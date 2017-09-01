@@ -109,6 +109,7 @@ namespace Dynamo.Graph.Workspaces
             }
             else
             {
+                //we don't need to remap ports for any nodes with json constructors which pass ports
                 node = (NodeModel)obj.ToObject(type);
             }
             //cannot set Lacing directly as property is protected
@@ -164,6 +165,7 @@ namespace Dynamo.Graph.Workspaces
             newPort.UseLevels = deserializedPort.UseLevels;
             newPort.Level = deserializedPort.Level;
             newPort.KeepListStructure = deserializedPort.KeepListStructure;
+            newPort.UsingDefaultValue = deserializedPort.UsingDefaultValue;
         }
 
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)

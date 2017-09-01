@@ -179,7 +179,6 @@ namespace Dynamo.Graph.Nodes
         /// <summary>
         /// Controls whether this port is set to use it's default value (true) or yield a closure (false).
         /// </summary>
-        [JsonIgnore]
         public bool UsingDefaultValue
         {
             get { return usingDefaultValue; }
