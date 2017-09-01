@@ -81,10 +81,10 @@ namespace Dynamo.Models
       {
         return new DynamoPreferencesData(
           1.0,
-          false,
+          true,
           true,
           AssemblyHelper.GetDynamoVersion().ToString(),
-          Models.RunType.Manual.ToString(),
+          Models.RunType.Automatic.ToString(),
           RunSettings.DefaultRunPeriod.ToString());
       }
     }
