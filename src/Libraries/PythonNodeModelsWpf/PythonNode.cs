@@ -58,8 +58,17 @@ namespace PythonNodeModelsWpf
                     editWindow = new ScriptEditorWindow(dynamoViewModel, model);
                     editWindow.Initialize(model.GUID, "ScriptContent", model.Script);
                     editWindow.Closed += this.view_EditWindowClosed;
+                    System.Windows.Application.Current.MainWindow.Closing += delegate { Application_Exit(); };
                     editWindow.Show();
                 }
+            }
+        }
+
+        private void Application_Exit()
+        {
+            if (editWindow != null)
+            {
+                editWindow.Close();
             }
         }
     }
