@@ -142,6 +142,7 @@ namespace PythonNodeModelsWpf
                 System.Guid.Empty, boundNodeId, propertyName, scriptText);
 
             dynamoViewModel.ExecuteCommand(command);
+            this.Focus();
             nodeWasModified = true;
             nodeModel.OnNodeModified();
         }
@@ -149,6 +150,10 @@ namespace PythonNodeModelsWpf
         private void OnTestClicked(object sender, RoutedEventArgs e)
         {
             UpdateScript(editText.Text);
+            if (dynamoViewModel.HomeSpace.RunSettings.RunType != RunType.Automatic)
+            {
+                dynamoViewModel.HomeSpace.Run();
+            }
         }
 
         #endregion
