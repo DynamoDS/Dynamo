@@ -128,13 +128,13 @@
     <comment>Description for Python Script</comment>
   </data>
   <data name="PythonScriptEditorAcceptChangesButton" xml:space="preserve">
-    <value>Accept Changes</value>
+    <value>Save Changes</value>
   </data>
   <data name="PythonScriptEditorTestButton" xml:space="preserve">
-    <value>Test</value>
+    <value>Run</value>
   </data>
   <data name="PythonScriptEditorCancelButton" xml:space="preserve">
-    <value>Cancel</value>
+    <value>Revert</value>
   </data>
   <data name="PythonScriptEditorCaption" xml:space="preserve">
     <value>Edit Python Script...</value>

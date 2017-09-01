@@ -88,7 +88,7 @@ namespace PythonNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Accept Changes.
+        ///   Looks up a localized string similar to Save Changes.
         /// </summary>
         public static string PythonScriptEditorAcceptChangesButton {
             get {
@@ -97,7 +97,7 @@ namespace PythonNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cancel.
+        ///   Looks up a localized string similar to Revert.
         /// </summary>
         public static string PythonScriptEditorCancelButton {
             get {
@@ -151,7 +151,7 @@ namespace PythonNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Test.
+        ///   Looks up a localized string similar to Run.
         /// </summary>
         public static string PythonScriptEditorTestButton {
             get {
