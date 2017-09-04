@@ -32,7 +32,7 @@ namespace ProtoCore
         public Type(string displayTypeName)
         {
             UID = Constants.kInvalidIndex;
-            rank = DSASM.Constants.kArbitraryRank;
+            rank = displayTypeName.Contains("[]") ? DSASM.Constants.kArbitraryRank : 0;
             Name = FromShortString(displayTypeName);
         }
 
