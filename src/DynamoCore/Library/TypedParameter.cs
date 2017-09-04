@@ -19,15 +19,15 @@ namespace Dynamo.Library
         /// This function creates TypedParameter
         /// </summary>
         /// <param name="name">parameter name</param>
-        /// <param name="type">parameter type</param>
+        /// <param name="displayTypeName">parameter displayTypeName, serialized short string representation of ProtoCore.Type</param>
         /// <param name="defaultValue">parameter default value</param>
         /// <param name="shortArgumentName">short name is used as tooltip</param>
         /// <param name="summary">parameter description</param>
         [JsonConstructor]
-        public TypedParameter(string name, ProtoCore.Type type, string defaultValue)
+        public TypedParameter(string name, string displayTypeName, string defaultValue)
         {
             Name = name;
-            Type = type;
+            Type = new ProtoCore.Type(displayTypeName);
             defaultValueString = defaultValue;
         }
         
