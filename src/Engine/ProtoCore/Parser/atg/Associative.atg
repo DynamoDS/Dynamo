@@ -160,6 +160,8 @@ Associative_Statement<out ProtoCore.AST.AssociativeAST.AssociativeNode node>
 =  SYNC                     (. if (!IsFullClosure()) SynErr(Resources.CloseBracketExpected); .)
                             (. node = null; .)
 (
+		Associative_ReturnStatement<out node>
+	|
 	IF(IsNonAssignmentStatement())
 		Associative_NonAssignmentStatement<out node>
 	|
@@ -189,6 +191,39 @@ Associative_Statement<out ProtoCore.AST.AssociativeAST.AssociativeNode node>
             )      
         )
 )
+.
+
+Associative_ReturnStatement<out ProtoCore.AST.AssociativeAST.AssociativeNode node>
+=
+	(.
+        var bNode = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode();
+		NodeUtils.SetNodeLocation(bNode, la);
+	.)
+	"return"
+	[
+		'='
+	]
+	(.
+		var lhs = AstFactory.BuildIdentifier("return");
+		lhs.datatype = TypeSystem.BuildPrimitiveTypeObject(ProtoCore.PrimitiveType.Return);
+		bNode.LeftNode = lhs;
+
+		ProtoCore.AST.AssociativeAST.AssociativeNode rhs = null;
+	.)
+	(
+		    Associative_LanguageBlock<out rhs>
+		|
+		IF(IsFunctionCallStatement())
+			Associative_FunctionCallStatement<out rhs>
+		|
+			Associative_NonAssignmentStatement<out rhs>
+	)
+	(.
+        bNode.RightNode = rhs;
+        bNode.Optr = Operator.assign;
+
+		node = bNode;
+	.)
 .
 
 Associative_StatementList<.out List<ProtoCore.AST.AssociativeAST.AssociativeNode> nodelist.> 

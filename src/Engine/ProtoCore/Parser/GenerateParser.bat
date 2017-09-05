@@ -5,4 +5,3 @@ del DesignScript.atg
 del DS.DesignScript.atg.temp
 del Parser.cs.old
 del Scanner.cs.old
-PAUSE
