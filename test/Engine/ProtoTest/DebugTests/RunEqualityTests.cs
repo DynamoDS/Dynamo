@@ -11746,20 +11746,6 @@ t = x;
         }
 
         [Test]
-        public void DebugEQT63_Dynamic_array_onthefly_function_return()
-        {
-            string code = @"
-def foo()
-{
-return b[0]=5;
-}
-a = foo();
-c = {100};
-";
-            DebugTestFx.CompareDebugAndRunResults(code);
-        }
-
-        [Test]
         public void DebugEQT63_Dynamic_array_onthefly_update()
         {
             string code = @"
