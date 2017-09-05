@@ -1526,9 +1526,8 @@ Associative_Ident<out ProtoCore.AST.AssociativeAST.AssociativeNode node>
                 {
                     errors.SemErr(t.line, t.col, String.Format(Resources.keywordCantBeUsedAsIdentifier, t.val));
                 }
-                int ltype = (0 == String.Compare(t.val, "return")) ? (int)ProtoCore.PrimitiveType.Return : (int)ProtoCore.PrimitiveType.Var;
                 var identNode = AstFactory.BuildIdentifier(t.val);
-                identNode.datatype = TypeSystem.BuildPrimitiveTypeObject((ProtoCore.PrimitiveType)ltype);
+                identNode.datatype = TypeSystem.BuildPrimitiveTypeObject(ProtoCore.PrimitiveType.Var);
                 node = identNode;
                 NodeUtils.SetNodeLocation(node, t);
             .)

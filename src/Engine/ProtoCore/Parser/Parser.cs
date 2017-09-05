@@ -1424,9 +1424,8 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 		{
 		   errors.SemErr(t.line, t.col, String.Format(Resources.keywordCantBeUsedAsIdentifier, t.val));
 		}
-		int ltype = (0 == String.Compare(t.val, "return")) ? (int)ProtoCore.PrimitiveType.Return : (int)ProtoCore.PrimitiveType.Var;
 		var identNode = AstFactory.BuildIdentifier(t.val);
-		identNode.datatype = TypeSystem.BuildPrimitiveTypeObject((ProtoCore.PrimitiveType)ltype);
+		identNode.datatype = TypeSystem.BuildPrimitiveTypeObject(ProtoCore.PrimitiveType.Var);
 		node = identNode;
 		NodeUtils.SetNodeLocation(node, t);
 		
@@ -2998,8 +2997,7 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 		{
 		   errors.SemErr(t.line, t.col, String.Format(Resources.keywordCantBeUsedAsIdentifier, t.val));
 		}
-		int ltype = (0 == String.Compare(t.val, "return")) ? (int)ProtoCore.PrimitiveType.Return : (int)ProtoCore.PrimitiveType.Var;
-		node = BuildImperativeIdentifier(t.val, (ProtoCore.PrimitiveType)ltype);
+		node = BuildImperativeIdentifier(t.val, ProtoCore.PrimitiveType.Var);
 		NodeUtils.SetNodeLocation(node, t);
 		
 	}

@@ -837,8 +837,7 @@ Imperative_Ident<out ProtoCore.AST.ImperativeAST.ImperativeNode node>
                     {
                         errors.SemErr(t.line, t.col, String.Format(Resources.keywordCantBeUsedAsIdentifier, t.val));
                     }
-                    int ltype = (0 == String.Compare(t.val, "return")) ? (int)ProtoCore.PrimitiveType.Return : (int)ProtoCore.PrimitiveType.Var;
-                    node = BuildImperativeIdentifier(t.val, (ProtoCore.PrimitiveType)ltype);
+                    node = BuildImperativeIdentifier(t.val, ProtoCore.PrimitiveType.Var);
                     NodeUtils.SetNodeLocation(node, t);
                 .)
 .
