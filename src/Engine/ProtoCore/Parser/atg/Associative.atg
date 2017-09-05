@@ -213,10 +213,8 @@ Associative_ReturnStatement<out ProtoCore.AST.AssociativeAST.AssociativeNode nod
 	(
 		    Associative_LanguageBlock<out rhs>
 		|
-		IF(IsFunctionCallStatement())
-			Associative_FunctionCallStatement<out rhs, false>
-		|
-			Associative_NonAssignmentStatement<out rhs, false>
+			Associative_Expression<out rhs>
+			endline
 	)
 	(.
         bNode.RightNode = rhs;
@@ -897,7 +895,7 @@ Associative_DecoratedIdentifier<out ProtoCore.AST.AssociativeAST.AssociativeNode
 )
 .
 
-Associative_NonAssignmentStatement<out ProtoCore.AST.AssociativeAST.AssociativeNode node, bool generateTempLhs = true>
+Associative_NonAssignmentStatement<out ProtoCore.AST.AssociativeAST.AssociativeNode node>
 =
   SYNC                       (.
 								 node = null; 
@@ -907,30 +905,23 @@ Associative_NonAssignmentStatement<out ProtoCore.AST.AssociativeAST.AssociativeN
 	(
 		Associative_Expression<out rightNode>
 					(.
-					    if (generateTempLhs)
-						{
-							//Try to make a false binary expression node.					    
-							ProtoCore.AST.AssociativeAST.BinaryExpressionNode expressionNode = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode();
-							ProtoCore.AST.AssociativeAST.IdentifierNode leftNode = new ProtoCore.AST.AssociativeAST.IdentifierNode();
-							leftNode.Value = leftNode.Name = Constants.kTempProcLeftVar;
+						//Try to make a false binary expression node.					    
+						ProtoCore.AST.AssociativeAST.BinaryExpressionNode expressionNode = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode();
+						ProtoCore.AST.AssociativeAST.IdentifierNode leftNode = new ProtoCore.AST.AssociativeAST.IdentifierNode();
+						leftNode.Value = leftNode.Name = Constants.kTempProcLeftVar;
 
-							var unknownType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, 0);
-							leftNode.datatype = unknownType;
-							leftNode.line = rightNode.line;
-							leftNode.col = rightNode.col;
-							leftNode.endLine = rightNode.endLine;
-							leftNode.endCol = rightNode.endCol;
+						var unknownType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, 0);
+						leftNode.datatype = unknownType;
+						leftNode.line = rightNode.line;
+						leftNode.col = rightNode.col;
+						leftNode.endLine = rightNode.endLine;
+						leftNode.endCol = rightNode.endCol;
 
-							expressionNode.LeftNode = leftNode;
-							expressionNode.RightNode = rightNode;
-							expressionNode.Optr = Operator.assign;
-							NodeUtils.UpdateBinaryExpressionLocation(expressionNode);
-							node = expressionNode;
-						}
-						else
-						{
-							node = rightNode;
-						}
+						expressionNode.LeftNode = leftNode;
+						expressionNode.RightNode = rightNode;
+						expressionNode.Optr = Operator.assign;
+						NodeUtils.UpdateBinaryExpressionLocation(expressionNode);
+						node = expressionNode;
 					.)			
                     
                     (. 
@@ -944,7 +935,7 @@ Associative_NonAssignmentStatement<out ProtoCore.AST.AssociativeAST.AssociativeN
 )
 .
 
-Associative_FunctionCallStatement<out ProtoCore.AST.AssociativeAST.AssociativeNode node, bool generateTempLhs = true>
+Associative_FunctionCallStatement<out ProtoCore.AST.AssociativeAST.AssociativeNode node>
 =
   SYNC                       (.
 								 node = null; 
@@ -961,29 +952,22 @@ Associative_FunctionCallStatement<out ProtoCore.AST.AssociativeAST.AssociativeNo
                             || rightNode is ProtoCore.AST.AssociativeAST.FunctionCallNode
                             || allowIdentList)
 						{
-							if (generateTempLhs)
-							{
-								ProtoCore.AST.AssociativeAST.BinaryExpressionNode expressionNode = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode();
-								ProtoCore.AST.AssociativeAST.IdentifierNode leftNode = new ProtoCore.AST.AssociativeAST.IdentifierNode();
-								leftNode.Value = leftNode.Name = Constants.kTempProcLeftVar;
+							ProtoCore.AST.AssociativeAST.BinaryExpressionNode expressionNode = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode();
+							ProtoCore.AST.AssociativeAST.IdentifierNode leftNode = new ProtoCore.AST.AssociativeAST.IdentifierNode();
+							leftNode.Value = leftNode.Name = Constants.kTempProcLeftVar;
 
-								var unknownType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, 0);
-								leftNode.datatype = unknownType;
-								leftNode.line = rightNode.line;
-								leftNode.col = rightNode.col;
-								leftNode.endLine = rightNode.endLine;
-								leftNode.endCol = rightNode.endCol;
+							var unknownType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, 0);
+							leftNode.datatype = unknownType;
+							leftNode.line = rightNode.line;
+							leftNode.col = rightNode.col;
+							leftNode.endLine = rightNode.endLine;
+							leftNode.endCol = rightNode.endCol;
 
-								expressionNode.LeftNode = leftNode;
-								expressionNode.RightNode = rightNode;
-								expressionNode.Optr = Operator.assign;
-								NodeUtils.UpdateBinaryExpressionLocation(expressionNode);
-								node = expressionNode;
-							}
-							else
-							{
-								node = rightNode;
-							}
+							expressionNode.LeftNode = leftNode;
+							expressionNode.RightNode = rightNode;
+							expressionNode.Optr = Operator.assign;
+							NodeUtils.UpdateBinaryExpressionLocation(expressionNode);
+							node = expressionNode;
 						}
 					.)			
                     
