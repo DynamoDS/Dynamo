@@ -986,9 +986,9 @@ public Node root { get; set; }
 		if (la.kind == 10) {
 			Associative_LanguageBlock(out rhs);
 		} else if (IsFunctionCallStatement()) {
-			Associative_FunctionCallStatement(out rhs);
+			Associative_FunctionCallStatement(out rhs, false);
 		} else if (StartOf(4)) {
-			Associative_NonAssignmentStatement(out rhs);
+			Associative_NonAssignmentStatement(out rhs, false);
 		} else SynErr(72);
 		bNode.RightNode = rhs;
 		bNode.Optr = Operator.assign;
@@ -997,12 +997,15 @@ public Node root { get; set; }
 		
 	}
 
-	void Associative_NonAssignmentStatement(out ProtoCore.AST.AssociativeAST.AssociativeNode node) {
+	void Associative_NonAssignmentStatement(out ProtoCore.AST.AssociativeAST.AssociativeNode node, bool generateTempLhs = true) {
 		while (!(StartOf(7))) {SynErr(73); Get();}
 		node = null; 
 		ProtoCore.AST.AssociativeAST.AssociativeNode rightNode = null;
 		 
 		Associative_Expression(out rightNode);
+		if (generateTempLhs)
+		{
+		//Try to make a false binary expression node.					    
 		ProtoCore.AST.AssociativeAST.BinaryExpressionNode expressionNode = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode();
 		ProtoCore.AST.AssociativeAST.IdentifierNode leftNode = new ProtoCore.AST.AssociativeAST.IdentifierNode();
 		leftNode.Value = leftNode.Name = Constants.kTempProcLeftVar;
@@ -1019,6 +1022,11 @@ public Node root { get; set; }
 		expressionNode.Optr = Operator.assign;
 		NodeUtils.UpdateBinaryExpressionLocation(expressionNode);
 		node = expressionNode;
+		}
+		else
+		{
+		node = rightNode;
+		}
 		
 		if (la.val != ";")
 		   SynErr(Resources.SemiColonExpected);  
@@ -1027,7 +1035,7 @@ public Node root { get; set; }
 		NodeUtils.SetNodeEndLocation(node, t); 
 	}
 
-	void Associative_FunctionCallStatement(out ProtoCore.AST.AssociativeAST.AssociativeNode node) {
+	void Associative_FunctionCallStatement(out ProtoCore.AST.AssociativeAST.AssociativeNode node, bool generateTempLhs = true) {
 		while (!(StartOf(7))) {SynErr(74); Get();}
 		node = null; 
 		ProtoCore.AST.AssociativeAST.AssociativeNode rightNode = null;
@@ -1039,7 +1047,8 @@ public Node root { get; set; }
 		if (rightNode is ProtoCore.AST.AssociativeAST.FunctionDotCallNode 
 		   || rightNode is ProtoCore.AST.AssociativeAST.FunctionCallNode
 		   || allowIdentList)
-		
+		{
+		if (generateTempLhs)
 		{
 		ProtoCore.AST.AssociativeAST.BinaryExpressionNode expressionNode = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode();
 		ProtoCore.AST.AssociativeAST.IdentifierNode leftNode = new ProtoCore.AST.AssociativeAST.IdentifierNode();
@@ -1057,6 +1066,11 @@ public Node root { get; set; }
 		expressionNode.Optr = Operator.assign;
 		NodeUtils.UpdateBinaryExpressionLocation(expressionNode);
 		node = expressionNode;
+		}
+		else
+		{
+		node = rightNode;
+		}
 		}
 		
 		if (la.val != ";")
