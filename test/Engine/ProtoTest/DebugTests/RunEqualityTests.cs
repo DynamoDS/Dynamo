@@ -11751,7 +11751,7 @@ t = x;
             string code = @"
 def foo()
 {
-return =b[0]=5;
+return b[0]=5;
 }
 a = foo();
 c = {100};
@@ -12997,11 +12997,11 @@ def foo : int ( a = 5, b = 5 )
             string code = @"
 def foo  ( a : int = 5, b : double = 5.5, c : bool = true )
 {
-	return = x = c == true ? a  : b;
+	return = c == true ? a  : b;
 }
 def foo  ( a : double = 5, b : double = 5.5, c : bool = true )
 {
-	return = x = c == true ? a  : b;
+	return = c == true ? a  : b;
 }
 [Imperative]
 {
@@ -13020,11 +13020,11 @@ def foo  ( a : double = 5, b : double = 5.5, c : bool = true )
             string code = @"
 def foo  ( a : int, b : double = 5, c : bool = true)
 {
-	return = x = c == true ? a  : b;
+	return = c == true ? a  : b;
 }
 def foo2  ( a , b = 5, c = true)
 {
-	return = x = c == true ? a  : b;
+	return = c == true ? a  : b;
 }
 d1 = foo2 (  );
 d2 = foo2 ( 1 );
@@ -13049,11 +13049,11 @@ d5 =
             string code = @"
 def foo  ( a : int = 5, b : double = 5.5, c : bool = true )
 {
-	return = x = c == true ? a  : b;
+	return = c == true ? a  : b;
 }
 def foo  ( a : double = 6, b : double = 5.5, c : bool = true )
 {
-	return = x = c == true ? a  : b;
+	return = c == true ? a  : b;
 }
 [Imperative]
 {
