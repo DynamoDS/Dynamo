@@ -765,20 +765,69 @@ namespace Dynamo.Tests
 
             // check first input defaults
             string concreteType = (string)jObject.SelectToken("Nodes[1].ConcreteType");
-            string inputSymbol = (string)jObject.SelectToken("Nodes[1].InputSymbol");
+            string name = (string)jObject.SelectToken("Nodes[1].Parameter.Name");
+            string typeName = (string)jObject.SelectToken("Nodes[1].Parameter.TypeName");
+            int typeRank = (int)jObject.SelectToken("Nodes[1].Parameter.TypeRank");
             string defaultValue = (string)jObject.SelectToken("Nodes[1].Parameter.DefaultValue");
 
             Assert.IsTrue(concreteType == "Dynamo.Graph.Nodes.CustomNodes.Symbol, DynamoCore");
-            Assert.IsTrue(inputSymbol == "center: Point = Point.ByCoordinates(10,10,10);");
+            Assert.IsTrue(name == "center");
+            Assert.IsTrue(typeName == "Autodesk.DesignScript.Geometry.Point");
+            Assert.IsTrue(typeRank == 0);
             Assert.IsTrue(defaultValue == "Autodesk.DesignScript.Geometry.Point.ByCoordinates(10, 10, 10)");
 
             // check second input defaults
             concreteType = (string)jObject.SelectToken("Nodes[2].ConcreteType");
-            inputSymbol = (string)jObject.SelectToken("Nodes[2].InputSymbol");
+            name = (string)jObject.SelectToken("Nodes[2].Parameter.Name");
+            typeName = (string)jObject.SelectToken("Nodes[2].Parameter.TypeName");
+            typeRank = (int)jObject.SelectToken("Nodes[2].Parameter.TypeRank");
             defaultValue = (string)jObject.SelectToken("Nodes[2].Parameter.DefaultValue");
 
             Assert.IsTrue(concreteType == "Dynamo.Graph.Nodes.CustomNodes.Symbol, DynamoCore");
-            Assert.IsTrue(inputSymbol == "radius: double = 5.5;");
+            Assert.IsTrue(name == "radius");
+            Assert.IsTrue(typeName == "double");
+            Assert.IsTrue(typeRank == 0);
+            Assert.IsTrue(defaultValue == "5.5");
+        }
+
+        [Test]
+        public void TestCustomNodeDefaultValueOpenedinJson()
+        {
+            // load json dyf test file
+            var dynFilePath = Path.Combine(TestDirectory, @"core\CustomNodes\CNDefault_json.dyf");
+            OpenModel(dynFilePath);
+
+            // get custom node ws as json
+            var cws = CurrentDynamoModel.Workspaces.FirstOrDefault(ws => ws is CustomNodeWorkspaceModel);
+            Assert.NotNull(cws);
+            var customNodeWorkspace = (CustomNodeWorkspaceModel)cws;
+            var json = customNodeWorkspace.ToJson(CurrentDynamoModel.EngineController);
+            var jObject = JObject.Parse(json);
+
+            // check first input defaults
+            string concreteType = (string)jObject.SelectToken("Nodes[1].ConcreteType");
+            string name = (string)jObject.SelectToken("Nodes[1].Parameter.Name");
+            string typeName = (string)jObject.SelectToken("Nodes[1].Parameter.TypeName");
+            int typeRank = (int)jObject.SelectToken("Nodes[1].Parameter.TypeRank");
+            string defaultValue = (string)jObject.SelectToken("Nodes[1].Parameter.DefaultValue");
+
+            Assert.IsTrue(concreteType == "Dynamo.Graph.Nodes.CustomNodes.Symbol, DynamoCore");
+            Assert.IsTrue(name == "center");
+            Assert.IsTrue(typeName == "Autodesk.DesignScript.Geometry.Point");
+            Assert.IsTrue(typeRank == 0);
+            Assert.IsTrue(defaultValue == "Autodesk.DesignScript.Geometry.Point.ByCoordinates(10, 10, 10)");
+
+            // check second input defaults
+            concreteType = (string)jObject.SelectToken("Nodes[2].ConcreteType");
+            name = (string)jObject.SelectToken("Nodes[2].Parameter.Name");
+            typeName = (string)jObject.SelectToken("Nodes[2].Parameter.TypeName");
+            typeRank = (int)jObject.SelectToken("Nodes[2].Parameter.TypeRank");
+            defaultValue = (string)jObject.SelectToken("Nodes[2].Parameter.DefaultValue");
+
+            Assert.IsTrue(concreteType == "Dynamo.Graph.Nodes.CustomNodes.Symbol, DynamoCore");
+            Assert.IsTrue(name == "radius");
+            Assert.IsTrue(typeName == "double");
+            Assert.IsTrue(typeRank == 0);
             Assert.IsTrue(defaultValue == "5.5");
         }
 

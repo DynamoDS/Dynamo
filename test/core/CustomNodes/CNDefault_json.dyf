@@ -1,0 +1,224 @@
+{
+  "Uuid": "8ec6c27a-50ce-4ffe-a6de-fd13587a5d60",
+  "IsCustomNode": true,
+  "Category": null,
+  "Description": "Testing Custom Node Default Value Serialization",
+  "Name": "CNDefault",
+  "ElementResolver": {
+    "ResolutionMap": {
+      "Cuboid": {
+        "Key": "Autodesk.DesignScript.Geometry.Cuboid",
+        "Value": "ProtoGeometry.dll"
+      },
+      "Point": {
+        "Key": "Autodesk.DesignScript.Geometry.Point",
+        "Value": "ProtoGeometry.dll"
+      },
+      "Sphere": {
+        "Key": "Autodesk.DesignScript.Geometry.Sphere",
+        "Value": "ProtoGeometry.dll"
+      },
+      "Autodesk.DesignScript.Geometry.Point": {
+        "Key": "Autodesk.DesignScript.Geometry.Point",
+        "Value": "ProtoGeometry.dll"
+      }
+    }
+  },
+  "Inputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "Sphere.ByCenterPointRadius(center, radius);",
+      "Id": "2ab5fe4cd3584ec49782d120b367d97e",
+      "Inputs": [
+        {
+          "Id": "9547323fb6574c2faa739ae57850244f",
+          "Name": "center",
+          "Description": "center",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "672c5cc9f5a74726b17d5229e6e447e7",
+          "Name": "radius",
+          "Description": "radius",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "ccb197383cbb45dd815346676701adc9",
+          "Name": "",
+          "Description": "t6BBA4B28C5E54CF89F300D510499A00E_0",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CustomNodes.Symbol, DynamoCore",
+      "NodeType": "InputNode",
+      "Parameter": {
+        "Name": "center",
+        "TypeName": "Autodesk.DesignScript.Geometry.Point",
+        "TypeRank": 0,
+        "DefaultValue": "Autodesk.DesignScript.Geometry.Point.ByCoordinates(10, 10, 10)"
+      },
+      "Id": "4b3ef2466ef649ea95db607b1f083d0c",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "a5d111fa0d4c49bcb312476a2f44f3a2",
+          "Name": "",
+          "Description": "Symbol",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "A function parameter, use with custom nodes.\r\n\r\nYou can specify the type and default value for parameter. E.g.,\r\n\r\ninput : var[]..[]\r\nvalue : bool = false"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CustomNodes.Symbol, DynamoCore",
+      "NodeType": "InputNode",
+      "Parameter": {
+        "Name": "radius",
+        "TypeName": "double",
+        "TypeRank": 0,
+        "DefaultValue": "5.5"
+      },
+      "Id": "e2efe8b186cd477995f6fb4cf28038a5",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "a948e29b20f34963a85c5c543bb1dd66",
+          "Name": "",
+          "Description": "Symbol",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "A function parameter, use with custom nodes.\r\n\r\nYou can specify the type and default value for parameter. E.g.,\r\n\r\ninput : var[]..[]\r\nvalue : bool = false"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CustomNodes.Output, DynamoCore",
+      "NodeType": "OutputNode",
+      "ElementResolver": null,
+      "Symbol": "",
+      "Id": "6a547116e7344efbbdfb4058c4a05928",
+      "Inputs": [
+        {
+          "Id": "cc5ac673b9b143998962cef1baeb749c",
+          "Name": "",
+          "Description": "",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [],
+      "Replication": "Disabled",
+      "Description": "A function output, use with custom nodes"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "ccb197383cbb45dd815346676701adc9",
+      "End": "cc5ac673b9b143998962cef1baeb749c",
+      "Id": "b8989e592e18467a9bbccdb57e77caa6"
+    },
+    {
+      "Start": "a5d111fa0d4c49bcb312476a2f44f3a2",
+      "End": "9547323fb6574c2faa739ae57850244f",
+      "Id": "54e06e3e9eba4feeb3231edd73e79155"
+    },
+    {
+      "Start": "a948e29b20f34963a85c5c543bb1dd66",
+      "End": "672c5cc9f5a74726b17d5229e6e447e7",
+      "Id": "d3f376607ebc4ee1b56b57e16a14c16b"
+    }
+  ],
+  "Dependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": false,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.0.0.2486",
+      "RunType": "Manual",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": 2.8314361572265625,
+      "EyeY": 9.0570955276489258,
+      "EyeZ": 23.05900764465332,
+      "LookX": -2.5422923564910889,
+      "LookY": 1.1224530935287476,
+      "LookZ": -30.208133697509766,
+      "UpX": 0.020997552201151848,
+      "UpY": 0.9681476354598999,
+      "UpZ": 0.24949799478054047
+    },
+    "NodeViews": [
+      {
+        "Id": "2ab5fe4cd3584ec49782d120b367d97e",
+        "Name": "Code Block",
+        "ShowGeometry": true,
+        "IsUpstreamVisible": true,
+        "Excluded": false,
+        "X": 551.0,
+        "Y": 406.0
+      },
+      {
+        "Id": "4b3ef2466ef649ea95db607b1f083d0c",
+        "Name": "Input",
+        "ShowGeometry": true,
+        "IsUpstreamVisible": true,
+        "Excluded": false,
+        "X": 49.0,
+        "Y": 196.0
+      },
+      {
+        "Id": "e2efe8b186cd477995f6fb4cf28038a5",
+        "Name": "Input",
+        "ShowGeometry": true,
+        "IsUpstreamVisible": true,
+        "Excluded": false,
+        "X": 225.0,
+        "Y": 402.0
+      },
+      {
+        "Id": "6a547116e7344efbbdfb4058c4a05928",
+        "Name": "Output",
+        "ShowGeometry": true,
+        "IsUpstreamVisible": true,
+        "Excluded": false,
+        "X": 1371.0,
+        "Y": 378.0
+      }
+    ],
+    "Notes": [],
+    "Annotations": [],
+    "X": 0.0,
+    "Y": 0.0,
+    "Zoom": 1.0
+  }
+}
