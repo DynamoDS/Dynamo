@@ -3615,10 +3615,10 @@ def foo(x) {
 }
 
 r = foo(3);
-}";
+";
             thisTest.RunScriptSource(code);
             thisTest.VerifyBuildWarningCount(0);
-            thisTest.Verify("x", 6);
+            thisTest.Verify("r", 6);
         }
 
         [Test]
@@ -3709,10 +3709,10 @@ def foo(x) {
 }
 
 r = foo(3);
-}";
+";
             thisTest.RunScriptSource(code);
             thisTest.VerifyBuildWarningCount(0);
-            thisTest.Verify("x", 6);
+            thisTest.Verify("r", 6);
         }
     }
 }
