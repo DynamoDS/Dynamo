@@ -186,6 +186,9 @@
   <data name="InvalidLanguageBlockIdentifier" xml:space="preserve">
     <value>\"{0}\" is not a valid language block identifier, do you mean \"Associative\" or \"Imperative\"?</value>
   </data>
+  <data name="InvalidReturnStatement" xml:space="preserve">
+    <value>Return statement is invalid. Do you mean: return = {0} ?</value>
+  </data>
   <data name="InvalidSymbol" xml:space="preserve">
     <value>Syntax Error: invalid symbol '{0}'. (Did you mean to use Modifier Stack \" =&gt; \")</value>
   </data>

@@ -39,8 +39,8 @@ using ProtoCore.Properties;
 
 public class Parser {
 -->constants
-	const bool _T = true;
-	const bool _x = false;
+	const bool T = true;
+	const bool x = false;
 	const int minErrDist = 2;
 	
 	public Scanner scanner;

@@ -971,6 +971,15 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Return statement is invalid. Do you mean: return = {0} ?.
+        /// </summary>
+        public static string InvalidReturnStatement {
+            get {
+                return ResourceManager.GetString("InvalidReturnStatement", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Syntax Error: invalid symbol &apos;{0}&apos;. (Did you mean to use Modifier Stack \&quot; =&gt; \&quot;).
         /// </summary>
         public static string InvalidSymbol {

@@ -1909,6 +1909,41 @@ z2 = z;
         }
 
         [Test]
+        [Category("SmokeTest")]
+        public void T51_Defect_1461388()
+        {
+            // Tracked by: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4094
+            String code =
+ @"
+b = 2;
+a = { 0, 1, 2 };
+c = 0;
+[Imperative]
+{
+    d = a + 1;
+    [Associative]
+    {
+        b = a  + 1;
+        a = { c, c } ;
+        [Imperative]
+        {
+            for ( i in a )
+            {
+                a[c] = i + 1;
+                c = c + 1;
+            }            
+        }
+    }
+}
+c = 10;
+";
+            string errmsg = "MAGN-4094 Runtime Cyclic Dependency not detected";
+            ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
+            TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.CyclicDependency);
+            
+        }
+
+        [Test]
         [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T52_Defect_1459478()
