@@ -29,11 +29,11 @@ namespace ProtoCore
         /// Constructor of Type using Short string
         /// </summary>
         /// <param name="displayTypeName"> Serialized Short String</param>
-        public Type(string displayTypeName)
+        public Type(string TypeName, int TypeRank)
         {
             UID = Constants.kInvalidIndex;
-            rank = displayTypeName.Contains("[]") ? DSASM.Constants.kArbitraryRank : 0;
-            Name = FromShortString(displayTypeName);
+            rank = TypeRank;
+            Name = TypeName;
         }
 
         /// <summary>
@@ -89,16 +89,6 @@ namespace ProtoCore
             {
                 return ToString();
             }
-        }
-
-        /// <summary>
-        /// Get the name of Type from the serialized short string
-        /// </summary>
-        /// <param name="displayTypeName">Serialized short string representation of ProtoCore.Type</param>
-        /// <returns></returns>
-        public static string FromShortString(string displayTypeName)
-        {
-            return displayTypeName.Split('[')[0];
         }
 
         public bool Equals(Type type)

@@ -3,6 +3,7 @@ using Dynamo.Engine;
 using Dynamo.Interfaces;
 using ProtoCore.AST.AssociativeAST;
 using Newtonsoft.Json;
+using Dynamo.Graph.Workspaces;
 
 namespace Dynamo.Library
 {
@@ -19,15 +20,14 @@ namespace Dynamo.Library
         /// This function creates TypedParameter
         /// </summary>
         /// <param name="name">parameter name</param>
-        /// <param name="displayTypeName">parameter displayTypeName, serialized short string representation of ProtoCore.Type</param>
-        /// <param name="defaultValue">parameter default value</param>
-        /// <param name="shortArgumentName">short name is used as tooltip</param>
-        /// <param name="summary">parameter description</param>
+        /// <param name="TypeName">parameter TypeName, serialized name of ProtoCore.Type</param>
+        /// <param name="TypeRank">parameter TypeRank, serialized rank of ProtoCore.Type</param>
+        /// <param name="defaultValue">parameter defaultValue</param>
         [JsonConstructor]
-        public TypedParameter(string name, string displayTypeName, string defaultValue)
+        public TypedParameter(string name = "", string TypeName = "", int TypeRank = -1, string defaultValue = "")
         {
             Name = name;
-            Type = new ProtoCore.Type(displayTypeName);
+            Type = new ProtoCore.Type(TypeName, TypeRank);
             defaultValueString = defaultValue;
         }
         
@@ -71,7 +71,6 @@ namespace Dynamo.Library
         /// <summary>
         /// Returns type of the parameter.
         /// </summary>
-        [JsonIgnore]
         public ProtoCore.Type Type { get; private set; }
 
         /// <summary>
@@ -138,6 +137,7 @@ namespace Dynamo.Library
         /// <summary>
         /// Returns short type name of the parameter.
         /// </summary>
+        [JsonIgnore]
         public string DisplayTypeName
         {
             get { return Type.ToShortString(); }
