@@ -44,6 +44,39 @@ namespace Dynamo.Tests
         public void FixtureSetup()
         {
             ExecutionEvents.GraphPostExecution += ExecutionEvents_GraphPostExecution;
+            
+            //Clear Temp directory folders before start of the new serialization test run
+            var tempPath = Path.GetTempPath();
+            var jsonFolder = Path.Combine(tempPath, "json");
+            var jsonNonGuidFolder = Path.Combine(tempPath, "jsonNonGuid");
+
+            //Try and delete all the files from the previous run. 
+            //If there's an error in deleting files, the tests should countinue
+            if (Directory.Exists(jsonFolder))
+            {
+                try
+                {
+                    Console.WriteLine("Deleting JSON directory from temp");
+                    Directory.Delete(jsonFolder, true);
+                }
+                catch(Exception e)
+                {
+                    Console.WriteLine(e.Message);
+                }
+            }
+
+            if (Directory.Exists(jsonNonGuidFolder))
+            {
+                try
+                {
+                    Console.WriteLine("Deleting jsonNonGuid directory from temp");
+                    Directory.Delete(jsonNonGuidFolder, true);
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e.Message);
+                }
+            }
         }
 
         [TestFixtureTearDown]
@@ -63,6 +96,7 @@ namespace Dynamo.Tests
             public bool UseLevels { get; set; }
             public bool KeepListStructure { get; set; }
             public int Level { get; set; }
+            public bool UsingDefaultValue { get; set; }
 
             public override bool Equals(object obj)
             {
@@ -70,7 +104,8 @@ namespace Dynamo.Tests
                 return ID == other.ID &&
                     other.KeepListStructure == this.KeepListStructure &&
                     other.Level == this.Level &&
-                    other.UseLevels == this.UseLevels;
+                    other.UseLevels == this.UseLevels &&
+                    other.UsingDefaultValue == this.UsingDefaultValue;
             }
         }
 
@@ -127,7 +162,8 @@ namespace Dynamo.Tests
                                 ID = p.GUID.ToString(),
                                 UseLevels = p.UseLevels,
                                 KeepListStructure = p.KeepListStructure,
-                                Level = p.Level
+                                Level = p.Level,
+                                UsingDefaultValue = p.UsingDefaultValue
                             });
                     });
 
@@ -605,7 +641,7 @@ namespace Dynamo.Tests
                 Directory.CreateDirectory(jsonFolder);
             }
 
-            var jsonPath = filePathBase + ".json";
+            var jsonPath = filePathBase + ".dyn";
             if (File.Exists(jsonPath))
             {
                 File.Delete(jsonPath);
@@ -670,7 +706,7 @@ namespace Dynamo.Tests
                 Directory.CreateDirectory(jsonFolder);
             }
 
-            var jsonPath = filePathBase + ".jsonNonGuid";
+            var jsonPath = filePathBase + ".dyn";
             if (File.Exists(jsonPath))
             {
                 File.Delete(jsonPath);
