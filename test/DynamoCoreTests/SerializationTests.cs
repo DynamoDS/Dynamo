@@ -44,6 +44,39 @@ namespace Dynamo.Tests
         public void FixtureSetup()
         {
             ExecutionEvents.GraphPostExecution += ExecutionEvents_GraphPostExecution;
+            
+            //Clear Temp directory folders before start of the new serialization test run
+            var tempPath = Path.GetTempPath();
+            var jsonFolder = Path.Combine(tempPath, "json");
+            var jsonNonGuidFolder = Path.Combine(tempPath, "jsonNonGuid");
+
+            //Try and delete all the files from the previous run. 
+            //If there's an error in deleting files, the tests should countinue
+            if (Directory.Exists(jsonFolder))
+            {
+                try
+                {
+                    Console.WriteLine("Deleting JSON directory from temp");
+                    Directory.Delete(jsonFolder, true);
+                }
+                catch(Exception e)
+                {
+                    Console.WriteLine(e.Message);
+                }
+            }
+
+            if (Directory.Exists(jsonNonGuidFolder))
+            {
+                try
+                {
+                    Console.WriteLine("Deleting jsonNonGuid directory from temp");
+                    Directory.Delete(jsonNonGuidFolder, true);
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e.Message);
+                }
+            }
         }
 
         [TestFixtureTearDown]
@@ -608,7 +641,7 @@ namespace Dynamo.Tests
                 Directory.CreateDirectory(jsonFolder);
             }
 
-            var jsonPath = filePathBase + ".json";
+            var jsonPath = filePathBase + ".dyn";
             if (File.Exists(jsonPath))
             {
                 File.Delete(jsonPath);
@@ -673,7 +706,7 @@ namespace Dynamo.Tests
                 Directory.CreateDirectory(jsonFolder);
             }
 
-            var jsonPath = filePathBase + ".jsonNonGuid";
+            var jsonPath = filePathBase + ".dyn";
             if (File.Exists(jsonPath))
             {
                 File.Delete(jsonPath);

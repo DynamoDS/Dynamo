@@ -3750,7 +3750,7 @@ b = a * 2;
 import (Dummy from ""FFITarget.dll"");
 dummy = Dummy.Dummy();
 arr = {0.0,1.0,2.0,3.0,4.0,5.0,6.0,7.0,8.0,9.0,10.0};
-sum_1_10 = dummy.SumAll(arr);
+sum_1_10 = dummy.SumAll1D(arr);
 twice_arr = dummy.Twice(arr);
 	
 ";
@@ -11746,20 +11746,6 @@ t = x;
         }
 
         [Test]
-        public void DebugEQT63_Dynamic_array_onthefly_function_return()
-        {
-            string code = @"
-def foo()
-{
-return =b[0]=5;
-}
-a = foo();
-c = {100};
-";
-            DebugTestFx.CompareDebugAndRunResults(code);
-        }
-
-        [Test]
         public void DebugEQT63_Dynamic_array_onthefly_update()
         {
             string code = @"
@@ -12997,11 +12983,11 @@ def foo : int ( a = 5, b = 5 )
             string code = @"
 def foo  ( a : int = 5, b : double = 5.5, c : bool = true )
 {
-	return = x = c == true ? a  : b;
+	return = c == true ? a  : b;
 }
 def foo  ( a : double = 5, b : double = 5.5, c : bool = true )
 {
-	return = x = c == true ? a  : b;
+	return = c == true ? a  : b;
 }
 [Imperative]
 {
@@ -13020,11 +13006,11 @@ def foo  ( a : double = 5, b : double = 5.5, c : bool = true )
             string code = @"
 def foo  ( a : int, b : double = 5, c : bool = true)
 {
-	return = x = c == true ? a  : b;
+	return = c == true ? a  : b;
 }
 def foo2  ( a , b = 5, c = true)
 {
-	return = x = c == true ? a  : b;
+	return = c == true ? a  : b;
 }
 d1 = foo2 (  );
 d2 = foo2 ( 1 );
@@ -13049,11 +13035,11 @@ d5 =
             string code = @"
 def foo  ( a : int = 5, b : double = 5.5, c : bool = true )
 {
-	return = x = c == true ? a  : b;
+	return = c == true ? a  : b;
 }
 def foo  ( a : double = 6, b : double = 5.5, c : bool = true )
 {
-	return = x = c == true ? a  : b;
+	return = c == true ? a  : b;
 }
 [Imperative]
 {

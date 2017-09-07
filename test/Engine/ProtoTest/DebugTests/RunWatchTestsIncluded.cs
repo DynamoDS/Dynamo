@@ -3139,7 +3139,7 @@ z = a.x;
             string src = @"import (Dummy from ""FFITarget.dll"");
 dummy = Dummy.Dummy();
 arr = {0.0,1.0,2.0,3.0,4.0,5.0,6.0,7.0,8.0,9.0,10.0};
-sum_1_10 = dummy.SumAll(arr);
+sum_1_10 = dummy.SumAll1D(arr);
 twice_arr = dummy.Twice(arr);
 	";
             WatchTestFx.GeneratePrintStatements(src, ref map);
@@ -9978,22 +9978,6 @@ t = x;
 
         [Test]
         [Category("WatchFx Tests")]
-        public void DebugWatch1083_T63_Dynamic_array_onthefly_function_return()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"def foo()
-{
-return =b[0]=5;
-}
-a = foo();
-c = {100};
-";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
-        [Test]
-        [Category("WatchFx Tests")]
         public void DebugWatch1084_T63_Dynamic_array_onthefly_update()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -11566,11 +11550,11 @@ c1;c2;c3;c4;
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
             string src = @"def foo  ( a : int = 5, b : double = 5.5, c : bool = true )
 {
-	return = x = c == true ? a  : b;
+	return = c == true ? a  : b;
 }
 def foo  ( a : double = 5, b : double = 5.5, c : bool = true )
 {
-	return = x = c == true ? a  : b;
+	return = c == true ? a  : b;
 }
 c1;c2;c3;c4;
 [Imperative]
@@ -11592,11 +11576,11 @@ c1;c2;c3;c4;
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
             string src = @"def foo  ( a : int, b : double = 5, c : bool = true)
 {
-	return = x = c == true ? a  : b;
+	return = c == true ? a  : b;
 }
 def foo2  ( a , b = 5, c = true)
 {
-	return = x = c == true ? a  : b;
+	return = c == true ? a  : b;
 }
 c1;c3;c3;c4;
 d1 = foo2 (  );
@@ -11624,11 +11608,11 @@ d5 =
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
             string src = @"def foo  ( a : int = 5, b : double = 5.5, c : bool = true )
 {
-	return = x = c == true ? a  : b;
+	return = c == true ? a  : b;
 }
 def foo  ( a : double = 6, b : double = 5.5, c : bool = true )
 {
-	return = x = c == true ? a  : b;
+	return = c == true ? a  : b;
 }
 c1;c2;c3;c4;
 [Imperative]

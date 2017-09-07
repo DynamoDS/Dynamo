@@ -99,7 +99,7 @@ c = TestOverloadC.TestOverloadC();
 val = c.execute(c);
                 ";
             thisTest.RunScriptSource(code);
-            thisTest.Verify("val", 2);
+            thisTest.Verify("val", 1);
         }
 
         [Test]
@@ -113,27 +113,6 @@ val = c.unique(c);
                 ";
             thisTest.RunScriptSource(code);
             thisTest.Verify("val", 4);
-        }
-
-        [Test]
-        public void TestMethodOverloadArray()
-        {
-            string code =
-                @"
-                def execute(a : var)
-                { 
-                    return = -1; 
-                }
-                def execute(arr : var[])
-                {
-                    return = 2;
-                }
-                arr = {1, 2, 3};
-                val = execute(arr);
-                ";
-            thisTest.RunScriptSource(code);
-            thisTest.Verify("val", 2);
-            thisTest.VerifyBuildWarningCount(0);
         }
 
         [Test]
@@ -223,67 +202,6 @@ val = v[0];
             thisTest.RunScriptSource(code);
             thisTest.VerifyBuildWarningCount(0);
             thisTest.Verify("val", 123);
-        }
-
-        [Test]
-        [Category("Method Resolution")]
-        [Category("DSDefinedClass_Ported")]
-        public void TestMethodWithArrayInputOverload()
-        {
-            string code = @"
-                            def foo(x : double)
-                            { return = 1; }
-                            def foo(x : double[]) 
-	                        { return = 2; }
-	                        def foo(x : double[][]) 
-	                        { return = 3; }
-                            arr = 1..20..2;
-                            val = foo(arr);
-                            ";
-            thisTest.RunScriptSource(code);
-            thisTest.VerifyBuildWarningCount(0);
-            thisTest.Verify("val", 2);
-        }
-
-        [Test]
-        [Category("Method Resolution")]
-        [Category("DSDefinedClass_Ported")]
-        public void TestMethodWithArrayInputOverloadDirectType()
-        {
-            string code = @"
-                            def foo(x : int)
-                            { return = 1; }
-                            def foo(x : int[]) 
-	                        { return = 2; }
-	                        def foo(x : int[][]) 
-	                        { return = 3; }
-                            arr = 1..20..2;
-                            val = foo(arr);
-                            ";
-            thisTest.RunScriptSource(code);
-            thisTest.VerifyBuildWarningCount(0);
-            thisTest.Verify("val", 2);
-        }
-
-        [Test]
-        [Category("Failure")]
-        public void TestMethodResolutionForSingleton()
-        {
-            // Tracked by: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4116
-            string code = @"
-def foo(x:var[]..[])
-{
-    return = 2;
-}
-def foo(x:var[])
-{
-    return = 1;
-}
-d = foo(2);
-";
-            string error = "MAGN-4116 DesignIssue: Method resolution - When a single value is passed to overloads with different rank, which one is chosen";
-            thisTest.VerifyRunScriptSource(code, error);
-            thisTest.Verify("d", 2);
         }
 
         [Test]
