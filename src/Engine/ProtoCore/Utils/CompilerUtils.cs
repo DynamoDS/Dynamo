@@ -560,17 +560,17 @@ namespace ProtoCore.Utils
 
                     var variable = ident.Value;
 
-                    if (scope.Contains(variable))
+                    if (!scope.Contains(variable))
+                    {
+                        scope.Add(variable);
+                    }
+                    else if (ident.ArrayDimensions == null)
                     {
                         errors.Add(new ErrorEntry
                         {
                             Message = String.Format(Properties.Resources.VariableRedifinitionError, variable),
                         });
                     } 
-                    else
-                    {
-                        scope.Add(variable);
-                    }
                 }
             }
 
