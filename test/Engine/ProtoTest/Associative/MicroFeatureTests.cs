@@ -3714,5 +3714,27 @@ r = foo(3);
             thisTest.VerifyBuildWarningCount(0);
             thisTest.Verify("r", 6);
         }
+
+        [Test]
+        public void TestReturnStatement15()
+        {
+            string code = @"
+[Imperative] {
+    return 6;
+}";
+            thisTest.RunScriptSource(code);
+            thisTest.VerifyBuildWarningCount(0);
+        }
+
+        [Test]
+        public void TestReturnStatement16()
+        {
+            string code = @"
+[Associative] {
+    return 6;
+}";
+            thisTest.RunScriptSource(code);
+            thisTest.VerifyBuildWarningCount(0);
+        }
     }
 }
