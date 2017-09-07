@@ -923,4 +923,7 @@ Parameter name: {0}</value>
   <data name="invalid_Associative_Level" xml:space="preserve">
     <value>Invalid list@level syntax, consider using @L1 for level 1.</value>
   </data>
+  <data name="VariableRedifinitionError" xml:space="preserve">
+    <value>Variable {0} has been defined in this code block node, you cannot define a variable more than once.</value>
+  </data>
 </root>

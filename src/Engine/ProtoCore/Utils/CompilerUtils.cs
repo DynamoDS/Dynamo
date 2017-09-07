@@ -281,14 +281,23 @@ namespace ProtoCore.Utils
             List<AssociativeNode> comments;
             ParseUserCode(core, parseParams.OriginalCode, postfixGuid, out astNodes, out comments);
 
+            var errors = Check(astNodes);
+
             // Catch the syntax errors and errors for unsupported 
             // language constructs thrown by compile expression
+            parseParams.AppendErrors(errors);
+
             if (core.BuildStatus.ErrorCount > 0)
             {
                 parseParams.AppendErrors(core.BuildStatus.Errors);
                 parseParams.AppendWarnings(core.BuildStatus.Warnings);
+            }
+
+            if (parseParams.Errors.Count() > 0 || parseParams.Warnings.Count() > 0)
+            {
                 return false;
             }
+
             parseParams.AppendParsedNodes(astNodes);
             parseParams.AppendComments(comments);
 
@@ -527,6 +536,45 @@ namespace ProtoCore.Utils
                 }
             }
             return result;
+        }
+
+        /// <summary>
+        /// Check does some sanity check, e.g., if a variable is re-defined.
+        /// </summary>
+        /// <param name="asts"></param>
+        private static List<ErrorEntry> Check(IEnumerable<AssociativeNode> asts)
+        {
+            List<ErrorEntry> errors = new List<ErrorEntry>();
+
+            HashSet<string> scope = new HashSet<string>();
+            foreach (var node in asts)
+            {
+                BinaryExpressionNode bnode = node as BinaryExpressionNode;
+                if (bnode?.Optr == Operator.assign)
+                {
+                    IdentifierNode ident = bnode.LeftNode as IdentifierNode;
+                    if (ident == null)
+                    {
+                        continue;
+                    }
+
+                    var variable = ident.Value;
+
+                    if (scope.Contains(variable))
+                    {
+                        errors.Add(new ErrorEntry
+                        {
+                            Message = String.Format(Properties.Resources.VariableRedifinitionError, variable),
+                        });
+                    } 
+                    else
+                    {
+                        scope.Add(variable);
+                    }
+                }
+            }
+
+            return errors;
         }
     }
 }
