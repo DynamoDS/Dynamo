@@ -26,7 +26,7 @@ namespace Dynamo.Graph.Nodes
         [JsonConstructor]
         private DummyNode(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
         {
-            ShouldDisplayPreviewCore = false;
+            throw new InvalidOperationException("Dummy nodes should not be serialized to JSON format.");
         }
 
         /// <summary>
