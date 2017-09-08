@@ -700,9 +700,7 @@ namespace ProtoCore.Lang
             Validity.Assert(null != callsite);
 
             // TODO: Disabling support for stepping into replicated function calls temporarily - pratapa
-            if (runtimeCore.Options.IDEDebugMode &&
-                runtimeCore.Options.RunMode != InterpreterMode.Expression &&
-                procNode != null)
+            if (runtimeCore.Options.IDEDebugMode && procNode != null)
             {
                 runtimeCore.DebugProps.SetUpCallrForDebug(
                                                    runtimeCore,
@@ -725,9 +723,7 @@ namespace ProtoCore.Lang
             runtimeCore.RemoveCallSiteGCRoot(callsite.CallSiteID);
 
             // Restore debug properties after returning from a CALL/CALLR
-            if (runtimeCore.Options.IDEDebugMode &&
-                runtimeCore.Options.RunMode != InterpreterMode.Expression &&
-                procNode != null)
+            if (runtimeCore.Options.IDEDebugMode && procNode != null)
             {
                 runtimeCore.DebugProps.RestoreCallrForNoBreak(runtimeCore, procNode);
             }

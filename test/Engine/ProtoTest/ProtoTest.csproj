@@ -123,12 +123,8 @@
     <Compile Include="AtLevel\AtLevelTest.cs" />
     <Compile Include="CompileAndExecute.cs" />
     <Compile Include="CoreUnitTests\StaticMirrorTest.cs" />
-    <Compile Include="DebugTests\BasicTests.cs" />
     <Compile Include="DebugTests\NamespaceConflictTest.cs" />
     <Compile Include="DebugTests\RunEqualityTests.cs" />
-    <Compile Include="DebugTests\RunWatchTestsIncluded.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="DebugTests\SetValueTests.cs" />
     <Compile Include="DSASM\ExecutionMirrorTests.cs" />
     <Compile Include="DSASM\HeapMarkSweepTests.cs" />

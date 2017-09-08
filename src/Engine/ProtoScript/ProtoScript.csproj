@@ -98,7 +98,6 @@
     <Compile Include="Runners\LiveRunnerTasks.cs" />
     <Compile Include="Runners\ProtoRunner.cs" />
     <Compile Include="Runners\DebugRunner.cs" />
-    <Compile Include="Runners\ExpressionInterpreterRunner.cs" />
     <Compile Include="Runners\ProtoScriptRunner.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

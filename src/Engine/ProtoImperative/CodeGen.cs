@@ -595,7 +595,6 @@ namespace ProtoImperative
 
         private int EmitExpressionInterpreter(ProtoCore.AST.Node codeBlockNode)
         {
-            core.watchStartPC = this.pc;
             ProtoCore.AST.ImperativeAST.CodeBlockNode codeblock = codeBlockNode as ProtoCore.AST.ImperativeAST.CodeBlockNode;
 
             ProtoCore.Type inferedType = new ProtoCore.Type();
@@ -607,20 +606,11 @@ namespace ProtoImperative
             }
             core.InferedType = inferedType;
 
-            this.pc = core.watchStartPC;
-
             return codeBlock.codeBlockId;
         }
 
-
         public override int Emit(ProtoCore.AST.Node codeBlockNode, ProtoCore.AssociativeGraph.GraphNode graphNode = null)
         {
-            core.watchStartPC = this.pc;
-            if (core.Options.RunMode == ProtoCore.DSASM.InterpreterMode.Expression)
-            {
-                return EmitExpressionInterpreter(codeBlockNode);
-            }
-
             this.localCodeBlockNode = codeBlockNode;
             ProtoCore.AST.ImperativeAST.CodeBlockNode codeblock = codeBlockNode as ProtoCore.AST.ImperativeAST.CodeBlockNode;
             // Imperative language block would never be the top language block.

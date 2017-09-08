@@ -128,8 +128,7 @@ namespace ProtoCore.Lang
                                                registers, 
                                                0);
 
-            bool isInDebugMode = runtimeCore.Options.IDEDebugMode &&
-                                 runtimeCore.Options.RunMode != InterpreterMode.Expression;
+            bool isInDebugMode = runtimeCore.Options.IDEDebugMode;
             if (isInDebugMode)
             {
                 runtimeCore.DebugProps.SetUpCallrForDebug(

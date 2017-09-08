@@ -96,7 +96,6 @@ namespace ProtoCore.DSASM
         public const string newobj = "newobj";
         public const string push = "push";
         public const string pushm = "pushm";
-        public const string pushw = "pushw";
         public const string pushdep = "pushdep";
         public const string pushrepguide = "pushguide";
         public const string pushlevel = "pushlevel";
@@ -104,7 +103,6 @@ namespace ProtoCore.DSASM
         public const string retb = "retb";
         public const string retcn = "retcn";
         public const string pop = "pop";
-        public const string popw = "popw";
         public const string popm = "popm";
         public const string poprepguides = "popguides";
         public const string poplevel = "poplevel";

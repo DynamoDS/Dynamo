@@ -1742,7 +1742,7 @@ namespace ProtoCore
                 return StackValue.Null;
             }
 
-            if (runtimeCore.Options.IDEDebugMode && runtimeCore.Options.RunMode != InterpreterMode.Expression)
+            if (runtimeCore.Options.IDEDebugMode)
             {
                 DebugFrame debugFrame = runtimeCore.DebugProps.DebugStackFrame.Peek();
                 debugFrame.FinalFepChosen = finalFep;

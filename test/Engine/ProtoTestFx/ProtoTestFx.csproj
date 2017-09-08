@@ -115,9 +115,6 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestFrameWork.cs" />
-    <Compile Include="WatchTestFx.cs">
-      <SubType>Code</SubType>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\src\Engine\ProtoAssociative\ProtoAssociative.csproj">

@@ -67,10 +67,10 @@ namespace ProtoCore
             // The heap is initialized by the core and is used to allocate strings
             // Use the that heap for runtime
             Validity.Assert(heap != null);
-            this.Heap = heap;
+            Heap = heap;
             RuntimeMemory = new RuntimeMemory(Heap);
 
-            this.Options = options;
+            Options = options;
 
             InterpreterProps = new Stack<InterpreterProperties>();
             ReplicationGuides = new List<List<ReplicationGuide>>();
@@ -82,15 +82,8 @@ namespace ProtoCore
 
             ContinuationStruct = new ContinuationStructure();
 
-
-            watchStack = new List<StackValue>();
-            watchFramePointer = Constants.kInvalidIndex;
-            WatchSymbolList = new List<SymbolNode>();
-
             FunctionCallDepth = 0;
             cancellationPending = false;
-
-            watchClassScope = Constants.kInvalidIndex;
 
             ExecutionInstance = CurrentExecutive = new Executive(this);
             ExecutiveProvider = new ExecutiveProvider();
@@ -118,19 +111,17 @@ namespace ProtoCore
             }
             RunningBlock = 0;
             RuntimeStatus.MessageHandler = compileCore.BuildStatus.MessageHandler;
-            WatchSymbolList = compileCore.watchSymbolList;
-            SetProperties(compileCore.Options, compileCore.DSExecutable, compileCore.DebuggerProperties, null, compileCore.ExprInterpreterExe);
+            SetProperties(compileCore.Options, compileCore.DSExecutable, compileCore.DebuggerProperties, null);
             RegisterDllTypes(compileCore.DllTypesToLoad);
             NotifyExecutionEvent(ProtoCore.ExecutionStateEventArgs.State.ExecutionBegin);
         }
 
-        public void SetProperties(Options runtimeOptions, Executable executable, DebugProperties debugProps = null, ProtoCore.Runtime.Context context = null, Executable exprInterpreterExe = null)
+        public void SetProperties(Options runtimeOptions, Executable executable, DebugProperties debugProps = null, ProtoCore.Runtime.Context context = null)
         {
             this.Context = context;
             this.DSExecutable = executable;
             this.Options = runtimeOptions;
             this.DebugProps = debugProps;
-            this.ExprInterpreterExe = exprInterpreterExe;
         }
 
         /// <summary>
@@ -153,7 +144,6 @@ namespace ProtoCore
 
         // Execution properties
         public Executable DSExecutable { get; private set; }
-        public Executable ExprInterpreterExe { get; private set; }
         public Options Options { get; private set; }
         public RuntimeStatus RuntimeStatus { get; set; }
         public Stack<InterpreterProperties> InterpreterProps { get; set; }
@@ -224,12 +214,6 @@ namespace ProtoCore
         /// Returns the reason why the execution was last suspended
         /// </summary>
         public ReasonForExecutionSuspend ReasonForExecutionSuspend { get; internal set; }
-
-
-        public List<StackValue> watchStack { get; set; }
-        public int watchFramePointer { get; set; }
-
-        public List<SymbolNode> WatchSymbolList { get; set; }
 #endregion 
         
         private Dictionary<Guid, List<StackValue>> callsiteGCRoots = new Dictionary<Guid, List<StackValue>>();

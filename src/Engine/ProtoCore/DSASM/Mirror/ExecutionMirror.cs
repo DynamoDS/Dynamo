@@ -296,7 +296,7 @@ namespace ProtoCore.DSASM.Mirror
 
             if (runtimeCore.DebugProps.DebugStackFrameContains(DebugProperties.StackFrameFlagOptions.FepRun))
             {
-                ci = runtimeCore.watchClassScope = rmem.CurrentStackFrame.ClassScope;
+                ci = rmem.CurrentStackFrame.ClassScope;
                 functionIndex = rmem.CurrentStackFrame.FunctionScope;
                 functionBlock = rmem.CurrentStackFrame.FunctionBlock;
             }
@@ -494,43 +494,6 @@ namespace ProtoCore.DSASM.Mirror
             }
         }
 
-        public Obj GetWatchValue()
-        {
-            RuntimeCore runtimeCore = MirrorTarget.RuntimeCore;
-            int count = runtimeCore.watchStack.Count;
-            int n = runtimeCore.WatchSymbolList.FindIndex(x => { return string.Equals(x.name, Constants.kWatchResultVar); });
-
-            if (n < 0 || n >= count)
-            {
-                runtimeCore.WatchSymbolList.Clear();
-                return new Obj { Payload = null };
-            }
-
-            Obj retVal = null;
-            try
-            {
-                StackValue sv = runtimeCore.watchStack[n];
-                if (!sv.IsInvalid)
-                {
-                    retVal = Unpack(runtimeCore.watchStack[n], MirrorTarget.rmem.Heap, runtimeCore);
-                }
-                else
-                {
-                    retVal = new Obj { Payload = null };
-                }
-            }
-            catch
-            {
-                retVal = new Obj { Payload = null };
-            }
-            finally
-            {
-                runtimeCore.WatchSymbolList.Clear();
-            }
-
-            return retVal;
-        }
-        
         //
         //  1.	Get the graphnode given the varname
         //  2.	Get the sv of the symbol
