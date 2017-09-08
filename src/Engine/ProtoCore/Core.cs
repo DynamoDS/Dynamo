@@ -534,7 +534,7 @@ namespace ProtoCore
             // Search variable might be defined in function. 
             // If we are not in class defintion, then just stop here, otherwise
             // we should search global block's symbol table.
-            if (searchBlock?.blockType == CodeBlockType.Function && classscope == Constants.kGlobalScope)
+            if (searchBlock != null && searchBlock.blockType == CodeBlockType.Function && classscope == Constants.kGlobalScope)
             {
                 symbolIndex = searchBlock.symbolTable.IndexOf(name, classscope, function);
             }
