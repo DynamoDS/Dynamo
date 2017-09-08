@@ -26,7 +26,7 @@ namespace CoreNodeModels
         private readonly string selectionMessage;
         private List<TResult> selectionResults = new List<TResult>();
         private List<TSelection> selection = new List<TSelection>();
-        private IEnumerable<string> selectionIdentifier;
+        private IEnumerable<string> selectionIdentifier = new List<string>();
         private readonly SelectionType selectionType;
         private readonly SelectionObjectType selectionObjectType;
         
@@ -78,13 +78,6 @@ namespace CoreNodeModels
                 if (updatedSelection.Count() > 0)
                 {
                     selectionIdentifier = updatedSelection;
-                }
-
-                // if instanceId is still null we have a selection node in the graph with no active selection
-                // in this scenario we return an empty list to ensure proper serialization/deserialization
-                if (selectionIdentifier == null)
-                {
-                    selectionIdentifier = new List<string>();
                 }
 
                 return selectionIdentifier;
