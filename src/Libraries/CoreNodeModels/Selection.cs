@@ -80,6 +80,13 @@ namespace CoreNodeModels
                     selectionIdentifier = updatedSelection;
                 }
 
+                // if instanceId is still null we have a selection node in the graph with no active selection
+                // in this scenario we return an empty list to ensure proper serialization/deserialization
+                if (selectionIdentifier == null)
+                {
+                    selectionIdentifier = new List<string>();
+                }
+
                 return selectionIdentifier;
             }
 
