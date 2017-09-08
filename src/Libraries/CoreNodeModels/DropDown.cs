@@ -97,7 +97,7 @@ namespace CoreNodeModels
         }
 
         [JsonConstructor]
-        protected DSDropDownBase(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
+        protected DSDropDownBase(string outputName, IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
         {
             PopulateItems();
         }
