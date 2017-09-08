@@ -1156,12 +1156,7 @@ namespace ProtoCore
             instr.op1 = StackValue.BuildLabelIndex(label);
 
             ++pc;
-            if (core.DebuggerProperties.breakOptions.HasFlag(DebugProperties.BreakpointOptions.EmitInlineConditionalBreakpoint))
-            {
-                instr.debug = null;
-            }
-            else
-                instr.debug = GetDebugObject(line, col, eline, ecol, label);
+            instr.debug = GetDebugObject(line, col, eline, ecol, label);
 
             AppendInstruction(instr, line, col);
         }
@@ -1257,19 +1252,6 @@ namespace ProtoCore
             instr.op3 = StackValue.BuildBlockIndex(blockId);
 
             ++pc;
-
-            bool outputBreakpoint = false;
-            DebugProperties.BreakpointOptions options = core.DebuggerProperties.breakOptions;
-            if (options.HasFlag(DebugProperties.BreakpointOptions.EmitPopForTempBreakpoint))
-                outputBreakpoint = true;
-
-            // Do not emit breakpoints for null or var type declarations
-            if (!core.DebuggerProperties.breakOptions.HasFlag(DebugProperties.BreakpointOptions.SuppressNullVarDeclarationBreakpoint))
-            {
-                // Don't need no pop for temp (unless caller demands it).
-                if (outputBreakpoint || !symbol.name.StartsWith("%"))
-                    instr.debug = GetDebugObject(line, col, eline, ecol, pc);
-            }
             AppendInstruction(instr, line, col);
         }
 
@@ -1293,19 +1275,6 @@ namespace ProtoCore
             instr.op3 = StackValue.BuildBlockIndex(blockId);
 
             ++pc;
-
-            bool outputBreakpoint = false;
-            DebugProperties.BreakpointOptions options = core.DebuggerProperties.breakOptions;
-            if (options.HasFlag(DebugProperties.BreakpointOptions.EmitPopForTempBreakpoint))
-                outputBreakpoint = true;
-
-            // Do not emit breakpoints for null or var type declarations
-            if (!core.DebuggerProperties.breakOptions.HasFlag(DebugProperties.BreakpointOptions.SuppressNullVarDeclarationBreakpoint))
-            {
-                // Don't need no pop for temp (unless caller demands it).
-                if (outputBreakpoint || !symbol.name.StartsWith("%"))
-                    instr.debug = GetDebugObject(line, col, eline, ecol, pc);
-            }
             AppendInstruction(instr, line, col);
         }
 
@@ -1376,14 +1345,6 @@ namespace ProtoCore
             instr.op3 = StackValue.BuildBlockIndex(blockId);
 
             ++pc;
-
-            DebugProperties.BreakpointOptions options = core.DebuggerProperties.breakOptions;
-            if (options.HasFlag(DebugProperties.BreakpointOptions.EmitIdentifierBreakpoint))
-            {
-                instr.debug = GetDebugObject(identNode.line, identNode.col,
-                    identNode.endLine, identNode.endCol, pc);
-            }
-
             AppendInstruction(instr, identNode.line, identNode.col);
         }
 

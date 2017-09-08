@@ -732,14 +732,6 @@ namespace ProtoAssociative
                          Constants.kInvalidIndex, Constants.kInvalidIndex, 
                          procNode.PC);
             }
-            // Break at function call inside dynamic lang block created for a 'true' or 'false' expression inside an inline conditional
-            else if (core.DebuggerProperties.breakOptions.HasFlag(DebugProperties.BreakpointOptions.EmitInlineConditionalBreakpoint))
-            {
-                ProtoCore.CodeModel.CodePoint startInclusive = core.DebuggerProperties.highlightRange.StartInclusive;
-                ProtoCore.CodeModel.CodePoint endExclusive = core.DebuggerProperties.highlightRange.EndExclusive;
-
-                EmitCall(procNode.ID, blockId, type, startInclusive.LineNo, startInclusive.CharNo, endExclusive.LineNo, endExclusive.CharNo, procNode.PC);
-            }
             else if (parentExpression != null)
             {
                 EmitCall(procNode.ID, blockId, type, parentExpression.line, parentExpression.col, parentExpression.endLine, parentExpression.endCol, procNode.PC);
@@ -1712,23 +1704,6 @@ namespace ProtoAssociative
                                  Constants.kInvalidIndex, 
                                  Constants.kInvalidIndex, 
                                  Constants.kInvalidIndex, 
-                                 procNode.PC);
-                    }
-                    // Break at function call inside dynamic lang block created for a 'true' or 'false' expression inside an inline conditional
-                    else if (core.DebuggerProperties.breakOptions.HasFlag(DebugProperties.BreakpointOptions.EmitInlineConditionalBreakpoint))
-                    {
-                        var codeRange = core.DebuggerProperties.highlightRange;
-
-                        var startInclusive = codeRange.StartInclusive;
-                        var endExclusive = codeRange.EndExclusive;
-
-                        EmitCall(procNode.ID, 
-                                 blockId,
-                                 type, 
-                                 startInclusive.LineNo, 
-                                 startInclusive.CharNo, 
-                                 endExclusive.LineNo, 
-                                 endExclusive.CharNo, 
                                  procNode.PC);
                     }
                     // Use startCol and endCol of binary expression node containing function call except if it's a setter
@@ -4224,11 +4199,6 @@ namespace ProtoAssociative
                 identNode.Name = ProtoCore.DSASM.Constants.kInlineConditionalMethodName;
                 inlineCall.Function = identNode;
 
-                DebugProperties.BreakpointOptions oldOptions = core.DebuggerProperties.breakOptions;
-                DebugProperties.BreakpointOptions newOptions = oldOptions;
-                newOptions |= DebugProperties.BreakpointOptions.EmitInlineConditionalBreakpoint;
-                core.DebuggerProperties.breakOptions = newOptions;
-
                 core.DebuggerProperties.highlightRange = new ProtoCore.CodeModel.CodeRange
                 {
                     StartInclusive = new ProtoCore.CodeModel.CodePoint
@@ -4298,7 +4268,6 @@ namespace ProtoAssociative
                     inlineCall.FormalArguments.Add(dynBlockF);
                 }
 
-                core.DebuggerProperties.breakOptions = oldOptions;
                 core.DebuggerProperties.highlightRange = new ProtoCore.CodeModel.CodeRange
                 {
                     StartInclusive = new ProtoCore.CodeModel.CodePoint
@@ -4972,8 +4941,6 @@ namespace ProtoAssociative
             ProtoCore.Type leftType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, 0);
             ProtoCore.Type rightType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, 0);
 
-            DebugProperties.BreakpointOptions oldOptions = core.DebuggerProperties.breakOptions;
-            
             // If this is an assignment statement, setup the top level graph node
             bool isGraphInScope = false;
             if (ProtoCore.DSASM.Operator.assign == bnode.Optr)
@@ -5105,10 +5072,6 @@ namespace ProtoAssociative
 
             if (bnode.RightNode == null && bnode.Optr == Operator.assign && bnode.LeftNode is IdentifierNode)
             {
-                DebugProperties.BreakpointOptions newOptions = oldOptions;
-                newOptions |= DebugProperties.BreakpointOptions.SuppressNullVarDeclarationBreakpoint;
-                core.DebuggerProperties.breakOptions = newOptions;
-
                 IdentifierNode t = bnode.LeftNode as IdentifierNode;
                 ProtoCore.DSASM.SymbolNode symbolnode = null;
                 bool isAccessible = false;
@@ -5543,7 +5506,6 @@ namespace ProtoAssociative
                 buildStatus.LogSemanticError(message, core.CurrentDSFileName, bnode.line, bnode.col);
                 throw new BuildHaltException(message);
             }
-            core.DebuggerProperties.breakOptions = oldOptions;
         }
 
         private void EmitImportNode(AssociativeNode node, ref ProtoCore.Type inferedType, ProtoCore.CompilerDefinitions.SubCompilePass subPass = ProtoCore.CompilerDefinitions.SubCompilePass.None)

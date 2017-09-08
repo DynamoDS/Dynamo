@@ -80,8 +80,6 @@ namespace ProtoCore
             RunningBlock = 0;
             ExecutionState = (int)ExecutionStateEventArgs.State.Invalid; //not yet started
 
-            ContinuationStruct = new ContinuationStructure();
-
             FunctionCallDepth = 0;
             cancellationPending = false;
 
@@ -202,18 +200,7 @@ namespace ProtoCore
         }
 
 #region DEBUGGER_PROPERTIES
-
-        public int watchClassScope { get; set; }
-
         public DebugProperties DebugProps { get; set; }
-        public List<Instruction> Breakpoints { get; set; }
-
-        // Continuation properties used for Serial mode execution and Debugging of Replicated calls
-        public ContinuationStructure ContinuationStruct { get; set; }
-        /// <summary>
-        /// Returns the reason why the execution was last suspended
-        /// </summary>
-        public ReasonForExecutionSuspend ReasonForExecutionSuspend { get; internal set; }
 #endregion 
         
         private Dictionary<Guid, List<StackValue>> callsiteGCRoots = new Dictionary<Guid, List<StackValue>>();

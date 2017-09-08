@@ -138,7 +138,7 @@ namespace ProtoCore.Lang
             }
             else
             {
-                svRet = interpreter.Run(runtimeCore.RunningBlock, activation.pc, Language.NotSpecified, runtimeCore.Breakpoints);
+                svRet = interpreter.Run(runtimeCore.RunningBlock, activation.pc, Language.NotSpecified);
                 runtimeCore.RunningBlock = origRunningBlock;
             }
 

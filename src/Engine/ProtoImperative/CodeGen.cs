@@ -456,7 +456,6 @@ namespace ProtoImperative
                     // The function call
                     EmitInstrConsole(ProtoCore.DSASM.kw.callr, procNode.Name);
 
-                    DebugProperties.BreakpointOptions oldOptions = core.DebuggerProperties.breakOptions;
                     if(procNode.Name.StartsWith(Constants.kSetterPrefix))
                     {
                         EmitCall(procNode.ID, blockId, type, parentNode.line, parentNode.col, parentNode.endLine, parentNode.endCol);
@@ -465,8 +464,7 @@ namespace ProtoImperative
                     {
                         EmitCall(procNode.ID, blockId, type, bnode.line, bnode.col, bnode.endLine, bnode.endCol);
                     }
-                    else if (!procNode.Name.Equals(Constants.kFunctionRangeExpression) ||
-                        oldOptions.HasFlag(DebugProperties.BreakpointOptions.EmitCallrForTempBreakpoint))
+                    else if (!procNode.Name.Equals(Constants.kFunctionRangeExpression))
                     {
                         EmitCall(procNode.ID, blockId, type, node.line, node.col, node.endLine, node.endCol);
                     }
@@ -1710,10 +1708,6 @@ namespace ProtoImperative
                     x = x + val;
                 }
                 */
-                DebugProperties.BreakpointOptions oldOptions = core.DebuggerProperties.breakOptions;
-                DebugProperties.BreakpointOptions newOptions = oldOptions;
-                newOptions |= DebugProperties.BreakpointOptions.EmitCallrForTempBreakpoint;
-                core.DebuggerProperties.breakOptions = newOptions;
 
                 // TODO Jun: This compilation unit has many opportunities for optimization 
                 //      1. Compiling to while need not be necessary if 'expr' has exactly one element
@@ -1776,18 +1770,8 @@ namespace ProtoImperative
                 arrayexprAssignment.RightNode = forNode.Expression;
                 NodeUtils.UpdateBinaryExpressionLocation(arrayexprAssignment);
 
-                switch (forNode.Expression.GetType().ToString())
-                {
-                    case "ProtoCore.AST.ImperativeAST.IdentifierNode":
-                    case "ProtoCore.AST.ImperativeAST.ExprListNode":
-                        newOptions |= DebugProperties.BreakpointOptions.EmitPopForTempBreakpoint;
-                        core.DebuggerProperties.breakOptions = newOptions;
-                        break;
-                }
-
                 type.UID = (int)ProtoCore.PrimitiveType.Void;
                 EmitBinaryExpressionNode(arrayexprAssignment, ref type, isBooleanOp, graphNode);
-                core.DebuggerProperties.breakOptions = oldOptions; // Restore breakpoint behaviors.
 
                 // Get the size of expr and assign it to the autogen iteration var
                 int symbolIndex = Constants.kInvalidIndex;
@@ -1920,14 +1904,7 @@ namespace ProtoImperative
             ifNode.IfBody = trueBody;
             ifNode.ElseBody = falseBody;
 
-            DebugProperties.BreakpointOptions oldOptions = core.DebuggerProperties.breakOptions;
-            DebugProperties.BreakpointOptions newOptions = oldOptions;
-            newOptions |= DebugProperties.BreakpointOptions.EmitInlineConditionalBreakpoint;
-            core.DebuggerProperties.breakOptions = newOptions;
-
             EmitIfStmtNode(ifNode, ref inferedType, parentNode, true, graphNode);
-
-            core.DebuggerProperties.breakOptions = oldOptions;
         }
 
         private void EmitRangeExprNode(ImperativeNode node, ref ProtoCore.Type inferedType, ProtoCore.AssociativeGraph.GraphNode graphNode = null)

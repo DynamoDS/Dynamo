@@ -15,11 +15,11 @@ namespace ProtoCore
 
         public ProtoCore.DSASM.Executive CurrentDSASMExec { get; set; }
 
-        public StackValue Execute(int codeblock, int entry, bool fepRun = false, System.Collections.Generic.List<Instruction> breakpoints = null)
+        public StackValue Execute(int codeblock, int entry, bool fepRun = false)
         {
             ProtoCore.DSASM.Interpreter interpreter = new ProtoCore.DSASM.Interpreter(runtimeCore, fepRun);
             CurrentDSASMExec = interpreter.runtime;
-            return interpreter.Run(codeblock, entry, CurrentDSASMExec.executingLanguage, breakpoints);
+            return interpreter.Run(codeblock, entry, CurrentDSASMExec.executingLanguage);
         }
 
 	}
