@@ -86,6 +86,47 @@ namespace Dynamo.Graph.Nodes
             GUID = helper.ReadGuid("guid", this.GUID);
         }
 
+        /// <summary>
+        /// This function creates DummyNode with specified number of ports.
+        /// </summary>
+        /// <param name="id">Id of the original node</param>
+        /// <param name="inputCount">Number of input ports</param>
+        /// <param name="outputCount">Number of output ports</param>
+        /// <param name="legacyAssembly">Assembly of the node</param>
+        public DummyNode(string id, int inputCount, int outputCount, string legacyAssembly)
+        {
+            GUID = new Guid(id);
+
+            InputCount = inputCount;
+
+            // TODO, QNTM-1635: Loading from XML always has one output port, need to test multiple output ports
+            OutputCount = 1; //outputCount;
+
+            string legacyName = "Unresolved";
+            LegacyNodeName = legacyName;
+            LegacyFullName = legacyName;
+            Name = legacyName;
+        
+            // TODO, QNTM-1635: Figure out what we really need frm this
+            OriginalNodeContent = null; //originalElement;
+
+            LegacyAssembly = legacyAssembly;
+            NodeNature = DummyNode.Nature.Unresolved;
+
+            Description = GetDescription();
+            ShouldDisplayPreviewCore = false;
+
+            // TODO, QNTM-1635: Determine where to get the legacy full name from
+            //if (OriginalNodeContent != null)
+            //{
+            //    var legacyFullName = OriginalNodeContent.Attributes["function"];
+            //    if (legacyFullName != null)
+            //        LegacyFullName = legacyFullName.Value;
+            //}
+
+            UpdatePorts();
+        }
+
         private void LoadNode(XmlNode nodeElement)
         {
             var inputCount = nodeElement.Attributes["inputCount"];

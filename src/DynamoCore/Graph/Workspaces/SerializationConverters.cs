@@ -80,21 +80,36 @@ namespace Dynamo.Graph.Workspaces
                 var mangledName = obj["FunctionSignature"].Value<string>();
 
                 var description = libraryServices.GetFunctionDescriptor(mangledName);
-
-                if (type == typeof(DSVarArgFunction))
+                if (description == null)
                 {
-                    node = new DSVarArgFunction(description);
-                    // The node syncs with the function definition.
-                    // Then we need to make the inport count correct
-                    var varg = (DSVarArgFunction)node;
-                    varg.VarInputController.SetNumInputs(inPorts.Count());
-                }
-                else if (type == typeof(DSFunction))
-                {
-                    node = new DSFunction(description);
+                    var inputcount = inPorts.Count();
+                    var outputcount = outPorts.Count();
 
+                    node = new DummyNode(
+                        obj["Id"].ToString(),
+                        inputcount,
+                        outputcount,
+                        objectType.Assembly.Location);
+
+                    RemapPorts(node, inPorts, outPorts, resolver);
                 }
-                RemapPorts(node, inPorts, outPorts, resolver);
+                else
+                {
+                    if (type == typeof(DSVarArgFunction))
+                    {
+                        node = new DSVarArgFunction(description);
+                        // The node syncs with the function definition.
+                        // Then we need to make the inport count correct
+                        var varg = (DSVarArgFunction)node;
+                        varg.VarInputController.SetNumInputs(inPorts.Count());
+                    }
+                    else if (type == typeof(DSFunction))
+                    {
+                        node = new DSFunction(description);
+
+                    }
+                    RemapPorts(node, inPorts, outPorts, resolver);
+                }
             }
             else if (type == typeof(DSVarArgFunction))
             {
