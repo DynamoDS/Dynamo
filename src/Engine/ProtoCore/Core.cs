@@ -67,7 +67,6 @@ namespace ProtoCore
 
             DumpFunctionResolverLogic = false; 
             BuildOptErrorAsWarning = false;
-            IDEDebugMode = false;
             IncludeDirectories = new List<string>();
             RootModulePathName = Path.GetFullPath(@".");
             staticCycleCheck = true;
@@ -88,7 +87,6 @@ namespace ProtoCore
         public bool GCTempVarsOnDebug { get; set; }
         public bool Verbose { get; set; }
         public bool BuildOptErrorAsWarning { get; set; }
-        public bool IDEDebugMode { get; set; }      //set to true if two way mapping b/w DesignScript and JIL code is needed
         public bool staticCycleCheck { get; set; }
         public bool dynamicCycleCheck { get; set; }
         public bool DumpFunctionResolverLogic { get; set; }

@@ -128,21 +128,6 @@ namespace ProtoCore.Lang
                                                registers, 
                                                0);
 
-            bool isInDebugMode = runtimeCore.Options.IDEDebugMode;
-            if (isInDebugMode)
-            {
-                runtimeCore.DebugProps.SetUpCallrForDebug(
-                                                          runtimeCore,
-                                                          interpreter.runtime, 
-                                                          procNode, 
-                                                          returnAddr - 1, 
-                                                          false, 
-                                                          callsite, 
-                                                          args,
-                                                          new List<List<ProtoCore.ReplicationGuide>>(), 
-                                                          newStackFrame);
-            }
-
             StackValue rx = callsite.JILDispatchViaNewInterpreter(
                                         new Runtime.Context(), 
                                         args,
@@ -150,12 +135,6 @@ namespace ProtoCore.Lang
                                         null,
                                         newStackFrame,
                                         runtimeCore);
-
-            if (isInDebugMode)
-            {
-                runtimeCore.DebugProps.RestoreCallrForNoBreak(runtimeCore, procNode);
-            }
-
             return rx;
         }
 

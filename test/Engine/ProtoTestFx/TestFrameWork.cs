@@ -38,7 +38,6 @@ namespace ProtoTestFx.TD
         bool dumpDS=false;
         bool cfgImport = Convert.ToBoolean(Environment.GetEnvironmentVariable("Import"));
         bool cfgDebug = Convert.ToBoolean(Environment.GetEnvironmentVariable("Debug"));
-        bool executeInDebugMode = true;
  
         public TestFrameWork()
         {
@@ -88,21 +87,6 @@ namespace ProtoTestFx.TD
             {
                 Verify(pair.Key, pair.Value);
             }
-            
-            if (executeInDebugMode)
-            {
-                RunDebugEqualityTest(code);
-            }
-        }
-
-        /// <summary>
-        /// Runs the code in Normal Execution, Debug StepOver, Debug StepIn 
-        /// Verifies that all 3 runs produce the same output 
-        /// </summary>
-        /// <param name="code"></param>
-        private void RunDebugEqualityTest(string code)
-        {
-            DebugTestFx.CompareDebugAndRunResults(code);
         }
 
         /// <summary>

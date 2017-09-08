@@ -328,7 +328,7 @@ namespace ProtoCore
 
             if (core.Options.EmitBreakpoints)
             {
-                if ( (core.Options.IDEDebugMode || core.Options.IsDeltaExecution)
+                if ( core.Options.IsDeltaExecution
                     && ProtoCore.DSASM.Constants.kInvalidIndex != line
                     && ProtoCore.DSASM.Constants.kInvalidIndex != col)
                 {

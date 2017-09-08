@@ -8,18 +8,15 @@ namespace ProtoTest.TD.MultiLangTests
     class TestFunction : ProtoTestBase
     {
         string testPath = "..\\..\\..\\test\\Engine\\ProtoTest\\ImportFiles\\";
-        ProtoScript.Runners.DebugRunner fsr;
 
         public override void Setup()
         {
             base.Setup();
-            fsr = new ProtoScript.Runners.DebugRunner(core);
         }
 
         public override void TearDown()
         {
             base.TearDown();
-            fsr = null;
         }
 
         [Test]
@@ -5341,37 +5338,6 @@ d1 = [Imperative]
             thisTest.Verify("d", true);
             thisTest.Verify("c1", false);
             thisTest.Verify("d1", false);
-        }
-
-        [Test]
-        [Category("Design Issue")]
-        [Category("Update")]
-        [Category("Failure")]
-        public void TV88_Defect_1463489_3()
-        {
-            // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1510
-            string src = string.Format("{0}{1}", testPath, "TV88_Defect_1463489_3.ds");
-            fsr.LoadAndPreStart(src);
-            ProtoCore.CodeModel.CodePoint cp = new ProtoCore.CodeModel.CodePoint
-            {
-                CharNo = 8,
-                LineNo = 35,
-                SourceLocation = new ProtoCore.CodeModel.CodeFile
-                {
-                    FilePath = Path.GetFullPath(src)
-                }
-            };
-            fsr.ToggleBreakpoint(cp);
-            ProtoScript.Runners.DebugRunner.VMState vms = fsr.Run();
-            Assert.AreEqual((bool)vms.mirror.GetDebugValue("y1").Payload, true);
-            Assert.AreEqual((bool)vms.mirror.GetDebugValue("y3").Payload, true);
-            Assert.AreEqual((bool)vms.mirror.GetDebugValue("y2").Payload, false);
-            Assert.AreEqual((bool)vms.mirror.GetDebugValue("y4").Payload, false);
-            fsr.Run();
-            Assert.AreEqual((bool)vms.mirror.GetDebugValue("y1").Payload, false);
-            Assert.AreEqual((bool)vms.mirror.GetDebugValue("y3").Payload, false);
-            Assert.AreEqual((bool)vms.mirror.GetDebugValue("y2").Payload, true);
-            Assert.AreEqual((bool)vms.mirror.GetDebugValue("y4").Payload, true);
         }
 
         [Test]

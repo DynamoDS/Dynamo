@@ -13,18 +13,14 @@ namespace ProtoTest.TD.MultiLangTests
 {
     class StringTest : ProtoTestBase
     {
-        ProtoScript.Runners.DebugRunner fsr;
-
         public override void Setup()
         {
             base.Setup();
-            fsr = new ProtoScript.Runners.DebugRunner(core);
         }
 
         public override void TearDown()
         {
             base.TearDown();
-            fsr = null;
         }
 
         [Test]

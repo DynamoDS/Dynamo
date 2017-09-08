@@ -110,7 +110,6 @@
     <Compile Include="..\..\..\src\AssemblySharedInfoGenerator\AssemblySharedInfo.cs">
       <Link>Properties\AssemblySharedInfo.cs</Link>
     </Compile>
-    <Compile Include="DebugTestFx.cs" />
     <Compile Include="JsonDecoder.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

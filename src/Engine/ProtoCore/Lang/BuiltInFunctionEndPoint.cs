@@ -437,13 +437,6 @@ namespace ProtoCore.Lang
                 case BuiltInMethods.MethodID.ImportData:
                     ret = ContextDataBuiltIns.ImportData(formalParameters[0], formalParameters[1], runtimeCore, interpreter, c);
                     break;
-                case BuiltInMethods.MethodID.Break:
-                    {
-                        DebuggerBuiltIns.Break(interpreter, stackFrame);
-                        ret = StackValue.Null;
-                        break;
-                    }
-
                 case BuiltInMethods.MethodID.GetKeys:
                     {
                         StackValue array = formalParameters[0];
@@ -699,34 +692,10 @@ namespace ProtoCore.Lang
             ProtoCore.CallSite callsite = runtimeData.GetCallSite( thisObjectType, functionName, runtime.exe, runtimeCore);
             Validity.Assert(null != callsite);
 
-            // TODO: Disabling support for stepping into replicated function calls temporarily - pratapa
-            if (runtimeCore.Options.IDEDebugMode && procNode != null)
-            {
-                runtimeCore.DebugProps.SetUpCallrForDebug(
-                                                   runtimeCore,
-                                                   runtimeCore.CurrentExecutive.CurrentDSASMExec,
-                                                   procNode,
-                                                   stackFrame.ReturnPC - 1,
-                                                   false, callsite,
-                                                   arguments,
-                                                   replicationGuides,
-                                                   newStackFrame,
-                                                   null,
-                                                   false,
-                                                   true,
-                                                   thisObject);
-            }
-
             var argumentAtLevels = AtLevelHandler.GetArgumentAtLevelStructure(arguments, atLevels, runtimeCore);
             argumentAtLevels.Arguments.ForEach(x => runtimeCore.AddCallSiteGCRoot(callsite.CallSiteID, x));
             StackValue ret = callsite.JILDispatchViaNewInterpreter(context, argumentAtLevels.Arguments, replicationGuides, argumentAtLevels.DominantStructure, newStackFrame, runtimeCore);
             runtimeCore.RemoveCallSiteGCRoot(callsite.CallSiteID);
-
-            // Restore debug properties after returning from a CALL/CALLR
-            if (runtimeCore.Options.IDEDebugMode && procNode != null)
-            {
-                runtimeCore.DebugProps.RestoreCallrForNoBreak(runtimeCore, procNode);
-            }
 
             return ret;
         }
@@ -801,39 +770,6 @@ namespace ProtoCore.Lang
         // set a breakpoint at the next breakable instruction
         internal static void Break(Interpreter interpreter, StackFrame stackFrame)
         {
-            RuntimeCore runtimeCore = interpreter.runtime.RuntimeCore;
-            if (!runtimeCore.Options.IDEDebugMode)
-                return;
-
-            if (runtimeCore.DebugProps.DebugStackFrameContains(DebugProperties.StackFrameFlagOptions.IsReplicating))
-                return;
-
-            // Search for next breakable instruction in list of instructions and add to RegisteredBreakPoints
-
-            int pc = stackFrame.ReturnPC;
-            int blockId = stackFrame.FunctionCallerBlock;
-            List<Instruction> instructions = runtimeCore.DSExecutable.instrStreamList[blockId].instrList;
-
-            // Search instructions from DebugEntryPC onwards for the next breakpoint and add it to current list of breakpoints
-            // if there is a bounce, then jump to new lang block and continue searching
-            while (pc < instructions.Count)
-            {
-                if (instructions[pc].debug != null)
-                {
-                    if(!runtimeCore.Breakpoints.Contains(instructions[pc]))
-                        runtimeCore.Breakpoints.Add(instructions[pc]);
-                    break;
-                }
-                else if (instructions[pc].opCode == OpCode.BOUNCE)
-                {
-                    blockId = instructions[pc].op1.BlockIndex;
-                    instructions = runtimeCore.DSExecutable.instrStreamList[blockId].instrList;
-                    pc = 0;
-                    continue;
-                }
-                pc++;
-            }
-
         }
     }
     internal class FileIOBuiltIns

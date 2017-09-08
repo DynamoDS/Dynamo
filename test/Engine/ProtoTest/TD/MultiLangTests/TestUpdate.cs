@@ -8,18 +8,15 @@ namespace ProtoTest.TD.MultiLangTests
     class TestUpdate : ProtoTestBase
     {
         string testPath = "..\\..\\..\\test\\Engine\\ProtoTest\\ImportFiles\\";
-        ProtoScript.Runners.DebugRunner fsr;
 
         public override void Setup()
         {
             base.Setup();
-            fsr = new ProtoScript.Runners.DebugRunner(core);
         }
 
         public override void TearDown()
         {
             base.TearDown();
-            fsr = null;
         }
 
         [Test]

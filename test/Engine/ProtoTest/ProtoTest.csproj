@@ -115,7 +115,6 @@
     <Compile Include="Associative\MicroFeatureTests.cs" />
     <Compile Include="Associative\RedefinitionExpression.cs" />
     <Compile Include="Associative\ReferenceCount.cs" />
-    <Compile Include="Associative\ReplicatorTest.cs" />
     <Compile Include="Associative\SSATransformTest.cs" />
     <Compile Include="Associative\TypeSystemTests.cs" />
     <Compile Include="Associative\VerificationErrorFormat.cs" />
@@ -124,7 +123,6 @@
     <Compile Include="CompileAndExecute.cs" />
     <Compile Include="CoreUnitTests\StaticMirrorTest.cs" />
     <Compile Include="DebugTests\NamespaceConflictTest.cs" />
-    <Compile Include="DebugTests\RunEqualityTests.cs" />
     <Compile Include="DebugTests\SetValueTests.cs" />
     <Compile Include="DSASM\ExecutionMirrorTests.cs" />
     <Compile Include="DSASM\HeapMarkSweepTests.cs" />
@@ -175,7 +173,6 @@
     <Compile Include="TD\Associative\InlineCondition.cs" />
     <Compile Include="TD\Associative\Replication.cs" />
     <Compile Include="TD\Associative\Update.cs" />
-    <Compile Include="TD\Debugger.cs" />
     <Compile Include="TD\DefectRegress.cs" />
     <Compile Include="FFITests\FFITest.cs" />
     <Compile Include="TD\Imperative\Assignment.cs" />

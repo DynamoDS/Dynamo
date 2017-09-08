@@ -153,11 +153,6 @@ namespace ProtoFFI
             get { return runtimeCore.Options.IncludeDirectories.ToArray(); }
         }
 
-        public bool IsDebugMode
-        {
-            get { return runtimeCore.Options.IDEDebugMode; }
-        }
-
         public object GetConfigValue(string config)
         {
             object value = null;
