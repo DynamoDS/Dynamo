@@ -1913,39 +1913,12 @@ namespace DynamoCoreWpfTests
 
         [Test, RequiresSTA]
         [Category("RegressionTests")]
-        public void Defect_MAGN_624()
-        {
-            // Details steps are here : http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-624
-
-            RunCommandsFromFile("Defect_MAGN_624.xml");
-
-            //Check the nodes and connectors count
-            var nodes = workspaceViewModel.Nodes;
-            var connectors = workspaceViewModel.Connectors;
-            Assert.NotNull(nodes);
-            Assert.AreEqual(1, nodes.Count);
-            Assert.AreEqual(0, connectors.Count());
-
-            //Check the CBN for input and output ports count
-            var cbn = GetNode("8bc43138-d655-40f6-973e-614f1695874c") as CodeBlockNodeModel;
-            Assert.AreNotEqual(ElementState.Error, cbn.State);
-            Assert.AreEqual(1, cbn.OutPorts.Count);
-            Assert.AreEqual(0, cbn.InPorts.Count);
-
-            //Check the position of ports
-            Assert.AreEqual("a", cbn.OutPorts[0].ToolTip);
-            Assert.AreEqual(1, cbn.OutPorts[0].LineIndex);
-        }
-
-        [Test, RequiresSTA]
-        [Category("RegressionTests")]
         public void Defect_MAGN_624_1()
         {
             // Further testing of this defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-624
             // a={1,2,3};
-            // a[0] = 3; // first create CBN with first two lines and then add two more. the below one.
+            // a[0] = 3; // first create CBN with first two lines and then add one more. the below one.
             // b = 1;
-            // a = 0;
 
             RunCommandsFromFile("Defect_MAGN_624_1.xml");
 
@@ -1963,11 +1936,11 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(0, cbn.InPorts.Count);
 
             //Check the position of ports
-            Assert.AreEqual("b", cbn.OutPorts[0].ToolTip);
-            Assert.AreEqual(3, cbn.OutPorts[0].LineIndex);
+            Assert.AreEqual("a", cbn.OutPorts[0].ToolTip);
+            Assert.AreEqual(0, cbn.OutPorts[0].LineIndex);
 
-            Assert.AreEqual("a", cbn.OutPorts[1].ToolTip);
-            Assert.AreEqual(5, cbn.OutPorts[1].LineIndex);
+            Assert.AreEqual("b", cbn.OutPorts[1].ToolTip);
+            Assert.AreEqual(3, cbn.OutPorts[1].LineIndex);
         }
 
         [Test, RequiresSTA]
@@ -5427,29 +5400,6 @@ namespace DynamoCoreWpfTests
                     case "ChangeName4":
                     case "ChangeName3":
                         AssertPreviewValue(nodeGuid, new object[] { 1, 2, 3 });
-                        break;
-                    default:
-                        break;
-                }
-            });
-        }
-
-        [Test]
-        public void MAGN9507()
-        {
-            // a = 1; ----> x = a; x = x + 1;
-            // a = 2;
-
-            var nodeGuid = "f00bc4f2-c20b-48be-a45b-cc13432db328";
-            RunCommandsFromFile("regress9507.xml", (commandTag) =>
-            {
-                switch (commandTag)
-                {
-                    case "FirstRun":
-                        AssertPreviewValue(nodeGuid, 2);
-                        break;
-                    case "SecondRun":
-                        AssertPreviewValue(nodeGuid, 3);
                         break;
                     default:
                         break;
