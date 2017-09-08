@@ -1,22 +1,170 @@
-<Workspace Version="1.2.1.2931" X="0" Y="0" zoom="1" Name="Home" Description="" RunType="Automatic" RunPeriod="1000" HasRunWithoutCrash="True">
-  <NamespaceResolutionMap />
-  <Elements>
-    <Dynamo.Graph.Nodes.CodeBlockNodeModel guid="2ac2cd51-7fd9-40aa-a70e-cbf8fe96762a" type="Dynamo.Graph.Nodes.CodeBlockNodeModel" nickname="Code Block" x="88" y="170" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false" CodeText="{1,2,3};" ShouldFocus="false" />
-    <Dynamo.Graph.Nodes.CodeBlockNodeModel guid="a3d712af-3e73-4c53-8001-055b4c0b78fb" type="Dynamo.Graph.Nodes.CodeBlockNodeModel" nickname="Code Block" x="286" y="175" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="true" CodeText="x= y;&#xA;x = Count(x);" ShouldFocus="false">
-      <PortInfo index="0" default="False" />
-    </Dynamo.Graph.Nodes.CodeBlockNodeModel>
-    <CoreNodeModels.Watch guid="3bf992eb-ecc9-4fcc-a90b-9b1ee7e925e9" type="CoreNodeModels.Watch" nickname="Watch" x="497" y="184" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false">
-      <PortInfo index="0" default="False" />
-    </CoreNodeModels.Watch>
-  </Elements>
-  <Connectors>
-    <Dynamo.Graph.Connectors.ConnectorModel start="2ac2cd51-7fd9-40aa-a70e-cbf8fe96762a" start_index="0" end="a3d712af-3e73-4c53-8001-055b4c0b78fb" end_index="0" portType="0" />
-    <Dynamo.Graph.Connectors.ConnectorModel start="a3d712af-3e73-4c53-8001-055b4c0b78fb" start_index="0" end="3bf992eb-ecc9-4fcc-a90b-9b1ee7e925e9" end_index="0" portType="0" />
-  </Connectors>
-  <Notes />
-  <Annotations />
-  <Presets />
-  <Cameras>
-    <Camera Name="Background Preview" eyeX="-17" eyeY="24" eyeZ="50" lookX="12" lookY="-13" lookZ="-58" upX="0" upY="1" upZ="0" />
-  </Cameras>
-</Workspace>
+{
+  "Uuid": "037714fc-7757-461f-a6d1-0d7117accd6b",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "Home",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "{1,2,3};",
+      "Id": "2ac2cd517fd940aaa70ecbf8fe96762a",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "1deccfb8717d4970b937ffda6aee57bd",
+          "Name": "",
+          "Description": "t6BBA4B28C5E54CF89F300D510499A00E_0",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "x= y;\nz = Count(x);",
+      "Id": "a3d712af3e734c538001055b4c0b78fb",
+      "Inputs": [
+        {
+          "Id": "647610cae00d46b4ba70bc2f2a3ded8e",
+          "Name": "y",
+          "Description": "y",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "dc9a4339786c449babf6558ceac7c50c",
+          "Name": "",
+          "Description": "x",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "7595827c817b48f39c9e716243d8aa02",
+          "Name": "",
+          "Description": "z",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "3bf992ebecc94fcca90b9b1ee7e925e9",
+      "Inputs": [
+        {
+          "Id": "281a773d9cb046e0ba07aa14abb12060",
+          "Name": "",
+          "Description": "Node to evaluate.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "0c8a5d0373e74aca806ef596f9657665",
+          "Name": "",
+          "Description": "Watch contents.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualize the output of node."
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "1deccfb8717d4970b937ffda6aee57bd",
+      "End": "647610cae00d46b4ba70bc2f2a3ded8e",
+      "Id": "dbe900cb47a6447eb5faef18479fa726"
+    },
+    {
+      "Start": "7595827c817b48f39c9e716243d8aa02",
+      "End": "281a773d9cb046e0ba07aa14abb12060",
+      "Id": "9d6b0f024d934b59899d16cf9f2e3fea"
+    }
+  ],
+  "Dependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.0.0.2121",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "2ac2cd517fd940aaa70ecbf8fe96762a",
+        "IsUpstreamVisible": true,
+        "Excluded": false,
+        "X": 88.0,
+        "Y": 170.0
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "a3d712af3e734c538001055b4c0b78fb",
+        "IsUpstreamVisible": true,
+        "Excluded": false,
+        "X": 286.0,
+        "Y": 175.0
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Watch",
+        "Id": "3bf992ebecc94fcca90b9b1ee7e925e9",
+        "IsUpstreamVisible": true,
+        "Excluded": false,
+        "X": 497.0,
+        "Y": 184.0
+      }
+    ],
+    "Notes": [],
+    "Annotations": [],
+    "X": 0.0,
+    "Y": 0.0,
+    "Zoom": 1.0
+  }
+}
