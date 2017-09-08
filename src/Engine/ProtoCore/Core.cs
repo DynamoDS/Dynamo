@@ -67,9 +67,7 @@ namespace ProtoCore
 
             DumpFunctionResolverLogic = false; 
             BuildOptErrorAsWarning = false;
-            ExecutionMode = ExecutionMode.Serial;
             IDEDebugMode = false;
-            WatchTestMode = false;
             IncludeDirectories = new List<string>();
             RootModulePathName = Path.GetFullPath(@".");
             staticCycleCheck = true;
@@ -91,8 +89,6 @@ namespace ProtoCore
         public bool Verbose { get; set; }
         public bool BuildOptErrorAsWarning { get; set; }
         public bool IDEDebugMode { get; set; }      //set to true if two way mapping b/w DesignScript and JIL code is needed
-        public bool WatchTestMode { get; set; }     // set to true when running automation tests for expression interpreter
-        public ExecutionMode ExecutionMode { get; set; }
         public bool staticCycleCheck { get; set; }
         public bool dynamicCycleCheck { get; set; }
         public bool DumpFunctionResolverLogic { get; set; }

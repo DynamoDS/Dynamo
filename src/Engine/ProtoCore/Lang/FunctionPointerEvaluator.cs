@@ -36,7 +36,7 @@ namespace ProtoCore.Lang
                 procNode = dsi.runtime.GetProcedureNode(blockId, classScope, procId);
             }
 
-            callsite = new ProtoCore.CallSite(classScope, Name, interpreter.runtime.exe.FunctionTable, runtimeCore.Options.ExecutionMode);
+            callsite = new ProtoCore.CallSite(classScope, Name, interpreter.runtime.exe.FunctionTable);
         }
 
         public StackValue Evaluate(List<StackValue> args, StackFrame stackFrame)

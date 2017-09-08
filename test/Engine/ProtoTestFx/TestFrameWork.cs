@@ -227,7 +227,6 @@ namespace ProtoTestFx.TD
             testCore.Compilers.Add(ProtoCore.Language.Imperative, new ProtoImperative.Compiler(testCore));
 
             // this setting is to fix the random failure of replication test case
-            testCore.Options.ExecutionMode = ProtoCore.ExecutionMode.Serial;
             testCore.Options.Verbose = false;
 
             //FFI registration and cleanup
@@ -263,7 +262,6 @@ namespace ProtoTestFx.TD
             ProtoCore.Core core = new ProtoCore.Core(new ProtoCore.Options());
             core.Compilers.Add(ProtoCore.Language.Associative, new ProtoAssociative.Compiler(core));
             core.Compilers.Add(ProtoCore.Language.Imperative, new ProtoImperative.Compiler(core));
-            core.Options.ExecutionMode = ProtoCore.ExecutionMode.Serial;
             core.ParsingMode = ProtoCore.ParseMode.AllowNonAssignment;
             core.IsParsingCodeBlockNode = true;
             core.IsParsingPreloadedAssembly = false;

@@ -416,14 +416,11 @@ namespace ProtoCore
         /// <param name="classScope"></param>
         /// <param name="methodName"></param>
         /// <param name="globalFunctionTable"></param>
-        /// <param name="execMode"></param>
         /// <param name="serializedTraceData">An optional Base64 encoded string
         /// representing the trace data that the callsite could use as part of 
         /// its re-construction.</param>
         /// 
-        public CallSite(int classScope, string methodName,
-            FunctionTable globalFunctionTable,
-            ExecutionMode execMode, string serializedTraceData = null)
+        public CallSite(int classScope, string methodName, FunctionTable globalFunctionTable, string serializedTraceData = null)
         {
             //Set the ID of internal test
             callsiteID = Guid.NewGuid();
@@ -434,10 +431,6 @@ namespace ProtoCore
             this.classScope = classScope;
             this.methodName = methodName;
             this.globalFunctionTable = globalFunctionTable;
-
-            if (execMode == ExecutionMode.Parallel)
-                throw new CompilerInternalException(
-                    "Parrallel Mode is not yet implemented {46F83CBB-9D37-444F-BA43-5E662784B1B3}");
 
             // Found preloaded trace data, reconstruct the instances from there.
             if (!String.IsNullOrEmpty(serializedTraceData))
@@ -1454,9 +1447,6 @@ namespace ProtoCore
             SingleRunTraceData previousTraceData, 
             SingleRunTraceData newTraceData)
         {
-            if (runtimeCore.Options.ExecutionMode == ExecutionMode.Parallel)
-                throw new NotImplementedException("Parallel mode disabled: {BF417AD5-9EA9-4292-ABBC-3526FC5A149E}");
-
             //Recursion base case
             if (replicationInstructions.Count == 0)
             {
