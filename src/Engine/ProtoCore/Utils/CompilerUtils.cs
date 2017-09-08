@@ -550,27 +550,29 @@ namespace ProtoCore.Utils
             foreach (var node in asts)
             {
                 BinaryExpressionNode bnode = node as BinaryExpressionNode;
-                if (bnode?.Optr == Operator.assign)
+                if (bnode == null || bnode.Optr != Operator.assign)
                 {
-                    IdentifierNode ident = bnode.LeftNode as IdentifierNode;
-                    if (ident == null)
-                    {
-                        continue;
-                    }
+                    continue;
+                }
 
-                    var variable = ident.Value;
+                IdentifierNode ident = bnode.LeftNode as IdentifierNode;
+                if (ident == null)
+                {
+                    continue;
+                }
 
-                    if (!scope.Contains(variable))
+                var variable = ident.Value;
+
+                if (!scope.Contains(variable))
+                {
+                    scope.Add(variable);
+                }
+                else if (ident.ArrayDimensions == null)
+                {
+                    errors.Add(new ErrorEntry
                     {
-                        scope.Add(variable);
-                    }
-                    else if (ident.ArrayDimensions == null)
-                    {
-                        errors.Add(new ErrorEntry
-                        {
-                            Message = String.Format(Properties.Resources.VariableRedifinitionError, variable),
-                        });
-                    } 
+                        Message = String.Format(Properties.Resources.VariableRedifinitionError, variable),
+                    });
                 }
             }
 
