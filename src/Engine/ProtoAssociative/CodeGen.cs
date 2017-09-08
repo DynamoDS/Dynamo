@@ -4199,21 +4199,6 @@ namespace ProtoAssociative
                 identNode.Name = ProtoCore.DSASM.Constants.kInlineConditionalMethodName;
                 inlineCall.Function = identNode;
 
-                core.DebuggerProperties.highlightRange = new ProtoCore.CodeModel.CodeRange
-                {
-                    StartInclusive = new ProtoCore.CodeModel.CodePoint
-                    {
-                        LineNo = parentNode.line,
-                        CharNo = parentNode.col
-                    },
-
-                    EndExclusive = new ProtoCore.CodeModel.CodePoint
-                    {
-                        LineNo = parentNode.endLine,
-                        CharNo = parentNode.endCol
-                    }
-                };
-
                 // As SSA conversion is enabled, we have got the values of
                 // true and false branch, so it isn't necessary to create 
                 // language blocks.
@@ -4267,21 +4252,6 @@ namespace ProtoAssociative
                     inlineCall.FormalArguments.Add(dynBlockT);
                     inlineCall.FormalArguments.Add(dynBlockF);
                 }
-
-                core.DebuggerProperties.highlightRange = new ProtoCore.CodeModel.CodeRange
-                {
-                    StartInclusive = new ProtoCore.CodeModel.CodePoint
-                    {
-                        LineNo = Constants.kInvalidIndex,
-                        CharNo = Constants.kInvalidIndex
-                    },
-
-                    EndExclusive = new ProtoCore.CodeModel.CodePoint
-                    {
-                        LineNo = Constants.kInvalidIndex,
-                        CharNo = Constants.kInvalidIndex
-                    }
-                };
 
                 // Save the pc and store it after the call
                 EmitFunctionCallNode(inlineCall, ref inferedType, false, graphNode, ProtoCore.CompilerDefinitions.SubCompilePass.UnboundIdentifier);

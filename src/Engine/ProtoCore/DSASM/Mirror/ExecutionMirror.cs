@@ -294,21 +294,6 @@ namespace ProtoCore.DSASM.Mirror
             ci = Constants.kInvalidIndex;
             int functionBlock = Constants.kGlobalScope;
 
-            if (runtimeCore.DebugProps.DebugStackFrameContains(DebugProperties.StackFrameFlagOptions.FepRun))
-            {
-                ci = rmem.CurrentStackFrame.ClassScope;
-                functionIndex = rmem.CurrentStackFrame.FunctionScope;
-                functionBlock = rmem.CurrentStackFrame.FunctionBlock;
-            }
-
-            // TODO Jun: 'block' is incremented only if there was no other block provided by the programmer
-            // This is only to address NUnit issues when retrieving a global variable
-            // Some predefined functions are hard coded in the AST so isSingleAssocBlock will never be true
-            //if (exe.isSingleAssocBlock)
-            //{
-            //    ++block;
-            //}
-
             int index = -1;
             if (ci != Constants.kInvalidIndex)
             {

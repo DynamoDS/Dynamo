@@ -14,14 +14,10 @@ namespace ProtoCore.DSASM
     {
         private readonly bool enableLogging = true;
 
-
         private readonly RuntimeCore runtimeCore;
         public RuntimeCore RuntimeCore
         {
-            get
-            {
-                return runtimeCore;
-            }
+            get { return runtimeCore; }
         }
 
         public Executable exe { get; set; }
@@ -45,7 +41,6 @@ namespace ProtoCore.DSASM
         {
             NONE,
             ENABLE_LOG,
-            SPAWN_DEBUGGER
         }
 
         // Execute DS Release build
@@ -127,7 +122,6 @@ namespace ProtoCore.DSASM
             {
                 rmem.PushFrameForLocals(locals);
                 rmem.PushStackFrame(stackFrame);
-                runtimeCore.DebugProps.SetUpBounce(exec, stackFrame.FunctionCallerBlock, stackFrame.ReturnPC);
             }
             return runtimeCore.ExecutionInstance.Execute(exeblock, entry, fepRun);
         }
@@ -157,7 +151,6 @@ namespace ProtoCore.DSASM
             {
                 rmem.PushFrameForLocals(locals);
                 rmem.PushStackFrame(stackFrame);
-                runtimeCore.DebugProps.SetUpBounce(exec, stackFrame.FunctionCallerBlock, stackFrame.ReturnPC);
             }
             executive.Execute(exeblock, entry);
             return executive.RX;
@@ -174,20 +167,6 @@ namespace ProtoCore.DSASM
                 (rmem.CurrentStackFrame.ClassScope == Constants.kInvalidIndex && rmem.CurrentStackFrame.FunctionScope == Constants.kInvalidIndex);
         }
 
-        private void BounceExplicit(int exeblock, int entry, Language language, StackFrame frame, List<Instruction> breakpoints)
-        {
-            fepRun = false;
-            rmem.PushStackFrame(frame);
-
-            SetupExecutive(exeblock, entry, language, breakpoints);
-
-            bool debugRun = (0 != (debugFlags & (int)DebugFlags.SPAWN_DEBUGGER));
-            if (!fepRun || fepRun && debugRun)
-            {
-                logVMMessage("Start JIL Execution - " + CoreUtils.GetLanguageString(language));
-            }
-        }
-
         private void BounceExplicit(int exeblock, int entry, Language language, StackFrame frame)
         {
             fepRun = false;
@@ -195,8 +174,7 @@ namespace ProtoCore.DSASM
 
             SetupExecutive(exeblock, entry);
 
-            bool debugRun = (0 != (debugFlags & (int)DebugFlags.SPAWN_DEBUGGER));
-            if (!fepRun || fepRun && debugRun)
+            if (!fepRun)
             {
                 logVMMessage("Start JIL Execution - " + CoreUtils.GetLanguageString(language));
             }
@@ -213,8 +191,6 @@ namespace ProtoCore.DSASM
             SetupExecutiveForCall(exeblock, entry);
         }
 
-        // TODO Jun: Optimization - instead of inspecting the stack, just store the 'is in function' flag in the stackframe
-        // Performance would only siffer if you have so a huge number of nested language blocks
         // TODO Jun: Optimization - instead of inspecting the stack, just store the 'is in function' flag in the stackframe
         // Performance would only siffer if you have so a huge number of nested language blocks
         private bool GetCurrentScope(out int classIndex, out int functionIndex)
@@ -733,11 +709,7 @@ namespace ProtoCore.DSASM
             return sv;
         }
 
-        private StackValue CallrForMemberFunction(int blockIndex,
-                                                  int classIndex,
-                                                  int procIndex,
-                                                  bool hasDebugInfo,
-                                                  ref bool isExplicitCall)
+        private StackValue CallrForMemberFunction(int blockIndex, int classIndex, int procIndex, bool hasDebugInfo, ref bool isExplicitCall)
         {
             var svDepth = rmem.Pop();
             Validity.Assert(svDepth.IsInteger);
@@ -1508,51 +1480,6 @@ namespace ProtoCore.DSASM
             return new List<StackValue> { RX, TX };
         }
 
-        private void SetupExecutive(int exeblock, int entry, Language language, List<Instruction> breakpoints)
-        {
-            // exe need to be assigned at the constructor, 
-            // for function call with replication, gc is triggered to handle the parameter and return value at FunctionEndPoint
-            // gc requirs exe to be not null but at that point, Execute has not been called
-            //Validity.Assert(exe == null);
-            exe = runtimeCore.DSExecutable;
-            executingBlock = exeblock;
-
-            runtimeCore.DebugProps.CurrentBlockId = exeblock;
-
-            istream = exe.instrStreamList[exeblock];
-            Validity.Assert(null != istream);
-
-            List<Instruction> instructions = istream.instrList;
-            Validity.Assert(null != instructions);
-
-            SetupGraphNodesInScope();
-
-            // Restore the previous state
-            //rmem = runtimeCore.RuntimeMemory;
-            rmem = runtimeCore.RuntimeMemory;
-
-            PushInterpreterProps(Properties);
-            Properties.Reset();
-
-            if (false == fepRun)
-            {
-                pc = istream.entrypoint;
-                rmem.FramePointer = rmem.Stack.Count;
-            }
-            else
-            {
-                pc = entry;
-            }
-            executingLanguage = exe.instrStreamList[exeblock].language;
-
-            if (Language.Associative == executingLanguage)
-            {
-                SetupEntryPoint();
-            }
-
-            Validity.Assert(null != rmem);
-        }
-
         /// <summary>
         /// This is the VM execution entry function
         /// </summary>
@@ -1570,8 +1497,7 @@ namespace ProtoCore.DSASM
 
                 string engine = CoreUtils.GetLanguageString(language);
 
-                bool debugRun = IsDebugRun();
-                if (!fepRun || fepRun && debugRun)
+                if (!fepRun)
                 {
                     logVMMessage("Start JIL Execution - " + engine);
                 }
@@ -1590,7 +1516,7 @@ namespace ProtoCore.DSASM
                     Exec(istream.instrList[pc]);
                 }
 
-                if (!fepRun || fepRun && debugRun)
+                if (!fepRun)
                 {
                     logVMMessage("End JIL Execution - " + engine);
                 }
@@ -1689,12 +1615,6 @@ namespace ProtoCore.DSASM
                     rmem.SetSymbolValue(symbol, opVal);
                     exe.UpdatedSymbols.Add(symbol);
 
-                    if (IsDebugRun())
-                    {
-                        logWatchWindow(blockId, op1.SymbolIndex);
-                        System.Console.ReadLine();
-                    }
-
                     if (Constants.kGlobalScope == op2.ClassIndex)
                     {
                         logWatchWindow(blockId, op1.SymbolIndex);
@@ -1708,13 +1628,6 @@ namespace ProtoCore.DSASM
                     opPrev = rmem.GetSymbolValue(staticMember);
                     rmem.SetSymbolValue(staticMember, opVal);
                     exe.UpdatedSymbols.Add(staticMember);
-
-                    if (IsDebugRun())
-                    {
-                        logWatchWindow(blockId, op1.StaticVariableIndex);
-                        System.Console.ReadLine();
-                    }
-
                     logWatchWindow(blockId, op1.StaticVariableIndex);
                     break;
                 case AddressType.Register:
@@ -1783,12 +1696,6 @@ namespace ProtoCore.DSASM
                 ret = array.SetValueForIndices(dimlist, data, runtimeCore);
             }
 
-            if (IsDebugRun())
-            {
-                logWatchWindow(blockId, symbolnode.symbolTableIndex);
-                System.Console.ReadLine();
-            }
-
             if (IsGlobalScope())
             {
                 logWatchWindow(blockId, symbolnode.symbolTableIndex);
@@ -1797,12 +1704,6 @@ namespace ProtoCore.DSASM
             RecordExecutedGraphNode();
             return ret;
         }
-
-        private bool IsDebugRun()
-        {
-            return (debugFlags & (int)DebugFlags.SPAWN_DEBUGGER) != 0;
-        }
-
 
         protected void runtimeVerify(bool condition, string msg = "Dsasm runtime error. Exiting...\n")
         {
@@ -1838,57 +1739,6 @@ namespace ProtoCore.DSASM
             }
             else
                 return StackValue.Null;
-        }
-
-        public StackValue GetIndexedArrayW(int dimensions, int blockId, StackValue op1, StackValue op2)
-        {
-            var dims = new List<StackValue>();
-            for (int n = dimensions - 1; n >= 0; --n)
-            {
-                dims.Insert(0, rmem.Pop());
-            }
-
-            int symbolIndex = op1.SymbolIndex;
-            int classIndex = op2.ClassIndex;
-
-            SymbolNode symbolNode = GetSymbolNode(blockId, classIndex, symbolIndex);
-            int stackindex = symbolNode.index;
-            string varname = symbolNode.name;
-
-            StackValue thisArray;
-            if (op1.IsMemberVariableIndex)
-            {
-                StackValue thisptr = rmem.GetAtRelative(StackFrame.FrameIndexThisPtr);
-                thisArray = rmem.Heap.ToHeapObject<DSObject>(thisptr).GetValueFromIndex(stackindex, runtimeCore);
-            }
-            else
-            {
-                thisArray = rmem.GetSymbolValue(symbolNode);
-            }
-
-            if (!thisArray.IsArray)
-            {
-                if (varname.StartsWith(Constants.kForLoopExpression))
-                {
-                    return thisArray;
-                }
-
-                runtimeCore.RuntimeStatus.LogWarning(WarningID.OverIndexing, Resources.IndexIntoNonArrayObject);
-                return StackValue.Null;
-            }
-
-            StackValue result;
-            try
-            {
-                result = GetIndexedArray(thisArray, dims);
-            }
-            catch (ArgumentOutOfRangeException)
-            {
-                runtimeCore.RuntimeStatus.LogWarning(WarningID.OverIndexing, Resources.IndexIntoNonArrayObject);
-                return StackValue.Null;
-            }
-
-            return result;
         }
 
         public StackValue GetIndexedArray(List<StackValue> dims, int blockId, StackValue op1, StackValue op2)
@@ -2196,16 +2046,6 @@ namespace ProtoCore.DSASM
             }
         }
 
-        public void Modify_istream_instrList_FromSetValue(int blockId, int pc, StackValue op)
-        {
-            exe.instrStreamList[blockId].instrList[pc].op1 = op;
-        }
-
-        public void Modify_istream_entrypoint_FromSetValue(int blockId, int pc)
-        {
-            exe.instrStreamList[blockId].entrypoint = pc;
-        }
-
         public AssociativeGraph.GraphNode GetFirstGraphNode(string varName, out int blockId)
         {
             blockId = 0;
@@ -2239,22 +2079,6 @@ namespace ProtoCore.DSASM
             else
             { 
                 return exe.classTable.ClassNodes[classIndex].ProcTable.Procedures[functionIndex];
-            }
-        }
-
-        private void GetLocalAndParamCount(int blockId, int classIndex, int functionIndex, out int localCount, out int paramCount)
-        {
-            localCount = paramCount = 0;
-
-            if (Constants.kGlobalScope != classIndex)
-            {
-                localCount = exe.classTable.ClassNodes[classIndex].ProcTable.Procedures[functionIndex].LocalCount;
-                paramCount = exe.classTable.ClassNodes[classIndex].ProcTable.Procedures[functionIndex].ArgumentTypes.Count;
-            }
-            else
-            {
-                localCount = exe.procedureTable[blockId].Procedures[functionIndex].LocalCount;
-                paramCount = exe.procedureTable[blockId].Procedures[functionIndex].ArgumentTypes.Count;
             }
         }
 
@@ -3269,8 +3093,6 @@ namespace ProtoCore.DSASM
 
             StackFrameType callerType = (fepRun) ? StackFrameType.Function : StackFrameType.LanguageBlock;
 
-            runtimeCore.DebugProps.SetUpBounce(this, blockCaller, returnAddr);
-
             StackFrame stackFrame = new StackFrame(svThisPtr, ci, fi, returnAddr, blockDecl, blockCaller, callerType, type, depth + 1, framePointer, 0, registers, 0);
             Language bounceLangauge = exe.instrStreamList[blockId].language;
             BounceExplicit(blockId, 0, bounceLangauge, stackFrame);
@@ -3633,8 +3455,7 @@ namespace ProtoCore.DSASM
             int classIndex = Constants.kInvalidIndex;
             int functionIndex = Constants.kGlobalScope;
             bool isInFunction = GetCurrentScope(out classIndex, out functionIndex);
-            Validity.Assert(runtimeCore.DebugProps.DebugStackFrame.Count > 0);
-            isInFunction = runtimeCore.DebugProps.DebugStackFrameContains(DebugProperties.StackFrameFlagOptions.FepRun);
+            isInFunction = false;
 
             if (isInFunction)
             {
@@ -3737,15 +3558,6 @@ namespace ProtoCore.DSASM
             int classIndex = Constants.kInvalidIndex;
             int functionIndex = Constants.kGlobalScope;
             bool isInFunction = GetCurrentScope(out classIndex, out functionIndex);
-
-            Validity.Assert(runtimeCore.DebugProps.DebugStackFrame.Count > 0);
-            isInFunction = runtimeCore.DebugProps.DebugStackFrameContains(DebugProperties.StackFrameFlagOptions.FepRun);
-
-            if (isInFunction)
-            {
-                ci = classIndex;
-                fi = functionIndex;
-            }
 
             SetupNextExecutableGraph(fi, ci);
         }
