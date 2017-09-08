@@ -2,12 +2,6 @@
 
 namespace ProtoCore.DSASM
 {
-    public enum InterpreterMode
-    {
-        Expression,
-        Normal,
-    }
-
     namespace CallingConvention
     {
         public enum BounceType

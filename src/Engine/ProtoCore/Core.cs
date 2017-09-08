@@ -54,10 +54,6 @@ namespace ProtoCore
     {
         public Options()
         {
-            // Execute using new graphnode dependency
-            // When executing direct dependency set the following:
-            //      DirectDependencyExecution = true
-            //      LHSGraphNodeUpdate = false
             DirectDependencyExecution = true;
 
             ApplyUpdate = false;
@@ -93,12 +89,10 @@ namespace ProtoCore
         public bool ExecuteSSA { get; set; }
         public bool GCTempVarsOnDebug { get; set; }
         public bool Verbose { get; set; }
-        public bool SuppressBuildOutput { get; set; }
         public bool BuildOptErrorAsWarning { get; set; }
         public bool IDEDebugMode { get; set; }      //set to true if two way mapping b/w DesignScript and JIL code is needed
         public bool WatchTestMode { get; set; }     // set to true when running automation tests for expression interpreter
         public ExecutionMode ExecutionMode { get; set; }
-        public string FormatToPrintFloatingPoints { get; set; }
         public bool staticCycleCheck { get; set; }
         public bool dynamicCycleCheck { get; set; }
         public bool DumpFunctionResolverLogic { get; set; }
@@ -106,7 +100,6 @@ namespace ProtoCore
         public bool SuppressFunctionResolutionWarning { get; set; }
         public bool AssociativeToImperativePropagation { get; set; }
         public bool IsDeltaExecution { get; set; }
-        public InterpreterMode RunMode { get; set; }
 
         /// <summary>
         /// TODO: Aparajit: This flag is true for Delta AST compilation
@@ -130,13 +123,11 @@ namespace ProtoCore
         public int instructionStream;
         public List<Instruction> ActiveBreakPoints;
     }
-
    
     public enum ParseMode
     {
         Normal,
         AllowNonAssignment,
-        None
     }
 
     public class Core
@@ -373,8 +364,6 @@ namespace ProtoCore
         {
             Options.ApplyUpdate = false;
 
-            Options.RunMode = InterpreterMode.Normal;
-
             // The main codeblock never goes out of scope
             // Resetting CodeBlockIndex means getting the number of main codeblocks that dont go out of scope.
             // As of the current requirements, there is only 1 main scope, the rest are nested within.
@@ -462,8 +451,6 @@ namespace ProtoCore
             SSASubscript_GUID = Guid.NewGuid();
             SSAExprUID = 0;
             ExpressionUID = 0;
-
-            Options.RunMode = InterpreterMode.Normal;
 
             assocCodegen = null;
 
