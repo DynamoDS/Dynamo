@@ -84,16 +84,26 @@ namespace Dynamo.Graph.Workspaces
       public double FontSize;
       public string Background;
 
-      // TODO, QNTM-1099: Determine if these are required
-      // public string Id;
-      // public double Left;
-      // public double Top;
-      // public double Width;
-      // public double Height;
-      // public double InitialTop;
-      // public double InitialHeight;
-      // public double TextBlockHeight;
-  }
+        // TODO, QNTM-1099: Determine if these are required
+        // public string Id;
+        // public double Left;
+        // public double Top;
+        // public double Width;
+        // public double Height;
+        // public double InitialTop;
+        // public double InitialHeight;
+        // public double TextBlockHeight;
+
+        public override bool Equals(object obj)
+        {
+            var other = obj as ExtraAnnotationViewInfo;
+            return other != null && 
+                this.Title == other.Title &&
+                this.Nodes.SequenceEqual(other.Nodes) &&
+                this.FontSize == other.FontSize &&
+                this.Background == other.Background; 
+        }
+    }
 
     /// <summary>
     /// Represents base class for all kind of workspaces which contains general data

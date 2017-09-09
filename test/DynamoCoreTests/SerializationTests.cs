@@ -26,7 +26,7 @@ namespace Dynamo.Tests
      *  - xxx.ds file containing the Design Script code for the workspace.
      */
     [TestFixture, Category("Serialization")]
-    class SerializationTests : DynamoModelTestBase
+    public class SerializationTests : DynamoModelTestBase
     {
         private TimeSpan lastExecutionDuration = new TimeSpan();
         private Dictionary<Guid, string> modelsGuidToIdMap = new Dictionary<Guid, string>();
@@ -395,7 +395,7 @@ namespace Dynamo.Tests
             DoWorkspaceOpenAndCompare(filePath, "json_nonGuidIds", ConvertCurrentWorkspaceToNonGuidJsonAndSave, CompareWorkspacesDifferentGuids, SaveWorkspaceComparisonDataWithNonGuidIds);
         }
 
-        private static List<string> bannedTests = new List<string>()
+        public static List<string> bannedTests = new List<string>()
             {
                 "NestedIF",
                 "recorded",
