@@ -3,6 +3,7 @@ using System.Xml;
 using Autodesk.DesignScript.Runtime;
 using Dynamo.Utilities;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
 
 namespace Dynamo.Graph.Nodes
@@ -52,7 +53,13 @@ namespace Dynamo.Graph.Nodes
         /// <param name="originalElement">Xml node</param>
         /// <param name="legacyAssembly">Assembly of the node</param>
         /// <param name="nodeNature">Node can be Deprecated or Unresolved</param>
-        public DummyNode(int inputCount, int outputCount, string legacyName, XmlElement originalElement, string legacyAssembly, Nature nodeNature)
+        public DummyNode(
+            int inputCount, 
+            int outputCount, 
+            string legacyName, 
+            XmlElement originalElement, 
+            string legacyAssembly, 
+            Nature nodeNature)
         {
             InputCount = inputCount;
             OutputCount = outputCount;
@@ -66,9 +73,9 @@ namespace Dynamo.Graph.Nodes
             Description = GetDescription();
             ShouldDisplayPreviewCore = false;
 
-            if (OriginalNodeContent != null)
+            if (originalElement != null)
             {
-                var legacyFullName = OriginalNodeContent.Attributes["function"];
+                var legacyFullName = originalElement.Attributes["function"];
                 if (legacyFullName != null)
                     LegacyFullName = legacyFullName.Value;
             }
@@ -93,7 +100,13 @@ namespace Dynamo.Graph.Nodes
         /// <param name="inputCount">Number of input ports</param>
         /// <param name="outputCount">Number of output ports</param>
         /// <param name="legacyAssembly">Assembly of the node</param>
-        public DummyNode(string id, int inputCount, int outputCount, string legacyAssembly)
+        /// <param name="originalElement">Original JSON description of the node</param>
+        public DummyNode(
+            string id, 
+            int inputCount, 
+            int outputCount, 
+            string legacyAssembly,
+            JObject originalElement)
         {
             GUID = new Guid(id);
 
@@ -106,9 +119,8 @@ namespace Dynamo.Graph.Nodes
             LegacyNodeName = legacyName;
             LegacyFullName = legacyName;
             Name = legacyName;
-        
-            // TODO, QNTM-1635: Figure out what we really need frm this
-            OriginalNodeContent = null; //originalElement;
+
+            OriginalNodeContent = originalElement;
 
             LegacyAssembly = legacyAssembly;
             NodeNature = DummyNode.Nature.Unresolved;
@@ -116,19 +128,20 @@ namespace Dynamo.Graph.Nodes
             Description = GetDescription();
             ShouldDisplayPreviewCore = false;
 
-            // TODO, QNTM-1635: Determine where to get the legacy full name from
-            //if (OriginalNodeContent != null)
-            //{
-            //    var legacyFullName = OriginalNodeContent.Attributes["function"];
-            //    if (legacyFullName != null)
-            //        LegacyFullName = legacyFullName.Value;
-            //}
+            if (originalElement != null)
+            {
+              var legacyFullName = originalElement["FunctionSignature"];
+              if (legacyFullName != null)
+                LegacyFullName = legacyFullName.ToString();
+            }
 
             UpdatePorts();
         }
 
         private void LoadNode(XmlNode nodeElement)
         {
+            XmlElement originalElement = OriginalXmlNodeContent;
+
             var inputCount = nodeElement.Attributes["inputCount"];
             var outputCount = nodeElement.Attributes["outputCount"];
             var legacyName = nodeElement.Attributes["legacyNodeName"];
@@ -144,9 +157,9 @@ namespace Dynamo.Graph.Nodes
                         OriginalNodeContent = (XmlElement)nodeElement.FirstChild.FirstChild;
             }
 
-            if (OriginalNodeContent != null)
+            if (originalElement != null)
             {
-                var legacyFullName = OriginalNodeContent.Attributes["type"];
+                var legacyFullName = originalElement.Attributes["type"];
                 if (legacyFullName != null)
                     LegacyFullName = legacyFullName.Value;
             }
@@ -186,6 +199,8 @@ namespace Dynamo.Graph.Nodes
 
         private void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
         {
+            XmlElement originalElement = OriginalXmlNodeContent;
+
             if (context == SaveContext.Copy || context == SaveContext.Undo)
             {
                 //Dump all the information into memory
@@ -196,18 +211,18 @@ namespace Dynamo.Graph.Nodes
                 nodeElement.SetAttribute("legacyAssembly", LegacyAssembly);
                 nodeElement.SetAttribute("nodeNature", NodeNature.ToString());
 
-                if (OriginalNodeContent != null)
+                if (originalElement != null)
                 {
                     XmlElement originalNode = xmlDoc.CreateElement("OriginalNodeContent");
-                    XmlElement nodeContent = nodeElement.OwnerDocument.CreateElement(OriginalNodeContent.Name);
+                    XmlElement nodeContent = nodeElement.OwnerDocument.CreateElement(originalElement.Name);
 
-                    foreach (XmlAttribute attribute in OriginalNodeContent.Attributes)
+                    foreach (XmlAttribute attribute in originalElement.Attributes)
                         nodeContent.SetAttribute(attribute.Name, attribute.Value);
 
-                    for (int i = 0; i < OriginalNodeContent.ChildNodes.Count; i++)
+                    for (int i = 0; i < originalElement.ChildNodes.Count; i++)
                     {
                         XmlNode child =
-                            nodeContent.OwnerDocument.ImportNode(OriginalNodeContent.ChildNodes[i], true);
+                            nodeContent.OwnerDocument.ImportNode(originalElement.ChildNodes[i], true);
                         nodeContent.AppendChild(child.CloneNode(true));
                     }
 
@@ -220,10 +235,10 @@ namespace Dynamo.Graph.Nodes
             {
                 //When save files, only save the original node's content, 
                 //instead of saving the dummy node.
-                if (OriginalNodeContent != null)
+                if (originalElement != null)
                 {
                     nodeElement.RemoveAll();
-                    foreach (XmlAttribute attribute in OriginalNodeContent.Attributes)
+                    foreach (XmlAttribute attribute in originalElement.Attributes)
                         nodeElement.SetAttribute(attribute.Name, attribute.Value);
 
                     //overwrite the guid/x/y value of the original node.
@@ -231,9 +246,9 @@ namespace Dynamo.Graph.Nodes
                     nodeElement.SetAttribute("x", nodeElement.GetAttribute("x"));
                     nodeElement.SetAttribute("y", nodeElement.GetAttribute("y"));
 
-                    for (int i = 0; i < OriginalNodeContent.ChildNodes.Count; i++)
+                    for (int i = 0; i < originalElement.ChildNodes.Count; i++)
                     {
-                        XmlNode child = nodeElement.OwnerDocument.ImportNode(OriginalNodeContent.ChildNodes[i], true);
+                        XmlNode child = nodeElement.OwnerDocument.ImportNode(originalElement.ChildNodes[i], true);
                         nodeElement.AppendChild(child.CloneNode(true));
                     }
                 }
@@ -252,9 +267,11 @@ namespace Dynamo.Graph.Nodes
 
         protected override XmlElement CreateElement(XmlDocument xmlDocument, SaveContext context)
         {
-            if (context == SaveContext.File && OriginalNodeContent != null)
+            XmlElement originalElement = OriginalXmlNodeContent;
+
+            if (context == SaveContext.File && originalElement != null)
             {
-                XmlElement originalNode = xmlDocument.CreateElement(OriginalNodeContent.Name);
+                XmlElement originalNode = xmlDocument.CreateElement(originalElement.Name);
                 return originalNode;
             }
             else
@@ -344,6 +361,21 @@ namespace Dynamo.Graph.Nodes
         /// <summary>
         /// Xml node
         /// </summary>
-        public XmlElement OriginalNodeContent { get; private set; }
+        public object OriginalNodeContent { get; private set; }
+
+        private XmlElement OriginalXmlNodeContent
+        {
+            get
+            {
+              if (OriginalNodeContent == null)
+                  return null;
+
+              XmlElement originalXmlElement = OriginalNodeContent as XmlElement;
+              if (originalXmlElement == null)
+                  throw new InvalidOperationException("OriginalNodeContent is not an XmlElement.");
+
+              return originalXmlElement;
+            }
+        }
     }
 }

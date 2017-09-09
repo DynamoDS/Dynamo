@@ -89,7 +89,8 @@ namespace Dynamo.Graph.Workspaces
                         obj["Id"].ToString(),
                         inputcount,
                         outputcount,
-                        objectType.Assembly.Location);
+                        objectType.Assembly.Location,
+                        obj);
 
                     RemapPorts(node, inPorts, outPorts, resolver);
                 }
@@ -457,6 +458,55 @@ namespace Dynamo.Graph.Workspaces
         }
     }
 
+    /// <summary>
+    /// WorkspaceWriteConverter is used for serializing Workspaces to JSON.
+    /// </summary>
+    public class DummyNodeWriteConverter : JsonConverter
+    {
+        //private EngineController engine;
+
+        public DummyNodeWriteConverter(EngineController engine = null)
+        {
+            //if (engine != null)
+            //{
+            //    this.engine = engine;
+            //}
+        }
+
+        public override bool CanConvert(Type objectType)
+        {
+            return typeof(DummyNode).IsAssignableFrom(objectType);
+        }
+
+        public override bool CanRead
+        {
+            get { return false; }
+        }
+
+        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+        {
+            var dummyNode = value as DummyNode;
+            if (dummyNode == null)
+                throw new ArgumentException("value is not a DummyNode.");
+
+            if (dummyNode.OriginalNodeContent == null)
+                throw new ArgumentException("There is no content to write for this DummyNode.");
+
+            JObject originalContent = dummyNode.OriginalNodeContent as JObject;
+            if (originalContent == null)
+                throw new ArgumentException("originalContent is not JSON compatible.");
+
+            // TODO, QNTM-1635: This will write out the original contents of the node replaced
+            //    by the dummy node. Need to determine if edits to dummy node
+            //    connections are required to be saved or not.
+            originalContent.WriteTo(writer);
+    }
+
+    public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+        {
+            throw new NotImplementedException();
+        }
+    }
 
     /// <summary>
     /// The ConnectorConverter is used to serialize and deserialize ConnectorModels.
