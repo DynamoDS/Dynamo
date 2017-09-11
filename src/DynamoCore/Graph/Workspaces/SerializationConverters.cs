@@ -548,8 +548,7 @@ namespace Dynamo.Graph.Workspaces
 
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
-            var obj = JValue.Load(reader);
-            return new TypedParameter(obj["Name"].ToString(), obj["TypeName"].ToString(), (int)obj["TypeRank"], obj["DefaultValue"].ToString());
+            throw new NotImplementedException();
         }
 
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
