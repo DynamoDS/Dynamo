@@ -25,6 +25,7 @@ using Dynamo.Wpf.ViewModels.Core;
 using Dynamo.Wpf.ViewModels.Watch3D;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Dynamo.Utilities;
 
 namespace DynamoCoreWpfTests
 {
@@ -446,7 +447,7 @@ namespace DynamoCoreWpfTests
         private void DoWorkspaceOpenAndCompareView(string filePath, string dirName,
            Func<DynamoViewModel, string, string> saveFunction,
            Action<WorkspaceViewComparisonData, WorkspaceViewComparisonData> workspaceViewCompareFunction,
-           Action<WorkspaceViewComparisonData, string, TimeSpan> workspaceViewDataSaveFunction)
+           Action<WorkspaceViewComparisonData, string, TimeSpan,Dictionary<Guid,string>> workspaceViewDataSaveFunction)
         {
             var openPath = filePath;
 
@@ -495,7 +496,7 @@ namespace DynamoCoreWpfTests
 
             string json = saveFunction(this.ViewModel, filePathBase);
 
-            workspaceViewDataSaveFunction(wcd1, filePathBase, lastExecutionDuration);
+            workspaceViewDataSaveFunction(wcd1, filePathBase, lastExecutionDuration,this.modelsGuidToIdMap);
 
             lastExecutionDuration = new TimeSpan();
 
@@ -586,15 +587,10 @@ namespace DynamoCoreWpfTests
             return json;
         }
 
-       
-
         private void CompareWorkspaceViews(WorkspaceViewComparisonData a, WorkspaceViewComparisonData b)
         {
-            var nodeDiff = a.NodeTypeMap.Except(b.NodeTypeMap);
-            if (nodeDiff.Any())
-            {
-                Assert.Fail("The workspaces don't have the same number of nodes. The json workspace is missing: " + string.Join(",", nodeDiff.Select(i => i.Value.ToString())));
-            }
+            //first compare the model data
+            serializationTestUtils.CompareWorkspaceModels(a, b, this.modelsGuidToIdMap);
 
             Assert.IsTrue(Math.Abs(a.X - b.X) < .00001, "The workspaces don't have the same X offset.");
             Assert.IsTrue(Math.Abs(a.X - b.X) < .00001, "The workspaces don't have the same Y offset.");
@@ -615,20 +611,6 @@ namespace DynamoCoreWpfTests
                 Assert.AreEqual(dataA, dataB);
             }
 
-            foreach (var kvp in a.InportCountMap)
-            {
-                var countA = kvp.Value;
-                var countB = b.InportCountMap[kvp.Key];
-                Assert.AreEqual(countA, countB, string.Format("One {0} node has {1} inports, while the other has {2}", a.NodeViewDataMap[kvp.Key].Name, countA, countB));
-            }
-            foreach (var kvp in a.OutportCountMap)
-            {
-                var countA = kvp.Value;
-                var countB = b.OutportCountMap[kvp.Key];
-                Assert.AreEqual(countA, countB, string.Format("One {0} node has {1} outports, while the other has {2}", a.NodeViewDataMap[kvp.Key].Name, countA, countB));
-            }
-
-
             foreach (var kvp in a.NodeViewDataMap)
             {
                 var valueA = kvp.Value;
@@ -637,67 +619,45 @@ namespace DynamoCoreWpfTests
                 string.Format("Node View Data:{0} value, {1} is not equal to {2}",
                 a.NodeViewDataMap[kvp.Key].Name, valueA, valueB));
             }
-
-            foreach (var kvp in a.NodeDataMap)
-            {
-                var valueA = kvp.Value;
-                var valueB = b.NodeDataMap[kvp.Key];
-
-                Assert.AreEqual(a.NodeTypeMap[kvp.Key], b.NodeTypeMap[kvp.Key]);
-
-                try
-                {
-                    // When values are geometry, sometimes the creation
-                    // of the string representation for forming this message
-                    // fails.
-                    Assert.AreEqual(valueA, valueB,
-                    string.Format("Node Type:{0} value, {1} is not equal to {2}",
-                    a.NodeTypeMap[kvp.Key], valueA, valueB));
-                }
-                catch
-                {
-                    continue;
-                }
-            }
-
-
-            foreach (var kvp in a.InputsMap)
-            {
-                var vala = kvp.Value;
-                var valb = b.InputsMap[kvp.Key];
-                Assert.AreEqual(vala, valb, "input datas are not the same.");
-            }
         }
 
-        private static void SaveWorkspaceViewComparisonData(WorkspaceViewComparisonData wcd1, string filePathBase, TimeSpan executionDuration)
+        private void CompareWorkspaceViewsDifferentGuids(WorkspaceViewComparisonData a, WorkspaceViewComparisonData b)
         {
-            var nodeData = new Dictionary<string, Dictionary<string, object>>();
-            foreach (var d in wcd1.NodeDataMap)
+            //first compare the model data
+            serializationTestUtils.CompareWorkspacesDifferentGuids(a, b, this.modelsGuidToIdMap);
+
+            Assert.IsTrue(Math.Abs(a.X - b.X) < .00001, "The workspaces don't have the same X offset.");
+            Assert.IsTrue(Math.Abs(a.X - b.X) < .00001, "The workspaces don't have the same Y offset.");
+            Assert.IsTrue(Math.Abs(a.Zoom - b.Zoom) < .00001, "The workspaces don't have the same Zoom.");
+            Assert.AreEqual(a.Camera, b.Camera);
+            Assert.AreEqual(a.Guid, b.Guid);
+
+            Assert.AreEqual(a.NodeViewCount, b.NodeViewCount, "The workspaces don't have the same number of node views.");
+            Assert.AreEqual(a.ConnectorViewCount, b.ConnectorViewCount, "The workspaces don't have the same number of connector views.");
+
+            Assert.AreEqual(a.AnnotationMap.Count, b.AnnotationMap.Count);
+
+            foreach (var annotationKVP in a.AnnotationMap)
             {
-                var t = wcd1.NodeTypeMap[d.Key];
-                var nodeDataDict = new Dictionary<string, object>();
-                nodeDataDict.Add("nodeType", t.ToString());
-                nodeDataDict.Add("portValues", d.Value);
-                nodeData.Add(d.Key.ToString(), nodeDataDict);
+                var valueA = annotationKVP.Value;
+                //convert the old guid to the new guid
+                var newGuid = GuidUtility.Create(GuidUtility.UrlNamespace, this.modelsGuidToIdMap[annotationKVP.Key]);
+                var valueB = b.AnnotationMap[newGuid];
+
+                Assert.AreEqual(valueA, valueB);
             }
 
-            var workspaceDataDict = new Dictionary<string, object>();
-            workspaceDataDict.Add("nodeData", nodeData);
-            workspaceDataDict.Add("executionDuration", executionDuration.TotalSeconds);
-
-            var dataMapStr = JsonConvert.SerializeObject(workspaceDataDict,
-                            new JsonSerializerSettings()
-                            {
-                                Formatting = Newtonsoft.Json.Formatting.Indented,
-                                ReferenceLoopHandling = ReferenceLoopHandling.Ignore
-                            });
-
-            var dataPath = filePathBase + ".data";
-            if (File.Exists(dataPath))
+            foreach (var kvp in a.NodeViewDataMap)
             {
-                File.Delete(dataPath);
+                var valueA = kvp.Value;
+                //convert the old guid to the new guid
+                var newGuid = GuidUtility.Create(GuidUtility.UrlNamespace, this.modelsGuidToIdMap[kvp.Key]);
+                var valueB = b.NodeViewDataMap[newGuid];
+
+                Assert.AreEqual(valueA, valueB,
+                string.Format("Node View Data:{0} value, {1} is not equal to {2}",
+                a.NodeViewDataMap[kvp.Key].Name, valueA, valueB));
             }
-            File.WriteAllText(dataPath, dataMapStr);
         }
 
 
@@ -766,7 +726,7 @@ namespace DynamoCoreWpfTests
                 "JsonWithView",
                 ConvertCurrentWorkspaceViewToJsonAndSave,
                 CompareWorkspaceViews,
-                SaveWorkspaceViewComparisonData);
+                serializationTestUtils.SaveWorkspaceComparisonData);
         }
 
         /// <summary>
@@ -785,8 +745,8 @@ namespace DynamoCoreWpfTests
             DoWorkspaceOpenAndCompareView(filePath,
                 "JsonWithView_nonGuidIds",
                 ConvertCurrentWorkspaceViewToNonGuidJsonAndSave,
-                CompareWorkspacesDifferentGuids,
-                SaveWorkspaceComparisonDataWithNonGuidIds);
+                CompareWorkspaceViewsDifferentGuids,
+                serializationTestUtils.SaveWorkspaceComparisonDataWithNonGuidIds);
         }
 
         [Test]
@@ -797,7 +757,7 @@ namespace DynamoCoreWpfTests
                 "JsonWithView", 
                 ConvertCurrentWorkspaceViewToJsonAndSave,
                 CompareWorkspaceViews,
-                SaveWorkspaceViewComparisonData);
+                serializationTestUtils.SaveWorkspaceComparisonData);
         }
 
         [Test]
@@ -808,7 +768,7 @@ namespace DynamoCoreWpfTests
                 "JsonWithView",
                 ConvertCurrentWorkspaceViewToJsonAndSave,
                 CompareWorkspaceViews,
-                SaveWorkspaceViewComparisonData);
+                serializationTestUtils.SaveWorkspaceComparisonData);
         }
 
         public object[] FindWorkspaces()
@@ -840,52 +800,23 @@ namespace DynamoCoreWpfTests
             }
         }
 
-        private class WorkspaceViewComparisonData
+        private class WorkspaceViewComparisonData : serializationTestUtils.WorkspaceComparisonData
         {
-            public Guid Guid { get; set; }
-            //this is a repeated property so we can verify results are the same as headless runs.
-            public Dictionary<Guid, Type> NodeTypeMap { get; set; }
-            //this is a repeated property so we can verify results are the same as headless runs.
-            public Dictionary<Guid, List<object>> NodeDataMap { get; set; }
-
             public int NodeViewCount { get; set; }
             public int ConnectorViewCount { get; set; }
             public Dictionary<Guid, NodeViewComparisonData> NodeViewDataMap { get; set; }
-            public Dictionary<Guid, int> InportCountMap { get; set; }
-            public Dictionary<Guid, int> OutportCountMap { get; set; }
-            public Dictionary<Guid, NodeInputData> InputsMap { get; set; }
             public Dictionary<Guid, ExtraAnnotationViewInfo> AnnotationMap { get; set; }
             public CameraData Camera { get; set; }
             public double X { get; set; }
             public double Y { get; set; }
             public double Zoom { get; set; }
 
-            public WorkspaceViewComparisonData(WorkspaceViewModel workspaceView, EngineController controller)
+            public WorkspaceViewComparisonData(WorkspaceViewModel workspaceView, EngineController controller):base(workspaceView.Model,controller)
             {
-                Guid = workspaceView.Model.Guid;
                 NodeViewCount = workspaceView.Nodes.Count();
                 ConnectorViewCount = workspaceView.Connectors.Count();
-
-                NodeTypeMap = new Dictionary<Guid, Type>();
-                NodeDataMap = new Dictionary<Guid, List<object>>();
-
                 NodeViewDataMap = new Dictionary<Guid, NodeViewComparisonData>();
                 AnnotationMap = new Dictionary<Guid, ExtraAnnotationViewInfo>();
-                InportCountMap = new Dictionary<Guid, int>();
-                OutportCountMap = new Dictionary<Guid, int>();
-                InputsMap = new Dictionary<Guid, NodeInputData>();
-
-
-                foreach (var n in workspaceView.Nodes.Select(x=>x.NodeModel))
-                {
-                    NodeTypeMap.Add(n.GUID, n.GetType());
-                    
-                    var portvalues = n.OutPorts.Select(p =>
-                        GetDataOfValue(n.GetValue(p.Index, controller))).ToList<object>();
-
-   
-                    NodeDataMap.Add(n.GUID, portvalues);
-                }
 
                 foreach (var annotation in workspaceView.Annotations)
                 {
@@ -900,17 +831,9 @@ namespace DynamoCoreWpfTests
 
                 foreach (var n in workspaceView.Nodes)
                 {
-
-                    //save input nodes to inputs block
-                    if (n.IsSetAsInput)
-                    {
-                        InputsMap.Add(n.NodeModel.GUID, n.NodeModel.InputData);
-                    }
-
                     NodeViewDataMap.Add(n.NodeModel.GUID, new NodeViewComparisonData
                     {
                         ShowGeometry = n.IsVisible,
-                        //TODO no dashes?
                         ID = n.NodeModel.GUID.ToString(),
                         Name = n.Name,
                         Excluded = n.IsFrozenExplicitly,
@@ -918,8 +841,6 @@ namespace DynamoCoreWpfTests
                         Y = n.Y,
 
                     });
-                    InportCountMap.Add(n.NodeModel.GUID, n.InPorts.Count);
-                    OutportCountMap.Add(n.NodeModel.GUID, n.OutPorts.Count);
                 }
 
                 X = workspaceView.X;
@@ -927,27 +848,6 @@ namespace DynamoCoreWpfTests
                 Zoom = workspaceView.Zoom;
                 Camera = workspaceView.Camera;
             }
-
-            private static object GetDataOfValue(ProtoCore.Mirror.MirrorData value)
-            {
-                if (value.IsCollection)
-                {
-                    return value.GetElements().Select(x => GetDataOfValue(x)).ToList<object>();
-                }
-
-                if (!value.IsPointer)
-                {
-                    var data = value.Data;
-
-                    if (data != null)
-                    {
-                        return data;
-                    }
-                }
-
-                return value.StringData;
-            }
-
         }
     }
 }
