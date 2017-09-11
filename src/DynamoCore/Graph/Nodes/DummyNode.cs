@@ -111,9 +111,7 @@ namespace Dynamo.Graph.Nodes
             GUID = new Guid(id);
 
             InputCount = inputCount;
-
-            // TODO, QNTM-1635: Loading from XML always has one output port, need to test multiple output ports
-            OutputCount = 1; //outputCount;
+            OutputCount = outputCount;
 
             string legacyName = "Unresolved";
             LegacyNodeName = legacyName;
