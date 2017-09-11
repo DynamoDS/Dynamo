@@ -621,7 +621,7 @@ namespace ProtoCore.Utils
                     {
                         warnings.Add(new WarningEntry
                         {
-                            Message = String.Format(Properties.Resources.VariableRedifinitionError, variable),
+                            Message = String.Format(Resources.VariableRecursiveReference, variable),
                         });
                     }
                 }
@@ -629,7 +629,7 @@ namespace ProtoCore.Utils
                 {
                     warnings.Add(new WarningEntry
                     {
-                        Message = String.Format(Properties.Resources.VariableRedifinitionError, variable),
+                        Message = String.Format(Resources.VariableRedifinitionError, variable),
                     });
                 }
             }

@@ -2466,7 +2466,16 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Variable {0} has been defined in this code block node, you cannot define a variable more than once..
+        ///   Looks up a localized string similar to Variable {0} is used in the same statement that you defined it. Recursive dependency is not allowed..
+        /// </summary>
+        public static string VariableRecursiveReference {
+            get {
+                return ResourceManager.GetString("VariableRecursiveReference", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Variable {0} has been defined in this code block node. You cannot define a variable more than once..
         /// </summary>
         public static string VariableRedifinitionError {
             get {
