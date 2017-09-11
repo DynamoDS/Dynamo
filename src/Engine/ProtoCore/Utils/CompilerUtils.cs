@@ -281,11 +281,10 @@ namespace ProtoCore.Utils
             List<AssociativeNode> comments;
             ParseUserCode(core, parseParams.OriginalCode, postfixGuid, out astNodes, out comments);
 
-            var errors = Check(astNodes);
-
             // Catch the syntax errors and errors for unsupported 
             // language constructs thrown by compile expression
-            parseParams.AppendErrors(errors);
+            var warnings = Check(astNodes);
+            parseParams.AppendWarnings(warnings);
 
             if (core.BuildStatus.ErrorCount > 0)
             {
@@ -542,9 +541,9 @@ namespace ProtoCore.Utils
         /// Check does some sanity check, e.g., if a variable is re-defined.
         /// </summary>
         /// <param name="asts"></param>
-        private static List<ErrorEntry> Check(IEnumerable<AssociativeNode> asts)
+        private static List<WarningEntry> Check(IEnumerable<AssociativeNode> asts)
         {
-            List<ErrorEntry> errors = new List<ErrorEntry>();
+            List<WarningEntry> errors = new List<WarningEntry>();
 
             HashSet<string> scope = new HashSet<string>();
             foreach (var node in asts)
@@ -569,7 +568,7 @@ namespace ProtoCore.Utils
                 }
                 else if (ident.ArrayDimensions == null)
                 {
-                    errors.Add(new ErrorEntry
+                    errors.Add(new WarningEntry
                     {
                         Message = String.Format(Properties.Resources.VariableRedifinitionError, variable),
                     });
