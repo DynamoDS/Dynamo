@@ -496,9 +496,6 @@ namespace Dynamo.Graph.Workspaces
             if (originalContent == null)
                 throw new ArgumentException("originalContent is not JSON compatible.");
 
-            // TODO, QNTM-1635: This will write out the original contents of the node replaced
-            //    by the dummy node. Need to determine if edits to dummy node
-            //    connections are required to be saved or not.
             originalContent.WriteTo(writer);
     }
 
