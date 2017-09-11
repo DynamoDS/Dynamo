@@ -1738,7 +1738,7 @@ namespace DynamoCoreWpfTests
             var cbn = GetNode("fc209d2f-1724-4485-bde4-92670802aaa3") as CodeBlockNodeModel;
             Assert.NotNull(cbn);
 
-            Assert.AreEqual(1, cbn.InPorts.Count);
+            Assert.AreEqual(2, cbn.InPorts.Count);
             Assert.AreEqual("b", cbn.InPorts[0].ToolTip);
         }
 
