@@ -770,20 +770,22 @@ namespace Dynamo.Tests
             int typeRank = (int)jObject.SelectToken("Nodes[1].Parameter.TypeRank");
             string defaultValue = (string)jObject.SelectToken("Nodes[1].Parameter.DefaultValue");
 
-            Assert.IsTrue(concreteType == "Dynamo.Graph.Nodes.CustomNodes.Symbol, DynamoCore");
+            string type = cws.Nodes.Where(node => node.GUID.ToString("N") == "4b3ef2466ef649ea95db607b1f083d0c").ToArray().First().GetType().ToString();
+            Assert.IsTrue(concreteType.Contains(type));
             Assert.IsTrue(name == "center");
             Assert.IsTrue(typeName == "Autodesk.DesignScript.Geometry.Point");
             Assert.IsTrue(typeRank == 0);
             Assert.IsTrue(defaultValue == "Autodesk.DesignScript.Geometry.Point.ByCoordinates(10, 10, 10)");
 
             // check second input defaults
+            type = cws.Nodes.Where(node => node.GUID.ToString("N") == "e2efe8b186cd477995f6fb4cf28038a5").ToArray().First().GetType().ToString();
             concreteType = (string)jObject.SelectToken("Nodes[2].ConcreteType");
             name = (string)jObject.SelectToken("Nodes[2].Parameter.Name");
             typeName = (string)jObject.SelectToken("Nodes[2].Parameter.TypeName");
             typeRank = (int)jObject.SelectToken("Nodes[2].Parameter.TypeRank");
             defaultValue = (string)jObject.SelectToken("Nodes[2].Parameter.DefaultValue");
 
-            Assert.IsTrue(concreteType == "Dynamo.Graph.Nodes.CustomNodes.Symbol, DynamoCore");
+            Assert.IsTrue(concreteType.Contains(type));
             Assert.IsTrue(name == "radius");
             Assert.IsTrue(typeName == "double");
             Assert.IsTrue(typeRank == 0);
@@ -811,20 +813,22 @@ namespace Dynamo.Tests
             int typeRank = (int)jObject.SelectToken("Nodes[1].Parameter.TypeRank");
             string defaultValue = (string)jObject.SelectToken("Nodes[1].Parameter.DefaultValue");
 
-            Assert.IsTrue(concreteType == "Dynamo.Graph.Nodes.CustomNodes.Symbol, DynamoCore");
+            string type = cws.Nodes.Where(node => node.GUID.ToString("N") == "4b3ef2466ef649ea95db607b1f083d0c").ToArray().First().GetType().ToString();
+            Assert.IsTrue(concreteType.Contains(type));
             Assert.IsTrue(name == "center");
             Assert.IsTrue(typeName == "Autodesk.DesignScript.Geometry.Point");
             Assert.IsTrue(typeRank == 0);
             Assert.IsTrue(defaultValue == "Autodesk.DesignScript.Geometry.Point.ByCoordinates(10, 10, 10)");
 
             // check second input defaults
+            type = cws.Nodes.Where(node => node.GUID.ToString("N") == "e2efe8b186cd477995f6fb4cf28038a5").ToArray().First().GetType().ToString();
             concreteType = (string)jObject.SelectToken("Nodes[2].ConcreteType");
             name = (string)jObject.SelectToken("Nodes[2].Parameter.Name");
             typeName = (string)jObject.SelectToken("Nodes[2].Parameter.TypeName");
             typeRank = (int)jObject.SelectToken("Nodes[2].Parameter.TypeRank");
             defaultValue = (string)jObject.SelectToken("Nodes[2].Parameter.DefaultValue");
 
-            Assert.IsTrue(concreteType == "Dynamo.Graph.Nodes.CustomNodes.Symbol, DynamoCore");
+            Assert.IsTrue(concreteType.Contains(type));
             Assert.IsTrue(name == "radius");
             Assert.IsTrue(typeName == "double");
             Assert.IsTrue(typeRank == 0);
