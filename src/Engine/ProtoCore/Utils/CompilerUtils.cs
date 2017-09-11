@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using ProtoCore.BuildData;
+using ProtoCore.SyntaxAnalysis;
 
 namespace ProtoCore.Utils
 {
@@ -537,13 +538,60 @@ namespace ProtoCore.Utils
             return result;
         }
 
+        internal class VariableFinder : AssociativeAstVisitor
+        {
+            private string variable;
+            public bool Found { get; private set; }
+
+            public VariableFinder(string variable)
+            {
+                this.variable = variable;
+            }
+
+            public override bool VisitIdentifierNode(IdentifierNode node)
+            {
+                if (node.Name == variable)
+                {
+                    Found = true;
+                    return true;
+                }
+
+                if (node.ArrayDimensions == null)
+                {
+                    return false;
+                }
+
+                return node.ArrayDimensions.Accept(this);
+            }
+
+            public override bool VisitIdentifierListNode(IdentifierListNode node)
+            {
+                if (node.LeftNode is IdentifierNode || node.LeftNode is IdentifierListNode)
+                {
+                    if (node.RightNode is FunctionCallNode || node.RightNode is IdentifierNode)
+                    {
+                        node.LeftNode.Accept(this);
+
+                        if (!(node.RightNode is IdentifierNode))
+                        {
+                            node.RightNode.Accept(this);
+                        }
+
+                        return true;
+                    }
+                }
+
+                return base.VisitIdentifierListNode(node);
+            }
+        }
+
         /// <summary>
         /// Check does some sanity check, e.g., if a variable is re-defined.
         /// </summary>
         /// <param name="asts"></param>
         private static List<WarningEntry> Check(IEnumerable<AssociativeNode> asts)
         {
-            List<WarningEntry> errors = new List<WarningEntry>();
+            List<WarningEntry> warnings = new List<WarningEntry>();
 
             HashSet<string> scope = new HashSet<string>();
             foreach (var node in asts)
@@ -565,17 +613,28 @@ namespace ProtoCore.Utils
                 if (!scope.Contains(variable))
                 {
                     scope.Add(variable);
+
+                    VariableFinder finder = new VariableFinder(variable);
+                    bnode.RightNode.Accept(finder);
+
+                    if (finder.Found) 
+                    {
+                        warnings.Add(new WarningEntry
+                        {
+                            Message = String.Format(Properties.Resources.VariableRedifinitionError, variable),
+                        });
+                    }
                 }
                 else if (ident.ArrayDimensions == null)
                 {
-                    errors.Add(new WarningEntry
+                    warnings.Add(new WarningEntry
                     {
                         Message = String.Format(Properties.Resources.VariableRedifinitionError, variable),
                     });
                 }
             }
 
-            return errors;
+            return warnings;
         }
     }
 }
