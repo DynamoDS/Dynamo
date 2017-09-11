@@ -433,6 +433,9 @@ namespace DynamoCoreWpfTests
 
     class JSONSerializationTests : DynamoViewModelUnitTest
     {
+        public static string jsonNonGuidFolderName = "jsonWithView_nonGuidIds";
+        public static string jsonFolderName = "jsonWithView";
+
         private TimeSpan lastExecutionDuration = new TimeSpan();
         private Dictionary<Guid, string> modelsGuidToIdMap = new Dictionary<Guid, string>();
 
@@ -537,7 +540,7 @@ namespace DynamoCoreWpfTests
             Assert.IsNotNullOrEmpty(jo.ToString());
 
             var tempPath = Path.GetTempPath();
-            var jsonFolder = Path.Combine(tempPath, "JsonWithView");
+            var jsonFolder = Path.Combine(tempPath, jsonFolderName);
 
             if (!System.IO.Directory.Exists(jsonFolder))
             {
@@ -570,7 +573,7 @@ namespace DynamoCoreWpfTests
             Assert.IsNotNullOrEmpty(json);
 
             var tempPath = Path.GetTempPath();
-            var jsonFolder = Path.Combine(tempPath, "JsonWithView_nonGuidIds");
+            var jsonFolder = Path.Combine(tempPath, jsonNonGuidFolderName);
 
             if (!System.IO.Directory.Exists(jsonFolder))
             {
@@ -653,6 +656,8 @@ namespace DynamoCoreWpfTests
                 //convert the old guid to the new guid
                 var newGuid = GuidUtility.Create(GuidUtility.UrlNamespace, this.modelsGuidToIdMap[kvp.Key]);
                 var valueB = b.NodeViewDataMap[newGuid];
+                //set the id explicitly since we know it will have changed and should be this id.
+                valueB.ID = newGuid.ToString();
 
                 Assert.AreEqual(valueA, valueB,
                 string.Format("Node View Data:{0} value, {1} is not equal to {2}",
@@ -669,8 +674,8 @@ namespace DynamoCoreWpfTests
 
             //Clear Temp directory folders before start of the new serialization test run
             var tempPath = Path.GetTempPath();
-            var jsonFolder = Path.Combine(tempPath, "JsonWithView");
-            var jsonNonGuidFolder = Path.Combine(tempPath, "JsonWithView_nonGuidIds");
+            var jsonFolder = Path.Combine(tempPath, jsonFolderName);
+            var jsonNonGuidFolder = Path.Combine(tempPath,  jsonNonGuidFolderName);
 
             //Try and delete all the files from the previous run. 
             //If there's an error in deleting files, the tests should countinue
@@ -723,7 +728,7 @@ namespace DynamoCoreWpfTests
         public void SerializationTest(string filePath)
         {
             DoWorkspaceOpenAndCompareView(filePath,
-                "JsonWithView",
+               jsonFolderName,
                 ConvertCurrentWorkspaceViewToJsonAndSave,
                 CompareWorkspaceViews,
                 serializationTestUtils.SaveWorkspaceComparisonData);
@@ -743,7 +748,7 @@ namespace DynamoCoreWpfTests
         {
             modelsGuidToIdMap.Clear();
             DoWorkspaceOpenAndCompareView(filePath,
-                "JsonWithView_nonGuidIds",
+               jsonNonGuidFolderName,
                 ConvertCurrentWorkspaceViewToNonGuidJsonAndSave,
                 CompareWorkspaceViewsDifferentGuids,
                 serializationTestUtils.SaveWorkspaceComparisonDataWithNonGuidIds);
@@ -754,7 +759,7 @@ namespace DynamoCoreWpfTests
         {
             var customNodeTestPath = Path.Combine(TestDirectory, @"core\CustomNodes\TestAdd.dyn");
             DoWorkspaceOpenAndCompareView(customNodeTestPath,
-                "JsonWithView", 
+               jsonFolderName, 
                 ConvertCurrentWorkspaceViewToJsonAndSave,
                 CompareWorkspaceViews,
                 serializationTestUtils.SaveWorkspaceComparisonData);
@@ -765,7 +770,7 @@ namespace DynamoCoreWpfTests
         {
             var customNodeTestPath = Path.Combine(TestDirectory, @"core\serialization\serialization.dyn");
             DoWorkspaceOpenAndCompareView(customNodeTestPath,
-                "JsonWithView",
+                jsonFolderName,
                 ConvertCurrentWorkspaceViewToJsonAndSave,
                 CompareWorkspaceViews,
                 serializationTestUtils.SaveWorkspaceComparisonData);

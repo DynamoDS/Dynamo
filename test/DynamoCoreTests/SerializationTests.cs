@@ -437,6 +437,9 @@ namespace Dynamo.Tests
     [TestFixture, Category("Serialization")]
     public class SerializationTests : DynamoModelTestBase
     {
+        public static string jsonNonGuidFolderName = "json_nonGuidIds";
+        public static string jsonFolderName = "json";
+
         private TimeSpan lastExecutionDuration = new TimeSpan();
         private Dictionary<Guid, string> modelsGuidToIdMap = new Dictionary<Guid, string>();
 
@@ -456,8 +459,8 @@ namespace Dynamo.Tests
             
             //Clear Temp directory folders before start of the new serialization test run
             var tempPath = Path.GetTempPath();
-            var jsonFolder = Path.Combine(tempPath, "json");
-            var jsonNonGuidFolder = Path.Combine(tempPath, "jsonNonGuid");
+            var jsonFolder = Path.Combine(tempPath, jsonFolderName);
+            var jsonNonGuidFolder = Path.Combine(tempPath, jsonNonGuidFolderName);
 
             //Try and delete all the files from the previous run. 
             //If there's an error in deleting files, the tests should countinue
@@ -534,7 +537,7 @@ namespace Dynamo.Tests
         [Test, TestCaseSource("FindWorkspaces")]
         public void SerializationTest(string filePath)
         {
-            DoWorkspaceOpenAndCompare(filePath, "json", ConvertCurrentWorkspaceToJsonAndSave, 
+            DoWorkspaceOpenAndCompare(filePath, jsonFolderName, ConvertCurrentWorkspaceToJsonAndSave, 
                 serializationTestUtils.CompareWorkspaceModels,
                 serializationTestUtils.SaveWorkspaceComparisonData);
         }
@@ -552,7 +555,7 @@ namespace Dynamo.Tests
         public void SerializationNonGuidIdsTest(string filePath)
         {
             modelsGuidToIdMap.Clear();
-            DoWorkspaceOpenAndCompare(filePath, "json_nonGuidIds", 
+            DoWorkspaceOpenAndCompare(filePath,jsonNonGuidFolderName, 
                 ConvertCurrentWorkspaceToNonGuidJsonAndSave,
                 serializationTestUtils.CompareWorkspacesDifferentGuids,
                 serializationTestUtils.SaveWorkspaceComparisonDataWithNonGuidIds);
@@ -732,7 +735,7 @@ namespace Dynamo.Tests
             Assert.IsNotNullOrEmpty(json);
 
             var tempPath = Path.GetTempPath();
-            var jsonFolder = Path.Combine(tempPath, "json");
+            var jsonFolder = Path.Combine(tempPath, jsonFolderName);
 
             if (!Directory.Exists(jsonFolder))
             {
@@ -758,7 +761,7 @@ namespace Dynamo.Tests
             Assert.IsNotNullOrEmpty(json);
 
             var tempPath = Path.GetTempPath();
-            var jsonFolder = Path.Combine(tempPath, "jsonNonGuid");
+            var jsonFolder = Path.Combine(tempPath, jsonNonGuidFolderName);
 
             if (!Directory.Exists(jsonFolder))
             {
