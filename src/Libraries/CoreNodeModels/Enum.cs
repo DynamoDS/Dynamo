@@ -63,13 +63,15 @@ namespace CoreNodeModels
     /// </summary>
     public abstract class AllChildrenOfType<T> : DSDropDownBase
     {
-        protected AllChildrenOfType() : base("Types")
+        private const string outputName = "Types";
+
+        protected AllChildrenOfType() : base(outputName)
         {
             RegisterAllPorts();
         }
 
         [JsonConstructor]
-        protected AllChildrenOfType(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base("Types", inPorts, outPorts)
+        protected AllChildrenOfType(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(outputName, inPorts, outPorts)
         {
         }
 
