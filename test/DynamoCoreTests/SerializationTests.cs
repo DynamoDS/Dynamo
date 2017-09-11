@@ -17,6 +17,67 @@ using Newtonsoft.Json.Linq;
 
 namespace Dynamo.Tests
 {
+
+    /// <summary>
+    /// Test helpers we can share between core and view json serialization tests.
+    /// </summary>
+    public static class serializationTestUtils
+    {
+        /// <summary>
+        /// replace the ids of models in the workspaceModel with non guids inside the given json string
+        /// </summary>
+        /// <param name="json"> the given json string to do replacements in</param>
+        /// <param name="model"> the workspace the json represents</param>
+        /// <param name="modelsGuidToIdMap"> a map of the old guids to the new ids we are replacing them with </param>
+        /// <returns> returns a new json string without guids where applicable </returns>
+        public static string replaceModelIdsWithNonGuids(string json, WorkspaceModel model, Dictionary<Guid,string> modelsGuidToIdMap)
+        {
+            var idcount = 0;
+
+            //alter the output json so that all node ids are not guids
+            foreach (var nodeId in model.Nodes.Select(x => x.GUID))
+            {
+                modelsGuidToIdMap.Add(nodeId, idcount.ToString());
+                json = json.Replace(nodeId.ToString("N"), idcount.ToString());
+                idcount = idcount + 1;
+            }
+
+            //alter the output json so that all port ids are not guids
+            foreach (var node in model.Nodes)
+            {
+                foreach (var port in node.InPorts)
+                {
+                    modelsGuidToIdMap.Add(port.GUID, idcount.ToString());
+                    json = json.Replace(port.GUID.ToString("N"), idcount.ToString());
+                    idcount = idcount + 1;
+                }
+
+                foreach (var port in node.OutPorts)
+                {
+                    modelsGuidToIdMap.Add(port.GUID, idcount.ToString());
+                    json = json.Replace(port.GUID.ToString("N"), idcount.ToString());
+                    idcount = idcount + 1;
+                }
+            }
+            //alter the output json so that all connectorModel ids are not guids
+            foreach (var connector in model.Connectors)
+            {
+                modelsGuidToIdMap.Add(connector.GUID, idcount.ToString());
+                json = json.Replace(connector.GUID.ToString("N"), idcount.ToString());
+                idcount = idcount + 1;
+            }
+            //alter the output json so that all annotationModel ids are not guids
+            foreach (var annotation in model.Annotations)
+            {
+                modelsGuidToIdMap.Add(annotation.GUID, idcount.ToString());
+                json = json.Replace(annotation.GUID.ToString("N"), idcount.ToString());
+                idcount = idcount + 1;
+            }
+
+            return json;
+        }
+    }
+
     /* The Serialization tests compare the results of a workspace opened and executed from its
      * original .dyn format, to one converted to json, deserialized and executed. In the process,
      * the tests save the following files:
@@ -654,47 +715,8 @@ namespace Dynamo.Tests
         private string ConvertCurrentWorkspaceToNonGuidJsonAndSave(DynamoModel model, string filePathBase)
         {
             var json = model.CurrentWorkspace.ToJson(model.EngineController);
-            var idcount = 0;
 
-            //alter the output json so that all node ids are not guids
-            foreach (var nodeId in model.CurrentWorkspace.Nodes.Select(x => x.GUID))
-            {
-                modelsGuidToIdMap.Add(nodeId, idcount.ToString());
-                json = json.Replace(nodeId.ToString("N"), idcount.ToString());
-                idcount = idcount + 1;
-            }
-
-            //alter the output json so that all port ids are not guids
-            foreach (var node in model.CurrentWorkspace.Nodes)
-            {
-                foreach (var port in node.InPorts)
-                {
-                    modelsGuidToIdMap.Add(port.GUID, idcount.ToString());
-                    json = json.Replace(port.GUID.ToString("N"), idcount.ToString());
-                    idcount = idcount + 1;
-                }
-
-                foreach (var port in node.OutPorts)
-                {
-                    modelsGuidToIdMap.Add(port.GUID, idcount.ToString());
-                    json = json.Replace(port.GUID.ToString("N"), idcount.ToString());
-                    idcount = idcount + 1;
-                }
-            }
-            //alter the output json so that all connectorModel ids are not guids
-            foreach (var connector in model.CurrentWorkspace.Connectors)
-            {
-                modelsGuidToIdMap.Add(connector.GUID, idcount.ToString());
-                json = json.Replace(connector.GUID.ToString("N"), idcount.ToString());
-                idcount = idcount + 1;
-            }
-            //alter the output json so that all annotationModel ids are not guids
-            foreach (var annotation in model.CurrentWorkspace.Annotations)
-            {
-                modelsGuidToIdMap.Add(annotation.GUID, idcount.ToString());
-                json = json.Replace(annotation.GUID.ToString("N"), idcount.ToString());
-                idcount = idcount + 1;
-            }
+           json = serializationTestUtils.replaceModelIdsWithNonGuids(json, model.CurrentWorkspace, modelsGuidToIdMap);
 
             Assert.IsNotNullOrEmpty(json);
 

@@ -83,6 +83,7 @@ namespace Dynamo.Graph.Workspaces
       public IEnumerable<string> Nodes;
       public double FontSize;
       public string Background;
+      public string Id;
 
         // TODO, QNTM-1099: Determine if these are required
         // public string Id;
@@ -1616,8 +1617,7 @@ namespace Dynamo.Graph.Workspaces
 
             foreach (ExtraAnnotationViewInfo annotationViewInfo in workspaceViewInfo.Annotations)
             {
-                // TODO, QNTM-1099: Determine where to set the ID for annotations
-                // Guid guidValue = IdToGuidConverter(annotationInfo.Id);
+                
 
                 // Create a collection of nodes in the given annotation
                 var nodes = new List<NodeModel>();
@@ -1651,10 +1651,13 @@ namespace Dynamo.Graph.Workspaces
                   notes.Add(noteModel);
                 }
 
+                var annotationGuidValue = IdToGuidConverter(annotationViewInfo.Id);
                 var annotationModel = new AnnotationModel(nodes, notes);
                 annotationModel.AnnotationText = annotationViewInfo.Title;
                 annotationModel.FontSize = annotationViewInfo.FontSize;
                 annotationModel.Background = annotationViewInfo.Background;
+                annotationModel.GUID = annotationGuidValue;
+
                 this.AddNewAnnotation(annotationModel);
             }
 
