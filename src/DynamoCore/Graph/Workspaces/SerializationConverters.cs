@@ -464,16 +464,6 @@ namespace Dynamo.Graph.Workspaces
     /// </summary>
     public class DummyNodeWriteConverter : JsonConverter
     {
-        //private EngineController engine;
-
-        public DummyNodeWriteConverter(EngineController engine = null)
-        {
-            //if (engine != null)
-            //{
-            //    this.engine = engine;
-            //}
-        }
-
         public override bool CanConvert(Type objectType)
         {
             return typeof(DummyNode).IsAssignableFrom(objectType);
