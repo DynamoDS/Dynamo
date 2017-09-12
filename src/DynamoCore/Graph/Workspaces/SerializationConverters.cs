@@ -459,7 +459,8 @@ namespace Dynamo.Graph.Workspaces
     }
 
     /// <summary>
-    /// WorkspaceWriteConverter is used for serializing Workspaces to JSON.
+    /// DummyNodeWriteConverter is used for serializing DummyNodes to JSON.
+    /// Note that the DummyNode objects serialize as their original content and not as a DummyNode.
     /// </summary>
     public class DummyNodeWriteConverter : JsonConverter
     {
