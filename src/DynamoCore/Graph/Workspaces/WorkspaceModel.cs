@@ -98,7 +98,8 @@ namespace Dynamo.Graph.Workspaces
         public override bool Equals(object obj)
         {
             var other = obj as ExtraAnnotationViewInfo;
-            return other != null && 
+            return other != null &&
+                this.Id == other.Id &&
                 this.Title == other.Title &&
                 this.Nodes.SequenceEqual(other.Nodes) &&
                 this.FontSize == other.FontSize &&

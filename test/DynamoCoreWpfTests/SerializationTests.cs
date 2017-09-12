@@ -646,6 +646,12 @@ namespace DynamoCoreWpfTests
                 //convert the old guid to the new guid
                 var newGuid = GuidUtility.Create(GuidUtility.UrlNamespace, this.modelsGuidToIdMap[annotationKVP.Key]);
                 var valueB = b.AnnotationMap[newGuid];
+                //set the id explicitly since we know it will have changed and should be this id.
+                valueB.Id = valueA.Id.ToString();
+                //check at least that number of referenced nodes is correct.
+                Assert.AreEqual(valueB.Nodes.Count(), valueA.Nodes.Count());
+                //ignore this list because all node ids will have changed.
+                valueB.Nodes = valueA.Nodes;
 
                 Assert.AreEqual(valueA, valueB);
             }
@@ -657,7 +663,7 @@ namespace DynamoCoreWpfTests
                 var newGuid = GuidUtility.Create(GuidUtility.UrlNamespace, this.modelsGuidToIdMap[kvp.Key]);
                 var valueB = b.NodeViewDataMap[newGuid];
                 //set the id explicitly since we know it will have changed and should be this id.
-                valueB.ID = newGuid.ToString();
+                valueB.ID = valueA.ID.ToString();
 
                 Assert.AreEqual(valueA, valueB,
                 string.Format("Node View Data:{0} value, {1} is not equal to {2}",
@@ -830,7 +836,8 @@ namespace DynamoCoreWpfTests
                         Background = annotation.Background.ToString(),
                         FontSize = annotation.FontSize,
                         Nodes = annotation.Nodes.Select(x => x.GUID.ToString()),
-                        Title = annotation.AnnotationText
+                        Title = annotation.AnnotationText,
+                        Id = annotation.AnnotationModel.GUID.ToString()
                     });
                 }
 
