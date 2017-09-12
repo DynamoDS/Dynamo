@@ -281,19 +281,15 @@ namespace ProtoCore.Utils
             List<AssociativeNode> astNodes;
             List<AssociativeNode> comments;
             ParseUserCode(core, parseParams.OriginalCode, postfixGuid, out astNodes, out comments);
+            parseParams.AppendErrors(core.BuildStatus.Errors);
+            parseParams.AppendWarnings(core.BuildStatus.Warnings);
 
             // Catch the syntax errors and errors for unsupported 
             // language constructs thrown by compile expression
-            var warnings = Check(astNodes);
-            parseParams.AppendWarnings(warnings);
+            var errors = Check(astNodes);
+            parseParams.AppendErrors(errors);
 
-            if (core.BuildStatus.ErrorCount > 0)
-            {
-                parseParams.AppendErrors(core.BuildStatus.Errors);
-                parseParams.AppendWarnings(core.BuildStatus.Warnings);
-            }
-
-            if (parseParams.Errors.Count() > 0 || parseParams.Warnings.Count() > 0)
+            if (parseParams.Errors.Count() > 0)
             {
                 return false;
             }
@@ -589,9 +585,9 @@ namespace ProtoCore.Utils
         /// Check does some sanity check, e.g., if a variable is re-defined.
         /// </summary>
         /// <param name="asts"></param>
-        private static List<WarningEntry> Check(IEnumerable<AssociativeNode> asts)
+        private static List<ErrorEntry> Check(IEnumerable<AssociativeNode> asts)
         {
-            List<WarningEntry> warnings = new List<WarningEntry>();
+            var errors = new List<ErrorEntry>();
 
             HashSet<string> scope = new HashSet<string>();
             foreach (var node in asts)
@@ -619,7 +615,7 @@ namespace ProtoCore.Utils
 
                     if (finder.Found) 
                     {
-                        warnings.Add(new WarningEntry
+                        errors.Add(new ErrorEntry
                         {
                             Message = String.Format(Resources.VariableRecursiveReference, variable),
                         });
@@ -627,14 +623,14 @@ namespace ProtoCore.Utils
                 }
                 else if (ident.ArrayDimensions == null)
                 {
-                    warnings.Add(new WarningEntry
+                    errors.Add(new ErrorEntry
                     {
                         Message = String.Format(Resources.VariableRedifinitionError, variable),
                     });
                 }
             }
 
-            return warnings;
+            return errors;
         }
     }
 }
