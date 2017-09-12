@@ -1559,34 +1559,6 @@ v4 = fun ({Integer.ValueCtor(0), Integer.ValueCtor(1)});
         }
 
         [Test]
-        [Category("DSDefinedClass_Ported")]
-        [Category("SmokeTest")]
-        public void TestOverloadDispatchWithTypeConversion()
-        {
-            String code =
-@"
-def foo(val : double)
-{
-    return = val;
-}
-def foo(arr : double[])
-{
-    return = -123;
-}
-def sqr(val : int)
-{
-    return = val * val;
-}
-
-arr = 5..25;
-s = foo(arr);
-";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            TestFrameWork fx = new TestFrameWork();
-            TestFrameWork.Verify(mirror, "s", -123);
-        }
-
-        [Test]
         [Category("SmokeTest")]
         public void T09_Defect_1456568_Replication_On_Operators()
         {
@@ -1713,86 +1685,6 @@ xdata = { 1.5, 2 };
         [Test]
         [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
-        public void T57_Defect_1467004_Replication_With_Method_Overload()
-        {
-            String code =
-                            @"
-                            def foo(val : double)
-                            {
-                                return = val;
-                            }
-                            def foo(arr : double[])
-                            {
-                                return = -123;
-                            }
-                            
-                            arr = 5..25;
-                            s = foo(arr); 
-                            ";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("s", -123);
-        }
-
-        [Test]
-        public void T57_Defect_1467004_Replication_With_Method_Overload_2()
-        {
-            String code =
-                            @"
-                                def foo(val : double)
-                                {
-                                    return = val;
-                                }
-                                def foo(arr : double[])
-                                {
-                                    return = -123;
-                                }
-                                arr = 5..25;
-                                s = test.foo(arr); 
-                            ";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            // Assert.Fail("1467091 - Sprint24 : rev 2733 : instance method resolution is too tolerant and passing even when the instance is not defined");
-            Object n1 = null;
-            thisTest.Verify("s", n1);
-        }
-
-        [Test]
-        [Category("Replication")]
-        [Category("Failure")]
-        public void T57_Defect_1467004_Replication_With_Method_Overload_3()
-        {
-            String code =
-                            @"
-                                def foo(val : int[])
-                                {
-                                    return = 1;
-                                }
-                                def foo(val : double[])
-                                {
-                                    return = 2;
-                                }
-                                def foo(val : int)
-                                {
-                                    return = 3;
-                                }
-                                def foo(arr : double)
-                                {
-                                    return = 4;
-                                }
-                                arr = { 3, 0, 5.5, 3 } ;
-                                s = foo(arr); 
-                            ";
-            //string errmsg = "1467090 - Sprint24 : rev 2733 : Replication and Method resolution issue : type conversion should be of lower precedence than exact match";
-            string errmsg = "MAGN-4098 Replication vs function override with different types - what is the correct ";
-
-            ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            Object[] v1 = new Object[] { 3, 3, 4, 3 };
-            thisTest.Verify("s", v1);
-
-        }
-
-        [Test]
-        [Category("DSDefinedClass_Ported")]
-        [Category("SmokeTest")]
         public void T57_Defect_1467004_Replication_With_Method_Overload_4()
         {
             String code =
@@ -1840,15 +1732,6 @@ xdata = { 1.5, 2 };
                                 {
                                     return = 2;
                                 }
-                                def foo(val : A)
-                                {
-                                    return = 3;
-                                }
-                                def foo(val : B)
-                                {
-                                    return = 4;
-                                }
-                                
                                 arr = { a1, b1 } ;
                                 s = foo(arr); 
                             ";

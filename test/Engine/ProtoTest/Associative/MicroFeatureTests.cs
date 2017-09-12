@@ -486,26 +486,6 @@ b = S.a;
             thisTest.Verify("b",2);
         }
 
-
-        [Test]
-        [Category("DSDefinedClass_Ported")]
-        public void TestStaticMethodResolution()
-        {
-            string code = @"
-	        def foo(a : int)
-	        {
-		        return = 1;
-	        }
-	        def foo(a : int[])
-	        {
-		        return = 2;
-            }
-            c = {1,2,3,4};
-            d = foo(c);";
-            thisTest.RunScriptSource(code);
-            thisTest.Verify("d", 2);
-        }
-
         [Test]
         public void TestTemporaryArrayIndexing01()
         {
@@ -3713,6 +3693,28 @@ r = foo(3);
             thisTest.RunScriptSource(code);
             thisTest.VerifyBuildWarningCount(0);
             thisTest.Verify("r", 6);
+        }
+
+        [Test]
+        public void TestReturnStatement15()
+        {
+            string code = @"
+[Imperative] {
+    return 6;
+}";
+            thisTest.RunScriptSource(code);
+            thisTest.VerifyBuildWarningCount(0);
+        }
+
+        [Test]
+        public void TestReturnStatement16()
+        {
+            string code = @"
+[Associative] {
+    return 6;
+}";
+            thisTest.RunScriptSource(code);
+            thisTest.VerifyBuildWarningCount(0);
         }
     }
 }
