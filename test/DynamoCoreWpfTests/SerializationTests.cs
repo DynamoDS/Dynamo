@@ -506,7 +506,6 @@ namespace DynamoCoreWpfTests
             //make sure we're opening the json here
             this.ViewModel.OpenCommand.Execute(filePathBase + ".dyn");
             var ws2 = ViewModel.CurrentSpaceViewModel;
-            //TODO make sure to run the second one.
             Assert.NotNull(ws2);
 
             dummyNodes = ws2.Nodes.Select(x => x.NodeModel).Where(n => n is DummyNode);
@@ -523,6 +522,20 @@ namespace DynamoCoreWpfTests
             var wcd2 = new WorkspaceViewComparisonData(ws2, this.ViewModel.EngineController);
 
             workspaceViewCompareFunction(wcd1, wcd2);
+
+            //TODO remove this after we merge notes and annotations -
+            //this is done here so we don't need to modify the workspaceComparison classes
+            //and it's simple to remove soon.
+            var index = 0;
+            foreach(var noteView in ws1.Notes)
+            {
+                var matchingNote = ws2.Notes[index];
+                Assert.IsTrue(noteView.Model.Text == matchingNote.Model.Text);
+                Assert.Less(Math.Abs(noteView.Model.X - matchingNote.Model.X),0001);
+                Assert.Less(Math.Abs(noteView.Model.Y - matchingNote.Model.Y), 0001);
+                index = index + 1;
+            }
+
         }
 
         private static string ConvertCurrentWorkspaceViewToJsonAndSave(DynamoViewModel viewModel, string filePathBase)
@@ -837,7 +850,13 @@ namespace DynamoCoreWpfTests
                         FontSize = annotation.FontSize,
                         Nodes = annotation.Nodes.Select(x => x.GUID.ToString()),
                         Title = annotation.AnnotationText,
-                        Id = annotation.AnnotationModel.GUID.ToString()
+                        Id = annotation.AnnotationModel.GUID.ToString(),
+                        Left = annotation.Left,
+                        Top = annotation.Top,
+                        Width = annotation.Width,
+                        Height = annotation.Height,
+                        InitialTop = annotation.AnnotationModel.InitialTop,
+                        TextBlockHeight = annotation.AnnotationModel.TextBlockHeight
                     });
                 }
 

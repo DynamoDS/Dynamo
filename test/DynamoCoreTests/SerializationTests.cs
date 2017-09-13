@@ -132,7 +132,8 @@ namespace Dynamo.Tests
                                 UseLevels = p.UseLevels,
                                 KeepListStructure = p.KeepListStructure,
                                 Level = p.Level,
-                                UsingDefaultValue = p.UsingDefaultValue
+                                UsingDefaultValue = p.UsingDefaultValue,
+                                Description = p.ToolTip
                             });
                     });
 
@@ -142,7 +143,7 @@ namespace Dynamo.Tests
                             new PortComparisonData
                             {
                                 ID = p.GUID.ToString(),
-
+                                Description = p.ToolTip
                             });
                     });
 
@@ -176,8 +177,8 @@ namespace Dynamo.Tests
         /// <summary>
         /// compare two workspace comparison objects that represent workspace models
         /// </summary>
-        /// <param name="a"></param>
-        /// <param name="b"></param>
+        /// <param name="a"> first workspace data to compare</param>
+        /// <param name="b">second workspace data to compare</param>
         public static void CompareWorkspaceModels(serializationTestUtils.WorkspaceComparisonData a, serializationTestUtils.WorkspaceComparisonData b, Dictionary<Guid,string> c = null)
         {
             var nodeDiff = a.NodeTypeMap.Except(b.NodeTypeMap);
@@ -284,6 +285,7 @@ namespace Dynamo.Tests
                 Assert.AreEqual(aPort.UseLevels, bPort.UseLevels);
                 Assert.AreEqual(aPort.KeepListStructure, bPort.KeepListStructure);
                 Assert.AreEqual(aPort.Level, bPort.Level);
+                Assert.AreEqual(aPort.Description, bPort.Description);
             }
 
             foreach (var kvp in a.NodeReplicationMap)
@@ -412,6 +414,7 @@ namespace Dynamo.Tests
             public bool KeepListStructure { get; set; }
             public int Level { get; set; }
             public bool UsingDefaultValue { get; set; }
+            public string Description { get; set; }
 
             public override bool Equals(object obj)
             {
@@ -420,7 +423,8 @@ namespace Dynamo.Tests
                     other.KeepListStructure == this.KeepListStructure &&
                     other.Level == this.Level &&
                     other.UseLevels == this.UseLevels &&
-                    other.UsingDefaultValue == this.UsingDefaultValue;
+                    other.UsingDefaultValue == this.UsingDefaultValue &&
+                    other.Description == this.Description;
             }
         }
     }

@@ -86,14 +86,13 @@ namespace Dynamo.Graph.Workspaces
       public string Id;
 
         // TODO, QNTM-1099: Determine if these are required
-        // public string Id;
-        // public double Left;
-        // public double Top;
-        // public double Width;
-        // public double Height;
-        // public double InitialTop;
-        // public double InitialHeight;
-        // public double TextBlockHeight;
+        public double Left;
+        public double Top;
+        public double Width;
+        public double Height;
+        public double InitialTop;
+        public double InitialHeight;
+        public double TextBlockHeight;
 
         public override bool Equals(object obj)
         {
@@ -103,7 +102,14 @@ namespace Dynamo.Graph.Workspaces
                 this.Title == other.Title &&
                 this.Nodes.SequenceEqual(other.Nodes) &&
                 this.FontSize == other.FontSize &&
-                this.Background == other.Background; 
+                this.Background == other.Background &&
+                //TODO try to get rid of these if possible
+                this.Left == other.Left &&
+                this.Top == other.Top &&
+                this.Width == other.Width &&
+                this.Height == other.Height &&
+                this.InitialTop == other.InitialTop &&
+                this.TextBlockHeight == other.TextBlockHeight;
         }
     }
 
