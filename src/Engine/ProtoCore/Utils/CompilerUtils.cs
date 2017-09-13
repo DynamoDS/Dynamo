@@ -293,7 +293,7 @@ namespace ProtoCore.Utils
             var warnings = Check(astNodes);
             parseParams.AppendWarnings(warnings);
 
-            parseParams.AppendParsedNodes(astNodes);
+            parseParams.AppendParsedNodes(astNodes.Where(n => !n.skipMe));
             parseParams.AppendComments(comments);
 
             // Compile the code to get the resultant unboundidentifiers  
@@ -618,6 +618,7 @@ namespace ProtoCore.Utils
                         {
                             Message = String.Format(Resources.VariableRecursiveReference, variable),
                         });
+                        node.skipMe = true;
                     }
                 }
                 else if (ident.ArrayDimensions == null)
@@ -626,6 +627,7 @@ namespace ProtoCore.Utils
                     {
                         Message = String.Format(Resources.VariableRedifinitionError, variable),
                     });
+                    node.skipMe = true;
                 }
             }
 
