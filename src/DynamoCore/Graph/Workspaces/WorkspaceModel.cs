@@ -85,7 +85,7 @@ namespace Dynamo.Graph.Workspaces
       public string Background;
       public string Id;
 
-        // TODO, QNTM-1099: Determine if these are required
+        // TODO, Determine if these are required
         public double Left;
         public double Top;
         public double Width;
@@ -93,6 +93,11 @@ namespace Dynamo.Graph.Workspaces
         public double InitialTop;
         public double InitialHeight;
         public double TextBlockHeight;
+
+        private bool tolerantDoubleCompare(double a, double b)
+        {
+            return Math.Abs(a - b) < .0001;
+        }
 
         public override bool Equals(object obj)
         {
@@ -102,14 +107,19 @@ namespace Dynamo.Graph.Workspaces
                 this.Title == other.Title &&
                 this.Nodes.SequenceEqual(other.Nodes) &&
                 this.FontSize == other.FontSize &&
-                this.Background == other.Background &&
+                this.Background == other.Background;
+
                 //TODO try to get rid of these if possible
-                this.Left == other.Left &&
-                this.Top == other.Top &&
-                this.Width == other.Width &&
-                this.Height == other.Height &&
-                this.InitialTop == other.InitialTop &&
-                this.TextBlockHeight == other.TextBlockHeight;
+                //needs investigation if we are okay letting them get 
+                //calculated at runtime. currently checking them will fail as we do
+                //not deserialize them.
+
+                //tolerantDoubleCompare(this.Left, other.Left) &&
+                //tolerantDoubleCompare(this.Top, other.Top) &&
+                //tolerantDoubleCompare(this.InitialTop, other.InitialTop);
+                //this.Width == other.Width &&
+                //this.Height == other.Height &&
+                //this.TextBlockHeight == other.TextBlockHeight;
         }
     }
 
