@@ -72,12 +72,10 @@ namespace ProtoCore.DSASM
         PUSH,
         PUSHBLOCK,      // Push construction block id in imperative code
         PUSHM,
-        PUSHW,
         PUSHDEP,        // Push symbols in left-hand-side identifier list in impertiave langauge block
         PUSHREPGUIDE,   // Push replicaion guide to the stack
         PUSHLEVEL,      // Push at-level to the stak
         POP,
-        POPW,
         POPM,
         POPREPGUIDES,   // Pop replication guides from stack and save to the core
 

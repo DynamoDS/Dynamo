@@ -14,7 +14,6 @@ namespace ProtoFFITests
         public ProtoCore.Core Setup()
         {
             ProtoCore.Core core = new ProtoCore.Core(new ProtoCore.Options());
-            core.Options.ExecutionMode = ProtoCore.ExecutionMode.Serial;
             core.Compilers.Add(ProtoCore.Language.Associative, new ProtoAssociative.Compiler(core));
             core.Compilers.Add(ProtoCore.Language.Imperative, new ProtoImperative.Compiler(core));
             DLLFFIHandler.Register(FFILanguage.CSharp, new CSModuleHelper());

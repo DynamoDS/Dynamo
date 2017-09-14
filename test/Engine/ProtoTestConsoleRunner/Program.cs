@@ -46,7 +46,6 @@ namespace ProtoTestConsoleRunner
             sw.Start();
 
             var opts = new Options();
-            opts.ExecutionMode = ExecutionMode.Serial;
             ProtoCore.Core core = new Core(opts);
             core.Compilers.Add(ProtoCore.Language.Associative, new ProtoAssociative.Compiler(core));
             core.Compilers.Add(ProtoCore.Language.Imperative, new ProtoImperative.Compiler(core));
@@ -72,7 +71,6 @@ namespace ProtoTestConsoleRunner
 
 
             var opts = new Options();
-            opts.ExecutionMode = ExecutionMode.Serial;
 #if DEBUG
             opts.DumpByteCode = true;
             opts.Verbose = true;

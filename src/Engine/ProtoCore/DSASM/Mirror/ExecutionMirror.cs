@@ -294,21 +294,6 @@ namespace ProtoCore.DSASM.Mirror
             ci = Constants.kInvalidIndex;
             int functionBlock = Constants.kGlobalScope;
 
-            if (runtimeCore.DebugProps.DebugStackFrameContains(DebugProperties.StackFrameFlagOptions.FepRun))
-            {
-                ci = runtimeCore.watchClassScope = rmem.CurrentStackFrame.ClassScope;
-                functionIndex = rmem.CurrentStackFrame.FunctionScope;
-                functionBlock = rmem.CurrentStackFrame.FunctionBlock;
-            }
-
-            // TODO Jun: 'block' is incremented only if there was no other block provided by the programmer
-            // This is only to address NUnit issues when retrieving a global variable
-            // Some predefined functions are hard coded in the AST so isSingleAssocBlock will never be true
-            //if (exe.isSingleAssocBlock)
-            //{
-            //    ++block;
-            //}
-
             int index = -1;
             if (ci != Constants.kInvalidIndex)
             {
@@ -494,43 +479,6 @@ namespace ProtoCore.DSASM.Mirror
             }
         }
 
-        public Obj GetWatchValue()
-        {
-            RuntimeCore runtimeCore = MirrorTarget.RuntimeCore;
-            int count = runtimeCore.watchStack.Count;
-            int n = runtimeCore.WatchSymbolList.FindIndex(x => { return string.Equals(x.name, Constants.kWatchResultVar); });
-
-            if (n < 0 || n >= count)
-            {
-                runtimeCore.WatchSymbolList.Clear();
-                return new Obj { Payload = null };
-            }
-
-            Obj retVal = null;
-            try
-            {
-                StackValue sv = runtimeCore.watchStack[n];
-                if (!sv.IsInvalid)
-                {
-                    retVal = Unpack(runtimeCore.watchStack[n], MirrorTarget.rmem.Heap, runtimeCore);
-                }
-                else
-                {
-                    retVal = new Obj { Payload = null };
-                }
-            }
-            catch
-            {
-                retVal = new Obj { Payload = null };
-            }
-            finally
-            {
-                runtimeCore.WatchSymbolList.Clear();
-            }
-
-            return retVal;
-        }
-        
         //
         //  1.	Get the graphnode given the varname
         //  2.	Get the sv of the symbol

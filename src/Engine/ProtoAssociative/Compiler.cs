@@ -27,24 +27,22 @@ namespace ProtoAssociative
             {
                 ProtoCore.CodeGen oldCodegen = core.assocCodegen;
 
-                if (ProtoCore.DSASM.InterpreterMode.Normal == core.Options.RunMode)
+                if ((core.IsParsingPreloadedAssembly || core.IsParsingCodeBlockNode) && parentBlock == null)
                 {
-                    if ((core.IsParsingPreloadedAssembly || core.IsParsingCodeBlockNode) && parentBlock == null)
+                    if (core.CodeBlockList.Count == 0)
                     {
-                        if (core.CodeBlockList.Count == 0)
-                        {
-                            core.assocCodegen = new ProtoAssociative.CodeGen(core, callContext, parentBlock);
-                        }
-                        else
-                        {
-                            // We reuse the existing toplevel CodeBlockList's for the procedureTable's 
-                            // by calling this overloaded constructor - pratapa
-                            core.assocCodegen = new ProtoAssociative.CodeGen(core);
-                        }
+                        core.assocCodegen = new ProtoAssociative.CodeGen(core, callContext, parentBlock);
                     }
                     else
-                        core.assocCodegen = new ProtoAssociative.CodeGen(core, callContext, parentBlock);
+                    {
+                        // We reuse the existing toplevel CodeBlockList's for the procedureTable's
+                        // by calling this overloaded constructor - pratapa
+                        core.assocCodegen = new ProtoAssociative.CodeGen(core);
+                    }
                 }
+                else
+                    core.assocCodegen = new ProtoAssociative.CodeGen(core, callContext, parentBlock);
+
 
                 if (null != core.AssocNode)
                 {
@@ -76,30 +74,10 @@ namespace ProtoAssociative
                     }
 
                     core.assocCodegen.context = callContext;
-
-                    //Temporarily change the code block for code gen to the current block, in the case it is an imperative block
-                    //CodeGen for ProtoImperative is modified to passing in the core object.
-                    ProtoCore.DSASM.CodeBlock oldCodeBlock = core.assocCodegen.codeBlock;
-                    if (core.Options.RunMode == ProtoCore.DSASM.InterpreterMode.Expression)
-                    {
-                        int tempBlockId = callContext.CurrentBlockId;
-                        ProtoCore.DSASM.CodeBlock tempCodeBlock = ProtoCore.Utils.CoreUtils.GetCodeBlock(core.CodeBlockList, tempBlockId);
-                        while (null != tempCodeBlock && tempCodeBlock.blockType != ProtoCore.DSASM.CodeBlockType.Language)
-                        {
-                            tempCodeBlock = tempCodeBlock.parent;
-                        }
-                        core.assocCodegen.codeBlock = tempCodeBlock;
-                    }
                     core.assocCodegen.codeBlock.EventSink = sink;
                     if (core.BuildStatus.ErrorCount == 0) //if there is syntax error, no build needed
                     {
                         blockId = core.assocCodegen.Emit((codeBlockNode as ProtoCore.AST.AssociativeAST.CodeBlockNode), graphNode);
-                    }
-                    if (core.Options.RunMode == ProtoCore.DSASM.InterpreterMode.Expression)
-                    {
-                        blockId = core.assocCodegen.codeBlock.codeBlockId;
-                        //Restore the code block.
-                        core.assocCodegen.codeBlock = oldCodeBlock;
                     }
                 }
 

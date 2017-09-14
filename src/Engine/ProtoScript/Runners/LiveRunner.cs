@@ -1161,7 +1161,6 @@ namespace ProtoScript.Runners
             {
                 IsDeltaExecution = true,
                 BuildOptErrorAsWarning = true,
-                ExecutionMode = ExecutionMode.Serial
             };
 
             runnerCore = new ProtoCore.Core(coreOptions);

@@ -110,7 +110,6 @@ namespace ProtoCore.Utils
             Validity.Assert(code != null);
 
             Core core = new Core(new Options());
-            core.Options.ExecutionMode = ExecutionMode.Serial;
             core.ParsingMode = ParseMode.AllowNonAssignment;
             core.IsParsingCodeBlockNode = true;
             core.IsParsingPreloadedAssembly = false;

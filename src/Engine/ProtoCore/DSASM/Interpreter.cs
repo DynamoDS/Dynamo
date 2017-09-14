@@ -17,10 +17,10 @@ namespace ProtoCore.DSASM
             runtime.rmem.Push(val);
         }
 
-        public StackValue Run(int codeblock = Constants.kInvalidIndex, int entry = Constants.kInvalidIndex, Language lang = Language.NotSpecified, List<Instruction> breakpoints = null)
+        public StackValue Run(int codeblock = Constants.kInvalidIndex, int entry = Constants.kInvalidIndex, Language lang = Language.NotSpecified)
         {
             runtime.RX = StackValue.Null;
-            runtime.Execute(codeblock, entry, breakpoints, lang);
+            runtime.Execute(codeblock, entry, lang);
             return runtime.RX;
         }
     }

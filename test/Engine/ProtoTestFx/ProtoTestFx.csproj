@@ -110,14 +110,10 @@
     <Compile Include="..\..\..\src\AssemblySharedInfoGenerator\AssemblySharedInfo.cs">
       <Link>Properties\AssemblySharedInfo.cs</Link>
     </Compile>
-    <Compile Include="DebugTestFx.cs" />
     <Compile Include="JsonDecoder.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestFrameWork.cs" />
-    <Compile Include="WatchTestFx.cs">
-      <SubType>Code</SubType>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\src\Engine\ProtoAssociative\ProtoAssociative.csproj">

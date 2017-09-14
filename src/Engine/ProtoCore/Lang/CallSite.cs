@@ -416,14 +416,11 @@ namespace ProtoCore
         /// <param name="classScope"></param>
         /// <param name="methodName"></param>
         /// <param name="globalFunctionTable"></param>
-        /// <param name="execMode"></param>
         /// <param name="serializedTraceData">An optional Base64 encoded string
         /// representing the trace data that the callsite could use as part of 
         /// its re-construction.</param>
         /// 
-        public CallSite(int classScope, string methodName,
-            FunctionTable globalFunctionTable,
-            ExecutionMode execMode, string serializedTraceData = null)
+        public CallSite(int classScope, string methodName, FunctionTable globalFunctionTable, string serializedTraceData = null)
         {
             //Set the ID of internal test
             callsiteID = Guid.NewGuid();
@@ -434,10 +431,6 @@ namespace ProtoCore
             this.classScope = classScope;
             this.methodName = methodName;
             this.globalFunctionTable = globalFunctionTable;
-
-            if (execMode == ExecutionMode.Parallel)
-                throw new CompilerInternalException(
-                    "Parrallel Mode is not yet implemented {46F83CBB-9D37-444F-BA43-5E662784B1B3}");
 
             // Found preloaded trace data, reconstruct the instances from there.
             if (!String.IsNullOrEmpty(serializedTraceData))
@@ -476,127 +469,6 @@ namespace ProtoCore
         {
             this.classScope = classScope;
             this.methodName = methodName;
-        }
-
-        /// <summary>
-        /// Conservative guess as to whether this call will replicate or not
-        /// This may give inaccurate answers if the node cluster doesn't actually exist
-        /// </summary>
-        /// <param name="context"></param>
-        /// <param name="arguments"></param>
-        /// <param name="stackFrame"></param>
-        /// <param name="core"></param>
-        /// <returns></returns>
-        public bool WillCallReplicate(Context context, List<StackValue> arguments,
-                                      List<List<ReplicationGuide>> partialReplicationGuides, StackFrame stackFrame, RuntimeCore runtimeCore,
-                                      out List<List<ReplicationInstruction>> replicationTrials)
-        {
-            replicationTrials = new List<List<ReplicationInstruction>>();
-
-            if (partialReplicationGuides.Count > 0)
-            {
-                // Jun Comment: And at least one of them contains somthing
-                for (int n = 0; n < partialReplicationGuides.Count; ++n)
-                {
-                    if (partialReplicationGuides[n].Count > 0)
-                    {
-                        return true;
-                    }
-                }
-            }
-
-            #region Get Function Group
-
-            //@PERF: Possible optimisation point here, to deal with static dispatches that don't need replication analysis
-            //Handle resolution Pass 1: Name -> Method Group
-            FunctionGroup funcGroup;
-            try
-            {
-                funcGroup = globalFunctionTable.GlobalFuncTable[classScope + 1][methodName];
-            }
-            catch (KeyNotFoundException)
-            {
-                return false;
-            }
-
-            #endregion
-
-            //Replication Control is an ordered list of the elements that we have to replicate over
-            //Ordering implies containment, so element 0 is the outer most forloop, element 1 is nested within it etc.
-            //Take the explicit replication guides and build the replication structure
-            //Turn the replication guides into a guide -> List args data structure
-           var instructions = Replicator.BuildPartialReplicationInstructions(partialReplicationGuides);
-
-            #region First Case: Replicate only according to the replication guides
-            {
-                FunctionEndPoint fep = GetCompleteMatchFunctionEndPoint(context, arguments, funcGroup, instructions, stackFrame, runtimeCore);
-                if (fep != null)
-                {
-                    //found an exact match
-                    return false;
-                }
-            }
-
-            #endregion
-
-            #region Case 2: Replication with no type cast
-            {
-                //Build the possible ways in which we might replicate
-                replicationTrials = Replicator.BuildReplicationCombinations(instructions, arguments, runtimeCore);
-
-                foreach (List<ReplicationInstruction> replicationOption in replicationTrials)
-                {
-                    List<List<StackValue>> reducedParams = Replicator.ComputeAllReducedParams(arguments, replicationOption, runtimeCore);
-                    HashSet<FunctionEndPoint> lookups;
-                    if (funcGroup.CanGetExactMatchStatics(context, reducedParams, stackFrame, runtimeCore, out lookups))
-                    {
-                        return true; //Replicates against cluster
-                    }
-                }
-            }
-
-            #endregion
-
-            #region Case 3: Match with type conversion, but no array promotion
-
-            {
-                Dictionary<FunctionEndPoint, int> candidatesWithDistances =
-                    funcGroup.GetConversionDistances(context, arguments, instructions,
-                                                     runtimeCore.DSExecutable.classTable, runtimeCore);
-                Dictionary<FunctionEndPoint, int> candidatesWithCastDistances =
-                    funcGroup.GetCastDistances(context, arguments, instructions, runtimeCore.DSExecutable.classTable,
-                                               runtimeCore);
-
-                List<FunctionEndPoint> candidateFunctions = GetCandidateFunctions(stackFrame, candidatesWithDistances);
-                FunctionEndPoint compliantTarget = GetCompliantTarget(context, arguments,
-                                                                      instructions, stackFrame, runtimeCore,
-                                                                      candidatesWithCastDistances, candidateFunctions,
-                                                                      candidatesWithDistances);
-
-                if (compliantTarget != null)
-                {
-                    return false; //Type conversion but no replication
-                }
-            }
-
-            #endregion
-
-            #region Case 5: Match with type conversion, replication and array promotion
-
-            {
-                //Build the possible ways in which we might replicate
-                replicationTrials =
-                    Replicator.BuildReplicationCombinations(instructions, arguments, runtimeCore);
-
-                //Add as a first attempt a no-replication, but allowing up-promoting
-                replicationTrials.Insert(0,
-                                         new List<ReplicationInstruction>()
-                    );
-            }
-
-            #endregion
-
-            return true; //It'll replicate if it suceeds
         }
 
         /// <summary>
@@ -1454,9 +1326,6 @@ namespace ProtoCore
             SingleRunTraceData previousTraceData, 
             SingleRunTraceData newTraceData)
         {
-            if (runtimeCore.Options.ExecutionMode == ExecutionMode.Parallel)
-                throw new NotImplementedException("Parallel mode disabled: {BF417AD5-9EA9-4292-ABBC-3526FC5A149E}");
-
             //Recursion base case
             if (replicationInstructions.Count == 0)
             {
@@ -1740,12 +1609,6 @@ namespace ProtoCore
                 runtimeCore.RuntimeStatus.LogWarning(WarningID.MethodResolutionFailure, 
                     string.Format(Resources.FunctionDispatchFailed, "{2EB39E1B-557C-4819-94D8-CF7C9F933E8A}"));
                 return StackValue.Null;
-            }
-
-            if (runtimeCore.Options.IDEDebugMode && runtimeCore.Options.RunMode != InterpreterMode.Expression)
-            {
-                DebugFrame debugFrame = runtimeCore.DebugProps.DebugStackFrame.Peek();
-                debugFrame.FinalFepChosen = finalFep;
             }
 
             List<StackValue> coercedParameters = finalFep.CoerceParameters(formalParameters, runtimeCore);

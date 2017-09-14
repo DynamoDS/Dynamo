@@ -20,8 +20,6 @@ namespace ProtoScript.Runners
         public void PreStart(String source, Dictionary<string, Object> context)
         {
             ProtoCore.Options options = new ProtoCore.Options();
-            options.ExecutionMode = ProtoCore.ExecutionMode.Serial;
-
 
             RunnerCore = new ProtoCore.Core(options);
             RunnerCore.Compilers.Add(ProtoCore.Language.Associative, new ProtoAssociative.Compiler(RunnerCore));

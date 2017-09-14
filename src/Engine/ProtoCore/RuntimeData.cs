@@ -88,8 +88,7 @@ namespace ProtoCore
             {
                 csInstance = new CallSite(classScope,
                                           methodName,
-                                          executable.FunctionTable,
-                                          runtimeCore.Options.ExecutionMode);
+                                          executable.FunctionTable);
             }
             else if (!CallsiteCache.TryGetValue(callsiteID, out csInstance))
             {
@@ -99,7 +98,6 @@ namespace ProtoCore
                 csInstance = new CallSite(classScope,
                                           methodName,
                                           executable.FunctionTable,
-                                          runtimeCore.Options.ExecutionMode,
                                           traceData);
 
                 CallsiteCache[callsiteID] = csInstance;
