@@ -1585,10 +1585,12 @@ namespace Dynamo.Graph.Workspaces
                 {
                     nodeModel.X = nodeViewInfo.X;
                     nodeModel.Y = nodeViewInfo.Y;
-                    nodeModel.Name = nodeViewInfo.Name;
                     nodeModel.IsFrozen = nodeViewInfo.Excluded;
 
-                    // Note: These parameters are not directly accessible due to undo/redo considerations
+                    // NOTE: The name needs to be set using UpdateValue to cause the view to update
+                    nodeModel.UpdateValue(new UpdateValueParams("Name", nodeViewInfo.Name));
+
+                    // NOTE: These parameters are not directly accessible due to undo/redo considerations
                     //       which should not be used during deserialization (see "ArgumentLacing" for details)
                     nodeModel.UpdateValue(new UpdateValueParams("IsVisible", nodeViewInfo.ShowGeometry.ToString()));
                     nodeModel.UpdateValue(new UpdateValueParams("IsUpstreamVisible", nodeViewInfo.IsUpstreamVisible.ToString()));
