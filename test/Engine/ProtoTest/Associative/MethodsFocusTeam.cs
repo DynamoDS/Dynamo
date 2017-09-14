@@ -659,23 +659,6 @@ import(""FFITarget.dll"");p = DummyPoint.ByCoordinates(1..3, 20, 30);a = p.X[0
         }
 
         [Test]
-        public void T038_Replication_HigherArrayDimensionDispatch()
-        {
-            String code =
-@"z = 0;a = {};b = {1};c = {{1}};d = {{{1}}};def foo(x:var){	return = 3;}def foo(x:var[]){	return = 7;}vz = foo(z);va = foo(a);vb = foo(b);vc = foo(c);vd = foo(d);";
-            thisTest.RunScriptSource(code);
-            thisTest.Verify("vz", 3);
-            thisTest.Verify("va", 7);
-            thisTest.Verify("vb", 7);
-            thisTest.Verify("vc",
-                                                  new object[] { 7 }
-                                              );
-            thisTest.Verify("vd",
-                                                  new object[]                                                      {                                                          new object[] {7 }                                                      }
-                                              );
-        }
-
-        [Test]
         public void Z001_ReplicationGuides_Minimal_01()
         {
             String code =
@@ -863,18 +846,6 @@ import(""FFITarget.dll"");a1 = DummyPoint.ByCoordinates(10, 20, 30);def foo(va
         }
 
         [Test]
-        [Category("DSDefinedClass_Ported")]
-        [Category("Method Resolution")]
-        public void TV052_Defect_ReplicationMethodOverloading_02()
-        {
-            String code =
-@"
-import(""FFITarget.dll"");a1 = DummyPoint.ByCoordinates(10, 20, 30);def foo(val : int[]){    return = 1;}def foo(val : var){    return = 2;}def foo(val: var[]..[]){	return = 3;}def foo(val: var[]){	return = 4;}                                arr = { {3}, a1, 5,{{a1}} } ;//3r = foo(arr);";
-            thisTest.RunScriptSource(code);
-            thisTest.Verify("r", 3);
-        }
-
-        [Test]
         [Category("Method Resolution")]
         [Category("Failure")]
         [Category("DSDefinedClass_Ported")]
@@ -945,34 +916,6 @@ import(""FFITarget.dll"");a1 = DummyPoint.ByCoordinates(10, 20, 30);def foo(va
             thisTest.Verify("a", null);
             TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.ConversionNotPossible);
         }
-
-        [Test]
-        public void T060_DispatchOnArrayLevel()
-        {
-            String code =
-            @"                def foo(x:var[]..[]){return = 2;}def foo(x:var[]){return = 1;}d = foo({1,2});            ";
-            thisTest.RunScriptSource(code);
-            thisTest.Verify("d", 1);
-        }
-
-        [Test]
-        public void T060_DispatchOnArrayLevel_1()
-        {
-            String code =
-            @"                def foo(x:var[]..[]){return = 2;}def foo(x:var[]){return = 1;}d = foo({ { 1 } , { 2} });            ";
-            thisTest.RunScriptSource(code);
-            thisTest.Verify("d", 2);
-        }
-
-        [Test]
-        public void T060_DispatchOnArrayLevel_2()
-        {
-            String code =
-            @"def foo(x:int[]..[]){return = 2;}def foo(x:int[]){return = 1;}d = foo({1,2});            ";
-            thisTest.RunScriptSource(code);
-            thisTest.Verify("d", 1);
-        }
-
 
         [Test]
         public void RepoTests_MAGN3177()

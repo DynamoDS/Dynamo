@@ -26,7 +26,7 @@ namespace CoreNodeModels
         private readonly string selectionMessage;
         private List<TResult> selectionResults = new List<TResult>();
         private List<TSelection> selection = new List<TSelection>();
-        private IEnumerable<string> selectionIdentifier;
+        private IEnumerable<string> selectionIdentifier = new List<string>();
         private readonly SelectionType selectionType;
         private readonly SelectionObjectType selectionObjectType;
         

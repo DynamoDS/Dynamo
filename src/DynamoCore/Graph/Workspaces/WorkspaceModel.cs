@@ -83,17 +83,45 @@ namespace Dynamo.Graph.Workspaces
       public IEnumerable<string> Nodes;
       public double FontSize;
       public string Background;
+      public string Id;
 
-      // TODO, QNTM-1099: Determine if these are required
-      // public string Id;
-      // public double Left;
-      // public double Top;
-      // public double Width;
-      // public double Height;
-      // public double InitialTop;
-      // public double InitialHeight;
-      // public double TextBlockHeight;
-  }
+        // TODO, Determine if these are required
+        public double Left;
+        public double Top;
+        public double Width;
+        public double Height;
+        public double InitialTop;
+        public double InitialHeight;
+        public double TextBlockHeight;
+
+        private bool tolerantDoubleCompare(double a, double b)
+        {
+            return Math.Abs(a - b) < .0001;
+        }
+
+        public override bool Equals(object obj)
+        {
+            var other = obj as ExtraAnnotationViewInfo;
+            return other != null &&
+                this.Id == other.Id &&
+                this.Title == other.Title &&
+                this.Nodes.SequenceEqual(other.Nodes) &&
+                this.FontSize == other.FontSize &&
+                this.Background == other.Background;
+
+                //TODO try to get rid of these if possible
+                //needs investigation if we are okay letting them get 
+                //calculated at runtime. currently checking them will fail as we do
+                //not deserialize them.
+
+                //tolerantDoubleCompare(this.Left, other.Left) &&
+                //tolerantDoubleCompare(this.Top, other.Top) &&
+                //tolerantDoubleCompare(this.InitialTop, other.InitialTop);
+                //this.Width == other.Width &&
+                //this.Height == other.Height &&
+                //this.TextBlockHeight == other.TextBlockHeight;
+        }
+    }
 
     /// <summary>
     /// Represents base class for all kind of workspaces which contains general data
@@ -1549,6 +1577,7 @@ namespace Dynamo.Graph.Workspaces
                         new ConnectorConverter(),
                         new WorkspaceReadConverter(engineController, scheduler, factory, isTestMode, verboseLogging),
                         new NodeReadConverter(manager, libraryServices),
+                        new TypedParameterConverter()
                     },
                 ReferenceResolverProvider = () => { return new IdReferenceResolver(); }
             };
@@ -1608,8 +1637,7 @@ namespace Dynamo.Graph.Workspaces
 
             foreach (ExtraAnnotationViewInfo annotationViewInfo in workspaceViewInfo.Annotations)
             {
-                // TODO, QNTM-1099: Determine where to set the ID for annotations
-                // Guid guidValue = IdToGuidConverter(annotationInfo.Id);
+                
 
                 // Create a collection of nodes in the given annotation
                 var nodes = new List<NodeModel>();
@@ -1643,10 +1671,13 @@ namespace Dynamo.Graph.Workspaces
                   notes.Add(noteModel);
                 }
 
+                var annotationGuidValue = IdToGuidConverter(annotationViewInfo.Id);
                 var annotationModel = new AnnotationModel(nodes, notes);
                 annotationModel.AnnotationText = annotationViewInfo.Title;
                 annotationModel.FontSize = annotationViewInfo.FontSize;
                 annotationModel.Background = annotationViewInfo.Background;
+                annotationModel.GUID = annotationGuidValue;
+
                 this.AddNewAnnotation(annotationModel);
             }
 

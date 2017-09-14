@@ -161,6 +161,8 @@ Associative_Statement<out ProtoCore.AST.AssociativeAST.AssociativeNode node>
                             (. node = null; .)
 (
 		Associative_ReturnStatement<out node>
+    |      
+        Associative_LanguageBlock<out node>
 	|
 	IF(IsNonAssignmentStatement())
 		Associative_NonAssignmentStatement<out node>
@@ -170,8 +172,6 @@ Associative_Statement<out ProtoCore.AST.AssociativeAST.AssociativeNode node>
 
 	|
         Associative_FunctionalStatement<out node>
-    |      
-        Associative_LanguageBlock<out node>
     |
         (
             (

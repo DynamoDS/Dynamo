@@ -12,6 +12,7 @@ using Dynamo.Graph.Nodes.NodeLoaders;
 using Dynamo.Graph.Nodes.ZeroTouch;
 using Dynamo.Graph.Notes;
 using Dynamo.Graph.Presets;
+using Dynamo.Library;
 using Dynamo.Scheduler;
 using Dynamo.Utilities;
 using Newtonsoft.Json;
@@ -585,6 +586,36 @@ namespace Dynamo.Graph.Workspaces
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
             writer.WriteValue(((Guid)value).ToString("N"));
+        }
+    }
+
+    /// <summary>
+    /// This converter is used to attempt to convert TypedParameter into a json object
+    /// </summary>
+    public class TypedParameterConverter : JsonConverter
+    {
+        public override bool CanConvert(Type objectType)
+        {
+            return objectType == typeof(TypedParameter);
+        }
+
+        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+        {
+            writer.WriteStartObject();
+            writer.WritePropertyName("Name");
+            writer.WriteValue(((TypedParameter)value).Name);
+            writer.WritePropertyName("TypeName");
+            writer.WriteValue(((TypedParameter)value).Type.Name);
+            writer.WritePropertyName("TypeRank");
+            writer.WriteValue(((TypedParameter)value).Type.rank);
+            writer.WritePropertyName("DefaultValue");
+            writer.WriteValue(((TypedParameter)value).DefaultValueString);
+            writer.WriteEndObject();
         }
     }
 

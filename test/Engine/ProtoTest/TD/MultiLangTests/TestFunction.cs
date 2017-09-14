@@ -6562,46 +6562,6 @@ result = {foo(a),foo(b)};";
 
         [Test]
         [Category("SmokeTest")]
-        public void TV107_Defect_1467273_Function_Resolution_Over_Argument_Rank()
-        {
-            String code =
-@"def foo(x:var[]..[])
-{
-return = 2;
-}
-def foo(x:var[])
-{
-return = 1;
-}
-d = foo({1,2});";
-            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
-            string errmsg = "";
-            ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.Verify("d", 1);
-        }
-
-        [Test]
-        [Category("SmokeTest")]
-        public void TV107_Defect_1467273_Function_Resolution_Over_Argument_Rank_2()
-        {
-            String code =
-@"def foo(x:int[]..[])
-{
-return = 2;
-}
-def foo(x:int[])
-{
-return = 1;
-}
-d = foo({1,2});";
-            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
-            string errmsg = "";
-            ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.Verify("d", 1);
-        }
-
-        [Test]
-        [Category("SmokeTest")]
         public void TV107_Defect_1467273_Function_Resolution_Over_Argument_Rank_3()
         {
             String code =
@@ -6618,52 +6578,6 @@ d = foo({1.5,2.5});";
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("d", 2);
-        }
-
-        [Test]
-        [Category("DSDefinedClass_Ported")]
-        [Category("SmokeTest")]
-        public void TV107_Defect_1467273_Function_Resolution_Over_Argument_Rank_4()
-        {
-            String code =
-@"
-def foo(x:int[]..[])
-{
-    return = 2;
-}
-def foo(x:int[])
-{
-    return = 1;
-}
-
-d = foo({1,2});";
-            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
-            string errmsg = "";
-            ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.Verify("d", 1);
-        }
-
-        [Test]
-        [Category("DSDefinedClass_Ported")]
-        [Category("SmokeTest")]
-        public void TV107_Defect_1467273_Function_Resolution_Over_Argument_Rank_4a()
-        {
-            String code =
-@"
-def foo(x:int[]..[])
-{
-    return = 2;
-}
-def foo(x:int[])
-{
-    return = 1;
-}
-
-d = foo({1.0,2.2});";
-            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
-            string errmsg = "";
-            ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.Verify("d", 1);
         }
 
         [Test]
@@ -6865,32 +6779,6 @@ b ;
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("b", new Object[] { 10, 14, 18, 22, 26, 30 });
-            thisTest.VerifyBuildWarningCount(0);
-        }
-
-        [Test]
-        [Category("SmokeTest")]
-        public void T65_1467115_warning_on_function_resolution_3()
-        {
-            String code = @"
-def foo (a : int)
-{
-    return = 1;
-}
-def foo(b : double)
-{
-    return = 2;
-}
-def foo(b : double[])
-{
-    return = 3;
-}
-x = { 1.0, 5, 2.4};
-p = foo(x);
-";
-            string errmsg = "";
-            ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.Verify("p", 3);
             thisTest.VerifyBuildWarningCount(0);
         }
 

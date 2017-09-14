@@ -225,19 +225,6 @@ namespace ProtoCore.DSASM
                    LocalCount == rhs.LocalCount && 
                    Name.Equals(rhs.Name);
         }
-
-        /// <summary>
-        /// Returns true if two procedure nodes have same signature.
-        /// </summary>
-        /// <param name="other"></param>
-        /// <returns></returns>
-        public bool Matches(string name, List<ProtoCore.Type> argumentTypes)
-        {
-            if (argumentTypes == null)
-                throw new ArgumentNullException("argumentTypes");
-
-            return Name == name && ArgumentTypes.SequenceEqual(argumentTypes);
-        }
     }
 
     public class ProcedureTable
@@ -332,17 +319,6 @@ namespace ProtoCore.DSASM
             }).OrderBy(p => p.ArgumentTypes.Count - argumentNumber);
         }
 
-        /// <summary>
-        /// Returns function with specified signature.
-        /// </summary>
-        /// <param name="name"></param>
-        /// <param name="args"></param>
-        /// <returns></returns>
-        public ProcedureNode GetFunctionBySignature(string name, List<Type> args)
-        {
-            return Procedures.FirstOrDefault(p => p.Matches(name, args));
-        }
-
         // TODO: To be deleted.
         public int IndexOf(string name, List<ProtoCore.Type> argTypeList, bool isStaticOrConstructor = false)
         {
@@ -395,6 +371,38 @@ namespace ProtoCore.DSASM
                 }
             }
             return currentProcedure;
+        }
+
+        /// <summary>
+        /// Get function by its signature.
+        /// </summary>
+        /// <param name="functionName"></param>
+        /// <param name="parameterTypes"></param>
+        /// <returns></returns>
+        public ProcedureNode GetFunctionBySignature(string functionName, List<Type> parameterTypes)
+        {
+            foreach (var f in Procedures)
+            {
+                if (f.Name != functionName || f.ArgumentTypes.Count != parameterTypes.Count)
+                {
+                    continue;
+                }
+                
+                for (int i = 0; i < parameterTypes.Count; i++)
+                {
+                    if (f.ArgumentTypes[i].Name != parameterTypes[i].Name || f.ArgumentTypes[i].UID != parameterTypes[i].UID)
+                    {
+                        goto NotMatch; 
+                    }
+                }
+
+                return f;
+
+                NotMatch:
+                    ;
+            }
+
+            return null;
         }
     }
 }
