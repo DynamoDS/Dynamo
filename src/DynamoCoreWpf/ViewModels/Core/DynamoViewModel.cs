@@ -1411,28 +1411,7 @@ namespace Dynamo.ViewModels
             }
         }
 
-        /// <summary>
-        /// Save the specified workspace to a file. If the file path is null or empty, an
-        /// exception is written to the console.
-        /// </summary>
-        /// <param name="path">The path to the file.</param>
-        /// <param name="workspace">The Workspace to save.</param>
-        internal void SaveAs(string path, WorkspaceModel workspace)
-        {
-            try
-            {
-                workspace.Save(path, false, EngineController);
-            }
-            catch (Exception ex)
-            {
-                Model.Logger.Log(ex.Message);
-                Model.Logger.Log(ex.StackTrace);
-
-                if (ex is IOException || ex is UnauthorizedAccessException)
-                    System.Windows.MessageBox.Show(String.Format(ex.Message, MessageBoxButtons.OK, MessageBoxIcon.Warning));
-            }
-        }
-
+        
         /// <summary>
         ///     Attempts to save a given workspace.  Shows a save as dialog if the 
         ///     workspace does not already have a path associated with it
@@ -1444,7 +1423,7 @@ namespace Dynamo.ViewModels
             // crash should always allow save as
             if (!String.IsNullOrEmpty(workspace.FileName) && !DynamoModel.IsCrashing)
             {
-                SaveAs(workspace.FileName, workspace);
+                SaveAs(workspace.FileName);
                 return true;
             }
             else
@@ -1458,7 +1437,7 @@ namespace Dynamo.ViewModels
                 fd.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
                 if (fd.ShowDialog() == DialogResult.OK)
                 {
-                    SaveAs(fd.FileName, workspace);
+                    SaveAs(fd.FileName);
                     return true;
                 }
             }
