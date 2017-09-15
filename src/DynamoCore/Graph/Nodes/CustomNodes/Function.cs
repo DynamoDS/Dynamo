@@ -319,8 +319,9 @@ namespace Dynamo.Graph.Nodes.CustomNodes
         ///     Responsible for resolving 
         ///     a partial class name to its fully resolved name
         /// </summary>
+        [JsonIgnore]
         public ElementResolver ElementResolver { get; set; }
-        
+
         /// <summary>
         ///     Initializes a new instance of the <see cref="Symbol"/> class.
         /// </summary>
@@ -338,8 +339,20 @@ namespace Dynamo.Graph.Nodes.CustomNodes
         }
 
         /// <summary>
+        ///     Initializes a new instance of the <see cref="Symbol"/> class.
+        /// </summary>
+        [JsonConstructor]
+        public Symbol(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts, TypedParameter parameter) : base(inPorts, outPorts)
+        {
+            ArgumentLacing = LacingStrategy.Disabled;
+            InputSymbol = parameter.ToString();
+            ElementResolver = new ElementResolver();
+        }
+
+        /// <summary>
         ///     Represents string input. 
         /// </summary>
+        [JsonIgnore]
         public string InputSymbol
         {
             get { return inputSymbol; }
@@ -561,6 +574,15 @@ namespace Dynamo.Graph.Nodes.CustomNodes
         }
 
         /// <summary>
+        /// Create output node.
+        /// </summary>
+        [JsonConstructor]
+        public Output(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
+        {
+            ArgumentLacing = LacingStrategy.Disabled;
+        }
+
+        /// <summary>
         /// Text in output node.
         /// </summary>
         public string Symbol
@@ -591,6 +613,7 @@ namespace Dynamo.Graph.Nodes.CustomNodes
         /// <summary>
         /// Output name and its description tuple.
         /// </summary>
+        [JsonIgnore]
         public Tuple<string, string> Return
         {
             get

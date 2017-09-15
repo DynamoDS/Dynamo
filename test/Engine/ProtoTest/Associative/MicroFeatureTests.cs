@@ -486,26 +486,6 @@ b = S.a;
             thisTest.Verify("b",2);
         }
 
-
-        [Test]
-        [Category("DSDefinedClass_Ported")]
-        public void TestStaticMethodResolution()
-        {
-            string code = @"
-	        def foo(a : int)
-	        {
-		        return = 1;
-	        }
-	        def foo(a : int[])
-	        {
-		        return = 2;
-            }
-            c = {1,2,3,4};
-            d = foo(c);";
-            thisTest.RunScriptSource(code);
-            thisTest.Verify("d", 2);
-        }
-
         [Test]
         public void TestTemporaryArrayIndexing01()
         {
@@ -3531,28 +3511,210 @@ b = TestThisOverload.Mul(obj, 4);
         public void TestReturnStatement01()
         {
             string code = @"
-def foo() {
-    return 21;
-}
-r = foo();
-";
+x = [Imperative] {
+    return 6;
+}";
             thisTest.RunScriptSource(code);
             thisTest.VerifyBuildWarningCount(0);
-            thisTest.Verify("r", 21);
+            thisTest.Verify("x", 6);
         }
-
 
         [Test]
         public void TestReturnStatement02()
         {
             string code = @"
-r = [Imperative] {
-    return 21;
+x = [Imperative] {
+    return {2, 3, 5};
+}";
+            thisTest.RunScriptSource(code);
+            thisTest.VerifyBuildWarningCount(0);
+            thisTest.Verify("x", new object[] { 2, 3, 5 } );
+        }
+
+        [Test]
+        public void TestReturnStatement03()
+        {
+            string code = @"
+def foo(x) {
+    return x * 2;
 }
+
+x = [Imperative] {
+    return foo(3);
+}";
+            thisTest.RunScriptSource(code);
+            thisTest.VerifyBuildWarningCount(0);
+            thisTest.Verify("x", 6);
+        }
+
+        [Test]
+        public void TestReturnStatement04()
+        {
+            string code = @"
+[Imperative] {
+    return 6;
+}";
+            thisTest.RunScriptSource(code);
+            thisTest.VerifyBuildWarningCount(0);
+        }
+
+        [Test]
+        public void TestReturnStatement05()
+        {
+            string code = @"
+[Imperative] {
+    return {2, 3, 5};
+}";
+            thisTest.RunScriptSource(code);
+            thisTest.VerifyBuildWarningCount(0);
+        }
+
+        [Test]
+        public void TestReturnStatement06()
+        {
+            string code = @"
+def foo(x) {
+    return x * 2;
+}
+
+[Imperative] {
+    return foo(3);
+}";
+            thisTest.RunScriptSource(code);
+            thisTest.VerifyBuildWarningCount(0);
+        }
+
+        [Test]
+        public void TestReturnStatement07()
+        {
+            string code = @"
+def foo(x) {
+    return [Imperative] {
+        return x * 2;
+    }
+}
+
+r = foo(3);
 ";
             thisTest.RunScriptSource(code);
             thisTest.VerifyBuildWarningCount(0);
-            thisTest.Verify("r", 21);
+            thisTest.Verify("r", 6);
+        }
+
+        [Test]
+        public void TestReturnStatement08()
+        {
+            string code = @"
+x = [Associative] {
+    return 6;
+}";
+            thisTest.RunScriptSource(code);
+            thisTest.VerifyBuildWarningCount(0);
+            thisTest.Verify("x", 6);
+        }
+
+        [Test]
+        public void TestReturnStatement09()
+        {
+            string code = @"
+x = [Associative] {
+    return {2, 3, 5};
+}";
+            thisTest.RunScriptSource(code);
+            thisTest.VerifyBuildWarningCount(0);
+            thisTest.Verify("x", new object[] { 2, 3, 5 });
+        }
+
+        [Test]
+        public void TestReturnStatement10()
+        {
+            string code = @"
+def foo(x) {
+    return x * 2;
+}
+
+x = [Associative] {
+    return foo(3);
+}";
+            thisTest.RunScriptSource(code);
+            thisTest.VerifyBuildWarningCount(0);
+            thisTest.Verify("x", 6);
+        }
+
+        [Test]
+        public void TestReturnStatement11()
+        {
+            string code = @"
+[Associative] {
+    return 6;
+}";
+            thisTest.RunScriptSource(code);
+            thisTest.VerifyBuildWarningCount(0);
+        }
+
+        [Test]
+        public void TestReturnStatement12()
+        {
+            string code = @"
+[Associative] {
+    return {2, 3, 5};
+}";
+            thisTest.RunScriptSource(code);
+            thisTest.VerifyBuildWarningCount(0);
+        }
+
+        [Test]
+        public void TestReturnStatement13()
+        {
+            string code = @"
+def foo(x) {
+    return x * 2;
+}
+
+[Associative] {
+    return foo(3);
+}";
+            thisTest.RunScriptSource(code);
+            thisTest.VerifyBuildWarningCount(0);
+        }
+
+        [Test]
+        public void TestReturnStatement14()
+        {
+            string code = @"
+def foo(x) {
+    return [Associative] {
+        return x * 2;
+    }
+}
+
+r = foo(3);
+";
+            thisTest.RunScriptSource(code);
+            thisTest.VerifyBuildWarningCount(0);
+            thisTest.Verify("r", 6);
+        }
+
+        [Test]
+        public void TestReturnStatement15()
+        {
+            string code = @"
+[Imperative] {
+    return 6;
+}";
+            thisTest.RunScriptSource(code);
+            thisTest.VerifyBuildWarningCount(0);
+        }
+
+        [Test]
+        public void TestReturnStatement16()
+        {
+            string code = @"
+[Associative] {
+    return 6;
+}";
+            thisTest.RunScriptSource(code);
+            thisTest.VerifyBuildWarningCount(0);
         }
     }
 }
