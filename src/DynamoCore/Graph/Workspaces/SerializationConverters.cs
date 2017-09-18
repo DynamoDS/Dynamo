@@ -67,7 +67,16 @@ namespace Dynamo.Graph.Workspaces
             if (type == typeof(Function))
             {
                 var functionId = Guid.Parse(obj["FunctionUuid"].Value<string>());
-                node = manager.CreateCustomNodeInstance(functionId);
+
+                CustomNodeDefinition def = null;
+                CustomNodeInfo info = null;
+                bool isUnresolved = !manager.TryGetCustomNodeData(functionId, null, false, out def, out info);
+                Function function = manager.CreateCustomNodeInstance(functionId, null, false, def, info);
+                node = function;
+
+                if (isUnresolved)
+                  function.UpdatePortsForUnresolved(inPorts, outPorts);
+
                 RemapPorts(node, inPorts, outPorts, resolver);
             }
             else if (type == typeof(CodeBlockNodeModel))
