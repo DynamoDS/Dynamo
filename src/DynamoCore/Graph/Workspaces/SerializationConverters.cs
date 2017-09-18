@@ -54,7 +54,7 @@ namespace Dynamo.Graph.Workspaces
             var obj = JObject.Load(reader);
             var type = Type.GetType(obj["$type"].Value<string>());
 
-            //if the id is not a guid, makes a guid based on the id of the node
+            // If the id is not a guid, makes a guid based on the id of the node
             var guid = GuidUtility.tryParseOrCreateGuid(obj["Id"].Value<string>());
 
             var replication = obj["Replication"].Value<string>();
@@ -63,8 +63,14 @@ namespace Dynamo.Graph.Workspaces
             var outPorts = obj["Outputs"].ToArray().Select(t => t.ToObject<PortModel>()).ToArray();
 
             var resolver = (IdReferenceResolver)serializer.ReferenceResolver;
+            string assemblyLocation = objectType.Assembly.Location;
 
-            if (type == typeof(Function))
+            bool remapPorts = true;
+            if (type == null)
+            {
+                node = CreateDummyNode(obj, assemblyLocation, inPorts, outPorts);
+            }
+            else if (type == typeof(Function))
             {
                 var functionId = Guid.Parse(obj["FunctionUuid"].Value<string>());
 
@@ -76,14 +82,11 @@ namespace Dynamo.Graph.Workspaces
 
                 if (isUnresolved)
                   function.UpdatePortsForUnresolved(inPorts, outPorts);
-
-                RemapPorts(node, inPorts, outPorts, resolver);
             }
             else if (type == typeof(CodeBlockNodeModel))
             {
                 var code = obj["Code"].Value<string>();
                 node = new CodeBlockNodeModel(code, guid, 0.0, 0.0, libraryServices, ElementResolver);
-                RemapPorts(node, inPorts, outPorts, resolver);
             }
             else if (typeof(DSFunctionBase).IsAssignableFrom(type))
             {
@@ -92,17 +95,7 @@ namespace Dynamo.Graph.Workspaces
                 var description = libraryServices.GetFunctionDescriptor(mangledName);
                 if (description == null)
                 {
-                    var inputcount = inPorts.Count();
-                    var outputcount = outPorts.Count();
-
-                    node = new DummyNode(
-                        obj["Id"].ToString(),
-                        inputcount,
-                        outputcount,
-                        objectType.Assembly.Location,
-                        obj);
-
-                    RemapPorts(node, inPorts, outPorts, resolver);
+                    node = CreateDummyNode(obj, assemblyLocation, inPorts, outPorts);
                 }
                 else
                 {
@@ -117,28 +110,30 @@ namespace Dynamo.Graph.Workspaces
                     else if (type == typeof(DSFunction))
                     {
                         node = new DSFunction(description);
-
                     }
-                    RemapPorts(node, inPorts, outPorts, resolver);
                 }
             }
             else if (type == typeof(DSVarArgFunction))
             {
                 var functionId = Guid.Parse(obj["FunctionUuid"].Value<string>());
                 node = manager.CreateCustomNodeInstance(functionId);
-                RemapPorts(node, inPorts, outPorts, resolver);
             }
             else if (type.ToString() == "CoreNodeModels.Formula")
             {
                 node = (NodeModel)obj.ToObject(type);
-                RemapPorts(node, inPorts, outPorts, resolver);
             }
             else
             {
-                //we don't need to remap ports for any nodes with json constructors which pass ports
                 node = (NodeModel)obj.ToObject(type);
+
+                // We don't need to remap ports for any nodes with json constructors which pass ports
+                remapPorts = false;
             }
-            //cannot set Lacing directly as property is protected
+
+            if (remapPorts)
+                RemapPorts(node, inPorts, outPorts, resolver);
+
+            // Cannot set Lacing directly as property is protected
             node.UpdateValue(new UpdateValueParams("ArgumentLacing", replication));
             node.GUID = guid;
 
@@ -147,17 +142,27 @@ namespace Dynamo.Graph.Workspaces
             serializer.ReferenceResolver.AddReference(serializer.Context, node.GUID.ToString(), node);
 
             foreach (var p in node.InPorts)
-            {
                 serializer.ReferenceResolver.AddReference(serializer.Context, p.GUID.ToString(), p);
-            }
+
             foreach (var p in node.OutPorts)
-            {
                 serializer.ReferenceResolver.AddReference(serializer.Context, p.GUID.ToString(), p);
-            }
-
-
+            
             return node;
         }
+
+        private DummyNode CreateDummyNode(JObject obj, string assemblyLocation, PortModel[] inPorts, PortModel[] outPorts)
+        {
+            var inputcount = inPorts.Count();
+            var outputcount = outPorts.Count();
+
+            return new DummyNode(
+                obj["Id"].ToString(),
+                inputcount,
+                outputcount,
+                assemblyLocation,
+                obj);
+        }
+
 
         /// <summary>
         /// Map old Guids to new Models in the IdReferenceResolver.
