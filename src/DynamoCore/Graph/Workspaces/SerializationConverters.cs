@@ -92,8 +92,8 @@ namespace Dynamo.Graph.Workspaces
             {
                 var mangledName = obj["FunctionSignature"].Value<string>();
 
-                var description = libraryServices.GetFunctionDescriptor(mangledName);
-                if (description == null)
+                var functionDescriptor = libraryServices.GetFunctionDescriptor(mangledName);
+                if (functionDescriptor == null)
                 {
                     node = CreateDummyNode(obj, assemblyLocation, inPorts, outPorts);
                 }
@@ -101,7 +101,7 @@ namespace Dynamo.Graph.Workspaces
                 {
                     if (type == typeof(DSVarArgFunction))
                     {
-                        node = new DSVarArgFunction(description);
+                        node = new DSVarArgFunction(functionDescriptor);
                         // The node syncs with the function definition.
                         // Then we need to make the inport count correct
                         var varg = (DSVarArgFunction)node;
@@ -109,7 +109,7 @@ namespace Dynamo.Graph.Workspaces
                     }
                     else if (type == typeof(DSFunction))
                     {
-                        node = new DSFunction(description);
+                        node = new DSFunction(functionDescriptor);
                     }
                 }
             }
