@@ -213,42 +213,33 @@
                 },
                 {
                   "path": "DSCoreNodes.DSCore.List.SortIndexByValue"
+                },
+                {
+                  "path": "BuiltIn.List.GetKeys"
+                },
+                {
+                  "path": "BuiltIn.List.GetValues"
+                },
+                {
+                  "path": "BuiltIn.List.MaximumItemByKey"
+                },
+                {
+                  "path": "BuiltIn.List.MinimumItemByKey"
+                },
+                {
+                  "path": "BuiltIn.List.ContainsKey"
+                },
+                {
+                  "path": "BuiltIn.List.RemoveKey"
+                },
+                {
+                  "path": "DSCoreNodes.DSCore.List.GroupByKey"
+                },
+                {
+                  "path": "DSCoreNodes.DSCore.List.SortByKey"
                 }
               ],
-              "childElements": [
-                {
-                  "text": "Keys",
-                  "iconUrl": "./dist/resources/Category.Keys.svg",
-                  "elementType": "category",
-                  "include": [
-                    {
-                      "path": "BuiltIn.List.GetKeys"
-                    },
-                    {
-                      "path": "BuiltIn.List.GetValues"
-                    },
-                    {
-                      "path": "BuiltIn.List.MaximumItemByKey"
-                    },
-                    {
-                      "path": "BuiltIn.List.MinimumItemByKey"
-                    },
-                    {
-                      "path": "BuiltIn.List.ContainsKey"
-                    },
-                    {
-                      "path": "BuiltIn.List.RemoveKey"
-                    },
-                    {
-                      "path": "DSCoreNodes.DSCore.List.GroupByKey"
-                    },
-                    {
-                      "path": "DSCoreNodes.DSCore.List.SortByKey"
-                    }
-                  ],
-                  "childItems": []
-                }
-              ]
+              "childElements": [ ]
             },
             {
               "text": "Generate",
