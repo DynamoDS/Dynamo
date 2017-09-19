@@ -1976,19 +1976,6 @@ a = 1;";
         }
 
         [Test]
-        public void Regress_1467273()
-        {
-            string code = @"
-def foo(x:var[]..[]) { return = 2; }
-def foo(x:var[]) { return = 1; }
-d = foo({1,2});
-";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("d", 1);
-            thisTest.VerifyBuildWarningCount(0);
-        }
-
-        [Test]
         [Category("DSDefinedClass_Ported")]
         public void Regress_1467318()
         {

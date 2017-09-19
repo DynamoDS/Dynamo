@@ -224,19 +224,23 @@ b = c[w][x][y][z];";
             Assert.AreEqual("a", indexMap.ElementAt(0).Key);
             Assert.AreEqual(1, indexMap.ElementAt(0).Value);
 
-            UpdateCodeBlockNodeContent(codeBlockNodeOne, "a = 0; \n a = 1;");
+            UpdateCodeBlockNodeContent(codeBlockNodeOne, "a = 0; \n b = 1;");
 
             indexMap = CodeBlockUtils.GetDefinitionLineIndexMap(codeBlockNodeOne.CodeStatements);
             Assert.AreEqual("a", indexMap.ElementAt(0).Key);
-            Assert.AreEqual(2, indexMap.ElementAt(0).Value);
+            Assert.AreEqual(1, indexMap.ElementAt(0).Value);
+            Assert.AreEqual("b", indexMap.ElementAt(1).Key);
+            Assert.AreEqual(2, indexMap.ElementAt(1).Value);
 
-            UpdateCodeBlockNodeContent(codeBlockNodeOne, "a = 0; \n b = 1; \n a = 2;");
+            UpdateCodeBlockNodeContent(codeBlockNodeOne, "b = 0; \n a = 1; \n c = 2;");
 
             indexMap = CodeBlockUtils.GetDefinitionLineIndexMap(codeBlockNodeOne.CodeStatements);
             Assert.AreEqual("b", indexMap.ElementAt(0).Key);
-            Assert.AreEqual(2, indexMap.ElementAt(0).Value);
+            Assert.AreEqual(1, indexMap.ElementAt(0).Value);
             Assert.AreEqual("a", indexMap.ElementAt(1).Key);
-            Assert.AreEqual(3, indexMap.ElementAt(1).Value);
+            Assert.AreEqual(2, indexMap.ElementAt(1).Value);
+            Assert.AreEqual("c", indexMap.ElementAt(2).Key);
+            Assert.AreEqual(3, indexMap.ElementAt(2).Value);
 
         }
 
