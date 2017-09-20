@@ -30,6 +30,7 @@ namespace Dynamo.Graph.Workspaces
                 Converters = new List<JsonConverter>{
                         new ConnectorConverter(),                        
                         new WorkspaceWriteConverter(engine),
+                        new DummyNodeWriteConverter(),
                         new TypedParameterConverter()
                     },
                 ReferenceResolverProvider = () => { return new IdReferenceResolver(); }

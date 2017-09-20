@@ -135,34 +135,97 @@ namespace Dynamo.Core
         public Function CreateCustomNodeInstance(
             Guid id, string name = null, bool isTestMode = false)
         {
-            CustomNodeWorkspaceModel workspace;
-            CustomNodeDefinition def;
-            CustomNodeInfo info;
+            CustomNodeDefinition def = null;
+            CustomNodeInfo info = null;
+            TryGetCustomNodeData(id, name, isTestMode, out def, out info);
+
+            return CreateCustomNodeInstance(id, name, isTestMode, def, info);
+        }
+
+        /// <summary>
+        ///     Attempts to get custom node info and definition data.
+        /// </summary>
+        /// <param name="id">Identifier referring to a custom node definition.</param>
+        /// <param name="name">
+        ///     Name for the custom node to be instantiated, used for error recovery if
+        ///     the given id could not be found.
+        /// </param>
+        /// <param name="isTestMode">
+        ///     Flag specifying whether or not this should operate in "test mode".
+        /// </param>
+        /// <param name="def">
+        ///     Custom node definition data
+        /// </param>
+        /// <param name="info">
+        ///     Custom node information data
+        /// </param>
+        public bool TryGetCustomNodeData(
+            Guid id, 
+            string name,
+            bool isTestMode, 
+            out CustomNodeDefinition def, 
+            out CustomNodeInfo info)
+        {
+            def = null;
+            info = null;
+
             // Try to get the definition, initializing the custom node if necessary
             if (TryGetFunctionDefinition(id, isTestMode, out def))
             {
                 // Got the definition, proceed as planned.
                 info = NodeInfos[id];
+                return true;
             }
-            else
+
+            // Couldn't get the workspace with the given ID, try a name lookup instead.
+            if (name != null && !TryGetNodeInfo(name, out info))
+                return false;
+
+            // Try to get the definition using the function ID, initializing the custom node if necessary
+            if (info != null && TryGetFunctionDefinition(info.FunctionId, isTestMode, out def))
+                return true;
+
+            return false;
+        }
+
+        /// <summary>
+        ///     Creates a new Custom Node Instance.
+        /// </summary>
+        /// <param name="id">Identifier referring to a custom node definition.</param>
+        /// <param name="name">
+        ///     Name for the custom node to be instantiated, used for error recovery if
+        ///     the given id could not be found.
+        /// </param>
+        /// <param name="isTestMode">
+        ///     Flag specifying whether or not this should operate in "test mode".
+        /// </param>
+        /// <param name="def">
+        ///     Custom node definition data
+        /// </param>
+        /// <param name="info">
+        ///     Custom node information data
+        /// </param>
+        public Function CreateCustomNodeInstance(
+            Guid id, 
+            string name,
+            bool isTestMode, 
+            CustomNodeDefinition def, 
+            CustomNodeInfo info)
+        {
+            if (info == null)
             {
-                // Couldn't get the workspace with the given ID, try a name lookup instead.
-                if (name != null && TryGetNodeInfo(name, out info))
-                    return CreateCustomNodeInstance(info.FunctionId, name, isTestMode);
-                
                 // Couldn't find the workspace at all, prepare for a late initialization.
-                Log(
-                    Properties.Resources.UnableToCreateCustomNodeID + id + "\"",
+                Log(Properties.Resources.UnableToCreateCustomNodeID + id + "\"",
                     WarningLevel.Moderate);
                 info = new CustomNodeInfo(id, name ?? "", "", "", "");
             }
 
             if (def == null)
-            {
                 def = CustomNodeDefinition.MakeProxy(id, info.Name);
-            }
 
             var node = new Function(def, info.Name, info.Description, info.Category);
+
+            CustomNodeWorkspaceModel workspace = null;
             if (loadedWorkspaceModels.TryGetValue(id, out workspace))
                 RegisterCustomNodeInstanceForUpdates(node, workspace);
             else
