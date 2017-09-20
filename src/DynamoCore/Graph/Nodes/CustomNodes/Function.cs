@@ -54,6 +54,24 @@ namespace Dynamo.Graph.Nodes.CustomNodes
         }
 
         /// <summary>
+        /// Initializes ports with default information when the function is unresolved.
+        /// </summary>
+        /// <param name="inputs">The input nodes for tis function node.</param>
+        /// <param name="outputs">The output nodes for tis function node.</param>
+        public void UpdatePortsForUnresolved(PortModel[] inputs, PortModel[] outputs)
+        {
+            InPorts.Clear();
+            for (int input = 0; input < inputs.Length; input++)
+                InPorts.Add(new PortModel(PortType.Input, this, new PortData(inputs[input].Name, inputs[input].ToolTip)));
+
+            OutPorts.Clear();
+            for (int output = 0; output < outputs.Length; output++)
+                OutPorts.Add(new PortModel(PortType.Output, this, new PortData(outputs[output].Name, outputs[output].ToolTip)));
+
+            RegisterAllPorts();
+        }
+
+        /// <summary>
         /// The unique id of the underlying function.
         /// </summary>
         public Guid FunctionUuid
