@@ -111,7 +111,7 @@ namespace ProtoCore.DSASM
             Count = Count + size;
         }
 
-        protected int ExpandByAcessingAt(int index)
+        protected int ExpandByAccessingAt(int index)
         {
             int retIndex = index;
 

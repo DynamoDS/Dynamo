@@ -953,6 +953,15 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Array indices must be numeric..
+        /// </summary>
+        public static string InvalidArrayIndexType {
+            get {
+                return ResourceManager.GetString("InvalidArrayIndexType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Not an valid function..
         /// </summary>
         public static string InvalidFunction {

@@ -321,7 +321,7 @@ namespace ProtoCore.DSASM
         {
             get { return optype == AddressType.ExplicitCall; }
         }
-
+    
         public bool IsArrayKey
         {
             get { return optype == AddressType.ArrayKey; }
