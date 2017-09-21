@@ -34,7 +34,9 @@ namespace Dynamo.Wpf.ViewModels.Core
                 },
             };
 
+            viewModel.ConvertNotesToAnnotations();
             var json = JsonConvert.SerializeObject(viewModel, settings);
+            viewModel.RemoveConvertedNotesFromAnnotations();
 
             return json;
         }
