@@ -1626,13 +1626,17 @@ namespace Dynamo.Graph.Workspaces
                 }
             }
 
-            foreach (ExtraNoteViewInfo noteViewInfo in workspaceViewInfo.Notes)
+            // NOTE: This is here to support early JSON graphs
+            if (workspaceViewInfo.Notes != null)
             {
-                var guidValue = IdToGuidConverter(noteViewInfo.Id);
+                foreach (ExtraNoteViewInfo noteViewInfo in workspaceViewInfo.Notes)
+                {
+                    var guidValue = IdToGuidConverter(noteViewInfo.Id);
 
-                // TODO, QNTM-1099: Figure out if ZIndex needs to be set here as well
-                var noteModel = new NoteModel(noteViewInfo.X, noteViewInfo.Y, noteViewInfo.Text, guidValue);
-                this.AddNote(noteModel);
+                    // TODO, QNTM-1099: Figure out if ZIndex needs to be set here as well
+                    var noteModel = new NoteModel(noteViewInfo.X, noteViewInfo.Y, noteViewInfo.Text, guidValue);
+                    this.AddNote(noteModel);
+                }
             }
 
             foreach (ExtraAnnotationViewInfo annotationViewInfo in workspaceViewInfo.Annotations)
