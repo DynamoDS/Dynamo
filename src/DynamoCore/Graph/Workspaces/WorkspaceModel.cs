@@ -1641,43 +1641,55 @@ namespace Dynamo.Graph.Workspaces
 
             foreach (ExtraAnnotationViewInfo annotationViewInfo in workspaceViewInfo.Annotations)
             {
-                
+                var annotationGuidValue = IdToGuidConverter(annotationViewInfo.Id);
+                var text = annotationViewInfo.Title;
+
+                if (annotationViewInfo.Nodes == null)
+                {
+                    var noteModel = new NoteModel(
+                        annotationViewInfo.Left, 
+                        annotationViewInfo.Top, 
+                        text, 
+                        annotationGuidValue);
+                    this.AddNote(noteModel);
+
+                    continue;
+                }
 
                 // Create a collection of nodes in the given annotation
                 var nodes = new List<NodeModel>();
                 foreach (string nodeId in annotationViewInfo.Nodes)
                 {
-                  var guidValue = IdToGuidConverter(nodeId);
-                  if (guidValue == null)
-                    continue;
+                    var guidValue = IdToGuidConverter(nodeId);
+                    if (guidValue == null)
+                      continue;
 
-                  // NOTE: Some nodes may be annotations and not be found here
-                  var nodeModel = Nodes.FirstOrDefault(node => node.GUID == guidValue);
-                  if (nodeModel == null)
-                    continue;
+                    // NOTE: Some nodes may be annotations and not be found here
+                    var nodeModel = Nodes.FirstOrDefault(node => node.GUID == guidValue);
+                    if (nodeModel == null)
+                      continue;
 
-                  nodes.Add(nodeModel);
+                    nodes.Add(nodeModel);
                 }
 
                 // Create a collection of notes in the given annotation
                 var notes = new List<NoteModel>();
                 foreach (string noteId in annotationViewInfo.Nodes)
                 {
-                  var guidValue = IdToGuidConverter(noteId);
-                  if (guidValue == null)
-                    continue;
+                    var guidValue = IdToGuidConverter(noteId);
+                    if (guidValue == null)
+                      continue;
 
-                  // NOTE: Some nodes may not be annotations and not be found here
-                  var noteModel = Notes.FirstOrDefault(note => note.GUID == guidValue);
-                  if (noteModel == null)
-                    continue;
+                    // NOTE: Some nodes may not be annotations and not be found here
+                    var noteModel = Notes.FirstOrDefault(note => note.GUID == guidValue);
+                    if (noteModel == null)
+                      continue;
 
-                  notes.Add(noteModel);
+                    notes.Add(noteModel);
                 }
 
-                var annotationGuidValue = IdToGuidConverter(annotationViewInfo.Id);
                 var annotationModel = new AnnotationModel(nodes, notes);
-                annotationModel.AnnotationText = annotationViewInfo.Title;
+                annotationModel.AnnotationText = text;
                 annotationModel.FontSize = annotationViewInfo.FontSize;
                 annotationModel.Background = annotationViewInfo.Background;
                 annotationModel.GUID = annotationGuidValue;
