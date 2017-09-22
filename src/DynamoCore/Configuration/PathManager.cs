@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Security.AccessControl;
+using System.Xml;
 using Dynamo.Configuration;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Interfaces;
@@ -423,20 +424,22 @@ namespace Dynamo.Core
         }
 
         /// <summary>
-        /// Checks the folder permission.
+        /// Backup the XML file.
         /// </summary>
-        /// <param name="folderPath">The folder path.</param>
+        /// <param name="xmlDoc">The XML document.</param>
+        /// <param name="filePath">The file path.</param>
         /// <returns></returns>
-        internal bool CheckFolderPermission(string folderPath)
+        internal bool BackupXMLFile(XmlDocument xmlDoc, string filePath)
         {
-            DirectoryInfo dirInfo = new DirectoryInfo(folderPath);
             try
             {
-                //If there is no write access, then you can’t read its privileges 
-                dirInfo.GetAccessControl(AccessControlSections.All);
+                var fileName = Path.GetFileNameWithoutExtension(filePath) + "_xml";
+                var extension = Path.GetExtension(filePath);
+                var savePath = Path.Combine(this.BackupDirectory, fileName + extension);
+                xmlDoc.Save(savePath);
                 return true;
             }
-            catch (PrivilegeNotHeldException)
+            catch (Exception ex)
             {
                 return false;
             }

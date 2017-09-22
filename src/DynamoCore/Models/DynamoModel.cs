@@ -1419,16 +1419,9 @@ namespace Dynamo.Models
                 //if in test mode, don't save the file in backup
                 if (!IsTestMode)
                 {
-                    var fileName = Path.GetFileNameWithoutExtension(filePath) + "_xml";
-                    var extension = Path.GetExtension(filePath);
-                    if (pathManager.CheckFolderPermission(pathManager.BackupDirectory))
+                    if (!pathManager.BackupXMLFile(xmlDoc, filePath))
                     {
-                        var savePath = Path.Combine(pathManager.BackupDirectory, fileName + extension);
-                        xmlDoc.Save(savePath);
-                    }
-                    else
-                    {
-                        Logger.Log("Backup file {0} has no write access: ", pathManager.BackupDirectory);
+                        Logger.Log("File is not saved in the backup folder {0}: ", pathManager.BackupDirectory);
                     }
                 }
               
