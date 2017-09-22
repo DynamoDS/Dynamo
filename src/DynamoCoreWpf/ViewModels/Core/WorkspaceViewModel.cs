@@ -558,7 +558,7 @@ namespace Dynamo.ViewModels
                 model.GUID = note.Model.GUID;
                 model.X = note.Left;
                 model.Y = note.Top;
-                model.Text = note.Text;
+                model.AnnotationText = note.Text;
                 _annotations.Add(new AnnotationViewModel(this, model));
             }
         }
