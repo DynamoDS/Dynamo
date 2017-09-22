@@ -96,7 +96,7 @@ namespace Dynamo.Models
     {
         /// <summary>
         /// A controller to coordinate the interactions between some DesignScript
-        /// sub components like library managment, live runner and so on.
+        /// sub components like library management, live runner and so on.
         /// </summary>
         EngineController EngineController { get; }
     }
@@ -141,6 +141,18 @@ namespace Dynamo.Models
             if (WorkspaceSaved != null)
             {
                 WorkspaceSaved(workspace);
+            }
+        }
+
+        /// <summary>
+        /// Occurs when a workspace is scheduled to be saved to a backup file.
+        /// </summary>
+        public event Action<string, bool> RequestWorkspaceBackUpSave;
+        internal void OnRequestWorkspaceBackUpSave(string path, bool isBackUp)
+        {
+            if (RequestWorkspaceBackUpSave != null)
+            {
+                RequestWorkspaceBackUpSave(path, isBackUp);
             }
         }
 
@@ -1628,11 +1640,7 @@ namespace Dynamo.Models
                     }
 
                     var savePath = pathManager.GetBackupFilePath(workspace);
-                    var oldFileName = workspace.FileName;
-                    var oldName = workspace.Name;
-                    workspace.Save(savePath, true, EngineController);
-                    workspace.FileName = oldFileName;
-                    workspace.Name = oldName;
+                    OnRequestWorkspaceBackUpSave(savePath, true);
                     backupFilesDict[workspace.Guid] = savePath;
                     Logger.Log("Backup file is saved: " + savePath);
                 }
