@@ -101,7 +101,9 @@
       <Link>Properties\AssemblySharedInfo.cs</Link>
     </Compile>
     <Compile Include="AssociativeGraph.cs" />
-    <Compile Include="DSASM\HeapObjects.cs" />
+    <Compile Include="DSASM\DSArray.cs" />
+    <Compile Include="DSASM\DSObject.cs" />
+    <Compile Include="DSASM\DSString.cs" />
     <Compile Include="Lang\InternalAttributes.cs" />
     <Compile Include="Lang\Replication\ArgumentAtLevel.cs" />
     <Compile Include="AttributeEntry.cs" />
@@ -123,7 +125,7 @@
     <Compile Include="Core.cs" />
     <Compile Include="ClassTable.cs" />
     <Compile Include="DebuggerProperties.cs" />
-    <Compile Include="DSASM\DSasmDefs.cs" />
+    <Compile Include="DSASM\Defs.cs" />
     <Compile Include="DSASM\Interpreter.cs" />
     <Compile Include="DSASM\Executable.cs" />
     <Compile Include="DSASM\Executive.cs" />

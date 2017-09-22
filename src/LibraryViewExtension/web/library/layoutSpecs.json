@@ -794,11 +794,7 @@
           "text": "Display",
           "iconUrl": "./dist/resources/Category.Display.svg",
           "elementType": "category",
-          "include": [
-            {
-              "path":  "Analysis.Analysis.Label"
-            }
-          ],
+          "include": [],
           "childElements": [
             {
               "text": "Color",
