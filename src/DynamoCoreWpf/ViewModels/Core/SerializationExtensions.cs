@@ -29,9 +29,8 @@ namespace Dynamo.Wpf.ViewModels.Core
                 TypeNameHandling = TypeNameHandling.Auto,
                 Formatting = Formatting.Indented,
                 Converters = new List<JsonConverter>{
-                    new AnnotationViewModelConverter(),
-                    new NoteViewModelConverter(),
-                },
+                    new AnnotationViewModelConverter()
+                }
             };
 
             viewModel.ConvertNotesToAnnotations();
