@@ -12,11 +12,7 @@ using Type = System.Type;
 namespace Dynamo.Wpf.ViewModels.Core.Converters
 {
     /// <summary>
-    /// The AnnotationConverter is used to serialize and deserialize AnnotationModels.
-    /// The SelectedModels property on AnnotationModel is a list of references
-    /// to ModelBase objects. During serialization we want to refer to these objects
-    /// by their ids. During deserialization, we use the ReferenceResolver to
-    /// find the correct ModelBase instances to reference.
+    /// The AnnotationViewModelConverter is used to serialize AnnotationViewModels.
     /// </summary>
     public class AnnotationViewModelConverter : JsonConverter
     {
@@ -27,37 +23,7 @@ namespace Dynamo.Wpf.ViewModels.Core.Converters
 
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
-            var obj = JObject.Load(reader);
-            var title = obj["Title"].Value<string>();
-
-            // If the id is not a guid, makes a guid based on the id of the model
-            Guid annotationId = GuidUtility.tryParseOrCreateGuid(obj["Id"].Value<string>());
-
-            // This is a string id, which should be accessible in the ReferenceResolver.
-            var models = obj["Nodes"].Values<JValue>();
-
-            var existing = models.Select(m =>
-            {
-                Guid modelId = GuidUtility.tryParseOrCreateGuid(m.Value<string>());
-                return serializer.ReferenceResolver.ResolveReference(serializer.Context, modelId.ToString());
-            });
-
-            var nodes = existing.Where(m => typeof(NodeModel).IsAssignableFrom(m.GetType())).Cast<NodeModel>();
-            var notes = existing.Where(m => typeof(NoteModel).IsAssignableFrom(m.GetType())).Cast<NoteModel>();
-
-            var anno = new AnnotationModel(nodes, notes);
-            anno.AnnotationText = title;
-            anno.GUID = annotationId;
-            anno.X = obj["Left"].Value<double>();
-            anno.Y = obj["Top"].Value<double>();
-            anno.Width = obj["Width"].Value<double>();
-            anno.Height = obj["Height"].Value<double>();
-            anno.FontSize = obj["FontSize"].Value<double>();
-            anno.InitialTop = obj["InitialTop"].Value<double>();
-            anno.InitialHeight = obj["InitialHeight"].Value<double>();
-            anno.TextBlockHeight = obj["TextblockHeight"].Value<double>();
-            anno.Background = obj["Background"].Value<string>();
-            return anno;
+            throw new NotImplementedException();
         }
 
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
