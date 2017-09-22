@@ -492,7 +492,7 @@ namespace Dynamo.ViewModels
         /// <param name="filePath"></param>
         /// <param name="engine"></param>
         /// <exception cref="ArgumentNullException">Thrown when the file path is null.</exception>
-        internal void Save(string filePath, EngineController engine = null)
+        internal void Save(string filePath, bool isBackup = false, EngineController engine = null)
         {
             if (String.IsNullOrEmpty(filePath))
             {
@@ -512,8 +512,13 @@ namespace Dynamo.ViewModels
                 // Stage 3: Save
                 File.WriteAllText(filePath, jo.ToString());
 
-                Model.FileName = filePath;
-                Model.OnSaved();
+                // Handle Workspace or CustomNodeWorkspace related non-serialization internal logic
+                // Only for actual save, update file path and recent file list
+                if (!isBackup)
+                {
+                    Model.FileName = filePath;
+                    Model.OnSaved();
+                }
             }
             catch (Exception ex)
             {

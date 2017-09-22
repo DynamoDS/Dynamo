@@ -537,6 +537,7 @@ namespace Dynamo.ViewModels
             SubscribeModelCleaningUpEvent();
             SubscribeModelUiEvents();
             SubscribeModelChangedHandlers();
+            SubscribeModelBackupFileSaveEvent();
             SubscribeUpdateManagerHandlers();
 
             InitializeAutomationSettings(startConfiguration.CommandFilePath);
@@ -631,6 +632,7 @@ namespace Dynamo.ViewModels
             UnsubscribeUpdateManagerEvents();
             UnsubscribeLoggerEvents();
             UnsubscribeModelCleaningUpEvent();
+            UnsubscribeModelBackupFileSaveEvent();
 
             model.WorkspaceAdded -= WorkspaceAdded;
             model.WorkspaceRemoved -= WorkspaceRemoved;
@@ -689,6 +691,16 @@ namespace Dynamo.ViewModels
         private void UnsubscribeModelCleaningUpEvent()
         {
             model.CleaningUp -= CleanUp;
+        }
+
+        private void SubscribeModelBackupFileSaveEvent()
+        {
+            model.RequestWorkspaceBackUpSave += SaveAs;
+        }
+
+        private void UnsubscribeModelBackupFileSaveEvent()
+        {
+            model.RequestWorkspaceBackUpSave -= SaveAs;
         }
 
         private void SubscribeModelChangedHandlers()
@@ -1391,15 +1403,15 @@ namespace Dynamo.ViewModels
         /// <param name="path">The path to the file.</param>
         /// <exception cref="IOException"></exception>
         /// <exception cref="UnauthorizedAccessException"></exception>
-        internal void SaveAs(string path)
+        internal void SaveAs(string path, bool isBackup = false)
         {
             try
             {
                 Model.Logger.Log(String.Format(Properties.Resources.SavingInProgress, path));
 
-                CurrentSpaceViewModel.Save(path, Model.EngineController);
-                
-                AddToRecentFiles(path);
+                CurrentSpaceViewModel.Save(path, isBackup, Model.EngineController);
+
+                if(!isBackup) AddToRecentFiles(path);
             }
             catch (Exception ex)
             {
