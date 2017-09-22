@@ -5,9 +5,11 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Security.AccessControl;
 using Dynamo.Configuration;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Interfaces;
+using Dynamo.Logging;
 using Dynamo.Properties;
 using DynamoUtilities;
 
@@ -418,6 +420,26 @@ namespace Dynamo.Core
             }
 
             return Path.Combine(BackupDirectory, fileName);
+        }
+
+        /// <summary>
+        /// Checks the folder permission.
+        /// </summary>
+        /// <param name="folderPath">The folder path.</param>
+        /// <returns></returns>
+        internal bool CheckFolderPermission(string folderPath)
+        {
+            DirectoryInfo dirInfo = new DirectoryInfo(folderPath);
+            try
+            {
+                //If there is no write access, then you can’t read its privileges 
+                dirInfo.GetAccessControl(AccessControlSections.All);
+                return true;
+            }
+            catch (PrivilegeNotHeldException)
+            {
+                return false;
+            }
         }
 
         #endregion

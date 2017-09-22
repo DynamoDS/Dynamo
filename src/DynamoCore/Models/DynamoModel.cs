@@ -1421,8 +1421,15 @@ namespace Dynamo.Models
                 {
                     var fileName = Path.GetFileNameWithoutExtension(filePath) + "_xml";
                     var extension = Path.GetExtension(filePath);
-                    var savePath = Path.Combine(pathManager.BackupDirectory, fileName + extension);
-                    xmlDoc.Save(savePath);
+                    if (pathManager.CheckFolderPermission(pathManager.BackupDirectory))
+                    {
+                        var savePath = Path.Combine(pathManager.BackupDirectory, fileName + extension);
+                        xmlDoc.Save(savePath);
+                    }
+                    else
+                    {
+                        Logger.Log("Backup file {0} has no write access: ", pathManager.BackupDirectory);
+                    }
                 }
               
                 WorkspaceInfo workspaceInfo;
