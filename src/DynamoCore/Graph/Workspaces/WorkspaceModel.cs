@@ -463,7 +463,7 @@ namespace Dynamo.Graph.Workspaces
                 {
                     foreach (var node in this.Nodes.OfType<Function>())
                     {
-                        dependencies.Add(node.FunctionUuid);
+                        dependencies.Add(node.FunctionSignature);
                     }
                 }
                 //else the workspace is a customnode - and we can add the dependencies directly
