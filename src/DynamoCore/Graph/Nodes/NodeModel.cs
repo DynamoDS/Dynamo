@@ -811,10 +811,11 @@ namespace Dynamo.Graph.Nodes
             }
             set
             {
+                bool oldValue = isFrozenExplicitly;
                 isFrozenExplicitly = value;
                 //If the node is Unfreezed then Mark all the downstream nodes as
                 // modified. This is essential recompiling the AST.
-                if (!value)
+                if (!value && oldValue)
                 {
                     MarkDownStreamNodesAsModified(this);
                     OnNodeModified();
