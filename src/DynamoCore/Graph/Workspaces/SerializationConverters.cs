@@ -72,7 +72,7 @@ namespace Dynamo.Graph.Workspaces
             }
             else if (type == typeof(Function))
             {
-                var functionId = Guid.Parse(obj["FunctionUuid"].Value<string>());
+                var functionId = Guid.Parse(obj["FunctionSignature"].Value<string>());
 
                 CustomNodeDefinition def = null;
                 CustomNodeInfo info = null;
@@ -115,7 +115,7 @@ namespace Dynamo.Graph.Workspaces
             }
             else if (type == typeof(DSVarArgFunction))
             {
-                var functionId = Guid.Parse(obj["FunctionUuid"].Value<string>());
+                var functionId = Guid.Parse(obj["FunctionSignature"].Value<string>());
                 node = manager.CreateCustomNodeInstance(functionId);
             }
             else if (type.ToString() == "CoreNodeModels.Formula")
