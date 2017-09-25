@@ -1427,6 +1427,16 @@ namespace Dynamo.Models
                 var xmlDoc = new XmlDocument();
                 xmlDoc.Load(filePath);
 
+                //save the file before it is migrated to JSON.
+                //if in test mode, don't save the file in backup
+                if (!IsTestMode)
+                {
+                    if (!pathManager.BackupXMLFile(xmlDoc, filePath))
+                    {
+                        Logger.Log("File is not saved in the backup folder {0}: ", pathManager.BackupDirectory);
+                    }
+                }
+              
                 WorkspaceInfo workspaceInfo;
                 if (WorkspaceInfo.FromXmlDocument(xmlDoc, filePath, IsTestMode, forceManualExecutionMode, Logger, out workspaceInfo))
                 {
