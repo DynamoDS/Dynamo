@@ -54,7 +54,6 @@ namespace Dynamo.Graph.Workspaces
         public double X;
         public double Y;
         public bool ShowGeometry;
-        public bool IsUpstreamVisible;
         public bool Excluded;
     }
 
@@ -1622,7 +1621,6 @@ namespace Dynamo.Graph.Workspaces
                     // NOTE: These parameters are not directly accessible due to undo/redo considerations
                     //       which should not be used during deserialization (see "ArgumentLacing" for details)
                     nodeModel.UpdateValue(new UpdateValueParams("IsVisible", nodeViewInfo.ShowGeometry.ToString()));
-                    nodeModel.UpdateValue(new UpdateValueParams("IsUpstreamVisible", nodeViewInfo.IsUpstreamVisible.ToString()));
                 }
             }
 

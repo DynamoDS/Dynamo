@@ -77,19 +77,7 @@ namespace Watch3DNodeModelsWpf
             OnClear();
         }
 
-        protected override void OnNodePropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-           
-            switch (e.PropertyName)
-            {
-                case "IsUpstreamVisible":
-                    UpdateUpstream();
-                    break;
-            }
-
-            base.OnNodePropertyChanged(sender, e);
-        }
-
+        
         protected override void OnRenderPackagesUpdated(NodeModel node,
             IEnumerable<IRenderPackage> renderPackages)
         {

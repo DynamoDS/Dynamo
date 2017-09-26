@@ -267,14 +267,7 @@ namespace Dynamo.ViewModels
             }
         }
 
-        public bool IsUpstreamVisible
-        {
-            get
-            {
-                return nodeLogic.IsUpstreamVisible;
-            }
-        }
-
+    
         [JsonIgnore]
         public Visibility PeriodicUpdateVisibility
         {
@@ -711,9 +704,6 @@ namespace Dynamo.ViewModels
                 case "IsVisible":
                     RaisePropertyChanged("IsVisible");
                     break;
-                case "IsUpstreamVisible":
-                    RaisePropertyChanged("IsUpstreamVisible");
-                    break;
                 case "Width":
                     RaisePropertyChanged("Width");
                     UpdateErrorBubblePosition();
@@ -994,23 +984,7 @@ namespace Dynamo.ViewModels
             DynamoViewModel.RaiseCanExecuteUndoRedo();
         }
 
-        private void ToggleIsUpstreamVisible(object parameter)
-        {
-            // Invert the visibility before setting the value
-            var visibility = (!nodeLogic.IsUpstreamVisible).ToString();
-            var command = new DynamoModel.UpdateModelValueCommand(Guid.Empty,
-                new[] { nodeLogic.GUID }, "IsUpstreamVisible", visibility);
-
-            DynamoViewModel.Model.ExecuteCommand(command);
-            DynamoViewModel.RaiseCanExecuteUndoRedo();
-        }
-
         private bool CanVisibilityBeToggled(object parameter)
-        {
-            return true;
-        }
-
-        private bool CanUpstreamVisibilityBeToggled(object parameter)
         {
             return true;
         }
