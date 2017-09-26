@@ -10,7 +10,7 @@ namespace Dynamo.Graph.Presets
     /// This class references a set of nodemodels, and a set of serialized versions of those nodemodels
     /// a client can use this class to store the state of a set of nodes from a graph
     /// </summary>
-    [Obsolete("Presets are not used anymore", false)]
+    [Obsolete("Model / Class is removed from DynamoCore", false)]
     public class PresetModel : ModelBase
     {
         private List<NodeModel> nodes;
