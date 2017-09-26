@@ -30,6 +30,11 @@ namespace Dynamo.Graph.Nodes.ZeroTouch
             }
         }
 
+        /// <summary>
+        /// It indicates which of the three types of function calls this node represents, 
+        /// a call to an external graph, a call to a function with a vararg argument, 
+        /// or a standard function.
+        /// </summary>
         public string FunctionType
         {
             get
