@@ -104,7 +104,7 @@ namespace Dynamo.Scheduler
                         case AsyncTask.TaskMergeInstruction.KeepThis:
                             droppedTasks.Add(taskQueue[index]);
                             taskQueue.RemoveAt(index);
-                            break; // eep the base task.
+                            break; // Keep the base task.
 
                         case AsyncTask.TaskMergeInstruction.KeepOther:
                             removeBaseTask = true;

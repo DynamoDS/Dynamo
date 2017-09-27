@@ -5200,7 +5200,7 @@ namespace ProtoAssociative
                 }
             }
 
-            // eep track of current pc, because when travese right node it
+            // Keep track of current pc, because when travese right node it
             // may generate null assignment ( x = null; if x hasn't been defined
             // yet - Yu Ke
             startpc = pc;

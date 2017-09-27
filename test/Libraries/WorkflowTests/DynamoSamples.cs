@@ -545,7 +545,7 @@ namespace Dynamo.Tests
             const string lineNodeID = "48175079-300b-4b1d-9953-e23d570dce12";
             AssertPreviewCount(lineNodeID, 65);
 
-            // illing excel process if there is any after running the graph.
+            // Killing excel process if there is any after running the graph.
             Process[] procs = Process.GetProcessesByName("excel");
             foreach (Process proc in procs)
                 proc.Kill();
@@ -579,7 +579,7 @@ namespace Dynamo.Tests
                 Assert.IsNotNull(point);
             }
 
-            // illing excel process if there is any after running the graph.
+            // Killing excel process if there is any after running the graph.
             Process[] procs = Process.GetProcessesByName("excel");
             foreach (Process proc in procs)
                 proc.Kill();

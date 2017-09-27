@@ -92,7 +92,7 @@ namespace Dynamo.Tests
             Assert.IsTrue(File.Exists(changedPyFilePath));
 
             // load initial settings
-            // eep in mind the initial settings file for this test has only specified a filename, not a full path
+            // keep in mind the initial settings file for this test has only specified a filename, not a full path
             var settings = PreferenceSettings.Load(settingsFilePath);
             settings.PythonTemplateFilePath = Path.Combine(settingDirectory, settings.PythonTemplateFilePath);
 

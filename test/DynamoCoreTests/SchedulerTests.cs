@@ -1283,7 +1283,7 @@ namespace Dynamo.Tests
             var cbn = CurrentDynamoModel.CurrentWorkspace.Nodes.OfType<CodeBlockNodeModel>().FirstOrDefault();
             var funcNode = CurrentDynamoModel.CurrentWorkspace.Nodes.OfType<DSFunction>().FirstOrDefault();
 
-            // eep code block node be silent so that the graph won't be
+            // Keep code block node be silent so that the graph won't be
             // executed automatically
             cbn.RaisesModificationEvents = false;
 

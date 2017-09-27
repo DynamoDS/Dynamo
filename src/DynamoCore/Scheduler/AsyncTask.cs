@@ -233,7 +233,7 @@ namespace Dynamo.Scheduler
 
         protected virtual TaskMergeInstruction CanMergeWithCore(AsyncTask otherTask)
         {
-            return TaskMergeInstruction.KeepBoth; // eeping both tasks by default.
+            return TaskMergeInstruction.KeepBoth; // Keeping both tasks by default.
         }
 
         protected virtual int CompareCore(AsyncTask otherTask)
