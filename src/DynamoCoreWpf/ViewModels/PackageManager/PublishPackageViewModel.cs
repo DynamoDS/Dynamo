@@ -180,7 +180,7 @@ namespace Dynamo.PackageManager
         }
 
         /// <summary>
-        /// eywords property </summary>
+        /// Keywords property </summary>
         /// <value>
         /// A string of space-delimited keywords</value>
         private string _Keywords = "";
@@ -204,7 +204,7 @@ namespace Dynamo.PackageManager
         }
 
         /// <summary>
-        /// eywordList property </summary>
+        /// KeywordList property </summary>
         /// <value>
         /// A list of keywords, usually produced by parsing Keywords</value>
         public List<string> KeywordList { get; set; }
