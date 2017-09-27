@@ -60,7 +60,7 @@ public class Buffer {
 		fileLen = b.fileLen;
 		bufPos = b.bufPos;
 		stream = b.stream;
-		// Keep destructor from closing the stream
+		// keep destructor from closing the stream
 		b.stream = null;
 		isUserStream = b.isUserStream;
 	}

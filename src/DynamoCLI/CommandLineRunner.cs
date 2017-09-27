@@ -99,7 +99,7 @@ namespace DynamoCLI
 
                 while (evalComplete == false)
                 {
-                    Thread.SlKeep(250);
+                    Thread.Sleep(250);
                 }
 
                 //if verbose was true, then print all nodes to the console

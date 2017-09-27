@@ -141,7 +141,7 @@ namespace Dynamo.Scheduler
         /// This method is called by DynamoScheduler when it compacts the task 
         /// queue. The result of this call indicates if either of the tasks in 
         /// comparison should be dropped from the task queue, or both should be 
-        /// ept. Tasks that are discarded during this phase will not be executed.
+        /// kept. Tasks that are discarded during this phase will not be executed.
         /// </summary>
         /// <param name="otherTask">Another task to compare with.</param>
         /// <returns>Returns the comparison result. See Comparison enumeration 

@@ -15,7 +15,7 @@ namespace ProtoFFI
 {
     /// <summary>
     /// This class creates ClassDeclNode for a given type and caches all the
-    /// imported types. This class also kKeeps the list of FFIFunctionPointer
+    /// imported types. This class also keeps the list of FFIFunctionPointer
     /// for the given type.
     /// </summary>
     public class CLRModuleType
@@ -1192,7 +1192,7 @@ namespace ProtoFFI
     }
 
     /// <summary>
-    ///     It kKeeps FFI class's attributes.
+    ///     It keeps FFI class's attributes.
     /// </summary>
     public class FFIClassAttributes : ClassAttributes
     {
@@ -1233,7 +1233,7 @@ namespace ProtoFFI
     }
 
     /// <summary>
-    /// It kKeeps FFI method's attributes.
+    /// It keeps FFI method's attributes.
     /// </summary>
     public class FFIMethodAttributes : ProtoCore.AST.AssociativeAST.MethodAttributes
     {

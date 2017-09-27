@@ -551,7 +551,7 @@ namespace Dynamo.Controls
             LoadNodeViewCustomizations();
             SubscribeNodeViewCustomizationEvents();
 
-            // ick start the automation run, if possible.
+            // Kick start the automation run, if possible.
             dynamoViewModel.BeginCommandPlayback(this);
 
             var loadedParams = new ViewLoadedParams(this, dynamoViewModel);

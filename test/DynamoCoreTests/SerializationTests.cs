@@ -130,7 +130,7 @@ namespace Dynamo.Tests
                             {
                                 ID = p.GUID.ToString(),
                                 UseLevels = p.UseLevels,
-                                KKeepListStructure = p.KKeepListStructure,
+                                KeepListStructure = p.KeepListStructure,
                                 Level = p.Level,
                                 UsingDefaultValue = p.UsingDefaultValue,
                                 Description = p.ToolTip
@@ -283,7 +283,7 @@ namespace Dynamo.Tests
                 var aPort = a.PortDataMap[portkvp.Key];
                 var bPort = b.PortDataMap[newGuid];
                 Assert.AreEqual(aPort.UseLevels, bPort.UseLevels);
-                Assert.AreEqual(aPort.KKeepListStructure, bPort.KKeepListStructure);
+                Assert.AreEqual(aPort.KeepListStructure, bPort.KeepListStructure);
                 Assert.AreEqual(aPort.Level, bPort.Level);
                 Assert.AreEqual(aPort.Description, bPort.Description);
             }
@@ -411,7 +411,7 @@ namespace Dynamo.Tests
         {
             public string ID { get; set; }
             public bool UseLevels { get; set; }
-            public bool KKeepListStructure { get; set; }
+            public bool KeepListStructure { get; set; }
             public int Level { get; set; }
             public bool UsingDefaultValue { get; set; }
             public string Description { get; set; }
@@ -420,7 +420,7 @@ namespace Dynamo.Tests
             {
                 var other = (obj as PortComparisonData);
                 return ID == other.ID &&
-                    other.KKeepListStructure == this.KKeepListStructure &&
+                    other.KeepListStructure == this.KeepListStructure &&
                     other.Level == this.Level &&
                     other.UseLevels == this.UseLevels &&
                     other.UsingDefaultValue == this.UsingDefaultValue &&
