@@ -70,7 +70,7 @@ namespace Dynamo.Tests
             return new List<NodeModel>() { numberNode1, numberNode2,addNode };
         }
 
-        [Test]
+        [Test, Ignore]
         [Category("UnitTests")]
         public void CanSavePinState()
         {
@@ -105,7 +105,7 @@ namespace Dynamo.Tests
         }
 
 
-        [Test]
+        [Test, Ignore]
         [Category("UnitTests")]
         public void CanAddPresetState()
         {
@@ -116,7 +116,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(model.CurrentWorkspace.Presets.First().Nodes.Count(), 2);
         }
 
-        [Test]
+        [Test, Ignore]
         [Category("UnitTests")]
         public void CanDeletePresetState()
         {
@@ -135,7 +135,7 @@ namespace Dynamo.Tests
         }
 
 
-        [Test]
+        [Test, Ignore]
         [Category("UnitTests")]
         public void CanAddAndRestoreState()
         {
@@ -163,7 +163,7 @@ namespace Dynamo.Tests
 
         }
 
-        [Test]
+        [Test, Ignore]
         public void CanRestoreStateAndUndo()
         {
             var nodes = SetupNumberNodesAndPresets();
@@ -200,7 +200,7 @@ namespace Dynamo.Tests
 
         }
 
-        [Test]
+        [Test, Ignore]
         public void CanRestoreStateAndUndoAndRedo()
         {
             var nodes = SetupNumberNodesAndPresets();
@@ -246,7 +246,7 @@ namespace Dynamo.Tests
 
         }
 
-        [Test]
+        [Test, Ignore]
         public void CanLoadFileWithGoodPresetsObject()
         {
             var model = CurrentDynamoModel;
@@ -271,7 +271,7 @@ namespace Dynamo.Tests
         }
 
         //this attempts to load some good states and some states with bad GUIDS, 
-        [Test]
+        [Test, Ignore]
         public void CanLoadFileWithMalformedPresetsObject()
         {
             var model = CurrentDynamoModel;
@@ -284,7 +284,7 @@ namespace Dynamo.Tests
 
         }
 
-        [Test]
+        [Test, Ignore]
         public void CanLoadFromDynWithMissingNodes()
           {
               var model = CurrentDynamoModel;
@@ -307,7 +307,7 @@ namespace Dynamo.Tests
 
           }
 
-        [Test]
+        [Test, Ignore]
         public void CanRestoreStateInGraphThatIsMissingNodes()
         {
             var nodes = SetupNumberNodesAndPresets();
@@ -330,7 +330,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(model.CurrentWorkspace.Nodes.Count(), 2);
         }
 
-        [Test]
+        [Test, Ignore]
         public void CanCreateStatesAndSave()
           {
               var nodes = SetupNumberNodesAndPresets();
@@ -376,7 +376,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(allSerializedNodesInAllStates.Count(), allSerializedNodesInAllStates2.Count());
         }
 
-        [Test]
+        [Test,Ignore]
         public void CanRestoreStateAndNodesDoNotMove()
         {
             var nodes = SetupNumberNodesAndPresets();
@@ -406,7 +406,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(numberNode2.Y, 20);
         }
 
-        [Test]
+        [Test,Ignore]
         public void CloseWorkspaceShouldClearPresets()
         {
             var nodes = SetupNumberNodesAndPresets();
@@ -419,7 +419,7 @@ namespace Dynamo.Tests
            Assert.AreEqual(0, model.CurrentWorkspace.Presets.Count());
         }
 
-        [Test]
+        [Test,Ignore]
         [Category("UnitTests")]
         public void AddPresetShouldSetDirtyFlag()
 
@@ -490,7 +490,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(model.CurrentWorkspace.HasUnsavedChanges, true);
         }
 
-        [Test]
+        [Test,Ignore]
         public void CanAddStateAndUndoAndRedo()
         {
             var nodes = SetupNumberNodesAndPresets();
@@ -512,7 +512,7 @@ namespace Dynamo.Tests
 
         }
 
-        [Test]
+        [Test,Ignore]
         public void CanDeleteStateAndUndoAndRedo()
         {
 
@@ -543,7 +543,7 @@ namespace Dynamo.Tests
 
         }
 
-        [Test]
+        [Test,Ignore]
         public void CanCreateAndApplyPresetWithUndoRedo()
         {
             var nodes = SetupNumberNodesAndPresets();
@@ -589,7 +589,7 @@ namespace Dynamo.Tests
 
         }
 
-        [Test]
+        [Test,Ignore]
         public void CanApplyPresetFromUndoRedoNodes()
         {
 

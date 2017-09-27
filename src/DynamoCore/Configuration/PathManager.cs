@@ -5,9 +5,11 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Xml;
 using Dynamo.Configuration;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Interfaces;
+using Dynamo.Logging;
 using Dynamo.Properties;
 using DynamoUtilities;
 
@@ -418,6 +420,28 @@ namespace Dynamo.Core
             }
 
             return Path.Combine(BackupDirectory, fileName);
+        }
+
+        /// <summary>
+        /// Backup the XML file.
+        /// </summary>
+        /// <param name="xmlDoc">The XML document.</param>
+        /// <param name="filePath">The file path.</param>
+        /// <returns></returns>
+        internal bool BackupXMLFile(XmlDocument xmlDoc, string filePath)
+        {
+            try
+            {
+                var fileName = Path.GetFileNameWithoutExtension(filePath) + "_xml";
+                var extension = Path.GetExtension(filePath);
+                var savePath = Path.Combine(this.BackupDirectory, fileName + extension);
+                xmlDoc.Save(savePath);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
         }
 
         #endregion
