@@ -184,6 +184,16 @@ namespace ProtoCore.SyntaxAnalysis
             return true;
         }
 
+        public virtual bool VisitDictionaryNode(DictionaryNode node)
+        {
+            for (int i = 0; i < node.Exprs.Count; ++i)
+            {
+                node.Exprs[i].Accept(this);
+            }
+
+            return true;
+        }
+
         public virtual bool VisitExprListNode(ExprListNode node)
         {
             for (int i = 0; i < node.Exprs.Count; ++i)
@@ -391,6 +401,11 @@ namespace ProtoCore.SyntaxAnalysis
         }
 
         public virtual TResult VisitExprListNode(ExprListNode node)
+        {
+            return DefaultVisit(node);
+        }
+
+        public virtual TResult VisitDictionaryNode(DictionaryNode node)
         {
             return DefaultVisit(node);
         }

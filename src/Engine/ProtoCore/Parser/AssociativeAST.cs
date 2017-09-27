@@ -30,6 +30,7 @@ namespace ProtoCore.AST.AssociativeAST
         Dynamic,
         DynamicBlock,
         ExpressionList,
+        DictionaryExpression,
         FunctionCall,
         FunctionDefintion,
         FunctionDotCall,
@@ -2216,6 +2217,67 @@ namespace ProtoCore.AST.AssociativeAST
         public override TResult Accept<TResult>(IAstVisitor<TResult> visitor)
         {
             return visitor.VisitRangeExprNode(this);
+        }
+    }
+
+    public class DictionaryNode : AssociativeNode
+    {
+        public DictionaryNode()
+        {
+            Exprs = new List<AssociativeNode>();
+        }
+
+        public DictionaryNode(DictionaryNode rhs) : base(rhs)
+        {
+            Exprs = rhs.Exprs.Select(NodeUtils.Clone).ToList();
+        }
+
+        public List<AssociativeNode> Exprs { get; set; }
+
+        public override bool Equals(object other)
+        {
+            var otherNode = other as ExprListNode;
+            return null != otherNode && Exprs.SequenceEqual(otherNode.Exprs);
+        }
+
+        public override int GetHashCode()
+        {
+            var listHashCode =
+                (Exprs == null ? base.GetHashCode() : Exprs.GetHashCode());
+
+            return listHashCode;
+        }
+
+        public override string ToString()
+        {
+            var buf = new StringBuilder();
+
+            buf.Append("{");
+            if (Exprs != null)
+            {
+                for (int i = 0; i < Exprs.Count; ++i)
+                {
+                    buf.Append(Exprs[i]);
+                    if (i < Exprs.Count - 1)
+                        buf.Append(", ");
+                }
+            }
+            buf.Append("}");
+            buf.Append(base.ToString());
+
+            return buf.ToString();
+        }
+        public override AstKind Kind
+        {
+            get
+            {
+                return AstKind.DictionaryExpression;
+            }
+        }
+
+        public override TResult Accept<TResult>(IAstVisitor<TResult> visitor)
+        {
+            return visitor.VisitDictionaryNode(this);
         }
     }
 

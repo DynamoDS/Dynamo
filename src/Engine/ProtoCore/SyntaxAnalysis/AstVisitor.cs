@@ -158,6 +158,11 @@ namespace ProtoCore.SyntaxAnalysis
             return VisitAssociativeNode(node);
         }
 
+        public virtual TAssociative VisitDictionaryNode(DictionaryNode node)
+        {
+            return VisitAssociativeNode(node);
+        }
+
         public virtual TAssociative VisitArrayNode(ArrayNode node)
         {
             return VisitAssociativeNode(node);
