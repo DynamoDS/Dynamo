@@ -16,7 +16,7 @@ using ProtoCore.Exceptions;
 
 namespace ProtoFFI
 {
-    abstract class PrimitiveMarshaler : FFIObjectMarshaler
+    abstract class PrimitiveMarshaler : FFIObjectMarshler
     {
         private readonly ProtoCore.Type mType;
         public PrimitiveMarshaler(ProtoCore.Type type)
@@ -212,14 +212,14 @@ namespace ProtoFFI
     /// </summary>
     class CollectionMarshaler : PrimitiveMarshaler
     {
-        private FFIObjectMarshaler primitiveMarshaler;
+        private FFIObjectMarshler primitiveMarshaler;
 
         /// <summary>
         /// Constructor for the CollectionMarshaler
         /// </summary>
         /// <param name="primitiveMarshaler">Marshaler to marshal primitive type</param>
         /// <param name="type">Expected DS type for marshaling</param>
-        public CollectionMarshaler(FFIObjectMarshaler primitiveMarshaler, ProtoCore.Type type)
+        public CollectionMarshaler(FFIObjectMarshler primitiveMarshaler, ProtoCore.Type type)
             : base(type)
         {
             this.primitiveMarshaler = primitiveMarshaler;
@@ -587,12 +587,12 @@ namespace ProtoFFI
     /// <summary>
     /// This class marshales CLR Objects to DS Object and vice-versa.
     /// </summary>
-    class CLRObjectMarshler : FFIObjectMarshaler
+    class CLRObjectMarshler : FFIObjectMarshler
     {
-        private static readonly Dictionary<Type, FFIObjectMarshaler> mPrimitiveMarshalers;
+        private static readonly Dictionary<Type, FFIObjectMarshler> mPrimitiveMarshalers;
         static CLRObjectMarshler()
         {
-            mPrimitiveMarshalers = new Dictionary<Type, FFIObjectMarshaler>();
+            mPrimitiveMarshalers = new Dictionary<Type, FFIObjectMarshler>();
             mPrimitiveMarshalers.Add(typeof(Int16), new IntMarshaler(Int16.MaxValue, Int16.MinValue, (long value) => (Int16)value));
             mPrimitiveMarshalers.Add(typeof(Int32), new IntMarshaler(Int32.MaxValue, Int32.MinValue, (long value) => (Int32)value));
             mPrimitiveMarshalers.Add(typeof(Int64), new IntMarshaler(Int64.MaxValue, Int64.MinValue, (long value) => value));
@@ -668,7 +668,7 @@ namespace ProtoFFI
 
             //2. Get appropriate marshaler for the expectedDSType and objType
             Type objType = obj.GetType();
-            FFIObjectMarshaler marshaler = GetMarshalerForDsType(expectedDSType, objType);
+            FFIObjectMarshler marshaler = GetMarshalerForDsType(expectedDSType, objType);
 
             //3. Got a marshaler, now marshal it.
             if (null != marshaler)
@@ -703,7 +703,7 @@ namespace ProtoFFI
                 return null;
 
             //Get the correct marshaler to unmarshal
-            FFIObjectMarshaler marshaler = GetMarshalerForCLRType(expectedCLRType, dsObject.optype);
+            FFIObjectMarshler marshaler = GetMarshalerForCLRType(expectedCLRType, dsObject.optype);
             if (null != marshaler)
                 return marshaler.UnMarshal(dsObject, context, dsi, expectedCLRType);
 
@@ -738,9 +738,9 @@ namespace ProtoFFI
         /// <param name="dsType">DS Object type, that needs to be marshaled.
         /// </param>
         /// <returns>FFIObjectMarshler or null</returns>
-        private FFIObjectMarshaler GetMarshalerForCLRType(Type clrType, AddressType dsType)
+        private FFIObjectMarshler GetMarshalerForCLRType(Type clrType, AddressType dsType)
         {
-            FFIObjectMarshaler marshaler = null;
+            FFIObjectMarshler marshaler = null;
             //Expected CLR type is object, get marshaled clrType from dsType
             Type expectedType = clrType;
             if (expectedType == typeof(object))
@@ -780,13 +780,13 @@ namespace ProtoFFI
         /// <param name="dsType">DS Type to which given objType needs to be marshaled.</param>
         /// <param name="objType">CLR object type that needs to marshal.</param>
         /// <returns>FFIObjectMarshler or null</returns>
-        private FFIObjectMarshaler GetMarshalerForDsType(ProtoCore.Type dsType, Type objType)
+        private FFIObjectMarshler GetMarshalerForDsType(ProtoCore.Type dsType, Type objType)
         {
             //Expected DS Type is pointer, so there is no primitive marshaler available.
             if (!dsType.IsIndexable && dsType.UID == (int)ProtoCore.PrimitiveType.Pointer)
                 return null;
 
-            FFIObjectMarshaler marshaler = null;
+            FFIObjectMarshler marshaler = null;
             bool marshalAsCollection = false;
             //0. String needs special handling becuase it's derived from IEnumerable.
             if (typeof(string) == objType)
@@ -875,7 +875,7 @@ namespace ProtoFFI
         /// <param name="protoCoreType">ref ProtoCore.Type</param>
         private static void ComputeDSType(Type type, ref ProtoCore.Type protoCoreType)
         {
-            FFIObjectMarshaler marshaler;
+            FFIObjectMarshler marshaler;
             Type arrayType = ComputeArrayType(type);
             if (arrayType != null)
             {
