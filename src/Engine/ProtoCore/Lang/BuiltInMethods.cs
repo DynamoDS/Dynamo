@@ -919,8 +919,8 @@ namespace ProtoCore.Lang
                     ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, Constants.kArbitraryRank),
                     Parameters = new List<KeyValuePair<string,Type>>
                     {
-                        new KeyValuePair<string, Type>("keys", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Array)),
-                        new KeyValuePair<string, Type>("values", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Array))
+                        new KeyValuePair<string, Type>("keys", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var)),
+                        new KeyValuePair<string, Type>("values", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var))
                     },
                     ID = MethodID.DictionaryByKeysValues,
                     MethodAttributes = new MethodAttributes(true),

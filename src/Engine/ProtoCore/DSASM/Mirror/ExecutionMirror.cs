@@ -967,7 +967,7 @@ namespace ProtoCore.DSASM.Mirror
             if (-1 == maximumDepth)
                 return true;
 
-            // Previously reached zero, don't keep decreasing because that 
+            // Previously reached zero, don't kKeep decreasing because that 
             // will essentially reach -1 and depth control will be disabled.
             if (0 == CurrentOutputDepth)
                 return false;

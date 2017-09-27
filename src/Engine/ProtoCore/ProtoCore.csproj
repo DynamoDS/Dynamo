@@ -171,7 +171,7 @@
     <Compile Include="DynamicFunctionTable.cs" />
     <Compile Include="Exceptions\DebugHalting.cs" />
     <Compile Include="FFI\CLRFFIFunctionPointer.cs" />
-    <Compile Include="FFI\CLRObjectMarshaler.cs" />
+    <Compile Include="FFI\CLRObjectMarshler.cs" />
     <Compile Include="FFI\ImportModuleHandler.cs" />
     <Compile Include="Parser\AssociativeAST.cs" />
     <Compile Include="Parser\AST.cs" />

@@ -276,7 +276,7 @@ namespace ProtoCore.DSASM
             Pause,
             WaitingForRoots,
             Propagate,
-            Sweep,
+            SwKeep,
         }
 
         public enum GCMark
@@ -298,7 +298,7 @@ namespace ProtoCore.DSASM
         private int gcDebt = GC_THRESHOLD;
 
         private LinkedList<StackValue> grayList;
-        private HashSet<int> sweepSet;
+        private HashSet<int> swKeepSet;
         private List<StackValue> roots;
         private Executive executive;
         private bool isDisposing = false;
@@ -642,9 +642,9 @@ namespace ProtoCore.DSASM
         /// </summary>
         private void StartCollection()
         {
-            sweepSet = new HashSet<int>(Enumerable.Range(0, heapElements.Count));
-            sweepSet.ExceptWith(freeList);
-            sweepSet.ExceptWith(fixedHeapElements);
+            swKeepSet = new HashSet<int>(Enumerable.Range(0, heapElements.Count));
+            swKeepSet.ExceptWith(freeList);
+            swKeepSet.ExceptWith(fixedHeapElements);
 
             grayList = new LinkedList<StackValue>();
             foreach (var heapPointer in roots)
@@ -680,12 +680,12 @@ namespace ProtoCore.DSASM
                     }
                     else
                     {
-                        gcState = GCState.Sweep;
+                        gcState = GCState.SwKeep;
                     }
                     break;
 
-                case GCState.Sweep:
-                    Sweep();
+                case GCState.SwKeep:
+                    SwKeep();
                     MarkAllWhite();
                     gcState = GCState.Pause;
                     IsGCRunning = false;
@@ -694,11 +694,11 @@ namespace ProtoCore.DSASM
         }
 
         /// <summary>
-        /// Sweep all heap elements that are marked as white.
+        /// SwKeep all heap elements that are marked as white.
         /// </summary>
-        private void Sweep()
+        private void SwKeep()
         {
-            foreach (var ptr in sweepSet)
+            foreach (var ptr in swKeepSet)
             {
                 var hp = heapElements[ptr];
                 if (hp.Mark != GCMark.White)

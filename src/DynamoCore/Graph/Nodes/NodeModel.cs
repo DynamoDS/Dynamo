@@ -1980,18 +1980,18 @@ namespace Dynamo.Graph.Nodes
                     return true;
 
                 case "KeepListStructure":
-                    var keepListStructureInfos = value.Split(new[] { ':' });
-                    if (keepListStructureInfos != null && keepListStructureInfos.Count() == 2)
+                    var KeepListStructureInfos = value.Split(new[] { ':' });
+                    if (KeepListStructureInfos != null && KeepListStructureInfos.Count() == 2)
                     {
                         int portIndex;
-                        bool keepListStructure;
-                        if (int.TryParse(keepListStructureInfos[0], out portIndex) &&
-                            bool.TryParse(keepListStructureInfos[1], out keepListStructure))
+                        bool KeepListStructure;
+                        if (int.TryParse(KeepListStructureInfos[0], out portIndex) &&
+                            bool.TryParse(KeepListStructureInfos[1], out KeepListStructure))
                         {
-                            inPorts[portIndex].KeepListStructure = keepListStructure;
-                            if (keepListStructure)
+                            inPorts[portIndex].KeepListStructure = KeepListStructure;
+                            if (KeepListStructure)
                             {
-                                // Only allow one input port to keep list structure
+                                // Only allow one input port to kKeep list structure
                                 for (int i = 0; i < inPorts.Count; i++)
                                 {
                                     if (portIndex != i && inPorts[i].KeepListStructure)

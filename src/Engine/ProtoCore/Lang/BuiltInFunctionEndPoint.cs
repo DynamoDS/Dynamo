@@ -159,11 +159,11 @@ namespace ProtoCore.Lang
                             ret = ProtoCore.DSASM.StackValue.BuildBoolean(ArrayUtilsForBuiltIns.SomeTrue(args[0], interpreter));
                         break;
                     }
-                case BuiltInMethods.MethodID.SlKeep:
+                case BuiltInMethods.MethodID.Sleep:
                     {
                         StackValue stackValue = args[0];
                         if (stackValue.IsInteger)
-                            System.Threading.Thread.SlKeep((int)stackValue.IntegerValue);
+                            System.Threading.Thread.Sleep((int)stackValue.IntegerValue);
                         else
                         {
                             runtimeCore.RuntimeStatus.LogWarning(
