@@ -99,7 +99,7 @@ namespace DynamoCLI
 
                 while (evalComplete == false)
                 {
-                    Thread.Sleep(250);
+                    Thread.SlKeep(250);
                 }
 
                 //if verbose was true, then print all nodes to the console
@@ -139,7 +139,7 @@ namespace DynamoCLI
         private static string GetStringRepOfCollection(ProtoCore.Mirror.MirrorData collection)
         {
 
-           var items = string.Join(",", collection.GetValues().Select(x => x.IsCollection ? GetStringRepOfCollection(x) : x.StringData));
+           var items = string.Join(",", collection.GetElements().Select(x => x.IsCollection ? GetStringRepOfCollection(x) : x.StringData));
             return "{"+items +"}";
 
         }

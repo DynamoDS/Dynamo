@@ -103,7 +103,7 @@ namespace Dynamo.Controls
 
         /// <summary>
         /// Used to present useful/important information to user
-        /// nown usages (when this summary is written): DynamoView and NodeView (via DataTemplates.xaml)
+        /// Known usages (when this summary is written): DynamoView and NodeView (via DataTemplates.xaml)
         /// Till date there are 5 major types of info bubble
         /// 1. LibraryItemPreview:  Displayed when mouse hover over an item in the search view
         /// 2. NodeTooltip:         Displayed when mouse hover over the title area of a node

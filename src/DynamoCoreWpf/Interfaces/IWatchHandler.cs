@@ -124,7 +124,7 @@ namespace Dynamo.Interfaces
         {
             if (data.IsArray)
             {
-                var list = data.GetValues();
+                var list = data.GetElements();
 
                 var node = new WatchViewModel(!list.Any() ? WatchViewModel.EMPTY_LIST : WatchViewModel.LIST, tag, RequestSelectGeometry, true);
                 foreach (var e in list.Select((element, idx) => new { element, idx }))
@@ -136,7 +136,7 @@ namespace Dynamo.Interfaces
             }
             else if (data.IsDictionary)
             {
-                var list = data.GetValues();
+                var list = data.GetElements();
 
                 var node = new WatchViewModel(!list.Any() ? WatchViewModel.EMPTY_DICTIONARY : WatchViewModel.DICTIONARY, tag, RequestSelectGeometry, true);
                 foreach (var e in list.Select((element, idx) => new { element, idx }))

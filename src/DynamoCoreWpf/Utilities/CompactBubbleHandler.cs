@@ -45,7 +45,7 @@ namespace Dynamo.Wpf.Utilities
 
             if (mirrorData.IsArray)
             {
-                var list = mirrorData.GetValues();
+                var list = mirrorData.GetElements();
 
                 foreach (var item in list)
                 {
@@ -61,7 +61,7 @@ namespace Dynamo.Wpf.Utilities
             }
             else if (mirrorData.IsDictionary)
             {
-                var list = mirrorData.GetValues();
+                var list = mirrorData.GetElements();
 
                 foreach (var item in list)
                 {

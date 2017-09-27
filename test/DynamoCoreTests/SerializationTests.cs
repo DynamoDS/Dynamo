@@ -130,7 +130,7 @@ namespace Dynamo.Tests
                             {
                                 ID = p.GUID.ToString(),
                                 UseLevels = p.UseLevels,
-                                KeepListStructure = p.KeepListStructure,
+                                KKeepListStructure = p.KKeepListStructure,
                                 Level = p.Level,
                                 UsingDefaultValue = p.UsingDefaultValue,
                                 Description = p.ToolTip
@@ -158,7 +158,7 @@ namespace Dynamo.Tests
         {
             if (value.IsCollection)
             {
-                return value.GetValues().Select(x => GetDataOfValue(x)).ToList<object>();
+                return value.GetElements().Select(x => GetDataOfValue(x)).ToList<object>();
             }
 
             if (!value.IsPointer)
@@ -283,7 +283,7 @@ namespace Dynamo.Tests
                 var aPort = a.PortDataMap[portkvp.Key];
                 var bPort = b.PortDataMap[newGuid];
                 Assert.AreEqual(aPort.UseLevels, bPort.UseLevels);
-                Assert.AreEqual(aPort.KeepListStructure, bPort.KeepListStructure);
+                Assert.AreEqual(aPort.KKeepListStructure, bPort.KKeepListStructure);
                 Assert.AreEqual(aPort.Level, bPort.Level);
                 Assert.AreEqual(aPort.Description, bPort.Description);
             }
@@ -411,7 +411,7 @@ namespace Dynamo.Tests
         {
             public string ID { get; set; }
             public bool UseLevels { get; set; }
-            public bool KeepListStructure { get; set; }
+            public bool KKeepListStructure { get; set; }
             public int Level { get; set; }
             public bool UsingDefaultValue { get; set; }
             public string Description { get; set; }
@@ -420,7 +420,7 @@ namespace Dynamo.Tests
             {
                 var other = (obj as PortComparisonData);
                 return ID == other.ID &&
-                    other.KeepListStructure == this.KeepListStructure &&
+                    other.KKeepListStructure == this.KKeepListStructure &&
                     other.Level == this.Level &&
                     other.UseLevels == this.UseLevels &&
                     other.UsingDefaultValue == this.UsingDefaultValue &&

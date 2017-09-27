@@ -573,7 +573,7 @@ namespace Dynamo.Tests
 
             Assert.IsTrue(splitListVal.IsCollection);
 
-            var outs = splitListVal.GetValues().ToList();
+            var outs = splitListVal.GetElements().ToList();
 
             Assert.AreEqual(2, outs.Count);
 
@@ -582,7 +582,7 @@ namespace Dynamo.Tests
 
             var out2 = outs[1];
             Assert.IsTrue(out2.IsCollection);
-            Assert.IsFalse(out2.GetValues().Any());
+            Assert.IsFalse(out2.GetElements().Any());
         }
 
         [Test]

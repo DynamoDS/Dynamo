@@ -1016,7 +1016,7 @@ r = b[""xyz""];
         [Test]
         public void TestDictionary10()
         {
-            // ey-value shouldn't be disposed after scope
+            // Key-value shouldn't be disposed after scope
             String code = @"
 a = [Imperative]
 {

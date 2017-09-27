@@ -142,7 +142,7 @@ namespace ProtoCore
             /// A list of MirrorData objects if this object represents an array or dictionary,
             /// otherwise null.
             /// </summary>
-            public IEnumerable<MirrorData> GetValues() 
+            public IEnumerable<MirrorData> GetElements() 
             {
                 switch (svData.optype)
                 {

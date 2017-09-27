@@ -783,7 +783,7 @@ namespace ProtoTest.LiveRunner
             liveRunner.UpdateGraph(syncData);
 
             ProtoCore.Mirror.RuntimeMirror mirror = liveRunner.InspectNodeValue("a");
-            var collection = mirror.GetData().GetValues().ToList();
+            var collection = mirror.GetData().GetElements().ToList();
             Assert.IsTrue((Int64)collection[1].Data == 1);
         }
 

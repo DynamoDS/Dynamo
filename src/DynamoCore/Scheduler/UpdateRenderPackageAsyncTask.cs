@@ -148,7 +148,7 @@ namespace Dynamo.Scheduler
             if (mirrorData.IsCollection)
             {
                 int count = 0;
-                foreach (var el in mirrorData.GetValues())
+                foreach (var el in mirrorData.GetElements())
                 {
                     if (el.IsCollection || el.Data is IGraphicItem)
                     {
@@ -333,19 +333,19 @@ namespace Dynamo.Scheduler
                 return base.CanMergeWithCore(otherTask);
 
             // If the two UpdateRenderPackageAsyncTask are for different nodes,
-            // then there is no comparison to be made, keep both the tasks.
+            // then there is no comparison to be made, kKeep both the tasks.
             // 
             if (nodeGuid != theOtherTask.nodeGuid)
-                return TaskMergeInstruction.KeepBoth;
+                return TaskMergeInstruction.KKeepBoth;
 
             // Comparing to another NotifyRenderPackagesReadyAsyncTask, the one 
             // that gets scheduled more recently stay, while the earlier one 
-            // gets dropped. If this task has a higher tick count, keep this.
+            // gets dropped. If this task has a higher tick count, kKeep this.
             // 
             if (ScheduledTime.TickCount > theOtherTask.ScheduledTime.TickCount)
-                return TaskMergeInstruction.KeepThis;
+                return TaskMergeInstruction.KKeepThis;
 
-            return TaskMergeInstruction.KeepOther; // Otherwise, keep the other.
+            return TaskMergeInstruction.KKeepOther; // Otherwise, kKeep the other.
         }
 
         #endregion
