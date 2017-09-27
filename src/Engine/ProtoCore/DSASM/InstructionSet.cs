@@ -30,7 +30,6 @@ namespace ProtoCore.DSASM
         BlockIndex,
         Pointer,
         ArrayPointer,
-        MapPointer,
         FunctionPointer,
         Null,
         DefaultArg,
@@ -272,7 +271,7 @@ namespace ProtoCore.DSASM
 
         public bool IsDictionary
         {
-            get { return optype == AddressType.MapPointer; }
+            get { return optype == AddressType.DictionaryPointer; }
         }
 
         public bool IsFunctionPointer
