@@ -250,7 +250,7 @@ namespace Dynamo.Manipulation
             WorkspaceModel = wsm;
             manipulatorNodes = new List<NodeModel>();
 
-            // kill all manipulators in current workspace
+            // ill all manipulators in current workspace
             if (manipulatorDaemon != null)
             {
                 manipulatorDaemon.KillAll();
@@ -317,7 +317,7 @@ namespace Dynamo.Manipulation
         }
 
         /// <summary>
-        /// Kills the manipulators on the given node. This method will unregister the
+        /// ills the manipulators on the given node. This method will unregister the
         /// property changed event handler if the node is not selected.
         /// </summary>
         /// <param name="node">Input node</param>

@@ -69,67 +69,69 @@ namespace ProtoCore.Lang
             TryGetValueFromNestedDictionaries,
             NodeAstFailed,
             GC,
+            DictionaryByKeysValues
         }
 
         private static string[] methodNames = new string[]
         {
-            "AllFalse",                 // kAllFalse
-            "AllTrue",                  // kAllTrue
-            "Average",                  // kAverage
-            "Concat",                   // kConcat
-            "Contains",                 // kContains
-            "Count",                    // kCount
-            "CountTrue",                // kCountTrue
-            "CountFalse",               // kCountFalse
-            "SetDifference",            // kDifference
-            "%dot",                     // kDot
-            "__Equals",                   // kEquals
-            "GetElapsedTime",           // kGetElapsedTime
-            Constants.kGetTypeMethodName,// kGetType
-            "Flatten",                  // kFlatten
-            "ImportData",               // kImportData
-            "IndexOf",                  // kIndexOf
-            "Insert",                   // kInsert
+            "AllFalse",                 // AllFalse
+            "AllTrue",                  // AllTrue
+            "Average",                  // Average
+            "Concat",                   // Concat
+            "Contains",                 // Contains
+            "Count",                    // Count
+            "CountTrue",                // CountTrue
+            "CountFalse",               // CountFalse
+            "SetDifference",            // Difference
+            "%dot",                     // Dot
+            "__Equals",                 // Equals
+            "GetElapsedTime",           // GetElapsedTime
+            Constants.kGetTypeMethodName,// GetType
+            "Flatten",                  // Flatten
+            "ImportData",               // ImportData
+            "IndexOf",                  // IndexOf
+            "Insert",                   // Insert
             "SetIntersection",          // Intersection
-            "IsUniformDepth",           // kIsUniformDepth
-            "IsRectangular",            // kIsRectangular
-            "IsHomogeneous",            // kIsHomogeneous
-            "ImportFromCSV",            // kLoadCSV
-            "Map",                      // kMap
-            "MapTo",                    // kMapTo
-            "NormalizeDepth",           // kNormalizeDepth
-            "Print",                    // kPrint
-            "Rank",                     // kRank
-            "Remove",                   // kRemove
-            "RemoveDuplicates",         // kRemoveDuplicates
-            "RemoveNulls",              // kRemoveNulls
-            "__RemoveIfNot",              // kRemoveIfNot
-            "Reverse",                  // kReverse
-            "Sleep",                    // kSleep
-            "SomeFalse",                // kSomeFalse
-            "SomeNulls",                // kSomeNulls
-            "SomeTrue",                 // kSomeTrue
-            "Sort",                     // kSort
-            "SortIndexByValue",         // kSortIndexByValue
-            "Sort",                     // kSortPointer
-            "Reorder",                  // kReorder
-            Constants.kFunctionRangeExpression, // kGenerateRange
-            "Sum",                      // kSum
-            "ToString",                 // kToString               
-            "__ToStringFromObject",     // kToStringFromObject
-            "__ToStringFromArray",      // kToStringFromArray
-            "Transpose",                // kTranspose
-            "SetUnion",                 // kUnion
+            "IsUniformDepth",           // IsUniformDepth
+            "IsRectangular",            // IsRectangular
+            "IsHomogeneous",            // IsHomogeneous
+            "ImportFromCSV",            // LoadCSV
+            "Map",                      // Map
+            "MapTo",                    // MapTo
+            "NormalizeDepth",           // NormalizeDepth
+            "Print",                    // Print
+            "Rank",                     // Rank
+            "Remove",                   // Remove
+            "RemoveDuplicates",         // RemoveDuplicates
+            "RemoveNulls",              // RemoveNulls
+            "__RemoveIfNot",            // RemoveIfNot
+            "Reverse",                  // Reverse
+            "Sleep",                    // Sleep
+            "SomeFalse",                // SomeFalse
+            "SomeNulls",                // SomeNulls
+            "SomeTrue",                 // SomeTrue
+            "Sort",                     // Sort
+            "SortIndexByValue",         // SortIndexByValue
+            "Sort",                     // SortPointer
+            "Reorder",                  // Reorder
+            Constants.kFunctionRangeExpression, // GenerateRange
+            "Sum",                      // Sum
+            "ToString",                 // ToString               
+            "__ToStringFromObject",     // ToStringFromObject
+            "__ToStringFromArray",      // ToStringFromArray
+            "Transpose",                // Transpose
+            "SetUnion",                 // Union
             Constants.kInlineConditionalMethodName,
-            "Break",                    // kBreak
-            "__GetKeys",                  // kGetKeys    
-            "__GetValues",                // kGetValues    
-            "__RemoveKey",                // kRemoveKey
-            "__ContainsKey",              // kContainsKey
-            "Evaluate",                 // kEvaluateFunctionPointer
-            "__TryGetValueFromNestedDictionaries",// kTryGetValueFromNestedDictionaries
-            Constants.kNodeAstFailed,   // kNodeAstFailed
-            "__GC",                     // kGC
+            "Break",                    // Break
+            "__GetKeys",                  // GetKeys    
+            "__GetValues",                // GetValues    
+            "__RemoveKey",                // RemoveKey
+            "__ContainsKey",              // ContainsKey
+            "Evaluate",                 // EvaluateFunctionPointer
+            "__TryGetValueFromNestedDictionaries",// TryGetValueFromNestedDictionaries
+            Constants.kNodeAstFailed,   // NodeAstFailed
+            "__GC",                     // GC
+            "__DictionaryByKeysValues", // DictionaryByKeysValues
         };
 
         public static string GetMethodName(MethodID id)
@@ -910,7 +912,19 @@ namespace ProtoCore.Lang
                      Parameters = new List<KeyValuePair<string,Type>>(),
                      ID = MethodID.GC,
                      MethodAttributes  = new MethodAttributes(true),
-                 }
+                 },
+
+                new BuiltInMethod
+                {
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, Constants.kArbitraryRank),
+                    Parameters = new List<KeyValuePair<string,Type>>
+                    {
+                        new KeyValuePair<string, Type>("keys", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Array)),
+                        new KeyValuePair<string, Type>("values", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Array))
+                    },
+                    ID = MethodID.DictionaryByKeysValues,
+                    MethodAttributes = new MethodAttributes(true),
+                },
             };
         }
     }

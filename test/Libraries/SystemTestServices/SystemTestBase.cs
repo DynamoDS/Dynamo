@@ -295,7 +295,7 @@ namespace SystemTestServices
 
             var data = mirror.GetData();
             Assert.IsTrue(data.IsCollection);
-            Assert.AreEqual(count, data.GetElements().ToList().Count);
+            Assert.AreEqual(count, data.GetValues().ToList().Count);
         }
 
         public NodeModel GetNode<T>(string guid) where T : NodeModel
@@ -334,7 +334,7 @@ namespace SystemTestServices
                 Assert.Fail("The mirror has no data.");
             }
 
-            var dataColl = mirror.GetData().GetElements();
+            var dataColl = mirror.GetData().GetValues();
             if (dataColl == null)
             {
                 return null;
@@ -353,7 +353,7 @@ namespace SystemTestServices
             var data = mirror.GetData();
             if (data == null) return null;
             if (!data.IsCollection) return null;
-            var elements = data.GetElements().ToList();
+            var elements = data.GetValues().ToList();
             return elements[index].Data;
         }
 
@@ -368,7 +368,7 @@ namespace SystemTestServices
             {
                 return data.Data == null ? new List<object>() : new List<object>() { data.Data };
             }
-            var elements = data.GetElements();
+            var elements = data.GetValues();
 
             var objects = GetSublistItems(elements);
 
@@ -397,7 +397,7 @@ namespace SystemTestServices
                 }
                 else
                 {
-                    objects.AddRange(GetSublistItems(data.GetElements()));
+                    objects.AddRange(GetSublistItems(data.GetValues()));
                 }
             }
             return objects;

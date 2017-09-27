@@ -158,7 +158,7 @@ namespace Dynamo.Tests
         {
             if (value.IsCollection)
             {
-                return value.GetElements().Select(x => GetDataOfValue(x)).ToList<object>();
+                return value.GetValues().Select(x => GetDataOfValue(x)).ToList<object>();
             }
 
             if (!value.IsPointer)

@@ -170,7 +170,7 @@ namespace Dynamo.Controls
         {
             // focusing grid allows to remove focus from current textbox
             FocusableGrid.Focus();
-            // keep handling input bindings of DynamoView
+            // eep handling input bindings of DynamoView
             Keyboard.Focus(this);
         }
 
@@ -551,7 +551,7 @@ namespace Dynamo.Controls
             LoadNodeViewCustomizations();
             SubscribeNodeViewCustomizationEvents();
 
-            // Kick start the automation run, if possible.
+            // ick start the automation run, if possible.
             dynamoViewModel.BeginCommandPlayback(this);
 
             var loadedParams = new ViewLoadedParams(this, dynamoViewModel);

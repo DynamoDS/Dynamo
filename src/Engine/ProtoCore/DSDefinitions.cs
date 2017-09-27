@@ -31,6 +31,7 @@
         public const string Char = "char";
         public const string Void = "void";
         public const string Array = "__array";
+        public const string Dictionary = "__dictionary";
         public const string Null = "null";
         public const string FunctionPointer = "function";
         public const string True = "true";

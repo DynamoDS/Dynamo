@@ -202,7 +202,7 @@ namespace DynamoCoreWpfTests
         {
             /*
             // "StringDirectory" class validates the directory name, so here we use one that we 
-            // know for sure exists so the validation process won't turn it into empty string.
+            // now for sure exists so the validation process won't turn it into empty string.
             var validFilePath = Assembly.GetExecutingAssembly().Location;
             var validDirectoryName = Path.GetDirectoryName(validFilePath);
 

@@ -905,7 +905,7 @@ namespace ProtoTestFx.TD
         private static void AssertCollection(MirrorData data, IEnumerable collection)
         {
             Assert.IsTrue(data.IsCollection);
-            List<MirrorData> elements = data.GetElements().ToList();
+            List<MirrorData> elements = data.GetValues().ToList();
             int i = 0;
             foreach (var item in collection)
             {

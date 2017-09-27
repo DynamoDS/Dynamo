@@ -67,7 +67,7 @@ namespace DynamoCoreWpfTests
         {
             Assert.IsNotNull(mirrorData);
             if (mirrorData.IsCollection)
-                AssertWatchTreeBranchContent(watch.Children, mirrorData.GetElements().ToList());
+                AssertWatchTreeBranchContent(watch.Children, mirrorData.GetValues().ToList());
             else if (mirrorData.IsNull)
                 Assert.AreEqual("null", watch.NodeLabel);
             else

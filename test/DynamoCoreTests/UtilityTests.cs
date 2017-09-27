@@ -146,7 +146,7 @@ namespace Dynamo.Tests
         //[Category("UnitTests")]
         //public void ResolveType03()
         //{
-        //    // Known internal type.
+        //    // nown internal type.
         //    string fqn = "Dynamo.Nodes.Addition";
         //    Type type;
         //    Assert.IsTrue(ViewModel.Model.NodeFactory.ResolveType(fqn, out type));

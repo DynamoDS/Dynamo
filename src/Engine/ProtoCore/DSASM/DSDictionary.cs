@@ -9,50 +9,62 @@ using ProtoCore.Exceptions;
 
 namespace ProtoCore.DSASM
 {
-    public class DSArray : HeapElement
+    public class DSDictionary : HeapElement
     {
-        /// <summary>
-        /// Create an array with pre-allocated size.
-        /// </summary>
-        public DSArray(int size, Heap heap)
-            : base(size, heap)
+        // Kept around basically for convenience. Strictly speaking, the keys/values are owned by the DS heap. TODO(boyerp) verify
+        private Dictionary<StackValue, StackValue> Contents;
+
+        internal static StackValue ByKeysValues(DSArray keys, DSArray values, RuntimeCore runtimeCore)
         {
-            MetaData = new MetaData { type = (int)PrimitiveType.Array };
+            var keysArr = keys.Values.ToArray();
+            var valuesArr = values.Values.ToArray();
+
+            // TODO(pboyer) verify the type of the keys, skipping non-string/numeric key/value pairs
+            if (keysArr.Length != valuesArr.Length)
+            {
+                runtimeCore.RuntimeStatus.LogWarning(WarningID.Default, "Number of keys does not match the number of values"); // TODO(pboyer) move into resource
+                return StackValue.Null;
+            }
+
+            return runtimeCore.Heap.AllocateDictionary(keysArr, valuesArr);
         }
 
         /// <summary>
-        /// Create an array and populate with input values
+        /// Create a DSDictionary. This should only be called by Heap itself.
         /// </summary>
-        public DSArray(StackValue[] values, Heap heap)
-            : base(values, heap)
+        internal DSDictionary(IEnumerable<StackValue> keys, IEnumerable<StackValue> values, Heap heap)
+            : base(keys.Concat(values).ToArray(), heap)
         {
-            MetaData = new MetaData { type = (int)PrimitiveType.Array };
+            Contents = keys
+                .Zip(values, (a, b) => new KeyValuePair<StackValue, StackValue>(a, b))
+                .ToDictionary(p => p.Key, p => p.Value);
+            MetaData = new MetaData { type = (int)PrimitiveType.Dictionary };
         }
 
         public IEnumerable<StackValue> Keys
         {
             get
             {
-                return Enumerable.Range(0, Count).Select(i => StackValue.BuildInt(i));
+                return Contents.Keys;
             }
         }
 
-        /// <summary>
-        /// Enqueue all reference-typed element.
-        /// Note: it is only used by heap manager to do garbage collection.
-        /// </summary>
-        /// <returns></returns>
-        public void CollectElementsForGC(Queue<StackValue> gcQueue)
+        public override IEnumerable<StackValue> Values
         {
-            foreach (var item in Values)
+            get
             {
-                if (item.IsReferenceType)
-                {
-                    gcQueue.Enqueue(item);
-                }
+                return Contents.Values;
             }
         }
 
+        public override int MemorySize
+        {
+            get
+            {
+                return base.MemorySize + Contents.Keys.Count + Contents.Values.Count;
+            }
+        }
+        
         /// <summary>
         /// Returns true if array contain key or not.
         /// </summary>
@@ -60,15 +72,17 @@ namespace ProtoCore.DSASM
         {
             if (key.IsNumeric)
             {
-                var index = (int)key.ToInteger().IntegerValue;
+                int index = (int)key.ToInteger().IntegerValue;
                 if (index < 0)
                 {
                     index = index + Count;
                 }
                 return (index >= 0 && index < Count);
             }
-
-            return false;
+            else
+            {
+                return Contents != null && Contents.ContainsKey(key);
+            }
         }
 
         /// <summary>
@@ -95,16 +109,80 @@ namespace ProtoCore.DSASM
                     return true;
                 }
             }
+            else
+            {
+                if (Contents != null && Contents.ContainsKey(key))
+                {
+                    Contents.Remove(key);
+                    return true;
+                }
+            }
 
             return false;
         }
 
-        public IDictionary<StackValue,StackValue> ToDictionary()
+        /// <summary>
+        /// Try to get value for key from nested dictionaries. This function is
+        /// used in the case that indexing into dictionaries that returned from
+        /// a replicated function whose return type is dictionary.
+        /// </summary>
+
+        public bool TryGetValueFromNestedDictionaries(StackValue key, out StackValue value, RuntimeCore runtimeCore)
         {
-            return Enumerable.Range(0, Count)
-                .Select(i => new KeyValuePair<StackValue, StackValue>(StackValue.BuildInt(i), GetValueAt(i)))
-                .ToDictionary(p => p.Key, p => p.Value);
+            if (Contents != null && Contents.TryGetValue(key, out value))
+            {
+                return true;
+            }
+
+            var values = new List<StackValue>();
+            bool hasValue = false;
+            foreach (var element in Values)
+            {
+                if (!(element.IsArray))
+                    continue;
+
+                StackValue valueInElement;
+                var subArray = heap.ToHeapObject<DSDictionary>(element);
+                if (subArray.TryGetValueFromNestedDictionaries(key, out valueInElement, runtimeCore))
+                {
+                    hasValue = true;
+                    values.Add(valueInElement);
+                }
+            }
+
+            if (hasValue)
+            {
+                try
+                {
+                    value = heap.AllocateArray(values.ToArray());
+                    return true;
+                }
+                catch (RunOutOfMemoryException)
+                {
+                    value = StackValue.Null;
+                    runtimeCore.RuntimeStatus.LogWarning(WarningID.RunOutOfMemory, Resources.RunOutOfMemory);
+                    return false;
+                }
+            }
+            else
+            {
+                value = StackValue.Null;
+                return false;
+            }
         }
+
+        /// <summary>
+        /// Returns a list of key-value pairs for an array.
+        /// </summary>
+        public IDictionary<StackValue, StackValue> ToDictionary()
+        {
+            var dict = Enumerable.Range(0, Count)
+                                 .Select(i => new KeyValuePair<StackValue, StackValue>(StackValue.BuildInt(i), GetValueAt(i)))
+                                 .Concat(Contents ?? Enumerable.Empty<KeyValuePair<StackValue, StackValue>>())
+                                 .ToDictionary(p => p.Key, p => p.Value);
+            return dict;
+        }
+
 
         public StackValue CopyArray(RuntimeCore runtimeCore)
         {
@@ -118,17 +196,32 @@ namespace ProtoCore.DSASM
 
         public StackValue CopyArray(Type type, RuntimeCore runtimeCore)
         {
-            var elements = new StackValue[Count];
+            StackValue[] elements = new StackValue[Count];
             for (int i = 0; i < Count; i++)
             {
-                var coercedValue = TypeSystem.Coerce(GetValueAt(i), type, runtimeCore);
+                StackValue coercedValue = TypeSystem.Coerce(GetValueAt(i), type, runtimeCore);
                 elements[i] = coercedValue;
+            }
+
+            Dictionary<StackValue, StackValue> dict = null;
+            if (Contents != null)
+            {
+                dict = new Dictionary<StackValue, StackValue>(new StackValueComparer(runtimeCore));
+                foreach (var pair in Contents)
+                {
+                    StackValue key = pair.Key;
+                    StackValue value = pair.Value;
+                    StackValue coercedValue = TypeSystem.Coerce(value, type, runtimeCore);
+
+                    dict[key] = coercedValue;
+                }
             }
 
             try
             {
                 var svArray = heap.AllocateArray(elements);
-                var array = heap.ToHeapObject<DSArray>(svArray);
+                var array = heap.ToHeapObject<DSDictionary>(svArray);
+                array.Contents = dict;
                 return svArray;
             }
             catch (RunOutOfMemoryException)
@@ -162,7 +255,7 @@ namespace ProtoCore.DSASM
                 return StackValue.Null;
             }
 
-            var oldValue = GetValueAt(index);
+            StackValue oldValue = GetValueAt(index);
             SetValueAt(index, value);
             return oldValue;
         }
@@ -176,12 +269,20 @@ namespace ProtoCore.DSASM
         {
             if (index.IsNumeric)
             {
-                return SetValueForIndex((int)index.ToInteger().IntegerValue, value, runtimeCore);
+                index = index.ToInteger();
+                return SetValueForIndex((int)index.IntegerValue, value, runtimeCore);
             }
+            else
+            {
+                StackValue oldValue;
+                if (Contents.TryGetValue(index, out oldValue))
+                {
+                    oldValue = StackValue.Null;
+                }
+                Contents[index] = value;
 
-            // If the index is non-numeric, return null and emit warning
-            runtimeCore.RuntimeStatus.LogWarning(WarningID.InvalidArrayIndexType, Resources.InvalidArrayIndexType);
-            return StackValue.Null;
+                return oldValue;
+            }
         }
 
         /// <summary>
@@ -192,7 +293,7 @@ namespace ProtoCore.DSASM
         /// </summary>
         public StackValue SetValueForIndices(StackValue[] indices, StackValue value, RuntimeCore runtimeCore)
         {
-            var array = this;
+            DSDictionary array = this;
             for (int i = 0; i < indices.Length - 1; ++i)
             {
                 var index = indices[i];
@@ -232,7 +333,7 @@ namespace ProtoCore.DSASM
                     array.SetValueForIndex(index, svSubArray, runtimeCore);
                 }
 
-                array = heap.ToHeapObject<DSArray>(svSubArray);
+                array = heap.ToHeapObject<DSDictionary>(svSubArray);
             }
 
             return array.SetValueForIndex(indices[indices.Length - 1], value, runtimeCore);
@@ -244,7 +345,9 @@ namespace ProtoCore.DSASM
         /// </summary>
         public StackValue SetValueForIndices(List<StackValue> indices, StackValue value, RuntimeCore runtimeCore)
         {
-            var zippedIndices = ArrayUtils.GetZippedIndices(indices, runtimeCore);
+            // TODO(pboyer) this looks broken
+
+            StackValue[][] zippedIndices = ArrayUtils.GetZippedIndices(indices, runtimeCore);
             if (zippedIndices == null || zippedIndices.Length == 0)
             {
                 return StackValue.Null;
@@ -254,20 +357,20 @@ namespace ProtoCore.DSASM
 
             if (zippedIndices.Length == 1)
             {
-                var coercedData = TypeSystem.Coerce(value, t, runtimeCore);
+                StackValue coercedData = TypeSystem.Coerce(value, t, runtimeCore);
                 return SetValueForIndices(zippedIndices[0], coercedData, runtimeCore);
             }
 
             if (value.IsArray)
             {
                 // Replication happens on both side.
-                var dataElements = heap.ToHeapObject<DSArray>(value);
-                var length = Math.Min(zippedIndices.Length, dataElements.Count);
+                var dataElements = heap.ToHeapObject<DSDictionary>(value);
+                int length = Math.Min(zippedIndices.Length, dataElements.Count);
 
                 var oldValues = new StackValue[length];
                 for (int i = 0; i < length; ++i)
                 {
-                    var coercedData = TypeSystem.Coerce(dataElements.GetValueAt(i), t, runtimeCore);
+                    StackValue coercedData = TypeSystem.Coerce(dataElements.GetValueAt(i), t, runtimeCore);
                     oldValues[i] = SetValueForIndices(zippedIndices[i], coercedData, runtimeCore);
                 }
 
@@ -286,8 +389,9 @@ namespace ProtoCore.DSASM
             {
                 // Replication is only on the LHS, so collect all old values 
                 // and return them in an array. 
-                var coercedData = TypeSystem.Coerce(value, t, runtimeCore);
-                var oldValues = new StackValue[zippedIndices.Length];
+                StackValue coercedData = TypeSystem.Coerce(value, t, runtimeCore);
+
+                StackValue[] oldValues = new StackValue[zippedIndices.Length];
                 for (int i = 0; i < zippedIndices.Length; ++i)
                 {
                     oldValues[i] = SetValueForIndices(zippedIndices[i], coercedData, runtimeCore);
@@ -329,6 +433,7 @@ namespace ProtoCore.DSASM
         /// 
         /// Note this function doesn't support the replication of array indexing.
         /// </summary>
+
         public StackValue GetValueFromIndex(StackValue index, RuntimeCore runtimeCore)
         {
             if (index.IsNumeric)
@@ -336,8 +441,47 @@ namespace ProtoCore.DSASM
                 index = index.ToInteger();
                 return GetValueFromIndex((int)index.IntegerValue, runtimeCore);
             }
+            else if (index.IsArrayKey)
+            {
+                int fullIndex = Constants.kInvalidIndex;
+                StackValue array;
+                index.TryGetArrayKey(out array, out fullIndex);
 
-            return StackValue.Null;
+                if (Count > fullIndex)
+                {
+                    return GetValueFromIndex(fullIndex, runtimeCore);
+                }
+                else
+                {
+                    fullIndex = fullIndex - Count;
+                    if (Contents != null && Contents.Count > fullIndex)
+                    {
+                        int count = 0;
+                        foreach (var key in Contents.Keys)
+                        {
+                            if (count == fullIndex)
+                            {
+                                return Contents[key];
+                            }
+                            count = count + 1;
+                        }
+                    }
+                }
+
+                return StackValue.Null;
+            }
+            else
+            {
+                StackValue value = StackValue.Null;
+                if (Contents.TryGetValue(index, out value))
+                {
+                    return value;
+                }
+                else
+                {
+                    return StackValue.Null;
+                }
+            }
         }
 
         /// <summary>
@@ -348,17 +492,21 @@ namespace ProtoCore.DSASM
         /// </summary>
         public StackValue GetValueFromIndices(StackValue[] indices, RuntimeCore runtimeCore)
         {
-            DSArray array = this;
+            DSDictionary array = this;
 
             for (int i = 0; i < indices.Length - 1; ++i)
             {
-                var index = indices[i];
-                var svArray = StackValue.Null;
+                StackValue index = indices[i];
+                StackValue svArray = StackValue.Null;
 
                 if (index.IsNumeric)
                 {
                     index = index.ToInteger();
                     svArray = array.GetValueFromIndex((int)index.IntegerValue, runtimeCore);
+                }
+                else
+                {
+                    svArray = array.GetValueFromIndex(index, runtimeCore);
                 }
 
                 if (!svArray.IsArray)
@@ -367,7 +515,7 @@ namespace ProtoCore.DSASM
                     return StackValue.Null;
                 }
 
-                array = heap.ToHeapObject<DSArray>(svArray);
+                array = heap.ToHeapObject<DSDictionary>(svArray);
             }
 
             return array.GetValueFromIndex(indices[indices.Length - 1], runtimeCore);
@@ -379,14 +527,13 @@ namespace ProtoCore.DSASM
         /// </summary>
         public StackValue GetValueFromIndices(List<StackValue> indices, RuntimeCore runtimeCore)
         {
-
-            var zippedIndices = ArrayUtils.GetZippedIndices(indices, runtimeCore);
+            StackValue[][] zippedIndices = ArrayUtils.GetZippedIndices(indices, runtimeCore);
             if (zippedIndices == null || zippedIndices.Length == 0)
             {
                 return StackValue.Null;
             }
 
-            var values = new StackValue[zippedIndices.Length];
+            StackValue[] values = new StackValue[zippedIndices.Length];
             for (int i = 0; i < zippedIndices.Length; ++i)
             {
                 values[i] = GetValueFromIndices(zippedIndices[i], runtimeCore);
@@ -410,7 +557,7 @@ namespace ProtoCore.DSASM
             }
         }
 
-        public static bool CompareFromDifferentCore(DSArray array1, DSArray array2, RuntimeCore rtCore1, RuntimeCore rtCore2, Context context = null)
+        public static bool CompareFromDifferentCore(DSDictionary array1, DSDictionary array2, RuntimeCore rtCore1, RuntimeCore rtCore2, Context context = null)
         {
             if (array1.Count != array2.Count)
             {
@@ -420,6 +567,21 @@ namespace ProtoCore.DSASM
             for (int i = 0; i < array1.Count; i++)
             {
                 if (!StackUtils.CompareStackValues(array1.GetValueAt(i), array2.GetValueAt(i), rtCore1, rtCore2, context))
+                {
+                    return false;
+                }
+            }
+
+            foreach (var key in array1.Contents.Keys)
+            {
+                StackValue value1 = array1.Contents[key];
+                StackValue value2 = StackValue.Null;
+                if (!array2.Contents.TryGetValue(key, out value2))
+                {
+                    return false;
+                }
+
+                if (!StackUtils.CompareStackValues(value1, value2, rtCore1, rtCore2))
                 {
                     return false;
                 }

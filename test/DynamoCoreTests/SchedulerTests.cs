@@ -585,7 +585,7 @@ namespace Dynamo.Tests
             schedulerThread.GetSchedulerToProcessTasks();
 
             // Drops all InconsequentialAsyncTask and leave behind one.
-            // Kept all PrioritizedAsyncTask instances and sorted them.
+            // ept all PrioritizedAsyncTask instances and sorted them.
             Assert.AreEqual(6, results.Count);
             Assert.AreEqual("PrioritizedAsyncTask: 1", results[0]);
             Assert.AreEqual("PrioritizedAsyncTask: 2", results[1]);
@@ -631,7 +631,7 @@ namespace Dynamo.Tests
             schedulerThread.GetSchedulerToProcessTasks();
 
             // Drops all InconsequentialAsyncTask and leave behind one.
-            // Kept all PrioritizedAsyncTask instances and sorted them.
+            // ept all PrioritizedAsyncTask instances and sorted them.
             Assert.AreEqual(6, results.Count);
             Assert.AreEqual("PrioritizedAsyncTask: 1", results[0]);
             Assert.AreEqual("PrioritizedAsyncTask: 2", results[1]);
@@ -677,7 +677,7 @@ namespace Dynamo.Tests
             schedulerThread.GetSchedulerToProcessTasks();
 
             // Drops all InconsequentialAsyncTask and leave behind one.
-            // Kept all PrioritizedAsyncTask instances and sorted them.
+            // ept all PrioritizedAsyncTask instances and sorted them.
             Assert.AreEqual(6, results.Count);
             Assert.AreEqual("PrioritizedAsyncTask: 1", results[0]);
             Assert.AreEqual("PrioritizedAsyncTask: 2", results[1]);
@@ -714,7 +714,7 @@ namespace Dynamo.Tests
             schedulerThread.GetSchedulerToProcessTasks();
 
             // Drops all InconsequentialAsyncTask and leave behind one.
-            // Kept all PrioritizedAsyncTask instances and sorted them.
+            // ept all PrioritizedAsyncTask instances and sorted them.
             Assert.AreEqual(1, results.Count);
             Assert.AreEqual("PrioritizedAsyncTask: 1", results[0]);
         }
@@ -747,7 +747,7 @@ namespace Dynamo.Tests
             schedulerThread.GetSchedulerToProcessTasks();
 
             // Drops all InconsequentialAsyncTask and leave behind one.
-            // Kept all PrioritizedAsyncTask instances and sorted them.
+            // ept all PrioritizedAsyncTask instances and sorted them.
             Assert.AreEqual(2, results.Count);
             Assert.AreEqual("PrioritizedAsyncTask: 1", results[0]);
             Assert.AreEqual("InconsequentialAsyncTask: 100", results[1]);
@@ -781,7 +781,7 @@ namespace Dynamo.Tests
             schedulerThread.GetSchedulerToProcessTasks();
 
             // Drops all InconsequentialAsyncTask and leave behind one.
-            // Kept all PrioritizedAsyncTask instances and sorted them.
+            // ept all PrioritizedAsyncTask instances and sorted them.
             Assert.AreEqual(2, results.Count);
             Assert.AreEqual("PrioritizedAsyncTask: 1", results[0]);
             Assert.AreEqual("InconsequentialAsyncTask: 100", results[1]);
@@ -834,7 +834,7 @@ namespace Dynamo.Tests
             schedulerThread.GetSchedulerToProcessTasks();
 
             // Drops all InconsequentialAsyncTask and leave behind one.
-            // Kept all PrioritizedAsyncTask instances and sorted them.
+            // ept all PrioritizedAsyncTask instances and sorted them.
             var expected = new List<string>
             {
                 // Scheduling notifications...
@@ -1283,7 +1283,7 @@ namespace Dynamo.Tests
             var cbn = CurrentDynamoModel.CurrentWorkspace.Nodes.OfType<CodeBlockNodeModel>().FirstOrDefault();
             var funcNode = CurrentDynamoModel.CurrentWorkspace.Nodes.OfType<DSFunction>().FirstOrDefault();
 
-            // Keep code block node be silent so that the graph won't be
+            // eep code block node be silent so that the graph won't be
             // executed automatically
             cbn.RaisesModificationEvents = false;
 

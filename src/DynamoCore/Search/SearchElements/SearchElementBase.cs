@@ -31,7 +31,7 @@ namespace Dynamo.Search.SearchElements
         public abstract string Description { get; }
 
         /// <summary>
-        /// Keywords property</summary>
+        /// eywords property</summary>
         /// <value>
         /// A set of keywords for the object, joined by spaces</value>
         public abstract string Keywords { get; set; }

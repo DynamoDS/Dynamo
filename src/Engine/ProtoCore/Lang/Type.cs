@@ -113,7 +113,8 @@ namespace ProtoCore
         Pointer,
         FunctionPointer,
         Return,
-        MaxPrimitive
+        Dictionary,
+        MaxPrimitive,
     }
 
     public class TypeSystem
@@ -151,6 +152,7 @@ namespace ProtoCore
                 primitiveTypeNames[PrimitiveType.Pointer] = DSDefinitions.Keyword.PointerReserved;
                 primitiveTypeNames[PrimitiveType.FunctionPointer] = DSDefinitions.Keyword.FunctionPointer;
                 primitiveTypeNames[PrimitiveType.Return] = "return_reserved";
+                primitiveTypeNames[PrimitiveType.Dictionary] = DSDefinitions.Keyword.Dictionary;
             }
             return primitiveTypeNames[type];
         }
@@ -185,6 +187,7 @@ namespace ProtoCore
             addressTypeClassMap.Add(ProtoCore.DSASM.AddressType.Pointer, (int)PrimitiveType.Pointer);
             addressTypeClassMap.Add(ProtoCore.DSASM.AddressType.FunctionPointer, (int)PrimitiveType.FunctionPointer);
             addressTypeClassMap.Add(ProtoCore.DSASM.AddressType.DefaultArg, (int)PrimitiveType.Var);
+            addressTypeClassMap.Add(ProtoCore.DSASM.AddressType.DictionaryPointer, (int)PrimitiveType.Dictionary);
         }
 
 
@@ -201,6 +204,10 @@ namespace ProtoCore
             classTable.Reserve((int)PrimitiveType.MaxPrimitive);
 
             ClassNode cnode;
+
+            cnode = new ClassNode { Name = DSDefinitions.Keyword.Dictionary, Rank = 6, TypeSystem = this }; // TODO(pboyer): Rank?
+            cnode.ID = (int)PrimitiveType.Dictionary;
+            classTable.SetClassNodeAt(cnode, (int)PrimitiveType.Dictionary);
 
             cnode = new ClassNode { Name = DSDefinitions.Keyword.Array, Rank = 5, TypeSystem = this };
             cnode.ID = (int)PrimitiveType.Array;
@@ -358,6 +365,8 @@ namespace ProtoCore
 
         public static StackValue Coerce(StackValue sv, Type targetType, RuntimeCore runtimeCore)
         {
+            // TODO(pboyer) How to handle dictionaries?
+
             ProtoCore.Runtime.RuntimeMemory rmem = runtimeCore.RuntimeMemory;
             
             //@TODO(Jun): FIX ME - abort coersion for default args

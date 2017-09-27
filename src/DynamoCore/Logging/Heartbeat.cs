@@ -25,7 +25,7 @@ namespace Dynamo.Logging
 
         private Heartbeat(DynamoModel dynamoModel)
         {
-            // KILLDYNSETTINGS - this is provisional - but we need to enforce that Hearbeat is 
+            // ILLDYNSETTINGS - this is provisional - but we need to enforce that Hearbeat is 
             // not referencing multiple DynamoModels
             this.dynamoModel = dynamoModel;
 

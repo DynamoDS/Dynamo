@@ -26,6 +26,8 @@ namespace Dynamo.ViewModels
         #region Properties/Fields
         public const string EMPTY_LIST = "Empty List";
         public const string LIST = "List";
+        public const string EMPTY_DICTIONARY = "Empty Dictionary";
+        public const string DICTIONARY = "Dictionary";
 
         private ObservableCollection<WatchViewModel> _children = new ObservableCollection<WatchViewModel>();
         private string _label;

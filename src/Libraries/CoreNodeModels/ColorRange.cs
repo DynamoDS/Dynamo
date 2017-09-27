@@ -172,9 +172,9 @@ namespace CoreNodeModels
             if (valuesMirror == null || valuesMirror.GetData() == null) return values;
 
             var data = valuesMirror.GetData();
-            if (data.IsCollection)
+            if (data.IsArray)
             {
-                var elements = data.GetElements().Select(e => e.Data);
+                var elements = data.GetValues().Select(e => e.Data);
                 foreach (var element in elements)
                 {
                     double parsed;
@@ -200,9 +200,9 @@ namespace CoreNodeModels
             var data = colorsMirror.GetData();
             if (data != null)
             {
-                if (data.IsCollection)
+                if (data.IsArray)
                 {
-                    colors.AddRange(data.GetElements().Select(e => e.Data).OfType<Color>());
+                    colors.AddRange(data.GetValues().Select(e => e.Data).OfType<Color>());
                 }
                 else
                 {

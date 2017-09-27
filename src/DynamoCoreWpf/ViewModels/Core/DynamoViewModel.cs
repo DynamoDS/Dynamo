@@ -179,7 +179,7 @@ namespace Dynamo.ViewModels
                 {
                     currentWorkspaceViewModel = viewModel;
 
-                    // Keep DynamoModel.CurrentWorkspace update-to-date
+                    // eep DynamoModel.CurrentWorkspace update-to-date
                     int modelIndex = model.Workspaces.IndexOf(currentWorkspaceViewModel.Model);
                     this.ExecuteCommand(new DynamoModel.SwitchTabCommand(modelIndex));
                 }

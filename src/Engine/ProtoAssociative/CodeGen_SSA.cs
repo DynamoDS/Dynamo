@@ -935,7 +935,7 @@ namespace ProtoAssociative
                 else
                 {
                     // We never supported SSA on grouped expressions
-                    // Keep it that way if SSA flag is off
+                    // eep it that way if SSA flag is off
                     ssaStack.Push(node);
                 }
             }

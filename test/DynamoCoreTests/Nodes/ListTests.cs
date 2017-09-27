@@ -447,7 +447,7 @@ namespace Dynamo.Tests
 
 			var watch = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace<DSFunction>("df181bd7-3f1f-4195-93af-c0b846f6c8ce");
 
-			var actual = watch.GetValue(0, CurrentDynamoModel.EngineController).GetElements().ToList();
+			var actual = watch.GetValue(0, CurrentDynamoModel.EngineController).GetValues().ToList();
 			Assert.AreEqual(0, actual.Count);
 		}
 
@@ -476,13 +476,13 @@ namespace Dynamo.Tests
 
 			string guid = "e639bc66-6dec-4a0a-bae2-9bac7dab59dc";
 			var nodeTranspose = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace<DSFunction>(guid);
-			var elements = nodeTranspose.GetValue(0, CurrentDynamoModel.EngineController).GetElements().ToList();
+			var elements = nodeTranspose.GetValue(0, CurrentDynamoModel.EngineController).GetValues().ToList();
 
 			Assert.AreEqual(4, elements.Count);
-			Assert.AreEqual(3, elements[0].GetElements().ToList().Count);
-			Assert.AreEqual(3, elements[1].GetElements().ToList().Count);
-			Assert.AreEqual(3, elements[2].GetElements().ToList().Count);
-			Assert.AreEqual(3, elements[3].GetElements().ToList().Count);
+			Assert.AreEqual(3, elements[0].GetValues().ToList().Count);
+			Assert.AreEqual(3, elements[1].GetValues().ToList().Count);
+			Assert.AreEqual(3, elements[2].GetValues().ToList().Count);
+			Assert.AreEqual(3, elements[3].GetValues().ToList().Count);
 
 			AssertPreviewValue(guid,
 				new object[][]
@@ -1208,13 +1208,13 @@ namespace Dynamo.Tests
 
             var numberRange = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace<CoreNodeModels.Range>("4e781f03-5b48-4d58-a511-8c732665e961");
 
-			var actual = numberRange.GetValue(0, CurrentDynamoModel.EngineController).GetElements().ToList();
-			var innerList1 = actual[0].GetElements().ToList();
-			var innerList2 = actual[1].GetElements().ToList();
-			var actualChild1 = innerList1[0].GetElements().ToList();
-			var actualChild2 = innerList1[1].GetElements().ToList();
-			var actualChild3 = innerList2[0].GetElements().ToList();
-			var actualChild4 = innerList2[1].GetElements().ToList();
+			var actual = numberRange.GetValue(0, CurrentDynamoModel.EngineController).GetValues().ToList();
+			var innerList1 = actual[0].GetValues().ToList();
+			var innerList2 = actual[1].GetValues().ToList();
+			var actualChild1 = innerList1[0].GetValues().ToList();
+			var actualChild2 = innerList1[1].GetValues().ToList();
+			var actualChild3 = innerList2[0].GetValues().ToList();
+			var actualChild4 = innerList2[1].GetValues().ToList();
 
 			Assert.AreEqual(2, actual.Count);
 			Assert.IsNotNull(actualChild1);
@@ -1312,8 +1312,8 @@ namespace Dynamo.Tests
 			Assert.AreEqual(8, workspace.Connectors.Count());
 
 			var addToList = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace<DSFunction>("31d0eb4e-8657-4eb1-a852-5e9b766eddd7");
-            var actual = addToList.GetValue(0, CurrentDynamoModel.EngineController).GetElements().ToList();
-			var childList = actual[2].GetElements().ToList();
+            var actual = addToList.GetValue(0, CurrentDynamoModel.EngineController).GetValues().ToList();
+			var childList = actual[2].GetValues().ToList();
 
 			Assert.AreEqual(6, actual.Count);
 			Assert.AreEqual("Design", actual[0].Data);
@@ -1445,12 +1445,12 @@ namespace Dynamo.Tests
 			var guid = "66e94123-deaf-4bc8-8c5f-b3bc0996a57e";
 			var splitList = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace<DSFunction>(guid);
 
-            var output = splitList.GetValue(0, CurrentDynamoModel.EngineController).GetElements().ToList();
-			var firstOutput = output[0].GetElements().ToList();
-			var secondOutput = output[1].GetElements().ToList();
+            var output = splitList.GetValue(0, CurrentDynamoModel.EngineController).GetValues().ToList();
+			var firstOutput = output[0].GetValues().ToList();
+			var secondOutput = output[1].GetValues().ToList();
 			
-			var child = secondOutput[0].GetElements().ToList();
-			var child1 = secondOutput[1].GetElements().ToList();
+			var child = secondOutput[0].GetValues().ToList();
+			var child1 = secondOutput[1].GetValues().ToList();
 
 			Assert.AreEqual(12, firstOutput.Count);
 			Assert.AreEqual("x", firstOutput[0].Data);
@@ -1479,9 +1479,9 @@ namespace Dynamo.Tests
 			Assert.AreEqual(9, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
 
 			var takeFromList = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace<DSFunction>("14cb6593-24d8-4ffc-8ee5-9f4247449fc2");
-            var firstOutput = takeFromList.GetValue(0, CurrentDynamoModel.EngineController).GetElements().ToList();
-			var child = firstOutput[0].GetElements().ToList();
-			var child1 = firstOutput[4].GetElements().ToList();
+            var firstOutput = takeFromList.GetValue(0, CurrentDynamoModel.EngineController).GetValues().ToList();
+			var child = firstOutput[0].GetValues().ToList();
+			var child1 = firstOutput[4].GetValues().ToList();
 
 			Assert.AreEqual(5, firstOutput.Count);
 
@@ -1616,9 +1616,9 @@ namespace Dynamo.Tests
 
 			var guid = "492db019-4807-4810-8919-10b94e8ca083";
 			var shiftListIndeces = workspace.NodeFromWorkspace<DSFunction>(guid);
-            var output = shiftListIndeces.GetValue(0, CurrentDynamoModel.EngineController).GetElements().ToList();
-			var child = output[0].GetElements().ToList();
-			var child1 = output[1].GetElements().ToList();
+            var output = shiftListIndeces.GetValue(0, CurrentDynamoModel.EngineController).GetValues().ToList();
+			var child = output[0].GetValues().ToList();
+			var child1 = output[1].GetValues().ToList();
 
 			Assert.AreEqual(2, output.Count);
 
@@ -1716,7 +1716,7 @@ namespace Dynamo.Tests
 			Assert.AreEqual(8, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
 
 			var getFromList = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace("d2f1c900-99ce-40a5-ae4d-bbac1fe96cfd");
-            var output = getFromList.GetValue(0, CurrentDynamoModel.EngineController).GetElements().ToList();
+            var output = getFromList.GetValue(0, CurrentDynamoModel.EngineController).GetValues().ToList();
 
 			Assert.AreEqual(3, output.Count);
 			Assert.AreEqual(14, output[0].Data);
@@ -1844,9 +1844,9 @@ namespace Dynamo.Tests
 
 			var guid = "4bd0ced4-29ee-4f4e-95af-d0573e04731a";
 			var takeEveryNth = workspace.NodeFromWorkspace<DSFunction>(guid);
-            var output = takeEveryNth.GetValue(0, CurrentDynamoModel.EngineController).GetElements().ToList();
-			var child = output[0].GetElements().ToList();
-			var child1 = output[1].GetElements().ToList();
+            var output = takeEveryNth.GetValue(0, CurrentDynamoModel.EngineController).GetValues().ToList();
+			var child = output[0].GetValues().ToList();
+			var child1 = output[1].GetValues().ToList();
 
 			Assert.AreEqual(2, output.Count);
 
@@ -2108,9 +2108,9 @@ namespace Dynamo.Tests
 			Assert.AreEqual(10, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
 
 			var joinList = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace<DSVarArgFunction>("1304807f-6d18-4aef-b4cb-9cb8f469993e");
-            var actual = joinList.GetValue(0, CurrentDynamoModel.EngineController).GetElements().ToList();
-			var actualChild1 = actual[5].GetElements().ToList();
-			var actualChild2 = actual[6].GetElements().ToList();
+            var actual = joinList.GetValue(0, CurrentDynamoModel.EngineController).GetValues().ToList();
+			var actualChild1 = actual[5].GetValues().ToList();
+			var actualChild2 = actual[6].GetValues().ToList();
 
 			Assert.AreEqual(7, actual.Count);
 

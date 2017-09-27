@@ -32,7 +32,6 @@ namespace ProtoCore.DSASM.Mirror
         private readonly ProtoCore.RuntimeCore runtimeCore;
         public Executive MirrorTarget { get; private set; }
         private OutputFormatParameters formatParams;
-        private Dictionary<string, List<string>> propertyFilter;
 
         /// <summary>
         /// Create a mirror for a given executive

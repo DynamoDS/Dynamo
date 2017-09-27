@@ -26,21 +26,21 @@ namespace ProtoFFI
         public abstract List<FFIFunctionPointer> GetFunctionPointers(string className, string name);
         public abstract FFIFunctionPointer GetFunctionPointer(string className, string name, List<ProtoCore.Type> argTypes, ProtoCore.Type returnType);
         public virtual CodeBlockNode ImportCodeBlock(string typeName, string alias, CodeBlockNode refnode) { return null; } //All modules don't support import
-        public virtual FFIObjectMarshler GetMarshaller(ProtoCore.RuntimeCore runtimeCore) { return null; }
+        public virtual FFIObjectMarshaler GetMarshaller(ProtoCore.RuntimeCore runtimeCore) { return null; }
         public virtual Type GetExtensionAppType() { return null; }
     }
 
     public abstract class ModuleHelper
     {
         public abstract DLLModule getModule(String name);
-        public abstract FFIObjectMarshler GetMarshaller(ProtoCore.RuntimeCore runtimeCore);
+        public abstract FFIObjectMarshaler GetMarshaller(ProtoCore.RuntimeCore runtimeCore);
     }
 
     /// <summary>
     /// This class is responsible for marshaling of FFI objects to DS world and 
     /// vice-versa.
     /// </summary>
-    public abstract class FFIObjectMarshler
+    public abstract class FFIObjectMarshaler
     {
         /// <summary>
         /// Marshales a given FFI object to DS Object of given ProtoCore.Type

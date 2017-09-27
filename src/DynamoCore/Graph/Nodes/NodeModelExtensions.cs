@@ -119,7 +119,7 @@ namespace Dynamo.Graph.Nodes
 
             if (mirrorData.IsCollection)
             {
-                foreach (var el in mirrorData.GetElements())
+                foreach (var el in mirrorData.GetValues())
                 {
                     GetGraphicItemsFromMirrorData(el, graphicItems);
                 }

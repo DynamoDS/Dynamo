@@ -1656,7 +1656,7 @@ namespace ProtoImperative
             }
             else if (b.LeftNode is IdentifierListNode)
             {
-                // keyu: the left hand side of an assignment statement won't be an
+                // eyu: the left hand side of an assignment statement won't be an
                 // identifier list anymore after replacing all properties (not 
                 // including the left-most property) with getters/setter.
                 // 
@@ -1841,7 +1841,7 @@ namespace ProtoImperative
                 EmitInstrConsole(ProtoCore.DSASM.kw.pop, keyIdent);
                 EmitPop(opDest, (symbol == null) ? globalClassIndex : symbol.classScope, symbol.runtimeTableIndex);
 
-                // key == null ?
+                // ey == null ?
                 BinaryExpressionNode condition = new BinaryExpressionNode();
                 {
                     condition.Optr = ProtoCore.DSASM.Operator.nq;
@@ -1872,7 +1872,7 @@ namespace ProtoImperative
                     arrayIndexing.endCol = loopvar.endCol;
                 }
 
-                // key = key + 1;
+                // ey = key + 1;
                 BinaryExpressionNode nextKey = new BinaryExpressionNode();
                 {
                     nextKey.LeftNode = key;

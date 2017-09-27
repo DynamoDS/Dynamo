@@ -1124,7 +1124,7 @@ namespace ProtoFFI
             return types;
         }
 
-        public override FFIObjectMarshler GetMarshaller(ProtoCore.RuntimeCore runtimeCore)
+        public override FFIObjectMarshaler GetMarshaller(ProtoCore.RuntimeCore runtimeCore)
         {
             return CLRObjectMarshler.GetInstance(runtimeCore);
         }
@@ -1185,7 +1185,7 @@ namespace ProtoFFI
             return module;
         }
 
-        public override FFIObjectMarshler GetMarshaller(ProtoCore.RuntimeCore runtimeCore)
+        public override FFIObjectMarshaler GetMarshaller(ProtoCore.RuntimeCore runtimeCore)
         {
             return CLRObjectMarshler.GetInstance(runtimeCore);
         }

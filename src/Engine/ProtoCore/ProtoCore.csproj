@@ -90,6 +90,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <DefineConstants>TRACE;DEBUG</DefineConstants>
     <Prefer32Bit>false</Prefer32Bit>
+    <NoWarn>CS3008, CS3003</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
     <DefineConstants>TRACE</DefineConstants>
@@ -102,6 +103,7 @@
     </Compile>
     <Compile Include="AssociativeGraph.cs" />
     <Compile Include="DSASM\DSArray.cs" />
+    <Compile Include="DSASM\DSDictionary.cs" />
     <Compile Include="DSASM\DSObject.cs" />
     <Compile Include="DSASM\DSString.cs" />
     <Compile Include="Lang\InternalAttributes.cs" />
@@ -169,7 +171,7 @@
     <Compile Include="DynamicFunctionTable.cs" />
     <Compile Include="Exceptions\DebugHalting.cs" />
     <Compile Include="FFI\CLRFFIFunctionPointer.cs" />
-    <Compile Include="FFI\CLRObjectMarshler.cs" />
+    <Compile Include="FFI\CLRObjectMarshaler.cs" />
     <Compile Include="FFI\ImportModuleHandler.cs" />
     <Compile Include="Parser\AssociativeAST.cs" />
     <Compile Include="Parser\AST.cs" />

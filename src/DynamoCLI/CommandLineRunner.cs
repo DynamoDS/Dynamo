@@ -139,7 +139,7 @@ namespace DynamoCLI
         private static string GetStringRepOfCollection(ProtoCore.Mirror.MirrorData collection)
         {
 
-           var items = string.Join(",", collection.GetElements().Select(x => x.IsCollection ? GetStringRepOfCollection(x) : x.StringData));
+           var items = string.Join(",", collection.GetValues().Select(x => x.IsCollection ? GetStringRepOfCollection(x) : x.StringData));
             return "{"+items +"}";
 
         }

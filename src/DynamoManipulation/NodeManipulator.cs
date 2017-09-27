@@ -278,7 +278,7 @@ namespace Dynamo.Manipulation
 
             if (data.IsCollection)
             {
-                var elems = data.GetElements();
+                var elems = data.GetValues();
                 foreach (var item in elems)
                 {
                     var objs = GetElementsFromMirrorData(item);

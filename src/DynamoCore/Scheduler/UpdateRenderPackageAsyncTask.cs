@@ -148,7 +148,7 @@ namespace Dynamo.Scheduler
             if (mirrorData.IsCollection)
             {
                 int count = 0;
-                foreach (var el in mirrorData.GetElements())
+                foreach (var el in mirrorData.GetValues())
                 {
                     if (el.IsCollection || el.Data is IGraphicItem)
                     {
