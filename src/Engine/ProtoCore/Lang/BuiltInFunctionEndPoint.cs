@@ -159,11 +159,11 @@ namespace ProtoCore.Lang
                             ret = ProtoCore.DSASM.StackValue.BuildBoolean(ArrayUtilsForBuiltIns.SomeTrue(args[0], interpreter));
                         break;
                     }
-                case BuiltInMethods.MethodID.Sleep:
+                case BuiltInMethods.MethodID.SlKeep:
                     {
                         StackValue stackValue = args[0];
                         if (stackValue.IsInteger)
-                            System.Threading.Thread.Sleep((int)stackValue.IntegerValue);
+                            System.Threading.Thread.SlKeep((int)stackValue.IntegerValue);
                         else
                         {
                             runtimeCore.RuntimeStatus.LogWarning(
@@ -787,7 +787,7 @@ namespace ProtoCore.Lang
             {
                 objects.Add(item.Data);
             }
-            ProtoCore.Type type = PrimitiveMarshaler.CreateType(ProtoCore.PrimitiveType.Var);
+            ProtoCore.Type type = PrimitiveMarshler.CreateType(ProtoCore.PrimitiveType.Var);
             Object obj = objects;
             if (objects.Count == 1)
                 obj = objects[0];

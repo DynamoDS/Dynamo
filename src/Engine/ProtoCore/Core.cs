@@ -195,6 +195,7 @@ namespace ProtoCore
         public Dictionary<ulong, ulong> CodeToLocation = new Dictionary<ulong, ulong>();
         public Dictionary<ulong, ErrorEntry> LocationErrorMap = new Dictionary<ulong, ErrorEntry>();
 
+
         public Dictionary<Language, Compiler> Compilers { get; private set; }
 
         public int GlobOffset { get; set; }

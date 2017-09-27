@@ -16,10 +16,10 @@ using ProtoCore.Exceptions;
 
 namespace ProtoFFI
 {
-    abstract class PrimitiveMarshaler : FFIObjectMarshler
+    abstract class PrimitiveMarshler : FFIObjectMarshler
     {
         private readonly ProtoCore.Type mType;
-        public PrimitiveMarshaler(ProtoCore.Type type)
+        public PrimitiveMarshler(ProtoCore.Type type)
         {
             mType = type;
         }
@@ -100,7 +100,7 @@ namespace ProtoFFI
     /// <summary>
     /// Marshales integer based primitive types.
     /// </summary>
-    class IntMarshaler : PrimitiveMarshaler
+    class IntMarshaler : PrimitiveMarshler
     {
         public long MaxValue { get; private set; }
         public long MinValue { get; private set; }
@@ -137,7 +137,7 @@ namespace ProtoFFI
     /// <summary>
     /// Marshales floating point primitive types.
     /// </summary>
-    class FloatMarshaler : PrimitiveMarshaler
+    class FloatMarshaler : PrimitiveMarshler
     {
         public double MaxValue { get; private set; }
         public double MinValue { get; private set; }
@@ -172,7 +172,7 @@ namespace ProtoFFI
     /// <summary>
     /// Marshales boolean
     /// </summary>
-    class BoolMarshaler : PrimitiveMarshaler
+    class BoolMarshaler : PrimitiveMarshler
     {
         private static readonly ProtoCore.Type kType = CreateType(ProtoCore.PrimitiveType.Bool);
         public BoolMarshaler() : base(kType) { }
@@ -191,7 +191,7 @@ namespace ProtoFFI
     /// <summary>
     /// Marshales char
     /// </summary>
-    class CharMarshaler : PrimitiveMarshaler
+    class CharMarshaler : PrimitiveMarshler
     {
         private static readonly ProtoCore.Type kType = CreateType(ProtoCore.PrimitiveType.Char);
         public CharMarshaler() : base(kType) { }
@@ -210,7 +210,7 @@ namespace ProtoFFI
     /// <summary>
     /// Marshals collection
     /// </summary>
-    class CollectionMarshaler : PrimitiveMarshaler
+    class CollectionMarshaler : PrimitiveMarshler
     {
         private FFIObjectMarshler primitiveMarshaler;
 
@@ -563,7 +563,7 @@ namespace ProtoFFI
     /// <summary>
     /// Marshales string as array of chars
     /// </summary>
-    class StringMarshaler : PrimitiveMarshaler 
+    class StringMarshaler : PrimitiveMarshler 
     {
         public static readonly ProtoCore.Type kType = CreateType(ProtoCore.PrimitiveType.String);
 
@@ -758,7 +758,7 @@ namespace ProtoFFI
             // If the expected type is collection, always marshal to collection
             if (collection)
             {
-                ProtoCore.Type type = PrimitiveMarshaler.CreateType(ProtoCore.PrimitiveType.Var);
+                ProtoCore.Type type = PrimitiveMarshler.CreateType(ProtoCore.PrimitiveType.Var);
                 type.rank = ProtoCore.DSASM.Constants.kArbitraryRank;
                 return new CollectionMarshaler(this, type);
             }
@@ -850,7 +850,7 @@ namespace ProtoFFI
         /// <returns>ProtoCore.Type</returns>
         public static ProtoCore.Type GetProtoCoreType(Type type)
         {
-            ProtoCore.Type retype = PrimitiveMarshaler.CreateType(ProtoCore.PrimitiveType.Var);
+            ProtoCore.Type retype = PrimitiveMarshler.CreateType(ProtoCore.PrimitiveType.Var);
             ComputeDSType(type, ref retype);
             return retype;
         }
@@ -862,7 +862,7 @@ namespace ProtoFFI
         /// <returns>ProtoCore.Type</returns>
         public static ProtoCore.Type GetUserDefinedType(Type type)
         {
-            ProtoCore.Type retype = PrimitiveMarshaler.CreateType(ProtoCore.PrimitiveType.Pointer);
+            ProtoCore.Type retype = PrimitiveMarshler.CreateType(ProtoCore.PrimitiveType.Pointer);
             ComputeDSType(type, ref retype);
             return retype;
         }
@@ -921,11 +921,11 @@ namespace ProtoFFI
             }
             else if (type == typeof(object))
             {
-                protoCoreType = PrimitiveMarshaler.CreateType(ProtoCore.PrimitiveType.Var);
+                protoCoreType = PrimitiveMarshler.CreateType(ProtoCore.PrimitiveType.Var);
                 protoCoreType.rank = 0; //Initially setup zero rank
             }
             else if (type == typeof(void))
-                protoCoreType = PrimitiveMarshaler.CreateType(ProtoCore.PrimitiveType.Void);
+                protoCoreType = PrimitiveMarshler.CreateType(ProtoCore.PrimitiveType.Void);
             else if (protoCoreType.UID == (int)ProtoCore.PrimitiveType.Pointer)
                 protoCoreType.Name = GetTypeName(type);
             else if (mPrimitiveMarshalers.TryGetValue(type, out marshaler))

@@ -250,7 +250,7 @@ namespace Dynamo.Manipulation
             WorkspaceModel = wsm;
             manipulatorNodes = new List<NodeModel>();
 
-            // Kill all manipulators in current workspace
+            // kill all manipulators in current workspace
             if (manipulatorDaemon != null)
             {
                 manipulatorDaemon.KillAll();
