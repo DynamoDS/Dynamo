@@ -562,7 +562,7 @@ namespace Dynamo.ViewModels
             BackgroundPreviewViewModel.PropertyChanged += Watch3DViewModelPropertyChanged;
             WatchHandler.RequestSelectGeometry += BackgroundPreviewViewModel.AddLabelForPath;
             RegisterWatch3DViewModel(BackgroundPreviewViewModel, RenderPackageFactoryViewModel.Factory);
-            model.ComputeModelSerialized +=model_ComputeModelSerialized;
+            model.ComputeModelDeSerialized += model_ComputeModelDeSerialized;
         }
 
         /// <summary>
@@ -1268,7 +1268,7 @@ namespace Dynamo.ViewModels
         /// <summary>
         /// Read the contents of the file and set the view parameters for that current workspace
         /// </summary>
-        private void model_ComputeModelSerialized()
+        private void model_ComputeModelDeSerialized()
         {
             if (filePath == String.Empty) return;
             string fileContents = File.ReadAllText(filePath);

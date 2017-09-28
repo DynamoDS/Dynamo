@@ -1401,7 +1401,7 @@ namespace Dynamo.Models
                             OpenWorkspace(ws);
                             //Raise an event to deserialize the view parameters before
                             //setting the graph to run
-                            OnComputeModelSerialized();
+                            OnComputeModelDeSerialized();
 
                             //TODO: Can this be called from ViewModel instead? If so, OnComputeModelSerialized is not required. 
                             SetPeriodicEvaluation(ws);
