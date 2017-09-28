@@ -72,7 +72,7 @@ namespace Dynamo.Graph.Workspaces
             }
             else if (type == typeof(Function))
             {
-                var functionId = Guid.Parse(obj["FunctionUuid"].Value<string>());
+                var functionId = Guid.Parse(obj["FunctionSignature"].Value<string>());
 
                 CustomNodeDefinition def = null;
                 CustomNodeInfo info = null;
@@ -115,7 +115,7 @@ namespace Dynamo.Graph.Workspaces
             }
             else if (type == typeof(DSVarArgFunction))
             {
-                var functionId = Guid.Parse(obj["FunctionUuid"].Value<string>());
+                var functionId = Guid.Parse(obj["FunctionSignature"].Value<string>());
                 node = manager.CreateCustomNodeInstance(functionId);
             }
             else if (type.ToString() == "CoreNodeModels.Formula")
@@ -315,6 +315,28 @@ namespace Dynamo.Graph.Workspaces
             //serialize view block first and build the notes.
             var notes = new List<NoteModel>();
 
+            // Restore Bindings
+            Dictionary<Guid, List<CallSite.RawTraceData>> loadedTraceData = new Dictionary<Guid, List<CallSite.RawTraceData>>();
+            JEnumerable<JToken> bindings = obj["Bindings"].Children();
+
+            // Iterate through bindings to extract nodeID's and bindingData (callsiteId & traceData)
+            foreach (JToken entity in bindings)
+            {
+                Guid nodeId = Guid.Parse(entity["NodeId"].ToString());
+                string bindingString = entity["Binding"].ToString();
+
+                // Key(callsiteId) : Value(traceData)
+                Dictionary<string, string> bindingData = JsonConvert.DeserializeObject<Dictionary<string, string>>(bindingString);
+                List<CallSite.RawTraceData> callsiteTraceData = new List<CallSite.RawTraceData>();
+
+                foreach (KeyValuePair<string, string> pair in bindingData)
+                {
+                    callsiteTraceData.Add(new CallSite.RawTraceData(pair.Key, pair.Value));
+                }
+
+                loadedTraceData.Add(nodeId, callsiteTraceData);
+            }
+
             WorkspaceModel ws;
             if (isCustomNode)
             {
@@ -323,8 +345,8 @@ namespace Dynamo.Graph.Workspaces
             }
             else
             {
-                ws = new HomeWorkspaceModel(guid, engine, scheduler, factory, 
-                    Enumerable.Empty<KeyValuePair<Guid, List<CallSite.RawTraceData>>>(), nodes, notes, annotations, 
+                ws = new HomeWorkspaceModel(guid, engine, scheduler, factory,
+                    loadedTraceData, nodes, notes, annotations, 
                     Enumerable.Empty<PresetModel>(), elementResolver, 
                     info, verboseLogging, isTestMode);
             }

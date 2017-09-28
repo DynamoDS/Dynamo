@@ -80,4 +80,12 @@
     <oldName>Autodesk.DesignScript.Geometry.Solid.ByLoft@Autodesk.DesignScript.Geometry.Curve[],Autodesk.DesignScript.Geometry.Curve</oldName>
     <newName>Autodesk.DesignScript.Geometry.Solid.ByLoft@Autodesk.DesignScript.Geometry.Curve[],Autodesk.DesignScript.Geometry.Curve[]</newName>
   </priorNameHint>
+  <priorNameHint>
+    <oldName>Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.Unweld@Autodesk.DesignScript.Geometry.TSpline.TSplineEdge[]</oldName>
+    <newName>Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.UnweldEdges@Autodesk.DesignScript.Geometry.TSpline.TSplineEdge[]</newName>
+  </priorNameHint>
+  <priorNameHint>
+    <oldName>Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.Unweld@Autodesk.DesignScript.Geometry.TSpline.TSplineVertex[]</oldName>
+    <newName>Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.UnweldVertices@Autodesk.DesignScript.Geometry.TSpline.TSplineVertex[]</newName>
+  </priorNameHint>
 </migrations>

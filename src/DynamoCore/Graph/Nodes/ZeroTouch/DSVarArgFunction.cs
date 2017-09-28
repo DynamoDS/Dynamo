@@ -5,8 +5,8 @@ using Autodesk.DesignScript.Runtime;
 using Dynamo.Core;
 using Dynamo.Engine;
 using Dynamo.Library;
-using ProtoCore.AST.AssociativeAST;
 using Newtonsoft.Json;
+using ProtoCore.AST.AssociativeAST;
 
 namespace Dynamo.Graph.Nodes.ZeroTouch
 {
@@ -31,6 +31,19 @@ namespace Dynamo.Graph.Nodes.ZeroTouch
         }
 
         /// <summary>
+        /// It indicates which of the three types of function calls this node represents, 
+        /// a call to an external graph, a call to a function with a vararg argument, 
+        /// or a standard function.
+        /// </summary>
+        public string FunctionType
+        {
+            get
+            {
+                return "VariableArguments";
+            }
+        }
+
+        /// <summary>
         ///     Initializes a new instance of the <see cref="DSVarArgFunction"/> class.
         /// </summary>
         /// <param name="descriptor">Function descritor.</param>
@@ -42,11 +55,11 @@ namespace Dynamo.Graph.Nodes.ZeroTouch
         }
 
         /// <summary>
-         /// The NodeType property provides a name which maps to the 
-         /// server type for the node. This property should only be
+        /// The NodeType property provides a name which maps to the 
+        /// server type for the node. This property should only be
         /// used for serialization. 
-         /// </summary>
-         public override string NodeType
+        /// </summary>
+        public override string NodeType
          {
              get
              {
@@ -54,10 +67,11 @@ namespace Dynamo.Graph.Nodes.ZeroTouch
              }
         }
 
-    /// <summary>
-    /// Returns the default number of inputs for the node
-    /// </summary>
-    private readonly int defaultNumInputs;
+        /// <summary>
+        /// Returns the default number of inputs for the node
+        /// </summary>
+        private readonly int defaultNumInputs;
+
         [JsonIgnore]
         internal int DefaultNumInputs { get { return defaultNumInputs; } }
 

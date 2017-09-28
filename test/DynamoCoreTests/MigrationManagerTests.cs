@@ -86,12 +86,11 @@ namespace Dynamo.Tests
         {
             XmlElement srcElement = xmlDocument.CreateElement("Element");
             srcElement.SetAttribute("guid", "D514AA10-63F0-4479-BB9F-0FEBEB2274B0");
-            srcElement.SetAttribute("isUpstreamVisible", "yeah");
-
+            
             // Non-existence attribute will result in a same-name attribute 
             // in the resulting XmlElement with an empty value.
             XmlElement dstElement = MigrationManager.CreateFunctionNodeFrom(
-                srcElement, new string[] { "guid", "dummy", "isUpstreamVisible" });
+                srcElement, new string[] { "guid", "dummy" });
 
             Assert.IsNotNull(dstElement);
             Assert.AreEqual(4, dstElement.Attributes.Count);
@@ -99,7 +98,6 @@ namespace Dynamo.Tests
                 dstElement.Attributes["guid"].Value);
 
             Assert.AreEqual("", dstElement.Attributes["dummy"].Value);
-            Assert.AreEqual("yeah", dstElement.Attributes["isUpstreamVisible"].Value);
             Assert.AreEqual("Dynamo.Graph.Nodes.ZeroTouch.DSFunction", dstElement.Attributes["type"].Value);
         }
 
@@ -259,7 +257,6 @@ namespace Dynamo.Tests
         {
             XmlElement srcElement = xmlDocument.CreateElement("Element");
             srcElement.SetAttribute("isVisible", "true");
-            srcElement.SetAttribute("isUpstreamVisible", "false");
             srcElement.SetAttribute("lacing", "Longest");
 
             XmlElement dstElement = MigrationManager.CreateCodeBlockNodeFrom(srcElement);
@@ -269,7 +266,6 @@ namespace Dynamo.Tests
             XmlAttributeCollection attribs = dstElement.Attributes;
             Assert.AreEqual(7, attribs.Count);
             Assert.AreEqual("true", attribs["isVisible"].Value);
-            Assert.AreEqual("false", attribs["isUpstreamVisible"].Value);
             Assert.AreEqual("Disabled", attribs["lacing"].Value);
             Assert.AreEqual("Dynamo.Graph.Nodes.CodeBlockNodeModel", attribs["type"].Value);
             Assert.AreEqual(string.Empty, attribs["CodeText"].Value);

@@ -121,7 +121,10 @@ namespace DSCore
         /// <summary>
         ///     Lists the components for the color in the order: alpha, red, green, blue.
         /// </summary>
-        /// <returns name="val">Saturation value for the color.</returns>
+        /// <returns name="a">alpha value</returns>
+        /// <returns name="r">red value</returns>
+        /// <returns name="g">green value</returns>
+        /// <returns name="b">blue value</returns>
         /// <search>alpha,red,green,blue</search>
         [MultiReturn("a", "r", "g", "b")]
         public static Dictionary<string, byte> Components(Color c)

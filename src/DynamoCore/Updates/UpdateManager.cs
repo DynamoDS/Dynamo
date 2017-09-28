@@ -261,7 +261,7 @@ namespace Dynamo.Updates
         /// </summary>
         string Data { get; set; }
 
-        // <summary>
+        /// <summary>
         /// Any error information returned from the request.
         /// </summary>
         string Error { get; set; }
