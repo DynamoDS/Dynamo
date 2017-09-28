@@ -1399,6 +1399,10 @@ namespace Dynamo.Models
                         if (OpenJsonFile(filePath, fileContents, dynamoPreferences, out ws))
                         {
                             OpenWorkspace(ws);
+                            //Raise an event to deserialize the view parameters before
+                            //setting the graph to run
+                            OnComputeModelSerialized();
+
                             SetPeriodicEvaluation(ws);
                         }
                     }

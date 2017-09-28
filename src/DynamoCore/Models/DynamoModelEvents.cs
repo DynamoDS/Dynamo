@@ -330,6 +330,20 @@ namespace Dynamo.Models
                 RefreshCompleted(homeWorkspaceModel);
         }
 
+        /// <summary>
+        /// Occurs after compute section of the workspace is serialized
+        /// </summary>
+        internal event Action ComputeModelSerialized;
+
+        /// <summary>
+        /// Triggers ComputeModelSerialized event
+        /// </summary>
+        internal virtual void OnComputeModelSerialized()
+        {
+            if (ComputeModelSerialized != null)
+                ComputeModelSerialized();
+        }
+
         #endregion
     }
 
