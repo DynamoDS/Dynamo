@@ -74,9 +74,22 @@ namespace Dynamo.Graph.Nodes.CustomNodes
         /// <summary>
         /// The unique id of the underlying function.
         /// </summary>
-        public Guid FunctionUuid
+        public Guid FunctionSignature
         {
             get { return Definition.FunctionId; }
+        }
+
+        /// <summary>
+        /// It indicates which of the three types of function calls this node represents, 
+        /// a call to an external graph, a call to a function with a vararg argument, 
+        /// or a standard function.
+        /// </summary>
+        public string FunctionType
+        {
+            get
+            {
+                return "Graph";
+            }
         }
 
         /// <summary>
@@ -86,7 +99,7 @@ namespace Dynamo.Graph.Nodes.CustomNodes
         {
             get
             {
-                return "CustomFunctionNode";
+                return "FunctionNode";
             }
         }
 
