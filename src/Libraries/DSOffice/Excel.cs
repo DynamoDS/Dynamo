@@ -269,15 +269,15 @@ namespace DSOffice
         /// <param name="file">File representing the Microsoft Excel spreadsheet.</param>
         /// <param name="sheetName">Name of the worksheet containing the data.</param>
         /// <param name="readAsStrings">toggle to switch between reading Excel file as strings only or not</param>
-        /// <param name="visible">toggle to switch between showing and hiding the main Excel window</param>
+        /// <param name="showExcel">toggle to switch between showing and hiding the main Excel window</param>
         /// <returns name="data">Rows of data from the Excel worksheet.</returns>
         /// <search>office,excel,spreadsheet,ifequalreturnindex</search>
         [IsVisibleInDynamoLibrary(false)]
-        public static object[][] ReadFromFile(FileInfo file, string sheetName, bool readAsStrings = false, bool visible = true)
+        public static object[][] ReadFromFile(FileInfo file, string sheetName, bool readAsStrings = false, bool showExcel = true)
         {
         	object[][] data;
         	
-        	if(!visible)
+        	if(!showExcel)
         	{
         		ExcelInterop.ShowOnStartup = false;
         	}
@@ -291,7 +291,7 @@ namespace DSOffice
             {
             	data = ws.Data;
             }
-            if(!visible)
+            if(!showExcel)
             {
             	wb.CloseHidden();
             	ExcelInterop.ShowOnStartup = true;
@@ -799,11 +799,40 @@ namespace DSOffice
             else return DSCore.List.Transpose(CSVdatalist);
         }
 
-        public static object[][] ImportExcel(FileInfo file, string sheetName, bool readAsStrings = false, bool visible = true)
+        /// <summary>
+        ///     Read data from a Microsoft Excel spreadsheet. Data is read by row and
+        ///     returned in a series of lists by row. Rows and columns are zero-indexed;
+        ///     for example, the value in cell A1 will appear in the data list at [0,0].
+        ///     This node requires Microsoft Excel to be installed.
+        /// </summary>
+        /// <param name="file">File representing the Microsoft Excel spreadsheet.</param>
+        /// <param name="sheetName">Name of the worksheet containing the data.</param>
+        /// <param name="readAsStrings">Toggle to switch between reading Excel file as strings.</param>
+        /// <param name="showExcel">Toggle to switch between showing and hiding the main Excel window.</param>
+        /// <returns name="data">Rows of data from the Excel worksheet.</returns>
+        /// <search>office,excel,spreadsheet,ifequalreturnindex</search>
+        public static object[][] ImportExcel(FileInfo file, string sheetName, bool readAsStrings = false, bool showExcel = true)
         {
-            return Excel.ReadFromFile(file, sheetName, readAsStrings, visible);
+            return Excel.ReadFromFile(file, sheetName, readAsStrings, showExcel);
         }
 
+        /// <summary>
+        ///     Write data to a Microsoft Excel spreadsheet. Data is written by row
+        ///     with sublists to be written in successive rows. Rows and columns are
+        ///     zero-indexed; for example, the value in the data list at [0,0] will
+        ///     be written to cell A1. Null values and empty lists are written to Excel 
+        ///     as empty cells. This node requires Microsoft Excel to be installed. 
+        /// </summary>
+        /// <param name="filePath">File path to the Microsoft Excel spreadsheet.</param>
+        /// <param name="sheetName">Name of the workseet to write data to.</param>
+        /// <param name="startRow">Start row for writing data. Enter 0 for Row 1, 1 for Row 2, etc.</param>
+        /// <param name="startCol">
+        ///     Start column for writing data. Enter 0 for Column A, 1 for Column B, etc.
+        /// </param>
+        /// <param name="data">Data to write to the spreadsheet.</param>
+        /// <param name="overWrite"></param>
+        /// <returns name="data">Data written to the spreadsheet.</returns>
+        /// <search>office,excel,spreadsheet</search>
         public static object[][] ExportExcel(string filePath, string sheetName, int startRow, int startCol, object[][] data, bool overWrite = false)
         {
             return Excel.WriteToFile(filePath, sheetName, startRow, startCol, data, overWrite);

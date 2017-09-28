@@ -35,7 +35,6 @@ namespace Dynamo.Graph.Nodes
 
         private LacingStrategy argumentLacing = LacingStrategy.Auto;
         private bool displayLabels;
-        private bool isUpstreamVisible;
         private bool isVisible;
         private bool canUpdatePeriodically;
         private string name;
@@ -193,28 +192,6 @@ namespace Dynamo.Graph.Nodes
                 {
                     isVisible = value;
                     RaisePropertyChanged("IsVisible");
-                }
-            }
-        }
-
-        /// <summary>
-        ///     Returns whether the node aggregates its upstream connections
-        ///     for visualizations.
-        /// </summary>
-        [JsonIgnore]
-        public bool IsUpstreamVisible
-        {
-            get
-            {
-                return isUpstreamVisible;
-            }
-
-            private set // Private setter, see "ArgumentLacing" for details.
-            {
-                if (isUpstreamVisible != value)
-                {
-                    isUpstreamVisible = value;
-                    RaisePropertyChanged("IsUpstreamVisible");
                 }
             }
         }
@@ -811,14 +788,18 @@ namespace Dynamo.Graph.Nodes
             }
             set
             {
+                bool oldValue = isFrozenExplicitly;
                 isFrozenExplicitly = value;
                 //If the node is Unfreezed then Mark all the downstream nodes as
                 // modified. This is essential recompiling the AST.
                 if (!value)
                 {
-                    MarkDownStreamNodesAsModified(this);
-                    OnNodeModified();
-                    RaisePropertyChanged("IsFrozen");
+                    if (oldValue)
+                    {
+                        MarkDownStreamNodesAsModified(this);
+                        OnNodeModified();
+                        RaisePropertyChanged("IsFrozen");
+                    }
                 }
                 //If the node is frozen, then do not execute the graph immediately.
                 // delete the node and its downstream nodes from AST.
@@ -975,7 +956,6 @@ namespace Dynamo.Graph.Nodes
             OutPorts.AddRange(outPorts);
 
             IsVisible = true;
-            IsUpstreamVisible = true;
             ShouldDisplayPreviewCore = true;
             executionHint = ExecutionHints.Modified;
 
@@ -1005,7 +985,6 @@ namespace Dynamo.Graph.Nodes
             outputNodes = new Dictionary<int, HashSet<Tuple<int, NodeModel>>>();
 
             IsVisible = true;
-            IsUpstreamVisible = true;
             ShouldDisplayPreviewCore = true;
             executionHint = ExecutionHints.Modified;
 
@@ -1943,12 +1922,6 @@ namespace Dynamo.Graph.Nodes
                         IsVisible = newVisibilityValue;
                     return true;
 
-                case "IsUpstreamVisible":
-                    bool newUpstreamVisibilityValue;
-                    if (bool.TryParse(value, out newUpstreamVisibilityValue))
-                        IsUpstreamVisible = newUpstreamVisibilityValue;
-                    return true;
-
                 case "IsFrozen":
                     bool newIsFrozen;
                     if (bool.TryParse(value, out newIsFrozen))
@@ -2066,7 +2039,6 @@ namespace Dynamo.Graph.Nodes
             helper.SetAttribute("x", X);
             helper.SetAttribute("y", Y);
             helper.SetAttribute("isVisible", IsVisible);
-            helper.SetAttribute("isUpstreamVisible", IsUpstreamVisible);
             helper.SetAttribute("lacing", ArgumentLacing.ToString());
             helper.SetAttribute("isSelectedInput", IsSetAsInput.ToString());
             helper.SetAttribute("IsFrozen", isFrozenExplicitly);
@@ -2124,7 +2096,6 @@ namespace Dynamo.Graph.Nodes
             X = helper.ReadDouble("x", 0.0);
             Y = helper.ReadDouble("y", 0.0);
             isVisible = helper.ReadBoolean("isVisible", true);
-            isUpstreamVisible = helper.ReadBoolean("isUpstreamVisible", true);
             argumentLacing = helper.ReadEnum("lacing", LacingStrategy.Disabled);
             IsSetAsInput = helper.ReadBoolean("isSelectedInput", true);
             isFrozenExplicitly = helper.ReadBoolean("IsFrozen", false);
@@ -2198,8 +2169,7 @@ namespace Dynamo.Graph.Nodes
                 RaisePropertyChanged("Name");
                 RaisePropertyChanged("ArgumentLacing");
                 RaisePropertyChanged("IsVisible");
-                RaisePropertyChanged("IsUpstreamVisible");
-
+                 
                 //we need to modify the downstream nodes manually in case the
                 //undo is for toggling freeze. This is ONLY modifying the execution hint.
                 // this does not run the graph.

@@ -28,6 +28,13 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        public void OpeningWorkspaceDoNotStartWithUnSavedChanges()
+        {
+            var ws = OpenWorkspaceFromSampleFile();
+            Assert.AreEqual(ws.HasUnsavedChanges, false);
+        }
+
+        [Test]
         public void ClearingWorkspaceResetsPositionAndZoom()
         {
             var ws = OpenWorkspaceFromSampleFile();
