@@ -13,7 +13,6 @@ namespace Dynamo.ViewModels
         private DelegateCommand _viewCustomNodeWorkspaceCommand;
         private DelegateCommand _validateConnectionsCommand;
         private DelegateCommand _toggleIsVisibleCommand;
-        private DelegateCommand _toggleIsUpstreamVisibleCommand;
         private DelegateCommand _renameCommand;
         private DelegateCommand _setModelSizeCommand;
         private DelegateCommand _gotoWorkspaceCommand;
@@ -121,19 +120,6 @@ namespace Dynamo.ViewModels
                         new DelegateCommand(ToggleIsVisible, CanVisibilityBeToggled);
 
                 return _toggleIsVisibleCommand;
-            }
-        }
-
-        [JsonIgnore]
-        public DelegateCommand ToggleIsUpstreamVisibleCommand
-        {
-            get
-            {
-                if(_toggleIsUpstreamVisibleCommand == null)
-                    _toggleIsUpstreamVisibleCommand = 
-                        new DelegateCommand(ToggleIsUpstreamVisible, CanUpstreamVisibilityBeToggled);
-
-                return _toggleIsUpstreamVisibleCommand;
             }
         }
 

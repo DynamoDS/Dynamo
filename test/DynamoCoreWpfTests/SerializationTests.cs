@@ -43,7 +43,6 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual("+", sumNode.Name);
             Assert.AreEqual(LacingStrategy.Auto, sumNode.ArgumentLacing);
             Assert.AreEqual(true, sumNode.IsVisible);
-            Assert.AreEqual(true, sumNode.IsUpstreamVisible);
             Assert.AreEqual(ElementState.Dead, sumNode.State);
 
             //Serialize node and then change values
@@ -54,7 +53,6 @@ namespace DynamoCoreWpfTests
             sumNode.Name = "TestNode";
             sumNode.UpdateValue(new UpdateValueParams("ArgumentLacing", "CrossProduct"));
             sumNode.UpdateValue(new UpdateValueParams("IsVisible", "false"));
-            sumNode.UpdateValue(new UpdateValueParams("IsUpstreamVisible", "false"));
             sumNode.State = ElementState.Active;
 
             //Assert New Changes
@@ -63,7 +61,6 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual("TestNode", sumNode.Name);
             Assert.AreEqual(LacingStrategy.CrossProduct, sumNode.ArgumentLacing);
             Assert.AreEqual(false, sumNode.IsVisible);
-            Assert.AreEqual(false, sumNode.IsUpstreamVisible);
             Assert.AreEqual(ElementState.Active, sumNode.State);
 
             //Deserialize and Assert Old values
@@ -73,7 +70,6 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual("+", sumNode.Name);
             Assert.AreEqual(LacingStrategy.Auto, sumNode.ArgumentLacing);
             Assert.AreEqual(true, sumNode.IsVisible);
-            Assert.AreEqual(true, sumNode.IsUpstreamVisible);
             Assert.AreEqual(ElementState.Dead, sumNode.State);
         }
 

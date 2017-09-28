@@ -588,7 +588,6 @@ namespace Dynamo.Migration
 
             // Attributes with default values (as in DynamoModel.OpenWorkspace).
             element.SetAttribute("isVisible", "true");
-            element.SetAttribute("isUpstreamVisible", "true");
             element.SetAttribute("lacing", "Disabled");
             element.SetAttribute("guid", Guid.NewGuid().ToString());
             
@@ -627,7 +626,6 @@ namespace Dynamo.Migration
 
             // Attributes with default values (as in DynamoModel.OpenWorkspace).
             element.SetAttribute("isVisible", "true");
-            element.SetAttribute("isUpstreamVisible", "true");
             element.SetAttribute("lacing", "Disabled");
             element.SetAttribute("guid", Guid.NewGuid().ToString());
 
@@ -663,7 +661,6 @@ namespace Dynamo.Migration
 
             // Attributes with default values (as in DynamoModel.OpenWorkspace).
             element.SetAttribute("isVisible", "true");
-            element.SetAttribute("isUpstreamVisible", "true");
             element.SetAttribute("lacing", "Disabled");
             element.SetAttribute("guid", Guid.NewGuid().ToString());
 
@@ -697,7 +694,6 @@ namespace Dynamo.Migration
 
             // Attributes with default values (as in DynamoModel.OpenWorkspace).
             element.SetAttribute("isVisible", "true");
-            element.SetAttribute("isUpstreamVisible", "true");
             element.SetAttribute("lacing", "Disabled");
             element.SetAttribute("guid", Guid.NewGuid().ToString());
 

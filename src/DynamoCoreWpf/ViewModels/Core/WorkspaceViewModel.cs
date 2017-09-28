@@ -1023,21 +1023,6 @@ namespace Dynamo.ViewModels
             RefreshViewOnSelectionChange();
         }
 
-        private void ShowHideAllUpstreamPreview(object parameter)
-        {
-            var modelGuids = DynamoSelection.Instance.Selection.
-                OfType<NodeModel>().Select(n => n.GUID);
-
-            if (!modelGuids.Any())
-                return;
-
-            var command = new DynamoModel.UpdateModelValueCommand(Guid.Empty,
-                modelGuids, "IsUpstreamVisible", (string) parameter);
-
-            DynamoViewModel.Model.ExecuteCommand(command);
-            RefreshViewOnSelectionChange();
-        }
-
         private void SetArgumentLacing(object parameter)
         {
             var modelGuids = DynamoSelection.Instance.Selection.
@@ -1307,7 +1292,6 @@ namespace Dynamo.ViewModels
         private void RefreshViewOnSelectionChange()
         {
             AlignSelectedCommand.RaiseCanExecuteChanged();
-            ShowHideAllUpstreamPreviewCommand.RaiseCanExecuteChanged();
             ShowHideAllGeometryPreviewCommand.RaiseCanExecuteChanged();
             SetArgumentLacingCommand.RaiseCanExecuteChanged();           
             RaisePropertyChanged("HasSelection");

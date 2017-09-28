@@ -19,12 +19,6 @@ namespace Dynamo.Graph.Nodes
             foreach (var n in upstream.Where(n => !gathered.Contains(n)))
             {
                 gathered.Add(n);
-
-                if (n.IsUpstreamVisible == false)
-                {
-                    continue;
-                }
-                
                 n.VisibleUpstreamNodes(gathered);
             }
         }
