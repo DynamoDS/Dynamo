@@ -176,13 +176,8 @@ namespace ProtoCore.DSASM
         /// </summary>
         public IDictionary<StackValue, StackValue> ToDictionary()
         {
-            var dict = Enumerable.Range(0, Count)
-                                 .Select(i => new KeyValuePair<StackValue, StackValue>(StackValue.BuildInt(i), GetValueAt(i)))
-                                 .Concat(Contents ?? Enumerable.Empty<KeyValuePair<StackValue, StackValue>>())
-                                 .ToDictionary(p => p.Key, p => p.Value);
-            return dict;
+            return Contents;
         }
-
 
         public StackValue CopyArray(RuntimeCore runtimeCore)
         {

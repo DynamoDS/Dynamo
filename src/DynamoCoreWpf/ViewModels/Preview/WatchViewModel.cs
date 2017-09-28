@@ -100,7 +100,6 @@ namespace Dynamo.ViewModels
                 if (splits.Count() == 1)
                     return string.Empty;
                 return splits.Any() ? string.Format(NodeLabel == LIST ? "{0}" : " {0} ", splits.Last()) : string.Empty;
-                //return _path;
             }
         }
 

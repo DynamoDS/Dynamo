@@ -257,22 +257,23 @@ namespace ProtoFFI
                 elementType = expectedCLRType.GetGenericArguments().First();
                 arrayType = elementType.MakeArrayType();
             }
-            else if (typeof(IDictionary).IsAssignableFrom(expectedCLRType))
+           
+            if (dsObject.IsDictionary)
             {
                 return ToIDictionary(dsObject, context, dsi, expectedCLRType);
             }
 
             ICollection collection = null;
-            //If dsObject is non array pointer but the expectedCLRType is IEnumerable, promote the dsObject to a collection.
-            if (!dsObject.IsArray)
+            if (dsObject.IsArray)
             {
+                collection = ToICollection(dsObject, context, dsi, arrayType);
+            }
+            else
+            {
+                // If dsObject is non array pointer but the expectedCLRType is IEnumerable, promote the dsObject to a collection.
                 Validity.Assert(typeof(IEnumerable).IsAssignableFrom(expectedCLRType));
                 var obj = primitiveMarshaler.UnMarshal(dsObject, context, dsi, elementType);
                 collection = new ArrayList(new object[] { obj });
-            }
-            else //Convert DS Array to CS Collection
-            {
-                collection = ToICollection(dsObject, context, dsi, arrayType);
             }
 
             if (expectedCLRType.IsGenericType && !expectedCLRType.IsInterface)
@@ -335,7 +336,7 @@ namespace ProtoFFI
 
         private object ToIDictionary(StackValue dsObject, ProtoCore.Runtime.Context context, Interpreter dsi, System.Type expectedType)
         {
-            if (!dsObject.IsArray)
+            if (!dsObject.IsDictionary)
                 return null;
 
             Type keyType = typeof(object);
@@ -348,9 +349,13 @@ namespace ProtoFFI
                 valueType = expectedType.GetGenericArguments().Last();
                 instanceType = expectedType.GetGenericTypeDefinition().MakeGenericType(keyType, valueType);
             }
+            else
+            {
+                instanceType = typeof(Dictionary<object, object>);
+            }
 
             var csDict = (IDictionary)Activator.CreateInstance(instanceType);
-            var dsDict = dsi.runtime.RuntimeCore.Heap.ToHeapObject<DSArray>(dsObject).ToDictionary();
+            var dsDict = dsi.runtime.RuntimeCore.Heap.ToHeapObject<DSDictionary>(dsObject).ToDictionary();
             return AddToDictionary(context, dsi, csDict, dsDict, keyType, valueType);
         }
 
@@ -749,7 +754,7 @@ namespace ProtoFFI
                 expectedType = Nullable.GetUnderlyingType(clrType);
 
             //If Ds Type is array pointer, it needs to be marshaled as collection.
-            bool collection = (dsType == AddressType.ArrayPointer);
+            bool collection = (dsType == AddressType.ArrayPointer || dsType == AddressType.DictionaryPointer);
 
             //Expected CLR type is not string, but is derived from IEnumerable
             if (typeof(string) != expectedType && typeof(IEnumerable).IsAssignableFrom(expectedType))

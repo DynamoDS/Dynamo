@@ -94,8 +94,6 @@ namespace ProtoScript.Runners
         /// Execute the data stored in core
         /// This is the entry point of all DS code to be executed
         /// </summary>
-        /// <param name="core"></param>
-        /// <returns></returns>
         public ProtoCore.RuntimeCore ExecuteVM(ProtoCore.Core core)
         {
             ProtoCore.RuntimeCore runtimeCore = CreateRuntimeCore(core);  
@@ -135,12 +133,6 @@ namespace ProtoScript.Runners
         /// ExecuteLive is called by the liverunner where a persistent RuntimeCore is provided
         /// ExecuteLive assumes only a single global scope
         /// </summary>
-        /// <param name="core"></param>
-        /// <param name="runtimeCore"></param>
-        /// <param name="runningBlock"></param>
-        /// <param name="staticContext"></param>
-        /// <param name="runtimeContext"></param>
-        /// <returns></returns>
         public ProtoCore.RuntimeCore ExecuteLive(ProtoCore.Core core, ProtoCore.RuntimeCore runtimeCore)
         {
             try
@@ -190,11 +182,6 @@ namespace ProtoScript.Runners
         /// <summary>
         /// Compile and execute the source that is stored in the static context
         /// </summary>
-        /// <param name="staticContext"></param>
-        /// <param name="runtimeContext"></param>
-        /// <param name="core"></param>
-        /// <param name="isTest"></param>
-        /// <returns></returns>
         public ExecutionMirror Execute(
             ProtoCore.CompileTime.Context staticContext,
             ProtoCore.Core core,
@@ -233,10 +220,6 @@ namespace ProtoScript.Runners
         /// <summary>
         /// Compile and execute the given list of ASTs
         /// </summary>
-        /// <param name="astList"></param>
-        /// <param name="core"></param>
-        /// <param name="isTest"></param>
-        /// <returns></returns>
         public ProtoCore.RuntimeCore Execute(List<ProtoCore.AST.AssociativeAST.AssociativeNode> astList, ProtoCore.Core core, bool isTest = true)
         {
             ProtoCore.RuntimeCore runtimeCore = null;
