@@ -1403,6 +1403,7 @@ namespace Dynamo.Models
                             //setting the graph to run
                             OnComputeModelSerialized();
 
+                            //TODO: Can this be called from ViewModel instead? If so, OnComputeModelSerialized is not required. 
                             SetPeriodicEvaluation(ws);
                         }
                     }
