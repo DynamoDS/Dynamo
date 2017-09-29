@@ -447,44 +447,49 @@ namespace DynamoCoreWpfTests
             base.GetLibrariesToPreload(libraries);
         }
 
-        private void DoWorkspaceOpenAndCompareView(string filePath, string dirName,
-           Func<DynamoViewModel, string, string> saveFunction,
-           Action<WorkspaceViewComparisonData, WorkspaceViewComparisonData> workspaceViewCompareFunction,
-           Action<WorkspaceViewComparisonData, string, TimeSpan,Dictionary<Guid,string>> workspaceViewDataSaveFunction)
+        private void DoWorkspaceOpen(string filePath)
         {
-            var openPath = filePath;
-
             if (Dynamo.Tests.SerializationTests.bannedTests.Any(t => filePath.Contains(t)))
             {
                 Assert.Inconclusive("Skipping test known to kill the test framework...");
             }
 
-            OpenModel(openPath);
+            OpenModel(filePath);
 
             var model = this.ViewModel.Model;
-            var ws1 = ViewModel.CurrentSpaceViewModel;
+            var workspace = ViewModel.CurrentSpaceViewModel;
 
-            ws1.Model.Description = "TestDescription";
+            workspace.Model.Description = "TestDescription";
 
-            var dummyNodes = ws1.Nodes.Select(x => x.NodeModel).Where(n => n is DummyNode);
+            var dummyNodes = workspace.Nodes.Select(x => x.NodeModel).Where(n => n is DummyNode);
             if (dummyNodes.Any())
             {
                 Assert.Inconclusive("The Workspace contains dummy nodes for: " + string.Join(",", dummyNodes.Select(n => n.Name).ToArray()));
             }
 
-            var cbnErrorNodes = ws1.Nodes.Where(n => n.NodeModel is CodeBlockNodeModel && n.NodeModel.State == ElementState.Error);
+            var cbnErrorNodes = workspace.Nodes.Where(n => n.NodeModel is CodeBlockNodeModel && n.NodeModel.State == ElementState.Error);
             if (cbnErrorNodes.Any())
             {
                 Assert.Inconclusive("The Workspace contains code block nodes in error state due to which rest " +
                                     "of the graph will not execute; skipping test ...");
             }
 
-            if (((HomeWorkspaceModel)ws1.Model).RunSettings.RunType == RunType.Manual)
+            if (((HomeWorkspaceModel)workspace.Model).RunSettings.RunType == RunType.Manual)
             {
                 RunCurrentModel();
             }
+        }
 
-            var wcd1 = new WorkspaceViewComparisonData(ws1, model.EngineController);
+        private void DoWorkspaceOpenAndCompareView(string filePath, string dirName,
+           Func<DynamoViewModel, string, string> saveFunction,
+           Action<WorkspaceViewComparisonData, WorkspaceViewComparisonData> workspaceViewCompareFunction,
+           Action<WorkspaceViewComparisonData, string, TimeSpan,Dictionary<Guid,string>> workspaceViewDataSaveFunction)
+        {
+            var openPath = filePath;
+            DoWorkspaceOpen(openPath);
+
+            var ws1 = ViewModel.CurrentSpaceViewModel;
+            var wcd1 = new WorkspaceViewComparisonData(ws1, ViewModel.Model.EngineController);
 
             var dirPath = Path.Combine(Path.GetTempPath(), dirName);
             if (!System.IO.Directory.Exists(dirPath))
@@ -508,7 +513,7 @@ namespace DynamoCoreWpfTests
             var ws2 = ViewModel.CurrentSpaceViewModel;
             Assert.NotNull(ws2);
 
-            dummyNodes = ws2.Nodes.Select(x => x.NodeModel).Where(n => n is DummyNode);
+            var dummyNodes = ws2.Nodes.Select(x => x.NodeModel).Where(n => n is DummyNode);
             if (dummyNodes.Any())
             {
                 Assert.Inconclusive("The Workspace contains dummy nodes for: " + string.Join(",", dummyNodes.Select(n => n.Name).ToArray()));
@@ -793,6 +798,25 @@ namespace DynamoCoreWpfTests
                 ConvertCurrentWorkspaceViewToJsonAndSave,
                 CompareWorkspaceViews,
                 serializationTestUtils.SaveWorkspaceComparisonData);
+        }
+
+        // This test checks that all notes are properly converted to annotations
+        // when saving to JSON.
+        [Test]
+        public void NotesSerializeAsAnnotations()
+        {
+            var filePath = Path.Combine(TestDirectory, @"core\serialization\serialization.dyn");
+            DoWorkspaceOpen(filePath);
+            var workspace = ViewModel.Model.CurrentWorkspace;
+
+            var numXMLNotes = workspace.Notes.Count();
+            var numXMLAnnotations = workspace.Annotations.Count();
+
+            var view = JToken.Parse(ViewModel.CurrentSpaceViewModel.ToJson());
+            var numJsonAnnotations = view["Annotations"].Count();
+
+            Assert.AreEqual(numXMLNotes, 0);
+            Assert.AreEqual(numXMLAnnotations, numJsonAnnotations);
         }
 
         public object[] FindWorkspaces()
