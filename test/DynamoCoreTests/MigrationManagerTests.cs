@@ -93,7 +93,7 @@ namespace Dynamo.Tests
                 srcElement, new string[] { "guid", "dummy" });
 
             Assert.IsNotNull(dstElement);
-            Assert.AreEqual(4, dstElement.Attributes.Count);
+            Assert.AreEqual(3, dstElement.Attributes.Count);
             Assert.AreEqual("D514AA10-63F0-4479-BB9F-0FEBEB2274B0",
                 dstElement.Attributes["guid"].Value);
 
@@ -264,7 +264,7 @@ namespace Dynamo.Tests
             Assert.IsNotNull(dstElement.Attributes);
 
             XmlAttributeCollection attribs = dstElement.Attributes;
-            Assert.AreEqual(7, attribs.Count);
+            Assert.AreEqual(6, attribs.Count);
             Assert.AreEqual("true", attribs["isVisible"].Value);
             Assert.AreEqual("Disabled", attribs["lacing"].Value);
             Assert.AreEqual("Dynamo.Graph.Nodes.CodeBlockNodeModel", attribs["type"].Value);
