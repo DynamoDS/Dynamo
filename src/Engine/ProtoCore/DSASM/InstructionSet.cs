@@ -1024,7 +1024,6 @@ namespace ProtoCore.DSASM
             return nextIndex == Constants.kInvalidIndex ? StackValue.Null : StackValue.BuildArrayKey(svArray, nextIndex);
         }
 
-
         #region Converters
         /// <summary>
         /// Convert StackValue to boolean typed StackValue. Returns 

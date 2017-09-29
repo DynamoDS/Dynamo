@@ -2323,7 +2323,7 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 		}
 		Expect(47);
 		NodeUtils.SetNodeEndLocation(dictExpr, t); 
-		node = dictExpr.ToFunctionCall(); 
+		node = dictExpr; 
 	}
 
 	void Associative_NameReference(out ProtoCore.AST.AssociativeAST.AssociativeNode node) {

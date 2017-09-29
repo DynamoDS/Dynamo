@@ -1550,6 +1550,26 @@ Associative_ArrayExprList<out ProtoCore.AST.AssociativeAST.AssociativeNode node>
                                         (. node = exprlist; .)
 .
 
+Associative_DictionaryExpression<out ProtoCore.AST.AssociativeAST.AssociativeNode node>
+=
+'{'                                     (. var dictExpr = new ProtoCore.AST.AssociativeAST.DictionaryNode(); .)
+                                        (. NodeUtils.SetNodeStartLocation(dictExpr, t); .)
+    [
+        textstring (. dictExpr.Keys.Add(t.val); .)  
+		':'                     
+        Associative_Expression<out node>            (. dictExpr.Values.Add(node); .)
+        {
+            ','
+			textstring (. dictExpr.Keys.Add(t.val); .)  
+			':'                     
+			Associative_Expression<out node>            (. dictExpr.Values.Add(node); .)
+        }
+                                        
+    ]
+'}'                                     (. NodeUtils.SetNodeEndLocation(dictExpr, t); .)
+                                        (. node = dictExpr.ToFunctionCall(); .)
+.
+
 Associative_NameReference<out ProtoCore.AST.AssociativeAST.AssociativeNode node>
 = 
                                         (.
@@ -1592,6 +1612,14 @@ Associative_NameReference<out ProtoCore.AST.AssociativeAST.AssociativeNode node>
             Associative_Ident<out node>         
                                         (. 
                                             nameNode = node as ProtoCore.AST.AssociativeAST.ArrayNameNode; 
+                                        .)
+        )
+		|
+		IF(IsDictionaryExpression())
+        (
+            Associative_DictionaryExpression<out node>
+                                        (.
+                                            nameNode = node as ProtoCore.AST.AssociativeAST.ArrayNameNode;
                                         .)
         )
         |

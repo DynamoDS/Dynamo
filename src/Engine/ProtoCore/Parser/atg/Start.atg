@@ -102,6 +102,49 @@ COMPILER DesignScriptParser
         return false;
     }
 
+	// Recognize: 
+    //     { "foo" :   
+    // OR   
+    //     { foo :
+    private bool IsDictionaryExpression()
+    {
+        short state = 0;
+        Token pt = la;
+        while (pt.kind != _EOF)
+        {
+            switch (state)
+            {
+                case 0:
+                    if (pt.val == "{")
+                    {
+                        state = 1;
+                        pt = scanner.Peek();
+                        continue;
+                    }
+                    goto fail;
+                case 1:
+                    if (pt.kind == _textstring || pt.kind ==_ident)
+                    {
+                        state = 2;
+                        pt = scanner.Peek();
+                        continue;
+                    }
+                    goto fail;
+                case 2:
+                    if (pt.val == ":")
+                    {
+                        scanner.ResetPeek();
+                        return true;
+                    }
+                    goto fail;
+            }
+        }
+
+        fail:
+        scanner.ResetPeek();
+        return false;
+    }
+
     private bool IsFunctionCall()
     {
         Token pt = la;

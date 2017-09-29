@@ -626,7 +626,7 @@ namespace ProtoCore.AST.AssociativeAST
         }
     }
 
-    public class IdentifierListNode : AssociativeNode
+    public class IdentifierListNode : ArrayNameNode
     {
         public bool IsLastSSAIdentListFactor { get; set; }
 
@@ -2220,32 +2220,37 @@ namespace ProtoCore.AST.AssociativeAST
         }
     }
 
-    public class DictionaryNode : AssociativeNode
+    public class DictionaryNode : ArrayNameNode
     {
+        public List<string> Keys { get; set; }
+        public List<AssociativeNode> Values { get; set; }
+
         public DictionaryNode()
         {
-            Exprs = new List<AssociativeNode>();
+            Keys = new List<string>();
+            Values = new List<AssociativeNode>();
         }
 
         public DictionaryNode(DictionaryNode rhs) : base(rhs)
         {
-            Exprs = rhs.Exprs.Select(NodeUtils.Clone).ToList();
+            Keys = rhs.Keys.ToList();
+            Values = rhs.Values.Select(NodeUtils.Clone).ToList();
         }
-
-        public List<AssociativeNode> Exprs { get; set; }
 
         public override bool Equals(object other)
         {
-            var otherNode = other as ExprListNode;
-            return null != otherNode && Exprs.SequenceEqual(otherNode.Exprs);
+            var otherNode = other as DictionaryNode;
+            return null != otherNode && Keys.SequenceEqual(otherNode.Keys) && Values.SequenceEqual(otherNode.Values);
         }
 
         public override int GetHashCode()
         {
-            var listHashCode =
-                (Exprs == null ? base.GetHashCode() : Exprs.GetHashCode());
+            var keysHashCode =
+                (Keys == null ? base.GetHashCode() : Keys.GetHashCode());
+            var valuesHashCode =
+                (Values == null ? base.GetHashCode() : Values.GetHashCode());
 
-            return listHashCode;
+            return keysHashCode ^ valuesHashCode;
         }
 
         public override string ToString()
@@ -2253,6 +2258,8 @@ namespace ProtoCore.AST.AssociativeAST
             var buf = new StringBuilder();
 
             buf.Append("{");
+            /*
+            // TODO(pboyer)
             if (Exprs != null)
             {
                 for (int i = 0; i < Exprs.Count; ++i)
@@ -2262,11 +2269,24 @@ namespace ProtoCore.AST.AssociativeAST
                         buf.Append(", ");
                 }
             }
+            */
             buf.Append("}");
             buf.Append(base.ToString());
 
             return buf.ToString();
         }
+
+        public AssociativeNode ToFunctionCall()
+        {
+            var f = AstFactory.BuildFunctionCall("DSCore.Dictionary2", "ByKeysValues", 
+                new List<AssociativeNode>() {  new StringNode { Value = "Foo"}, new IntNode(12) });
+            f.col = this.col;
+            f.line = this.line;
+            f.endCol = this.endCol;
+            f.endLine = this.endLine;
+            return f;
+        }
+
         public override AstKind Kind
         {
             get

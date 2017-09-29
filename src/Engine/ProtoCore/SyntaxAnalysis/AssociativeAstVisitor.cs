@@ -186,9 +186,9 @@ namespace ProtoCore.SyntaxAnalysis
 
         public virtual bool VisitDictionaryNode(DictionaryNode node)
         {
-            for (int i = 0; i < node.Exprs.Count; ++i)
+            for (int i = 0; i < node.Values.Count; ++i)
             {
-                node.Exprs[i].Accept(this);
+                node.Values[i].Accept(this);
             }
 
             return true;
