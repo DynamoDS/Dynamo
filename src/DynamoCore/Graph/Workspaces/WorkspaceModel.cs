@@ -1606,15 +1606,23 @@ namespace Dynamo.Graph.Workspaces
                 this,
                 new PointEventArgs(new Point2D(X, Y)));
 
+            // This function loads standard nodes
             LoadNodes(workspaceViewInfo.NodeViews);
 
+            // This function loads notes from the Notes array in the JSON format
             // NOTE: This is here to support early JSON graphs
+            // IMPORTANT: All notes must be loaded before annotations are loaded to
+            //            ensure that any contained notes are contained properly
             LoadLegacyNotes(workspaceViewInfo.Notes);
 
+            // This function loads notes from the Annotations array in the JSON format
+            // that have an empty nodes collection
+            // IMPORTANT: All notes must be loaded before annotations are loaded to
+            //            ensure that any contained notes are contained properly
             LoadNotesFromAnnotations(workspaceViewInfo.Annotations);
 
-            // All notes must be loaded/created before annotations to be 
-            // included in a containing annotation
+            // This function loads annotations from the Annotations array in the JSON format
+            // that have a non-empty nodes collection
             LoadAnnotations(workspaceViewInfo.Annotations);
 
             // TODO, QNTM-1099: These items are not in the extra view info
