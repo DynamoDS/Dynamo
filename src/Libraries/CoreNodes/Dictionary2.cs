@@ -1,25 +1,25 @@
-﻿#region
-using System;
-using System.Collections;
+﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Globalization;
 using System.Linq;
-using System.Threading;
+using System.Text;
+using System.Threading.Tasks;
+using System.Collections.Immutable;
 using Autodesk.DesignScript.Runtime;
-using DSCore.Properties;
-
-#endregion
 
 namespace DSCore
 {
-
-    /// <summary>
-    ///     Methods for creating and manipulating Lists.
-    /// </summary>
-    [IsVisibleInDynamoLibrary(false)]
-    public static class Dictionary
+    // Doesn't implement IDictionary so suppresses FFI import
+    public class Dictionary2
     {
+        [SupressImportIntoVM]
+        private readonly ImmutableDictionary<object, object> D;
+
+        // You can only use the StaticConstructor
+        private Dictionary2(ImmutableDictionary<object, object> dict)
+        {
+            this.D = dict;
+        }
+
         #region private methods
 
         [SupressImportIntoVM]
@@ -40,15 +40,6 @@ namespace DSCore
             return k;
         }
 
-        [SupressImportIntoVM]
-        private static IDictionary Copy(IDictionary d)
-        {
-            return d.Keys.Cast<object>().Zip(d.Values.Cast<object>(), (a, b) =>
-            {
-                return new KeyValuePair<object, object>(a, b);
-            }).ToDictionary(a => a.Key, a => a.Value);
-        }
-
         #endregion
 
         #region public methods
@@ -62,43 +53,40 @@ namespace DSCore
         /// <returns name="dictionary">The result Dictionary</returns>
         /// <search>map,{},table</search>
         [IsVisibleInDynamoLibrary(true)]
-        public static IDictionary ByKeysValues(IList keys, IList values)
+        public static Dictionary2 ByKeysValues(IList<object> keys, IList<object> values)
         {
-            return keys.Cast<object>().Zip(values.Cast<object>(), (a, b) =>
+            var pairs = keys.Cast<object>().Zip(values.Cast<object>(), (a, b) =>
             {
-                a = CoerceKey(a);
-                AssertIsKeyType(a);
-
                 return new KeyValuePair<object, object>(a, b);
-            }).ToDictionary(a => a.Key, a => a.Value);
+            });
+
+            return new Dictionary2(ImmutableDictionary.Create<object, object>().AddRange(pairs));
         }
 
         /// <summary>
         ///     Produces the components of a Dictionary. The reverse of Dictionary.ByKeysValues.
         /// </summary>
-        /// <param name="dictionary">The input dictionary</param>
         /// <returns name="keys">The keys of the dictionary</returns>
         /// <returns name="values">The values of the dictionary</returns>
         [MultiReturn(new[] { "keys", "values" })]
         [IsVisibleInDynamoLibrary(true)]
-        public static IDictionary Components(IDictionary dictionary)
+        public IDictionary<string, object> Components()
         {
             return new Dictionary<string, object>
             {
-                { "keys", dictionary.Keys },
-                { "values", dictionary.Values }
+                { "keys", D.Keys },
+                { "values", D.Values }
             };
         }
 
         /// <summary>
         ///     Produces the keys in a Dictionary.
         /// </summary>
-        /// <param name="dictionary">The input dictionary</param>
         /// <returns name="keys">The keys of the dictionary</returns>
         [IsVisibleInDynamoLibrary(true)]
-        public static ICollection Keys(IDictionary dictionary)
+        public IEnumerable<object> Keys()
         {
-            return dictionary.Keys;
+            return D.Keys;
         }
 
         /// <summary>
@@ -107,42 +95,38 @@ namespace DSCore
         /// <param name="dictionary">The input dictionary</param>
         /// <returns name="keys">The values of the dictionary</returns>
         [IsVisibleInDynamoLibrary(true)]
-        public static ICollection Values(IDictionary dictionary)
+        public IEnumerable<object> Values()
         {
-            return dictionary.Values;
+            return D.Values;
         }
 
         /// <summary>
         ///     Produce a new Dictionary with a new entry set to the input value
         /// </summary>
-        /// <param name="dictionary">The input Dictionary</param>
         /// <param name="key">The key in the dictionary to set. If the same key already exists, the value at that key will be modified.</param>
         /// <param name="value">The value to insert.</param>
         /// <returns name="dictionary">A new Dictionary with the entry inserted.</returns>
         [IsVisibleInDynamoLibrary(true)]
-        public static IDictionary SetValueAtKey(IDictionary dictionary, object key, [ArbitraryDimensionArrayImport] object value)
+        public Dictionary2 SetValueAtKey(object key, [ArbitraryDimensionArrayImport] object value)
         {
             key = CoerceKey(key);
             AssertIsKeyType(key);
 
-            (dictionary = Copy(dictionary))[key] = value;
-            return dictionary;
+            return new Dictionary2(D.SetItem(key, value));
         }
 
         /// <summary>
         ///     Produce a new Dictionary with a new entry set to the input value
         /// </summary>
-        /// <param name="dictionary">The input dictionary</param>
         /// <param name="key">The keys in the dictionary to set</param>
         /// <returns name="dictionary">A new dictionary with </returns>
         [IsVisibleInDynamoLibrary(true)]
-        public static IDictionary RemoveValueAtKey(IDictionary dictionary, object key)
+        public Dictionary2 RemoveValueAtKey(object key)
         {
             key = CoerceKey(key);
             AssertIsKeyType(key);
 
-            (dictionary = Copy(dictionary)).Remove(key);
-            return dictionary;
+            return new Dictionary2(D.Remove(key));
         }
         #endregion
     }

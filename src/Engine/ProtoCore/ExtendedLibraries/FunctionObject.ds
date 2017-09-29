@@ -10,16 +10,20 @@ def __CreateFunctionObject(
     arguments: var[]..[],
     unpackArgs: bool)
 {
-    f = {};
-    f["__fptr"] = fptr;
-    f["__pcount"] = paramCount;
-    f["__unpack"] = unpackArgs;
+    f = Dictionary.ByKeysValues({"__fptr", "__pcount", "__unpack"}, {fptr, paramCount, unpackArgs});
+    //f["__fptr"] = fptr;
+    //f["__pcount"] = paramCount;
+    //f["__unpack"] = unpackArgs;
 
-    a = {};
+    // a = {};
     hasArgAt[0..paramCount- 1] = false;
     hasArgAt[paramPositions] = true;
-    a["__argflags"] = hasArgAt;
-    a["__args"] = arguments;
+
+	f = Dictionary.ByKeysValues({"__argflags", "__args"}, {hasArgAt, arguments});
+    //a["__argflags"] = hasArgAt;
+    //a["__args"] = arguments;
+
+	fobj = Dictionary.ByKeysValues({"__func", "__arginfo"}, {f, arguments});
 
     fobj = {};
     fobj["__func"] = f;

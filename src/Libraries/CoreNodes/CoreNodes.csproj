@@ -56,6 +56,9 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Collections.Immutable, Version=1.2.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.Collections.Immutable.1.4.0\lib\portable-net45+win8+wp8+wpa81\System.Collections.Immutable.dll</HintPath>
+    </Reference>
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Xaml" />
@@ -70,6 +73,7 @@
     <Compile Include="Compare.cs" />
     <Compile Include="DateTime.cs" />
     <Compile Include="Dictionary.cs" />
+    <Compile Include="Dictionary2.cs" />
     <Compile Include="Files.cs" />
     <Compile Include="List.cs" />
     <Compile Include="Math.cs" />
@@ -106,6 +110,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Flatten.ds" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="DSCoreNodes.Migrations.xml">
