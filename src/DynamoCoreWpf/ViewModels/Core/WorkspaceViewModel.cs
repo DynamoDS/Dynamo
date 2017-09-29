@@ -550,25 +550,6 @@ namespace Dynamo.ViewModels
             return JsonConvert.DeserializeObject<ExtraWorkspaceViewInfo>(viewBlock.ToString(), settings);
         }
 
-        public void ConvertNotesToAnnotations()
-        {
-            foreach (var note in _notes)
-            {
-                AnnotationModel model = new AnnotationModel(new NodeModel[0], new NoteModel[0]);
-                model.GUID = note.Model.GUID;
-                model.X = note.Left;
-                model.Y = note.Top;
-                model.AnnotationText = note.Text;
-                _annotations.Add(new AnnotationViewModel(this, model));
-            }
-        }
-
-        public void RemoveConvertedNotesFromAnnotations()
-        {
-            foreach (var note in _notes)
-                _annotations.RemoveAll(annotation => annotation.AnnotationModel.GUID == note.Model.GUID);
-        }
-
         void CopyPasteChanged(object sender, EventArgs e)
         {
             RaisePropertyChanged("CanPaste", "CanCopy", "CanCopyOrPaste");

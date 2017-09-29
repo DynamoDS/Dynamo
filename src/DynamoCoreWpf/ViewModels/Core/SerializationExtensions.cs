@@ -29,15 +29,12 @@ namespace Dynamo.Wpf.ViewModels.Core
                 TypeNameHandling = TypeNameHandling.Auto,
                 Formatting = Formatting.Indented,
                 Converters = new List<JsonConverter>{
+                    new WorkspaceViewWriteConverter(),
                     new AnnotationViewModelConverter()
                 }
             };
 
-            viewModel.ConvertNotesToAnnotations();
-            var json = JsonConvert.SerializeObject(viewModel, settings);
-            viewModel.RemoveConvertedNotesFromAnnotations();
-
-            return json;
+            return JsonConvert.SerializeObject(viewModel, settings);
         }
     }
 }
