@@ -2258,18 +2258,7 @@ namespace ProtoCore.AST.AssociativeAST
             var buf = new StringBuilder();
 
             buf.Append("{");
-            /*
             // TODO(pboyer)
-            if (Exprs != null)
-            {
-                for (int i = 0; i < Exprs.Count; ++i)
-                {
-                    buf.Append(Exprs[i]);
-                    if (i < Exprs.Count - 1)
-                        buf.Append(", ");
-                }
-            }
-            */
             buf.Append("}");
             buf.Append(base.ToString());
 
@@ -2278,13 +2267,16 @@ namespace ProtoCore.AST.AssociativeAST
 
         public AssociativeNode ToFunctionCall()
         {
-            var keys = new ExprListNode();
-            this.Keys.ForEach(x => keys.Exprs.Add(new StringNode { Value = x }));
+            var keys = new ExprListNode {
+                Exprs = this.Keys.Select(x => new StringNode { Value = x } as AssociativeNode).ToList()
+            };
 
-            var values = new ExprListNode();
-            this.Values.ForEach(x => values.Exprs.Add(x));
-
-            var f = AstFactory.BuildFunctionCall("DSCore.Dictionary2", "ByKeysValues", 
+            var values = new ExprListNode
+            {
+                Exprs = this.Values
+            };
+            
+            var f = AstFactory.BuildFunctionCall("DSCore.Dictionary", "ByKeysValues", 
                 new List<AssociativeNode>() {  keys, values });
             f.col = this.col;
             f.line = this.line;
