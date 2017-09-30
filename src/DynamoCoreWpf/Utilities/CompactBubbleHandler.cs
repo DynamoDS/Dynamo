@@ -4,6 +4,7 @@ using Dynamo.Extensions;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Properties;
 using ProtoCore.Mirror;
+using DSCore;
 
 namespace Dynamo.Wpf.Utilities
 {
@@ -72,6 +73,16 @@ namespace Dynamo.Wpf.Utilities
                     ? new CompactBubbleViewModel(true)
                     {
                         NodeLabel = list.Any() ? WatchViewModel.DICTIONARY : WatchViewModel.EMPTY_DICTIONARY
+                    }
+                    : null;
+            } else if (mirrorData.IsPointer && mirrorData.Data is Dictionary2)
+            {
+                var dict = mirrorData.Data as Dictionary2;
+
+                return generateViewModel
+                    ? new CompactBubbleViewModel(true)
+                    {
+                        NodeLabel = dict.Values().Any() ? WatchViewModel.DICTIONARY : WatchViewModel.EMPTY_DICTIONARY
                     }
                     : null;
             }
