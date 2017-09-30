@@ -75,14 +75,14 @@ namespace Dynamo.Wpf.Utilities
                         NodeLabel = list.Any() ? WatchViewModel.DICTIONARY : WatchViewModel.EMPTY_DICTIONARY
                     }
                     : null;
-            } else if (mirrorData.IsPointer && mirrorData.Data is Dictionary2)
+            } else if (mirrorData.IsPointer && mirrorData.Data is Dictionary)
             {
-                var dict = mirrorData.Data as Dictionary2;
+                var dict = mirrorData.Data as Dictionary;
 
                 return generateViewModel
                     ? new CompactBubbleViewModel(true)
                     {
-                        NodeLabel = dict.Values().Any() ? WatchViewModel.DICTIONARY : WatchViewModel.EMPTY_DICTIONARY
+                        NodeLabel = dict.Values.Any() ? WatchViewModel.DICTIONARY : WatchViewModel.EMPTY_DICTIONARY
                     }
                     : null;
             }

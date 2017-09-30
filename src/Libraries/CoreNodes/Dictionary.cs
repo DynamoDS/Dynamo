@@ -9,13 +9,13 @@ using Autodesk.DesignScript.Runtime;
 namespace DSCore
 {
     // Doesn't implement IDictionary so suppresses FFI import
-    public class Dictionary2
+    public class Dictionary
     {
         [SupressImportIntoVM]
         private readonly ImmutableDictionary<object, object> D;
 
         // You can only use the StaticConstructor
-        private Dictionary2(ImmutableDictionary<object, object> dict)
+        private Dictionary(ImmutableDictionary<object, object> dict)
         {
             this.D = dict;
         }
@@ -53,14 +53,14 @@ namespace DSCore
         /// <returns name="dictionary">The result Dictionary</returns>
         /// <search>map,{},table</search>
         [IsVisibleInDynamoLibrary(true)]
-        public static Dictionary2 ByKeysValues(IList<object> keys, IList<object> values)
+        public static Dictionary ByKeysValues(IList<object> keys, IList<object> values)
         {
             var pairs = keys.Cast<object>().Zip(values.Cast<object>(), (a, b) =>
             {
                 return new KeyValuePair<object, object>(a, b);
             });
 
-            return new Dictionary2(ImmutableDictionary.Create<object, object>().AddRange(pairs));
+            return new Dictionary(ImmutableDictionary.Create<object, object>().AddRange(pairs));
         }
 
         /// <summary>
@@ -84,20 +84,19 @@ namespace DSCore
         /// </summary>
         /// <returns name="keys">The keys of the dictionary</returns>
         [IsVisibleInDynamoLibrary(true)]
-        public IEnumerable<object> Keys()
+        public IEnumerable<object> Keys
         {
-            return D.Keys;
+            get { return D.Keys; }
         }
 
         /// <summary>
         ///     Produces the values in a Dictionary.
         /// </summary>
-        /// <param name="dictionary">The input dictionary</param>
-        /// <returns name="keys">The values of the dictionary</returns>
+        /// <returns name="values">The values of the dictionary</returns>
         [IsVisibleInDynamoLibrary(true)]
-        public IEnumerable<object> Values()
+        public IEnumerable<object> Values
         {
-            return D.Values;
+            get { return D.Values; }
         }
 
         /// <summary>
@@ -107,12 +106,12 @@ namespace DSCore
         /// <param name="value">The value to insert.</param>
         /// <returns name="dictionary">A new Dictionary with the entry inserted.</returns>
         [IsVisibleInDynamoLibrary(true)]
-        public Dictionary2 SetValueAtKey(object key, [ArbitraryDimensionArrayImport] object value)
+        public Dictionary SetValueAtKey(object key, [ArbitraryDimensionArrayImport] object value)
         {
             key = CoerceKey(key);
             AssertIsKeyType(key);
 
-            return new Dictionary2(D.SetItem(key, value));
+            return new Dictionary(D.SetItem(key, value));
         }
 
         /// <summary>
@@ -121,12 +120,12 @@ namespace DSCore
         /// <param name="key">The keys in the dictionary to set</param>
         /// <returns name="dictionary">A new dictionary with </returns>
         [IsVisibleInDynamoLibrary(true)]
-        public Dictionary2 RemoveValueAtKey(object key)
+        public Dictionary RemoveValueAtKey(object key)
         {
             key = CoerceKey(key);
             AssertIsKeyType(key);
 
-            return new Dictionary2(D.Remove(key));
+            return new Dictionary(D.Remove(key));
         }
         #endregion
     }

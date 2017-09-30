@@ -73,7 +73,6 @@
     <Compile Include="Compare.cs" />
     <Compile Include="DateTime.cs" />
     <Compile Include="Dictionary.cs" />
-    <Compile Include="Dictionary2.cs" />
     <Compile Include="Files.cs" />
     <Compile Include="List.cs" />
     <Compile Include="Math.cs" />
