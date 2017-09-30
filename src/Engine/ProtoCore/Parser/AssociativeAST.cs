@@ -2278,12 +2278,19 @@ namespace ProtoCore.AST.AssociativeAST
 
         public AssociativeNode ToFunctionCall()
         {
+            var keys = new ExprListNode();
+            this.Keys.ForEach(x => keys.Exprs.Add(new StringNode { Value = x }));
+
+            var values = new ExprListNode();
+            this.Values.ForEach(x => values.Exprs.Add(x));
+
             var f = AstFactory.BuildFunctionCall("DSCore.Dictionary2", "ByKeysValues", 
-                new List<AssociativeNode>() {  new StringNode { Value = "Foo"}, new IntNode(12) });
+                new List<AssociativeNode>() {  keys, values });
             f.col = this.col;
             f.line = this.line;
             f.endCol = this.endCol;
             f.endLine = this.endLine;
+
             return f;
         }
 
