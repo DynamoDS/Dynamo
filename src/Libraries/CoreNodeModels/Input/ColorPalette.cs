@@ -46,6 +46,15 @@ namespace CoreNodeModels.Input
             }
         }
 
+        //override ExtensionNode
+        public override string NodeType
+        {
+            get
+            {
+                return "ColorInputNode";
+            }
+        }
+
         public override NodeInputData InputData
         {
             get
