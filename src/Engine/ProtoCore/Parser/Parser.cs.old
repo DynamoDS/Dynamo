@@ -2388,12 +2388,8 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 					
 					Associative_Expression(out node);
 					isLeft = tmpIsLeft; 
-					ProtoCore.AST.AssociativeAST.ArrayNode array2 = new ProtoCore.AST.AssociativeAST.ArrayNode();
-					array2.Expr = node; 
-					array2.Type = null;
-					NodeUtils.SetNodeLocation(array2, t);
-					array.Type = array2;
-					array = array2;
+					nameNode = AstFactory.BuildFunctionCall("DSCore.Dictionary", "ValueAtKey",
+					new List<AssociativeNode>() { nameNode, node }) as ArrayNameNode;
 					
 				}
 				Expect(11);
