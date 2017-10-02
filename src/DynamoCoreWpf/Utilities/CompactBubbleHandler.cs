@@ -75,7 +75,7 @@ namespace Dynamo.Wpf.Utilities
                         NodeLabel = list.Any() ? WatchViewModel.DICTIONARY : WatchViewModel.EMPTY_DICTIONARY
                     }
                     : null;
-            } else if (mirrorData.IsPointer && mirrorData.Data is Dictionary)
+            } else if (mirrorData.IsPointer && mirrorData.Data is DSCore.Dictionary)
             {
                 var dict = mirrorData.Data as Dictionary;
 

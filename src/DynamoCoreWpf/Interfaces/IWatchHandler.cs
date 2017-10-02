@@ -52,26 +52,11 @@ namespace Dynamo.Interfaces
 
         private WatchViewModel ProcessThing(object value, ProtoCore.RuntimeCore runtimeCore, string tag, bool showRawData, WatchHandlerCallback callback)
         {
-            if (value is Dictionary)
+            if (value is DSCore.Dictionary)
             {
-                var dict = value as Dictionary;
+                var dict = value as DSCore.Dictionary;
                 var keys = dict.Keys;
                 var values = dict.Values;
-
-                var node = new WatchViewModel(keys.Any() ? WatchViewModel.DICTIONARY : WatchViewModel.EMPTY_DICTIONARY, tag, RequestSelectGeometry, true);
-
-                foreach (var e in keys.Zip(values, (key, val) => new { key, val }))
-                {
-                    node.Children.Add(ProcessThing(e.val, runtimeCore, tag + ":" + e.key.ToString(), showRawData, callback));
-                }
-
-                return node;
-            }
-            else if (value is IDictionary)
-            {
-                var dict = value as IDictionary;
-                var keys = dict.Keys.Cast<dynamic>();
-                var values = dict.Values.Cast<dynamic>();
 
                 var node = new WatchViewModel(keys.Any() ? WatchViewModel.DICTIONARY : WatchViewModel.EMPTY_DICTIONARY, tag, RequestSelectGeometry, true);
 
@@ -175,9 +160,9 @@ namespace Dynamo.Interfaces
 
                 return node;
             }
-            else if (data.IsPointer && data.Data is Dictionary)
+            else if (data.IsPointer && data.Data is DSCore.Dictionary)
             {
-                var dict = data.Data as Dictionary;
+                var dict = data.Data as DSCore.Dictionary;
                 var keys = dict.Keys;
                 var values = dict.Values;
 
