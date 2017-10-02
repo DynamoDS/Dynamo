@@ -1632,9 +1632,6 @@ Associative_NameReference<out ProtoCore.AST.AssociativeAST.AssociativeNode node>
     )
 
     [
-                                        (. 
-                                            ProtoCore.AST.AssociativeAST.ArrayNode array = new ProtoCore.AST.AssociativeAST.ArrayNode(); 
-                                        .)
         openbracket             
         [
                                         (. 

@@ -2383,7 +2383,7 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 				// nameNode.ArrayDimensions = array;
 
                 nameNode = AstFactory.BuildFunctionCall("DSCore.Dictionary", "ValueAtKey",
-                        new List<AssociativeNode>() { nameNode, new StringNode() { Value = "foo" } }) as ArrayNameNode;
+                        new List<AssociativeNode>() { nameNode, node }) as ArrayNameNode;
 
 			}
 			Expect(11);
