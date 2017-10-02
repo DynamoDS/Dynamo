@@ -8,14 +8,14 @@ using Autodesk.DesignScript.Runtime;
 
 namespace DSCore
 {
-    // Doesn't implement IDictionary so suppresses FFI import
+    // Don't implement IDictionary to suppress FFI import
     public class Dictionary
     {
         [SupressImportIntoVM]
         private readonly ImmutableDictionary<object, object> D;
 
-        // You can only use the StaticConstructor
-        private Dictionary(ImmutableDictionary<object, object> dict)
+        // You can only use the static constructor
+        internal Dictionary(ImmutableDictionary<object, object> dict)
         {
             this.D = dict;
         }
@@ -82,7 +82,7 @@ namespace DSCore
         /// <summary>
         ///     Produces the keys in a Dictionary.
         /// </summary>
-        /// <returns name="keys">The keys of the dictionary</returns>
+        /// <returns name="keys">The keys of the dictionary</returns>        
         [IsVisibleInDynamoLibrary(true)]
         public IEnumerable<object> Keys
         {
@@ -126,6 +126,22 @@ namespace DSCore
             AssertIsKeyType(key);
 
             return new Dictionary(D.Remove(key));
+        }
+
+        /// <summary>
+        ///     Obtain the value at a specified key
+        /// </summary>
+        /// <param name="key">The key in the dictionary to obtain.</param>
+        /// <returns name="value">The value at the specified key or null if it is not set.</returns>
+        [IsVisibleInDynamoLibrary(true)]
+        public object ValueAtKey(object key)
+        {
+            key = CoerceKey(key);
+            if (D.ContainsKey(key))
+            {
+                return D[key];
+            }
+            return null;
         }
         #endregion
     }
