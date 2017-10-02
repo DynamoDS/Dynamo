@@ -8,28 +8,21 @@ using Autodesk.DesignScript.Runtime;
 
 namespace DSCore
 {
-    // Don't implement IDictionary to suppress FFI import
     public class Dictionary
     {
-        [SupressImportIntoVM]
         private readonly ImmutableDictionary<object, object> D;
 
-        // You can only use the static constructor
-        internal Dictionary(ImmutableDictionary<object, object> dict)
+        private Dictionary(ImmutableDictionary<object, object> dict)
         {
             this.D = dict;
         }
 
-        #region private methods
-
-        [SupressImportIntoVM]
         private static void AssertIsKeyType(object k)
         {
             if (k is string || k is int || k is long) return;
             throw new Exception("Dictionary keys must be strings or numbers");
         }
 
-        [SupressImportIntoVM]
         private static object CoerceKey(object k)
         {
             if (k is double)
@@ -39,10 +32,6 @@ namespace DSCore
 
             return k;
         }
-
-        #endregion
-
-        #region public methods
 
         /// <summary>
         ///     Produces a Dictionary with the supplied keys and values. The number of entries is 
@@ -143,6 +132,5 @@ namespace DSCore
             }
             return null;
         }
-        #endregion
     }
 }
