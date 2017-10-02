@@ -2368,8 +2368,6 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 			
 		} else SynErr(94);
 		if (la.kind == 10) {
-			ProtoCore.AST.AssociativeAST.ArrayNode array = new ProtoCore.AST.AssociativeAST.ArrayNode(); 
-			
 			Get();
 			if (StartOf(4)) {
 				bool tmpIsLeft = isLeft; 
@@ -2377,14 +2375,9 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 				
 				Associative_Expression(out node);
 				isLeft = tmpIsLeft; 
-				array.Expr = node; 
-				array.Type = nameNode.ArrayDimensions;
-				NodeUtils.SetNodeLocation(array, t);
-				// nameNode.ArrayDimensions = array;
-
-                nameNode = AstFactory.BuildFunctionCall("DSCore.Dictionary", "ValueAtKey",
-                        new List<AssociativeNode>() { nameNode, node }) as ArrayNameNode;
-
+				nameNode = AstFactory.BuildFunctionCall("DSCore.Dictionary", "ValueAtKey",
+				new List<AssociativeNode>() { nameNode, node }) as ArrayNameNode;
+				
 			}
 			Expect(11);
 			while (la.kind == 10) {

@@ -1641,11 +1641,8 @@ Associative_NameReference<out ProtoCore.AST.AssociativeAST.AssociativeNode node>
             Associative_Expression<out node>
                                         (. 
                                             isLeft = tmpIsLeft; 
-                                            array.Expr = node; 
-                                            array.Type = nameNode.ArrayDimensions;
-                                            NodeUtils.SetNodeLocation(array, t);
-                                            nameNode.ArrayDimensions = array; 
-                                            
+                                            nameNode = AstFactory.BuildFunctionCall("DSCore.Dictionary", "ValueAtKey",
+                        new List<AssociativeNode>() { nameNode, node }) as ArrayNameNode;
                                         .)
         ]
         closebracket 
