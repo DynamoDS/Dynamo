@@ -2267,8 +2267,8 @@ namespace ProtoCore.AST.AssociativeAST
 
         public AssociativeNode ToFunctionCall()
         {
-            var keys = new ExprListNode {
-                Exprs = this.Keys.Select(x => new StringNode { Value = x } as AssociativeNode).ToList()
+            var keys = new ExprListNode { // TODO(pboyer) trimming here is a hack
+                Exprs = this.Keys.Select(x => new StringNode { Value = x.Trim('"') } as AssociativeNode).ToList()
             };
 
             var values = new ExprListNode
