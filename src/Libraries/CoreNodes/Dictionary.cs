@@ -41,7 +41,6 @@ namespace DSCore
         /// <param name="values">The values of the Dictionary</param>
         /// <returns name="dictionary">The result Dictionary</returns>
         /// <search>map,{},table</search>
-        [IsVisibleInDynamoLibrary(true)]
         public static Dictionary ByKeysValues(IList<object> keys, IList<object> values)
         {
             var pairs = keys.Cast<object>().Zip(values.Cast<object>(), (a, b) =>
@@ -58,7 +57,6 @@ namespace DSCore
         /// <returns name="keys">The keys of the dictionary</returns>
         /// <returns name="values">The values of the dictionary</returns>
         [MultiReturn(new[] { "keys", "values" })]
-        [IsVisibleInDynamoLibrary(true)]
         public IDictionary<string, object> Components()
         {
             return new Dictionary<string, object>
@@ -71,8 +69,7 @@ namespace DSCore
         /// <summary>
         ///     Produces the keys in a Dictionary.
         /// </summary>
-        /// <returns name="keys">The keys of the dictionary</returns>        
-        [IsVisibleInDynamoLibrary(true)]
+        /// <returns name="keys">The keys of the dictionary</returns>
         public IEnumerable<object> Keys
         {
             get { return D.Keys; }
@@ -82,7 +79,6 @@ namespace DSCore
         ///     Produces the values in a Dictionary.
         /// </summary>
         /// <returns name="values">The values of the dictionary</returns>
-        [IsVisibleInDynamoLibrary(true)]
         public IEnumerable<object> Values
         {
             get { return D.Values; }
@@ -94,7 +90,6 @@ namespace DSCore
         /// <param name="key">The key in the dictionary to set. If the same key already exists, the value at that key will be modified.</param>
         /// <param name="value">The value to insert.</param>
         /// <returns name="dictionary">A new Dictionary with the entry inserted.</returns>
-        [IsVisibleInDynamoLibrary(true)]
         public Dictionary SetValueAtKey(object key, [ArbitraryDimensionArrayImport] object value)
         {
             key = CoerceKey(key);
@@ -108,7 +103,6 @@ namespace DSCore
         /// </summary>
         /// <param name="key">The keys in the dictionary to set</param>
         /// <returns name="dictionary">A new dictionary with </returns>
-        [IsVisibleInDynamoLibrary(true)]
         public Dictionary RemoveValueAtKey(object key)
         {
             key = CoerceKey(key);
@@ -122,7 +116,6 @@ namespace DSCore
         /// </summary>
         /// <param name="key">The key in the dictionary to obtain.</param>
         /// <returns name="value">The value at the specified key or null if it is not set.</returns>
-        [IsVisibleInDynamoLibrary(true)]
         public object ValueAtKey(object key)
         {
             key = CoerceKey(key);
