@@ -69,6 +69,7 @@
     <Compile Include="..\..\AssemblySharedInfoGenerator\AssemblySharedInfo.cs">
       <Link>Properties\AssemblySharedInfo.cs</Link>
     </Compile>
+    <Compile Include="Builtin.cs" />
     <Compile Include="Color.cs" />
     <Compile Include="Compare.cs" />
     <Compile Include="DateTime.cs" />
