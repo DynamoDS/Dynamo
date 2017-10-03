@@ -2708,6 +2708,11 @@ namespace ProtoCore.AST.AssociativeAST
             return BuildNullNode();
         }
 
+        public static AssociativeNode BuildIndexExpression(AssociativeNode value, AssociativeNode index)
+        {
+            return BuildFunctionCall("DSCore.Builtin", "Lookup", new List<AssociativeNode>() { value, index });
+        }
+
         public static InlineConditionalNode BuildConditionalNode(
             AssociativeNode condition, AssociativeNode trueExpr, AssociativeNode falseExpr)
         {

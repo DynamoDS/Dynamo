@@ -2375,7 +2375,7 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 				
 				Associative_Expression(out node);
 				isLeft = tmpIsLeft; 
-				nameNode = AstFactory.BuildFunctionCall("DSCore.Dictionary", "ValueAtKey",
+				nameNode = AstFactory.BuildFunctionCall("DSCore.Builtin", "Lookup",
 				new List<AssociativeNode>() { nameNode, node }) as ArrayNameNode;
 				
 			}
@@ -2388,7 +2388,7 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 					
 					Associative_Expression(out node);
 					isLeft = tmpIsLeft; 
-					nameNode = AstFactory.BuildFunctionCall("DSCore.Dictionary", "ValueAtKey",
+					nameNode = AstFactory.BuildFunctionCall("DSCore.Builtin", "Lookup",
 					new List<AssociativeNode>() { nameNode, node }) as ArrayNameNode;
 					
 				}

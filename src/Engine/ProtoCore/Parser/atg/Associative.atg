@@ -1641,8 +1641,7 @@ Associative_NameReference<out ProtoCore.AST.AssociativeAST.AssociativeNode node>
             Associative_Expression<out node>
                                         (. 
                                             isLeft = tmpIsLeft; 
-                                            nameNode = AstFactory.BuildFunctionCall("DSCore.Dictionary", "ValueAtKey",
-                        new List<AssociativeNode>() { nameNode, node }) as ArrayNameNode;
+                                            nameNode = AstFactory.BuildIndexExpression(nameNode, node) as ArrayNameNode;
                                         .)
         ]
         closebracket 
@@ -1656,8 +1655,7 @@ Associative_NameReference<out ProtoCore.AST.AssociativeAST.AssociativeNode node>
                 Associative_Expression<out node>  
                                         (. 
                                             isLeft = tmpIsLeft; 
-                                            nameNode = AstFactory.BuildFunctionCall("DSCore.Dictionary", "ValueAtKey",
-                        new List<AssociativeNode>() { nameNode, node }) as ArrayNameNode;
+                                            nameNode = AstFactory.BuildIndexExpression(nameNode, node) as ArrayNameNode;
                                         .)
             ]
             closebracket
