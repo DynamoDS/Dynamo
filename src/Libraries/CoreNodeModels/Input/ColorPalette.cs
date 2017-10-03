@@ -46,7 +46,7 @@ namespace CoreNodeModels.Input
             }
         }
 
-        //override ExtensionNode
+        //override ExtensionNode NodeType from NodeModel base class
         public override string NodeType
         {
             get
