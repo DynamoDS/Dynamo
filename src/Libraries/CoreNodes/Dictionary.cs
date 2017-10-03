@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,45 +11,29 @@ namespace DSCore
 {
     public class Dictionary
     {
-        private readonly ImmutableDictionary<object, object> D;
+        private readonly ImmutableDictionary<string, object> D;
 
-        private Dictionary(ImmutableDictionary<object, object> dict)
+        private Dictionary(ImmutableDictionary<string, object> dict)
         {
             this.D = dict;
-        }
-
-        private static void AssertIsKeyType(object k)
-        {
-            if (k is string || k is int || k is long) return;
-            throw new Exception("Dictionary keys must be strings or numbers");
-        }
-
-        private static object CoerceKey(object k)
-        {
-            if (k is double)
-            {
-                return (int)Math.Floor((double)k);
-            }
-
-            return k;
         }
 
         /// <summary>
         ///     Produces a Dictionary with the supplied keys and values. The number of entries is 
         ///     the shorter of keys or values.
         /// </summary>
-        /// <param name="keys">The keys of the Dictionary</param>
+        /// <param name="keys">The string keys of the Dictionary</param>
         /// <param name="values">The values of the Dictionary</param>
         /// <returns name="dictionary">The result Dictionary</returns>
         /// <search>map,{},table</search>
-        public static Dictionary ByKeysValues(IList<object> keys, IList<object> values)
+        public static Dictionary ByKeysValues(IList<string> keys, IList<object> values)
         {
-            var pairs = keys.Cast<object>().Zip(values.Cast<object>(), (a, b) =>
+            var pairs = keys.Cast<string>().Zip(values.Cast<object>(), (a, b) =>
             {
-                return new KeyValuePair<object, object>(a, b);
+                return new KeyValuePair<string, object>(a, b);
             });
 
-            return new Dictionary(ImmutableDictionary.Create<object, object>().AddRange(pairs));
+            return new Dictionary(ImmutableDictionary.Create<string, object>().AddRange(pairs));
         }
 
         /// <summary>
@@ -70,7 +55,7 @@ namespace DSCore
         ///     Produces the keys in a Dictionary.
         /// </summary>
         /// <returns name="keys">The keys of the dictionary</returns>
-        public IEnumerable<object> Keys
+        public IEnumerable<string> Keys
         {
             get { return D.Keys; }
         }
@@ -85,45 +70,34 @@ namespace DSCore
         }
 
         /// <summary>
-        ///     Produce a new Dictionary with a new entry set to the input value
+        ///     Produce a new Dictionary with the provided key set to a given value
         /// </summary>
         /// <param name="key">The key in the dictionary to set. If the same key already exists, the value at that key will be modified.</param>
         /// <param name="value">The value to insert.</param>
         /// <returns name="dictionary">A new Dictionary with the entry inserted.</returns>
-        public Dictionary SetValueAtKey(object key, [ArbitraryDimensionArrayImport] object value)
+        public Dictionary SetValueAtKey(string key, [ArbitraryDimensionArrayImport] object value)
         {
-            key = CoerceKey(key);
-            AssertIsKeyType(key);
-
             return new Dictionary(D.SetItem(key, value));
         }
 
         /// <summary>
         ///     Produce a new Dictionary with a new entry set to the input value
         /// </summary>
-        /// <param name="key">The keys in the dictionary to set</param>
-        /// <returns name="dictionary">A new dictionary with </returns>
-        public Dictionary RemoveValueAtKey(object key)
+        /// <param name="key">The key in the Dictionary to remove</param>
+        /// <returns name="dictionary">A new Dictionary with the key removed</returns>
+        public Dictionary RemoveValueAtKey(string key)
         {
-            key = CoerceKey(key);
-            AssertIsKeyType(key);
-
             return new Dictionary(D.Remove(key));
         }
 
         /// <summary>
         ///     Obtain the value at a specified key
         /// </summary>
-        /// <param name="key">The key in the dictionary to obtain.</param>
+        /// <param name="key">The key in the Dictionary to obtain.</param>
         /// <returns name="value">The value at the specified key or null if it is not set.</returns>
-        public object ValueAtKey(object key)
+        public object ValueAtKey(string key)
         {
-            key = CoerceKey(key);
-            if (D.ContainsKey(key))
-            {
-                return D[key];
-            }
-            return null;
+            return D[key];
         }
     }
 }
