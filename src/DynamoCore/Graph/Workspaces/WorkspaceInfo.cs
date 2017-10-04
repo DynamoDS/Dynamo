@@ -5,6 +5,8 @@ using System.Xml;
 using Dynamo.Logging;
 using Dynamo.Models;
 using Dynamo.Utilities;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace Dynamo.Graph.Workspaces
 {
@@ -140,6 +142,84 @@ namespace Dynamo.Graph.Workspaces
                 Debug.WriteLine(ex.Message + ":" + ex.StackTrace);
 
                 //TODO(Steve): Need a better way to handle this kind of thing. -- MAGN-5712
+                if (isTestMode)
+                    throw; // Rethrow for NUnit.
+
+                workspaceInfo = null;
+                return false;
+            }
+        }
+
+        internal static bool FromJsonDocument(String jsonDoc, string path, bool isTestMode,
+            bool forceManualExecutionMode, ILogger logger, out WorkspaceInfo workspaceInfo)
+        {
+            var jObject = (JObject)JsonConvert.DeserializeObject(jsonDoc);
+            try
+            {
+                string funName = null;
+                double cx = 0;
+                double cy = 0;
+                double zoom = 1.0;
+                double scaleFactor = 1.0;
+                string id = "";
+                string category = "";
+                string description = "";
+                string version = "";
+                var runType = RunType.Manual;
+                int runPeriod = RunSettings.DefaultRunPeriod;
+                bool hasRunWithoutCrash = false;
+                bool isVisibleInDynamoLibrary = true;
+
+                cx = double.Parse(jObject["View"]["X"].ToString(), CultureInfo.InvariantCulture);
+                cy = double.Parse(jObject["View"]["Y"].ToString(), CultureInfo.InvariantCulture);
+                zoom = double.Parse(jObject["View"]["Zoom"].ToString(), CultureInfo.InvariantCulture);
+                scaleFactor = double.Parse(jObject["View"]["Dynamo"]["ScaleFactor"].ToString(), CultureInfo.InvariantCulture);
+                funName = jObject["Name"].ToString();
+                id = jObject["Uuid"].ToString();
+                category = jObject["Category"].ToString();
+                description = jObject["Description"].ToString();
+                hasRunWithoutCrash = bool.Parse(jObject["View"]["Dynamo"]["HasRunWithoutCrash"].ToString());
+                isVisibleInDynamoLibrary = bool.Parse(jObject["View"]["Dynamo"]["IsVisibleInDynamoLibrary"].ToString());
+                version = jObject["View"]["Dynamo"]["Version"].ToString();
+                if (forceManualExecutionMode || !Enum.TryParse(jObject["View"]["Dynamo"]["RunType"].ToString(), false, out runType))
+                {
+                    runType = RunType.Manual;
+                }
+                runPeriod = Int32.Parse(jObject["View"]["Dynamo"]["RunPeriod"].ToString());
+
+                // we have a dyf and it lacks an ID field, we need to assign it
+                // a deterministic guid based on its name.  By doing it deterministically,
+                // files remain compatible
+                if (string.IsNullOrEmpty(id) && !string.IsNullOrEmpty(funName) && funName != "Home")
+                {
+                    id = GuidUtility.Create(GuidUtility.UrlNamespace, funName).ToString();
+                }
+
+                workspaceInfo = new WorkspaceInfo
+                {
+                    ID = id,
+                    Name = funName,
+                    X = cx,
+                    Y = cy,
+                    Zoom = zoom,
+                    ScaleFactor = scaleFactor,
+                    FileName = path,
+                    Category = category,
+                    Description = description,
+                    Version = version,
+                    RunType = runType,
+                    RunPeriod = runPeriod,
+                    HasRunWithoutCrash = hasRunWithoutCrash,
+                    IsVisibleInDynamoLibrary = isVisibleInDynamoLibrary
+                };
+                return true;
+            }
+            catch (Exception ex)
+            {
+                logger.Log(Properties.Resources.OpenWorkbenchError);
+                logger.Log(ex);
+                Debug.WriteLine(ex.Message + ":" + ex.StackTrace);
+
                 if (isTestMode)
                     throw; // Rethrow for NUnit.
 

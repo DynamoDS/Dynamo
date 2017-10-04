@@ -555,13 +555,16 @@ namespace Dynamo.Core
         /// <returns>The custom node info object - null if we failed</returns>
         internal bool TryGetInfoFromPath(string path, bool isTestMode, out CustomNodeInfo info)
         {
+            WorkspaceInfo header = null;
             try
             {
-                var xmlDoc = new XmlDocument();
-                xmlDoc.Load(path);
+                XmlDocument xmlDoc;
+                string jsonDoc;
+                DynamoUtilities.PathHelper.isValidXML(path, out xmlDoc);
+                DynamoUtilities.PathHelper.isValidJson(path, out jsonDoc);
 
-                WorkspaceInfo header;
-                if (!WorkspaceInfo.FromXmlDocument(xmlDoc, path, isTestMode, false, AsLogger(), out header))
+                if (!WorkspaceInfo.FromXmlDocument(xmlDoc, path, isTestMode, false, AsLogger(), out header)
+                && !WorkspaceInfo.FromJsonDocument(jsonDoc, path, isTestMode, false, AsLogger(), out header))
                 {
                     Log(String.Format(Properties.Resources.FailedToLoadHeader, path));
                     info = null;
@@ -571,10 +574,11 @@ namespace Dynamo.Core
                     Guid.Parse(header.ID),
                     header.Name,
                     header.Category,
-                    header.Description, 
+                    header.Description,
                     path,
                     header.IsVisibleInDynamoLibrary);
                 return true;
+
             }
             catch (Exception e)
             {
@@ -596,12 +600,13 @@ namespace Dynamo.Core
         /// <param name="workspace"></param>
         /// <returns></returns>
         public bool OpenCustomNodeWorkspace(
-            XmlDocument xmlDoc, WorkspaceInfo workspaceInfo, bool isTestMode, out WorkspaceModel workspace)
+            WorkspaceInfo workspaceInfo, 
+            bool isTestMode, 
+            out WorkspaceModel workspace)
         {
             CustomNodeWorkspaceModel customNodeWorkspace;
             if (InitializeCustomNode(
                 workspaceInfo,
-                xmlDoc,
                 out customNodeWorkspace))
             {
                 workspace = customNodeWorkspace;
@@ -612,27 +617,34 @@ namespace Dynamo.Core
         }
 
         private bool InitializeCustomNode(
-            WorkspaceInfo workspaceInfo,
-            XmlDocument xmlDoc, out CustomNodeWorkspaceModel workspace)
+            WorkspaceInfo workspaceInfo, 
+            out CustomNodeWorkspaceModel workspace)
         {
             // Add custom node definition firstly so that a recursive
             // custom node won't recursively load itself.
             SetPreloadFunctionDefinition(Guid.Parse(workspaceInfo.ID));
- 
-            var nodeGraph = NodeGraph.LoadGraphFromXml(xmlDoc, nodeFactory);
-           
-            var newWorkspace = new CustomNodeWorkspaceModel(
+
+            XmlDocument xmlDoc;
+            string jsonDoc;
+            CustomNodeWorkspaceModel newWorkspace = null;
+            if (DynamoUtilities.PathHelper.isValidXML(workspaceInfo.FileName, out xmlDoc))
+            {
+                var nodeGraph = NodeGraph.LoadGraphFromXml(xmlDoc, nodeFactory);
+                newWorkspace = new CustomNodeWorkspaceModel(
                 nodeFactory,
                 nodeGraph.Nodes,
                 nodeGraph.Notes,
                 nodeGraph.Annotations,
-                nodeGraph.Presets,              
+                nodeGraph.Presets,
                 nodeGraph.ElementResolver,
                 workspaceInfo);
+            }
+            else if(DynamoUtilities.PathHelper.isValidJson(workspaceInfo.FileName, out jsonDoc))
+            {
+                newWorkspace = (CustomNodeWorkspaceModel)WorkspaceModel.FromJson(jsonDoc, null, null, null, nodeFactory, false, true, this);
+            }
 
-            
             RegisterCustomNodeWorkspace(newWorkspace);
-
             workspace = newWorkspace;
             return true;
         }
@@ -689,28 +701,28 @@ namespace Dynamo.Core
             try
             {
                 var customNodeInfo = NodeInfos[functionId];
-
-                var xmlPath = customNodeInfo.Path;
-
-                Log(String.Format(Properties.Resources.LoadingNodeDefinition, customNodeInfo, xmlPath));
-
-                var xmlDoc = new XmlDocument();
-                xmlDoc.Load(xmlPath);
-
+                var path = customNodeInfo.Path;
+                Log(String.Format(Properties.Resources.LoadingNodeDefinition, customNodeInfo, path));
                 WorkspaceInfo info;
-                if (WorkspaceInfo.FromXmlDocument(
-                    xmlDoc,
-                    xmlPath,
-                    isTestMode,
-                    false,
-                    AsLogger(),
-                    out info) && info.IsCustomNodeWorkspace)
+                XmlDocument xmlDoc;
+                string strInput;
+                if (DynamoUtilities.PathHelper.isValidXML(path, out xmlDoc))
                 {
-                    info.ID = functionId.ToString();
-                    if (migrationManager.ProcessWorkspace(info, xmlDoc, isTestMode, nodeFactory))
+                    if (WorkspaceInfo.FromXmlDocument(xmlDoc, path, isTestMode, false, AsLogger(),out info))
                     {
-                        return InitializeCustomNode(info, xmlDoc, out workspace);
+                        info.ID = functionId.ToString();
+                        if (migrationManager.ProcessWorkspace(info, xmlDoc, isTestMode, nodeFactory))
+                        {
+                            return InitializeCustomNode(info, out workspace);
+                        }
                     }
+                }
+                else if (DynamoUtilities.PathHelper.isValidJson(path, out strInput))
+                {
+                    // Skip Json migration for now
+                    WorkspaceInfo.FromJsonDocument(strInput, path, isTestMode, false, AsLogger(), out info);
+                    info.ID = functionId.ToString();
+                    return InitializeCustomNode(info, out workspace);
                 }
                 Log(string.Format(Properties.Resources.CustomNodeCouldNotBeInitialized, customNodeInfo.Name));
                 workspace = null;
