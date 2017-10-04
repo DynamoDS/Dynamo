@@ -2220,83 +2220,64 @@ namespace ProtoCore.AST.AssociativeAST
         }
     }
 
-    public class DictionaryNode : ArrayNameNode
+    public class DictionaryExpressionBuilder
     {
-        public List<string> Keys { get; set; }
-        public List<AssociativeNode> Values { get; set; }
+        private readonly List<AssociativeNode> keys;
+        private readonly List<AssociativeNode> values;
 
-        public DictionaryNode()
+        private int col;
+        private int line;
+        private int endCol;
+        private int endLine;
+
+        public DictionaryExpressionBuilder()
         {
-            Keys = new List<string>();
-            Values = new List<AssociativeNode>();
+            keys = new List<AssociativeNode>();
+            values = new List<AssociativeNode>();
         }
 
-        public DictionaryNode(DictionaryNode rhs) : base(rhs)
+        public void AddKey(ProtoCore.DesignScriptParser.Token token)
         {
-            Keys = rhs.Keys.ToList();
-            Values = rhs.Values.Select(NodeUtils.Clone).ToList();
+            keys.Add(new StringNode { Value = token.val.Trim('"') });
         }
 
-        public override bool Equals(object other)
+        public void AddValue(AssociativeNode node)
         {
-            var otherNode = other as DictionaryNode;
-            return null != otherNode && Keys.SequenceEqual(otherNode.Keys) && Values.SequenceEqual(otherNode.Values);
+            values.Add(node);
         }
 
-        public override int GetHashCode()
+        public void SetNodeStartLocation(ProtoCore.DesignScriptParser.Token token)
         {
-            var keysHashCode =
-                (Keys == null ? base.GetHashCode() : Keys.GetHashCode());
-            var valuesHashCode =
-                (Values == null ? base.GetHashCode() : Values.GetHashCode());
-
-            return keysHashCode ^ valuesHashCode;
+            line = token.line;
+            col = token.col;
         }
 
-        public override string ToString()
+        public void SetNodeEndLocation(ProtoCore.DesignScriptParser.Token token)
         {
-            var buf = new StringBuilder();
-
-            buf.Append("{");
-            // TODO(pboyer)
-            buf.Append("}");
-            buf.Append(base.ToString());
-
-            return buf.ToString();
+            line = token.line;
+            col = token.col;
         }
 
         public AssociativeNode ToFunctionCall()
         {
-            var keys = new ExprListNode { // TODO(pboyer) trimming here is a hack
-                Exprs = this.Keys.Select(x => new StringNode { Value = x.Trim('"') } as AssociativeNode).ToList()
+            var keys = new ExprListNode
+            {
+                Exprs = this.keys
             };
 
             var values = new ExprListNode
             {
-                Exprs = this.Values
+                Exprs = this.values
             };
-            
-            var f = AstFactory.BuildFunctionCall("DSCore.Dictionary", "ByKeysValues", 
-                new List<AssociativeNode>() {  keys, values });
+
+            var f = AstFactory.BuildFunctionCall("DSCore.Dictionary", nameof(DSCore.Dictionary.ByKeysValues),
+                new List<AssociativeNode>() { keys, values });
             f.col = this.col;
             f.line = this.line;
             f.endCol = this.endCol;
             f.endLine = this.endLine;
 
             return f;
-        }
-
-        public override AstKind Kind
-        {
-            get
-            {
-                return AstKind.DictionaryExpression;
-            }
-        }
-
-        public override TResult Accept<TResult>(IAstVisitor<TResult> visitor)
-        {
-            return visitor.VisitDictionaryNode(this);
         }
     }
 

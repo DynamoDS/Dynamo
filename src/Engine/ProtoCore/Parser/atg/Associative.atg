@@ -1552,22 +1552,22 @@ Associative_ArrayExprList<out ProtoCore.AST.AssociativeAST.AssociativeNode node>
 
 Associative_DictionaryExpression<out ProtoCore.AST.AssociativeAST.AssociativeNode node>
 =
-'{'                                     (. var dictExpr = new ProtoCore.AST.AssociativeAST.DictionaryNode(); .)
-                                        (. NodeUtils.SetNodeStartLocation(dictExpr, t); .)
+'{'                                     (. var dictBuilder = new ProtoCore.AST.AssociativeAST.DictionaryExpressionBuilder(); .)
+                                        (. dictBuilder.SetNodeStartLocation(t); .)
     [
-        textstring (. dictExpr.Keys.Add(t.val); .)  
+        textstring (. dictBuilder.AddKey(t); .)  
 		':'                     
-        Associative_Expression<out node>            (. dictExpr.Values.Add(node); .)
+        Associative_Expression<out node>            (. dictBuilder.AddValue(node); .)
         {
             ','
-			textstring (. dictExpr.Keys.Add(t.val); .)  
+			textstring (. dictBuilder.AddKey(t); .)  
 			':'                     
-			Associative_Expression<out node>            (. dictExpr.Values.Add(node); .)
+			Associative_Expression<out node>            (. dictBuilder.AddValue(node); .)
         }
                                         
     ]
-'}'                                     (. NodeUtils.SetNodeEndLocation(dictExpr, t); .)
-                                        (. node = dictExpr.ToFunctionCall(); .)
+'}'                                     (. dictBuilder.SetNodeEndLocation(t); .)
+                                        (. node = dictBuilder.ToFunctionCall(); .)
 .
 
 Associative_NameReference<out ProtoCore.AST.AssociativeAST.AssociativeNode node>

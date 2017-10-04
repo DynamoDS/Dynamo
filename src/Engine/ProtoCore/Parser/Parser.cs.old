@@ -2304,26 +2304,26 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 
 	void Associative_DictionaryExpression(out ProtoCore.AST.AssociativeAST.AssociativeNode node) {
 		Expect(46);
-		var dictExpr = new ProtoCore.AST.AssociativeAST.DictionaryNode(); 
-		NodeUtils.SetNodeStartLocation(dictExpr, t); 
+		var dictBuilder = new ProtoCore.AST.AssociativeAST.DictionaryExpressionBuilder(); 
+		dictBuilder.SetNodeStartLocation(t); 
 		if (la.kind == 4) {
 			Get();
-			dictExpr.Keys.Add(t.val); 
+			dictBuilder.AddKey(t); 
 			Expect(48);
 			Associative_Expression(out node);
-			dictExpr.Values.Add(node); 
+			dictBuilder.AddValue(node); 
 			while (la.kind == 52) {
 				Get();
 				Expect(4);
-				dictExpr.Keys.Add(t.val); 
+				dictBuilder.AddKey(t); 
 				Expect(48);
 				Associative_Expression(out node);
-				dictExpr.Values.Add(node); 
+				dictBuilder.AddValue(node); 
 			}
 		}
 		Expect(47);
-		NodeUtils.SetNodeEndLocation(dictExpr, t); 
-		node = dictExpr.ToFunctionCall(); 
+		dictBuilder.SetNodeEndLocation(t); 
+		node = dictBuilder.ToFunctionCall(); 
 	}
 
 	void Associative_NameReference(out ProtoCore.AST.AssociativeAST.AssociativeNode node) {
@@ -2375,8 +2375,7 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 				
 				Associative_Expression(out node);
 				isLeft = tmpIsLeft; 
-				nameNode = AstFactory.BuildFunctionCall("DSCore.Builtin", "Lookup",
-				new List<AssociativeNode>() { nameNode, node }) as ArrayNameNode;
+				nameNode = AstFactory.BuildIndexExpression(nameNode, node) as ArrayNameNode;
 				
 			}
 			Expect(11);
@@ -2388,8 +2387,7 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 					
 					Associative_Expression(out node);
 					isLeft = tmpIsLeft; 
-					nameNode = AstFactory.BuildFunctionCall("DSCore.Builtin", "Lookup",
-					new List<AssociativeNode>() { nameNode, node }) as ArrayNameNode;
+					nameNode = AstFactory.BuildIndexExpression(nameNode, node) as ArrayNameNode;
 					
 				}
 				Expect(11);
