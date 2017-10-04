@@ -134,7 +134,7 @@ namespace Dynamo.Interfaces
 
         private WatchViewModel ProcessThing(MirrorData data, ProtoCore.RuntimeCore runtimeCore, string tag, bool showRawData, WatchHandlerCallback callback)
         {
-            if (data.IsArray)
+            if (data.IsCollection)
             {
                 var list = data.GetElements();
 
@@ -142,20 +142,6 @@ namespace Dynamo.Interfaces
                 foreach (var e in list.Select((element, idx) => new { element, idx }))
                 {
                     node.Children.Add(ProcessThing(e.element, runtimeCore, tag + ":" + e.idx, showRawData, callback));
-                }
-
-                return node;
-            }
-            else if (data.IsDictionary)
-            {
-                var keys = data.GetDictionaryKeys();
-                var values = data.GetElements();
-
-                var node = new WatchViewModel(keys.Any() ? WatchViewModel.DICTIONARY : WatchViewModel.EMPTY_DICTIONARY, tag, RequestSelectGeometry, true);
-
-                foreach (var e in keys.Zip(values, (key,value) => new { key, value }))
-                {
-                    node.Children.Add(ProcessThing(e.value, runtimeCore, tag + ":" + e.key.StringData, showRawData, callback));
                 }
 
                 return node;

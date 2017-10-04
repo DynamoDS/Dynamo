@@ -6,7 +6,7 @@ namespace DSCore
     [IsVisibleInDynamoLibrary(false)]
     public static class Builtin
     {
-        // The indexing syntax a["foo"] or b[1] are syntactic sugar for this particular operation.
+        // The indexing syntax a["foo"] or b[1] are syntactic sugar for these methods.
         
         public static object Lookup(Dictionary dict, string key)
         {

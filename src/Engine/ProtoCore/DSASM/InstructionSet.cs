@@ -41,9 +41,7 @@ namespace ProtoCore.DSASM
         FrameType,
         ThisPtr,
         ExplicitCall,
-        ArrayKey,
-        DictionaryKey,
-        DictionaryPointer,
+        ArrayKey
     }
 
     public enum OpCode
@@ -269,11 +267,6 @@ namespace ProtoCore.DSASM
             get { return optype == AddressType.ArrayPointer; }
         }
 
-        public bool IsDictionary
-        {
-            get { return optype == AddressType.DictionaryPointer; }
-        }
-
         public bool IsFunctionPointer
         {
             get { return optype == AddressType.FunctionPointer; }
@@ -328,7 +321,7 @@ namespace ProtoCore.DSASM
         {
             get { return optype == AddressType.ExplicitCall; }
         }
-    
+
         public bool IsArrayKey
         {
             get { return optype == AddressType.ArrayKey; }
@@ -336,7 +329,7 @@ namespace ProtoCore.DSASM
 
         public bool IsReferenceType
         {
-            get { return opdata != Constants.kInvalidIndex && (IsDictionary || IsArray || IsPointer || IsString); }
+            get { return opdata != Constants.kInvalidIndex && (IsArray || IsPointer || IsString); }
         }
         #endregion
 
@@ -478,15 +471,6 @@ namespace ProtoCore.DSASM
             get
             {
                 Check(IsArray, "The Type of StackValue is not ArrayPointer");
-                return (int)opdata;
-            }
-        }
-
-        public int DictionaryPointer
-        {
-            get
-            {
-                Check(IsDictionary, "The Type of StackValue is not ArrayPointer");
                 return (int)opdata;
             }
         }
@@ -685,20 +669,6 @@ namespace ProtoCore.DSASM
             value.metaData = mdata;
             return value;
         }
-
-        public static StackValue BuildDictionaryPointer(Int64 data)
-        {
-            var value = new StackValue(); 
-            value.optype = AddressType.DictionaryPointer;
-            value.opdata = data;
-
-            MetaData mdata;
-            mdata.type = (int)PrimitiveType.Dictionary;
-            value.metaData = mdata;
-            return value;
-        }
-
-        // TODO(pboyer) BuildDictionaryKey?
 
         public static StackValue BuildArrayKey(int arrayPtr, int index)
         {
@@ -1023,6 +993,7 @@ namespace ProtoCore.DSASM
 
             return nextIndex == Constants.kInvalidIndex ? StackValue.Null : StackValue.BuildArrayKey(svArray, nextIndex);
         }
+
 
         #region Converters
         /// <summary>

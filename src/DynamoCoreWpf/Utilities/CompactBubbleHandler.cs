@@ -44,7 +44,7 @@ namespace Dynamo.Wpf.Utilities
                 return generateViewModel ? new CompactBubbleViewModel(Resources.NullString, 0) : null;
             }
 
-            if (mirrorData.IsArray)
+            if (mirrorData.IsCollection)
             {
                 var list = mirrorData.GetElements();
 
@@ -60,22 +60,7 @@ namespace Dynamo.Wpf.Utilities
                     }
                     : null;
             }
-            else if (mirrorData.IsDictionary)
-            {
-                var list = mirrorData.GetElements();
-
-                foreach (var item in list)
-                {
-                    ProcessThing(item, false);
-                }
-
-                return generateViewModel
-                    ? new CompactBubbleViewModel(true)
-                    {
-                        NodeLabel = list.Any() ? WatchViewModel.DICTIONARY : WatchViewModel.EMPTY_DICTIONARY
-                    }
-                    : null;
-            } else if (mirrorData.IsPointer && mirrorData.Data is DSCore.Dictionary)
+            else if (mirrorData.IsPointer && mirrorData.Data is DSCore.Dictionary)
             {
                 var dict = mirrorData.Data as Dictionary;
 

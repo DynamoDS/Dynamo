@@ -56,9 +56,6 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="System" />
-    <Reference Include="System.Collections.Immutable, Version=1.2.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\System.Collections.Immutable.1.4.0\lib\portable-net45+win8+wp8+wpa81\System.Collections.Immutable.dll</HintPath>
-    </Reference>
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Xaml" />
@@ -73,7 +70,6 @@
     <Compile Include="Color.cs" />
     <Compile Include="Compare.cs" />
     <Compile Include="DateTime.cs" />
-    <Compile Include="Dictionary.cs" />
     <Compile Include="Files.cs" />
     <Compile Include="List.cs" />
     <Compile Include="Math.cs" />
@@ -101,6 +97,10 @@
       <Project>{ef879a10-041d-4c68-83e7-3192685f1bae}</Project>
       <Name>DynamoServices</Name>
       <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\Builtin\Builtin.csproj">
+      <Project>{c0d6dee5-5532-4345-9c66-4c00d7fdb8be}</Project>
+      <Name>Builtin</Name>
     </ProjectReference>
     <ProjectReference Include="..\DynamoUnits\Units.csproj">
       <Project>{6e0a079e-85f1-45a1-ad5b-9855e4344809}</Project>

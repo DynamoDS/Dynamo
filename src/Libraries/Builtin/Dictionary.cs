@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections;
+﻿using Autodesk.DesignScript.Runtime;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Collections.Immutable;
-using Autodesk.DesignScript.Runtime;
+using System.Linq;
 
 namespace DSCore
 {

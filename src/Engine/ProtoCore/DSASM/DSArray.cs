@@ -145,7 +145,7 @@ namespace ProtoCore.DSASM
         {
             try
             {
-                index = ExpandByAccessingAt(index);
+                index = ExpandByAcessingAt(index);
                 if (index < 0)
                     index += Count;
             }
@@ -203,7 +203,7 @@ namespace ProtoCore.DSASM
                     index = index.ToInteger();
                     try
                     {
-                        int absIndex = array.ExpandByAccessingAt((int)index.IntegerValue);
+                        int absIndex = array.ExpandByAcessingAt((int)index.IntegerValue);
                         svSubArray = array.GetValueAt(absIndex);
                     }
                     catch (RunOutOfMemoryException)

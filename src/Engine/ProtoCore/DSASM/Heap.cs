@@ -32,6 +32,8 @@ namespace ProtoCore.DSASM
         /// <summary>
         /// Create HeapElement
         /// </summary>
+        /// <param name="size"></param>
+        /// <param name="heap"></param>
         public HeapElement(int size, Heap heap)
         {
             allocated = Count = size;
@@ -42,6 +44,8 @@ namespace ProtoCore.DSASM
         /// <summary>
         /// Create HeapElement based on the existing values
         /// </summary>
+        /// <param name="values"></param>
+        /// <param name="heap"></param>
         public HeapElement(StackValue[] values, Heap heap)
         {
             allocated = Count = values.Count();
@@ -107,7 +111,7 @@ namespace ProtoCore.DSASM
             Count = Count + size;
         }
 
-        protected int ExpandByAccessingAt(int index)
+        protected int ExpandByAcessingAt(int index)
         {
             int retIndex = index;
 
@@ -324,35 +328,21 @@ namespace ProtoCore.DSASM
         }
 
         /// <summary>
+        /// Allocate an array.
+        ///
         /// Exceptions: ProtoCore.Exceptions.RunOutOfMemoryException
         /// </summary>
         /// <param name="values">Array elements whose indices are integer</param>
+        /// <param name="dict">Array elements whose indices are not integer</param>
+        /// <returns></returns>
         public StackValue AllocateArray(StackValue[] values)
         {
             try
             {
-                var index = AddHeapElement(new DSArray(values, this));
+                int index = AllocateInternal(values, PrimitiveType.Array);
                 var heapElement = heapElements[index];
                 heapElement.MetaData = new MetaData { type = (int)PrimitiveType.Array };
                 return StackValue.BuildArrayPointer(index);
-            }
-            catch (OutOfMemoryException)
-            {
-                throw new RunOutOfMemoryException();
-            }
-        }
-
-        /// <summary>
-        /// Exceptions: ProtoCore.Exceptions.RunOutOfMemoryException
-        /// </summary>
-        public StackValue AllocateDictionary(IEnumerable<StackValue> keys, IEnumerable<StackValue> values)
-        {
-            try
-            {
-                var index = AddHeapElement(new DSDictionary(keys, values, this));
-                var heapElement = heapElements[index];
-                heapElement.MetaData = new MetaData { type = (int)PrimitiveType.Dictionary };
-                return StackValue.BuildDictionaryPointer(index);
             }
             catch (OutOfMemoryException)
             {
@@ -368,7 +358,7 @@ namespace ProtoCore.DSASM
         /// <returns></returns>
         private StackValue AllocatePointer(StackValue[] values, MetaData metaData)
         {
-            var index = AddHeapElement(new DSObject(values, this));
+            int index = AllocateInternal(values, PrimitiveType.Pointer);
             var heapElement = heapElements[index];
             heapElement.MetaData = metaData;
             return StackValue.BuildPointer(index, metaData);
@@ -405,7 +395,7 @@ namespace ProtoCore.DSASM
         {
             try
             {
-                int index = AddHeapElement(new DSObject(size, this));
+                int index = AllocateInternal(size, PrimitiveType.Pointer);
                 var hpe = heapElements[index];
                 hpe.MetaData = metadata;
                 return StackValue.BuildPointer(index, metadata);
@@ -426,7 +416,7 @@ namespace ProtoCore.DSASM
             int index;
             if (!stringTable.TryGetPointer(str, out index))
             {
-                index = AddHeapElement(new DSString(new StackValue[] { }, this));
+                index = AllocateInternal(new StackValue[] {}, PrimitiveType.String);
                 stringTable.AddString(index, str);
             }
 
@@ -502,10 +492,6 @@ namespace ProtoCore.DSASM
             {
                 index = pointer.ArrayPointer;
             }
-            else if (pointer.IsDictionary)
-            {
-                index = pointer.DictionaryPointer;
-            }
             else if (pointer.IsString)
             {
                 index = pointer.StringPointer;
@@ -542,6 +528,56 @@ namespace ProtoCore.DSASM
             }
 
             return index;
+        }
+
+        private int AllocateInternal(int size, PrimitiveType type)
+        {
+            HeapElement hpe = null;
+
+            switch (type)
+            {
+                case PrimitiveType.Array:
+                    hpe = new DSArray(size, this);
+                    break;
+
+                case PrimitiveType.Pointer:
+                    hpe = new DSObject(size, this);
+                    break;
+
+                case PrimitiveType.String:
+                    hpe = new DSString(size, this);
+                    break;
+
+                default:
+                    throw new ArgumentException("type");
+            }
+
+            return AddHeapElement(hpe);
+        }
+
+        private int AllocateInternal(StackValue[] values, PrimitiveType type)
+        {
+            HeapElement hpe = null;
+
+            switch (type)
+            {
+                case PrimitiveType.Array:
+                    hpe = new DSArray(values, this);
+                    break;
+
+                case PrimitiveType.Pointer:
+                    hpe = new DSObject(values, this);
+                    break;
+
+                case PrimitiveType.String:
+                    hpe = new DSString(values, this);
+                    break;
+
+                default:
+                    throw new ArgumentException("type");
+            }
+
+            return AddHeapElement(hpe);
         }
 
         private bool TryFindFreeIndex(out int index)
@@ -609,24 +645,31 @@ namespace ProtoCore.DSASM
         /// <returns></returns>
         private int RecursiveMark(StackValue root)
         {
-            var ptrs = new Queue<StackValue>();
+            Queue<StackValue> ptrs = new Queue<StackValue>();
             ptrs.Enqueue(root);
-            var releaseSize = 0;
+            int releaseSize = 0;
 
             while (ptrs.Any())
             {
-                var value = ptrs.Dequeue();
-                var rawPtr = (int)value.RawData;
+                StackValue value = ptrs.Dequeue();
+                int rawPtr = (int)value.RawData;
                 var hp = heapElements[rawPtr];
                 if (hp.Mark == GCMark.Black)
                     continue;
 
                 hp.Mark = GCMark.Black;
-
-                HeapElement elem;
-                if (TryGetHeapElement(value, out elem))
+                if (value.IsArray)
                 {
-                    foreach (var item in elem.Values)
+                    var array = ToHeapObject<DSArray>(value);
+                    releaseSize += array.MemorySize;
+                    array.CollectElementsForGC(ptrs);
+                }
+                else if (value.IsPointer)
+                {
+                    var obj = ToHeapObject<DSObject>(value);
+                    releaseSize += obj.MemorySize;
+
+                    foreach (var item in obj.Values)
                     {
                         if (item.IsReferenceType)
                             ptrs.Enqueue(item);

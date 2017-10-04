@@ -11,15 +11,18 @@ namespace ProtoCore
     namespace Mirror
     {
         /// <summary>
-        /// An object allowing inspection of a StackValue inside of the virtual machine
+        ///  An object that performs marshalling of all relevant data associated with this object
         /// </summary>
         public class MirrorData
         {
+
             /// <summary>
             ///  The stack value associated with this mirror data
             /// </summary>
             private StackValue svData;
 
+
+            //
             // Comment Jun:
             // Experimental - have a copy of the core so the data marshaller has access to it
             // The proper solution is to either:
@@ -38,6 +41,7 @@ namespace ProtoCore
             /// Experimental constructor that takes in a core object
             /// Takes a core object to read static data
             /// </summary>
+            /// <param name="sv"></param>
             public MirrorData(ProtoCore.Core core, StackValue sv)
             {
                 this.core = core;
@@ -47,12 +51,14 @@ namespace ProtoCore
             /// <summary>
             /// Takes a runtime core object to read runtime data
             /// </summary>
+            /// <param name="sv"></param>
             public MirrorData(ProtoCore.Core core, ProtoCore.RuntimeCore runtimeCore, StackValue sv)
             {
                 this.core = core;
                 this.runtimeCore = runtimeCore;
                 svData = sv;
             }
+
 
             /// <summary>
             ///  Retrieves list of IGraphicItem to get the graphic 
@@ -65,10 +71,13 @@ namespace ProtoCore
             [System.Obsolete("Query IGraphicItem from Data property of this class")]
             public List<IGraphicItem> GetGraphicsItems()
             {
-                var graphicItems = new List<IGraphicItem>();
-                foreach (var sv in GetPointersRecursively(svData))
+                List<DSASM.StackValue> values = new List<DSASM.StackValue>();
+                GetPointersRecursively(svData, values);
+
+                List<IGraphicItem> graphicItems = new List<IGraphicItem>();
+                foreach (var sv in values)
                 {
-                    var items = dataProvider.GetGraphicItems(sv, this.runtimeCore);
+                    List<IGraphicItem> items = dataProvider.GetGraphicItems(sv, this.runtimeCore);
                     if (items != null && (items.Count > 0))
                         graphicItems.AddRange(items);
                 }
@@ -78,22 +87,24 @@ namespace ProtoCore
                 return null;
             }
 
-            private IEnumerable<StackValue> GetPointersRecursively(DSASM.StackValue sv)
+            /// <summary>
+            /// Recursively finds all Pointers from the stack value
+            /// </summary>
+            /// <param name="sv">Stack value</param>
+            /// <param name="values">Stack values</param>
+            private void GetPointersRecursively(DSASM.StackValue sv, List<DSASM.StackValue> values)
             {
                 switch (sv.optype)
                 {
-                    case AddressType.Pointer:
-                        yield return sv;
+                    case ProtoCore.DSASM.AddressType.Pointer:
+                        values.Add(sv);
                         break;
-                    case AddressType.ArrayPointer:
+                    case ProtoCore.DSASM.AddressType.ArrayPointer:
                         var array = runtimeCore.Heap.ToHeapObject<DSArray>(sv);
                         foreach (var item in array.Values)
-                            GetPointersRecursively(item);
+                            GetPointersRecursively(item, values);
                         break;
-                    case AddressType.DictionaryPointer:
-                        var dict = runtimeCore.Heap.ToHeapObject<DSDictionary>(sv);
-                        foreach (var item in dict.Values)
-                            GetPointersRecursively(item);
+                    default:
                         break;
                 }
             }
@@ -139,37 +150,18 @@ namespace ProtoCore
             }
 
             /// <summary>
-            /// A list of MirrorData objects if this object represents an array or dictionary,
-            /// otherwise null.
+            /// Returns the list of MirrorData if this data represents a collection,
+            /// else null.
             /// </summary>
+            /// <returns>List of MirrorData represented by this data.</returns>
             public IEnumerable<MirrorData> GetElements() 
             {
-                switch (svData.optype)
-                {
-                    case AddressType.ArrayPointer:
-                        var array = runtimeCore.Heap.ToHeapObject<DSArray>(svData);
-                        return array.Values.Select(x => new MirrorData(this.core, this.runtimeCore, x));
-                    case AddressType.DictionaryPointer:
-                        var dict = runtimeCore.Heap.ToHeapObject<DSDictionary>(svData);
-                        return dict.Values.Select(x => new MirrorData(this.core, this.runtimeCore, x));
-                }
-
-                return null;
-            }
-
-            /// <summary>
-            /// A list of MirrorData objects if this object represents a dictionary,
-            /// otherwise null.
-            /// </summary>
-            public IEnumerable<MirrorData> GetDictionaryKeys()
-            {
-                if (!svData.IsDictionary)
-                {
+                //This is not a collection
+                if (!this.IsCollection)
                     return null;
-                }
 
-                var dict = runtimeCore.Heap.ToHeapObject<DSDictionary>(svData);
-                return dict.Keys.Select(x => new MirrorData(this.core, this.runtimeCore, x));
+                var array = runtimeCore.Heap.ToHeapObject<DSArray>(svData);
+                return array.Values.Select(x => new MirrorData(this.core, this.runtimeCore, x));
             }
 
             /// <summary>
@@ -183,6 +175,9 @@ namespace ProtoCore
             /// Pointer if the pointer represents an FFI object. For other cases
             /// it returns null.
             /// </summary>
+            /// <param name="sv">StackValue</param>
+            /// <param name="core">ProtoCore.Core</param>
+            /// <returns>System.Object</returns>
             internal static object GetData(StackValue sv, RuntimeCore runtimeCore)
             {
                 switch (sv.optype)
@@ -250,6 +245,9 @@ namespace ProtoCore
                 }
             }
 
+            /// <summary>
+            /// Returns if this data points to null.
+            /// </summary>
             public bool IsNull
             {
                 get
@@ -258,15 +256,10 @@ namespace ProtoCore
                 }
             }
 
+            /// <summary>
+            /// Determines if this data points to a collection.
+            /// </summary>
             public bool IsCollection
-            {
-                get
-                {
-                    return svData.IsArray || svData.IsDictionary;
-                }
-            }
-
-            public bool IsArray
             {
                 get
                 {
@@ -274,15 +267,9 @@ namespace ProtoCore
                 }
             }
 
-
-            public bool IsDictionary
-            {
-                get
-                {
-                    return svData.IsDictionary;
-                }
-            }
-
+            /// <summary>
+            /// Determines if this data is a pointer
+            /// </summary>
             public bool IsPointer
             {
                 get
@@ -291,6 +278,11 @@ namespace ProtoCore
                 }
             }
 
+            /// <summary>
+            /// 
+            /// </summary>
+            /// <param name="obj"></param>
+            /// <returns></returns>
             public override bool Equals(object obj)
             {
                 if (object.ReferenceEquals(obj, this))

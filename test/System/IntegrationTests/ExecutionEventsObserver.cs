@@ -40,6 +40,7 @@ namespace IntegrationTests
 
         protected override void GetLibrariesToPreload(List<string> libraries)
         {
+            libraries.Add("Builtin.dll");
             libraries.Add("DSCoreNodes.dll");
             base.GetLibrariesToPreload(libraries);
         }

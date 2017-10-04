@@ -60,7 +60,7 @@ namespace ProtoCore.DSASM
             {
                 throw new ArgumentException("size is less than 0");
             }
-            ExpandByAccessingAt(Count + size - 1);
+            ExpandByAcessingAt(Count + size - 1);
         }
     }
 }
