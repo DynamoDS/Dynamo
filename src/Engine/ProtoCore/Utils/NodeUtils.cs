@@ -67,10 +67,6 @@ namespace ProtoCore.Utils
             {
                 return new ProtoCore.AST.AssociativeAST.ExprListNode(rhsNode as ProtoCore.AST.AssociativeAST.ExprListNode);
             }
-            else if (rhsNode is ProtoCore.AST.AssociativeAST.DictionaryNode)
-            {
-                return new ProtoCore.AST.AssociativeAST.DictionaryNode(rhsNode as ProtoCore.AST.AssociativeAST.DictionaryNode);
-            }
             else if (rhsNode is ProtoCore.AST.AssociativeAST.LanguageBlockNode)
             {
                 return new ProtoCore.AST.AssociativeAST.LanguageBlockNode(rhsNode as ProtoCore.AST.AssociativeAST.LanguageBlockNode);

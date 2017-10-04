@@ -63,8 +63,6 @@ namespace ProtoCore.SyntaxAnalysis.Associative
 
         TResult VisitExprListNode(ExprListNode node);
 
-        TResult VisitDictionaryNode(DictionaryNode node);
-
         TResult VisitArrayNode(ArrayNode node);
 
         TResult VisitImportNode(ImportNode node);

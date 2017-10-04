@@ -5948,25 +5948,6 @@ namespace ProtoAssociative
             }
         }
 
-        protected void EmitDictionaryNode(AssociativeNode node, ref ProtoCore.Type inferedType, ProtoCore.AssociativeGraph.GraphNode graphNode = null, ProtoCore.CompilerDefinitions.SubCompilePass subPass = ProtoCore.CompilerDefinitions.SubCompilePass.None, ProtoCore.AST.Node parentNode = null)
-        {
-            var dictNode = node as DictionaryNode;
-
-            // emit the keys as an identifier
-            var keys = new StringNode();
-            keys.Value = "Foo";
-
-            // emit the values as an identifier
-            var values = new IntNode(12);
-
-            var fcall = AstFactory.BuildFunctionCall("DSCore.Dictionary2", "ByKeysValues", new List<AssociativeNode>() { keys, values });
-
-            EmitFunctionCallNode(fcall, ref inferedType, false, graphNode, subPass, parentNode as BinaryExpressionNode);
-
-            // private void EmitFunctionCallNode(AssociativeNode node, ref ProtoCore.Type inferedType, bool isBooleanOp = false, ProtoCore.AssociativeGraph.GraphNode graphNode = null,
-            //    ProtoCore.CompilerDefinitions.SubCompilePass subPass = ProtoCore.CompilerDefinitions.SubCompilePass.None, ProtoCore.AST.AssociativeAST.BinaryExpressionNode parentNode = null)
-        }
-
         private void EmitGroupExpressionNode(AssociativeNode node, ref ProtoCore.Type inferedType, bool isBooleanOp = false, ProtoCore.AssociativeGraph.GraphNode graphNode = null, ProtoCore.CompilerDefinitions.SubCompilePass subPass = ProtoCore.CompilerDefinitions.SubCompilePass.None)
         {
             GroupExpressionNode group = node as GroupExpressionNode;
@@ -6183,9 +6164,6 @@ namespace ProtoAssociative
                     break;
                 case AstKind.ExpressionList:
                     EmitExprListNode(node, ref inferedType, graphNode, subPass, parentNode);
-                    break;
-                case AstKind.DictionaryExpression:
-                    EmitDictionaryNode(node, ref inferedType, graphNode, subPass, parentNode);
                     break;
                 case AstKind.IdentifierList:
                     EmitIdentifierListNode(node, ref inferedType, isBooleanOp, graphNode, subPass, parentNode);

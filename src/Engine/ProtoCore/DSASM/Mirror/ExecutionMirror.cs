@@ -32,6 +32,7 @@ namespace ProtoCore.DSASM.Mirror
         private readonly ProtoCore.RuntimeCore runtimeCore;
         public Executive MirrorTarget { get; private set; }
         private OutputFormatParameters formatParams;
+        private Dictionary<string, List<string>> propertyFilter;
 
         /// <summary>
         /// Create a mirror for a given executive
@@ -967,7 +968,7 @@ namespace ProtoCore.DSASM.Mirror
             if (-1 == maximumDepth)
                 return true;
 
-            // Previously reached zero, don't kKeep decreasing because that 
+            // Previously reached zero, don't keep decreasing because that 
             // will essentially reach -1 and depth control will be disabled.
             if (0 == CurrentOutputDepth)
                 return false;

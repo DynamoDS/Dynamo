@@ -113,7 +113,7 @@ namespace ProtoCore
         Pointer,
         FunctionPointer,
         Return,
-        MaxPrimitive,
+        MaxPrimitive
     }
 
     public class TypeSystem
@@ -358,8 +358,6 @@ namespace ProtoCore
 
         public static StackValue Coerce(StackValue sv, Type targetType, RuntimeCore runtimeCore)
         {
-            // TODO(pboyer) How to handle dictionaries?
-
             ProtoCore.Runtime.RuntimeMemory rmem = runtimeCore.RuntimeMemory;
             
             //@TODO(Jun): FIX ME - abort coersion for default args
