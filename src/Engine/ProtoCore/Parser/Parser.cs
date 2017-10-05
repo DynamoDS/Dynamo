@@ -2370,29 +2370,27 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 		if (la.kind == 10) {
 			Get();
 			if (StartOf(4)) {
-				bool tmpIsLeft = isLeft;
-                isLeft = false;
-                Associative_Expression(out node);
-
-                if (tmpIsLeft)
-                {
-                    // if "foo[bar]" is on the lhs, it is interpreted as an array initialization expression
-                    var array = new ProtoCore.AST.AssociativeAST.ArrayNode
-                    {
-                        Expr = node,
-                        Type = nameNode.ArrayDimensions
-                    };
-
-                    NodeUtils.SetNodeLocation(array, t);
-                    nameNode.ArrayDimensions = array;
-                }
-                else
-                {
-                    // if "foo[bar]" is on the rhs, it is interpreted as an lookup in an array or dictionary
-                    nameNode = AstFactory.BuildIndexExpression(nameNode, node) as ArrayNameNode;
-                }
-
+				bool tmpIsLeft = isLeft; 
+				isLeft = false;
+				
+				Associative_Expression(out node);
+				if (tmpIsLeft) {
+				// if "foo[bar]" is on the lhs, it is interpreted as an array initialization expression
+				var array = new ProtoCore.AST.AssociativeAST.ArrayNode
+				{
+					Expr = node,
+					Type = nameNode.ArrayDimensions
+				};
+				
+				NodeUtils.SetNodeLocation(array, t);
+				nameNode.ArrayDimensions = array;
+				} else {
+				// if "foo[bar]" is on the rhs, it is interpreted as an lookup in an array or dictionary
+				nameNode = AstFactory.BuildIndexExpression(nameNode, node) as ArrayNameNode;
+				}
+				
 				isLeft = tmpIsLeft; 
+				                            
 			}
 			Expect(11);
 			while (la.kind == 10) {
@@ -2402,23 +2400,21 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 					isLeft = false;
 					
 					Associative_Expression(out node);
-                    if (tmpIsLeft)
-                    {
-                        var array = new ProtoCore.AST.AssociativeAST.ArrayNode
-                        {
-                            Expr = node,
-                            Type = nameNode.ArrayDimensions
-                        };
-
-                        NodeUtils.SetNodeLocation(array, t);
-                        nameNode.ArrayDimensions = array;
-                    }
-                    else
-                    {
-                        nameNode = AstFactory.BuildIndexExpression(nameNode, node) as ArrayNameNode;
-                    }
-
-                    isLeft = tmpIsLeft; 
+					if (tmpIsLeft) {
+					var array = new ProtoCore.AST.AssociativeAST.ArrayNode
+					{
+						Expr = node,
+						Type = nameNode.ArrayDimensions
+					};
+					
+					NodeUtils.SetNodeLocation(array, t);
+					nameNode.ArrayDimensions = array;
+					} else {
+					nameNode = AstFactory.BuildIndexExpression(nameNode, node) as ArrayNameNode;
+					}
+					
+					isLeft = tmpIsLeft; 
+					                            
 				}
 				Expect(11);
 			}

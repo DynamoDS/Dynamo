@@ -1640,8 +1640,22 @@ Associative_NameReference<out ProtoCore.AST.AssociativeAST.AssociativeNode node>
                                         .)
             Associative_Expression<out node>
                                         (. 
-                                            isLeft = tmpIsLeft; 
-                                            nameNode = AstFactory.BuildIndexExpression(nameNode, node) as ArrayNameNode;
+											if (tmpIsLeft) {
+												// if "foo[bar]" is on the lhs, it is interpreted as an array initialization expression
+												var array = new ProtoCore.AST.AssociativeAST.ArrayNode
+												{
+													Expr = node,
+													Type = nameNode.ArrayDimensions
+												};
+
+												NodeUtils.SetNodeLocation(array, t);
+												nameNode.ArrayDimensions = array;
+											} else {
+												// if "foo[bar]" is on the rhs, it is interpreted as an lookup in an array or dictionary
+												nameNode = AstFactory.BuildIndexExpression(nameNode, node) as ArrayNameNode;
+											}
+
+											isLeft = tmpIsLeft; 
                                         .)
         ]
         closebracket 
@@ -1654,8 +1668,20 @@ Associative_NameReference<out ProtoCore.AST.AssociativeAST.AssociativeNode node>
                                         .) 
                 Associative_Expression<out node>  
                                         (. 
-                                            isLeft = tmpIsLeft; 
-                                            nameNode = AstFactory.BuildIndexExpression(nameNode, node) as ArrayNameNode;
+											if (tmpIsLeft) {
+												var array = new ProtoCore.AST.AssociativeAST.ArrayNode
+												{
+													Expr = node,
+													Type = nameNode.ArrayDimensions
+												};
+
+												NodeUtils.SetNodeLocation(array, t);
+												nameNode.ArrayDimensions = array;
+											} else {
+												nameNode = AstFactory.BuildIndexExpression(nameNode, node) as ArrayNameNode;
+											}
+
+											isLeft = tmpIsLeft; 
                                         .)
             ]
             closebracket
