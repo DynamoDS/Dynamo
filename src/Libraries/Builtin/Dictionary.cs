@@ -69,7 +69,7 @@ namespace DesignScript
             }
 
             /// <summary>
-            ///     Produce a new Dictionary with the provided key set to a given value
+            ///     Produce a new Dictionary with the provided key set to a given value, possibly overwriting an existing key-value pair.
             /// </summary>
             /// <param name="key">The key in the dictionary to set. If the same key already exists, the value at that key will be modified.</param>
             /// <param name="value">The value to insert.</param>
@@ -80,13 +80,40 @@ namespace DesignScript
             }
 
             /// <summary>
-            ///     Produce a new Dictionary with a new entry set to the input value
+            ///     Produce a new Dictionary with a list of keys set to the new values, possibly overwriting existing key-value pairs. 
+            ///     These two lists are expected to be of the same length. If not, the shorter of the two bounds the number of insertions.
             /// </summary>
-            /// <param name="key">The key in the Dictionary to remove</param>
-            /// <returns name="dictionary">A new Dictionary with the key removed</returns>
+            /// <param name="key">The keys in the dictionary to set. If the same key already exists, the value at that key will be modified.</param>
+            /// <param name="value">The corresponding values to insert.</param>
+            /// <returns name="dictionary">A new Dictionary with the entries inserted.</returns>
+            public Dictionary SetValueAtKeys(IList<string> keys, [KeepReference] [ArbitraryDimensionArrayImport] IList<object> values)
+            {
+                var pairs = keys.Cast<string>().Zip(values.Cast<object>(), (a, b) =>
+                {
+                    return new KeyValuePair<string, object>(a, b);
+                });
+
+                return new Dictionary(D.SetItems(pairs));
+            }
+
+            /// <summary>
+            ///     Produce a new Dictionary with the given key removed.
+            /// </summary>
+            /// <param name="key">The key in the Dictionary to remove.</param>
+            /// <returns name="dictionary">A new Dictionary with the key removed.</returns>
             public Dictionary RemoveValueAtKey(string key)
             {
                 return new Dictionary(D.Remove(key));
+            }
+
+            /// <summary>
+            ///     Produce a new Dictionary with the given keys removed.
+            /// </summary>
+            /// <param name="key">The key in the Dictionary to remove</param>
+            /// <returns name="dictionary">A new Dictionary with the key removed</returns>
+            public Dictionary RemoveValueAtKeys(IList<string> keys)
+            {
+                return new Dictionary(D.RemoveRange(keys));
             }
 
             /// <summary>
