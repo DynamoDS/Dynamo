@@ -30,7 +30,6 @@ namespace ProtoCore.AST.AssociativeAST
         Dynamic,
         DynamicBlock,
         ExpressionList,
-        DictionaryExpression,
         FunctionCall,
         FunctionDefintion,
         FunctionDotCall,
@@ -626,7 +625,7 @@ namespace ProtoCore.AST.AssociativeAST
         }
     }
 
-    public class IdentifierListNode : ArrayNameNode
+    public class IdentifierListNode : AssociativeNode
     {
         public bool IsLastSSAIdentListFactor { get; set; }
 
@@ -2220,6 +2219,10 @@ namespace ProtoCore.AST.AssociativeAST
         }
     }
 
+    /// <summary>
+    /// Dictionary syntax like { "foo" : 12 } isn't part of the AST. Instead, this helper class exists to 
+    /// build a function call to build a Dictionary via zero touch.
+    /// </summary>
     public class DictionaryExpressionBuilder
     {
         private readonly List<AssociativeNode> keys;
@@ -2694,7 +2697,8 @@ namespace ProtoCore.AST.AssociativeAST
 
         public static AssociativeNode BuildIndexExpression(AssociativeNode value, AssociativeNode index)
         {
-            // For now, we can't import this method into 
+            // It would be preferrable to use compile time affordances like typeof and nameof here to help with refactoring
+            // This method unfortunately is defined in CoreNodes.dll and can't be referenced by this assembly. 
             return BuildFunctionCall("DesignScript.Builtin.Get", "ValueAtIndex", new List<AssociativeNode>() { value, index });
         }
 
