@@ -104,7 +104,7 @@ namespace Dynamo.Graph.Nodes
         }
 
         private static readonly string BuiltinDictionaryTypeName = typeof(DesignScript.Builtin.Dictionary).FullName;
-        private static readonly string BuiltinDictionaryValueAtKeyName = nameof(DesignScript.Builtin.Dictionary.ValueAtKey);
+        private static readonly string BuiltinDictionaryGet = nameof(DesignScript.Builtin.Dictionary.ValueAtKey);
 
         /// <summary>
         ///     Produces AST that assigns all necessary Identifiers for the given NodeModel from
@@ -122,7 +122,7 @@ namespace Dynamo.Graph.Nodes
                 from item in keys.Zip(Enumerable.Range(0, keys.Count()), (key, idx) => new { key, idx })
                 let outputIdentiferNode = model.GetAstIdentifierForOutputIndex(item.idx)
                 let outputIdentifier = outputIdentiferNode.ToString()
-                let getValueCall = AstFactory.BuildFunctionCall(BuiltinDictionaryTypeName, BuiltinDictionaryValueAtKeyName,
+                let getValueCall = AstFactory.BuildFunctionCall(BuiltinDictionaryTypeName, BuiltinDictionaryGet,
                     new List<AssociativeNode> { model.AstIdentifierForPreview, AstFactory.BuildStringNode(item.key) })
                 select
                 AstFactory.BuildAssignment(outputIdentiferNode, getValueCall));
