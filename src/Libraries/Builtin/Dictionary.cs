@@ -37,8 +37,8 @@ namespace DesignScript
             /// <summary>
             ///     Produces the components of a Dictionary. The reverse of Dictionary.ByKeysValues.
             /// </summary>
-            /// <returns name="keys">The keys of the dictionary</returns>
-            /// <returns name="values">The values of the dictionary</returns>
+            /// <returns name="keys">The keys of the Dictionary</returns>
+            /// <returns name="values">The values of the Dictionary</returns>
             [MultiReturn(new[] { "keys", "values" })]
             public IDictionary<string, object> Components()
             {
@@ -52,7 +52,7 @@ namespace DesignScript
             /// <summary>
             ///     Produces the keys in a Dictionary.
             /// </summary>
-            /// <returns name="keys">The keys of the dictionary</returns>
+            /// <returns name="keys">The keys of the Dictionary</returns>
             public IEnumerable<string> Keys
             {
                 get { return D.Keys; }
@@ -61,7 +61,7 @@ namespace DesignScript
             /// <summary>
             ///     Produces the values in a Dictionary.
             /// </summary>
-            /// <returns name="values">The values of the dictionary</returns>
+            /// <returns name="values">The values of the Dictionary</returns>
             [AllowRankReduction]
             public IEnumerable<object> Values
             {
@@ -69,11 +69,20 @@ namespace DesignScript
             }
 
             /// <summary>
+            ///     The number of key value pairs in a Dictionary.
+            /// </summary>
+            public int Count
+            {
+                get { return D.Count; }
+            }
+
+            /// <summary>
             ///     Produce a new Dictionary with the provided key set to a given value, possibly overwriting an existing key-value pair.
             /// </summary>
-            /// <param name="key">The key in the dictionary to set. If the same key already exists, the value at that key will be modified.</param>
+            /// <param name="key">The key in the Dictionary to set. If the same key already exists, the value at that key will be modified.</param>
             /// <param name="value">The value to insert.</param>
             /// <returns name="dictionary">A new Dictionary with the entry inserted.</returns>
+            /// <search>insert,add</search>
             public Dictionary SetValueAtKey(string key, [KeepReference] [ArbitraryDimensionArrayImport] object value)
             {
                 return new Dictionary(D.SetItem(key, value));
@@ -83,9 +92,10 @@ namespace DesignScript
             ///     Produce a new Dictionary with a list of keys set to the new values, possibly overwriting existing key-value pairs. 
             ///     These two lists are expected to be of the same length. If not, the shorter of the two bounds the number of insertions.
             /// </summary>
-            /// <param name="key">The keys in the dictionary to set. If the same key already exists, the value at that key will be modified.</param>
+            /// <param name="key">The keys in the Dictionary to set. If the same key already exists, the value at that key will be modified.</param>
             /// <param name="value">The corresponding values to insert.</param>
             /// <returns name="dictionary">A new Dictionary with the entries inserted.</returns>
+            /// <search>insert,add</search>
             public Dictionary SetValueAtKeys(IList<string> keys, [KeepReference] [ArbitraryDimensionArrayImport] IList<object> values)
             {
                 var pairs = keys.Cast<string>().Zip(values.Cast<object>(), (a, b) =>
@@ -101,7 +111,8 @@ namespace DesignScript
             /// </summary>
             /// <param name="key">The key in the Dictionary to remove.</param>
             /// <returns name="dictionary">A new Dictionary with the key removed.</returns>
-            public Dictionary RemoveValueAtKey(string key)
+            /// <search>drop,delete</search>
+            public Dictionary RemoveKey(string key)
             {
                 return new Dictionary(D.Remove(key));
             }
@@ -111,7 +122,8 @@ namespace DesignScript
             /// </summary>
             /// <param name="key">The key in the Dictionary to remove</param>
             /// <returns name="dictionary">A new Dictionary with the key removed</returns>
-            public Dictionary RemoveValueAtKeys(IList<string> keys)
+            /// <search>drop,delete</search>
+            public Dictionary RemoveKeys(IList<string> keys)
             {
                 return new Dictionary(D.RemoveRange(keys));
             }
@@ -121,6 +133,7 @@ namespace DesignScript
             /// </summary>
             /// <param name="key">The key in the Dictionary to obtain.</param>
             /// <returns name="value">The value at the specified key or null if it is not set.</returns>
+            /// <search>lookup,valueatkey,find</search>
             public object ValueAtKey(string key)
             {
                 return D[key];
