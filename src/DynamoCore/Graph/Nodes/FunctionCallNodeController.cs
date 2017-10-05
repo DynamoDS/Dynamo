@@ -5,7 +5,6 @@ using System.Xml;
 using Dynamo.Engine;
 using Dynamo.Logging;
 using ProtoCore.AST.AssociativeAST;
-using ProtoCore.Lang;
 
 namespace Dynamo.Graph.Nodes
 {
@@ -104,6 +103,9 @@ namespace Dynamo.Graph.Nodes
                                     }))));
         }
 
+        private static readonly string BuiltinDictionaryTypeName = typeof(DesignScript.Builtin.Dictionary).FullName;
+        private static readonly string BuiltinDictionaryValueAtKeyName = nameof(DesignScript.Builtin.Dictionary.ValueAtKey);
+
         /// <summary>
         ///     Produces AST that assigns all necessary Identifiers for the given NodeModel from
         ///     the produced function call AST.
@@ -120,7 +122,7 @@ namespace Dynamo.Graph.Nodes
                 from item in keys.Zip(Enumerable.Range(0, keys.Count()), (key, idx) => new { key, idx })
                 let outputIdentiferNode = model.GetAstIdentifierForOutputIndex(item.idx)
                 let outputIdentifier = outputIdentiferNode.ToString()
-                let getValueCall = AstFactory.BuildFunctionCall( "DSCore.Dictionary", "ValueAtKey", // TODO(pboyer) ensure is the same behavior
+                let getValueCall = AstFactory.BuildFunctionCall(BuiltinDictionaryTypeName, BuiltinDictionaryValueAtKeyName,
                     new List<AssociativeNode> { model.AstIdentifierForPreview, AstFactory.BuildStringNode(item.key) })
                 select
                 AstFactory.BuildAssignment(outputIdentiferNode, getValueCall));

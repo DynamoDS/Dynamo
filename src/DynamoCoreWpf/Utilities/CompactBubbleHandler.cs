@@ -4,7 +4,6 @@ using Dynamo.Extensions;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Properties;
 using ProtoCore.Mirror;
-using DSCore;
 
 namespace Dynamo.Wpf.Utilities
 {
@@ -60,9 +59,9 @@ namespace Dynamo.Wpf.Utilities
                     }
                     : null;
             }
-            else if (mirrorData.IsPointer && mirrorData.Data is DSCore.Dictionary)
+            else if (mirrorData.IsPointer && mirrorData.Data is DesignScript.Builtin.Dictionary)
             {
-                var dict = mirrorData.Data as Dictionary;
+                var dict = mirrorData.Data as DesignScript.Builtin.Dictionary;
 
                 return generateViewModel
                     ? new CompactBubbleViewModel(true)

@@ -438,7 +438,7 @@ namespace ProtoFFI
             var dict = obj as IDictionary;
 
             // TODO(pboyer) what if keys are not strings?
-            var dsdict = DSCore.Dictionary.ByKeysValues(dict.Keys.Cast<string>().ToList(), dict.Values.Cast<object>().ToList());
+            var dsdict = DesignScript.Builtin.Dictionary.ByKeysValues(dict.Keys.Cast<string>().ToList(), dict.Values.Cast<object>().ToList());
             return MarshalToStackValue(dsdict, context, dsi);
         }
 
@@ -465,7 +465,7 @@ namespace ProtoFFI
 
             // If it's possible to assign a builtin Dictionary to the target type, then all we need to do is provide
             // the CLR object.
-            if (expectedCLRType.IsAssignableFrom(typeof(DSCore.Dictionary)))
+            if (expectedCLRType.IsAssignableFrom(typeof(DesignScript.Builtin.Dictionary)))
             {
                 return primitiveMarshaler.GetDictionary(dsObject);
             }
@@ -480,7 +480,7 @@ namespace ProtoFFI
                     .Where(i => i.IsGenericType)
                     .Select(i => i.GetGenericTypeDefinition())
                     .Contains(typeof(IDictionary<,>)) ||
-                expectedCLRType.IsAssignableFrom(typeof(DSCore.Dictionary));
+                expectedCLRType.IsAssignableFrom(typeof(DesignScript.Builtin.Dictionary));
         }
 
         private object ToIDictionary(StackValue dsObject, ProtoCore.Runtime.Context context, Interpreter dsi, System.Type expectedType)
@@ -815,12 +815,12 @@ namespace ProtoFFI
         internal bool IsDictionary(StackValue value)
         {
             object obj;
-            return value.IsPointer && DSObjectMap.TryGetValue(value, out obj) && obj is DSCore.Dictionary;
+            return value.IsPointer && DSObjectMap.TryGetValue(value, out obj) && obj is DesignScript.Builtin.Dictionary;
         }
 
-        internal DSCore.Dictionary GetDictionary(StackValue value)
+        internal DesignScript.Builtin.Dictionary GetDictionary(StackValue value)
         {
-            return DSObjectMap[value] as DSCore.Dictionary;
+            return DSObjectMap[value] as DesignScript.Builtin.Dictionary;
         }
 
         /// <summary>

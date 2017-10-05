@@ -2258,6 +2258,9 @@ namespace ProtoCore.AST.AssociativeAST
             col = token.col;
         }
 
+        private static readonly string DictionaryTypeName = typeof(DesignScript.Builtin.Dictionary).FullName;
+        private static readonly string DictionaryByKeysValuesName = nameof(DesignScript.Builtin.Dictionary.ByKeysValues);
+
         public AssociativeNode ToFunctionCall()
         {
             var keys = new ExprListNode
@@ -2270,7 +2273,7 @@ namespace ProtoCore.AST.AssociativeAST
                 Exprs = this.values
             };
 
-            var f = AstFactory.BuildFunctionCall("DSCore.Dictionary", nameof(DSCore.Dictionary.ByKeysValues),
+            var f = AstFactory.BuildFunctionCall(DictionaryTypeName, DictionaryByKeysValuesName,
                 new List<AssociativeNode>() { keys, values });
             f.col = this.col;
             f.line = this.line;
@@ -2691,7 +2694,8 @@ namespace ProtoCore.AST.AssociativeAST
 
         public static AssociativeNode BuildIndexExpression(AssociativeNode value, AssociativeNode index)
         {
-            return BuildFunctionCall("DSCore.Builtin", "Lookup", new List<AssociativeNode>() { value, index });
+            // For now, we can't import this method into 
+            return BuildFunctionCall("DesignScript.Builtin.Get", "ValueAtIndex", new List<AssociativeNode>() { value, index });
         }
 
         public static InlineConditionalNode BuildConditionalNode(

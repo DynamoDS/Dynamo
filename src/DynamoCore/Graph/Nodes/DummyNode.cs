@@ -365,14 +365,14 @@ namespace Dynamo.Graph.Nodes
         {
             get
             {
-              if (OriginalNodeContent == null)
-                  return null;
+                if (OriginalNodeContent == null)
+                    return null;
 
-              XmlElement originalXmlElement = OriginalNodeContent as XmlElement;
-              if (originalXmlElement == null)
-                  throw new InvalidOperationException("OriginalNodeContent is not an XmlElement.");
+                XmlElement originalXmlElement = OriginalNodeContent as XmlElement;
+                if (originalXmlElement == null)
+                    return null;
 
-              return originalXmlElement;
+                return originalXmlElement;
             }
         }
     }

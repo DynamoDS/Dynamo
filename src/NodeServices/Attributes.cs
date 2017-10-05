@@ -132,7 +132,7 @@ namespace Autodesk.DesignScript.Runtime
     /// collection of single object and at designscript side we want the method
     /// to return a single object instead of a collection of single object.
     /// </summary>
-    [AttributeUsage(AttributeTargets.Method)]
+    [AttributeUsage(AttributeTargets.Method | AttributeTargets.Property)]
     public sealed class AllowRankReductionAttribute : Attribute
     {
         /// <summary>

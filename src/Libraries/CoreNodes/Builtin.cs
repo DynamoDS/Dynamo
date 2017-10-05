@@ -2,25 +2,24 @@
 using System.Collections;
 using Autodesk.DesignScript.Runtime;
 
-namespace DSCore
+namespace DesignScript
 {
-    [IsVisibleInDynamoLibrary(false)]
-    public static class Builtin
+    namespace Builtin
     {
-        // The indexing syntax a["foo"] or b[1] are syntactic sugar for these methods.
-        
-        public static object Lookup(Dictionary dictionary, string key)
+        [IsVisibleInDynamoLibrary(false)]
+        public static class Get
         {
-            if (dictionary == null)
-            {
-                throw new ArgumentNullException("dictionary");
-            }
-            return dictionary.ValueAtKey(key);
-        }
+            // The indexing syntax a["foo"] or b[1] are syntactic sugar for these methods.
 
-        public static object Lookup(IList list, int index)
-        {
-            return List.GetItemAtIndex(list, index);
+            public static object ValueAtIndex(Dictionary dictionary, string key)
+            {
+                return dictionary.ValueAtKey(key);
+            }
+
+            public static object ValueAtIndex(IList list, int index)
+            {
+                return DSCore.List.GetItemAtIndex(list, index);
+            }
         }
     }
 }

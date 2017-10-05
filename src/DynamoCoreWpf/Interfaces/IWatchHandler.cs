@@ -10,7 +10,7 @@ using ProtoCore.Mirror;
 using ProtoCore.Utils;
 using Dynamo.Extensions;
 using Dynamo.Wpf.Properties;
-using DSCore;
+using DesignScript.Builtin;
 
 namespace Dynamo.Interfaces
 {
@@ -52,9 +52,9 @@ namespace Dynamo.Interfaces
 
         private WatchViewModel ProcessThing(object value, ProtoCore.RuntimeCore runtimeCore, string tag, bool showRawData, WatchHandlerCallback callback)
         {
-            if (value is DSCore.Dictionary)
+            if (value is DesignScript.Builtin.Dictionary)
             {
-                var dict = value as DSCore.Dictionary;
+                var dict = value as DesignScript.Builtin.Dictionary;
                 var keys = dict.Keys;
                 var values = dict.Values;
 
@@ -67,7 +67,7 @@ namespace Dynamo.Interfaces
 
                 return node;
             }
-            else if (value is IEnumerable)
+            else if (!(value is string) && value is IEnumerable)
             {
                 var list = (value as IEnumerable).Cast<dynamic>().ToList();
 
@@ -146,9 +146,9 @@ namespace Dynamo.Interfaces
 
                 return node;
             }
-            else if (data.IsPointer && data.Data is DSCore.Dictionary)
+            else if (data.IsPointer && data.Data is DesignScript.Builtin.Dictionary)
             {
-                var dict = data.Data as DSCore.Dictionary;
+                var dict = data.Data as DesignScript.Builtin.Dictionary;
                 var keys = dict.Keys;
                 var values = dict.Values;
 
