@@ -625,7 +625,7 @@ namespace ProtoCore.AST.AssociativeAST
         }
     }
 
-    public class IdentifierListNode : AssociativeNode
+    public class IdentifierListNode : ArrayNameNode
     {
         public bool IsLastSSAIdentListFactor { get; set; }
 
