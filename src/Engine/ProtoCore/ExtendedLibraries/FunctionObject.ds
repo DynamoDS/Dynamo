@@ -10,12 +10,45 @@ def __CreateFunctionObject(
     arguments: var[]..[],
     unpackArgs: bool)
 {
-	return = null;
+    f = { 
+		"__fptr": fptr, 
+		"__pcount" : paramCount, 
+		"__unpack" : unpackArgs
+	};
+
+    hasArgAt[0..paramCount- 1] = false;
+    hasArgAt[paramPositions] = true;
+
+	a = { 
+		"__argflags" : hasArgAt,
+		"__args" : arguments
+	};
+
+    fobj = {
+		"__func" : f,
+		"__arginfo" : a
+	};
+    
+	fo = Function();
+	imp = { "__funcobj" : fobj };
+	fo.imp = imp;
+    return = fo;
 }
 
 def __CreateComposedFunctionObject(fobjs: Function[])
 {
-	return = null;
+    return = [Imperative] {
+        for (fobj in fobjs) {
+            if (fobj.imp["__funcobj"] == null && fobj.imp["__funcobjs"] == null) {
+                return = null;
+            }
+        }
+
+        composedObj = Function();
+		imp = { "__funcobj" : fobj };
+		composedObj.imp = imp;
+        return = composedObj;
+    }
 }
 
 def __GetNextParamPos(hasParamAt: bool[])

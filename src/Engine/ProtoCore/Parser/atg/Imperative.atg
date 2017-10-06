@@ -882,6 +882,14 @@ Imperative_NameReference<out ProtoCore.AST.ImperativeAST.ImperativeNode node>
                                     .)
         )
         |
+		IF(IsDictionaryExpression())
+        (
+            Imperative_DictionaryExpression<out node>
+                                    (.
+                                        nameNode = node as ProtoCore.AST.ImperativeAST.ArrayNameNode;
+                                    .)
+        )
+        |
         (
             Imperative_ExprList<out node>
                                     (.
@@ -964,6 +972,26 @@ Imperative_NameReference<out ProtoCore.AST.ImperativeAST.ImperativeNode node>
                                         node = nameNode;
                                     }
                                 .)
+.
+
+Imperative_DictionaryExpression<out ProtoCore.AST.ImperativeAST.ImperativeNode node>
+=
+'{'                                     (. var dictBuilder = new ProtoCore.AST.ImperativeAST.DictionaryExpressionBuilder(); .)
+                                        (. dictBuilder.SetNodeStartLocation(t); .)
+    [
+        textstring (. dictBuilder.AddKey(t); .)  
+		':'                     
+        Imperative_expr<out node>            (. dictBuilder.AddValue(node); .)
+        {
+            ','
+			textstring (. dictBuilder.AddKey(t); .)  
+			':'                     
+			Imperative_expr<out node>            (. dictBuilder.AddValue(node); .)
+        }
+                                        
+    ]
+'}'                                     (. dictBuilder.SetNodeEndLocation(t); .)
+                                        (. node = dictBuilder.ToFunctionCall(); .)
 .
 
 Imperative_ExprList<out ProtoCore.AST.ImperativeAST.ImperativeNode node>

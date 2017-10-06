@@ -117,6 +117,7 @@
     <Compile Include="Compiler.cs" />
     <Compile Include="CompilerOptions.cs" />
     <Compile Include="MigrationRewriter.cs" />
+    <Compile Include="Parser\DictionaryBuilder.cs" />
     <Compile Include="SyntaxAnalysis\AssociativeAstVisitor.cs" />
     <Compile Include="SyntaxAnalysis\AstVisitor.cs" />
     <Compile Include="SyntaxAnalysis\Interface\Associative.cs" />
