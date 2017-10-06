@@ -899,31 +899,60 @@ Imperative_NameReference<out ProtoCore.AST.ImperativeAST.ImperativeNode node>
     )
 
     [
-                                    (.
-                                        ProtoCore.AST.ImperativeAST.ArrayNode array = new ProtoCore.AST.ImperativeAST.ArrayNode();
-                                    .)
+		(. ProtoCore.AST.ImperativeAST.ArrayNode array = null; .)
         openbracket                  
         [                        
+		                            (. 
+                                        bool tmpIsLeft = isLeft; 
+                                        isLeft = false;
+                                    .)
             Imperative_expr<out node>   
                                     (. 
-                                        array.Expr = node; 
-                                        array.Type = nameNode.ArrayDimensions;
-                                        NodeUtils.SetNodeLocation(array, t);
-                                        nameNode.ArrayDimensions = array; 
+										if (tmpIsLeft) {
+											// if "foo[bar]" is on the lhs, it is interpreted as an array initialization expression
+											array = new ProtoCore.AST.ImperativeAST.ArrayNode
+											{
+												Expr = node,
+												Type = nameNode.ArrayDimensions
+											};
+
+											NodeUtils.SetNodeLocation(array, t);
+											nameNode.ArrayDimensions = array;
+										} else {
+											// if "foo[bar]" is on the rhs, it is interpreted as an lookup in an array or dictionary
+											nameNode = ProtoCore.AST.ImperativeAST.AstFactory.BuildIndexExpression(nameNode, node) as ProtoCore.AST.ImperativeAST.ArrayNameNode;
+										}
+
+										isLeft = tmpIsLeft; 
                                     .)
         ]
         closebracket 
         { 
+		                        (. 
+                                    bool tmpIsLeft = isLeft; 
+                                    isLeft = false;
+                                .) 
             openbracket
             [
-                Imperative_expr<out node>  
-                                (.
-                                    ProtoCore.AST.ImperativeAST.ArrayNode array2 = new ProtoCore.AST.ImperativeAST.ArrayNode();
-                                    array2.Expr = node; 
-                                    array2.Type = null;
-                                    NodeUtils.SetNodeLocation(array2, t);
-                                    array.Type = array2;
-                                    array = array2;
+                Imperative_expr<out node>
+
+				                (. 
+									if (tmpIsLeft) {
+										var array2 = new ProtoCore.AST.ImperativeAST.ArrayNode
+										{
+											Expr = node,
+											Type = nameNode.ArrayDimensions
+										};
+
+										NodeUtils.SetNodeLocation(array2, t);
+										array.Type = array2;
+										array = array2;
+									} else {
+										nameNode = ProtoCore.AST.ImperativeAST.AstFactory.BuildIndexExpression(nameNode, node) as ProtoCore.AST.ImperativeAST.ArrayNameNode;
+									}
+
+									// TODO(pboyer) this looks incorrect, probably wrong in associative code, too
+									isLeft = tmpIsLeft; 
                                 .)
             ]
             closebracket

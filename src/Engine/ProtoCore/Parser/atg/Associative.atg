@@ -1632,6 +1632,9 @@ Associative_NameReference<out ProtoCore.AST.AssociativeAST.AssociativeNode node>
     )
 
     [
+										(. 
+											ProtoCore.AST.AssociativeAST.ArrayNode array = null;
+										.)
         openbracket             
         [
                                         (. 
@@ -1642,7 +1645,7 @@ Associative_NameReference<out ProtoCore.AST.AssociativeAST.AssociativeNode node>
                                         (. 
 											if (tmpIsLeft) {
 												// if "foo[bar]" is on the lhs, it is interpreted as an array initialization expression
-												var array = new ProtoCore.AST.AssociativeAST.ArrayNode
+												array = new ProtoCore.AST.AssociativeAST.ArrayNode
 												{
 													Expr = node,
 													Type = nameNode.ArrayDimensions
@@ -1666,17 +1669,18 @@ Associative_NameReference<out ProtoCore.AST.AssociativeAST.AssociativeNode node>
                                             bool tmpIsLeft = isLeft; 
                                             isLeft = false;
                                         .) 
-                Associative_Expression<out node>  
-                                        (. 
+                Associative_Expression<out node>
+                                        (.
 											if (tmpIsLeft) {
-												var array = new ProtoCore.AST.AssociativeAST.ArrayNode
+												var array2 = new ProtoCore.AST.AssociativeAST.ArrayNode
 												{
 													Expr = node,
-													Type = nameNode.ArrayDimensions
+													Type = null
 												};
 
-												NodeUtils.SetNodeLocation(array, t);
-												nameNode.ArrayDimensions = array;
+												NodeUtils.SetNodeLocation(array2, t);
+												array.Type = array2;
+												array = array2;
 											} else {
 												nameNode = AstFactory.BuildIndexExpression(nameNode, node) as ArrayNameNode;
 											}

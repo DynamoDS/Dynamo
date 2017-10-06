@@ -128,5 +128,4 @@ namespace ProtoCore.AST
             }
         }
     }
-
 }

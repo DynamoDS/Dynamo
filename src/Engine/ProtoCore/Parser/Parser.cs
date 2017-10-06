@@ -2368,6 +2368,8 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 			
 		} else SynErr(94);
 		if (la.kind == 10) {
+			ProtoCore.AST.AssociativeAST.ArrayNode array = null;
+			
 			Get();
 			if (StartOf(4)) {
 				bool tmpIsLeft = isLeft; 
@@ -2376,7 +2378,7 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 				Associative_Expression(out node);
 				if (tmpIsLeft) {
 				// if "foo[bar]" is on the lhs, it is interpreted as an array initialization expression
-				var array = new ProtoCore.AST.AssociativeAST.ArrayNode
+				array = new ProtoCore.AST.AssociativeAST.ArrayNode
 				{
 					Expr = node,
 					Type = nameNode.ArrayDimensions
@@ -2401,14 +2403,15 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 					
 					Associative_Expression(out node);
 					if (tmpIsLeft) {
-					var array = new ProtoCore.AST.AssociativeAST.ArrayNode
+					var array2 = new ProtoCore.AST.AssociativeAST.ArrayNode
 					{
 						Expr = node,
-						Type = nameNode.ArrayDimensions
+						Type = null
 					};
 					
-					NodeUtils.SetNodeLocation(array, t);
-					nameNode.ArrayDimensions = array;
+					NodeUtils.SetNodeLocation(array2, t);
+					array.Type = array2;
+					array = array2;
 					} else {
 					nameNode = AstFactory.BuildIndexExpression(nameNode, node) as ArrayNameNode;
 					}
@@ -3156,29 +3159,56 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 			
 		} else SynErr(109);
 		if (la.kind == 10) {
-			ProtoCore.AST.ImperativeAST.ArrayNode array = new ProtoCore.AST.ImperativeAST.ArrayNode();
-			
+			ProtoCore.AST.ImperativeAST.ArrayNode array = null; 
 			Get();
 			if (StartOf(4)) {
-				Imperative_expr(out node);
-				array.Expr = node; 
-				array.Type = nameNode.ArrayDimensions;
-				NodeUtils.SetNodeLocation(array, t);
-				nameNode.ArrayDimensions = array; 
+				bool tmpIsLeft = isLeft; 
+				isLeft = false;
 				
+				Imperative_expr(out node);
+				if (tmpIsLeft) {
+				// if "foo[bar]" is on the lhs, it is interpreted as an array initialization expression
+				array = new ProtoCore.AST.ImperativeAST.ArrayNode
+				{
+					Expr = node,
+					Type = nameNode.ArrayDimensions
+				};
+				
+				NodeUtils.SetNodeLocation(array, t);
+				nameNode.ArrayDimensions = array;
+				} else {
+				// if "foo[bar]" is on the rhs, it is interpreted as an lookup in an array or dictionary
+				nameNode = ProtoCore.AST.ImperativeAST.AstFactory.BuildIndexExpression(nameNode, node) as ProtoCore.AST.ImperativeAST.ArrayNameNode;
+				}
+				
+				isLeft = tmpIsLeft; 
+				                         
 			}
 			Expect(11);
 			while (la.kind == 10) {
+				bool tmpIsLeft = isLeft; 
+				isLeft = false;
+				
 				Get();
 				if (StartOf(4)) {
 					Imperative_expr(out node);
-					ProtoCore.AST.ImperativeAST.ArrayNode array2 = new ProtoCore.AST.ImperativeAST.ArrayNode();
-					array2.Expr = node; 
-					array2.Type = null;
+					if (tmpIsLeft) {
+					var array2 = new ProtoCore.AST.ImperativeAST.ArrayNode
+					{
+						Expr = node,
+						Type = nameNode.ArrayDimensions
+					};
+					
 					NodeUtils.SetNodeLocation(array2, t);
 					array.Type = array2;
 					array = array2;
+					} else {
+					nameNode = ProtoCore.AST.ImperativeAST.AstFactory.BuildIndexExpression(nameNode, node) as ProtoCore.AST.ImperativeAST.ArrayNameNode;
+					}
 					
+					// TODO(pboyer) this looks incorrect, probably wrong in associative code, too
+					isLeft = tmpIsLeft; 
+					                      
 				}
 				Expect(11);
 			}

@@ -1768,4 +1768,28 @@ namespace ProtoCore.AST.ImperativeAST
             return visitor.VisitContinueNode(this);
         }
     }
+
+    static class AstFactory
+    {
+        public static ImperativeNode BuildIndexExpression(ImperativeNode value, ImperativeNode index)
+        {
+            // It would be preferrable to use compile time affordances like typeof and nameof here to help with refactoring
+            // This method unfortunately is defined in CoreNodes.dll and can't be referenced by this assembly. 
+            return BuildFunctionCall("DesignScript.Builtin.Get", "ValueAtIndex", new List<ImperativeNode>() { value, index });
+        }
+
+        public static ImperativeNode BuildFunctionCall(string className, string functionName, List<ImperativeNode> args)
+        {
+            return new IdentifierListNode
+            {
+                LeftNode = new IdentifierNode(className),
+                Optr = Operator.dot,
+                RightNode = new FunctionCallNode
+                {
+                    Function = new IdentifierNode(functionName),
+                    FormalArguments = args
+                }
+            };
+        }
+    }
 }
