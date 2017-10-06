@@ -3146,6 +3146,10 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 			Imperative_Ident(out node);
 			nameNode = node as ProtoCore.AST.ImperativeAST.ArrayNameNode;
 			
+		} else if (IsDictionaryExpression()) {
+			Imperative_DictionaryExpression(out node);
+			nameNode = node as ProtoCore.AST.ImperativeAST.ArrayNameNode;
+			
 		} else if (la.kind == 46) {
 			Imperative_ExprList(out node);
 			nameNode = node as ProtoCore.AST.ImperativeAST.ArrayNameNode;
@@ -3629,6 +3633,30 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 		NodeUtils.SetNodeEndLocation(funcNode, t);
 		node = funcNode; 
 		
+	}
+
+	void Imperative_DictionaryExpression(out ProtoCore.AST.ImperativeAST.ImperativeNode node) {
+		Expect(46);
+		var dictBuilder = new ProtoCore.AST.ImperativeAST.DictionaryExpressionBuilder(); 
+		dictBuilder.SetNodeStartLocation(t); 
+		if (la.kind == 4) {
+			Get();
+			dictBuilder.AddKey(t); 
+			Expect(48);
+			Imperative_expr(out node);
+			dictBuilder.AddValue(node); 
+			while (la.kind == 52) {
+				Get();
+				Expect(4);
+				dictBuilder.AddKey(t); 
+				Expect(48);
+				Imperative_expr(out node);
+				dictBuilder.AddValue(node); 
+			}
+		}
+		Expect(47);
+		dictBuilder.SetNodeEndLocation(t); 
+		node = dictBuilder.ToFunctionCall(); 
 	}
 
 	void Imperative_ExprList(out ProtoCore.AST.ImperativeAST.ImperativeNode node) {

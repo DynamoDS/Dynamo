@@ -1661,7 +1661,7 @@ namespace ProtoCore.AST.ImperativeAST
         }
     }
 
-    public class IdentifierListNode : ImperativeNode
+    public class IdentifierListNode : ArrayNameNode
     {
         public ImperativeNode LeftNode { get; set; }
         public Operator Optr { get; set; }
