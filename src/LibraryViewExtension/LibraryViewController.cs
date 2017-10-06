@@ -107,7 +107,8 @@ namespace Dynamo.LibraryUI
         //if the window is resized toggle visibility of browser to force redraw
         private void DynamoWindow_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            this.browser.InvalidateVisual();
+            this.browser.Visibility = Visibility.Hidden;
+            this.browser.Visibility = Visibility.Visible;
         }
 
         //if the dynamo window is minimized and then restored, force a layout update.
@@ -115,7 +116,8 @@ namespace Dynamo.LibraryUI
         {
             if (this.dynamoWindow.WindowState == WindowState.Normal)
             {
-                this.browser.InvalidateVisual();
+                this.browser.Visibility = Visibility.Hidden;
+                this.browser.Visibility = Visibility.Visible;
             }
         }
 
@@ -168,13 +170,15 @@ namespace Dynamo.LibraryUI
 
         private void Browser_LoadError(object sender, LoadErrorEventArgs e)
         {
-            throw new Exception(e.ErrorText);
+            System.Diagnostics.Trace.WriteLine("*****Chromium Browser Messages******");
+            System.Diagnostics.Trace.Write(e.ErrorText);
         }
 
         //if the browser window itself is resized, toggle visibility to force redraw.
         private void Browser_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            this.browser.InvalidateVisual();
+            this.browser.Visibility = Visibility.Hidden;
+            this.browser.Visibility = Visibility.Visible;
         }
 
         #region Tooltip
@@ -406,6 +410,8 @@ namespace Dynamo.LibraryUI
             if (this.browser != null)
             {
                 browser.SizeChanged -= Browser_SizeChanged;
+                browser.LoadError -= Browser_LoadError;
+                browser.Dispose();
                 browser = null;
             }
         }
