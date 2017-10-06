@@ -3,7 +3,6 @@ using System.Linq;
 using Dynamo.Graph.Annotations;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Notes;
-using Dynamo.Nodes;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Newtonsoft.Json;
@@ -13,11 +12,74 @@ using Type = System.Type;
 namespace Dynamo.Wpf.ViewModels.Core.Converters
 {
     /// <summary>
-    /// The AnnotationConverter is used to serialize and deserialize AnnotationModels.
-    /// The SelectedModels property on AnnotationModel is a list of references
-    /// to ModelBase objects. During serialization we want to refer to these objects
-    /// by their ids. During deserialization, we use the ReferenceResolver to
-    /// find the correct ModelBase instances to reference.
+    /// WorkspaceWriteConverter is used for serializing Workspaces to JSON.
+    /// </summary>
+    public class WorkspaceViewWriteConverter : JsonConverter
+    {
+        public override bool CanConvert(Type objectType)
+        {
+            return typeof(WorkspaceViewModel).IsAssignableFrom(objectType);
+        }
+
+        public override bool CanRead
+        {
+            get { return false; }
+        }
+
+        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+        {
+            var workspaceView = (WorkspaceViewModel)value;
+
+            writer.WriteStartObject();
+
+            writer.WritePropertyName("Dynamo");
+            serializer.Serialize(writer, workspaceView.DynamoPreferences);
+
+            writer.WritePropertyName("Camera");
+            serializer.Serialize(writer, workspaceView.Camera);
+
+            writer.WritePropertyName("NodeViews");
+            writer.WriteStartArray();
+            foreach (var nodeView in workspaceView.Nodes)
+                serializer.Serialize(writer, nodeView);
+            writer.WriteEndArray();
+
+            writer.WritePropertyName("Annotations");
+            writer.WriteStartArray();
+            foreach (var annotation in workspaceView.Annotations)
+                serializer.Serialize(writer, annotation);
+            foreach (var note in workspaceView.Notes)
+            {
+                AnnotationModel convertedNote = new AnnotationModel(new NodeModel[0], new NoteModel[0]);
+                convertedNote.GUID = note.Model.GUID;
+                convertedNote.X = note.Left;
+                convertedNote.Y = note.Top;
+                convertedNote.AnnotationText = note.Text;
+
+                serializer.Serialize(writer, new AnnotationViewModel(workspaceView, convertedNote));
+            }
+            writer.WriteEndArray();
+
+            writer.WritePropertyName("X");
+            writer.WriteValue(workspaceView.X);
+
+            writer.WritePropertyName("Y");
+            writer.WriteValue(workspaceView.Y);
+
+            writer.WritePropertyName("Zoom");
+            writer.WriteValue(workspaceView.Zoom);
+
+            writer.WriteEndObject();
+        }
+
+        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    /// <summary>
+    /// The AnnotationViewModelConverter is used to serialize AnnotationViewModels.
     /// </summary>
     public class AnnotationViewModelConverter : JsonConverter
     {
@@ -28,45 +90,13 @@ namespace Dynamo.Wpf.ViewModels.Core.Converters
 
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
-            var obj = JObject.Load(reader);
-            var title = obj["Title"].Value<string>();
-            //if the id is not a guid, makes a guid based on the id of the model
-            Guid annotationId = GuidUtility.tryParseOrCreateGuid(obj["Id"].Value<string>());
-
-            // This is a string id, which
-            // should be accessible in the ReferenceResolver.
-            var models = obj["Nodes"].Values<JValue>();
-
-            var existing = models.Select(m =>
-            {
-                Guid modelId = GuidUtility.tryParseOrCreateGuid(m.Value<string>());
-
-                return serializer.ReferenceResolver.ResolveReference(serializer.Context, modelId.ToString());
-            });
-
-            var nodes = existing.Where(m => typeof(NodeModel).IsAssignableFrom(m.GetType())).Cast<NodeModel>();
-            var notes = existing.Where(m => typeof(NoteModel).IsAssignableFrom(m.GetType())).Cast<NoteModel>();
-
-            var anno = new AnnotationModel(nodes, notes);
-            anno.AnnotationText = title;
-            anno.GUID = annotationId;
-            anno.X = obj["Left"].Value<double>();
-            anno.Y = obj["Top"].Value<double>();
-            anno.Width = obj["Width"].Value<double>();
-            anno.Height = obj["Height"].Value<double>();
-            anno.FontSize = obj["FontSize"].Value<double>();
-            anno.InitialTop = obj["InitialTop"].Value<double>();
-            anno.InitialHeight = obj["InitialHeight"].Value<double>();
-            anno.TextBlockHeight = obj["TextblockHeight"].Value<double>();
-            anno.Background = obj["Background"].Value<string>();
-            return anno;
+            throw new NotImplementedException();
         }
 
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
             var annoVM = (AnnotationViewModel)value;
             var anno = annoVM.AnnotationModel;
-
 
             writer.WriteStartObject();
 
@@ -99,41 +129,6 @@ namespace Dynamo.Wpf.ViewModels.Core.Converters
             writer.WriteValue(anno.TextBlockHeight);
             writer.WritePropertyName("Background");
             writer.WriteValue(anno.Background != null ? anno.Background : "");
-            writer.WriteEndObject();
-        }
-    }
-
-    /// <summary>
-    /// Serialize NoteViewModel.
-    /// </summary>
-    public class NoteViewModelConverter : JsonConverter
-    {
-        public override bool CanConvert(Type objectType)
-        {
-            return objectType == typeof(NoteViewModel);
-        }
-
-        public override object ReadJson(JsonReader reader, Type objectType, object existingValue,
-            JsonSerializer serializer)
-        {
-            throw new NotImplementedException();
-        }
-
-        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
-        {
-            var noteViewModel = (NoteViewModel)value;
-            var notes = noteViewModel.Model;
-
-            // For each noteViewModel, start a new object
-            writer.WriteStartObject();
-            writer.WritePropertyName("Id");
-            writer.WriteValue(notes.GUID.ToString("N"));
-            writer.WritePropertyName("X");
-            writer.WriteValue(notes.X);
-            writer.WritePropertyName("Y");
-            writer.WriteValue(notes.Y);
-            writer.WritePropertyName("Text");
-            writer.WriteValue(notes.Text);
             writer.WriteEndObject();
         }
     }

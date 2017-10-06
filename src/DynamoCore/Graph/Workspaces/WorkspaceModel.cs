@@ -54,7 +54,6 @@ namespace Dynamo.Graph.Workspaces
         public double X;
         public double Y;
         public bool ShowGeometry;
-        public bool IsUpstreamVisible;
         public bool Excluded;
     }
 
@@ -79,11 +78,11 @@ namespace Dynamo.Graph.Workspaces
     /// </summary>
     public class ExtraAnnotationViewInfo
     {
-      public string Title;
-      public IEnumerable<string> Nodes;
-      public double FontSize;
-      public string Background;
-      public string Id;
+        public string Title;
+        public IEnumerable<string> Nodes;
+        public double FontSize;
+        public string Background;
+        public string Id;
 
         // TODO, Determine if these are required
         public double Left;
@@ -463,7 +462,7 @@ namespace Dynamo.Graph.Workspaces
                 {
                     foreach (var node in this.Nodes.OfType<Function>())
                     {
-                        dependencies.Add(node.FunctionUuid);
+                        dependencies.Add(node.FunctionSignature);
                     }
                 }
                 //else the workspace is a customnode - and we can add the dependencies directly
@@ -1606,7 +1605,37 @@ namespace Dynamo.Graph.Workspaces
                 this,
                 new PointEventArgs(new Point2D(X, Y)));
 
-            foreach (ExtraNodeViewInfo nodeViewInfo in workspaceViewInfo.NodeViews)
+            // This function loads standard nodes
+            LoadNodes(workspaceViewInfo.NodeViews);
+
+            // This function loads notes from the Notes array in the JSON format
+            // NOTE: This is here to support early JSON graphs
+            // IMPORTANT: All notes must be loaded before annotations are loaded to
+            //            ensure that any contained notes are contained properly
+            LoadLegacyNotes(workspaceViewInfo.Notes);
+
+            // This function loads notes from the Annotations array in the JSON format
+            // that have an empty nodes collection
+            // IMPORTANT: All notes must be loaded before annotations are loaded to
+            //            ensure that any contained notes are contained properly
+            LoadNotesFromAnnotations(workspaceViewInfo.Annotations);
+
+            // This function loads annotations from the Annotations array in the JSON format
+            // that have a non-empty nodes collection
+            LoadAnnotations(workspaceViewInfo.Annotations);
+
+            // TODO, QNTM-1099: These items are not in the extra view info
+            // Name = info.Name;
+            // Description = info.Description;
+            // FileName = info.FileName;
+        }
+
+        private void LoadNodes(IEnumerable<ExtraNodeViewInfo> nodeViews)
+        {
+            if (nodeViews == null)
+              return;
+
+            foreach (ExtraNodeViewInfo nodeViewInfo in nodeViews)
             {
                 var guidValue = IdToGuidConverter(nodeViewInfo.Id);
                 var nodeModel = Nodes.FirstOrDefault(node => node.GUID == guidValue);
@@ -1614,17 +1643,24 @@ namespace Dynamo.Graph.Workspaces
                 {
                     nodeModel.X = nodeViewInfo.X;
                     nodeModel.Y = nodeViewInfo.Y;
-                    nodeModel.Name = nodeViewInfo.Name;
                     nodeModel.IsFrozen = nodeViewInfo.Excluded;
 
-                    // Note: These parameters are not directly accessible due to undo/redo considerations
+                    // NOTE: The name needs to be set using UpdateValue to cause the view to update
+                    nodeModel.UpdateValue(new UpdateValueParams("Name", nodeViewInfo.Name));
+
+                    // NOTE: These parameters are not directly accessible due to undo/redo considerations
                     //       which should not be used during deserialization (see "ArgumentLacing" for details)
                     nodeModel.UpdateValue(new UpdateValueParams("IsVisible", nodeViewInfo.ShowGeometry.ToString()));
-                    nodeModel.UpdateValue(new UpdateValueParams("IsUpstreamVisible", nodeViewInfo.IsUpstreamVisible.ToString()));
                 }
             }
+        }
 
-            foreach (ExtraNoteViewInfo noteViewInfo in workspaceViewInfo.Notes)
+        private void LoadLegacyNotes(IEnumerable<ExtraNoteViewInfo> noteViews)
+        {
+            if (noteViews == null)
+              return;
+
+            foreach (ExtraNoteViewInfo noteViewInfo in noteViews)
             {
                 var guidValue = IdToGuidConverter(noteViewInfo.Id);
 
@@ -1632,57 +1668,90 @@ namespace Dynamo.Graph.Workspaces
                 var noteModel = new NoteModel(noteViewInfo.X, noteViewInfo.Y, noteViewInfo.Text, guidValue);
                 this.AddNote(noteModel);
             }
+        }
 
-            foreach (ExtraAnnotationViewInfo annotationViewInfo in workspaceViewInfo.Annotations)
+        private void LoadNotesFromAnnotations(IEnumerable<ExtraAnnotationViewInfo> annotationViews)
+        {
+            if (annotationViews == null)
+              return;
+
+            foreach (ExtraAnnotationViewInfo annotationViewInfo in annotationViews)
             {
-                
+                if (annotationViewInfo.Nodes == null)
+                    continue;
+
+                // If count is not zero, this is an annotation, not a note
+                if (annotationViewInfo.Nodes.Count() != 0)
+                    continue;
+
+                var annotationGuidValue = IdToGuidConverter(annotationViewInfo.Id);
+                var text = annotationViewInfo.Title;
+
+                var noteModel = new NoteModel(
+                    annotationViewInfo.Left, 
+                    annotationViewInfo.Top, 
+                    text, 
+                    annotationGuidValue);
+                this.AddNote(noteModel);
+            }
+        }
+
+        private void LoadAnnotations(IEnumerable<ExtraAnnotationViewInfo> annotationViews)
+        {
+            if (annotationViews == null)
+              return;
+
+            foreach (ExtraAnnotationViewInfo annotationViewInfo in annotationViews)
+            {
+                if (annotationViewInfo.Nodes == null)
+                    continue;
+
+                // If count is zero, this is a note, not an annotation
+                if (annotationViewInfo.Nodes.Count() == 0)
+                    continue;
+
+                var annotationGuidValue = IdToGuidConverter(annotationViewInfo.Id);
+                var text = annotationViewInfo.Title;
 
                 // Create a collection of nodes in the given annotation
                 var nodes = new List<NodeModel>();
                 foreach (string nodeId in annotationViewInfo.Nodes)
                 {
-                  var guidValue = IdToGuidConverter(nodeId);
-                  if (guidValue == null)
-                    continue;
+                    var guidValue = IdToGuidConverter(nodeId);
+                    if (guidValue == null)
+                      continue;
 
-                  // NOTE: Some nodes may be annotations and not be found here
-                  var nodeModel = Nodes.FirstOrDefault(node => node.GUID == guidValue);
-                  if (nodeModel == null)
-                    continue;
+                    // NOTE: Some nodes may be annotations and not be found here
+                    var nodeModel = Nodes.FirstOrDefault(node => node.GUID == guidValue);
+                    if (nodeModel == null)
+                      continue;
 
-                  nodes.Add(nodeModel);
+                    nodes.Add(nodeModel);
                 }
 
                 // Create a collection of notes in the given annotation
                 var notes = new List<NoteModel>();
                 foreach (string noteId in annotationViewInfo.Nodes)
                 {
-                  var guidValue = IdToGuidConverter(noteId);
-                  if (guidValue == null)
-                    continue;
+                    var guidValue = IdToGuidConverter(noteId);
+                    if (guidValue == null)
+                      continue;
 
-                  // NOTE: Some nodes may not be annotations and not be found here
-                  var noteModel = Notes.FirstOrDefault(note => note.GUID == guidValue);
-                  if (noteModel == null)
-                    continue;
+                    // NOTE: Some nodes may not be annotations and not be found here
+                    var noteModel = Notes.FirstOrDefault(note => note.GUID == guidValue);
+                    if (noteModel == null)
+                      continue;
 
-                  notes.Add(noteModel);
+                    notes.Add(noteModel);
                 }
 
-                var annotationGuidValue = IdToGuidConverter(annotationViewInfo.Id);
                 var annotationModel = new AnnotationModel(nodes, notes);
-                annotationModel.AnnotationText = annotationViewInfo.Title;
+                annotationModel.AnnotationText = text;
                 annotationModel.FontSize = annotationViewInfo.FontSize;
                 annotationModel.Background = annotationViewInfo.Background;
                 annotationModel.GUID = annotationGuidValue;
-
                 this.AddNewAnnotation(annotationModel);
             }
-
-            // TODO, QNTM-1099: These items are not in the extra view info
-            // Name = info.Name;
-            // Description = info.Description;
-            // FileName = info.FileName;
         }
 
         private Guid IdToGuidConverter(string id)

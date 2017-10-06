@@ -5937,6 +5937,12 @@
             </summary>
             <search>bounds</search>
         </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Geometry.ToSolidDef">
+            <summary>
+            Convert geometry to Solid Def json
+            </summary>
+            <returns>Json formatted string</returns>
+        </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.ImportFromSAT(System.IO.FileInfo)">
             <summary>
             Imports a SAT file and returns an array of imported geometries
@@ -5950,6 +5956,13 @@
             </summary>
             <param name="filePath">Path to the SAT file</param>
             <returns>List of imported geometries</returns>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Geometry.FromSolidDef(System.String)">
+            <summary>
+            Imports a JSON string and returns an array of imported geometries
+            </summary>
+            <param name="solidDefJson">Json string containg solid def formated geometry</param>
+            <returns>List of converted geometries</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.ExportToSAT(System.String)">
             <summary>

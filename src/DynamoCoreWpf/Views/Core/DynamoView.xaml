@@ -418,29 +418,6 @@
                                   InputGestureText="Ctrl + V" />
                         <Separator />
 
-                       
-                        <MenuItem Header="{x:Static p:Resources.DynamoViewEditMenuPresetsMenu}"
-                              Name = "PresetsMenu"
-                              Focusable= "False"
-                              IsEnabled="True">
-                            <MenuItem Header="{x:Static p:Resources.DynamoViewEditMenuCreatePreset}"
-                                      Command="{Binding ShowNewPresetsDialogCommand}"
-                                      Name="newPreset"
-                                      Focusable="False"
-                                      InputGestureText="Ctrl + T"/>
-                            <MenuItem Header="{x:Static p:Resources.DynamoViewEditMenuRestorePreset}"
-                                      MouseEnter="LoadPresetsMenus"
-                                      Name="RestorePresetMenu"
-                                      ItemContainerStyle="{StaticResource SubMenuItemOverride}"
-                                      Focusable="False" IsEnabled="{Binding EnablePresetOptions}" />
-                            <MenuItem Header="{x:Static p:Resources.DynamoViewEditMenuDeletePreset}"
-                                      MouseEnter="LoadPresetsMenus"
-                                      Name="DeletePresetMenu"
-                                      ItemContainerStyle="{StaticResource SubMenuItemOverride}"
-                                      Focusable="False" IsEnabled="{Binding EnablePresetOptions}" />                                                          
-                        </MenuItem>
-                        <Separator />
-                        
                         <MenuItem Focusable="False"
                                   Header="{x:Static p:Resources.DynamoViewEditMenuCreateNote}"
                                   Command="{Binding AddNoteCommand}"

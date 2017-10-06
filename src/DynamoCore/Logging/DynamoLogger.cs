@@ -79,6 +79,7 @@ namespace Dynamo.Logging
 
         /// <summary>
         /// event that is raised when a notification is logged
+        /// </summary>
         public event Action<NotificationMessage> NotificationLogged;
 
         /// <summary>

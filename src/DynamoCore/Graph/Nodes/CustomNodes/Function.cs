@@ -54,11 +54,42 @@ namespace Dynamo.Graph.Nodes.CustomNodes
         }
 
         /// <summary>
+        /// Initializes ports with default information when the function is unresolved.
+        /// </summary>
+        /// <param name="inputs">The input nodes for tis function node.</param>
+        /// <param name="outputs">The output nodes for tis function node.</param>
+        public void UpdatePortsForUnresolved(PortModel[] inputs, PortModel[] outputs)
+        {
+            InPorts.Clear();
+            for (int input = 0; input < inputs.Length; input++)
+                InPorts.Add(new PortModel(PortType.Input, this, new PortData(inputs[input].Name, inputs[input].ToolTip)));
+
+            OutPorts.Clear();
+            for (int output = 0; output < outputs.Length; output++)
+                OutPorts.Add(new PortModel(PortType.Output, this, new PortData(outputs[output].Name, outputs[output].ToolTip)));
+
+            RegisterAllPorts();
+        }
+
+        /// <summary>
         /// The unique id of the underlying function.
         /// </summary>
-        public Guid FunctionUuid
+        public Guid FunctionSignature
         {
             get { return Definition.FunctionId; }
+        }
+
+        /// <summary>
+        /// It indicates which of the three types of function calls this node represents, 
+        /// a call to an external graph, a call to a function with a vararg argument, 
+        /// or a standard function.
+        /// </summary>
+        public string FunctionType
+        {
+            get
+            {
+                return "Graph";
+            }
         }
 
         /// <summary>
@@ -68,7 +99,7 @@ namespace Dynamo.Graph.Nodes.CustomNodes
         {
             get
             {
-                return "CustomFunctionNode";
+                return "FunctionNode";
             }
         }
 

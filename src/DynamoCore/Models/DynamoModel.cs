@@ -96,7 +96,7 @@ namespace Dynamo.Models
     {
         /// <summary>
         /// A controller to coordinate the interactions between some DesignScript
-        /// sub components like library managment, live runner and so on.
+        /// sub components like library management, live runner and so on.
         /// </summary>
         EngineController EngineController { get; }
     }
@@ -141,6 +141,18 @@ namespace Dynamo.Models
             if (WorkspaceSaved != null)
             {
                 WorkspaceSaved(workspace);
+            }
+        }
+
+        /// <summary>
+        /// Occurs when a workspace is scheduled to be saved to a backup file.
+        /// </summary>
+        public event Action<string, bool> RequestWorkspaceBackUpSave;
+        internal void OnRequestWorkspaceBackUpSave(string path, bool isBackUp)
+        {
+            if (RequestWorkspaceBackUpSave != null)
+            {
+                RequestWorkspaceBackUpSave(path, isBackUp);
             }
         }
 
@@ -1387,6 +1399,10 @@ namespace Dynamo.Models
                         if (OpenJsonFile(filePath, fileContents, dynamoPreferences, out ws))
                         {
                             OpenWorkspace(ws);
+                            //Raise an event to deserialize the view parameters before
+                            //setting the graph to run
+                            OnComputeModelDeSerialized();
+ 
                             SetPeriodicEvaluation(ws);
                         }
                     }
@@ -1415,6 +1431,16 @@ namespace Dynamo.Models
                 var xmlDoc = new XmlDocument();
                 xmlDoc.Load(filePath);
 
+                //save the file before it is migrated to JSON.
+                //if in test mode, don't save the file in backup
+                if (!IsTestMode)
+                {
+                    if (!pathManager.BackupXMLFile(xmlDoc, filePath))
+                    {
+                        Logger.Log("File is not saved in the backup folder {0}: ", pathManager.BackupDirectory);
+                    }
+                }
+              
                 WorkspaceInfo workspaceInfo;
                 if (WorkspaceInfo.FromXmlDocument(xmlDoc, filePath, IsTestMode, forceManualExecutionMode, Logger, out workspaceInfo))
                 {
@@ -1628,11 +1654,7 @@ namespace Dynamo.Models
                     }
 
                     var savePath = pathManager.GetBackupFilePath(workspace);
-                    var oldFileName = workspace.FileName;
-                    var oldName = workspace.Name;
-                    workspace.Save(savePath, true, EngineController);
-                    workspace.FileName = oldFileName;
-                    workspace.Name = oldName;
+                    OnRequestWorkspaceBackUpSave(savePath, true);
                     backupFilesDict[workspace.Guid] = savePath;
                     Logger.Log("Backup file is saved: " + savePath);
                 }
