@@ -85,6 +85,7 @@ namespace Dynamo.LibraryUI
         private FloatingLibraryTooltipPopup libraryViewTooltip;
         private ResourceHandlerFactory resourceFactory;
         private IDisposable observer;
+        private ChromiumWebBrowser browser;
 
         /// <summary>
         /// Creates LibraryViewController
@@ -99,7 +100,26 @@ namespace Dynamo.LibraryUI
 
             this.commandExecutive = commandExecutive;
             InitializeResourceStreams(dynamoViewModel.Model, customization);
+            dynamoWindow.StateChanged += Owner_StateChanged;
+            dynamoWindow.SizeChanged += DynamoWindow_SizeChanged;
         }
+
+        private void DynamoWindow_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            this.browser.Visibility = Visibility.Hidden;
+            this.browser.Visibility = Visibility.Visible;
+        }
+
+        //if the window is minimized and then restored, force a layout update.
+        private void Owner_StateChanged(object sender, EventArgs e)
+        {
+           if (this.dynamoWindow.WindowState == WindowState.Normal)
+            {
+                this.browser.Visibility = Visibility.Hidden;
+                this.browser.Visibility = Visibility.Visible;
+            }
+        }
+
 
         /// <summary>
         /// Call this method to create a new node in Dynamo canvas.
@@ -136,12 +156,20 @@ namespace Dynamo.LibraryUI
             var view = new LibraryView(model);
 
             var browser = view.Browser;
+            this.browser = browser;
             sidebarGrid.Children.Add(view);
             browser.RegisterJsObject("controller", this);
             RegisterResources(browser);
 
             view.Loaded += OnLibraryViewLoaded;
+            browser.SizeChanged += Browser_SizeChanged;
             return view;
+        }
+
+        private void Browser_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            this.browser.Visibility = Visibility.Hidden;
+            this.browser.Visibility = Visibility.Visible;
         }
 
         #region Tooltip
@@ -218,6 +246,7 @@ namespace Dynamo.LibraryUI
 #if DEBUG
             var browser = libraryView.Browser;
             browser.ConsoleMessage += OnBrowserConsoleMessage;
+            browser.LayoutUpdated += Browser_LayoutUpdated;
 #endif
         }
 
