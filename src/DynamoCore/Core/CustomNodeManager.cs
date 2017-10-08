@@ -560,15 +560,23 @@ namespace Dynamo.Core
             {
                 XmlDocument xmlDoc;
                 string jsonDoc;
-                DynamoUtilities.PathHelper.isValidXML(path, out xmlDoc);
-                DynamoUtilities.PathHelper.isValidJson(path, out jsonDoc);
-
-                if (!WorkspaceInfo.FromXmlDocument(xmlDoc, path, isTestMode, false, AsLogger(), out header)
-                && !WorkspaceInfo.FromJsonDocument(jsonDoc, path, isTestMode, false, AsLogger(), out header))
+                if (DynamoUtilities.PathHelper.isValidXML(path, out xmlDoc))
                 {
-                    Log(String.Format(Properties.Resources.FailedToLoadHeader, path));
-                    info = null;
-                    return false;
+                    if (!WorkspaceInfo.FromXmlDocument(xmlDoc, path, isTestMode, false, AsLogger(), out header))
+                    {
+                        Log(String.Format(Properties.Resources.FailedToLoadHeader, path));
+                        info = null;
+                        return false;
+                    }
+                }
+                else if (DynamoUtilities.PathHelper.isValidJson(path, out jsonDoc))
+                {
+                    if (!WorkspaceInfo.FromJsonDocument(jsonDoc, path, isTestMode, false, AsLogger(), out header))
+                    {
+                        Log(String.Format(Properties.Resources.FailedToLoadHeader, path));
+                        info = null;
+                        return false;
+                    }
                 }
                 info = new CustomNodeInfo(
                     Guid.Parse(header.ID),
