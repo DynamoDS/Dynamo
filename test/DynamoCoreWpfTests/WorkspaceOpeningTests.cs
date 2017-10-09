@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using Dynamo.Events;
 using Dynamo.Graph;
 using Dynamo.Graph.Workspaces;
@@ -37,12 +38,13 @@ namespace Dynamo.Tests
             
             // Verify events handlers have been registered
             bool openXmlFired = false;
-            ViewModel.Model.EvaluationCompleted += (sender, e) => openXmlFired = true;
+            EventHandler<EvaluationCompletedEventArgs> testXmlEvent = (sender, e) => openXmlFired = true;
+            ViewModel.Model.EvaluationCompleted += testXmlEvent;
             RunCurrentModel();
             Assert.IsTrue(openXmlFired);
 
             //Unsubscribe
-            ViewModel.Model.EvaluationCompleted -= ViewModel.Model.OnEvaluationCompleted;
+            ViewModel.Model.EvaluationCompleted -= testXmlEvent;
 
             // Save to json in temp location
             string tempPath = Path.Combine(Dynamo.UnitTestBase.TestDirectory, @"core\serialization\serialization_temp.dyn");
@@ -62,7 +64,8 @@ namespace Dynamo.Tests
 
             // Verify events handlers have been registered
             bool openJsonFired = false;
-            ViewModel.Model.EvaluationCompleted += (sender, e) => openJsonFired = true;
+            EventHandler<EvaluationCompletedEventArgs> testJsonEvent = (sender, e) => openJsonFired = true;
+            ViewModel.Model.EvaluationCompleted += testJsonEvent;
             RunCurrentModel();
             Assert.IsTrue(openJsonFired);
 
@@ -74,7 +77,7 @@ namespace Dynamo.Tests
             File.Delete(tempPath);
 
             //Unsubscribe
-            ViewModel.Model.EvaluationCompleted -= ViewModel.Model.OnEvaluationCompleted;
+            ViewModel.Model.EvaluationCompleted -= testJsonEvent;
         }
 
         [Test]
