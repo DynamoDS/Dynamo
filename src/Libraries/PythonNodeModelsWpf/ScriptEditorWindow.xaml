@@ -25,7 +25,7 @@
                 <ColumnDefinition Width="*"></ColumnDefinition>
             </Grid.ColumnDefinitions>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Grid.Column="0">
-                <Button Content="{x:Static p:Resources.PythonScriptEditorTestButton}" Style="{DynamicResource ResourceKey=STextButtonWithShapeIcon}" Name="button3" Click="OnTestClicked" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="2">
+                <Button Content="{x:Static p:Resources.PythonScriptEditorRunButton}" Style="{DynamicResource ResourceKey=STextButtonWithShapeIcon}" Name="button3" Click="OnRunClicked" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="2">
                     <Button.Resources>
                         <Polygon
                             x:Key="Shape"
@@ -38,8 +38,8 @@
                 </Button>
             </StackPanel>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Grid.Column="1">
-                <Button Content="{x:Static p:Resources.PythonScriptEditorAcceptChangesButton}" Style="{DynamicResource ResourceKey=STextButton}" Name="button2" Click="OnAcceptClicked" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="2" Grid.Column="1"/>
-                <Button Content="{x:Static p:Resources.PythonScriptEditorCancelButton}" Style="{DynamicResource ResourceKey=STextButton}" Name="button1" Click="OnCancelClicked" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="2" Grid.Column="1"/>
+                <Button Content="{x:Static p:Resources.PythonScriptEditorSaveChangesButton}" Style="{DynamicResource ResourceKey=STextButton}" Name="button2" Click="OnSaveClicked" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="2" Grid.Column="1"/>
+                <Button Content="{x:Static p:Resources.PythonScriptEditorRevertButton}" Style="{DynamicResource ResourceKey=STextButton}" Name="button1" Click="OnRevertClicked" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="2" Grid.Column="1"/>
             </StackPanel>
         </Grid>
     </Grid>

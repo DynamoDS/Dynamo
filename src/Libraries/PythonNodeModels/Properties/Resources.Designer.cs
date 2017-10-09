@@ -88,24 +88,6 @@ namespace PythonNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Save Changes.
-        /// </summary>
-        public static string PythonScriptEditorAcceptChangesButton {
-            get {
-                return ResourceManager.GetString("PythonScriptEditorAcceptChangesButton", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Revert.
-        /// </summary>
-        public static string PythonScriptEditorCancelButton {
-            get {
-                return ResourceManager.GetString("PythonScriptEditorCancelButton", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Edit Python Script....
         /// </summary>
         public static string PythonScriptEditorCaption {
@@ -151,11 +133,29 @@ namespace PythonNodeModels.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Revert.
+        /// </summary>
+        public static string PythonScriptEditorRevertButton {
+            get {
+                return ResourceManager.GetString("PythonScriptEditorRevertButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Run.
         /// </summary>
-        public static string PythonScriptEditorTestButton {
+        public static string PythonScriptEditorRunButton {
             get {
-                return ResourceManager.GetString("PythonScriptEditorTestButton", resourceCulture);
+                return ResourceManager.GetString("PythonScriptEditorRunButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Save Changes.
+        /// </summary>
+        public static string PythonScriptEditorSaveChangesButton {
+            get {
+                return ResourceManager.GetString("PythonScriptEditorSaveChangesButton", resourceCulture);
             }
         }
         

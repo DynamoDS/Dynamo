@@ -120,13 +120,13 @@ namespace PythonNodeModelsWpf
 
         #region Private Event Handlers
 
-        private void OnAcceptClicked(object sender, RoutedEventArgs e)
+        private void OnSaveClicked(object sender, RoutedEventArgs e)
         {
             UpdateScript(editText.Text);
             this.Close();
         }
 
-        private void OnCancelClicked(object sender, RoutedEventArgs e)
+        private void OnRevertClicked(object sender, RoutedEventArgs e)
         {
             if (nodeWasModified)
             {
@@ -147,7 +147,7 @@ namespace PythonNodeModelsWpf
             nodeModel.OnNodeModified();
         }
 
-        private void OnTestClicked(object sender, RoutedEventArgs e)
+        private void OnRunClicked(object sender, RoutedEventArgs e)
         {
             UpdateScript(editText.Text);
             if (dynamoViewModel.HomeSpace.RunSettings.RunType != RunType.Automatic)

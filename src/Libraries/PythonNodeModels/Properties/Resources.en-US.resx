@@ -127,13 +127,13 @@
     <value>Runs an embedded IronPython script.</value>
     <comment>Description for Python Script</comment>
   </data>
-  <data name="PythonScriptEditorAcceptChangesButton" xml:space="preserve">
+  <data name="PythonScriptEditorSaveChangesButton" xml:space="preserve">
     <value>Save Changes</value>
   </data>
-  <data name="PythonScriptEditorTestButton" xml:space="preserve">
+  <data name="PythonScriptEditorRunButton" xml:space="preserve">
     <value>Run</value>
   </data>
-  <data name="PythonScriptEditorCancelButton" xml:space="preserve">
+  <data name="PythonScriptEditorRevertButton" xml:space="preserve">
     <value>Revert</value>
   </data>
   <data name="PythonScriptEditorCaption" xml:space="preserve">
