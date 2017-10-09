@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using Dynamo.Events;
 using Dynamo.Graph;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
@@ -17,6 +18,63 @@ namespace Dynamo.Tests
             Assert.AreEqual(ws.Name, "Home");
             Assert.AreEqual(ws.X, -3732.93, .1);
             Assert.AreEqual(ws.Y, -827.405442288027 , .1);
+        }
+
+        [Test]
+        public void VerifyRegisteredHomeWorkspace()
+        {
+            // This test verifies the HomeWorkspace was registered with the EvaluationCompleted
+            // and RefreshCompleted events upon deserialization in both xml and json
+
+            // Load an xml test file
+            string dynFilePath = Path.Combine(Dynamo.UnitTestBase.TestDirectory, @"core\serialization\serialization.dyn");
+            string testPath = Path.GetFullPath(dynFilePath);
+            ViewModel.OpenCommand.Execute(testPath);
+
+            // Verify homeWorkspace is not null
+            var homeWorkspace = ViewModel.Model.CurrentWorkspace as HomeWorkspaceModel;
+            Assert.NotNull(homeWorkspace);
+            
+            // Verify events handlers have been registered
+            bool openXmlFired = false;
+            ViewModel.Model.EvaluationCompleted += (sender, e) => openXmlFired = true;
+            RunCurrentModel();
+            Assert.IsTrue(openXmlFired);
+
+            //Unsubscribe
+            ViewModel.Model.EvaluationCompleted -= ViewModel.Model.OnEvaluationCompleted;
+
+            // Save to json in temp location
+            string tempPath = Path.Combine(Dynamo.UnitTestBase.TestDirectory, @"core\serialization\serialization_temp.dyn");
+            ViewModel.SaveAsCommand.Execute(tempPath);
+            
+            // Close workspace
+            Assert.IsTrue(ViewModel.CloseHomeWorkspaceCommand.CanExecute(null));
+            ViewModel.CloseHomeWorkspaceCommand.Execute(null);
+            
+            // Open json temp file
+            testPath = Path.GetFullPath(tempPath);
+            ViewModel.OpenCommand.Execute(testPath);
+
+            // Verify homeWorkspace is not null
+            homeWorkspace = ViewModel.Model.CurrentWorkspace as HomeWorkspaceModel;
+            Assert.NotNull(homeWorkspace);
+
+            // Verify events handlers have been registered
+            bool openJsonFired = false;
+            ViewModel.Model.EvaluationCompleted += (sender, e) => openJsonFired = true;
+            RunCurrentModel();
+            Assert.IsTrue(openJsonFired);
+
+            // Close workspace
+            Assert.IsTrue(ViewModel.CloseHomeWorkspaceCommand.CanExecute(null));
+            ViewModel.CloseHomeWorkspaceCommand.Execute(null);
+
+            // Delete temp file
+            File.Delete(tempPath);
+
+            //Unsubscribe
+            ViewModel.Model.EvaluationCompleted -= ViewModel.Model.OnEvaluationCompleted;
         }
 
         [Test]
@@ -70,6 +128,5 @@ namespace Dynamo.Tests
             ViewModel.Model.OpenFileFromPath(examplePath);
             return ViewModel.Model.CurrentWorkspace;
         }
-
     }
 }
