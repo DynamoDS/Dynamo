@@ -132,14 +132,19 @@ namespace Dynamo.Core
         /// <param name="isTestMode">
         ///     Flag specifying whether or not this should operate in "test mode".
         /// </param>
+        /// <param name="libraryServices">LibraryServices used for code block node initialization.</param>
+        /// <returns>Custom Node Instance</returns>
         public Function CreateCustomNodeInstance(
-            Guid id, string name = null, bool isTestMode = false)
+            Guid id,
+            string name = null,
+            bool isTestMode = false,
+            Engine.LibraryServices libraryServices = null)
         {
             CustomNodeDefinition def = null;
             CustomNodeInfo info = null;
-            TryGetCustomNodeData(id, name, isTestMode, out def, out info);
+            TryGetCustomNodeData(id, name, isTestMode, out def, out info, libraryServices);
 
-            return CreateCustomNodeInstance(id, name, isTestMode, def, info);
+            return CreateCustomNodeInstance(id, name, isTestMode, def, info, libraryServices);
         }
 
         /// <summary>
@@ -164,13 +169,14 @@ namespace Dynamo.Core
             string name,
             bool isTestMode, 
             out CustomNodeDefinition def, 
-            out CustomNodeInfo info)
+            out CustomNodeInfo info,
+            Engine.LibraryServices libraryServices = null)
         {
             def = null;
             info = null;
 
             // Try to get the definition, initializing the custom node if necessary
-            if (TryGetFunctionDefinition(id, isTestMode, out def))
+            if (TryGetFunctionDefinition(id, isTestMode, out def, libraryServices))
             {
                 // Got the definition, proceed as planned.
                 info = NodeInfos[id];
@@ -182,7 +188,7 @@ namespace Dynamo.Core
                 return false;
 
             // Try to get the definition using the function ID, initializing the custom node if necessary
-            if (info != null && TryGetFunctionDefinition(info.FunctionId, isTestMode, out def))
+            if (info != null && TryGetFunctionDefinition(info.FunctionId, isTestMode, out def, libraryServices))
                 return true;
 
             return false;
@@ -205,12 +211,15 @@ namespace Dynamo.Core
         /// <param name="info">
         ///     Custom node information data
         /// </param>
+        /// <param name="libraryServices">LibraryServices used for code block node initialization.</param>
+        /// <returns>Custom Node Instance</returns>
         public Function CreateCustomNodeInstance(
             Guid id, 
             string name,
             bool isTestMode, 
             CustomNodeDefinition def, 
-            CustomNodeInfo info)
+            CustomNodeInfo info,
+            Engine.LibraryServices libraryServices = null)
         {
             if (info == null)
             {
@@ -229,12 +238,17 @@ namespace Dynamo.Core
             if (loadedWorkspaceModels.TryGetValue(id, out workspace))
                 RegisterCustomNodeInstanceForUpdates(node, workspace);
             else
-                RegisterCustomNodeInstanceForLateInitialization(node, id, name, isTestMode);
+                RegisterCustomNodeInstanceForLateInitialization(node, id, name, isTestMode, libraryServices);
 
             return node;
         }
 
-        private void RegisterCustomNodeInstanceForLateInitialization(Function node, Guid id, string name, bool isTestMode)
+        private void RegisterCustomNodeInstanceForLateInitialization(
+            Function node,
+            Guid id,
+            string name,
+            bool isTestMode,
+            Engine.LibraryServices libraryServices = null)
         {
             var disposed = false;
             Action<CustomNodeInfo> infoUpdatedHandler = null;
@@ -243,7 +257,7 @@ namespace Dynamo.Core
                 if (newInfo.FunctionId == id || newInfo.Name == name)
                 {
                     CustomNodeWorkspaceModel foundWorkspace;
-                    if (TryGetFunctionWorkspace(newInfo.FunctionId, isTestMode, out foundWorkspace))
+                    if (TryGetFunctionWorkspace(newInfo.FunctionId, isTestMode, out foundWorkspace, libraryServices))
                     {
                         node.ResyncWithDefinition(foundWorkspace.CustomNodeDefinition);
                         RegisterCustomNodeInstanceForUpdates(node, foundWorkspace);
@@ -449,14 +463,19 @@ namespace Dynamo.Core
         ///     Flag specifying whether or not this should operate in "test mode".
         /// </param>
         /// <param name="ws"></param>
+        /// <param name="libraryServices">LibraryServices used for code block node initialization.</param>
         /// <returns>The path to the node or null if it wasn't found.</returns>
-        public bool TryGetFunctionWorkspace(Guid id, bool isTestMode, out CustomNodeWorkspaceModel ws)
+        public bool TryGetFunctionWorkspace(
+            Guid id, 
+            bool isTestMode, 
+            out CustomNodeWorkspaceModel ws,
+            Engine.LibraryServices libraryServices = null)
         {
             if (Contains(id))
             {
                 if (!loadedWorkspaceModels.TryGetValue(id, out ws))
                 {
-                    if (InitializeCustomNode(id, isTestMode, out ws))
+                    if (InitializeCustomNode(id, isTestMode, out ws, libraryServices))
                         return true;
                 }
                 else
@@ -472,11 +491,16 @@ namespace Dynamo.Core
         /// <param name="id">The identifier.</param>
         /// <param name="isTestMode">if set to <c>true</c> [is test mode].</param>
         /// <param name="ws">The workspace.</param>
-        /// <returns></returns>
-        public bool TryGetFunctionWorkspace(Guid id, bool isTestMode, out ICustomNodeWorkspaceModel ws)
+        /// <param name="libraryServices">LibraryServices used for code block node initialization.</param>
+        /// <returns>Boolean indicating if Custom Node Workspace defination is loaded.</returns>
+        public bool TryGetFunctionWorkspace(
+            Guid id,
+            bool isTestMode,
+            out ICustomNodeWorkspaceModel ws,
+            Engine.LibraryServices libraryServices)
         {
             CustomNodeWorkspaceModel workSpace;
-            var result = TryGetFunctionWorkspace(id, isTestMode, out workSpace);
+            var result = TryGetFunctionWorkspace(id, isTestMode, out workSpace, libraryServices);
             ws = workSpace;
             return result;
         }
@@ -489,13 +513,18 @@ namespace Dynamo.Core
         ///     Flag specifying whether or not this should operate in "test mode".
         /// </param>
         /// <param name="definition"></param>
-        /// <returns></returns>
-        public bool TryGetFunctionDefinition(Guid id, bool isTestMode, out CustomNodeDefinition definition)
+        /// <param name="libraryServices">LibraryServices used for code block node initialization.</param>
+        /// <returns>Boolean indicating if Custom Node Workspace defination is loaded.</returns>
+        public bool TryGetFunctionDefinition(
+            Guid id,
+            bool isTestMode,
+            out CustomNodeDefinition definition,
+            Engine.LibraryServices libraryServices = null)
         {
             if (Contains(id))
             {
                 CustomNodeWorkspaceModel ws;
-                if (IsInitialized(id) || InitializeCustomNode(id, isTestMode, out ws))
+                if (IsInitialized(id) || InitializeCustomNode(id, isTestMode, out ws, libraryServices))
                 {
                     definition = loadedCustomNodes[id];
                     return true;
@@ -600,22 +629,24 @@ namespace Dynamo.Core
         /// <summary>
         ///     Opens a Custom Node workspace from an XmlDocument, given a pre-constructed WorkspaceInfo.
         /// </summary>
-        /// <param name="xmlDoc">XmlDocument representing the parsed custom node file.</param>
         /// <param name="workspaceInfo">Workspace header describing the custom node file.</param>
         /// <param name="isTestMode">
         ///     Flag specifying whether or not this should operate in "test mode".
         /// </param>
         /// <param name="workspace"></param>
-        /// <returns></returns>
+        /// <param name="libraryServices">LibraryServices used for code block node initialization.</param>
+        /// <returns>Boolean indicating if Custom Node Workspace opened.</returns>
         public bool OpenCustomNodeWorkspace(
             WorkspaceInfo workspaceInfo, 
             bool isTestMode, 
-            out WorkspaceModel workspace)
+            out WorkspaceModel workspace,
+            Engine.LibraryServices libraryServices = null)
         {
             CustomNodeWorkspaceModel customNodeWorkspace;
             if (InitializeCustomNode(
                 workspaceInfo,
-                out customNodeWorkspace))
+                out customNodeWorkspace,
+                libraryServices))
             {
                 workspace = customNodeWorkspace;
                 return true;
@@ -625,8 +656,9 @@ namespace Dynamo.Core
         }
 
         private bool InitializeCustomNode(
-            WorkspaceInfo workspaceInfo, 
-            out CustomNodeWorkspaceModel workspace)
+            WorkspaceInfo workspaceInfo,
+            out CustomNodeWorkspaceModel workspace,
+            Engine.LibraryServices libraryServices)
         {
             // Add custom node definition firstly so that a recursive
             // custom node won't recursively load itself.
@@ -649,7 +681,7 @@ namespace Dynamo.Core
             }
             else if(DynamoUtilities.PathHelper.isValidJson(workspaceInfo.FileName, out jsonDoc))
             {
-                newWorkspace = (CustomNodeWorkspaceModel)WorkspaceModel.FromJson(jsonDoc, null, null, null, nodeFactory, false, true, this);
+                newWorkspace = (CustomNodeWorkspaceModel)WorkspaceModel.FromJson(jsonDoc, libraryServices, null, null, nodeFactory, false, true, this);
             }
 
             RegisterCustomNodeWorkspace(newWorkspace);
@@ -703,8 +735,13 @@ namespace Dynamo.Core
         /// <param name="functionId">The function guid we're currently loading</param>
         /// <param name="isTestMode"></param>
         /// <param name="workspace">The resultant function definition</param>
-        /// <returns></returns>
-        private bool InitializeCustomNode(Guid functionId, bool isTestMode, out CustomNodeWorkspaceModel workspace)
+        /// <param name="libraryServices">LibraryServices used for code block node initialization.</param>
+        /// <returns>Boolean indicating if Custom Node initialized.</returns>
+        private bool InitializeCustomNode(
+            Guid functionId, 
+            bool isTestMode, 
+            out CustomNodeWorkspaceModel workspace,
+            Engine.LibraryServices libraryServices)
         {
             try
             {
@@ -721,7 +758,7 @@ namespace Dynamo.Core
                         info.ID = functionId.ToString();
                         if (migrationManager.ProcessWorkspace(info, xmlDoc, isTestMode, nodeFactory))
                         {
-                            return InitializeCustomNode(info, out workspace);
+                            return InitializeCustomNode(info, out workspace, libraryServices);
                         }
                     }
                 }
@@ -730,7 +767,7 @@ namespace Dynamo.Core
                     // Skip Json migration for now
                     WorkspaceInfo.FromJsonDocument(strInput, path, isTestMode, false, AsLogger(), out info);
                     info.ID = functionId.ToString();
-                    return InitializeCustomNode(info, out workspace);
+                    return InitializeCustomNode(info, out workspace, libraryServices);
                 }
                 Log(string.Format(Properties.Resources.CustomNodeCouldNotBeInitialized, customNodeInfo.Name));
                 workspace = null;

@@ -41,7 +41,7 @@ namespace Dynamo.PackageManager
             var id = customNodeManager.GuidFromPath(originalPath);
 
             ICustomNodeWorkspaceModel def;
-            var res = customNodeManager.TryGetFunctionWorkspace(id, this.isTestMode, out def);
+            var res = customNodeManager.TryGetFunctionWorkspace(id, this.isTestMode, out def, null);
 
             if (!res) return false;
 
