@@ -38,7 +38,7 @@ namespace Dynamo.Tests
             
             // Verify events handlers have been registered
             bool openXmlFired = false;
-            EventHandler<EvaluationCompletedEventArgs> testXmlEvent = (sender, e) => openXmlFired = true;
+            EventHandler<EvaluationCompletedEventArgs> testXmlEvent = (sender, e) => { openXmlFired = true; };
             ViewModel.Model.EvaluationCompleted += testXmlEvent;
             RunCurrentModel();
             Assert.IsTrue(openXmlFired);
@@ -64,7 +64,7 @@ namespace Dynamo.Tests
 
             // Verify events handlers have been registered
             bool openJsonFired = false;
-            EventHandler<EvaluationCompletedEventArgs> testJsonEvent = (sender, e) => openJsonFired = true;
+            EventHandler<EvaluationCompletedEventArgs> testJsonEvent = (sender, e) => { openJsonFired = true; };
             ViewModel.Model.EvaluationCompleted += testJsonEvent;
             RunCurrentModel();
             Assert.IsTrue(openJsonFired);
