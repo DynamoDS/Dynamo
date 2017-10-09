@@ -683,6 +683,7 @@ namespace Dynamo.Core
             else if(DynamoUtilities.PathHelper.isValidJson(workspaceInfo.FileName, out jsonDoc))
             {
                 newWorkspace = (CustomNodeWorkspaceModel)WorkspaceModel.FromJson(jsonDoc, libraryServices, null, null, nodeFactory, false, true, this);
+                newWorkspace.FileName = workspaceInfo.FileName;
             }
 
             RegisterCustomNodeWorkspace(newWorkspace);
