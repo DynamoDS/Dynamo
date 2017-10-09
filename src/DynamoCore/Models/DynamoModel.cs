@@ -1557,6 +1557,8 @@ namespace Dynamo.Models
               homeWorkspace.RunSettings = new RunSettings(runType, runPeriod);
             }
 
+            RegisterHomeWorkspace(homeWorkspace);
+
             CustomNodeWorkspaceModel customNodeWorkspace = workspace as CustomNodeWorkspaceModel;
             if (customNodeWorkspace != null)
               customNodeWorkspace.IsVisibleInDynamoLibrary = dynamoPreferences.IsVisibleInDynamoLibrary;
