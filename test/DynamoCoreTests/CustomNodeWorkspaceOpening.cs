@@ -62,7 +62,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void CanOpenCustomNodeWorkspace()
+        public void CanOpenXmlCustomNodeWorkspace()
         {
             OpenTestFile(@"core\combine", "Sequence2.dyf");
 
@@ -72,10 +72,29 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void CustomNodeWorkspaceIsAddedToSearchOnOpening()
+        public void XmlCustomNodeWorkspaceIsAddedToSearchOnOpening()
         {
             OpenTestFile(@"core\combine", "Sequence2.dyf");
             
+            var res = CurrentDynamoModel.SearchModel.Search("Sequence2");
+            Assert.AreEqual("Sequence2", res.First().Name);
+        }
+
+        [Test]
+        public void CanOpenJsonCustomNodeWorkspace()
+        {
+            OpenTestFile(@"core\combine", "Sequence_Json.dyf");
+
+            var nodeWorkspace = CurrentDynamoModel.Workspaces.FirstOrDefault(x => x is CustomNodeWorkspaceModel);
+            Assert.IsNotNull(nodeWorkspace);
+            Assert.AreEqual(CurrentDynamoModel.CurrentWorkspace.Name, "Sequence2");
+        }
+
+        [Test]
+        public void JsonCustomNodeWorkspaceIsAddedToSearchOnOpening()
+        {
+            OpenTestFile(@"core\combine", "Sequence_Json.dyf");
+
             var res = CurrentDynamoModel.SearchModel.Search("Sequence2");
             Assert.AreEqual("Sequence2", res.First().Name);
         }

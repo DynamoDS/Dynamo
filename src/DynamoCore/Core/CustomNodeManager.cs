@@ -164,6 +164,7 @@ namespace Dynamo.Core
         /// <param name="info">
         ///     Custom node information data
         /// </param>
+        /// <param name="libraryServices">LibraryServices used for code block node initialization.</param>
         public bool TryGetCustomNodeData(
             Guid id, 
             string name,
