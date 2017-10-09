@@ -1555,13 +1555,13 @@ namespace Dynamo.Models
               if (!Int32.TryParse(dynamoPreferences.RunPeriod, out runPeriod))
                   runPeriod = RunSettings.DefaultRunPeriod;
               homeWorkspace.RunSettings = new RunSettings(runType, runPeriod);
-            }
 
-            RegisterHomeWorkspace(homeWorkspace);
+              RegisterHomeWorkspace(homeWorkspace);
+            }
 
             CustomNodeWorkspaceModel customNodeWorkspace = workspace as CustomNodeWorkspaceModel;
             if (customNodeWorkspace != null)
-              customNodeWorkspace.IsVisibleInDynamoLibrary = dynamoPreferences.IsVisibleInDynamoLibrary;
+                customNodeWorkspace.IsVisibleInDynamoLibrary = dynamoPreferences.IsVisibleInDynamoLibrary;
 
             return true;
         }
