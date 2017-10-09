@@ -1557,11 +1557,17 @@ namespace Dynamo.Models
               homeWorkspace.RunSettings = new RunSettings(runType, runPeriod);
             }
 
-            RegisterHomeWorkspace(homeWorkspace);
-
             CustomNodeWorkspaceModel customNodeWorkspace = workspace as CustomNodeWorkspaceModel;
             if (customNodeWorkspace != null)
-              customNodeWorkspace.IsVisibleInDynamoLibrary = dynamoPreferences.IsVisibleInDynamoLibrary;
+            {
+                customNodeWorkspace.IsVisibleInDynamoLibrary = dynamoPreferences.IsVisibleInDynamoLibrary;
+            }
+
+            // Only RegisterHomeWorkspace if not a CustomNodeWorkspace
+            else
+            {
+                RegisterHomeWorkspace(homeWorkspace);
+            }
 
             return true;
         }
