@@ -111,6 +111,7 @@ namespace Dynamo.Graph.Workspaces
                 // we have a dyf and it lacks an ID field, we need to assign it
                 // a deterministic guid based on its name.  By doing it deterministically,
                 // files remain compatible
+                if (string.IsNullOrEmpty(id) && !string.IsNullOrEmpty(funName) && funName != Properties.Resources.DefaultHomeWorkspaceName)
                 {
                     id = GuidUtility.Create(GuidUtility.UrlNamespace, funName).ToString();
                 }
