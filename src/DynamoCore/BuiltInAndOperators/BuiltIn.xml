@@ -224,16 +224,6 @@
 			<param name="unpackParams"></param>
             <search>evaluate</search>
         </member>
-		<member name="__TryGetValueFromNestedDictionaries">
-			<param name="list">list of values</param>
-			<param name="key"></param>
-            <search>nested,dictionary,get</search>
-        </member>
-      <member name="__DictionaryByKeysValues">
-        <param name="keys">list of keys</param>
-        <param name="values">list of values</param>
-        <search>dictionary,create</search>
-      </member>
 		<member name="__Apply">
 			<param name="functionObject"></param>
 			<param name="param"></param>
