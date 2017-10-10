@@ -111,7 +111,6 @@ namespace Dynamo.Graph.Workspaces
                 // we have a dyf and it lacks an ID field, we need to assign it
                 // a deterministic guid based on its name.  By doing it deterministically,
                 // files remain compatible
-                if (string.IsNullOrEmpty(id) && !string.IsNullOrEmpty(funName) && funName != "Home")
                 {
                     id = GuidUtility.Create(GuidUtility.UrlNamespace, funName).ToString();
                 }
@@ -150,6 +149,16 @@ namespace Dynamo.Graph.Workspaces
             }
         }
 
+        /// <summary>
+        /// Return a boolean indicating if successfully deserialized workspace info object from Json file
+        /// </summary>
+        /// <param name="jsonDoc">Target Josn</param>
+        /// <param name="path">Target path</param>
+        /// <param name="isTestMode">Boolean indicating if Dynamo is running in Test Mode</param>
+        /// <param name="forceManualExecutionMode">Boolean indicating if forcing manual mode</param>
+        /// <param name="logger">Dynamo logger</param>
+        /// <param name="workspaceInfo">Return object</param>
+        /// <returns>A boolean indicating success</returns>
         internal static bool FromJsonDocument(String jsonDoc, string path, bool isTestMode,
             bool forceManualExecutionMode, ILogger logger, out WorkspaceInfo workspaceInfo)
         {
@@ -190,7 +199,7 @@ namespace Dynamo.Graph.Workspaces
                 // we have a dyf and it lacks an ID field, we need to assign it
                 // a deterministic guid based on its name.  By doing it deterministically,
                 // files remain compatible
-                if (string.IsNullOrEmpty(id) && !string.IsNullOrEmpty(funName) && funName != "Home")
+                if (string.IsNullOrEmpty(id) && !string.IsNullOrEmpty(funName) && funName != Properties.Resources.DefaultHomeWorkspaceName)
                 {
                     id = GuidUtility.Create(GuidUtility.UrlNamespace, funName).ToString();
                 }

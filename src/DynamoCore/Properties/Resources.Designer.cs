@@ -322,6 +322,15 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Home.
+        /// </summary>
+        public static string DefaultHomeWorkspaceName {
+            get {
+                return ResourceManager.GetString("DefaultHomeWorkspaceName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Default value.
         /// </summary>
         public static string DefaultValue {

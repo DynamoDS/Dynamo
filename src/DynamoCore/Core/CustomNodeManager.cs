@@ -575,7 +575,7 @@ namespace Dynamo.Core
         }
 
         /// <summary>
-        ///     Returns a guid from a specific path, internally this first calls GetDefinitionFromPath
+        ///     Returns a boolean indicating if successfully get a CustomNodeInfo object from a workspace path
         /// </summary>
         /// <param name="path">The path from which to get the guid</param>
         /// <param name="isTestMode">
@@ -766,7 +766,7 @@ namespace Dynamo.Core
                 }
                 else if (DynamoUtilities.PathHelper.isValidJson(path, out strInput))
                 {
-                    // Skip Json migration for now
+                    // TODO: Skip Json migration for now
                     WorkspaceInfo.FromJsonDocument(strInput, path, isTestMode, false, AsLogger(), out info);
                     info.ID = functionId.ToString();
                     return InitializeCustomNode(info, out workspace, libraryServices);
