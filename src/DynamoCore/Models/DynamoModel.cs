@@ -1342,11 +1342,19 @@ namespace Dynamo.Models
         /// execution mode specified in the file and set manual mode</param>
         public void OpenFileFromPath(string filePath, bool forceManualExecutionMode = false)
         {
-            if (OpenXmlFileFromPath(filePath, forceManualExecutionMode))
+            XmlDocument xmlDoc;
+            if (DynamoUtilities.PathHelper.isValidXML(filePath, out xmlDoc))
+            {
+                OpenXmlFileFromPath(xmlDoc, filePath, forceManualExecutionMode);
                 return;
+            }
 
-            if (OpenJsonFileFromPath(filePath, forceManualExecutionMode))
+            string fileContents;
+            if (DynamoUtilities.PathHelper.isValidJson(filePath, out fileContents))
+            {
+                OpenJsonFileFromPath(fileContents, filePath, forceManualExecutionMode);
                 return;
+            }
 
             Logger.LogError("Could not open workspace at: " + filePath);
         }
@@ -1378,17 +1386,15 @@ namespace Dynamo.Models
         /// <summary>
         /// Opens a Dynamo workspace from a path to an JSON file on disk.
         /// </summary>
+        /// <param name="fileContents">Json file contents</param>
         /// <param name="filePath">Path to file</param>
         /// <param name="forceManualExecutionMode">Set this to true to discard
         /// execution mode specified in the file and set manual mode</param>
         /// <returns>True if workspace was opened successfully</returns>
-        private bool OpenJsonFileFromPath(string filePath, bool forceManualExecutionMode)
+        private bool OpenJsonFileFromPath(string fileContents, string filePath, bool forceManualExecutionMode)
         {
-            bool success = true;
             try
             {
-                string fileContents = File.ReadAllText(filePath);
-
                 DynamoPreferencesData dynamoPreferences = DynamoPreferencesDataFromJson(fileContents);
                 if (dynamoPreferences != null)
                 {
@@ -1407,13 +1413,12 @@ namespace Dynamo.Models
                         }
                     }
                 }
+                return true;
             }
-            catch (Exception e)
+            catch (Exception)
             {
-                success = false;
+                return false;
             }
-
-            return success;
         }
 
         /// <summary>
@@ -1423,14 +1428,11 @@ namespace Dynamo.Models
         /// <param name="forceManualExecutionMode">Set this to true to discard
         /// execution mode specified in the file and set manual mode</param>
         /// <returns>True if workspace was opened successfully</returns>
-        private bool OpenXmlFileFromPath(string filePath, bool forceManualExecutionMode)
+        private bool OpenXmlFileFromPath(XmlDocument xmlDoc, string filePath, bool forceManualExecutionMode)
         {
             bool success = true;
             try
             {
-                var xmlDoc = new XmlDocument();
-                xmlDoc.Load(filePath);
-
                 //save the file before it is migrated to JSON.
                 //if in test mode, don't save the file in backup
                 if (!IsTestMode)
@@ -1573,7 +1575,7 @@ namespace Dynamo.Models
                 IsTestMode);
 
             var result = workspaceInfo.IsCustomNodeWorkspace
-                ? CustomNodeManager.OpenCustomNodeWorkspace(xmlDoc, workspaceInfo, IsTestMode, out workspace)
+                ? CustomNodeManager.OpenCustomNodeWorkspace(workspaceInfo, IsTestMode, out workspace)
                 : OpenXmlHomeWorkspace(xmlDoc, workspaceInfo, out workspace);
 
             workspace.OnCurrentOffsetChanged(
@@ -1859,7 +1861,7 @@ namespace Dynamo.Models
         public bool OpenCustomNodeWorkspace(Guid guid)
         {
             CustomNodeWorkspaceModel customNodeWorkspace;
-            if (CustomNodeManager.TryGetFunctionWorkspace(guid, IsTestMode, out customNodeWorkspace))
+            if (CustomNodeManager.TryGetFunctionWorkspace(guid, IsTestMode, out customNodeWorkspace, this.LibraryServices))
             {
                 if (!Workspaces.OfType<CustomNodeWorkspaceModel>().Contains(customNodeWorkspace))
                     AddWorkspace(customNodeWorkspace);

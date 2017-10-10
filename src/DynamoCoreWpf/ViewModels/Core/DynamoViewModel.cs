@@ -1109,6 +1109,14 @@ namespace Dynamo.ViewModels
             else
             {
                 var newVm = new WorkspaceViewModel(item, this);
+
+                // For Json Workspaces, workspace view info need to be read agin from file
+                string fileContents;
+                if (DynamoUtilities.PathHelper.isValidJson(newVm.Model.FileName, out fileContents))
+                {
+                    ExtraWorkspaceViewInfo viewInfo = WorkspaceViewModel.ExtraWorkspaceViewInfoFromJson(fileContents);
+                    newVm.Model.UpdateWithExtraWorkspaceViewInfo(viewInfo);
+                }
                 workspaces.Add(newVm);
             }
         }

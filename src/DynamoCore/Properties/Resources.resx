@@ -658,4 +658,8 @@ value : bool = false</value>
   <data name="PythonTemplateUserFile" xml:space="preserve">
     <value>Python template set to user file</value>
   </data>
+  <data name="DefaultHomeWorkspaceName" xml:space="preserve">
+    <value>Home</value>
+    <comment>The default name of home workspace</comment>
+  </data>
 </root>
