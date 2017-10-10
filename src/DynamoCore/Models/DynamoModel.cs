@@ -1342,14 +1342,14 @@ namespace Dynamo.Models
         /// execution mode specified in the file and set manual mode</param>
         public void OpenFileFromPath(string filePath, bool forceManualExecutionMode = false)
         {
-            var xmlDoc = new XmlDocument();
+            XmlDocument xmlDoc;
             if (DynamoUtilities.PathHelper.isValidXML(filePath, out xmlDoc))
             {
                 OpenXmlFileFromPath(xmlDoc, filePath, forceManualExecutionMode);
                 return;
             }
 
-            var fileContents = "";
+            string fileContents;
             if (DynamoUtilities.PathHelper.isValidJson(filePath, out fileContents))
             {
                 OpenJsonFileFromPath(fileContents, filePath, forceManualExecutionMode);
@@ -1386,13 +1386,13 @@ namespace Dynamo.Models
         /// <summary>
         /// Opens a Dynamo workspace from a path to an JSON file on disk.
         /// </summary>
+        /// <param name="fileContents">Json file contents</param>
         /// <param name="filePath">Path to file</param>
         /// <param name="forceManualExecutionMode">Set this to true to discard
         /// execution mode specified in the file and set manual mode</param>
         /// <returns>True if workspace was opened successfully</returns>
         private bool OpenJsonFileFromPath(string fileContents, string filePath, bool forceManualExecutionMode)
         {
-            bool success = true;
             try
             {
                 DynamoPreferencesData dynamoPreferences = DynamoPreferencesDataFromJson(fileContents);
@@ -1413,13 +1413,12 @@ namespace Dynamo.Models
                         }
                     }
                 }
+                return true;
             }
             catch (Exception)
             {
-                success = false;
+                return false;
             }
-
-            return success;
         }
 
         /// <summary>

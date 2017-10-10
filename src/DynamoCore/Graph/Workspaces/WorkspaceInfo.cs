@@ -166,43 +166,51 @@ namespace Dynamo.Graph.Workspaces
             var jObject = (JObject)JsonConvert.DeserializeObject(jsonDoc);
             try
             {
-                string funName = null;
                 double cx = 0;
                 double cy = 0;
                 double zoom = 1.0;
                 double scaleFactor = 1.0;
-                string id = "";
-                string category = "";
-                string description = "";
                 string version = "";
                 var runType = RunType.Manual;
                 int runPeriod = RunSettings.DefaultRunPeriod;
                 bool hasRunWithoutCrash = false;
                 bool isVisibleInDynamoLibrary = true;
 
-                cx = double.Parse(jObject["View"]["X"].ToString(), CultureInfo.InvariantCulture);
-                cy = double.Parse(jObject["View"]["Y"].ToString(), CultureInfo.InvariantCulture);
-                zoom = double.Parse(jObject["View"]["Zoom"].ToString(), CultureInfo.InvariantCulture);
-                scaleFactor = double.Parse(jObject["View"]["Dynamo"]["ScaleFactor"].ToString(), CultureInfo.InvariantCulture);
-                funName = jObject["Name"].ToString();
-                id = jObject["Uuid"].ToString();
-                category = jObject["Category"].ToString();
-                description = jObject["Description"].ToString();
-                hasRunWithoutCrash = bool.Parse(jObject["View"]["Dynamo"]["HasRunWithoutCrash"].ToString());
-                isVisibleInDynamoLibrary = bool.Parse(jObject["View"]["Dynamo"]["IsVisibleInDynamoLibrary"].ToString());
-                version = jObject["View"]["Dynamo"]["Version"].ToString();
-                if (forceManualExecutionMode || !Enum.TryParse(jObject["View"]["Dynamo"]["RunType"].ToString(), false, out runType))
-                {
-                    runType = RunType.Manual;
-                }
-                runPeriod = Int32.Parse(jObject["View"]["Dynamo"]["RunPeriod"].ToString());
-
+                JToken value;
+                string funName = jObject.TryGetValue("Name", out value)? value.ToString(): "";
+                string id = jObject.TryGetValue("Uuid", out value) ? value.ToString() : "";
+                string category = jObject.TryGetValue("Category", out value) ? value.ToString() : "";
+                string description = jObject.TryGetValue("Description", out value) ? value.ToString() : "";
                 // we have a dyf and it lacks an ID field, we need to assign it
                 // a deterministic guid based on its name.  By doing it deterministically,
                 // files remain compatible
                 if (string.IsNullOrEmpty(id) && !string.IsNullOrEmpty(funName) && funName != Properties.Resources.DefaultHomeWorkspaceName)
                 {
                     id = GuidUtility.Create(GuidUtility.UrlNamespace, funName).ToString();
+                }
+
+                // Parse the following info when graph contains a "View" block
+                if (jObject.TryGetValue("View", out value))
+                {
+                    JObject viewObject = value.ToObject<JObject>();
+                    Double.TryParse((viewObject.TryGetValue("X", out value) ? value.ToString(): "0"), out cx);
+                    Double.TryParse((viewObject.TryGetValue("Y", out value) ? value.ToString() : "0"), out cy);
+                    Double.TryParse((viewObject.TryGetValue("Zoom", out value) ? value.ToString() : "1.0"), out zoom);
+
+                    // Parse the following info when "View" block contains a "Dynamo" block
+                    if (viewObject.TryGetValue("Dynamo", out value))
+                    {
+                        JObject dynamoObject = value.ToObject<JObject>();
+                        Double.TryParse((dynamoObject.TryGetValue("ScaleFactor", out value) ? value.ToString(): "1.0"), out scaleFactor);
+                        Boolean.TryParse((dynamoObject.TryGetValue("HasRunWithoutCrash", out value) ? value.ToString(): "false"), out hasRunWithoutCrash);
+                        Boolean.TryParse((dynamoObject.TryGetValue("IsVisibleInDynamoLibrary", out value) ? value.ToString(): "true"), out isVisibleInDynamoLibrary);
+                        version = dynamoObject.TryGetValue("Version", out value)? value.ToString() : "";
+                        if (forceManualExecutionMode || !Enum.TryParse((dynamoObject.TryGetValue("RunType", out value)? value.ToString(): "false"), false, out runType))
+                        {
+                            runType = RunType.Manual;
+                        }
+                        Int32.TryParse((dynamoObject.TryGetValue("RunPeriod", out value)? value.ToString() : RunSettings.DefaultRunPeriod.ToString()), out runPeriod);
+                    }
                 }
 
                 workspaceInfo = new WorkspaceInfo
