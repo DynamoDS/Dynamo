@@ -21,6 +21,7 @@ using Newtonsoft.Json.Serialization;
 using ProtoCore;
 using ProtoCore.Namespace;
 using Type = System.Type;
+using System.Xml;
 
 namespace Dynamo.Graph.Workspaces
 {
@@ -33,13 +34,51 @@ namespace Dynamo.Graph.Workspaces
     {
         private CustomNodeManager manager;
         private LibraryServices libraryServices;
-        
+        private NodeFactory factory;
+
         public ElementResolver ElementResolver { get; set; }
 
-        public NodeReadConverter(CustomNodeManager manager, LibraryServices libraryServices)
+        public NodeReadConverter(CustomNodeManager manager, LibraryServices libraryServices, NodeFactory factory)
         {
             this.manager = manager;
             this.libraryServices = libraryServices;
+            this.factory = factory;
+        }
+
+        /// <summary>
+        /// DummyNodeReadConverter is used for deserializing DummyNodes in JSON graphs which hold some XMl.
+        /// This converter has two cases, either the node is still unresolved, there the conversion is straightforward.
+        /// Or the node type is now available and we should actually create a different node type and instead use xml
+        /// deserialization.
+        /// </summary>
+        private NodeModel handleDummyNode(JObject jobject, IEnumerable<PortModel> inports, IEnumerable<PortModel> outports)
+        {
+            //first lets grab the xml and try to deserialize this as a node:
+            var xml = jobject.GetValue("OriginalNodeContent").Value<String>();
+            var doc = new XmlDocument();
+            doc.LoadXml(xml);
+            //TODO zerotouch nodes would be loaded best using this method, if we could optionally have access to the filepath of the json file.
+            //for now make a bad guess.
+            Dynamo.Graph.Nodes.Utilities.SetDocumentXmlPath(doc, System.Reflection.Assembly.GetExecutingAssembly().Location);
+
+            //deserialize into node
+            var node = NodeGraph.LoadNodeFromXml(doc.DocumentElement, SaveContext.File, factory, ElementResolver);
+
+            //lets reassign the guids of the ports so they match the JSON ports and connectors.
+            //we do this here so we retain all other properties on the ports from the original XML except the GUIDs.
+            var index = 0;
+            foreach (var deserializedPort in inports)
+            {
+                node.InPorts.ElementAt(index).GUID = deserializedPort.GUID;
+                index++;
+            }
+            index = 0;
+            foreach (var deserializedPort in outports)
+            {
+                node.OutPorts.ElementAt(index).GUID = deserializedPort.GUID;
+                index++;
+            }
+            return node;
         }
 
         public override bool CanConvert(Type objectType)
@@ -58,7 +97,7 @@ namespace Dynamo.Graph.Workspaces
             var guid = GuidUtility.tryParseOrCreateGuid(obj["Id"].Value<string>());
 
             var replication = obj["Replication"].Value<string>();
-           
+
             var inPorts = obj["Inputs"].ToArray().Select(t => t.ToObject<PortModel>()).ToArray();
             var outPorts = obj["Outputs"].ToArray().Select(t => t.ToObject<PortModel>()).ToArray();
 
@@ -81,7 +120,7 @@ namespace Dynamo.Graph.Workspaces
                 node = function;
 
                 if (isUnresolved)
-                  function.UpdatePortsForUnresolved(inPorts, outPorts);
+                    function.UpdatePortsForUnresolved(inPorts, outPorts);
             }
             else if (type == typeof(CodeBlockNodeModel))
             {
@@ -122,6 +161,15 @@ namespace Dynamo.Graph.Workspaces
             {
                 node = (NodeModel)obj.ToObject(type);
             }
+            //if we actually find a dummy node, then this dummy node
+            //contains xml which was unresolved when this JSON graph was made...
+            //lets invoke our converter to handle this.
+            else if (type == typeof(DummyNode))
+            {
+                node = this.handleDummyNode(obj, inPorts, outPorts);
+                remapPorts = false;
+
+            }
             else
             {
                 node = (NodeModel)obj.ToObject(type);
@@ -146,7 +194,7 @@ namespace Dynamo.Graph.Workspaces
 
             foreach (var p in node.OutPorts)
                 serializer.ReferenceResolver.AddReference(serializer.Context, p.GUID.ToString(), p);
-            
+
             return node;
         }
 
@@ -189,7 +237,7 @@ namespace Dynamo.Graph.Workspaces
             }
         }
 
-        private static void setPortDataOnNewPort(PortModel newPort, PortModel deserializedPort )
+        private static void setPortDataOnNewPort(PortModel newPort, PortModel deserializedPort)
         {
             //set the appropriate properties on the new port.
             newPort.GUID = deserializedPort.GUID;
@@ -235,7 +283,7 @@ namespace Dynamo.Graph.Workspaces
         bool isTestMode;
         bool verboseLogging;
 
-        public WorkspaceReadConverter(EngineController engine, 
+        public WorkspaceReadConverter(EngineController engine,
             DynamoScheduler scheduler, NodeFactory factory, bool isTestMode, bool verboseLogging)
         {
             this.scheduler = scheduler;
@@ -265,6 +313,7 @@ namespace Dynamo.Graph.Workspaces
             var guid = Guid.Parse(guidStr);
             var name = obj["Name"].Value<string>();
 
+            //set the elementResolver on other converters which require it to create nodes.
             var elementResolver = obj["ElementResolver"].ToObject<ElementResolver>(serializer);
             var nmc = (NodeReadConverter)serializer.Converters.First(c => c is NodeReadConverter);
             nmc.ElementResolver = elementResolver;
@@ -274,30 +323,19 @@ namespace Dynamo.Graph.Workspaces
 
             // nodes
             var inputsToken = obj["Inputs"];
-            if(inputsToken != null)
+            if (inputsToken != null)
             {
-               var inputs = inputsToken.ToArray().Select(x => x.ToObject<NodeInputData>()).ToList();
-               //using the inputs lets set the correct properties on the nodes.
-               foreach(var inputData in inputs)
+                var inputs = inputsToken.ToArray().Select(x => x.ToObject<NodeInputData>()).ToList();
+                //using the inputs lets set the correct properties on the nodes.
+                foreach (var inputData in inputs)
                 {
                     var matchingNode = nodes.Where(x => x.GUID == inputData.Id).FirstOrDefault();
-                    if(matchingNode != null)
+                    if (matchingNode != null)
                     {
                         matchingNode.IsSetAsInput = true;
                     }
                 }
             }
-
-            // notes
-            //TODO: Check this when implementing ReadJSON in ViewModel.
-            //var notes = obj["Notes"].ToObject<IEnumerable<NoteModel>>(serializer);
-            //if (notes.Any())
-            //{
-            //    foreach(var n in notes)
-            //    {
-            //        serializer.ReferenceResolver.AddReference(serializer.Context, n.GUID.ToString(), n);
-            //    }
-            //}
 
             // connectors
             // Although connectors are not used in the construction of the workspace
@@ -345,14 +383,14 @@ namespace Dynamo.Graph.Workspaces
             WorkspaceModel ws;
             if (isCustomNode)
             {
-                ws = new CustomNodeWorkspaceModel(factory, nodes, notes, annotations, 
+                ws = new CustomNodeWorkspaceModel(factory, nodes, notes, annotations,
                     Enumerable.Empty<PresetModel>(), elementResolver, info);
             }
             else
             {
                 ws = new HomeWorkspaceModel(guid, engine, scheduler, factory,
-                    loadedTraceData, nodes, notes, annotations, 
-                    Enumerable.Empty<PresetModel>(), elementResolver, 
+                    loadedTraceData, nodes, notes, annotations,
+                    Enumerable.Empty<PresetModel>(), elementResolver,
                     info, verboseLogging, isTestMode);
             }
 
@@ -515,29 +553,60 @@ namespace Dynamo.Graph.Workspaces
         {
             get { return false; }
         }
-
+        //TODO I assume we want to serialize XML content in some cases in a special way... 
+        //as an extension node etc...
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
             var dummyNode = value as DummyNode;
             if (dummyNode == null)
+            {
                 throw new ArgumentException("value is not a DummyNode.");
-
+            }
             if (dummyNode.OriginalNodeContent == null)
+            {
                 throw new ArgumentException("There is no content to write for this DummyNode.");
+            }
 
-            JObject originalContent = dummyNode.OriginalNodeContent as JObject;
-            if (originalContent == null)
-                throw new ArgumentException("originalContent is not JSON compatible.");
+            var originalContent = dummyNode.OriginalNodeContent as JObject;
+            var originalContentXML = dummyNode.OriginalNodeContent as XmlElement;
 
-            originalContent.WriteTo(writer);
-    }
+            if (originalContent != null)
+            {
+                (originalContent as JObject).WriteTo(writer);
+            }
+            // if its actually an XML element, then we'll write out a different node type
+            // here and embed the xml string as property which we can try to deserialize again later.
+            else if (originalContentXML != null)
+            {
+                //lets try to simply serialize this dummy node as a regular node
+                //invoke the nodeSerializer - most properties will be incorrect.
+                var intermediateJson = JsonConvert.SerializeObject(dummyNode);
+                var jObject = JObject.Parse(intermediateJson);
 
-    public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+                //modify the JSON a bit...
+                //inject dummy node type.
+
+                //we need replace the json lacing the lacing set on the xml node originally 
+                //TODO crap, the replication needs to be migrated somehow... because I think shortest should become auto...
+                var replicationFromXml = originalContentXML.GetAttribute("lacing");
+                dummyNode.UpdateValue(new UpdateValueParams("ArgumentLacing", replicationFromXml));
+
+                var concreteType = dummyNode.GetType().FullName + ", " + dummyNode.GetType().Assembly.GetName().Name;
+                jObject["$type"] = concreteType;
+
+                //inject the original xml
+                jObject.Add("OriginalNodeContent", (dummyNode.OriginalNodeContent as XmlElement).OuterXml);
+
+                //write the new json object out as this node.
+                jObject.WriteTo(writer);
+            }
+        }
+
+        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
             throw new NotImplementedException();
         }
     }
-
     /// <summary>
     /// The ConnectorConverter is used to serialize and deserialize ConnectorModels.
     /// The Start and End of a ConnectorModel are references to PortModels, but
@@ -569,12 +638,12 @@ namespace Dynamo.Graph.Workspaces
             // If the start or end ports can't be found in the resolver,
             // try to resolve them from the resolver's map, which maps
             // the persisted port ids to the new port ids.
-            if(startPort == null)
+            if (startPort == null)
             {
                 startPort = (PortModel)resolver.ResolveReferenceFromMap(serializer.Context, startIdGuid.ToString());
             }
 
-            if(endPort == null)
+            if (endPort == null)
             {
                 endPort = (PortModel)resolver.ResolveReferenceFromMap(serializer.Context, endIdGuid.ToString());
             }
@@ -680,7 +749,7 @@ namespace Dynamo.Graph.Workspaces
             if (modelMap.ContainsKey(oldId))
             {
                 throw new InvalidOperationException(@"the map already contains a model with this id, the id must
-                    be unique for the workspace that is currently being deserialized: "+oldId);
+                    be unique for the workspace that is currently being deserialized: " + oldId);
             }
             modelMap.Add(oldId, newObject);
         }
@@ -691,7 +760,7 @@ namespace Dynamo.Graph.Workspaces
             if (models.ContainsKey(id))
             {
                 throw new InvalidOperationException(@"the map already contains a model with this id, the id must
-                    be unique for the workspace that is currently being deserialized :"+id);
+                    be unique for the workspace that is currently being deserialized :" + id);
             }
             models[id] = value;
         }
