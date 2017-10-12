@@ -89,14 +89,6 @@
         "Excluded": false,
         "X": 76.8,
         "Y": 162.4
-      },
-      {
-        "ShowGeometry": true,
-        "Name": "Code Block",
-        "Id": "da2bfb84f2fc4de1a08d0e7aedfb29a3",
-        "Excluded": false,
-        "X": 78.4,
-        "Y": 259.2
       }
     ],
     "Annotations": [],

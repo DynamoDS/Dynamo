@@ -101,7 +101,7 @@ namespace Dynamo.Logging
                         () =>
                         {
                             string workspace = dynamoModel.CurrentWorkspace == null ? string.Empty :
-                                dynamoModel.CurrentWorkspace.ToJson(dynamoModel.EngineController);
+                                dynamoModel.CurrentWorkspace.GetStringRepOfWorkspace();
                             Analytics.LogPiiInfo("Workspace", workspace);
                         });
 

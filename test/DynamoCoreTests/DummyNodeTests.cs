@@ -7,7 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using static Dynamo.Models.DynamoModel;
+using Dynamo.Models;
 
 namespace Dynamo.Tests
 {
@@ -59,7 +59,7 @@ namespace Dynamo.Tests
             var originalPos = dummyNode.X;
             var contentPreMove = (dummyNode.OriginalNodeContent as JObject).ToString();
             //move the node.
-            CurrentDynamoModel.ExecuteCommand(new UpdateModelValueCommand(dummyNode.GUID, "Position", "12.0;34.1"));
+            CurrentDynamoModel.ExecuteCommand(new DynamoModel.UpdateModelValueCommand(dummyNode.GUID, "Position", "12.0;34.1"));
             //assert we moved.
             Assert.AreEqual(12, dummyNode.X);
             //assert same content after move.
