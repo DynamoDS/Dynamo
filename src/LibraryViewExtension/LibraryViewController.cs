@@ -164,11 +164,20 @@ namespace Dynamo.LibraryUI
             this.browser = browser;
             sidebarGrid.Children.Add(view);
             browser.RegisterJsObject("controller", this);
-            RegisterResources(browser);
+            //RegisterResources(browser);
 
             view.Loaded += OnLibraryViewLoaded;
             browser.SizeChanged += Browser_SizeChanged;
             browser.LoadError += Browser_LoadError;
+            browser.LoadingStateChanged += (sender, args) =>
+            {
+                //Wait for the Page to finish loading
+                if (args.IsLoading == false)
+                {
+                    RegisterResources(browser);
+                }
+            };
+
             return view;
         }
 
