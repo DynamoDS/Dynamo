@@ -1,5 +1,5 @@
 <Commands ExitAfterPlayback="true" PauseAfterPlaybackInMs="10" CommandIntervalInMs="20">
   <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
   <CreateNodeCommand NodeId="fc209d2f-1724-4485-bde4-92670802aaa3" NodeName="Code Block" X="323" Y="197" DefaultPosition="false" TransformCoordinates="true" />
-  <UpdateModelValueCommand ModelGuid="fc209d2f-1724-4485-bde4-92670802aaa3" Name="Code" Value="a = 0..a+b;&#xD;&#xA;z = b;" />
+  <UpdateModelValueCommand ModelGuid="fc209d2f-1724-4485-bde4-92670802aaa3" Name="Code" Value="a = 0..b+c;&#xD;&#xA;z = b;" />
 </Commands>

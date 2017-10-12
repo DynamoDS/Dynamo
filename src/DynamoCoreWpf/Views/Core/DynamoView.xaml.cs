@@ -502,15 +502,6 @@ namespace Dynamo.Controls
 #if !__NO_SAMPLES_MENU
             LoadSamplesMenu();
 #endif
-            #region Search initialization
-
-            var search = new SearchView(
-                dynamoViewModel.SearchViewModel,
-                dynamoViewModel);
-            sidebarGrid.Children.Add(search);
-            dynamoViewModel.SearchViewModel.Visible = true;
-
-            #endregion
 
             #region Package manager
 
@@ -1252,28 +1243,12 @@ namespace Dynamo.Controls
                             Header = state.Name,
                             Tag = state
                         };
-                  //if the sender was the restoremenu then add restore delegates
-                 if (sender == RestorePresetMenu)
-                 {
-                     stateItem.Click += RestoreState_Click;
-                 }
-                 else
-                 {
-                     //else the sender was the delete menu
-                     stateItem.Click += DeleteState_Click;
-                 }
+                 //the sender was the delete menu
+                 stateItem.Click += DeleteState_Click;
                  stateItem.ToolTip = state.Description;
                  ((MenuItem)sender).Items.Add(stateItem);
                 }
             }
-        }
-
-
-        private void RestoreState_Click(object sender, RoutedEventArgs e)
-        {
-            PresetModel state = (sender as MenuItem).Tag as PresetModel;
-            var workspace = dynamoViewModel.CurrentSpace;
-            dynamoViewModel.ExecuteCommand(new DynamoModel.ApplyPresetCommand(workspace.Guid, state.GUID));
         }
 
         private void DeleteState_Click(object sender, RoutedEventArgs e)

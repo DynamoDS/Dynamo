@@ -262,7 +262,7 @@ namespace ProtoFFITests
         [Test]
         public void TestReturnIDictionary()
         {
-            string code = @"                import(DummyCollection from ""FFITarget.dll"");                a = DummyCollection.ReturnIDictionary();                b = { GetKeys(a), GetValues(a)};                ";
+            string code = @"                import(DummyCollection from ""FFITarget.dll"");                import(""BuiltIn.ds"");                a = DummyCollection.ReturnIDictionary();                b = { List.GetKeys(a), List.GetValues(a)};                ";
 
             thisTest.RunScriptSource(code);
             var methods = thisTest.GetMethods("DummyCollection", "ReturnIDictionary");
@@ -277,7 +277,7 @@ namespace ProtoFFITests
         [Test]
         public void TestReturnDictionaryAsObject()
         {
-            string code = @"                import(DummyCollection from ""FFITarget.dll"");                a = DummyCollection.ReturnDictionaryAsObject();                b = { GetKeys(a), GetValues(a)};                ";
+            string code = @"                import(DummyCollection from ""FFITarget.dll"");                import(""BuiltIn.ds"");                a = DummyCollection.ReturnDictionaryAsObject();                b = { List.GetKeys(a), List.GetValues(a)};                ";
 
             thisTest.RunScriptSource(code);
             var methods = thisTest.GetMethods("DummyCollection", "ReturnDictionaryAsObject");

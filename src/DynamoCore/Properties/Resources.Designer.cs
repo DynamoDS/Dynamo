@@ -322,6 +322,15 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Home.
+        /// </summary>
+        public static string DefaultHomeWorkspaceName {
+            get {
+                return ResourceManager.GetString("DefaultHomeWorkspaceName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Default value.
         /// </summary>
         public static string DefaultValue {
@@ -1076,6 +1085,33 @@ namespace Dynamo.Properties {
         public static string ProceedButton {
             get {
                 return ResourceManager.GetString("ProceedButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Python template set to default file.
+        /// </summary>
+        public static string PythonTemplateDefaultFile {
+            get {
+                return ResourceManager.GetString("PythonTemplateDefaultFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Python template : no valid template found..
+        /// </summary>
+        public static string PythonTemplateInvalid {
+            get {
+                return ResourceManager.GetString("PythonTemplateInvalid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Python template set to user file.
+        /// </summary>
+        public static string PythonTemplateUserFile {
+            get {
+                return ResourceManager.GetString("PythonTemplateUserFile", resourceCulture);
             }
         }
         

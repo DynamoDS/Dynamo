@@ -300,7 +300,7 @@ sum;
              {
                 dummy = Dummy.Dummy();
                 arr = 1..10.0;
-                sum = dummy.SumAll(arr);
+                sum = dummy.SumAll1D(arr);
              }
             ";
             Type dummy = typeof (FFITarget.Dummy);
@@ -320,7 +320,7 @@ sum;
                 dummy = Dummy.Dummy();
                 arr = 1..10.0;
                 arr_2 = dummy.Twice(arr);
-                sum = dummy.SumAll(arr_2);
+                sum = dummy.SumAll1D(arr_2);
              }
             ";
             Type dummy = typeof (FFITarget.Dummy);
@@ -451,7 +451,7 @@ sum;
             @"
                dummy = DerivedDummy.DerivedDummy();
                arr = 1..10.0;
-               sum = dummy.SumAll(arr);
+               sum = dummy.SumAll1D(arr);
             ";
             Type dummy = typeof (FFITarget.DerivedDummy);
             code = string.Format("import(\"{0}\");\r\n{1}", dummy.AssemblyQualifiedName, code);
@@ -1300,6 +1300,7 @@ p11;
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1947
             string code =
                 @"import(""FFITarget.dll"");
+                    import(""BuiltIn.ds"");
                     x = 1..2;
 
                     Xo = x[0];
@@ -1310,7 +1311,7 @@ p11;
                     bDup = B.DupTargetTest(x);
                     bReadback = bDup.Prop[1];
 
-                    check = Equals(aDup.Prop,bDup.Prop);";
+                    check = List.Equals(aDup.Prop,bDup.Prop);";
 
             thisTest.RunScriptSource(code);
             thisTest.Verify("check", true);
@@ -1331,6 +1332,7 @@ p11;
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1947
             string code =
                 @"import(""FFITarget.dll"");
+                    import(""BuiltIn.ds"");
                     aDup = A.DupTargetTest(0);
                     aReadback = aDup.Prop;
 
@@ -1340,8 +1342,8 @@ p11;
                     cDup = C.B.DupTargetTest(2);
                     cReadback = cDup.Prop;
 
-                    check = Equals(aDup.Prop,bDup.Prop);
-                    check = Equals(bDup.Prop,cDup.Prop);
+                    check = List.Equals(aDup.Prop,bDup.Prop);
+                    check = List.Equals(bDup.Prop,cDup.Prop);
 ";
             string err = "MAGN-1947 IntegrationTests.NamespaceConflictTest.DupImportTest";
             thisTest.RunScriptSource(code, err);

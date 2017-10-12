@@ -17,7 +17,9 @@ using DSColor = DSCore.Color;
 
 using Autodesk.DesignScript.Runtime;
 using Dynamo.Graph.Workspaces;
-
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System.IO;
 
 namespace CoreNodeModels.Input
 {
@@ -32,6 +34,7 @@ namespace CoreNodeModels.Input
     public class ColorPalette : NodeModel
     {
         private DSColor dscolor = DSColor.ByARGB(255, 0, 0, 0);
+
         public DSColor DsColor
         {
             get { return dscolor; }
@@ -42,12 +45,47 @@ namespace CoreNodeModels.Input
                 RaisePropertyChanged("DsColor");
             }
         }
+
+        public override NodeInputData InputData
+        {
+            get
+            {
+                //this object which we'll convert to a json string matches the format the schema expects for colors
+                var colorObj = new { Red = Convert.ToInt32(DsColor.Red), Blue = Convert.ToInt32(DsColor.Blue), Green = Convert.ToInt32(DsColor.Green), Alpha = Convert.ToInt32(DsColor.Alpha) };
+
+                return new NodeInputData()
+                {
+                    Id = this.GUID,
+                    Name = this.Name,
+
+                    Type = NodeInputTypes.colorInput,
+                    Description = this.Description,
+                    Value = JsonConvert.SerializeObject(colorObj),
+                };
+            }
+        }
         /// <summary>
         ///     Node constructor.
         /// </summary>
         public ColorPalette()
         {
             RegisterAllPorts();
+        }
+        
+        [JsonConstructor]
+        public ColorPalette(JObject DsColor, IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
+        {
+            // RGBA to ARGB
+            try
+            {
+                this.DsColor = DSColor.ByARGB((int)DsColor["Alpha"], (int)DsColor["Red"], (int)DsColor["Green"], (int)DsColor["Blue"]);
+            }
+
+            catch
+            {
+                this.DsColor = DSColor.ByARGB(255, 0, 0, 0);
+            }
+
         }
 
         protected override bool UpdateValueCore(UpdateValueParams updateValueParams)

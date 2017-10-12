@@ -19,7 +19,7 @@ namespace ProtoCore.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class Resources {
@@ -971,15 +971,6 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Return statement is invalid. Do you mean: return = {0} ?.
-        /// </summary>
-        public static string InvalidReturnStatement {
-            get {
-                return ResourceManager.GetString("InvalidReturnStatement", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Syntax Error: invalid symbol &apos;{0}&apos;. (Did you mean to use Modifier Stack \&quot; =&gt; \&quot;).
         /// </summary>
         public static string InvalidSymbol {
@@ -1372,6 +1363,15 @@ namespace ProtoCore.Properties {
         public static string kMethodAlreadyDefined {
             get {
                 return ResourceManager.GetString("kMethodAlreadyDefined", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Method &apos;{0}&apos; has been deprecated, please use method &apos;{1}&apos; instead.
+        /// </summary>
+        public static string kMethodDeprecated {
+            get {
+                return ResourceManager.GetString("kMethodDeprecated", resourceCulture);
             }
         }
         
@@ -2462,6 +2462,24 @@ namespace ProtoCore.Properties {
         public static string ValidForImperativeBlockOnly {
             get {
                 return ResourceManager.GetString("ValidForImperativeBlockOnly", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Variable {0} is used in the same statement that you defined it. Recursive dependency is not allowed..
+        /// </summary>
+        public static string VariableRecursiveReference {
+            get {
+                return ResourceManager.GetString("VariableRecursiveReference", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Variable {0} has been defined in this code block node. You cannot define a variable more than once..
+        /// </summary>
+        public static string VariableRedifinitionError {
+            get {
+                return ResourceManager.GetString("VariableRedifinitionError", resourceCulture);
             }
         }
         

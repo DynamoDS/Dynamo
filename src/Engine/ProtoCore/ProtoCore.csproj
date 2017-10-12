@@ -101,7 +101,9 @@
       <Link>Properties\AssemblySharedInfo.cs</Link>
     </Compile>
     <Compile Include="AssociativeGraph.cs" />
-    <Compile Include="DSASM\HeapObjects.cs" />
+    <Compile Include="DSASM\DSArray.cs" />
+    <Compile Include="DSASM\DSObject.cs" />
+    <Compile Include="DSASM\DSString.cs" />
     <Compile Include="Lang\InternalAttributes.cs" />
     <Compile Include="Lang\Replication\ArgumentAtLevel.cs" />
     <Compile Include="AttributeEntry.cs" />
@@ -113,6 +115,7 @@
     <Compile Include="CodePoint.cs" />
     <Compile Include="Compiler.cs" />
     <Compile Include="CompilerOptions.cs" />
+    <Compile Include="MigrationRewriter.cs" />
     <Compile Include="SyntaxAnalysis\AssociativeAstVisitor.cs" />
     <Compile Include="SyntaxAnalysis\AstVisitor.cs" />
     <Compile Include="SyntaxAnalysis\Interface\Associative.cs" />
@@ -122,7 +125,7 @@
     <Compile Include="Core.cs" />
     <Compile Include="ClassTable.cs" />
     <Compile Include="DebuggerProperties.cs" />
-    <Compile Include="DSASM\DSasmDefs.cs" />
+    <Compile Include="DSASM\Defs.cs" />
     <Compile Include="DSASM\Interpreter.cs" />
     <Compile Include="DSASM\Executable.cs" />
     <Compile Include="DSASM\Executive.cs" />
@@ -216,6 +219,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="ExtendedLibraries\BuiltIn.ds" />
     <None Include="ExtendedLibraries\FunctionObject.ds" />
     <None Include="Parser\atg\Associative.atg" />
     <None Include="Parser\atg\End.atg" />

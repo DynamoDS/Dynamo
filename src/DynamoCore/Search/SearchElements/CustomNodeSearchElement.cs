@@ -24,6 +24,11 @@ namespace Dynamo.Search.SearchElements
         public Guid ID { get; private set; }
 
         /// <summary>
+        /// Returns a name using which this node can be created
+        /// </summary>
+        public override string CreationName { get { return this.ID.ToString(); } }
+        
+        /// <summary>
         ///     Path to this custom node in disk, used in the Edit context menu.
         /// </summary>
         public string Path

@@ -29,6 +29,100 @@ using Dynamo.Scheduler;
 namespace Dynamo.Graph.Workspaces
 {
     /// <summary>
+    /// Non view-specific container for additional view information required to
+    /// fully construct a WorkspaceModel from JSON
+    /// </summary>
+    public class ExtraWorkspaceViewInfo
+    {
+        public object Camera;
+        public IEnumerable<ExtraNodeViewInfo> NodeViews;
+        public IEnumerable<ExtraNoteViewInfo> Notes;
+        public IEnumerable<ExtraAnnotationViewInfo> Annotations;
+        public double X;
+        public double Y;
+        public double Zoom;        
+    }
+
+    /// <summary>
+    /// Non view-specific container for additional node view information 
+    /// required to fully construct a WorkspaceModel from JSON
+    /// </summary>
+    public class ExtraNodeViewInfo
+    {
+        public string Id;
+        public string Name;
+        public double X;
+        public double Y;
+        public bool ShowGeometry;
+        public bool Excluded;
+    }
+
+    /// <summary>
+    /// Non view-specific container for additional note view information 
+    /// required to fully construct a WorkspaceModel from JSON
+    /// </summary>
+    public class ExtraNoteViewInfo
+    {
+        public string Id;
+        public double X;
+        public double Y;
+        public string Text;
+
+        // TODO, QNTM-1099: Figure out if this is necessary
+        // public int ZIndex;
+    }
+
+    /// <summary>
+    /// Non view-specific container for additional annotation view information 
+    /// required to fully construct a WorkspaceModel from JSON
+    /// </summary>
+    public class ExtraAnnotationViewInfo
+    {
+        public string Title;
+        public IEnumerable<string> Nodes;
+        public double FontSize;
+        public string Background;
+        public string Id;
+
+        // TODO, Determine if these are required
+        public double Left;
+        public double Top;
+        public double Width;
+        public double Height;
+        public double InitialTop;
+        public double InitialHeight;
+        public double TextBlockHeight;
+
+        private bool tolerantDoubleCompare(double a, double b)
+        {
+            return Math.Abs(a - b) < .0001;
+        }
+
+        public override bool Equals(object obj)
+        {
+            var other = obj as ExtraAnnotationViewInfo;
+            return other != null &&
+                this.Id == other.Id &&
+                this.Title == other.Title &&
+                this.Nodes.SequenceEqual(other.Nodes) &&
+                this.FontSize == other.FontSize &&
+                this.Background == other.Background;
+
+                //TODO try to get rid of these if possible
+                //needs investigation if we are okay letting them get 
+                //calculated at runtime. currently checking them will fail as we do
+                //not deserialize them.
+
+                //tolerantDoubleCompare(this.Left, other.Left) &&
+                //tolerantDoubleCompare(this.Top, other.Top) &&
+                //tolerantDoubleCompare(this.InitialTop, other.InitialTop);
+                //this.Width == other.Width &&
+                //this.Height == other.Height &&
+                //this.TextBlockHeight == other.TextBlockHeight;
+        }
+    }
+
+    /// <summary>
     /// Represents base class for all kind of workspaces which contains general data
     /// such as Name, collections of nodes, notes, annotations, etc.
     /// </summary>
@@ -368,7 +462,7 @@ namespace Dynamo.Graph.Workspaces
                 {
                     foreach (var node in this.Nodes.OfType<Function>())
                     {
-                        dependencies.Add(node.FunctionUuid);
+                        dependencies.Add(node.FunctionSignature);
                     }
                 }
                 //else the workspace is a customnode - and we can add the dependencies directly
@@ -1480,9 +1574,9 @@ namespace Dynamo.Graph.Workspaces
                 Formatting = Newtonsoft.Json.Formatting.Indented,
                 Converters = new List<JsonConverter>{
                         new ConnectorConverter(),
-                        new AnnotationConverter(),
                         new WorkspaceReadConverter(engineController, scheduler, factory, isTestMode, verboseLogging),
                         new NodeReadConverter(manager, libraryServices),
+                        new TypedParameterConverter()
                     },
                 ReferenceResolverProvider = () => { return new IdReferenceResolver(); }
             };
@@ -1491,6 +1585,186 @@ namespace Dynamo.Graph.Workspaces
             var ws = JsonConvert.DeserializeObject<WorkspaceModel>(result, settings);
 
             return ws;
+        }
+
+        /// <summary>
+        /// Updates a workspace model with extra view information. When loading a workspace from JSON,
+        /// the data is split into two parts, model and view. This method sets the view information.
+        /// </summary>
+        /// <param name="workspaceViewInfo">The extra view information from the workspace to update the model with.</param>
+        public void UpdateWithExtraWorkspaceViewInfo(ExtraWorkspaceViewInfo workspaceViewInfo)
+        {
+            if (workspaceViewInfo == null)
+              return;
+
+            X = workspaceViewInfo.X;
+            Y = workspaceViewInfo.Y;
+            Zoom = workspaceViewInfo.Zoom; 
+
+            OnCurrentOffsetChanged(
+                this,
+                new PointEventArgs(new Point2D(X, Y)));
+
+            // This function loads standard nodes
+            LoadNodes(workspaceViewInfo.NodeViews);
+
+            // This function loads notes from the Notes array in the JSON format
+            // NOTE: This is here to support early JSON graphs
+            // IMPORTANT: All notes must be loaded before annotations are loaded to
+            //            ensure that any contained notes are contained properly
+            LoadLegacyNotes(workspaceViewInfo.Notes);
+
+            // This function loads notes from the Annotations array in the JSON format
+            // that have an empty nodes collection
+            // IMPORTANT: All notes must be loaded before annotations are loaded to
+            //            ensure that any contained notes are contained properly
+            LoadNotesFromAnnotations(workspaceViewInfo.Annotations);
+
+            // This function loads annotations from the Annotations array in the JSON format
+            // that have a non-empty nodes collection
+            LoadAnnotations(workspaceViewInfo.Annotations);
+
+            // TODO, QNTM-1099: These items are not in the extra view info
+            // Name = info.Name;
+            // Description = info.Description;
+            // FileName = info.FileName;
+        }
+
+        private void LoadNodes(IEnumerable<ExtraNodeViewInfo> nodeViews)
+        {
+            if (nodeViews == null)
+              return;
+
+            foreach (ExtraNodeViewInfo nodeViewInfo in nodeViews)
+            {
+                var guidValue = IdToGuidConverter(nodeViewInfo.Id);
+                var nodeModel = Nodes.FirstOrDefault(node => node.GUID == guidValue);
+                if (nodeModel != null)
+                {
+                    nodeModel.X = nodeViewInfo.X;
+                    nodeModel.Y = nodeViewInfo.Y;
+                    nodeModel.IsFrozen = nodeViewInfo.Excluded;
+
+                    // NOTE: The name needs to be set using UpdateValue to cause the view to update
+                    nodeModel.UpdateValue(new UpdateValueParams("Name", nodeViewInfo.Name));
+
+                    // NOTE: These parameters are not directly accessible due to undo/redo considerations
+                    //       which should not be used during deserialization (see "ArgumentLacing" for details)
+                    nodeModel.UpdateValue(new UpdateValueParams("IsVisible", nodeViewInfo.ShowGeometry.ToString()));
+                }
+            }
+        }
+
+        private void LoadLegacyNotes(IEnumerable<ExtraNoteViewInfo> noteViews)
+        {
+            if (noteViews == null)
+              return;
+
+            foreach (ExtraNoteViewInfo noteViewInfo in noteViews)
+            {
+                var guidValue = IdToGuidConverter(noteViewInfo.Id);
+
+                // TODO, QNTM-1099: Figure out if ZIndex needs to be set here as well
+                var noteModel = new NoteModel(noteViewInfo.X, noteViewInfo.Y, noteViewInfo.Text, guidValue);
+                this.AddNote(noteModel);
+            }
+        }
+
+        private void LoadNotesFromAnnotations(IEnumerable<ExtraAnnotationViewInfo> annotationViews)
+        {
+            if (annotationViews == null)
+              return;
+
+            foreach (ExtraAnnotationViewInfo annotationViewInfo in annotationViews)
+            {
+                if (annotationViewInfo.Nodes == null)
+                    continue;
+
+                // If count is not zero, this is an annotation, not a note
+                if (annotationViewInfo.Nodes.Count() != 0)
+                    continue;
+
+                var annotationGuidValue = IdToGuidConverter(annotationViewInfo.Id);
+                var text = annotationViewInfo.Title;
+
+                var noteModel = new NoteModel(
+                    annotationViewInfo.Left, 
+                    annotationViewInfo.Top, 
+                    text, 
+                    annotationGuidValue);
+                this.AddNote(noteModel);
+            }
+        }
+
+        private void LoadAnnotations(IEnumerable<ExtraAnnotationViewInfo> annotationViews)
+        {
+            if (annotationViews == null)
+              return;
+
+            foreach (ExtraAnnotationViewInfo annotationViewInfo in annotationViews)
+            {
+                if (annotationViewInfo.Nodes == null)
+                    continue;
+
+                // If count is zero, this is a note, not an annotation
+                if (annotationViewInfo.Nodes.Count() == 0)
+                    continue;
+
+                var annotationGuidValue = IdToGuidConverter(annotationViewInfo.Id);
+                var text = annotationViewInfo.Title;
+
+                // Create a collection of nodes in the given annotation
+                var nodes = new List<NodeModel>();
+                foreach (string nodeId in annotationViewInfo.Nodes)
+                {
+                    var guidValue = IdToGuidConverter(nodeId);
+                    if (guidValue == null)
+                      continue;
+
+                    // NOTE: Some nodes may be annotations and not be found here
+                    var nodeModel = Nodes.FirstOrDefault(node => node.GUID == guidValue);
+                    if (nodeModel == null)
+                      continue;
+
+                    nodes.Add(nodeModel);
+                }
+
+                // Create a collection of notes in the given annotation
+                var notes = new List<NoteModel>();
+                foreach (string noteId in annotationViewInfo.Nodes)
+                {
+                    var guidValue = IdToGuidConverter(noteId);
+                    if (guidValue == null)
+                      continue;
+
+                    // NOTE: Some nodes may not be annotations and not be found here
+                    var noteModel = Notes.FirstOrDefault(note => note.GUID == guidValue);
+                    if (noteModel == null)
+                      continue;
+
+                    notes.Add(noteModel);
+                }
+
+                var annotationModel = new AnnotationModel(nodes, notes);
+                annotationModel.AnnotationText = text;
+                annotationModel.FontSize = annotationViewInfo.FontSize;
+                annotationModel.Background = annotationViewInfo.Background;
+                annotationModel.GUID = annotationGuidValue;
+                this.AddNewAnnotation(annotationModel);
+            }
+        }
+
+        private Guid IdToGuidConverter(string id)
+        {
+            Guid deterministicGuid;
+            if (!Guid.TryParse(id, out deterministicGuid))
+            {
+                Console.WriteLine("The id was not a guid, converting to a guid");
+                deterministicGuid = GuidUtility.Create(GuidUtility.UrlNamespace, id);
+                Console.WriteLine(id + " becomes " + deterministicGuid);
+            }
+
+            return deterministicGuid;
         }
     }
 }

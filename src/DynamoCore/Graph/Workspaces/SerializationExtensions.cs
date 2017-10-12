@@ -28,9 +28,10 @@ namespace Dynamo.Graph.Workspaces
                 TypeNameHandling = TypeNameHandling.Auto,
                 Formatting = Formatting.Indented,
                 Converters = new List<JsonConverter>{
-                        new ConnectorConverter(),
-                        new AnnotationConverter(),
-                        new WorkspaceWriteConverter(engine)
+                        new ConnectorConverter(),                        
+                        new WorkspaceWriteConverter(engine),
+                        new DummyNodeWriteConverter(),
+                        new TypedParameterConverter()
                     },
                 ReferenceResolverProvider = () => { return new IdReferenceResolver(); }
             };

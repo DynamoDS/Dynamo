@@ -139,7 +139,7 @@
     <value>Wednesday</value>
   </data>
   <data name="ExportToCSVObsolete" xml:space="preserve">
-    <value>Use ImportExport.ExportCSV node instead</value>
+    <value>Use Data.ExportCSV node instead</value>
   </data>
   <data name="FactorialNegativeInt" xml:space="preserve">
     <value>The input value of Math.Factorial cannot be negative.</value>

@@ -2,6 +2,8 @@
 using Dynamo.Engine;
 using Dynamo.Interfaces;
 using ProtoCore.AST.AssociativeAST;
+using Newtonsoft.Json;
+using Dynamo.Graph.Workspaces;
 
 namespace Dynamo.Library
 {
@@ -13,14 +15,31 @@ namespace Dynamo.Library
         private string summary = null; // Indicating that it is not initialized.
         private readonly string defaultValueString;
 
+
         /// <summary>
         /// This function creates TypedParameter
         /// </summary>
         /// <param name="name">parameter name</param>
-        /// <param name="type">parameter type</param>
-        /// <param name="defaultValue">parameter default value</param>
-        /// <param name="shortArgumentName">short name is used as tooltip</param>
-        /// <param name="summary">parameter description</param>
+        /// <param name="TypeName">parameter TypeName, serialized name of ProtoCore.Type</param>
+        /// <param name="TypeRank">parameter TypeRank, serialized rank of ProtoCore.Type</param>
+        /// <param name="defaultValue">parameter defaultValue</param>
+        [JsonConstructor]
+        public TypedParameter(string name = "", string TypeName = "", int TypeRank = -1, string defaultValue = "")
+        {
+            Name = name;
+            Type = new ProtoCore.Type(TypeName, TypeRank);
+            defaultValueString = defaultValue;
+        }
+        
+        
+        /// <summary>
+         /// This function creates TypedParameter
+         /// </summary>
+         /// <param name="name">parameter name</param>
+         /// <param name="type">parameter type</param>
+         /// <param name="defaultValue">parameter default value</param>
+         /// <param name="shortArgumentName">short name is used as tooltip</param>
+         /// <param name="summary">parameter description</param>
         public TypedParameter(string name, ProtoCore.Type type, AssociativeNode defaultValue = null, string shortArgumentName = null, string summary = null)
         {
             if (name == null)
@@ -41,6 +60,7 @@ namespace Dynamo.Library
         /// <summary>
         /// Returns DesignScript function.
         /// </summary>
+        [JsonIgnore]
         public FunctionDescriptor Function { get; private set; }
 
         /// <summary>
@@ -54,13 +74,27 @@ namespace Dynamo.Library
         public ProtoCore.Type Type { get; private set; }
 
         /// <summary>
-        /// Returns default value of the parameter.
+        /// Returns default value of the parameter as AST node.
         /// </summary>
+        [JsonIgnore]
         public AssociativeNode DefaultValue { get; private set; }
+
+        /// <summary>
+        /// Returns fully qualified string representation of AST node.
+        /// </summary>
+        [JsonProperty("DefaultValue")]
+        public string DefaultValueString
+        {
+            get
+            {
+                return defaultValueString;
+            }
+        }
 
         /// <summary>
         /// Returns summary of the parameter.
         /// </summary>
+        [JsonIgnore]
         public string Summary
         {
             get
@@ -77,6 +111,7 @@ namespace Dynamo.Library
         /// <summary>
         /// Returns description of the parameter.
         /// </summary>
+        [JsonIgnore]
         public string Description
         {
             get
@@ -102,6 +137,7 @@ namespace Dynamo.Library
         /// <summary>
         /// Returns short type name of the parameter.
         /// </summary>
+        [JsonIgnore]
         public string DisplayTypeName
         {
             get { return Type.ToShortString(); }

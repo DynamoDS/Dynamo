@@ -1,0 +1,291 @@
+{
+  "Uuid": "6aecda57-7679-4afb-aa02-05a75cc3433e",
+  "IsCustomNode": true,
+  "Category": "Misc",
+  "Description": "",
+  "Name": "Sequence2",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "CoreNodeModels.Range, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "5399c352d22945f18c5973c55cd3574e",
+      "Inputs": [
+        {
+          "Id": "e00a6c94b25148d1abdfc428831e3861",
+          "Name": "start",
+          "Description": "Number or letter to start the sequence at\r\nDefault value: 0 (disabled)",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "de086a19e8754a07b31ba4980ecee5b8",
+          "Name": "end",
+          "Description": "Number or letter to end the sequence at\r\nDefault value: 9 (disabled)",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "b48f9a1d015b46ee97e44eab6741d028",
+          "Name": "step",
+          "Description": "Space between numbers or letters\r\nDefault value: 1 (disabled)",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "b84f6a3271064f5781b3c42596c66b8e",
+          "Name": "seq",
+          "Description": "New sequence",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Creates a sequence of numbers or letters in the specified range."
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CustomNodes.Symbol, DynamoCore",
+      "NodeType": "InputNode",
+      "Parameter": {
+        "Name": "start",
+        "TypeName": "var",
+        "TypeRank": -1,
+        "DefaultValue": null
+      },
+      "Id": "c1e4f3cc6d4048c483ceaee56d646c98",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "2e578dd7cd6543719ffb5833e941f02b",
+          "Name": "",
+          "Description": "Symbol",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "A function parameter, use with custom nodes.\r\n\r\nYou can specify the type and default value for parameter. E.g.,\r\n\r\ninput : var[]..[]\r\nvalue : bool = false"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CustomNodes.Symbol, DynamoCore",
+      "NodeType": "InputNode",
+      "Parameter": {
+        "Name": "end",
+        "TypeName": "var",
+        "TypeRank": -1,
+        "DefaultValue": null
+      },
+      "Id": "f5906773647143a0b1fcce12f61d461d",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "842bcc23f4c94cbd880a416e9e539dd0",
+          "Name": "",
+          "Description": "Symbol",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "A function parameter, use with custom nodes.\r\n\r\nYou can specify the type and default value for parameter. E.g.,\r\n\r\ninput : var[]..[]\r\nvalue : bool = false"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CustomNodes.Symbol, DynamoCore",
+      "NodeType": "InputNode",
+      "Parameter": {
+        "Name": "step",
+        "TypeName": "var",
+        "TypeRank": -1,
+        "DefaultValue": null
+      },
+      "Id": "8f47fb7e43c7415f87ef5d564bb68191",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "431ddbd96d184d0e907115428abef2a2",
+          "Name": "",
+          "Description": "Symbol",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "A function parameter, use with custom nodes.\r\n\r\nYou can specify the type and default value for parameter. E.g.,\r\n\r\ninput : var[]..[]\r\nvalue : bool = false"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Formula, CoreNodeModels",
+      "Formula": "x-1",
+      "NodeType": "FormulaNode",
+      "Id": "dab29ca0f01346c0b2a33bcb5c7745c2",
+      "Inputs": [
+        {
+          "Id": "f5214325101149388056914b4b09b2d9",
+          "Name": "x",
+          "Description": "variable",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "48b0eeec709242b4a61dac3cc13b7bfe",
+          "Name": "",
+          "Description": "Result of math computation",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Evaluates mathematical formulas. Uses NCalc: http://ncalc.codeplex.com/"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CustomNodes.Output, DynamoCore",
+      "NodeType": "OutputNode",
+      "ElementResolver": null,
+      "Symbol": "",
+      "Id": "28a960447dee4da299f970c2f350e622",
+      "Inputs": [
+        {
+          "Id": "78807c4ba8034576b07e12e6e9b2c885",
+          "Name": "",
+          "Description": "",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [],
+      "Replication": "Disabled",
+      "Description": "A function output, use with custom nodes"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "b84f6a3271064f5781b3c42596c66b8e",
+      "End": "78807c4ba8034576b07e12e6e9b2c885",
+      "Id": "3f2deabd1dff48d8a3ff291a1122ea21"
+    },
+    {
+      "Start": "2e578dd7cd6543719ffb5833e941f02b",
+      "End": "e00a6c94b25148d1abdfc428831e3861",
+      "Id": "805ce74a9f1945748e336753f440c70e"
+    },
+    {
+      "Start": "842bcc23f4c94cbd880a416e9e539dd0",
+      "End": "f5214325101149388056914b4b09b2d9",
+      "Id": "54c7eb9e13834a2abc5bb5455de0b5a2"
+    },
+    {
+      "Start": "431ddbd96d184d0e907115428abef2a2",
+      "End": "b48f9a1d015b46ee97e44eab6741d028",
+      "Id": "462d335a0fd3484f95ad88c9f56eb018"
+    },
+    {
+      "Start": "48b0eeec709242b4a61dac3cc13b7bfe",
+      "End": "de086a19e8754a07b31ba4980ecee5b8",
+      "Id": "90b11ea0846b4ef6860386a3ef50264d"
+    }
+  ],
+  "Dependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": false,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.0.0.2806",
+      "RunType": "Manual",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "NodeViews": [
+      {
+        "Id": "5399c352d22945f18c5973c55cd3574e",
+        "Name": "Range",
+        "ShowGeometry": true,
+        "Excluded": false,
+        "X": 323.383122001953,
+        "Y": 208.824760256458
+      },
+      {
+        "Id": "c1e4f3cc6d4048c483ceaee56d646c98",
+        "Name": "Input",
+        "ShowGeometry": true,
+        "Excluded": false,
+        "X": 0.0,
+        "Y": 154.577959398747
+      },
+      {
+        "Id": "f5906773647143a0b1fcce12f61d461d",
+        "Name": "Input",
+        "ShowGeometry": true,
+        "Excluded": false,
+        "X": 0.0,
+        "Y": 230.871432466577
+      },
+      {
+        "Id": "8f47fb7e43c7415f87ef5d564bb68191",
+        "Name": "Input",
+        "ShowGeometry": true,
+        "Excluded": false,
+        "X": 0.0,
+        "Y": 311.641216267404
+      },
+      {
+        "Id": "dab29ca0f01346c0b2a33bcb5c7745c2",
+        "Name": "Formula",
+        "ShowGeometry": true,
+        "Excluded": false,
+        "X": 113.533651647406,
+        "Y": 228.546463130036
+      },
+      {
+        "Id": "28a960447dee4da299f970c2f350e622",
+        "Name": "Output",
+        "ShowGeometry": true,
+        "Excluded": false,
+        "X": 490.991600088771,
+        "Y": 207.689005153314
+      }
+    ],
+    "Annotations": [],
+    "X": 124.0,
+    "Y": -2.0,
+    "Zoom": 1.0
+  }
+}

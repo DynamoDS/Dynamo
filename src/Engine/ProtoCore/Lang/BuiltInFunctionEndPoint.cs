@@ -303,9 +303,6 @@ namespace ProtoCore.Lang
                 case ProtoCore.Lang.BuiltInMethods.MethodID.Print:
                     ret = FileIOBuiltIns.Print(formalParameters[0], interpreter);
                     break;
-                case ProtoCore.Lang.BuiltInMethods.MethodID.PrintIndexable:
-                    ret = FileIOBuiltIns.Print(formalParameters[0], interpreter);
-                    break;
                 case ProtoCore.Lang.BuiltInMethods.MethodID.GetElapsedTime:
                     ret = ProtoCore.DSASM.StackValue.BuildInt(ProgramUtilsBuiltIns.GetElapsedTime(interpreter));
                     break;

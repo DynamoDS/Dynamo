@@ -1,6 +1,8 @@
 ﻿using System;
 using System.IO;
 using System.Security.AccessControl;
+using System.Xml;
+using Newtonsoft.Json;
 
 namespace DynamoUtilities
 {
@@ -87,6 +89,65 @@ namespace DynamoUtilities
             }
 
             return writeAllow && !writeDeny;
+        }
+
+        /// <summary>
+        /// This is a utility method for checking if given path contains valid XML document.
+        /// </summary>
+        /// <param name="path">path to the target xml file</param>
+        /// <param name="xmlDoc">System.Xml.XmlDocument repensentation of target xml file</param>
+        /// <returns></returns>
+        public static bool isValidXML(string path, out XmlDocument xmlDoc)
+        {
+            // Based on https://msdn.microsoft.com/en-us/library/875kz807(v=vs.110).aspx
+            // Exception thrown indicate invalid XML document path 
+            try
+            {
+                xmlDoc = new XmlDocument();
+                xmlDoc.Load(path);
+                return true;
+            }
+            catch
+            {
+                xmlDoc = null;
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// This is a utility method for checking if given path contains valid Json document.
+        /// </summary>
+        /// <param name="path">path to the target json file</param>
+        /// <param name="fileContents"> string contents of target json file</param>
+        /// <returns></returns>
+        public static bool isValidJson(string path, out string fileContents)
+        {
+            fileContents = File.ReadAllText(path);
+            fileContents = fileContents.Trim();
+            if ((fileContents.StartsWith("{") && fileContents.EndsWith("}")) || //For object
+                (fileContents.StartsWith("[") && fileContents.EndsWith("]"))) //For array
+            {
+                try
+                {
+                    var obj = Newtonsoft.Json.Linq.JToken.Parse(fileContents);
+                    return true;
+                }
+                catch (JsonReaderException jex)
+                {
+                    //Exception in parsing Json
+                    Console.WriteLine(jex.Message);
+                    return false;
+                }
+                catch (Exception ex) //some other exception
+                {
+                    Console.WriteLine(ex.ToString());
+                    return false;
+                }
+            }
+            else
+            {
+                return false;
+            }
         }
     }
 }

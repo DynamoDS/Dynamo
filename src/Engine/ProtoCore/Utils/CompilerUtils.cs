@@ -9,6 +9,8 @@ using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using ProtoCore.BuildData;
+using ProtoCore.SyntaxAnalysis;
 
 namespace ProtoCore.Utils
 {
@@ -267,10 +269,11 @@ namespace ProtoCore.Utils
         /// stores list of AST nodes, errors and warnings
         /// Evaluates and stores list of unbound identifiers
         /// </summary>
+        /// <param name="priorNames"></param>
         /// <param name="parseParams"> container for compilation related parameters </param>
         /// <param name="elementResolver"> classname resolver </param>
         /// <returns> true if code compilation succeeds, false otherwise </returns>
-        public static bool PreCompileCodeBlock(Core core, ref ParseParam parseParams)
+        public static bool PreCompileCodeBlock(Core core, ref ParseParam parseParams, IDictionary<string, string> priorNames = null)
         {
             string postfixGuid = parseParams.PostfixGuid.ToString().Replace("-", "_");
 
@@ -278,24 +281,27 @@ namespace ProtoCore.Utils
             List<AssociativeNode> astNodes;
             List<AssociativeNode> comments;
             ParseUserCode(core, parseParams.OriginalCode, postfixGuid, out astNodes, out comments);
+            parseParams.AppendErrors(core.BuildStatus.Errors);
+            if (parseParams.Errors.Count() > 0)
+            {
+                return false;
+            }
 
             // Catch the syntax errors and errors for unsupported 
             // language constructs thrown by compile expression
-            if (core.BuildStatus.ErrorCount > 0)
-            {
-                parseParams.AppendErrors(core.BuildStatus.Errors);
-                parseParams.AppendWarnings(core.BuildStatus.Warnings);
-                return false;
-            }
-            parseParams.AppendParsedNodes(astNodes);
+            parseParams.AppendWarnings(core.BuildStatus.Warnings);
+            var warnings = Check(astNodes);
+            parseParams.AppendWarnings(warnings);
+
+            parseParams.AppendParsedNodes(astNodes.Where(n => !n.skipMe));
             parseParams.AppendComments(comments);
 
             // Compile the code to get the resultant unboundidentifiers  
             // and any errors or warnings that were caught by the compiler and cache them in parseParams
-            return CompileCodeBlockAST(core, parseParams);
+            return CompileCodeBlockAST(core, parseParams, priorNames);
         }
 
-        private static bool CompileCodeBlockAST(Core core, ParseParam parseParams)
+        private static bool CompileCodeBlockAST(Core core, ParseParam parseParams, IDictionary<string, string> priorNames)
         {
             var unboundIdentifiers = new Dictionary<int, List<VariableLine>>();
 
@@ -320,6 +326,12 @@ namespace ProtoCore.Utils
                 // update Resolution map in elementResolver with fully resolved name from compiler.
                 var reWrittenNodes = ElementRewriter.RewriteElementNames(core.ClassTable,  
                     parseParams.ElementResolver, astNodes, core.BuildStatus.LogSymbolConflictWarning);
+
+                if (priorNames != null)
+                {
+                    // Use migration rewriter to migrate old method names to new names based on priorNameHints from LibraryServices
+                    reWrittenNodes = MigrationRewriter.MigrateMethodNames(reWrittenNodes, priorNames, core.BuildStatus.LogDeprecatedMethodWarning);
+                }
 
                 // Clone a disposable copy of AST nodes for PreCompile() as Codegen mutates AST's
                 // while performing SSA transforms and we want to keep the original AST's
@@ -519,6 +531,107 @@ namespace ProtoCore.Utils
                 }
             }
             return result;
+        }
+
+        internal class VariableFinder : AssociativeAstVisitor
+        {
+            private string variable;
+            public bool Found { get; private set; }
+
+            public VariableFinder(string variable)
+            {
+                this.variable = variable;
+            }
+
+            public override bool VisitIdentifierNode(IdentifierNode node)
+            {
+                if (node.Name == variable)
+                {
+                    Found = true;
+                    return true;
+                }
+
+                if (node.ArrayDimensions == null)
+                {
+                    return false;
+                }
+
+                return node.ArrayDimensions.Accept(this);
+            }
+
+            public override bool VisitIdentifierListNode(IdentifierListNode node)
+            {
+                if (node.LeftNode is IdentifierNode || node.LeftNode is IdentifierListNode)
+                {
+                    if (node.RightNode is FunctionCallNode || node.RightNode is IdentifierNode)
+                    {
+                        node.LeftNode.Accept(this);
+
+                        if (!(node.RightNode is IdentifierNode))
+                        {
+                            node.RightNode.Accept(this);
+                        }
+
+                        return true;
+                    }
+                }
+
+                return base.VisitIdentifierListNode(node);
+            }
+        }
+
+        /// <summary>
+        /// Check does some sanity check, e.g., if a variable is re-defined.
+        /// </summary>
+        /// <param name="asts"></param>
+        private static List<WarningEntry> Check(IEnumerable<AssociativeNode> asts)
+        {
+            var warnings = new List<WarningEntry>();
+
+            HashSet<string> scope = new HashSet<string>();
+            foreach (var node in asts)
+            {
+                BinaryExpressionNode bnode = node as BinaryExpressionNode;
+                if (bnode == null || bnode.Optr != Operator.assign)
+                {
+                    continue;
+                }
+
+                IdentifierNode ident = bnode.LeftNode as IdentifierNode;
+                if (ident == null)
+                {
+                    continue;
+                }
+
+                var variable = ident.Value;
+
+                if (!scope.Contains(variable))
+                {
+                    scope.Add(variable);
+
+                    VariableFinder finder = new VariableFinder(variable);
+                    bnode.RightNode.Accept(finder);
+
+                    if (finder.Found) 
+                    {
+                        warnings.Add(new WarningEntry
+                        {
+                            Message = String.Format(Resources.VariableRecursiveReference, variable),
+                        });
+                        node.skipMe = true;
+                    }
+                }
+                else if (ident.ArrayDimensions == null)
+                {
+                    warnings.Add(new WarningEntry
+                    {
+                        Message = String.Format(Resources.VariableRedifinitionError, variable),
+                    });
+                    node.skipMe = true;
+                }
+            }
+
+            return warnings;
         }
     }
 }

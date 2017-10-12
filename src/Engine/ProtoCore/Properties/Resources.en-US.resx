@@ -186,9 +186,6 @@
   <data name="InvalidLanguageBlockIdentifier" xml:space="preserve">
     <value>\"{0}\" is not a valid language block identifier, do you mean \"Associative\" or \"Imperative\"?</value>
   </data>
-  <data name="InvalidReturnStatement" xml:space="preserve">
-    <value>Return statement is invalid. Do you mean: return = {0} ?</value>
-  </data>
   <data name="InvalidSymbol" xml:space="preserve">
     <value>Syntax Error: invalid symbol '{0}'. (Did you mean to use Modifier Stack \" =&gt; \")</value>
   </data>
@@ -335,6 +332,9 @@
   </data>
   <data name="kMultipleSymbolFoundFromName" xml:space="preserve">
     <value>Multiple definitions for '{0}' are found as {1}</value>
+  </data>
+  <data name="kMethodDeprecated" xml:space="preserve">
+    <value>Method '{0}' has been deprecated, please use method '{1}' instead</value>
   </data>
   <data name="kNoStepSizeInAmountRangeExpression" xml:space="preserve">
     <value>No step size is specified in amount range expression</value>
@@ -919,5 +919,11 @@ Parameter name: {0}</value>
   </data>
   <data name="invalid_Associative_Level" xml:space="preserve">
     <value>Invalid list@level syntax, consider using @L1 for level 1.</value>
+  </data>
+  <data name="VariableRedifinitionError" xml:space="preserve">
+    <value>Variable {0} has been defined in this code block node. You cannot define a variable more than once.</value>
+  </data>
+  <data name="VariableRecursiveReference" xml:space="preserve">
+    <value>Variable {0} is used in the same statement that you defined it. Recursive dependency is not allowed.</value>
   </data>
 </root>

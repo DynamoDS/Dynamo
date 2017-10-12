@@ -73,16 +73,17 @@ namespace ProtoTestConsoleRunner
 
             var opts = new Options();
             opts.ExecutionMode = ExecutionMode.Serial;
+#if DEBUG
+            opts.DumpByteCode = true;
+            opts.Verbose = true;
+#else
+            opts.DumpByteCode = false;
+            opts.Verbose = false;
+#endif
             ProtoCore.Core core = new Core(opts);
             core.Compilers.Add(ProtoCore.Language.Associative, new ProtoAssociative.Compiler(core));
             core.Compilers.Add(ProtoCore.Language.Imperative, new ProtoImperative.Compiler(core));
-#if DEBUG
-            core.Options.DumpByteCode = true;
-            core.Options.Verbose = true;
-#else
-            core.Options.DumpByteCode = false;
-            core.Options.Verbose = false;
-#endif
+
             ProtoFFI.DLLFFIHandler.Register(ProtoFFI.FFILanguage.CSharp, new ProtoFFI.CSModuleHelper());
             ProtoScriptRunner runner = new ProtoScriptRunner();
 

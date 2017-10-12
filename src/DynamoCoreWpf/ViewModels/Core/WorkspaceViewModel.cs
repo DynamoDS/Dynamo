@@ -29,7 +29,6 @@ using Dynamo.Engine;
 
 namespace Dynamo.ViewModels
 {
-
     public delegate void NoteEventHandler(object sender, EventArgs e);
     public delegate void ViewEventHandler(object sender, EventArgs e);
     public delegate void SelectionEventHandler(object sender, SelectionBoxUpdateArgs e);
@@ -182,10 +181,45 @@ namespace Dynamo.ViewModels
         public bool IsSnapping { get; set; }
 
         /// <summary>
+        /// Gets the collection of Dynamo-specific preferences.
+        /// This is used when serializing Dynamo preferences in the View block of Graph.Json.
+        /// </summary>
+        [JsonProperty("Dynamo")]
+        public DynamoPreferencesData DynamoPreferences
+        {
+            get
+            {
+              bool hasRunWithoutCrash = false;
+              string runType = RunType.Manual.ToString();
+              string runPeriod = RunSettings.DefaultRunPeriod.ToString();
+              HomeWorkspaceModel homeWorkspace = Model as HomeWorkspaceModel;
+              if (homeWorkspace != null)
+              {
+                hasRunWithoutCrash = homeWorkspace.HasRunWithoutCrash;
+                runType = homeWorkspace.RunSettings.RunType.ToString();
+                runPeriod = homeWorkspace.RunSettings.RunPeriod.ToString();
+              }
+
+              bool isVisibleInDynamoLibrary = true;
+              CustomNodeWorkspaceModel customNodeWorkspace = Model as CustomNodeWorkspaceModel;
+              if (customNodeWorkspace != null)
+                isVisibleInDynamoLibrary = customNodeWorkspace.IsVisibleInDynamoLibrary;
+
+              return new DynamoPreferencesData(
+                Model.ScaleFactor,
+                hasRunWithoutCrash,
+                isVisibleInDynamoLibrary,
+                AssemblyHelper.GetDynamoVersion().ToString(),
+                runType,
+                runPeriod);
+            }
+        }
+
+        /// <summary>
         /// Gets the Camera Data. This is used when serializing Camera Data in the View block
         /// of Graph.Json.
         /// </summary>
-        [JsonProperty("Cameras")]
+        [JsonProperty("Camera")]
         public CameraData Camera
         {
             get { return DynamoViewModel.BackgroundPreviewViewModel.GetCameraInformation(); }
@@ -228,8 +262,10 @@ namespace Dynamo.ViewModels
         public ObservableCollection<ConnectorViewModel> Connectors { get { return _connectors; } }
 
         ObservableCollection<NodeViewModel> _nodes = new ObservableCollection<NodeViewModel>();
+        [JsonProperty("NodeViews")]
         public ObservableCollection<NodeViewModel> Nodes { get { return _nodes; } }
 
+        // Do not serialize notes, they will be converted to annotations during serialization
         ObservableCollection<NoteViewModel> _notes = new ObservableCollection<NoteViewModel>();
         [JsonIgnore]
         public ObservableCollection<NoteViewModel> Notes { get { return _notes; } }
@@ -239,7 +275,6 @@ namespace Dynamo.ViewModels
         public ObservableCollection<InfoBubbleViewModel> Errors { get { return _errors; } }
 
         ObservableCollection<AnnotationViewModel> _annotations = new ObservableCollection<AnnotationViewModel>();
-        [JsonIgnore]
         public ObservableCollection<AnnotationViewModel> Annotations { get { return _annotations; } }
 
         [JsonIgnore]
@@ -458,7 +493,7 @@ namespace Dynamo.ViewModels
         /// <param name="filePath"></param>
         /// <param name="engine"></param>
         /// <exception cref="ArgumentNullException">Thrown when the file path is null.</exception>
-        internal void Save(string filePath, EngineController engine = null)
+        internal void Save(string filePath, bool isBackup = false, EngineController engine = null)
         {
             if (String.IsNullOrEmpty(filePath))
             {
@@ -478,14 +513,46 @@ namespace Dynamo.ViewModels
                 // Stage 3: Save
                 File.WriteAllText(filePath, jo.ToString());
 
-                Model.FileName = filePath;
-                Model.OnSaved();
+                // Handle Workspace or CustomNodeWorkspace related non-serialization internal logic
+                // Only for actual save, update file path and recent file list
+                if (!isBackup)
+                {
+                    Model.FileName = filePath;
+                    Model.OnSaved();
+                }
             }
             catch (Exception ex)
             {
                 Debug.WriteLine(ex.Message + " : " + ex.StackTrace);
                 throw (ex);
             }
+        }
+
+        /// <summary>
+        /// Load the extra view information required to fully construct a WorkspaceModel object 
+        /// </summary>
+        /// <param name="json"></param>
+        static public ExtraWorkspaceViewInfo ExtraWorkspaceViewInfoFromJson(string json)
+        {
+            JsonReader reader = new JsonTextReader(new StringReader(json));
+            var obj = JObject.Load(reader);
+            var viewBlock = obj["View"];
+            if (viewBlock == null)
+              return null;
+           
+            var settings = new JsonSerializerSettings
+            {
+                Error = (sender, args) =>
+                {
+                    args.ErrorContext.Handled = true;
+                    Console.WriteLine(args.ErrorContext.Error);
+                },
+                ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+                TypeNameHandling = TypeNameHandling.Auto,
+                Formatting = Newtonsoft.Json.Formatting.Indented
+            };
+
+            return JsonConvert.DeserializeObject<ExtraWorkspaceViewInfo>(viewBlock.ToString(), settings);
         }
 
         void CopyPasteChanged(object sender, EventArgs e)
@@ -957,21 +1024,6 @@ namespace Dynamo.ViewModels
             RefreshViewOnSelectionChange();
         }
 
-        private void ShowHideAllUpstreamPreview(object parameter)
-        {
-            var modelGuids = DynamoSelection.Instance.Selection.
-                OfType<NodeModel>().Select(n => n.GUID);
-
-            if (!modelGuids.Any())
-                return;
-
-            var command = new DynamoModel.UpdateModelValueCommand(Guid.Empty,
-                modelGuids, "IsUpstreamVisible", (string) parameter);
-
-            DynamoViewModel.Model.ExecuteCommand(command);
-            RefreshViewOnSelectionChange();
-        }
-
         private void SetArgumentLacing(object parameter)
         {
             var modelGuids = DynamoSelection.Instance.Selection.
@@ -1241,7 +1293,6 @@ namespace Dynamo.ViewModels
         private void RefreshViewOnSelectionChange()
         {
             AlignSelectedCommand.RaiseCanExecuteChanged();
-            ShowHideAllUpstreamPreviewCommand.RaiseCanExecuteChanged();
             ShowHideAllGeometryPreviewCommand.RaiseCanExecuteChanged();
             SetArgumentLacingCommand.RaiseCanExecuteChanged();           
             RaisePropertyChanged("HasSelection");

@@ -1,3 +1,12 @@
+Please Note:
+1. Before submitting the PR, please review [How to Contribute to Dynamo](https://github.com/DynamoDS/Dynamo/blob/master/CONTRIBUTING.md)
+2. Dynamo Team will meet 1x a month to review PRs found on Github (Issues will be handled separately)
+3. PRs will be reviewed from oldest to newest
+4. If a reviewed PR requires changes by the owner, the owner of the PR has 30 days to respond. If the PR has seen no activity by the next session, it will be either closed by the team or depending on its utility will be taken over by someone on the team
+5. PRs should use either Dynamo's default PR template or [one of these other template options](https://github.com/DynamoDS/Dynamo/wiki/Choosing-a-Pull-Request-Template) in order to be considered for review.
+6. PRs that do not have one of the Dynamo PR templates completely filled out with all declarations satisfied will not be reviewed by the Dynamo team.
+7. PRs made to the `DynamoRevit` repo will need to be cherry-picked into all the DynamoRevit Release branches that Dynamo supports. Contributors will be responsible for cherry-picking their reviewed commits to the other branches after a `LGTM` label is added to the PR.
+
 ### Purpose
 
 (FILL ME IN) This section describes why this PR is here. Usually it would include a reference 

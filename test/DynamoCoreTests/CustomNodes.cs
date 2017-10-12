@@ -5,7 +5,6 @@ using System.Linq;
 using System.Threading;
 using Dynamo.Models;
 using Dynamo.Selection;
-
 using NUnit.Framework;
 using System.Collections;
 using CoreNodeModels;
@@ -15,6 +14,7 @@ using Dynamo.Graph.Nodes.CustomNodes;
 using Dynamo.Graph.Nodes.ZeroTouch;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Graph.Notes;
+using Newtonsoft.Json.Linq;
 
 namespace Dynamo.Tests
 {
@@ -26,6 +26,7 @@ namespace Dynamo.Tests
             libraries.Add("ProtoGeometry.dll");
             libraries.Add("DSCoreNodes.dll");
             libraries.Add("FunctionObject.ds");
+            libraries.Add("BuiltIn.ds");
             base.GetLibrariesToPreload(libraries);
         }
 
@@ -746,6 +747,92 @@ namespace Dynamo.Tests
             BeginRun();
 
             AssertPreviewValue("405d0c03-6b22-466e-a2b9-b9bf602e1762", 142);
+        }
+
+        [Test]
+        public void TestCustomNodeDefaultValueJson()
+        {
+            // load xml dyf test file
+            var dynFilePath = Path.Combine(TestDirectory, @"core\CustomNodes\CNDefault.dyf");
+            OpenModel(dynFilePath);
+
+            // get custom node ws as json
+            var cws = CurrentDynamoModel.Workspaces.FirstOrDefault(ws => ws is CustomNodeWorkspaceModel);
+            Assert.NotNull(cws);
+            var customNodeWorkspace = (CustomNodeWorkspaceModel)cws;
+            var json = customNodeWorkspace.ToJson(CurrentDynamoModel.EngineController);
+            var jObject = JObject.Parse(json);
+
+            // check first input defaults
+            string concreteType = (string)jObject.SelectToken("Nodes[1].ConcreteType");
+            string name = (string)jObject.SelectToken("Nodes[1].Parameter.Name");
+            string typeName = (string)jObject.SelectToken("Nodes[1].Parameter.TypeName");
+            int typeRank = (int)jObject.SelectToken("Nodes[1].Parameter.TypeRank");
+            string defaultValue = (string)jObject.SelectToken("Nodes[1].Parameter.DefaultValue");
+
+            string type = cws.Nodes.Where(node => node.GUID.ToString("N") == "4b3ef2466ef649ea95db607b1f083d0c").ToArray().First().GetType().ToString();
+            Assert.IsTrue(concreteType.Contains(type));
+            Assert.IsTrue(name == "center");
+            Assert.IsTrue(typeName == "Autodesk.DesignScript.Geometry.Point");
+            Assert.IsTrue(typeRank == 0);
+            Assert.IsTrue(defaultValue == "Autodesk.DesignScript.Geometry.Point.ByCoordinates(10, 10, 10)");
+
+            // check second input defaults
+            type = cws.Nodes.Where(node => node.GUID.ToString("N") == "e2efe8b186cd477995f6fb4cf28038a5").ToArray().First().GetType().ToString();
+            concreteType = (string)jObject.SelectToken("Nodes[2].ConcreteType");
+            name = (string)jObject.SelectToken("Nodes[2].Parameter.Name");
+            typeName = (string)jObject.SelectToken("Nodes[2].Parameter.TypeName");
+            typeRank = (int)jObject.SelectToken("Nodes[2].Parameter.TypeRank");
+            defaultValue = (string)jObject.SelectToken("Nodes[2].Parameter.DefaultValue");
+
+            Assert.IsTrue(concreteType.Contains(type));
+            Assert.IsTrue(name == "radius");
+            Assert.IsTrue(typeName == "double");
+            Assert.IsTrue(typeRank == 0);
+            Assert.IsTrue(defaultValue == "5.5");
+        }
+
+        [Test]
+        public void TestCustomNodeDefaultValueOpenedinJson()
+        {
+            // load json dyf test file
+            var dynFilePath = Path.Combine(TestDirectory, @"core\CustomNodes\CNDefault_json.dyf");
+            OpenModel(dynFilePath);
+
+            // get custom node ws as json
+            var cws = CurrentDynamoModel.Workspaces.FirstOrDefault(ws => ws is CustomNodeWorkspaceModel);
+            Assert.NotNull(cws);
+            var customNodeWorkspace = (CustomNodeWorkspaceModel)cws;
+            var json = customNodeWorkspace.ToJson(CurrentDynamoModel.EngineController);
+            var jObject = JObject.Parse(json);
+
+            // check first input defaults
+            string concreteType = (string)jObject.SelectToken("Nodes[1].ConcreteType");
+            string name = (string)jObject.SelectToken("Nodes[1].Parameter.Name");
+            string typeName = (string)jObject.SelectToken("Nodes[1].Parameter.TypeName");
+            int typeRank = (int)jObject.SelectToken("Nodes[1].Parameter.TypeRank");
+            string defaultValue = (string)jObject.SelectToken("Nodes[1].Parameter.DefaultValue");
+
+            string type = cws.Nodes.Where(node => node.GUID.ToString("N") == "4b3ef2466ef649ea95db607b1f083d0c").ToArray().First().GetType().ToString();
+            Assert.IsTrue(concreteType.Contains(type));
+            Assert.IsTrue(name == "center");
+            Assert.IsTrue(typeName == "Autodesk.DesignScript.Geometry.Point");
+            Assert.IsTrue(typeRank == 0);
+            Assert.IsTrue(defaultValue == "Autodesk.DesignScript.Geometry.Point.ByCoordinates(10, 10, 10)");
+
+            // check second input defaults
+            type = cws.Nodes.Where(node => node.GUID.ToString("N") == "e2efe8b186cd477995f6fb4cf28038a5").ToArray().First().GetType().ToString();
+            concreteType = (string)jObject.SelectToken("Nodes[2].ConcreteType");
+            name = (string)jObject.SelectToken("Nodes[2].Parameter.Name");
+            typeName = (string)jObject.SelectToken("Nodes[2].Parameter.TypeName");
+            typeRank = (int)jObject.SelectToken("Nodes[2].Parameter.TypeRank");
+            defaultValue = (string)jObject.SelectToken("Nodes[2].Parameter.DefaultValue");
+
+            Assert.IsTrue(concreteType.Contains(type));
+            Assert.IsTrue(name == "radius");
+            Assert.IsTrue(typeName == "double");
+            Assert.IsTrue(typeRank == 0);
+            Assert.IsTrue(defaultValue == "5.5");
         }
 
         [Test]

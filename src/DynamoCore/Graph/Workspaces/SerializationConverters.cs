@@ -12,6 +12,7 @@ using Dynamo.Graph.Nodes.NodeLoaders;
 using Dynamo.Graph.Nodes.ZeroTouch;
 using Dynamo.Graph.Notes;
 using Dynamo.Graph.Presets;
+using Dynamo.Library;
 using Dynamo.Scheduler;
 using Dynamo.Utilities;
 using Newtonsoft.Json;
@@ -53,65 +54,87 @@ namespace Dynamo.Graph.Workspaces
             var obj = JObject.Load(reader);
             var type = Type.GetType(obj["$type"].Value<string>());
 
-            //if the id is not a guid, makes a guid based on the id of the node
+            // If the id is not a guid, makes a guid based on the id of the node
             var guid = GuidUtility.tryParseOrCreateGuid(obj["Id"].Value<string>());
-        
 
+            var replication = obj["Replication"].Value<string>();
            
             var inPorts = obj["Inputs"].ToArray().Select(t => t.ToObject<PortModel>()).ToArray();
             var outPorts = obj["Outputs"].ToArray().Select(t => t.ToObject<PortModel>()).ToArray();
 
             var resolver = (IdReferenceResolver)serializer.ReferenceResolver;
+            string assemblyLocation = objectType.Assembly.Location;
 
-            if (type == typeof(Function))
+            bool remapPorts = true;
+            if (type == null)
             {
-                var functionId = Guid.Parse(obj["FunctionUuid"].Value<string>());
-                node = manager.CreateCustomNodeInstance(functionId);
-                RemapPorts(node, inPorts, outPorts, resolver);
+                node = CreateDummyNode(obj, assemblyLocation, inPorts, outPorts);
+            }
+            else if (type == typeof(Function))
+            {
+                var functionId = Guid.Parse(obj["FunctionSignature"].Value<string>());
+
+                CustomNodeDefinition def = null;
+                CustomNodeInfo info = null;
+                bool isUnresolved = !manager.TryGetCustomNodeData(functionId, null, false, out def, out info);
+                Function function = manager.CreateCustomNodeInstance(functionId, null, false, def, info);
+                node = function;
+
+                if (isUnresolved)
+                  function.UpdatePortsForUnresolved(inPorts, outPorts);
             }
             else if (type == typeof(CodeBlockNodeModel))
             {
                 var code = obj["Code"].Value<string>();
                 node = new CodeBlockNodeModel(code, guid, 0.0, 0.0, libraryServices, ElementResolver);
-                RemapPorts(node, inPorts, outPorts, resolver);
             }
             else if (typeof(DSFunctionBase).IsAssignableFrom(type))
             {
                 var mangledName = obj["FunctionSignature"].Value<string>();
 
-                var description = libraryServices.GetFunctionDescriptor(mangledName);
-
-                if (type == typeof(DSVarArgFunction))
+                var functionDescriptor = libraryServices.GetFunctionDescriptor(mangledName);
+                if (functionDescriptor == null)
                 {
-                    node = new DSVarArgFunction(description);
-                    // The node syncs with the function definition.
-                    // Then we need to make the inport count correct
-                    var varg = (DSVarArgFunction)node;
-                    varg.VarInputController.SetNumInputs(inPorts.Count());
+                    node = CreateDummyNode(obj, assemblyLocation, inPorts, outPorts);
                 }
-                else if (type == typeof(DSFunction))
+                else
                 {
-                    node = new DSFunction(description);
-
+                    if (type == typeof(DSVarArgFunction))
+                    {
+                        node = new DSVarArgFunction(functionDescriptor);
+                        // The node syncs with the function definition.
+                        // Then we need to make the inport count correct
+                        var varg = (DSVarArgFunction)node;
+                        varg.VarInputController.SetNumInputs(inPorts.Count());
+                    }
+                    else if (type == typeof(DSFunction))
+                    {
+                        node = new DSFunction(functionDescriptor);
+                    }
                 }
-                RemapPorts(node, inPorts, outPorts, resolver);
             }
             else if (type == typeof(DSVarArgFunction))
             {
-                var functionId = Guid.Parse(obj["FunctionUuid"].Value<string>());
+                var functionId = Guid.Parse(obj["FunctionSignature"].Value<string>());
                 node = manager.CreateCustomNodeInstance(functionId);
-                RemapPorts(node, inPorts, outPorts, resolver);
             }
             else if (type.ToString() == "CoreNodeModels.Formula")
             {
                 node = (NodeModel)obj.ToObject(type);
-                RemapPorts(node, inPorts, outPorts, resolver);
             }
             else
             {
                 node = (NodeModel)obj.ToObject(type);
+
+                // We don't need to remap ports for any nodes with json constructors which pass ports
+                remapPorts = false;
             }
 
+            if (remapPorts)
+                RemapPorts(node, inPorts, outPorts, resolver);
+
+            // Cannot set Lacing directly as property is protected
+            node.UpdateValue(new UpdateValueParams("ArgumentLacing", replication));
             node.GUID = guid;
 
             // Add references to the node and the ports to the reference resolver,
@@ -119,18 +142,32 @@ namespace Dynamo.Graph.Workspaces
             serializer.ReferenceResolver.AddReference(serializer.Context, node.GUID.ToString(), node);
 
             foreach (var p in node.InPorts)
-            {
                 serializer.ReferenceResolver.AddReference(serializer.Context, p.GUID.ToString(), p);
-            }
+
             foreach (var p in node.OutPorts)
-            {
                 serializer.ReferenceResolver.AddReference(serializer.Context, p.GUID.ToString(), p);
-            }
+            
             return node;
         }
 
+        private DummyNode CreateDummyNode(JObject obj, string assemblyLocation, PortModel[] inPorts, PortModel[] outPorts)
+        {
+            var inputcount = inPorts.Count();
+            var outputcount = outPorts.Count();
+
+            return new DummyNode(
+                obj["Id"].ToString(),
+                inputcount,
+                outputcount,
+                assemblyLocation,
+                obj);
+        }
+
+
         /// <summary>
         /// Map old Guids to new Models in the IdReferenceResolver.
+        /// This method also sets portData from the deserialized ports onto the 
+        /// newly created ports.
         /// </summary>
         /// <param name="node">The newly created node.</param>
         /// <param name="inPorts">The deserialized input ports.</param>
@@ -140,12 +177,26 @@ namespace Dynamo.Graph.Workspaces
         {
             foreach (var p in node.InPorts)
             {
-                resolver.AddToReferenceMap(inPorts[p.Index].GUID, p);
+                var deserializedPort = inPorts[p.Index];
+                resolver.AddToReferenceMap(deserializedPort.GUID, p);
+                setPortDataOnNewPort(p, deserializedPort);
             }
             foreach (var p in node.OutPorts)
             {
-                resolver.AddToReferenceMap(outPorts[p.Index].GUID, p);
+                var deserializedPort = outPorts[p.Index];
+                resolver.AddToReferenceMap(deserializedPort.GUID, p);
+                setPortDataOnNewPort(p, deserializedPort);
             }
+        }
+
+        private static void setPortDataOnNewPort(PortModel newPort, PortModel deserializedPort )
+        {
+            //set the appropriate properties on the new port.
+            newPort.GUID = deserializedPort.GUID;
+            newPort.UseLevels = deserializedPort.UseLevels;
+            newPort.Level = deserializedPort.Level;
+            newPort.KeepListStructure = deserializedPort.KeepListStructure;
+            newPort.UsingDefaultValue = deserializedPort.UsingDefaultValue;
         }
 
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
@@ -209,9 +260,6 @@ namespace Dynamo.Graph.Workspaces
             var obj = JObject.Load(reader);
 
             var isCustomNode = obj["IsCustomNode"].Value<bool>();
-            var lastModifiedStr = obj["LastModified"].Value<string>();
-            var lastModified = DateTime.Parse(lastModifiedStr);
-            var author = obj["LastModifiedBy"].Value<string>();
             var description = obj["Description"].Value<string>();
             var guidStr = obj["Uuid"].Value<string>();
             var guid = Guid.Parse(guidStr);
@@ -223,16 +271,33 @@ namespace Dynamo.Graph.Workspaces
 
             // nodes
             var nodes = obj["Nodes"].ToObject<IEnumerable<NodeModel>>(serializer);
-            
-            // notes
-            var notes = obj["Notes"].ToObject<IEnumerable<NoteModel>>(serializer);
-            if (notes.Any())
+
+            // nodes
+            var inputsToken = obj["Inputs"];
+            if(inputsToken != null)
             {
-                foreach(var n in notes)
+               var inputs = inputsToken.ToArray().Select(x => x.ToObject<NodeInputData>()).ToList();
+               //using the inputs lets set the correct properties on the nodes.
+               foreach(var inputData in inputs)
                 {
-                    serializer.ReferenceResolver.AddReference(serializer.Context, n.GUID.ToString(), n);
+                    var matchingNode = nodes.Where(x => x.GUID == inputData.Id).FirstOrDefault();
+                    if(matchingNode != null)
+                    {
+                        matchingNode.IsSetAsInput = true;
+                    }
                 }
             }
+
+            // notes
+            //TODO: Check this when implementing ReadJSON in ViewModel.
+            //var notes = obj["Notes"].ToObject<IEnumerable<NoteModel>>(serializer);
+            //if (notes.Any())
+            //{
+            //    foreach(var n in notes)
+            //    {
+            //        serializer.ReferenceResolver.AddReference(serializer.Context, n.GUID.ToString(), n);
+            //    }
+            //}
 
             // connectors
             // Although connectors are not used in the construction of the workspace
@@ -240,10 +305,42 @@ namespace Dynamo.Graph.Workspaces
             // relevant ports.
             var connectors = obj["Connectors"].ToObject<IEnumerable<ConnectorModel>>(serializer);
 
-            // annotations
-            var annotations = obj["Annotations"].ToObject<IEnumerable<AnnotationModel>>(serializer);
-
             var info = new WorkspaceInfo(guid.ToString(), name, description, Dynamo.Models.RunType.Automatic);
+
+            //Build an empty annotations. Annotations are defined in the view block. If the file has View block
+            //serialize view block first and build the annotations.
+            var annotations = new List<AnnotationModel>();
+
+            //Build an empty notes. Notes are defined in the view block. If the file has View block
+            //serialize view block first and build the notes.
+            var notes = new List<NoteModel>();
+
+            // Trace Data
+            Dictionary<Guid, List<CallSite.RawTraceData>> loadedTraceData = new Dictionary<Guid, List<CallSite.RawTraceData>>();
+
+            // Restore trace data if bindings are present in json
+            if (obj["Bindings"] != null && obj["Bindings"].Children().Count() > 0)
+            {
+                JEnumerable<JToken> bindings = obj["Bindings"].Children();
+
+                // Iterate through bindings to extract nodeID's and bindingData (callsiteId & traceData)
+                foreach (JToken entity in bindings)
+                {
+                    Guid nodeId = Guid.Parse(entity["NodeId"].ToString());
+                    string bindingString = entity["Binding"].ToString();
+
+                    // Key(callsiteId) : Value(traceData)
+                    Dictionary<string, string> bindingData = JsonConvert.DeserializeObject<Dictionary<string, string>>(bindingString);
+                    List<CallSite.RawTraceData> callsiteTraceData = new List<CallSite.RawTraceData>();
+
+                    foreach (KeyValuePair<string, string> pair in bindingData)
+                    {
+                        callsiteTraceData.Add(new CallSite.RawTraceData(pair.Key, pair.Value));
+                    }
+
+                    loadedTraceData.Add(nodeId, callsiteTraceData);
+                }
+            }
 
             WorkspaceModel ws;
             if (isCustomNode)
@@ -253,8 +350,8 @@ namespace Dynamo.Graph.Workspaces
             }
             else
             {
-                ws = new HomeWorkspaceModel(guid, engine, scheduler, factory, 
-                    Enumerable.Empty<KeyValuePair<Guid, List<CallSite.RawTraceData>>>(), nodes, notes, annotations, 
+                ws = new HomeWorkspaceModel(guid, engine, scheduler, factory,
+                    loadedTraceData, nodes, notes, annotations, 
                     Enumerable.Empty<PresetModel>(), elementResolver, 
                     info, verboseLogging, isTestMode);
             }
@@ -296,32 +393,28 @@ namespace Dynamo.Graph.Workspaces
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
             var ws = (WorkspaceModel)value;
-
+            bool isCustomNode = value is CustomNodeWorkspaceModel;
             writer.WriteStartObject();
-
             writer.WritePropertyName("Uuid");
-            if (value is CustomNodeWorkspaceModel)
-            {
+            if (isCustomNode)
                 writer.WriteValue((ws as CustomNodeWorkspaceModel).CustomNodeId.ToString());
-            }
             else
-            {
                 writer.WriteValue(ws.Guid.ToString());
-
-            }
+            // TODO: revisit IsCustomNode during DYN/DYF convergence
             writer.WritePropertyName("IsCustomNode");
             writer.WriteValue(value is CustomNodeWorkspaceModel ? true : false);
-            if (value is CustomNodeWorkspaceModel)
+            if (isCustomNode)
             {
                 writer.WritePropertyName("Category");
                 writer.WriteValue(((CustomNodeWorkspaceModel)value).Category);
             }
-            writer.WritePropertyName("LastModified");
-            writer.WriteValue(ws.LastSaved.ToUniversalTime());
-            writer.WritePropertyName("LastModifiedBy");
-            writer.WriteValue(ws.Author);
+
+            // Description
             writer.WritePropertyName("Description");
-            writer.WriteValue(ws.Description);
+            if (isCustomNode)
+                writer.WriteValue(((CustomNodeWorkspaceModel)ws).Description);
+            else
+                writer.WriteValue(ws.Description);
             writer.WritePropertyName("Name");
             writer.WriteValue(ws.Name);
 
@@ -329,26 +422,20 @@ namespace Dynamo.Graph.Workspaces
             writer.WritePropertyName("ElementResolver");
             serializer.Serialize(writer, ws.ElementResolver);
 
+            //inputs
+            writer.WritePropertyName("Inputs");
+            //find nodes which are inputs and get their inputData if its not null.
+            var inputNodeDatas = ws.Nodes.Where((node) => node.IsSetAsInput == true && node.InputData != null)
+                .Select(inputNode => inputNode.InputData).ToList();
+            serializer.Serialize(writer, inputNodeDatas);
+
             //nodes
             writer.WritePropertyName("Nodes");
             serializer.Serialize(writer, ws.Nodes);
 
-            //notes
-           writer.WritePropertyName("Notes");
-            serializer.Serialize(writer, ws.Notes);
- 
             //connectors
             writer.WritePropertyName("Connectors");
             serializer.Serialize(writer, ws.Connectors);
-
-            //annotations
-            writer.WritePropertyName("Annotations");
-            serializer.Serialize(writer, ws.Annotations);
-
-            //cameras
-            writer.WritePropertyName("Cameras");
-            writer.WriteStartArray();
-            writer.WriteEndArray();
 
             // Dependencies
             writer.WritePropertyName("Dependencies");
@@ -414,65 +501,40 @@ namespace Dynamo.Graph.Workspaces
     }
 
     /// <summary>
-    /// The AnnotationConverter is used to serialize and deserialize AnnotationModels.
-    /// The SelectedModels property on AnnotationModel is a list of references
-    /// to ModelBase objects. During serialization we want to refer to these objects
-    /// by their ids. During deserialization, we use the ReferenceResolver to
-    /// find the correct ModelBase instances to reference.
+    /// DummyNodeWriteConverter is used for serializing DummyNodes to JSON.
+    /// Note that the DummyNode objects serialize as their original content and not as a DummyNode.
     /// </summary>
-    public class AnnotationConverter : JsonConverter
+    public class DummyNodeWriteConverter : JsonConverter
     {
         public override bool CanConvert(Type objectType)
         {
-            return objectType == typeof(AnnotationModel);
+            return typeof(DummyNode).IsAssignableFrom(objectType);
         }
 
-        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+        public override bool CanRead
         {
-            var obj = JObject.Load(reader);
-            var title = obj["Title"].Value<string>();
-            //if the id is not a guid, makes a guid based on the id of the model
-            Guid annotationId =  GuidUtility.tryParseOrCreateGuid(obj["Id"].Value<string>());
-
-            // This is a collection of string Guids, which
-            // should be accessible in the ReferenceResolver.
-            var models = obj["Nodes"].Values<JValue>();
-
-            var existing = models.Select(m => {
-                Guid modelId = GuidUtility.tryParseOrCreateGuid(m.Value<string>());
-              
-                return serializer.ReferenceResolver.ResolveReference(serializer.Context, modelId.ToString());
-                });
-
-            var nodes = existing.Where(m => typeof(NodeModel).IsAssignableFrom(m.GetType())).Cast<NodeModel>();
-            var notes = existing.Where(m => typeof(NoteModel).IsAssignableFrom(m.GetType())).Cast<NoteModel>();
-
-            var anno = new AnnotationModel(nodes, notes);
-            anno.AnnotationText = title;
-            anno.GUID = annotationId;
-
-            return anno;
+            get { return false; }
         }
 
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
-            var anno = (AnnotationModel)value;
+            var dummyNode = value as DummyNode;
+            if (dummyNode == null)
+                throw new ArgumentException("value is not a DummyNode.");
 
-            writer.WriteStartObject();
+            if (dummyNode.OriginalNodeContent == null)
+                throw new ArgumentException("There is no content to write for this DummyNode.");
 
-            writer.WritePropertyName("Title");
-            writer.WriteValue(anno.AnnotationText);
-            writer.WritePropertyName("Nodes");
-            writer.WriteStartArray();
-            foreach (var m in anno.Nodes)
-            {
-                writer.WriteValue(m.GUID.ToString());
-            }
-            writer.WriteEndArray();
-            writer.WritePropertyName("Id");
-            writer.WriteValue(anno.GUID.ToString());
+            JObject originalContent = dummyNode.OriginalNodeContent as JObject;
+            if (originalContent == null)
+                throw new ArgumentException("originalContent is not JSON compatible.");
 
-            writer.WriteEndObject();
+            originalContent.WriteTo(writer);
+    }
+
+    public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+        {
+            throw new NotImplementedException();
         }
     }
 
@@ -529,11 +591,11 @@ namespace Dynamo.Graph.Workspaces
 
             writer.WriteStartObject();
             writer.WritePropertyName("Start");
-            writer.WriteValue(connector.Start.GUID.ToString());
+            writer.WriteValue(connector.Start.GUID.ToString("N"));
             writer.WritePropertyName("End");
-            writer.WriteValue(connector.End.GUID.ToString());
+            writer.WriteValue(connector.End.GUID.ToString("N"));
             writer.WritePropertyName("Id");
-            writer.WriteValue(connector.GUID.ToString());
+            writer.WriteValue(connector.GUID.ToString("N"));
             writer.WriteEndObject();
         }
     }
@@ -564,15 +626,37 @@ namespace Dynamo.Graph.Workspaces
 
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
+            writer.WriteValue(((Guid)value).ToString("N"));
+        }
+    }
+
+    /// <summary>
+    /// This converter is used to attempt to convert TypedParameter into a json object
+    /// </summary>
+    public class TypedParameterConverter : JsonConverter
+    {
+        public override bool CanConvert(Type objectType)
+        {
+            return objectType == typeof(TypedParameter);
+        }
+
+        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+        {
             throw new NotImplementedException();
         }
 
-        public override bool CanWrite
+        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
-            get
-            {
-                return false;
-            }
+            writer.WriteStartObject();
+            writer.WritePropertyName("Name");
+            writer.WriteValue(((TypedParameter)value).Name);
+            writer.WritePropertyName("TypeName");
+            writer.WriteValue(((TypedParameter)value).Type.Name);
+            writer.WritePropertyName("TypeRank");
+            writer.WriteValue(((TypedParameter)value).Type.rank);
+            writer.WritePropertyName("DefaultValue");
+            writer.WriteValue(((TypedParameter)value).DefaultValueString);
+            writer.WriteEndObject();
         }
     }
 

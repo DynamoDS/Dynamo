@@ -44,9 +44,9 @@ namespace Dynamo.Models
 
         protected virtual void OpenFileImpl(OpenFileCommand command)
         {
-            string xmlFilePath = command.XmlFilePath;
+            string filePath = command.FilePath;
             bool forceManualMode = command.ForceManualExecutionMode;
-            OpenFileFromPath(xmlFilePath, forceManualMode);
+            OpenFileFromPath(filePath, forceManualMode);
 
             //clear the clipboard to avoid copying between dyns
             //ClipBoard.Clear();
@@ -169,7 +169,7 @@ namespace Dynamo.Models
             // And if that didn't work, then it must be a custom node.
             if (Guid.TryParse(name, out customNodeId))
             {
-                node = CustomNodeManager.CreateCustomNodeInstance(customNodeId);
+                node = CustomNodeManager.CreateCustomNodeInstance(customNodeId, null, false, LibraryServices);
                 node.GUID = nodeId;
                 return node;
             }

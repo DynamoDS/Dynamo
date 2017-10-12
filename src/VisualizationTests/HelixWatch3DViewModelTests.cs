@@ -56,7 +56,7 @@ namespace WpfVisualizationTests
             libraries.Add("ProtoGeometry.dll");
             libraries.Add("DSIronPython.dll");
             libraries.Add("DSCoreNodes.dll");
-            libraries.Add("Display.dll");
+            libraries.Add("GeometryColor.dll");
             libraries.Add("VMDataBridge.dll");
             base.GetLibrariesToPreload(libraries);
         }
@@ -188,10 +188,7 @@ namespace WpfVisualizationTests
             var vm = view.ViewModel as HelixWatch3DNodeViewModel;
             Assert.NotNull(vm);
 
-            //flip off the line node's preview upstream
-            var l1 = model.CurrentWorkspace.Nodes.First(x => x.GUID.ToString() == "7c1cecee-43ed-43b5-a4bb-5f71c50341b2");
-            l1.UpdateValue(new UpdateValueParams("IsUpstreamVisible", "false"));
-
+           
             Assert.True(vm.SceneItems.HasNumberOfPointsCurvesAndMeshes(0,6,0));
         }
 
@@ -781,11 +778,6 @@ namespace WpfVisualizationTests
             // Now turn on the preview of all the nodes
             ViewModel.CurrentSpaceViewModel.SelectAllCommand.Execute(null);
             ViewModel.CurrentSpaceViewModel.ShowHideAllGeometryPreviewCommand.Execute("true");
-
-            Assert.IsTrue(nodes.Select(n => n.IsUpstreamVisible).SequenceEqual(new[]
-            {
-                true, true, true, true
-            }));
             Assert.AreEqual(3, BackgroundPreviewGeometry.TotalPoints());
         }
 

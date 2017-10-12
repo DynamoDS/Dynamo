@@ -385,7 +385,30 @@ test = foo( x<1>,y<2> );
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.Verify("test", new Object[][] { new object[]{4},new object[]{ 5} });
+            thisTest.Verify("test", new Object[] { 4, 5});
+        }
+
+        [Test]
+        [Category("Replication")]
+        public void T0001_Replication_Guide_Function_With_3_Args()
+        {
+            String code =
+                @"
+def foo: var[]..[](x : string, y : string, z : string)
+{
+return = x + y + z;
+}
+x = {{""1""}};
+y = ""2"";
+z = {""3"", ""4""};
+a = foo(x<1>, y<2>, z<3>);
+b = foo(x<1>, y<2>, z<3><4>);
+";
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
+            String errmsg = "";
+            ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
+            thisTest.Verify("a", new object[] {new object[] {new object[] {"123"}, new object[] {"124"}}});
+            thisTest.Verify("b", new object[] {new object[] {new object[] {"123"}, new object[] {"124"}}});
         }
 
         [Test]
@@ -567,7 +590,7 @@ test = TestObjectC.TestObjectC(x<1>,y<2>).z;
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "DNL-1467459 NotImplemented Exception occurs when replication guides are used on a combination of collection and singleton";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.Verify("test", new Object[] { new object[] { 2 }, new object[] { 3 } });
+            thisTest.Verify("test", new Object[] {  2, 3 });
         }
 
         [Test]
@@ -2372,6 +2395,7 @@ test1 = ReplicationTestA.ReplicationTestA(x<1>, y<2>, z<3>).A ;
         {
             string code =
 @" 
+    import(""BuiltIn.ds"");
     x = {0,1,2,3};
     y = {0,1};
     z = { ""int"", ""double"" };
@@ -2379,7 +2403,7 @@ test1 = ReplicationTestA.ReplicationTestA(x<1>, y<2>, z<3>).A ;
     test2 = IndexOf ( x, y) ;
     test3 = Remove ( x, y) ;
     test5 = NormalizeDepth ( x, y) ; 
-    test6 = RemoveIfNot ( x, z) ; 
+    test6 = List.RemoveIfNot ( x, z) ; 
     test7 = SortIndexByValue ( x, y) ; 
     test8 = Map ( {1,2}, {3,4}, {2,3}) ;   
 ";
@@ -2401,6 +2425,7 @@ test1 = ReplicationTestA.ReplicationTestA(x<1>, y<2>, z<3>).A ;
         {
             string code =
 @" 
+import(""BuiltIn.ds"");
 test1;
 test2;
 test3;
@@ -2419,7 +2444,7 @@ test8;
     test3 = Remove ( x<1>, y<2>) ; 
     test4 = Insert ( x<1>, y<2>, y<2>) ;
     test5 = NormalizeDepth ( x<1>, y<2>) ; 
-    test6 = RemoveIfNot ( x<1>, z<2>) ; 
+    test6 = List.RemoveIfNot ( x<1>, z<2>) ; 
     test7 = SortIndexByValue ( x<1>, y<2>) ; 
     test8 = Map ( {1,2}<1>, {5,6}<2>, {2,3}<2>) ; 
     
@@ -2889,10 +2914,7 @@ t1 = foo(a<1>, b<2>);
 ";
             string errmsg = "";
             thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.Verify("t1", new Object[]
-                {
-                    new Object[] { 0, 1}
-                });
+            thisTest.Verify("t1", new Object[] {0, 1});
 
         }
 

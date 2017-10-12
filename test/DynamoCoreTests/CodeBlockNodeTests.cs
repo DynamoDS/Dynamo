@@ -224,19 +224,23 @@ b = c[w][x][y][z];";
             Assert.AreEqual("a", indexMap.ElementAt(0).Key);
             Assert.AreEqual(1, indexMap.ElementAt(0).Value);
 
-            UpdateCodeBlockNodeContent(codeBlockNodeOne, "a = 0; \n a = 1;");
+            UpdateCodeBlockNodeContent(codeBlockNodeOne, "a = 0; \n b = 1;");
 
             indexMap = CodeBlockUtils.GetDefinitionLineIndexMap(codeBlockNodeOne.CodeStatements);
             Assert.AreEqual("a", indexMap.ElementAt(0).Key);
-            Assert.AreEqual(2, indexMap.ElementAt(0).Value);
+            Assert.AreEqual(1, indexMap.ElementAt(0).Value);
+            Assert.AreEqual("b", indexMap.ElementAt(1).Key);
+            Assert.AreEqual(2, indexMap.ElementAt(1).Value);
 
-            UpdateCodeBlockNodeContent(codeBlockNodeOne, "a = 0; \n b = 1; \n a = 2;");
+            UpdateCodeBlockNodeContent(codeBlockNodeOne, "b = 0; \n a = 1; \n c = 2;");
 
             indexMap = CodeBlockUtils.GetDefinitionLineIndexMap(codeBlockNodeOne.CodeStatements);
             Assert.AreEqual("b", indexMap.ElementAt(0).Key);
-            Assert.AreEqual(2, indexMap.ElementAt(0).Value);
+            Assert.AreEqual(1, indexMap.ElementAt(0).Value);
             Assert.AreEqual("a", indexMap.ElementAt(1).Key);
-            Assert.AreEqual(3, indexMap.ElementAt(1).Value);
+            Assert.AreEqual(2, indexMap.ElementAt(1).Value);
+            Assert.AreEqual("c", indexMap.ElementAt(2).Key);
+            Assert.AreEqual(3, indexMap.ElementAt(2).Value);
 
         }
 
@@ -1034,6 +1038,23 @@ var06 = g;
                 ProtoCore.Properties.Resources.kConvertNonConvertibleTypes));
         }
 
+        [Test]
+        // This test case is specific to the "ExportCSV node, needs to be updated whenever there is a change to the node
+        public void MethodDeprecated_LogsWarning()
+        {
+            string openPath = Path.Combine(TestDirectory, @"core\dsevaluation\MigrateCBN.dyn");
+            RunModel(openPath);
+
+            Assert.AreEqual(3, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+            Assert.AreEqual(2, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
+
+            var node1 = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace
+                ("eff3e874-cfc3-455c-8275-741ab5b42ebd");
+
+            Assert.IsTrue(node1.ToolTipText.Contains(
+                "Method 'DSCore.IO.CSV.WriteToFile' has been deprecated, please use method 'DSOffice.Data.ExportCSV' instead"));
+        }
+
         #endregion
 
         #region Codeblock Namespace Resolution Tests
@@ -1447,9 +1468,13 @@ var06 = g;
         [Category("UnitTests")]
         public void TestBuiltInMethodSignatureCompletion()
         {
+            const string libraryPath = "BuiltIn.ds";
+
+            CompilerUtils.TryLoadAssemblyIntoCore(libraryServicesCore, libraryPath);
+
             var codeCompletionServices = new CodeCompletionServices(libraryServicesCore);
 
-            string functionPrefix = "";
+            string functionPrefix = "List";
             string functionName = "ContainsKey";
 
             string code = "";

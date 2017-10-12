@@ -486,26 +486,6 @@ b = S.a;
             thisTest.Verify("b",2);
         }
 
-
-        [Test]
-        [Category("DSDefinedClass_Ported")]
-        public void TestStaticMethodResolution()
-        {
-            string code = @"
-	        def foo(a : int)
-	        {
-		        return = 1;
-	        }
-	        def foo(a : int[])
-	        {
-		        return = 2;
-            }
-            c = {1,2,3,4};
-            d = foo(c);";
-            thisTest.RunScriptSource(code);
-            thisTest.Verify("d", 2);
-        }
-
         [Test]
         public void TestTemporaryArrayIndexing01()
         {
@@ -1186,10 +1166,11 @@ r = c[3];
         {
             // Test builtin functions GetKeys() for array
             String code = @"
-        a = {1, 2, 3};
+import(""BuiltIn.ds"");
+a = {1, 2, 3};
 a[true] = 41;
 a[""x""] = ""foo"";
-r = Count(GetKeys(a));
+r = Count(List.GetKeys(a));
 ";
             thisTest.RunScriptSource(code);
             thisTest.Verify("r", 5);
@@ -1200,10 +1181,11 @@ r = Count(GetKeys(a));
         {
             // Test builtin functions GetValues() for array
             String code = @"
-        a = {1, 2, 3};
+import(""BuiltIn.ds"");
+a = {1, 2, 3};
 a[true] = 41;
 a[""x""] = ""foo"";
-r = Count(GetValues(a));
+r = Count(List.GetValues(a));
 ";
             thisTest.RunScriptSource(code);
             thisTest.Verify("r", 5);
@@ -1214,11 +1196,12 @@ r = Count(GetValues(a));
         {
             // Test builtin functions ContainsKey() for array
             String code = @"
-        a = {1, 2, 3};
+import(""BuiltIn.ds"");
+a = {1, 2, 3};
 a[true] = 41;
 a[""x""] = ""foo"";
-r1 = ContainsKey(a, ""x"");
-r2 = ContainsKey(a, true);
+r1 = List.ContainsKey(a, ""x"");
+r2 = List.ContainsKey(a, true);
 ";
             thisTest.RunScriptSource(code);
             thisTest.Verify("r1", true);
@@ -1230,13 +1213,14 @@ r2 = ContainsKey(a, true);
         {
             // Test builtin functions RemoveKey() for array
             String code = @"
-        a = {1, 2, 3};
+import(""BuiltIn.ds"");
+a = {1, 2, 3};
 a[true] = 41;
 a[""x""] = ""foo"";
-r1 = RemoveKey(a, ""x"");
-r2 = RemoveKey(r1, true);
-r3 = ContainsKey(r2, ""x"");
-r4 = ContainsKey(r2, true);
+r1 = List.RemoveKey(a, ""x"");
+r2 = List.RemoveKey(r1, true);
+r3 = List.ContainsKey(r2, ""x"");
+r4 = List.ContainsKey(r2, true);
 ";
             // Tracked in:http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4155
             string errmsg = "MAGN-4155 : ContainsKey returns wrong value";
@@ -3521,6 +3505,216 @@ b = TestThisOverload.Mul(obj, 4);
             // TestThisOverload.Mul() is a defined static function. 
             // Here we shouldn't generate an overloaded one.
             thisTest.Verify("b", 24);
+        }
+
+        [Test]
+        public void TestReturnStatement01()
+        {
+            string code = @"
+x = [Imperative] {
+    return 6;
+}";
+            thisTest.RunScriptSource(code);
+            thisTest.VerifyBuildWarningCount(0);
+            thisTest.Verify("x", 6);
+        }
+
+        [Test]
+        public void TestReturnStatement02()
+        {
+            string code = @"
+x = [Imperative] {
+    return {2, 3, 5};
+}";
+            thisTest.RunScriptSource(code);
+            thisTest.VerifyBuildWarningCount(0);
+            thisTest.Verify("x", new object[] { 2, 3, 5 } );
+        }
+
+        [Test]
+        public void TestReturnStatement03()
+        {
+            string code = @"
+def foo(x) {
+    return x * 2;
+}
+
+x = [Imperative] {
+    return foo(3);
+}";
+            thisTest.RunScriptSource(code);
+            thisTest.VerifyBuildWarningCount(0);
+            thisTest.Verify("x", 6);
+        }
+
+        [Test]
+        public void TestReturnStatement04()
+        {
+            string code = @"
+[Imperative] {
+    return 6;
+}";
+            thisTest.RunScriptSource(code);
+            thisTest.VerifyBuildWarningCount(0);
+        }
+
+        [Test]
+        public void TestReturnStatement05()
+        {
+            string code = @"
+[Imperative] {
+    return {2, 3, 5};
+}";
+            thisTest.RunScriptSource(code);
+            thisTest.VerifyBuildWarningCount(0);
+        }
+
+        [Test]
+        public void TestReturnStatement06()
+        {
+            string code = @"
+def foo(x) {
+    return x * 2;
+}
+
+[Imperative] {
+    return foo(3);
+}";
+            thisTest.RunScriptSource(code);
+            thisTest.VerifyBuildWarningCount(0);
+        }
+
+        [Test]
+        public void TestReturnStatement07()
+        {
+            string code = @"
+def foo(x) {
+    return [Imperative] {
+        return x * 2;
+    }
+}
+
+r = foo(3);
+";
+            thisTest.RunScriptSource(code);
+            thisTest.VerifyBuildWarningCount(0);
+            thisTest.Verify("r", 6);
+        }
+
+        [Test]
+        public void TestReturnStatement08()
+        {
+            string code = @"
+x = [Associative] {
+    return 6;
+}";
+            thisTest.RunScriptSource(code);
+            thisTest.VerifyBuildWarningCount(0);
+            thisTest.Verify("x", 6);
+        }
+
+        [Test]
+        public void TestReturnStatement09()
+        {
+            string code = @"
+x = [Associative] {
+    return {2, 3, 5};
+}";
+            thisTest.RunScriptSource(code);
+            thisTest.VerifyBuildWarningCount(0);
+            thisTest.Verify("x", new object[] { 2, 3, 5 });
+        }
+
+        [Test]
+        public void TestReturnStatement10()
+        {
+            string code = @"
+def foo(x) {
+    return x * 2;
+}
+
+x = [Associative] {
+    return foo(3);
+}";
+            thisTest.RunScriptSource(code);
+            thisTest.VerifyBuildWarningCount(0);
+            thisTest.Verify("x", 6);
+        }
+
+        [Test]
+        public void TestReturnStatement11()
+        {
+            string code = @"
+[Associative] {
+    return 6;
+}";
+            thisTest.RunScriptSource(code);
+            thisTest.VerifyBuildWarningCount(0);
+        }
+
+        [Test]
+        public void TestReturnStatement12()
+        {
+            string code = @"
+[Associative] {
+    return {2, 3, 5};
+}";
+            thisTest.RunScriptSource(code);
+            thisTest.VerifyBuildWarningCount(0);
+        }
+
+        [Test]
+        public void TestReturnStatement13()
+        {
+            string code = @"
+def foo(x) {
+    return x * 2;
+}
+
+[Associative] {
+    return foo(3);
+}";
+            thisTest.RunScriptSource(code);
+            thisTest.VerifyBuildWarningCount(0);
+        }
+
+        [Test]
+        public void TestReturnStatement14()
+        {
+            string code = @"
+def foo(x) {
+    return [Associative] {
+        return x * 2;
+    }
+}
+
+r = foo(3);
+";
+            thisTest.RunScriptSource(code);
+            thisTest.VerifyBuildWarningCount(0);
+            thisTest.Verify("r", 6);
+        }
+
+        [Test]
+        public void TestReturnStatement15()
+        {
+            string code = @"
+[Imperative] {
+    return 6;
+}";
+            thisTest.RunScriptSource(code);
+            thisTest.VerifyBuildWarningCount(0);
+        }
+
+        [Test]
+        public void TestReturnStatement16()
+        {
+            string code = @"
+[Associative] {
+    return 6;
+}";
+            thisTest.RunScriptSource(code);
+            thisTest.VerifyBuildWarningCount(0);
         }
     }
 }
