@@ -405,6 +405,37 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
+        public void JSONisSameBeforeAndAfterSaveWithDummyNodes()
+        {
+            var testFileWithDummyNode = @"core\dummy_node\2080_JSONTESTCRASH undo_redo.dyn";
+            var openPath = Path.Combine(TestDirectory, testFileWithDummyNode);
+
+            var json1 = File.ReadAllText(openPath);
+            var jobject1 = JObject.Parse(json1);
+            jobject1["View"]["Camera"] = null;
+            //we need to replace the camera with null so it will match the null camera produced by the 
+            //save without a real view below.
+            json1 = jobject1.ToString();
+          
+            OpenModel(openPath);
+            Assert.AreEqual(1, ViewModel.CurrentSpace.Nodes.OfType<DummyNode>().Count());
+
+            // Stage 1: Serialize the workspace.
+            var jsonModel = ViewModel.Model.CurrentWorkspace.ToJson(ViewModel.Model.EngineController);
+
+            // Stage 2: Add the View.
+            var json2 = JObject.Parse(jsonModel);
+            var token = JToken.Parse(ViewModel.CurrentSpaceViewModel.ToJson());
+            json2.Add("View", token);
+
+            Console.WriteLine(json1);
+            Console.WriteLine(json2.ToString());
+
+            Assert.IsTrue(JToken.DeepEquals(JObject.Parse(json1), json2));
+
+        }
+
+        [Test]
         public void TestUndoRedoOnConnectedNodes()
         {
             ViewModel.OpenCommand.Execute(Path.Combine(TestDirectory, "core", "LacingTest.dyn"));
