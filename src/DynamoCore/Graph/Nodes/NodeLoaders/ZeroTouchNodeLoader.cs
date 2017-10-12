@@ -108,13 +108,20 @@ namespace Dynamo.Graph.Nodes.NodeLoaders
             {
                 var inputcount = DetermineFunctionInputCount(nodeElement);
 
+                //when we create a dummy node make sure to set the lacing accurately, as we want
+                //migration to be performed - this will ensure the generated json has the correct replication type.
+                //TODO move to function, check for null.
+                var replicationFromXml = nodeElement.GetAttribute("lacing");
+                var argumentLacing = (LacingStrategy)Enum.Parse(typeof(LacingStrategy), replicationFromXml);
+
                 return new DummyNode(
                     inputcount,
                     1,
                     name,
                     nodeElement,
                     assembly,
-                    DummyNode.Nature.Unresolved);
+                    DummyNode.Nature.Unresolved,
+                    argumentLacing);
             }
 
             DSFunctionBase result;

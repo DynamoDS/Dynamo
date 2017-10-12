@@ -1575,7 +1575,7 @@ namespace Dynamo.Graph.Workspaces
                 Converters = new List<JsonConverter>{
                         new ConnectorConverter(),
                         new WorkspaceReadConverter(engineController, scheduler, factory, isTestMode, verboseLogging),
-                        new NodeReadConverter(manager, libraryServices),
+                        new NodeReadConverter(manager, libraryServices,factory),
                         new TypedParameterConverter()
                     },
                 ReferenceResolverProvider = () => { return new IdReferenceResolver(); }

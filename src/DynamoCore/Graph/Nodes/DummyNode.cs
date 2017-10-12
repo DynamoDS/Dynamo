@@ -53,13 +53,16 @@ namespace Dynamo.Graph.Nodes
         /// <param name="originalElement">Xml node</param>
         /// <param name="legacyAssembly">Assembly of the node</param>
         /// <param name="nodeNature">Node can be Deprecated or Unresolved</param>
+        /// <param name="lacing">Node can be Deprecated or Unresolved</param>
+
         public DummyNode(
             int inputCount, 
             int outputCount, 
             string legacyName, 
             XmlElement originalElement, 
             string legacyAssembly, 
-            Nature nodeNature)
+            Nature nodeNature,
+            LacingStrategy lacing = LacingStrategy.Disabled)
         {
             InputCount = inputCount;
             OutputCount = outputCount;
@@ -69,6 +72,7 @@ namespace Dynamo.Graph.Nodes
             OriginalNodeContent = originalElement;
             LegacyAssembly = legacyAssembly;
             NodeNature = nodeNature;
+            ArgumentLacing = lacing;
 
             Description = GetDescription();
             ShouldDisplayPreviewCore = false;
@@ -101,17 +105,20 @@ namespace Dynamo.Graph.Nodes
         /// <param name="outputCount">Number of output ports</param>
         /// <param name="legacyAssembly">Assembly of the node</param>
         /// <param name="originalElement">Original JSON description of the node</param>
+        /// <param name="lacing">Node can be Deprecated or Unresolved</param>
         public DummyNode(
             string id, 
             int inputCount, 
             int outputCount, 
             string legacyAssembly,
-            JObject originalElement)
+            JObject originalElement,
+            LacingStrategy lacing = LacingStrategy.Disabled)
         {
             GUID = new Guid(id);
 
             InputCount = inputCount;
             OutputCount = outputCount;
+            ArgumentLacing = lacing;
 
             string legacyName = "Unresolved";
             LegacyNodeName = legacyName;
@@ -143,10 +150,13 @@ namespace Dynamo.Graph.Nodes
             var inputCount = nodeElement.Attributes["inputCount"];
             var outputCount = nodeElement.Attributes["outputCount"];
             var legacyName = nodeElement.Attributes["legacyNodeName"];
+            var lacing = nodeElement.Attributes["lacing"];
 
             InputCount = Int32.Parse(inputCount.Value);
             OutputCount = Int32.Parse(outputCount.Value);
             LegacyNodeName = legacyName.Value;
+            //TODO use tryparse.
+            ArgumentLacing = (LacingStrategy)Enum.Parse(typeof(LacingStrategy),lacing.Value);
 
             if (nodeElement.ChildNodes != null)
             {
@@ -178,6 +188,7 @@ namespace Dynamo.Graph.Nodes
 
         private void UpdatePorts()
         {
+            //TODO set the use defaults correctly here.
             InPorts.Clear();
             for (int input = 0; input < InputCount; input++)
             {
@@ -202,12 +213,14 @@ namespace Dynamo.Graph.Nodes
             if (context == SaveContext.Copy || context == SaveContext.Undo)
             {
                 //Dump all the information into memory
+                //TODO do we need to set lacing here?
 
                 nodeElement.SetAttribute("inputCount", InputCount.ToString());
                 nodeElement.SetAttribute("outputCount", OutputCount.ToString());
                 nodeElement.SetAttribute("legacyNodeName", LegacyNodeName);
                 nodeElement.SetAttribute("legacyAssembly", LegacyAssembly);
                 nodeElement.SetAttribute("nodeNature", NodeNature.ToString());
+                nodeElement.SetAttribute("lacing", ArgumentLacing.ToString());
 
                 if (originalElement != null)
                 {
@@ -257,6 +270,7 @@ namespace Dynamo.Graph.Nodes
                     nodeElement.SetAttribute("legacyNodeName", LegacyNodeName);
                     nodeElement.SetAttribute("legacyAssembly", LegacyAssembly);
                     nodeElement.SetAttribute("nodeNature", NodeNature.ToString());
+                    nodeElement.SetAttribute("lacing", ArgumentLacing.ToString());
                 }
             }
         }
@@ -325,40 +339,47 @@ namespace Dynamo.Graph.Nodes
             const string message = "Unhandled 'DummyNode.NodeNature' value: {0}";
             throw new InvalidOperationException(string.Format(message, NodeNature));
         }
-        
+
         /// <summary>
         /// Returns the number of input ports
         /// </summary>
+        [JsonIgnore]
         public int InputCount { get; private set; }
 
         /// <summary>
         /// Returns the number of output ports
         /// </summary>
+        [JsonIgnore]
         public int OutputCount { get; private set; }
 
         /// <summary>
         /// Returns the node name
         /// </summary>
+        [JsonIgnore]
         public string LegacyNodeName { get; private set; }
 
         /// <summary>
         /// Returns the node assembly
         /// </summary>
+        [JsonIgnore]
         public string LegacyAssembly { get; private set; }
 
         /// <summary>
         /// Returns the original node DSFunction description or UI node type
         /// </summary>
+        [JsonIgnore]
         public string LegacyFullName { get; private set; }
 
         /// <summary>
         /// Node can be Deprecated or Unresolved
         /// </summary>
+        [JsonIgnore]
         public Nature NodeNature { get; private set; }
 
         /// <summary>
         /// Xml node
         /// </summary>
+        [JsonIgnore]
         public object OriginalNodeContent { get; private set; }
 
         private XmlElement OriginalXmlNodeContent

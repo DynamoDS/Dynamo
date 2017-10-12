@@ -23,6 +23,8 @@ namespace Dynamo.Graph.Workspaces
                 {
                     args.ErrorContext.Handled = true;
                     Console.WriteLine(args.ErrorContext.Error);
+                    //log any errors during serialization to the dynamo console as well.
+                    engine.AsLogger().Log(args.ErrorContext.Error);
                 },
                 ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
                 TypeNameHandling = TypeNameHandling.Auto,

@@ -334,8 +334,13 @@ namespace Dynamo.Graph.Nodes.NodeLoaders
             {
                 return node;
             }
+            //when we create a dummy node make sure to set the lacing accurately, as we want
+            //migration to be performed - this will ensure the generated json has the correct replication type.
+            //TODO check for null try parse.
+            var replicationFromXml = elNode.GetAttribute("lacing");
+            var argumentLacing = (LacingStrategy)Enum.Parse(typeof(LacingStrategy), replicationFromXml);
 
-            node = new DummyNode(1, 1, typeName, elNode, "", DummyNode.Nature.Deprecated);
+            node = new DummyNode(1, 1, typeName, elNode, "", DummyNode.Nature.Deprecated, argumentLacing);
             return node;
         }
 
