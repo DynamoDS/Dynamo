@@ -12,7 +12,7 @@ namespace Dynamo.Graph.Nodes
     /// DummyNode is used for tests or in case if node couldn't be loaded.
     /// </summary>
     [NodeName("Legacy Node")]
-    [NodeDescription("DummyNodeDescription",typeof(Dynamo.Properties.Resources))]
+    [NodeDescription("DummyNodeDescription", typeof(Dynamo.Properties.Resources))]
     [IsMetaNode]
     [IsVisibleInDynamoLibrary(false)]
     [IsDesignScriptCompatible]
@@ -54,11 +54,11 @@ namespace Dynamo.Graph.Nodes
         /// <param name="legacyAssembly">Assembly of the node</param>
         /// <param name="nodeNature">Node can be Deprecated or Unresolved</param>
         public DummyNode(
-            int inputCount, 
-            int outputCount, 
-            string legacyName, 
-            XmlElement originalElement, 
-            string legacyAssembly, 
+            int inputCount,
+            int outputCount,
+            string legacyName,
+            XmlElement originalElement,
+            string legacyAssembly,
             Nature nodeNature)
         {
             InputCount = inputCount;
@@ -102,9 +102,9 @@ namespace Dynamo.Graph.Nodes
         /// <param name="legacyAssembly">Assembly of the node</param>
         /// <param name="originalElement">Original JSON description of the node</param>
         public DummyNode(
-            string id, 
-            int inputCount, 
-            int outputCount, 
+            string id,
+            int inputCount,
+            int outputCount,
             string legacyAssembly,
             JObject originalElement)
         {
@@ -128,9 +128,9 @@ namespace Dynamo.Graph.Nodes
 
             if (originalElement != null)
             {
-              var legacyFullName = originalElement["FunctionSignature"];
-              if (legacyFullName != null)
-                LegacyFullName = legacyFullName.ToString();
+                var legacyFullName = originalElement["FunctionSignature"];
+                if (legacyFullName != null)
+                    LegacyFullName = legacyFullName.ToString();
             }
 
             UpdatePorts();
@@ -164,7 +164,11 @@ namespace Dynamo.Graph.Nodes
             else if (nodeElement.Attributes["OriginalNodeContent"] != null)
             {
                 //we have some json, so lets parse it.
-               this.OriginalNodeContent = JObject.Parse(nodeElement.Attributes["OriginalNodeContent"].Value);
+                var jsonObject = JObject.Parse(nodeElement.Attributes["OriginalNodeContent"].Value);
+                if (jsonObject != null)
+                {
+                    this.OriginalNodeContent = jsonObject;
+                }
             }
 
 
@@ -339,7 +343,7 @@ namespace Dynamo.Graph.Nodes
             const string message = "Unhandled 'DummyNode.NodeNature' value: {0}";
             throw new InvalidOperationException(string.Format(message, NodeNature));
         }
-        
+
         /// <summary>
         /// Returns the number of input ports
         /// </summary>
@@ -382,16 +386,16 @@ namespace Dynamo.Graph.Nodes
         {
             get
             {
-              if (OriginalNodeContent == null)
-                  return null;
+                if (OriginalNodeContent == null)
+                    return null;
 
-              XmlElement originalXmlElement = OriginalNodeContent as XmlElement;
-              if (originalXmlElement == null)
+                XmlElement originalXmlElement = OriginalNodeContent as XmlElement;
+                if (originalXmlElement == null)
                 {
                     return null;
                 }
-              
-              return originalXmlElement;
+
+                return originalXmlElement;
             }
         }
     }
