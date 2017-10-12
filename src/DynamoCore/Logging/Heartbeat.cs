@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading;
 using Dynamo.Graph.Nodes;
 using Dynamo.Models;
+using Dynamo.Graph.Workspaces;
 
 namespace Dynamo.Logging
 {
@@ -100,8 +101,7 @@ namespace Dynamo.Logging
                         () =>
                         {
                             string workspace = dynamoModel.CurrentWorkspace == null ? string.Empty :
-                                dynamoModel.CurrentWorkspace
-                                    .GetStringRepOfWorkspace();
+                                dynamoModel.CurrentWorkspace.ToJson(dynamoModel.EngineController);
                             Analytics.LogPiiInfo("Workspace", workspace);
                         });
 

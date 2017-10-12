@@ -161,6 +161,13 @@ namespace Dynamo.Graph.Nodes
                 if (legacyFullName != null)
                     LegacyFullName = legacyFullName.Value;
             }
+            else if (nodeElement.Attributes["OriginalNodeContent"] != null)
+            {
+                //we have some json, so lets parse it.
+               this.OriginalNodeContent = JObject.Parse(nodeElement.Attributes["OriginalNodeContent"].Value);
+            }
+
+
 
             var legacyAsm = nodeElement.Attributes["legacyAssembly"];
             if (legacyAsm != null)
@@ -172,6 +179,7 @@ namespace Dynamo.Graph.Nodes
                 var nature = Enum.Parse(typeof(Nature), nodeNature.Value);
                 NodeNature = ((Nature)nature);
             }
+
 
             UpdatePorts();
         }
@@ -226,6 +234,12 @@ namespace Dynamo.Graph.Nodes
 
                     originalNode.AppendChild(nodeContent);
                     nodeElement.AppendChild(originalNode);
+                }
+                //if the node actually came from JSON we need to
+                //still preserve that incase this node was copied or undo/redone
+                else if (OriginalNodeContent is JObject)
+                {
+                    nodeElement.SetAttribute("OriginalNodeContent", OriginalNodeContent.ToString());
                 }
             }
 
@@ -361,6 +375,9 @@ namespace Dynamo.Graph.Nodes
         /// </summary>
         public object OriginalNodeContent { get; private set; }
 
+        /// <summary>
+        /// This property returns the originalXmlContent if it exists or returns null.
+        /// </summary>
         private XmlElement OriginalXmlNodeContent
         {
             get
@@ -370,8 +387,10 @@ namespace Dynamo.Graph.Nodes
 
               XmlElement originalXmlElement = OriginalNodeContent as XmlElement;
               if (originalXmlElement == null)
-                  throw new InvalidOperationException("OriginalNodeContent is not an XmlElement.");
-
+                {
+                    return null;
+                }
+              
               return originalXmlElement;
             }
         }
