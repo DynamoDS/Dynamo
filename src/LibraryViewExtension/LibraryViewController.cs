@@ -169,6 +169,7 @@ namespace Dynamo.LibraryUI
             view.Loaded += OnLibraryViewLoaded;
             browser.SizeChanged += Browser_SizeChanged;
             browser.LoadError += Browser_LoadError;
+            //wait for the browser to load before setting the resources
             browser.LoadingStateChanged += (sender, args) =>
             {
                 //Wait for the Page to finish loading
@@ -342,7 +343,9 @@ namespace Dynamo.LibraryUI
 
         private void InitializeResourceStreams(DynamoModel model, LibraryViewCustomization customization)
         {
-            resourceFactory = new ResourceHandlerFactory();
+            //TODO: Remove the parameter after testing.
+            //For testing purpose.
+            resourceFactory = new ResourceHandlerFactory(model.Logger);
 
             //Register the resource stream registered through the LibraryViewCustomization
             foreach (var item in customization.Resources)
