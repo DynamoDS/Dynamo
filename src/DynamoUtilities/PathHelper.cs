@@ -122,30 +122,28 @@ namespace DynamoUtilities
         /// <returns></returns>
         public static bool isValidJson(string path, out string fileContents)
         {
-            fileContents = File.ReadAllText(path);
-            fileContents = fileContents.Trim();
-            if ((fileContents.StartsWith("{") && fileContents.EndsWith("}")) || //For object
-                (fileContents.StartsWith("[") && fileContents.EndsWith("]"))) //For array
+            fileContents = "";
+            try
             {
-                try
+                fileContents = File.ReadAllText(path);
+                fileContents = fileContents.Trim();
+                if ((fileContents.StartsWith("{") && fileContents.EndsWith("}")) || //For object
+                    (fileContents.StartsWith("[") && fileContents.EndsWith("]"))) //For array
                 {
                     var obj = Newtonsoft.Json.Linq.JToken.Parse(fileContents);
                     return true;
                 }
-                catch (JsonReaderException jex)
-                {
-                    //Exception in parsing Json
-                    Console.WriteLine(jex.Message);
-                    return false;
-                }
-                catch (Exception ex) //some other exception
-                {
-                    Console.WriteLine(ex.ToString());
-                    return false;
-                }
+                return false;
             }
-            else
+            catch (JsonReaderException jex)
             {
+                //Exception in parsing Json
+                Console.WriteLine(jex.Message);
+                return false;
+            }
+            catch (Exception ex) //some other exception
+            {
+                Console.WriteLine(ex.ToString());
                 return false;
             }
         }
