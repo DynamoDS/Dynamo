@@ -410,12 +410,14 @@ namespace DynamoCoreWpfTests
             var testFileWithDummyNode = @"core\dummy_node\2080_JSONTESTCRASH undo_redo.dyn";
             var openPath = Path.Combine(TestDirectory, testFileWithDummyNode);
 
-            var json1 = File.ReadAllText(openPath);
-            var jobject1 = JObject.Parse(json1);
+            var jsonText1 = File.ReadAllText(openPath);
+            var jobject1 = JObject.Parse(jsonText1);
+
+            // We need to replace the camera with null so it will match the null camera produced by the 
+            // save without a real view below.
             jobject1["View"]["Camera"] = null;
-            //we need to replace the camera with null so it will match the null camera produced by the 
-            //save without a real view below.
-            json1 = jobject1.ToString();
+            jsonText1 = jobject1.ToString();
+            jobject1 = JObject.Parse(jsonText1);
           
             OpenModel(openPath);
             Assert.AreEqual(1, ViewModel.CurrentSpace.Nodes.OfType<DummyNode>().Count());
@@ -424,15 +426,19 @@ namespace DynamoCoreWpfTests
             var jsonModel = ViewModel.Model.CurrentWorkspace.ToJson(ViewModel.Model.EngineController);
 
             // Stage 2: Add the View.
-            var json2 = JObject.Parse(jsonModel);
+            var jobject2 = JObject.Parse(jsonModel);
             var token = JToken.Parse(ViewModel.CurrentSpaceViewModel.ToJson());
-            json2.Add("View", token);
+            jobject2.Add("View", token);
 
-            Console.WriteLine(json1);
-            Console.WriteLine(json2.ToString());
+            // Re-saving the file will update the version number (which can be expected)
+            // Setting the version numbers to be equal to stop the deep compare from failing
+            jobject2["View"]["Dynamo"]["Version"] = jobject1["View"]["Dynamo"]["Version"];
+            var jsonText2 = jobject2.ToString();
 
-            Assert.IsTrue(JToken.DeepEquals(JObject.Parse(json1), json2));
+            Console.WriteLine(jsonText1);
+            Console.WriteLine(jsonText2);
 
+            Assert.IsTrue(JToken.DeepEquals(jobject1, jobject2));
         }
 
         [Test]
