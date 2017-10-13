@@ -1588,8 +1588,9 @@ namespace Dynamo.Models
             XmlDocument xmlDoc, WorkspaceInfo workspaceInfo, out WorkspaceModel workspace)
         {
             var nodeGraph = NodeGraph.LoadGraphFromXml(xmlDoc, NodeFactory);
-
+            Guid deterministicId =  GuidUtility.Create(GuidUtility.UrlNamespace, workspaceInfo.Name);
             var newWorkspace = new HomeWorkspaceModel(
+                deterministicId,
                 EngineController,
                 Scheduler,
                 NodeFactory,
