@@ -631,6 +631,7 @@ namespace Dynamo.Core
         ///     Opens a Custom Node workspace from an XmlDocument, given a pre-constructed WorkspaceInfo.
         /// </summary>
         /// <param name="workspaceInfo">Workspace header describing the custom node file.</param>
+        /// <param name="xmlDoc">Xml content of workspace</param>
         /// <param name="isTestMode">
         ///     Flag specifying whether or not this should operate in "test mode".
         /// </param>
@@ -638,6 +639,7 @@ namespace Dynamo.Core
         /// <param name="libraryServices">LibraryServices used for code block node initialization.</param>
         /// <returns>Boolean indicating if Custom Node Workspace opened.</returns>
         public bool OpenCustomNodeWorkspace(
+            XmlDocument xmlDoc,
             WorkspaceInfo workspaceInfo, 
             bool isTestMode, 
             out WorkspaceModel workspace,
@@ -646,6 +648,7 @@ namespace Dynamo.Core
             CustomNodeWorkspaceModel customNodeWorkspace;
             if (InitializeCustomNode(
                 workspaceInfo,
+                xmlDoc,
                 out customNodeWorkspace,
                 libraryServices))
             {
@@ -658,17 +661,16 @@ namespace Dynamo.Core
 
         private bool InitializeCustomNode(
             WorkspaceInfo workspaceInfo,
+            XmlDocument xmlDoc,
             out CustomNodeWorkspaceModel workspace,
             Engine.LibraryServices libraryServices)
         {
             // Add custom node definition firstly so that a recursive
             // custom node won't recursively load itself.
             SetPreloadFunctionDefinition(Guid.Parse(workspaceInfo.ID));
-
-            XmlDocument xmlDoc;
             string jsonDoc;
             CustomNodeWorkspaceModel newWorkspace = null;
-            if (DynamoUtilities.PathHelper.isValidXML(workspaceInfo.FileName, out xmlDoc))
+            if (xmlDoc is XmlDocument)
             {
                 var nodeGraph = NodeGraph.LoadGraphFromXml(xmlDoc, nodeFactory);
                 newWorkspace = new CustomNodeWorkspaceModel(
@@ -755,12 +757,12 @@ namespace Dynamo.Core
                 string strInput;
                 if (DynamoUtilities.PathHelper.isValidXML(path, out xmlDoc))
                 {
-                    if (WorkspaceInfo.FromXmlDocument(xmlDoc, path, isTestMode, false, AsLogger(),out info))
+                    if (WorkspaceInfo.FromXmlDocument(xmlDoc, path, isTestMode, false, AsLogger(), out info))
                     {
                         info.ID = functionId.ToString();
                         if (migrationManager.ProcessWorkspace(info, xmlDoc, isTestMode, nodeFactory))
                         {
-                            return InitializeCustomNode(info, out workspace, libraryServices);
+                            return InitializeCustomNode(info, xmlDoc, out workspace, libraryServices);
                         }
                     }
                 }
@@ -769,7 +771,7 @@ namespace Dynamo.Core
                     // TODO: Skip Json migration for now
                     WorkspaceInfo.FromJsonDocument(strInput, path, isTestMode, false, AsLogger(), out info);
                     info.ID = functionId.ToString();
-                    return InitializeCustomNode(info, out workspace, libraryServices);
+                    return InitializeCustomNode(info, null, out workspace, libraryServices);
                 }
                 Log(string.Format(Properties.Resources.CustomNodeCouldNotBeInitialized, customNodeInfo.Name));
                 workspace = null;

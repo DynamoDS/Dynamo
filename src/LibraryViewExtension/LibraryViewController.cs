@@ -107,18 +107,22 @@ namespace Dynamo.LibraryUI
         //if the window is resized toggle visibility of browser to force redraw
         private void DynamoWindow_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            this.browser.Visibility = Visibility.Hidden;
-            this.browser.Visibility = Visibility.Visible;
+            toggleBrowserVisibility(this.browser);
+        }
+
+        private void toggleBrowserVisibility(ChromiumWebBrowser browser)
+        {
+            if (browser != null)
+            {
+                browser.Visibility = Visibility.Hidden;
+                browser.Visibility = Visibility.Visible;
+            }
         }
 
         //if the dynamo window is minimized and then restored, force a layout update.
         private void DynamoWindowStateChanged(object sender, EventArgs e)
         {
-            if (this.dynamoWindow.WindowState == WindowState.Normal)
-            {
-                this.browser.Visibility = Visibility.Hidden;
-                this.browser.Visibility = Visibility.Visible;
-            }
+            toggleBrowserVisibility(this.browser);
         }
 
 
@@ -160,11 +164,21 @@ namespace Dynamo.LibraryUI
             this.browser = browser;
             sidebarGrid.Children.Add(view);
             browser.RegisterJsObject("controller", this);
-            RegisterResources(browser);
+            //RegisterResources(browser);
 
             view.Loaded += OnLibraryViewLoaded;
             browser.SizeChanged += Browser_SizeChanged;
             browser.LoadError += Browser_LoadError;
+            //wait for the browser to load before setting the resources
+            browser.LoadingStateChanged += (sender, args) =>
+            {
+                //Wait for the Page to finish loading
+                if (args.IsLoading == false)
+                {
+                    RegisterResources(browser);
+                }
+            };
+
             return view;
         }
 
@@ -172,13 +186,13 @@ namespace Dynamo.LibraryUI
         {
             System.Diagnostics.Trace.WriteLine("*****Chromium Browser Messages******");
             System.Diagnostics.Trace.Write(e.ErrorText);
+            this.dynamoViewModel.Model.Logger.LogError(e.ErrorText);
         }
 
         //if the browser window itself is resized, toggle visibility to force redraw.
         private void Browser_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            this.browser.Visibility = Visibility.Hidden;
-            this.browser.Visibility = Visibility.Visible;
+            toggleBrowserVisibility(this.browser);
         }
 
         #region Tooltip
@@ -329,7 +343,9 @@ namespace Dynamo.LibraryUI
 
         private void InitializeResourceStreams(DynamoModel model, LibraryViewCustomization customization)
         {
-            resourceFactory = new ResourceHandlerFactory();
+            //TODO: Remove the parameter after testing.
+            //For testing purpose.
+            resourceFactory = new ResourceHandlerFactory(model.Logger);
 
             //Register the resource stream registered through the LibraryViewCustomization
             foreach (var item in customization.Resources)
