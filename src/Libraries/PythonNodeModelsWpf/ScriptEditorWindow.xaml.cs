@@ -11,6 +11,7 @@ using Dynamo.Logging;
 using ICSharpCode.AvalonEdit.CodeCompletion;
 using ICSharpCode.AvalonEdit.Highlighting;
 using ICSharpCode.AvalonEdit.Highlighting.Xshd;
+using PythonNodeModels;
 
 namespace PythonNodeModelsWpf
 {
@@ -24,10 +25,14 @@ namespace PythonNodeModelsWpf
         private CompletionWindow completionWindow = null;
         private readonly IronPythonCompletionProvider completionProvider;
         private readonly DynamoViewModel dynamoViewModel;
+        public PythonNode nodeModel { get; set; }
+        private bool nodeWasModified = false;
+        private string originalScript;
 
-        public ScriptEditorWindow(DynamoViewModel dynamoViewModel)
+        public ScriptEditorWindow(DynamoViewModel dynamoViewModel, PythonNode nodeModel)
         {
             this.dynamoViewModel = dynamoViewModel;
+            this.nodeModel = nodeModel;
             completionProvider = new IronPythonCompletionProvider();
             completionProvider.MessageLogged += dynamoViewModel.Model.Logger.Log;
 
@@ -55,7 +60,7 @@ namespace PythonNodeModelsWpf
                 new XmlTextReader(elem), HighlightingManager.Instance);
 
             editText.Text = propValue;
-            Closed += OnScriptEditWindowClosed;
+            originalScript = propValue;
         }
 
         #region Autocomplete Event Handlers
@@ -115,24 +120,39 @@ namespace PythonNodeModelsWpf
 
         #region Private Event Handlers
 
-        private void OnAcceptClicked(object sender, RoutedEventArgs e)
+        private void OnSaveClicked(object sender, RoutedEventArgs e)
         {
-            DialogResult = true;
+            UpdateScript(editText.Text);
+            this.Close();
         }
 
-        private void OnCancelClicked(object sender, RoutedEventArgs e)
+        private void OnRevertClicked(object sender, RoutedEventArgs e)
         {
-            DialogResult = false;
-        }
-
-        private void OnScriptEditWindowClosed(object sender, EventArgs e)
-        {
-            if (DialogResult.HasValue && (DialogResult.Value))
+            if (nodeWasModified)
             {
-                var command = new DynamoModel.UpdateModelValueCommand(
-                    System.Guid.Empty, boundNodeId, propertyName, editText.Text);
+                UpdateScript(originalScript);
+            }
+            
+            this.Close();
+        }
 
-                dynamoViewModel.ExecuteCommand(command);
+        private void UpdateScript(string scriptText)
+        {
+            var command = new DynamoModel.UpdateModelValueCommand(
+                System.Guid.Empty, boundNodeId, propertyName, scriptText);
+
+            dynamoViewModel.ExecuteCommand(command);
+            this.Focus();
+            nodeWasModified = true;
+            nodeModel.OnNodeModified();
+        }
+
+        private void OnRunClicked(object sender, RoutedEventArgs e)
+        {
+            UpdateScript(editText.Text);
+            if (dynamoViewModel.HomeSpace.RunSettings.RunType != RunType.Automatic)
+            {
+                dynamoViewModel.HomeSpace.Run();
             }
         }
 
