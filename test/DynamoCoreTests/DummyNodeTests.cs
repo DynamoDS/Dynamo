@@ -48,7 +48,7 @@ namespace Dynamo.Tests
 
         }
 
-        [Test, Category("Failure")]
+        [Test]
         public void CanMoveAndUndoJSONDummyNodeAndRetainsOriginalJSON()
         {
             string openPath = Path.Combine(TestDirectory, testFileWithDummyNode);
