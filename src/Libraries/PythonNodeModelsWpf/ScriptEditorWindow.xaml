@@ -1,8 +1,9 @@
-﻿<Window x:Class="PythonNodeModelsWpf.ScriptEditorWindow"
+﻿<dww:ModelessChildWindow x:Class="PythonNodeModelsWpf.ScriptEditorWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:avalonedit="clr-namespace:ICSharpCode.AvalonEdit;assembly=ICSharpCode.AvalonEdit"
         xmlns:ui1="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf"
+        xmlns:dww="clr-namespace:Dynamo.Wpf.Windows;assembly=DynamoCoreWpf"
         xmlns:p="clr-namespace:PythonNodeModels.Properties;assembly=PythonNodeModels"
         Title="{Binding nodeModel.Name, Mode=OneWay, RelativeSource={RelativeSource Self}}" Height="500" Width="600">
 
@@ -44,4 +45,4 @@
         </Grid>
     </Grid>
 
-</Window>
+</dww:ModelessChildWindow>

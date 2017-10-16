@@ -14,6 +14,7 @@ namespace PythonNodeModelsWpf
     {
         private DynamoViewModel dynamoViewModel;
         private PythonNode model;
+        private NodeView view;
         private ScriptEditorWindow editWindow;
 
         public void CustomizeView(PythonNode nodeModel, NodeView nodeView)
@@ -21,6 +22,7 @@ namespace PythonNodeModelsWpf
             base.CustomizeView(nodeModel, nodeView);
 
             model = nodeModel;
+            view = nodeView;
             dynamoViewModel = nodeView.ViewModel.DynamoViewModel;
 
             var editWindowItem = new MenuItem { Header = PythonNodeModels.Properties.Resources.EditHeader, IsCheckable = false };
@@ -40,7 +42,7 @@ namespace PythonNodeModelsWpf
             }
         }
 
-        public void view_EditWindowClosed(object sender, EventArgs e)
+        public void editWindow_Closed(object sender, EventArgs e)
         {
             editWindow = null;
         }
@@ -55,20 +57,11 @@ namespace PythonNodeModelsWpf
                 }
                 else
                 {
-                    editWindow = new ScriptEditorWindow(dynamoViewModel, model);
+                    editWindow = new ScriptEditorWindow(dynamoViewModel, model, view);
                     editWindow.Initialize(model.GUID, "ScriptContent", model.Script);
-                    editWindow.Closed += this.view_EditWindowClosed;
-                    System.Windows.Application.Current.MainWindow.Closing += delegate { Application_Exit(); };
+                    editWindow.Closed += editWindow_Closed;
                     editWindow.Show();
                 }
-            }
-        }
-
-        private void Application_Exit()
-        {
-            if (editWindow != null)
-            {
-                editWindow.Close();
             }
         }
     }
