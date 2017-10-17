@@ -24,7 +24,14 @@ namespace CoreNodeModels
         [JsonConstructor]
         private Range(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
         {
+            if (inPorts.Count() == 3)
+            {
+                inPorts.ElementAt(0).DefaultValue = startPortDefaultValue;
+                inPorts.ElementAt(1).DefaultValue = endPortDefaultValue;
+                inPorts.ElementAt(2).DefaultValue = stepPortDefaultValue;
+            }
             ArgumentLacing = LacingStrategy.Auto;
+            SetNodeStateBasedOnConnectionAndDefaults();
         }
 
         public Range()
@@ -103,7 +110,14 @@ namespace CoreNodeModels
         [JsonConstructor]
         private Sequence(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
         {
+            if (inPorts.Count() == 3)
+            {
+                inPorts.ElementAt(0).DefaultValue = startPortDefaultValue;
+                inPorts.ElementAt(1).DefaultValue = amountPortDefaultValue;
+                inPorts.ElementAt(2).DefaultValue = stepPortDefaultValue;
+            }
             ArgumentLacing = LacingStrategy.Auto;
+            SetNodeStateBasedOnConnectionAndDefaults();
         }
 
         public Sequence()
