@@ -1407,7 +1407,7 @@ namespace Dynamo.Models
                             OpenWorkspace(ws);
                             //Raise an event to deserialize the view parameters before
                             //setting the graph to run
-                            OnComputeModelDeSerialized();
+                            OnComputeModelDeserialized();
  
                             SetPeriodicEvaluation(ws);
                         }
@@ -2265,7 +2265,42 @@ namespace Dynamo.Models
             };
 
             _workspaces.Add(workspace);
+            //TODO move this to some handler for the event...
+            CheckForXMLDummyNodes(workspace);
             OnWorkspaceAdded(workspace);
+        }
+
+        private void CheckForXMLDummyNodes(WorkspaceModel workspace)
+        {
+            //if the graph that is opened contains xml dummynodes log a notification 
+            if (workspace.containsXmlDummyNodes())
+            {
+                this.Logger.LogNotification("DynamoViewModel",
+                  Resources.UnresolvedNodesWarningTitle,
+                  Resources.UnresolvedNodesWarningShortMessage,
+                  Resources.UnresolvedNodesWarningMessage);
+
+                //raise a window as well so the user is clearly alerted to this state.
+                DisplayXmlDummyNodeWarning();
+            }
+        }
+        private void DisplayXmlDummyNodeWarning()
+        {
+           var xmlDummyNodeCount = this.CurrentWorkspace.Nodes.OfType<DummyNode>().
+                Where(node => node.OriginalNodeContent is XmlElement).Count();
+
+           Logging.Analytics.LogPiiInfo("XmlDummyNodeWarning",
+               xmlDummyNodeCount.ToString());
+
+            string summary = Resources.UnresolvedNodesWarningShortMessage;
+            var description = Resources.UnresolvedNodesWarningMessage;
+            const string imageUri = "/DynamoCoreWpf;component/UI/Images/task_dialog_future_file.png";
+            var args = new TaskDialogEventArgs(
+               new Uri(imageUri, UriKind.Relative),
+               Resources.UnresolvedNodesWarningTitle, summary, description);
+
+            args.AddRightAlignedButton((int)ButtonId.Proceed, Resources.OKButton);
+            OnRequestTaskDialog(null, args);
         }
 
         enum ButtonId
@@ -2364,7 +2399,7 @@ namespace Dynamo.Models
 
             Logging.Analytics.LogPiiInfo("FutureFileMessage", fullFilePath +
                 " :: fileVersion:" + fileVer + " :: currVersion:" + currVer);
-
+            
             string summary = Resources.FutureFileSummary;
             var description = string.Format(Resources.FutureFileDescription, fullFilePath, fileVersion, currVersion);
 

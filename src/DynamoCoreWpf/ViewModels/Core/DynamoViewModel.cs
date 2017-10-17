@@ -37,7 +37,6 @@ using System.Windows.Forms;
 using System.Windows.Threading;
 using ISelectable = Dynamo.Selection.ISelectable;
 
-
 namespace Dynamo.ViewModels
 {
     public interface IDynamoViewModel : INotifyPropertyChanged
@@ -562,7 +561,7 @@ namespace Dynamo.ViewModels
             BackgroundPreviewViewModel.PropertyChanged += Watch3DViewModelPropertyChanged;
             WatchHandler.RequestSelectGeometry += BackgroundPreviewViewModel.AddLabelForPath;
             RegisterWatch3DViewModel(BackgroundPreviewViewModel, RenderPackageFactoryViewModel.Factory);
-            model.ComputeModelDeSerialized += model_ComputeModelDeSerialized;
+            model.ComputeModelDeserialized += model_ComputeModelDeserialized;
         }
 
         /// <summary>
@@ -1276,7 +1275,7 @@ namespace Dynamo.ViewModels
         /// <summary>
         /// Read the contents of the file and set the view parameters for that current workspace
         /// </summary>
-        private void model_ComputeModelDeSerialized()
+        private void model_ComputeModelDeserialized()
         {
             if (filePath == String.Empty) return;
             string fileContents = File.ReadAllText(filePath);

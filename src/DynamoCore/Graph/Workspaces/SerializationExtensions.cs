@@ -28,7 +28,7 @@ namespace Dynamo.Graph.Workspaces
                 TypeNameHandling = TypeNameHandling.Auto,
                 Formatting = Formatting.Indented,
                 Converters = new List<JsonConverter>{
-                        new ConnectorConverter(),                        
+                        new ConnectorConverter(engine.AsLogger()),                        
                         new WorkspaceWriteConverter(engine),
                         new DummyNodeWriteConverter(),
                         new TypedParameterConverter()
