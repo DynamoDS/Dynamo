@@ -35,6 +35,7 @@ namespace CoreNodeModels.Input
     {
         private DSColor dscolor = DSColor.ByARGB(255, 0, 0, 0);
 
+        [JsonProperty(PropertyName = "InputValue")]
         public DSColor DsColor
         {
             get { return dscolor; }
@@ -82,12 +83,12 @@ namespace CoreNodeModels.Input
         }
         
         [JsonConstructor]
-        public ColorPalette(JObject DsColor, IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
+        public ColorPalette(JObject InputValue, IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
         {
             // RGBA to ARGB
             try
             {
-                this.DsColor = DSColor.ByARGB((int)DsColor["Alpha"], (int)DsColor["Red"], (int)DsColor["Green"], (int)DsColor["Blue"]);
+                this.DsColor = DSColor.ByARGB((int)InputValue["Alpha"], (int)InputValue["Red"], (int)InputValue["Green"], (int)InputValue["Blue"]);
             }
 
             catch
@@ -105,6 +106,9 @@ namespace CoreNodeModels.Input
             switch (name)
             {
                 case "DsColor":
+                    this.DsColor = this.DeserializeValue(value);
+                    return true;
+                case "InputValue":
                     this.DsColor = this.DeserializeValue(value);
                     return true;
             }
