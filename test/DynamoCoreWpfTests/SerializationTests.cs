@@ -405,6 +405,43 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
+        public void JSONisSameBeforeAndAfterSaveWithDummyNodes()
+        {
+            var testFileWithDummyNode = @"core\dummy_node\2080_JSONTESTCRASH undo_redo.dyn";
+            var openPath = Path.Combine(TestDirectory, testFileWithDummyNode);
+
+            var jsonText1 = File.ReadAllText(openPath);
+            var jobject1 = JObject.Parse(jsonText1);
+
+            // We need to replace the camera with null so it will match the null camera produced by the 
+            // save without a real view below.
+            jobject1["View"]["Camera"] = null;
+            jsonText1 = jobject1.ToString();
+            jobject1 = JObject.Parse(jsonText1);
+          
+            OpenModel(openPath);
+            Assert.AreEqual(1, ViewModel.CurrentSpace.Nodes.OfType<DummyNode>().Count());
+
+            // Stage 1: Serialize the workspace.
+            var jsonModel = ViewModel.Model.CurrentWorkspace.ToJson(ViewModel.Model.EngineController);
+
+            // Stage 2: Add the View.
+            var jobject2 = JObject.Parse(jsonModel);
+            var token = JToken.Parse(ViewModel.CurrentSpaceViewModel.ToJson());
+            jobject2.Add("View", token);
+
+            // Re-saving the file will update the version number (which can be expected)
+            // Setting the version numbers to be equal to stop the deep compare from failing
+            jobject2["View"]["Dynamo"]["Version"] = jobject1["View"]["Dynamo"]["Version"];
+            var jsonText2 = jobject2.ToString();
+
+            Console.WriteLine(jsonText1);
+            Console.WriteLine(jsonText2);
+
+            Assert.IsTrue(JToken.DeepEquals(jobject1, jobject2));
+        }
+
+        [Test]
         public void TestUndoRedoOnConnectedNodes()
         {
             ViewModel.OpenCommand.Execute(Path.Combine(TestDirectory, "core", "LacingTest.dyn"));

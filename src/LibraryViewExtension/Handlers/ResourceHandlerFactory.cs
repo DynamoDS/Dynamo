@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using CefSharp;
+using Dynamo.Logging;
 
 namespace Dynamo.LibraryUI.Handlers
 {
@@ -14,6 +15,21 @@ namespace Dynamo.LibraryUI.Handlers
     {
         private Dictionary<string, IResourceProvider> resourceProviders = new Dictionary<string, IResourceProvider>();
         private HashSet<string> supportedSchemes = new HashSet<string>();
+        private DynamoLogger logger;
+
+        //TODO: Remove this after testing.
+        //For testing purpose.
+        public ResourceHandlerFactory()
+        {
+            
+        }
+
+        //TODO: Remove this after testing.
+        //For testing purpose.
+        public ResourceHandlerFactory(DynamoLogger log)
+        {
+            this.logger = log;
+        }
 
         /// <summary>
         /// This method is called before a resource is loaded, if a valid resource handler
@@ -24,6 +40,11 @@ namespace Dynamo.LibraryUI.Handlers
             try
             {
                 IResourceHandler handler;
+                if (logger != null)
+                {
+                    logger.Log("Requested URL", request.Url);
+                }
+                
                 if(!Handlers.TryGetValue(request.Url, out handler))
                 {
                     handler = this.GetResourceHandler(request);

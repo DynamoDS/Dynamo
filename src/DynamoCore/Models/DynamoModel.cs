@@ -1430,7 +1430,6 @@ namespace Dynamo.Models
         /// <returns>True if workspace was opened successfully</returns>
         private bool OpenXmlFileFromPath(XmlDocument xmlDoc, string filePath, bool forceManualExecutionMode)
         {
-            bool success = true;
             try
             {
                 //save the file before it is migrated to JSON.
@@ -1459,13 +1458,12 @@ namespace Dynamo.Models
                         }
                     }
                 }
+                return true;
             }
-            catch (Exception e)
+            catch (Exception)
             {
-                success = false;
+                return false;
             }
-
-            return success;
         }
 
         private void OpenWorkspace(WorkspaceModel ws)
@@ -1575,7 +1573,7 @@ namespace Dynamo.Models
                 IsTestMode);
 
             var result = workspaceInfo.IsCustomNodeWorkspace
-                ? CustomNodeManager.OpenCustomNodeWorkspace(workspaceInfo, IsTestMode, out workspace)
+                ? CustomNodeManager.OpenCustomNodeWorkspace(xmlDoc, workspaceInfo, IsTestMode, out workspace)
                 : OpenXmlHomeWorkspace(xmlDoc, workspaceInfo, out workspace);
 
             workspace.OnCurrentOffsetChanged(
@@ -1590,8 +1588,9 @@ namespace Dynamo.Models
             XmlDocument xmlDoc, WorkspaceInfo workspaceInfo, out WorkspaceModel workspace)
         {
             var nodeGraph = NodeGraph.LoadGraphFromXml(xmlDoc, NodeFactory);
-
+            Guid deterministicId =  GuidUtility.Create(GuidUtility.UrlNamespace, workspaceInfo.Name);
             var newWorkspace = new HomeWorkspaceModel(
+                deterministicId,
                 EngineController,
                 Scheduler,
                 NodeFactory,
