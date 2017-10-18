@@ -597,7 +597,7 @@ namespace Dynamo.Graph.Workspaces
                 return new ConnectorModel(startPort, endPort, connectorId);
             }
             else
-            {   //TODO should we log a notification to alert user that graph is missing nodes?
+            {
                 this.logger.LogWarning(
                     string.Format("connector {0} could not be created, start or end port does not exist", connectorId),
                     Logging.WarningLevel.Moderate);

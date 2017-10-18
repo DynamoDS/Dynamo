@@ -1328,7 +1328,6 @@ namespace Dynamo.Graph.Workspaces
         /// <returns></returns>
         internal bool containsXmlDummyNodes()
         {
-            //if the workspace being added has dummy nodes which contain XML, log a notification.
             return this.Nodes.OfType<DummyNode>().Where(node => node.OriginalNodeContent is XmlElement).Count()> 0;
         }
 
@@ -1664,7 +1663,7 @@ namespace Dynamo.Graph.Workspaces
                     nodeModel.UpdateValue(new UpdateValueParams("IsVisible", nodeViewInfo.ShowGeometry.ToString()));
                 }
                 else
-                {   //TODO we may want to raise an event which logs a notification.
+                {   
                     this.Log(string.Format("This graph has a nodeview with id:{0} and name:{1}, but does not contain a matching nodeModel", 
                         guidValue.ToString(),nodeViewInfo.Name)
                         , WarningLevel.Moderate);

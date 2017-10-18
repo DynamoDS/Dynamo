@@ -2264,7 +2264,6 @@ namespace Dynamo.Models
             };
 
             _workspaces.Add(workspace);
-            //TODO move this to some handler for the event...
             CheckForXMLDummyNodes(workspace);
             OnWorkspaceAdded(workspace);
         }
