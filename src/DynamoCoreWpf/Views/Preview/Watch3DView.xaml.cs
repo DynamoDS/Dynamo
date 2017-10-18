@@ -238,7 +238,7 @@ namespace Dynamo.Controls
             }
             catch(Exception ex)
             {
-                Console.WriteLine(ex.ToString());
+                ViewModel.CurrentSpaceViewModel.DynamoViewModel.Model.Logger.Log(ex.ToString());
             }         
         }
 
