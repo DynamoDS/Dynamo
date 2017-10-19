@@ -278,10 +278,8 @@ namespace ProtoImperative
                 arglist.Add(paramType);
             }
 
-            ProtoCore.DSASM.ProcedureNode procNode = null;
-            int type = ProtoCore.DSASM.Constants.kInvalidIndex;
-            bool isConstructor = false;
-            bool isStatic = false;
+            ProcedureNode procNode = null;
+            int type = Constants.kInvalidIndex;
             bool hasLogError = false;
 
             int refClassIndex = Constants.kInvalidIndex;
@@ -295,18 +293,18 @@ namespace ProtoImperative
             }
 
             // If lefttype is a valid class then check if calling a constructor
-            if ((int)ProtoCore.PrimitiveType.InvalidType != inferedType.UID && (int)ProtoCore.PrimitiveType.Void != inferedType.UID)
+            if ((int)PrimitiveType.InvalidType != inferedType.UID && (int)PrimitiveType.Void != inferedType.UID)
             {
-                bool isAccessible;
-                int realType;
-
                 if (procName != Constants.kFunctionPointerCall)
                 {
                     bool isStaticOrConstructor = refClassIndex != Constants.kInvalidIndex;
                     var classNode = core.ClassTable.ClassNodes[inferedType.UID];
+
+                    bool isAccessible;
+                    int realType;
                     procNode = classNode.GetMemberFunction(procName, arglist, globalClassIndex, out isAccessible, out realType, isStaticOrConstructor);
 
-                    if (isStaticOrConstructor)
+                    if (isStaticOrConstructor && procNode == null)
                     {
                         procNode = classNode.GetFirstConstructorBy(procName, arglist.Count);
                         if (procNode == null)
@@ -323,8 +321,6 @@ namespace ProtoImperative
 
                     if (procNode != null)
                     {
-                        isConstructor = procNode.IsConstructor;
-                        isStatic = procNode.IsStatic;
                         type = lefttype = realType;
 
                         if (!isAccessible)
