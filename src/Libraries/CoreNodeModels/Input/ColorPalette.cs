@@ -88,7 +88,7 @@ namespace CoreNodeModels.Input
             // RGBA to ARGB
             try
             {
-                this.DsColor = DSColor.ByARGB((int)InputValue["Alpha"], (int)InputValue["Red"], (int)InputValue["Green"], (int)InputValue["Blue"]);
+                this.DsColor = DSColor.ByARGB((int)InputValue["A"], (int)InputValue["R"], (int)InputValue["G"], (int)InputValue["B"]);
             }
 
             catch
@@ -106,9 +106,6 @@ namespace CoreNodeModels.Input
             switch (name)
             {
                 case "DsColor":
-                    this.DsColor = this.DeserializeValue(value);
-                    return true;
-                case "InputValue":
                     this.DsColor = this.DeserializeValue(value);
                     return true;
             }
