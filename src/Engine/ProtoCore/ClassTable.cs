@@ -204,24 +204,24 @@ namespace ProtoCore.DSASM
         //    1.3 Return member function whose access == kPublic
         //
         // 2. In global scope, classScope == kInvalidIndex;
-        public ProtoCore.DSASM.ProcedureNode GetMemberFunction(string procName, List<ProtoCore.Type> argTypeList, int classScope, out bool isAccessible, out int functionHostClassIndex, bool isStaticOrConstructor = false)
+        public ProcedureNode GetMemberFunction(string procName, List<ProtoCore.Type> argTypeList, int classScope, out bool isAccessible, out int functionHostClassIndex, bool isStaticOrConstructor = false)
         {
             isAccessible = false;
-            functionHostClassIndex = ProtoCore.DSASM.Constants.kInvalidIndex;
+            functionHostClassIndex = Constants.kInvalidIndex;
 
             if (ProcTable == null)
                 return null;
 
-            ProtoCore.DSASM.ProcedureNode procNode = null;
+            ProcedureNode procNode = null;
 
             int functionIndex = ProcTable.IndexOf(procName, argTypeList, isStaticOrConstructor);
-            if (functionIndex != ProtoCore.DSASM.Constants.kInvalidIndex)
+            if (functionIndex != Constants.kInvalidIndex)
             {
                 int myClassIndex = TypeSystem.classTable.IndexOf(Name);
                 functionHostClassIndex = myClassIndex;
                 procNode = ProcTable.Procedures[functionIndex];
 
-                if (classScope == ProtoCore.DSASM.Constants.kInvalidIndex)
+                if (classScope == Constants.kInvalidIndex)
                 {
                     isAccessible = (procNode.AccessModifier == CompilerDefinitions.AccessModifier.Public);
                 }
