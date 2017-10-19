@@ -547,6 +547,17 @@ namespace Dynamo.Graph.Workspaces
     /// </summary>
     public class ConnectorConverter : JsonConverter
     {
+        private Logging.ILogger logger;
+        
+        /// <summary>
+        /// Constructs a ConnectorConverter.
+        /// </summary>
+        /// <param name="logger"></param>
+        public ConnectorConverter(Logging.ILogger logger)
+        {
+            this.logger = logger;
+        }
+
         public override bool CanConvert(Type objectType)
         {
             return objectType == typeof(ConnectorModel);
@@ -581,8 +592,17 @@ namespace Dynamo.Graph.Workspaces
 
             //if the id is not a guid, makes a guid based on the id of the model
             Guid connectorId = GuidUtility.tryParseOrCreateGuid(obj["Id"].Value<string>());
-
-            return new ConnectorModel(startPort, endPort, connectorId);
+            if(startPort != null && endPort != null)
+            {
+                return new ConnectorModel(startPort, endPort, connectorId);
+            }
+            else
+            {
+                this.logger.LogWarning(
+                    string.Format("connector {0} could not be created, start or end port does not exist", connectorId),
+                    Logging.WarningLevel.Moderate);
+                return null;
+            }
         }
 
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)

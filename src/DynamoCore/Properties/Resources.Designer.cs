@@ -1476,6 +1476,33 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to This graph currently contains some unresolved nodes, and cannot be saved until the nodes are resolved. If the graph is saved using SaveAs - the unresolved nodes will be removed from the file..
+        /// </summary>
+        public static string UnresolvedNodesWarningMessage {
+            get {
+                return ResourceManager.GetString("UnresolvedNodesWarningMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This graph cannot be saved until unresolved nodes are removed or resolved..
+        /// </summary>
+        public static string UnresolvedNodesWarningShortMessage {
+            get {
+                return ResourceManager.GetString("UnresolvedNodesWarningShortMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Graph Contains Unresolved Nodes and Cannot Be Saved..
+        /// </summary>
+        public static string UnresolvedNodesWarningTitle {
+            get {
+                return ResourceManager.GetString("UnresolvedNodesWarningTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Update available: {0}.
         /// </summary>
         public static string UpdateAvailable {

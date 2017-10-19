@@ -531,8 +531,9 @@ namespace Dynamo.Graph.Workspaces
         /// Returns if current workspace is readonly.
         /// </summary>
         public bool IsReadOnly
-        {
-            get { return isReadOnly; }
+        {   
+            //if the workspace contains xmlDummyNodes it's effectively a readonly graph.
+            get { return isReadOnly || this.containsXmlDummyNodes(); }
             set
             {
                 isReadOnly = value;
@@ -1320,6 +1321,15 @@ namespace Dynamo.Graph.Workspaces
         #endregion
 
         #region private/internal methods
+        /// <summary>
+        /// Returns true if the graph currently contains dummy node which point to XML content.
+        /// These nodes cannot be serialized to json correctly.
+        /// </summary>
+        /// <returns></returns>
+        internal bool containsXmlDummyNodes()
+        {
+            return this.Nodes.OfType<DummyNode>().Where(node => node.OriginalNodeContent is XmlElement).Count()> 0;
+        }
 
         private void SerializeElementResolver(XmlDocument xmlDoc)
         {
@@ -1573,7 +1583,7 @@ namespace Dynamo.Graph.Workspaces
                 TypeNameHandling = TypeNameHandling.Auto,
                 Formatting = Newtonsoft.Json.Formatting.Indented,
                 Converters = new List<JsonConverter>{
-                        new ConnectorConverter(),
+                        new ConnectorConverter(engineController.AsLogger()),
                         new WorkspaceReadConverter(engineController, scheduler, factory, isTestMode, verboseLogging),
                         new NodeReadConverter(manager, libraryServices),
                         new TypedParameterConverter()
@@ -1651,6 +1661,12 @@ namespace Dynamo.Graph.Workspaces
                     // NOTE: These parameters are not directly accessible due to undo/redo considerations
                     //       which should not be used during deserialization (see "ArgumentLacing" for details)
                     nodeModel.UpdateValue(new UpdateValueParams("IsVisible", nodeViewInfo.ShowGeometry.ToString()));
+                }
+                else
+                {   
+                    this.Log(string.Format("This graph has a nodeview with id:{0} and name:{1}, but does not contain a matching nodeModel", 
+                        guidValue.ToString(),nodeViewInfo.Name)
+                        , WarningLevel.Moderate);
                 }
             }
         }
