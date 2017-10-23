@@ -22,7 +22,7 @@ namespace DSCore
     public static class List
     {
         /// <summary>
-        ///     An Empty List.
+        ///     Returns an Empty List.
         /// </summary>
         /// <returns name="list">Empty list.</returns>
         /// <search>empty list, emptylist,[]</search>

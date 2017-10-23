@@ -331,17 +331,17 @@ namespace Dynamo.Models
         }
 
         /// <summary>
-        /// Occurs after compute section of the workspace is serialized
+        /// This Event is raised after the compute section of the workspace is deserialized
         /// </summary>
-        internal event Action ComputeModelDeSerialized;
+        internal event Action ComputeModelDeserialized;
 
         /// <summary>
         /// Triggers ComputeModelSerialized event
         /// </summary>
-        internal virtual void OnComputeModelDeSerialized()
+        internal virtual void OnComputeModelDeserialized()
         {
-            if (ComputeModelDeSerialized != null)
-                ComputeModelDeSerialized();
+            if (ComputeModelDeserialized != null)
+                ComputeModelDeserialized();
         }
 
         #endregion

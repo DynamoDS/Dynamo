@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Input;
-using System.Windows.Media;
 using System.Xml;
 using Dynamo.Controls;
 using Dynamo.Models;
@@ -12,13 +11,14 @@ using ICSharpCode.AvalonEdit.CodeCompletion;
 using ICSharpCode.AvalonEdit.Highlighting;
 using ICSharpCode.AvalonEdit.Highlighting.Xshd;
 using PythonNodeModels;
+using Dynamo.Wpf.Windows;
 
 namespace PythonNodeModelsWpf
 {
     /// <summary>
     /// Interaction logic for ScriptEditorWindow.xaml
     /// </summary>
-    public partial class ScriptEditorWindow : Window
+    public partial class ScriptEditorWindow : ModelessChildWindow
     {
         private string propertyName = string.Empty;
         private Guid boundNodeId = Guid.Empty;
@@ -29,17 +29,20 @@ namespace PythonNodeModelsWpf
         private bool nodeWasModified = false;
         private string originalScript;
 
-        public ScriptEditorWindow(DynamoViewModel dynamoViewModel, PythonNode nodeModel)
+        public ScriptEditorWindow(
+            DynamoViewModel dynamoViewModel, 
+            PythonNode nodeModel, 
+            NodeView nodeView
+            ) : base(nodeView)
         {
             this.dynamoViewModel = dynamoViewModel;
             this.nodeModel = nodeModel;
+
             completionProvider = new IronPythonCompletionProvider();
             completionProvider.MessageLogged += dynamoViewModel.Model.Logger.Log;
 
             InitializeComponent();
-            var view = FindUpVisualTree<DynamoView>(this);
-            Owner = view;
-            WindowStartupLocation = WindowStartupLocation.CenterOwner;
+
             Dynamo.Logging.Analytics.TrackScreenView("Python");
         }
 
@@ -158,16 +161,6 @@ namespace PythonNodeModelsWpf
 
         #endregion
 
-        // walk up the visual tree to find object of type T, starting from initial object
-        private static T FindUpVisualTree<T>(DependencyObject initial) where T : DependencyObject
-        {
-            DependencyObject current = initial;
 
-            while (current != null && current.GetType() != typeof(T))
-            {
-                current = VisualTreeHelper.GetParent(current);
-            }
-            return current as T;
-        }
     }
 }
