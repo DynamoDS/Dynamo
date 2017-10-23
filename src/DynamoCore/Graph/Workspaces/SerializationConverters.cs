@@ -598,9 +598,14 @@ namespace Dynamo.Graph.Workspaces
             }
             else
             {
-                this.logger.LogWarning(
-                    string.Format("connector {0} could not be created, start or end port does not exist", connectorId),
-                    Logging.WarningLevel.Moderate);
+                if (this.logger!=null)
+                {
+                    this.logger.LogWarning(
+                       string.Format("connector {0} could not be created, start or end port does not exist", connectorId),
+                       Logging.WarningLevel.Moderate);
+
+                }
+                
                 return null;
             }
         }
