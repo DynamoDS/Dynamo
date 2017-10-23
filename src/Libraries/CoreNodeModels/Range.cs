@@ -133,6 +133,15 @@ namespace CoreNodeModels
                 inPorts.ElementAt(1).DefaultValue = amountPortDefaultValue;
                 inPorts.ElementAt(2).DefaultValue = stepPortDefaultValue;
             }
+            else
+            {
+                // If information from json does not look correct, clear the default ports and add ones with default value
+                InPorts.Clear();
+                InPorts.Add(new PortModel(PortType.Input, this, new PortData("start", Resources.RangePortDataStartToolTip, startPortDefaultValue)));
+                InPorts.Add(new PortModel(PortType.Input, this, new PortData("amount", Resources.RangePortDataAmountToolTip, amountPortDefaultValue)));
+                InPorts.Add(new PortModel(PortType.Input, this, new PortData("step", Resources.RangePortDataStepToolTip, stepPortDefaultValue)));
+            }
+            if (outPorts.Count() == 0) OutPorts.Add(new PortModel(PortType.Output, this, new PortData("seq", Resources.RangePortDataSeqToolTip)));
             ArgumentLacing = LacingStrategy.Auto;
             SetNodeStateBasedOnConnectionAndDefaults();
         }
