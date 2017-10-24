@@ -11,6 +11,7 @@
     <Import Project="..\..\src\packages\CefSharp.Wpf.55.0.0\build\CefSharp.Wpf.targets" Condition="Exists('..\..\src\packages\CefSharp.Wpf.55.0.0\build\CefSharp.Wpf.targets')" />
   </ImportGroup>
   <PropertyGroup>
+    <CefSharpAnyCpuSupport>true</CefSharpAnyCpuSupport>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{AE7F2579-104A-4AF4-AA7B-614AE9E79279}</ProjectGuid>
@@ -18,10 +19,11 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>ViewExtensionLibraryTests</RootNamespace>
     <AssemblyName>ViewExtensionLibraryTests</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
