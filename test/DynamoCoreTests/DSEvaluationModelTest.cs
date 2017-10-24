@@ -35,7 +35,7 @@ namespace Dynamo.Tests
         public void Regress561()
         {
             // 1; ----> x
-            // 2; ----> y Point.ByCoordinates(x, y, z);
+            // 2; ----> y .ByCoordinates(x, y, z);
             // 3; ----> z
             RunModel(@"core\dsevaluation\regress561.dyn");
             AssertClassName("8774296c-5269-450b-959d-ce4020ddbf80", "Autodesk.DesignScript.Geometry.Point");
@@ -664,6 +664,46 @@ namespace Dynamo.Tests
 
             AssertPreviewValue("d9b9d0a9-1fec-4b20-82c4-2d1665306509", new int[] { 4, 6, 7 });
             AssertPreviewValue("c35f1c6d-b955-4638-802f-208f93112078", new object[] { new int[] { 4, 5, 6 }, new int[] { 5, 6, 7 } });
+        }
+
+        [Test]
+        public void Test_Longest_Lacing()
+        {
+            RunModel(@"core\dsevaluation\longest_lacing.dyn");
+
+            AssertPreviewValue("c9476b21a972476788e184982918700e", new object[]
+            {
+                new[] {3, 4, 5}, new[] {7, 8, 9}, new[] {8, 9, 10}
+            });
+        }
+
+        [Test]
+        public void Test_Auto_Lacing()
+        {
+            RunModel(@"core\dsevaluation\auto_lacing.dyn");
+
+            AssertPreviewValue("c9476b21a972476788e184982918700e",
+                new object[] {new[] {3, 4, 5}, new[] {7, 8, 9}});
+        }
+
+        [Test]
+        public void Test_Cross_Lacing()
+        {
+            RunModel(@"core\dsevaluation\cross_lacing.dyn");
+
+            AssertPreviewValue("c9476b21a972476788e184982918700e", new object[]
+            {
+                new object[] {new[] {3, 4, 5}, new[] {4, 5, 6}, new[] {5, 6, 7}},
+                new object[] {new[] {6, 7, 8}, new[] {7, 8, 9}, new[] {8, 9, 10}}
+            });
+        }
+
+        [Test]
+        public void Test_Shortest_Lacing()
+        {
+            RunModel(@"core\dsevaluation\shortest_lacing.dyn");
+
+            AssertPreviewValue("c9476b21a972476788e184982918700e", new object[] {new[] {3, 4, 5}});
         }
 
         [Test]
