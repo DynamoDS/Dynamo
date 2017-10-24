@@ -2277,9 +2277,11 @@ namespace Dynamo.Models
                   Resources.UnresolvedNodesWarningTitle,
                   Resources.UnresolvedNodesWarningShortMessage,
                   Resources.UnresolvedNodesWarningMessage);
-
+                if (!IsTestMode)
+                {
+                    DisplayXmlDummyNodeWarning();
+                }
                 //raise a window as well so the user is clearly alerted to this state.
-                DisplayXmlDummyNodeWarning();
             }
         }
         private void DisplayXmlDummyNodeWarning()
