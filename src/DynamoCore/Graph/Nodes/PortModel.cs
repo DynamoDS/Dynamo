@@ -82,7 +82,7 @@ namespace Dynamo.Graph.Nodes
                 string useDefaultArgument = string.Empty;
                 if (!UsingDefaultValue && DefaultValue != null)
                     useDefaultArgument = " " + Properties.Resources.DefaultValueDisabled;
-                return toolTip + useDefaultArgument;
+                return toolTip.Contains(Properties.Resources.DefaultValueDisabled)? toolTip: toolTip + useDefaultArgument;
             }
             set
             {
