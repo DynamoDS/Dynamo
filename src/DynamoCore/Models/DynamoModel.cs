@@ -763,6 +763,11 @@ namespace Dynamo.Models
             }
         }
 
+        /// <summary>
+        /// Adds a new path to the list of custom package folders, but only if the path
+        /// does not already exist in the list.
+        /// </summary>
+        /// <param name="path"> The path to add.</param>
         public bool AddPackagePath(string path)
         {
             if (!Directory.Exists(path))
