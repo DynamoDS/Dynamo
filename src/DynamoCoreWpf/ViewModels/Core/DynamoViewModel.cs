@@ -2253,12 +2253,12 @@ namespace Dynamo.ViewModels
                         {
                             string title = "Package Path Added";
                             string shortMessage = "A library (*.dll, *.ds) was recently imported into Dynamo. Its path was automatically added to \"Settings > Manage Node and Package Paths...\"";
-                            string detailedMessage = "The import path \"" + path + "\" was added to \"Manage Node and Package Paths\". If you want to update or remove this path, please open \"Settings > Manage Node and Package Paths...\"";
+                            string detailedMessage = "The import path \"{0}\" was added to \"Manage Node and Package Paths\". If you want to update or remove this path, please open \"Settings > Manage Node and Package Paths...\"";
                             this.Model.Logger.LogNotification(
                                 "Dynamo", 
                                 title,
                                 shortMessage, 
-                                detailedMessage);
+                                string.Format(detailedMessage, path));
                         }
                     }
                     SearchViewModel.SearchAndUpdateResults();
