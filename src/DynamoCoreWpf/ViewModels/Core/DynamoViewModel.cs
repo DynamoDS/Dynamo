@@ -2248,6 +2248,15 @@ namespace Dynamo.ViewModels
                     foreach (var file in openFileDialog.FileNames)
                     {
                         EngineController.ImportLibrary(file);
+                        string path = new FileInfo(file).Directory.FullName;
+                        if (this.Model.AddPackagePath(path))
+                        {
+                            this.Model.Logger.LogNotification(
+                                "Dynamo", 
+                                "Package Path Added", 
+                                "Due to importing a library a package path has been added to the \"Manage Node and Package Paths\" options.", 
+                                "The import path \"" + path + "\" has been added to the \"Manage Node and Package Paths\" options.");
+                        }
                     }
                     SearchViewModel.SearchAndUpdateResults();
                 }
