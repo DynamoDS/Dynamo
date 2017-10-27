@@ -535,14 +535,16 @@ namespace DynamoCoreWpfTests
             //no longer do this, as its done in model serialization tests.
             //ConvertCurrentWorkspaceToDesignScriptAndSave(filePathBase);
 
-            string json = saveFunction(this.ViewModel, filePathBase);
+            string json = saveFunction(this.ViewModel, filePath);
 
             workspaceViewDataSaveFunction(wcd1, filePathBase, lastExecutionDuration,this.modelsGuidToIdMap);
 
             lastExecutionDuration = new TimeSpan();
 
-            //make sure we're opening the json here
-            this.ViewModel.OpenCommand.Execute(filePathBase + ".dyn");
+            // Open JSON .dyn or .dyf
+            var fileExtension = Path.GetExtension(filePath);
+            this.ViewModel.OpenCommand.Execute(filePathBase + fileExtension);
+
             var ws2 = ViewModel.CurrentSpaceViewModel;
             Assert.NotNull(ws2);
 
@@ -576,9 +578,39 @@ namespace DynamoCoreWpfTests
 
         }
 
-        private static string ConvertCurrentWorkspaceViewToJsonAndSave(DynamoViewModel viewModel, string filePathBase)
-        {
+        private static string SaveJsonTempWithFolderStructure(DynamoViewModel viewModel, string filePath, JObject jo)
+        {   
+            // Get all folder structure following "\\test"
+            var expectedStructure = filePath.Split(new string[] { "\\test" }, StringSplitOptions.None).Last();
 
+            // Current test fileName
+            var fileName = Path.GetFileName(filePath);
+
+            // Get temp folder path
+            var tempPath = Path.GetTempPath();
+            var jsonFolder = Path.Combine(tempPath, "DynamoTestJSON");
+            jsonFolder += Path.GetDirectoryName(expectedStructure);
+
+            if (!System.IO.Directory.Exists(jsonFolder))
+            {
+                System.IO.Directory.CreateDirectory(jsonFolder);
+            }
+
+            // Combine directory with test file name
+            var jsonPath = jsonFolder + "\\" + fileName;
+
+            if (File.Exists(jsonPath))
+            {
+                File.Delete(jsonPath);
+            }
+
+            File.WriteAllText(jsonPath, jo.ToString());
+
+            return jo.ToString();
+        }
+
+        private static string ConvertCurrentWorkspaceViewToJsonAndSave(DynamoViewModel viewModel, string filePath)
+        {
             // Stage 1: Serialize the workspace.
             var jsonModel = viewModel.Model.CurrentWorkspace.ToJson(viewModel.Model.EngineController);
 
@@ -590,6 +622,9 @@ namespace DynamoCoreWpfTests
             Assert.IsNotNullOrEmpty(jsonModel);
             Assert.IsNotNullOrEmpty(jo.ToString());
 
+            // Call new structured copy function
+            SaveJsonTempWithFolderStructure(viewModel, filePath, jo);
+
             var tempPath = Path.GetTempPath();
             var jsonFolder = Path.Combine(tempPath, jsonFolderName);
 
@@ -598,7 +633,9 @@ namespace DynamoCoreWpfTests
                 System.IO.Directory.CreateDirectory(jsonFolder);
             }
 
-            var jsonPath = filePathBase + ".dyn";
+            var fileName = Path.GetFileName(filePath);
+            var jsonPath = Path.Combine(jsonFolder, fileName);
+
             if (File.Exists(jsonPath))
             {
                 File.Delete(jsonPath);
@@ -608,7 +645,7 @@ namespace DynamoCoreWpfTests
             return jo.ToString();
         }
 
-        private string ConvertCurrentWorkspaceViewToNonGuidJsonAndSave(DynamoViewModel viewModel, string filePathBase)
+        private string ConvertCurrentWorkspaceViewToNonGuidJsonAndSave(DynamoViewModel viewModel, string filePath)
         {
             // Stage 1: Serialize the workspace.
             var jsonModel = viewModel.Model.CurrentWorkspace.ToJson(viewModel.Model.EngineController);
@@ -623,6 +660,9 @@ namespace DynamoCoreWpfTests
 
             Assert.IsNotNullOrEmpty(json);
 
+            // Call new structured copy function
+            SaveJsonTempWithFolderStructure(viewModel, filePath, jo);
+
             var tempPath = Path.GetTempPath();
             var jsonFolder = Path.Combine(tempPath, jsonNonGuidFolderName);
 
@@ -631,7 +671,9 @@ namespace DynamoCoreWpfTests
                 System.IO.Directory.CreateDirectory(jsonFolder);
             }
 
-            var jsonPath = filePathBase + ".dyn";
+            var fileName = Path.GetFileName(filePath);
+            var jsonPath = Path.Combine(jsonFolder, fileName);
+
             if (File.Exists(jsonPath))
             {
                 File.Delete(jsonPath);
@@ -855,7 +897,8 @@ namespace DynamoCoreWpfTests
         public object[] FindWorkspaces()
         {
             var di = new DirectoryInfo(TestDirectory);
-            var fis = di.GetFiles("*.dyn", SearchOption.AllDirectories);
+            var fis = new string[] { "*.dyn", "*.dyf" }
+            .SelectMany(i => di.GetFiles(i, SearchOption.AllDirectories));
             return fis.Select(fi => fi.FullName).ToArray();
         }
 
