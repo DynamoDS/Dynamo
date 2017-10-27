@@ -542,12 +542,8 @@ namespace DynamoCoreWpfTests
             lastExecutionDuration = new TimeSpan();
 
             // Open JSON .dyn or .dyf
-            var fileName = Path.GetFileName(filePath);
-            string folderPath = Path.GetFullPath(Path.Combine(filePath, @".."));
-
-            // Determine required exntension (dyn or dyf)
-            var fileExtension = filePath.Split('.');
-            this.ViewModel.OpenCommand.Execute(filePathBase + '.' + fileExtension[fileExtension.Length - 1]);
+            var fileExtension = Path.GetExtension(filePath);
+            this.ViewModel.OpenCommand.Execute(filePathBase + fileExtension);
 
             var ws2 = ViewModel.CurrentSpaceViewModel;
             Assert.NotNull(ws2);
