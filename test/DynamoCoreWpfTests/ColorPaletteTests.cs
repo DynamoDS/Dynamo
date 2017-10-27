@@ -1,4 +1,5 @@
-﻿using SystemTestServices;
+﻿using System.IO;
+using SystemTestServices;
 using CoreNodeModels.Input;
 using Dynamo.Graph;
 using Dynamo.Graph.Workspaces;
@@ -32,7 +33,30 @@ namespace DynamoCoreWpfTests
             Assert.DoesNotThrow(DispatcherUtil.DoEvents);
             Assert.AreEqual(colorPalette.DsColor, DSColor.ByARGB(255,0,0,0));
             Assert.Pass();
+
+            // Verify same results in JSON
+
+            // Change from default color to red
+            homespace.UpdateModelValue(new List<System.Guid>() { colorPalette.GUID }, "DsColor", DSColor.ByARGB(255, 255, 0, 0).ToString());
+            homespace.Run();
+            Assert.AreEqual(DSColor.ByARGB(255, 255, 0, 0), colorPalette.DsColor);
+            // Save in temp location
+            var tempPath = Path.GetTempPath() + "ColorPaletteTest_temp.dyn";
+            ViewModel.SaveAs(tempPath);
+            // Close workspace
+            Assert.IsTrue(ViewModel.CloseHomeWorkspaceCommand.CanExecute(null));
+            ViewModel.CloseHomeWorkspaceCommand.Execute(null);
+            // Open JSON temp file
+            OpenDynamoDefinition(tempPath);
+            // Run
+            RunCurrentModel();
+            // Verify xml results against json
+            Assert.DoesNotThrow(DispatcherUtil.DoEvents);
+            Assert.AreEqual(colorPalette.DsColor, DSColor.ByARGB(255, 255, 0, 0));
+            // Delete temp file
+            File.Delete(tempPath);
         }
+
         [Test]
         public void ColorPalette_Undo()
         {

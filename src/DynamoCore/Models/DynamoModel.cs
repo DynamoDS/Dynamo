@@ -667,9 +667,6 @@ namespace Dynamo.Models
             NodeFactory = new NodeFactory();
             NodeFactory.MessageLogged += LogMessage;
 
-            CustomNodeManager = new CustomNodeManager(NodeFactory, MigrationManager);
-            InitializeCustomNodeManager();
-
             extensionManager = new ExtensionManager();
             extensionManager.MessageLogged += LogMessage;
             var extensions = config.Extensions ?? LoadExtensions();
@@ -687,6 +684,9 @@ namespace Dynamo.Models
             LibraryServices = new LibraryServices(libraryCore, pathManager, PreferenceSettings);
             LibraryServices.MessageLogged += LogMessage;
             LibraryServices.LibraryLoaded += LibraryLoaded;
+
+            CustomNodeManager = new CustomNodeManager(NodeFactory, MigrationManager, LibraryServices);
+            InitializeCustomNodeManager();
 
             ResetEngineInternal();
 
@@ -1407,7 +1407,7 @@ namespace Dynamo.Models
                             OpenWorkspace(ws);
                             //Raise an event to deserialize the view parameters before
                             //setting the graph to run
-                            OnComputeModelDeSerialized();
+                            OnComputeModelDeserialized();
  
                             SetPeriodicEvaluation(ws);
                         }
@@ -1430,7 +1430,6 @@ namespace Dynamo.Models
         /// <returns>True if workspace was opened successfully</returns>
         private bool OpenXmlFileFromPath(XmlDocument xmlDoc, string filePath, bool forceManualExecutionMode)
         {
-            bool success = true;
             try
             {
                 //save the file before it is migrated to JSON.
@@ -1459,13 +1458,12 @@ namespace Dynamo.Models
                         }
                     }
                 }
+                return true;
             }
-            catch (Exception e)
+            catch (Exception)
             {
-                success = false;
+                return false;
             }
-
-            return success;
         }
 
         private void OpenWorkspace(WorkspaceModel ws)
@@ -1575,7 +1573,7 @@ namespace Dynamo.Models
                 IsTestMode);
 
             var result = workspaceInfo.IsCustomNodeWorkspace
-                ? CustomNodeManager.OpenCustomNodeWorkspace(workspaceInfo, IsTestMode, out workspace)
+                ? CustomNodeManager.OpenCustomNodeWorkspace(xmlDoc, workspaceInfo, IsTestMode, out workspace)
                 : OpenXmlHomeWorkspace(xmlDoc, workspaceInfo, out workspace);
 
             workspace.OnCurrentOffsetChanged(
@@ -1590,8 +1588,9 @@ namespace Dynamo.Models
             XmlDocument xmlDoc, WorkspaceInfo workspaceInfo, out WorkspaceModel workspace)
         {
             var nodeGraph = NodeGraph.LoadGraphFromXml(xmlDoc, NodeFactory);
-
+            Guid deterministicId =  GuidUtility.Create(GuidUtility.UrlNamespace, workspaceInfo.Name);
             var newWorkspace = new HomeWorkspaceModel(
+                deterministicId,
                 EngineController,
                 Scheduler,
                 NodeFactory,
@@ -1861,7 +1860,7 @@ namespace Dynamo.Models
         public bool OpenCustomNodeWorkspace(Guid guid)
         {
             CustomNodeWorkspaceModel customNodeWorkspace;
-            if (CustomNodeManager.TryGetFunctionWorkspace(guid, IsTestMode, out customNodeWorkspace, this.LibraryServices))
+            if (CustomNodeManager.TryGetFunctionWorkspace(guid, IsTestMode, out customNodeWorkspace))
             {
                 if (!Workspaces.OfType<CustomNodeWorkspaceModel>().Contains(customNodeWorkspace))
                     AddWorkspace(customNodeWorkspace);
@@ -2265,7 +2264,43 @@ namespace Dynamo.Models
             };
 
             _workspaces.Add(workspace);
+            CheckForXMLDummyNodes(workspace);
             OnWorkspaceAdded(workspace);
+        }
+
+        private void CheckForXMLDummyNodes(WorkspaceModel workspace)
+        {
+            //if the graph that is opened contains xml dummynodes log a notification 
+            if (workspace.containsXmlDummyNodes())
+            {
+                this.Logger.LogNotification("DynamoViewModel",
+                  Resources.UnresolvedNodesWarningTitle,
+                  Resources.UnresolvedNodesWarningShortMessage,
+                  Resources.UnresolvedNodesWarningMessage);
+                if (!IsTestMode)
+                {
+                    DisplayXmlDummyNodeWarning();
+                }
+                //raise a window as well so the user is clearly alerted to this state.
+            }
+        }
+        private void DisplayXmlDummyNodeWarning()
+        {
+           var xmlDummyNodeCount = this.CurrentWorkspace.Nodes.OfType<DummyNode>().
+                Where(node => node.OriginalNodeContent is XmlElement).Count();
+
+           Logging.Analytics.LogPiiInfo("XmlDummyNodeWarning",
+               xmlDummyNodeCount.ToString());
+
+            string summary = Resources.UnresolvedNodesWarningShortMessage;
+            var description = Resources.UnresolvedNodesWarningMessage;
+            const string imageUri = "/DynamoCoreWpf;component/UI/Images/task_dialog_future_file.png";
+            var args = new TaskDialogEventArgs(
+               new Uri(imageUri, UriKind.Relative),
+               Resources.UnresolvedNodesWarningTitle, summary, description);
+
+            args.AddRightAlignedButton((int)ButtonId.Proceed, Resources.OKButton);
+            OnRequestTaskDialog(null, args);
         }
 
         enum ButtonId
@@ -2364,7 +2399,7 @@ namespace Dynamo.Models
 
             Logging.Analytics.LogPiiInfo("FutureFileMessage", fullFilePath +
                 " :: fileVersion:" + fileVer + " :: currVersion:" + currVer);
-
+            
             string summary = Resources.FutureFileSummary;
             var description = string.Format(Resources.FutureFileDescription, fullFilePath, fileVersion, currVersion);
 

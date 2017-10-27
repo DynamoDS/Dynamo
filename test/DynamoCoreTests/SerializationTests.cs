@@ -507,6 +507,13 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        public void ConverterDoesNotThrowWithNullEngine()
+        {
+            CurrentDynamoModel.AddHomeWorkspace();
+            Assert.DoesNotThrow(()=>{ CurrentDynamoModel.CurrentWorkspace.ToJson(null); });
+        }
+
+        [Test]
         public void CustomNodeSerializationTest()
         {
             var customNodeTestPath = Path.Combine(TestDirectory, @"core\CustomNodes\TestAdd.dyn");

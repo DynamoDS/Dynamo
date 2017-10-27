@@ -397,7 +397,10 @@ namespace ProtoCore.Lang.Replication
                     if (ri.Zipped)
                     {
                         foreach (int idx in ri.ZipIndecies)
-                            maxReductionDepths[idx] = maxReductionDepths[idx] - 1;
+                        {
+                            if(maxReductionDepths[idx] > 0)
+                                maxReductionDepths[idx] = maxReductionDepths[idx] - 1;
+                        }
                     }
                     else
                     {

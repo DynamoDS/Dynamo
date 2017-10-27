@@ -96,6 +96,13 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        public void OpeningXMLWorkspaceShouldSetDeterministicId()
+        {
+            var ws = OpenWorkspaceFromSampleFile();
+            Assert.AreEqual(ws.Guid.ToString(), "3c9d0464-8643-5ffe-96e5-ab1769818209");
+        }
+
+        [Test]
         public void ClearingWorkspaceResetsPositionAndZoom()
         {
             var ws = OpenWorkspaceFromSampleFile();
