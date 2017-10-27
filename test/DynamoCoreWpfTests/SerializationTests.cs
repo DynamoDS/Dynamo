@@ -37,7 +37,7 @@ namespace DynamoCoreWpfTests
         {
             var sumNode = new DSFunction(ViewModel.Model.LibraryServices.GetFunctionDescriptor("+")) { X = 400, Y = 100 };
 
-            //Assert inital values
+            //Assert initial values
             Assert.AreEqual(400, sumNode.X);
             Assert.AreEqual(100, sumNode.Y);
             Assert.AreEqual("+", sumNode.Name);
@@ -94,7 +94,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(250, numNode.X);
             Assert.AreEqual("4", numNode.Value);
 
-            //Deserialize and aasert old values
+            //Deserialize and assert old values
             numNode.Deserialize(serializedEl, SaveContext.Undo);
             Assert.AreEqual(400, numNode.X);
             Assert.AreEqual("0.0", numNode.Value);
