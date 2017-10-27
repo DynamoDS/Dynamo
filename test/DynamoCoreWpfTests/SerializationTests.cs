@@ -514,7 +514,7 @@ namespace DynamoCoreWpfTests
         }
 
         private void DoWorkspaceOpenAndCompareView(string filePath, string dirName,
-           Func<DynamoViewModel, string, string, string> saveFunction,
+           Func<DynamoViewModel, string, string> saveFunction,
            Action<WorkspaceViewComparisonData, WorkspaceViewComparisonData> workspaceViewCompareFunction,
            Action<WorkspaceViewComparisonData, string, TimeSpan,Dictionary<Guid,string>> workspaceViewDataSaveFunction)
         {
@@ -535,7 +535,7 @@ namespace DynamoCoreWpfTests
             //no longer do this, as its done in model serialization tests.
             //ConvertCurrentWorkspaceToDesignScriptAndSave(filePathBase);
 
-            string json = saveFunction(this.ViewModel, filePathBase, filePath);
+            string json = saveFunction(this.ViewModel, filePath);
 
             workspaceViewDataSaveFunction(wcd1, filePathBase, lastExecutionDuration,this.modelsGuidToIdMap);
 
@@ -609,7 +609,7 @@ namespace DynamoCoreWpfTests
             return jo.ToString();
         }
 
-        private static string ConvertCurrentWorkspaceViewToJsonAndSave(DynamoViewModel viewModel, string filePathBase, string filePath)
+        private static string ConvertCurrentWorkspaceViewToJsonAndSave(DynamoViewModel viewModel, string filePath)
         {
             // Stage 1: Serialize the workspace.
             var jsonModel = viewModel.Model.CurrentWorkspace.ToJson(viewModel.Model.EngineController);
@@ -645,7 +645,7 @@ namespace DynamoCoreWpfTests
             return jo.ToString();
         }
 
-        private string ConvertCurrentWorkspaceViewToNonGuidJsonAndSave(DynamoViewModel viewModel, string filePathBase, string filePath)
+        private string ConvertCurrentWorkspaceViewToNonGuidJsonAndSave(DynamoViewModel viewModel, string filePath)
         {
             // Stage 1: Serialize the workspace.
             var jsonModel = viewModel.Model.CurrentWorkspace.ToJson(viewModel.Model.EngineController);
