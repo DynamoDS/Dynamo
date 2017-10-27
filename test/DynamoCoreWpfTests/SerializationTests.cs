@@ -578,13 +578,13 @@ namespace DynamoCoreWpfTests
 
         }
 
-        private static string SaveJsonTempWithFolderStructure(DynamoViewModel viewModel, string originalPath, JObject jo)
+        private static string SaveJsonTempWithFolderStructure(DynamoViewModel viewModel, string filePath, JObject jo)
         {   
             // Get all folder structure following "\\test"
-            var expectedStructure = originalPath.Split(new string[] { "\\test" }, StringSplitOptions.None).Last();
+            var expectedStructure = filePath.Split(new string[] { "\\test" }, StringSplitOptions.None).Last();
 
             // Current test fileName
-            var fileName = Path.GetFileName(originalPath);
+            var fileName = Path.GetFileName(filePath);
 
             // Get temp folder path
             var tempPath = Path.GetTempPath();
