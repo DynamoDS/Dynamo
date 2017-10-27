@@ -593,7 +593,6 @@ namespace DynamoCoreWpfTests
             // Get temp folder path
             var tempPath = Path.GetTempPath();
             var jsonFolder = Path.Combine(tempPath, "DynamoTestJSON");
-            var thing = Path.GetDirectoryName(expectedStructure);
             jsonFolder += Path.GetDirectoryName(expectedStructure);
 
             if (!System.IO.Directory.Exists(jsonFolder))
@@ -902,7 +901,6 @@ namespace DynamoCoreWpfTests
         public object[] FindWorkspaces()
         {
             var di = new DirectoryInfo(TestDirectory);
-            //var fis = di.GetFiles("*.dyn", SearchOption.AllDirectories);
             var fis = new string[] { "*.dyn", "*.dyf" }
             .SelectMany(i => di.GetFiles(i, SearchOption.AllDirectories));
             return fis.Select(fi => fi.FullName).ToArray();
