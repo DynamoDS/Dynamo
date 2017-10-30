@@ -40,10 +40,11 @@ namespace Dynamo.LibraryUI.Handlers
             try
             {
                 IResourceHandler handler;
-                if (logger != null)
-                {
-                    logger.Log("Requested URL", request.Url);
-                }
+                //enable this if you want to seet the requests in librarieJS
+                //if (logger != null)
+                //{
+                //    logger.Log("Requested URL", request.Url);
+                //}
                 
                 if(!Handlers.TryGetValue(request.Url, out handler))
                 {
