@@ -4,9 +4,11 @@ using System.Windows.Input;
 using Dynamo.Controls;
 using Dynamo.ViewModels;
 using Dynamo.Wpf;
+using Dynamo.Wpf.Windows;
 
 using PythonNodeModels;
 using System;
+
 
 namespace PythonNodeModelsWpf
 {
@@ -16,6 +18,7 @@ namespace PythonNodeModelsWpf
         private PythonNode model;
         private NodeView view;
         private ScriptEditorWindow editWindow;
+        private ModelessChildWindow.WindowPosition windowPosition;
 
         public void CustomizeView(PythonNode nodeModel, NodeView nodeView)
         {
@@ -57,7 +60,7 @@ namespace PythonNodeModelsWpf
                 }
                 else
                 {
-                    editWindow = new ScriptEditorWindow(dynamoViewModel, model, view);
+                    editWindow = new ScriptEditorWindow(dynamoViewModel, model, view, ref windowPosition);
                     editWindow.Initialize(model.GUID, "ScriptContent", model.Script);
                     editWindow.Closed += editWindow_Closed;
                     editWindow.Show();
