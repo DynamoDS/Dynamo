@@ -16,6 +16,9 @@ namespace Dynamo.Wpf.Windows
     // </summary>
     public class ModelessChildWindow : Window
     {
+        /// <summary>
+        /// Screen position of the child window.
+        /// </summary>
         public class WindowPosition
         {
             public double Left;
