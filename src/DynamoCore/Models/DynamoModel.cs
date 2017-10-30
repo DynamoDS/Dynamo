@@ -637,10 +637,7 @@ namespace Dynamo.Models
 
             // Make sure that the default package folder is added in the list if custom packages folder.
             var userDataFolder = pathManager.GetUserDataFolder(); // Get the default user data path
-            if (Directory.Exists(userDataFolder) && !PreferenceSettings.CustomPackageFolders.Contains(userDataFolder))
-            {
-                PreferenceSettings.CustomPackageFolders.Add(userDataFolder);
-            }
+            AddPackagePath(userDataFolder);
 
             // Check if the Python template file specified in the settings file exists & it's not empty
             // If not, check the default filepath for the Python template (userDataFolder\PythonTemplate.py).
@@ -764,6 +761,24 @@ namespace Dynamo.Models
                     Logger.Log(ex.Message);
                 }
             }
+        }
+
+        /// <summary>
+        /// Adds a new path to the list of custom package folders, but only if the path
+        /// does not already exist in the list.
+        /// </summary>
+        /// <param name="path"> The path to add.</param>
+        public bool AddPackagePath(string path)
+        {
+            if (!Directory.Exists(path))
+                return false;
+          
+            if (PreferenceSettings.CustomPackageFolders.Contains(path))
+                return false;
+
+            PreferenceSettings.CustomPackageFolders.Add(path);
+
+            return true;
         }
 
         private IEnumerable<IExtension> LoadExtensions()

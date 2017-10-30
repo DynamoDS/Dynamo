@@ -1611,6 +1611,15 @@ Next assemblies were loaded several times:
     <value>Move the selected path upward</value>
     <comment>Tool-tip for up arrow</comment>
   </data>
+  <data name="PackagePathAutoAddNotificationTitle" xml:space="preserve">
+    <value>Package Path Added</value>
+  </data>
+  <data name="PackagePathAutoAddNotificationShortDescription" xml:space="preserve">
+    <value>A library (*.dll, *.ds) was recently imported into Dynamo. Its path was automatically added to "Settings > Manage Node and Package Paths..."</value>
+  </data>
+  <data name="PackagePathAutoAddNotificationDetailedDescription" xml:space="preserve">
+    <value>The import path "{0}" was added to "Manage Node and Package Paths". If you want to update or remove this path, please open "Settings > Manage Node and Package Paths..."</value>
+  </data>
   <data name="PackageSearchStateNoResult" xml:space="preserve">
     <value>Search returned no results!</value>
   </data>
