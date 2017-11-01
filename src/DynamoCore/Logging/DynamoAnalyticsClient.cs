@@ -151,7 +151,7 @@ namespace Dynamo.Logging
             var appversion = dynamoModel.AppVersion;
 
             //If not ReportingAnalytics, then set the idle time as infinite so idle state is not recorded.
-            Service.StartUp(new ProductInfo() { Name = "Dynamo", VersionString = appversion },
+            Service.StartUp(new ProductInfo() { Name = "Dynamo", VersionString = appversion, AppVersion = dynamoModel.Version },
                 new UserInfo(Session.UserId), ReportingAnalytics ? TimeSpan.FromMinutes(30) : TimeSpan.MaxValue);
         }
 
