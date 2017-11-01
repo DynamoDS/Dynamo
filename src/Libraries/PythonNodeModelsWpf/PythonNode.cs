@@ -34,6 +34,15 @@ namespace PythonNodeModelsWpf
             nodeView.UpdateLayout();
 
             nodeView.MouseDown += view_MouseDown;
+            nodeModel.Disposed += NodeModel_Disposed;
+        }
+
+        private void NodeModel_Disposed(Dynamo.Graph.ModelBase obj)
+        {
+            if (editWindow != null)
+            {
+                editWindow.Close();
+            }
         }
 
         private void view_MouseDown(object sender, MouseButtonEventArgs e)
