@@ -8,7 +8,7 @@ using Dynamo.Wpf.Windows;
 
 using PythonNodeModels;
 using System;
-
+using System.Windows;
 
 namespace PythonNodeModelsWpf
 {
@@ -34,6 +34,7 @@ namespace PythonNodeModelsWpf
             nodeView.UpdateLayout();
 
             nodeView.MouseDown += view_MouseDown;
+            nodeModel.DeletionStarted += NodeModel_DeletionStarted;
             nodeModel.Disposed += NodeModel_Disposed;
         }
 
@@ -42,6 +43,25 @@ namespace PythonNodeModelsWpf
             if (editWindow != null)
             {
                 editWindow.Close();
+            }
+        }
+
+        private void NodeModel_DeletionStarted(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            if (editWindow != null)
+            {
+                var res = MessageBox.Show(
+                    String.Format(
+                        PythonNodeModels.Properties.Resources.DeletingPythonNodeWithOpenEditorMessage, 
+                        this.model.Name),
+                    PythonNodeModels.Properties.Resources.DeletingPythonNodeWithOpenEditorTitle,
+                    MessageBoxButton.OKCancel, 
+                    MessageBoxImage.Question);
+
+                if (res == MessageBoxResult.Cancel)
+                {
+                    e.Cancel = true;
+                }
             }
         }
 
