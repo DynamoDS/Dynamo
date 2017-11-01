@@ -27,7 +27,7 @@ namespace Dynamo.Wpf.Windows
             public double Height;
         }
 
-        public WindowPosition Position;
+        private WindowPosition Position;
 
         /// <summary>
         /// Construct a ModelessChildWindow.
