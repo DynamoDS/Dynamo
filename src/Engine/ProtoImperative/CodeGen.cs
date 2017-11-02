@@ -666,35 +666,30 @@ namespace ProtoImperative
             IdentifierNode t = node as IdentifierNode;
             if (t.Name.Equals(ProtoCore.DSDefinitions.Keyword.This))
             {
+                string message;
                 if (localProcedure != null)
                 {
                     if (localProcedure.IsStatic)
                     {
-                        string message = ProtoCore.Properties.Resources.kUsingThisInStaticFunction;
+                        message = ProtoCore.Properties.Resources.kUsingThisInStaticFunction;
                         core.BuildStatus.LogWarning(WarningID.InvalidThis, message, core.CurrentDSFileName, t.line, t.col, graphNode);
                         EmitPushNull();
                         return;
                     }
-                    else if (localProcedure.ClassID == Constants.kGlobalScope)
+                    if (localProcedure.ClassID == Constants.kGlobalScope)
                     {
-                        string message = ProtoCore.Properties.Resources.kInvalidThis;
+                        message = ProtoCore.Properties.Resources.kInvalidThis;
                         core.BuildStatus.LogWarning(WarningID.InvalidThis, message, core.CurrentDSFileName, t.line, t.col, graphNode);
                         EmitPushNull();
                         return;
                     }
-                    else
-                    {
-                        EmitThisPointerNode();
-                        return;
-                    }
-                }
-                else
-                {
-                    string message = ProtoCore.Properties.Resources.kInvalidThis;
-                    core.BuildStatus.LogWarning(WarningID.InvalidThis, message, core.CurrentDSFileName, t.line, t.col, graphNode);
-                    EmitPushNull();
+                    EmitThisPointerNode();
                     return;
                 }
+                message = ProtoCore.Properties.Resources.kInvalidThis;
+                core.BuildStatus.LogWarning(WarningID.InvalidThis, message, core.CurrentDSFileName, t.line, t.col, graphNode);
+                EmitPushNull();
+                return;
             }
 
             int dimensions = 0;
@@ -731,6 +726,7 @@ namespace ProtoImperative
                 }
             }
 
+            SymbolNode symbolCopy = null;
             if (!isAllocated || !isAccessible)
             {
                 if (isAllocated)
@@ -767,8 +763,7 @@ namespace ProtoImperative
             else
             {
                 type = symbolnode.datatype;
-                runtimeIndex = symbolnode.runtimeTableIndex;
-
+                
                 if (core.Options.AssociativeToImperativePropagation)
                 {
                     // Comment Jun: If this symbol belongs to an outer block, then append it to this language blocks dependent
@@ -781,12 +776,27 @@ namespace ProtoImperative
                             dependentNode.PushSymbolReference(symbolnode);
                             graphNode.PushDependent(dependentNode);
                         }
+
+                        // make a copy of the symbol
+                        //symbolCopy = new SymbolNode(symbolnode.name,
+                        //    Constants.kInvalidIndex, Constants.kInvalidIndex,
+                        //    symbolnode.datatype, false, codeBlock.symbolTable.RuntimeIndex,
+                        //    MemoryRegion.MemStack, globalClassIndex,
+                        //    ProtoCore.CompilerDefinitions.AccessModifier.Public, false,
+                        //    codeBlock.codeBlockId);
+                        //symbolCopy.symbolTableIndex = codeBlock.symbolTable.Append(symbolCopy);
+
                     }
                 }
+                runtimeIndex = symbolnode.runtimeTableIndex;
             }
 
             EmitInstrConsole(kw.push, t.Value);
             EmitPushForSymbol(symbolnode, runtimeIndex, t);
+            if (symbolCopy != null)
+            {
+                EmitPopForSymbol(symbolCopy, codeBlock.symbolTable.RuntimeIndex);
+            }
 
             if (null != t.ArrayDimensions)
             {
@@ -1583,70 +1593,88 @@ namespace ProtoImperative
                     }
                     else
                     {
-                        if (!isAllocated)
+                        if (isAllocated && dimensions > 0)
+                        {
+                            // if array symbol is already allocated and being assigned to,
+                            // push its value, make a local copy and pop the value
+                            var symbolCopy = Allocate(t.Value, globalProcIndex, inferedType);
+                            
+                            symbolCopy.datatype.rank = dimensions;
+
+                            EmitInstrConsole(kw.push, t.Value);
+                            EmitPushForSymbol(symbolnode, runtimeIndex, t);
+
+                            runtimeIndex = codeBlock.symbolTable.RuntimeIndex;
+                            EmitInstrConsole(kw.pop, t.Value);
+                            EmitPopForSymbol(symbolCopy, runtimeIndex,
+                                node.line, node.col, node.endLine, node.endCol);
+
+                            symbolnode = symbolCopy;
+                        }
+                        //if (!isAllocated)
+                        else
                         {
                             symbolnode = Allocate(t.Value, globalProcIndex, inferedType);
                             if (dimensions > 0)
                             {
                                 symbolnode.datatype.rank = dimensions;
                             }
+                            runtimeIndex = codeBlock.symbolTable.RuntimeIndex;
                         }
-                        else if (dimensions == 0)
-                        {
-                            if (core.TypeSystem.IsHigherRank(inferedType.UID, symbolnode.datatype.UID))
-                            {
-                                symbolnode.datatype = inferedType;
-                            }
-                        }
+                        //else if (dimensions == 0)
+                        //{
+                        //    if (core.TypeSystem.IsHigherRank(inferedType.UID, symbolnode.datatype.UID))
+                        //    {
+                        //        symbolnode.datatype = inferedType;
+                        //    }
+                        //}
 
                         if (b.LeftNode is TypedIdentifierNode)
                         {
                             EmitCast(castType.UID, castType.rank);
                         }
 
+                        int line, col, endLine, endCol;
                         if (parentNode != null)
                         {
-                            if (dimensions == 0)
-                            {
-                                EmitInstrConsole(kw.pop, t.Value);
-                                EmitPopForSymbol(symbolnode, runtimeIndex, parentNode.line, parentNode.col, parentNode.endLine, parentNode.endCol);
-                            }
-                            else
-                            {
-                                EmitPushDimensions(dimensions);
-                                EmitInstrConsole(kw.setelement, t.Value);
-                                EmitSetElement(symbolnode, runtimeIndex);
-                            }
+                            line = parentNode.line;
+                            col = parentNode.col;
+                            endLine = parentNode.endLine;
+                            endCol = parentNode.endCol;
                         }
                         else
                         {
-                            if (dimensions == 0)
-                            {
-                                EmitInstrConsole(kw.pop, t.Value);
-                                EmitPopForSymbol(symbolnode, runtimeIndex, node.line, node.col, node.endLine, node.endCol);
-                            }
-                            else
-                            {
-                                EmitPushDimensions(dimensions);
-                                EmitInstrConsole(kw.setelement, t.Value);
-                                EmitSetElement(symbolnode, runtimeIndex);
-                            }
+                            line = node.line;
+                            col = node.col;
+                            endLine = node.endLine;
+                            endCol = node.endCol;
                         }
-                        
+
+                        if (dimensions == 0)
+                        {
+                            EmitInstrConsole(kw.pop, t.Value);
+                            EmitPopForSymbol(symbolnode, runtimeIndex, line, col, endLine, endCol);
+                        }
+                        else
+                        {
+                            EmitPushDimensions(dimensions);
+                            EmitInstrConsole(kw.setelement, t.Value);
+                            EmitSetElement(symbolnode, runtimeIndex);
+                        }
 
                         // Check if the symbol was not here, only then it becomes a valid propagation symbol 
                         // TODO Jun: check if the symbol was allocated from an associative block
-                        if (!ProtoCore.Utils.CoreUtils.IsAutoGeneratedVar(symbolnode.name))
-                        {
-                            if (codeBlock.symbolTable.RuntimeIndex != symbolnode.runtimeTableIndex)
-                            {
-                                List<ProtoCore.DSASM.SymbolNode> symbolList = new List<ProtoCore.DSASM.SymbolNode>();
-                                symbolList.Add(symbolnode);
+                        //if (!ProtoCore.Utils.CoreUtils.IsAutoGeneratedVar(symbolnode.name))
+                        //{
+                        //    if (codeBlock.symbolTable.RuntimeIndex != symbolnode.runtimeTableIndex)
+                        //    {
+                        //        List<ProtoCore.DSASM.SymbolNode> symbolList = new List<ProtoCore.DSASM.SymbolNode>();
+                        //        symbolList.Add(symbolnode);
 
-                                EmitPushDepData(symbolList);
-                                EmitPushDep(runtimeIndex, symbolList.Count, globalClassIndex);
-                            }
-                        }
+                        //        EmitPushDepData(symbolList);
+                        //        EmitPushDep(runtimeIndex, symbolList.Count, globalClassIndex);
+                        //    }
+                        //}
                     }
                 }
             }
