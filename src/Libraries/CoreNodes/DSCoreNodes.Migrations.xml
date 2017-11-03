@@ -162,4 +162,89 @@
     <oldName>DSCore.Logic.Or</oldName>
     <newName>DSCore.Math.Or</newName>
   </priorNameHint>
+  <!-- NEW ADDITIONS -->
+  <!-- Many of these nodes are already remapped above.
+       Since these changes were introduced for 2.0 the
+       'newNames' can just be replaced if we don't need to support
+       any existing 2.0 graphs otherwise we need to remap twice-->
+  <priorNameHint>
+    <oldName>File.File.FromPath</oldName>
+    <newName>File.File From Path</newName>
+  </priorNameHint>
+  <priorNameHint>
+    <oldName>File.DirectoryFromPath</oldName>
+    <newName>File.Directory From Path</newName>
+  </priorNameHint>
+  <priorNameHint>
+    <oldName>DSCore.IO.File.CombinePath</oldName>
+    <newName>DSCore.IO.FileSystem.CombinePath</newName>
+  </priorNameHint>
+  <priorNameHint>
+    <oldName>DSCore.IO.File.FileExtension</oldName>
+    <newName>DSCore.IO.FileSystem.FileExtension</newName>
+  </priorNameHint>
+  <priorNameHint>
+    <oldName>DSCore.IO.File.ChangePathExtension</oldName>
+    <newName>DSCore.IO.FileSystem.ChangePathExtension</newName>
+  </priorNameHint>
+  <priorNameHint>
+    <oldName>DSCore.IO.File.DirectoryName</oldName>
+    <newName>DSCore.IO.FileSystem.DirectoryName</newName>
+  </priorNameHint>
+  <priorNameHint>
+    <oldName>DSCore.IO.File.FileName</oldName>
+    <newName>DSCore.IO.FileSystem.FileName</newName>
+  </priorNameHint>
+  <priorNameHint>
+    <oldName>DSCore.IO.File.FileHasExtension</oldName>
+    <newName>DSCore.IO.FileSystem.FileHasExtension</newName>
+  </priorNameHint>
+  <priorNameHint>
+    <oldName>DSCore.IO.File.ReadText</oldName>
+    <newName>DSCore.IO.FileSystem.ReadText</newName>
+  </priorNameHint>
+  <priorNameHint>
+    <oldName>DSCore.IO.File.Move</oldName>
+    <newName>DSCore.IO.FileSystem.MoveFile</newName>
+  </priorNameHint>
+  <priorNameHint>
+    <oldName>DSCore.IO.File.Delete</oldName>
+    <newName>DSCore.IO.FileSystem.DeleteFile</newName>
+  </priorNameHint>
+  <priorNameHint>
+    <oldName>DSCore.IO.File.Copy</oldName>
+    <newName>DSCore.IO.FileSystem.CopyFile</newName>
+  </priorNameHint>
+  <priorNameHint>
+    <oldName>DSCore.IO.File.Exists</oldName>
+    <newName>DSCore.IO.FileSystem.FileExists</newName>
+  </priorNameHint>
+  <priorNameHint>
+    <oldName>DSCore.IO.File.WriteText</oldName>
+    <newName>DSCore.IO.FileSystem.WriteText</newName>
+  </priorNameHint>
+  <priorNameHint>
+    <oldName>DSCore.IO.File.AppendText</oldName>
+    <newName>DSCore.IO.FileSystem.AppendText</newName>
+  </priorNameHint>
+  <priorNameHint>
+    <oldName>DSCore.IO.File.MoveDirectory</oldName>
+    <newName>DSCore.IO.FileSystem.MoveDirectory</newName>
+  </priorNameHint>
+  <priorNameHint>
+    <oldName>DSCore.IO.File.CopyDirectory</oldName>
+    <newName>DSCore.IO.FileSystem.CopyDirectory</newName>
+  </priorNameHint>
+  <priorNameHint>
+    <oldName>DSCore.IO.File.DeleteDirectory</oldName>
+    <newName>DSCore.IO.FileSystem.DeleteDirectory</newName>
+  </priorNameHint>
+  <priorNameHint>
+    <oldName>DSCore.IO.File.GetDirectoryContents</oldName>
+    <newName>DSCore.IO.FileSystem.GetDirectoryContents</newName>
+  </priorNameHint>
+  <priorNameHint>
+    <oldName>DSCore.IO.File.DirectoryExists</oldName>
+    <newName>DSCore.IO.FileSystem.DirectoryExists</newName>
+  </priorNameHint>
 </migrations>
