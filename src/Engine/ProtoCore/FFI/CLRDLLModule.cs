@@ -664,6 +664,8 @@ namespace ProtoFFI
             func.IsExternLib = true;
             func.ExternLibName = Module.Name;
             func.IsStatic = f.IsStatic;
+            //Set the method attribute for Enum properties.
+            func.MethodAttributes = new FFIMethodAttributes(f);
 
             return func;
         }
@@ -1247,6 +1249,32 @@ namespace ProtoFFI
         }
         public bool AllowRankReduction { get; protected set; }
         public bool RequireTracing { get; protected set; }
+
+        //Set the MethodAttributes for Enum fields.
+        public FFIMethodAttributes(FieldInfo f)
+        {
+            var atts = f.GetCustomAttributes(false).Cast<Attribute>();
+
+            foreach (var attr in atts)
+            {
+                //Set the obsolete message for enum fields.
+                if (attr is IsObsoleteAttribute)
+                {
+                    HiddenInLibrary = true;
+                    ObsoleteMessage = (attr as IsObsoleteAttribute).Message;
+                    if (string.IsNullOrEmpty(ObsoleteMessage))
+                        ObsoleteMessage = "Obsolete";
+                }
+                else if (attr is ObsoleteAttribute)
+                {
+                    HiddenInLibrary = true;
+                    ObsoleteMessage = (attr as ObsoleteAttribute).Message;
+                    if (string.IsNullOrEmpty(ObsoleteMessage))
+                        ObsoleteMessage = "Obsolete";
+                }
+
+            }
+        }
 
         public FFIMethodAttributes(MethodInfo method, Dictionary<MethodInfo, Attribute[]> getterAttributes)
         {
