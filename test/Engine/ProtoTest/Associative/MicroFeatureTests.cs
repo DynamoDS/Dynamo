@@ -748,11 +748,8 @@ a = t[1][1][0];
         {
             String code =
 @"
-a;
-b;
-c;
-d;
-[Imperative]
+
+i = [Imperative]
 {
     t = {};
     t[0][0] = 1;
@@ -763,7 +760,12 @@ d;
     b = t[0][1];
     c = t[1][0];
     d = t[1][1];
+    return {a, b, c, d};
 }
+a = i[0];
+b = i[1];
+c = i[2];
+d = i[3];
 ";
             thisTest.RunScriptSource(code);
             thisTest.Verify("a",1);
@@ -2313,7 +2315,7 @@ a = 10;
                 @"
 a;
 b;
-[Associative]
+c = [Associative]
 {
     a = 1;
     b = a;
@@ -2321,11 +2323,11 @@ b;
     {
         a = a + 1;
     }
+    return {a, b};
 }
                 ";
             thisTest.RunScriptSource(code);
-            thisTest.Verify("a",2);
-            thisTest.Verify("b",2);
+            thisTest.Verify("c", new[] {1, 1});
         }
 
         [Test]
@@ -2340,9 +2342,9 @@ b;
     a = 1;
     b = a;
     a = 10;
-    [Imperative]
+    a = [Imperative]
     {
-        a = a + 1;
+        return a + 1;
     }
 }
                 ";
@@ -2361,18 +2363,19 @@ a;b;c;d;
 {
     a = 1;
     b = a;
-    c = 100;
+    c = 10;
     d = c;
-    [Imperative]
+    a = [Imperative]
     {
         a = a + 1;
-        c = 10;
+        c = c + a;
+        return c;
     }
 }
                 ";
             thisTest.RunScriptSource(code);
-            thisTest.Verify("a",2);
-            thisTest.Verify("b",2);
+            thisTest.Verify("a",12);
+            thisTest.Verify("b",12);
             thisTest.Verify("c",10);
             thisTest.Verify("d",10);
         }
@@ -2626,11 +2629,7 @@ t4 = 6.1;";
         {
             string code =
 @" 
-t1;
-t2;
-t3;
-t4;
-[Imperative]
+i = [Imperative]
 {
     t1:int = 1;
     t1 = 3.5;
@@ -2642,9 +2641,14 @@ t4;
     t4:int = 3.9;
     t4:var = 5.1;
     t4 = 6.1;
-}";
+    return {t1, t2, t3, t4};
+}
+t1 = i[0];
+t2 = i[1];
+t3 = i[2];
+t4 = i[3];";
             thisTest.RunScriptSource(code);
-            thisTest.Verify("t1", 4);
+            thisTest.Verify("t1", 3.5);
             thisTest.Verify("t2", 4.3);
             thisTest.Verify("t3", 4.9);
             thisTest.Verify("t4", 6.1);

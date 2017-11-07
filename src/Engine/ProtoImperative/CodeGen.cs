@@ -1269,6 +1269,39 @@ namespace ProtoImperative
             }
         }
 
+        private void PreprocessWhileBody(List<ImperativeNode> whileBody)
+        {
+            foreach (var stmt in whileBody)
+            {
+                var bNode = stmt as BinaryExpressionNode;
+                if(bNode == null) continue;
+
+                var lNode = bNode.LeftNode as IdentifierNode;
+                if (bNode.Optr != Operator.assign || lNode == null) continue;
+
+                SymbolNode symbolnode;
+                bool isAccessible;
+                bool isAllocated = VerifyAllocation(lNode.Value, globalClassIndex, globalProcIndex, out symbolnode, out isAccessible);
+
+                if (null == lNode.ArrayDimensions || !isAllocated) continue;
+
+                int runtimeIndex = symbolnode.runtimeTableIndex;
+
+                var symbolCopy = Allocate(lNode.Value, globalProcIndex, symbolnode.datatype);
+
+                symbolCopy.datatype.rank = symbolnode.datatype.rank;
+
+                EmitInstrConsole(kw.push, lNode.Value);
+                EmitPushForSymbol(symbolnode, runtimeIndex, lNode);
+
+                runtimeIndex = codeBlock.symbolTable.RuntimeIndex;
+
+                EmitInstrConsole(kw.pop, lNode.Value);
+                EmitPopForSymbol(symbolCopy, runtimeIndex,
+                    stmt.line, stmt.col, stmt.endLine, stmt.endCol);
+            }
+        }
+
         private void EmitBinaryExpressionNode(ImperativeNode node, ref ProtoCore.Type inferedType, bool isBooleanOp = false, 
             ProtoCore.AssociativeGraph.GraphNode graphNode = null, BinaryExpressionNode parentNode = null)
         {
@@ -1356,7 +1389,7 @@ namespace ProtoImperative
                     DFSGetSymbolList(lnode, ref type, leftNodeRef);
                     
                     // Get the first identifier symbol runtime index as it is required for the pushdep
-                    List<ProtoCore.DSASM.SymbolNode> symbolList = new List<SymbolNode>();
+                    var symbolList = new List<SymbolNode>();
                     symbolList.Add(leftNodeRef.nodeList[0].symbol);
                     int runtimeIndex = leftNodeRef.nodeList[0].symbol.runtimeTableIndex;
 
@@ -1410,7 +1443,7 @@ namespace ProtoImperative
             rightType.rank = inferedType.rank;
 
             BinaryExpressionNode rightNode = b.RightNode as BinaryExpressionNode;
-            if ((rightNode != null) && (ProtoCore.DSASM.Operator.assign == rightNode.Optr))
+            if ((rightNode != null) && (Operator.assign == rightNode.Optr))
             {
                 DfsTraverse(rightNode.LeftNode, ref inferedType);
             }
@@ -1423,7 +1456,6 @@ namespace ProtoImperative
                     buildStatus.LogSemanticError(message, core.CurrentDSFileName, b.RightNode.line, b.RightNode.col);
                 }
                 EmitBinaryOperation(leftType, rightType, b.Optr);
-                isBooleanOp = false;
 
                 return;
             }
@@ -1453,17 +1485,11 @@ namespace ProtoImperative
                     }
 
                     bool isAccessible;
-                    bool isAllocated;
                     bool isLocalDeclaration = t.IsLocal;
                     SymbolNode symbolnode;
-                    if (isLocalDeclaration)
-                    {
-                        isAllocated = VerifyAllocationInScope(t.Value, globalClassIndex, globalProcIndex, out symbolnode, out isAccessible);
-                    }
-                    else
-                    {
-                        isAllocated = VerifyAllocation(t.Value, globalClassIndex, globalProcIndex, out symbolnode, out isAccessible);
-                    }
+                    var isAllocated = isLocalDeclaration
+                        ? VerifyAllocationInScope(t.Value, globalClassIndex, globalProcIndex, out symbolnode, out isAccessible) 
+                        : VerifyAllocation(t.Value, globalClassIndex, globalProcIndex, out symbolnode, out isAccessible);
 
                     if (!string.IsNullOrEmpty(t.ArrayName) && symbolnode != null)
                     {
@@ -1475,7 +1501,7 @@ namespace ProtoImperative
 
                     // Comment Jun: Add modifeid properties into the updatedProperties list of the current function
                     // This propagates upated of mproperties taht were modified in an imperative block
-                    if (null != localProcedure && ProtoCore.DSASM.Constants.kGlobalScope != localProcedure.ClassID)
+                    if (null != localProcedure && Constants.kGlobalScope != localProcedure.ClassID)
                     {
                         if (isAllocated)
                         {
@@ -1541,15 +1567,22 @@ namespace ProtoImperative
                                     localVarInMemFunc = true;
                                 }
                             }
-                            bool isMemberVar = Constants.kGlobalScope == core.ClassTable.ClassNodes[globalClassIndex].Symbols.symbolList[n].functionIndex
+                            bool isMemberVar = Constants.kGlobalScope == 
+                                core.ClassTable.ClassNodes[globalClassIndex].Symbols.symbolList[n].functionIndex
                                 && core.ClassTable.ClassNodes[globalClassIndex].Symbols.symbolList[n].name == t.Name
                                 && !localVarInMemFunc;
                             if (isMemberVar)
                             {
                                 if (t.ArrayDimensions == null)
-                                    core.ClassTable.ClassNodes[globalClassIndex].Symbols.symbolList[n].datatype = inferedType;
+                                {
+                                    core.ClassTable.ClassNodes[globalClassIndex].Symbols.symbolList[n].datatype =
+                                        inferedType;
+                                }
                                 else if (dimensions == inferedType.rank)
-                                    core.ClassTable.ClassNodes[globalClassIndex].Symbols.symbolList[n].datatype.UID = inferedType.UID;
+                                {
+                                    core.ClassTable.ClassNodes[globalClassIndex].Symbols.symbolList[n].datatype.UID =
+                                        inferedType.UID;
+                                }
                                 symbol = symbolnode.symbolTableIndex;
                                 break;
                             }
@@ -1561,8 +1594,6 @@ namespace ProtoImperative
                             {
                                 symbolnode = Allocate(t.Name, globalProcIndex, inferedType);
                             }
-
-                            symbol = symbolnode.symbolTableIndex;
 
                             if (b.LeftNode is TypedIdentifierNode)
                             {
@@ -1607,12 +1638,19 @@ namespace ProtoImperative
                     }
                     else
                     {
-                        if (isAllocated && codeBlock.symbolTable.RuntimeIndex != symbolnode.runtimeTableIndex)
+                        // if a symbol is already allocated in parent scope and is being assigned to
+                        // in the current imperative scope, not within a while, for, or if-else statement
+                        if (isAllocated && 
+                            codeBlock.symbolTable.RuntimeIndex != symbolnode.runtimeTableIndex
+                            && codeBlock.symbolTable.ScopeName != GetConstructBlockName("while")
+                            && codeBlock.symbolTable.ScopeName != GetConstructBlockName("if")
+                            && codeBlock.symbolTable.ScopeName != GetConstructBlockName("else")
+                            && codeBlock.symbolTable.ScopeName != GetConstructBlockName("elseif"))
                         {
-                            // if an array symbol is already allocated in parent scope and being assigned to,
-                            // add instructions to push its value, make a local copy and pop the value
                             if (dimensions > 0)
                             {
+                                // if an array symbol is already allocated in parent scope and being assigned to,
+                                // emit instructions to push its value, make a local copy and pop the value
                                 var symbolCopy = Allocate(t.Value, globalProcIndex, inferedType);
 
                                 symbolCopy.datatype.rank = dimensions;
@@ -1649,13 +1687,13 @@ namespace ProtoImperative
                             }
                             runtimeIndex = codeBlock.symbolTable.RuntimeIndex;
                         }
-                        //else if (dimensions == 0)
-                        //{
-                        //    if (core.TypeSystem.IsHigherRank(inferedType.UID, symbolnode.datatype.UID))
-                        //    {
-                        //        symbolnode.datatype = inferedType;
-                        //    }
-                        //}
+                        else if (dimensions == 0)
+                        {
+                            if (core.TypeSystem.IsHigherRank(inferedType.UID, symbolnode.datatype.UID))
+                            {
+                                symbolnode.datatype = inferedType;
+                            }
+                        }
 
                         if (b.LeftNode is TypedIdentifierNode)
                         {
@@ -1689,6 +1727,19 @@ namespace ProtoImperative
                             EmitInstrConsole(kw.setelement, t.Value);
                             EmitSetElement(symbolnode, runtimeIndex);
                         }
+                        // Check if the symbol was not here, only then it becomes a valid propagation symbol 
+                        // TODO Jun: check if the symbol was allocated from an associative block
+                        //if (!CoreUtils.IsAutoGeneratedVar(symbolnode.name))
+                        //{
+                        //    if (codeBlock.symbolTable.RuntimeIndex != symbolnode.runtimeTableIndex)
+                        //    {
+                        //        var symbolList = new List<SymbolNode>();
+                        //        symbolList.Add(symbolnode);
+
+                        //        EmitPushDepData(symbolList);
+                        //        EmitPushDep(runtimeIndex, symbolList.Count, globalClassIndex);
+                        //    }
+                        //}
                     }
                 }
             }
