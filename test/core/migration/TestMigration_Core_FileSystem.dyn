@@ -1,0 +1,51 @@
+<Workspace Version="0.9.1.4062" X="385.6" Y="92" zoom="1" Name="Home" Description="" RunType="Automatic" RunPeriod="1000" HasRunWithoutCrash="True">
+  <NamespaceResolutionMap />
+  <Elements>
+    <Dynamo.Graph.Nodes.ZeroTouch.DSFunction guid="e2c895bb-aefc-4b30-929a-af377c11b82d" type="Dynamo.Graph.Nodes.ZeroTouch.DSFunction" nickname="Directory.Contents" x="31.6000000000002" y="6.40000000000001" isVisible="true" isUpstreamVisible="true" lacing="Shortest" isSelectedInput="False" IsFrozen="false" assembly="DSCoreNodes.dll" function="DSCore.IO.Directory.Contents@var,string">
+      <PortInfo index="1" default="True" />
+    </Dynamo.Graph.Nodes.ZeroTouch.DSFunction>
+    <Dynamo.Graph.Nodes.ZeroTouch.DSFunction guid="59b1cd70-0949-4841-9a63-291354ee2cd9" type="Dynamo.Graph.Nodes.ZeroTouch.DSFunction" nickname="Directory.Copy" x="52.4" y="113.6" isVisible="true" isUpstreamVisible="true" lacing="Shortest" isSelectedInput="False" IsFrozen="false" assembly="DSCoreNodes.dll" function="DSCore.IO.Directory.Copy@var,string,bool">
+      <PortInfo index="2" default="True" />
+    </Dynamo.Graph.Nodes.ZeroTouch.DSFunction>
+    <Dynamo.Graph.Nodes.ZeroTouch.DSFunction guid="5724100d-beb0-4562-a9c1-72317c91368a" type="Dynamo.Graph.Nodes.ZeroTouch.DSFunction" nickname="Directory.Delete" x="67.6" y="253.6" isVisible="true" isUpstreamVisible="true" lacing="Shortest" isSelectedInput="False" IsFrozen="false" assembly="DSCoreNodes.dll" function="DSCore.IO.Directory.Delete@string,bool">
+      <PortInfo index="1" default="True" />
+    </Dynamo.Graph.Nodes.ZeroTouch.DSFunction>
+    <Dynamo.Graph.Nodes.ZeroTouch.DSFunction guid="80de7c9c-e2eb-4259-a49c-6e88bc58fb91" type="Dynamo.Graph.Nodes.ZeroTouch.DSFunction" nickname="Directory.Exists" x="74.0000000000001" y="369.6" isVisible="true" isUpstreamVisible="true" lacing="Shortest" isSelectedInput="False" IsFrozen="false" assembly="DSCoreNodes.dll" function="DSCore.IO.Directory.Exists@string" />
+    <Dynamo.Graph.Nodes.ZeroTouch.DSFunction guid="c4306990-93d8-4235-b952-89a274816063" type="Dynamo.Graph.Nodes.ZeroTouch.DSFunction" nickname="Directory.Move" x="38" y="461.6" isVisible="true" isUpstreamVisible="true" lacing="Shortest" isSelectedInput="False" IsFrozen="false" assembly="DSCoreNodes.dll" function="DSCore.IO.Directory.Move@string,string,bool">
+      <PortInfo index="2" default="True" />
+    </Dynamo.Graph.Nodes.ZeroTouch.DSFunction>
+    <Dynamo.Graph.Nodes.ZeroTouch.DSFunction guid="033f228a-d359-46b9-85e6-292f226cf5a1" type="Dynamo.Graph.Nodes.ZeroTouch.DSFunction" nickname="File.Copy" x="262" y="600" isVisible="true" isUpstreamVisible="true" lacing="Shortest" isSelectedInput="False" IsFrozen="false" assembly="DSCoreNodes.dll" function="DSCore.IO.File.Copy@var,string,bool">
+      <PortInfo index="2" default="True" />
+    </Dynamo.Graph.Nodes.ZeroTouch.DSFunction>
+    <Dynamo.Graph.Nodes.ZeroTouch.DSFunction guid="d664d920-8e33-4ac2-9c4b-36707dbf7ca0" type="Dynamo.Graph.Nodes.ZeroTouch.DSFunction" nickname="File.Delete" x="294.8" y="-41.6000000000001" isVisible="true" isUpstreamVisible="true" lacing="Shortest" isSelectedInput="False" IsFrozen="false" assembly="DSCoreNodes.dll" function="DSCore.IO.File.Delete@string" />
+    <Dynamo.Graph.Nodes.ZeroTouch.DSFunction guid="f3aec853-2a00-407f-b0eb-074517c22661" type="Dynamo.Graph.Nodes.ZeroTouch.DSFunction" nickname="File.Exists" x="291.6" y="80.8" isVisible="true" isUpstreamVisible="true" lacing="Shortest" isSelectedInput="False" IsFrozen="false" assembly="DSCoreNodes.dll" function="DSCore.IO.File.Exists@string" />
+    <Dynamo.Graph.Nodes.ZeroTouch.DSFunction guid="2fcbe204-9735-4e97-9101-c1cdb3a18c70" type="Dynamo.Graph.Nodes.ZeroTouch.DSFunction" nickname="File.Move" x="281.2" y="197.6" isVisible="true" isUpstreamVisible="true" lacing="Shortest" isSelectedInput="False" IsFrozen="false" assembly="DSCoreNodes.dll" function="DSCore.IO.File.Move@string,string,bool">
+      <PortInfo index="2" default="True" />
+    </Dynamo.Graph.Nodes.ZeroTouch.DSFunction>
+    <Dynamo.Graph.Nodes.ZeroTouch.DSFunction guid="e63ea1af-839f-4eab-bf08-3e06d28651ba" type="Dynamo.Graph.Nodes.ZeroTouch.DSFunction" nickname="File.ReadText" x="301.2" y="360.8" isVisible="true" isUpstreamVisible="true" lacing="Shortest" isSelectedInput="False" IsFrozen="false" assembly="DSCoreNodes.dll" function="DSCore.IO.File.ReadText@var" />
+    <Dynamo.Graph.Nodes.ZeroTouch.DSFunction guid="3dd79899-ddbd-4a8c-acf8-cd45b30db759" type="Dynamo.Graph.Nodes.ZeroTouch.DSFunction" nickname="File.WriteText" x="288.4" y="473.6" isVisible="true" isUpstreamVisible="true" lacing="Shortest" isSelectedInput="False" IsFrozen="false" assembly="DSCoreNodes.dll" function="DSCore.IO.File.WriteText@string,string" />
+    <Dynamo.Graph.Nodes.ZeroTouch.DSFunction guid="0bc3b05f-c20a-47ed-b5cc-9e86bfc3bc70" type="Dynamo.Graph.Nodes.ZeroTouch.DSFunction" nickname="FilePath.ChangeExtension" x="461.2" y="167.2" isVisible="true" isUpstreamVisible="true" lacing="Shortest" isSelectedInput="False" IsFrozen="false" assembly="DSCoreNodes.dll" function="DSCore.IO.FilePath.ChangeExtension@string,string" />
+    <Dynamo.Graph.Nodes.ZeroTouch.DSVarArgFunction guid="bf35a282-45ba-4bc6-826e-6e6364ac792e" type="Dynamo.Graph.Nodes.ZeroTouch.DSVarArgFunction" nickname="FilePath.Combine" x="481.2" y="280.8" isVisible="true" isUpstreamVisible="true" lacing="Shortest" isSelectedInput="False" IsFrozen="false" assembly="DSCoreNodes.dll" function="DSCore.IO.FilePath.Combine@string[]" inputcount="1" />
+    <Dynamo.Graph.Nodes.ZeroTouch.DSFunction guid="0a4e3bc3-1203-4445-a2d8-c74633f31ef5" type="Dynamo.Graph.Nodes.ZeroTouch.DSFunction" nickname="FilePath.DirectoryName" x="478.8" y="371.2" isVisible="true" isUpstreamVisible="true" lacing="Shortest" isSelectedInput="False" IsFrozen="false" assembly="DSCoreNodes.dll" function="DSCore.IO.FilePath.DirectoryName@string" />
+    <Dynamo.Graph.Nodes.ZeroTouch.DSFunction guid="72b40f68-ac66-487f-8dad-a1ba8b779c58" type="Dynamo.Graph.Nodes.ZeroTouch.DSFunction" nickname="FilePath.Extension" x="497.2" y="458.4" isVisible="true" isUpstreamVisible="true" lacing="Shortest" isSelectedInput="False" IsFrozen="false" assembly="DSCoreNodes.dll" function="DSCore.IO.FilePath.Extension@string" />
+    <Dynamo.Graph.Nodes.ZeroTouch.DSFunction guid="10f54985-a184-4c9d-9c24-cd483c413dda" type="Dynamo.Graph.Nodes.ZeroTouch.DSFunction" nickname="FilePath.FileName" x="469.2" y="49.5999999999999" isVisible="true" isUpstreamVisible="true" lacing="Shortest" isSelectedInput="False" IsFrozen="false" assembly="DSCoreNodes.dll" function="DSCore.IO.FilePath.FileName@string,bool">
+      <PortInfo index="1" default="True" />
+    </Dynamo.Graph.Nodes.ZeroTouch.DSFunction>
+    <Dynamo.Graph.Nodes.ZeroTouch.DSFunction guid="de7087dd-810c-4aee-a5fa-82ee18a64b94" type="Dynamo.Graph.Nodes.ZeroTouch.DSFunction" nickname="FilePath.HasExtension" x="494" y="-37.6000000000001" isVisible="true" isUpstreamVisible="true" lacing="Shortest" isSelectedInput="False" IsFrozen="false" assembly="DSCoreNodes.dll" function="DSCore.IO.FilePath.HasExtension@string" />
+    <CoreNodeModels.Input.DirectoryObject guid="4408214d-da58-448e-91af-8437118fcfde" type="CoreNodeModels.Input.DirectoryObject" nickname="Directory.FromPath" x="686.8" y="282.4" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" />
+    <CoreNodeModels.Input.FileObject guid="7b82ad75-a822-4057-bdd6-d96502ea0ed7" type="CoreNodeModels.Input.FileObject" nickname="File.FromPath" x="708.4" y="404.8" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" />
+    <CoreNodeModels.Input.Filename guid="63ef1405-214a-444c-9f91-2d4677f70cc4" type="CoreNodeModels.Input.Filename" nickname="File Path" x="702" y="49.5999999999999" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="True" IsFrozen="false">
+      <System.String>No file selected.</System.String>
+    </CoreNodeModels.Input.Filename>
+    <CoreNodeModels.Input.Directory guid="470d70bb-631b-4e6e-abec-3b11bab825e1" type="CoreNodeModels.Input.Directory" nickname="Directory Path" x="699.6" y="153.6" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="True" IsFrozen="false">
+      <System.String>No file selected.</System.String>
+    </CoreNodeModels.Input.Directory>
+  </Elements>
+  <Connectors />
+  <Notes />
+  <Annotations />
+  <Presets />
+  <Cameras>
+    <Camera Name="Background Preview" eyeX="-17" eyeY="24" eyeZ="50" lookX="12" lookY="-13" lookZ="-58" upX="0" upY="1" upZ="0" />
+  </Cameras>
+</Workspace>
