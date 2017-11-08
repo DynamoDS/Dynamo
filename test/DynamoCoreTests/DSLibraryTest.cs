@@ -176,5 +176,51 @@ namespace Dynamo.Tests
             AssertPreviewValue("0c9c34fa-236c-43c0-a5b1-44139c83cbb6", 3);
             AssertPreviewValue("3cb6f401-2811-4b66-9d46-83f2deb1dacb", 4);
         }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TestAddStandardLibraryPath()
+        {
+            // Get the default custom package folders
+            List<string> customPackageFolders = CurrentDynamoModel.PreferenceSettings.CustomPackageFolders;
+
+            // Test that the default number of folders is correct
+            Assert.IsTrue(customPackageFolders.Count == 1);
+
+            // Test that the path is added as expected
+            CurrentDynamoModel.AddPackagePath(TestDirectory, "");
+            Assert.IsTrue(customPackageFolders.Count == 2);
+
+            // Test that the path is not duplicated
+            CurrentDynamoModel.AddPackagePath(TestDirectory, "");
+            Assert.IsTrue(customPackageFolders.Count == 2);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TestAddDllLibraryPath()
+        {
+            // Get the default custom package folders
+            List<string> customPackageFolders = CurrentDynamoModel.PreferenceSettings.CustomPackageFolders;
+
+            // Test that the default number of folders is correct
+            Assert.IsTrue(customPackageFolders.Count == 1);
+
+            string filename = @"DLL.dll";
+            string packagePath = Path.Combine(TestDirectory, @"pkgs\Custom Rounding\extra");
+            string libraryPath = Path.Combine(packagePath, filename);
+
+            // Test that the full file path is added as expected
+            CurrentDynamoModel.AddPackagePath(packagePath, filename);
+            Assert.IsTrue(customPackageFolders.Count == 2);
+            int count = customPackageFolders.Where(s => s == libraryPath).Count();
+            Assert.IsTrue(count == 1);
+
+            // Test that the full file path is not duplicated
+            CurrentDynamoModel.AddPackagePath(packagePath, filename);
+            Assert.IsTrue(customPackageFolders.Count == 2);
+            count = customPackageFolders.Where(s => s == libraryPath).Count();
+            Assert.IsTrue(count == 1);
+        }
     }
 }
