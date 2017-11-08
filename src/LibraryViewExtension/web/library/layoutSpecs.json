@@ -501,17 +501,6 @@
                 }
               ],
               "childElements": [ ]
-            },
-            {
-              "text": "Thread",
-              "iconUrl": "",
-              "elementType": "group",
-              "include": [
-                {
-                  "path": "DSCoreNodes.DSCore.Thread"
-                }
-              ],
-              "childElements": [ ]
             }
           ]
         },
@@ -768,6 +757,9 @@
                 },
                 {
                   "path": "Core.Logic.If"
+                },
+                {
+                  "path": "DSCoreNodes.DSCore.Thread.Pause"
                 }
               ],
               "childElements": [ ]
