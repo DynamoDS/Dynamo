@@ -1,5 +1,6 @@
 ﻿using Dynamo.Engine;
 using Dynamo.Exceptions;
+using Dynamo.Configuration;
 using NUnit.Framework;
 using System.Collections.Generic;
 using System.IO;
@@ -131,6 +132,31 @@ namespace Dynamo.Tests
             // Open the other dyn file which uses node in that library, and
             // library should still be available
             RunModel(@"core\library\t2dll.dyn");
+            AssertNoDummyNodes();
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TestDllLibraryLoadAtStartup()
+        {
+            // Get the default custom package folders
+            List<string> initialCustomPackageFolders = CurrentDynamoModel.PreferenceSettings.CustomPackageFolders;
+
+            // Shutdown the current Dynamo model
+            CurrentDynamoModel.ShutDown(false);
+            CurrentDynamoModel = null;
+
+            // Create new default preferences with the required custom package folders
+            PreferenceSettings preferenceSettings = new PreferenceSettings();
+            preferenceSettings.CustomPackageFolders = initialCustomPackageFolders;
+            string libraryPath = Path.Combine(TestDirectory, @"FFITarget.dll");
+            preferenceSettings.CustomPackageFolders.Add(libraryPath);
+
+            // Resart Dynamo using the new preferences
+            StartDynamo(preferenceSettings);
+
+            // Open the dyn file which uses node in that library which should be available
+            RunModel(@"core\library\t1dll.dyn");
             AssertNoDummyNodes();
         }
 
