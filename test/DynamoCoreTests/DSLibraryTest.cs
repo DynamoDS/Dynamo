@@ -62,13 +62,32 @@ namespace Dynamo.Tests
             try
             {
                 libraryServices.ImportLibrary(libraryPath);
-
             }
             catch( System.Exception ex)
             {
                 Assert.IsTrue(ex is LibraryLoadFailedException);
             }
             Assert.IsFalse(libraryLoaded);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TestLoadDllFileSuccess()
+        {
+            bool libraryLoaded = false;
+
+            libraryServices.LibraryLoaded += (sender, e) => libraryLoaded = true;
+
+            string libraryPath = Path.Combine(TestDirectory, @"FFITarget.dll");
+            try
+            {
+                libraryServices.ImportLibrary(libraryPath);
+            }
+            catch( System.Exception ex)
+            {
+                Assert.IsTrue(ex is LibraryLoadFailedException);
+            }
+            Assert.IsTrue(libraryLoaded);
         }
 
         [Test]
