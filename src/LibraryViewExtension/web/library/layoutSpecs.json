@@ -175,12 +175,57 @@
                 },
                 {
                   "path": "DSCoreNodes.DSCore.List.AddItemToFront"
+                }
+              ],
+              "childElements": [ ]
+            },
+            {
+              "text": "Organize",
+              "iconUrl": "",
+              "elementType": "group",
+              "include": [
+                {
+                  "path": "BuiltIn.List.ContainsKey"
                 },
                 {
-                  "path": "DSCoreNodes.DSCore.List.Transpose"
+                  "path": "BuiltIn.List.GetKeys"
+                },
+                {
+                  "path": "BuiltIn.List.GetValues"
+                },
+                {
+                  "path": "DSCoreNodes.DSCore.List.GroupByKey"
+                },
+                {
+                  "path": "BuiltIn.List.GroupByFunction"
+                },
+                {
+                  "path": "BuiltIn.List.MaximumItemByKey"
+                },
+                {
+                  "path": "BuiltIn.List.MinimumItemByKey"
+                },
+                {
+                  "path": "DSCoreNodes.DSCore.List.NormalizeDepth"
+                },
+
+                {
+                  "path": "BuiltIn.List.RemoveKey"
                 },
                 {
                   "path": "DSCoreNodes.DSCore.List.Reverse"
+                },
+                {
+                  "path": "DSCoreNodes.DSCore.List.Reorder"
+                },
+                {
+                  "path": "BuiltIn.List.SortByFunction"
+                },
+                {
+                  "path": "DSCoreNodes.DSCore.List.SortByKey"
+                },
+                {
+                  "path": "DSCoreNodes.DSCore.List.SortIndexByValue"
                 },
                 {
                   "path": "DSCoreNodes.DSCore.List.ShiftIndices"
@@ -192,51 +237,7 @@
                   "path": "DSCoreNodes.DSCore.List.Sort"
                 },
                 {
-                  "path": "DSCoreNodes.DSCore.List.NormalizeDepth"
-                }
-              ],
-              "childElements": [ ]
-            },
-            {
-              "text": "Organize",
-              "iconUrl": "",
-              "elementType": "group",
-              "include": [
-                {
-                  "path": "BuiltIn.List.GroupByFunction"
-                },
-                {
-                  "path": "DSCoreNodes.DSCore.List.Reorder"
-                },
-                {
-                  "path": "BuiltIn.List.SortByFunction"
-                },
-                {
-                  "path": "DSCoreNodes.DSCore.List.SortIndexByValue"
-                },
-                {
-                  "path": "BuiltIn.List.GetKeys"
-                },
-                {
-                  "path": "BuiltIn.List.GetValues"
-                },
-                {
-                  "path": "BuiltIn.List.MaximumItemByKey"
-                },
-                {
-                  "path": "BuiltIn.List.MinimumItemByKey"
-                },
-                {
-                  "path": "BuiltIn.List.ContainsKey"
-                },
-                {
-                  "path": "BuiltIn.List.RemoveKey"
-                },
-                {
-                  "path": "DSCoreNodes.DSCore.List.GroupByKey"
-                },
-                {
-                  "path": "DSCoreNodes.DSCore.List.SortByKey"
+                  "path": "DSCoreNodes.DSCore.List.Transpose"
                 }
               ],
               "childElements": [ ]
@@ -500,17 +501,6 @@
                 }
               ],
               "childElements": [ ]
-            },
-            {
-              "text": "Thread",
-              "iconUrl": "",
-              "elementType": "group",
-              "include": [
-                {
-                  "path": "DSCoreNodes.DSCore.Thread"
-                }
-              ],
-              "childElements": [ ]
             }
           ]
         },
@@ -727,7 +717,7 @@
                   "path": "Core.Math.Or"
                 },
                 {
-                  "path": "Core.Logic.If"
+                  "path": "DSCoreNodes.DSCore.Math.Xor"
                 }
               ],
               "childElements": [ ]
@@ -766,7 +756,10 @@
                   "path": "Core.Logic.ScopeIf"
                 },
                 {
-                  "path": "DSCoreNodes.DSCore.Math.Xor"
+                  "path": "Core.Logic.If"
+                },
+                {
+                  "path": "DSCoreNodes.DSCore.Thread.Pause"
                 }
               ],
               "childElements": [ ]

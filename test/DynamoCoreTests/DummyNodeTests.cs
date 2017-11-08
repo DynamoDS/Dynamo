@@ -14,6 +14,9 @@ namespace Dynamo.Tests
     internal class DummyNodeTests : DynamoModelTestBase
     {
         string testFileWithDummyNode = @"core\dummy_node\2080_JSONTESTCRASH undo_redo.dyn";
+        string testFileWithXmlDummyNode = @"core\dummy_node\dummyNode.dyn";
+        string testFileWithMultipleXmlDummyNode = @"core\dummy_node\dummyNodeXMLMultiple.dyn";
+
 
         protected override void GetLibrariesToPreload(List<string> libraries)
         {
@@ -71,6 +74,21 @@ namespace Dynamo.Tests
 
             //assert the content is the same as when we started.
             Assert.AreEqual(contentPreMove, (dummyNode.OriginalNodeContent as JObject).ToString());
+        }
+
+        [Test]
+        public void WorkspaceIsReadonly_IfXmlDummyNodePresent()
+        {
+            string openPath = Path.Combine(TestDirectory, testFileWithXmlDummyNode);
+            OpenModel(openPath);
+
+            Assert.AreEqual(1, CurrentDynamoModel.CurrentWorkspace.Nodes.OfType<DummyNode>().Count());
+            var dummyNode = CurrentDynamoModel.CurrentWorkspace.Nodes.OfType<DummyNode>().First();
+            Assert.IsTrue(this.CurrentDynamoModel.CurrentWorkspace.IsReadOnly);
+
+            //delete the dummy node
+            this.CurrentDynamoModel.CurrentWorkspace.RemoveAndDisposeNode(dummyNode);
+            Assert.IsFalse(this.CurrentDynamoModel.CurrentWorkspace.IsReadOnly);
         }
     }
 }

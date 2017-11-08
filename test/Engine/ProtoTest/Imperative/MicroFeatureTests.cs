@@ -1077,6 +1077,30 @@ def fac : int( n : int )
         }
 
         [Test]
+        public void ListMethod_Imperative()
+        {
+            var code =
+@"
+import(""DSCoreNodes.dll"");
+import(""BuiltIn.ds"");
+a = [Imperative]
+{
+counter = 0;
+lst = {};
+while(counter < 10)
+{
+lst = List.AddItemToEnd(counter, lst);
+counter = counter + 1;
+}
+return = lst;
+};
+  ";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("a", new object[] { 0,1,2,3,4,5,6,7,8,9 }
+);
+        }
+
+        [Test]
         public void NegativeIndexOnCollection003()
         {
             String code =

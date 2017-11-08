@@ -1,0 +1,10 @@
+<Workspace Version="0.7.6.3912" X="99.1977448010291" Y="167.824962319859" zoom="0.342081630871005" Name="Home">
+  <NamespaceResolutionMap />
+  <Elements>
+    <Dynamo.Nodes.DSFunction guid="6a5b9043-a953-4909-913d-5616609f8e3c" type="Dynamo.Nodes.DSFunction" nickname="Foo" x="0" y="0" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="FooBar.dll" function="Foo@int" />
+    <Dynamo.Nodes.DSFunction guid="6a5b9043-a953-4909-913d-5616609f8e3b" type="Dynamo.Nodes.DSFunction" nickname="Foo" x="0" y="0" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="FooBar.dll" function="Foo@int" />
+    <Dynamo.Nodes.DSFunction guid="6a5b9043-a953-4909-913d-5616609f8e3d" type="Dynamo.Nodes.DSFunction" nickname="Foo" x="0" y="0" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="FooBar.dll" function="Foo@int" />
+  </Elements>
+  <Connectors>
+  </Connectors>
+</Workspace>

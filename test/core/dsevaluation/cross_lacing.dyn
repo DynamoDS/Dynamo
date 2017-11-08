@@ -1,0 +1,161 @@
+{
+  "Uuid": "5f171e29-cba2-47b6-a0df-b3cceb606241",
+  "IsCustomNode": false,
+  "Description": null,
+  "Name": "Home",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "{1..3, 4..6};\n1..3;\n1;",
+      "Id": "e50c1c999df84755ad4f64ffc35b6bb3",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "4d48a90869e244a3b58298b20427dfff",
+          "Name": "",
+          "Description": "t6BBA4B28C5E54CF89F300D510499A00E_0",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "cf34473beb4d4bad98e515513264ffd1",
+          "Name": "",
+          "Description": "t6BBA4B28C5E54CF89F300D510499A00E_1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "3de0ea03b44c49fa8819a29825576f24",
+          "Name": "",
+          "Description": "t6BBA4B28C5E54CF89F300D510499A00E_2",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "def foo(x, y, z)\n{\n\treturn x+y+z;\n}\nfoo(a<1>, b<2>, c<3>);",
+      "Id": "c9476b21a972476788e184982918700e",
+      "Inputs": [
+        {
+          "Id": "64ea6a36f678486fb5c0532c81ebe50f",
+          "Name": "a",
+          "Description": "a",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "e9c915227f8d45eeba939b878d120a76",
+          "Name": "b",
+          "Description": "b",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "ed8c7c2616784678b4e4aaf46567e32f",
+          "Name": "c",
+          "Description": "c",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "56d4416565714e8c9dcfe3964f55a1da",
+          "Name": "",
+          "Description": "t6BBA4B28C5E54CF89F300D510499A00E_0",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "4d48a90869e244a3b58298b20427dfff",
+      "End": "64ea6a36f678486fb5c0532c81ebe50f",
+      "Id": "6b3159ff93cb4d9bb7e1efc0b29a40d9"
+    },
+    {
+      "Start": "cf34473beb4d4bad98e515513264ffd1",
+      "End": "e9c915227f8d45eeba939b878d120a76",
+      "Id": "fff2ca84a61249c29c816ef5c68ccdf6"
+    },
+    {
+      "Start": "3de0ea03b44c49fa8819a29825576f24",
+      "End": "ed8c7c2616784678b4e4aaf46567e32f",
+      "Id": "269d3a34ae9741d6ba48b1718f6e8c4c"
+    }
+  ],
+  "Dependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.0.0.2967",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -4.0812240985643733,
+      "EyeY": 19.0894291853785,
+      "EyeZ": 11.061506781679528,
+      "LookX": 13.440191730132705,
+      "LookY": -14.872155307949512,
+      "LookZ": -14.570419692502922,
+      "UpX": 0.28117168088060362,
+      "UpY": 0.90996127087654344,
+      "UpZ": -0.30481629119114106
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "e50c1c999df84755ad4f64ffc35b6bb3",
+        "Excluded": false,
+        "X": 69.0,
+        "Y": 8.0
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "c9476b21a972476788e184982918700e",
+        "Excluded": false,
+        "X": 575.0,
+        "Y": 48.0
+      }
+    ],
+    "Annotations": [],
+    "X": 0.0,
+    "Y": 0.0,
+    "Zoom": 1.0
+  }
+}
