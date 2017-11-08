@@ -113,6 +113,28 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
+        public void TestDllLibraryAcrossSessions()
+        {
+            bool libraryLoaded = false;
+            libraryServices.LibraryLoaded += (sender, e) => libraryLoaded = true;
+
+            // Library should be able to load
+            string libraryPath = Path.Combine(TestDirectory, @"FFITarget.dll");
+            libraryServices.ImportLibrary(libraryPath);
+            Assert.IsTrue(libraryLoaded);
+
+            // Open dyn file which uses node in that library
+            RunModel(@"core\library\t1dll.dyn");
+            AssertNoDummyNodes();
+
+            // Open the other dyn file which uses node in that library, and
+            // library should still be available
+            RunModel(@"core\library\t2dll.dyn");
+            AssertNoDummyNodes();
+        }
+
+        [Test]
         public void TestOverloadedMethodsWithDifferentPrimitiveType()
         {
             RunModel(@"core\library\PrimitiveType.dyn");
