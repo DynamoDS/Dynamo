@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Management.Instrumentation;
 using ProtoCore;
 using ProtoCore.AST.ImperativeAST;
 using ProtoCore.DSASM;
@@ -978,8 +979,7 @@ namespace ProtoImperative
                 // If-expr
                 IfStmtNode ifnode = node as IfStmtNode;
 
-                PreprocessCodeBlock(ifnode.IfBody);
-                PreprocessCodeBlock(ifnode.ElseBody);
+                MakeLocalSymbolsInIfBlock(ifnode);
 
                 DfsTraverse(ifnode.IfExprNode, ref inferedType, false, graphNode, ProtoCore.CompilerDefinitions.SubCompilePass.None, parentNode);
 
@@ -1294,9 +1294,22 @@ namespace ProtoImperative
             }
         }
 
+        private void MakeLocalSymbolsInIfBlock(IfStmtNode ifNode)
+        {
+            if(ifNode == null) return;
+
+            PreprocessCodeBlock(ifNode.IfBody);
+            PreprocessCodeBlock(ifNode.ElseBody);
+
+            foreach (var elseIfBlock in ifNode.ElseIfList)
+            {
+                PreprocessCodeBlock(elseIfBlock.Body);
+            }
+        }
+
         /// <summary>
-        /// Identify lhs symbols used that in current codeblock that are allocated in 
-        /// a parent associative block and allocate a copy of them
+        /// Identify lhs symbols used in current codeblock that are allocated in 
+        /// a parent associative block and allocate a copy of them in the outer imperative block
         /// </summary>
         /// <param name="body"></param>
         private void PreprocessCodeBlock(List<ImperativeNode> body)
@@ -1682,9 +1695,9 @@ namespace ProtoImperative
                         if (isAllocated && 
                             codeBlock.symbolTable.RuntimeIndex != symbolnode.runtimeTableIndex
                             && codeBlock.symbolTable.ScopeName != GetConstructBlockName("while")
-                            /*&& codeBlock.symbolTable.ScopeName != GetConstructBlockName("if")
+                            && codeBlock.symbolTable.ScopeName != GetConstructBlockName("if")
                             && codeBlock.symbolTable.ScopeName != GetConstructBlockName("else")
-                            && codeBlock.symbolTable.ScopeName != GetConstructBlockName("elseif")*/)
+                            && codeBlock.symbolTable.ScopeName != GetConstructBlockName("elseif"))
                         {
                             if (dimensions > 0)
                             {

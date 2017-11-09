@@ -929,9 +929,10 @@ a12;
             @"
                import(""FFITarget.dll"");
                pt={0,0,0,0,0,0};
-p11;
-               [Imperative]
+
+               x = [Imperative]
                {
+                    p11;
                     i=0;
                     temp=0;
                     while( i <= 5 )
@@ -940,12 +941,12 @@ p11;
                         pt[i]=DummyPoint.ByCoordinates(i,1,1);
                         p11={pt[i].X,pt[i].Y,pt[i].Z};
                     }
-                    
+                    return p11;
                 }
             ";
             object[] a = new object[] { 6.0, 1.0, 1.0 };
             thisTest.RunScriptSource(code);
-            thisTest.Verify("p11", a);
+            thisTest.Verify("x", a);
         }
 
         [Test]
