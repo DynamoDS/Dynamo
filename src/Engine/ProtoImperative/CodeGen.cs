@@ -137,23 +137,43 @@ namespace ProtoImperative
             return ProtoCore.DSASM.Constants.kForLoopExpression + core.ForLoopBlockIndex.ToString();
         }
 
-        private SymbolNode Allocate(string ident, int funcIndex, ProtoCore.Type datatype)
+        private SymbolNode Allocate(string ident, int funcIndex, ProtoCore.Type datatype, CodeBlock cb = null)
         {
             if (core.ClassTable.IndexOf(ident) != ProtoCore.DSASM.Constants.kInvalidIndex)
                 buildStatus.LogSemanticError(String.Format(Resources.ClassNameAsVariableError,ident));
 
-            SymbolNode symbolnode = new SymbolNode(
-                ident, 
-                Constants.kInvalidIndex, 
-                funcIndex, 
-                datatype,
-                false,
-                codeBlock.symbolTable.RuntimeIndex,
-                MemoryRegion.MemStack,
-                globalClassIndex,
-                ProtoCore.CompilerDefinitions.AccessModifier.Public,
-                false,
-                codeBlock.codeBlockId);
+            SymbolNode symbolnode;
+            if(cb == null)
+            {
+                 symbolnode = new SymbolNode(
+                 ident,
+                 Constants.kInvalidIndex,
+                 funcIndex,
+                 datatype,
+                 false,
+                 codeBlock.symbolTable.RuntimeIndex,
+                 MemoryRegion.MemStack,
+                 globalClassIndex,
+                 ProtoCore.CompilerDefinitions.AccessModifier.Public,
+                 false,
+                 codeBlock.codeBlockId);
+            }
+            else
+            {
+               symbolnode = new SymbolNode(
+               ident,
+               Constants.kInvalidIndex,
+               funcIndex,
+               datatype,
+               false,
+               cb.symbolTable.RuntimeIndex,
+               MemoryRegion.MemStack,
+               globalClassIndex,
+               ProtoCore.CompilerDefinitions.AccessModifier.Public,
+               false,
+               cb.codeBlockId);
+            }
+           
 
             if (isEmittingImportNode)
                 symbolnode.ExternLib = core.CurrentDSFileName;
@@ -178,7 +198,7 @@ namespace ProtoImperative
             }
             else
             {
-                symbolindex = codeBlock.symbolTable.Append(symbolnode);                
+                symbolindex = cb != null ? cb.symbolTable.Append(symbolnode) : codeBlock.symbolTable.Append(symbolnode);                
             }
 
             symbolnode.symbolTableIndex = symbolindex;
@@ -957,6 +977,10 @@ namespace ProtoImperative
 
                 // If-expr
                 IfStmtNode ifnode = node as IfStmtNode;
+
+                PreprocessCodeBlock(ifnode.IfBody);
+                PreprocessCodeBlock(ifnode.ElseBody);
+
                 DfsTraverse(ifnode.IfExprNode, ref inferedType, false, graphNode, ProtoCore.CompilerDefinitions.SubCompilePass.None, parentNode);
 
                 L1 = ProtoCore.DSASM.Constants.kInvalidIndex;
@@ -1199,11 +1223,12 @@ namespace ProtoImperative
 
                 int bp = (int)ProtoCore.DSASM.Constants.kInvalidIndex;
                 int L1 = (int)ProtoCore.DSASM.Constants.kInvalidIndex;
-                int entry = (int)ProtoCore.DSASM.Constants.kInvalidIndex;
-
-                entry = pc;
-
+                
                 WhileStmtNode whileNode = node as WhileStmtNode;
+                PreprocessCodeBlock(whileNode.Body);
+
+                int entry = pc;
+
                 DfsTraverse(whileNode.Expr, ref inferedType);
 
                 L1 = ProtoCore.DSASM.Constants.kInvalidIndex;
@@ -1269,36 +1294,50 @@ namespace ProtoImperative
             }
         }
 
-        private void PreprocessWhileBody(List<ImperativeNode> whileBody)
+        /// <summary>
+        /// Identify lhs symbols used that in current codeblock that are allocated in 
+        /// a parent associative block and allocate a copy of them
+        /// </summary>
+        /// <param name="body"></param>
+        private void PreprocessCodeBlock(List<ImperativeNode> body)
         {
-            foreach (var stmt in whileBody)
+            foreach (var stmt in body)
             {
                 var bNode = stmt as BinaryExpressionNode;
-                if(bNode == null) continue;
+                if(bNode == null || bNode.Optr != Operator.assign) continue;
 
                 var lNode = bNode.LeftNode as IdentifierNode;
-                if (bNode.Optr != Operator.assign || lNode == null) continue;
+                if (lNode == null) continue;
 
                 SymbolNode symbolnode;
                 bool isAccessible;
                 bool isAllocated = VerifyAllocation(lNode.Value, globalClassIndex, globalProcIndex, out symbolnode, out isAccessible);
+                if (!isAllocated) continue;
+                
+                // Find outer associative block.
+                var cb = codeBlock;
+                while (cb.parent.language != Language.Associative)
+                {
+                    cb = cb.parent;
+                }
+                // If symbol is not allocated in parent associative scope
+                if (symbolnode.codeBlockId != cb.parent.codeBlockId || !isAccessible) continue;
 
-                if (null == lNode.ArrayDimensions || !isAllocated) continue;
+                Validity.Assert(cb.language == Language.Imperative);
+
+                
+                var symbolCopy = Allocate(lNode.Value, globalProcIndex, symbolnode.datatype, cb);
+                symbolCopy.datatype.rank = symbolnode.datatype.rank;
 
                 int runtimeIndex = symbolnode.runtimeTableIndex;
-
-                var symbolCopy = Allocate(lNode.Value, globalProcIndex, symbolnode.datatype);
-
-                symbolCopy.datatype.rank = symbolnode.datatype.rank;
 
                 EmitInstrConsole(kw.push, lNode.Value);
                 EmitPushForSymbol(symbolnode, runtimeIndex, lNode);
 
-                runtimeIndex = codeBlock.symbolTable.RuntimeIndex;
+                runtimeIndex = cb.symbolTable.RuntimeIndex;
 
                 EmitInstrConsole(kw.pop, lNode.Value);
-                EmitPopForSymbol(symbolCopy, runtimeIndex,
-                    stmt.line, stmt.col, stmt.endLine, stmt.endCol);
+                EmitPopForSymbol(symbolCopy, runtimeIndex, stmt.line, stmt.col, stmt.endLine, stmt.endCol);
             }
         }
 
@@ -1638,18 +1677,18 @@ namespace ProtoImperative
                     }
                     else
                     {
-                        // if a symbol is already allocated in parent scope and is being assigned to
+                        // if a symbol is already allocated in parent (associative) scope and is being assigned to (lhs)
                         // in the current imperative scope, not within a while, for, or if-else statement
                         if (isAllocated && 
                             codeBlock.symbolTable.RuntimeIndex != symbolnode.runtimeTableIndex
                             && codeBlock.symbolTable.ScopeName != GetConstructBlockName("while")
-                            && codeBlock.symbolTable.ScopeName != GetConstructBlockName("if")
+                            /*&& codeBlock.symbolTable.ScopeName != GetConstructBlockName("if")
                             && codeBlock.symbolTable.ScopeName != GetConstructBlockName("else")
-                            && codeBlock.symbolTable.ScopeName != GetConstructBlockName("elseif"))
+                            && codeBlock.symbolTable.ScopeName != GetConstructBlockName("elseif")*/)
                         {
                             if (dimensions > 0)
                             {
-                                // if an array symbol is already allocated in parent scope and being assigned to,
+                                // if an array symbol is already allocated in parent (associative) scope and being assigned to,
                                 // emit instructions to push its value, make a local copy and pop the value
                                 var symbolCopy = Allocate(t.Value, globalProcIndex, inferedType);
 
@@ -1668,7 +1707,7 @@ namespace ProtoImperative
                             }
                             else
                             {
-                                // if a symbol is already allocated in parent scope and being assigned to,
+                                // if a symbol is already allocated in parent (associative) scope and being assigned to,
                                 // allocate it again as local in scope inside the imperative block
                                 symbolnode = Allocate(t.Value, globalProcIndex, inferedType);
                                 if (dimensions > 0)
