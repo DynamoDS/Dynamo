@@ -2,6 +2,7 @@
 using Dynamo.Exceptions;
 using Dynamo.Configuration;
 using NUnit.Framework;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -13,6 +14,8 @@ namespace Dynamo.Tests
     {
         private LibraryServices libraryServices;
 
+        protected static bool LibraryLoaded { get; set; }
+
         protected override void GetLibrariesToPreload(List<string> libraries)
         {
             libraries.Add("DSCoreNodes.dll");
@@ -23,6 +26,39 @@ namespace Dynamo.Tests
         {
             base.Setup();
             libraryServices = CurrentDynamoModel.LibraryServices;
+            RegisterEvents();
+        }
+
+        public override void Cleanup()
+        {
+            UnRegisterEvents();
+            base.Cleanup();
+        }
+
+        private void RegisterEvents()
+        {
+            libraryServices.LibraryLoaded += OnLibraryLoaded;
+            libraryServices.LibraryLoadFailed += OnLibraryLoadFailed;
+        }
+
+        private void UnRegisterEvents()
+        {
+            libraryServices.LibraryLoaded -= OnLibraryLoaded;
+            libraryServices.LibraryLoadFailed -= OnLibraryLoadFailed;
+        }
+
+        public static void OnLibraryLoaded(object sender, EventArgs e)
+        {
+            LibraryLoaded = true;
+        }
+
+        public static void OnLibraryLoadFailed(object sender, EventArgs e)
+        {
+            LibraryServices.LibraryLoadFailedEventArgs a = e as LibraryServices.LibraryLoadFailedEventArgs;
+            if (null != a)
+                Assert.Fail("Failed to load library: " + a.LibraryPath);
+            else
+                Assert.Fail("Failed to load library");
         }
 
         [Test]
@@ -37,14 +73,11 @@ namespace Dynamo.Tests
         [Category("UnitTests")]
         public void TestLoadDSFile()
         {
-            bool libraryLoaded = false;
-
-            libraryServices.LibraryLoaded += (sender, e) => libraryLoaded = true;
-            libraryServices.LibraryLoadFailed += (sender, e) => Assert.Fail("Failed to load library: " + e.LibraryPath);
+            LibraryLoaded = false;
 
             string libraryPath = Path.Combine(TestDirectory, @"core\library\Dummy.ds");
             libraryServices.ImportLibrary(libraryPath);
-            Assert.IsTrue(libraryLoaded);
+            Assert.IsTrue(LibraryLoaded);
 
             var functions = libraryServices.GetFunctionGroups(libraryPath);
             Assert.IsNotNull(functions);
@@ -55,53 +88,48 @@ namespace Dynamo.Tests
         [Category("UnitTests")]
         public void TestLoadDllFileFailure()
         {
-            bool libraryLoaded = false;
-
-            libraryServices.LibraryLoaded += (sender, e) => libraryLoaded = true;
+            LibraryLoaded = false;
 
             string libraryPath = Path.Combine(TestDirectory, @"core\library\Dummy.dll");
             try
             {
                 libraryServices.ImportLibrary(libraryPath);
             }
-            catch( System.Exception ex)
+            catch (Exception ex)
             {
                 Assert.IsTrue(ex is LibraryLoadFailedException);
             }
-            Assert.IsFalse(libraryLoaded);
+            Assert.IsFalse(LibraryLoaded);
         }
 
         [Test]
         [Category("UnitTests")]
         public void TestLoadDllFileSuccess()
         {
-            bool libraryLoaded = false;
-
-            libraryServices.LibraryLoaded += (sender, e) => libraryLoaded = true;
+            LibraryLoaded = false;
 
             string libraryPath = Path.Combine(TestDirectory, @"FFITarget.dll");
             try
             {
                 libraryServices.ImportLibrary(libraryPath);
             }
-            catch( System.Exception ex)
+            catch(Exception ex)
             {
                 Assert.IsTrue(ex is LibraryLoadFailedException);
             }
-            Assert.IsTrue(libraryLoaded);
+            Assert.IsTrue(LibraryLoaded);
         }
 
         [Test]
         [Category("UnitTests")]
         public void TestLibraryAcrossSessions()
         {
-            bool libraryLoaded = false;
-            libraryServices.LibraryLoaded += (sender, e) => libraryLoaded = true;
+            LibraryLoaded = false;
 
             // library should be able to load
             string libraryPath = Path.Combine(TestDirectory, @"core\library\Test.ds");
             libraryServices.ImportLibrary(libraryPath);
-            Assert.IsTrue(libraryLoaded);
+            Assert.IsTrue(LibraryLoaded);
 
             // open dyn file which uses node in that library
             RunModel(@"core\library\t1.dyn");
@@ -117,13 +145,12 @@ namespace Dynamo.Tests
         [Category("UnitTests")]
         public void TestDllLibraryAcrossSessions()
         {
-            bool libraryLoaded = false;
-            libraryServices.LibraryLoaded += (sender, e) => libraryLoaded = true;
+            LibraryLoaded = false;
 
             // Library should be able to load
             string libraryPath = Path.Combine(TestDirectory, @"FFITarget.dll");
             libraryServices.ImportLibrary(libraryPath);
-            Assert.IsTrue(libraryLoaded);
+            Assert.IsTrue(LibraryLoaded);
 
             // Open dyn file which uses node in that library
             RunModel(@"core\library\t1dll.dyn");
