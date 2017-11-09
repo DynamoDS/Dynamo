@@ -60,7 +60,7 @@
     <Compile Include="Input\Double.cs" />
     <Compile Include="Input\BaseTypes.cs" />
     <Compile Include="Input\DoubleSlider.cs" />
-    <Compile Include="Input\File.cs" />
+    <Compile Include="Input\FileSystem.cs" />
     <Compile Include="Input\Integer.cs" />
     <Compile Include="Input\String.cs" />
     <Compile Include="..\..\AssemblySharedInfoGenerator\AssemblySharedInfo.cs">
