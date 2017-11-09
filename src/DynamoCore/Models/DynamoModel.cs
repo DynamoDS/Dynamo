@@ -768,15 +768,24 @@ namespace Dynamo.Models
         /// does not already exist in the list.
         /// </summary>
         /// <param name="path"> The path to add.</param>
-        public bool AddPackagePath(string path)
+        /// <param name="file"> The file to add when importing a library.</param>
+        public bool AddPackagePath(string path, string file = "")
         {
             if (!Directory.Exists(path))
                 return false;
           
-            if (PreferenceSettings.CustomPackageFolders.Contains(path))
+            string fullFilename = path;
+            if (file != "")
+            {
+                fullFilename = Path.Combine(path, file);
+                if (!File.Exists(fullFilename))
+                    return false;
+            }
+              
+            if (PreferenceSettings.CustomPackageFolders.Contains(fullFilename))
                 return false;
 
-            PreferenceSettings.CustomPackageFolders.Add(path);
+            PreferenceSettings.CustomPackageFolders.Add(fullFilename);
 
             return true;
         }
@@ -1129,9 +1138,25 @@ namespace Dynamo.Models
             DumpLibrarySnapshot(functionGroups);
 #endif
 
-            // Load local custom nodes
-            foreach (var directory in pathManager.DefinitionDirectories)
-                CustomNodeManager.AddUninitializedCustomNodesInPath(directory, IsTestMode);
+            // Load local custom nodes and locally imported libraries
+            foreach (var path in pathManager.DefinitionDirectories)
+            {
+                // NOTE: extension will only be null if path is null
+                string extension = Path.GetExtension(path);
+                if (extension == null)
+                    continue;
+
+                // If the path has a .dll or .ds extension it is a locally imported library
+                if (extension == ".dll" || extension == ".ds")
+                {
+                    LibraryServices.ImportLibrary(path);
+                    continue;
+                }
+
+                // Otherwise it is a custom node
+                CustomNodeManager.AddUninitializedCustomNodesInPath(path, IsTestMode);
+            }
+
             CustomNodeManager.AddUninitializedCustomNodesInPath(pathManager.CommonDefinitions, IsTestMode);
         }
 
