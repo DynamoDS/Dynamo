@@ -1142,7 +1142,12 @@ namespace Dynamo.Models
             foreach (var path in pathManager.DefinitionDirectories)
             {
                 // NOTE: extension will only be null if path is null
-                string extension = Path.GetExtension(path);
+                string extension = null;
+                try
+                {
+                    extension = Path.GetExtension(path);
+                }
+                catch (ArgumentException) { }
                 if (extension == null)
                     continue;
 
