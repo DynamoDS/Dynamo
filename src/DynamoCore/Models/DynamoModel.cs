@@ -1147,7 +1147,10 @@ namespace Dynamo.Models
                 {
                     extension = Path.GetExtension(path);
                 }
-                catch (ArgumentException) { }
+                catch (ArgumentException e)
+                {
+                    Logger.Log(e.Message);
+                }
                 if (extension == null)
                     continue;
 
