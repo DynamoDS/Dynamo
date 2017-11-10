@@ -6,23 +6,23 @@
   </priorNameHint>
   <priorNameHint>
     <oldName>DSCore.File.ReadImage</oldName>
-    <newName>DSCore.IO.File.ReadImage</newName>
+    <newName>DSCore.IO.FileSystem.ReadImage</newName>
   </priorNameHint>
   <priorNameHint>
     <oldName>DSCore.File.LoadImageFromPath</oldName>
-    <newName>DSCore.IO.File.LoadImageFromPath</newName>
+    <newName>DSCore.IO.FileSystem.LoadImageFromPath</newName>
   </priorNameHint>
   <priorNameHint>
     <oldName>DSCore.File.ReadText</oldName>
-    <newName>DSCore.IO.File.ReadText</newName>
+    <newName>DSCore.IO.FileSystem.ReadText</newName>
   </priorNameHint>
   <priorNameHint>
     <oldName>DSCore.File.WriteImage</oldName>
-    <newName>DSCore.IO.File.WriteImage</newName>
+    <newName>DSCore.IO.FileSystem.WriteImage</newName>
   </priorNameHint>
   <priorNameHint>
     <oldName>DSCore.File.WriteText</oldName>
-    <newName>DSCore.IO.File.WriteText</newName>
+    <newName>DSCore.IO.FileSystem.WriteText</newName>
   </priorNameHint>
   <priorNameHint>
     <oldName>DSCore.IO.CSV.ReadFromFile</oldName>
