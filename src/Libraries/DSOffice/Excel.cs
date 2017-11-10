@@ -710,7 +710,7 @@ namespace DSOffice
         /// <search>write,text,file</search>
         public static void ExportCSV(string filePath, object[][] data)
         {
-            using (var writer = new StreamWriter(DSCore.IO.FileSystem.AbsolutePath(filePath)))
+            using (var writer = new StreamWriter(DSCore.IO.File.AbsolutePath(filePath)))
             {
                 foreach (var line in data)
                 {
@@ -736,7 +736,7 @@ namespace DSOffice
         /// <search>import,csv,comma,file,list,separate,transpose</search>
         public static IList ImportCSV(string filePath, bool transpose = false)
         {
-            if (string.IsNullOrEmpty(filePath) || !DSCore.IO.FileSystem.FileExists(filePath))
+            if (string.IsNullOrEmpty(filePath) || !DSCore.IO.File.Exists(filePath))
             {
                 // File not existing.
                 throw new FileNotFoundException();

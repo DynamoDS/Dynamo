@@ -61,7 +61,7 @@ namespace CoreNodeModels.Input
                 yield return
                     AstFactory.BuildAssignment(
                         GetAstIdentifierForOutputIndex(0),
-                        AstFactory.BuildFunctionCall<string,string,string>(DSCore.IO.FileSystem.AbsolutePath, ast));
+                        AstFactory.BuildFunctionCall<string,string,string>(DSCore.IO.File.AbsolutePath, ast));
             }
         }
 
@@ -259,7 +259,7 @@ namespace CoreNodeModels.Input
         }
     }
 
-    [NodeName("File From Path")]
+    [NodeName("File.FromPath")]
     [NodeCategory(BuiltinNodeCategories.CORE_IO)]
     [NodeDescription("FileObjectNodeDescription", typeof(Resources))]
     [NodeSearchTags("FilePathSearchTags", typeof(Resources))]
@@ -272,10 +272,10 @@ namespace CoreNodeModels.Input
 
         [JsonConstructor]
         private FileObject(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : 
-            base(DSCore.IO.FileSystem.FileFromPath, inPorts, outPorts) { }
+            base(DSCore.IO.File.FromPath, inPorts, outPorts) { }
 
         public FileObject()
-            : base(DSCore.IO.FileSystem.FileFromPath)
+            : base(DSCore.IO.File.FromPath)
         {
             InPorts.Add(new PortModel(PortType.Input, this, new PortData("path", Resources.FileObjectPortDataPathToolTip)));
             OutPorts.Add(new PortModel(PortType.Output, this, new PortData("file", Resources.FileObjectPortDataResultToolTip)));
@@ -321,7 +321,7 @@ namespace CoreNodeModels.Input
         }
     }
 
-    [NodeName("Directory From Path")]
+    [NodeName("DirectoryFromPath")]
     [NodeCategory("Core.File")]
     [NodeDescription("DirectoryObjectNodeDescription",typeof(Resources))]
     [NodeSearchTags("DirectoryPathSearchTags", typeof(Resources))]
@@ -332,10 +332,10 @@ namespace CoreNodeModels.Input
     {
         [JsonConstructor]
         private DirectoryObject(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : 
-            base(DSCore.IO.FileSystem.DirectoryFromPath, inPorts, outPorts) { }
+            base(DSCore.IO.File.DirectoryFromPath, inPorts, outPorts) { }
 
         public DirectoryObject()
-            : base(DSCore.IO.FileSystem.DirectoryFromPath)
+            : base(DSCore.IO.File.DirectoryFromPath)
         {
             InPorts.Add(new PortModel(PortType.Input, this, new PortData("path", Resources.DirectoryObjectPortDataPathToolTip)));
             OutPorts.Add(new PortModel(PortType.Output, this, new PortData("directory", Resources.DirectoryObjectPortDataResultToolTip)));
