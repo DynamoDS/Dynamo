@@ -11,7 +11,7 @@ using Moq;
 using NUnit.Framework;
 using Color = DSCore.Color;
 using Directory = System.IO.Directory;
-using FileSystem = DSCore.IO.FileSystem;
+using File = DSCore.IO.File;
 using Image = DSCore.IO.Image;
 
 namespace Dynamo.Tests
@@ -28,28 +28,28 @@ namespace Dynamo.Tests
         [Test, Category("UnitTests")]
         public void SimpleWrappers()
         {
-            Assert.AreEqual(Path.Combine("test"), FileSystem.CombinePath("test"));
-            Assert.AreEqual(Path.Combine("test", "1"), FileSystem.CombinePath("test", "1"));
-            Assert.AreEqual(Path.Combine("test/", @"1\"), FileSystem.CombinePath("test/", @"1\"));
+            Assert.AreEqual(Path.Combine("test"), File.CombinePath("test"));
+            Assert.AreEqual(Path.Combine("test", "1"), File.CombinePath("test", "1"));
+            Assert.AreEqual(Path.Combine("test/", @"1\"), File.CombinePath("test/", @"1\"));
 
             const string aFilePath = @"hello\there.txt";
             const string aFileName = "hello";
 
-            Assert.AreEqual(Path.GetExtension(aFilePath), FileSystem.FileExtension(aFilePath));
-            Assert.AreEqual(Path.GetExtension(aFileName), FileSystem.FileExtension(aFileName));
+            Assert.AreEqual(Path.GetExtension(aFilePath), File.FileExtension(aFilePath));
+            Assert.AreEqual(Path.GetExtension(aFileName), File.FileExtension(aFileName));
 
             Assert.AreEqual(
                 Path.ChangeExtension(aFilePath, ".png"),
-                FileSystem.ChangePathExtension(aFilePath, ".png"));
+                File.ChangePathExtension(aFilePath, ".png"));
             Assert.AreEqual(
                 Path.ChangeExtension(aFileName, ".txt"),
-                FileSystem.ChangePathExtension(aFileName, ".txt"));
+                File.ChangePathExtension(aFileName, ".txt"));
 
-            Assert.AreEqual(Path.GetDirectoryName(aFilePath), FileSystem.DirectoryName(aFilePath));
-            Assert.AreEqual(Path.GetDirectoryName(aFileName), FileSystem.DirectoryName(aFileName));
+            Assert.AreEqual(Path.GetDirectoryName(aFilePath), File.DirectoryName(aFilePath));
+            Assert.AreEqual(Path.GetDirectoryName(aFileName), File.DirectoryName(aFileName));
 
-            Assert.AreEqual(Path.HasExtension(aFilePath), FileSystem.FileHasExtension(aFilePath));
-            Assert.AreEqual(Path.HasExtension(aFileName), FileSystem.FileHasExtension(aFileName));
+            Assert.AreEqual(Path.HasExtension(aFilePath), File.FileHasExtension(aFilePath));
+            Assert.AreEqual(Path.HasExtension(aFileName), File.FileHasExtension(aFileName));
         }
 
         [Test, Category("UnitTests")]
@@ -57,10 +57,10 @@ namespace Dynamo.Tests
         {
             const string aFilePath = @"hello\there.txt";
 
-            Assert.AreEqual(Path.GetFileName(aFilePath), FileSystem.FileName(aFilePath));
+            Assert.AreEqual(Path.GetFileName(aFilePath), File.FileName(aFilePath));
             Assert.AreEqual(
                 Path.GetFileNameWithoutExtension(aFilePath),
-                FileSystem.FileName(aFilePath, withExtension: false));
+                File.FileName(aFilePath, withExtension: false));
         }
         #endregion
 
@@ -76,7 +76,7 @@ namespace Dynamo.Tests
             SetActiveSession(session.Object);
             var relativepath = @"images\testImage.jpg";
             var expectedpath = Path.Combine(TestDirectory, @"core\files", relativepath);
-            Assert.AreEqual(expectedpath, FileSystem.AbsolutePath(relativepath));
+            Assert.AreEqual(expectedpath, File.AbsolutePath(relativepath));
             SetActiveSession(null);
         }
 
@@ -91,7 +91,7 @@ namespace Dynamo.Tests
             SetActiveSession(session.Object);
             var relativepath = @"do not exist\no file.txt";
             var expectedpath = Path.Combine(TestDirectory, @"core\files", relativepath);
-            Assert.AreEqual(expectedpath, FileSystem.AbsolutePath(relativepath));
+            Assert.AreEqual(expectedpath, File.AbsolutePath(relativepath));
             SetActiveSession(null);
         }
 
@@ -106,7 +106,7 @@ namespace Dynamo.Tests
             SetActiveSession(session.Object);
             var relativepath = @"excel\ascending.xlsx";
             var hintpath = Path.Combine(TestDirectory, "core", relativepath);
-            Assert.AreEqual(hintpath, FileSystem.AbsolutePath(relativepath, hintpath));
+            Assert.AreEqual(hintpath, File.AbsolutePath(relativepath, hintpath));
             SetActiveSession(null);
         }
 
@@ -117,7 +117,7 @@ namespace Dynamo.Tests
             string wspath = Path.Combine(TestDirectory, @"core\files\dummy.dyn");
             var relativepath = @"excel\ascending.xlsx";
             var hintpath = Path.Combine(TestDirectory, "core", relativepath);
-            Assert.AreEqual(wspath, FileSystem.AbsolutePath(wspath, hintpath));
+            Assert.AreEqual(wspath, File.AbsolutePath(wspath, hintpath));
         }
 
         [Test, Category("UnitTests")]
@@ -126,14 +126,14 @@ namespace Dynamo.Tests
             Assert.IsNull(ExecutionEvents.ActiveSession);
             var relativepath = @"excel\ascending.xlsx";
             var hintpath = Path.Combine(TestDirectory, @"do not exist\no file.txt");
-            Assert.AreEqual(hintpath, FileSystem.AbsolutePath(relativepath, hintpath));
+            Assert.AreEqual(hintpath, File.AbsolutePath(relativepath, hintpath));
         }
 
         [Test, Category("UnitTests")]
         public void File_FromPath()
         {
             var fn = GetNewFileNameOnTempPath(".txt");
-            Assert.AreEqual(new FileInfo(fn).FullName, FileSystem.FileFromPath(fn).FullName);
+            Assert.AreEqual(new FileInfo(fn).FullName, File.FromPath(fn).FullName);
         }
 
         [Test, Category("UnitTests")]
@@ -142,8 +142,8 @@ namespace Dynamo.Tests
             const string contents = "test";
             var fn = GetNewFileNameOnTempPath(".txt");
             System.IO.File.WriteAllText(fn, contents);
-            var fnInfo = FileSystem.FileFromPath(fn);
-            Assert.AreEqual(contents, FileSystem.ReadText(fnInfo));
+            var fnInfo = File.FromPath(fn);
+            Assert.AreEqual(contents, File.ReadText(fnInfo));
         }
 
         [Test, Category("UnitTests")]
@@ -155,11 +155,11 @@ namespace Dynamo.Tests
             Assert.IsTrue(System.IO.File.Exists(fn));
 
             var dest = GetNewFileNameOnTempPath(".txt");
-            var destInfo = FileSystem.FileFromPath(dest);
-            FileSystem.MoveFile(fn, dest);
+            var destInfo = File.FromPath(dest);
+            File.Move(fn, dest);
             Assert.IsTrue(System.IO.File.Exists(dest));
             Assert.IsFalse(System.IO.File.Exists(fn));
-            Assert.AreEqual(contents, FileSystem.ReadText(destInfo));
+            Assert.AreEqual(contents, File.ReadText(destInfo));
         }
 
         [Test, Category("UnitTests")]
@@ -170,7 +170,7 @@ namespace Dynamo.Tests
             System.IO.File.WriteAllText(fn, contents);
             Assert.IsTrue(System.IO.File.Exists(fn));
 
-            FileSystem.DeleteFile(fn);
+            File.Delete(fn);
             Assert.IsFalse(System.IO.File.Exists(fn));
         }
 
@@ -179,17 +179,17 @@ namespace Dynamo.Tests
         {
             const string contents = "test";
             var fn = GetNewFileNameOnTempPath(".txt");
-            var fnInfo = FileSystem.FileFromPath(fn);
+            var fnInfo = File.FromPath(fn);
             System.IO.File.WriteAllText(fn, contents);
             Assert.IsTrue(System.IO.File.Exists(fn));
 
             var dest = GetNewFileNameOnTempPath(".txt");
-            var destInfo = FileSystem.FileFromPath(dest);
-            FileSystem.CopyFile(fnInfo, dest);
+            var destInfo = File.FromPath(dest);
+            File.Copy(fnInfo, dest);
             Assert.IsTrue(System.IO.File.Exists(dest));
             Assert.IsTrue(System.IO.File.Exists(fn));
-            Assert.AreEqual(contents, FileSystem.ReadText(fnInfo));
-            Assert.AreEqual(contents, FileSystem.ReadText(destInfo));
+            Assert.AreEqual(contents, File.ReadText(fnInfo));
+            Assert.AreEqual(contents, File.ReadText(destInfo));
         }
 
         [Test, Category("UnitTests")]
@@ -208,7 +208,7 @@ namespace Dynamo.Tests
             const string contents = "test";
             var fn = GetNewFileNameOnTempPath(".txt");
             Assert.IsFalse(System.IO.File.Exists(fn));
-            FileSystem.WriteText(fn, contents);
+            File.WriteText(fn, contents);
             Assert.IsTrue(System.IO.File.Exists(fn));
             Assert.AreEqual(contents, System.IO.File.ReadAllText(fn));
         }
@@ -219,9 +219,9 @@ namespace Dynamo.Tests
             const string contents = "test";
             var fn = GetNewFileNameOnTempPath(".txt");
             Assert.IsFalse(System.IO.File.Exists(fn));
-            FileSystem.AppendText(fn, contents);
+            File.AppendText(fn, contents);
             Assert.IsTrue(System.IO.File.Exists(fn));
-            FileSystem.AppendText(fn, contents);
+            File.AppendText(fn, contents);
             Assert.AreEqual(contents + contents, System.IO.File.ReadAllText(fn));
         }
         #endregion
@@ -232,12 +232,12 @@ namespace Dynamo.Tests
         {
             var tmp = GetNewFileNameOnTempPath("");
             Assert.IsFalse(Directory.Exists(tmp));
-            var info = FileSystem.DirectoryFromPath(tmp);
+            var info = File.DirectoryFromPath(tmp);
             Assert.AreEqual(tmp, info.FullName);
             Assert.IsTrue(info.Exists);
 
             //Make again now that it already exists
-            var info2 = FileSystem.DirectoryFromPath(tmp);
+            var info2 = File.DirectoryFromPath(tmp);
             Assert.AreEqual(tmp, info2.FullName);
             Assert.IsTrue(info2.Exists);
         }
@@ -248,34 +248,34 @@ namespace Dynamo.Tests
             var tmpSrc = GetNewFileNameOnTempPath("");
             Directory.CreateDirectory(tmpSrc);
             const string fileName = @"temp.txt";
-            FileSystem.WriteText(FileSystem.CombinePath(tmpSrc, fileName), "test");
+            File.WriteText(File.CombinePath(tmpSrc, fileName), "test");
 
             var tmpDest = GetNewFileNameOnTempPath("");
-            FileSystem.MoveDirectory(tmpSrc, tmpDest);
-            Assert.IsFalse(FileSystem.DirectoryExists(tmpSrc));
-            Assert.IsTrue(FileSystem.DirectoryExists(tmpDest));
+            File.MoveDirectory(tmpSrc, tmpDest);
+            Assert.IsFalse(File.DirectoryExists(tmpSrc));
+            Assert.IsTrue(File.DirectoryExists(tmpDest));
 
-            var destFileName = FileSystem.CombinePath(tmpDest, fileName);
-            Assert.IsTrue(FileSystem.FileExists(destFileName));
-            Assert.AreEqual("test", FileSystem.ReadText(FileSystem.FileFromPath(destFileName)));
+            var destFileName = File.CombinePath(tmpDest, fileName);
+            Assert.IsTrue(File.Exists(destFileName));
+            Assert.AreEqual("test", File.ReadText(File.FromPath(destFileName)));
         }
 
         [Test, Category("UnitTests")]
         public void Directory_Copy()
         {
             var tmpSrc = GetNewFileNameOnTempPath("");
-            var tmpSrcInfo = FileSystem.DirectoryFromPath(tmpSrc);
+            var tmpSrcInfo = File.DirectoryFromPath(tmpSrc);
             const string fileName = @"temp.txt";
-            FileSystem.WriteText(FileSystem.CombinePath(tmpSrc, fileName), "test");
+            File.WriteText(File.CombinePath(tmpSrc, fileName), "test");
 
             var tmpDest = GetNewFileNameOnTempPath("");
-            FileSystem.CopyDirectory(tmpSrcInfo, tmpDest);
-            Assert.IsTrue(FileSystem.DirectoryExists(tmpSrc));
-            Assert.IsTrue(FileSystem.DirectoryExists(tmpDest));
+            File.CopyDirectory(tmpSrcInfo, tmpDest);
+            Assert.IsTrue(File.DirectoryExists(tmpSrc));
+            Assert.IsTrue(File.DirectoryExists(tmpDest));
 
-            var destFileName = FileSystem.CombinePath(tmpDest, fileName);
-            Assert.IsTrue(FileSystem.FileExists(destFileName));
-            Assert.AreEqual("test", FileSystem.ReadText(FileSystem.FileFromPath(destFileName)));
+            var destFileName = File.CombinePath(tmpDest, fileName);
+            Assert.IsTrue(File.Exists(destFileName));
+            Assert.AreEqual("test", File.ReadText(File.FromPath(destFileName)));
         }
 
         [Test, Category("UnitTests")]
@@ -284,32 +284,32 @@ namespace Dynamo.Tests
             var tmpSrc = GetNewFileNameOnTempPath("");
             Directory.CreateDirectory(tmpSrc);
             const string fileName = @"temp.txt";
-            FileSystem.WriteText(FileSystem.CombinePath(tmpSrc, fileName), "test");
+            File.WriteText(File.CombinePath(tmpSrc, fileName), "test");
 
-            Assert.Throws<IOException>(() => FileSystem.DeleteDirectory(tmpSrc));
-            FileSystem.DeleteDirectory(tmpSrc, recursive: true);
-            Assert.IsFalse(FileSystem.DirectoryExists(tmpSrc));
+            Assert.Throws<IOException>(() => File.DeleteDirectory(tmpSrc));
+            File.DeleteDirectory(tmpSrc, recursive: true);
+            Assert.IsFalse(File.DirectoryExists(tmpSrc));
 
             var tmpSrc2 = GetNewFileNameOnTempPath("");
             Directory.CreateDirectory(tmpSrc2);
-            FileSystem.DeleteDirectory(tmpSrc2);
-            Assert.IsFalse(FileSystem.DirectoryExists(tmpSrc2));
+            File.DeleteDirectory(tmpSrc2);
+            Assert.IsFalse(File.DirectoryExists(tmpSrc2));
         }
 
         [Test, Category("UnitTests")]
         public void Directory_Contents()
         {
             var tmpSrc = GetNewFileNameOnTempPath("");
-            var tmpSrcInfo = FileSystem.DirectoryFromPath(tmpSrc);
+            var tmpSrcInfo = File.DirectoryFromPath(tmpSrc);
             const string fileName = @"temp.txt";
-            var newFile = FileSystem.CombinePath(tmpSrc, fileName);
-            FileSystem.WriteText(newFile, "test");
+            var newFile = File.CombinePath(tmpSrc, fileName);
+            File.WriteText(newFile, "test");
 
             const string dirName = @"subDir";
-            var newDir = FileSystem.CombinePath(tmpSrc, dirName);
+            var newDir = File.CombinePath(tmpSrc, dirName);
             Directory.CreateDirectory(newDir);
 
-            var contents = FileSystem.GetDirectoryContents(tmpSrcInfo);
+            var contents = File.GetDirectoryContents(tmpSrcInfo);
             Assert.AreEqual(new[] { newFile }, contents["files"]);
             Assert.AreEqual(new[] { newDir }, contents["directories"]);
         }
@@ -318,24 +318,24 @@ namespace Dynamo.Tests
         public void Directory_ContentsRecursive()
         {
             var tmpSrc = GetNewFileNameOnTempPath("");
-            var tmpSrcInfo = FileSystem.DirectoryFromPath(tmpSrc);
+            var tmpSrcInfo = File.DirectoryFromPath(tmpSrc);
 
             // make test file
             const string fileName = @"temp.txt";
-            var newFile = FileSystem.CombinePath(tmpSrc, fileName);
-            FileSystem.WriteText(newFile, "test");
+            var newFile = File.CombinePath(tmpSrc, fileName);
+            File.WriteText(newFile, "test");
 
             // make subdirectory
             const string dirName = @"subDir";
-            var newDir = FileSystem.CombinePath(tmpSrc, dirName);
+            var newDir = File.CombinePath(tmpSrc, dirName);
             Directory.CreateDirectory(newDir);
 
             // make another test file in subdirectory
             const string subdirFileName = @"tempSubdir.txt";
-            var newSubdirFile = FileSystem.CombinePath(newDir, subdirFileName);
-            FileSystem.WriteText(newSubdirFile, "testSubdir");
+            var newSubdirFile = File.CombinePath(newDir, subdirFileName);
+            File.WriteText(newSubdirFile, "testSubdir");
 
-            var contents = FileSystem.GetDirectoryContents(tmpSrcInfo, "*.*", true);
+            var contents = File.GetDirectoryContents(tmpSrcInfo, "*.*", true);
             Assert.AreEqual(new[] { newFile, newSubdirFile }, contents["files"]);
             Assert.AreEqual(new[] { newDir }, contents["directories"]);
         }
@@ -345,9 +345,9 @@ namespace Dynamo.Tests
         public void Directory_Exists()
         {
             var tmp = GetNewFileNameOnTempPath("");
-            Assert.IsFalse(FileSystem.DirectoryExists(tmp), "Directory hasn't been created yet.");
+            Assert.IsFalse(File.DirectoryExists(tmp), "Directory hasn't been created yet.");
             Directory.CreateDirectory(tmp);
-            Assert.IsTrue(FileSystem.DirectoryExists(tmp), "Directory has been created.");
+            Assert.IsTrue(File.DirectoryExists(tmp), "Directory has been created.");
         }
         #endregion
 
@@ -364,7 +364,7 @@ namespace Dynamo.Tests
         {
             foreach (var file in GetTestImageFiles())
             {
-                Image.ReadFromFile(FileSystem.FileFromPath(file));
+                Image.ReadFromFile(File.FromPath(file));
                 Assert.DoesNotThrow(
                     () =>
                     {
