@@ -96,6 +96,20 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        public void OpeningWorkspaceWithManualRunState()
+        {
+            var ws = (HomeWorkspaceModel)OpenWorkspaceInManualModeFromSampleFile(true);
+            Assert.IsFalse(ws.HasRunWithoutCrash);
+        }
+
+        [Test]
+        public void OpeningWorkspaceWithAutoRunState()
+        {
+            var ws = (HomeWorkspaceModel)OpenWorkspaceInManualModeFromSampleFile(false);
+            Assert.IsTrue(ws.HasRunWithoutCrash);
+        }
+
+        [Test]
         public void OpeningXMLWorkspaceShouldSetDeterministicId()
         {
             var ws = OpenWorkspaceFromSampleFile();
@@ -136,6 +150,14 @@ namespace Dynamo.Tests
         {
             var examplePath = Path.Combine(SampleDirectory, @"en-US\Basics\Basics_Basic01.dyn");
             ViewModel.Model.OpenFileFromPath(examplePath);
+            return ViewModel.Model.CurrentWorkspace;
+        }
+
+        private WorkspaceModel OpenWorkspaceInManualModeFromSampleFile(bool forceManualMode)
+        {
+            // The sample is saved in auto mode, this function opens it in ForceMannual mode
+            var examplePath = Path.Combine(SampleDirectory, @"en-US\Basics\Basics_Basic03.dyn");
+            ViewModel.Model.OpenFileFromPath(examplePath, forceManualMode);
             return ViewModel.Model.CurrentWorkspace;
         }
     }
