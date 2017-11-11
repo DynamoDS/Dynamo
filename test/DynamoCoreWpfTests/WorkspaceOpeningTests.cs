@@ -99,6 +99,7 @@ namespace Dynamo.Tests
         public void OpeningWorkspaceWithManualRunState()
         {
             var ws = (HomeWorkspaceModel)OpenWorkspaceInManualModeFromSampleFile(true);
+            Assert.AreEqual(ws.RunSettings.RunType, RunType.Manual);
             Assert.IsFalse(ws.HasRunWithoutCrash);
         }
 
@@ -106,6 +107,7 @@ namespace Dynamo.Tests
         public void OpeningWorkspaceWithAutoRunState()
         {
             var ws = (HomeWorkspaceModel)OpenWorkspaceInManualModeFromSampleFile(false);
+            Assert.AreEqual(ws.RunSettings.RunType, RunType.Automatic);
             Assert.IsTrue(ws.HasRunWithoutCrash);
         }
 
