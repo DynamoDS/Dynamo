@@ -9,6 +9,10 @@
     <newName>DSCore.IO.FileSystem.ReadImage</newName>
   </priorNameHint>
   <priorNameHint>
+    <oldName>DSCore.IO.File.ReadImage</oldName>
+    <newName>DSCore.IO.FileSystem.ReadImage</newName>
+  </priorNameHint>
+  <priorNameHint>
     <oldName>DSCore.File.LoadImageFromPath</oldName>
     <newName>DSCore.IO.FileSystem.LoadImageFromPath</newName>
   </priorNameHint>
@@ -18,6 +22,10 @@
   </priorNameHint>
   <priorNameHint>
     <oldName>DSCore.File.WriteImage</oldName>
+    <newName>DSCore.IO.FileSystem.WriteImage</newName>
+  </priorNameHint>
+  <priorNameHint>
+    <oldName>DSCore.IO.File.WriteImage</oldName>
     <newName>DSCore.IO.FileSystem.WriteImage</newName>
   </priorNameHint>
   <priorNameHint>
