@@ -2247,8 +2247,9 @@ namespace Dynamo.ViewModels
                     foreach (var file in openFileDialog.FileNames)
                     {
                         EngineController.ImportLibrary(file);
-                        string path = new FileInfo(file).Directory.FullName;
-                        if (this.Model.AddPackagePath(path))
+
+                        FileInfo info = new FileInfo(file);
+                        if (this.Model.AddPackagePath(info.Directory.FullName, info.Name))
                         {
                             string title = Resources.PackagePathAutoAddNotificationTitle;
                             string shortMessage = Resources.PackagePathAutoAddNotificationShortDescription;
@@ -2257,7 +2258,7 @@ namespace Dynamo.ViewModels
                                 "Dynamo", 
                                 title,
                                 shortMessage, 
-                                string.Format(detailedMessage, path));
+                                string.Format(detailedMessage, file));
                         }
                     }
                     SearchViewModel.SearchAndUpdateResults();

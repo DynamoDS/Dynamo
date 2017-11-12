@@ -65,6 +65,26 @@
     </additionalAttributes>
   </priorNameHint>
   <priorNameHint>
+    <oldName>DSCore.IO.Directory.Contents</oldName>
+    <newName>DSCore.IO.File.GetDirectoryContents</newName>
+  </priorNameHint>
+  <priorNameHint>
+    <oldName>DSCore.IO.Directory.Copy</oldName>
+    <newName>DSCore.IO.File.CopyDirectory</newName>
+  </priorNameHint>
+  <priorNameHint>
+    <oldName>DSCore.IO.Directory.Delete</oldName>
+    <newName>DSCore.IO.File.DeleteDirectory</newName>
+  </priorNameHint>
+  <priorNameHint>
+    <oldName>DSCore.IO.Directory.Exists</oldName>
+    <newName>DSCore.IO.File.DirectoryExists</newName>
+  </priorNameHint>
+  <priorNameHint>
+    <oldName>DSCore.IO.Directory.Move</oldName>
+    <newName>DSCore.IO.File.MoveDirectory</newName>
+  </priorNameHint>
+  <priorNameHint>
     <oldName>DSCore.Display.ByGeometryColor</oldName>
     <newName>Modifiers.GeometryColor.ByGeometryColor</newName>
     <additionalAttributes>
@@ -103,6 +123,30 @@
     </additionalAttributes>
   </priorNameHint>
   <priorNameHint>
+    <oldName>DSCore.IO.FilePath.HasExtension</oldName>
+    <newName>DSCore.IO.File.FileHasExtension</newName>
+  </priorNameHint>
+  <priorNameHint>
+    <oldName>DSCore.IO.FilePath.ChangeExtension</oldName>
+    <newName>DSCore.IO.File.ChangePathExtension</newName>
+  </priorNameHint>
+  <priorNameHint>
+    <oldName>DSCore.IO.FilePath.DirectoryName</oldName>
+    <newName>DSCore.IO.File.DirectoryName</newName>
+  </priorNameHint>
+  <priorNameHint>
+    <oldName>DSCore.IO.FilePath.Combine</oldName>
+    <newName>DSCore.IO.File.CombinePath</newName>
+  </priorNameHint>
+  <priorNameHint>
+    <oldName>DSCore.IO.FilePath.FileName</oldName>
+    <newName>DSCore.IO.File.FileName</newName>
+  </priorNameHint>
+  <priorNameHint>
+    <oldName>DSCore.IO.FilePath.Extension</oldName>
+    <newName>DSCore.IO.File.FileExtension</newName>
+  </priorNameHint>
+  <priorNameHint>
     <oldName>DSCore.Formula.Evaluate</oldName>
     <newName>DSCore.Math.EvaluateFormula</newName>
   </priorNameHint>
@@ -117,85 +161,5 @@
   <priorNameHint>
     <oldName>DSCore.Logic.Or</oldName>
     <newName>DSCore.Math.Or</newName>
-  </priorNameHint>
-  <priorNameHint>
-    <oldName>File.File.FromPath</oldName>
-    <newName>File.File From Path</newName>
-  </priorNameHint>
-  <priorNameHint>
-    <oldName>File.DirectoryFromPath</oldName>
-    <newName>File.Directory From Path</newName>
-  </priorNameHint>
-  <priorNameHint>
-    <oldName>DSCore.IO.FilePath.Combine</oldName>
-    <newName>DSCore.IO.FileSystem.CombinePath</newName>
-  </priorNameHint>
-  <priorNameHint>
-    <oldName>DSCore.IO.FilePath.Extension</oldName>
-    <newName>DSCore.IO.FileSystem.FileExtension</newName>
-  </priorNameHint>
-  <priorNameHint>
-    <oldName>DSCore.IO.FilePath.ChangeExtension</oldName>
-    <newName>DSCore.IO.FileSystem.ChangePathExtension</newName>
-  </priorNameHint>
-  <priorNameHint>
-    <oldName>DSCore.IO.FilePath.DirectoryName</oldName>
-    <newName>DSCore.IO.FileSystem.DirectoryName</newName>
-  </priorNameHint>
-  <priorNameHint>
-    <oldName>DSCore.IO.FilePath.FileName</oldName>
-    <newName>DSCore.IO.FileSystem.FileName</newName>
-  </priorNameHint>
-  <priorNameHint>
-    <oldName>DSCore.IO.FilePath.HasExtension</oldName>
-    <newName>DSCore.IO.FileSystem.FileHasExtension</newName>
-  </priorNameHint>
-  <priorNameHint>
-    <oldName>DSCore.IO.File.ReadText</oldName>
-    <newName>DSCore.IO.FileSystem.ReadText</newName>
-  </priorNameHint>
-  <priorNameHint>
-    <oldName>DSCore.IO.File.Move</oldName>
-    <newName>DSCore.IO.FileSystem.MoveFile</newName>
-  </priorNameHint>
-  <priorNameHint>
-    <oldName>DSCore.IO.File.Delete</oldName>
-    <newName>DSCore.IO.FileSystem.DeleteFile</newName>
-  </priorNameHint>
-  <priorNameHint>
-    <oldName>DSCore.IO.File.Copy</oldName>
-    <newName>DSCore.IO.FileSystem.CopyFile</newName>
-  </priorNameHint>
-  <priorNameHint>
-    <oldName>DSCore.IO.File.Exists</oldName>
-    <newName>DSCore.IO.FileSystem.FileExists</newName>
-  </priorNameHint>
-  <priorNameHint>
-    <oldName>DSCore.IO.File.WriteText</oldName>
-    <newName>DSCore.IO.FileSystem.WriteText</newName>
-  </priorNameHint>
-  <priorNameHint>
-    <oldName>DSCore.IO.File.AppendText</oldName>
-    <newName>DSCore.IO.FileSystem.AppendText</newName>
-  </priorNameHint>
-  <priorNameHint>
-    <oldName>DSCore.IO.Directory.Move</oldName>
-    <newName>DSCore.IO.FileSystem.MoveDirectory</newName>
-  </priorNameHint>
-  <priorNameHint>
-    <oldName>DSCore.IO.Directory.Copy</oldName>
-    <newName>DSCore.IO.FileSystem.CopyDirectory</newName>
-  </priorNameHint>
-  <priorNameHint>
-    <oldName>DSCore.IO.Directory.Delete</oldName>
-    <newName>DSCore.IO.FileSystem.DeleteDirectory</newName>
-  </priorNameHint>
-  <priorNameHint>
-    <oldName>DSCore.IO.Directory.Contents</oldName>
-    <newName>DSCore.IO.FileSystem.GetDirectoryContents</newName>
-  </priorNameHint>
-  <priorNameHint>
-    <oldName>DSCore.IO.Directory.Exists</oldName>
-    <newName>DSCore.IO.FileSystem.DirectoryExists</newName>
   </priorNameHint>
 </migrations>

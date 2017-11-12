@@ -73,7 +73,7 @@
     <Compile Include="Color.cs" />
     <Compile Include="Compare.cs" />
     <Compile Include="DateTime.cs" />
-    <Compile Include="FileSystem.cs" />
+    <Compile Include="Files.cs" />
     <Compile Include="List.cs" />
     <Compile Include="Math.cs" />
     <Compile Include="Object.cs" />

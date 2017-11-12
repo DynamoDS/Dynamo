@@ -1,0 +1,81 @@
+{
+  "Uuid": "65d90e95-52b6-4411-b0c1-875a0de05588",
+  "IsCustomNode": false,
+  "Description": null,
+  "Name": "Home",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "FFITarget.Dummy.Create@int",
+      "Id": "49e8e255f310446e9f4b9b5487b941ab",
+      "Inputs": [
+        {
+          "Id": "996867bae7f048878f6e23148cebcf59",
+          "Name": "a",
+          "Description": "int",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "a04f368d67244573a2c727bb6738a7ed",
+          "Name": "Dummy",
+          "Description": "Dummy",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Dummy.Create (a: int): Dummy"
+    }
+  ],
+  "Connectors": [],
+  "Dependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.0.0.3110",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "NodeViews": [
+      {
+        "Id": "49e8e255f310446e9f4b9b5487b941ab",
+        "Name": "Dummy.Create",
+        "ShowGeometry": true,
+        "Excluded": false,
+        "X": 301.2,
+        "Y": 201.2
+      }
+    ],
+    "Annotations": [],
+    "X": 0.0,
+    "Y": 0.0,
+    "Zoom": 1.0
+  }
+}

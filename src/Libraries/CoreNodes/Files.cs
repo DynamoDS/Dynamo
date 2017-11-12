@@ -16,7 +16,7 @@ namespace DSCore.IO
     /// <summary>
     ///     Methods for working with Files.
     /// </summary>
-    public static class FileSystem
+    public static class File
     {
         #region file methods
 
@@ -42,7 +42,7 @@ namespace DSCore.IO
                 var filepath = Path.Combine(parent, path);
                 //If hint path is null or file exists at this location return the computed path
                 //If hint path doesn't exist then the relative path might be for write operation.
-                if (FileSystem.FileExists(filepath) || string.IsNullOrEmpty(hintPath) || !FileSystem.FileExists(hintPath))
+                if (File.Exists(filepath) || string.IsNullOrEmpty(hintPath) || !File.Exists(hintPath))
                     return Path.GetFullPath(filepath);
             }
 
@@ -55,7 +55,7 @@ namespace DSCore.IO
         /// <param name="path"></param>
         /// <returns></returns>
         [IsVisibleInDynamoLibrary(false)]
-        public static FileInfo FileFromPath(string path)
+        public static FileInfo FromPath(string path)
         {
             return new FileInfo(AbsolutePath(path));
         }
@@ -76,10 +76,10 @@ namespace DSCore.IO
         /// <param name="path"></param>
         /// <param name="newPath"></param>
         /// <param name="overwrite"></param>
-        public static void MoveFile(string path, string newPath, bool overwrite = false)
+        public static void Move(string path, string newPath, bool overwrite = false)
         {
-            if (overwrite && FileExists(newPath))
-                DeleteFile(newPath);
+            if (overwrite && Exists(newPath))
+                Delete(newPath);
             System.IO.File.Move(path, newPath);
         }
 
@@ -87,7 +87,7 @@ namespace DSCore.IO
         ///   Deletes the specified file.
         /// </summary>
         /// <param name="path"></param>
-        public static void DeleteFile(string path)
+        public static void Delete(string path)
         {
             System.IO.File.Delete(path);
         }
@@ -98,7 +98,7 @@ namespace DSCore.IO
         /// <param name="file"></param>
         /// <param name="destinationPath"></param>
         /// <param name="overwrite"></param>
-        public static void CopyFile(FileInfo file, string destinationPath, bool overwrite = false)
+        public static void Copy(FileInfo file, string destinationPath, bool overwrite = false)
         {
             file.CopyTo(destinationPath, overwrite);
         }
@@ -108,7 +108,7 @@ namespace DSCore.IO
         /// </summary>
         /// <param name="path"></param>
         /// <search>filepath</search>
-        public static bool FileExists(string path)
+        public static bool Exists(string path)
         {
             return System.IO.File.Exists(path);
         }
@@ -223,13 +223,13 @@ namespace DSCore.IO
         /// <param name="overwriteFiles"></param>
         public static void CopyDirectory(DirectoryInfo directory, string destinationPath, bool overwriteFiles = false)
         {
-            if (!FileExists(destinationPath))
+            if (!Exists(destinationPath))
                 System.IO.Directory.CreateDirectory(destinationPath);
 
             foreach (var file in directory.EnumerateFiles())
             {
                 var newFilePath = Path.Combine(destinationPath, file.Name);
-                CopyFile(file, newFilePath, overwriteFiles);
+                Copy(file, newFilePath, overwriteFiles);
             }
 
             foreach (var dir in directory.EnumerateDirectories())
@@ -284,7 +284,7 @@ namespace DSCore.IO
             foreach (var file in info.EnumerateFiles())
             {
                 var newFilePath = Path.Combine(newPath, file.Name);
-                MoveFile(file.FullName, newFilePath, overwriteFiles);
+                Move(file.FullName, newFilePath, overwriteFiles);
             }
 
             foreach (var dir in info.EnumerateDirectories())
@@ -301,7 +301,7 @@ namespace DSCore.IO
         [NodeObsolete("ReadImageObsolete", typeof(Properties.Resources))]
         public static Color[] ReadImage(string path, int xSamples, int ySamples)
         {
-            var info = FileFromPath(path);
+            var info = FromPath(path);
             var image = Image.ReadFromFile(info);
             return Image.Pixels(image, xSamples, ySamples).SelectMany(x => x).ToArray();
         }
@@ -309,13 +309,13 @@ namespace DSCore.IO
         [NodeObsolete("LoadImageFromPathObsolete", typeof(Properties.Resources))]
         public static Bitmap LoadImageFromPath(string path)
         {
-            return Image.ReadFromFile(FileFromPath(path));
+            return Image.ReadFromFile(FromPath(path));
         }
 
         [NodeObsolete("ReadTextObsolete", typeof(Properties.Resources))]
         public static string ReadText(string path)
         {
-            return ReadText(FileFromPath(path));
+            return ReadText(FromPath(path));
         }
 
         [NodeObsolete("WriteImageObsolete", typeof(Properties.Resources))]
@@ -451,7 +451,7 @@ namespace DSCore.IO
         /// <search>write image,image,file,filepath</search>
         public static void WriteToFile(string path, Bitmap image)
         {
-            image.Save(FileSystem.AbsolutePath(path));
+            image.Save(File.AbsolutePath(path));
         }
     }
 }
