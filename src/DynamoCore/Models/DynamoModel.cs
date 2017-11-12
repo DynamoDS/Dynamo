@@ -1450,7 +1450,7 @@ namespace Dynamo.Models
                     if (true) //MigrationManager.ProcessWorkspace(dynamoPreferences.Version, xmlDoc, IsTestMode, NodeFactory))
                     {
                         WorkspaceModel ws;
-                        if (OpenJsonFile(filePath, fileContents, dynamoPreferences, out ws))
+                        if (OpenJsonFile(filePath, fileContents, dynamoPreferences, forceManualExecutionMode, out ws))
                         {
                             OpenWorkspace(ws);
                             //Raise an event to deserialize the view parameters before
@@ -1562,7 +1562,8 @@ namespace Dynamo.Models
         private bool OpenJsonFile(
           string filePath, 
           string fileContents, 
-          DynamoPreferencesData dynamoPreferences, 
+          DynamoPreferencesData dynamoPreferences,
+          bool forceManualExecutionMode,
           out WorkspaceModel workspace)
         {
             CustomNodeManager.AddUninitializedCustomNodesInPath(
@@ -1597,7 +1598,7 @@ namespace Dynamo.Models
               homeWorkspace.HasRunWithoutCrash = dynamoPreferences.HasRunWithoutCrash;
 
               RunType runType;
-              if (!homeWorkspace.HasRunWithoutCrash || !Enum.TryParse(dynamoPreferences.RunType, false, out runType))
+              if (!homeWorkspace.HasRunWithoutCrash || !Enum.TryParse(dynamoPreferences.RunType, false, out runType) || forceManualExecutionMode)
                   runType = RunType.Manual;
               int runPeriod;
               if (!Int32.TryParse(dynamoPreferences.RunPeriod, out runPeriod))
