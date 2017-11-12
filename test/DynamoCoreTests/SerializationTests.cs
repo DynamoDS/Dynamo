@@ -30,7 +30,7 @@ namespace Dynamo.Tests
         /// <param name="model"> the workspace the json represents</param>
         /// <param name="modelsGuidToIdMap"> a map of the old guids to the new ids we are replacing them with </param>
         /// <returns> returns a new json string without guids where applicable </returns>
-        public static string replaceModelIdsWithNonGuids(string json, WorkspaceModel model, Dictionary<Guid,string> modelsGuidToIdMap)
+        public static string replaceModelIdsWithNonGuids(string json, WorkspaceModel model, Dictionary<Guid, string> modelsGuidToIdMap)
         {
             var idcount = 0;
 
@@ -179,7 +179,7 @@ namespace Dynamo.Tests
         /// </summary>
         /// <param name="a"> first workspace data to compare</param>
         /// <param name="b">second workspace data to compare</param>
-        public static void CompareWorkspaceModels(serializationTestUtils.WorkspaceComparisonData a, serializationTestUtils.WorkspaceComparisonData b, Dictionary<Guid,string> c = null)
+        public static void CompareWorkspaceModels(serializationTestUtils.WorkspaceComparisonData a, serializationTestUtils.WorkspaceComparisonData b, Dictionary<Guid, string> c = null)
         {
             var nodeDiff = a.NodeTypeMap.Except(b.NodeTypeMap);
             if (nodeDiff.Any())
@@ -189,7 +189,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(a.Description, b.Description, "The workspaces don't have the same description.");
             Assert.AreEqual(a.NodeCount, b.NodeCount, "The workspaces don't have the same number of nodes.");
             Assert.AreEqual(a.ConnectorCount, b.ConnectorCount, "The workspaces don't have the same number of connectors.");
-          
+
             foreach (var kvp in a.InportCountMap)
             {
                 var countA = kvp.Value;
@@ -248,7 +248,7 @@ namespace Dynamo.Tests
 
         public static void CompareWorkspacesDifferentGuids(serializationTestUtils.WorkspaceComparisonData a,
             serializationTestUtils.WorkspaceComparisonData b,
-            Dictionary<Guid,string> modelGuidsToIDmap)
+            Dictionary<Guid, string> modelGuidsToIDmap)
         {
             var nodeDiff = a.NodeTypeMap.Select(x => x.Value).Except(b.NodeTypeMap.Select(x => x.Value));
             if (nodeDiff.Any())
@@ -330,7 +330,7 @@ namespace Dynamo.Tests
         public static void SaveWorkspaceComparisonData(serializationTestUtils.WorkspaceComparisonData wcd1,
             string filePathBase,
             TimeSpan executionDuration,
-            Dictionary<Guid,string> modelGuidToIDMap = null)
+            Dictionary<Guid, string> modelGuidToIDMap = null)
         {
             var nodeData = new Dictionary<string, Dictionary<string, object>>();
             foreach (var d in wcd1.NodeDataMap)
@@ -371,7 +371,7 @@ namespace Dynamo.Tests
         public static void SaveWorkspaceComparisonDataWithNonGuidIds(serializationTestUtils.WorkspaceComparisonData wcd1,
             string filePathBase,
             TimeSpan executionDuration,
-            Dictionary<Guid,string> modelsGuidToIdMap)
+            Dictionary<Guid, string> modelsGuidToIdMap)
         {
             var nodeData = new Dictionary<string, Dictionary<string, object>>();
             foreach (var d in wcd1.NodeDataMap)
@@ -460,7 +460,7 @@ namespace Dynamo.Tests
         public void FixtureSetup()
         {
             ExecutionEvents.GraphPostExecution += ExecutionEvents_GraphPostExecution;
-            
+
             //Clear Temp directory folders before start of the new serialization test run
             var tempPath = Path.GetTempPath();
             var jsonFolder = Path.Combine(tempPath, jsonFolderName);
@@ -475,7 +475,7 @@ namespace Dynamo.Tests
                     Console.WriteLine("Deleting JSON directory from temp");
                     Directory.Delete(jsonFolder, true);
                 }
-                catch(Exception e)
+                catch (Exception e)
                 {
                     Console.WriteLine(e.Message);
                 }
@@ -510,7 +510,26 @@ namespace Dynamo.Tests
         public void ConverterDoesNotThrowWithNullEngine()
         {
             CurrentDynamoModel.AddHomeWorkspace();
-            Assert.DoesNotThrow(()=>{ CurrentDynamoModel.CurrentWorkspace.ToJson(null); });
+            Assert.DoesNotThrow(() => { CurrentDynamoModel.CurrentWorkspace.ToJson(null); });
+        }
+
+        [Test]
+        public void ReadConverterDoesNotThrowWithNullEngineAndScheduler()
+        {
+            CurrentDynamoModel.AddHomeWorkspace();
+            var json = CurrentDynamoModel.CurrentWorkspace.ToJson(null);
+
+            Assert.DoesNotThrow(() =>
+            {
+                WorkspaceModel.FromJson(
+                json, this.CurrentDynamoModel.LibraryServices,
+                null,
+                null,
+                this.CurrentDynamoModel.NodeFactory,
+                true,
+                true,
+                this.CurrentDynamoModel.CustomNodeManager);
+            });
         }
 
         [Test]
@@ -518,7 +537,7 @@ namespace Dynamo.Tests
         {
             var customNodeTestPath = Path.Combine(TestDirectory, @"core\CustomNodes\TestAdd.dyn");
             DoWorkspaceOpenAndCompare(customNodeTestPath, "json", ConvertCurrentWorkspaceToJsonAndSave,
-                serializationTestUtils.CompareWorkspaceModels, 
+                serializationTestUtils.CompareWorkspaceModels,
                 serializationTestUtils.SaveWorkspaceComparisonData);
         }
 
@@ -527,7 +546,7 @@ namespace Dynamo.Tests
         {
             var customNodeTestPath = Path.Combine(TestDirectory, @"core\serialization\serialization.dyn");
             DoWorkspaceOpenAndCompare(customNodeTestPath, "json", ConvertCurrentWorkspaceToJsonAndSave,
-                serializationTestUtils.CompareWorkspaceModels, 
+                serializationTestUtils.CompareWorkspaceModels,
                 serializationTestUtils.SaveWorkspaceComparisonData);
         }
 
@@ -548,7 +567,7 @@ namespace Dynamo.Tests
         [Test, TestCaseSource("FindWorkspaces")]
         public void SerializationTest(string filePath)
         {
-            DoWorkspaceOpenAndCompare(filePath, jsonFolderName, ConvertCurrentWorkspaceToJsonAndSave, 
+            DoWorkspaceOpenAndCompare(filePath, jsonFolderName, ConvertCurrentWorkspaceToJsonAndSave,
                 serializationTestUtils.CompareWorkspaceModels,
                 serializationTestUtils.SaveWorkspaceComparisonData);
         }
@@ -566,7 +585,7 @@ namespace Dynamo.Tests
         public void SerializationNonGuidIdsTest(string filePath)
         {
             modelsGuidToIdMap.Clear();
-            DoWorkspaceOpenAndCompare(filePath,jsonNonGuidFolderName, 
+            DoWorkspaceOpenAndCompare(filePath, jsonNonGuidFolderName,
                 ConvertCurrentWorkspaceToNonGuidJsonAndSave,
                 serializationTestUtils.CompareWorkspacesDifferentGuids,
                 serializationTestUtils.SaveWorkspaceComparisonDataWithNonGuidIds);
@@ -595,8 +614,8 @@ namespace Dynamo.Tests
 
         private void DoWorkspaceOpenAndCompare(string filePath, string dirName,
             Func<DynamoModel, string, string> saveFunction,
-            Action<serializationTestUtils.WorkspaceComparisonData, serializationTestUtils.WorkspaceComparisonData, Dictionary<Guid,String>> workspaceCompareFunction,
-            Action<serializationTestUtils.WorkspaceComparisonData, string, TimeSpan,Dictionary<Guid,string>> workspaceDataSaveFunction)
+            Action<serializationTestUtils.WorkspaceComparisonData, serializationTestUtils.WorkspaceComparisonData, Dictionary<Guid, String>> workspaceCompareFunction,
+            Action<serializationTestUtils.WorkspaceComparisonData, string, TimeSpan, Dictionary<Guid, string>> workspaceDataSaveFunction)
         {
             var openPath = filePath;
 
@@ -643,7 +662,7 @@ namespace Dynamo.Tests
 
             string json = saveFunction(model, filePathBase);
 
-            workspaceDataSaveFunction(wcd1, filePathBase, lastExecutionDuration,modelsGuidToIdMap);
+            workspaceDataSaveFunction(wcd1, filePathBase, lastExecutionDuration, modelsGuidToIdMap);
 
             lastExecutionDuration = new TimeSpan();
 
@@ -704,7 +723,7 @@ namespace Dynamo.Tests
 
             var wcd2 = new serializationTestUtils.WorkspaceComparisonData(ws2, CurrentDynamoModel.EngineController);
 
-            workspaceCompareFunction(wcd1, wcd2,modelsGuidToIdMap);
+            workspaceCompareFunction(wcd1, wcd2, modelsGuidToIdMap);
 
             var functionNodes = ws2.Nodes.Where(n => n is Function).Cast<Function>();
             if (functionNodes.Any())
@@ -738,7 +757,7 @@ namespace Dynamo.Tests
             Assert.IsTrue(inputs.SequenceEqual(inputs2));
         }
 
-     
+
 
         private static string ConvertCurrentWorkspaceToJsonAndSave(DynamoModel model, string filePathBase)
         {
@@ -767,7 +786,7 @@ namespace Dynamo.Tests
         {
             var json = model.CurrentWorkspace.ToJson(model.EngineController);
 
-           json = serializationTestUtils.replaceModelIdsWithNonGuids(json, model.CurrentWorkspace, modelsGuidToIdMap);
+            json = serializationTestUtils.replaceModelIdsWithNonGuids(json, model.CurrentWorkspace, modelsGuidToIdMap);
 
             Assert.IsNotNullOrEmpty(json);
 
