@@ -911,9 +911,13 @@ namespace DynamoCoreWpfTests
             var nodeingraph = this.ViewModel.CurrentSpace.Nodes.FirstOrDefault();
             Assert.NotNull(nodeingraph);
             Assert.IsTrue(nodeingraph.State == ElementState.Active);
+            //remove custom node from definitions folder
+            var savePath = Path.Combine(this.ViewModel.Model.PathManager.DefinitionDirectories.FirstOrDefault(), "NewCustomNodeSaveAndLoad.dyf");
+            File.Delete(savePath);
+
         }
 
-        
+
         [Test]
         public void AllTypesSerialize()
         {
