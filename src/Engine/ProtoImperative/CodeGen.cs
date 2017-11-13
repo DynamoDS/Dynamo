@@ -979,7 +979,7 @@ namespace ProtoImperative
                 // If-expr
                 IfStmtNode ifnode = node as IfStmtNode;
 
-                MakeLocalSymbolsInIfBlock(ifnode);
+                MakeSymbolsLocalInIfBlock(ifnode);
 
                 DfsTraverse(ifnode.IfExprNode, ref inferedType, false, graphNode, ProtoCore.CompilerDefinitions.SubCompilePass.None, parentNode);
 
@@ -1225,7 +1225,7 @@ namespace ProtoImperative
                 int L1 = (int)ProtoCore.DSASM.Constants.kInvalidIndex;
                 
                 WhileStmtNode whileNode = node as WhileStmtNode;
-                PreprocessCodeBlock(whileNode.Body);
+                MakeSymbolsLocalInImperativeBlock(whileNode.Body);
 
                 int entry = pc;
 
@@ -1294,16 +1294,16 @@ namespace ProtoImperative
             }
         }
 
-        private void MakeLocalSymbolsInIfBlock(IfStmtNode ifNode)
+        private void MakeSymbolsLocalInIfBlock(IfStmtNode ifNode)
         {
             if(ifNode == null) return;
 
-            PreprocessCodeBlock(ifNode.IfBody);
-            PreprocessCodeBlock(ifNode.ElseBody);
+            MakeSymbolsLocalInImperativeBlock(ifNode.IfBody);
+            MakeSymbolsLocalInImperativeBlock(ifNode.ElseBody);
 
             foreach (var elseIfBlock in ifNode.ElseIfList)
             {
-                PreprocessCodeBlock(elseIfBlock.Body);
+                MakeSymbolsLocalInImperativeBlock(elseIfBlock.Body);
             }
         }
 
@@ -1312,10 +1312,26 @@ namespace ProtoImperative
         /// a parent associative block and allocate a copy of them in the outer imperative block
         /// </summary>
         /// <param name="body"></param>
-        private void PreprocessCodeBlock(List<ImperativeNode> body)
+        private void MakeSymbolsLocalInImperativeBlock(List<ImperativeNode> body)
         {
             foreach (var stmt in body)
             {
+                if (stmt is WhileStmtNode)
+                {
+                    var whileNode = stmt as WhileStmtNode;
+                    MakeSymbolsLocalInImperativeBlock(whileNode.Body);
+                }
+                else if(stmt is ForLoopNode)
+                {
+                    var forNode = stmt as ForLoopNode;
+                    MakeSymbolsLocalInImperativeBlock(forNode.Body);
+                }
+                else if(stmt is IfStmtNode)
+                {
+                    var ifNode = stmt as IfStmtNode;
+                    MakeSymbolsLocalInIfBlock(ifNode);
+                }
+
                 var bNode = stmt as BinaryExpressionNode;
                 if(bNode == null || bNode.Optr != Operator.assign) continue;
 
