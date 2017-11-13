@@ -493,7 +493,7 @@ namespace ProtoFFI
                 targetDict[key] = d.ValueAtKey(key);
             }
 
-            return d;
+            return targetDict;
         }
 
         private object ToGenericIDictionary(StackValue dsObject, ProtoCore.Runtime.Context context, Interpreter dsi, System.Type expectedType) {
@@ -509,7 +509,7 @@ namespace ProtoFFI
                 targetDict[key] = d.ValueAtKey(key);
             }
 
-            return d;
+            return targetDict;
         }
 
         private ProtoCore.Type GetApproxDSType(object obj)
