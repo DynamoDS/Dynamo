@@ -1,6 +1,6 @@
 <Workspace Version="0.7.2.2114" X="-92.5" Y="274" zoom="1" Description="" Category="" Name="Home">
   <Elements>
-    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="75b9d0a3-e954-42b5-8ccf-66845b122e3f" nickname="Code Block" x="462" y="257" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="c = File.LoadImageFromPath(a);&#xA;File.WriteImage(b,&quot;Image&quot;,c);" ShouldFocus="false" />
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="75b9d0a3-e954-42b5-8ccf-66845b122e3f" nickname="Code Block" x="462" y="257" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="c = FileSystem.LoadImageFromPath(a);&#xA;FileSystem.WriteImage(b,&quot;Image&quot;,c);" ShouldFocus="false" />
     <DSCore.File.Filename type="DSCore.File.Filename" guid="545b092b-8b2c-4cd4-b15e-9e4162dd4579" nickname="File Path" x="118" y="185.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
       <System.String>File_Migration.txt</System.String>
     </DSCore.File.Filename>
