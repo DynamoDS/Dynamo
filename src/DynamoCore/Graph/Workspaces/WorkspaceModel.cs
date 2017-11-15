@@ -1572,6 +1572,8 @@ namespace Dynamo.Graph.Workspaces
             EngineController engineController, DynamoScheduler scheduler, NodeFactory factory,
             bool isTestMode, bool verboseLogging, CustomNodeManager manager)
         {
+            var logger = engineController != null ? engineController.AsLogger() : null;
+
             var settings = new JsonSerializerSettings
             {
                 Error = (sender, args) =>
@@ -1583,7 +1585,7 @@ namespace Dynamo.Graph.Workspaces
                 TypeNameHandling = TypeNameHandling.Auto,
                 Formatting = Newtonsoft.Json.Formatting.Indented,
                 Converters = new List<JsonConverter>{
-                        new ConnectorConverter(engineController.AsLogger()),
+                        new ConnectorConverter(logger),
                         new WorkspaceReadConverter(engineController, scheduler, factory, isTestMode, verboseLogging),
                         new NodeReadConverter(manager, libraryServices),
                         new TypedParameterConverter()

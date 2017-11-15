@@ -26,6 +26,7 @@ using Dynamo.Wpf.ViewModels.Watch3D;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Dynamo.Utilities;
+using Dynamo.Graph.Connectors;
 
 namespace DynamoCoreWpfTests
 {
@@ -863,6 +864,59 @@ namespace DynamoCoreWpfTests
                 CompareWorkspaceViews,
                 serializationTestUtils.SaveWorkspaceComparisonData);
         }
+
+        [Test]
+        public void NewCustomNodeSaveAndLoadPt1()
+        {
+
+            var funcguid = GuidUtility.Create(GuidUtility.UrlNamespace, "NewCustomNodeSaveAndLoad");
+            //first create a new custom node.
+            this.ViewModel.ExecuteCommand(new DynamoModel.CreateCustomNodeCommand(funcguid, "testnode", "testcategory", "atest", true));
+            var outnode1 = new Output();
+            outnode1.Symbol = "out1";
+            var outnode2 = new Output();
+            outnode1.Symbol = "out2";
+
+            var numberNode = new DoubleInput();
+            numberNode.Value = "5";
+          
+
+            this.ViewModel.CurrentSpace.AddAndRegisterNode(numberNode);
+            this.ViewModel.CurrentSpace.AddAndRegisterNode(outnode1);
+            this.ViewModel.CurrentSpace.AddAndRegisterNode(outnode2);
+
+            new ConnectorModel(numberNode.OutPorts.FirstOrDefault(), outnode1.InPorts.FirstOrDefault(), Guid.NewGuid());
+            new ConnectorModel(numberNode.OutPorts.FirstOrDefault(), outnode2.InPorts.FirstOrDefault(), Guid.NewGuid());
+
+
+            var savePath = Path.Combine(this.ViewModel.Model.PathManager.DefinitionDirectories.FirstOrDefault(), "NewCustomNodeSaveAndLoad.dyf");
+            //save it to the definitions folder so it gets loaded at startup.
+            this.ViewModel.CurrentSpace.Save(savePath);
+
+            //assert the filesaved
+            Assert.IsTrue(File.Exists(savePath));
+            Assert.IsFalse(string.IsNullOrEmpty(File.ReadAllText(savePath)));
+        }
+
+        [Test]
+        public void NewCustomNodeSaveAndLoadPt2()
+        {
+            var funcguid = GuidUtility.Create(GuidUtility.UrlNamespace, "NewCustomNodeSaveAndLoad");
+            var functionnode = this.ViewModel.Model.CustomNodeManager.CreateCustomNodeInstance(funcguid,"testnode",true);
+            Assert.IsTrue(functionnode.IsCustomFunction);
+            Assert.IsFalse(functionnode.IsInErrorState);
+            Assert.AreEqual(functionnode.OutPorts.Count, 2);
+
+            this.ViewModel.CurrentSpace.AddAndRegisterNode(functionnode);
+            var nodeingraph = this.ViewModel.CurrentSpace.Nodes.FirstOrDefault();
+            Assert.NotNull(nodeingraph);
+            Assert.IsTrue(nodeingraph.State == ElementState.Active);
+            //remove custom node from definitions folder
+            var savePath = Path.Combine(this.ViewModel.Model.PathManager.DefinitionDirectories.FirstOrDefault(), "NewCustomNodeSaveAndLoad.dyf");
+            File.Delete(savePath);
+
+        }
+
 
         [Test]
         public void AllTypesSerialize()
