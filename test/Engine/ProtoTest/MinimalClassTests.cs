@@ -11,10 +11,10 @@ namespace ProtoTest
         {
             String code =
 @"
-size;
-[Imperative]
+size=[Imperative]
 {
 	size = 5;
+    return size;
 }
 ";
             thisTest.RunScriptSource(code);

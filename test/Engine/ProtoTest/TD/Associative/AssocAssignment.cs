@@ -155,22 +155,22 @@ e;
 		}
 		d = b;
 		e = c;	
-                g2 = g1;	
+        g2 = g1;	
 	}
 	f = a * 2;
-        g1 = 3;
-        g3 = g2;
+    g1 = 3;
+    g3 = g2;
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
             thisTest.Verify("a", 4);
-            thisTest.Verify("b", 4);
+            thisTest.Verify("b", 6);
             thisTest.Verify("f", 8);
             thisTest.Verify("g1", 3);
             thisTest.Verify("g3", null);
-            thisTest.Verify("d", 4);
-            thisTest.Verify("c", 0);
-            thisTest.Verify("e", 0);
+            thisTest.Verify("d", null);
+            thisTest.Verify("c", null);
+            thisTest.Verify("e", null);
         }
 
         [Test]
@@ -531,7 +531,7 @@ y1;
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
             thisTest.Verify("x", 1);
             thisTest.Verify("y", null);
-            thisTest.Verify("x1", 1);
+            thisTest.Verify("x1", null);
             thisTest.Verify("y1", null);
         }
 
@@ -829,7 +829,7 @@ e;
 b;
 c;
 d;
-[Imperative]
+i=[Imperative]
 {
 	a = null;
 	b = a * 2;
@@ -856,15 +856,10 @@ d;
 	{
 	    d = d + 3;
 	}
-	
-	
-	
+	return {a,b,c,d};
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            thisTest.Verify("a", null);
-            thisTest.Verify("b", null);
-            thisTest.Verify("c", null);
-            thisTest.Verify("d", 3);
+            thisTest.Verify("i", new object[] {null, null, null, 3});
 
         }
 
@@ -1400,14 +1395,15 @@ c = foo2(""Hello \""DesignScript\""!"");
 def foo()
 {
     returnValue = 0;
-    [Imperative]
+    i=[Imperative]
     {
         for(i in { 1, 2 })
         {
             returnValue = returnValue + i;; 
         }
+        return returnValue;
     }
-    return = returnValue;
+    return = i;
 }
 x = foo();
 ";

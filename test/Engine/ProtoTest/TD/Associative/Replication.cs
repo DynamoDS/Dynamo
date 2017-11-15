@@ -1233,13 +1233,12 @@ return =[Imperative]{
 			return = a;
 }
 	}
-c;
-[Imperative]
+c=[Imperative]
 {
 
     x = { 1, 2, 3 };
 	c = even(x);
-	
+	return c;
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -1382,10 +1381,11 @@ a = fun();
         {
             String code =
 @"def fun : double() { return = 4.0; }
-a;
+a=
 [Imperative]
 {
 a = fun();
+return a;
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("a",4);
@@ -2582,16 +2582,15 @@ x1;x2;x3;
     {
         return = (0..9);
     }
-[Imperative]
+i=[Imperative]
 {
     x1 = ({1,2,3})[1];
     x2 = (0..9)[3];
     x3 = (foo())[4];
+    return {x1,x2,x3};
 }";
             thisTest.RunScriptSource(code);
-            thisTest.Verify("x1", 2);
-            thisTest.Verify("x2", 3);
-            thisTest.Verify("x3", 4);
+            thisTest.Verify("i", new[] {2, 3, 4});
         }
 
         [Test]

@@ -98,12 +98,16 @@ import(""FFITarget.dll"");
             String code =
 @"
 a;b;c;
-[Imperative]
+i=[Imperative]
 {
 	a = {1,2,3};
     b = {1.0, 2.0, 3.0, 3.0};
     c = {1.0, 2.0, 9};
+    return {a,b,c};
 }
+a=i[0];
+b=i[1];
+c=i[2];
 ";
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             ProtoCore.RuntimeCore runtimeCore = null;
@@ -127,14 +131,20 @@ a;b;c;
         {
             String code =
 @"a;b;c;d;e;
-[Imperative]
+i=[Imperative]
 {
 	a = {1,2,3};
     b = {1.0, 2.0, 3.0, 3.0};
     c = {1.0, 2.0, 9};
     d = {{1}, {1}, {1}};
     e = {{1, 2, 3}, {1, 2, 3}, {1, 2, 3}};
+    return {a,b,c,d,e};
 }
+a=i[0];
+b=i[1];
+c=i[2];
+d=i[3];
+e=i[4];
 ";
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             ProtoCore.RuntimeCore runtimeCore = null;
@@ -163,14 +173,20 @@ a;b;c;
             String code =
 @"
 a;b;c;d;e;
-[Imperative]
+i=[Imperative]
 {
 	a = {1,{2},3};
     b = {1.0, {2.0, 3.0, 3.0}};
     c = {1.0, {2.0, {9}}};
     d = {{1}, {}, {1}};
     e = {{1, 2, 3}, {1, {2}, 3}, {{{1}}, 2, 3}};
+    return {a,b,c,d,e};
 }
+a=i[0];
+b=i[1];
+c=i[2];
+d=i[3];
+e=i[4];
 ";
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             ProtoCore.RuntimeCore runtimeCore = null;
@@ -468,12 +484,16 @@ rBH = {b,h};
         {
             String code =
 @"a;b;c;
-[Imperative]
+i=[Imperative]
 {
 	a = {1,2,3};
     b = 1;
     c = a;
+    return {a,b,c};
 }
+a=i[0];
+b=i[1];
+c=i[2];
 ";
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             ProtoCore.RuntimeCore runtimeCore = null;

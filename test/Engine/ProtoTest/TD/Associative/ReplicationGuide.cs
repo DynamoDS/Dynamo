@@ -1591,16 +1591,16 @@ def foo ( a )
 b = { { 0, 1}, { 2, 3} };
 test1;
 test2;
-[Imperative]
+i=[Imperative]
 {
     test1 = foo ( b[0][0..1] );
     test2 = foo ( b[1][{0, 1}] );
+    return {test1,test2};
 }
 ";
             string errmsg = "";
             thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.Verify("test1", 0);
-            thisTest.Verify("test2", 2);
+            thisTest.Verify("i", new[] {0, 2});
         }
 
         [Test]
@@ -1894,7 +1894,7 @@ def foo (x1,y1,z1)
 {
     return = y1;
 }
-test;
+test=
 [Imperative]
 {
     x = {0,1};
@@ -1904,6 +1904,7 @@ test;
     {
         return = foo(x<7>, y<3>, z<6>); // expect this to be treated as :  foo(x<3>,y<1>,z<2>); 
     }
+    return test;
 }
 ";
             string errmsg = "";
