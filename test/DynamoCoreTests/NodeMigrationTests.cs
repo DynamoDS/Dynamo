@@ -12,6 +12,7 @@ using PythonNodeModels;
 
 namespace Dynamo.Tests
 {
+    [Category("JsonTestExclude")]
     public class NodeMigrationTests : DynamoModelTestBase
     {
         protected override void GetLibrariesToPreload(List<string> libraries)

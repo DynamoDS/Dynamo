@@ -6,6 +6,7 @@ using NUnit.Framework;
 namespace Dynamo.Tests
 {
     [TestFixture]
+    [Category("JsonTestExclude")]
     class MigrationTestFramework : DynamoModelTestBase
     {
         protected override void GetLibrariesToPreload(List<string> libraries)
