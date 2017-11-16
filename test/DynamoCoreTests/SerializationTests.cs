@@ -532,7 +532,7 @@ namespace Dynamo.Tests
             });
         }
 
-        [Test]
+        [Test, Category("JsonTestExclude")]
         public void CustomNodeSerializationTest()
         {
             var customNodeTestPath = Path.Combine(TestDirectory, @"core\CustomNodes\TestAdd.dyn");
@@ -541,7 +541,7 @@ namespace Dynamo.Tests
                 serializationTestUtils.SaveWorkspaceComparisonData);
         }
 
-        [Test]
+        [Test, Category("JsonTestExclude")]
         public void AllTypesSerialize()
         {
             var customNodeTestPath = Path.Combine(TestDirectory, @"core\serialization\serialization.dyn");
@@ -564,7 +564,7 @@ namespace Dynamo.Tests
         /// </summary>
         /// <param name="filePath">The path to a .dyn file. This parameter is supplied
         /// by the test framework.</param>
-        [Test, TestCaseSource("FindWorkspaces")]
+        [Test, TestCaseSource("FindWorkspaces"), Category("JsonTestExclude")]
         public void SerializationTest(string filePath)
         {
             DoWorkspaceOpenAndCompare(filePath, jsonFolderName, ConvertCurrentWorkspaceToJsonAndSave,
@@ -581,7 +581,7 @@ namespace Dynamo.Tests
         /// </summary>
         /// <param name="filePath">The path to a .dyn file. This parameter is supplied
         /// by the test framework.</param>
-        [Test, TestCaseSource("FindWorkspaces")]
+        [Test, TestCaseSource("FindWorkspaces"), Category("JsonTestExclude")]
         public void SerializationNonGuidIdsTest(string filePath)
         {
             modelsGuidToIdMap.Clear();
