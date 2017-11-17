@@ -2283,7 +2283,7 @@ namespace Dynamo.Graph.Nodes
                 Node = this,
                 RenderPackageFactory = factory,
                 EngineController = engine,
-                DrawableIds = GetDrawableIds(),
+                DrawableIds = GetDrawableIdMap(),
                 PreviewIdentifierName = AstIdentifierForPreview.Name,
                 ForceUpdate = forceUpdate
             };
@@ -2338,21 +2338,24 @@ namespace Dynamo.Graph.Nodes
         }
 
         /// <summary>
-        /// Returns list of drawable Ids as registered with visualization manager
-        /// for all the output port of the given node.
+        /// Returns a map of output port GUIDs and drawable Ids as registered 
+        /// with visualization manager for all the output ports of the given node.
         /// </summary>
         /// <returns>List of Drawable Ids</returns>
-        private IEnumerable<string> GetDrawableIds()
+        private IEnumerable<KeyValuePair<Guid, string>> GetDrawableIdMap()
         {
-            var drawables = new List<String>();
-            for (int i = 0; i < OutPorts.Count; ++i)
+            var idMap = new Dictionary<Guid, string>();
+            for (int index = 0; index < OutPorts.Count; ++index)
             {
-                string id = GetDrawableId(i);
+                string id = GetDrawableId(index);
                 if (!string.IsNullOrEmpty(id))
-                    drawables.Add(id);
+                {
+                    Guid originId = OutPorts[index].GUID;
+                    idMap[originId] = id;
+                }
             }
 
-            return drawables;
+            return idMap;
         }
 
         /// <summary>

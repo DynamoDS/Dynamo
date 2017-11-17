@@ -20,7 +20,7 @@ namespace Dynamo.Scheduler
         internal string PreviewIdentifierName { get; set; }
         internal NodeModel Node { get; set; }
         internal EngineController EngineController { get; set; }
-        internal IEnumerable<string> DrawableIds { get; set; }
+        internal IEnumerable<KeyValuePair<Guid, string>> DrawableIds { get; set; }
 
         internal bool ForceUpdate { get; set; }
     }
@@ -50,7 +50,7 @@ namespace Dynamo.Scheduler
         private bool isNodeSelected;
         private string previewIdentifierName;
         private EngineController engineController;
-        private IEnumerable<string> drawableIds;
+        private IEnumerable<KeyValuePair<Guid, string>> drawableIdMap;
         private readonly List<IRenderPackage> renderPackages;
         private IRenderPackageFactory factory;
 
@@ -99,8 +99,8 @@ namespace Dynamo.Scheduler
             if (string.IsNullOrEmpty(nodeModel.AstIdentifierForPreview.Value))
                 return false;
 
-            drawableIds = initParams.DrawableIds;
-            if (!drawableIds.Any())
+            drawableIdMap = initParams.DrawableIds;
+            if (!drawableIdMap.Any())
                 return false; // Nothing to be drawn.
 
             displayLabels = nodeModel.DisplayLabels;
@@ -126,15 +126,14 @@ namespace Dynamo.Scheduler
                     "UpdateRenderPackageAsyncTask.Initialize not called");
             }
 
-            var data = from varName in drawableIds
-                       select engineController.GetMirror(varName)
-                           into mirror
-                           where mirror != null
-                           select mirror.GetData();
-
-            foreach (var mirrorData in data)
+            var idEnum = drawableIdMap.GetEnumerator();
+            while (idEnum.MoveNext())
             {
-                GetRenderPackagesFromMirrorData(mirrorData, previewIdentifierName, displayLabels);
+                var mirrorData = engineController.GetMirror(idEnum.Current.Value);
+                if (mirrorData == null)
+                    continue;
+
+                GetRenderPackagesFromMirrorData(mirrorData.GetData(), previewIdentifierName, displayLabels);
             }
         }
 
