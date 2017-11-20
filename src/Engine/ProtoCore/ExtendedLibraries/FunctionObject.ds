@@ -45,7 +45,7 @@ def __CreateComposedFunctionObject(fobjs: Function[])
         }
 
         composedObj = Function();
-		imp = { "__funcobj" : fobj };
+		imp = { "__funcobjs" : fobjs };
 		composedObj.imp = imp;
         return = composedObj;
     }

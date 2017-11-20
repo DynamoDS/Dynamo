@@ -1790,31 +1790,40 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 		   disableKwCheck = true;
 		}
 		
-		Associative_NameReference(out node);
+		Associative_NameReference(ref node);
 		disableKwCheck = false; 
 		ProtoCore.AST.AssociativeAST.AssociativeNode inode = node; 
 		
 		while (la.kind == 6) {
 			Get();
-			ProtoCore.AST.AssociativeAST.AssociativeNode rnode = null; 
-			Associative_NameReference(out rnode);
-			if ((inode is ProtoCore.AST.AssociativeAST.IdentifierNode) &&
-			   (inode as ProtoCore.AST.AssociativeAST.IdentifierNode).Name == ProtoCore.DSDefinitions.Keyword.This &&
-			   (rnode is ProtoCore.AST.AssociativeAST.FunctionCallNode))
-			{
-			   node = rnode;
-			   return;
-			}
-			
-			
-			ProtoCore.AST.AssociativeAST.IdentifierListNode bnode = new ProtoCore.AST.AssociativeAST.IdentifierListNode();
-			bnode.LeftNode = node;
-			bnode.Optr = Operator.dot;
-			bnode.RightNode = rnode;
-			node = bnode;
-			NodeUtils.SetNodeLocation(bnode, bnode.LeftNode, bnode.RightNode);
-			
-			if (!core.Options.GenerateSSA)
+			ProtoCore.AST.AssociativeAST.AssociativeNode rnode = node; 
+			Associative_NameReference(ref rnode);
+            if ((inode is ProtoCore.AST.AssociativeAST.IdentifierNode) &&
+                (inode as ProtoCore.AST.AssociativeAST.IdentifierNode).Name == ProtoCore.DSDefinitions.Keyword.This &&
+                (rnode is ProtoCore.AST.AssociativeAST.FunctionCallNode))
+            {
+                node = rnode;
+                return;
+            }
+
+            ProtoCore.AST.AssociativeAST.IdentifierListNode bnode;
+
+            var idnode = rnode as ProtoCore.AST.AssociativeAST.IdentifierListNode;
+		    if (idnode != null && idnode.LeftNode.Name == "DesignScript.Builtin.Get")
+		    {
+		        bnode = idnode;
+		    }
+		    else
+		    {
+                bnode = new ProtoCore.AST.AssociativeAST.IdentifierListNode();
+                bnode.LeftNode = node;
+                bnode.Optr = Operator.dot;
+                bnode.RightNode = rnode;
+                NodeUtils.SetNodeLocation(bnode, bnode.LeftNode, bnode.RightNode);
+            }
+            node = bnode;
+
+            if (!core.Options.GenerateSSA)
 			{
 			bool isNeitherIdentOrFunctionCall = !(rnode is ProtoCore.AST.AssociativeAST.IdentifierNode || rnode is ProtoCore.AST.AssociativeAST.FunctionCallNode);
 			if (isLeft || isNeitherIdentOrFunctionCall)
@@ -2326,11 +2335,12 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 		node = dictBuilder.ToFunctionCall(); 
 	}
 
-	void Associative_NameReference(out ProtoCore.AST.AssociativeAST.AssociativeNode node) {
+	void Associative_NameReference(ref ProtoCore.AST.AssociativeAST.AssociativeNode node) {
 		ProtoCore.AST.AssociativeAST.ArrayNameNode nameNode = null; 
 		ProtoCore.AST.AssociativeAST.GroupExpressionNode groupExprNode = null;
-		
-		if (la.kind == 12) {
+            ProtoCore.AST.AssociativeAST.ArrayNameNode qualifierNode = node as AST.AssociativeAST.ArrayNameNode;
+
+            if (la.kind == 12) {
 			Get();
 			Associative_Expression(out node);
 			if (node is ProtoCore.AST.AssociativeAST.ArrayNameNode)
@@ -2387,8 +2397,17 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 				NodeUtils.SetNodeLocation(array, t);
 				nameNode.ArrayDimensions = array;
 				} else {
-				// if "foo[bar]" is on the rhs, it is interpreted as an lookup in an array or dictionary
-				nameNode = AstFactory.BuildIndexExpression(nameNode, node) as ArrayNameNode;
+                    if (qualifierNode != null)
+                    {
+                        ProtoCore.AST.AssociativeAST.IdentifierListNode inode = new ProtoCore.AST.AssociativeAST.IdentifierListNode();
+                        inode.LeftNode = qualifierNode;
+                        inode.Optr = Operator.dot;
+                        inode.RightNode = nameNode;
+                        NodeUtils.SetNodeLocation(inode, inode.LeftNode, inode.RightNode);
+                        nameNode = inode;
+                    }
+                    // if "foo[bar]" is on the rhs, it is interpreted as an lookup in an array or dictionary
+                    nameNode = AstFactory.BuildIndexExpression(nameNode, node) as ArrayNameNode;
 				}
 				
 				isLeft = tmpIsLeft; 
@@ -2879,9 +2898,10 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 		ProtoCore.AST.ImperativeAST.BinaryExpressionNode bNode = new ProtoCore.AST.ImperativeAST.BinaryExpressionNode();
 		ProtoCore.AST.ImperativeAST.ImperativeNode lhsNode = null; 
 		NodeUtils.SetNodeLocation(bNode, la);
-		
-		Imperative_decoratedIdentifier(out lhsNode);
-		node = lhsNode; 
+        isLeft = true;
+        Imperative_decoratedIdentifier(out lhsNode);
+            isLeft = false;
+            node = lhsNode; 
 		if (la.kind == 23) {
 			Get();
 			bNode.LeftNode = lhsNode;
@@ -3056,17 +3076,27 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 		if (isInClass && IsIdentList())
 		disableKwCheck = true;
 		
-		Imperative_NameReference(out node);
+		Imperative_NameReference(ref node);
 		disableKwCheck = false; 
 		while (la.kind == 6) {
 			Get();
-			ProtoCore.AST.ImperativeAST.ImperativeNode rnode = null; 
-			Imperative_NameReference(out rnode);
-			ProtoCore.AST.ImperativeAST.IdentifierListNode bnode = new ProtoCore.AST.ImperativeAST.IdentifierListNode(); 
-			bnode.LeftNode = node; 
-			bnode.Optr = Operator.dot; 
-			bnode.RightNode = rnode; 
-			NodeUtils.SetNodeLocation(bnode, bnode.LeftNode, bnode.RightNode);
+			ProtoCore.AST.ImperativeAST.ImperativeNode rnode = node; 
+			Imperative_NameReference(ref rnode);
+		    var inode = rnode as ProtoCore.AST.ImperativeAST.IdentifierListNode;
+		    ProtoCore.AST.ImperativeAST.IdentifierListNode bnode;
+		    if (inode != null && inode.LeftNode.Name == "DesignScript.Builtin.Get")
+		    {
+		        bnode = inode;
+		    }
+		    else
+		    {
+                    bnode = new ProtoCore.AST.ImperativeAST.IdentifierListNode();
+                    bnode.LeftNode = node;
+                    bnode.Optr = Operator.dot;
+                    bnode.RightNode = rnode;
+                    NodeUtils.SetNodeLocation(bnode, bnode.LeftNode, bnode.RightNode);
+            }
+			
 			if (bnode.RightNode is ProtoCore.AST.ImperativeAST.FunctionCallNode)
 			{
 			   // We want the entire "Point.Project()" to be highlighted, 
@@ -3122,11 +3152,13 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 		node = inlineConNode; 
 	}
 
-	void Imperative_NameReference(out ProtoCore.AST.ImperativeAST.ImperativeNode node) {
+	void Imperative_NameReference(ref ProtoCore.AST.ImperativeAST.ImperativeNode node) {
 		ProtoCore.AST.ImperativeAST.ArrayNameNode nameNode = null;
 		ProtoCore.AST.ImperativeAST.GroupExpressionNode groupExprNode = null;
-		
-		if (la.kind == 12) {
+        ProtoCore.AST.ImperativeAST.ArrayNameNode qualifierNode = node as AST.ImperativeAST.ArrayNameNode;
+
+
+	    if (la.kind == 12) {
 			Get();
 			Imperative_expr(out node);
 			Expect(13);
@@ -3177,12 +3209,19 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 				NodeUtils.SetNodeLocation(array, t);
 				nameNode.ArrayDimensions = array;
 				} else {
-				// if "foo[bar]" is on the rhs, it is interpreted as an lookup in an array or dictionary
-				nameNode = ProtoCore.AST.ImperativeAST.AstFactory.BuildIndexExpression(nameNode, node) as ProtoCore.AST.ImperativeAST.ArrayNameNode;
+				    if (qualifierNode != null)
+				    {
+                        ProtoCore.AST.ImperativeAST.IdentifierListNode inode = new ProtoCore.AST.ImperativeAST.IdentifierListNode();
+                        inode.LeftNode = qualifierNode;
+                        inode.Optr = Operator.dot;
+                        inode.RightNode = nameNode;
+                        NodeUtils.SetNodeLocation(inode, inode.LeftNode, inode.RightNode);
+				        nameNode = inode;
+				    }
+				    // if "foo[bar]" is on the rhs, it is interpreted as an lookup in an array or dictionary
+				    nameNode = ProtoCore.AST.ImperativeAST.AstFactory.BuildIndexExpression(nameNode, node) as ProtoCore.AST.ImperativeAST.ArrayNameNode;
 				}
-				
 				isLeft = tmpIsLeft; 
-				                         
 			}
 			Expect(11);
 			while (la.kind == 10) {
