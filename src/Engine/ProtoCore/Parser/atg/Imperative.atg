@@ -320,11 +320,15 @@ Imperative_assignstmt<out ProtoCore.AST.ImperativeAST.ImperativeNode node>
                             ProtoCore.AST.ImperativeAST.BinaryExpressionNode bNode = new ProtoCore.AST.ImperativeAST.BinaryExpressionNode();
                             ProtoCore.AST.ImperativeAST.ImperativeNode lhsNode = null; 
                             NodeUtils.SetNodeLocation(bNode, la);
+							isLeft = true;
                         .)
     (   
         Imperative_decoratedIdentifier<out lhsNode>
     )
-                        (. node = lhsNode; .)
+                        (. 
+							isLeft = false;
+							node = lhsNode; 
+						.)
 
     (
         endline
@@ -520,16 +524,26 @@ Imperative_IdentifierList<out ProtoCore.AST.ImperativeAST.ImperativeNode node>
                                         (. if (isInClass && IsIdentList())
                                           disableKwCheck = true;
                                         .)
-    Imperative_NameReference<out node>  (. disableKwCheck = false; .)
+    Imperative_NameReference<ref node>  (. disableKwCheck = false; .)
     {
-        '.'                             (. ProtoCore.AST.ImperativeAST.ImperativeNode rnode = null; .)              
-        Imperative_NameReference<out rnode>
+        '.'                             (. ProtoCore.AST.ImperativeAST.ImperativeNode rnode = node; .)              
+        Imperative_NameReference<ref rnode>
                                         (.
-                                            ProtoCore.AST.ImperativeAST.IdentifierListNode bnode = new ProtoCore.AST.ImperativeAST.IdentifierListNode(); 
-                                            bnode.LeftNode = node; 
-                                            bnode.Optr = Operator.dot; 
-                                            bnode.RightNode = rnode; 
-                                            NodeUtils.SetNodeLocation(bnode, bnode.LeftNode, bnode.RightNode);
+                                            ProtoCore.AST.ImperativeAST.IdentifierListNode inode = rnode as ProtoCore.AST.ImperativeAST.IdentifierListNode;
+											ProtoCore.AST.ImperativeAST.IdentifierListNode bnode;
+											if (inode != null && inode.LeftNode.Name == "DesignScript.Builtin.Get")
+											{
+												bnode = inode;
+											}
+											else
+											{
+													bnode = new ProtoCore.AST.ImperativeAST.IdentifierListNode();
+													bnode.LeftNode = node;
+													bnode.Optr = Operator.dot;
+													bnode.RightNode = rnode;
+													NodeUtils.SetNodeLocation(bnode, bnode.LeftNode, bnode.RightNode);
+											}
+
                                             if (bnode.RightNode is ProtoCore.AST.ImperativeAST.FunctionCallNode)
                                             {
                                                 // We want the entire "Point.Project()" to be highlighted, 
@@ -842,11 +856,12 @@ Imperative_Ident<out ProtoCore.AST.ImperativeAST.ImperativeNode node>
                 .)
 .
 
-Imperative_NameReference<out ProtoCore.AST.ImperativeAST.ImperativeNode node> 
+Imperative_NameReference<ref ProtoCore.AST.ImperativeAST.ImperativeNode node> 
 = 
                                     (.
                                         ProtoCore.AST.ImperativeAST.ArrayNameNode nameNode = null;
                                         ProtoCore.AST.ImperativeAST.GroupExpressionNode groupExprNode = null;
+										ProtoCore.AST.ImperativeAST.ArrayNameNode qualifierNode = node as AST.ImperativeAST.ArrayNameNode;
                                     .)
     (
         (
@@ -919,6 +934,16 @@ Imperative_NameReference<out ProtoCore.AST.ImperativeAST.ImperativeNode node>
 											NodeUtils.SetNodeLocation(array, t);
 											nameNode.ArrayDimensions = array;
 										} else {
+											if (qualifierNode != null)
+											{
+												ProtoCore.AST.ImperativeAST.IdentifierListNode inode = new ProtoCore.AST.ImperativeAST.IdentifierListNode();
+												inode.LeftNode = qualifierNode;
+												inode.Optr = Operator.dot;
+												inode.RightNode = nameNode;
+												NodeUtils.SetNodeLocation(inode, inode.LeftNode, inode.RightNode);
+												nameNode = inode;
+											}
+
 											// if "foo[bar]" is on the rhs, it is interpreted as an lookup in an array or dictionary
 											nameNode = ProtoCore.AST.ImperativeAST.AstFactory.BuildIndexExpression(nameNode, node) as ProtoCore.AST.ImperativeAST.ArrayNameNode;
 										}

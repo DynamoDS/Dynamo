@@ -1570,11 +1570,12 @@ Associative_DictionaryExpression<out ProtoCore.AST.AssociativeAST.AssociativeNod
                                         (. node = dictBuilder.ToFunctionCall(); .)
 .
 
-Associative_NameReference<out ProtoCore.AST.AssociativeAST.AssociativeNode node>
+Associative_NameReference<ref ProtoCore.AST.AssociativeAST.AssociativeNode node>
 = 
                                         (.
                                             ProtoCore.AST.AssociativeAST.ArrayNameNode nameNode = null; 
                                             ProtoCore.AST.AssociativeAST.GroupExpressionNode groupExprNode = null;
+											ProtoCore.AST.AssociativeAST.ArrayNameNode qualifierNode = node as AST.AssociativeAST.ArrayNameNode;
                                         .)
     (
         (
@@ -1654,6 +1655,15 @@ Associative_NameReference<out ProtoCore.AST.AssociativeAST.AssociativeNode node>
 												NodeUtils.SetNodeLocation(array, t);
 												nameNode.ArrayDimensions = array;
 											} else {
+												if (qualifierNode != null)
+												{
+													ProtoCore.AST.AssociativeAST.IdentifierListNode inode = new ProtoCore.AST.AssociativeAST.IdentifierListNode();
+													inode.LeftNode = qualifierNode;
+													inode.Optr = Operator.dot;
+													inode.RightNode = nameNode;
+													NodeUtils.SetNodeLocation(inode, inode.LeftNode, inode.RightNode);
+													nameNode = inode;
+												}
 												// if "foo[bar]" is on the rhs, it is interpreted as an lookup in an array or dictionary
 												nameNode = AstFactory.BuildIndexExpression(nameNode, node) as ArrayNameNode;
 											}
@@ -1903,16 +1913,16 @@ Associative_IdentifierList<out ProtoCore.AST.AssociativeAST.AssociativeNode node
                                         }
                                     .)
 
-    Associative_NameReference<out node> 
+    Associative_NameReference<ref node> 
                                     (. 
                                         disableKwCheck = false; 
                                         ProtoCore.AST.AssociativeAST.AssociativeNode inode = node; 
                                     .)
     {
         '.'
-                                    (. ProtoCore.AST.AssociativeAST.AssociativeNode rnode = null; .)
+                                    (. ProtoCore.AST.AssociativeAST.AssociativeNode rnode = node; .)
 
-        Associative_NameReference<out rnode>
+        Associative_NameReference<ref rnode>
                                     (.
                                         if ((inode is ProtoCore.AST.AssociativeAST.IdentifierNode) &&
                                             (inode as ProtoCore.AST.AssociativeAST.IdentifierNode).Name == ProtoCore.DSDefinitions.Keyword.This &&
@@ -1923,12 +1933,22 @@ Associative_IdentifierList<out ProtoCore.AST.AssociativeAST.AssociativeNode node
                                         }
 
                                         
-                                        ProtoCore.AST.AssociativeAST.IdentifierListNode bnode = new ProtoCore.AST.AssociativeAST.IdentifierListNode();
-                                        bnode.LeftNode = node;
-                                        bnode.Optr = Operator.dot;
-                                        bnode.RightNode = rnode;
-                                        node = bnode;
-                                        NodeUtils.SetNodeLocation(bnode, bnode.LeftNode, bnode.RightNode);
+                                        ProtoCore.AST.AssociativeAST.IdentifierListNode bnode;
+
+										ProtoCore.AST.AssociativeAST.IdentifierListNode idnode = rnode as ProtoCore.AST.AssociativeAST.IdentifierListNode;
+										if (idnode != null && idnode.LeftNode.Name == "DesignScript.Builtin.Get")
+										{
+											bnode = idnode;
+										}
+										else
+										{
+											bnode = new ProtoCore.AST.AssociativeAST.IdentifierListNode();
+											bnode.LeftNode = node;
+											bnode.Optr = Operator.dot;
+											bnode.RightNode = rnode;
+											NodeUtils.SetNodeLocation(bnode, bnode.LeftNode, bnode.RightNode);
+										}
+										node = bnode;
                                         
                                         if (!core.Options.GenerateSSA)
                                         {
