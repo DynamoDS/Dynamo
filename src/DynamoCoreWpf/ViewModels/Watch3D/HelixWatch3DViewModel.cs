@@ -24,6 +24,7 @@ using Dynamo.Selection;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Properties;
 using Dynamo.Wpf.Rendering;
+using Dynamo.Visualization;
 using DynamoUtilities;
 using HelixToolkit.Wpf;
 using HelixToolkit.Wpf.SharpDX;
@@ -196,8 +197,8 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         /// <summary>
         /// An envent requesting to create geometries from render packages.
         /// </summary>
-        public event Action<IEnumerable<IRenderPackage>, bool> RequestCreateModels;
-        private void OnRequestCreateModels(IEnumerable<IRenderPackage> packages, bool forceAsyncCall = false)
+        public event Action<RenderPackageCache, bool> RequestCreateModels;
+        private void OnRequestCreateModels(RenderPackageCache packages, bool forceAsyncCall = false)
         {
             if (RequestCreateModels != null)
             {
@@ -557,7 +558,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             }
         }
 
-        public override void AddGeometryForRenderPackages(IEnumerable<IRenderPackage> packages, bool forceAsyncCall = false)
+        public override void AddGeometryForRenderPackages(RenderPackageCache packages, bool forceAsyncCall = false)
         {
             if (Active)
             {
@@ -757,7 +758,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             }
         }
 
-        public override void GenerateViewGeometryFromRenderPackagesAndRequestUpdate(IEnumerable<IRenderPackage> taskPackages)
+        public override void GenerateViewGeometryFromRenderPackagesAndRequestUpdate(RenderPackageCache taskPackages)
         {
             /*foreach (var p in taskPackages)
             {
@@ -769,7 +770,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 #if DEBUG
             renderTimer.Start();
 #endif
-            var packages = taskPackages
+            var packages = taskPackages.Packages
                 .Cast<HelixRenderPackage>().Where(rp => rp.MeshVertexCount % 3 == 0);
 
             RemoveGeometryForUpdatedPackages(packages);

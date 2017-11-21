@@ -1,14 +1,11 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using Autodesk.DesignScript.Geometry;
 using Autodesk.DesignScript.Interfaces;
 using Dynamo.Engine;
-using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
-using Dynamo.Models;
 using Dynamo.Visualization;
 using ProtoCore.Mirror;
 
@@ -20,7 +17,7 @@ namespace Dynamo.Scheduler
         internal string PreviewIdentifierName { get; set; }
         internal NodeModel Node { get; set; }
         internal EngineController EngineController { get; set; }
-        internal IEnumerable<KeyValuePair<Guid, string>> DrawableIds { get; set; }
+        internal IEnumerable<KeyValuePair<Guid, string>> DrawableIdMap { get; set; }
 
         internal bool ForceUpdate { get; set; }
     }
@@ -51,12 +48,12 @@ namespace Dynamo.Scheduler
         private string previewIdentifierName;
         private EngineController engineController;
         private IEnumerable<KeyValuePair<Guid, string>> drawableIdMap;
-        private readonly List<IRenderPackage> renderPackages;
+        private readonly RenderPackageCache renderPackageCache;
         private IRenderPackageFactory factory;
 
-        internal IEnumerable<IRenderPackage> RenderPackages
+        internal RenderPackageCache RenderPackages
         {
-            get { return renderPackages; }
+            get { return renderPackageCache; }
         }
 
         public override TaskPriority Priority
@@ -72,7 +69,7 @@ namespace Dynamo.Scheduler
             : base(scheduler)
         {
             nodeGuid = Guid.Empty;
-            renderPackages = new List<IRenderPackage>();
+            renderPackageCache = new RenderPackageCache();
         }
 
         internal bool Initialize(UpdateRenderPackageParams initParams)
@@ -83,7 +80,7 @@ namespace Dynamo.Scheduler
                 throw new ArgumentNullException("initParams.Node");
             if (initParams.EngineController == null)
                 throw new ArgumentNullException("initParams.EngineController");
-            if (initParams.DrawableIds == null)
+            if (initParams.DrawableIdMap == null)
                 throw new ArgumentNullException("initParams.DrawableIds");
 
             var nodeModel = initParams.Node;
@@ -99,7 +96,7 @@ namespace Dynamo.Scheduler
             if (string.IsNullOrEmpty(nodeModel.AstIdentifierForPreview.Value))
                 return false;
 
-            drawableIdMap = initParams.DrawableIds;
+            drawableIdMap = initParams.DrawableIdMap;
             if (!drawableIdMap.Any())
                 return false; // Nothing to be drawn.
 
@@ -304,7 +301,7 @@ namespace Dynamo.Scheduler
                 package.DisplayLabels = displayLabels;
                 package.IsSelected = isNodeSelected;
 
-                renderPackages.Add(package);
+                renderPackageCache.Add(package);
             }
         }
 

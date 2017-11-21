@@ -46,9 +46,9 @@ namespace Dynamo.Manipulation
         /// Returns render package for all the drawables of this Gizmo.
         /// </summary>
         /// <returns>List of render packages.</returns>
-        IEnumerable<IRenderPackage> GetDrawables();
+        RenderPackageCache GetDrawables();
 
-        IEnumerable<IRenderPackage> GetDrawablesForTransientGraphics();
+        RenderPackageCache GetDrawablesForTransientGraphics();
 
         /// <summary>
         /// Delete any transient graphics associated with the Gizmo
@@ -186,9 +186,9 @@ namespace Dynamo.Manipulation
 
         public abstract Vector GetOffset(Point newPosition, Vector viewDirection);
 
-        public abstract IEnumerable<IRenderPackage> GetDrawables();
+        public abstract RenderPackageCache GetDrawables();
 
-        public abstract IEnumerable<IRenderPackage> GetDrawablesForTransientGraphics();
+        public abstract RenderPackageCache GetDrawablesForTransientGraphics();
 
         public abstract void UpdateGizmoGraphics();
 

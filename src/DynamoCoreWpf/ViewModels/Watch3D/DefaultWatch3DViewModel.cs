@@ -8,7 +8,6 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Media3D;
 using System.Xml;
-using Autodesk.DesignScript.Interfaces;
 using Dynamo.Core;
 using Dynamo.Graph.Connectors;
 using Dynamo.Graph.Nodes;
@@ -500,7 +499,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         /// </summary>
         /// <param name="packages"></param>
         /// <param name="forceAsyncCall"></param>
-        public virtual void AddGeometryForRenderPackages(IEnumerable<IRenderPackage> packages, bool forceAsyncCall = false)
+        public virtual void AddGeometryForRenderPackages(RenderPackageCache packages, bool forceAsyncCall = false)
         {
             // Override in inherited classes.
         }
@@ -594,10 +593,10 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             // Override in derived classes
         }
 
-        protected virtual void OnRenderPackagesUpdated(NodeModel node, IEnumerable<IRenderPackage> packages)
+        protected virtual void OnRenderPackagesUpdated(NodeModel node, RenderPackageCache packages)
         {
             RemoveGeometryForNode(node);
-            if(packages.Any())
+            if (!packages.IsEmpty())
             {
                 AddGeometryForRenderPackages(packages);
             }
@@ -610,7 +609,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         /// <param name="taskPackages">A collection of packages from which to 
         /// create render geometry.</param>
         public virtual void GenerateViewGeometryFromRenderPackagesAndRequestUpdate(
-            IEnumerable<IRenderPackage> taskPackages)
+            RenderPackageCache taskPackages)
         {
             // Override in derived classes
         }

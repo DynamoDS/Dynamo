@@ -6,7 +6,6 @@ using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Xml;
-using Autodesk.DesignScript.Interfaces;
 using Dynamo.Configuration;
 using Dynamo.Engine;
 using Dynamo.Engine.CodeGeneration;
@@ -2283,7 +2282,7 @@ namespace Dynamo.Graph.Nodes
                 Node = this,
                 RenderPackageFactory = factory,
                 EngineController = engine,
-                DrawableIds = GetDrawableIdMap(),
+                DrawableIdMap = GetDrawableIdMap(),
                 PreviewIdentifierName = AstIdentifierForPreview.Name,
                 ForceUpdate = forceUpdate
             };
@@ -2307,34 +2306,37 @@ namespace Dynamo.Graph.Nodes
         private void OnRenderPackageUpdateCompleted(AsyncTask asyncTask)
         {
             var task = asyncTask as UpdateRenderPackageAsyncTask;
-            var packages = new List<IRenderPackage>();
-            if (task.RenderPackages.Any())
+            var packages = new RenderPackageCache();
+
+            // TODO, QNTM-2631: Determine why OnRequestRenderPackages should not be called
+            // if the task render package cache is empty
+            if (!task.RenderPackages.IsEmpty())
             {
-                packages.AddRange(task.RenderPackages);
-                packages.AddRange(OnRequestRenderPackages());
-
+                packages.Add(task.RenderPackages);
+                packages.Add(OnRequestRenderPackages());
             }
-            OnRenderPackagesUpdated(packages);
 
+            OnRenderPackagesUpdated(packages);
         }
 
         /// <summary>
         ///
         /// </summary>
-        public event Func<IEnumerable<IRenderPackage>> RequestRenderPackages;
+        public event Func<RenderPackageCache> RequestRenderPackages;
 
         /// <summary>
         /// This event handler is invoked when the render packages (specific to this node)
         /// become available and in addition the node requests for associated render packages
         /// if any for example, packages used for associated node manipulators
         /// </summary>
-        private IEnumerable<IRenderPackage> OnRequestRenderPackages()
+        private RenderPackageCache OnRequestRenderPackages()
         {
             if (RequestRenderPackages != null)
             {
                 return RequestRenderPackages();
             }
-            return new List<IRenderPackage>();
+
+            return new RenderPackageCache();
         }
 
         /// <summary>
@@ -2431,9 +2433,9 @@ namespace Dynamo.Graph.Nodes
 
         protected bool ShouldDisplayPreviewCore { get; set; }
 
-        public event Action<NodeModel, IEnumerable<IRenderPackage>> RenderPackagesUpdated;
+        public event Action<NodeModel, RenderPackageCache> RenderPackagesUpdated;
 
-        private void OnRenderPackagesUpdated(IEnumerable<IRenderPackage> packages)
+        private void OnRenderPackagesUpdated(RenderPackageCache packages)
         {
             if (RenderPackagesUpdated != null)
             {

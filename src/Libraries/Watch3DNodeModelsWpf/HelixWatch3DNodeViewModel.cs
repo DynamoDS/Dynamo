@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Xml;
-using Autodesk.DesignScript.Interfaces;
 using Dynamo.Graph.Connectors;
 using Dynamo.Graph.Nodes;
 using Dynamo.Wpf.ViewModels.Watch3D;
 using Watch3DNodeModels;
+using Dynamo.Visualization;
 
 namespace Watch3DNodeModelsWpf
 {
@@ -79,7 +79,7 @@ namespace Watch3DNodeModelsWpf
 
         
         protected override void OnRenderPackagesUpdated(NodeModel node,
-            IEnumerable<IRenderPackage> renderPackages)
+            RenderPackageCache renderPackages)
         {
             var updatedNode = model.CurrentWorkspace.Nodes.FirstOrDefault(n => n.GUID == node.GUID);
             if (updatedNode == null) return;
