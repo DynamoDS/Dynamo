@@ -232,14 +232,22 @@ namespace DSCore
     /// <summary>
     ///     Days of the Week
     /// </summary>
+    [IsVisibleInDynamoLibrary(false)]
     public enum DayOfWeek
     {
+        [Obsolete("This node is deprecated")]
         [EnumDescription("EnumDateOfWeekSunday", typeof(Properties.Resources))]Sunday,
+        [Obsolete("This node is deprecated")]
         [EnumDescription("EnumDateOfWeekMonday", typeof(Properties.Resources))]Monday,
+        [Obsolete("This node is deprecated")]
         [EnumDescription("EnumDateOfWeekTuesday", typeof(Properties.Resources))]Tuesday,
+        [Obsolete("This node is deprecated")]
         [EnumDescription("EnumDateOfWeekWednesday", typeof(Properties.Resources))]Wednesday,
+        [Obsolete("This node is deprecated")]
         [EnumDescription("EnumDateOfWeekThursday", typeof(Properties.Resources))]Thursday,
+        [Obsolete("This node is deprecated")]
         [EnumDescription("EnumDateOfWeekFriday", typeof(Properties.Resources))]Friday,
+        [Obsolete("This node is deprecated")]
         [EnumDescription("EnumDateOfWeekSaturday", typeof(Properties.Resources))]Saturday
     }
 

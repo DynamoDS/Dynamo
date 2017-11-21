@@ -222,15 +222,24 @@ namespace Dynamo.Controls
 
         private void CompositionTargetRenderingHandler(object sender, EventArgs e)
         {
-            //Do not call the clip plane update on the render loop if the camera is unchanged or
-            //the user is manipulating the view with mouse.  Do run when queued by runUpdateClipPlane bool 
-            if (runUpdateClipPlane || (!View.Camera.Position.Equals(prevCamera) && !View.IsMouseCaptured) )
+            // https://github.com/DynamoDS/Dynamo/issues/7295
+            // This should not crash Dynamo when View is null
+            try
             {
-                ViewModel.UpdateNearClipPlane();
-                runUpdateClipPlane = false;
+                //Do not call the clip plane update on the render loop if the camera is unchanged or
+                //the user is manipulating the view with mouse.  Do run when queued by runUpdateClipPlane bool 
+                if (runUpdateClipPlane || (!View.Camera.Position.Equals(prevCamera) && !View.IsMouseCaptured))
+                {
+                    ViewModel.UpdateNearClipPlane();
+                    runUpdateClipPlane = false;
+                }
+                ViewModel.ComputeFrameUpdate();
+                prevCamera = View.Camera.Position;
             }
-            ViewModel.ComputeFrameUpdate();
-            prevCamera = View.Camera.Position;          
+            catch(Exception ex)
+            {
+                ViewModel.CurrentSpaceViewModel.DynamoViewModel.Model.Logger.Log(ex.ToString());
+            }         
         }
 
         private void MouseButtonIgnoreHandler(object sender, MouseButtonEventArgs e)

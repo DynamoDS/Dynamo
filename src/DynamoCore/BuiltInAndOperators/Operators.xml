@@ -62,7 +62,7 @@
         </member>
 		<member name="%mod">
             <summary>
-                Is x divisible by y?
+                Finds the remainder of x/y
             </summary>
             <param name="x">x value.</param>
             <param name="y">y value.</param>

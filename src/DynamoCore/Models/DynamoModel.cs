@@ -637,10 +637,7 @@ namespace Dynamo.Models
 
             // Make sure that the default package folder is added in the list if custom packages folder.
             var userDataFolder = pathManager.GetUserDataFolder(); // Get the default user data path
-            if (Directory.Exists(userDataFolder) && !PreferenceSettings.CustomPackageFolders.Contains(userDataFolder))
-            {
-                PreferenceSettings.CustomPackageFolders.Add(userDataFolder);
-            }
+            AddPackagePath(userDataFolder);
 
             // Check if the Python template file specified in the settings file exists & it's not empty
             // If not, check the default filepath for the Python template (userDataFolder\PythonTemplate.py).
@@ -667,9 +664,6 @@ namespace Dynamo.Models
             NodeFactory = new NodeFactory();
             NodeFactory.MessageLogged += LogMessage;
 
-            CustomNodeManager = new CustomNodeManager(NodeFactory, MigrationManager);
-            InitializeCustomNodeManager();
-
             extensionManager = new ExtensionManager();
             extensionManager.MessageLogged += LogMessage;
             var extensions = config.Extensions ?? LoadExtensions();
@@ -687,6 +681,9 @@ namespace Dynamo.Models
             LibraryServices = new LibraryServices(libraryCore, pathManager, PreferenceSettings);
             LibraryServices.MessageLogged += LogMessage;
             LibraryServices.LibraryLoaded += LibraryLoaded;
+
+            CustomNodeManager = new CustomNodeManager(NodeFactory, MigrationManager, LibraryServices);
+            InitializeCustomNodeManager();
 
             ResetEngineInternal();
 
@@ -764,6 +761,33 @@ namespace Dynamo.Models
                     Logger.Log(ex.Message);
                 }
             }
+        }
+
+        /// <summary>
+        /// Adds a new path to the list of custom package folders, but only if the path
+        /// does not already exist in the list.
+        /// </summary>
+        /// <param name="path"> The path to add.</param>
+        /// <param name="file"> The file to add when importing a library.</param>
+        public bool AddPackagePath(string path, string file = "")
+        {
+            if (!Directory.Exists(path))
+                return false;
+          
+            string fullFilename = path;
+            if (file != "")
+            {
+                fullFilename = Path.Combine(path, file);
+                if (!File.Exists(fullFilename))
+                    return false;
+            }
+              
+            if (PreferenceSettings.CustomPackageFolders.Contains(fullFilename))
+                return false;
+
+            PreferenceSettings.CustomPackageFolders.Add(fullFilename);
+
+            return true;
         }
 
         private IEnumerable<IExtension> LoadExtensions()
@@ -1114,9 +1138,33 @@ namespace Dynamo.Models
             DumpLibrarySnapshot(functionGroups);
 #endif
 
-            // Load local custom nodes
-            foreach (var directory in pathManager.DefinitionDirectories)
-                CustomNodeManager.AddUninitializedCustomNodesInPath(directory, IsTestMode);
+            // Load local custom nodes and locally imported libraries
+            foreach (var path in pathManager.DefinitionDirectories)
+            {
+                // NOTE: extension will only be null if path is null
+                string extension = null;
+                try
+                {
+                    extension = Path.GetExtension(path);
+                }
+                catch (ArgumentException e)
+                {
+                    Logger.Log(e.Message);
+                }
+                if (extension == null)
+                    continue;
+
+                // If the path has a .dll or .ds extension it is a locally imported library
+                if (extension == ".dll" || extension == ".ds")
+                {
+                    LibraryServices.ImportLibrary(path);
+                    continue;
+                }
+
+                // Otherwise it is a custom node
+                CustomNodeManager.AddUninitializedCustomNodesInPath(path, IsTestMode);
+            }
+
             CustomNodeManager.AddUninitializedCustomNodesInPath(pathManager.CommonDefinitions, IsTestMode);
         }
 
@@ -1342,11 +1390,19 @@ namespace Dynamo.Models
         /// execution mode specified in the file and set manual mode</param>
         public void OpenFileFromPath(string filePath, bool forceManualExecutionMode = false)
         {
-            if (OpenXmlFileFromPath(filePath, forceManualExecutionMode))
+            XmlDocument xmlDoc;
+            if (DynamoUtilities.PathHelper.isValidXML(filePath, out xmlDoc))
+            {
+                OpenXmlFileFromPath(xmlDoc, filePath, forceManualExecutionMode);
                 return;
+            }
 
-            if (OpenJsonFileFromPath(filePath, forceManualExecutionMode))
+            string fileContents;
+            if (DynamoUtilities.PathHelper.isValidJson(filePath, out fileContents))
+            {
+                OpenJsonFileFromPath(fileContents, filePath, forceManualExecutionMode);
                 return;
+            }
 
             Logger.LogError("Could not open workspace at: " + filePath);
         }
@@ -1378,17 +1434,15 @@ namespace Dynamo.Models
         /// <summary>
         /// Opens a Dynamo workspace from a path to an JSON file on disk.
         /// </summary>
+        /// <param name="fileContents">Json file contents</param>
         /// <param name="filePath">Path to file</param>
         /// <param name="forceManualExecutionMode">Set this to true to discard
         /// execution mode specified in the file and set manual mode</param>
         /// <returns>True if workspace was opened successfully</returns>
-        private bool OpenJsonFileFromPath(string filePath, bool forceManualExecutionMode)
+        private bool OpenJsonFileFromPath(string fileContents, string filePath, bool forceManualExecutionMode)
         {
-            bool success = true;
             try
             {
-                string fileContents = File.ReadAllText(filePath);
-
                 DynamoPreferencesData dynamoPreferences = DynamoPreferencesDataFromJson(fileContents);
                 if (dynamoPreferences != null)
                 {
@@ -1396,20 +1450,23 @@ namespace Dynamo.Models
                     if (true) //MigrationManager.ProcessWorkspace(dynamoPreferences.Version, xmlDoc, IsTestMode, NodeFactory))
                     {
                         WorkspaceModel ws;
-                        if (OpenJsonFile(filePath, fileContents, dynamoPreferences, out ws))
+                        if (OpenJsonFile(filePath, fileContents, dynamoPreferences, forceManualExecutionMode, out ws))
                         {
                             OpenWorkspace(ws);
+                            //Raise an event to deserialize the view parameters before
+                            //setting the graph to run
+                            OnComputeModelDeserialized();
+ 
                             SetPeriodicEvaluation(ws);
                         }
                     }
                 }
+                return true;
             }
-            catch (Exception e)
+            catch (Exception)
             {
-                success = false;
+                return false;
             }
-
-            return success;
         }
 
         /// <summary>
@@ -1419,14 +1476,10 @@ namespace Dynamo.Models
         /// <param name="forceManualExecutionMode">Set this to true to discard
         /// execution mode specified in the file and set manual mode</param>
         /// <returns>True if workspace was opened successfully</returns>
-        private bool OpenXmlFileFromPath(string filePath, bool forceManualExecutionMode)
+        private bool OpenXmlFileFromPath(XmlDocument xmlDoc, string filePath, bool forceManualExecutionMode)
         {
-            bool success = true;
             try
             {
-                var xmlDoc = new XmlDocument();
-                xmlDoc.Load(filePath);
-
                 //save the file before it is migrated to JSON.
                 //if in test mode, don't save the file in backup
                 if (!IsTestMode)
@@ -1453,13 +1506,12 @@ namespace Dynamo.Models
                         }
                     }
                 }
+                return true;
             }
-            catch (Exception e)
+            catch (Exception)
             {
-                success = false;
+                return false;
             }
-
-            return success;
         }
 
         private void OpenWorkspace(WorkspaceModel ws)
@@ -1510,7 +1562,8 @@ namespace Dynamo.Models
         private bool OpenJsonFile(
           string filePath, 
           string fileContents, 
-          DynamoPreferencesData dynamoPreferences, 
+          DynamoPreferencesData dynamoPreferences,
+          bool forceManualExecutionMode,
           out WorkspaceModel workspace)
         {
             CustomNodeManager.AddUninitializedCustomNodesInPath(
@@ -1545,17 +1598,19 @@ namespace Dynamo.Models
               homeWorkspace.HasRunWithoutCrash = dynamoPreferences.HasRunWithoutCrash;
 
               RunType runType;
-              if (!homeWorkspace.HasRunWithoutCrash || !Enum.TryParse(dynamoPreferences.RunType, false, out runType))
+              if (!homeWorkspace.HasRunWithoutCrash || !Enum.TryParse(dynamoPreferences.RunType, false, out runType) || forceManualExecutionMode)
                   runType = RunType.Manual;
               int runPeriod;
               if (!Int32.TryParse(dynamoPreferences.RunPeriod, out runPeriod))
                   runPeriod = RunSettings.DefaultRunPeriod;
               homeWorkspace.RunSettings = new RunSettings(runType, runPeriod);
+
+              RegisterHomeWorkspace(homeWorkspace);
             }
 
             CustomNodeWorkspaceModel customNodeWorkspace = workspace as CustomNodeWorkspaceModel;
             if (customNodeWorkspace != null)
-              customNodeWorkspace.IsVisibleInDynamoLibrary = dynamoPreferences.IsVisibleInDynamoLibrary;
+                customNodeWorkspace.IsVisibleInDynamoLibrary = dynamoPreferences.IsVisibleInDynamoLibrary;
 
             return true;
         }
@@ -1582,8 +1637,9 @@ namespace Dynamo.Models
             XmlDocument xmlDoc, WorkspaceInfo workspaceInfo, out WorkspaceModel workspace)
         {
             var nodeGraph = NodeGraph.LoadGraphFromXml(xmlDoc, NodeFactory);
-
+            Guid deterministicId =  GuidUtility.Create(GuidUtility.UrlNamespace, workspaceInfo.Name);
             var newWorkspace = new HomeWorkspaceModel(
+                deterministicId,
                 EngineController,
                 Scheduler,
                 NodeFactory,
@@ -2257,7 +2313,43 @@ namespace Dynamo.Models
             };
 
             _workspaces.Add(workspace);
+            CheckForXMLDummyNodes(workspace);
             OnWorkspaceAdded(workspace);
+        }
+
+        private void CheckForXMLDummyNodes(WorkspaceModel workspace)
+        {
+            //if the graph that is opened contains xml dummynodes log a notification 
+            if (workspace.containsXmlDummyNodes())
+            {
+                this.Logger.LogNotification("DynamoViewModel",
+                  Resources.UnresolvedNodesWarningTitle,
+                  Resources.UnresolvedNodesWarningShortMessage,
+                  Resources.UnresolvedNodesWarningMessage);
+                if (!IsTestMode)
+                {
+                    DisplayXmlDummyNodeWarning();
+                }
+                //raise a window as well so the user is clearly alerted to this state.
+            }
+        }
+        private void DisplayXmlDummyNodeWarning()
+        {
+           var xmlDummyNodeCount = this.CurrentWorkspace.Nodes.OfType<DummyNode>().
+                Where(node => node.OriginalNodeContent is XmlElement).Count();
+
+           Logging.Analytics.LogPiiInfo("XmlDummyNodeWarning",
+               xmlDummyNodeCount.ToString());
+
+            string summary = Resources.UnresolvedNodesWarningShortMessage;
+            var description = Resources.UnresolvedNodesWarningMessage;
+            const string imageUri = "/DynamoCoreWpf;component/UI/Images/task_dialog_future_file.png";
+            var args = new TaskDialogEventArgs(
+               new Uri(imageUri, UriKind.Relative),
+               Resources.UnresolvedNodesWarningTitle, summary, description);
+
+            args.AddRightAlignedButton((int)ButtonId.Proceed, Resources.OKButton);
+            OnRequestTaskDialog(null, args);
         }
 
         enum ButtonId
@@ -2356,7 +2448,7 @@ namespace Dynamo.Models
 
             Logging.Analytics.LogPiiInfo("FutureFileMessage", fullFilePath +
                 " :: fileVersion:" + fileVer + " :: currVersion:" + currVer);
-
+            
             string summary = Resources.FutureFileSummary;
             var description = string.Format(Resources.FutureFileDescription, fullFilePath, fileVersion, currVersion);
 

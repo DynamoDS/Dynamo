@@ -25,8 +25,9 @@ namespace Dynamo.LibraryUI.Views
             {
                 var settings = new CefSettings { RemoteDebuggingPort = 8088 };
                 //to fix Fickering set disable-gpu to true
-                settings.CefCommandLineArgs.Add("disable-gpu", "1");
-                Cef.Initialize(settings, true, false);
+                settings.SetOffScreenRenderingBestPerformanceArgs();
+                //Matching the API with  version 55
+                Cef.Initialize(settings);
             }
             
             InitializeComponent();

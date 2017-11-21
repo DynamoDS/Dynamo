@@ -46,6 +46,19 @@ namespace CoreNodeModels.Input
             }
         }
 
+        /// <summary>
+        /// The NodeType property provides a name which maps to the
+        /// server type for the node. This property should only be
+        /// used for serialization.
+        /// </summary>
+        public override string NodeType
+        {
+            get
+            {
+                return "DateTimeInputNode";
+            }
+        }
+
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
             var yearNode = AstFactory.BuildIntNode(Value.Year);

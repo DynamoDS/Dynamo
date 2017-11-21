@@ -265,8 +265,9 @@ namespace Dynamo.ViewModels
         [JsonProperty("NodeViews")]
         public ObservableCollection<NodeViewModel> Nodes { get { return _nodes; } }
 
+        // Do not serialize notes, they will be converted to annotations during serialization
         ObservableCollection<NoteViewModel> _notes = new ObservableCollection<NoteViewModel>();
-        [JsonProperty("Notes")]
+        [JsonIgnore]
         public ObservableCollection<NoteViewModel> Notes { get { return _notes; } }
 
         ObservableCollection<InfoBubbleViewModel> _errors = new ObservableCollection<InfoBubbleViewModel>();

@@ -668,6 +668,46 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        public void Test_Longest_Lacing()
+        {
+            RunModel(@"core\dsevaluation\longest_lacing.dyn");
+
+            AssertPreviewValue("c9476b21a972476788e184982918700e", new object[]
+            {
+                new[] {3, 4, 5}, new[] {7, 8, 9}, new[] {8, 9, 10}
+            });
+        }
+
+        [Test]
+        public void Test_Auto_Lacing()
+        {
+            RunModel(@"core\dsevaluation\auto_lacing.dyn");
+
+            AssertPreviewValue("c9476b21a972476788e184982918700e",
+                new object[] {new[] {3, 4, 5}, new[] {7, 8, 9}});
+        }
+
+        [Test]
+        public void Test_Cross_Lacing()
+        {
+            RunModel(@"core\dsevaluation\cross_lacing.dyn");
+
+            AssertPreviewValue("c9476b21a972476788e184982918700e", new object[]
+            {
+                new object[] {new[] {3, 4, 5}, new[] {4, 5, 6}, new[] {5, 6, 7}},
+                new object[] {new[] {6, 7, 8}, new[] {7, 8, 9}, new[] {8, 9, 10}}
+            });
+        }
+
+        [Test]
+        public void Test_Shortest_Lacing()
+        {
+            RunModel(@"core\dsevaluation\shortest_lacing.dyn");
+
+            AssertPreviewValue("c9476b21a972476788e184982918700e", new object[] {new[] {3, 4, 5}});
+        }
+
+        [Test]
         public void CBNAndFormula()
         {
             RunModel(@"core\dsevaluation\CBNWithFormula.dyn");

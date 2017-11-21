@@ -315,26 +315,31 @@ namespace Dynamo.Graph.Workspaces
             //serialize view block first and build the notes.
             var notes = new List<NoteModel>();
 
-            // Restore Bindings
+            // Trace Data
             Dictionary<Guid, List<CallSite.RawTraceData>> loadedTraceData = new Dictionary<Guid, List<CallSite.RawTraceData>>();
-            JEnumerable<JToken> bindings = obj["Bindings"].Children();
 
-            // Iterate through bindings to extract nodeID's and bindingData (callsiteId & traceData)
-            foreach (JToken entity in bindings)
+            // Restore trace data if bindings are present in json
+            if (obj["Bindings"] != null && obj["Bindings"].Children().Count() > 0)
             {
-                Guid nodeId = Guid.Parse(entity["NodeId"].ToString());
-                string bindingString = entity["Binding"].ToString();
+                JEnumerable<JToken> bindings = obj["Bindings"].Children();
 
-                // Key(callsiteId) : Value(traceData)
-                Dictionary<string, string> bindingData = JsonConvert.DeserializeObject<Dictionary<string, string>>(bindingString);
-                List<CallSite.RawTraceData> callsiteTraceData = new List<CallSite.RawTraceData>();
-
-                foreach (KeyValuePair<string, string> pair in bindingData)
+                // Iterate through bindings to extract nodeID's and bindingData (callsiteId & traceData)
+                foreach (JToken entity in bindings)
                 {
-                    callsiteTraceData.Add(new CallSite.RawTraceData(pair.Key, pair.Value));
-                }
+                    Guid nodeId = Guid.Parse(entity["NodeId"].ToString());
+                    string bindingString = entity["Binding"].ToString();
 
-                loadedTraceData.Add(nodeId, callsiteTraceData);
+                    // Key(callsiteId) : Value(traceData)
+                    Dictionary<string, string> bindingData = JsonConvert.DeserializeObject<Dictionary<string, string>>(bindingString);
+                    List<CallSite.RawTraceData> callsiteTraceData = new List<CallSite.RawTraceData>();
+
+                    foreach (KeyValuePair<string, string> pair in bindingData)
+                    {
+                        callsiteTraceData.Add(new CallSite.RawTraceData(pair.Key, pair.Value));
+                    }
+
+                    loadedTraceData.Add(nodeId, callsiteTraceData);
+                }
             }
 
             WorkspaceModel ws;
@@ -542,6 +547,17 @@ namespace Dynamo.Graph.Workspaces
     /// </summary>
     public class ConnectorConverter : JsonConverter
     {
+        private Logging.ILogger logger;
+        
+        /// <summary>
+        /// Constructs a ConnectorConverter.
+        /// </summary>
+        /// <param name="logger"></param>
+        public ConnectorConverter(Logging.ILogger logger)
+        {
+            this.logger = logger;
+        }
+
         public override bool CanConvert(Type objectType)
         {
             return objectType == typeof(ConnectorModel);
@@ -576,8 +592,22 @@ namespace Dynamo.Graph.Workspaces
 
             //if the id is not a guid, makes a guid based on the id of the model
             Guid connectorId = GuidUtility.tryParseOrCreateGuid(obj["Id"].Value<string>());
+            if(startPort != null && endPort != null)
+            {
+                return new ConnectorModel(startPort, endPort, connectorId);
+            }
+            else
+            {
+                if (this.logger!=null)
+                {
+                    this.logger.LogWarning(
+                       string.Format("connector {0} could not be created, start or end port does not exist", connectorId),
+                       Logging.WarningLevel.Moderate);
 
-            return new ConnectorModel(startPort, endPort, connectorId);
+                }
+                
+                return null;
+            }
         }
 
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)

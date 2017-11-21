@@ -655,6 +655,8 @@ namespace Dynamo.Tests
             //Check whether the geometry node is frozen
             var node = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace("8163332d-21ec-4257-9a5a-0b69462db44f");
             Assert.IsTrue(node.IsFrozen);
+            //Frozen nodes should not get involved in execution.
+            Assert.IsFalse(node.WasInvolvedInExecution);
         }
 
         [Test]

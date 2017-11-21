@@ -37,7 +37,6 @@ using System.Windows.Forms;
 using System.Windows.Threading;
 using ISelectable = Dynamo.Selection.ISelectable;
 
-
 namespace Dynamo.ViewModels
 {
     public interface IDynamoViewModel : INotifyPropertyChanged
@@ -145,6 +144,7 @@ namespace Dynamo.ViewModels
         }
 
         private WorkspaceViewModel currentWorkspaceViewModel;
+        private string filePath;
         /// <summary>
         /// The index in the collection of workspaces of the current workspace.
         /// This property is bound to the SelectedIndex property in the workspaces tab control
@@ -530,10 +530,10 @@ namespace Dynamo.ViewModels
             var homespaceViewModel = new HomeWorkspaceViewModel(model.CurrentWorkspace as HomeWorkspaceModel, this);
             workspaces.Add(homespaceViewModel);
             currentWorkspaceViewModel = homespaceViewModel;
-
+           
             model.WorkspaceAdded += WorkspaceAdded;
             model.WorkspaceRemoved += WorkspaceRemoved;
-
+             
             SubscribeModelCleaningUpEvent();
             SubscribeModelUiEvents();
             SubscribeModelChangedHandlers();
@@ -561,6 +561,7 @@ namespace Dynamo.ViewModels
             BackgroundPreviewViewModel.PropertyChanged += Watch3DViewModelPropertyChanged;
             WatchHandler.RequestSelectGeometry += BackgroundPreviewViewModel.AddLabelForPath;
             RegisterWatch3DViewModel(BackgroundPreviewViewModel, RenderPackageFactoryViewModel.Factory);
+            model.ComputeModelDeserialized += model_ComputeModelDeserialized;
         }
 
         /// <summary>
@@ -1107,6 +1108,14 @@ namespace Dynamo.ViewModels
             else
             {
                 var newVm = new WorkspaceViewModel(item, this);
+
+                // For Json Workspaces, workspace view info need to be read agin from file
+                string fileContents;
+                if (DynamoUtilities.PathHelper.isValidJson(newVm.Model.FileName, out fileContents))
+                {
+                    ExtraWorkspaceViewInfo viewInfo = WorkspaceViewModel.ExtraWorkspaceViewInfoFromJson(fileContents);
+                    newVm.Model.UpdateWithExtraWorkspaceViewInfo(viewInfo);
+                }
                 workspaces.Add(newVm);
             }
         }
@@ -1210,7 +1219,7 @@ namespace Dynamo.ViewModels
         {
             // try catch for exceptions thrown while opening files, say from a future version, 
             // that can't be handled reliably
-            string filePath = string.Empty;
+            filePath = string.Empty;
             bool forceManualMode = false; 
             try
             {
@@ -1225,23 +1234,6 @@ namespace Dynamo.ViewModels
                     filePath = parameters as string;
                 }
                 ExecuteCommand(new DynamoModel.OpenFileCommand(filePath, forceManualMode));
-
-                string fileContents = File.ReadAllText(filePath);
-                try
-                {
-                    // This call will fail in the case of an XML file
-                    ExtraWorkspaceViewInfo viewInfo = WorkspaceViewModel.ExtraWorkspaceViewInfoFromJson(fileContents);
-
-                    this.Model.CurrentWorkspace.UpdateWithExtraWorkspaceViewInfo(viewInfo);
-                    this.Model.OnWorkspaceOpening(viewInfo);
-                }
-                catch (Exception e)
-                {
-                    this.ShowStartPage = false; // Hide start page if there's one.
-                    return;
-                }
-
-                // TODO: Finish initialization of the WorkspaceViewModel
             }
             catch (Exception e)
             {
@@ -1278,6 +1270,30 @@ namespace Dynamo.ViewModels
         {
             var filePath = parameters as string;
             return PathHelper.IsValidPath(filePath);
+        }
+
+        /// <summary>
+        /// Read the contents of the file and set the view parameters for that current workspace
+        /// </summary>
+        private void model_ComputeModelDeserialized()
+        {
+            if (filePath == String.Empty) return;
+            string fileContents = File.ReadAllText(filePath);
+            try
+            {
+                // This call will fail in the case of an XML file
+                ExtraWorkspaceViewInfo viewInfo = WorkspaceViewModel.ExtraWorkspaceViewInfoFromJson(fileContents);
+
+                Model.CurrentWorkspace.UpdateWithExtraWorkspaceViewInfo(viewInfo);
+                Model.OnWorkspaceOpening(viewInfo);
+            }
+            catch (Exception e)
+            {
+                this.ShowStartPage = false; // Hide start page if there's one.
+                return;
+            }
+
+            // TODO: Finish initialization of the WorkspaceViewModel
         }
 
         /// <summary>
@@ -2231,6 +2247,19 @@ namespace Dynamo.ViewModels
                     foreach (var file in openFileDialog.FileNames)
                     {
                         EngineController.ImportLibrary(file);
+
+                        FileInfo info = new FileInfo(file);
+                        if (this.Model.AddPackagePath(info.Directory.FullName, info.Name))
+                        {
+                            string title = Resources.PackagePathAutoAddNotificationTitle;
+                            string shortMessage = Resources.PackagePathAutoAddNotificationShortDescription;
+                            string detailedMessage = Resources.PackagePathAutoAddNotificationDetailedDescription;
+                            this.Model.Logger.LogNotification(
+                                "Dynamo", 
+                                title,
+                                shortMessage, 
+                                string.Format(detailedMessage, file));
+                        }
                     }
                     SearchViewModel.SearchAndUpdateResults();
                 }

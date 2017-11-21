@@ -658,4 +658,17 @@ value : bool = false</value>
   <data name="PythonTemplateUserFile" xml:space="preserve">
     <value>Python template set to user file</value>
   </data>
+  <data name="DefaultHomeWorkspaceName" xml:space="preserve">
+    <value>Home</value>
+    <comment>The default name of home workspace</comment>
+  </data>
+  <data name="UnresolvedNodesWarningMessage" xml:space="preserve">
+    <value>This graph currently contains some unresolved nodes, and cannot be saved until the nodes are resolved. If the graph is saved using SaveAs - the unresolved nodes will be removed from the file.</value>
+  </data>
+  <data name="UnresolvedNodesWarningShortMessage" xml:space="preserve">
+    <value>This graph cannot be saved until unresolved nodes are removed or resolved.</value>
+  </data>
+  <data name="UnresolvedNodesWarningTitle" xml:space="preserve">
+    <value>Graph Contains Unresolved Nodes and Cannot Be Saved.</value>
+  </data>
 </root>

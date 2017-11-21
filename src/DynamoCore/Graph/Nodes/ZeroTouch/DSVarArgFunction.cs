@@ -39,7 +39,7 @@ namespace Dynamo.Graph.Nodes.ZeroTouch
         {
             get
             {
-                return "VariableArguments";
+                return "VariableArgument";
             }
         }
 
