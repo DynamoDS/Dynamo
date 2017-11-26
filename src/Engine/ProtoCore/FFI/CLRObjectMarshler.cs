@@ -695,16 +695,17 @@ namespace ProtoFFI
                 string.Format("Operand type {0} not supported for marshalling", 
                 dsObject.optype));
 
-            //Search in the DSObjectMap, for corresponding clrObject.
-            object clrObject = null;
-            if (DSObjectMap.TryGetValue(dsObject, out clrObject))
-                return clrObject;
-
             if (dsObject.IsFunctionPointer)
             {
                 return dsObject;
             }
 
+            //Search in the DSObjectMap, for corresponding clrObject.
+            object clrObject = null;
+            if (DSObjectMap.TryGetValue(dsObject, out clrObject))
+                return clrObject;
+
+            
             return CreateCLRObject(dsObject, context, dsi, expectedCLRType);
         }
 
