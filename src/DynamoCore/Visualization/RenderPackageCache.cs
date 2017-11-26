@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Autodesk.DesignScript.Interfaces;
 
 namespace Dynamo.Visualization
@@ -6,6 +7,17 @@ namespace Dynamo.Visualization
     public class RenderPackageCache
     {
         private List<IRenderPackage> packages;
+        private Dictionary<Guid, List<IRenderPackage>> portMap;
+
+        private void AddPort(IRenderPackage package, Guid outputPortId)
+        {
+            if (!portMap.ContainsKey(outputPortId))
+            {
+                portMap[outputPortId] = new List<IRenderPackage>();
+            }
+
+            portMap[outputPortId].Add(package);
+        }
 
         // TODO, QNTM-2631: The packages list returned should take into account the
         // output port they were created by if needed
@@ -20,16 +32,14 @@ namespace Dynamo.Visualization
         public RenderPackageCache()
         {
             packages = new List<IRenderPackage>();
+            portMap = new Dictionary<Guid, List<IRenderPackage>>();
         }
 
         // TODO, QNTM-2631: This should include the GUIDs of the output ports that the packages came from
         public RenderPackageCache(IEnumerable<IRenderPackage> otherPackages)
+        : this()
         {
-            packages = new List<IRenderPackage>();
-            foreach (var package in otherPackages)
-            {
-                packages.Add(package);
-            }
+            packages.AddRange(otherPackages);
         }
 
         public bool IsEmpty()
@@ -39,16 +49,25 @@ namespace Dynamo.Visualization
 
         public void Add(RenderPackageCache other)
         {
-            foreach (var package in other.packages)
+            packages.AddRange(other.packages);
+            foreach(var port in other.portMap)
             {
-                packages.Add(package);
+                foreach(var item in port.Value)
+                {
+                    AddPort(item, port.Key);
+                }
             }
         }
 
-        // TODO, QNTM-2631: This should include the GUID of the output port the package came from
         public void Add(IRenderPackage package)
         {
             packages.Add(package);
+        }
+
+        public void Add(IRenderPackage package, Guid outputPortId)
+        {
+            Add(package);
+            AddPort(package, outputPortId);
         }
     }
 }

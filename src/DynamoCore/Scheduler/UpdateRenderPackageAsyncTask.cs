@@ -130,11 +130,19 @@ namespace Dynamo.Scheduler
                 if (mirrorData == null)
                     continue;
 
-                GetRenderPackagesFromMirrorData(mirrorData.GetData(), previewIdentifierName, displayLabels);
+                GetRenderPackagesFromMirrorData(
+                    idEnum.Current.Key,
+                    mirrorData.GetData(), 
+                    previewIdentifierName, 
+                    displayLabels);
             }
         }
 
-        private void GetRenderPackagesFromMirrorData(MirrorData mirrorData, string tag, bool displayLabels)
+        private void GetRenderPackagesFromMirrorData(
+            Guid outputPortId,
+            MirrorData mirrorData, 
+            string tag, 
+            bool displayLabels)
         {
             if (mirrorData.IsNull)
             {
@@ -149,7 +157,7 @@ namespace Dynamo.Scheduler
                     if (el.IsCollection || el.Data is IGraphicItem)
                     {
                         string newTag = tag + ":" + count;
-                        GetRenderPackagesFromMirrorData(el, newTag, displayLabels);
+                        GetRenderPackagesFromMirrorData(outputPortId, el, newTag, displayLabels);
                     }
                     count = count + 1;
                 }
@@ -301,7 +309,7 @@ namespace Dynamo.Scheduler
                 package.DisplayLabels = displayLabels;
                 package.IsSelected = isNodeSelected;
 
-                renderPackageCache.Add(package);
+                renderPackageCache.Add(package, outputPortId);
             }
         }
 
