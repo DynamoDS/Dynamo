@@ -13,30 +13,31 @@ namespace Watch3DNodeModelsWpf
 {
     public class HelixWatch3DNodeViewModel : HelixWatch3DViewModel
     {
-        private readonly Watch3D watchNode;
-
         public override bool IsBackgroundPreview
         {
             get { return false; }
         }
 
-        public HelixWatch3DNodeViewModel(Watch3D node, Watch3DViewModelStartupParams parameters):
-            base(parameters)
+        public HelixWatch3DNodeViewModel(Watch3D node, Watch3DViewModelStartupParams parameters)
+        : base(node, parameters)
         {
-            watchNode = node;
             IsResizable = true;
 
             RegisterPortEventHandlers(node);
 
-            watchNode.Serialized += SerializeCamera;
-            watchNode.Deserialized += watchNode_Deserialized;
+            node.Serialized += SerializeCamera;
+            node.Deserialized += watchNode_Deserialized;
 
             Name = string.Format("{0} Preview", node.GUID);
         }
 
         protected override void OnWatchExecution()
         {
-            watchNode.WasExecuted = true;
+            var watch3D = watchModel as Watch3D;
+            if (watch3D != null)
+            {
+                watch3D.WasExecuted = true;
+            }
         }
 
         void watchNode_Deserialized(XmlNode obj)
@@ -56,7 +57,7 @@ namespace Watch3DNodeModelsWpf
             OnClear();
 
             var gathered = new List<NodeModel>();
-            watchNode.VisibleUpstreamNodes(gathered);
+            watchModel.VisibleUpstreamNodes(gathered);
 
             gathered.ForEach(n => n.WasRenderPackageUpdatedAfterExecution = false);
             gathered.ForEach(n => n.RequestVisualUpdateAsync(scheduler, engineManager.EngineController, renderPackageFactory));
@@ -81,11 +82,11 @@ namespace Watch3DNodeModelsWpf
         protected override void OnRenderPackagesUpdated(NodeModel node,
             RenderPackageCache renderPackages)
         {
-            var updatedNode = model.CurrentWorkspace.Nodes.FirstOrDefault(n => n.GUID == node.GUID);
+            var updatedNode = dynamoModel.CurrentWorkspace.Nodes.FirstOrDefault(n => n.GUID == node.GUID);
             if (updatedNode == null) return;
 
             var visibleUpstream = new List<NodeModel>();
-            watchNode.VisibleUpstreamNodes(visibleUpstream);
+            watchModel.VisibleUpstreamNodes(visibleUpstream);
 
             if (!visibleUpstream.Contains(updatedNode))
             {

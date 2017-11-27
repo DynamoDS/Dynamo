@@ -55,7 +55,9 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
     /// </summary>
     public class DefaultWatch3DViewModel : NotificationObject, IWatch3DViewModel, IDisposable, IWatchPreferenceProperties
     {
-        protected readonly IDynamoModel model;
+        protected readonly NodeModel watchModel;
+
+        protected readonly IDynamoModel dynamoModel;
         protected readonly IScheduler scheduler;
         protected readonly IPreferences preferences;
         protected readonly ILogger logger;
@@ -198,7 +200,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         {
             get
             {
-                return viewModel.Workspaces.FirstOrDefault(vm => vm.Model == model.CurrentWorkspace);
+                return viewModel.Workspaces.FirstOrDefault(vm => vm.Model == dynamoModel.CurrentWorkspace);
             }
         }
 
@@ -233,10 +235,12 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         /// cannot be established. Typically, this is machines that do not have GPUs, or do not
         /// support DirectX 10 feature levels. For most purposes, you will want to use a <see cref="HelixWatch3DViewModel"/>
         /// </summary>
+        /// <param name="model">The NodeModel that this watch is displaying.</param>
         /// <param name="parameters">A Watch3DViewModelStartupParams object.</param>
-        public DefaultWatch3DViewModel(Watch3DViewModelStartupParams parameters)
+        public DefaultWatch3DViewModel(NodeModel model, Watch3DViewModelStartupParams parameters)
         {
-            model = parameters.Model;
+            watchModel = model;
+            dynamoModel = parameters.Model;
             scheduler = parameters.Scheduler;
             preferences = parameters.Preferences;
             logger = parameters.Logger;
@@ -295,9 +299,9 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
             LogVisualizationCapabilities();
 
-            RegisterModelEventhandlers(model);
+            RegisterModelEventhandlers(dynamoModel);
 
-            RegisterWorkspaceEventHandlers(model);
+            RegisterWorkspaceEventHandlers(dynamoModel);
         }
 
         /// <summary>
@@ -332,9 +336,9 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         {
             DynamoSelection.Instance.Selection.CollectionChanged -= SelectionChangedHandler;
 
-            UnregisterModelEventHandlers(model);
+            UnregisterModelEventHandlers(dynamoModel);
 
-            UnregisterWorkspaceEventHandlers(model);
+            UnregisterWorkspaceEventHandlers(dynamoModel);
         }
 
         private void OnModelShutdownStarted(IDynamoModel dynamoModel)
@@ -420,7 +424,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         public void RegenerateAllPackages()
         {
             foreach (var node in
-                model.CurrentWorkspace.Nodes)
+                dynamoModel.CurrentWorkspace.Nodes)
             {
                 node.RequestVisualUpdateAsync(scheduler, engineManager.EngineController,
                         renderPackageFactory, true);
