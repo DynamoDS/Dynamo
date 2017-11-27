@@ -614,10 +614,14 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             var inputId = watchModel.InPorts[0].Connectors[0].Start.GUID;
             foreach (var port in node.OutPorts)
             {
-                if (port.GUID == inputId)
-                {
-                    //AddGeometryForRenderPackages(packages.GetPortPackages(port.GUID));
-                }
+                if (port.GUID != inputId)
+                    continue;
+
+                RenderPackageCache portPackages = packages.GetPortPackages(inputId);
+                if (portPackages == null)
+                    continue;
+
+                AddGeometryForRenderPackages(portPackages);
             }
         }
 

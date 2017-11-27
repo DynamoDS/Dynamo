@@ -42,6 +42,18 @@ namespace Dynamo.Visualization
             packages.AddRange(otherPackages);
         }
 
+        public RenderPackageCache GetPortPackages(Guid portId)
+        {
+            List<IRenderPackage> portPackages;
+            if (!portMap.TryGetValue(portId, out portPackages))
+                return null;
+
+            if (portPackages == null)
+                return null;
+
+            return new RenderPackageCache(portPackages);
+        }
+
         public bool IsEmpty()
         {
             return packages.Count == 0;
