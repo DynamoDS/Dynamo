@@ -11,6 +11,11 @@ namespace Dynamo.Visualization
 
         private void AddPort(IRenderPackage package, Guid outputPortId)
         {
+            if (portMap == null)
+            {
+                portMap = new Dictionary<Guid, RenderPackageCache>();
+            }
+
             if (!portMap.ContainsKey(outputPortId))
             {
                 portMap[outputPortId] = new RenderPackageCache();
@@ -22,7 +27,7 @@ namespace Dynamo.Visualization
         public RenderPackageCache()
         {
             packages = new List<IRenderPackage>();
-            portMap = new Dictionary<Guid, RenderPackageCache>();
+            portMap = null;
         }
 
         public RenderPackageCache(IEnumerable<IRenderPackage> otherPackages)
@@ -41,6 +46,9 @@ namespace Dynamo.Visualization
 
         public RenderPackageCache GetPortPackages(Guid portId)
         {
+            if (portMap == null)
+                return null;
+
             RenderPackageCache portPackages;
             if (!portMap.TryGetValue(portId, out portPackages))
                 return null;
@@ -59,7 +67,11 @@ namespace Dynamo.Visualization
         public void Add(RenderPackageCache other)
         {
             packages.AddRange(other.packages);
-            foreach(var port in other.portMap)
+
+            if (other.portMap == null)
+                return;
+
+            foreach (var port in other.portMap)
             {
                 foreach(var item in port.Value.packages)
                 {
