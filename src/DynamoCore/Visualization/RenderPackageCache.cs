@@ -74,11 +74,6 @@ namespace Dynamo.Visualization
                 return null;
             }
 
-            if (portPackages == null)
-            {
-                return null;
-            }
-
             return portPackages;
         }
 
