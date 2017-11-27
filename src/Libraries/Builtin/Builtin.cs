@@ -18,7 +18,7 @@ namespace DesignScript
 
             public static object ValueAtIndex(IList list, int index)
             {
-                return DSCore.List.GetItemAtIndex(list, index);
+                return list[index];
             }
         }
     }

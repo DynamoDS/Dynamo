@@ -1771,11 +1771,15 @@ namespace ProtoCore.AST.ImperativeAST
 
     public static class AstFactory
     {
+        private static readonly string BuiltinGetValueAtIndexTypeName = typeof(DesignScript.Builtin.Get).FullName;
+        private static readonly string BuiltinValueAtIndexMethodName = nameof(DesignScript.Builtin.Get.ValueAtIndex);
+
         public static ImperativeNode BuildIndexExpression(ImperativeNode value, ImperativeNode index)
         {
             // It would be preferrable to use compile time affordances like typeof and nameof here to help with refactoring
             // This method unfortunately is defined in CoreNodes.dll and can't be referenced by this assembly. 
-            return BuildFunctionCall("DesignScript.Builtin.Get", "ValueAtIndex", new List<ImperativeNode>() { value, index });
+            return BuildFunctionCall(BuiltinGetValueAtIndexTypeName, BuiltinValueAtIndexMethodName, 
+                new List<ImperativeNode>() { value, index });
         }
 
         public static ImperativeNode BuildFunctionCall(string className, string functionName, List<ImperativeNode> args)

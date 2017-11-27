@@ -2564,6 +2564,9 @@ namespace ProtoCore.AST.AssociativeAST
 
     public class AstFactory
     {
+        private static readonly string BuiltinGetValueAtIndexTypeName = typeof(DesignScript.Builtin.Get).FullName;
+        private static readonly string BuiltinValueAtIndexMethodName = nameof(DesignScript.Builtin.Get.ValueAtIndex);
+
         public static NullNode BuildNullNode()
         {
             return new NullNode();
@@ -2631,7 +2634,8 @@ namespace ProtoCore.AST.AssociativeAST
         {
             // It would be preferrable to use compile time affordances like typeof and nameof here to help with refactoring
             // This method unfortunately is defined in CoreNodes.dll and can't be referenced by this assembly. 
-            return BuildFunctionCall("DesignScript.Builtin.Get", "ValueAtIndex", new List<AssociativeNode>() { value, index });
+            return BuildFunctionCall(BuiltinGetValueAtIndexTypeName, BuiltinValueAtIndexMethodName, 
+                new List<AssociativeNode>() { value, index });
         }
 
         public static InlineConditionalNode BuildConditionalNode(
