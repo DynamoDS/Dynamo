@@ -64,14 +64,20 @@ namespace Dynamo.Visualization
         public RenderPackageCache GetPortPackages(Guid portId)
         {
             if (portMap == null)
+            {
                 return null;
+            }
 
             RenderPackageCache portPackages;
             if (!portMap.TryGetValue(portId, out portPackages))
+            {
                 return null;
+            }
 
             if (portPackages == null)
+            {
                 return null;
+            }
 
             return portPackages;
         }
@@ -93,7 +99,9 @@ namespace Dynamo.Visualization
             packages.AddRange(other.packages);
 
             if (other.portMap == null)
+            {
                 return;
+            }
 
             foreach (var port in other.portMap)
             {
