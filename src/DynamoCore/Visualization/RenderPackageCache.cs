@@ -100,9 +100,15 @@ namespace Dynamo.Visualization
 
             foreach (var port in other.portMap)
             {
-                foreach(var item in port.Value.packages)
+                Guid portId = port.Key;
+                if (portMap != null && portMap.ContainsKey(portId))
                 {
-                    AddPort(item, port.Key);
+                    throw new ArgumentException("The given port already exists in this render cache.");
+                }
+
+                foreach (var item in port.Value.packages)
+                {
+                    AddPort(item, portId);
                 }
             }
         }
