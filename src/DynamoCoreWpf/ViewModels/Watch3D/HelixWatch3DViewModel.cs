@@ -427,6 +427,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         /// Attempt to create a HelixWatch3DViewModel. If one cannot be created,
         /// fall back to creating a DefaultWatch3DViewModel and log the exception.
         /// </summary>
+        /// <param name="model">The NodeModel to associate with the returned view model.</param>
         /// <param name="parameters">A Watch3DViewModelStartupParams object.</param>
         /// <param name="logger">A logger to be used to log the exception.</param>
         /// <returns></returns>
