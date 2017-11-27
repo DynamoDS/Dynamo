@@ -225,12 +225,14 @@ namespace Dynamo.Wpf.ViewModels.Core
             return true;
         }
 
-        public void Dispose()
+        public override void Dispose()
         {
+            base.Dispose();
             var hwm = (HomeWorkspaceModel)Model;
             hwm.EvaluationStarted -= hwm_EvaluationStarted;
             hwm.EvaluationCompleted -= hwm_EvaluationCompleted;
             hwm.SetNodeDeltaState -= hwm_SetNodeDeltaState;
+            RunSettingsViewModel.PropertyChanged -= RunSettingsViewModel_PropertyChanged;
 
             DynamoViewModel.Model.ShutdownStarted -= Model_ShutdownStarted;
         }

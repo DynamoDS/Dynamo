@@ -1124,6 +1124,10 @@ namespace Dynamo.ViewModels
         {
             var viewModel = workspaces.First(x => x.Model == item);
             if (currentWorkspaceViewModel == viewModel)
+                if(currentWorkspaceViewModel != null)
+                {
+                    currentWorkspaceViewModel.Dispose();
+                }
                 currentWorkspaceViewModel = null;
             workspaces.Remove(viewModel);
         }
@@ -1812,6 +1816,7 @@ namespace Dynamo.ViewModels
 
         private void CloseHomeWorkspace(object parameter)
         {
+            //TODO potentially dispose viewModel here.
             if (ClearHomeWorkspaceInternal())
             {
                 // If after closing the HOME workspace, and there are no other custom 
