@@ -600,9 +600,24 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         protected virtual void OnRenderPackagesUpdated(NodeModel node, RenderPackageCache packages)
         {
             RemoveGeometryForNode(node);
-            if (!packages.IsEmpty())
+            if (packages.IsEmpty())
+                return;
+
+            // If no attached model update for all render packages
+            if (watchModel == null)
             {
                 AddGeometryForRenderPackages(packages);
+                return;
+            }
+
+            // Only update for render packages from the connected output port
+            var inputId = watchModel.InPorts[0].Connectors[0].Start.GUID;
+            foreach (var port in node.OutPorts)
+            {
+                if (port.GUID == inputId)
+                {
+                    //AddGeometryForRenderPackages(packages.GetPortPackages(port.GUID));
+                }
             }
         }
 
