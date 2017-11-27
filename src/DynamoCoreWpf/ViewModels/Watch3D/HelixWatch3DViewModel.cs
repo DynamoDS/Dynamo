@@ -771,13 +771,11 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 #if DEBUG
             renderTimer.Start();
 #endif
-            var packages = taskPackages.Packages
-                .Cast<HelixRenderPackage>().Where(rp => rp.MeshVertexCount % 3 == 0);
+            var packages = taskPackages.Packages;
+            var meshPackages = packages.Cast<HelixRenderPackage>().Where(rp => rp.MeshVertexCount % 3 == 0);
 
-            RemoveGeometryForUpdatedPackages(packages);
-
-            AggregateRenderPackages(packages);
-
+            RemoveGeometryForUpdatedPackages(meshPackages);
+            AggregateRenderPackages(meshPackages);
 #if DEBUG
             renderTimer.Stop();
             Debug.WriteLine(string.Format("RENDER: {0} ellapsed for compiling assets for rendering.", renderTimer.Elapsed));
