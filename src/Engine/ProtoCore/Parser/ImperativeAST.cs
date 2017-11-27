@@ -1769,7 +1769,7 @@ namespace ProtoCore.AST.ImperativeAST
         }
     }
 
-    static class AstFactory
+    public static class AstFactory
     {
         public static ImperativeNode BuildIndexExpression(ImperativeNode value, ImperativeNode index)
         {

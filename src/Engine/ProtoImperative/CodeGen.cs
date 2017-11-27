@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using ProtoCore;
 using ProtoCore.AST.ImperativeAST;
 using ProtoCore.DSASM;
-using System.Text;
 using ProtoCore.Utils;
 using ProtoCore.BuildData;
+using ProtoCore.DesignScriptParser;
 using ProtoImperative.Properties;
 
 namespace ProtoImperative
@@ -78,7 +78,7 @@ namespace ProtoImperative
                 if (bodyNode is LanguageBlockNode)
                 {
                     BinaryExpressionNode langBlockNode = new BinaryExpressionNode();
-                    langBlockNode.LeftNode = nodeBuilder.BuildIdentfier(core.GenerateTempLangageVar());
+                    langBlockNode.LeftNode = Parser.BuildImperativeIdentifier(core.GenerateTempLangageVar());
                     langBlockNode.Optr = ProtoCore.DSASM.Operator.assign;
                     langBlockNode.RightNode = bodyNode;
                     DfsTraverse(langBlockNode, ref inferedType, isBooleanOp, graphNode);
@@ -511,7 +511,7 @@ namespace ProtoImperative
                         {
                             dynFunc = core.DynamicFunctionTable.AddNewFunction(procName, arglist.Count, lefttype);
                         }
-                        var iNode = nodeBuilder.BuildIdentfier(funcCall.Function.Name);
+                        var iNode = Parser.BuildImperativeIdentifier(funcCall.Function.Name);
                         EmitIdentifierNode(iNode, ref inferedType);
                     }
                     else
@@ -631,7 +631,7 @@ namespace ProtoImperative
                 if (node is LanguageBlockNode)
                 {
                     // Build a binary node with a temporary lhs for every stand-alone language block
-                    var iNode = nodeBuilder.BuildIdentfier(core.GenerateTempLangageVar());
+                    var iNode = Parser.BuildImperativeIdentifier(core.GenerateTempLangageVar());
                     var langBlockNode = nodeBuilder.BuildBinaryExpression(iNode, node);
                     DfsTraverse(langBlockNode, ref type, false, graphNode);
                 }
@@ -1368,7 +1368,7 @@ namespace ProtoImperative
                 bool hasAllocated = VerifyAllocation(t.Value, globalClassIndex, globalProcIndex, out symbolnode, out isAccessible);
                 if (hasAllocated)
                 {
-                    b.RightNode = nodeBuilder.BuildIdentfier(t.Value);
+                    b.RightNode = Parser.BuildImperativeIdentifier(t.Value);
                 }
                 else
                 {
@@ -1751,7 +1751,7 @@ namespace ProtoImperative
                 ProtoCore.Type type = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Void, 0);
 
                 // val = null; 
-                IdentifierNode loopvar = nodeBuilder.BuildIdentfier(forNode.LoopVariable.Name) as IdentifierNode;
+                IdentifierNode loopvar = Parser.BuildImperativeIdentifier(forNode.LoopVariable.Name) as IdentifierNode;
                 {
                     loopvar.ArrayName = forNode.Expression.Name;
                     ProtoCore.Utils.NodeUtils.CopyNodeLocation(loopvar, forNode.LoopVariable);
@@ -1769,12 +1769,12 @@ namespace ProtoImperative
                 // %key = null;
                 string keyIdent = GetForLoopKeyIdent();
                 Allocate(keyIdent, globalProcIndex, TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Void, 0));
-                var key = nodeBuilder.BuildIdentfier(keyIdent);
+                var key = Parser.BuildImperativeIdentifier(keyIdent);
 
                 // %array = complicated expr in for...in loop, so that we could
                 // index into it. 
                 string identName = GetForExprIdent();
-                var arrayExpr = nodeBuilder.BuildIdentfier(identName);
+                var arrayExpr = Parser.BuildImperativeIdentifier(identName);
                 NodeUtils.CopyNodeLocation(arrayExpr, forNode.Expression);
                 BinaryExpressionNode arrayexprAssignment = new BinaryExpressionNode();
                 arrayexprAssignment.Optr = ProtoCore.DSASM.Operator.assign;
@@ -1850,23 +1850,23 @@ namespace ProtoImperative
                 }
 
                 // val = array[key];
-                BinaryExpressionNode arrayIndexing = new BinaryExpressionNode();
+                // Array index into the expr ident
+                //ArrayNode arrayIndex = new ArrayNode
+                //{
+                //    Expr = key,
+                //    Type = null
+                //};
+                //arrayExpr.ArrayDimensions = arrayIndex;
+
+                BinaryExpressionNode arrayIndexing = new BinaryExpressionNode
                 {
-                    arrayIndexing.Optr = ProtoCore.DSASM.Operator.assign;
-                    arrayIndexing.LeftNode = loopvar;
+                    Optr = ProtoCore.DSASM.Operator.assign,
+                    LeftNode = loopvar,
 
-                    // Array index into the expr ident
-                    ArrayNode arrayIndex = new ArrayNode();
-                    arrayIndex.Expr = key;
-                    arrayIndex.Type = null;
-                    (arrayExpr as IdentifierNode).ArrayDimensions = arrayIndex;
-                    arrayIndexing.RightNode = arrayExpr;
-
-                    arrayIndexing.line = loopvar.line;
-                    arrayIndexing.col = loopvar.col;
-                    arrayIndexing.endLine = loopvar.endLine;
-                    arrayIndexing.endCol = loopvar.endCol;
-                }
+                    //RightNode = arrayExpr;
+                    RightNode = AstFactory.BuildIndexExpression(arrayExpr, key) as ArrayNameNode
+                };
+                NodeUtils.CopyNodeLocation(arrayIndexing, loopvar);
 
                 // key = key + 1;
                 BinaryExpressionNode nextKey = new BinaryExpressionNode();
@@ -2203,7 +2203,7 @@ namespace ProtoImperative
                 if (!string.Equals(ProtoCore.DSDefinitions.Keyword.This, leftMostIdent.Name) &&
                     IsProperty(leftMostIdent.Name))
                 {
-                    var thisIdent = nodeBuilder.BuildIdentfier(ProtoCore.DSDefinitions.Keyword.This);
+                    var thisIdent = Parser.BuildImperativeIdentifier(ProtoCore.DSDefinitions.Keyword.This);
                     var thisIdentList = nodeBuilder.BuildIdentList(thisIdent, leftMostIdent);
                     leftMostIdentList.LeftNode = thisIdentList;
                 }
@@ -2251,7 +2251,7 @@ namespace ProtoImperative
                             inode.RightNode = nodeBuilder.BuildFunctionCall(rnodeName, new List<ImperativeNode> { setterArgument as ImperativeNode });
                         }
 
-                        var tmpVar = nodeBuilder.BuildIdentfier(Constants.kTempArg);
+                        var tmpVar = Parser.BuildImperativeIdentifier(Constants.kTempArg);
                         var tmpAssignmentNode = nodeBuilder.BuildBinaryExpression(tmpVar, inode);
                         EmitBinaryExpressionNode(tmpAssignmentNode, ref inferedType, false);
                     }
@@ -2476,19 +2476,10 @@ namespace ProtoImperative
         {
             core = protocore;
         }
-
-        public ImperativeNode BuildIdentfier(string name, PrimitiveType type = PrimitiveType.Var)
-        {
-            var ident = new IdentifierNode();
-            ident.Name = ident.Value = name;
-            ident.DataType = TypeSystem.BuildPrimitiveTypeObject(type, 0);
-
-            return ident;
-        }
-
+        
         public ImperativeNode BuildTempVariable()
         {
-            return BuildIdentfier(core.GenerateTempVar(), PrimitiveType.Var);
+            return Parser.BuildImperativeIdentifier(core.GenerateTempVar());
         }
 
         public ImperativeNode BuildIdentList(ImperativeNode leftNode, ImperativeNode rightNode)
@@ -2512,7 +2503,7 @@ namespace ProtoImperative
         public ImperativeNode BuildFunctionCall(string functionName, List<ImperativeNode> arguments)
         {
             var func = new FunctionCallNode();
-            func.Function = BuildIdentfier(functionName);
+            func.Function = Parser.BuildImperativeIdentifier(functionName);
             func.FormalArguments = arguments;
 
             return func;

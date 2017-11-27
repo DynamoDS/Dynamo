@@ -561,7 +561,7 @@ public Node root { get; set; }
         return funCallNode;
     }
 
-    private AST.ImperativeAST.IdentifierNode BuildImperativeIdentifier(string name, ProtoCore.PrimitiveType type = ProtoCore.PrimitiveType.Var)
+    public static AST.ImperativeAST.IdentifierNode BuildImperativeIdentifier(string name, ProtoCore.PrimitiveType type = ProtoCore.PrimitiveType.Var)
     {
         var ident = new AST.ImperativeAST.IdentifierNode();
         ident.Name = ident.Value = name;
