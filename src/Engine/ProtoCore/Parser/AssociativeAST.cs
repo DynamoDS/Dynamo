@@ -2632,8 +2632,6 @@ namespace ProtoCore.AST.AssociativeAST
 
         public static AssociativeNode BuildIndexExpression(AssociativeNode value, AssociativeNode index)
         {
-            // It would be preferrable to use compile time affordances like typeof and nameof here to help with refactoring
-            // This method unfortunately is defined in CoreNodes.dll and can't be referenced by this assembly. 
             return BuildFunctionCall(BuiltinGetValueAtIndexTypeName, BuiltinValueAtIndexMethodName, 
                 new List<AssociativeNode>() { value, index });
         }

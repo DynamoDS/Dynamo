@@ -11,6 +11,7 @@ using System.Text;
 using System.IO;
 using System.Xml;
 using System.Linq;
+using DesignScript.Builtin;
 using ProtoCore.Properties;
 using ProtoCore.Exceptions;
 
@@ -435,10 +436,23 @@ namespace ProtoFFI
 
         public override StackValue Marshal(object obj, ProtoCore.Runtime.Context context, Interpreter dsi, ProtoCore.Type type)
         {
-            var dict = obj as IDictionary;
-
+            List<string> keys = null;
+            List<object> values = null;
+            
+            if (obj is IDictionary)
+            {
+                var dict = (IDictionary) obj;
+                keys = dict.Keys.Cast<string>().ToList();
+                values = dict.Values.Cast<object>().ToList();
+            }
+            else if (obj is Dictionary)
+            {
+                var dict = (Dictionary) obj;
+                keys = dict.Keys.ToList();
+                values = dict.Values.ToList();
+            }
             // TODO(pboyer) what if keys are not strings?
-            var dsdict = DesignScript.Builtin.Dictionary.ByKeysValues(dict.Keys.Cast<string>().ToList(), dict.Values.Cast<object>().ToList());
+            var dsdict = Dictionary.ByKeysValues(keys, values);
             return MarshalToStackValue(dsdict, context, dsi);
         }
 
