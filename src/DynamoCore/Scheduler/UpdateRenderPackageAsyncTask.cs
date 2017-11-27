@@ -81,7 +81,7 @@ namespace Dynamo.Scheduler
             if (initParams.EngineController == null)
                 throw new ArgumentNullException("initParams.EngineController");
             if (initParams.DrawableIdMap == null)
-                throw new ArgumentNullException("initParams.DrawableIds");
+                throw new ArgumentNullException("initParams.DrawableIdMap");
 
             var nodeModel = initParams.Node;
             if (nodeModel.WasRenderPackageUpdatedAfterExecution && !initParams.ForceUpdate)
