@@ -19,27 +19,24 @@ namespace Dynamo.Visualization
             portMap[outputPortId].Add(package);
         }
 
-        // TODO, QNTM-2631: The packages list returned should take into account the
-        // output port they were created by if needed
-        public IEnumerable<IRenderPackage> Packages
-        {
-            get
-            {
-                return packages;
-            }
-        }
-
         public RenderPackageCache()
         {
             packages = new List<IRenderPackage>();
             portMap = new Dictionary<Guid, RenderPackageCache>();
         }
 
-        // TODO, QNTM-2631: This should include the GUIDs of the output ports that the packages came from
         public RenderPackageCache(IEnumerable<IRenderPackage> otherPackages)
         : this()
         {
             packages.AddRange(otherPackages);
+        }
+
+        public IEnumerable<IRenderPackage> Packages
+        {
+            get
+            {
+                return packages;
+            }
         }
 
         public RenderPackageCache GetPortPackages(Guid portId)

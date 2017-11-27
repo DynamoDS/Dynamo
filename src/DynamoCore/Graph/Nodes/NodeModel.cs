@@ -2308,8 +2308,6 @@ namespace Dynamo.Graph.Nodes
             var task = asyncTask as UpdateRenderPackageAsyncTask;
             var packages = new RenderPackageCache();
 
-            // TODO, QNTM-2631: Determine why OnRequestRenderPackages should not be called
-            // if the task render package cache is empty
             if (!task.RenderPackages.IsEmpty())
             {
                 packages.Add(task.RenderPackages);
