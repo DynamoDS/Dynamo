@@ -603,23 +603,43 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             if (packages.IsEmpty())
                 return;
 
-            // If no attached model update for all render packages
+            // If there is no attached model update for all render packages
             if (watchModel == null)
             {
                 AddGeometryForRenderPackages(packages);
                 return;
             }
 
+            // If there are no input ports update for all render packages
+            var inPorts = watchModel.InPorts;
+            if (inPorts == null || inPorts.Count() < 1)
+            {
+                AddGeometryForRenderPackages(packages);
+                return;
+            }
+
+            // If there are no connectors connected to the first (only) input port update for all render packages
+            var inConnectors = inPorts[0].Connectors;
+            if (inConnectors == null || inConnectors.Count() < 1 || inConnectors[0].Start == null)
+            {
+                AddGeometryForRenderPackages(packages);
+                return;
+            }
+
             // Only update for render packages from the connected output port
-            var inputId = watchModel.InPorts[0].Connectors[0].Start.GUID;
+            var inputId = inConnectors[0].Start.GUID;
             foreach (var port in node.OutPorts)
             {
                 if (port.GUID != inputId)
+                {
                     continue;
+                }
 
                 RenderPackageCache portPackages = packages.GetPortPackages(inputId);
                 if (portPackages == null)
+                {
                     continue;
+                }
 
                 AddGeometryForRenderPackages(portPackages);
             }
