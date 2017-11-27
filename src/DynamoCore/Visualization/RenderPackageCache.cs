@@ -64,7 +64,7 @@ namespace Dynamo.Visualization
             packages.AddRange(other.packages);
             foreach(var port in other.portMap)
             {
-                foreach(var item in port.Value.Packages)
+                foreach(var item in port.Value.packages)
                 {
                     AddPort(item, port.Key);
                 }
