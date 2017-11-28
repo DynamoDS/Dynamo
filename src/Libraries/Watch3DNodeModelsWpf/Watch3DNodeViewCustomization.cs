@@ -13,6 +13,7 @@ using Dynamo.Controls;
 using Dynamo.Wpf;
 using Dynamo.Wpf.Rendering;
 using Dynamo.Wpf.ViewModels.Watch3D;
+using Dynamo.Visualization;
 using VMDataBridge;
 using Watch3DNodeModels;
 using Watch3DNodeModelsWpf.Properties;
@@ -137,7 +138,8 @@ namespace Watch3DNodeModelsWpf
 
         private void RenderData(object data)
         {
-            watch3DViewModel.AddGeometryForRenderPackages(UnpackRenderData(data).Select(CreateRenderPackageFromGraphicItem));
+            IEnumerable<IRenderPackage> packages = UnpackRenderData(data).Select(CreateRenderPackageFromGraphicItem);
+            watch3DViewModel.AddGeometryForRenderPackages(new RenderPackageCache(packages));
         }
 
         void mi_Click(object sender, RoutedEventArgs e)
@@ -164,7 +166,6 @@ namespace Watch3DNodeModelsWpf
 
         public void Dispose()
         {
-
         }
     }
 }

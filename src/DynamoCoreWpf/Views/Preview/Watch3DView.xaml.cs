@@ -1,13 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Windows;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Media3D;
 using System.Windows.Threading;
-using Autodesk.DesignScript.Interfaces;
+using Dynamo.Visualization;
 using Dynamo.Wpf.ViewModels.Watch3D;
 using HelixToolkit.Wpf.SharpDX;
 using SharpDX;
@@ -172,7 +170,7 @@ namespace Dynamo.Controls
             runUpdateClipPlane = true;
         }
 
-        private void RequestCreateModelsHandler(IEnumerable<IRenderPackage> packages, bool forceAsyncCall = false)
+        private void RequestCreateModelsHandler(RenderPackageCache packages, bool forceAsyncCall = false)
         {
             if (!forceAsyncCall && CheckAccess())
             {

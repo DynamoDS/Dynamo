@@ -8,7 +8,6 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Media3D;
 using System.Xml;
-using Autodesk.DesignScript.Interfaces;
 using Dynamo.Core;
 using Dynamo.Graph.Connectors;
 using Dynamo.Graph.Nodes;
@@ -56,7 +55,9 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
     /// </summary>
     public class DefaultWatch3DViewModel : NotificationObject, IWatch3DViewModel, IDisposable, IWatchPreferenceProperties
     {
-        protected readonly IDynamoModel model;
+        protected readonly NodeModel watchModel;
+
+        protected readonly IDynamoModel dynamoModel;
         protected readonly IScheduler scheduler;
         protected readonly IPreferences preferences;
         protected readonly ILogger logger;
@@ -199,7 +200,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         {
             get
             {
-                return viewModel.Workspaces.FirstOrDefault(vm => vm.Model == model.CurrentWorkspace);
+                return viewModel.Workspaces.FirstOrDefault(vm => vm.Model == dynamoModel.CurrentWorkspace);
             }
         }
 
@@ -234,10 +235,12 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         /// cannot be established. Typically, this is machines that do not have GPUs, or do not
         /// support DirectX 10 feature levels. For most purposes, you will want to use a <see cref="HelixWatch3DViewModel"/>
         /// </summary>
+        /// <param name="model">The NodeModel that this watch is displaying.</param>
         /// <param name="parameters">A Watch3DViewModelStartupParams object.</param>
-        public DefaultWatch3DViewModel(Watch3DViewModelStartupParams parameters)
+        public DefaultWatch3DViewModel(NodeModel model, Watch3DViewModelStartupParams parameters)
         {
-            model = parameters.Model;
+            watchModel = model;
+            dynamoModel = parameters.Model;
             scheduler = parameters.Scheduler;
             preferences = parameters.Preferences;
             logger = parameters.Logger;
@@ -296,9 +299,9 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
             LogVisualizationCapabilities();
 
-            RegisterModelEventhandlers(model);
+            RegisterModelEventhandlers(dynamoModel);
 
-            RegisterWorkspaceEventHandlers(model);
+            RegisterWorkspaceEventHandlers(dynamoModel);
         }
 
         /// <summary>
@@ -333,9 +336,9 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         {
             DynamoSelection.Instance.Selection.CollectionChanged -= SelectionChangedHandler;
 
-            UnregisterModelEventHandlers(model);
+            UnregisterModelEventHandlers(dynamoModel);
 
-            UnregisterWorkspaceEventHandlers(model);
+            UnregisterWorkspaceEventHandlers(dynamoModel);
         }
 
         private void OnModelShutdownStarted(IDynamoModel dynamoModel)
@@ -421,7 +424,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         public void RegenerateAllPackages()
         {
             foreach (var node in
-                model.CurrentWorkspace.Nodes)
+                dynamoModel.CurrentWorkspace.Nodes)
             {
                 node.RequestVisualUpdateAsync(scheduler, engineManager.EngineController,
                         renderPackageFactory, true);
@@ -500,7 +503,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         /// </summary>
         /// <param name="packages"></param>
         /// <param name="forceAsyncCall"></param>
-        public virtual void AddGeometryForRenderPackages(IEnumerable<IRenderPackage> packages, bool forceAsyncCall = false)
+        public virtual void AddGeometryForRenderPackages(RenderPackageCache packages, bool forceAsyncCall = false)
         {
             // Override in inherited classes.
         }
@@ -594,12 +597,51 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             // Override in derived classes
         }
 
-        protected virtual void OnRenderPackagesUpdated(NodeModel node, IEnumerable<IRenderPackage> packages)
+        protected virtual void OnRenderPackagesUpdated(NodeModel node, RenderPackageCache packages)
         {
             RemoveGeometryForNode(node);
-            if(packages.Any())
+            if (packages.IsEmpty())
+                return;
+
+            // If there is no attached model update for all render packages
+            if (watchModel == null)
             {
                 AddGeometryForRenderPackages(packages);
+                return;
+            }
+
+            // If there are no input ports update for all render packages
+            var inPorts = watchModel.InPorts;
+            if (inPorts == null || inPorts.Count() < 1)
+            {
+                AddGeometryForRenderPackages(packages);
+                return;
+            }
+
+            // If there are no connectors connected to the first (only) input port update for all render packages
+            var inConnectors = inPorts[0].Connectors;
+            if (inConnectors == null || inConnectors.Count() < 1 || inConnectors[0].Start == null)
+            {
+                AddGeometryForRenderPackages(packages);
+                return;
+            }
+
+            // Only update for render packages from the connected output port
+            var inputId = inConnectors[0].Start.GUID;
+            foreach (var port in node.OutPorts)
+            {
+                if (port.GUID != inputId)
+                {
+                    continue;
+                }
+
+                RenderPackageCache portPackages = packages.GetPortPackages(inputId);
+                if (portPackages == null)
+                {
+                    continue;
+                }
+
+                AddGeometryForRenderPackages(portPackages);
             }
         }
 
@@ -610,7 +652,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         /// <param name="taskPackages">A collection of packages from which to 
         /// create render geometry.</param>
         public virtual void GenerateViewGeometryFromRenderPackagesAndRequestUpdate(
-            IEnumerable<IRenderPackage> taskPackages)
+            RenderPackageCache taskPackages)
         {
             // Override in derived classes
         }

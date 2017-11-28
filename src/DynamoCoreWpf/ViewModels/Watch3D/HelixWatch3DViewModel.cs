@@ -24,6 +24,7 @@ using Dynamo.Selection;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Properties;
 using Dynamo.Wpf.Rendering;
+using Dynamo.Visualization;
 using DynamoUtilities;
 using HelixToolkit.Wpf;
 using HelixToolkit.Wpf.SharpDX;
@@ -196,8 +197,8 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         /// <summary>
         /// An envent requesting to create geometries from render packages.
         /// </summary>
-        public event Action<IEnumerable<IRenderPackage>, bool> RequestCreateModels;
-        private void OnRequestCreateModels(IEnumerable<IRenderPackage> packages, bool forceAsyncCall = false)
+        public event Action<RenderPackageCache, bool> RequestCreateModels;
+        private void OnRequestCreateModels(RenderPackageCache packages, bool forceAsyncCall = false)
         {
             if (RequestCreateModels != null)
             {
@@ -426,14 +427,15 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         /// Attempt to create a HelixWatch3DViewModel. If one cannot be created,
         /// fall back to creating a DefaultWatch3DViewModel and log the exception.
         /// </summary>
+        /// <param name="model">The NodeModel to associate with the returned view model.</param>
         /// <param name="parameters">A Watch3DViewModelStartupParams object.</param>
         /// <param name="logger">A logger to be used to log the exception.</param>
         /// <returns></returns>
-        public static DefaultWatch3DViewModel TryCreateHelixWatch3DViewModel(Watch3DViewModelStartupParams parameters, DynamoLogger logger)
+        public static DefaultWatch3DViewModel TryCreateHelixWatch3DViewModel(NodeModel model, Watch3DViewModelStartupParams parameters, DynamoLogger logger)
         {
             try
             {
-                var vm = new HelixWatch3DViewModel(parameters);
+                var vm = new HelixWatch3DViewModel(model, parameters);
                 return vm;
             }
             catch (Exception ex)
@@ -441,7 +443,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 logger.Log(Resources.BackgroundPreviewCreationFailureMessage, LogLevel.Console);
                 logger.Log(ex.Message, LogLevel.File);
 
-                var vm = new DefaultWatch3DViewModel(parameters)
+                var vm = new DefaultWatch3DViewModel(model, parameters)
                 {
                     Active = false,
                     CanBeActivated = false
@@ -459,7 +461,8 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         {
         }
 
-        protected HelixWatch3DViewModel(Watch3DViewModelStartupParams parameters) : base(parameters)
+        protected HelixWatch3DViewModel(NodeModel model, Watch3DViewModelStartupParams parameters) 
+        : base(model, parameters)
         {
             Name = Resources.BackgroundPreviewName;
             IsResizable = false;
@@ -557,7 +560,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             }
         }
 
-        public override void AddGeometryForRenderPackages(IEnumerable<IRenderPackage> packages, bool forceAsyncCall = false)
+        public override void AddGeometryForRenderPackages(RenderPackageCache packages, bool forceAsyncCall = false)
         {
             if (Active)
             {
@@ -757,7 +760,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             }
         }
 
-        public override void GenerateViewGeometryFromRenderPackagesAndRequestUpdate(IEnumerable<IRenderPackage> taskPackages)
+        public override void GenerateViewGeometryFromRenderPackagesAndRequestUpdate(RenderPackageCache taskPackages)
         {
             /*foreach (var p in taskPackages)
             {
@@ -769,13 +772,11 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 #if DEBUG
             renderTimer.Start();
 #endif
-            var packages = taskPackages
-                .Cast<HelixRenderPackage>().Where(rp => rp.MeshVertexCount % 3 == 0);
+            var packages = taskPackages.Packages;
+            var meshPackages = packages.Cast<HelixRenderPackage>().Where(rp => rp.MeshVertexCount % 3 == 0);
 
-            RemoveGeometryForUpdatedPackages(packages);
-
-            AggregateRenderPackages(packages);
-
+            RemoveGeometryForUpdatedPackages(meshPackages);
+            AggregateRenderPackages(meshPackages);
 #if DEBUG
             renderTimer.Stop();
             Debug.WriteLine(string.Format("RENDER: {0} ellapsed for compiling assets for rendering.", renderTimer.Elapsed));
@@ -858,7 +859,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     // This will need to be adapted when multiple home workspaces are supported,
                     // so that a specific workspace can be selected to act as the preview context.
 
-                    var hs = model.Workspaces.FirstOrDefault(i => i is HomeWorkspaceModel);
+                    var hs = dynamoModel.Workspaces.FirstOrDefault(i => i is HomeWorkspaceModel);
                     if (hs != null)
                     {
                         nodesToRender = hs.Nodes;
@@ -919,7 +920,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         {
             IEnumerable<string> idents = null;
 
-            var hs = model.Workspaces.OfType<HomeWorkspaceModel>().FirstOrDefault();
+            var hs = dynamoModel.Workspaces.OfType<HomeWorkspaceModel>().FirstOrDefault();
             if (hs == null)
             {
                 return idents;
@@ -1356,7 +1357,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         private bool InCustomNode()
         {
-            return model.CurrentWorkspace is CustomNodeWorkspaceModel;
+            return dynamoModel.CurrentWorkspace is CustomNodeWorkspaceModel;
         }
 
         /// <summary>
@@ -1502,7 +1503,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             IEnumerable<string> customNodeIdents = null;
             if (InCustomNode())
             {
-                var hs = model.Workspaces.OfType<HomeWorkspaceModel>().FirstOrDefault();
+                var hs = dynamoModel.Workspaces.OfType<HomeWorkspaceModel>().FirstOrDefault();
                 if (hs != null)
                 {
                     customNodeIdents = FindIdentifiersForCustomNodes(hs);
@@ -2123,7 +2124,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
             using (TextWriter tw = new StreamWriter(path))
             {
-                tw.WriteLine("solid {0}", model.CurrentWorkspace.Name);
+                tw.WriteLine("solid {0}", dynamoModel.CurrentWorkspace.Name);
                 foreach (var g in geoms)
                 {
                     var n = ((MeshGeometry3D) g.Geometry).Normals.ToList();
@@ -2141,7 +2142,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                         tw.WriteLine("\tendfacet");
                     }
                 }
-                tw.WriteLine("endsolid {0}", model.CurrentWorkspace.Name);
+                tw.WriteLine("endsolid {0}", dynamoModel.CurrentWorkspace.Name);
             }
         }
 
