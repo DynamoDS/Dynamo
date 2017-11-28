@@ -500,6 +500,13 @@ namespace Dynamo.ViewModels
             DynamoViewModel.CopyCommand.CanExecuteChanged -= CopyPasteChanged;
             DynamoViewModel.PasteCommand.CanExecuteChanged -= CopyPasteChanged;
 
+            Nodes.ToList().ForEach(nodeViewModel => nodeViewModel.Dispose());
+            Notes.ToList().ForEach(noteViewModel => noteViewModel.Dispose());
+            Connectors.ToList().ForEach(connectorViewmModel => connectorViewmModel.Dispose());
+            Nodes.Clear();
+            Notes.Clear();
+            Connectors.Clear();
+            
         }
 
         internal void ZoomInInternal()

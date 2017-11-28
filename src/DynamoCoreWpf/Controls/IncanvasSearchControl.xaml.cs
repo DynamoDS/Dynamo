@@ -32,8 +32,23 @@ namespace Dynamo.UI.Controls
             InitializeComponent();
             if (Application.Current != null)
             {
-                Application.Current.Deactivated += (s, args) => { OnRequestShowInCanvasSearch(ShowHideFlags.Hide); };
+                Application.Current.Deactivated += currentApplicationDeactivated;
             }
+            Unloaded += InCanvasSearchControl_Unloaded; ;
+
+        }
+
+        private void InCanvasSearchControl_Unloaded(object sender, RoutedEventArgs e)
+        {
+            if (Application.Current != null)
+            {
+                Application.Current.Deactivated -= currentApplicationDeactivated;
+            }
+        }
+
+        private void currentApplicationDeactivated(object sender, EventArgs e)
+        {
+            OnRequestShowInCanvasSearch(ShowHideFlags.Hide);
         }
 
         private void OnRequestShowInCanvasSearch(ShowHideFlags flags)
