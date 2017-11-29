@@ -157,7 +157,7 @@ namespace ProtoCore.Utils
                 return ret;
             }
 
-            Dictionary<ClassNode, int> usageFreq = new Dictionary<ClassNode,int>();
+            Dictionary<ClassNode, int> usageFreq = new Dictionary<ClassNode, int>();
 
             //This is the element on the heap that manages the data structure
             var dsArray = runtimeCore.Heap.ToHeapObject<DSArray>(array);
@@ -390,7 +390,7 @@ namespace ProtoCore.Utils
         {
             List<StackValue[]> allFlattenValues = new List<StackValue[]>();
 
-            int zipLength = System.Int32.MaxValue;
+            int zipLength = Int32.MaxValue;
             foreach (var index in indices)
             {
                 int length = 1;
@@ -471,5 +471,13 @@ namespace ProtoCore.Utils
             var array = runtimeCore.Heap.ToHeapObject<DSArray>(arrayPointer);
             return array.Values.All(v => IsEmpty(v, runtimeCore));
         }
-   }
+
+        public static IEnumerable<T> GetCommonItems<T>(IEnumerable<T>[] lists)
+        {
+            HashSet<T> hs = new HashSet<T>(lists.First());
+            for (int i = 1; i < lists.Length; i++)
+                hs.IntersectWith(lists[i]);
+            return hs;
+        }
+    }
 }
