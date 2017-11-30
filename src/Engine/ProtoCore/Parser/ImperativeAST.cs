@@ -1776,8 +1776,10 @@ namespace ProtoCore.AST.ImperativeAST
 
         public static ImperativeNode BuildIndexExpression(ImperativeNode value, ImperativeNode index)
         {
-            return BuildFunctionCall(BuiltinGetValueAtIndexTypeName, BuiltinValueAtIndexMethodName, 
+            var node = BuildFunctionCall(BuiltinGetValueAtIndexTypeName, BuiltinValueAtIndexMethodName, 
                 new List<ImperativeNode>() { value, index });
+            NodeUtils.SetNodeLocation(node, value, index);
+            return node;
         }
 
         public static ImperativeNode BuildFunctionCall(string className, string functionName, List<ImperativeNode> args)

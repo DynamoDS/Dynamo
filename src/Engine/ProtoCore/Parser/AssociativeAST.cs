@@ -2632,8 +2632,10 @@ namespace ProtoCore.AST.AssociativeAST
 
         public static AssociativeNode BuildIndexExpression(AssociativeNode value, AssociativeNode index)
         {
-            return BuildFunctionCall(BuiltinGetValueAtIndexTypeName, BuiltinValueAtIndexMethodName, 
+            var node = BuildFunctionCall(BuiltinGetValueAtIndexTypeName, BuiltinValueAtIndexMethodName, 
                 new List<AssociativeNode>() { value, index });
+            NodeUtils.SetNodeLocation(node, value, index);
+            return node;
         }
 
         public static InlineConditionalNode BuildConditionalNode(
