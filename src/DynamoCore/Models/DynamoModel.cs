@@ -637,10 +637,7 @@ namespace Dynamo.Models
 
             // Make sure that the default package folder is added in the list if custom packages folder.
             var userDataFolder = pathManager.GetUserDataFolder(); // Get the default user data path
-            if (Directory.Exists(userDataFolder) && !PreferenceSettings.CustomPackageFolders.Contains(userDataFolder))
-            {
-                PreferenceSettings.CustomPackageFolders.Add(userDataFolder);
-            }
+            AddPackagePath(userDataFolder);
 
             // Check if the Python template file specified in the settings file exists & it's not empty
             // If not, check the default filepath for the Python template (userDataFolder\PythonTemplate.py).
@@ -764,6 +761,33 @@ namespace Dynamo.Models
                     Logger.Log(ex.Message);
                 }
             }
+        }
+
+        /// <summary>
+        /// Adds a new path to the list of custom package folders, but only if the path
+        /// does not already exist in the list.
+        /// </summary>
+        /// <param name="path"> The path to add.</param>
+        /// <param name="file"> The file to add when importing a library.</param>
+        public bool AddPackagePath(string path, string file = "")
+        {
+            if (!Directory.Exists(path))
+                return false;
+          
+            string fullFilename = path;
+            if (file != "")
+            {
+                fullFilename = Path.Combine(path, file);
+                if (!File.Exists(fullFilename))
+                    return false;
+            }
+              
+            if (PreferenceSettings.CustomPackageFolders.Contains(fullFilename))
+                return false;
+
+            PreferenceSettings.CustomPackageFolders.Add(fullFilename);
+
+            return true;
         }
 
         private IEnumerable<IExtension> LoadExtensions()
@@ -1114,9 +1138,33 @@ namespace Dynamo.Models
             DumpLibrarySnapshot(functionGroups);
 #endif
 
-            // Load local custom nodes
-            foreach (var directory in pathManager.DefinitionDirectories)
-                CustomNodeManager.AddUninitializedCustomNodesInPath(directory, IsTestMode);
+            // Load local custom nodes and locally imported libraries
+            foreach (var path in pathManager.DefinitionDirectories)
+            {
+                // NOTE: extension will only be null if path is null
+                string extension = null;
+                try
+                {
+                    extension = Path.GetExtension(path);
+                }
+                catch (ArgumentException e)
+                {
+                    Logger.Log(e.Message);
+                }
+                if (extension == null)
+                    continue;
+
+                // If the path has a .dll or .ds extension it is a locally imported library
+                if (extension == ".dll" || extension == ".ds")
+                {
+                    LibraryServices.ImportLibrary(path);
+                    continue;
+                }
+
+                // Otherwise it is a custom node
+                CustomNodeManager.AddUninitializedCustomNodesInPath(path, IsTestMode);
+            }
+
             CustomNodeManager.AddUninitializedCustomNodesInPath(pathManager.CommonDefinitions, IsTestMode);
         }
 
@@ -1402,7 +1450,7 @@ namespace Dynamo.Models
                     if (true) //MigrationManager.ProcessWorkspace(dynamoPreferences.Version, xmlDoc, IsTestMode, NodeFactory))
                     {
                         WorkspaceModel ws;
-                        if (OpenJsonFile(filePath, fileContents, dynamoPreferences, out ws))
+                        if (OpenJsonFile(filePath, fileContents, dynamoPreferences, forceManualExecutionMode, out ws))
                         {
                             OpenWorkspace(ws);
                             //Raise an event to deserialize the view parameters before
@@ -1514,7 +1562,8 @@ namespace Dynamo.Models
         private bool OpenJsonFile(
           string filePath, 
           string fileContents, 
-          DynamoPreferencesData dynamoPreferences, 
+          DynamoPreferencesData dynamoPreferences,
+          bool forceManualExecutionMode,
           out WorkspaceModel workspace)
         {
             CustomNodeManager.AddUninitializedCustomNodesInPath(
@@ -1549,7 +1598,7 @@ namespace Dynamo.Models
               homeWorkspace.HasRunWithoutCrash = dynamoPreferences.HasRunWithoutCrash;
 
               RunType runType;
-              if (!homeWorkspace.HasRunWithoutCrash || !Enum.TryParse(dynamoPreferences.RunType, false, out runType))
+              if (!homeWorkspace.HasRunWithoutCrash || !Enum.TryParse(dynamoPreferences.RunType, false, out runType) || forceManualExecutionMode)
                   runType = RunType.Manual;
               int runPeriod;
               if (!Int32.TryParse(dynamoPreferences.RunPeriod, out runPeriod))

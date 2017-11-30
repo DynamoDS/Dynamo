@@ -40,10 +40,14 @@ namespace Dynamo.LibraryUI.Handlers
             try
             {
                 IResourceHandler handler;
+#if DEBUG
+                
                 if (logger != null)
                 {
                     logger.Log("Requested URL", request.Url);
                 }
+
+#endif
                 
                 if(!Handlers.TryGetValue(request.Url, out handler))
                 {

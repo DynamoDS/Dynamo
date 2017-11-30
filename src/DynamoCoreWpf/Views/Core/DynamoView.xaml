@@ -195,7 +195,7 @@
 
         <Grid.ColumnDefinitions>
             <ColumnDefinition MaxWidth="500"
-                              MinWidth="204"
+                              MinWidth="1"
                               Name="LibraryViewColumn">
                 <ColumnDefinition.Width>
                     <Binding Path="LibraryWidth"

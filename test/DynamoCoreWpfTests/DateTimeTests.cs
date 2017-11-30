@@ -1,7 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Dynamo;
 using Dynamo.Configuration;
+using Dynamo.Engine;
+using Dynamo.Graph.Nodes;
 using Dynamo.Tests;
 using NUnit.Framework;
 using DateTime = CoreNodeModels.Input.DateTime;
@@ -60,6 +63,19 @@ namespace DynamoCoreWpfTests
             var dt = (System.DateTime)GetPreviewValue(node.GUID.ToString());
 
             Assert.AreEqual(string.Format("{0:" + PreferenceSettings.DefaultDateFormat + "}", dt), testDate.ToString(PreferenceSettings.DefaultDateFormat));
+        }
+
+        [Test]
+
+        public void DateTimeNodeDeprecated_Test()
+        {
+            var path = Path.Combine(TestDirectory, "core", "dateTime", "DateTimeDeprecated.dyn");
+            CurrentDynamoModel.OpenFileFromPath(path);
+
+            var node = CurrentDynamoModel.CurrentWorkspace.Nodes.FirstOrDefault();
+            Assert.IsNotNull(node);
+            Assert.AreEqual(ElementState.PersistentWarning, node.State);
+            Assert.AreEqual("This node is deprecated", node.ToolTipText);
         }
 
         [TearDown]

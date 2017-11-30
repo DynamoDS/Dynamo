@@ -146,6 +146,12 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        public void TestMigration_FileSystem()
+        {
+            TestMigration("TestMigration_Core_FileSystem.dyn");
+        }
+
+        [Test]
         [Category("Failure")]
         public void TestMigration_InputOutput_Hardware()
         {
