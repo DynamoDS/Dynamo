@@ -10,7 +10,7 @@ using Newtonsoft.Json;
 
 namespace Dynamo.ViewModels
 {
-    public partial class NoteViewModel: ViewModelBase,IDisposable
+    public partial class NoteViewModel: ViewModelBase
     {
         #region Events
 
@@ -108,7 +108,7 @@ namespace Dynamo.ViewModels
             ZIndex = ++StaticZIndex; // places the note on top of all nodes/notes
         }
 
-        public virtual void Dispose()
+        public override void Dispose()
         {
             _model.PropertyChanged -= note_PropertyChanged;
             DynamoSelection.Instance.Selection.CollectionChanged -= SelectionOnCollectionChanged;

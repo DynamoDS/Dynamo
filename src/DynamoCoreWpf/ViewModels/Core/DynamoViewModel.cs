@@ -1816,7 +1816,6 @@ namespace Dynamo.ViewModels
 
         private void CloseHomeWorkspace(object parameter)
         {
-            //TODO potentially dispose viewModel here.
             if (ClearHomeWorkspaceInternal())
             {
                 // If after closing the HOME workspace, and there are no other custom 

@@ -16,7 +16,7 @@ using Newtonsoft.Json;
 
 namespace Dynamo.Wpf.ViewModels.Core
 {
-    public class HomeWorkspaceViewModel : WorkspaceViewModel, IDisposable
+    public class HomeWorkspaceViewModel : WorkspaceViewModel
     {
         #region private members
 
@@ -235,7 +235,6 @@ namespace Dynamo.Wpf.ViewModels.Core
             RunSettingsViewModel.PropertyChanged -= RunSettingsViewModel_PropertyChanged;
             RunSettingsViewModel = null;
             DynamoViewModel.Model.ShutdownStarted -= Model_ShutdownStarted;
-            //RunSettingsViewModel.Dispose();
         }
     }
 

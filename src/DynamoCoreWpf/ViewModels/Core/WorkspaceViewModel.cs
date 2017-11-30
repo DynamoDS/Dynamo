@@ -37,7 +37,7 @@ namespace Dynamo.ViewModels
 
     public enum ShowHideFlags { Hide, Show };
 
-    public partial class WorkspaceViewModel : ViewModelBase, IDisposable
+    public partial class WorkspaceViewModel : ViewModelBase
     {
         #region constants
         /// <summary>
@@ -476,7 +476,7 @@ namespace Dynamo.ViewModels
             InCanvasSearchViewModel.Visible = true;
         }
 
-        public virtual void Dispose()
+        public override void Dispose()
         {
             Model.NodeAdded -= Model_NodeAdded;
             Model.NodeRemoved -= Model_NodeRemoved;
@@ -662,7 +662,6 @@ namespace Dynamo.ViewModels
             }
             _nodes.Clear();
             Errors.Clear();
-            //TODO dispose the cleared errors?
 
             PostNodeChangeActions();
         }

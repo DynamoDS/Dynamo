@@ -8,7 +8,7 @@ using Dynamo.UI.Commands;
 
 namespace Dynamo.ViewModels
 {
-    public partial class PortViewModel : ViewModelBase, IDisposable
+    public partial class PortViewModel : ViewModelBase
     {
 
         #region Properties/Fields
@@ -220,7 +220,7 @@ namespace Dynamo.ViewModels
             _node.WorkspaceViewModel.PropertyChanged += Workspace_PropertyChanged;
         }
 
-        public virtual void Dispose()
+        public override void Dispose()
         {
             _port.PropertyChanged -= _port_PropertyChanged;
             _node.PropertyChanged -= _node_PropertyChanged;

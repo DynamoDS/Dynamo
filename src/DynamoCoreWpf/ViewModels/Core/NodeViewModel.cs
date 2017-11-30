@@ -24,7 +24,7 @@ namespace Dynamo.ViewModels
     /// Interaction logic for dynControl.xaml
     /// </summary>
 
-    public partial class NodeViewModel : ViewModelBase, IDisposable
+    public partial class NodeViewModel : ViewModelBase
     {
         #region delegates
         public delegate void SetToolTipDelegate(string message);
@@ -569,8 +569,6 @@ namespace Dynamo.ViewModels
 
         public virtual void Dispose()
         {
-            //TODO add other event removal here.
-
             this.NodeModel.PropertyChanged -= logic_PropertyChanged;
 
             DynamoViewModel.Model.PropertyChanged -= Model_PropertyChanged;
