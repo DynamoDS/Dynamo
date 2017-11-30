@@ -7,6 +7,8 @@ using ProtoCore.AST.AssociativeAST;
 using ProtoCore.Properties;
 using ProtoCore.Utils;
 using System.Linq;
+using System.Runtime.InteropServices;
+using ProtoCore.Namespace;
 
 namespace ProtoCore.DSASM
 {
@@ -386,19 +388,49 @@ namespace ProtoCore.DSASM
 
     public class ClassTable
     {
+        
+        private List<ClassNode> classNodes = new List<ClassNode>();
+
+        //Symbol table to manage symbols with namespace
+        private Namespace.SymbolTable symbolTable = new Namespace.SymbolTable();
+        
+        private List<ClassNode> GetClassHierarchy(ClassNode node)
+        {
+            var cNodes = new List<ClassNode> {node};
+            
+            while (node.Base != Constants.kInvalidIndex)
+            {
+                node = ClassNodes[node.Base];
+                cNodes.Add(node);
+            }
+            return cNodes;
+        }
+
+        private ClassNode GetCommonBaseClass(IEnumerable<Symbol> symbols)
+        {
+            var cNodes = ClassNodes.Where(node => symbols.Any(s => s.Id == node.ID));
+            var baseLists = new List<List<ClassNode>>();
+            foreach (var classNode in cNodes)
+            {
+                var baseNodes = GetClassHierarchy(classNode);
+                baseLists.Add(baseNodes);
+            }
+            var arr = baseLists.ToArray();
+
+            if (!arr.Any()) return null;
+
+            var baseClass = ArrayUtils.GetCommonItems(arr);
+            return baseClass.FirstOrDefault();
+        }
+
         // Don't directly modify class table list.
-        public ReadOnlyCollection<ClassNode> ClassNodes 
+        public ReadOnlyCollection<ClassNode> ClassNodes
         {
             get
             {
                 return classNodes.AsReadOnly();
             }
         }
-
-        private List<ClassNode> classNodes = new List<ClassNode>();
-
-        //Symbol table to manage symbols with namespace
-        private Namespace.SymbolTable symbolTable = new Namespace.SymbolTable();
 
         public ClassTable()
         {
@@ -500,19 +532,29 @@ namespace ProtoCore.DSASM
         }
 
         /// <summary>
-        /// Returns all matching classes for the given name from this ClassTable
+        /// Returns all matching classes for the given name from this ClassTable.
+        /// If the classes have a common base class, this simply returns the given name of the class.
         /// </summary>
         /// <param name="name">Partial name of the class for lookup</param>
         /// <returns>Array of fully qualified name of all matching symbols</returns>
         public string[] GetAllMatchingClasses(string name)
         {
-            Namespace.Symbol[] symbols = symbolTable.TryGetSymbols(name, (Namespace.Symbol s) => s.Matches(name));
-            int size = symbols.Length;
-            string[] classes = new string[size];
-            for (int i = 0; i < size; ++i)
-                classes[i] = symbols[i].FullName;
+            var symbols = symbolTable.TryGetSymbols(name, s => s.Matches(name));
 
-            return classes;
+            var classes = new List<string>();
+
+            if (symbols.Length > 1)
+            {
+                var baseClass = GetCommonBaseClass(symbols);
+
+                if (baseClass != null)
+                {
+                    classes.Add(name);
+                    return classes.ToArray();
+                }
+            }
+            classes.AddRange(symbols.Select(t => t.FullName));
+            return classes.ToArray();
         }
 
         public string GetTypeName(int UID)
@@ -545,6 +587,13 @@ namespace ProtoCore.DSASM
                 var symbols = symbolTable.GetAllSymbols(name);
                 if (symbols.Count > 1)
                 {
+                    var baseClass = GetCommonBaseClass(symbols);
+
+                    if (baseClass != null)
+                    {
+                        continue;
+                    }
+
                     string message = string.Format(Resources.kMultipleSymbolFound, name, "");
                     foreach (var symbol in symbols)
                     {
