@@ -472,6 +472,12 @@ namespace ProtoCore.Utils
             return array.Values.All(v => IsEmpty(v, runtimeCore));
         }
 
+        /// <summary>
+        /// Returns the list of common items from a given collection of generic lists 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="lists"></param>
+        /// <returns>list of common items from multiple lists</returns>
         public static IEnumerable<T> GetCommonItems<T>(IEnumerable<T>[] lists)
         {
             HashSet<T> hs = new HashSet<T>(lists.First());
