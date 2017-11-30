@@ -533,7 +533,7 @@ namespace ProtoCore.DSASM
 
         /// <summary>
         /// Returns all matching classes for the given name from this ClassTable.
-        /// If the classes have a common base class, this simply returns the base class.
+        /// If the classes have a common base class, this simply returns the given name of the class.
         /// </summary>
         /// <param name="name">Partial name of the class for lookup</param>
         /// <returns>Array of fully qualified name of all matching symbols</returns>
@@ -549,7 +549,7 @@ namespace ProtoCore.DSASM
 
                 if (baseClass != null)
                 {
-                    classes.Add(baseClass.Name);
+                    classes.Add(name);
                     return classes.ToArray();
                 }
             }
