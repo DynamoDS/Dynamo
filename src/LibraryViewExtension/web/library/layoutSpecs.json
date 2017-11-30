@@ -1157,35 +1157,35 @@
               "include": [
                 {
                   "path": "ProtoGeometry.Autodesk.DesignScript.Geometry.BoundingBox",
-                  "iconUrl": "./dist/resources/Autodesk.DesignScript.Geometry.BoundingBox.png"
+                  "iconUrl": ""
                 },
                 {
                   "path": "ProtoGeometry.Autodesk.DesignScript.Geometry.CoordinateSystem",
-                  "iconUrl": "./dist/resources/Autodesk.DesignScript.Geometry.CoordinateSystem.png"
+                  "iconUrl": ""
                 },
                 {
                   "path": "ProtoGeometry.Autodesk.DesignScript.Geometry.Vector",
-                  "iconUrl": "./dist/resources/Autodesk.DesignScript.Geometry.Vector.png"
+                  "iconUrl": ""
                 },
                 {
                   "path": "ProtoGeometry.Autodesk.DesignScript.Geometry.Edge",
-                  "iconUrl": "./dist/resources/Autodesk.DesignScript.Geometry.Edge.png"
+                  "iconUrl": ""
                 },
                 {
                   "path": "ProtoGeometry.Autodesk.DesignScript.Geometry.Face",
-                  "iconUrl": "./dist/resources/Autodesk.DesignScript.Geometry.Face.png"
+                  "iconUrl": ""
                 },
                 {
                   "path": "ProtoGeometry.Autodesk.DesignScript.Geometry.Plane",
-                  "iconUrl": "./dist/resources/Autodesk.DesignScript.Geometry.Plane.png"
+                  "iconUrl": ""
                 },
                 {
                   "path": "ProtoGeometry.Autodesk.DesignScript.Geometry.Vertex",
-                  "iconUrl": "./dist/resources/Autodesk.DesignScript.Geometry.Vertex.png"
+                  "iconUrl": ""
                 },
                 {
                   "path": "ProtoGeometry.Autodesk.DesignScript.Geometry.Topology",
-                  "iconUrl": "./dist/resources/Autodesk.DesignScript.Geometry.Topology.png"
+                  "iconUrl": ""
                 }
               ],
               "childElements": [ ]
@@ -1197,11 +1197,11 @@
               "include": [
                 {
                   "path": "ProtoGeometry.Autodesk.DesignScript.Geometry.Point",
-                  "iconUrl": "./dist/resources/Autodesk.DesignScript.Geometry.Point.png"
+                  "iconUrl": ""
                 },
                 {
                   "path": "ProtoGeometry.Autodesk.DesignScript.Geometry.UV",
-                  "iconUrl": "./dist/resources/Autodesk.DesignScript.Geometry.UV.png"
+                  "iconUrl": ""
                 }
               ],
               "childElements": [ ]
@@ -1213,47 +1213,47 @@
               "include": [
                 {
                   "path": "ProtoGeometry.Autodesk.DesignScript.Geometry.Arc",
-                  "iconUrl": "./dist/resources/Autodesk.DesignScript.Geometry.Arc.png"
+                  "iconUrl": ""
                 },
                 {
                   "path": "ProtoGeometry.Autodesk.DesignScript.Geometry.Circle",
-                  "iconUrl": "./dist/resources/Autodesk.DesignScript.Geometry.Circle.png"
+                  "iconUrl": ""
                 },
                 {
                   "path": "ProtoGeometry.Autodesk.DesignScript.Geometry.Curve",
-                  "iconUrl": "./dist/resources/Autodesk.DesignScript.Geometry.Curve.png"
+                  "iconUrl": ""
                 },
                 {
                   "path": "ProtoGeometry.Autodesk.DesignScript.Geometry.Ellipse",
-                  "iconUrl": "./dist/resources/Autodesk.DesignScript.Geometry.Ellipse.png"
+                  "iconUrl": ""
                 },
                 {
                   "path": "ProtoGeometry.Autodesk.DesignScript.Geometry.EllipseArc",
-                  "iconUrl": "./dist/resources/Autodesk.DesignScript.Geometry.EllipseArc.png"
+                  "iconUrl": ""
                 },
                 {
                   "path": "ProtoGeometry.Autodesk.DesignScript.Geometry.Helix",
-                  "iconUrl": "./dist/resources/Autodesk.DesignScript.Geometry.Helix.png"
+                  "iconUrl": ""
                 },
                 {
                   "path": "ProtoGeometry.Autodesk.DesignScript.Geometry.Line",
-                  "iconUrl": "./dist/resources/Autodesk.DesignScript.Geometry.Line.png"
+                  "iconUrl": ""
                 },
                 {
                   "path": "ProtoGeometry.Autodesk.DesignScript.Geometry.NurbsCurve",
-                  "iconUrl": "./dist/resources/Autodesk.DesignScript.Geometry.NurbsCurve.png"
+                  "iconUrl": ""
                 },
                 {
                   "path": "ProtoGeometry.Autodesk.DesignScript.Geometry.PolyCurve",
-                  "iconUrl": "./dist/resources/Autodesk.DesignScript.Geometry.PolyCurve.png"
+                  "iconUrl": ""
                 },
                 {
                   "path": "ProtoGeometry.Autodesk.DesignScript.Geometry.Polygon",
-                  "iconUrl": "./dist/resources/Autodesk.DesignScript.Geometry.Polygon.png"
+                  "iconUrl": ""
                 },
                 {
                   "path": "ProtoGeometry.Autodesk.DesignScript.Geometry.Rectangle",
-                  "iconUrl": "./dist/resources/Autodesk.DesignScript.Geometry.Rectangle.png"
+                  "iconUrl": ""
                 }
               ],
               "childElements": [ ]
@@ -1265,15 +1265,15 @@
               "include": [
                 {
                   "path": "ProtoGeometry.Autodesk.DesignScript.Geometry.NurbsSurface",
-                  "iconUrl": "./dist/resources/Autodesk.DesignScript.Geometry.NurbsSurface.png"
+                  "iconUrl": ""
                 },
                 {
                   "path": "ProtoGeometry.Autodesk.DesignScript.Geometry.PolySurface",
-                  "iconUrl": "./dist/resources/Autodesk.DesignScript.Geometry.PolySurface.png"
+                  "iconUrl": ""
                 },
                 {
                   "path": "ProtoGeometry.Autodesk.DesignScript.Geometry.Surface",
-                  "iconUrl": "./dist/resources/Autodesk.DesignScript.Geometry.Surface.png"
+                  "iconUrl": ""
                 }
               ],
               "childElements": [ ]
@@ -1285,23 +1285,23 @@
               "include": [
                 {
                   "path": "ProtoGeometry.Autodesk.DesignScript.Geometry.Cone",
-                  "iconUrl": "./dist/resources/Autodesk.DesignScript.Geometry.Cone.png"
+                  "iconUrl": ""
                 },
                 {
                   "path": "ProtoGeometry.Autodesk.DesignScript.Geometry.Cuboid",
-                  "iconUrl": "./dist/resources/Autodesk.DesignScript.Geometry.Cuboid.png"
+                  "iconUrl": ""
                 },
                 {
                   "path": "ProtoGeometry.Autodesk.DesignScript.Geometry.Cylinder",
-                  "iconUrl": "./dist/resources/Autodesk.DesignScript.Geometry.Cylinder.png"
+                  "iconUrl": ""
                 },
                 {
                   "path": "ProtoGeometry.Autodesk.DesignScript.Geometry.Solid",
-                  "iconUrl": "./dist/resources/Autodesk.DesignScript.Geometry.Solid.png"
+                  "iconUrl": ""
                 },
                 {
                   "path": "ProtoGeometry.Autodesk.DesignScript.Geometry.Sphere",
-                  "iconUrl": "./dist/resources/Autodesk.DesignScript.Geometry.Sphere.png"
+                  "iconUrl": ""
                 }
               ],
               "childElements": [ ]
@@ -1313,11 +1313,11 @@
               "include": [
                 {
                   "path": "ProtoGeometry.Autodesk.DesignScript.Geometry.IndexGroup",
-                  "iconUrl": "./dist/resources/Autodesk.DesignScript.Geometry.IndexGroup.png"
+                  "iconUrl": ""
                 },
                 {
                   "path": "ProtoGeometry.Autodesk.DesignScript.Geometry.Mesh",
-                  "iconUrl": "./dist/resources/Autodesk.DesignScript.Geometry.Mesh.png"
+                  "iconUrl": ""
                 }
               ],
               "childElements": [ ]
@@ -1366,15 +1366,15 @@
               "include": [
                 {
                   "path": "Tessellation.Tessellation.ConvexHull",
-                  "iconUrl": "./dist/resources/Tessellation.ConvexHull.png"
+                  "iconUrl": ""
                 },
                 {
                   "path": "Tessellation.Tessellation.Delaunay",
-                  "iconUrl": "./dist/resources/Tessellation.Delaunay.png"
+                  "iconUrl": ""
                 },
                 {
                   "path": "Tessellation.Tessellation.Voronoi",
-                  "iconUrl": "./dist/resources/Tessellation.Voronoi.png"
+                  "iconUrl": ""
                 }
               ],
               "childElements": [ ]
