@@ -41,7 +41,7 @@ namespace CoreNodeModels.Input
                     Type = NodeInputData.getNodeInputTypeFromType(typeof(System.DateTime)),
                     Description = this.Description,
                     //format dateTime with swagger spec in mind:  ISO 8601.
-                    Value = Value.ToUniversalTime().ToString("yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'fff'Z'"),
+                    Value = Value.ToString("O"),
                 };
             }
         }
