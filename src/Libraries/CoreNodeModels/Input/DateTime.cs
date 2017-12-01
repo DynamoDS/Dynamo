@@ -21,11 +21,13 @@ namespace CoreNodeModels.Input
         {
             ArgumentLacing = LacingStrategy.Disabled;
             ShouldDisplayPreviewCore = false;
+            Value = System.DateTime.SpecifyKind(Value, DateTimeKind.Utc);
         }
 
         public DateTime()
         {
             Value = System.DateTime.UtcNow;
+            Value = System.DateTime.SpecifyKind(Value, DateTimeKind.Utc);
             ArgumentLacing = LacingStrategy.Disabled;
             ShouldDisplayPreviewCore = false;
         }
@@ -41,7 +43,7 @@ namespace CoreNodeModels.Input
                     Type = NodeInputData.getNodeInputTypeFromType(typeof(System.DateTime)),
                     Description = this.Description,
                     //format dateTime with swagger spec in mind:  ISO 8601.
-                    Value = Value.ToString("o", CultureInfo.InvariantCulture),
+                    Value = System.DateTime.SpecifyKind(Value, DateTimeKind.Utc).ToString("o", CultureInfo.InvariantCulture),
                 };
             }
         }
@@ -91,8 +93,9 @@ namespace CoreNodeModels.Input
         protected override System.DateTime DeserializeValue(string val)
         {
             System.DateTime result;
-            return System.DateTime.TryParseExact(val, PreferenceSettings.DefaultDateFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out result) ?
+            result = System.DateTime.TryParseExact(val, PreferenceSettings.DefaultDateFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out result) ?
                 result : PreferenceSettings.DynamoDefaultTime;
+            return System.DateTime.SpecifyKind(result, DateTimeKind.Utc);
         }
 
         protected override string SerializeValue()
