@@ -18,7 +18,7 @@ namespace PythonNodeModelsWpf
         private PythonNode model;
         private NodeView view;
         private ScriptEditorWindow editWindow;
-        private ModelessChildWindow.WindowPosition windowPosition;
+        private ModelessChildWindow.WindowRect editorWindowRect;
 
         public void CustomizeView(PythonNode nodeModel, NodeView nodeView)
         {
@@ -89,7 +89,7 @@ namespace PythonNodeModelsWpf
                 }
                 else
                 {
-                    editWindow = new ScriptEditorWindow(dynamoViewModel, model, view, ref windowPosition);
+                    editWindow = new ScriptEditorWindow(dynamoViewModel, model, view, ref editorWindowRect);
                     editWindow.Initialize(model.GUID, "ScriptContent", model.Script);
                     editWindow.Closed += editWindow_Closed;
                     editWindow.Show();

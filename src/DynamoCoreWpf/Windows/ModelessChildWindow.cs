@@ -17,9 +17,9 @@ namespace Dynamo.Wpf.Windows
     public class ModelessChildWindow : Window
     {
         /// <summary>
-        /// Screen position of the child window.
+        ///  Screen position of the child window (in a reference type.)
         /// </summary>
-        public class WindowPosition
+        public class WindowRect
         {
             public double Left;
             public double Top;
@@ -27,19 +27,22 @@ namespace Dynamo.Wpf.Windows
             public double Height;
         }
 
-        private WindowPosition Position;
+        private WindowRect SavedWindowRect;
 
         /// <summary>
         /// Construct a ModelessChildWindow.
         /// </summary>
         /// <param name="viewParent">A UI object in the Dynamo visual tree.</param>
-        public ModelessChildWindow(DependencyObject viewParent, ref WindowPosition position)
+        /// <param name="rect">A reference to the Rect object that will store the window's position during this session.</param>
+        public ModelessChildWindow(DependencyObject viewParent, ref WindowRect rect)
         {
             Owner = WpfUtilities.FindUpVisualTree<DynamoView>(viewParent);
-            if (position == null)
+            Owner.Closing += OwnerWindow_Closing;
+            
+            if (rect == null || !IsRectVisibleOnScreen(rect, Owner))
             {
+                rect = new WindowRect();
                 WindowStartupLocation = WindowStartupLocation.CenterOwner;
-                position = new WindowPosition();
 
                 LocationChanged += ModelessChildWindow_LocationChanged;
                 SizeChanged += ModelessChildWindow_SizeChanged;
@@ -49,10 +52,8 @@ namespace Dynamo.Wpf.Windows
                 WindowStartupLocation = WindowStartupLocation.Manual;
                 Loaded += ModelessChildWindow_Loaded;
             }
-            Position = position;
-                    
-            Owner.Closing += OwnerWindow_Closing;
-            
+
+            SavedWindowRect = rect;
         }
 
         private void OwnerWindow_Closing(object sender, EventArgs e)
@@ -65,13 +66,46 @@ namespace Dynamo.Wpf.Windows
             Owner.Closing -= OwnerWindow_Closing;
         }
 
+        private bool IsRectVisibleOnScreen(WindowRect windowRect, Window w)
+        {
+            int minimumVisiblePixels = 10;
+            var source = PresentationSource.FromVisual(w);
+            var toDeviceMatrix = source.CompositionTarget.TransformToDevice;
+
+            Rect rect = new Rect(windowRect.Left, windowRect.Top, windowRect.Width, windowRect.Height);
+            var pixelRect = Rect.Transform(rect, toDeviceMatrix);
+            var pixelRectangle = 
+                new System.Drawing.Rectangle(
+                    (int)pixelRect.X, 
+                    (int)pixelRect.Y, 
+                    (int)pixelRect.Width, 
+                    (int)pixelRect.Height
+                );
+
+            foreach (var screen in System.Windows.Forms.Screen.AllScreens)
+            {
+                var intersection = pixelRectangle;
+                intersection.Intersect(screen.WorkingArea);
+                if (intersection.Width >= minimumVisiblePixels && 
+                    intersection.Height >= minimumVisiblePixels)
+                {
+                    // sufficiently visible on at least one screen
+                    return true;
+                }
+            }
+
+            // Window rect does not overlap any current screens
+            return false;
+        }
+
         private void ModelessChildWindow_Loaded(object sender, RoutedEventArgs e)
         {
             Window w = (Window)sender;
-            w.Left = Position.Left;
-            w.Top = Position.Top;
-            w.Width = Position.Width;
-            w.Height = Position.Height;
+
+            w.Left = SavedWindowRect.Left;
+            w.Top = SavedWindowRect.Top;
+            w.Width = SavedWindowRect.Width;
+            w.Height = SavedWindowRect.Height;
 
             LocationChanged += ModelessChildWindow_LocationChanged;
             SizeChanged += ModelessChildWindow_SizeChanged;
@@ -79,15 +113,15 @@ namespace Dynamo.Wpf.Windows
 
         private void ModelessChildWindow_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            Position.Width = e.NewSize.Width;
-            Position.Height = e.NewSize.Height;
+            SavedWindowRect.Width = e.NewSize.Width;
+            SavedWindowRect.Height = e.NewSize.Height;
         }
 
         private void ModelessChildWindow_LocationChanged(object sender, EventArgs e)
         {
             Window w = (Window)sender;
-            Position.Left = w.Left;
-            Position.Top = w.Top;
+            SavedWindowRect.Left = w.Left;
+            SavedWindowRect.Top = w.Top;
         }
     }
 }

@@ -33,8 +33,8 @@ namespace PythonNodeModelsWpf
             DynamoViewModel dynamoViewModel, 
             PythonNode nodeModel, 
             NodeView nodeView,
-            ref ModelessChildWindow.WindowPosition position
-            ) : base(nodeView, ref position)
+            ref ModelessChildWindow.WindowRect windowRect
+            ) : base(nodeView, ref windowRect)
         {
             this.dynamoViewModel = dynamoViewModel;
             this.nodeModel = nodeModel;
