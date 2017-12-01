@@ -91,8 +91,9 @@ namespace CoreNodeModels.Input
         protected override System.DateTime DeserializeValue(string val)
         {
             System.DateTime result;
-            return System.DateTime.TryParseExact(val, PreferenceSettings.DefaultDateFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out result) ?
+            result = System.DateTime.TryParseExact(val, PreferenceSettings.DefaultDateFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out result) ?
                 result : PreferenceSettings.DynamoDefaultTime;
+            return System.DateTime.SpecifyKind(result, DateTimeKind.Utc);
         }
 
         protected override string SerializeValue()
