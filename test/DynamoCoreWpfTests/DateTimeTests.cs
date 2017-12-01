@@ -54,6 +54,7 @@ namespace DynamoCoreWpfTests
             var node = CurrentDynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<DateTime>();
             var testDate = new System.DateTime(2150, 1, 1, 12, 0, 0).ToUniversalTime();
             node.Value = testDate;
+            Assert.IsTrue(node.Value.Kind == System.DateTimeKind.Utc, " DateTime Value should be UTC kind");
 
             CurrentDynamoModel.CurrentWorkspace.Save(tempPath);
 
@@ -63,13 +64,16 @@ namespace DynamoCoreWpfTests
                 (fileContents.StartsWith("[") && fileContents.EndsWith("]"))) //For array
             {
                 var obj = Newtonsoft.Json.Linq.JToken.Parse(fileContents);
-                Assert.IsTrue(obj["Inputs"][0].ToString().Contains("2150-01-01T17:00:00Z"));
-                Assert.IsTrue(obj["Nodes"][0].ToString().Contains("2150-01-01T17:00:00Z"));
+                Assert.IsTrue(obj["Inputs"][0].ToString().Contains("Z"),
+                    "DateTime Nodes serialization incorrectly in Inputs Block: " + obj["Inputs"][0].ToString());
+                Assert.IsTrue(obj["Nodes"][0].ToString().Contains("Z"),
+                    "DateTime Nodes serialization incorrectly in Nodes Block: " + obj["Nodes"][0].ToString());
             }
 
             CurrentDynamoModel.OpenFileFromPath(tempPath);
 
             node = CurrentDynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<DateTime>();
+            Assert.IsTrue(node.Value.Kind == System.DateTimeKind.Utc, " DateTime Value should be UTC kind");
             var dt = (System.DateTime)GetPreviewValue(node.GUID.ToString());
 
             Assert.AreEqual(string.Format("{0:" + PreferenceSettings.DefaultDateFormat + "}", dt), testDate.ToString(PreferenceSettings.DefaultDateFormat));
