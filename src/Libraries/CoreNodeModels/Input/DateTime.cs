@@ -21,13 +21,11 @@ namespace CoreNodeModels.Input
         {
             ArgumentLacing = LacingStrategy.Disabled;
             ShouldDisplayPreviewCore = false;
-            Value = System.DateTime.SpecifyKind(Value, DateTimeKind.Utc);
         }
 
         public DateTime()
         {
             Value = System.DateTime.UtcNow;
-            Value = System.DateTime.SpecifyKind(Value, DateTimeKind.Utc);
             ArgumentLacing = LacingStrategy.Disabled;
             ShouldDisplayPreviewCore = false;
         }
@@ -43,7 +41,7 @@ namespace CoreNodeModels.Input
                     Type = NodeInputData.getNodeInputTypeFromType(typeof(System.DateTime)),
                     Description = this.Description,
                     //format dateTime with swagger spec in mind:  ISO 8601.
-                    Value = System.DateTime.SpecifyKind(Value, DateTimeKind.Utc).ToString("o", CultureInfo.InvariantCulture),
+                    Value = Value.ToString("o", CultureInfo.InvariantCulture),
                 };
             }
         }
