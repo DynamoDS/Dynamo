@@ -381,6 +381,8 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         {
             model.WorkspaceCleared -= OnWorkspaceCleared;
             model.ShutdownStarted -= OnModelShutdownStarted;
+            model.EvaluationCompleted -= OnEvaluationCompleted;
+            model.PropertyChanged -= OnModelPropertyChanged;
         }
 
         private void UnregisterWorkspaceEventHandlers(IDynamoModel model)

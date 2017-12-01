@@ -500,7 +500,10 @@ namespace Dynamo.ViewModels
             DynamoViewModel.CopyCommand.CanExecuteChanged -= CopyPasteChanged;
             DynamoViewModel.PasteCommand.CanExecuteChanged -= CopyPasteChanged;
 
-            Nodes.ToList().ForEach(nodeViewModel => nodeViewModel.Dispose());
+            var nodeViewModels = Nodes.ToList();
+            nodeViewModels.ForEach(nodeViewModel => nodeViewModel.Dispose());
+            nodeViewModels.ForEach(nodeViewModel => this.unsubscribeNodeEvents(nodeViewModel));
+
             Notes.ToList().ForEach(noteViewModel => noteViewModel.Dispose());
             Connectors.ToList().ForEach(connectorViewmModel => connectorViewmModel.Dispose());
             Nodes.Clear();
