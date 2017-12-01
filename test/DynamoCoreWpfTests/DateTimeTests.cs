@@ -63,8 +63,10 @@ namespace DynamoCoreWpfTests
                 (fileContents.StartsWith("[") && fileContents.EndsWith("]"))) //For array
             {
                 var obj = Newtonsoft.Json.Linq.JToken.Parse(fileContents);
-                Assert.IsTrue(obj["Inputs"][0].ToString().Contains("2150-01-01T17:00:00Z"));
-                Assert.IsTrue(obj["Nodes"][0].ToString().Contains("2150-01-01T17:00:00Z"));
+                Assert.IsTrue(obj["Inputs"][0].ToString().Contains("2150-01-01T17:00:00Z"),
+                    "DateTime Nodes serialization incorrectly in Inputs Block: " + obj["Inputs"][0].ToString());
+                Assert.IsTrue(obj["Nodes"][0].ToString().Contains("2150-01-01T17:00:00Z"),
+                    "DateTime Nodes serialization incorrectly in Nodes Block: " + obj["Nodes"][0].ToString());
             }
 
             CurrentDynamoModel.OpenFileFromPath(tempPath);
