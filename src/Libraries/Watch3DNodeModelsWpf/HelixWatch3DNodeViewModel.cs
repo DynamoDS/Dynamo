@@ -8,6 +8,7 @@ using Dynamo.Graph.Connectors;
 using Dynamo.Graph.Nodes;
 using Dynamo.Wpf.ViewModels.Watch3D;
 using Watch3DNodeModels;
+using Dynamo.Selection;
 
 namespace Watch3DNodeModelsWpf
 {
@@ -101,6 +102,19 @@ namespace Watch3DNodeModelsWpf
             // the workspace is saving. See Watch3D.SeralizeCore where we call
             // the view model's SerializeCamera method, and Watch3D.DeserializeCore 
             // where we call the view model's DeserializeCamera method.
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            base.Dispose(true);
+            UnregisterNodeEventHandlers(this.watchNode);
+            UnregisterModelEventHandlers(this.model);
+            UnregisterWorkspaceEventHandlers(model);
+            //since we are removing this node from a workspace - we must detach all events
+            //from all workspaces.
+            this.model.Workspaces.ToList().ForEach(ws => OnWorkspaceRemoved(ws));
+            DynamoSelection.Instance.Selection.CollectionChanged -= SelectionChangedHandler;
+            OnClear();
         }
     }
 }
