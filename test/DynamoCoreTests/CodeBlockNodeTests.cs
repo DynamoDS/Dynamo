@@ -1093,6 +1093,26 @@ var06 = g;
             AssertPreviewValue("ebb49227-2e2b-4861-b824-1574ba89b455", 6);
         }
 
+        [Test]
+        public void TestWarningsWithListMethods()
+        {
+            string openPath = Path.Combine(TestDirectory, @"core\sorting\sorting.dyn");
+            OpenModel(openPath);
+
+            var node1 = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace
+                ("14fae78b-b009-4503-afe9-b714e08db1ec");
+            var node2 = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace
+                ("9e2c84e6-b9b8-4bdf-b82e-868b2436b865");
+
+            Assert.IsTrue(string.IsNullOrEmpty(node1.ToolTipText));
+            Assert.IsTrue(string.IsNullOrEmpty(node2.ToolTipText));
+
+            BeginRun();
+
+            Assert.IsTrue(string.IsNullOrEmpty(node1.ToolTipText));
+            Assert.IsTrue(string.IsNullOrEmpty(node2.ToolTipText));
+        }
+
         #endregion
 
 
