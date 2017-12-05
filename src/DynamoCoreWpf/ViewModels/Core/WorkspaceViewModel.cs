@@ -180,8 +180,6 @@ namespace Dynamo.ViewModels
         [JsonIgnore]
         public bool IsSnapping { get; set; }
 
-        private NotifyCollectionChangedEventHandler refreshViewHandler;
-
         /// <summary>
         /// Gets the collection of Dynamo-specific preferences.
         /// This is used when serializing Dynamo preferences in the View block of Graph.Json.
@@ -457,10 +455,9 @@ namespace Dynamo.ViewModels
             Model.ConnectorDeleted += Connectors_ConnectorDeleted;
             Model.PropertyChanged += ModelPropertyChanged;
             
-            this.refreshViewHandler = (sender, e) => { RefreshViewOnSelectionChange(); };
+            RefreshViewOnSelectionChange(this,null);
 
-            DynamoSelection.Instance.Selection.CollectionChanged +=
-                refreshViewHandler;
+            DynamoSelection.Instance.Selection.CollectionChanged += RefreshViewOnSelectionChange;
 
             DynamoViewModel.CopyCommand.CanExecuteChanged += CopyPasteChanged;
             DynamoViewModel.PasteCommand.CanExecuteChanged += CopyPasteChanged;
@@ -494,8 +491,7 @@ namespace Dynamo.ViewModels
             Model.ConnectorDeleted -= Connectors_ConnectorDeleted;
             Model.PropertyChanged -= ModelPropertyChanged;
 
-            DynamoSelection.Instance.Selection.CollectionChanged -=
-                this.refreshViewHandler;
+            DynamoSelection.Instance.Selection.CollectionChanged -= RefreshViewOnSelectionChange;
 
             DynamoViewModel.CopyCommand.CanExecuteChanged -= CopyPasteChanged;
             DynamoViewModel.PasteCommand.CanExecuteChanged -= CopyPasteChanged;
@@ -1085,7 +1081,7 @@ namespace Dynamo.ViewModels
                 modelGuids, "IsVisible", (string) parameter);
 
             DynamoViewModel.Model.ExecuteCommand(command);
-            RefreshViewOnSelectionChange();
+            RefreshViewOnSelectionChange(this,null);
         }
 
         private void SetArgumentLacing(object parameter)
@@ -1354,7 +1350,7 @@ namespace Dynamo.ViewModels
             this.OnZoomChanged(this, new ZoomEventArgs(this.Zoom));
         }
 
-        private void RefreshViewOnSelectionChange()
+        private void RefreshViewOnSelectionChange(object sender, NotifyCollectionChangedEventArgs args)
         {
             AlignSelectedCommand.RaiseCanExecuteChanged();
             ShowHideAllGeometryPreviewCommand.RaiseCanExecuteChanged();
