@@ -2151,7 +2151,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         protected override void Dispose(bool disposing)
         {
-            base.Dispose(disposing);
             if (disposing)
             {
                 var effectsManager = EffectsManager as DynamoEffectsManager;

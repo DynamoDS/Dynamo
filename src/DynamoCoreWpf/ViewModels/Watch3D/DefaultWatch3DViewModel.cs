@@ -377,7 +377,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             // Override in derived classes
         }
 
-        protected void UnregisterModelEventHandlers(IDynamoModel model)
+        private void UnregisterModelEventHandlers(IDynamoModel model)
         {
             model.WorkspaceCleared -= OnWorkspaceCleared;
             model.ShutdownStarted -= OnModelShutdownStarted;
@@ -385,7 +385,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             model.PropertyChanged -= OnModelPropertyChanged;
         }
 
-        protected void UnregisterWorkspaceEventHandlers(IDynamoModel model)
+        private void UnregisterWorkspaceEventHandlers(IDynamoModel model)
         {
             model.WorkspaceAdded -= OnWorkspaceAdded;
             model.WorkspaceRemoved -= OnWorkspaceRemoved;

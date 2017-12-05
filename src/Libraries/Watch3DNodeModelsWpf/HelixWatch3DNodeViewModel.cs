@@ -108,9 +108,8 @@ namespace Watch3DNodeModelsWpf
         {
             base.Dispose(true);
             UnregisterNodeEventHandlers(this.watchNode);
-            UnregisterModelEventHandlers(this.model);
-            UnregisterWorkspaceEventHandlers(model);
-            //since we are removing this node from a workspace - we must detach all events
+            UnregisterEventHandlers();
+            //since we are removing this node - we must detach all events
             //from all workspaces.
             this.model.Workspaces.ToList().ForEach(ws => OnWorkspaceRemoved(ws));
             DynamoSelection.Instance.Selection.CollectionChanged -= SelectionChangedHandler;
