@@ -108,11 +108,11 @@ namespace Watch3DNodeModelsWpf
         protected override void Dispose(bool disposing)
         {
             base.Dispose(true);
-            UnregisterNodeEventHandlers(this.watchNode);
+            UnregisterNodeEventHandlers(this.watchModel);
             UnregisterEventHandlers();
             //since we are removing this node - we must detach all events
             //from all workspaces.
-            this.model.Workspaces.ToList().ForEach(ws => OnWorkspaceRemoved(ws));
+            this.dynamoModel.Workspaces.ToList().ForEach(ws => OnWorkspaceRemoved(ws));
             DynamoSelection.Instance.Selection.CollectionChanged -= SelectionChangedHandler;
             OnClear();
         }
