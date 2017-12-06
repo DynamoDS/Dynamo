@@ -1,4 +1,4 @@
-<Commands ExitAfterPlayback="false" PauseAfterPlaybackInMs="10" CommandIntervalInMs="20">
+<Commands ExitAfterPlayback="true" PauseAfterPlaybackInMs="10" CommandIntervalInMs="20">
   <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
   <SelectInRegionCommand X="47" Y="74" Width="0" Height="0" IsCrossSelection="false" />
   <CreateNodeCommand X="47" Y="74" DefaultPosition="false" TransformCoordinates="true">
