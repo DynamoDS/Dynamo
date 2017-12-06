@@ -2056,6 +2056,21 @@ namespace Dynamo.Tests
             TestMigration("TestMigrateBuiltIn.dyn");
         }
 
+        [Test]
+        public void TestFunctionApplyAndCompose()
+        {
+            OpenModel(GetDynPath("TestMigration_FunctionApplyAndCompose.dyn"));
+
+            RunCurrentModel();
+
+            var workspace = CurrentDynamoModel.CurrentWorkspace;
+
+            AssertPreviewValue("95c607e2-7f1b-4ec7-ba1c-a34f9dcf23bc", 14);
+
+            Assert.AreEqual(6, workspace.Nodes.Count());
+            Assert.AreEqual(6, workspace.Connectors.Count());
+        }
+
         #endregion
 
         #region Dynamo Libraries Node Migration Tests
