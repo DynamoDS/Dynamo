@@ -395,7 +395,13 @@ namespace Dynamo.Tests
         {
             //http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-722
             RunModel(@"core\dsevaluation\CBN_array_indexnull_619.dyn");
-            AssertPreviewValue("6985948e-992c-4420-8c39-1f5f5d57dc64", new int[] { 5 });
+            AssertPreviewValue("6985948e-992c-4420-8c39-1f5f5d57dc64", new object[] {});
+
+            ProtoCore.RuntimeCore runtimeCore = CurrentDynamoModel.EngineController.LiveRunnerRuntimeCore;
+            Assert.AreEqual(1, runtimeCore.RuntimeStatus.WarningCount);
+
+            ProtoCore.Runtime.WarningEntry warningEntry = runtimeCore.RuntimeStatus.Warnings.ElementAt(0);
+            Assert.AreEqual(ProtoCore.Runtime.WarningID.InvalidArrayIndexType, warningEntry.ID);
         }
 
         [Test]
@@ -1133,8 +1139,20 @@ namespace Dynamo.Tests
             // To test that variable could still be properly renamed.
             var dynFilePath = Path.Combine(TestDirectory, @"core\dsevaluation\define_dictionary.dyn");
             OpenModel(dynFilePath);
-            AssertPreviewValue("a0227846-04ca-4323-9074-2bd1ea9ac8cf", new object[] { 1, 2, 3 });
-            AssertPreviewValue("ada2d384-626f-4240-b251-7df6e395f3f2", new object[] {"Bob", "Sally", "Pat" });
+            //AssertPreviewValue("a0227846-04ca-4323-9074-2bd1ea9ac8cf", new object[] { 1, 2, 3 });
+            //AssertPreviewValue("ada2d384-626f-4240-b251-7df6e395f3f2", new object[] {"Bob", "Sally", "Pat" });
+
+            AssertPreviewValue("1e454a5a-3828-4c74-bf53-fc3249704183", new object[] {});
+            AssertPreviewValue("ab406c15-3272-4085-8fdb-2662bcc52276", new object[] {});
+
+            ProtoCore.RuntimeCore runtimeCore = CurrentDynamoModel.EngineController.LiveRunnerRuntimeCore;
+            Assert.AreEqual(2, runtimeCore.RuntimeStatus.WarningCount);
+
+            ProtoCore.Runtime.WarningEntry warningEntry = runtimeCore.RuntimeStatus.Warnings.ElementAt(0);
+            Assert.AreEqual(ProtoCore.Runtime.WarningID.InvalidArrayIndexType, warningEntry.ID);
+
+            warningEntry = runtimeCore.RuntimeStatus.Warnings.ElementAt(1);
+            Assert.AreEqual(ProtoCore.Runtime.WarningID.InvalidArrayIndexType, warningEntry.ID);
         }
 
         [Test]
@@ -1143,11 +1161,26 @@ namespace Dynamo.Tests
             // Regression test for https://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-10382
             // To test that variable could still be properly renamed.
             var dynFilePath = Path.Combine(TestDirectory, @"core\dsevaluation\define_dictionary2.dyn");
-            OpenModel(dynFilePath);
-            AssertPreviewValue("231d235b-0d7f-4bd8-b19a-5dda561aea3d", new object[] { 1024 });
-            AssertPreviewValue("372c04aa-4088-4224-a922-d34fc2869fc1", new object[] { "qux" });
-            AssertPreviewValue("e7bf0921-cf77-4f37-8336-8aa9c56b22a6", new object[] { "qux" });
-            AssertPreviewValue("756497b4-4f7a-4ae3-9e5c-de5f69762d16", new object[] { 1024 });
+            RunModel(dynFilePath);
+            //AssertPreviewValue("231d235b-0d7f-4bd8-b19a-5dda561aea3d", new object[] { 1024 });
+            //AssertPreviewValue("372c04aa-4088-4224-a922-d34fc2869fc1", new object[] { "qux" });
+            //AssertPreviewValue("e7bf0921-cf77-4f37-8336-8aa9c56b22a6", new object[] { "qux" });
+            //AssertPreviewValue("756497b4-4f7a-4ae3-9e5c-de5f69762d16", new object[] { 1024 });
+
+            AssertPreviewValue("dfa4f4e3-6e74-4866-a196-95c2c981ba30", new object[] {});
+            AssertPreviewValue("f769c8ab-a865-4681-b41f-0b0c1dfe9fc9", new object[] {});
+            AssertPreviewValue("a2985ad3-2ec3-4b9c-a987-bb86584ca2d2", new object[] {});
+            AssertPreviewValue("a718b332-346c-4df0-838b-be93b70e1aae", new object[] {});
+            AssertPreviewValue("047660dc-be17-4b29-84ec-1059d9637e07", new object[] { });
+            AssertPreviewValue("d74944a0-098c-421d-911f-cf5935aa0d20", new object[] { });
+
+            ProtoCore.RuntimeCore runtimeCore = CurrentDynamoModel.EngineController.LiveRunnerRuntimeCore;
+            Assert.AreEqual(6, runtimeCore.RuntimeStatus.WarningCount);
+
+            foreach (var warning in runtimeCore.RuntimeStatus.Warnings)
+            {
+                Assert.AreEqual(ProtoCore.Runtime.WarningID.InvalidArrayIndexType, warning.ID);
+            }
         }
 
         [Test]

@@ -1,4 +1,5 @@
-﻿using Autodesk.DesignScript.Runtime;
+﻿using System.Collections;
+using Autodesk.DesignScript.Runtime;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
@@ -24,7 +25,8 @@ namespace DesignScript
             /// <param name="values">The values of the Dictionary</param>
             /// <returns name="dictionary">The result Dictionary</returns>
             /// <search>map,{},table</search>
-            public static Dictionary ByKeysValues(IList<string> keys, [KeepReference] [ArbitraryDimensionArrayImport] IList<object> values)
+            public static Dictionary ByKeysValues(IList<string> keys,
+                [KeepReference] [ArbitraryDimensionArrayImport] IList<object> values)
             {
                 var pairs = keys.Cast<string>().Zip(values.Cast<object>(), (a, b) =>
                 {
@@ -39,14 +41,14 @@ namespace DesignScript
             /// </summary>
             /// <returns name="keys">The keys of the Dictionary</returns>
             /// <returns name="values">The values of the Dictionary</returns>
-            [MultiReturn(new[] { "keys", "values" })]
+            [MultiReturn(new[] {"keys", "values"})]
             public IDictionary<string, object> Components()
             {
                 return new Dictionary<string, object>
-            {
-                { "keys", D.Keys },
-                { "values", D.Values }
-            };
+                {
+                    {"keys", D.Keys},
+                    {"values", D.Values}
+                };
             }
 
             /// <summary>
@@ -96,7 +98,8 @@ namespace DesignScript
             /// <param name="value">The corresponding values to insert.</param>
             /// <returns name="dictionary">A new Dictionary with the entries inserted.</returns>
             /// <search>insert,add</search>
-            public Dictionary SetValueAtKeys(IList<string> keys, [KeepReference] [ArbitraryDimensionArrayImport] IList<object> values)
+            public Dictionary SetValueAtKeys(IList<string> keys,
+                [KeepReference] [ArbitraryDimensionArrayImport] IList<object> values)
             {
                 var pairs = keys.Cast<string>().Zip(values.Cast<object>(), (a, b) =>
                 {

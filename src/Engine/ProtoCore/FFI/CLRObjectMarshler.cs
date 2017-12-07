@@ -14,6 +14,7 @@ using System.Linq;
 using DesignScript.Builtin;
 using ProtoCore.Properties;
 using ProtoCore.Exceptions;
+using ProtoCore.Runtime;
 
 namespace ProtoFFI
 {
@@ -516,11 +517,18 @@ namespace ProtoFFI
             var instanceType = expectedType.GetGenericTypeDefinition().MakeGenericType(keyType, valueType);
 
             var targetDict = Activator.CreateInstance(instanceType) as IDictionary;
-
             var d = primitiveMarshaler.GetDictionary(dsObject);
             foreach (var key in d.Keys)
             {
-                targetDict[key] = d.ValueAtKey(key);
+                try
+                {
+                    targetDict[key] = Convert.ChangeType(d.ValueAtKey(key), valueType);
+                }
+                catch (Exception e)
+                {
+                    dsi.LogWarning(WarningID.TypeMismatch, e.Message);
+                }
+                
             }
 
             return targetDict;
@@ -754,21 +762,23 @@ namespace ProtoFFI
             //Expected CLR type is not string, but is derived from IEnumerable
             isArray = isArray || (typeof(string) != expectedType && typeof(IEnumerable).IsAssignableFrom(expectedType));
 
+            // If the source is a Dictionary and the target allows assignment of a Dictionary
+            if (IsDictionary(value) && DictionaryMarshaler.IsAssignableFromDictionary(expectedType))
+            {
+                var type = PrimitiveMarshler.CreateType(ProtoCore.PrimitiveType.Var);
+                type.rank = ProtoCore.DSASM.Constants.kArbitraryRank;
+                return new DictionaryMarshaler(this, type);
+            }
+
             if (isArray)
             {
                 var type = PrimitiveMarshler.CreateType(ProtoCore.PrimitiveType.Var);
                 type.rank = ProtoCore.DSASM.Constants.kArbitraryRank;
                 return new ArrayMarshaler(this, type);
             }
-            // If the source is a Dictionary and the target allows assignment of a Dictionary
-            else if (IsDictionary(value) && DictionaryMarshaler.IsAssignableFromDictionary(expectedType))
-            {
-                var type = PrimitiveMarshler.CreateType(ProtoCore.PrimitiveType.Var);
-                type.rank = ProtoCore.DSASM.Constants.kArbitraryRank;
-                return new DictionaryMarshaler(this, type);
-            }
+
             // If the input ds object is pointer type then it can't be marshaled as primitive.
-            else if (dsType == AddressType.Pointer)
+            if (dsType == AddressType.Pointer)
             {
                 return null;
             }
