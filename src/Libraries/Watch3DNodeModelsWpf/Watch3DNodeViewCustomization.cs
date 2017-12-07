@@ -168,9 +168,12 @@ namespace Watch3DNodeModelsWpf
 
         public void Dispose()
         {
-            watch3DViewModel.ViewCameraChanged -= onCameraChanged;
+            if (watch3DViewModel != null)
+            {
+                watch3DViewModel.ViewCameraChanged -= onCameraChanged;
+                watch3DViewModel.Dispose();
+            }
             DataBridge.Instance.UnregisterCallback(watch3dModel.GUID.ToString());
-            watch3DViewModel.Dispose();
         }
     }
 }
