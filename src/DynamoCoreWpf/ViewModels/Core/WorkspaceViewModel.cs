@@ -455,8 +455,6 @@ namespace Dynamo.ViewModels
             Model.ConnectorDeleted += Connectors_ConnectorDeleted;
             Model.PropertyChanged += ModelPropertyChanged;
             
-            RefreshViewOnSelectionChange(this,null);
-
             DynamoSelection.Instance.Selection.CollectionChanged += RefreshViewOnSelectionChange;
 
             DynamoViewModel.CopyCommand.CanExecuteChanged += CopyPasteChanged;
