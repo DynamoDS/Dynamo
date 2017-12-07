@@ -1127,6 +1127,10 @@ namespace Dynamo.ViewModels
         {
             var viewModel = workspaces.First(x => x.Model == item);
             if (currentWorkspaceViewModel == viewModel)
+                if(currentWorkspaceViewModel != null)
+                {
+                    currentWorkspaceViewModel.Dispose();
+                }
                 currentWorkspaceViewModel = null;
             workspaces.Remove(viewModel);
         }

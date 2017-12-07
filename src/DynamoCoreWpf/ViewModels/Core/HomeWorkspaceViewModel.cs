@@ -16,7 +16,7 @@ using Newtonsoft.Json;
 
 namespace Dynamo.Wpf.ViewModels.Core
 {
-    public class HomeWorkspaceViewModel : WorkspaceViewModel, IDisposable
+    public class HomeWorkspaceViewModel : WorkspaceViewModel
     {
         #region private members
 
@@ -225,13 +225,15 @@ namespace Dynamo.Wpf.ViewModels.Core
             return true;
         }
 
-        public void Dispose()
+        public override void Dispose()
         {
+            base.Dispose();
             var hwm = (HomeWorkspaceModel)Model;
             hwm.EvaluationStarted -= hwm_EvaluationStarted;
             hwm.EvaluationCompleted -= hwm_EvaluationCompleted;
             hwm.SetNodeDeltaState -= hwm_SetNodeDeltaState;
-
+            RunSettingsViewModel.PropertyChanged -= RunSettingsViewModel_PropertyChanged;
+            RunSettingsViewModel = null;
             DynamoViewModel.Model.ShutdownStarted -= Model_ShutdownStarted;
         }
     }

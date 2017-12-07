@@ -585,6 +585,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 {
                     var model = Model3DDictionary[key] as GeometryModel3D;
                     model.Detach();
+                    model.Dispose();
                     Model3DDictionary.Remove(key);
                 }
 
@@ -807,6 +808,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     if (model3D != null)
                     {
                         model3D.Detach();
+                        model3D.Dispose();
                     }
 
                     Model3DDictionary.Remove(kvp.Key);

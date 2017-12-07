@@ -332,7 +332,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             // Override in inherited classes.
         }
 
-        private void UnregisterEventHandlers()
+        protected void UnregisterEventHandlers()
         {
             DynamoSelection.Instance.Selection.CollectionChanged -= SelectionChangedHandler;
 
@@ -384,6 +384,8 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         {
             model.WorkspaceCleared -= OnWorkspaceCleared;
             model.ShutdownStarted -= OnModelShutdownStarted;
+            model.EvaluationCompleted -= OnEvaluationCompleted;
+            model.PropertyChanged -= OnModelPropertyChanged;
         }
 
         private void UnregisterWorkspaceEventHandlers(IDynamoModel model)
@@ -453,7 +455,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             }
         }
 
-        private void OnWorkspaceRemoved(WorkspaceModel workspace)
+        protected void OnWorkspaceRemoved(WorkspaceModel workspace)
         {
             workspace.Saving -= OnWorkspaceSaving;
             workspace.NodeAdded -= OnNodeAddedToWorkspace;
@@ -559,7 +561,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             RegisterPortEventHandlers(node);
         }
 
-        private void UnregisterNodeEventHandlers(NodeModel node)
+        protected void UnregisterNodeEventHandlers(NodeModel node)
         {
             node.PropertyChanged -= OnNodePropertyChanged;
             node.RenderPackagesUpdated -= OnRenderPackagesUpdated;
