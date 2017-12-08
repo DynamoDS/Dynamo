@@ -127,6 +127,27 @@
     </EmbeddedResource>
     <EmbeddedResource Include="ProtoGeometryImages.resx" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Autodesk.DesignScript.Geometry.Cylinder.Height.Large.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Autodesk.DesignScript.Geometry.Cylinder.Axis.Large.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Autodesk.DesignScript.Geometry.Cyllinder.Axis.Small.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Autodesk.DesignScript.Geometry.Cylinder.Height.Small.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Autodesk.DesignScript.Geometry.Cylinder.Axis.Small.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Autodesk.DesignScript.Geometry.Cone.ByCoordinateSystemHeightRadius.Small.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Autodesk.DesignScript.Geometry.Cone.ByCoordinateSystemHeightRadius.Large.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="AfterBuild">
     <!-- Get System.Drawing.dll -->
