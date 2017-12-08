@@ -77,19 +77,7 @@ namespace DesignScript
             {
                 get { return D.Count; }
             }
-
-            /// <summary>
-            ///     Produce a new Dictionary with the provided key set to a given value, possibly overwriting an existing key-value pair.
-            /// </summary>
-            /// <param name="key">The key in the Dictionary to set. If the same key already exists, the value at that key will be modified.</param>
-            /// <param name="value">The value to insert.</param>
-            /// <returns name="dictionary">A new Dictionary with the entry inserted.</returns>
-            /// <search>insert,add</search>
-            public Dictionary SetValueAtKey(string key, [KeepReference] [ArbitraryDimensionArrayImport] object value)
-            {
-                return new Dictionary(D.SetItem(key, value));
-            }
-
+            
             /// <summary>
             ///     Produce a new Dictionary with a list of keys set to the new values, possibly overwriting existing key-value pairs. 
             ///     These two lists are expected to be of the same length. If not, the shorter of the two bounds the number of insertions.
@@ -108,18 +96,7 @@ namespace DesignScript
 
                 return new Dictionary(D.SetItems(pairs));
             }
-
-            /// <summary>
-            ///     Produce a new Dictionary with the given key removed.
-            /// </summary>
-            /// <param name="key">The key in the Dictionary to remove.</param>
-            /// <returns name="dictionary">A new Dictionary with the key removed.</returns>
-            /// <search>drop,delete</search>
-            public Dictionary RemoveKey(string key)
-            {
-                return new Dictionary(D.Remove(key));
-            }
-
+            
             /// <summary>
             ///     Produce a new Dictionary with the given keys removed.
             /// </summary>
