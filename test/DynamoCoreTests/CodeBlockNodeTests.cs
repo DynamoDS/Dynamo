@@ -1135,7 +1135,7 @@ var06 = g;
             AssertPreviewValue("39c65660-8575-43bc-8af7-f24225a6bd5b", 21);
         }
 
-        [Test]
+        [Test, Category("Failure")]
         public void TestImperativeLanguageBlock()
         {
             string openPath = Path.Combine(TestDirectory, @"core\cbn_renaming\TestImperativeInCBN.dyn");
