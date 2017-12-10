@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media.Media3D;
-using Autodesk.DesignScript.Interfaces;
+using Dynamo.Visualization;
 using Dynamo.Graph.Nodes;
 
 namespace Dynamo.Wpf.ViewModels.Watch3D
@@ -95,7 +95,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         /// <param name="packages">render packages to be drawn</param>
         /// <param name="forceAsyncCall">set to 'true' if calling from UI thread and still need to queue 
         /// the creation of display geometry for asynchronous execution</param>
-        void AddGeometryForRenderPackages(IEnumerable<IRenderPackage> packages, bool forceAsyncCall = false);
+        void AddGeometryForRenderPackages(RenderPackageCache packages, bool forceAsyncCall = false);
 
         /// <summary>
         /// Finds a geometry corresponding to a string identifier

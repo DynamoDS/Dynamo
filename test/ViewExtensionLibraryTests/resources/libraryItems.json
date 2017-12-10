@@ -922,15 +922,7 @@
     },
     {
       "fullyQualifiedName": "Autodesk.DesignScript.Geometry.Curve.SplitByParameter",
-      "iconUrl": "http://localhost/icons/Autodesk.DesignScript.Geometry.Curve.SplitByParameter.double.Small?path=ProtoGeometry.dll",
-      "contextData": "Autodesk.DesignScript.Geometry.Curve.SplitByParameter@double",
-      "parameters": "(parameter)",
-      "itemType": "action",
-      "keywords": "cutinto, divide, curve2curves, cut"
-    },
-    {
-      "fullyQualifiedName": "Autodesk.DesignScript.Geometry.Curve.SplitByParameter",
-      "iconUrl": "http://localhost/icons/Autodesk.DesignScript.Geometry.Curve.SplitByParameter.double1.Small?path=ProtoGeometry.dll",
+      "iconUrl": "http://localhost/icons/Autodesk.DesignScript.Geometry.Curve.SplitByParameter.Small?path=ProtoGeometry.dll",
       "contextData": "Autodesk.DesignScript.Geometry.Curve.SplitByParameter@double[]",
       "parameters": "(parameters)",
       "itemType": "action",
@@ -1298,15 +1290,7 @@
     },
     {
       "fullyQualifiedName": "Autodesk.DesignScript.Geometry.Geometry.SerializeAsSAB",
-      "iconUrl": "http://localhost/icons/Autodesk.DesignScript.Geometry.Geometry.SerializeAsSAB..Small?path=ProtoGeometry.dll",
-      "contextData": "Autodesk.DesignScript.Geometry.Geometry.SerializeAsSAB",
-      "parameters": "()",
-      "itemType": "action",
-      "keywords": ""
-    },
-    {
-      "fullyQualifiedName": "Autodesk.DesignScript.Geometry.Geometry.SerializeAsSAB",
-      "iconUrl": "http://localhost/icons/Autodesk.DesignScript.Geometry.Geometry.SerializeAsSAB.Geometry1.Small?path=ProtoGeometry.dll",
+      "iconUrl": "http://localhost/icons/Autodesk.DesignScript.Geometry.Geometry.SerializeAsSAB.Small?path=ProtoGeometry.dll",
       "contextData": "Autodesk.DesignScript.Geometry.Geometry.SerializeAsSAB@Autodesk.DesignScript.Geometry.Geometry[]",
       "parameters": "(geometry)",
       "itemType": "action",
@@ -2962,15 +2946,7 @@
     },
     {
       "fullyQualifiedName": "Autodesk.DesignScript.Geometry.PolySurface.BySweep",
-      "iconUrl": "http://localhost/icons/Autodesk.DesignScript.Geometry.PolySurface.BySweep.Curve-Curve1.Small?path=ProtoGeometry.dll",
-      "contextData": "Autodesk.DesignScript.Geometry.PolySurface.BySweep@Autodesk.DesignScript.Geometry.Curve,Autodesk.DesignScript.Geometry.Curve[]",
-      "parameters": "(rail, crossSection)",
-      "itemType": "create",
-      "keywords": "sweep, rail, guide, sweep1"
-    },
-    {
-      "fullyQualifiedName": "Autodesk.DesignScript.Geometry.PolySurface.BySweep",
-      "iconUrl": "http://localhost/icons/Autodesk.DesignScript.Geometry.PolySurface.BySweep.Curve-Curve.Small?path=ProtoGeometry.dll",
+      "iconUrl": "http://localhost/icons/Autodesk.DesignScript.Geometry.PolySurface.BySweep.Small?path=ProtoGeometry.dll",
       "contextData": "Autodesk.DesignScript.Geometry.PolySurface.BySweep@Autodesk.DesignScript.Geometry.Curve,Autodesk.DesignScript.Geometry.Curve",
       "parameters": "(rail, profile)",
       "itemType": "create",

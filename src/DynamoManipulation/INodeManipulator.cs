@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using Autodesk.DesignScript.Interfaces;
+using Dynamo.Visualization;
 using Dynamo.Graph.Nodes;
 
 namespace Dynamo.Manipulation
@@ -26,6 +26,6 @@ namespace Dynamo.Manipulation
     /// </summary>
     public interface INodeManipulator : IDisposable
     {
-        IEnumerable<IRenderPackage> BuildRenderPackage();
+        RenderPackageCache BuildRenderPackage();
     }
 }

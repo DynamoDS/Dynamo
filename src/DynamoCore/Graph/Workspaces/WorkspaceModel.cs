@@ -1086,6 +1086,7 @@ namespace Dynamo.Graph.Workspaces
                 functionNode.Controller.SyncWithDefinitionEnd -= OnSyncWithDefinitionEnd;
             }
             node.ConnectorAdded -= OnConnectorAdded;
+            node.UpdateASTCollection -= OnToggleNodeFreeze;
             node.Modified -= NodeModified;
             node.Dispose();
         }

@@ -567,6 +567,20 @@ namespace Dynamo.ViewModels
             ++NoteViewModel.StaticZIndex;
         }
 
+        public virtual void Dispose()
+        {
+            this.NodeModel.PropertyChanged -= logic_PropertyChanged;
+
+            DynamoViewModel.Model.PropertyChanged -= Model_PropertyChanged;
+            DynamoViewModel.Model.DebugSettings.PropertyChanged -= DebugSettings_PropertyChanged;
+            if (IsDebugBuild)
+            {
+                DynamoViewModel.EngineController.AstBuilt -= EngineController_AstBuilt;
+            }
+
+            DynamoSelection.Instance.Selection.CollectionChanged -= SelectionOnCollectionChanged;
+        }
+
         public NodeViewModel(WorkspaceViewModel workspaceViewModel, NodeModel logic, Size preferredSize)
             : this(workspaceViewModel, logic)
         {
@@ -650,7 +664,7 @@ namespace Dynamo.ViewModels
 
 
         /// <summary>
-        /// Respond to property changes on the model
+        /// Respond to property changes on the Dynamo model
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -857,6 +871,7 @@ namespace Dynamo.ViewModels
                 {
                     PortViewModel portToRemove = UnSubscribePortEvents(InPorts.ToList().First(x => x.PortModel == item)); ;
                     InPorts.Remove(portToRemove);
+                    portToRemove.Dispose();
                 }
             }
             else if (e.Action == NotifyCollectionChangedAction.Reset)
@@ -864,6 +879,7 @@ namespace Dynamo.ViewModels
                 foreach (var p in InPorts)
                 {
                     UnSubscribePortEvents(p);
+                    p.Dispose();
                 }
                 InPorts.Clear();
             }

@@ -6,7 +6,6 @@ using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Xml;
-using Autodesk.DesignScript.Interfaces;
 using Dynamo.Configuration;
 using Dynamo.Engine;
 using Dynamo.Engine.CodeGeneration;
@@ -2283,7 +2282,7 @@ namespace Dynamo.Graph.Nodes
                 Node = this,
                 RenderPackageFactory = factory,
                 EngineController = engine,
-                DrawableIds = GetDrawableIds(),
+                DrawableIdMap = GetDrawableIdMap(),
                 PreviewIdentifierName = AstIdentifierForPreview.Name,
                 ForceUpdate = forceUpdate
             };
@@ -2307,52 +2306,56 @@ namespace Dynamo.Graph.Nodes
         private void OnRenderPackageUpdateCompleted(AsyncTask asyncTask)
         {
             var task = asyncTask as UpdateRenderPackageAsyncTask;
-            var packages = new List<IRenderPackage>();
-            if (task.RenderPackages.Any())
+            var packages = new RenderPackageCache();
+
+            if (!task.RenderPackages.IsEmpty())
             {
-                packages.AddRange(task.RenderPackages);
-                packages.AddRange(OnRequestRenderPackages());
-
+                packages.Add(task.RenderPackages);
+                packages.Add(OnRequestRenderPackages());
             }
-            OnRenderPackagesUpdated(packages);
 
+            OnRenderPackagesUpdated(packages);
         }
 
         /// <summary>
         ///
         /// </summary>
-        public event Func<IEnumerable<IRenderPackage>> RequestRenderPackages;
+        public event Func<RenderPackageCache> RequestRenderPackages;
 
         /// <summary>
         /// This event handler is invoked when the render packages (specific to this node)
         /// become available and in addition the node requests for associated render packages
         /// if any for example, packages used for associated node manipulators
         /// </summary>
-        private IEnumerable<IRenderPackage> OnRequestRenderPackages()
+        private RenderPackageCache OnRequestRenderPackages()
         {
             if (RequestRenderPackages != null)
             {
                 return RequestRenderPackages();
             }
-            return new List<IRenderPackage>();
+
+            return new RenderPackageCache();
         }
 
         /// <summary>
-        /// Returns list of drawable Ids as registered with visualization manager
-        /// for all the output port of the given node.
+        /// Returns a map of output port GUIDs and drawable Ids as registered 
+        /// with visualization manager for all the output ports of the given node.
         /// </summary>
         /// <returns>List of Drawable Ids</returns>
-        private IEnumerable<string> GetDrawableIds()
+        private IEnumerable<KeyValuePair<Guid, string>> GetDrawableIdMap()
         {
-            var drawables = new List<String>();
-            for (int i = 0; i < OutPorts.Count; ++i)
+            var idMap = new Dictionary<Guid, string>();
+            for (int index = 0; index < OutPorts.Count; ++index)
             {
-                string id = GetDrawableId(i);
+                string id = GetDrawableId(index);
                 if (!string.IsNullOrEmpty(id))
-                    drawables.Add(id);
+                {
+                    Guid originId = OutPorts[index].GUID;
+                    idMap[originId] = id;
+                }
             }
 
-            return drawables;
+            return idMap;
         }
 
         /// <summary>
@@ -2428,9 +2431,9 @@ namespace Dynamo.Graph.Nodes
 
         protected bool ShouldDisplayPreviewCore { get; set; }
 
-        public event Action<NodeModel, IEnumerable<IRenderPackage>> RenderPackagesUpdated;
+        public event Action<NodeModel, RenderPackageCache> RenderPackagesUpdated;
 
-        private void OnRenderPackagesUpdated(IEnumerable<IRenderPackage> packages)
+        private void OnRenderPackagesUpdated(RenderPackageCache packages)
         {
             if (RenderPackagesUpdated != null)
             {

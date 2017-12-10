@@ -96,7 +96,11 @@ namespace WpfVisualizationTests
                 new DynamoViewModel.StartConfiguration()
                 {
                     DynamoModel = Model,
-                    Watch3DViewModel = HelixWatch3DViewModel.TryCreateHelixWatch3DViewModel(new Watch3DViewModelStartupParams(Model), Model.Logger)
+                    Watch3DViewModel = 
+                        HelixWatch3DViewModel.TryCreateHelixWatch3DViewModel(
+                            null,
+                            new Watch3DViewModelStartupParams(Model), 
+                            Model.Logger)
                 });
 
             //create the view

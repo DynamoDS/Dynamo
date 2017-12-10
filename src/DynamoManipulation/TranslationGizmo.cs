@@ -5,6 +5,7 @@ using System.Windows.Media;
 using Autodesk.DesignScript.Geometry;
 using Autodesk.DesignScript.Interfaces;
 using Dynamo.Wpf.ViewModels.Watch3D;
+using Dynamo.Visualization;
 
 namespace Dynamo.Manipulation
 {
@@ -334,9 +335,9 @@ namespace Dynamo.Manipulation
         /// Returns drawables to render this Gizmo
         /// </summary>
         /// <returns>List of render package</returns>
-        public override IEnumerable<IRenderPackage> GetDrawables()
+        public override RenderPackageCache GetDrawables()
         {
-            var drawables = new List<IRenderPackage>();
+            var drawables = new RenderPackageCache();
             foreach (Vector axis in axes)
             {
                 IRenderPackage package = RenderPackageFactory.CreateRenderPackage();
@@ -351,7 +352,7 @@ namespace Dynamo.Manipulation
                 DrawPlane(ref package, plane, p++);
                 drawables.Add(package);
             }
-            drawables.AddRange(GetDrawablesForTransientGraphics());
+            drawables.Add(GetDrawablesForTransientGraphics());
 
             return drawables;
         }
@@ -382,9 +383,9 @@ namespace Dynamo.Manipulation
         /// Returns drawables for transient geometry associated with Gizmo
         /// </summary>
         /// <returns></returns>
-        public override IEnumerable<IRenderPackage> GetDrawablesForTransientGraphics()
+        public override RenderPackageCache GetDrawablesForTransientGraphics()
         {
-            var drawables = new List<IRenderPackage>();
+            var drawables = new RenderPackageCache();
             if (null != hitAxis)
             {
                 IRenderPackage package = RenderPackageFactory.CreateRenderPackage();
@@ -401,6 +402,7 @@ namespace Dynamo.Manipulation
                 DrawAxisLine(ref package, hitPlane.YAxis, "yAxisLine");
                 drawables.Add(package);
             }
+
             return drawables;
         }
 
