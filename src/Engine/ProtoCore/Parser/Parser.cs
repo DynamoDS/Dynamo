@@ -2316,20 +2316,38 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 		Expect(46);
 		var dictBuilder = new ProtoCore.AST.AssociativeAST.DictionaryExpressionBuilder(); 
 		dictBuilder.SetNodeStartLocation(t); 
-		if (la.kind == 4) {
+		if (la.kind == 1 || la.kind == 4) {
+			if (la.kind == 4) {
+				Get();
+				var str = new StringNode {Value = t.val.Trim('"')}; 
+				dictBuilder.AddKey(str); 
+			} else {
+				Get();
+				var ident = new IdentifierNode(t.val); 
+				NodeUtils.SetNodeLocation(ident, t); 
+				dictBuilder.AddKey(ident); 
+			}
+		}
+		Expect(48);
+		Associative_Expression(out node);
+		dictBuilder.AddValue(node); 
+		while (la.kind == 52) {
 			Get();
-			dictBuilder.AddKey(t); 
+			if (la.kind == 1 || la.kind == 4) {
+				if (la.kind == 4) {
+					Get();
+					var str = new StringNode { Value = t.val.Trim('"') }; 
+					dictBuilder.AddKey(str); 
+				} else {
+					Get();
+					var ident = new IdentifierNode(t.val); 
+					NodeUtils.SetNodeLocation(ident, t); 
+					dictBuilder.AddKey(ident); 
+				}
+			}
 			Expect(48);
 			Associative_Expression(out node);
 			dictBuilder.AddValue(node); 
-			while (la.kind == 52) {
-				Get();
-				Expect(4);
-				dictBuilder.AddKey(t); 
-				Expect(48);
-				Associative_Expression(out node);
-				dictBuilder.AddValue(node); 
-			}
 		}
 		Expect(47);
 		dictBuilder.SetNodeEndLocation(t); 
@@ -3713,20 +3731,39 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 		Expect(46);
 		var dictBuilder = new ProtoCore.AST.ImperativeAST.DictionaryExpressionBuilder(); 
 		dictBuilder.SetNodeStartLocation(t); 
-		if (la.kind == 4) {
+		if (la.kind == 1 || la.kind == 4) {
+			if (la.kind == 4) {
+				Get();
+				var str = new ProtoCore.AST.ImperativeAST.StringNode {Value = t.val.Trim('"')}; 
+				dictBuilder.AddKey(str); 
+			} else {
+				Get();
+				var ident = new ProtoCore.AST.ImperativeAST.IdentifierNode(t.val); 
+				NodeUtils.SetNodeLocation(ident, t); 
+				dictBuilder.AddKey(ident); 
+			}
+		}
+		Expect(48);
+		Imperative_expr(out node);
+		dictBuilder.AddValue(node); 
+		while (la.kind == 52) {
 			Get();
-			dictBuilder.AddKey(t); 
+			if (la.kind == 1 || la.kind == 4) {
+				if (la.kind == 4) {
+					Get();
+					var str = new ProtoCore.AST.ImperativeAST.StringNode { Value = t.val.Trim('"') }; 
+					dictBuilder.AddKey(str); 
+				} else {
+					Get();
+					var ident = new ProtoCore.AST.ImperativeAST.IdentifierNode(t.val); 
+					NodeUtils.SetNodeLocation(ident, t); 
+					dictBuilder.AddKey(ident); 
+				}
+			}
 			Expect(48);
 			Imperative_expr(out node);
+			dictBuilder.SetNodeEndLocation(t); 
 			dictBuilder.AddValue(node); 
-			while (la.kind == 52) {
-				Get();
-				Expect(4);
-				dictBuilder.AddKey(t); 
-				Expect(48);
-				Imperative_expr(out node);
-				dictBuilder.AddValue(node); 
-			}
 		}
 		Expect(47);
 		dictBuilder.SetNodeEndLocation(t); 

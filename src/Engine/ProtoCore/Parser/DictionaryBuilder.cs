@@ -35,6 +35,11 @@ namespace ProtoCore.AST
             this.values.Add(value);
         }
 
+        public void AddKey(T value)
+        {
+            this.keys.Add(value);
+        }
+
         public void SetNodeStartLocation(ProtoCore.DesignScriptParser.Token token)
         {
             line = token.line;
@@ -43,8 +48,8 @@ namespace ProtoCore.AST
 
         public void SetNodeEndLocation(ProtoCore.DesignScriptParser.Token token)
         {
-            line = token.line;
-            col = token.col;
+            endLine = token.line;
+            endCol = token.col;
         }
 
         public abstract T ToFunctionCall();
@@ -55,12 +60,7 @@ namespace ProtoCore.AST
         class DictionaryExpressionBuilder : DictionaryExpressionBuilderBase<AssociativeNode>
         {
             public DictionaryExpressionBuilder() : base() { }
-
-            public void AddKey(ProtoCore.DesignScriptParser.Token token)
-            {
-                this.keys.Add(new StringNode { Value = token.val.Trim('"') });
-            }
-
+            
             public override AssociativeAST.AssociativeNode ToFunctionCall()
             {
                 var keys = new ExprListNode
@@ -90,12 +90,7 @@ namespace ProtoCore.AST
         class DictionaryExpressionBuilder : DictionaryExpressionBuilderBase<ImperativeNode>
         {
             public DictionaryExpressionBuilder() : base() { }
-
-            public void AddKey(ProtoCore.DesignScriptParser.Token token)
-            {
-                this.keys.Add(new StringNode { Value = token.val.Trim('"') });
-            }
-
+            
             public override ImperativeNode ToFunctionCall()
             {
                 var keys = new ExprListNode

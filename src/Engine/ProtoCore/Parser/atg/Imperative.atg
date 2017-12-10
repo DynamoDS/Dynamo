@@ -1033,17 +1033,39 @@ Imperative_DictionaryExpression<out ProtoCore.AST.ImperativeAST.ImperativeNode n
 '{'                                     (. var dictBuilder = new ProtoCore.AST.ImperativeAST.DictionaryExpressionBuilder(); .)
                                         (. dictBuilder.SetNodeStartLocation(t); .)
     [
-        textstring (. dictBuilder.AddKey(t); .)  
+		(
+			textstring	(. var str = new ProtoCore.AST.ImperativeAST.StringNode {Value = t.val.Trim('"')}; .)  
+						(. dictBuilder.AddKey(str); .) 
+		) 
+		|
+		(
+			ident		(. var ident = new ProtoCore.AST.ImperativeAST.IdentifierNode(t.val); .)
+						(. NodeUtils.SetNodeLocation(ident, t); .)
+						(. dictBuilder.AddKey(ident); .)
+		)
+	]
+	':'                     
+    Imperative_expr<out node>            (. dictBuilder.AddValue(node); .)
+    {
+        ','
+		[
+			(
+				textstring	(. var str = new ProtoCore.AST.ImperativeAST.StringNode { Value = t.val.Trim('"') }; .)
+							(. dictBuilder.AddKey(str); .)  
+			)
+			|
+			(
+				ident		(. var ident = new ProtoCore.AST.ImperativeAST.IdentifierNode(t.val); .)
+							(. NodeUtils.SetNodeLocation(ident, t); .)
+							(. dictBuilder.AddKey(ident); .)
+			) 
+		]
 		':'                     
-        Imperative_expr<out node>            (. dictBuilder.AddValue(node); .)
-        {
-            ','
-			textstring (. dictBuilder.AddKey(t); .)  
-			':'                     
-			Imperative_expr<out node>            (. dictBuilder.AddValue(node); .)
-        }
+		Imperative_expr<out node>       (. dictBuilder.SetNodeEndLocation(t); .)
+										(. dictBuilder.AddValue(node); .)
+    }
                                         
-    ]
+    
 '}'                                     (. dictBuilder.SetNodeEndLocation(t); .)
                                         (. node = dictBuilder.ToFunctionCall(); .)
 .
