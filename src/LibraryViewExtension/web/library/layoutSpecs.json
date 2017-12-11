@@ -248,7 +248,7 @@
               "elementType": "group",
               "include": [
                 {
-                  "path": "Core.List.List.Create"
+                  "path": "Core.List.List Create"
                 },
                 {
                   "path": "DSCoreNodes.DSCore.List.Join"
@@ -736,10 +736,10 @@
               "elementType": "group",
               "include": [
                 {
-                  "path": "Core.Evaluate.Function.Apply"
+                  "path": "Core.Evaluate.Function Apply"
                 },
                 {
-                  "path": "Core.Evaluate.Function.Compose"
+                  "path": "Core.Evaluate.Function Compose"
                 }
               ],
               "childElements": [ ]
