@@ -234,7 +234,7 @@ namespace Dynamo.Models
         /// <summary>
         ///     DesignScript VM EngineController, used for this instance of Dynamo.
         /// </summary>
-        public EngineController EngineController { get; private set; }
+        public EngineController EngineController { get; set; }
 
         /// <summary>
         ///     Manages all loaded ZeroTouch libraries.
@@ -682,7 +682,7 @@ namespace Dynamo.Models
             LibraryServices.MessageLogged += LogMessage;
             LibraryServices.LibraryLoaded += LibraryLoaded;
 
-            CustomNodeManager = new CustomNodeManager(NodeFactory, MigrationManager, LibraryServices, Scheduler);
+            CustomNodeManager = new CustomNodeManager(NodeFactory, MigrationManager, LibraryServices);
             InitializeCustomNodeManager();
 
             ResetEngineInternal();
@@ -1360,8 +1360,6 @@ namespace Dynamo.Models
             EngineController.MessageLogged += LogMessage;
             EngineController.TraceReconcliationComplete += EngineController_TraceReconcliationComplete;
 
-            CustomNodeManager.EngineController = EngineController;
-
             foreach (var def in CustomNodeManager.LoadedDefinitions)
                 RegisterCustomNodeDefinitionWithEngine(def);
         }
@@ -2023,11 +2021,6 @@ namespace Dynamo.Models
             var newNoteModels = new List<NoteModel>();
             foreach (var note in notes)
             {
-                // TODO: find out the issue that duplicates NoteModel with same GUID
-                // check if NoteModel was already inserted
-                if (modelLookup.ContainsKey(note.GUID))
-                    continue;
-
                 var noteModel = new NoteModel(note.X, note.Y, note.Text, Guid.NewGuid());
                 //Store the old note as Key and newnote as value.
                 modelLookup.Add(note.GUID, noteModel);

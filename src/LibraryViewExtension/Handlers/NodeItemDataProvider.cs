@@ -76,8 +76,7 @@ namespace Dynamo.LibraryUI.Handlers
             var data = new LoadedTypeData<LoadedTypeItem>();
             data.loadedTypes = searchEntries
                 //.Where(e => !e.ElementType.HasFlag(ElementTypes.Packaged))
-                //.Select(e => CreateLoadedTypeItem<LoadedTypeItem>(e)).ToList(); // Excpetion: Collection was modified; enumeration operation may not execute.
-                .ToList().Select(e => CreateLoadedTypeItem<LoadedTypeItem>(e)).ToList();
+                .Select(e => CreateLoadedTypeItem<LoadedTypeItem>(e)).ToList();
             return data;
         }
 

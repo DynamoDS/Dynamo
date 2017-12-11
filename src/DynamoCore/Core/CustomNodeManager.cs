@@ -14,7 +14,6 @@ using Dynamo.Logging;
 using Dynamo.Migration;
 using Dynamo.Models;
 using Dynamo.Properties;
-using Dynamo.Scheduler;
 using Dynamo.Selection;
 using Dynamo.Utilities;
 using System;
@@ -40,20 +39,14 @@ namespace Dynamo.Core
         /// <param name="nodeFactory">NodeFactory</param>
         /// <param name="migrationManager">MigrationManager</param>
         /// <param name="libraryServices">LibraryServices</param>
-        /// <param name="scheduler">DynamoScheduler</param>
-        public CustomNodeManager(NodeFactory nodeFactory, MigrationManager migrationManager, LibraryServices libraryServices, DynamoScheduler scheduler)
+        public CustomNodeManager(NodeFactory nodeFactory, MigrationManager migrationManager, LibraryServices libraryServices)
         {
             this.nodeFactory = nodeFactory;
             this.migrationManager = migrationManager;
             this.libraryServices = libraryServices;
-            this.scheduler = scheduler;
         }
 
         #region Fields and properties
-
-        private DynamoScheduler scheduler;
-
-        public EngineController EngineController { get; set; }
 
         private LibraryServices libraryServices;
 
