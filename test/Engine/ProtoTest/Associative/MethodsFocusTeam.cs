@@ -244,7 +244,7 @@ import(""Builtin.dll"");import(""FFITarget.dll"");p = DummyPoint.ByCoordinates(
         public void T017_DotOp_Collection_03()
         {
             String code =
-@"	def A(x : var[][]){	return = x;	}a = {{0},{1},{2}};fa = A(a);r1 = fa[1][0];";
+@"import(""Builtin.dll"");def A(x : var[][]){	return = x;	}a = {{0},{1},{2}};fa = A(a);r1 = fa[1][0];";
             thisTest.RunScriptSource(code);
 
             thisTest.Verify("r1", 1);
@@ -359,7 +359,7 @@ import(""Builtin.dll"");import(""FFITarget.dll"");p = DummyPoint.ByCoordinates(
         public void TV1467137_1_DotOp_Update()
         {
             String code =
-@"class A {	fx: int;	fb: B[];		constructor A(x :int)	{		fx = x;		fb = B.B({10,11});		}}class B{	fy : int;	constructor B(y : int)	{		fy = y;	}}a = {1,2};va = A.A(a);r1 = va[0].fb.fy;r2 = va.fb[0].fy;r3 = va.fb.fy[0];";
+@"import(""Builtin.dll"");class A {	fx: int;	fb: B[];		constructor A(x :int)	{		fx = x;		fb = B.B({10,11});		}}class B{	fy : int;	constructor B(y : int)	{		fy = y;	}}a = {1,2};va = A.A(a);r1 = va[0].fb.fy;r2 = va.fb[0].fy;r3 = va.fb.fy[0];";
             thisTest.RunScriptSource(code);
             Object[] v1 = new Object[] { 10, 11 };
             thisTest.Verify("r1", v1);

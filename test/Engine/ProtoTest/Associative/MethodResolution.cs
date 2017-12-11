@@ -135,7 +135,8 @@ val = b.execute(arr);
         {
             //Recorded as defect: DNL-1467146
             string code =
-                @"def execute(b : var)
+                @"import(""Builtin.dll"");
+def execute(b : var)
 {
 	return = 100; 
 }
@@ -154,7 +155,8 @@ val = v[0];
         public void TestDispatchEmptyArray()
         {
             string code =
-                @"def execute(b : var)
+                @"import(""Builtin.dll"");
+def execute(b : var)
 {
     return = 100; 
 }
