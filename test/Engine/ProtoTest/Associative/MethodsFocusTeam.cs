@@ -15,7 +15,7 @@ namespace ProtoTest.Associative
         public void SimpleCtorResolution01()
         {
             String code =
-@"    import(""Builtin.dll"");import(""FFITarget.dll"");	p = TestObjectA.TestObjectA();    p.Set(2);	x = p.a;";
+@"    import(""FFITarget.dll"");	p = TestObjectA.TestObjectA();    p.Set(2);	x = p.a;";
             thisTest.RunScriptSource(code);
             thisTest.Verify("x", 2);
         }
@@ -35,7 +35,7 @@ namespace ProtoTest.Associative
         public void SimpleCtorResolution02()
         {
             String code =
-@"    import(""Builtin.dll"");import(""FFITarget.dll"");	p = TestObjectA.TestObjectA(2);	x = p.a;";
+@"    import(""FFITarget.dll"");	p = TestObjectA.TestObjectA(2);	x = p.a;";
             thisTest.RunScriptSource(code);
             thisTest.Verify("x", 2);
         }
@@ -44,7 +44,7 @@ namespace ProtoTest.Associative
         public void T002_DotOp_DefautConstructor_IntProperty()
         {
             String code =
-@"    import(""Builtin.dll"");import(""FFITarget.dll"");	c = ClassFunctionality.ClassFunctionality(1);	x = c.IntVal;";
+@"    import(""FFITarget.dll"");	c = ClassFunctionality.ClassFunctionality(1);	x = c.IntVal;";
             thisTest.RunScriptSource(code);
             //Assert.Fail("0.0 should not be evaluated to be the same as 'null' in verification");
             thisTest.Verify("x", 1);
@@ -54,7 +54,7 @@ namespace ProtoTest.Associative
         public void T002_DotOp_DefautConstructor_DoubleProperty()
         {
             String code =
-@"    import(""Builtin.dll"");import(""FFITarget.dll"");	p = DummyPoint.ByCoordinates(1.0, 2.0, 3.0);    x = p.X;";
+@"    import(""FFITarget.dll"");	p = DummyPoint.ByCoordinates(1.0, 2.0, 3.0);    x = p.X;";
             thisTest.RunScriptSource(code);
             thisTest.Verify("x", 1.0);
         }
@@ -63,7 +63,7 @@ namespace ProtoTest.Associative
         public void T002_DotOp_DefautConstructor_ArrayProperty()
         {
             String code =
-@"    import(""Builtin.dll"");import(""FFITarget.dll"");	p = ArrayMember.Ctor({1,2,3,4,5});    x = p.X;";
+@"    import(""FFITarget.dll"");	p = ArrayMember.Ctor({1,2,3,4,5});    x = p.X;";
             thisTest.RunScriptSource(code);
             thisTest.Verify("x", new object[] { 1, 2, 3, 4, 5 });
         }
@@ -72,7 +72,7 @@ namespace ProtoTest.Associative
         public void T006_DotOp_SelfDefinedConstructor_01()
         {
             String code =
-@"    import(""Builtin.dll"");import(""FFITarget.dll"");	p = ClassFunctionality.ClassFunctionality(10);	x = p.IntVal;";
+@"    import(""FFITarget.dll"");	p = ClassFunctionality.ClassFunctionality(10);	x = p.IntVal;";
             thisTest.RunScriptSource(code);
             thisTest.Verify("x", 10);
         }
@@ -111,7 +111,7 @@ namespace ProtoTest.Associative
         public void T008_DotOp_MultiConstructor_01()
         {
             String code =
-@"	    import(""Builtin.dll"");import(""FFITarget.dll"");	p1 = TestObjectA.TestObjectA();    p1.Set(1);	x = p1.a;	p2 = TestObjectA.TestObjectA(2);	y = p2.a;";
+@"	    import(""FFITarget.dll"");	p1 = TestObjectA.TestObjectA();    p1.Set(1);	x = p1.a;	p2 = TestObjectA.TestObjectA(2);	y = p2.a;";
             thisTest.RunScriptSource(code);
             thisTest.Verify("x", 1);
             thisTest.Verify("y", 2);
@@ -121,7 +121,7 @@ namespace ProtoTest.Associative
         public void T009_DotOp_FuncCall()
         {
             String code =
-@"    import(""Builtin.dll"");import(""FFITarget.dll"");	p1 = DummyPoint.ByCoordinates(1.0, 2.0, 3.0);	p2 = p1.Translate(1.0, 1.0, 1.0);    x = p2.X;    y = p2.Y;    z = p2.Z;    ";
+@"    import(""FFITarget.dll"");	p1 = DummyPoint.ByCoordinates(1.0, 2.0, 3.0);	p2 = p1.Translate(1.0, 1.0, 1.0);    x = p2.X;    y = p2.Y;    z = p2.Z;    ";
             thisTest.RunScriptSource(code);
             thisTest.Verify("x", 2.0);
             thisTest.Verify("y", 3.0);
@@ -132,7 +132,7 @@ namespace ProtoTest.Associative
         public void T010_DotOp_Property()
         {
             String code =
-@"    import(""Builtin.dll"");import(""FFITarget.dll"");	p1 = DummyPoint.ByCoordinates(1.0, 2.0, 3.0);	p2 = p1.Translate(1.0, 1.0, 1.0);    x = p2.X;    y = p2.Y;    z = p2.Z + 1;	";
+@"    import(""FFITarget.dll"");	p1 = DummyPoint.ByCoordinates(1.0, 2.0, 3.0);	p2 = p1.Translate(1.0, 1.0, 1.0);    x = p2.X;    y = p2.Y;    z = p2.Z + 1;	";
             thisTest.RunScriptSource(code);
             thisTest.Verify("z", 5.0);
         }
@@ -213,7 +213,7 @@ namespace ProtoTest.Associative
         {
             String code =
 @"
-import(""Builtin.dll"");import(""FFITarget.dll"");p = DummyPoint.ByCoordinates(1..3, 20, 30);a = p.X[0];b = p[0].X;r1 = p.X[0] == p[0].X ? true : false;";
+import(""FFITarget.dll"");p = DummyPoint.ByCoordinates(1..3, 20, 30);a = p.X[0];b = p[0].X;r1 = p.X[0] == p[0].X ? true : false;";
             thisTest.RunScriptSource(code);
             thisTest.Verify("r1", true);
         }
@@ -222,7 +222,7 @@ import(""Builtin.dll"");import(""FFITarget.dll"");p = DummyPoint.ByCoordinates(
         public void T015_DotOp_Collection_01a()
         {
             String code =
-@"import(""Builtin.dll"");import(""FFITarget.dll"");p = DummyPoint.ByCoordinates(1..3, 20, 30);r1 = (p.X[0] == p[0].X);";
+@"import(""FFITarget.dll"");p = DummyPoint.ByCoordinates(1..3, 20, 30);r1 = (p.X[0] == p[0].X);";
             thisTest.RunScriptSource(code);
             thisTest.Verify("r1", true);
         }
@@ -244,7 +244,7 @@ import(""Builtin.dll"");import(""FFITarget.dll"");p = DummyPoint.ByCoordinates(
         public void T017_DotOp_Collection_03()
         {
             String code =
-@"import(""Builtin.dll"");def A(x : var[][]){	return = x;	}a = {{0},{1},{2}};fa = A(a);r1 = fa[1][0];";
+@"def A(x : var[][]){	return = x;	}a = {{0},{1},{2}};fa = A(a);r1 = fa[1][0];";
             thisTest.RunScriptSource(code);
 
             thisTest.Verify("r1", 1);
@@ -254,7 +254,7 @@ import(""Builtin.dll"");import(""FFITarget.dll"");p = DummyPoint.ByCoordinates(
         public void T018_DotOp_Collection_04()
         {
             String code =
-                    @"                     import(""Builtin.dll"");import(""FFITarget.dll"");	c = ClassFunctionality.ClassFunctionality({1,2});	x = c.IntVal;                    ";
+                    @"                     import(""FFITarget.dll"");	c = ClassFunctionality.ClassFunctionality({1,2});	x = c.IntVal;                    ";
             thisTest.RunScriptSource(code);
             Object[] v = { 1, 2 };
             thisTest.Verify("x", v);
@@ -265,7 +265,7 @@ import(""Builtin.dll"");import(""FFITarget.dll"");p = DummyPoint.ByCoordinates(
         public void TV018_DotOp_Collection_04_1()
         {
             String code =
-@"import(""Builtin.dll"");import(""FFITarget.dll"");	c = ClassFunctionality.ClassFunctionality({1,2} + 1);	x = c.IntVal;";
+@"import(""FFITarget.dll"");	c = ClassFunctionality.ClassFunctionality({1,2} + 1);	x = c.IntVal;";
             thisTest.RunScriptSource(code);
             Object[] v = { 2, 3 };
             thisTest.Verify("x", v);
@@ -285,7 +285,7 @@ import(""Builtin.dll"");import(""FFITarget.dll"");p = DummyPoint.ByCoordinates(
         public void TV018_DotOp_Collection_04_3()
         {
             String code =
-                    @"                   import(""Builtin.dll"");import(""FFITarget.dll"");	c = {ClassFunctionality.ClassFunctionality(1), ClassFunctionality.ClassFunctionality(2)};	x = c.IntVal;                    ";
+                    @"                   import(""FFITarget.dll"");	c = {ClassFunctionality.ClassFunctionality(1), ClassFunctionality.ClassFunctionality(2)};	x = c.IntVal;                    ";
             thisTest.RunScriptSource(code);
             Object[] v = { 1, 2 };
             thisTest.Verify("x", v);
@@ -295,7 +295,7 @@ import(""Builtin.dll"");import(""FFITarget.dll"");p = DummyPoint.ByCoordinates(
         public void TV018_DotOp_Collection_04_4()
         {
             String code =
-                    @"    import(""Builtin.dll"");import(""FFITarget.dll"");	c = {ClassFunctionality.ClassFunctionality(1), ClassFunctionality.ClassFunctionality(2)};	x = c.IntVal + 1;                    ";
+                    @"    import(""FFITarget.dll"");	c = {ClassFunctionality.ClassFunctionality(1), ClassFunctionality.ClassFunctionality(2)};	x = c.IntVal + 1;                    ";
             thisTest.RunScriptSource(code);
             Object[] v = { 2, 3 };
             thisTest.Verify("x", v);                    
@@ -323,7 +323,7 @@ import(""Builtin.dll"");import(""FFITarget.dll"");p = DummyPoint.ByCoordinates(
         public void T019_DotOp_Collection_05()
         {
             String code =
-@" import(""Builtin.dll"");import(""FFITarget.dll"");	c = {ClassFunctionality.ClassFunctionality(1), ClassFunctionality.ClassFunctionality(2)};	x = c.IntVal[0];";
+@" import(""FFITarget.dll"");	c = {ClassFunctionality.ClassFunctionality(1), ClassFunctionality.ClassFunctionality(2)};	x = c.IntVal[0];";
             thisTest.RunScriptSource(code);
             thisTest.Verify("x", 1);
 
@@ -334,7 +334,7 @@ import(""Builtin.dll"");import(""FFITarget.dll"");p = DummyPoint.ByCoordinates(
         {
             String code =
 
-@" import(""Builtin.dll"");import(""FFITarget.dll"");	c = {ClassFunctionality.ClassFunctionality({1,2}), ClassFunctionality.ClassFunctionality({3,4})};	x = c.IntVal[0][1];";
+@" import(""FFITarget.dll"");	c = {ClassFunctionality.ClassFunctionality({1,2}), ClassFunctionality.ClassFunctionality({3,4})};	x = c.IntVal[0][1];";
             thisTest.RunScriptSource(code);
             thisTest.Verify("x", 2);
 
@@ -347,7 +347,7 @@ import(""Builtin.dll"");import(""FFITarget.dll"");p = DummyPoint.ByCoordinates(
         {
             String code =
 
-@" import(""Builtin.dll"");import(""FFITarget.dll"");	c = {ClassFunctionality.ClassFunctionality({1,2}), ClassFunctionality.ClassFunctionality({3,4})};	x = c.IntVal[1][0];";
+@" import(""FFITarget.dll"");	c = {ClassFunctionality.ClassFunctionality({1,2}), ClassFunctionality.ClassFunctionality({3,4})};	x = c.IntVal[1][0];";
             thisTest.RunScriptSource(code);
             thisTest.Verify("x", 3);
 
@@ -359,7 +359,7 @@ import(""Builtin.dll"");import(""FFITarget.dll"");p = DummyPoint.ByCoordinates(
         public void TV1467137_1_DotOp_Update()
         {
             String code =
-@"import(""Builtin.dll"");class A {	fx: int;	fb: B[];		constructor A(x :int)	{		fx = x;		fb = B.B({10,11});		}}class B{	fy : int;	constructor B(y : int)	{		fy = y;	}}a = {1,2};va = A.A(a);r1 = va[0].fb.fy;r2 = va.fb[0].fy;r3 = va.fb.fy[0];";
+@"class A {	fx: int;	fb: B[];		constructor A(x :int)	{		fx = x;		fb = B.B({10,11});		}}class B{	fy : int;	constructor B(y : int)	{		fy = y;	}}a = {1,2};va = A.A(a);r1 = va[0].fb.fy;r2 = va.fb[0].fy;r3 = va.fb.fy[0];";
             thisTest.RunScriptSource(code);
             Object[] v1 = new Object[] { 10, 11 };
             thisTest.Verify("r1", v1);
@@ -386,7 +386,7 @@ import(""Builtin.dll"");import(""FFITarget.dll"");p = DummyPoint.ByCoordinates(
         public void T025_DotOp_FuncCall_04()
         {
             String code =
-@"import(""Builtin.dll"");import(""FFITarget.dll"");p = DummyPoint.ByCoordinates(1..3, 20, 30);r = p.X;";
+@"import(""FFITarget.dll"");p = DummyPoint.ByCoordinates(1..3, 20, 30);r = p.X;";
             thisTest.RunScriptSource(code);
             Object[] v1 = new Object[] { 1.0, 2.0, 3.0 };
             thisTest.Verify("r", v1);
@@ -808,7 +808,7 @@ import(""Builtin.dll"");import(""FFITarget.dll"");p = DummyPoint.ByCoordinates(
         public void T052_Defect_ReplicationMethodOverloading()
         {
             String code =
-@"import(""Builtin.dll"");import(""FFITarget.dll"");p = DummyPoint.ByCoordinates(10, 20, 30);def foo(val : int[]){    return = 1;}def foo(val : var){    return = 2;}                                arr = { 3, p, 5 } ;r = foo(arr);    ";
+@"import(""FFITarget.dll"");p = DummyPoint.ByCoordinates(10, 20, 30);def foo(val : int[]){    return = 1;}def foo(val : var){    return = 2;}                                arr = { 3, p, 5 } ;r = foo(arr);    ";
             thisTest.RunScriptSource(code);
             Object[] v1 = new Object[] { 2, 2, 2 };
             thisTest.Verify("r", v1);
@@ -822,7 +822,7 @@ import(""Builtin.dll"");import(""FFITarget.dll"");p = DummyPoint.ByCoordinates(
         {
             String code =
 @"
-import(""Builtin.dll"");import(""FFITarget.dll"");a1 = DummyPoint.ByCoordinates(10, 20, 30);def foo(val : int[]){    return = 1;}def foo(val : var){    return = 2;}def foo(val: var[]){	return = 3;}                                arr = { {3}, a1, 5,{a1} } ;//1,2,2,3r = foo(arr);    ";
+import(""FFITarget.dll"");a1 = DummyPoint.ByCoordinates(10, 20, 30);def foo(val : int[]){    return = 1;}def foo(val : var){    return = 2;}def foo(val: var[]){	return = 3;}                                arr = { {3}, a1, 5,{a1} } ;//1,2,2,3r = foo(arr);    ";
             // Tracked by: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4052
             thisTest.RunScriptSource(code);
             Object[] v1 = new Object[] { 1, 2, 2, 3 };
@@ -837,7 +837,7 @@ import(""Builtin.dll"");import(""FFITarget.dll"");a1 = DummyPoint.ByCoordinates
         {
             String code =
 @"
-import(""Builtin.dll"");import(""FFITarget.dll"");a1 = DummyPoint.ByCoordinates(10, 20, 30);def foo(val : int[]){    return = 1;}def foo(val : var){    return = 2;}def foo(val: var[]){	return = 3;}                                arr = { {3}, a1, 5,{{a1}} } ;//1,2,2,nullr = foo(arr);";
+import(""FFITarget.dll"");a1 = DummyPoint.ByCoordinates(10, 20, 30);def foo(val : int[]){    return = 1;}def foo(val : var){    return = 2;}def foo(val: var[]){	return = 3;}                                arr = { {3}, a1, 5,{{a1}} } ;//1,2,2,nullr = foo(arr);";
             // Tracked by: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4052
             string err = "MAGN-4052 Replication and Method overload issue, resolving to wrong method";
             thisTest.RunScriptSource(code, err);
@@ -853,7 +853,7 @@ import(""Builtin.dll"");import(""FFITarget.dll"");a1 = DummyPoint.ByCoordinates
         {
             String code =
 @"
-import(""Builtin.dll"");import(""FFITarget.dll"");a1 = DummyPoint.ByCoordinates(10, 20, 30);def foo(val : int[]){    return = 1;}def foo(val : var){    return = 2;}def foo(val: var[]){	return = 3;}                                arr = { {3}, a1, 5.0,{{a1}} } ;//1,2,2,nullr = foo(arr);";
+import(""FFITarget.dll"");a1 = DummyPoint.ByCoordinates(10, 20, 30);def foo(val : int[]){    return = 1;}def foo(val : var){    return = 2;}def foo(val: var[]){	return = 3;}                                arr = { {3}, a1, 5.0,{{a1}} } ;//1,2,2,nullr = foo(arr);";
             // Tracked by: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4052
             string err = "MAGN-4052 Replication and Method overload issue, resolving to wrong method";
             thisTest.RunScriptSource(code, err);
@@ -868,7 +868,7 @@ import(""Builtin.dll"");import(""FFITarget.dll"");a1 = DummyPoint.ByCoordinates
         public void TV052_Defect_ReplicationMethodOverloading_InUserDefinedClass()
         {
             String code =
-@"import(""Builtin.dll"");import(""FFITarget.dll"");a1 = DummyPoint.ByCoordinates(10, 20, 30);def foo(val : int[]){    return = 1;}def foo(val : var){    return = 2;}def foo(val: var[]){	return = 3;}                                arr = { {3}, a1, 5.0,{{a1}} } ;//1,2,2,nullr = foo(arr);";
+@"import(""FFITarget.dll"");a1 = DummyPoint.ByCoordinates(10, 20, 30);def foo(val : int[]){    return = 1;}def foo(val : var){    return = 2;}def foo(val: var[]){	return = 3;}                                arr = { {3}, a1, 5.0,{{a1}} } ;//1,2,2,nullr = foo(arr);";
             // Tracked by: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4052
             string err = "MAGN-4052 Replication and Method overload issue, resolving to wrong method";
             thisTest.RunScriptSource(code, err);
@@ -900,7 +900,7 @@ import(""Builtin.dll"");import(""FFITarget.dll"");a1 = DummyPoint.ByCoordinates
         public void T056_nonmatchingclass_1467162()
         {
             String code =
-            @"                import(""Builtin.dll"");import(""FFITarget.dll"");                a : M = DummyPoint.ByCoordinates(10, 20, 30);            ";
+            @"                import(""FFITarget.dll"");                a : M = DummyPoint.ByCoordinates(10, 20, 30);            ";
             thisTest.RunScriptSource(code);
             thisTest.Verify("a", null);
             TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.ConversionNotPossible);
@@ -911,7 +911,7 @@ import(""Builtin.dll"");import(""FFITarget.dll"");a1 = DummyPoint.ByCoordinates
         public void T057_nonmatchingclass_1467162_2()
         {
             String code =
-            @"                                import(""Builtin.dll"");import(""FFITarget.dll"");                a : DummyVector = DummyPoint.ByCoordinates(10, 20, 30);            ";
+            @"                                import(""FFITarget.dll"");                a : DummyVector = DummyPoint.ByCoordinates(10, 20, 30);            ";
             thisTest.RunScriptSource(code);
             thisTest.Verify("a", null);
             TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.ConversionNotPossible);
@@ -933,7 +933,7 @@ import(""Builtin.dll"");import(""FFITarget.dll"");a1 = DummyPoint.ByCoordinates
         {
             string code = @"
 
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 
     def foo()
     {
@@ -975,7 +975,7 @@ r4 = foo(a,a,a);
         {
             string code = @"
 
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 
 def foo(x: int)
 {
@@ -1001,7 +1001,7 @@ r2 = foo(a, 1);
         public void TestMethodResolution03()
         {
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 
 def foo(x: int)
 {

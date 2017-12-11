@@ -101,7 +101,7 @@ c = a + 1;
         public void T04_Update_Class_Instance_Argument()
         {
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 t1 = 1;
 a1 = ClassFunctionality.ClassFunctionality(t1);
 b1 = a1.OverloadedAdd(t1);
@@ -320,7 +320,7 @@ f = c + 1;";
         public void T14_Defect_1461209()
         {
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 y = ClassFunctionality.ClassFunctionality( x);
 a1 = y.IntVal;
 x = 3;
@@ -336,7 +336,7 @@ x = 5;";
         public void T14_Defect_1461209_2()
         {
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 y = ClassFunctionality.ClassFunctionality( x);
 a1 = y.IntVal;
 x = [Imperative]
@@ -355,7 +355,7 @@ x = [Imperative]
         public void T15_Defect_1460935()
         {
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 def foo ( b1 : ClassFunctionality )
 {
     return = b1.IntVal;
@@ -377,7 +377,7 @@ y = x;
         public void T15_Defect_1460935_2()
         {
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 def foo ( b1 : ClassFunctionality )
 {
     return = b1.IntVal;
@@ -416,7 +416,7 @@ x = false;
         public void T15_Defect_1460935_4()
         {
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 def foo ( b1 : ClassFunctionality )
 {
     return = b1.IntVal;
@@ -451,7 +451,7 @@ y2 = foo ( b2 );
         public void T15_Defect_1460935_5()
         {
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 b3 = ClassFunctionality.ClassFunctionality( 2 );
 x3 = b3.IntVal;
 [Imperative]
@@ -470,7 +470,7 @@ x3 = b3.IntVal;
         public void T15_Defect_1460935_6()
         {
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 def foo ( b : ClassFunctionality )
 {
     return = { b.IntVal, b.IntVal + 1 };
@@ -563,7 +563,7 @@ y = foo (x );
         public void T17_Defect_1459759()
         {
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 p1 = 1;
 p2 = p1 * 2;
 p1 = true;
@@ -808,7 +808,7 @@ c;
         {
             string error = "1467385 Sprint 27 - rev 4219 - valid update testcase throws cyclic dependancy error ";
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 a1 = ClassFunctionality.ClassFunctionality();
 a1.IntVal = 1;
 b = a1.IntVal;
@@ -824,7 +824,7 @@ a1.IntVal = 2;
         public void T23_Update_Class_Instance_Using_Set_Method_2()
         {
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 a1 = ClassFunctionality.ClassFunctionality();
 a1.IntVal = 1;
 b = a1.IntVal;
@@ -840,7 +840,7 @@ a1.IntVal = 2;
         public void T23_Update_Class_Instance_Using_Set_Method_3()
         {
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 a1 = ClassFunctionality.ClassFunctionality();
 a1.IntVal = 1;
 b = a1.IntVal;
@@ -858,7 +858,7 @@ a1.IntVal = null;
         {
             string error = "1467385 Sprint 27 - rev 4219 - valid update testcase throws cyclic dependancy error ";
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 a1 = ClassFunctionality.ClassFunctionality();
 a1.IntVal = 1;
 b = a1.IntVal;
@@ -875,7 +875,7 @@ a1.IntVal = 3.5;
         public void T23_Update_Class_Instance_Using_Set_Method_5()
         {
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 a1 = ClassFunctionality.ClassFunctionality();
 a1.IntVal = 1;
 b = a1.IntVal;
@@ -893,7 +893,7 @@ a1.IntVal = true; // This is not accepted as IntVal is an 'int' type
             // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1553
             string errmsg = "MAGN-1553: [Design Issue] update of instance , between property update and by method what ist he expected answer ";//1467187 - Sprint24: REGRESSION : rev 3177: When a class collection property is updated, the value if not reflected";
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 def foo ( x1 : ClassFunctionality)
 {
     x1.IntVal = -1;
@@ -916,7 +916,7 @@ a1 = foo ( a1);
         {
             string errmsg = "";
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 a1 = ClassFunctionality.ClassFunctionality();
 b = a1.IntVal;
 a1.IntVal = -1;
@@ -936,7 +936,7 @@ a1.IntVal = -1;
             //Assert.Fail("1463327 - Sprint 20 : Rev 2086 : Update issue : When a variable is updated to a different type using itself DS is throwing System.NullReference exception");
 
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 c = 1.0;
 c = ClassFunctionality.ClassFunctionality( c );
 x = c.IntVal;";
@@ -1073,7 +1073,7 @@ a2 = 4;";
         public void T30_Update_Global_Variables_Class()
         {
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 y = ClassFunctionality.ClassFunctionality();
 z = y.StaticProp;
 y.StaticProp = 2;
@@ -1088,7 +1088,7 @@ y.StaticProp = 2;
         public void T30_Update_Global_Variables_Function()
         {
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 IntVal = 1;
 y = ClassFunctionality.ClassFunctionality(2);
 z1 = y.IntVal;
@@ -1139,7 +1139,7 @@ y = x;";
         public void T31_Defect_1459777()
         {
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 class A 
 {
     a : var;
@@ -1168,7 +1168,7 @@ c1 = b1;
         {
             string err = "1467385 Sprint 27 - rev 4219 - valid update testcase throws cyclic dependancy error";
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 a1 = ClassFunctionality.ClassFunctionality();
 a1.IntVal = 1;
 b = a1.IntVal;
@@ -1184,7 +1184,7 @@ a1.IntVal = 2; // expected b = 2; received : b = 1;
         public void T31_Defect_1459777_3()
         {
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 a1 = ClassFunctionality.ClassFunctionality();
 x = a1.IntVal;
 c = [Imperative]
@@ -1242,7 +1242,7 @@ z2 = z;
             //Assert.Fail("1466085 - Sprint 22 : rev 2396 : Update issue : update not working with range expressions ");
 
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 x = ClassFunctionality.ClassFunctionality();
 y = x.IntVal;
 y1 = 0..y;
@@ -1266,7 +1266,7 @@ z3 = y3;";
         public void T31_Defect_1459777_8()
         {
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 def foo ( x ) 
 {
     return  = x + 1;
@@ -1286,7 +1286,7 @@ x1.IntVal = 2;
         public void T31_Defect_1459777_9()
         {
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 def foo ( x ) 
 {
     return  = x + 1;
@@ -1360,7 +1360,7 @@ a1.a = 2;
         public void T34_Defect_DNL_1463327()
         {
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 c = 1.0;
 x = [Imperative]
 {
@@ -1410,7 +1410,7 @@ x = [Imperative]
         {
             string error = "1467416 Count returns null if the input argument is single value ";
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 t = 0..3;
 c = ClassFunctionality.ClassFunctionality ( t );
 c1 = Count ( c );
@@ -1434,7 +1434,7 @@ t = 0..2;
         public void T34_Defect_DNL_1463327_4()
         {
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 t = 0..3;
 c = ClassFunctionality.ClassFunctionality ( t );
 c = ClassFunctionality.ClassFunctionality ( c[0].IntVal );
@@ -1564,7 +1564,7 @@ def foo : int ( a : int, b : int )
         public void T44_Defect_1457029()
         {
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 c1 = { { 1,2}, 3};
 c1 = ClassFunctionality.ClassFunctionality( c1[0] );
 x = c1.IntVal;
@@ -1579,7 +1579,7 @@ x = c1.IntVal;
         public void T44_Defect_1457029_2()
         {
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll""); 
+import(""FFITarget.dll""); 
 c1 = { { 1.0, 2.0}, 3.0 };
 c1 = ClassFunctionality.ClassFunctionality( c1[0][0] );
 x = c1.IntVal;
@@ -1675,7 +1675,7 @@ A = 1..10..2;
         {
             String code =
  @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 t = 0..3;
 c = ClassFunctionality.ClassFunctionality ( t );
 x = c.IntVal;
@@ -1765,7 +1765,7 @@ t = 2; // expected i = 12
         {
             String code =
  @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 a = ClassFunctionality.ClassFunctionality();
 b1 = a.IntVal;
 c = [Imperative]
@@ -1811,7 +1811,7 @@ totalLength = 0;
         {
             String code =
  @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 a = ClassFunctionality.ClassFunctionality(0);
 totalLength = a.IntVal;
 i = 0;
@@ -1841,7 +1841,7 @@ i = 0;
         {
             String code =
  @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 totalLength = 0;
 i = 4;
 b = 0;
@@ -1915,7 +1915,7 @@ z2 = z;
         {
             String code =
 @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 def foo (x1:var[])
 {
     return = x1 + 1;
@@ -1934,7 +1934,7 @@ x = foo(a);
         {
             String code =
 @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 def foo (x1:var[])
 {
     return = x1 + 1;
@@ -2151,7 +2151,7 @@ c = a + 1;
         {
             string errmsg = "";
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 i = 0;
 [Imperative]
 {
@@ -2188,7 +2188,7 @@ i = 0;
         public void T60_Defect_14672007_Update_In_Class_From_Imperative_Scope()
         {
             String code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 x = { 1, 2 };
 y1 =ClassFunctionality.ClassFunctionality(x);
 y2 = { y1[0].IntVal, y1[1].IntVal };
@@ -2214,7 +2214,7 @@ y2 = { y1[0].IntVal, y1[1].IntVal };
         public void T60_Defect_14672007_Update_In_Class_From_Imperative_Scope_2()
         {
             String code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 x = { 1, 2 };
 y1 = ClassFunctionality.ClassFunctionality(x);
 y2 = { y1[0].IntVal, y1[1].IntVal };
@@ -2237,7 +2237,7 @@ y2 = { y1[0].IntVal, y1[1].IntVal };
         public void T60_Defect_14672007_Update_In_Class_From_Imperative_Scope_3()
         {
             String code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 x = { 1, 2 };
 y1 = ClassFunctionality.ClassFunctionality(x);
 y2 = { y1[0].IntVal, y1[1].IntVal };
@@ -2414,7 +2414,7 @@ a = 33;
         public void T62_update_wrongsequnce_1467484_9()
         {
             String code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 c = 0;
 x = c > 5 ? 1 : 2;
 [Imperative]{ c = 10; }
@@ -2632,7 +2632,7 @@ b;
         public void T65_1467495_FalseCyclicDependancy()
         {
             String code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 def XPlusY(NextPoint : DummyPoint)
 {
     x = NextPoint.X;
@@ -2654,7 +2654,7 @@ pt2 = XPlusY(pt1);
         public void T65_1467495_FalseCyclicDependancy_2()
         {
             String code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 def XPlusY(NextPoint : DummyPoint)
 {
     x = NextPoint.X;
@@ -2681,7 +2681,7 @@ pt2;
         public void T65_1467495_FalseCyclicDependancy_5()
         {
             String code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 def XPlusY(NextPoint : DummyPoint)
 {
     x = NextPoint.X;
@@ -3434,7 +3434,7 @@ b = 2;
         public void T75_TestUpdate_1467536()
         {
             String code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 def f(p : DummyPoint)
 {
     return = p.X + 1;
@@ -3756,7 +3756,7 @@ a = 2;
         public void T85_1467452_update_using_class_methods()
         {
             String code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 a1 = ClassFunctionality.ClassFunctionality();
 x1 = 3;
 y = a1.SetAndReturn( x1 ); 
@@ -3776,7 +3776,7 @@ y = a1.SetAndReturn( x1 );
         public void T85_1467452_update_using_class_methods_2()
         {
             String code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 x1 = 3;
 y = 0;
 test = 0;
@@ -3800,7 +3800,7 @@ x1 = 4;
         public void T85_1467452_update_using_class_methods_3()
         {
             String code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 x1 = 3;
 y = 0;
 [Associative]
@@ -3824,7 +3824,7 @@ x1 = 4;
         public void T85_1467452_update_using_class_methods_4()
         {
             String code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 y = [Associative]
 {
     x1 = 3;
@@ -3850,7 +3850,7 @@ x1 = 4;
         public void T85_1467452_update_using_class_methods_5()
         {
             String code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 x1 = 3;
 y = 0;
 [Imperative]
@@ -3878,7 +3878,7 @@ x1 = 4;
         public void T85_1467452_update_using_class_methods_6()
         {
             String code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 x1 = 3;
 y = 0;
 [Imperative]
@@ -3902,7 +3902,7 @@ x1 = 4;
         public void T85_1467452_update_using_class_methods_7()
         {
             String code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 y = 0;
 x1 = 3;
 y = 0;
@@ -4025,7 +4025,7 @@ x1 = 4;
         public void T90_1467510_cyclic()
         {
             String code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 a = 1;
 b = a + 1;
 c = a + b;
@@ -4108,7 +4108,7 @@ x = n.X;
         public void T91_1467547_4()
         {
             String code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 def foo ( b1 : ClassFunctionality )
 {
     return = b1.IntVal;
@@ -4128,7 +4128,7 @@ e1 = d1(b1);
         public void T91_1467547_5()
         {
             String code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 def foo ( b1 : ClassFunctionality )
 {
     return = b1.IntVal;
@@ -4214,7 +4214,7 @@ a;
         public void T92_Test_Update_Propagation_In_Self_Update_Thru_Inline_Condition()
         {
             String code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 c = 0;
 ClassFunctionality.StaticProp = 1;
 b = ClassFunctionality.StaticProp + 1;

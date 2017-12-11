@@ -34,7 +34,7 @@ namespace ProtoTest.UtilsTests
         {
             String code =
 @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 [Imperative]
 {
 	a = ClassFunctionality.ClassFunctionality(20);
@@ -55,7 +55,7 @@ import(""Builtin.dll"");import(""FFITarget.dll"");
         {
             String code =
 @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 [Imperative]
 {
 	a = ClassFunctionality.ClassFunctionality(20);
@@ -76,7 +76,7 @@ import(""Builtin.dll"");import(""FFITarget.dll"");
         {
             String code =
 @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 [Imperative]
 {
 	a = ClassFunctionality.ClassFunctionality(20);

@@ -382,7 +382,8 @@ namespace ProtoTestFx.TD
         /// <returns></returns>
         public virtual ExecutionMirror RunScriptSource(string sourceCode, string errorstring = "", string includePath = "")
         {
-            
+            sourceCode = sourceCode.Insert(0, "import(\"Builtin.dll\");");
+
             if (testImport)
             {
                 Guid g;
@@ -421,7 +422,6 @@ namespace ProtoTestFx.TD
                         Console.WriteLine(String.Format("Path: {0} does not exist.", includePath));
                     }
                 }
-
                 StringReader file = new StringReader(sourceCode);
                 WatchTestFx.GeneratePrintStatements(file, ref map);
 

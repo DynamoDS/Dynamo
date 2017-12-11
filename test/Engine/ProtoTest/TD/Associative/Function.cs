@@ -395,7 +395,7 @@ def Level2 : int (a : int)
         public void Z002_Defect_1461399()
         {
             string src = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 def VectorProperties(v : DummyVector)
 {
  return = {
@@ -431,7 +431,7 @@ a = function1({null,null});
         public void TestCallFunctionReturningObjectMultipleTimes()
         {
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 def f()
 {
     p = ClassFunctionality.ClassFunctionality(1);
@@ -495,7 +495,7 @@ x = f();
         public void TestDefaultArgumentPointer01()
         {
             string code = @"    
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 def f(p : ClassFunctionality = ClassFunctionality.ClassFunctionality(1))
 {
     return = p.IntVal;
@@ -512,7 +512,7 @@ x = f();
         public void TestDefaultArgumentPointer02()
         {
             string code = @"    
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 
 def f (a : DummyPoint = DummyPoint.ByCoordinates(1,2,3))
 {
@@ -558,7 +558,7 @@ x = f();
         public void TestDefaultArgumentUntyped03()
         {
             string code = @"    
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 def f(p = ClassFunctionality.ClassFunctionality(1))
 {
     return = p.IntVal;
@@ -574,7 +574,7 @@ x = f();
         public void TestDefaultArgumentUntyped04()
         {
             string code = @"    
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 
 def f (a = DummyPoint.ByCoordinates(1,2,3))
 {

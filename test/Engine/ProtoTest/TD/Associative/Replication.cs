@@ -252,7 +252,7 @@ list13 = false || list2; // { true, true, false, false, false }";
         public void T09_Pass_1_single_list_of_class_type()
         {
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 list =  {
 			DummyVector.ByCoordinates(1, 2, 3), 
 			DummyVector.ByCoordinates(4, 5, 6),
@@ -278,7 +278,7 @@ list2_2_x = list2[2].X; // 7
         public void T10_Pass_2_Lists_Different_Length_2_Integers()
         {
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 list1 = { 1, 2 };
 list2 = { 11, 12 };
 pointList = DummyVector.ByCoordinates(list1, list2, 111);
@@ -299,7 +299,7 @@ z0 = pointList[0].Z; // 111
         {
             //Assert.Fail("Test crashes NUnit");
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 p1 = {
 		Point_1D.ValueCtor(1),
 		Point_1D.ValueCtor(2),
@@ -322,7 +322,7 @@ list_2_z = list[2].z; // 4
         public void T12_Pass_2_Lists_Same_Length_1_Integer()
         {
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 list1 = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
 list2 = { 11, 12, 13, 14, 15, 16, 17, 18, 19, 20 };
 pointList = Point_3D.ValueCtor(list1, list2, 99);
@@ -341,7 +341,7 @@ pointList_9_x = pointList[9].GetValue(); // 129";
         public void T13_Pass_3_Lists_Different_Length()
         {
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 list1 = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
 list2 = { 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24 };
 list3 = { 25, 26, 27, 28, 29, 30 };
@@ -361,7 +361,7 @@ pointList_5_x = pointList[5].GetValue(); // 52";
         public void T14_Pass_3_Lists_Same_Length()
         {
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 list1 = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
 list2 = { 11, 12, 13, 14, 15, 16, 17, 18, 19, 20 };
 list3 = { 21, 22, 23, 24, 25, 26, 27, 28, 29, 30 };
@@ -382,7 +382,7 @@ pointList_9_x = pointList[9].GetValue(); // 60";
         {
             //Assert.Fail("1467075 - Sprint23 : rev 2660 : replication with nested array is not working as expected");
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 list1 = { { 1, 2, 3 }, { 1, 2, 3 }, { 1, 2, 3 } };
 list2 = { { 1, 2, 3, 4 }, { 1, 2, 3, 4 } };
 list3 = Point_2D.ValueCtor(list1, list2);
@@ -408,7 +408,7 @@ list2_1_2 = list3[1][2].GetValue(); // 9
         public void T16_Pass_a_3x3_List()
         {
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 list1 = { { 1, 2, 3 }, { 1, 2, 3 }, { 1, 2, 3 } };
 list2 = Point_1D.ValueCtor(list1);
 list2_0_0 = list2[0][0].GetValue(); // 1
@@ -428,7 +428,7 @@ list2_2_2 = list2[2][2].GetValue(); // 9
         public void T17_Pass_ConstructorCall_Return_List()
         {
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 list1 = { 1, 2, 3, 4, 5 };
 list2 = Point_3D.PointOnXCtor(Point_1D.ValueCtor(list1));
 list2_0 = list2[0].GetIndexX(); // 1
@@ -447,7 +447,7 @@ list2_4 = list2[4].GetIndexX(); // 25
         public void T18_Pass_ConstructorCall_Return_List_to_Function()
         {
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 def GetPointIndex : int(p : Point_1D)
 {
 	return = p.x;
@@ -467,7 +467,7 @@ list2 = GetPointIndex(Point_1D.ValueCtor(list1)); // { 1, 2, 3, 4, 5, 6 }
         public void T19_Pass_FunctionCall_Return_List()
         {
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 def foo : int(a : int)
 {
 	return = a * a;
@@ -489,7 +489,7 @@ list2_4 = list2[4].GetIndex(); // 390625";
         public void T20_Pass_Single_List()
         {
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 list1 = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
 pointList = Point_1D.ValueCtor(list1);
 pointList_0_x = pointList[0].GetValue(); // 1
@@ -507,7 +507,7 @@ pointList_9_x = pointList[9].GetValue(); // 100";
         public void T21_Pass_Single_List_2_Integer()
         {
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 list1 = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
 pointList = Point_3D.ValueCtor(list1, 66, 88);
 pointList_0_x = pointList[0].GetValue(); // 155
@@ -525,7 +525,7 @@ pointList_9_x = pointList[9].GetValue(); // 164";
         public void T22_Pass_1_single_list_of_class_type_and_1_variable_of_class_type()
         {
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 list = {
 			Integer.ValueCtor(4),
 			Integer.ValueCtor(5),
@@ -544,7 +544,7 @@ m = i.Mul(list, i); // { 16, 20, 28 }";
         public void T23_Pass_2_lists_of_class_type_with_different_length()
         {
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 list1 = {
 			Integer.ValueCtor(4),
 			Integer.ValueCtor(5),
@@ -567,7 +567,7 @@ m = i.Mul(list1, list2); // { 8, 20 }";
         public void T24_Pass_3x3_List_And_2x4_List()
         {
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 list1 = { { 1, 2, 3 }, { 4, 5, 6 }, { 7, 8, 9 } };
 list2 = { { 1, 2, 3, 4 }, { 5, 6, 7, 8 } };
 m = DummyMath.ValueCtor(2);
@@ -584,7 +584,7 @@ list3 = m.Div(list1, list2);  // { { 1, 2, 3 }, { 4, 5, 6 } }
         public void T25_Pass_3_List_Different_Length()
         {
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 list1 = { 1, 2, 3, 4, 5, 6, 7 };
 list2 = { 1, 2, 3, 4, 5 };
 list3 = { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
@@ -601,7 +601,7 @@ list4 = m.Div(list1, list2, list3);
         public void T26_Pass_3_List_Different_Length_2_Integers()
         {
             string src = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 list1 = { 10, 11, 12, 13, 14, 15, 16 };
 list2 = { 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30 };
 list3 = { 30, 31, 32, 33, 34 };
@@ -618,7 +618,7 @@ listX2 = m.Div(list1, list2, list3, 15, 25); // { 25, 25, 26, 27, 28 }
         public void T27_Pass_3_List_Same_Length()
         {
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 list1 = { 31, 32, 33, 34, 35, 36, 37, 38, 39, 40 };
 list2 = { 21, 22, 23, 24, 25, 26, 27, 28, 29, 30 };
 list3 = { 11, 12, 13, 14, 15, 16, 17, 18, 19, 20 };
@@ -635,7 +635,7 @@ list4 = m.Mul(list1, list2, list3); // { 252, 264, 276, 288, 300, 312, 324, 336,
         public void T28_Pass_3_List_Same_Length_2_Integers()
         {
             string src = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 list1 = { 10, 11, 12, 13, 14 };
 list2 = { 20, 21, 22, 23, 24 };
 list3 = { 30, 31, 32, 33, 34 };
@@ -652,7 +652,7 @@ list2 = m.Div(list1, list2, list3, 15, 25);
         public void T29_Pass_FunctionCall_Reutrn_List001()
         {
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 list1 = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
 m = DummyMath.ValueCtor(10);
 list2 = m.Mul(m.Mul(list1));  // { 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000 }";
@@ -667,7 +667,7 @@ list2 = m.Mul(m.Mul(list1));  // { 100, 200, 300, 400, 500, 600, 700, 800, 900, 
         public void T30_Pass_FunctionCall_Reutrn_List002()
         {
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 def foo : int (a : int)
 {
 	return = a * a;
@@ -686,7 +686,7 @@ list2 = m.Mul(foo(list1));  // { 10, 40, 90, 160, 250, 360, 490, 640, 810, 1000 
         public void T31_Pass_FunctionCall_Reutrn_List003()
         {
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 def foo : int (a : int)
 {
 	return = a * a;
@@ -705,7 +705,7 @@ list2 = foo(m.Mul(list1));  // { 100, 400, 900, 1600, 2500, 3600, 4900, 6400, 81
         public void T32_Pass_Single_3x3_List()
         {
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 list1 = { { 1, 2, 3 }, { 4, 5, 6 }, { 7, 8, 9 } };
 m = DummyMath.ValueCtor(10);
 list2 = m.Mul(list1);  // { { 10, 20, 30 }, { 40, 50, 60 }, { 70, 80, 90 } }";
@@ -720,7 +720,7 @@ list2 = m.Mul(list1);  // { { 10, 20, 30 }, { 40, 50, 60 }, { 70, 80, 90 } }";
         public void T33_Pass_Single_List()
         {
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 list1 = { 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0 };
 m = DummyMath.ValueCtor(10.0);
 list2 = m.Mul(list1);  // { 10, 20, 30, 40, 50, 60, 70, 80, 90, 100 }";
@@ -735,7 +735,7 @@ list2 = m.Mul(list1);  // { 10, 20, 30, 40, 50, 60, 70, 80, 90, 100 }";
         public void T34_Pass_Single_List_2_Integers()
         {
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 list1 = { 31, 32, 33, 34, 35, 36, 37, 38, 39, 40 };
 m = DummyMath.ValueCtor(5);
 list2 = m.Mul(list1, 12, 17); // {300,305,310,315,320,325,330,335,340,345}";
@@ -751,7 +751,7 @@ list2 = m.Mul(list1, 12, 17); // {300,305,310,315,320,325,330,335,340,345}";
         {
             //Assert.Fail("1467194 - Sprint 25 - rev Regressions created by array copy constructions ");
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 def GetMidPoint : Point_3D(p1 : Point_3D, p2 : Point_3D)
 {
 	return = Point_3D.ValueCtor(	
@@ -783,7 +783,7 @@ list3_2_z = list3[2].GetCoor(3); // 19
         public void T36_Pass_1_single_list_of_class_type()
         {
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 def Square : int(i : Integer)
 {
 	return = i.value * i.value;
@@ -807,7 +807,7 @@ list2 = Square(list); // { 4, 9, 16, 25 }";
         public void T37_Pass_2_lists_of_class_type_different_length()
         {
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 def GetMidPoint : Point_3D(p1 : Point_3D, p2 : Point_3D)
 {
 	return = Point_3D.ValueCtor(	
@@ -840,7 +840,7 @@ list3_1_y = list3[1].GetCoor(2); // 25
         public void T38_Pass_2_lists_of_class_type_different_length_and_1_integer()
         {
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 def Sum : int(i1 : Integer, i2 : Integer, i3 : int)
 {
 	return = i1.value + i2.value + i3;
@@ -868,7 +868,7 @@ list3 = Sum(list1, list2, 10); // { 15, 21, 27 }";
         public void T39_Pass_2_lists_of_class_type_same_length_and_1_variable_of_class_type()
         {
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 def Sum : int(i1 : Integer, i2 : Integer, i3 : Integer)
 {
 	return = i1.value + i2.value + i3.value;
@@ -895,7 +895,7 @@ list3 = Sum(list1, list2, Integer.ValueCtor(10)); // { 15, 21, 27 }";
         public void T40_Pass_2_List_of_class_type_Same_Length()
         {
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 def GetMidPoint : Point_3D(p1 : Point_3D, p2 : Point_3D)
 {
 	return = Point_3D.ValueCtor(	
@@ -1689,7 +1689,7 @@ xdata = { 1.5, 2 };
         {
             String code =
                             @"
-                                import(""Builtin.dll"");import(""FFITarget.dll"");
+                                import(""FFITarget.dll"");
                                 a1 = Integer.ValueCtor(1);
                                 def foo(val : int[])
                                 {
@@ -2042,7 +2042,7 @@ list2 = !list1;
         {
             String code =
 @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 a1 = Integer.ValueCtor(0);
 b1 = { true, a1 };
 b = !b1;
@@ -2060,7 +2060,7 @@ b = !b1;
         {
             String code =
 @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 coords = {0,1,2,3,4,5,6,7,8,9};
 pts = DummyPoint.ByCoordinates(coords, coords, 1);
 y = Count ( pts );
@@ -2077,7 +2077,7 @@ y = Count ( pts );
         {
             String code =
 @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 coords = {0,1,2,3,4,5,6,7,8,9};
 vList1 = DummyVector.ByCoordinates(coords,10,20);
 vList2 = DummyVector.ByVector(vList1); 
@@ -2095,7 +2095,7 @@ v = Count ( vList2 );
         {
             String code =
 @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 x1 = { 0.0, 1 };
 y1 = { 0, 2.0, 3 };
 z1 = { 0, 1 };
@@ -2114,7 +2114,7 @@ c1 = Count ( pts );
         {
             String code =
 @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 x1 = { { 0.0, 1 } };
 y1 = { 0, 2.0, 3 };
 z1 = { 0, 1 };
@@ -2132,7 +2132,7 @@ c1 = Count ( pts );
         {
             String code =
 @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 x1 = { 0, 0.0, 1  };
 y1 = 3;
 z1 = { 0, 1 };
@@ -2151,7 +2151,7 @@ c1 = Count ( pts );
         {
             String code =
 @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 x1 = { 0, 0.0, 1  };
 y1 = 3;
 pts = DummyPoint.ByCoordinates(x1, y1);
@@ -2168,7 +2168,7 @@ c1 = Count ( pts );
         {
             String code =
 @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 list1 = { { 1, 2, 3 }, { 1, 2, 3 }, { 1, 2, 3 } };
 list2 = { { 1, 2, 3, 4 }, { 1, 2, 3, 4 } };
 list3 = Point_2D.ValueCtor(list1, list2);
@@ -2184,7 +2184,7 @@ list2_0_0 = list3[0][0].GetValue();
         public void T50_Defect_1456738_Replication_Race_Condition()
         {
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 // dimensions of the roof in each direction
 //
 xSize = 10;
@@ -2413,7 +2413,7 @@ x = a < b ? 1 : 0;";
         {
             String code =
 @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 c1 = { TestObjectA.TestObjectA(1), TestObjectA.TestObjectA(2) };
 c2 = c1.a; 
 ";
@@ -2429,7 +2429,7 @@ c2 = c1.a;
         {
             String code =
 @"
-    import(""Builtin.dll"");import(""FFITarget.dll"");
+    import(""FFITarget.dll"");
     coords = {0,1,2,3,4,5,6,7,8,9};
     pts = DummyPoint.ByCoordinates(coords, 20, 30);
     xs = pts.X;
@@ -2446,7 +2446,7 @@ c2 = c1.a;
         {
             String code =
 @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 p2 = DummyPoint.ByCoordinates(-20.0,-30.0,-40.0).X;
 ";
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
@@ -2461,7 +2461,7 @@ p2 = DummyPoint.ByCoordinates(-20.0,-30.0,-40.0).X;
         {
             String code =
 @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 p2 = DummyPoint.ByCoordinates(0..2,-30.0, -40.0).X;";
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -2475,7 +2475,7 @@ p2 = DummyPoint.ByCoordinates(0..2,-30.0, -40.0).X;";
         {
             String code =
 @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 a1 = TestObjectA.TestObjectA(1);
 b1 = TestObjectA.TestObjectA(2);
 test = {a1, b1}.a;
@@ -2492,7 +2492,7 @@ test = {a1, b1}.a;
         {
             String code =
 @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 a1 = {ArrayMember.Ctor(1..2), ArrayMember.Ctor(2..3) };
 test = a1.X ;
 test2 = a1.X[0];
@@ -2515,7 +2515,7 @@ test4 = a1[0].X[0];
             String code =
 @"
 
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 a1 = { ArrayMember.Ctor(1..2), ArrayMember.Ctor(2..3) };
 test = a1.X ;
 test2 = a1.X[0];
@@ -2539,7 +2539,7 @@ test4 = a1[0].X[0][1];
         {
             String code =
 @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 a1 = { ArrayMember.Ctor(1..2), ArrayMember.Ctor(2..3) };
 test1 = a1.X;
 test2 = a1.X[0];
@@ -2559,7 +2559,7 @@ test3 = (a1.X[0])[0];
         {
             String code =
 @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 a1 = { ArrayMember.Ctor(1..2), ArrayMember.Ctor(2..3) };
 test1 = a1.X;
 test2 = a1.X[0];
@@ -2599,7 +2599,7 @@ x1;x2;x3;
         public void T67_Defect_1460965_ExpressionInParenthesis02()
         {
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 a = ArrayMember.Ctor({1,2,3,4,5});
 t1 = (a.X)[3];
 t2 = (a.foo())[4];
@@ -2617,7 +2617,7 @@ t3 = (a.foo2())[1][1];
         public void T67_Defect_1460965_ExpressionInParenthesis03()
         {
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 a = ArrayMember.Ctor({1,2,3,4,5});
 t2 = a.foo()[4];
 t3 = (a.foo2()[1])[1];
@@ -2635,7 +2635,7 @@ t3 = (a.foo2()[1])[1];
             String code =
 @"
 
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 a1 = { DummyVector.ByCoordinates(1,11,111), DummyVector.ByCoordinates(2,22,222) };
 a1.X = 5;
 test = a1.X;
@@ -2800,7 +2800,7 @@ test3 = a1.a.X[0][0];
         {
             String code =
 @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 a1 = DummyVector.ByCoordinates(1,11,111);
 b1 = DummyVector.ByCoordinates(2,22,222);
 test = {a1, b1}.X;
@@ -2819,7 +2819,7 @@ test = {a1, b1}.X;
         {
             String code =
 @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 a = { ArrayMember.Ctor(1..2), ArrayMember.Ctor(4..5) } ;
 test1 = a.X;
 test2 = a.X[0];
@@ -2916,7 +2916,7 @@ b = a[i] > 0? 1 : 0;
         {
             String code =
 @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 a = { 1, 2 } ;
 i = 0..1; 
 b = a[i] > 0? TestObjectA.TestObjectA(i) : 0;
@@ -2935,7 +2935,7 @@ test = b.a;
         {
             String code =
 @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 a = { 1, 2 } ;
 i = 0..1; 
 b = a[i] > 0? ArrayMember.Ctor(a[i]) : 0;
@@ -3235,7 +3235,7 @@ x = a[(0..1)<1>][(0..1)<2>];
         {
             String code =
 @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 def sum(a, b)
 {
     return = a + b;
@@ -3524,7 +3524,7 @@ b = -a[i];
         {
             String code =
 @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 a1 = ArrayMember.Ctor({ 1, 2, 3});
 i = 0..1;
 c = a1.X;
@@ -3543,7 +3543,7 @@ b = a1.X[i];
         {
             String code =
 @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 a1 = ArrayMember.Ctor({ 1, 2, 3});
 i = 0..1;
 c = a1.X;
@@ -3562,7 +3562,7 @@ b = a1.X[i];
         {
             String code =
 @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 a1 = ArrayMember.Ctor({ 1, 2, 3});
 i = 0..1;
 b = -a1.X[i];
@@ -3581,7 +3581,7 @@ b = -a1.X[i];
         {
             String code =
 @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 a1 = ArrayMember.Ctor({ 1, 2, 3});
 i = 0..1;
 b = -a1.X[0];
@@ -3600,7 +3600,7 @@ b = -a1.X[0];
         {
             String code =
 @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 a1 = ArrayMember.Ctor({ 1, 2, 3});
 i = 0..1;
 b = -a1.X;
@@ -3619,7 +3619,7 @@ b = -a1.X;
         {
             String code =
 @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 a1 = DummyVector.ByCoordinates(1,2,3);
 b = -a1.X;
 ";
@@ -3637,7 +3637,7 @@ b = -a1.X;
         {
             String code =
 @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 b = -DummyVector.ByCoordinates(1,2,3).X;
 ";
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
@@ -3913,7 +3913,7 @@ c1 = add( a<1>, b<2>);
         {
             String code =
 @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 def execute(b : TestObjectA)
 { 
     return = 100; 
@@ -3941,7 +3941,7 @@ v3 = execute(arr);
         {
             String code =
 @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 def execute(b : TestObjectA)
 { 
     return = 100; 
@@ -3964,7 +3964,7 @@ v3 = execute(arr);
             String code =
 @"
 
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 def execute(b : TestObjectA)
 { 
     return = 100; 
@@ -4220,7 +4220,7 @@ y = x;
         {
             String code =
 @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 a1 = ArrayMember.Ctor({ 1, 2, 3});
 i = 0..1;
 c = a1.X;
@@ -4557,7 +4557,7 @@ n = (0..11..#(nums + 2))[1..nums];
         {
             String code =
 @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 a1 = ArrayMember.Ctor({ 1, 2, 3});
 test = [Imperative]
 {
@@ -4576,7 +4576,7 @@ test = [Imperative]
         {
             String code =
 @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 t = { 1,2,3};
 test = [Imperative]
 {
@@ -4668,7 +4668,7 @@ test2 = (foo()[0])[0];
         {
             String code =
 @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 a = {0,1};
 b = {2,3};
 test = DummyPoint2D.ByCoordinates( a<1>, b<2>).X;
@@ -4836,7 +4836,7 @@ test2 = a.f2;
         {
             String code =
 @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 a = ArrayMember.Ctor(0..1);
 test1 = a.X;
 a.X = 2..3;

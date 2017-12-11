@@ -425,7 +425,7 @@ b;
         public void T12_TestIfElseUsingClassProperty()
         {
             string src = @"
-			import(""Builtin.dll"");import(""FFITarget.dll"");
+			import(""FFITarget.dll"");
 			x;
 y;
 	

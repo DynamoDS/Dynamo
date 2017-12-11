@@ -69,7 +69,7 @@ twice_arr = dummy.Twice(arr);
         public void T023_MethodOverload()
         {
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 cf1 = ClassFunctionality.ClassFunctionality(1);
 cf2 = ClassFunctionality.ClassFunctionality(2);
 i = 3;
@@ -88,7 +88,7 @@ o2 = cf1.OverloadedAdd(i);
         public void T024_MethodOverload_static()
         {
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 cf1 = ClassFunctionality.ClassFunctionality(1);
 dp1 = DummyPoint.ByCoordinates(0,1,2);
 
@@ -110,7 +110,7 @@ o3 = OverloadTarget.StaticOverload(dp1);
         public void T025_MethodOverload_DifferentPrimitiveType()
         {
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 
 o1 = OverloadTarget.DifferentPrimitiveType(1);
 o2 = OverloadTarget.DifferentPrimitiveType(true);
@@ -124,7 +124,7 @@ o2 = OverloadTarget.DifferentPrimitiveType(true);
         public void T026_MethodOverload_DifferentIEnumerable()
         {
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 
 a = DummyClassA.DummyClassA();
 o1 = OverloadTarget.IEnumerableOfDifferentObjectType(a);
@@ -141,7 +141,7 @@ o2 = OverloadTarget.IEnumerableOfDifferentObjectType(a);
         public void MethodWithRefOutParams_NoLoad()
         {
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
 

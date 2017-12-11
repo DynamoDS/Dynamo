@@ -12,7 +12,7 @@ namespace ProtoTest.TD.Associative
         public void T001_Associative_Class_Property_Int()
         {
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 	
 	newPoint = DummyPoint.ByCoordinates(1,2,3);
 	
@@ -32,7 +32,7 @@ import(""Builtin.dll"");import(""FFITarget.dll"");
         public void T002_Associative_Class_Property_Double()
         {
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 	newPoint = DummyPoint.ByCoordinates(1.1,2.2,3.3);
 	
 	xPoint = newPoint.X;
@@ -51,7 +51,7 @@ import(""Builtin.dll"");import(""FFITarget.dll"");
         public void T003_Associative_Class_Property_Bool()
         {
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 	newPoint1 = BooleanMember.BooleanMember(true);
 	newPoint2 = BooleanMember.BooleanMember(false);
 	propPoint1 = newPoint1.a;
@@ -68,7 +68,7 @@ import(""Builtin.dll"");import(""FFITarget.dll"");
         public void T007_FFI_Class_Property_CallFromFunctionOutsideClass()
         {
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 	def GetPointValue : double (pt : DummyPoint)
 	{
 		return = pt.X + pt.Y + pt.Z; 
@@ -86,7 +86,7 @@ import(""Builtin.dll"");import(""FFITarget.dll"");
         public void T010_Associative_Class_Constructor_Overloads()
         {
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
     pt1 = TestOverloadConstructor.TestOverloadConstructor(10);
 	pt2 = TestOverloadConstructor.TestOverloadConstructor(10, 200);
 	pt3 = TestOverloadConstructor.TestOverloadConstructor(10, 200, 300);
@@ -108,7 +108,7 @@ import(""Builtin.dll"");import(""FFITarget.dll"");
         public void T014_Associative_Class_Property_GetUsingMultipleReferencingWithSameName()
         {
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 	p1 = TestObjectA.TestObjectA(10);
 	p2 = TestSamePropertyName.TestSamePropertyName(p1);
     x = p2.a.a;
@@ -123,7 +123,7 @@ import(""Builtin.dll"");import(""FFITarget.dll"");
         public void T015_Associative_Class_Property_SetInExternalFunction()
         {
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");  
+import(""FFITarget.dll"");  
 def Modify : TestPoint(old : DummyPoint)
 {
         old.X = 10;
@@ -146,7 +146,7 @@ testY1 = pt1.Y;
         public void T019_Associative_Class_Constructor_Overloads_WithSameNameAndDifferentArgumentNumber()
         {
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
     test1 = TestOverloadConstructor.TestOverloadConstructor(1, 2);
 	test2 = TestOverloadConstructor.TestOverloadConstructor(10, 20, 30);
 	
@@ -168,7 +168,7 @@ import(""Builtin.dll"");import(""FFITarget.dll"");
         public void TestDefaultArgInConstructor01()
         {
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");p = TestDefaultArgument.TestDefaultArgument(2); i = p.a;
+import(""FFITarget.dll"");p = TestDefaultArgument.TestDefaultArgument(2); i = p.a;
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("i", 2);
@@ -179,7 +179,7 @@ import(""Builtin.dll"");import(""FFITarget.dll"");p = TestDefaultArgument.TestD
         public void TestDefaultArgInConstructor02()
         {
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");p = TestDefaultArgument.TestDefaultArgument(1, 2); i = p.b;
+import(""FFITarget.dll"");p = TestDefaultArgument.TestDefaultArgument(1, 2); i = p.b;
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("i", 2);
@@ -191,7 +191,7 @@ import(""Builtin.dll"");import(""FFITarget.dll"");p = TestDefaultArgument.TestD
         public void Z005_Associative_Class_Property_Regress_1454178()
         {
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 sum = [Associative]
 {
     t1 = DummyTuple4.XYZH(1,1,1,1);
@@ -209,7 +209,7 @@ sum = [Associative]
         public void Z007_Associative_Class_Property_Regress_1454172()
         {
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 sum = [Associative]
 {
     t1 = DummyTuple4.XYZH(1,1,1,1);
@@ -227,7 +227,7 @@ sum = [Associative]
         public void Z008_Associative_Class_Property_Regress_1454161()
         {
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 x3;
 y3;
 z3;
@@ -254,7 +254,7 @@ h3;
         public void Z009_Associative_Class_Property_Regress_1453891()
         {
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 pt1 = DummyPoint.ByCoordinates(3.1,2.1,1.1);
 pt2 = DummyPoint.ByCoordinates(31.1,21.1,11.1);
 l = DummyLine.ByStartPointEndPoint(pt1, pt2);               
@@ -270,7 +270,7 @@ l_startPoint_X = l.Start.X;
         public void Z011_Associative_Class_Property_Regress_1454162()
         {
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
     t1 = DummyTuple4.XYZH(1.0,1.0,1.0,1.0);
     x1 = t1.X;
     y1 = t1.Y;
@@ -302,7 +302,7 @@ import(""Builtin.dll"");import(""FFITarget.dll"");
             //Assert.Fail("1457029 - Sprint25: Rev 3369 : Passing a collection value using index as argument to a class method is failing");
 
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 c1 = { 1.0, 2.0, 3.0 };
 c1 = DummyVector.ByCoordinates( c1[0], 20, 30 );
 x = c1.X;
@@ -318,7 +318,7 @@ x = c1.X;
             //Assert.Fail("1457029 - Sprint25: Rev 3369 : Passing a collection value using index as argument to a class method is failing");
 
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 c = { {1.0, 2.0}, {3.0} };
 c = ArrayMember.Ctor( c[0] );
 x = c.X;
@@ -375,7 +375,7 @@ b1;
         public void Z018_Defect_1456798()
         {
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 x = { 0, 1, 2 };
 a1 = ArrayMember.Ctor(x);
 b1 = a1.X[0] + a1.X[1] + a1.X[2];
@@ -403,7 +403,7 @@ b2 = a1.Add();
         public void Z029_Calling_Class_Constructor_From_Instance_Negative()
         {
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 a1 = ClassFunctionality.ClassFunctionality();
 b1 = a1.ClassFunctionality();
 c1 = b1.IntVal;";
@@ -422,7 +422,7 @@ c1 = b1.IntVal;";
             Assert.Throws(typeof(ProtoCore.Exceptions.CompileErrorsOccured), () =>
             {
                 string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 ClassFunctionality = ClassFunctionality.ClassFunctionality();
 ";
                 ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -436,7 +436,7 @@ ClassFunctionality = ClassFunctionality.ClassFunctionality();
             Assert.Throws(typeof(ProtoCore.Exceptions.CompileErrorsOccured), () =>
             {
                 string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 ClassFunctionality = ClassFunctionality.ClassFunctionality();
 t = ClassFunctionality.IntaVal;
 ";

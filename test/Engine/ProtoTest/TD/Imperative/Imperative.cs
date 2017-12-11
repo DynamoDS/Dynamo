@@ -50,7 +50,7 @@ a = ClassFunctionality.ClassFunctionality(true);";
         {
             String code =
              @"
-			 import(""Builtin.dll"");import(""FFITarget.dll"");
+			 import(""FFITarget.dll"");
 def foo ()
 {
     return = false;
@@ -104,7 +104,7 @@ result= test(false,true);
         {
             String code =
              @"
-			 import(""Builtin.dll"");import(""FFITarget.dll"");
+			 import(""FFITarget.dll"");
 def foo ()
  
  {
@@ -188,7 +188,7 @@ return=d;
         {
             String code =
              @"
-			 import(""Builtin.dll"");import(""FFITarget.dll"");
+			 import(""FFITarget.dll"");
 def foo ()
 {
     return = 1;

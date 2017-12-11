@@ -18,7 +18,7 @@ namespace ProtoTest.Associative
         public void BIM01_SomeNulls()
         {
             String code =
-@"import(""Builtin.dll"");
+@"
 a = {null,20,30,null,{10,0},0,5,2};
 b = {1,2,3};
 e = {3,20,30,4,{null,0},0,5,2};
@@ -37,7 +37,7 @@ f = SomeNulls(e);
         public void BIM02_CountTrue()
         {
             String code =
-@"import(""Builtin.dll"");a = {true,true,true,false,{true,false},true,{false,false,{true,{false},true,true,false}}};
+@"a = {true,true,true,false,{true,false},true,{false,false,{true,{false},true,true,false}}};
 b = {true,true,true,false,true,true};
 c = {true,true,true,true,true,true,true};
 w = CountTrue(a);
@@ -55,7 +55,7 @@ y = CountTrue(c);
         public void BIM03_CountFalse()
         {
             String code =
-@"import(""Builtin.dll"");a = {true,true,true,false,{true,false},true,{false,false,{true,{false},true,true,false}}};
+@"a = {true,true,true,false,{true,false},true,{false,false,{true,{false},true,true,false}}};
 b = {true,true,true,false,true,true};
 c = {true,true,true,true,true,true,true};
 e = CountFalse(a);
@@ -73,7 +73,7 @@ g = CountFalse(c);
         public void BIM04_AllFalse_AllTrue()
         {
             String code =
-@"import(""Builtin.dll"");
+@"
 a = {true};
 b = {false,false,{false,{false,{false,false,{false},false}}},false};
 c = {true,true,true,true,{true,true},true,{true,true,{true, true,{true},true,true,true}}};
@@ -98,7 +98,7 @@ i = AllFalse(c);
         public void BIM05_IsHomogeneous()
         {
             String code =
-@"import(""Builtin.dll"");a = {1,2,3,4,5};
+@"a = {1,2,3,4,5};
 b = {false, true, false};
 c = {{1},{1.0,2.0}};
 d = {null,1,2,3};
@@ -122,7 +122,7 @@ ce = IsHomogeneous(e);
         public void BIM06_SumAverage()
         {
             String code =
-@"import(""Builtin.dll"");
+@"
 b = {1,2,{3,4,{5,{6,{7},8,{9,10},11}},12,13,14,{15}},16};
 c = {1.2,2.2,{3.2,4.2,{5.2,{6.2,{7.2},8.2,{9.2,10.2},11.2}},12.2,13.2,14.2,{15.2}},16.2};
 x = Average(b);
@@ -143,7 +143,7 @@ s = Sum(c);
         public void BIM07_SomeTrue_SomeFalse()
         {
             String code =
-@"import(""Builtin.dll"");a = {true,true,true,{false,false,{true, true,{false},true,true,false}}};
+@"a = {true,true,true,{false,false,{true, true,{false},true,true,false}}};
 b = {true,true,{true,true,true,{true,{true},true},true},true};
 c = {true, false, false};
 p = SomeTrue(a);
@@ -167,7 +167,7 @@ u = SomeFalse(c);
         public void BIM08_Remove_RemoveDuplicate()
         {
             String code =
-@"import(""Builtin.dll"");
+@"
 a = {null,20,30,null,20,15,true,true,5,false};
 b = {1,2,3,4,9,4,2,5,6,7,8,7,1,0,2};
 rda = RemoveDuplicates(a);
@@ -191,7 +191,7 @@ y = rb[2];
         public void BIM09_RemoveNulls()
         {
             String code =
-@"import(""Builtin.dll"");a = {1,{6,null,7,{null,null}},7,null,2};
+@"a = {1,{6,null,7,{null,null}},7,null,2};
 b = {null,{null,{null,{null},null},null},null};
 p = RemoveNulls(a);
 q = RemoveNulls(b);
@@ -208,7 +208,7 @@ y = p[1][1];
         public void BIM10_RemoveIfNot()
         {
             String code =
-@"import(""Builtin.dll"");import(""BuiltIn.ds"");
+@"import(""BuiltIn.ds"");
 a = {""This is "",""a very complex "",""array"",1,2.0,3,false,4.0,5,6.0,true,{2,3.1415926},null,false,'c'};
 b = List.RemoveIfNot(a, ""int"");
 c = List.RemoveIfNot(a, ""double"");
@@ -231,7 +231,7 @@ t = e[0][0];
         public void BIM11_Reverse()
         {
             String code =
-@"import(""Builtin.dll"");a = {1,{{1},{3.1415}},null,1.0,12.3};
+@"a = {1,{{1},{3.1415}},null,1.0,12.3};
 b = {1,2,{3}};
 p = Reverse(a);
 q = Reverse(b);
@@ -248,7 +248,7 @@ y = q[0][0];
         public void BIM12_Contains()
         {
             String code =
-@"import(""Builtin.dll"");a = {1,{{1},{3.1415}},null,1.0,12.3};
+@"a = {1,{{1},{3.1415}},null,1.0,12.3};
 b = {1,2,{3}};
 x = {{1},{3.1415}};
 r = Contains(a, 3.0);
@@ -273,7 +273,7 @@ w = Contains(b, 3);
         public void BIM13_IndexOf()
         {
             String code =
-@"import(""Builtin.dll"");a = {1,{{1},{3.1415}},null,1.0,12,3};
+@"a = {1,{{1},{3.1415}},null,1.0,12,3};
 b = {1,2,{3}};
 c = {1,2,{3}};
 d = {{1},{3.1415}};
@@ -296,7 +296,7 @@ v = IndexOf(b, 3);
         public void BIM14_Sort()
         {
             String code =
-@"import(""Builtin.dll"");a = {1,3,5,7,9,8,6,4,2,0};
+@"a = {1,3,5,7,9,8,6,4,2,0};
 b = {1.3,2,0.8,2,null,2,2.0,2,null};
 x = Sort(a);
 x1 = Sort(a,true);
@@ -323,7 +323,7 @@ t = y[7];
         public void BIM15_SortIndexByValue()
         {
             String code =
-@"import(""Builtin.dll"");a = {1,3,5,7,9,8,6,4,2,0};
+@"a = {1,3,5,7,9,8,6,4,2,0};
 b = {1.3,2,0.8,2,null,2,2.0,2,null};
 x = SortIndexByValue(a);
 x1 = SortIndexByValue(a,true);
@@ -350,7 +350,7 @@ t = y[7];
         public void BIM16_Insert()
         {
             String code =
-@"import(""Builtin.dll"");a = {false,2,3.1415926,null,{false}};
+@"a = {false,2,3.1415926,null,{false}};
 b = 1;
 c = {1};
 d = {};
@@ -376,7 +376,7 @@ x = s[5][0][0];
         public void BIM17_SetDifference_SetUnion_SetIntersection()
         {
             String code =
-@"import(""Builtin.dll"");a = {false,15,6.0,15,false,null,15.0};
+@"a = {false,15,6.0,15,false,null,15.0};
 b = {10,20,false,12,21,6.0,15,null,8.2};
 c = SetDifference(a,b);
 d = SetDifference(b,a);
@@ -399,7 +399,7 @@ s = f[1];
         public void BIM18_Reorder()
         {
             String code =
-@"import(""Builtin.dll"");a = {1,4,3,8.0,2.0,0};
+@"a = {1,4,3,8.0,2.0,0};
 b = {2,1,0,3,4};
 c = Reorder(a,b);
 p = c[0];
@@ -416,7 +416,7 @@ r = c[2];
         public void Reorder2()
         {
             String code =
-@"import(""Builtin.dll"");
+@"
 x = {1, 2, 3};
 y = {-1};
 z = Reorder(x,y);
@@ -430,7 +430,7 @@ z = Reorder(x,y);
         public void BIM19_IsUniformDepth()
         {
             String code =
-@"import(""Builtin.dll"");a = {};
+@"a = {};
 b = {1,2,3};
 c = {{1},{2,3}};
 d = {1,{2},{{3}}};
@@ -451,7 +451,7 @@ s = IsUniformDepth(d);
         public void BIM20_NormalizeDepth()
         {
             String code =
-@"import(""Builtin.dll"");a = {{1,{2,3,4,{5}}}};
+@"a = {{1,{2,3,4,{5}}}};
 p = NormalizeDepth(a,1);
 q = NormalizeDepth(a,2);
 r = NormalizeDepth(a,4);
@@ -473,7 +473,7 @@ z = s[0][0][0][0];
         public void BIM21_Map_MapTo()
         {
             String code =
-@"import(""Builtin.dll"");a = Map(80.0, 120.0, 100.0);
+@"a = Map(80.0, 120.0, 100.0);
 b = MapTo(0.0, 100.0 ,25.0, 80.0, 90.0);
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -486,7 +486,7 @@ b = MapTo(0.0, 100.0 ,25.0, 80.0, 90.0);
         public void BIM22_Transpose()
         {
             String code =
-@"import(""Builtin.dll"");a = {{1,2,3},{1,2},{1,2,3,4,5,6,7}};
+@"a = {{1,2,3},{1,2},{1,2,3,4,5,6,7}};
 p = Transpose(a);
 q = Transpose(p);
 x = p[6][0];
@@ -500,7 +500,7 @@ y = q[2][6];
         [Test]
         public void TransposeEmpty2DArray()
         {
-            string code = @"import(""Builtin.dll"");x = {{}}; y = Transpose(x);";
+            string code = @"x = {{}}; y = Transpose(x);";
             var mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("y", new object[] { });
         }
@@ -510,7 +510,7 @@ y = q[2][6];
         public void BIM23_LoadCSV()
         {
             String code =
-@"import(""Builtin.dll"");a = ""../../../test/Engine/ProtoTest/ImportFiles/CSV/Set1/test1.csv"";
+@"a = ""../../../test/Engine/ProtoTest/ImportFiles/CSV/Set1/test1.csv"";
 b = ImportFromCSV(a);
 c = ImportFromCSV(a, false);
 d = ImportFromCSV(a, true);
@@ -530,7 +530,7 @@ z = d[0][2];
         {
             // ensure that white space is trimmed from the path
             String code =
-@"import(""Builtin.dll"");a = ""\n \r\t../../../test/Engine/ProtoTest/ImportFiles/CSV/Set1/test1.csv\r\r\n "";
+@"a = ""\n \r\t../../../test/Engine/ProtoTest/ImportFiles/CSV/Set1/test1.csv\r\r\n "";
 b = ImportFromCSV(a);
 x = b[0][2];
 ";
@@ -543,7 +543,7 @@ x = b[0][2];
         public void BIM24_Count()
         {
             String code =
-@"import(""Builtin.dll"");a = {1, 2, 3, 4};
+@"a = {1, 2, 3, 4};
 b = { { 1, { 2, 3, 4, { 5 } } } };
 c = { { 2, null }, 1, ""str"", { 2, { 3, 4 } } };
 x = Count(a);
@@ -561,7 +561,7 @@ z = Count(c);
         public void BIM25_Rank()
         {
             String code =
-@"import(""Builtin.dll"");a = { { 1 }, 2, 3, 4 };
+@"a = { { 1 }, 2, 3, 4 };
 b = { ""good"", { { null } }, { 1, { 2, 3, 4, { 5, { ""good"" }, { null } } } } };
 c = { { null }, { 2, ""good"" }, 1, null, { 2, { 3, 4 } } };
 x = Rank(a);
@@ -579,7 +579,7 @@ z = Rank(c);
         public void BIM26_Flatten()
         {
             String code =
-@"import(""Builtin.dll"");a = {1, 2, 3, 4};
+@"a = {1, 2, 3, 4};
 b = { ""good"", { 1, { 2, 3, 4, { 5 } } } };
 c = { null, { 2, ""good""}, 1, null, { 2, { 3, 4 } } };
 q = Flatten(a);
@@ -602,7 +602,7 @@ s = p[0];
         public void BIM27_Conversion_Resolution_Cases()
         {
             String code =
-@"import(""Builtin.dll"");a = {null,20,30,null,{10,0},true,{false,0,{true,{false},5,2,false}}};
+@"a = {null,20,30,null,{10,0},true,{false,0,{true,{false},5,2,false}}};
 b = {1,2,{3,4,9},4,2,5,{6,7,{8}},7,1,0,2};
 x = CountTrue(a);
 y = CountFalse(a);
@@ -624,7 +624,7 @@ t = RemoveDuplicates(b);
         public void BIM28_IsRectangular()
         {
             String code =
-@"import(""Builtin.dll"");a = {{1,{2,3}},{4, 5, 6}};
+@"a = {{1,{2,3}},{4, 5, 6}};
 b= {{1, 2, 3, 4}, {5, 6, 7, 8}};
 c= {};
 x = IsRectangular(a);
@@ -640,7 +640,7 @@ z = IsRectangular(c);
         [Test]
         public void BIM29_RemoveIfNot()
         {
-            string code = @"import(""Builtin.dll"");
+            string code = @"
 import(""BuiltIn.ds"");
 a = { true,null,false,true};
 b = List.RemoveIfNot(a, ""bool""); 
@@ -654,8 +654,8 @@ b = List.RemoveIfNot(a, ""bool"");
         public void BIM30_RemoveDuplicate()
         {
             String code =
-@"import(""Builtin.dll"");
-import(""Builtin.dll"");import(""FFITarget.dll"");
+@"
+import(""FFITarget.dll"");
 a = {null,20,30,null,20,15,true,true,5,false};
 b = {1,2,3,4,9,4,2,5,6,7,8,7,1,0,2};
 rda = RemoveDuplicates(a);
@@ -690,7 +690,7 @@ res6 = Count(rdf);
         public void BIM31_Sort()
         {
             String code =
-@"import(""Builtin.dll"");a = { 3, 1, 2 };
+@"a = { 3, 1, 2 };
 def sorterFunction(a : double, b : int)
 {
     return = a > b ? 1 : -1;
@@ -706,7 +706,7 @@ sort = Sort(sorterFunction, a);
         public void BIM31_Sort_null()
         {
             String code =
-@"import(""Builtin.dll"");c = { 3, 1, 2,null };
+@"c = { 3, 1, 2,null };
 def sorterFunction(a : int, b : int)
 {
     return = [Imperative]
@@ -729,7 +729,7 @@ sort = Sort(sorterFunction, c);
         public void BIM31_Sort_duplicate()
         {
             String code =
-@"import(""Builtin.dll"");c = { 3, 1, 2, 2,null };
+@"c = { 3, 1, 2, 2,null };
 def sorterFunction(a : int, b : int)
 {
     return = [Imperative]
@@ -751,7 +751,7 @@ sort = Sort(sorterFunction, c);
         public void Test_EvaluateFunctionPointer01()
         {
             string code =
-@"import(""Builtin.dll"");
+@"
 def foo(x, y, z)
 {
     return = x + y + z;
@@ -768,7 +768,7 @@ x = Evaluate(foo, param, true);
         public void Test_EvaluateFunctionPointer02()
         {
             string code =
-@"import(""Builtin.dll"");
+@"
 def foo(x, y, z)
 {
     return = x + y + z;
@@ -791,7 +791,7 @@ param = { 5, 6 };
         public void Test_EvaluateFunctionPointer03()
         {
             string code =
-@"import(""Builtin.dll"");
+@"
 def foo(x, y, z)
 {
     return = x + y + z;
@@ -816,7 +816,7 @@ t = bar;
         {
             // replicated on function pointer
             string code =
-@"import(""Builtin.dll"");
+@"
 def foo(x, y, z)
 {
     return = x + y + z;
@@ -839,7 +839,7 @@ x = Evaluate({ foo, bar }, param, true);
         {
             // replicated on function pointer
             string code =
-@"import(""Builtin.dll"");
+@"
 def foo(x, y, z)
 {
     return = x + y + z;
@@ -859,7 +859,7 @@ x = Evaluate(foo, param, true);
         {
             // replicated on function pointer
             string code =
-@"import(""Builtin.dll"");
+@"
 def bar(x, y)
 {
     return = x * y;
@@ -881,7 +881,7 @@ x = Evaluate(foo, { bar, 2, 3 }, true);
         {
             // Nested call
             string code =
-@"import(""Builtin.dll"");
+@"
 def multiplyBy2(z)
 {
     return = 2 * z;
@@ -908,7 +908,7 @@ x = Evaluate(foo, { 2, 3, 4 }, true);
         {
             // Nested call
             string code =
-@"import(""Builtin.dll"");
+@"
 def f1(x)
 {
     return = 2 * x;
@@ -935,7 +935,7 @@ x = foo({ Evaluate, Evaluate }, { f1, f2 }, { { 41 }, { 42 } });
         {
             // Recursive call
             string code =
-@"import(""Builtin.dll"");
+@"
 def foo(x)
 {
     Print(x);
@@ -964,7 +964,7 @@ x = foo(5);
        [Test]
        public void TestTryGetValueFromNestedDictionaries01()
        {
-           string code = @"import(""Builtin.dll"");
+           string code = @"
 a = { ""in"" : 42 };
 r = Dictionary.ValueAtKey(a, ""in"");
 ";
@@ -975,7 +975,7 @@ r = Dictionary.ValueAtKey(a, ""in"");
        [Test]
        public void TestTryGetValuesFromDictionary02()
        {
-           string code = @"import(""Builtin.dll"");
+           string code = @"
 a = { ""in"" : 42 };
 key = ""in"";
 r = Dictionary.ValueAtKey(a, key);
@@ -987,7 +987,7 @@ r = Dictionary.ValueAtKey(a, key);
        [Test]
        public void TestTryGetValuesFromDictionary03()
        {
-           string code = @"import(""Builtin.dll"");
+           string code = @"
 a = {""in"": 42, ""out"" : 24};
 
 b = { ""in"": 24, ""out"" : 42};
@@ -1005,7 +1005,7 @@ r2 = Dictionary.ValueAtKey(c, ""out"");
        [Test]
        public void TestTryGetValuesFromDictionary04()
        {
-           string code = @"import(""Builtin.dll"");
+           string code = @"
 a = { ""in"" : 42, ""out"" : 24 };
 b = { ""in"" : 24, ""out"" : 42 };
 c = {{a}, {b}};
@@ -1020,7 +1020,7 @@ r2 = Dictionary.ValueAtKey(c, ""out"");
        [Test]
        public void TestTryGetValuesFromDictionary05()
        {
-           string code = @"import(""Builtin.dll"");
+           string code = @"
 a = { ""in"" : 42, ""out"" : 24 };
 b = { ""in"" : 24, ""out"" : 42 };
 c = {a, {b}};
@@ -1035,7 +1035,7 @@ r2 = Dictionary.ValueAtKey(c, ""out"");
        [Test]
        public void TestTryGetValuesFromDictionary06()
        {
-           string code = @"import(""Builtin.dll"");
+           string code = @"
 a = { ""in"" : 42, ""out"" : 24 };
 b = { ""in"" : 24, ""out"" : 42 };
 c = {a, {b}};
@@ -1048,7 +1048,7 @@ r = Dictionary.ValueAtKey(c, ""nonexist"");
        [Test]
        public void TestTryGetValuesFromDictionary07()
        {
-           string code = @"import(""Builtin.dll"");
+           string code = @"
 a = { ""in"" : 42, ""out"" : 24 };
 r = Dictionary.ValueAtKey(a, ""nonexist"");
 ";
@@ -1059,7 +1059,7 @@ r = Dictionary.ValueAtKey(a, ""nonexist"");
        [Test]
        public void TestTryGetValuesFromDictionary08()
        {
-           string code = @"import(""Builtin.dll"");
+           string code = @"
 a = 42;
 r = Dictionary.ValueAtKey(a, ""nonexist"");
 ";
@@ -1070,7 +1070,7 @@ r = Dictionary.ValueAtKey(a, ""nonexist"");
         [Test]
         public void TestGetKeysFromNonArray()
         {
-            string code = @"import(""Builtin.dll"");
+            string code = @"
 x = 1;
 k = GetKeys(x);";
             var mirror = thisTest.RunScriptSource(code);

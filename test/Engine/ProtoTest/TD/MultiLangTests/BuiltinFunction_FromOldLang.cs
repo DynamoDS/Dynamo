@@ -182,7 +182,7 @@ t14 = b14;
         {
             string code = @"
 // testing Count()
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 def ret_count(ee : int[]) 
 {
 return =  Count(ee[1..Count(ee)]);
@@ -220,7 +220,7 @@ b4 = Count(a4); //0";
         public void language_functions_test_1()
         {
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 raggedCollection = { 1, { 2, 3 } };
 isUniformDepthRagged = IsUniformDepth(raggedCollection);//false
 average = Average(raggedCollection);

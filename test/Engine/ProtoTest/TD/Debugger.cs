@@ -32,7 +32,7 @@ namespace ProtoTest.TD
             string defectID = "MAGN-4005 GC issue with globally declared objects used in update loop inside Associative language block";
 
             string src = @" 
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 
 a : DummyPoint = null;
 b : DummyLine = null;
@@ -51,7 +51,7 @@ c = b;
         public void T005_Defect_IDE_963_Crash_On_Debugging()
         {
             string src = @" 
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 a : DummyPoint = null;
 b : DummyLine = null;
 [Imperative]

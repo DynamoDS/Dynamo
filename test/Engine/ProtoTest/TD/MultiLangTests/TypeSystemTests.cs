@@ -44,7 +44,7 @@ namespace ProtoTest.TD.MultiLangTests
         {
             string code =
                 @"
-                import(""Builtin.dll"");import(""FFITarget.dll"");
+                import(""FFITarget.dll"");
                 a = 1;
                 b : ClassFunctionality = a;";
             thisTest.RunScriptSource(code);
@@ -90,7 +90,7 @@ namespace ProtoTest.TD.MultiLangTests
         {
             string code =
                 @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
                         def length : ClassFunctionality[] (pts : ClassFunctionality[])
                         {
                             return = pts[0];
@@ -134,7 +134,7 @@ import(""Builtin.dll"");import(""FFITarget.dll"");
         {
             string code =
                 @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
                         def length : ClassFunctionality[] (a : ClassFunctionality)
                         {
                             return = a;
@@ -157,7 +157,7 @@ import(""Builtin.dll"");import(""FFITarget.dll"");
         {
             string code =
                 @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
                     def length : ClassFunctionality (pts : ClassFunctionality[])
                     {
                         return = 1.0;
@@ -181,7 +181,7 @@ import(""Builtin.dll"");import(""FFITarget.dll"");
         {
             string code =
                 @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 def length : double (pts : ClassFunctionality[])
 {
     return = 1;
@@ -643,7 +643,7 @@ z = foo(a);
         {
             string code =
                 @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
                 zero_var:var = 0;
                 zero_int:int = 0;
                 zero_double:double = 0;
@@ -938,7 +938,7 @@ import(""Builtin.dll"");import(""FFITarget.dll"");
         {
             string code =
                 @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
                         def foo ( x )
                         {
 	                        b1= x ;
@@ -969,7 +969,7 @@ import(""Builtin.dll"");import(""FFITarget.dll"");
         {
             string code =
                 @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
                         def foo ( x:var )
                         {
 	                        b1= x ;
@@ -1001,7 +1001,7 @@ import(""Builtin.dll"");import(""FFITarget.dll"");
         {
             string code =
                 @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
                         def foo ( x:int )
                         {
 	                        b1= x ;
@@ -1052,7 +1052,7 @@ import(""Builtin.dll"");import(""FFITarget.dll"");
         {
             string code =
                 @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
                         def foo ( x:double )
                         {
 	                        b1= x ;
@@ -1120,7 +1120,7 @@ import(""Builtin.dll"");import(""FFITarget.dll"");
         public void TS032_eachType_To_bool()
         {
             string code =
-                @"import(""Builtin.dll"");import(""FFITarget.dll"");
+                @"import(""FFITarget.dll"");
                         a:bool= 1;//true
                         b:bool= -0.1; //true
                         c:bool=""1.5""; //true
@@ -1148,7 +1148,7 @@ import(""Builtin.dll"");import(""FFITarget.dll"");
         {
             string code =
                 @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
                        def foo ( x:string)
                           {
                               b1= x ;
@@ -1219,7 +1219,7 @@ import(""Builtin.dll"");import(""FFITarget.dll"");
         {
             string code =
                 @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
                        def foo ( x:char)
                           {
                               b1= x ;
@@ -1288,7 +1288,7 @@ import(""Builtin.dll"");import(""FFITarget.dll"");
         {
             string code =
                 @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
                     d:bool=ClassFunctionality.ClassFunctionality(5); // user def to bool - > if not null true ";
             string error = "1467240 - Sprint 26 - Rev 3426 user defined type not convertible to bool";
             thisTest.RunScriptSource(code, error);
@@ -1302,7 +1302,7 @@ import(""Builtin.dll"");import(""FFITarget.dll"");
         {
             string code =
                 @"
-import(""Builtin.dll"");import(""FFITarget.dll"");    
+import(""FFITarget.dll"");    
                             a:A= 1;//
                             b:A= -0.1; //
                             c:A= ""1.5""; //false
@@ -1331,7 +1331,7 @@ import(""Builtin.dll"");import(""FFITarget.dll"");
         {
             string code =
                 @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
                         def foo ( x:ClassFunctionality)
                         {
 	                        b1= x ;
@@ -1473,7 +1473,7 @@ import(""Builtin.dll"");import(""FFITarget.dll"");
         {
             string code =
                 @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 
                     a:double= null; 
                     b:int =  null; 
@@ -1517,7 +1517,7 @@ import(""Builtin.dll"");import(""FFITarget.dll"");
         {
             string code =
                 @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 
                     a:double[]= {1,2,3}; 
                     
@@ -1549,7 +1549,7 @@ import(""Builtin.dll"");import(""FFITarget.dll"");
         {
             string code =
                 @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
                     a:double[]= 1; 
                     
                     b:int[] =  1.1; 
@@ -1580,7 +1580,7 @@ import(""Builtin.dll"");import(""FFITarget.dll"");
         {
             string code =
                 @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
                     a:double[][]= {1}; 
                     
                     b:int[][] =  {1.1}; 
@@ -1613,7 +1613,7 @@ import(""Builtin.dll"");import(""FFITarget.dll"");
         {
             string code =
                 @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
                     a:var[][]= 1; 
                     
                     b:var[][] =  1.1; 
@@ -1643,7 +1643,7 @@ import(""Builtin.dll"");import(""FFITarget.dll"");
         {
             string code =
                 @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
                     a:int[]= 1; 
                     
                     b:int[] =  1.1; 
@@ -1673,7 +1673,7 @@ import(""Builtin.dll"");import(""FFITarget.dll"");
         {
             string code =
                 @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
                     a:int[][]= {1}; 
                     
                     b:int[][] =  {1.1}; 
@@ -1702,7 +1702,7 @@ import(""Builtin.dll"");import(""FFITarget.dll"");
         {
             string code =
                 @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
                     a:double[]= 1; 
                     
                     b:double[] =  1.1; 
@@ -1733,7 +1733,7 @@ import(""Builtin.dll"");import(""FFITarget.dll"");
         {
             string code =
                 @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
                     a:double[][]= {1}; 
                     
                     b:double[][] =  {1.1}; 
@@ -1763,7 +1763,7 @@ import(""Builtin.dll"");import(""FFITarget.dll"");
         {
             string code =
                 @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
                     a:bool[]= 1; 
                     
                     b:bool[] =  1.1; 
@@ -1793,7 +1793,7 @@ import(""Builtin.dll"");import(""FFITarget.dll"");
         {
             string code =
                 @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
                     a:bool[][]= {1}; 
                     
                     b:bool[][] =  {1.1}; 
@@ -1821,7 +1821,7 @@ import(""Builtin.dll"");import(""FFITarget.dll"");
         {
             string code =
                 @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
                     a:string[]= 1; 
                     
                     b:string[] =  1.0; 
@@ -1852,7 +1852,7 @@ import(""Builtin.dll"");import(""FFITarget.dll"");
         {
             string code =
                 @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
                     a:string[][]= {1}; 
                     
                     b:string[][] =  {1.0}; 
@@ -1882,7 +1882,7 @@ import(""Builtin.dll"");import(""FFITarget.dll"");
         {
             string code =
                 @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
                     a:char[]= 1; 
                     
                     b:char[] =  1.0; 
@@ -1911,7 +1911,7 @@ import(""Builtin.dll"");import(""FFITarget.dll"");
         {
             string code =
                 @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
                     a:char[][]= 1; 
                     
                     b:char[][] =  1.0; 
@@ -1980,7 +1980,7 @@ import(""Builtin.dll"");import(""FFITarget.dll"");
         {
             string code =
                 @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
                         def foo ( x:var[] )
                         {
 	                        b1= x ;
@@ -2029,7 +2029,7 @@ import(""Builtin.dll"");import(""FFITarget.dll"");
         {
             string code =
                 @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
                         def foo :var[]( x)
                         {
 	                        b1= x ;
@@ -2064,7 +2064,7 @@ import(""Builtin.dll"");import(""FFITarget.dll"");
             //  
             string code =
                 @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
                         def foo :int[]( x)
                         {
 	                        b1= x ;
@@ -2099,7 +2099,7 @@ import(""Builtin.dll"");import(""FFITarget.dll"");
         {
             string code =
                 @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
                         def foo ( x:int[])
                         {
 	                        b1= x ;
@@ -2136,7 +2136,7 @@ import(""Builtin.dll"");import(""FFITarget.dll"");
             //  
             string code =
                 @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
                         def foo :double[]( x)
                         {
 	                        b1= x ;
@@ -2173,7 +2173,7 @@ import(""Builtin.dll"");import(""FFITarget.dll"");
             //  
             string code =
                 @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
                         def foo ( x:double[])
                         {
 	                        b1= x ;
@@ -2210,7 +2210,7 @@ import(""Builtin.dll"");import(""FFITarget.dll"");
         {
             string code =
                 @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
                         def foo ( x:bool[])
                         {
 	                        b1= x ;
@@ -2279,7 +2279,7 @@ import(""Builtin.dll"");import(""FFITarget.dll"");
         {
             string code =
                 @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
                         def foo :bool[]( x)
                         {
 	                        b1= x ;
@@ -2315,7 +2315,7 @@ import(""Builtin.dll"");import(""FFITarget.dll"");
         {
             string code =
                 @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
                     def foo:bool[](x)
                             {
 		 	                    b1= x ;
@@ -2373,7 +2373,7 @@ import(""Builtin.dll"");import(""FFITarget.dll"");
         {
             string code =
                 @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
                     a = DummyVector.ByCoordinates(1,2,3);
                     a.X = false;
                     c = a.X;
@@ -2563,7 +2563,7 @@ a;
         {
             string code =
                 @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
                         def foo ( x:bool[])
                         {
 	                        b1= x ;
@@ -2598,7 +2598,7 @@ import(""Builtin.dll"");import(""FFITarget.dll"");
         {
             string code =
                 @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
                         def foo:bool[]( x)
                         {
 	                        b1= x ;
@@ -2632,7 +2632,7 @@ import(""Builtin.dll"");import(""FFITarget.dll"");
         {
             string code =
                 @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
                         def foo ( x:string[])
                         {
 	                        b1= x ;
@@ -2665,7 +2665,7 @@ import(""Builtin.dll"");import(""FFITarget.dll"");
         {
             string code =
                 @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
                         def foo :string[]( x)
                         {
 	                        b1= x ;
@@ -2699,7 +2699,7 @@ import(""Builtin.dll"");import(""FFITarget.dll"");
         {
             string code =
                 @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
                         def foo ( x:char[])
                         {
 	                        b1= x ;
@@ -2733,7 +2733,7 @@ import(""Builtin.dll"");import(""FFITarget.dll"");
         {
             string code =
                 @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
                         def foo :char[]( x)
                         {
 	                        b1= x ;
@@ -2766,7 +2766,7 @@ import(""Builtin.dll"");import(""FFITarget.dll"");
         {
             string code =
                 @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 d;
                     [Imperative]{
                          d:bool=ClassFunctionality.ClassFunctionality(5); // user def to bool - > if not null true
@@ -2784,7 +2784,7 @@ d;
         {
             string code =
                 @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
                         a : ClassFunctionality[] =  ClassFunctionality.ClassFunctionality(1) ;
                         a1 = a.IntVal;";
             string error = "";
@@ -2800,7 +2800,7 @@ import(""Builtin.dll"");import(""FFITarget.dll"");
         {
             string code =
                 @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
                     a :double[]=null;
                     b :string[]=null;
                     c :char[]=null;
@@ -3060,7 +3060,7 @@ import(""Builtin.dll"");import(""FFITarget.dll"");
         {
             string code =
                     @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
                             def foo (y)
                             {
     	                        loc : string[]= y;
@@ -3096,7 +3096,7 @@ import(""Builtin.dll"");import(""FFITarget.dll"");
         {
             string code =
                     @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
                             def foo (y)
                             {
     	                        loc : char[] = y;
@@ -3296,7 +3296,7 @@ import(""Builtin.dll"");import(""FFITarget.dll"");
         {
             string code =
                     @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
                         def foo:bool[]( x)
                         {
 	                        b1= x ;
@@ -3317,7 +3317,7 @@ import(""Builtin.dll"");import(""FFITarget.dll"");
         {
             string code =
                     @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
                         def foo( x:bool[])
                         {
 	                        b1= x ;
@@ -3338,7 +3338,7 @@ import(""Builtin.dll"");import(""FFITarget.dll"");
         {
             string code =
                     @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
                     v = {ClassFunctionality.ClassFunctionality(), ClassFunctionality.ClassFunctionality()};
                     b:bool[] = v;
                     ";
@@ -3354,7 +3354,7 @@ import(""Builtin.dll"");import(""FFITarget.dll"");
         {
             string code =
                     @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
                     v = ClassFunctionality.ClassFunctionality();
                     b:bool[] = v;
                     ";
@@ -3370,7 +3370,7 @@ import(""Builtin.dll"");import(""FFITarget.dll"");
         {
             string code =
                     @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
                     def foo(b : bool[]) { return = 1; }
                     v = {ClassFunctionality.ClassFunctionality(), ClassFunctionality.ClassFunctionality()};
                     o = foo(v);
@@ -3387,7 +3387,7 @@ import(""Builtin.dll"");import(""FFITarget.dll"");
         {
             string code =
                     @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
                     def foo(b : bool[]) { return = 1; }
                     v = ClassFunctionality.ClassFunctionality();
                     o = foo(v);
@@ -3440,7 +3440,7 @@ import(""Builtin.dll"");import(""FFITarget.dll"");
         {
             string code =
                     @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
                         def foo : ClassFunctionality[](x )
                         {
                             b1 = x;
@@ -3462,7 +3462,7 @@ import(""Builtin.dll"");import(""FFITarget.dll"");
         {
             string code =
                     @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
                         def foo(x:ClassFunctionality[] )
                         {
                             b1 = x;
@@ -3607,7 +3607,7 @@ import(""Builtin.dll"");import(""FFITarget.dll"");
         {
             string code =
                     @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
                     def foo(x : ClassFunctionality, y : ClassFunctionality)
                     {
 
@@ -3633,7 +3633,7 @@ import(""Builtin.dll"");import(""FFITarget.dll"");
         {
             string code =
                     @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
                         def foo (x : ClassFunctionality)
                         {
                             b  : ClassFunctionality = x;
@@ -3680,7 +3680,7 @@ import(""Builtin.dll"");import(""FFITarget.dll"");
         {
             string code =
                 @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
                     a:var[]..[]= {1,{2,3},{{4},3}}; 
                     
                     b:var[]..[] =  {1.1,{2.2,3.3}}; 
@@ -3714,7 +3714,7 @@ import(""Builtin.dll"");import(""FFITarget.dll"");
         {
             string code =
                 @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
                     a:int[]..[]= {1,{2,{3}}}; 
                     
                     b:int[]..[] =  {1.1,{1.1}}; 
@@ -3745,7 +3745,7 @@ import(""Builtin.dll"");import(""FFITarget.dll"");
         {
             string code =
                 @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
                     a:double[]= {1,{1}}; 
                     
                     b:double[] =  {1.1,{-3}}; 
@@ -3778,7 +3778,7 @@ import(""Builtin.dll"");import(""FFITarget.dll"");
         {
             string code =
                 @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
                     a:bool[]..[]= {1,{1}}; 
                     
                     b:bool[] ..[]=  {1.1,{1.1}}; 
@@ -3810,7 +3810,7 @@ import(""Builtin.dll"");import(""FFITarget.dll"");
         {
             string code =
                 @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
                     a:string[]..[]= {1,{1}}; 
                     
                     b:string[] ..[]=  {1.0,{1.0}}; 
@@ -3841,7 +3841,7 @@ import(""Builtin.dll"");import(""FFITarget.dll"");
         {
             string code =
                 @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
                     a:char[]..[]= {1,{1}}; 
                     
                     b:char[]..[] =  {1.0,{1.0}}; 
@@ -3906,7 +3906,7 @@ import(""Builtin.dll"");import(""FFITarget.dll"");
         {
             string code =
                 @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
                         def foo (x: var[][])
                         {
                             return = x;
@@ -3942,7 +3942,7 @@ import(""Builtin.dll"");import(""FFITarget.dll"");
         {
             string code =
                 @"
-                    import(""Builtin.dll"");import(""FFITarget.dll"");
+                    import(""FFITarget.dll"");
                         def foo : var[][](x)
                         {
                             return = x;
@@ -3978,7 +3978,7 @@ import(""Builtin.dll"");import(""FFITarget.dll"");
         {
             string code =
                 @"
-                    import(""Builtin.dll"");import(""FFITarget.dll"");
+                    import(""FFITarget.dll"");
                         def foo (x: int[][])
                         {
                             return = x;
@@ -4015,7 +4015,7 @@ import(""Builtin.dll"");import(""FFITarget.dll"");
         {
             string code =
                 @"
-                    import(""Builtin.dll"");import(""FFITarget.dll"");
+                    import(""FFITarget.dll"");
                         def foo : int[][](x)
                         {
                             return = x;
@@ -4052,7 +4052,7 @@ import(""Builtin.dll"");import(""FFITarget.dll"");
         {
             string code =
                 @"
-                    import(""Builtin.dll"");import(""FFITarget.dll"");
+                    import(""FFITarget.dll"");
                         def foo (x: double[][])
                         {
                             return = x;
@@ -4089,7 +4089,7 @@ import(""Builtin.dll"");import(""FFITarget.dll"");
         {
             string code =
                 @"
-                    import(""Builtin.dll"");import(""FFITarget.dll"");
+                    import(""FFITarget.dll"");
                         def foo : double[][](x)
                         {
                             return = x;
@@ -4126,7 +4126,7 @@ import(""Builtin.dll"");import(""FFITarget.dll"");
         {
             string code =
                 @"
-                    import(""Builtin.dll"");import(""FFITarget.dll"");
+                    import(""FFITarget.dll"");
                         def foo (x: bool[][])
                         {
                             return = x;
@@ -4162,7 +4162,7 @@ import(""Builtin.dll"");import(""FFITarget.dll"");
         {
             string code =
                 @"
-                    import(""Builtin.dll"");import(""FFITarget.dll"");
+                    import(""FFITarget.dll"");
                         def foo : bool[][](x)
                         {
                             return = x;
@@ -4198,7 +4198,7 @@ import(""Builtin.dll"");import(""FFITarget.dll"");
         {
             string code =
                 @"
-                    import(""Builtin.dll"");import(""FFITarget.dll"");
+                    import(""FFITarget.dll"");
                         def foo (x: string[][])
                         {
                             return = x;
@@ -4235,7 +4235,7 @@ import(""Builtin.dll"");import(""FFITarget.dll"");
         {
             string code =
                 @"
-                    import(""Builtin.dll"");import(""FFITarget.dll"");
+                    import(""FFITarget.dll"");
                         def foo : string[][](x)
                         {
                             return = x;
@@ -4272,7 +4272,7 @@ import(""Builtin.dll"");import(""FFITarget.dll"");
         {
             string code =
                 @"
-                    import(""Builtin.dll"");import(""FFITarget.dll"");
+                    import(""FFITarget.dll"");
                         def foo (x: char[][])
                         {
                             return = x;
@@ -4309,7 +4309,7 @@ import(""Builtin.dll"");import(""FFITarget.dll"");
         {
             string code =
                 @"
-                    import(""Builtin.dll"");import(""FFITarget.dll"");
+                    import(""FFITarget.dll"");
                         def foo : char[][](x)
                         {
                             return = x;
@@ -4347,7 +4347,7 @@ import(""Builtin.dll"");import(""FFITarget.dll"");
         {
             string code =
                 @"
-                    import(""Builtin.dll"");import(""FFITarget.dll"");
+                    import(""FFITarget.dll"");
                         def foo (x: var[]..[])
                         {
                             return = x;
@@ -4385,7 +4385,7 @@ import(""Builtin.dll"");import(""FFITarget.dll"");
         {
             string code =
                  @"
-                  import(""Builtin.dll"");import(""FFITarget.dll"");
+                  import(""FFITarget.dll"");
                       def foo : var[]..[](x)
                       {
                           return = x;
@@ -4423,7 +4423,7 @@ import(""Builtin.dll"");import(""FFITarget.dll"");
         {
             string code =
                   @"
-          import(""Builtin.dll"");import(""FFITarget.dll"");
+          import(""FFITarget.dll"");
                      def foo (x: int[]..[])
                      {
                          return = x;
@@ -4461,7 +4461,7 @@ import(""Builtin.dll"");import(""FFITarget.dll"");
         {
             string code =
                 @"
-                 import(""Builtin.dll"");import(""FFITarget.dll"");
+                 import(""FFITarget.dll"");
                      def foo : int[]..[](x)
                      {
                          return = x;
@@ -4498,7 +4498,7 @@ import(""Builtin.dll"");import(""FFITarget.dll"");
         {
             string code =
                 @"
-                 import(""Builtin.dll"");import(""FFITarget.dll"");
+                 import(""FFITarget.dll"");
                      def foo (x: double[]..[])
                      {
                          return = x;
@@ -4535,7 +4535,7 @@ import(""Builtin.dll"");import(""FFITarget.dll"");
         {
             string code =
                               @"
-                 import(""Builtin.dll"");import(""FFITarget.dll"");
+                 import(""FFITarget.dll"");
                      def foo (x: double[]..[])
                      {
                          return = x;
@@ -4572,7 +4572,7 @@ import(""Builtin.dll"");import(""FFITarget.dll"");
         {
             string code =
                 @"
-                 import(""Builtin.dll"");import(""FFITarget.dll"");
+                 import(""FFITarget.dll"");
                      def foo (x: bool[]..[])
                      {
                          return = x;
@@ -4610,7 +4610,7 @@ import(""Builtin.dll"");import(""FFITarget.dll"");
         {
             string code =
                  @"
-                 import(""Builtin.dll"");import(""FFITarget.dll"");
+                 import(""FFITarget.dll"");
                      def foo : bool[]..[](x)
                      {
                          return = x;
@@ -4648,7 +4648,7 @@ import(""Builtin.dll"");import(""FFITarget.dll"");
         {
             string code =
                  @"
-                   import(""Builtin.dll"");import(""FFITarget.dll"");
+                   import(""FFITarget.dll"");
                        def foo (x: string[]..[])
                        {
                            return = x;
@@ -4686,7 +4686,7 @@ import(""Builtin.dll"");import(""FFITarget.dll"");
         {
             string code =
                 @"
-                   import(""Builtin.dll"");import(""FFITarget.dll"");
+                   import(""FFITarget.dll"");
                        def foo : string[]..[](x)
                        {
                            return = x;
@@ -4723,7 +4723,7 @@ import(""Builtin.dll"");import(""FFITarget.dll"");
         {
             string code =
                 @"
-                  import(""Builtin.dll"");import(""FFITarget.dll"");
+                  import(""FFITarget.dll"");
                       def foo (x: char[]..[])
                       {
                           return = x;
@@ -4760,7 +4760,7 @@ import(""Builtin.dll"");import(""FFITarget.dll"");
         {
             string code =
                 @"
-                  import(""Builtin.dll"");import(""FFITarget.dll"");
+                  import(""FFITarget.dll"");
                       def foo : char[]..[](x)
                       {
                           return = x;
@@ -4797,7 +4797,7 @@ import(""Builtin.dll"");import(""FFITarget.dll"");
         {
             string code =
                 @"
-                    import(""Builtin.dll"");import(""FFITarget.dll"");
+                    import(""FFITarget.dll"");
                         def foo (x: var[]..[])
                         {
                             return = x;
@@ -4942,7 +4942,7 @@ e = foo({5});
         {
             string code =
                 @"
-                    import(""Builtin.dll"");import(""FFITarget.dll"");
+                    import(""FFITarget.dll"");
                         def foo (x: var[])
                         {
                             return = x;
@@ -4971,7 +4971,7 @@ e = foo({5});
         {
             string code =
                 @"
-                    import(""Builtin.dll"");import(""FFITarget.dll"");
+                    import(""FFITarget.dll"");
                         def foo (x: var)
                         {
                             return = x;
@@ -5000,7 +5000,7 @@ e = foo({5});
         {
             string code =
                 @"
-                    import(""Builtin.dll"");import(""FFITarget.dll"");
+                    import(""FFITarget.dll"");
                         def foo (x: var)
                         {
                             return = x;
@@ -5029,7 +5029,7 @@ e = foo({5});
         {
             string code =
                 @"
-                    import(""Builtin.dll"");import(""FFITarget.dll"");
+                    import(""FFITarget.dll"");
                         def foo (x: int)
                         {
                             return = x;
@@ -5059,7 +5059,7 @@ e = foo({5});
         {
             string code =
                 @"
-                    import(""Builtin.dll"");import(""FFITarget.dll"");
+                    import(""FFITarget.dll"");
                         def foo (x: double)
                         {
                             return = x;
@@ -5091,7 +5091,7 @@ e = foo({5});
         {
             string code =
                 @"
-                    import(""Builtin.dll"");import(""FFITarget.dll"");
+                    import(""FFITarget.dll"");
                         def foo (x: bool)
                         {
                             return = x;
@@ -5121,7 +5121,7 @@ e = foo({5});
         {
             string code =
                 @"
-                    import(""Builtin.dll"");import(""FFITarget.dll"");
+                    import(""FFITarget.dll"");
                         def foo (x: A)
                         {
                             return = x;
@@ -5328,7 +5328,7 @@ e = foo({5});
         {
             string code =
                 @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
                     def foo(x : bool, y : ClassFunctionality[])
                     {
                         return = { x, y.IntVal };
@@ -5431,7 +5431,7 @@ import(""Builtin.dll"");import(""FFITarget.dll"");
         {
             string code =
                 @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
                     arr = { 0, ClassFunctionality.ClassFunctionality() };
                     x = arr[1];
                     test = x.SetAndReturn(1);
@@ -5448,7 +5448,7 @@ import(""Builtin.dll"");import(""FFITarget.dll"");
         {
             string code =
                 @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
                     arr = { ClassFunctionality.ClassFunctionality(), 1, { 2, ClassFunctionality.ClassFunctionality() }, 5 };
                     x = arr[2][1];
                     test = x.SetAndReturn(1);
@@ -5578,7 +5578,7 @@ import(""Builtin.dll"");import(""FFITarget.dll"");
         {
             string code =
                 @"
-                    import(""Builtin.dll"");import(""FFITarget.dll"");
+                    import(""FFITarget.dll"");
                         def foo (x: var[])
                         {
                             return = x;
@@ -5608,7 +5608,7 @@ import(""Builtin.dll"");import(""FFITarget.dll"");
         {
             string code =
                 @"
-                    import(""Builtin.dll"");import(""FFITarget.dll"");
+                    import(""FFITarget.dll"");
                         def foo (x: int[])
                         {
                             return = x;
@@ -5639,7 +5639,7 @@ import(""Builtin.dll"");import(""FFITarget.dll"");
         {
             string code =
                 @"
-                    import(""Builtin.dll"");import(""FFITarget.dll"");
+                    import(""FFITarget.dll"");
                         def foo (x: double[])
                         {
                             return = x;
@@ -5672,7 +5672,7 @@ import(""Builtin.dll"");import(""FFITarget.dll"");
         {
             string code =
                 @"
-                    import(""Builtin.dll"");import(""FFITarget.dll"");
+                    import(""FFITarget.dll"");
                         def foo (x: bool[])
                         {
                             return = x;
@@ -5703,7 +5703,7 @@ import(""Builtin.dll"");import(""FFITarget.dll"");
         {
             string code =
                 @"
-                   import(""Builtin.dll"");import(""FFITarget.dll"");
+                   import(""FFITarget.dll"");
                         def foo (x: ClassFunctionality[])
                         {
                             return = x;
@@ -5735,7 +5735,7 @@ import(""Builtin.dll"");import(""FFITarget.dll"");
         {
             string code =
                 @"
-                   import(""Builtin.dll"");import(""FFITarget.dll"");
+                   import(""FFITarget.dll"");
                    def foo(x : ClassFunctionality)
                         {
                             return = x;
@@ -5758,7 +5758,7 @@ import(""Builtin.dll"");import(""FFITarget.dll"");
         {
             string code =
                 @"
-                   import(""Builtin.dll"");import(""FFITarget.dll"");
+                   import(""FFITarget.dll"");
                    def foo(x : ClassFunctionality[])
                         {
                             return = x;
@@ -5894,7 +5894,7 @@ d = { 1.0+ { { c + 5 }, { c + 5.5 }, { c + 6 } } };// received {46.0,47.00,47.00
         {
             string code =
                 @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
                 x : var[] = { ClassFunctionality.ClassFunctionality(1),ClassFunctionality.ClassFunctionality(1),ClassFunctionality.ClassFunctionality(1),ClassFunctionality.ClassFunctionality(1)};//var 
                 x[2..3] = { ClassFunctionalityMirror.ClassFunctionalityMirror(2),ClassFunctionalityMirror.ClassFunctionalityMirror(2)};
                  y = x.IntVal;
@@ -5911,7 +5911,7 @@ import(""Builtin.dll"");import(""FFITarget.dll"");
         {
             string code =
                 @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
                 x : ClassFunctionality[] = { ClassFunctionality.ClassFunctionality(1),ClassFunctionality.ClassFunctionality(1),ClassFunctionality.ClassFunctionality(1),ClassFunctionality.ClassFunctionality(1)};//class
                 x[2..3] = {ClassFunctionalityMirror.ClassFunctionalityMirror(2),ClassFunctionalityMirror.ClassFunctionalityMirror(2)};
                 y = x.IntVal;
@@ -5967,7 +5967,7 @@ import(""Builtin.dll"");import(""FFITarget.dll"");
         {
             string code =
                 @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
                     def foo()
                     {
                         x3 : ClassFunctionality[]..[] = {  ClassFunctionality.ClassFunctionality(1) , ClassFunctionality.ClassFunctionality(1) };

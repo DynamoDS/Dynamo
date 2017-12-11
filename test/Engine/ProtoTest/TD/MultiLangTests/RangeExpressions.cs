@@ -1599,7 +1599,7 @@ c = 5;
         public void IndexingIntoClassInstanceByRangeExpr()
         {
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 x = (ClassFunctionality.ClassFunctionality(1..3))[0];
 z = x.IntVal;
 ";

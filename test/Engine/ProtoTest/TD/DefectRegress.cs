@@ -15,7 +15,7 @@ namespace ProtoTest.TD
         public void Regress_1455158()
         {
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");         
+import(""FFITarget.dll"");         
 def Modify : TestPoint(p : DummyPoint2D)
 {
     tempX = p.X + 1;
@@ -59,7 +59,7 @@ b;
         public void Regress_1455276()
         {
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 def SquaredDistance : double (pt : DummyPoint, otherPt : DummyPoint)
 {
     distx = (otherPt.X - pt.X);
@@ -86,7 +86,7 @@ dist = SquaredDistance(pt1, pt2);
         {
             //Assert.Fail("1467188 - Sprint24 : rev 3170: REGRESSION : instantiating a class more than once with same argument is causing DS to go into infinite loop!");
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 C0 = DummyTuple4.XYZH(1.0,0,0,0);
 C1 = DummyTuple4.XYZH(0,1.0,0,0);
 C2 = DummyTuple4.XYZH(0,0,1.0,0);
@@ -114,7 +114,7 @@ result1 =  DummyTuple4.XYZH(RX, RY, RZ, RH);";
         public void Regress_1454075()
         {
             string dscode = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 v = DummyVector.ByCoordinates(1,2,3);";
             ExecutionMirror mirror = thisTest.RunScriptSource(dscode);
             //Compilation test. 
@@ -268,7 +268,7 @@ a2 = 3;";
         public void Regress_1458785_3()
         {
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 a1 = DummyPoint.ByCoordinates(1,1,1);
 x1 = a1.X;
 y1 = a1.yy;
@@ -427,7 +427,7 @@ a = 0.2..0.3..~0.2;";
         public void Regress_1454966()
         {
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 a1 = [Associative]
 {	
 	return = ClassFunctionality.ClassFunctionality(1).IntVal;	
@@ -445,7 +445,7 @@ a1 = [Associative]
         public void Regress_1454966_2()
         {
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 def create:A( b )
 {
     a = ClassFunctionality.ClassFunctionality(b);
@@ -465,7 +465,7 @@ x = create(3).IntVal;
         {
             string errmsg = "MAGN-4092 Replication should not be supported in Imperative scope";
             string src = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 x;  
 a1; 
 a2;
@@ -501,7 +501,7 @@ a3;
         public void Regress_1454966_4()
         {
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
  value = ArrayMember.Ctor({1,3,5});
  value2 = ArrayMember.Ctor(1.3);
  getval= value.X;
@@ -517,7 +517,7 @@ import(""Builtin.dll"");import(""FFITarget.dll"");
         public void Regress_1454966_5()
         {
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 value = ArrayMember.Ctor({1,3,5});
 getval= value.X;
 getval2= value.X[0];
@@ -544,7 +544,7 @@ getval5= value.X[b];
         public void Regress_1454966_6()
         {
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 
  value = ClassFunctionality.ClassFunctionality(1);
 def call:int(b:ClassFunctionality)
@@ -564,7 +564,7 @@ c= call(value);";
         {
             Object[] x = new Object[] { 1.0, 2.0, 3.0 };
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 a1;
 [Imperative]
 {	
@@ -751,7 +751,7 @@ a = true && true ? -1 : 1;";
         public void Regress_1459175()
         {
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 p1 = DummyPoint2D.ByCoordinates( 5.0, 10.0);
 a1 = p1.create(4.0,5.0);
 a2 = a1.X; // expected null here!!
@@ -770,7 +770,7 @@ a3 = a1.Y; // expected null here!!
         {
             Assert.Inconclusive();
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 def length : ClassFunctionality[] (pts : ClassFunctionality[])
 {
     numPts = [Imperative]
@@ -892,7 +892,7 @@ d;
         {
             //Assert.Fail("1467156 - Sprint 25 - Rev 3026 type checking of return types at run time ");
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 def foo : int (a : ClassFunctionality)
 {
     return = a;
@@ -929,7 +929,7 @@ d = [Associative]
         public void Regress_1456611()
         {
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 def create( b )
 {
     a = ClassFunctionality.ClassFunctionality(b);
@@ -948,7 +948,7 @@ y = x.IntVal;
         public void Regress_1456611_2()
         {
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
     def length : int (pts : ClassFunctionality[])
     {
         numPts = [Imperative]
@@ -981,7 +981,7 @@ numpts = [Imperative]
         {
             string code = @"
 // function test -return class array, argument as class array 
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 def length : ClassFunctionality[] (pts : ClassFunctionality[])
 {
     numPts = [Imperative]
@@ -1010,7 +1010,7 @@ numpts = length(pts); // getting null
         {
             string code = @"
 //  function test return int , multiple arguments 
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 def length : int (pts : ClassFunctionality[],num:int)
 {
     numPts = [Imperative]
@@ -1039,7 +1039,7 @@ numpts = length(pts,5); // getting null";
         {
             string code = @"
 // function test pass an item in hte array as argument , no return type specified
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 def length(pts : ClassFunctionality[],num:int )
 {
     numPts = [Imperative]
@@ -1069,7 +1069,7 @@ numpts = length(pts,a[0]);";
         {
             string code = @"
 // function test pass an item in the array as argument , no return type specified
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 def length(pts : ClassFunctionality[],num:int )
 {
     numPts = [Imperative]
@@ -1100,7 +1100,7 @@ numpts = length(pts,a[0]);";
         {
             string code = @"
 // no return type specified ad no return statement 
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 def length(pts : ClassFunctionality[],num:int )
 {
     numPts = [Imperative]
@@ -1131,7 +1131,7 @@ numpts = length(pts,a[0]);";
             //Assert.Fail("Sub-recursion calls with auto promotion on jagged arrays is not working");
             string code = @"
 // function test pass an item in the array as argument , no return type specified
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 def length :ClassFunctionality[](pts : ClassFunctionality[])
 {
    
@@ -1165,7 +1165,7 @@ t3 = numpts[1][0].IntVal;";
             //Assert.Fail("DNL-1467208 Auto-upcasting of int -> int[] is not happening on function return");
             string code = @"
 // test rank of return type 
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 def length : ClassFunctionality[](pts : ClassFunctionality[])
 {
    
@@ -1229,7 +1229,7 @@ z=length({1,2});";
         public void Regress_1459171_1()
         {
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 def create( X, Y)
 {	    
 	return = DummyPoint2D.ByCoordinates( X, Y );		
@@ -1289,7 +1289,7 @@ e1;
         public void Regress_1458916()
         {
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 a1 =ClassFunctionality.ClassFunctionality(5);
 x1 = a1.IntVal;";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -1302,7 +1302,7 @@ x1 = a1.IntVal;";
         public void Regress_1459584()
         {
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 def length : ClassFunctionality[] (pts : ClassFunctionality[])
 {
     numPts = [Imperative]
@@ -1335,7 +1335,7 @@ test2= numpts[1].IntVal;";
         {
             string code = @"
 //return type class and return an array of class-
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 def length : ClassFunctionality[] (pts : ClassFunctionality[])
 {
     [Imperative]
@@ -1369,7 +1369,7 @@ b=numpts[1].IntVal;
             //Assert.Fail("1467196 Sprint 25 - Rev 3216 - [Design Issue] when rank of return type does not match the value returned what is the expected result ");
             string code = @"
 //return type class and return an array of class-
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 def length : ClassFunctionality[] (pts : ClassFunctionality[])
 {
     numPts = [Imperative]
@@ -1402,7 +1402,7 @@ b=numpts[1].IntVal;";
             //Assert.Fail("1467196 Sprint 25 - Rev 3216 - [Design Issue] when rank of return type does not match the value returned what is the expected result ");
             string code = @"
 //return type class and return a double
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 def length : ClassFunctionality (pts : ClassFunctionality[])
 {
     numPts = [Imperative]
@@ -1434,7 +1434,7 @@ b=numpts[1].IntVal;";
         {
             string code = @"
 //return type int and return a double
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 def length : int (pts : ClassFunctionality[])
 {
     numPts = [Imperative]
@@ -1463,7 +1463,7 @@ numpts = length(pts);";
         {
             string code = @"
 //return type int and return a double
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 def length : double (pts : ClassFunctionality[])
 {
     numPts = [Imperative]
@@ -1492,7 +1492,7 @@ numpts = length(pts); ";
         {
             string code = @"
 //no return type defined
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 def length  (pts : ClassFunctionality[])
 {
     numPts = [Imperative]
@@ -1526,7 +1526,7 @@ test2=numpts[1].IntVal;
         {
             string code = @"
 //no return type defined and return null
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 def length  (pts : ClassFunctionality[])
 {
     numPts = [Imperative]
@@ -1556,7 +1556,7 @@ numpts = length(pts); ";
         {
             string code = @"
 //no return statement
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 def length  (pts : ClassFunctionality[])
 {
     numPts = [Imperative]
@@ -1689,7 +1689,7 @@ a:int = 1.3;";
         public void Regress_1459762()
         {
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 r1 = ClassFunctionality.ClassFunctionality(5);
 r2 = r1+1;
 ";
@@ -1910,7 +1910,7 @@ z = t[-1];
         public void Regress_1467094_2()
         {
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 c = { ClassFunctionality.ClassFunctionality(0), ClassFunctionality.ClassFunctionality(1) };
 p = {};
 d = [Imperative]
@@ -1939,7 +1939,7 @@ t4=p[1];";
         public void Regress_1467104()
         {
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 pts = ClassFunctionality.ClassFunctionality( { 1, 2} );
 aa = pts[null].IntVal;
 ";
@@ -1980,7 +1980,7 @@ a = 1;";
         public void Regress_1467318()
         {
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 a = ArrayMember.Ctor({2, 3});
 t = a.X;
 ";

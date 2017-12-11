@@ -12,7 +12,7 @@ namespace ProtoTest.Associative
         {
             string code =
     @"
-import(""Builtin.dll"");import (""FunctionObject.ds"");
+import (""FunctionObject.ds"");
 def add1(x) { return = x + 1; }
 def lt10(x) { return = x < 10; }
 add1fo = __CreateFunctionObject(add1, 1, {}, {null}, true);
@@ -28,7 +28,7 @@ r = LoopWhile(0, lt10fo, add1fo);
         {
             string code =
     @"
-import(""Builtin.dll"");import (""FunctionObject.ds"");
+import (""FunctionObject.ds"");
 def add(x,y) { return = x + y;}
 
 // fo = add(?, 42);
@@ -44,7 +44,7 @@ r = __Apply(fo, 3);
         {
             string code =
     @"
-import(""Builtin.dll"");import (""FunctionObject.ds"");
+import (""FunctionObject.ds"");
 def add(x,y,z) { return = x + y + z;}
 
 // foo1 = add(?, 42, ?);
@@ -64,7 +64,7 @@ r = __Apply(fo2, 3);
         {
             string code =
     @"
-import(""Builtin.dll"");import (""FunctionObject.ds"");
+import (""FunctionObject.ds"");
 def add(x,y) { return = x + y;}
 
 // fo = add(?, {100, 200});
@@ -80,7 +80,7 @@ r = __Apply(fo, {1, 2});
         {
             string code =
     @"
-import(""Builtin.dll"");import (""FunctionObject.ds"");
+import (""FunctionObject.ds"");
 def add(x,y) { return = x + y;}
 
 // fo = add(?, {100, 200});
@@ -96,7 +96,7 @@ r = __Apply(fo, 1);
         {
             string code =
     @"
-import(""Builtin.dll"");import (""FunctionObject.ds"");
+import (""FunctionObject.ds"");
 def add(x,y) { return = x + y;}
 
 // fo = add(?, {100, 200});
@@ -113,7 +113,7 @@ r = __Apply(fo, {1});
             // Return a function object from function
             string code =
     @"
-import(""Builtin.dll"");import (""FunctionObject.ds"");
+import (""FunctionObject.ds"");
 def add(x,y) { return = x + y;}
 
 def getFunctionObject()
@@ -136,7 +136,7 @@ r = __Apply(fo, 42);
             // Return a function object from function
             string code =
     @"
-import(""Builtin.dll"");import (""FunctionObject.ds"");
+import (""FunctionObject.ds"");
 def add(x,y) { return = x + y;}
 def mul(x,y) { return = x * y;}
 def getFunctionObject(f:function)
@@ -160,7 +160,7 @@ r2 = __Apply(fo2, 3);
             // Return a function object from function
             string code =
     @"
-import(""Builtin.dll"");import (""FunctionObject.ds"");
+import (""FunctionObject.ds"");
 def add(x,y) { return = x + y;}
 def mul(x,y) { return = x * y;}
 def getFunctionObject(f:function)
@@ -183,7 +183,7 @@ r2 = __Apply(fo2, 3);
         {
             string code =
     @"
-import(""Builtin.dll"");import (""FunctionObject.ds"");
+import (""FunctionObject.ds"");
 def add(x,y) { return = x + y;}
 def mul(x, y) { return = x * y;}
 
@@ -203,7 +203,7 @@ r = __Apply(fo3, 2);
         {
             string code =
     @"
-import(""Builtin.dll"");import (""FunctionObject.ds"");
+import (""FunctionObject.ds"");
 def add(x,y) { return = x + y;}
 def mul(x, y) { return = x * y;}
 
@@ -224,7 +224,7 @@ r = __Apply(fo2, 42);
             string err = "MAGN-4037 Defects with FunctionObject tests";
             string code =
     @"
-import(""Builtin.dll"");import (""FunctionObject.ds"");
+import (""FunctionObject.ds"");
 def add(x, y) { return = x + y; }
 
 def mul(x, y) { return = x * y; }
@@ -258,7 +258,7 @@ r5 = __Apply(comp3, 9);
         {
             string code =
     @"
-import(""Builtin.dll"");import (""FunctionObject.ds"");
+import (""FunctionObject.ds"");
 def foo(x, y)
 {
     return = x + y;
@@ -277,7 +277,7 @@ r = __Apply(fo, 3);
         {
             string code =
     @"
-import(""Builtin.dll"");import (""FunctionObject.ds"");
+import (""FunctionObject.ds"");
 
 def Foo(x, y)
 {
@@ -298,7 +298,7 @@ r = f;
         {
             string code =
     @"
-import(""Builtin.dll"");import (""FunctionObject.ds"");
+import (""FunctionObject.ds"");
 def odd(x)
 {
     return = x % 2 == 1;
@@ -316,7 +316,7 @@ r1 = __Filter(1..10, pred);
         {
             string code =
     @"
-import(""Builtin.dll"");import (""FunctionObject.ds"");
+import (""FunctionObject.ds"");
 def odd(x)
 {
     return = x % 2 == 1;
@@ -338,7 +338,7 @@ r3 = r1[1];
         {
             string code =
     @"
-import(""Builtin.dll"");import (""FunctionObject.ds"");
+import (""FunctionObject.ds"");
 def mul(x, y)
 {
     return = x * y;

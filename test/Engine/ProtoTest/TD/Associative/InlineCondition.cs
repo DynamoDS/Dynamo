@@ -750,7 +750,7 @@ d;
         {
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1692
             string code = @"
-            import(""Builtin.dll"");import(""FFITarget.dll"");
+            import(""FFITarget.dll"");
             a = DummyPoint.ByCoordinates(1,2,3);
             b = DummyVector.ByCoordinates(4,5,6);
             c = a == b;

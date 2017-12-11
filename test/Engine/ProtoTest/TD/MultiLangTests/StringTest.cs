@@ -477,7 +477,7 @@ m = m+n;
         {
             String code =
                 @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
                 a  = ClassFunctionality.ClassFunctionality();
                 b = ""a"" + a;
     
@@ -493,7 +493,7 @@ import(""Builtin.dll"");import(""FFITarget.dll"");
         {
             String code =
                 @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
                 a  = ClassFunctionality.ClassFunctionality(1);
                 arr1 = {1,2};
                 arr2 = {1,a};

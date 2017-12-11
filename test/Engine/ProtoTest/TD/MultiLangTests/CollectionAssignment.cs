@@ -138,7 +138,7 @@ e;
         public void T05_Collection_Assignment_Using_Class()
         {
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 d = [Imperative]
 {
 	c1 = ArrayMember.Ctor({ 1,2,3 });
@@ -373,7 +373,7 @@ p1;
         {
             string error = "1467321 rev 3878: class property specified as an empty array with no rank is becoming null when assigned a collection to it ";
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 a = ArrayMember.Ctor({1,2,3});
 val = a.X;
 val[0] = 100;
@@ -461,7 +461,7 @@ b = a[1];";
         public void T20_Defect_1458567_2()
         {
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 startPt = DummyPoint.ByCoordinates(1, 1, 0);
 endPt   = DummyPoint.ByCoordinates(1, 5, 0);
 line_0  = DummyLine.ByStartPointEndPoint(startPt, endPt); 	
@@ -1523,7 +1523,7 @@ b=a[2];
         public void T27_DynamicArray_Invalid_Index_1465614_2()
         {
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 baseLineCollection = { };
 basePoint = { }; // replace this with ""basePoint = { 0, 0};"", and it works fine
 nsides = 2;
@@ -1553,7 +1553,7 @@ z=basePoint[0].Z;";
         public void T27_DynamicArray_Invalid_Index_1467104()
         {
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 pts = ClassFunctionality.ClassFunctionality( { 1, 2} );
 aa = pts[null].IntVal;
 ";
@@ -1845,7 +1845,7 @@ return = x;
         public void T41_Accessing_Non_Existent_Properties_From_Array_Elements()
         {
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 c = { TestObjectA.TestObjectA(0), TestObjectB.TestObjectB(1) };
 d = c[1].a; 
 ";
@@ -1862,7 +1862,7 @@ d = c[1].a;
         public void T41_Accessing_Non_Existent_Property_FromArray_1467083()
         {
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 c = { TestObjectA.TestObjectA(0), TestObjectB.TestObjectB(1) };
 c0 = c[0].a;//0
 d = c[1].a;//null
@@ -1879,7 +1879,7 @@ d = c[1].a;//null
         public void T41_Accessing_Non_Existent_Property_FromArray_1467083_2()
         {
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 c = { TestObjectA.TestObjectA(0), TestObjectB.TestObjectB(1), 1 };
 e = c[2].IntVal;
 e1 = c[2].IntVal;
@@ -1933,7 +1933,7 @@ f1 = d[1].x2;//null
         {
             //Assert.Fail("1467094 - Sprint 24 : Rev 2748 : in some cases if try to access nonexisting item in an array it does not return null ) ");
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 c = { ClassFunctionality.ClassFunctionality(0), ClassFunctionality.ClassFunctionality(1) };
 p = {};
 d = p[1];
@@ -1972,7 +1972,7 @@ t4 = p[1];
         {
             // Assert.Fail("");
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 c = { ClassFunctionality.ClassFunctionality(0), ClassFunctionality.ClassFunctionality(1) };
 p = {};
 q=p[0].IntVal;
@@ -1990,7 +1990,7 @@ q=p[0].IntVal;
         {
             // Assert.Fail("");
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 c = { ClassFunctionality.ClassFunctionality(0), ClassFunctionality.ClassFunctionality(1) };
 p = {};
 q=p[0].IntVal;
@@ -2053,7 +2053,7 @@ s = f[1][0].x;
         {
             // Assert.Fail("");
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 c = { ClassFunctionality.ClassFunctionality(0), ClassFunctionality.ClassFunctionality(1) };
 p = {};
 d = [Imperative]
@@ -2337,7 +2337,7 @@ b[0]=10;
         public void T65_Array_Alias_ByVal_1467165_2()
         {
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 a = {TestObjectA.TestObjectA(),TestObjectB.TestObjectB()};
 b=a;
 a[0].a = 100;
@@ -2371,7 +2371,7 @@ b[0]=false;
         {
             //Assert.Fail("1467182 - Sprint 25 - [Design Decision] Rev 3163 - method resolution or type conversion is expected in following cases ");
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 a = {TestObjectA.TestObjectA(),TestObjectB.TestObjectB()};
 b=a;
 a[0].a = 100;
@@ -2388,7 +2388,7 @@ d=b[0].a;";
         public void T65_Array_Alias_ByVal_1467165_5()
         {
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 a = {TestObjectA.TestObjectA(),TestObjectB.TestObjectB()};
 b=a;
 a[0].IntVal = 100;
@@ -2506,7 +2506,7 @@ b = a;
         {
             String code =
 @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 a1 = { ArrayMember.Ctor(1..2), ArrayMember.Ctor(2..3) };
 a = a1[0].X[0][1];
 ";
@@ -2990,7 +2990,7 @@ test = foo();
         {
             String code =
 @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 def foo ()
 {
     arr = { {}, {}};
@@ -3021,7 +3021,7 @@ test = foo().IntVal;
         {
             String code =
 @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 def foo ()
 {
     t = [Imperative]
@@ -3052,7 +3052,7 @@ test = foo().IntVal;
         {
             String code =
 @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 def foo ()
 {
     t = [Imperative]
@@ -3085,7 +3085,7 @@ test = foo().IntVal;
         {
             String code =
 @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 def foo ()
 {
     t = [Imperative]
@@ -3118,7 +3118,7 @@ test = foo().IntVal;
         {
             String code =
 @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 def foo ()
 {
     arr;

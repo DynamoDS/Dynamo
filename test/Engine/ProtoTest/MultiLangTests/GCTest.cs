@@ -19,7 +19,7 @@ namespace ProtoTest.MultiLangTests
         public void T01_TestGCArray()
         {
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 v1;
 v2;
 v3;
@@ -54,7 +54,7 @@ v4 = DisposeCounter.x;
         public void T02_TestGCEndofIfBlk()
         {
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 DisposeCounter.Reset(1);
 a1 = DisposeCounterTest.DisposeCounterTest();
 [Imperative]
@@ -77,7 +77,7 @@ v = DisposeCounter.x; // 3";
         public void T03_TestGCEndofLangBlk()
         {
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 DisposeCounter.Reset(1);
 a1 = DisposeCounterTest.DisposeCounterTest();
 v1;
@@ -104,7 +104,7 @@ v2 = DisposeCounter.x; // 3";
         public void T04_TestGCReturnFromLangBlk()
         {
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 DisposeCounter.Reset(1);
 v1;
 [Imperative]
@@ -131,7 +131,7 @@ v2 = DisposeCounter.x; // 2";
         public void T05_TestGCReturnFromFunction()
         {
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 DisposeCounter.Reset(1);
 v1;
 v2;
@@ -160,7 +160,7 @@ v3 = DisposeCounter.x;";
         public void T06_TestGCEndofWhileBlk()
         {
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 v1;
 v2;
 v3;
@@ -198,7 +198,7 @@ v4 = DisposeCounter.x;
         public void T07_TestGCEndofForBlk()
         {
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 v1;
 v2;
 v3;
@@ -235,7 +235,7 @@ v4 = DisposeCounter.x;
         public void T08_TestGCArray02()
         {
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 v1;
 v2;
 v3;
@@ -281,7 +281,7 @@ v8 = DisposeCounter.x;";
         public void T09_TestGCPassingArguments()
         {
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 DisposeCounter.Reset(1);
 def foo : int(p : DisposeCounterTest[])
 {
@@ -331,7 +331,7 @@ v6 = DisposeCounter.x; // 9";
         public void T10_TestGCReturnArguments()
         {
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 DisposeCounter.Reset(1);
 def foo : DisposeCounterTest(p : DisposeCounterTest[])
 {
@@ -358,7 +358,7 @@ v3 = DisposeCounter.x;";
         public void T11_TestGCLangBlkInFunction()
         {
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 def foo : DisposeCounterTest(a : DisposeCounterTest)
 {
 	aaa = DisposeCounterTest.DisposeCounterTest();
@@ -383,7 +383,7 @@ v1 = DisposeCounter.x; // 2
         public void T13_GCTestComplexCase()
         {
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 def flatten(arr : DisposeCounterTest[][])
 {
 	solids = {};
@@ -415,7 +415,7 @@ v1 = DisposeCounter.x; // 1
         public void T14_TestGCPointer_AssociativeScope()
         {
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 [Associative]
 {
     DisposeCounter.Reset(1);
@@ -435,7 +435,7 @@ __GC();
         public void T15_TestGCArray_AssociativeScope()
         {
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 
 [Associative]
 {

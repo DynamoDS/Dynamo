@@ -12,7 +12,7 @@ namespace ProtoTest.TD.MultiLangTests
         public void T01_Class_In_Various_Scopes()
         {
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 obj1 = [Imperative]
 {
 	a = ClassFunctionality.ClassFunctionality(2);
@@ -37,7 +37,7 @@ getX2 = obj2.IntVal;	";
         public void T02_Class_In_Various_Nested_Scopes()
         {
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 c1 = [Imperative]
 {
 	a = ClassFunctionality.ClassFunctionality(2);
@@ -67,7 +67,7 @@ c2 = [Associative]
         public void T03_Class_In_Various_Scopes()
         {
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 a = ClassFunctionality.ClassFunctionality(2);
 c1 = [Imperative]
 {
@@ -96,7 +96,7 @@ c2 = [Associative]
         {
             String code =
             @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 obj = [Imperative]{
 return = ClassFunctionality.ClassFunctionality(2);
 }

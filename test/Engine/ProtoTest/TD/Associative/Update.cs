@@ -159,7 +159,7 @@ b = b + 0.1;    // updates the source member of the collection";
         public void T006_Update_In_Class()
         {
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 startPt = DummyPoint.ByCoordinates(1, 1, 0);
 endPt   = DummyPoint.ByCoordinates(1, 5, 0);
 line_0  = DummyLine.ByStartPointEndPoint(startPt, endPt); 	// create line_0
@@ -325,7 +325,7 @@ r1 = true;
         public void T013_Update_Of_Variables_To_User_Defined_Class()
         {
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 r1 = 2.0;
 r2 = r1+1;
 r1 = TestObjectA.TestObjectA(5);
@@ -346,7 +346,7 @@ t1 = TestObjectA.TestObjectA(5);
         public void T014_Update_Of_Class_Properties()
         {
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 x = 3;
 a1 = TestObjectA.TestObjectA(x);
 b1 = a1.a;
@@ -364,7 +364,7 @@ c1 = b1;
         public void T015_Update_Of_Class_Properties()
         {
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 x = { 3, 4 } ;
 a1 = TestObjectA.TestObjectA(x);
 b1 = a1.a;
@@ -384,7 +384,7 @@ c1 = b1;
         public void T016_Update_Of_Variable_Types()
         {
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 x = { 3, 4 } ;
 y = x[0] + 1;
 x =  { 3.5, 4.5 } ;
@@ -420,7 +420,7 @@ test = X + Y;
         public void T022_Defect_1459905()
         {
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 p = TestObjectA.TestObjectA(1);
 x = p.a;
 ";
@@ -435,7 +435,7 @@ x = p.a;
         public void T022_Defect_1459905_3()
         {
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 def foo ( b1 : TestObjectA )
 {
     return = b1.a;
@@ -454,7 +454,7 @@ b1 = foo(b1);
         public void T022_Defect_1459905_4()
         {
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 def foo ( b1 : TestObjectA )
 {
     return = b1.a;
@@ -476,7 +476,7 @@ y = x;
         public void T023_Defect_1459789()
         {
             string code = @"
-import(""Builtin.dll"");import(""FFITarget.dll"");
+import(""FFITarget.dll"");
 p = TestObjectA.TestObjectA(1.0);			        
 x = p.a;
 p = TestObjectA.TestObjectA(2.0);

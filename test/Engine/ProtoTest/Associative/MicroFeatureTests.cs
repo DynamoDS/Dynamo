@@ -19,7 +19,7 @@ namespace ProtoTest.Associative
         {
 
             String code =
-@"import(""Builtin.dll"");
+@"
 foo;
 [Associative]
 {
@@ -34,7 +34,7 @@ foo;
         public void TestAssignment02()
         {
             String code =
-@"import(""Builtin.dll"");
+@"
 boo;
 moo;
 scoo;
@@ -55,7 +55,7 @@ scoo;
         public void TestNull01()
         {
             String code =
-@"import(""Builtin.dll"");
+@"
 x;
 y;
 a;
@@ -82,7 +82,7 @@ c;
         public void TestNull02()
         {
             String code =
-@"import(""Builtin.dll"");
+@"
 c;
 [Associative]
 {
@@ -102,7 +102,7 @@ c;
         public void TestFunctions01()
         {
             String code =
-@"import(""Builtin.dll"");
+@"
 test;
 test2;
 test3;
@@ -127,7 +127,7 @@ def mult : int( s : int )
         public void TestFunctions02()
         {
             String code =
-@"import(""Builtin.dll"");        
+@"        
 temp;
 def test2 : int(b : int)
 {
@@ -151,7 +151,7 @@ def test : int(a : int)
         [Category("Failure")]
         public void TestDuplicateFunctionParams()
         {
-            const string code = @"import(""Builtin.dll"");
+            const string code = @"
 def test : int(a : int, a : int)
 {
     return = a + a;
@@ -168,7 +168,7 @@ temp = test(1, 2);
         public void TestFunctionsOverload02()
         {
             String code =
-@"import(""Builtin.dll"");
+@"
     def f : int( p1 : int )
     {
 	    x = p1 * 10;
@@ -194,7 +194,7 @@ temp = test(1, 2);
         public void TestFunctionsOverload03()
         {
             String code =
-            @"import(""Builtin.dll"");
+            @"
             def foo(a : int)
             {
 	            return = a;
@@ -217,7 +217,7 @@ temp = test(1, 2);
         public void TestDynamicDispatch01()
         {
             String code =
-@"import(""Builtin.dll"");
+@"
     def foo(x:int)
     {
         return = x;
@@ -243,8 +243,8 @@ temp = test(1, 2);
         public void TestClasses01()
         {
             String code =
-@"import(""Builtin.dll"");
-import(""Builtin.dll"");import(""FFITarget.dll"");
+@"
+import(""FFITarget.dll"");
 p = DummyPoint.ByCoordinates(123.0, 345.0, 567.0);
 a = p.X;
 b = p.Y;
@@ -260,8 +260,8 @@ c = p.Z;
         public void TestClasses06()
         {
             String code =
-@"import(""Builtin.dll"");  
-import(""Builtin.dll"");import(""FFITarget.dll"");
+@"  
+import(""FFITarget.dll"");
 p1 = DummyPoint.ByCoordinates(1,1,1);
 p2 = DummyPoint.ByCoordinates(10,10,10);
 line = DummyLine.ByStartPointEndPoint(p1, p2);
@@ -286,7 +286,7 @@ z = line.End.Z;
         public void TestClasses07()
         {
             String code =
-@"import(""Builtin.dll"");  
+@"  
 mx : var[];
 def vector2D()
 {
@@ -310,7 +310,7 @@ x = ModifyMe();
         public void TestClassFunction02()
         {
             String code =
-@"import(""Builtin.dll"");
+@"
     val : var;
 	def sum : int (p : int)
     {
@@ -328,8 +328,8 @@ x = ModifyMe();
         public void TestClassProperty()
         {
             String code =
-@"import(""Builtin.dll"");  
-import(""Builtin.dll"");import(""FFITarget.dll"");
+@"  
+import(""FFITarget.dll"");
 p1 = DummyPoint.ByCoordinates(1.0,1.0,1.0);
 p2 = DummyPoint.ByCoordinates(10.0,10.0,10.0);
 line = DummyLine.ByStartPointEndPoint(p1, p2);
@@ -357,7 +357,7 @@ a;b;c;x;y;z;
         public void TestClassFunction10()
         {
             String code =
-@"import(""Builtin.dll"");
+@"
 class A  
 {   
     x : int;
@@ -385,7 +385,7 @@ aa = 2;
         public void TestClassFunction11()
         {
             String code =
-@"import(""Builtin.dll"");
+@"
 class Point
 {
     context : var;
@@ -416,7 +416,7 @@ xval = cs2.origin.x;
         [Test]
         public void TestStaticUpdate01()
         {
-            string code = @"import(""Builtin.dll"");
+            string code = @"
 class Base
 {
     public static x;
@@ -432,7 +432,7 @@ Base.x = 10;
         [Test]
         public void TestStaticUpdate02()
         {
-            string code = @"import(""Builtin.dll"");
+            string code = @"
 class Base
 {
     static x : int[];
@@ -447,7 +447,7 @@ Base.x = { 1, 2 };
         [Test]
         public void TestStaticProperty01()
         {
-            string code = @"import(""Builtin.dll"");
+            string code = @"
 class A
 {
     static x:int;
@@ -466,7 +466,7 @@ t2 = b.x;
         [Test]
         public void TestStaticProperty02()
         {
-            string code = @"import(""Builtin.dll"");
+            string code = @"
 class S
 {
 	public static a : int;
@@ -489,7 +489,7 @@ b = S.a;
         [Test]
         public void TestTemporaryArrayIndexing01()
         {
-            string code = @"import(""Builtin.dll"");t = {1,2,3,4}[3]; ";
+            string code = @"t = {1,2,3,4}[3]; ";
             thisTest.RunScriptSource(code);
             thisTest.Verify("t", 4);
         }
@@ -497,7 +497,7 @@ b = S.a;
         [Test]
         public void TestTemporaryArrayIndexing02()
         {
-            string code = @"import(""Builtin.dll"");
+            string code = @"
     t = {{1,2}, {3,4}}[1][1];
 ";
             thisTest.RunScriptSource(code);
@@ -507,7 +507,7 @@ b = S.a;
         [Test]
         public void TestTemporaryArrayIndexing03()
         {
-            string code = @"import(""Builtin.dll"");
+            string code = @"
     t = ({{1,2}, {3,4}})[1][1];
 ";
             thisTest.RunScriptSource(code);
@@ -517,7 +517,7 @@ b = S.a;
         [Test]
         public void TestTemporaryArrayIndexing04()
         {
-            string code = @"import(""Builtin.dll"");
+            string code = @"
     t = ({{1,2}, {3,4}}[1])[1];
 ";
             thisTest.RunScriptSource(code);
@@ -527,7 +527,7 @@ b = S.a;
         [Test]
         public void TestTemporaryArrayIndexing05()
         {
-            string code = @"import(""Builtin.dll"");
+            string code = @"
     t = {1,2,3,4,5}[1..3];
 ";
             thisTest.RunScriptSource(code);
@@ -537,7 +537,7 @@ b = S.a;
         [Test]
         public void TestTemporaryArrayIndexing06()
         {
-            string code = @"import(""Builtin.dll"");
+            string code = @"
     t = (1..5)[1..3];
 ";
             thisTest.RunScriptSource(code);
@@ -547,7 +547,7 @@ b = S.a;
         [Test]
         public void TestTemporaryArrayIndexing07()
         {
-            string code = @"import(""Builtin.dll"");
+            string code = @"
     t = ({1,2,3} + {4, 5, 6})[1];
 ";
             thisTest.RunScriptSource(code);
@@ -558,7 +558,7 @@ b = S.a;
         public void TestArray001()
         {
             String code =
-@"import(""Builtin.dll"");
+@"
 x;
 y;
 a;
@@ -579,7 +579,7 @@ a;
         public void TestArray002()
         {
             String code =
-@"import(""Builtin.dll"");
+@"
     def foo : int (a : int[])
     {           
         return = a[0];
@@ -596,7 +596,7 @@ a;
         public void TestArray003()
         {
             String code =
-@"import(""Builtin.dll"");
+@"
 a = {0,1,2};
 t = {10,11,12};
 a[0] = t[0];
@@ -609,7 +609,7 @@ a[0] = t[0];
         public void TestIndexingIntoArray01()
         {
             String code =
-@"import(""Builtin.dll"");
+@"
 class A
 {
     fx :var;
@@ -633,7 +633,7 @@ r3 = fa.fx[0]; // 10
         public void TestIndexingIntoArray02()
         {
             String code =
-@"import(""Builtin.dll"");
+@"
 x=[Imperative]
 {
     return = ding()[1][1];
@@ -658,7 +658,7 @@ y = foo()[1];
         {
             // TODO pratapa: Zero sub-indexing of array now works due to array promotion 
             // after introducing Builtin.Get.ValueAtIndex for indexing operator
-            string code = @"import(""Builtin.dll"");
+            string code = @"
 [Imperative]
 {
     arr1 = {true, false};
@@ -675,7 +675,7 @@ y = foo()[1];
         public void TestDynamicArray001()
         {
             String code =
-@"import(""Builtin.dll"");
+@"
 a = {10,20};
 a[2] = 100;
 ";
@@ -687,7 +687,7 @@ a[2] = 100;
         public void TestDynamicArray002()
         {
             String code =
-@"import(""Builtin.dll"");
+@"
 t = {};
 t[0] = 100;
 t[1] = 200;
@@ -701,7 +701,7 @@ t[2] = 300;
         public void TestDynamicArray003()
         {
             String code =
-@"import(""Builtin.dll"");
+@"
 t = {};
 t[0][0] = 1;
 t[0][1] = 2;
@@ -717,7 +717,7 @@ b = t[0][1];
         public void TestDynamicArray004()
         {
             String code =
-@"import(""Builtin.dll"");
+@"
 t = {};
 t[0][0] = 1;
 t[0][1] = 2;
@@ -735,7 +735,7 @@ b = t[1][1];
         public void TestDynamicArray005()
         {
             String code =
-@"import(""Builtin.dll"");
+@"
 t = {0,{20,30}};
 t[1][1] = {40,50};
 a = t[1][1][0];
@@ -750,7 +750,7 @@ a = t[1][1][0];
             // TODO pratapa: Crash on parsing nested index-assignment inside Imperative block
             // post Dictionary changes
             String code =
-@"import(""Builtin.dll"");
+@"
 a;
 b;
 c;
@@ -778,7 +778,7 @@ d;
         [Test]
         public void TestDynamicArray007()
         {
-            String code = @"import(""Builtin.dll"");
+            String code = @"
 a[3] = 3;
 ";
             thisTest.RunScriptSource(code);
@@ -788,7 +788,7 @@ a[3] = 3;
         [Test]
         public void TestDynamicArray008()
         {
-            String code = @"import(""Builtin.dll"");
+            String code = @"
 a[0] = false;
 ";
             thisTest.RunScriptSource(code);
@@ -798,7 +798,7 @@ a[0] = false;
         [Test]
         public void TestDynamicArray009()
         {
-            String code = @"import(""Builtin.dll"");
+            String code = @"
 a = false;
 a[3] = 1;
 ";
@@ -809,7 +809,7 @@ a[3] = 1;
         [Test]
         public void TestDynamicArray010()
         {
-            String code = @"import(""Builtin.dll"");
+            String code = @"
 a = false;
 a[1][1] = {3};
 ";
@@ -820,7 +820,7 @@ a[1][1] = {3};
         [Test]
         public void TestDynamicArray011()
         {
-            String code = @"import(""Builtin.dll"");
+            String code = @"
 a[0] = 1;
 a[0][1] = 2;
 ";
@@ -831,7 +831,7 @@ a[0][1] = 2;
         [Test]
         public void TestDynamicArray012()
         {
-            String code = @"import(""Builtin.dll"");
+            String code = @"
 a = 1;
 a[-1] = 2;
 ";
@@ -842,7 +842,7 @@ a[-1] = 2;
         [Test]
         public void TestDynamicArray013()
         {
-            String code = @"import(""Builtin.dll"");
+            String code = @"
 a = 1;
 a[-3] = 2;
 ";
@@ -853,7 +853,7 @@ a[-3] = 2;
         [Test]
         public void TestDynamicArray014()
         {
-            String code = @"import(""Builtin.dll"");
+            String code = @"
 a = {1, 2};
 a[3] = 3;
 a[-5] = 100;
@@ -865,7 +865,7 @@ a[-5] = 100;
         [Test]
         public void TestDynamicArray015()
         {
-            String code = @"import(""Builtin.dll"");
+            String code = @"
 a = 1;
 a[-2][-1] = 3;
 ";
@@ -877,7 +877,7 @@ a[-2][-1] = 3;
         public void TestDictionary01()
         {
             // Using string as a key
-            String code = @"import(""Builtin.dll"");
+            String code = @"
 a = {""x"" : 42};
 r = a [""x""];
 ";
@@ -889,7 +889,7 @@ r = a [""x""];
         public void TestDecimalArrayIndex()
         {
             // Double value can't be used as a key
-            String code = @"import(""Builtin.dll"");
+            String code = @"
 a = {1, 2, 3};
 r = a [1.3];
 ";
@@ -901,7 +901,7 @@ r = a [1.3];
         public void TestExpressionArrayIndex()
         {
             // Using boolean value as a key
-            String code = @"import(""Builtin.dll"");
+            String code = @"
 a = {};
 a[0] = 42;
 a[1] = 41;
@@ -917,7 +917,7 @@ r2 = a [0 == 1 ? 0 : 1];
         public void TestDictionary04()
         {
             // Using character value as a key
-            String code = @"import(""Builtin.dll"");
+            String code = @"
 a = {""x"" : 42};
 r1 = a[""x""];
 r2 = a[""y""];
@@ -931,7 +931,7 @@ r2 = a[""y""];
         public void TestDictionary05()
         {
             // Using class instance as a key 
-            String code = @"import(""Builtin.dll"");
+            String code = @"
 
 arr = {""a"" : 41};
 arr = arr.SetValueAtKeys(""a"", 42);
@@ -946,7 +946,7 @@ r = arr[""a""];
         {
             // Test replication on array indexing on LHS
             // using character as a key
-            String code = @"import(""Builtin.dll"");
+            String code = @"
 strs = {""x"", 'c', 'b'};
 arr = { 11, 13, 17};
 dict = Dictionary.ByKeysValues(strs, arr);
@@ -964,7 +964,7 @@ r3 = dict['b'];
         public void TestDictionary07()
         {
             // Test replication on array indexing on RHS
-            String code = @"import(""Builtin.dll"");
+            String code = @"
 strs = {""x"", 'c', 'b'};
 arr = { 11, 13, 17};
             dict = Dictionary.ByKeysValues(strs, arr);
@@ -983,7 +983,7 @@ arr = { 11, 13, 17};
         public void TestDictionary08()
         {
             // Test for 2D array
-            String code = @"import(""Builtin.dll"");
+            String code = @"
 arr = {{1, 2}, {3, 4}};
 arr[1] = {""xyz"" : 42};
 r1 = arr[1][""xyz""];
@@ -996,7 +996,7 @@ r1 = arr[1][""xyz""];
         public void TestDictionary09()
         {
             // Copy array should also copy key-value pairs
-            String code = @"import(""Builtin.dll"");
+            String code = @"
 a = {""xyz"" : 42};
 b = a;
 r = b[""xyz""];
@@ -1009,7 +1009,7 @@ r = b[""xyz""];
         public void TestDictionary10()
         {
             // Key-value shouldn't be disposed after scope
-            String code = @"import(""Builtin.dll"");
+            String code = @"
 a = [Imperative]
 {
     b = {""xyz"" : 42};
@@ -1027,7 +1027,7 @@ r = a[""xyz""];
         public void TestDictionary14()
         {
             // Copy array should also copy key-value pairs
-            String code = @"import(""Builtin.dll"");
+            String code = @"
 a = {""true"" : 42};
 def foo(x: var[]..[])
 {
@@ -1043,7 +1043,7 @@ r = foo(a);
         public void TestMixedArray()
         {
             // Type conversion applied to values as well
-            String code = @"import(""Builtin.dll"");
+            String code = @"
 a:int[] = {1.1, 2.2, 3.3};
 a[1] = 42.4;
 r = a;
@@ -1056,7 +1056,7 @@ r = a;
         public void TestTypedArrayAssignment()
         {
             // Type conversion applied to values as well
-            String code = @"import(""Builtin.dll"");
+            String code = @"
 a = {1.1, 2.2, 3.3};
 a[1] = 42.4;
 b:int[] = a;
@@ -1070,7 +1070,7 @@ r = b[1];
         public void TestImperativeArray()
         {
             // Test for-loop to get values
-            String code = @"import(""Builtin.dll"");
+            String code = @"
 a = {1, 2, 3};
 a[2] = 42;
 r = [Imperative]
@@ -1091,7 +1091,7 @@ r = [Imperative]
         public void TestFunctionArray()
         {
             // Test replication for function call
-            String code = @"import(""Builtin.dll"");
+            String code = @"
 a = {1, 2, 3};
 a[3] = 42;
 
@@ -1107,7 +1107,7 @@ r2 = r1[3];
         public void TestFunctionArrays()
         {
             // Test replication for function call
-            String code = @"import(""Builtin.dll"");
+            String code = @"
 a = {1, 2, 3};
 a[3] = 21;
 b = {1, 2, 3};
@@ -1126,7 +1126,7 @@ r = sum[3];
         public void TestArrayIndexingAssignment()
         {
             // Test replication for array indexing
-            String code = @"import(""Builtin.dll"");
+            String code = @"
 a = {1, 2, 3};
 a[3] = 42;
 b = {};
@@ -1143,7 +1143,7 @@ r = c[3];
         public void TestDictionary19()
         {
             // Test builtin functions GetKeys() for array
-            String code = @"import(""Builtin.dll"");
+            String code = @"
 import(""BuiltIn.ds"");
 a = {""x"" : ""foo""};
 r = List.Count(a.Keys);
@@ -1156,7 +1156,7 @@ r = List.Count(a.Keys);
         public void TestDictionary20()
         {
             // Test builtin functions GetValues() for array
-            String code = @"import(""Builtin.dll"");
+            String code = @"
 a = {""x"" : ""foo""};
 r = a.Values;
 ";
@@ -1168,7 +1168,7 @@ r = a.Values;
         public void TestDictionary21()
         {
             // Test builtin functions ContainsKey() for array
-            String code = @"import(""Builtin.dll"");
+            String code = @"
 a = {""x"" : ""foo""};
 r = Dictionary.ValueAtKey(a, ""x"");
             ";
@@ -1180,7 +1180,7 @@ r = Dictionary.ValueAtKey(a, ""x"");
         public void TestDictionary22()
         {
             // Test builtin functions RemoveKey() for array
-            String code = @"import(""Builtin.dll"");
+            String code = @"
 a = {""x"" : ""foo""};
 r1 = Dictionary.RemoveKeys(a, ""x"");
 r2 = Dictionary.ValueAtKey(r1, ""x"");
@@ -1193,7 +1193,7 @@ r2 = Dictionary.ValueAtKey(r1, ""x"");
         public void TestForArray()
         {
             // Test for-loop
-            String code = @"import(""Builtin.dll"");
+            String code = @"
 r = [Imperative]
 {
     a = {1, 5, 7};
@@ -1213,7 +1213,7 @@ r = [Imperative]
         public void TestForEmptyArray()
         {
             // Test for-loop
-            String code = @"import(""Builtin.dll"");
+            String code = @"
 r = [Imperative]
 {
     a = {};
@@ -1232,7 +1232,7 @@ r = [Imperative]
         [Test]
         public void TestDictionaryRegressMAGN337()
         {
-            string code = @"import(""Builtin.dll"");
+            string code = @"
      a = { 1, 2, 3 };
     b = {""x"",""y""};
                 
@@ -1255,7 +1255,7 @@ r2=z1[""y""];
         [Test]
         public void TestDictionaryRegressMAGN619()
         {
-            string code = @"import(""Builtin.dll"");
+            string code = @"
 a = {""null"" : 5};
 c = a.Count;
 r = a[""null""];
@@ -1269,7 +1269,7 @@ r = a[""null""];
         public void TestDictionary25()
         {
             // TODO pratapa: Crash typing this code in CBN post Dictionary changes
-            string code = @"import(""Builtin.dll"");
+            string code = @"
 a = {};
 x = ""key"";
 a[x] = 42;
@@ -1301,7 +1301,7 @@ r8 = a[z];
         [Test]
         public void TestArrayCopyAssignment01()
         {
-            String code = @"import(""Builtin.dll"");
+            String code = @"
 a = {1, 2, 3};
 b[1] = a;
 b[1][1] = 100;
@@ -1314,7 +1314,7 @@ z = a[1];
         [Test]
         public void TestArrayCopyAssignment02()
         {
-            String code = @"import(""Builtin.dll"");
+            String code = @"
 a = {1, 2, 3};
 b = {1, 2, 3};
 b[1] = a;
@@ -1328,7 +1328,7 @@ z = a[1];
         [Test]
         public void TestDynamicArray016()
         {
-            String code = @"import(""Builtin.dll"");
+            String code = @"
 a = {{1, 2}, {3, 4}};
 a[-3][-1] = 5;
 ";
@@ -1339,7 +1339,7 @@ a[-3][-1] = 5;
         [Test]
         public void TestArrayIndexReplication01()
         {
-            string code = @"import(""Builtin.dll"");
+            string code = @"
 a = 1;
 a[1..2] = 2;
 ";
@@ -1350,7 +1350,7 @@ a[1..2] = 2;
         [Test]
         public void TestArrayIndexReplication02()
         {
-            string code = @"import(""Builtin.dll"");
+            string code = @"
 a = {1, 2, 3};
 b = a[1..2];
 ";
@@ -1361,7 +1361,7 @@ b = a[1..2];
         [Test]
         public void TestDynamicArrayNegative01()
         {
-            string code = @"import(""Builtin.dll"");
+            string code = @"
 x = (null)[0];
 ";
             thisTest.RunScriptSource(code, "");
@@ -1371,7 +1371,7 @@ x = (null)[0];
         [Test]
         public void TestDynamicArrayNegative02()
         {
-            string code = @"import(""Builtin.dll"");
+            string code = @"
 x;
 [Imperative]
 {
@@ -1386,7 +1386,7 @@ x = (null)[0];
         public void TestDynamicArrayNegative03()
         {
             // Test calling a function on an empty array
-            string code = @"import(""Builtin.dll"");
+            string code = @"
 p = {};
 x = p.f();
 ";
@@ -1398,7 +1398,7 @@ x = p.f();
         [Test]
         public void TestReplicationGuidesOnFunctions01()
         {
-            string code = @"import(""Builtin.dll"");
+            string code = @"
 def f()
 {
     return = { 1, 2 };
@@ -1422,7 +1422,7 @@ b = x[1];
         public void TestReplicationGuideWithLongestProperty01()
         {
             String code =
-@"import(""Builtin.dll"");
+@"
 
 def f(i:int, j:int)
 {
@@ -1441,7 +1441,7 @@ c = f(a<1L>,b<2>);
         [Category("DSDefinedClass_Ported")]
         public void TestReplicationGuidesOnDotOps01()
         {
-            string code = @"import(""Builtin.dll"");
+            string code = @"
 v = {1,2};
 c = v<1> + v<2>;
 x = c[0];
@@ -1456,7 +1456,7 @@ y = c[1];
         [Category("DSDefinedClass_Ported")]
         public void TestReplicationGuidesOnDotOps02()
         {
-            string code = @"import(""Builtin.dll"");
+            string code = @"
 def f(a:int,b:int)
 {
     return = 1;
@@ -1474,7 +1474,7 @@ b = a[0];
         [Category("DSDefinedClass_Ported")]
         public void TestReplicationGuidesOnDotOps03()
         {
-            string code = @"import(""Builtin.dll"");
+            string code = @"
 def f(a:int,b:int)
 {
     return = 1;
@@ -1489,7 +1489,7 @@ b = a[0];
         [Test]
         public void TestTypeArrayAssign4()
         {
-            string code = @"import(""Builtin.dll"");
+            string code = @"
 a:int[] = {false, 2, 3};
 ";
             thisTest.RunScriptSource(code);
@@ -1499,7 +1499,7 @@ a:int[] = {false, 2, 3};
         [Test]
         public void TestTypeArrayAssign5()
         {
-            string code = @"import(""Builtin.dll"");
+            string code = @"
 a = {false, 2, true};
 b:int[] = a;
 ";
@@ -1510,7 +1510,7 @@ b:int[] = a;
         [Test]
         public void TestTypeArrayAssign6()
         {
-            string code = @"import(""Builtin.dll"");
+            string code = @"
 a:int = 2;
 a[1] = 3;;
 ";
@@ -1521,7 +1521,7 @@ a[1] = 3;;
         [Test]
         public void TestTypeArrayAssign_1467462()
         {
-            string code = @"import(""Builtin.dll"");
+            string code = @"
 x:int[] = 1..4;
 x[{2,3}] = {1, 2};
 ";
@@ -1533,7 +1533,7 @@ x[{2,3}] = {1, 2};
         public void NestedBlocks001()
         {
             String code =
-@"import(""Builtin.dll"");
+@"
 a;
 [Associative]
 {
@@ -1560,7 +1560,7 @@ a;
         public void LogicalOp001()
         {
             String code =
-                        @"import(""Builtin.dll"");
+                        @"
 e;
                         [Associative]
                         {
@@ -1579,7 +1579,7 @@ e;
         public void LogicalOp002()
         {
             String code =
-                        @"import(""Builtin.dll"");
+                        @"
 e;
                         [Associative]
                         {
@@ -1598,7 +1598,7 @@ e;
         public void LogicalOp003()
         {
             String code =
-                        @"import(""Builtin.dll"");
+                        @"
 c;
                         [Associative]
                         {
@@ -1615,7 +1615,7 @@ c;
         public void DoubleOp()
         {
             String code =
-                        @"import(""Builtin.dll"");
+                        @"
 b;
                         [Associative]
                         {
@@ -1631,7 +1631,7 @@ b;
         [Test]
         public void TestEq()
         {
-            string code= @"import(""Builtin.dll"");
+            string code= @"
 class A {}
 a = A();
 b = 42;
@@ -1646,7 +1646,7 @@ c = a == b;
         public void RangeExpr001()
         {
             String code =
-                        @"import(""Builtin.dll"");
+                        @"
 b;
 c;
 d;
@@ -1674,7 +1674,7 @@ f;
         public void RangeExpr002()
         {
             String code =
-                        @"import(""Builtin.dll"");
+                        @"
 b;
 c;
 d;
@@ -1699,7 +1699,7 @@ e;
         public void RangeExpr003()
         {
             String code =
-                        @"import(""Builtin.dll"");
+                        @"
 b;
 c;
 d;
@@ -1724,7 +1724,7 @@ e;
         public void RangeExpr004()
         {
             String code =
-                        @"import(""Builtin.dll"");
+                        @"
 b;
 c;
 d;
@@ -1752,7 +1752,7 @@ f;
         public void RangeExpr005()
         {
             String code =
-                        @"import(""Builtin.dll"");
+                        @"
 b;
 c;
 d;
@@ -1779,7 +1779,7 @@ f;
         [Test]
         public void RangeExpr06()
         {
-            string code = @"import(""Builtin.dll"");
+            string code = @"
 x1 = 0..#(-1)..5;
 x2 = 0..#0..5;
 x3 = 0..#1..10;
@@ -1796,7 +1796,7 @@ x4 = 0..#5..10;
         public void InlineCondition001()
         {
             String code =
-                        @"import(""Builtin.dll"");
+                        @"
 	                        a = 10;
                             b = 20;
                             c = a < b ? a : b;
@@ -1809,7 +1809,7 @@ x4 = 0..#5..10;
         public void InlineCondition002()
         {
             String code =
-                        @"import(""Builtin.dll"");	
+                        @"	
 	                        a = 10;
 			                b = 20;
                             c = a > b ? a : a == b ? 0 : b; 
@@ -1822,7 +1822,7 @@ x4 = 0..#5..10;
         public void InlineCondition003()
         {
             String code =
-                        @"import(""Builtin.dll"");
+                        @"
 a = {11,12,10};
 t = 10;
 b = a > t ? 2 : 1;
@@ -1840,7 +1840,7 @@ z = b[2];
         public void InlineCondition004()
         {
             String code =
-                        @"import(""Builtin.dll"");
+                        @"
 def f(i : int)
 {
     return = i + 1;
@@ -1866,7 +1866,7 @@ z = b[2];
         public void Modulo001()
         {
             String code =
-                @"import(""Builtin.dll"");
+                @"
                     a = 10 % 4; // 2
                     b = 5 % a; // 1
                     c = b + 11 % a * 3 - 4; // 0
@@ -1879,7 +1879,7 @@ z = b[2];
         public void Modulo002()
         {
             String code =
-               @"import(""Builtin.dll"");
+               @"
                     a = 10 % 4; // 2
                     b = 5 % a; // 1
                     c = 11 % a == 2 ? 11 % 2 : 11 % 3; // 2
@@ -1891,7 +1891,7 @@ z = b[2];
         [Test]
         public void Modulo003()
         {
-            string code = @"import(""Builtin.dll"");a = 5.2 % 2.3;";
+            string code = @"a = 5.2 % 2.3;";
             thisTest.RunScriptSource(code);
             thisTest.Verify("a", 0.6);
         }
@@ -1900,7 +1900,7 @@ z = b[2];
         public void ModuloByZero()
         {
             string code =
-@"import(""Builtin.dll"");
+@"
 a = 2 % 0;
 b = 2.1 % 0;
 ";
@@ -1917,7 +1917,7 @@ b = 2.1 % 0;
         public void NegativeIndexOnCollection001()
         {
             String code =
-                @"import(""Builtin.dll"");
+                @"
                     a = {1, 2, 3, 4};
                     b = a[-2]; // 3
                 ";
@@ -1929,7 +1929,7 @@ b = 2.1 % 0;
         public void NegativeIndexOnCollection002()
         {
             String code =
-                @"import(""Builtin.dll"");
+                @"
                     a = { { 1, 2 }, { 3, 4 } };
                     b = a[-1][-2]; // 3
                 ";
@@ -1941,7 +1941,7 @@ b = 2.1 % 0;
         public void NegativeIndexOnCollection003()
         {
             String code =
-                @"import(""Builtin.dll"");
+                @"
                     class A
                     {
 	                    x : var[];
@@ -1972,7 +1972,7 @@ b = 2.1 % 0;
         public void PopListWithDimension()
         {
             String code =
-                @"import(""Builtin.dll"");
+                @"
 y : var;
 z : var[]..[];
 
@@ -1996,7 +1996,7 @@ z[1][0] = 10;
         public void TestUpdate01()
         {
             String code =
-                @"import(""Builtin.dll"");
+                @"
                     a = 1;
                     b = a;
                     a = 10;
@@ -2010,7 +2010,7 @@ z[1][0] = 10;
         public void TestUpdate02()
         {
             String code =
-                @"import(""Builtin.dll"");
+                @"
                     a = 1;
                     b = b + a;
                     b = 2;
@@ -2024,7 +2024,7 @@ z[1][0] = 10;
         public void TestUpdate03()
         {
             String code =
-                @"import(""Builtin.dll"");
+                @"
 def f : int(p : int)
 {
     a = 10;
@@ -2045,7 +2045,7 @@ x = 40;
         public void TestUpdateRedefinition01()
         {
             String code =
-                @"import(""Builtin.dll"");
+                @"
 a = 1;
 c = 2;
 b = a + 1;
@@ -2060,7 +2060,7 @@ a = 3;
         public void TestUpdateRedefinition02()
         {
             String code =
-                @"import(""Builtin.dll"");
+                @"
                     a = 1;
                     a = a + 1;
                     a = 10;
@@ -2073,7 +2073,7 @@ a = 3;
         public void TestArrayUpdate01()
         {
             String code =
-                @"import(""Builtin.dll"");
+                @"
 a = {10,11,12};
 t = 0;
 i = a[t];
@@ -2088,7 +2088,7 @@ t = 2;
         public void TestNoUpdate01()
         {
             String code =
-                @"import(""Builtin.dll"");
+                @"
 def Trim(x)
 {
     return = x - 1;
@@ -2107,7 +2107,7 @@ length = myline;
         public void TestPropertyUpdate01()
         {
             String code =
-                @"import(""Builtin.dll"");
+                @"
 p = 0;
 a = p;
 p = 2; 
@@ -2122,7 +2122,7 @@ p = 2;
         public void TestPropertyUpdate02()
         {
             String code =
-                @"import(""Builtin.dll"");
+                @"
 p = 0;
 b = 2;
 p = b;
@@ -2138,7 +2138,7 @@ t = p;
         public void TestPropertyUpdate03()
         {
             String code =
-                @"import(""Builtin.dll"");
+                @"
 class A
 {
     x : int;	
@@ -2167,7 +2167,7 @@ p.m.x = 2;
         public void TestPropertyUpdate04()
         {
             String code =
-                @"import(""Builtin.dll"");
+                @"
 class A
 {
     x : int;	
@@ -2198,7 +2198,7 @@ t = p.m.x;
         public void TestPropertyUpdate07()
         {
             String code =
-                @"import(""Builtin.dll"");
+                @"
 class C
 {
     x : int;
@@ -2222,7 +2222,7 @@ i = 7;
         public void TestLHSUpdate01()
         {
             String code =
-                @"import(""Builtin.dll"");
+                @"
 class C
 {
     x : var;
@@ -2256,7 +2256,7 @@ j = a.x.y;
         public void TestLHSUpdate02()
         {
             String code =
-                @"import(""Builtin.dll"");
+                @"
 a = 1;
 b = a; // Should only update once
 a = 10;
@@ -2269,7 +2269,7 @@ a = 10;
         public void TestXLangUpdate01()
         {
             String code =
-                @"import(""Builtin.dll"");
+                @"
 a;
 b;
 [Associative]
@@ -2291,7 +2291,7 @@ b;
         public void TestXLangUpdate02()
         {
             String code =
-                @"import(""Builtin.dll"");
+                @"
 a;
 b;
 [Associative]
@@ -2314,7 +2314,7 @@ b;
         public void TestXLangUpdate03()
         {
             String code =
-                @"import(""Builtin.dll"");
+                @"
 a;b;c;d;
 [Associative]
 {
@@ -2340,7 +2340,7 @@ a;b;c;d;
         public void TestXLangUpdate04()
         {
             String code =
-                @"import(""Builtin.dll"");
+                @"
 def f(p : int)
 {
     return = p;
@@ -2361,7 +2361,7 @@ a = 10;
         {
             // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4585
             String code =
-                @"import(""Builtin.dll"");
+                @"
 a = 1;
 x = [Associative]
 {
@@ -2379,7 +2379,7 @@ a = 2;
         {
             // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4585
             String code =
-                @"import(""Builtin.dll"");
+                @"
 a = 1;
 x = [Associative]
 {
@@ -2405,7 +2405,7 @@ a = 10;
         public void TestGCRefCount002()
         {
             String code =
-                @"import(""Builtin.dll"");
+                @"
 import (""FFITarget.dll"");
 def CreatePoint : Point(x : int, y : int, z : int)
 {
@@ -2426,7 +2426,7 @@ x = getx(p);
         public void TestGlobalVariable()
         {
             String code =
-                @"import(""Builtin.dll"");
+                @"
                     gx = 100;
                     def f : int()
                     {
@@ -2441,7 +2441,7 @@ x = getx(p);
         [Test]
         public void TestBasicArrayMethods()
         {
-            string src = @"import(""Builtin.dll"");a = { 1, 2, { 3, 4, 5, { 6, 7, { 8, 9, { { 11 } } } } }, { 12, 13 } };
+            string src = @"a = { 1, 2, { 3, 4, 5, { 6, 7, { 8, 9, { { 11 } } } } }, { 12, 13 } };
 c = Count(a);
 r = Rank(a);
 a2 = Flatten(a);";
@@ -2454,7 +2454,7 @@ a2 = Flatten(a);";
         [Test]
         public void TestStringConcatenation01()
         {
-            string src = @"import(""Builtin.dll"");s1='a';
+            string src = @"s1='a';
 s2=""bcd"";
 s3=s1+s2;
 
@@ -2476,7 +2476,7 @@ s9=s7+s8;";
         [Category("DSDefinedClass_Ported")]
         public void TestStringOperations()
         {
-            string src = @"import(""Builtin.dll"");
+            string src = @"
 s = ""ab"";
 r1 = s + 3;
 r2 = s + false;
@@ -2507,7 +2507,7 @@ m = ss;
         public void TestStringTypeConversion()
         {
             //Assert.Fail("DNL-1467239 Sprint 26 - Rev 3425 type conversion - string to bool conversion failing");
-            string src = @"import(""Builtin.dll"");def foo:bool(x:bool)
+            string src = @"def foo:bool(x:bool)
 {
     return=x;
 }
@@ -2524,7 +2524,7 @@ r3 = 'h' + 1;";
         public void TestTypeArrayAssign()
         {
             String code =
-@"import(""Builtin.dll"");
+@"
 t:int[] = {1,2,3};
 ";
             thisTest.RunScriptSource(code);
@@ -2535,7 +2535,7 @@ t:int[] = {1,2,3};
         public void TestTypeArrayAssign2()
         {
             String code =
-@"import(""Builtin.dll"");
+@"
 t:int[];
 t = {1,2,3};
 ";
@@ -2548,7 +2548,7 @@ t = {1,2,3};
         public void TestTypeArrayAssign3()
         {
             String code =
-@"import(""Builtin.dll"");
+@"
 def foo() {
     t = {1,2,3};
     return = t;
@@ -2563,7 +2563,7 @@ b = foo();
         public void TestTypedAssignment02()
         {
             string code =
-@"import(""Builtin.dll""); t1:int = 1;
+@" t1:int = 1;
 t1 = 3.5;
 t2:var = 2;
 t2 = 4.3;
@@ -2584,7 +2584,7 @@ t4 = 6.1;";
         public void TestTypedAssignment03()
         {
             string code =
-@"import(""Builtin.dll""); 
+@" 
 t1;
 t2;
 t3;
@@ -2614,7 +2614,7 @@ t4;
         public void TestTypedAssignment05()
         {
             string code =
-@"import(""Builtin.dll"");
+@"
 x:int = 1;
 def foo()
 {
@@ -2631,7 +2631,7 @@ r = foo();
         public void TestTypedAssignment06()
         {
             string code =
-@"import(""Builtin.dll"");
+@"
 x:int = 3.5;
 x:bool;
 y:int = 0;
@@ -2648,7 +2648,7 @@ y:bool;
         {
             //Assert.Fail("DNL-1467241 Sprint25: rev 3420 : Property assignments using replication is not working");
             string code =
-@"import(""Builtin.dll"");class A
+@"class A
 {
     x : int;
     t : int;
@@ -2672,7 +2672,7 @@ test = a1.t;
         public void TestPropAssignWithReplication02()
         {
             string code =
-@"import(""Builtin.dll"");class A 
+@"class A 
 {
     x : int;
     constructor A(i : int)
@@ -2692,7 +2692,7 @@ t = a.x;
         public void TestGlobalFunctionRecursion100()
         {
             string code =
-@"import(""Builtin.dll"");
+@"
 def f(i : int)
 {
     loc = [Imperative]
@@ -2717,7 +2717,7 @@ y = f(x);
         public void TestGlobalFunctionRecursion100_GlobalIncrement()
         {
             string code =
-@"import(""Builtin.dll"");
+@"
 def f(i : int)
 {
     loc = [Imperative]
@@ -2742,7 +2742,7 @@ y = f(x);
         public void TestGlobalFunctionRecursionReplication()
         {
             string code =
-@"import(""Builtin.dll"");
+@"
 def f(i : int)
 {
     loc = [Imperative]
@@ -2767,7 +2767,7 @@ y = f(x);
         public void TestrecusionWithNestedFunction01()
         {
             string code =
-@"import(""Builtin.dll"");
+@"
 def if_1(x)
 {
     return = 1;
@@ -2808,7 +2808,7 @@ r = foo(3);
         {
             ProtoScript.Runners.ProtoRunner runner = new ProtoScript.Runners.ProtoRunner();
             string code =
-@"import(""Builtin.dll"");
+@"
 [Associative]
 {
 	a = x; 
@@ -2832,7 +2832,7 @@ r = foo(3);
         public void TestBasicFFIReplicate()
         {
             string code =
-@"import(""Builtin.dll"");
+@"
 a = {25, 36, 49};
 r = Minimal.Sqrt(a);
 ";
@@ -2995,7 +2995,7 @@ r = Minimal.Sqrt(a);
         public void TestLHSUndefinedArrayIndex01()
         {
             string code = 
-@"import(""Builtin.dll"");
+@"
 a[i] = 10;     
 b = a[0];       
             ";
@@ -3007,7 +3007,7 @@ b = a[0];
         public void TestLHSUndefinedArrayIndex02()
         {
             string code =
-@"import(""Builtin.dll"");
+@"
 a = {1,2,3};
 a[i] = 10;     
 b = a[0];       
@@ -3020,7 +3020,7 @@ b = a[0];
         public void TestLocalKeywordDeclaration01()
         {
             string code =
-@"import(""Builtin.dll"");
+@"
 a : local = 1;       
 ";
             thisTest.RunScriptSource(code);
@@ -3032,7 +3032,7 @@ a : local = 1;
         public void TestLocalKeywordDeclaration02()
         {
             string code =
-@"import(""Builtin.dll"");
+@"
 a : local = 1;       
 ";
             thisTest.RunScriptSource(code);
@@ -3043,7 +3043,7 @@ a : local = 1;
         public void TestLocalKeywordDeclaration03()
         {
             string code =
-@"import(""Builtin.dll"");
+@"
 a : local int = 1;       
 ";
             thisTest.RunScriptSource(code);
@@ -3054,7 +3054,7 @@ a : local int = 1;
         public void TestLocalKeywordDeclaration04()
         {
             string code =
-@"import(""Builtin.dll"");
+@"
 a : local = 1;      
 b : local int = 2;       
 c = a + b;
@@ -3067,7 +3067,7 @@ c = a + b;
         public void TestLocalKeywordDeclaration05()
         {
             string code =
-@"import(""Builtin.dll"");
+@"
 a : local int = 1;      
 b : local int = 2;       
 c = a + b;
@@ -3080,7 +3080,7 @@ c = a + b;
         public void TestLocalKeywordDeclaration06()
         {
             string code =
-@"import(""Builtin.dll"");
+@"
 a : local int = 1;      
 b : local int = 2;       
 c : local int = a + b;
@@ -3093,7 +3093,7 @@ c : local int = a + b;
         public void TestLocalKeywordDeclaration07()
         {
             string code =
-@"import(""Builtin.dll"");
+@"
 i = [Associative]
 {
     a : local int = 1;      
@@ -3108,7 +3108,7 @@ i = [Associative]
         public void TestLocalKeywordDeclaration08()
         {
             string code =
-@"import(""Builtin.dll"");
+@"
 i = [Associative]
 {
     a : local int = 1;      
@@ -3124,7 +3124,7 @@ i = [Associative]
         public void TestLocalKeywordDeclarationNegativ01()
         {
             String code =
-@"import(""Builtin.dll"");  
+@"  
 a : int local = 1;   // 'local' should come before any type specifier
 ";
             Assert.Throws(typeof(ProtoCore.Exceptions.CompileErrorsOccured), () =>
@@ -3138,7 +3138,7 @@ a : int local = 1;   // 'local' should come before any type specifier
         public void TestLocalKeywordDeclarationNegativ02()
         {
             String code =
-@"import(""Builtin.dll"");  
+@"  
 local = 1;   // 'local' is a reserved keyword
 ";
             Assert.Throws(typeof(ProtoCore.Exceptions.CompileErrorsOccured), () =>
@@ -3151,7 +3151,7 @@ local = 1;   // 'local' is a reserved keyword
         public void TestLocalKeywordDeclarationNegativ03()
         {
             String code =
-@"import(""Builtin.dll"");  
+@"  
 local : int = 1;   // 'local' is a reserved keyword
 ";
             Assert.Throws(typeof(ProtoCore.Exceptions.CompileErrorsOccured), () =>
@@ -3164,7 +3164,7 @@ local : int = 1;   // 'local' is a reserved keyword
         public void TestLocalKeywordDeclarationNegativ04()
         {
             String code =
-@"import(""Builtin.dll"");  
+@"  
 local = [Imperative] { return = 1; };   // 'local' is a reserved keyword
 ";
             Assert.Throws(typeof(ProtoCore.Exceptions.CompileErrorsOccured), () =>
@@ -3178,7 +3178,7 @@ local = [Imperative] { return = 1; };   // 'local' is a reserved keyword
         public void TestLocalKeywordFromLanguageBlock01()
         {
             string code =
-@"import(""Builtin.dll"");
+@"
 a = 1;
 b = [Associative]
 {
@@ -3198,7 +3198,7 @@ d = b;
         public void TestLocalKeywordFromLanguageBlock02()
         {
             string code =
-@"import(""Builtin.dll"");
+@"
 a = 1;
 b = [Associative]
 {
@@ -3219,7 +3219,7 @@ d = b;
         public void TestLocalKeywordFromFunction01()
         {
             string code =
-@"import(""Builtin.dll"");
+@"
 a = 1;
 def f()
 {
@@ -3237,7 +3237,7 @@ p = f();
         public void TestLocalKeywordFromFunction02()
         {
             string code =
-@"import(""Builtin.dll"");
+@"
 a = 1;
 def f()
 {
@@ -3257,7 +3257,7 @@ p = f();
         public void TestLocalVariableUpdate01()
         {
             string code =
-@"import(""Builtin.dll"");
+@"
 i = [Associative]
 {
     a : local = 1; 
@@ -3274,7 +3274,7 @@ i = [Associative]
         public void TestLocalVariableUpdate02()
         {
             string code =
-@"import(""Builtin.dll"");
+@"
 i = [Associative]
 {
     a : local = 1; 
@@ -3291,7 +3291,7 @@ i = [Associative]
         public void TestLocalVariableUpdate03()
         {
             string code =
-@"import(""Builtin.dll"");
+@"
 a = 10;
 b = a;
 i = [Associative]
@@ -3312,7 +3312,7 @@ i = [Associative]
         public void TestLocalVariableUpdate04()
         {
             string code =
-@"import(""Builtin.dll"");
+@"
 a = 10;
 b = a;
 i = [Associative]
@@ -3338,7 +3338,7 @@ i = [Associative]
         public void TestLocalVariableNoUpdate01()
         {
             string code =
-@"import(""Builtin.dll"");
+@"
 a = 1;
 b = a;
 c = [Associative]
@@ -3357,7 +3357,7 @@ c = [Associative]
         public void TestLocalVariableNoUpdate02()
         {
             string code =
-@"import(""Builtin.dll"");
+@"
 a = 1;
 b = a;
 c = [Associative]
@@ -3378,7 +3378,7 @@ c = [Associative]
         public void TestLocalVariableNoUpdate03()
         {
             string code =
-@"import(""Builtin.dll"");
+@"
 a : local = 1;      // Tagging a variable local at the global scope has no semantic effect
 b : local = a;
 c = [Associative]
@@ -3399,7 +3399,7 @@ c = [Associative]
         public void TestNullsOnExpression01()
         {
             string code =
-@"import(""Builtin.dll"");
+@"
         a = 1 + null;
         b = """" == null;
 ";
@@ -3412,7 +3412,7 @@ c = [Associative]
         public void TestAddNullToString()
         {
             string code =
-@"import(""Builtin.dll"");
+@"
 a = ""hello"" + null;
 ";
             thisTest.RunScriptSource(code);
@@ -3423,7 +3423,7 @@ a = ""hello"" + null;
         public void TestUndefinedTypedIdentifier()
         {
             string code =
-@"import(""Builtin.dll"");
+@"
         a : UndefinedType;
         b : UndefinedType2 = 2;
         c : UndefinedType3 = null;
@@ -3439,7 +3439,7 @@ a = ""hello"" + null;
         [Test]
         public void TestCallingOverloadedMemberFunction01()
         {
-            string code = @"import(""Builtin.dll"");
+            string code = @"
 import (TestThisOverload from ""FFITarget.dll"");
 obj = TestThisOverload.TestThisOverload(100);
 a = obj.Add(21);
@@ -3453,7 +3453,7 @@ b = TestThisOverload.Add(obj, 21);
         [Test]
         public void TestCallingOverloadedMemberFunction02()
         {
-            string code = @"import(""Builtin.dll"");
+            string code = @"
 import (TestThisOverload from ""FFITarget.dll"");
 obj = TestThisOverload.TestThisOverload(3);
 a = obj.Mul(4);
@@ -3469,7 +3469,7 @@ b = TestThisOverload.Mul(obj, 4);
         [Test]
         public void TestReturnStatement01()
         {
-            string code = @"import(""Builtin.dll"");
+            string code = @"
 x = [Imperative] {
     return 6;
 }";
@@ -3481,7 +3481,7 @@ x = [Imperative] {
         [Test]
         public void TestReturnStatement02()
         {
-            string code = @"import(""Builtin.dll"");
+            string code = @"
 x = [Imperative] {
     return {2, 3, 5};
 }";
@@ -3493,7 +3493,7 @@ x = [Imperative] {
         [Test]
         public void TestReturnStatement03()
         {
-            string code = @"import(""Builtin.dll"");
+            string code = @"
 def foo(x) {
     return x * 2;
 }
@@ -3509,7 +3509,7 @@ x = [Imperative] {
         [Test]
         public void TestReturnStatement04()
         {
-            string code = @"import(""Builtin.dll"");
+            string code = @"
 [Imperative] {
     return 6;
 }";
@@ -3520,7 +3520,7 @@ x = [Imperative] {
         [Test]
         public void TestReturnStatement05()
         {
-            string code = @"import(""Builtin.dll"");
+            string code = @"
 [Imperative] {
     return {2, 3, 5};
 }";
@@ -3531,7 +3531,7 @@ x = [Imperative] {
         [Test]
         public void TestReturnStatement06()
         {
-            string code = @"import(""Builtin.dll"");
+            string code = @"
 def foo(x) {
     return x * 2;
 }
@@ -3546,7 +3546,7 @@ def foo(x) {
         [Test]
         public void TestReturnStatement07()
         {
-            string code = @"import(""Builtin.dll"");
+            string code = @"
 def foo(x) {
     return [Imperative] {
         return x * 2;
@@ -3563,7 +3563,7 @@ r = foo(3);
         [Test]
         public void TestReturnStatement08()
         {
-            string code = @"import(""Builtin.dll"");
+            string code = @"
 x = [Associative] {
     return 6;
 }";
@@ -3575,7 +3575,7 @@ x = [Associative] {
         [Test]
         public void TestReturnStatement09()
         {
-            string code = @"import(""Builtin.dll"");
+            string code = @"
 x = [Associative] {
     return {2, 3, 5};
 }";
@@ -3587,7 +3587,7 @@ x = [Associative] {
         [Test]
         public void TestReturnStatement10()
         {
-            string code = @"import(""Builtin.dll"");
+            string code = @"
 def foo(x) {
     return x * 2;
 }
@@ -3603,7 +3603,7 @@ x = [Associative] {
         [Test]
         public void TestReturnStatement11()
         {
-            string code = @"import(""Builtin.dll"");
+            string code = @"
 [Associative] {
     return 6;
 }";
@@ -3614,7 +3614,7 @@ x = [Associative] {
         [Test]
         public void TestReturnStatement12()
         {
-            string code = @"import(""Builtin.dll"");
+            string code = @"
 [Associative] {
     return {2, 3, 5};
 }";
@@ -3625,7 +3625,7 @@ x = [Associative] {
         [Test]
         public void TestReturnStatement13()
         {
-            string code = @"import(""Builtin.dll"");
+            string code = @"
 def foo(x) {
     return x * 2;
 }
@@ -3640,7 +3640,7 @@ def foo(x) {
         [Test]
         public void TestReturnStatement14()
         {
-            string code = @"import(""Builtin.dll"");
+            string code = @"
 def foo(x) {
     return [Associative] {
         return x * 2;
@@ -3657,7 +3657,7 @@ r = foo(3);
         [Test]
         public void TestReturnStatement15()
         {
-            string code = @"import(""Builtin.dll"");
+            string code = @"
 [Imperative] {
     return 6;
 }";
@@ -3668,7 +3668,7 @@ r = foo(3);
         [Test]
         public void TestReturnStatement16()
         {
-            string code = @"import(""Builtin.dll"");
+            string code = @"
 [Associative] {
     return 6;
 }";

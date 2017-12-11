@@ -2532,7 +2532,7 @@ d = { };
         {//1467446
             String code =
             @"
-            import(""Builtin.dll"");import(""FFITarget.dll"");
+            import(""FFITarget.dll"");
             pt = DummyPoint.ByCoordinates(1, 1, 1);
             input = { pt, pt};
             removeDuplicatesSetInsert = RemoveDuplicates(input);
