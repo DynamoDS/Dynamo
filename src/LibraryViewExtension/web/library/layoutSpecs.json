@@ -248,7 +248,7 @@
               "elementType": "group",
               "include": [
                 {
-                  "path": "Core.List.List.Create"
+                  "path": "Core.List.List Create"
                 },
                 {
                   "path": "DSCoreNodes.DSCore.List.Join"
@@ -736,10 +736,10 @@
               "elementType": "group",
               "include": [
                 {
-                  "path": "Core.Evaluate.Function.Apply"
+                  "path": "Core.Evaluate.Function Apply"
                 },
                 {
-                  "path": "Core.Evaluate.Function.Compose"
+                  "path": "Core.Evaluate.Function Compose"
                 }
               ],
               "childElements": [ ]
@@ -792,7 +792,7 @@
             {
               "text": "Color",
               "iconUrl": "",
-              "elementType": "class",
+              "elementType": "group",
               "include": [
                 {
                   "path": "DSCoreNodes.DSCore.Color.Red"
@@ -839,7 +839,7 @@
             {
               "text": "Color Range",
               "iconUrl": "",
-              "elementType": "class",
+              "elementType": "group",
               "include": [
                 {
                   "path": "Core.Color.Color Range"
@@ -856,7 +856,7 @@
             {
               "text": "Watch",
               "iconUrl": "",
-              "elementType": "class",
+              "elementType": "group",
               "include": [
                 {
                   "path": "Core.View.Watch"
