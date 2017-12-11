@@ -13,7 +13,7 @@ using ProtoCore.DSASM;
 
 namespace ProtoTest.DebugTests
 {
-    [TestFixture]
+    [TestFixture, Category("Debugger")]
     class BasicTests : ProtoTestBase
     {
         private DebugRunner fsr;
@@ -5811,7 +5811,7 @@ a : Dummy = null;
         }
     }
 
-    [TestFixture]
+    [TestFixture, Category("Debugger")]
     public class BasicUseCaseTests
     {
         public ProtoCore.Core core;
