@@ -792,7 +792,7 @@
             {
               "text": "Color",
               "iconUrl": "",
-              "elementType": "group",
+              "elementType": "class",
               "include": [
                 {
                   "path": "DSCoreNodes.DSCore.Color.Red"
@@ -839,7 +839,7 @@
             {
               "text": "Color Range",
               "iconUrl": "",
-              "elementType": "group",
+              "elementType": "class",
               "include": [
                 {
                   "path": "Core.Color.Color Range"
@@ -856,7 +856,7 @@
             {
               "text": "Watch",
               "iconUrl": "",
-              "elementType": "group",
+              "elementType": "class",
               "include": [
                 {
                   "path": "Core.View.Watch"
