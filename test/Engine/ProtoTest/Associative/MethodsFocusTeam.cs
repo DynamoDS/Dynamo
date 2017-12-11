@@ -244,7 +244,7 @@ import(""FFITarget.dll"");p = DummyPoint.ByCoordinates(1..3, 20, 30);a = p.X[0
         public void T017_DotOp_Collection_03()
         {
             String code =
-@"def A(x : var[][]){	return = x;	}a = {{0},{1},{2}};fa = A(a);r1 = fa[1][0];";
+@"	def A(x : var[][]){	return = x;	}a = {{0},{1},{2}};fa = A(a);r1 = fa[1][0];";
             thisTest.RunScriptSource(code);
 
             thisTest.Verify("r1", 1);
