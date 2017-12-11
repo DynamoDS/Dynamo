@@ -1163,7 +1163,7 @@ b;
         {
 
             string code = @"
-import(""FFITarget.dll"");
+import(""Builtin.dll"");import(""FFITarget.dll"");
 y1;
 y2;
 y3;
@@ -1224,7 +1224,7 @@ y4;
         public void T56_Defect_1454691()
         {
             string code = @"
-import(""FFITarget.dll"");
+import(""Builtin.dll"");import(""FFITarget.dll"");
 b;
 [Associative]
 {
@@ -1250,7 +1250,7 @@ b;
         public void T57_Defect_1454691_2()
         {
             string code = @"
-import(""FFITarget.dll"");
+import(""Builtin.dll"");import(""FFITarget.dll"");
 def foo ( )
 {
     x = ClassFunctionality.ClassFunctionality(1);
@@ -1509,7 +1509,7 @@ a = null + 1;
         {
             String code =
             @"
-import(""FFITarget.dll"");
+import(""Builtin.dll"");import(""FFITarget.dll"");
 [Imperative]
 
 {

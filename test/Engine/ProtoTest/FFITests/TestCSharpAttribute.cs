@@ -23,7 +23,7 @@ namespace ProtoTest.FFITests
             var testClass = assembly.GetType("FFITarget.TestCSharpAttribute");
             var testMethod = testClass.GetMethod("Test");
 
-            String code = @"import(""FFITarget.dll"");";
+            String code = @"import(""Builtin.dll"");import(""FFITarget.dll"");";
             var execMirror = thisTest.RunScriptSource(code);
             var staticCore = thisTest.GetTestCore();
 

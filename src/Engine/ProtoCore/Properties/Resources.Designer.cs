@@ -404,6 +404,15 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cannot convert List to Dictionary type..
+        /// </summary>
+        public static string FailedToConvertArrayToDictionary {
+            get {
+                return ResourceManager.GetString("FailedToConvertArrayToDictionary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Failed to import {0}.
         /// </summary>
         public static string FailedToImport {

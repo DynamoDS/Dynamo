@@ -96,7 +96,7 @@ namespace ProtoTest
         {
             string code =
 @"
-import(""FFITarget.dll"");
+import(""Builtin.dll"");import(""FFITarget.dll"");
 x;y;
 [Imperative]
 {

@@ -929,4 +929,7 @@ Parameter name: {0}</value>
   <data name="InvalidArrayIndexType" xml:space="preserve">
     <value>List indices must be numeric.</value>
   </data>
+  <data name="FailedToConvertArrayToDictionary" xml:space="preserve">
+    <value>Cannot convert List to Dictionary type.</value>
+  </data>
 </root>

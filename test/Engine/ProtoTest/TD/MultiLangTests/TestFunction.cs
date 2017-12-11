@@ -473,7 +473,7 @@ x;y;
         public void T22_Function_Call_As_Instance_Arguments()
         {
             string code = @"
-import(""FFITarget.dll"");
+import(""Builtin.dll"");import(""FFITarget.dll"");
 def foo : int( n : int )
 {
     return = n ;	
@@ -802,7 +802,7 @@ b2;
         public void T33_Function_With_Mismatching_Return_Type()
         {
             string code = @"
-import(""FFITarget.dll"");
+import(""Builtin.dll"");import(""FFITarget.dll"");
 	 def foo3 : int ( a : double )
 	 {
 	    temp = ClassFunctionality.ClassFunctionality(1);
@@ -905,7 +905,7 @@ b2;
             //{
             //Assert.Fail("1467156 - Sprint 25 - Rev 3026 type checking of return types at run time ");
             string code = @"
-import(""FFITarget.dll"");
+import(""Builtin.dll"");import(""FFITarget.dll"");
 	 def foo3 : int ( a : double )
 	 {
 	    temp = ClassFunctionality.ClassFunctionality(1);
@@ -1145,7 +1145,7 @@ c;
         public void T49_Function_With_Matching_Return_Type()
         {
             string code = @"
-import(""FFITarget.dll"");
+import(""Builtin.dll"");import(""FFITarget.dll"");
 	 def foo : ClassFunctionality ( x : ClassFunctionality )
 	 {
 	    return = x;
@@ -2009,7 +2009,7 @@ def foo:int ( a : int )
         public void T84_Function_With_User_Defined_Class()
         {
             string code = @"
-import(""FFITarget.dll"");
+import(""Builtin.dll"");import(""FFITarget.dll"");
 def foo : ClassFunctionality ( a : ClassFunctionality )
 {
     a1 = a.IntVal;
@@ -2176,7 +2176,7 @@ t2 = two[1];
         public void T90_Function_PassingNullToUserDefinedType()
         {
             string code = @"
-import(""FFITarget.dll"");
+import(""Builtin.dll"");import(""FFITarget.dll"");
 def GetVal : int(p:ClassFunctionality)
 {
 	return = p.IntVal;
@@ -2562,7 +2562,7 @@ e = foo(1, 2.0, 3); // not found, null
         public void TV10_Function_With_Class_Instances()
         {
             string src = @"
-import(""FFITarget.dll"");
+import(""Builtin.dll"");import(""FFITarget.dll"");
 def foo:int( a : int )
 {
 	A1 = ClassFunctionality.ClassFunctionality( a );
@@ -2764,7 +2764,7 @@ e;f;
         public void TV22_Function_With_Class_Object_As_Argument()
         {
             string src = @"
-import(""FFITarget.dll"");
+import(""Builtin.dll"");import(""FFITarget.dll"");
 def foo:int ( A_Inst : ClassFunctionality )
 {	
 	return = A_Inst.IntVal + 1;
@@ -3511,7 +3511,7 @@ b1;b2;
         public void TV46_Defect_1455278()
         {
             string code = @"
-import(""FFITarget.dll"");
+import(""Builtin.dll"");import(""FFITarget.dll"");
 def foo : int ( a1 : int, a: int)
 {
 	c = [Imperative]
@@ -3688,7 +3688,7 @@ c;
         {
 
             string code = @"
-import(""FFITarget.dll"");
+import(""Builtin.dll"");import(""FFITarget.dll"");
 def add_1:double[](a: double[] )
 {
 	j = 0;
@@ -3736,7 +3736,7 @@ b2 = add_2( b );
             object[] expectedResult1 = { 1.0, 2.0, 3.0 };
             object[] expectedResult2 = { 2.0, 3.0, 4.0 };
             string code = @"
-import(""FFITarget.dll"");
+import(""Builtin.dll"");import(""FFITarget.dll"");
 	def add_2:double[]( b : double[] )
 	{
 		j = 0;
@@ -3766,7 +3766,7 @@ t2 = add_2(b);
         public void TV51_Defect_1456108_5()
         {
             string code = @"
-import(""FFITarget.dll"");
+import(""Builtin.dll"");import(""FFITarget.dll"");
 	def add_1:double[](a: double[],  b : double[])
 	{
 		j = 0;
@@ -3815,7 +3815,7 @@ c = { -1, -1, -1 };";
         public void TV52_Defect_1456397()
         {
             string code = @"
-import(""FFITarget.dll"");
+import(""Builtin.dll"");import(""FFITarget.dll"");
 	def CreateNewVal ( a )
 	{
 		y = [Imperative]
@@ -3844,7 +3844,7 @@ b1 = [Associative]
         public void TV53_Defect_1456397_2()
         {
             string code = @"
-import(""FFITarget.dll"");
+import(""Builtin.dll"");import(""FFITarget.dll"");
 def CreateNewVal (a )
 {
 	y = [Associative]
@@ -3955,7 +3955,7 @@ x;
         public void TV58_Defect_1455278()
         {
             string code = @"
-import(""FFITarget.dll"");
+import(""Builtin.dll"");import(""FFITarget.dll"");
 	def foo : int ( a1 : int, a )
 	{
 		c = [Imperative]
@@ -4159,7 +4159,7 @@ c;d;
         public void TV65_Defect_1455090_4()
         {
             string code = @"
-import(""FFITarget.dll"");
+import(""Builtin.dll"");import(""FFITarget.dll"");
 def foo: int(a : int[]..[])
 {
 	return = a[0][0];
@@ -4177,7 +4177,7 @@ a = foo( b );
         public void TV66_Defect_1455090_5()
         {
             string code = @"
-import(""FFITarget.dll"");
+import(""Builtin.dll"");import(""FFITarget.dll"");
 	def objarray:ClassFunctionality ( arr : ClassFunctionality[]..[] )
 	{
 		return = arr[1][0];
@@ -4207,7 +4207,7 @@ import(""FFITarget.dll"");
         public void TV67_Defect_1455090_6()
         {
             string code = @"
-import(""FFITarget.dll"");
+import(""Builtin.dll"");import(""FFITarget.dll"");
 	def objarray:ClassFunctionality ( arr : ClassFunctionality[]..[] )
 	{
 		return = arr[1][0];
@@ -4238,7 +4238,7 @@ c = [Imperative]
             //Assert.Fail("1463372 - Sprint 20 : Rev 2088 : Imperative code is not allowed in class constructor ");
 
             string code = @"
-import(""FFITarget.dll"");
+import(""Builtin.dll"");import(""FFITarget.dll"");
 def create(i:int)
 {
 	return = [Imperative]
@@ -4390,7 +4390,7 @@ bcurvePtX;
         public void TV70_Defect_1456798()
         {
             string code = @"
-import(""FFITarget.dll"");
+import(""Builtin.dll"");import(""FFITarget.dll"");
 pt1 = DummyPoint.ByCoordinates(0,0,0);
 pt2 = DummyPoint.ByCoordinates(5,0,0);
 pt3 = DummyPoint.ByCoordinates(10,0,0);
@@ -4775,7 +4775,7 @@ z2 = [Imperative]
         public void TV79_Defect_1462300()
         {
             string code = @"
-import(""FFITarget.dll"");
+import(""Builtin.dll"");import(""FFITarget.dll"");
 def testcall(a:ClassFunctionality) 
 { 
 return ={a.ImNotDefined(),a.ImNotDefined()}; 
@@ -4799,7 +4799,7 @@ bb = b[1];
         public void TV79_Defect_1462300_2()
         {
             string code = @"
-import(""FFITarget.dll"");
+import(""Builtin.dll"");import(""FFITarget.dll"");
 def testcall(a:ClassFunctionality) 
 { 
 return ={a.ImNotDefined(),a.ImNotDefined()}; 
@@ -4820,7 +4820,7 @@ b=testcall(a);
             //Assert.Fail("1462300 - sprint 19 - rev 1948-316037 - if return an array of functions as properties then it does not return all of them");
 
             string code = @"
-import(""FFITarget.dll"");
+import(""Builtin.dll"");import(""FFITarget.dll"");
 def testcall2 :ClassFunctionality[] () 
 { 	
 	return ={ClassFunctionality.ClassFunctionality(), ClassFunctionality.ClassFunctionality()}; 
@@ -5199,7 +5199,7 @@ a;
         public void TV85_Function_Return_Type_Var_User_Defined_Type_Conversion()
         {
             string code = @"
-import(""FFITarget.dll"");
+import(""Builtin.dll"");import(""FFITarget.dll"");
 def goo : var()
 {
     return = ClassFunctionality.ClassFunctionality();
@@ -5512,7 +5512,7 @@ b;c;d;
         public void TV92_Accessing_Variables_Declared_Inside_Function_Body()
         {
             string code = @"
-import(""FFITarget.dll"");
+import(""Builtin.dll"");import(""FFITarget.dll"");
 def foo ( )
 {
     a = { 1, 2, 3};
@@ -5534,7 +5534,7 @@ c = b.IntVal; // expected 10, received 10";
         public void TV93_Modifying_Global_Var_In_Func_Call()
         {
             string code = @"
-import(""FFITarget.dll"");
+import(""Builtin.dll"");import(""FFITarget.dll"");
 def foo ( p: DummyPoint)
 {
 	return = DummyPoint.ByCoordinates( (p.X), (p.Y), (p.Z) );
@@ -5565,7 +5565,7 @@ dummy = func1(p);
         public void TV93_Modifying_Global_Var_In_Func_Call_2()
         {
             string code = @"
-import(""FFITarget.dll"");
+import(""Builtin.dll"");import(""FFITarget.dll"");
 def foo ( p: DummyPoint)
 {
 	return = DummyPoint.ByCoordinates( (p.X), (p.Y), (p.Z) );
@@ -5597,7 +5597,7 @@ dummy = func1(p);
         public void TV93_Modifying_Global_Var_In_Func_Call_3()
         {
             string code = @"
-import(""FFITarget.dll"");
+import(""Builtin.dll"");import(""FFITarget.dll"");
 def foo ( p: DummyPoint)
 {
 	return = DummyPoint.ByCoordinates( (p.X), (p.Y), (p.Z) );
@@ -5627,7 +5627,7 @@ zz = p1.Z;
         public void TV93_Modifying_Global_Var_In_Func_Call_4()
         {
             string code = @"
-import(""FFITarget.dll"");
+import(""Builtin.dll"");import(""FFITarget.dll"");
 def foo ( p: DummyPoint)
 {
 	return = DummyPoint.ByCoordinates( (p.X+X), (p.Y+Y), (p.Z+Z) );
@@ -5786,7 +5786,7 @@ x = [Imperative]
         public void TV97_Heterogenous_Objects_As_Function_Arguments_No_Replication()
         {
             string code = @"
-import(""FFITarget.dll"");
+import(""Builtin.dll"");import(""FFITarget.dll"");
 a1 = ClassFunctionality.ClassFunctionality();
 def foo ( x : double[])
 {
@@ -5815,7 +5815,7 @@ b3 = foo ( a3 );
         public void TV97_Heterogenous_Objects_As_Function_Arguments_No_Replication_2()
         {
             string code = @"
-import(""FFITarget.dll"");
+import(""Builtin.dll"");import(""FFITarget.dll"");
 a = ClassFunctionality.ClassFunctionality(1);
 def foo ( x : var[])
 {
@@ -5861,7 +5861,7 @@ b3 = foo ( a3 );
         public void TV97_Heterogenous_Objects_As_Function_Arguments_With_Replication_2()
         {
             string code = @"
-import(""FFITarget.dll"");
+import(""Builtin.dll"");import(""FFITarget.dll"");
 a1 = ClassFunctionality.ClassFunctionality();
 def foo ( x : var)
 {
@@ -6072,7 +6072,7 @@ b1 = foo ( a1 );";
         {
             string errmsg = " 1467318 -  Cannot return an array from a function whose return type is var with undefined rank (-2)  ";
             string code = @"
-import(""FFITarget.dll"");
+import(""Builtin.dll"");import(""FFITarget.dll"");
 a = ArrayMember.Ctor({1,2,3});
 val = a.X;
 val[0] = 100;
@@ -6235,7 +6235,7 @@ t = [Imperative]
         {
             // Assert.Fail("1467131- Sprint 24 - Rev 2910 method overload with replication , throws error WARNING: Multiple type+pattern match parameters found, non-deterministic dispatch" );
             string code = @"
-import(""FFITarget.dll"");
+import(""Builtin.dll"");import(""FFITarget.dll"");
 def foo ( p: DummyPoint)
 {
 	return = DummyPoint.ByCoordinates( (p.X), (p.Y), (p.Z) );
@@ -6265,7 +6265,7 @@ zz = p1.Z; // expected 0, received 0
         {
             // Assert.Fail("1467131- Sprint 24 - Rev 2910 method overload with replication , throws error WARNING: Multiple type+pattern match parameters found, non-deterministic dispatch" );
             string code = @"
-import(""FFITarget.dll"");
+import(""Builtin.dll"");import(""FFITarget.dll"");
 def foo ( p: DummyPoint)
 {
 	return = DummyPoint.ByCoordinates( (p.X), (p.Y), (p.Z) );
@@ -6295,7 +6295,7 @@ zz = p1.Z;
         {
             // Assert.Fail("1467131- Sprint 24 - Rev 2910 method overload with replication , throws error WARNING: Multiple type+pattern match parameters found, non-deterministic dispatch" );
             string code = @"
-import(""FFITarget.dll"");
+import(""Builtin.dll"");import(""FFITarget.dll"");
 def foo ( p: DummyPoint)
 {
 	return = DummyPoint.ByCoordinates( (p.X), (p.Y), (p.Z) );
@@ -6329,7 +6329,7 @@ zz = p[1].Z;
         public void TV103_Defect_1467149()
         {
             string code = @"
-import(""FFITarget.dll"");
+import(""Builtin.dll"");import(""FFITarget.dll"");
 convert={ClassFunctionality.ClassFunctionality(1..2), ClassFunctionality.ClassFunctionality(3)};
 def prop(test:ClassFunctionality)
 {
@@ -6606,7 +6606,7 @@ b = 1;
         {
             String code =
 @"
-import(""FFITarget.dll"");
+import(""Builtin.dll"");import(""FFITarget.dll"");
 def foo ( x1: int, y1 : int )
 {
     return = x1;
@@ -6787,7 +6787,7 @@ b ;
         public void TestMultiOverLoadWithDefaultArg()
         {
             string code = @"
-import(""FFITarget.dll"");
+import(""Builtin.dll"");import(""FFITarget.dll"");
 def foo(x = 0, y = 0, z = 0)
 {
     return = 41;

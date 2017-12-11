@@ -205,7 +205,7 @@ startPt = DummyPoint.ByCoordinates( 2, 1, 0 );
             //Assert.Fail("1467174 sprint24 : rev 3150 : warning:Function 'get_X' not Found");
 
             string code = @"
-import(""FFITarget.dll"");
+import(""Builtin.dll"");import(""FFITarget.dll"");
 def drawUniqueLines (points : DummyPoint[], start : int, end : int)
 {
     return = DummyLine.ByStartPointEndPoint(points[(0..start..1)],points[end]); 
@@ -225,7 +225,7 @@ t2 = lines[1][2].Start.X;";
         public void T00016_Geometry_012_centroid_1()
         {
             string code = @"
-import(""FFITarget.dll"");
+import(""Builtin.dll"");import(""FFITarget.dll"");
 def sumCollection(arr : double[])
 {
     return = sumCollectionInternal(arr, Count(arr)-1);

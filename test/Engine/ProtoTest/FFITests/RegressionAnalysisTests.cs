@@ -15,7 +15,7 @@ namespace ProtoTest.FFITests
         public void TestArrayPromoteAndCastIList()
         {
             string code = @"
-import(""FFITarget.dll"");
+import(""Builtin.dll"");import(""FFITarget.dll"");
 a = 5;
 o1 = RegressionTargets.AverageIList(a);
 ";
@@ -28,7 +28,7 @@ o1 = RegressionTargets.AverageIList(a);
         public void TestArrayPromoteAndCastList()
         {
             string code = @"
-import(""FFITarget.dll"");
+import(""Builtin.dll"");import(""FFITarget.dll"");
 a = 5;
 o1 = RegressionTargets.AverageList(a);
 ";

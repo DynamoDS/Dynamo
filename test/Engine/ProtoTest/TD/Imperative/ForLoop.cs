@@ -1354,7 +1354,7 @@ for (i in (0..10)) {
         public void T45_Defect_1458284()
         {
             string code = @"
-			import(""FFITarget.dll"");
+			import(""Builtin.dll"");import(""FFITarget.dll"");
 
     def length (pts : DummyPoint[])
     {

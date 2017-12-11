@@ -2496,7 +2496,7 @@ r = __Equals(x, {41, 42});
         {
             List<string> codes = new List<string>() 
             {
-                @"import(""FFITarget.dll""); p = DummyPoint.ByCoordinates(0.0, 0.0, 0.0); x = p.X;",
+                @"import(""Builtin.dll"");import(""FFITarget.dll""); p = DummyPoint.ByCoordinates(0.0, 0.0, 0.0); x = p.X;",
                 "p = DummyPoint.ByCoordinates(0.0, 0.0, 0.0); a = p.X;",
                 "p = DummyPoint.ByCoordinates(1.0, 0.0, 0.0); a = p.X;"
             };
@@ -2533,7 +2533,7 @@ r = __Equals(x, {41, 42});
 
             List<string> codes = new List<string>() 
             {
-                @"import(""FFITarget.dll"");", 
+                @"import(""Builtin.dll"");import(""FFITarget.dll"");", 
                 "a = 10; b = 20;", 
                 "t = TestPersistentNodeValues(); t = t.Add(a,b); p = t.Sum;",
                 "a = 15; b = 25;"
@@ -2654,7 +2654,7 @@ r = __Equals(x, {41, 42});
         {
             List<string> codes = new List<string>() 
             {
-                @"import(""FFITarget.dll"");",
+                @"import(""Builtin.dll"");import(""FFITarget.dll"");",
                 "x = 1; p = DummyPoint.ByCoordinates(x, 0.0, 0.0); p = p.Translate(0,5,0);",
                 "x = 1; p = DummyPoint.ByCoordinates(x, 0.0, 0.0); p = p.Translate(0,5,0); b = p.Y;"
             };
@@ -2687,7 +2687,7 @@ r = __Equals(x, {41, 42});
         {
             List<string> codes = new List<string>() 
             {
-                @"import(""FFITarget.dll"");",
+                @"import(""Builtin.dll"");import(""FFITarget.dll"");",
                 "x = 1; p = DummyPoint.ByCoordinates(x, 0.0, 0.0);",
                 "x = 1; p = DummyPoint.ByCoordinates(x, 0.0, 0.0); p = p.Translate(0,5,0);",
                 "x = 1; p = DummyPoint.ByCoordinates(x, 0.0, 0.0); p = p.Translate(0,5,0); b = p.Y;"
@@ -2727,7 +2727,7 @@ r = __Equals(x, {41, 42});
         {
             List<string> codes = new List<string>() 
             {
-                @"import(""FFITarget.dll"");",
+                @"import(""Builtin.dll"");import(""FFITarget.dll"");",
                 "x = 0..2; p = DummyPoint.ByCoordinates(x, 0.0, 0.0); p[0] = p[0].Translate(0,5,0);",
                 "x = 0..2; p = DummyPoint.ByCoordinates(x, 0.0, 0.0); p[0] = p[0].Translate(0,5,0); b = p[0].Y;"
             };
@@ -2760,7 +2760,7 @@ r = __Equals(x, {41, 42});
         {
             List<string> codes = new List<string>() 
             {
-                @"import(""FFITarget.dll"");",
+                @"import(""Builtin.dll"");import(""FFITarget.dll"");",
                 "x = 0..2; p = DummyPoint.ByCoordinates(x, 0.0, 0.0);",
                 "x = 0..2; p = DummyPoint.ByCoordinates(x, 0.0, 0.0); p[0] = p[0].Translate(0,5,0);",
                 "x = 0..2; p = DummyPoint.ByCoordinates(x, 0.0, 0.0); p[0] = p[0].Translate(0,5,0); b = p[0].Y;"
@@ -2799,7 +2799,7 @@ r = __Equals(x, {41, 42});
         {
             List<string> codes = new List<string>() 
             {
-                @"import(""FFITarget.dll"");",
+                @"import(""Builtin.dll"");import(""FFITarget.dll"");",
                 "a = 1;",
                 "a = 10;",
                 "p = DummyPoint.ByCoordinates(x, 0.0, 0.0); i = p.X;",
@@ -2845,7 +2845,7 @@ r = __Equals(x, {41, 42});
         {
             List<string> codes = new List<string>() 
             {
-                @"import(""FFITarget.dll"");",
+                @"import(""Builtin.dll"");import(""FFITarget.dll"");",
                 "a = 1;",
                 "a = 10;",
                 "p = DummyPoint.ByCoordinates(x, 0.0, 0.0); i = p.X;",
@@ -2919,7 +2919,7 @@ r = __Equals(x, {41, 42});
         {
             List<string> codes = new List<string>() 
             {
-                @"import(""FFITarget.dll"");",
+                @"import(""Builtin.dll"");import(""FFITarget.dll"");",
                 "y = 10.0;",
                 "p = DummyPoint.ByCoordinates(0.0, 0.0, 0.0);",
                 "i = p.Y;",
@@ -3290,7 +3290,7 @@ r = __Equals(x, {41, 42});
         {
             List<string> codes = new List<string>() 
             {
-                @"import(""FFITarget.dll"");a=10;b=20;c=30;",
+                @"import(""Builtin.dll"");import(""FFITarget.dll"");a=10;b=20;c=30;",
                 "p = DummyPoint.ByCoordinates(a,b,c);",
                 "x = p.X; "
             };
@@ -3545,7 +3545,7 @@ OUT = 100"", {""IN""}, {{}}); x = x;"
         {
             List<string> codes = new List<string>() 
             {
-                @"import(""FFITarget.dll"");TestUpdateCount.Reset();", 
+                @"import(""Builtin.dll"");import(""FFITarget.dll"");TestUpdateCount.Reset();", 
                 "p = TestUpdateCount.Ctor(10,20);",
                 "a = p.UpdateCount;"
             };
@@ -3613,7 +3613,7 @@ OUT = 100"", {""IN""}, {{}}); x = x;"
         {
             List<string> codes = new List<string>() 
             {
-                @"import(""FFITarget.dll""); TestUpdateCount.Reset();", 
+                @"import(""Builtin.dll"");import(""FFITarget.dll""); TestUpdateCount.Reset();", 
                 "p = TestUpdateCount.Ctor(10,20);",
                 "a = p.UpdateCount + p.Val;",
                 "p = TestUpdateCount.Ctor(10,30);"
@@ -3657,7 +3657,7 @@ OUT = 100"", {""IN""}, {{}}); x = x;"
         {
             List<string> codes = new List<string>() 
             {
-                @"import(""FFITarget.dll"");", 
+                @"import(""Builtin.dll"");import(""FFITarget.dll"");", 
                 "a = DummyPoint.ByCoordinates(0,1,2);",
                 "b = DummyPoint.ByCoordinates(1,2,3);",
                 "a_in = a; b_in = b; c = DummyLine.ByStartPointEndPoint(a,b);"
@@ -3727,7 +3727,7 @@ OUT = 100"", {""IN""}, {{}}); x = x;"
         {
             List<string> codes = new List<string>() 
             {
-                @"import(""FFITarget.dll"");", 
+                @"import(""Builtin.dll"");import(""FFITarget.dll"");", 
                 "t_0_a = DummyPoint.ByCoordinates(0,1,8);",
                 "t_0_b = DummyPoint.ByCoordinates(0,1,2);",
                 "a_6 = t_0_b; b_6 = t_0_a; t_0_7 = DummyLine.ByStartPointEndPoint(a_6,b_6);"
@@ -3818,7 +3818,7 @@ OUT = 100"", {""IN""}, {{}}); x = x;"
         {
             List<string> codes = new List<string>() 
             {
-                @"import(""FFITarget.dll"");", 
+                @"import(""Builtin.dll"");import(""FFITarget.dll"");", 
                 "t_0_a = DummyPoint.ByCoordinates(0,1,8);",
                 "t_0_e = DummyPoint.ByCoordinates(0,1,2);",
                 "a_6 = t_0_e; b_6 = t_0_a; t_0_6 = DummyLine.ByStartPointEndPoint(a_6,b_6);"
@@ -3929,7 +3929,7 @@ OUT = 100"", {""IN""}, {{}}); x = x;"
         {
             List<string> codes = new List<string>() 
             {
-                @"import(""FFITarget.dll"");", 
+                @"import(""Builtin.dll"");import(""FFITarget.dll"");", 
                 "a = DummyPoint.ByCoordinates(0,1,2);",
                 "b = DummyPoint.ByCoordinates(1,2,3);",
                 "a_in = a; b_in = b; c = DummyLine.ByStartPointEndPoint(a,b);"
@@ -4049,7 +4049,7 @@ OUT = 100"", {""IN""}, {{}}); x = x;"
         {
             List<string> codes = new List<string>()
                 {
-                    @"import(""FFITarget.dll""); 
+                    @"import(""Builtin.dll"");import(""FFITarget.dll""); 
                     import(""FunctionObject.ds"");",
                     "t0 = 0;",
                     "v0 = FFITarget.DummyPoint.ByCoordinates(t0, t0, t0);"
@@ -4167,7 +4167,7 @@ OUT = 100"", {""IN""}, {{}}); x = x;"
         {
             List<string> codes = new List<string>()
                 {
-                    @"import(""FFITarget.dll""); 
+                    @"import(""Builtin.dll"");import(""FFITarget.dll""); 
                     import(""FunctionObject.ds"");",
                     "t0 = 0;",
                     "v0 = FFITarget.DummyPoint.ByCoordinates(t0, t0, t0);"
@@ -5318,7 +5318,7 @@ v = foo(t);
         {
             List<string> codes = new List<string>() 
             {
-                @"import(""FFITarget.dll""); p = DummyPoint.ByCoordinates(0.0, 0.0, 0.0);",
+                @"import(""Builtin.dll"");import(""FFITarget.dll""); p = DummyPoint.ByCoordinates(0.0, 0.0, 0.0);",
                 "x = p.X;",
                 "r = x;",
                 "x = p.X();",
@@ -5351,7 +5351,7 @@ v = foo(t);
         public void TestTransactionUpdate01()
         {
             string code = @"
-import(""FFITarget.dll""); 
+import(""Builtin.dll"");import(""FFITarget.dll""); 
 TestUpdateCount.Reset();
 x = 1;
 y = 2;
@@ -5374,7 +5374,7 @@ a = p.UpdateCount;
         public void TestTransactionUpdate02()
         {
             string code = @"
-import(""FFITarget.dll"");
+import(""Builtin.dll"");import(""FFITarget.dll"");
 TestUpdateCount.Reset();
 x = 1;
 y = 2;
@@ -5400,7 +5400,7 @@ a = p.UpdateCount;
         {
             List<string> codes = new List<string>() 
             {
-                @"import(""FFITarget.dll""); TestUpdateCount.Reset();", 
+                @"import(""Builtin.dll"");import(""FFITarget.dll""); TestUpdateCount.Reset();", 
                 "x = 1; y = 2;",
                 "p = TestUpdateCount.Ctor(x,y);",
                 "a = p.UpdateCount;",
@@ -5444,7 +5444,7 @@ a = p.UpdateCount;
         {
             List<string> codes = new List<string>() 
             {
-                @"import(""FFITarget.dll""); TestUpdateCount.Reset();", 
+                @"import(""Builtin.dll"");import(""FFITarget.dll""); TestUpdateCount.Reset();", 
                 "x = 1;",
                 "p = TestUpdateCount.Ctor(x,0);",
                 "a = p.UpdateCount;",
@@ -5542,7 +5542,7 @@ a = p.UpdateCount;
             var added = new List<Subtree>();
 
             var guid1 = Guid.NewGuid();
-            var code1 = @"import(""FFITarget.dll""); x = DisposeTracer(); DisposeTracer.DisposeCount = 0;";
+            var code1 = @"import(""Builtin.dll"");import(""FFITarget.dll""); x = DisposeTracer(); DisposeTracer.DisposeCount = 0;";
             added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid1, code1));
 
             var guid2 = Guid.NewGuid();
@@ -5860,7 +5860,7 @@ k = __TryGetValueFromNestedDictionaries(i, ""a"");
 // =================Run 1===============
 // guid1
 @"
-import(""FFITarget.dll"");
+import(""Builtin.dll"");import(""FFITarget.dll"");
 ",
 
 // Add code 

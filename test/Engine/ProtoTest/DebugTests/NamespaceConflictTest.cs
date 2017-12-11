@@ -15,7 +15,7 @@ namespace ProtoTest.DebugTests
         public void DupImportTest()
         {
             var mirror = thisTest.RunScriptSource(
-@"import(""FFITarget.dll"");
+@"import(""Builtin.dll"");import(""FFITarget.dll"");
 a = A.DupTargetTest.DupTargetTest(); 
 aO = a.Foo();
 
@@ -34,7 +34,7 @@ bO = b.Foo();
         public void DupImportTestNamespaceConflict01()
         {
             var mirror = thisTest.RunScriptSource(
-@"import(""FFITarget.dll"");
+@"import(""Builtin.dll"");import(""FFITarget.dll"");
 a = DupTargetTest.DupTargetTest(); 
 aO = a.Foo();
 "
@@ -46,7 +46,7 @@ aO = a.Foo();
         public void DupImportTestNamespaceConflict02()
         {
             var mirror = thisTest.RunScriptSource(
-@"import(""FFITarget.dll"");
+@"import(""Builtin.dll"");import(""FFITarget.dll"");
 a = DupTargetTest.DupTargetTest(); 
 p = a;
 "
@@ -61,7 +61,7 @@ p = a;
         public void DupImportTestNeg()
         {
             var mirror = thisTest.RunScriptSource(
-@"import(""FFITarget.dll"");
+@"import(""Builtin.dll"");import(""FFITarget.dll"");
 a = DupTargetTest.DupTargetTest(); 
 aO = a.Foo();
 "

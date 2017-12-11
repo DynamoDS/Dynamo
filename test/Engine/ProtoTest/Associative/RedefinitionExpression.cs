@@ -30,7 +30,7 @@ x = f(x);
             String code =
 @"
 
-import(""FFITarget.dll"");
+import(""Builtin.dll"");import(""FFITarget.dll"");
 p = 10;
 p = DummyPoint.ByCoordinates(11.0, 20.0, 30.0);
 x = p.X;
@@ -159,7 +159,7 @@ y = a[1];
             String code =
 @"
 
-import(""FFITarget.dll"");
+import(""Builtin.dll"");import(""FFITarget.dll"");
 p = 2;
 p = DummyPoint.ByCoordinates(1..3, 20, 30);
 a = p.X;

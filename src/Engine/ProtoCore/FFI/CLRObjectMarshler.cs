@@ -239,6 +239,17 @@ namespace ProtoFFI
 
         public override object UnMarshal(StackValue dsObject, ProtoCore.Runtime.Context context, Interpreter dsi, Type expectedCLRType)
         {
+            // If expected type is an IDictionary, log warning and return
+            if (expectedCLRType == typeof(IDictionary) ||
+                expectedCLRType.GetInterfaces()
+                    .Where(i => i.IsGenericType)
+                    .Select(i => i.GetGenericTypeDefinition())
+                    .Contains(typeof(IDictionary<,>)))
+            {
+                dsi.LogWarning(WarningID.TypeMismatch, Resources.FailedToConvertArrayToDictionary);
+                return null;
+            }
+
             var arrayType = expectedCLRType;
             var elementType = expectedCLRType.GetElementType() ?? typeof(object);
 

@@ -253,7 +253,7 @@ h;
         public void T011_Inline_Using_Variables()
         {
             string code = @"
-import(""FFITarget.dll"");
+import(""Builtin.dll"");import(""FFITarget.dll"");
 x1;
 x2;
 x3;
@@ -297,7 +297,7 @@ temp;
         public void T012_Inline_Using_Fun_Calls()
         {
             string code = @"
-import(""FFITarget.dll"");
+import(""Builtin.dll"");import(""FFITarget.dll"");
 def power ( a )
 {
     return = a * a ;

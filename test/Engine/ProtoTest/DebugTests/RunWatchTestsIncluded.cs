@@ -8534,7 +8534,7 @@ result = Count(a);";
         {
             string defectID = "MAGN-3988 Defects with Expression Interpreter Test Framework";
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"import(""FFITarget.dll"");
+            string src = @"import(""Builtin.dll"");import(""FFITarget.dll"");
 result = 
 [Imperative]
 {
@@ -8563,7 +8563,7 @@ result =
         {
             string defectID = "MAGN-3988 Defects with Expression Interpreter Test Framework";
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"import(""FFITarget.dll"");
+            string src = @"import(""Builtin.dll"");import(""FFITarget.dll"");
 result = 
 [Imperative]
 {

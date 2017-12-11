@@ -16,7 +16,7 @@ namespace ProtoTest.Associative
         {
             String code =
 @"
-import(""FFITarget.dll"");
+import(""Builtin.dll"");import(""FFITarget.dll"");
 p = ClassFunctionality.ClassFunctionality(1);
 a = p.IntVal;
 p.IntVal = 10;

@@ -189,7 +189,7 @@ test = foo( x<1>,y<2> );
         {
             String code =
 @"
-import(""FFITarget.dll"");
+import(""Builtin.dll"");import(""FFITarget.dll"");
 def foo(a:TestObjectA, b:TestObjectA)
 {
     return = a.a + b.a;
@@ -531,7 +531,7 @@ test = foo( x<1>,y<2>,z<3> );
         {
             String code =
 @"
-import(""FFITarget.dll"");
+import(""Builtin.dll"");import(""FFITarget.dll"");
 test = TestObjectC.TestObjectC({0,1}<1>,{2,3}<2>).z;
 ";
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
@@ -548,7 +548,7 @@ test = TestObjectC.TestObjectC({0,1}<1>,{2,3}<2>).z;
         {
             String code =
 @"
-import(""FFITarget.dll"");
+import(""Builtin.dll"");import(""FFITarget.dll"");
 test = TestObjectC.TestObjectC((0..1)<1>,(2..3)<2>).z;
 ";
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
@@ -564,7 +564,7 @@ test = TestObjectC.TestObjectC((0..1)<1>,(2..3)<2>).z;
         {
             String code =
 @"
-import(""FFITarget.dll"");
+import(""Builtin.dll"");import(""FFITarget.dll"");
 x = {0,1};
 y = {2,3};
 test = TestObjectC.TestObjectC(x<1>,y<2>).z;
@@ -582,7 +582,7 @@ test = TestObjectC.TestObjectC(x<1>,y<2>).z;
         {
             String code =
 @"
-import(""FFITarget.dll"");
+import(""Builtin.dll"");import(""FFITarget.dll"");
 x = {0,1};
 y = 2;
 test = TestObjectC.TestObjectC(x<1>,y<2>).z;
@@ -600,7 +600,7 @@ test = TestObjectC.TestObjectC(x<1>,y<2>).z;
         {
             String code =
 @"
-import(""FFITarget.dll"");
+import(""Builtin.dll"");import(""FFITarget.dll"");
 x = {0,1};
 y = {2,3};
 z = {4,5};
@@ -620,7 +620,7 @@ test = TestObjectD.TestObjectD(x<1>,y<2>,z<3>).t;
         {
             String code =
 @"
-import(""FFITarget.dll"");
+import(""Builtin.dll"");import(""FFITarget.dll"");
 x = {0,1};
 y = {2,3};
 z = {4,5};
@@ -641,7 +641,7 @@ test = TestObjectD.TestObjectD(x<1>,y<2>,z<1>).t;
         {
             String code =
 @"
-import(""FFITarget.dll"");
+import(""Builtin.dll"");import(""FFITarget.dll"");
 x = {0,1};
 y = {2,3};
 z = {4,5};
@@ -692,7 +692,7 @@ b_1DArray = 10..100..10;
         {
             String code =
 @"
-import(""FFITarget.dll"");
+import(""Builtin.dll"");import(""FFITarget.dll"");
 def ByPoints(pts : DummyPoint2D)
 {
     return = pts;
@@ -713,7 +713,7 @@ test = ByPoints(p).X;
         {
             String code =
                 @"
-import(""FFITarget.dll"");
+import(""Builtin.dll"");import(""FFITarget.dll"");
 def ByStartPointEndPoint(p1:DummyPoint, p2:DummyPoint)
 {
     return = p1;
@@ -894,7 +894,7 @@ test = sum ( z, x<1> );";
         {
             String code =
 @"
-import(""FFITarget.dll"");
+import(""Builtin.dll"");import(""FFITarget.dll"");
 x1 = 1..2;
 y1 = 1;
 a = DummyPoint2D.ByCoordinates(y1, x1<1>);
@@ -936,7 +936,7 @@ dummy = foo(y1, x1);
         {
             String code =
 @"
-import(""FFITarget.dll"");
+import(""Builtin.dll"");import(""FFITarget.dll"");
 a = (0..1..#2);
 cs = DummyPoint.ByCoordinates(1, a<1>, a<2>); 
 test = cs.Y;
@@ -952,7 +952,7 @@ test = cs.Y;
         {
             String code =
 @"
-import(""FFITarget.dll"");
+import(""Builtin.dll"");import(""FFITarget.dll"");
 def sum (a, b, c)
 {
     return = a + b + c;
@@ -978,7 +978,7 @@ zArray = temp1 < 1 > +temp2 < 2 >;
             //have the fix applied for function calls applied to ctors as well.
             String code =
 @"
-import(""FFITarget.dll"");
+import(""Builtin.dll"");import(""FFITarget.dll"");
 a = (0..1..#2);
 b = { 0, 1}; // fails with this as well
 cs = DummyPoint.ByCoordinates(1, a<1>, b<2>); 
@@ -995,7 +995,7 @@ test = cs.Y;";
         {
             String code =
 @"
-import(""FFITarget.dll"");
+import(""Builtin.dll"");import(""FFITarget.dll"");
 a = ArrayMember.Ctor({1,2});
 b = ArrayMember.Ctor({1,2});
 test = a.X<1> + b.X<2>;
@@ -1013,7 +1013,7 @@ test = a.X<1> + b.X<2>;
         {
             String code =
 @"
-import(""FFITarget.dll"");
+import(""Builtin.dll"");import(""FFITarget.dll"");
 def foo ()
 {
     a = ArrayMember.Ctor({1,2});
@@ -1036,7 +1036,7 @@ test = foo();
         {
             String code =
 @"
-import(""FFITarget.dll"");
+import(""Builtin.dll"");import(""FFITarget.dll"");
 test = { { } };
 test2 = [Associative]
 {
@@ -1068,7 +1068,7 @@ test2 = [Associative]
         {
             String code =
 @"
-import(""FFITarget.dll"");
+import(""Builtin.dll"");import(""FFITarget.dll"");
 p = DummyPoint2D.ByCoordinates((1..2..1)<1>, (3..4..1)<2> ).X;
 ";
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
@@ -1129,7 +1129,7 @@ r = sum(1, { 1, 2}<1>, y<2>);";
         public void T037_ReplicationGuidebrackets_1467328_3()
         {
             string code = @"
-import(""FFITarget.dll"");
+import(""Builtin.dll"");import(""FFITarget.dll"");
 x = (TestObjectA.TestObjectA(1..3))[0];
 x = (TestObjectA.TestObjectA(1..3))[0..2].a<1> +(TestObjectA.TestObjectA(1..3))[0..2].a<2> ;
 ";
@@ -1144,7 +1144,7 @@ x = (TestObjectA.TestObjectA(1..3))[0..2].a<1> +(TestObjectA.TestObjectA(1..3))[
         public void T037_ReplicationGuidebrackets_1467328_4()
         {
             string code = @"
-import(""FFITarget.dll"");
+import(""Builtin.dll"");import(""FFITarget.dll"");
             x = (TestObjectA.TestObjectA(1..3))[0];
             x = (TestObjectA.TestObjectA(1..3))[0..2].a<1> +(TestObjectA.TestObjectA(1..3))[0..2].a<2> ;";
             string errmsg = "";
@@ -2253,7 +2253,7 @@ test1 = foo(x<1>, y<1><3>) ;
         {
             string code =
 @" 
-import(""FFITarget.dll"");
+import(""Builtin.dll"");import(""FFITarget.dll"");
 def foo (x1:int,y1:TestObjectA)
 {
     return = x1 + y1.a;
@@ -2273,7 +2273,7 @@ test1 = foo(x<1>, y<3>) ;
         {
             string code =
 @" 
-import(""FFITarget.dll"");
+import(""Builtin.dll"");import(""FFITarget.dll"");
 def foo (x1:double,y1:TestObjectA)
 {
     return = x1 + y1.a;
@@ -2293,7 +2293,7 @@ test1 = foo(x<1><2>, y<1>) ;
         {
             string code =
 @" 
-import(""FFITarget.dll"");
+import(""Builtin.dll"");import(""FFITarget.dll"");
 def foo (x1:double,y1:TestObjectA)
 {
     return = x1 + y1.a;
@@ -2313,7 +2313,7 @@ test1 = foo(x<1><2>, y<3><4>) ;
         {
             string code =
 @" 
-import(""FFITarget.dll"");
+import(""Builtin.dll"");import(""FFITarget.dll"");
 def foo (x1:double,y1:TestObjectA)
 {
     return = x1 + y1.a;
@@ -2333,7 +2333,7 @@ test1 = foo(x<1>, y) ;
         {
             string code =
 @" 
-import(""FFITarget.dll"");
+import(""Builtin.dll"");import(""FFITarget.dll"");
 def foo (x1:double,y1:TestObjectA, z : int)
 {
     return = x1 + y1.a + z;
@@ -2356,7 +2356,7 @@ test1 = foo(x<1>, y, z<2>) ;
         {
             string code =
 @" 
-import(""FFITarget.dll"");
+import(""Builtin.dll"");import(""FFITarget.dll"");
 def foo (x1:double,y1:TestObjectA, z : int)
 {
     return = x1 + y1.a + z;
@@ -3128,7 +3128,7 @@ x = foo(""xyz"");
             // Test replication on singleton
             string code =
             @" 
-import(""FFITarget.dll"");
+import(""Builtin.dll"");import(""FFITarget.dll"");
 t = TestObjectA.TestObjectA(1);
 r1 = t.Set(1);
 r2 = t<1>.Set(1);
@@ -3147,7 +3147,7 @@ r3 = t<1L>.Set(1);
             // Test replication on singleton 
             string code =
             @" 
-import(""FFITarget.dll"");
+import(""Builtin.dll"");import(""FFITarget.dll"");
 t = TestObjectA.TestObjectA(1);
 v = 42;
 r1 = t.Set(v);
@@ -3168,7 +3168,7 @@ r4 = t<1>.Set(v<2>);
             // Test replication on LHS
             string code =
             @" 
-import(""FFITarget.dll"");
+import(""Builtin.dll"");import(""FFITarget.dll"");
 ts = {TestObjectA.TestObjectA(), TestObjectA.TestObjectA()};
 r1 = ts.Set(1);
 r2 = ts<1>.Set(1);
@@ -3187,7 +3187,7 @@ r3 = ts<1L>.Set(1);
             // Test replication on LHS
             string code =
             @" 
-import(""FFITarget.dll"");
+import(""Builtin.dll"");import(""FFITarget.dll"");
 ts = {TestObjectA.TestObjectA(), TestObjectA.TestObjectA()};
 vs = {42, 43};
 r1 = ts.Set(vs);
@@ -3208,7 +3208,7 @@ r4 = ts<1>.Set(vs<2>);
             // Test replication on LHS
             string code =
             @" 
-import(""FFITarget.dll"");
+import(""Builtin.dll"");import(""FFITarget.dll"");
 t = TestObjectA.TestObjectA(42);
 r1 = t.a;
 ts = {TestObjectA.TestObjectA(42), TestObjectA.TestObjectA(42)};

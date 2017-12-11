@@ -244,7 +244,7 @@ temp = test(1, 2);
         {
             String code =
 @"
-import(""FFITarget.dll"");
+import(""Builtin.dll"");import(""FFITarget.dll"");
 p = DummyPoint.ByCoordinates(123.0, 345.0, 567.0);
 a = p.X;
 b = p.Y;
@@ -261,7 +261,7 @@ c = p.Z;
         {
             String code =
 @"  
-import(""FFITarget.dll"");
+import(""Builtin.dll"");import(""FFITarget.dll"");
 p1 = DummyPoint.ByCoordinates(1,1,1);
 p2 = DummyPoint.ByCoordinates(10,10,10);
 line = DummyLine.ByStartPointEndPoint(p1, p2);
@@ -329,7 +329,7 @@ x = ModifyMe();
         {
             String code =
 @"  
-import(""FFITarget.dll"");
+import(""Builtin.dll"");import(""FFITarget.dll"");
 p1 = DummyPoint.ByCoordinates(1.0,1.0,1.0);
 p2 = DummyPoint.ByCoordinates(10.0,10.0,10.0);
 line = DummyLine.ByStartPointEndPoint(p1, p2);

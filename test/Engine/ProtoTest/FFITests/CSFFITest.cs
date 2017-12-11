@@ -108,7 +108,7 @@ namespace ProtoFFITests
         public void TestImportAllClasses()
         {
             String code =
-            @"import(""FFITarget.dll"");
+            @"import(""Builtin.dll"");import(""FFITarget.dll"");
 success;
 x;
              [Associative] 
@@ -152,7 +152,7 @@ x;
         {
             String code =
             @"
-               import(""FFITarget.dll"");
+               import(""Builtin.dll"");import(""FFITarget.dll"");
                p1 = DummyPoint.ByCoordinates(1,2,3);
                p2 = DummyPoint.ByCoordinates(3,4,5);
                v = p1.DirectionTo(p2);
@@ -178,7 +178,7 @@ x;
         {
             String code =
             @"
-            import(""FFITarget.dll"");
+            import(""Builtin.dll"");import(""FFITarget.dll"");
             cf1 = ClassFunctionality.ClassFunctionality(1);
             vc2 = ValueContainer.ValueContainer(2);
             o = cf1.AddWithValueContainer(vc2);
@@ -199,7 +199,7 @@ x;
         {
             String code =
            @"
-              import(""FFITarget.dll"");
+              import(""Builtin.dll"");import(""FFITarget.dll"");
               cf1 = ClassFunctionality.ClassFunctionality(1);
               cf2 = ClassFunctionality.ClassFunctionality(2);
               v = cf1.IntVal;
@@ -220,7 +220,7 @@ x;
         {
             String code =
            @"
-              import(""FFITarget.dll"");
+              import(""Builtin.dll"");import(""FFITarget.dll"");
               cf1 = ClassFunctionality.ClassFunctionality(1);
               cf2 = ClassFunctionality.ClassFunctionality(2);
               ClassFunctionality.StaticProp = 42;
@@ -254,7 +254,7 @@ x;
             Type derived1 = typeof (FFITarget.Derived1);
             Type testdispose = typeof (FFITarget.TestDispose);
             Type dummydispose = typeof (FFITarget.DummyDispose);
-            code = string.Format("import(\"{0}\");\r\nimport(\"{1}\");\r\nimport(\"{2}\");\r\nimport(\"{3}\");\r\n{4}",
+            code = string.Format("import(\"Builtin.dll\");\r\nimport(\"{0}\");\r\nimport(\"{1}\");\r\nimport(\"{2}\");\r\nimport(\"{3}\");\r\n{4}",
                 dummy.AssemblyQualifiedName, derived1.AssemblyQualifiedName, testdispose.AssemblyQualifiedName, dummydispose.AssemblyQualifiedName, code);
             ValidationData[] data = { new ValidationData { ValueName = "value", ExpectedValue = 128.0, BlockIndex = 0 } };
             ExecuteAndVerify(code, data);
@@ -284,7 +284,7 @@ x;
             Type derived1 = typeof (FFITarget.Derived1);
             Type testdispose = typeof (FFITarget.TestDispose);
             Type dummydispose = typeof (FFITarget.DummyDispose);
-            code = string.Format("import(\"{0}\");\r\nimport(\"{1}\");\r\nimport(\"{2}\");\r\nimport(\"{3}\");\r\n{4}",
+            code = string.Format("import(\"Builtin.dll\");\r\nimport(\"{0}\");\r\nimport(\"{1}\");\r\nimport(\"{2}\");\r\nimport(\"{3}\");\r\n{4}",
                 dummy.AssemblyQualifiedName, derived1.AssemblyQualifiedName, testdispose.AssemblyQualifiedName, dummydispose.AssemblyQualifiedName, code);
             ValidationData[] data = { new ValidationData { ValueName = "value", ExpectedValue = 128.0, BlockIndex = 0 } };
             Assert.IsTrue(ExecuteAndVerify(code, data) == 0); //runs without any error
@@ -634,7 +634,7 @@ sum;
         public void TestDisposeForUpdate2()
         {
             string code = @"
-                            import(""FFITarget.dll"");
+                            import(""Builtin.dll"");import(""FFITarget.dll"");
                             a = DummyDispose.DummyDispose(); //instance1
                             a = DummyVector.ByCoordinates(1,1,1); //instance2, instance1 will be freed
                             a = DummyDispose.DummyDispose(); //instance3, instance1 will be re-used.
@@ -670,7 +670,7 @@ sum;
         {
             String code =
             @"
-           import(""FFITarget.dll"");
+           import(""Builtin.dll"");import(""FFITarget.dll"");
             pt = DummyPoint.ByCoordinates(1,2,3);
             a = { pt.X, pt.X};
             def test (pt : DummyPoint)
@@ -689,7 +689,7 @@ sum;
         {
             String code =
             @"
-            import(""FFITarget.dll"");
+            import(""Builtin.dll"");import(""FFITarget.dll"");
             pt = DummyPoint.ByCoordinates(1,2,3);
             def test (pt : DummyPoint)
             {
@@ -707,7 +707,8 @@ sum;
         {
             String code =
             @"
-               import(""FFITarget.dll"");
+                import(""Builtin.dll"");
+               import(""Builtin.dll"");import(""FFITarget.dll"");
               
                pt1=DummyPoint.ByCoordinates(1,1,1);
                pt2=DummyPoint.ByCoordinates(2,2,2);
@@ -751,7 +752,8 @@ b12;
         {
             String code =
             @"
-                import(""FFITarget.dll"");
+                import(""Builtin.dll"");
+                import(""Builtin.dll"");import(""FFITarget.dll"");
                 
                 pt1=DummyPoint.ByCoordinates(1,1,1);
                 pt2=DummyPoint.ByCoordinates(2,2,2);
@@ -787,7 +789,7 @@ a12;
         {
             String code =
             @"
-                import(""FFITarget.dll"");
+                import(""Builtin.dll"");import(""FFITarget.dll"");
                 pt1=DummyPoint.ByCoordinates(1,1,1);
                 def foo : DummyPoint( a:DummyPoint)
                 {
@@ -806,7 +808,7 @@ a12;
         {
             String code =
             @"
-               import(""FFITarget.dll"");
+               import(""Builtin.dll"");import(""FFITarget.dll"");
          
 a1;
 ptcoords;
@@ -845,7 +847,7 @@ ptcoords;
         {
             String code =
             @"
-               import(""FFITarget.dll"");
+               import(""Builtin.dll"");import(""FFITarget.dll"");
                 pt1=DummyPoint.ByCoordinates(1,1,1);
                 pt2=DummyPoint.ByCoordinates(2,2,2);
 s11;
@@ -873,7 +875,8 @@ l11;
         {
             String code =
             @"
-               import(""FFITarget.dll"");
+                import(""Builtin.dll"");
+               import(""Builtin.dll"");import(""FFITarget.dll"");
                  
                     a=1;
 a12;
@@ -934,7 +937,7 @@ a12;
         {
             String code =
             @"
-               import(""FFITarget.dll"");
+               import(""Builtin.dll"");import(""FFITarget.dll"");
                pt={0,0,0,0,0,0};
 p11;
                [Imperative]
@@ -961,7 +964,7 @@ p11;
         {
             String code =
             @"
-              import(""FFITarget.dll"");
+              import(""Builtin.dll"");import(""FFITarget.dll"");
               pt1 = DummyPoint.ByCoordinates(10, 10, 10);
               a=pt1.X;
             ";
@@ -1007,7 +1010,7 @@ p11;
         public void PropertyReadback()
         {
             string code =
-                @"import(""FFITarget.dll"");
+                @"import(""Builtin.dll"");import(""FFITarget.dll"");
                 cls = ClassFunctionality.ClassFunctionality();
                 cls.IntVal = 3;
                 readback = cls.IntVal;";
@@ -1021,7 +1024,7 @@ p11;
         public void PropertyUpdate()
         {
             string code =
-                @"import(""FFITarget.dll"");
+                @"import(""Builtin.dll"");import(""FFITarget.dll"");
                 cls = ClassFunctionality.ClassFunctionality();
                 cls.IntVal = 3;
                 readback = cls.IntVal;
@@ -1163,7 +1166,7 @@ p11;
         public void TestDefaultConstructorNotAvailableOnAbstractClass()
         {
             string code = @"
-                import(""FFITarget.dll"");
+                import(""Builtin.dll"");import(""FFITarget.dll"");
                 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             //Verify that AbstractDisposeTracert.AbstractDisposeTracert constructor deson't exists
@@ -1214,7 +1217,7 @@ p11;
         {
             thisTest.RunScriptSource(
             @"
-                import(""FFITarget.dll"");
+                import(""Builtin.dll"");import(""FFITarget.dll"");
                 p = A.NamespaceResolutionTargetTest.NamespaceResolutionTargetTest();
                 x = p.Prop;
             "
@@ -1228,7 +1231,7 @@ p11;
         {
             thisTest.RunScriptSource(
             @"
-                import(""FFITarget.dll"");
+                import(""Builtin.dll"");import(""FFITarget.dll"");
                 p = A.NamespaceResolutionTargetTest.NamespaceResolutionTargetTest(1);
                 x = p.Prop;
             "
@@ -1242,7 +1245,7 @@ p11;
         {
             thisTest.RunScriptSource(
             @"
-                import(""FFITarget.dll"");
+                import(""Builtin.dll"");import(""FFITarget.dll"");
                 p = A.NamespaceResolutionTargetTest.Foo(1);
                 x = p.Prop;
             "
@@ -1256,7 +1259,7 @@ p11;
         {
             thisTest.RunScriptSource(
             @"
-                import(""FFITarget.dll"");
+                import(""Builtin.dll"");import(""FFITarget.dll"");
                 p = A.NamespaceResolutionTargetTest.Foo(1);
                 x = p.Prop;
             "
@@ -1270,7 +1273,7 @@ p11;
         {
             thisTest.RunScriptSource(
             @"
-                import(""FFITarget.dll"");
+                import(""Builtin.dll"");import(""FFITarget.dll"");
                 p = A.NamespaceResolutionTargetTest(1);
                 x = p.Prop;
             "
@@ -1284,7 +1287,7 @@ p11;
         {
             thisTest.RunScriptSource(
             @"
-                import(""FFITarget.dll"");
+                import(""Builtin.dll"");import(""FFITarget.dll"");
                 p = B.NamespaceResolutionTargetTest();
                 x = p.Prop;
             "
@@ -1299,7 +1302,7 @@ p11;
         {
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1947
             string code =
-                @"import(""FFITarget.dll"");
+                @"import(""Builtin.dll"");import(""FFITarget.dll"");
                     import(""BuiltIn.ds"");
                     x = 1..2;
 
@@ -1331,7 +1334,7 @@ p11;
         {
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1947
             string code =
-                @"import(""FFITarget.dll"");
+                @"import(""Builtin.dll"");import(""FFITarget.dll"");
                     import(""BuiltIn.ds"");
                     aDup = A.DupTargetTest(0);
                     aReadback = aDup.Prop;
@@ -1362,7 +1365,7 @@ p11;
         {
             String code =
             @"              
-import(""FFITarget.dll"");
+import(""Builtin.dll"");import(""FFITarget.dll"");
 o = InheritenceDriver.Gen();
 oy = o.Y;
             ";
