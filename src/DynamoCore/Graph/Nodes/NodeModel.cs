@@ -1229,24 +1229,23 @@ namespace Dynamo.Graph.Nodes
                 return result;
             }
 
-            var emptyList = AstFactory.BuildExprList(new List<AssociativeNode>());
-            var previewIdInit = AstFactory.BuildAssignment(AstIdentifierForPreview, emptyList);
+            // Create AST for Dictionary initialization:
+            // var_ast_identifier = {"outport1" : var_ast_identifier_out1, ..., "outportn" : var_ast_identifier_outn};
+            var kvps = OutPorts.Select((outNode, index) =>
+                new KeyValuePair<StringNode, IdentifierNode>
+                    (new StringNode {Value = outNode.Name}, GetAstIdentifierForOutputIndex(index)));
 
-            return
-                result.Concat(new[] { previewIdInit })
-                      .Concat(
-                          OutPorts.Select(
-                              (outNode, index) =>
-                                  AstFactory.BuildAssignment(
-                                      new IdentifierNode(AstIdentifierForPreview)
-                                      {
-                                          ArrayDimensions =
-                                              new ArrayNode
-                                              {
-                                                  Expr = new StringNode { Value = outNode.Name }
-                                              }
-                                      },
-                                      GetAstIdentifierForOutputIndex(index))));
+            var dict = new DictionaryExpressionBuilder();
+            foreach (var kvp in kvps)
+            {
+                dict.AddKey(kvp.Key);
+                dict.AddValue(kvp.Value);
+            }
+            return result.Concat(new[]
+            {
+                AstFactory.BuildAssignment(
+                    this.AstIdentifierForPreview, dict.ToFunctionCall())
+            });
         }
 
         /// <summary>

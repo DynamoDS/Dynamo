@@ -11,7 +11,7 @@ namespace ProtoCore.AST
     /// Dictionary syntax like { "foo" : 12 } isn't part of the AST. Instead, this helper class exists to 
     /// build a function call to build a Dictionary via zero touch.
     /// </summary>
-    abstract class DictionaryExpressionBuilderBase<T>
+    public abstract class DictionaryExpressionBuilderBase<T>
     {
         internal readonly List<T> keys;
         internal readonly List<T> values;
@@ -57,7 +57,7 @@ namespace ProtoCore.AST
 
     namespace AssociativeAST
     {
-        class DictionaryExpressionBuilder : DictionaryExpressionBuilderBase<AssociativeNode>
+        public class DictionaryExpressionBuilder : DictionaryExpressionBuilderBase<AssociativeNode>
         {
             public DictionaryExpressionBuilder() : base() { }
             
@@ -87,7 +87,7 @@ namespace ProtoCore.AST
 
     namespace ImperativeAST
     {
-        class DictionaryExpressionBuilder : DictionaryExpressionBuilderBase<ImperativeNode>
+        public class DictionaryExpressionBuilder : DictionaryExpressionBuilderBase<ImperativeNode>
         {
             public DictionaryExpressionBuilder() : base() { }
             
