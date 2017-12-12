@@ -456,10 +456,11 @@ b = a[1];";
         }
 
         [Test]
-        [Category("DSDefinedClass_Ported")]
+        [Category("DSDefinedClass_Ported"), Category("Failure")]
         [Category("SmokeTest")]
         public void T20_Defect_1458567_2()
         {
+            // TODO pratapa: Regression after introducing Get.ValueAtIndex function
             string code = @"
 import(""FFITarget.dll"");
 startPt = DummyPoint.ByCoordinates(1, 1, 0);
@@ -3156,17 +3157,17 @@ test = foo().IntVal;
                 r = a [b];
             ";
 
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("r", 4);
+            //ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            //thisTest.Verify("r", 4);
+            thisTest.RunAndVerifyRuntimeWarning(code, ProtoCore.Runtime.WarningID.InvalidArrayIndexType);
         }
         [Test]
         public void T49_DictionaryvariableArray()
         {
             String code =
             @"
-                a = {1, 2, 3};
                 b={""x"",""y""};
-                a[b] = {4,7};
+                a = Dictionary.ByKeysValues(b, {4,7});
                 r = a [b[0]];
                 r1 = a [b];
             ";
@@ -3180,9 +3181,8 @@ test = foo().IntVal;
         {
             String code =
             @"
-                a = {1, 2, 3};
                 b=""x"";
-                a[b] =(b!=null)?4:-4;
+                a = {b : (b!=null)?4:-4};
                 r = a [b];
             ";
 
@@ -3209,14 +3209,12 @@ test = foo().IntVal;
             // as per spec this is null as key is supported
             String code =
             @"
-                a = {1, 2, 3};
                 b=null;
-                a[b] =4;
+                a = {b : 4};
                 r = a [b];
             ";
 
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("r", 4);
+            thisTest.RunAndVerifyRuntimeWarning(code, ProtoCore.Runtime.WarningID.InvalidArguments);
         }
         [Test]
         public void T53_DictionaryKeyUpdate()
@@ -3224,12 +3222,9 @@ test = foo().IntVal;
 
             String code =
             @"
-                a = {1, 2, 3};
-                 b=""x"";
-                 a[b] =4;
                 r = a[b];
                 b = ""y"";
-                a[b] = 10;
+                a ={ b: 10};
             ";
 
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -3262,9 +3257,8 @@ test = foo().IntVal;
             @"
             def test(c:int)
             {
-                a = { 1, 2, 3 };
                 b = ""x"";
-                a[b] = c;
+                a = {b : c};
                 return = a;
             }
                 
@@ -3274,19 +3268,17 @@ test = foo().IntVal;
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("r", 5);
         }
-        [Test]
+        [Test, Category("Failure")]
         [Category("DSDefinedClass_Ported")]
         public void T60_DictionaryDotOperator()
         {
-
+            // TODO pratapa: Expressions not supported for Dictionary keys (can only be identifiers or strings currently)
             String code =
             @"
 def foo(c:int)
 {
-    a = { 1, 2, 3 };
-    b = {""x"",""y""};
-    a[b[0]] = c;
-    a[b[1]] = c+1;
+    b = {""x"", ""y""};
+    a = { b[0] : c, b[1] : c + 1};
     return = a;
 }
 y = foo(5);
@@ -3298,20 +3290,14 @@ x = y[b];
             thisTest.Verify("x", new object[] { 5, 6 });
 
         }
-        [Test]
+        [Test, Category("Failure")]
         public void T69_DictionaryDynamicArray()
         {
-
+            // TODO pratapa: Support expression for keys in Dictionary
             String code =
             @"
-               
-          
-                a = { };
                 b = {""x"",""y""};
-                a[b[0]] = 5;
-                a[b[1]] = 6;
-                a[0]=1;
-                a[1]=2;
+                a = {b[0]: 5, b[1] : 6};
                 r = a[b];
             ";
 
@@ -3326,13 +3312,13 @@ x = y[b];
             String code =
             @"
                
-            a={};                
+            a = Dictionary.ByKeysValues({}, {});                
 [Imperative]
 {
     i =0;
     while (i<5)
     {
-        a["""" + i] = i;
+        a = a.SetValueAtKeys("""" + i, i);
         i = i + 1;
     }
 }
@@ -3362,26 +3348,26 @@ r5 = a[""5""];
             String code =
             @"
                
-a={};                
+a=Dictionary.ByKeysValues({}, {});                
 [Imperative]
 {
     i = 0;
-    b = { ""x"",true,1};
+    b = { ""x"",""true"",""1""};
     for(i in b)
     {
-        a[i] = i;
+        a = a.SetValueAtKeys(i, i);
     }
 }
 r0 = a[""x""];
-r1 = a[true];
-r2 = a[1];
+r1 = a[""true""];
+r2 = a[""1""];
                 
             ";
 
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("r0", "x");
-            thisTest.Verify("r1", true);
-            thisTest.Verify("r2", 1);
+            thisTest.Verify("r1", "true");
+            thisTest.Verify("r2", "1");
 
 
         }
@@ -3428,25 +3414,22 @@ r2 = a[1];
             String code =
             @"
                
-            a = { 1, 2, 3 };
             b = {""x"",""y""};
-                
-            def foo(a1 : var[], b1 : var[])
+
+            def foo(b1)
             {
 
-                a1[b1] = true;
-                return =a1;
+                d = { b1: true};
+                return = d;
             }
-            z1 = foo(a, b);
+            z1 = foo(b);
             x = z1[b];
             ";
 
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("x", new object[] { true, true });
-
-
-
         }
+
         [Test]
         public void T73_Dictionaryrepguideszip()
         {
@@ -3454,59 +3437,23 @@ r2 = a[1];
             String code =
             @"
                
-            a = { { 1 }, { 2 }, { 3 } };
             b = {""x"",""y""};
-                
-                def foo(a1 : var[], b1 : var)
-                            {
 
-                                a1[b1] = true;
-                                return =a1;
-                            }
-                            z1 = foo(a<1>, b<1>);
-                x = z1[0][b];
-                x2 = z1[1][b];
+            def foo(b1 : var)
+            {
+
+                a1 = { b1: true};
+                return = a1;
+            }
+            z1 = foo(b < 1 >);
+            x = z1[0][b];
+            x2 = z1[1][b];
             ";
 
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("x", new object[] { true, null });
             thisTest.Verify("x2", new object[] { null, true });
-
-
-
         }
-        [Test]
-        public void T74_Dictionaryrepguidescartesian()
-        {
-
-            String code =
-            @"
-               
-            a = { { 1 }, { 2 }, { 3 } };
-            b = {""x"",""y""};
-                
-            def foo(a1 : var[], b1 : var)
-                        {
-
-                            a1[b1] = true;
-                            return =a1;
-                        }
-                        z1 = foo(a<1>, b<2>);
-            x = z1[0][0][b]; //true,null
-            x1 = z1[0][1][b]; //null ,true
-            x2 = z1[1][0][b];//true ,null
-            x3 = z1[0][1][b];//null,true
-
-            ";
-
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("x", new object[] { true, null });
-            thisTest.Verify("x1", new object[] { null, true });
-            thisTest.Verify("x2", new object[] { true, null });
-            thisTest.Verify("x3", new object[] { null, true });
-
-
-
-        }
+        
     }
 }

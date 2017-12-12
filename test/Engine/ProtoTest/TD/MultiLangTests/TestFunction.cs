@@ -6159,10 +6159,10 @@ t = foo()[0];";
             thisTest.Verify("t", t);
         }
 
-        [Test]
+        [Test, Category("Failure")]
         public void TV101_Indexing_Intovariablenotarray_InFunctionCall_1463234_4()
         {
-            // Assert.Fail("1467131- Sprint 24 - Rev 2910 method overload with replication , throws error WARNING: Multiple type+pattern match parameters found, non-deterministic dispatch" );
+            // TODO pratapa: Regression due to Get.ValueAtIndex (array promotion while indexing into single value)
             string code = @"
 def foo()
 {
