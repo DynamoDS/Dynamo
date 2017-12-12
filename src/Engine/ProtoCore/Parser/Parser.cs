@@ -3258,7 +3258,7 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 					var array2 = new ProtoCore.AST.ImperativeAST.ArrayNode
 					{
 						Expr = node,
-						Type = nameNode.ArrayDimensions
+						Type = null
 					};
 					
 					NodeUtils.SetNodeLocation(array2, t);

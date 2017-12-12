@@ -966,7 +966,7 @@ Imperative_NameReference<ref ProtoCore.AST.ImperativeAST.ImperativeNode node>
 										var array2 = new ProtoCore.AST.ImperativeAST.ArrayNode
 										{
 											Expr = node,
-											Type = nameNode.ArrayDimensions
+											Type = null
 										};
 
 										NodeUtils.SetNodeLocation(array2, t);

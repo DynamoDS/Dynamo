@@ -3229,7 +3229,7 @@ x = a[(0..1)<1>][(0..1)<2>];
         }
 
         [Test]
-        [Category("DSDefinedClass_Ported")]
+        [Category("DSDefinedClass_Ported"), Category("Failure")]
         [Category("Replication")]
         public void T75_Defect_1467282_5()
         {

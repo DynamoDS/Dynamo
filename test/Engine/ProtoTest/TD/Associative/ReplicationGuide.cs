@@ -989,7 +989,7 @@ test = cs.Y;";
         }
 
         [Test]
-        [Category("DSDefinedClass_Ported")]
+        [Category("DSDefinedClass_Ported"), Category("Failure")]
         [Category("Replication")]
         public void T035_Defect_1467317_Replication_Guide_On_Instances()
         {
@@ -1007,7 +1007,7 @@ test = a.X<1> + b.X<2>;
         }
 
         [Test]
-        [Category("DSDefinedClass_Ported")]
+        [Category("DSDefinedClass_Ported"), Category("Failure")]
         [Category("Replication")]
         public void T035_Defect_1467317_Replication_Guide_On_Instances_2()
         {
@@ -1030,7 +1030,7 @@ test = foo();
         }
 
         [Test]
-        [Category("DSDefinedClass_Ported")]
+        [Category("DSDefinedClass_Ported"), Category("Failure")]
         [Category("Replication")]
         public void T035_Defect_1467317_Replication_Guide_On_Instances_3()
         {
@@ -1124,7 +1124,7 @@ r = sum(1, { 1, 2}<1>, y<2>);";
         }
 
         [Test]
-        [Category("DSDefinedClass_Ported")]
+        [Category("DSDefinedClass_Ported"), Category("Failure")]
         [Category("Replication")]
         public void T037_ReplicationGuidebrackets_1467328_3()
         {
@@ -1139,7 +1139,7 @@ x = (TestObjectA.TestObjectA(1..3))[0..2].a<1> +(TestObjectA.TestObjectA(1..3))[
         }
 
         [Test]
-        [Category("DSDefinedClass_Ported")]
+        [Category("DSDefinedClass_Ported"), Category("Failure")]
         [Category("Replication")]
         public void T037_ReplicationGuidebrackets_1467328_4()
         {
@@ -1599,8 +1599,8 @@ test2;
 ";
             string errmsg = "";
             thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.Verify("test1", 0);
-            thisTest.Verify("test2", 2);
+            thisTest.Verify("test1", new[] { 0, 1 });
+            thisTest.Verify("test2", new[] { 2, 3 });
         }
 
         [Test]

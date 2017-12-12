@@ -744,11 +744,9 @@ a = t[1][1][0];
             thisTest.Verify("a",40);
         }
 
-        [Test, Category("Failure")]
+        [Test]
         public void TestDynamicArray006()
         {
-            // TODO pratapa: Crash on parsing nested index-assignment inside Imperative block
-            // post Dictionary changes
             String code =
 @"
 a;

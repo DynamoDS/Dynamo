@@ -420,6 +420,7 @@ test5;
         [Category("SmokeTest")]
         public void T19_TestAssignmentToCollection()
         {
+            // TODO pratapa: Parser crash on nested index assignment in Imperative scope
             string src = @"a;
 b;
 [Imperative]
@@ -1092,7 +1093,7 @@ c6 = a [-1.5];
             thisTest.Verify("c2", 2, 0);
             thisTest.Verify("c3", 1, 0);
             thisTest.Verify("c4", 0, 0);
-            thisTest.Verify("c5", null);
+            thisTest.Verify("c5", 3, 0);
             thisTest.Verify("c6", 2, 0);
         }
 
