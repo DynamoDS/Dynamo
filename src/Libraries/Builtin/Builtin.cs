@@ -18,7 +18,12 @@ namespace DesignScript
 
             public static object ValueAtIndex(IList list, int index)
             {
-                while (index < 0) index += list.Count;
+                while (index < 0)
+                {
+                    var count = list.Count;
+                    if (count == 0) break;
+                    index += count;
+                }
                 return list[index];
             }
         }
