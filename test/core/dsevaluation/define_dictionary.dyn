@@ -1,14 +1,104 @@
-<Workspace Version="1.3.0.875" X="164.276900823688" Y="-124.423529387635" zoom="1.22965001984127" ScaleFactor="1" Name="Home" Description="" RunType="Automatic" RunPeriod="1000" HasRunWithoutCrash="True">
-  <NamespaceResolutionMap />
-  <Elements>
-    <Dynamo.Graph.Nodes.CodeBlockNodeModel guid="1e454a5a-3828-4c74-bf53-fc3249704183" type="Dynamo.Graph.Nodes.CodeBlockNodeModel" nickname="Code Block" x="167" y="351" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false" CodeText="s[&quot;a&quot;]=&quot;Bob&quot;;&#xA;s[&quot;b&quot;]=&quot;Sally&quot;;&#xA;s[&quot;c&quot;]=&quot;Pat&quot;;&#xA;s;" ShouldFocus="false" />
-    <Dynamo.Graph.Nodes.CodeBlockNodeModel guid="ab406c15-3272-4085-8fdb-2662bcc52276" type="Dynamo.Graph.Nodes.CodeBlockNodeModel" nickname="Code Block" x="166" y="160" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false" CodeText="s[&quot;a&quot;]=1;&#xA;s[&quot;b&quot;]=2;&#xA;s[&quot;c&quot;]=3;&#xA;s;" ShouldFocus="false" />
-  </Elements>
-  <Connectors />
-  <Notes />
-  <Annotations />
-  <Presets />
-  <Cameras>
-    <Camera Name="Background Preview" eyeX="-17" eyeY="24" eyeZ="50" lookX="12" lookY="-13" lookZ="-58" upX="0" upY="1" upZ="0" />
-  </Cameras>
-</Workspace>
+{
+  "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "Home",
+  "ElementResolver": {
+    "ResolutionMap": {
+      "DesignScript.Builtin.Dictionary": {
+        "Key": "DesignScript.Builtin.Dictionary",
+        "Value": "Builtin.dll"
+      }
+    }
+  },
+  "Inputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "s = {\"a\" : \"Bob\", \"b\" : \"Sally\", \"c\" : \"Pat\"};",
+      "Id": "1e454a5a38284c74bf53fc3249704183",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "f9544aefdc774c09ab1941b4c447c334",
+          "Name": "",
+          "Description": "s",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "s = {\"a\" : 1, \"b\" : 2, \"c\" : 3};",
+      "Id": "ab406c15327240858fdb2662bcc52276",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "0e37bef00b6647b096add4cd88c6d8b7",
+          "Name": "",
+          "Description": "s",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    }
+  ],
+  "Connectors": [],
+  "Dependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.0.0.3460",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "1e454a5a38284c74bf53fc3249704183",
+        "Excluded": false,
+        "X": -19.231851587788071,
+        "Y": 346.93380236707884
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "ab406c15327240858fdb2662bcc52276",
+        "Excluded": false,
+        "X": 13.924208528749432,
+        "Y": 145.36168852148421
+      }
+    ],
+    "Annotations": [],
+    "X": 164.276900823688,
+    "Y": -124.423529387635,
+    "Zoom": 1.22965001984127
+  }
+}
