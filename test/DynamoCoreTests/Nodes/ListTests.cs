@@ -4,6 +4,7 @@ using Dynamo.Nodes;
 using Dynamo.Models;
 using System.Collections.Generic;
 using System.Linq;
+using DesignScript.Builtin;
 using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.ZeroTouch;
@@ -830,22 +831,13 @@ namespace Dynamo.Tests
 			Assert.AreEqual(8, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
 
 			//  before Filter
-			Dictionary<int, object> validationData = new Dictionary<int, object>()
-			{
-				{0,0},
-				{1,1},
-				{10,10},
-			};
-			SelectivelyAssertPreviewValues("a54127b5-decb-4750-aaf3-1b895be73984", validationData);
+		    var validationData = new[] {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+            AssertPreviewValue("a54127b5-decb-4750-aaf3-1b895be73984", validationData);
 
 			// after Filter
-			Dictionary<int, object> validationData1 = new Dictionary<int, object>()
-			{
-				{0,new int[]{6,7,8,9,10}},
-				{1,new int[]{0,1,2,3,4,5}},
-			};
-			SelectivelyAssertPreviewValues("b03dcac5-14f1-46b8-bcb8-398561d28b83", validationData1);
-
+		    var validationData1 = Dictionary.ByKeysValues(new[] {"in", "out"},
+		        new object[] {new int[] {6, 7, 8, 9, 10}, new int[] {0, 1, 2, 3, 4, 5}});
+            AssertPreviewValue("b03dcac5-14f1-46b8-bcb8-398561d28b83", validationData1);
 		}
 
 		[Test]
@@ -859,15 +851,13 @@ namespace Dynamo.Tests
 			Assert.AreEqual(8, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
 
 			//  before Filter
-			Dictionary<int, object> validationData = new Dictionary<int, object>()
-			{
-				{0,0},
-				{1,1},
-				{5,5},
-			};
-			SelectivelyAssertPreviewValues("1327061f-b25d-4e91-9df7-a79850cb59e0", validationData);
-		   
-			AssertPreviewValue("b03dcac5-14f1-46b8-bcb8-398561d28b83", new int[]{});
+		    var validationData = new[] {0, 1, 2, 3, 4, 5};
+            AssertPreviewValue("1327061f-b25d-4e91-9df7-a79850cb59e0", validationData);
+
+		    var validationData1 = Dictionary.ByKeysValues(new[] {"in", "out"},
+		        new object[] {new object[] {}, new[] {0, 1, 2, 3, 4, 5}});
+		    
+			AssertPreviewValue("b03dcac5-14f1-46b8-bcb8-398561d28b83", validationData1);
 		}
 
 		[Test]
@@ -881,30 +871,15 @@ namespace Dynamo.Tests
 			Assert.AreEqual(12, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
 
 			//  before Filter
-			Dictionary<int, object> validationData = new Dictionary<int, object>()
-			{
-				{0,new int[]{6,7,8,9,10}},
-				{1,new int[]{0,1,2,3,4,5}},
-			};
-			SelectivelyAssertPreviewValues("d957655d-57d0-4445-a5a8-c730a3cb8d28", validationData);
+		    var validationData = Dictionary.ByKeysValues(new[] {"in", "out"},
+		        new object[] {new int[] {6, 7, 8, 9, 10}, new int[] {0, 1, 2, 3, 4, 5}});
+            AssertPreviewValue("d957655d-57d0-4445-a5a8-c730a3cb8d28", validationData);
 
-			// after Filter
-			Dictionary<int, object> validationData1 = new Dictionary<int, object>()
-			{
-				{0,new int[]{0,1,2,3,4}},
-				{1,new int[]{5,6,7,8,9,10}},
-			};
-			SelectivelyAssertPreviewValues("32e204af-cc73-486c-9add-9215f2688b98", validationData1);
-
-			// after Filter and Combine
-			Dictionary<int, object> validationData2 = new Dictionary<int, object>()
-			{
-				{1,7},
-				{4,2.5},
-
-			};
-			SelectivelyAssertPreviewValues("dc27f671-4cef-480f-9ddc-218d61db7e52", validationData2);
-		}
+            // after Filter
+            var validationData1 = Dictionary.ByKeysValues(new[] { "in", "out" },
+                new object[] { new int[] { 0, 1, 2, 3, 4 }, new int[] { 5, 6, 7, 8, 9, 10 } });
+            AssertPreviewValue("32e204af-cc73-486c-9add-9215f2688b98", validationData1);
+        }
 
 		#endregion
 
@@ -1063,20 +1038,15 @@ namespace Dynamo.Tests
 			RunModel(openPath);
 
 			// Elements from first FilterOut list
-			Dictionary<int, object> validationData2 = new Dictionary<int, object>()
-			{
-				{0,new int[]{1,2}},
-				{1,new int[]{3,4,5,6,7,8,9,10}},
-			};
-			SelectivelyAssertPreviewValues("53ec97e2-d860-4fdc-8ea5-2288bf39bcfc", validationData2);
+
+		    var validationData2 = DesignScript.Builtin.Dictionary.ByKeysValues(
+		        new[] {"in", "out"}, new object[] {new[] {1, 2}, new[] {3, 4, 5, 6, 7, 8, 9, 10}});
+            AssertPreviewValue("53ec97e2-d860-4fdc-8ea5-2288bf39bcfc", validationData2);
 
 			// Elements from second FilterOut list
-			Dictionary<int, object> validationData3 = new Dictionary<int, object>()
-			{
-				{0,new int[]{4,5,6,7,8,9,10}},
-				{1,new int[]{1,2,3}},
-			};
-			SelectivelyAssertPreviewValues("0af3f566-1b05-4578-9fb0-297ca98d6d8c", validationData3);
+		    var validationData3 = DesignScript.Builtin.Dictionary.ByKeysValues(
+		        new[] {"in", "out"}, new object[] {new[] {4, 5, 6, 7, 8, 9, 10}, new[] {1, 2, 3}});
+            AssertPreviewValue("0af3f566-1b05-4578-9fb0-297ca98d6d8c", validationData3);
 
 		}
 
@@ -1087,17 +1057,12 @@ namespace Dynamo.Tests
 			RunModel(openPath);
 
 			// Elements from Take from List
-			Dictionary<int, object> validationData3 = new Dictionary<int, object>()
-			{
-				{0,3},
-				{1,4},
-				{2,5},
-			};
-			SelectivelyAssertPreviewValues("6921b2ef-fc5c-44b4-992f-9421c267d9ef", validationData3);
+		    var validationData3 = new[] {3, 4, 5};
+            AssertPreviewValue("6921b2ef-fc5c-44b4-992f-9421c267d9ef", validationData3);
 
 
 			// Elements from Drop from List 
-			AssertPreviewValue("57a41c41-fa71-41dd-aa25-ca2156f2ba0b", new int[] { });
+		    AssertPreviewValue("57a41c41-fa71-41dd-aa25-ca2156f2ba0b", new int[] {});
 
 		}
 
