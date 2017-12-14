@@ -8,6 +8,7 @@ using Dynamo.Selection;
 using NUnit.Framework;
 using System.Collections;
 using CoreNodeModels;
+using DesignScript.Builtin;
 using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.CustomNodes;
@@ -572,18 +573,8 @@ namespace Dynamo.Tests
 
             var splitListVal = CurrentDynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<Function>().CachedValue;
 
-            Assert.IsTrue(splitListVal.IsCollection);
-
-            var outs = splitListVal.GetElements().ToList();
-
-            Assert.AreEqual(2, outs.Count);
-
-            var out1 = outs[0];
-            Assert.AreEqual(0, out1.Data);
-
-            var out2 = outs[1];
-            Assert.IsTrue(out2.IsCollection);
-            Assert.IsFalse(out2.GetElements().Any());
+            var val = Dictionary.ByKeysValues(new[] {"item", "rest"}, new object[] {0, new object[] {}});
+            AssertValue(splitListVal, val);
         }
 
         [Test]
