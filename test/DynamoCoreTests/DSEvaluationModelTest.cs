@@ -1251,6 +1251,24 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        public void CustomNodeWithSimpleGeometry()
+        {
+            var examplePath = Path.Combine(TestDirectory, @"core\CustomNodes\");
+
+            CustomNodeInfo info;
+            Assert.IsTrue(
+                CurrentDynamoModel.CustomNodeManager.AddUninitializedCustomNode(
+                    Path.Combine(examplePath, "Point.dyf"),
+                    true,
+                    out info));
+            string openPath = Path.Combine(examplePath, "TestPoint.dyn");
+
+            RunModel(openPath);
+
+            AssertPreviewValue("5ed80f52-ea60-4a07-8dd0-514f0eb70a28", 2);
+        }
+
+        [Test]
         public void CustomNodeMultipleInGraph()
         {
             var examplePath = Path.Combine(TestDirectory, @"core\CustomNodes\");
@@ -1276,13 +1294,9 @@ namespace Dynamo.Tests
                 CurrentDynamoModel.CustomNodeManager.AddUninitializedCustomNode(Path.Combine(examplePath, "Conditional.dyf"), true, out info));
 
             string openPath = Path.Combine(examplePath, "TestConditional.dyn");
-            //model.Open(openPath);
 
             RunModel(openPath);
-
-            // check all the nodes and connectors are loaded
-
-
+            
             AssertPreviewValue("ec2e79de-35ed-44ad-9dea-4bedc526c612", false);
             AssertPreviewValue("7be13594-8d09-4377-98aa-d3cf1c716288", true);
         }
