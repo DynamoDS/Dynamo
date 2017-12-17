@@ -1158,7 +1158,7 @@ var06 = g;
         [Test, Category("Failure")]
         public void TestImperativeLanguageBlock()
         {
-            // TODO pratapa: Return to fix this test
+            // TODO pratapa: Return to fix this test - result of difference in indexing behavior after ValueAtIndex
             string openPath = Path.Combine(TestDirectory, @"core\cbn_renaming\TestImperativeInCBN.dyn");
             RunModel(openPath);
             AssertPreviewValue("27fba61c-ba19-4575-90a7-f856f74b4887", 49);
