@@ -531,7 +531,7 @@ Imperative_IdentifierList<out ProtoCore.AST.ImperativeAST.ImperativeNode node>
                                         (.
                                             ProtoCore.AST.ImperativeAST.IdentifierListNode inode = rnode as ProtoCore.AST.ImperativeAST.IdentifierListNode;
 											ProtoCore.AST.ImperativeAST.IdentifierListNode bnode;
-											if (inode != null && inode.LeftNode.Name == "DesignScript.Builtin.Get")
+											if (inode != null && inode.LeftNode.Name == Node.BuiltinGetValueAtIndexTypeName)
 											{
 												bnode = inode;
 											}

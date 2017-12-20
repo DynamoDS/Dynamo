@@ -1955,7 +1955,7 @@ Associative_IdentifierList<out ProtoCore.AST.AssociativeAST.AssociativeNode node
                                         ProtoCore.AST.AssociativeAST.IdentifierListNode bnode;
 
 										ProtoCore.AST.AssociativeAST.IdentifierListNode idnode = rnode as ProtoCore.AST.AssociativeAST.IdentifierListNode;
-										if (idnode != null && idnode.LeftNode.Name == "DesignScript.Builtin.Get")
+										if (idnode != null && idnode.LeftNode.Name == Node.BuiltinGetValueAtIndexTypeName)
 										{
 											bnode = idnode;
 										}
