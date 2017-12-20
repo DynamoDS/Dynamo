@@ -1143,8 +1143,19 @@ var06 = g;
             libraries.Add("ProtoGeometry.dll");
             libraries.Add("Builtin.dll");
             libraries.Add("DSCoreNodes.dll");
+            libraries.Add("FFITarget.dll");
 
             base.GetLibrariesToPreload(libraries);
+        }
+        [Test]
+        public void TestReplicationGuidesWithASTRewrite()
+        {
+            string openPath = Path.Combine(TestDirectory, @"core\cbn_renaming\TestReplicationGuidesWithASTRewrite.dyn");
+            RunModel(openPath);
+            var data1 = new object[] {new[] {5, 6, 7}, new[] {6, 7, 8}, new[] {7, 8, 9}};
+            var data2 = new object[] { new[] { 11, 21, 31 }, new[] { 12, 22, 32 }, new[] { 13, 23, 33 } };
+            AssertPreviewValue("345a236b-6919-4075-b64c-81568c892bb2", data1);
+            AssertPreviewValue("49f2bd4a-6b88-4bf7-bf61-5c6f8d407478", data2);
         }
 
         [Test]

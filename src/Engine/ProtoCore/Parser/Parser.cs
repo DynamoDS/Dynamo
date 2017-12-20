@@ -1810,7 +1810,7 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 			ProtoCore.AST.AssociativeAST.IdentifierListNode bnode;
 			
 			ProtoCore.AST.AssociativeAST.IdentifierListNode idnode = rnode as ProtoCore.AST.AssociativeAST.IdentifierListNode;
-			if (idnode != null && idnode.LeftNode.Name == "DesignScript.Builtin.Get")
+			if (idnode != null && idnode.LeftNode.Name == Node.BuiltinGetValueAtIndexTypeName)
 			{
 			bnode = idnode;
 			}
@@ -3105,7 +3105,7 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 			Imperative_NameReference(ref rnode);
 			ProtoCore.AST.ImperativeAST.IdentifierListNode inode = rnode as ProtoCore.AST.ImperativeAST.IdentifierListNode;
 			ProtoCore.AST.ImperativeAST.IdentifierListNode bnode;
-			if (inode != null && inode.LeftNode.Name == "DesignScript.Builtin.Get")
+			if (inode != null && inode.LeftNode.Name == Node.BuiltinGetValueAtIndexTypeName)
 			{
 			bnode = inode;
 			}

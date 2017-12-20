@@ -1436,6 +1436,35 @@ c = f(a<1L>,b<2>);
         }
 
         [Test]
+        public void TestReplicationGuidesOnProperties()
+        {
+            string code = @"
+                class A
+                {
+                    X : int[];
+	                constructor A(a : int[])
+                    {
+                        X = a;
+                    }
+                }
+                a = {A.A(0..2), A.A(3..5)};
+                z = a.X<1> + a.X<2>;
+                ";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("z", new object[]
+            {
+                new object[]
+                {
+                    new[] {0, 2, 4}, new[] {3, 5, 7}
+                },
+                new object[]
+                {
+                    new[] {3, 5, 7}, new[] {6, 8, 10}
+                }
+            });
+        }
+
+        [Test]
         [Category("DSDefinedClass_Ported")]
         public void TestReplicationGuidesOnDotOps01()
         {

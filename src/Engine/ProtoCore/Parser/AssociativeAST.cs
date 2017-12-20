@@ -2564,9 +2564,6 @@ namespace ProtoCore.AST.AssociativeAST
 
     public class AstFactory
     {
-        private static readonly string BuiltinGetValueAtIndexTypeName = typeof(DesignScript.Builtin.Get).FullName;
-        private static readonly string BuiltinValueAtIndexMethodName = nameof(DesignScript.Builtin.Get.ValueAtIndex);
-
         public static NullNode BuildNullNode()
         {
             return new NullNode();
@@ -2632,7 +2629,7 @@ namespace ProtoCore.AST.AssociativeAST
 
         public static AssociativeNode BuildIndexExpression(AssociativeNode value, AssociativeNode index)
         {
-            var node = BuildFunctionCall(BuiltinGetValueAtIndexTypeName, BuiltinValueAtIndexMethodName, 
+            var node = BuildFunctionCall(Node.BuiltinGetValueAtIndexTypeName, Node.BuiltinValueAtIndexMethodName, 
                 new List<AssociativeNode>() { value, index });
             NodeUtils.SetNodeLocation(node, value, index);
             return node;

@@ -1771,12 +1771,9 @@ namespace ProtoCore.AST.ImperativeAST
 
     public static class AstFactory
     {
-        private static readonly string BuiltinGetValueAtIndexTypeName = typeof(DesignScript.Builtin.Get).FullName;
-        private static readonly string BuiltinValueAtIndexMethodName = nameof(DesignScript.Builtin.Get.ValueAtIndex);
-
         public static ImperativeNode BuildIndexExpression(ImperativeNode value, ImperativeNode index)
         {
-            var node = BuildFunctionCall(BuiltinGetValueAtIndexTypeName, BuiltinValueAtIndexMethodName, 
+            var node = BuildFunctionCall(Node.BuiltinGetValueAtIndexTypeName, Node.BuiltinValueAtIndexMethodName, 
                 new List<ImperativeNode>() { value, index });
             NodeUtils.SetNodeLocation(node, value, index);
             return node;

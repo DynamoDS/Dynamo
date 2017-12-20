@@ -1839,16 +1839,21 @@ namespace ProtoAssociative
         /// <returns></returns>
         private List<AssociativeNode> GetReplicationGuides(AssociativeNode node)
         {
-            if (node is IdentifierListNode)
-            {
-                var identListNode = node as IdentifierListNode;
-                return GetReplicationGuides(identListNode.RightNode);
-            }
+            
             if (node is ArrayNameNode)
             {
-                var nodeWithReplication = node as ArrayNameNode;
-                return nodeWithReplication.ReplicationGuides;
+                var guides = ((ArrayNameNode) node).ReplicationGuides;
+                if (guides == null || guides.Count == 0)
+                {
+                    if (node is IdentifierListNode)
+                    {
+                        var identListNode = node as IdentifierListNode;
+                        return GetReplicationGuides(identListNode.RightNode);
+                    }
+                }
+                return guides;
             }
+            
             if (node is FunctionDotCallNode)
             {
                 var dotCallNode = node as FunctionDotCallNode;
