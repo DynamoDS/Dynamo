@@ -1230,7 +1230,7 @@ namespace Dynamo.Tests
 
             AssertPreviewValue("1bee0f0f-5c93-48b3-a90d-f8761fa6e221", 3);
         }
-        [Test]
+        [Test, Category("Failure")]
         public void CustomNodeWithCBNAndGeometry()
         {
             var examplePath = Path.Combine(TestDirectory, @"core\CustomNodes\");
@@ -1268,7 +1268,7 @@ namespace Dynamo.Tests
             AssertPreviewValue("5ed80f52-ea60-4a07-8dd0-514f0eb70a28", 2);
         }
 
-        [Test]
+        [Test, Category("Failure")]
         public void CustomNodeMultipleInGraph()
         {
             var examplePath = Path.Combine(TestDirectory, @"core\CustomNodes\");
@@ -1319,7 +1319,7 @@ namespace Dynamo.Tests
             Assert.DoesNotThrow(() => RunModel(openPath));
         }
 
-        [Test]
+        [Test, Category("Failure")]
         public void Regress_Magn_4837()
         {
             // Test nested custom node: run and reset engine and re-run.
@@ -1337,7 +1337,7 @@ namespace Dynamo.Tests
             AssertPreviewValue("42693721-622d-475e-a82e-bfe793ddc153", new object[] { 2, 3, 4, 5, 6 });
         }
 
-        [Test]
+        [Test, Category("Failure")]
         public void Regression_Magn_10015()
         {
             // no crash

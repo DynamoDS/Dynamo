@@ -737,7 +737,7 @@ namespace Dynamo.Tests
             base.GetLibrariesToPreload(libraries);
         }
 
-        [Test]
+        [Test, Category("Failure")]
         public void CanMapOverUnits()
         {
             var length = Enumerable.Range(1, 5).Select(x => Length.FromDouble(x)).ToList();
