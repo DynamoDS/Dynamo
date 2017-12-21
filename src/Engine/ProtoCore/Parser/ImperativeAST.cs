@@ -1661,7 +1661,7 @@ namespace ProtoCore.AST.ImperativeAST
         }
     }
 
-    public class IdentifierListNode : ImperativeNode
+    public class IdentifierListNode : ArrayNameNode
     {
         public ImperativeNode LeftNode { get; set; }
         public Operator Optr { get; set; }
@@ -1766,6 +1766,31 @@ namespace ProtoCore.AST.ImperativeAST
         public override TResult Accept<TResult>(IAstVisitor<TResult> visitor)
         {
             return visitor.VisitContinueNode(this);
+        }
+    }
+
+    public static class AstFactory
+    {
+        public static ImperativeNode BuildIndexExpression(ImperativeNode value, ImperativeNode index)
+        {
+            var node = BuildFunctionCall(Node.BuiltinGetValueAtIndexTypeName, Node.BuiltinValueAtIndexMethodName, 
+                new List<ImperativeNode>() { value, index });
+            NodeUtils.SetNodeLocation(node, value, index);
+            return node;
+        }
+
+        public static ImperativeNode BuildFunctionCall(string className, string functionName, List<ImperativeNode> args)
+        {
+            return new IdentifierListNode
+            {
+                LeftNode = new IdentifierNode(className),
+                Optr = Operator.dot,
+                RightNode = new FunctionCallNode
+                {
+                    Function = new IdentifierNode(functionName),
+                    FormalArguments = args
+                }
+            };
         }
     }
 }

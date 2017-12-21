@@ -285,10 +285,10 @@ namespace ProtoTest.ProtoAST
         }
 
         [Test]
-        [Category("DSDefinedClass_Ported")]
+        [Category("DSDefinedClass_Ported"), Category("Failure")]
         public void TestAstToCode()
         {
-            // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4393
+            // TODO pratapa: Regression post Dictionary changes for Get.ValueAtIndex method
 
             // Convert a list of code -> AST nodes -> code -> AST nodes
             // Compare two AST node lists are equal

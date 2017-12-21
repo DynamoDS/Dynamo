@@ -1550,11 +1550,51 @@ Associative_ArrayExprList<out ProtoCore.AST.AssociativeAST.AssociativeNode node>
                                         (. node = exprlist; .)
 .
 
-Associative_NameReference<out ProtoCore.AST.AssociativeAST.AssociativeNode node>
+Associative_DictionaryExpression<out ProtoCore.AST.AssociativeAST.AssociativeNode node>
+=
+'{'                                     (. var dictBuilder = new ProtoCore.AST.AssociativeAST.DictionaryExpressionBuilder(); .)
+                                        (. dictBuilder.SetNodeStartLocation(t); .)
+    [
+		(
+			textstring	(. var str = new StringNode {Value = t.val.Trim('"')}; .)  
+						(. dictBuilder.AddKey(str); .)
+		)
+		|
+		(
+			ident		(. var ident = new IdentifierNode(t.val); .)
+						(. NodeUtils.SetNodeLocation(ident, t); .)
+						(. dictBuilder.AddKey(ident); .)
+		)
+	]
+	':'                     
+	Associative_Expression<out node>            (. dictBuilder.AddValue(node); .)
+	{
+		','
+		[
+			(
+				textstring	(. var str = new StringNode { Value = t.val.Trim('"') }; .)
+							(. dictBuilder.AddKey(str); .)  
+			)
+			|
+			(
+				ident		(. var ident = new IdentifierNode(t.val); .)
+							(. NodeUtils.SetNodeLocation(ident, t); .)
+							(. dictBuilder.AddKey(ident); .)
+			)
+		]
+		':'                     
+		Associative_Expression<out node>            (. dictBuilder.AddValue(node); .)
+	}
+'}'                                     (. dictBuilder.SetNodeEndLocation(t); .)
+                                        (. node = dictBuilder.ToFunctionCall(); .)
+.
+
+Associative_NameReference<ref ProtoCore.AST.AssociativeAST.AssociativeNode node>
 = 
                                         (.
                                             ProtoCore.AST.AssociativeAST.ArrayNameNode nameNode = null; 
                                             ProtoCore.AST.AssociativeAST.GroupExpressionNode groupExprNode = null;
+											ProtoCore.AST.AssociativeAST.ArrayNameNode qualifierNode = node as AST.AssociativeAST.ArrayNameNode;
                                         .)
     (
         (
@@ -1594,6 +1634,14 @@ Associative_NameReference<out ProtoCore.AST.AssociativeAST.AssociativeNode node>
                                             nameNode = node as ProtoCore.AST.AssociativeAST.ArrayNameNode; 
                                         .)
         )
+		|
+		IF(IsDictionaryExpression())
+        (
+            Associative_DictionaryExpression<out node>
+                                        (.
+                                            nameNode = node as ProtoCore.AST.AssociativeAST.ArrayNameNode;
+                                        .)
+        )
         |
         (
             Associative_ArrayExprList<out node>
@@ -1604,9 +1652,9 @@ Associative_NameReference<out ProtoCore.AST.AssociativeAST.AssociativeNode node>
     )
 
     [
-                                        (. 
-                                            ProtoCore.AST.AssociativeAST.ArrayNode array = new ProtoCore.AST.AssociativeAST.ArrayNode(); 
-                                        .)
+										(. 
+											ProtoCore.AST.AssociativeAST.ArrayNode array = null;
+										.)
         openbracket             
         [
                                         (. 
@@ -1615,12 +1663,31 @@ Associative_NameReference<out ProtoCore.AST.AssociativeAST.AssociativeNode node>
                                         .)
             Associative_Expression<out node>
                                         (. 
-                                            isLeft = tmpIsLeft; 
-                                            array.Expr = node; 
-                                            array.Type = nameNode.ArrayDimensions;
-                                            NodeUtils.SetNodeLocation(array, t);
-                                            nameNode.ArrayDimensions = array; 
-                                            
+											if (tmpIsLeft) {
+												// if "foo[bar]" is on the lhs, it is interpreted as an array initialization expression
+												array = new ProtoCore.AST.AssociativeAST.ArrayNode
+												{
+													Expr = node,
+													Type = nameNode.ArrayDimensions
+												};
+
+												NodeUtils.SetNodeLocation(array, t);
+												nameNode.ArrayDimensions = array;
+											} else {
+												if (qualifierNode != null)
+												{
+													ProtoCore.AST.AssociativeAST.IdentifierListNode inode = new ProtoCore.AST.AssociativeAST.IdentifierListNode();
+													inode.LeftNode = qualifierNode;
+													inode.Optr = Operator.dot;
+													inode.RightNode = nameNode;
+													NodeUtils.SetNodeLocation(inode, inode.LeftNode, inode.RightNode);
+													nameNode = inode;
+												}
+												// if "foo[bar]" is on the rhs, it is interpreted as an lookup in an array or dictionary
+												nameNode = AstFactory.BuildIndexExpression(nameNode, node) as ArrayNameNode;
+											}
+
+											isLeft = tmpIsLeft; 
                                         .)
         ]
         closebracket 
@@ -1631,15 +1698,23 @@ Associative_NameReference<out ProtoCore.AST.AssociativeAST.AssociativeNode node>
                                             bool tmpIsLeft = isLeft; 
                                             isLeft = false;
                                         .) 
-                Associative_Expression<out node>  
-                                        (. 
-                                            isLeft = tmpIsLeft; 
-                                            ProtoCore.AST.AssociativeAST.ArrayNode array2 = new ProtoCore.AST.AssociativeAST.ArrayNode();
-                                            array2.Expr = node; 
-                                            array2.Type = null;
-                                            NodeUtils.SetNodeLocation(array2, t);
-                                            array.Type = array2;
-                                            array = array2;
+                Associative_Expression<out node>
+                                        (.
+											if (tmpIsLeft) {
+												var array2 = new ProtoCore.AST.AssociativeAST.ArrayNode
+												{
+													Expr = node,
+													Type = null
+												};
+
+												NodeUtils.SetNodeLocation(array2, t);
+												array.Type = array2;
+												array = array2;
+											} else {
+												nameNode = AstFactory.BuildIndexExpression(nameNode, node) as ArrayNameNode;
+											}
+
+											isLeft = tmpIsLeft; 
                                         .)
             ]
             closebracket
@@ -1857,16 +1932,16 @@ Associative_IdentifierList<out ProtoCore.AST.AssociativeAST.AssociativeNode node
                                         }
                                     .)
 
-    Associative_NameReference<out node> 
+    Associative_NameReference<ref node> 
                                     (. 
                                         disableKwCheck = false; 
                                         ProtoCore.AST.AssociativeAST.AssociativeNode inode = node; 
                                     .)
     {
         '.'
-                                    (. ProtoCore.AST.AssociativeAST.AssociativeNode rnode = null; .)
+                                    (. ProtoCore.AST.AssociativeAST.AssociativeNode rnode = node; .)
 
-        Associative_NameReference<out rnode>
+        Associative_NameReference<ref rnode>
                                     (.
                                         if ((inode is ProtoCore.AST.AssociativeAST.IdentifierNode) &&
                                             (inode as ProtoCore.AST.AssociativeAST.IdentifierNode).Name == ProtoCore.DSDefinitions.Keyword.This &&
@@ -1877,12 +1952,22 @@ Associative_IdentifierList<out ProtoCore.AST.AssociativeAST.AssociativeNode node
                                         }
 
                                         
-                                        ProtoCore.AST.AssociativeAST.IdentifierListNode bnode = new ProtoCore.AST.AssociativeAST.IdentifierListNode();
-                                        bnode.LeftNode = node;
-                                        bnode.Optr = Operator.dot;
-                                        bnode.RightNode = rnode;
-                                        node = bnode;
-                                        NodeUtils.SetNodeLocation(bnode, bnode.LeftNode, bnode.RightNode);
+                                        ProtoCore.AST.AssociativeAST.IdentifierListNode bnode;
+
+										ProtoCore.AST.AssociativeAST.IdentifierListNode idnode = rnode as ProtoCore.AST.AssociativeAST.IdentifierListNode;
+										if (idnode != null && idnode.LeftNode.Name == Node.BuiltinGetValueAtIndexTypeName)
+										{
+											bnode = idnode;
+										}
+										else
+										{
+											bnode = new ProtoCore.AST.AssociativeAST.IdentifierListNode();
+											bnode.LeftNode = node;
+											bnode.Optr = Operator.dot;
+											bnode.RightNode = rnode;
+											NodeUtils.SetNodeLocation(bnode, bnode.LeftNode, bnode.RightNode);
+										}
+										node = bnode;
                                         
                                         if (!core.Options.GenerateSSA)
                                         {

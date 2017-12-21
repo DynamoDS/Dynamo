@@ -11,8 +11,10 @@ using System.Text;
 using System.IO;
 using System.Xml;
 using System.Linq;
+using DesignScript.Builtin;
 using ProtoCore.Properties;
 using ProtoCore.Exceptions;
+using ProtoCore.Runtime;
 
 namespace ProtoFFI
 {
@@ -207,88 +209,67 @@ namespace ProtoFFI
         }
     }
 
-    /// <summary>
-    /// Marshals collection
-    /// </summary>
-    class CollectionMarshaler : PrimitiveMarshler
+    class ArrayMarshaler : PrimitiveMarshler
     {
-        private FFIObjectMarshler primitiveMarshaler;
+        private readonly CLRObjectMarshler primitiveMarshaler;
 
         /// <summary>
-        /// Constructor for the CollectionMarshaler
+        /// Constructor for the ArrayMarshaler
         /// </summary>
         /// <param name="primitiveMarshaler">Marshaler to marshal primitive type</param>
         /// <param name="type">Expected DS type for marshaling</param>
-        public CollectionMarshaler(FFIObjectMarshler primitiveMarshaler, ProtoCore.Type type)
+        public ArrayMarshaler(CLRObjectMarshler primitiveMarshaler, ProtoCore.Type type)
             : base(type)
         {
             this.primitiveMarshaler = primitiveMarshaler;
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="obj"></param>
-        /// <param name="context"></param>
-        /// <param name="dsi"></param>
-        /// <param name="type"></param>
-        /// <returns></returns>
         public override StackValue Marshal(object obj, ProtoCore.Runtime.Context context, Interpreter dsi, ProtoCore.Type type)
         {
-            IEnumerable collection = obj as IEnumerable;
+            var collection = obj as IEnumerable;
             Validity.Assert(null != collection, "Expected IEnumerable object for marshaling as collection");
             if (null == collection) 
                 return StackValue.Null;
 
-            if (collection is IDictionary)
-                return ToDSArray(collection as IDictionary, context, dsi, type);
             if (collection is ICollection)
                 return ToDSArray(collection as ICollection, context, dsi, type);
 
             return ToDSArray(collection, context, dsi, type);
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="dsObject"></param>
-        /// <param name="context"></param>
-        /// <param name="dsi"></param>
-        /// <param name="expectedCLRType"></param>
-        /// <returns></returns>
         public override object UnMarshal(StackValue dsObject, ProtoCore.Runtime.Context context, Interpreter dsi, Type expectedCLRType)
         {
-            Type arrayType = expectedCLRType;
-            Type elementType = GetElementType(expectedCLRType);
+            // If expected type is an IDictionary, log warning and return
+            if (expectedCLRType == typeof(IDictionary) ||
+                expectedCLRType.GetInterfaces()
+                    .Where(i => i.IsGenericType)
+                    .Select(i => i.GetGenericTypeDefinition())
+                    .Contains(typeof(IDictionary<,>)))
+            {
+                dsi.LogWarning(WarningID.TypeMismatch, Resources.FailedToConvertArrayToDictionary);
+                return null;
+            }
+
+            var arrayType = expectedCLRType;
+            var elementType = expectedCLRType.GetElementType() ?? typeof(object);
 
             if (expectedCLRType.IsGenericType)
             {
-                bool isDictionary = expectedCLRType.GetInterfaces()
-                                                   .Where(i => i.IsGenericType)
-                                                   .Select(i => i.GetGenericTypeDefinition())
-                                                   .Contains(typeof(IDictionary<,>));
-                if (isDictionary)
-                    return ToIDictionary(dsObject, context, dsi, expectedCLRType);
-
                 elementType = expectedCLRType.GetGenericArguments().First();
                 arrayType = elementType.MakeArrayType();
             }
-            else if (typeof(IDictionary).IsAssignableFrom(expectedCLRType))
-            {
-                return ToIDictionary(dsObject, context, dsi, expectedCLRType);
-            }
 
             ICollection collection = null;
-            //If dsObject is non array pointer but the expectedCLRType is IEnumerable, promote the dsObject to a collection.
-            if (!dsObject.IsArray)
-            {
-                Validity.Assert(typeof(IEnumerable).IsAssignableFrom(expectedCLRType));
-                object obj = primitiveMarshaler.UnMarshal(dsObject, context, dsi, elementType);
-                collection = new ArrayList(new object[] { obj });
-            }
-            else //Convert DS Array to CS Collection
+            if (dsObject.IsArray)
             {
                 collection = ToICollection(dsObject, context, dsi, arrayType);
+            }
+            else
+            {
+                // If dsObject is non array pointer but the expectedCLRType is IEnumerable, promote the dsObject to a collection.
+                Validity.Assert(typeof(IEnumerable).IsAssignableFrom(expectedCLRType));
+                var obj = primitiveMarshaler.UnMarshal(dsObject, context, dsi, elementType);
+                collection = new ArrayList(new object[] { obj });
             }
 
             if (expectedCLRType.IsGenericType && !expectedCLRType.IsInterface)
@@ -303,76 +284,13 @@ namespace ProtoFFI
 
             if (expectedCLRType.IsArray || expectedCLRType.IsGenericType)
             {
-                ArrayList list = collection as ArrayList;
+                var list = collection as ArrayList;
                 if (null != list)
                     return list.ToArray(elementType);
             }
 
             return collection;
         }
-
-        private static Type GetElementType(Type expectedCLRType)
-        {
-            var elementType = expectedCLRType.GetElementType();
-            if (elementType == null)
-                elementType = typeof(object);
-            return elementType;
-        }
-
-        #region DS_ARRAY_TO_CS_DICTIONARY
-
-        private object AddToDictionary(ProtoCore.Runtime.Context context,
-            Interpreter dsi,
-            IDictionary csDictionary,
-            IDictionary<StackValue, StackValue> dsDictionary,
-            System.Type keyType, System.Type valueType)
-        {
-            if (csDictionary == null)
-                throw new ArgumentNullException("csDictionary");
-
-            if (dsDictionary == null)
-                throw new ArgumentNullException("dsDictionary");
-
-            foreach (var pair in dsDictionary)
-            {
-                var key = primitiveMarshaler.UnMarshal(pair.Key, context, dsi, keyType);
-                if (key == null || !keyType.IsAssignableFrom(key.GetType()))
-                    continue;
-
-                var value = primitiveMarshaler.UnMarshal(pair.Value, context, dsi, valueType);
-                if (value != null && valueType.IsAssignableFrom(value.GetType()))
-                    csDictionary.Add(key, value);
-                else
-                    csDictionary.Add(key, null);
-            }
-
-            return csDictionary;
-        }
-
-        private object ToIDictionary(StackValue dsObject, ProtoCore.Runtime.Context context, Interpreter dsi, System.Type expectedType)
-        {
-            if (!dsObject.IsArray)
-                return null;
-
-            Type keyType = typeof(object);
-            Type valueType = typeof(object);
-            Type instanceType = expectedType;
-
-            if (expectedType.IsGenericType)
-            {
-                keyType = expectedType.GetGenericArguments().First();
-                valueType = expectedType.GetGenericArguments().Last();
-                instanceType = expectedType.GetGenericTypeDefinition().MakeGenericType(keyType, valueType);
-            }
-
-            var csDict = (IDictionary)Activator.CreateInstance(instanceType);
-            var dsDict = dsi.runtime.RuntimeCore.Heap.ToHeapObject<DSArray>(dsObject).ToDictionary();
-            return AddToDictionary(context, dsi, csDict, dsDict, keyType, valueType);
-        }
-
-        #endregion
-
-        #region CS_ARRAY_TO_DS_ARRAY
 
         private ProtoCore.Type GetApproxDSType(object obj)
         {
@@ -392,42 +310,23 @@ namespace ProtoFFI
                 return dsType;
             }
 
-            //Else return var type
             return CreateType(ProtoCore.PrimitiveType.Var); 
         }
 
-        /// <summary>
-        /// Marshal an object to a StackValue
-        /// </summary>
-        /// <param name="obj"></param>
-        /// <param name="context"></param>
-        /// <param name="dsi"></param>
-        /// <returns></returns>
         protected StackValue MarshalToStackValue(object obj, ProtoCore.Runtime.Context context, Interpreter dsi)
         {
             if (obj is StackValue)
             {
                 return (StackValue)obj;
             }
-            else
-            {
-                ProtoCore.Type dsType = GetApproxDSType(obj);
-                return primitiveMarshaler.Marshal(obj, context, dsi, dsType);
-            }
+
+            return primitiveMarshaler.Marshal(obj, context, dsi, GetApproxDSType(obj));
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="collection"></param>
-        /// <param name="context"></param>
-        /// <param name="dsi"></param>
-        /// <param name="expectedDSType"></param>
-        /// <returns></returns>
         protected StackValue ToDSArray(ICollection collection, ProtoCore.Runtime.Context context, Interpreter dsi, ProtoCore.Type expectedDSType)
         {
-            StackValue[] sv = new StackValue[collection.Count];
-            int index = 0;
+            var sv = new StackValue[collection.Count];
+            var index = 0;
 
             foreach (var item in collection)
             {
@@ -437,8 +336,7 @@ namespace ProtoFFI
 
             try
             {
-                var retVal = dsi.runtime.rmem.Heap.AllocateArray(sv);
-                return retVal;
+                return dsi.runtime.rmem.Heap.AllocateArray(sv);
             }
             catch (RunOutOfMemoryException)
             {
@@ -449,19 +347,16 @@ namespace ProtoFFI
 
         protected StackValue ToDSArray(IEnumerable enumerable, ProtoCore.Runtime.Context context, Interpreter dsi, ProtoCore.Type expectedDSType)
         {
-            List<StackValue> svs = new List<StackValue>();
+            var svs = new List<StackValue>();
 
             foreach (var item in enumerable)
             {
                 svs.Add(MarshalToStackValue(item, context, dsi));
             }
 
-            var heap = dsi.runtime.rmem.Heap;
-
             try
             {
-                var retVal = heap.AllocateArray(svs.ToArray());
-                return retVal;
+                return dsi.runtime.rmem.Heap.AllocateArray(svs.ToArray());
             }
             catch (RunOutOfMemoryException)
             {
@@ -470,44 +365,6 @@ namespace ProtoFFI
             }
         }
 
-        protected StackValue ToDSArray(IDictionary dictionary, ProtoCore.Runtime.Context context, Interpreter dsi, ProtoCore.Type expectedDSType)
-        {
-            var runtimeCore = dsi.runtime.RuntimeCore;
-
-            StackValue svArray;
-            try
-            {
-                svArray = dsi.runtime.rmem.Heap.AllocateArray(new StackValue[] { });
-            }
-            catch (RunOutOfMemoryException)
-            {
-                dsi.runtime.RuntimeCore.RuntimeStatus.LogWarning(ProtoCore.Runtime.WarningID.RunOutOfMemory, Resources.RunOutOfMemory);
-                return StackValue.Null;
-            }
-
-            DSArray array = dsi.runtime.rmem.Heap.ToHeapObject<DSArray>(svArray);
-            foreach (var key in dictionary.Keys)
-            {
-                var value = dictionary[key];
-                StackValue dsKey = MarshalToStackValue(key, context, dsi);
-                StackValue dsValue = MarshalToStackValue(value, context, dsi);
-                array.SetValueForIndex(dsKey, dsValue, dsi.runtime.RuntimeCore);
-            }
-
-            return svArray;
-        }
-
-        #endregion
-
-        #region DS_ARRAY_TO_CS_ARRAY
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="dsObject"></param>
-        /// <param name="context"></param>
-        /// <param name="dsi"></param>
-        /// <returns></returns>
         protected T[] UnMarshal<T>(StackValue dsObject, ProtoCore.Runtime.Context context, Interpreter dsi)
         {
             var result = new List<T>();
@@ -538,14 +395,6 @@ namespace ProtoFFI
             return result.ToArray();
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="dsObject"></param>
-        /// <param name="context"></param>
-        /// <param name="dsi"></param>
-        /// <param name="arrayType"></param>
-        /// <returns></returns>
         private ICollection ToICollection(StackValue dsObject, ProtoCore.Runtime.Context context, Interpreter dsi, System.Type arrayType)
         {
             if (arrayType.IsArray)
@@ -572,7 +421,7 @@ namespace ProtoFFI
             //  use arraylist instead of object[], this allows us to correctly capture 
             //  the type of objects being passed
             //
-            ArrayList arrList = new ArrayList();
+            var arrList = new ArrayList();
             var elementType = arrayType.GetElementType();
             if (elementType == null)
                 elementType = typeof(object);
@@ -585,7 +434,147 @@ namespace ProtoFFI
             return arrList;
 
         }
-        #endregion
+    }
+
+    class DictionaryMarshaler : PrimitiveMarshler
+    {
+        private readonly CLRObjectMarshler primitiveMarshaler;
+
+        public DictionaryMarshaler(CLRObjectMarshler primitiveMarshaler, ProtoCore.Type type)
+            : base(type)
+        {
+            this.primitiveMarshaler = primitiveMarshaler;
+        }
+
+        public override StackValue Marshal(object obj, ProtoCore.Runtime.Context context, Interpreter dsi, ProtoCore.Type type)
+        {
+            List<string> keys = null;
+            List<object> values = null;
+            
+            if (obj is IDictionary)
+            {
+                var dict = (IDictionary) obj;
+                keys = dict.Keys.Cast<string>().ToList();
+                values = dict.Values.Cast<object>().ToList();
+            }
+            else if (obj is Dictionary)
+            {
+                var dict = (Dictionary) obj;
+                keys = dict.Keys.ToList();
+                values = dict.Values.ToList();
+            }
+            // TODO(pboyer) what if keys are not strings?
+            var dsdict = Dictionary.ByKeysValues(keys, values);
+            return MarshalToStackValue(dsdict, context, dsi);
+        }
+
+        public override object UnMarshal(StackValue dsObject, ProtoCore.Runtime.Context context, Interpreter dsi, Type expectedCLRType)
+        {
+            if (expectedCLRType.IsGenericType)
+            {
+                var isGenericDict = expectedCLRType.GetInterfaces()
+                                                   .Where(i => i.IsGenericType)
+                                                   .Select(i => i.GetGenericTypeDefinition())
+                                                   .Contains(typeof(IDictionary<,>));
+
+                if (isGenericDict)
+                {
+                    return ToGenericIDictionary(dsObject, context, dsi, expectedCLRType);
+                }
+            }
+
+            // If the target type is an IDictionary, marshal to that type
+            if (expectedCLRType == typeof(IDictionary))
+            {
+                return ToIDictionary(dsObject, context, dsi, expectedCLRType);
+            }
+
+            // If it's possible to assign a builtin Dictionary to the target type, then all we need to do is provide
+            // the CLR object.
+            if (expectedCLRType.IsAssignableFrom(typeof(DesignScript.Builtin.Dictionary)))
+            {
+                return primitiveMarshaler.GetDictionary(dsObject);
+            }
+
+            return null;
+        }
+
+        internal static bool IsAssignableFromDictionary(Type expectedCLRType)
+        {
+            return expectedCLRType == typeof(IDictionary) ||
+                expectedCLRType.GetInterfaces()
+                    .Where(i => i.IsGenericType)
+                    .Select(i => i.GetGenericTypeDefinition())
+                    .Contains(typeof(IDictionary<,>)) ||
+                expectedCLRType.IsAssignableFrom(typeof(DesignScript.Builtin.Dictionary));
+        }
+
+        private object ToIDictionary(StackValue dsObject, ProtoCore.Runtime.Context context, Interpreter dsi, System.Type expectedType)
+        {
+            var targetDict = Activator.CreateInstance(typeof(Dictionary<object, object>)) as IDictionary;
+
+            var d = primitiveMarshaler.GetDictionary(dsObject);
+            foreach (var key in d.Keys)
+            {
+                targetDict[key] = d.ValueAtKey(key);
+            }
+
+            return targetDict;
+        }
+
+        private object ToGenericIDictionary(StackValue dsObject, ProtoCore.Runtime.Context context, Interpreter dsi, System.Type expectedType) {
+            var keyType = expectedType.GetGenericArguments().First();
+            var valueType = expectedType.GetGenericArguments().Last();
+            var instanceType = expectedType.GetGenericTypeDefinition().MakeGenericType(keyType, valueType);
+
+            var targetDict = Activator.CreateInstance(instanceType) as IDictionary;
+            var d = primitiveMarshaler.GetDictionary(dsObject);
+            foreach (var key in d.Keys)
+            {
+                try
+                {
+                    targetDict[key] = Convert.ChangeType(d.ValueAtKey(key), valueType);
+                }
+                catch (Exception e)
+                {
+                    dsi.LogWarning(WarningID.TypeMismatch, e.Message);
+                }
+                
+            }
+
+            return targetDict;
+        }
+
+        private ProtoCore.Type GetApproxDSType(object obj)
+        {
+            if (null == obj)
+                return CreateType(ProtoCore.PrimitiveType.Null);
+
+            Type type = obj.GetType();
+            if (type == typeof(string))
+                return StringMarshaler.kType;
+            ProtoCore.Type dsType;
+            if (CLRModuleType.TryGetImportedDSType(type, out dsType))
+                return dsType;
+            if (typeof(IEnumerable).IsAssignableFrom(type)) //It's a collection
+            {
+                dsType = CreateType(ProtoCore.PrimitiveType.Var);
+                dsType.rank = ProtoCore.DSASM.Constants.kArbitraryRank;
+                return dsType;
+            }
+
+            return CreateType(ProtoCore.PrimitiveType.Var);
+        }
+
+        protected StackValue MarshalToStackValue(object obj, ProtoCore.Runtime.Context context, Interpreter dsi)
+        {
+            if (obj is StackValue)
+            {
+                return (StackValue)obj;
+            }
+
+            return primitiveMarshaler.Marshal(obj, context, dsi, GetApproxDSType(obj));
+        }
     }
 
     /// <summary>
@@ -695,11 +684,10 @@ namespace ProtoFFI
                 return StackValue.Null;
 
             //2. Get appropriate marshaler for the expectedDSType and objType
-            Type objType = obj.GetType();
-            FFIObjectMarshler marshaler = GetMarshalerForDsType(expectedDSType, objType);
+            var marshaler = GetMarshalerForDsType(expectedDSType, obj.GetType());
 
             //3. Got a marshaler, now marshal it.
-            if (null != marshaler)
+            if (marshaler != null)
                 return marshaler.Marshal(obj, context, dsi, expectedDSType);
 
             //4. Didn't get the marshaler, could be a pointer or var type, check from map
@@ -731,7 +719,7 @@ namespace ProtoFFI
                 return null;
 
             //Get the correct marshaler to unmarshal
-            FFIObjectMarshler marshaler = GetMarshalerForCLRType(expectedCLRType, dsObject.optype);
+            var marshaler = GetMarshalerForCLRType(expectedCLRType, dsObject);
             if (null != marshaler)
                 return marshaler.UnMarshal(dsObject, context, dsi, expectedCLRType);
 
@@ -740,16 +728,17 @@ namespace ProtoFFI
                 string.Format("Operand type {0} not supported for marshalling", 
                 dsObject.optype));
 
-            //Search in the DSObjectMap, for corresponding clrObject.
-            object clrObject = null;
-            if (DSObjectMap.TryGetValue(dsObject, out clrObject))
-                return clrObject;
-
             if (dsObject.IsFunctionPointer)
             {
                 return dsObject;
             }
 
+            //Search in the DSObjectMap, for corresponding clrObject.
+            object clrObject = null;
+            if (DSObjectMap.TryGetValue(dsObject, out clrObject))
+                return clrObject;
+
+            
             return CreateCLRObject(dsObject, context, dsi, expectedCLRType);
         }
 
@@ -766,8 +755,10 @@ namespace ProtoFFI
         /// <param name="dsType">DS Object type, that needs to be marshaled.
         /// </param>
         /// <returns>FFIObjectMarshler or null</returns>
-        private FFIObjectMarshler GetMarshalerForCLRType(Type clrType, AddressType dsType)
+        private FFIObjectMarshler GetMarshalerForCLRType(Type clrType, StackValue value)
         {
+            var dsType = value.optype;
+
             FFIObjectMarshler marshaler = null;
             //Expected CLR type is object, get marshaled clrType from dsType
             Type expectedType = clrType;
@@ -776,22 +767,29 @@ namespace ProtoFFI
             else if (clrType.IsGenericType && clrType.GetGenericTypeDefinition() == typeof(Nullable<>))
                 expectedType = Nullable.GetUnderlyingType(clrType);
 
-            //If Ds Type is array pointer, it needs to be marshaled as collection.
-            bool collection = (dsType == AddressType.ArrayPointer);
+            //If DS Type is array, it needs to be marshaled as collection.
+            bool isArray = dsType == AddressType.ArrayPointer;
 
             //Expected CLR type is not string, but is derived from IEnumerable
-            if (typeof(string) != expectedType && typeof(IEnumerable).IsAssignableFrom(expectedType))
-                collection = true;
+            isArray = isArray || (typeof(string) != expectedType && typeof(IEnumerable).IsAssignableFrom(expectedType));
 
-            // If the expected type is collection, always marshal to collection
-            if (collection)
+            // If the source is a Dictionary and the target allows assignment of a Dictionary
+            if (IsDictionary(value) && DictionaryMarshaler.IsAssignableFromDictionary(expectedType))
             {
-                ProtoCore.Type type = PrimitiveMarshler.CreateType(ProtoCore.PrimitiveType.Var);
+                var type = PrimitiveMarshler.CreateType(ProtoCore.PrimitiveType.Var);
                 type.rank = ProtoCore.DSASM.Constants.kArbitraryRank;
-                return new CollectionMarshaler(this, type);
+                return new DictionaryMarshaler(this, type);
             }
+
+            if (isArray)
+            {
+                var type = PrimitiveMarshler.CreateType(ProtoCore.PrimitiveType.Var);
+                type.rank = ProtoCore.DSASM.Constants.kArbitraryRank;
+                return new ArrayMarshaler(this, type);
+            }
+
             // If the input ds object is pointer type then it can't be marshaled as primitive.
-            else if (dsType == AddressType.Pointer)
+            if (dsType == AddressType.Pointer)
             {
                 return null;
             }
@@ -815,26 +813,50 @@ namespace ProtoFFI
                 return null;
 
             FFIObjectMarshler marshaler = null;
-            bool marshalAsCollection = false;
+
+            if (DictionaryMarshaler.IsAssignableFromDictionary(objType))
+            {
+                return new DictionaryMarshaler(this, dsType);
+            }
+
+            bool marshalAsArray = false;
+
             //0. String needs special handling becuase it's derived from IEnumerable.
             if (typeof(string) == objType)
-                marshalAsCollection = false;
+            {
+                marshalAsArray = false;
+            }  
             //1. If expectedDSType is fixed rank collection, objType must be a collection of same rank
             else if (dsType.rank > 0 && typeof(IEnumerable).IsAssignableFrom(objType))
-                marshalAsCollection = true;
+            {
+                marshalAsArray = true;
+            }
             //2. If dsType is arbitrary rank collection, marshal based on objType
             //3. If dsType is var, marshal based on objType.
             else if ((dsType.rank == ProtoCore.DSASM.Constants.kArbitraryRank ||
                 dsType.UID == (int)ProtoCore.PrimitiveType.Var) && typeof(IEnumerable).IsAssignableFrom(objType))
-                marshalAsCollection = true;
+            {
+                marshalAsArray = true;
+            }
 
             //4. Else get primitive marshaler for given objType
-            if (marshalAsCollection)
-                marshaler = new CollectionMarshaler(this, dsType);
+            if (marshalAsArray)
+                marshaler = new ArrayMarshaler(this, dsType);
             else if(dsType.UID != (int)ProtoCore.PrimitiveType.Pointer) //Not exported as pointer type
                 mPrimitiveMarshalers.TryGetValue(objType, out marshaler);
 
             return marshaler;
+        }
+
+        internal bool IsDictionary(StackValue value)
+        {
+            object obj;
+            return value.IsPointer && DSObjectMap.TryGetValue(value, out obj) && obj is DesignScript.Builtin.Dictionary;
+        }
+
+        internal DesignScript.Builtin.Dictionary GetDictionary(StackValue value)
+        {
+            return DSObjectMap[value] as DesignScript.Builtin.Dictionary;
         }
 
         /// <summary>

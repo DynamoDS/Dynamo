@@ -452,6 +452,7 @@ namespace Dynamo.Tests
         {
             libraries.Add("VMDataBridge.dll");
             libraries.Add("ProtoGeometry.dll");
+            libraries.Add("Builtin.dll");
             libraries.Add("DSCoreNodes.dll");
             base.GetLibrariesToPreload(libraries);
         }
@@ -609,7 +610,8 @@ namespace Dynamo.Tests
                 "MultipleIF",
                 "packageTest",
                 "reduce-example",
-                "TestFrozen"
+                "TestFrozen",
+                "TestImperativeInCBN"
             };
 
         private void DoWorkspaceOpenAndCompare(string filePath, string dirName,

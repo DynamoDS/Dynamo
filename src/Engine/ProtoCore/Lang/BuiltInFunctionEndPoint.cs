@@ -524,17 +524,6 @@ namespace ProtoCore.Lang
                         interpreter, 
                         stackFrame);
                     break;
-                case BuiltInMethods.MethodID.TryGetValueFromNestedDictionaries:
-                    ret = StackValue.Null;
-
-                    if (formalParameters[0].IsArray)
-                    {
-                        StackValue value;
-                        var parameterArray = runtimeCore.Heap.ToHeapObject<DSArray>(formalParameters[0]);
-                        if (parameterArray.TryGetValueFromNestedDictionaries(formalParameters[1], out value, runtimeCore))
-                            ret = value;
-                    }
-                    break;
                 case BuiltInMethods.MethodID.NodeAstFailed:
                     var nodeFullName = formalParameters[0];
                     var fullName = StringUtils.GetStringValue(nodeFullName, runtimeCore);

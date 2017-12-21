@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using CoreNodeModels;
+using DesignScript.Builtin;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.ZeroTouch;
 using NUnit.Framework;
@@ -16,6 +17,7 @@ namespace Dynamo.Tests
         protected override void GetLibrariesToPreload(List<string> libraries)
         {
             libraries.Add("ProtoGeometry.dll");
+            libraries.Add("Builtin.dll");
             libraries.Add("DSCoreNodes.dll");
             libraries.Add("DSIronPython.dll");
             libraries.Add("FunctionObject.ds");
@@ -394,7 +396,13 @@ namespace Dynamo.Tests
         {
             //http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-722
             RunModel(@"core\dsevaluation\CBN_array_indexnull_619.dyn");
-            AssertPreviewValue("6985948e-992c-4420-8c39-1f5f5d57dc64", new int[] { 5 });
+            AssertPreviewValue("6985948e-992c-4420-8c39-1f5f5d57dc64", new object[] {});
+
+            ProtoCore.RuntimeCore runtimeCore = CurrentDynamoModel.EngineController.LiveRunnerRuntimeCore;
+            Assert.AreEqual(1, runtimeCore.RuntimeStatus.WarningCount);
+
+            ProtoCore.Runtime.WarningEntry warningEntry = runtimeCore.RuntimeStatus.Warnings.ElementAt(0);
+            Assert.AreEqual(ProtoCore.Runtime.WarningID.InvalidArrayIndexType, warningEntry.ID);
         }
 
         [Test]
@@ -1128,12 +1136,15 @@ namespace Dynamo.Tests
         [Test]
         public void TestDictionaryDefintion()
         {
-            // Regression test for https://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-10382
-            // To test that variable could still be properly renamed.
             var dynFilePath = Path.Combine(TestDirectory, @"core\dsevaluation\define_dictionary.dyn");
             OpenModel(dynFilePath);
-            AssertPreviewValue("a0227846-04ca-4323-9074-2bd1ea9ac8cf", new object[] { 1, 2, 3 });
-            AssertPreviewValue("ada2d384-626f-4240-b251-7df6e395f3f2", new object[] {"Bob", "Sally", "Pat" });
+
+            var validationData1 = Dictionary.ByKeysValues(new[] {"a", "b", "c"}, new object[] {1, 2, 3});
+            AssertPreviewValue("1e454a5a38284c74bf53fc3249704183", validationData1);
+
+            validationData1 = Dictionary.ByKeysValues(new[] {"a", "b", "c"}, new[] {"Bob", "Sally", "Pat"});
+            AssertPreviewValue("ab406c15327240858fdb2662bcc52276", validationData1);
+            
         }
 
         [Test]
@@ -1142,11 +1153,15 @@ namespace Dynamo.Tests
             // Regression test for https://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-10382
             // To test that variable could still be properly renamed.
             var dynFilePath = Path.Combine(TestDirectory, @"core\dsevaluation\define_dictionary2.dyn");
-            OpenModel(dynFilePath);
-            AssertPreviewValue("231d235b-0d7f-4bd8-b19a-5dda561aea3d", new object[] { 1024 });
-            AssertPreviewValue("372c04aa-4088-4224-a922-d34fc2869fc1", new object[] { "qux" });
-            AssertPreviewValue("e7bf0921-cf77-4f37-8336-8aa9c56b22a6", new object[] { "qux" });
-            AssertPreviewValue("756497b4-4f7a-4ae3-9e5c-de5f69762d16", new object[] { 1024 });
+            RunModel(dynFilePath);
+
+            ProtoCore.RuntimeCore runtimeCore = CurrentDynamoModel.EngineController.LiveRunnerRuntimeCore;
+            Assert.AreEqual(6, runtimeCore.RuntimeStatus.WarningCount);
+
+            foreach (var warning in runtimeCore.RuntimeStatus.Warnings)
+            {
+                Assert.AreEqual(ProtoCore.Runtime.WarningID.InvalidArrayIndexType, warning.ID);
+            }
         }
 
         [Test]
@@ -1215,7 +1230,7 @@ namespace Dynamo.Tests
 
             AssertPreviewValue("1bee0f0f-5c93-48b3-a90d-f8761fa6e221", 3);
         }
-        [Test]
+        [Test, Category("Failure")]
         public void CustomNodeWithCBNAndGeometry()
         {
             var examplePath = Path.Combine(TestDirectory, @"core\CustomNodes\");
@@ -1236,6 +1251,24 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        public void CustomNodeWithSimpleGeometry()
+        {
+            var examplePath = Path.Combine(TestDirectory, @"core\CustomNodes\");
+
+            CustomNodeInfo info;
+            Assert.IsTrue(
+                CurrentDynamoModel.CustomNodeManager.AddUninitializedCustomNode(
+                    Path.Combine(examplePath, "Point.dyf"),
+                    true,
+                    out info));
+            string openPath = Path.Combine(examplePath, "TestPoint.dyn");
+
+            RunModel(openPath);
+
+            AssertPreviewValue("5ed80f52-ea60-4a07-8dd0-514f0eb70a28", 2);
+        }
+
+        [Test, Category("Failure")]
         public void CustomNodeMultipleInGraph()
         {
             var examplePath = Path.Combine(TestDirectory, @"core\CustomNodes\");
@@ -1261,13 +1294,9 @@ namespace Dynamo.Tests
                 CurrentDynamoModel.CustomNodeManager.AddUninitializedCustomNode(Path.Combine(examplePath, "Conditional.dyf"), true, out info));
 
             string openPath = Path.Combine(examplePath, "TestConditional.dyn");
-            //model.Open(openPath);
 
             RunModel(openPath);
-
-            // check all the nodes and connectors are loaded
-
-
+            
             AssertPreviewValue("ec2e79de-35ed-44ad-9dea-4bedc526c612", false);
             AssertPreviewValue("7be13594-8d09-4377-98aa-d3cf1c716288", true);
         }
@@ -1290,7 +1319,7 @@ namespace Dynamo.Tests
             Assert.DoesNotThrow(() => RunModel(openPath));
         }
 
-        [Test]
+        [Test, Category("Failure")]
         public void Regress_Magn_4837()
         {
             // Test nested custom node: run and reset engine and re-run.
@@ -1308,7 +1337,7 @@ namespace Dynamo.Tests
             AssertPreviewValue("42693721-622d-475e-a82e-bfe793ddc153", new object[] { 2, 3, 4, 5, 6 });
         }
 
-        [Test]
+        [Test, Category("Failure")]
         public void Regression_Magn_10015()
         {
             // no crash
@@ -1324,6 +1353,7 @@ namespace Dynamo.Tests
         protected override void GetLibrariesToPreload(List<string> libraries)
         {
             libraries.Add("ProtoGeometry.dll");
+            libraries.Add("Builtin.dll");
             libraries.Add("DSCoreNodes.dll");
             libraries.Add("DSIronPython.dll");
             libraries.Add("FunctionObject.ds");

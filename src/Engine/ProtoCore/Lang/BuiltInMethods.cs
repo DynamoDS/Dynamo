@@ -66,7 +66,6 @@ namespace ProtoCore.Lang
             RemoveKey,
             ContainsKey,
             Evaluate,
-            TryGetValueFromNestedDictionaries,
             NodeAstFailed,
             GC,
         }
@@ -127,7 +126,6 @@ namespace ProtoCore.Lang
             "__RemoveKey",                // kRemoveKey
             "__ContainsKey",              // kContainsKey
             "Evaluate",                 // kEvaluateFunctionPointer
-            "__TryGetValueFromNestedDictionaries",// kTryGetValueFromNestedDictionaries
             Constants.kNodeAstFailed,   // kNodeAstFailed
             "__GC",                     // kGC
         };
@@ -878,18 +876,6 @@ namespace ProtoCore.Lang
                         new KeyValuePair<string, Type>("unpackParams", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Bool, 0))
                     },
                     ID = MethodID.Evaluate,
-                    MethodAttributes = new MethodAttributes(true),
-                },
-
-                new BuiltInMethod
-                {
-                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, Constants.kArbitraryRank),
-                    Parameters = new List<KeyValuePair<string,Type>>
-                    {
-                        new KeyValuePair<string, Type>("list", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var)),
-                        new KeyValuePair<string, Type>("key", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var))
-                    },
-                    ID = MethodID.TryGetValueFromNestedDictionaries,
                     MethodAttributes = new MethodAttributes(true),
                 },
 

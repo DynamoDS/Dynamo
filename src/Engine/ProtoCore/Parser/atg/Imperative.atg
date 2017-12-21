@@ -320,11 +320,15 @@ Imperative_assignstmt<out ProtoCore.AST.ImperativeAST.ImperativeNode node>
                             ProtoCore.AST.ImperativeAST.BinaryExpressionNode bNode = new ProtoCore.AST.ImperativeAST.BinaryExpressionNode();
                             ProtoCore.AST.ImperativeAST.ImperativeNode lhsNode = null; 
                             NodeUtils.SetNodeLocation(bNode, la);
+							isLeft = true;
                         .)
     (   
         Imperative_decoratedIdentifier<out lhsNode>
     )
-                        (. node = lhsNode; .)
+                        (. 
+							isLeft = false;
+							node = lhsNode; 
+						.)
 
     (
         endline
@@ -520,16 +524,26 @@ Imperative_IdentifierList<out ProtoCore.AST.ImperativeAST.ImperativeNode node>
                                         (. if (isInClass && IsIdentList())
                                           disableKwCheck = true;
                                         .)
-    Imperative_NameReference<out node>  (. disableKwCheck = false; .)
+    Imperative_NameReference<ref node>  (. disableKwCheck = false; .)
     {
-        '.'                             (. ProtoCore.AST.ImperativeAST.ImperativeNode rnode = null; .)              
-        Imperative_NameReference<out rnode>
+        '.'                             (. ProtoCore.AST.ImperativeAST.ImperativeNode rnode = node; .)              
+        Imperative_NameReference<ref rnode>
                                         (.
-                                            ProtoCore.AST.ImperativeAST.IdentifierListNode bnode = new ProtoCore.AST.ImperativeAST.IdentifierListNode(); 
-                                            bnode.LeftNode = node; 
-                                            bnode.Optr = Operator.dot; 
-                                            bnode.RightNode = rnode; 
-                                            NodeUtils.SetNodeLocation(bnode, bnode.LeftNode, bnode.RightNode);
+                                            ProtoCore.AST.ImperativeAST.IdentifierListNode inode = rnode as ProtoCore.AST.ImperativeAST.IdentifierListNode;
+											ProtoCore.AST.ImperativeAST.IdentifierListNode bnode;
+											if (inode != null && inode.LeftNode.Name == Node.BuiltinGetValueAtIndexTypeName)
+											{
+												bnode = inode;
+											}
+											else
+											{
+													bnode = new ProtoCore.AST.ImperativeAST.IdentifierListNode();
+													bnode.LeftNode = node;
+													bnode.Optr = Operator.dot;
+													bnode.RightNode = rnode;
+													NodeUtils.SetNodeLocation(bnode, bnode.LeftNode, bnode.RightNode);
+											}
+
                                             if (bnode.RightNode is ProtoCore.AST.ImperativeAST.FunctionCallNode)
                                             {
                                                 // We want the entire "Point.Project()" to be highlighted, 
@@ -842,11 +856,12 @@ Imperative_Ident<out ProtoCore.AST.ImperativeAST.ImperativeNode node>
                 .)
 .
 
-Imperative_NameReference<out ProtoCore.AST.ImperativeAST.ImperativeNode node> 
+Imperative_NameReference<ref ProtoCore.AST.ImperativeAST.ImperativeNode node> 
 = 
                                     (.
                                         ProtoCore.AST.ImperativeAST.ArrayNameNode nameNode = null;
                                         ProtoCore.AST.ImperativeAST.GroupExpressionNode groupExprNode = null;
+										ProtoCore.AST.ImperativeAST.ArrayNameNode qualifierNode = node as AST.ImperativeAST.ArrayNameNode;
                                     .)
     (
         (
@@ -882,6 +897,14 @@ Imperative_NameReference<out ProtoCore.AST.ImperativeAST.ImperativeNode node>
                                     .)
         )
         |
+		IF(IsDictionaryExpression())
+        (
+            Imperative_DictionaryExpression<out node>
+                                    (.
+                                        nameNode = node as ProtoCore.AST.ImperativeAST.ArrayNameNode;
+                                    .)
+        )
+        |
         (
             Imperative_ExprList<out node>
                                     (.
@@ -891,31 +914,70 @@ Imperative_NameReference<out ProtoCore.AST.ImperativeAST.ImperativeNode node>
     )
 
     [
-                                    (.
-                                        ProtoCore.AST.ImperativeAST.ArrayNode array = new ProtoCore.AST.ImperativeAST.ArrayNode();
-                                    .)
+		(. ProtoCore.AST.ImperativeAST.ArrayNode array = null; .)
         openbracket                  
         [                        
+		                            (. 
+                                        bool tmpIsLeft = isLeft; 
+                                        isLeft = false;
+                                    .)
             Imperative_expr<out node>   
                                     (. 
-                                        array.Expr = node; 
-                                        array.Type = nameNode.ArrayDimensions;
-                                        NodeUtils.SetNodeLocation(array, t);
-                                        nameNode.ArrayDimensions = array; 
+										if (tmpIsLeft) {
+											// if "foo[bar]" is on the lhs, it is interpreted as an array initialization expression
+											array = new ProtoCore.AST.ImperativeAST.ArrayNode
+											{
+												Expr = node,
+												Type = nameNode.ArrayDimensions
+											};
+
+											NodeUtils.SetNodeLocation(array, t);
+											nameNode.ArrayDimensions = array;
+										} else {
+											if (qualifierNode != null)
+											{
+												ProtoCore.AST.ImperativeAST.IdentifierListNode inode = new ProtoCore.AST.ImperativeAST.IdentifierListNode();
+												inode.LeftNode = qualifierNode;
+												inode.Optr = Operator.dot;
+												inode.RightNode = nameNode;
+												NodeUtils.SetNodeLocation(inode, inode.LeftNode, inode.RightNode);
+												nameNode = inode;
+											}
+
+											// if "foo[bar]" is on the rhs, it is interpreted as an lookup in an array or dictionary
+											nameNode = ProtoCore.AST.ImperativeAST.AstFactory.BuildIndexExpression(nameNode, node) as ProtoCore.AST.ImperativeAST.ArrayNameNode;
+										}
+
+										isLeft = tmpIsLeft; 
                                     .)
         ]
         closebracket 
         { 
+		                        (. 
+                                    bool tmpIsLeft = isLeft; 
+                                    isLeft = false;
+                                .) 
             openbracket
             [
-                Imperative_expr<out node>  
-                                (.
-                                    ProtoCore.AST.ImperativeAST.ArrayNode array2 = new ProtoCore.AST.ImperativeAST.ArrayNode();
-                                    array2.Expr = node; 
-                                    array2.Type = null;
-                                    NodeUtils.SetNodeLocation(array2, t);
-                                    array.Type = array2;
-                                    array = array2;
+                Imperative_expr<out node>
+
+				                (. 
+									if (tmpIsLeft) {
+										var array2 = new ProtoCore.AST.ImperativeAST.ArrayNode
+										{
+											Expr = node,
+											Type = null
+										};
+
+										NodeUtils.SetNodeLocation(array2, t);
+										array.Type = array2;
+										array = array2;
+									} else {
+										nameNode = ProtoCore.AST.ImperativeAST.AstFactory.BuildIndexExpression(nameNode, node) as ProtoCore.AST.ImperativeAST.ArrayNameNode;
+									}
+
+									// TODO(pboyer) this looks incorrect, probably wrong in associative code, too
+									isLeft = tmpIsLeft; 
                                 .)
             ]
             closebracket
@@ -964,6 +1026,48 @@ Imperative_NameReference<out ProtoCore.AST.ImperativeAST.ImperativeNode node>
                                         node = nameNode;
                                     }
                                 .)
+.
+
+Imperative_DictionaryExpression<out ProtoCore.AST.ImperativeAST.ImperativeNode node>
+=
+'{'                                     (. var dictBuilder = new ProtoCore.AST.ImperativeAST.DictionaryExpressionBuilder(); .)
+                                        (. dictBuilder.SetNodeStartLocation(t); .)
+    [
+		(
+			textstring	(. var str = new ProtoCore.AST.ImperativeAST.StringNode {Value = t.val.Trim('"')}; .)  
+						(. dictBuilder.AddKey(str); .) 
+		) 
+		|
+		(
+			ident		(. var ident = new ProtoCore.AST.ImperativeAST.IdentifierNode(t.val); .)
+						(. NodeUtils.SetNodeLocation(ident, t); .)
+						(. dictBuilder.AddKey(ident); .)
+		)
+	]
+	':'                     
+    Imperative_expr<out node>            (. dictBuilder.AddValue(node); .)
+    {
+        ','
+		[
+			(
+				textstring	(. var str = new ProtoCore.AST.ImperativeAST.StringNode { Value = t.val.Trim('"') }; .)
+							(. dictBuilder.AddKey(str); .)  
+			)
+			|
+			(
+				ident		(. var ident = new ProtoCore.AST.ImperativeAST.IdentifierNode(t.val); .)
+							(. NodeUtils.SetNodeLocation(ident, t); .)
+							(. dictBuilder.AddKey(ident); .)
+			) 
+		]
+		':'                     
+		Imperative_expr<out node>       (. dictBuilder.SetNodeEndLocation(t); .)
+										(. dictBuilder.AddValue(node); .)
+    }
+                                        
+    
+'}'                                     (. dictBuilder.SetNodeEndLocation(t); .)
+                                        (. node = dictBuilder.ToFunctionCall(); .)
 .
 
 Imperative_ExprList<out ProtoCore.AST.ImperativeAST.ImperativeNode node>

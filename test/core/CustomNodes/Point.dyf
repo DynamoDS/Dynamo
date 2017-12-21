@@ -1,0 +1,29 @@
+<Workspace Version="1.3.0.875" X="0" Y="0" zoom="1" ScaleFactor="1" Name="Point" Description="" ID="cb0bf3fc-e511-402e-a12e-775b8d18bf77" Category="test">
+  <NamespaceResolutionMap />
+  <Elements>
+    <Dynamo.Graph.Nodes.ZeroTouch.DSFunction guid="2882826f-d446-479f-b46b-2fdc281e4be3" type="Dynamo.Graph.Nodes.ZeroTouch.DSFunction" nickname="Point.ByCoordinates" x="330" y="0" isVisible="true" isUpstreamVisible="true" lacing="Shortest" isSelectedInput="False" IsFrozen="false" isPinned="false" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double,double">
+      <PortInfo index="0" default="True" />
+      <PortInfo index="1" default="True" />
+      <PortInfo index="2" default="True" />
+    </Dynamo.Graph.Nodes.ZeroTouch.DSFunction>
+    <Dynamo.Graph.Nodes.CustomNodes.Symbol guid="deddda9f-8694-4e8c-8761-1dce34bd7a75" type="Dynamo.Graph.Nodes.CustomNodes.Symbol" nickname="Input" x="0" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="True" IsFrozen="false" isPinned="false">
+      <Symbol value="x : double" />
+    </Dynamo.Graph.Nodes.CustomNodes.Symbol>
+    <Dynamo.Graph.Nodes.CustomNodes.Output guid="19a78f6a-cfa4-47dd-9692-7121ec7044b3" type="Dynamo.Graph.Nodes.CustomNodes.Output" nickname="Output" x="563" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false">
+      <PortInfo index="0" default="False" />
+      <Symbol value="out" />
+    </Dynamo.Graph.Nodes.CustomNodes.Output>
+  </Elements>
+  <Connectors>
+    <Dynamo.Graph.Connectors.ConnectorModel start="2882826f-d446-479f-b46b-2fdc281e4be3" start_index="0" end="19a78f6a-cfa4-47dd-9692-7121ec7044b3" end_index="0" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="deddda9f-8694-4e8c-8761-1dce34bd7a75" start_index="0" end="2882826f-d446-479f-b46b-2fdc281e4be3" end_index="0" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="deddda9f-8694-4e8c-8761-1dce34bd7a75" start_index="0" end="2882826f-d446-479f-b46b-2fdc281e4be3" end_index="1" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="deddda9f-8694-4e8c-8761-1dce34bd7a75" start_index="0" end="2882826f-d446-479f-b46b-2fdc281e4be3" end_index="2" portType="0" />
+  </Connectors>
+  <Notes />
+  <Annotations />
+  <Presets />
+  <Cameras>
+    <Camera Name="Background Preview" eyeX="-17" eyeY="24" eyeZ="50" lookX="12" lookY="-13" lookZ="-58" upX="0" upY="1" upZ="0" />
+  </Cameras>
+</Workspace>

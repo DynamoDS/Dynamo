@@ -556,11 +556,11 @@ namespace Dynamo.Graph.Nodes
                 if (funcNode == null)
                     return type;
 
-                string fullyQualitifiedName = CoreUtils.GetIdentifierExceptMethodName(identListNode);
-                if (string.IsNullOrEmpty(fullyQualitifiedName))
+                string fullyQualifiedName = CoreUtils.GetIdentifierExceptMethodName(identListNode);
+                if (string.IsNullOrEmpty(fullyQualifiedName))
                     return type;
 
-                var classIndex = core.ClassTable.IndexOf(fullyQualitifiedName);
+                var classIndex = core.ClassTable.IndexOf(fullyQualifiedName);
                 if (classIndex == ProtoCore.DSASM.Constants.kInvalidIndex)
                     return type;
 
