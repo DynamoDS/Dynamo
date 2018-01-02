@@ -734,7 +734,7 @@ namespace ProtoCore.Lang
             IContextDataProvider provider = runtimeCore.DSExecutable.ContextDataMngr.GetDataProvider(appname);
             ProtoCore.Utils.Validity.Assert(null != provider, string.Format("Couldn't locate data provider for {0}", appname));
 
-            CLRObjectMarshler marshaler = CLRObjectMarshler.GetInstance(runtimeCore);
+            CLRObjectMarshaler marshaler = CLRObjectMarshaler.GetInstance(runtimeCore);
 
             Dictionary<string, Object> parameters = new Dictionary<string, object>();
             if (!svConnectionParameters.IsArray)
@@ -765,7 +765,7 @@ namespace ProtoCore.Lang
             {
                 objects.Add(item.Data);
             }
-            ProtoCore.Type type = PrimitiveMarshler.CreateType(ProtoCore.PrimitiveType.Var);
+            ProtoCore.Type type = PrimitiveMarshaler.CreateType(ProtoCore.PrimitiveType.Var);
             Object obj = objects;
             if (objects.Count == 1)
                 obj = objects[0];

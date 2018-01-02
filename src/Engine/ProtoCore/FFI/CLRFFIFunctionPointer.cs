@@ -324,7 +324,7 @@ namespace ProtoFFI
             StackValue dsRetValue = StackValue.Null;
             try
             {
-                FFIObjectMarshler marshaller = Module.GetMarshaller(dsi.runtime.RuntimeCore);
+                FFIObjectMarshaler marshaller = Module.GetMarshaller(dsi.runtime.RuntimeCore);
                 ret = InvokeFunctionPointer(thisObject, parameters);
                 //Reduce to singleton if the attribute is specified.
                 ret = ReflectionInfo.ReduceReturnedCollectionToSingleton(ret);
@@ -452,7 +452,7 @@ namespace ProtoFFI
             List<Object> parameters = new List<object>();
             List<StackValue> s = dsi.runtime.rmem.Stack;
             Object thisObject = null;
-            FFIObjectMarshler marshaller = Module.GetMarshaller(dsi.runtime.RuntimeCore);
+            FFIObjectMarshaler marshaller = Module.GetMarshaller(dsi.runtime.RuntimeCore);
             if (!ReflectionInfo.IsStatic)
             {
                 try
@@ -620,7 +620,7 @@ namespace ProtoFFI
         public override object Execute(ProtoCore.Runtime.Context c, Interpreter dsi)
         {
             List<StackValue> s = dsi.runtime.rmem.Stack;
-            FFIObjectMarshler marshaller = Module.GetMarshaller(dsi.runtime.RuntimeCore);
+            FFIObjectMarshaler marshaller = Module.GetMarshaller(dsi.runtime.RuntimeCore);
 
             var thisObject = marshaller.UnMarshal(s.Last(), c, dsi, ReflectionInfo.DeclaringType);
             //Notify marshler for dispose.
