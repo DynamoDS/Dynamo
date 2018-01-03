@@ -1,10 +1,102 @@
-<Workspace Version="0.8.1.980" X="0" Y="0" zoom="1" Name="Home" RunType="Automatic" RunPeriod="100" HasRunWithoutCrash="True">
-  <NamespaceResolutionMap />
-  <Elements>
-    <Dynamo.Nodes.CodeBlockNodeModel guid="0609f582-a861-40b8-bb9f-c87842a7c690" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="269" y="267" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="a = 3;" ShouldFocus="false" />
-    <Dynamo.Nodes.CodeBlockNodeModel guid="98522f13-379e-4db5-876c-906e86fb10da" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="269" y="144" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="a = 1;&#xA;a = 2;" ShouldFocus="false" />
-  </Elements>
-  <Connectors />
-  <Notes />
-  <Annotations />
-</Workspace>
+{
+  "Uuid": "368fceaf-59f9-4c3a-8344-86551c9ec444",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "Home",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "a = 2;",
+      "Id": "0609f582a86140b8bb9fc87842a7c690",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "fa6e3444f55a4edebd6fac716eb7cb65",
+          "Name": "",
+          "Description": "a",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "a = 1;",
+      "Id": "98522f13379e4db5876c906e86fb10da",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "334356a810234e558f90b7f14a242766",
+          "Name": "",
+          "Description": "a",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    }
+  ],
+  "Connectors": [],
+  "Dependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.0.0.2121",
+      "RunType": "Automatic",
+      "RunPeriod": "100"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "0609f582a86140b8bb9fc87842a7c690",
+        "IsUpstreamVisible": true,
+        "Excluded": false,
+        "X": 269.0,
+        "Y": 267.0
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "98522f13379e4db5876c906e86fb10da",
+        "IsUpstreamVisible": true,
+        "Excluded": false,
+        "X": 269.0,
+        "Y": 144.0
+      }
+    ],
+    "Notes": [],
+    "Annotations": [],
+    "X": 0.0,
+    "Y": 0.0,
+    "Zoom": 1.0
+  }
+}

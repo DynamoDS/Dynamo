@@ -10,6 +10,7 @@ namespace Dynamo.Tests
     {
         protected override void GetLibrariesToPreload(List<string> libraries)
         {
+            libraries.Add("Builtin.dll");
             libraries.Add("DSCoreNodes.dll");
             base.GetLibrariesToPreload(libraries);
         }
@@ -26,5 +27,6 @@ namespace Dynamo.Tests
             ProtoCore.Runtime.WarningEntry warningEntry = runtimeCore.RuntimeStatus.Warnings.ElementAt(0);
             Assert.AreEqual(ProtoCore.Runtime.WarningID.Default, warningEntry.ID);
         }
+        
     }
 }

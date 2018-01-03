@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Xml;
 using CoreNodeModels.Properties;
 using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
 using Dynamo.Logging;
+using Newtonsoft.Json;
 
 namespace CoreNodeModels
 {
@@ -17,12 +19,14 @@ namespace CoreNodeModels
     /// </summary>
     /// <typeparam name="TSelection">The type which is used to constrain the selection.</typeparam>
     /// <typeparam name="TResult">The type which is returned from the selection or subselection.</typeparam>
+    [DataContract]
     public abstract class SelectionBase<TSelection, TResult> : NodeModel
     {
         private bool canSelect = true;
         private readonly string selectionMessage;
         private List<TResult> selectionResults = new List<TResult>();
         private List<TSelection> selection = new List<TSelection>();
+        private IEnumerable<string> selectionIdentifier = new List<string>();
         private readonly SelectionType selectionType;
         private readonly SelectionObjectType selectionObjectType;
         
@@ -53,6 +57,35 @@ namespace CoreNodeModels
 
                 RaisePropertyChanged("SelectionResults");
                 RaisePropertyChanged("Text");
+            }
+        }
+
+        [JsonProperty("NodeType")]
+        public string NodeType
+        {
+            get
+            {
+                return "ExtensionNode";
+            }
+        }
+
+        [JsonProperty("InstanceId")]
+        public IEnumerable<string> SelectionIdentifier
+        {
+            get
+            {
+                IEnumerable<String> updatedSelection = selection.Select(GetIdentifierFromModelObject).Where(x => x != null).ToList();
+                if (updatedSelection.Count() > 0)
+                {
+                    selectionIdentifier = updatedSelection;
+                }
+
+                return selectionIdentifier;
+            }
+
+            set
+            {
+                selectionIdentifier = value;
             }
         }
 
@@ -115,6 +148,31 @@ namespace CoreNodeModels
             ShouldDisplayPreviewCore = true;
         }
 
+        [JsonConstructor]
+        protected SelectionBase(
+            SelectionType selectionType,
+            SelectionObjectType selectionObjectType,
+            string message,
+            string prefix,
+            IEnumerable<string> selectionIdentifier,
+            IEnumerable<PortModel> inPorts,
+            IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
+        {
+            selectionMessage = message;
+
+            this.selectionType = selectionType;
+            this.selectionObjectType = selectionObjectType;
+
+            Prefix = prefix;
+
+            State = ElementState.Warning;
+
+            ShouldDisplayPreviewCore = true;
+
+            SelectionIdentifier = selectionIdentifier;
+            ResetSelectionFromIds(SelectionIdentifier.ToList());
+        }
+
         #endregion
 
         #region public methods
@@ -131,7 +189,7 @@ namespace CoreNodeModels
             SelectionResults = new List<TResult>();
         }
 
-        public override void ClearRuntimeError()
+        public override void ClearErrorsAndWarnings()
         {
             //do nothing as the errors for the selection nodes
             //are not created when running the graph

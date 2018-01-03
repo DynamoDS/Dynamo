@@ -404,6 +404,15 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cannot convert List to Dictionary type..
+        /// </summary>
+        public static string FailedToConvertArrayToDictionary {
+            get {
+                return ResourceManager.GetString("FailedToConvertArrayToDictionary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Failed to import {0}.
         /// </summary>
         public static string FailedToImport {
@@ -953,6 +962,15 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to List indices must be numeric..
+        /// </summary>
+        public static string InvalidArrayIndexType {
+            get {
+                return ResourceManager.GetString("InvalidArrayIndexType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Not an valid function..
         /// </summary>
         public static string InvalidFunction {
@@ -967,15 +985,6 @@ namespace ProtoCore.Properties {
         public static string InvalidLanguageBlockIdentifier {
             get {
                 return ResourceManager.GetString("InvalidLanguageBlockIdentifier", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Return statement is invalid. Do you mean: return = {0} ?.
-        /// </summary>
-        public static string InvalidReturnStatement {
-            get {
-                return ResourceManager.GetString("InvalidReturnStatement", resourceCulture);
             }
         }
         
@@ -1372,6 +1381,15 @@ namespace ProtoCore.Properties {
         public static string kMethodAlreadyDefined {
             get {
                 return ResourceManager.GetString("kMethodAlreadyDefined", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Method &apos;{0}&apos; has been deprecated, please use method &apos;{1}&apos; instead.
+        /// </summary>
+        public static string kMethodDeprecated {
+            get {
+                return ResourceManager.GetString("kMethodDeprecated", resourceCulture);
             }
         }
         
@@ -2462,6 +2480,24 @@ namespace ProtoCore.Properties {
         public static string ValidForImperativeBlockOnly {
             get {
                 return ResourceManager.GetString("ValidForImperativeBlockOnly", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Variable {0} is used in the same statement that you defined it. Recursive dependency is not allowed..
+        /// </summary>
+        public static string VariableRecursiveReference {
+            get {
+                return ResourceManager.GetString("VariableRecursiveReference", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Variable {0} has been defined in this code block node. You cannot define a variable more than once..
+        /// </summary>
+        public static string VariableRedifinitionError {
+            get {
+                return ResourceManager.GetString("VariableRedifinitionError", resourceCulture);
             }
         }
         

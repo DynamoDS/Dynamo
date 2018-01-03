@@ -85,6 +85,7 @@ namespace Dynamo.LibraryUI
         private FloatingLibraryTooltipPopup libraryViewTooltip;
         private ResourceHandlerFactory resourceFactory;
         private IDisposable observer;
+        private ChromiumWebBrowser browser;
 
         /// <summary>
         /// Creates LibraryViewController
@@ -99,7 +100,31 @@ namespace Dynamo.LibraryUI
 
             this.commandExecutive = commandExecutive;
             InitializeResourceStreams(dynamoViewModel.Model, customization);
+            dynamoWindow.StateChanged += DynamoWindowStateChanged;
+            dynamoWindow.SizeChanged += DynamoWindow_SizeChanged;
         }
+
+        //if the window is resized toggle visibility of browser to force redraw
+        private void DynamoWindow_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            toggleBrowserVisibility(this.browser);
+        }
+
+        private void toggleBrowserVisibility(ChromiumWebBrowser browser)
+        {
+            if (browser != null)
+            {
+                browser.Visibility = Visibility.Hidden;
+                browser.Visibility = Visibility.Visible;
+            }
+        }
+
+        //if the dynamo window is minimized and then restored, force a layout update.
+        private void DynamoWindowStateChanged(object sender, EventArgs e)
+        {
+            toggleBrowserVisibility(this.browser);
+        }
+
 
         /// <summary>
         /// Call this method to create a new node in Dynamo canvas.
@@ -136,12 +161,38 @@ namespace Dynamo.LibraryUI
             var view = new LibraryView(model);
 
             var browser = view.Browser;
+            this.browser = browser;
             sidebarGrid.Children.Add(view);
             browser.RegisterJsObject("controller", this);
-            RegisterResources(browser);
+            //RegisterResources(browser);
 
             view.Loaded += OnLibraryViewLoaded;
+            browser.SizeChanged += Browser_SizeChanged;
+            browser.LoadError += Browser_LoadError;
+            //wait for the browser to load before setting the resources
+            browser.LoadingStateChanged += (sender, args) =>
+            {
+                //Wait for the Page to finish loading
+                if (args.IsLoading == false)
+                {
+                    RegisterResources(browser);
+                }
+            };
+
             return view;
+        }
+
+        private void Browser_LoadError(object sender, LoadErrorEventArgs e)
+        {
+            System.Diagnostics.Trace.WriteLine("*****Chromium Browser Messages******");
+            System.Diagnostics.Trace.Write(e.ErrorText);
+            this.dynamoViewModel.Model.Logger.LogError(e.ErrorText);
+        }
+
+        //if the browser window itself is resized, toggle visibility to force redraw.
+        private void Browser_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            toggleBrowserVisibility(this.browser);
         }
 
         #region Tooltip
@@ -174,8 +225,13 @@ namespace Dynamo.LibraryUI
         {
             var sidebarGrid = dynamoWindow.FindName("sidebarGrid") as Grid;
 
-            var tooltipPopup = new FloatingLibraryTooltipPopup(200){ Name = "libraryToolTipPopup",
-                                    StaysOpen = true, AllowsTransparency = true, PlacementTarget = sidebarGrid };
+            var tooltipPopup = new FloatingLibraryTooltipPopup(200)
+            {
+                Name = "libraryToolTipPopup",
+                StaysOpen = true,
+                AllowsTransparency = true,
+                PlacementTarget = sidebarGrid
+            };
             sidebarGrid.Children.Add(tooltipPopup);
 
             return tooltipPopup;
@@ -189,7 +245,7 @@ namespace Dynamo.LibraryUI
         private void ShowTooltip(String nodeName, double y)
         {
             var nseViewModel = FindTooltipContext(nodeName);
-            if(nseViewModel == null)
+            if (nseViewModel == null)
             {
                 return;
             }
@@ -229,7 +285,7 @@ namespace Dynamo.LibraryUI
 
         internal static IDisposable SetupSearchModelEventsObserver(NodeSearchModel model, IEventController controller, ILibraryViewCustomization customization, int throttleTime = 200)
         {
-            customization.SpecificationUpdated += (o,e) => controller.RaiseEvent("libraryDataUpdated");
+            customization.SpecificationUpdated += (o, e) => controller.RaiseEvent("libraryDataUpdated");
 
             var observer = new EventObserver<NodeSearchElement, IEnumerable<NodeSearchElement>>(
                     elements => NotifySearchModelUpdate(customization, elements), CollectToList
@@ -287,7 +343,9 @@ namespace Dynamo.LibraryUI
 
         private void InitializeResourceStreams(DynamoModel model, LibraryViewCustomization customization)
         {
-            resourceFactory = new ResourceHandlerFactory();
+            //TODO: Remove the parameter after testing.
+            //For testing purpose.
+            resourceFactory = new ResourceHandlerFactory(model.Logger);
 
             //Register the resource stream registered through the LibraryViewCustomization
             foreach (var item in customization.Resources)
@@ -298,7 +356,7 @@ namespace Dynamo.LibraryUI
             //Setup the event handler for resource registration
             customization.ResourceStreamRegistered += OnResourceStreamRegistered;
 
-            resourceFactory.RegisterProvider("/dist", 
+            resourceFactory.RegisterProvider("/dist",
                 new DllResourceProvider("http://localhost/dist",
                     "Dynamo.LibraryUI.web.library"));
 
@@ -359,6 +417,19 @@ namespace Dynamo.LibraryUI
 
             if (observer != null) observer.Dispose();
             observer = null;
+            if (this.dynamoWindow != null)
+            {
+                dynamoWindow.StateChanged -= DynamoWindowStateChanged;
+                dynamoWindow.SizeChanged -= DynamoWindow_SizeChanged;
+                dynamoWindow = null;
+            }
+            if (this.browser != null)
+            {
+                browser.SizeChanged -= Browser_SizeChanged;
+                browser.LoadError -= Browser_LoadError;
+                browser.Dispose();
+                browser = null;
+            }
         }
     }
 }

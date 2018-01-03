@@ -656,7 +656,7 @@ namespace ProtoFFI
                 return null;
 
             ProtoCore.AST.AssociativeAST.FunctionDefinitionNode func = new ProtoCore.AST.AssociativeAST.FunctionDefinitionNode();
-            func.Name = string.Format("%get_{0}", f.Name);
+            func.Name = string.Format("{0}{1}", Constants.kGetterPrefix, f.Name);
             func.Signature = new ProtoCore.AST.AssociativeAST.ArgumentSignatureNode();
             func.ReturnType = CLRModuleType.GetProtoCoreType(f.FieldType, Module);
             func.FunctionBody = null;
@@ -664,6 +664,8 @@ namespace ProtoFFI
             func.IsExternLib = true;
             func.ExternLibName = Module.Name;
             func.IsStatic = f.IsStatic;
+            //Set the method attribute for Enum properties.
+            func.MethodAttributes = new FFIMethodAttributes(f);
 
             return func;
         }
@@ -690,8 +692,7 @@ namespace ProtoFFI
                 return node;
             }
 
-            //Need to hide property accessor from design script users, prefix with %
-            string prefix = (isOperator || propaccessor) ? "%" : "";
+            string prefix = isOperator ? Constants.kInternalNamePrefix : string.Empty;
             var func = new ProtoCore.AST.AssociativeAST.FunctionDefinitionNode();
 
             if (isOperator)
@@ -1248,6 +1249,32 @@ namespace ProtoFFI
         }
         public bool AllowRankReduction { get; protected set; }
         public bool RequireTracing { get; protected set; }
+
+        //Set the MethodAttributes for Enum fields.
+        public FFIMethodAttributes(FieldInfo f)
+        {
+            var atts = f.GetCustomAttributes(false).Cast<Attribute>();
+
+            foreach (var attr in atts)
+            {
+                //Set the obsolete message for enum fields.
+                if (attr is IsObsoleteAttribute)
+                {
+                    HiddenInLibrary = true;
+                    ObsoleteMessage = (attr as IsObsoleteAttribute).Message;
+                    if (string.IsNullOrEmpty(ObsoleteMessage))
+                        ObsoleteMessage = "Obsolete";
+                }
+                else if (attr is ObsoleteAttribute)
+                {
+                    HiddenInLibrary = true;
+                    ObsoleteMessage = (attr as ObsoleteAttribute).Message;
+                    if (string.IsNullOrEmpty(ObsoleteMessage))
+                        ObsoleteMessage = "Obsolete";
+                }
+
+            }
+        }
 
         public FFIMethodAttributes(MethodInfo method, Dictionary<MethodInfo, Attribute[]> getterAttributes)
         {

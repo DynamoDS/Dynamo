@@ -8,7 +8,7 @@ using CefSharp;
 namespace Dynamo.LibraryUI.Handlers
 {
     /// <summary>
-    /// A simple DllResourceProvider, which provides embeded resources from the dll.
+    /// A simple DllResourceProvider, which provides embedded resources from the dll.
     /// </summary>
     public class DllResourceProvider : ResourceProviderBase
     {

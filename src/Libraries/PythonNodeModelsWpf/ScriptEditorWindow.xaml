@@ -1,10 +1,11 @@
-﻿<Window x:Class="PythonNodeModelsWpf.ScriptEditorWindow"
+﻿<dww:ModelessChildWindow x:Class="PythonNodeModelsWpf.ScriptEditorWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:avalonedit="clr-namespace:ICSharpCode.AvalonEdit;assembly=ICSharpCode.AvalonEdit"
         xmlns:ui1="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf"
+        xmlns:dww="clr-namespace:Dynamo.Wpf.Windows;assembly=DynamoCoreWpf"
         xmlns:p="clr-namespace:PythonNodeModels.Properties;assembly=PythonNodeModels"
-        Title="{x:Static p:Resources.PythonScriptEditorCaption}" Height="500" Width="600">
+        Title="{Binding nodeModel.Name, Mode=OneWay, RelativeSource={RelativeSource Self}}" Height="500" Width="600">
 
     <Window.Resources>
         <ResourceDictionary>
@@ -19,10 +20,29 @@
         <Border Margin="0,0,0,44" BorderThickness="0" Background="Black" >
             <avalonedit:TextEditor Name="editText" FontFamily="Consolas" FontSize="10pt" ShowLineNumbers="True" Background="#272822" Foreground="#F8F8F2" HorizontalScrollBarVisibility="Disabled"/>
         </Border>
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-            <Button Content="{x:Static p:Resources.PythonScriptEditorAcceptChangesButton}" Style="{DynamicResource ResourceKey=STextButton}" Name="button2" Click="OnAcceptClicked" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="2"/>
-            <Button Content="{x:Static p:Resources.PythonScriptEditoCancelButton}" Style="{DynamicResource ResourceKey=STextButton}" Name="button1" Click="OnCancelClicked" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="2"/>
-        </StackPanel>
+        <Grid HorizontalAlignment="Stretch">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Grid.Column="0">
+                <Button Content="{x:Static p:Resources.PythonScriptEditorRunButton}" Style="{DynamicResource ResourceKey=STextButtonWithShapeIcon}" Name="button3" Click="OnRunClicked" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="2">
+                    <Button.Resources>
+                        <Polygon
+                            x:Key="Shape"
+                            Points="5,0 12,7 5,14 5,0" Height="14" >
+                            <Polygon.Fill>
+                                <SolidColorBrush Color="DarkSeaGreen" />
+                            </Polygon.Fill>
+                        </Polygon>
+                    </Button.Resources>
+                </Button>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Grid.Column="1">
+                <Button Content="{x:Static p:Resources.PythonScriptEditorSaveChangesButton}" Style="{DynamicResource ResourceKey=STextButton}" Name="button2" Click="OnSaveClicked" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="2" Grid.Column="1"/>
+                <Button Content="{x:Static p:Resources.PythonScriptEditorRevertButton}" Style="{DynamicResource ResourceKey=STextButton}" Name="button1" Click="OnRevertClicked" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="2" Grid.Column="1"/>
+            </StackPanel>
+        </Grid>
     </Grid>
 
-</Window>
+</dww:ModelessChildWindow>

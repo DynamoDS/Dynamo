@@ -303,9 +303,6 @@ namespace ProtoCore.Lang
                 case ProtoCore.Lang.BuiltInMethods.MethodID.Print:
                     ret = FileIOBuiltIns.Print(formalParameters[0], interpreter);
                     break;
-                case ProtoCore.Lang.BuiltInMethods.MethodID.PrintIndexable:
-                    ret = FileIOBuiltIns.Print(formalParameters[0], interpreter);
-                    break;
                 case ProtoCore.Lang.BuiltInMethods.MethodID.GetElapsedTime:
                     ret = ProtoCore.DSASM.StackValue.BuildInt(ProgramUtilsBuiltIns.GetElapsedTime(interpreter));
                     break;
@@ -526,17 +523,6 @@ namespace ProtoCore.Lang
                         formalParameters[2],
                         interpreter, 
                         stackFrame);
-                    break;
-                case BuiltInMethods.MethodID.TryGetValueFromNestedDictionaries:
-                    ret = StackValue.Null;
-
-                    if (formalParameters[0].IsArray)
-                    {
-                        StackValue value;
-                        var parameterArray = runtimeCore.Heap.ToHeapObject<DSArray>(formalParameters[0]);
-                        if (parameterArray.TryGetValueFromNestedDictionaries(formalParameters[1], out value, runtimeCore))
-                            ret = value;
-                    }
                     break;
                 case BuiltInMethods.MethodID.NodeAstFailed:
                     var nodeFullName = formalParameters[0];

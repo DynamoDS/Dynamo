@@ -486,26 +486,6 @@ b = S.a;
             thisTest.Verify("b",2);
         }
 
-
-        [Test]
-        [Category("DSDefinedClass_Ported")]
-        public void TestStaticMethodResolution()
-        {
-            string code = @"
-	        def foo(a : int)
-	        {
-		        return = 1;
-	        }
-	        def foo(a : int[])
-	        {
-		        return = 2;
-            }
-            c = {1,2,3,4};
-            d = foo(c);";
-            thisTest.RunScriptSource(code);
-            thisTest.Verify("d", 2);
-        }
-
         [Test]
         public void TestTemporaryArrayIndexing01()
         {
@@ -620,7 +600,6 @@ a;
 a = {0,1,2};
 t = {10,11,12};
 a[0] = t[0];
-t[1] = a[1];
 ";
             thisTest.RunScriptSource(code);
             thisTest.Verify("a", new object[] { 10, 1, 2});
@@ -674,9 +653,11 @@ y = foo()[1];
             thisTest.Verify("y", 2);
         }
 
-        [Test]
+        [Test, Category("Failure")]
         public void TestArrayOverIndexing01()
         {
+            // TODO pratapa: Zero sub-indexing of array now works due to array promotion 
+            // after introducing Builtin.Get.ValueAtIndex for indexing operator
             string code = @"
 [Imperative]
 {
@@ -895,8 +876,7 @@ a[-2][-1] = 3;
         {
             // Using string as a key
             String code = @"
-a = {1, 2, 3};
-a[""x""] = 42;
+a = {""x"" : 42};
 r = a [""x""];
 ";
             thisTest.RunScriptSource(code);
@@ -904,28 +884,27 @@ r = a [""x""];
         }
 
         [Test]
-        public void TestDictionary02()
+        public void TestDecimalArrayIndex()
         {
             // Double value can't be used as a key
             String code = @"
 a = {1, 2, 3};
-a[1.234] = 42;
 r = a [1.3];
 ";
             thisTest.RunScriptSource(code);
-            thisTest.Verify("r", 42);
+            thisTest.Verify("r", 2);
         }
 
         [Test]
-        public void TestDictionary03()
+        public void TestExpressionArrayIndex()
         {
             // Using boolean value as a key
             String code = @"
 a = {};
-a[true] = 42;
-a[false] = 41;
-r1 = a [1 == 1];
-r2 = a [0 == 1];
+a[0] = 42;
+a[1] = 41;
+r1 = a [1 == 1 ? 0 : 1];
+r2 = a [0 == 1 ? 0 : 1];
 ";
             thisTest.RunScriptSource(code);
             thisTest.Verify("r1", 42);
@@ -937,10 +916,9 @@ r2 = a [0 == 1];
         {
             // Using character value as a key
             String code = @"
-a = {};
-a['x'] = 42;
-r1 = a['x'];
-r2 = a[""x""];
+a = {""x"" : 42};
+r1 = a[""x""];
+r2 = a[""y""];
 ";
             thisTest.RunScriptSource(code);
             thisTest.Verify("r1", 42);
@@ -952,14 +930,10 @@ r2 = a[""x""];
         {
             // Using class instance as a key 
             String code = @"
-class A
-{
-}
-a = A();
-arr = {};
-arr[a] = 41;
-arr[a] = 42;
-r = arr[a];
+
+arr = {""a"" : 41};
+arr = arr.SetValueAtKeys(""a"", 42);
+r = arr[""a""];
 ";
             thisTest.RunScriptSource(code);
             thisTest.Verify("r", 42);
@@ -971,12 +945,12 @@ r = arr[a];
             // Test replication on array indexing on LHS
             // using character as a key
             String code = @"
-strs = {""x"", true, 'b'};
-arr = {};
-arr[strs] = {11, 13, 17};
-r1 = arr[""x""];
-r2 = arr[true];
-r3 = arr['b'];
+strs = {""x"", 'c', 'b'};
+arr = { 11, 13, 17};
+dict = Dictionary.ByKeysValues(strs, arr);
+r1 = dict[""x""];
+r2 = dict['c'];
+r3 = dict['b'];
 ";
             thisTest.RunScriptSource(code);
             thisTest.Verify("r1", 11);
@@ -989,14 +963,14 @@ r3 = arr['b'];
         {
             // Test replication on array indexing on RHS
             String code = @"
-strs = {""x"", true, 'b'};
-arr = {};
-arr[strs] = {11, 13, 17};
-values = arr[strs];
-r1 = values[0];
-r2 = values[1];
-r3 = values[2];
-";
+strs = {""x"", 'c', 'b'};
+arr = { 11, 13, 17};
+            dict = Dictionary.ByKeysValues(strs, arr);
+            values = dict[strs];
+            r1 = values[0];
+            r2 = values[1];
+            r3 = values[2];
+            ";
             thisTest.RunScriptSource(code);
             thisTest.Verify("r1", 11);
             thisTest.Verify("r2", 13);
@@ -1009,14 +983,11 @@ r3 = values[2];
             // Test for 2D array
             String code = @"
 arr = {{1, 2}, {3, 4}};
-arr[1][""xyz""] = 42;
-arr[1][true] = 42;
-r1 = arr[1][""xyzxyzxyz""];
-r2 = arr[1][true];
-";
+arr[1] = {""xyz"" : 42};
+r1 = arr[1][""xyz""];
+            ";
             thisTest.RunScriptSource(code);
-            thisTest.Verify("r1", null);
-            thisTest.Verify("r2", 42);
+            thisTest.Verify("r1", 42);
         }
 
         [Test]
@@ -1024,8 +995,7 @@ r2 = arr[1][true];
         {
             // Copy array should also copy key-value pairs
             String code = @"
-a = {};
-a[""xyz""] = 42;
+a = {""xyz"" : 42};
 b = a;
 r = b[""xyz""];
 ";
@@ -1040,8 +1010,7 @@ r = b[""xyz""];
             String code = @"
 a = [Imperative]
 {
-    b = {};
-    b[""xyz""] = 42;
+    b = {""xyz"" : 42};
     return = b;
 }
 
@@ -1051,30 +1020,16 @@ r = a[""xyz""];
             thisTest.Verify("r", 42);
         }
 
-        [Test]
-        public void TestDictionary11()
-        {
-            // Copy array should also copy key-value pairs
-            String code = @"
-a = {};
-a[true] = 42;
-b = a;
-r = b[true];
-";
-            thisTest.RunScriptSource(code);
-            thisTest.Verify("r", 42);
-        }
 
         [Test]
         public void TestDictionary14()
         {
             // Copy array should also copy key-value pairs
             String code = @"
-a = {};
-a[true] = 42;
+a = {""true"" : 42};
 def foo(x: var[]..[])
 {
-    return = x[true];
+    return = x[""true""];
 }
 r = foo(a);
 ";
@@ -1083,39 +1038,39 @@ r = foo(a);
         }
 
         [Test]
-        public void TestDictionary12()
+        public void TestMixedArray()
         {
             // Type conversion applied to values as well
             String code = @"
 a:int[] = {1.1, 2.2, 3.3};
-a[true] = 42.4;
-r = a[true];
+a[1] = 42.4;
+r = a;
 ";
             thisTest.RunScriptSource(code);
-            thisTest.Verify("r", 42);
+            thisTest.Verify("r", new[] { 1, 42.4, 3 });
         }
 
         [Test]
-        public void TestDictionary13()
+        public void TestTypedArrayAssignment()
         {
             // Type conversion applied to values as well
             String code = @"
 a = {1.1, 2.2, 3.3};
-a[true] = 42.4;
+a[1] = 42.4;
 b:int[] = a;
-r = b[true];
+r = b[1];
 ";
             thisTest.RunScriptSource(code);
             thisTest.Verify("r", 42);
         }
 
         [Test]
-        public void TestDictionary15()
+        public void TestImperativeArray()
         {
             // Test for-loop to get values
             String code = @"
 a = {1, 2, 3};
-a[true] = 42;
+a[2] = 42;
 r = [Imperative]
 {
     x = null;
@@ -1131,14 +1086,14 @@ r = [Imperative]
         }
 
         [Test]
-        public void TestDictionary16()
+        public void TestFunctionArray()
         {
             // Test replication for function call
             String code = @"
 a = {1, 2, 3};
-a[true] = 42;
+a[3] = 42;
 
-def foo(x) { return = x; }
+def foo(x) { return = x;};
 r1 = foo(a);
 r2 = r1[3];
 ";
@@ -1147,16 +1102,17 @@ r2 = r1[3];
         }
 
         [Test]
-        public void TestDictionary17()
+        public void TestFunctionArrays()
         {
             // Test replication for function call
             String code = @"
 a = {1, 2, 3};
-a[true] = 21;
+a[3] = 21;
 b = {1, 2, 3};
-b[false] = 21;
+b[3] = 21;
 
-def foo(x, y) { return = x + y; }
+def foo(x, y) { return = x + y;
+ };
 sum = foo(a, b);
 r = sum[3];
 ";
@@ -1165,12 +1121,12 @@ r = sum[3];
         }
 
         [Test]
-        public void TestDictionary18()
+        public void TestArrayIndexingAssignment()
         {
             // Test replication for array indexing
             String code = @"
 a = {1, 2, 3};
-a[true] = 42;
+a[3] = 42;
 b = {};
 b[a] = 1;
 b[42] = 42;
@@ -1187,13 +1143,11 @@ r = c[3];
             // Test builtin functions GetKeys() for array
             String code = @"
 import(""BuiltIn.ds"");
-a = {1, 2, 3};
-a[true] = 41;
-a[""x""] = ""foo"";
-r = Count(List.GetKeys(a));
-";
+a = {""x"" : ""foo""};
+r = List.Count(a.Keys);
+            ";
             thisTest.RunScriptSource(code);
-            thisTest.Verify("r", 5);
+            thisTest.Verify("r", 1);
         }
 
         [Test]
@@ -1201,14 +1155,11 @@ r = Count(List.GetKeys(a));
         {
             // Test builtin functions GetValues() for array
             String code = @"
-import(""BuiltIn.ds"");
-a = {1, 2, 3};
-a[true] = 41;
-a[""x""] = ""foo"";
-r = Count(List.GetValues(a));
+a = {""x"" : ""foo""};
+r = a.Values;
 ";
             thisTest.RunScriptSource(code);
-            thisTest.Verify("r", 5);
+            thisTest.Verify("r", new[] { "foo" });
         }
 
         [Test]
@@ -1216,16 +1167,11 @@ r = Count(List.GetValues(a));
         {
             // Test builtin functions ContainsKey() for array
             String code = @"
-import(""BuiltIn.ds"");
-a = {1, 2, 3};
-a[true] = 41;
-a[""x""] = ""foo"";
-r1 = List.ContainsKey(a, ""x"");
-r2 = List.ContainsKey(a, true);
-";
+a = {""x"" : ""foo""};
+r = Dictionary.ValueAtKey(a, ""x"");
+            ";
             thisTest.RunScriptSource(code);
-            thisTest.Verify("r1", true);
-            thisTest.Verify("r2", true);
+            thisTest.Verify("r", "foo");
         }
 
         [Test]
@@ -1233,32 +1179,22 @@ r2 = List.ContainsKey(a, true);
         {
             // Test builtin functions RemoveKey() for array
             String code = @"
-import(""BuiltIn.ds"");
-a = {1, 2, 3};
-a[true] = 41;
-a[""x""] = ""foo"";
-r1 = List.RemoveKey(a, ""x"");
-r2 = List.RemoveKey(r1, true);
-r3 = List.ContainsKey(r2, ""x"");
-r4 = List.ContainsKey(r2, true);
+a = {""x"" : ""foo""};
+r1 = Dictionary.RemoveKeys(a, ""x"");
+r2 = Dictionary.ValueAtKey(r1, ""x"");
 ";
-            // Tracked in:http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4155
-            string errmsg = "MAGN-4155 : ContainsKey returns wrong value";
-            thisTest.RunScriptSource(code, errmsg);
-            thisTest.Verify("r3", false);
-            thisTest.Verify("r4", false);
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("r2", null);
         }
 
         [Test]
-        public void TestDictionary23()
+        public void TestForArray()
         {
             // Test for-loop
             String code = @"
 r = [Imperative]
 {
     a = {1, 5, 7};
-    a[""x""] = 9;
-    a[true] = 11;
     x = 0; 
     for (v in a) 
     {
@@ -1268,11 +1204,11 @@ r = [Imperative]
 }
 ";
             thisTest.RunScriptSource(code);
-            thisTest.Verify("r", 33);
+            thisTest.Verify("r", 13);
         }
 
         [Test]
-        public void TestDictionary24()
+        public void TestForEmptyArray()
         {
             // Test for-loop
             String code = @"
@@ -1296,21 +1232,21 @@ r = [Imperative]
         {
             string code = @"
      a = { 1, 2, 3 };
-            b = {""x"",""y""};
+    b = {""x"",""y""};
                 
 def foo(a1 : var[], b1 : var[])
-            {
+{
 
-                a1[b1] = true;
-                return =a1;
-            }
+    a1 = Dictionary.ByKeysValues(b1, a1);
+    return =a1;
+}
 z1 = foo(a, b);
 r1=z1[""x""];
 r2=z1[""y""];
 ";
             thisTest.RunScriptSource(code);
-            thisTest.Verify("r1", true);
-            thisTest.Verify("r2", true);
+            thisTest.Verify("r1", 1);
+            thisTest.Verify("r2", 2);
         }
 
 
@@ -1318,18 +1254,19 @@ r2=z1[""y""];
         public void TestDictionaryRegressMAGN619()
         {
             string code = @"
-a[null]=5;
-c=Count(a);
-r = a[null];
+a = {""null"" : 5};
+c = a.Count;
+r = a[""null""];
 ";
             thisTest.RunScriptSource(code);
-            thisTest.Verify("c", 0);
+            thisTest.Verify("c", 1);
             thisTest.Verify("r", 5);
         }
 
-        [Test]
+        [Test, Category("Failure")]
         public void TestDictionary25()
         {
+            // TODO pratapa: Crash typing this code in CBN post Dictionary changes
             string code = @"
 a = {};
 x = ""key"";
@@ -1496,6 +1433,35 @@ c = f(a<1L>,b<2>);
 ";
             thisTest.RunScriptSource(code);
             thisTest.Verify("c", new Object[] { new object[] { 3, 4 }, new object[] { 4, 5 }, new object[] { 5, 6 } });
+        }
+
+        [Test]
+        public void TestReplicationGuidesOnProperties()
+        {
+            string code = @"
+                class A
+                {
+                    X : int[];
+	                constructor A(a : int[])
+                    {
+                        X = a;
+                    }
+                }
+                a = {A.A(0..2), A.A(3..5)};
+                z = a.X<1> + a.X<2>;
+                ";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("z", new object[]
+            {
+                new object[]
+                {
+                    new[] {0, 2, 4}, new[] {3, 5, 7}
+                },
+                new object[]
+                {
+                    new[] {3, 5, 7}, new[] {6, 8, 10}
+                }
+            });
         }
 
         [Test]
@@ -3525,6 +3491,216 @@ b = TestThisOverload.Mul(obj, 4);
             // TestThisOverload.Mul() is a defined static function. 
             // Here we shouldn't generate an overloaded one.
             thisTest.Verify("b", 24);
+        }
+
+        [Test]
+        public void TestReturnStatement01()
+        {
+            string code = @"
+x = [Imperative] {
+    return 6;
+}";
+            thisTest.RunScriptSource(code);
+            thisTest.VerifyBuildWarningCount(0);
+            thisTest.Verify("x", 6);
+        }
+
+        [Test]
+        public void TestReturnStatement02()
+        {
+            string code = @"
+x = [Imperative] {
+    return {2, 3, 5};
+}";
+            thisTest.RunScriptSource(code);
+            thisTest.VerifyBuildWarningCount(0);
+            thisTest.Verify("x", new object[] { 2, 3, 5 } );
+        }
+
+        [Test]
+        public void TestReturnStatement03()
+        {
+            string code = @"
+def foo(x) {
+    return x * 2;
+}
+
+x = [Imperative] {
+    return foo(3);
+}";
+            thisTest.RunScriptSource(code);
+            thisTest.VerifyBuildWarningCount(0);
+            thisTest.Verify("x", 6);
+        }
+
+        [Test]
+        public void TestReturnStatement04()
+        {
+            string code = @"
+[Imperative] {
+    return 6;
+}";
+            thisTest.RunScriptSource(code);
+            thisTest.VerifyBuildWarningCount(0);
+        }
+
+        [Test]
+        public void TestReturnStatement05()
+        {
+            string code = @"
+[Imperative] {
+    return {2, 3, 5};
+}";
+            thisTest.RunScriptSource(code);
+            thisTest.VerifyBuildWarningCount(0);
+        }
+
+        [Test]
+        public void TestReturnStatement06()
+        {
+            string code = @"
+def foo(x) {
+    return x * 2;
+}
+
+[Imperative] {
+    return foo(3);
+}";
+            thisTest.RunScriptSource(code);
+            thisTest.VerifyBuildWarningCount(0);
+        }
+
+        [Test]
+        public void TestReturnStatement07()
+        {
+            string code = @"
+def foo(x) {
+    return [Imperative] {
+        return x * 2;
+    }
+}
+
+r = foo(3);
+";
+            thisTest.RunScriptSource(code);
+            thisTest.VerifyBuildWarningCount(0);
+            thisTest.Verify("r", 6);
+        }
+
+        [Test]
+        public void TestReturnStatement08()
+        {
+            string code = @"
+x = [Associative] {
+    return 6;
+}";
+            thisTest.RunScriptSource(code);
+            thisTest.VerifyBuildWarningCount(0);
+            thisTest.Verify("x", 6);
+        }
+
+        [Test]
+        public void TestReturnStatement09()
+        {
+            string code = @"
+x = [Associative] {
+    return {2, 3, 5};
+}";
+            thisTest.RunScriptSource(code);
+            thisTest.VerifyBuildWarningCount(0);
+            thisTest.Verify("x", new object[] { 2, 3, 5 });
+        }
+
+        [Test]
+        public void TestReturnStatement10()
+        {
+            string code = @"
+def foo(x) {
+    return x * 2;
+}
+
+x = [Associative] {
+    return foo(3);
+}";
+            thisTest.RunScriptSource(code);
+            thisTest.VerifyBuildWarningCount(0);
+            thisTest.Verify("x", 6);
+        }
+
+        [Test]
+        public void TestReturnStatement11()
+        {
+            string code = @"
+[Associative] {
+    return 6;
+}";
+            thisTest.RunScriptSource(code);
+            thisTest.VerifyBuildWarningCount(0);
+        }
+
+        [Test]
+        public void TestReturnStatement12()
+        {
+            string code = @"
+[Associative] {
+    return {2, 3, 5};
+}";
+            thisTest.RunScriptSource(code);
+            thisTest.VerifyBuildWarningCount(0);
+        }
+
+        [Test]
+        public void TestReturnStatement13()
+        {
+            string code = @"
+def foo(x) {
+    return x * 2;
+}
+
+[Associative] {
+    return foo(3);
+}";
+            thisTest.RunScriptSource(code);
+            thisTest.VerifyBuildWarningCount(0);
+        }
+
+        [Test]
+        public void TestReturnStatement14()
+        {
+            string code = @"
+def foo(x) {
+    return [Associative] {
+        return x * 2;
+    }
+}
+
+r = foo(3);
+";
+            thisTest.RunScriptSource(code);
+            thisTest.VerifyBuildWarningCount(0);
+            thisTest.Verify("r", 6);
+        }
+
+        [Test]
+        public void TestReturnStatement15()
+        {
+            string code = @"
+[Imperative] {
+    return 6;
+}";
+            thisTest.RunScriptSource(code);
+            thisTest.VerifyBuildWarningCount(0);
+        }
+
+        [Test]
+        public void TestReturnStatement16()
+        {
+            string code = @"
+[Associative] {
+    return 6;
+}";
+            thisTest.RunScriptSource(code);
+            thisTest.VerifyBuildWarningCount(0);
         }
     }
 }

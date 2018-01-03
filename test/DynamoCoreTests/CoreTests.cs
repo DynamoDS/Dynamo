@@ -19,6 +19,7 @@ using Newtonsoft.Json;
 using NUnit.Framework;
 using ProtoCore.DSASM;
 using DynCmd = Dynamo.Models.DynamoModel;
+using Dynamo.Configuration;
 
 namespace Dynamo.Tests
 {
@@ -27,6 +28,7 @@ namespace Dynamo.Tests
         protected override void GetLibrariesToPreload(List<string> libraries)
         {
             libraries.Add("VMDataBridge.dll");
+            libraries.Add("Builtin.dll");
             libraries.Add("DSCoreNodes.dll");
             base.GetLibrariesToPreload(libraries);
         }
@@ -51,16 +53,128 @@ namespace Dynamo.Tests
 
         [Test]
         [Category("UnitTests")]
+        public void CanReadPythonTemplateSetting()
+        {
+            // load the settings from XML file to DynamoModel
+            string settingDirectory = Path.Combine(TestDirectory, "settings");
+            var settingsFilePath = Path.Combine(settingDirectory, "DynamoSettings-invalidPaths.xml");
+            var pyFile = @"C:\this_folder_doesn't_exist\PythonTemplate.py";
+
+            // check files required for test exist
+            Assert.IsTrue(File.Exists(settingsFilePath));
+
+            // load the settings from file
+            var settings = PreferenceSettings.Load(settingsFilePath);
+
+            // check settings were read correctly
+            Assert.IsFalse(settings == null);
+            Assert.IsFalse(File.Exists(settings.PythonTemplateFilePath));
+            Assert.IsFalse(File.Exists(pyFile));
+            Assert.AreEqual(settings.PythonTemplateFilePath, pyFile);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void CanUpdatePythonTemplateSettings()
+        {
+            string settingDirectory = Path.Combine(TestDirectory, "settings");
+            string settingsFilePath = Path.Combine(settingDirectory, "DynamoSettings-PythonTemplate-initial.xml");
+            string changedSettingsFilePath = Path.Combine(settingDirectory, "DynamoSettings-PythonTemplate-changed.xml");
+            string initialPyFilePath = Path.Combine(settingDirectory, @"PythonTemplate-initial.py");
+            string changedPyFilePath = Path.Combine(settingDirectory, @"PythonTemplate-changed.py");
+            string initialPyVerificationText = "# Unit tests Python template example";
+            string updatedPyVerificationText = "# Changed Unit tests Python template example";
+            string pyTemplate = "";
+            string updatedPyTemplate = "";
+
+            // Assert files required for test exist
+            Assert.IsTrue(File.Exists(settingsFilePath));
+            Assert.IsTrue(File.Exists(initialPyFilePath));
+            Assert.IsTrue(File.Exists(changedPyFilePath));
+
+            // load initial settings
+            // Keep in mind the initial settings file for this test has only specified a filename, not a full path
+            var settings = PreferenceSettings.Load(settingsFilePath);
+            settings.PythonTemplateFilePath = Path.Combine(settingDirectory, settings.PythonTemplateFilePath);
+
+            // Assert path in settings file and in test match
+            Assert.AreEqual(settings.PythonTemplateFilePath, initialPyFilePath);
+
+            // Propagate Python template specified in settings file to DynamoModel & read it from *.py file
+            CurrentDynamoModel.PreferenceSettings.PythonTemplateFilePath = settings.PythonTemplateFilePath;
+            pyTemplate = File.ReadAllText(CurrentDynamoModel.PreferenceSettings.PythonTemplateFilePath);
+
+            // Assert the template actually reads and is not empty
+            Assert.IsNotEmpty(pyTemplate);
+            Assert.IsTrue(pyTemplate.StartsWith(initialPyVerificationText));
+
+            // Assert the workspace has no nodes
+            Assert.AreEqual(CurrentDynamoModel.CurrentWorkspace.Nodes.Count(), 0);
+
+            // create a Python nodeModel & add node to workspace 
+            var firstPyNodeModel = new PythonNodeModels.PythonNode();
+            CurrentDynamoModel.ExecuteCommand(new DynCmd.CreateNodeCommand(firstPyNodeModel, 0, 0, true, false));
+            var firstPyNode = CurrentDynamoModel.CurrentWorkspace.Nodes.Last() as PythonNodeModels.PythonNode;
+
+            // Assert a new node has been added to workspace
+            Assert.AreEqual(CurrentDynamoModel.CurrentWorkspace.Nodes.Count(), 1);
+
+            // Assert both the new python nodeModel and workspace node have been 
+            // initialised with the initial Python template
+            Assert.AreEqual(firstPyNodeModel.Script, pyTemplate);
+            Assert.AreEqual(firstPyNode.Script, pyTemplate);
+            Assert.IsTrue(firstPyNodeModel.Script.StartsWith(initialPyVerificationText));
+            Assert.IsTrue(firstPyNode.Script.StartsWith(initialPyVerificationText));
+
+            // change Python template & save settings to XML file
+            CurrentDynamoModel.PreferenceSettings.PythonTemplateFilePath = changedPyFilePath;
+            CurrentDynamoModel.PreferenceSettings.Save(changedSettingsFilePath);
+
+            // load updated settings
+            // no need for combining paths here as we have already done so before saving
+            settings = PreferenceSettings.Load(changedSettingsFilePath);
+
+            // update the DynamoModel settings
+            CurrentDynamoModel.PreferenceSettings.PythonTemplateFilePath = settings.PythonTemplateFilePath;
+            updatedPyTemplate = File.ReadAllText(CurrentDynamoModel.PreferenceSettings.PythonTemplateFilePath);
+
+            // Assert the updated template is applied and not empty
+            Assert.AreEqual(
+                CurrentDynamoModel.PreferenceSettings.PythonTemplateFilePath,
+                changedPyFilePath
+                );
+            Assert.IsNotEmpty(updatedPyTemplate);
+            Assert.IsTrue(updatedPyTemplate.StartsWith(updatedPyVerificationText));
+
+            // create a Python nodeModel & add node to workspace 
+            var secondPyNodeModel = new PythonNodeModels.PythonNode();
+            CurrentDynamoModel.ExecuteCommand(new DynCmd.CreateNodeCommand(secondPyNodeModel, 100, 100, true, false));
+            var secondPyNode = CurrentDynamoModel.CurrentWorkspace.Nodes.Last() as PythonNodeModels.PythonNode;
+
+            // Assert a new node has been added to workspace
+            Assert.AreEqual(CurrentDynamoModel.CurrentWorkspace.Nodes.Count(), 2);
+
+            // Assert both the new python nodeModel and workspace node have been 
+            // initialised with the updated Python template
+            Assert.AreEqual(secondPyNodeModel.Script, updatedPyTemplate);
+            Assert.AreEqual(secondPyNode.Script, updatedPyTemplate);
+            Assert.IsTrue(secondPyNodeModel.Script.StartsWith(updatedPyVerificationText));
+            Assert.IsTrue(secondPyNode.Script.StartsWith(updatedPyVerificationText));
+
+        }
+
+        [Test]
+        [Category("UnitTests")]
         public void WorkspaceModelHasCorrectDependencies()
-        {   
+        {
             var addNode = new DSFunction(CurrentDynamoModel.LibraryServices.GetFunctionDescriptor("+"));
             var ws = this.CurrentDynamoModel.CustomNodeManager.CreateCustomNode("someNode", "someCategory", "");
-            var csid =  (ws as CustomNodeWorkspaceModel).CustomNodeId;
+            var csid = (ws as CustomNodeWorkspaceModel).CustomNodeId;
             var customNode = this.CurrentDynamoModel.CustomNodeManager.CreateCustomNodeInstance(csid);
 
             Assert.AreEqual(0, CurrentDynamoModel.CurrentWorkspace.Dependencies.ToList().Count());
 
-            CurrentDynamoModel.AddNodeToCurrentWorkspace(customNode,false);
+            CurrentDynamoModel.AddNodeToCurrentWorkspace(customNode, false);
             CurrentDynamoModel.CurrentWorkspace.AddAndRegisterNode(addNode, false);
             Assert.AreEqual(1, CurrentDynamoModel.CurrentWorkspace.Dependencies.ToList().Count());
             //assert that we still only record one dep even though custom node is in graph twice.
@@ -68,7 +182,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(1, CurrentDynamoModel.CurrentWorkspace.Dependencies.ToList().Count());
 
             //assert that guid we have stored is is the custom nodes functionID
-            Assert.AreEqual(customNode.FunctionUuid, CurrentDynamoModel.CurrentWorkspace.Dependencies.First());
+            Assert.AreEqual(customNode.FunctionSignature, CurrentDynamoModel.CurrentWorkspace.Dependencies.First());
 
         }
 
@@ -81,7 +195,6 @@ namespace Dynamo.Tests
             CurrentDynamoModel.CurrentWorkspace.AddNote(false, 200, 200, "This is a test note", id);
             Assert.AreEqual(CurrentDynamoModel.CurrentWorkspace.Notes.Count(), 1);
         }
-
 
         [Test]
         [Category("UnitTests")]
@@ -531,7 +644,7 @@ namespace Dynamo.Tests
         [Category("UnitTests")]
         public void CannotSaveEmptyWorkspaceIfSaveIsCalledWithoutSettingPath()
         {
-            Assert.Throws<ArgumentNullException>(()=>CurrentDynamoModel.CurrentWorkspace.Save(CurrentDynamoModel.CurrentWorkspace.FileName));
+            Assert.Throws<ArgumentNullException>(() => CurrentDynamoModel.CurrentWorkspace.Save(CurrentDynamoModel.CurrentWorkspace.FileName));
             Assert.AreEqual(CurrentDynamoModel.CurrentWorkspace.FileName, string.Empty);
         }
 
@@ -548,7 +661,7 @@ namespace Dynamo.Tests
                 Assert.AreEqual(i + 1, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
             }
 
-            Assert.Throws<ArgumentNullException>(()=>CurrentDynamoModel.CurrentWorkspace.Save(CurrentDynamoModel.CurrentWorkspace.FileName));
+            Assert.Throws<ArgumentNullException>(() => CurrentDynamoModel.CurrentWorkspace.Save(CurrentDynamoModel.CurrentWorkspace.FileName));
             Assert.AreEqual(CurrentDynamoModel.CurrentWorkspace.FileName, string.Empty);
         }
 
@@ -865,7 +978,7 @@ namespace Dynamo.Tests
             OpenModel(openPath);
 
             //this asserts that each node's UpstreamCache contains the same list as the recursively computed AllUpstreamNodes
-            foreach(var node in CurrentDynamoModel.CurrentWorkspace.Nodes)
+            foreach (var node in CurrentDynamoModel.CurrentWorkspace.Nodes)
             {
                 Assert.IsTrue(node.UpstreamCache.SetEquals(node.AllUpstreamNodes(new List<NodeModel>())));
             }

@@ -41,10 +41,30 @@ namespace CoreNodeModels.Input
                 return "Double";
             }
         }
+        public override NodeInputData InputData
+        {
+            get
+            {
+                return new NodeInputData()
+                {
+                    Id = this.GUID,
+                    Name = this.Name,
+                    Type = NodeInputTypes.numberInput,
+                    Description = this.Description,
+                    Value = Value.ToString(CultureInfo.InvariantCulture),
+
+                    MinimumValue = this.Min,
+                    MaximumValue = this.Max,
+                    StepValue = this.Step,
+                    NumberType = this.NumberType,
+
+                };
+            }
+        }
+
 
         [JsonConstructor]
-        private DoubleSlider(IEnumerable<PortModel> inPorts,
-            IEnumerable<PortModel> outPorts): base(inPorts, outPorts)
+        private DoubleSlider(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
         {
             Min = 0;
             Max = 100;

@@ -1,15 +1,11 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
-using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media.Media3D;
 using Autodesk.DesignScript.Geometry;
-using Autodesk.DesignScript.Interfaces;
 using CoreNodeModels.Input;
 using Dynamo.Extensions;
 using Dynamo.Graph.Nodes;
@@ -20,7 +16,6 @@ using Dynamo.Wpf.ViewModels.Watch3D;
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.Mirror;
 using Point = Autodesk.DesignScript.Geometry.Point;
-using String = System.String;
 using Vector = Autodesk.DesignScript.Geometry.Vector;
 
 namespace Dynamo.Manipulation
@@ -422,9 +417,9 @@ namespace Dynamo.Manipulation
         /// called on the scheduler thread if there's a node update
         /// </summary>
         /// <returns>List of render packages</returns>
-        private IEnumerable<IRenderPackage> GenerateRenderPackages()
+        private RenderPackageCache GenerateRenderPackages()
         {
-            var packages = new List<IRenderPackage>();
+            var packages = new RenderPackageCache();
 
             // This can happen only when the node is updating along with the manipulator
             // and meanwhile it is deselected in the UI before the manipulator is killed
@@ -450,7 +445,7 @@ namespace Dynamo.Manipulation
             // to avoid race condition with gizmo members b/w scheduler and UI threads.
             // Race condition can occur if say one gizmo is moving due to another gizmo
             // and it is highlighted when it comes near the mouse pointer.
-            IEnumerable<IRenderPackage> result = null;
+            RenderPackageCache result = null;
             BackgroundPreviewViewModel.Invoke(() => result = BuildRenderPackage());
             return result;
         }
@@ -526,7 +521,7 @@ namespace Dynamo.Manipulation
         {
             Dispose(true);
 
-            Node.ClearRuntimeError();
+            Node.ClearErrorsAndWarnings();
             DeleteGizmos();
             DetachHandlers();
         }
@@ -535,23 +530,24 @@ namespace Dynamo.Manipulation
         /// Builds render packages as required for rendering this manipulator.
         /// </summary>
         /// <returns>List of render packages</returns>
-        public IEnumerable<IRenderPackage> BuildRenderPackage()
+        public RenderPackageCache BuildRenderPackage()
         {
             Debug.Assert(IsMainThread());
 
-            var packages = new List<IRenderPackage>();
+            var packages = new RenderPackageCache();
             try
             {
                 var gizmos = GetGizmos(true);
                 foreach (var item in gizmos)
                 {
-                    packages.AddRange(item.GetDrawables());
+                    packages.Add(item.GetDrawables());
                 }
             }
             catch (Exception e)
             {
                 Node.Warning(Properties.Resources.DirectManipulationError +": " + e.Message);
             }
+
             return packages;
         }
 
@@ -649,13 +645,14 @@ namespace Dynamo.Manipulation
             subManipulators.ForEach(x => x.Dispose());
         }
 
-        public IEnumerable<IRenderPackage> BuildRenderPackage()
+        public RenderPackageCache BuildRenderPackage()
         {
-            var packages = new List<IRenderPackage>();
+            var packages = new RenderPackageCache();
             foreach (var subManipulator in subManipulators)
             {
-                packages.AddRange(subManipulator.BuildRenderPackage());
+                packages.Add(subManipulator.BuildRenderPackage());
             }
+
             return packages;
         }
 

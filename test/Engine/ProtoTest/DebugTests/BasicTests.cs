@@ -13,7 +13,7 @@ using ProtoCore.DSASM;
 
 namespace ProtoTest.DebugTests
 {
-    [TestFixture]
+    [TestFixture, Category("Debugger")]
     class BasicTests : ProtoTestBase
     {
         private DebugRunner fsr;
@@ -4144,7 +4144,7 @@ a = x < foo(22) ? 3 : 55;
             }
 
         }
-        [Test]
+        [Test, Category("Failure")]
         [Category("Debugger")]
         public void cyclicdependancy_726()
         {
@@ -4757,7 +4757,7 @@ a;b;
 
         }
 
-        [Test]
+        [Test, Category("Failure")]
         [Category("ExpressionInterpreterRunner")]
 
         public void watchinImperative_nested_666()
@@ -4807,7 +4807,7 @@ r = 0;
             TestFrameWork.Verify(mirror, "r", 1, 0);
 
         }
-        [Test]
+        [Test, Category("Failure")]
         [Category("ExpressionInterpreterRunner")]
 
         public void watchinImperative_nested_666_2()
@@ -4867,7 +4867,7 @@ r = 0;
             TestFrameWork.Verify(mirror, "r", 1, 0);
 
         }
-        [Test]
+        [Test, Category("Failure")]
         [Category("ExpressionInterpreterRunner")]
 
         public void watchinImperative_nested_666_3()
@@ -5811,7 +5811,7 @@ a : Dummy = null;
         }
     }
 
-    [TestFixture]
+    [TestFixture, Category("Debugger")]
     public class BasicUseCaseTests
     {
         public ProtoCore.Core core;

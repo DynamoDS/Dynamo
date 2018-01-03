@@ -5,6 +5,8 @@ using System.Xml;
 using Dynamo.Logging;
 using Dynamo.Models;
 using Dynamo.Utilities;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace Dynamo.Graph.Workspaces
 {
@@ -109,7 +111,7 @@ namespace Dynamo.Graph.Workspaces
                 // we have a dyf and it lacks an ID field, we need to assign it
                 // a deterministic guid based on its name.  By doing it deterministically,
                 // files remain compatible
-                if (string.IsNullOrEmpty(id) && !string.IsNullOrEmpty(funName) && funName != "Home")
+                if (string.IsNullOrEmpty(id) && !string.IsNullOrEmpty(funName) && funName != Properties.Resources.DefaultHomeWorkspaceName)
                 {
                     id = GuidUtility.Create(GuidUtility.UrlNamespace, funName).ToString();
                 }
@@ -140,6 +142,102 @@ namespace Dynamo.Graph.Workspaces
                 Debug.WriteLine(ex.Message + ":" + ex.StackTrace);
 
                 //TODO(Steve): Need a better way to handle this kind of thing. -- MAGN-5712
+                if (isTestMode)
+                    throw; // Rethrow for NUnit.
+
+                workspaceInfo = null;
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Return a boolean indicating if successfully deserialized workspace info object from Json file
+        /// </summary>
+        /// <param name="jsonDoc">Target Josn</param>
+        /// <param name="path">Target path</param>
+        /// <param name="isTestMode">Boolean indicating if Dynamo is running in Test Mode</param>
+        /// <param name="forceManualExecutionMode">Boolean indicating if forcing manual mode</param>
+        /// <param name="logger">Dynamo logger</param>
+        /// <param name="workspaceInfo">Return object</param>
+        /// <returns>A boolean indicating success</returns>
+        internal static bool FromJsonDocument(String jsonDoc, string path, bool isTestMode,
+            bool forceManualExecutionMode, ILogger logger, out WorkspaceInfo workspaceInfo)
+        {
+            var jObject = (JObject)JsonConvert.DeserializeObject(jsonDoc);
+            try
+            {
+                double cx = 0;
+                double cy = 0;
+                double zoom = 1.0;
+                double scaleFactor = 1.0;
+                string version = "";
+                var runType = RunType.Manual;
+                int runPeriod = RunSettings.DefaultRunPeriod;
+                bool hasRunWithoutCrash = false;
+                bool isVisibleInDynamoLibrary = true;
+
+                JToken value;
+                string funName = jObject.TryGetValue("Name", out value)? value.ToString(): "";
+                string id = jObject.TryGetValue("Uuid", out value) ? value.ToString() : "";
+                string category = jObject.TryGetValue("Category", out value) ? value.ToString() : "";
+                string description = jObject.TryGetValue("Description", out value) ? value.ToString() : "";
+                // we have a dyf and it lacks an ID field, we need to assign it
+                // a deterministic guid based on its name.  By doing it deterministically,
+                // files remain compatible
+                if (string.IsNullOrEmpty(id) && !string.IsNullOrEmpty(funName) && funName != Properties.Resources.DefaultHomeWorkspaceName)
+                {
+                    id = GuidUtility.Create(GuidUtility.UrlNamespace, funName).ToString();
+                }
+
+                // Parse the following info when graph contains a "View" block
+                if (jObject.TryGetValue("View", out value))
+                {
+                    JObject viewObject = value.ToObject<JObject>();
+                    Double.TryParse((viewObject.TryGetValue("X", out value) ? value.ToString(): "0"), out cx);
+                    Double.TryParse((viewObject.TryGetValue("Y", out value) ? value.ToString() : "0"), out cy);
+                    Double.TryParse((viewObject.TryGetValue("Zoom", out value) ? value.ToString() : "1.0"), out zoom);
+
+                    // Parse the following info when "View" block contains a "Dynamo" block
+                    if (viewObject.TryGetValue("Dynamo", out value))
+                    {
+                        JObject dynamoObject = value.ToObject<JObject>();
+                        Double.TryParse((dynamoObject.TryGetValue("ScaleFactor", out value) ? value.ToString(): "1.0"), out scaleFactor);
+                        Boolean.TryParse((dynamoObject.TryGetValue("HasRunWithoutCrash", out value) ? value.ToString(): "false"), out hasRunWithoutCrash);
+                        Boolean.TryParse((dynamoObject.TryGetValue("IsVisibleInDynamoLibrary", out value) ? value.ToString(): "true"), out isVisibleInDynamoLibrary);
+                        version = dynamoObject.TryGetValue("Version", out value)? value.ToString() : "";
+                        if (forceManualExecutionMode || !Enum.TryParse((dynamoObject.TryGetValue("RunType", out value)? value.ToString(): "false"), false, out runType))
+                        {
+                            runType = RunType.Manual;
+                        }
+                        Int32.TryParse((dynamoObject.TryGetValue("RunPeriod", out value)? value.ToString() : RunSettings.DefaultRunPeriod.ToString()), out runPeriod);
+                    }
+                }
+
+                workspaceInfo = new WorkspaceInfo
+                {
+                    ID = id,
+                    Name = funName,
+                    X = cx,
+                    Y = cy,
+                    Zoom = zoom,
+                    ScaleFactor = scaleFactor,
+                    FileName = path,
+                    Category = category,
+                    Description = description,
+                    Version = version,
+                    RunType = runType,
+                    RunPeriod = runPeriod,
+                    HasRunWithoutCrash = hasRunWithoutCrash,
+                    IsVisibleInDynamoLibrary = isVisibleInDynamoLibrary
+                };
+                return true;
+            }
+            catch (Exception ex)
+            {
+                logger.Log(Properties.Resources.OpenWorkbenchError);
+                logger.Log(ex);
+                Debug.WriteLine(ex.Message + ":" + ex.StackTrace);
+
                 if (isTestMode)
                     throw; // Rethrow for NUnit.
 

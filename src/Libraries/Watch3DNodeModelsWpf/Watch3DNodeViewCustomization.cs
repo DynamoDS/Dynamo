@@ -13,6 +13,7 @@ using Dynamo.Controls;
 using Dynamo.Wpf;
 using Dynamo.Wpf.Rendering;
 using Dynamo.Wpf.ViewModels.Watch3D;
+using Dynamo.Visualization;
 using VMDataBridge;
 using Watch3DNodeModels;
 using Watch3DNodeModelsWpf.Properties;
@@ -24,6 +25,21 @@ namespace Watch3DNodeModelsWpf
         private Watch3D watch3dModel;
         private Watch3DView watch3DView;
         private HelixWatch3DNodeViewModel watch3DViewModel;
+
+        private void onCameraChanged(object sender ,RoutedEventArgs args)
+        {
+            var camera = watch3DViewModel.GetCameraInformation();
+            watch3dModel.Camera.Name = camera.Name;
+            watch3dModel.Camera.EyeX = camera.EyePosition.X;
+            watch3dModel.Camera.EyeY = camera.EyePosition.Y;
+            watch3dModel.Camera.EyeZ = camera.EyePosition.Z;
+            watch3dModel.Camera.LookX = camera.LookDirection.X;
+            watch3dModel.Camera.LookY = camera.LookDirection.Y;
+            watch3dModel.Camera.LookZ = camera.LookDirection.Z;
+            watch3dModel.Camera.UpX = camera.UpDirection.X;
+            watch3dModel.Camera.UpY = camera.UpDirection.Y;
+            watch3dModel.Camera.UpZ = camera.UpDirection.Z;
+        }
 
         public void CustomizeView(Watch3D model, NodeView nodeView)
         {
@@ -57,20 +73,7 @@ namespace Watch3DNodeModelsWpf
             }
 
             model.Serialized += model_Serialized;
-            watch3DViewModel.ViewCameraChanged += (s, args) =>
-            {
-                var camera = watch3DViewModel.GetCameraInformation();
-                watch3dModel.Camera.Name = camera.Name;
-                watch3dModel.Camera.EyeX = camera.EyePosition.X;
-                watch3dModel.Camera.EyeY = camera.EyePosition.Y;
-                watch3dModel.Camera.EyeZ = camera.EyePosition.Z;
-                watch3dModel.Camera.LookX = camera.LookDirection.X;
-                watch3dModel.Camera.LookY = camera.LookDirection.Y;
-                watch3dModel.Camera.LookZ = camera.LookDirection.Z;
-                watch3dModel.Camera.UpX = camera.UpDirection.X;
-                watch3dModel.Camera.UpY = camera.UpDirection.Y;
-                watch3dModel.Camera.UpZ = camera.UpDirection.Z;
-            };
+            watch3DViewModel.ViewCameraChanged += onCameraChanged;
 
             watch3DView = new Watch3DView()
             {
@@ -137,7 +140,8 @@ namespace Watch3DNodeModelsWpf
 
         private void RenderData(object data)
         {
-            watch3DViewModel.AddGeometryForRenderPackages(UnpackRenderData(data).Select(CreateRenderPackageFromGraphicItem));
+            IEnumerable<IRenderPackage> packages = UnpackRenderData(data).Select(CreateRenderPackageFromGraphicItem);
+            watch3DViewModel.AddGeometryForRenderPackages(new RenderPackageCache(packages));
         }
 
         void mi_Click(object sender, RoutedEventArgs e)
@@ -164,7 +168,12 @@ namespace Watch3DNodeModelsWpf
 
         public void Dispose()
         {
-
+            if (watch3DViewModel != null)
+            {
+                watch3DViewModel.ViewCameraChanged -= onCameraChanged;
+                watch3DViewModel.Dispose();
+            }
+            DataBridge.Instance.UnregisterCallback(watch3dModel.GUID.ToString());
         }
     }
 }

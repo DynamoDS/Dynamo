@@ -16,6 +16,17 @@ using Dynamo.Tests;
 using NUnit.Framework;
 
 using DoubleSlider = CoreNodeModels.Input.DoubleSlider;
+using Dynamo.Events;
+using Dynamo.Models;
+using Dynamo.Graph.Workspaces;
+using Dynamo.ViewModels;
+using Dynamo.Engine;
+using Dynamo.Wpf.ViewModels.Core;
+using Dynamo.Wpf.ViewModels.Watch3D;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using Dynamo.Utilities;
+using Dynamo.Graph.Connectors;
 
 namespace DynamoCoreWpfTests
 {
@@ -27,13 +38,12 @@ namespace DynamoCoreWpfTests
         {
             var sumNode = new DSFunction(ViewModel.Model.LibraryServices.GetFunctionDescriptor("+")) { X = 400, Y = 100 };
 
-            //Assert inital values
+            //Assert initial values
             Assert.AreEqual(400, sumNode.X);
             Assert.AreEqual(100, sumNode.Y);
             Assert.AreEqual("+", sumNode.Name);
             Assert.AreEqual(LacingStrategy.Auto, sumNode.ArgumentLacing);
             Assert.AreEqual(true, sumNode.IsVisible);
-            Assert.AreEqual(true, sumNode.IsUpstreamVisible);
             Assert.AreEqual(ElementState.Dead, sumNode.State);
 
             //Serialize node and then change values
@@ -44,7 +54,6 @@ namespace DynamoCoreWpfTests
             sumNode.Name = "TestNode";
             sumNode.UpdateValue(new UpdateValueParams("ArgumentLacing", "CrossProduct"));
             sumNode.UpdateValue(new UpdateValueParams("IsVisible", "false"));
-            sumNode.UpdateValue(new UpdateValueParams("IsUpstreamVisible", "false"));
             sumNode.State = ElementState.Active;
 
             //Assert New Changes
@@ -53,7 +62,6 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual("TestNode", sumNode.Name);
             Assert.AreEqual(LacingStrategy.CrossProduct, sumNode.ArgumentLacing);
             Assert.AreEqual(false, sumNode.IsVisible);
-            Assert.AreEqual(false, sumNode.IsUpstreamVisible);
             Assert.AreEqual(ElementState.Active, sumNode.State);
 
             //Deserialize and Assert Old values
@@ -63,7 +71,6 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual("+", sumNode.Name);
             Assert.AreEqual(LacingStrategy.Auto, sumNode.ArgumentLacing);
             Assert.AreEqual(true, sumNode.IsVisible);
-            Assert.AreEqual(true, sumNode.IsUpstreamVisible);
             Assert.AreEqual(ElementState.Dead, sumNode.State);
         }
 
@@ -88,7 +95,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(250, numNode.X);
             Assert.AreEqual("4", numNode.Value);
 
-            //Deserialize and aasert old values
+            //Deserialize and assert old values
             numNode.Deserialize(serializedEl, SaveContext.Undo);
             Assert.AreEqual(400, numNode.X);
             Assert.AreEqual("0.0", numNode.Value);
@@ -399,6 +406,43 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
+        public void JSONisSameBeforeAndAfterSaveWithDummyNodes()
+        {
+            var testFileWithDummyNode = @"core\dummy_node\2080_JSONTESTCRASH undo_redo.dyn";
+            var openPath = Path.Combine(TestDirectory, testFileWithDummyNode);
+
+            var jsonText1 = File.ReadAllText(openPath);
+            var jobject1 = JObject.Parse(jsonText1);
+
+            // We need to replace the camera with null so it will match the null camera produced by the 
+            // save without a real view below.
+            jobject1["View"]["Camera"] = null;
+            jsonText1 = jobject1.ToString();
+            jobject1 = JObject.Parse(jsonText1);
+          
+            OpenModel(openPath);
+            Assert.AreEqual(1, ViewModel.CurrentSpace.Nodes.OfType<DummyNode>().Count());
+
+            // Stage 1: Serialize the workspace.
+            var jsonModel = ViewModel.Model.CurrentWorkspace.ToJson(ViewModel.Model.EngineController);
+
+            // Stage 2: Add the View.
+            var jobject2 = JObject.Parse(jsonModel);
+            var token = JToken.Parse(ViewModel.CurrentSpaceViewModel.ToJson());
+            jobject2.Add("View", token);
+
+            // Re-saving the file will update the version number (which can be expected)
+            // Setting the version numbers to be equal to stop the deep compare from failing
+            jobject2["View"]["Dynamo"]["Version"] = jobject1["View"]["Dynamo"]["Version"];
+            var jsonText2 = jobject2.ToString();
+
+            Console.WriteLine(jsonText1);
+            Console.WriteLine(jsonText2);
+
+            Assert.IsTrue(JToken.DeepEquals(jobject1, jobject2));
+        }
+
+        [Test]
         public void TestUndoRedoOnConnectedNodes()
         {
             ViewModel.OpenCommand.Execute(Path.Combine(TestDirectory, "core", "LacingTest.dyn"));
@@ -418,6 +462,578 @@ namespace DynamoCoreWpfTests
         {
             libraries.Add("ProtoGeometry.dll");
             base.GetLibrariesToPreload(libraries);
+        }
+    }
+
+    class JSONSerializationTests : DynamoViewModelUnitTest
+    {
+        public static string jsonNonGuidFolderName = "jsonWithView_nonGuidIds";
+        public static string jsonFolderName = "jsonWithView";
+
+        private TimeSpan lastExecutionDuration = new TimeSpan();
+        private Dictionary<Guid, string> modelsGuidToIdMap = new Dictionary<Guid, string>();
+
+        protected override void GetLibrariesToPreload(List<string> libraries)
+        {
+            libraries.Add("VMDataBridge.dll");
+            libraries.Add("ProtoGeometry.dll");
+            libraries.Add("Builtin.dll");
+            libraries.Add("DSCoreNodes.dll");
+            base.GetLibrariesToPreload(libraries);
+        }
+
+        private void DoWorkspaceOpen(string filePath)
+        {
+            if (Dynamo.Tests.SerializationTests.bannedTests.Any(t => filePath.Contains(t)))
+            {
+                Assert.Inconclusive("Skipping test known to kill the test framework...");
+            }
+
+            OpenModel(filePath);
+
+            var model = this.ViewModel.Model;
+            var workspace = ViewModel.CurrentSpaceViewModel;
+
+            workspace.Model.Description = "TestDescription";
+
+            var dummyNodes = workspace.Nodes.Select(x => x.NodeModel).Where(n => n is DummyNode);
+            if (dummyNodes.Any())
+            {
+                Assert.Inconclusive("The Workspace contains dummy nodes for: " + string.Join(",", dummyNodes.Select(n => n.Name).ToArray()));
+            }
+
+            var cbnErrorNodes = workspace.Nodes.Where(n => n.NodeModel is CodeBlockNodeModel && n.NodeModel.State == ElementState.Error);
+            if (cbnErrorNodes.Any())
+            {
+                Assert.Inconclusive("The Workspace contains code block nodes in error state due to which rest " +
+                                    "of the graph will not execute; skipping test ...");
+            }
+
+            if (((HomeWorkspaceModel)workspace.Model).RunSettings.RunType == RunType.Manual)
+            {
+                RunCurrentModel();
+            }
+        }
+
+        private void DoWorkspaceOpenAndCompareView(string filePath, string dirName,
+           Func<DynamoViewModel, string, string> saveFunction,
+           Action<WorkspaceViewComparisonData, WorkspaceViewComparisonData> workspaceViewCompareFunction,
+           Action<WorkspaceViewComparisonData, string, TimeSpan,Dictionary<Guid,string>> workspaceViewDataSaveFunction)
+        {
+            var openPath = filePath;
+            DoWorkspaceOpen(openPath);
+
+            var ws1 = ViewModel.CurrentSpaceViewModel;
+            var wcd1 = new WorkspaceViewComparisonData(ws1, ViewModel.Model.EngineController);
+
+            var dirPath = Path.Combine(Path.GetTempPath(), dirName);
+            if (!System.IO.Directory.Exists(dirPath))
+            {
+                System.IO.Directory.CreateDirectory(dirPath);
+            }
+            var fi = new FileInfo(filePath);
+            var filePathBase = dirPath + @"\" + Path.GetFileNameWithoutExtension(fi.Name);
+
+            //no longer do this, as its done in model serialization tests.
+            //ConvertCurrentWorkspaceToDesignScriptAndSave(filePathBase);
+
+            string json = saveFunction(this.ViewModel, filePath);
+
+            workspaceViewDataSaveFunction(wcd1, filePathBase, lastExecutionDuration,this.modelsGuidToIdMap);
+
+            lastExecutionDuration = new TimeSpan();
+
+            // Open JSON .dyn or .dyf
+            var fileExtension = Path.GetExtension(filePath);
+            this.ViewModel.OpenCommand.Execute(filePathBase + fileExtension);
+
+            var ws2 = ViewModel.CurrentSpaceViewModel;
+            Assert.NotNull(ws2);
+
+            var dummyNodes = ws2.Nodes.Select(x => x.NodeModel).Where(n => n is DummyNode);
+            if (dummyNodes.Any())
+            {
+                Assert.Inconclusive("The Workspace contains dummy nodes for: " + string.Join(",", dummyNodes.Select(n => n.Name).ToArray()));
+            }
+
+            if (((HomeWorkspaceModel)ws2.Model).RunSettings.RunType == RunType.Manual)
+            {
+                RunCurrentModel();
+            }
+
+            var wcd2 = new WorkspaceViewComparisonData(ws2, this.ViewModel.EngineController);
+
+            workspaceViewCompareFunction(wcd1, wcd2);
+
+            //TODO remove this after we merge notes and annotations -
+            //this is done here so we don't need to modify the workspaceComparison classes
+            //and it's simple to remove soon.
+            var index = 0;
+            foreach(var noteView in ws1.Notes)
+            {
+                var matchingNote = ws2.Notes[index];
+                Assert.IsTrue(noteView.Model.Text == matchingNote.Model.Text);
+                Assert.Less(Math.Abs(noteView.Model.X - matchingNote.Model.X),0001);
+                Assert.Less(Math.Abs(noteView.Model.Y - matchingNote.Model.Y), 0001);
+                index = index + 1;
+            }
+
+        }
+
+        private static string SaveJsonTempWithFolderStructure(DynamoViewModel viewModel, string filePath, JObject jo)
+        {   
+            // Get all folder structure following "\\test"
+            var expectedStructure = filePath.Split(new string[] { "\\test" }, StringSplitOptions.None).Last();
+
+            // Current test fileName
+            var fileName = Path.GetFileName(filePath);
+
+            // Get temp folder path
+            var tempPath = Path.GetTempPath();
+            var jsonFolder = Path.Combine(tempPath, "DynamoTestJSON");
+            jsonFolder += Path.GetDirectoryName(expectedStructure);
+
+            if (!System.IO.Directory.Exists(jsonFolder))
+            {
+                System.IO.Directory.CreateDirectory(jsonFolder);
+            }
+
+            // Combine directory with test file name
+            var jsonPath = jsonFolder + "\\" + fileName;
+
+            if (File.Exists(jsonPath))
+            {
+                File.Delete(jsonPath);
+            }
+
+            File.WriteAllText(jsonPath, jo.ToString());
+
+            return jo.ToString();
+        }
+
+        private static string ConvertCurrentWorkspaceViewToJsonAndSave(DynamoViewModel viewModel, string filePath)
+        {
+            // Stage 1: Serialize the workspace.
+            var jsonModel = viewModel.Model.CurrentWorkspace.ToJson(viewModel.Model.EngineController);
+
+            // Stage 2: Add the View.
+            var jo = JObject.Parse(jsonModel);
+            var token = JToken.Parse(viewModel.CurrentSpaceViewModel.ToJson());
+            jo.Add("View", token);
+
+            Assert.IsNotNullOrEmpty(jsonModel);
+            Assert.IsNotNullOrEmpty(jo.ToString());
+
+            // Call new structured copy function
+            SaveJsonTempWithFolderStructure(viewModel, filePath, jo);
+
+            var tempPath = Path.GetTempPath();
+            var jsonFolder = Path.Combine(tempPath, jsonFolderName);
+
+            if (!System.IO.Directory.Exists(jsonFolder))
+            {
+                System.IO.Directory.CreateDirectory(jsonFolder);
+            }
+
+            var fileName = Path.GetFileName(filePath);
+            var jsonPath = Path.Combine(jsonFolder, fileName);
+
+            if (File.Exists(jsonPath))
+            {
+                File.Delete(jsonPath);
+            }
+            File.WriteAllText(jsonPath, jo.ToString());
+
+            return jo.ToString();
+        }
+
+        private string ConvertCurrentWorkspaceViewToNonGuidJsonAndSave(DynamoViewModel viewModel, string filePath)
+        {
+            // Stage 1: Serialize the workspace.
+            var jsonModel = viewModel.Model.CurrentWorkspace.ToJson(viewModel.Model.EngineController);
+            // Stage 2: Add the View.
+            var jo = JObject.Parse(jsonModel);
+            var token = JToken.Parse(viewModel.CurrentSpaceViewModel.ToJson());
+            jo.Add("View", token);
+            var json = jo.ToString();
+            var model = viewModel.Model;
+
+            json = serializationTestUtils.replaceModelIdsWithNonGuids(json, model.CurrentWorkspace ,modelsGuidToIdMap);
+
+            Assert.IsNotNullOrEmpty(json);
+
+            // Call new structured copy function
+            SaveJsonTempWithFolderStructure(viewModel, filePath, jo);
+
+            var tempPath = Path.GetTempPath();
+            var jsonFolder = Path.Combine(tempPath, jsonNonGuidFolderName);
+
+            if (!System.IO.Directory.Exists(jsonFolder))
+            {
+                System.IO.Directory.CreateDirectory(jsonFolder);
+            }
+
+            var fileName = Path.GetFileName(filePath);
+            var jsonPath = Path.Combine(jsonFolder, fileName);
+
+            if (File.Exists(jsonPath))
+            {
+                File.Delete(jsonPath);
+            }
+            File.WriteAllText(jsonPath, json);
+
+            return json;
+        }
+
+        private void CompareWorkspaceViews(WorkspaceViewComparisonData a, WorkspaceViewComparisonData b)
+        {
+            //first compare the model data
+            serializationTestUtils.CompareWorkspaceModels(a, b, this.modelsGuidToIdMap);
+
+            Assert.IsTrue(Math.Abs(a.X - b.X) < .00001, "The workspaces don't have the same X offset.");
+            Assert.IsTrue(Math.Abs(a.X - b.X) < .00001, "The workspaces don't have the same Y offset.");
+            Assert.IsTrue(Math.Abs(a.Zoom - b.Zoom) < .00001, "The workspaces don't have the same Zoom.");
+            Assert.AreEqual(a.Camera, b.Camera);
+            Assert.AreEqual(a.Guid, b.Guid);
+
+            Assert.AreEqual(a.NodeViewCount, b.NodeViewCount, "The workspaces don't have the same number of node views.");
+            Assert.AreEqual(a.ConnectorViewCount, b.ConnectorViewCount, "The workspaces don't have the same number of connector views.");
+
+            Assert.AreEqual(a.AnnotationMap.Count, b.AnnotationMap.Count);
+
+            foreach (var annotationKVP in a.AnnotationMap)
+            {
+                var dataA = a.AnnotationMap[annotationKVP.Key];
+                var dataB = b.AnnotationMap[annotationKVP.Key];
+
+                Assert.AreEqual(dataA, dataB);
+            }
+
+            foreach (var kvp in a.NodeViewDataMap)
+            {
+                var valueA = kvp.Value;
+                var valueB = b.NodeViewDataMap[kvp.Key];
+                Assert.AreEqual(valueA, valueB,
+                string.Format("Node View Data:{0} value, {1} is not equal to {2}",
+                a.NodeViewDataMap[kvp.Key].Name, valueA, valueB));
+            }
+        }
+
+        private void CompareWorkspaceViewsDifferentGuids(WorkspaceViewComparisonData a, WorkspaceViewComparisonData b)
+        {
+            //first compare the model data
+            serializationTestUtils.CompareWorkspacesDifferentGuids(a, b, this.modelsGuidToIdMap);
+
+            Assert.IsTrue(Math.Abs(a.X - b.X) < .00001, "The workspaces don't have the same X offset.");
+            Assert.IsTrue(Math.Abs(a.X - b.X) < .00001, "The workspaces don't have the same Y offset.");
+            Assert.IsTrue(Math.Abs(a.Zoom - b.Zoom) < .00001, "The workspaces don't have the same Zoom.");
+            Assert.AreEqual(a.Camera, b.Camera);
+            Assert.AreEqual(a.Guid, b.Guid);
+
+            Assert.AreEqual(a.NodeViewCount, b.NodeViewCount, "The workspaces don't have the same number of node views.");
+            Assert.AreEqual(a.ConnectorViewCount, b.ConnectorViewCount, "The workspaces don't have the same number of connector views.");
+
+            Assert.AreEqual(a.AnnotationMap.Count, b.AnnotationMap.Count);
+
+            foreach (var annotationKVP in a.AnnotationMap)
+            {
+                var valueA = annotationKVP.Value;
+                //convert the old guid to the new guid
+                var newGuid = GuidUtility.Create(GuidUtility.UrlNamespace, this.modelsGuidToIdMap[annotationKVP.Key]);
+                var valueB = b.AnnotationMap[newGuid];
+                //set the id explicitly since we know it will have changed and should be this id.
+                valueB.Id = valueA.Id.ToString();
+                //check at least that number of referenced nodes is correct.
+                Assert.AreEqual(valueB.Nodes.Count(), valueA.Nodes.Count());
+                //ignore this list because all node ids will have changed.
+                valueB.Nodes = valueA.Nodes;
+
+                Assert.AreEqual(valueA, valueB);
+            }
+
+            foreach (var kvp in a.NodeViewDataMap)
+            {
+                var valueA = kvp.Value;
+                //convert the old guid to the new guid
+                var newGuid = GuidUtility.Create(GuidUtility.UrlNamespace, this.modelsGuidToIdMap[kvp.Key]);
+                var valueB = b.NodeViewDataMap[newGuid];
+                //set the id explicitly since we know it will have changed and should be this id.
+                valueB.ID = valueA.ID.ToString();
+
+                Assert.AreEqual(valueA, valueB,
+                string.Format("Node View Data:{0} value, {1} is not equal to {2}",
+                a.NodeViewDataMap[kvp.Key].Name, valueA, valueB));
+            }
+        }
+
+
+
+        [TestFixtureSetUp]
+        public void FixtureSetup()
+        {
+            ExecutionEvents.GraphPostExecution += ExecutionEvents_GraphPostExecution;
+
+            //Clear Temp directory folders before start of the new serialization test run
+            var tempPath = Path.GetTempPath();
+            var jsonFolder = Path.Combine(tempPath, jsonFolderName);
+            var jsonNonGuidFolder = Path.Combine(tempPath,  jsonNonGuidFolderName);
+
+            //Try and delete all the files from the previous run. 
+            //If there's an error in deleting files, the tests should countinue
+            if (System.IO.Directory.Exists(jsonFolder))
+            {
+                try
+                {
+                    Console.WriteLine("Deleting JsonWithView directory from temp");
+                    System.IO.Directory.Delete(jsonFolder, true);
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e.Message);
+                }
+            }
+
+            if (System.IO.Directory.Exists(jsonNonGuidFolder))
+            {
+                try
+                {
+                    Console.WriteLine("Deleting JsonWithViewNonGuid directory from temp");
+                    System.IO.Directory.Delete(jsonNonGuidFolder, true);
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e.Message);
+                }
+            }
+        }
+
+        [TestFixtureTearDown]
+        public void TearDown()
+        {
+            ExecutionEvents.GraphPostExecution -= ExecutionEvents_GraphPostExecution;
+        }
+
+        private void ExecutionEvents_GraphPostExecution(Dynamo.Session.IExecutionSession session)
+        {
+            lastExecutionDuration = (TimeSpan)session.GetParameterValue(Dynamo.Session.ParameterKeys.LastExecutionDuration);
+        }
+
+        /// <summary>
+        /// This parameterized test finds all .dyn files in directories within
+        /// the test directory, opens them and executes, then converts them to
+        /// json and executes again, comparing the values from the two runs.
+        /// </summary>
+        /// <param name="filePath">The path to a .dyn file. This parameter is supplied
+        /// by the test framework.</param>
+        [Test, TestCaseSource("FindWorkspaces"), Category("JsonTestExclude")]
+        public void SerializationTest(string filePath)
+        {
+            DoWorkspaceOpenAndCompareView(filePath,
+               jsonFolderName,
+                ConvertCurrentWorkspaceViewToJsonAndSave,
+                CompareWorkspaceViews,
+                serializationTestUtils.SaveWorkspaceComparisonData);
+        }
+
+        /// <summary>
+        /// This parameterized test finds all .dyn files in directories within
+        /// the test directory, opens them and executes, then converts them to
+        /// json and executes again, comparing the values from the two runs.
+        /// This set of tests has slightly modified json where the id properties
+        /// are altered when serialized to test deserialization of non-guid ids.
+        /// </summary>
+        /// <param name="filePath">The path to a .dyn file. This parameter is supplied
+        /// by the test framework.</param>
+        [Test, TestCaseSource("FindWorkspaces"), Category("JsonTestExclude")]
+        public void SerializationNonGuidIdsTest(string filePath)
+        {
+            modelsGuidToIdMap.Clear();
+            DoWorkspaceOpenAndCompareView(filePath,
+               jsonNonGuidFolderName,
+                ConvertCurrentWorkspaceViewToNonGuidJsonAndSave,
+                CompareWorkspaceViewsDifferentGuids,
+                serializationTestUtils.SaveWorkspaceComparisonDataWithNonGuidIds);
+        }
+
+        [Test]
+        public void CustomNodeSerializationTest()
+        {
+            var customNodeTestPath = Path.Combine(TestDirectory, @"core\CustomNodes\TestAdd.dyn");
+            DoWorkspaceOpenAndCompareView(customNodeTestPath,
+               jsonFolderName, 
+                ConvertCurrentWorkspaceViewToJsonAndSave,
+                CompareWorkspaceViews,
+                serializationTestUtils.SaveWorkspaceComparisonData);
+        }
+
+        [Test]
+        public void NewCustomNodeSaveAndLoadPt1()
+        {
+
+            var funcguid = GuidUtility.Create(GuidUtility.UrlNamespace, "NewCustomNodeSaveAndLoad");
+            //first create a new custom node.
+            this.ViewModel.ExecuteCommand(new DynamoModel.CreateCustomNodeCommand(funcguid, "testnode", "testcategory", "atest", true));
+            var outnode1 = new Output();
+            outnode1.Symbol = "out1";
+            var outnode2 = new Output();
+            outnode1.Symbol = "out2";
+
+            var numberNode = new DoubleInput();
+            numberNode.Value = "5";
+          
+
+            this.ViewModel.CurrentSpace.AddAndRegisterNode(numberNode);
+            this.ViewModel.CurrentSpace.AddAndRegisterNode(outnode1);
+            this.ViewModel.CurrentSpace.AddAndRegisterNode(outnode2);
+
+            new ConnectorModel(numberNode.OutPorts.FirstOrDefault(), outnode1.InPorts.FirstOrDefault(), Guid.NewGuid());
+            new ConnectorModel(numberNode.OutPorts.FirstOrDefault(), outnode2.InPorts.FirstOrDefault(), Guid.NewGuid());
+
+
+            var savePath = Path.Combine(this.ViewModel.Model.PathManager.DefinitionDirectories.FirstOrDefault(), "NewCustomNodeSaveAndLoad.dyf");
+            //save it to the definitions folder so it gets loaded at startup.
+            this.ViewModel.CurrentSpace.Save(savePath);
+
+            //assert the filesaved
+            Assert.IsTrue(File.Exists(savePath));
+            Assert.IsFalse(string.IsNullOrEmpty(File.ReadAllText(savePath)));
+        }
+
+        [Test]
+        public void NewCustomNodeSaveAndLoadPt2()
+        {
+            var funcguid = GuidUtility.Create(GuidUtility.UrlNamespace, "NewCustomNodeSaveAndLoad");
+            var functionnode = this.ViewModel.Model.CustomNodeManager.CreateCustomNodeInstance(funcguid,"testnode",true);
+            Assert.IsTrue(functionnode.IsCustomFunction);
+            Assert.IsFalse(functionnode.IsInErrorState);
+            Assert.AreEqual(functionnode.OutPorts.Count, 2);
+
+            this.ViewModel.CurrentSpace.AddAndRegisterNode(functionnode);
+            var nodeingraph = this.ViewModel.CurrentSpace.Nodes.FirstOrDefault();
+            Assert.NotNull(nodeingraph);
+            Assert.IsTrue(nodeingraph.State == ElementState.Active);
+            //remove custom node from definitions folder
+            var savePath = Path.Combine(this.ViewModel.Model.PathManager.DefinitionDirectories.FirstOrDefault(), "NewCustomNodeSaveAndLoad.dyf");
+            File.Delete(savePath);
+
+        }
+
+
+        [Test]
+        public void AllTypesSerialize()
+        {
+            var customNodeTestPath = Path.Combine(TestDirectory, @"core\serialization\serialization.dyn");
+            DoWorkspaceOpenAndCompareView(customNodeTestPath,
+                jsonFolderName,
+                ConvertCurrentWorkspaceViewToJsonAndSave,
+                CompareWorkspaceViews,
+                serializationTestUtils.SaveWorkspaceComparisonData);
+        }
+
+        // This test checks that all notes are properly converted to annotations
+        // when saving to JSON.
+        [Test]
+        public void NotesSerializeAsAnnotations()
+        {
+            var filePath = Path.Combine(TestDirectory, @"core\serialization\serialization.dyn");
+            DoWorkspaceOpen(filePath);
+            var workspace = ViewModel.Model.CurrentWorkspace;
+
+            var numXMLNotes = workspace.Notes.Count();
+            var numXMLAnnotations = workspace.Annotations.Count();
+
+            var view = JToken.Parse(ViewModel.CurrentSpaceViewModel.ToJson());
+            var numJsonAnnotations = view["Annotations"].Count();
+
+            Assert.AreEqual(numXMLNotes, 0);
+            Assert.AreEqual(numXMLAnnotations, numJsonAnnotations);
+        }
+
+        public object[] FindWorkspaces()
+        {
+            var di = new DirectoryInfo(TestDirectory);
+            var fis = new string[] { "*.dyn", "*.dyf" }
+            .SelectMany(i => di.GetFiles(i, SearchOption.AllDirectories));
+            return fis.Select(fi => fi.FullName).ToArray();
+        }
+
+
+        internal class NodeViewComparisonData
+        {
+            public string ID { get; set; }
+            public bool ShowGeometry { get; set; }
+            public string Name { get; set; }
+            public bool Excluded { get; set; }
+            public double X { get; set; }
+            public double Y { get; set; }
+
+            public override bool Equals(object obj)
+            {
+                var other = (obj as NodeViewComparisonData);
+                return ID == other.ID &&
+                    other.ShowGeometry == this.ShowGeometry &&
+                    other.Name == this.Name &&
+                    other.Excluded == this.Excluded &&
+                    Math.Abs(other.X - this.X) < .0001 &&
+                    Math.Abs(other.Y - this.Y) < .0001;
+            }
+        }
+
+        private class WorkspaceViewComparisonData : serializationTestUtils.WorkspaceComparisonData
+        {
+            public int NodeViewCount { get; set; }
+            public int ConnectorViewCount { get; set; }
+            public Dictionary<Guid, NodeViewComparisonData> NodeViewDataMap { get; set; }
+            public Dictionary<Guid, ExtraAnnotationViewInfo> AnnotationMap { get; set; }
+            public CameraData Camera { get; set; }
+            public double X { get; set; }
+            public double Y { get; set; }
+            public double Zoom { get; set; }
+
+            public WorkspaceViewComparisonData(WorkspaceViewModel workspaceView, EngineController controller):base(workspaceView.Model,controller)
+            {
+                NodeViewCount = workspaceView.Nodes.Count();
+                ConnectorViewCount = workspaceView.Connectors.Count();
+                NodeViewDataMap = new Dictionary<Guid, NodeViewComparisonData>();
+                AnnotationMap = new Dictionary<Guid, ExtraAnnotationViewInfo>();
+
+                foreach (var annotation in workspaceView.Annotations)
+                {
+                    AnnotationMap.Add(annotation.AnnotationModel.GUID, new ExtraAnnotationViewInfo
+                    {
+                        Background = annotation.Background.ToString(),
+                        FontSize = annotation.FontSize,
+                        Nodes = annotation.Nodes.Select(x => x.GUID.ToString()),
+                        Title = annotation.AnnotationText,
+                        Id = annotation.AnnotationModel.GUID.ToString(),
+                        Left = annotation.Left,
+                        Top = annotation.Top,
+                        Width = annotation.Width,
+                        Height = annotation.Height,
+                        InitialTop = annotation.AnnotationModel.InitialTop,
+                        TextBlockHeight = annotation.AnnotationModel.TextBlockHeight
+                    });
+                }
+
+                foreach (var n in workspaceView.Nodes)
+                {
+                    NodeViewDataMap.Add(n.NodeModel.GUID, new NodeViewComparisonData
+                    {
+                        ShowGeometry = n.IsVisible,
+                        ID = n.NodeModel.GUID.ToString(),
+                        Name = n.Name,
+                        Excluded = n.IsFrozenExplicitly,
+                        X = n.X,
+                        Y = n.Y,
+
+                    });
+                }
+
+                X = workspaceView.X;
+                Y = workspaceView.Y;
+                Zoom = workspaceView.Zoom;
+                Camera = workspaceView.Camera;
+            }
         }
     }
 }

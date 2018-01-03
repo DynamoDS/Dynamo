@@ -606,6 +606,13 @@ namespace ProtoCore
             LogWarning(BuildData.WarningID.MultipleSymbolFoundFromName, message);
         }
 
+        public void LogDeprecatedMethodWarning(string oldMethodName, string newMethodName)
+        {
+            var warningMessage = string.Format(Resources.kMethodDeprecated,
+                oldMethodName, newMethodName);
+            LogWarning(BuildData.WarningID.FunctionNotFound, warningMessage);
+        }
+
         /// <summary>
         /// Logs the unbound variable warning and sets the unbound symbol
         /// </summary>

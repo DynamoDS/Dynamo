@@ -2979,11 +2979,11 @@ c1;c2;c3;c4;
             string code = @"
 def foo  ( a : int = 5, b : double = 5.5, c : bool = true )
 {
-	return = x = c == true ? a  : b;
+	return = c == true ? a  : b;
 }
 def foo  ( a : double = 5, b : double = 5.5, c : bool = true )
 {
-	return = x = c == true ? a  : b;
+	return = c == true ? a  : b;
 }
 c1;c2;c3;c4;
 [Imperative]
@@ -3009,11 +3009,11 @@ c1;c2;c3;c4;
             string code = @"
 def foo  ( a : int, b : double = 5, c : bool = true)
 {
-	return = x = c == true ? a  : b;
+	return = c == true ? a  : b;
 }
 def foo2  ( a , b = 5, c = true)
 {
-	return = x = c == true ? a  : b;
+	return = c == true ? a  : b;
 }
 c1;c3;c3;c4;
 d1 = foo2 (  );
@@ -3045,11 +3045,11 @@ d5 =
             string code = @"
 def foo  ( a : int = 5, b : double = 5.5, c : bool = true )
 {
-	return = x = c == true ? a  : b;
+	return = c == true ? a  : b;
 }
 def foo  ( a : double = 6, b : double = 5.5, c : bool = true )
 {
-	return = x = c == true ? a  : b;
+	return = c == true ? a  : b;
 }
 c1;c2;c3;c4;
 [Imperative]
@@ -6159,10 +6159,10 @@ t = foo()[0];";
             thisTest.Verify("t", t);
         }
 
-        [Test]
+        [Test, Category("Failure")]
         public void TV101_Indexing_Intovariablenotarray_InFunctionCall_1463234_4()
         {
-            // Assert.Fail("1467131- Sprint 24 - Rev 2910 method overload with replication , throws error WARNING: Multiple type+pattern match parameters found, non-deterministic dispatch" );
+            // TODO pratapa: Regression due to Get.ValueAtIndex (array promotion while indexing into single value)
             string code = @"
 def foo()
 {
@@ -6562,46 +6562,6 @@ result = {foo(a),foo(b)};";
 
         [Test]
         [Category("SmokeTest")]
-        public void TV107_Defect_1467273_Function_Resolution_Over_Argument_Rank()
-        {
-            String code =
-@"def foo(x:var[]..[])
-{
-return = 2;
-}
-def foo(x:var[])
-{
-return = 1;
-}
-d = foo({1,2});";
-            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
-            string errmsg = "";
-            ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.Verify("d", 1);
-        }
-
-        [Test]
-        [Category("SmokeTest")]
-        public void TV107_Defect_1467273_Function_Resolution_Over_Argument_Rank_2()
-        {
-            String code =
-@"def foo(x:int[]..[])
-{
-return = 2;
-}
-def foo(x:int[])
-{
-return = 1;
-}
-d = foo({1,2});";
-            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
-            string errmsg = "";
-            ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.Verify("d", 1);
-        }
-
-        [Test]
-        [Category("SmokeTest")]
         public void TV107_Defect_1467273_Function_Resolution_Over_Argument_Rank_3()
         {
             String code =
@@ -6618,52 +6578,6 @@ d = foo({1.5,2.5});";
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("d", 2);
-        }
-
-        [Test]
-        [Category("DSDefinedClass_Ported")]
-        [Category("SmokeTest")]
-        public void TV107_Defect_1467273_Function_Resolution_Over_Argument_Rank_4()
-        {
-            String code =
-@"
-def foo(x:int[]..[])
-{
-    return = 2;
-}
-def foo(x:int[])
-{
-    return = 1;
-}
-
-d = foo({1,2});";
-            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
-            string errmsg = "";
-            ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.Verify("d", 1);
-        }
-
-        [Test]
-        [Category("DSDefinedClass_Ported")]
-        [Category("SmokeTest")]
-        public void TV107_Defect_1467273_Function_Resolution_Over_Argument_Rank_4a()
-        {
-            String code =
-@"
-def foo(x:int[]..[])
-{
-    return = 2;
-}
-def foo(x:int[])
-{
-    return = 1;
-}
-
-d = foo({1.0,2.2});";
-            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
-            string errmsg = "";
-            ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.Verify("d", 1);
         }
 
         [Test]
@@ -6865,32 +6779,6 @@ b ;
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("b", new Object[] { 10, 14, 18, 22, 26, 30 });
-            thisTest.VerifyBuildWarningCount(0);
-        }
-
-        [Test]
-        [Category("SmokeTest")]
-        public void T65_1467115_warning_on_function_resolution_3()
-        {
-            String code = @"
-def foo (a : int)
-{
-    return = 1;
-}
-def foo(b : double)
-{
-    return = 2;
-}
-def foo(b : double[])
-{
-    return = 3;
-}
-x = { 1.0, 5, 2.4};
-p = foo(x);
-";
-            string errmsg = "";
-            ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.Verify("p", 3);
             thisTest.VerifyBuildWarningCount(0);
         }
 

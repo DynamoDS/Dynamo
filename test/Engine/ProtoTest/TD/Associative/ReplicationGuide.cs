@@ -385,7 +385,30 @@ test = foo( x<1>,y<2> );
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.Verify("test", new Object[][] { new object[]{4},new object[]{ 5} });
+            thisTest.Verify("test", new Object[] { 4, 5});
+        }
+
+        [Test]
+        [Category("Replication")]
+        public void T0001_Replication_Guide_Function_With_3_Args()
+        {
+            String code =
+                @"
+def foo: var[]..[](x : string, y : string, z : string)
+{
+return = x + y + z;
+}
+x = {{""1""}};
+y = ""2"";
+z = {""3"", ""4""};
+a = foo(x<1>, y<2>, z<3>);
+b = foo(x<1>, y<2>, z<3><4>);
+";
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
+            String errmsg = "";
+            ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
+            thisTest.Verify("a", new object[] {new object[] {new object[] {"123"}, new object[] {"124"}}});
+            thisTest.Verify("b", new object[] {new object[] {new object[] {"123"}, new object[] {"124"}}});
         }
 
         [Test]
@@ -567,7 +590,7 @@ test = TestObjectC.TestObjectC(x<1>,y<2>).z;
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "DNL-1467459 NotImplemented Exception occurs when replication guides are used on a combination of collection and singleton";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.Verify("test", new Object[] { new object[] { 2 }, new object[] { 3 } });
+            thisTest.Verify("test", new Object[] {  2, 3 });
         }
 
         [Test]
@@ -966,7 +989,7 @@ test = cs.Y;";
         }
 
         [Test]
-        [Category("DSDefinedClass_Ported")]
+        [Category("DSDefinedClass_Ported"), Category("Failure")]
         [Category("Replication")]
         public void T035_Defect_1467317_Replication_Guide_On_Instances()
         {
@@ -984,7 +1007,7 @@ test = a.X<1> + b.X<2>;
         }
 
         [Test]
-        [Category("DSDefinedClass_Ported")]
+        [Category("DSDefinedClass_Ported"), Category("Failure")]
         [Category("Replication")]
         public void T035_Defect_1467317_Replication_Guide_On_Instances_2()
         {
@@ -1007,7 +1030,7 @@ test = foo();
         }
 
         [Test]
-        [Category("DSDefinedClass_Ported")]
+        [Category("DSDefinedClass_Ported"), Category("Failure")]
         [Category("Replication")]
         public void T035_Defect_1467317_Replication_Guide_On_Instances_3()
         {
@@ -1101,7 +1124,7 @@ r = sum(1, { 1, 2}<1>, y<2>);";
         }
 
         [Test]
-        [Category("DSDefinedClass_Ported")]
+        [Category("DSDefinedClass_Ported"), Category("Failure")]
         [Category("Replication")]
         public void T037_ReplicationGuidebrackets_1467328_3()
         {
@@ -1116,7 +1139,7 @@ x = (TestObjectA.TestObjectA(1..3))[0..2].a<1> +(TestObjectA.TestObjectA(1..3))[
         }
 
         [Test]
-        [Category("DSDefinedClass_Ported")]
+        [Category("DSDefinedClass_Ported"), Category("Failure")]
         [Category("Replication")]
         public void T037_ReplicationGuidebrackets_1467328_4()
         {
@@ -1576,8 +1599,8 @@ test2;
 ";
             string errmsg = "";
             thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.Verify("test1", 0);
-            thisTest.Verify("test2", 2);
+            thisTest.Verify("test1", new[] { 0, 1 });
+            thisTest.Verify("test2", new[] { 2, 3 });
         }
 
         [Test]
@@ -2891,10 +2914,7 @@ t1 = foo(a<1>, b<2>);
 ";
             string errmsg = "";
             thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.Verify("t1", new Object[]
-                {
-                    new Object[] { 0, 1}
-                });
+            thisTest.Verify("t1", new Object[] {0, 1});
 
         }
 

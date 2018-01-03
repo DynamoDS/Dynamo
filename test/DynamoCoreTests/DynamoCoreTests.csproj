@@ -83,6 +83,7 @@
     <Compile Include="AnalyticsTests.cs" />
     <Compile Include="AtLevelTest.cs" />
     <Compile Include="AttributeTest.cs" />
+    <Compile Include="DummyNodeTests.cs" />
     <Compile Include="ImperativeClodeBlockTest.cs" />
     <Compile Include="ListAtLevelTests.cs" />
     <Compile Include="MultiOutputNodeTest.cs" />
@@ -167,6 +168,10 @@
       <Project>{0d3d43dc-bd7e-46f0-93f7-1c6a6cc79948}</Project>
       <Name>ProtoImperative</Name>
       <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\src\Libraries\Builtin\Builtin.csproj">
+      <Project>{c0d6dee5-5532-4345-9c66-4c00d7fdb8be}</Project>
+      <Name>Builtin</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\src\Libraries\CoreNodeModels\CoreNodeModels.csproj">
       <Project>{d8262d40-4880-41e4-91e4-af8f480c8637}</Project>

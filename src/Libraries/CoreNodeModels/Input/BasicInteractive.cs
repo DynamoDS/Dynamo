@@ -6,6 +6,7 @@ using Dynamo.Graph.Nodes;
 using System.Collections.Generic;
 using Dynamo.Utilities;
 using Newtonsoft.Json;
+using System.Globalization;
 
 namespace CoreNodeModels.Input
 {
@@ -37,18 +38,32 @@ namespace CoreNodeModels.Input
                 }               
             }
         }
+        public override NodeInputData InputData
+        {
+           
+            get
+            {
+                return new NodeInputData()
+                {
+                    Id = this.GUID,
+                    Name = this.Name,
+                    //use the <T> type to convert to the correct nodeTypeString defined by
+                    //the schema
+                    Type = NodeInputData.getNodeInputTypeFromType(typeof(T)),
+                    Description = this.Description,
+                    Value = Value.ToString(),
+                };
+            }
+        }
 
         // Making these abstract so that derived classes are forced to come up 
         // with their implementations rather than default silently taking over.
         protected abstract T DeserializeValue(string val);
         protected abstract string SerializeValue();
 
-        protected BasicInteractive(IEnumerable<PortModel> inPorts,
-            IEnumerable<PortModel> outPorts)
+        protected BasicInteractive(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
         {
             Type type = typeof(T);
-            InPorts.AddRange(inPorts);
-            OutPorts.AddRange(outPorts);
         }
 
         protected BasicInteractive()

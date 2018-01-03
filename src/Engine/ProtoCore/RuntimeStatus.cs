@@ -37,6 +37,7 @@ namespace ProtoCore
             RangeExpressionOutOfMemory,
             MoreThanOneDominantList,
             RunOutOfMemory,
+            InvalidArrayIndexType,
         }
 
         public struct WarningEntry

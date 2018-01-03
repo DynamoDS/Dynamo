@@ -8,6 +8,7 @@ using Dynamo.Utilities;
 using Newtonsoft.Json;
 using ProtoCore.AST.AssociativeAST;
 using Dynamo.Graph.Workspaces;
+using System.ComponentModel;
 
 namespace Dynamo.Graph.Nodes
 {
@@ -81,7 +82,7 @@ namespace Dynamo.Graph.Nodes
                 string useDefaultArgument = string.Empty;
                 if (!UsingDefaultValue && DefaultValue != null)
                     useDefaultArgument = " " + Properties.Resources.DefaultValueDisabled;
-                return toolTip + useDefaultArgument;
+                return toolTip.Contains(Properties.Resources.DefaultValueDisabled)? toolTip: toolTip + useDefaultArgument;
             }
             set
             {
@@ -179,7 +180,8 @@ namespace Dynamo.Graph.Nodes
         /// <summary>
         /// Controls whether this port is set to use it's default value (true) or yield a closure (false).
         /// </summary>
-        [JsonIgnore]
+        [DefaultValue(true)]            
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
         public bool UsingDefaultValue
         {
             get { return usingDefaultValue; }

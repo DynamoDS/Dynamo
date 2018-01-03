@@ -27,6 +27,7 @@ namespace Dynamo.Tests
         protected override void GetLibrariesToPreload(List<string> libraries)
         {
             libraries.Add("ProtoGeometry.dll");
+            libraries.Add("Builtin.dll");
             libraries.Add("DSCoreNodes.dll");
             base.GetLibrariesToPreload(libraries);
         }
@@ -172,26 +173,25 @@ namespace Dynamo.Tests
             // Code blocks:
             //  
             //    a = 1;
-            //    a = 2;
             //
-            //    a = 3;
+            //    a = 2;
             OpenModel(@"core\node2code\sameNames2.dyn");
             var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
             var engine = CurrentDynamoModel.EngineController;
 
             var result = engine.ConvertNodesToCode(nodes, nodes);
-            // We should get 3 ast nodes, but their order is not important. 
+            // We should get 2 ast nodes, but their order is not important. 
             Assert.IsNotNull(result);
             Assert.IsNotNull(result.AstNodes);
-            Assert.AreEqual(3, result.AstNodes.Count());
+            Assert.AreEqual(2, result.AstNodes.Count());
             Assert.True(result.AstNodes.All(n => n is BinaryExpressionNode));
 
             var exprs = String.Concat(result.AstNodes
                                             .Cast<BinaryExpressionNode>()
                                             .Select(e => e.ToString().Replace(" ", String.Empty)));
 
-            Assert.IsTrue(((exprs.Contains("a1=1") && exprs.Contains("a1=2") && exprs.Contains("a=3"))
-                || ((exprs.Contains("a=1") && exprs.Contains("a=2") && exprs.Contains("a1=3")))));
+            Assert.IsTrue(((exprs.Contains("a1=1") && exprs.Contains("a=2"))
+                || ((exprs.Contains("a=1") && exprs.Contains("a1=2")))));
         }
 
         [Test]
@@ -579,7 +579,7 @@ namespace Dynamo.Tests
 
             var expr = result.AstNodes.Last() as BinaryExpressionNode;
             Assert.IsNotNull(expr);
-            Assert.AreEqual("t1.DistanceTo(t2)", expr.RightNode.ToString());
+            Assert.AreEqual("Geometry.DistanceTo(t1, t2)", expr.RightNode.ToString());
         }
 
         [Test]
@@ -839,7 +839,7 @@ namespace Dynamo.Tests
             NodeToCodeCompiler.ReplaceWithShortestQualifiedName(engine.LibraryServices.LibraryManagementCore.ClassTable, result.AstNodes);
             Assert.IsTrue(result != null && result.AstNodes != null);
 
-            var rhs = result.AstNodes.Skip(1).Select(b => (b as BinaryExpressionNode).RightNode.ToString().EndsWith(".X"));
+            var rhs = result.AstNodes.Skip(1).Select(b => (b as BinaryExpressionNode).RightNode.ToString().Contains("get_X"));
             Assert.IsTrue(rhs.All(r => r));
         }
 

@@ -643,7 +643,8 @@ namespace FFITarget
         {
             return value;
         }
-        public double SumAll(double[] arr)
+
+        public double SumAll1D(double[] arr)
         {
             var sum = 0.0;
             if (arr == null)
@@ -658,23 +659,17 @@ namespace FFITarget
             }
             return sum;
         }
-        public double SumAll(double[][] arr)
+
+        public double SumAll2D(double[][] arr)
         {
             var sum = 0.0;
             if (arr == null)
                 return sum;
             foreach (var item in arr)
-                sum += SumAll(item);
+                sum += SumAll1D(item);
             return sum;
         }
-        //public double SumAll(double[,] arr)
-        //{
-        //    var sum = 0.0;
-        //    if(arr == null)
-        //        return sum;
-        //    foreach (var item in arr)
-        //        sum += SumAll(item);
-        //}
+       
         public double[] Twice(double[] arr)
         {
             if (arr == null)

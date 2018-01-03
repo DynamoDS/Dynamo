@@ -3696,6 +3696,33 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The import path &quot;{0}&quot; was added to &quot;Manage Node and Package Paths&quot;. If you want to update or remove this path, please open &quot;Settings &gt; Manage Node and Package Paths...&quot;.
+        /// </summary>
+        public static string PackagePathAutoAddNotificationDetailedDescription {
+            get {
+                return ResourceManager.GetString("PackagePathAutoAddNotificationDetailedDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A library (*.dll, *.ds) was recently imported into Dynamo. Its path was automatically added to &quot;Settings &gt; Manage Node and Package Paths...&quot;.
+        /// </summary>
+        public static string PackagePathAutoAddNotificationShortDescription {
+            get {
+                return ResourceManager.GetString("PackagePathAutoAddNotificationShortDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Package Path Added.
+        /// </summary>
+        public static string PackagePathAutoAddNotificationTitle {
+            get {
+                return ResourceManager.GetString("PackagePathAutoAddNotificationTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Accept Changes.
         /// </summary>
         public static string PackagePathViewAccept {

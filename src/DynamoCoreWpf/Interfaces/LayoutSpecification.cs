@@ -155,7 +155,12 @@ namespace Dynamo.Wpf.Interfaces
         /// <summary>
         /// All other expandable library items that are not categories or groups
         /// </summary>
-        none
+        none,
+
+        /// <summary>
+        /// classType comes directly under its parent category, it contains just text without icon
+        /// </summary>
+        classType,
     }
 
     /// <summary>

@@ -962,7 +962,7 @@ namespace ProtoTest.LiveRunner
         {
             List<string> codes = new List<string>() 
             {
-@"
+@"import(""Builtin.dll"");
 a = (1..2) + (1..2); i = a[0];
 ",
 
@@ -2324,7 +2324,7 @@ r = __Equals(x, {41, 42});
         public void TestFunctionObjectInApply()
         {
             liveRunner = new ProtoScript.Runners.LiveRunner();
-            liveRunner.ResetVMAndResyncGraph(new List<string> { "FunctionObject.ds" });
+            liveRunner.ResetVMAndResyncGraph(new List<string> { "Builtin.dll", "FunctionObject.ds" });
             string code = @"
  def foo(x,y ) { return = x + y; }
  f = __CreateFunctionObject(foo, 2, {1}, {null, 42}, true); r = __Apply(f, 3);
@@ -2727,7 +2727,7 @@ r = __Equals(x, {41, 42});
         {
             List<string> codes = new List<string>() 
             {
-                @"import(""FFITarget.dll"");",
+                @"import(""Builtin.dll"");import(""FFITarget.dll"");",
                 "x = 0..2; p = DummyPoint.ByCoordinates(x, 0.0, 0.0); p[0] = p[0].Translate(0,5,0);",
                 "x = 0..2; p = DummyPoint.ByCoordinates(x, 0.0, 0.0); p[0] = p[0].Translate(0,5,0); b = p[0].Y;"
             };
@@ -2760,7 +2760,7 @@ r = __Equals(x, {41, 42});
         {
             List<string> codes = new List<string>() 
             {
-                @"import(""FFITarget.dll"");",
+                @"import(""Builtin.dll"");import(""FFITarget.dll"");",
                 "x = 0..2; p = DummyPoint.ByCoordinates(x, 0.0, 0.0);",
                 "x = 0..2; p = DummyPoint.ByCoordinates(x, 0.0, 0.0); p[0] = p[0].Translate(0,5,0);",
                 "x = 0..2; p = DummyPoint.ByCoordinates(x, 0.0, 0.0); p[0] = p[0].Translate(0,5,0); b = p[0].Y;"
@@ -4380,7 +4380,7 @@ a = [Imperative]
         {
             List<string> codes = new List<string>() 
             {
-               @"
+               @"import(""Builtin.dll"");
 a = [Imperative]
 {
     x = 0;
@@ -4408,7 +4408,7 @@ a = [Imperative]
         {
             List<string> codes = new List<string>() 
             {
-               @"
+               @"import(""Builtin.dll"");
 a = [Imperative]
 {
     x = 0;
@@ -5662,8 +5662,8 @@ d = [Imperative]
         public void TestFalseCyclicExecution01()
         {
             List<string> codes = new List<string>() 
-            { 
-@"
+            {
+@"import(""Builtin.dll"");
 i = {1}; 
 j = i[0];
 "
@@ -5712,8 +5712,8 @@ j = i[0];
         public void TestFalseCyclicExecution02()
         {
             List<string> codes = new List<string>() 
-            { 
-@"
+            {
+@"import(""Builtin.dll"");
 i = {1,2}; 
 j = i[0];
 k = i[1];
@@ -5771,15 +5771,13 @@ k = i[1];
             List<string> codes = new List<string>() 
             {
 @"
-
+import(""Builtin.dll"");
 import(""FunctionObject.ds"");
 def foosa: var[]..[](a1 : var[]..[], a2 : var[]..[])
 {
     p = a2;
     q = a1;
-    r = {};
-    r[""b""] = q;
-    r[""a""] = p;
+    r = {""b"" : q, ""a"" : p};
     return = r;
 }
 "
@@ -5795,8 +5793,8 @@ z = 3;
 
 @"
 i = foosa(x, y);
-j = __TryGetValueFromNestedDictionaries(i, ""b"");
-k = __TryGetValueFromNestedDictionaries(i, ""a"");
+j = i[""b""];
+k = i[""a""];
 "
 ,
 
@@ -5811,8 +5809,8 @@ i[""a""] = k;
 ,
 @"
 i = foosa(x, z);
-j = __TryGetValueFromNestedDictionaries(i, ""b"");
-k = __TryGetValueFromNestedDictionaries(i, ""a"");
+j = i[""b""];
+k = i[""a""];
 "
             };
 

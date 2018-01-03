@@ -25,9 +25,38 @@ namespace CoreNodeModels.Input
 
         public DateTime()
         {
-            Value = System.DateTime.Now;
+            Value = System.DateTime.UtcNow;
             ArgumentLacing = LacingStrategy.Disabled;
             ShouldDisplayPreviewCore = false;
+        }
+
+        public override NodeInputData InputData
+        {
+            get
+            {
+                return new NodeInputData()
+                {
+                    Id = this.GUID,
+                    Name = this.Name,
+                    Type = NodeInputData.getNodeInputTypeFromType(typeof(System.DateTime)),
+                    Description = this.Description,
+                    //format dateTime with swagger spec in mind:  ISO 8601.
+                    Value = Value.ToString("o", CultureInfo.InvariantCulture),
+                };
+            }
+        }
+
+        /// <summary>
+        /// The NodeType property provides a name which maps to the
+        /// server type for the node. This property should only be
+        /// used for serialization.
+        /// </summary>
+        public override string NodeType
+        {
+            get
+            {
+                return "DateTimeInputNode";
+            }
         }
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
@@ -62,8 +91,9 @@ namespace CoreNodeModels.Input
         protected override System.DateTime DeserializeValue(string val)
         {
             System.DateTime result;
-            return System.DateTime.TryParseExact(val, PreferenceSettings.DefaultDateFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out result) ?
+            result = System.DateTime.TryParseExact(val, PreferenceSettings.DefaultDateFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out result) ?
                 result : PreferenceSettings.DynamoDefaultTime;
+            return System.DateTime.SpecifyKind(result, DateTimeKind.Utc);
         }
 
         protected override string SerializeValue()

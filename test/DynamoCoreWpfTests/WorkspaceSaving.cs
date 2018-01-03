@@ -554,6 +554,30 @@ namespace Dynamo.Tests
             Assert.IsFalse(def.HasUnsavedChanges);
         }
 
+        [Test]
+        [Category("UnitTests")]
+        public void WorkspaceWithDummyXmlNodesSavesAndOpensWithoutThrowing()
+        {
+            //openPath
+            var testFileWithMultipleXmlDummyNode = @"core\dummy_node\dummyNodeXMLMultiple.dyn";
+            string openPath = Path.Combine(TestDirectory, testFileWithMultipleXmlDummyNode);
+            ViewModel.OpenCommand.Execute(openPath);
+            var nodeCount1 = ViewModel.CurrentSpace.Nodes.Count();
+
+            //try saving this graph
+            var newPath = GetNewFileNameOnTempPath("dyn");
+            Assert.DoesNotThrow(()=> { this.ViewModel.SaveAs(newPath); }) ;
+
+            //try to open the file we just saved.
+            Assert.DoesNotThrow(() => { ViewModel.OpenCommand.Execute(newPath); });
+            var nodeCount2 = ViewModel.CurrentSpace.Nodes.Count();
+            //assert we are missing the dummy nodes after opening
+            Assert.Less(nodeCount2, nodeCount1);
+            Assert.IsNotNull(this.ViewModel);
+            Assert.DoesNotThrow(() => { ViewModel.Model.ClearCurrentWorkspace(); });
+            System.IO.File.Delete(newPath);
+        }
+
         #region CustomNodeWorkspaceModel SaveAs side effects
 
         [Test]

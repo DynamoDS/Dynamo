@@ -5,11 +5,18 @@ using System.Linq;
 
 using Dynamo.Utilities;
 using ProtoCore.AST.AssociativeAST;
+using Newtonsoft.Json;
+using Dynamo.Graph.Nodes;
 
 namespace CoreNodeModels
 {
     public abstract class EnumAsInt<T> : EnumBase<T>
     {
+        protected EnumAsInt() { }
+
+        [JsonConstructor]
+        protected EnumAsInt(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts) { }
+
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
             var rhs = AstFactory.BuildIntNode(SelectedIndex);
@@ -34,6 +41,9 @@ namespace CoreNodeModels
     {
         protected EnumBase() : base(typeof(T).ToString()) { }
 
+        [JsonConstructor]
+        protected EnumBase(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(typeof(T).ToString(), inPorts, outPorts) { }
+
         protected override SelectionState PopulateItemsCore(string currentSelection)
         {
             Items.Clear();
@@ -53,9 +63,16 @@ namespace CoreNodeModels
     /// </summary>
     public abstract class AllChildrenOfType<T> : DSDropDownBase
     {
-        protected AllChildrenOfType() : base("Types")
+        private const string outputName = "Types";
+
+        protected AllChildrenOfType() : base(outputName)
         {
             RegisterAllPorts();
+        }
+
+        [JsonConstructor]
+        protected AllChildrenOfType(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(outputName, inPorts, outPorts)
+        {
         }
 
         protected override SelectionState PopulateItemsCore(string currentSelection)

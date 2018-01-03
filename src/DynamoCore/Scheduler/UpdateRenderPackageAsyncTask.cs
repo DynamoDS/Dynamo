@@ -1,14 +1,11 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using Autodesk.DesignScript.Geometry;
 using Autodesk.DesignScript.Interfaces;
 using Dynamo.Engine;
-using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
-using Dynamo.Models;
 using Dynamo.Visualization;
 using ProtoCore.Mirror;
 
@@ -20,7 +17,7 @@ namespace Dynamo.Scheduler
         internal string PreviewIdentifierName { get; set; }
         internal NodeModel Node { get; set; }
         internal EngineController EngineController { get; set; }
-        internal IEnumerable<string> DrawableIds { get; set; }
+        internal IEnumerable<KeyValuePair<Guid, string>> DrawableIdMap { get; set; }
 
         internal bool ForceUpdate { get; set; }
     }
@@ -50,13 +47,13 @@ namespace Dynamo.Scheduler
         private bool isNodeSelected;
         private string previewIdentifierName;
         private EngineController engineController;
-        private IEnumerable<string> drawableIds;
-        private readonly List<IRenderPackage> renderPackages;
+        private IEnumerable<KeyValuePair<Guid, string>> drawableIdMap;
+        private readonly RenderPackageCache renderPackageCache;
         private IRenderPackageFactory factory;
 
-        internal IEnumerable<IRenderPackage> RenderPackages
+        internal RenderPackageCache RenderPackages
         {
-            get { return renderPackages; }
+            get { return renderPackageCache; }
         }
 
         public override TaskPriority Priority
@@ -72,7 +69,7 @@ namespace Dynamo.Scheduler
             : base(scheduler)
         {
             nodeGuid = Guid.Empty;
-            renderPackages = new List<IRenderPackage>();
+            renderPackageCache = new RenderPackageCache();
         }
 
         internal bool Initialize(UpdateRenderPackageParams initParams)
@@ -83,8 +80,8 @@ namespace Dynamo.Scheduler
                 throw new ArgumentNullException("initParams.Node");
             if (initParams.EngineController == null)
                 throw new ArgumentNullException("initParams.EngineController");
-            if (initParams.DrawableIds == null)
-                throw new ArgumentNullException("initParams.DrawableIds");
+            if (initParams.DrawableIdMap == null)
+                throw new ArgumentNullException("initParams.DrawableIdMap");
 
             var nodeModel = initParams.Node;
             if (nodeModel.WasRenderPackageUpdatedAfterExecution && !initParams.ForceUpdate)
@@ -99,8 +96,8 @@ namespace Dynamo.Scheduler
             if (string.IsNullOrEmpty(nodeModel.AstIdentifierForPreview.Value))
                 return false;
 
-            drawableIds = initParams.DrawableIds;
-            if (!drawableIds.Any())
+            drawableIdMap = initParams.DrawableIdMap;
+            if (!drawableIdMap.Any())
                 return false; // Nothing to be drawn.
 
             displayLabels = nodeModel.DisplayLabels;
@@ -126,19 +123,26 @@ namespace Dynamo.Scheduler
                     "UpdateRenderPackageAsyncTask.Initialize not called");
             }
 
-            var data = from varName in drawableIds
-                       select engineController.GetMirror(varName)
-                           into mirror
-                           where mirror != null
-                           select mirror.GetData();
-
-            foreach (var mirrorData in data)
+            var idEnum = drawableIdMap.GetEnumerator();
+            while (idEnum.MoveNext())
             {
-                GetRenderPackagesFromMirrorData(mirrorData, previewIdentifierName, displayLabels);
+                var mirrorData = engineController.GetMirror(idEnum.Current.Value);
+                if (mirrorData == null)
+                    continue;
+
+                GetRenderPackagesFromMirrorData(
+                    idEnum.Current.Key,
+                    mirrorData.GetData(), 
+                    previewIdentifierName, 
+                    displayLabels);
             }
         }
 
-        private void GetRenderPackagesFromMirrorData(MirrorData mirrorData, string tag, bool displayLabels)
+        private void GetRenderPackagesFromMirrorData(
+            Guid outputPortId,
+            MirrorData mirrorData, 
+            string tag, 
+            bool displayLabels)
         {
             if (mirrorData.IsNull)
             {
@@ -153,7 +157,7 @@ namespace Dynamo.Scheduler
                     if (el.IsCollection || el.Data is IGraphicItem)
                     {
                         string newTag = tag + ":" + count;
-                        GetRenderPackagesFromMirrorData(el, newTag, displayLabels);
+                        GetRenderPackagesFromMirrorData(outputPortId, el, newTag, displayLabels);
                     }
                     count = count + 1;
                 }
@@ -305,7 +309,7 @@ namespace Dynamo.Scheduler
                 package.DisplayLabels = displayLabels;
                 package.IsSelected = isNodeSelected;
 
-                renderPackages.Add(package);
+                renderPackageCache.Add(package, outputPortId);
             }
         }
 

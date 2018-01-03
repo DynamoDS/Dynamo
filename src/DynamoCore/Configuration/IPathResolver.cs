@@ -158,6 +158,12 @@ namespace Dynamo.Interfaces
         string PreferenceFilePath { get; }
 
         /// <summary>
+        /// Full path to the python template py file. This setting file is specific 
+        /// to the current user.
+        /// </summary>
+        string PythonTemplateFilePath { get; }
+
+        /// <summary>
         /// Full path to the GalleryContent xml file. The file is located in
         /// the AppData/Dynamo/[version]/gallery/
         /// </summary>

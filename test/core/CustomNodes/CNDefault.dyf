@@ -1,0 +1,35 @@
+<Workspace Version="2.0.0.4501" X="0" Y="0" zoom="1" ScaleFactor="1" Name="CNDefault" Description="Testing Custom Node Default Value Serialization" ID="8ec6c27a-50ce-4ffe-a6de-fd13587a5d60" Category="Core">
+  <NamespaceResolutionMap>
+    <ClassMap partialName="Cuboid" resolvedName="Autodesk.DesignScript.Geometry.Cuboid" assemblyName="ProtoGeometry.dll" />
+    <ClassMap partialName="Point" resolvedName="Autodesk.DesignScript.Geometry.Point" assemblyName="ProtoGeometry.dll" />
+    <ClassMap partialName="Sphere" resolvedName="Autodesk.DesignScript.Geometry.Sphere" assemblyName="ProtoGeometry.dll" />
+  </NamespaceResolutionMap>
+  <Elements>
+    <Dynamo.Graph.Nodes.CodeBlockNodeModel guid="2ab5fe4c-d358-4ec4-9782-d120b367d97e" type="Dynamo.Graph.Nodes.CodeBlockNodeModel" nickname="Code Block" x="488" y="200" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false" CodeText="Sphere.ByCenterPointRadius(center, radius);" ShouldFocus="false">
+      <PortInfo index="0" default="False" name="center" />
+      <PortInfo index="1" default="False" name="radius" />
+      <OutPortInfo LineIndex="0" />
+    </Dynamo.Graph.Nodes.CodeBlockNodeModel>
+    <Dynamo.Graph.Nodes.CustomNodes.Symbol guid="4b3ef246-6ef6-49ea-95db-607b1f083d0c" type="Dynamo.Graph.Nodes.CustomNodes.Symbol" nickname="Input" x="49" y="196" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="True" IsFrozen="false" isPinned="false">
+      <Symbol value="center: Point = Point.ByCoordinates(10,10,10);" />
+    </Dynamo.Graph.Nodes.CustomNodes.Symbol>
+    <Dynamo.Graph.Nodes.CustomNodes.Symbol guid="e2efe8b1-86cd-4779-95f6-fb4cf28038a5" type="Dynamo.Graph.Nodes.CustomNodes.Symbol" nickname="Input" x="255" y="254" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="True" IsFrozen="false" isPinned="false">
+      <Symbol value="radius: double = 5.5;" />
+    </Dynamo.Graph.Nodes.CustomNodes.Symbol>
+    <Dynamo.Graph.Nodes.CustomNodes.Output guid="6a547116-e734-4efb-bdfb-4058c4a05928" type="Dynamo.Graph.Nodes.CustomNodes.Output" nickname="Output" x="943" y="196" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false">
+      <PortInfo index="0" default="False" />
+      <Symbol value="" />
+    </Dynamo.Graph.Nodes.CustomNodes.Output>
+  </Elements>
+  <Connectors>
+    <Dynamo.Graph.Connectors.ConnectorModel start="2ab5fe4c-d358-4ec4-9782-d120b367d97e" start_index="0" end="6a547116-e734-4efb-bdfb-4058c4a05928" end_index="0" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="4b3ef246-6ef6-49ea-95db-607b1f083d0c" start_index="0" end="2ab5fe4c-d358-4ec4-9782-d120b367d97e" end_index="0" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="e2efe8b1-86cd-4779-95f6-fb4cf28038a5" start_index="0" end="2ab5fe4c-d358-4ec4-9782-d120b367d97e" end_index="1" portType="0" />
+  </Connectors>
+  <Notes />
+  <Annotations />
+  <Presets />
+  <Cameras>
+    <Camera Name="Background Preview" eyeX="2.8314362561146" eyeY="9.05709558355063" eyeZ="23.0590080512624" lookX="-2.54229239326341" lookY="1.12245307135493" lookZ="-30.2081339191246" upX="0.0209975516931229" upY="0.968147640378112" upZ="0.249497994487326" />
+  </Cameras>
+</Workspace>

@@ -10,24 +10,28 @@ def __CreateFunctionObject(
     arguments: var[]..[],
     unpackArgs: bool)
 {
-    f = {};
-    f["__fptr"] = fptr;
-    f["__pcount"] = paramCount;
-    f["__unpack"] = unpackArgs;
+    f = { 
+		"__fptr": fptr, 
+		"__pcount" : paramCount, 
+		"__unpack" : unpackArgs
+	};
 
-    a = {};
     hasArgAt[0..paramCount- 1] = false;
     hasArgAt[paramPositions] = true;
-    a["__argflags"] = hasArgAt;
-    a["__args"] = arguments;
 
-    fobj = {};
-    fobj["__func"] = f;
-    fobj["__arginfo"] = a;
+	a = { 
+		"__argflags" : hasArgAt,
+		"__args" : arguments
+	};
+
+    fobj = {
+		"__func" : f,
+		"__arginfo" : a
+	};
     
 	fo = Function();
-	fo.imp = {};
-	fo.imp["__funcobj"] = fobj;
+	imp = { "__funcobj" : fobj };
+	fo.imp = imp;
     return = fo;
 }
 
@@ -41,8 +45,8 @@ def __CreateComposedFunctionObject(fobjs: Function[])
         }
 
         composedObj = Function();
-		composedObj.imp = {};
-        composedObj.imp["__funcobjs"] = fobjs;
+		imp = { "__funcobjs" : fobjs };
+		composedObj.imp = imp;
         return = composedObj;
     }
 }

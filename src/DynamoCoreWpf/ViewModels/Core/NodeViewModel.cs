@@ -56,6 +56,7 @@ namespace Dynamo.ViewModels
         /// <summary>
         /// Returns NodeModel ID
         /// </summary>
+        [JsonConverter(typeof(IdToGuidConverter))]
         public Guid Id
         {
             get { return NodeModel.GUID; }
@@ -266,14 +267,7 @@ namespace Dynamo.ViewModels
             }
         }
 
-        public bool IsUpstreamVisible
-        {
-            get
-            {
-                return nodeLogic.IsUpstreamVisible;
-            }
-        }
-
+    
         [JsonIgnore]
         public Visibility PeriodicUpdateVisibility
         {
@@ -444,7 +438,7 @@ namespace Dynamo.ViewModels
         /// <value>
         ///  Returns true if the node has been frozen explicitly by the user, otherwise false.
         /// </value>  
-        [JsonIgnore]
+        [JsonProperty("Excluded")]
         public bool IsFrozenExplicitly
         {
             get
@@ -573,6 +567,20 @@ namespace Dynamo.ViewModels
             ++NoteViewModel.StaticZIndex;
         }
 
+        public virtual void Dispose()
+        {
+            this.NodeModel.PropertyChanged -= logic_PropertyChanged;
+
+            DynamoViewModel.Model.PropertyChanged -= Model_PropertyChanged;
+            DynamoViewModel.Model.DebugSettings.PropertyChanged -= DebugSettings_PropertyChanged;
+            if (IsDebugBuild)
+            {
+                DynamoViewModel.EngineController.AstBuilt -= EngineController_AstBuilt;
+            }
+
+            DynamoSelection.Instance.Selection.CollectionChanged -= SelectionOnCollectionChanged;
+        }
+
         public NodeViewModel(WorkspaceViewModel workspaceViewModel, NodeModel logic, Size preferredSize)
             : this(workspaceViewModel, logic)
         {
@@ -656,7 +664,7 @@ namespace Dynamo.ViewModels
 
 
         /// <summary>
-        /// Respond to property changes on the model
+        /// Respond to property changes on the Dynamo model
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -709,9 +717,6 @@ namespace Dynamo.ViewModels
                     break;
                 case "IsVisible":
                     RaisePropertyChanged("IsVisible");
-                    break;
-                case "IsUpstreamVisible":
-                    RaisePropertyChanged("IsUpstreamVisible");
                     break;
                 case "Width":
                     RaisePropertyChanged("Width");
@@ -866,6 +871,7 @@ namespace Dynamo.ViewModels
                 {
                     PortViewModel portToRemove = UnSubscribePortEvents(InPorts.ToList().First(x => x.PortModel == item)); ;
                     InPorts.Remove(portToRemove);
+                    portToRemove.Dispose();
                 }
             }
             else if (e.Action == NotifyCollectionChangedAction.Reset)
@@ -873,6 +879,7 @@ namespace Dynamo.ViewModels
                 foreach (var p in InPorts)
                 {
                     UnSubscribePortEvents(p);
+                    p.Dispose();
                 }
                 InPorts.Clear();
             }
@@ -993,23 +1000,7 @@ namespace Dynamo.ViewModels
             DynamoViewModel.RaiseCanExecuteUndoRedo();
         }
 
-        private void ToggleIsUpstreamVisible(object parameter)
-        {
-            // Invert the visibility before setting the value
-            var visibility = (!nodeLogic.IsUpstreamVisible).ToString();
-            var command = new DynamoModel.UpdateModelValueCommand(Guid.Empty,
-                new[] { nodeLogic.GUID }, "IsUpstreamVisible", visibility);
-
-            DynamoViewModel.Model.ExecuteCommand(command);
-            DynamoViewModel.RaiseCanExecuteUndoRedo();
-        }
-
         private bool CanVisibilityBeToggled(object parameter)
-        {
-            return true;
-        }
-
-        private bool CanUpstreamVisibilityBeToggled(object parameter)
         {
             return true;
         }

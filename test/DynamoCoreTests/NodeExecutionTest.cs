@@ -22,6 +22,7 @@ namespace Dynamo.Tests
         protected override void GetLibrariesToPreload(List<string> libraries)
         {
             libraries.Add("VMDataBridge.dll");
+            libraries.Add("Builtin.dll");
             libraries.Add("DSCoreNodes.dll");
             libraries.Add("ProtoGeometry.dll");
             libraries.Add("DSCoreNodes.dll");
@@ -654,6 +655,8 @@ namespace Dynamo.Tests
             //Check whether the geometry node is frozen
             var node = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace("8163332d-21ec-4257-9a5a-0b69462db44f");
             Assert.IsTrue(node.IsFrozen);
+            //Frozen nodes should not get involved in execution.
+            Assert.IsFalse(node.WasInvolvedInExecution);
         }
 
         [Test]

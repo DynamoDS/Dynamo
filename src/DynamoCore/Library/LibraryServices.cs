@@ -75,7 +75,7 @@ namespace Dynamo.Engine
 
         private readonly Dictionary<string, UpgradeHint> priorNameHints =
             new Dictionary<string, UpgradeHint>();
-
+        
         /// <summary>
         /// Copy properties from the liveCore
         /// The properties to copy are only those used by the library core
@@ -393,6 +393,20 @@ namespace Dynamo.Engine
                     return functionGroup.GetFunctionDescriptor(mangledName);
             }
             return null;
+        }
+
+        /// <summary>
+        /// Returns a dictionary of old names vs. new names for node migration
+        /// </summary>
+        /// <returns></returns>
+        public Dictionary<string, string> GetPriorNames()
+        {
+            var priorNames = new Dictionary<string, string>();
+            foreach (var kvp in priorNameHints)
+            {
+                priorNames[kvp.Key] = kvp.Value.UpgradeName;
+            }
+            return priorNames;
         }
 
         /// <summary>

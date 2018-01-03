@@ -6,7 +6,6 @@ using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Xml;
-using Autodesk.DesignScript.Interfaces;
 using Dynamo.Configuration;
 using Dynamo.Engine;
 using Dynamo.Engine.CodeGeneration;
@@ -35,7 +34,6 @@ namespace Dynamo.Graph.Nodes
 
         private LacingStrategy argumentLacing = LacingStrategy.Auto;
         private bool displayLabels;
-        private bool isUpstreamVisible;
         private bool isVisible;
         private bool canUpdatePeriodically;
         private string name;
@@ -193,28 +191,6 @@ namespace Dynamo.Graph.Nodes
                 {
                     isVisible = value;
                     RaisePropertyChanged("IsVisible");
-                }
-            }
-        }
-
-        /// <summary>
-        ///     Returns whether the node aggregates its upstream connections
-        ///     for visualizations.
-        /// </summary>
-        [JsonIgnore]
-        public bool IsUpstreamVisible
-        {
-            get
-            {
-                return isUpstreamVisible;
-            }
-
-            private set // Private setter, see "ArgumentLacing" for details.
-            {
-                if (isUpstreamVisible != value)
-                {
-                    isUpstreamVisible = value;
-                    RaisePropertyChanged("IsUpstreamVisible");
                 }
             }
         }
@@ -722,7 +698,7 @@ namespace Dynamo.Graph.Nodes
         {
             get
             {
-                return GUID.ToString().Replace("-", string.Empty).ToLower();
+                return GUID.ToString("N");
             }
         }
 
@@ -811,14 +787,18 @@ namespace Dynamo.Graph.Nodes
             }
             set
             {
+                bool oldValue = isFrozenExplicitly;
                 isFrozenExplicitly = value;
                 //If the node is Unfreezed then Mark all the downstream nodes as
                 // modified. This is essential recompiling the AST.
                 if (!value)
                 {
-                    MarkDownStreamNodesAsModified(this);
-                    OnNodeModified();
-                    RaisePropertyChanged("IsFrozen");
+                    if (oldValue)
+                    {
+                        MarkDownStreamNodesAsModified(this);
+                        OnNodeModified();
+                        RaisePropertyChanged("IsFrozen");
+                    }
                 }
                 //If the node is frozen, then do not execute the graph immediately.
                 // delete the node and its downstream nodes from AST.
@@ -850,6 +830,12 @@ namespace Dynamo.Graph.Nodes
         public override bool ShouldSerializeY()
         {
             return false;
+        }
+
+        [JsonIgnore]
+        public virtual NodeInputData InputData
+        {
+           get { return null; }
         }
 
         #endregion
@@ -959,12 +945,16 @@ namespace Dynamo.Graph.Nodes
             inputNodes = new Dictionary<int, Tuple<int, NodeModel>>();
             outputNodes = new Dictionary<int, HashSet<Tuple<int, NodeModel>>>();
 
+            // Initialize the port events
+            // Note: It is important that this occurs before the ports are added next
+            InPorts.CollectionChanged += PortsCollectionChanged;
+            OutPorts.CollectionChanged += PortsCollectionChanged;
+
             // Set the ports from the deserialized data
             InPorts.AddRange(inPorts);
             OutPorts.AddRange(outPorts);
 
             IsVisible = true;
-            IsUpstreamVisible = true;
             ShouldDisplayPreviewCore = true;
             executionHint = ExecutionHints.Modified;
 
@@ -986,9 +976,6 @@ namespace Dynamo.Graph.Nodes
             ArgumentLacing = LacingStrategy.Disabled;
 
             RaisesModificationEvents = true;
-
-            InPorts.CollectionChanged += PortsCollectionChanged;
-            OutPorts.CollectionChanged += PortsCollectionChanged;
         }
 
         protected NodeModel()
@@ -997,7 +984,6 @@ namespace Dynamo.Graph.Nodes
             outputNodes = new Dictionary<int, HashSet<Tuple<int, NodeModel>>>();
 
             IsVisible = true;
-            IsUpstreamVisible = true;
             ShouldDisplayPreviewCore = true;
             executionHint = ExecutionHints.Modified;
 
@@ -1243,24 +1229,23 @@ namespace Dynamo.Graph.Nodes
                 return result;
             }
 
-            var emptyList = AstFactory.BuildExprList(new List<AssociativeNode>());
-            var previewIdInit = AstFactory.BuildAssignment(AstIdentifierForPreview, emptyList);
+            // Create AST for Dictionary initialization:
+            // var_ast_identifier = {"outport1" : var_ast_identifier_out1, ..., "outportn" : var_ast_identifier_outn};
+            var kvps = OutPorts.Select((outNode, index) =>
+                new KeyValuePair<StringNode, IdentifierNode>
+                    (new StringNode {Value = outNode.Name}, GetAstIdentifierForOutputIndex(index)));
 
-            return
-                result.Concat(new[] { previewIdInit })
-                      .Concat(
-                          OutPorts.Select(
-                              (outNode, index) =>
-                                  AstFactory.BuildAssignment(
-                                      new IdentifierNode(AstIdentifierForPreview)
-                                      {
-                                          ArrayDimensions =
-                                              new ArrayNode
-                                              {
-                                                  Expr = new StringNode { Value = outNode.Name }
-                                              }
-                                      },
-                                      GetAstIdentifierForOutputIndex(index))));
+            var dict = new DictionaryExpressionBuilder();
+            foreach (var kvp in kvps)
+            {
+                dict.AddKey(kvp.Key);
+                dict.AddValue(kvp.Value);
+            }
+            return result.Concat(new[]
+            {
+                AstFactory.BuildAssignment(
+                    this.AstIdentifierForPreview, dict.ToFunctionCall())
+            });
         }
 
         /// <summary>
@@ -1415,25 +1400,22 @@ namespace Dynamo.Graph.Nodes
             ToolTipText = "";
         }
 
+        private void ClearPersistentWarning()
+        {
+            persistentWarning = String.Empty;
+        }
+
         /// <summary>
-        /// Clears the errors/warnings that are generated when running the graph.
-        /// If the node has a value supplied for the persistentWarning, then the
-        /// node's State will be set to ElementState.Persistent and the ToolTipText will
-        /// be set to the persistent warning. Otherwise, the State will be
-        /// set to ElementState.Dead
+        /// Clears the errors/warnings that are generated when running the graph,
+        /// the State will be set to ElementState.Dead.
         /// </summary>
-        public virtual void ClearRuntimeError()
+        public virtual void ClearErrorsAndWarnings()
         {
             State = ElementState.Dead;
+            ClearPersistentWarning();
+
             SetNodeStateBasedOnConnectionAndDefaults();
-            if (!string.IsNullOrEmpty(persistentWarning))
-            {
-                ToolTipText = persistentWarning;
-            }
-            else
-            {
-                ClearTooltipText();
-            }
+            ClearTooltipText();
         }
 
         public void SelectNeighbors()
@@ -1497,12 +1479,17 @@ namespace Dynamo.Graph.Nodes
             if (isPersistent)
             {
                 State = ElementState.PersistentWarning;
-                ToolTipText = string.Format("{0}\n{1}", persistentWarning, p);
+                if (!string.Equals(persistentWarning, p))
+                {
+                    persistentWarning += p;
+                }
+                ToolTipText = persistentWarning;
             }
             else
             {
                 State = ElementState.Warning;
-                ToolTipText = p;
+                ToolTipText = string.IsNullOrEmpty(persistentWarning) ? p : string.Format("{0}\n{1}", persistentWarning, p);
+                ClearPersistentWarning();
             }
         }
 
@@ -1933,12 +1920,6 @@ namespace Dynamo.Graph.Nodes
                         IsVisible = newVisibilityValue;
                     return true;
 
-                case "IsUpstreamVisible":
-                    bool newUpstreamVisibilityValue;
-                    if (bool.TryParse(value, out newUpstreamVisibilityValue))
-                        IsUpstreamVisible = newUpstreamVisibilityValue;
-                    return true;
-
                 case "IsFrozen":
                     bool newIsFrozen;
                     if (bool.TryParse(value, out newIsFrozen))
@@ -2056,7 +2037,6 @@ namespace Dynamo.Graph.Nodes
             helper.SetAttribute("x", X);
             helper.SetAttribute("y", Y);
             helper.SetAttribute("isVisible", IsVisible);
-            helper.SetAttribute("isUpstreamVisible", IsUpstreamVisible);
             helper.SetAttribute("lacing", ArgumentLacing.ToString());
             helper.SetAttribute("isSelectedInput", IsSetAsInput.ToString());
             helper.SetAttribute("IsFrozen", isFrozenExplicitly);
@@ -2114,7 +2094,6 @@ namespace Dynamo.Graph.Nodes
             X = helper.ReadDouble("x", 0.0);
             Y = helper.ReadDouble("y", 0.0);
             isVisible = helper.ReadBoolean("isVisible", true);
-            isUpstreamVisible = helper.ReadBoolean("isUpstreamVisible", true);
             argumentLacing = helper.ReadEnum("lacing", LacingStrategy.Disabled);
             IsSetAsInput = helper.ReadBoolean("isSelectedInput", true);
             isFrozenExplicitly = helper.ReadBoolean("IsFrozen", false);
@@ -2188,8 +2167,7 @@ namespace Dynamo.Graph.Nodes
                 RaisePropertyChanged("Name");
                 RaisePropertyChanged("ArgumentLacing");
                 RaisePropertyChanged("IsVisible");
-                RaisePropertyChanged("IsUpstreamVisible");
-
+                 
                 //we need to modify the downstream nodes manually in case the
                 //undo is for toggling freeze. This is ONLY modifying the execution hint.
                 // this does not run the graph.
@@ -2303,7 +2281,7 @@ namespace Dynamo.Graph.Nodes
                 Node = this,
                 RenderPackageFactory = factory,
                 EngineController = engine,
-                DrawableIds = GetDrawableIds(),
+                DrawableIdMap = GetDrawableIdMap(),
                 PreviewIdentifierName = AstIdentifierForPreview.Name,
                 ForceUpdate = forceUpdate
             };
@@ -2327,52 +2305,56 @@ namespace Dynamo.Graph.Nodes
         private void OnRenderPackageUpdateCompleted(AsyncTask asyncTask)
         {
             var task = asyncTask as UpdateRenderPackageAsyncTask;
-            var packages = new List<IRenderPackage>();
-            if (task.RenderPackages.Any())
+            var packages = new RenderPackageCache();
+
+            if (!task.RenderPackages.IsEmpty())
             {
-                packages.AddRange(task.RenderPackages);
-                packages.AddRange(OnRequestRenderPackages());
-
+                packages.Add(task.RenderPackages);
+                packages.Add(OnRequestRenderPackages());
             }
-            OnRenderPackagesUpdated(packages);
 
+            OnRenderPackagesUpdated(packages);
         }
 
         /// <summary>
         ///
         /// </summary>
-        public event Func<IEnumerable<IRenderPackage>> RequestRenderPackages;
+        public event Func<RenderPackageCache> RequestRenderPackages;
 
         /// <summary>
         /// This event handler is invoked when the render packages (specific to this node)
         /// become available and in addition the node requests for associated render packages
         /// if any for example, packages used for associated node manipulators
         /// </summary>
-        private IEnumerable<IRenderPackage> OnRequestRenderPackages()
+        private RenderPackageCache OnRequestRenderPackages()
         {
             if (RequestRenderPackages != null)
             {
                 return RequestRenderPackages();
             }
-            return new List<IRenderPackage>();
+
+            return new RenderPackageCache();
         }
 
         /// <summary>
-        /// Returns list of drawable Ids as registered with visualization manager
-        /// for all the output port of the given node.
+        /// Returns a map of output port GUIDs and drawable Ids as registered 
+        /// with visualization manager for all the output ports of the given node.
         /// </summary>
         /// <returns>List of Drawable Ids</returns>
-        private IEnumerable<string> GetDrawableIds()
+        private IEnumerable<KeyValuePair<Guid, string>> GetDrawableIdMap()
         {
-            var drawables = new List<String>();
-            for (int i = 0; i < OutPorts.Count; ++i)
+            var idMap = new Dictionary<Guid, string>();
+            for (int index = 0; index < OutPorts.Count; ++index)
             {
-                string id = GetDrawableId(i);
+                string id = GetDrawableId(index);
                 if (!string.IsNullOrEmpty(id))
-                    drawables.Add(id);
+                {
+                    Guid originId = OutPorts[index].GUID;
+                    idMap[originId] = id;
+                }
             }
 
-            return drawables;
+            return idMap;
         }
 
         /// <summary>
@@ -2425,7 +2407,7 @@ namespace Dynamo.Graph.Nodes
             return migrationData;
         }
 
-        [NodeMigration(version: "1.3.0.0")]
+        [NodeMigration(version: "1.4.0.0")]
         public static NodeMigrationData MigrateShortestLacingToAutoLacing(NodeMigrationData data)
         {
             var migrationData = new NodeMigrationData(data.Document);
@@ -2448,9 +2430,9 @@ namespace Dynamo.Graph.Nodes
 
         protected bool ShouldDisplayPreviewCore { get; set; }
 
-        public event Action<NodeModel, IEnumerable<IRenderPackage>> RenderPackagesUpdated;
+        public event Action<NodeModel, RenderPackageCache> RenderPackagesUpdated;
 
-        private void OnRenderPackagesUpdated(IEnumerable<IRenderPackage> packages)
+        private void OnRenderPackagesUpdated(RenderPackageCache packages)
         {
             if (RenderPackagesUpdated != null)
             {

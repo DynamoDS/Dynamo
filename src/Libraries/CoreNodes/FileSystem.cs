@@ -16,8 +16,10 @@ namespace DSCore.IO
     /// <summary>
     ///     Methods for working with Files.
     /// </summary>
-    public static class File
+    public static class FileSystem
     {
+        #region file methods
+
         /// <summary>
         /// Returns absolute path from the given path. If the given path is 
         /// relative path then it is resolved with respect to the current 
@@ -34,13 +36,13 @@ namespace DSCore.IO
             if (Path.IsPathRooted(path)) return path;
 
             var session = Dynamo.Events.ExecutionEvents.ActiveSession;
-            if(session != null && !string.IsNullOrEmpty(session.CurrentWorkspacePath))
+            if (session != null && !string.IsNullOrEmpty(session.CurrentWorkspacePath))
             {
                 var parent = Path.GetDirectoryName(session.CurrentWorkspacePath);
                 var filepath = Path.Combine(parent, path);
                 //If hint path is null or file exists at this location return the computed path
                 //If hint path doesn't exist then the relative path might be for write operation.
-                if (File.Exists(filepath) || string.IsNullOrEmpty(hintPath) || !File.Exists(hintPath))
+                if (FileSystem.FileExists(filepath) || string.IsNullOrEmpty(hintPath) || !FileSystem.FileExists(hintPath))
                     return Path.GetFullPath(filepath);
             }
 
@@ -53,7 +55,7 @@ namespace DSCore.IO
         /// <param name="path"></param>
         /// <returns></returns>
         [IsVisibleInDynamoLibrary(false)]
-        public static FileInfo FromPath(string path)
+        public static FileInfo FileFromPath(string path)
         {
             return new FileInfo(AbsolutePath(path));
         }
@@ -74,10 +76,10 @@ namespace DSCore.IO
         /// <param name="path"></param>
         /// <param name="newPath"></param>
         /// <param name="overwrite"></param>
-        public static void Move(string path, string newPath, bool overwrite = false)
+        public static void MoveFile(string path, string newPath, bool overwrite = false)
         {
-            if (overwrite && Exists(newPath))
-                Delete(newPath);
+            if (overwrite && FileExists(newPath))
+                DeleteFile(newPath);
             System.IO.File.Move(path, newPath);
         }
 
@@ -85,7 +87,7 @@ namespace DSCore.IO
         ///   Deletes the specified file.
         /// </summary>
         /// <param name="path"></param>
-        public static void Delete(string path)
+        public static void DeleteFile(string path)
         {
             System.IO.File.Delete(path);
         }
@@ -96,7 +98,7 @@ namespace DSCore.IO
         /// <param name="file"></param>
         /// <param name="destinationPath"></param>
         /// <param name="overwrite"></param>
-        public static void Copy(FileInfo file, string destinationPath, bool overwrite = false)
+        public static void CopyFile(FileInfo file, string destinationPath, bool overwrite = false)
         {
             file.CopyTo(destinationPath, overwrite);
         }
@@ -106,7 +108,7 @@ namespace DSCore.IO
         /// </summary>
         /// <param name="path"></param>
         /// <search>filepath</search>
-        public static bool Exists(string path)
+        public static bool FileExists(string path)
         {
             return System.IO.File.Exists(path);
         }
@@ -124,6 +126,18 @@ namespace DSCore.IO
         }
 
         /// <summary>
+        /// Append the text content to a file specified by the path
+        /// </summary>
+        /// <param name="filePath">Path to write to</param>
+        /// <param name="text">Text content</param>
+        /// <search>append file,write file,text,file,filepath</search>
+        public static void AppendText(string filePath, string text)
+        {
+            var fullpath = AbsolutePath(filePath);
+            System.IO.File.AppendAllText(fullpath, text);
+        }
+
+        /// <summary>
         ///     Combines multiple strings into a single file path.
         /// </summary>
         /// <param name="paths">String to combine into a path.</param>
@@ -131,7 +145,7 @@ namespace DSCore.IO
         {
             return Path.Combine(paths);
         }
-  
+
         /// <summary>
         /// Returns the extension from a file path.
         /// </summary>
@@ -140,7 +154,7 @@ namespace DSCore.IO
         {
             return Path.GetExtension(path);
         }
-  
+
         /// <summary>
         ///     Changes the extension of a file path.
         /// </summary>
@@ -150,7 +164,7 @@ namespace DSCore.IO
         {
             return Path.ChangeExtension(path, newExtension);
         }
-  
+
         /// <summary>
         /// Returns the directory name of a file path.
         /// </summary>
@@ -160,7 +174,7 @@ namespace DSCore.IO
         {
             return Path.GetDirectoryName(path);
         }
-  
+
         /// <summary>
         /// Returns the file name of a file path.
         /// </summary>
@@ -170,7 +184,7 @@ namespace DSCore.IO
         {
             return withExtension ? Path.GetFileName(path) : Path.GetFileNameWithoutExtension(path);
         }
-  
+
         /// <summary>
         ///     Determines whether or not a file path contains an extension.
         /// </summary>
@@ -181,19 +195,24 @@ namespace DSCore.IO
         }
 
         /// <summary>          
-        ///     Returns all of the contents of a given directory.
+        ///  Returns all of the contents of a given directory.
         /// </summary>
         /// <param name="directory">Directory to get contents of.</param>
         /// <param name="searchString">Search string used to filter results. Defaults to "*.*" (displays all contents).</param>
+        /// <param name="includeSubdirectories">Set to true to include files & folders in subdirectories (recursive) or set to false to include results from top-level of given directory only. Defaults to false.</param>
         [MultiReturn("files", "directories")]
-        public static Dictionary<string, IList> GetDirectoryContents(DirectoryInfo directory, string searchString = "*.*")
+        public static Dictionary<string, IList> GetDirectoryContents(DirectoryInfo directory, string searchString = "*.*", bool includeSubdirectories = false)
         {
+            var searchOptions = SearchOption.TopDirectoryOnly;
+            if (includeSubdirectories == true) searchOptions = SearchOption.AllDirectories;
+
             return new Dictionary<string, IList>
             {
-                { "files", directory.EnumerateFiles(searchString).Select(x => x.FullName).ToList() },
-                { "directories", directory.EnumerateDirectories(searchString).Select(x => x.FullName).ToList() }
+                { "files", directory.EnumerateFiles(searchString, searchOptions).Select(x => x.FullName).ToList() },
+                { "directories", directory.EnumerateDirectories(searchString, searchOptions).Select(x => x.FullName).ToList() }
             };
         }
+        #endregion
 
         #region directory methods
         /// <summary>
@@ -204,13 +223,13 @@ namespace DSCore.IO
         /// <param name="overwriteFiles"></param>
         public static void CopyDirectory(DirectoryInfo directory, string destinationPath, bool overwriteFiles = false)
         {
-            if (!Exists(destinationPath))
+            if (!FileExists(destinationPath))
                 System.IO.Directory.CreateDirectory(destinationPath);
 
             foreach (var file in directory.EnumerateFiles())
             {
                 var newFilePath = Path.Combine(destinationPath, file.Name);
-                Copy(file, newFilePath, overwriteFiles);
+                CopyFile(file, newFilePath, overwriteFiles);
             }
 
             foreach (var dir in directory.EnumerateDirectories())
@@ -265,7 +284,7 @@ namespace DSCore.IO
             foreach (var file in info.EnumerateFiles())
             {
                 var newFilePath = Path.Combine(newPath, file.Name);
-                Move(file.FullName, newFilePath, overwriteFiles);
+                MoveFile(file.FullName, newFilePath, overwriteFiles);
             }
 
             foreach (var dir in info.EnumerateDirectories())
@@ -276,14 +295,13 @@ namespace DSCore.IO
         }
         #endregion
 
-
         #region Obsolete Methods
 
 
         [NodeObsolete("ReadImageObsolete", typeof(Properties.Resources))]
         public static Color[] ReadImage(string path, int xSamples, int ySamples)
         {
-            var info = FromPath(path);
+            var info = FileFromPath(path);
             var image = Image.ReadFromFile(info);
             return Image.Pixels(image, xSamples, ySamples).SelectMany(x => x).ToArray();
         }
@@ -291,13 +309,13 @@ namespace DSCore.IO
         [NodeObsolete("LoadImageFromPathObsolete", typeof(Properties.Resources))]
         public static Bitmap LoadImageFromPath(string path)
         {
-            return Image.ReadFromFile(FromPath(path));
+            return Image.ReadFromFile(FileFromPath(path));
         }
 
         [NodeObsolete("ReadTextObsolete", typeof(Properties.Resources))]
         public static string ReadText(string path)
         {
-            return ReadText(FromPath(path));
+            return ReadText(FileFromPath(path));
         }
 
         [NodeObsolete("WriteImageObsolete", typeof(Properties.Resources))]
@@ -340,7 +358,7 @@ namespace DSCore.IO
         /// <param name="ySamples">Number of sample grid points in the Y direction.</param>
         /// <returns name="colors">Colors at the specified grid points.</returns>
         /// <search>read,image,bitmap,png,jpg,jpeg</search>
-        public static Color[][] Pixels(Bitmap image, int? xSamples=null, int? ySamples=null)
+        public static Color[][] Pixels(Bitmap image, int? xSamples = null, int? ySamples = null)
         {
             var numX = xSamples ?? image.Width;
             var numY = ySamples ?? image.Height;
@@ -350,7 +368,7 @@ namespace DSCore.IO
                     .Select(
                         y =>
                             Enumerable.Range(0, numX)
-                                .Select(x => 
+                                .Select(x =>
                                      Color.ByColor(image.GetPixel(x * (image.Width / numX), y * (image.Height / numY))))
                                 .ToArray())
                     .ToArray();
@@ -417,10 +435,10 @@ namespace DSCore.IO
         [MultiReturn("width", "height")]
         public static Dictionary<string, int> Dimensions(Bitmap image)
         {
-            return new Dictionary<string, int> 
-            { 
-                { "width", image.Width }, 
-                { "height", image.Height } 
+            return new Dictionary<string, int>
+            {
+                { "width", image.Width },
+                { "height", image.Height }
             };
         }
 
@@ -433,7 +451,7 @@ namespace DSCore.IO
         /// <search>write image,image,file,filepath</search>
         public static void WriteToFile(string path, Bitmap image)
         {
-            image.Save(File.AbsolutePath(path));
+            image.Save(FileSystem.AbsolutePath(path));
         }
     }
 }

@@ -16,7 +16,7 @@ namespace ProtoCore.Utils
         /// is null it will search only in the executing assembly path or the
         /// current directory.</param>
         /// <returns>Full path for the file if located successfully else the 
-        /// file name when failed to loate the given file</returns>
+        /// file name when failed to locate the given file</returns>
         public static string GetDSFullPathName(string fileName, Options options = null)
         {
             // trim white space chars

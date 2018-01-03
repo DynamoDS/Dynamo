@@ -62,6 +62,14 @@ namespace CoreNodeModels
                 RaisePropertyChanged("Items");
             }
         }
+        public override NodeInputData InputData
+        {
+            //TODO There is not yet an appropriate input type
+            //defined in the cogs graph schema to support dropdowns
+            //which return arbitrary objects at some index - implement this
+            //when that exists.
+            get { return null; }
+        }
 
         private int selectedIndex = 0;
         public int SelectedIndex
@@ -85,6 +93,12 @@ namespace CoreNodeModels
         {
             OutPorts.Add(new PortModel(PortType.Output, this, new PortData(outputName, string.Format(Resources.DropDownPortDataResultToolTip, outputName))));
             RegisterAllPorts();
+            PopulateItems();
+        }
+
+        [JsonConstructor]
+        protected DSDropDownBase(string outputName, IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
+        {
             PopulateItems();
         }
 

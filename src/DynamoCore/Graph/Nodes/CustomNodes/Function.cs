@@ -54,11 +54,42 @@ namespace Dynamo.Graph.Nodes.CustomNodes
         }
 
         /// <summary>
+        /// Initializes ports with default information when the function is unresolved.
+        /// </summary>
+        /// <param name="inputs">The input nodes for tis function node.</param>
+        /// <param name="outputs">The output nodes for tis function node.</param>
+        public void UpdatePortsForUnresolved(PortModel[] inputs, PortModel[] outputs)
+        {
+            InPorts.Clear();
+            for (int input = 0; input < inputs.Length; input++)
+                InPorts.Add(new PortModel(PortType.Input, this, new PortData(inputs[input].Name, inputs[input].ToolTip)));
+
+            OutPorts.Clear();
+            for (int output = 0; output < outputs.Length; output++)
+                OutPorts.Add(new PortModel(PortType.Output, this, new PortData(outputs[output].Name, outputs[output].ToolTip)));
+
+            RegisterAllPorts();
+        }
+
+        /// <summary>
         /// The unique id of the underlying function.
         /// </summary>
-        public Guid FunctionUuid
+        public Guid FunctionSignature
         {
             get { return Definition.FunctionId; }
+        }
+
+        /// <summary>
+        /// It indicates which of the three types of function calls this node represents, 
+        /// a call to an external graph, a call to a function with a vararg argument, 
+        /// or a standard function.
+        /// </summary>
+        public string FunctionType
+        {
+            get
+            {
+                return "Graph";
+            }
         }
 
         /// <summary>
@@ -68,7 +99,7 @@ namespace Dynamo.Graph.Nodes.CustomNodes
         {
             get
             {
-                return "CustomFunctionNode";
+                return "FunctionNode";
             }
         }
 
@@ -269,7 +300,7 @@ namespace Dynamo.Graph.Nodes.CustomNodes
             } 
             else
             {
-                this.ClearRuntimeError();
+                this.ClearErrorsAndWarnings();
             }
         }
 
@@ -319,8 +350,9 @@ namespace Dynamo.Graph.Nodes.CustomNodes
         ///     Responsible for resolving 
         ///     a partial class name to its fully resolved name
         /// </summary>
+        [JsonIgnore]
         public ElementResolver ElementResolver { get; set; }
-        
+
         /// <summary>
         ///     Initializes a new instance of the <see cref="Symbol"/> class.
         /// </summary>
@@ -338,8 +370,20 @@ namespace Dynamo.Graph.Nodes.CustomNodes
         }
 
         /// <summary>
+        ///     Initializes a new instance of the <see cref="Symbol"/> class.
+        /// </summary>
+        [JsonConstructor]
+        public Symbol(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts, TypedParameter parameter) : base(inPorts, outPorts)
+        {
+            ArgumentLacing = LacingStrategy.Disabled;
+            InputSymbol = parameter.ToString();
+            ElementResolver = new ElementResolver();
+        }
+
+        /// <summary>
         ///     Represents string input. 
         /// </summary>
+        [JsonIgnore]
         public string InputSymbol
         {
             get { return inputSymbol; }
@@ -347,7 +391,7 @@ namespace Dynamo.Graph.Nodes.CustomNodes
             {
                 inputSymbol = value;
                 name = inputSymbol;
-                ClearRuntimeError();
+                ClearErrorsAndWarnings();
 
                 var type = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var);
                 AssociativeNode defaultValue = null;
@@ -561,6 +605,15 @@ namespace Dynamo.Graph.Nodes.CustomNodes
         }
 
         /// <summary>
+        /// Create output node.
+        /// </summary>
+        [JsonConstructor]
+        public Output(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
+        {
+            ArgumentLacing = LacingStrategy.Disabled;
+        }
+
+        /// <summary>
         /// Text in output node.
         /// </summary>
         public string Symbol
@@ -569,7 +622,7 @@ namespace Dynamo.Graph.Nodes.CustomNodes
             set
             {
                 symbol = value;
-                ClearRuntimeError();
+                ClearErrorsAndWarnings();
 
                 string comment = string.Empty;
                 IdentifierNode identNode;
@@ -591,6 +644,7 @@ namespace Dynamo.Graph.Nodes.CustomNodes
         /// <summary>
         /// Output name and its description tuple.
         /// </summary>
+        [JsonIgnore]
         public Tuple<string, string> Return
         {
             get
