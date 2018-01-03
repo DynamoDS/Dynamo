@@ -24,14 +24,17 @@ namespace Dynamo.Docs
         /// <param name="args">The arguments.</param>
         static void Main(string[] args)
         {
-            var asm = Assembly.LoadFrom(args[0]);
+            var path1 = @"C:\GitHub\Dynamo\bin\AnyCPU\Debug\DynamoCore.dll";
+            var path2 = @"C:\GitHub\Dynamo\bin\AnyCPU\Debug\DynamoCore.xml";
+
+            var asm = Assembly.LoadFrom(path1);
             var namespaces = MarkDownLibrary.GetAllNamespacesInAssemblyWithPublicMembers(asm);
 
             var docsFolder = Helper.CreateDocsFolder();
 
             if (docsFolder != null)
             {
-                var xml = XDocument.Load(args[1]);
+                var xml = XDocument.Load(path2);
 
                 Helper.HandleConstructors(xml);
                 Helper.HandleGenerics(xml);
@@ -47,7 +50,8 @@ namespace Dynamo.Docs
 
                     foreach (var t in publicTypes)
                     {
-                        MarkDownLibrary.GenerateMarkdownDocumentForType(t, outputDir, xml);
+                       //  MarkDownLibrary.GenerateMarkdownDocumentForType(t, outputDir, xml);
+                        JSONMarkDownLibrary.GenerateMarkdownDocumentForType(t, outputDir, xml);
                     }
                 }
 
