@@ -102,6 +102,36 @@ COMPILER DesignScriptParser
         return false;
     }
 
+    private bool IsLanguageBlock()
+    {
+        short state = 0;
+        Token pt = la;
+        while (pt.kind != _EOF)
+        {
+            switch (state)
+            {
+                case 0:
+                    if (pt.val == "[")
+                    {
+                        state = 1;
+                        pt = scanner.Peek();
+                        continue;
+                    }
+                    goto fail;
+                case 1:
+                    if (pt.val == "Associative" || pt.val == "Imperative")
+                    {
+                        return true;
+                    }
+					goto fail;
+            }
+        }
+
+        fail:
+        scanner.ResetPeek();
+        return false;
+    }
+
 	// Recognize: 
     //     { "foo" :   
     // OR   

@@ -91,7 +91,8 @@ Imperative_stmt<out ProtoCore.AST.ImperativeAST.ImperativeNode node>
         |
         Imperative_forloop<out node>
         |
-        Imperative_languageblock<out node>      
+		IF(IsLanguageBlock())
+			Imperative_languageblock<out node>      
         |
         (
             kw_break 
@@ -155,7 +156,8 @@ Imperative_returnstmt<out ProtoCore.AST.ImperativeAST.ImperativeNode node>
 	.)
 
 	(
-	Imperative_languageblock<out rhs>
+	IF(IsLanguageBlock())
+		Imperative_languageblock<out rhs>
 	|
 	Imperative_expr<out rhs>
     (.
@@ -348,7 +350,10 @@ Imperative_assignstmt<out ProtoCore.AST.ImperativeAST.ImperativeNode node>
                     IF(HasMoreAssignmentStatements())
                         Imperative_assignstmt<out rhsNode>
                 )
-                |        
+				|
+				IF(IsLanguageBlock())
+                    Imperative_languageblock<out rhsNode>
+                |
                 (
                     Imperative_expr<out rhsNode>        
                     (.
@@ -356,10 +361,6 @@ Imperative_assignstmt<out ProtoCore.AST.ImperativeAST.ImperativeNode node>
                            SynErr(Resources.SemiColonExpected);
                     .)
                     endline
-                )
-                |
-                (
-                    Imperative_languageblock<out rhsNode>       
                 )
             )
             (.
@@ -896,7 +897,7 @@ Imperative_NameReference<ref ProtoCore.AST.ImperativeAST.ImperativeNode node>
                                         nameNode = node as ProtoCore.AST.ImperativeAST.ArrayNameNode;
                                     .)
         )
-        |
+		|
 		IF(IsDictionaryExpression())
         (
             Imperative_DictionaryExpression<out node>
@@ -904,9 +905,16 @@ Imperative_NameReference<ref ProtoCore.AST.ImperativeAST.ImperativeNode node>
                                         nameNode = node as ProtoCore.AST.ImperativeAST.ArrayNameNode;
                                     .)
         )
-        |
+		|
         (
             Imperative_ExprList<out node>
+                                    (.
+                                        nameNode = node as ProtoCore.AST.ImperativeAST.ArrayNameNode;
+                                    .)
+        )
+        |
+        (
+            Imperative_DeprecatedExprList<out node>
                                     (.
                                         nameNode = node as ProtoCore.AST.ImperativeAST.ArrayNameNode;
                                     .)
@@ -1072,8 +1080,29 @@ Imperative_DictionaryExpression<out ProtoCore.AST.ImperativeAST.ImperativeNode n
 
 Imperative_ExprList<out ProtoCore.AST.ImperativeAST.ImperativeNode node>
 =
+        '['                         (.
+                                        var exprlist = new ProtoCore.AST.ImperativeAST.ExprListNode();
+                                        NodeUtils.SetNodeStartLocation(exprlist, t);
+                                    .)
+            [
+                                    
+                Imperative_expr<out node>          (. exprlist.Exprs.Add(node); .)
+                {
+                    ','
+                    Imperative_expr<out node>      (. exprlist.Exprs.Add(node); .)
+                }
+         
+            ]
+        ']'                         (.
+                                        NodeUtils.SetNodeEndLocation(exprlist, t);
+                                        node = exprlist;
+                                    .)
+.
+
+Imperative_DeprecatedExprList<out ProtoCore.AST.ImperativeAST.ImperativeNode node>
+=
         '{'                         (.
-                                        ProtoCore.AST.ImperativeAST.ExprListNode exprlist = new ProtoCore.AST.ImperativeAST.ExprListNode();
+                                        var exprlist = new ProtoCore.AST.ImperativeAST.ExprListNode();
                                         NodeUtils.SetNodeStartLocation(exprlist, t);
                                     .)
             [
@@ -1090,7 +1119,6 @@ Imperative_ExprList<out ProtoCore.AST.ImperativeAST.ImperativeNode node>
                                         node = exprlist;
                                     .)
 .
-
 Imperative_num<out ProtoCore.AST.ImperativeAST.ImperativeNode node>         
     (.  
         node = null; 

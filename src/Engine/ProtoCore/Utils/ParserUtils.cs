@@ -122,10 +122,6 @@ namespace ProtoCore.Utils
         /// <summary>
         /// Returns a parser for the DS code.
         /// </summary>
-        /// <param name="code"></param>
-        /// <param name="core"></param>
-        /// <param name="hasBuiltInLoaded"></param>
-        /// <returns></returns>
         public static DesignScriptParser.Parser CreateParser(string code, ProtoCore.Core core)
         {
             byte[] buffer = System.Text.Encoding.UTF8.GetBytes(code);

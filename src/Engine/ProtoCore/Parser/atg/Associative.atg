@@ -161,7 +161,8 @@ Associative_Statement<out ProtoCore.AST.AssociativeAST.AssociativeNode node>
                             (. node = null; .)
 (
 		Associative_ReturnStatement<out node>
-    |      
+    | 
+	IF(IsLanguageBlock())
         Associative_LanguageBlock<out node>
 	|
 	IF(IsNonAssignmentStatement())
@@ -211,6 +212,7 @@ Associative_ReturnStatement<out ProtoCore.AST.AssociativeAST.AssociativeNode nod
 		ProtoCore.AST.AssociativeAST.AssociativeNode rhs = null;
 	.)
 	(
+		IF(IsLanguageBlock())
 		    Associative_LanguageBlock<out rhs>
 		|
 			Associative_Expression<out rhs>
@@ -1047,10 +1049,11 @@ Associative_FunctionalStatement<out ProtoCore.AST.AssociativeAST.AssociativeNode
                 )
                 |
                 (  
+					IF(IsLanguageBlock())
                                 (. 
                                     withinModifierCheckScope = false; 
                                 .)
-                    Associative_LanguageBlock<out rightNode>
+						Associative_LanguageBlock<out rightNode>
                                 (. 
                                     NodeUtils.SetNodeEndLocation(expressionNode, t);
                                     expressionNode.LeftNode = leftNode;
@@ -1533,9 +1536,26 @@ Associative_Ident<out ProtoCore.AST.AssociativeAST.AssociativeNode node>
             .)
 .
 
-Associative_ArrayExprList<out ProtoCore.AST.AssociativeAST.AssociativeNode node>
+Associative_ExprList<out ProtoCore.AST.AssociativeAST.AssociativeNode node>
 =
-'{'                                     (. ProtoCore.AST.AssociativeAST.ExprListNode exprlist = new ProtoCore.AST.AssociativeAST.ExprListNode(); .)
+'['                                     (. var exprlist = new ProtoCore.AST.AssociativeAST.ExprListNode(); .)
+                                        (. NodeUtils.SetNodeStartLocation(exprlist, t); .)
+    [
+                                        
+        Associative_Expression<out node>            (. exprlist.Exprs.Add(node); .)
+        {
+            ','
+            Associative_Expression<out node>        (. exprlist.Exprs.Add(node); .)
+        }
+                                        
+    ]
+']'                                     (. NodeUtils.SetNodeEndLocation(exprlist, t); .)
+                                        (. node = exprlist; .)
+.
+
+Associative_DeprecatedExprList<out ProtoCore.AST.AssociativeAST.AssociativeNode node>
+=
+'{'                                     (. var exprlist = new ProtoCore.AST.AssociativeAST.ExprListNode(); .)
                                         (. NodeUtils.SetNodeStartLocation(exprlist, t); .)
     [
                                         
@@ -1642,9 +1662,16 @@ Associative_NameReference<ref ProtoCore.AST.AssociativeAST.AssociativeNode node>
                                             nameNode = node as ProtoCore.AST.AssociativeAST.ArrayNameNode;
                                         .)
         )
+		|
+        (
+            Associative_ExprList<out node>
+                                        (.
+                                            nameNode = node as ProtoCore.AST.AssociativeAST.ArrayNameNode;
+                                        .)
+        )
         |
         (
-            Associative_ArrayExprList<out node>
+            Associative_DeprecatedExprList<out node>
                                         (.
                                             nameNode = node as ProtoCore.AST.AssociativeAST.ArrayNameNode;
                                         .)
