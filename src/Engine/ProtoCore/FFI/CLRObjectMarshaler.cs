@@ -602,7 +602,7 @@ namespace ProtoFFI
     }
 
     /// <summary>
-    /// This class marshales CLR Objects to DS Object and vice-versa.
+    /// This class marshals CLR Objects to DS Object and vice-versa.
     /// </summary>
     class CLRObjectMarshaler : FFIObjectMarshaler
     {
