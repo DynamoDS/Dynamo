@@ -1136,7 +1136,7 @@
                                                                                  Value="Saved">
                                                                         <!--TODO find out what is up with this binding did it ever do anything?-->
                                                                         <Setter Property="Header"
-                                                                                Value="{Binding Path=CurrentSpaceViewModel, Converter={StaticResource WorkspaceToFileNameConverter}}" />
+                                                                                Value="{Binding Converter={StaticResource WorkspaceToFileNameConverter}}" />
                                                                     </DataTrigger>
 
                                                                     <DataTrigger Binding="{Binding HasUnsavedChanges}"
