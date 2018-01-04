@@ -1,5 +1,7 @@
 ﻿namespace ProtoCore.AST
 {
+    using System.Collections.Generic;
+
     public abstract class Node
     {
         private static int sID;
@@ -44,5 +46,7 @@
         {
             ID = id;
         }
+
+        public abstract IEnumerable<Node> Children();
     }
 }
