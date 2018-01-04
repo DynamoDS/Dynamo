@@ -106,7 +106,6 @@
     <Compile Include="DSASM\DSObject.cs" />
     <Compile Include="DSASM\DSString.cs" />
     <Compile Include="FFI\CLRObjectMarshaler.cs" />
-    <Compile Include="FFI\CLRObjectMarshler.cs" />
     <Compile Include="Lang\InternalAttributes.cs" />
     <Compile Include="Lang\Replication\ArgumentAtLevel.cs" />
     <Compile Include="AttributeEntry.cs" />
