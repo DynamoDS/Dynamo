@@ -1134,8 +1134,9 @@
                                                                     </DataTrigger>
                                                                     <DataTrigger Binding="{Binding Path=FileName, Converter={StaticResource PathToSaveStateConverter}}"
                                                                                  Value="Saved">
+                                                                        <!--TODO find out what is up with this binding did it ever do anything?-->
                                                                         <Setter Property="Header"
-                                                                                Value="{Binding FileName, Converter={StaticResource PathToFileNameConverter}}" />
+                                                                                Value="{Binding Path=CurrentSpaceViewModel, Converter={StaticResource WorkspaceToFileNameConverter}}" />
                                                                     </DataTrigger>
 
                                                                     <DataTrigger Binding="{Binding HasUnsavedChanges}"
@@ -1390,7 +1391,7 @@
                                                                        Value="Saved" />
                                                         </MultiDataTrigger.Conditions>
                                                         <Setter Property="Text"
-                                                                Value="{Binding Path=FileName, Converter={StaticResource PathToFileNameConverter}}" />
+                                                                Value="{Binding Converter={StaticResource WorkspaceToFileNameConverter}}" />
                                                     </MultiDataTrigger>
 
                                                     <MultiDataTrigger>
@@ -1412,7 +1413,7 @@
                                                                        Value="Saved" />
                                                         </MultiDataTrigger.Conditions>
                                                         <Setter Property="Text"
-                                                                Value="{Binding Path=FileName, Converter={StaticResource PathToFileNameConverter}}" />
+                                                                Value="{Binding Converter={StaticResource WorkspaceToFileNameConverter}}" />
                                                     </MultiDataTrigger>
 
                                                 </Style.Triggers>
