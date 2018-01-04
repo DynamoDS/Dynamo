@@ -105,6 +105,7 @@
     <Compile Include="DSASM\DSArray.cs" />
     <Compile Include="DSASM\DSObject.cs" />
     <Compile Include="DSASM\DSString.cs" />
+    <Compile Include="FFI\CLRObjectMarshaler.cs" />
     <Compile Include="Lang\InternalAttributes.cs" />
     <Compile Include="Lang\Replication\ArgumentAtLevel.cs" />
     <Compile Include="AttributeEntry.cs" />
@@ -171,7 +172,6 @@
     <Compile Include="DynamicFunctionTable.cs" />
     <Compile Include="Exceptions\DebugHalting.cs" />
     <Compile Include="FFI\CLRFFIFunctionPointer.cs" />
-    <Compile Include="FFI\CLRObjectMarshler.cs" />
     <Compile Include="FFI\ImportModuleHandler.cs" />
     <Compile Include="Parser\AssociativeAST.cs" />
     <Compile Include="Parser\AST.cs" />
