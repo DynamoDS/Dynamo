@@ -354,7 +354,7 @@ namespace ProtoFFI
 
     public class PInvokeModuleHelper : ModuleHelper
     {
-        public override FFIObjectMarshler GetMarshaller(ProtoCore.RuntimeCore runtimeCore)
+        public override FFIObjectMarshaler GetMarshaler(ProtoCore.RuntimeCore runtimeCore)
         {
             return null;
         }
