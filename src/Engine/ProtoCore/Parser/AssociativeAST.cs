@@ -2251,7 +2251,7 @@ namespace ProtoCore.AST.AssociativeAST
         {
             var buf = new StringBuilder();
 
-            buf.Append("{");
+            buf.Append("[");
             if (Exprs != null)
             {
                 for (int i = 0; i < Exprs.Count; ++i)
@@ -2261,7 +2261,7 @@ namespace ProtoCore.AST.AssociativeAST
                         buf.Append(", ");
                 }
             }
-            buf.Append("}");
+            buf.Append("]");
             buf.Append(base.ToString());
 
             return buf.ToString();
