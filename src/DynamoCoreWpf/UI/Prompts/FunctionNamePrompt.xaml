@@ -20,7 +20,8 @@
 
         <StackPanel Margin="15">
 
-            <TextBlock Name ="Indicator" Foreground="WhiteSmoke" Padding="0,15,0,15" FontSize="15" Text="{x:Static p:Resources.CustomNodePropertyWindowTitle}"/>
+            <TextBlock Name ="Indicator" Foreground="WhiteSmoke" Padding="0,15,0,0" FontSize="15" Text="{x:Static p:Resources.CustomNodePropertyWindowTitle}"/>
+            <TextBlock Name ="MainText" Foreground="DarkGray" FontSize="13" TextWrapping="Wrap" Text="{x:Static p:Resources.CustomNodePropertyWindowMainText}"/>
             <Label Content="{x:Static p:Resources.CustomNodePropertyWindowName}" Foreground="DarkGray" Height="28" Margin="0,10,0,0"  HorizontalAlignment="Left" Name="TitleLabel" VerticalAlignment="Top" >
                 <Label.ToolTip>
                     <TextBlock Text="{x:Static p:Resources.CustomNodePromptNameTooltip}" />
@@ -38,7 +39,7 @@
                      Name="DescriptionInput" Padding="5" MinLines="3" TextWrapping="Wrap" AcceptsReturn="True" Tag="{x:Static p:Resources.CustomNodePropertyWindowDescriptionHint}"/>
 
             <Label Content="{x:Static p:Resources.CustomNodePropertyWindowCategory}" Foreground="DarkGray" Height="28" HorizontalAlignment="Stretch" Name="label2"  />
-            <ComboBox FontSize="14" Style="{DynamicResource ResourceKey=SComboBox}" Background="Black" Foreground="White" HorizontalAlignment="Stretch" Name="categoryBox" Margin="0" IsEditable="True" TabIndex="1" />
+            <ComboBox FontSize="14" Style="{DynamicResource ResourceKey=SComboBox}" Background="Black" Foreground="White" HorizontalAlignment="Stretch" Name="categoryBox" Margin="0" IsEditable="True" TabIndex="1" SelectionChanged="categoryBox_SelectionChanged" />
 
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,25,0,0">
 

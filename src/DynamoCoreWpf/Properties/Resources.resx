@@ -2192,4 +2192,8 @@ Want to publish a different package?</value>
   <data name="RerunButtonToolTip" xml:space="preserve">
     <value>Rerun the graph.</value>
   </data>
+  <data name="CustomNodePropertyWindowMainText" xml:space="preserve">
+    <value>Custom Nodes will be placed in the Add-Ons section of the library.</value>
+    <comment>Note regarding Custom Node library location</comment>
+  </data>
 </root>

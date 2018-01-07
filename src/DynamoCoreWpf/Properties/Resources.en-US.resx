@@ -426,6 +426,10 @@ You will get a chance to save your work.</value>
     <value>Name of Custom Node</value>
     <comment>Text box hint</comment>
   </data>
+  <data name="CustomNodePropertyWindowMainText" xml:space="preserve">
+    <value>Custom Nodes will be placed in the Add-Ons section of the library.</value>
+    <comment>Note regarding Custom Node library location</comment>
+  </data>
   <data name="CustomNodePropertyWindowTitle" xml:space="preserve">
     <value>Custom Node Properties</value>
     <comment>Dialog name</comment>
