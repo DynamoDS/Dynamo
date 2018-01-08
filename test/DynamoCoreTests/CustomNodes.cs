@@ -1035,7 +1035,7 @@ namespace Dynamo.Tests
             Assert.AreEqual("x2:var\n\nvar", customInstance.InPorts[2].ToolTip);
 
             Assert.AreEqual("x3", customInstance.InPorts[3].Name);
-            Assert.AreEqual("x3:var\n\nvar[]\nDefault value : {1}", customInstance.InPorts[3].ToolTip);
+            Assert.AreEqual("x3:var\n\nvar[]\nDefault value : [1]", customInstance.InPorts[3].ToolTip);
 
             Assert.AreEqual("x4", customInstance.InPorts[4].Name);
             Assert.AreEqual("comment1\ncomment2\ncomment3\n\nvar[]..[]", customInstance.InPorts[4].ToolTip);
