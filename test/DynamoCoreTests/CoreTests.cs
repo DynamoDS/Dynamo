@@ -826,37 +826,6 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void NodesHaveCorrectLocationsIndpendentOfCulture()
-        {
-            string openPath = Path.Combine(TestDirectory, @"core\nodeLocationTest.dyn");
-            Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo("es-AR");
-            OpenModel(openPath);
-
-            Assert.AreEqual(1, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
-            var node = CurrentDynamoModel.CurrentWorkspace.Nodes.First();
-            Assert.AreEqual(217.952067513811, node.X);
-            Assert.AreEqual(177.041832898393, node.Y);
-
-            Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo("zu-ZA");
-            OpenModel(openPath);
-
-            Assert.AreEqual(1, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
-            node = CurrentDynamoModel.CurrentWorkspace.Nodes.First();
-            Assert.AreEqual(217.952067513811, node.X);
-            Assert.AreEqual(177.041832898393, node.Y);
-
-            Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo("ja-JP");
-            OpenModel(openPath);
-
-            Assert.AreEqual(1, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
-            node = CurrentDynamoModel.CurrentWorkspace.Nodes.First();
-            Assert.AreEqual(217.952067513811, node.X);
-            Assert.AreEqual(177.041832898393, node.Y);
-
-            Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo("en-US");
-        }
-
-        [Test]
         [Category("RegressionTests")]
         public void Defect_MAGN_3166()
         {
