@@ -8,16 +8,6 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 
-namespace ProtoCore.AST {
-    public static class NodeEnumerableExtensions
-    {
-        public static IEnumerable<Node> ToEnumerable(this Node item)
-        {
-            return new List<Node>() { item };
-        }
-    }
-}
-
 namespace ProtoCore.AST.ImperativeAST
 {
     public static class NodeEnumerableExtensions
@@ -237,7 +227,7 @@ namespace ProtoCore.AST.ImperativeAST
 
         public override IEnumerable<Node> Children()
         {
-            return this.ArrayDimensions.ToEnumerable();
+            return this.ArrayDimensions.AsEnumerable();
         }
     }
 
@@ -924,7 +914,7 @@ namespace ProtoCore.AST.ImperativeAST
         {
             StringBuilder buf = new StringBuilder();
 
-            buf.Append("{");
+            buf.Append("[");
             if (Exprs != null)
             {
                 for (int i = 0; i < Exprs.Count; ++i)
@@ -934,7 +924,7 @@ namespace ProtoCore.AST.ImperativeAST
                         buf.Append(", ");
                 }
             }
-            buf.Append("}");
+            buf.Append("]");
             buf.Append(base.ToString());
 
             return buf.ToString();
@@ -1451,7 +1441,7 @@ namespace ProtoCore.AST.ImperativeAST
 
         public override IEnumerable<Node> Children()
         {
-            return this.IfExprNode.ToEnumerable()
+            return this.IfExprNode.AsEnumerable()
                 .Concat(this.IfBody)
                 .Concat(this.IfBodyPosition)
                 .Concat(this.ElseIfList)
@@ -1537,7 +1527,7 @@ namespace ProtoCore.AST.ImperativeAST
 
         public override IEnumerable<Node> Children()
         {
-            return this.Expr.ToEnumerable()
+            return this.Expr.AsEnumerable()
                 .Concat(this.Body);
         }
     }
@@ -1595,7 +1585,7 @@ namespace ProtoCore.AST.ImperativeAST
 
         public override IEnumerable<Node> Children()
         {
-            return this.Expression.ToEnumerable();
+            return this.Expression.AsEnumerable();
         }
     }
 

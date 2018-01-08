@@ -766,4 +766,50 @@ namespace ProtoCore.SyntaxAnalysis
             return nodes.Select(n => n.Accept(this)).ToList();
         }
     }
+
+    /// <summary>
+    /// AstTraversal visits all nodes of the AST unless the result of a Visit* method is false.
+    /// </summary>
+    public abstract class AstTraversal : AstVisitor<bool, bool>
+    {
+        public sealed override bool VisitAssociativeNode(AssociativeNode node)
+        {
+            return DefaultVisit(node);
+        }
+
+        public sealed override bool VisitImperativeNode(ImperativeNode node)
+        {
+            return DefaultVisit(node);
+        }
+
+        private bool DefaultVisit(Node node)
+        {
+            if (node == null) return true;
+
+            foreach (var n in node.Children())
+            {
+                if (n is AssociativeNode)
+                {
+                    if (!(n as AssociativeNode).Accept(this))
+                    {
+                        return false;
+                    }
+                }
+                else if (n is ImperativeNode)
+                {
+                    if (!(n as ImperativeNode).Accept(this))
+                    {
+                        return false;
+                    }
+                }
+
+                if (!DefaultVisit(n))
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+    }
 }

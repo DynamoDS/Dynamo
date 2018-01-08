@@ -301,7 +301,7 @@ namespace ProtoCore.AST.AssociativeAST
 
         public override IEnumerable<Node> Children()
         {
-            return this.RepGuide.ToEnumerable();
+            return this.RepGuide.AsEnumerable();
         }
     }
 
@@ -490,7 +490,7 @@ namespace ProtoCore.AST.AssociativeAST
 
         public override IEnumerable<Node> Children()
         {
-            return this.ArrayDimensions.ToEnumerable()
+            return this.ArrayDimensions.AsEnumerable()
                 .Concat(this.ReplicationGuides)
                 .Concat(this.AtLevel);
         }
@@ -551,7 +551,7 @@ namespace ProtoCore.AST.AssociativeAST
 
         public override IEnumerable<Node> Children()
         {
-            return this.Expression.ToEnumerable();
+            return this.Expression.AsEnumerable();
         }
     }
 
@@ -734,7 +734,7 @@ namespace ProtoCore.AST.AssociativeAST
 
         public override IEnumerable<Node> Children()
         {
-            return this.LeftNode.ToEnumerable()
+            return this.LeftNode.AsEnumerable()
                 .Concat(this.RightNode)
                 .Concat(base.Children());
         }
@@ -1195,7 +1195,8 @@ namespace ProtoCore.AST.AssociativeAST
 
         public override IEnumerable<Node> Children()
         {
-            return this.Function.ToEnumerable().Concat(this.FormalArguments);
+            return this.Function.AsEnumerable()
+                .Concat(this.FormalArguments);
         }
     }
 
@@ -1272,7 +1273,8 @@ namespace ProtoCore.AST.AssociativeAST
 
         public override IEnumerable<Node> Children()
         {
-            return this.FunctionCall.ToEnumerable().Concat(this.Arguments);
+            return this.FunctionCall.AsEnumerable()
+                .Concat(this.Arguments);
         }
     }
 
@@ -1363,7 +1365,7 @@ namespace ProtoCore.AST.AssociativeAST
 
         public override IEnumerable<Node> Children()
         {
-            return this.NameNode.ToEnumerable();
+            return this.NameNode.AsEnumerable();
         }
     }
 
@@ -1790,7 +1792,7 @@ namespace ProtoCore.AST.AssociativeAST
 
         public override IEnumerable<Node> Children()
         {
-            return this.FunctionBody.ToEnumerable();
+            return this.FunctionBody.AsEnumerable();
         }
     }
 
@@ -1971,7 +1973,7 @@ namespace ProtoCore.AST.AssociativeAST
 
         public override IEnumerable<Node> Children()
         {
-            return this.ifExprNode.ToEnumerable()
+            return this.ifExprNode.AsEnumerable()
                 .Concat(this.IfBody)
                 .Concat(this.ElseBody);
         }
@@ -2052,7 +2054,7 @@ namespace ProtoCore.AST.AssociativeAST
 
         public override IEnumerable<Node> Children()
         {
-            return this.ConditionExpression.ToEnumerable()
+            return this.ConditionExpression.AsEnumerable()
                 .Concat(this.TrueExpression)
                 .Concat(this.FalseExpression);
         }
@@ -2198,7 +2200,7 @@ namespace ProtoCore.AST.AssociativeAST
 
         public override IEnumerable<Node> Children()
         {
-            return this.LeftNode.ToEnumerable()
+            return this.LeftNode.AsEnumerable()
                 .Concat(this.RightNode);
         }
     }
@@ -2245,7 +2247,7 @@ namespace ProtoCore.AST.AssociativeAST
 
         public override IEnumerable<Node> Children()
         {
-            return this.Expression.ToEnumerable();
+            return this.Expression.AsEnumerable();
         }
     }
 
@@ -2355,7 +2357,7 @@ namespace ProtoCore.AST.AssociativeAST
 
         public override IEnumerable<Node> Children()
         {
-            return this.From.ToEnumerable()
+            return this.From.AsEnumerable()
                 .Concat(this.To)
                 .Concat(this.Step)
                 .Concat(base.Children());
@@ -2512,7 +2514,7 @@ namespace ProtoCore.AST.AssociativeAST
 
         public override IEnumerable<Node> Children()
         {
-            return this.Expr.ToEnumerable();
+            return this.Expr.AsEnumerable();
         }
     }
 
@@ -2600,7 +2602,7 @@ namespace ProtoCore.AST.AssociativeAST
 
         public override IEnumerable<Node> Children()
         {
-            return this.CodeNode.ToEnumerable();
+            return this.CodeNode.AsEnumerable();
         }
     }
 

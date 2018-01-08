@@ -86,6 +86,27 @@ namespace Dynamo.Graph.Nodes
             get { return false; }
         }
 
+
+        class ListCollector : AstTraversal
+        {
+            private readonly List<ExprListNode> nodes = new List<ExprListNode>();
+
+            public override bool VisitExprListNode(ExprListNode node)
+            {
+                nodes.Add(node);
+                return true;
+            }
+
+            private ListCollector() {}
+
+            public static IEnumerable<ExprListNode> Collect(CodeBlockNode node)
+            {
+                var c = new ListCollector();
+                node.Accept(c);
+                return c.nodes;
+            }
+        }
+
         #region Public Methods
 
         /// <summary>
@@ -98,6 +119,7 @@ namespace Dynamo.Graph.Nodes
             ArgumentLacing = LacingStrategy.Disabled;
             this.libraryServices = libraryServices;
             this.ElementResolver = new ElementResolver();
+
             ProcessCodeDirect();
         }
 
@@ -135,6 +157,10 @@ namespace Dynamo.Graph.Nodes
             code = userCode;
             GUID = guid;
             ShouldFocus = false;
+
+            var cb = ParserUtils.Parse(userCode);
+            var nodes = ListCollector.Collect(cb);
+            
 
             ProcessCodeDirect();
         }
