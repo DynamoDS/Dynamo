@@ -867,7 +867,7 @@ It does not contain your graph or any personal data</value>
     <value>Custom Node Property Error</value>
   </data>
   <data name="CustomNodePropertyWindowCategory" xml:space="preserve">
-    <value>Category</value>
+    <value>Add-ons Category</value>
     <comment>Label - specify custom node category</comment>
   </data>
   <data name="CustomNodePropertyWindowDescription" xml:space="preserve">
