@@ -305,7 +305,7 @@
         {
           "text": "Dictionary",
           "iconUrl": "",
-          "elementType": "group",
+          "elementType": "category",
           "include": [
             {
               "path": "Builtin.DesignScript.Builtin.Dictionary.ByKeysValues"
