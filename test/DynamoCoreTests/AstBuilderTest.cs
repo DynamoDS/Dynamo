@@ -99,7 +99,7 @@ namespace Dynamo.Tests
                     nodePosMap[ids[idx]] = idx;
                 }
 
-                // no matter input nodes in whatever order, there invariants 
+                // no matter the order of the input nodes, these invariants 
                 // should hold
                 Assert.IsTrue(nodePosMap[id2] > nodePosMap[id1]);
                 Assert.IsTrue(nodePosMap[id3] > nodePosMap[id1]);
@@ -144,7 +144,7 @@ namespace Dynamo.Tests
                     nodePosMap[ids[idx]] = idx;
                 }
 
-                // no matter input nodes in whatever order, there invariants 
+                // no matter the order of the input nodes, these invariants 
                 // should hold
                 Assert.IsTrue(nodePosMap[id1] < nodePosMap[id4]);
                 Assert.IsTrue(nodePosMap[id2] < nodePosMap[id4]);
@@ -186,7 +186,7 @@ namespace Dynamo.Tests
                     nodePosMap[ids[idx]] = idx;
                 }
 
-                // no matter input nodes in whatever order, there invariants 
+                // no matter the order of the input nodes, these invariants 
                 // should hold
                 Assert.IsTrue(nodePosMap[id2] < nodePosMap[id3]);
                 Assert.IsTrue(nodePosMap[id3] < nodePosMap[id1]);
@@ -226,7 +226,7 @@ namespace Dynamo.Tests
                     nodePosMap[ids[idx]] = idx;
                 }
 
-                // no matter input nodes in whatever order, there invariants 
+                // no matter the order of the input nodes, these invariants 
                 // should hold
                 Assert.IsTrue(nodePosMap[id4] < nodePosMap[id3]);
                 Assert.IsTrue(nodePosMap[id4] < nodePosMap[id2]);
@@ -280,7 +280,7 @@ namespace Dynamo.Tests
                     nodePosMap[ids[idx]] = idx;
                 }
 
-                // no matter input nodes in whatever order, there invariants 
+                // no matter the order of the input nodes, these invariants 
                 // should hold
                 Assert.IsTrue(nodePosMap[id1] > nodePosMap[id2]);
                 Assert.IsTrue(nodePosMap[id6] > nodePosMap[id4]);
@@ -338,7 +338,7 @@ namespace Dynamo.Tests
                     nodePosMap[ids[idx]] = idx;
                 }
 
-                // no matter input nodes in whatever order, there invariants 
+                // no matter the order of the input nodes, these invariants 
                 // should hold
                 Assert.IsTrue(nodePosMap[id2] > nodePosMap[id1]);
                 Assert.IsTrue(nodePosMap[id3] > nodePosMap[id1]);
@@ -382,7 +382,7 @@ namespace Dynamo.Tests
                     nodePosMap[ids[idx]] = idx;
                 }
 
-                // no matter input nodes in whatever order, there invariants 
+                // no matter the order of the input nodes, these invariants 
                 // should hold
                 Assert.IsTrue(nodePosMap[id1] < nodePosMap[id4]);
                 Assert.IsTrue(nodePosMap[id2] < nodePosMap[id4]);
@@ -427,7 +427,7 @@ namespace Dynamo.Tests
                     nodePosMap[ids[idx]] = idx;
                 }
 
-                // no matter input nodes in whatever order, there invariants 
+                // no matter the order of the input nodes, these invariants 
                 // should hold
                 Assert.IsTrue(nodePosMap[id2] < nodePosMap[id3]);
                 Assert.IsTrue(nodePosMap[id3] < nodePosMap[id1]);
@@ -468,7 +468,7 @@ namespace Dynamo.Tests
                     nodePosMap[ids[idx]] = idx;
                 }
 
-                // no matter input nodes in whatever order, there invariants 
+                // no matter the order of the input nodes, these invariants 
                 // should hold
                 Assert.IsTrue(nodePosMap[id4] < nodePosMap[id3]);
                 Assert.IsTrue(nodePosMap[id4] < nodePosMap[id2]);
@@ -521,7 +521,7 @@ namespace Dynamo.Tests
                     nodePosMap[ids[idx]] = idx;
                 }
 
-                // no matter input nodes in whatever order, there invariants 
+                // no matter the order of the input nodes, these invariants 
                 // should hold
                 Assert.IsTrue(nodePosMap[id1] > nodePosMap[id2]);
                 Assert.IsTrue(nodePosMap[id6] > nodePosMap[id4]);
