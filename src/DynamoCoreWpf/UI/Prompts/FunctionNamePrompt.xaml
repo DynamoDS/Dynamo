@@ -39,7 +39,7 @@
                      Name="DescriptionInput" Padding="5" MinLines="3" TextWrapping="Wrap" AcceptsReturn="True" Tag="{x:Static p:Resources.CustomNodePropertyWindowDescriptionHint}"/>
 
             <Label Content="{x:Static p:Resources.CustomNodePropertyWindowCategory}" Foreground="DarkGray" Height="28" HorizontalAlignment="Stretch" Name="label2"  />
-            <ComboBox FontSize="14" Style="{DynamicResource ResourceKey=SComboBox}" Background="Black" Foreground="White" HorizontalAlignment="Stretch" Name="categoryBox" Margin="0" IsEditable="True" TabIndex="1" SelectionChanged="categoryBox_SelectionChanged" />
+            <ComboBox FontSize="14" Style="{DynamicResource ResourceKey=SComboBox}" Background="Black" Foreground="White" HorizontalAlignment="Stretch" Name="categoryBox" Margin="0" IsEditable="True" TabIndex="1"/>
 
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,25,0,0">
 
