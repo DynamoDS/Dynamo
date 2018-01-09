@@ -938,17 +938,21 @@ namespace Dynamo.Controls
                 // Only include packages and custom nodes
                 if (element.ElementType.HasFlag(ElementTypes.Packaged) || element.ElementType.HasFlag(ElementTypes.CustomNode))
                 {
+                    // Ordered list of all categories for the search element including all nested categories
                     var allAddOns = element.Categories.ToList();
 
                     string category = "";
 
+                    // Construct all categories levels for the element starting at the top level
                     for (int i = 0; i < allAddOns.Count; i++)
                     {
+                        // Append nested categories for the given element
                         if (i != 0)
                         {
                             category += "." + allAddOns[i];
                             addOns.Add(category);
                         }
+                        // The first list item is the package/custom nodes top level category
                         else
                         {
                             category += allAddOns[i];
