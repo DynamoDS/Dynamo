@@ -1099,6 +1099,9 @@ namespace Dynamo.Engine
             public const string Properties = "Query";
         }
 
+        /// <summary>
+        /// Contains arguments to pass to a handler when a library load fails
+        /// </summary>
         public class LibraryLoadFailedEventArgs : EventArgs
         {
             public LibraryLoadFailedEventArgs(string libraryPath, string reason, bool throwOnFailure = true)
@@ -1108,8 +1111,19 @@ namespace Dynamo.Engine
                 ThrowOnFailure = throwOnFailure;
             }
 
+            /// <summary>
+            /// The path to the library that failed to load
+            /// </summary>
             public string LibraryPath { get; private set; }
+
+            /// <summary>
+            /// The reason that the library failed to load
+            /// </summary>
             public string Reason { get; private set; }
+
+            /// <summary>
+            /// Indicates if the failure should result in an exception being thrown
+            /// </summary>
             public bool ThrowOnFailure { get; private set; }
         }
 
