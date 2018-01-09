@@ -542,11 +542,18 @@ namespace Dynamo.Engine
                 return false;
             }
 
+            // Copy the library path so that the path can be reported in the case of a failure
+            // to resolve the library path. If there is a failure "library" is set to null.
             string path = library;
             if (!pathManager.ResolveLibraryPath(ref library))
             {
                 string errorMessage = string.Format(Properties.Resources.LibraryPathCannotBeFound, path);
+
+                // In the case that a library was locally imported set the load failed args
+                // to not throw an exception if the load fails. This can happen after using
+                // File|Import Library and then moving or deleting the library.
                 OnLibraryLoadFailed(new LibraryLoadFailedEventArgs(path, errorMessage, !isLocalLib));
+
                 return false;
             }
 
