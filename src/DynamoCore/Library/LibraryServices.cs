@@ -172,6 +172,9 @@ namespace Dynamo.Engine
             LibraryLoadFailedException ex = new LibraryLoadFailedException(args.LibraryPath, args.Reason);
             Log(ex.Message, WarningLevel.Moderate);
 
+            // NOTE: We do not want to throw an exception here if the failure was due
+            // to a missing library that was explicitly (attempoted to be) loaded
+            // but was moved or deleted
             if (args.ThrowOnFailure)
                 throw ex;
         }
@@ -521,8 +524,8 @@ namespace Dynamo.Engine
         ///     Import a library (if it hasn't been imported yet).
         /// </summary>
         /// <param name="library">The library to be loaded</param>
-        /// <param name="isLocalLib">Indicates if the library has been locally imported</param>
-        internal bool ImportLibrary(string library, bool isLocalLib = false)
+        /// <param name="isExplicitlyImportedLib">Indicates if the library has been imported using the "File | ImportLibrary" command</param>
+        internal bool ImportLibrary(string library, bool isExplicitlyImportedLib = false)
         {
             if (null == library)
                 throw new ArgumentNullException();
@@ -549,10 +552,10 @@ namespace Dynamo.Engine
             {
                 string errorMessage = string.Format(Properties.Resources.LibraryPathCannotBeFound, path);
 
-                // In the case that a library was locally imported set the load failed args
-                // to not throw an exception if the load fails. This can happen after using
+                // In the case that a library was explicitly imported using the "File|Import Library" command
+                // set the load failed args to not throw an exception if the load fails. This can happen after using
                 // File|Import Library and then moving or deleting the library.
-                OnLibraryLoadFailed(new LibraryLoadFailedEventArgs(path, errorMessage, !isLocalLib));
+                OnLibraryLoadFailed(new LibraryLoadFailedEventArgs(path, errorMessage, !isExplicitlyImportedLib));
 
                 return false;
             }
