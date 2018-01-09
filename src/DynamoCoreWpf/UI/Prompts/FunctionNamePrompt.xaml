@@ -25,7 +25,7 @@
                     <TextBlock Text="CN" FontSize="18" Foreground="WhiteSmoke" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                 </Border>
             </StackPanel>
-            <TextBlock Name ="MainText" Foreground="DarkGray" FontSize="13" TextWrapping="Wrap" Text="{x:Static p:Resources.CustomNodePropertyWindowMainText}"/>
+            <TextBlock Name ="LocationNote" Foreground="DarkGray" FontSize="13" TextWrapping="Wrap" Text="{x:Static p:Resources.CustomNodePropertyWindowLocationNote}"/>
             <Label Content="{x:Static p:Resources.CustomNodePropertyWindowName}" Foreground="DarkGray" Height="28" Margin="0,10,0,0"  HorizontalAlignment="Left" Name="TitleLabel" VerticalAlignment="Top" >
                 <Label.ToolTip>
                     <TextBlock Text="{x:Static p:Resources.CustomNodePromptNameTooltip}" />

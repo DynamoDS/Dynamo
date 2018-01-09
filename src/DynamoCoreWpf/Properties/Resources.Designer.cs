@@ -831,9 +831,9 @@ namespace Dynamo.Wpf.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Custom Nodes will be placed in the Add-Ons section of the library..
         /// </summary>
-        public static string CustomNodePropertyWindowMainText {
+        public static string CustomNodePropertyWindowLocationNote {
             get {
-                return ResourceManager.GetString("CustomNodePropertyWindowMainText", resourceCulture);
+                return ResourceManager.GetString("CustomNodePropertyWindowLocationNote", resourceCulture);
             }
         }
         
