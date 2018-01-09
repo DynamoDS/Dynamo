@@ -171,7 +171,9 @@ namespace Dynamo.Engine
         {
             LibraryLoadFailedException ex = new LibraryLoadFailedException(args.LibraryPath, args.Reason);
             Log(ex.Message, WarningLevel.Moderate);
-            throw ex;
+
+            if (args.ThrowOnFailure)
+                throw ex;
         }
 
         private void PreloadLibraries(IEnumerable<string> preloadLibraries)
@@ -518,8 +520,9 @@ namespace Dynamo.Engine
         /// <summary>
         ///     Import a library (if it hasn't been imported yet).
         /// </summary>
-        /// <param name="library"></param>
-        internal bool ImportLibrary(string library)
+        /// <param name="library">The library to be loaded</param>
+        /// <param name="isLocalLib">Indicates if the library has been locally imported</param>
+        internal bool ImportLibrary(string library, bool isLocalLib = false)
         {
             if (null == library)
                 throw new ArgumentNullException();
@@ -539,10 +542,11 @@ namespace Dynamo.Engine
                 return false;
             }
 
+            string path = library;
             if (!pathManager.ResolveLibraryPath(ref library))
             {
-                string errorMessage = string.Format(Properties.Resources.LibraryPathCannotBeFound, library);
-                OnLibraryLoadFailed(new LibraryLoadFailedEventArgs(library, errorMessage));
+                string errorMessage = string.Format(Properties.Resources.LibraryPathCannotBeFound, path);
+                OnLibraryLoadFailed(new LibraryLoadFailedEventArgs(path, errorMessage, !isLocalLib));
                 return false;
             }
 
@@ -1090,14 +1094,16 @@ namespace Dynamo.Engine
 
         public class LibraryLoadFailedEventArgs : EventArgs
         {
-            public LibraryLoadFailedEventArgs(string libraryPath, string reason)
+            public LibraryLoadFailedEventArgs(string libraryPath, string reason, bool throwOnFailure = true)
             {
                 LibraryPath = libraryPath;
                 Reason = reason;
+                ThrowOnFailure = throwOnFailure;
             }
 
             public string LibraryPath { get; private set; }
             public string Reason { get; private set; }
+            public bool ThrowOnFailure { get; private set; }
         }
 
         public class LibraryLoadedEventArgs : EventArgs
