@@ -9,6 +9,8 @@
         public int col { get; set; }
         public int endLine { get; set; }
         public int endCol { get; set; }
+        public int charPos { get; set; }
+        public int endCharPos { get; set; }
         public string Name { get; set; }
         public int ID { get; private set; }
         public bool skipMe { get; set; }
@@ -23,6 +25,8 @@
             col = ProtoCore.DSASM.Constants.kInvalidIndex;
             endLine = ProtoCore.DSASM.Constants.kInvalidIndex;
             endCol = ProtoCore.DSASM.Constants.kInvalidIndex;
+            charPos = ProtoCore.DSASM.Constants.kInvalidIndex;
+            endCharPos = ProtoCore.DSASM.Constants.kInvalidIndex;
             skipMe = false;
             Name = string.Empty;
         }
@@ -34,6 +38,8 @@
             col = rhs.col;
             endLine = rhs.endLine;
             endCol = rhs.endCol;
+            charPos = rhs.charPos;
+            endCharPos = rhs.charPos;
             Name = rhs.Name;
             skipMe = rhs.skipMe;
         }

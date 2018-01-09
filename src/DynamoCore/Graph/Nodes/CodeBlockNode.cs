@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Xml;
@@ -16,6 +17,7 @@ using ProtoCore.BuildData;
 using ProtoCore.Namespace;
 using ProtoCore.SyntaxAnalysis;
 using ProtoCore.Utils;
+using ProtoCore.AST;
 using ArrayNode = ProtoCore.AST.AssociativeAST.ArrayNode;
 using Node = ProtoCore.AST.Node;
 using Operator = ProtoCore.DSASM.Operator;
@@ -86,20 +88,26 @@ namespace Dynamo.Graph.Nodes
             get { return false; }
         }
 
-
+        
         class ListCollector : AstTraversal
         {
-            private readonly List<ExprListNode> nodes = new List<ExprListNode>();
+            private readonly List<Node> nodes = new List<Node>();
 
-            public override bool VisitExprListNode(ExprListNode node)
+            public override bool VisitExprListNode(ProtoCore.AST.ImperativeAST.ExprListNode node)
             {
                 nodes.Add(node);
-                return true;
+                return this.VisitAllChildren(node);
+            }
+
+            public override bool VisitExprListNode(ProtoCore.AST.AssociativeAST.ExprListNode node)
+            {
+                nodes.Add(node);
+                return this.VisitAllChildren(node);
             }
 
             private ListCollector() {}
 
-            public static IEnumerable<ExprListNode> Collect(CodeBlockNode node)
+            public static IEnumerable<Node> Collect(CodeBlockNode node)
             {
                 var c = new ListCollector();
                 node.Accept(c);
@@ -124,7 +132,7 @@ namespace Dynamo.Graph.Nodes
         }
 
         /// <summary>
-        ///     Initilizes a new instance of the <see cref="CodeBlockNodeModel"/> class
+        ///     Initializes a new instance of the <see cref="CodeBlockNodeModel"/> class
         /// </summary>
         /// <param name="code">Code block content</param>
         /// <param name="x">X coordinate of the code block</param>
@@ -137,7 +145,7 @@ namespace Dynamo.Graph.Nodes
             : this(code, Guid.NewGuid(), x, y, libraryServices, resolver) { }
 
         /// <summary>
-        ///     Initilizes a new instance of the <see cref="CodeBlockNodeModel"/> class
+        ///     Initializes a new instance of the <see cref="CodeBlockNodeModel"/> class
         /// </summary>
         /// <param name="userCode">Code block content</param>
         /// <param name="guid">Identifier of the code block</param>
@@ -154,15 +162,129 @@ namespace Dynamo.Graph.Nodes
             Y = yPos;
             this.libraryServices = libraryServices;
             this.ElementResolver = resolver;
-            code = userCode;
             GUID = guid;
             ShouldFocus = false;
 
             var cb = ParserUtils.Parse(userCode);
+
             var nodes = ListCollector.Collect(cb);
-            
+
+
+            var codeList = userCode.ToCharArray();
+
+            foreach (var n in nodes)
+            {
+                // don't include nodes not part of the code
+                if (n.line == ProtoCore.DSASM.Constants.kInvalidIndex)
+                {
+                    continue;
+                }
+
+                codeList[n.charPos] = '[';
+                codeList[n.endCharPos-1] = ']';
+            }
+
+            code = new String(codeList);
+
+            /*
+
+            var startCodePoints = new List<CodePoint>();
+            var endCodePoints = new List<CodePoint>();
+            foreach (var n in nodes)
+            {
+                // don't include nodes not part of the code
+                if (n.line <= 0 || n.endLine <= 0)
+                {
+                    continue;
+                }
+
+                startCodePoints.Add(new CodePoint()
+                {
+                    Line = n.line,
+                    Col = n.col
+                });
+
+                endCodePoints.Add(new CodePoint()
+                {
+                    Line = n.endLine,
+                    Col = n.endCol
+                });
+            }
+
+            endCodePoints.Sort(new CodePointComparer());
+            startCodePoints.Sort(new CodePointComparer());
+
+            var codeList = new List<char>();
+            codeList.AddRange(userCode);
+
+            ReplaceAtSortedCodePoints(codeList, '{', '[', startCodePoints);
+            ReplaceAtSortedCodePoints(codeList, '}', ']', endCodePoints);
+
+            */
 
             ProcessCodeDirect();
+        }
+
+        struct CodePoint
+        {
+            public int Line;
+            public int Col;
+        }
+
+        class CodePointComparer : IComparer<CodePoint>
+        {
+            int IComparer<CodePoint>.Compare(CodePoint x, CodePoint y)
+            {
+                if (x.Line == y.Line)
+                {
+                    return x.Col.CompareTo(y.Col);
+                }
+
+                return x.Line.CompareTo(y.Line);
+            }
+        }
+
+        private void ReplaceAtSortedCodePoints(List<char> code, char oldChar, char newChar, IEnumerable<CodePoint> codePoints)
+        {
+            var line = 1;
+            var col = 0;
+            var i = 0;
+
+            foreach (var pt in codePoints)
+            {
+                // advance to line
+                while (i < code.Count && line < pt.Line)
+                {
+                    if (code[i] == '\n')
+                    {
+                        line++;
+                        col = 0;
+                    }
+
+                    i++;
+                    col++;
+                }
+
+                // advance to col at line
+                while (i < code.Count && code[i] != '\n' && col < pt.Col)
+                {
+                    i++;
+                    col++;
+                }
+
+                if (i >= code.Count || col != pt.Col || line != pt.Line)
+                {
+                    throw new Exception("The code point does not exist in the program!");
+                }
+
+                if (code[i] != oldChar)
+                {
+                    continue;
+                }
+
+                code[i] = newChar;
+            }
+
         }
 
         /// <summary>

@@ -2355,9 +2355,11 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 				exprlist.Exprs.Add(node); 
 			}
 		}
-		Expect(47);
-		NodeUtils.SetNodeEndLocation(exprlist, t); 
-		node = exprlist; 
+
+        Expect(47);
+	    NodeUtils.SetNodeEndLocation(exprlist, t);
+
+        node = exprlist; 
 	}
 
 	void Associative_DictionaryExpression(out ProtoCore.AST.AssociativeAST.AssociativeNode node) {

@@ -774,19 +774,21 @@ namespace ProtoCore.SyntaxAnalysis
     {
         public sealed override bool VisitAssociativeNode(AssociativeNode node)
         {
-            return DefaultVisit(node);
+            return VisitAllChildren(node);
         }
 
         public sealed override bool VisitImperativeNode(ImperativeNode node)
         {
-            return DefaultVisit(node);
+            return VisitAllChildren(node);
         }
 
-        private bool DefaultVisit(Node node)
+        public bool VisitAllChildren(Node node)
         {
             if (node == null) return true;
 
-            foreach (var n in node.Children())
+            var children = node.Children();
+
+            foreach (var n in children)
             {
                 if (n is AssociativeNode)
                 {
@@ -801,11 +803,6 @@ namespace ProtoCore.SyntaxAnalysis
                     {
                         return false;
                     }
-                }
-
-                if (!DefaultVisit(n))
-                {
-                    return false;
                 }
             }
 
