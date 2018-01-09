@@ -382,7 +382,8 @@ namespace ProtoTestFx.TD
         /// <returns></returns>
         public virtual ExecutionMirror RunScriptSource(string sourceCode, string errorstring = "", string includePath = "")
         {
-            
+            sourceCode = sourceCode.Insert(0, "import(\"Builtin.dll\");");
+
             if (testImport)
             {
                 Guid g;
@@ -421,7 +422,6 @@ namespace ProtoTestFx.TD
                         Console.WriteLine(String.Format("Path: {0} does not exist.", includePath));
                     }
                 }
-
                 StringReader file = new StringReader(sourceCode);
                 WatchTestFx.GeneratePrintStatements(file, ref map);
 
@@ -794,7 +794,7 @@ namespace ProtoTestFx.TD
         string GetFFIObjectStringValue(string dsVariable, int startBlock = 1, int arrayIndex = -1)
         {
             var helper = DLLFFIHandler.GetModuleHelper(FFILanguage.CSharp);
-            var marshaller = helper.GetMarshaller(TestFrameWork.testRuntimeCore);
+            var marshaller = helper.GetMarshaler(TestFrameWork.testRuntimeCore);
             Obj val = testMirror.GetFirstValue(dsVariable, startBlock);
             StackValue sv;
 

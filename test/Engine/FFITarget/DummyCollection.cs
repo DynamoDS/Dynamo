@@ -81,9 +81,19 @@ namespace FFITarget
             return value;
         }
 
+        public static Dictionary<string, int> ReturnDictionary()
+        {
+            var dictionary = new Dictionary<string, int>();
+            dictionary.Add("A", 1);
+            dictionary.Add("B", 2);
+            dictionary.Add("C", 3);
+            dictionary.Add("D", 4);
+            return dictionary;
+        }
+
         public static IDictionary ReturnIDictionary()
         {
-            IDictionary dictionary = new Dictionary<string, int>();
+            var dictionary = new Dictionary<string, int>();
             dictionary.Add("A", 1);
             dictionary.Add("B", 2);
             dictionary.Add("C", 3);
@@ -97,6 +107,16 @@ namespace FFITarget
         }
 
         public static IDictionary AcceptDictionary(Dictionary<string, int> dictionary)
+        {
+            return dictionary;
+        }
+
+        public static IDictionary AcceptIDictionary(IDictionary dictionary)
+        {
+            return dictionary;
+        }
+
+        public static IDictionary AcceptTypedDictionary(Dictionary<string, DummyCollection> dictionary)
         {
             return dictionary;
         }

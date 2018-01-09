@@ -169,6 +169,10 @@
       <Name>ProtoImperative</Name>
       <Private>False</Private>
     </ProjectReference>
+    <ProjectReference Include="..\..\src\Libraries\Builtin\Builtin.csproj">
+      <Project>{c0d6dee5-5532-4345-9c66-4c00d7fdb8be}</Project>
+      <Name>Builtin</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\src\Libraries\CoreNodeModels\CoreNodeModels.csproj">
       <Project>{d8262d40-4880-41e4-91e4-af8f480c8637}</Project>
       <Name>CoreNodeModels</Name>

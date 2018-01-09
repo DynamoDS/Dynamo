@@ -61,6 +61,24 @@ namespace PythonNodeModels.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The Python node &quot;{0}&quot; still has a script editor window open. Are you sure you want to close the editor and delete the node?.
+        /// </summary>
+        public static string DeletingPythonNodeWithOpenEditorMessage {
+            get {
+                return ResourceManager.GetString("DeletingPythonNodeWithOpenEditorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Script Editor Open.
+        /// </summary>
+        public static string DeletingPythonNodeWithOpenEditorTitle {
+            get {
+                return ResourceManager.GetString("DeletingPythonNodeWithOpenEditorTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Edit....
         /// </summary>
         public static string EditHeader {

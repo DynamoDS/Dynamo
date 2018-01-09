@@ -167,7 +167,8 @@ u = SomeFalse(c);
         public void BIM08_Remove_RemoveDuplicate()
         {
             String code =
-@"a = {null,20,30,null,20,15,true,true,5,false};
+@"
+a = {null,20,30,null,20,15,true,true,5,false};
 b = {1,2,3,4,9,4,2,5,6,7,8,7,1,0,2};
 rda = RemoveDuplicates(a);
 rdb = RemoveDuplicates(b);
@@ -366,7 +367,7 @@ x = s[5][0][0];
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("u", 1);
             thisTest.Verify("v", 1);
-            thisTest.Verify("w", null);
+            thisTest.Verify("w", false);
             thisTest.Verify("x", 1);
         }
 
@@ -960,128 +961,111 @@ x = foo(5);
             //Assert.Fail("This test case crashes Nunit");
         }
 
-        [Test]
-        public void TestTryGetValueFromNestedDictionaries01()
-        {
-            string code = @"
-a = {};
-a[""in""] = 42;
-r = __TryGetValueFromNestedDictionaries(a, ""in"");
+       [Test]
+       public void TestTryGetValueFromNestedDictionaries01()
+       {
+           string code = @"
+a = { ""in"" : 42 };
+r = Dictionary.ValueAtKey(a, ""in"");
 ";
-            var mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("r", 42);
-        }
+           var mirror = thisTest.RunScriptSource(code);
+           thisTest.Verify("r", 42);
+       }
 
-        [Test]
-        public void TestTryGetValuesFromDictionary02()
-        {
-            string code = @"
-a = {};
+       [Test]
+       public void TestTryGetValuesFromDictionary02()
+       {
+           string code = @"
+a = { ""in"" : 42 };
 key = ""in"";
-a[key] = 42;
-r = __TryGetValueFromNestedDictionaries(a, key);
+r = Dictionary.ValueAtKey(a, key);
 ";
-            var mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("r", 42);
-        }
+           var mirror = thisTest.RunScriptSource(code);
+           thisTest.Verify("r", 42);
+       }
 
-        [Test]
-        public void TestTryGetValuesFromDictionary03()
-        {
-            string code = @"
-a = {};
-a[""in""] = 42;
-a[""out""] = 24;
-b = {};
-b[""in""] = 24;
-b[""out""] = 42;
-c = {a, b};
-r1 = __TryGetValueFromNestedDictionaries(c, ""in"");
-r2 = __TryGetValueFromNestedDictionaries(c, ""out"");
+       [Test]
+       public void TestTryGetValuesFromDictionary03()
+       {
+           string code = @"
+a = {""in"": 42, ""out"" : 24};
+
+b = { ""in"": 24, ""out"" : 42};
+
+c = { a, b};
+
+r1 = Dictionary.ValueAtKey(c, ""in"");
+r2 = Dictionary.ValueAtKey(c, ""out"");
 ";
-            var mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("r1", new object[] { 42, 24 });
-            thisTest.Verify("r2", new object[] { 24, 42 });
-        }
+           var mirror = thisTest.RunScriptSource(code);
+           thisTest.Verify("r1", new object[] { 42, 24 });
+           thisTest.Verify("r2", new object[] { 24, 42 });
+       }
 
-        [Test]
-        public void TestTryGetValuesFromDictionary04()
-        {
-            string code = @"
-a = {};
-a[""in""] = 42;
-a[""out""] = 24;
-b = {};
-b[""in""] = 24;
-b[""out""] = 42;
+       [Test]
+       public void TestTryGetValuesFromDictionary04()
+       {
+           string code = @"
+a = { ""in"" : 42, ""out"" : 24 };
+b = { ""in"" : 24, ""out"" : 42 };
 c = {{a}, {b}};
-r1 = __TryGetValueFromNestedDictionaries(c, ""in"");
-r2 = __TryGetValueFromNestedDictionaries(c, ""out"");
+r1 = Dictionary.ValueAtKey(c, ""in"");
+r2 = Dictionary.ValueAtKey(c, ""out"");
 ";
-            var mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("r1", new object[] { new object[] { 42 }, new object[] { 24 } });
-            thisTest.Verify("r2", new object[] { new object[] { 24 }, new object[] { 42 } });
-        }
+           var mirror = thisTest.RunScriptSource(code);
+           thisTest.Verify("r1", new object[] { new object[] { 42 }, new object[] { 24 } });
+           thisTest.Verify("r2", new object[] { new object[] { 24 }, new object[] { 42 } });
+       }
 
-        [Test]
-        public void TestTryGetValuesFromDictionary05()
-        {
-            string code = @"
-a = {};
-a[""in""] = 42;
-a[""out""] = 24;
-b = {};
-b[""in""] = 24;
-b[""out""] = 42;
+       [Test]
+       public void TestTryGetValuesFromDictionary05()
+       {
+           string code = @"
+a = { ""in"" : 42, ""out"" : 24 };
+b = { ""in"" : 24, ""out"" : 42 };
 c = {a, {b}};
-r1 = __TryGetValueFromNestedDictionaries(c, ""in"");
-r2 = __TryGetValueFromNestedDictionaries(c, ""out"");
+r1 = Dictionary.ValueAtKey(c, ""in"");
+r2 = Dictionary.ValueAtKey(c, ""out"");
 ";
-            var mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("r1", new object[] { 42, new object[] { 24 } });
-            thisTest.Verify("r2", new object[] { 24, new object[] { 42 } });
-        }
+           var mirror = thisTest.RunScriptSource(code);
+           thisTest.Verify("r1", new object[] { 42, new object[] { 24 } });
+           thisTest.Verify("r2", new object[] { 24, new object[] { 42 } });
+       }
 
-        [Test]
-        public void TestTryGetValuesFromDictionary06()
-        {
-            string code = @"
-a = {};
-a[""in""] = 42;
-a[""out""] = 24;
-b = {};
-b[""in""] = 24;
-b[""out""] = 42;
+       [Test]
+       public void TestTryGetValuesFromDictionary06()
+       {
+           string code = @"
+a = { ""in"" : 42, ""out"" : 24 };
+b = { ""in"" : 24, ""out"" : 42 };
 c = {a, {b}};
-r = __TryGetValueFromNestedDictionaries(c, ""nonexist"");
+r = Dictionary.ValueAtKey(c, ""nonexist"");
 ";
-            var mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("r", null);
-        }
+           var mirror = thisTest.RunScriptSource(code);
+            thisTest.Verify("r", new object[] { null, new object[] { null } });
+       }
 
-        [Test]
-        public void TestTryGetValuesFromDictionary07()
-        {
-            string code = @"
-a = {};
-a[""in""] = 42;
-a[""out""] = 24;
-r = __TryGetValueFromNestedDictionaries(a, ""nonexist"");
+       [Test]
+       public void TestTryGetValuesFromDictionary07()
+       {
+           string code = @"
+a = { ""in"" : 42, ""out"" : 24 };
+r = Dictionary.ValueAtKey(a, ""nonexist"");
 ";
-            var mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("r", null);
-        }
+           var mirror = thisTest.RunScriptSource(code);
+           thisTest.Verify("r", null);
+       }
 
-        [Test]
-        public void TestTryGetValuesFromDictionary08()
-        {
-            string code = @"
+       [Test]
+       public void TestTryGetValuesFromDictionary08()
+       {
+           string code = @"
 a = 42;
-r = __TryGetValueFromNestedDictionaries(a, ""nonexist"");
+r = Dictionary.ValueAtKey(a, ""nonexist"");
 ";
-            var mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("r", null);
-        }
+           var mirror = thisTest.RunScriptSource(code);
+           thisTest.Verify("r", null);
+       }
 
         [Test]
         public void TestGetKeysFromNonArray()

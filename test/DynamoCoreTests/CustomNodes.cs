@@ -8,6 +8,7 @@ using Dynamo.Selection;
 using NUnit.Framework;
 using System.Collections;
 using CoreNodeModels;
+using DesignScript.Builtin;
 using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.CustomNodes;
@@ -24,6 +25,7 @@ namespace Dynamo.Tests
         {
             libraries.Add("VMDataBridge.dll");
             libraries.Add("ProtoGeometry.dll");
+            libraries.Add("Builtin.dll");
             libraries.Add("DSCoreNodes.dll");
             libraries.Add("FunctionObject.ds");
             libraries.Add("BuiltIn.ds");
@@ -571,18 +573,8 @@ namespace Dynamo.Tests
 
             var splitListVal = CurrentDynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<Function>().CachedValue;
 
-            Assert.IsTrue(splitListVal.IsCollection);
-
-            var outs = splitListVal.GetElements().ToList();
-
-            Assert.AreEqual(2, outs.Count);
-
-            var out1 = outs[0];
-            Assert.AreEqual(0, out1.Data);
-
-            var out2 = outs[1];
-            Assert.IsTrue(out2.IsCollection);
-            Assert.IsFalse(out2.GetElements().Any());
+            var val = Dictionary.ByKeysValues(new[] {"item", "rest"}, new object[] {0, new object[] {}});
+            AssertValue(splitListVal, val);
         }
 
         [Test]
@@ -1043,7 +1035,7 @@ namespace Dynamo.Tests
             Assert.AreEqual("x2:var\n\nvar", customInstance.InPorts[2].ToolTip);
 
             Assert.AreEqual("x3", customInstance.InPorts[3].Name);
-            Assert.AreEqual("x3:var\n\nvar[]\nDefault value : {1}", customInstance.InPorts[3].ToolTip);
+            Assert.AreEqual("x3:var\n\nvar[]\nDefault value : [1]", customInstance.InPorts[3].ToolTip);
 
             Assert.AreEqual("x4", customInstance.InPorts[4].Name);
             Assert.AreEqual("comment1\ncomment2\ncomment3\n\nvar[]..[]", customInstance.InPorts[4].ToolTip);

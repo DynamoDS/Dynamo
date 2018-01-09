@@ -10,6 +10,7 @@ using ProtoCore.Mirror;
 using ProtoCore.Utils;
 using Dynamo.Extensions;
 using Dynamo.Wpf.Properties;
+using DesignScript.Builtin;
 
 namespace Dynamo.Interfaces
 {
@@ -51,17 +52,32 @@ namespace Dynamo.Interfaces
 
         private WatchViewModel ProcessThing(object value, ProtoCore.RuntimeCore runtimeCore, string tag, bool showRawData, WatchHandlerCallback callback)
         {
-            WatchViewModel node;
+            if (value is DesignScript.Builtin.Dictionary)
+            {
+                var dict = value as DesignScript.Builtin.Dictionary;
+                var keys = dict.Keys;
+                var values = dict.Values;
 
-            if (value is IEnumerable)
+                var node = new WatchViewModel(keys.Any() ? WatchViewModel.DICTIONARY : WatchViewModel.EMPTY_DICTIONARY, tag, RequestSelectGeometry, true);
+
+                foreach (var e in keys.Zip(values, (key, val) => new { key, val }))
+                {
+                    node.Children.Add(ProcessThing(e.val, runtimeCore, tag + ":" + e.key.ToString(), showRawData, callback));
+                }
+
+                return node;
+            }
+            else if (!(value is string) && value is IEnumerable)
             {
                 var list = (value as IEnumerable).Cast<dynamic>().ToList();
 
-                node = new WatchViewModel(list.Count == 0 ? WatchViewModel.EMPTY_LIST : WatchViewModel.LIST, tag, RequestSelectGeometry, true);
+                var node = new WatchViewModel(list.Count == 0 ? WatchViewModel.EMPTY_LIST : WatchViewModel.LIST, tag, RequestSelectGeometry, true);
                 foreach (var e in list.Select((element, idx) => new { element, idx }))
                 {
                     node.Children.Add(callback(e.element, runtimeCore, tag + ":" + e.idx, showRawData));
                 }
+
+                return node;
             }
             else if (runtimeCore != null && value is StackValue)
             {
@@ -77,18 +93,14 @@ namespace Dynamo.Interfaces
                     int typeId = runtimeCore.DSExecutable.TypeSystem.GetType(stackValue);
                     stringValue = runtimeCore.DSExecutable.classTable.ClassNodes[typeId].Name;
                 }
-                node = new WatchViewModel(stringValue, tag, RequestSelectGeometry);
+                return new WatchViewModel(stringValue, tag, RequestSelectGeometry);
             }
             else if (value is Enum)
             {
                 return new WatchViewModel(((Enum)value).GetDescription(), tag, RequestSelectGeometry);
             }
-            else
-            {
-                node = new WatchViewModel(ToString(value), tag, RequestSelectGeometry);
-            }
 
-            return node;
+            return new WatchViewModel(ToString(value), tag, RequestSelectGeometry);
         }
 
         private WatchViewModel ProcessThing(SIUnit unit, ProtoCore.RuntimeCore runtimeCore, string tag, bool showRawData, WatchHandlerCallback callback)
@@ -105,7 +117,7 @@ namespace Dynamo.Interfaces
             return new WatchViewModel(value.ToString(numberFormat, CultureInfo.InvariantCulture), tag, RequestSelectGeometry);
         }
 
-        private WatchViewModel ProcessThing(DateTime value, ProtoCore.RuntimeCore runtimeCore, string tag, bool showRawData, WatchHandlerCallback callback)
+        private WatchViewModel ProcessThing(System.DateTime value, ProtoCore.RuntimeCore runtimeCore, string tag, bool showRawData, WatchHandlerCallback callback)
         {
             return new WatchViewModel(value.ToString(PreferenceSettings.DefaultDateFormat, CultureInfo.InvariantCulture), tag, RequestSelectGeometry);
         }
@@ -130,6 +142,21 @@ namespace Dynamo.Interfaces
                 foreach (var e in list.Select((element, idx) => new { element, idx }))
                 {
                     node.Children.Add(ProcessThing(e.element, runtimeCore, tag + ":" + e.idx, showRawData, callback));
+                }
+
+                return node;
+            }
+            else if (data.IsPointer && data.Data is DesignScript.Builtin.Dictionary)
+            {
+                var dict = data.Data as DesignScript.Builtin.Dictionary;
+                var keys = dict.Keys;
+                var values = dict.Values;
+
+                var node = new WatchViewModel(keys.Any() ? WatchViewModel.DICTIONARY : WatchViewModel.EMPTY_DICTIONARY, tag, RequestSelectGeometry, true);
+
+                foreach (var e in keys.Zip(values, (key, value) => new { key, value }))
+                {
+                    node.Children.Add(ProcessThing(e.value, runtimeCore, tag + ":" + e.key.ToString(), showRawData, callback));
                 }
 
                 return node;
@@ -171,7 +198,7 @@ namespace Dynamo.Interfaces
 
         public WatchViewModel Process(dynamic value, ProtoCore.RuntimeCore runtimeCore, string tag, bool showRawData, WatchHandlerCallback callback)
         {
-            return Object.ReferenceEquals(value, null)
+            return System.Object.ReferenceEquals(value, null)
                 ? new WatchViewModel(Resources.NullString, tag, RequestSelectGeometry)
                 : ProcessThing(value, runtimeCore, tag, showRawData, callback);
         }

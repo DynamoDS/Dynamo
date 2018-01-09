@@ -378,6 +378,7 @@ namespace ProtoCore.DSASM
         public const string kTempLangBlock = "%tempLangBlock";
         public const string kForLoopExpression = "%forloop_expr_";
         public const string kForLoopKey = "%forloop_key_";
+        public const string kForLoopCounter = "%forloop_count_";
         public const string kFunctionPointerCall = "%FunctionPointerCall";
         public const string kFunctionRangeExpression = "%generate_range";
         public const string kDotMethodName = "%dot";

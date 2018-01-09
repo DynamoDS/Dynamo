@@ -32,8 +32,9 @@ namespace PythonNodeModelsWpf
         public ScriptEditorWindow(
             DynamoViewModel dynamoViewModel, 
             PythonNode nodeModel, 
-            NodeView nodeView
-            ) : base(nodeView)
+            NodeView nodeView,
+            ref ModelessChildWindow.WindowRect windowRect
+            ) : base(nodeView, ref windowRect)
         {
             this.dynamoViewModel = dynamoViewModel;
             this.nodeModel = nodeModel;

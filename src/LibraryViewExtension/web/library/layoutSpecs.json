@@ -303,6 +303,38 @@
           ]
         },
         {
+          "text": "Dictionary",
+          "iconUrl": "",
+          "elementType": "category",
+          "include": [
+            {
+              "path": "Builtin.DesignScript.Builtin.Dictionary.ByKeysValues"
+            },
+            {
+              "path": "Builtin.DesignScript.Builtin.Dictionary.Components"
+            },
+            {
+              "path": "Builtin.DesignScript.Builtin.Dictionary.RemoveKeys"
+            },
+            {
+              "path": "Builtin.DesignScript.Builtin.Dictionary.SetValueAtKeys"
+            },
+            {
+              "path": "Builtin.DesignScript.Builtin.Dictionary.ValueAtKey"
+            },
+            {
+              "path": "Builtin.DesignScript.Builtin.Dictionary.Count"
+            },
+            {
+              "path": "Builtin.DesignScript.Builtin.Dictionary.Keys"
+            },
+            {
+              "path": "Builtin.DesignScript.Builtin.Dictionary.Values"
+            }
+          ],
+          "childElements": [ ]
+        },
+        {
           "text": "Input",
           "iconUrl": "./dist/resources/Category.Input.svg",
           "elementType": "category",
@@ -792,7 +824,7 @@
             {
               "text": "Color",
               "iconUrl": "",
-              "elementType": "group",
+              "elementType": "classType",
               "include": [
                 {
                   "path": "DSCoreNodes.DSCore.Color.Red"
@@ -839,7 +871,7 @@
             {
               "text": "Color Range",
               "iconUrl": "",
-              "elementType": "group",
+              "elementType": "classType",
               "include": [
                 {
                   "path": "Core.Color.Color Range"
@@ -856,7 +888,7 @@
             {
               "text": "Watch",
               "iconUrl": "",
-              "elementType": "group",
+              "elementType": "classType",
               "include": [
                 {
                   "path": "Core.View.Watch"

@@ -7,7 +7,7 @@ using NUnit.Framework;
 using ProtoTestFx;
 namespace ProtoTest.DebugTests
 {
-    [TestFixture]
+    [TestFixture, Category("WatchFx Tests")]
     public class RunWatchTests
     {
 

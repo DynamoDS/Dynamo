@@ -27,6 +27,7 @@ namespace Dynamo.Tests
         protected override void GetLibrariesToPreload(List<string> libraries)
         {
             libraries.Add("ProtoGeometry.dll");
+            libraries.Add("Builtin.dll");
             libraries.Add("DSCoreNodes.dll");
             base.GetLibrariesToPreload(libraries);
         }
@@ -1010,7 +1011,7 @@ namespace Dynamo.Tests
             var binaryExpr = assignment as BinaryExpressionNode;
             Assert.IsNotNull(binaryExpr);
 
-            Assert.AreEqual("{t1, t2}", binaryExpr.RightNode.ToString());
+            Assert.AreEqual("[t1, t2]", binaryExpr.RightNode.ToString());
         }
 
         [Test]

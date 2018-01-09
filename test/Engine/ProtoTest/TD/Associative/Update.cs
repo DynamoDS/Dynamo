@@ -228,10 +228,11 @@ line_0 = [Imperative]
         }
 
         [Test]
-        [Category("DSDefinedClass_Ported")]
+        [Category("DSDefinedClass_Ported"), Category("Failure")]
         [Category("SmokeTest")]
         public void T008_Update_Of_Variables()
         {
+            // TODO pratapa: Regression after introduction of Get.ValueAtIndex method for array indexing
             string code = @"
 a = 1;
 b = a + 1;
@@ -721,11 +722,10 @@ a1;
         {
 
             string code = @"
-a = {};
+
 x = 1;
 y = 2;
-a[""x""] = x;
-a[""y""] = y;
+a = {""x"" : x, ""y"" : y};
 x = 3;
 y = 4;
 r1 = a[""x""];

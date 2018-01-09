@@ -49,6 +49,22 @@ namespace ProtoTest.FFITests
             Assert.AreEqual("p = Autodesk.DS.Geometry.Point.ByCoordinates(0, 0, 0);\n", newNodes.ElementAt(0).ToString());
         }
 
+        //A.B.C()[0]
+        [Test, Category("Failure")]
+        public void LookupResolvedName_FromElementResolver_RewriteAst2()
+        {
+            // TODO pratapa: Return to fix test with Dictionary.ValueAtKey method
+
+            var astNodes = CoreUtils.BuildASTList(core, "p = Geometry.Point.ByCoordinates(0,0,0)[0];");
+
+            var elementResolver = new ElementResolver();
+            elementResolver.AddToResolutionMap("Point", "Autodesk.DS.Geometry.Point", "Protogeometry.dll");
+
+            var newNodes = ElementRewriter.RewriteElementNames(core.ClassTable, elementResolver, astNodes);
+
+            Assert.AreEqual("p = Autodesk.DS.Geometry.Point.ByCoordinates(0, 0, 0)[0];\n", newNodes.ElementAt(0).ToString());
+        }
+
         [Test]
         public void LookupResolvedName_FromCompiler_RewriteAst()
         {

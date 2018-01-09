@@ -1774,7 +1774,12 @@ namespace Dynamo.Models
                 }
             }
 
-            OnDeletionStarted();
+            var cancelEventArgs = new CancelEventArgs();
+            OnDeletionStarted(modelsToDelete, cancelEventArgs);
+            if (cancelEventArgs.Cancel)
+            {
+                return;
+            }
 
             CurrentWorkspace.RecordAndDeleteModels(modelsToDelete);
 

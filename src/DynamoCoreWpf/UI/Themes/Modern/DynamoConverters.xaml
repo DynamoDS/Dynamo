@@ -84,7 +84,7 @@
     <controls:PortNameConverter x:Key="PortNameConverter" />
     <controls:NodeSearchElementVMToBoolConverter x:Key="NodeSearchElementVMToBoolConverter" />
     <controls:FilePathDisplayConverter x:Key="FilePathDisplayConverter" />
-    <controls:PathToFileNameConverter x:Key="PathToFileNameConverter" />
+    <controls:WorkspaceToFileNameConverter x:Key="WorkspaceToFileNameConverter" />
     <controls:PathToSaveStateConverter x:Key="PathToSaveStateConverter" />
     <controls:InverseBooleanConverter x:Key="InverseBooleanConverter" />
     <controls:ShowHideConsoleMenuItemConverter x:Key="ShowHideConsoleMenuConverter" />

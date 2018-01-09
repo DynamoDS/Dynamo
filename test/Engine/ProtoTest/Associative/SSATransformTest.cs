@@ -37,12 +37,10 @@ a[0] = x[0];
 x[1] = a[1];
 y = x[1]; // 1
 ";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("y", 1);
+            thisTest.RunAndVerifyBuildWarning(code, ProtoCore.BuildData.WarningID.InvalidStaticCyclicDependency);
         }
 
         [Test]
-        [Category("Failure")]
         public void ArrayAssignmentNoCycle2()
         {
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4117
@@ -56,9 +54,7 @@ a[0] = x[0];
 x[i] = a[i];
 y = x[i]; // 1
 ";
-            string err = "MAGN-4117 SSA Issue: Script must not cycle";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code, err);
-            thisTest.Verify("y", 1);
+            thisTest.RunAndVerifyBuildWarning(code, ProtoCore.BuildData.WarningID.InvalidStaticCyclicDependency);
         }
 
         [Test]
