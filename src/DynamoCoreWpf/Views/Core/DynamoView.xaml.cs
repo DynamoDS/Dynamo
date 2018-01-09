@@ -11,6 +11,7 @@ using Dynamo.Nodes.Prompts;
 using Dynamo.PackageManager;
 using Dynamo.PackageManager.UI;
 using Dynamo.Search;
+using Dynamo.Search.SearchElements;
 using Dynamo.Selection;
 using Dynamo.Services;
 using Dynamo.UI.Controls;
@@ -21,6 +22,7 @@ using Dynamo.Wpf;
 using Dynamo.Wpf.Authentication;
 using Dynamo.Wpf.Controls;
 using Dynamo.Wpf.Extensions;
+using Dynamo.Wpf.Interfaces;
 using Dynamo.Wpf.Utilities;
 using Dynamo.Wpf.ViewModels.Core;
 using Dynamo.Wpf.Views.Gallery;
@@ -929,13 +931,34 @@ namespace Dynamo.Controls
         /// <returns></returns>
         internal void ShowNewFunctionDialog(FunctionNamePromptEventArgs e)
         {
-            var categorized =
-                SearchCategoryUtil.CategorizeSearchEntries(
-                    dynamoViewModel.Model.SearchModel.SearchEntries,
-                    entry => entry.Categories);
 
-            var allCategories =
-                categorized.SubCategories.SelectMany(sub => sub.GetAllCategoryNames());
+            List<string> addOns = new List<string>();
+            foreach (var element in dynamoViewModel.Model.SearchModel.SearchEntries)
+            {
+                // Populated categories for packages and custom nodes
+                if (element.ElementType.HasFlag(ElementTypes.Packaged) || element.ElementType.HasFlag(ElementTypes.CustomNode))
+                {
+                    var allAddOns = element.Categories.ToList();
+
+                    string category = "";
+
+                    for (int i = 0; i < allAddOns.Count; i++)
+                    {
+                        if (i == 0)
+                        {
+                            category += allAddOns[i];
+                            addOns.Add(allAddOns[i]);
+                        }
+                        else
+                        {
+                            category += "." + allAddOns[i];
+                            addOns.Add(category);
+                        }
+                    }
+                }
+            }
+
+            var allCategories = addOns.Distinct();
 
             var dialog = new FunctionNamePrompt(allCategories)
             {
