@@ -206,6 +206,10 @@ public Node root { get; set; }
         return false;
     }
 
+	private bool IsDeprecatedListExpression() {
+		return la.val == "{" && !IsDictionaryExpression();
+	}
+
     // Recognize: 
     //     { "foo" :   
     // OR   
@@ -2355,11 +2359,9 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 				exprlist.Exprs.Add(node); 
 			}
 		}
-
-        Expect(47);
-	    NodeUtils.SetNodeEndLocation(exprlist, t);
-
-        node = exprlist; 
+		Expect(47);
+		NodeUtils.SetNodeEndLocation(exprlist, t); 
+		node = exprlist; 
 	}
 
 	void Associative_DictionaryExpression(out ProtoCore.AST.AssociativeAST.AssociativeNode node) {
@@ -2437,16 +2439,16 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 			Associative_Ident(out node);
 			nameNode = node as ProtoCore.AST.AssociativeAST.ArrayNameNode; 
 			
-		} else if (IsDictionaryExpression()) {
-			Associative_DictionaryExpression(out node);
-			nameNode = node as ProtoCore.AST.AssociativeAST.ArrayNameNode;
-			
 		} else if (la.kind == 10) {
 			Associative_ExprList(out node);
 			nameNode = node as ProtoCore.AST.AssociativeAST.ArrayNameNode;
 			
-		} else if (la.kind == 46) {
+		} else if (core.ParseDeprecatedListSyntax && IsDeprecatedListExpression()) {
 			Associative_DeprecatedExprList(out node);
+			nameNode = node as ProtoCore.AST.AssociativeAST.ArrayNameNode;
+			
+		} else if (la.kind == 46) {
+			Associative_DictionaryExpression(out node);
 			nameNode = node as ProtoCore.AST.AssociativeAST.ArrayNameNode;
 			
 		} else SynErr(94);
@@ -3255,16 +3257,16 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 			Imperative_Ident(out node);
 			nameNode = node as ProtoCore.AST.ImperativeAST.ArrayNameNode;
 			
-		} else if (IsDictionaryExpression()) {
-			Imperative_DictionaryExpression(out node);
-			nameNode = node as ProtoCore.AST.ImperativeAST.ArrayNameNode;
-			
 		} else if (la.kind == 10) {
 			Imperative_ExprList(out node);
 			nameNode = node as ProtoCore.AST.ImperativeAST.ArrayNameNode;
 			
-		} else if (la.kind == 46) {
+		} else if (core.ParseDeprecatedListSyntax && IsDeprecatedListExpression()) {
 			Imperative_DeprecatedExprList(out node);
+			nameNode = node as ProtoCore.AST.ImperativeAST.ArrayNameNode;
+			
+		} else if (la.kind == 46) {
+			Imperative_DictionaryExpression(out node);
 			nameNode = node as ProtoCore.AST.ImperativeAST.ArrayNameNode;
 			
 		} else SynErr(109);
@@ -3785,6 +3787,46 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 		
 	}
 
+	void Imperative_ExprList(out ProtoCore.AST.ImperativeAST.ImperativeNode node) {
+		Expect(10);
+		var exprlist = new ProtoCore.AST.ImperativeAST.ExprListNode();
+		NodeUtils.SetNodeStartLocation(exprlist, t);
+		
+		if (StartOf(5)) {
+			Imperative_expr(out node);
+			exprlist.Exprs.Add(node); 
+			while (la.kind == 52) {
+				Get();
+				Imperative_expr(out node);
+				exprlist.Exprs.Add(node); 
+			}
+		}
+		Expect(11);
+		NodeUtils.SetNodeEndLocation(exprlist, t);
+		node = exprlist;
+		
+	}
+
+	void Imperative_DeprecatedExprList(out ProtoCore.AST.ImperativeAST.ImperativeNode node) {
+		Expect(46);
+		var exprlist = new ProtoCore.AST.ImperativeAST.ExprListNode();
+		NodeUtils.SetNodeStartLocation(exprlist, t);
+		
+		if (StartOf(5)) {
+			Imperative_expr(out node);
+			exprlist.Exprs.Add(node); 
+			while (la.kind == 52) {
+				Get();
+				Imperative_expr(out node);
+				exprlist.Exprs.Add(node); 
+			}
+		}
+		Expect(47);
+		NodeUtils.SetNodeEndLocation(exprlist, t);
+		node = exprlist;
+		
+	}
+
 	void Imperative_DictionaryExpression(out ProtoCore.AST.ImperativeAST.ImperativeNode node) {
 		Expect(46);
 		var dictBuilder = new ProtoCore.AST.ImperativeAST.DictionaryExpressionBuilder(); 
@@ -3826,46 +3868,6 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 		Expect(47);
 		dictBuilder.SetNodeEndLocation(t); 
 		node = dictBuilder.ToFunctionCall(); 
-	}
-
-	void Imperative_ExprList(out ProtoCore.AST.ImperativeAST.ImperativeNode node) {
-		Expect(10);
-		var exprlist = new ProtoCore.AST.ImperativeAST.ExprListNode();
-		NodeUtils.SetNodeStartLocation(exprlist, t);
-		
-		if (StartOf(5)) {
-			Imperative_expr(out node);
-			exprlist.Exprs.Add(node); 
-			while (la.kind == 52) {
-				Get();
-				Imperative_expr(out node);
-				exprlist.Exprs.Add(node); 
-			}
-		}
-		Expect(11);
-		NodeUtils.SetNodeEndLocation(exprlist, t);
-		node = exprlist;
-		
-	}
-
-	void Imperative_DeprecatedExprList(out ProtoCore.AST.ImperativeAST.ImperativeNode node) {
-		Expect(46);
-		var exprlist = new ProtoCore.AST.ImperativeAST.ExprListNode();
-		NodeUtils.SetNodeStartLocation(exprlist, t);
-		
-		if (StartOf(5)) {
-			Imperative_expr(out node);
-			exprlist.Exprs.Add(node); 
-			while (la.kind == 52) {
-				Get();
-				Imperative_expr(out node);
-				exprlist.Exprs.Add(node); 
-			}
-		}
-		Expect(47);
-		NodeUtils.SetNodeEndLocation(exprlist, t);
-		node = exprlist;
-		
 	}
 
 

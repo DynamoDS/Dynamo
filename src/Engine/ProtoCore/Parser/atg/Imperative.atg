@@ -898,14 +898,6 @@ Imperative_NameReference<ref ProtoCore.AST.ImperativeAST.ImperativeNode node>
                                     .)
         )
         |
-        IF(IsDictionaryExpression())
-        (
-            Imperative_DictionaryExpression<out node>
-                                    (.
-                                        nameNode = node as ProtoCore.AST.ImperativeAST.ArrayNameNode;
-                                    .)
-        )
-        |
         (
             Imperative_ExprList<out node>
                                     (.
@@ -913,8 +905,16 @@ Imperative_NameReference<ref ProtoCore.AST.ImperativeAST.ImperativeNode node>
                                     .)
         )
         |
+        IF(core.ParseDeprecatedListSyntax && IsDeprecatedListExpression())
         (
             Imperative_DeprecatedExprList<out node>
+                                    (.
+                                        nameNode = node as ProtoCore.AST.ImperativeAST.ArrayNameNode;
+                                    .)
+        )
+        |
+        (
+            Imperative_DictionaryExpression<out node>
                                     (.
                                         nameNode = node as ProtoCore.AST.ImperativeAST.ArrayNameNode;
                                     .)

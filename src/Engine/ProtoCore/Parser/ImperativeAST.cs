@@ -14,12 +14,12 @@ namespace ProtoCore.AST.ImperativeAST
     {
         public static IEnumerable<Node> AsEnumerable(this Node item)
         {
-            return new List<Node>(){ item };
+            return item != null ? new List<Node>() {item} : new List<Node>();
         }
 
         public static IEnumerable<Node> Concat(this IEnumerable<Node> list, Node item)
         {
-            return list.Concat(item.AsEnumerable());
+            return (list ?? new List<Node>()).Concat(item.AsEnumerable());
         }
     }
 

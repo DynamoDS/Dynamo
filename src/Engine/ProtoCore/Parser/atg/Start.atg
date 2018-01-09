@@ -132,6 +132,10 @@ COMPILER DesignScriptParser
         return false;
     }
 
+	private bool IsDeprecatedListExpression() {
+		return la.val == "{" && !IsDictionaryExpression();
+	}
+
     // Recognize: 
     //     { "foo" :   
     // OR   

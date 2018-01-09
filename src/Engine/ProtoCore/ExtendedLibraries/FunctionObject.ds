@@ -129,7 +129,7 @@ def __EvaluateFunctionObject(fo: Function, arg: var[]..[])
                 {
                     if (hasArgAt[i])
                     {
-                        paramPositions = Concat(paramPositions, { i });
+                        paramPositions = Concat(paramPositions, [ i ]);
                     }
                 }
             

@@ -88,33 +88,6 @@ namespace Dynamo.Graph.Nodes
             get { return false; }
         }
 
-        
-        class ListCollector : AstTraversal
-        {
-            private readonly List<Node> nodes = new List<Node>();
-
-            public override bool VisitExprListNode(ProtoCore.AST.ImperativeAST.ExprListNode node)
-            {
-                nodes.Add(node);
-                return this.VisitAllChildren(node);
-            }
-
-            public override bool VisitExprListNode(ProtoCore.AST.AssociativeAST.ExprListNode node)
-            {
-                nodes.Add(node);
-                return this.VisitAllChildren(node);
-            }
-
-            private ListCollector() {}
-
-            public static IEnumerable<Node> Collect(CodeBlockNode node)
-            {
-                var c = new ListCollector();
-                node.Accept(c);
-                return c.nodes;
-            }
-        }
-
         #region Public Methods
 
         /// <summary>
@@ -164,127 +137,9 @@ namespace Dynamo.Graph.Nodes
             this.ElementResolver = resolver;
             GUID = guid;
             ShouldFocus = false;
-
-            var cb = ParserUtils.Parse(userCode);
-
-            var nodes = ListCollector.Collect(cb);
-
-
-            var codeList = userCode.ToCharArray();
-
-            foreach (var n in nodes)
-            {
-                // don't include nodes not part of the code
-                if (n.line == ProtoCore.DSASM.Constants.kInvalidIndex)
-                {
-                    continue;
-                }
-
-                codeList[n.charPos] = '[';
-                codeList[n.endCharPos-1] = ']';
-            }
-
-            code = new String(codeList);
-
-            /*
-
-            var startCodePoints = new List<CodePoint>();
-            var endCodePoints = new List<CodePoint>();
-            foreach (var n in nodes)
-            {
-                // don't include nodes not part of the code
-                if (n.line <= 0 || n.endLine <= 0)
-                {
-                    continue;
-                }
-
-                startCodePoints.Add(new CodePoint()
-                {
-                    Line = n.line,
-                    Col = n.col
-                });
-
-                endCodePoints.Add(new CodePoint()
-                {
-                    Line = n.endLine,
-                    Col = n.endCol
-                });
-            }
-
-            endCodePoints.Sort(new CodePointComparer());
-            startCodePoints.Sort(new CodePointComparer());
-
-            var codeList = new List<char>();
-            codeList.AddRange(userCode);
-
-            ReplaceAtSortedCodePoints(codeList, '{', '[', startCodePoints);
-            ReplaceAtSortedCodePoints(codeList, '}', ']', endCodePoints);
-
-            */
+            this.code = userCode;
 
             ProcessCodeDirect();
-        }
-
-        struct CodePoint
-        {
-            public int Line;
-            public int Col;
-        }
-
-        class CodePointComparer : IComparer<CodePoint>
-        {
-            int IComparer<CodePoint>.Compare(CodePoint x, CodePoint y)
-            {
-                if (x.Line == y.Line)
-                {
-                    return x.Col.CompareTo(y.Col);
-                }
-
-                return x.Line.CompareTo(y.Line);
-            }
-        }
-
-        private void ReplaceAtSortedCodePoints(List<char> code, char oldChar, char newChar, IEnumerable<CodePoint> codePoints)
-        {
-            var line = 1;
-            var col = 0;
-            var i = 0;
-
-            foreach (var pt in codePoints)
-            {
-                // advance to line
-                while (i < code.Count && line < pt.Line)
-                {
-                    if (code[i] == '\n')
-                    {
-                        line++;
-                        col = 0;
-                    }
-
-                    i++;
-                    col++;
-                }
-
-                // advance to col at line
-                while (i < code.Count && code[i] != '\n' && col < pt.Col)
-                {
-                    i++;
-                    col++;
-                }
-
-                if (i >= code.Count || col != pt.Col || line != pt.Line)
-                {
-                    throw new Exception("The code point does not exist in the program!");
-                }
-
-                if (code[i] != oldChar)
-                {
-                    continue;
-                }
-
-                code[i] = newChar;
-            }
-
         }
 
         /// <summary>
@@ -747,8 +602,29 @@ namespace Dynamo.Graph.Nodes
 
         internal void ProcessCodeDirect()
         {
-            string errorMessage = string.Empty;
-            string warningMessage = string.Empty;
+            var errorMessage = string.Empty;
+            var warningMessage = string.Empty;
+
+            // convert all deprecated list types to the new syntax
+            var cb = ParserUtils.ParseWithDeprecatedListSyntax(this.code);
+
+            var nodes = ParserUtils.FindExprListNodes(cb);
+
+            var codeList = this.code.ToCharArray();
+
+            foreach (var n in nodes)
+            {
+                // don't include nodes not part of the code
+                if (n.line == ProtoCore.DSASM.Constants.kInvalidIndex)
+                {
+                    continue;
+                }
+
+                codeList[n.charPos] = '[';
+                codeList[n.endCharPos - 1] = ']';
+            }
+
+            this.code = new String(codeList);
 
             ProcessCode(ref errorMessage, ref warningMessage);
             RaisePropertyChanged("Code");

@@ -768,16 +768,17 @@ namespace ProtoCore.SyntaxAnalysis
     }
 
     /// <summary>
-    /// AstTraversal visits all nodes of the AST unless the result of a Visit* method is false.
+    /// AstTraversal visits all nodes of the AST unless the result of a Visit* method is false or you override one of the methods such that
+    /// it doesn't visit all of the Node's child nodes.
     /// </summary>
     public abstract class AstTraversal : AstVisitor<bool, bool>
     {
-        public sealed override bool VisitAssociativeNode(AssociativeNode node)
+        public override bool VisitAssociativeNode(AssociativeNode node)
         {
             return VisitAllChildren(node);
         }
 
-        public sealed override bool VisitImperativeNode(ImperativeNode node)
+        public override bool VisitImperativeNode(ImperativeNode node)
         {
             return VisitAllChildren(node);
         }
