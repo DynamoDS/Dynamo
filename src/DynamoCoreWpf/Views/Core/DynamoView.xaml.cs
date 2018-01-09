@@ -935,7 +935,7 @@ namespace Dynamo.Controls
             List<string> addOns = new List<string>();
             foreach (var element in dynamoViewModel.Model.SearchModel.SearchEntries)
             {
-                // Populated categories for packages and custom nodes
+                // Only include packages and custom nodes
                 if (element.ElementType.HasFlag(ElementTypes.Packaged) || element.ElementType.HasFlag(ElementTypes.CustomNode))
                 {
                     var allAddOns = element.Categories.ToList();
@@ -944,15 +944,15 @@ namespace Dynamo.Controls
 
                     for (int i = 0; i < allAddOns.Count; i++)
                     {
-                        if (i == 0)
-                        {
-                            category += allAddOns[i];
-                            addOns.Add(allAddOns[i]);
-                        }
-                        else
+                        if (i != 0)
                         {
                             category += "." + allAddOns[i];
                             addOns.Add(category);
+                        }
+                        else
+                        {
+                            category += allAddOns[i];
+                            addOns.Add(allAddOns[i]);
                         }
                     }
                 }
