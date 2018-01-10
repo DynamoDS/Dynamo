@@ -769,17 +769,6 @@ namespace Dynamo.Tests
             Assert.AreEqual(2, pastedGroup.Nodes.Count());
         }
 
-        [Test]
-        [Category("UnitTests")]
-        public void TestOpeningMalformedAnnotation()
-        {
-            OpenModel("core\\MalformedGroup.dyn");
-            var ws = CurrentDynamoModel.CurrentWorkspace;
-            // the file contains annotation which has a removed node
-            // check if all models are loaded correctly
-            Assert.AreEqual(4, ws.Nodes.Count());
-            Assert.AreEqual(1, ws.Annotations.Count());
-            Assert.AreEqual(4, ws.Annotations.First().Nodes.Count());
-        }
+       
     }
 }
