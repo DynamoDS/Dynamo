@@ -57,8 +57,6 @@ namespace Dynamo.Graph.Workspaces
             // If the id is not a guid, makes a guid based on the id of the node
             var guid = GuidUtility.tryParseOrCreateGuid(obj["Id"].Value<string>());
 
-            var previewPinned = obj["PreviewPinned"].Value<bool>();
-
             var replication = obj["Replication"].Value<string>();
            
             var inPorts = obj["Inputs"].ToArray().Select(t => t.ToObject<PortModel>()).ToArray();
@@ -138,7 +136,6 @@ namespace Dynamo.Graph.Workspaces
             // Cannot set Lacing directly as property is protected
             node.UpdateValue(new UpdateValueParams("ArgumentLacing", replication));
             node.GUID = guid;
-            node.PreviewPinned = previewPinned;
 
             // Add references to the node and the ports to the reference resolver,
             // so that they are available for entities which are deserialized later.

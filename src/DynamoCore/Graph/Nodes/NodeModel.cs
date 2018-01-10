@@ -264,6 +264,7 @@ namespace Dynamo.Graph.Nodes
             }
         }
 
+        [JsonIgnore]
         /// <summary>
         ///     Indicates if node preview is pinned
         /// </summary>
