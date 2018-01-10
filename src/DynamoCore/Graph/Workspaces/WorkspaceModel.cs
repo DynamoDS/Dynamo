@@ -533,7 +533,7 @@ namespace Dynamo.Graph.Workspaces
         public bool IsReadOnly
         {   
             //if the workspace contains xmlDummyNodes it's effectively a readonly graph.
-            get { return isReadOnly || this.containsXmlDummyNodes() || DynamoUtilities.PathHelper.IsReadOnlyPath(this.FileName); }
+            get { return isReadOnly || this.containsXmlDummyNodes(); }
             set
             {
                 isReadOnly = value;
