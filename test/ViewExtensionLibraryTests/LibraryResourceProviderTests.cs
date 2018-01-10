@@ -307,6 +307,48 @@ namespace ViewExtensionLibraryTests
 
         [Test]
         [Category("UnitTests")]
+        public void CustomNodePropertiesWindowValidateCategories()
+        {
+            var guid = Guid.NewGuid();
+            var name = "category test node";
+            var category = "base.level1.level2.level3";
+            var description = "A node for testing CN dialog categories drop-down";
+            var path = @"C:\temp\category_test_node.dyf";
+            var info = new CustomNodeInfo(guid, name, category, description, path);
+            var expectedQualifiedName = "dyf://base.level1.level2.level3.category test node";
+            var moq = new Mock<ICustomNodeSource>();
+            var element = new CustomNodeSearchElement(moq.Object, info);
+            var provider = new NodeItemDataProvider(new NodeSearchModel());
+            var item = provider.CreateLoadedTypeItem<LoadedTypeItem>(element);
+
+            var elements = new NodeSearchElement[] { element };
+
+            // Call function used to populate Add-ons categories drop-down in CN properties window
+            List<string> addOnCategories = Dynamo.Controls.DynamoView.getUniqueAddOnCategories(elements).ToList();
+
+            Assert.AreEqual(expectedQualifiedName, item.fullyQualifiedName);
+
+            // Expected results
+            string[] expectedCategories = new string[]
+            {
+                "base",
+                "base.level1",
+                "base.level1.level2",
+                "base.level1.level2.level3"
+                // Should not include node name at bottom level
+            };
+
+            // Verify expected results
+            Assert.AreEqual(addOnCategories.Count, expectedCategories.Length);
+
+            for (int i = 0; i < addOnCategories.Count; i++)
+            {
+                Assert.AreEqual(addOnCategories[i], expectedCategories[i]);
+            }
+        }
+
+        [Test]
+        [Category("UnitTests")]
         public void LibraryDataUpdatedEventRaised()
         {
             const string libraryDataUpdated = "libraryDataUpdated";
