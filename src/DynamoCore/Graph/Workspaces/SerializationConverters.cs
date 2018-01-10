@@ -21,6 +21,7 @@ using Newtonsoft.Json.Serialization;
 using ProtoCore;
 using ProtoCore.Namespace;
 using Type = System.Type;
+using System.Reflection;
 
 namespace Dynamo.Graph.Workspaces
 {
@@ -33,13 +34,41 @@ namespace Dynamo.Graph.Workspaces
     {
         private CustomNodeManager manager;
         private LibraryServices libraryServices;
+        private bool isTestMode;
+
         
         public ElementResolver ElementResolver { get; set; }
+        //map of all loaded assemblies including LoadFrom context assemblies
+        private Dictionary<string, List<Assembly>> loadedAssemblies;
 
-        public NodeReadConverter(CustomNodeManager manager, LibraryServices libraryServices)
+        public NodeReadConverter(CustomNodeManager manager, LibraryServices libraryServices, bool isTestMode = false)
         {
             this.manager = manager;
             this.libraryServices = libraryServices;
+            this.isTestMode = isTestMode;
+
+            if (this.isTestMode)
+            {
+                this.loadedAssemblies = this.buildMapOfLoadedAssemblies();
+            }
+        }
+
+        private Dictionary<string,List<Assembly>> buildMapOfLoadedAssemblies()
+        {
+            var allAssemblies = AppDomain.CurrentDomain.GetAssemblies();
+            var dict = new Dictionary<string, List<Assembly>>();
+            foreach(var assembly in allAssemblies)
+            {
+                var resultList = new List<Assembly>();
+                if (!dict.TryGetValue(assembly.GetName().Name, out resultList))
+                {
+                    dict[assembly.GetName().Name] = new List<Assembly>() { assembly };
+                }
+                else{
+                    dict[assembly.GetName().Name].Add(assembly);
+                }
+            }
+            return dict;
         }
 
         public override bool CanConvert(Type objectType)
@@ -53,6 +82,24 @@ namespace Dynamo.Graph.Workspaces
 
             var obj = JObject.Load(reader);
             var type = Type.GetType(obj["$type"].Value<string>());
+            //if we can't find this type - try to look in our load from assemblies
+            //but only during testing.
+            if(type == null && this.isTestMode == true)
+            {
+                List<Assembly> resultList;
+
+                var typeName = obj["$type"].Value<string>().Split(',').FirstOrDefault();
+                //this assemblyName does not usually usually contain version information...
+                var assemblyName = obj["$type"].Value<string>().Split(',').Skip(1).FirstOrDefault().Trim();
+                if (assemblyName != null)
+                {
+                    if(this.loadedAssemblies.TryGetValue(assemblyName, out resultList))
+                    {
+                        var matchingTypes = resultList.Select(x => x.GetType(typeName)).ToList();
+                        type =  matchingTypes.FirstOrDefault();
+                    }
+                }
+            }
 
             // If the id is not a guid, makes a guid based on the id of the node
             var guid = GuidUtility.tryParseOrCreateGuid(obj["Id"].Value<string>());

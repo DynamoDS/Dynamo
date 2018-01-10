@@ -34,11 +34,15 @@ namespace Dynamo.Utilities
             try
             {
                 var targetAssemblyName = new AssemblyName(args.Name).Name + ".dll";
-
+                Console.WriteLine("trying to resolve");
+                Console.WriteLine(targetAssemblyName);
                 // First check the core path
                 string assemblyPath = Path.Combine(moduleRootFolder, targetAssemblyName);
+                Console.WriteLine("at");
+                Console.WriteLine(assemblyPath);
                 if (File.Exists(assemblyPath))
                 {
+                    Console.WriteLine("loading from "+assemblyPath);
                     return Assembly.LoadFrom(assemblyPath);
                 }
 
@@ -46,8 +50,13 @@ namespace Dynamo.Utilities
                 foreach (var resolutionPath in additionalResolutionPaths)
                 {
                     assemblyPath = Path.Combine(resolutionPath, targetAssemblyName);
+                    Console.WriteLine("trying to resolve");
+                    Console.WriteLine(targetAssemblyName);
+                    Console.WriteLine("at");
+                    Console.WriteLine(assemblyPath);
                     if (File.Exists(assemblyPath))
                     {
+                        Console.WriteLine("loading from " + assemblyPath);
                         return Assembly.LoadFrom(assemblyPath);
                     }
                 }
