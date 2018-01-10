@@ -96,18 +96,6 @@ namespace Dynamo.Graph.Presets
         }
 
         /// <summary>
-        /// this overload is used for loading
-        /// </summary>
-        private PresetModel(string name, string description, List<NodeModel> nodes, List<XmlElement> serializedNodes, Guid id)
-        {
-            Name = name;
-            Description = description;
-            this.nodes = nodes;
-            this.serializedNodes = serializedNodes;
-            GUID = id;
-        }
-
-        /// <summary>
         /// this overload is used for loading with deserializeCore, we must pass the nodesInTheGraph to the instance of the Preset so that
         /// we can detect missing nodes
         /// </summary>

@@ -187,6 +187,9 @@ namespace Dynamo.Tests
             var categorized = SearchCategoryUtil.CategorizeSearchEntries(search.SearchEntries, x => x.Categories);
             Assert.AreEqual(1, categorized.SubCategories.Count());
 
+            var allCategories = SearchCategoryUtil.GetAllCategoryNames(categorized);
+            Assert.AreEqual(5, allCategories.Count());
+
             categorized = categorized.SubCategories.First();
             Assert.AreEqual("Category", categorized.Name);
             Assert.AreEqual(1, categorized.SubCategories.Count());

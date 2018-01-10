@@ -827,6 +827,32 @@ namespace DynamoCoreWpfTests
             Assert.IsTrue(currentWs.WorkspaceLacingMenu.IsSubmenuOpen);
         }
 
+        [Test]
+        [Category("UnitTests")]
+        public void TestDumpLibraryToXml()
+        {
+            ViewModel.DumpLibraryToXmlCommand.Execute(null);
+
+            // Look for library dump files aged within 10 seconds from the current time
+            var time = System.DateTime.Now;
+            var attempts = 10;
+
+            for (var attempt = 0; attempt < attempts; ++attempt)
+            {
+                string fileName = string.Format("LibrarySnapshot_{0}.xml", time.ToString("yyyyMMddHmmss"));
+                string fullFileName = Path.Combine(Model.PathManager.LogDirectory, fileName);
+                Console.WriteLine("Looking for library dump file at " + fullFileName);
+                if (File.Exists(fullFileName))
+                {
+                    File.Delete(fullFileName);
+                    Console.WriteLine("Library dump file has been found and deleted.");
+                    Assert.Pass();
+                }
+                time = time.AddSeconds(-1);
+            }
+            Assert.Fail("Library dump file aged within 10 seconds is not found.");
+        }
+
         private void RightClick(IInputElement element)
         {
             element.RaiseEvent(new MouseButtonEventArgs(Mouse.PrimaryDevice, 0, MouseButton.Right)
