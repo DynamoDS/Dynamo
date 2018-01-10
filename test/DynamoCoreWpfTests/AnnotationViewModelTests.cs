@@ -738,6 +738,18 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(noteY, noteVm.Top, "Note" + msgPart);
         }
 
+        [Test]
+        public void TestOpeningMalformedAnnotation()
+        {
+            OpenModel("core\\MalformedGroup.dyn");
+            var ws = ViewModel.Model.CurrentWorkspace;
+            // the file contains annotation which has a removed node
+            // check if all models are loaded correctly
+            Assert.AreEqual(4, ws.Nodes.Count());
+            Assert.AreEqual(1, ws.Annotations.Count());
+            Assert.AreEqual(4, ws.Annotations.First().Nodes.Count());
+        }
+
         #endregion
     }
 }
