@@ -739,7 +739,7 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
-       public void TestOpeningMalformedAnnotation()
+        public void TestOpeningMalformedAnnotation()
         {
             OpenModel("core\\MalformedGroup.dyn");
             var ws = ViewModel.Model.CurrentWorkspace;
