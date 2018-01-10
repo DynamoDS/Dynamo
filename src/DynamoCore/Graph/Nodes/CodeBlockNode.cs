@@ -10,6 +10,7 @@ using Dynamo.Configuration;
 using Dynamo.Engine;
 using Dynamo.Engine.CodeGeneration;
 using Dynamo.Graph.Connectors;
+using Dynamo.Migration;
 using Dynamo.Utilities;
 using ProtoCore;
 using ProtoCore.AST.AssociativeAST;
@@ -605,27 +606,6 @@ namespace Dynamo.Graph.Nodes
             var errorMessage = string.Empty;
             var warningMessage = string.Empty;
 
-            // convert all deprecated list types to the new syntax
-            var cb = ParserUtils.ParseWithDeprecatedListSyntax(this.code);
-
-            var nodes = ParserUtils.FindExprListNodes(cb);
-
-            var codeList = this.code.ToCharArray();
-
-            foreach (var n in nodes)
-            {
-                // don't include nodes not part of the code
-                if (n.line == ProtoCore.DSASM.Constants.kInvalidIndex)
-                {
-                    continue;
-                }
-
-                codeList[n.charPos] = '[';
-                codeList[n.endCharPos - 1] = ']';
-            }
-
-            this.code = new String(codeList);
-
             ProcessCode(ref errorMessage, ref warningMessage);
             RaisePropertyChanged("Code");
 
@@ -1144,6 +1124,51 @@ namespace Dynamo.Graph.Nodes
         }
 
         #endregion
+
+        [NodeMigration(version: "1.9.0.0")]
+        public static NodeMigrationData Migrate_2_0_0(NodeMigrationData data)
+        {
+            var migrationData = new NodeMigrationData(data.Document);
+            var node = data.MigratedNodes.ElementAt(0);
+
+            var codeTextAttr = node.Attributes["CodeText"];
+            if (codeTextAttr == null)
+            {
+                return migrationData;
+            }
+
+            var codeText = codeTextAttr.Value;
+
+            try
+            {
+                // convert all deprecated list types to the new syntax
+                var cb = ParserUtils.ParseWithDeprecatedListSyntax(codeText);
+
+                var nodes = ParserUtils.FindExprListNodes(cb);
+
+                var codeList = codeText.ToCharArray();
+
+                foreach (var n in nodes)
+                {
+                    // ignore nodes not part of original code
+                    if (n.line == ProtoCore.DSASM.Constants.kInvalidIndex)
+                    {
+                        continue;
+                    }
+
+                    codeList[n.charPos] = '[';
+                    codeList[n.endCharPos - 1] = ']';
+                }
+
+                codeTextAttr.Value = new String(codeList);
+            }
+            catch
+            {
+            }
+
+            migrationData.AppendNode(node);
+            return migrationData;
+        }
     }
 
     /// <summary>
