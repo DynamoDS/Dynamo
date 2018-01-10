@@ -1154,10 +1154,12 @@ namespace Dynamo.Models
                 if (extension == null)
                     continue;
 
-                // If the path has a .dll or .ds extension it is a locally imported library
+                // If the path has a .dll or .ds extension it is an explicitly imported library
                 if (extension == ".dll" || extension == ".ds")
                 {
-                    LibraryServices.ImportLibrary(path);
+                    // If a library was explicitly loaded by using the "File | ImportLibrary..." command
+                    // and for some reason the import fails we do not want to throw an exception
+                    LibraryServices.ImportLibrary(path, true);
                     continue;
                 }
 
