@@ -935,4 +935,7 @@ Parameter name: {0}</value>
   <data name="FailedToConvertArrayToDictionary" xml:space="preserve">
     <value>Cannot convert List to Dictionary type.</value>
   </data>
+  <data name="DeprecatedListInitializationSyntax" xml:space="preserve">
+    <value>Using curly braces for list initialization is no longer supported. Lists should be initialized with square brackets like [] or [1,2,3].</value>
+  </data>
 </root>

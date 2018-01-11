@@ -1574,37 +1574,39 @@ Associative_DictionaryExpression<out ProtoCore.AST.AssociativeAST.AssociativeNod
 =
 '{'                                     (. var dictBuilder = new ProtoCore.AST.AssociativeAST.DictionaryExpressionBuilder(); .)
                                         (. dictBuilder.SetNodeStartLocation(t); .)
-    [
-        (
-            textstring	(. var str = new StringNode {Value = t.val.Trim('"')}; .)  
-                        (. dictBuilder.AddKey(str); .)
-        )
-        |
-        (
-            ident		(. var ident = new IdentifierNode(t.val); .)
-                        (. NodeUtils.SetNodeLocation(ident, t); .)
-                        (. dictBuilder.AddKey(ident); .)
-        )
-    ]
-    ':'                     
-    Associative_Expression<out node>            (. dictBuilder.AddValue(node); .)
-    {
-        ','
-        [
-            (
-                textstring	(. var str = new StringNode { Value = t.val.Trim('"') }; .)
-                            (. dictBuilder.AddKey(str); .)  
-            )
-            |
-            (
-                ident		(. var ident = new IdentifierNode(t.val); .)
-                            (. NodeUtils.SetNodeLocation(ident, t); .)
-                            (. dictBuilder.AddKey(ident); .)
-            )
-        ]
-        ':'                     
-        Associative_Expression<out node>            (. dictBuilder.AddValue(node); .)
-    }
+	[
+		(
+			(
+				textstring	(. var str = new StringNode {Value = t.val.Trim('"')}; .)  
+							(. dictBuilder.AddKey(str); .)
+			)
+			|
+			(
+				ident		(. var ident = new IdentifierNode(t.val); .)
+							(. NodeUtils.SetNodeLocation(ident, t); .)
+							(. dictBuilder.AddKey(ident); .)
+			)
+		)
+		':'                     
+		Associative_Expression<out node>            (. dictBuilder.AddValue(node); .)
+		{
+			','
+			(
+				(
+					textstring	(. var str = new StringNode { Value = t.val.Trim('"') }; .)
+								(. dictBuilder.AddKey(str); .)  
+				)
+				|
+				(
+					ident		(. var ident = new IdentifierNode(t.val); .)
+								(. NodeUtils.SetNodeLocation(ident, t); .)
+								(. dictBuilder.AddKey(ident); .)
+				)
+			)
+			':'                     
+			Associative_Expression<out node>            (. dictBuilder.AddValue(node); .)
+		}
+	]
 '}'                                     (. dictBuilder.SetNodeEndLocation(t); .)
                                         (. node = dictBuilder.ToFunctionCall(); .)
 .
@@ -1670,6 +1672,14 @@ Associative_NameReference<ref ProtoCore.AST.AssociativeAST.AssociativeNode node>
                                         .)
         )
         |
+		IF(!core.ParseDeprecatedListSyntax && IsNonEmptyDeprecatedListExpression())
+		(
+			 Associative_DeprecatedExprList<out node>
+			                            (.
+                                            errors.SemErr(t.line, t.col, Resources.DeprecatedListInitializationSyntax);
+                                        .)
+		)
+		|
         (
             Associative_DictionaryExpression<out node>
                                         (.

@@ -101,6 +101,11 @@ COMPILER DesignScriptParser
         scanner.ResetPeek();
         return false;
     }
+	
+    private bool IsListExpression()
+    {
+        return la.val == "[" && !IsLanguageBlock();
+    }
 
     private bool IsLanguageBlock()
     {
@@ -131,9 +136,22 @@ COMPILER DesignScriptParser
         scanner.ResetPeek();
         return false;
     }
+	
+	private bool IsEmptyDictionaryExpression() {
+		if (la.val == "{") {
+			var isCloseCurlyBracket = scanner.Peek().val == "}";
+			scanner.ResetPeek();
+			return isCloseCurlyBracket;
+		}
+		return false;
+	}
 
 	private bool IsDeprecatedListExpression() {
 		return la.val == "{" && !IsDictionaryExpression();
+	}
+
+	private bool IsNonEmptyDeprecatedListExpression() {
+		return la.val == "{" && !IsEmptyDictionaryExpression() && !IsDictionaryExpression();
 	}
 
     // Recognize: 
@@ -552,6 +570,11 @@ COMPILER DesignScriptParser
      // use by associative
      private bool IsNotAttributeFunctionClass()
      {
+		 if (IsListExpression())
+         {
+             return true;
+         }
+
         if (la.val == "[")
         {
             Token t = scanner.Peek();
@@ -581,6 +604,11 @@ COMPILER DesignScriptParser
      // used by imperative
      private bool IsNotAttributeFunction()
      {
+	    if (IsListExpression())
+		{
+			return true;
+		}
+
         if (la.val == "[")
         {
             Token t = scanner.Peek();
