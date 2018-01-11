@@ -81,14 +81,17 @@ namespace Dynamo.Graph.Workspaces
 
             var obj = JObject.Load(reader);
             var type = Type.GetType(obj["$type"].Value<string>());
-            //if we can't find this type - try to look in our load from assemblies
-            //but only during testing.
+            //if we can't find this type - try to look in our load from assemblies,
+            //but only during testing - this is required during testing because some dlls are loaded
+            //using Assembly.LoadFrom using the assemblyHelper - which loads dlls into loadFrom context - 
+            //dlls loaded with LoadFrom context cannot be found using Type.GetType() - this should
+            //not be an issue during normal dynamo use but if it is we can enable this code.
             if(type == null && this.isTestMode == true)
             {
                 List<Assembly> resultList;
 
                 var typeName = obj["$type"].Value<string>().Split(',').FirstOrDefault();
-                //this assemblyName does not usually usually contain version information...
+                //this assemblyName does not usually contain version information...
                 var assemblyName = obj["$type"].Value<string>().Split(',').Skip(1).FirstOrDefault().Trim();
                 if (assemblyName != null)
                 {
