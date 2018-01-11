@@ -305,7 +305,7 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Using curly braces for list initialization is no longer supported. Lists should be initialized with square brackets like [] or [1,2,3]..
+        ///   Looks up a localized string similar to Curly braces can no longer be used for list initialization.  Square brackets must be used instead like [] or [1,2,3]..
         /// </summary>
         public static string DeprecatedListInitializationSyntax {
             get {
