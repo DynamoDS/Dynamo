@@ -1256,6 +1256,22 @@ var06 = g;
         }
 
         [Test]
+        public void TestDictionaryAndListInitializationSyntax()
+        {
+            string openPath = Path.Combine(TestDirectory, @"core\cbn\TestDictionaryListSyntax.dyn");
+            RunModel(openPath);
+            AssertPreviewValue("3ad6f95c-3bc4-4740-b9ae-0cd3a8577b4a", DesignScript.Builtin.Dictionary.ByKeysValues(new List<string>(), new List<object>()));
+            AssertPreviewValue("499afbf5-416b-4f13-bdd6-e232130f644d", new int[] { });
+            AssertPreviewValue("31373889-0b81-42cf-82d1-463af2e4a200", DesignScript.Builtin.Dictionary.ByKeysValues(new List<string>() { "foo" }, new List<object>() { "bar" }));
+            AssertPreviewValue("6ce105e2-fa09-453e-9418-a57dff7e62c1", DesignScript.Builtin.Dictionary.ByKeysValues(new List<string>() { "foo" }, new List<object>() { "bar" }));
+            AssertPreviewValue("0dfac919-8996-4dd3-b5ab-5c1f3034510a", new [] { 1, 2 });
+            AssertPreviewValue("5486ba2d-af43-4f9f-9ed0-7e080bca49fd", new [] { 1, 2 });
+            AssertPreviewValue("6fe8b8b3-3c81-4210-b58b-df60cc778fb0", null);
+            AssertPreviewValue("24f7cbca-a101-44df-a751-8ed264096c20", null);
+            AssertPreviewValue("2afe34da-e7ae-43c1-a43a-fa233a7e1906", DesignScript.Builtin.Dictionary.ByKeysValues(new List<string>() { "foo" }, new List<object>() { "bar" }));
+        }
+
+        [Test]
         public void TestDeprecatedListSyntaxMigration()
         {
             string openPath = Path.Combine(TestDirectory, @"core\migration\CodeBlockWithArray.dyn");

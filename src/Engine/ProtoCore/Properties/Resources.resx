@@ -936,6 +936,6 @@ Parameter name: {0}</value>
     <value>Cannot convert List to Dictionary type.</value>
   </data>
   <data name="DeprecatedListInitializationSyntax" xml:space="preserve">
-    <value>Curly braces can no longer be used for list initialization.  Square brackets must be used instead like [] or [1,2,3].</value>
+    <value>Curly braces are no longer used for list creation. Use square brackets instead, like [] or [1,2,3].</value>
   </data>
 </root>
