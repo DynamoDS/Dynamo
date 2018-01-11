@@ -151,42 +151,51 @@ namespace Dynamo.Graph.Nodes
             if (nodeElement.ChildNodes != null)
             {
                 foreach (XmlNode childNode in nodeElement.ChildNodes)
-                    if (childNode.Name.Equals("OriginalNodeContent"))
-                        OriginalNodeContent = (XmlElement)nodeElement.FirstChild.FirstChild;
-            }
-
-            if (originalElement != null)
-            {
-                var legacyFullName = originalElement.Attributes["type"];
-                if (legacyFullName != null)
-                    LegacyFullName = legacyFullName.Value;
-            }
-            else if (nodeElement.Attributes["OriginalNodeContent"] != null)
-            {
-                //we have some json, so lets parse it.
-                var jsonObject = JObject.Parse(nodeElement.Attributes["OriginalNodeContent"].Value);
-                if (jsonObject != null)
                 {
-                    this.OriginalNodeContent = jsonObject;
+                    if (childNode.Name.Equals("OriginalNodeContent"))
+                    {
+                        OriginalNodeContent = (XmlElement)nodeElement.FirstChild.FirstChild;
+                        //if it still is null then use the element directly
+                        if (OriginalNodeContent == null)
+                        {
+                            OriginalNodeContent = childNode.FirstChild;
+                        }
+                    }
                 }
             }
 
+                if (originalElement != null)
+                {
+                    var legacyFullName = originalElement.Attributes["type"];
+                    if (legacyFullName != null)
+                        LegacyFullName = legacyFullName.Value;
+                }
+                else if (nodeElement.Attributes["OriginalNodeContent"] != null)
+                {
+                    //we have some json, so lets parse it.
+                    var jsonObject = JObject.Parse(nodeElement.Attributes["OriginalNodeContent"].Value);
+                    if (jsonObject != null)
+                    {
+                        this.OriginalNodeContent = jsonObject;
+                    }
+                }
 
 
-            var legacyAsm = nodeElement.Attributes["legacyAssembly"];
-            if (legacyAsm != null)
-                LegacyAssembly = legacyAsm.Value;
 
-            var nodeNature = nodeElement.Attributes["nodeNature"];
-            if (nodeNature != null)
-            {
-                var nature = Enum.Parse(typeof(Nature), nodeNature.Value);
-                NodeNature = ((Nature)nature);
+                var legacyAsm = nodeElement.Attributes["legacyAssembly"];
+                if (legacyAsm != null)
+                    LegacyAssembly = legacyAsm.Value;
+
+                var nodeNature = nodeElement.Attributes["nodeNature"];
+                if (nodeNature != null)
+                {
+                    var nature = Enum.Parse(typeof(Nature), nodeNature.Value);
+                    NodeNature = ((Nature)nature);
+                }
+
+
+                UpdatePorts();
             }
-
-
-            UpdatePorts();
-        }
 
         private void UpdatePorts()
         {

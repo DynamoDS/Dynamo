@@ -318,6 +318,15 @@ namespace Dynamo.ViewModels
             get { return Model.FileName; }
         }
 
+        /// <summary>
+        /// Is the workspaceModel set as readonly or is the filePath readonly?
+        /// </summary>
+        [JsonIgnore]
+        public bool IsReadOnly
+        {
+            get { return Model.IsReadOnly; }
+        }
+
         [JsonIgnore]
         public bool CanEditName
         {
@@ -677,6 +686,10 @@ namespace Dynamo.ViewModels
             //unsub the events we attached below in NodeAdded.
             this.unsubscribeNodeEvents(nodeViewModel);
             nodeViewModel.Dispose();
+            if (node is DummyNode)
+            {
+                RaisePropertyChanged("IsReadOnly");
+            }
 
             PostNodeChangeActions();
         }
@@ -689,6 +702,10 @@ namespace Dynamo.ViewModels
             _nodes.Add(nodeViewModel);
             Errors.Add(nodeViewModel.ErrorBubble);
             nodeViewModel.UpdateBubbleContent();
+            if (node is DummyNode)
+            {
+                RaisePropertyChanged("IsReadOnly");
+            }
 
             PostNodeChangeActions();
         }

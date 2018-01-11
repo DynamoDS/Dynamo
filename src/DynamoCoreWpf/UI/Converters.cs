@@ -396,28 +396,33 @@ namespace Dynamo.Controls
         }
     }
 
-    public class WorkspaceToFileNameConverter : IValueConverter
+    /// <summary>
+    /// A converter that combines readonly state and filename into string to display on workspace tabs.
+    /// </summary>
+    public class ReadOnlyToFileNameConverter : IMultiValueConverter
     {
-        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        public object Convert(object[] values, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
+            bool readOnly = (bool)values[0];
+            string filename = (string)values[1];
 
-            var wsvm = value as WorkspaceViewModel;
-            if (wsvm != null && !string.IsNullOrEmpty(wsvm.FileName))
+            if (values[0] != null && !string.IsNullOrEmpty(filename))
             {
                 // Convert to path, get file name. If read-only file, append [Read-Only].
-                if (wsvm.Model.IsReadOnly)
-                    return Resources.TabFileNameReadOnlyPrefix + Path.GetFileName(wsvm.FileName);
+                if (readOnly)
+                    return Resources.TabFileNameReadOnlyPrefix + Path.GetFileName(filename);
                 else
-                    return Path.GetFileName(wsvm.FileName);
+                    return Path.GetFileName(filename);
             }
 
             return "Unsaved";
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
         {
             return null;
         }
+
     }
 
     public class PathToSaveStateConverter : IValueConverter

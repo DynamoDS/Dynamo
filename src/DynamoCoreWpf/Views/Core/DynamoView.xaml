@@ -1134,9 +1134,14 @@
                                                                     </DataTrigger>
                                                                     <DataTrigger Binding="{Binding Path=FileName, Converter={StaticResource PathToSaveStateConverter}}"
                                                                                  Value="Saved">
-                                                                        <!--TODO find out what is up with this binding did it ever do anything?-->
-                                                                        <Setter Property="Header"
-                                                                                Value="{Binding Converter={StaticResource WorkspaceToFileNameConverter}}" />
+                                                                        <Setter Property="Header">
+                                                                            <Setter.Value>
+                                                                                <MultiBinding Converter="{StaticResource ReadOnlyToFileNameConverter}">
+                                                                                    <Binding Path="IsReadOnly"></Binding>
+                                                                                    <Binding Path="FileName"></Binding>
+                                                                                </MultiBinding>
+                                                                            </Setter.Value>
+                                                                        </Setter>
                                                                     </DataTrigger>
 
                                                                     <DataTrigger Binding="{Binding HasUnsavedChanges}"
@@ -1390,8 +1395,14 @@
                                                             <Condition Binding="{Binding Path=FileName, Converter={StaticResource PathToSaveStateConverter}}"
                                                                        Value="Saved" />
                                                         </MultiDataTrigger.Conditions>
-                                                        <Setter Property="Text"
-                                                                Value="{Binding Converter={StaticResource WorkspaceToFileNameConverter}}" />
+                                                        <Setter Property="Text">
+                                                            <Setter.Value>
+                                                                <MultiBinding Converter="{StaticResource ReadOnlyToFileNameConverter}">
+                                                                    <Binding Path="IsReadOnly"></Binding>
+                                                                    <Binding Path="FileName"></Binding>
+                                                                </MultiBinding>
+                                                            </Setter.Value>
+                                                        </Setter>
                                                     </MultiDataTrigger>
 
                                                     <MultiDataTrigger>
@@ -1412,8 +1423,14 @@
                                                             <Condition Binding="{Binding Path=FileName, Converter={StaticResource PathToSaveStateConverter}}"
                                                                        Value="Saved" />
                                                         </MultiDataTrigger.Conditions>
-                                                        <Setter Property="Text"
-                                                                Value="{Binding Converter={StaticResource WorkspaceToFileNameConverter}}" />
+                                                        <Setter Property="Text">
+                                                            <Setter.Value>
+                                                                <MultiBinding Converter="{StaticResource ReadOnlyToFileNameConverter}">
+                                                                    <Binding Path="IsReadOnly"></Binding>
+                                                                    <Binding Path="FileName"></Binding>
+                                                                </MultiBinding>
+                                                            </Setter.Value>
+                                                        </Setter>
                                                     </MultiDataTrigger>
 
                                                 </Style.Triggers>
