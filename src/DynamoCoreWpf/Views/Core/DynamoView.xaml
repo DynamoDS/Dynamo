@@ -1134,7 +1134,6 @@
                                                                     </DataTrigger>
                                                                     <DataTrigger Binding="{Binding Path=FileName, Converter={StaticResource PathToSaveStateConverter}}"
                                                                                  Value="Saved">
-                                                                        <!--TODO find out what is up with this binding did it ever do anything?-->
                                                                         <Setter Property="Header"
                                                                                 Value="{Binding Converter={StaticResource WorkspaceToFileNameConverter}}" />
                                                                     </DataTrigger>
