@@ -1135,7 +1135,7 @@
                                                                     <DataTrigger Binding="{Binding Path=FileName, Converter={StaticResource PathToSaveStateConverter}}"
                                                                                  Value="Saved">
                                                                         <Setter Property="Header"
-                                                                                Value="{Binding Converter={StaticResource WorkspaceToFileNameConverter}}" />
+                                                                                Value="{Binding FileName, Converter={StaticResource PathToFileNameConverter}}" />
                                                                     </DataTrigger>
 
                                                                     <DataTrigger Binding="{Binding HasUnsavedChanges}"
@@ -1390,7 +1390,7 @@
                                                                        Value="Saved" />
                                                         </MultiDataTrigger.Conditions>
                                                         <Setter Property="Text"
-                                                                Value="{Binding Converter={StaticResource WorkspaceToFileNameConverter}}" />
+                                                                Value="{Binding Path=FileName, Converter={StaticResource PathToFileNameConverter}}" />
                                                     </MultiDataTrigger>
 
                                                     <MultiDataTrigger>
@@ -1412,7 +1412,7 @@
                                                                        Value="Saved" />
                                                         </MultiDataTrigger.Conditions>
                                                         <Setter Property="Text"
-                                                                Value="{Binding Converter={StaticResource WorkspaceToFileNameConverter}}" />
+                                                                Value="{Binding Path=FileName, Converter={StaticResource PathToFileNameConverter}}" />
                                                     </MultiDataTrigger>
 
                                                 </Style.Triggers>

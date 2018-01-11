@@ -12,8 +12,6 @@ using Dynamo.Wpf.ViewModels;
 
 using NUnit.Framework;
 using Dynamo.ViewModels;
-using Dynamo.Controls;
-using Dynamo.Wpf.Properties;
 
 namespace Dynamo.Tests
 {
@@ -580,39 +578,6 @@ namespace Dynamo.Tests
             System.IO.File.Delete(newPath);
         }
 
-        [Test]
-        [Category("UnitTests")]
-        public void WorkspaceToFileNameConverterTest()
-        {
-            //openPath
-            var testFileWithMultipleXmlDummyNode = @"core\dummy_node\dummyNodeXMLMultiple.dyn";
-            string openPath = Path.Combine(TestDirectory, testFileWithMultipleXmlDummyNode);
-            ViewModel.OpenCommand.Execute(openPath);
-
-            var converter = new WorkspaceToFileNameConverter();
-            var result = converter.Convert(ViewModel.CurrentSpaceViewModel, null, null, null);
-            //assert the filename is correct for readonly workspace
-            Assert.IsTrue(ViewModel.CurrentSpaceViewModel.Model.IsReadOnly);
-            Assert.AreEqual(Resources.TabFileNameReadOnlyPrefix + Path.GetFileName(ViewModel.CurrentSpaceViewModel.FileName), result);
-
-            //try saving this graph
-            var newPath = GetNewFileNameOnTempPath("dyn");
-            Assert.DoesNotThrow(() => { this.ViewModel.SaveAs(newPath); });
-
-            //try to open the file we just saved.
-            Assert.DoesNotThrow(() => { ViewModel.OpenCommand.Execute(newPath); });
-
-            //assert that we no longer have a readonly filename
-            result = converter.Convert(ViewModel.CurrentSpaceViewModel, null, null, null);
-            //assert the filename is correct for readonly workspace
-            Assert.False(ViewModel.CurrentSpaceViewModel.Model.IsReadOnly);
-            Assert.AreEqual(Path.GetFileName(ViewModel.CurrentSpaceViewModel.FileName), result);
-
-            System.IO.File.Delete(newPath);
-
-
-
-        }
         #region CustomNodeWorkspaceModel SaveAs side effects
 
         [Test]
