@@ -68,7 +68,7 @@
       <Directory Id="DYNAMO_INSTALLDIR"/>
       <Directory Id="CommonAppDataFolder">
         <Directory Id="DYNAMO_PROGDATA" Name="Dynamo">
-          <Directory Id="DYNAMO_CORE_PROGDATA" Name="$(var.ProductName)">
+          <Directory Id="DYNAMO_CORE_PROGDATA" Name="$(var.ProductName).$(var.Minor)">
             <Directory Id="PROGDATA" Name="$(var.Major)">
             </Directory>
           </Directory>
@@ -79,7 +79,7 @@
     <DirectoryRef Id="TARGETDIR">
       <Component Id="ProductRegistry" Win64="yes">
         <RegistryKey Root="HKLM"
-                     Key="SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$(var.ProductName) $(var.Major)"
+                     Key="SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$(var.ProductName) $(var.Major).$(var.Minor)"
                      ForceDeleteOnUninstall="yes">
           <RegistryValue Name="InstallLocation" Value="[DYNAMO_INSTALLDIR]" Type="string" />
           <RegistryValue Name="UninstallString" Value="MsiExec.exe" Type="string" />
