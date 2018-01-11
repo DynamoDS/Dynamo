@@ -59,8 +59,7 @@ namespace Dynamo.Graph.Workspaces
             var dict = new Dictionary<string, List<Assembly>>();
             foreach(var assembly in allAssemblies)
             {
-                var resultList = new List<Assembly>();
-                if (!dict.TryGetValue(assembly.GetName().Name, out resultList))
+                if (!dict.ContainsKey(assembly.GetName().Name))
                 {
                     dict[assembly.GetName().Name] = new List<Assembly>() { assembly };
                 }
