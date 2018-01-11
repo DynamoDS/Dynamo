@@ -844,7 +844,6 @@ namespace Dynamo.Graph.Workspaces
             SetModelEventOnAnnotation();
             WorkspaceEvents.WorkspaceAdded += computeUpstreamNodesWhenWorkspaceAdded;
         }
-
         /// <summary>
         /// Computes the upstream nodes when workspace is added. when a workspace is added (assuming that
         /// all the nodes and its connectors were added successfully) compute the upstream cache for all

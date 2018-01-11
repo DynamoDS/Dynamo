@@ -29,8 +29,8 @@ namespace Dynamo.Tests
             // file exists  
 
             var dynamoModel = ViewModel.Model;
-            Assert.IsNotNull( dynamoModel.CurrentWorkspace );
-            Assert.IsAssignableFrom( typeof(HomeWorkspaceModel), dynamoModel.CurrentWorkspace );
+            Assert.IsNotNull(dynamoModel.CurrentWorkspace);
+            Assert.IsAssignableFrom(typeof(HomeWorkspaceModel), dynamoModel.CurrentWorkspace);
 
             var newPath = GetNewFileNameOnTempPath("dyn");
             dynamoModel.CurrentWorkspace.Save(newPath);
@@ -80,7 +80,7 @@ namespace Dynamo.Tests
             var catName = "Custom Nodes";
 
             var ws = dynamoModel.CustomNodeManager.CreateCustomNode(nodeName, catName, "");
-                
+
             var newPath = GetNewFileNameOnTempPath("dyf");
             dynamoModel.CurrentWorkspace.Save(newPath);
 
@@ -135,7 +135,7 @@ namespace Dynamo.Tests
             var examplePath = Path.Combine(TestDirectory, @"core\math", "Add.dyn");
             ViewModel.OpenCommand.Execute(examplePath);
 
-            Assert.Throws<ArgumentNullException>(()=> model.CurrentWorkspace.Save(""));
+            Assert.Throws<ArgumentNullException>(() => model.CurrentWorkspace.Save(""));
         }
 
         [Test]
@@ -152,7 +152,7 @@ namespace Dynamo.Tests
 
             var def = dynamoModel.CustomNodeManager.CreateCustomNode(nodeName, catName, "");
 
-            Assert.Throws<ArgumentNullException>(()=>def.Save(null));
+            Assert.Throws<ArgumentNullException>(() => def.Save(null));
         }
 
         [Test]
@@ -166,7 +166,7 @@ namespace Dynamo.Tests
             Assert.IsNotNull(dynamoModel.CurrentWorkspace);
             Assert.IsAssignableFrom(typeof(HomeWorkspaceModel), dynamoModel.CurrentWorkspace);
 
-            Assert.Throws<ArgumentNullException>(()=>ViewModel.Model.CurrentWorkspace.Save(ViewModel.Model.CurrentWorkspace.FileName));
+            Assert.Throws<ArgumentNullException>(() => ViewModel.Model.CurrentWorkspace.Save(ViewModel.Model.CurrentWorkspace.FileName));
         }
 
         [Test]
@@ -182,7 +182,7 @@ namespace Dynamo.Tests
 
             var def = dynamoModel.CustomNodeManager.CreateCustomNode(nodeName, catName, "");
 
-            Assert.Throws<ArgumentNullException>(()=>def.Save(def.FileName));
+            Assert.Throws<ArgumentNullException>(() => def.Save(def.FileName));
         }
 
         [Test]
@@ -223,7 +223,7 @@ namespace Dynamo.Tests
 
             Assert.IsTrue(File.Exists(newPath));
 
-            Assert.AreEqual(newPath, def.FileName );
+            Assert.AreEqual(newPath, def.FileName);
         }
 
         [Test]
@@ -424,7 +424,7 @@ namespace Dynamo.Tests
             string openPath = Path.Combine(TestDirectory, (@"UI\GroupTest.dyn"));
             var eventCount = 0;
 
-            var handler = new WorkspaceSaveEventHandler((o,e) => { eventCount = eventCount + 1; });
+            var handler = new WorkspaceSaveEventHandler((o, e) => { eventCount = eventCount + 1; });
             //attach handler to the save request
             ViewModel.RequestUserSaveWorkflow += handler;
             //send the command
@@ -434,7 +434,7 @@ namespace Dynamo.Tests
             ViewModel.RequestUserSaveWorkflow -= handler;
 
             //assert the request was made
-            Assert.AreEqual(1,eventCount);
+            Assert.AreEqual(1, eventCount);
         }
 
         [Test]
@@ -468,7 +468,7 @@ namespace Dynamo.Tests
         [Category("UnitTests")]
         public void EnsureOnOpenIfSaveCommandOpensDynFile()
         {
-            
+
             //openPath
             string openPath = Path.Combine(TestDirectory, (@"UI\GroupTest.dyn"));
             //send the command
@@ -548,8 +548,8 @@ namespace Dynamo.Tests
             var node = new DSFunction(dynamoModel.LibraryServices.GetFunctionDescriptor("+"));
             def.AddAndRegisterNode(node, false);
             Assert.IsTrue(def.HasUnsavedChanges);
-            Assert.AreEqual(1, def.Nodes.Count() );
-            
+            Assert.AreEqual(1, def.Nodes.Count());
+
             var newPath = GetNewFileNameOnTempPath("dyf");
             def.Save(newPath);
 
@@ -568,7 +568,7 @@ namespace Dynamo.Tests
 
             //try saving this graph
             var newPath = GetNewFileNameOnTempPath("dyn");
-            Assert.DoesNotThrow(()=> { this.ViewModel.SaveAs(newPath); }) ;
+            Assert.DoesNotThrow(() => { this.ViewModel.SaveAs(newPath); });
 
             //try to open the file we just saved.
             Assert.DoesNotThrow(() => { ViewModel.OpenCommand.Execute(newPath); });
@@ -582,15 +582,17 @@ namespace Dynamo.Tests
 
         [Test]
         [Category("UnitTests")]
-        public void WorkspaceToFileNameConverterTest()
+        public void ReadonlyToFileNameConverterTest()
         {
             //openPath
             var testFileWithMultipleXmlDummyNode = @"core\dummy_node\dummyNodeXMLMultiple.dyn";
             string openPath = Path.Combine(TestDirectory, testFileWithMultipleXmlDummyNode);
             ViewModel.OpenCommand.Execute(openPath);
 
-            var converter = new WorkspaceToFileNameConverter();
-            var result = converter.Convert(ViewModel.CurrentSpaceViewModel, null, null, null);
+            var converter = new ReadOnlyToFileNameConverter();
+            var result = converter.Convert(new object[] { ViewModel.CurrentSpaceViewModel.Model.IsReadOnly,
+                ViewModel.CurrentSpaceViewModel.FileName }
+                , null, null, null);
             //assert the filename is correct for readonly workspace
             Assert.IsTrue(ViewModel.CurrentSpaceViewModel.Model.IsReadOnly);
             Assert.AreEqual(Resources.TabFileNameReadOnlyPrefix + Path.GetFileName(ViewModel.CurrentSpaceViewModel.FileName), result);
@@ -603,7 +605,9 @@ namespace Dynamo.Tests
             Assert.DoesNotThrow(() => { ViewModel.OpenCommand.Execute(newPath); });
 
             //assert that we no longer have a readonly filename
-            result = converter.Convert(ViewModel.CurrentSpaceViewModel, null, null, null);
+            result = converter.Convert(new object[] { ViewModel.CurrentSpaceViewModel.Model.IsReadOnly,
+                ViewModel.CurrentSpaceViewModel.FileName }
+                , null, null, null);
             //assert the filename is correct for readonly workspace
             Assert.False(ViewModel.CurrentSpaceViewModel.Model.IsReadOnly);
             Assert.AreEqual(Path.GetFileName(ViewModel.CurrentSpaceViewModel.FileName), result);
@@ -692,7 +696,7 @@ namespace Dynamo.Tests
 
             var nodeWorkspace =
                 model.Workspaces.OfType<CustomNodeWorkspaceModel>().FirstOrDefault();
-            
+
             Assert.IsNotNull(nodeWorkspace);
             var oldId = nodeWorkspace.CustomNodeDefinition.FunctionId;
 
@@ -860,7 +864,7 @@ namespace Dynamo.Tests
                     .ToList();
             Assert.AreEqual(10, funcs.Count);
             funcs.ForEach(x => Assert.AreEqual(newName, x.Name));
-            
+
         }
 
         [Test]
@@ -878,7 +882,7 @@ namespace Dynamo.Tests
 
             CustomNodeWorkspaceModel nodeWorkspace;
             Assert.IsTrue(model.CustomNodeManager.TryGetFunctionWorkspace(oldId, true, out nodeWorkspace));
-            
+
             var newPath = GetNewFileNameOnTempPath("dyf");
             var originalNumElements = ViewModel.Model.SearchModel.NumElements;
 
@@ -996,8 +1000,8 @@ namespace Dynamo.Tests
                 listGuids.Add(newId);
                 listNames.Add(newName);
 
-                listGuids.ForEach( x => Assert.IsTrue( ViewModel.Model.CustomNodeManager.NodeInfos.ContainsKey(x) ));
-                listNames.ForEach( x => Assert.IsTrue( ViewModel.Model.CustomNodeManager.Contains(x) ));
+                listGuids.ForEach(x => Assert.IsTrue(ViewModel.Model.CustomNodeManager.NodeInfos.ContainsKey(x)));
+                listNames.ForEach(x => Assert.IsTrue(ViewModel.Model.CustomNodeManager.Contains(x)));
             }
         }
 
@@ -1019,7 +1023,7 @@ namespace Dynamo.Tests
 
                 Assert.AreEqual(connectorCount, workspace.Connectors.Count());
                 Assert.AreEqual(nodeCount, workspace.Nodes.Count());
-            } 
+            }
         }
 
         [Test]
@@ -1076,7 +1080,7 @@ namespace Dynamo.Tests
             var def = dynamoModel.CustomNodeManager.CreateCustomNode(nodeName, catName, "");
 
             var tempPath1 = Path.Combine(TempFolder, nodeName + ".dyf");
-            
+
             // Create the folder first incase it does not exist
             Directory.CreateDirectory(Path.Combine(TempFolder, nodeName, nodeName));
             var tempPath2 = Path.Combine(TempFolder, nodeName, nodeName + ".dyf");
