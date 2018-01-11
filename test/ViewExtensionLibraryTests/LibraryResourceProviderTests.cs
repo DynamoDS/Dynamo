@@ -309,36 +309,56 @@ namespace ViewExtensionLibraryTests
         [Category("UnitTests")]
         public void CustomNodePropertiesWindowValidateCategories()
         {
-            var guid = Guid.NewGuid();
-            var name = "category test node";
-            var category = "base.level1.level2.level3";
-            var description = "A node for testing CN dialog categories drop-down";
-            var path = @"C:\temp\category_test_node.dyf";
-            var info = new CustomNodeInfo(guid, name, category, description, path);
-            var expectedQualifiedName = "dyf://base.level1.level2.level3.category test node";
-            var moq = new Mock<ICustomNodeSource>();
-            var element = new CustomNodeSearchElement(moq.Object, info);
-            var provider = new NodeItemDataProvider(new NodeSearchModel());
-            var item = provider.CreateLoadedTypeItem<LoadedTypeItem>(element);
+            // sample CN #1
+            var CN1_Info = new CustomNodeInfo(
+                Guid.NewGuid(), 
+                "category test node 1", 
+                "base.level1.level2.level3",
+                "A node for testing CN dialog categories drop - down",
+                @"C:\temp\category_test_node_1.dyf");
 
-            var elements = new NodeSearchElement[] { element };
+            // sample CN #2
+            var CN2_Info = new CustomNodeInfo(
+                Guid.NewGuid(),
+                "category test node 2",
+                "base.level1.level2.level3.level4.level5",
+                "A node for testing CN dialog categories drop - down",
+                @"C:\temp\category_test_node_2.dyf");
+
+            var CN1_Mock = new Mock<ICustomNodeSource>();
+            var CN2_Mock = new Mock<ICustomNodeSource>();
+
+            var CN1_element = new CustomNodeSearchElement(CN1_Mock.Object, CN1_Info);
+            var CN2_element = new CustomNodeSearchElement(CN2_Mock.Object, CN2_Info);
+
+            var provider = new NodeItemDataProvider(new NodeSearchModel());
+            var CN1_LoadedType = provider.CreateLoadedTypeItem<LoadedTypeItem>(CN1_element);
+            var CN2_LoadedType = provider.CreateLoadedTypeItem<LoadedTypeItem>(CN2_element);
+
+            var elements = new NodeSearchElement[] { CN1_element, CN2_element };
 
             // Call function used to populate Add-ons categories drop-down in CN properties window
             List<string> addOnCategories = Dynamo.Controls.DynamoView.getUniqueAddOnCategories(elements).ToList();
 
-            Assert.AreEqual(expectedQualifiedName, item.fullyQualifiedName);
-
             // Expected results
+            var CN1_expectedQualifiedName = "dyf://base.level1.level2.level3.category test node 1";
+            var CN2_expectedQualifiedName = "dyf://base.level1.level2.level3.level4.level5.category test node 2";
+
+            // Expected unique categories that will be populated for the drop-down in the function above
             string[] expectedCategories = new string[]
             {
                 "base",
                 "base.level1",
                 "base.level1.level2",
-                "base.level1.level2.level3"
-                // Should not include node name at bottom level
+                "base.level1.level2.level3",
+                "base.level1.level2.level3.level4",
+                "base.level1.level2.level3.level4.level5"
+                // Should not include node names at bottom levels
             };
 
             // Verify expected results
+            Assert.AreEqual(CN1_expectedQualifiedName, CN1_LoadedType.fullyQualifiedName);
+            Assert.AreEqual(CN2_expectedQualifiedName, CN2_LoadedType.fullyQualifiedName);
             Assert.AreEqual(addOnCategories.Count, expectedCategories.Length);
 
             for (int i = 0; i < addOnCategories.Count; i++)
