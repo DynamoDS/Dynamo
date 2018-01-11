@@ -40,8 +40,8 @@
     <UIRef Id="SetupDialogUI" />
     
     <Property Id="INSTALLDIR"/>
-    <CustomAction Id="DIRCA_DEFAULT_INSTALLDIR" Property="DYNAMO_INSTALLDIR" Value="[ProgramFiles64Folder][Manufacturer]\$(var.ProductName)\$(var.Major).$(var.Minor)" Execute="immediate" />
-    <CustomAction Id="DIRCA_SET_INSTALLDIR" Property="DYNAMO_INSTALLDIR" Value="[INSTALLDIR]\$(var.ProductName)\$(var.Major).$(var.Minor)" Execute="immediate" />
+    <CustomAction Id="DIRCA_DEFAULT_INSTALLDIR" Property="DYNAMO_INSTALLDIR" Value="[ProgramFiles64Folder][Manufacturer]\$(var.ProductName)\$(var.Major)" Execute="immediate" />
+    <CustomAction Id="DIRCA_SET_INSTALLDIR" Property="DYNAMO_INSTALLDIR" Value="[INSTALLDIR]\$(var.ProductName)\$(var.Major)" Execute="immediate" />
 
     <CustomAction Id='AlreadyInstalled' Error='[ProductName] is already installed.&#13;&#10;&#13;&#10;Skipping [ProductName] Installation...' />
 
@@ -69,7 +69,7 @@
       <Directory Id="CommonAppDataFolder">
         <Directory Id="DYNAMO_PROGDATA" Name="Dynamo">
           <Directory Id="DYNAMO_CORE_PROGDATA" Name="$(var.ProductName)">
-            <Directory Id="PROGDATA" Name="$(var.Major).$(var.Minor)">
+            <Directory Id="PROGDATA" Name="$(var.Major)">
             </Directory>
           </Directory>
         </Directory>
@@ -79,7 +79,7 @@
     <DirectoryRef Id="TARGETDIR">
       <Component Id="ProductRegistry" Win64="yes">
         <RegistryKey Root="HKLM"
-                     Key="SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$(var.ProductName) $(var.Major).$(var.Minor)"
+                     Key="SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$(var.ProductName) $(var.Major)"
                      ForceDeleteOnUninstall="yes">
           <RegistryValue Name="InstallLocation" Value="[DYNAMO_INSTALLDIR]" Type="string" />
           <RegistryValue Name="UninstallString" Value="MsiExec.exe" Type="string" />

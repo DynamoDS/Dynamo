@@ -533,7 +533,7 @@ namespace Dynamo.Graph.Workspaces
         public bool IsReadOnly
         {   
             //if the workspace contains xmlDummyNodes it's effectively a readonly graph.
-            get { return isReadOnly || this.containsXmlDummyNodes() || DynamoUtilities.PathHelper.IsReadOnlyPath(this.FileName); }
+            get { return isReadOnly || this.containsXmlDummyNodes(); }
             set
             {
                 isReadOnly = value;
@@ -1587,7 +1587,7 @@ namespace Dynamo.Graph.Workspaces
                 Converters = new List<JsonConverter>{
                         new ConnectorConverter(logger),
                         new WorkspaceReadConverter(engineController, scheduler, factory, isTestMode, verboseLogging),
-                        new NodeReadConverter(manager, libraryServices),
+                        new NodeReadConverter(manager, libraryServices,isTestMode),
                         new TypedParameterConverter()
                     },
                 ReferenceResolverProvider = () => { return new IdReferenceResolver(); }
