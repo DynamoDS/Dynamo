@@ -1254,6 +1254,14 @@ var06 = g;
             RunModel(openPath);
             AssertPreviewValue("30c24391-9361-4b53-834f-912e9faf9586", 2);
         }
+
+        [Test]
+        public void TestDeprecatedListSyntaxMigration()
+        {
+            string openPath = Path.Combine(TestDirectory, @"core\migration\CodeBlockWithArray.dyn");
+            RunModel(openPath);
+            AssertPreviewValue("b80e0c94-4a98-4f98-a197-f426a0a96db3", new object[] { 1, 2, 3 });
+        }
     }
 
     public class CodeBlockCompletionTests
