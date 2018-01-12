@@ -11,6 +11,7 @@ using Dynamo.Nodes.Prompts;
 using Dynamo.PackageManager;
 using Dynamo.PackageManager.UI;
 using Dynamo.Search;
+using Dynamo.Search.SearchElements;
 using Dynamo.Selection;
 using Dynamo.Services;
 using Dynamo.UI.Controls;
@@ -21,6 +22,7 @@ using Dynamo.Wpf;
 using Dynamo.Wpf.Authentication;
 using Dynamo.Wpf.Controls;
 using Dynamo.Wpf.Extensions;
+using Dynamo.Wpf.Interfaces;
 using Dynamo.Wpf.Utilities;
 using Dynamo.Wpf.ViewModels.Core;
 using Dynamo.Wpf.Views.Gallery;
@@ -929,13 +931,10 @@ namespace Dynamo.Controls
         /// <returns></returns>
         internal void ShowNewFunctionDialog(FunctionNamePromptEventArgs e)
         {
-            var categorized =
-                SearchCategoryUtil.CategorizeSearchEntries(
-                    dynamoViewModel.Model.SearchModel.SearchEntries,
-                    entry => entry.Categories);
+            var elements = dynamoViewModel.Model.SearchModel.SearchEntries;
 
-            var allCategories =
-                categorized.SubCategories.SelectMany(sub => sub.GetAllCategoryNames());
+            // Unique package and custom node categories
+            var allCategories = getUniqueAddOnCategories(elements);
 
             var dialog = new FunctionNamePrompt(allCategories)
             {
@@ -970,6 +969,46 @@ namespace Dynamo.Controls
             e.Description = dialog.Description;
 
             e.Success = true;
+        }
+
+        /// <summary>
+        /// Helper function returns enum containing all unique package and custom node categories including all nested levels
+        /// </summary>
+        /// <param name="elements"></param>
+        /// <returns></returns>
+        public static IEnumerable<string> getUniqueAddOnCategories(IEnumerable<NodeSearchElement> elements)
+        {
+            List<string> addOns = new List<string>();
+            foreach (var element in elements)
+            {
+                // Only include packages and custom nodes
+                if (element.ElementType.HasFlag(ElementTypes.Packaged) || element.ElementType.HasFlag(ElementTypes.CustomNode))
+                {
+                    // Ordered list of all categories for the search element including all nested categories
+                    var allAddOns = element.Categories.ToList();
+
+                    string category = "";
+
+                    // Construct all categories levels for the element starting at the top level
+                    for (int i = 0; i < allAddOns.Count; i++)
+                    {
+                        // Append nested categories for the given element
+                        if (i != 0)
+                        {
+                            category += "." + allAddOns[i];
+                            addOns.Add(category);
+                        }
+                        // The first list item is the package/custom nodes top level category
+                        else
+                        {
+                            category += allAddOns[i];
+                            addOns.Add(allAddOns[i]);
+                        }
+                    }
+                }
+            }
+
+            return addOns.Distinct();
         }
 
         /// <summary>
