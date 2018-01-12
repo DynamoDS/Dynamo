@@ -6,6 +6,7 @@ using Dynamo.Selection;
 using Dynamo.Utilities;
 using Newtonsoft.Json;
 using ProtoCore.Namespace;
+using System.ComponentModel;
 
 namespace Dynamo.Graph
 {
@@ -64,6 +65,11 @@ namespace Dynamo.Graph
         /// Fired when this Model is disposed.
         /// </summary>
         public event Action<ModelBase> Disposed;
+
+        /// <summary>
+        /// Fired when this Model is about to be deleted. Operation can be cancelled by setting the Cancel flag on the args object to true.
+        /// </summary>
+        public event EventHandler<CancelEventArgs> DeletionStarted;
 
         private Guid guid;
         private bool isSelected;
@@ -279,11 +285,15 @@ namespace Dynamo.Graph
         /// </summary>
         public virtual void Dispose()
         {
-            var handler = Disposed;
-            if (handler != null)
-            {
-                handler(this);
-            }
+            Disposed?.Invoke(this);
+        }
+
+        /// <summary>
+        /// Invokes the DeletionStarted event on this object.
+        /// </summary>
+        public virtual void OnDeletionStarted(CancelEventArgs e)
+        {
+            DeletionStarted?.Invoke(this, e);
         }
 
         #region Command Framework Supporting Methods

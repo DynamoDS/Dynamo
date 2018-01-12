@@ -396,19 +396,17 @@ namespace Dynamo.Controls
         }
     }
 
-    public class WorkspaceToFileNameConverter : IValueConverter
+    public class PathToFileNameConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
-
-            var wsvm = value as WorkspaceViewModel;
-            if (wsvm != null && !string.IsNullOrEmpty(wsvm.FileName))
+            if (value is string && !string.IsNullOrEmpty(value as string))
             {
                 // Convert to path, get file name. If read-only file, append [Read-Only].
-                if (wsvm.Model.IsReadOnly)
-                    return Resources.TabFileNameReadOnlyPrefix + Path.GetFileName(wsvm.FileName);
+                if (DynamoUtilities.PathHelper.IsReadOnlyPath((string)value))
+                    return Resources.TabFileNameReadOnlyPrefix + Path.GetFileName((string)value);
                 else
-                    return Path.GetFileName(wsvm.FileName);
+                    return Path.GetFileName((string)value);
             }
 
             return "Unsaved";

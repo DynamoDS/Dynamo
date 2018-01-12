@@ -1011,7 +1011,7 @@ namespace Dynamo.Tests
             var binaryExpr = assignment as BinaryExpressionNode;
             Assert.IsNotNull(binaryExpr);
 
-            Assert.AreEqual("{t1, t2}", binaryExpr.RightNode.ToString());
+            Assert.AreEqual("[t1, t2]", binaryExpr.RightNode.ToString());
         }
 
         [Test]

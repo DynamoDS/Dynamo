@@ -1154,10 +1154,12 @@ namespace Dynamo.Models
                 if (extension == null)
                     continue;
 
-                // If the path has a .dll or .ds extension it is a locally imported library
+                // If the path has a .dll or .ds extension it is an explicitly imported library
                 if (extension == ".dll" || extension == ".ds")
                 {
-                    LibraryServices.ImportLibrary(path);
+                    // If a library was explicitly loaded by using the "File | ImportLibrary..." command
+                    // and for some reason the import fails we do not want to throw an exception
+                    LibraryServices.ImportLibrary(path, true);
                     continue;
                 }
 
@@ -1463,8 +1465,9 @@ namespace Dynamo.Models
                 }
                 return true;
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                Console.WriteLine(e.Message);
                 return false;
             }
         }
@@ -1774,7 +1777,12 @@ namespace Dynamo.Models
                 }
             }
 
-            OnDeletionStarted();
+            var cancelEventArgs = new CancelEventArgs();
+            OnDeletionStarted(modelsToDelete, cancelEventArgs);
+            if (cancelEventArgs.Cancel)
+            {
+                return;
+            }
 
             CurrentWorkspace.RecordAndDeleteModels(modelsToDelete);
 

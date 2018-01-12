@@ -5,6 +5,8 @@ using Dynamo.Core;
 using Dynamo.Events;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Workspaces;
+using System.Collections.Generic;
+using Dynamo.Graph;
 
 namespace Dynamo.Models
 {
@@ -162,10 +164,21 @@ namespace Dynamo.Models
         /// <summary>
         /// Called when Deletion started.
         /// </summary>
-        public virtual void OnDeletionStarted()
+        public virtual void OnDeletionStarted(List<ModelBase> modelsToDelete, CancelEventArgs cancelEventArgs)
         {
+            foreach (var model in modelsToDelete)
+            {
+                model.OnDeletionStarted(cancelEventArgs);
+                if (cancelEventArgs.Cancel)
+                {
+                    return;
+                }
+            }
+
             if (DeletionStarted != null)
+            {
                 DeletionStarted();
+            }
         }
 
         /// <summary>
