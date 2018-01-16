@@ -407,7 +407,7 @@ You will get a chance to save your work.</value>
     <value>Custom Node Property Error</value>
   </data>
   <data name="CustomNodePropertyWindowCategory" xml:space="preserve">
-    <value>Category</value>
+    <value>Add-ons Category</value>
     <comment>Label - specify custom node category</comment>
   </data>
   <data name="CustomNodePropertyWindowDescription" xml:space="preserve">
@@ -425,6 +425,10 @@ You will get a chance to save your work.</value>
   <data name="CustomNodePropertyWindowNameHint" xml:space="preserve">
     <value>Name of Custom Node</value>
     <comment>Text box hint</comment>
+  </data>
+  <data name="CustomNodePropertyWindowLocationNote" xml:space="preserve">
+    <value>Custom Nodes will be placed in the Add-Ons section of the library.</value>
+    <comment>Note regarding Custom Node library location</comment>
   </data>
   <data name="CustomNodePropertyWindowTitle" xml:space="preserve">
     <value>Custom Node Properties</value>
