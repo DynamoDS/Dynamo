@@ -390,8 +390,10 @@ namespace Dynamo.Graph.Nodes
                 inputPortHelpers.Select(x => x.ReadString("name", String.Empty))
                     .Where(y => !string.IsNullOrEmpty(y))
                     .ToList();
+            //TODO these ports are immediately replaced by process code, any reason to keep?
             SetInputPorts();
 
+            //TODO these ports are immediately replaced by process code, any reason to keep?
             // read and set ouput port info
             var outputPortHelpers =
                 childNodes.Where(node => node.Name.Equals("OutPortInfo")).Select(x => new XmlElementHelper(x));
