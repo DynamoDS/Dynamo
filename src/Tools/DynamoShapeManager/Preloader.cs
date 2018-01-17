@@ -9,6 +9,7 @@ namespace DynamoShapeManager
     public enum LibraryVersion
     {
         None,
+        Version224 = 224,
         Version223 = 223,
         Version222 = 222,
         Version221 = 221
@@ -57,6 +58,7 @@ namespace DynamoShapeManager
         public Preloader(string rootFolder)
             : this(rootFolder, new[]
             {
+                LibraryVersion.Version224,
                 LibraryVersion.Version223, 
                 LibraryVersion.Version222,
                 LibraryVersion.Version221
