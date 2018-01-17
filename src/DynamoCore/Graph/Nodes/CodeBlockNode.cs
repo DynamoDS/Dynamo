@@ -377,6 +377,10 @@ namespace Dynamo.Graph.Nodes
             shouldFocus = helper.ReadBoolean("ShouldFocus");
             code = helper.ReadString("CodeText");
 
+            var inportConnections = new OrderedDictionary();
+            var outportConnections = new OrderedDictionary();
+            SaveAndDeleteConnectors(inportConnections, outportConnections);
+
             var childNodes = nodeElement.ChildNodes.Cast<XmlElement>().ToList();
             var inputPortHelpers =
                 childNodes.Where(node => node.Name.Equals("PortInfo")).Select(x => new XmlElementHelper(x));
@@ -403,6 +407,8 @@ namespace Dynamo.Graph.Nodes
             }
 
             ProcessCodeDirect();
+            //Recreate connectors that can be reused
+            LoadAndCreateConnectors(inportConnections, outportConnections);
         }
 
         internal override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes, CompilationContext context)
