@@ -151,7 +151,8 @@ namespace Dynamo.Applications
             {
                 LibraryVersion.Version221,
                 LibraryVersion.Version222,
-                LibraryVersion.Version223
+                LibraryVersion.Version223,
+                LibraryVersion.Version224
             };
 
             var preloader = new Preloader(rootFolder, versions);
