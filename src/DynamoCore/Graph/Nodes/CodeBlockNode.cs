@@ -379,7 +379,7 @@ namespace Dynamo.Graph.Nodes
 
             var inportConnections = new OrderedDictionary();
             var outportConnections = new OrderedDictionary();
-           // SaveAndDeleteConnectors(inportConnections, outportConnections);
+            SaveAndDeleteConnectors(inportConnections, outportConnections);
 
             var childNodes = nodeElement.ChildNodes.Cast<XmlElement>().ToList();
             var inputPortHelpers =
@@ -409,8 +409,8 @@ namespace Dynamo.Graph.Nodes
             }
 
             ProcessCodeDirect();
-            //Recreate connectors that can be reused
-          //  LoadAndCreateConnectors(inportConnections, outportConnections);
+             //Recreate connectors that can be reused
+             LoadAndCreateConnectors(inportConnections, outportConnections);
         }
 
         internal override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes, CompilationContext context)
