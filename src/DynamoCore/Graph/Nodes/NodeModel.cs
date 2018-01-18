@@ -1039,21 +1039,6 @@ namespace Dynamo.Graph.Nodes
                         SetNodeStateBasedOnConnectionAndDefaults();
                     }
                     break;
-                    //also handle reset - this occurs when the collection is cleared.
-                case System.Collections.Specialized.NotifyCollectionChangedAction.Reset:
-                    if(e.OldItems != null)
-                    {
-                        foreach (PortModel p in e.OldItems)
-                        {
-                            p.PropertyChanged -= OnPortPropertyChanged;
-
-                            p.DestroyConnectors();
-
-                            SetNodeStateBasedOnConnectionAndDefaults();
-                        }
-                    }
-                   
-                    break;
             }
         }
 

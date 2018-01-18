@@ -379,22 +379,22 @@ namespace Dynamo.Graph.Nodes
 
             var inportConnections = new OrderedDictionary();
             var outportConnections = new OrderedDictionary();
-            SaveAndDeleteConnectors(inportConnections, outportConnections);
+           // SaveAndDeleteConnectors(inportConnections, outportConnections);
 
             var childNodes = nodeElement.ChildNodes.Cast<XmlElement>().ToList();
             var inputPortHelpers =
                 childNodes.Where(node => node.Name.Equals("PortInfo")).Select(x => new XmlElementHelper(x));
 
+
+            //set the input ports and outputPorts incase this node is in an error state after processing code.
             // read and set input port info
             inputPortNames =
                 inputPortHelpers.Select(x => x.ReadString("name", String.Empty))
                     .Where(y => !string.IsNullOrEmpty(y))
                     .ToList();
-            //TODO these ports are immediately replaced by process code, any reason to keep?
             SetInputPorts();
 
-            //TODO these ports are immediately replaced by process code, any reason to keep?
-            // read and set ouput port info
+           
             var outputPortHelpers =
                 childNodes.Where(node => node.Name.Equals("OutPortInfo")).Select(x => new XmlElementHelper(x));
             var lineNumbers = outputPortHelpers.Select(x => x.ReadInteger("LineIndex")).ToList();
@@ -410,7 +410,7 @@ namespace Dynamo.Graph.Nodes
 
             ProcessCodeDirect();
             //Recreate connectors that can be reused
-            LoadAndCreateConnectors(inportConnections, outportConnections);
+          //  LoadAndCreateConnectors(inportConnections, outportConnections);
         }
 
         internal override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes, CompilationContext context)
@@ -792,8 +792,8 @@ namespace Dynamo.Graph.Nodes
 
         private void SetInputPorts()
         {
-            //Clear out all the input port models
-            InPorts.Clear();
+
+            InPorts.RemoveAll((p) => { return true; });
 
             // Generate input port data list from the unbound identifiers.
             var inportData = CodeBlockUtils.GenerateInputPortData(inputPortNames);
@@ -809,7 +809,7 @@ namespace Dynamo.Graph.Nodes
                 return;
             
             //Clear out all the output port models
-            OutPorts.Clear();
+            OutPorts.RemoveAll((p) => { return true; });
 
             foreach (var def in allDefs)
             {
