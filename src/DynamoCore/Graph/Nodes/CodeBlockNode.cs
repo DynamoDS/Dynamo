@@ -263,7 +263,13 @@ namespace Dynamo.Graph.Nodes
                 // disable node modification evnets while mutating the code
                 this.OnRequestSilenceModifiedEvents(true);
 
-                //Save the connectors so that we can recreate them at the correct positions
+                //Save the connectors so that we can recreate them at the correct positions.
+                //before the refactor here: https://github.com/DynamoDS/Dynamo/pull/7301
+                //we didn't actually make new portModels we just updated them, 
+                //but after this PR we remove the data property of ports,
+                //so now new models are created instead,
+                //so we have to delete and create new connectors to go along with those ports.
+
                 SaveAndDeleteConnectors(inportConnections, outportConnections);
 
                 code = newCode;
@@ -792,8 +798,12 @@ namespace Dynamo.Graph.Nodes
 
         private void SetInputPorts()
         {
+            //this extension method is used instead because 
+            //observableCollection has very odd behavior when cleared - 
+            //there is no way to reference the cleared items and so they 
+            //cannot be cleaned up properly
 
-            InPorts.RemoveAll((p) => { return true; });
+           InPorts.RemoveAll((p) => { return true; });
 
             // Generate input port data list from the unbound identifiers.
             var inportData = CodeBlockUtils.GenerateInputPortData(inputPortNames);
@@ -807,7 +817,11 @@ namespace Dynamo.Graph.Nodes
 
             if (allDefs.Any() == false)
                 return;
-            
+
+            //this extension method is used instead because 
+            //observableCollection has very odd behavior when cleared - 
+            //there is no way to reference the cleared items and so they 
+            //cannot be cleaned up properly
             //Clear out all the output port models
             OutPorts.RemoveAll((p) => { return true; });
 
