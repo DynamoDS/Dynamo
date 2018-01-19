@@ -264,12 +264,6 @@ namespace Dynamo.Graph.Nodes
                 this.OnRequestSilenceModifiedEvents(true);
 
                 //Save the connectors so that we can recreate them at the correct positions.
-                //before the refactor here: https://github.com/DynamoDS/Dynamo/pull/7301
-                //we didn't actually make new portModels we just updated them, 
-                //but after this PR we remove the data property of ports,
-                //so now new models are created instead,
-                //so we have to delete and create new connectors to go along with those ports.
-
                 SaveAndDeleteConnectors(inportConnections, outportConnections);
 
                 code = newCode;
@@ -385,6 +379,12 @@ namespace Dynamo.Graph.Nodes
 
             var inportConnections = new OrderedDictionary();
             var outportConnections = new OrderedDictionary();
+
+            //before the refactor here: https://github.com/DynamoDS/Dynamo/pull/7301
+            //we didn't actually make new portModels we just updated them, 
+            //but after this PR we remove the data property of ports,
+            //so now new models are created instead,
+            //so we have to delete and create new connectors to go along with those ports.
             SaveAndDeleteConnectors(inportConnections, outportConnections);
 
             var childNodes = nodeElement.ChildNodes.Cast<XmlElement>().ToList();
