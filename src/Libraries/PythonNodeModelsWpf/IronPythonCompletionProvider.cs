@@ -67,6 +67,11 @@ namespace Dynamo.Python
         /// floats, strings, etc.  Initialized by
         /// </summary>
         public Dictionary<string, Type> RegexToType = new Dictionary<string, Type>();
+        
+        /// <summary>
+        /// Tracks already referenced CLR modules
+        /// </summary>
+        public HashSet<string> clrModules { get; set; }
 
         /// <summary>
         /// A bunch of regexes for use in introspaction
@@ -99,6 +104,7 @@ namespace Dynamo.Python
 
             VariableTypes = new Dictionary<string, Type>();
             ImportedTypes = new Dictionary<string, Type>();
+            clrModules = new HashSet<string>();
             
             //special case for python variables defined as null
             ImportedTypes["None"] = null;
@@ -122,6 +128,8 @@ namespace Dynamo.Python
                         "clr.AddReference('RevitAPI')\nclr.AddReference('RevitAPIUI')\nfrom Autodesk.Revit.DB import *\nimport Autodesk\n";
 
                     scope.Engine.CreateScriptSourceFromString(revitImports, SourceCodeKind.Statements).Execute(scope);
+                    clrModules.Add("clr.AddReference('RevitAPI')");
+                    clrModules.Add("clr.AddReference('RevitAPIUI')");
                 }
                 catch
                 {
@@ -137,6 +145,7 @@ namespace Dynamo.Python
                         "clr.AddReference('ProtoGeometry')\nfrom Autodesk.DesignScript.Geometry import *\n";
 
                     scope.Engine.CreateScriptSourceFromString(libGImports, SourceCodeKind.Statements).Execute(scope);
+                    clrModules.Add("clr.AddReference('ProtoGeometry')");
                 }
                 catch (Exception e)
                 {
@@ -597,6 +606,19 @@ namespace Dynamo.Python
             return paramMatches;
 
         }
+        
+        public List<string> findClrReferences(string code)
+        {
+            var statements = new List<string>();
+            foreach (var line in code.Split(new[] {'\n', ';'}))
+            {
+                if (line.Contains("clr.AddReference"))
+                    {
+                    statements.Add(line.Trim());
+                    }
+            }
+            return statements;
+        }
 
         /// <summary>
         /// Find all import statements and import into scope.  If the type is already in the scope, this will be skipped.
@@ -605,6 +627,25 @@ namespace Dynamo.Python
         /// <param name="code">The code to discover the import statements.</param>
         public void UpdateImportedTypes(string code)
         {
+            //detect all lib references prior to attempting to import anything
+            var refs = findClrReferences(code);
+            foreach (var statement in refs)
+            {
+                try
+                {
+                    if (!clrModules.Contains(statement))
+                    {
+                        scope.Engine.CreateScriptSourceFromString(statement, SourceCodeKind.SingleStatement).Execute(this.scope);
+                        clrModules.Add(statement);
+                    }
+                }
+                catch (Exception e)
+                {
+                    Log(e.ToString());
+                    Log(String.Format("Failed to reference library: {0}", statement));
+                }
+            }
+            
             // look all import statements
             var imports = FindBasicImportStatements(code)
                 .Union(FindTypeSpecificImportStatements(code))
@@ -629,7 +670,6 @@ namespace Dynamo.Python
                     Log(String.Format("Failed to load module: {0}, with statement: {1}", import.Key, import.Value));
                 }
             }
-
         }
 
         /// <summary>
@@ -717,9 +757,10 @@ namespace Dynamo.Python
             string possibleTypeName = String.Empty;
             
             string trimmed = line.Trim();
-            int substrInd = trimmed.IndexOfAny(new []{'.', '(', ','});
+            int substrInd = trimmed.IndexOfAny(new []{'.', '(', ',', '[', '{'});
             if(substrInd != -1)
             {
+                //might need to trim additional parenthesis characters
                 possibleTypeName = trimmed.Substring(0,substrInd);
             }
             
