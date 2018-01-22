@@ -52,6 +52,7 @@ namespace TestServices
 
                 var versions = new List<LibraryVersion>
                 {
+                    LibraryVersion.Version224,
                     LibraryVersion.Version223,
                     LibraryVersion.Version222,
                     LibraryVersion.Version221
