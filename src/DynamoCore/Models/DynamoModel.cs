@@ -1402,22 +1402,29 @@ namespace Dynamo.Models
                 }
             }
             catch(Exception ex) {
-                Logger.LogError("Could not open workspace at: " + filePath);
-                throw ex;
-            }
-
-            string fileContents;
-            try
-            {
-                if (DynamoUtilities.PathHelper.isValidJson(filePath, out fileContents))
+                // These kind of exceptions indicate that file is not accessible.
+                if (ex is IOException || ex is UnauthorizedAccessException)
                 {
-                    OpenJsonFileFromPath(fileContents, filePath, forceManualExecutionMode);
-                    return;
+                    throw ex;
                 }
-            }
-            catch(Exception ex) {
-                Logger.LogError("Could not open workspace at: " + filePath);
-                throw ex;
+                if (ex is System.Xml.XmlException)
+                {
+                    // XML opening failure can indicate that this file is corrupted XML or Json
+                    string fileContents;
+                    try
+                    {
+                        if (DynamoUtilities.PathHelper.isValidJson(filePath, out fileContents))
+                        {
+                            OpenJsonFileFromPath(fileContents, filePath, forceManualExecutionMode);
+                            return;
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        // When Json opening also failed, this file is corrupted for sure
+                        throw e;
+                    }
+                }
             }
         }
 

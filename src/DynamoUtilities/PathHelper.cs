@@ -96,7 +96,7 @@ namespace DynamoUtilities
         /// </summary>
         /// <param name="path">path to the target xml file</param>
         /// <param name="xmlDoc">System.Xml.XmlDocument repensentation of target xml file</param>
-        /// <returns></returns>
+        /// <returns>Return true if file is XML, exception if not</returns>
         public static bool isValidXML(string path, out XmlDocument xmlDoc)
         {
             // Based on https://msdn.microsoft.com/en-us/library/875kz807(v=vs.110).aspx
@@ -119,7 +119,7 @@ namespace DynamoUtilities
         /// </summary>
         /// <param name="path">path to the target json file</param>
         /// <param name="fileContents"> string contents of target json file</param>
-        /// <returns></returns>
+        /// <returns>Return true if file is Json, exception if not</returns>
         public static bool isValidJson(string path, out string fileContents)
         {
             fileContents = "";
@@ -133,18 +133,18 @@ namespace DynamoUtilities
                     var obj = Newtonsoft.Json.Linq.JToken.Parse(fileContents);
                     return true;
                 }
-                return false;
+                throw new JsonReaderException();
             }
             catch (JsonReaderException jex)
             {
                 //Exception in parsing Json
                 Console.WriteLine(jex.Message);
-                return false;
+                throw jex;
             }
             catch (Exception ex) //some other exception
             {
                 Console.WriteLine(ex.ToString());
-                return false;
+                throw ex;
             }
         }
     }
