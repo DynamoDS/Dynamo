@@ -43,10 +43,6 @@
     <xsl:key name="DynamoAddInGenerator-search" match="wix:Component[contains(wix:File/@Source, 'DynamoAddInGenerator.exe')]" use="@Id"/>
     <xsl:template match="wix:Component[key('DynamoAddInGenerator-search', @Id)]" />
 
-    <!--Exclude DynamoSandbox-->
-    <xsl:key name="DynamoSandbox-search" match="wix:Component[contains(wix:File/@Source, 'DynamoSandbox')]" use="@Id"/>
-    <xsl:template match="wix:Component[key('DynamoSandbox-search', @Id)]" />
-
     <!--Exclude Moq.dll-->
     <xsl:key name="moq-search" match="wix:Component[contains(wix:File/@Source, 'Moq')]" use="@Id"/>
     <xsl:template match="wix:Component[key('moq-search', @Id)]" />
