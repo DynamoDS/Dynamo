@@ -1421,7 +1421,8 @@ namespace Dynamo.Models
                     }
                     catch (Exception e)
                     {
-                        // When Json opening also failed, this file is corrupted for sure
+                        // When Json opening also failed, either this file is corrupted or there
+                        // are other kind of failures related to Json de-serialization
                         throw e;
                     }
                 }
