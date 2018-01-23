@@ -107,10 +107,10 @@ namespace DynamoUtilities
                 xmlDoc.Load(path);
                 return true;
             }
-            catch
+            catch(Exception ex)
             {
                 xmlDoc = null;
-                return false;
+                throw ex;
             }
         }
 

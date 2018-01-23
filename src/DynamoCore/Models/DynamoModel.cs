@@ -1393,20 +1393,32 @@ namespace Dynamo.Models
         public void OpenFileFromPath(string filePath, bool forceManualExecutionMode = false)
         {
             XmlDocument xmlDoc;
-            if (DynamoUtilities.PathHelper.isValidXML(filePath, out xmlDoc))
+            try
             {
-                OpenXmlFileFromPath(xmlDoc, filePath, forceManualExecutionMode);
-                return;
+                if (DynamoUtilities.PathHelper.isValidXML(filePath, out xmlDoc))
+                {
+                    OpenXmlFileFromPath(xmlDoc, filePath, forceManualExecutionMode);
+                    return;
+                }
+            }
+            catch(Exception ex) {
+                Logger.LogError("Could not open workspace at: " + filePath);
+                throw ex;
             }
 
             string fileContents;
-            if (DynamoUtilities.PathHelper.isValidJson(filePath, out fileContents))
+            try
             {
-                OpenJsonFileFromPath(fileContents, filePath, forceManualExecutionMode);
-                return;
+                if (DynamoUtilities.PathHelper.isValidJson(filePath, out fileContents))
+                {
+                    OpenJsonFileFromPath(fileContents, filePath, forceManualExecutionMode);
+                    return;
+                }
             }
-
-            Logger.LogError("Could not open workspace at: " + filePath);
+            catch(Exception ex) {
+                Logger.LogError("Could not open workspace at: " + filePath);
+                throw ex;
+            }
         }
 
         static private DynamoPreferencesData DynamoPreferencesDataFromJson(string json)
