@@ -420,7 +420,6 @@ test5;
         [Category("SmokeTest")]
         public void T19_TestAssignmentToCollection()
         {
-            // TODO pratapa: Parser crash on nested index assignment in Imperative scope
             string src = @"a;
 b;
 [Imperative]

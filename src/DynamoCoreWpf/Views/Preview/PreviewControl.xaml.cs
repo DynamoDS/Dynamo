@@ -371,7 +371,8 @@ namespace Dynamo.UI.Controls
                 () =>
                 {
                     newViewModel = nodeViewModel.DynamoViewModel.WatchHandler.GenerateWatchViewModelForData(
-                        nodeViewModel.NodeModel.CachedValue, null, nodeViewModel.NodeModel.AstIdentifierForPreview.Name, false);
+                        nodeViewModel.NodeModel.CachedValue, nodeViewModel.NodeModel.OutPorts, 
+                        null, nodeViewModel.NodeModel.AstIdentifierForPreview.Name, false);
 
                 },
                 (m) =>

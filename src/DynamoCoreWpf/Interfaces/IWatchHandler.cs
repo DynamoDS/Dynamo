@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Linq;
 using Dynamo.Configuration;
@@ -11,6 +13,7 @@ using ProtoCore.Utils;
 using Dynamo.Extensions;
 using Dynamo.Wpf.Properties;
 using DesignScript.Builtin;
+using Dynamo.Graph.Nodes;
 
 namespace Dynamo.Interfaces
 {
@@ -24,16 +27,17 @@ namespace Dynamo.Interfaces
     public interface IWatchHandler
     {
         event Action<string> RequestSelectGeometry;
-        WatchViewModel Process(dynamic value, ProtoCore.RuntimeCore runtimeCore, string tag, bool showRawData, WatchHandlerCallback callback);
+        WatchViewModel Process(dynamic value, ObservableCollection<PortModel> outports, ProtoCore.RuntimeCore runtimeCore, string tag, bool showRawData, WatchHandlerCallback callback);
     }
 
-    public delegate WatchViewModel WatchHandlerCallback(dynamic value, ProtoCore.RuntimeCore runtimeCore, string tag, bool showRawData);
+    public delegate WatchViewModel WatchHandlerCallback(dynamic value, ObservableCollection<PortModel> outports, ProtoCore.RuntimeCore runtimeCore, string tag, bool showRawData);
 
     public static class WatchHandler
     {
-        public static WatchViewModel GenerateWatchViewModelForData(this IWatchHandler handler, dynamic value, ProtoCore.RuntimeCore runtimeCore, string tag, bool showRawData = true)
+        public static WatchViewModel GenerateWatchViewModelForData(this IWatchHandler handler, dynamic value, 
+            ObservableCollection<PortModel> outports, ProtoCore.RuntimeCore runtimeCore, string tag, bool showRawData = true)
         {
-            return handler.Process(value, runtimeCore, tag, showRawData, new WatchHandlerCallback(handler.GenerateWatchViewModelForData));
+            return handler.Process(value, outports, runtimeCore, tag, showRawData, new WatchHandlerCallback(handler.GenerateWatchViewModelForData));
 
         }
     }
@@ -50,36 +54,40 @@ namespace Dynamo.Interfaces
             this.preferences = preferences;
         }
 
-        private WatchViewModel ProcessThing(object value, ProtoCore.RuntimeCore runtimeCore, string tag, bool showRawData, WatchHandlerCallback callback)
+        private WatchViewModel ProcessThing(object value, ObservableCollection<PortModel> outports, ProtoCore.RuntimeCore runtimeCore, string tag, bool showRawData, WatchHandlerCallback callback)
         {
             if (value is DesignScript.Builtin.Dictionary)
             {
                 var dict = value as DesignScript.Builtin.Dictionary;
-                var keys = dict.Keys;
-                var values = dict.Values;
+                //var keys = dict.Keys;
+                //var values = dict.Values;
+                var keys = outports.Select(p => p.Name);
+                var values = keys.Select(k => dict.ValueAtKey(k));
 
                 var node = new WatchViewModel(keys.Any() ? WatchViewModel.DICTIONARY : WatchViewModel.EMPTY_DICTIONARY, tag, RequestSelectGeometry, true);
 
                 foreach (var e in keys.Zip(values, (key, val) => new { key, val }))
                 {
-                    node.Children.Add(ProcessThing(e.val, runtimeCore, tag + ":" + e.key.ToString(), showRawData, callback));
+                    node.Children.Add(ProcessThing(e.val, outports, runtimeCore, tag + ":" + e.key.ToString(), showRawData, callback));
                 }
 
                 return node;
             }
-            else if (!(value is string) && value is IEnumerable)
+
+            if (!(value is string) && value is IEnumerable)
             {
                 var list = (value as IEnumerable).Cast<dynamic>().ToList();
 
                 var node = new WatchViewModel(list.Count == 0 ? WatchViewModel.EMPTY_LIST : WatchViewModel.LIST, tag, RequestSelectGeometry, true);
                 foreach (var e in list.Select((element, idx) => new { element, idx }))
                 {
-                    node.Children.Add(callback(e.element, runtimeCore, tag + ":" + e.idx, showRawData));
+                    node.Children.Add(callback(e.element, outports, runtimeCore, tag + ":" + e.idx, showRawData));
                 }
 
                 return node;
             }
-            else if (runtimeCore != null && value is StackValue)
+
+            if (runtimeCore != null && value is StackValue)
             {
                 StackValue stackValue = (StackValue)value;
                 string stringValue = string.Empty;
@@ -95,7 +103,8 @@ namespace Dynamo.Interfaces
                 }
                 return new WatchViewModel(stringValue, tag, RequestSelectGeometry);
             }
-            else if (value is Enum)
+
+            if (value is Enum)
             {
                 return new WatchViewModel(((Enum)value).GetDescription(), tag, RequestSelectGeometry);
             }
@@ -132,7 +141,7 @@ namespace Dynamo.Interfaces
             return new WatchViewModel(value, tag, RequestSelectGeometry);
         }
 
-        private WatchViewModel ProcessThing(MirrorData data, ProtoCore.RuntimeCore runtimeCore, string tag, bool showRawData, WatchHandlerCallback callback)
+        private WatchViewModel ProcessThing(MirrorData data, ObservableCollection<PortModel> outports, ProtoCore.RuntimeCore runtimeCore, string tag, bool showRawData, WatchHandlerCallback callback)
         {
             if (data.IsCollection)
             {
@@ -141,22 +150,25 @@ namespace Dynamo.Interfaces
                 var node = new WatchViewModel(!list.Any() ? WatchViewModel.EMPTY_LIST : WatchViewModel.LIST, tag, RequestSelectGeometry, true);
                 foreach (var e in list.Select((element, idx) => new { element, idx }))
                 {
-                    node.Children.Add(ProcessThing(e.element, runtimeCore, tag + ":" + e.idx, showRawData, callback));
+                    node.Children.Add(ProcessThing(e.element, outports, runtimeCore, tag + ":" + e.idx, showRawData, callback));
                 }
 
                 return node;
             }
-            else if (data.IsPointer && data.Data is DesignScript.Builtin.Dictionary)
+
+            if (data.IsPointer && data.Data is DesignScript.Builtin.Dictionary)
             {
                 var dict = data.Data as DesignScript.Builtin.Dictionary;
-                var keys = dict.Keys;
-                var values = dict.Values;
+                //var keys = dict.Keys;
+                //var values = dict.Values;
+                var keys = outports.Select(p => p.Name);
+                var values = keys.Select(k => dict.ValueAtKey(k));
 
                 var node = new WatchViewModel(keys.Any() ? WatchViewModel.DICTIONARY : WatchViewModel.EMPTY_DICTIONARY, tag, RequestSelectGeometry, true);
 
                 foreach (var e in keys.Zip(values, (key, value) => new { key, value }))
                 {
-                    node.Children.Add(ProcessThing(e.value, runtimeCore, tag + ":" + e.key.ToString(), showRawData, callback));
+                    node.Children.Add(ProcessThing(e.value, outports, runtimeCore, tag + ":" + e.key.ToString(), showRawData, callback));
                 }
 
                 return node;
@@ -186,7 +198,7 @@ namespace Dynamo.Interfaces
             }
 
             //Finally for all else get the string representation of data as watch content.
-            return callback(data.Data, runtimeCore, tag, showRawData);
+            return callback(data.Data, outports, runtimeCore, tag, showRawData);
         }
 
         private static string ToString(object obj)
@@ -196,11 +208,11 @@ namespace Dynamo.Interfaces
                 : (obj is bool ? obj.ToString().ToLower() : obj.ToString());
         }
 
-        public WatchViewModel Process(dynamic value, ProtoCore.RuntimeCore runtimeCore, string tag, bool showRawData, WatchHandlerCallback callback)
+        public WatchViewModel Process(dynamic value, ObservableCollection<PortModel> outports, ProtoCore.RuntimeCore runtimeCore, string tag, bool showRawData, WatchHandlerCallback callback)
         {
             return System.Object.ReferenceEquals(value, null)
                 ? new WatchViewModel(Resources.NullString, tag, RequestSelectGeometry)
-                : ProcessThing(value, runtimeCore, tag, showRawData, callback);
+                : ProcessThing(value, outports, runtimeCore, tag, showRawData, callback);
         }
 
         public event Action<string> RequestSelectGeometry;

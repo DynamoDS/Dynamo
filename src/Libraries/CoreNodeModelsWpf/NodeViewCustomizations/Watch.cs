@@ -156,6 +156,7 @@ namespace CoreNodeModelsWpf.Nodes
 
             return watchHandler.GenerateWatchViewModelForData(
                 watch.CachedValue,
+                watch.OutPorts,
                 core,
                 inputVar,
                 rootWatchViewModel.ShowRawData);
