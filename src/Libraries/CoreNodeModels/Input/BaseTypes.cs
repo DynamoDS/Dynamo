@@ -69,9 +69,9 @@ namespace CoreNodeModels.Input
             return base.UpdateValueCore(updateValueParams);
         }
 
-        protected override void SerializeCore(XmlElement nodeElement, SaveContext context)
+        protected override void RuntimeSerializeCore(XmlElement nodeElement, SaveContext context)
         {
-            base.SerializeCore(nodeElement, context);
+            base.RuntimeSerializeCore(nodeElement, context);
             XmlElement outEl = nodeElement.OwnerDocument.CreateElement(typeof(string).FullName);
 
             var helper = new XmlElementHelper(outEl);
@@ -79,9 +79,9 @@ namespace CoreNodeModels.Input
             nodeElement.AppendChild(outEl);
         }
 
-        protected override void DeserializeCore(XmlElement nodeElement, SaveContext context)
+        protected override void RuntimeDeserializeCore(XmlElement nodeElement, SaveContext context)
         {
-            base.DeserializeCore(nodeElement, context);
+            base.RuntimeDeserializeCore(nodeElement, context);
             foreach (XmlNode subNode in nodeElement.ChildNodes)
             {
                 if (subNode.Name.Equals(typeof(string).FullName))
@@ -261,18 +261,18 @@ namespace CoreNodeModels.Input
 
         #region Serialization/Deserialization Methods
 
-        protected override void SerializeCore(XmlElement element, SaveContext context)
+        protected override void RuntimeSerializeCore(XmlElement element, SaveContext context)
         {
-            base.SerializeCore(element, context); //Base implementation must be called
+            base.RuntimeSerializeCore(element, context); //Base implementation must be called
 
             XmlElement outEl = element.OwnerDocument.CreateElement(typeof(double).FullName);
             outEl.SetAttribute("value", Value);
             element.AppendChild(outEl);
         }
 
-        protected override void DeserializeCore(XmlElement element, SaveContext context)
+        protected override void RuntimeDeserializeCore(XmlElement element, SaveContext context)
         {
-            base.DeserializeCore(element, context); //Base implementation must be called
+            base.RuntimeDeserializeCore(element, context); //Base implementation must be called
 
             foreach (
                 XmlNode subNode in

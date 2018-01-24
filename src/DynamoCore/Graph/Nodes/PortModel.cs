@@ -355,13 +355,13 @@ namespace Dynamo.Graph.Nodes
 
         #region Serialization/Deserialization Methods
 
-        protected override void SerializeCore(XmlElement element, SaveContext context)
+        protected override void RuntimeSerializeCore(XmlElement element, SaveContext context)
         {
             // We are not deserializing the ports.
             throw new NotImplementedException();
         }
 
-        protected override void DeserializeCore(XmlElement nodeElement, SaveContext context)
+        protected override void RuntimeDeserializeCore(XmlElement nodeElement, SaveContext context)
         {
             // We are not deserializing the ports.
             throw new NotImplementedException();

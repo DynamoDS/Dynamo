@@ -351,7 +351,7 @@ namespace Dynamo.Graph.Workspaces
         public void ReloadModel(XmlElement modelData)
         {
             ModelBase model = GetModelForElement(modelData);
-            model.Deserialize(modelData, SaveContext.Undo);
+            model.RuntimeDeserialize(modelData, SaveContext.Undo);
         }
 
         /// <summary>
@@ -423,14 +423,14 @@ namespace Dynamo.Graph.Workspaces
                 var annotationModel = new AnnotationModel(selectedNodes, selectedNotes);
                 annotationModel.ModelBaseRequested += annotationModel_GetModelBase;
                 annotationModel.Disposed += (_) => annotationModel.ModelBaseRequested -= annotationModel_GetModelBase;
-                annotationModel.Deserialize(modelData, SaveContext.Undo);
+                annotationModel.RuntimeDeserialize(modelData, SaveContext.Undo);
                 AddNewAnnotation(annotationModel);
             }
 
             else if (typeName.Contains("PresetModel"))
             {
                 var preset = new PresetModel(this.Nodes);
-                preset.Deserialize(modelData, SaveContext.Undo);
+                preset.RuntimeDeserialize(modelData, SaveContext.Undo);
                 presets.Add(preset);
                 //we raise this property change here so that this event bubbles up through
                 //the model and to the DynamoViewModel so that presets show in the UI menu if our undo/redo

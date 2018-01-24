@@ -113,15 +113,15 @@ namespace Dynamo.Graph.Nodes
             VariableInputController.OnBuilt();
         }
 
-        protected override void SerializeCore(XmlElement element, SaveContext context)
+        protected override void RuntimeSerializeCore(XmlElement element, SaveContext context)
         {
-            base.SerializeCore(element, context);
+            base.RuntimeSerializeCore(element, context);
             VariableInputController.SerializeCore(element, context);
         }
 
-        protected override void DeserializeCore(XmlElement nodeElement, SaveContext context)
+        protected override void RuntimeDeserializeCore(XmlElement nodeElement, SaveContext context)
         {
-            base.DeserializeCore(nodeElement, context);
+            base.RuntimeDeserializeCore(nodeElement, context);
             VariableInputController.DeserializeCore(nodeElement, context);
         }
 

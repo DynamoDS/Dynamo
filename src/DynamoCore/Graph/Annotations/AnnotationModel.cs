@@ -396,7 +396,7 @@ namespace Dynamo.Graph.Annotations
         }
 
         protected override
-             void SerializeCore(XmlElement element, SaveContext context)
+             void RuntimeSerializeCore(XmlElement element, SaveContext context)
         {            
             XmlElementHelper helper = new XmlElementHelper(element);
             helper.SetAttribute("guid", this.GUID);
@@ -424,7 +424,7 @@ namespace Dynamo.Graph.Annotations
             }
         }
 
-        protected override void DeserializeCore(XmlElement element, SaveContext context)
+        protected override void RuntimeDeserializeCore(XmlElement element, SaveContext context)
         {         
             XmlElementHelper helper = new XmlElementHelper(element);
             this.GUID = helper.ReadGuid("guid", this.GUID);

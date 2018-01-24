@@ -65,9 +65,9 @@ namespace CoreNodeModels.Input
             }
         }
 
-        protected override void SerializeCore(XmlElement element, SaveContext context)
+        protected override void RuntimeSerializeCore(XmlElement element, SaveContext context)
         {
-            base.SerializeCore(element, context); // Base implementation must be called
+            base.RuntimeSerializeCore(element, context); // Base implementation must be called
 
             if (!string.IsNullOrEmpty(HintPath))
             {
@@ -78,9 +78,9 @@ namespace CoreNodeModels.Input
             }
         }
 
-        protected override void DeserializeCore(XmlElement nodeElement, SaveContext context)
+        protected override void RuntimeDeserializeCore(XmlElement nodeElement, SaveContext context)
         {
-            base.DeserializeCore(nodeElement, context); // Base implementation must be called
+            base.RuntimeDeserializeCore(nodeElement, context); // Base implementation must be called
 
             foreach (XmlNode subNode in nodeElement.ChildNodes.Cast<XmlNode>()
                 .Where(subNode => subNode.Name.Equals(HintPathString)))

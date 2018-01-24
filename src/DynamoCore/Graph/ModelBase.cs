@@ -358,10 +358,12 @@ namespace Dynamo.Graph
         /// <param name="xmlDocument">Xml document</param>
         /// <param name="context">Context in which object is saved</param>
         /// <returns>xml node</returns>
-        public XmlElement Serialize(XmlDocument xmlDocument, SaveContext context)
+        [Obsolete(@"Use this method only for saving/loading of node state during undo/redo and copy/paste 
+                  - data saved here will not be saved to the .dyn file. This method will be removed in the future to use json")]
+        public XmlElement RuntimeSerialize(XmlDocument xmlDocument, SaveContext context)
         {
             var element = CreateElement(xmlDocument, context);
-            SerializeCore(element, context);
+            RuntimeSerializeCore(element, context);
             return element;
         }
 
@@ -370,9 +372,11 @@ namespace Dynamo.Graph
         /// </summary>
         /// <param name="element">Xml node</param>
         /// <param name="context">Save context. E.g. save in file, copy node etc.</param>
-        public void Deserialize(XmlElement element, SaveContext context)
+        [Obsolete(@"Use this method only for saving/loading of node state during undo/redo and copy/paste 
+                  - data saved here will not be saved to the .dyn file. This method will be removed in the future to use json")]
+        public void RuntimeDeserialize(XmlElement element, SaveContext context)
         {
-            DeserializeCore(element, context);
+            RuntimeDeserializeCore(element, context);
         }
 
         protected virtual XmlElement CreateElement(XmlDocument xmlDocument, SaveContext context)
@@ -382,8 +386,13 @@ namespace Dynamo.Graph
             return element;
         }
 
-        protected abstract void SerializeCore(XmlElement element, SaveContext context);
-        protected abstract void DeserializeCore(XmlElement nodeElement, SaveContext context);
+        [Obsolete(@"Use this method only for saving/loading of node state during undo/redo and copy/paste 
+                  - data saved here will not be saved to the .dyn file. This method will be removed in the future to use json")]
+        protected abstract void RuntimeSerializeCore(XmlElement element, SaveContext context);
+
+        [Obsolete(@"Use this method only for saving/loading of node state during undo/redo and copy/paste 
+                  - data saved here will not be saved to the .dyn file. This method will be removed in the future to use json")]
+        protected abstract void RuntimeDeserializeCore(XmlElement nodeElement, SaveContext context);
 
         #endregion
 

@@ -201,7 +201,7 @@ namespace Dynamo.Graph.Connectors
 
         #region Serialization/Deserialization Methods
 
-        protected override void SerializeCore(XmlElement element, SaveContext context)
+        protected override void RuntimeSerializeCore(XmlElement element, SaveContext context)
         {
             var helper = new XmlElementHelper(element);
             helper.SetAttribute("guid", GUID);
@@ -212,7 +212,7 @@ namespace Dynamo.Graph.Connectors
             //helper.SetAttribute("portType", ((int) End.PortType));
         }
 
-        protected override void DeserializeCore(XmlElement nodeElement, SaveContext context)
+        protected override void RuntimeDeserializeCore(XmlElement nodeElement, SaveContext context)
         {
             //This is now handled via NodeGraph.LoadConnectorFromXml
 

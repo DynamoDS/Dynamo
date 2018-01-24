@@ -2053,7 +2053,7 @@ namespace Dynamo.Models
                 }
                 else
                 {
-                    var dynEl = node.Serialize(xmlDoc, SaveContext.Copy);
+                    var dynEl = node.RuntimeSerialize(xmlDoc, SaveContext.Copy);
                     newNode = NodeFactory.CreateNodeFromXml(dynEl, SaveContext.Copy, CurrentWorkspace.ElementResolver);
                 }
 

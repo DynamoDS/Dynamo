@@ -116,9 +116,9 @@ namespace Dynamo.Graph.Nodes.CustomNodes
 
 #region Serialization/Deserialization methods
 
-        protected override void SerializeCore(XmlElement element, SaveContext context)
+        protected override void RuntimeSerializeCore(XmlElement element, SaveContext context)
         {
-            base.SerializeCore(element, context); //Base implementation must be called
+            base.RuntimeSerializeCore(element, context); //Base implementation must be called
 
             Controller.SerializeCore(element, context);
 
@@ -207,7 +207,7 @@ namespace Dynamo.Graph.Nodes.CustomNodes
             ArgumentLacing = LacingStrategy.Disabled;
         }
 
-        protected override void DeserializeCore(XmlElement nodeElement, SaveContext context)
+        protected override void RuntimeDeserializeCore(XmlElement nodeElement, SaveContext context)
         {
             List<XmlNode> childNodes = nodeElement.ChildNodes.Cast<XmlNode>().ToList();
 
@@ -279,7 +279,7 @@ namespace Dynamo.Graph.Nodes.CustomNodes
                 RegisterAllPorts();
             }
 
-            base.DeserializeCore(nodeElement, context); //Base implementation must be called
+            base.RuntimeDeserializeCore(nodeElement, context); //Base implementation must be called
 
             XmlNode nameNode = childNodes.LastOrDefault(subNode => subNode.Name.Equals("Name"));
             if (nameNode != null && nameNode.Attributes != null)
@@ -450,18 +450,18 @@ namespace Dynamo.Graph.Nodes.CustomNodes
                     string.IsNullOrEmpty(name) ? AstIdentifierBase : name + "__" + AstIdentifierBase);
         }
 
-        protected override void SerializeCore(XmlElement nodeElement, SaveContext context)
+        protected override void RuntimeSerializeCore(XmlElement nodeElement, SaveContext context)
         {
-            base.SerializeCore(nodeElement, context);
+            base.RuntimeSerializeCore(nodeElement, context);
             //Debug.WriteLine(pd.Object.GetType().ToString());
             XmlElement outEl = nodeElement.OwnerDocument.CreateElement("Symbol");
             outEl.SetAttribute("value", InputSymbol);
             nodeElement.AppendChild(outEl);
         }
 
-        protected override void DeserializeCore(XmlElement nodeElement, SaveContext context)
+        protected override void RuntimeDeserializeCore(XmlElement nodeElement, SaveContext context)
         {
-            base.DeserializeCore(nodeElement, context);
+            base.RuntimeDeserializeCore(nodeElement, context);
             foreach (var subNode in
                 nodeElement.ChildNodes.Cast<XmlNode>()
                     .Where(subNode => subNode.Name == "Symbol"))
@@ -664,18 +664,18 @@ namespace Dynamo.Graph.Nodes.CustomNodes
             return new[] { assignment };
         }
 
-        protected override void SerializeCore(XmlElement nodeElement, SaveContext context)
+        protected override void RuntimeSerializeCore(XmlElement nodeElement, SaveContext context)
         {
-            base.SerializeCore(nodeElement, context);
+            base.RuntimeSerializeCore(nodeElement, context);
             //Debug.WriteLine(pd.Object.GetType().ToString());
             XmlElement outEl = nodeElement.OwnerDocument.CreateElement("Symbol");
             outEl.SetAttribute("value", Symbol);
             nodeElement.AppendChild(outEl);
         }
 
-        protected override void DeserializeCore(XmlElement nodeElement, SaveContext context)
+        protected override void RuntimeDeserializeCore(XmlElement nodeElement, SaveContext context)
         {
-            base.DeserializeCore(nodeElement, context);
+            base.RuntimeDeserializeCore(nodeElement, context);
             foreach (var subNode in 
                 nodeElement.ChildNodes.Cast<XmlNode>()
                     .Where(subNode => subNode.Name == "Symbol"))

@@ -207,7 +207,7 @@ namespace Dynamo.Graph.Nodes.NodeLoaders
             public NodeModel CreateNodeFromXml(XmlElement elNode, SaveContext context, ElementResolver resolver)
             {
                 var node = CreateNode();
-                node.Deserialize(elNode, context);
+                node.RuntimeDeserialize(elNode, context);
                 return node;
             }
 

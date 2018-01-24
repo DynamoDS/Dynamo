@@ -91,7 +91,7 @@ namespace Dynamo.Graph.Presets
             serializedNodes = new List<XmlElement>();
             foreach (var node in Nodes)
             {
-                serializedNodes.Add(node.Serialize(tempdoc, SaveContext.Preset));
+                serializedNodes.Add(node.RuntimeSerialize(tempdoc, SaveContext.Preset));
             }
         }
 
@@ -121,7 +121,7 @@ namespace Dynamo.Graph.Presets
 
         #region serialization / deserialzation
 
-        protected override void SerializeCore(System.Xml.XmlElement element, SaveContext context)
+        protected override void RuntimeSerializeCore(System.Xml.XmlElement element, SaveContext context)
         {
             element.SetAttribute(StateNameAttributeName, this.Name);
             element.SetAttribute(DescriptionAttributeName, this.Description);
@@ -135,7 +135,7 @@ namespace Dynamo.Graph.Presets
             }
         }
 
-        protected override void DeserializeCore(XmlElement nodeElement, SaveContext context)
+        protected override void RuntimeDeserializeCore(XmlElement nodeElement, SaveContext context)
         {
             var stateName = nodeElement.GetAttribute(StateNameAttributeName);
             var stateguidString = nodeElement.GetAttribute(GuidAttributeName);

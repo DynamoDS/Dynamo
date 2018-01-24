@@ -136,7 +136,7 @@ namespace Dynamo.Graph.Nodes.NodeLoaders
                 result = new DSFunction(descriptor);
             }
 
-            result.Deserialize(nodeElement, context);
+            result.RuntimeDeserialize(nodeElement, context);
 
             // In case of input parameters mismatch, use default arguments for parameters that have one
             if (!descriptor.MangledName.EndsWith(function))

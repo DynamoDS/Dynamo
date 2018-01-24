@@ -359,7 +359,7 @@ namespace Dynamo.Core
 
             // Serialize the affected model into xml representation
             // and store it under the current action group.
-            XmlNode childNode = model.Serialize(document, SaveContext.Undo);
+            XmlNode childNode = model.RuntimeSerialize(document, SaveContext.Undo);
             SetNodeAction(childNode, action.ToString());
             group.AppendChild(childNode);
         }
@@ -531,7 +531,7 @@ namespace Dynamo.Core
                 // Record the existing connectors...
                 foreach (var connectorModel in allConnectors)
                 {
-                    var element = connectorModel.Serialize(
+                    var element = connectorModel.RuntimeSerialize(
                         recorder.document, SaveContext.Undo);
 
                     existingConnectors[connectorModel.GUID] = element;

@@ -40,7 +40,7 @@ namespace Dynamo.Graph.Nodes.NodeLoaders
                 funcId = GuidUtility.Create(GuidUtility.UrlNamespace, name);
 
             var node = customNodeManager.CreateCustomNodeInstance(funcId, name, isTestMode);
-            node.Deserialize(nodeElement, context);
+            node.RuntimeDeserialize(nodeElement, context);
             return node;
         }
 

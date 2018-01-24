@@ -102,15 +102,15 @@ namespace CoreNodeModels
             PopulateItems();
         }
 
-        protected override void SerializeCore(XmlElement nodeElement, SaveContext context)
+        protected override void RuntimeSerializeCore(XmlElement nodeElement, SaveContext context)
         {
-            base.SerializeCore(nodeElement, context);
+            base.RuntimeSerializeCore(nodeElement, context);
             nodeElement.SetAttribute("index", SaveSelectedIndex(SelectedIndex, Items));
         }
 
-        protected override void DeserializeCore(XmlElement nodeElement, SaveContext context)
+        protected override void RuntimeDeserializeCore(XmlElement nodeElement, SaveContext context)
         {
-            base.DeserializeCore(nodeElement, context);
+            base.RuntimeDeserializeCore(nodeElement, context);
             // Drop downs previsouly saved their selected index as an int.
             // Between versions of host applications where the number or order of items
             // in a list would vary, this made loading of drop downs un-reliable.
