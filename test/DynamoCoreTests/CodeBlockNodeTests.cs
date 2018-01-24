@@ -16,6 +16,7 @@ using ProtoCore.Mirror;
 using ProtoCore.Utils;
 
 using DynCmd = Dynamo.Models.DynamoModel;
+using Dynamo.Models;
 
 namespace Dynamo.Tests
 {
@@ -260,6 +261,53 @@ b = c[w][x][y][z];";
             UpdateCodeBlockNodeContent(codeBlockNode, "a = 1..6;\na[2]=a[2] + 1;");
             Assert.AreEqual(0, codeBlockNode.InPorts.Count);
             Assert.AreEqual(1, codeBlockNode.OutPorts.Count);
+        }
+
+        [Test]
+        public void CodeBlockConnectionsRemainAfterUndo()
+        {
+            RunCurrentModel();
+            // Create the initial code block node.
+            var codeBlockNode1 = CreateCodeBlockNode();
+            UpdateCodeBlockNodeContent(codeBlockNode1,"3;");
+
+            // Create the second code block node.
+            var codeBlockNode2 = CreateCodeBlockNode();
+            UpdateCodeBlockNodeContent(codeBlockNode2, "x;");
+
+            //connect them
+            this.CurrentDynamoModel.ExecuteCommand(
+                new DynamoModel.MakeConnectionCommand(codeBlockNode1.GUID, 0, PortType.Output,
+             DynamoModel.MakeConnectionCommand.Mode.Begin));
+            this.CurrentDynamoModel.ExecuteCommand(
+                new DynamoModel.MakeConnectionCommand(codeBlockNode2.GUID, 0, PortType.Input,
+                DynamoModel.MakeConnectionCommand.Mode.End));
+            RunCurrentModel();
+
+            var oldPos = codeBlockNode2.X;
+            var oldinputPortGuid = codeBlockNode2.InPorts[0].GUID;
+            var oldConnectorGuid = codeBlockNode2.InPorts[0].Connectors[0].GUID;
+
+            //move the second node.
+            this.CurrentDynamoModel.ExecuteCommand(
+                new DynamoModel.UpdateModelValueCommand(codeBlockNode2.GUID, "Position", "300.0;300.0"));
+            Assert.AreEqual(300, codeBlockNode2.X);
+            //undo it.
+            this.CurrentDynamoModel.CurrentWorkspace.Undo();
+            Assert.AreEqual(oldPos, codeBlockNode2.X);
+
+            //TODO not sure this is required behavior...
+            //assert that after undo the port and connector have the same GUIDs
+            //Assert.AreEqual(oldinputPortGuid, codeBlockNode2.InPorts[0].GUID);
+            //Assert.AreEqual(oldConnectorGuid, codeBlockNode2.InPorts[0].Connectors[0].GUID);
+
+
+            RunCurrentModel();
+            //assert the connectors still exist and the node has the same value
+            Assert.IsTrue(codeBlockNode2.InPorts[0].Connectors.Count > 0);
+            Assert.IsTrue(codeBlockNode1.OutPorts[0].Connectors.Count > 0);
+            Assert.AreEqual(3, codeBlockNode2.CachedValue.Data);
+
         }
 
         [Test]
