@@ -59,10 +59,14 @@ namespace Dynamo.Interfaces
             if (value is DesignScript.Builtin.Dictionary)
             {
                 var dict = value as DesignScript.Builtin.Dictionary;
-                //var keys = dict.Keys;
-                //var values = dict.Values;
-                var keys = outports.Select(p => p.Name);
-                var values = keys.Select(k => dict.ValueAtKey(k));
+
+                var keys = dict.Keys;
+                var values = dict.Values;
+                if (outports.Count > 1)
+                {
+                    keys = outports.Select(p => p.Name);
+                    values = keys.Select(k => dict.ValueAtKey(k));
+                }
 
                 var node = new WatchViewModel(keys.Any() ? WatchViewModel.DICTIONARY : WatchViewModel.EMPTY_DICTIONARY, tag, RequestSelectGeometry, true);
 
@@ -159,10 +163,14 @@ namespace Dynamo.Interfaces
             if (data.IsPointer && data.Data is DesignScript.Builtin.Dictionary)
             {
                 var dict = data.Data as DesignScript.Builtin.Dictionary;
-                //var keys = dict.Keys;
-                //var values = dict.Values;
-                var keys = outports.Select(p => p.Name);
-                var values = keys.Select(k => dict.ValueAtKey(k));
+
+                var keys = dict.Keys;
+                var values = dict.Values;
+                if (outports.Count > 1)
+                {
+                    keys = outports.Select(p => p.Name);
+                    values = keys.Select(k => dict.ValueAtKey(k));
+                }
 
                 var node = new WatchViewModel(keys.Any() ? WatchViewModel.DICTIONARY : WatchViewModel.EMPTY_DICTIONARY, tag, RequestSelectGeometry, true);
 
