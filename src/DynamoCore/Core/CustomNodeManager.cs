@@ -592,7 +592,7 @@ namespace Dynamo.Core
                         return false;
                     }
                 }
-                if (DynamoUtilities.PathHelper.isValidJson(path, out jsonDoc, out ex))
+                else if (DynamoUtilities.PathHelper.isValidJson(path, out jsonDoc, out ex))
                 {
                     if (!WorkspaceInfo.FromJsonDocument(jsonDoc, path, isTestMode, false, AsLogger(), out header))
                     {
