@@ -88,7 +88,7 @@ namespace Dynamo.Core
         /// </summary>
         /// <param name="customNodeId">Custom node ID of a requested workspace</param>
         /// <returns>Custom node workspace by a specified ID</returns>
-        public CustomNodeWorkspaceModel GetWorkspaceById (Guid customNodeId)
+        public CustomNodeWorkspaceModel GetWorkspaceById(Guid customNodeId)
         {
             return loadedWorkspaceModels.ContainsKey(customNodeId) ? loadedWorkspaceModels[customNodeId] : null;
         }
@@ -168,10 +168,10 @@ namespace Dynamo.Core
         ///     Custom node information data
         /// </param>
         public bool TryGetCustomNodeData(
-            Guid id, 
+            Guid id,
             string name,
-            bool isTestMode, 
-            out CustomNodeDefinition def, 
+            bool isTestMode,
+            out CustomNodeDefinition def,
             out CustomNodeInfo info)
         {
             def = null;
@@ -215,10 +215,10 @@ namespace Dynamo.Core
         /// </param>
         /// <returns>Custom Node Instance</returns>
         public Function CreateCustomNodeInstance(
-            Guid id, 
+            Guid id,
             string name,
-            bool isTestMode, 
-            CustomNodeDefinition def, 
+            bool isTestMode,
+            CustomNodeDefinition def,
             CustomNodeInfo info)
         {
             if (info == null)
@@ -313,7 +313,7 @@ namespace Dynamo.Core
             loadedCustomNodes[id] = def;
             loadOrder.Add(id);
         }
-        
+
         private void SetPreloadFunctionDefinition(Guid id)
         {
             loadedCustomNodes[id] = null;
@@ -464,8 +464,8 @@ namespace Dynamo.Core
         /// <param name="ws"></param>
         /// <returns>The path to the node or null if it wasn't found.</returns>
         public bool TryGetFunctionWorkspace(
-            Guid id, 
-            bool isTestMode, 
+            Guid id,
+            bool isTestMode,
             out CustomNodeWorkspaceModel ws)
         {
             if (Contains(id))
@@ -526,7 +526,7 @@ namespace Dynamo.Core
             definition = null;
             return false;
         }
-        
+
         /// <summary>
         ///     Returns true if the custom node's unique identifier is inside of the manager (initialized or not)
         /// </summary>
@@ -578,11 +578,12 @@ namespace Dynamo.Core
         internal bool TryGetInfoFromPath(string path, bool isTestMode, out CustomNodeInfo info)
         {
             WorkspaceInfo header = null;
+            XmlDocument xmlDoc;
+            string jsonDoc;
+            Exception ex;
             try
             {
-                XmlDocument xmlDoc;
-                string jsonDoc;
-                if (DynamoUtilities.PathHelper.isValidXML(path, out xmlDoc))
+                if (DynamoUtilities.PathHelper.isValidXML(path, out xmlDoc, out ex))
                 {
                     if (!WorkspaceInfo.FromXmlDocument(xmlDoc, path, isTestMode, false, AsLogger(), out header))
                     {
@@ -591,7 +592,7 @@ namespace Dynamo.Core
                         return false;
                     }
                 }
-                else if (DynamoUtilities.PathHelper.isValidJson(path, out jsonDoc))
+                if (DynamoUtilities.PathHelper.isValidJson(path, out jsonDoc, out ex))
                 {
                     if (!WorkspaceInfo.FromJsonDocument(jsonDoc, path, isTestMode, false, AsLogger(), out header))
                     {
@@ -600,6 +601,7 @@ namespace Dynamo.Core
                         return false;
                     }
                 }
+                else throw ex;
                 info = new CustomNodeInfo(
                     Guid.Parse(header.ID),
                     header.Name,
@@ -608,7 +610,6 @@ namespace Dynamo.Core
                     path,
                     header.IsVisibleInDynamoLibrary);
                 return true;
-
             }
             catch (Exception e)
             {
@@ -631,8 +632,8 @@ namespace Dynamo.Core
         /// <returns>Boolean indicating if Custom Node Workspace opened.</returns>
         public bool OpenCustomNodeWorkspace(
             XmlDocument xmlDoc,
-            WorkspaceInfo workspaceInfo, 
-            bool isTestMode, 
+            WorkspaceInfo workspaceInfo,
+            bool isTestMode,
             out WorkspaceModel workspace)
         {
             CustomNodeWorkspaceModel customNodeWorkspace;
@@ -671,16 +672,14 @@ namespace Dynamo.Core
                 workspaceInfo);
             }
             else {
-                try
+                Exception ex;
+                if (DynamoUtilities.PathHelper.isValidJson(workspaceInfo.FileName, out jsonDoc, out ex))
                 {
-                    if (DynamoUtilities.PathHelper.isValidJson(workspaceInfo.FileName, out jsonDoc))
-                    {
-                        //we pass null for engine and scheduler as apparently the custom node constructor doesnt need them.
-                        newWorkspace = (CustomNodeWorkspaceModel)WorkspaceModel.FromJson(jsonDoc, this.libraryServices, null, null, nodeFactory, false, true, this);
-                        newWorkspace.FileName = workspaceInfo.FileName;
-                    }
+                    //we pass null for engine and scheduler as apparently the custom node constructor doesn't need them.
+                    newWorkspace = (CustomNodeWorkspaceModel)WorkspaceModel.FromJson(jsonDoc, this.libraryServices, null, null, nodeFactory, false, true, this);
+                    newWorkspace.FileName = workspaceInfo.FileName;
                 }
-                catch (Exception) { }
+
             }
 
             RegisterCustomNodeWorkspace(newWorkspace);
@@ -736,8 +735,8 @@ namespace Dynamo.Core
         /// <param name="workspace">The resultant function definition</param>
         /// <returns>Boolean indicating if Custom Node initialized.</returns>
         private bool InitializeCustomNode(
-            Guid functionId, 
-            bool isTestMode, 
+            Guid functionId,
+            bool isTestMode,
             out CustomNodeWorkspaceModel workspace)
         {
             try
@@ -748,7 +747,8 @@ namespace Dynamo.Core
                 WorkspaceInfo info;
                 XmlDocument xmlDoc;
                 string strInput;
-                if (DynamoUtilities.PathHelper.isValidXML(path, out xmlDoc))
+                Exception ex;
+                if (DynamoUtilities.PathHelper.isValidXML(path, out xmlDoc, out ex))
                 {
                     if (WorkspaceInfo.FromXmlDocument(xmlDoc, path, isTestMode, false, AsLogger(), out info))
                     {
@@ -759,13 +759,14 @@ namespace Dynamo.Core
                         }
                     }
                 }
-                else if (DynamoUtilities.PathHelper.isValidJson(path, out strInput))
+                else if (DynamoUtilities.PathHelper.isValidJson(path, out strInput, out ex))
                 {
                     // TODO: Skip Json migration for now
                     WorkspaceInfo.FromJsonDocument(strInput, path, isTestMode, false, AsLogger(), out info);
                     info.ID = functionId.ToString();
                     return InitializeCustomNode(info, null, out workspace);
                 }
+                else throw ex;
                 Log(string.Format(Properties.Resources.CustomNodeCouldNotBeInitialized, customNodeInfo.Name));
                 workspace = null;
                 return false;
@@ -804,7 +805,7 @@ namespace Dynamo.Core
                 Description = description,
                 X = 0,
                 Y = 0,
-                ID = newId.ToString(), 
+                ID = newId.ToString(),
                 FileName = string.Empty,
                 IsVisibleInDynamoLibrary = true
             };
@@ -875,7 +876,7 @@ namespace Dynamo.Core
 
             CustomNodeWorkspaceModel newWorkspace;
 
-            Debug.WriteLine("Current workspace has {0} nodes and {1} connectors", 
+            Debug.WriteLine("Current workspace has {0} nodes and {1} connectors",
                 currentWorkspace.Nodes.Count(), currentWorkspace.Connectors.Count());
 
             using (undoRecorder.BeginActionGroup())
@@ -888,7 +889,7 @@ namespace Dynamo.Core
                         selectedNodeSet.SelectMany(
                             node =>
                                 Enumerable.Range(0, node.InPorts.Count)
-                                .Where(index=>node.InPorts[index].Connectors.Any())
+                                .Where(index => node.InPorts[index].Connectors.Any())
                                 .Select(data => Tuple.Create(node, data, node.InputNodes[data]))
                                 .Where(input => !selectedNodeSet.Contains(input.Item3.Item2))));
 
@@ -897,7 +898,7 @@ namespace Dynamo.Core
                         selectedNodeSet.SelectMany(
                             node =>
                                 Enumerable.Range(0, node.OutPorts.Count)
-                                .Where(index=>node.OutPorts[index].Connectors.Any())
+                                .Where(index => node.OutPorts[index].Connectors.Any())
                                 .SelectMany(
                                     data =>
                                         node.OutputNodes[data].Where(
@@ -966,12 +967,12 @@ namespace Dynamo.Core
                 var newNodes = new List<NodeModel>();
                 var newNotes = new List<NoteModel>();
                 var newAnnotations = new List<AnnotationModel>();
-            
+
                 // Step 4: move all nodes and notes to new workspace remove from old
                 // PB: This could be more efficiently handled by a copy paste, but we
                 // are preservering the node 
                 foreach (var node in selectedNodeSet)
-                {                   
+                {
                     undoRecorder.RecordDeletionForUndo(node);
                     currentWorkspace.RemoveAndDisposeNode(node);
 
@@ -983,11 +984,11 @@ namespace Dynamo.Core
                     // shift nodes
                     node.X = node.X - leftShift;
                     node.Y = node.Y - topMost;
-                 
+
                     newNodes.Add(node);
                 }
 
-                foreach(var note in selectedNotes)
+                foreach (var note in selectedNotes)
                 {
                     undoRecorder.RecordDeletionForUndo(note);
                     currentWorkspace.RemoveNote(note);
@@ -1008,7 +1009,7 @@ namespace Dynamo.Core
                     group.Nodes = group.DeletedModelBases;
                     newAnnotations.Add(group);
                 }
-                
+
                 // Now all selected nodes already moved to custom workspace,
                 // clear the selection.
                 DynamoSelection.Instance.ClearSelection();
@@ -1059,10 +1060,10 @@ namespace Dynamo.Core
                         // function node and custom node. 
                         List<Library.TypedParameter> parameters = null;
 
-                        if (inputReceiverNode is Function) 
+                        if (inputReceiverNode is Function)
                         {
-                            var func = inputReceiverNode as Function; 
-                            parameters =  func.Controller.Definition.Parameters.ToList(); 
+                            var func = inputReceiverNode as Function;
+                            parameters = func.Controller.Definition.Parameters.ToList();
                         }
                         else if (inputReceiverNode is DSFunctionBase)
                         {
@@ -1091,7 +1092,7 @@ namespace Dynamo.Core
                         }
 
                         node.SetNameFromNodeNameAttribute();
-                        node.Y = inputIndex*(50 + node.Height);
+                        node.Y = inputIndex * (50 + node.Height);
 
                         uniqueInputSenders[key] = node;
 
@@ -1129,7 +1130,7 @@ namespace Dynamo.Core
                                 X = rightMost + 75 - leftShift
                             };
 
-                            node.Y = i*(50 + node.Height);
+                            node.Y = i * (50 + node.Height);
 
                             node.SetNameFromNodeNameAttribute();
 
@@ -1169,7 +1170,7 @@ namespace Dynamo.Core
                             Symbol = hanging.node.OutPorts[hanging.port].Name,
                             X = rightMost + 75 - leftShift
                         };
-                        node.Y = i*(50 + node.Height);
+                        node.Y = i * (50 + node.Height);
                         node.SetNameFromNodeNameAttribute();
 
                         newNodes.Add(node);
@@ -1200,7 +1201,7 @@ namespace Dynamo.Core
                         FileName = string.Empty,
                         IsVisibleInDynamoLibrary = true
                     });
-                
+
                 newWorkspace.HasUnsavedChanges = true;
 
                 RegisterCustomNodeWorkspace(newWorkspace);
@@ -1239,7 +1240,7 @@ namespace Dynamo.Core
                 {
                     undoRecorder.RecordCreationForUndo(connector);
                 }
-            } 
+            }
             return newWorkspace;
         }
 
