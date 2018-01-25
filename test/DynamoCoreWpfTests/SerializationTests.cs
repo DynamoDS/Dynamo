@@ -902,6 +902,8 @@ namespace DynamoCoreWpfTests
         [Test]
         public void NewCustomNodeSaveAndLoadPt2()
         {
+            // This unit test is a follow-up of NewCustomNodeSaveAndLoadPt1 test to make sure the newly created
+            // custom node will be loaded once DynamoCore restarted
             var funcguid = GuidUtility.Create(GuidUtility.UrlNamespace, "NewCustomNodeSaveAndLoad");
             var functionnode = this.ViewModel.Model.CustomNodeManager.CreateCustomNodeInstance(funcguid,"testnode",true);
             Assert.IsTrue(functionnode.IsCustomFunction);

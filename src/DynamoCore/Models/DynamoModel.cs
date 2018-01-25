@@ -54,39 +54,39 @@ namespace Dynamo.Models
     /// </summary>
     public class DynamoPreferencesData
     {
-      public double ScaleFactor { get; internal set; }
-      public bool HasRunWithoutCrash { get; internal set; }
-      public bool IsVisibleInDynamoLibrary { get; internal set; }
-      public string Version { get; internal set; }
-      public string RunType { get; internal set; }
-      public string RunPeriod { get; internal set; }
+        public double ScaleFactor { get; internal set; }
+        public bool HasRunWithoutCrash { get; internal set; }
+        public bool IsVisibleInDynamoLibrary { get; internal set; }
+        public string Version { get; internal set; }
+        public string RunType { get; internal set; }
+        public string RunPeriod { get; internal set; }
 
-      public DynamoPreferencesData(
-        double scaleFactor,
-        bool hasRunWithoutCrash,
-        bool isVisibleInDynamoLibrary,
-        string version,
-        string runType,
-        string runPeriod)
-      {
-        ScaleFactor = scaleFactor;
-        HasRunWithoutCrash = hasRunWithoutCrash;
-        IsVisibleInDynamoLibrary = isVisibleInDynamoLibrary;
-        Version = version;
-        RunType = runType;
-        RunPeriod = runPeriod;
-      }
+        public DynamoPreferencesData(
+          double scaleFactor,
+          bool hasRunWithoutCrash,
+          bool isVisibleInDynamoLibrary,
+          string version,
+          string runType,
+          string runPeriod)
+        {
+            ScaleFactor = scaleFactor;
+            HasRunWithoutCrash = hasRunWithoutCrash;
+            IsVisibleInDynamoLibrary = isVisibleInDynamoLibrary;
+            Version = version;
+            RunType = runType;
+            RunPeriod = runPeriod;
+        }
 
-      public static DynamoPreferencesData Default()
-      {
-        return new DynamoPreferencesData(
-          1.0,
-          true,
-          true,
-          AssemblyHelper.GetDynamoVersion().ToString(),
-          Models.RunType.Automatic.ToString(),
-          RunSettings.DefaultRunPeriod.ToString());
-      }
+        public static DynamoPreferencesData Default()
+        {
+            return new DynamoPreferencesData(
+              1.0,
+              true,
+              true,
+              AssemblyHelper.GetDynamoVersion().ToString(),
+              Models.RunType.Automatic.ToString(),
+              RunSettings.DefaultRunPeriod.ToString());
+        }
     }
 
     /// <summary>
@@ -773,7 +773,7 @@ namespace Dynamo.Models
         {
             if (!Directory.Exists(path))
                 return false;
-          
+
             string fullFilename = path;
             if (file != "")
             {
@@ -781,7 +781,7 @@ namespace Dynamo.Models
                 if (!File.Exists(fullFilename))
                     return false;
             }
-              
+
             if (PreferenceSettings.CustomPackageFolders.Contains(fullFilename))
                 return false;
 
@@ -1393,16 +1393,15 @@ namespace Dynamo.Models
         public void OpenFileFromPath(string filePath, bool forceManualExecutionMode = false)
         {
             XmlDocument xmlDoc;
-            try
+            Exception ex;
+            if (DynamoUtilities.PathHelper.isValidXML(filePath, out xmlDoc, out ex))
             {
-                if (DynamoUtilities.PathHelper.isValidXML(filePath, out xmlDoc))
-                {
-                    OpenXmlFileFromPath(xmlDoc, filePath, forceManualExecutionMode);
-                    return;
-                }
+                OpenXmlFileFromPath(xmlDoc, filePath, forceManualExecutionMode);
+                return;
             }
-            catch(Exception ex) {
-                // These kind of exceptions indicate that file is not accessible.
+            else
+            {
+                // These kind of exceptions indicate that file is not accessible 
                 if (ex is IOException || ex is UnauthorizedAccessException)
                 {
                     throw ex;
@@ -1411,19 +1410,17 @@ namespace Dynamo.Models
                 {
                     // XML opening failure can indicate that this file is corrupted XML or Json
                     string fileContents;
-                    try
+
+                    if (DynamoUtilities.PathHelper.isValidJson(filePath, out fileContents, out ex))
                     {
-                        if (DynamoUtilities.PathHelper.isValidJson(filePath, out fileContents))
-                        {
-                            OpenJsonFileFromPath(fileContents, filePath, forceManualExecutionMode);
-                            return;
-                        }
+                        OpenJsonFileFromPath(fileContents, filePath, forceManualExecutionMode);
+                        return;
                     }
-                    catch (Exception e)
+                    else
                     {
                         // When Json opening also failed, either this file is corrupted or there
                         // are other kind of failures related to Json de-serialization
-                        throw e;
+                        throw ex;
                     }
                 }
             }
@@ -1436,8 +1433,8 @@ namespace Dynamo.Models
             var viewBlock = obj["View"];
             var dynamoBlock = viewBlock == null ? null : viewBlock["Dynamo"];
             if (dynamoBlock == null)
-              return DynamoPreferencesData.Default();
-           
+                return DynamoPreferencesData.Default();
+
             var settings = new JsonSerializerSettings
             {
                 Error = (sender, args) =>
@@ -1478,7 +1475,7 @@ namespace Dynamo.Models
                             //Raise an event to deserialize the view parameters before
                             //setting the graph to run
                             OnComputeModelDeserialized();
- 
+
                             SetPeriodicEvaluation(ws);
                         }
                     }
@@ -1512,7 +1509,7 @@ namespace Dynamo.Models
                         Logger.Log("File is not saved in the backup folder {0}: ", pathManager.BackupDirectory);
                     }
                 }
-              
+
                 WorkspaceInfo workspaceInfo;
                 if (WorkspaceInfo.FromXmlDocument(xmlDoc, filePath, IsTestMode, forceManualExecutionMode, Logger, out workspaceInfo))
                 {
@@ -1583,8 +1580,8 @@ namespace Dynamo.Models
         }
 
         private bool OpenJsonFile(
-          string filePath, 
-          string fileContents, 
+          string filePath,
+          string fileContents,
           DynamoPreferencesData dynamoPreferences,
           bool forceManualExecutionMode,
           out WorkspaceModel workspace)
@@ -1612,23 +1609,23 @@ namespace Dynamo.Models
             //       This logic may not be correct, need to decide the importance of versioning early JSON files
             string versionString = dynamoPreferences.Version;
             if (versionString == null)
-              versionString = AssemblyHelper.GetDynamoVersion().ToString();
+                versionString = AssemblyHelper.GetDynamoVersion().ToString();
             workspace.WorkspaceVersion = new System.Version(versionString);
 
             HomeWorkspaceModel homeWorkspace = workspace as HomeWorkspaceModel;
             if (homeWorkspace != null)
             {
-              homeWorkspace.HasRunWithoutCrash = dynamoPreferences.HasRunWithoutCrash;
+                homeWorkspace.HasRunWithoutCrash = dynamoPreferences.HasRunWithoutCrash;
 
-              RunType runType;
-              if (!homeWorkspace.HasRunWithoutCrash || !Enum.TryParse(dynamoPreferences.RunType, false, out runType) || forceManualExecutionMode)
-                  runType = RunType.Manual;
-              int runPeriod;
-              if (!Int32.TryParse(dynamoPreferences.RunPeriod, out runPeriod))
-                  runPeriod = RunSettings.DefaultRunPeriod;
-              homeWorkspace.RunSettings = new RunSettings(runType, runPeriod);
+                RunType runType;
+                if (!homeWorkspace.HasRunWithoutCrash || !Enum.TryParse(dynamoPreferences.RunType, false, out runType) || forceManualExecutionMode)
+                    runType = RunType.Manual;
+                int runPeriod;
+                if (!Int32.TryParse(dynamoPreferences.RunPeriod, out runPeriod))
+                    runPeriod = RunSettings.DefaultRunPeriod;
+                homeWorkspace.RunSettings = new RunSettings(runType, runPeriod);
 
-              RegisterHomeWorkspace(homeWorkspace);
+                RegisterHomeWorkspace(homeWorkspace);
             }
 
             CustomNodeWorkspaceModel customNodeWorkspace = workspace as CustomNodeWorkspaceModel;
@@ -1660,7 +1657,7 @@ namespace Dynamo.Models
             XmlDocument xmlDoc, WorkspaceInfo workspaceInfo, out WorkspaceModel workspace)
         {
             var nodeGraph = NodeGraph.LoadGraphFromXml(xmlDoc, NodeFactory);
-            Guid deterministicId =  GuidUtility.Create(GuidUtility.UrlNamespace, workspaceInfo.Name);
+            Guid deterministicId = GuidUtility.Create(GuidUtility.UrlNamespace, workspaceInfo.Name);
             var newWorkspace = new HomeWorkspaceModel(
                 deterministicId,
                 EngineController,
@@ -2363,11 +2360,11 @@ namespace Dynamo.Models
         }
         private void DisplayXmlDummyNodeWarning()
         {
-           var xmlDummyNodeCount = this.CurrentWorkspace.Nodes.OfType<DummyNode>().
-                Where(node => node.OriginalNodeContent is XmlElement).Count();
+            var xmlDummyNodeCount = this.CurrentWorkspace.Nodes.OfType<DummyNode>().
+                 Where(node => node.OriginalNodeContent is XmlElement).Count();
 
-           Logging.Analytics.LogPiiInfo("XmlDummyNodeWarning",
-               xmlDummyNodeCount.ToString());
+            Logging.Analytics.LogPiiInfo("XmlDummyNodeWarning",
+                xmlDummyNodeCount.ToString());
 
             string summary = Resources.UnresolvedNodesWarningShortMessage;
             var description = Resources.UnresolvedNodesWarningMessage;
@@ -2476,7 +2473,7 @@ namespace Dynamo.Models
 
             Logging.Analytics.LogPiiInfo("FutureFileMessage", fullFilePath +
                 " :: fileVersion:" + fileVer + " :: currVersion:" + currVer);
-            
+
             string summary = Resources.FutureFileSummary;
             var description = string.Format(Resources.FutureFileDescription, fullFilePath, fileVersion, currVersion);
 
