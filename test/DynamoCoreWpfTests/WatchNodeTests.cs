@@ -108,7 +108,7 @@ namespace DynamoCoreWpfTests
 
             return watchHandler.GenerateWatchViewModelForData(
                 watch.CachedValue,
-                watch.OutPorts,
+                watch.OutPorts.Select(p => p.Name),
                 core,
                 inputVar,
                 false );
@@ -189,7 +189,7 @@ namespace DynamoCoreWpfTests
 
             var watchNode = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<Watch>();
             var watchVM = ViewModel.WatchHandler.GenerateWatchViewModelForData(
-                watchNode.CachedValue, watchNode.OutPorts,
+                watchNode.CachedValue, watchNode.OutPorts.Select(p => p.Name),
                 ViewModel.Model.EngineController.LiveRunnerRuntimeCore,
                 watchNode.InPorts[0].Connectors[0].Start.Owner.AstIdentifierForPreview.Name);
 
@@ -207,7 +207,7 @@ namespace DynamoCoreWpfTests
             foreach (var watchNode in watchNodes)
             {
                 var watchVM = ViewModel.WatchHandler.GenerateWatchViewModelForData(
-                    watchNode.CachedValue, watchNode.OutPorts,
+                    watchNode.CachedValue, watchNode.OutPorts.Select(p => p.Name),
                     ViewModel.Model.EngineController.LiveRunnerRuntimeCore,
                     watchNode.InPorts[0].Connectors[0].Start.Owner.AstIdentifierForPreview.Name);
                 Assert.IsTrue(watchVM.NodeLabel.StartsWith("function"));
@@ -225,7 +225,7 @@ namespace DynamoCoreWpfTests
 
             var watchNode = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<Watch>();
             var watchVM = ViewModel.WatchHandler.GenerateWatchViewModelForData(
-                watchNode.CachedValue, watchNode.OutPorts,
+                watchNode.CachedValue, watchNode.OutPorts.Select(p => p.Name),
                ViewModel.Model.EngineController.LiveRunnerRuntimeCore,
                 watchNode.InPorts[0].Connectors[0].Start.Owner.AstIdentifierForPreview.Name);
 

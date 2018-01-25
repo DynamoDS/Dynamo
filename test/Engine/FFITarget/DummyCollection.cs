@@ -91,6 +91,17 @@ namespace FFITarget
             return dictionary;
         }
 
+        [MultiReturn(new string[] {"E", "F", "G"})]
+        public static Dictionary<string, object> ReturnNestedDictionary()
+        {
+            var dict = ReturnDictionary();
+            var dictionary = new Dictionary<string, object>();
+            dictionary.Add("E", 1);
+            dictionary.Add("F", dict);
+            dictionary.Add("G", 3);
+            return dictionary;
+        } 
+
         public static IDictionary ReturnIDictionary()
         {
             var dictionary = new Dictionary<string, int>();
