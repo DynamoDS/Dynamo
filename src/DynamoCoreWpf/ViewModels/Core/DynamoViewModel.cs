@@ -1114,11 +1114,15 @@ namespace Dynamo.ViewModels
 
                 // For Json Workspaces, workspace view info need to be read agin from file
                 string fileContents;
-                if (DynamoUtilities.PathHelper.isValidJson(newVm.Model.FileName, out fileContents))
-                {
-                    ExtraWorkspaceViewInfo viewInfo = WorkspaceViewModel.ExtraWorkspaceViewInfoFromJson(fileContents);
-                    newVm.Model.UpdateWithExtraWorkspaceViewInfo(viewInfo);
+
+                try {
+                    if (DynamoUtilities.PathHelper.isValidJson(newVm.Model.FileName, out fileContents))
+                    {
+                        ExtraWorkspaceViewInfo viewInfo = WorkspaceViewModel.ExtraWorkspaceViewInfoFromJson(fileContents);
+                        newVm.Model.UpdateWithExtraWorkspaceViewInfo(viewInfo);
+                    }
                 }
+                catch (Exception) { }
                 workspaces.Add(newVm);
             }
         }
@@ -1253,7 +1257,7 @@ namespace Dynamo.ViewModels
                     {
                         errorMsgString = String.Format(e.Message, filePath);
                     }
-                    else if (e is System.Xml.XmlException)
+                    else if (e is System.Xml.XmlException || e is Newtonsoft.Json.JsonReaderException)
                     {
                         errorMsgString = String.Format(Resources.MessageFailedToOpenCorruptedFile, filePath);
                     }

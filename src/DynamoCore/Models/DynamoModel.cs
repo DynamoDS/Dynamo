@@ -1393,20 +1393,40 @@ namespace Dynamo.Models
         public void OpenFileFromPath(string filePath, bool forceManualExecutionMode = false)
         {
             XmlDocument xmlDoc;
-            if (DynamoUtilities.PathHelper.isValidXML(filePath, out xmlDoc))
+            try
             {
-                OpenXmlFileFromPath(xmlDoc, filePath, forceManualExecutionMode);
-                return;
+                if (DynamoUtilities.PathHelper.isValidXML(filePath, out xmlDoc))
+                {
+                    OpenXmlFileFromPath(xmlDoc, filePath, forceManualExecutionMode);
+                    return;
+                }
             }
-
-            string fileContents;
-            if (DynamoUtilities.PathHelper.isValidJson(filePath, out fileContents))
-            {
-                OpenJsonFileFromPath(fileContents, filePath, forceManualExecutionMode);
-                return;
+            catch(Exception ex) {
+                // These kind of exceptions indicate that file is not accessible.
+                if (ex is IOException || ex is UnauthorizedAccessException)
+                {
+                    throw ex;
+                }
+                if (ex is System.Xml.XmlException)
+                {
+                    // XML opening failure can indicate that this file is corrupted XML or Json
+                    string fileContents;
+                    try
+                    {
+                        if (DynamoUtilities.PathHelper.isValidJson(filePath, out fileContents))
+                        {
+                            OpenJsonFileFromPath(fileContents, filePath, forceManualExecutionMode);
+                            return;
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        // When Json opening also failed, either this file is corrupted or there
+                        // are other kind of failures related to Json de-serialization
+                        throw e;
+                    }
+                }
             }
-
-            Logger.LogError("Could not open workspace at: " + filePath);
         }
 
         static private DynamoPreferencesData DynamoPreferencesDataFromJson(string json)
