@@ -55,6 +55,7 @@ namespace WpfVisualizationTests
         {
             libraries.Add("ProtoGeometry.dll");
             libraries.Add("DSIronPython.dll");
+            libraries.Add("Builtin.dll");
             libraries.Add("DSCoreNodes.dll");
             libraries.Add("GeometryColor.dll");
             libraries.Add("VMDataBridge.dll");
@@ -95,7 +96,11 @@ namespace WpfVisualizationTests
                 new DynamoViewModel.StartConfiguration()
                 {
                     DynamoModel = Model,
-                    Watch3DViewModel = HelixWatch3DViewModel.TryCreateHelixWatch3DViewModel(new Watch3DViewModelStartupParams(Model), Model.Logger)
+                    Watch3DViewModel = 
+                        HelixWatch3DViewModel.TryCreateHelixWatch3DViewModel(
+                            null,
+                            new Watch3DViewModelStartupParams(Model), 
+                            Model.Logger)
                 });
 
             //create the view

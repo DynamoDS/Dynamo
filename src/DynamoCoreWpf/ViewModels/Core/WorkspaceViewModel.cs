@@ -454,9 +454,8 @@ namespace Dynamo.ViewModels
             Model.ConnectorAdded += Connectors_ConnectorAdded;
             Model.ConnectorDeleted += Connectors_ConnectorDeleted;
             Model.PropertyChanged += ModelPropertyChanged;
-
-            DynamoSelection.Instance.Selection.CollectionChanged +=
-                (sender, e) => RefreshViewOnSelectionChange();
+            
+            DynamoSelection.Instance.Selection.CollectionChanged += RefreshViewOnSelectionChange;
 
             DynamoViewModel.CopyCommand.CanExecuteChanged += CopyPasteChanged;
             DynamoViewModel.PasteCommand.CanExecuteChanged += CopyPasteChanged;
@@ -470,6 +469,41 @@ namespace Dynamo.ViewModels
 
             InCanvasSearchViewModel = new SearchViewModel(DynamoViewModel);
             InCanvasSearchViewModel.Visible = true;
+        }
+
+        public override void Dispose()
+        {
+            Model.NodeAdded -= Model_NodeAdded;
+            Model.NodeRemoved -= Model_NodeRemoved;
+            Model.NodesCleared -= Model_NodesCleared;
+
+            Model.NoteAdded -= Model_NoteAdded;
+            Model.NoteRemoved -= Model_NoteRemoved;
+            Model.NotesCleared -= Model_NotesCleared;
+
+            Model.AnnotationAdded -= Model_AnnotationAdded;
+            Model.AnnotationRemoved -= Model_AnnotationRemoved;
+            Model.AnnotationsCleared -= Model_AnnotationsCleared;
+
+            Model.ConnectorAdded -= Connectors_ConnectorAdded;
+            Model.ConnectorDeleted -= Connectors_ConnectorDeleted;
+            Model.PropertyChanged -= ModelPropertyChanged;
+
+            DynamoSelection.Instance.Selection.CollectionChanged -= RefreshViewOnSelectionChange;
+
+            DynamoViewModel.CopyCommand.CanExecuteChanged -= CopyPasteChanged;
+            DynamoViewModel.PasteCommand.CanExecuteChanged -= CopyPasteChanged;
+
+            var nodeViewModels = Nodes.ToList();
+            nodeViewModels.ForEach(nodeViewModel => nodeViewModel.Dispose());
+            nodeViewModels.ForEach(nodeViewModel => this.unsubscribeNodeEvents(nodeViewModel));
+
+            Notes.ToList().ForEach(noteViewModel => noteViewModel.Dispose());
+            Connectors.ToList().ForEach(connectorViewmModel => connectorViewmModel.Dispose());
+            Nodes.Clear();
+            Notes.Clear();
+            Connectors.Clear();
+            
         }
 
         internal void ZoomInInternal()
@@ -572,7 +606,10 @@ namespace Dynamo.ViewModels
         {
             var connector = _connectors.FirstOrDefault(x => x.ConnectorModel == c);
             if (connector != null)
+            {
                 _connectors.Remove(connector);
+                connector.Dispose();
+            }
         }
 
         private void Model_NoteAdded(NoteModel note)
@@ -583,11 +620,17 @@ namespace Dynamo.ViewModels
 
         private void Model_NoteRemoved(NoteModel note)
         {
-            _notes.Remove(_notes.First(x => x.Model == note));
+            var matchingNoteViewModel = _notes.First(x => x.Model == note);
+            _notes.Remove(matchingNoteViewModel);
+            matchingNoteViewModel.Dispose();
         }
 
         private void Model_NotesCleared()
         {
+            foreach (var noteViewModel in _notes)
+            {
+                noteViewModel.Dispose();
+            }
             _notes.Clear();
         }
 
@@ -609,9 +652,21 @@ namespace Dynamo.ViewModels
 
         void Model_NodesCleared()
         {
+            foreach(var nodeViewModel in _nodes)
+            {
+                this.unsubscribeNodeEvents(nodeViewModel);
+                nodeViewModel.Dispose();
+            }
             _nodes.Clear();
             Errors.Clear();
+
             PostNodeChangeActions();
+        }
+
+        private void unsubscribeNodeEvents(NodeViewModel nodeViewModel)
+        {
+            nodeViewModel.SnapInputEvent -= nodeViewModel_SnapInputEvent;
+            nodeViewModel.NodeLogic.Modified -= OnNodeModified;
         }
 
         void Model_NodeRemoved(NodeModel node)
@@ -619,6 +674,9 @@ namespace Dynamo.ViewModels
             NodeViewModel nodeViewModel = _nodes.First(x => x.NodeLogic == node);
             Errors.Remove(nodeViewModel.ErrorBubble);
             _nodes.Remove(nodeViewModel);
+            //unsub the events we attached below in NodeAdded.
+            this.unsubscribeNodeEvents(nodeViewModel);
+            nodeViewModel.Dispose();
 
             PostNodeChangeActions();
         }
@@ -1021,7 +1079,7 @@ namespace Dynamo.ViewModels
                 modelGuids, "IsVisible", (string) parameter);
 
             DynamoViewModel.Model.ExecuteCommand(command);
-            RefreshViewOnSelectionChange();
+            RefreshViewOnSelectionChange(this,null);
         }
 
         private void SetArgumentLacing(object parameter)
@@ -1290,7 +1348,7 @@ namespace Dynamo.ViewModels
             this.OnZoomChanged(this, new ZoomEventArgs(this.Zoom));
         }
 
-        private void RefreshViewOnSelectionChange()
+        private void RefreshViewOnSelectionChange(object sender, NotifyCollectionChangedEventArgs args)
         {
             AlignSelectedCommand.RaiseCanExecuteChanged();
             ShowHideAllGeometryPreviewCommand.RaiseCanExecuteChanged();

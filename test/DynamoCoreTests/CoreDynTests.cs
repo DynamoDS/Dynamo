@@ -17,9 +17,11 @@ namespace Dynamo.Tests
         protected override void GetLibrariesToPreload(List<string> libraries)
         {
             libraries.Add("VMDataBridge.dll");
+            libraries.Add("Builtin.dll");
             libraries.Add("DSCoreNodes.dll");
             libraries.Add("FunctionObject.ds");
             libraries.Add("BuiltIn.ds");
+            libraries.Add("DSOffice.dll");
             base.GetLibrariesToPreload(libraries);
         }
 
@@ -71,12 +73,11 @@ namespace Dynamo.Tests
             string openPath = Path.Combine(TestDirectory, @"core\multiout\multi.dyn");
             RunModel(openPath);
 
-            var validationData = new Dictionary<int, object>
-            {
-                {0,0}
-            };
+            var empty = new List<object>();
+            var validationData = DesignScript.Builtin.Dictionary.ByKeysValues(
+                new[] {"first", "rest"}, new object[] {0, empty});
 
-            SelectivelyAssertPreviewValues("a4d6ecce-0fe7-483d-a4f2-cd8cddefa25c", validationData);
+            AssertPreviewValue("a4d6ecce-0fe7-483d-a4f2-cd8cddefa25c", validationData);
         }
 
         [Test]
@@ -399,7 +400,7 @@ namespace Dynamo.Tests
             }
             catch (System.Exception e)
             {
-                Assert.IsTrue(e is System.Xml.XmlException);
+                Assert.IsTrue(e is System.Xml.XmlException || e is Newtonsoft.Json.JsonReaderException);
             }
         }
 

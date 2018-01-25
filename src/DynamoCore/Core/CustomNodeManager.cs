@@ -670,10 +670,17 @@ namespace Dynamo.Core
                 nodeGraph.ElementResolver,
                 workspaceInfo);
             }
-            else if(DynamoUtilities.PathHelper.isValidJson(workspaceInfo.FileName, out jsonDoc))
-            {
-                newWorkspace = (CustomNodeWorkspaceModel)WorkspaceModel.FromJson(jsonDoc, this.libraryServices, null, null, nodeFactory, false, true, this);
-                newWorkspace.FileName = workspaceInfo.FileName;
+            else {
+                try
+                {
+                    if (DynamoUtilities.PathHelper.isValidJson(workspaceInfo.FileName, out jsonDoc))
+                    {
+                        //we pass null for engine and scheduler as apparently the custom node constructor doesnt need them.
+                        newWorkspace = (CustomNodeWorkspaceModel)WorkspaceModel.FromJson(jsonDoc, this.libraryServices, null, null, nodeFactory, false, true, this);
+                        newWorkspace.FileName = workspaceInfo.FileName;
+                    }
+                }
+                catch (Exception) { }
             }
 
             RegisterCustomNodeWorkspace(newWorkspace);

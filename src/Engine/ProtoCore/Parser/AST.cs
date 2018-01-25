@@ -11,6 +11,9 @@
         public int ID { get; private set; }
         public bool skipMe { get; set; }
 
+        internal static readonly string BuiltinGetValueAtIndexTypeName = typeof(DesignScript.Builtin.Get).FullName;
+        internal static readonly string BuiltinValueAtIndexMethodName = nameof(DesignScript.Builtin.Get.ValueAtIndex);
+
         public Node()
         {
             ID = ++sID;

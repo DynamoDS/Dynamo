@@ -211,6 +211,19 @@ namespace Dynamo.PackageManager
             {
                 if (!Directory.Exists(root))
                 {
+                    string extension = null;
+                    if (root != null)
+                    {
+                        extension = Path.GetExtension(root);
+                    }
+
+                    // If the path has a .dll or .ds extension it is a locally imported library
+                    // so do not output an error about the directory
+                    if (extension == ".dll" || extension == ".ds")
+                    {
+                        return;
+                    }
+
                     this.Log(string.Format(Resources.InvalidPackageFolderWarning, root));
                     return;
                 }

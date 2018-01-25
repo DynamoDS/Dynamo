@@ -802,7 +802,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Category.
+        ///   Looks up a localized string similar to Add-ons Category.
         /// </summary>
         public static string CustomNodePropertyWindowCategory {
             get {
@@ -825,6 +825,15 @@ namespace Dynamo.Wpf.Properties {
         public static string CustomNodePropertyWindowDescriptionHint {
             get {
                 return ResourceManager.GetString("CustomNodePropertyWindowDescriptionHint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Custom Nodes will be placed in the Add-Ons section of the library..
+        /// </summary>
+        public static string CustomNodePropertyWindowLocationNote {
+            get {
+                return ResourceManager.GetString("CustomNodePropertyWindowLocationNote", resourceCulture);
             }
         }
         
@@ -3692,6 +3701,33 @@ namespace Dynamo.Wpf.Properties {
         public static string PackageNotExisted {
             get {
                 return ResourceManager.GetString("PackageNotExisted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The import path &quot;{0}&quot; was added to &quot;Manage Node and Package Paths&quot;. If you want to update or remove this path, please open &quot;Settings &gt; Manage Node and Package Paths...&quot;.
+        /// </summary>
+        public static string PackagePathAutoAddNotificationDetailedDescription {
+            get {
+                return ResourceManager.GetString("PackagePathAutoAddNotificationDetailedDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A library (*.dll, *.ds) was recently imported into Dynamo. Its path was automatically added to &quot;Settings &gt; Manage Node and Package Paths...&quot;.
+        /// </summary>
+        public static string PackagePathAutoAddNotificationShortDescription {
+            get {
+                return ResourceManager.GetString("PackagePathAutoAddNotificationShortDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Package Path Added.
+        /// </summary>
+        public static string PackagePathAutoAddNotificationTitle {
+            get {
+                return ResourceManager.GetString("PackagePathAutoAddNotificationTitle", resourceCulture);
             }
         }
         

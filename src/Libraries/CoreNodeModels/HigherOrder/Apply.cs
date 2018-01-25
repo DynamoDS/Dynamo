@@ -8,11 +8,11 @@ using Newtonsoft.Json;
 
 namespace CoreNodeModels.HigherOrder
 {
-    [NodeName("Function.Apply")]
+    [NodeName("Function Apply")]
     [NodeCategory(BuiltinNodeCategories.CORE_EVALUATE)]
     [NodeDescription("FunctionApplyDescription", typeof(Resources))]
     [IsDesignScriptCompatible]
-    [AlsoKnownAs("DSCoreNodesUI.HigherOrder.ApplyFunction")]
+    [AlsoKnownAs("DSCoreNodesUI.HigherOrder.ApplyFunction", "Function.Apply")]
     public class ApplyFunction : VariableInputNode
     {
         [JsonConstructor]
@@ -71,11 +71,11 @@ namespace CoreNodeModels.HigherOrder
         }
     }
 
-    [NodeName("Function.Compose")]
+    [NodeName("Function Compose")]
     [NodeCategory(BuiltinNodeCategories.CORE_EVALUATE)]
     [NodeDescription("FunctionComposeDescription", typeof(Resources))]
     [IsDesignScriptCompatible]
-    [AlsoKnownAs("DSCoreNodesUI.HigherOrder.ComposeFunctions")]
+    [AlsoKnownAs("DSCoreNodesUI.HigherOrder.ComposeFunctions", "Function.Compose")]
     public class ComposeFunctions : VariableInputNode
     {
         [JsonConstructor]

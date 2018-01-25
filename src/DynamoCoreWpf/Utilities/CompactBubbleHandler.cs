@@ -59,6 +59,17 @@ namespace Dynamo.Wpf.Utilities
                     }
                     : null;
             }
+            else if (mirrorData.IsPointer && mirrorData.Data is DesignScript.Builtin.Dictionary)
+            {
+                var dict = mirrorData.Data as DesignScript.Builtin.Dictionary;
+
+                return generateViewModel
+                    ? new CompactBubbleViewModel(true)
+                    {
+                        NodeLabel = dict.Values.Any() ? WatchViewModel.DICTIONARY : WatchViewModel.EMPTY_DICTIONARY
+                    }
+                    : null;
+            }
 
             items++;
 

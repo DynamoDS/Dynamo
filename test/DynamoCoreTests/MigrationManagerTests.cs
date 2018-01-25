@@ -11,6 +11,7 @@ using NUnit.Framework;
 namespace Dynamo.Tests
 {
     [TestFixture]
+    [Category("JsonTestExclude")]
     internal class MigrationManagerTests
     {
         private XmlDocument xmlDocument = null;

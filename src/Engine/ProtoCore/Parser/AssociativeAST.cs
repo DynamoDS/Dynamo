@@ -625,7 +625,7 @@ namespace ProtoCore.AST.AssociativeAST
         }
     }
 
-    public class IdentifierListNode : AssociativeNode
+    public class IdentifierListNode : ArrayNameNode
     {
         public bool IsLastSSAIdentListFactor { get; set; }
 
@@ -2251,7 +2251,7 @@ namespace ProtoCore.AST.AssociativeAST
         {
             var buf = new StringBuilder();
 
-            buf.Append("{");
+            buf.Append("[");
             if (Exprs != null)
             {
                 for (int i = 0; i < Exprs.Count; ++i)
@@ -2261,7 +2261,7 @@ namespace ProtoCore.AST.AssociativeAST
                         buf.Append(", ");
                 }
             }
-            buf.Append("}");
+            buf.Append("]");
             buf.Append(base.ToString());
 
             return buf.ToString();
@@ -2625,6 +2625,14 @@ namespace ProtoCore.AST.AssociativeAST
                     break;
             }
             return BuildNullNode();
+        }
+
+        public static AssociativeNode BuildIndexExpression(AssociativeNode value, AssociativeNode index)
+        {
+            var node = BuildFunctionCall(Node.BuiltinGetValueAtIndexTypeName, Node.BuiltinValueAtIndexMethodName, 
+                new List<AssociativeNode>() { value, index });
+            NodeUtils.SetNodeLocation(node, value, index);
+            return node;
         }
 
         public static InlineConditionalNode BuildConditionalNode(

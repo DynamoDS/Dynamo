@@ -495,8 +495,11 @@ namespace Dynamo.ViewModels
 
             if (startConfiguration.Watch3DViewModel == null)
             {
-                startConfiguration.Watch3DViewModel = HelixWatch3DViewModel.TryCreateHelixWatch3DViewModel(
-                    new Watch3DViewModelStartupParams(startConfiguration.DynamoModel), startConfiguration.DynamoModel.Logger);
+                startConfiguration.Watch3DViewModel = 
+                    HelixWatch3DViewModel.TryCreateHelixWatch3DViewModel(
+                        null,
+                        new Watch3DViewModelStartupParams(startConfiguration.DynamoModel), 
+                        startConfiguration.DynamoModel.Logger);
             }
 
             return new DynamoViewModel(startConfiguration);
@@ -1111,11 +1114,15 @@ namespace Dynamo.ViewModels
 
                 // For Json Workspaces, workspace view info need to be read agin from file
                 string fileContents;
-                if (DynamoUtilities.PathHelper.isValidJson(newVm.Model.FileName, out fileContents))
-                {
-                    ExtraWorkspaceViewInfo viewInfo = WorkspaceViewModel.ExtraWorkspaceViewInfoFromJson(fileContents);
-                    newVm.Model.UpdateWithExtraWorkspaceViewInfo(viewInfo);
+
+                try {
+                    if (DynamoUtilities.PathHelper.isValidJson(newVm.Model.FileName, out fileContents))
+                    {
+                        ExtraWorkspaceViewInfo viewInfo = WorkspaceViewModel.ExtraWorkspaceViewInfoFromJson(fileContents);
+                        newVm.Model.UpdateWithExtraWorkspaceViewInfo(viewInfo);
+                    }
                 }
+                catch (Exception) { }
                 workspaces.Add(newVm);
             }
         }
@@ -1124,6 +1131,10 @@ namespace Dynamo.ViewModels
         {
             var viewModel = workspaces.First(x => x.Model == item);
             if (currentWorkspaceViewModel == viewModel)
+                if(currentWorkspaceViewModel != null)
+                {
+                    currentWorkspaceViewModel.Dispose();
+                }
                 currentWorkspaceViewModel = null;
             workspaces.Remove(viewModel);
         }
@@ -1246,7 +1257,7 @@ namespace Dynamo.ViewModels
                     {
                         errorMsgString = String.Format(e.Message, filePath);
                     }
-                    else if (e is System.Xml.XmlException)
+                    else if (e is System.Xml.XmlException || e is Newtonsoft.Json.JsonReaderException)
                     {
                         errorMsgString = String.Format(Resources.MessageFailedToOpenCorruptedFile, filePath);
                     }
@@ -2247,6 +2258,19 @@ namespace Dynamo.ViewModels
                     foreach (var file in openFileDialog.FileNames)
                     {
                         EngineController.ImportLibrary(file);
+
+                        FileInfo info = new FileInfo(file);
+                        if (this.Model.AddPackagePath(info.Directory.FullName, info.Name))
+                        {
+                            string title = Resources.PackagePathAutoAddNotificationTitle;
+                            string shortMessage = Resources.PackagePathAutoAddNotificationShortDescription;
+                            string detailedMessage = Resources.PackagePathAutoAddNotificationDetailedDescription;
+                            this.Model.Logger.LogNotification(
+                                "Dynamo", 
+                                title,
+                                shortMessage, 
+                                string.Format(detailedMessage, file));
+                        }
                     }
                     SearchViewModel.SearchAndUpdateResults();
                 }

@@ -4,7 +4,7 @@ using ProtoTestFx;
 
 namespace ProtoTest.DebugTests
 {
-    [TestFixture]
+    [TestFixture, Category("Debugger")]
     public class RunEqualityTests
     {
 
@@ -15549,7 +15549,7 @@ b = ++a;
 
     }
 
-    [TestFixture]
+    [TestFixture, Category("Debugger")]
     public class DebugUseCaseTesting
     {
         [Test]

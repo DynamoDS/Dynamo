@@ -73,7 +73,7 @@
     <Compile Include="Color.cs" />
     <Compile Include="Compare.cs" />
     <Compile Include="DateTime.cs" />
-    <Compile Include="Files.cs" />
+    <Compile Include="FileSystem.cs" />
     <Compile Include="List.cs" />
     <Compile Include="Math.cs" />
     <Compile Include="Object.cs" />
@@ -100,6 +100,10 @@
       <Project>{ef879a10-041d-4c68-83e7-3192685f1bae}</Project>
       <Name>DynamoServices</Name>
       <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\Builtin\Builtin.csproj">
+      <Project>{c0d6dee5-5532-4345-9c66-4c00d7fdb8be}</Project>
+      <Name>Builtin</Name>
     </ProjectReference>
     <ProjectReference Include="..\DynamoUnits\Units.csproj">
       <Project>{6e0a079e-85f1-45a1-ad5b-9855e4344809}</Project>
