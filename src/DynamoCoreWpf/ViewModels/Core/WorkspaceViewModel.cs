@@ -537,6 +537,20 @@ namespace Dynamo.ViewModels
             try
             {
                 // Stage 1: Serialize the workspace.
+                string fileName = string.Empty;
+                try
+                {
+                    fileName = Path.GetFileName(filePath);
+                }
+                catch (ArgumentException)
+                {
+                }
+
+                if (fileName != string.Empty)
+                {
+                    Model.Name = fileName;
+                }
+              
                 var json = Model.ToJson(engine);
 
                 // Stage 2: Add the View.
