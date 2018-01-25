@@ -1,4 +1,4 @@
-﻿﻿using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using NUnit.Framework;
@@ -1412,10 +1412,10 @@ def f()
 { 
     t1 = 41; 
     t2 = 42; 
-    return = {t1, t2}; 
+    return = [t1, t2]; 
 } 
 x = f(); 
-r = __Equals(x, {41, 42});
+r = __Equals(x, [41, 42]);
 ",
             };
 
@@ -2327,7 +2327,7 @@ r = __Equals(x, {41, 42});
             liveRunner.ResetVMAndResyncGraph(new List<string> { "Builtin.dll", "FunctionObject.ds" });
             string code = @"
  def foo(x,y ) { return = x + y; }
- f = __CreateFunctionObject(foo, 2, {1}, {null, 42}, true); r = __Apply(f, 3);
+ f = __CreateFunctionObject(foo, 2, [1], [null, 42], true); r = __Apply(f, 3);
  ";
 
             Guid guid = System.Guid.NewGuid();
@@ -3478,14 +3478,14 @@ r = __Equals(x, {41, 42});
 dataEnteringNode = IN
 
 #Assign your output to the OUT variable
-OUT = 1"", {""IN""}, {{}}); x = x;",
+OUT = 1"", [""IN""], [[]]); x = x;",
                             @"x = IronPythonEvaluator.EvaluateIronPythonScript(""# Default imports
 
 #The inputs to this node will be stored as a list in the IN variable.
 dataEnteringNode = IN
 
 #Assign your output to the OUT variable
-OUT = 100"", {""IN""}, {{}}); x = x;"
+OUT = 100"", [""IN""], [[]]); x = x;"
             };
 
             Guid guid1 = System.Guid.NewGuid();
@@ -3516,7 +3516,7 @@ OUT = 100"", {""IN""}, {{}}); x = x;"
             List<string> codes = new List<string>() 
             {
                 @"def foo(i:int, j : var[]..[]) { return = i; }",
-                @"x = 1; p = foo(x, {{}});",
+                @"x = 1; p = foo(x, [[]]);",
                 @"x = 10;"
             };
 
@@ -5664,19 +5664,19 @@ d = [Imperative]
             List<string> codes = new List<string>() 
             {
 @"import(""Builtin.dll"");
-i = {1}; 
+i = [1]; 
 j = i[0];
 "
 ,
 
 @"
 j = 999;
-i = {};
+i = [];
 i[0] = j;
 "
 ,
 @"
-i = {100}; 
+i = [100]; 
 j = i[0];
 "
             };
@@ -5714,7 +5714,7 @@ j = i[0];
             List<string> codes = new List<string>() 
             {
 @"import(""Builtin.dll"");
-i = {1,2}; 
+i = [1,2]; 
 j = i[0];
 k = i[1];
 "
@@ -5723,13 +5723,13 @@ k = i[1];
 @"
 j = 999;
 k = 999;
-i = {};
+i = [];
 i[0] = j;
 i[1] = k;
 "
 ,
 @"
-i = {10,20}; 
+i = [10,20]; 
 j = i[0];
 k = i[1];
 "
@@ -5799,10 +5799,10 @@ k = i[""a""];
 ,
 
 @"
-partialVar = Function(foosa, 2, {0}, {x, null}, true);
-j = Function(__ComposeBuffered, 3, {0, 1}, {{Function(__GetOutput, 2, {1}, {null, ""b""}, true), partialVar}, 1, null}, true);
-i_out1 = Function(__ComposeBuffered, 3, {0, 1}, {{Function(__GetOutput, 2, {1}, {null, ""a""}, true), partialVar}, 1, null}, true);
-i = {};
+partialVar = Function(foosa, 2, [0], [x, null], true);
+j = Function(__ComposeBuffered, 3, [0, 1], [[Function(__GetOutput, 2, [1], [null, ""b""], true), partialVar], 1, null], true);
+i_out1 = Function(__ComposeBuffered, 3, [0, 1], [[Function(__GetOutput, 2, [1], [null, ""a""], true), partialVar], 1, null], true);
+i = [];
 i[""b""] = j;
 i[""a""] = k;
 "

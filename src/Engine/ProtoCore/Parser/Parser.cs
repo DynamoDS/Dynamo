@@ -200,6 +200,7 @@ public Node root { get; set; }
                 case 1:
                     if (pt.val == "Associative" || pt.val == "Imperative")
                     {
+                        scanner.ResetPeek();
                         return true;
                     }
                     goto fail;

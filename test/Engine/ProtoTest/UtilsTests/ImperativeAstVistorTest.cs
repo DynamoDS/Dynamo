@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -127,12 +127,12 @@ namespace ProtoTest.UtilsTests
             TestMapping(@"
 [Imperative]
 {
-    foo = {a, b, c, d, e};
+    foo = [a, b, c, d, e];
 }",
 @"
 [Imperative]
 {
-    bar = {a1, b1, c1, d, e};
+    bar = [a1, b1, c1, d, e];
 }");
         }
 

@@ -1621,7 +1621,7 @@ namespace ProtoCore.AST.AssociativeAST
 
         public override IEnumerable<Node> Children()
         {
-            return this.Attributes
+            return ( this.Attributes ?? Enumerable.Empty<Node>() )
                 .Concat(this.Procedures)
                 .Concat(this.Variables);
         }

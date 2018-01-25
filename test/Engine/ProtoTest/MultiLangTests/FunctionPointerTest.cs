@@ -255,7 +255,7 @@ def foo(x)
 }
 def bar:function[]()
 {
-    return = {foo, foo};
+    return = [foo, foo];
 }
 fs = bar();
 f = fs[0];
@@ -275,7 +275,7 @@ def foo:int(x)
 }
 def bar:var[]()
 {
-    return = {foo, foo};
+    return = [foo, foo];
 }
 fs = bar();
 f = fs[0];
@@ -406,8 +406,8 @@ t6:function = foo;
     } 
 
 f = foo;
-a = { 3, 5 };
-b = { 7, 9 };
+a = [ 3, 5 ];
+b = [ 7, 9 ];
 r = f(a<1>, b<2>);
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
