@@ -1427,7 +1427,7 @@ namespace Dynamo.ViewModels
         /// <param name="path">The path to the file.</param>
         /// <exception cref="IOException"></exception>
         /// <exception cref="UnauthorizedAccessException"></exception>
-        internal void SaveAs(string path, bool isBackup = false)
+        public void SaveAs(string path, bool isBackup = false)
         {
             try
             {
