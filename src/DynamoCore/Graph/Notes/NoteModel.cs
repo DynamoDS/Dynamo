@@ -56,7 +56,7 @@ namespace Dynamo.Graph.Notes
 
         #region Serialization/Deserialization Methods
 
-        protected override void RuntimeSerializeCore(XmlElement element, SaveContext context)
+        protected override void SerializeCore(XmlElement element, SaveContext context)
         {
             var helper = new XmlElementHelper(element);
             helper.SetAttribute("guid", GUID);
@@ -65,7 +65,7 @@ namespace Dynamo.Graph.Notes
             helper.SetAttribute("y", Y);
         }
 
-        protected override void RuntimeDeserializeCore(XmlElement nodeElement, SaveContext context)
+        protected override void DeserializeCore(XmlElement nodeElement, SaveContext context)
         {
             var helper = new XmlElementHelper(nodeElement);
             GUID = helper.ReadGuid("guid", GUID);

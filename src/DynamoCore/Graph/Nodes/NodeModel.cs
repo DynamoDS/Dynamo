@@ -2026,7 +2026,7 @@ namespace Dynamo.Graph.Nodes
         /// </summary>
         protected internal virtual void OnSave() { }
 
-        protected override void RuntimeSerializeCore(XmlElement element, SaveContext context)
+        protected override void SerializeCore(XmlElement element, SaveContext context)
         {
             var helper = new XmlElementHelper(element);
 
@@ -2073,7 +2073,7 @@ namespace Dynamo.Graph.Nodes
                 OnSave();
         }
 
-        protected override void RuntimeDeserializeCore(XmlElement nodeElement, SaveContext context)
+        protected override void DeserializeCore(XmlElement nodeElement, SaveContext context)
         {
             var helper = new XmlElementHelper(nodeElement);
 

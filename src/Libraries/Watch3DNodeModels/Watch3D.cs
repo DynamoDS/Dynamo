@@ -216,9 +216,9 @@ namespace Watch3DNodeModels
 
         #endregion
 
-        protected override void RuntimeSerializeCore(XmlElement nodeElement, SaveContext context)
+        protected override void SerializeCore(XmlElement nodeElement, SaveContext context)
         {
-            base.RuntimeSerializeCore(nodeElement, context);
+            base.SerializeCore(nodeElement, context);
 
             if (nodeElement.OwnerDocument == null) return;
 
@@ -232,9 +232,9 @@ namespace Watch3DNodeModels
             OnSerialized(viewElement);
         }
 
-        protected override void RuntimeDeserializeCore(XmlElement nodeElement, SaveContext context)
+        protected override void DeserializeCore(XmlElement nodeElement, SaveContext context)
         {
-            base.RuntimeDeserializeCore(nodeElement, context);
+            base.DeserializeCore(nodeElement, context);
             try
             {
                 foreach (var node in nodeElement.ChildNodes.Cast<XmlNode>().Where(node => node.Name == "view"))

@@ -346,9 +346,9 @@ namespace Dynamo.Graph.Nodes
             return true;
         }
 
-        protected override void RuntimeSerializeCore(XmlElement element, SaveContext context)
+        protected override void SerializeCore(XmlElement element, SaveContext context)
         {
-            base.RuntimeSerializeCore(element, context);
+            base.SerializeCore(element, context);
             var helper = new XmlElementHelper(element);
             helper.SetAttribute("CodeText", code);
             helper.SetAttribute("ShouldFocus", shouldFocus);
@@ -370,9 +370,9 @@ namespace Dynamo.Graph.Nodes
             }
         }
 
-        protected override void RuntimeDeserializeCore(XmlElement nodeElement, SaveContext context)
+        protected override void DeserializeCore(XmlElement nodeElement, SaveContext context)
         {
-            base.RuntimeDeserializeCore(nodeElement, context);
+            base.DeserializeCore(nodeElement, context);
             var helper = new XmlElementHelper(nodeElement);
             shouldFocus = helper.ReadBoolean("ShouldFocus");
             code = helper.ReadString("CodeText");

@@ -79,15 +79,15 @@ namespace Dynamo.Graph.Nodes.ZeroTouch
         /// <summary>
         ///     Copy command will call it to serialize this node to xml data.
         /// </summary>
-        protected override void RuntimeSerializeCore(XmlElement element, SaveContext context)
+        protected override void SerializeCore(XmlElement element, SaveContext context)
         {
-            base.RuntimeSerializeCore(element, context);
+            base.SerializeCore(element, context);
             Controller.SerializeCore(element, context);
         }
 
-        protected override void RuntimeDeserializeCore(XmlElement nodeElement, SaveContext context)
+        protected override void DeserializeCore(XmlElement nodeElement, SaveContext context)
         {
-            base.RuntimeDeserializeCore(nodeElement, context);
+            base.DeserializeCore(nodeElement, context);
             if (Controller.Definition != null) return;
             Controller.SyncNodeWithDefinition(this);
         }

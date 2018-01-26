@@ -175,18 +175,18 @@ namespace PythonNodeModels
 
         #region SerializeCore/DeserializeCore
 
-        protected override void RuntimeSerializeCore(XmlElement element, SaveContext context)
+        protected override void SerializeCore(XmlElement element, SaveContext context)
         {
-            base.RuntimeSerializeCore(element, context);
+            base.SerializeCore(element, context);
 
             XmlElement script = element.OwnerDocument.CreateElement("Script");
             script.InnerText = this.script;
             element.AppendChild(script);
         }
 
-        protected override void RuntimeDeserializeCore(XmlElement nodeElement, SaveContext context)
+        protected override void DeserializeCore(XmlElement nodeElement, SaveContext context)
         {
-            base.RuntimeDeserializeCore(nodeElement, context);
+            base.DeserializeCore(nodeElement, context);
 
             var scriptNode =
                 nodeElement.ChildNodes.Cast<XmlNode>().FirstOrDefault(x => x.Name == "Script");

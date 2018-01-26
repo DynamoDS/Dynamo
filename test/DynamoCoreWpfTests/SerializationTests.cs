@@ -48,7 +48,7 @@ namespace DynamoCoreWpfTests
 
             //Serialize node and then change values
             XmlDocument xmlDoc = new XmlDocument();
-            XmlElement serializedEl = sumNode.RuntimeSerialize(xmlDoc, SaveContext.Undo);
+            XmlElement serializedEl = sumNode.Serialize(xmlDoc, SaveContext.Undo);
             sumNode.X = 250;
             sumNode.Y = 0;
             sumNode.Name = "TestNode";
@@ -65,7 +65,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(ElementState.Active, sumNode.State);
 
             //Deserialize and Assert Old values
-            sumNode.RuntimeDeserialize(serializedEl, SaveContext.Undo);
+            sumNode.Deserialize(serializedEl, SaveContext.Undo);
             Assert.AreEqual(400, sumNode.X);
             Assert.AreEqual(100, sumNode.Y);
             Assert.AreEqual("+", sumNode.Name);
@@ -87,7 +87,7 @@ namespace DynamoCoreWpfTests
 
             //Serialize node and then change values
             XmlDocument xmlDoc = new XmlDocument();
-            XmlElement serializedEl = numNode.RuntimeSerialize(xmlDoc, SaveContext.Undo);
+            XmlElement serializedEl = numNode.Serialize(xmlDoc, SaveContext.Undo);
             numNode.X = 250;
             numNode.Value = "4";
 
@@ -96,7 +96,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual("4", numNode.Value);
 
             //Deserialize and assert old values
-            numNode.RuntimeDeserialize(serializedEl, SaveContext.Undo);
+            numNode.Deserialize(serializedEl, SaveContext.Undo);
             Assert.AreEqual(400, numNode.X);
             Assert.AreEqual("0.0", numNode.Value);
         }
@@ -118,7 +118,7 @@ namespace DynamoCoreWpfTests
 
             //Serialize node and then change values
             XmlDocument xmlDoc = new XmlDocument();
-            XmlElement serializedEl = numNode.RuntimeSerialize(xmlDoc, SaveContext.Undo);
+            XmlElement serializedEl = numNode.Serialize(xmlDoc, SaveContext.Undo);
             numNode.X = 250;
             numNode.Value = 4.0;
             numNode.Max = 189.0;
@@ -131,7 +131,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(189.0, numNode.Max);
 
             //Deserialize and aasert old values
-            numNode.RuntimeDeserialize(serializedEl, SaveContext.Undo);
+            numNode.Deserialize(serializedEl, SaveContext.Undo);
             Assert.AreEqual(400, numNode.X);
             Assert.AreEqual(50.0, numNode.Value);
             Assert.AreEqual(0.0, numNode.Min);
@@ -152,7 +152,7 @@ namespace DynamoCoreWpfTests
 
             //Serialize node and then change values
             XmlDocument xmlDoc = new XmlDocument();
-            XmlElement serializedEl = boolNode.RuntimeSerialize(xmlDoc, SaveContext.Undo);
+            XmlElement serializedEl = boolNode.Serialize(xmlDoc, SaveContext.Undo);
             boolNode.X = 250;
             boolNode.Value = true;
 
@@ -161,7 +161,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(true, boolNode.Value);
 
             //Deserialize and assert old values
-            boolNode.RuntimeDeserialize(serializedEl, SaveContext.Undo);
+            boolNode.Deserialize(serializedEl, SaveContext.Undo);
             Assert.AreEqual(400, boolNode.X);
             Assert.AreEqual(false, boolNode.Value);
         }
@@ -179,7 +179,7 @@ namespace DynamoCoreWpfTests
 
             //Serialize node and then change values
             XmlDocument xmlDoc = new XmlDocument();
-            XmlElement serializedEl = strNode.RuntimeSerialize(xmlDoc, SaveContext.Undo);
+            XmlElement serializedEl = strNode.Serialize(xmlDoc, SaveContext.Undo);
             strNode.X = 250;
             strNode.Value = "Exit";
 
@@ -188,7 +188,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual("Exit", strNode.Value);
 
             //Deserialize and aasert old values
-            strNode.RuntimeDeserialize(serializedEl, SaveContext.Undo);
+            strNode.Deserialize(serializedEl, SaveContext.Undo);
             Assert.AreEqual(400, strNode.X);
             Assert.AreEqual("Enter", strNode.Value);
         }
@@ -279,7 +279,7 @@ namespace DynamoCoreWpfTests
 
             //Serialize node and then change values
             XmlDocument xmlDoc = new XmlDocument();
-            XmlElement serializedEl = formulaNode.RuntimeSerialize(xmlDoc, SaveContext.Undo);
+            XmlElement serializedEl = formulaNode.Serialize(xmlDoc, SaveContext.Undo);
             formulaNode.X = 250;
             formulaNode.FormulaString = "x+y+z";
 
@@ -289,7 +289,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual("x+y+z", formulaNode.FormulaString);
 
             //Deserialize and aasert old values
-            formulaNode.RuntimeDeserialize(serializedEl, SaveContext.Undo);
+            formulaNode.Deserialize(serializedEl, SaveContext.Undo);
             Assert.AreEqual(400, formulaNode.X);
             Assert.AreEqual("x+y", formulaNode.FormulaString);
             Assert.AreEqual(2, formulaNode.InPorts.Count);
@@ -321,7 +321,7 @@ namespace DynamoCoreWpfTests
 
             //Serialize node and then change values
             XmlDocument xmlDoc = new XmlDocument();
-            XmlElement serializedEl = graphNode.RuntimeSerialize(xmlDoc, SaveContext.Undo);
+            XmlElement serializedEl = graphNode.Serialize(xmlDoc, SaveContext.Undo);
             graphNode.X = 250;
             graphNode.Name = "NewNode";
             graphNode.InPorts.RemoveAt(graphNode.InPorts.Count - 1);
@@ -332,7 +332,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual("NewNode", graphNode.Name);
 
             //Deserialize and aasert old values
-            graphNode.RuntimeDeserialize(serializedEl, SaveContext.Undo);
+            graphNode.Deserialize(serializedEl, SaveContext.Undo);
             Assert.AreEqual(534.75, graphNode.X);
             Assert.AreEqual(4, graphNode.InPorts.Count);
             Assert.AreEqual("GraphFunction", graphNode.Name);
@@ -377,12 +377,12 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(2, dummyNode.OutPorts.Count);
 
             var xmlDocument = new XmlDocument();
-            var element = dummyNode.RuntimeSerialize(xmlDocument, SaveContext.Undo);
+            var element = dummyNode.Serialize(xmlDocument, SaveContext.Undo);
 
             // Deserialize more than once should not cause ports to accumulate.
-            dummyNode.RuntimeDeserialize(element, SaveContext.Undo);
-            dummyNode.RuntimeDeserialize(element, SaveContext.Undo);
-            dummyNode.RuntimeDeserialize(element, SaveContext.Undo);
+            dummyNode.Deserialize(element, SaveContext.Undo);
+            dummyNode.Deserialize(element, SaveContext.Undo);
+            dummyNode.Deserialize(element, SaveContext.Undo);
 
             Assert.AreEqual(3, dummyNode.InPorts.Count);
             Assert.AreEqual(2, dummyNode.OutPorts.Count);
@@ -399,7 +399,7 @@ namespace DynamoCoreWpfTests
 
             Assert.IsNotNull(dummyNode);
             var xmlDocument = new XmlDocument();
-            var element = dummyNode.RuntimeSerialize(xmlDocument, SaveContext.File);
+            var element = dummyNode.Serialize(xmlDocument, SaveContext.File);
 
             // Dummy node should be serialized to its original node
             Assert.AreEqual(element.Name, "Dynamo.Nodes.DSFunction");

@@ -127,7 +127,7 @@ namespace Dynamo.Graph
         public static NoteModel LoadNoteFromXml(XmlNode note)
         {
             var instance = new NoteModel(0, 0, string.Empty, Guid.NewGuid());
-            instance.RuntimeDeserialize(note as XmlElement, SaveContext.File);
+            instance.Deserialize(note as XmlElement, SaveContext.File);
             return instance;
         }
 
@@ -146,7 +146,7 @@ namespace Dynamo.Graph
         internal static AnnotationModel LoadAnnotationFromXml(XmlNode annotation, IEnumerable<NodeModel> nodes, IEnumerable<NoteModel> notes)
         {
             var instance = new AnnotationModel(nodes,notes);             
-            instance.RuntimeDeserialize(annotation as XmlElement, SaveContext.File);
+            instance.Deserialize(annotation as XmlElement, SaveContext.File);
             return instance;
         }
 
@@ -184,7 +184,7 @@ namespace Dynamo.Graph
         private static PresetModel PresetFromXml(XmlElement stateNode, IEnumerable<NodeModel> nodesInNodeGraph)
         {
             var instance = new PresetModel(nodesInNodeGraph);
-            instance.RuntimeDeserialize(stateNode, SaveContext.File);
+            instance.Deserialize(stateNode, SaveContext.File);
             return instance;
         }
 

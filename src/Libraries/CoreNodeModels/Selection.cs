@@ -257,9 +257,9 @@ namespace CoreNodeModels
 
         protected abstract IEnumerable<TResult> ExtractSelectionResults(TSelection selections);
 
-        protected override void RuntimeSerializeCore(XmlElement nodeElement, SaveContext context)
+        protected override void SerializeCore(XmlElement nodeElement, SaveContext context)
         {
-            base.RuntimeSerializeCore(nodeElement, context);
+            base.SerializeCore(nodeElement, context);
             if (!SelectionResults.Any()) return;
 
             var uuidsSelection =
@@ -273,9 +273,9 @@ namespace CoreNodeModels
             }
         }
 
-        protected override void RuntimeDeserializeCore(XmlElement nodeElement, SaveContext context)
+        protected override void DeserializeCore(XmlElement nodeElement, SaveContext context)
         {
-            base.RuntimeDeserializeCore(nodeElement, context);
+            base.DeserializeCore(nodeElement, context);
             var savedUuids =
                 nodeElement.ChildNodes.Cast<XmlNode>()
                     .Where(subNode => subNode.Name.Equals("instance") && subNode.Attributes != null)

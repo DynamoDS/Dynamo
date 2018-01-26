@@ -20,7 +20,7 @@ namespace Dynamo.Graph.Nodes.NodeLoaders
         {
             var node = CreateNode();
             node.ElementResolver = resolver;
-            node.RuntimeDeserialize(elNode, context);
+            node.Deserialize(elNode, context);
             return node;
         }
 

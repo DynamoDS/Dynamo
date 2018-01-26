@@ -75,15 +75,15 @@ namespace Dynamo.Graph.Nodes.ZeroTouch
         [JsonIgnore]
         internal int DefaultNumInputs { get { return defaultNumInputs; } }
 
-        protected override void RuntimeSerializeCore(XmlElement element, SaveContext context)
+        protected override void SerializeCore(XmlElement element, SaveContext context)
         {
-            base.RuntimeSerializeCore(element, context);
+            base.SerializeCore(element, context);
             VarInputController.SerializeCore(element, context);
         }
 
-        protected override void RuntimeDeserializeCore(XmlElement nodeElement, SaveContext context)
+        protected override void DeserializeCore(XmlElement nodeElement, SaveContext context)
         {
-            base.RuntimeDeserializeCore(nodeElement, context);
+            base.DeserializeCore(nodeElement, context);
             VarInputController.DeserializeCore(nodeElement, context);
         }
 

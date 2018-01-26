@@ -135,9 +135,9 @@ namespace CoreNodeModels.Input
         /// </summary>
         /// <param name="element"></param>
         /// <param name="context"></param>
-        protected override void RuntimeSerializeCore(XmlElement element, SaveContext context)
+        protected override void SerializeCore(XmlElement element, SaveContext context)
         {
-            base.RuntimeSerializeCore(element, context);
+            base.SerializeCore(element, context);
 
             XmlElement color = element.OwnerDocument.CreateElement("DsColor");
             color.InnerText = SerializeValue();
@@ -148,9 +148,9 @@ namespace CoreNodeModels.Input
         /// </summary>
         /// <param name="element"></param>
         /// <param name="context"></param>
-        protected override void RuntimeDeserializeCore(XmlElement element, SaveContext context)
+        protected override void DeserializeCore(XmlElement element, SaveContext context)
         {
-            base.RuntimeDeserializeCore(element, context);
+            base.DeserializeCore(element, context);
 
             var colorNode = element.ChildNodes.Cast<XmlNode>().FirstOrDefault(x => x.Name == "DsColor");
 

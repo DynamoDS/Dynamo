@@ -173,9 +173,9 @@ namespace CoreNodeModels
 
         #region Serialization/Deserialization Methods
 
-        protected override void RuntimeSerializeCore(XmlElement element, SaveContext context)
+        protected override void SerializeCore(XmlElement element, SaveContext context)
         {
-            base.RuntimeSerializeCore(element, context); // Base implementation must be called.
+            base.SerializeCore(element, context); // Base implementation must be called.
 
             var helper = new XmlElementHelper(element);
             helper.SetAttribute("conversionMetric", SelectedMetricConversion.ToString());
@@ -183,9 +183,9 @@ namespace CoreNodeModels
             helper.SetAttribute("conversionTo", SelectedToConversion.ToString());
         }
 
-        protected override void RuntimeDeserializeCore(XmlElement element, SaveContext context)
+        protected override void DeserializeCore(XmlElement element, SaveContext context)
         {
-            base.RuntimeDeserializeCore(element, context); //Base implementation must be called.
+            base.DeserializeCore(element, context); //Base implementation must be called.
             var helper = new XmlElementHelper(element);
             var metricConversion = helper.ReadString("conversionMetric");
             var selectedMetricConversionFrom = helper.ReadString("conversionFrom");

@@ -139,17 +139,17 @@ namespace UnitsUI
             RaisePropertyChanged("Value");
         }
 
-        protected override void RuntimeSerializeCore(XmlElement nodeElement, SaveContext context)
+        protected override void SerializeCore(XmlElement nodeElement, SaveContext context)
         {
-            base.RuntimeSerializeCore(nodeElement, context);
+            base.SerializeCore(nodeElement, context);
             XmlElement outEl = nodeElement.OwnerDocument.CreateElement(typeof(double).FullName);
             outEl.SetAttribute("value", Value.ToString(CultureInfo.InvariantCulture));
             nodeElement.AppendChild(outEl);
         }
 
-        protected override void RuntimeDeserializeCore(XmlElement nodeElement, SaveContext context)
+        protected override void DeserializeCore(XmlElement nodeElement, SaveContext context)
         {
-            base.RuntimeDeserializeCore(nodeElement, context);
+            base.DeserializeCore(nodeElement, context);
             foreach (XmlNode subNode in nodeElement.ChildNodes)
             {
                 // this node now stores a double, having previously stored a measure type

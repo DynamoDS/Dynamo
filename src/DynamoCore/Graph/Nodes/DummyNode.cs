@@ -296,15 +296,15 @@ namespace Dynamo.Graph.Nodes
             }
         }
 
-        protected override void RuntimeSerializeCore(XmlElement element, SaveContext context)
+        protected override void SerializeCore(XmlElement element, SaveContext context)
         {
-            base.RuntimeSerializeCore(element, context);
+            base.SerializeCore(element, context);
             SaveNode(element.OwnerDocument, element, context);
         }
 
-        protected override void RuntimeDeserializeCore(XmlElement element, SaveContext context)
+        protected override void DeserializeCore(XmlElement element, SaveContext context)
         {
-            base.RuntimeDeserializeCore(element, context);
+            base.DeserializeCore(element, context);
             LoadNode(element);
         }
 

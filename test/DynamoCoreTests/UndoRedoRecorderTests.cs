@@ -43,14 +43,14 @@ namespace Dynamo.Tests
 
         #region Serialization/Deserialization Methods
 
-        protected override void RuntimeSerializeCore(XmlElement element, SaveContext context)
+        protected override void SerializeCore(XmlElement element, SaveContext context)
         {
             XmlElementHelper helper = new XmlElementHelper(element);
             helper.SetAttribute(DummyModel.RadiusName, this.Radius);
             helper.SetAttribute(DummyModel.IdName, this.Identifier);
         }
 
-        protected override void RuntimeDeserializeCore(XmlElement nodeElement, SaveContext context)
+        protected override void DeserializeCore(XmlElement nodeElement, SaveContext context)
         {
             XmlElementHelper helper = new XmlElementHelper(nodeElement);
             this.Radius = helper.ReadInteger(DummyModel.RadiusName);
@@ -138,13 +138,13 @@ namespace Dynamo.Tests
             XmlElementHelper helper = new XmlElementHelper(modelData);
             int identifier = helper.ReadInteger(DummyModel.IdName);
             DummyModel model = models.First((x) => (x.Identifier == identifier));
-            model.RuntimeDeserialize(modelData, SaveContext.Undo);
+            model.Deserialize(modelData, SaveContext.Undo);
         }
 
         public void CreateModel(XmlElement modelData)
         {
             DummyModel model = DummyModel.CreateBlankInstance();
-            model.RuntimeDeserialize(modelData, SaveContext.Undo);
+            model.Deserialize(modelData, SaveContext.Undo);
             models.Add(model);
         }
 

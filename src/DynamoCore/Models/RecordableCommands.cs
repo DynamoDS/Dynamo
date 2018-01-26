@@ -784,7 +784,7 @@ namespace Dynamo.Models
 
                 if (Node != null)
                 {
-                    var nodeElement = Node.RuntimeSerialize(element.OwnerDocument, SaveContext.File);
+                    var nodeElement = Node.Serialize(element.OwnerDocument, SaveContext.File);
                     element.AppendChild(nodeElement);
                 }
                 else if (NodeXml != null)

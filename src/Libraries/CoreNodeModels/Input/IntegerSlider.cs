@@ -159,9 +159,9 @@ namespace CoreNodeModels.Input
 
         #region Serialization/Deserialization Methods
 
-        protected override void RuntimeSerializeCore(XmlElement element, SaveContext context)
+        protected override void SerializeCore(XmlElement element, SaveContext context)
         {
-            base.RuntimeSerializeCore(element, context); // Base implementation must be called.
+            base.SerializeCore(element, context); // Base implementation must be called.
 
             var xmlDocument = element.OwnerDocument;
             var subNode = xmlDocument.CreateElement("Range");
@@ -171,9 +171,9 @@ namespace CoreNodeModels.Input
             element.AppendChild(subNode);
         }
 
-        protected override void RuntimeDeserializeCore(XmlElement element, SaveContext context)
+        protected override void DeserializeCore(XmlElement element, SaveContext context)
         {
-            base.RuntimeDeserializeCore(element, context); //Base implementation must be called.
+            base.DeserializeCore(element, context); //Base implementation must be called.
 
             foreach (XmlNode subNode in element.ChildNodes)
             {

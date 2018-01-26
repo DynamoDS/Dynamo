@@ -98,17 +98,17 @@ namespace GeometryUI
 
         #region Serialization/Deserialization Methods
 
-        protected override void RuntimeSerializeCore(XmlElement element, SaveContext context)
+        protected override void SerializeCore(XmlElement element, SaveContext context)
         {
-            base.RuntimeSerializeCore(element, context); // Base implementation must be called.
+            base.SerializeCore(element, context); // Base implementation must be called.
 
             var helper = new XmlElementHelper(element);
             helper.SetAttribute("exportedUnit", SelectedExportedUnit.ToString());
         }
 
-        protected override void RuntimeDeserializeCore(XmlElement element, SaveContext context)
+        protected override void DeserializeCore(XmlElement element, SaveContext context)
         {
-            base.RuntimeDeserializeCore(element, context); //Base implementation must be called.
+            base.DeserializeCore(element, context); //Base implementation must be called.
             var helper = new XmlElementHelper(element);
             var exportedUnit = helper.ReadString("exportedUnit");
 
