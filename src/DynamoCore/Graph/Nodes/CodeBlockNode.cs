@@ -920,7 +920,7 @@ namespace Dynamo.Graph.Nodes
                                 this,
                                 startPortModel.Index,
                                 i);
-                            //during an undo operation we should set the old input connector
+                            //during an undo operation we should set the new input connector
                             //to have the same id as the old connector.
                             if(context == SaveContext.Undo)
                             {
@@ -954,7 +954,7 @@ namespace Dynamo.Graph.Nodes
                             var endPortModel = oldConnector.End;
                             NodeModel endNode = endPortModel.Owner;
                             var connector = ConnectorModel.Make(this, endNode, i, endPortModel.Index);
-                            //during an undo operation we should set the old input connector
+                            //during an undo operation we should set the new input connector
                             //to have the same id as the old connector.
                             if (context == SaveContext.Undo)
                             {
