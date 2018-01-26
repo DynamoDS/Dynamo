@@ -270,7 +270,7 @@ namespace Dynamo.Graph.Nodes
                 ProcessCode(ref errorMessage, ref warningMessage, workspaceElementResolver);
 
                 //Recreate connectors that can be reused
-                LoadAndCreateConnectors(inportConnections, outportConnections);
+                LoadAndCreateConnectors(inportConnections, outportConnections,SaveContext.None);
 
                 RaisePropertyChanged("Code");
 
@@ -416,7 +416,7 @@ namespace Dynamo.Graph.Nodes
 
             ProcessCodeDirect();
              //Recreate connectors that can be reused
-             LoadAndCreateConnectors(inportConnections, outportConnections);
+             LoadAndCreateConnectors(inportConnections, outportConnections,SaveContext.Undo);
         }
 
         internal override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes, CompilationContext context)
@@ -839,6 +839,7 @@ namespace Dynamo.Graph.Nodes
             }
         }
 
+
         /// <summary>
         ///     Deletes all the connections and saves their data (the start and end port)
         ///     so that they can be recreated if needed.
@@ -853,10 +854,10 @@ namespace Dynamo.Graph.Nodes
                 var portName = portModel.ToolTip;
                 if (portModel.Connectors.Count != 0)
                 {
-                    inportConnections.Add(portName, new List<PortModel>());
+                    inportConnections.Add(portName, new List<ConnectorModel>());
                     foreach (var connector in portModel.Connectors)
                     {
-                        (inportConnections[portName] as List<PortModel>).Add(connector.Start);
+                        (inportConnections[portName] as List<ConnectorModel>).Add(connector);
                     }
                 }
                 else
@@ -876,10 +877,10 @@ namespace Dynamo.Graph.Nodes
                     portName += i.ToString(CultureInfo.InvariantCulture);
                 if (portModel.Connectors.Count != 0)
                 {
-                    outportConnections.Add(portName, new List<PortModel>());
+                    outportConnections.Add(portName, new List<ConnectorModel>());
                     foreach (ConnectorModel connector in portModel.Connectors)
                     {
-                        (outportConnections[portName] as List<PortModel>).Add(connector.End);
+                        (outportConnections[portName] as List<ConnectorModel>).Add(connector);
                     }
                 }
                 else
@@ -898,7 +899,8 @@ namespace Dynamo.Graph.Nodes
         /// </summary>
         /// <param name="inportConnections"></param>
         /// <param name="outportConnections"> List of the connections that were killed</param>
-        private void LoadAndCreateConnectors(OrderedDictionary inportConnections, OrderedDictionary outportConnections)
+        /// <param name="context">context this operation is being performed in</param>
+        private void LoadAndCreateConnectors(OrderedDictionary inportConnections, OrderedDictionary outportConnections,SaveContext context)
         {
             //----------------------------Inputs---------------------------------
             /* Input Port connections are matched only if the name is the same */
@@ -909,14 +911,21 @@ namespace Dynamo.Graph.Nodes
                 {
                     if (inportConnections[varName] != null)
                     {
-                        foreach (var startPortModel in (inportConnections[varName] as List<PortModel>))
+                        foreach (var oldConnector in (inportConnections[varName] as List<ConnectorModel>))
                         {
+                            var startPortModel = oldConnector.Start;
                             NodeModel startNode = startPortModel.Owner;
                             var connector = ConnectorModel.Make(
                                 startNode,
                                 this,
                                 startPortModel.Index,
                                 i);
+                            //during an undo operation we should set the old input connector
+                            //to have the same id as the old connector.
+                            if(context == SaveContext.Undo)
+                            {
+                                connector.GUID = oldConnector.GUID;
+                            }
                         }
                         outportConnections[varName] = null;
                     }
@@ -940,10 +949,17 @@ namespace Dynamo.Graph.Nodes
                 {
                     if (outportConnections[varName] != null)
                     {
-                        foreach (var endPortModel in (outportConnections[varName] as List<PortModel>))
+                        foreach (var oldConnector in (outportConnections[varName] as List<ConnectorModel>))
                         {
+                            var endPortModel = oldConnector.End;
                             NodeModel endNode = endPortModel.Owner;
                             var connector = ConnectorModel.Make(this, endNode, i, endPortModel.Index);
+                            //during an undo operation we should set the old input connector
+                            //to have the same id as the old connector.
+                            if (context == SaveContext.Undo)
+                            {
+                                connector.GUID = oldConnector.GUID;
+                            }
                         }
                         outportConnections[varName] = null;
                     }
@@ -966,11 +982,13 @@ namespace Dynamo.Graph.Nodes
                 int index = undefinedIndices[i];
                 if (index < outportConnections.Count && outportConnections[index] != null)
                 {
-                    foreach (PortModel endPortModel in (outportConnections[index] as List<PortModel>))
+                    foreach (PortModel endPortModel in (outportConnections[index] as List<ConnectorModel>).Select(connector=>connector.End))
                     {
                         NodeModel endNode = endPortModel.Owner;
                         var connector = ConnectorModel.Make(this, endNode, index, endPortModel.Index);
                     }
+                    // we do not match the guid here as these ports did not exist before 
+                    //...so these should be brand new connectors.
                     outportConnections[index] = null;
                     undefinedIndices.Remove(index);
                     i--;
@@ -978,15 +996,15 @@ namespace Dynamo.Graph.Nodes
             }
 
             /*
-             *Step 2:
+             *Step 3:
              *   The final step. Now that the priorties are finished, the 
              *   function tries to reuse any existing connections by attaching 
              *   them to any ports that have not already been given connections
              */
             List<List<PortModel>> unusedConnections =
-                outportConnections.Values.Cast<List<PortModel>>()
-                    .Where(portModelList => portModelList != null)
-                    .ToList();
+                outportConnections.Values.Cast<List<ConnectorModel>>()
+                    .Where(connectorList => connectorList != null).Select(list => list.Select(x => x.End).ToList()).ToList();
+                    
 
             while (undefinedIndices.Count > 0 && unusedConnections.Count != 0)
             {
@@ -998,6 +1016,9 @@ namespace Dynamo.Graph.Nodes
                         endNode,
                         undefinedIndices[0],
                         endPortModel.Index);
+
+                    // we do not match the guid here as these ports did not exist before 
+                    //...so these should be brand new connectors.
                 }
                 undefinedIndices.RemoveAt(0);
                 unusedConnections.RemoveAt(0);

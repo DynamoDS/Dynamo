@@ -17,6 +17,7 @@ using ProtoCore.Utils;
 
 using DynCmd = Dynamo.Models.DynamoModel;
 using Dynamo.Models;
+using Dynamo.Graph.Workspaces;
 
 namespace Dynamo.Tests
 {
@@ -296,10 +297,9 @@ b = c[w][x][y][z];";
             this.CurrentDynamoModel.CurrentWorkspace.Undo();
             Assert.AreEqual(oldPos, codeBlockNode2.X);
 
-            //TODO not sure this is required behavior...
             //assert that after undo the port and connector have the same GUIDs
             //Assert.AreEqual(oldinputPortGuid, codeBlockNode2.InPorts[0].GUID);
-            //Assert.AreEqual(oldConnectorGuid, codeBlockNode2.InPorts[0].Connectors[0].GUID);
+            Assert.AreEqual(oldConnectorGuid, codeBlockNode2.InPorts[0].Connectors[0].GUID);
 
 
             RunCurrentModel();
@@ -307,6 +307,63 @@ b = c[w][x][y][z];";
             Assert.IsTrue(codeBlockNode2.InPorts[0].Connectors.Count > 0);
             Assert.IsTrue(codeBlockNode1.OutPorts[0].Connectors.Count > 0);
             Assert.AreEqual(3, codeBlockNode2.CachedValue.Data);
+
+        }
+
+        [Test]
+        public void UndoRedoCodeBlockDeletionDoesNotCrash()
+        {
+            RunCurrentModel();
+            // Create the initial code block node.
+            var codeBlockNode1 = CreateCodeBlockNode();
+            UpdateCodeBlockNodeContent(codeBlockNode1, "3;");
+
+            // Create the second code block node.
+            var codeBlockNode2 = CreateCodeBlockNode();
+            UpdateCodeBlockNodeContent(codeBlockNode2, "x;");
+
+            //connect them
+            this.CurrentDynamoModel.ExecuteCommand(
+                new DynamoModel.MakeConnectionCommand(codeBlockNode1.GUID, 0, PortType.Output,
+             DynamoModel.MakeConnectionCommand.Mode.Begin));
+            this.CurrentDynamoModel.ExecuteCommand(
+                new DynamoModel.MakeConnectionCommand(codeBlockNode2.GUID, 0, PortType.Input,
+                DynamoModel.MakeConnectionCommand.Mode.End));
+            RunCurrentModel();
+
+            var oldConnectorGuid = codeBlockNode2.InPorts[0].Connectors[0].GUID;
+
+            //record the codeblock for undo - this is the issue as undoing this will deserialize the codeblock
+            WorkspaceModel.RecordModelsForModification(new List<ModelBase> { codeBlockNode2 }, CurrentDynamoModel.CurrentWorkspace.UndoRecorder);
+
+            //delete it
+            this.CurrentDynamoModel.ExecuteCommand(
+                new DynamoModel.DeleteModelCommand(codeBlockNode2.GUID));
+
+            //undo the deletion.
+            this.CurrentDynamoModel.CurrentWorkspace.Undo();
+            Assert.AreEqual(2, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+            Assert.AreEqual(1, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
+
+            //get the new codeblock instance
+            codeBlockNode2 = CurrentDynamoModel.CurrentWorkspace.Nodes.Where(x => x.GUID == codeBlockNode2.GUID).FirstOrDefault() as CodeBlockNodeModel;
+
+            Assert.AreEqual(oldConnectorGuid, codeBlockNode2.InPorts[0].Connectors[0].GUID);
+
+            //undo the initial recording...
+            this.CurrentDynamoModel.CurrentWorkspace.Undo();
+            //assert nothing changed
+            Assert.AreEqual(1, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
+            Assert.AreEqual(oldConnectorGuid, codeBlockNode2.InPorts[0].Connectors[0].GUID);
+
+            //redo the deletion
+            Assert.DoesNotThrow(() =>
+            {
+                this.CurrentDynamoModel.CurrentWorkspace.Redo();
+                this.CurrentDynamoModel.CurrentWorkspace.Redo();
+                this.CurrentDynamoModel.CurrentWorkspace.Redo();
+                this.CurrentDynamoModel.CurrentWorkspace.Redo();
+            });
 
         }
 
