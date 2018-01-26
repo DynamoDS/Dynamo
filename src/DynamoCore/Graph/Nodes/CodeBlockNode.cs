@@ -1125,6 +1125,7 @@ namespace Dynamo.Graph.Nodes
 
         #endregion
 
+        
         [NodeMigration(version: "1.9.0.0")]
         public static NodeMigrationData Migrate_2_0_0(NodeMigrationData data)
         {
@@ -1137,34 +1138,7 @@ namespace Dynamo.Graph.Nodes
                 return migrationData;
             }
 
-            var codeText = codeTextAttr.Value;
-
-            try
-            {
-                // convert all deprecated list types to the new syntax
-                var cb = ParserUtils.ParseWithDeprecatedListSyntax(codeText);
-
-                var nodes = ParserUtils.FindExprListNodes(cb);
-
-                var codeList = codeText.ToCharArray();
-
-                foreach (var n in nodes)
-                {
-                    // ignore nodes not part of original code
-                    if (n.line == ProtoCore.DSASM.Constants.kInvalidIndex)
-                    {
-                        continue;
-                    }
-
-                    codeList[n.charPos] = '[';
-                    codeList[n.endCharPos - 1] = ']';
-                }
-
-                codeTextAttr.Value = new String(codeList);
-            }
-            catch
-            {
-            }
+            codeTextAttr.Value = ParserUtils.TryMigrateDeprecatedListSyntax(codeTextAttr.Value);
 
             migrationData.AppendNode(node);
             return migrationData;

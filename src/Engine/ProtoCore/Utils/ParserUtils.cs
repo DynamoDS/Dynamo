@@ -155,6 +155,39 @@ namespace ProtoCore.Utils
             return ParseWithCore(code, core).CodeBlockNode;
         }
 
+        public static string TryMigrateDeprecatedListSyntax(string codeText)
+        {
+            try
+            {
+                // convert all deprecated list types to the new syntax
+                var cb = ParseWithDeprecatedListSyntax(codeText);
+
+                var nodes = FindExprListNodes(cb);
+
+                var codeList = codeText.ToCharArray();
+
+                foreach (var n in nodes)
+                {
+                    // ignore nodes not part of original code
+                    if (n.line == ProtoCore.DSASM.Constants.kInvalidIndex)
+                    {
+                        continue;
+                    }
+
+                    codeList[n.charPos] = '[';
+                    codeList[n.endCharPos - 1] = ']';
+                }
+
+                return new String(codeList);
+            }
+            catch
+            {
+            }
+
+            return codeText;
+        }
+
+
         /// <summary>
         /// Parses designscript code and returns a ProtoAST CodeBlockNode
         /// </summary>

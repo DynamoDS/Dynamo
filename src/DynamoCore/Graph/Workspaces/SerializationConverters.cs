@@ -20,6 +20,7 @@ using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
 using ProtoCore;
 using ProtoCore.Namespace;
+using ProtoCore.Utils;
 using Type = System.Type;
 
 namespace Dynamo.Graph.Workspaces
@@ -86,6 +87,10 @@ namespace Dynamo.Graph.Workspaces
             else if (type == typeof(CodeBlockNodeModel))
             {
                 var code = obj["Code"].Value<string>();
+
+                // Due to the lack of migration capabilities in JSON deserialization, we need to perform this for _all_ code blocks
+                code = ParserUtils.TryMigrateDeprecatedListSyntax(code);
+
                 node = new CodeBlockNodeModel(code, guid, 0.0, 0.0, libraryServices, ElementResolver);
             }
             else if (typeof(DSFunctionBase).IsAssignableFrom(type))
