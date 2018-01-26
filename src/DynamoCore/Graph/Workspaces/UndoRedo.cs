@@ -325,6 +325,11 @@ namespace Dynamo.Graph.Workspaces
             {
                 RemoveAndDisposeNode(model as NodeModel);
             }
+            else if(model == null)
+            {
+                return;
+            }
+            //some unknown type
             else
             {
                 // If it gets here we obviously need to handle it.
@@ -351,7 +356,10 @@ namespace Dynamo.Graph.Workspaces
         public void ReloadModel(XmlElement modelData)
         {
             ModelBase model = GetModelForElement(modelData);
-            model.Deserialize(modelData, SaveContext.Undo);
+            if(model != null)
+            {
+                model.Deserialize(modelData, SaveContext.Undo);
+            }
         }
 
         /// <summary>
@@ -479,9 +487,10 @@ namespace Dynamo.Graph.Workspaces
             ModelBase foundModel = GetModelInternal(modelGuid);
             if (null != foundModel)
                 return foundModel;
-
-            throw new ArgumentException(
-                string.Format("Unhandled model type: {0}", helper.ReadString("type", modelData.Name)));
+            
+            //if we could not find a matching model
+            this.Log(string.Format("Please Report: Unhandled model type: {0}, could not find a matching model with given id", helper.ReadString("type", modelData.Name)), Logging.WarningLevel.Error);
+            return null;
         }
 
         /// <summary>

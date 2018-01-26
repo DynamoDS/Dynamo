@@ -398,8 +398,12 @@ namespace Dynamo.Core
                         try
                         {
                             ModelBase toBeDeleted = undoClient.GetModelForElement(element);
-                            RecordActionInternal(newGroup, toBeDeleted, modelActionType);
-                            undoClient.DeleteModel(element);
+                            if (toBeDeleted != null)
+                            {
+
+                                RecordActionInternal(newGroup, toBeDeleted, modelActionType);
+                                undoClient.DeleteModel(element);
+                            }
                         }
                         catch (ArgumentException e)
                         {
@@ -420,8 +424,12 @@ namespace Dynamo.Core
 
                     case UserAction.Modification:
                         ModelBase toBeUpdated = undoClient.GetModelForElement(element);
-                        RecordActionInternal(newGroup, toBeUpdated, modelActionType);
-                        undoClient.ReloadModel(element);
+                        if (toBeUpdated != null)
+                        {
+
+                            RecordActionInternal(newGroup, toBeUpdated, modelActionType);
+                            undoClient.ReloadModel(element);
+                        }
                         break;
 
                     case UserAction.Deletion:
@@ -457,14 +465,21 @@ namespace Dynamo.Core
 
                     case UserAction.Modification:
                         ModelBase toBeUpdated = undoClient.GetModelForElement(element);
-                        RecordActionInternal(newGroup, toBeUpdated, modelActionType);
-                        undoClient.ReloadModel(element);
+                        if (toBeUpdated != null)
+                        {
+
+                            RecordActionInternal(newGroup, toBeUpdated, modelActionType);
+                            undoClient.ReloadModel(element);
+                        }
                         break;
 
                     case UserAction.Deletion:
                         ModelBase toBeDeleted = undoClient.GetModelForElement(element);
-                        RecordActionInternal(newGroup, toBeDeleted, modelActionType);
-                        undoClient.DeleteModel(element);
+                        if (toBeDeleted != null)
+                        {
+                            RecordActionInternal(newGroup, toBeDeleted, modelActionType);
+                            undoClient.DeleteModel(element);
+                        }
                         break;
                 }
             }
