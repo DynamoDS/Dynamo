@@ -364,7 +364,14 @@ b = c[w][x][y][z];";
                 this.CurrentDynamoModel.CurrentWorkspace.Redo();
                 this.CurrentDynamoModel.CurrentWorkspace.Redo();
             });
-
+            
+            //undo deletion again
+            this.CurrentDynamoModel.CurrentWorkspace.Undo();
+            //get the new codeblock instance
+            codeBlockNode2 = CurrentDynamoModel.CurrentWorkspace.Nodes.Where(x => x.GUID == codeBlockNode2.GUID).FirstOrDefault() as CodeBlockNodeModel;
+            Assert.AreEqual(2, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+            Assert.AreEqual(1, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
+            Assert.AreEqual(oldConnectorGuid, codeBlockNode2.InPorts[0].Connectors[0].GUID);
         }
 
         [Test]

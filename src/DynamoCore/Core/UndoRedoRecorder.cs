@@ -94,7 +94,6 @@ namespace Dynamo.Core
 
             undoStack = new Stack<XmlElement>();
             redoStack = new Stack<XmlElement>();
-            offTrackModels = new HashSet<Guid>();
         }
 
         /// <summary>
@@ -173,7 +172,6 @@ namespace Dynamo.Core
             EnsureValidRecorderStates();
             undoStack.Clear();
             redoStack.Clear();
-            offTrackModels.Clear();
         }
 
         #endregion
@@ -244,24 +242,6 @@ namespace Dynamo.Core
             }
 
             return PopActionGroupFromUndoStack();
-        }
-
-        /// <summary>
-        /// A model is recorded as an off-track object means it is modified
-        /// somewhere else, but that modification operation is not recorded in
-        /// undo/redo stack. UndoRedoRecorder will ignore all excpetions that
-        /// related to this kind of objects during undo/redo.
-        /// 
-        /// For example, a connector that connects to an input port of a custom
-        /// node instance could be deleted because of the removal of that input
-        /// port in custom workspace. As this deletion in the custom workspace 
-        /// is not recorded by UndoRedoRecorder in home workspace, the connector
-        /// should be marked as off-track.
-        /// </summary>
-        /// <param name="modelGuid"></param>
-        public void RecordModelAsOffTrack(Guid modelGuid)
-        {
-            offTrackModels.Add(modelGuid);
         }
         #endregion
 
@@ -395,30 +375,12 @@ namespace Dynamo.Core
                     // up-to-date model is retrieved and serialized into the 
                     // redo action group so that it can properly be redone later.
                     case UserAction.Creation:
-                        try
-                        {
-                            ModelBase toBeDeleted = undoClient.GetModelForElement(element);
-                            if (toBeDeleted != null)
-                            {
 
-                                RecordActionInternal(newGroup, toBeDeleted, modelActionType);
-                                undoClient.DeleteModel(element);
-                            }
-                        }
-                        catch (ArgumentException e)
+                        ModelBase toBeDeleted = undoClient.GetModelForElement(element);
+                        if (toBeDeleted != null)
                         {
-                            bool isOffTrackObject = false;
-                            var guidAttribute = element.Attributes["guid"];
-                            if (guidAttribute != null)
-                            {
-                                var guid = Guid.Parse(guidAttribute.Value);
-                                isOffTrackObject = offTrackModels.Contains(guid);
-                            }
-
-                            if (!isOffTrackObject)
-                            {
-                                throw e;
-                            }
+                            RecordActionInternal(newGroup, toBeDeleted, modelActionType);
+                            undoClient.DeleteModel(element);
                         }
                         break;
 

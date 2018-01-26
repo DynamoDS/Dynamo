@@ -401,7 +401,6 @@ namespace Dynamo.Graph.Workspaces
                     {
                         throw new InvalidOperationException("'guid' field missing from recorded model");
                     }
-                    undoRecorder.RecordModelAsOffTrack(Guid.Parse(guidAttribute.Value));
                 }
                 else
                 {
