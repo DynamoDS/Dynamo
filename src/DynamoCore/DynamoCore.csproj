@@ -14,10 +14,14 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 -->
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\packages\NETStandard.Library.NETFramework.2.0.0-preview2-25405-01\build\net461\NETStandard.Library.NETFramework.props" Condition="Exists('..\packages\NETStandard.Library.NETFramework.2.0.0-preview2-25405-01\build\net461\NETStandard.Library.NETFramework.props')" />
   <ImportGroup Label="PropertySheets">
     <Import Project="$(SolutionDir)/Config/CS.props" />
     <Import Project="$(SolutionDir)Config/Cleanup.targets" />
+    <Import Project="..\packages\Microsoft.Packaging.Tools.1.0.0-preview2-25401-01\build\Microsoft.Packaging.Tools.targets" Condition="Exists('..\packages\Microsoft.Packaging.Tools.1.0.0-preview2-25401-01\build\Microsoft.Packaging.Tools.targets')" />
+    <Import Project="..\packages\NETStandard.Library.2.0.0-preview2-25401-01\build\NETStandard.Library.targets" Condition="Exists('..\packages\NETStandard.Library.2.0.0-preview2-25401-01\build\NETStandard.Library.targets')" />
+    <Import Project="..\packages\NETStandard.Library.NETFramework.2.0.0-preview2-25405-01\build\net461\NETStandard.Library.NETFramework.targets" Condition="Exists('..\packages\NETStandard.Library.NETFramework.2.0.0-preview2-25405-01\build\net461\NETStandard.Library.NETFramework.targets')" />
   </ImportGroup>
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -29,7 +33,7 @@ limitations under the License.
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Dynamo</RootNamespace>
     <AssemblyName>DynamoCore</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <WarningLevel>4</WarningLevel>
     <FileUpgradeFlags>
@@ -38,6 +42,8 @@ limitations under the License.
     </UpgradeBackupLocation>
     <OldToolsVersion>3.5</OldToolsVersion>
     <TargetFrameworkProfile />
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup>
     <ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
@@ -382,6 +388,7 @@ limitations under the License.
       <GalleryFiles Include="$(SolutionDir)..\extern\gallery\**\*.*" />
       <LocalizedResources Include="$(SolutionDir)..\extern\Localized\**\*.*" />
       <ExternAnalytics Include="$(SolutionDir)..\extern\Analytics.NET\*.*" />
+      <NetStandard Include="$(SolutionDir)packages\NETStandard.Library.NETFramework.2.0.0-preview2-25405-01\build\net461\lib\netstandard.dll" />
     </ItemGroup>
     <Copy SourceFiles="$(SolutionDir)..\README.md" DestinationFiles="$(OutputPath)README.txt" />
     <Copy SourceFiles="$(SolutionDir)..\doc\distrib\License.rtf" DestinationFolder="$(OutputPath)" />
@@ -405,6 +412,7 @@ limitations under the License.
     <Copy SourceFiles="$(ProjectDir)\BuiltInAndOperators\Operators.xml" DestinationFolder="$(OutputPath)\$(UICulture)" />
     <Copy SourceFiles="$(ProjectDir)\BuiltInAndOperators\BuiltIn.xml" DestinationFolder="$(OutputPath)\$(UICulture)" />
     <Copy SourceFiles="$(ProjectDir)\BuiltInAndOperators\BuiltIn.Migrations.xml" DestinationFolder="$(OutputPath)" />
+    <Copy SourceFiles="@(NetStandard)" DestinationFolder="$(OutputPath)"/>
   </Target>
   <Target Name="AfterBuild" Condition=" '$(OS)' != 'Unix' ">
     <!-- Get System.Drawing.dll -->
@@ -424,5 +432,14 @@ limitations under the License.
     <!-- Generate customization dll for BuiltIn -->
     <GenerateResource UseSourcePath="true" Sources="$(ProjectDir)/BuiltInAndOperators/BuiltInImages.resx" OutputResources="$(ProjectDir)/BuiltInAndOperators/BuiltInImages.resources" References="$(FrameworkAssembliesPath)System.Drawing.dll" />
     <AL TargetType="library" EmbedResources="$(ProjectDir)/BuiltInAndOperators/BuiltInImages.resources" OutputAssembly="$(OutDir)BuiltIn.customization.dll" Version="%(DynamoCoreInfo.Version)" />
+  </Target>
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\Microsoft.Packaging.Tools.1.0.0-preview2-25401-01\build\Microsoft.Packaging.Tools.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Packaging.Tools.1.0.0-preview2-25401-01\build\Microsoft.Packaging.Tools.targets'))" />
+    <Error Condition="!Exists('..\packages\NETStandard.Library.2.0.0-preview2-25401-01\build\NETStandard.Library.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\NETStandard.Library.2.0.0-preview2-25401-01\build\NETStandard.Library.targets'))" />
+    <Error Condition="!Exists('..\packages\NETStandard.Library.NETFramework.2.0.0-preview2-25405-01\build\net461\NETStandard.Library.NETFramework.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\NETStandard.Library.NETFramework.2.0.0-preview2-25405-01\build\net461\NETStandard.Library.NETFramework.props'))" />
+    <Error Condition="!Exists('..\packages\NETStandard.Library.NETFramework.2.0.0-preview2-25405-01\build\net461\NETStandard.Library.NETFramework.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\NETStandard.Library.NETFramework.2.0.0-preview2-25405-01\build\net461\NETStandard.Library.NETFramework.targets'))" />
   </Target>
 </Project>
