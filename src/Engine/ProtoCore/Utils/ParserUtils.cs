@@ -137,12 +137,12 @@ namespace ProtoCore.Utils
 
         private static Core CodeBlockParserCore()
         {
-            return new Core(new Options())
-            {
-                ParsingMode = ParseMode.AllowNonAssignment,
-                IsParsingCodeBlockNode = true,
-                IsParsingPreloadedAssembly = true
-            };
+            var core = new Core(new Options());
+            core.Options.ExecutionMode = ExecutionMode.Serial;
+            core.ParsingMode = ParseMode.AllowNonAssignment;
+            core.IsParsingCodeBlockNode = true;
+            core.IsParsingPreloadedAssembly = false;
+            return core;
         }
 
         public static AST.AssociativeAST.CodeBlockNode ParseWithDeprecatedListSyntax(string code)
