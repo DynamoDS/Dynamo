@@ -9,14 +9,16 @@ namespace Dynamo.Utilities
     {
         private readonly string moduleRootFolder;
         private readonly IEnumerable<string> additionalResolutionPaths;
+        private bool testMode;
 
-        public AssemblyHelper(string moduleRootFolder, IEnumerable<string> additionalResolutionPaths)
+        public AssemblyHelper(string moduleRootFolder, IEnumerable<string> additionalResolutionPaths, bool testMode = false)
         {
             if (additionalResolutionPaths == null)
                 additionalResolutionPaths = new List<string>();
 
             this.moduleRootFolder = moduleRootFolder;
             this.additionalResolutionPaths = additionalResolutionPaths;
+            this.testMode = testMode;
         }
 
         /// <summary>
@@ -37,8 +39,17 @@ namespace Dynamo.Utilities
 
                 // First check the core path
                 string assemblyPath = Path.Combine(moduleRootFolder, targetAssemblyName);
+                if (testMode)
+                {
+                    Console.WriteLine("trying to resolve " + targetAssemblyName + " at " + assemblyPath);
+                }
                 if (File.Exists(assemblyPath))
                 {
+                    if (testMode)
+                    {
+                        Console.WriteLine("loading from " + assemblyPath);
+
+                    }
                     return Assembly.LoadFrom(assemblyPath);
                 }
 
@@ -46,8 +57,17 @@ namespace Dynamo.Utilities
                 foreach (var resolutionPath in additionalResolutionPaths)
                 {
                     assemblyPath = Path.Combine(resolutionPath, targetAssemblyName);
+                    if (testMode)
+                    {
+                        Console.WriteLine("trying to resolve " + targetAssemblyName + " at " + assemblyPath);
+                    }
+
                     if (File.Exists(assemblyPath))
                     {
+                        if (testMode)
+                        {
+                            Console.WriteLine("loading from " + assemblyPath);
+                        }
                         return Assembly.LoadFrom(assemblyPath);
                     }
                 }
@@ -61,7 +81,7 @@ namespace Dynamo.Utilities
             }
         }
 
-        public static Version GetDynamoVersion(bool includeRevisionNumber=true)
+        public static Version GetDynamoVersion(bool includeRevisionNumber = true)
         {
             var assembly = Assembly.GetCallingAssembly();
             var version = assembly.GetName().Version;

@@ -6,13 +6,14 @@ using Dynamo.Selection;
 using Dynamo.Utilities;
 using Newtonsoft.Json;
 using ProtoCore.Namespace;
+using System.ComponentModel;
 
 namespace Dynamo.Graph
 {
     /// <summary>
     /// SaveContext represents several contexts, in which node can be serialized/deserialized.
     /// </summary>
-    public enum SaveContext { File, Copy, Undo, Preset };
+    public enum SaveContext { File, Copy, Undo, Preset, None };
 
     /// <summary>
     /// This class encapsulates the input parameters that need to be passed into nodes
@@ -64,6 +65,11 @@ namespace Dynamo.Graph
         /// Fired when this Model is disposed.
         /// </summary>
         public event Action<ModelBase> Disposed;
+
+        /// <summary>
+        /// Fired when this Model is about to be deleted. Operation can be cancelled by setting the Cancel flag on the args object to true.
+        /// </summary>
+        public event EventHandler<CancelEventArgs> DeletionStarted;
 
         private Guid guid;
         private bool isSelected;
@@ -279,11 +285,15 @@ namespace Dynamo.Graph
         /// </summary>
         public virtual void Dispose()
         {
-            var handler = Disposed;
-            if (handler != null)
-            {
-                handler(this);
-            }
+            Disposed?.Invoke(this);
+        }
+
+        /// <summary>
+        /// Invokes the DeletionStarted event on this object.
+        /// </summary>
+        public virtual void OnDeletionStarted(CancelEventArgs e)
+        {
+            DeletionStarted?.Invoke(this, e);
         }
 
         #region Command Framework Supporting Methods
@@ -348,6 +358,8 @@ namespace Dynamo.Graph
         /// <param name="xmlDocument">Xml document</param>
         /// <param name="context">Context in which object is saved</param>
         /// <returns>xml node</returns>
+        [Obsolete(@"Use this method only for runtime saving/loading of node state during undo/redo and copy/paste 
+                  - data saved here will not be saved to the .dyn or.dyf file. This method will be removed in the future to use json")]
         public XmlElement Serialize(XmlDocument xmlDocument, SaveContext context)
         {
             var element = CreateElement(xmlDocument, context);
@@ -360,6 +372,8 @@ namespace Dynamo.Graph
         /// </summary>
         /// <param name="element">Xml node</param>
         /// <param name="context">Save context. E.g. save in file, copy node etc.</param>
+        [Obsolete(@"Use this method only for runtime saving/loading of node state during undo/redo and copy/paste 
+                  - data saved here will not be saved to the .dyn or.dyf file. This method will be removed in the future to use json")]
         public void Deserialize(XmlElement element, SaveContext context)
         {
             DeserializeCore(element, context);
@@ -372,7 +386,12 @@ namespace Dynamo.Graph
             return element;
         }
 
+        [Obsolete(@"Use this method only for runtime saving/loading of node state during undo/redo and copy/paste 
+                  - data saved here will not be saved to the .dyn or.dyf file. This method will be removed in the future to use json")]
         protected abstract void SerializeCore(XmlElement element, SaveContext context);
+
+        [Obsolete(@"Use this method only for runtime saving/loading of node state during undo/redo and copy/paste 
+                  - data saved here will not be saved to the .dyn or.dyf file. This method will be removed in the future to use json")]
         protected abstract void DeserializeCore(XmlElement nodeElement, SaveContext context);
 
         #endregion

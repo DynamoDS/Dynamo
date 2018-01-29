@@ -22,6 +22,7 @@ using ProtoCore;
 using ProtoCore.Namespace;
 using ProtoCore.Utils;
 using Type = System.Type;
+using System.Reflection;
 
 namespace Dynamo.Graph.Workspaces
 {
@@ -34,13 +35,42 @@ namespace Dynamo.Graph.Workspaces
     {
         private CustomNodeManager manager;
         private LibraryServices libraryServices;
+        private bool isTestMode;
+
         
         public ElementResolver ElementResolver { get; set; }
+        //map of all loaded assemblies including LoadFrom context assemblies
+        private Dictionary<string, List<Assembly>> loadedAssemblies;
 
-        public NodeReadConverter(CustomNodeManager manager, LibraryServices libraryServices)
+        public NodeReadConverter(CustomNodeManager manager, LibraryServices libraryServices, bool isTestMode = false)
         {
             this.manager = manager;
             this.libraryServices = libraryServices;
+            this.isTestMode = isTestMode;
+
+            //we only do this in test mode because it should not be required-
+            //see comment below in NodeReadConverter.ReadJson - and it could be slow.
+            if (this.isTestMode)
+            {
+                this.loadedAssemblies = this.buildMapOfLoadedAssemblies();
+            }
+        }
+
+        private Dictionary<string,List<Assembly>> buildMapOfLoadedAssemblies()
+        {
+            var allAssemblies = AppDomain.CurrentDomain.GetAssemblies();
+            var dict = new Dictionary<string, List<Assembly>>();
+            foreach(var assembly in allAssemblies)
+            {
+                if (!dict.ContainsKey(assembly.GetName().Name))
+                {
+                    dict[assembly.GetName().Name] = new List<Assembly>() { assembly };
+                }
+                else{
+                    dict[assembly.GetName().Name].Add(assembly);
+                }
+            }
+            return dict;
         }
 
         public override bool CanConvert(Type objectType)
@@ -54,6 +84,27 @@ namespace Dynamo.Graph.Workspaces
 
             var obj = JObject.Load(reader);
             var type = Type.GetType(obj["$type"].Value<string>());
+            //if we can't find this type - try to look in our load from assemblies,
+            //but only during testing - this is required during testing because some dlls are loaded
+            //using Assembly.LoadFrom using the assemblyHelper - which loads dlls into loadFrom context - 
+            //dlls loaded with LoadFrom context cannot be found using Type.GetType() - this should
+            //not be an issue during normal dynamo use but if it is we can enable this code.
+            if(type == null && this.isTestMode == true)
+            {
+                List<Assembly> resultList;
+
+                var typeName = obj["$type"].Value<string>().Split(',').FirstOrDefault();
+                //this assemblyName does not usually contain version information...
+                var assemblyName = obj["$type"].Value<string>().Split(',').Skip(1).FirstOrDefault().Trim();
+                if (assemblyName != null)
+                {
+                    if(this.loadedAssemblies.TryGetValue(assemblyName, out resultList))
+                    {
+                        var matchingTypes = resultList.Select(x => x.GetType(typeName)).ToList();
+                        type =  matchingTypes.FirstOrDefault();
+                    }
+                }
+            }
 
             // If the id is not a guid, makes a guid based on the id of the node
             var guid = GuidUtility.tryParseOrCreateGuid(obj["Id"].Value<string>());

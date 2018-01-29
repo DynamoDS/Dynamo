@@ -4,6 +4,8 @@ using Dynamo.Selection;
 using DynamoCoreWpfTests.Utility;
 using NUnit.Framework;
 using System.Windows.Input;
+using System.Globalization;
+using System.Threading;
 
 namespace DynamoCoreWpfTests
 {
@@ -136,6 +138,37 @@ namespace DynamoCoreWpfTests
                 Assert.AreEqual(4, nodeView.ViewModel.ZIndex);
                 Assert.AreEqual(2, annotation.ZIndex);
             };
+        }
+
+        [Test]
+        public void NodesHaveCorrectLocationsIndpendentOfCulture()
+        {
+            string openPath = @"core\nodeLocationTest.dyn";
+            Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo("es-AR");
+            Open(openPath);
+
+            Assert.AreEqual(1, this.Model.CurrentWorkspace.Nodes.Count());
+            var node = this.Model.CurrentWorkspace.Nodes.First();
+            Assert.AreEqual(217.952067513811, node.X);
+            Assert.AreEqual(177.041832898393, node.Y);
+
+            Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo("zu-ZA");
+            Open(openPath);
+
+            Assert.AreEqual(1, this.Model.CurrentWorkspace.Nodes.Count());
+            node = this.Model.CurrentWorkspace.Nodes.First();
+            Assert.AreEqual(217.952067513811, node.X);
+            Assert.AreEqual(177.041832898393, node.Y);
+
+            Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo("ja-JP");
+            Open(openPath);
+
+            Assert.AreEqual(1, this.Model.CurrentWorkspace.Nodes.Count());
+            node = this.Model.CurrentWorkspace.Nodes.First();
+            Assert.AreEqual(217.952067513811, node.X);
+            Assert.AreEqual(177.041832898393, node.Y);
+
+            Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo("en-US");
         }
     }
 }

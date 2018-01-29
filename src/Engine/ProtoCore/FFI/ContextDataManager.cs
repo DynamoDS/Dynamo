@@ -122,7 +122,7 @@ namespace ProtoFFI
                 SortedSet<Type> types = GetTypesForImport(item.Value.Data);
                 foreach (var type in types)
                 {
-                    if (CLRObjectMarshler.IsMarshaledAsNativeType(type))
+                    if (CLRObjectMarshaler.IsMarshaledAsNativeType(type))
                         continue;
                     ImportNode node = importer.Import(type.Assembly.Location, type.FullName, "");
                     if (impNode != null && node != null)
@@ -158,7 +158,7 @@ namespace ProtoFFI
                 set.Add(valueType);
             }
             else 
-                set.Add(CLRObjectMarshler.GetPublicType(valueType));
+                set.Add(CLRObjectMarshaler.GetPublicType(valueType));
 
             return set;
         }

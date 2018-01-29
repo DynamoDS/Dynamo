@@ -141,7 +141,7 @@ namespace ProtoCore.DSASM.Mirror
             if (classnode.IsImportedClass)
             {
                 var helper = DLLFFIHandler.GetModuleHelper(FFILanguage.CSharp);
-                var marshaller = helper.GetMarshaller(runtimeCore);
+                var marshaller = helper.GetMarshaler(runtimeCore);
                 var strRep = marshaller.GetStringValue(val);
                 formatParams.RestoreOutputTraceDepth();
                 return strRep;
