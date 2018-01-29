@@ -82,6 +82,11 @@
     <xsl:key name="revit_2018-search" match="wix:Component[contains(wix:File/@Source, '\Revit_2018\')]" use="@Id"/>
     <xsl:template match="wix:Directory[@Name = 'Revit_2018']" />
     <xsl:template match="wix:Component[key('revit_2018-search', @Id)]" />
+	
+	<!--Exclude 'revit_2019' folders-->
+    <xsl:key name="revit_2019-search" match="wix:Component[contains(wix:File/@Source, '\Revit_2019\')]" use="@Id"/>
+    <xsl:template match="wix:Directory[@Name = 'Revit_2019']" />
+    <xsl:template match="wix:Component[key('revit_2019-search', @Id)]" />
 
     <!--Exclude 'int' folders-->
     <xsl:template match="wix:Directory[@Name = 'int']" />
