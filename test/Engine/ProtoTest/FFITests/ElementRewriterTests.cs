@@ -594,7 +594,7 @@ namespace ProtoTest.FFITests
             var code =
                 "c = [Associative]" +
                 "{" +
-                "   a = {1, 2, 3, 4};" +
+                "   a = [1, 2, 3, 4];" +
                 "   b = Autodesk.Point.ByCoordinates(a);" +
                 "   return = b;" +
                 "}";
