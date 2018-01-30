@@ -8,13 +8,13 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 
-namespace ProtoCore.AST.ImperativeAST
+namespace ProtoCore.AST
 {
     public static class NodeEnumerableExtensions
     {
         public static IEnumerable<Node> AsEnumerable(this Node item)
         {
-            return item != null ? new List<Node>() {item} : new List<Node>();
+            return item != null ? new List<Node>() { item } : new List<Node>();
         }
 
         public static IEnumerable<Node> Concat(this IEnumerable<Node> list, Node item)
@@ -22,7 +22,10 @@ namespace ProtoCore.AST.ImperativeAST
             return (list ?? new List<Node>()).Concat(item.AsEnumerable());
         }
     }
+}
 
+namespace ProtoCore.AST.ImperativeAST
+{
     public enum AstKind
     {
         ArrayName,
