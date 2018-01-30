@@ -234,7 +234,7 @@ z3;
 h3;
     [Associative]
     {
-    t3 = DummyTuple4.ByCoordinates3({1.0,1.0,1.0});
+    t3 = DummyTuple4.ByCoordinates3([1.0,1.0,1.0]);
     x3 = t3.X;
     y3 = t3.Y;
     z3 = t3.Z;
@@ -276,16 +276,16 @@ import(""FFITarget.dll"");
     y1 = t1.Y;
     z1 = t1.Z;
     h1 = t1.H;
-    result1 = {x1, y1, z1, h1};
+    result1 = [x1, y1, z1, h1];
     
     
     
-    t2 = DummyTuple4.ByCoordinates3({1.0,1.0,1.0});
+    t2 = DummyTuple4.ByCoordinates3([1.0,1.0,1.0]);
     x2 = t2.X;
     y2 = t2.Y;
     z2 = t2.Z;
     h2 = t2.H;
-    result2 = {x2, y2, z2, h2};
+    result2 = [x2, y2, z2, h2];
     
    ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -303,7 +303,7 @@ import(""FFITarget.dll"");
 
             string code = @"
 import(""FFITarget.dll"");
-c1 = { 1.0, 2.0, 3.0 };
+c1 = [ 1.0, 2.0, 3.0 ];
 c1 = DummyVector.ByCoordinates( c1[0], 20, 30 );
 x = c1.X;
 ";
@@ -319,7 +319,7 @@ x = c1.X;
 
             string code = @"
 import(""FFITarget.dll"");
-c = { {1.0, 2.0}, {3.0} };
+c = [ [1.0, 2.0], [3.0] ];
 c = ArrayMember.Ctor( c[0] );
 x = c.X;
 ";
@@ -358,8 +358,8 @@ a1;
 b1;
 [Imperative]
 {
-    a1 = foo( { 0, 1 } );
-    b1 = foo( { 1, 2 } );
+    a1 = foo( [ 0, 1 ] );
+    b1 = foo( [ 1, 2 ] );
 	
 }
 ";
@@ -376,7 +376,7 @@ b1;
         {
             string code = @"
 import(""FFITarget.dll"");
-x = { 0, 1, 2 };
+x = [ 0, 1, 2 ];
 a1 = ArrayMember.Ctor(x);
 b1 = a1.X[0] + a1.X[1] + a1.X[2];
 b2 = a1.Add();

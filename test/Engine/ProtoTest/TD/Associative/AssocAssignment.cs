@@ -365,7 +365,7 @@ c3;
 b;
 [Associative]
 {
-	a = {{1,2},3.5};
+	a = [[1,2],3.5];
 	c = a[1];
 	d = a[0][1];
         a[0][1] = 5;
@@ -966,7 +966,7 @@ def foo()
 {
     return = 0;
 }
-x = { 1, 2 };
+x = [ 1, 2 ];
 x[foo()] = 3;
 y = x;
 ";
@@ -1051,7 +1051,7 @@ y = x;
             String errmsg = "[Design Issue] conditionals with empty arrays and ararys with different ranks";
             string src = @"[Associative]
 {
-	x = {} == null;
+	x = [] == null;
 }
 ";
             thisTest.VerifyRunScriptSource(src, errmsg);
@@ -1402,7 +1402,7 @@ def foo()
     returnValue = 0;
     [Imperative]
     {
-        for(i in { 1, 2 })
+        for(i in [ 1, 2 ])
         {
             returnValue = returnValue + i;; 
         }

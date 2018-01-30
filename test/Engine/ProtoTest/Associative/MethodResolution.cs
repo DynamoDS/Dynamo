@@ -122,7 +122,7 @@ val = c.unique(c);
                 @"
 import (""FFITarget.dll"");
 b = TestOverloadB.TestOverloadB();
-arr = {TestOverloadC.TestOverloadC(), TestOverloadB.TestOverloadB(), TestOverloadB.TestOverloadB()};
+arr = [TestOverloadC.TestOverloadC(), TestOverloadB.TestOverloadB(), TestOverloadB.TestOverloadB()];
 val = b.execute(arr);
                 ";
             thisTest.RunScriptSource(code);
@@ -139,7 +139,7 @@ val = b.execute(arr);
 {
 	return = 100; 
 }
-arr = {3};
+arr = [3];
 v = execute(arr);
 val = v[0];
                 ";
@@ -158,7 +158,7 @@ val = v[0];
 {
     return = 100; 
 }
-arr = {};
+arr = [];
 v = execute(arr);
 val = v[0];
                 ";
@@ -174,7 +174,7 @@ val = v[0];
                             {
                                 return = 123;
                             }
-                            a = {3, 4, 5};
+                            a = [3, 4, 5];
                             val = Test(a);
                             ";
             thisTest.RunScriptSource(code);
@@ -196,7 +196,7 @@ val = v[0];
                             {
                                 return = 123;
                             }
-                            a = {B.B(), A.A(), B.B()};
+                            a = [B.B(), A.A(), B.B()];
                             val = Test(a);
                             ";
             thisTest.RunScriptSource(code);
@@ -216,9 +216,9 @@ def foo(val : var)
 {
     return = 2;
 }
-arr1 = { true, null, false };
+arr1 = [ true, null, false ];
 r1 = foo(arr1);   // r1 = {1, 1, 1}
-arr2 = { null, true, false };
+arr2 = [ null, true, false ];
 r2 = foo(arr2);   // r2 = {2, 2, 2}";
             string error = "";
             thisTest.VerifyRunScriptSource(code, error);
@@ -256,7 +256,7 @@ def foo(x : NonExistClass[][])
 {
     return = x;
 }
-z = foo({ 1, 2 });  
+z = foo([ 1, 2 ]);  
 ";
             string error = "";
             thisTest.VerifyRunScriptSource(code, error);
@@ -277,9 +277,9 @@ def foo(val : double)
     return = false;
 }
 
-r1 = foo({1, 2});   // r1 = {true, true}
-r2 = foo({1.0, 2.0});   // r1 = {false, false}
-r3 = foo({1, 2.0});
+r1 = foo([1, 2]);   // r1 = {true, true}
+r2 = foo([1.0, 2.0]);   // r1 = {false, false}
+r3 = foo([1, 2.0]);
 ";
             string error = "";
             thisTest.VerifyRunScriptSource(code, error);
@@ -301,9 +301,9 @@ def foo(val : double)
     return = false;
 }
 
-r1 = foo({1, 2}<1>);   // r1 = {true, true}
-r2 = foo({1.0, 2.0}<1>);   // r1 = {false, false}
-r3 = foo({1, 2.0}<1>);
+r1 = foo([1, 2]<1>);   // r1 = {true, true}
+r2 = foo([1.0, 2.0]<1>);   // r1 = {false, false}
+r3 = foo([1, 2.0]<1>);
 ";
             string error = "";
             thisTest.VerifyRunScriptSource(code, error);
@@ -325,7 +325,7 @@ def foo(val : double)
     return = false;
 }
 
-r3 = foo({1, 2.0}<1>);
+r3 = foo([1, 2.0]<1>);
 ";
             string error = "";
             thisTest.VerifyRunScriptSource(code, error);
@@ -346,7 +346,7 @@ def foo(val : double)
     return = false;
 }
 
-r3 = foo({1, 2.0});
+r3 = foo([1, 2.0]);
 ";
             string error = "";
             thisTest.VerifyRunScriptSource(code, error);
@@ -385,8 +385,8 @@ def qux2()
     }
 }
 
-x = foo({1,2,3});
-y = bar({4,5,6});
+x = foo([1,2,3]);
+y = bar([4,5,6]);
 z1 = qux1();
 z2 = qux2();
 ";

@@ -1762,7 +1762,7 @@ c = foo(t);
 c = [Imperative]
 {
   a = 10;
-  b = {10,20,30};
+  b = [10,20,30];
   for (i in b)
   {
       a = a + i;

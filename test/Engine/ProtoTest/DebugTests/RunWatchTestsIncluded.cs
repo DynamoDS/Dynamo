@@ -54,7 +54,7 @@ namespace ProtoTest.DebugTests
 	d[2][2] = 2;
 	d[3][3] = x;
 	*/
-	e = {10,{20,30}};
+	e = [10,[20,30]];
 	e[1][1] = 40;
 	dd = e[0];
 	dd = e[1][0];
@@ -158,19 +158,19 @@ namespace ProtoTest.DebugTests
             string src = @"
 [Imperative]
 {
-    a = {10,20,30,40};
+    a = [10,20,30,40];
     x = 0;
     for (val in a)
     {
         x = x + val;
     }
     x = 0;
-    for (val in {100,200,300,400})
+    for (val in [100,200,300,400])
     {
         x = x + val;
     }
     x = 0;
-    for (val in {{100,101},{200,201},{300,301},{400,401}})
+    for (val in [[100,101],[200,201],[300,301],[400,401]])
     {
         x = x + val[1];
     }
@@ -231,10 +231,10 @@ namespace ProtoTest.DebugTests
 	ySize = 3;
 	result = 0;
     
-	somelist = {11,102,1003,1004};
-	somelist2 = {x, y, xSize * 4, 1004 * ySize};
+	somelist = [11,102,1003,1004];
+	somelist2 = [x, y, xSize * 4, 1004 * ySize];
 	// Populate a multi-dimensional array
-	list2d = {{10,20,30},{40,50,60}};
+	list2d = [[10,20,30],[40,50,60]];
 	// do somthing with those values
 	while( x < xSize )
 	{
@@ -249,7 +249,7 @@ namespace ProtoTest.DebugTests
 	result = result * 10;
     
 	// Populate an array of ints
-	list = {10, 20, 30, 40, 50};
+	list = [10, 20, 30, 40, 50];
     
 	// Declare counters and result storage
 	n = 0;
@@ -512,7 +512,7 @@ b = ++a;
         public void DebugWatch54_TestBasicArrayMethods()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"a = { 1, 2, { 3, 4, 5, { 6, 7, { 8, 9, { { 11 } } } } }, { 12, 13 } };
+            string src = @"a = [ 1, 2, [ 3, 4, 5, [ 6, 7, [ 8, 9, [ [ 11 ] ] ] ] ], [ 12, 13 ] ];
 c = Count(a);
 r = Rank(a);
 a2 = Flatten(a);";
@@ -828,7 +828,7 @@ j = n <= 100 + 1;
 	r7 = ""ab"" == ""ab"";
 	ns = s;
 	ns[0] = 1;
-	r8 = ns == {1, 'b'};
+	r8 = ns == [1, 'b'];
 	//r9 = """" == """";
 	//r10 = ("""" == null);
     r9 = s != ""ab"";
@@ -1245,7 +1245,7 @@ test5;
 b;
 [Associative]
 {
-	a = {{1,2},3.5};
+	a = [[1,2],3.5];
 	c = a[1];
 	d = a[0][1];
         a[0][1] = 5;
@@ -1694,7 +1694,7 @@ b = a * 3;
 {
     return = 0;
 }
-x = { 1, 2 };
+x = [ 1, 2 ];
 x[foo()] = 3;
 y = x;
 ";
@@ -1709,7 +1709,7 @@ y = x;
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
             string src = @"[Associative]
 {
-	x = {} == null;
+	x = [] == null;
 }
 ";
             WatchTestFx.GeneratePrintStatements(src, ref map);
@@ -1744,8 +1744,8 @@ a1;
 b1;
 [Imperative]
 {
-    a1 = foo( { 0, 1 } );
-    b1 = foo( { 1, 2 } );
+    a1 = foo( [ 0, 1 ] );
+    b1 = foo( [ 1, 2 ] );
 	
 }
 ";
@@ -1945,7 +1945,7 @@ sum;
 		multiply = 5;
 		divide = 10;
 	
-		return = {input*multiply, input/divide};
+		return = [input*multiply, input/divide];
 	}
 	
 	input = 20;
@@ -2159,7 +2159,7 @@ result;
         return = array[0];
     }
     
-    arr = {1.0,2.0,3.0};
+    arr = [1.0,2.0,3.0];
     arr2 = Twice(arr);";
             WatchTestFx.GeneratePrintStatements(src, ref map);
             WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
@@ -2172,9 +2172,9 @@ result;
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
             string src = @"def function1 (arr :  double[] )
 {
-    return = { arr[0], arr [1] };
+    return = [ arr[0], arr [1] ];
 }
-a = function1({null,null});
+a = function1([null,null]);
 ";
             WatchTestFx.GeneratePrintStatements(src, ref map);
             WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
@@ -2217,7 +2217,7 @@ a = function1({null,null});
 	Rameshwar = 80;
 	Jun = 68;
 	Roham = 50;
-	Smartness = { BenBarnes, BenGoh, Jun, Rameshwar, Roham }; // { 1, 0, 1, 1, 0 }
+	Smartness = [ BenBarnes, BenGoh, Jun, Rameshwar, Roham ]; // { 1, 0, 1, 1, 0 }
 	Results = Smartness > Einstein ? Passed : Failed;
 ";
             WatchTestFx.GeneratePrintStatements(src, ref map);
@@ -2256,9 +2256,9 @@ a = function1({null,null});
 	d = ((c - c / 2 * 2) > 0)? c : c+1 ; //5 
 	e1 = ((b>(d-b+d))) ? d : (d+1); //5
 	//inline conditional, returning different sized collections
-	c1 = {1,2,3};
-	c2 = {1,2};
-	a1 = {1, 2, 3, 4};
+	c1 = [1,2,3];
+	c2 = [1,2];
+	a1 = [1, 2, 3, 4];
 	b1 = a1>3?true:a1; // expected : {1, 2, 3, true}
 	b2 = a1>3?true:c1; // expected : {1, 2, 3}
 	b3 = a1>3?c1:c2;   // expected : {1, 2}
@@ -2294,8 +2294,8 @@ a = function1({null,null});
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
             string src = @"
-	a = { 0, 1, 2, 4};
-	x = a > 1 ? 0 : {1,1}; // { 1, 1} ? 
+	a = [ 0, 1, 2, 4];
+	x = a > 1 ? 0 : [1,1]; // { 1, 1} ? 
 	x_0 = x[0];
 	x_1 = x[1];
 ";
@@ -2358,11 +2358,11 @@ x3;
 x4;
 [Imperative]
 {
-	a = { 0, 1, 2};
-	b = { 3, 11 };
+	a = [ 0, 1, 2];
+	b = [ 3, 11 ];
 	c = 5;
-	d = { 6, 7, 8, 9};
-	e = { 10 };
+	d = [ 6, 7, 8, 9];
+	e = [ 10 ];
 	xx = 1 < a ? a : 5; // expected:5 
         yy = 0;
 	if( 1 < a )
@@ -2392,7 +2392,7 @@ x4;
 	{
 		c3 = c3 + 1;
 	}
-	x4 = b > e ? d : { 0, 1}; // expected {0,1}
+	x4 = b > e ? d : [ 0, 1]; // expected {0,1}
 	t7 = x4[0]; 
 	c4 = 0;
 	for (i in x4)
@@ -2423,10 +2423,10 @@ thisTest.Verification(mirror, ""c4"", 1, 1);*/";
         public void DebugWatch326_T011_Defect_1467281_conditionals()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @" x = 2 == { }; 
- y = {}==null;
- z = {{1}}=={1};
- z2 = {{1}}==1;
+            string src = @" x = 2 == [ ]; 
+ y = []==null;
+ z = [[1]]==[1];
+ z2 = [[1]]==1;
 ";
             WatchTestFx.GeneratePrintStatements(src, ref map);
             WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
@@ -2437,8 +2437,8 @@ thisTest.Verification(mirror, ""c4"", 1, 1);*/";
         public void DebugWatch328_T01_Arithmatic_List_And_List_Different_Length()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"list1 = { 1, 4, 7, 2};
-list2 = { 5, 8, 3, 6, 7, 9 };
+            string src = @"list1 = [ 1, 4, 7, 2];
+list2 = [ 5, 8, 3, 6, 7, 9 ];
 list3 = list1 + list2; // { 6, 12, 10, 8 }
 list4 = list1 - list2; // { -4, -4, 4, -4}
 list5 = list1 * list2; // { 5, 32, 21, 12 }
@@ -2452,8 +2452,8 @@ list6 = list2 / list1; // { 5, 2, 0, 3 }";
         public void DebugWatch329_T02_Arithmatic_List_And_List_Same_Length()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"list1 = { 1, 4, 7, 2};
-list2 = { 5, 8, 3, 6 };
+            string src = @"list1 = [ 1, 4, 7, 2];
+list2 = [ 5, 8, 3, 6 ];
 list3 = list1 + list2; // { 6, 12, 10, 8 }
 list4 = list1 - list2; // { -4, -4, 4, -4}
 list5 = list1 * list2; // { 5, 32, 21, 12 }
@@ -2468,8 +2468,8 @@ list6 = list2 / list1; // { 5, 2, 0, 3 }
         public void DebugWatch330_T03_Arithmatic_Mixed()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"list1 = { 13, 23, 42, 65, 23 };
-list2 = { 12, 8, 45, 64 };
+            string src = @"list1 = [ 13, 23, 42, 65, 23 ];
+list2 = [ 12, 8, 45, 64 ];
 list3 = 3 * 6 + 3 * (list1 + 10) - list2 + list1 * list2 / 3 + list1 / list2; // { 128, 172, 759, 1566 }";
             WatchTestFx.GeneratePrintStatements(src, ref map);
             WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
@@ -2480,7 +2480,7 @@ list3 = 3 * 6 + 3 * (list1 + 10) - list2 + list1 * list2 / 3 + list1 / list2; //
         public void DebugWatch331_T04_Arithmatic_Single_List_And_Integer()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"list1 = { 1, 2, 3, 4, 5 };
+            string src = @"list1 = [ 1, 2, 3, 4, 5 ];
 a = 5;
 list2 = a + list1; // { 6, 7, 8, 9, 10 }
 list3 = list1 + a; // { 6, 7, 8, 9, 10 }
@@ -2499,13 +2499,13 @@ list9 = list1 / a; ";
         public void DebugWatch332_T05_Logic_List_And_List_Different_Value()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"list1 = { 1, 8, 10, 4, 7 };
-list2 = { 2, 6, 10, 3, 5, 20 };
+            string src = @"list1 = [ 1, 8, 10, 4, 7 ];
+list2 = [ 2, 6, 10, 3, 5, 20 ];
 list3 = list1 > list2; // { false, true, false, true, true }
 list4 = list1 < list2;	// { true, false, false, false, false }
 list5 = list1 >= list2; // { false, true, true, true, true }
 list6 = list1 <= list2; // { true, false, true, false, false }
-list9 = { true, false, true };
+list9 = [ true, false, true ];
 list7 = list9 && list5; // { false, false, true }
 list8 = list9 || list6; // { true, false, true }";
             WatchTestFx.GeneratePrintStatements(src, ref map);
@@ -2517,8 +2517,8 @@ list8 = list9 || list6; // { true, false, true }";
         public void DebugWatch333_T06_Logic_List_And_List_Same_Length()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"list1 = { 1, 8, 10, 4, 7 };
-list2 = { 2, 6, 10, 3, 5 };
+            string src = @"list1 = [ 1, 8, 10, 4, 7 ];
+list2 = [ 2, 6, 10, 3, 5 ];
 list3 = list1 > list2; // { false, true, false, true, true }
 list4 = list1 < list2;	// { true, false, false, false, false }
 list5 = list1 >= list2; // { false, true, true, true, true }
@@ -2535,8 +2535,8 @@ list8 = list4 || list6; // { true, false, true, false, false }
         public void DebugWatch334_T07_Logic_Mixed()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"list1 = { 1, 5, 8, 3, 6 };
-list2 = { 4, 1, 6, 3 };
+            string src = @"list1 = [ 1, 5, 8, 3, 6 ];
+list2 = [ 4, 1, 6, 3 ];
 list3 = (list1 > 1) && (list2 > list1) || (list2 < 5); // { true, true, false , true }";
             WatchTestFx.GeneratePrintStatements(src, ref map);
             WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
@@ -2547,7 +2547,7 @@ list3 = (list1 > 1) && (list2 > list1) || (list2 < 5); // { true, true, false , 
         public void DebugWatch335_T08_Logic_Single_List_And_Value()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"list1 = { 1, 2, 3, 4, 5 };
+            string src = @"list1 = [ 1, 2, 3, 4, 5 ];
 a = 3;
 list2 = a > list1; // { true, true, false, false, false }
 list3 = list1 > a; // { false, false, false, true, true }
@@ -2590,8 +2590,8 @@ list13 = false || list2; // { true, true, false, false, false }";
 {
 	return = a * b;
 }
-list1 = { { 1, 2, 3 }, { 4, 5, 6 }, { 7, 8, 9 } };
-list2 = { { 1, 2, 3, 4 }, { 5, 6, 7, 8 } };
+list1 = [ [ 1, 2, 3 ], [ 4, 5, 6 ], [ 7, 8, 9 ] ];
+list2 = [ [ 1, 2, 3, 4 ], [ 5, 6, 7, 8 ] ];
 list3 = foo(list1, list2); // { { 1, 4, 9 }, { 20, 30, 42 } }
 x = list3[0];
 y = list3[1];";
@@ -2608,9 +2608,9 @@ y = list3[1];";
 {
 	return = a * b - c;
 }
-list1 = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
-list2 = { 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0, -1, -2, -3 };
-list3 = {1, 4, 7, 2, 5, 8, 3 };
+list1 = [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ];
+list2 = [ 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0, -1, -2, -3 ];
+list3 = [1, 4, 7, 2, 5, 8, 3 ];
 list4 = foo(list1, list2, list3); // { 9, 14, 17, 26, 25, 22, 25 }";
             WatchTestFx.GeneratePrintStatements(src, ref map);
             WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
@@ -2625,9 +2625,9 @@ list4 = foo(list1, list2, list3); // { 9, 14, 17, 26, 25, 22, 25 }";
 {
 	return = a * b - c / d + e;
 }
-list1 = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
-list2 = { 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0, -1, -2, -3 };
-list3 = {1, 4, 7, 2, 5, 8, 3 };
+list1 = [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ];
+list2 = [ 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0, -1, -2, -3 ];
+list3 = [1, 4, 7, 2, 5, 8, 3 ];
 list4 = foo(list1, list2, list3, 4, 23);";
             WatchTestFx.GeneratePrintStatements(src, ref map);
             WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
@@ -2642,9 +2642,9 @@ list4 = foo(list1, list2, list3, 4, 23);";
 {
 	return = a * b - c;
 }
-list1 = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
-list2 = { 10, 9, 8, 7, 6, 5, 4, 3, 2, 1 };
-list3 = {1, 4, 7, 2, 5, 8, 3, 6, 9, 0 };
+list1 = [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ];
+list2 = [ 10, 9, 8, 7, 6, 5, 4, 3, 2, 1 ];
+list3 = [1, 4, 7, 2, 5, 8, 3, 6, 9, 0 ];
 list4 = foo(list1, list2, list3); // { 9, 14, 17, 26, 25, 22, 25, 18, 9, 10 }";
             WatchTestFx.GeneratePrintStatements(src, ref map);
             WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
@@ -2659,9 +2659,9 @@ list4 = foo(list1, list2, list3); // { 9, 14, 17, 26, 25, 22, 25, 18, 9, 10 }";
 {
 	return = a * b - c * d + e;
 }
-list1 = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
-list2 = { 10, 9, 8, 7, 6, 5, 4, 3, 2, 1 };
-list3 = {1, 4, 7, 2, 5, 8, 3, 6, 9, 0 };
+list1 = [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ];
+list2 = [ 10, 9, 8, 7, 6, 5, 4, 3, 2, 1 ];
+list3 = [1, 4, 7, 2, 5, 8, 3, 6, 9, 0 ];
 list4 = foo(list1, list2, list3, 26, 43); // { 27, -43, -115, 19, -57, -135, -7, -89, -173, 53 }  ";
             WatchTestFx.GeneratePrintStatements(src, ref map);
             WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
@@ -2676,7 +2676,7 @@ list4 = foo(list1, list2, list3, 26, 43); // { 27, -43, -115, 19, -57, -135, -7,
 {
 	return = a * a;
 }
-list1 = { 1, 2, 3, 4, 5 };
+list1 = [ 1, 2, 3, 4, 5 ];
 list3 = foo(foo(foo(list1))); // { 1, 256, 6561, 65536, 390625 }";
             WatchTestFx.GeneratePrintStatements(src, ref map);
             WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
@@ -2691,7 +2691,7 @@ list3 = foo(foo(foo(list1))); // { 1, 256, 6561, 65536, 390625 }";
 {
 	return = a * a;
 }
-list1 = { { 1, 2, 3 }, { 4, 5, 6 }, { 7, 8, 9 } };
+list1 = [ [ 1, 2, 3 ], [ 4, 5, 6 ], [ 7, 8, 9 ] ];
 list2 = foo(list1); // { { 1, 4, 9 }, { 16, 25, 36 }, { 49, 64, 81 } }
 ";
             WatchTestFx.GeneratePrintStatements(src, ref map);
@@ -2707,7 +2707,7 @@ list2 = foo(list1); // { { 1, 4, 9 }, { 16, 25, 36 }, { 49, 64, 81 } }
 {
 	return = num * num;
 }
-list1 = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+list1 = [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ];
 list2 = foo(list1);  // { 1, 4, 9, 16, 25, 36, 49, 64, 81, 100 }";
             WatchTestFx.GeneratePrintStatements(src, ref map);
             WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
@@ -2722,7 +2722,7 @@ list2 = foo(list1);  // { 1, 4, 9, 16, 25, 36, 49, 64, 81, 100 }";
 {
 	return = num * num2 - num3;
 }
-list1 = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+list1 = [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ];
 list2 = foo(list1, 34, 18); // { 16, 50, 84, 118, 152, 186, 220, 254, 288, 322 }";
             WatchTestFx.GeneratePrintStatements(src, ref map);
             WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
@@ -2733,13 +2733,13 @@ list2 = foo(list1, 34, 18); // { 16, 50, 84, 118, 152, 186, 220, 254, 288, 322 }
         public void DebugWatch380_T50_1_of_3_Exprs_is_List()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"list1 = { true, false, true, false, true };
+            string src = @"list1 = [ true, false, true, false, true ];
 list2 = list1 ? 1 : 0; // { 1, 0, 1, 0, 1 }
 list3 = true ? 10 : list2; // { 10, 10, 10, 10, 10 }
 list4 = false ? 10 : list2; // { 1, 0, 1, 0, 1 }
-a = { 1, 2, 3, 4, 5 };
-b = {5, 4, 3, 2, 1 };
-c = { 4, 3, 2, 1 };
+a = [ 1, 2, 3, 4, 5 ];
+b = [5, 4, 3, 2, 1 ];
+c = [ 4, 3, 2, 1 ];
 list5 = a > b ? 1 : 0; // { 0, 0, 0, 1, 1 }
 list6 = c > a ? 1 : 0; // { 1, 1, 0, 0 }";
             WatchTestFx.GeneratePrintStatements(src, ref map);
@@ -2751,16 +2751,16 @@ list6 = c > a ? 1 : 0; // { 1, 1, 0, 0 }";
         public void DebugWatch381_T51_2_of_3_Exprs_are_Lists_Different_Length()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"list1 = { 1, 2, 3, 4, 5 };
-list2 = { true, false, true, false };
+            string src = @"list1 = [ 1, 2, 3, 4, 5 ];
+list2 = [ true, false, true, false ];
 list3 = list2 ? list1 : 0; // { 1, 0, 3, 0 }
 list4 = list2 ? 0 : list1; // { 0, 2, 0, 4 }
-list5 = { -1, -2, -3, -4, -5, -6 };
+list5 = [ -1, -2, -3, -4, -5, -6 ];
 list6 = true ? list1 : list5; // { 1, 2, 3, 4, 5 }
 list7 = false ? list1 : list5; // { -1, -2, -3, -4, -5 }  
-a = { 1, 2, 3, 4 };
-b = { 5, 4, 3, 2, 1 };
-c = { 1, 4, 7 };
+a = [ 1, 2, 3, 4 ];
+b = [ 5, 4, 3, 2, 1 ];
+c = [ 1, 4, 7 ];
 list8 = a >= b ? a + c : 10; // { 10, 10, 10 }
 list9 = a < b ? 10 : a + c; // { 10, 10, 10 }";
             WatchTestFx.GeneratePrintStatements(src, ref map);
@@ -2772,14 +2772,14 @@ list9 = a < b ? 10 : a + c; // { 10, 10, 10 }";
         public void DebugWatch382_T52_2_of_3_Exprs_are_Lists_Same_Length()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"list1 = { 1, 2, 3, 4, 5 };
-list2 = { true, false, true, false, true };
+            string src = @"list1 = [ 1, 2, 3, 4, 5 ];
+list2 = [ true, false, true, false, true ];
 list3 = list2 ? list1 : 0; // { 1, 0, 3, 0, 5 }
 list4 = list2 ? 0 : list1; // { 0, 2, 0, 4, 0 }
 list5 = true ? list3 : list4; // { 1, 0, 3, 0, 5 }
 list6 = true ? list4 : list3; // {0, 2, 0, 4, 0 }
-a = { 1, 2, 3, 4, 5 };
-b = { 5, 4, 3, 2 };
+a = [ 1, 2, 3, 4, 5 ];
+b = [ 5, 4, 3, 2 ];
 list7 = a > b ? a + b : 10; // { 10, 10, 10, 6 }
 list8 = a <= b ? 10 : a + b; // { 10, 10, 10, 6 }";
             WatchTestFx.GeneratePrintStatements(src, ref map);
@@ -2791,9 +2791,9 @@ list8 = a <= b ? 10 : a + b; // { 10, 10, 10, 6 }";
         public void DebugWatch383_T53_3_of_3_Exprs_are_different_dimension_list()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"a = { { 1, 2, 3 }, { 4, 5, 6 } };
-b = { { 1, 2 },  { 3, 4 }, { 5, 6 } };
-c = { { 1, 2, 3, 4 }, { 5, 6, 7, 8 }, { 9, 10, 11, 12 } };
+            string src = @"a = [ [ 1, 2, 3 ], [ 4, 5, 6 ] ];
+b = [ [ 1, 2 ],  [ 3, 4 ], [ 5, 6 ] ];
+c = [ [ 1, 2, 3, 4 ], [ 5, 6, 7, 8 ], [ 9, 10, 11, 12 ] ];
 list = a > b ? b + c : a + c; // { { 2, 4, }, { 8, 10 } } ";
             WatchTestFx.GeneratePrintStatements(src, ref map);
             WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
@@ -2804,16 +2804,16 @@ list = a > b ? b + c : a + c; // { { 2, 4, }, { 8, 10 } } ";
         public void DebugWatch384_T54_3_of_3_Exprs_are_Lists_Different_Length()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"list1 = { true, false, true, true, false };
-list2 = { 1, 2, 3, 4 };
-list3 = { -1, -2, -3, -4, -5, -6 };
+            string src = @"list1 = [ true, false, true, true, false ];
+list2 = [ 1, 2, 3, 4 ];
+list3 = [ -1, -2, -3, -4, -5, -6 ];
 list4 = list1 ? list2 : list3; // { 1, -2, 3, 4 }
 list5 = !list1 ? list2 : list4; // { 1, 2, 3, 4 }
-list6 = { -1, -2, -3, -4, -5 };
+list6 = [ -1, -2, -3, -4, -5 ];
 list7 = list1 ? list2 : list6; // { 1, -2, 3, 4 }
-a = { 3, 0, -1 };
-b = { 2, 1, 0, 3 };
-c = { -2, 4, 1, 2, 0 };
+a = [ 3, 0, -1 ];
+b = [ 2, 1, 0, 3 ];
+c = [ -2, 4, 1, 2, 0 ];
 list8 = a < c ? b + c : a + c; // { 1, 4, 1 }";
             WatchTestFx.GeneratePrintStatements(src, ref map);
             WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
@@ -2824,14 +2824,14 @@ list8 = a < c ? b + c : a + c; // { 1, 4, 1 }";
         public void DebugWatch385_T55_3_of_3_Exprs_are_Lists_Same_Length()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"list1 = { true, false, false, true };
-list2 = { 1, 2, 3, 4 };
-list3 = { -1, -2, -3, -4 };
+            string src = @"list1 = [ true, false, false, true ];
+list2 = [ 1, 2, 3, 4 ];
+list3 = [ -1, -2, -3, -4 ];
 list4 = list1 ? list2 : list3; // { 1, -2, -3, 4 }
 list5 = !list1 ? list2 : list3; // { -1, 2, 3, -4 }
-a = { 1, 4, 7 };
-b = { 2, 8, 5 };
-c = { 6, 9, 3 };
+a = [ 1, 4, 7 ];
+b = [ 2, 8, 5 ];
+c = [ 6, 9, 3 ];
 list6 = a > b ? b + c : b - c; // { -4, -1, 8 }";
             WatchTestFx.GeneratePrintStatements(src, ref map);
             WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
@@ -2842,7 +2842,7 @@ list6 = a > b ? b + c : b - c; // { -4, -1, 8 }";
         public void DebugWatch386_T56_UnaryOperator()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"list1 = { true, true, false, false, true, false };
+            string src = @"list1 = [ true, true, false, false, true, false ];
 list2 = !list1; // { false, false, true, true, false, true }
 ";
             WatchTestFx.GeneratePrintStatements(src, ref map);
@@ -2939,7 +2939,7 @@ a[1] = a[1] + 1;";
             string src = @"a=1;
 b=2;
 c=4;
-collection = {a,b,c};
+collection = [a,b,c];
 collection[1] = collection[1] + 0.5;
 d = collection[1];
 d = d + 0.1; // updates the result of accessing the collection
@@ -2967,7 +2967,7 @@ u2 = 3;
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
             string src = @"s1 = 3;
 s2 = s1 -1;
-s1 = { 3, 4 } ;";
+s1 = [ 3, 4 ] ;";
             WatchTestFx.GeneratePrintStatements(src, ref map);
             WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
         }
@@ -3077,11 +3077,11 @@ test = foo();
         public void DebugWatch426_T024_Defect_1459470_4()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"a = {1,2,3,4};
+            string src = @"a = [1,2,3,4];
 b = a;
 c = b[2];
 d = a[2];
-a[0..1] = {1, 2};
+a[0..1] = [1, 2];
 b[2..3] = 5;
 	
 ";
@@ -3138,7 +3138,7 @@ z = a.x;
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
             string src = @"import (Dummy from ""FFITarget.dll"");
 dummy = Dummy.Dummy();
-arr = {0.0,1.0,2.0,3.0,4.0,5.0,6.0,7.0,8.0,9.0,10.0};
+arr = [0.0,1.0,2.0,3.0,4.0,5.0,6.0,7.0,8.0,9.0,10.0];
 sum_1_10 = dummy.SumAll1D(arr);
 twice_arr = dummy.Twice(arr);
 	";
@@ -3373,7 +3373,7 @@ c3;
 b;
 [Imperative]
 {
-	a = {{1,2},3.5};
+	a = [[1,2],3.5];
 	c = a[1];
 	d = a[0][1];
         a[0][1] = 5;
@@ -3660,7 +3660,7 @@ e;
             string src = @"x;
 [Imperative]
 {
-	a = { -2,3,4.5,true };
+	a = [ -2,3,4.5,true ];
 	x = 1;
 	for ( y in a )
 	{
@@ -3807,7 +3807,7 @@ e;
         public void DebugWatch513_T51_Assignment_Using_Negative_Index()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"a = { 0, 1, 2, 3 };
+            string src = @"a = [ 0, 1, 2, 3 ];
 c1 = a [-1];
 c2 = a [-2];
 c3 = a [-3];
@@ -3936,7 +3936,7 @@ c2 = 3  - true;
             string src = @"a;
 [Imperative]
 {
-    a = { 1, 0.5, null, {2,3 } ,{{0.4, 5}, true } };
+    a = [ 1, 0.5, null, [2,3 ] ,[[0.4, 5], true ] ];
 	
 }
 ";
@@ -4080,7 +4080,7 @@ f;
             string src = @"x;
 [Imperative]
 {
-	a = { 1,2,3,4,5 };
+	a = [ 1,2,3,4,5 ];
 	for( y in a )
 	{
 		x = 5;
@@ -4183,7 +4183,7 @@ y;
 [Imperative]
 {
     sum = 0;
-    for (x in {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13})
+    for (x in [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13])
     {
         if (x >= 11)
             break;
@@ -4204,7 +4204,7 @@ y;
 [Imperative]
 {
     sum = 0;
-    for (x in {1, 2, 3, 4, 5, 6, 7, 8, 9, 10})
+    for (x in [1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
     {
         sum = sum + x;
         if (x <= 5)
@@ -4225,11 +4225,11 @@ y;
             string src = @"x;
 [Associative]
 {
-	a = { 4, 5 };
+	a = [ 4, 5 ];
 	[Imperative]
 	{
 		x = 0;
-		b = { 2,3 };
+		b = [ 2,3 ];
 		for( y in b )
 		{
 			x = y + x;
@@ -4248,7 +4248,7 @@ y;
             string src = @"b;
 [Associative]
 {
-	a = { 4,5 };
+	a = [ 4,5 ];
 	b =[Imperative]
 	{
 	
@@ -4272,7 +4272,7 @@ y;
             string src = @"x;
 [Imperative]
 {
-	a = { 1, 2, 3, 4, 5 };
+	a = [ 1, 2, 3, 4, 5 ];
 	x = 0;
 	for( y in a )
 	{
@@ -4293,7 +4293,7 @@ y;
             string src = @"x;
 [Imperative]
 {
-	a = { 1,2,3 };
+	a = [ 1,2,3 ];
 	x = 0;
 	for( i in a )
 	{
@@ -4313,7 +4313,7 @@ y;
             string src = @"x;
 [Imperative]
 {
-	a = { 1,2,3 };
+	a = [ 1,2,3 ];
 	x = 0;
 	for ( i in a )
 	{
@@ -4335,7 +4335,7 @@ y;
             string src = @"x;
 [Imperative]
 {
-	a = {1};
+	a = [1];
 	b = 1;
 	x = 0;
  
@@ -4362,7 +4362,7 @@ y;
 z;
 [Imperative]
 {
-	a = {{1},{2,3},{4,5,6}};
+	a = [[1],[2,3],[4,5,6]];
 	x = 0;
 	i = 0;
     for (y in a)
@@ -4394,8 +4394,8 @@ z;
 y;
 [Imperative]
 {
-	a = { -1,-3,-5 };
-	b = { 2.5,3.5,4.2 };
+	a = [ -1,-3,-5 ];
+	b = [ 2.5,3.5,4.2 ];
 	x = 0;
 	y = 0;
     for ( i in a )
@@ -4421,7 +4421,7 @@ y;
             string src = @"x;
 [Imperative]
 { 
-	a = { true, false, true, true };
+	a = [ true, false, true, true ];
 	x = false;
 	
 	for( i in a )
@@ -4442,14 +4442,14 @@ y;
 y;
 [Imperative]
 {
-	a = { -2, 3, 4.5 };
+	a = [ -2, 3, 4.5 ];
 	x = 1;
 	for ( y in a )
 	{
 		x = x * y;       
     }
 	
-	a = { -2, 3, 4.5, true };
+	a = [ -2, 3, 4.5, true ];
 	y = 1;
 	for ( i in a )
 	{
@@ -4470,7 +4470,7 @@ y;
 [Imperative]
 {
 	a = 1;
-	b = { 2,3,4 };
+	b = [ 2,3,4 ];
 	if( a == 1 )
 	{
 		for( y in b )
@@ -4500,7 +4500,7 @@ y;
 [Imperative]
 {
 	a = 1;
-	b = { 2,3,4 };
+	b = [ 2,3,4 ];
 	c = 1;
 	if( a == 1 )
 	{
@@ -4534,7 +4534,7 @@ y;
 [Imperative]
 {
 	a = 1;
-	b = { 1,1,1 };
+	b = [ 1,1,1 ];
 	x = 0;
 	
 	if( a == 1 )
@@ -4563,7 +4563,7 @@ y;
 [Imperative]
 {
 	i = 1;
-	a = {1,2,3,4,5};
+	a = [1,2,3,4,5];
 	x = 0;
 	
 	while( i <= 5 )
@@ -4594,7 +4594,7 @@ y;
             string src = @"x;
 [Imperative]
 {
-	a = { 1, 2, 3 };
+	a = [ 1, 2, 3 ];
     x = 0;
 	
 	for( y in a )
@@ -4612,7 +4612,7 @@ y;
             string src = @"x;
 [Imperative]
 {
-	a = { 1,2,3,4,5 };
+	a = [ 1,2,3,4,5 ];
 	x = 0;
 	
 	for ( i in a )
@@ -4639,7 +4639,7 @@ y;
             string src = @"x;
 [Imperative]
 {
-	a = { 1,2,3 };
+	a = [ 1,2,3 ];
 	x = 0;
 	
 	for( y in a )
@@ -4675,8 +4675,8 @@ a5;
 a6;
 [Imperative]
 {
-	a = {0, 0, 0, 0, 0, 0};
-	b = {5, 4, 3, 2, 1, 0, -1, -2};
+	a = [0, 0, 0, 0, 0, 0];
+	b = [5, 4, 3, 2, 1, 0, -1, -2];
 	i = 5;
 	for( x in b )
 	{
@@ -4706,7 +4706,7 @@ a6;
 a7;
 [Imperative]
 {
-	a = {1,2,3,4,5,6,7};
+	a = [1,2,3,4,5,6,7];
 	i = 0;
 	for( x in a )
 	{
@@ -4735,7 +4735,7 @@ a7;
             string src = @"x;
 [Imperative]
 {
-	a = {};
+	a = [];
 	x = 0;
 	for( i in a )
 	{
@@ -4774,7 +4774,7 @@ a7;
             string src = @"x;
 [Imperative]
 {
-	a = { 1,2,3 };
+	a = [ 1,2,3 ];
 	x = 0;
 	for ( i in a )
 	{
@@ -4796,7 +4796,7 @@ a7;
             string src = @"x;
 [Imperative]
 {
-	a = {{6},{5,4},{3,2,1}};
+	a = [[6],[5,4],[3,2,1]];
 	x = 0;
 	
     for ( i in a )
@@ -4819,7 +4819,7 @@ a7;
             string src = @"x;
 [Imperative]
 {
-	a = { 1,null,null };
+	a = [ 1,null,null ];
 	x = 1;
 	
 	for( i in a )
@@ -4837,10 +4837,10 @@ a7;
         public void DebugWatch583_T33_ForLoopToReplaceReplicationGuides()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"a = { 1, 2 };
-b = { 3, 4 };
+            string src = @"a = [ 1, 2 ];
+b = [ 3, 4 ];
 //c = a<1> + b <2>;
-dummyArray = { { 0, 0 }, { 0, 0 } };
+dummyArray = [ [ 0, 0 ], [ 0, 0 ] ];
 counter1 = 0;
 counter2 = 0;
 [Imperative]
@@ -4875,7 +4875,7 @@ a4 = dummyArray[1][1];";
             string src = @"sum;
 [Imperative]
 {
-	a = { 1, 2, 3, 4 };
+	a = [ 1, 2, 3, 4 ];
 	sum = 0;
 	
 	for(i in a )
@@ -4898,7 +4898,7 @@ a4 = dummyArray[1][1];";
             string src = @"sum;
 [Imperative]
 {
-	a = { {1, 2, 3}, {4}, {5,6} };
+	a = [ [1, 2, 3], [4], [5,6] ];
 	sum = 0;
 	
 	for(i in a )
@@ -4921,7 +4921,7 @@ a4 = dummyArray[1][1];";
             string src = @"b;
 [Associative]
 {
-	a = { {1, 2, 3}, {4}, {5,6} };
+	a = [ [1, 2, 3], [4], [5,6] ];
 	
 	def forloop :int ( a: int[]..[] )
 	{
@@ -4954,7 +4954,7 @@ a4 = dummyArray[1][1];";
         public void DebugWatch587_T37_Defect_1454517()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"	a = { 4,5 };
+            string src = @"	a = [ 4,5 ];
 	
 	b =[Imperative]
 	{
@@ -4976,7 +4976,7 @@ a4 = dummyArray[1][1];";
         public void DebugWatch588_T38_Defect_1454517_2()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"	a = { 4,5 };
+            string src = @"	a = [ 4,5 ];
 	x = 0;
 	
 	[Imperative]
@@ -5009,7 +5009,7 @@ a4 = dummyArray[1][1];";
 	}
 	return = x;
 }
-a = { 4,5 };	
+a = [ 4,5 ];	
 b;
 [Imperative]
 {
@@ -5027,7 +5027,7 @@ b;
             string src = @"x;
 [Associative]
 {
-	a = { 4,5 };
+	a = [ 4,5 ];
    
 	[Imperative]
 	{
@@ -5048,10 +5048,10 @@ b;
         public void DebugWatch594_T40_Create_3_Dim_Collection_Using_For_Loop()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"x = { { { 0, 0} , { 0, 0} }, { { 0, 0 }, { 0, 0} }};
-a = { 0, 1 };
-b = { 2, 3};
-c = { 4, 5 };
+            string src = @"x = [ [ [ 0, 0] , [ 0, 0] ], [ [ 0, 0 ], [ 0, 0] ]];
+a = [ 0, 1 ];
+b = [ 2, 3];
+c = [ 4, 5 ];
 y = [Imperative]
 {
 	c1 = 0;
@@ -5097,7 +5097,7 @@ def foo :int[]..[]( a : int[], b:int[], c :int[])
 {
 	y = [Imperative]
 	{
-		x = { { { 0, 0} , { 0, 0} }, { { 0, 0 }, { 0, 0} }};
+		x = [ [ [ 0, 0] , [ 0, 0] ], [ [ 0, 0 ], [ 0, 0] ]];
 		c1 = 0;
 		for ( i in a)
 		{
@@ -5118,9 +5118,9 @@ def foo :int[]..[]( a : int[], b:int[], c :int[])
 	}
 	return = y;
 }
-a = { 0, 1 };
-b = { 2, 3};
-c = { 4, 5 };
+a = [ 0, 1 ];
+b = [ 2, 3];
+c = [ 4, 5 ];
 y = foo ( a, b, c );
 p1 = y[0][0][0];
 p2 = y[0][0][1];
@@ -5172,12 +5172,12 @@ z;
  b4 = -101.99;
  b5 = 10.0009;
  
- c1 = { 0, 1, 2, 3};
- c2 = { 1, 0.2};
- c3 = { 0, 1.4, true };
- c4 = {{0,1}, {2,3 } };
+ c1 = [ 0, 1, 2, 3];
+ c2 = [ 1, 0.2];
+ c3 = [ 0, 1.4, true ];
+ c4 = [[0,1], [2,3 ] ];
  
- x = {0, 0, 0, 0};
+ x = [0, 0, 0, 0];
  if(a1 == 2 ) // pass condition
  {
      x[0] = 1;
@@ -5196,7 +5196,7 @@ z;
  }
  
  
- y = {0, 0, 0, 0, 0};
+ y = [0, 0, 0, 0, 0];
  if(b1 == 1.0 ) // pass condition
  {
      y[0] = 1;
@@ -5219,7 +5219,7 @@ z;
  }
  
  
- z = {0, 0, 0, 0};
+ z = [0, 0, 0, 0];
  if(c1[0] == 0 ) // pass condition
  {
      z[0] = 1;
@@ -5734,7 +5734,7 @@ f;
             string src = @"c;
 [Imperative]
 {
-    a = { 0, 4, 2, 3 };
+    a = [ 0, 4, 2, 3 ];
 	b = 1;
     c = 0;
 	if(a > b)
@@ -5760,7 +5760,7 @@ f;
             string src = @"c;
 [Imperative]
 {
-    a = { 0, 4, 2, 3 };
+    a = [ 0, 4, 2, 3 ];
 	b = 1;
     c = 0;
 	if(a[0] > b)
@@ -6215,9 +6215,9 @@ c;
             string src = @"d2;
 [Associative]
 {
-    a2 = { 0, 1 };
+    a2 = [ 0, 1 ];
 	b2 = 1;
-	d2 = a2 > b2 ? true : { false, false};
+	d2 = a2 > b2 ? true : [ false, false];
     //f2 = a2 > b2;	
 }";
             WatchTestFx.GeneratePrintStatements(src, ref map);
@@ -6232,7 +6232,7 @@ c;
             string src = @"f2;
 [Associative]
 {
-    a2 = { 0, 1 };
+    a2 = [ 0, 1 ];
     b2 = 1;	
     f2 = a2 > b2;	
 }";
@@ -6248,9 +6248,9 @@ c;
             string src = @"f2;
 [Associative]
 {
-    a2 = { 0, 1 };
+    a2 = [ 0, 1 ];
     b2 = 1;
-    d2 = a2 > b2 ? true : { false, false};
+    d2 = a2 > b2 ? true : [ false, false];
     f2 = a2 > b2;	
 }";
             WatchTestFx.GeneratePrintStatements(src, ref map);
@@ -6267,7 +6267,7 @@ d;
 f;
 [Imperative]
 {
-    a = { 0, 1 };
+    a = [ 0, 1 ];
 	b = 1;
 	c = -1;
 	if(a > b)
@@ -6278,7 +6278,7 @@ f;
 	{
 		c = 1;
 	}
-    d = a > b ? true : { false, false};
+    d = a > b ? true : [ false, false];
     f = a > b;
 	
 }";
@@ -6370,7 +6370,7 @@ d2 = ( null == 0 ) ? 1 : 0;
 		{
 			b = b + 4;
 		}
-        return = { b, d };		
+        return = [ b, d ];		
 	}	
 	return = c;
 }
@@ -6415,7 +6415,7 @@ A;
 	Rameshwar = 80;
 	Jun = 68;
 	Roham = 50;
-	Smartness = { BenBarnes, BenGoh, Jun, Rameshwar, Roham }; // { 1, 0, 1, 1, 0 }
+	Smartness = [ BenBarnes, BenGoh, Jun, Rameshwar, Roham ]; // { 1, 0, 1, 1, 0 }
 	Results = Smartness > Einstein ? Passed : Failed;
 	
 }";
@@ -6458,9 +6458,9 @@ A;
 	d = ((c - c / 2 * 2) > 0)? c : c+1 ; //5 
 	e1 = ((b>(d-b+d))) ? d : (d+1); //5
 	//inline conditional, returning different sized collections
-	c1 = {1,2,3};
-	c2 = {1,2};
-	a1 = {1, 2, 3, 4};
+	c1 = [1,2,3];
+	c2 = [1,2];
+	a1 = [1, 2, 3, 4];
 	b1 = a1>3?true:a1; // expected : {1, 2, 3, true}
 	b2 = a1>3?true:c1; // expected : {1, 2, 3}
 	b3 = a1>3?c1:c2;   // expected : {1, 2}
@@ -6477,8 +6477,8 @@ A;
             string src = @"x;
 [Imperative]
 {
-	a = { 0, 1, 2, 4};
-	x = a > 1 ? 0 : {1,1}; // { 1, 1} ? 
+	a = [ 0, 1, 2, 4];
+	x = a > 1 ? 0 : [1,1]; // { 1, 1} ? 
 	x_0 = x[0];
 	x_1 = x[1];
 }
@@ -6525,11 +6525,11 @@ h;
 c1;c2;c3;c4;
 [Imperative]
 {
-	a = { 0, 1, 2};
-	b = { 3, 11 };
+	a = [ 0, 1, 2];
+	b = [ 3, 11 ];
 	c = 5;
-	d = { 6, 7, 8, 9};
-	e = { 10 };
+	d = [ 6, 7, 8, 9];
+	e = [ 10 ];
 	x1 = a < 5 ? b : 5;
 	t1 = x1[0];
 	t2 = x1[1];
@@ -6556,7 +6556,7 @@ c1;c2;c3;c4;
 		c3 = c3 + 1;
 	}
 	
-	x4 = b > e ? d : { 0, 1};
+	x4 = b > e ? d : [ 0, 1];
 	t7 = x4[0];	
 	c4 = 0;
 	for (i in x4)
@@ -6586,8 +6586,8 @@ c = 2> 1 && 4>3 ? 1 : 0;
 d = 1 == 1 || (1 == 0) ? 1 : 0;
 e1 = a > b && c > d ? 1 : 0;
 f = a <= b || c <= d ? 1 : 0;
-g = foo({ 1, 2 }) > 3+ foo({4,5,6}) ?  1 : 3+ foo({4,5,6});
-i = {1,3} > 2 ? 1: 0;";
+g = foo([ 1, 2 ]) > 3+ foo([4,5,6]) ?  1 : 3+ foo([4,5,6]);
+i = [1,3] > 2 ? 1: 0;";
             WatchTestFx.GeneratePrintStatements(src, ref map);
             WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
         }
@@ -6647,7 +6647,7 @@ a2;
             string src = @"
 a1 =  1 > 2 ? true : 2 > 1 ? 2 : 1;
 a2 =  1 > 2 ? true : 0..3;
-b = {0,1,2,3};
+b = [0,1,2,3];
 a3 = 1 > 2 ? true : b;";
             WatchTestFx.GeneratePrintStatements(src, ref map);
             WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
@@ -6660,7 +6660,7 @@ a3 = 1 > 2 ? true : b;";
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
             string src = @"[Imperative] 
 {
-    a = { 0, 1, 2}; 
+    a = [ 0, 1, 2]; 
     xx = a < 1 ? 1 : 0;
 }";
             WatchTestFx.GeneratePrintStatements(src, ref map);
@@ -6983,11 +6983,11 @@ factorial_a;
 {
 	result = [Imperative]
     {
-		array = { 1, 2 };
+		array = [ 1, 2 ];
 		counter = 0;
 		while( counter < col)
 		{
-			array[counter] = { 1, 2};
+			array[counter] = [ 1, 2];
 			counter = counter + 1;
 		}
 		return = array;
@@ -7115,7 +7115,7 @@ x2 = test(0);";
 	a[0] = 0;
 	return = a;
 }
-	a = {1,2,3};
+	a = [1,2,3];
 	c = foo ( a  );
 	d = c[0];
 	e = c[1];";
@@ -7129,13 +7129,13 @@ x2 = test(0);";
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
             string src = @"//testing Transpose
-x = {{1,2},{3,4}};
+x = [[1,2],[3,4]];
 y = Transpose(x) ;
-a={1,2};
+a=[1,2];
 b = Transpose(a);
-a1 = {{{1,2}},{{3,4}}};
+a1 = [[[1,2]],[[3,4]]];
 b1 = Transpose(a1);
-x1 = {{1,2},{3,4,5}};
+x1 = [[1,2],[3,4,5]];
 y1 = Transpose(x1);
 ";
             WatchTestFx.GeneratePrintStatements(src, ref map);
@@ -7149,19 +7149,19 @@ y1 = Transpose(x1);
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
             string src = @"//testing AllFalse
 w = false ;
-x = {1,2,3,false};
-y = {-1,-2,3,4};
-z = {w,w,w,w};
+x = [1,2,3,false];
+y = [-1,-2,3,4];
+z = [w,w,w,w];
 a = AllFalse(a);//false 
 b = AllFalse(y); //false
 c = AllFalse(z) ; //true 
-w1 = {P1, ""s"", {1,2,3},true,false};
+w1 = [P1, ""s"", [1,2,3],true,false];
 a1 = AllFalse(w1);
 a2 = AllFalse(3);
 w2 = 5.0;
 a3 = AllFalse(w2);
 a4 = AllFalse(null);
-w3 = {};
+w3 = [];
 a5 = AllFalse(w3);
 ";
             WatchTestFx.GeneratePrintStatements(src, ref map);
@@ -7175,22 +7175,22 @@ a5 = AllFalse(w3);
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
             string src = @"//testing CountFalse
 w = false ;
-x = {1,2,3,false};
-y = {-1,-2,3,4};
-z = {w,w,w,true};
+x = [1,2,3,false];
+y = [-1,-2,3,4];
+z = [w,w,w,true];
 a = CountFalse(x);//1 
 b = CountFalse(y); //0
 c = CountFalse(z) ; //3
-g = {false};
+g = [false];
 h = CountFalse(g); //1 
-x1 = {{true,false},true,false,{{{false}}},{false,false}};
+x1 = [[true,false],true,false,[[[false]]],[false,false]];
 y1 = CountFalse(x1);
 //negative testing
 a1 = ""s"";
 b1 = CountFalse(a1); //0
 b2 = CountFalse(a2); //0
 b3 = CountFalse(null); //0
-a4 = {};
+a4 = [];
 b4 = CountFalse(a4); //0";
             WatchTestFx.GeneratePrintStatements(src, ref map);
             WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
@@ -7203,20 +7203,20 @@ b4 = CountFalse(a4); //0";
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
             string src = @"//testing countTrue
 w = true ;
-x = {1,2,3,true};
-y = {-1,-2,3,4};
-z = {w,w,w,w};
+x = [1,2,3,true];
+y = [-1,-2,3,4];
+z = [w,w,w,w];
 a = countTrue(x);//1 
 b = countTrue(y); //0
 c = countTrue(z) ; //4 
-x1 = {{true,false},true,false,{{{false}}},{false,false}};
+x1 = [[true,false],true,false,[[[false]]],[false,false]];
 y1 = countTrue(x1);
 //negative testing
 a1 = ""s"";
 b1 = countTrue(a1); //0
 b2 = countTrue(a2); //0
 b3 = countTrue(null); //0
-a4 = {};
+a4 = [];
 b4 = countTrue(a4); //0";
             WatchTestFx.GeneratePrintStatements(src, ref map);
             WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
@@ -7228,8 +7228,8 @@ b4 = countTrue(a4); //0";
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
             string src = @"//testing flatten()
-x = {{1.1},{2.3,3}};
-y = {{{-1,2,-3}},6};
+x = [[1.1],[2.3,3]];
+y = [[[-1,2,-3]],6];
 a = Flatten(x);
 b = Flatten(y); 
 c = Flatten(y * 0.1);
@@ -7239,7 +7239,7 @@ e1 = Flatten(-0.2);
 a1 = ""s"";
 b1 = Flatten(a1); //b1 = ""s""
 b3 = Flatten(null); // b3 = null
-a4 = {};
+a4 = [];
 b4 = Flatten(a4); //b4 = null
 ";
             WatchTestFx.GeneratePrintStatements(src, ref map);
@@ -7261,13 +7261,13 @@ c = floor(z) ; //-1
 d = floor(-1.5) ;//-2
 e1 = floor(-2);//-2
 g = floor(2.1);//2
-h = floor({0.2*0.2 , 1.2 , -1.2 , 3.4 , 3.6 , -3.6});//{0,1,-2,3,2,-4}
+h = floor([0.2*0.2 , 1.2 , -1.2 , 3.4 , 3.6 , -3.6]);//{0,1,-2,3,2,-4}
 //negative testing
 a1 = ""s"";
 b1 = floor(a1); //null
 b2 = floor(a2); //null
 b3 = floor(null); //null
-a4 = {};
+a4 = [];
 b4 = floor(a4); //null";
             WatchTestFx.GeneratePrintStatements(src, ref map);
             WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
@@ -7283,7 +7283,7 @@ x =1 ;
 y = 10000;
 a = log10(x) ;//0
 b = log10(10) ; //1
-c = log10({0.1,-1,-0.9,0.9,y});//{ -1, -1.#IO, -1.#IO, -0.105, 4.000 }
+c = log10([0.1,-1,-0.9,0.9,y]);//{ -1, -1.#IO, -1.#IO, -0.105, 4.000 }
 d = log10(a); // expected -1.#IO(invalid output) but then d = -2147483648
 ";
             WatchTestFx.GeneratePrintStatements(src, ref map);
@@ -7301,19 +7301,19 @@ b = map(4,5,12); //1
 c = map(2.3,5,9); //1
 d = map(2.3,5,0.2); //0
 e1 = map(2.3,5.2,0.2);  //0 
-f = map({1,2.2,3,4},{2,4.2,3.4,5},1.2);//{0.200, 0, 0, 0 }
-g = map({1,2},{3.4,4.5},{0,1}); // {0,0}
-g1 = map({1,2,3},{4,5},{0,1}); // 
+f = map([1,2.2,3,4],[2,4.2,3.4,5],1.2);//{0.200, 0, 0, 0 }
+g = map([1,2],[3.4,4.5],[0,1]); // {0,0}
+g1 = map([1,2,3],[4,5],[0,1]); // 
 g2 = map(4,4,2); // 
 g3 = map(4,4,4); // 
 //negative testing
-g4 = map({{1,2},{2,3}},{1,2},3);
+g4 = map([[1,2],[2,3]],[1,2],3);
 b1 = map(""s"",8,12); //1 
 b3 = map(null,4,5); //null
 b4 = map(null,null,null); //null
 b5 = map(4,null,5); //null
 b6 = map(5,4,null); //null
-b7 = map({},5,4); //null
+b7 = map([],5,4); //null
 ";
             WatchTestFx.GeneratePrintStatements(src, ref map);
             WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
@@ -7328,17 +7328,17 @@ b7 = map({},5,4); //null
 a = mapTo(3,8,12,4,5); //5
 b = mapTo(4,5,12,3,4); //4
 c = mapTo(2.3,5,9,10,12); //12
-d = mapTo(2.3,5,0.2,{1,2,3,4},5); //{1,2,3,4}
-e1 = mapTo(-2.3,5.2,0.2,{-2.3,3.4},{4.5,5.6});  //{-0.033,4.133}
-f = mapTo({1,2},{3.4,4.5},{0,1},2,3); // {2,2}
+d = mapTo(2.3,5,0.2,[1,2,3,4],5); //{1,2,3,4}
+e1 = mapTo(-2.3,5.2,0.2,[-2.3,3.4],[4.5,5.6]);  //{-0.033,4.133}
+f = mapTo([1,2],[3.4,4.5],[0,1],2,3); // {2,2}
 //negative testing
-g4 = map({{1,2},{2,3}},{1,2},3,4,5);
+g4 = map([[1,2],[2,3]],[1,2],3,4,5);
 b1 = map(""s"",8,12,14,15); //1 
 b3 = map(null,4,5,5,6); //null
 b4 = map(null,null,null,null,null); //null
 b5 = map(4,null,5,6,7); //null
 b6 = map(5,4,null,7,8); //null
-b7 = map({},5,4,8,9); //null
+b7 = map([],5,4,8,9); //null
 ";
             WatchTestFx.GeneratePrintStatements(src, ref map);
             WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
@@ -7354,8 +7354,8 @@ a = max(4.5,6.5); //6.5
 b = 10;
 c = 3 ; 
 d = max(b,c); //10
-e1 = {a,b,c};//{ 6.5, 10, 3 }
-f = max(e,{2,3.5,4}); //{ 6.5, 10, 4 }
+e1 = [a,b,c];//{ 6.5, 10, 3 }
+f = max(e,[2,3.5,4]); //{ 6.5, 10, 4 }
 g = max(e<2>,f<1>); //{ { 6.5, 10, 6.5 }, { 10, 10, 10 }, { 6.500, 10, 4 } }
 e = max(-1,-2); //-1 , g = { { 2 }, { 3.5 }, { 4 } } and f = {2,3.5,4}
 a1 = max(4/5,4.0/5.0);
@@ -7364,8 +7364,8 @@ a1 = ""s"";
 b1 = max(a1,4); //null
 b2 = max(a2,5); //null
 b3 = max(null,5); //null
-a4 = {};
-b4 = max(a4,{1,2}); //null";
+a4 = [];
+b4 = max(a4,[1,2]); //null";
             WatchTestFx.GeneratePrintStatements(src, ref map);
             WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
         }
@@ -7380,8 +7380,8 @@ a = min(5,6); //5
 b = 10.5;
 c = 3.5 ; 
 d = min(b,c); //3.5
-e1 = {a,b,c};//{ 5, 10.500, 3.500 }
-f = min(e,{2,3.5,4}); //{ 2, 3.500, 3.500 }
+e1 = [a,b,c];//{ 5, 10.500, 3.500 }
+f = min(e,[2,3.5,4]); //{ 2, 3.500, 3.500 }
 g = min(e<2>,f<1>); //{ { 2, 2, 2 }, { 3.500, 3.500, 3.500 }, { 3.500, 3.500, 3.500 } }
 e = min(-1,-2); //-2 , g = { { -2 }, { -2 }, { -2 } } and f = { -2, -2, -2 }
 ";
@@ -7396,21 +7396,21 @@ e = min(-1,-2); //-2 , g = { { -2 }, { -2 }, { -2 } } and f = { -2, -2, -2 }
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
             string src = @"//testing rand()
 x = 1 ;
-y = {1,3,5};
-z = {8,7,6}; 
+y = [1,3,5];
+z = [8,7,6]; 
 a = rand(x,10) ;
 b = rand(2,10);
 c = rand(9,9.5);//No method found matching the given argument(s) in global context
                  //Updated variable c = null*/
-d = rand({1,2,3,4,5},10);
-e1 = rand({1,2,3},{4,5,6});
+d = rand([1,2,3,4,5],10);
+e1 = rand([1,2,3],[4,5,6]);
 f = rand(y<1> ,z<2>);
 //negative testing
 a1 = ""s"";
 b1 = rand(a1,3); //null
 b2 = rand(5,a2); //null
 b3 = rand(3,null); //null
-a4 = {};
+a4 = [];
 b4 = rand(a4,6); //null
 ";
             WatchTestFx.GeneratePrintStatements(src, ref map);
@@ -7427,7 +7427,7 @@ a = 90 ;
 b = sin(a);
 c = a * 3 ;
 d = sin(c);
-e1 = {0,30,45,60,90};
+e1 = [0,30,45,60,90];
 f = sin(e);
 /*
 testBSplineCurve = BSplineCurve.ByPoint(points);
@@ -7451,9 +7451,9 @@ Super class should be included
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
             string src = @"//testing someFalse
 w = false ;
-x = {1,2,3,false};
-y = {-1,-2,3,4};
-z = {w,w,w,w};
+x = [1,2,3,false];
+y = [-1,-2,3,4];
+z = [w,w,w,w];
 a = someFalse(x);//true 
 b = someFalse(y); //false
 c = someFalse(z) ; //true ";
@@ -7468,9 +7468,9 @@ c = someFalse(z) ; //true ";
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
             string src = @"//testing someNulls 
 w = null ;
-x = {1,2,3,null};
-y = {-1,-2,3,4};
-z = {w,w,w,w};
+x = [1,2,3,null];
+y = [-1,-2,3,4];
+z = [w,w,w,w];
 a = someNulls(x);//false 
 b = someNulls(y); //false
 c = someNulls(z) ; //true ";
@@ -7485,9 +7485,9 @@ c = someNulls(z) ; //true ";
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
             string src = @"//testing someTrue
 w = true ;
-x = {1,2,3,true};
-y = {-1,-2,3,4};
-z = {w,w,w,w};
+x = [1,2,3,true];
+y = [-1,-2,3,4];
+z = [w,w,w,w];
 a = someTrue(x);//true 
 b = someTrue(y); //false
 c = someTrue(z) ; //true ";
@@ -7505,9 +7505,9 @@ a = 90 ;
 b = tan(a);
 c = a * 3 ;
 d = tan(c);
-e = {0,30,45,60,90};
+e = [0,30,45,60,90];
 f = tan(e);
-g = tan({180,360}); //{-0,-0}
+g = tan([180,360]); //{-0,-0}
 h = tan(-90);
 i = tan(10);
 j = tan(135); //-1
@@ -7525,8 +7525,8 @@ l = tan(0); //0";
             string src = @"result =
 [Imperative]
 {
-	arr1 = {1,null};
-	arr2 = {1,2};
+	arr1 = [1,null];
+	arr2 = [1,2];
 	if(SomeNulls(arr1))
 	{
 		arr2 = arr1;
@@ -7545,8 +7545,8 @@ l = tan(0); //0";
             string src = @"result =
 [Imperative]
 {
-	arr1 = {};
-	arr2 = {1,2};
+	arr1 = [];
+	arr2 = [1,2];
 	if(SomeNulls(arr1))
 	{
 		arr2 = arr1;
@@ -7565,12 +7565,12 @@ l = tan(0); //0";
             string src = @"result = 
 [Imperative]
 {
-	a = {1,3,5,7,{}};
-	b = {null,null,true};
-	c = {SomeNulls({1,null})};
-	d = {a,b,c};
+	a = [1,3,5,7,[]];
+	b = [null,null,true];
+	c = [SomeNulls([1,null])];
+	d = [a,b,c];
 	j = 0;
-	e = {};
+	e = [];
 	
 	for(i in d)
 	{
@@ -7592,15 +7592,15 @@ l = tan(0); //0";
             string src = @"result = 
 [Imperative]
 {
-	a = {1,3,5,7,{}};
-	b = {null,null,true};
-	c = {{}};
+	a = [1,3,5,7,[]];
+	b = [null,null,true];
+	c = [[]];
 	
-	d = {a,b,c};
+	d = [a,b,c];
 	
 	i = 0;
 	j = 0;
-	e = {};
+	e = [];
 	
 	while(i<Count(d))
 	{
@@ -7622,7 +7622,7 @@ l = tan(0); //0";
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
             string src = @"def foo(x:var[]..[])
 {
-	a = {};
+	a = [];
 	i = 0;
 	[Imperative]
 	{
@@ -7637,11 +7637,11 @@ l = tan(0); //0";
 	}
 	return  = Count(a);
 }
-b = {
-{null},
-{1,2,3,{}},
-{0}
-};
+b = [
+[null],
+[1,2,3,[]],
+[0]
+];
 result = foo(b);
 ";
             WatchTestFx.GeneratePrintStatements(src, ref map);
@@ -7656,9 +7656,9 @@ result = foo(b);
             string src = @"result;
 [Imperative]
 {
-a = {null,1};
-b = {};
-c = {1,2,3};
+a = [null,1];
+b = [];
+c = [1,2,3];
 result = SomeNulls(c)?SomeNulls(b):SomeNulls(a);
 }";
             WatchTestFx.GeneratePrintStatements(src, ref map);
@@ -7674,7 +7674,7 @@ result = SomeNulls(c)?SomeNulls(b):SomeNulls(a);
 [Imperative]
 {
 i = 0;
-arr = {{1,1.2} , {null,0}, {true, false} };
+arr = [[1,1.2] , [null,0], [true, false] ];
 a1 = 0;
 a2 = 2;
 d = 1;
@@ -7705,11 +7705,11 @@ return = -1;
 	x = a[i];
 }
 */
-a = {
-{{null, 1},1},
-{null},
-{1,2,false}
-};
+a = [
+[[null, 1],1],
+[null],
+[1,2,false]
+];
 i = 0..2;
 j = 0;
 [Imperative]
@@ -7746,15 +7746,15 @@ j = 0;
 n;
 [Imperative]
 {
-	a = {1,2,null};
-	b = {null, null};
+	a = [1,2,null];
+	b = [null, null];
 	
 	[Associative]
 	{
-		a = {1};
+		a = [1];
 		b = a;
 		m = SomeNulls(b);
-		a = {1,null,{}};
+		a = [1,null,[]];
 		n = m;
 	}
 }";
@@ -7769,20 +7769,20 @@ n;
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
             string src = @"[Imperative]
 {
-	a = {false};
+	a = [false];
 	if(!SomeNulls(a))
 	{
 	[Associative]
 	{
 		
 		b = a;
-		a = {null};
+		a = [null];
 		
 		m = SomeNulls(b);//true,false
 		[Imperative]
 		{
 			c = a;
-			a = {2};
+			a = [2];
 			n = SomeNulls(c);//true
 		}
 		
@@ -7804,17 +7804,17 @@ n;
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
             string src = @"
 	
-	a = {{}};
+	a = [[]];
 	b = a;
 	
 	m = SomeNulls(b);//false
 	[Imperative]
 	{
 		c = a;
-		a = {null,{}};
+		a = [null,[]];
 		m = SomeNulls(c);//false
 	}
-	a = {null};
+	a = [null];
 	n = SomeNulls(b);//true;
 ";
             WatchTestFx.GeneratePrintStatements(src, ref map);
@@ -7829,8 +7829,8 @@ n;
             string src = @"result =
 [Imperative]
 {
-	arr1 = {true,{{{{true}}}},null};
-	arr2 = {{true},{false},null};
+	arr1 = [true,[[[[true]]]],null];
+	arr2 = [[true],[false],null];
 	if(CountTrue(arr1) > 1)
 	{
 		arr2 = arr1;
@@ -7849,13 +7849,13 @@ n;
             string src = @"result = 
 [Imperative]
 {
-	a = {1,3,5,7,{}};
-	b = {null,null,{1,true}};
-	c = {CountTrue({1,null})};
+	a = [1,3,5,7,[]];
+	b = [null,null,[1,true]];
+	c = [CountTrue([1,null])];
 	
-	d = {a,b,c};
+	d = [a,b,c];
 	j = 0;
-	e = {};
+	e = [];
 	
 	for(i in d)
 	{
@@ -7876,15 +7876,15 @@ n;
             string src = @"result = 
 [Imperative]
 {
-	a = {1,3,5,7,{1}};//0
-	b = {1,null,true};//1
-	c = {{false}};//0
+	a = [1,3,5,7,[1]];//0
+	b = [1,null,true];//1
+	c = [[false]];//0
 	
-	d = {a,b,c};
+	d = [a,b,c];
 	
 	i = 0;
 	j = 0;
-	e = {};
+	e = [];
 	
 	while(i<Count(d))
 	{
@@ -7905,7 +7905,7 @@ n;
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
             string src = @"def foo(x:var[]..[])
 {
-	a = {};
+	a = [];
 	i = 0;
 	[Imperative]
 	{
@@ -7917,13 +7917,13 @@ n;
 	}
 	return  = a;
 }
-b = {
-{null},//0
-{1,2,3,{true}},//1
-{0},//0
-{true, true,1,true, null},//3
-{x, null}//0
-};
+b = [
+[null],//0
+[1,2,3,[true]],//1
+[0],//0
+[true, true,1,true, null],//3
+[x, null]//0
+];
 result = foo(b);
 ";
             WatchTestFx.GeneratePrintStatements(src, ref map);
@@ -7939,9 +7939,9 @@ result = foo(b);
 result = 
 [Imperative]
 {
-	a1 = {1,true, null};//1
+	a1 = [1,true, null];//1
 	a2 = 8;
-	a3 = {2,{true,{true,1}},{false,x, true}};//3
+	a3 = [2,[true,[true,1]],[false,x, true]];//3
 	a = CountTrue(a1)..a2..CountTrue(a3);//{1,4,7}
 	
 	return = CountTrue(a);
@@ -7958,9 +7958,9 @@ result =
             string src = @"result = 
 [Imperative]
 {
-	a1 = {1,true, null};//1
+	a1 = [1,true, null];//1
 	a2 = 8;
-	a3 = {2,{true,{true,1}},{false,x, true}};//3
+	a3 = [2,[true,[true,1]],[false,x, true]];//3
 	a = CountTrue(a1)..a2..~CountTrue(a3);//{}
 	return = CountTrue(a);
 }";
@@ -7977,10 +7977,10 @@ result =
 result = 
 [Imperative]
 {
-	a1 = {1,true, null};//1
+	a1 = [1,true, null];//1
 	a2 = 8;
-	a3 = {2,{true,{true,1}},{false,x, true}};//3
-	a = {1.0,4.0,7.0};
+	a3 = [2,[true,[true,1]],[false,x, true]];//3
+	a = [1.0,4.0,7.0];
 	//a = CountTrue(a1)..a2..#CountTrue(a3);//{}
 	return = CountTrue(a);
 }";
@@ -7998,11 +7998,11 @@ def foo(x:int)
 {
 	return = x +1;
 }
-a = {true,{true},1};//2
-b = {null};
-c = {{{true}}};//1
-d = {{true},{false,{true,true}}};//3
-arr = {CountTrue(a),CountTrue(b),CountTrue(c),CountTrue(d)};
+a = [true,[true],1];//2
+b = [null];
+c = [[[true]]];//1
+d = [[true],[false,[true,true]]];//3
+arr = [CountTrue(a),CountTrue(b),CountTrue(c),CountTrue(d)];
 result = foo(arr);";
             WatchTestFx.GeneratePrintStatements(src, ref map);
             WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
@@ -8017,14 +8017,14 @@ result = foo(arr);";
 c;
 [Imperative]
 {
-	a1 = {true,0,1,1.0,null};
-	a2 = {false, CountTrue(a1),0.0};
+	a1 = [true,0,1,1.0,null];
+	a2 = [false, CountTrue(a1),0.0];
 	a3 = a1;
 	[Associative]
 	{
-		a1 = {true,{true}};
+		a1 = [true,[true]];
 		a4 = a2;
-		a2 = {true};
+		a2 = [true];
 		b = CountTrue(a4);//1
 	}
 	
@@ -8043,8 +8043,8 @@ c;
             string src = @"result =
 [Imperative]
 {
-	arr1 = {false,{{{{false}}}},null,0};
-	arr2 = {{true},{false},null,null};
+	arr1 = [false,[[[[false]]]],null,0];
+	arr2 = [[true],[false],null,null];
 	if(CountFalse(arr1) > 1)
 	{
 		arr2 = arr1;
@@ -8063,13 +8063,13 @@ c;
             string src = @"result = 
 [Imperative]
 {
-	a = {1,3,5,7,{}};
-	b = {null,null,{0,false}};
-	c = {CountFalse({{false},null})};
+	a = [1,3,5,7,[]];
+	b = [null,null,[0,false]];
+	c = [CountFalse([[false],null])];
 	
-	d = {a,b,c};
+	d = [a,b,c];
 	j = 0;
-	e = {};
+	e = [];
 	
 	for(i in d)
 	{
@@ -8090,15 +8090,15 @@ c;
             string src = @"result = 
 [Imperative]
 {
-	a = {1,3,5,7,{0}};//0
-	b = {1,null,false};//1
-	c = {{true}};//0
+	a = [1,3,5,7,[0]];//0
+	b = [1,null,false];//1
+	c = [[true]];//0
 	
-	d = {a,b,c};
+	d = [a,b,c];
 	
 	i = 0;
 	j = 0;
-	e = {};
+	e = [];
 	
 	while(i<Count(d))
 	{
@@ -8119,7 +8119,7 @@ c;
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
             string src = @"def foo(x:var[]..[])
 {
-	a = {};
+	a = [];
 	i = 0;
 	[Imperative]
 	{
@@ -8131,13 +8131,13 @@ c;
 	}
 	return  = a;
 }
-b = {
-{null},//0
-{1,2,3,{false}},//1
-{0},//0
-{false, false,0,false, null},//3
-{x, null}//0
-};
+b = [
+[null],//0
+[1,2,3,[false]],//1
+[0],//0
+[false, false,0,false, null],//3
+[x, null]//0
+];
 result = foo(b);
 ";
             WatchTestFx.GeneratePrintStatements(src, ref map);
@@ -8153,9 +8153,9 @@ result = foo(b);
 result = 
 [Imperative]
 {
-	a1 = {0,false, null};//1
+	a1 = [0,false, null];//1
 	a2 = 8;
-	a3 = {2,{false,{false,1}},{false,x, true}};//3
+	a3 = [2,[false,[false,1]],[false,x, true]];//3
 	a = CountFalse(a1)..a2..CountFalse(a3);//{1,4,7}
 	
 	return = CountFalse(a);
@@ -8173,10 +8173,10 @@ result =
 result = 
 [Imperative]
 {
-	a1 = {1,false, null};//1
+	a1 = [1,false, null];//1
 	a2 = 8;
-	a3 = {2,{false,{false,1}},{false,x, true}};//3
-	a = {1.0,4.0,7.0};
+	a3 = [2,[false,[false,1]],[false,x, true]];//3
+	a = [1.0,4.0,7.0];
 	//a = CountFalse(a1)..a2..#CountFalse(a3);//{}
 	return = CountFalse(a);
 }";
@@ -8194,11 +8194,11 @@ def foo(x:int)
 {
 	return = x +1;
 }
-a = {false,{false},0};//2
-b = {CountFalse({a[2]})};
-c = {{{false}}};//1
-d = {{false},{false,{true,false,0}}};//3
-arr = {CountFalse(a),CountFalse(b),CountFalse(c),CountFalse(d)};
+a = [false,[false],0];//2
+b = [CountFalse([a[2]])];
+c = [[[false]]];//1
+d = [[false],[false,[true,false,0]]];//3
+arr = [CountFalse(a),CountFalse(b),CountFalse(c),CountFalse(d)];
 result = foo(arr);";
             WatchTestFx.GeneratePrintStatements(src, ref map);
             WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
@@ -8213,14 +8213,14 @@ result = foo(arr);";
 c;
 [Imperative]
 {
-	a1 = {false,0,1,1.0,null};
-	a2 = {true, CountFalse(a1),0.0};
+	a1 = [false,0,1,1.0,null];
+	a2 = [true, CountFalse(a1),0.0];
 	a3 = a1;
 	[Associative]
 	{
-		a1 = {false,{false}};
+		a1 = [false,[false]];
 		a4 = a2;
-		a2 = {false};
+		a2 = [false];
 		b = CountFalse(a4);//1
 	}
 	
@@ -8236,10 +8236,10 @@ c;
         public void DebugWatch799_T034_AllFalse_IfElse()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"a = {false, false};//true
-b = {{false}};//true
-c = {false, 0};//false
-result = {};
+            string src = @"a = [false, false];//true
+b = [[false]];//true
+c = [false, 0];//false
+result = [];
 [Imperative]
 {
 	if(AllFalse(a)){
@@ -8268,17 +8268,17 @@ result = {};
 result = 
 [Imperative]
 {
-	a = {false,false0,0,null,x};//false
-	b = {false,false0,x};//false
-	c = {};//false
-	d = {{}};//false
+	a = [false,false0,0,null,x];//false
+	b = [false,false0,x];//false
+	c = [];//false
+	d = [[]];//false
 	
-	h = {
-	{{0}},
-	{false}
-};
-	e = {a,b ,c ,d,h};
-	f = {};
+	h = [
+	[[0]],
+	[false]
+];
+	e = [a,b ,c ,d,h];
+	f = [];
 	j = 0;
 	for(i in e)
 	{	
@@ -8313,13 +8313,13 @@ return = f;
 result = 
 [Imperative]
 {
-	a = {false,false0,0,null,x};//false
-	b = {false,false0,x};//false
-	c = {};//false
-	d = {{}};//false
-	e = {a,b ,c ,d};
+	a = [false,false0,0,null,x];//false
+	b = [false,false0,x];//false
+	c = [];//false
+	d = [[]];//false
+	e = [a,b ,c ,d];
 	i = 0;
-	f = {};
+	f = [];
 	j = 0;
 	while(!AllFalse(e[i])&& i < Count(e))
 	{	
@@ -8345,11 +8345,11 @@ return = f;
 {	
 	return = !x;
 }
-a1 = {0};
-a2 = {null};
-a3 = {!true};
-b = {a1,a2,a3};
-result = {foo(AllFalse(a1)),foo(AllFalse(a2)),foo(AllFalse(a3))};//true,true,false
+a1 = [0];
+a2 = [null];
+a3 = [!true];
+b = [a1,a2,a3];
+result = [foo(AllFalse(a1)),foo(AllFalse(a2)),foo(AllFalse(a3))];//true,true,false
 ";
             WatchTestFx.GeneratePrintStatements(src, ref map);
             WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
@@ -8360,11 +8360,11 @@ result = {foo(AllFalse(a1)),foo(AllFalse(a2)),foo(AllFalse(a3))};//true,true,fal
         public void DebugWatch805_T039_AllFalse_Inline()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"a1 = {false,{false}};
+            string src = @"a1 = [false,[false]];
 a = AllFalse(a1);//true
-b1 = {null,null};
+b1 = [null,null];
 b = AllFalse(b1);//false
-c = AllFalse({b});//t
+c = AllFalse([b]);//t
 result = a? c:b;//t";
             WatchTestFx.GeneratePrintStatements(src, ref map);
             WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
@@ -8376,10 +8376,10 @@ result = a? c:b;//t";
         public void DebugWatch807_T040_AllFalse_Replication()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"a = {
-	{{0}},
-	{false}
-};
+            string src = @"a = [
+	[[0]],
+	[false]
+];
 c = AllFalse(a);
 ";
             WatchTestFx.GeneratePrintStatements(src, ref map);
@@ -8391,9 +8391,9 @@ c = AllFalse(a);
         public void DebugWatch808_T042_AllFalse_DynamicArray()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"b = {};
-a = {{true},{false},{false},
-	{false,{true,false}}};
+            string src = @"b = [];
+a = [[true],[false],[false],
+	[false,[true,false]]];
 	
 	i = 0;
 	result2 = 
@@ -8421,16 +8421,16 @@ a = {{true},{false},{false},
 n;
 [Imperative]
 {
-	a = {false||true};
-	b = {""false""};
+	a = [false||true];
+	b = [""false""];
 	c = a;
-	a = {false};
+	a = [false];
 	[Associative]
 	{
 		
 		d = b;
 		
-		b = {false};
+		b = [false];
 		
 		m = AllFalse(c);//f
 		n = AllFalse(d);//t
@@ -8445,9 +8445,9 @@ n;
         public void DebugWatch811_T045_Defect_CountArray_1()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"a = {0,1,null};
-b = {m,{},a};
-c={};
+            string src = @"a = [0,1,null];
+b = [m,[],a];
+c=[];
 c[0] = 1;
 c[1] = true;
 c[2] = 0;
@@ -8455,7 +8455,7 @@ c[3] = 0;
 a1 = Count(a);
 b1 = Count(b);
 c1 = Count(c);
-result = {a1,b1,c1};";
+result = [a1,b1,c1];";
             WatchTestFx.GeneratePrintStatements(src, ref map);
             WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
         }
@@ -8468,7 +8468,7 @@ result = {a1,b1,c1};";
             string src = @"result=
 [Imperative]
 {
-a = {};
+a = [];
 b = a;
 a[0] = b;
 a[1] = ""true"";
@@ -8486,8 +8486,8 @@ return = Count(a);
         public void DebugWatch813_T045_Defect_CountArray_3()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"a = {};
-b = {null,1+2};
+            string src = @"a = [];
+b = [null,1+2];
 a[0] = b;
 a[1] = b[1];
 result = Count(a);";
@@ -8503,15 +8503,15 @@ result = Count(a);";
             string src = @"result = 
 [Imperative]
 {
-	a = {1,2,3,4};
-	b = {1.0,2.0,3.0,4.0};
-	c = {1.0,2,3,4.0};
-	d = {};
-	e = {{1,2,3,4}};
-	f = {true,1,2,3,4};
-	g = {null};
+	a = [1,2,3,4];
+	b = [1.0,2.0,3.0,4.0];
+	c = [1.0,2,3,4.0];
+	d = [];
+	e = [[1,2,3,4]];
+	f = [true,1,2,3,4];
+	g = [null];
 	
-	m= {-1,-1,-1,-1,-1,-1,-1};
+	m= [-1,-1,-1,-1,-1,-1,-1];
 	
 	if(Sum(a)>=0) m[0] = Sum(a);	
 	if(Sum(b)>=0) m[1] = Sum(b);
@@ -8538,11 +8538,11 @@ result = Count(a);";
 result = 
 [Imperative]
 {
-	a = {0,0.0};
-	b = {{}};
-	c = {m, DummyMath.Sum(a), b, 10.0};
+	a = [0,0.0];
+	b = [[]];
+	c = [m, DummyMath.Sum(a), b, 10.0];
 	
-	d = {a,b,c};
+	d = [a,b,c];
 	j = 0;
 	
 	for(i in d)
@@ -8567,14 +8567,14 @@ result =
 result = 
 [Imperative]
 {
-	a = {-2,0.0};
-	b = {{}};
-	c = {m, DummyMath.Sum(a), b, 10.0};
+	a = [-2,0.0];
+	b = [[]];
+	c = [m, DummyMath.Sum(a), b, 10.0];
 	
-	d = {a,b,c};
+	d = [a,b,c];
 	j = 0;
 	k = 0;
-	e = {};
+	e = [];
 	
 	while(j<Count(d))
 	{
@@ -8605,9 +8605,9 @@ result =
 		return = Sum(x);
 	}
 }
-a = {-0.1,true,{},null,1};
-b = {m+n,{{{1}}}};
-c = {Sum(a),Sum(b)};
+a = [-0.1,true,[],null,1];
+b = [m+n,[[[1]]]];
+c = [Sum(a),Sum(b)];
 result = foo(c);
 ";
             WatchTestFx.GeneratePrintStatements(src, ref map);
@@ -8619,10 +8619,10 @@ result = foo(c);
         public void DebugWatch819_T051_Sum_Inline()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"a = {1,{2,-3.00}};//0.0
+            string src = @"a = [1,[2,-3.00]];//0.0
 sum = Sum(a);
 b = Sum(a) -1;//-1.0
-c = Sum({a,b,-1});//-2.0;
+c = Sum([a,b,-1]);//-2.0;
 result = Sum(a)==0&& b==-1.00? b :c;
 ";
             WatchTestFx.GeneratePrintStatements(src, ref map);
@@ -8637,9 +8637,9 @@ result = Sum(a)==0&& b==-1.00? b :c;
             string src = @"result = 
 [Imperative]
 {
-	a1 = {1,true, null};//1
+	a1 = [1,true, null];//1
 	a2 = 8;
-	a3 = {2,{true,{true,1.0}},{false,x, true}};//3.0
+	a3 = [2,[true,[true,1.0]],[false,x, true]];//3.0
 	a = Sum(a1)..a2..Sum(a3);//{1,4,7}
 	
 	return = Sum(a);//12.0
@@ -8653,7 +8653,7 @@ result = Sum(a)==0&& b==-1.00? b :c;
         public void DebugWatch821_T053_Sum_Replication()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"a = {1,2,3};
+            string src = @"a = [1,2,3];
 ";
             WatchTestFx.GeneratePrintStatements(src, ref map);
             WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
@@ -8664,12 +8664,12 @@ result = Sum(a)==0&& b==-1.00? b :c;
         public void DebugWatch822_T054_Sum_DynamicArr()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"a = {};
-b = {1.0,2,3.0};
-c = {null,m,""1""};
+            string src = @"a = [];
+b = [1.0,2,3.0];
+c = [null,m,""1""];
 a[0]=Sum(b);//6.0
 a[1] = Sum(c);//0
-a[2] = Sum({a[0],a[1]});//6.0
+a[2] = Sum([a[0],a[1]]);//6.0
 result = Sum(a);//12.0";
             WatchTestFx.GeneratePrintStatements(src, ref map);
             WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
@@ -8680,15 +8680,15 @@ result = Sum(a);//12.0";
         public void DebugWatch824_T056_Sum_AssociativeImperative()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"a = {1,0,0.0};
-b = {2.0,0,true};
-b1 = {b,1};
+            string src = @"a = [1,0,0.0];
+b = [2.0,0,true];
+b1 = [b,1];
 [Imperative]
 {
 	c = a[2];
 	a[1] = 1;
 	m = a;
-	sum1 = Sum({c});//0.0
+	sum1 = Sum([c]);//0.0
 	[Associative]
 	{
 		 b[1] = 1;
@@ -8707,10 +8707,10 @@ b1 = {b,1};
         public void DebugWatch825_T057_Average_DataType_01()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"a = {};
-b = {1,2,3};
-c = {0.1,0.2,0.3,1};
-d = {true, false, 1};
+            string src = @"a = [];
+b = [1,2,3];
+c = [0.1,0.2,0.3,1];
+d = [true, false, 1];
 a1 = Average(a);
 b1 = Average(b);
 c1 = Average(c);
@@ -8726,8 +8726,8 @@ d1 = Average(d);";
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
             string src = @"a = 0..10..5;
 b = 20..30..2;
-c = {a, b};
-d = Flatten({a,b});
+c = [a, b];
+d = Flatten([a,b]);
 ";
             WatchTestFx.GeneratePrintStatements(src, ref map);
             WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
@@ -8738,9 +8738,9 @@ d = Flatten({a,b});
         public void DebugWatch828_T059_Defect_Flatten_RangeExpression_1()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"a = {{null}};
-b = {1,2,{3}};
-c = {a,b};
+            string src = @"a = [[null]];
+b = [1,2,[3]];
+c = [a,b];
 d = Flatten(c);";
             WatchTestFx.GeneratePrintStatements(src, ref map);
             WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
@@ -8754,12 +8754,12 @@ d = Flatten(c);";
             string src = @"result = 
 [Imperative]
 {
-	a = {};
-	b = {1,{2},{{2},1}};
-	c = {true, false, null, 10};
-	d = {a,b,c};
+	a = [];
+	b = [1,[2],[[2],1]];
+	c = [true, false, null, 10];
+	d = [a,b,c];
 	
-	e = {};
+	e = [];
 	j = 0;
 	
 	for(i in d)
@@ -8785,10 +8785,10 @@ d = Flatten(c);";
 	
 	return = Average(x);
 }
-a = {1,2,2,1};
-b = {1,{}};
+a = [1,2,2,1];
+b = [1,[]];
 c = Average(a);
-result = {foo(a),foo(b)};";
+result = [foo(a),foo(b)];";
             WatchTestFx.GeneratePrintStatements(src, ref map);
             WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
         }
@@ -8798,8 +8798,8 @@ result = {foo(a),foo(b)};";
         public void DebugWatch832_T063_Average_Inline()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"a = {1.0,2};
-b = {{0},1.0,{2}};
+            string src = @"a = [1.0,2];
+b = [[0],1.0,[2]];
 result = Average(a)>Average(b)?true:false;";
             WatchTestFx.GeneratePrintStatements(src, ref map);
             WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
@@ -8814,7 +8814,7 @@ result = Average(a)>Average(b)?true:false;";
 b = 0..10..~3;//0,3.3,6.6,10
 m = Average(a);//3
 n = Average(b);//5.0
-c = Average({m})..Average({n});//3.0,4.0,5.0";
+c = Average([m])..Average([n]);//3.0,4.0,5.0";
             WatchTestFx.GeneratePrintStatements(src, ref map);
             WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
         }
@@ -8837,9 +8837,9 @@ str = ""Hello + World"";";
         public void DebugWatch836_T067_Print_Arr()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"arr = { 0, 1 ,2};
+            string src = @"arr = [ 0, 1 ,2];
 r1 = Print(arr);
-arr2 = {0,{1},{{}}};
+arr2 = [0,[1],[[]]];
 r2 = Print(arr2);";
             WatchTestFx.GeneratePrintStatements(src, ref map);
             WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
@@ -8850,7 +8850,7 @@ r2 = Print(arr2);";
         public void DebugWatch848_test()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"a = {};
+            string src = @"a = [];
 b = Average(a);";
             WatchTestFx.GeneratePrintStatements(src, ref map);
             WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
@@ -8908,14 +8908,14 @@ b = a;";
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
             string src = @"[Imperative]
 {
-	a = {};
+	a = [];
 	b = a;
 	a[0] = b;
 	c = Count(a);
 }
 [Associative]
 {
-	a1 = {0};
+	a1 = [0];
 	b1 = a1;
 	a1[0] = b1;
 	c1 = Count(a1);
@@ -8934,17 +8934,17 @@ d;
 e;
 [Imperative]
 {
-	a = { {1,2}, {3,4} };
+	a = [ [1,2], [3,4] ];
 	
-	a[1] = {-1,-2,3};
+	a[1] = [-1,-2,3];
 	
 	c = a[1][1];
 	
 	d = a[0];
 	
-	b = { 1, 2 };
+	b = [ 1, 2 ];
 	
-	b[0] = {2,2};
+	b[0] = [2,2];
 	e = b[0];
 }";
             WatchTestFx.GeneratePrintStatements(src, ref map);
@@ -8958,7 +8958,7 @@ e;
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
             string src = @"def foo: int[]( a: int,b: int )
 {
-	return = { a,b };
+	return = [ a,b ];
 }
 	c = foo( 1, 2 );
 d;	
@@ -8978,7 +8978,7 @@ d;
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
             string src = @"def foo: int[]( a: int,b: int )
 {
-	return = { a+1,b-2 };
+	return = [ a+1,b-2 ];
 }
 	c = foo( 1, 2 );
 	d;
@@ -9000,13 +9000,13 @@ d;
 	a[b] = c;
 	return = a;
 }
-d = { 1,2,2 };
+d = [ 1,2,2 ];
 b = foo( d,2,3 );
 e;
 c;
 [Imperative]
 {
-	e = { -2,1,2 };
+	e = [ -2,1,2 ];
 	c = foo( e,0,0 );
 }";
             WatchTestFx.GeneratePrintStatements(src, ref map);
@@ -9025,17 +9025,17 @@ d;
 e;
 [Imperative]
 {
-	a = { {1,2}, {3,4} };
+	a = [ [1,2], [3,4] ];
 	
-	a[1] = {-1,-2,3};
+	a[1] = [-1,-2,3];
 	
 	c = a[1][1];
 	
 	d = a[0];
 	
-	b = { 1, 2 };
+	b = [ 1, 2 ];
 	
-	b[0] = {2,2};
+	b[0] = [2,2];
 	e = b[0];
 }";
             WatchTestFx.GeneratePrintStatements(src, ref map);
@@ -9054,17 +9054,17 @@ d;
 e;
 [Associative]
 {
-	a = { {1,2}, {3,4} };
+	a = [ [1,2], [3,4] ];
 	
-	a[1] = {-1,-2,3};
+	a[1] = [-1,-2,3];
 	
 	c = a[1][1];
 	
 	d = a[0];
 	
-	b = { 1, 2 };
+	b = [ 1, 2 ];
 	
-	b[0] = {2,2};
+	b[0] = [2,2];
 	e = b[0];
 }
 ";
@@ -9082,7 +9082,7 @@ d;
 e;
 [Associative]
 {
-	a = { {1,2,3},{4,5,6} };
+	a = [ [1,2,3],[4,5,6] ];
 	
 	[Imperative]
 	{
@@ -9106,15 +9106,15 @@ d;
 e;
 [Associative]
 {
-	a = { {1,2,3},{4,5,6} };
+	a = [ [1,2,3],[4,5,6] ];
 	
-	b = { a[0], 4 };
+	b = [ a[0], 4 ];
 	
 	c = b[0];
 	
 	d = b[1];
 	
-	e = { a[0][0], a[0][1], a[1][0] };
+	e = [ a[0][0], a[0][1], a[1][0] ];
 	
 }
 	";
@@ -9133,7 +9133,7 @@ e;
 	a[2] = c;
 	return= a;
 }
-	a = { 1,0,0 };
+	a = [ 1,0,0 ];
 	[Imperative]
 	{
 		a = collection( a, 2, 3 );
@@ -9152,11 +9152,11 @@ e;
 {
 	return= a;
 }
-	a = { 1, foo( 2 ) , 3 };
+	a = [ 1, foo( 2 ) , 3 ];
 	b;
 	[Imperative]
 	{
-		b = { foo( 4 ), 5, 6 };
+		b = [ foo( 4 ), 5, 6 ];
 	}
 ";
             WatchTestFx.GeneratePrintStatements(src, ref map);
@@ -9173,7 +9173,7 @@ e;
 		a[0][0] = 1;
 		return= a;
 	}
-	b = { {0,2,3}, {4,5,6} };
+	b = [ [0,2,3], [4,5,6] ];
 	d = foo( b );
 	c = d[0];
 		
@@ -9193,11 +9193,11 @@ c;
 d;
 [Imperative]
 {
-	a = { {1,2,3}, {4}, {5,6} };
+	a = [ [1,2,3], [4], [5,6] ];
 	b = a[1];
 	a[1] = 2;
 	a[1] = a[1] + 1;
-	a[2] = {7,8};
+	a[2] = [7,8];
 	c = a[1];
 	d = a[2][1];
 }	";
@@ -9218,7 +9218,7 @@ c2;
 	
 	b = [Imperative]
 	{
-		c = { 1,2,3 };
+		c = [ 1,2,3 ];
 		if( c[1] <= 3 )
 		return= c;
 	}
@@ -9246,7 +9246,7 @@ c2;
 	
 	b = [Imperative]
 	{
-		c = { { 1,2,3 } , { 4,5,6 } } ;
+		c = [ [ 1,2,3 ] , [ 4,5,6 ] ] ;
 		return= c;
 	}
 	
@@ -9265,9 +9265,9 @@ c2;
         public void DebugWatch994_T14_2D_Collection_Assignment_Using_For_Loop()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"pts = {{0,1,2},{0,1,2}};
-x = {1,2};
-y = {1,2,3};
+            string src = @"pts = [[0,1,2],[0,1,2]];
+x = [1,2];
+y = [1,2,3];
 [Imperative]
 {
     c1 = 0;
@@ -9297,9 +9297,9 @@ p1 = pts[1][1];
             string src = @"p1;
 [Imperative]
 {
-	pts = {{0,1,2},{0,1,2}};
-	x = {1,2,3};
-	y = {1,2,3};
+	pts = [[0,1,2],[0,1,2]];
+	x = [1,2,3];
+	y = [1,2,3];
     i = 0;
 	while ( i < 2 )
 	{		
@@ -9323,7 +9323,7 @@ p1 = pts[1][1];
         public void DebugWatch997_T17_Assigning_Collection_And_Updating()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"a = {1, 2, 3};
+            string src = @"a = [1, 2, 3];
 b = a;
 b[0] = 100;
 t = a[0];       // t = 100, as expected
@@ -9342,7 +9342,7 @@ t = a[0];       // t = 100, as expected
 {
     return = a;
 }
-val = {1,2,3};
+val = [1,2,3];
 b = A(val);
 t = b;
 t[0] = 100;    // 
@@ -9363,7 +9363,7 @@ z = val[0];    // val[0] is still 1
 {
     return = a;
 }
-val = {1,2,3};
+val = [1,2,3];
 b = A(val);
 b[0] = 100;     
 z = val[0];     
@@ -9393,7 +9393,7 @@ b = a[1];";
 c;
 [Imperative]
 {
-    b = { };
+    b = [ ];
     count = 0;
     a = 1..5..2;
     for ( i in a )
@@ -9418,7 +9418,7 @@ def CreateArray ( x : var[] , i )
     x[i] = i;
 	return = x;
 }
-b = {0, 1};
+b = [0, 1];
 count = 0..1;
 b = CreateArray ( b, count );
 ";
@@ -9434,10 +9434,10 @@ b = CreateArray ( b, count );
             string src = @"test;
 [Imperative]
 {
-    d = {{}};
+    d = [[]];
     r = c = 0;
-    a = { 0, 1, 2 };
-	b = { 3, 4, 5 };
+    a = [ 0, 1, 2 ];
+	b = [ 3, 4, 5 ];
     for ( i in a )
     {
         c = 0;
@@ -9467,7 +9467,7 @@ b = CreateArray ( b, count );
 b1;
 [Associative]
 {
-cy={};
+cy=[];
 cy[0]=10;
 cy[1]=12;
 b1=foo(cy);
@@ -9489,7 +9489,7 @@ b1=foo(cy);
 b1;
 [Associative]
 {
-cy={};
+cy=[];
 cy[0]=10;
 cy[1]=null;
 b1=foo(cy);
@@ -9507,7 +9507,7 @@ b1=foo(cy);
 {  
     a = [Imperative]  
     {    
-        collection = {};	
+        collection = [];	
 	lineCnt = 0;
 	while ( lineCnt < 2 )
 	{
@@ -9518,7 +9518,7 @@ b1=foo(cy);
     }
     return = a;
 }
-x = createArray ( { 1, 2, 3, 4 } );
+x = createArray ( [ 1, 2, 3, 4 ] );
 ";
             WatchTestFx.GeneratePrintStatements(src, ref map);
             WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
@@ -9531,10 +9531,10 @@ x = createArray ( { 1, 2, 3, 4 } );
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
             string src = @"t = [Imperative]
 {
-    d = { { } };
+    d = [ [ ] ];
     r = c = 0;
-    a = { 0, 1, 2 };
-    b = { 3, 4, 5 };
+    a = [ 0, 1, 2 ];
+    b = [ 3, 4, 5 ];
     for ( i in a )
     {
         c = 0;
@@ -9565,8 +9565,8 @@ def foo ( d : var[] )
     [Imperative]
     {
 	r = c = 0;
-	a = { 0, 1, 2 };
-	b1 = { 3, 4, 5 };
+	a = [ 0, 1, 2 ];
+	b1 = [ 3, 4, 5 ];
 	for ( i in a )
 	{
 	    c = 0;
@@ -9580,7 +9580,7 @@ def foo ( d : var[] )
     }
     return = d;
 }
-b = {};
+b = [];
 b = foo ( b ) ;     
 a = b;
 ";
@@ -9599,8 +9599,8 @@ def foo ( d : var[]..[] )
     [Imperative]
     {
 	r = c = 0;
-	a = { 0, 1, 2 };
-	b1 = { 3, 4, 5 };
+	a = [ 0, 1, 2 ];
+	b1 = [ 3, 4, 5 ];
 	for ( i in a )
 	{
 	    c = 0;
@@ -9614,7 +9614,7 @@ def foo ( d : var[]..[] )
     }
     return = d;
 }
-b = { {} };
+b = [ [] ];
 b = foo ( b ) ;     
 a = b;
 ";
@@ -9630,9 +9630,9 @@ a = b;
             string src = @"a = 0..2;
 a[3] = 3;
 b = a;
-x = { { 0, 0 } , { 1, 1 } };
+x = [ [ 0, 0 ] , [ 1, 1 ] ];
 x[1][2] = 1;
-x[2] = {2,2,2,2};
+x[2] = [2,2,2,2];
 y = x;
 ";
             WatchTestFx.GeneratePrintStatements(src, ref map);
@@ -9647,10 +9647,10 @@ y = x;
             string src = @"def add ( x : var[]..[] ) 
 {
     x[1][2] = 1;
-    x[2] = { 2, 2, 2, 2 };
+    x[2] = [ 2, 2, 2, 2 ];
     return = x;
 }
-x = { { 0, 0 } , { 1, 1 } };
+x = [ [ 0, 0 ] , [ 1, 1 ] ];
 x = add(x);
 ";
             WatchTestFx.GeneratePrintStatements(src, ref map);
@@ -9663,7 +9663,7 @@ x = add(x);
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
             string src = @"a=1;
-a={a,2};";
+a=[a,2];";
             WatchTestFx.GeneratePrintStatements(src, ref map);
             WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
         }
@@ -9673,10 +9673,10 @@ a={a,2};";
         public void DebugWatch1033_T26_Defct_DNL_1459616_2()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"a={1,2};
+            string src = @"a=[1,2];
 [Imperative]
 {
-    a={a,2};
+    a=[a,2];
 }
 b = a;";
             WatchTestFx.GeneratePrintStatements(src, ref map);
@@ -9688,15 +9688,15 @@ b = a;";
         public void DebugWatch1034_T26_Defct_DNL_1459616_3()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"a={1,2};
+            string src = @"a=[1,2];
 [Imperative]
 {
-    a={a,2};
+    a=[a,2];
 }
-b = { 1, 2 };
+b = [ 1, 2 ];
 def foo ( )
 {
-    b =  { b[1], b[1] };
+    b =  [ b[1], b[1] ];
     return = null;
 }
 dummy = foo ();
@@ -9716,7 +9716,7 @@ def CreateArray ( x : var[] , i )
 x[i] = i;
 return = x;
 }
-b = { }; // Note : b = { 0, 0} works fine
+b = [ ]; // Note : b = { 0, 0} works fine
 count = 0..1;
 t2 = CreateArray ( b, count );
 t1=b;";
@@ -9735,7 +9735,7 @@ def CreateArray ( x : var[] , i )
 x[i] = i;
 return = x;
 }
-b = { }; // Note : b = { 0, 0} works fine
+b = [ ]; // Note : b = { 0, 0} works fine
 count = 0..1;
 t2 = CreateArray ( b, count );
 t1=b;";
@@ -9754,7 +9754,7 @@ def CreateArray ( x : var[] , i )
 x[i] = i;
 return = x;
 }
-b = { }; // Note : b = { 0, 0} works fine
+b = [ ]; // Note : b = { 0, 0} works fine
 count = 0..1;
 t2 = CreateArray ( b, count );
 t1=b;
@@ -9768,7 +9768,7 @@ count = -2..-1;";
         public void DebugWatch1048_T27_DynamicArray_Invalid_Index_1465614_1()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"a={};
+            string src = @"a=[];
 b=a[2];
 ";
             WatchTestFx.GeneratePrintStatements(src, ref map);
@@ -9781,7 +9781,7 @@ b=a[2];
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
             string src = @"   
-    basePoint = {  };
+    basePoint = [  ];
     
     basePoint [ 4 ] =3;
     test = basePoint;
@@ -9790,14 +9790,14 @@ b=a[2];
     b = basePoint[ 4] + 1;
     c = basePoint [ 8 ] + 1;
     
-    d = { 0,1 };
+    d = [ 0,1 ];
     e1 = d [ 8] + 1;
     
-    x = { };
-    y = { };    
+    x = [ ];
+    y = [ ];    
     t = [Imperative]
     {
-        k = { };
+        k = [ ];
 	for ( i in 0..1 )
 	{
 	    x[i] = i;
@@ -9826,7 +9826,7 @@ b=a[2];
 {    
 return = 0;
 }
-x = { 1, 2 };
+x = [ 1, 2 ];
 x[foo()] = 3;
 y = x;";
             WatchTestFx.GeneratePrintStatements(src, ref map);
@@ -9969,7 +9969,7 @@ b[2]=-5;";
 }
 x[0]=5;
 a = foo(x);
-c = {100};
+c = [100];
 t = x;
 ";
             WatchTestFx.GeneratePrintStatements(src, ref map);
@@ -9983,7 +9983,7 @@ t = x;
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
             string src = @"z=true;
 b=z;
-z[0]={1};
+z[0]=[1];
 z=5;
 ";
             WatchTestFx.GeneratePrintStatements(src, ref map);
@@ -9995,7 +9995,7 @@ z=5;
         public void DebugWatch1085_T64_Modify_itemInAnArray_1467093()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"a = {1, 2, 3};
+            string src = @"a = [1, 2, 3];
 a[1] = a; 
 ";
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3988
@@ -10013,7 +10013,7 @@ a[1] = a;
             string src = @"a;b;c;
 [Imperative]
 {
-a = {};
+a = [];
 b = a;
 a[0] = b;
 //hangs here
@@ -10029,7 +10029,7 @@ c = a;
         public void DebugWatch1087_T65_Array_Alias_ByVal_1467165()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"a = {0,1,2,3};
+            string src = @"a = [0,1,2,3];
 b=a;
 a[0]=9;
 b[0]=10;
@@ -10043,7 +10043,7 @@ b[0]=10;
         public void DebugWatch1089_T65_Array_Alias_ByVal_1467165_3()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"a = {0,1,2,3};
+            string src = @"a = [0,1,2,3];
 b=a;
 a[0]=9;
 b[0]=false;
@@ -10057,7 +10057,7 @@ b[0]=false;
         public void DebugWatch1092_T65_Array_Alias_ByVal_1467165_6()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"a = {0,1,2,3};
+            string src = @"a = [0,1,2,3];
 b=a;
 a[0]=null;
 b[0]=false;
@@ -10077,8 +10077,8 @@ b[0]=false;
             string src = @"x;
 [Imperative]
 {
-    a = {3,1,2}; 
-    x = {10,11,12,13,14,15}; 
+    a = [3,1,2]; 
+    x = [10,11,12,13,14,15]; 
     x[a] = 2;
 }";
             WatchTestFx.GeneratePrintStatements(src, ref map);
@@ -10090,7 +10090,7 @@ b[0]=false;
         public void DebugWatch1095_T67_Array_Remove_Item()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"a={1,2,3,4,5,6,7};
+            string src = @"a=[1,2,3,4,5,6,7];
 a=Remove(a,0);// expected :{2,3,4,5,6,7}
 a=Remove(a,4);//expected {1,2,3,4,6,7}
 ";
@@ -10103,7 +10103,7 @@ a=Remove(a,4);//expected {1,2,3,4,6,7}
         public void DebugWatch1096_T67_Array_Remove_Item_2()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"a={1,2,3,4,5,6,7};
+            string src = @"a=[1,2,3,4,5,6,7];
 a=Remove(a,0);// expected :{2,3,4,5,6,7}
 a=Insert(a,4,6);//expected {1,2,3,4,6,7}";
             WatchTestFx.GeneratePrintStatements(src, ref map);
@@ -10118,7 +10118,7 @@ a=Insert(a,4,6);//expected {1,2,3,4,6,7}";
             string src = @"test;
 [Associative]
 {
-a = { 1, 2, 3};
+a = [ 1, 2, 3];
 b = a;
 b[0] = 10;
 test = a[0]; //= 10� i.e. a change in �b� causes a change to �a�
@@ -10300,7 +10300,7 @@ a;b;
 	[Imperative]
 	{
 	
-		a = { 0, 1, 2, 3, 4, 5 };
+		a = [ 0, 1, 2, 3, 4, 5 ];
 		x = 0;
 		for ( i in a )
 		{
@@ -10480,7 +10480,7 @@ a;b;
 { 
 	 def foo3 : int ( a : double )
 	 {
-	    return = {1, 2};
+	    return = [1, 2];
 	 }
 	 
 	dummyArg = 1.5;
@@ -10501,7 +10501,7 @@ a;b;
 { 
 	 def foo3 : int[][] ( a : double )
 	 {
-	    return = { {2.5}, {3.5}};
+	    return = [ [2.5], [3.5]];
 	 }
 	 
 	dummyArg = 1.5;
@@ -10522,7 +10522,7 @@ a;b;
 { 
 	 def foo3 : int[][] ( a : double )
 	 {
-	    return = { {2.5}, 3};
+	    return = [ [2.5], 3];
 	 }
 	 
 	dummyArg = 1.5;
@@ -10544,7 +10544,7 @@ a;b;
 { 
 	 def foo3 : bool[]..[] ( a : double )
 	 {
-	    return = { {2}, 3};
+	    return = [ [2], 3];
 	 }
 	 
 	dummyArg = 1.5;
@@ -10566,7 +10566,7 @@ a;b;
 { 
 	 def foo3 : int[]..[] ( a : double )
 	 {
-	    return = { { 0, 2 }, { 1 } };
+	    return = [ [ 0, 2 ], [ 1 ] ];
 	 }
 	 
 	dummyArg = 1.5;
@@ -10631,7 +10631,7 @@ a;b;
 	 {
 	    return = 1.5;
      }
-	 aa = { };
+	 aa = [ ];
 	 b2 = foo ( aa );	
 	 c = 3;	
 }
@@ -10652,7 +10652,7 @@ a;b;
 	 {
 	    return = 1.5;
      }
-	 aa = {1, 2 };
+	 aa = [1, 2 ];
 	 b2 = foo ( aa );	
 	 c = 3;	
 }
@@ -10717,7 +10717,7 @@ a;b;
 	    a[0] = 0;
 		return = a;
      }
-	 aa = { 1, 2 };
+	 aa = [ 1, 2 ];
 	 bb = foo ( aa );	
 	 
 	 c = 3;	
@@ -10834,7 +10834,7 @@ a;b;
 		return  = a + 1;
 	}
 	
-	x = { 1, 2, 3 };
+	x = [ 1, 2, 3 ];
 	y = foo(x);
 	
 }
@@ -10858,8 +10858,8 @@ a;b;
 		return  = a + b;
 	}
 	
-	x1 = { 1, 2, 3 };
-	x2 = { 1, 2, 3 };
+	x1 = [ 1, 2, 3 ];
+	x2 = [ 1, 2, 3 ];
 	
 	y = foo ( x1, x2 );
 	
@@ -10884,7 +10884,7 @@ a;b;
 		return  = a + b;
 	}
 	
-	x1 = { 1, 2, 3 };
+	x1 = [ 1, 2, 3 ];
 	x2 = 1;
 	
 	y = foo ( x1, x2 );
@@ -10910,8 +10910,8 @@ a;b;
 		return  = a + b;
 	}
 	
-	x1 = { 1, 2 };
-	x2 = { 1, 2 };
+	x1 = [ 1, 2 ];
+	x2 = [ 1, 2 ];
 	y = foo( x1<1> , x2<2> );
 	a1 = y[0][0];
 	a2 = y[0][1];
@@ -11071,7 +11071,7 @@ x = foo( 0 );
 {
     return = 0;
 }
-arr = {1,2,3,4};
+arr = [1,2,3,4];
 sum = foo(arr);
 ";
             WatchTestFx.GeneratePrintStatements(src, ref map);
@@ -11087,7 +11087,7 @@ sum = foo(arr);
 {
     return  = arr1[0] + arr2[0];
 }
-arr = {  {2.5,3}, {1.5,2} };
+arr = [  [2.5,3], [1.5,2] ];
 two = foo (arr, arr);
 t1 = two[0];
 t2 = two[1];
@@ -11152,7 +11152,7 @@ e = foo(1, 2.0, 3); // not found, null
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
             string src = @"def foo()
 {
-return = {1,2};
+return = [1,2];
 }
 t = foo()[0];";
             WatchTestFx.GeneratePrintStatements(src, ref map);
@@ -11166,7 +11166,7 @@ t = foo()[0];";
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
             string src = @"def foo()
 {
-return = {};
+return = [];
 }
 t = foo()[0];";
             WatchTestFx.GeneratePrintStatements(src, ref map);
@@ -11181,11 +11181,11 @@ t = foo()[0];";
             string src = @"
 	def foo()
 	{
-		return = {foo2()[0],foo2()[1]};
+		return = [foo2()[0],foo2()[1]];
 	}
 def foo2()
 {
-return = {1,2};
+return = [1,2];
 }
 a=test.test()[0];
 t = foo()[0];";
@@ -11200,7 +11200,7 @@ t = foo()[0];";
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
             string src = @"def foo()
 {
-return = {1,2};
+return = [1,2];
 }
 t = foo()[0];";
             WatchTestFx.GeneratePrintStatements(src, ref map);
@@ -11214,7 +11214,7 @@ t = foo()[0];";
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
             string src = @"def foo()
 {
-return = {1};
+return = [1];
 }
 t = foo()[0];";
             WatchTestFx.GeneratePrintStatements(src, ref map);
@@ -11594,7 +11594,7 @@ d5 =
 	c2 = foo ( 1 );
 	c3 = foo ( 2, 3 );
 	c4 = foo ( 4, 5, false );
-	return = { c1, c2, c3, c4 };
+	return = [ c1, c2, c3, c4 ];
 }
 ";
             WatchTestFx.GeneratePrintStatements(src, ref map);
@@ -11962,7 +11962,7 @@ x;
 		a[0][0] = 1;
 		return = a;
 	}
-	b = { {0,2,3}, {4,5,6} };
+	b = [ [0,2,3], [4,5,6] ];
 	d = foo( b );
 	c = d[0];";
             WatchTestFx.GeneratePrintStatements(src, ref map);
@@ -11978,7 +11978,7 @@ x;
 {    
 	temp = [Imperative]
     { 
-		b = {0, 10};
+		b = [0, 10];
 		counter = 0; 
 		
 		for( y in a ) 
@@ -11992,7 +11992,7 @@ x;
 	return = temp;
 }
 	
-	x = {2.5,10.0};
+	x = [2.5,10.0];
 	x_squared = multiply( x );";
             WatchTestFx.GeneratePrintStatements(src, ref map);
             WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
@@ -12007,7 +12007,7 @@ x;
 {    
 	temp = [Imperative]
     { 
-		b = {0, 10};
+		b = [0, 10];
 		counter = 0; 
 		
 		for( y in a ) 
@@ -12021,7 +12021,7 @@ x;
 	return = temp;
 }
 	
-	x = {2.5,10};
+	x = [2.5,10];
 	x_squared = multiply( x );";
             WatchTestFx.GeneratePrintStatements(src, ref map);
             WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
@@ -12127,7 +12127,7 @@ x;
 		a[0][0] = 1;
 		return = a;
 	}
-	b = { {0,2,3}, {4,5,6} };
+	b = [ [0,2,3], [4,5,6] ];
 	d = foo( b );
 	c = d[0];";
             WatchTestFx.GeneratePrintStatements(src, ref map);
@@ -12146,14 +12146,14 @@ x;
 		return = a;
 	}
 	
-	a = { {2.3,3.5},{4.5,5.5} };
+	a = [ [2.3,3.5],[4.5,5.5] ];
 	
 	a = foo( a );
 	c = a[0];
 	d;
 	[Imperative]
 	{
-		b = { {2.3}, {2.5} };
+		b = [ [2.3], [2.5] ];
 		b = foo( b );
 		d = b[0];
 	}
@@ -12183,7 +12183,7 @@ x;
 		}
 		return = a;
 	}
-	d = { 1,2,3 };
+	d = [ 1,2,3 ];
 	c = collectioninc( d );
 	b;
         [Imperative]
@@ -12276,13 +12276,13 @@ a2 = foo2(3);
 {
     return = 0;
 }
-arr = {1,2,3,4};
+arr = [1,2,3,4];
 sum = foo1(arr);
 def foo2 : double (arr : double)
 {
     return = 0;
 }
-arr1 = {1.0,2.0,3.0,4.0};
+arr1 = [1.0,2.0,3.0,4.0];
 sum1 = foo2(arr1);
 sum2 = foo1(arr);
 ";
@@ -12302,10 +12302,10 @@ sum2 = foo1(arr);
 sum1;sum2;
 [Imperative]
 {
-	arr1 = { {1, 2.0}, {true, 4} };
+	arr1 = [ [1, 2.0], [true, 4] ];
 	sum1 = foo1(arr);
 	x = 1;
-	arr2 = { {1, 2.0}, {x, 4} };
+	arr2 = [ [1, 2.0], [x, 4] ];
 	sum2 = foo1(arr2);
 }
 ";
@@ -12422,7 +12422,7 @@ def foo ( b : bool[]..[], f1 : function )
 {
     return = count( b );
 }
-a = foo ( { true, false, { true, true } },  count );
+a = foo ( [ true, false, [ true, true ] ],  count );
 ";
             WatchTestFx.GeneratePrintStatements(src, ref map);
             WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
@@ -12450,7 +12450,7 @@ def foo ( b : double[], f1 : function )
 {
     return = count( b );
 }
-a = foo ( { 1.0, 2.6 },  count );
+a = foo ( [ 1.0, 2.6 ],  count );
 ";
             WatchTestFx.GeneratePrintStatements(src, ref map);
             WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
@@ -12478,7 +12478,7 @@ def foo ( b : int[]..[], f1 : function )
 {
     return = count( b );
 }
-a = foo ( { 1, 2 , {3, 4} },  count );
+a = foo ( [ 1, 2 , [3, 4] ],  count );
 ";
             WatchTestFx.GeneratePrintStatements(src, ref map);
             WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
@@ -12506,8 +12506,8 @@ def foo ( b : int[], f1 : function )
 {
     return = count( b );
 }
-a = foo ( { 1, 2,  { 3, 4 } },  count );
-d = foo ( { 2, 2.5, { 1, 1.5 }, 1 , false},  count );
+a = foo ( [ 1, 2,  [ 3, 4 ] ],  count );
+d = foo ( [ 2, 2.5, [ 1, 1.5 ], 1 , false],  count );
 // boolean can't be converted to double, so the following statement
 // will generate a method resultion fail exception
 // b = foo ( { true, false },  count );
@@ -12540,8 +12540,8 @@ def foo ( b : int[], f1 : function )
 }
 [Imperative]
 {
-	a = foo ( { 1, 2,  { 3, 4 } },  count );
-	d = foo ( { 2, 2.5, { 1, 1.5 }, 1 , false},  count );
+	a = foo ( [ 1, 2,  [ 3, 4 ] ],  count );
+	d = foo ( [ 2, 2.5, [ 1, 1.5 ], 1 , false],  count );
 }
 ";
             WatchTestFx.GeneratePrintStatements(src, ref map);
@@ -12579,7 +12579,7 @@ def greatest ( a : double[], f : function )
 a;
 [Imperative]
 {
-	a = greatest ( { 1.5, 6, 3, -1, 0 }, greater2 );
+	a = greatest ( [ 1.5, 6, 3, -1, 0 ], greater2 );
 	
 }
 ";
@@ -12622,7 +12622,7 @@ def foo ( a : double[], greatest : function , greater : function)
 a;
 [Imperative]
 {
-	a = foo ( { 1.5, 6, 3, -1, 0 }, greatest, greater );
+	a = foo ( [ 1.5, 6, 3, -1, 0 ], greatest, greater );
 	
 }
 ";
@@ -12641,10 +12641,10 @@ a;
 }
 def f2 (arr :  double[] )
 {
-    return = { arr[0], arr[1] };
+    return = [ arr[0], arr[1] ];
 }
-a = f1( { null, null } );
-b = f2( { null, null } );
+a = f1( [ null, null ] );
+b = f2( [ null, null ] );
 ";
             WatchTestFx.GeneratePrintStatements(src, ref map);
             WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
@@ -12700,7 +12700,7 @@ d1 = [Imperative]
 {
     return = x;
 }
-a2 = { 2, 4, 3.5 };
+a2 = [ 2, 4, 3.5 ];
 b2 = foo (a2);";
             WatchTestFx.GeneratePrintStatements(src, ref map);
             WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
@@ -12715,7 +12715,7 @@ b2 = foo (a2);";
 {
     return = x;
 }
-a2 = { 2, 4, 3};
+a2 = [ 2, 4, 3];
 b2 = foo ( a2 );";
             WatchTestFx.GeneratePrintStatements(src, ref map);
             WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
@@ -12730,7 +12730,7 @@ b2 = foo ( a2 );";
 {
     return = x;
 }
-a1 = { 2, 4.1, 3.5};
+a1 = [ 2, 4.1, 3.5];
 b1 = foo ( a1 );";
             WatchTestFx.GeneratePrintStatements(src, ref map);
             WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
@@ -12745,7 +12745,7 @@ b1 = foo ( a1 );";
 {
     return = x;
 }
-a1 = { 2, 4.1, false};
+a1 = [ 2, 4.1, false];
 b1 = foo ( a1 );";
             WatchTestFx.GeneratePrintStatements(src, ref map);
             WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
@@ -12760,7 +12760,7 @@ b1 = foo ( a1 );";
 {
     return = x;
 }
-a1 = { 2, 4.1, {1,2}};
+a1 = [ 2, 4.1, [1,2]];
 b1 = foo ( a1 );";
             WatchTestFx.GeneratePrintStatements(src, ref map);
             WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
@@ -12775,7 +12775,7 @@ b1 = foo ( a1 );";
 {
     return = x;
 }
-a1 = { null, 5, 6.0};
+a1 = [ null, 5, 6.0];
 b1 = foo ( a1 );";
             WatchTestFx.GeneratePrintStatements(src, ref map);
             WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
@@ -12790,7 +12790,7 @@ b1 = foo ( a1 );";
 {
     return = x;
 }
-a1 = { null, null, null};
+a1 = [ null, null, null];
 b1 = foo ( a1 );";
             WatchTestFx.GeneratePrintStatements(src, ref map);
             WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
@@ -12805,7 +12805,7 @@ b1 = foo ( a1 );";
 {
     return = x;
 }
-a1 = {1.1,2.0,3};
+a1 = [1.1,2.0,3];
 b1 = foo ( a1 );";
             WatchTestFx.GeneratePrintStatements(src, ref map);
             WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
@@ -12820,7 +12820,7 @@ b1 = foo ( a1 );";
 {
     return = x;
 }
-a1 = { 1, null, 6.0};
+a1 = [ 1, null, 6.0];
 b1 = foo ( a1 );";
             WatchTestFx.GeneratePrintStatements(src, ref map);
             WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
@@ -12870,11 +12870,11 @@ b1 = a;
 {
     return = x;
 }
-a1 = { 2.5, 4 };
+a1 = [ 2.5, 4 ];
 b1 = foo ( a1 );
-a2 = { 3, 4, 2.5 };
+a2 = [ 3, 4, 2.5 ];
 b2 = foo ( a2 );
-a3 = { 3, 4, 2 };
+a3 = [ 3, 4, 2 ];
 b3 = foo ( a3 );
 ";
             WatchTestFx.GeneratePrintStatements(src, ref map);
@@ -12899,7 +12899,7 @@ def foo(x : int[][])
     return = 0;
 }
     
-x = foo ( { { 0,1}, {2, 3} } );
+x = foo ( [ [ 0,1], [2, 3] ] );
 ";
             WatchTestFx.GeneratePrintStatements(src, ref map);
             WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
@@ -12914,7 +12914,7 @@ x = foo ( { { 0,1}, {2, 3} } );
 {
 return = a;
 }
-val = {1,2,3};
+val = [1,2,3];
 b = A(val);
 b[0] = 100; 
 t = val[0]; //expected 100, received 1";
@@ -13010,7 +13010,7 @@ a = 3;
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
             string src = @"import (""basicImport.ds"");
-a = {1.1,2.2};
+a = [1.1,2.2];
 b = 2;
 c = Scale(a,b);";
             WatchTestFx.GeneratePrintStatements(src, ref map);
@@ -13023,7 +13023,7 @@ c = Scale(a,b);";
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
             string src = @"import (""basicImport.ds"");
-a = {1.1,2.2};
+a = [1.1,2.2];
 b = 2;
 c = Scale(a,b);
 ";
@@ -13037,7 +13037,7 @@ c = Scale(a,b);
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
             string src = @"import ("".\basicImport.ds"");
-a = {1.1,2.2};
+a = [1.1,2.2];
 b = 2;
 c = Scale(a,b);";
             WatchTestFx.GeneratePrintStatements(src, ref map);
@@ -13050,7 +13050,7 @@ c = Scale(a,b);";
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
             string src = @"import ("".\\ExtraFolderToTestRelativePath\\basicImport.ds"");
-a = {1.1,2.2};
+a = [1.1,2.2];
 b = 2;
 c = Scale(a,b);";
             WatchTestFx.GeneratePrintStatements(src, ref map);
@@ -13063,7 +13063,7 @@ c = Scale(a,b);";
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
             string src = @"import (""basicImport.ds"");
-a = {1.1,2.2};
+a = [1.1,2.2];
 b = 2;
 c = Scale(a,b);
 d = Sin(30.0);
@@ -13120,7 +13120,7 @@ a = 10;";
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
             string src = @"import (""basicImport1.ds"");
 import (""basicImport3.ds"");
-arr = { 1.0, 2.0, 3.0 };
+arr = [ 1.0, 2.0, 3.0 ];
 a1 = Scale( arr, 4.0 );
 b = a * 2;";
             WatchTestFx.GeneratePrintStatements(src, ref map);
@@ -13170,7 +13170,7 @@ b = a * 2;";
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
             string src = @"import (""basicImport1.ds"");
 import (""basicImport3.ds"");
-arr1 = { 1, 3, 5 };
+arr1 = [ 1, 3, 5 ];
 temp = Scale( arr1, a );
 a = a;
 b = 2 * a;";
@@ -13208,7 +13208,7 @@ b = 2 * a;";
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
             string src = @"import (""../basicImport.ds"");
-a = {1.1,2.2};
+a = [1.1,2.2];
 b = 2;
 c = Scale(a,b);";
             WatchTestFx.GeneratePrintStatements(src, ref map);
@@ -13223,10 +13223,10 @@ c = Scale(a,b);";
             string src = @"a = 5;
 b = 7;
 c = 9;
-d = {a, b};
+d = [a, b];
 f = Contains(d, a); // true
 g = Contains(d, c); // false
-h = Contains({10,11},11); // true collection built �on the fly�
+h = Contains([10,11],11); // true collection built �on the fly�
 				  // with �literal� values
 ";
             WatchTestFx.GeneratePrintStatements(src, ref map);
@@ -13241,7 +13241,7 @@ h = Contains({10,11},11); // true collection built �on the fly�
             string src = @"a = 5;
 b = 7;
 c = 9;
-d = {a, b, c};
+d = [a, b, c];
 f = IndexOf(d, b); // 1
 g = d[f+1]; // c
 ";
@@ -13254,7 +13254,7 @@ g = d[f+1]; // c
         public void DebugWatch1405_Test_4_13_Transpose()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"a ={{1,2},{3,4}};
+            string src = @"a =[[1,2],[3,4]];
 b = a[0][0]; // b = 1
 c = a [0][1]; // c = 2
 a = Transpose(a); // b = 1; c =3
@@ -13268,7 +13268,7 @@ a = Transpose(a); // b = 1; c =3
         public void DebugWatch1406_Test_4_14_isUniformDepth()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"myNonUniformDepth2Dcollection = {{1, 2, 3}, {4, 5}, 6};
+            string src = @"myNonUniformDepth2Dcollection = [[1, 2, 3], [4, 5], 6];
 individualMemberB = myNonUniformDepth2Dcollection [0][1]; // OK, = B
 individualMemberD = myNonUniformDepth2Dcollection [2][0]; // would fail
 individualMemberE = myNonUniformDepth2Dcollection [2];    // OK, = 6
@@ -13286,7 +13286,7 @@ testForDeepestDepth  = Rank(myNonUniformDepth2Dcollection); // = 2; current limi
         public void DebugWatch1408_Test_4_15_someNulls()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"a = { 1, null, 2, 3 };
+            string src = @"a = [ 1, null, 2, 3 ];
 b = Count(a); // 4 after updating a @ line 9 this value become 3.
 c = SomeNulls(a); // true after updating a @ line 9 this value become false.
 d = a[-2]; // d = 2 note: use of fixed index [-2] 
@@ -13307,9 +13307,9 @@ g = SomeNulls(a); // false
 a[1] = -1; // replace a member of a collection
 a[2] = a[2] + 0.5; // modify a member of a collection
 a[3] = null; // make a member of a collection = null
-a[4] = { 3.4, 4.5 }; // allowed, but not advised: subsequently altering the structure of the collection
+a[4] = [ 3.4, 4.5 ]; // allowed, but not advised: subsequently altering the structure of the collection
 c = a;
-b = { 0, -1, 2.5, null, { 3.4, 4.5 }, 5 }; // however a collection of non-uniform depth and irregular structure can be defined
+b = [ 0, -1, 2.5, null, [ 3.4, 4.5 ], 5 ]; // however a collection of non-uniform depth and irregular structure can be defined
 ";
             WatchTestFx.GeneratePrintStatements(src, ref map);
             WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
@@ -13324,7 +13324,7 @@ b = { 0, -1, 2.5, null, { 3.4, 4.5 }, 5 }; // however a collection of non-unifor
 b = 2;
 c = 3;
 d = 4;
-x = { a, b, c, d };
+x = [ a, b, c, d ];
 u = Remove(x, 0); // remove by content.. u = {b, c, d};
 v = Remove(x, -1); // remove by index.. x = {a, b, c};
 w = Insert(x, d, 0); // insert after defined index.. x = {d,a,b,c,d};";
@@ -13338,8 +13338,8 @@ w = Insert(x, d, 0); // insert after defined index.. x = {d,a,b,c,d};";
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
             string src = @"// Current limitation : 
-a = {3, 4, 5};
-b = {2, 6};
+a = [3, 4, 5];
+b = [2, 6];
 c = a + b ; // { 5, 10, null}; // Here the length of the resulting variable [c] will be based on the length of the first
 //collection encountered [in this case a]
 d = b + a; // { 5, 10}; // Here the length of the resulting variable [d] will be based on the length of the first
@@ -13360,8 +13360,8 @@ d = b + a; // { 5, 10}; // Here the length of the resulting variable [d] will be
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
             string src = @"// The use of replication guides with ragged collections can be unpredictable results, as follows:
-a = { 1, { 3, 4 } }; // initial ragged collections
-b = { { 5, 6 }, 7 };
+a = [ 1, [ 3, 4 ] ]; // initial ragged collections
+b = [ [ 5, 6 ], 7 ];
 c = a + b; // c = { { 6, 7 }, { 10, 11 } } � zipped collection
 //d = a<1> + b<2>; // unpredictable
 /*
@@ -13384,14 +13384,14 @@ l = i<1> + j<2>; // unpredictable*/";
         public void DebugWatch1414_Test_4_9_count()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"count_test1=Count({1,2});   // 2 .. count of collection
-a = {{1,2},3};		   // define a nested/ragged collection
+            string src = @"count_test1=Count([1,2]);   // 2 .. count of collection
+a = [[1,2],3];		   // define a nested/ragged collection
 count_test2=Count(a);       // 2 .. count of collection
 count_test3=Count(a[0]);    // 2 .. count of sub collection
 count_test4=Count(a[0][0]); // 0 .. count of single member
 m = a[0][0];
 count_test5=Count(a[1]);    // 0 .. count of single member
-count_test6=Count({}); 	   // 0 .. count of an empty collection
+count_test6=Count([]); 	   // 0 .. count of an empty collection
 count_test7=Count(3); 	   // 0 .. count of single value
 count_test8=Count(null);    // null .. count of null
 ";
@@ -13860,7 +13860,7 @@ c=twice(4);
 		c=2*(1..a);
 		return = c;
 	}
-    d={1,2,3,4};
+    d=[1,2,3,4];
 	z1=twice(d);
 //	z1 = 1..twice(4)..twice(1);
 }
@@ -15142,7 +15142,7 @@ x = f(""hello"");
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
             string src = @"a = ""a"";
-bcd = {""b"",""c"",""d""};
+bcd = [""b"",""c"",""d""];
 r = a +bcd;";
             WatchTestFx.GeneratePrintStatements(src, ref map);
             WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
@@ -15153,8 +15153,8 @@ r = a +bcd;";
         public void DebugWatch1526_T07_String_Replication_1()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"a = {""a""};
-bc = {""b"",""c""};
+            string src = @"a = [""a""];
+bc = [""b"",""c""];
 str = a + bc;
 ";
             WatchTestFx.GeneratePrintStatements(src, ref map);
@@ -15167,7 +15167,7 @@ str = a + bc;
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
             string src = @"a = ""a"";
-b = {{""b""},{""c""}};
+b = [[""b""],[""c""]];
 str = a +b;";
             WatchTestFx.GeneratePrintStatements(src, ref map);
             WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
@@ -15264,7 +15264,7 @@ m = m+n;
 B = 2*A;   	   	// expression involving previously defined variables
 A = A + 1; 	   	// expressions modifying an existing variable;
 A = 15;		   	// redefine A, removing modifier
-A = {1,2,3,4}; 		// redefine A as a collection
+A = [1,2,3,4]; 		// redefine A as a collection
 A = 1..10..2;  		// redefine A as a range expression (start..end..inc)
 A = 1..10..~4; 		// redefine A as a range expression (start..end..approx_inc)
 A = 1..10..#4; 		// redefine A as a range expression (start..end..no_of_incs)
@@ -15284,7 +15284,7 @@ B[1] = B[1] + 0.5; 	// modify a member of a collection [problem here]
             string src = @"a=1;
 b=2;
 c=4;
-collection = {a,b,c};
+collection = [a,b,c];
 collection[1] = collection[1] + 0.5;
 d = collection[1];
 d = d + 0.1; // updates the result of accessing the collection
@@ -15302,8 +15302,8 @@ t3 = collection[2];
         public void DebugWatch1538_T00003_Language_001b_replication_expressions()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"a = {1,0,-1};
-b = {0, 5, 10};
+            string src = @"a = [1,0,-1];
+b = [0, 5, 10];
 zipped_sum = a + b; // {1, 5, 9}
 cartesian_sum  = a<1> + b<2>;
 // cartesian_sum =    {{1, 6, 11},
@@ -15483,7 +15483,7 @@ f = d;
 b = a;
 c = [Imperative ]
 {
-    x = { 10, a[1], a[2] };
+    x = [ 10, a[1], a[2] ];
 	a[0] = 10;
 	return = x;
 }
@@ -15580,7 +15580,7 @@ test2 = a2;
 a2 = 3.0;
 a2 = 3.3;
 t2 = test2; // expected : 3.3; recieved : 3.0
-a1 = { 1.0, 2.0};
+a1 = [ 1.0, 2.0];
 test1 = a1[1]; 
 a1[1] = 3.0;
 a1[1] = 3.3;
@@ -15642,7 +15642,7 @@ y = foo (x );
         public void DebugWatch1582_T17_Defect_1459759_2()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"a1 = { 1, 2 };
+            string src = @"a1 = [ 1, 2 ];
 y = a1[1] + 1;
 a1[1] = 3;
 a1 = 5;
@@ -15710,7 +15710,7 @@ def foo ( a1 : double[] )
     return = a1[0] + a1[1];
 }
 b = foo ( c ) ;
-c = { a, a };
+c = [ a, a ];
 [Imperative]
 {
     a = 2.5;
@@ -15749,7 +15749,7 @@ b = foo ( a ) ;
 {
     return = a;
 }
-y1 = { 1, 2 };
+y1 = [ 1, 2 ];
 y2 = foo ( y1);
 [Imperative]
 { 
@@ -15834,7 +15834,7 @@ p1 = true;";
         public void DebugWatch1603_T25_Defect_1459759_2()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"a1 = { 1, 2 };
+            string src = @"a1 = [ 1, 2 ];
 y = a1[1] + 1;
 a1[1] = 3;
 a1 = 5;";
@@ -15847,11 +15847,11 @@ a1 = 5;";
         public void DebugWatch1604_T25_Defect_1459759_3()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"a = { 2 , b ,3 };
+            string src = @"a = [ 2 , b ,3 ];
 b = 3;
 c = a[1] + 2;
 d = c + 1;
-b = { 1,2 };";
+b = [ 1,2 ];";
             WatchTestFx.GeneratePrintStatements(src, ref map);
             WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
         }
@@ -15886,7 +15886,7 @@ b = { 1,2 };";
 	a = 2;
 	x = [Associative]
 	{
-		b = { 2, 3 };
+		b = [ 2, 3 ];
 		c = b[1] + 1;
 		b = 2;
 		return = c;
@@ -15907,7 +15907,7 @@ b = { 1,2 };";
 	{
 		a = b + 1;
 		b = true;
-		return = { a , b };
+		return = [ a , b ];
 	}
 e;
 [Imperative]
@@ -15941,7 +15941,7 @@ a2 = 4;";
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
             string src = @"x = 3;
-a1 = { 1, 2};
+a1 = [ 1, 2];
 a2 = 3;
 a = x > 2 ? a2: a1;
 a2 = 5;
@@ -15956,7 +15956,7 @@ a1[0] = 0;";
         public void DebugWatch1638_T30_Update_Global_Variables_Imperative_Scope()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"x  = {0,0,0,0};
+            string src = @"x  = [0,0,0,0];
 count = 0;
 i = 0;
 sum  = 0;
@@ -16004,7 +16004,7 @@ test = sum;
         j = j + 1;
     }
 }
-x  = {0,0,0,0};
+x  = [0,0,0,0];
 y = x;
 ";
             WatchTestFx.GeneratePrintStatements(src, ref map);
@@ -16030,7 +16030,7 @@ z1 = y1;
         public void DebugWatch1660_T37_Modify_Collections_Referencing_Each_Other()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"a = {1,2,3};
+            string src = @"a = [1,2,3];
 b = a;
 c1 = a[0];
 b[0] = 10;
@@ -16317,11 +16317,11 @@ testFoo2 = foo();";
 {
 	result = [Imperative]
     {
-		array = { 1, 2 };
+		array = [ 1, 2 ];
 		counter = 0;
 		while( counter < col)
 		{
-			array[counter] = { 1, 2};
+			array[counter] = [ 1, 2];
 			counter = counter + 1;
 		}
 		return = array;
@@ -16341,7 +16341,7 @@ x = Create2DArray( 2) ;";
             string src = @"x;
 [Associative]
 {
-	a = { 4,5 };
+	a = [ 4,5 ];
    
 	[Imperative]
 	{
@@ -16672,7 +16672,7 @@ a=foo1(null); ";
         public void DebugWatch1782_Regress_1458475()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"a = { 1,2 };
+            string src = @"a = [ 1,2 ];
 b1 = a[-1];//b1=2";
             WatchTestFx.GeneratePrintStatements(src, ref map);
             WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
@@ -16711,7 +16711,7 @@ a2 = 3;";
         public void DebugWatch1800_Regress_1459372()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"collection = { 2, 2, 2 };
+            string src = @"collection = [ 2, 2, 2 ];
 collection[1] = 3;
 ";
             WatchTestFx.GeneratePrintStatements(src, ref map);
@@ -16736,7 +16736,7 @@ collection[1] = 3;
     }
     return = numPts;
 }
-z=length({1,2});";
+z=length([1,2]);";
             WatchTestFx.GeneratePrintStatements(src, ref map);
             WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
         }
@@ -16774,7 +16774,7 @@ y2 = ding().foo(3);";
         public void DebugWatch1817_Regress_1467094_1()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"t = {};
+            string src = @"t = [];
 x = t[3];
 t[2] = 1;
 y = t[3];
@@ -16830,7 +16830,7 @@ a = 1;";
     }
     return = numPts;
 }
-z=length({1,2});";
+z=length([1,2]);";
             WatchTestFx.GeneratePrintStatements(src, ref map);
             WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
         }

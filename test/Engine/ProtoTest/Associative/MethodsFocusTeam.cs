@@ -63,7 +63,7 @@ namespace ProtoTest.Associative
         public void T002_DotOp_DefautConstructor_ArrayProperty()
         {
             String code =
-@"    import(""FFITarget.dll"");	p = ArrayMember.Ctor({1,2,3,4,5});    x = p.X;";
+@"    import(""FFITarget.dll"");	p = ArrayMember.Ctor([1,2,3,4,5]);    x = p.X;";
             thisTest.RunScriptSource(code);
             thisTest.Verify("x", new object[] { 1, 2, 3, 4, 5 });
         }
@@ -141,7 +141,7 @@ namespace ProtoTest.Associative
         public void ArrayInFunction()
         {
             String code =
-@"def foo(fz:int){    return =  {0,1,2} + fz;}n = foo(1);	";
+@"def foo(fz:int){    return =  [0,1,2] + fz;}n = foo(1);	";
             thisTest.RunScriptSource(code);
             Object[] v2 = new Object[] { 1, 2, 3 };
             thisTest.Verify("n", v2);
@@ -189,7 +189,7 @@ namespace ProtoTest.Associative
         public void TV1467372_ThisKeyword_2_Replication()
         {
             String code =
-@"class A {    fx:int;    constructor A(x)    {        this.fx = 0;        this.fx = this.fx +x;    }}a = A.A({1,1});ra = a.fx;";
+@"class A {    fx:int;    constructor A(x)    {        this.fx = 0;        this.fx = this.fx +x;    }}a = A.A([1,1]);ra = a.fx;";
             thisTest.RunScriptSource(code);
             Object[] v1 = new Object[] { 1, 1 };
             thisTest.Verify("ra", v1);
@@ -200,7 +200,7 @@ namespace ProtoTest.Associative
         public void TV1467372_ThisKeyword_3()
         {
             String code =
-@"class A {    fx:int;    constructor A(x:int)    {        this.fx = 0;        this.fx = this.fx +x;    }}class B extends A{    constructor B(y:int)    {        this.fx = 0;        this.fx = this.fx + y;    }}a = A.A({1,1});b = B.B({2,2});ra = a.fx;rb = b.fx;";
+@"class A {    fx:int;    constructor A(x:int)    {        this.fx = 0;        this.fx = this.fx +x;    }}class B extends A{    constructor B(y:int)    {        this.fx = 0;        this.fx = this.fx + y;    }}a = A.A([1,1]);b = B.B([2,2]);ra = a.fx;rb = b.fx;";
             thisTest.RunScriptSource(code);
             Object[] v1 = new Object[] { 1, 1 };
             Object[] v2 = new Object[] { 2, 2 };
@@ -231,7 +231,7 @@ import(""FFITarget.dll"");p = DummyPoint.ByCoordinates(1..3, 20, 30);a = p.X[0
         public void T016_Collection_02()
         {
             String code =
-@"def A(x : var[][]){	return = x;	}a = {{0},{1},{2}};fa = A(a);r1 = fa;";
+@"def A(x : var[][]){	return = x;	}a = [[0],[1],[2]];fa = A(a);r1 = fa;";
             thisTest.RunScriptSource(code);
             Object[] v1 = new Object[] { 0 };
             Object[] v2 = new Object[] { 1 };
@@ -244,7 +244,7 @@ import(""FFITarget.dll"");p = DummyPoint.ByCoordinates(1..3, 20, 30);a = p.X[0
         public void T017_DotOp_Collection_03()
         {
             String code =
-@"	def A(x : var[][]){	return = x;	}a = {{0},{1},{2}};fa = A(a);r1 = fa[1][0];";
+@"	def A(x : var[][]){	return = x;	}a = [[0],[1],[2]];fa = A(a);r1 = fa[1][0];";
             thisTest.RunScriptSource(code);
 
             thisTest.Verify("r1", 1);
@@ -254,7 +254,7 @@ import(""FFITarget.dll"");p = DummyPoint.ByCoordinates(1..3, 20, 30);a = p.X[0
         public void T018_DotOp_Collection_04()
         {
             String code =
-                    @"                     import(""FFITarget.dll"");	c = ClassFunctionality.ClassFunctionality({1,2});	x = c.IntVal;                    ";
+                    @"                     import(""FFITarget.dll"");	c = ClassFunctionality.ClassFunctionality([1,2]);	x = c.IntVal;                    ";
             thisTest.RunScriptSource(code);
             Object[] v = { 1, 2 };
             thisTest.Verify("x", v);
@@ -265,7 +265,7 @@ import(""FFITarget.dll"");p = DummyPoint.ByCoordinates(1..3, 20, 30);a = p.X[0
         public void TV018_DotOp_Collection_04_1()
         {
             String code =
-@"import(""FFITarget.dll"");	c = ClassFunctionality.ClassFunctionality({1,2} + 1);	x = c.IntVal;";
+@"import(""FFITarget.dll"");	c = ClassFunctionality.ClassFunctionality([1,2] + 1);	x = c.IntVal;";
             thisTest.RunScriptSource(code);
             Object[] v = { 2, 3 };
             thisTest.Verify("x", v);
@@ -275,7 +275,7 @@ import(""FFITarget.dll"");p = DummyPoint.ByCoordinates(1..3, 20, 30);a = p.X[0
         public void TV018_DotOp_Collection_04_2()
         {
             String code =
-@"def foo(x:int){    return = x;}r:int = foo({1,2});";
+@"def foo(x:int){    return = x;}r:int = foo([1,2]);";
             thisTest.RunScriptSource(code);
             Object v1 = null;
             thisTest.Verify("r", v1);
@@ -285,7 +285,7 @@ import(""FFITarget.dll"");p = DummyPoint.ByCoordinates(1..3, 20, 30);a = p.X[0
         public void TV018_DotOp_Collection_04_3()
         {
             String code =
-                    @"                   import(""FFITarget.dll"");	c = {ClassFunctionality.ClassFunctionality(1), ClassFunctionality.ClassFunctionality(2)};	x = c.IntVal;                    ";
+                    @"                   import(""FFITarget.dll"");	c = [ClassFunctionality.ClassFunctionality(1), ClassFunctionality.ClassFunctionality(2)];	x = c.IntVal;                    ";
             thisTest.RunScriptSource(code);
             Object[] v = { 1, 2 };
             thisTest.Verify("x", v);
@@ -295,7 +295,7 @@ import(""FFITarget.dll"");p = DummyPoint.ByCoordinates(1..3, 20, 30);a = p.X[0
         public void TV018_DotOp_Collection_04_4()
         {
             String code =
-                    @"    import(""FFITarget.dll"");	c = {ClassFunctionality.ClassFunctionality(1), ClassFunctionality.ClassFunctionality(2)};	x = c.IntVal + 1;                    ";
+                    @"    import(""FFITarget.dll"");	c = [ClassFunctionality.ClassFunctionality(1), ClassFunctionality.ClassFunctionality(2)];	x = c.IntVal + 1;                    ";
             thisTest.RunScriptSource(code);
             Object[] v = { 2, 3 };
             thisTest.Verify("x", v);                    
@@ -304,7 +304,7 @@ import(""FFITarget.dll"");p = DummyPoint.ByCoordinates(1..3, 20, 30);a = p.X[0
         [Test]
         public void DotCallOnEmptyList()
         {
-            string code = @"x = {{}, {}}; y = x.foo();";
+            string code = @"x = [[], []]; y = x.foo();";
             thisTest.RunScriptSource(code);
             thisTest.Verify("x", new object [] { new object [] { }, new object [] { } });
         }
@@ -313,7 +313,7 @@ import(""FFITarget.dll"");p = DummyPoint.ByCoordinates(1..3, 20, 30);a = p.X[0
         public void T020_Replication_Var()
         {
             String code =
-@"def foo(x:var){	return = x+1;}a = {1,2};r = foo(a);";
+@"def foo(x:var){	return = x+1;}a = [1,2];r = foo(a);";
             thisTest.RunScriptSource(code);
             Object v1 = new Object[] { 2, 3 };
             thisTest.Verify("r", v1);
@@ -323,7 +323,7 @@ import(""FFITarget.dll"");p = DummyPoint.ByCoordinates(1..3, 20, 30);a = p.X[0
         public void T019_DotOp_Collection_05()
         {
             String code =
-@" import(""FFITarget.dll"");	c = {ClassFunctionality.ClassFunctionality(1), ClassFunctionality.ClassFunctionality(2)};	x = c.IntVal[0];";
+@" import(""FFITarget.dll"");	c = [ClassFunctionality.ClassFunctionality(1), ClassFunctionality.ClassFunctionality(2)];	x = c.IntVal[0];";
             thisTest.RunScriptSource(code);
             thisTest.Verify("x", 1);
 
@@ -334,7 +334,7 @@ import(""FFITarget.dll"");p = DummyPoint.ByCoordinates(1..3, 20, 30);a = p.X[0
         {
             String code =
 
-@" import(""FFITarget.dll"");	c = {ClassFunctionality.ClassFunctionality({1,2}), ClassFunctionality.ClassFunctionality({3,4})};	x = c.IntVal[0][1];";
+@" import(""FFITarget.dll"");	c = [ClassFunctionality.ClassFunctionality([1,2]), ClassFunctionality.ClassFunctionality([3,4])];	x = c.IntVal[0][1];";
             thisTest.RunScriptSource(code);
             thisTest.Verify("x", 2);
 
@@ -347,7 +347,7 @@ import(""FFITarget.dll"");p = DummyPoint.ByCoordinates(1..3, 20, 30);a = p.X[0
         {
             String code =
 
-@" import(""FFITarget.dll"");	c = {ClassFunctionality.ClassFunctionality({1,2}), ClassFunctionality.ClassFunctionality({3,4})};	x = c.IntVal[1][0];";
+@" import(""FFITarget.dll"");	c = [ClassFunctionality.ClassFunctionality([1,2]), ClassFunctionality.ClassFunctionality([3,4])];	x = c.IntVal[1][0];";
             thisTest.RunScriptSource(code);
             thisTest.Verify("x", 3);
 
@@ -359,7 +359,7 @@ import(""FFITarget.dll"");p = DummyPoint.ByCoordinates(1..3, 20, 30);a = p.X[0
         public void TV1467137_1_DotOp_Update()
         {
             String code =
-@"class A {	fx: int;	fb: B[];		constructor A(x :int)	{		fx = x;		fb = B.B({10,11});		}}class B{	fy : int;	constructor B(y : int)	{		fy = y;	}}a = {1,2};va = A.A(a);r1 = va[0].fb.fy;r2 = va.fb[0].fy;r3 = va.fb.fy[0];";
+@"class A {	fx: int;	fb: B[];		constructor A(x :int)	{		fx = x;		fb = B.B([10,11]);		}}class B{	fy : int;	constructor B(y : int)	{		fy = y;	}}a = [1,2];va = A.A(a);r1 = va[0].fb.fy;r2 = va.fb[0].fy;r3 = va.fb.fy[0];";
             thisTest.RunScriptSource(code);
             Object[] v1 = new Object[] { 10, 11 };
             thisTest.Verify("r1", v1);
@@ -372,7 +372,7 @@ import(""FFITarget.dll"");p = DummyPoint.ByCoordinates(1..3, 20, 30);a = p.X[0
         public void TV1467333()
         {
             String code =
-@"class A {         fb: B  ;      constructor B()    {        fb = B.B({10,11});    }    } class B {         constructor B(y : int)         {        }} va = A.A();s = va.fb;n = a.fb;m:B = B.B({10,11});r = m==n;";
+@"class A {         fb: B  ;      constructor B()    {        fb = B.B([10,11]);    }    } class B {         constructor B(y : int)         {        }} va = A.A();s = va.fb;n = a.fb;m:B = B.B([10,11]);r = m==n;";
             thisTest.RunScriptSource(code);
             thisTest.SetErrorMessage("1467333 - Sprint 27 - Rev 3959: when initializing class member, array is converted to not indexable type, which gives wrong result");
             Object v1 = null;
@@ -398,7 +398,7 @@ import(""FFITarget.dll"");p = DummyPoint.ByCoordinates(1..3, 20, 30);a = p.X[0
         public void TV025_1467140_1()
         {
             String code =
-@"class A{	fb : B;	x: int;constructor A(x:int){		this.x = x;        this.fb = B.B(x);}}class B{    b:int;    constructor B(x:int)    {        this.b = x;    }}a = A.A({0,1});r = a.x;r2 = a.fb.b;";
+@"class A{	fb : B;	x: int;constructor A(x:int){		this.x = x;        this.fb = B.B(x);}}class B{    b:int;    constructor B(x:int)    {        this.b = x;    }}a = A.A([0,1]);r = a.x;r2 = a.fb.b;";
             thisTest.RunScriptSource(code);
             Object[] v1 = new Object[] { 0, 1 };
             Object[] v2 = new Object[] { 0, 1 };
@@ -411,7 +411,7 @@ import(""FFITarget.dll"");p = DummyPoint.ByCoordinates(1..3, 20, 30);a = p.X[0
         public void TV025_1467140_2()
         {
             String code =
-@"class A{	fb : B;	x: int;constructor A(x:int){		this.x = x;        this.fb = B.B(x);}}class B extends A{    b:int;    constructor B(x:int)    {        this.x = x+10;        this.b = x;    }}a = A.A({0,1});r = a.x;r2 = a.fb.x;";
+@"class A{	fb : B;	x: int;constructor A(x:int){		this.x = x;        this.fb = B.B(x);}}class B extends A{    b:int;    constructor B(x:int)    {        this.x = x+10;        this.b = x;    }}a = A.A([0,1]);r = a.x;r2 = a.fb.x;";
             thisTest.RunScriptSource(code);
             Object[] v1 = new Object[] { 0, 1 };
             Object[] v2 = new Object[] { 10, 11 };
@@ -462,7 +462,7 @@ import(""FFITarget.dll"");p = DummyPoint.ByCoordinates(1..3, 20, 30);a = p.X[0
         public void T031_Inheritance_Property_3()
         {
             String code =
-@"class A{	fx :int[];	constructor A(x:int[])	{		fx = x +1;	}}class B extends A{	fy :int[];	constructor B(y: int[],x:int[]): base.A(x)	{		fy = y +2;	}}a = A.A({0,1});r1 = a.fx;b = B.B({10,11},{0,1});r2 = b.fx;r3 = b.fy;r4 = a.fy;";
+@"class A{	fx :int[];	constructor A(x:int[])	{		fx = x +1;	}}class B extends A{	fy :int[];	constructor B(y: int[],x:int[]): base.A(x)	{		fy = y +2;	}}a = A.A([0,1]);r1 = a.fx;b = B.B([10,11],[0,1]);r2 = b.fx;r3 = b.fy;r4 = a.fy;";
             thisTest.RunScriptSource(code);
             Object[] v1 = new Object[] { 1, 2 };
             Object[] v2 = new Object[] { 12, 13 };
@@ -507,7 +507,7 @@ import(""FFITarget.dll"");p = DummyPoint.ByCoordinates(1..3, 20, 30);a = p.X[0
         {
             //DNL-1467147 When arguments are up-converted to a var during replication, the type of the value is changed, not the type of the reference
             String code =
-@"def foo(x:var){	return = bar(x) + 1;}def bar(x:int){    return = x + 1;}a = {0,1};r = foo(a);";
+@"def foo(x:var){	return = bar(x) + 1;}def bar(x:int){    return = x + 1;}a = [0,1];r = foo(a);";
             thisTest.RunScriptSource(code);
             Object r = new Object[]             {                2,                3            }
             ;
@@ -518,7 +518,7 @@ import(""FFITarget.dll"");p = DummyPoint.ByCoordinates(1..3, 20, 30);a = p.X[0
         public void TV1467147_PushThroughCastingWithReplication_1()
         {
             String code =
-@"def foo(x:var){	return = bar(x) + 1;}def bar(x:int){    return = x + 1;}a = {0,1.0};r = foo(a);";
+@"def foo(x:var){	return = bar(x) + 1;}def bar(x:int){    return = x + 1;}a = [0,1.0];r = foo(a);";
             thisTest.RunScriptSource(code);
             Object r = new Object[]             {                2,                3            }
             ;
@@ -529,7 +529,7 @@ import(""FFITarget.dll"");p = DummyPoint.ByCoordinates(1..3, 20, 30);a = p.X[0
         public void TV1467147_PushThroughCastingWithReplication()
         {
             String code =
-@"def A(x:var){    return = bar(x);}def bar(x:bool){    return = x;}a = A({0,1.1,null});r = a;";
+@"def A(x:var){    return = bar(x);}def bar(x:bool){    return = x;}a = A([0,1.1,null]);r = a;";
             thisTest.RunScriptSource(code);
             Object r = new Object[]             {                false,                true,                null            }
             ;
@@ -541,7 +541,7 @@ import(""FFITarget.dll"");p = DummyPoint.ByCoordinates(1..3, 20, 30);a = p.X[0
         public void T034_PushThroughCastingWithReplication_UserDefinedType()
         {
             String code =
-@"def foo(x:AB){	return = bar(x) + 1;}def bar(x:Ric){    return = x.fx +1 ;}class AB{	fx : var;	constructor AB()	{ 		fx = 1;	}}class Ric extends AB{	constructor Ric() : base.AB()	{	}}ric1 = Ric.Ric();ric2 = Ric.Ric();rics = {ric1, ric2};r = foo(rics);";
+@"def foo(x:AB){	return = bar(x) + 1;}def bar(x:Ric){    return = x.fx +1 ;}class AB{	fx : var;	constructor AB()	{ 		fx = 1;	}}class Ric extends AB{	constructor Ric() : base.AB()	{	}}ric1 = Ric.Ric();ric2 = Ric.Ric();rics = [ric1, ric2];r = foo(rics);";
             thisTest.RunScriptSource(code);
             Object[] rs = new Object[] { 3, 3 };
             thisTest.Verify("r", rs);
@@ -551,7 +551,7 @@ import(""FFITarget.dll"");p = DummyPoint.ByCoordinates(1..3, 20, 30);a = p.X[0
         public void T035_PushThroughIntWithReplication()
         {
             String code =
-@"def foo(x:int){	return = bar(x) + 1;}def bar(x:int){    return = x + 1;}a = {0,1};r = foo(a);";
+@"def foo(x:int){	return = bar(x) + 1;}def bar(x:int){    return = x + 1;}a = [0,1];r = foo(a);";
             thisTest.RunScriptSource(code);
             Object r = new Object[]             {                2,                3            }
             ;
@@ -571,7 +571,7 @@ import(""FFITarget.dll"");p = DummyPoint.ByCoordinates(1..3, 20, 30);a = p.X[0
         public void T036_Replication_ArrayDimensionDispatch_SubTest_1D()
         {
             String code =
-@"a = { 0 };def foo(x:int){	return = 7;}va = foo(a);";
+@"a = [ 0 ];def foo(x:int){	return = 7;}va = foo(a);";
             thisTest.RunScriptSource(code);
             thisTest.Verify("va", new object[] { 7 });
         }
@@ -580,7 +580,7 @@ import(""FFITarget.dll"");p = DummyPoint.ByCoordinates(1..3, 20, 30);a = p.X[0
         public void T036_Replication_ArrayDimensionDispatch_SubTest_1D2()
         {
             String code =
-@"a = { 0, 0 };def foo(x:int){	return = 7;}va = foo(a);";
+@"a = [ 0, 0 ];def foo(x:int){	return = 7;}va = foo(a);";
             thisTest.RunScriptSource(code);
             thisTest.Verify("va", new object[] { 7, 7 });
         }
@@ -589,7 +589,7 @@ import(""FFITarget.dll"");p = DummyPoint.ByCoordinates(1..3, 20, 30);a = p.X[0
         public void T036_Replication_ArrayDimensionDispatch_SubTest_2D()
         {
             String code =
-@"a = { { 0 } };def foo(x:int){	return = 7;}va = foo(a);";
+@"a = [ [ 0 ] ];def foo(x:int){	return = 7;}va = foo(a);";
             thisTest.RunScriptSource(code);
             thisTest.Verify("va", new object[] { new object[] { 7 } });
         }
@@ -598,7 +598,7 @@ import(""FFITarget.dll"");p = DummyPoint.ByCoordinates(1..3, 20, 30);a = p.X[0
         public void T036_Replication_ArrayDimensionDispatch_SubTest_2D2()
         {
             String code =
-@"a = { { 0 }, {0} };def foo(x:int){	return = 7;}va = foo(a);";
+@"a = [ [ 0 ], [0] ];def foo(x:int){	return = 7;}va = foo(a);";
             thisTest.RunScriptSource(code);
             thisTest.Verify("va", new object[] { new object[] { 7 }, new object[] { 7 } });
         }
@@ -607,7 +607,7 @@ import(""FFITarget.dll"");p = DummyPoint.ByCoordinates(1..3, 20, 30);a = p.X[0
         public void T036_Replication_ArrayDimensionDispatch_SubTest_3D()
         {
             String code =
-@"a = { { { 0 } } };def foo(x:int){	return = 7;}va = foo(a);";
+@"a = [ [ [ 0 ] ] ];def foo(x:int){	return = 7;}va = foo(a);";
             thisTest.RunScriptSource(code);
             thisTest.Verify("va", new object[] { new object[] { new object[] { 7 } } });
         }
@@ -616,7 +616,7 @@ import(""FFITarget.dll"");p = DummyPoint.ByCoordinates(1..3, 20, 30);a = p.X[0
         public void T036_Replication_ArrayDimensionDispatch_SubTest_4D()
         {
             String code =
-@"a = { { { { 0 } } } };def foo(x:int){	return = 7;}va = foo(a);";
+@"a = [ [ [ [ 0 ] ] ] ];def foo(x:int){	return = 7;}va = foo(a);";
             thisTest.RunScriptSource(code);
             thisTest.Verify("va", new object[] { new object[] { new object[] { new object[] { 7 } } } });
         }
@@ -626,7 +626,7 @@ import(""FFITarget.dll"");p = DummyPoint.ByCoordinates(1..3, 20, 30);a = p.X[0
         public void T036_Replication_ArrayDimensionDispatch_SubTest()
         {
             String code =
-@"c = {{1}};d = {{{1}}};def foo(x:int){	return = 7;}vc = foo(c);vd = foo(d);";
+@"c = [[1]];d = [[[1]]];def foo(x:int){	return = 7;}vc = foo(c);vd = foo(d);";
             thisTest.RunScriptSource(code);
             thisTest.Verify("vc", new object[]                                              {                                                  new object[] {7 }                                              });
             thisTest.Verify("vd", new object[]                                              {                                                  new object[]                                                      {                                                          new object[] {7 }                                                      }                                              });
@@ -636,7 +636,7 @@ import(""FFITarget.dll"");p = DummyPoint.ByCoordinates(1..3, 20, 30);a = p.X[0
         public void T036_Replication_ArrayDimensionDispatch()
         {
             String code =
-@"z = 0;a = {};b = {1};c = {{1}};d = {{{1}}};def foo(x:int){	return = 7;}vz = foo(z);va = foo(a);vb = foo(b);vc = foo(c);vd = foo(d);";
+@"z = 0;a = [];b = [1];c = [[1]];d = [[[1]]];def foo(x:int){	return = 7;}vz = foo(z);va = foo(a);vb = foo(b);vc = foo(c);vd = foo(d);";
             thisTest.RunScriptSource(code);
             thisTest.Verify("vz", 7);
             thisTest.Verify("va", new object[0]);
@@ -649,7 +649,7 @@ import(""FFITarget.dll"");p = DummyPoint.ByCoordinates(1..3, 20, 30);a = p.X[0
         public void T037_Replication_ArrayDimensionDispatch_Var()
         {
             String code =
-@"z = 0;a = {};b = {1};c = {{1}};d = {{{1}}};def foo(x:var){	return = 7;}vz = foo(z);va = foo(a);vb = foo(b);vc = foo(c);vd = foo(d);";
+@"z = 0;a = [];b = [1];c = [[1]];d = [[[1]]];def foo(x:var){	return = 7;}vz = foo(z);va = foo(a);vb = foo(b);vc = foo(c);vd = foo(d);";
             thisTest.RunScriptSource(code);
             thisTest.Verify("vz", 7);
             thisTest.Verify("va", new object[0]);
@@ -808,7 +808,7 @@ import(""FFITarget.dll"");p = DummyPoint.ByCoordinates(1..3, 20, 30);a = p.X[0
         public void T052_Defect_ReplicationMethodOverloading()
         {
             String code =
-@"import(""FFITarget.dll"");p = DummyPoint.ByCoordinates(10, 20, 30);def foo(val : int[]){    return = 1;}def foo(val : var){    return = 2;}                                arr = { 3, p, 5 } ;r = foo(arr);    ";
+@"import(""FFITarget.dll"");p = DummyPoint.ByCoordinates(10, 20, 30);def foo(val : int[]){    return = 1;}def foo(val : var){    return = 2;}                                arr = [ 3, p, 5 ] ;r = foo(arr);    ";
             thisTest.RunScriptSource(code);
             Object[] v1 = new Object[] { 2, 2, 2 };
             thisTest.Verify("r", v1);
@@ -822,7 +822,7 @@ import(""FFITarget.dll"");p = DummyPoint.ByCoordinates(1..3, 20, 30);a = p.X[0
         {
             String code =
 @"
-import(""FFITarget.dll"");a1 = DummyPoint.ByCoordinates(10, 20, 30);def foo(val : int[]){    return = 1;}def foo(val : var){    return = 2;}def foo(val: var[]){	return = 3;}                                arr = { {3}, a1, 5,{a1} } ;//1,2,2,3r = foo(arr);    ";
+import(""FFITarget.dll"");a1 = DummyPoint.ByCoordinates(10, 20, 30);def foo(val : int[]){    return = 1;}def foo(val : var){    return = 2;}def foo(val: var[]){	return = 3;}                                arr = [ [3], a1, 5,[a1] ] ;//1,2,2,3r = foo(arr);    ";
             // Tracked by: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4052
             thisTest.RunScriptSource(code);
             Object[] v1 = new Object[] { 1, 2, 2, 3 };
@@ -837,7 +837,7 @@ import(""FFITarget.dll"");a1 = DummyPoint.ByCoordinates(10, 20, 30);def foo(va
         {
             String code =
 @"
-import(""FFITarget.dll"");a1 = DummyPoint.ByCoordinates(10, 20, 30);def foo(val : int[]){    return = 1;}def foo(val : var){    return = 2;}def foo(val: var[]){	return = 3;}                                arr = { {3}, a1, 5,{{a1}} } ;//1,2,2,nullr = foo(arr);";
+import(""FFITarget.dll"");a1 = DummyPoint.ByCoordinates(10, 20, 30);def foo(val : int[]){    return = 1;}def foo(val : var){    return = 2;}def foo(val: var[]){	return = 3;}                                arr = [ [3], a1, 5,[[a1]] ] ;//1,2,2,nullr = foo(arr);";
             // Tracked by: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4052
             string err = "MAGN-4052 Replication and Method overload issue, resolving to wrong method";
             thisTest.RunScriptSource(code, err);
@@ -853,7 +853,7 @@ import(""FFITarget.dll"");a1 = DummyPoint.ByCoordinates(10, 20, 30);def foo(va
         {
             String code =
 @"
-import(""FFITarget.dll"");a1 = DummyPoint.ByCoordinates(10, 20, 30);def foo(val : int[]){    return = 1;}def foo(val : var){    return = 2;}def foo(val: var[]){	return = 3;}                                arr = { {3}, a1, 5.0,{{a1}} } ;//1,2,2,nullr = foo(arr);";
+import(""FFITarget.dll"");a1 = DummyPoint.ByCoordinates(10, 20, 30);def foo(val : int[]){    return = 1;}def foo(val : var){    return = 2;}def foo(val: var[]){	return = 3;}                                arr = [ [3], a1, 5.0,[[a1]] ] ;//1,2,2,nullr = foo(arr);";
             // Tracked by: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4052
             string err = "MAGN-4052 Replication and Method overload issue, resolving to wrong method";
             thisTest.RunScriptSource(code, err);
@@ -868,7 +868,7 @@ import(""FFITarget.dll"");a1 = DummyPoint.ByCoordinates(10, 20, 30);def foo(va
         public void TV052_Defect_ReplicationMethodOverloading_InUserDefinedClass()
         {
             String code =
-@"import(""FFITarget.dll"");a1 = DummyPoint.ByCoordinates(10, 20, 30);def foo(val : int[]){    return = 1;}def foo(val : var){    return = 2;}def foo(val: var[]){	return = 3;}                                arr = { {3}, a1, 5.0,{{a1}} } ;//1,2,2,nullr = foo(arr);";
+@"import(""FFITarget.dll"");a1 = DummyPoint.ByCoordinates(10, 20, 30);def foo(val : int[]){    return = 1;}def foo(val : var){    return = 2;}def foo(val: var[]){	return = 3;}                                arr = [ [3], a1, 5.0,[[a1]] ] ;//1,2,2,nullr = foo(arr);";
             // Tracked by: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4052
             string err = "MAGN-4052 Replication and Method overload issue, resolving to wrong method";
             thisTest.RunScriptSource(code, err);
@@ -881,7 +881,7 @@ import(""FFITarget.dll"");a1 = DummyPoint.ByCoordinates(10, 20, 30);def foo(va
         public void ReplicationSubDispatch()
         {
             String code =
-@"def foo (i : int){ return=1;}def foo (d: double){ return=2;}m = {4, 5.0, 56, 6.3};ret = foo(m);";
+@"def foo (i : int){ return=1;}def foo (d: double){ return=2;}m = [4, 5.0, 56, 6.3];ret = foo(m);";
             thisTest.RunScriptSource(code);
 
             thisTest.Verify("ret", new object[] { 1, 2, 1, 2 });
@@ -921,7 +921,7 @@ import(""FFITarget.dll"");a1 = DummyPoint.ByCoordinates(10, 20, 30);def foo(va
         public void RepoTests_MAGN3177()
         {
             String code =
-                @"def foo(str: string, para : string[], arg : var[]){    Print(str);    Print(para);    Print(arg);}" +   "\n s = \"str\";\n" +   "paras = {\"a\",\"b\"}; \n" +   "args = {{2,5},{5}}; \n"+"foo(s, paras, args);";
+                @"def foo(str: string, para : string[], arg : var[]){    Print(str);    Print(para);    Print(arg);}" +   "\n s = \"str\";\n" +   "paras = [\"a\",\"b\"]; \n" +   "args = [[2,5],[5]]; \n"+"foo(s, paras, args);";
             thisTest.RunScriptSource(code);
             //thisTest.Verify("d", 1);
         }
@@ -1013,8 +1013,8 @@ def foo(x : DummyPoint, y: int)
     return = 42;
 }
 a = DummyPoint.ByCoordinates(10, 20, 30);
-r1 = foo({1});
-r2 = foo(a, {1});
+r1 = foo([1]);
+r2 = foo(a, [1]);
 ";
 
             thisTest.RunScriptSource(code);
@@ -1031,7 +1031,7 @@ def foo(x : int)
     return = x;
 }
 
-r = foo({""foo"", ""bar"", 33.9});
+r = foo([""foo"", ""bar"", 33.9]);
 ";
             thisTest.RunScriptSource(code);
             thisTest.Verify("r", new object[] { null, null, 34 });
@@ -1046,8 +1046,8 @@ def foo(x: int, y : string)
     return = x;
 }
 
-xs = {""foo"", 10, ""bar""};
-ys = { 12, ""ding"", ""dang""};
+xs = [""foo"", 10, ""bar""];
+ys = [ 12, ""ding"", ""dang""];
 r = foo(xs, ys);
 ";
             thisTest.RunScriptSource(code);
@@ -1063,8 +1063,8 @@ def foo(x: int, y : string)
     return = x;
 }
 
-xs = {""foo"", 10, ""bar""};
-ys = { 12, ""ding"", ""dang""};
+xs = [""foo"", 10, ""bar""];
+ys = [ 12, ""ding"", ""dang""];
 r = foo(xs<1>, ys<1>);
 ";
             thisTest.RunScriptSource(code);

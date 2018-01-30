@@ -11,7 +11,7 @@
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
       "NodeType": "CodeBlockNode",
-      "Code": "{1,2,3};",
+      "Code": "[1,2,3];",
       "Id": "2ac2cd517fd940aaa70ecbf8fe96762a",
       "Inputs": [],
       "Outputs": [

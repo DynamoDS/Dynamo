@@ -107,7 +107,7 @@ import(""FFITarget.dll"");
                    
                         pt1 = ClassFunctionality.ClassFunctionality( );
                         pt2 = ClassFunctionality.ClassFunctionality(  );
-                        pts = {pt1, pt2};
+                        pts = [pt1, pt2];
                         numpts = length(pts); 
                         a=numpts.IntVal;
                        
@@ -134,7 +134,7 @@ a;                    def length : ClassFunctionality (pts : ClassFunctionality[
                    
                     pt1 = ClassFunctionality.ClassFunctionality();
                     pt2 = ClassFunctionality.ClassFunctionality();
-                    pts = {pt1, pt2};
+                    pts = [pt1, pt2];
                     numpts = length(pts); 
                     a=numpts.IntVal;
                 }";
@@ -163,7 +163,7 @@ import(""FFITarget.dll"");
                        
                         pt1 = ClassFunctionality.ClassFunctionality( );
                         pt2 = ClassFunctionality.ClassFunctionality( );
-                        pts = {pt1, pt2};
+                        pts = [pt1, pt2];
                         numpts = length(pts); 
                          a=numpts.IntVal;
                  
@@ -278,7 +278,7 @@ import(""FFITarget.dll"");
             string code =
                 @"r;                       def foo:int()
                        {
-                            return = {1, 2, 3};
+                            return = [1, 2, 3];
                        }    [Imperative]{
                        r = foo();                              
                 }";
@@ -296,7 +296,7 @@ import(""FFITarget.dll"");
                       {
                              return = x + 1;
                       }[Imperative]{
-                      r = foo({true, false}); // method resolution failure, r= null
+                      r = foo([true, false]); // method resolution failure, r= null
                               
                 }";
             //Assert.Fail("1467200 - Sprint 25 - rev 3242 type checking negative cases failing ");
@@ -312,7 +312,7 @@ import(""FFITarget.dll"");
                 @"r;
                        def foo:int()
                        {
-                              return = {true, false};
+                              return = [true, false];
                        }   
                         [Imperative]{
                        r = foo();                             
@@ -333,7 +333,7 @@ import(""FFITarget.dll"");
 c;
                             [Imperative]{
                        
-                            a = {ClassFunctionality.ClassFunctionality(),ClassFunctionalityMirror.ClassFunctionalityMirror()};
+                            a = [ClassFunctionality.ClassFunctionality(),ClassFunctionalityMirror.ClassFunctionalityMirror()];
                             b=a;
                             a[0].IntVal = 100;
                             b[0].IntVal = ""false"";
@@ -353,12 +353,12 @@ c;
 b;c;d;
                             def foo( a : bool )
                             {
-                            c={a};
+                            c=[a];
                             return = c; 
                             }
                       [Imperative]
                             {
-                            c={};
+                            c=[];
 
                             b = foo( 1 );
                             c = foo( 1.5 );
@@ -584,7 +584,7 @@ foo3;
                 @"
                         def twice : int []( a : double )
                         {
-                            return = {{1,1},{1,1}};
+                            return = [[1,1],[1,1]];
                         }
                         
 d;
@@ -605,7 +605,7 @@ d;
         {
             string code =
                 @"b;[Imperative]{
-                  a={1,2,3,4,5};
+                  a=[1,2,3,4,5];
                     x=2.5;
                     b=a[x];
                         }";
@@ -651,7 +651,7 @@ d;
                 @"a;
                  def foo:int[]()
                     {
-                         return = {3.5}; 
+                         return = [3.5]; 
                     }[Imperative]{
                     a=foo();
                         }";
@@ -685,7 +685,7 @@ d;
                 @"a;
                   def foo:int[]()
                   {
-                      return = {3.5}; 
+                      return = [3.5]; 
                   }
                  [Imperative]{
                   a=foo()[0];
@@ -1144,18 +1144,18 @@ import(""FFITarget.dll"");
 a;b;c;d;e1;f;g;
                     [Imperative]{
               
-                    a:double[]= {1,2,3}; 
+                    a:double[]= [1,2,3]; 
                     
-                    b:int[] =  {1,2,3}; 
-                    c:string[]={""a"",""b"",""c""}; 
-                    d:char []= {'c','d','e'};
+                    b:int[] =  [1,2,3]; 
+                    c:string[]=[""a"",""b"",""c""]; 
+                    d:char []= ['c','d','e'];
                     x1= ClassFunctionality.ClassFunctionality();
                     y1= ClassFunctionality.ClassFunctionality();
                     z1= ClassFunctionality.ClassFunctionality();
-                    e:ClassFunctionality []= {x1,y1,z1};
-                    e1 = { e[0].IntVal, e[1].IntVal, e[2].IntVal };
-                    f:bool []= {true,false,null};
-                    g ={ null,null,null};
+                    e:ClassFunctionality []= [x1,y1,z1];
+                    e1 = [ e[0].IntVal, e[1].IntVal, e[2].IntVal ];
+                    f:bool []= [true,false,null];
+                    g =[ null,null,null];
                 }";
             thisTest.RunScriptSource(code);
             thisTest.Verify("a", new object[] { 1.0, 2.0, 3.0 });
@@ -1214,16 +1214,16 @@ import(""FFITarget.dll"");
 a;b;c;d;e1;f;g;
                     [Imperative]
                     {
-                    a:double[][]= {1}; 
+                    a:double[][]= [1]; 
                     
-                    b:int[][] =  {1.1}; 
-                    c:string[][]={""a""}; 
-                    d:char [][]= {'c'};
+                    b:int[][] =  [1.1]; 
+                    c:string[][]=[""a""]; 
+                    d:char [][]= ['c'];
                     x1= ClassFunctionality.ClassFunctionality();
-                    e:ClassFunctionality [][]= {x1};
+                    e:ClassFunctionality [][]= [x1];
                     e1=e.IntVal;
-                    f:bool [][]= {true};
-                    g [][]={null};
+                    f:bool [][]= [true];
+                    g [][]=[null];
                     }
                     ";
 
@@ -1337,7 +1337,7 @@ a;b;c;d1;e;f;
                         b = foo( 1); 
                         c = foo( ""1.5""); //char to var 
                          d = foo( ClassFunctionality.ClassFunctionality(1)); // user define to var
-                          d1={d[0].IntVal};
+                          d1=[d[0].IntVal];
                         e = foo( false);//bool to var 
                         f = foo( null);//null to var 
                         }";
@@ -1372,7 +1372,7 @@ a;b;c;d1;e;f;
                         a = foo( 1.5); 
                         b = foo( 1); 
                         d = foo( ClassFunctionality.ClassFunctionality(1)); // user define to var
-                         d1 =  {d[0].IntVal };
+                         d1 =  [d[0].IntVal ];
                         e = foo( false); 
                         f = foo( null); 
                         }";
@@ -1409,7 +1409,7 @@ a;a1;b;c;d1;e;f;
                         b = foo( 1); 
                         c = foo( ""1.5""); 
                         d = foo( ClassFunctionality.ClassFunctionality(1)); // user define to var
-                         d1 =  {d[0].IntVal} ;
+                         d1 =  [d[0].IntVal] ;
                         e = foo( false); 
                         f = foo( null); 
                         }";
@@ -1554,15 +1554,15 @@ a;a1;b;c;d;e;e1;
 	                        return =b1;
                         }
                 [Imperative]{
-                        a = foo({ 1.5, 2.5 });
-                        z:var[]={ 1.5,2.5 };
+                        a = foo([ 1.5, 2.5 ]);
+                        z:var[]=[ 1.5,2.5 ];
                         a1=foo(z);
-                        b = foo({ 1, 0 });
-                        c = foo({ ""1.5"" ,""""});
-                        c1 = foo( {'1','0'});
-                        d = foo({ ClassFunctionality.ClassFunctionality(1),ClassFunctionality.ClassFunctionality(1) });
-                        e = foo({ false,true });
-                        f = foo({ null, null });}";
+                        b = foo([ 1, 0 ]);
+                        c = foo([ ""1.5"" ,""""]);
+                        c1 = foo( ['1','0']);
+                        d = foo([ ClassFunctionality.ClassFunctionality(1),ClassFunctionality.ClassFunctionality(1) ]);
+                        e = foo([ false,true ]);
+                        f = foo([ null, null ]);}";
             string error = "1467251 - sprint 26 - Rev 3485 type conversion from var to var array promotion is not happening ";
             thisTest.RunScriptSource(code, error);
             thisTest.Verify("a", new object[] { true, true });
@@ -1590,15 +1590,15 @@ a;a1;b;c;d;e;f;g;
 	                        return =b1;
                         }
                 [Imperative]{
-                        a = foo({ 1.5, 2.5 });
-                        z:var[]={ 1.5,2.5 };
+                        a = foo([ 1.5, 2.5 ]);
+                        z:var[]=[ 1.5,2.5 ];
                         a1=foo(z);
-                        b = foo({ 1, 0 });
-                        c = foo({ ""1.5"" ,""""});
-                        d = foo({ '1','0'});
-                        e = d = foo({ ClassFunctionality.ClassFunctionality(1),ClassFunctionality.ClassFunctionality(1) });
-                        f = foo({ false,true });
-                        g = foo({ null, null });
+                        b = foo([ 1, 0 ]);
+                        c = foo([ ""1.5"" ,""""]);
+                        d = foo([ '1','0']);
+                        e = d = foo([ ClassFunctionality.ClassFunctionality(1),ClassFunctionality.ClassFunctionality(1) ]);
+                        f = foo([ false,true ]);
+                        g = foo([ null, null ]);
                                                   }";
             string error = "1467251 - sprint 26 - Rev 3485 type conversion from var to var array promotion is not happening ";
             thisTest.RunScriptSource(code, error);
@@ -1627,12 +1627,12 @@ a;a1;b;c;d;e;
 	                             return =b1;
                             }
                 [Imperative]{
-                    a = foo({ 1.5, 2.5 });
-                    a1 : var = foo({ 1.5,2.5 });
-                    b = foo({ 1, 0 });
-                    c = foo({ ""1.5"" ,""""});
-                    d = foo({ '1', '0' });
-                     e = d = foo({ ClassFunctionality.ClassFunctionality(1),ClassFunctionality.ClassFunctionality(1) });
+                    a = foo([ 1.5, 2.5 ]);
+                    a1 : var = foo([ 1.5,2.5 ]);
+                    b = foo([ 1, 0 ]);
+                    c = foo([ ""1.5"" ,""""]);
+                    d = foo([ '1', '0' ]);
+                     e = d = foo([ ClassFunctionality.ClassFunctionality(1),ClassFunctionality.ClassFunctionality(1) ]);
                                                   }";
             string error = "1467258 - sprint 26 - Rev 3541 if the return type is bool array , type conversion does not happen for some cases  ";
             thisTest.RunScriptSource(code, error);
@@ -1772,7 +1772,7 @@ import(""FFITarget.dll"");
         {
             string code =
                 @"b;c;d;[Imperative]{
-                    a={1,2,3,4,5};
+                    a=[1,2,3,4,5];
                     x=2.5;
                     b=a[x];
                     c=a[2.1];       
@@ -1793,7 +1793,7 @@ import(""FFITarget.dll"");
         {
             string code =
                 @"b;[Imperative]{
-                    a = { 1, { 2 }, 3, 4, 5 };
+                    a = [ 1, [ 2 ], 3, 4, 5 ];
                     x=-0.1;
                     b = a[1][x];}";
             string error = "1467214 - Sprint 26- Rev 3313 Type Conversion from Double to Int not happening while indexing into array ";
@@ -2044,8 +2044,8 @@ a1;
                 @"x;
                 [Imperative]
                 {
-                    x : var[] = { 1, 2, 3, 4 };
-                    x[2..3] = { 1, 2 };
+                    x : var[] = [ 1, 2, 3, 4 ];
+                    x[2..3] = [ 1, 2 ];
                 }
                 ";
             var mirror = thisTest.RunScriptSource(code);
@@ -2059,8 +2059,8 @@ a1;
                 @"x;
                 [Imperative]
                 {
-                    x : int[] = { 1, 2, 3, 4 };
-                    x[2..3] = { 1, 2 };
+                    x : int[] = [ 1, 2, 3, 4 ];
+                    x[2..3] = [ 1, 2 ];
                 }
                 ";
             var mirror = thisTest.RunScriptSource(code);
@@ -2074,8 +2074,8 @@ a1;
                 @"x;
                 [Imperative]
                 {
-                x : int[] = { 1, 2, 3, 4 };
-                x[2..3] = { 1, 2 };
+                x : int[] = [ 1, 2, 3, 4 ];
+                x[2..3] = [ 1, 2 ];
                 }
                 ";
             var mirror = thisTest.RunScriptSource(code);
@@ -2089,8 +2089,8 @@ a1;
                 @"x;
                 [Imperative]
                 {
-                    x : bool[] = { true, false, true, false };
-                    x[2..3] = { true, 2 };
+                    x : bool[] = [ true, false, true, false ];
+                    x[2..3] = [ true, 2 ];
                 }
                 ";
             var mirror = thisTest.RunScriptSource(code);
@@ -2104,8 +2104,8 @@ a1;
                 @"x;
                 [Imperative]
                 {
-                    x : var[] = { 1, false,""q"", 1.3 };//jagged
-                    x[2..3] = { true, 2 };
+                    x : var[] = [ 1, false,""q"", 1.3 ];//jagged
+                    x[2..3] = [ true, 2 ];
                 }
                 ";
             var mirror = thisTest.RunScriptSource(code);

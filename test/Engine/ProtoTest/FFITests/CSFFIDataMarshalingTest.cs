@@ -224,7 +224,7 @@ namespace ProtoFFITests
         public void TestIEnumerable3()
         {
             String code =
-            @"               nums = TestData.DoubleThem({1,2,3,4,5});               num = nums[4];            ";
+            @"               nums = TestData.DoubleThem([1,2,3,4,5]);               num = nums[4];            ";
             Type t = typeof (FFITarget.TestData); //"ProtoFFITests.TestData, ProtoTest, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"
             code = string.Format("import(\"Builtin.dll\");import(\"{0}\");\r\n{1}", t.AssemblyQualifiedName, code);
             ValidationData[] data = { new ValidationData { ValueName = "num", ExpectedValue = 10, BlockIndex = 0 },                                    };
@@ -248,7 +248,7 @@ namespace ProtoFFITests
             String code =
             @"
                data = TestData.GetNestedCollection();
-               list = TestData.RemoveItemsAtIndices(data, {3,1});
+               list = TestData.RemoveItemsAtIndices(data, [3,1]);
                size = Count(Flatten(list));
             ";
             Type t = typeof(FFITarget.TestData);
@@ -389,7 +389,7 @@ namespace ProtoFFITests
         public void Test_DataMasrshalling_Using_Implicit_Type_Cast_In_Method_Arguments()
         {
             string code =
-                @" t = TestData.TestData();                   t1 = t.FuncReturningVariousObjectTypes(0..18); // this function uses replication to create 19 different 'types' of variables, returned as 'objects'                   // Now each of those objects are passed to respective functions where the values are verified                    t2 = t.TestUlong(t1[0]);//1                   t3 = t.TestByte(t1[1]);//1                   t4 = t.TestSbyte(t1[2]);//1                   t5 = t.TestShort(t1[3]);//1                   t6 = t.TestUint16(t1[4]);//1                   t7 = t.TestDummyDispose(t1[5]);//20                   t8 = t.TestUint64(t1[6]);//1                   t9 = t.TestChar(t1[7]); //1                   t10 = t.TestFloat(t1[8]);//1                   t11 = t.TestDecimal(t1[9]);//1                   t12 = t.TestUshort(t1[10]);//1                   t13 = t.TestDerivedDummyClass(t1[11]);//123                   t14 = t.TestDerivedDisposeClass(t1[12]);//5                   t15 = t.TestDerived1(t1[13]);//20                   t16 = t.TestDisposeClass(t1[14]);//5                   t17 = t.TestString(t1[15]);  //4                    t18 = t.TestInt(t1[16]); //1                   t19 = t.TestDouble(t1[17]); //1                   t20 = t.TestBoolean(t1[18]); //1                   t21 = { t2, t3, t4, t5, t6, t7, t8,  t9, t10, t11, t12, t13, t14, t15, t16, t17 , t18, t19, t20};                                               ";
+                @" t = TestData.TestData();                   t1 = t.FuncReturningVariousObjectTypes(0..18); // this function uses replication to create 19 different 'types' of variables, returned as 'objects'                   // Now each of those objects are passed to respective functions where the values are verified                    t2 = t.TestUlong(t1[0]);//1                   t3 = t.TestByte(t1[1]);//1                   t4 = t.TestSbyte(t1[2]);//1                   t5 = t.TestShort(t1[3]);//1                   t6 = t.TestUint16(t1[4]);//1                   t7 = t.TestDummyDispose(t1[5]);//20                   t8 = t.TestUint64(t1[6]);//1                   t9 = t.TestChar(t1[7]); //1                   t10 = t.TestFloat(t1[8]);//1                   t11 = t.TestDecimal(t1[9]);//1                   t12 = t.TestUshort(t1[10]);//1                   t13 = t.TestDerivedDummyClass(t1[11]);//123                   t14 = t.TestDerivedDisposeClass(t1[12]);//5                   t15 = t.TestDerived1(t1[13]);//20                   t16 = t.TestDisposeClass(t1[14]);//5                   t17 = t.TestString(t1[15]);  //4                    t18 = t.TestInt(t1[16]); //1                   t19 = t.TestDouble(t1[17]); //1                   t20 = t.TestBoolean(t1[18]); //1                   t21 = [ t2, t3, t4, t5, t6, t7, t8,  t9, t10, t11, t12, t13, t14, t15, t16, t17 , t18, t19, t20];                                               ";
             object[] b = new object[] { 1, 1, 1, 1, 1, 20, 1, 1, 1, 1, 1, 123, 5, 20.0, 5, 4, 1, 1, 1 };
             ValidationData[] data = { new ValidationData { ValueName = "t21", ExpectedValue = b, BlockIndex = 0 } };
             Type dummy = typeof(FFITarget.TestData);
@@ -492,7 +492,7 @@ r4 = TestData.GetValueFromHashTable(table, 1024);
         {
             string code =
                 @"
-arr = {21, 42, 63};
+arr = [21, 42, 63];
 arr[""foo""] = ""xyz"";
 r1 = TestData.GetValueFromHashTable(arr, 1);
 r2 = TestData.GetValueFromHashTable(arr, ""foo"");
@@ -533,7 +533,7 @@ r4 = TestData.GetValueFromDictionary(arr, ""3"");
         {
             string code =
                 @"
-arr = {21, 42, 63};
+arr = [21, 42, 63];
 r1 = TestData.GetValueFromHashTable(arr, 0);
 r2 = TestData.GetValueFromHashTable(arr, 1);
 r3 = TestData.GetValueFromHashTable(arr, 2);
@@ -566,8 +566,8 @@ r4 = TestData.GetValueFromHashTable(arr, 3);
         {
             string code =
 @" 
-d1 = TestData.GetDepth({1, 2, {3, 4}, {5, {6, {7}}}});  
-d2 = TestData.SumList({1, 2, {3, 4}, {5, {6, {7}}}});  
+d1 = TestData.GetDepth([1, 2, [3, 4], [5, [6, [7]]]]);  
+d2 = TestData.SumList([1, 2, [3, 4], [5, [6, [7]]]]);  
 ";
             ValidationData[] data = 
             { 
@@ -605,7 +605,7 @@ d2 = TestData.SumList({1, 2, {3, 4}, {5, {6, {7}}}});
         public void Test_MarshalingNullInCollection()
         {
             string code = @"
-                     list = {1, null, ""test"", true, 3.5};
+                     list = [1, null, ""test"", true, 3.5];
                      l1 = TestData.AddItemToFront(null, list);
                      l2 = TestData.AddItemToFront(list, list);";
             ValidationData[] data = 
@@ -637,8 +637,8 @@ d2 = TestData.SumList({1, 2, {3, 4}, {5, {6, {7}}}});
             @"                import(""Builtin.dll"");                import (TestData from ""FFITarget.dll"");
 
                 d = TestData.TestData();
-                arr1 = TestData.JoinList({d, {1,2,3}});
-                arr2 = TestData.JoinList({d, d, d});
+                arr1 = TestData.JoinList([d, [1,2,3]]);
+                arr2 = TestData.JoinList([d, d, d]);
 
                 type1 = ToString(arr1[0]);
                 rank1 = Rank(arr1);

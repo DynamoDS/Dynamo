@@ -100,9 +100,9 @@ import(""FFITarget.dll"");
 a;b;c;
 [Imperative]
 {
-	a = {1,2,3};
-    b = {1.0, 2.0, 3.0, 3.0};
-    c = {1.0, 2.0, 9};
+	a = [1,2,3];
+    b = [1.0, 2.0, 3.0, 3.0];
+    c = [1.0, 2.0, 9];
 }
 ";
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
@@ -129,11 +129,11 @@ a;b;c;
 @"a;b;c;d;e;
 [Imperative]
 {
-	a = {1,2,3};
-    b = {1.0, 2.0, 3.0, 3.0};
-    c = {1.0, 2.0, 9};
-    d = {{1}, {1}, {1}};
-    e = {{1, 2, 3}, {1, 2, 3}, {1, 2, 3}};
+	a = [1,2,3];
+    b = [1.0, 2.0, 3.0, 3.0];
+    c = [1.0, 2.0, 9];
+    d = [[1], [1], [1]];
+    e = [[1, 2, 3], [1, 2, 3], [1, 2, 3]];
 }
 ";
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
@@ -165,11 +165,11 @@ a;b;c;
 a;b;c;d;e;
 [Imperative]
 {
-	a = {1,{2},3};
-    b = {1.0, {2.0, 3.0, 3.0}};
-    c = {1.0, {2.0, {9}}};
-    d = {{1}, {}, {1}};
-    e = {{1, 2, 3}, {1, {2}, 3}, {{{1}}, 2, 3}};
+	a = [1,[2],3];
+    b = [1.0, [2.0, 3.0, 3.0]];
+    c = [1.0, [2.0, [9]]];
+    d = [[1], [], [1]];
+    e = [[1, 2, 3], [1, [2], 3], [[[1]], 2, 3]];
 }
 ";
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
@@ -201,35 +201,35 @@ a;b;c;d;e;
 class A {}
 class B extends A {}
 class C extends B {}
-tAAA = {A.A(), A.A(), A.A()};
-tAAB = {A.A(), A.A(), B.B()};
-tAAC = {A.A(), A.A(), C.C()};
-tABA = {A.A(), B.B(), A.A()};
-tABB = {A.A(), B.B(), B.B()};
-tABC = {A.A(), B.B(), C.C()};
-tACA = {A.A(), C.C(), A.A()};
-tACB = {A.A(), C.C(), B.B()};
-tACC = {A.A(), C.C(), C.C()};
+tAAA = [A.A(), A.A(), A.A()];
+tAAB = [A.A(), A.A(), B.B()];
+tAAC = [A.A(), A.A(), C.C()];
+tABA = [A.A(), B.B(), A.A()];
+tABB = [A.A(), B.B(), B.B()];
+tABC = [A.A(), B.B(), C.C()];
+tACA = [A.A(), C.C(), A.A()];
+tACB = [A.A(), C.C(), B.B()];
+tACC = [A.A(), C.C(), C.C()];
 //---
-tBAA = {B.B(), A.A(), A.A()};
-tBAB = {B.B(), A.A(), B.B()};
-tBAC = {B.B(), A.A(), C.C()};
-tBBA = {B.B(), B.B(), A.A()};
-tBBB = {B.B(), B.B(), B.B()};
-tBBC = {B.B(), B.B(), C.C()};
-tBCA = {B.B(), C.C(), A.A()};
-tBCB = {B.B(), C.C(), B.B()};
-tBCC = {B.B(), C.C(), C.C()};
+tBAA = [B.B(), A.A(), A.A()];
+tBAB = [B.B(), A.A(), B.B()];
+tBAC = [B.B(), A.A(), C.C()];
+tBBA = [B.B(), B.B(), A.A()];
+tBBB = [B.B(), B.B(), B.B()];
+tBBC = [B.B(), B.B(), C.C()];
+tBCA = [B.B(), C.C(), A.A()];
+tBCB = [B.B(), C.C(), B.B()];
+tBCC = [B.B(), C.C(), C.C()];
 //---
-tCAA = {C.C(), A.A(), A.A()};
-tCAB = {C.C(), A.A(), B.B()};
-tCAC = {C.C(), A.A(), C.C()};
-tCBA = {C.C(), B.B(), A.A()};
-tCBB = {C.C(), B.B(), B.B()};
-tCBC = {C.C(), B.B(), C.C()};
-tCCA = {C.C(), C.C(), A.A()};
-tCCB = {C.C(), C.C(), B.B()};
-tCCC = {C.C(), C.C(), C.C()};
+tCAA = [C.C(), A.A(), A.A()];
+tCAB = [C.C(), A.A(), B.B()];
+tCAC = [C.C(), A.A(), C.C()];
+tCBA = [C.C(), B.B(), A.A()];
+tCBB = [C.C(), B.B(), B.B()];
+tCBC = [C.C(), B.B(), C.C()];
+tCCA = [C.C(), C.C(), A.A()];
+tCCB = [C.C(), C.C(), B.B()];
+tCCC = [C.C(), C.C(), C.C()];
 ";
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             ProtoCore.RuntimeCore runtimeCore = null;
@@ -335,15 +335,15 @@ d = D.D();
 //ba:A = B.B();
 //ca:A = C.C();
 //dc:C = D.D();
-tABC = { a, b, c };
-tABD = { a, b, d };
-tACD = { a, c, d };
-tBCD = { b, c, d };
-tAB = { a, b };
-tAD = { a, d };
-tBC = { b, c };
-tBD = { b, d };
-tCD = { c, d };
+tABC = [ a, b, c ];
+tABD = [ a, b, d ];
+tACD = [ a, c, d ];
+tBCD = [ b, c, d ];
+tAB = [ a, b ];
+tAD = [ a, d ];
+tBC = [ b, c ];
+tBD = [ b, d ];
+tCD = [ c, d ];
 ";
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             ProtoCore.RuntimeCore runtimeCore = null;
@@ -392,12 +392,12 @@ a = A.A();
 ba:A = B.B();
 ca:A = C.C();
 dc:C = D.D();
-tABC = { a, ba, ca };
-tABD = { a, ba, dc };
-tACD = { a, ca, dc };
-tBCD = { ba, ca, dc };
-tDD = {dc, D.D()};
-tE = {};//empty array
+tABC = [ a, ba, ca ];
+tABD = [ a, ba, dc ];
+tACD = [ a, ca, dc ];
+tBCD = [ ba, ca, dc ];
+tDD = [dc, D.D()];
+tE = [];//empty array
 ";
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             ProtoCore.RuntimeCore runtimeCore = null;
@@ -445,9 +445,9 @@ e = E.E();
 f = F.F();
 g = G.G();
 h = H.H();
-rABCDEF = {a,b,c,d,e,f};
-rBCDEF = {b,c,d,e,f};
-rBH = {b,h};
+rABCDEF = [a,b,c,d,e,f];
+rBCDEF = [b,c,d,e,f];
+rBH = [b,h];
 ";
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             ProtoCore.RuntimeCore runtimeCore = null;
@@ -470,7 +470,7 @@ rBH = {b,h};
 @"a;b;c;
 [Imperative]
 {
-	a = {1,2,3};
+	a = [1,2,3];
     b = 1;
     c = a;
 }
@@ -491,9 +491,9 @@ rBH = {b,h};
         {
             String code =
                 @"
-a = {1,{{1},{3.1415}},null,1.0,12.3};
-b = {1,2,{3}};
-x = {{1},{3.1415}};
+a = [1,[[1],[3.1415]],null,1.0,12.3];
+b = [1,2,[3]];
+x = [[1],[3.1415]];
 ";
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             ProtoCore.RuntimeCore runtimeCore = null;
@@ -516,7 +516,7 @@ x = {{1},{3.1415}};
         {
             String code =
                 @"
-        a = {{3.1415}};
+        a = [[3.1415]];
 r1 = Contains(a, 3.0);
 r2 = Contains(a, 3.0);
 //t = Contains(a, null);
