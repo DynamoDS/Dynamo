@@ -1489,7 +1489,7 @@
                     HorizontalAlignment="Left"
                     VerticalAlignment="Top"
                     Margin="0,120,0,0">
-            <Grid Background="#222222"
+            <Grid Background="#353535"
                   Width="80"
                   Cursor="Hand">
                 <Button Click="OnCollapsedSidebarClick"
