@@ -1304,8 +1304,8 @@ def f()
             List<string> codes = new List<string>() 
             {
                 "def f() { t = 41; return = t;} x = f();",
-                "def f() { t1 = 41; t2 = 42; return = {t1, t2}; } x = f();",
-                "def f() { t1 = 41; t2 = 42; t3 = 43; return = {t1, t2, t3};} x = f();"
+                "def f() { t1 = 41; t2 = 42; return = [t1, t2]; } x = f();",
+                "def f() { t1 = 41; t2 = 42; t3 = 43; return = [t1, t2, t3];} x = f();"
             };
 
             Guid guid = System.Guid.NewGuid();
@@ -1350,12 +1350,12 @@ def f()
             List<string> codes = new List<string>() 
             {
                 "def f() { t = 41; return = t;} x = f(); r = __Equals(x, 41);",
-                "def f() { t1 = 41; t2 = 42; return = {t1, t2}; } x = f(); r = __Equals(x, {41, 42});",
-                "def f() { t1 = 41; t2 = 42; t3 = 43; return = {t1, t2, t3};} x = f(); r = __Equals(x, {41, 42, 43});",
-                "def f() { t1 = 43; t2 = 42; t3 = 41; return = {t1, t2, t3};} x = f(); r = __Equals(x, {43, 42, 41});",
+                "def f() { t1 = 41; t2 = 42; return = [t1, t2]; } x = f(); r = __Equals(x, [41, 42]);",
+                "def f() { t1 = 41; t2 = 42; t3 = 43; return = [t1, t2, t3];} x = f(); r = __Equals(x, [41, 42, 43]);",
+                "def f() { t1 = 43; t2 = 42; t3 = 41; return = [t1, t2, t3];} x = f(); r = __Equals(x, [43, 42, 41]);",
                 "def f() { t1 = t2 + t3; return = t;} x = f(); r = __Equals(x, null);",
-                "def f() { t1 = 2; t2 = 5; t3 = t1..t2; return = t3;} x = f(); r = __Equals(x, {2, 3, 4, 5});",
-                "def f() { t1 = 2; t2 = 5; t3 = t1..t2..#2; return = t3;} x = f(); r = __Equals(x, {2, 5});",
+                "def f() { t1 = 2; t2 = 5; t3 = t1..t2; return = t3;} x = f(); r = __Equals(x, [2, 3, 4, 5]);",
+                "def f() { t1 = 2; t2 = 5; t3 = t1..t2..#2; return = t3;} x = f(); r = __Equals(x, [2, 5]);",
                 "def f() { a = 1; b = 2; c = (a == b) ? 3 : 4; return = c; } x = f(); r = __Equals(x, 4);",
                 "def f() { a = 2; b = 2; c = (a == b) ? 3 : 4; return = c; } x = f(); r = __Equals(x, 3);",
             };
@@ -4074,7 +4074,7 @@ OUT = 100"", [""IN""], [[]]); x = x;"
             Guid guid2 = System.Guid.NewGuid();
             Subtree cbnPt = ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid2, codes[2]);
             Subtree cbnDel = ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid2,
-                "v0 = Function(FFITarget.DummyPoint.ByCoordinates, 3, {}, {null, null, null}, true);");
+                "v0 = Function(FFITarget.DummyPoint.ByCoordinates, 3, [], [null, null, null], true);");
 
             added.Add(cbnPt);
 
@@ -4192,7 +4192,7 @@ OUT = 100"", [""IN""], [[]]); x = x;"
             Guid guid2 = System.Guid.NewGuid();
             Subtree cbnPt = ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid2, codes[2]);
             Subtree cbnDel = ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid2,
-                "v0 = Function(FFITarget.DummyPoint.ByCoordinates, 3, {}, {null, null, null}, true);");
+                "v0 = Function(FFITarget.DummyPoint.ByCoordinates, 3, [], [null, null, null], true);");
 
             added.Add(cbnPt);
 

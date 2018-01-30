@@ -921,7 +921,7 @@ import(""FFITarget.dll"");a1 = DummyPoint.ByCoordinates(10, 20, 30);def foo(va
         public void RepoTests_MAGN3177()
         {
             String code =
-                @"def foo(str: string, para : string[], arg : var[]){    Print(str);    Print(para);    Print(arg);}" +   "\n s = \"str\";\n" +   "paras = {\"a\",\"b\"}; \n" +   "args = {{2,5},{5}}; \n"+"foo(s, paras, args);";
+                @"def foo(str: string, para : string[], arg : var[]){    Print(str);    Print(para);    Print(arg);}" +   "\n s = \"str\";\n" +   "paras = [\"a\",\"b\"]; \n" +   "args = [[2,5],[5]]; \n"+"foo(s, paras, args);";
             thisTest.RunScriptSource(code);
             //thisTest.Verify("d", 1);
         }

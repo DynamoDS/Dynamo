@@ -468,7 +468,7 @@ b = c[w][x][y][z];";
             Assert.AreEqual(8, cbn.AllConnectors.Count());
 
             // add syntax error in cbn code and update
-            string codeInCBN = @"x = {a$,b,c,d,e};x[1];x[3];";
+            string codeInCBN = @"x = [a$,b,c,d,e];x[1];x[3];";
             UpdateCodeBlockNodeContent(cbn, codeInCBN);
 
             // Verify that cbn is in error state and number of input, output ports remains the same

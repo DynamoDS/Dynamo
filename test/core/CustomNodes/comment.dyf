@@ -11,7 +11,7 @@
       <Symbol value="//x2:var&#xD;&#xA;x2:var" />
     </Dynamo.Graph.Nodes.CustomNodes.Symbol>
     <Dynamo.Graph.Nodes.CustomNodes.Symbol guid="a8ebbbb0-d99e-4871-99c4-bf2c9774c426" type="Dynamo.Graph.Nodes.CustomNodes.Symbol" nickname="Input" x="505.021142575499" y="453.522339273737" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="True" IsFrozen="false">
-      <Symbol value="//x3:var&#xD;&#xA;x3:var[] = {1}" />
+      <Symbol value="//x3:var&#xD;&#xA;x3:var[] = [1]" />
     </Dynamo.Graph.Nodes.CustomNodes.Symbol>
     <Dynamo.Graph.Nodes.CustomNodes.Symbol guid="a01180aa-a2d0-4cab-bf0b-020488ae6a03" type="Dynamo.Graph.Nodes.CustomNodes.Symbol" nickname="Input" x="505.696105288121" y="540.526068157488" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="True" IsFrozen="false">
       <Symbol value="/*comment1&#xD;&#xA;comment2&#xD;&#xA;comment3*/&#xD;&#xA;x4" />
