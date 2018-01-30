@@ -111,6 +111,22 @@ namespace Dynamo.Controls
             SizeChanged += DynamoView_SizeChanged;
             LocationChanged += DynamoView_LocationChanged;
 
+            if (LibraryCollapsed)
+            {
+                var imageUri = new Uri(@"pack://application:,,,/DynamoCoreWpf;component/UI/Images/expand_normal.png");
+                BitmapImage icon = new BitmapImage(imageUri);
+                LibrarySidebarIcon.Source = icon;
+                LibrarySidebarText.Visibility = Visibility.Visible;
+            }
+
+            else
+            {
+                var imageUri = new Uri(@"pack://application:,,,/DynamoCoreWpf;component/UI/Images/collapse_normal.png");
+                BitmapImage icon = new BitmapImage(imageUri);
+                LibrarySidebarIcon.Source = icon;
+                LibrarySidebarText.Visibility = Visibility.Collapsed;
+            }
+
             // Check that preference bounds are actually within one
             // of the available monitors.
             if (CheckVirtualScreenSize())
@@ -1593,50 +1609,88 @@ namespace Dynamo.Controls
         private void Button_MouseEnter(object sender, MouseEventArgs e)
         {
             Grid g = (Grid)sender;
-            TextBlock tb = (TextBlock)(g.Children[1]);
+            StackPanel sp = (StackPanel)(g.Children[0]);
+            TextBlock tb = (TextBlock)(sp.Children[0]);
             var bc = new BrushConverter();
             tb.Foreground = (Brush)bc.ConvertFrom("#cccccc");
-            Image collapseIcon = (Image)g.Children[0];
-            var imageUri = new Uri(@"pack://application:,,,/DynamoCoreWpf;component/UI/Images/expand_hover.png");
+            Image collapseIcon = (Image)sp.Children[1];
+
+            Uri imageUri;
+
+            if (LibraryCollapsed)
+            { imageUri = new Uri(@"pack://application:,,,/DynamoCoreWpf;component/UI/Images/expand_hover.png"); }
+
+            else
+            { imageUri = new Uri(@"pack://application:,,,/DynamoCoreWpf;component/UI/Images/collapse_hover.png"); }
 
             BitmapImage hover = new BitmapImage(imageUri);
-            // hover.Rotation = Rotation.Rotate180;
-
             collapseIcon.Source = hover;
+        }
+
+        private bool libraryCollapsed;
+
+        public double LibraryWidthCache { get; set; } = 200;
+
+        public bool LibraryCollapsed
+        {
+            get
+            {
+                if (LibraryViewColumn.Width.Value < 2)
+                { libraryCollapsed = true; }
+
+                else
+                { libraryCollapsed = false; }
+
+                return libraryCollapsed;
+            }
         }
 
         private void OnCollapsedSidebarClick(object sender, EventArgs e)
         {
-            LibraryViewColumn.MinWidth = Configurations.MinWidthLibraryView;
+            Uri imageUri;
 
-            UserControl view = (UserControl)sidebarGrid.Children[0];
-            if (view.Visibility == Visibility.Collapsed)
+            if (LibraryCollapsed)
             {
-                view.Width = double.NaN;
-                view.HorizontalAlignment = HorizontalAlignment.Stretch;
-                view.Height = double.NaN;
-                view.VerticalAlignment = VerticalAlignment.Stretch;
-
-                mainGrid.ColumnDefinitions[0].Width = new GridLength(restoreWidth);
-                verticalSplitter.Visibility = Visibility.Visible;
-                view.Visibility = Visibility.Visible;
-                sidebarGrid.Visibility = Visibility.Visible;
-                collapsedSidebar.Visibility = Visibility.Collapsed;
+                LibraryViewColumn.Width = new GridLength(LibraryWidthCache, GridUnitType.Star);
+                imageUri = new Uri(@"pack://application:,,,/DynamoCoreWpf;component/UI/Images/expand_normal.png");
+                LibrarySidebarText.Visibility = Visibility.Visible;
             }
+
+            else
+            {
+                LibraryWidthCache = LibraryViewColumn.Width.Value;
+                LibraryViewColumn.Width = new GridLength(0, GridUnitType.Star);
+                imageUri = new Uri(@"pack://application:,,,/DynamoCoreWpf;component/UI/Images/collapse_normal.png");
+                LibrarySidebarText.Visibility = Visibility.Collapsed;
+            }
+
+            BitmapImage icon = new BitmapImage(imageUri);
+            LibrarySidebarIcon.Source = icon;
         }
 
         private void Button_MouseLeave(object sender, MouseEventArgs e)
         {
             Grid g = (Grid)sender;
-            TextBlock tb = (TextBlock)(g.Children[1]);
+            StackPanel sp = (StackPanel)(g.Children[0]);
+            TextBlock tb = (TextBlock)(sp.Children[0]);
             var bc = new BrushConverter();
             tb.Foreground = (Brush)bc.ConvertFromString("#aaaaaa");
-            Image collapseIcon = (Image)g.Children[0];
+            Image collapseIcon = (Image)sp.Children[1];
 
-            // Change the collapse icon and rotate
-            var imageUri = new Uri(@"pack://application:,,,/DynamoCoreWpf;component/UI/Images/expand_normal.png");
+            Uri imageUri;
+
+            if(LibraryCollapsed)
+            {
+                imageUri = new Uri(@"pack://application:,,,/DynamoCoreWpf;component/UI/Images/expand_normal.png");
+                LibrarySidebarText.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                imageUri = new Uri(@"pack://application:,,,/DynamoCoreWpf;component/UI/Images/collapse_normal.png");
+                LibrarySidebarText.Visibility = Visibility.Collapsed;
+            }
+
             BitmapImage hover = new BitmapImage(imageUri);
-
             collapseIcon.Source = hover;
         }
 
