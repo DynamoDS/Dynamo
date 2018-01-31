@@ -5,6 +5,7 @@ using System.Text;
 using ProtoCore.DSASM;
 using ProtoCore.Utils;
 using System.Linq;
+using ProtoCore.DSDefinitions;
 using ProtoCore.Runtime;
 using ProtoCore.Properties;
 
@@ -409,7 +410,7 @@ namespace ProtoCore
         private string GetTypeName(StackValue v)
         {
             var type = runtimeCore.DSExecutable.TypeSystem.GetType(v.metaData.type);
-            if (type != "__array")
+            if (type != Keyword.Array)
             {
                 return type;
             }
