@@ -48,15 +48,14 @@ def foo : int( a:int )
         public void T02_Function_In_Imp_Scope()
         {
             string code = @"
-a;
     def foo : double( a:double, b : int )
     {
 	   return = a * b;
 	}
-[Imperative]
+a=[Imperative]
 {
 	
-    a = foo( 2.5, 2 );
+    return foo( 2.5, 2 );
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("a",5.0);
@@ -67,12 +66,11 @@ a;
         public void T03_Function_In_Nested_Scope()
         {
             string code = @"
-a;b;
     def foo : double( a:double, b : int )
     {
 	   return = a * b;
 	}
-[Imperative]
+i=[Imperative]
 {
 	a = 3;
 	[Associative]
@@ -85,10 +83,10 @@ a;b;
 		a = foo( 2.5, 1 );
 		return = a;
 	}
+    return {a,b};
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("a",2.5);
-            thisTest.Verify("b",2.5);
+            thisTest.Verify("i", new[] { 2.5, 2.5 });
         }
 
         [Test]
@@ -96,92 +94,26 @@ a;b;
         public void T04_Function_In_Nested_Scope()
         {
             string code = @"
-a;b;
+a=x[0];b=x[1];
 def foo : int( a:int, b : int )
 {
    return = a * b;
 }
-[Associative]
+x=[Associative]
 {
-	a = 3.5;
-	[Imperative]
+	i = [Imperative]
 	{
-		a = foo( 2, 1 );
+		return foo( 2, 1 );
 	}
-	b = 
-	[Imperative]
+	j = [Imperative]
 	{
-		a = foo( 2, 1 );
-		return = a;
+		return foo( 2, 1 );
 	}
+    return {i, j};
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("a", 2);
             thisTest.Verify("b", 2);
-        }
-
-        [Test]
-        [Category("SmokeTest")]
-        public void T05_Function_outside_Any_Block()
-        {
-            string code = @"
-def foo : int( a:int, b : int )
-{
-    return = a * b;
-}
-a = 3.5;
-b = 3.5;
-[Associative]
-{
-	a = 3.5;
-	[Imperative]
-	{
-		a = foo( 2, 1 );
-	}
-	b = 
-	[Imperative]
-	{
-		a = foo( 2, 1 );
-		return = a;
-	}
-}";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("a", 2);
-            thisTest.Verify("b", 2);
-        }
-
-        [Test]
-        [Category("Smoke Test")]
-        public void T06_Function_Imp_Inside_Assoc()
-        {
-            string code = @"
-a;b;
-def foo : int( a:int, b : int )
-{
-    return = a * b;
-}
-[Associative]
-{
-	a = 3.5;
-	b = 3.5;
-
-	[Imperative]
-	{
-		a = foo( 2, 1 );
-	}
-	b = 
-	[Imperative]
-	{
-		c = foo( 2, 1 );
-		return = c;
-	}
-}
-";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-
-            thisTest.Verify("a", 2);
-            thisTest.Verify("b", 2);
-
         }
 
         [Test]

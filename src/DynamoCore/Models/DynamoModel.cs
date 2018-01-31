@@ -1320,7 +1320,7 @@ namespace Dynamo.Models
         /// condition by using a thread join inside the vm executive.
         /// </summary>
         /// <param name="markNodesAsDirty">Set this parameter to true to force
-        /// reset of the execution substrait. Note that setting this parameter
+        /// reset of the execution substrate. Note that setting this parameter
         /// to true will have a negative performance impact.</param>
         public virtual void ResetEngine(bool markNodesAsDirty = false)
         {

@@ -97,7 +97,6 @@ import(""FFITarget.dll"");
         {
             String code =
 @"
-a;b;c;
 i=[Imperative]
 {
 	a = {1,2,3};
@@ -130,7 +129,7 @@ c=i[2];
         public void TestArrayRankSimple()
         {
             String code =
-@"a;b;c;d;e;
+@"
 i=[Imperative]
 {
 	a = {1,2,3};
@@ -172,7 +171,6 @@ e=i[4];
         {
             String code =
 @"
-a;b;c;d;e;
 i=[Imperative]
 {
 	a = {1,{2},3};
@@ -483,7 +481,7 @@ rBH = {b,h};
         public void IsArrayTest()
         {
             String code =
-@"a;b;c;
+@"
 i=[Imperative]
 {
 	a = {1,2,3};

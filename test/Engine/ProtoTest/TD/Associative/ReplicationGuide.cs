@@ -1600,7 +1600,7 @@ i=[Imperative]
 ";
             string errmsg = "";
             thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.Verify("i", new[] {0, 2});
+            thisTest.Verify("i", new[] {new[] {0, 1}, new[] {2, 3}});
         }
 
         [Test]

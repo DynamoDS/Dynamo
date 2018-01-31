@@ -897,7 +897,7 @@ Parameter name: {0}</value>
     <value>Start value can be just number or single letter</value>
   </data>
   <data name="kInvalidUnicodeArgumentInRangeExpression" xml:space="preserve">
-    <value>Sequence node supports only ASCII characters</value>
+    <value>Range and Sequence expressions support only ASCII characters</value>
   </data>
   <data name="MoreThanOneDominantList" xml:space="preserve">
     <value>Only one dominant list is allowed</value>

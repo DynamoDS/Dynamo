@@ -416,26 +416,19 @@ b;
         [Category("SmokeTest")]
         public void T22_TestAssignmentToNegativeNumbers()
         {
-            string src = @"a;
-b;
-c;
-d;
-e;
-[Associative]
+            string src = @"
+a = [Associative]
 {
 	a = -1;
 	b = -111;
 	c = -0.1;
 	d = -1.99;
 	e = 1.99;
+    return {a, b, c, d, e};
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            thisTest.Verify("a", -1);
-            thisTest.Verify("b", -111);
-            thisTest.Verify("c", -0.1);
-            thisTest.Verify("d", -1.99);
-            thisTest.Verify("e", 1.99);
+            thisTest.Verify("a", new[] {-1, -111, -0.1, -1.99, 1.99});
         }
 
         [Test]
