@@ -102,7 +102,7 @@ x = f(x + f(x));
             String code =
 @"
 a = 1;
-a = {a, 2};
+a = [a, 2];
 x = a[0];
 y = a[1];
 ";
@@ -121,7 +121,7 @@ def f(i : int)
     return = i + 1;
 }
 a = 1;
-a = {1, f(a)};
+a = [1, f(a)];
 x = a[0];
 y = a[1];
 ";
@@ -139,11 +139,11 @@ y = a[1];
 @"
 def f(i : int)
 {
-    list = {1, 2, 3, 4};
+    list = [1, 2, 3, 4];
     return = i + list[i];
 }
 a = 1;
-a = {f(f(a)), f(a)};
+a = [f(f(a)), f(a)];
 x = a[0];
 y = a[1];
 ";

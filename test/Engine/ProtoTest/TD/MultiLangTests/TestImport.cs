@@ -14,7 +14,7 @@ namespace ProtoTest.TD.MultiLangTests
         {
             string code = @"
 import (""basicImport.ds"");
-a = {1.1,2.2};
+a = [1.1,2.2];
 b = 2;
 c = Scale(a,b);";
             ExecutionMirror mirror = thisTest.RunScriptSource(code, "", importPath);
@@ -28,7 +28,7 @@ c = Scale(a,b);";
         {
             string code = @"
 import (""basicImport.ds"");
-a = {1.1,2.2};
+a = [1.1,2.2];
 b = 2;
 c = Scale(a,b);
 ";
@@ -53,7 +53,7 @@ c = Scale(a,b);
         {
             string code = @"
 import (""\basicImport.ds"");
-a = {1.1,2.2};
+a = [1.1,2.2];
 b = 2;
 c = Scale(a,b);";
             ExecutionMirror mirror = thisTest.RunScriptSource(code, "", importPath);
@@ -67,7 +67,7 @@ c = Scale(a,b);";
         {
             string code = @"
 import (""\\ExtraFolderToTestRelativePath\\basicImport.ds"");
-a = {1.1,2.2};
+a = [1.1,2.2];
 b = 2;
 c = Scale(a,b);";
             ExecutionMirror mirror = thisTest.RunScriptSource(code, "", importPath);
@@ -250,7 +250,7 @@ a = 10;";
             string code = @"
 import (""basicImport1.ds"");
 import (""basicImport3.ds"");
-arr = { 1.0, 2.0, 3.0 };
+arr = [ 1.0, 2.0, 3.0 ];
 a1 = Scale( arr, 4.0 );
 b = a * 2;";
             ExecutionMirror mirror = thisTest.RunScriptSource(code, "", importPath);
@@ -264,7 +264,7 @@ b = a * 2;";
             string code = @"
 import (""basicImport1.ds"");
 import (""basicImport3.ds"");
-arr1 = { 1, 3, 5 };
+arr1 = [ 1, 3, 5 ];
 temp = Scale( arr1, a );
 a = a;
 b = 2 * a;";

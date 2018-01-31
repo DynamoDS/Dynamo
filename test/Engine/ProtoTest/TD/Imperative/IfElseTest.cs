@@ -27,12 +27,12 @@ z;
  b4 = -101.99;
  b5 = 10.0009;
  
- c1 = { 0, 1, 2, 3};
- c2 = { 1, 0.2};
- c3 = { 0, 1.4, true };
- c4 = {{0,1}, {2,3 } };
+ c1 = [ 0, 1, 2, 3];
+ c2 = [ 1, 0.2];
+ c3 = [ 0, 1.4, true ];
+ c4 = [[0,1], [2,3 ] ];
  
- x = {0, 0, 0, 0};
+ x = [0, 0, 0, 0];
  if(a1 == 2 ) // pass condition
  {
      x[0] = 1;
@@ -51,7 +51,7 @@ z;
  }
  
  
- y = {0, 0, 0, 0, 0};
+ y = [0, 0, 0, 0, 0];
  if(b1 == 1.0 ) // pass condition
  {
      y[0] = 1;
@@ -74,7 +74,7 @@ z;
  }
  
  
- z = {0, 0, 0, 0};
+ z = [0, 0, 0, 0];
  if(c1[0] == 0 ) // pass condition
  {
      z[0] = 1;
@@ -769,7 +769,7 @@ f;
             string src = @"c;
 [Imperative]
 {
-    a = { 0, 4, 2, 3 };
+    a = [ 0, 4, 2, 3 ];
 	b = 1;
     c = 0;
 	if(a > b)
@@ -794,7 +794,7 @@ f;
             string src = @"c;
 [Imperative]
 {
-    a = { 0, 4, 2, 3 };
+    a = [ 0, 4, 2, 3 ];
 	b = 1;
     c = 0;
 	if(a[0] > b)
@@ -1719,8 +1719,8 @@ def length:int  (pts : ClassFunctionality[])
 }
 pt1 = ClassFunctionality.ClassFunctionality( 0 );
 pt2 = ClassFunctionality.ClassFunctionality( 10 );
-pts1 = {pt1, pt2};
-pts2 = {pt1};
+pts1 = [pt1, pt2];
+pts2 = [pt1];
 numpts1 = length(pts1);
 numpts2 = length(pts2);
 ";
@@ -1769,7 +1769,7 @@ d;
 f;
 [Imperative]
 {
-    a = { 0, 1 };
+    a = [ 0, 1 ];
 	b = 1;
 	c = -1;
 	if(a > b)
@@ -1780,7 +1780,7 @@ f;
 	{
 		c = 1;
 	}
-    d = a > b ? true : { false, false};
+    d = a > b ? true : [ false, false];
     f = a > b;
 	
 }";
@@ -1802,9 +1802,9 @@ f;
 d2;
 [Associative]
 {
-    a2 = { 0, 1 };
+    a2 = [ 0, 1 ];
 	b2 = 1;
-	d2 = a2 > b2 ? true : { false, false};
+	d2 = a2 > b2 ? true : [ false, false];
     //f2 = a2 > b2;	
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -1822,7 +1822,7 @@ d2;
 f2;
 [Associative]
 {
-    a2 = { 0, 1 };
+    a2 = [ 0, 1 ];
     b2 = 1;	
     f2 = a2 > b2;	
 }";
@@ -1839,9 +1839,9 @@ f2;
             string src = @"f2;
 [Associative]
 {
-    a2 = { 0, 1 };
+    a2 = [ 0, 1 ];
     b2 = 1;
-    d2 = a2 > b2 ? true : { false, false};
+    d2 = a2 > b2 ? true : [ false, false];
     f2 = a2 > b2;	
 }";
             thisTest.VerifyRunScriptSource(src, err);
@@ -1938,7 +1938,7 @@ def foo ()
 		{
 			b = b + 4;
 		}
-        return = { b, d };		
+        return = [ b, d ];		
 	}	
 	return = c;
 }
@@ -2003,8 +2003,8 @@ x1 = a1.IntVal == ClassFunctionality.ClassFunctionality(10).IntVal ? true : fals
             // Assert.Fail("");
             string code = @"
 import (""FFITarget.dll"");
-c = { ClassFunctionality.ClassFunctionality(0), ClassFunctionality.ClassFunctionality(1) };
-p = {};
+c = [ ClassFunctionality.ClassFunctionality(0), ClassFunctionality.ClassFunctionality(1) ];
+p = [];
 d = [Imperative]
 {
     if(c[0].IntVal == 0 )

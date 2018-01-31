@@ -468,7 +468,7 @@ b = c[w][x][y][z];";
             Assert.AreEqual(8, cbn.AllConnectors.Count());
 
             // add syntax error in cbn code and update
-            string codeInCBN = @"x = {a$,b,c,d,e};x[1];x[3];";
+            string codeInCBN = @"x = [a$,b,c,d,e];x[1];x[3];";
             UpdateCodeBlockNodeContent(cbn, codeInCBN);
 
             // Verify that cbn is in error state and number of input, output ports remains the same
@@ -1365,6 +1365,30 @@ var06 = g;
             string openPath = Path.Combine(TestDirectory, @"core\cbn_renaming\TestPropertyAccessing.dyn");
             RunModel(openPath);
             AssertPreviewValue("30c24391-9361-4b53-834f-912e9faf9586", 2);
+        }
+
+        [Test]
+        public void TestDictionaryAndListInitializationSyntax()
+        {
+            string openPath = Path.Combine(TestDirectory, @"core\cbn\TestDictionaryListSyntax.dyn");
+            RunModel(openPath);
+            AssertPreviewValue("3ad6f95c-3bc4-4740-b9ae-0cd3a8577b4a", DesignScript.Builtin.Dictionary.ByKeysValues(new List<string>(), new List<object>()));
+            AssertPreviewValue("499afbf5-416b-4f13-bdd6-e232130f644d", new int[] { });
+            AssertPreviewValue("31373889-0b81-42cf-82d1-463af2e4a200", DesignScript.Builtin.Dictionary.ByKeysValues(new List<string>() { "foo" }, new List<object>() { "bar" }));
+            AssertPreviewValue("6ce105e2-fa09-453e-9418-a57dff7e62c1", DesignScript.Builtin.Dictionary.ByKeysValues(new List<string>() { "foo" }, new List<object>() { "bar" }));
+            AssertPreviewValue("0dfac919-8996-4dd3-b5ab-5c1f3034510a", new [] { 1, 2 });
+            AssertPreviewValue("5486ba2d-af43-4f9f-9ed0-7e080bca49fd", new [] { 1, 2 });
+            AssertPreviewValue("6fe8b8b3-3c81-4210-b58b-df60cc778fb0", null);
+            AssertPreviewValue("24f7cbca-a101-44df-a751-8ed264096c20", null);
+            AssertPreviewValue("2afe34da-e7ae-43c1-a43a-fa233a7e1906", DesignScript.Builtin.Dictionary.ByKeysValues(new List<string>() { "foo" }, new List<object>() { "bar" }));
+        }
+
+        [Test]
+        public void TestDeprecatedListSyntaxMigration()
+        {
+            string openPath = Path.Combine(TestDirectory, @"core\migration\CodeBlockWithArray.dyn");
+            RunModel(openPath);
+            AssertPreviewValue("b80e0c94-4a98-4f98-a197-f426a0a96db3", new object[] { 1, 2, 3 });
         }
     }
 

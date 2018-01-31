@@ -253,6 +253,8 @@ namespace ProtoCore.Utils
             node.line = node.endLine = token.line;
             node.col = token.col;
             node.endCol = token.col + ((null == token.val) ? 0 : token.val.Length);
+            node.charPos = token.charPos;
+            node.endCharPos = token.charPos + (token.val?.Length ?? 0);
         }
 
         public static void SetNodeLocation(ProtoCore.AST.Node node, ProtoCore.AST.Node startNode, ProtoCore.AST.Node endNode)
@@ -264,6 +266,8 @@ namespace ProtoCore.Utils
             node.col = startNode.col;
             node.endLine = endNode.endLine;
             node.endCol = endNode.endCol;
+            node.charPos = endNode.charPos;
+            node.endCharPos = endNode.endCharPos;
         }
 
         public static void SetNodeStartLocation(ProtoCore.AST.Node node, ProtoCore.DesignScriptParser.Token token)
@@ -273,6 +277,7 @@ namespace ProtoCore.Utils
 
             node.line = token.line;
             node.col = token.col;
+            node.charPos = token.charPos;
         }
 
         public static void SetNodeStartLocation(ProtoCore.AST.Node node, ProtoCore.AST.Node other)
@@ -282,6 +287,7 @@ namespace ProtoCore.Utils
 
             node.line = other.line;
             node.col = other.col;
+            node.charPos = other.charPos;
         }
 
         public static void SetNodeEndLocation(ProtoCore.AST.Node node, ProtoCore.DesignScriptParser.Token token)
@@ -290,7 +296,8 @@ namespace ProtoCore.Utils
                 return;
 
             node.endLine = token.line;
-            node.endCol = token.col + ((null == token.val) ? 0 : token.val.Length);
+            node.endCol = token.col + (token.val?.Length ?? 0);
+            node.endCharPos = token.charPos + (token.val?.Length ?? 0);
         }
 
         public static void SetNodeEndLocation(ProtoCore.AST.Node node, ProtoCore.AST.Node other)
@@ -300,6 +307,7 @@ namespace ProtoCore.Utils
 
             node.endLine = other.endLine;
             node.endCol = other.endCol;
+            node.endCharPos = other.endCharPos;
         }
 
         public static void CopyNodeLocation(ProtoCore.AST.Node node, ProtoCore.AST.Node other)
@@ -311,6 +319,8 @@ namespace ProtoCore.Utils
             node.col = other.col;
             node.endLine = other.endLine;
             node.endCol = other.endCol;
+            node.charPos = other.charPos;
+            node.endCharPos = other.endCharPos;
         }
 
         public static void UpdateBinaryExpressionLocation(ProtoCore.AST.AssociativeAST.BinaryExpressionNode node)

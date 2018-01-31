@@ -11,18 +11,18 @@
   </SelectModelCommand>
   <CreateNodeCommand X="310" Y="214" DefaultPosition="false" TransformCoordinates="true">
     <ModelGuid>c7e8b13e-959e-45fb-9f3d-3c66fd079b2b</ModelGuid>
-    <Dynamo.Graph.Nodes.CodeBlockNodeModel guid="c7e8b13e-959e-45fb-9f3d-3c66fd079b2b" type="Dynamo.Graph.Nodes.CodeBlockNodeModel" nickname="Code Block" x="218" y="183" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false" CodeText="{{&quot;foo&quot;, &quot;bar&quot;}, {&quot;qux&quot;, &quot;quz&quot;}};" ShouldFocus="false" />
+    <Dynamo.Graph.Nodes.CodeBlockNodeModel guid="c7e8b13e-959e-45fb-9f3d-3c66fd079b2b" type="Dynamo.Graph.Nodes.CodeBlockNodeModel" nickname="Code Block" x="218" y="183" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false" CodeText="[[&quot;foo&quot;, &quot;bar&quot;], [&quot;qux&quot;, &quot;quz&quot;]];" ShouldFocus="false" />
   </CreateNodeCommand>
   <SelectModelCommand Modifiers="0">
     <ModelGuid>00000000-0000-0000-0000-000000000000</ModelGuid>
   </SelectModelCommand>
-  <UpdateModelValueCommand Name="Code" Value="{{&quot;foo&quot;, &quot;bar&quot;}, {&quot;qux&quot;, quz&quot;}}" WorkspaceGuid="faaed644-f15d-44ea-a841-097e57fb5232">
+  <UpdateModelValueCommand Name="Code" Value="[[&quot;foo&quot;, &quot;bar&quot;], [&quot;qux&quot;, quz&quot;]]" WorkspaceGuid="faaed644-f15d-44ea-a841-097e57fb5232">
     <ModelGuid>c7e8b13e-959e-45fb-9f3d-3c66fd079b2b</ModelGuid>
   </UpdateModelValueCommand>
   <SelectModelCommand Modifiers="0">
     <ModelGuid>00000000-0000-0000-0000-000000000000</ModelGuid>
   </SelectModelCommand>
-  <UpdateModelValueCommand Name="Code" Value="{{&quot;foo&quot;, &quot;bar&quot;}, {&quot;qux&quot;, &quot;quz&quot;}}" WorkspaceGuid="faaed644-f15d-44ea-a841-097e57fb5232">
+  <UpdateModelValueCommand Name="Code" Value="[[&quot;foo&quot;, &quot;bar&quot;], [&quot;qux&quot;, &quot;quz&quot;]]" WorkspaceGuid="faaed644-f15d-44ea-a841-097e57fb5232">
     <ModelGuid>c7e8b13e-959e-45fb-9f3d-3c66fd079b2b</ModelGuid>
   </UpdateModelValueCommand>
   <MakeConnectionCommand PortIndex="0" Type="1" ConnectionMode="0">

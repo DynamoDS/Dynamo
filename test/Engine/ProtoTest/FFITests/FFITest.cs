@@ -53,7 +53,7 @@ import (""FFITarget.dll"");
             string code = @"
 import (Dummy from ""FFITarget.dll"");
 dummy = Dummy.Dummy();
-arr = {0.0,1.0,2.0,3.0,4.0,5.0,6.0,7.0,8.0,9.0,10.0};
+arr = [0.0,1.0,2.0,3.0,4.0,5.0,6.0,7.0,8.0,9.0,10.0];
 sum_1_10 = dummy.SumAll1D(arr);
 twice_arr = dummy.Twice(arr);
 	";

@@ -305,6 +305,15 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Curly braces are no longer used for list creation. Use square brackets instead, like [] or [1,2,3]..
+        /// </summary>
+        public static string DeprecatedListInitializationSyntax {
+            get {
+                return ResourceManager.GetString("DeprecatedListInitializationSyntax", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Determines whether two object instances are equal.
         /// </summary>
         public static string DeterminesObjectsAreEqual {

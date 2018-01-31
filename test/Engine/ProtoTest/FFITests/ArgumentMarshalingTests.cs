@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -50,7 +50,7 @@ namespace ProtoFFITests
         [Test]
         public void TestReturnIEnumerablOfIList()
         {
-            string code = @"                import(DummyCollection from ""FFITarget.dll"");                a = {1..5, 6..10};                b = DummyCollection.ReturnIEnumerablOfIList(a);                ";
+            string code = @"                import(DummyCollection from ""FFITarget.dll"");                a = [1..5, 6..10];                b = DummyCollection.ReturnIEnumerablOfIList(a);                ";
 
             thisTest.RunScriptSource(code);
             var methods = thisTest.GetMethods("DummyCollection", "ReturnIEnumerablOfIList");
@@ -68,7 +68,7 @@ namespace ProtoFFITests
         [Test]
         public void TestAcceptIEnumerablOfIList()
         {
-            string code = @"                import(DummyCollection from ""FFITarget.dll"");                a = {1..5, 6..10};                b = DummyCollection.AcceptIEnumerablOfIList(a);                ";
+            string code = @"                import(DummyCollection from ""FFITarget.dll"");                a = [1..5, 6..10];                b = DummyCollection.AcceptIEnumerablOfIList(a);                ";
 
             thisTest.RunScriptSource(code);
             var methods = thisTest.GetMethods("DummyCollection", "AcceptIEnumerablOfIList");
@@ -83,7 +83,7 @@ namespace ProtoFFITests
         [Test]
         public void TestReturnIListOfIListInt()
         {
-            string code = @"                import(DummyCollection from ""FFITarget.dll"");                a = {1..5, 6..10};                b = DummyCollection.ReturnIListOfIListInt(a);                ";
+            string code = @"                import(DummyCollection from ""FFITarget.dll"");                a = [1..5, 6..10];                b = DummyCollection.ReturnIListOfIListInt(a);                ";
 
             thisTest.RunScriptSource(code);
             var methods = thisTest.GetMethods("DummyCollection", "ReturnIListOfIListInt");
@@ -101,7 +101,7 @@ namespace ProtoFFITests
         [Test]
         public void TestAcceptIEnumerablOfIListInt()
         {
-            string code = @"                import(DummyCollection from ""FFITarget.dll"");                a = {1..5, 6..10};                b = DummyCollection.AcceptIEnumerablOfIListInt(a);                ";
+            string code = @"                import(DummyCollection from ""FFITarget.dll"");                a = [1..5, 6..10];                b = DummyCollection.AcceptIEnumerablOfIListInt(a);                ";
 
             thisTest.RunScriptSource(code);
             var methods = thisTest.GetMethods("DummyCollection", "AcceptIEnumerablOfIListInt");
@@ -116,7 +116,7 @@ namespace ProtoFFITests
         [Test]
         public void TestReturnListOfList()
         {
-            string code = @"                import(DummyCollection from ""FFITarget.dll"");                a = {1..5, 6..10};                b = DummyCollection.ReturnListOfList(a);                ";
+            string code = @"                import(DummyCollection from ""FFITarget.dll"");                a = [1..5, 6..10];                b = DummyCollection.ReturnListOfList(a);                ";
 
             thisTest.RunScriptSource(code);
             var methods = thisTest.GetMethods("DummyCollection", "ReturnListOfList");
@@ -134,7 +134,7 @@ namespace ProtoFFITests
         [Test]
         public void TestAcceptListOfList()
         {
-            string code = @"                import(DummyCollection from ""FFITarget.dll"");                a = {1..5, 6..10};                b = DummyCollection.AcceptListOfList(a);                ";
+            string code = @"                import(DummyCollection from ""FFITarget.dll"");                a = [1..5, 6..10];                b = DummyCollection.AcceptListOfList(a);                ";
 
             thisTest.RunScriptSource(code);
             var methods = thisTest.GetMethods("DummyCollection", "AcceptListOfList");
@@ -149,7 +149,7 @@ namespace ProtoFFITests
         [Test]
         public void TestReturn3DList()
         {
-            string code = @"                import(DummyCollection from ""FFITarget.dll"");                a = {{1..5}};                b = DummyCollection.Return3DList(a);                ";
+            string code = @"                import(DummyCollection from ""FFITarget.dll"");                a = [[1..5]];                b = DummyCollection.Return3DList(a);                ";
 
             thisTest.RunScriptSource(code);
             var methods = thisTest.GetMethods("DummyCollection", "Return3DList");
@@ -167,7 +167,7 @@ namespace ProtoFFITests
         [Test]
         public void TestAccept3DList()
         {
-            string code = @"                import(DummyCollection from ""FFITarget.dll"");                a = {{1..5}};                b = DummyCollection.Accept3DList(a);                ";
+            string code = @"                import(DummyCollection from ""FFITarget.dll"");                a = [[1..5]];                b = DummyCollection.Accept3DList(a);                ";
 
             thisTest.RunScriptSource(code);
             var methods = thisTest.GetMethods("DummyCollection", "Accept3DList");
@@ -245,7 +245,7 @@ namespace ProtoFFITests
         [Test]
         public void TestObjectAsArbitraryDimensionArrayImport()
         {
-            string code = @"                import(DummyCollection from ""FFITarget.dll"");                a = DummyCollection.ReturnListOf5Points();                b = DummyCollection.ObjectAsArbitraryDimensionArrayImport({a, 1..5});                c = Count(b[0]);                ";
+            string code = @"                import(DummyCollection from ""FFITarget.dll"");                a = DummyCollection.ReturnListOf5Points();                b = DummyCollection.ObjectAsArbitraryDimensionArrayImport([a, 1..5]);                c = Count(b[0]);                ";
 
             thisTest.RunScriptSource(code);
             var methods = thisTest.GetMethods("DummyCollection", "ObjectAsArbitraryDimensionArrayImport");
@@ -262,7 +262,7 @@ namespace ProtoFFITests
         [Test]
         public void TestReturnIDictionary()
         {
-            string code = @"                import(DummyCollection from ""FFITarget.dll"");                import(""BuiltIn.ds"");                a = DummyCollection.ReturnIDictionary();                b = { List.Sort(a.Keys), List.Sort(a.Values) };                ";
+            string code = @"                import(DummyCollection from ""FFITarget.dll"");                import(""BuiltIn.ds"");                a = DummyCollection.ReturnIDictionary();                b = [ List.Sort(a.Keys), List.Sort(a.Values) ];                ";
 
             thisTest.RunScriptSource(code);
             var methods = thisTest.GetMethods("DummyCollection", "ReturnIDictionary");
@@ -277,7 +277,7 @@ namespace ProtoFFITests
         [Test]
         public void TestReturnDictionaryAsObject()
         {
-            string code = @"                import(DummyCollection from ""FFITarget.dll"");                import(""BuiltIn.ds"");                a = DummyCollection.ReturnDictionaryAsObject();                b = { List.Sort(a.Keys), List.Sort(a.Values)};                ";
+            string code = @"                import(DummyCollection from ""FFITarget.dll"");                import(""BuiltIn.ds"");                a = DummyCollection.ReturnDictionaryAsObject();                b = [ List.Sort(a.Keys), List.Sort(a.Values)];                ";
 
             thisTest.RunScriptSource(code);
             var methods = thisTest.GetMethods("DummyCollection", "ReturnDictionaryAsObject");
