@@ -347,6 +347,22 @@ namespace Dynamo.Graph.Nodes.CustomNodes
         }
 
         /// <summary>
+        ///     Indicates whether node is input node
+        /// </summary>
+        public override bool IsInputNode
+        {
+            get { return false; }
+        }
+
+        /// <summary>
+        ///     Indicates whether node is output node
+        /// </summary>
+        public override bool IsOutputNode
+        {
+            get { return false; }
+        }
+
+        /// <summary>
         ///     Responsible for resolving 
         ///     a partial class name to its fully resolved name
         /// </summary>
@@ -585,6 +601,22 @@ namespace Dynamo.Graph.Nodes.CustomNodes
             {
                 return "OutputNode";
             }
+        }
+
+        /// <summary>
+        ///     Indicates whether node is input node
+        /// </summary>
+        public override bool IsInputNode
+        {
+            get { return false; }
+        }
+
+        /// <summary>
+        ///     Indicates whether node is output node
+        /// </summary>
+        public override bool IsOutputNode
+        {
+            get { return false; }
         }
 
         /// <summary>

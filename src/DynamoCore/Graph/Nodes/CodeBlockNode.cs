@@ -86,6 +86,14 @@ namespace Dynamo.Graph.Nodes
             get { return false; }
         }
 
+        /// <summary>
+        ///     Indicates whether node is an output node
+        /// </summary>
+        public override bool IsOutputNode
+        {
+            get { return false; }
+        }
+
         #region Public Methods
 
         /// <summary>
