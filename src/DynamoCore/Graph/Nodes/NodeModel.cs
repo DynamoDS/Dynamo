@@ -838,6 +838,32 @@ namespace Dynamo.Graph.Nodes
            get { return null; }
         }
 
+        [JsonIgnore]
+        public virtual NodeOutputData OutputData
+        {
+            get
+            {
+                // Determine if the output type can be determined at this time
+                // Current enum supports String, Integer, Float, Boolean, and unknown
+                // When CachedValue is null, type is set to unknown
+                // When Concrete type is dictionary or other type not expressed in enum, type is set to unknown
+                object returnObj = CachedValue?.Data?? new object();
+                var returnType = NodeOutputData.getNodeOutputTypeFromType(returnObj.GetType());
+
+                // IntialValue is returned when the Type enum does not equal unknown
+                var returnValue = (returnType != NodeOutputTypes.unknownOutput) ? returnObj.ToString() : String.Empty; 
+                
+                return new NodeOutputData()
+                {
+                    Id = this.GUID,
+                    Name = this.Name,
+                    Type = returnType,
+                    Description = this.Description,
+                    IntitialValue = returnValue
+                };
+            }
+        }
+
         #endregion
 
         #region freeze execution
