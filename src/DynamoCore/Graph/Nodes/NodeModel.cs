@@ -209,7 +209,7 @@ namespace Dynamo.Graph.Nodes
             }
         }
 
-        private bool isSetAsInput = true;
+        private bool isSetAsInput = false;
         /// <summary>
         /// This property is user-controllable via a checkbox and is set to true when a user wishes to include
         /// this node in a Customizer as an interactive control.
