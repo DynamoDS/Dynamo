@@ -487,17 +487,7 @@ namespace Dynamo.Models
             IAuthProvider AuthProvider { get; set; }
             IEnumerable<IExtension> Extensions { get; set; }
             TaskProcessMode ProcessMode { get; set; }
-        }
 
-        /// <summary>
-        /// A new interface that adds a headless flag on top of the existing
-        /// IStartConfiguration, as the existing interface can't be changed
-        /// until 2.0.0.  The flag is used to suppress update checks and
-        /// analytics.
-        /// TODO: Merge this into IStartConfiguration for 2.0.0.
-        /// </summary>
-        public interface IStartConfiguration2 : IStartConfiguration
-        {
             /// <summary>
             /// If true, the program does not have a UI.
             /// No update checks or analytics collection should be done.
@@ -522,6 +512,7 @@ namespace Dynamo.Models
             public IAuthProvider AuthProvider { get; set; }
             public IEnumerable<IExtension> Extensions { get; set; }
             public TaskProcessMode ProcessMode { get; set; }
+            public bool IsHeadless { get; set; }
         }
 
         /// <summary>
@@ -568,9 +559,7 @@ namespace Dynamo.Models
 
             Context = config.Context;
             IsTestMode = config.StartInTestMode;
-
-            var config2 = config as IStartConfiguration2;
-            IsHeadless = (config2 != null) ? config2.IsHeadless : false;
+            IsHeadless = config.IsHeadless;
 
             DebugSettings = new DebugSettings();
             Logger = new DynamoLogger(DebugSettings, pathManager.LogDirectory);
@@ -693,9 +682,7 @@ namespace Dynamo.Models
 
             UpdateManager = config.UpdateManager ?? new DefaultUpdateManager(null);
 
-            // config.UpdateManager has to be cast to IHostUpdateManager in order to extract the HostVersion and HostName
-            // see IHostUpdateManager summary for more details 
-            var hostUpdateManager = config.UpdateManager as IHostUpdateManager;
+            var hostUpdateManager = config.UpdateManager;
 
             if (hostUpdateManager != null)
             {
