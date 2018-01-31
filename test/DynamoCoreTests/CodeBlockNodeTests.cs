@@ -16,6 +16,8 @@ using ProtoCore.Mirror;
 using ProtoCore.Utils;
 
 using DynCmd = Dynamo.Models.DynamoModel;
+using Dynamo.Models;
+using Dynamo.Graph.Workspaces;
 
 namespace Dynamo.Tests
 {
@@ -263,6 +265,116 @@ b = c[w][x][y][z];";
         }
 
         [Test]
+        public void CodeBlockConnectionsRemainAfterUndo()
+        {
+            RunCurrentModel();
+            // Create the initial code block node.
+            var codeBlockNode1 = CreateCodeBlockNode();
+            UpdateCodeBlockNodeContent(codeBlockNode1,"3;");
+
+            // Create the second code block node.
+            var codeBlockNode2 = CreateCodeBlockNode();
+            UpdateCodeBlockNodeContent(codeBlockNode2, "x;");
+
+            //connect them
+            this.CurrentDynamoModel.ExecuteCommand(
+                new DynamoModel.MakeConnectionCommand(codeBlockNode1.GUID, 0, PortType.Output,
+             DynamoModel.MakeConnectionCommand.Mode.Begin));
+            this.CurrentDynamoModel.ExecuteCommand(
+                new DynamoModel.MakeConnectionCommand(codeBlockNode2.GUID, 0, PortType.Input,
+                DynamoModel.MakeConnectionCommand.Mode.End));
+            RunCurrentModel();
+
+            var oldPos = codeBlockNode2.X;
+            var oldinputPortGuid = codeBlockNode2.InPorts[0].GUID;
+            var oldConnectorGuid = codeBlockNode2.InPorts[0].Connectors[0].GUID;
+
+            //move the second node.
+            this.CurrentDynamoModel.ExecuteCommand(
+                new DynamoModel.UpdateModelValueCommand(codeBlockNode2.GUID, "Position", "300.0;300.0"));
+            Assert.AreEqual(300, codeBlockNode2.X);
+            //undo it.
+            this.CurrentDynamoModel.CurrentWorkspace.Undo();
+            Assert.AreEqual(oldPos, codeBlockNode2.X);
+
+            //assert that after undo the port and connector have the same GUIDs
+            //Assert.AreEqual(oldinputPortGuid, codeBlockNode2.InPorts[0].GUID);
+            Assert.AreEqual(oldConnectorGuid, codeBlockNode2.InPorts[0].Connectors[0].GUID);
+
+
+            RunCurrentModel();
+            //assert the connectors still exist and the node has the same value
+            Assert.IsTrue(codeBlockNode2.InPorts[0].Connectors.Count > 0);
+            Assert.IsTrue(codeBlockNode1.OutPorts[0].Connectors.Count > 0);
+            Assert.AreEqual(3, codeBlockNode2.CachedValue.Data);
+
+        }
+
+        [Test]
+        public void UndoRedoCodeBlockDeletionDoesNotCrash()
+        {
+            RunCurrentModel();
+            // Create the initial code block node.
+            var codeBlockNode1 = CreateCodeBlockNode();
+            UpdateCodeBlockNodeContent(codeBlockNode1, "3;");
+
+            // Create the second code block node.
+            var codeBlockNode2 = CreateCodeBlockNode();
+            UpdateCodeBlockNodeContent(codeBlockNode2, "x;");
+
+            //connect them
+            this.CurrentDynamoModel.ExecuteCommand(
+                new DynamoModel.MakeConnectionCommand(codeBlockNode1.GUID, 0, PortType.Output,
+             DynamoModel.MakeConnectionCommand.Mode.Begin));
+            this.CurrentDynamoModel.ExecuteCommand(
+                new DynamoModel.MakeConnectionCommand(codeBlockNode2.GUID, 0, PortType.Input,
+                DynamoModel.MakeConnectionCommand.Mode.End));
+            RunCurrentModel();
+
+            var oldConnectorGuid = codeBlockNode2.InPorts[0].Connectors[0].GUID;
+
+            //record the codeblock for undo - this is the issue as undoing this will deserialize the codeblock
+            WorkspaceModel.RecordModelsForModification(new List<ModelBase> { codeBlockNode2 }, CurrentDynamoModel.CurrentWorkspace.UndoRecorder);
+
+            //delete it
+            this.CurrentDynamoModel.ExecuteCommand(
+                new DynamoModel.DeleteModelCommand(codeBlockNode2.GUID));
+
+            //undo the deletion.
+            this.CurrentDynamoModel.CurrentWorkspace.Undo();
+            Assert.AreEqual(2, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+            Assert.AreEqual(1, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
+
+            //get the new codeblock instance
+            codeBlockNode2 = CurrentDynamoModel.CurrentWorkspace.Nodes.Where(x => x.GUID == codeBlockNode2.GUID).FirstOrDefault() as CodeBlockNodeModel;
+
+            Assert.AreEqual(oldConnectorGuid, codeBlockNode2.InPorts[0].Connectors[0].GUID);
+
+            //undo the initial recording...
+            this.CurrentDynamoModel.CurrentWorkspace.Undo();
+            //assert nothing changed
+            Assert.AreEqual(1, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
+            Assert.AreEqual(oldConnectorGuid, codeBlockNode2.InPorts[0].Connectors[0].GUID);
+
+            //redo the deletion
+            Assert.DoesNotThrow(() =>
+            {
+                this.CurrentDynamoModel.CurrentWorkspace.Redo();
+                this.CurrentDynamoModel.CurrentWorkspace.Redo();
+                this.CurrentDynamoModel.CurrentWorkspace.Redo();
+                this.CurrentDynamoModel.CurrentWorkspace.Redo();
+            });
+            
+            //undo deletion again
+            this.CurrentDynamoModel.CurrentWorkspace.Undo();
+            //get the new codeblock instance
+            codeBlockNode2 = CurrentDynamoModel.CurrentWorkspace.Nodes.Where(x => x.GUID == codeBlockNode2.GUID).FirstOrDefault() as CodeBlockNodeModel;
+            Assert.AreEqual(2, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+            Assert.AreEqual(1, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
+            Assert.AreEqual(oldConnectorGuid, codeBlockNode2.InPorts[0].Connectors[0].GUID);
+        }
+
+        [Test]
         [Category("RegressionTests")]
         public void Defect_MAGN_4024()
         {
@@ -356,7 +468,7 @@ b = c[w][x][y][z];";
             Assert.AreEqual(8, cbn.AllConnectors.Count());
 
             // add syntax error in cbn code and update
-            string codeInCBN = @"x = {a$,b,c,d,e};x[1];x[3];";
+            string codeInCBN = @"x = [a$,b,c,d,e];x[1];x[3];";
             UpdateCodeBlockNodeContent(cbn, codeInCBN);
 
             // Verify that cbn is in error state and number of input, output ports remains the same
@@ -1253,6 +1365,30 @@ var06 = g;
             string openPath = Path.Combine(TestDirectory, @"core\cbn_renaming\TestPropertyAccessing.dyn");
             RunModel(openPath);
             AssertPreviewValue("30c24391-9361-4b53-834f-912e9faf9586", 2);
+        }
+
+        [Test]
+        public void TestDictionaryAndListInitializationSyntax()
+        {
+            string openPath = Path.Combine(TestDirectory, @"core\cbn\TestDictionaryListSyntax.dyn");
+            RunModel(openPath);
+            AssertPreviewValue("3ad6f95c-3bc4-4740-b9ae-0cd3a8577b4a", DesignScript.Builtin.Dictionary.ByKeysValues(new List<string>(), new List<object>()));
+            AssertPreviewValue("499afbf5-416b-4f13-bdd6-e232130f644d", new int[] { });
+            AssertPreviewValue("31373889-0b81-42cf-82d1-463af2e4a200", DesignScript.Builtin.Dictionary.ByKeysValues(new List<string>() { "foo" }, new List<object>() { "bar" }));
+            AssertPreviewValue("6ce105e2-fa09-453e-9418-a57dff7e62c1", DesignScript.Builtin.Dictionary.ByKeysValues(new List<string>() { "foo" }, new List<object>() { "bar" }));
+            AssertPreviewValue("0dfac919-8996-4dd3-b5ab-5c1f3034510a", new [] { 1, 2 });
+            AssertPreviewValue("5486ba2d-af43-4f9f-9ed0-7e080bca49fd", new [] { 1, 2 });
+            AssertPreviewValue("6fe8b8b3-3c81-4210-b58b-df60cc778fb0", null);
+            AssertPreviewValue("24f7cbca-a101-44df-a751-8ed264096c20", null);
+            AssertPreviewValue("2afe34da-e7ae-43c1-a43a-fa233a7e1906", DesignScript.Builtin.Dictionary.ByKeysValues(new List<string>() { "foo" }, new List<object>() { "bar" }));
+        }
+
+        [Test]
+        public void TestDeprecatedListSyntaxMigration()
+        {
+            string openPath = Path.Combine(TestDirectory, @"core\migration\CodeBlockWithArray.dyn");
+            RunModel(openPath);
+            AssertPreviewValue("b80e0c94-4a98-4f98-a197-f426a0a96db3", new object[] { 1, 2, 3 });
         }
     }
 

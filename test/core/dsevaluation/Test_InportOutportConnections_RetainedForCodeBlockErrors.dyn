@@ -8,7 +8,7 @@
       <OutPortInfo LineIndex="3" />
       <OutPortInfo LineIndex="4" />
     </Dynamo.Graph.Nodes.CodeBlockNodeModel>
-    <Dynamo.Graph.Nodes.CodeBlockNodeModel guid="50edf3c7-7e0d-4e2d-8344-f7380eddd827" type="Dynamo.Graph.Nodes.CodeBlockNodeModel" nickname="Code Block" x="474" y="183" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false" CodeText="x = {a,b,c,d,e};&#xA;x[1];&#xA;x[3];" ShouldFocus="false">
+    <Dynamo.Graph.Nodes.CodeBlockNodeModel guid="50edf3c7-7e0d-4e2d-8344-f7380eddd827" type="Dynamo.Graph.Nodes.CodeBlockNodeModel" nickname="Code Block" x="474" y="183" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false" CodeText="x = [a,b,c,d,e];&#xA;x[1];&#xA;x[3];" ShouldFocus="false">
       <PortInfo index="0" default="False" name="a" />
       <PortInfo index="1" default="False" name="b" />
       <PortInfo index="2" default="False" name="c" />
@@ -18,7 +18,7 @@
       <OutPortInfo LineIndex="1" />
       <OutPortInfo LineIndex="2" />
     </Dynamo.Graph.Nodes.CodeBlockNodeModel>
-    <Dynamo.Graph.Nodes.CodeBlockNodeModel guid="4b1e7b56-bac5-43dc-ad5e-79b41e3585dd" type="Dynamo.Graph.Nodes.CodeBlockNodeModel" nickname="Code Block" x="730" y="188" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false" CodeText="arr;&#xA;{a,b};" ShouldFocus="false">
+    <Dynamo.Graph.Nodes.CodeBlockNodeModel guid="4b1e7b56-bac5-43dc-ad5e-79b41e3585dd" type="Dynamo.Graph.Nodes.CodeBlockNodeModel" nickname="Code Block" x="730" y="188" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false" CodeText="arr;&#xA;[a,b];" ShouldFocus="false">
       <PortInfo index="0" default="False" name="arr" />
       <PortInfo index="1" default="False" name="a" />
       <PortInfo index="2" default="False" name="b" />

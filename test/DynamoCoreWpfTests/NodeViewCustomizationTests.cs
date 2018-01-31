@@ -420,7 +420,7 @@ namespace DynamoCoreWpfTests
             Assert.Pass(); // We should reach here safely without exception.
         }
 
-        [Test, Category("DisplayHardwareDependent"), Category("Failure")]
+        [Test, Category("DisplayHardwareDependent")]
         public void WatchConnectDisconnectTest()
         {
             WatchIsEmptyWhenLoaded();
@@ -460,9 +460,9 @@ namespace DynamoCoreWpfTests
                 DynamoModel.MakeConnectionCommand.Mode.Begin));
             Model.ExecuteCommand(new DynamoModel.MakeConnectionCommand(watchGuid, 0, PortType.Input,
                 DynamoModel.MakeConnectionCommand.Mode.End));
-            
-            DispatcherUtil.DoEvents();
+
             Run();
+            DispatcherUtil.DoEvents();
             tree = nodeView.ChildrenOfType<WatchTree>();
             items = tree.First().treeView1.ChildrenOfType<TextBlock>();
             Assert.AreEqual(8, items.Count());

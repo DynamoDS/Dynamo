@@ -15,17 +15,17 @@ d;
 e;
 [Imperative]
 {
-	a = { {1,2}, {3,4} };
+	a = [ [1,2], [3,4] ];
 	
-	a[1] = {-1,-2,3};
+	a[1] = [-1,-2,3];
 	
 	c = a[1][1];
 	
 	d = a[0];
 	
-	b = { 1, 2 };
+	b = [ 1, 2 ];
 	
-	b[0] = {2,2};
+	b[0] = [2,2];
 	e = b[0];
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -44,7 +44,7 @@ e;
             string code = @"
 def foo: int[]( a: int,b: int )
 {
-	return = { a,b };
+	return = [ a,b ];
 }
 	c = foo( 1, 2 );
 d;	
@@ -67,7 +67,7 @@ d;
             string code = @"
 def foo: int[]( a: int,b: int )
 {
-	return = { a+1,b-2 };
+	return = [ a+1,b-2 ];
 }
 	c = foo( 1, 2 );
 	d;
@@ -104,7 +104,7 @@ c;
 	}
 [Imperative]
 {
-		d = { 1,2,3 };
+		d = [ 1,2,3 ];
 		c = collectioninc( d );
 		a1 = c[0];
 		a2 = c[1];
@@ -126,13 +126,13 @@ def foo: int[] ( a : int[], b: int, c:int )
 	a[b] = c;
 	return = a;
 }
-d = { 1,2,2 };
+d = [ 1,2,2 ];
 b = foo( d,2,3 );
 e;
 c;
 [Imperative]
 {
-	e = { -2,1,2 };
+	e = [ -2,1,2 ];
 	c = foo( e,0,0 );
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);

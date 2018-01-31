@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using NUnit.Framework;
 using ProtoCore.DSASM.Mirror;
@@ -263,12 +263,12 @@ d;f;
 	}
 [Imperative]
 {
-	a = {1,2,3};
-	b = {3,4,5} ;
-	c = {1.5,2.5,4,3.65};
-	f = {7,8*2,9+1,5-3,-1,-0.34};
+	a = [1,2,3];
+	b = [3,4,5] ;
+	c = [1.5,2.5,4,3.65];
+	f = [7,8*2,9+1,5-3,-1,-0.34];
 	//nested collection
-	d = {3.5,increment(c)};
+	d = [3.5,increment(c)];
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             List<Object> l1 = new List<object> { 3.5, new List<Object> { 2.5, 3.5, 5, 4.65 } };
@@ -1468,7 +1468,7 @@ def twice : int[]( a : int )
 }
 [Associative]
 {
-    d={1,2,3,4};
+    d=[1,2,3,4];
 	z1=twice(d);
 //	z1 = 1..twice(4)..twice(1);
 }
@@ -1688,7 +1688,7 @@ d1;d2;d3;d4;d5;
             // Crash when step range expression come to infinity.
             // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-5111
 
-            string code = @"x = 0..0..360/{0,0};";
+            string code = @"x = 0..0..360/[0,0];";
             thisTest.RunScriptSource(code);
             thisTest.Verify("x", new object[] { null, null });
             thisTest.VerifyRuntimeWarningCount(2);

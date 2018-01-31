@@ -30,7 +30,7 @@ foo;
 foo;
 [Associative]
 {
-	foo = {5};
+	foo = [5];
 }
 ";
             thisTest.RunScriptSource(code);
@@ -45,7 +45,7 @@ foo;
 foo;
 [Associative]
 {
-	foo = {{5}};
+	foo = [[5]];
 }
 ";
             thisTest.RunScriptSource(code);
@@ -60,7 +60,7 @@ foo;
 foo;
 [Associative]
 {
-	foo = {{5}, 6};
+	foo = [[5], 6];
 }
 ";
             thisTest.RunScriptSource(code);
@@ -75,7 +75,7 @@ foo;
 foo;
 [Associative]
 {
-	foo = {{5}, {6}};
+	foo = [[5], [6]];
 }
 ";
             thisTest.RunScriptSource(code);
@@ -90,7 +90,7 @@ foo;
 foo;
 [Associative]
 {
-	foo = {};
+	foo = [];
 }
 ";
             thisTest.RunScriptSource(code);

@@ -668,9 +668,9 @@ namespace ProtoCore
         /// Internal support method for reporting a method that can't be located
         /// </summary>
         /// <returns></returns>
-        private StackValue ReportMethodNotFoundForArguments(RuntimeCore runtimeCore, List<StackValue> arguments)
+        private StackValue ReportMethodNotFoundForArguments(RuntimeCore runtimeCore, FunctionGroup funcGroup, List<StackValue> arguments)
         {
-            runtimeCore.RuntimeStatus.LogMethodResolutionWarning(methodName, classScope, arguments);
+            runtimeCore.RuntimeStatus.LogMethodResolutionWarning(funcGroup, methodName, classScope, arguments);
             return StackValue.Null;
         }
 
@@ -851,7 +851,7 @@ namespace ProtoCore
             }
             #endregion
 
-            #region Case 3: Replciation with type conversion
+            #region Case 3: Replication with type conversion
             {
                 FunctionEndPoint compliantTarget = GetCompliantFEP(context, arguments, funcGroup, instructions, stackFrame, runtimeCore);
                 if (compliantTarget != null)
@@ -948,14 +948,6 @@ namespace ProtoCore
         /// <summary>
         /// Returns complete match attempts to locate a function endpoint where 1 FEP matches all of the requirements for dispatch
         /// </summary>
-        /// <param name="context"></param>
-        /// <param name="arguments"></param>
-        /// <param name="funcGroup"></param>
-        /// <param name="replicationControl"></param>
-        /// <param name="stackFrame"></param>
-        /// <param name="core"></param>
-        /// <param name="log"></param>
-        /// <returns></returns>
         private FunctionEndPoint GetCompleteMatchFunctionEndPoint(
             Context context, List<StackValue> arguments,
             FunctionGroup funcGroup,
@@ -989,8 +981,6 @@ namespace ProtoCore
        /// <summary>
         /// Returns the function group associated with this callsite
         /// </summary>
-        /// <param name="core"></param>
-        /// <returns></returns>
         private FunctionGroup GetFuncGroup(RuntimeCore runtimeCore)
         {
             FunctionGroup funcGroup = null;
@@ -1383,7 +1373,7 @@ namespace ProtoCore
                 if (runtimeCore.Options.DumpFunctionResolverLogic)
                     runtimeCore.DSExecutable.EventSink.PrintMessage(log.ToString());
 
-                return ReportMethodNotFoundForArguments(runtimeCore, arguments);
+                return ReportMethodNotFoundForArguments(runtimeCore, funcGroup, arguments);
             }
 
             arguments.ForEach(x => runtimeCore.AddCallSiteGCRoot(CallSiteID, x));

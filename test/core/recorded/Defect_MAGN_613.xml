@@ -2,5 +2,5 @@
   <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
   <CreateNodeCommand NodeId="3c7c3458-70be-4588-b162-b1099cf30ebc" NodeName="Code Block" X="193" Y="217" DefaultPosition="false" TransformCoordinates="true" />
   <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
-  <UpdateModelValueCommand ModelGuid="3c7c3458-70be-4588-b162-b1099cf30ebc" Name="Code" Value="a={1,2,3};&#xD;&#xA;a[0]=2;&#xD;&#xA;a[1]=3;&#xD;&#xA;a[2]=4;" />
+  <UpdateModelValueCommand ModelGuid="3c7c3458-70be-4588-b162-b1099cf30ebc" Name="Code" Value="a=[1,2,3];&#xD;&#xA;a[0]=2;&#xD;&#xA;a[1]=3;&#xD;&#xA;a[2]=4;" />
 </Commands>

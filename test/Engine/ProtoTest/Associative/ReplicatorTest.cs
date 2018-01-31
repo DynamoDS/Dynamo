@@ -29,8 +29,8 @@ namespace ProtoTest.Associative
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4115
             string code =
                            @"
-                      a = {1,2};
-                      b = {3,4};
+                      a = [1,2];
+                      b = [3,4];
                   ";
 
             //Run

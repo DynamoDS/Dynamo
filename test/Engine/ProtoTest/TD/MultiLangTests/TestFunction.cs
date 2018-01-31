@@ -325,7 +325,7 @@ x;y;
 [Imperative]
 {
 
-	a = { 0, 1, 2, 3, 4, 5 };
+	a = [ 0, 1, 2, 3, 4, 5 ];
 	x = 0;
 	for ( i in a )
 	{
@@ -363,7 +363,7 @@ def foo : int( n : int )
 	[Imperative]
 	{
 	
-		a = { 0, 1, 2, 3, 4, 5 };
+		a = [ 0, 1, 2, 3, 4, 5 ];
 		x = 0;
 		for ( i in a )
 		{
@@ -429,7 +429,7 @@ x;y;
 [Imperative]
 {
 	
-	a = { 0, 1, 2, 3, 4, 5 };
+	a = [ 0, 1, 2, 3, 4, 5 ];
 	x = 0;
 	for ( i in a )
 	{
@@ -537,7 +537,7 @@ def foo : double ( a : double , b :double )
 	a1 = 1..foo(2,3)..foo(1,1);
 	a2 = 1..foo(2,3)..#foo(1,1);
 	a3 = 1..foo(2,3)..~foo(1,1);
-	a4 = { foo(1,0), foo(1,1), 3 };
+	a4 = [ foo(1,0), foo(1,1), 3 ];
 	
 }	
 
@@ -550,7 +550,7 @@ def foo_2 : double ( a : double , b :double )
 	a1 = 1..foo_2(2,3)..foo_2(1,1);
 	a2 = 1..foo_2(2,3)..#foo_2(1,1);
 	a3 = 1..foo_2(2,3)..~foo_2(1,1);
-	a4 = { foo_2(1,0), foo_2(1,1), 3 };
+	a4 = [ foo_2(1,0), foo_2(1,1), 3 ];
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -634,7 +634,7 @@ def foo_2 : double ( a : double , b :double )
 	    x = x + 1;
 	}
 	
-	c = { 0, 1, 2 };
+	c = [ 0, 1, 2 ];
 	for (i in c )
 	{
 		if( foo_2(1,2) > foo_2(1,0) )
@@ -709,10 +709,10 @@ y;
 	 a = 1;
 	 b = 1;
 	 c = true;
-	 d = { 1, 2 };
-	 e = { { 1, 1 }, {2, 2 } } ;
-	 f = { {0, 1}, 2 };
-	 g = { true, false };
+	 d = [ 1, 2 ];
+	 e = [ [ 1, 1 ], [2, 2 ] ] ;
+	 f = [ [0, 1], 2 ];
+	 g = [ true, false ];
 	 
 	 y = foo ( a, b, c, d, e, f, g );
 }
@@ -958,7 +958,7 @@ b2;
 b2;
 	 def foo3 : int ( a : double )
 	 {
-	    return = {1, 2};
+	    return = [1, 2];
 	 }
 	 
 [Associative]
@@ -980,7 +980,7 @@ b2;
             string code = @"
 	 def foo3 : int[][] ( a : double )
 	 {
-	    return = { {2.5}, {3.5}};
+	    return = [ [2.5], [3.5]];
 	 }
 	 
 [Associative]
@@ -1001,7 +1001,7 @@ b2;
             string code = @"
 	 def foo3 : int[][] ( a : double )
 	 {
-	    return = { {2.5}, 3};
+	    return = [ [2.5], 3];
 	 }
 [Associative]
 { 
@@ -1022,7 +1022,7 @@ b2;
 b2;
 	 def foo3 : bool[]..[] ( a : double )
 	 {
-	    return = { {2}, 3};
+	    return = [ [2], 3];
 	 }
 	 
 [Associative]
@@ -1044,7 +1044,7 @@ b2;
 b2;
 	 def foo3 : int[]..[] ( a : double )
 	 {
-	    return = { { 0, 2 }, { 1 } };
+	    return = [ [ 0, 2 ], [ 1 ] ];
 	 }
 	 
 [Associative]
@@ -1175,7 +1175,7 @@ c;
      }
 [Associative]
 { 
-	 aa = { };
+	 aa = [ ];
 	 b2 = foo ( aa );	
 	 c = 3;	
 }
@@ -1196,7 +1196,7 @@ c;
      }
 [Associative]
 { 
-	 aa = {1, 2 };
+	 aa = [1, 2 ];
 	 b2 = foo ( aa );	
 	 c = 3;	
 }
@@ -1312,7 +1312,7 @@ aa;bb;c;
      }
 [Associative]
 { 
-	 aa = { 1, 2 };
+	 aa = [ 1, 2 ];
 	 bb = foo ( aa );	
 	 
 	 c = 3;	
@@ -1469,7 +1469,7 @@ x = [Imperative]
 {
 	a = 1;
 	b = foo(a);
-    return = { a, b };    
+    return = [ a, b ];    
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -1539,7 +1539,7 @@ a;b;c;
 a;b;
 	def foo : int[] ( a : int )
 	{
-		c = { a + 1, a + 2.5 };
+		c = [ a + 1, a + 2.5 ];
         return = c;		
 	}
 [Imperative]
@@ -1567,7 +1567,7 @@ a;b;
 a;b;
 	def foo : int[] ( a : int )
 	{
-		c = { a + 1, a + 2.5 };
+		c = [ a + 1, a + 2.5 ];
         return = null;		
 	}
 [Imperative]
@@ -1706,7 +1706,7 @@ x;y;
 	}
 [Imperative]
 {
-	x = { 1, 2, 3 };
+	x = [ 1, 2, 3 ];
 	y = foo(x);
 	
 }	 
@@ -1731,7 +1731,7 @@ def foo : int ( a : int )
 	
 [Associative]
 {
-	x = { 1, 2, 3 };
+	x = [ 1, 2, 3 ];
 	y = foo(x);
 }
 ";
@@ -1755,8 +1755,8 @@ def foo : int ( a : int, b : int )
 
 [Associative]
 {
-	x1 = { 1, 2, 3 };
-	x2 = { 1, 2, 3 };
+	x1 = [ 1, 2, 3 ];
+	x2 = [ 1, 2, 3 ];
 	
 	y = foo ( x1, x2 );
 }
@@ -1781,7 +1781,7 @@ def foo : int ( a : int, b : int )
 
 [Associative]
 {
-	x1 = { 1, 2, 3 };
+	x1 = [ 1, 2, 3 ];
 	x2 = 1;
 	
 	y = foo ( x1, x2 );
@@ -1807,8 +1807,8 @@ def foo : int ( a : int, b : int )
 
 [Associative]
 {
-	x1 = { 1, 2 };
-	x2 = { 1, 2 };
+	x1 = [ 1, 2 ];
+	x2 = [ 1, 2 ];
 	y = foo( x1<1> , x2<2> );
 	a1 = y[0][0];
 	a2 = y[0][1];
@@ -2039,7 +2039,7 @@ a12;a22;a32;
 	}
 [Imperative]
 {
-	c = { 1,2,3 };
+	c = [ 1,2,3 ];
 	d = foo ( c ) ;
 		
 	a11 = d[0];
@@ -2053,7 +2053,7 @@ a12;a22;a32;
 		a = a + 1;
 		return = a;
 	}
-	c = { 1,2,3 };
+	c = [ 1,2,3 ];
 	d = foo ( c ) ;
 		
 	a12 = d[0];
@@ -2087,7 +2087,7 @@ a1;a2;a3;
 	}	
 [Imperative]
 {	
-	d = { 1,2,3 };	
+	d = [ 1,2,3 ];	
 	//c = foo( d );	
 	j = 0;	
 	for( i in d )	
@@ -2138,7 +2138,7 @@ def foo : double (arr : double[])
 {
     return = 0;
 }
-arr = {1,2,3,4};
+arr = [1,2,3,4];
 sum = foo(arr);
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -2157,7 +2157,7 @@ sum = foo(arr);
 {
     return  = arr1[0] + arr2[0];
 }
-arr = {  {2.5,3}, {1.5,2} };
+arr = [  [2.5,3], [1.5,2] ];
 two = foo (arr, arr);
 t1 = two[0];
 t2 = two[1];
@@ -2324,7 +2324,7 @@ e = foo(1, 2.0, 3); // not found, null
 	def foo:int( a:int )
 	{	
     return = [Imperative]{
-		c = { 1,2,3,4,5 };
+		c = [ 1,2,3,4,5 ];
 		temp = 0;
 		
 		for( i in c )
@@ -3027,7 +3027,7 @@ d5 =
 	c2 = foo ( 1 );
 	c3 = foo ( 2, 3 );
 	c4 = foo ( 4, 5, false );
-	return = { c1, c2, c3, c4 };
+	return = [ c1, c2, c3, c4 ];
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -3395,7 +3395,7 @@ a2;b2;c2;
          }
 [Associative]
 { 
-	 aa = { 1, 2 };
+	 aa = [ 1, 2 ];
 	 bb = foo1 ( aa );	
 	 a1 = aa[0];
 	 b1 = bb[0];
@@ -3412,7 +3412,7 @@ a2;b2;c2;
          }
 [Imperative]
 { 
-	 aa = { 1, 2 };
+	 aa = [ 1, 2 ];
 	 bb = foo ( aa );	
 	 a2 = aa[0];
 	 b2 = bb[0];
@@ -3642,7 +3642,7 @@ c;
 {
 	[Associative]
 	{
-		c = { 1,2,3 };
+		c = [ 1,2,3 ];
 		c = collection( c );
 	}
 }";
@@ -3672,7 +3672,7 @@ c;
 	}
 [Imperative]
 {
-	c = { 1.0,2.0,3.0 };
+	c = [ 1.0,2.0,3.0 ];
 	c = collection( c );
 	
 }";
@@ -3717,7 +3717,7 @@ def add_2:double[](b : double[] )
 	}
 }
 
-b = { 1.0, 2.0, 3.0 };
+b = [ 1.0, 2.0, 3.0 ];
 c = add_1(b);
 b2 = add_2( b );
 ";
@@ -3753,7 +3753,7 @@ import(""FFITarget.dll"");
 		return = x;
 	}
 
-b= { 1.0, 2.0, 3.0 };
+b= [ 1.0, 2.0, 3.0 ];
 t2 = add_2(b);
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -3798,10 +3798,10 @@ import(""FFITarget.dll"");
 		
 		return = x;
 	}
-c = { 1.0, 2.0, 3.0 };
+c = [ 1.0, 2.0, 3.0 ];
 b1 = add_1( c, c );
 b2 = add_2(c);
-c = { -1, -1, -1 };";
+c = [ -1, -1, -1 ];";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             //Assert.Fail("1467238 - Sprint25: rev 3420 : REGRESSION : Update issue when class collection property is updated");
             object[] expectedResult1 = { 0.0, 0.0, 0.0 };
@@ -3988,7 +3988,7 @@ def multiply : double[] (a : double[])
 {    
 	temp = [Imperative]
     { 
-		b = {0, 10};
+		b = [0, 10];
 		counter = 0; 
 		
 		for( y in a ) 
@@ -4002,7 +4002,7 @@ def multiply : double[] (a : double[])
 	return = temp;
 }
 	
-	x = {2.5,10.0};
+	x = [2.5,10.0];
 	x_squared = multiply( x );";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             object[] ExpectedResult = { 6.25, 100.0 };
@@ -4056,7 +4056,7 @@ d;
 	}
 [Imperative]
 {
-	d = { 1,2,3 };
+	d = [ 1,2,3 ];
 	j = 0;
 	
 	for( i in d )
@@ -4081,7 +4081,7 @@ d;
 		a[0][0] = 1;
 		return = a;
 	}
-	b = { {0,2,3}, {4,5,6} };
+	b = [ [0,2,3], [4,5,6] ];
 	d = foo( b );
 	c = d[0];";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -4100,14 +4100,14 @@ d;
 		return = a;
 	}
 	
-	a = { {2.3,3.5},{4.5,5.5} };
+	a = [ [2.3,3.5],[4.5,5.5] ];
 	
 	a = foo( a );
 	c = a[0];
 	d;
 	[Imperative]
 	{
-		b = { {2.3}, {2.5} };
+		b = [ [2.3], [2.5] ];
 		b = foo( b );
 		d = b[0];
 	}
@@ -4134,14 +4134,14 @@ c;d;
 	}
 [Imperative]
 {
-	a = { {2.3,3.5},{4.5,5.5} };
+	a = [ [2.3,3.5],[4.5,5.5] ];
 	
 	a = foo( a );
 	c = a[0];
 	
 	[Associative]
 	{
-		b = { {2.3}, {2.5} };
+		b = [ [2.3], [2.5] ];
 		b = foo( b );
 		d = b[0];
 	}
@@ -4164,7 +4164,7 @@ def foo: int(a : int[]..[])
 {
 	return = a[0][0];
 }	
-b = {{1,2},{3,4}};
+b = [[1,2],[3,4]];
 a = foo( b );
 	";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -4188,7 +4188,7 @@ import(""FFITarget.dll"");
 	A3 = ClassFunctionality.ClassFunctionality( 5 );
 	A4 = ClassFunctionality.ClassFunctionality( 7 );
 	
-	B = { { A1,A2 },{ A3,A4} };
+	B = [ [ A1,A2 ],[ A3,A4] ];
 	
 	b = objarray( B );
 	
@@ -4219,7 +4219,7 @@ c = [Imperative]
 	A3 = ClassFunctionality.ClassFunctionality( 5 );
 	A4 = ClassFunctionality.ClassFunctionality( 7 );
 	
-	B = { { A1,A2 },{ A3,A4} };
+	B = [ [ A1,A2 ],[ A3,A4] ];
 		
 	b = objarray( B );
 	
@@ -4246,11 +4246,11 @@ def create(i:int)
 	    a = null;
 		if( i == 1 )
 		{
-			a = { { 1,2,3 } , { 4,5,6 } };
+			a = [ [ 1,2,3 ] , [ 4,5,6 ] ];
 		}
 		else
 		{
-			a = { { 1,2,3 } , { 1,2,3 } };
+			a = [ [ 1,2,3 ] , [ 1,2,3 ] ];
 		}
 	    return = a;
 	}
@@ -4267,7 +4267,7 @@ def compare:int ( b : int[]..[], a : int[]..[], i : int, j : int )
 	return = temp ;
 }
 
-b1 = { {1, 2, 3},{ 1, 2, 3} };
+b1 = [ [1, 2, 3],[ 1, 2, 3] ];
 a = create(1);
 a1 = compare( b1, a, 0, 0 );
 a2 = compare( b1, a, 1, 1 );
@@ -4303,7 +4303,7 @@ class BSplineCurve
 }
 pt1 = Point.ByCoordinates(0);
 pt2 = Point.ByCoordinates(5);
-pts = {pt1, pt2};
+pts = [pt1, pt2];
 bcurve = BSplineCurve.ByPoints(pts[1]);
 bcurvePt = bcurve.P;
 bcurvePtX = bcurvePt.X;
@@ -4338,7 +4338,7 @@ class BSplineCurve
 }
 pt1 = Point.ByCoordinates(0);
 pt2 = Point.ByCoordinates(5);
-pts = {pt1, pt2};
+pts = [pt1, pt2];
 bcurve = BSplineCurve.ByPoints(pts);
 bcurvePtX = bcurve.P[1].X;
 ";
@@ -4375,7 +4375,7 @@ bcurvePtX;
 {
 	pt1 = Point.ByCoordinates(0);
 	pt2 = Point.ByCoordinates(5);
-	pts = {pt1, pt2};
+	pts = [pt1, pt2];
 	bcurve = BSplineCurve.ByPoints(pts);
 	bcurvePtX = bcurve.P[1].X;
 }
@@ -4396,7 +4396,7 @@ pt2 = DummyPoint.ByCoordinates(5,0,0);
 pt3 = DummyPoint.ByCoordinates(10,0,0);
 pt4 = DummyPoint.ByCoordinates(15,0,0);
 pt5 = DummyPoint.ByCoordinates(20,0,0);
-pts = {pt1, pt2, pt3, pt4, pt5};
+pts = [pt1, pt2, pt3, pt4, pt5];
 p = pts[2];
 X = p.X;
 ";
@@ -4425,7 +4425,7 @@ def collectioninc: int[]( a : int[] )
 	}
 [Imperative]
 {
-	d = { 1,2,3 };
+	d = [ 1,2,3 ];
 	c = collectioninc( d );
 }
 ";
@@ -4454,7 +4454,7 @@ def collectioninc: int[]( a : int[] )
 		}
 		return = a;
 	}
-	d = { 1,2,3 };
+	d = [ 1,2,3 ];
 	c = collectioninc( d );
 	b;
         [Imperative]
@@ -4628,13 +4628,13 @@ def foo1 : double (arr : double[])
 {
     return = 0;
 }
-arr = {1,2,3,4};
+arr = [1,2,3,4];
 sum = foo1(arr);
 def foo2 : double (arr : double)
 {
     return = 0;
 }
-arr1 = {1.0,2.0,3.0,4.0};
+arr1 = [1.0,2.0,3.0,4.0];
 sum1 = foo2(arr1);
 sum2 = foo1(arr);
 ";
@@ -4657,10 +4657,10 @@ def foo1 : double (arr : double[][])
 sum1;sum2;
 [Imperative]
 {
-	arr1 = { {1, 2.0}, {true, 4} };
+	arr1 = [ [1, 2.0], [true, 4] ];
 	sum1 = foo1(arr);
 	x = 1;
-	arr2 = { {1, 2.0}, {x, 4} };
+	arr2 = [ [1, 2.0], [x, 4] ];
 	sum2 = foo1(arr2);
 }
 ";
@@ -4778,7 +4778,7 @@ z2 = [Imperative]
 import(""FFITarget.dll"");
 def testcall(a:ClassFunctionality) 
 { 
-return ={a.ImNotDefined(),a.ImNotDefined()}; 
+return =[a.ImNotDefined(),a.ImNotDefined()]; 
 } 
 a= ClassFunctionality.ClassFunctionality(); 
 b=testcall(a); 
@@ -4802,7 +4802,7 @@ bb = b[1];
 import(""FFITarget.dll"");
 def testcall(a:ClassFunctionality) 
 { 
-return ={a.ImNotDefined(),a.ImNotDefined()}; 
+return =[a.ImNotDefined(),a.ImNotDefined()]; 
 } 
 a= null; 
 b=testcall(a); 
@@ -4823,15 +4823,15 @@ b=testcall(a);
 import(""FFITarget.dll"");
 def testcall2 :ClassFunctionality[] () 
 { 	
-	return ={ClassFunctionality.ClassFunctionality(), ClassFunctionality.ClassFunctionality()}; 
+	return =[ClassFunctionality.ClassFunctionality(), ClassFunctionality.ClassFunctionality()]; 
 } 
 def testcall3 :int[] () 
 { 	
-	return ={ClassFunctionality.ClassFunctionality(), ClassFunctionality.ClassFunctionality()}; 
+	return =[ClassFunctionality.ClassFunctionality(), ClassFunctionality.ClassFunctionality()]; 
 } 
 def testcall4 :ClassFunctionality[] () 
 { 	
-	return ={null, null}; 
+	return =[null, null]; 
 } 
 b = testcall2(); 
 d = testcall3(); 
@@ -4977,7 +4977,7 @@ def foo ( b : bool[]..[], f1 : function )
 {
     return = count( b );
 }
-a = foo ( { true, false, { true, true } },  count );
+a = foo ( [ true, false, [ true, true ] ],  count );
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("a", 3);
@@ -5006,7 +5006,7 @@ def foo ( b : double[], f1 : function )
 {
     return = count( b );
 }
-a = foo ( { 1.0, 2.6 },  count );
+a = foo ( [ 1.0, 2.6 ],  count );
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
 
@@ -5035,7 +5035,7 @@ def foo ( b : int[]..[], f1 : function )
 {
     return = count( b );
 }
-a = foo ( { 1, 2 , {3, 4} },  count );
+a = foo ( [ 1, 2 , [3, 4] ],  count );
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
 
@@ -5065,8 +5065,8 @@ def foo ( b : int[], f1 : function )
 {
     return = f1( b );
 }
-a = foo ( { 1, 2,  { 3, 4 } },  count );
-d = foo ( { 2, 2.5, { 1, 1.5 }, 1 , false},  count );
+a = foo ( [ 1, 2,  [ 3, 4 ] ],  count );
+d = foo ( [ 2, 2.5, [ 1, 1.5 ], 1 , false],  count );
 
 ";
             string err = "MAGN-4748: Replication Unboxing error";
@@ -5101,8 +5101,8 @@ def foo ( b : int[], f1 : function )
 }
 [Imperative]
 {
-	a = foo ( { 1, 2,  { 3, 4 } },  count );
-	d = foo ( { 2, 2.5, { 1, 1.5 }, 1 , false},  count );
+	a = foo ( [ 1, 2,  [ 3, 4 ] ],  count );
+	d = foo ( [ 2, 2.5, [ 1, 1.5 ], 1 , false],  count );
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -5145,7 +5145,7 @@ def foo ( a : double[], greatest : function , greater : function)
 a;
 [Imperative]
 {
-	a = foo ( { 1.5, 6, 3, -1, 0 }, greatest, greater );
+	a = foo ( [ 1.5, 6, 3, -1, 0 ], greatest, greater );
 	
 }
 ";
@@ -5184,7 +5184,7 @@ def greatest ( a : double[], f : function )
 a;
 [Imperative]
 {
-	a = greatest ( { 1.5, 6, 3, -1, 0 }, greater2 );
+	a = greatest ( [ 1.5, 6, 3, -1, 0 ], greater2 );
 	
 }
 ";
@@ -5226,10 +5226,10 @@ def f1 (arr :  double[] )
 }
 def f2 (arr :  double[] )
 {
-    return = { arr[0], arr[1] };
+    return = [ arr[0], arr[1] ];
 }
-a = f1( { null, null } );
-b = f2( { null, null } );
+a = f1( [ null, null ] );
+b = f2( [ null, null ] );
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             Object[] v2 = new Object[] { null, null };
@@ -5515,9 +5515,9 @@ b;c;d;
 import(""FFITarget.dll"");
 def foo ( )
 {
-    a = { 1, 2, 3};
+    a = [ 1, 2, 3];
     b = ClassFunctionality.ClassFunctionality(10);
-    return = {a,b};
+    return = [a,b];
 }
 x = foo ();
 a = x[0][0]; // expected 1, received 1
@@ -5547,7 +5547,7 @@ def func1(pts : DummyPoint[])
 }
 p1 = DummyPoint.ByCoordinates( 0,0,0);
 p2 = DummyPoint.ByCoordinates( 1, 1, 1 );
-p = { p1, p2 }; 
+p = [ p1, p2 ]; 
 xx = p[1].X;
 yy = p[1].Y;
 zz = p[1].Z;
@@ -5577,7 +5577,7 @@ def func1(pts : DummyPoint[])
 }
 p1 = 0;
 p2 = 1;
-p = { p1, p2 }; 
+p = [ p1, p2 ]; 
 xx = p[1];
 yy = p[1];
 zz = p[1];
@@ -5646,7 +5646,7 @@ def UnionBox(combined : Point, arr : Point[], index : int) {
   }
   return = null;
 }
-points = { DummyPoint.ByCoordinates( 0,0,0), DummyPoint.ByCoordinates( 1, 1, 1 ), DummyPoint.ByCoordinates( 2, 2, 2 ), DummyPoint.ByCoordinates( 3, 3, 3 ) };
+points = [ DummyPoint.ByCoordinates( 0,0,0), DummyPoint.ByCoordinates( 1, 1, 1 ), DummyPoint.ByCoordinates( 2, 2, 2 ), DummyPoint.ByCoordinates( 3, 3, 3 ) ];
 top_index = Count( points ) - 2;
 base_index = Count ( points ) -1;
 s = points[base_index];
@@ -5678,7 +5678,7 @@ def Test(arr : A[])
 {
         return = 123;
 }
-a = {B.B(), B.B(), B.B()};
+a = [B.B(), B.B(), B.B()];
 t = Test(a);
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -5705,7 +5705,7 @@ x = [Imperative]
 {    
     a = 1;    
 	b = foo(a);        
-	return = { a, b };    
+	return = [ a, b ];    
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -5738,7 +5738,7 @@ x = [Imperative]
 {    
         a = 2;    
 	b = foo(a);        
-	return = { a, b };    
+	return = [ a, b ];    
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -5769,9 +5769,9 @@ a;
 }   
 x = [Imperative]
 {    
-    a = { { 1, 2 } , { 3, 4 } };    
+    a = [ [ 1, 2 ] , [ 3, 4 ] ];    
 	b = foo(a);        
-	return = { a, b };    
+	return = [ a, b ];    
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -5792,11 +5792,11 @@ def foo ( x : double[])
 {
     return = x;
 }
-a1 = { 2.5, 4, 3*2 };
+a1 = [ 2.5, 4, 3*2 ];
 b1 = foo ( a1 );
-a2 = { 2, 4, 3.5 };
+a2 = [ 2, 4, 3.5 ];
 b2 = foo ( a2 );
-a3 = { 2, 4, 3 };
+a3 = [ 2, 4, 3 ];
 b3 = foo ( a3 );
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -5821,7 +5821,7 @@ def foo ( x : var[])
 {
     return = 1;
 }
-a1 = { 2.5, null, 3, a, ""sar"" };
+a1 = [ 2.5, null, 3, a, ""sar"" ];
 b1 = foo ( a1 );
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -5838,11 +5838,11 @@ def foo ( x : double)
 {
     return = x;
 }
-a1 = { 2.5, 4 };
+a1 = [ 2.5, 4 ];
 b1 = foo ( a1 );
-a2 = { 3, 4, 2.5 };
+a2 = [ 3, 4, 2.5 ];
 b2 = foo ( a2 );
-a3 = { 3, 4, 2 };
+a3 = [ 3, 4, 2 ];
 b3 = foo ( a3 );
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -5867,7 +5867,7 @@ def foo ( x : var)
 {
     return = 1;
 }
-a1 = { 2.5, null, 3, a1, ""sar"" };
+a1 = [ 2.5, null, 3, a1, ""sar"" ];
 b1 = foo ( a1 );";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             Object[] v1 = new Object[] { 1, 1, 1, 1, 1 };
@@ -5892,7 +5892,7 @@ def foo(x : int[][])
     return = 0;
 }
     
-x = foo ( { { 0,1}, {2, 3} } );
+x = foo ( [ [ 0,1], [2, 3] ] );
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
 
@@ -5908,7 +5908,7 @@ def foo ( x : double[])
 {
     return = x;
 }
-a2 = { 2, 4, 3.5 };
+a2 = [ 2, 4, 3.5 ];
 b2 = foo (a2);";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             Object[] b2 = new Object[] { 2.0, 4.0, 3.5 };
@@ -5924,7 +5924,7 @@ def foo ( x : double[])
 {
     return = x;
 }
-a2 = { 2, 4, 3};
+a2 = [ 2, 4, 3];
 b2 = foo ( a2 );";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             Object[] b2 = new Object[] { 2.0, 4.0, 3.0 };
@@ -5943,7 +5943,7 @@ def foo ( x : int[])
 {
     return = x;
 }
-a1 = { 2, 4.1, 3.5};
+a1 = [ 2, 4.1, 3.5];
 b1 = foo ( a1 );";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             Object[] b1 = new Object[] { 2, 4, 4 };
@@ -5962,7 +5962,7 @@ def foo ( x : int)
 {
     return = x;
 }
-a1 = { 2, 4.1, false};
+a1 = [ 2, 4.1, false];
 b1 = foo ( a1 );";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             Object[] b1 = new Object[] { 2, 4, null };
@@ -5981,7 +5981,7 @@ def foo ( x : int[])
 {
     return = x;
 }
-a1 = { 2, 4.1, {1,2}};
+a1 = [ 2, 4.1, [1,2]];
 b1 = foo ( a1 );";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             Object[] b1 = new Object[] { new object[] { 2 }, new Object[] { 4 }, new object[] { 1, 2 } };
@@ -6002,7 +6002,7 @@ b1 = foo ( a1 );";
 {
     return = x;
 }
-a1 = { null, 5, 6.0};
+a1 = [ null, 5, 6.0];
 b1 = foo ( a1 );";
             thisTest.VerifyRunScriptSource(code, error);
             Object[] b1 = new Object[] { null, 5, 6 };
@@ -6021,7 +6021,7 @@ def foo ( x : int[])
 {
     return = x;
 }
-a1 = { 1, null, 6.0};
+a1 = [ 1, null, 6.0];
 b1 = foo ( a1 );";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             Object[] b1 = new Object[] { 1, null, 6 };
@@ -6036,7 +6036,7 @@ def foo ( x : int[])
 {
     return = x;
 }
-a1 = { null, null, null};
+a1 = [ null, null, null];
 b1 = foo ( a1 );";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             Object[] b1 = new Object[] { null, null, null };
@@ -6053,7 +6053,7 @@ def foo:int[]( x : int[])
 {
     return = x;
 }
-a1 = {1.1,2.0,3};
+a1 = [1.1,2.0,3];
 b1 = foo ( a1 );";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             Object[] b1 = new Object[] { 1, 2, 3 };
@@ -6073,7 +6073,7 @@ b1 = foo ( a1 );";
             string errmsg = " 1467318 -  Cannot return an array from a function whose return type is var with undefined rank (-2)  ";
             string code = @"
 import(""FFITarget.dll"");
-a = ArrayMember.Ctor({1,2,3});
+a = ArrayMember.Ctor([1,2,3]);
 val = a.X;
 val[0] = 100;
 t = a.X[0]; //expected 100; received 1";
@@ -6090,7 +6090,7 @@ def A (a: int [])
 {
 return = a;
 }
-val = {1,2,3};
+val = [1,2,3];
 b = A(val);
 b[0] = 100; 
 t = val[0]; //expected 100, received 1";
@@ -6105,7 +6105,7 @@ t = val[0]; //expected 100, received 1";
             string code = @"
 def foo()
 {
-return = {1,2};
+return = [1,2];
 }
 t = foo()[0];";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -6120,7 +6120,7 @@ t = foo()[0];";
 t;
 def foo()
 {
-return = {1,2};
+return = [1,2];
 }
 [Imperative]
 {
@@ -6137,7 +6137,7 @@ t = foo()[0];
             string code = @"
 def foo()
 {
-return = {1};
+return = [1];
 }
 t = foo()[0];";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -6151,7 +6151,7 @@ t = foo()[0];";
             string code = @"
 def foo()
 {
-return = {};
+return = [];
 }
 t = foo()[0];";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -6181,11 +6181,11 @@ t = foo()[0];";
             string code = @"
 	def foo()
 	{
-		return = {foo2()[0],foo2()[1]};
+		return = [foo2()[0],foo2()[1]];
 	}
 def foo2()
 {
-return = {1,2};
+return = [1,2];
 }
 a=test.test()[0];
 t = foo()[0];";
@@ -6202,7 +6202,7 @@ t = foo()[0];";
             string code = @"
 def foo()
 {
-	return = {1,2};
+	return = [1,2];
 }
 t = foo()[0];";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -6218,7 +6218,7 @@ t = foo()[0];";
             string code = @"
 def foo()
 {
-	return = {1,2};
+	return = [1,2];
 }
 t = [Imperative]
 {
@@ -6312,7 +6312,7 @@ return = null;
 }
 p1 = DummyPoint.ByCoordinates( 0,0,0);
 p2 = DummyPoint.ByCoordinates( 1, 1, 1 );
-p = { p1, p2 };
+p = [ p1, p2 ];
 xx = p[1].X;
 yy = p[1].Y;
 zz = p[1].Z;
@@ -6330,7 +6330,7 @@ zz = p[1].Z;
         {
             string code = @"
 import(""FFITarget.dll"");
-convert={ClassFunctionality.ClassFunctionality(1..2), ClassFunctionality.ClassFunctionality(3)};
+convert=[ClassFunctionality.ClassFunctionality(1..2), ClassFunctionality.ClassFunctionality(3)];
 def prop(test:ClassFunctionality)
 {
 	return= test.IntVal;
@@ -6356,7 +6356,7 @@ def foo : int ( a : double[][] )
 }
 [Associative]
 {
-    a = { { 0, 1}, {2, 3} };
+    a = [ [ 0, 1], [2, 3] ];
     b = foo ( a );
 }
 ";
@@ -6376,7 +6376,7 @@ def foo : var[][][] (X : var[][][])
 {
     return = X ; 
 }
-a = { { { 0, 1} }, { {2, 3} } };
+a = [ [ [ 0, 1] ], [ [2, 3] ] ];
 c = foo(a);";
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -6399,7 +6399,7 @@ def foo : var[][][] (  X : var[][])
     return = X ; 
 }
 
-a = { { 0, 1} ,  2  };
+a = [ [ 0, 1] ,  2  ];
 b = Create( a );
 c = foo(b);
 ";
@@ -6460,7 +6460,7 @@ def foo : var[][][] (  X : var[][])
 {
     return = X; 
 }
-                a = { 3, { 0, 1} ,  2  };
+                a = [ 3, [ 0, 1] ,  2  ];
                 b = Create ( a);
                 c = foo(b);
 ";
@@ -6481,7 +6481,7 @@ def foo  ( x : int[][] )
 {
         return = x ; 
 }
-a = { 3, { 0, 1} ,  2  };
+a = [ 3, [ 0, 1] ,  2  ];
 b = foo ( a );";
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -6546,13 +6546,13 @@ d = foo(1.5);";
     
     return = Average(x);
 }
-a = {1,2,2,1};
-b = {1,{}};
+a = [1,2,2,1];
+b = [1,[]];
 c = Average(a);
 c1= foo(a);
 c2 = foo(b);
-c3 = Average({});
-result = {foo(a),foo(b)};";
+c3 = Average([]);
+result = [foo(a),foo(b)];";
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4171
             string errmsg = "MAGN-4171: Replication method resolution";
@@ -6573,7 +6573,7 @@ def foo(x:int[])
 {
 return = 1;
 }
-d = foo({1.5,2.5});";
+d = foo([1.5,2.5]);";
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -6628,7 +6628,7 @@ def foo3()
     r2=a.foo(); 
     b2 = foo1();
     d2 = foo(2, ClassFunctionality.ClassFunctionality() );
-    return = { r2, b2, d2 };
+    return = [ r2, b2, d2 ];
 }
 ";
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
@@ -6749,7 +6749,7 @@ x = foo(); // null
         public void T65_1467115_warning_on_function_resolution_1()
         {
             String code = @"
-x = { 1,2};
+x = [ 1,2];
 t = 0;
 y = x[null];
 p = y + 1;
@@ -6771,7 +6771,7 @@ b ;
 {
     a = 10;
     b = a * 2;
-    a = { 5, 10, 15 };
+    a = [ 5, 10, 15 ];
     
     a = 5..15..2;
 }

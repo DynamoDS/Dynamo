@@ -425,7 +425,7 @@ test5;
 b;
 [Imperative]
 {
-	a = {{1,2},3.5};
+	a = [[1,2],3.5];
 	c = a[1];
 	d = a[0][1];
         a[0][1] = 5;
@@ -880,7 +880,7 @@ _c;
             string src = @"x;
 [Imperative]
 {
-	a = { -2,3,4.5,true };
+	a = [ -2,3,4.5,true ];
 	x = 1;
 	for ( y in a )
 	{
@@ -1080,7 +1080,7 @@ def foo : string (x : string )
         public void T51_Assignment_Using_Negative_Index()
         {
             string code = @"
-a = { 0, 1, 2, 3 };
+a = [ 0, 1, 2, 3 ];
 c1 = a [-1];
 c2 = a [-2];
 c3 = a [-3];
@@ -1181,7 +1181,7 @@ y4;
 	}
 	
 	y2 = 0;
-	c = { 3, 4 };
+	c = [ 3, 4 ];
 	for ( i in c )
 	{
 	    t1 = ClassFunctionality.ClassFunctionality(i);
@@ -1436,7 +1436,7 @@ c2 = 3  - true;
 a;
 [Imperative]
 {
-    a = { 1, 0.5, null, {2,3 } ,{{0.4, 5}, true } };
+    a = [ 1, 0.5, null, [2,3 ] ,[[0.4, 5], true ] ];
 	
 }
 ";
@@ -1523,9 +1523,9 @@ import(""FFITarget.dll"");
 
     arr4 : double[]..[] = null;
 
-    arr5 : double[]  = { };
+    arr5 : double[]  = [ ];
 
-    arr6 : double[]..[]  = { };
+    arr6 : double[]..[]  = [ ];
 
     arr11 : int[] ;
 
@@ -1535,9 +1535,9 @@ import(""FFITarget.dll"");
 
     arr14 : int[]..[] = null;
 
-    arr15 : int[]  = { };
+    arr15 : int[]  = [ ];
 
-    arr16 : int[]..[]  = { };
+    arr16 : int[]..[]  = [ ];
 
     arr111 : bool[] ;
 
@@ -1547,9 +1547,9 @@ import(""FFITarget.dll"");
 
     arr114 : bool[]..[] = null;
 
-    arr115 : bool[]  = { };
+    arr115 : bool[]  = [ ];
 
-    arr116 : bool[]..[]  = { };
+    arr116 : bool[]..[]  = [ ];
 
     arr1111 : ClassFunctionality[] ;
 
@@ -1559,9 +1559,9 @@ import(""FFITarget.dll"");
 
     arr1114 : ClassFunctionality[]..[] = null;
 
-    arr1115 : ClassFunctionality[]  = { };
+    arr1115 : ClassFunctionality[]  = [ ];
 
-    arr1116 : ClassFunctionality[]..[]  = { };
+    arr1116 : ClassFunctionality[]..[]  = [ ];
 
 }
 

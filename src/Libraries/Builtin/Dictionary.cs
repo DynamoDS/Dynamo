@@ -28,10 +28,7 @@ namespace DesignScript
             public static Dictionary ByKeysValues(IList<string> keys,
                 [KeepReference] [ArbitraryDimensionArrayImport] IList<object> values)
             {
-                var pairs = keys.Cast<string>().Zip(values.Cast<object>(), (a, b) =>
-                {
-                    return new KeyValuePair<string, object>(a, b);
-                });
+                var pairs = keys.Zip(values, (a, b) => new KeyValuePair<string, object>(a, b));
 
                 return new Dictionary(ImmutableDictionary.Create<string, object>().AddRange(pairs));
             }
@@ -55,29 +52,20 @@ namespace DesignScript
             ///     Produces the keys in a Dictionary.
             /// </summary>
             /// <returns name="keys">The keys of the Dictionary</returns>
-            public IEnumerable<string> Keys
-            {
-                get { return D.Keys; }
-            }
+            public IEnumerable<string> Keys => D.Keys;
 
             /// <summary>
             ///     Produces the values in a Dictionary.
             /// </summary>
             /// <returns name="values">The values of the Dictionary</returns>
             [AllowRankReduction]
-            public IEnumerable<object> Values
-            {
-                get { return D.Values; }
-            }
+            public IEnumerable<object> Values => D.Values;
 
             /// <summary>
             ///     The number of key value pairs in a Dictionary.
             /// </summary>
-            public int Count
-            {
-                get { return D.Count; }
-            }
-            
+            public int Count => D.Count;
+
             /// <summary>
             ///     Produce a new Dictionary with a list of keys set to the new values, possibly overwriting existing key-value pairs. 
             ///     These two lists are expected to be of the same length. If not, the shorter of the two bounds the number of insertions.
@@ -89,10 +77,7 @@ namespace DesignScript
             public Dictionary SetValueAtKeys(IList<string> keys,
                 [KeepReference] [ArbitraryDimensionArrayImport] IList<object> values)
             {
-                var pairs = keys.Cast<string>().Zip(values.Cast<object>(), (a, b) =>
-                {
-                    return new KeyValuePair<string, object>(a, b);
-                });
+                var pairs = keys.Zip(values, (a, b) => new KeyValuePair<string, object>(a, b));
 
                 return new Dictionary(D.SetItems(pairs));
             }
@@ -100,7 +85,7 @@ namespace DesignScript
             /// <summary>
             ///     Produce a new Dictionary with the given keys removed.
             /// </summary>
-            /// <param name="key">The key in the Dictionary to remove</param>
+            /// <param name="keys">The key in the Dictionary to remove</param>
             /// <returns name="dictionary">A new Dictionary with the key removed</returns>
             /// <search>drop,delete</search>
             public Dictionary RemoveKeys(IList<string> keys)

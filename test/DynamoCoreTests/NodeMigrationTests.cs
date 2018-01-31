@@ -1217,7 +1217,7 @@ namespace Dynamo.Tests
         [Test]
         public void TestListFlatten()
         {
-            // This file contains a code block node with value {1,3,5,{2,4,{6},8},7,9,{{0}}},
+            // This file contains a code block node with value [1,3,5,[2,4,[6],8],7,9,[[0]]],
             // connected to List.Flatten(list) node and List.Flatten(list, amt) node with amt = 1.
             OpenModel(GetDynPath("TestListFlatten.dyn"));
 
