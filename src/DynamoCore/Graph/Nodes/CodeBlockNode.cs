@@ -1029,7 +1029,7 @@ namespace Dynamo.Graph.Nodes
 
         private string LocalizeIdentifier(string identifierName)
         {
-            return string.Format("blablabla{0}_{1}", identifierName, AstIdentifierGuid);
+            return string.Format("{0}_{1}", identifierName, AstIdentifierGuid);
         }
 
         private class ImperativeIdentifierInPlaceMapper : ImperativeAstReplacer
