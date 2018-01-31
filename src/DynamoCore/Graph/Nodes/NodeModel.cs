@@ -232,6 +232,42 @@ namespace Dynamo.Graph.Nodes
         }
 
         /// <summary>
+        /// Output nodes are used applications that consume graphs outside of Dynamo such as Optioneering, Optimization, 
+        /// and Dynamo Player. Output nodes can be any node that returns a single output or a dictionary.  
+        /// </summary>
+        [JsonIgnore]
+        public virtual bool IsOutputNode
+        {
+            get
+            {
+                return true;
+            }
+        }
+
+        private bool isSetAsOutput = false;
+
+        /// <summary>
+        /// This property is user-controllable via a checkbox and is set to true when a user wishes to include
+        /// this node in the OutputData block of the Dyn file.
+        /// </summary>
+        [JsonIgnore]
+        public bool IsSetAsOutput
+        {
+            get
+            {
+                if (!IsOutputNode)
+                    return false;
+
+                return isSetAsOutput;
+            }
+
+            set
+            {
+                isSetAsOutput = value;
+            }
+        }
+
+        /// <summary>
         ///     The Node's state, which determines the coloring of the Node in the canvas.
         /// </summary>
         [JsonIgnore]
