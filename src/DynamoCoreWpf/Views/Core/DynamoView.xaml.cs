@@ -1622,6 +1622,7 @@ namespace Dynamo.Controls
         {
             get
             {
+                // Threshold that determines if button should be displayed
                 if (LibraryViewColumn.Width.Value < 20)
                 { libraryCollapsed = true; }
 
