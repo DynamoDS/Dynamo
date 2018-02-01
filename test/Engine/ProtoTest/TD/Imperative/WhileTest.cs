@@ -520,11 +520,11 @@ def Create2DArray( col : int)
 {
 	result = [Imperative]
     {
-		array = { 1, 2 };
+		array = [ 1, 2 ];
 		counter = 0;
 		while( counter < col)
 		{
-			array[counter] = { 1, 2};
+			array[counter] = [ 1, 2];
 			counter = counter + 1;
 		}
 		return = array;
@@ -658,7 +658,7 @@ y;y1;y2;
             string src = @"
 def foo ()
 {
-	return = { 0, 1, 2 };
+	return = [ 0, 1, 2 ];
 }
 def test ()
 {

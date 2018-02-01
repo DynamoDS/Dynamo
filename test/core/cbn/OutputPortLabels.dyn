@@ -1,8 +1,8 @@
 {
-  "Uuid": "1d52c19f-c6d4-408c-ab5c-c6266af6977f",
+  "Uuid": "b55de8cb-3363-4f3d-9680-201082814348",
   "IsCustomNode": false,
-  "Description": "",
-  "Name": "Home",
+  "Description": null,
+  "Name": "OutputPortLabels.dyn",
   "ElementResolver": {
     "ResolutionMap": {}
   },
@@ -11,23 +11,32 @@
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
       "NodeType": "CodeBlockNode",
-      "Code": "b=[[1,2],[3,4]];\nz=b[1][1];",
-      "Id": "1086551ad8514eccb9bf9eeba3e9f6bf",
+      "Code": "1;\n[Imperative]{ return 5;\n };\n\"foo\";",
+      "Id": "d96ab731fec24471bcd9444aeab3faf4",
       "Inputs": [],
       "Outputs": [
         {
-          "Id": "1d04477cde6f4442819af592eac2cbef",
+          "Id": "5727748b51f44dd2a452b4de4c2fa77a",
           "Name": "",
-          "Description": "b",
+          "Description": "Value of expression at line 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
           "KeepListStructure": false
         },
         {
-          "Id": "af3742e5825840f98751277d77988099",
+          "Id": "6a70ea8d2b884b359f8ec26a287395bc",
           "Name": "",
-          "Description": "z",
+          "Description": "Value of expression at line 2",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "fec5551f0eab4381bd90b961cbf2b920",
+          "Name": "",
+          "Description": "Value of expression at line 4",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -44,36 +53,23 @@
   "View": {
     "Dynamo": {
       "ScaleFactor": 1.0,
-      "HasRunWithoutCrash": false,
+      "HasRunWithoutCrash": true,
       "IsVisibleInDynamoLibrary": true,
-      "Version": "2.0.0.2121",
-      "RunType": "Manual",
+      "Version": "2.0.0.2821",
+      "RunType": "Automatic",
       "RunPeriod": "1000"
     },
-    "Camera": {
-      "Name": "Background Preview",
-      "EyeX": -17.0,
-      "EyeY": 24.0,
-      "EyeZ": 50.0,
-      "LookX": 12.0,
-      "LookY": -13.0,
-      "LookZ": -58.0,
-      "UpX": 0.0,
-      "UpY": 1.0,
-      "UpZ": 0.0
-    },
+    "Camera": null,
     "NodeViews": [
       {
         "ShowGeometry": true,
         "Name": "Code Block",
-        "Id": "1086551ad8514eccb9bf9eeba3e9f6bf",
-        "IsUpstreamVisible": true,
+        "Id": "d96ab731fec24471bcd9444aeab3faf4",
         "Excluded": false,
-        "X": 110.0,
-        "Y": 262.0
+        "X": 247.0,
+        "Y": 156.0
       }
     ],
-    "Notes": [],
     "Annotations": [],
     "X": 0.0,
     "Y": 0.0,

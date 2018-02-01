@@ -2,12 +2,12 @@
   <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
   <SelectInRegionCommand X="38" Y="64" Width="0" Height="0" IsCrossSelection="false" />
   <CreateNodeCommand X="38" Y="64" DefaultPosition="false" TransformCoordinates="true">
-    <Dynamo.Nodes.CodeBlockNodeModel guid="67ef5890-7aa6-4db6-ae82-c4532efc0c01" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="112" y="34" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="{pt.X,pt.Y,pt.Z};" ShouldFocus="false" />
+    <Dynamo.Nodes.CodeBlockNodeModel guid="67ef5890-7aa6-4db6-ae82-c4532efc0c01" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="112" y="34" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="[pt.X,pt.Y,pt.Z];" ShouldFocus="false" />
   </CreateNodeCommand>
   <SelectModelCommand ModelGuid="67ef5890-7aa6-4db6-ae82-c4532efc0c01" Modifiers="0" />
   <DragSelectionCommand X="45" Y="51" DragOperation="0" />
   <DragSelectionCommand X="211" Y="52" DragOperation="1" />
-  <UpdateModelValueCommand Name="Code" Value="{pt.X,pt.Y,pt.Z}" WorkspaceGuid="65e1804f-c8ff-4dbc-b227-26c102eb359b">
+  <UpdateModelValueCommand Name="Code" Value="[pt.X,pt.Y,pt.Z]" WorkspaceGuid="65e1804f-c8ff-4dbc-b227-26c102eb359b">
     <ModelGuid>67ef5890-7aa6-4db6-ae82-c4532efc0c01</ModelGuid>
   </UpdateModelValueCommand>
   <CreateNodeCommand X="0" Y="0" DefaultPosition="true" TransformCoordinates="true">

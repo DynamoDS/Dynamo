@@ -15,9 +15,6 @@ namespace ProtoCore.Utils
         /// If an empty array is passed, the result will be null
         /// if there are instances, but they share no common supertype the result will be var
         /// </summary>
-        /// <param name="array"></param>
-        /// <param name="core"></param>
-        /// <returns></returns>
         public static ClassNode GetGreatestCommonSubclassForArray(StackValue array, RuntimeCore runtimeCore)
         {
             if (!array.IsArray)

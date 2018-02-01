@@ -538,6 +538,11 @@ namespace Dynamo.ViewModels
                 try
                 {
                     fileName = Path.GetFileName(filePath);
+                    string extension = Path.GetExtension(filePath);
+                    if (extension == ".dyn" || extension == ".dyf")
+                    {
+                      fileName = Path.GetFileNameWithoutExtension(filePath);
+                    }
                 }
                 catch (ArgumentException)
                 {

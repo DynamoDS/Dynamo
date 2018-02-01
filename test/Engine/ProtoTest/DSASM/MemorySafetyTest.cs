@@ -1,4 +1,4 @@
-﻿using NUnit.Framework;
+using NUnit.Framework;
 
 namespace ProtoTest.DSASM
 {
@@ -9,7 +9,7 @@ namespace ProtoTest.DSASM
         public void TestMemoryAllocation()
         {
             string code = @"
-x = {};
+x = [];
 x[1000000000] = 21;
 ";
             thisTest.RunAndVerifyRuntimeWarning(code, ProtoCore.Runtime.WarningID.RunOutOfMemory);

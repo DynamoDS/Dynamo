@@ -539,6 +539,11 @@ namespace Dynamo.Tests
             // get file path and name of file
             var filePath = GetNewFileNameOnTempPath("dyn");
             var fileName = Path.GetFileName(filePath);
+            string extension = Path.GetExtension(filePath);
+            if (extension == ".dyn" || extension == ".dyf")
+            {
+              fileName = Path.GetFileNameWithoutExtension(filePath);
+            }
 
             // save
             ViewModel.SaveAs(filePath);

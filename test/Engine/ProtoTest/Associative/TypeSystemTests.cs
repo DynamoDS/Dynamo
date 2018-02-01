@@ -22,7 +22,7 @@ namespace ProtoTest.Associative
         public void ArrayConvTest()
         {
             String code =
-                @"def foo:int[](){ return = {3.5}; }a=foo();";
+                @"def foo:int[](){ return = [3.5]; }a=foo();";
             var mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("a", new Object[] { 4 });
         }
@@ -101,7 +101,7 @@ namespace ProtoTest.Associative
         public void Rep3()
         {
             String code =
-                @"def foo(i:int){ return = 3.5; }a=foo({0, 1});";
+                @"def foo(i:int){ return = 3.5; }a=foo([0, 1]);";
             var mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("a", new object[] { 3.5, 3.5 });
         }
@@ -110,7 +110,7 @@ namespace ProtoTest.Associative
         public void Rep4()
         {
             String code =
-                @"def foo(i:int){ return = 3.5; }a=foo({{0, 1}});";
+                @"def foo(i:int){ return = 3.5; }a=foo([[0, 1]]);";
             var mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("a", new object[] { new object[] { 3.5, 3.5 } });
         }
@@ -120,7 +120,7 @@ namespace ProtoTest.Associative
         {
             //Assert.Fail("DNL-1467183 Sprint24: rev 3163 : replication on nested array is outputting extra brackets in some cases");
             String code =
-                @"def foo(i:int){ return = 3.5; }a=foo({{0, 1}, 1});";
+                @"def foo(i:int){ return = 3.5; }a=foo([[0, 1], 1]);";
             var mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("a", new object[] { new object[] { 3.5, 3.5 }, 3.5 });
         }
@@ -168,7 +168,7 @@ namespace ProtoTest.Associative
         public void TestVarDispatch()
         {
             string code =
-                @"def foo (x : var[]){return=x;}y = foo(3);z = foo({3});z1 = foo({{3}});";
+                @"def foo (x : var[]){return=x;}y = foo(3);z = foo([3]);z1 = foo([[3]]);";
             var mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("y", new object[] { 3 });
             thisTest.Verify("z", new object[] { 3 });
@@ -179,7 +179,7 @@ namespace ProtoTest.Associative
         public void TestIntDispatch()
         {
             string code =
-                @"def foo (x : int[]){return=x;}y = foo(3);z = foo({3});";
+                @"def foo (x : int[]){return=x;}y = foo(3);z = foo([3]);";
             var mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("y", new object[] { 3 });
             thisTest.Verify("z", new object[] { 3 });
@@ -189,7 +189,7 @@ namespace ProtoTest.Associative
         public void TestVarDispatchOnArrayStructure()
         {
             string code =
-                @"                    def foo (x : var[][])                    {                    return=x;                    }                    y = foo(3);                    z = foo({3});";
+                @"                    def foo (x : var[][])                    {                    return=x;                    }                    y = foo(3);                    z = foo([3]);";
             string error = "1467326 - Sprint 27 - Rev 3905 when there is rank mismatch for function , array upagrades to 1 dimension higer than expected ";
             var mirror = thisTest.RunScriptSource(code, error);
             thisTest.Verify("y", new object[] { new object[] { 3 } });
@@ -200,7 +200,7 @@ namespace ProtoTest.Associative
         public void TestVarDispatchOnArrayStructure2()
         {
             string code =
-                @"                    def foo (x : var[][][])                    {                    return=x;                    }                    y = foo(3);                    z = foo({3});                    z2 = foo({{3}});                    z3 = foo({{{3}}});                    ";
+                @"                    def foo (x : var[][][])                    {                    return=x;                    }                    y = foo(3);                    z = foo([3]);                    z2 = foo([[3]]);                    z3 = foo([[[3]]]);                    ";
             string error = "1467326 - Sprint 27 - Rev 3905 when there is rank mismatch for function , array upagrades to 1 dimension higer than expected ";
             var mirror = thisTest.RunScriptSource(code, error);
             thisTest.Verify("y", new object[] { new object[] { new object[] { 3 } } });
@@ -213,7 +213,7 @@ namespace ProtoTest.Associative
         public void TestIntDispatchOnArrayStructure()
         {
             string code =
-                @"                    def foo (x : int[][])                    {                    return=x;                    }                    y = foo(3);                    z = foo({3});";
+                @"                    def foo (x : int[][])                    {                    return=x;                    }                    y = foo(3);                    z = foo([3]);";
             string error = "1467326 - Sprint 27 - Rev 3905 when there is rank mismatch for function , array upagrades to 1 dimension higer than expected ";
             var mirror = thisTest.RunScriptSource(code, error);
             thisTest.Verify("y", new object[] { new object[] { 3 } });
@@ -224,7 +224,7 @@ namespace ProtoTest.Associative
         public void TestIntDispatchRetOnArrayStructure()
         {
             string code =
-                @"                    def foo (x : int[][])                    {                    return=1;                    }                    //y = foo(3);                    z = foo({3});                    z1 = foo({{3}});";
+                @"                    def foo (x : int[][])                    {                    return=1;                    }                    //y = foo(3);                    z = foo([3]);                    z1 = foo([[3]]);";
             string error = "1467326 - Sprint 27 - Rev 3905 when there is rank mismatch for function , array upagrades to 1 dimension higer than expected ";
             var mirror = thisTest.RunScriptSource(code, error);
             //thisTest.Verify(mirror, "y", 1);
@@ -238,7 +238,7 @@ namespace ProtoTest.Associative
         {
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1668
             string code =
-                @"                    x:int[][] = 3;                    y:int[][] = {3};                    z:int[][] = {{3}};                    z1:int[][] = {{{3}}};";
+                @"                    x:int[][] = 3;                    y:int[][] = [3];                    z:int[][] = [[3]];                    z1:int[][] = [[[3]]];";
             string error = "MAGN-1668 Sprint 27 - Rev 3905 when there is rank mismatch for function , array upagrades to 1 dimension higer than expected";
             var mirror = thisTest.RunScriptSource(code, error);
             thisTest.Verify("x", new object[] { new object[] { 3 } });
@@ -251,7 +251,7 @@ namespace ProtoTest.Associative
         public void TestIntDispatchOnArrayStructure2()
         {
             string code =
-                @"                    def foo (x : int[][][])                    {                    return=x;                    }                    y = foo(3);                    z = foo({3});                    z2 = foo({{3}});                    z3 = foo({{{3}}});                    ";
+                @"                    def foo (x : int[][][])                    {                    return=x;                    }                    y = foo(3);                    z = foo([3]);                    z2 = foo([[3]]);                    z3 = foo([[[3]]]);                    ";
             string error = "1467326 - Sprint 27 - Rev 3905 when there is rank mismatch for function , array upagrades to 1 dimension higer than expected ";
             var mirror = thisTest.RunScriptSource(code, error);
             thisTest.Verify("y", new object[] { new object[] { new object[] { 3 } } });
@@ -274,7 +274,7 @@ namespace ProtoTest.Associative
         public void TestArbitraryRankArr()
         {
             string code =
-                @"a:int[] =  3 ;b:int[]..[] =  3 ;y:int[] = { 3 };z:int[]..[] = { 3 };";
+                @"a:int[] =  3 ;b:int[]..[] =  3 ;y:int[] = [ 3 ];z:int[]..[] = [ 3 ];";
             var mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("a", new object[] { 3 });
             thisTest.Verify("b", 3);
@@ -286,7 +286,7 @@ namespace ProtoTest.Associative
         public void TestAssignFailDueToRank()
         {
             string code =
-                @"a:int = {3};";
+                @"a:int = [3];";
             var mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("a", null);
         }

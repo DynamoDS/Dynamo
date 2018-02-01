@@ -20,6 +20,7 @@ using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
 using ProtoCore;
 using ProtoCore.Namespace;
+using ProtoCore.Utils;
 using Type = System.Type;
 using System.Reflection;
 

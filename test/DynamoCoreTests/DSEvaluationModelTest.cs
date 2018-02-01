@@ -1167,7 +1167,7 @@ namespace Dynamo.Tests
         [Test]
         public void TestMAGN9507()
         {
-            // x = {1, 2, 3};
+            // x = [1, 2, 3];
             // x = Count(x);
             var dynFilePath = Path.Combine(TestDirectory, @"core\dsevaluation\MAGN-9507.dyn");
             OpenModel(dynFilePath);

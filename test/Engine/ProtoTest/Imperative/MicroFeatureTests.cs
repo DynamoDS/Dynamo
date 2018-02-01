@@ -366,7 +366,7 @@ c;
                         @"x;
                         [Imperative]
                         {
-                            a = {10,20,30,40};
+                            a = [10,20,30,40];
                             x = 0;
                             for (val in a)
                             {
@@ -386,7 +386,7 @@ c;
                         [Imperative]
                         {
                             x = 0;
-                            for (val in {100,200,300,400})
+                            for (val in [100,200,300,400])
                             {
                                 x = x + val;
                             }
@@ -404,7 +404,7 @@ c;
                         [Imperative]
                         {
                             x = 0;
-                            for (val in {{100,101},{200,201},{300,301},{400,401}})
+                            for (val in [[100,101],[200,201],[300,301],[400,401]])
                             {
                                 x = x + val[1];
                             }
@@ -1054,7 +1054,7 @@ def fac : int( n : int )
             String code =
                 @"  b;[Imperative]
                     {
-                        a = {1, 2, 3, 4};
+                        a = [1, 2, 3, 4];
                         b = a[-2]; // 3
                     }
                     ";
@@ -1068,7 +1068,7 @@ def fac : int( n : int )
             String code =
                 @"  b;[Imperative]
                     {
-                        a = { { 1, 2 }, { 3, 4 } };
+                        a = [ [ 1, 2 ], [ 3, 4 ] ];
                         b = a[-1][-2]; // 3
                     }
                 ";
@@ -1086,7 +1086,7 @@ import(""BuiltIn.ds"");
 a = [Imperative]
 {
 counter = 0;
-lst = {};
+lst = [];
 while(counter < 10)
 {
 lst = List.AddItemToEnd(counter, lst);
@@ -1111,7 +1111,7 @@ return = lst;
 	
 	                    constructor A()
 	                    {
-		                    x = { B.B(), B.B(), B.B() };
+		                    x = [ B.B(), B.B(), B.B() ];
 	                    }
                     }
                     class B
@@ -1120,13 +1120,13 @@ return = lst;
 	
 	                    constructor B()
 	                    {
-		                    x = { { 1, 2 }, { 3, 4 },  { 5, 6 } };		
+		                    x = [ [ 1, 2 ], [ 3, 4 ],  [ 5, 6 ] ];		
 	                    }
                     }
 b;
                     [Imperative]
                     {
-                        a = { A.A(), A.A(), A.A() };
+                        a = [ A.A(), A.A(), A.A() ];
                         b = a[-2].x[-3].x[-2][-1]; // 4 
                     }
                 ";
@@ -1149,7 +1149,7 @@ b;
 	                {
 		                x = B.B(20, 30);
 		                y = 10;
-		                z = { B.B(40, 50), B.B(60, 70), B.B(80, 90) };
+		                z = [ B.B(40, 50), B.B(60, 70), B.B(80, 90) ];
 	                }
                 }
                 class B
@@ -1171,7 +1171,7 @@ watch4;
                 {
 	                a = A.A();
 	                b = B.B(1, 2);
-	                c = { B.B(-1, -2), B.B(-3, -4) };
+	                c = [ B.B(-1, -2), B.B(-3, -4) ];
 	                a.z[-2] = b;
 	                watch1 = a.z[-2].n; // 2
 	                a.z[-2].m = 3;
@@ -1197,9 +1197,9 @@ watch4;
             string code = @"
 [Imperative]
 {
-    arr1 = {true, false};
-    arr2 = {1, 2, 3};
-    arr3 = {false, true};
+    arr1 = [true, false];
+    arr2 = [1, 2, 3];
+    arr3 = [false, true];
     t = arr2[1][0];
 }
 ";
@@ -1214,7 +1214,7 @@ watch4;
 t;
 [Imperative]
 {
-    t = {1,2,3,4}[3];
+    t = [1,2,3,4][3];
 }";
             thisTest.RunScriptSource(code);
             thisTest.Verify("t", 4);
@@ -1227,7 +1227,7 @@ t;
 t;
 [Imperative]
 {
-    t = {{1,2}, {3,4}}[1][1];
+    t = [[1,2], [3,4]][1][1];
 }";
             thisTest.RunScriptSource(code);
             thisTest.Verify("t", 4);
@@ -1240,7 +1240,7 @@ t;
 t;
 [Imperative]
 {
-    t = ({{1,2}, {3,4}})[1][1];
+    t = ([[1,2], [3,4]])[1][1];
 }";
             thisTest.RunScriptSource(code);
             thisTest.Verify("t", 4);
@@ -1253,7 +1253,7 @@ t;
 t;
 [Imperative]
 {
-    t = ({{1,2}, {3,4}}[1])[1];
+    t = ([[1,2], [3,4]][1])[1];
 }";
             thisTest.RunScriptSource(code);
             thisTest.Verify("t", 4);
@@ -1266,7 +1266,7 @@ t;
 t;
 [Imperative]
 {
-    t = {1,2,3,4,5}[1..3];
+    t = [1,2,3,4,5][1..3];
 }";
             thisTest.RunScriptSource(code);
             thisTest.Verify("t", new object[] { 2, 3, 4 });
@@ -1294,7 +1294,7 @@ loc;
 [Imperative]
 {
     range = 1..10;
-    loc = {};
+    loc = [];
     c = 0;
     for(i in range)
     {
@@ -1347,7 +1347,7 @@ v = loc[0];
 	r7 = ""ab"" == ""ab"";
 	ns = s;
 	ns[0] = 1;
-	r8 = ns == {1, 'b'};
+	r8 = ns == [1, 'b'];
 	r9 = s != ""ab"";
     ss = ""abc"";
     ss[0] = 'x';
