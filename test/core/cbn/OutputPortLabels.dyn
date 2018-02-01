@@ -1,0 +1,78 @@
+{
+  "Uuid": "b55de8cb-3363-4f3d-9680-201082814348",
+  "IsCustomNode": false,
+  "Description": null,
+  "Name": "OutputPortLabels.dyn",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "1;\n[Imperative]{ return 5;\n };\n\"foo\";",
+      "Id": "d96ab731fec24471bcd9444aeab3faf4",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "5727748b51f44dd2a452b4de4c2fa77a",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "6a70ea8d2b884b359f8ec26a287395bc",
+          "Name": "",
+          "Description": "Value of expression at line 2",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "fec5551f0eab4381bd90b961cbf2b920",
+          "Name": "",
+          "Description": "Value of expression at line 4",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    }
+  ],
+  "Connectors": [],
+  "Dependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.0.0.2821",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": null,
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "d96ab731fec24471bcd9444aeab3faf4",
+        "Excluded": false,
+        "X": 247.0,
+        "Y": 156.0
+      }
+    ],
+    "Annotations": [],
+    "X": 0.0,
+    "Y": 0.0,
+    "Zoom": 1.0
+  }
+}
