@@ -111,7 +111,7 @@ namespace Dynamo.Controls
             SizeChanged += DynamoView_SizeChanged;
             LocationChanged += DynamoView_LocationChanged;
 
-            // Apply initial appropriate expand/collapse library icon depending on state
+            // Apply appropriate expand/collapse library button state depending on initial width
             updateCollapseIcon();
 
             // Check that preference bounds are actually within one
@@ -1602,30 +1602,28 @@ namespace Dynamo.Controls
             tb.Foreground = (Brush)bc.ConvertFrom("#cccccc");
             Image collapseIcon = (Image)sp.Children[1];
 
-            Uri imageUri;
-
-            // When hovered swap appropriate expand/collapse icons
+            // When hovered swap appropriate expand/collapse button state
             if (LibraryCollapsed)
-            { imageUri = new Uri(@"pack://application:,,,/DynamoCoreWpf;component/UI/Images/expand_hover.png"); }
-
-            else
-            { imageUri = new Uri(@"pack://application:,,,/DynamoCoreWpf;component/UI/Images/collapse_hover.png"); }
-
-            BitmapImage hover = new BitmapImage(imageUri);
-            collapseIcon.Source = hover;
+            {
+                Uri imageUri;
+                imageUri = new Uri(@"pack://application:,,,/DynamoCoreWpf;component/UI/Images/expand_hover.png");
+                BitmapImage hover = new BitmapImage(imageUri);
+                collapseIcon.Source = hover;
+            }
         }
 
         private bool libraryCollapsed;
 
-        // Retain last known library width prior to collapsing
-        public double LibraryWidthCache { get; set; } = 200;
+        // Default library width
+        private const int defaultLibraryWidth = 200;
 
         // Check if library is collapsed or expanded
         public bool LibraryCollapsed
         {
             get
             {
-                if (LibraryViewColumn.Width.Value < 2)
+                // Threshold that determines if button should be displayed
+                if (LibraryViewColumn.Width.Value < 20)
                 { libraryCollapsed = true; }
 
                 else
@@ -1635,23 +1633,17 @@ namespace Dynamo.Controls
             }
         }
 
-        // Check if library is collapsed or expanded and apply appropriate icon
+        // Check if library is collapsed or expanded and apply appropriate button state
         private void updateCollapseIcon()
         {
             if (LibraryCollapsed)
             {
-                var imageUri = new Uri(@"pack://application:,,,/DynamoCoreWpf;component/UI/Images/expand_normal.png");
-                BitmapImage icon = new BitmapImage(imageUri);
-                LibrarySidebarIcon.Source = icon;
-                LibrarySidebarText.Visibility = Visibility.Visible;
+                collapsedSidebar.Visibility = Visibility.Visible;
             }
 
             else
             {
-                var imageUri = new Uri(@"pack://application:,,,/DynamoCoreWpf;component/UI/Images/collapse_normal.png");
-                BitmapImage icon = new BitmapImage(imageUri);
-                LibrarySidebarIcon.Source = icon;
-                LibrarySidebarText.Visibility = Visibility.Collapsed;
+                collapsedSidebar.Visibility = Visibility.Collapsed;
             }
         }
 
@@ -1659,14 +1651,12 @@ namespace Dynamo.Controls
         {
             if(LibraryCollapsed)
             {
-                // Restore library to previous width (or default if none)
-                LibraryViewColumn.Width = new GridLength(LibraryWidthCache, GridUnitType.Star);
+                // Restore library to default width (200)
+                LibraryViewColumn.Width = new GridLength(defaultLibraryWidth, GridUnitType.Star);
             }
 
             else
             {
-                // Cache library width and collapse
-                LibraryWidthCache = LibraryViewColumn.Width.Value;
                 LibraryViewColumn.Width = new GridLength(0, GridUnitType.Star);
             }
 
@@ -1681,6 +1671,11 @@ namespace Dynamo.Controls
             var bc = new BrushConverter();
             tb.Foreground = (Brush)bc.ConvertFromString("#aaaaaa");
             Image collapseIcon = (Image)sp.Children[1];
+
+            Uri imageUri;
+            imageUri = new Uri(@"pack://application:,,,/DynamoCoreWpf;component/UI/Images/expand_normal.png");
+            BitmapImage hover = new BitmapImage(imageUri);
+            collapseIcon.Source = hover;
 
             updateCollapseIcon();
         }

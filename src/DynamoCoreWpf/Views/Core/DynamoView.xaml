@@ -1525,6 +1525,7 @@
                             </TextBlock>
                             <Image Grid.Column="0"
                                Name="LibrarySidebarIcon"
+                               Source="/DynamoCoreWpf;component/UI/Images/expand_normal.png"
                                Visibility="Visible"
                                Width="10"
                                Height="10"
