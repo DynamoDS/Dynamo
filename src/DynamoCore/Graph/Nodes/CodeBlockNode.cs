@@ -736,9 +736,7 @@ namespace Dynamo.Graph.Nodes
                 identifierNode = statement.LeftNode as IdentifierNode;
                 if (identifierNode != null) // Found the identifier...
                 {
-                    // ... that is not a temporary variable, take it!
-                    if (!IsTempIdentifier(identifierNode.Value))
-                        break;
+                    break;
                 }
             }
 
