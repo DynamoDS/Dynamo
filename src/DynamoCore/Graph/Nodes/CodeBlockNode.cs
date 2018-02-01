@@ -76,12 +76,6 @@ namespace Dynamo.Graph.Nodes
         [JsonIgnore]
         public ElementResolver ElementResolver { get; set; }
 
-        private struct Formatting
-        {
-            public const double INITIAL_MARGIN = 0;
-            public const string TOOL_TIP_FOR_TEMP_VARIABLE = "Statement Output";
-        }
-
         /// <summary>
         ///     Indicates whether node is input node
         /// </summary>
@@ -400,7 +394,7 @@ namespace Dynamo.Graph.Nodes
             var lineNumbers = outputPortHelpers.Select(x => x.ReadInteger("LineIndex")).ToList();
             foreach (var line in lineNumbers)
             {
-                var tooltip = Formatting.TOOL_TIP_FOR_TEMP_VARIABLE;
+                var tooltip = string.Format(Resources.CodeBlockTempIdentifierOutputLabel, line);
                 OutPorts.Add(new PortModel(PortType.Output, this, new PortData(string.Empty, tooltip)
                 {
                     LineIndex = line, // Logical line index.
@@ -870,8 +864,6 @@ namespace Dynamo.Graph.Nodes
             {
                 PortModel portModel = OutPorts[i];
                 string portName = portModel.ToolTip;
-                if (portModel.ToolTip.Equals(Formatting.TOOL_TIP_FOR_TEMP_VARIABLE))
-                    portName += i.ToString(CultureInfo.InvariantCulture);
                 if (portModel.Connectors.Count != 0)
                 {
                     outportConnections.Add(portName, new List<ConnectorModel>());
