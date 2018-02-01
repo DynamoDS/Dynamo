@@ -111,7 +111,7 @@ namespace Dynamo.Controls
             SizeChanged += DynamoView_SizeChanged;
             LocationChanged += DynamoView_LocationChanged;
 
-            // Apply initial appropriate expand/collapse library icon depending on state
+            // Apply appropriate expand/collapse library button state depending on initial width
             updateCollapseIcon();
 
             // Check that preference bounds are actually within one
@@ -1602,7 +1602,7 @@ namespace Dynamo.Controls
             tb.Foreground = (Brush)bc.ConvertFrom("#cccccc");
             Image collapseIcon = (Image)sp.Children[1];
 
-            // When hovered swap appropriate expand/collapse icons
+            // When hovered swap appropriate expand/collapse button state
             if (LibraryCollapsed)
             {
                 Uri imageUri;
@@ -1614,8 +1614,8 @@ namespace Dynamo.Controls
 
         private bool libraryCollapsed;
 
-        // Retain last known library width prior to collapsing
-        private const double defaultLibraryWidth = 200;
+        // Default library width
+        private const int defaultLibraryWidth = 200;
 
         // Check if library is collapsed or expanded
         public bool LibraryCollapsed
@@ -1632,7 +1632,7 @@ namespace Dynamo.Controls
             }
         }
 
-        // Check if library is collapsed or expanded and apply appropriate icon
+        // Check if library is collapsed or expanded and apply appropriate button state
         private void updateCollapseIcon()
         {
             if (LibraryCollapsed)
