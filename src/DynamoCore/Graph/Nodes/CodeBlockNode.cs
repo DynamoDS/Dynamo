@@ -11,6 +11,7 @@ using Dynamo.Engine;
 using Dynamo.Engine.CodeGeneration;
 using Dynamo.Graph.Connectors;
 using Dynamo.Migration;
+using Dynamo.Properties;
 using Dynamo.Utilities;
 using ProtoCore;
 using ProtoCore.AST.AssociativeAST;
@@ -23,6 +24,7 @@ using ArrayNode = ProtoCore.AST.AssociativeAST.ArrayNode;
 using Node = ProtoCore.AST.Node;
 using Operator = ProtoCore.DSASM.Operator;
 using Newtonsoft.Json;
+using ProtoCore.DSASM;
 
 namespace Dynamo.Graph.Nodes
 {
@@ -41,7 +43,6 @@ namespace Dynamo.Graph.Nodes
         private string code = string.Empty;
         private List<string> inputIdentifiers = new List<string>();
         private List<string> inputPortNames = new List<string>();
-        private readonly List<string> tempVariables = new List<string>();
         private string previewVariable;
         private readonly LibraryServices libraryServices;
 
@@ -74,12 +75,6 @@ namespace Dynamo.Graph.Nodes
         /// </summary>
         [JsonIgnore]
         public ElementResolver ElementResolver { get; set; }
-
-        private struct Formatting
-        {
-            public const double INITIAL_MARGIN = 0;
-            public const string TOOL_TIP_FOR_TEMP_VARIABLE = "Statement Output";
-        }
 
         /// <summary>
         ///     Indicates whether node is input node
@@ -298,23 +293,12 @@ namespace Dynamo.Graph.Nodes
             }
         }
 
-        /// <summary>
-        /// Temporary variables that generated in code.
-        /// </summary>
-        [JsonIgnore]
-        public IEnumerable<string> TempVariables
-        {
-            get { return tempVariables; }
-        }
 
         /// <summary>
         /// Code statement of CBN
         /// </summary>
         [JsonIgnore]
-        public IEnumerable<Statement> CodeStatements
-        {
-            get { return codeStatements; }
-        }
+        public IEnumerable<Statement> CodeStatements => codeStatements;
 
         #endregion
 
@@ -410,7 +394,7 @@ namespace Dynamo.Graph.Nodes
             var lineNumbers = outputPortHelpers.Select(x => x.ReadInteger("LineIndex")).ToList();
             foreach (var line in lineNumbers)
             {
-                var tooltip = Formatting.TOOL_TIP_FOR_TEMP_VARIABLE;
+                var tooltip = string.Format(Resources.CodeBlockTempIdentifierOutputLabel, line);
                 OutPorts.Add(new PortModel(PortType.Output, this, new PortData(string.Empty, tooltip)
                 {
                     LineIndex = line, // Logical line index.
@@ -735,6 +719,11 @@ namespace Dynamo.Graph.Nodes
             CreateInputOutputPorts();
         }
 
+        private static bool IsTempIdentifier(string name)
+        {
+            return name.StartsWith(Constants.kTempVarForNonAssignment);
+        }
+
         private void SetPreviewVariable(IEnumerable<Node> parsedNodes)
         {
             previewVariable = null;
@@ -747,9 +736,7 @@ namespace Dynamo.Graph.Nodes
                 identifierNode = statement.LeftNode as IdentifierNode;
                 if (identifierNode != null) // Found the identifier...
                 {
-                    // ... that is not a temporary variable, take it!
-                    if (!tempVariables.Contains(identifierNode.Value))
-                        break;
+                    break;
                 }
             }
 
@@ -831,9 +818,7 @@ namespace Dynamo.Graph.Nodes
 
             foreach (var def in allDefs)
             {
-                string tooltip = def.Key;
-                if (tempVariables.Contains(def.Key))
-                    tooltip = Formatting.TOOL_TIP_FOR_TEMP_VARIABLE;
+                var tooltip = IsTempIdentifier(def.Key) ? string.Format(Resources.CodeBlockTempIdentifierOutputLabel, def.Value) : def.Key;
 
                 OutPorts.Add(new PortModel(PortType.Output, this, new PortData(string.Empty, tooltip)
                 {
@@ -877,8 +862,6 @@ namespace Dynamo.Graph.Nodes
             {
                 PortModel portModel = OutPorts[i];
                 string portName = portModel.ToolTip;
-                if (portModel.ToolTip.Equals(Formatting.TOOL_TIP_FOR_TEMP_VARIABLE))
-                    portName += i.ToString(CultureInfo.InvariantCulture);
                 if (portModel.Connectors.Count != 0)
                 {
                     outportConnections.Add(portName, new List<ConnectorModel>());

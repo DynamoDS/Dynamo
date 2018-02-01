@@ -1448,7 +1448,7 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to One or more of the input types are not matching. Couldn&apos;t find a version of {0} that takes arguments of type {1}.
+        ///   Looks up a localized string similar to There is no version of {0} that accepts argument type(s) ({1})..
         /// </summary>
         public static string kMethodResolutionFailureWithTypes {
             get {
@@ -1957,6 +1957,15 @@ namespace ProtoCore.Properties {
         public static string NoConstructorForAttribute {
             get {
                 return ResourceManager.GetString("NoConstructorForAttribute", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} expects argument type(s) ({1}), but was called with ({2})..
+        /// </summary>
+        public static string NonOverloadMethodResolutionError {
+            get {
+                return ResourceManager.GetString("NonOverloadMethodResolutionError", resourceCulture);
             }
         }
         

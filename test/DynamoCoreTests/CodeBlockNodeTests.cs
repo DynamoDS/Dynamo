@@ -18,6 +18,7 @@ using ProtoCore.Utils;
 using DynCmd = Dynamo.Models.DynamoModel;
 using Dynamo.Models;
 using Dynamo.Graph.Workspaces;
+using Dynamo.Properties;
 
 namespace Dynamo.Tests
 {
@@ -1381,6 +1382,7 @@ var06 = g;
             AssertPreviewValue("6fe8b8b3-3c81-4210-b58b-df60cc778fb0", null);
             AssertPreviewValue("24f7cbca-a101-44df-a751-8ed264096c20", null);
             AssertPreviewValue("2afe34da-e7ae-43c1-a43a-fa233a7e1906", DesignScript.Builtin.Dictionary.ByKeysValues(new List<string>() { "foo" }, new List<object>() { "bar" }));
+            
         }
 
         [Test]
@@ -1389,6 +1391,18 @@ var06 = g;
             string openPath = Path.Combine(TestDirectory, @"core\migration\CodeBlockWithArray.dyn");
             RunModel(openPath);
             AssertPreviewValue("b80e0c94-4a98-4f98-a197-f426a0a96db3", new object[] { 1, 2, 3 });
+        }
+
+        [Test]
+        public void CodeBlockNodeModelOutputPortLabels()
+        {
+            string openPath = Path.Combine(TestDirectory, @"core\cbn\OutputPortLabels.dyn");
+            RunModel(openPath);
+
+            var cbn = GetModel().Workspaces.First().Nodes.First() as CodeBlockNodeModel;
+            Assert.AreEqual(string.Format(Resources.CodeBlockTempIdentifierOutputLabel, 1), cbn.OutPorts.First().ToolTip); 
+            Assert.AreEqual(string.Format(Resources.CodeBlockTempIdentifierOutputLabel, 2), cbn.OutPorts.ElementAt(1).ToolTip); 
+            Assert.AreEqual(string.Format(Resources.CodeBlockTempIdentifierOutputLabel, 4), cbn.OutPorts.ElementAt(2).ToolTip); 
         }
     }
 

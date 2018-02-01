@@ -322,7 +322,7 @@
     <value>Operator '{0}' cannot be applied to operands of type '{1}' and '{2}'</value>
   </data>
   <data name="kMethodResolutionFailureWithTypes" xml:space="preserve">
-    <value>One or more of the input types are not matching. Couldn't find a version of {0} that takes arguments of type {1}</value>
+    <value>There is no version of {0} that accepts argument type(s) ({1}).</value>
   </data>
   <data name="kMethodStackOverflow" xml:space="preserve">
     <value>'{0}()' recursed until Dynamo ran out of memory, please add a base case.</value>
@@ -931,6 +931,9 @@ Parameter name: {0}</value>
   </data>
   <data name="FailedToConvertArrayToDictionary" xml:space="preserve">
     <value>Cannot convert List to Dictionary type.</value>
+  </data>
+  <data name="NonOverloadMethodResolutionError" xml:space="preserve">
+    <value>{0} expects argument type(s) ({1}), but was called with ({2}).</value>
   </data>
   <data name="DeprecatedListInitializationSyntax" xml:space="preserve">
     <value>Curly braces are no longer used for list creation. Use square brackets instead, like [] or [1,2,3].</value>
