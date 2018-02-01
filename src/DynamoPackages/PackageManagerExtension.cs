@@ -13,12 +13,23 @@ using System.Reflection;
 
 namespace Dynamo.PackageManager
 {
-    public class PackageManagerExtension : IExtension, ILogSource
+    public class PackageManagerExtension : IExtension, ILogSource, IExtensionSource
     {
         #region Fields & Properties
 
         private Action<Assembly> RequestLoadNodeLibraryHandler;
-        private Func<string, IEnumerable<CustomNodeInfo>> RequestLoadCustomNodeDirectoryHandler; 
+        private event Func<string, IEnumerable<CustomNodeInfo>> RequestLoadCustomNodeDirectoryHandler;
+        /// <summary>
+        /// event that is raised when package manager requests an extension be loaded
+        /// which was found within a package it is loading.
+        /// </summary>
+        public event Func<string, IExtension> RequestLoadExtensionHandler;
+        /// <summary>
+        /// event that is raised when pacckage manager requests an extension manager to be added to
+        /// the list of currently loaded extensions. The extension was found within a package that
+        /// is currently being loaded. This is isually raised directly after an extension load occurs.
+        /// </summary>
+        public event Action<IExtension> RequestAddExtensionHandler;
 
         public event Action<ILogMessage> MessageLogged;
 
@@ -57,6 +68,16 @@ namespace Dynamo.PackageManager
                 PackageLoader.RequestLoadCustomNodeDirectory -=
                     RequestLoadCustomNodeDirectoryHandler;
             }
+            if (RequestLoadExtensionHandler != null)
+            {
+                PackageLoader.RequestLoadExtension -=
+                RequestLoadExtensionHandler;
+            }
+            if (RequestAddExtensionHandler != null)
+            {
+                PackageLoader.RequestAddExtension -=
+                RequestAddExtensionHandler;
+            }
         }
 
         /// <summary>
@@ -85,6 +106,10 @@ namespace Dynamo.PackageManager
             RequestLoadNodeLibraryHandler = startupParams.LibraryLoader.LoadNodeLibrary;
             RequestLoadCustomNodeDirectoryHandler = (dir) => startupParams.CustomNodeManager
                     .AddUninitializedCustomNodesInPath(dir, DynamoModel.IsTestMode, true);
+
+            //raise the public events on this extension when the package loader requests.
+            PackageLoader.RequestLoadExtension += RequestLoadExtensionHandler;
+            PackageLoader.RequestAddExtension += RequestAddExtensionHandler;
 
             PackageLoader.RequestLoadNodeLibrary += RequestLoadNodeLibraryHandler;
             PackageLoader.RequestLoadCustomNodeDirectory += RequestLoadCustomNodeDirectoryHandler;
@@ -135,6 +160,8 @@ namespace Dynamo.PackageManager
 
         #endregion
     }
+    
+
 
     public static class DynamoModelExtensions
     {

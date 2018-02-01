@@ -8,6 +8,26 @@ using System.Text;
 
 namespace Dynamo.Extensions
 {
+
+    /// <summary>
+    /// An object which may request extensions to be loaded and added to the extensionsManager
+    /// </summary>
+    public interface IExtensionSource
+    {
+        /// <summary>
+        /// event that is raised when package manager requests an extension be loaded
+        /// which was found within a package it is loading.
+        /// </summary>
+        event Func<string, IExtension> RequestLoadExtensionHandler;
+
+        /// <summary>
+        /// event that is raised when pacckage manager requests an extension manager to be added to
+        /// the list of currently loaded extensions. The extension was found within a package that
+        /// is currently being loaded. This is isually raised directly after an extension load occurs.
+        /// </summary>
+        event Action<IExtension> RequestAddExtensionHandler;
+    }
+
     /// <summary>
     ///  This class handles registration, lookup, and disposal of extensions.
     /// </summary>
@@ -23,6 +43,29 @@ namespace Dynamo.Extensions
         public ExtensionManager()
         {
             extensionLoader.MessageLogged += Log;
+            this.ExtensionAdded += AddEventSubscriptions;
+            this.ExtensionRemoved += removeEventSubscriptions;
+        }
+
+        private void removeEventSubscriptions(IExtension obj)
+        {
+            if (obj is IExtensionSource)
+            {
+                (obj as IExtensionSource).RequestLoadExtensionHandler -= this.ExtensionLoader.Load;
+                (obj as IExtensionSource).RequestAddExtensionHandler -= this.Add;
+            }
+        }
+
+        private void AddEventSubscriptions(IExtension obj)
+        {
+            //if this extension could be a source of other extensions (like packageManagerExtension) then
+            //lets handle those requests.
+            if(obj is IExtensionSource)
+            {
+                (obj as IExtensionSource).RequestLoadExtensionHandler += this.ExtensionLoader.Load;
+                (obj as IExtensionSource).RequestAddExtensionHandler += this.Add;
+            }
+
         }
 
         /// <summary>

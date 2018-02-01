@@ -9,6 +9,7 @@ using Dynamo.Utilities;
 using DynamoPackages.Properties;
 using DynamoUtilities;
 using Dynamo.Core;
+using Dynamo.Extensions;
 
 namespace Dynamo.PackageManager
 {
@@ -29,6 +30,8 @@ namespace Dynamo.PackageManager
     {
         internal event Action<Assembly> RequestLoadNodeLibrary;
         internal event Func<string, IEnumerable<CustomNodeInfo>> RequestLoadCustomNodeDirectory;
+        internal event Func<string, IExtension> RequestLoadExtension;
+        internal event Action<IExtension> RequestAddExtension;
         public event Action<Package> PackageAdded;
         public event Action<Package> PackageRemoved;
 
@@ -151,6 +154,16 @@ namespace Dynamo.PackageManager
                 package.LoadedCustomNodes.AddRange(customNodes);
 
                 package.EnumerateAdditionalFiles();
+                //if the additional files contained an extension or extensionView manifest then request it be loaded.
+                var extensionManifests = package.AdditionalFiles.Where(file => file.Model.Name.Contains("ExtensionDefinition.xml")).ToList();
+                foreach(var extPath in extensionManifests)
+                {
+                    var extension = RequestLoadExtension?.Invoke(extPath.Model.FullName);
+                    if (extension != null)
+                    {
+                        RequestAddExtension?.Invoke(extension);
+                    }
+                }
                 package.Loaded = true;
             }
             catch (Exception e)

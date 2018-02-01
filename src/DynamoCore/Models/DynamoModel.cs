@@ -198,6 +198,12 @@ namespace Dynamo.Models
                 ShutdownCompleted(this);
         }
 
+         /// <summary>
+         /// this event is raised when Dynamo is ready for user interaction.
+         /// </summary>
+         public event Action<ReadyParams> DynamoReady;
+         private bool dynamoReady;
+
         #endregion
 
         #region static properties
@@ -668,6 +674,24 @@ namespace Dynamo.Models
             extensionManager.MessageLogged += LogMessage;
             var extensions = config.Extensions ?? LoadExtensions();
 
+            //when dynamo is ready, alert the loaded extensions
+            DynamoReady += (readyParams) =>
+            {
+                this.dynamoReady = true;
+                DynamoReadyExtensionHandler(readyParams, ExtensionManager.Extensions);
+            };
+
+            // when an extension is added if dynamo is ready, alert that extension (this alerts late
+            // loaded extensions)
+            ExtensionManager.ExtensionAdded += (extension) =>
+            {
+                if (this.dynamoReady)
+                {
+                    DynamoReadyExtensionHandler(new ReadyParams(this),
+                    new List<IExtension>() { extension });
+                };
+            };
+
             Loader = new NodeModelAssemblyLoader();
             Loader.MessageLogged += LogMessage;
 
@@ -749,6 +773,11 @@ namespace Dynamo.Models
             StartBackupFilesTimer();
 
             TraceReconciliationProcessor = this;
+            //we're done loading the model
+            DynamoReady(new ReadyParams(this));
+        }
+
+        private void DynamoReadyExtensionHandler(ReadyParams readyParams, IEnumerable<IExtension> extensions) {
 
             foreach (var ext in ExtensionManager.Extensions)
             {
