@@ -1410,7 +1410,14 @@ namespace ProtoFFI
         /// <returns>True if the given attribute is of type SupressImportIntoVMAttribute</returns>
         public static bool SupressImportIntoVM(this Attribute attribute)
         {
-            return attribute is SupressImportIntoVMAttribute;
+            //TODO@Dynamo 3.0 
+            //Following code is to fix attribute resolution issue due to
+            //presence of DynamoServices.dll in Dynamo Studio folder. The DLL
+            //can be removed in 3.0, once we have removed the dlls we can restore
+            //following code.
+            //return attribute is SupressImportIntoVMAttribute;
+
+            return null != attribute && attribute.GetType().Name == typeof(SupressImportIntoVMAttribute).Name;
         }
 
         /// <summary>
