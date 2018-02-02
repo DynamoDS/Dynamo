@@ -14,10 +14,9 @@ namespace DynamoCLI
 {
 
     /// <summary>
-    /// This class invokes a dynamo model's run methods in a headless mode from the CLI using a set of flags
-    /// that set the graph to different preset states. This class also has a very limited method for exporting 
-    /// the graph evaluation to an xml file, so that the results from invoking dynamo from the command line 
-    /// are useable.
+    /// This class invokes a dynamo model's run methods in a headless mode from the CLI using a set of flags.
+    /// This class also has a very limited method for exporting the graph evaluation to an xml file, so that 
+    /// the results from invoking dynamo from the command line are useable.
     /// </summary>
     public class CommandLineRunner
     {
@@ -44,57 +43,18 @@ namespace DynamoCLI
             Console.WriteLine("loaded file");
             model.EvaluationCompleted += (o, args) => { evalComplete = true; };
 
-            if (!string.IsNullOrEmpty(cmdLineArgs.PresetFilePath))
-            {
-                //first load the openfile nodegraph
-                var originalGraphdoc = XmlHelper.CreateDocument("tempworkspace");
-                originalGraphdoc.Load(cmdLineArgs.OpenFilePath);
-                var graph = NodeGraph.LoadGraphFromXml(originalGraphdoc, model.NodeFactory);
-
-                //then load the presetsfile nodegraph (this should only contain presets),
-                var presetsDoc = XmlHelper.CreateDocument("presetstempworkspace");
-                presetsDoc.Load(cmdLineArgs.PresetFilePath);
-                //when we load the presets we need to pass in the nodeModels from the original graph
-                var presets = NodeGraph.LoadPresetsFromXml(presetsDoc, graph.Nodes);
-
-                //load the presets contained in the presetsfile into the workspace,
-                model.CurrentWorkspace.ImportPresets(presets);
-            }
-
-            //build a list of states, for now, none, a single state, or all of them
-            //this must be done after potentially loading states from external file
+            // Build a list of states, by default there is only a single state `default`
+            // If the desire is to have additional states you can add logic here to build
+            // up a list and iterate through each state in the list using the loop below.
+            // This must be done after potentially loading states from an external file.
             var stateNames = new List<String>();
-            if (!string.IsNullOrEmpty(cmdLineArgs.PresetStateID))
-            {
-                if (cmdLineArgs.PresetStateID == "all")
-                {
-                    foreach (var state in model.CurrentWorkspace.Presets)
-                    {
-                        stateNames.Add(state.Name);
-                    }
-                }
-                else
-                {
-                    stateNames.Add(cmdLineArgs.PresetStateID);
-                }
-            }
-            else
-            {
-                stateNames.Add("default");
-            }
+            stateNames.Add("default");
 
             var outputresults = new List<Dictionary<Guid, List<object>>>();
             XmlDocument doc = null;
             foreach (var stateName in stateNames)
             {
-                Guid stateGuid = Guid.Empty;
-                var state = model.CurrentWorkspace.Presets.Where(x => x.Name == stateName).FirstOrDefault();
-                if (state != null)
-                {
-                    stateGuid = state.GUID;
-                }
-                
-                model.ExecuteCommand(new DynamoModel.ApplyPresetCommand(model.CurrentWorkspace.Guid, stateGuid));
+                // Graph execution
                 model.ExecuteCommand(new DynamoModel.RunCancelCommand(false, false));
 
                 while (evalComplete == false)
@@ -131,7 +91,6 @@ namespace DynamoCLI
                 evalComplete = false;
 
             }
-
 
             return doc;
         }
