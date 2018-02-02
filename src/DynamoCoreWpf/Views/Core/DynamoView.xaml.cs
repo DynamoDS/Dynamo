@@ -68,6 +68,7 @@ namespace Dynamo.Controls
         private readonly LoginService loginService;
         internal ViewExtensionManager viewExtensionManager = new ViewExtensionManager();
         private ShortcutToolbar shortcutBar;
+        private bool loaded = false;
 
         // This is to identify whether the PerformShutdownSequenceOnViewModel() method has been
         // called on the view model and the process is not cancelled
@@ -165,6 +166,17 @@ namespace Dynamo.Controls
                     Log(ext.Name + ": " + exc.Message);
                 }
             }
+
+            // when an extension is added if dynamoView is loaded, call loaded on
+            //that extension (this alerts late loaded extensions).
+            this.viewExtensionManager.ExtensionAdded += (extension) =>
+             {
+                 if (this.loaded)
+                 {
+                     DynamoLoadedViewExtensionHandler(new ViewLoadedParams(this, this.dynamoViewModel),
+                         new List<IViewExtension>() { extension });
+                 }
+             };
 
             this.dynamoViewModel.RequestPaste += OnRequestPaste;
             this.dynamoViewModel.RequestReturnFocusToView += OnRequestReturnFocusToView;
@@ -481,6 +493,21 @@ namespace Dynamo.Controls
             }
         }
 
+        private void DynamoLoadedViewExtensionHandler(ViewLoadedParams loadedParams, IEnumerable<IViewExtension> extensions)
+        {
+            foreach (var ext in extensions)
+            {
+                try
+                {
+                    ext.Loaded(loadedParams);
+                }
+                catch (Exception exc)
+                {
+                    Log(ext.Name + ": " + exc.Message);
+                }
+            }
+        }
+
         private void DynamoView_Loaded(object sender, EventArgs e)
         {
             // Do an initial load of the cursor collection
@@ -561,18 +588,8 @@ namespace Dynamo.Controls
 
             var loadedParams = new ViewLoadedParams(this, dynamoViewModel);
 
-            foreach (var ext in viewExtensionManager.ViewExtensions)
-            {
-                try
-                {
-                    ext.Loaded(loadedParams);
-                }
-                catch (Exception exc)
-                {
-                    Log(ext.Name + ": " + exc.Message);
-                }
-            }
-
+            this.DynamoLoadedViewExtensionHandler(loadedParams, viewExtensionManager.ViewExtensions);
+           
             BackgroundPreview = new Watch3DView {Name = BackgroundPreviewName};
             background_grid.Children.Add(BackgroundPreview);
             BackgroundPreview.DataContext = dynamoViewModel.BackgroundPreviewViewModel;
@@ -593,6 +610,7 @@ namespace Dynamo.Controls
             {
                 this.Deactivated += (s, args) => { HidePopupWhenWindowDeactivated(); };
             }
+            loaded = true;
         }
 
         /// <summary>
