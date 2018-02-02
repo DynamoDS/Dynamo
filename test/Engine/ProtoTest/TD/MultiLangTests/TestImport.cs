@@ -180,13 +180,12 @@ import (""BaseImportImperative.ds"");";
         {
             string code = @"
 import (""basicImport.ds"");
-arr;
-[Imperative]
+arr = [Imperative]
 {
 	myPoint = DummyPoint.ByCoordinates(10.1, 20.2, 30.3);
 	midValue = MidValue(myPoint);
 	
-	arr =  Scale(midValue, 4.0);
+	return  Scale(midValue, 4.0);
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code, "", importPath);
             object[] arr = { 20.2, 40.4, 60.6 };

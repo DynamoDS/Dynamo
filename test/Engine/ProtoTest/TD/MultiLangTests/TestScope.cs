@@ -89,13 +89,14 @@ c_inner;
 	a = 10;
 	b = true;
 	c = 20.1;
-	[Imperative]	
+	i = [Imperative]	
 	{
 		a_inner = a;
 		b_inner = b;
 		c_inner = c;
+        return {a_inner, b_inner, c_inner};
 	}
-	
+	a_inner=i[0];b_inner=i[1];c_inner=i[2];
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
             thisTest.Verify("a_inner", 10);
@@ -107,7 +108,8 @@ c_inner;
         [Category("SmokeTest")]
         public void T005_LanguageBlockScope_DeepNested_IAI()
         {
-            string src = @"a_inner1;a_inner2;
+            string src = @"
+a_inner1;a_inner2;
 b_inner1;b_inner2;
 c_inner1;c_inner2;
 [Imperative]
@@ -122,13 +124,16 @@ c_inner1;c_inner2;
 		c_inner1 = c;
 		
 		
-		[Imperative]
+		i = [Imperative]
 		{
 			a_inner2 = a;
 			b_inner2 = b;
 			c_inner2 = c;
-			
+			return {a_inner2, b_inner2, c_inner2};
 		}
+        a_inner2 = i[0];
+		b_inner2 = i[1];
+		c_inner2 = i[2];
 	}
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
@@ -144,14 +149,15 @@ c_inner1;c_inner2;
         [Category("SmokeTest")]
         public void T006_LanguageBlockScope_DeepNested_AIA()
         {
-            string src = @"a_inner1;b_inner1;c_inner1;
+            string src = @"
+a_inner1;b_inner1;c_inner1;
 a_inner2;b_inner2;c_inner2;
 [Associative]
 {
 	a = 10;
 	b = true;
 	c = 20.1;
-	[Imperative]	
+	i = [Imperative]	
 	{
 		a_inner1 = a;
 		b_inner1 = b;
@@ -165,7 +171,9 @@ a_inner2;b_inner2;c_inner2;
 			c_inner2 = c;
 			
 		}
+        return {a_inner1, b_inner1, c_inner1};
 	}
+    a_inner1=i[0];b_inner1=i[1];c_inner1=i[2];
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
             thisTest.Verify("a_inner1", 10);
@@ -230,8 +238,8 @@ a_inner2;b_inner2;c_inner2;
         public void T009_LanguageBlockScope_UpdateVariableInNestedLanguageBlock_IA()
         {
             string src = @"a;b;c;
-newA;newB;newC;
-[Imperative]
+newA = i[0]; newB = i[1]; newC = i[2];
+i = [Imperative]
 {
 	a = -10;
 	b = false;
@@ -246,6 +254,7 @@ newA;newB;newC;
 	newA = a;
 	newB = b;
 	newC = c;
+    return {newA, newB, newC};
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
@@ -261,23 +270,25 @@ newA;newB;newC;
         [Category("SmokeTest")]
         public void T010_LanguageBlockScope_UpdateVariableInNestedLanguageBlock_AI()
         {
-            string src = @"a;b;c;
+            string src = @"
+a;b;c;
 newA;newB;newC;
 [Associative]
 {
 	a = -10;
 	b = false;
 	c = -20.1;
-	[Imperative]	
+	i = [Imperative]	
 	{
 		a = 1.5;
 		b = -4;
 		c = false;
+        return {a,b,c};
 	}
 	
-	newA = a;
-	newB = b;
-	newC = c;
+	a = newA = i[0];
+	b = newB = i[1];
+	c = newC = i[2];
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
@@ -422,15 +433,15 @@ aA;bA;cA;
 {
 	a = 10;
 	
-	[Imperative]	
+	aI1 = [Imperative]	
 	{
-		aI1 = a;
+		return a;
 	}
 	aA1 = a;
 	
-	[Imperative]	
+	aI2 = [Imperative]	
 	{
-		aI2 = a;
+		return a;
 	}
 	
 	aA2 = a;
@@ -449,21 +460,23 @@ aA;bA;cA;
         [Category("SmokeTest")]
         public void T016_LanguageBlockScope_ParallelInsideNestedBlock_ImperativeNested_AA()
         {
-            string src = @"a;aA1;aI1;aA2;aI2;
-[Imperative]
+            string src = @"
+a=i[0];aA1=i[1];aI1=i[2];aA2=i[3];aI2=i[4];
+i = [Imperative]
 {
 	a = 10;
-	[Associative]	
+	aA1 = [Associative]	
 	{
-		aA1 = a;
+		return a;
 	}
 	aI1 = a;
 	
-	[Associative]	
+	aA2 = [Associative]	
 	{
-		aA2 = a;
+		return a;
 	}
 	aI2 = a;
+    return {a, aA1, aI1, aA2, aI2};
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
@@ -557,11 +570,11 @@ def foo : int(a : int, b : int)
 }
 [Associative]
 {
-	[Imperative]	
+	z = [Imperative]	
 	{
-	x = 20;
-	y = 10;
-	z = foo (x, y);
+	    x = 20;
+	    y = 10;
+	    return foo (x, y);
 	}
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
@@ -575,25 +588,23 @@ def foo : int(a : int, b : int)
             string code = @"
 z_1;
 z_2;
-	def foo : int(a : int, b : int)
-	{
-		return = a - b;
-	}
+def foo : int(a : int, b : int)
+{
+	return = a - b;
+}
 [Imperative]
 {
-	[Associative]	
+	[Associative]
 	{
 		x_1 = 20;
 		y_1 = 10;
 		z_1 = foo (x_1, y_1);
 	
-	
-	[Imperative]
+	    z_2 = [Imperative]
 		{
 			x_2 = 100;
 			y_2 = 100;
-			z_2 = foo (x_2, y_2);
-			
+			return foo (x_2, y_2);
 		}
 	}
 }";
@@ -607,28 +618,30 @@ z_2;
         [Category("SmokeTest")]
         public void T022_LanguageBlockScope_DeepNested_AIA_Function()
         {
-            string src = @"z_1;
+            string src = @"
+z_1;
 z_2;
-	def foo : int(a : int, b : int)
-	{
-		return = a - b;
-	}
+def foo : int(a : int, b : int)
+{
+	return = a - b;
+}
 [Associative]
 {
-	[Imperative]	
+	z_1 = [Imperative]	
 	{
 		x_1 = 20;
 		y_1 = 10;
 		z_1 = foo (x_1, y_1);
 	
 	
-	[Associative]
+	    [Associative]
 		{
 			x_2 = 100;
 			y_2 = 100;
 			z_2 = foo (x_2, y_2);
 			
 		}
+        return z_1;
 	}
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
@@ -640,7 +653,7 @@ z_2;
         [Category("SmokeTest")]
         public void T023_LanguageBlockScope_AssociativeParallelImperative_Function()
         {
-            string src = @"z;
+            string src = @"
 def foo : int(a : int, b : int)
 {
     return = a - b;
@@ -649,12 +662,11 @@ def foo : int(a : int, b : int)
 {
 	a = 10;
 }
-[Imperative]	
+z = [Imperative]	
 {
 	x = 20;
 	y = 0;
-	z = foo (x, y);
-	
+	return foo (x, y);
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
             thisTest.Verify("z", 20);
@@ -723,22 +735,18 @@ def foo : int(a : int, b : int)
         {
             //Assert.Throws(typeof(ProtoCore.Exceptions.CompileErrorsOccured), () =>
             //{
-            string src = @"z;
+            string src = @"
 	def foo : int(a : int, b : int)
 	{
 		return = a - b;
 	}
-[Imperative]
-{
-	a = 10;
-	
-}
-[Imperative]	
+
+z = [Imperative]	
 {
 	x = 20;
 	y = 0;
 	z = foo (x, y);
-	
+	return z;
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
             thisTest.Verify("z", 20);
@@ -763,11 +771,11 @@ z_2;
 {
 	a = 10;
 }
-[Imperative]	
+z_1 = [Imperative]	
 {
 	x_1 = 20;
 	y_1 = 0;
-	z_1 = foo (x_1, y_1);
+	 foo (x_1, y_1);
 	
 }
 [Associative]

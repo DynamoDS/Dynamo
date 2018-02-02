@@ -556,7 +556,7 @@ i = [Imperative]
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.Verify("x1", new[] {1, 0, 1, 1, 1});
+            thisTest.Verify("i", new[] {1, 0, 1, 1, 1});
         }
 
 

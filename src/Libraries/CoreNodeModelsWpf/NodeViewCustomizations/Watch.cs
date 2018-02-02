@@ -129,6 +129,7 @@ namespace CoreNodeModelsWpf.Nodes
                 || astBeingComputed == null) return;
 
             var astBeingWatched = input.Item2.GetAstIdentifierForOutputIndex(input.Item1);
+            if (astBeingWatched == null) return;
             if (astBeingComputed.Value != astBeingWatched.Value)
             {
                 // the input node has changed, we clear preview

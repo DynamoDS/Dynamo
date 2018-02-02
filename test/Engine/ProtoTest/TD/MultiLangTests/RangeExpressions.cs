@@ -67,7 +67,7 @@ i = [Imperative]
             List<Object> result13 = new List<Object> { 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1 };
             thisTest.Verify("a14", result13);
             List<Object> result14 = new List<Object> { 0.5, 0.25 };
-            thisTest.Verify("a17", result14);
+            thisTest.Verify("a15", result14);
         }
 
         [Test]

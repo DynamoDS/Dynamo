@@ -15,8 +15,8 @@ namespace ProtoTest.TD.Imperative
             string code = @"
 def Create ( a : int)
 {
-	    x : int  = 2;
-		return = x + a ;
+	x : int  = 2;
+	return = x + a ;
 }
 	
 def foo : int ( )
@@ -59,9 +59,9 @@ a = [Associative]
     return {i2, d2, isTrue2, isFalse2, x2, a2, b2, x12, y2};
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("i", new object[] {5, 5.2, true, false, 3, 5, 2, 2.0});
+            thisTest.Verify("i", new object[] {5, 5.2, true, false, 3, 3, 5, 2, 2.0});
 
-            thisTest.Verify("a", new object[] {5, 5.2, true, false, 3, 5, 2, 2.0});
+            thisTest.Verify("a", new object[] {5, 5.2, true, false, 3, 3, 5, 2, 2.0});
         }
     }
 }

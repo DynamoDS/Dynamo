@@ -118,33 +118,41 @@ i = [Imperative]
 {
 	a = 4;
 	b = a + 2;
-    [Associative]
+    i = [Associative]
     {
-        [Imperative]
+        return [Imperative]
         {
             b = 0;
             c = 0;
             if ( a == 4 )
             {
                 b = 4;
-            }			
+            }
             else
             {
                 c = 5;
             }
             d = b;
-            e = c;	
-            g2 = g1;	
+            e = c;
+            g2 = g1;
+            return {a, b, g1, g2, d, c, e};
         }
+
     }
+    a = i[0];
+    b = i[1];
+    g2 = i[3];
+    d = i[4];
+    c = i[5];
+    e = i[6];
 	f = a * 2;
     g1 = 3;
     g3 = g2;
-    return {a, b, f, g1, g3, d, c, e, g1};  
-}
+    return {a, b, f, g1, g3, d, c, e};
+};
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            var arr = new object[] {4, 4, 8, 3, null, 4, 0, 0, 3};
+            var arr = new object[] {4, 4, 8, 3, null, 4, 0, 0};
             thisTest.Verify("i", arr);
         }
 
@@ -1116,20 +1124,20 @@ i = [Imperative]
         {
             string code = @"
 import(""FFITarget.dll"");
-[Associative]
+b = [Associative]
 {
     x = 3;
 	A1 = ClassFunctionality.ClassFunctionality(x);
 	a1 = A1.IntVal;
-	b = [Imperative]
+	return [Imperative]
 	{
 		if ( a1 < 10 )
 		{
-			return = A1.IntVal;;
+			return = A1.IntVal;
 		}
 	    return = A1.IntVal + 1;
 	}
-}";
+};";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("b", 3);
         }

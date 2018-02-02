@@ -48,7 +48,7 @@ i = [Imperative]
     return {x, z, y, w, f};
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            thisTest.Verify("i", new object[] {35, 5.1, 5, null, null});
+            thisTest.Verify("i", new object[] {35, 35, 5, null, null});
         }
 
         [Test]
@@ -308,6 +308,7 @@ b = [Associative]
 x = [Imperative]
 {
 	a = { 1,2,3,4,5 };
+    x = null;
 	for( y in a )
 	{
 		x = 5;

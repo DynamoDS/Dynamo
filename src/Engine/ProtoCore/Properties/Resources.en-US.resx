@@ -235,7 +235,7 @@
     <value>Asked to convert non-convertible types</value>
   </data>
   <data name="kCyclicDependency" xml:space="preserve">
-    <value>A cyclic dependency exists between two varaibles</value>
+    <value>A cyclic dependency exists between two variables</value>
   </data>
   <data name="kDeferencingNonPointer" xml:space="preserve">
     <value>Internal error, please report: Dereferencing a non-pointer.</value>

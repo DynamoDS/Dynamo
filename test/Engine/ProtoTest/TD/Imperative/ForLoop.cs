@@ -969,19 +969,19 @@ b = [Imperative]
         public void T39_Defect_1452951()
         {
             string code = @"
-x;
-[Associative]
+x = [Associative]
 {
 	a = { 4,5 };
    
-	[Imperative]
+	return [Imperative]
 	{
-	       //a = { 4,5 }; // works fine
+	    //a = { 4,5 }; // works fine
 		x = 0;
 		for( y in a )
 		{
 			x = x + y;
 		}
+        return x;
 	}
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);

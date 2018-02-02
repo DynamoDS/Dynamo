@@ -426,7 +426,7 @@ i = [Imperative]
             string src = @"
 			import(""FFITarget.dll"");
 			
-	[Imperative]
+	i = [Imperative]
 	{
 	    a1 = ClassFunctionality.ClassFunctionality(2);
         b1 = a1.intVal; 
@@ -1439,7 +1439,7 @@ i = [Imperative]
 	
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            thisTest.Verify("a", new object[] {2, 1, null});
+            thisTest.Verify("i", new object[] {2, 1, null});
         }
 
         [Test]
