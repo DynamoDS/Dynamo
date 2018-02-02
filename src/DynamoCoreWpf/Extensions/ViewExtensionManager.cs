@@ -1,4 +1,5 @@
-﻿using Dynamo.Interfaces;
+﻿using Dynamo.Extensions;
+using Dynamo.Interfaces;
 using Dynamo.Logging;
 
 using System;
@@ -14,8 +15,36 @@ namespace Dynamo.Wpf.Extensions
         public ViewExtensionManager()
         {
             viewExtensionLoader.MessageLogged += Log;
+            this.ExtensionAdded += AddEventSubscriptions;
+            this.ExtensionRemoved += removeEventSubscriptions;
         }
 
+        private void requestAddViewExtensionHandler(dynamic viewExtension )
+        {
+            //this handler is used to cast to IViewExtension.    
+            this.Add(viewExtension as IViewExtension);
+        }
+
+        private void removeEventSubscriptions(IViewExtension obj)
+        {
+            if (obj is IExtensionSource)
+            {
+                (obj as IExtensionSource).RequestLoadViewExtension -= this.ExtensionLoader.Load;
+                (obj as IExtensionSource).RequestAddViewExtension -= this.requestAddViewExtensionHandler;
+            }
+        }
+
+        private void AddEventSubscriptions(IViewExtension obj)
+        {
+            //if this extension could be a source of other extensions (like packageManagerExtension) then
+            //lets handle those requests.
+            if (obj is IExtensionSource)
+            {
+                (obj as IExtensionSource).RequestLoadViewExtension += this.ExtensionLoader.Load;
+                (obj as IExtensionSource).RequestAddViewExtension += this.requestAddViewExtensionHandler;
+            }
+
+        }
         public ViewExtensionLoader ExtensionLoader
         {
             get { return viewExtensionLoader; }

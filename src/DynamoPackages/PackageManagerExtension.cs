@@ -19,19 +19,14 @@ namespace Dynamo.PackageManager
 
         private Action<Assembly> RequestLoadNodeLibraryHandler;
         private event Func<string, IEnumerable<CustomNodeInfo>> RequestLoadCustomNodeDirectoryHandler;
-        /// <summary>
-        /// event that is raised when package manager requests an extension be loaded
-        /// which was found within a package it is loading.
-        /// </summary>
+       
         public event Func<string, IExtension> RequestLoadExtensionHandler;
-        /// <summary>
-        /// event that is raised when pacckage manager requests an extension manager to be added to
-        /// the list of currently loaded extensions. The extension was found within a package that
-        /// is currently being loaded. This is isually raised directly after an extension load occurs.
-        /// </summary>
         public event Action<IExtension> RequestAddExtensionHandler;
+        public event Func<string, dynamic> RequestLoadViewExtension;
+        public event Action<dynamic> RequestAddViewExtension;
 
         public event Action<ILogMessage> MessageLogged;
+
 
         public string Name { get { return "DynamoPackageManager"; } }
 
@@ -78,6 +73,16 @@ namespace Dynamo.PackageManager
                 PackageLoader.RequestAddExtension -=
                 RequestAddExtensionHandler;
             }
+            if (RequestAddViewExtension != null)
+            {
+                PackageLoader.RequestAddViewExtension -=
+                RequestAddViewExtension;
+            }
+            if (RequestLoadViewExtension != null)
+            {
+                PackageLoader.RequestLoadViewExtension -=
+                RequestLoadViewExtension;
+            }
         }
 
         /// <summary>
@@ -110,6 +115,10 @@ namespace Dynamo.PackageManager
             //raise the public events on this extension when the package loader requests.
             PackageLoader.RequestLoadExtension += RequestLoadExtensionHandler;
             PackageLoader.RequestAddExtension += RequestAddExtensionHandler;
+
+            //raise the public events for view extension loading on this extension when the package loader requests.
+            PackageLoader.RequestLoadViewExtension += RequestLoadViewExtension;
+            PackageLoader.RequestAddViewExtension += RequestAddViewExtension;
 
             PackageLoader.RequestLoadNodeLibrary += RequestLoadNodeLibraryHandler;
             PackageLoader.RequestLoadCustomNodeDirectory += RequestLoadCustomNodeDirectoryHandler;

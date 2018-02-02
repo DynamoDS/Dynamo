@@ -16,16 +16,30 @@ namespace Dynamo.Extensions
     {
         /// <summary>
         /// event that is raised when package manager requests an extension be loaded
-        /// which was found within a package it is loading.
+        /// which was found within a package it is currently loading.
         /// </summary>
         event Func<string, IExtension> RequestLoadExtensionHandler;
 
         /// <summary>
-        /// event that is raised when pacckage manager requests an extension manager to be added to
-        /// the list of currently loaded extensions. The extension was found within a package that
-        /// is currently being loaded. This is isually raised directly after an extension load occurs.
+        /// event that is raised when package manager requests an Extension to be added to
+        /// the list of currently loaded extensions. The Extension was found within a package that
+        /// is currently being loaded. This is usually raised directly after an Extension load occurs.
         /// </summary>
         event Action<IExtension> RequestAddExtensionHandler;
+
+
+        /// <summary>
+        /// event that is raised when package manager requests a ViewExtension be loaded
+        /// which was found within a package it is currently loading.
+        /// </summary>
+        event Func<string, dynamic> RequestLoadViewExtension;
+
+        /// <summary>
+        /// event that is raised when package manager requests a viewExtension to be added to
+        /// the list of currently loaded extensions. The ViewExtension was found within a package that
+        /// is currently being loaded. This is usually raised directly after a ViewExtension load occurs.
+        /// </summary>
+        event Action<dynamic> RequestAddViewExtension;
     }
 
     /// <summary>

@@ -32,6 +32,8 @@ namespace Dynamo.PackageManager
         internal event Func<string, IEnumerable<CustomNodeInfo>> RequestLoadCustomNodeDirectory;
         internal event Func<string, IExtension> RequestLoadExtension;
         internal event Action<IExtension> RequestAddExtension;
+        internal event Func<string, dynamic> RequestLoadViewExtension;
+        internal event Action<dynamic> RequestAddViewExtension;
         public event Action<Package> PackageAdded;
         public event Action<Package> PackageRemoved;
 
@@ -158,11 +160,26 @@ namespace Dynamo.PackageManager
                 var extensionManifests = package.AdditionalFiles.Where(file => file.Model.Name.Contains("ExtensionDefinition.xml")).ToList();
                 foreach(var extPath in extensionManifests)
                 {
-                    var extension = RequestLoadExtension?.Invoke(extPath.Model.FullName);
-                    if (extension != null)
+                    //if this is a viewExtension manifest ask the viewExtensionsManager to load it.
+                    if (extPath.Model.FullName.Contains("ViewExtensionDefinition.xml"))
                     {
-                        RequestAddExtension?.Invoke(extension);
+                        var viewextension = RequestLoadViewExtension?.Invoke(extPath.Model.FullName);
+                        //TODO at runtime is this a problem?
+                        if (viewextension != null)
+                        {
+                            RequestAddViewExtension?.Invoke(viewextension);
+                        }
                     }
+                    //if its a model extension ask the extensions manager to load it. 
+                    else
+                    {
+                        var extension = RequestLoadExtension?.Invoke(extPath.Model.FullName);
+                        if (extension != null)
+                        {
+                            RequestAddExtension?.Invoke(extension);
+                        }
+                    }
+                   
                 }
                 package.Loaded = true;
             }
