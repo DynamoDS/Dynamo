@@ -2,6 +2,7 @@ using System.IO;
 using System.Linq;
 
 using NUnit.Framework;
+using Dynamo.Extensions;
 
 namespace Dynamo.PackageManager.Tests
 {
@@ -31,6 +32,94 @@ namespace Dynamo.PackageManager.Tests
         }
 
         [Test]
+        public void PackageLoaderRequestsExtensionsBeLoaded()
+        {
+            var loader = GetPackageLoader();
+            var pkgDir = Path.Combine(PackagesDirectory, "SampleExtension");
+          
+
+            var extensionLoad = false;
+            var extensionAdd = false;
+            var viewExtensionLoad = false;
+            var viewExtensionAdd = false;
+
+
+            loader.RequestLoadExtension += (extensionPath) =>
+            { extensionLoad = true;
+                var mock = new Moq.Mock<IExtension>().Object;
+                return mock;
+            };
+            loader.RequestAddExtension += (extension) =>
+            {
+                extensionAdd = true;
+            };
+            loader.RequestLoadViewExtension += (extensionPath) =>
+            {
+                viewExtensionLoad = true;
+                var mock = new Moq.Mock<IExtension>().Object;
+                return mock;
+            };
+            loader.RequestAddViewExtension += (extension) =>
+            {
+                viewExtensionAdd = true;
+            };
+
+            var pkg = loader.ScanPackageDirectory(pkgDir);
+            loader.Load(pkg);
+
+            Assert.IsTrue(extensionLoad);
+            Assert.IsTrue(extensionAdd);
+            //these events should not have been raised.
+            Assert.IsFalse(viewExtensionLoad);
+            Assert.IsFalse(viewExtensionAdd);
+
+        }
+
+        [Test]
+        public void PackageLoaderRequestsViewExtensionsBeLoaded()
+        {
+            var loader = GetPackageLoader();
+            var pkgDir = Path.Combine(PackagesDirectory, "SampleViewExtension");
+
+
+            var extensionLoad = false;
+            var extensionAdd = false;
+            var viewExtensionLoad = false;
+            var viewExtensionAdd = false;
+
+
+            loader.RequestLoadExtension += (extensionPath) =>
+            {
+                extensionLoad = true;
+                var mock = new Moq.Mock<IExtension>().Object;
+                return mock;
+            };
+            loader.RequestAddExtension += (extension) =>
+            {
+                extensionAdd = true;
+            };
+            loader.RequestLoadViewExtension += (extensionPath) =>
+            {
+                viewExtensionLoad = true;
+                var mock = new Moq.Mock<IExtension>().Object;
+                return mock;
+            };
+            loader.RequestAddViewExtension += (extension) =>
+            {
+                viewExtensionAdd = true;
+            };
+
+            var pkg = loader.ScanPackageDirectory(pkgDir);
+            loader.Load(pkg);
+
+            Assert.False(extensionLoad);
+            Assert.False(extensionAdd);
+            Assert.IsTrue(viewExtensionLoad);
+            Assert.IsTrue(viewExtensionAdd);
+
+        }
+
+        [Test]
         public void ScanPackageDirectoryReturnsNullForInvalidDirectory()
         {
             var pkgDir = "";
@@ -48,7 +137,7 @@ namespace Dynamo.PackageManager.Tests
             });
 
             // There are four packages in "GitHub\Dynamo\test\pkgs"
-            Assert.AreEqual(4, loader.LocalPackages.Count());
+            Assert.AreEqual(6, loader.LocalPackages.Count());
         }
 
         [Test]

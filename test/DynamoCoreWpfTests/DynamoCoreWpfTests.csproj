@@ -148,6 +148,7 @@
     <Compile Include="ElementResolverTests.cs" />
     <Compile Include="GraphLayoutTests.cs" />
     <Compile Include="NodeToCodeTests.cs" />
+    <Compile Include="PackageManagerExtensionLoadingTests.cs" />
     <Compile Include="PresetPromptTests.cs" />
     <Compile Include="AnnotationViewModelTests.cs" />
     <Compile Include="AnnotationViewTests.cs" />

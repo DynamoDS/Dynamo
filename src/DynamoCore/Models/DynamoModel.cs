@@ -757,6 +757,9 @@ namespace Dynamo.Models
 
                     try
                     {
+                        //we want to add the extension to the manager before starting it up
+                        //so that all events can be attached in time.
+                        ExtensionManager.Add(ext);
                         ext.Startup(startupParams);
                     }
                     catch (Exception ex)
@@ -764,7 +767,6 @@ namespace Dynamo.Models
                         Logger.Log(ex.Message);
                     }
 
-                    ExtensionManager.Add(ext);
                 }
             }
 

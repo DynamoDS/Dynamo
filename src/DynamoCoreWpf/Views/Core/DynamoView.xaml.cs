@@ -144,6 +144,13 @@ namespace Dynamo.Controls
             foreach (var dir in dynamoViewModel.Model.PathManager.ViewExtensionsDirectories)
             {
                 viewExtensions.AddRange(viewExtensionManager.ExtensionLoader.LoadDirectory(dir));
+
+                //grab the viewExtensions from the packageLoader which we deferred loading, and load them now.
+                var packageViewExtensionPaths = this.dynamoViewModel.Model.GetPackageManagerExtension().PackageLoader.DeferredLoadViewExtensions;
+                var viewExtensionsFromPackages = packageViewExtensionPaths.Select(path => viewExtensionManager.ExtensionLoader.Load(path));
+
+                viewExtensions.AddRange(viewExtensionsFromPackages);
+
             }
 
             viewExtensionManager.MessageLogged += Log;
@@ -158,8 +165,9 @@ namespace Dynamo.Controls
                     if (logSource != null)
                         logSource.MessageLogged += Log;
 
-                    ext.Startup(startupParams);
                     viewExtensionManager.Add(ext);
+                    ext.Startup(startupParams);
+                   
                 }
                 catch (Exception exc)
                 {

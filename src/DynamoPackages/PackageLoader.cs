@@ -36,6 +36,7 @@ namespace Dynamo.PackageManager
         internal event Action<dynamic> RequestAddViewExtension;
         public event Action<Package> PackageAdded;
         public event Action<Package> PackageRemoved;
+        public List<string> DeferredLoadViewExtensions { get; private set; } = new List<string>();
 
         private readonly List<Package> localPackages = new List<Package>();
         public IEnumerable<Package> LocalPackages { get { return localPackages; } }
@@ -163,12 +164,21 @@ namespace Dynamo.PackageManager
                     //if this is a viewExtension manifest ask the viewExtensionsManager to load it.
                     if (extPath.Model.FullName.Contains("ViewExtensionDefinition.xml"))
                     {
-                        var viewextension = RequestLoadViewExtension?.Invoke(extPath.Model.FullName);
-                        //TODO at runtime is this a problem?
-                        if (viewextension != null)
+                        //if the handler is null then we're loading this viewExtension before the view is present-
+                        //add this to a list of deferedLoadViewExtensions. We'll load these later when the view
+                        //exists.
+                        if (RequestLoadViewExtension == null)
                         {
-                            RequestAddViewExtension?.Invoke(viewextension);
+                            this.DeferredLoadViewExtensions.Add(extPath.Model.FullName);
                         }
+                        else
+                        {
+                            var viewextension = RequestLoadViewExtension(extPath.Model.FullName);
+                            if (viewextension != null)
+                            {
+                                RequestAddViewExtension?.Invoke(viewextension);
+                            }
+                        }                       
                     }
                     //if its a model extension ask the extensions manager to load it. 
                     else
