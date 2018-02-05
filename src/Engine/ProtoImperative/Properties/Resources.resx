@@ -133,7 +133,7 @@
     <value>Function pointer is not allowed at binary expression other than assignment!</value>
   </data>
   <data name="ImperativeSymbolsAreReadOnly" xml:space="preserve">
-    <value>Variables allocated in outer scope are read-only inside imperative block!</value>
+    <value>Variables declared in outer scope are read-only inside imperative block!</value>
   </data>
   <data name="IdentifierRedefinition" xml:space="preserve">
     <value>redefinition of identifier '{0}'</value>

@@ -136,7 +136,7 @@
     <value>redefinition of identifier '{0}'</value>
   </data>
   <data name="ImperativeSymbolsAreReadOnly" xml:space="preserve">
-    <value>Variables allocated in outer scope are read-only inside imperative block!</value>
+    <value>Variables declared in outer scope are read-only inside imperative block!</value>
   </data>
   <data name="InvalidArrayInitializer" xml:space="preserve">
     <value>array initializer must be an expression list</value>

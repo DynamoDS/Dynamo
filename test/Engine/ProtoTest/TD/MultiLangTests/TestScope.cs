@@ -237,7 +237,7 @@ a_inner2;b_inner2;c_inner2;
         [Category("SmokeTest")]
         public void T009_LanguageBlockScope_UpdateVariableInNestedLanguageBlock_IA()
         {
-            string src = @"a;b;c;
+            string src = @"
 newA = i[0]; newB = i[1]; newC = i[2];
 i = [Imperative]
 {
@@ -258,9 +258,6 @@ i = [Imperative]
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            thisTest.Verify("a",1.5);
-            thisTest.Verify("b", -4);
-            thisTest.Verify("c", false);
             thisTest.Verify("newA",1.5);
             thisTest.Verify("newB", -4);
             thisTest.Verify("newC", false);
@@ -775,7 +772,7 @@ z_1 = [Imperative]
 {
 	x_1 = 20;
 	y_1 = 0;
-	 foo (x_1, y_1);
+	return foo (x_1, y_1);
 	
 }
 [Associative]
@@ -796,7 +793,6 @@ z_1 = [Imperative]
             //Assert.Throws(typeof(ProtoCore.Exceptions.CompileErrorsOccured), () =>
             //{
             string src = @"z_1;
-z_2;
 	def foo : int(a : int, b : int)
 	{
 		return = a - b;
@@ -813,11 +809,11 @@ z_2;
 	z_1 = foo (x_1, y_1);
 	
 }
-[Imperative]
+z_2 = [Imperative]
 {
 	x_2 = 20;
 	y_2 = 0;
-	z_2 = foo (x_2, y_2);
+	return foo (x_2, y_2);
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
             thisTest.Verify("z_1", 20);
@@ -841,22 +837,22 @@ z_A2;
 	 
 [Associative]
 {
-	[Imperative]
+	z_I1 = [Imperative]
 	{
-	x_I1 = 50;
-	y_I1 = 50;
-	z_I1 = foo (x_I1, y_I1);
+	    x_I1 = 50;
+	    y_I1 = 50;
+	    return foo (x_I1, y_I1);
 	}
 	
 	x_A1 = 30;
 	y_A1 = 12;
 	z_A1 = foo (x_A1, y_A1);
 	
-	[Imperative]
+	z_I2 = [Imperative]
 	{
-	x_I2 = 0;
-	y_I2 = 12;
-	z_I2 = foo (x_I2, y_I2);
+	    x_I2 = 0;
+	    y_I2 = 12;
+	    return foo (x_I2, y_I2);
 	}
 	
 	x_A2 = 0;
@@ -878,15 +874,15 @@ z_A2;
         public void T030_LanguageBlockScope_ParallelInsideNestedBlock_ImperativeNested_AA()
         {
             string code = @"
-z_A1;
-z_I1;
-z_A2;
-z_I2;
+z_A1=i[0];
+z_I1=i[1];
+z_A2=i[2];
+z_I2=i[3];
 	def foo : int(a : int, b : int)
 	{
 		return = a - b;
 	}
-[Imperative]
+i = [Imperative]
 {
 	[Associative]
 	{
@@ -911,8 +907,7 @@ z_I2;
 	y_I2 = 12;
 	z_I2 = foo (x_I2, y_I2);
 	
-	
-	
+	return {z_A1, z_I1, z_A2, z_I2};
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -955,13 +950,13 @@ z_I2;
             string src = @"
 a = 5;
 b = 2 * a;
-count;
-[Imperative] {
+count = [Imperative] {
 	count = 0;
 	arr = 0..b;
 	for (i  in arr) {
 		count = count + 1;
 	}
+    return count;
 }
 a = 10;
 // expected: count = 21
@@ -1831,12 +1826,12 @@ b;
         {
             String code =
         @"
-c;
+c=
 [Imperative]
 {	
    a = 1;
    b = 2;
-   c = a < b ? a : b;			
+   return a < b ? a : b;			
 }
                         
 ";
@@ -1850,13 +1845,13 @@ c;
         {
             String code =
         @"
-a;
+a=
 [Imperative]
 {	
    a1 = 1;
    a2 = 5;
    a3 = 1;
-   a = a1..a2..a3;
+   return a1..a2..a3;
 			
 }
                         
@@ -1878,10 +1873,9 @@ def test()
     f;
     [Associative]
     {
-        i;
-        [Imperative]
+        i=[Imperative]
         {
-            i = 3;
+            return 3;
         }
         f = i;
     }

@@ -758,6 +758,12 @@ namespace ProtoTestFx.TD
             Assert.IsTrue(warningCount == count, mErrorMessage);
         }
 
+        public void VerifyBuildWarningMessage(string message)
+        {
+            var warnings = testCore.BuildStatus.Warnings.Where(w => w.Message.Contains(message));
+            Assert.IsTrue(warnings.Any());
+        }
+
         public static void VerifyRuntimeWarning(ProtoCore.Runtime.WarningID id)
         {
             VerifyRuntimeWarning(testRuntimeCore, id);

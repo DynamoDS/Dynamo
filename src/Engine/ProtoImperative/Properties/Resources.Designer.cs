@@ -115,7 +115,7 @@ namespace ProtoImperative.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Variables allocated in outer scope are read-only inside imperative block!.
+        ///   Looks up a localized string similar to Variables declared in outer scope are read-only inside imperative block!.
         /// </summary>
         public static string ImperativeSymbolsAreReadOnly {
             get {
