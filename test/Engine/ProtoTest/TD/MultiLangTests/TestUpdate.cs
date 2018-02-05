@@ -3455,10 +3455,11 @@ def f(p : DummyPoint)
 p1 = DummyPoint.ByCoordinates(1,1,1);
 p2 = DummyPoint.ByCoordinates(2,2,2);
 j = 0;
-i = [Imperative]
+j = [Imperative]
 {
     j = j + 1;
-    return = p1.f(p2);
+    f(p2);
+    return j;
 }
 p2 = DummyPoint.ByCoordinates(3,3,3);
 ";
