@@ -152,17 +152,9 @@ namespace CoreNodeModels.Input
             }
         }
 
-        private static readonly string OUTPUT_TOOLTIP = "Double";
-
         [JsonConstructor]
         private DoubleInput(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
         {
-            // Previously, the tooltip was set incorrectly to be empty. We paper over this issue here.
-            if (outPorts.Count() == 1)
-            {
-                outPorts.ElementAt(0).ToolTip = OUTPUT_TOOLTIP;
-            }
-
             ShouldDisplayPreviewCore = false;
             ConvertToken = Convert;
             Value = "0";
@@ -170,7 +162,7 @@ namespace CoreNodeModels.Input
 
         public DoubleInput()
         {
-            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("", OUTPUT_TOOLTIP)));
+            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("", "Double")));
             RegisterAllPorts();
 
             ShouldDisplayPreviewCore = false;
