@@ -43,7 +43,8 @@ import(""FFITarget.dll"");
 ";
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             ProtoCore.RuntimeCore runtimeCore = null;
-            runtimeCore = fsr.Execute(code, core); ExecutionMirror mirror = runtimeCore.Mirror;
+            runtimeCore = fsr.Execute(code, core);
+            ExecutionMirror mirror = runtimeCore.Mirror;
             StackValue svA = mirror.GetRawFirstValue("a");
             StackValue svB = mirror.GetRawFirstValue("b");
             Assert.IsTrue(svA.metaData.type != svB.metaData.type);
@@ -97,28 +98,25 @@ import(""FFITarget.dll"");
         {
             String code =
 @"
-i=[Imperative]
+[Imperative]
 {
 	a = {1,2,3};
     b = {1.0, 2.0, 3.0, 3.0};
     c = {1.0, 2.0, 9};
-    return {a,b,c};
+    //return {a,b,c};
 }
-a=i[0];
-b=i[1];
-c=i[2];
 ";
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             ProtoCore.RuntimeCore runtimeCore = null;
             runtimeCore = fsr.Execute(code, core); ExecutionMirror mirror = runtimeCore.Mirror;
             StackValue svA = mirror.GetRawFirstValue("a");
-            var dict = ProtoCore.Utils.ArrayUtils.GetTypeStatisticsForLayer(svA, runtimeCore);
+            var dict = ArrayUtils.GetTypeStatisticsForLayer(svA, runtimeCore);
             Assert.IsTrue(dict[dict.Keys.First()] == 3);
             StackValue svB = mirror.GetRawFirstValue("b");
-            var dict2 = ProtoCore.Utils.ArrayUtils.GetTypeStatisticsForLayer(svB, runtimeCore);
+            var dict2 = ArrayUtils.GetTypeStatisticsForLayer(svB, runtimeCore);
             Assert.IsTrue(dict2[dict2.Keys.First()] == 4);
             StackValue svC = mirror.GetRawFirstValue("c");
-            var dict3 = ProtoCore.Utils.ArrayUtils.GetTypeStatisticsForLayer(svC, runtimeCore);
+            var dict3 = ArrayUtils.GetTypeStatisticsForLayer(svC, runtimeCore);
             Assert.IsTrue(dict3[dict3.Keys.First()] == 2);
             Assert.IsTrue(dict3[dict3.Keys.Last()] == 1);
 
@@ -499,9 +497,11 @@ c=i[2];
             StackValue svA = mirror.GetRawFirstValue("a");
             StackValue svB = mirror.GetRawFirstValue("b");
             StackValue svC = mirror.GetRawFirstValue("c");
-            Assert.IsTrue(svA.IsArray);
+            StackValue svI = mirror.GetRawFirstValue("i");
+            Assert.IsTrue(!svA.IsArray);
             Assert.IsTrue(!svB.IsArray);
-            Assert.IsTrue(svC.IsArray);
+            Assert.IsTrue(!svC.IsArray);
+            Assert.IsTrue(svI.IsArray);
         }
 
         [Test]
