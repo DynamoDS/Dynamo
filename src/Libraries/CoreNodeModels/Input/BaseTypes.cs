@@ -162,7 +162,7 @@ namespace CoreNodeModels.Input
 
         public DoubleInput()
         {
-            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("", "")));
+            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("", "Double")));
             RegisterAllPorts();
 
             ShouldDisplayPreviewCore = false;
