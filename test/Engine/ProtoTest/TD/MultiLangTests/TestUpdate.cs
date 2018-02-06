@@ -21,33 +21,7 @@ namespace ProtoTest.TD.MultiLangTests
             base.TearDown();
             fsr = null;
         }
-
-        [Test]
-        [Category("SmokeTest")]
-        public void T01_Update_Variable_Across_Language_Scope()
-        {
-            string code = @"
-a;b;c;d;
-[Associative]
-{
-    a = 0;
-	d = a + 1;
-    i = [Imperative]
-    {
-		b = 2 + a;
-		return {1.5, b};
-    }
-    a = i[0];
-    b = i[1];
-	c = 2;
-}";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("a", 1.5, 0);
-            thisTest.Verify("b", 2, 0);
-            thisTest.Verify("c", 2, 0);
-            thisTest.Verify("d", 2.5, 0);
-
-        }
+        
 
         [Test]
         [Category("SmokeTest")]
