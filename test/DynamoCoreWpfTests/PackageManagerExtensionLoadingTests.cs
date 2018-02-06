@@ -18,9 +18,7 @@ namespace DynamoCoreWpfTests
 {
     class PackageManagerExtensionLoadingTests : DynamoTestUIBase
     {
-        public string PackagesDirectory { get { return Path.Combine(GetTestDirectory(this.ExecutingDirectory), "pkgs"); } }
-       // var loader = GetPackageLoader();
-       // var pkgDir = Path.Combine(PackagesDirectory, "SampleExtension");
+        private string PackagesDirectory { get { return Path.Combine(GetTestDirectory(this.ExecutingDirectory), "pkgs"); } }
 
         protected override void GetLibrariesToPreload(List<string> libraries)
         {

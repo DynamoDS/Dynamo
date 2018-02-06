@@ -79,11 +79,9 @@ namespace DynamoCoreWpfTests
         }
 
         /// <summary>
-        /// Derived test classes could override it to provide different 
-        /// configuration.
+        /// Derived test classes can override this method to provide different configurations.
         /// </summary>
-        /// <param name="settings"></param>
-        /// <returns></returns>
+        /// <param name="pathResolver">A path resolver to pass to the DynamoModel. </param>
         protected virtual DynamoModel.IStartConfiguration CreateStartConfiguration(IPathResolver pathResolver)
         {
             return new DynamoModel.DefaultStartConfiguration()

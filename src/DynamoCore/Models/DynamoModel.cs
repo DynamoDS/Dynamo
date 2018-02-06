@@ -199,7 +199,7 @@ namespace Dynamo.Models
         }
 
          /// <summary>
-         /// this event is raised when Dynamo is ready for user interaction.
+         /// This event is raised when Dynamo is ready for user interaction.
          /// </summary>
          public event Action<ReadyParams> DynamoReady;
          private bool dynamoReady;
@@ -674,7 +674,7 @@ namespace Dynamo.Models
             extensionManager.MessageLogged += LogMessage;
             var extensions = config.Extensions ?? LoadExtensions();
 
-            //when dynamo is ready, alert the loaded extensions
+            // when dynamo is ready, alert the loaded extensions
             DynamoReady += (readyParams) =>
             {
                 this.dynamoReady = true;
@@ -775,8 +775,8 @@ namespace Dynamo.Models
             StartBackupFilesTimer();
 
             TraceReconciliationProcessor = this;
-            //we're done loading the model
-            DynamoReady(new ReadyParams(this));
+            // This event should only be raised at the end of this method.
+             DynamoReady(new ReadyParams(this));
         }
 
         private void DynamoReadyExtensionHandler(ReadyParams readyParams, IEnumerable<IExtension> extensions) {

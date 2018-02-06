@@ -10,34 +10,30 @@ namespace Dynamo.Extensions
 {
 
     /// <summary>
-    /// An object which may request extensions to be loaded and added to the extensionsManager
+    /// An object which may request extensions to be loaded and added to the extensionsManager.
     /// </summary>
     public interface IExtensionSource
     {
         /// <summary>
-        /// event that is raised when package manager requests an extension be loaded
-        /// which was found within a package it is currently loading.
+        /// Event that is raised when the ExtensionSource requests an Extension be loaded.
         /// </summary>
-        event Func<string, IExtension> RequestLoadExtensionHandler;
+        event Func<string, IExtension> RequestLoadExtension;
 
         /// <summary>
-        /// event that is raised when package manager requests an Extension to be added to
-        /// the list of currently loaded extensions. The Extension was found within a package that
-        /// is currently being loaded. This is usually raised directly after an Extension load occurs.
+        /// Event that is raised when ExtensionSource requests an Extension to be added to 
+        /// list of currently loaded extensions.
         /// </summary>
-        event Action<IExtension> RequestAddExtensionHandler;
+        event Action<IExtension> RequestAddExtension;
 
 
         /// <summary>
-        /// event that is raised when package manager requests a ViewExtension be loaded
-        /// which was found within a package it is currently loading.
+        /// Event that is raised when the ExtensionSource requests a ViewExtension be loaded.
         /// </summary>
         event Func<string, dynamic> RequestLoadViewExtension;
 
         /// <summary>
-        /// event that is raised when package manager requests a viewExtension to be added to
-        /// the list of currently loaded extensions. The ViewExtension was found within a package that
-        /// is currently being loaded. This is usually raised directly after a ViewExtension load occurs.
+        /// Event that is raised when ExtensionSource requests a ViewExtension to be added to 
+        /// list of currently loaded extensions.  
         /// </summary>
         event Action<dynamic> RequestAddViewExtension;
     }
@@ -57,27 +53,27 @@ namespace Dynamo.Extensions
         public ExtensionManager()
         {
             extensionLoader.MessageLogged += Log;
-            this.ExtensionAdded += AddEventSubscriptions;
-            this.ExtensionRemoved += removeEventSubscriptions;
+            this.ExtensionAdded += UnsubscribeExtension;
+            this.ExtensionRemoved += SubscribeExtension;
         }
 
-        private void removeEventSubscriptions(IExtension obj)
+        private void SubscribeExtension(IExtension obj)
         {
             if (obj is IExtensionSource)
             {
-                (obj as IExtensionSource).RequestLoadExtensionHandler -= this.ExtensionLoader.Load;
-                (obj as IExtensionSource).RequestAddExtensionHandler -= this.Add;
+                (obj as IExtensionSource).RequestLoadExtension -= this.ExtensionLoader.Load;
+                (obj as IExtensionSource).RequestAddExtension -= this.Add;
             }
         }
 
-        private void AddEventSubscriptions(IExtension obj)
+        private void UnsubscribeExtension(IExtension obj)
         {
             //if this extension could be a source of other extensions (like packageManagerExtension) then
             //lets handle those requests.
             if(obj is IExtensionSource)
             {
-                (obj as IExtensionSource).RequestLoadExtensionHandler += this.ExtensionLoader.Load;
-                (obj as IExtensionSource).RequestAddExtensionHandler += this.Add;
+                (obj as IExtensionSource).RequestLoadExtension += this.ExtensionLoader.Load;
+                (obj as IExtensionSource).RequestAddExtension += this.Add;
             }
 
         }

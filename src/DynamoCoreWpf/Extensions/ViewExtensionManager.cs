@@ -15,8 +15,8 @@ namespace Dynamo.Wpf.Extensions
         public ViewExtensionManager()
         {
             viewExtensionLoader.MessageLogged += Log;
-            this.ExtensionAdded += AddEventSubscriptions;
-            this.ExtensionRemoved += removeEventSubscriptions;
+            this.ExtensionAdded += SubscribeViewExtension;
+            this.ExtensionRemoved += UnsubscribeViewExtension;
         }
 
         private void requestAddViewExtensionHandler(dynamic viewExtension )
@@ -25,7 +25,7 @@ namespace Dynamo.Wpf.Extensions
             this.Add(viewExtension as IViewExtension);
         }
 
-        private void removeEventSubscriptions(IViewExtension obj)
+        private void UnsubscribeViewExtension(IViewExtension obj)
         {
             if (obj is IExtensionSource)
             {
@@ -34,7 +34,7 @@ namespace Dynamo.Wpf.Extensions
             }
         }
 
-        private void AddEventSubscriptions(IViewExtension obj)
+        private void SubscribeViewExtension(IViewExtension obj)
         {
             //if this extension could be a source of other extensions (like packageManagerExtension) then
             //lets handle those requests.

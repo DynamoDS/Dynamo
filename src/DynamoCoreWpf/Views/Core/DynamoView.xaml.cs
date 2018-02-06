@@ -176,7 +176,7 @@ namespace Dynamo.Controls
             }
 
             // when an extension is added if dynamoView is loaded, call loaded on
-            //that extension (this alerts late loaded extensions).
+            // that extension (this alerts late loaded extensions).
             this.viewExtensionManager.ExtensionAdded += (extension) =>
              {
                  if (this.loaded)

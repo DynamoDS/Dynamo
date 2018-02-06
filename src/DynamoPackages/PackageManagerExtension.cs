@@ -20,8 +20,8 @@ namespace Dynamo.PackageManager
         private Action<Assembly> RequestLoadNodeLibraryHandler;
         private event Func<string, IEnumerable<CustomNodeInfo>> RequestLoadCustomNodeDirectoryHandler;
        
-        public event Func<string, IExtension> RequestLoadExtensionHandler;
-        public event Action<IExtension> RequestAddExtensionHandler;
+        public event Func<string, IExtension> RequestLoadExtension;
+        public event Action<IExtension> RequestAddExtension;
         public event Func<string, dynamic> RequestLoadViewExtension;
         public event Action<dynamic> RequestAddViewExtension;
 
@@ -63,15 +63,15 @@ namespace Dynamo.PackageManager
                 PackageLoader.RequestLoadCustomNodeDirectory -=
                     RequestLoadCustomNodeDirectoryHandler;
             }
-            if (RequestLoadExtensionHandler != null)
+            if (RequestLoadExtension != null)
             {
                 PackageLoader.RequestLoadExtension -=
-                RequestLoadExtensionHandler;
+                RequestLoadExtension;
             }
-            if (RequestAddExtensionHandler != null)
+            if (RequestAddExtension != null)
             {
                 PackageLoader.RequestAddExtension -=
-                RequestAddExtensionHandler;
+                RequestAddExtension;
             }
             if (RequestAddViewExtension != null)
             {
@@ -113,8 +113,8 @@ namespace Dynamo.PackageManager
                     .AddUninitializedCustomNodesInPath(dir, DynamoModel.IsTestMode, true);
 
             //raise the public events on this extension when the package loader requests.
-            PackageLoader.RequestLoadExtension += RequestLoadExtensionHandler;
-            PackageLoader.RequestAddExtension += RequestAddExtensionHandler;
+            PackageLoader.RequestLoadExtension += RequestLoadExtension;
+            PackageLoader.RequestAddExtension += RequestAddExtension;
 
             //raise the public events for view extension loading on this extension when the package loader requests.
             PackageLoader.RequestLoadViewExtension += RequestLoadViewExtension;
