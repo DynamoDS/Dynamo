@@ -414,9 +414,9 @@ namespace DynamoCoreWpfTests
             var jsonText1 = File.ReadAllText(openPath);
             var jobject1 = JObject.Parse(jsonText1);
 
-            // We need to replace the camera with null so it will match the null camera produced by the 
+            // We need to replace the camera with default camera so it will match the deafult camera produced by the 
             // save without a real view below.
-            jobject1["View"]["Camera"] = null;
+            jobject1["View"]["Camera"] = JToken.FromObject(new CameraData());
             jsonText1 = jobject1.ToString();
             jobject1 = JObject.Parse(jsonText1);
           
