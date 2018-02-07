@@ -138,6 +138,22 @@ namespace ProtoTestFx.TD
             Validity.Assert(syntaxErrors.Count() > 0);
         }
 
+        public void RunAndVerifySemanticError(string code, string errorMessage = null)
+        {
+            Assert.Throws(typeof(ProtoCore.Exceptions.CompileErrorsOccured), () =>
+            {
+                RunScriptSource(code);
+            });
+            Assert.IsTrue(testCore.BuildStatus.Errors.Any());
+            var errors = testCore.BuildStatus.Errors.Where(e => e.ID == ProtoCore.BuildData.ErrorType.SemanticError);
+            Assert.IsTrue(errors.Any());
+            if (!string.IsNullOrEmpty(errorMessage))
+            {
+                var errorsWithmsgs = errors.Where(e => e.Message.Contains(errorMessage));
+                Assert.IsTrue(errorsWithmsgs.Any());
+            }
+        }
+
         /// <summary>
         /// Executes the code and verifies that the specified build warning appears at least once
         /// </summary>
@@ -408,7 +424,8 @@ namespace ProtoTestFx.TD
                 return testMirror = RunScriptFile(importDir, importFileName);
 
             }
-            else if (testDebug)
+
+            if (testDebug)
             {
                 Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
                 if (!String.IsNullOrEmpty(includePath))
@@ -432,41 +449,39 @@ namespace ProtoTestFx.TD
                 
                 return testMirror;
             }
-            else
+
+            SetupTestCore();
+            if (!String.IsNullOrEmpty(includePath))
             {
-                SetupTestCore();
-                if (!String.IsNullOrEmpty(includePath))
+                if (System.IO.Directory.Exists(includePath))
                 {
-                    if (System.IO.Directory.Exists(includePath))
-                    {
-                        testCore.Options.IncludeDirectories.Add(includePath);
-                    }
-                    else
-                    {
-                        Console.WriteLine(String.Format("Path: {0} does not exist.", includePath));
-                    }
+                    testCore.Options.IncludeDirectories.Add(includePath);
                 }
-                testRuntimeCore = runner.Execute(sourceCode, testCore);
-                testMirror = testRuntimeCore.Mirror;
-                
-                if (dumpDS )
+                else
                 {
-
-                    String fileName = TestContext.CurrentContext.Test.Name + ".ds";
-                    String folderName = TestContext.CurrentContext.Test.FullName;
-
-                    string[] substrings = folderName.Split('.');
-
-                    string path = "..\\..\\..\\test\\core\\dsevaluation\\DSFiles\\";
-                    if (!System.IO.Directory.Exists(path))
-                        System.IO.Directory.CreateDirectory(path);
-
-                    createDSFile(fileName, path, sourceCode);
+                    Console.WriteLine(String.Format("Path: {0} does not exist.", includePath));
                 }
-
-                SetErrorMessage(errorstring);
-                return testMirror;
             }
+            testRuntimeCore = runner.Execute(sourceCode, testCore);
+            testMirror = testRuntimeCore.Mirror;
+                
+            if (dumpDS )
+            {
+
+                String fileName = TestContext.CurrentContext.Test.Name + ".ds";
+                String folderName = TestContext.CurrentContext.Test.FullName;
+
+                string[] substrings = folderName.Split('.');
+
+                string path = "..\\..\\..\\test\\core\\dsevaluation\\DSFiles\\";
+                if (!System.IO.Directory.Exists(path))
+                    System.IO.Directory.CreateDirectory(path);
+
+                createDSFile(fileName, path, sourceCode);
+            }
+
+            SetErrorMessage(errorstring);
+            return testMirror;
         }
 
         /// <summary>

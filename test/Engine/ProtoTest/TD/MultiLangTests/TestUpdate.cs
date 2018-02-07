@@ -1174,10 +1174,8 @@ c = [Imperative]
 	return = b;
 }
 ";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            thisTest.RunAndVerifySemanticError(code, ProtoImperative.Properties.Resources.ImperativeSymbolsAreReadOnly);
 
-            //Assert.Fail("1466071 - Sprint 22 : rev 2396 : Update issue : when a property is updated in imperative scope, it does not update the outer associative scope variable ");
-            thisTest.VerifyBuildWarningMessage(ProtoImperative.Properties.Resources.ImperativeSymbolsAreReadOnly);
         }
 
         [Test]
@@ -1750,9 +1748,7 @@ c = [Imperative]
     return = a.IntVal;
 } 
 ";
-            string errmsg = "";//1467385: Sprint 27 - rev 4219 - valid update testcase throws cyclic dependancy error ";
-            ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.VerifyBuildWarningMessage(ProtoImperative.Properties.Resources.ImperativeSymbolsAreReadOnly);
+            thisTest.RunAndVerifySemanticError(code, ProtoImperative.Properties.Resources.ImperativeSymbolsAreReadOnly);
         }
 
         [Test]
@@ -2204,8 +2200,7 @@ y2 = { y1[0].IntVal, y1[1].IntVal };
     }
 }
 ";
-            string errmsg = "";
-            ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
+           thisTest.RunAndVerifySemanticError(code, ProtoImperative.Properties.Resources.ImperativeSymbolsAreReadOnly);
         }
 
         [Test]
