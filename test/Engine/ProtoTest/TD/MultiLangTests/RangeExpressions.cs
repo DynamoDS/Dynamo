@@ -32,7 +32,7 @@ i = [Imperative]
 	a13 = 0.3..1..0.1;
 	a14 = 0.2..1..0.1;
 	a15 = (0.5)..(0.25)..(-0.25);
-	return {a, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15};
+	return [a, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15];
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
@@ -83,7 +83,7 @@ i = [Imperative]
 	a19 = (1.0/2.0)..(1.0/4.0)..(-1.0/4.0);
 	a20 = 1..3*2; 
 	//a21 = 1..-6;
-    return {a15, a16, a18, a19, a20};
+    return [a15, a16, a18, a19, a20];
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
             List<Object> result = new List<Object> { 0.5, 0.25 };
@@ -114,7 +114,7 @@ i = [Imperative]
 	w3 = e1..f; //correct
 	w4 = (3-2)..(w3[1][1])..(c+2) ; //correct
 	w5 = (w3[1][1]-2)..(w3[1][1])..(w3[0][1]-1) ; //correct
-    return {w1, w2, w3, w4, w5};
+    return [w1, w2, w3, w4, w5];
 }
 /* expected results : 
     Updated variable a = 3
@@ -155,7 +155,7 @@ i = [Imperative]
 	z5 = (2*twice(1))..1..-1;
 	//z6 = z5 - z2 + 0.3;
 	z7 = (z3[0]+0.3)..4..#1 ; 
-   return {z1, z2, z3, z4, z5, z7};
+   return [z1, z2, z3, z4, z5, z7];
 }
 /*
 Succesfully created function 'twice' 
@@ -202,7 +202,7 @@ x=[Imperative]
 	n = 0.1..0.9..~0.3;
 	k = 0.02..0.03..#3;
 	l = 0.9..1..#5;
-    return {d,e1,f,g,h,i,j,k,l,m};
+    return [d,e1,f,g,h,i,j,k,l,m];
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
@@ -240,7 +240,7 @@ i = [Imperative]
 	a = 0.3..0.1..-0.1;
 	b = 0.1..0.3..0.2;
 	c = 0.1..0.3..0.1;
-    return {a, b, c};
+    return [a, b, c];
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
             List<Object> result = new List<Object> { 0.3, 0.2, 0.1 };
@@ -272,13 +272,13 @@ d=i[0];f=i[1];
 	}
 i = [Imperative]
 {
-	a = {1,2,3};
-	b = {3,4,5} ;
-	c = {1.5,2.5,4,3.65};
-	f = {7,8*2,9+1,5-3,-1,-0.34};
+	a = [1,2,3];
+	b = [3,4,5] ;
+	c = [1.5,2.5,4,3.65];
+	f = [7,8*2,9+1,5-3,-1,-0.34];
 	//nested collection
-	d = {3.5,increment(c)};
-    return {d, f};
+	d = [3.5,increment(c)];
+    return [d, f];
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             List<Object> l1 = new List<object> { 3.5, new List<Object> { 2.5, 3.5, 5, 4.65 } };
@@ -317,7 +317,7 @@ x = [Imperative]
 	m = 0.8..square(1)..0.1; 
 	n = square(1)..0.8..-0.1;
 	o = 0.8..square(0.9)..0.01; 
-    return {h, i, j, k, l};
+    return [h, i, j, k, l];
 }
 /*
 result
@@ -369,7 +369,7 @@ i=[Imperative]
 	j = 0.8..0.5..~-0.3;
 	k = 0.5..0.8..~0.3; 
 	l = 0.2..0.3..~0.0;
-    return {a, b, f, g, h, j, k, l};
+    return [a, b, f, g, h, j, k, l];
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
@@ -407,7 +407,7 @@ i = [Imperative]
 	f = e1[1]..d[2]..0.5;
 	g = e1..d..0.2;
 	h = e1[2]..d[1]..0.5;
-    return {a, b};
+    return [a, b];
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
@@ -443,7 +443,7 @@ x=[Imperative]
 	i = x[0]..y[3]..#10;//1..6..#10
 	j = 1..0.9..#4;// {1.0, 0.96,.93,0.9}
 	k= 1..3..#0;//null
-    return {b,c,d,e1,f,g,h,i,j};
+    return [b,c,d,e1,f,g,h,i,j];
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
             thisTest.Verify("b", new object[] { 3.0, 2.4, 1.8, 1.2, 0.6 });
@@ -483,7 +483,7 @@ i = [Imperative]
 	e1 = e..4..#3;  //e takes default value 2.17
 	f = even(3)..(even(8)+4*0.5)..#3;
 	g = even(2)+1..1..#5;
-    return {x, b, c, e1, f, g};
+    return [x, b, c, e1, f, g];
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
@@ -519,7 +519,7 @@ x = [Imperative]
 	j = 0.8..0.99..#10;
 	//k = 0.9..1..#1;
 	l = 0.9..1..0.1;
-    return {a, b, d, f, g, h, i, l};
+    return [a, b, d, f, g, h, i, l];
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
@@ -559,7 +559,7 @@ i = [Imperative]
 	f = 3..3.2..~0.2;
 	g = 3.6..3.8..~0.2; 
 	h = 3.8..4..~0.2; 
-    return {a, b, c, d, e1, f, g, h};
+    return [a, b, c, d, e1, f, g, h];
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
             List<Object> result = new List<Object> { 1.2, 1.3 };
@@ -598,7 +598,7 @@ x=[Imperative]
 	i = 0.9..1.1..0.1;
 	j = 1..0.9..-0.05;
 	k = 1.2..1.3..~0.1;
-    return {a,b,c,d,e1,f,g,h,i,j,k};
+    return [a,b,c,d,e1,f,g,h,i,j,k];
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
             List<Object> result = new List<Object> { 1, 1.2, 1.4, 1.6, 1.8, 2, 2.2 };
@@ -641,7 +641,7 @@ i = [Imperative]
 	g = 0.4..0.45..0.05;
 	h = 0.4..0.45..~0.05; 
 	g = 0.4..0.6..~0.05;
-    return {a,b,c,d,e1,f,g,h};
+    return [a,b,c,d,e1,f,g,h];
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
             List<Object> result = new List<Object> { 2.3, 2.6 };
@@ -678,7 +678,7 @@ x=[Imperative]
 	g = 0.9..0.8..#3;
 	h = 0.9..0.7..#5;
 	i = 0.6..1..#4;
-    return {b,c,d,e1,f,g,h,i};
+    return [b,c,d,e1,f,g,h,i];
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
@@ -735,7 +735,7 @@ i=[Imperative]
 	l = power(1.2,1)..power(1.3,1)..~power(0.1,1); 
 	m = power(0.8,1)..power(0.9,1)..~power(0.1,1);
 	n = power(0.08,1)..power(0.3,2)..~power(0.1,2); */
-    return {e1, f};
+    return [e1, f];
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
             List<Object> result = new List<Object> { 2, 4, 6, 8 };
@@ -786,7 +786,7 @@ x=[Imperative]
    /*  {2,4,4,6,6,8,8,10,10,12,12} .. {4,6,6,8,8,10,10,12,12,14,14}
 */ 
 	g = even(y)..even(z)..f[0][1];  // {2,4,6,8,10} .. {12,14,16,18,20} .. 3
-    return {c,d,e1,f,g};
+    return [c,d,e1,f,g];
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
@@ -813,7 +813,7 @@ i = [Imperative]
 {
 	a1 = 1..5..2;
 	a2 = 12.5..20..2;
-    return {a1, a2};
+    return [a1, a2];
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
@@ -832,7 +832,7 @@ i=[Imperative]
 {
 	a1 = 2..9..2.7;
 	a2 = 10..11.5..0.3;
-     return {a1, a2};
+     return [a1, a2];
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
             List<Object> result = new List<Object> { 2, 4.7, 7.4 };
@@ -851,7 +851,7 @@ i=[Imperative]
 	a = 10..-1..-2;
 	b = -2..-10..-1;
 	c = 10..3..-1.5;
-     return {a, b, c};
+     return [a, b, c];
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
@@ -872,7 +872,7 @@ i=[Imperative]
 {
 	a = 1..5..null;
 	b = 0..6..(null);
-    return {a,b};
+    return [a,b];
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
             thisTest.Verify("a", null);
@@ -888,7 +888,7 @@ i=[Imperative]
 {
 	a = 2.5..6..(true);
 	b = 3..7..false;
-return {a,b};
+return [a,b];
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
@@ -905,7 +905,7 @@ i=[Imperative]
 {
 	a = 1..10..~4;
 	b = -2.5..10..~5;
-    return {a,b};
+    return [a,b];
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
             List<Object> result = new List<Object> { 1, 5.5, 10 };
@@ -924,7 +924,7 @@ i=[Imperative]
 {
 	a = 0.2..0.3..~0.2; //divide by zero error
 	b = 6..13..~1.3;
-    return {a,b};
+    return [a,b];
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -943,7 +943,7 @@ i=[Imperative]
 {
 	a = 3..1..~-0.5;
 	b = 18..13..~-1.3;
-    return {a,b};
+    return [a,b];
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
             List<Object> result = new List<Object> { 3, 2.5, 2, 1.5, 1 };
@@ -961,7 +961,7 @@ i=[Imperative]
 {
 	a = 1..5..~null;
 	b = 5..2..~(null);
-    return {a,b};
+    return [a,b];
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
             thisTest.Verify("a", null);
@@ -977,7 +977,7 @@ i=[Imperative]
 {
 	a = 1..3..(true);
 	b = 2..2..false;
-    return {a,b};
+    return [a,b];
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
             thisTest.Verify("a", null);
@@ -994,7 +994,7 @@ i=[Imperative]
 	a = 1..3.3..#5;
 	b = 3..3..#3;
 	c = 3..3..#1;
-    return {a,b,c};
+    return [a,b,c];
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
             List<Object> result = new List<Object> { 1, 1.575, 2.150, 2.725, 3.3 };
@@ -1014,7 +1014,7 @@ i=[Imperative]
 {
 	a = 1..7..#2.5;
 	b = 2..10..#2.4;
-    return {a,b};
+    return [a,b];
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
             TestFrameWork.VerifyBuildWarning(ProtoCore.BuildData.WarningID.InvalidRangeExpression);
@@ -1053,7 +1053,7 @@ i=[Imperative]
 {
 	b = 12..12..#false;
 	a = 12..12..#(true);
-    return {a,b};
+    return [a,b];
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
             thisTest.Verify("a", null);
@@ -1094,7 +1094,7 @@ i=[Imperative]
 	a = 7..7..5;
 	b = 8..8..~3;
 	c = 9..9..#1;
-    return {a, b, c};
+    return [a, b, c];
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
             List<Object> result1 = new List<Object> { 7 };
@@ -1224,7 +1224,7 @@ i=[Imperative]
 	}
 	x1 = 0..3;
 	c = foo(x1);
-    return {c, x};
+    return [c, x];
 }
 	";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -1296,7 +1296,7 @@ i=[Imperative]
 	k = 0.5..0.8..~0.3; 
 	l = 0.2..0.3..~0.0;
 	m = 0.2..0.3..~1/2; // division
-    return {x,a,b,f,g,h,j,k,l,m}; 
+    return [x,a,b,f,g,h,j,k,l,m]; 
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -1349,7 +1349,7 @@ i = [Associative]
         k = 0.5..0.8..~0.3; 
         l = 0.2..0.3..~0.0;
         m = 0.2..0.3..~1/2; // division 
-        return {x, a, b, f, g, h, j, k, l, m};
+        return [x, a, b, f, g, h, j, k, l, m];
     }
 }
 ";
@@ -1401,7 +1401,7 @@ i=[Imperative]
 	k = 0.5..0.8..~0.3; 
 	l = 0.2..0.3..~0.0;
 	m = 0.2..0.3..~1/2; // division 
-    return {x, a, b, f, g, h, j, k, l, m};
+    return [x, a, b, f, g, h, j, k, l, m];
 }
 	
 ";
@@ -1502,7 +1502,7 @@ def twice : int[]( a : int )
 }
 [Associative]
 {
-    d={1,2,3,4};
+    d=[1,2,3,4];
 	z1=twice(d);
 //	z1 = 1..twice(4)..twice(1);
 }
@@ -1722,7 +1722,7 @@ d1;d2;d3;d4;d5;
             // Crash when step range expression come to infinity.
             // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-5111
 
-            string code = @"x = 0..0..360/{0,0};";
+            string code = @"x = 0..0..360/[0,0];";
             thisTest.RunScriptSource(code);
             thisTest.Verify("x", new object[] { null, null });
             thisTest.VerifyRuntimeWarningCount(2);
@@ -1771,7 +1771,7 @@ i = [Imperative]
     a8 = ""a""..""z""..3;
     a9 = ""A""..""D"";
     a10 = ""o""..""q"";
-    return {a1, a2, a3, a4, a5, a6, a7, a8, a9, a10};
+    return [a1, a2, a3, a4, a5, a6, a7, a8, a9, a10];
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
@@ -1926,7 +1926,7 @@ i = [Imperative]
     a4 = ""z""..#5..1;
     a5 = ""A""..#3..-1;
     a6 = ""z""..#3..-1;
-    return {a1, a2, a3, a4, a5, a6};
+    return [a1, a2, a3, a4, a5, a6];
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
             List<Object> result = new List<Object> { "a", "c", "e" };
@@ -1961,7 +1961,7 @@ i = [Imperative]
 	a1 = ""л""..#3..2;    
     a2 = ""I""..#-5..1;
     a3 = ""z""..#0..1;
-    return {a1, a2, a3};
+    return [a1, a2, a3];
 }";
             thisTest.RunScriptSource(src);
 

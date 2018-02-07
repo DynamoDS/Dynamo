@@ -135,7 +135,7 @@ i = [Imperative]
             d = b;
             e = c;
             g2 = g1;
-            return {a, b, g1, g2, d, c, e};
+            return [a, b, g1, g2, d, c, e];
         }
 
     }
@@ -148,7 +148,7 @@ i = [Imperative]
 	f = a * 2;
     g1 = 3;
     g3 = g2;
-    return {a, b, f, g1, g3, d, c, e};
+    return [a, b, f, g1, g3, d, c, e];
 };
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
@@ -228,7 +228,7 @@ i = [Imperative]
   {
     e = 4;
   }
-  return {a, b, c, d, e};
+  return [a, b, c, d, e];
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
@@ -249,7 +249,7 @@ i = [Imperative]
   b = a - b;
   b = a * b;
   b = a / b; 
-  return {a, b};
+  return [a, b];
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
@@ -273,7 +273,7 @@ i = [Imperative]
   c1 = 1 && 2;
   c2 = 1 && 0;
   c3 = null && true;
-  return {a, b, c1, c2, c3};
+  return [a, b, c1, c2, c3];
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
@@ -366,7 +366,7 @@ i = [Imperative]
         test3 = add (add(1.5,0.5), 4.5 ) ;  
         test4 = add (1+1, 4.5 ) ;
         test5 = add (add(1,1)+add(1,0.5), 3.0 ) ;
-       return {test0, test1, test2, test3, test4, test5};
+       return [test0, test1, test2, test3, test4, test5];
        			
 }
 ";
@@ -382,13 +382,13 @@ i = [Imperative]
             string src = @"
 i = [Imperative]
 {
-	a = {{1,2},3.5};
+	a = [[1,2],3.5];
 	c = a[1];
 	d = a[0][1];
     a[0][1] = 5;
     b = a[0][1] + a[1];
     a = 2;	
-    return {b, a};	
+    return [b, a];	
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
@@ -404,7 +404,7 @@ i = [Imperative]
 {
 	a = 2;;;;;
     b = 3;
-    return {a, b};		
+    return [a, b];		
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
@@ -420,7 +420,7 @@ i = [Imperative]
 {
 	a = true;
     b = false;  
-    return {a, b};    			
+    return [a, b];    			
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
@@ -440,7 +440,7 @@ i = [Imperative]
 	c = -0.1;
 	d = -1.99;
 	e = 1.99;
-    return {a, b, c, d, e};
+    return [a, b, c, d, e];
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
@@ -460,7 +460,7 @@ i = [Imperative]
   c2 = a - b;
   c3 = a * b;
   c4 = a / b; 
-  return {c1, c2, c3, c4};
+  return [c1, c2, c3, c4];
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
@@ -480,7 +480,7 @@ i = [Imperative]
   c2 = a - b;
   c3 = a * b;
   c4 = a / b; 
-  return {c1, c2, c3, c4};
+  return [c1, c2, c3, c4];
 }
 ";
             thisTest.RunScriptSource(src);
@@ -500,7 +500,7 @@ i = [Imperative]
   c2 = a - b;
   c3 = a * b;
   c4 = a / b; 
-  return {c1, c2, c3, c4};
+  return [c1, c2, c3, c4];
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
@@ -621,7 +621,7 @@ i = [Imperative]
 	d = c * b - a;
 	e = b + c / a;
 	f = a * b + c;
-    return {c, d, e};
+    return [c, d, e];
 } ";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
             thisTest.Verify("i", new[] {-6, 13, 4});
@@ -662,7 +662,7 @@ i = [Imperative]
     	_a_test = check(2.5,5);
     	_b = 4.5;
     	_c = true;
-        return {_a_test, _b, _c};
+        return [_a_test, _b, _c];
     }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
             thisTest.Verify("i", new object[] {12.5, 4.5, true});
@@ -738,7 +738,7 @@ i = [Imperative]
 	a = true;
 	b = a + 1;
 	c = null + 2;
-    return {b, c};
+    return [b, c];
  }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
             thisTest.Verify("i", new object[] {null, null});
@@ -798,7 +798,7 @@ d = [Imperative]
             string src = @"
 x = [Imperative]
 {
-	a = { -2,3,4.5,true };
+	a = [ -2,3,4.5,true ];
 	x = 1;
 	for ( y in a )
 	{
@@ -947,7 +947,7 @@ i = [Imperative]
 	a = b = 4;
     x = y = foo(1);
 	b1 = a+x;
-    return {a, b, x, y, b1};
+    return [a, b, x, y, b1];
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -993,7 +993,7 @@ def foo : string (x : string )
         public void T51_Assignment_Using_Negative_Index()
         {
             string code = @"
-a = { 0, 1, 2, 3 };
+a = [ 0, 1, 2, 3 ];
 c1 = a [-1];
 c2 = a [-2];
 c3 = a [-3];
@@ -1020,7 +1020,7 @@ i = [Imperative]
 	a = b;
     c = foo();
 	d = 1;
-    return {a, c, d};
+    return [a, c, d];
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -1083,7 +1083,7 @@ i = [Imperative]
 	}
 	
 	y2 = 0;
-	c = { 3, 4 };
+	c = [ 3, 4 ];
 	for ( i in c )
 	{
 	    t1 = ClassFunctionality.ClassFunctionality(i);
@@ -1110,7 +1110,7 @@ i = [Imperative]
 	    t1 = ClassFunctionality.ClassFunctionality(y4);
 		y4 = y4 + t1.IntVal;
 	}
-	return {y1, y2, y3, y4};
+	return [y1, y2, y3, y4];
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -1213,7 +1213,7 @@ import (""FFITarget.dll"");
 	i = [Imperative]
 	{
 		c = d = e = 4+1;
-        return {c, d, e};
+        return [c, d, e];
 	}
 		";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -1268,7 +1268,7 @@ i = [Imperative]
 	{
 		b3 = 10;
 	}
-    return {b1, b2, b3};
+    return [b1, b2, b3];
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
 
@@ -1325,7 +1325,7 @@ c2 = 3  - true;
             string code = @"
 a = [Imperative]
 {
-    return { 1, 0.5, null, {2,3 } ,{{0.4, 5}, true } };
+    return [ 1, 0.5, null, [2,3 ] ,[[0.4, 5], true ] ];
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -1411,9 +1411,9 @@ import(""FFITarget.dll"");
 
     arr4 : double[]..[] = null;
 
-    arr5 : double[]  = { };
+    arr5 : double[]  = [ ];
 
-    arr6 : double[]..[]  = { };
+    arr6 : double[]..[]  = [ ];
 
     arr11 : int[] ;
 
@@ -1423,9 +1423,9 @@ import(""FFITarget.dll"");
 
     arr14 : int[]..[] = null;
 
-    arr15 : int[]  = { };
+    arr15 : int[]  = [ ];
 
-    arr16 : int[]..[]  = { };
+    arr16 : int[]..[]  = [ ];
 
     arr111 : bool[] ;
 
@@ -1435,9 +1435,9 @@ import(""FFITarget.dll"");
 
     arr114 : bool[]..[] = null;
 
-    arr115 : bool[]  = { };
+    arr115 : bool[]  = [ ];
 
-    arr116 : bool[]..[]  = { };
+    arr116 : bool[]..[]  = [ ];
 
     arr1111 : ClassFunctionality[] ;
 
@@ -1447,9 +1447,9 @@ import(""FFITarget.dll"");
 
     arr1114 : ClassFunctionality[]..[] = null;
 
-    arr1115 : ClassFunctionality[]  = { };
+    arr1115 : ClassFunctionality[]  = [ ];
 
-    arr1116 : ClassFunctionality[]..[]  = { };
+    arr1116 : ClassFunctionality[]..[]  = [ ];
 
 }
 

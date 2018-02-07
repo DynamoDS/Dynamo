@@ -72,7 +72,7 @@ i = [Imperative]
                     a = 2;
                     b = null + 2;
                     c = b * 3; 
-                    return {aa, bb, a, b, c};
+                    return [aa, bb, a, b, c];
                 }";
             thisTest.RunScriptSource(code);
             thisTest.Verify("i", new object[] {0, 20, 2, null, null});
@@ -300,7 +300,7 @@ i = [Imperative]
 	                    a = i;
                         // At this point 'i' is already allocated and assigned null
 	                    b = i; 
-                        return {a, b};
+                        return [a, b];
                     }";
             thisTest.RunScriptSource(code);
             thisTest.Verify("a", new object[] {null, null});
@@ -319,7 +319,7 @@ i = [Imperative]
                             b = 2;
                         }
                         c = a;
-                        return {a, c};
+                        return [a, c];
                     }
                     ";
             thisTest.RunScriptSource(code);
@@ -356,7 +356,7 @@ i = [Imperative]
                             {
 	                            x = -2.5;
 	                            y = -0.0;
-                                return {x, y};
+                                return [x, y];
                             }
                         ";
             thisTest.RunScriptSource(code);
@@ -369,7 +369,7 @@ i = [Imperative]
             String code =
                         @"x=[Imperative]
                         {
-                            a = {10,20,30,40};
+                            a = [10,20,30,40];
                             x = 0;
                             for (val in a)
                             {
@@ -389,7 +389,7 @@ i = [Imperative]
                         @"x = [Imperative]
                         {
                             x = 0;
-                            for (val in {100,200,300,400})
+                            for (val in [100,200,300,400])
                             {
                                 x = x + val;
                             }
@@ -407,7 +407,7 @@ i = [Imperative]
                         @"x=[Imperative]
                         {
                             x = 0;
-                            for (val in {{100,101},{200,201},{300,301},{400,401}})
+                            for (val in [[100,101],[200,201],[300,301],[400,401]])
                             {
                                 x = x + val[1];
                             }
@@ -667,7 +667,7 @@ i = [Imperative]
 		                        d = 3;
 	                        if (!null)
 		                        e = 4;	
-                            return {b,c,d,e};
+                            return [b,c,d,e];
                         }
                         ";
             thisTest.RunScriptSource(code);
@@ -716,7 +716,7 @@ i = [Imperative]
 	                        c = a[1];
 	                        d = a[2];
 	                        e = a[3];   
-                            return {b,c,d,e};                          
+                            return [b,c,d,e];                          
                         }
                         ";
             thisTest.RunScriptSource(code);
@@ -736,7 +736,7 @@ i = [Imperative]
 	                        c = a[1];
 	                        d = a[2];
 	                        e = a[3];  
-                            return {b,c,d,e};                           
+                            return [b,c,d,e];                           
                         }
                         ";
             thisTest.RunScriptSource(code);
@@ -756,7 +756,7 @@ i = [Imperative]
 	                        d = a[2];
 	                        e = a[3]; 
                             f = a[4];  
-                            return {b,c,d,e,f};                          
+                            return [b,c,d,e,f];                          
                         }
                         ";
             thisTest.RunScriptSource(code);
@@ -776,7 +776,7 @@ i = [Imperative]
 	                        d = a[2];
 	                        e = a[3];  
                             f = a[4];  
-                            return {b,c,d,e,f};                          
+                            return [b,c,d,e,f];                          
                         }
                         ";
             thisTest.RunScriptSource(code);
@@ -794,7 +794,7 @@ i=[Imperative]
     x2 = 0..#0..5;
     x3 = 0..#1..10;
     x4 = 0..#5..10;
-    return {x1,x2,x3,x4};
+    return [x1,x2,x3,x4];
 }
 ";
             thisTest.RunScriptSource(code);
@@ -825,7 +825,7 @@ i=[Imperative]
                                     }
                                 }
                             }
-                            return {i,temp};
+                            return [i,temp];
                         }
                         ";
             thisTest.RunScriptSource(code);
@@ -966,7 +966,7 @@ def fac : int( n : int )
                             {
 	                            a = 5;
                                 b = ++a;
-                                return {a,b};
+                                return [a,b];
                             }
                         ";
             thisTest.RunScriptSource(code);
@@ -982,7 +982,7 @@ def fac : int( n : int )
                             {
 	                            a = 5;
                                 b = a++;
-                                return {a,b};
+                                return [a,b];
                             }
                         ";
             thisTest.RunScriptSource(code);
@@ -999,7 +999,7 @@ def fac : int( n : int )
                                 b = ++a;		//b =6; a =6;
                                 a++;			//a=7;
                                 c = a++;		//c = 7; a = 8;
-                                return {a,b,c};
+                                return [a,b,c];
                             }
                         ";
             thisTest.RunScriptSource(code);
@@ -1044,7 +1044,7 @@ def fac : int( n : int )
             String code =
                 @"  b=[Imperative]
                     {
-                        a = {1, 2, 3, 4};
+                        a = [1, 2, 3, 4];
                         b = a[-2]; // 3
                         return b;
                     }
@@ -1059,7 +1059,7 @@ def fac : int( n : int )
             String code =
                 @"  b=[Imperative]
                     {
-                        a = { { 1, 2 }, { 3, 4 } };
+                        a = [ [ 1, 2 ], [ 3, 4 ] ];
                         b = a[-1][-2]; // 3
                         return b;
                     }
@@ -1078,7 +1078,7 @@ import(""BuiltIn.ds"");
 a = [Imperative]
 {
     counter = 0;
-    lst = {};
+    lst = [];
     while(counter < 10)
     {
         lst = List.AddItemToEnd(counter, lst);
@@ -1103,7 +1103,7 @@ a = [Imperative]
 	
 	                    constructor A()
 	                    {
-		                    x = { B.B(), B.B(), B.B() };
+		                    x = [ B.B(), B.B(), B.B() ];
 	                    }
                     }
                     class B
@@ -1112,12 +1112,12 @@ a = [Imperative]
 	
 	                    constructor B()
 	                    {
-		                    x = { { 1, 2 }, { 3, 4 },  { 5, 6 } };		
+		                    x = [ [ 1, 2 ], [ 3, 4 ],  [ 5, 6 ] ];		
 	                    }
                     }
                     b=[Imperative]
                     {
-                        a = { A.A(), A.A(), A.A() };
+                        a = [ A.A(), A.A(), A.A() ];
                         b = a[-2].x[-3].x[-2][-1]; // 4 
                         return b;
                     }
@@ -1141,7 +1141,7 @@ a = [Imperative]
 	                {
 		                x = B.B(20, 30);
 		                y = 10;
-		                z = { B.B(40, 50), B.B(60, 70), B.B(80, 90) };
+		                z = [ B.B(40, 50), B.B(60, 70), B.B(80, 90) ];
 	                }
                 }
                 class B
@@ -1163,7 +1163,7 @@ a = [Imperative]
                 {
 	                a = A.A();
 	                b = B.B(1, 2);
-	                c = { B.B(-1, -2), B.B(-3, -4) };
+	                c = [ B.B(-1, -2), B.B(-3, -4) ];
 	                a.z[-2] = b;
 	                watch1 = a.z[-2].n; // 2
 	                a.z[-2].m = 3;
@@ -1172,7 +1172,7 @@ a = [Imperative]
 	                watch3 = a.x.m; // 3
 	                a.z = c;
 	                watch4 = a.z[-1].m; // -3
-                    return {watch1,watch2,watch3,watch4};
+                    return [watch1,watch2,watch3,watch4];
                 }
                 ";
             thisTest.RunScriptSource(code);
@@ -1187,9 +1187,9 @@ a = [Imperative]
             string code = @"
 [Imperative]
 {
-    arr1 = {true, false};
-    arr2 = {1, 2, 3};
-    arr3 = {false, true};
+    arr1 = [true, false];
+    arr2 = [1, 2, 3];
+    arr3 = [false, true];
     t = arr2[1][0];
 }
 ";
@@ -1203,7 +1203,7 @@ a = [Imperative]
             string code = @"
 t=[Imperative]
 {
-    t = {1,2,3,4}[3];
+    t = [1,2,3,4][3];
     return t;
 }";
             thisTest.RunScriptSource(code);
@@ -1216,7 +1216,7 @@ t=[Imperative]
             string code = @"
 t=[Imperative]
 {
-    t = {{1,2}, {3,4}}[1][1];
+    t = [[1,2], [3,4]][1][1];
     return t;
 }";
             thisTest.RunScriptSource(code);
@@ -1229,7 +1229,7 @@ t=[Imperative]
             string code = @"
 t=[Imperative]
 {
-    t = ({{1,2}, {3,4}})[1][1];
+    t = ([[1,2], [3,4]])[1][1];
     return t;
 }";
             thisTest.RunScriptSource(code);
@@ -1242,7 +1242,7 @@ t=[Imperative]
             string code = @"
 t=[Imperative]
 {
-    t = ({{1,2}, {3,4}}[1])[1];
+    t = ([[1,2], [3,4]][1])[1];
     return t;
 }";
             thisTest.RunScriptSource(code);
@@ -1255,7 +1255,7 @@ t=[Imperative]
             string code = @"
 t=[Imperative]
 {
-    t = {1,2,3,4,5}[1..3];
+    t = [1,2,3,4,5][1..3];
     return t;
 }";
             thisTest.RunScriptSource(code);
@@ -1283,7 +1283,7 @@ t=[Imperative]
 loc=[Imperative]
 {
     range = 1..10;
-    loc = {};
+    loc = [];
     c = 0;
     for(i in range)
     {
@@ -1313,7 +1313,7 @@ i=[Imperative]
 	s7=""ab"";
 	s8=""cd"";
 	s9=s7+s8;
-    return {s3,s6,s9};
+    return [s3,s6,s9];
 }";
             thisTest.RunScriptSource(code);
             thisTest.Verify("i", new[] {"abcd", "abcd", "abcd"});
@@ -1336,12 +1336,12 @@ i=[Imperative]
 	r7 = ""ab"" == ""ab"";
 	ns = s;
 	ns[0] = 1;
-	r8 = ns == {1, 'b'};
+	r8 = ns == [1, 'b'];
 	r9 = s != ""ab"";
     ss = ""abc"";
     ss[0] = 'x';
     r10 = """" == null;
-    return {r1,r2,r3,r4,r5,r6,r7,r8,r9,ss,r10};
+    return [r1,r2,r3,r4,r5,r6,r7,r8,r9,ss,r10];
 }
 ";
             string err = "MAGN-4118 null upgrades to string when added to string";
@@ -1364,7 +1364,7 @@ i=[Imperative]
 	r1 = foo('h');
 	r2 = 'h' && true;
 	r3 = 'h' + 1;
-    return {r1,r2,r3};
+    return [r1,r2,r3];
 }";
             string err = "MAGN-4119 Char does not upgrade to 'int' in arithmetic expression";
             thisTest.RunScriptSource(code, err);

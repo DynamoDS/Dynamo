@@ -29,7 +29,7 @@ i = [Imperative]
     t5 = (5 <= 6);
     t6 = 5 <= 5;
     t7 = (5 <= 5);
-    return {f0, f1, f2, f3, t0, t1, t2, t3, t4, t5, t6, t7};
+    return [f0, f1, f2, f3, t0, t1, t2, t3, t4, t5, t6, t7];
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -58,7 +58,7 @@ i = [Imperative]
     t6 = 0 <= 0;
     t7 = (0 <= 0);
 
-    return {f0, f1, f2, f3, t0, t1, t2, t3, t4, t5, t6, t7};
+    return [f0, f1, f2, f3, t0, t1, t2, t3, t4, t5, t6, t7];
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -86,7 +86,7 @@ i = [Imperative]
     t5 = (-1 <= 0);
     t6 = -1 <= -1;
     t7 = (-1 <= -1);
-    return {f0, f1, f2, f3, t0, t1, t2, t3, t4, t5, t6, t7};
+    return [f0, f1, f2, f3, t0, t1, t2, t3, t4, t5, t6, t7];
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);

@@ -104,7 +104,7 @@ i=[Imperative]
     x = p.IntVal;
     p.IntVal = 32;
     y = p.IntVal;
-    return {x,y};
+    return [x,y];
 }
 ";
             thisTest.RunScriptSource(code);

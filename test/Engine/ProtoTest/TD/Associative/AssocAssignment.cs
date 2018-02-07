@@ -365,7 +365,7 @@ c3;
 b;
 [Associative]
 {
-	a = {{1,2},3.5};
+	a = [[1,2],3.5];
 	c = a[1];
 	d = a[0][1];
         a[0][1] = 5;
@@ -424,7 +424,7 @@ a = [Associative]
 	c = -0.1;
 	d = -1.99;
 	e = 1.99;
-    return {a, b, c, d, e};
+    return [a, b, c, d, e];
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
@@ -849,7 +849,7 @@ i=[Imperative]
 	{
 	    d = d + 3;
 	}
-	return {a,b,c,d};
+	return [a,b,c,d];
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
             thisTest.Verify("i", new object[] {null, null, null, 3});
@@ -954,7 +954,7 @@ def foo()
 {
     return = 0;
 }
-x = { 1, 2 };
+x = [ 1, 2 ];
 x[foo()] = 3;
 y = x;
 ";
@@ -1039,7 +1039,7 @@ y = x;
             String errmsg = "[Design Issue] conditionals with empty arrays and ararys with different ranks";
             string src = @"[Associative]
 {
-	x = {} == null;
+	x = [] == null;
 }
 ";
             thisTest.VerifyRunScriptSource(src, errmsg);
@@ -1390,7 +1390,7 @@ def foo()
     returnValue = 0;
     i=[Imperative]
     {
-        for(i in { 1, 2 })
+        for(i in [ 1, 2 ])
         {
             returnValue = returnValue + i;; 
         }

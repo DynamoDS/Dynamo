@@ -45,7 +45,7 @@ i = [Imperative]
         i = 3;
     }
     f = i;
-    return {x, z, y, w, f};
+    return [x, z, y, w, f];
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
             thisTest.Verify("i", new object[] {35, 35, 5, null, null});
@@ -69,7 +69,7 @@ a = [Associative]
         i = 3;
     }
     f = i;
-    return {x, y, z, w, f};
+    return [x, y, z, w, f];
 };";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
             thisTest.Verify("a", new object[] {5.1, null, null, null, null});
@@ -307,7 +307,7 @@ b = [Associative]
             string src = @"
 x = [Imperative]
 {
-	a = { 1,2,3,4,5 };
+	a = [ 1,2,3,4,5 ];
     x = null;
 	for( y in a )
 	{

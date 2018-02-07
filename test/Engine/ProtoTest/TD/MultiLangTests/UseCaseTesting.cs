@@ -81,7 +81,7 @@ i = [Imperative]
 	
 		}
 	}
-	return {b,c};
+	return [b,c];
 }
  
 a = a + 2;

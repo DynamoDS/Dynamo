@@ -25,12 +25,12 @@ i = [Imperative]
  b4 = -101.99;
  b5 = 10.0009;
  
- c1 = { 0, 1, 2, 3};
- c2 = { 1, 0.2};
- c3 = { 0, 1.4, true };
- c4 = {{0,1}, {2,3 } };
+ c1 = [ 0, 1, 2, 3];
+ c2 = [ 1, 0.2];
+ c3 = [ 0, 1.4, true ];
+ c4 = [[0,1], [2,3 ] ];
  
- x = {0, 0, 0, 0};
+ x = [0, 0, 0, 0];
  if(a1 == 2 ) // pass condition
  {
      x[0] = 1;
@@ -49,7 +49,7 @@ i = [Imperative]
  }
  
  
- y = {0, 0, 0, 0, 0};
+ y = [0, 0, 0, 0, 0];
  if(b1 == 1.0 ) // pass condition
  {
      y[0] = 1;
@@ -72,7 +72,7 @@ i = [Imperative]
  }
  
  
- z = {0, 0, 0, 0};
+ z = [0, 0, 0, 0];
  if(c1[0] == 0 ) // pass condition
  {
      z[0] = 1;
@@ -89,7 +89,7 @@ i = [Imperative]
  {
      z[3] = 1;
  }
- return {x, y, z};
+ return [x, y, z];
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
             thisTest.Verify("i", 
@@ -220,7 +220,7 @@ i = [Imperative]
 	if(fn2(2)==2)
 	   temp2=fn2(1);
     
-    return {temp, temp2};
+    return [temp, temp2];
 } ";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
             thisTest.Verify("i", new[] {1, 1});
@@ -295,7 +295,7 @@ i = [Imperative]
 		}
     }
 	a = temp;
-    return {temp, a};
+    return [temp, a];
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
             thisTest.Verify("i", new[] {2, 2});
@@ -322,7 +322,7 @@ x = [Associative]
     }
 	b=2*a;
 	a=2;
-	return {a, b, temp};
+	return [a, b, temp];
 };";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
             thisTest.Verify("x", new[] {2, 4, 2});
@@ -412,7 +412,7 @@ i = [Imperative]
  {
      b = 0;
  }
- return {a,b};
+ return [a,b];
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
             thisTest.Verify("i", new[] {0, 1});
@@ -449,7 +449,7 @@ i = [Imperative]
 		{
 			y = 0;
 		}
-        return {x, y};
+        return [x, y];
 	}
                               
 ";
@@ -519,7 +519,7 @@ i = [Imperative]
  b = 1;
  if(a == b);
  else a = 1;
- return {a,b};
+ return [a,b];
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
 
@@ -540,7 +540,7 @@ i = [Imperative]
 	{
 	    a = 4;
 	}
-	return {a, b};
+	return [a, b];
 }
  
  ";
@@ -658,7 +658,7 @@ i = [Imperative]
 	{
 		d = 4;
 	}
-	return {a, b, c, d};
+	return [a, b, c, d];
 } 
  
  ";
@@ -733,7 +733,7 @@ i = [Imperative]
 	{
 		f = 6;
 	}
-	return {a, b, c, d, e, f};
+	return [a, b, c, d, e, f];
 } 
  
  ";
@@ -748,7 +748,7 @@ i = [Imperative]
             string src = @"
 c = [Imperative]
 {
-    a = { 0, 4, 2, 3 };
+    a = [ 0, 4, 2, 3 ];
 	b = 1;
     c = 0;
 	if(a > b)
@@ -774,7 +774,7 @@ c = [Imperative]
             string src = @"c = 
 [Imperative]
 {
-    a = { 0, 4, 2, 3 };
+    a = [ 0, 4, 2, 3 ];
 	b = 1;
     c = 0;
 	if(a[0] > b)
@@ -1139,7 +1139,7 @@ i = [Imperative]
 	{
 		c =  3;
 	}	
-    return {a, b, c};	
+    return [a, b, c];	
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
             thisTest.Verify("i", new[] {1, 2, 3});
@@ -1200,7 +1200,7 @@ i = [Imperative]
 	{
 		c = 2;
 	}
-	return {c, d};
+	return [c, d];
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
@@ -1249,7 +1249,7 @@ d=0;
 	{
 		c =  3;
 	}		
-    return {a, b, c, d};
+    return [a, b, c, d];
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
             thisTest.Verify("i", new[] {1, 2, 3, 4});
@@ -1277,7 +1277,7 @@ i = [Imperative]
  if(a==1); 
  elseif(a ==3);
  else b3 = 2;
- return {b2, b3};
+ return [b2, b3];
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
@@ -1305,7 +1305,7 @@ i = [Imperative]
  {
      d = 1;
  }
- return {c, d};
+ return [c, d];
  }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
@@ -1354,7 +1354,7 @@ i = [Imperative]
  
  if( a2 >= -9.5 )
 	temp2 = temp2 + 2;
- return {temp1, temp2};
+ return [temp1, temp2];
  }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
             thisTest.Verify("i", new[] {12, 12});
@@ -1435,7 +1435,7 @@ i = [Imperative]
 	{
 		a = 2;	
 	}	
-	return {a, c, b};
+	return [a, c, b];
 	
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
@@ -1693,8 +1693,8 @@ def length:int  (pts : ClassFunctionality[])
 }
 pt1 = ClassFunctionality.ClassFunctionality( 0 );
 pt2 = ClassFunctionality.ClassFunctionality( 10 );
-pts1 = {pt1, pt2};
-pts2 = {pt1};
+pts1 = [pt1, pt2];
+pts2 = [pt1];
 numpts1 = length(pts1);
 numpts2 = length(pts2);
 ";
@@ -1721,7 +1721,7 @@ i = [Imperative]
 {
 	x = even(1);
 	y = even(2);
-    return {x, y};
+    return [x, y];
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -1737,7 +1737,7 @@ i = [Imperative]
             string code = @"
 i = [Imperative]
 {
-    a = { 0, 1 };
+    a = [ 0, 1 ];
 	b = 1;
 	c = -1;
 	if(a > b)
@@ -1748,9 +1748,9 @@ i = [Imperative]
 	{
 		c = 1;
 	}
-    d = a > b ? true : { false, false};
+    d = a > b ? true : [ false, false];
     f = a > b;
-	return {c, d, f};
+	return [c, d, f];
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             Object[] v1 = new Object[] { false, false };
@@ -1768,9 +1768,9 @@ i = [Imperative]
 d2;
 [Associative]
 {
-    a2 = { 0, 1 };
+    a2 = [ 0, 1 ];
 	b2 = 1;
-	d2 = a2 > b2 ? true : { false, false};
+	d2 = a2 > b2 ? true : [ false, false];
     //f2 = a2 > b2;	
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -1788,7 +1788,7 @@ d2;
 f2;
 [Associative]
 {
-    a2 = { 0, 1 };
+    a2 = [ 0, 1 ];
     b2 = 1;	
     f2 = a2 > b2;	
 }";
@@ -1805,9 +1805,9 @@ f2;
             string src = @"f2;
 [Associative]
 {
-    a2 = { 0, 1 };
+    a2 = [ 0, 1 ];
     b2 = 1;
-    d2 = a2 > b2 ? true : { false, false};
+    d2 = a2 > b2 ? true : [ false, false];
     f2 = a2 > b2;	
 }";
             thisTest.VerifyRunScriptSource(src, err);
@@ -1852,7 +1852,7 @@ i = [Imperative]
 	{
 	    b = b + 4;
 	}
-	return {b, d};
+	return [b, d];
 	
 }	
 ";
@@ -1902,7 +1902,7 @@ def foo ()
 		{
 			b = b + 4;
 		}
-        return = { b, d };		
+        return = [ b, d ];		
 	}	
 	return = c;
 }
@@ -1967,8 +1967,8 @@ x1 = a1.IntVal == ClassFunctionality.ClassFunctionality(10).IntVal ? true : fals
             // Assert.Fail("");
             string code = @"
 import (""FFITarget.dll"");
-c = { ClassFunctionality.ClassFunctionality(0), ClassFunctionality.ClassFunctionality(1) };
-p = {};
+c = [ ClassFunctionality.ClassFunctionality(0), ClassFunctionality.ClassFunctionality(1) ];
+p = [];
 d = [Imperative]
 {
     if(c[0].IntVal == 0 )
@@ -2150,7 +2150,7 @@ i = [Imperative]
     a = A.A();
     b:bool = A.A();
     m = b;
-    return {foo(b), foo(a)};
+    return [foo(b), foo(a)];
 }
 ";
             thisTest.RunScriptSource(code);

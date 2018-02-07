@@ -244,10 +244,10 @@
   <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
   <SelectInRegionCommand X="1542.17288610811" Y="185.160705553982" Width="0" Height="0" IsCrossSelection="false" />
   <CreateNodeCommand X="1542.17288610811" Y="185.160705553982" DefaultPosition="false" TransformCoordinates="true">
-    <Dynamo.Nodes.CodeBlockNodeModel guid="f3cbd915-8b15-40be-9cfe-0070b56861c1" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="1503.08991743057" y="137.48313679938" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="cc = {a,b,c};" ShouldFocus="false" />
+    <Dynamo.Nodes.CodeBlockNodeModel guid="f3cbd915-8b15-40be-9cfe-0070b56861c1" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="1503.08991743057" y="137.48313679938" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="cc = [a,b,c];" ShouldFocus="false" />
   </CreateNodeCommand>
   <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
-  <UpdateModelValueCommand Name="Code" Value="cc = {a,b,c}" WorkspaceGuid="af0a01d6-9be6-4f07-97f7-de77493ea732">
+  <UpdateModelValueCommand Name="Code" Value="cc = [a,b,c]" WorkspaceGuid="af0a01d6-9be6-4f07-97f7-de77493ea732">
     <ModelGuid>f3cbd915-8b15-40be-9cfe-0070b56861c1</ModelGuid>
   </UpdateModelValueCommand>
   <SelectModelCommand ModelGuid="f3cbd915-8b15-40be-9cfe-0070b56861c1" Modifiers="0" />

@@ -196,7 +196,7 @@ d = a..b..c;";
         return = 1.0 ;
     }
     
-    arr = {1,2,3};
+    arr = [1,2,3];
     arr2 = foo(arr);
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -294,7 +294,7 @@ i=[Imperative]
 	{
 		x = y + x;
 	}
-	return {x,y};
+	return [x,y];
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("i", new object[] {6, null});
@@ -356,7 +356,7 @@ i=[Imperative]
 	{
 	    d = 3;
 	}
-    return {b,c,d};
+    return [b,c,d];
 }
 ";
             thisTest.RunScriptSource(code);
@@ -391,12 +391,12 @@ a3;
 a4;
 i=[Imperative]
 {
-	x1 = { 1, 2, 3, 4 };
+	x1 = [ 1, 2, 3, 4 ];
 	a = Create(x1);
 	a2 = foo(x1);	
 	a3 = foo1(x1[0]);
 	a4 = foo2(x1);
-    return {x1,a,a2,a3,a4};
+    return [x1,a,a2,a3,a4];
 }";
             thisTest.RunScriptSource(code);
             var x1 = new Object[] { 1.0, 2.0, 3.0, 4.0 };
@@ -470,7 +470,7 @@ t3;
 a3;
 [Imperative]
 {
-	x  = { 1, 2, 3 };
+	x  = [ 1, 2, 3 ];
 	a1 = ArrayMember.Ctor( x ).X;
 	a2 = ArrayMember.Ctor( x );
 	t1 = a2[0].X[0];
@@ -497,7 +497,7 @@ a3;
         {
             string code = @"
 import(""FFITarget.dll"");
- value = ArrayMember.Ctor({1,3,5});
+ value = ArrayMember.Ctor([1,3,5]);
  value2 = ArrayMember.Ctor(1.3);
  getval= value.X;
 ";
@@ -513,7 +513,7 @@ import(""FFITarget.dll"");
         {
             string code = @"
 import(""FFITarget.dll"");
-value = ArrayMember.Ctor({1,3,5});
+value = ArrayMember.Ctor([1,3,5]);
 getval= value.X;
 getval2= value.X[0];
 b=1;
@@ -562,8 +562,8 @@ c= call(value);";
 import(""FFITarget.dll"");
 a1=[Imperative]
 {	
-	d = { 1,2,3 };	
-	val={0,0,0};
+	d = [ 1,2,3 ];	
+	val=[0,0,0];
 	j = 0;	
 	for( i in d )	
 	{		
@@ -584,11 +584,11 @@ a1=[Imperative]
             string code = @"
 def foo : var[] ( b : int )
 {
-    return  = { b, b, b };
+    return  = [ b, b, b ];
 }
 t1 = [Imperative]
 {
-	x = { 1, 2, 3 };
+	x = [ 1, 2, 3 ];
 	a2 = foo( x );
 	return = a2[0][0];
 }
@@ -605,7 +605,7 @@ t1 = [Imperative]
             string code = @"
 def foo : int[]( b : int)
 {
-    return = { b , b};
+    return = [ b , b];
 }
                 
 def ret_col (a)
@@ -642,7 +642,7 @@ c;
 d;
 [Associative]
 {                
-    c = { 3, 3 };
+    c = [ 3, 3 ];
 	c1 = create( c );                
 	d = ret_col(c1);
 }
@@ -672,7 +672,7 @@ def length ( pts : double[] )
 	}
 	return = numPts;
 }  
-arr = {0.0,1.0,2.0,3.0};
+arr = [0.0,1.0,2.0,3.0];
 num = length(arr); 
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -780,7 +780,7 @@ def length : ClassFunctionality[] (pts : ClassFunctionality[])
 }
 pt1 = ClassFunctionality.ClassFunctionality( 1 );
 pt2 = ClassFunctionality.ClassFunctionality( 10 );
-pts = {pt1, pt2};
+pts = [pt1, pt2];
 numpts = length(pts);
 test = numpts[0].IntVal;
 test2 = numpts[1].IntVal;
@@ -960,7 +960,7 @@ numpts = [Imperative]
 {
     pt1 = ClassFunctionality.ClassFunctionality( 0 );
     pt2 = ClassFunctionality.ClassFunctionality( 10 );
-    pts = {pt1, pt2};
+    pts = [pt1, pt2];
     return = length(pts); 
 }
 ";
@@ -991,7 +991,7 @@ def length : ClassFunctionality[] (pts : ClassFunctionality[])
 }
 pt1 = ClassFunctionality.ClassFunctionality( 0 );
 pt2 = ClassFunctionality.ClassFunctionality( 10 );
-pts = {pt1, pt2};
+pts = [pt1, pt2];
 numpts = length(pts); // getting null
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -1020,7 +1020,7 @@ def length : int (pts : ClassFunctionality[],num:int)
 }
 pt1 = ClassFunctionality.ClassFunctionality( 0 );
 pt2 = ClassFunctionality.ClassFunctionality( 10 );
-pts = {pt1, pt2};
+pts = [pt1, pt2];
 numpts = length(pts,5); // getting null";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("numpts", 5, 0);
@@ -1049,8 +1049,8 @@ def length(pts : ClassFunctionality[],num:int )
 }
 pt1 = ClassFunctionality.ClassFunctionality( 0 );
 pt2 = ClassFunctionality.ClassFunctionality( 10 );
-pts = {pt1, pt2};
-a={1,2,3};
+pts = [pt1, pt2];
+a=[1,2,3];
 numpts = length(pts,a[0]);";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("numpts", 1, 0);
@@ -1079,8 +1079,8 @@ def length(pts : ClassFunctionality[],num:int )
 }
 pt1 = ClassFunctionality.ClassFunctionality( 0 );
 pt2 = ClassFunctionality.ClassFunctionality( 10 );
-pts = {pt1, pt2};
-a={1,2,3};
+pts = [pt1, pt2];
+a=[1,2,3];
 numpts = length(pts,a[0]);";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             object c = null;
@@ -1110,8 +1110,8 @@ def length(pts : ClassFunctionality[],num:int )
 }
 pt1 = ClassFunctionality.ClassFunctionality( 0 );
 pt2 = ClassFunctionality.ClassFunctionality( 10 );
-pts = {pt1, pt2};
-a={1,2,3};
+pts = [pt1, pt2];
+a=[1,2,3];
 numpts = length(pts,a[0]);";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             object c = null;
@@ -1134,13 +1134,13 @@ def length :ClassFunctionality[](pts : ClassFunctionality[])
 def nested(pts:ClassFunctionality[] )
 {
     pt1 = ClassFunctionality.ClassFunctionality( 5 );
-    pts2={pts,pt1};
+    pts2=[pts,pt1];
     return =length(pts2);
 }
 gpt1 = ClassFunctionality.ClassFunctionality( 0 );
 gpt2 = ClassFunctionality.ClassFunctionality( 10 );
-gpts = {gpt1, gpt2};
-a={1,2,3};
+gpts = [gpt1, gpt2];
+a=[1,2,3];
 numpts = nested(gpts);
 t1 = numpts[0][0].IntVal;
 t2 = numpts[0][1].IntVal;
@@ -1173,8 +1173,8 @@ def nested:ClassFunctionality[][](pts:ClassFunctionality[] )//return type 2 dime
 }
 gpt1 = ClassFunctionality.ClassFunctionality( 0 );
 gpt2 = ClassFunctionality.ClassFunctionality( 10 );
-gpts = {gpt1, gpt2};
-a={1,2,3};
+gpts = [gpt1, gpt2];
+a=[1,2,3];
 res = nested(gpts);
 numpts=res[0][0].IntVal;
 ";
@@ -1187,7 +1187,7 @@ numpts=res[0][0].IntVal;
         public void Regress_1459372()
         {
             string code = @"
-collection = { 2, 2, 2 };
+collection = [ 2, 2, 2 ];
 collection[1] = 3;
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -1213,7 +1213,7 @@ def length : int (pts : int[])
     }
     return = numPts;
 }
-z=length({1,2});";
+z=length([1,2]);";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
         }
 
@@ -1313,7 +1313,7 @@ def length : ClassFunctionality[] (pts : ClassFunctionality[])
 }
 pt1 = ClassFunctionality.ClassFunctionality( 0 );
 pt2 = ClassFunctionality.ClassFunctionality( 10 );
-pts = {pt1, pt2};
+pts = [pt1, pt2];
 numpts = length(pts);
 test=numpts[0].IntVal;
 test2= numpts[1].IntVal;";
@@ -1346,7 +1346,7 @@ def length : ClassFunctionality[] (pts : ClassFunctionality[])
 }
 pt1 = ClassFunctionality.ClassFunctionality( 0 );
 pt2 = ClassFunctionality.ClassFunctionality( 10 );
-pts = {pt1, pt2};
+pts = [pt1, pt2];
 numpts = length(pts); 
 a=numpts[0].IntVal;
 b=numpts[1].IntVal;
@@ -1380,7 +1380,7 @@ def length : ClassFunctionality[] (pts : ClassFunctionality[])
 }
 pt1 = ClassFunctionality.ClassFunctionality( 0 );
 pt2 = ClassFunctionality.ClassFunctionality( 10 );
-pts = {pt1, pt2};
+pts = [pt1, pt2];
 numpts = length(pts); 
 a=numpts[0].IntVal;
 b=numpts[1].IntVal;";
@@ -1413,7 +1413,7 @@ def length : ClassFunctionality (pts : ClassFunctionality[])
 }
 pt1 = ClassFunctionality.ClassFunctionality( 0 );
 pt2 = ClassFunctionality.ClassFunctionality( 10 );
-pts = {pt1, pt2};
+pts = [pt1, pt2];
 numpts = length(pts); 
 a=numpts[0].IntVal;
 b=numpts[1].IntVal;";
@@ -1445,7 +1445,7 @@ def length : int (pts : ClassFunctionality[])
 }
 pt1 = ClassFunctionality.ClassFunctionality(0);
 pt2 = ClassFunctionality.ClassFunctionality(10);
-pts = {pt1, pt2};
+pts = [pt1, pt2];
 numpts = length(pts);";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("numpts", 1, 0);
@@ -1474,7 +1474,7 @@ def length : double (pts : ClassFunctionality[])
 }
 pt1 = ClassFunctionality.ClassFunctionality(0);
 pt2 = ClassFunctionality.ClassFunctionality(10);
-pts = {pt1, pt2};
+pts = [pt1, pt2];
 numpts = length(pts); ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("numpts", 1.0, 0);
@@ -1503,7 +1503,7 @@ def length  (pts : ClassFunctionality[])
 }
 pt1 = ClassFunctionality.ClassFunctionality(0);
 pt2 = ClassFunctionality.ClassFunctionality(10);
-pts = {pt1, pt2};
+pts = [pt1, pt2];
 numpts = length(pts); 
 test=numpts[0].IntVal;
 test2=numpts[1].IntVal;
@@ -1537,7 +1537,7 @@ def length  (pts : ClassFunctionality[])
 }
 pt1 = ClassFunctionality.ClassFunctionality(0);
 pt2 = ClassFunctionality.ClassFunctionality(10);
-pts = {pt1, pt2};
+pts = [pt1, pt2];
 numpts = length(pts); ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             object c = null;
@@ -1567,7 +1567,7 @@ def length  (pts : ClassFunctionality[])
 }
 pt1 = ClassFunctionality.ClassFunctionality(0);
 pt2 = ClassFunctionality.ClassFunctionality(10);
-pts = {pt1, pt2};
+pts = [pt1, pt2];
 numpts = length(pts); ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             object c = null;
@@ -1579,7 +1579,7 @@ numpts = length(pts); ";
         public void Regress_1458475()
         {
             string code = @"
-a = { 1,2 };
+a = [ 1,2 ];
 b1 = a[-1];//b1=2";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("b1", 2, 0);
@@ -1590,7 +1590,7 @@ b1 = a[-1];//b1=2";
         public void Regress_1458475_2()
         {
             string code = @"
-a = { {1,2},{3,4,5}};
+a = [ [1,2],[3,4,5]];
 b1 = a[0][-1];// b1=2";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("b1", 2, 0);
@@ -1701,7 +1701,7 @@ r2 = r1+1;
 x;
 [Associative]
 {
-	a = { 4,5 };
+	a = [ 4,5 ];
    
 	x=[Imperative]
 	{
@@ -1738,7 +1738,7 @@ def length : int (pts : double[])
     }
     return = numPts;
 }
-arr = {0.0,1.0,2.0,3.0};
+arr = [0.0,1.0,2.0,3.0];
 num = length(arr);
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -1767,7 +1767,7 @@ def length : int (C : double[])
     }
     
 }
-arr = { 0.0, 1.0, 2.0, 3.0 };
+arr = [ 0.0, 1.0, 2.0, 3.0 ];
 num = length(arr);
 ";
             thisTest.RunScriptSource(code);
@@ -1797,7 +1797,7 @@ def add_2:double[](b : double[])
 		
 	return = x;
 }
-c = { 1.0, 2, 3 };
+c = [ 1.0, 2, 3 ];
 b2 = add_2(c);";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             Object[] b2 = new object[] { 2.0, 3.0, 4.0 };
@@ -1817,9 +1817,9 @@ b2 = add_2(c);";
 		{
 			if( i == 1 )
 			{
-				return = { { 1,2,3 } , { 4,5,6 } };
+				return = [ [ 1,2,3 ] , [ 4,5,6 ] ];
 			}
-			return = { { 1,2,3 } , { 1,2,3 } };	
+			return = [ [ 1,2,3 ] , [ 1,2,3 ] ];	
         }
 	}
 	
@@ -1848,7 +1848,7 @@ def length : int (pts : int[])
     }
     return = numPts;
 }
-z=length({1,2});";
+z=length([1,2]);";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
         }
 
@@ -1890,7 +1890,7 @@ y2 = ding().foo(3);";
         public void Regress_1467094_1()
         {
             string code = @"
-t = {};
+t = [];
 x = t[3];
 t[2] = 1;
 y = t[3];
@@ -1908,8 +1908,8 @@ z = t[-1];
         {
             string code = @"
 import(""FFITarget.dll"");
-c = { ClassFunctionality.ClassFunctionality(0), ClassFunctionality.ClassFunctionality(1) };
-p = {};
+c = [ ClassFunctionality.ClassFunctionality(0), ClassFunctionality.ClassFunctionality(1) ];
+p = [];
 d = [Imperative]
 {
     if(c[0].IntVal == 0 )
@@ -1937,7 +1937,7 @@ t4=p[1];";
         {
             string code = @"
 import(""FFITarget.dll"");
-pts = ClassFunctionality.ClassFunctionality( { 1, 2} );
+pts = ClassFunctionality.ClassFunctionality( [ 1, 2] );
 aa = pts[null].IntVal;
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -1978,7 +1978,7 @@ a = 1;";
         {
             string code = @"
 import(""FFITarget.dll"");
-a = ArrayMember.Ctor({2, 3});
+a = ArrayMember.Ctor([2, 3]);
 t = a.X;
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);

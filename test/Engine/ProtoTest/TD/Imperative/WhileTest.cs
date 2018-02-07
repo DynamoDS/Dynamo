@@ -136,7 +136,7 @@ x = [Associative]
         return temp;
     }
 	a = temp;
-    return {temp, a, b};
+    return [temp, a, b];
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
             thisTest.Verify("x", new[] {7, 7, 14});
@@ -158,7 +158,7 @@ x = [Imperative]
 		    break;
 		temp=temp+1;
 	}
-    return {temp, i};
+    return [temp, i];
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
             thisTest.Verify("x", new[] {2, 3});
@@ -183,7 +183,7 @@ x = [Imperative]
 		temp=temp+1;
 		 
 	}
-    return {temp, i};
+    return [temp, i];
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
             thisTest.Verify("x", new[] { 3, 6 });
@@ -217,7 +217,7 @@ x = [Imperative]
 		}
 		i = i + 1;
 	}
-    return {temp, i, a, p};
+    return [temp, i, a, p];
 }  ";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
             thisTest.Verify("x", new[] {125, 6, 6, 6});
@@ -283,7 +283,7 @@ i = [Imperative]
             i1 = i1 - 1;		
             temp4 = 4;
         }       
-        return {temp1, temp2, temp3, temp4};
+        return [temp1, temp2, temp3, temp4];
 }		
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
@@ -360,7 +360,7 @@ i = [Imperative]
 		b = b * (a-1) ;		
 	}
 	factorial_a = b * a;
-    return {a, factorial_a};
+    return [a, factorial_a];
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
             thisTest.Verify("i", new[] {6, 720});
@@ -380,7 +380,7 @@ i = [Imperative]
 		a = a + 1;
 		b = b * (a-1) ;		
 	}
-	return {a, b};
+	return [a, b];
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
             thisTest.Verify("i", new[] {6.5, 324.84375});
@@ -400,7 +400,7 @@ i = [Imperative]
 		a = a + 1;
 		b = b * (a-1) ;		
 	}	
-return {a, b};
+return [a, b];
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
 
@@ -449,7 +449,7 @@ i = [Imperative]
 	{
 		a = 2;	
 	}	
-	return {a, c, b};
+	return [a, c, b];
 	
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
@@ -478,7 +478,7 @@ i = [Imperative]
 		a = a + 1;
 	}
 	
-	return {a, b};
+	return [a, b];
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
             thisTest.Verify("i", new[] {5, 15});
@@ -505,11 +505,11 @@ def Create2DArray( col : int)
 {
 	result = [Imperative]
     {
-		array = { 1, 2 };
+		array = [ 1, 2 ];
 		counter = 0;
 		while( counter < col)
 		{
-			array[counter] = { 1, 2};
+			array[counter] = [ 1, 2];
 			counter = counter + 1;
 		}
 		return = array;
@@ -642,7 +642,7 @@ y = [Imperative]
             string src = @"
 def foo ()
 {
-	return = { 0, 1, 2 };
+	return = [ 0, 1, 2 ];
 }
 def test ()
 {

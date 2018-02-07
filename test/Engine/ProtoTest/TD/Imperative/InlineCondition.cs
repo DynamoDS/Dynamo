@@ -26,7 +26,7 @@ i = [Imperative]
 	d = fo1(a);
 	smallest2   =   (fo1(a))	<   (fo1(b))  ?   (fo1(a))	:	(fo1(a));	//100
 	largest2	=   (fo1(a)) >   (fo1(b))  ?   (fo1(a))	:	(fo1(b)); //400
-    return {smallest2, largest2};
+    return [smallest2, largest2];
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
@@ -73,7 +73,7 @@ largest2  =   sqrt(fo1(a)) >   sqrt(fo1(b))  ?   sqrt(fo1(a))  :     sqrt(fo1(b)
 	Rameshwar = 80;
 	Jun = 68;
 	Roham = 50;
-	Smartness = { BenBarnes, BenGoh, Jun, Rameshwar, Roham }; // { 1, 0, 1, 1, 0 }
+	Smartness = [ BenBarnes, BenGoh, Jun, Rameshwar, Roham ]; // { 1, 0, 1, 1, 0 }
 	Results = Smartness > Einstein ? Passed : Failed;
 	
 }";
@@ -119,9 +119,9 @@ largest2  =   sqrt(fo1(a)) >   sqrt(fo1(b))  ?   sqrt(fo1(a))  :     sqrt(fo1(b)
 	d = ((c - c / 2 * 2) > 0)? c : c+1 ; //5 
 	e1 = ((b>(d-b+d))) ? d : (d+1); //5
 	//inline conditional, returning different sized collections
-	c1 = {1,2,3};
-	c2 = {1,2};
-	a1 = {1, 2, 3, 4};
+	c1 = [1,2,3];
+	c2 = [1,2];
+	a1 = [1, 2, 3, 4];
 	b1 = a1>3?true:a1; // expected : {1, 2, 3, true}
 	b2 = a1>3?true:c1; // expected : {1, 2, 3}
 	b3 = a1>3?c1:c2;   // expected : {1, 2}
@@ -171,8 +171,8 @@ largest2  =   sqrt(fo1(a)) >   sqrt(fo1(b))  ?   sqrt(fo1(a))  :     sqrt(fo1(b)
             string src = @"
 x = [Imperative]
 {
-	a = { 0, 1, 2, 4};
-	x = a > 1 ? 0 : {1,1}; // { 1, 1} ? 
+	a = [ 0, 1, 2, 4];
+	x = a > 1 ? 0 : [1,1]; // { 1, 1} ? 
 	x_0 = x[0];
 	x_1 = x[1];
     return x;
@@ -226,7 +226,7 @@ i = [Imperative]
 	f = true == true ? 1 : 0.5;
 	g = (1/3.0) > 0 ? (1/3.0) : (4/3);
 	h = (1/3.0) < 0 ? (1/3.0) : (4/3);
-    return {a, b, c, d, e, f, g, h};
+    return [a, b, c, d, e, f, g, h];
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
@@ -259,7 +259,7 @@ i = [Imperative]
     x5 = f != g ? h : h.IntVal;	
 	
 	temp = x3.IntVal;
-    return {x1, x2, x4, x5, x3, temp};
+    return [x1, x2, x4, x5, x3, temp];
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -346,11 +346,11 @@ x4 = foo(a, power(3)) >= power(foo(0, 3)) ? foo(a, power(3)) : power(foo(0, 3));
 c1;c2;c3;c4;
 [Imperative]
 {
-	a = { 0, 1, 2};
-	b = { 3, 11 };
+	a = [ 0, 1, 2];
+	b = [ 3, 11 ];
 	c = 5;
-	d = { 6, 7, 8, 9};
-	e = { 10 };
+	d = [ 6, 7, 8, 9];
+	e = [ 10 ];
 	x1 = a < 5 ? b : 5;
 	t1 = x1[0];
 	t2 = x1[1];
@@ -377,7 +377,7 @@ c1;c2;c3;c4;
 		c3 = c3 + 1;
 	}
 	
-	x4 = b > e ? d : { 0, 1};
+	x4 = b > e ? d : [ 0, 1];
 	t7 = x4[0];	
 	c4 = 0;
 	for (i in x4)
@@ -418,8 +418,8 @@ c = 2> 1 && 4>3 ? 1 : 0;
 d = 1 == 1 || (1 == 0) ? 1 : 0;
 e1 = a > b && c > d ? 1 : 0;
 f = a <= b || c <= d ? 1 : 0;
-g = foo({ 1, 2 }) > 3+ foo({4,5,6}) ?  1 : 3+ foo({4,5,6});
-i = {1,3} > 2 ? 1: 0;";
+g = foo([ 1, 2 ]) > 3+ foo([4,5,6]) ?  1 : 3+ foo([4,5,6]);
+i = [1,3] > 2 ? 1: 0;";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             Object[] array2 = { 0, 1 };
             thisTest.Verify("a", 5.0, 0);
@@ -488,7 +488,7 @@ a2 = [Imperative]
             string code = @"
 a1 =  1 > 2 ? true : 2 > 1 ? 2 : 1;
 a2 =  1 > 2 ? true : 0..3;
-b = {0,1,2,3};
+b = [0,1,2,3];
 a3 = 1 > 2 ? true : b;";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             Object[] ExpectedRes_1 = { 0, 1, 2, 3 };
@@ -506,7 +506,7 @@ a3 = 1 > 2 ? true : b;";
             String code =
 @"xx = [Imperative] 
 {
-    a = { 0, 1, 2}; 
+    a = [ 0, 1, 2]; 
     return a < 1 ? 1 : 0;
 }
 ";
@@ -523,7 +523,7 @@ a3 = 1 > 2 ? true : b;";
             String code =
 @"xx = [Imperative] 
 {
-    a = { 0, 1, 2}; 
+    a = [ 0, 1, 2]; 
     return 2 > 1 ? a : 0;
 }
 ";
@@ -550,7 +550,7 @@ i = [Imperative]
    x3 = null == a ? 1 : 0;
    x4 = foo2(1) == a ? 1 : 0;
    x5 = foo() == null ? 1 : 0;
-   return {x1, x2, x3, x4, x5};
+   return [x1, x2, x3, x4, x5];
 }
 ";
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();

@@ -26,7 +26,7 @@ i = [Imperative]
         
         y = y + 1;
     }
-    return {x, y};
+    return [x, y];
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
@@ -74,7 +74,7 @@ sum = [Imperative]
 sum = [Imperative]
 {
     sum = 0;
-    for (x in {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13})
+    for (x in [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13])
     {
         if (x >= 11)
             break;
@@ -95,7 +95,7 @@ sum = [Imperative]
 sum = [Imperative]
 {
     sum = 0;
-    for (x in {1, 2, 3, 4, 5, 6, 7, 8, 9, 10})
+    for (x in [1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
     {
         sum = sum + x;
         if (x <= 5)
@@ -138,7 +138,7 @@ sum = [Imperative]
         b = ding(6);
         c = dong(2);
         d = dong(7);
-        return {a, b, c, d};
+        return [a, b, c, d];
     }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);

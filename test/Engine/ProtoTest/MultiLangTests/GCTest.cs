@@ -30,15 +30,15 @@ def foo : int(a : DisposeCounterTest[])
 [Imperative]
 {
 DisposeCounter.Reset(1);
-arr = { DisposeCounterTest.DisposeCounterTest(), DisposeCounterTest.DisposeCounterTest(), DisposeCounterTest.DisposeCounterTest() };
+arr = [ DisposeCounterTest.DisposeCounterTest(), DisposeCounterTest.DisposeCounterTest(), DisposeCounterTest.DisposeCounterTest() ];
 arr = 3;
 v1 = DisposeCounter.x; // 4
 a1 = DisposeCounterTest.DisposeCounterTest();
-arr = { a1, DisposeCounterTest.DisposeCounterTest() };
+arr = [ a1, DisposeCounterTest.DisposeCounterTest() ];
 arr = 3;
 v2 = DisposeCounter.x; // 5
 a2 = DisposeCounterTest.DisposeCounterTest();
-a = foo( { a1, a2 });
+a = foo( [ a1, a2 ]);
 a2 = DisposeCounterTest.DisposeCounterTest();
 v3 = DisposeCounter.x; // 6
 }
@@ -137,7 +137,7 @@ v1;
 v2;
 def foo : DisposeCounterTest()
 {
-	arr = { DisposeCounterTest.DisposeCounterTest(), DisposeCounterTest.DisposeCounterTest(), DisposeCounterTest.DisposeCounterTest() };
+	arr = [ DisposeCounterTest.DisposeCounterTest(), DisposeCounterTest.DisposeCounterTest(), DisposeCounterTest.DisposeCounterTest() ];
 	return = arr[1]; // only the second element in arr is not gced, ref count of arr[1] is incremented
 }
 [Imperative]
@@ -168,7 +168,7 @@ v3;
 {
   
 DisposeCounter.Reset(1);
-arr = { DisposeCounterTest.DisposeCounterTest(), DisposeCounterTest.DisposeCounterTest(), DisposeCounterTest.DisposeCounterTest() };
+arr = [ DisposeCounterTest.DisposeCounterTest(), DisposeCounterTest.DisposeCounterTest(), DisposeCounterTest.DisposeCounterTest() ];
 [Associative]
 {
     [Imperative]
@@ -206,7 +206,7 @@ v3;
 {
   
 DisposeCounter.Reset(1);
-arr = { DisposeCounterTest.DisposeCounterTest(), DisposeCounterTest.DisposeCounterTest(), DisposeCounterTest.DisposeCounterTest() };
+arr = [ DisposeCounterTest.DisposeCounterTest(), DisposeCounterTest.DisposeCounterTest(), DisposeCounterTest.DisposeCounterTest() ];
 [Associative]
 {
     [Imperative]
@@ -247,7 +247,7 @@ v7;
 {
   
 DisposeCounter.Reset(1);
-arr = { DisposeCounterTest.DisposeCounterTest(), DisposeCounterTest.DisposeCounterTest(), DisposeCounterTest.DisposeCounterTest() };
+arr = [ DisposeCounterTest.DisposeCounterTest(), DisposeCounterTest.DisposeCounterTest(), DisposeCounterTest.DisposeCounterTest() ];
 b = arr;
 b = null;
 v1 = DisposeCounter.x; // 1
@@ -256,7 +256,7 @@ v2 = DisposeCounter.x; // 4
 a1 = DisposeCounterTest.DisposeCounterTest();
 a2 = DisposeCounterTest.DisposeCounterTest();
 a3 = DisposeCounterTest.DisposeCounterTest();
-arr2 = { a1, a2, a3 };
+arr2 = [ a1, a2, a3 ];
 b2 = arr2;
 b2 = null;
 v3 = DisposeCounter.x; // 4
@@ -301,7 +301,7 @@ v6;
 [Imperative]
 {
 a1 = DisposeCounterTest.DisposeCounterTest();
-a2 = { DisposeCounterTest.DisposeCounterTest(), DisposeCounterTest.DisposeCounterTest(), DisposeCounterTest.DisposeCounterTest() };
+a2 = [ DisposeCounterTest.DisposeCounterTest(), DisposeCounterTest.DisposeCounterTest(), DisposeCounterTest.DisposeCounterTest() ];
 x = foo2(a1);
 y = foo(a2);
 v1 = DisposeCounter.x; // 1
@@ -312,7 +312,7 @@ a2 = null;
 v4 = DisposeCounter.x; // 5
 b = foo2(DisposeCounterTest.DisposeCounterTest());
 v5 = DisposeCounter.x; // 6
-c = foo( { DisposeCounterTest.DisposeCounterTest(), DisposeCounterTest.DisposeCounterTest(), DisposeCounterTest.DisposeCounterTest() } );
+c = foo( [ DisposeCounterTest.DisposeCounterTest(), DisposeCounterTest.DisposeCounterTest(), DisposeCounterTest.DisposeCounterTest() ] );
 }
 __GC();
 v6 = DisposeCounter.x; // 9";
@@ -342,7 +342,7 @@ v2;
 [Imperative]
 {
   
-m = foo( { DisposeCounterTest.DisposeCounterTest(), DisposeCounterTest.DisposeCounterTest(), DisposeCounterTest.DisposeCounterTest() } );
+m = foo( [ DisposeCounterTest.DisposeCounterTest(), DisposeCounterTest.DisposeCounterTest(), DisposeCounterTest.DisposeCounterTest() ] );
 v1 = DisposeCounter.x; // 3
 m = null; 
 v2 = DisposeCounter.x; // 4
@@ -386,7 +386,7 @@ v1 = DisposeCounter.x; // 2
 import(""FFITarget.dll"");
 def flatten(arr : DisposeCounterTest[][])
 {
-	solids = {};
+	solids = [];
 	i = 0;
 	[Imperative]
 	{
@@ -402,7 +402,7 @@ def flatten(arr : DisposeCounterTest[][])
 	return = solids;
 }
 DisposeCounter.Reset(1);
-arrr = { { DisposeCounterTest.DisposeCounterTest(), DisposeCounterTest.DisposeCounterTest(), DisposeCounterTest.DisposeCounterTest() }, { DisposeCounterTest.DisposeCounterTest(), DisposeCounterTest.DisposeCounterTest(), DisposeCounterTest.DisposeCounterTest() }, { DisposeCounterTest.DisposeCounterTest(), DisposeCounterTest.DisposeCounterTest(), DisposeCounterTest.DisposeCounterTest() } };
+arrr = [ [ DisposeCounterTest.DisposeCounterTest(), DisposeCounterTest.DisposeCounterTest(), DisposeCounterTest.DisposeCounterTest() ], [ DisposeCounterTest.DisposeCounterTest(), DisposeCounterTest.DisposeCounterTest(), DisposeCounterTest.DisposeCounterTest() ], [ DisposeCounterTest.DisposeCounterTest(), DisposeCounterTest.DisposeCounterTest(), DisposeCounterTest.DisposeCounterTest() ] ];
 arrr2 = flatten(arrr);
 v1 = DisposeCounter.x; // 1
 ";
@@ -440,7 +440,7 @@ import(""FFITarget.dll"");
 [Associative]
 {
     DisposeCounter.Reset(1);
-    arr = {DisposeCounterTest.DisposeCounterTest()};
+    arr = [DisposeCounterTest.DisposeCounterTest()];
     arr = 1;                // Dispose DisposeCounterTest.DisposeCounterTest() 
 }
 __GC();

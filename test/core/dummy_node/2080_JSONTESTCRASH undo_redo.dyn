@@ -18,7 +18,7 @@
         {
           "Id": "cddfa508b4a246fd94f79792d303cbf5",
           "Name": "",
-          "Description": "t6BBA4B28C5E54CF89F300D510499A00E_0",
+          "Description": "Value of expression at line 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -38,7 +38,7 @@
         {
           "Id": "8234ec6cc018433da0605ddfb17cdc2b",
           "Name": "",
-          "Description": "t6BBA4B28C5E54CF89F300D510499A00E_0",
+          "Description": "Value of expression at line 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,

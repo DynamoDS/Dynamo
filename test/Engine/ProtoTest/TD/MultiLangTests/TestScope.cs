@@ -94,7 +94,7 @@ c_inner;
 		a_inner = a;
 		b_inner = b;
 		c_inner = c;
-        return {a_inner, b_inner, c_inner};
+        return [a_inner, b_inner, c_inner];
 	}
 	a_inner=i[0];b_inner=i[1];c_inner=i[2];
 }";
@@ -129,7 +129,7 @@ c_inner1;c_inner2;
 			a_inner2 = a;
 			b_inner2 = b;
 			c_inner2 = c;
-			return {a_inner2, b_inner2, c_inner2};
+			return [a_inner2, b_inner2, c_inner2];
 		}
         a_inner2 = i[0];
 		b_inner2 = i[1];
@@ -171,7 +171,7 @@ a_inner2;b_inner2;c_inner2;
 			c_inner2 = c;
 			
 		}
-        return {a_inner1, b_inner1, c_inner1};
+        return [a_inner1, b_inner1, c_inner1];
 	}
     a_inner1=i[0];b_inner1=i[1];c_inner1=i[2];
 }";
@@ -254,7 +254,7 @@ i = [Imperative]
 	newA = a;
 	newB = b;
 	newC = c;
-    return {newA, newB, newC};
+    return [newA, newB, newC];
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
@@ -280,7 +280,7 @@ newA;newB;newC;
 		a = 1.5;
 		b = -4;
 		c = false;
-        return {a,b,c};
+        return [a,b,c];
 	}
 	
 	a = newA = i[0];
@@ -473,7 +473,7 @@ i = [Imperative]
 		return a;
 	}
 	aI2 = a;
-    return {a, aA1, aI1, aA2, aI2};
+    return [a, aA1, aI1, aA2, aI2];
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
@@ -907,7 +907,7 @@ i = [Imperative]
 	y_I2 = 12;
 	z_I2 = foo (x_I2, y_I2);
 	
-	return {z_A1, z_I1, z_A2, z_I2};
+	return [z_A1, z_I1, z_A2, z_I2];
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -1765,7 +1765,7 @@ c = foo(t);
 c = [Imperative]
 {
   a = 10;
-  b = {10,20,30};
+  b = [10,20,30];
   for (i in b)
   {
       a = a + i;

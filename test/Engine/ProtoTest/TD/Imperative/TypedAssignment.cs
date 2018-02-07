@@ -43,7 +43,7 @@ i = [Imperative]
 	b1 = foo(a1);
 	x11:int = 2.3;
 	y1:double = 2;
-    return {i1, d1, isTrue1, isFalse1, x1, a1, b1, x11, y1};
+    return [i1, d1, isTrue1, isFalse1, x1, a1, b1, x11, y1];
 }
 a = [Associative]
 {
@@ -56,7 +56,7 @@ a = [Associative]
 	b2 = foo(a2);
 	x12:int = 2.3;
 	y2:double = 2;
-    return {i2, d2, isTrue2, isFalse2, x2, a2, b2, x12, y2};
+    return [i2, d2, isTrue2, isFalse2, x2, a2, b2, x12, y2];
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("i", new object[] {5, 5.2, true, false, 3, 3, 5, 2, 2.0});

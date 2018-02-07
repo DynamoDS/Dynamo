@@ -92,11 +92,11 @@ namespace ProtoTest.TD.Imperative
             string src = @"
 x = [Associative]
 {
-	a = { 4, 5 };
+	a = [ 4, 5 ];
 	return [Imperative]
 	{
 		x = 0;
-		b = { 2,3 };
+		b = [ 2,3 ];
 		for( y in b )
 		{
 			x = y + x;
@@ -115,7 +115,7 @@ x = [Associative]
             string src = @"b;
 [Associative]
 {
-	a = { 4,5 };
+	a = [ 4,5 ];
 	b =[Imperative]
 	{
 	
@@ -138,7 +138,7 @@ x = [Associative]
             string src = @"
 x = [Imperative]
 {
-	a = { 1, 2, 3, 4, 5 };
+	a = [ 1, 2, 3, 4, 5 ];
 	x = 0;
 	for( y in a )
 	{
@@ -161,7 +161,7 @@ def sum : double ( a : double, b : double, c : double )
 {   
     return = [Imperative] {
 		x = 0;
-	    z = {a, b, c};
+	    z = [a, b, c];
 		for(y in z)
 		{
 			x = x + y;
@@ -173,7 +173,7 @@ i = [Imperative]
 {
 	y = sum ( 1.0, 2.5, -3.5 );
 	z = sum ( -4.0, 5.0, 6.0 );
-    return {y, z};
+    return [y, z];
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
             thisTest.Verify("i", new[] {0, 7});
@@ -186,7 +186,7 @@ i = [Imperative]
             string src = @"
 x = [Imperative]
 {
-	a = { 1,2,3 };
+	a = [ 1,2,3 ];
 	x = 0;
 	for( i in a )
 	{
@@ -206,7 +206,7 @@ x = [Imperative]
             string src = @"
 x = [Imperative]
 {
-	a = { 1,2,3 };
+	a = [ 1,2,3 ];
 	x = 0;
 	for ( i in a )
 	{
@@ -228,7 +228,7 @@ x = [Imperative]
             string src = @"
 x = [Imperative]
 {
-	a = {1};
+	a = [1];
 	b = 1;
 	x = 0;
  
@@ -254,7 +254,7 @@ x = [Imperative]
             string src = @"
 i = [Imperative]
 {
-	a = {{1},{2,3},{4,5,6}};
+	a = [[1],[2,3],[4,5,6]];
 	x = 0;
 	i = 0;
     for (y in a)
@@ -270,7 +270,7 @@ i = [Imperative]
 		    z = z + j1;
 		}
 	}
-	return {x, z};	
+	return [x, z];	
 	
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
@@ -284,8 +284,8 @@ i = [Imperative]
             string src = @"
 i = [Imperative]
 {
-	a = { -1,-3,-5 };
-	b = { 2.5,3.5,4.2 };
+	a = [ -1,-3,-5 ];
+	b = [ 2.5,3.5,4.2 ];
 	x = 0;
 	y = 0;
     for ( i in a )
@@ -297,7 +297,7 @@ i = [Imperative]
 	{
 		y = y + i;
 	}
-	return {x, y};
+	return [x, y];
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
             thisTest.Verify("i", new[] {-9, 10.2});
@@ -310,7 +310,7 @@ i = [Imperative]
             string src = @"x;
 [Imperative]
 { 
-	a = { true, false, true, true };
+	a = [ true, false, true, true ];
 	x = false;
 	
 	for( i in a )
@@ -329,20 +329,20 @@ i = [Imperative]
             string src = @"
 i = [Imperative]
 {
-	a = { -2, 3, 4.5 };
+	a = [ -2, 3, 4.5 ];
 	x = 1;
 	for ( y in a )
 	{
 		x = x * y;       
     }
 	
-	a = { -2, 3, 4.5, true };
+	a = [ -2, 3, 4.5, true ];
 	y = 1;
 	for ( i in a )
 	{
 		y = i * y;       
     }
-	return {x, y};
+	return [x, y];
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
             thisTest.Verify("i", new object[] {-27, null});
@@ -356,7 +356,7 @@ i = [Imperative]
 a = [Imperative]
 {
 	a = 1;
-	b = { 2,3,4 };
+	b = [ 2,3,4 ];
 	if( a == 1 )
 	{
 		for( y in b )
@@ -385,7 +385,7 @@ a = [Imperative]
 a = [Imperative]
 {
 	a = 1;
-	b = { 2,3,4 };
+	b = [ 2,3,4 ];
 	c = 1;
 	if( a == 1 )
 	{
@@ -418,7 +418,7 @@ a = [Imperative]
 x = [Imperative]
 {
 	a = 1;
-	b = { 1,1,1 };
+	b = [ 1,1,1 ];
 	x = 0;
 	
 	if( a == 1 )
@@ -447,7 +447,7 @@ x = [Imperative]
 x = [Imperative]
 {
 	i = 1;
-	a = {1,2,3,4,5};
+	a = [1,2,3,4,5];
 	x = 0;
 	
 	while( i <= 5 )
@@ -478,7 +478,7 @@ x = [Imperative]
             string src = @"
 x = [Imperative]
 {
-	a = { 1, 2, 3 };
+	a = [ 1, 2, 3 ];
     x = 0;
 	
 	for( y in a )
@@ -496,7 +496,7 @@ x = [Imperative]
             string src = @"
 x = [Imperative]
 {
-	a = { 1,2,3,4,5 };
+	a = [ 1,2,3,4,5 ];
 	x = 0;
 	
 	for ( i in a )
@@ -523,7 +523,7 @@ x = [Imperative]
             string src = @"
 x = [Imperative]
 {
-	a = { 1,2,3 };
+	a = [ 1,2,3 ];
 	x = 0;
 	
 	for( y in a )
@@ -554,8 +554,8 @@ x = [Imperative]
             string src = @"
 i = [Imperative]
 {
-	a = {0, 0, 0, 0, 0, 0};
-	b = {5, 4, 3, 2, 1, 0, -1, -2};
+	a = [0, 0, 0, 0, 0, 0];
+	b = [5, 4, 3, 2, 1, 0, -1, -2];
 	i = 5;
 	for( x in b )
 	{
@@ -571,7 +571,7 @@ i = [Imperative]
 	a4 = a[3];
 	a5 = a[4];
 	a6 = a[5];
-    return {a6, a5, a4, a3, a2, a1};
+    return [a6, a5, a4, a3, a2, a1];
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
             thisTest.Verify("i", new[] {5, 4, 3, 2, 1, 0});
@@ -584,7 +584,7 @@ i = [Imperative]
             string src = @"
 i = [Imperative]
 {
-	a = {1,2,3,4,5,6,7};
+	a = [1,2,3,4,5,6,7];
 	i = 0;
 	for( x in a )
 	{
@@ -600,7 +600,7 @@ i = [Imperative]
 	a5 = a[4];
 	a6 = a[5];
 	a7 = a[6];
-    return {a6, a7};
+    return [a6, a7];
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
             thisTest.Verify("i", new[] {7, 8});
@@ -613,7 +613,7 @@ i = [Imperative]
             string src = @"
 x = [Imperative]
 {
-	a = {};
+	a = [];
 	x = 0;
 	for( i in a )
 	{
@@ -655,7 +655,7 @@ x = [Imperative]
 	}
 x = [Imperative]
 {
-	a = { 1.3, 2.3, 3.3, 4.3 };
+	a = [ 1.3, 2.3, 3.3, 4.3 ];
 	
 	x = 3;
 	
@@ -676,7 +676,7 @@ x = [Imperative]
             string src = @"
 x = [Imperative]
 {
-	a = { 1,2,3 };
+	a = [ 1,2,3 ];
 	x = 0;
 	for ( i in a )
 	{
@@ -698,7 +698,7 @@ x = [Imperative]
             string src = @"
 x = [Imperative]
 {
-	a = {{6},{5,4},{3,2,1}};
+	a = [[6],[5,4],[3,2,1]];
 	x = 0;
 	
     for ( i in a )
@@ -721,7 +721,7 @@ x = [Imperative]
             string src = @"
 x = [Imperative]
 {
-	a = { 1,null,null };
+	a = [ 1,null,null ];
 	x = 1;
 	
 	for( i in a )
@@ -784,10 +784,10 @@ x = [Imperative]
         public void T33_ForLoopToReplaceReplicationGuides()
         {
             string code = @"
-a = { 1, 2 };
-b = { 3, 4 };
+a = [ 1, 2 ];
+b = [ 3, 4 ];
 //c = a<1> + b <2>;
-dummyArray = { { 0, 0 }, { 0, 0 } };
+dummyArray = [ [ 0, 0 ], [ 0, 0 ] ];
 counter1 = 0;
 counter2 = 0;
 dummyArr = [Imperative]
@@ -824,7 +824,7 @@ a4 = dummyArr[1][1];";
             string code = @"
 sum = [Imperative]
 {
-	a = { 1, 2, 3, 4 };
+	a = [ 1, 2, 3, 4 ];
 	sum = 0;
 	
 	for(i in a )
@@ -847,7 +847,7 @@ sum = [Imperative]
             string code = @"
 sum = [Imperative]
 {
-	a = { {1, 2, 3}, {4}, {5,6} };
+	a = [ [1, 2, 3], [4], [5,6] ];
 	sum = 0;
 	
 	for(i in a )
@@ -869,7 +869,7 @@ sum = [Imperative]
         {
             string code = @"
 b;
-a = { {1, 2, 3}, {4}, {5,6} };
+a = [ [1, 2, 3], [4], [5,6] ];
 
 def forloop :int ( a: int[]..[] )
 {
@@ -900,7 +900,7 @@ def forloop :int ( a: int[]..[] )
         public void T37_Defect_1454517()
         {
             string code = @"
-	a = { 4,5 };
+	a = [ 4,5 ];
 	
 	b =[Imperative]
 	{
@@ -922,7 +922,7 @@ def forloop :int ( a: int[]..[] )
         public void T38_Defect_1454517_2()
         {
             string code = @"
-	a = { 4, 5 };
+	a = [ 4,5 ];
 	x = [Imperative]
 	{
 		x = 0;
@@ -954,7 +954,7 @@ def foo ( a : int [] )
 	}
 	return x;
 }
-a = { 4,5 };	
+a = [ 4,5 ];
 b = [Imperative]
 {
 	return foo(a);
@@ -971,7 +971,7 @@ b = [Imperative]
             string code = @"
 x = [Associative]
 {
-	a = { 4,5 };
+	a = [ 4,5 ];
    
 	return [Imperative]
 	{
@@ -1002,7 +1002,7 @@ def foo ( a : int[])
 }
 x = [Imperative]
 {
-	a = { 4,5 };
+	a = [ 4,5 ];
 
 	return [Associative]
 	{
@@ -1034,7 +1034,7 @@ x = [Imperative]
             return a1;
 		}
 	}
-    a = { 10, 4 };
+   a = [ 10, 4 ];
     a3 = [Imperative]
     {
     	return foo(a);
@@ -1049,10 +1049,10 @@ x = [Imperative]
         public void T40_Create_3_Dim_Collection_Using_For_Loop()
         {
             string code = @"
-x = { { { 0, 0} , { 0, 0} }, { { 0, 0 }, { 0, 0} }};
-a = { 0, 1 };
-b = { 2, 3};
-c = { 4, 5 };
+x = [ [ [ 0, 0] , [ 0, 0] ], [ [ 0, 0 ], [ 0, 0] ]];
+a = [ 0, 1 ];
+b = [ 2, 3];
+c = [ 4, 5 ];
 y = [Imperative]
 {
 	c1 = 0;
@@ -1106,7 +1106,7 @@ def foo :int[]..[]( a : int[], b:int[], c :int[])
 {
 	y = [Imperative]
 	{
-		x = { { { 0, 0} , { 0, 0} }, { { 0, 0 }, { 0, 0} }};
+		x = [ [ [ 0, 0] , [ 0, 0] ], [ [ 0, 0 ], [ 0, 0] ]];
 		c1 = 0;
 		for ( i in a)
 		{
@@ -1127,9 +1127,9 @@ def foo :int[]..[]( a : int[], b:int[], c :int[])
 	}
 	return = y;
 }
-a = { 0, 1 };
-b = { 2, 3};
-c = { 4, 5 };
+a = [ 0, 1 ];
+b = [ 2, 3];
+c = [ 4, 5 ];
 y = foo ( a, b, c );
 p1 = y[0][0][0];
 p2 = y[0][0][1];
@@ -1162,7 +1162,7 @@ p8 = y[1][1][1];
 	{
 		y = [Imperative]
 		{
-			x = { { { 0, 0} , { 0, 0} }, { { 0, 0 }, { 0, 0} }};
+			x = [ [ [ 0, 0] , [ 0, 0] ], [ [ 0, 0 ], [ 0, 0] ]];
 			c1 = 0;
 			for ( i in a)
 			{
@@ -1183,9 +1183,9 @@ p8 = y[1][1][1];
 		}
 		return = y;
 	};
-a = { 0, 1 };
-b = { 2, 3};
-c = { 4, 5 };
+a = [ 0, 1 ];
+b = [ 2, 3];
+c = [ 4, 5 ];
 y = foo(a,b,c);
 
 p1 = y[0][0][0];
@@ -1221,7 +1221,7 @@ def foo :int[]..[]( a : int[], b:int[])
 {
 y = [Imperative]
 {
-x = { { 0,0,0 }, {0,0,0} , {0,0,0} };
+x = [ [ 0,0,0 ], [0,0,0] , [0,0,0] ];
 c1 = 0;
 for ( i in a)
 {
@@ -1238,8 +1238,8 @@ return = x;
 return = y;
 }
 
-a = { 0, 1, 2 };
-b = { 3, 4, 5 };
+a = [ 0, 1, 2 ];
+b = [ 3, 4, 5 ];
 y = foo( a, b);
 p1 = y[0][0];
 p2 = y[0][1];
@@ -1275,7 +1275,7 @@ def foo :int[]..[]( a : int[], b:int[], c :int[])
 {
 y = [Imperative]
 {
-x = { { { 0, 0} , { 0, 0} }, { { 0, 0 }, { 0, 0} }};
+x = [ [ [ 0, 0] , [ 0, 0] ], [ [ 0, 0 ], [ 0, 0] ]];
 c1 = 0;
 for ( i in a)
 {
@@ -1297,9 +1297,9 @@ return = x;
 return = y;
 }
 
-a = { 0, 1 };
-b = { 2, 3};
-c = { 4, 5 };
+a = [ 0, 1 ];
+b = [ 2, 3];
+c = [ 4, 5 ];
 y = foo( a, b , c);
 
 p1 = y[0][0][0]; //6
@@ -1366,7 +1366,7 @@ pt2 = Point.ByCoordinates(5,0,0);
 pt3 = Point.ByCoordinates(10,0,0);
 pt4 = Point.ByCoordinates(15,0,0);
 pt5 = Point.ByCoordinates(20,0,0);
-pts = {pt1, pt2, pt3, pt4, pt5};
+pts = [pt1, pt2, pt3, pt4, pt5];
 
 numpts = length(pts);
 

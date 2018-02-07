@@ -19,7 +19,7 @@ namespace Dynamo.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class Resources {
@@ -196,6 +196,15 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Value of expression at line {0}.
+        /// </summary>
+        public static string CodeBlockTempIdentifierOutputLabel {
+            get {
+                return ResourceManager.GetString("CodeBlockTempIdentifierOutputLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Composes two single parameter functions into one function..
         /// </summary>
         public static string ComposeFunctionNodeDescription {
@@ -367,7 +376,7 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The virtual machine that powers Dynamo is experiencing some unexpected errors internally and is likely &quot;having great difficulties pulling itself together. It is &quot;recommended that you save your work now and reload the file. Giving the Dynamo VM a new lease of life can potentially make it feel happier and behave better. 
+        ///   Looks up a localized string similar to The virtual machine that powers Dynamo is experiencing some unexpected errors internally and is likely having great difficulties pulling itself together. It is recommended that you save your work now and reload the file. Giving the Dynamo VM a new lease of life can potentially make it feel happier and behave better. 
         ///
         ///If you don&apos;t mind, it would be helpful for you to send us your file. That will make it quicker for us to get these issues fixed..
         /// </summary>
