@@ -232,8 +232,9 @@ namespace Dynamo.Graph.Nodes
         }
 
         /// <summary>
-        /// Output nodes are used applications that consume graphs outside of Dynamo such as Optioneering, Optimization, 
-        /// and Dynamo Player. Output nodes can be any node that returns a single output or a dictionary.  
+        /// Output nodes are used by applications that consume graphs outside of Dynamo such as Optioneering, Optimization, 
+        /// and Dynamo Player. Output nodes can be any node that returns a single output or a dictionary. Code block nodes are
+        /// specifically excluded at this time even though they can return a single output for sake of clarity. 
         /// </summary>
         [JsonIgnore]
         public virtual bool IsOutputNode

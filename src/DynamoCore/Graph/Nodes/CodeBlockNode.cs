@@ -79,7 +79,8 @@ namespace Dynamo.Graph.Nodes
         }
 
         /// <summary>
-        ///     Indicates whether node is input node
+        ///     Indicates whether node is input node.
+        ///     Used to bind visibility of UI for user selection.
         /// </summary>
         public override bool IsInputNode
         {
@@ -87,7 +88,8 @@ namespace Dynamo.Graph.Nodes
         }
 
         /// <summary>
-        ///     Indicates whether node is an output node
+        ///     Indicates whether node is an output node.
+        ///     Used to bind visibility of UI for user selection.
         /// </summary>
         public override bool IsOutputNode
         {
