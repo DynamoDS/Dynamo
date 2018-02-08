@@ -35,10 +35,10 @@ namespace Dynamo.PackageManager
         public event Action<Package> PackageAdded;
         public event Action<Package> PackageRemoved;
         /// <summary>
-        /// A list of the extension manifest paths which the package loader found during package load
-        /// and has requested be loaded.
+        /// A map of the extension manifest paths which the package loader found during package load
+        /// and has requested be loaded. The result of the load request is mapped to the requested path.
         /// </summary>
-        public List<string> RequestedExtensions { get; private set; } = new List<string>();
+        public Dictionary<string, dynamic> RequestedExtensions { get; private set; } = new Dictionary<string, dynamic>();
 
         private readonly List<Package> localPackages = new List<Package>();
         public IEnumerable<Package> LocalPackages { get { return localPackages; } }
@@ -170,8 +170,8 @@ namespace Dynamo.PackageManager
                         RequestAddExtension?.Invoke(extension);
                         
                     }
-                    // Add this extension to the list of extensions we've requested to be loaded.
-                    this.RequestedExtensions.Add(extPath.Model.FullName);
+                    // Add this extension to the dict of extensions we've requested to be loaded.
+                    this.RequestedExtensions[extPath.Model.FullName] = extension;
                 }
 
                 package.Loaded = true;

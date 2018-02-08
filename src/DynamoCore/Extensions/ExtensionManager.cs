@@ -24,6 +24,12 @@ namespace Dynamo.Extensions
         /// list of currently loaded extensions.
         /// </summary>
         event Action<dynamic> RequestAddExtension;
+
+        /// <summary>
+        /// A map of the extension manifest paths which the package loader found during package load
+        /// and has requested be loaded. The result of the load request is mapped to the requested path.
+        /// </summary>
+        Dictionary<string, dynamic> RequestedExtensions { get;}
     }
 
     /// <summary>

@@ -757,8 +757,19 @@ namespace Dynamo.Models
 
                     try
                     {
-                       
                         ext.Startup(startupParams);
+                        // if we are starting extension (A) which is a source of other extensions (like packageManager)
+                        // then we can start the extension(s) (B) that it requested be loaded.
+                        if(ext is IExtensionSource)
+                        {
+                           foreach(var loadedExtension in((ext as IExtensionSource).RequestedExtensions.Values))
+                            {
+                                if(loadedExtension is IExtension)
+                                {
+                                    (loadedExtension as IExtension).Startup(startupParams);
+                                }
+                            }
+                        }
                     }
                     catch (Exception ex)
                     {
@@ -781,11 +792,11 @@ namespace Dynamo.Models
 
         private void DynamoReadyExtensionHandler(ReadyParams readyParams, IEnumerable<IExtension> extensions) {
 
-            foreach (var ext in ExtensionManager.Extensions)
+            foreach (var ext in extensions)
             {
                 try
                 {
-                    ext.Ready(new ReadyParams(this));
+                    ext.Ready(readyParams);
                 }
                 catch (Exception ex)
                 {

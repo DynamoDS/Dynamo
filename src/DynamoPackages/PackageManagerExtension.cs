@@ -39,6 +39,11 @@ namespace Dynamo.PackageManager
         public PackageLoader PackageLoader { get; private set; }
 
         /// <summary>
+        ///   
+        /// </summary>
+        public Dictionary<string,dynamic> RequestedExtensions => this.PackageLoader.RequestedExtensions;
+
+        /// <summary>
         ///     Dynamo Package Manager Instance.
         /// </summary>
         public PackageManagerClient PackageManagerClient { get; private set; }
