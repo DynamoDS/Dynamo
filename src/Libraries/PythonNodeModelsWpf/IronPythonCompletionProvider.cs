@@ -69,18 +69,26 @@ namespace Dynamo.Python
         public Dictionary<string, Type> RegexToType = new Dictionary<string, Type>();
         
         /// <summary>
+        /// Maps a basic variable regex to a basic python type.
+        /// </summary>
+        public List<Tuple<Regex, Type>> BasicVariableTypes;
+        
+        /// <summary>
         /// Tracks already referenced CLR modules
         /// </summary>
         public HashSet<string> clrModules { get; set; }
+        
+        /// <summary>
+        /// Keeps track of failed statements to avoid poluting the log
+        /// </summary>
+        public Dictionary<string, int> badStatements { get; set; }
 
         /// <summary>
         /// A bunch of regexes for use in introspaction
         /// </summary>
         public static string commaDelimitedVariableNamesRegex = @"(([0-9a-zA-Z_]+,?\s?)+)";
         public static string variableName = @"([0-9a-zA-Z_]+(\.[a-zA-Z_0-9]+)*)";
-//        public static string doubleQuoteStringRegex = "(\"[^\"]*\")";
-//        public static string singleQuoteStringRegex = "(\'[^\']*\')";
-        public static string quotesStringRegex = "[\"|']([^\"']*)[\"|']";
+        public static string quotesStringRegex = "[\"']([^\"']*)[\"']";
         public static string arrayRegex = "(\\[.*\\])";
         public static string spacesOrNone = @"(\s*)";
         public static string atLeastOneSpaceRegex = @"(\s+)";
@@ -91,15 +99,23 @@ namespace Dynamo.Python
         public static string basicImportRegex = @"(import)";
         public static string fromImportRegex = @"^(from)";
         
-        //
-        
         private static readonly Regex MATCH_LAST_WORD = new Regex(@"\w+$", RegexOptions.Compiled);
         private static readonly Regex MATCH_FIRST_QUOTED_NAME = new Regex(quotesStringRegex, RegexOptions.Compiled);
         private static readonly Regex MATCH_VALID_TYPE_NAME_CHARACTERS_ONLY = new Regex(@"^\w+", RegexOptions.Compiled);
         private static readonly Regex TRIPPLE_QUOTE_STRINGS = new Regex(".*?\\\"{{3}}[\\s\\S]+?\\\"{{3}}", RegexOptions.Compiled);
         
-        private System.Text.StringBuilder tempCode;
-
+        private static readonly Regex MATCH_IMPORT_STATEMENTS = new Regex(@"^import\s+?(.+)", RegexOptions.Compiled | RegexOptions.Multiline);
+        private static readonly Regex MATCH_FROM_IMPORT_STATEMENTS = new Regex(@"from\s+?([\w.]+)\s+?import\s+?([\w, *]+)", RegexOptions.Compiled | RegexOptions.Multiline);
+        private static readonly Regex MATCH_VARIABLE_ASSIGNMENTS = new Regex(@"^[ \t]*?(\w+(\s*?,\s*?\w+)*)\s*?=\s*(.+)", RegexOptions.Compiled | RegexOptions.Multiline);
+        
+        private static readonly Regex STRING_VARIABLE = new Regex("[\"']([^\"']*)[\"']", RegexOptions.Compiled);
+        private static readonly Regex DOUBLE_VARIABLE = new Regex("^-?\\d+\\.\\d+", RegexOptions.Compiled);
+        private static readonly Regex INT_VARIABLE = new Regex("^-?\\d+", RegexOptions.Compiled);
+        private static readonly Regex LIST_VARIABLE = new Regex("\\[.*\\]", RegexOptions.Compiled);
+        private static readonly Regex DICT_VARIABLE = new Regex("{.*}", RegexOptions.Compiled);
+        
+        private static readonly string BAD_ASSIGNEMNT_ENDS = ",([{";
+        
         #endregion
 
         /// <summary>
@@ -113,21 +129,21 @@ namespace Dynamo.Python
             VariableTypes = new Dictionary<string, Type>();
             ImportedTypes = new Dictionary<string, Type>();
             clrModules = new HashSet<string>();
-            tempCode = new System.Text.StringBuilder();
+            badStatements = new Dictionary<string, int>();
             
             //special case for python variables defined as null
             ImportedTypes["None"] = null;
             
-//            RegexToType.Add(singleQuoteStringRegex, typeof(string));
-//            RegexToType.Add(doubleQuoteStringRegex, typeof(string));
-            RegexToType.Add(quotesStringRegex, typeof(string));
-            RegexToType.Add(doubleRegex, typeof(double));
-            RegexToType.Add(intRegex, typeof(int));
-            RegexToType.Add(arrayRegex, typeof(List));
-            RegexToType.Add(dictRegex, typeof(PythonDictionary));
+            BasicVariableTypes = new List<Tuple<Regex, Type>>();
+            
+            BasicVariableTypes.Add(Tuple.Create(STRING_VARIABLE, typeof(string)));
+            BasicVariableTypes.Add(Tuple.Create(DOUBLE_VARIABLE,  typeof(double)));
+            BasicVariableTypes.Add(Tuple.Create(INT_VARIABLE,  typeof(int)));
+            BasicVariableTypes.Add(Tuple.Create(LIST_VARIABLE,  typeof(IronPython.Runtime.List)));
+            BasicVariableTypes.Add(Tuple.Create(DICT_VARIABLE,  typeof(PythonDictionary)));
             
             //main clr module
-            scope.Engine.CreateScriptSourceFromString("import clr\n", SourceCodeKind.SingleStatement).Execute(scope);
+            engine.CreateScriptSourceFromString("import clr\n", SourceCodeKind.SingleStatement).Execute(scope);
             
             var assemblies = AppDomain.CurrentDomain.GetAssemblies();
             if (assemblies.Any(x => x.GetName().Name == "RevitAPI"))
@@ -137,7 +153,7 @@ namespace Dynamo.Python
                     var revitImports =
                         "clr.AddReference('RevitAPI')\nclr.AddReference('RevitAPIUI')\nfrom Autodesk.Revit.DB import *\nimport Autodesk\n";
 
-                    scope.Engine.CreateScriptSourceFromString(revitImports, SourceCodeKind.Statements).Execute(scope);
+                    engine.CreateScriptSourceFromString(revitImports, SourceCodeKind.Statements).Execute(scope);
                     clrModules.Add("RevitAPI");
                     clrModules.Add("RevitAPIUI");
                 }
@@ -154,7 +170,7 @@ namespace Dynamo.Python
                     var libGImports =
                         "clr.AddReference('ProtoGeometry')\nfrom Autodesk.DesignScript.Geometry import *\n";
 
-                    scope.Engine.CreateScriptSourceFromString(libGImports, SourceCodeKind.Statements).Execute(scope);
+                    engine.CreateScriptSourceFromString(libGImports, SourceCodeKind.Statements).Execute(scope);
                     clrModules.Add("ProtoGeometry");
                 }
                 catch (Exception e)
@@ -171,12 +187,12 @@ namespace Dynamo.Python
                 try
                 {
                     var pyLibImports = String.Format("import sys\nsys.path.append(r'{0}')\n", pythonLibDir);
-                    scope.Engine.CreateScriptSourceFromString(pyLibImports, SourceCodeKind.Statements).Execute(scope);
+                    engine.CreateScriptSourceFromString(pyLibImports, SourceCodeKind.Statements).Execute(scope);
                 }
                 catch (Exception e)
                 {
                     Log(e.ToString());
-                    Log("Failed to register IronPython's native library. Python autocomplete will not see native modules.");
+                    Log("Failed to register IronPython's native library. Python autocomplete will not see standard modules.");
                 }
             }
             
@@ -190,21 +206,21 @@ namespace Dynamo.Python
         /// Generates completion data for the specified text, while import the given types into the
         /// scope and discovering variable assignments.
         /// </summary>
-        /// <param name="line">The code to parse</param>
+        /// <param name="code">The code to parse</param>
         /// <returns>Return a list of IronPythonCompletionData </returns>
-        public ICompletionData[] GetCompletionData(string line)
+        public ICompletionData[] GetCompletionData(string code)
         {
             var items = new List<IronPythonCompletionData>();
             
-            if (line.Contains("\"\"\""))
+            if (code.Contains("\"\"\""))
             {
-                line = StripDocStrings(line);
+                code = StripDocStrings(code);
             }
             
-            this.UpdateImportedTypes(line);
-            this.UpdateVariableTypes(line); // this is where hindley-milner could come into play
-               
-            string name = GetLastName(line);
+            UpdateImportedTypes(code);
+            UpdateVariableTypes(code); // this is where hindley-milner could come into play
+            
+            string name = GetLastName(code);
             if (!String.IsNullOrEmpty(name))
             {
                 try
@@ -218,9 +234,9 @@ namespace Dynamo.Python
                         items = EnumerateMembers(type, name);
                     }
                     // it's a variable?
-                    else if (this.VariableTypes.ContainsKey(name))
+                    else if (VariableTypes.TryGetValue(name, out type))
                     {
-                        items = EnumerateMembers(this.VariableTypes[name], name);
+                        items = EnumerateMembers(type, name);
                     }
                     // is it a namespace or python type?
                     else
@@ -241,7 +257,8 @@ namespace Dynamo.Python
                             {
                                 // shows static and instance methods in just the same way :(
                                 var value = ClrModule.GetClrType(mem as PythonType);
-                                if (value != null){
+                                if (value != null)
+                                {
                                     items = EnumerateMembers(value, name);
                                 }
                             }
@@ -479,18 +496,13 @@ namespace Dynamo.Python
         ///     Traverse the given source code and define variable types based on
         ///     the current scope
         /// </summary>
-        /// <param name="line">The source code to look through</param>
-        public void UpdateVariableTypes(string line)
+        /// <param name="code">The source code to look through</param>
+        public void UpdateVariableTypes(string code)
         {
-            this.VariableTypes.Clear(); // for now...
-            
-            var vars = this.FindAllVariables(line);
-            foreach (var varData in vars)
-            {
-                VariableTypes[varData.Key] = varData.Value.Item3;
-            }
+            VariableTypes.Clear(); // for now...
+            VariableTypes = FindAllVariableAssignments(code);
         }
-
+        
         /// <summary>
         ///     Returns a type from a name.  For example: System.Collections or System.Collections.ArrayList
         /// </summary>
@@ -502,11 +514,6 @@ namespace Dynamo.Python
             {
                 return ImportedTypes[name];
             }
-
-            if (VariableTypes.ContainsKey(name))
-            {
-                return VariableTypes[name];
-            }
             
             //if the type name does noe exist in the local or built-in variables, then it is out of scope
             string lookupScr = String.Format("clr.GetClrType({0}) if (\"{0}\" in locals() or \"{0}\" in __builtins__) and isinstance({0}, type) else None", name);
@@ -514,7 +521,7 @@ namespace Dynamo.Python
             dynamic type = null;
             try
             {
-                type = scope.Engine.CreateScriptSourceFromString(lookupScr, SourceCodeKind.Expression).Execute(scope);
+                type = engine.CreateScriptSourceFromString(lookupScr, SourceCodeKind.Expression).Execute(scope);
             }
             catch (Exception e)
             {
@@ -529,7 +536,137 @@ namespace Dynamo.Python
             }
             return foundType;
         }
-
+        
+        /// <summary>
+        /// Attempts to find all import statements in the code
+        /// </summary>
+        /// <param name="code">The code to search</param>
+        /// <returns>A list of tuples that contain the namespace, the module and the custom name</returns>
+        public static List<Tuple<string, string, string>> FindAllImportStatements(string code)
+        {
+            var statements = new List<Tuple<string, string, string>>();
+            
+            //i.e. import math
+            //or import math, cmath as cm
+            var importMatches = MATCH_IMPORT_STATEMENTS.Matches(code);
+            foreach (Match m in importMatches)
+            {
+                var names = m.Groups[1].Value.Trim().Split(new char[]{','}).Select(x => x.Trim() );
+                foreach (string n in names)
+                {
+                    var parts = n.Split(new string []{" as "}, 2, StringSplitOptions.RemoveEmptyEntries);
+                    var name = parts[0];
+                    string asname = parts.Length > 1 ? parts[1] : null;
+                    statements.Add(new Tuple<string, string, string>(null, name, asname));
+                }
+            }
+            
+            //i.e. from Autodesk.Revit.DB import *
+            //or from Autodesk.Revit.DB import XYZ, Line, Point as rvtPoint
+            var fromMatches = MATCH_FROM_IMPORT_STATEMENTS.Matches(code);
+            foreach (Match m in fromMatches)
+            {
+                var module = m.Groups[1].Value;
+                var names = m.Groups[2].Value.Trim().Split(new char[]{','}).Select(x => x.Trim() );
+                foreach (string n in names)
+                {
+                    var parts = n.Split(new string []{" as "}, 2, StringSplitOptions.RemoveEmptyEntries);
+                    var name = parts[0];
+                    string asname = parts.Length > 1 ? parts[1] : null;
+                    statements.Add(new Tuple<string, string, string>(module, name, asname));
+                }
+            }
+            return statements;
+        }
+        
+        /// <summary>
+        /// Attempts to find all variable assignments in the code. Has basic variable unpacking support.
+        /// We don't need to check the line indices because regex matches are ordered as per the code.
+        /// </summary>
+        /// <param name="code">The code to search</param>
+        /// <returns>A dictionary of variable name and type pairs</returns>
+        public Dictionary<string, Type> FindAllVariableAssignments(string code)
+        {
+            var assignments = new Dictionary<string, Type>();
+            
+            var varMatches = MATCH_VARIABLE_ASSIGNMENTS.Matches(code);
+            foreach (Match m in varMatches)
+            {
+                string _left = m.Groups[1].Value.Trim(), _right = m.Groups[3].Value.Trim();
+                if(BAD_ASSIGNEMNT_ENDS.Contains(_right.Last()))
+                {
+                    continue; //incomplete statement
+                }
+                
+                string[] left = _left.Split(new char[]{','}).Select(x => x.Trim() ).ToArray();
+                string[] right = _right.Split(new char[]{','}).Select(x => x.Trim() ).ToArray();
+                
+                if (right.Length < left.Length)
+                {
+                    continue; // we can't resolve iterable unpacking
+                }
+                
+                if (left.Length == 1 && right.Length > 1)
+                {
+                    //check if we broke up a list/dict assignment, else assume it's a tuple assignment
+                    if (LIST_VARIABLE.IsMatch(_right) )
+                    {
+                        assignments[left[0]] = typeof(IronPython.Runtime.List);
+                    }
+                    else if (DICT_VARIABLE.IsMatch(_right))
+                    {
+                        assignments[left[0]] = typeof(PythonDictionary);
+                    }
+                    else
+                    {
+                        assignments[left[0]] = typeof(PythonTuple);
+                    }
+                    continue;
+                }
+                
+                //try to resolve each variable, assignment pair
+                if (left.Length == right.Length)
+                {
+                    for (int i = 0; i < left.Length; i++)
+                    {
+                        //check the basics first
+                        bool foundBasicMatch = false;
+                        foreach (Tuple<Regex, Type> rx in BasicVariableTypes)
+                        {
+                            if (rx.Item1.IsMatch(right[i]))
+                            {
+                                assignments[left[i]] = rx.Item2;
+                                foundBasicMatch = true;
+                                break;
+                            }
+                        }
+                        
+                        //check the scope for a possible match
+                        if(!foundBasicMatch)
+                        {
+                            var possibleTypeName = GetFirstPossibleTypeName(right[i]);
+                            if (!String.IsNullOrEmpty(possibleTypeName))
+                            {
+                                Type t1;
+                                //check if this is pointing to a predefined variable
+                                if(!assignments.TryGetValue(possibleTypeName, out t1))
+                                {
+                                    //else proceed with a regular scope type check
+                                    t1 = TryGetType(possibleTypeName);
+                                }
+                                if (t1 != null)
+                                {
+                                    assignments[left[i]] = t1;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            
+            return assignments;
+        }
+        
         /// <summary>
         /// Attempts to find import statements that look like
         ///     from lib import *
@@ -643,15 +780,16 @@ namespace Dynamo.Python
 
         }
         
+        
         public List<string> findClrReferences(string code)
         {
             var statements = new List<string>();
             foreach (var line in code.Split(new[] {'\n', ';'}))
             {
                 if (line.Contains("clr.AddReference"))
-                    {
-                        statements.Add(line.Trim());
-                    }
+                {
+                    statements.Add(line.Trim());
+                }
             }
             return statements;
         }
@@ -667,12 +805,20 @@ namespace Dynamo.Python
             var refs = findClrReferences(code);
             foreach (var statement in refs)
             {
-            	try
+                
+                int previousTries = 0;
+                badStatements.TryGetValue(statement, out previousTries);
+                if (previousTries > 3)
                 {
-            	    string libName = MATCH_FIRST_QUOTED_NAME.Match(statement).Groups[0].Value;
-            	    if (!clrModules.Contains(libName) && AppDomain.CurrentDomain.GetAssemblies().Any(x => x.GetName().Name == libName))
+                    continue;
+                }
+                
+                try
+                {
+                    string libName = MATCH_FIRST_QUOTED_NAME.Match(statement).Groups[1].Value;
+                    if (!clrModules.Contains(libName) && AppDomain.CurrentDomain.GetAssemblies().Any(x => x.GetName().Name == libName))
                     {
-                        scope.Engine.CreateScriptSourceFromString(statement, SourceCodeKind.SingleStatement).Execute(scope);
+                        engine.CreateScriptSourceFromString(statement, SourceCodeKind.SingleStatement).Execute(scope);
                         clrModules.Add(libName);
                     }
                 }
@@ -680,31 +826,61 @@ namespace Dynamo.Python
                 {
                     Log(e.ToString());
                     Log(String.Format("Failed to reference library: {0}", statement));
+                    badStatements[statement] = previousTries + 1;
                 }
             }
             
-            // look all import statements
-            var imports = FindBasicImportStatements(code)
-                .Union(FindTypeSpecificImportStatements(code))
-                .Union(FindAllTypeImportStatements(code));
-
-            // try and load modules into python scope
-            foreach (var import in imports)
+            var importStatements = FindAllImportStatements(code);
+            foreach (var i in importStatements)
             {
-                if (scope.ContainsVariable(import.Key) || ImportedTypes.ContainsKey(import.Key))
+                string module = i.Item1, memberName = i.Item2, asname = i.Item3;
+                string name = asname ?? memberName;
+                string statement = "";
+                int previousTries = 0;
+                
+                if (name != "*" && (scope.ContainsVariable(name) || ImportedTypes.ContainsKey(name)))
                 {
                     continue;
                 }
+                
                 try
                 {
-                    scope.Engine.CreateScriptSourceFromString(import.Value, SourceCodeKind.SingleStatement).Execute(scope);
-                    var type = Type.GetType(import.Key);
-                    ImportedTypes.Add(import.Key, type);
+                    if (module == null)
+                    {
+                        statement = String.Format("import {0} as {1}", memberName, name);
+                    }
+                    else
+                    {
+                        if (memberName != "*")
+                        {
+                            statement = String.Format("from {0} import {1} as {2}", module, memberName, name);
+                        }
+                        else
+                        {
+                            statement = String.Format("from {0} import *", module);
+                        }
+                    }
+                    
+                    badStatements.TryGetValue(statement, out previousTries);
+                    if (previousTries > 3)
+                    {
+                        continue;
+                    }
+                    
+                    engine.CreateScriptSourceFromString(statement, SourceCodeKind.SingleStatement).Execute(scope);
+                    if (memberName == "*")
+                    {
+                        continue;
+                    }
+                    string typeName = module == null ? memberName : String.Format("{0}.{1}", module, memberName);
+                    var type = Type.GetType(typeName);
+                    ImportedTypes.Add(name, type);
                 }
                 catch (Exception e)
                 {
                     Log(e.ToString());
-                    Log(String.Format("Failed to load module: {0}, with statement: {1}", import.Key, import.Value));
+                    Log(String.Format("Failed to load module: {0}, with statement: {1}", memberName, statement));
+                    badStatements[statement] = previousTries + 1;
                 }
             }
         }
@@ -795,10 +971,10 @@ namespace Dynamo.Python
             
             string trimmed = line.Trim();
             int substrInd = trimmed.IndexOfAny(new []{'.', '(', ',', '[', '{'});
-            if(substrInd != -1)
+            if(substrInd > 0)
             {
                 possibleTypeName = MATCH_VALID_TYPE_NAME_CHARACTERS_ONLY.Match(trimmed.Substring(0, substrInd)).Value;
-            	//possibleTypeName = trimmed.Substring(0, substrInd);
+                //possibleTypeName = trimmed.Substring(0, substrInd);
             }
             
             return possibleTypeName;
@@ -811,16 +987,8 @@ namespace Dynamo.Python
         /// <returns></returns>
         private string StripDocStrings(string code)
         {
-            tempCode.Clear();
-            var matches = TRIPPLE_QUOTE_STRINGS.Matches(code);
-            int prev = 0;
-            foreach (Match match in matches)
-            {
-                tempCode.Append(code.Substring(prev, match.Index - prev));
-                prev = match.Index + match.Length;
-            }
-            tempCode.Append(code.Substring(prev));
-            return tempCode.ToString();
+            var matches = TRIPPLE_QUOTE_STRINGS.Split(code);
+            return String.Join("", matches);
         }
     }
 }
