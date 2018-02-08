@@ -228,7 +228,7 @@ a = 1..3;
 b = a;
 c = [Imperative ]
 {
-    x = { 10, a[1], a[2] };
+    x = [ 10, a[1], a[2] ];
 	a[0] = 10;
 	return = x;
 }
@@ -456,7 +456,7 @@ b3 = ClassFunctionality.ClassFunctionality( 2 );
 x3 = b3.IntVal;
 [Imperative]
 {
-	b3 = { ClassFunctionality.ClassFunctionality( 1 ), ClassFunctionality.ClassFunctionality( 2 ) } ;
+	b3 = [ ClassFunctionality.ClassFunctionality( 1 ), ClassFunctionality.ClassFunctionality( 2 ) ] ;
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -473,7 +473,7 @@ x3 = b3.IntVal;
 import(""FFITarget.dll"");
 def foo ( b : ClassFunctionality )
 {
-    return = { b.IntVal, b.IntVal + 1 };
+    return = [ b.IntVal, b.IntVal + 1 ];
 }
 b1 = ClassFunctionality.ClassFunctionality( 2 );
 x1 = b1.IntVal;
@@ -497,7 +497,7 @@ test2 = a2;
 a2 = 3.0;
 a2 = 3.3;
 t2 = test2; // expected : 3.3; recieved : 3.0
-a1 = { 1.0, 2.0};
+a1 = [ 1.0, 2.0];
 test1 = a1[1]; 
 a1[1] = 3.0;
 a1[1] = 3.3;
@@ -582,7 +582,7 @@ x1 = ClassFunctionality.ClassFunctionality();
         public void T17_Defect_1459759_2()
         {
             string code = @"
-a1 = { 1, 2 };
+a1 = [ 1, 2 ];
 y = a1[1] + 1;
 a1[1] = 3;
 a1 = 5;
@@ -718,7 +718,7 @@ def foo ( a1 : double[] )
     return = a1[0] + a1[1];
 }
 b = foo ( c ) ;
-c = { a, a };
+c = [ a, a ];
 [Imperative]
 {
     a = 2.5;
@@ -758,7 +758,7 @@ def foo ( a : int)
 {
     return = a;
 }
-y1 = { 1, 2 };
+y1 = [ 1, 2 ];
 y2 = foo ( y1);
 [Imperative]
 { 
@@ -963,7 +963,7 @@ p1 = true;";
         public void T25_Defect_1459759_2()
         {
             string code = @"
-a1 = { 1, 2 };
+a1 = [ 1, 2 ];
 y = a1[1] + 1;
 a1[1] = 3;
 a1 = 5;";
@@ -976,11 +976,11 @@ a1 = 5;";
         public void T25_Defect_1459759_3()
         {
             string code = @"
-a = { 2 , b ,3 };
+a = [ 2 , b ,3 ];
 b = 3;
 c = a[1] + 2;
 d = c + 1;
-b = { 1,2 };";
+b = [ 1,2 ];";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             Object[] v3 = new Object[] { 3, 4 };
             Object[] v4 = new Object[] { 4, 5 };
@@ -1018,7 +1018,7 @@ a;
 	a = 2;
 	x = [Associative]
 	{
-		b = { 2, 3 };
+		b = [ 2, 3 ];
 		c = b[1] + 1;
 		b = 2;
 		return = c;
@@ -1038,7 +1038,7 @@ a;
 	{
 		a = b + 1;
 		b = true;
-		return = { a , b };
+		return = [ a , b ];
 	}
 e;
 [Imperative]
@@ -1106,7 +1106,7 @@ z4 = y.IntVal;
         public void T30_Update_Global_Variables_Imperative_Scope()
         {
             string code = @"
-x  = {0,0,0,0};
+x  = [0,0,0,0];
 count = 0;
 i = 0;
 sum  = 0;
@@ -1292,9 +1292,9 @@ def foo ( x )
 {
     return  = x + 1;
 }
-x1 =  { ClassFunctionality.ClassFunctionality(), ClassFunctionality.ClassFunctionality() };
+x1 =  [ ClassFunctionality.ClassFunctionality(), ClassFunctionality.ClassFunctionality() ];
 a1 = ClassFunctionality.ClassFunctionality();
-x2 =  { a1.IntVal, a1.IntVal };
+x2 =  [ a1.IntVal, a1.IntVal ];
 y2 = foo ( x2[0] );
 y1 = foo ( x1[1].IntVal );
 x1[1].IntVal = 2;
@@ -1341,9 +1341,9 @@ def foo ( x )
 {
     return  = x + 1;
 }
-x1 =  { A.A(), A.A() };
+x1 =  [ A.A(), A.A() ];
 a1 = A.A();
-x2 =  { a1.a, a1.a };
+x2 =  [ a1.a, a1.a ];
 y2 = foo ( x2[0] );
 y1 = foo ( x1[1].b );
 x1[1].b = 2;
@@ -1393,7 +1393,7 @@ c = 0.0..3.0;
 y = c[0];
 x = [Imperative]
 {
-	c = A.A( {c[0], c[0]} );
+	c = A.A( [c[0], c[0]] );
 	x = c.Pt;
 	return = x;
 }
@@ -1457,7 +1457,7 @@ t = 0..1;
             string errmsg = " 1467318 - Cannot return an array from a function whose return type is var with undefined rank (-2) ";
             string code = @"     
 def foo()        
-{   x = {1,2,3};          
+{   x = [1,2,3];          
     x[0] = 100;        
     return = x;
 }
@@ -1473,7 +1473,7 @@ a = foo();
         public void T37_Modify_Collections_Referencing_Each_Other()
         {
             string code = @"
-a = {1,2,3};
+a = [1,2,3];
 b = a;
 c1 = a[0];
 b[0] = 10;
@@ -1568,7 +1568,7 @@ def foo : int ( a : int, b : int )
         {
             string code = @"
 import(""FFITarget.dll"");
-c1 = { { 1,2}, 3};
+c1 = [ [ 1,2], 3];
 c1 = ClassFunctionality.ClassFunctionality( c1[0] );
 x = c1.IntVal;
 ";
@@ -1583,7 +1583,7 @@ x = c1.IntVal;
         {
             string code = @"
 import(""FFITarget.dll""); 
-c1 = { { 1.0, 2.0}, 3.0 };
+c1 = [ [ 1.0, 2.0], 3.0 ];
 c1 = ClassFunctionality.ClassFunctionality( c1[0][0] );
 x = c1.IntVal;
 ";
@@ -1597,7 +1597,7 @@ x = c1.IntVal;
         {
             String code =
  @"x = 3;
-a1 = { 1, 2};
+a1 = [ 1, 2];
 a2 = 3;
 a = x > 2 ? a2: a1;
 a2 = 5;
@@ -1618,7 +1618,7 @@ def foo ( x1 )
     return = x1 + 1;
 }
 x = 3;
-a1 = { 1, 2};
+a1 = [ 1, 2];
 a2 = 3;
 a = x > 2 ? foo(a2): foo(a1);
 a2 = 5;
@@ -1639,7 +1639,7 @@ def foo ( x, a2, a1:int[] )
    y = x > 2 ? a2: a1;
    return = y;
 }
-a1 = { 1, 2 };
+a1 = [ 1, 2 ];
 a2 = 5;
 x = 3;
 a = foo ( x, a2, a1 );
@@ -1659,7 +1659,7 @@ A = 10;              // assignment of single literal value
 B = 2*A;              // expression involving previously defined variables
 A = A + 1;            // expressions modifying an existing variable;
 A = 15;               // redefine A, removing modifier
-A = {1,2,3,4};         // redefine A as a collection
+A = [1,2,3,4];         // redefine A as a collection
 A = 1..10..2;          // redefine A as a range expression (start..end..inc)
 A = 1..10..~4;         // redefine A as a range expression (start..end..approx_inc)
 A = 1..10..#4;         // redefine A as a range expression (start..end..no_of_incs)
@@ -1696,8 +1696,8 @@ c = ClassFunctionality.ClassFunctionality ( c.IntVal );
         {
             String code =
  @"
-a = {0,1,2};
-t = {10,11,12};
+a = [0,1,2];
+t = [10,11,12];
 a[0] = t[0];
 t[1] = a[1]; 
 ";
@@ -1711,8 +1711,8 @@ t[1] = a[1];
         {
             String code =
  @"
-a = {0,1,2};
-t = {10,11,12};
+a = [0,1,2];
+t = [10,11,12];
 a[0] = t[0];
 t[1] = a[1]; 
 ";
@@ -1729,7 +1729,7 @@ def foo ( x )
 {
     return = x + 1;
 }
-x = {1,2,3};
+x = [1,2,3];
 b = 0;
 y1 = x[b];
 y2 = x[foo(b)];
@@ -1747,7 +1747,7 @@ b = 1;
         {
             String code =
  @"
-a = {10,11,12};
+a = [10,11,12];
 t = 0;
 i = a[t];
 t = 2; // expected i = 12
@@ -2001,7 +2001,7 @@ def foo(arr: double)
 z=0;
 p1 = z+1;
 p2 = z+2;
-points = {p1,p2};
+points = [p1,p2];
 a = foo(points);
 z = 2;";
             string errmsg = "DNL-1467341 rev 3997: REGRESSION : false cyclic dependency detected";
@@ -2015,7 +2015,7 @@ z = 2;";
         {
             // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4088
             String code = @"
-a = { 1, 2};
+a = [ 1, 2];
 x = a > 1 ? a : null; ";
             Object n1 = null;
             string errmsg = "MAGN-4088 Design issue with inline condition : only the condition being replicated";
@@ -2039,7 +2039,7 @@ x1.a= -1;
     return = x1;
 }
 a1 = A.A();
-a1.a = {1,2};
+a1.a = [1,2];
 b = a1.a;
 a1 = foo ( a1);
 // received b = {1,2} - 10,11,12,13,11,12  - wrong 
@@ -2066,7 +2066,7 @@ def foo ( x1 : A)
     return = x1;
 }
 a1 = A.A();
-a1.a = {1,2};
+a1.a = [1,2];
 b = a1.a;
 a1.a = -1;
 // b= {-1} , received - 10,11,12,13 - correct 
@@ -2095,7 +2095,7 @@ a1 = A.A();
 a2 = A.A();
 a1 = foo ( a1);
 b = a1.a;
-a1.a = {1,2};
+a1.a = [1,2];
 // received - b- {1,2} 10,11,12,13 - correct
  ";
             Object n1 = null;
@@ -2158,7 +2158,7 @@ i = 0;
     {
         [Associative]
         {
-            as = {ClassFunctionality.ClassFunctionality(), ClassFunctionality.ClassFunctionality()};
+            as = [ClassFunctionality.ClassFunctionality(), ClassFunctionality.ClassFunctionality()];
             [Imperative]
             {
                 c = 0;
@@ -2188,9 +2188,9 @@ i = 0;
         {
             String code = @"
 import(""FFITarget.dll"");
-x = { 1, 2 };
+x = [ 1, 2 ];
 y1 =ClassFunctionality.ClassFunctionality(x);
-y2 = { y1[0].IntVal, y1[1].IntVal };
+y2 = [ y1[0].IntVal, y1[1].IntVal ];
 [Imperative]
 {
     count = 0;
@@ -2214,9 +2214,9 @@ y2 = { y1[0].IntVal, y1[1].IntVal };
         {
             String code = @"
 import(""FFITarget.dll"");
-x = { 1, 2 };
+x = [ 1, 2 ];
 y1 = ClassFunctionality.ClassFunctionality(x);
-y2 = { y1[0].IntVal, y1[1].IntVal };
+y2 = [ y1[0].IntVal, y1[1].IntVal ];
 [Imperative]
 {
     for ( i in y1)
@@ -2237,9 +2237,9 @@ y2 = { y1[0].IntVal, y1[1].IntVal };
         {
             String code = @"
 import(""FFITarget.dll"");
-x = { 1, 2 };
+x = [ 1, 2 ];
 y1 = ClassFunctionality.ClassFunctionality(x);
-y2 = { y1[0].IntVal, y1[1].IntVal };
+y2 = [ y1[0].IntVal, y1[1].IntVal ];
 [Imperative]
 { 
     count = 0;
@@ -2339,12 +2339,12 @@ x = 3;
         public void T62_update_wrongsequnce_1467484_5()
         {
             String code = @"
-a = {  1, 2,3 };
-a = {  0, 2,4 };
-b = { 1, 2, 3 };
+a = [  1, 2,3 ];
+a = [  0, 2,4 ];
+b = [ 1, 2, 3 ];
 c = 1;
 a = b[c] + 1;
-c = {1,2};
+c = [1,2];
 ";
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -2420,7 +2420,7 @@ x = c > 5 ? 1 : 2;
 a = DummyPoint.ByCoordinates(10, 20, 30);
 b = a;
 c = Print(b);
-[Imperative]{ a = { 1, 2, 3, 4, { 5, { 6, { 7, { 8.9 } } } } }; }
+[Imperative]{ a = [ 1, 2, 3, 4, [ 5, [ 6, [ 7, [ 8.9 ] ] ] ] ]; }
 ";
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -2539,7 +2539,7 @@ b;
         [Imperative]
         {
             c = a;
-            a = {2};
+            a = [2];
         }
     }
 }
@@ -2564,7 +2564,7 @@ b;
         [Imperative]
         {
             c = a;
-            a = {2};
+            a = [2];
         }
     }
 }
@@ -2589,7 +2589,7 @@ b;
         {
             c = a;
             d = b;
-            a = { 2 };
+            a = [ 2 ];
         }
     }
 }
@@ -2709,7 +2709,7 @@ pt3 = XPlusY(pt2);
                 {
                    c = 3;
                    i = 0;
-                    c = { 1, 2, 3 };
+                    c = [ 1, 2, 3 ];
                     for(i in c)
                     {
                         b = a;
@@ -3946,7 +3946,7 @@ x1 = 4;
         {
             String code = @"
  
-            a = { 10, 20, 30 };
+            a = [ 10, 20, 30 ];
             c = 1;
             b = a[c];
             a[c] = 100;

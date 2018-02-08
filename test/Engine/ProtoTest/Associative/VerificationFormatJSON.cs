@@ -123,7 +123,7 @@ namespace ProtoTest.Associative
         public void TestArrayAssignment01()
         {
             string code =
-@"a = {1,2,3};";
+@"a = [1,2,3];";
             string verification =
 @" 
     {""a"": [1,2,3]}
@@ -135,7 +135,7 @@ namespace ProtoTest.Associative
         public void TestArrayAssignment02()
         {
             string code =
-@"i = 2;a = {1, 2, 3 + i};";
+@"i = 2;a = [1, 2, 3 + i];";
             string verification =
 @" 
 {
@@ -150,7 +150,7 @@ namespace ProtoTest.Associative
         public void TestNestedArrayAssignment01()
         {
             string code =
-@"a = {1,2,{3,4}};";
+@"a = [1,2,[3,4]];";
             string verification =
 @" 
 {

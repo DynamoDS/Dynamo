@@ -320,7 +320,7 @@ f;
             string src = @"x;
 [Imperative]
 {
-	a = { 1,2,3,4,5 };
+	a = [ 1,2,3,4,5 ];
 	for( y in a )
 	{
 		x = 5;

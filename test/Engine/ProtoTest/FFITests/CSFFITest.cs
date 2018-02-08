@@ -277,7 +277,7 @@ x;
                b = GetAt(1);
                c = GetAt(2);
                d = GetAt(3);
-               x = {a.random123(), b.GetNumber(), c.Value, d.Value};
+               x = [a.random123(), b.GetNumber(), c.Value, d.Value];
                value = a.random123() - b.GetNumber() + c.Value + d.Value;
             ";
             Type dummy = typeof (FFITarget.DerivedDummy);
@@ -672,10 +672,10 @@ sum;
             @"
            import(""FFITarget.dll"");
             pt = DummyPoint.ByCoordinates(1,2,3);
-            a = { pt.X, pt.X};
+            a = [ pt.X, pt.X];
             def test (pt : DummyPoint)
             {
-            return = {  pt.X};
+            return = [  pt.X];
             }
             b = test(pt);
             ";
@@ -693,7 +693,7 @@ sum;
             pt = DummyPoint.ByCoordinates(1,2,3);
             def test (pt : DummyPoint)
             {
-            return = {  pt.X,pt.Y};
+            return = [  pt.X,pt.Y];
             }
             b = test(pt);
             ";
@@ -722,17 +722,17 @@ b11;
 b12;
                [Imperative]
                {
-                    a    = { {pt1,pt2}, {pt3,pt4} };
-                    a11  = {a[0][0].X,a[0][0].Y,a[0][0].Z};
-                    a[1] = {pt5,pt6};
-                    a12  = {a[1][1].X,a[1][1].Y,a[1][1].Z};
+                    a    = [ [pt1,pt2], [pt3,pt4] ];
+                    a11  = [a[0][0].X,a[0][0].Y,a[0][0].Z];
+                    a[1] = [pt5,pt6];
+                    a12  = [a[1][1].X,a[1][1].Y,a[1][1].Z];
                     d    = a[0];
-                    b    = { pt1, pt2 };
-                    b11  = {b[0].X,b[0].Y,b[0].Z};
-                    b[0] = {pt3,pt4,pt5};
-                    b12  = {b[0][0].X,b[0][0].Y,b[0][0].Z};
+                    b    = [ pt1, pt2 ];
+                    b11  = [b[0].X,b[0].Y,b[0].Z];
+                    b[0] = [pt3,pt4,pt5];
+                    b12  = [b[0][0].X,b[0][0].Y,b[0][0].Z];
                     e    = b[0];
-                    e12  = {e[0].X,e[0].Y,e[0].Z};
+                    e12  = [e[0].X,e[0].Y,e[0].Z];
                }
             ";
             object[] c = new object[] { 1.0, 1.0, 1.0 };
@@ -762,15 +762,15 @@ a11;
 a12;
                 [Imperative]
                 {
-                    a = { pt1, pt2, pt3 };
-                    a11={a[0].X,a[0].Y,a[0].Z};
+                    a = [ pt1, pt2, pt3 ];
+                    a11=[a[0].X,a[0].Y,a[0].Z];
                     x = 0;
  
                     for (y in a )
                     {
                     
                     a[x]=pt3;
-                    a12={a[0].X,a[0].Y,a[0].Z};
+                    a12=[a[0].X,a[0].Y,a[0].Z];
                     x=x+1;
                     }
                     
@@ -796,7 +796,7 @@ a12;
                     return = a;
                 }
                 a = foo( pt1);
-                a11={a.X,a.Y,a.Z};
+                a11=[a.X,a.Y,a.Z];
             ";
             object[] c = new object[] { 1.0, 1.0, 1.0 };
             ValidationData[] data = { new ValidationData { ValueName = "a11", ExpectedValue = c, BlockIndex = 0 } };
@@ -821,7 +821,7 @@ ptcoords;
                  if( a1>=10 )
                  {
                 pt1=DummyPoint.ByCoordinates(2,2,2);
-                ptcoords={pt1.X,pt1.Y,pt1.Z};
+                ptcoords=[pt1.X,pt1.Y,pt1.Z];
                 a1=1;
                  }
  
@@ -858,8 +858,8 @@ l11;
                     b	=	20;
                     smallest   =   a	<   b   ?   pt1	:	pt2;
                     largest	=   a	>   b   ?   pt1	:	pt2;
-                    s11={smallest.X,smallest.Y,smallest.Z};
-                    l11={largest.X,largest.Y,largest.Z};
+                    s11=[smallest.X,smallest.Y,smallest.Z];
+                    l11=[largest.X,largest.Y,largest.Z];
                  }
         
             ";
@@ -887,7 +887,7 @@ l11;
                     [Associative]
                     {
                     pt=DummyPoint.ByCoordinates(a[0],0,0);
-                    a12={pt.X,pt.Y,pt.Z};
+                    a12=[pt.X,pt.Y,pt.Z];
                     }
         
             ";
@@ -938,7 +938,7 @@ l11;
             String code =
             @"
                import(""FFITarget.dll"");
-               pt={0,0,0,0,0,0};
+               pt=[0,0,0,0,0,0];
 p11;
                [Imperative]
                {
@@ -948,7 +948,7 @@ p11;
                     { 
                         i = i + 1;
                         pt[i]=DummyPoint.ByCoordinates(i,1,1);
-                        p11={pt[i].X,pt[i].Y,pt[i].Z};
+                        p11=[pt[i].X,pt[i].Y,pt[i].Z];
                     }
                     
                 }
@@ -1063,7 +1063,7 @@ p11;
                             def foo : BClass(b : BClass)
                             {
                                 a1 = BClass.CreateObject(9);
-                                a2 = { BClass.CreateObject(1), BClass.CreateObject(2), BClass.CreateObject(3), BClass.CreateObject(4) };    
+                                a2 = [ BClass.CreateObject(1), BClass.CreateObject(2), BClass.CreateObject(3), BClass.CreateObject(4) ];    
                                 a4 = b;
                                 a3 = BClass.CreateObject(5);
                                 
@@ -1130,7 +1130,7 @@ p11;
                             a1 = AClass.CreateObject(3);
                             a2 = AClass.CreateObject(4);
                             a2 = a1;
-                            b = { BClass.CreateObject(1), BClass.CreateObject(2), BClass.CreateObject(3) };
+                            b = [ BClass.CreateObject(1), BClass.CreateObject(2), BClass.CreateObject(3) ];
                             b = a1;    
                             v = dv.GetValue();
                             ";
@@ -1152,7 +1152,7 @@ p11;
                             }
                             dv = DisposeVerify.CreateObject();
                             m = dv.SetValue(2);
-                            a = {AClass.CreateObject(1), AClass.CreateObject(2), AClass.CreateObject(3)};
+                            a = [AClass.CreateObject(1), AClass.CreateObject(2), AClass.CreateObject(3)];
                             b = foo(a);
                             c = dv.GetValue();
                             ";
@@ -1382,7 +1382,7 @@ import(UnknownPoint from ""FFITarget.dll"");
 p = DummyPoint.ByCoordinates(1, 2, 3);
 u = p.UnknownPoint();
 newPoint = u.Translate(1,2,3);
-value = {u.X, u.Y, u.Z};
+value = [u.X, u.Y, u.Z];
                  ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("value", new double[] {1,2,3});
@@ -1398,7 +1398,7 @@ import(DummyPoint from ""FFITarget.dll"");
 p = DummyPoint.ByCoordinates(1, 2, 3);
 u = p.UnknownPoint();
 newPoint = u.Translate(1,2,3);
-value = {u.X, u.Y, u.Z};
+value = [u.X, u.Y, u.Z];
                  ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("value", new double[] { 1, 2, 3 });

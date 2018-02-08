@@ -79,7 +79,7 @@ namespace ProtoFFITests
             object[] arr = new object[3];
             context.Values.CopyTo(arr, 0);
             String code =
-            @"                          value = x + y + z;               arr = {x,y,z};               success = (value==3);            ";
+            @"                          value = x + y + z;               arr = [x,y,z];               success = (value==3);            ";
             ValidationData[] data = { new ValidationData { ValueName = "success", ExpectedValue = true, BlockIndex = 0 },                                      new ValidationData { ValueName = "arr", ExpectedValue = arr, BlockIndex = 0 }};
             //Inject the context and execute code.
             ExecuteAndVerify(code, data, context);
@@ -110,7 +110,7 @@ namespace ProtoFFITests
             object[] arr = new object[3];
             context.Values.CopyTo(arr, 0);
             String code =
-            @"                          arr = ImportData(""ProtoCoreDataProvider"", {""name1"", ""x"", ""name2"", ""y"", ""name3"", ""z""});            ";
+            @"                          arr = ImportData(""ProtoCoreDataProvider"", [""name1"", ""x"", ""name2"", ""y"", ""name3"", ""z""]);            ";
             ValidationData[] data = { new ValidationData { ValueName = "arr", ExpectedValue = arr, BlockIndex = 0 } };
             //Inject the context and execute code.
             ExecuteAndVerify(code, data, context);

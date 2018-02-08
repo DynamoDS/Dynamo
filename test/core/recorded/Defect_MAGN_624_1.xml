@@ -2,11 +2,11 @@
   <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
   <CreateNodeCommand NodeId="c9929987-69c8-42bd-9cda-04ef90d029cb" NodeName="Code Block" X="181" Y="292" DefaultPosition="false" TransformCoordinates="true" />
   <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
-  <UpdateModelValueCommand ModelGuid="c9929987-69c8-42bd-9cda-04ef90d029cb" Name="Code" Value="a={1,2,3};&#xD;&#xA;a[0] = 3;" />
+  <UpdateModelValueCommand ModelGuid="c9929987-69c8-42bd-9cda-04ef90d029cb" Name="Code" Value="a=[1,2,3];&#xD;&#xA;a[0] = 3;" />
   <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
-  <UpdateModelValueCommand ModelGuid="c9929987-69c8-42bd-9cda-04ef90d029cb" Name="Code" Value="a={1,2,3};&#xA;a[0] = 3;&#xD;&#xA;&#xD;&#xA;b=;&#xD;&#xA;&#xD;&#xA;a=0;" />
+  <UpdateModelValueCommand ModelGuid="c9929987-69c8-42bd-9cda-04ef90d029cb" Name="Code" Value="a=[1,2,3];&#xA;a[0] = 3;&#xD;&#xA;&#xD;&#xA;b=;&#xD;&#xA;&#xD;&#xA;a=0;" />
   <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
-  <UpdateModelValueCommand ModelGuid="c9929987-69c8-42bd-9cda-04ef90d029cb" Name="Code" Value="a={1,2,3};&#xA;a[0] = 3;&#xA;&#xA;b=1;" />
+  <UpdateModelValueCommand ModelGuid="c9929987-69c8-42bd-9cda-04ef90d029cb" Name="Code" Value="a=[1,2,3];&#xA;a[0] = 3;&#xA;&#xA;b=1;" />
   <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
   <CreateNodeCommand NodeId="c3fb10a3-4b3e-4e4b-a32a-5e4d3fe5059d" NodeName="+" X="0" Y="0" DefaultPosition="true" TransformCoordinates="true" />
   <SelectModelCommand ModelGuid="c3fb10a3-4b3e-4e4b-a32a-5e4d3fe5059d" Modifiers="0" />

@@ -111,6 +111,9 @@ namespace Dynamo.Controls
             SizeChanged += DynamoView_SizeChanged;
             LocationChanged += DynamoView_LocationChanged;
 
+            // Apply appropriate expand/collapse library button state depending on initial width
+            updateCollapseIcon();
+
             // Check that preference bounds are actually within one
             // of the available monitors.
             if (CheckVirtualScreenSize())
@@ -1593,51 +1596,88 @@ namespace Dynamo.Controls
         private void Button_MouseEnter(object sender, MouseEventArgs e)
         {
             Grid g = (Grid)sender;
-            TextBlock tb = (TextBlock)(g.Children[1]);
+            StackPanel sp = (StackPanel)(g.Children[0]);
+            TextBlock tb = (TextBlock)(sp.Children[0]);
             var bc = new BrushConverter();
             tb.Foreground = (Brush)bc.ConvertFrom("#cccccc");
-            Image collapseIcon = (Image)g.Children[0];
-            var imageUri = new Uri(@"pack://application:,,,/DynamoCoreWpf;component/UI/Images/expand_hover.png");
+            Image collapseIcon = (Image)sp.Children[1];
 
-            BitmapImage hover = new BitmapImage(imageUri);
-            // hover.Rotation = Rotation.Rotate180;
+            // When hovered swap appropriate expand/collapse button state
+            if (LibraryCollapsed)
+            {
+                Uri imageUri;
+                imageUri = new Uri(@"pack://application:,,,/DynamoCoreWpf;component/UI/Images/expand_hover.png");
+                BitmapImage hover = new BitmapImage(imageUri);
+                collapseIcon.Source = hover;
+            }
+        }
 
-            collapseIcon.Source = hover;
+        private bool libraryCollapsed;
+
+        // Default library width
+        private const int defaultLibraryWidth = 200;
+
+        // Check if library is collapsed or expanded
+        public bool LibraryCollapsed
+        {
+            get
+            {
+                // Threshold that determines if button should be displayed
+                if (LibraryViewColumn.Width.Value < 20)
+                { libraryCollapsed = true; }
+
+                else
+                { libraryCollapsed = false; }
+
+                return libraryCollapsed;
+            }
+        }
+
+        // Check if library is collapsed or expanded and apply appropriate button state
+        private void updateCollapseIcon()
+        {
+            if (LibraryCollapsed)
+            {
+                collapsedSidebar.Visibility = Visibility.Visible;
+            }
+
+            else
+            {
+                collapsedSidebar.Visibility = Visibility.Collapsed;
+            }
         }
 
         private void OnCollapsedSidebarClick(object sender, EventArgs e)
         {
-            LibraryViewColumn.MinWidth = Configurations.MinWidthLibraryView;
-
-            UserControl view = (UserControl)sidebarGrid.Children[0];
-            if (view.Visibility == Visibility.Collapsed)
+            if(LibraryCollapsed)
             {
-                view.Width = double.NaN;
-                view.HorizontalAlignment = HorizontalAlignment.Stretch;
-                view.Height = double.NaN;
-                view.VerticalAlignment = VerticalAlignment.Stretch;
-
-                mainGrid.ColumnDefinitions[0].Width = new GridLength(restoreWidth);
-                verticalSplitter.Visibility = Visibility.Visible;
-                view.Visibility = Visibility.Visible;
-                sidebarGrid.Visibility = Visibility.Visible;
-                collapsedSidebar.Visibility = Visibility.Collapsed;
+                // Restore library to default width (200)
+                LibraryViewColumn.Width = new GridLength(defaultLibraryWidth, GridUnitType.Star);
             }
+
+            else
+            {
+                LibraryViewColumn.Width = new GridLength(0, GridUnitType.Star);
+            }
+
+            updateCollapseIcon();
         }
 
         private void Button_MouseLeave(object sender, MouseEventArgs e)
         {
             Grid g = (Grid)sender;
-            TextBlock tb = (TextBlock)(g.Children[1]);
+            StackPanel sp = (StackPanel)(g.Children[0]);
+            TextBlock tb = (TextBlock)(sp.Children[0]);
             var bc = new BrushConverter();
             tb.Foreground = (Brush)bc.ConvertFromString("#aaaaaa");
-            Image collapseIcon = (Image)g.Children[0];
+            Image collapseIcon = (Image)sp.Children[1];
 
-            // Change the collapse icon and rotate
-            var imageUri = new Uri(@"pack://application:,,,/DynamoCoreWpf;component/UI/Images/expand_normal.png");
+            Uri imageUri;
+            imageUri = new Uri(@"pack://application:,,,/DynamoCoreWpf;component/UI/Images/expand_normal.png");
             BitmapImage hover = new BitmapImage(imageUri);
-
             collapseIcon.Source = hover;
+
+            updateCollapseIcon();
         }
 
         private double restoreWidth = 0;
@@ -1707,6 +1747,9 @@ namespace Dynamo.Controls
         private void WorkspaceTabs_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             ToggleWorkspaceTabVisibility(WorkspaceTabs.SelectedIndex);
+
+            // When workspace is resized apply appropriate library expand/collapse icon
+            updateCollapseIcon();
         }
 
         private void DynamoView_OnDrop(object sender, DragEventArgs e)

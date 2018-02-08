@@ -18,7 +18,7 @@ def foo(a,b)
 {
     return = a + b;
 }
-test = foo( {0,1}<1>,{2,3}<2> );
+test = foo( [0,1]<1>,[2,3]<2> );
 ";
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "";
@@ -36,8 +36,8 @@ def foo(a,b)
 {
     return = a + b;
 }
-f = {0,1};
-g = {2,3};
+f = [0,1];
+g = [2,3];
 test = foo( f<1>, g<2> );
 ";
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
@@ -76,8 +76,8 @@ def foo(a,b)
 {
     return = a + b;
 }
-x = {0,1};
-y = {2,3};
+x = [0,1];
+y = [2,3];
 test = foo( x<1>,y<2> );
 ";
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
@@ -114,7 +114,7 @@ def foo(a,b)
 {
     return = a + b;
 }
-test = foo( {0..1}<1>,{2..3}<2> );
+test = foo( [0..1]<1>,[2..3]<2> );
 ";
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "";
@@ -132,8 +132,8 @@ def foo(a:var,b:var)
 {
     return = a + b;
 }
-x = {0,1};
-y = {2,3};
+x = [0,1];
+y = [2,3];
 test = foo( x<1>,y<2> );
 ";
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
@@ -152,8 +152,8 @@ def foo(a:var,b:var)
 {
     return = a + b;
 }
-x = {0,1};
-y = {2,3};
+x = [0,1];
+y = [2,3];
 test = foo( x<1>,y<1> );
 ";
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
@@ -172,8 +172,8 @@ def foo(a:int,b:double)
 {
     return = a + b;
 }
-x = {0,1};
-y = {2,3};
+x = [0,1];
+y = [2,3];
 test = foo( x<1>,y<2> );
 ";
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
@@ -194,8 +194,8 @@ def foo(a:TestObjectA, b:TestObjectA)
 {
     return = a.a + b.a;
 }
-x = TestObjectA.TestObjectA({0,1});
-y = TestObjectA.TestObjectA({2,3});
+x = TestObjectA.TestObjectA([0,1]);
+y = TestObjectA.TestObjectA([2,3]);
 test = foo( x<1>,y<2> );
 ";
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
@@ -214,8 +214,8 @@ def foo(a:int,b:double)
 {
     return = a + b;
 }
-x = {{0,1},{2,3}};
-y = {{0,1},{2,3}};
+x = [[0,1],[2,3]];
+y = [[0,1],[2,3]];
 test = foo( x<1>,y<2> );
 ";
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
@@ -235,8 +235,8 @@ def foo(a:int,b:double)
 {
     return = a + b;
 }
-x = {{0,1}};
-y = {{2,3}};
+x = [[0,1]];
+y = [[2,3]];
 test = foo( x<1>,y<2> );
 ";
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
@@ -256,8 +256,8 @@ def foo(a:var[],b:var[])
 {
     return = a + b;
 }
-x = {{0,1}};
-y = {{2,3}};
+x = [[0,1]];
+y = [[2,3]];
 test = foo( x<1>,y<2> );
 ";
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
@@ -276,8 +276,8 @@ def foo(a,b:int)
 {
     return = a + b;
 }
-x = {0,1};
-y = {2,3};
+x = [0,1];
+y = [2,3];
 test = foo( x<1>,y<2> );
 ";
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
@@ -296,8 +296,8 @@ def foo(a:int,b:int)
 {
     return = a + b;
 }
-x = {0,1};
-y = {2,3};
+x = [0,1];
+y = [2,3];
 test = foo( x<1>,y );
 ";
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
@@ -317,8 +317,8 @@ def foo(a:int,b:int)
 {
     return = a + b;
 }
-x = {0,1};
-y = {2,3};
+x = [0,1];
+y = [2,3];
 test = foo( x,y<1> );
 ";
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
@@ -338,8 +338,8 @@ def foo(a:int,b:int)
 {
     return = a + b;
 }
-x = {0,1};
-y = {2,3,4};
+x = [0,1];
+y = [2,3,4];
 test = foo( x<1>,y<2> );
 ";
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
@@ -358,8 +358,8 @@ def foo(a:int,b:int)
 {
     return = a + b;
 }
-x = {0,1,3};
-y = {4,5};
+x = [0,1,3];
+y = [4,5];
 test = foo( x<1>,y<2> );
 ";
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
@@ -378,7 +378,7 @@ def foo(a:int,b:int)
 {
     return = a + b;
 }
-x = {0,1};
+x = [0,1];
 y = 4;
 test = foo( x<1>,y<2> );
 ";
@@ -398,9 +398,9 @@ def foo: var[]..[](x : string, y : string, z : string)
 {
 return = x + y + z;
 }
-x = {{""1""}};
+x = [[""1""]];
 y = ""2"";
-z = {""3"", ""4""};
+z = [""3"", ""4""];
 a = foo(x<1>, y<2>, z<3>);
 b = foo(x<1>, y<2>, z<3><4>);
 ";
@@ -421,9 +421,9 @@ def foo(a:int,b:int,c)
 {
     return = a + b +c;
 }
-x = {0,1};
-y = {2,3};
-z = {4,5};
+x = [0,1];
+y = [2,3];
+z = [4,5];
 test = foo( x<1>,y<2>,z<3> );
 ";
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
@@ -443,9 +443,9 @@ def foo(a:int,b:int,c:int)
 {
     return = a + b +c;
 }
-x = {0,1};
-y = {2,3};
-z = {4,5};
+x = [0,1];
+y = [2,3];
+z = [4,5];
 test = foo( x<1>,y<2>,z<1> );
 ";
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
@@ -466,9 +466,9 @@ def foo(a:int,b:int,c:int)
 {
     return = a + b +c;
 }
-x = {0,1};
-y = {2,3};
-z = {4,5};
+x = [0,1];
+y = [2,3];
+z = [4,5];
 test = foo( x<1>,y,z<2> );
 ";
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
@@ -489,9 +489,9 @@ def foo(a,b,c)
 {
     return = a + b +c;
 }
-x = {0,1};
-y = {2,3};
-z = {4,5};
+x = [0,1];
+y = [2,3];
+z = [4,5];
 test = foo( x<1>,y<2>,z<3> );
 ";
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
@@ -512,9 +512,9 @@ def foo(a,b,c)
 {
     return = a + b +c;
 }
-x = {0,1};
-y = {2,3,4};
-z = {5,6,7,8};
+x = [0,1];
+y = [2,3,4];
+z = [5,6,7,8];
 test = foo( x<1>,y<2>,z<3> );
 ";
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
@@ -532,7 +532,7 @@ test = foo( x<1>,y<2>,z<3> );
             String code =
 @"
 import(""FFITarget.dll"");
-test = TestObjectC.TestObjectC({0,1}<1>,{2,3}<2>).z;
+test = TestObjectC.TestObjectC([0,1]<1>,[2,3]<2>).z;
 ";
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "";
@@ -565,8 +565,8 @@ test = TestObjectC.TestObjectC((0..1)<1>,(2..3)<2>).z;
             String code =
 @"
 import(""FFITarget.dll"");
-x = {0,1};
-y = {2,3};
+x = [0,1];
+y = [2,3];
 test = TestObjectC.TestObjectC(x<1>,y<2>).z;
 ";
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
@@ -583,7 +583,7 @@ test = TestObjectC.TestObjectC(x<1>,y<2>).z;
             String code =
 @"
 import(""FFITarget.dll"");
-x = {0,1};
+x = [0,1];
 y = 2;
 test = TestObjectC.TestObjectC(x<1>,y<2>).z;
 ";
@@ -601,9 +601,9 @@ test = TestObjectC.TestObjectC(x<1>,y<2>).z;
             String code =
 @"
 import(""FFITarget.dll"");
-x = {0,1};
-y = {2,3};
-z = {4,5};
+x = [0,1];
+y = [2,3];
+z = [4,5];
 test = TestObjectD.TestObjectD(x<1>,y<2>,z<3>).t;
 ";
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
@@ -621,9 +621,9 @@ test = TestObjectD.TestObjectD(x<1>,y<2>,z<3>).t;
             String code =
 @"
 import(""FFITarget.dll"");
-x = {0,1};
-y = {2,3};
-z = {4,5};
+x = [0,1];
+y = [2,3];
+z = [4,5];
 test = TestObjectD.TestObjectD(x<1>,y<2>,z<1>).t;
 ";
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
@@ -642,9 +642,9 @@ test = TestObjectD.TestObjectD(x<1>,y<2>,z<1>).t;
             String code =
 @"
 import(""FFITarget.dll"");
-x = {0,1};
-y = {2,3};
-z = {4,5};
+x = [0,1];
+y = [2,3];
+z = [4,5];
 test = TestObjectD.TestObjectD(x<1>,y<2>,z).t;
 ";
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
@@ -760,7 +760,7 @@ test = sum ( z, x<1>, y<2> ); ";
 }
 x = 1..2;
 y = 3..4;
-z = {1, 1};
+z = [1, 1];
 test = sum ( z<1>, x<1>, y<2> ); ";
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "";//DNL-1467386 Rev 4247 : WARNING: Replication unbox requested on Singleton warning coming from using replication guides on only some, not all arguments of a function gives incorrect output";
@@ -798,8 +798,8 @@ test = sum ( x<1>, y<2>, z ); ";
 {
     return = a + b + c ;
 }
-x = {1,2};
-y = {3,4};
+x = [1,2];
+y = [3,4];
 z = 1;
 test = sum ( z, x<1>, y<2> ); ";
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
@@ -980,7 +980,7 @@ zArray = temp1 < 1 > +temp2 < 2 >;
 @"
 import(""FFITarget.dll"");
 a = (0..1..#2);
-b = { 0, 1}; // fails with this as well
+b = [ 0, 1]; // fails with this as well
 cs = DummyPoint.ByCoordinates(1, a<1>, b<2>); 
 test = cs.Y;";
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
@@ -996,8 +996,8 @@ test = cs.Y;";
             String code =
 @"
 import(""FFITarget.dll"");
-a = ArrayMember.Ctor({1,2});
-b = ArrayMember.Ctor({1,2});
+a = ArrayMember.Ctor([1,2]);
+b = ArrayMember.Ctor([1,2]);
 test = a.X<1> + b.X<2>;
 ";
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
@@ -1016,8 +1016,8 @@ test = a.X<1> + b.X<2>;
 import(""FFITarget.dll"");
 def foo ()
 {
-    a = ArrayMember.Ctor({1,2});
-    b = ArrayMember.Ctor({1,2});
+    a = ArrayMember.Ctor([1,2]);
+    b = ArrayMember.Ctor([1,2]);
     test = a.X<1> + b.X<2>;
     return = test;
 }
@@ -1037,14 +1037,14 @@ test = foo();
             String code =
 @"
 import(""FFITarget.dll"");
-test = { { } };
+test = [ [ ] ];
 test2 = [Associative]
 {
-    test2 = { } ;
+    test2 = [ ] ;
     [Imperative]
     {
-        a = ArrayMember.Ctor({1,2});
-        b = ArrayMember.Ctor({1,2});
+        a = ArrayMember.Ctor([1,2]);
+        b = ArrayMember.Ctor([1,2]);
         [Associative]
         {
             test = a.X<1> + b.X<2>;
@@ -1089,7 +1089,7 @@ def sum ( a, b, c)
     return = a + b + c ;
 }
 y = 3..4;
-r = sum(1, { 1, 2}<1>, y<2>);";
+r = sum(1, [ 1, 2]<1>, y<2>);";
             string errmsg = "DNL-1467580 IndexOutOfRange Exception when replication guides are not applied on all arguments";
             thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("r", new object[] { new object[] { 5, 6 }, new object[] { 6, 7 } });
@@ -1161,8 +1161,8 @@ import(""FFITarget.dll"");
             {
                 return = a * b;
             }
-            list1 = {1,2};
-            list2 = {1,2};
+            list1 = [1,2];
+            list2 = [1,2];
             list3 = foo(foo(foo(list1<1>, list2<2>)<1>, list2<2>)<1>, list2<2>);";
             string errmsg = "";
             thisTest.VerifyRunScriptSource(code, errmsg);
@@ -1219,7 +1219,7 @@ def foo(x:var[])
 {
     return = x;
 }
-test2 = foo({2,3})<1> + ({5,7})<2>;";
+test2 = foo([2,3])<1> + ([5,7])<2>;";
             string errmsg = "";
             thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("test2", new object[] { new object[] { 7, 9 }, new object[] { 8, 10 } }
@@ -1235,8 +1235,8 @@ def foo(x:var[])
 {
     return = x;
 }
-x = {1,2,3,4,5,6,7,8,9};
-test2 = x[foo({1,2})]<1> + ({5, 7})<2>;";
+x = [1,2,3,4,5,6,7,8,9];
+test2 = x[foo([1,2])]<1> + ([5, 7])<2>;";
             string errmsg = "";
             thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("test2", new object[] { new object[] { 7, 9 }, new object[] { 8, 10 } }
@@ -1251,7 +1251,7 @@ def foo(x:var[])
 {
     return = x;
 }
-test2 = foo({2,3}<1> + ({5,7})<2>);";
+test2 = foo([2,3]<1> + ([5,7])<2>);";
             string errmsg = "";
             thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("test2", new object[] { new object[] { 7, 9 }, new object[] { 8, 10 } });
@@ -1280,8 +1280,8 @@ def foo(x1,y1)
 {
     return = x1 + y1;
 }
-x = {0,1};
-y = {2, 3};
+x = [0,1];
+y = [2, 3];
 test = foo(x<1>,y<3>);
 ";
             string errmsg = "DNL-1467460 NotImplemented Exception occurs when replication guides are not in sequence";
@@ -1299,7 +1299,7 @@ test = foo(x<1>,y<3>);
     return = a + b + c ;
 }
 y = 3..4;
-test = sum(1, { 1, 2}<1>, y<2>);
+test = sum(1, [ 1, 2]<1>, y<2>);
 ";
             string errmsg = "";
             thisTest.VerifyRunScriptSource(code, errmsg);
@@ -1318,7 +1318,7 @@ def sum ( a, b, c)
     return = a + b + c ;
 }
 y = 3..4;
-test = sum(1, { 1, 2}<1>, y<2>);
+test = sum(1, [ 1, 2]<1>, y<2>);
 ";
             string errmsg = "";
             thisTest.VerifyRunScriptSource(code, errmsg);
@@ -1339,7 +1339,7 @@ def sum ( a, b, c)
 test = [Associative]
 {
     y = 3..4;
-    return = sum(1, { 1, 2}<1>, y<2>);
+    return = sum(1, [ 1, 2]<1>, y<2>);
 }
 ";
             string errmsg = "";
@@ -1361,7 +1361,7 @@ def sum ( a, b, c)
 test = [Associative]
 {
     y = 3..4;
-    return = sum(1, { 1, 2}<1>, y<2>);
+    return = sum(1, [ 1, 2]<1>, y<2>);
 }
 ";
             string errmsg = "";
@@ -1383,7 +1383,7 @@ def sum ( a, b, c)
 test = [Associative]
 {
     y = 3..4;
-    return = Count ( sum(1, { 1, 2}<1>, y<2>) ) > 1 ? sum(1, { 1, 2}<1>, y<2>) : 0;
+    return = Count ( sum(1, [ 1, 2]<1>, y<2>) ) > 1 ? sum(1, [ 1, 2]<1>, y<2>) : 0;
 }
 ";
             string errmsg = "";
@@ -1403,7 +1403,7 @@ def foo ( a, b, c)
     return = x;
 }
 y = 3..4;
-test2 = 0..foo(1, { 1, 2}<1>, y<2>);
+test2 = 0..foo(1, [ 1, 2]<1>, y<2>);
 test = test2[1][1];
 ";
             string errmsg = "";
@@ -1502,7 +1502,7 @@ test = [Associative]
 test;
 [Associative]
 {
-   test = 1 + (1..2..#2)<2> + {3,4}<2>;
+   test = 1 + (1..2..#2)<2> + [3,4]<2>;
 }
 ";
             string errmsg = "MAGN-4113[Design] - spec for rep guides when skip a guide";
@@ -1532,7 +1532,7 @@ test = b[t1]<1>+b[t1]<2>;
             string code =
 @"
 b = 0..3;
-test = b[0..1]<1>+b[{2,3}]<2>;
+test = b[0..1]<1>+b[[2,3]]<2>;
 ";
             string errmsg = "";
             thisTest.VerifyRunScriptSource(code, errmsg);
@@ -1550,7 +1550,7 @@ def foo ( a )
     return = a ;
 }
 b = 0..3;
-test = foo ( b[0..1]<1>+b[{2,3}]<2> );
+test = foo ( b[0..1]<1>+b[[2,3]]<2> );
 ";
             string errmsg = "";
             thisTest.VerifyRunScriptSource(code, errmsg);
@@ -1569,7 +1569,7 @@ def foo ( a )
     return = a ;
 }
 b = 0..3;
-test = foo( b[0..1]<1>+b[{2,3}]<2> );
+test = foo( b[0..1]<1>+b[[2,3]]<2> );
 ";
             string errmsg = "";
             thisTest.VerifyRunScriptSource(code, errmsg);
@@ -1588,13 +1588,13 @@ def foo ( a )
     return = a ;
 }
 
-b = { { 0, 1}, { 2, 3} };
+b = [ [ 0, 1], [ 2, 3] ];
 test1;
 test2;
 [Imperative]
 {
     test1 = foo ( b[0][0..1] );
-    test2 = foo ( b[1][{0, 1}] );
+    test2 = foo ( b[1][[0, 1]] );
 }
 ";
             string errmsg = "";
@@ -1615,13 +1615,13 @@ def foo ( a )
 {
     return = a ;
 }
-b = { { 0, 1}, { 2, 3} };
+b = [ [ 0, 1], [ 2, 3] ];
 test1;
 test2;
 [Associative]
 {
-    test1 = foo ( b[ {0, 0} ][ 0..1 ] );
-    test2 = foo ( b[ { 1, 1} ][ {0, 1} ] );
+    test1 = foo ( b[ [0, 0] ][ 0..1 ] );
+    test2 = foo ( b[ [ 1, 1] ][ [0, 1] ] );
 }
 ";
             string errmsg = "MAGN-4113[Design] - spec for rep guides when skip a guide";
@@ -1641,10 +1641,10 @@ def foo ( a )
 {
     return = a ;
 }
-b = { { 0, 1}, { 2, 3} };
+b = [ [ 0, 1], [ 2, 3] ];
 test = [Associative]
 {
-    return = foo ( b[ {0, 1}<1> ][( 0..1 )<2>] );
+    return = foo ( b[ [0, 1]<1> ][( 0..1 )<2>] );
 }
 ";
             string errmsg = "DNL-1467298 rev 4245 :  replication guides with partial array indexing is not giving the expected output";
@@ -1666,10 +1666,10 @@ def foo ( a )
     return = a ;
 }
 
-b = { { 0, 1}, { 2, 3} };
+b = [ [ 0, 1], [ 2, 3] ];
 def foo2 ( )
 {
-    t = foo ( b[ {0, 1} ][( 0..1 ) ] );
+    t = foo ( b[ [0, 1] ][( 0..1 ) ] );
     return = t;
 }
 test = foo2();
@@ -1689,8 +1689,8 @@ def foo (x1,y1)
 {
     return = x1 + y1;
 }
-x = {0,1};
-y = {2, 3};
+x = [0,1];
+y = [2, 3];
 test = foo(x<1>,y<3>);
 ";
             string errmsg = "";
@@ -1708,9 +1708,9 @@ def foo (x1,y1,z1)
 {
     return = y1;
 }
-x = {0,1};
-y = {2,3};
-z = {4,5 };
+x = [0,1];
+y = [2,3];
+z = [4,5 ];
 test = foo(x<1>,y<3>,z); // expect this to be treated as :  foo(x<1>,y<2>,z<1>);
 ";
             string errmsg = "MAGN-1707 IndexOutOfRange Exception when replication guides are not applied on all arguments";
@@ -1728,9 +1728,9 @@ def foo (x1,y1,z1)
 {
     return = y1;
 }
-x = {0,1};
-y = {2,3};
-z = {4,5 };
+x = [0,1];
+y = [2,3];
+z = [4,5 ];
 test = foo(x, y<2>, z<3>); // expect this to be treated as :  foo(x<1>,y<2>,z<3>);
 ";
             string errmsg = "MAGN-4113[Design] - spec for rep guides when skip a guide";
@@ -1748,9 +1748,9 @@ def foo (x1,y1,z1)
 {
     return = y1;
 }
-x = {0,1};
-y = {2,3};
-z = {4,5 };
+x = [0,1];
+y = [2,3];
+z = [4,5 ];
 test = foo(x<1>, y, z<3>); // expect this to be treated as :  foo(x<1>,y<1>,z<2>);
 ";
             string errmsg = "MAGN-1707 IndexOutOfRange Exception when replication guides are not applied on all arguments";
@@ -1768,9 +1768,9 @@ def foo (x1,y1,z1)
 {
     return = y1;
 }
-x = {0,1};
-y = {2,3};
-z = {4,5 };
+x = [0,1];
+y = [2,3];
+z = [4,5 ];
 test = foo(x<1>, y<1>, z<3>); // expect this to be treated as :  foo(x<1>,y<1>,z<2>);
 ";
             string errmsg = "";
@@ -1788,9 +1788,9 @@ def foo (x1,y1,z1)
 {
     return = y1;
 }
-x = {0,1};
-y = {2,3};
-z = {4,5 };
+x = [0,1];
+y = [2,3];
+z = [4,5 ];
 test = foo(x<3>, y<1>, z<5>); // expect this to be treated as :  foo(x<2>,y<1>,z<3>); 
 ";
             string errmsg = "";
@@ -1808,9 +1808,9 @@ def foo (x1,y1,z1)
 {
     return = z1;
 }
-x = {0,1};
-y = {2,3};
-z = {4,5 };
+x = [0,1];
+y = [2,3];
+z = [4,5 ];
 test = foo(x<4>, y<3>, z<1>); // expect this to be treated as :  foo(x<3>,y<2>,z<1>); 
 ";
             string errmsg = "";
@@ -1830,9 +1830,9 @@ def foo (x1,y1,z1)
 {
     return = y1;
 }
-x = {0,1};
-y = {2,3};
-z = {4,5 };
+x = [0,1];
+y = [2,3];
+z = [4,5 ];
 test = foo(x<7>, y<3>, z<6>); // expect this to be treated as :  foo(x<3>,y<1>,z<2>); 
 ";
             string errmsg = "";
@@ -1852,9 +1852,9 @@ def foo (x1,y1,z1)
 {
     return = y1;
 }
-x = {0,1};
-y = {2,3};
-z = {4,5 };
+x = [0,1];
+y = [2,3];
+z = [4,5 ];
 test = foo(x<7>, y<3>, z<6>); // expect this to be treated as :  foo(x<3>,y<1>,z<2>); 
 ";
             string errmsg = "";
@@ -1873,9 +1873,9 @@ def foo (x1,y1,z1)
 {
     return = y1;
 }
-x = {0,1};
-y = {2,3};
-z = {4,5 };
+x = [0,1];
+y = [2,3];
+z = [4,5 ];
 test = foo(x<7>, y<3>, z<6>); // expect this to be treated as :  foo(x<3>,y<1>,z<2>); 
 ";
             string errmsg = "";
@@ -1897,9 +1897,9 @@ def foo (x1,y1,z1)
 test;
 [Imperative]
 {
-    x = {0,1};
-    y = {2,3};
-    z = {4,5 };
+    x = [0,1];
+    y = [2,3];
+    z = [4,5 ];
     test = [Associative]
     {
         return = foo(x<7>, y<3>, z<6>); // expect this to be treated as :  foo(x<3>,y<1>,z<2>); 
@@ -1922,9 +1922,9 @@ def foo (x1,y1,z1)
 {
     return = y1;
 }
-x = {0,1};
-y = {2,3};
-z = {4,5 };
+x = [0,1];
+y = [2,3];
+z = [4,5 ];
 test1 = foo(x<2>, y<2>, z<3>) ; // expect this to be treated as :  foo(x<1>,y<1>,z<2>);
 test2 = foo(x<1>, y<3>, z<3>) ; // expect this to be treated as :  foo(x<1>,y<2>,z<2>);
             
@@ -1943,10 +1943,10 @@ test2 = foo(x<1>, y<3>, z<3>) ; // expect this to be treated as :  foo(x<1>,y<2>
             string code =
 @"
 import (""FFITarget.dll"");
-x = {0,1};
-y = {2,3};
-z = {4,5};
-aa = { ReplicationTestA.ReplicationTestA(0,0,0), ReplicationTestA.ReplicationTestA(0,0,0) };
+x = [0,1];
+y = [2,3];
+z = [4,5];
+aa = [ ReplicationTestA.ReplicationTestA(0,0,0), ReplicationTestA.ReplicationTestA(0,0,0) ];
 test1 = aa.gety(x<2>, y<2>, z<3>) ; // expect this to be treated as :  foo(x<1>,y<1>,z<2>);
 test2 = aa.gety(x<1>, y<3>, z<3>) ; // expect this to be treated as :  foo(x<1>,y<2>,z<2>);
 ";
@@ -1966,9 +1966,9 @@ def foo (x1,y1,z1)
 {
     return = x1+y1+z1;
 }
-x = {0,1};
-y = {2,3};
-z = {4,5 };
+x = [0,1];
+y = [2,3];
+z = [4,5 ];
 test1 = foo(x<1>, y<2>, z<3>) ; 
 
 ";
@@ -1987,9 +1987,9 @@ def foo (x1,y1,z1)
 {
     return = x1+y1+z1;
 }
-x = {0.0,1.0};
-y = {2.0,3.0};
-z = {4.0,5.0 };
+x = [0.0,1.0];
+y = [2.0,3.0];
+z = [4.0,5.0 ];
 test1 = foo(x, y<2>, z<3>) ;       
 ";
             string errmsg = "MAGN-4113[Design] - spec for rep guides when skip a guide";
@@ -2003,9 +2003,9 @@ test1 = foo(x, y<2>, z<3>) ;
             string code =
 @"
 import (""FFITarget.dll"");
-x = {0.0,1.0};
-y = {2.0,3.0};
-z = {4.0,5.0 };
+x = [0.0,1.0];
+y = [2.0,3.0];
+z = [4.0,5.0 ];
 t1 = ReplicationTestA.ReplicationTestA(x, y<2>, z);  
 test2 = t1.A;
 test = ReplicationTestA.ReplicationTestA(0,0,0);
@@ -2029,9 +2029,9 @@ def foo (x1,y1,z1)
 {
     return = x1 == true ? y1 : z1;
 }
-x = {true, false};
-y = {false, true};
-z = {true, true};
+x = [true, false];
+y = [false, true];
+z = [true, true];
 test1 = foo(x<2>, y<4>, z<5>) ;          
 ";
             string errmsg = "";
@@ -2049,9 +2049,9 @@ def foo (x1,y1,z1)
 {
     return = x1 == true ? y1 : z1;
 }
-x = {true, false};
-y = {false, true};
-z = {true, true};
+x = [true, false];
+y = [false, true];
+z = [true, true];
 test1 = foo(x<4>, y<3>, z<5>) ;   
 ";
             string errmsg = "";
@@ -2069,9 +2069,9 @@ def foo (x1,y1,z1)
 {
     return = x1 + y1 + z1;
 }
-x = {0, 1};
-y = {2, 3};
-z = {4, 5};
+x = [0, 1];
+y = [2, 3];
+z = [4, 5];
 test1 = foo(x, y<2>, z<2>) ;       
 ";
             string errmsg = "DNL-1467580 IndexOutOfRange Exception when replication guides are not applied on all arguments";
@@ -2089,8 +2089,8 @@ def foo (x1,y1)
 {
     return = x1 + y1;
 }
-x = {{0, 1},{2,3}};
-y = {{4,5},{6,7}};
+x = [[0, 1],[2,3]];
+y = [[4,5],[6,7]];
 test1 = foo(x<1><2>, y<3><4>) ;          
 ";
             string errmsg = "MAGN-4113[Design] - spec for rep guides when skip a guide";
@@ -2108,8 +2108,8 @@ def foo (x1,y1)
 {
     return = x1 + y1;
 }
-x = {{0, 1},{2,3}};
-y = {{4,5},{6,7}};
+x = [[0, 1],[2,3]];
+y = [[4,5],[6,7]];
 test1 = foo(x<1><1>, y<2><3>) ;         
 ";
             string errmsg = "MAGN-4113[Design] - spec for rep guides when skip a guide";
@@ -2127,8 +2127,8 @@ def foo (x1,y1)
 {
     return = x1 + y1;
 }
-x = {{0, 1},{2,3}};
-y = {{4,5},{6,7}};
+x = [[0, 1],[2,3]];
+y = [[4,5],[6,7]];
 test1 = foo(x<1><3>, y<4><5>) ;        
 ";
             string errmsg = "";
@@ -2146,8 +2146,8 @@ def foo (x1,y1)
 {
     return = x1 + y1;
 }
-x = {{0, 1},{2,3}};
-y = {{4,5},{6,7}};
+x = [[0, 1],[2,3]];
+y = [[4,5],[6,7]];
 test1 = foo(x<2><4>, y<3><1>) ;            
 ";
             string errmsg = "MAGN-1708 NotImplemented Exception when multiple non-sequential replication guides are used on multidimensional arrays";
@@ -2164,8 +2164,8 @@ def foo (x1,y1)
 {
     return = x1 + y1;
 }
-x = {{0, 1},{2,3}};
-y = {{4,5},{6,7}};
+x = [[0, 1],[2,3]];
+y = [[4,5],[6,7]];
 test1 = foo(x<4><8>, y<7><3>) ;            
 ";
             string errmsg = "MAGN-4113[Design] - spec for rep guides when skip a guide";
@@ -2182,8 +2182,8 @@ def foo (x1,y1)
 {
     return = x1 + y1;
 }
-x = {{0, 1},{2,3}};
-y = {{4,5},{6,7}};
+x = [[0, 1],[2,3]];
+y = [[4,5],[6,7]];
 test1 = foo(x<3><5>, y<4><1>) ;            
 ";
             string errmsg = "MAGN-4113[Design] - spec for rep guides when skip a guide";
@@ -2201,8 +2201,8 @@ def foo (x1,y1)
 {
     return = x1 + y1;
 }
-x = {0,1};
-y = {{4,5},{6,7}};
+x = [0,1];
+y = [[4,5],[6,7]];
 test1 = foo(x<1>, y<2><3>) ;        
 ";
             string errmsg = "";
@@ -2220,8 +2220,8 @@ def foo (x1,y1)
 {
     return = x1 + y1;
 }
-x = {0,1};
-y = {{4,5},{6,7}};
+x = [0,1];
+y = [[4,5],[6,7]];
 test1 = foo(x, y<2><3>) ;        
 ";
             string errmsg = "MAGN-4113[Design] - spec for rep guides when skip a guide";
@@ -2238,8 +2238,8 @@ def foo (x1,y1)
 {
     return = x1 + y1;
 }
-x = {0,1};
-y = {{4,5},{6,7}};
+x = [0,1];
+y = [[4,5],[6,7]];
 test1 = foo(x<1>, y<1><3>) ;            
 ";
             string errmsg = "";
@@ -2258,8 +2258,8 @@ def foo (x1:int,y1:TestObjectA)
 {
     return = x1 + y1.a;
 }
-x = {0,1};
-y = {TestObjectA.TestObjectA(2), TestObjectA.TestObjectA(3)};
+x = [0,1];
+y = [TestObjectA.TestObjectA(2), TestObjectA.TestObjectA(3)];
 test1 = foo(x<1>, y<3>) ;            
 ";
             string errmsg = "";
@@ -2278,8 +2278,8 @@ def foo (x1:double,y1:TestObjectA)
 {
     return = x1 + y1.a;
 }
-x = {{0.0,1.0}, {2.0, 3.0} };
-y = { TestObjectA.TestObjectA(2), TestObjectA.TestObjectA(3)};
+x = [[0.0,1.0], [2.0, 3.0] ];
+y = [ TestObjectA.TestObjectA(2), TestObjectA.TestObjectA(3)];
 test1 = foo(x<1><2>, y<1>) ;            
 ";
             string errmsg = "";
@@ -2298,8 +2298,8 @@ def foo (x1:double,y1:TestObjectA)
 {
     return = x1 + y1.a;
 }
-x = {{0.0,1.0}, {2.0, 3.0} };
-y = { {TestObjectA.TestObjectA(4), TestObjectA.TestObjectA(5)}, { TestObjectA.TestObjectA(6), TestObjectA.TestObjectA(7) } };
+x = [[0.0,1.0], [2.0, 3.0] ];
+y = [ [TestObjectA.TestObjectA(4), TestObjectA.TestObjectA(5)], [ TestObjectA.TestObjectA(6), TestObjectA.TestObjectA(7) ] ];
 test1 = foo(x<1><2>, y<3><4>) ;            
 ";
             string errmsg = "";
@@ -2318,8 +2318,8 @@ def foo (x1:double,y1:TestObjectA)
 {
     return = x1 + y1.a;
 }
-x = {0.0,1.0 };
-y = { TestObjectA.TestObjectA(2), TestObjectA.TestObjectA(3) };
+x = [0.0,1.0 ];
+y = [ TestObjectA.TestObjectA(2), TestObjectA.TestObjectA(3) ];
 test1 = foo(x<1>, y) ;            
 ";
             string errmsg = "MAGN-4113[Design] - spec for rep guides when skip a guide";
@@ -2338,9 +2338,9 @@ def foo (x1:double,y1:TestObjectA, z : int)
 {
     return = x1 + y1.a + z;
 }
-x = { 0.0,1.0 };
-y = { TestObjectA.TestObjectA(2), TestObjectA.TestObjectA(3) };
-z = {4, 5};
+x = [ 0.0,1.0 ];
+y = [ TestObjectA.TestObjectA(2), TestObjectA.TestObjectA(3) ];
+z = [4, 5];
 test1 = foo(x<1>, y, z<2>) ;            
 ";
             string errmsg = "MAGN-4113[Design] - spec for rep guides when skip a guide";
@@ -2361,9 +2361,9 @@ def foo (x1:double,y1:TestObjectA, z : int)
 {
     return = x1 + y1.a + z;
 }
-x = { 0.0 };
-y = { TestObjectA.TestObjectA(2), TestObjectA.TestObjectA(3) };
-z = {4, 5};
+x = [ 0.0 ];
+y = [ TestObjectA.TestObjectA(2), TestObjectA.TestObjectA(3) ];
+z = [4, 5];
 test1 = foo(x<1>, y<2>, z<3>) ;            
 ";
             // This is just a sample test case of replication guides on jagged array. Replication on jagged array is not yet defined properly
@@ -2380,9 +2380,9 @@ test1 = foo(x<1>, y<2>, z<3>) ;
             string code =
 @" 
 import (""FFITarget.dll"");
-x = { 1, 2 };
-y = { 3, 4 };
-z = { 5, 6 };
+x = [ 1, 2 ];
+y = [ 3, 4 ];
+z = [ 5, 6 ];
 test1 = ReplicationTestA.ReplicationTestA(x<1>, y<2>, z<3>).A ;            
 ";
             string errmsg = "";
@@ -2396,16 +2396,16 @@ test1 = ReplicationTestA.ReplicationTestA(x<1>, y<2>, z<3>).A ;
             string code =
 @" 
     import(""BuiltIn.ds"");
-    x = {0,1,2,3};
-    y = {0,1};
-    z = { ""int"", ""double"" };
+    x = [0,1,2,3];
+    y = [0,1];
+    z = [ ""int"", ""double"" ];
     test1 = Contains ( x, y);
     test2 = IndexOf ( x, y) ;
     test3 = Remove ( x, y) ;
     test5 = NormalizeDepth ( x, y) ; 
     test6 = List.RemoveIfNot ( x, z) ; 
     test7 = SortIndexByValue ( x, y) ; 
-    test8 = Map ( {1,2}, {3,4}, {2,3}) ;   
+    test8 = Map ( [1,2], [3,4], [2,3]) ;   
 ";
             string errmsg = "MAGN-4113[Design] - spec for rep guides when skip a guide";
             thisTest.VerifyRunScriptSource(code, errmsg);
@@ -2436,9 +2436,9 @@ test7;
 test8;
 [Associative]
 {
-    x = {{0,1},{2,3}};
-    y = {0,1};
-    z = { ""int"", ""double"" };
+    x = [[0,1],[2,3]];
+    y = [0,1];
+    z = [ ""int"", ""double"" ];
     test1 = Contains ( x<1>, y<2>);
     test2 = IndexOf ( x<1>, y<2>) ;
     test3 = Remove ( x<1>, y<2>) ; 
@@ -2446,7 +2446,7 @@ test8;
     test5 = NormalizeDepth ( x<1>, y<2>) ; 
     test6 = List.RemoveIfNot ( x<1>, z<2>) ; 
     test7 = SortIndexByValue ( x<1>, y<2>) ; 
-    test8 = Map ( {1,2}<1>, {5,6}<2>, {2,3}<2>) ; 
+    test8 = Map ( [1,2]<1>, [5,6]<2>, [2,3]<2>) ; 
     
 }    
 ";
@@ -2473,11 +2473,11 @@ def foo1(x,y)
 }
 def foo2()
 {
-    return = {1, 2};
+    return = [1, 2];
 }
 def foo3()
 {
-    return = {3, 4};
+    return = [3, 4];
 }
 def foo ( x )
 {
@@ -2503,11 +2503,11 @@ def foo1(x,y)
 }
 def foo2()
 {
-    return = {1, 2};
+    return = [1, 2];
 }
 def foo3()
 {
-    return = {3, 4};
+    return = [3, 4];
 }
 def foo ( x )
 {
@@ -2533,11 +2533,11 @@ def foo1(x,y)
 }
 def foo2()
 {
-    return = {1, 2};
+    return = [1, 2];
 }
 def foo3()
 {
-    return = {3, 4};
+    return = [3, 4];
 }
 def fooo ( x )
 {
@@ -2566,16 +2566,16 @@ def foo (x,y,z)
     return = x + y + z;
 }
 x = 2;
-t1 = x > 2 ? 0 : foo({1,2}<1>,{3,4}<5>, {5,6}<3>);
-t2 = x > 2 ? 0 : foo({1,2}<1>,{3,4}<3>, x);
-t3 = x > 2 ? 0 : foo({1,2}<1>,{3,4}<5>, {5,6}<3>);
+t1 = x > 2 ? 0 : foo([1,2]<1>,[3,4]<5>, [5,6]<3>);
+t2 = x > 2 ? 0 : foo([1,2]<1>,[3,4]<3>, x);
+t3 = x > 2 ? 0 : foo([1,2]<1>,[3,4]<5>, [5,6]<3>);
 t4 = [Associative]
 {
      return = [Imperative]
      {
           return = [Associative]
           {
-               return = x > 2 ? 0 : foo({1,2}<1>,{3,4}<3>, x);
+               return = x > 2 ? 0 : foo([1,2]<1>,[3,4]<3>, x);
           }
      }
 }
@@ -2599,10 +2599,10 @@ def foo (x,y,z)
     return = x + y + z;
 }
 x = 2;
-t1 = 0..Count(foo({1,2}<1>,{3,4}<5>, {5,6}<3>));
-t2 = Count(foo({1,2}<1>,{3,4}<3>, x))..4..#3;
-t3 = 0..Count(foo({1,2}<1>,{3,4}<5>, {5,6}<3>));
-t4 = Count(foo({1,2}<1>,{3,4}<3>, x))..4..#3;
+t1 = 0..Count(foo([1,2]<1>,[3,4]<5>, [5,6]<3>));
+t2 = Count(foo([1,2]<1>,[3,4]<3>, x))..4..#3;
+t3 = 0..Count(foo([1,2]<1>,[3,4]<5>, [5,6]<3>));
+t4 = Count(foo([1,2]<1>,[3,4]<3>, x))..4..#3;
 ";
             string errmsg = "";
             thisTest.VerifyRunScriptSource(code, errmsg);
@@ -2620,7 +2620,7 @@ t4 = Count(foo({1,2}<1>,{3,4}<3>, x))..4..#3;
 @" 
 def foo()
 {
-    return = 0..Count(foo({1,2}<1>,{3,4}<5>, {5,6}<3>));
+    return = 0..Count(foo([1,2]<1>,[3,4]<5>, [5,6]<3>));
 }
     
 def foo (x,y,z)
@@ -2629,10 +2629,10 @@ def foo (x,y,z)
 }
 def foo2 ()
 {
-    return = 0..Count(foo({1,2}<1>,{3,4}<5>, {5,6}<3>));
+    return = 0..Count(foo([1,2]<1>,[3,4]<5>, [5,6]<3>));
 }
 x = 2;
-t1 = 0..Count(foo({1,2}<1>,{3,4}<5>, {5,6}<3>));
+t1 = 0..Count(foo([1,2]<1>,[3,4]<5>, [5,6]<3>));
 t2 = foo();
 t3 = foo2();
 t4 = [Associative]
@@ -2641,7 +2641,7 @@ t4 = [Associative]
     {
          return = [Associative]
          {
-              return = 0..Count(foo({1,2}<1>,{3,4}<5>, {5,6}<3>));              
+              return = 0..Count(foo([1,2]<1>,[3,4]<5>, [5,6]<3>));              
          }
     }
 }
@@ -2666,24 +2666,24 @@ def foo (x,y,z)
 }
 def foo2 : int[] (a:var[]..[])
 {
-    return = a[0..Count(foo({1,2}<1>,{3,4}<5>, {5,6}<3>))];
+    return = a[0..Count(foo([1,2]<1>,[3,4]<5>, [5,6]<3>))];
 }
 def foo: int[] (a:var[]..[])
 {
-    return = a[0..Count(foo({1,2}<1>,{3,4}<5>, {5,6}<3>))];
+    return = a[0..Count(foo([1,2]<1>,[3,4]<5>, [5,6]<3>))];
 }
-a = {1,2,3,4};
+a = [1,2,3,4];
 c = foo2(a);
 d = foo(a);
 b;
 f = [Associative]
 {
-    b = a[0..Count(foo({1,2}<1>,{3,4}<5>, {5,6}<3>))];
+    b = a[0..Count(foo([1,2]<1>,[3,4]<5>, [5,6]<3>))];
     return = [Imperative]
     {
          return = [Associative]
          {
-              return = a[0..Count(foo({1,2}<1>,{3,4}<5>, 5))];              
+              return = a[0..Count(foo([1,2]<1>,[3,4]<5>, 5))];              
          }
     }
 }
@@ -2706,8 +2706,8 @@ def foo (x,y,z)
 {
     return = x + y + z;
 }
-a = {{1},{2,3},{4,5,6}};
-b = a[0..Count(foo({1,2}<1>,{3,4}<5>, {5,6}<3>))][0..Count(foo({1,2}<1>,{3,4}<5>, {5,6}<3>))];
+a = [[1],[2,3],[4,5,6]];
+b = a[0..Count(foo([1,2]<1>,[3,4]<5>, [5,6]<3>))][0..Count(foo([1,2]<1>,[3,4]<5>, [5,6]<3>))];
 ";
             string errmsg = "MAGN-4113[Design] - spec for rep guides when skip a guide";
             thisTest.VerifyRunScriptSource(code, errmsg);
@@ -2739,8 +2739,8 @@ c4 = a<1> != b<2> ? 1 : 0;
         {
             string code =
 @" 
-a1 = { true, false};
-b1 = {false, false};
+a1 = [ true, false];
+b1 = [false, false];
 c1 = a1<1> && b1<2>;
 c2 = (!a1)<1> || (!b1)<1>;
 //c3 = (~a1)<1> && (~b1)<1>;
@@ -2764,8 +2764,8 @@ def foo (x,y,z)
 {
     return = x + y + z;
 }
-a = {{0,1},{2,3}}; 
-b = {{4,5},{6,7}};
+a = [[0,1],[2,3]]; 
+b = [[4,5],[6,7]];
 c1 = a<1><2> + b<1><2>;
 c2 = a<1><2> - b<3><4>;
 c3 = a<1> / b<1>;
@@ -2786,8 +2786,8 @@ c5 = a<1> % b<1>;
         {
             string code =
 @"
-a = { ""1"", ""2""};
-b = {""3"", ""4""};
+a = [ ""1"", ""2""];
+b = [""3"", ""4""];
 c = a<1> + b<2>;
 ";
             string errmsg = "";
@@ -2804,8 +2804,8 @@ def foo (x,y,z)
 {
     return = x + y + z;
 }
-a = {{0,1},{2,3}}; 
-b = {{4,5},{6,7}};
+a = [[0,1],[2,3]]; 
+b = [[4,5],[6,7]];
 c = a<1><2> > b<1><2> ? 1 : 0;
 d = a > b ? 1 : 0;
 f = a<1><2> > b<3><4> ? 1 : 0;
@@ -2856,11 +2856,11 @@ y = 2..3;
 b1 = ReplicationY.ReplicationY(x, y);
 t2 = b1.sum(0..1, 2..3);
 t3 = b1.sum((0..1)<1>, (2..3)<2>);
-t4 = b1.sum({0,1}<1>, {2,3}<2>);
-t5 = b1<1>.sum({0,1}<1>, {2,3}<2>);
+t4 = b1.sum([0,1]<1>, [2,3]<2>);
+t5 = b1<1>.sum([0,1]<1>, [2,3]<2>);
 t6 = b1<1>.sum((0..1)<1>, (2..3)<2>);
 t7 = b1<1>.sum((0..1)<2>, (2..3)<2>);
-t8 = b1<1>.sum({0,1}<1>, {2,3}<1>);
+t8 = b1<1>.sum([0,1]<1>, [2,3]<1>);
 ";
             string errmsg = "MAGN-4113[Design] - spec for rep guides when skip a guide";
             thisTest.VerifyRunScriptSource(code, errmsg);
@@ -2929,7 +2929,7 @@ def foo (x,y)
     return = x + y;
 }
 
-a = {0};
+a = [0];
 b = 0..1;
 
 t1 = foo(a<1>, b<2>);
@@ -2954,7 +2954,7 @@ def foo (x,y)
     return = x + y;
 }
 
-a = {0};
+a = [0];
 b = 0..1;
 
 t1 = foo(a<1>, b<1>);
@@ -3088,8 +3088,8 @@ def foo (x,y)
     return = x + y;
 }
 
-a = { 1 };
-b = { 2 };
+a = [ 1 ];
+b = [ 2 ];
 
 t1 = foo(a<1>, b<2>);
 
@@ -3169,7 +3169,7 @@ r4 = t<1>.Set(v<2>);
             string code =
             @" 
 import(""FFITarget.dll"");
-ts = {TestObjectA.TestObjectA(), TestObjectA.TestObjectA()};
+ts = [TestObjectA.TestObjectA(), TestObjectA.TestObjectA()];
 r1 = ts.Set(1);
 r2 = ts<1>.Set(1);
 r3 = ts<1L>.Set(1);
@@ -3188,8 +3188,8 @@ r3 = ts<1L>.Set(1);
             string code =
             @" 
 import(""FFITarget.dll"");
-ts = {TestObjectA.TestObjectA(), TestObjectA.TestObjectA()};
-vs = {42, 43};
+ts = [TestObjectA.TestObjectA(), TestObjectA.TestObjectA()];
+vs = [42, 43];
 r1 = ts.Set(vs);
 r2 = ts<1>.Set(vs<1>);
 r3 = ts<1L>.Set(vs<1L>);
@@ -3211,7 +3211,7 @@ r4 = ts<1>.Set(vs<2>);
 import(""FFITarget.dll"");
 t = TestObjectA.TestObjectA(42);
 r1 = t.a;
-ts = {TestObjectA.TestObjectA(42), TestObjectA.TestObjectA(42)};
+ts = [TestObjectA.TestObjectA(42), TestObjectA.TestObjectA(42)];
 r2 = ts.a;
 ";
             string errmsg = "";
@@ -3230,7 +3230,7 @@ def firstItem(list: var[]..[])
     return=list[0];
 }
 
-xs = {{{1, 2, 3}, {4, 5, 6}},{{7, 8, 9}, {10, 11, 12}}};
+xs = [[[1, 2, 3], [4, 5, 6]],[[7, 8, 9], [10, 11, 12]]];
 result = firstItem(xs<1><1>);
 ";
             thisTest.RunScriptSource(code);
@@ -3246,8 +3246,8 @@ def foo(x:var, y:var)
 {
     return = x + y;
 }
-xs = {{""a"", ""b""}, {""c"", ""d""}};
-ys = {1, 2};
+xs = [[""a"", ""b""], [""c"", ""d""]];
+ys = [1, 2];
 zs = foo(xs, ys);";
             thisTest.RunScriptSource(code);
             thisTest.Verify("zs", new object[] { new object[] { "a1", "b1" }, new object[] { "c2", "d2" } });
@@ -3262,8 +3262,8 @@ def foo (x1,y1)
 {
     return = x1 + y1;
 }
-x = {{0, 1},{2,3}};
-y = {{4,5},{6,7}};
+x = [[0, 1],[2,3]];
+y = [[4,5],[6,7]];
 
 rs = foo(x<2><4>, y<3><1>);";  
             // it is equivalent to foo(x<1><2>, y<2><1>) =  
@@ -3292,7 +3292,7 @@ rs = foo(x<2><4>, y<3><1>);";
             string code = @"
 import (""FFITarget.dll"");
 zero = 0;
-            Var2 = { 0, 1 };
+            Var2 = [ 0, 1 ];
             Var10 = DummyPoint.ByCoordinates(Var2 < 1 >, Var2 < 2 >, zero < 1 >); // if 'zero' does not have any replications guide, then am getting the expected value
             rs = Var10.Z;";
             thisTest.RunScriptSource(code);
@@ -3306,7 +3306,7 @@ zero = 0;
             string code = @"
 import (""FFITarget.dll"");
 zero = 0;
-            Var2 = { 0, 1 };
+            Var2 = [ 0, 1 ];
             Var10 = DummyPoint.ByCoordinates(Var2 < 1L >, Var2 < 2 >, zero < 1 >); // if 'zero' does not have any replications guide, then am getting the expected value
             rs = Var10.Z;";
             thisTest.RunScriptSource(code);
@@ -3318,9 +3318,9 @@ zero = 0;
         public void RegressMAGN1705()
         {
             string code = @"
-val = { 0.5 , 0.5 };
+val = [ 0.5 , 0.5 ];
 def foo( x : var, y : var ) { return = (x+y)/2.0 ; }
-answer=foo({ val }[0]<1> , { val }[0]<2>)[0]; // expected : { 0.5, 0.5 }
+answer=foo([ val ][0]<1> , [ val ][0]<2>)[0]; // expected : { 0.5, 0.5 }
 ";
 
             thisTest.RunScriptSource(code);
@@ -3337,7 +3337,7 @@ def foo(xs:var[], ys:var, zs:var)
 {
     return = Sum(xs) + ys + zs;
 };
-xs = {1, 2, 3};
+xs = [1, 2, 3];
 ys = ""-foo"";
 zs = ""-bar"";
 r = foo(xs<1>, ys, zs);
@@ -3357,7 +3357,7 @@ def foo(xs:var[], ys:var, zs:var)
 {
     return = Sum(xs) + ys + zs;
 };
-xs = {1, 2, 3};
+xs = [1, 2, 3];
 ys = ""-foo"";
 zs = ""-bar"";
 r = foo(xs<1L>, ys<1L>, zs<1L>);

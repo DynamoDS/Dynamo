@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Xml;
@@ -9,6 +10,8 @@ using Dynamo.Configuration;
 using Dynamo.Engine;
 using Dynamo.Engine.CodeGeneration;
 using Dynamo.Graph.Connectors;
+using Dynamo.Migration;
+using Dynamo.Properties;
 using Dynamo.Utilities;
 using ProtoCore;
 using ProtoCore.AST.AssociativeAST;
@@ -16,10 +19,12 @@ using ProtoCore.BuildData;
 using ProtoCore.Namespace;
 using ProtoCore.SyntaxAnalysis;
 using ProtoCore.Utils;
+using ProtoCore.AST;
 using ArrayNode = ProtoCore.AST.AssociativeAST.ArrayNode;
 using Node = ProtoCore.AST.Node;
 using Operator = ProtoCore.DSASM.Operator;
 using Newtonsoft.Json;
+using ProtoCore.DSASM;
 
 namespace Dynamo.Graph.Nodes
 {
@@ -38,7 +43,6 @@ namespace Dynamo.Graph.Nodes
         private string code = string.Empty;
         private List<string> inputIdentifiers = new List<string>();
         private List<string> inputPortNames = new List<string>();
-        private readonly List<string> tempVariables = new List<string>();
         private string previewVariable;
         private readonly LibraryServices libraryServices;
 
@@ -72,12 +76,6 @@ namespace Dynamo.Graph.Nodes
         [JsonIgnore]
         public ElementResolver ElementResolver { get; set; }
 
-        private struct Formatting
-        {
-            public const double INITIAL_MARGIN = 0;
-            public const string TOOL_TIP_FOR_TEMP_VARIABLE = "Statement Output";
-        }
-
         /// <summary>
         ///     Indicates whether node is input node.
         ///     Used to bind visibility of UI for user selection.
@@ -108,11 +106,12 @@ namespace Dynamo.Graph.Nodes
             ArgumentLacing = LacingStrategy.Disabled;
             this.libraryServices = libraryServices;
             this.ElementResolver = new ElementResolver();
+
             ProcessCodeDirect();
         }
 
         /// <summary>
-        ///     Initilizes a new instance of the <see cref="CodeBlockNodeModel"/> class
+        ///     Initializes a new instance of the <see cref="CodeBlockNodeModel"/> class
         /// </summary>
         /// <param name="code">Code block content</param>
         /// <param name="x">X coordinate of the code block</param>
@@ -125,7 +124,7 @@ namespace Dynamo.Graph.Nodes
             : this(code, Guid.NewGuid(), x, y, libraryServices, resolver) { }
 
         /// <summary>
-        ///     Initilizes a new instance of the <see cref="CodeBlockNodeModel"/> class
+        ///     Initializes a new instance of the <see cref="CodeBlockNodeModel"/> class
         /// </summary>
         /// <param name="userCode">Code block content</param>
         /// <param name="guid">Identifier of the code block</param>
@@ -142,9 +141,9 @@ namespace Dynamo.Graph.Nodes
             Y = yPos;
             this.libraryServices = libraryServices;
             this.ElementResolver = resolver;
-            code = userCode;
             GUID = guid;
             ShouldFocus = false;
+            this.code = userCode;
 
             ProcessCodeDirect();
         }
@@ -280,7 +279,7 @@ namespace Dynamo.Graph.Nodes
                 ProcessCode(ref errorMessage, ref warningMessage, workspaceElementResolver);
 
                 //Recreate connectors that can be reused
-                LoadAndCreateConnectors(inportConnections, outportConnections);
+                LoadAndCreateConnectors(inportConnections, outportConnections,SaveContext.None);
 
                 RaisePropertyChanged("Code");
 
@@ -304,23 +303,12 @@ namespace Dynamo.Graph.Nodes
             }
         }
 
-        /// <summary>
-        /// Temporary variables that generated in code.
-        /// </summary>
-        [JsonIgnore]
-        public IEnumerable<string> TempVariables
-        {
-            get { return tempVariables; }
-        }
 
         /// <summary>
         /// Code statement of CBN
         /// </summary>
         [JsonIgnore]
-        public IEnumerable<Statement> CodeStatements
-        {
-            get { return codeStatements; }
-        }
+        public IEnumerable<Statement> CodeStatements => codeStatements;
 
         #endregion
 
@@ -416,7 +404,7 @@ namespace Dynamo.Graph.Nodes
             var lineNumbers = outputPortHelpers.Select(x => x.ReadInteger("LineIndex")).ToList();
             foreach (var line in lineNumbers)
             {
-                var tooltip = Formatting.TOOL_TIP_FOR_TEMP_VARIABLE;
+                var tooltip = string.Format(Resources.CodeBlockTempIdentifierOutputLabel, line);
                 OutPorts.Add(new PortModel(PortType.Output, this, new PortData(string.Empty, tooltip)
                 {
                     LineIndex = line, // Logical line index.
@@ -426,7 +414,7 @@ namespace Dynamo.Graph.Nodes
 
             ProcessCodeDirect();
              //Recreate connectors that can be reused
-             LoadAndCreateConnectors(inportConnections, outportConnections);
+             LoadAndCreateConnectors(inportConnections, outportConnections,SaveContext.Undo);
         }
 
         internal override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes, CompilationContext context)
@@ -623,8 +611,8 @@ namespace Dynamo.Graph.Nodes
 
         internal void ProcessCodeDirect()
         {
-            string errorMessage = string.Empty;
-            string warningMessage = string.Empty;
+            var errorMessage = string.Empty;
+            var warningMessage = string.Empty;
 
             ProcessCode(ref errorMessage, ref warningMessage);
             RaisePropertyChanged("Code");
@@ -741,6 +729,11 @@ namespace Dynamo.Graph.Nodes
             CreateInputOutputPorts();
         }
 
+        private static bool IsTempIdentifier(string name)
+        {
+            return name.StartsWith(Constants.kTempVarForNonAssignment);
+        }
+
         private void SetPreviewVariable(IEnumerable<Node> parsedNodes)
         {
             previewVariable = null;
@@ -753,9 +746,7 @@ namespace Dynamo.Graph.Nodes
                 identifierNode = statement.LeftNode as IdentifierNode;
                 if (identifierNode != null) // Found the identifier...
                 {
-                    // ... that is not a temporary variable, take it!
-                    if (!tempVariables.Contains(identifierNode.Value))
-                        break;
+                    break;
                 }
             }
 
@@ -837,9 +828,7 @@ namespace Dynamo.Graph.Nodes
 
             foreach (var def in allDefs)
             {
-                string tooltip = def.Key;
-                if (tempVariables.Contains(def.Key))
-                    tooltip = Formatting.TOOL_TIP_FOR_TEMP_VARIABLE;
+                var tooltip = IsTempIdentifier(def.Key) ? string.Format(Resources.CodeBlockTempIdentifierOutputLabel, def.Value) : def.Key;
 
                 OutPorts.Add(new PortModel(PortType.Output, this, new PortData(string.Empty, tooltip)
                 {
@@ -848,6 +837,7 @@ namespace Dynamo.Graph.Nodes
                 }));
             }
         }
+
 
         /// <summary>
         ///     Deletes all the connections and saves their data (the start and end port)
@@ -863,10 +853,10 @@ namespace Dynamo.Graph.Nodes
                 var portName = portModel.ToolTip;
                 if (portModel.Connectors.Count != 0)
                 {
-                    inportConnections.Add(portName, new List<PortModel>());
+                    inportConnections.Add(portName, new List<ConnectorModel>());
                     foreach (var connector in portModel.Connectors)
                     {
-                        (inportConnections[portName] as List<PortModel>).Add(connector.Start);
+                        (inportConnections[portName] as List<ConnectorModel>).Add(connector);
                     }
                 }
                 else
@@ -882,14 +872,12 @@ namespace Dynamo.Graph.Nodes
             {
                 PortModel portModel = OutPorts[i];
                 string portName = portModel.ToolTip;
-                if (portModel.ToolTip.Equals(Formatting.TOOL_TIP_FOR_TEMP_VARIABLE))
-                    portName += i.ToString(CultureInfo.InvariantCulture);
                 if (portModel.Connectors.Count != 0)
                 {
-                    outportConnections.Add(portName, new List<PortModel>());
+                    outportConnections.Add(portName, new List<ConnectorModel>());
                     foreach (ConnectorModel connector in portModel.Connectors)
                     {
-                        (outportConnections[portName] as List<PortModel>).Add(connector.End);
+                        (outportConnections[portName] as List<ConnectorModel>).Add(connector);
                     }
                 }
                 else
@@ -908,7 +896,8 @@ namespace Dynamo.Graph.Nodes
         /// </summary>
         /// <param name="inportConnections"></param>
         /// <param name="outportConnections"> List of the connections that were killed</param>
-        private void LoadAndCreateConnectors(OrderedDictionary inportConnections, OrderedDictionary outportConnections)
+        /// <param name="context">context this operation is being performed in</param>
+        private void LoadAndCreateConnectors(OrderedDictionary inportConnections, OrderedDictionary outportConnections,SaveContext context)
         {
             //----------------------------Inputs---------------------------------
             /* Input Port connections are matched only if the name is the same */
@@ -919,14 +908,21 @@ namespace Dynamo.Graph.Nodes
                 {
                     if (inportConnections[varName] != null)
                     {
-                        foreach (var startPortModel in (inportConnections[varName] as List<PortModel>))
+                        foreach (var oldConnector in (inportConnections[varName] as List<ConnectorModel>))
                         {
+                            var startPortModel = oldConnector.Start;
                             NodeModel startNode = startPortModel.Owner;
                             var connector = ConnectorModel.Make(
                                 startNode,
                                 this,
                                 startPortModel.Index,
                                 i);
+                            //during an undo operation we should set the new input connector
+                            //to have the same id as the old connector.
+                            if(context == SaveContext.Undo)
+                            {
+                                connector.GUID = oldConnector.GUID;
+                            }
                         }
                         outportConnections[varName] = null;
                     }
@@ -950,10 +946,17 @@ namespace Dynamo.Graph.Nodes
                 {
                     if (outportConnections[varName] != null)
                     {
-                        foreach (var endPortModel in (outportConnections[varName] as List<PortModel>))
+                        foreach (var oldConnector in (outportConnections[varName] as List<ConnectorModel>))
                         {
+                            var endPortModel = oldConnector.End;
                             NodeModel endNode = endPortModel.Owner;
                             var connector = ConnectorModel.Make(this, endNode, i, endPortModel.Index);
+                            //during an undo operation we should set the new output connector
+                            //to have the same id as the old connector.
+                            if (context == SaveContext.Undo)
+                            {
+                                connector.GUID = oldConnector.GUID;
+                            }
                         }
                         outportConnections[varName] = null;
                     }
@@ -976,11 +979,13 @@ namespace Dynamo.Graph.Nodes
                 int index = undefinedIndices[i];
                 if (index < outportConnections.Count && outportConnections[index] != null)
                 {
-                    foreach (PortModel endPortModel in (outportConnections[index] as List<PortModel>))
+                    foreach (PortModel endPortModel in (outportConnections[index] as List<ConnectorModel>).Select(connector=>connector.End))
                     {
                         NodeModel endNode = endPortModel.Owner;
                         var connector = ConnectorModel.Make(this, endNode, index, endPortModel.Index);
                     }
+                    // we do not match the guid here as these ports did not exist before 
+                    //...so these should be brand new connectors.
                     outportConnections[index] = null;
                     undefinedIndices.Remove(index);
                     i--;
@@ -988,15 +993,15 @@ namespace Dynamo.Graph.Nodes
             }
 
             /*
-             *Step 2:
+             *Step 3:
              *   The final step. Now that the priorties are finished, the 
              *   function tries to reuse any existing connections by attaching 
              *   them to any ports that have not already been given connections
              */
             List<List<PortModel>> unusedConnections =
-                outportConnections.Values.Cast<List<PortModel>>()
-                    .Where(portModelList => portModelList != null)
-                    .ToList();
+                outportConnections.Values.Cast<List<ConnectorModel>>()
+                    .Where(connectorList => connectorList != null).Select(list => list.Select(x => x.End).ToList()).ToList();
+                    
 
             while (undefinedIndices.Count > 0 && unusedConnections.Count != 0)
             {
@@ -1008,6 +1013,9 @@ namespace Dynamo.Graph.Nodes
                         endNode,
                         undefinedIndices[0],
                         endPortModel.Index);
+
+                    // we do not match the guid here as these ports did not exist before 
+                    //...so these should be brand new connectors.
                 }
                 undefinedIndices.RemoveAt(0);
                 unusedConnections.RemoveAt(0);
@@ -1152,6 +1160,25 @@ namespace Dynamo.Graph.Nodes
         }
 
         #endregion
+
+        
+        [NodeMigration(version: "1.9.0.0")]
+        public static NodeMigrationData Migrate_2_0_0(NodeMigrationData data)
+        {
+            var migrationData = new NodeMigrationData(data.Document);
+            var node = data.MigratedNodes.ElementAt(0);
+
+            var codeTextAttr = node.Attributes["CodeText"];
+            if (codeTextAttr == null)
+            {
+                return migrationData;
+            }
+
+            codeTextAttr.Value = ParserUtils.TryMigrateDeprecatedListSyntax(codeTextAttr.Value);
+
+            migrationData.AppendNode(node);
+            return migrationData;
+        }
     }
 
     /// <summary>

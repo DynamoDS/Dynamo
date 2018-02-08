@@ -17,7 +17,7 @@
   <UpdateModelValueCommand ModelGuid="275d7a3d-2b98-4f0e-808d-2aba03c6ff4f" Name="Code" Value="c=test(1);" />
   <UpdateModelValueCommand ModelGuid="48af4731-99bb-42c7-848b-a6b812206ffb" Name="Code" Value="def test(i:int) &#xA;{&#xA;a=a+1;&#xA;return = i;&#xA;};" />
   <RunCancelCommand ShowErrors="false" CancelRun="false" />
-  <UpdateModelValueCommand ModelGuid="275d7a3d-2b98-4f0e-808d-2aba03c6ff4f" Name="Code" Value="c=test({1,2,3});" />
+  <UpdateModelValueCommand ModelGuid="275d7a3d-2b98-4f0e-808d-2aba03c6ff4f" Name="Code" Value="c=test([1,2,3]);" />
   <UpdateModelValueCommand ModelGuid="48af4731-99bb-42c7-848b-a6b812206ffb" Name="Code" Value="def test(i:int[]) &#xA;{&#xA;a=a+1;&#xA;return = i;&#xA;};" />
   <RunCancelCommand ShowErrors="false" CancelRun="false" />
 </Commands>

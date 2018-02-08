@@ -17,7 +17,7 @@ A = 10;   	   	// assignment of single literal value
 B = 2*A;   	   	// expression involving previously defined variables
 A = A + 1; 	   	// expressions modifying an existing variable;
 A = 15;		   	// redefine A, removing modifier
-A = {1,2,3,4}; 		// redefine A as a collection
+A = [1,2,3,4]; 		// redefine A as a collection
 A = 1..10..2;  		// redefine A as a range expression (start..end..inc)
 A = 1..10..~4; 		// redefine A as a range expression (start..end..approx_inc)
 A = 1..10..#4; 		// redefine A as a range expression (start..end..no_of_incs)
@@ -37,7 +37,7 @@ B[1] = B[1] + 0.5; 	// modify a member of a collection [problem here]
             string code = @"a=1;
 b=2;
 c=4;
-collection = {a,b,c};
+collection = [a,b,c];
 collection[1] = collection[1] + 0.5;
 d = collection[1];
 d = d + 0.1; // updates the result of accessing the collection
@@ -63,8 +63,8 @@ t3 = collection[2];
             //Assert.Fail("1463477 - Sprint 20 : rev 2112 : replication guides throwing MethodResolutionException ");
 
             string code = @"
-a = {1,0,-1};
-b = {0, 5, 10};
+a = [1,0,-1];
+b = [0, 5, 10];
 zipped_sum = a + b; // {1, 5, 9}
 cartesian_sum  = a<1> + b<2>;
 // cartesian_sum =    {{1, 6, 11},
@@ -259,9 +259,9 @@ point_1 = DummyPoint.ByCoordinates( 30.0, 80.0, 0.0 );
 point_2 = DummyPoint.ByCoordinates( 10.0, 50.0, 0.0 );
 point_3 = DummyPoint.ByCoordinates( 50.0, 50.0, 0.0 );
 // [3] create centrePoint
-centrePoint = centroid( {point_1, point_2, point_3} );
+centrePoint = centroid( [point_1, point_2, point_3] );
 // [4] test with lines
-lineTest  = DummyLine.ByStartPointEndPoint( centrePoint, { point_1, point_2, point_3 } );
+lineTest  = DummyLine.ByStartPointEndPoint( centrePoint, [ point_1, point_2, point_3 ] );
 // [5] move a point
 point_1 = DummyPoint.ByCoordinates( 40.0, 80.0, 0.0 );
 x1 = lineTest[2].End.X;
