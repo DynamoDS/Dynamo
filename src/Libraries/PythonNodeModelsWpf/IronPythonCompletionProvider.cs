@@ -967,16 +967,8 @@ namespace Dynamo.Python
         /// <returns></returns>
         private static string GetFirstPossibleTypeName(string line)
         {
-            string possibleTypeName = String.Empty;
-            
-            string trimmed = line.Trim();
-            int substrInd = trimmed.IndexOfAny(new []{'.', '(', ',', '[', '{'});
-            if(substrInd > 0)
-            {
-                possibleTypeName = MATCH_VALID_TYPE_NAME_CHARACTERS_ONLY.Match(trimmed.Substring(0, substrInd)).Value;
-                //possibleTypeName = trimmed.Substring(0, substrInd);
-            }
-            
+            var match = MATCH_VALID_TYPE_NAME_CHARACTERS_ONLY.Match(line);
+            string possibleTypeName = match.Success ? match.Value : "";
             return possibleTypeName;
         }
         
