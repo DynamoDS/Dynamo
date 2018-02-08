@@ -3,6 +3,9 @@ using System.Linq;
 
 using NUnit.Framework;
 using Dynamo.Extensions;
+using Moq;
+using System;
+using System.Dynamic;
 
 namespace Dynamo.PackageManager.Tests
 {
@@ -22,7 +25,7 @@ namespace Dynamo.PackageManager.Tests
             Assert.AreEqual("Custom Rounding", pkg.Name);
             Assert.AreEqual("0.1.4", pkg.VersionName);
             Assert.AreEqual("This collection of nodes allows rounding, rounding up and rounding down to a specified precision.", pkg.Description);
-            Assert.AreEqual("Round Up To Precision - Rounds a number *up* to a specified precision, Round Down To Precision - " 
+            Assert.AreEqual("Round Up To Precision - Rounds a number *up* to a specified precision, Round Down To Precision - "
                 + "Rounds a number *down* to a specified precision, Round To Precision - Rounds a number to a specified precision", pkg.Contents);
             Assert.AreEqual("0.5.2.10107", pkg.EngineVersion);
 
@@ -36,75 +39,55 @@ namespace Dynamo.PackageManager.Tests
         {
             var loader = GetPackageLoader();
             var pkgDir = Path.Combine(PackagesDirectory, "SampleExtension");
-          
 
             var extensionLoad = false;
             var extensionAdd = false;
-            var viewExtensionLoad = false;
-            var viewExtensionAdd = false;
-
+            var extensionReady = false;
 
             loader.RequestLoadExtension += (extensionPath) =>
-            { extensionLoad = true;
-                var mock = new Moq.Mock<IExtension>().Object;
-                return mock;
+            {
+                extensionLoad = true;
+                var mockExtension = new Moq.Mock<IExtension>();
+                mockExtension.Setup(ext => ext.Startup(It.IsAny<StartupParams>()))
+                .Throws(new Exception("Startup() Should not be called when extension loaded from package"));
+
+                mockExtension.Setup(ext => ext.Ready(It.IsAny<ReadyParams>()))
+               .Callback(() => { extensionReady = true; });
+
+                return mockExtension.Object;
             };
             loader.RequestAddExtension += (extension) =>
             {
                 extensionAdd = true;
             };
-            loader.RequestLoadViewExtension += (extensionPath) =>
-            {
-                viewExtensionLoad = true;
-                var mock = new Moq.Mock<IExtension>().Object;
-                return mock;
-            };
-            loader.RequestAddViewExtension += (extension) =>
-            {
-                viewExtensionAdd = true;
-            };
 
             var pkg = loader.ScanPackageDirectory(pkgDir);
             loader.Load(pkg);
 
+            Assert.IsTrue(loader.RequestedExtensions.Count == 1);
             Assert.IsTrue(extensionLoad);
             Assert.IsTrue(extensionAdd);
-            //these events should not have been raised.
-            Assert.IsFalse(viewExtensionLoad);
-            Assert.IsFalse(viewExtensionAdd);
+            Assert.IsTrue(extensionReady);
 
         }
 
+        //
         [Test]
         public void PackageLoaderRequestsViewExtensionsBeLoaded()
         {
             var loader = GetPackageLoader();
             var pkgDir = Path.Combine(PackagesDirectory, "SampleViewExtension");
 
-
-            var extensionLoad = false;
-            var extensionAdd = false;
             var viewExtensionLoad = false;
             var viewExtensionAdd = false;
 
 
             loader.RequestLoadExtension += (extensionPath) =>
             {
-                extensionLoad = true;
-                var mock = new Moq.Mock<IExtension>().Object;
-                return mock;
+                viewExtensionLoad = true;
+                return null;
             };
             loader.RequestAddExtension += (extension) =>
-            {
-                extensionAdd = true;
-            };
-            loader.RequestLoadViewExtension += (extensionPath) =>
-            {
-                viewExtensionLoad = true;
-                var mock = new Moq.Mock<IExtension>().Object;
-                return mock;
-            };
-            loader.RequestAddViewExtension += (extension) =>
             {
                 viewExtensionAdd = true;
             };
@@ -112,10 +95,10 @@ namespace Dynamo.PackageManager.Tests
             var pkg = loader.ScanPackageDirectory(pkgDir);
             loader.Load(pkg);
 
-            Assert.False(extensionLoad);
-            Assert.False(extensionAdd);
+            Assert.IsTrue(loader.RequestedExtensions.Count == 1);
             Assert.IsTrue(viewExtensionLoad);
-            Assert.IsTrue(viewExtensionAdd);
+            //will be false as we return null.
+            Assert.IsFalse(viewExtensionAdd);
 
         }
 
@@ -147,7 +130,7 @@ namespace Dynamo.PackageManager.Tests
             var loader = new PackageLoader(pkgDir);
             loader.LoadAll(new LoadPackageParams
             {
-                Preferences = this.CurrentDynamoModel.PreferenceSettings           
+                Preferences = this.CurrentDynamoModel.PreferenceSettings
             });
 
             Assert.AreEqual(0, loader.LocalPackages.Count());

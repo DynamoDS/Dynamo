@@ -15,22 +15,35 @@ namespace Dynamo.Wpf.Extensions
         public ViewExtensionManager()
         {
             viewExtensionLoader.MessageLogged += Log;
-            this.ExtensionAdded += SubscribeViewExtension;
+            this.ExtensionLoader.ExtensionLoading += SubscribeViewExtension;
             this.ExtensionRemoved += UnsubscribeViewExtension;
         }
 
-        private void requestAddViewExtensionHandler(dynamic viewExtension )
+        private void RequestAddViewExtensionHandler(dynamic viewExtension)
         {
-            //this handler is used to cast to IViewExtension.    
-            this.Add(viewExtension as IViewExtension);
+            if (viewExtension is IViewExtension)
+            {
+                this.Add(viewExtension as IViewExtension);
+            }
+
         }
+        private IViewExtension RequestLoadViewExtensionHandler(string extensionPath)
+        {
+            // If the path is a viewExtension - load it.
+            if ((extensionPath.Contains("_ViewExtensionDefinition")))
+            {
+                return this.ExtensionLoader.Load(extensionPath);
+            }
+            return null;
+        }
+
 
         private void UnsubscribeViewExtension(IViewExtension obj)
         {
             if (obj is IExtensionSource)
             {
-                (obj as IExtensionSource).RequestLoadViewExtension -= this.ExtensionLoader.Load;
-                (obj as IExtensionSource).RequestAddViewExtension -= this.requestAddViewExtensionHandler;
+                (obj as IExtensionSource).RequestLoadExtension -= RequestLoadViewExtensionHandler;
+                (obj as IExtensionSource).RequestAddExtension -= RequestAddViewExtensionHandler ;
             }
         }
 
@@ -40,8 +53,8 @@ namespace Dynamo.Wpf.Extensions
             //lets handle those requests.
             if (obj is IExtensionSource)
             {
-                (obj as IExtensionSource).RequestLoadViewExtension += this.ExtensionLoader.Load;
-                (obj as IExtensionSource).RequestAddViewExtension += this.requestAddViewExtensionHandler;
+                (obj as IExtensionSource).RequestLoadExtension += RequestLoadViewExtensionHandler;
+                (obj as IExtensionSource).RequestAddExtension += RequestAddViewExtensionHandler;
             }
 
         }
@@ -105,6 +118,7 @@ namespace Dynamo.Wpf.Extensions
         public event Action<IViewExtension> ExtensionAdded;
 
         public event Action<IViewExtension> ExtensionRemoved;
+
 
         public void Dispose()
         {

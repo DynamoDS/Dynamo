@@ -20,10 +20,8 @@ namespace Dynamo.PackageManager
         private Action<Assembly> RequestLoadNodeLibraryHandler;
         private event Func<string, IEnumerable<CustomNodeInfo>> RequestLoadCustomNodeDirectoryHandler;
        
-        public event Func<string, IExtension> RequestLoadExtension;
-        public event Action<IExtension> RequestAddExtension;
-        public event Func<string, dynamic> RequestLoadViewExtension;
-        public event Action<dynamic> RequestAddViewExtension;
+        public event Func<string, dynamic> RequestLoadExtension;
+        public event Action<dynamic> RequestAddExtension;
 
         public event Action<ILogMessage> MessageLogged;
 
@@ -73,16 +71,6 @@ namespace Dynamo.PackageManager
                 PackageLoader.RequestAddExtension -=
                 RequestAddExtension;
             }
-            if (RequestAddViewExtension != null)
-            {
-                PackageLoader.RequestAddViewExtension -=
-                RequestAddViewExtension;
-            }
-            if (RequestLoadViewExtension != null)
-            {
-                PackageLoader.RequestLoadViewExtension -=
-                RequestLoadViewExtension;
-            }
         }
 
         /// <summary>
@@ -115,10 +103,6 @@ namespace Dynamo.PackageManager
             //raise the public events on this extension when the package loader requests.
             PackageLoader.RequestLoadExtension += RequestLoadExtension;
             PackageLoader.RequestAddExtension += RequestAddExtension;
-
-            //raise the public events for view extension loading on this extension when the package loader requests.
-            PackageLoader.RequestLoadViewExtension += RequestLoadViewExtension;
-            PackageLoader.RequestAddViewExtension += RequestAddViewExtension;
 
             PackageLoader.RequestLoadNodeLibrary += RequestLoadNodeLibraryHandler;
             PackageLoader.RequestLoadCustomNodeDirectory += RequestLoadCustomNodeDirectoryHandler;

@@ -17,25 +17,13 @@ namespace Dynamo.Extensions
         /// <summary>
         /// Event that is raised when the ExtensionSource requests an Extension be loaded.
         /// </summary>
-        event Func<string, IExtension> RequestLoadExtension;
+        event Func<string, dynamic> RequestLoadExtension;
 
         /// <summary>
         /// Event that is raised when ExtensionSource requests an Extension to be added to 
         /// list of currently loaded extensions.
         /// </summary>
-        event Action<IExtension> RequestAddExtension;
-
-
-        /// <summary>
-        /// Event that is raised when the ExtensionSource requests a ViewExtension be loaded.
-        /// </summary>
-        event Func<string, dynamic> RequestLoadViewExtension;
-
-        /// <summary>
-        /// Event that is raised when ExtensionSource requests a ViewExtension to be added to 
-        /// list of currently loaded extensions.  
-        /// </summary>
-        event Action<dynamic> RequestAddViewExtension;
+        event Action<dynamic> RequestAddExtension;
     }
 
     /// <summary>
@@ -53,27 +41,45 @@ namespace Dynamo.Extensions
         public ExtensionManager()
         {
             extensionLoader.MessageLogged += Log;
-            this.ExtensionAdded += UnsubscribeExtension;
-            this.ExtensionRemoved += SubscribeExtension;
+            this.extensionLoader.ExtensionLoading += SubscribeExtension;
+            this.ExtensionRemoved += UnsubscribeExtension;
         }
 
-        private void SubscribeExtension(IExtension obj)
+        private void RequestAddExtensionHandler(dynamic extension)
         {
-            if (obj is IExtensionSource)
+            if(extension is IExtension)
             {
-                (obj as IExtensionSource).RequestLoadExtension -= this.ExtensionLoader.Load;
-                (obj as IExtensionSource).RequestAddExtension -= this.Add;
+                this.Add(extension as IExtension);
             }
+           
+        }
+        private IExtension RequestLoadExtensionHandler(string extensionPath)
+        {
+            // If the path is not a viewExtension - load it.
+            if (!(extensionPath.Contains("_ViewExtension")))
+            {
+               return this.extensionLoader.Load(extensionPath);
+            }
+            return null;
         }
 
         private void UnsubscribeExtension(IExtension obj)
+        {
+            if (obj is IExtensionSource)
+            {
+                (obj as IExtensionSource).RequestLoadExtension -= RequestLoadExtensionHandler;
+                (obj as IExtensionSource).RequestAddExtension -= RequestAddExtensionHandler;
+            }
+        }
+
+        private void SubscribeExtension(IExtension obj)
         {
             //if this extension could be a source of other extensions (like packageManagerExtension) then
             //lets handle those requests.
             if(obj is IExtensionSource)
             {
-                (obj as IExtensionSource).RequestLoadExtension += this.ExtensionLoader.Load;
-                (obj as IExtensionSource).RequestAddExtension += this.Add;
+                (obj as IExtensionSource).RequestLoadExtension += RequestLoadExtensionHandler;
+                (obj as IExtensionSource).RequestAddExtension += RequestAddExtensionHandler;
             }
 
         }

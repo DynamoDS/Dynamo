@@ -30,13 +30,15 @@ namespace Dynamo.PackageManager
     {
         internal event Action<Assembly> RequestLoadNodeLibrary;
         internal event Func<string, IEnumerable<CustomNodeInfo>> RequestLoadCustomNodeDirectory;
-        internal event Func<string, IExtension> RequestLoadExtension;
-        internal event Action<IExtension> RequestAddExtension;
-        internal event Func<string, dynamic> RequestLoadViewExtension;
-        internal event Action<dynamic> RequestAddViewExtension;
+        internal event Func<string, dynamic> RequestLoadExtension;
+        internal event Action<dynamic> RequestAddExtension;
         public event Action<Package> PackageAdded;
         public event Action<Package> PackageRemoved;
-        public List<string> DeferredLoadViewExtensions { get; private set; } = new List<string>();
+        /// <summary>
+        /// A list of the extension manifest paths which the package loader found during package load
+        /// and has requested be loaded.
+        /// </summary>
+        public List<string> RequestedExtensions { get; private set; } = new List<string>();
 
         private readonly List<Package> localPackages = new List<Package>();
         public IEnumerable<Package> LocalPackages { get { return localPackages; } }
@@ -145,7 +147,7 @@ namespace Dynamo.PackageManager
                         {
                             OnRequestLoadNodeLibrary(assem.Assembly);
                         }
-                        catch(Dynamo.Exceptions.LibraryLoadFailedException ex)
+                        catch (Dynamo.Exceptions.LibraryLoadFailedException ex)
                         {
                             Log(ex.GetType() + ": " + ex.Message);
                         }
@@ -157,40 +159,21 @@ namespace Dynamo.PackageManager
                 package.LoadedCustomNodes.AddRange(customNodes);
 
                 package.EnumerateAdditionalFiles();
-                //if the additional files contained an extension or extensionView manifest then request it be loaded.
-                var extensionManifests = package.AdditionalFiles.Where(file => file.Model.Name.Contains("ExtensionDefinition.xml")).ToList();
-                foreach(var extPath in extensionManifests)
+                // If the additional files contained an extension or extensionView manifest then request it be loaded.
+                var extensionManifests = package.AdditionalFiles.Where(
+                    file => file.Model.Name.Contains("ExtensionDefinition.xml")).ToList();
+                foreach (var extPath in extensionManifests)
                 {
-                    //if this is a viewExtension manifest ask the viewExtensionsManager to load it.
-                    if (extPath.Model.FullName.Contains("ViewExtensionDefinition.xml"))
+                    var extension = RequestLoadExtension?.Invoke(extPath.Model.FullName);
+                    if (extension != null)
                     {
-                        //if the handler is null then we're loading this viewExtension before the view is present-
-                        //add this to a list of deferedLoadViewExtensions. We'll load these later when the view
-                        //exists.
-                        if (RequestLoadViewExtension == null)
-                        {
-                            this.DeferredLoadViewExtensions.Add(extPath.Model.FullName);
-                        }
-                        else
-                        {
-                            var viewextension = RequestLoadViewExtension(extPath.Model.FullName);
-                            if (viewextension != null)
-                            {
-                                RequestAddViewExtension?.Invoke(viewextension);
-                            }
-                        }                       
+                        RequestAddExtension?.Invoke(extension);
+                        
                     }
-                    //if its a model extension ask the extensions manager to load it. 
-                    else
-                    {
-                        var extension = RequestLoadExtension?.Invoke(extPath.Model.FullName);
-                        if (extension != null)
-                        {
-                            RequestAddExtension?.Invoke(extension);
-                        }
-                    }
-                   
+                    // Add this extension to the list of extensions we've requested to be loaded.
+                    this.RequestedExtensions.Add(extPath.Model.FullName);
                 }
+
                 package.Loaded = true;
             }
             catch (Exception e)
@@ -215,8 +198,8 @@ namespace Dynamo.PackageManager
                     if (File.Exists(pkg.BinaryDirectory))
                     {
                         pathManager.AddResolutionPath(pkg.BinaryDirectory);
-                    } 
-                    
+                    }
+
                 }
             }
 
@@ -227,7 +210,8 @@ namespace Dynamo.PackageManager
         }
         public void LoadCustomNodesAndPackages(LoadPackageParams loadPackageParams, CustomNodeManager customNodeManager)
         {
-            foreach(var path in loadPackageParams.Preferences.CustomPackageFolders){
+            foreach (var path in loadPackageParams.Preferences.CustomPackageFolders)
+            {
                 customNodeManager.AddUninitializedCustomNodesInPath(path, false, false);
                 if (!this.packagesDirectories.Contains(path))
                 {
@@ -380,7 +364,7 @@ namespace Dynamo.PackageManager
 
         public bool IsUnderPackageControl(Assembly t)
         {
-            return LocalPackages.Any(package => package.LoadedAssemblies.Any(x => x.Assembly == t ));
+            return LocalPackages.Any(package => package.LoadedAssemblies.Any(x => x.Assembly == t));
         }
 
         public Package GetPackageFromRoot(string path)

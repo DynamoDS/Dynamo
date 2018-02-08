@@ -24,6 +24,19 @@ namespace Dynamo.Wpf.Extensions
         public readonly Menu dynamoMenu;
 
         /// <summary>
+        /// A reference to the <see cref="ViewStartupParams"/> class.
+        /// Useful if this extension will be loaded from a package as its startup method, will not be called.
+        /// </summary>
+        public ViewStartupParams ViewStartupParameters
+        {
+            get
+            {
+                var startupParams = new ViewStartupParams(this.dynamoViewModel);
+                return startupParams;
+            }
+        }
+
+        /// <summary>
         /// A reference to the background preview viewmodel for geometry selection,
         /// hit testing, mouse and keyboard event handling for events in the background preview 
         /// </summary>
