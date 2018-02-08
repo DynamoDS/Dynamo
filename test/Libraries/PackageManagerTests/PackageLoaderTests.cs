@@ -48,9 +48,7 @@ namespace Dynamo.PackageManager.Tests
             {
                 extensionLoad = true;
                 var mockExtension = new Moq.Mock<IExtension>();
-                mockExtension.Setup(ext => ext.Startup(It.IsAny<StartupParams>()))
-                .Throws(new Exception("Startup() Should not be called when extension loaded from package"));
-
+                mockExtension.Setup(ext => ext.Startup(It.IsAny<StartupParams>())).Callback(() => { Assert.Fail(); });
                 mockExtension.Setup(ext => ext.Ready(It.IsAny<ReadyParams>()))
                .Callback(() => { extensionReady = true; });
 
