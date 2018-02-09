@@ -2162,7 +2162,7 @@ namespace Dynamo.Graph.Nodes
             isVisible = helper.ReadBoolean("isVisible", true);
             argumentLacing = helper.ReadEnum("lacing", LacingStrategy.Disabled);
             IsSetAsInput = helper.ReadBoolean("isSelectedInput", true);
-            IsSetAsOutput = helper.ReadBoolean("isSelectedOutput", true);
+            IsSetAsOutput = helper.ReadBoolean("isSelectedOutput", false);
             isFrozenExplicitly = helper.ReadBoolean("IsFrozen", false);
             PreviewPinned = helper.ReadBoolean("isPinned", false);
 
