@@ -121,6 +121,12 @@ namespace Dynamo.Tests
             }
         }
 
+        protected void AssertError(string guid)
+        {
+            var node = GetModel().CurrentWorkspace.Nodes.First(n => n.GUID.ToString() == guid);
+            Assert.True(node.IsInErrorState);
+        }
+
         protected void AssertPreviewValue(string guid, object value)
         {
             string previewVariable = GetVarName(guid);

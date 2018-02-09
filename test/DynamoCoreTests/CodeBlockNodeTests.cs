@@ -1382,7 +1382,9 @@ var06 = g;
             AssertPreviewValue("6fe8b8b3-3c81-4210-b58b-df60cc778fb0", null);
             AssertPreviewValue("24f7cbca-a101-44df-a751-8ed264096c20", null);
             AssertPreviewValue("2afe34da-e7ae-43c1-a43a-fa233a7e1906", DesignScript.Builtin.Dictionary.ByKeysValues(new List<string>() { "foo" }, new List<object>() { "bar" }));
-            
+
+            AssertError("0cb2f07a-95ab-49ed-bd7e-3e21281b87a3"); // uses identifier as dictionary key
+            AssertError("a2b3ac31-98f0-46b0-906e-8617821d0a51"); // uses old syntax {1,2}
         }
 
         [Test]
