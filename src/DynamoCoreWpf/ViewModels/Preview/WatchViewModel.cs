@@ -10,7 +10,6 @@ namespace Dynamo.ViewModels
 {
     public class WatchViewModel : NotificationObject
     {
-
         #region Events
 
         public event Action Clicked;
@@ -211,7 +210,7 @@ namespace Dynamo.ViewModels
             this.tagGeometry = tagGeometry;
             numberOfItems = 0;
             maxListLevel = 0;
-            isCollection = label == WatchViewModel.LIST;
+            isCollection = label == WatchViewModel.LIST || label == WatchViewModel.DICTIONARY;
         }
 
         private bool CanFindNodeForPath(object obj)
