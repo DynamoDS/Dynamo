@@ -2393,7 +2393,7 @@ c = [Imperative]{ return 10; }
 a = DummyPoint.ByCoordinates(10, 20, 30);
 b = a;
 c = Print(b);
-a=[Imperative]{ a = [ 1, 2, 3, 4, [ 5, [ 6, [ 7, [ 8.9 ] ] ] ] ]; }
+a=[Imperative]{ return [ 1, 2, 3, 4, [ 5, [ 6, [ 7, [ 8.9 ] ] ] ] ]; }
 ";
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);

@@ -3342,7 +3342,7 @@ i = [Imperative]
 	 a2 = aa[0];
 	 b2 = bb[0];
 	 c2 = 3;	
-    return [a2, b2, c2};
+    return [a2, b2, c2];
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);

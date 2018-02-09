@@ -1120,7 +1120,7 @@ foo3];
                 i = [Imperative]{
                 a=null; 
                 c=test(a);
-                return [a, c};]"; //expected :true, received : null
+                return [a, c];}"; //expected :true, received : null
             thisTest.RunScriptSource(code);
             thisTest.Verify("a", null);
             thisTest.Verify("c", null);
