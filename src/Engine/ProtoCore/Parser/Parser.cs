@@ -2397,16 +2397,16 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 		dictBuilder.SetNodeStartLocation(t); 
 		if (la.kind == 4) {
 			Get();
-			var str = new StringNode {Value = t.val.Trim('"')}; 
-			dictBuilder.AddKey(str); 
+			var key = new StringNode {Value = t.val.Trim('"')}; 
+			dictBuilder.AddKey(key); 
 			Expect(48);
 			Associative_Expression(out node);
 			dictBuilder.AddValue(node); 
 			while (la.kind == 52) {
 				Get();
 				Expect(4);
-				var str = new StringNode { Value = t.val.Trim('"') }; 
-				dictBuilder.AddKey(str); 
+				var nextkey = new StringNode { Value = t.val.Trim('"') }; 
+				dictBuilder.AddKey(nextkey); 
 				Expect(48);
 				Associative_Expression(out node);
 				dictBuilder.AddValue(node); 
@@ -3852,16 +3852,16 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 		dictBuilder.SetNodeStartLocation(t); 
 		if (la.kind == 4) {
 			Get();
-			var str = new ProtoCore.AST.ImperativeAST.StringNode {Value = t.val.Trim('"')}; 
-			dictBuilder.AddKey(str); 
+			var key = new ProtoCore.AST.ImperativeAST.StringNode {Value = t.val.Trim('"')}; 
+			dictBuilder.AddKey(key); 
 			Expect(48);
 			Imperative_expr(out node);
 			dictBuilder.AddValue(node); 
 			while (la.kind == 52) {
 				Get();
 				Expect(4);
-				var str = new ProtoCore.AST.ImperativeAST.StringNode { Value = t.val.Trim('"') }; 
-				dictBuilder.AddKey(str); 
+				var nextkey = new ProtoCore.AST.ImperativeAST.StringNode { Value = t.val.Trim('"') }; 
+				dictBuilder.AddKey(nextkey); 
 				Expect(48);
 				Imperative_expr(out node);
 				dictBuilder.SetNodeEndLocation(t); 

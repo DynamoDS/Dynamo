@@ -1051,8 +1051,8 @@ Imperative_DictionaryExpression<out ProtoCore.AST.ImperativeAST.ImperativeNode n
 	[
 		(
 			(
-				textstring	(. var str = new ProtoCore.AST.ImperativeAST.StringNode {Value = t.val.Trim('"')}; .)  
-							(. dictBuilder.AddKey(str); .) 
+				textstring	(. var key = new ProtoCore.AST.ImperativeAST.StringNode {Value = t.val.Trim('"')}; .)  
+							(. dictBuilder.AddKey(key); .) 
 			) 
 		)
 		':'                     
@@ -1061,8 +1061,8 @@ Imperative_DictionaryExpression<out ProtoCore.AST.ImperativeAST.ImperativeNode n
 			','
 			(
 				(
-					textstring	(. var str = new ProtoCore.AST.ImperativeAST.StringNode { Value = t.val.Trim('"') }; .)
-								(. dictBuilder.AddKey(str); .)  
+					textstring	(. var nextkey = new ProtoCore.AST.ImperativeAST.StringNode { Value = t.val.Trim('"') }; .)
+								(. dictBuilder.AddKey(nextkey); .)  
 				)
 			)
 			':'                     
