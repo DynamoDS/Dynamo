@@ -2,7 +2,7 @@
   "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
   "IsCustomNode": false,
   "Description": "",
-  "Name": "Home",
+  "Name": "TestDictionaryListSyntax",
   "ElementResolver": {
     "ResolutionMap": {
       "DesignScript.Builtin.Dictionary": {
@@ -23,7 +23,7 @@
         {
           "Id": "d4ce5edd31534092b990fbafed359a1f",
           "Name": "",
-          "Description": "t6BBA4B28C5E54CF89F300D510499A00E_0",
+          "Description": "Value of expression at line 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -43,7 +43,7 @@
         {
           "Id": "edf52521f33947a3840ec55e3260b968",
           "Name": "",
-          "Description": "t6BBA4B28C5E54CF89F300D510499A00E_0",
+          "Description": "Value of expression at line 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -83,7 +83,7 @@
         {
           "Id": "dc2aadd016e44b22bb076acc391f32fe",
           "Name": "",
-          "Description": "t6BBA4B28C5E54CF89F300D510499A00E_0",
+          "Description": "Value of expression at line 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -248,7 +248,7 @@
         {
           "Id": "601a6087432f45a892db35875d0b664c",
           "Name": "",
-          "Description": "t6BBA4B28C5E54CF89F300D510499A00E_0",
+          "Description": "Value of expression at line 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -297,7 +297,7 @@
         {
           "Id": "2c3dc25c806845b9a3e00313b2cccdaa",
           "Name": "",
-          "Description": "t6BBA4B28C5E54CF89F300D510499A00E_0",
+          "Description": "Value of expression at line 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -346,7 +346,7 @@
         {
           "Id": "36854257d0e64cf1bc29e7e1d4b3a43e",
           "Name": "",
-          "Description": "t6BBA4B28C5E54CF89F300D510499A00E_0",
+          "Description": "Value of expression at line 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -395,7 +395,7 @@
         {
           "Id": "3210d309f62e4f39904536a765179b20",
           "Name": "",
-          "Description": "t6BBA4B28C5E54CF89F300D510499A00E_0",
+          "Description": "Value of expression at line 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -444,7 +444,7 @@
         {
           "Id": "64b2a51934cd4069b51f2936066e3832",
           "Name": "",
-          "Description": "t6BBA4B28C5E54CF89F300D510499A00E_0",
+          "Description": "Value of expression at line 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -459,6 +459,16 @@
       "NodeType": "CodeBlockNode",
       "Code": "{1,2};",
       "Id": "0cb2f07a95ab49edbd7e3e21281b87a3",
+      "Inputs": [],
+      "Outputs": [],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "{ foo: \"bar\" };",
+      "Id": "a2b3ac3198f046b0906e8617821d0a51",
       "Inputs": [],
       "Outputs": [],
       "Replication": "Disabled",
@@ -523,7 +533,18 @@
       "RunType": "Automatic",
       "RunPeriod": "1000"
     },
-    "Camera": null,
+    "Camera": {
+      "Name": "Default Camera",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
     "NodeViews": [
       {
         "ShowGeometry": true,
@@ -556,14 +577,6 @@
         "Excluded": false,
         "X": 101.0,
         "Y": 69.0
-      },
-      {
-        "ShowGeometry": true,
-        "Name": "Code Block",
-        "Id": "01d27d0f50ce4a63b16255df4af82238",
-        "Excluded": false,
-        "X": 14.0,
-        "Y": 814.0
       },
       {
         "ShowGeometry": true,
@@ -682,8 +695,16 @@
         "Name": "Code Block",
         "Id": "0cb2f07a95ab49edbd7e3e21281b87a3",
         "Excluded": false,
-        "X": 1104.0,
-        "Y": 261.0
+        "X": 313.0,
+        "Y": 788.0
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "a2b3ac3198f046b0906e8617821d0a51",
+        "Excluded": false,
+        "X": 149.0,
+        "Y": 796.0
       }
     ],
     "Annotations": [],
