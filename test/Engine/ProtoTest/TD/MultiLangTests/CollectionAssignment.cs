@@ -3204,19 +3204,6 @@ test = foo().IntVal;
             thisTest.Verify("r", new object[] { 4, -4 });
         }
 
-        [Test, Category("Failure")]
-        public void T52_DictionaryKeynull()
-        {
-            // as per spec this is null as key is supported
-            String code =
-                @"
-                b=null;
-                a = {b : 4};
-                r = a [b];
-            ";
-            thisTest.RunAndVerifyRuntimeWarning(code, ProtoCore.Runtime.WarningID.InvalidArguments);
-        }
-
         [Test]
         public void T53_DictionaryKeyUpdate()
         {
