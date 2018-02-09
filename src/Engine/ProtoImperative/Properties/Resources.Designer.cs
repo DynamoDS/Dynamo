@@ -97,7 +97,7 @@ namespace ProtoImperative.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Function pointer is not allowed at binary expression other than assignment!.
+        ///   Looks up a localized string similar to Function pointer is not allowed at binary expression other than assignment..
         /// </summary>
         public static string FunctionPointerNotAllowedAtBinaryExpression {
             get {
@@ -115,7 +115,7 @@ namespace ProtoImperative.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Variables declared in outer scope are read-only inside imperative block!.
+        ///   Looks up a localized string similar to Variables declared in an outer scope cannot be changed inside an imperative block..
         /// </summary>
         public static string ImperativeSymbolsAreReadOnly {
             get {

@@ -130,10 +130,10 @@
     <value>\"{0}\"is a function and not allowed as a variable name</value>
   </data>
   <data name="FunctionPointerNotAllowedAtBinaryExpression" xml:space="preserve">
-    <value>Function pointer is not allowed at binary expression other than assignment!</value>
+    <value>Function pointer is not allowed at binary expression other than assignment.</value>
   </data>
   <data name="ImperativeSymbolsAreReadOnly" xml:space="preserve">
-    <value>Variables declared in outer scope are read-only inside imperative block!</value>
+    <value>Variables declared in an outer scope cannot be changed inside an imperative block.</value>
   </data>
   <data name="IdentifierRedefinition" xml:space="preserve">
     <value>redefinition of identifier '{0}'</value>

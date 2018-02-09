@@ -1315,7 +1315,6 @@ namespace ProtoImperative
         /// Identify lhs symbols used in current codeblock that are allocated in 
         /// a parent associative block and allocate a copy of them in the outer imperative block
         /// </summary>
-        /// <param name="body"></param>
         private void MakeSymbolsLocalInImperativeBlock(List<ImperativeNode> body)
         {
             foreach (var stmt in body)
