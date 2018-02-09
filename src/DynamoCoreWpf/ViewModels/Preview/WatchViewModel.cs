@@ -153,7 +153,6 @@ namespace Dynamo.ViewModels
             }
         }
 
-
         /// <summary>
         /// Number of items in the overall list if node output is a list
         /// </summary>
@@ -256,13 +255,17 @@ namespace Dynamo.ViewModels
             {
                 return GetMaximumDepthAndItemNumber(wvm.Children[0]);
             }
-            else
+
+            // if it's a list, recurse
+            if (wvm.NodeLabel == LIST)
             {
                 var depthAndNumbers = wvm.Children.Select(GetMaximumDepthAndItemNumber);
                 var maxDepth = depthAndNumbers.Select(t => t.Item1).DefaultIfEmpty(1).Max() + 1;
                 var itemNumber = depthAndNumbers.Select(t => t.Item2).Sum();
                 return new Tuple<int, int>(maxDepth, itemNumber);
             }
+
+            return new Tuple<int, int>(1,1);
         }
 
         /// <summary>
