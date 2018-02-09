@@ -3182,7 +3182,7 @@ test = foo().IntVal;
             String code =
             @"
                 b=""x"";
-                a = {b : (b!=null)?4:-4};
+                a = {""x"" : (b!=null)?4:-4};
                 r = a [b];
             ";
 
@@ -3203,19 +3203,20 @@ test = foo().IntVal;
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("r", new object[] { 4, -4 });
         }
-        [Test]
+
+        [Test, Category("Failure")]
         public void T52_DictionaryKeynull()
         {
             // as per spec this is null as key is supported
             String code =
-            @"
+                @"
                 b=null;
                 a = {b : 4};
                 r = a [b];
             ";
-
             thisTest.RunAndVerifyRuntimeWarning(code, ProtoCore.Runtime.WarningID.InvalidArguments);
         }
+
         [Test]
         public void T53_DictionaryKeyUpdate()
         {
@@ -3224,16 +3225,16 @@ test = foo().IntVal;
             @"
                 r = a[b];
                 b = ""y"";
-                a ={ b: 10};
+                a ={ ""y"": 10};
             ";
 
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("r", 10);
         }
+
         [Test]
         public void T54_DictionaryKeyUpdate_2()
         {
-
             String code =
             @"
                a = [1, 2, 3];
@@ -3257,8 +3258,7 @@ test = foo().IntVal;
             @"
             def test(c:int)
             {
-                b = ""x"";
-                a = {b : c};
+                a = {""x"" : c};
                 return = a;
             }
                 
@@ -3268,6 +3268,7 @@ test = foo().IntVal;
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("r", 5);
         }
+
         [Test, Category("Failure")]
         [Category("DSDefinedClass_Ported")]
         public void T60_DictionaryDotOperator()
@@ -3306,7 +3307,7 @@ x = y[b];
 
         }
         [Test]
-        public void T70_DictionaryImeperativeWhile()
+        public void T70_DictionaryImperativeWhile()
         {
 
             String code =
@@ -3410,7 +3411,7 @@ r2 = a[""1""];
         [Test]
         public void T72_Dictionarytypeconversion()
         {
-
+            // Dictionary expression keys not (yet) supported
             String code =
             @"
                
@@ -3418,9 +3419,7 @@ r2 = a[""1""];
 
             def foo(b1)
             {
-
-                d = { b1: true};
-                return = d;
+                return Dictionary.ByKeysValues(b1, true);
             }
             z1 = foo(b);
             x = z1[b];
@@ -3433,7 +3432,7 @@ r2 = a[""1""];
         [Test]
         public void T73_Dictionaryrepguideszip()
         {
-
+            // Dictionary expression keys not (yet) supported
             String code =
             @"
                
@@ -3441,9 +3440,7 @@ r2 = a[""1""];
 
             def foo(b1 : var)
             {
-
-                a1 = { b1: true};
-                return = a1;
+                return Dictionary.ByKeysValues(b1, true);
             }
             z1 = foo(b < 1 >);
             x = z1[0][b];
