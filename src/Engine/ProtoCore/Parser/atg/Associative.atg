@@ -1580,12 +1580,6 @@ Associative_DictionaryExpression<out ProtoCore.AST.AssociativeAST.AssociativeNod
 				textstring	(. var str = new StringNode {Value = t.val.Trim('"')}; .)  
 							(. dictBuilder.AddKey(str); .)
 			)
-			|
-			(
-				ident		(. var ident = new IdentifierNode(t.val); .)
-							(. NodeUtils.SetNodeLocation(ident, t); .)
-							(. dictBuilder.AddKey(ident); .)
-			)
 		)
 		':'                     
 		Associative_Expression<out node>            (. dictBuilder.AddValue(node); .)
@@ -1595,12 +1589,6 @@ Associative_DictionaryExpression<out ProtoCore.AST.AssociativeAST.AssociativeNod
 				(
 					textstring	(. var str = new StringNode { Value = t.val.Trim('"') }; .)
 								(. dictBuilder.AddKey(str); .)  
-				)
-				|
-				(
-					ident		(. var ident = new IdentifierNode(t.val); .)
-								(. NodeUtils.SetNodeLocation(ident, t); .)
-								(. dictBuilder.AddKey(ident); .)
 				)
 			)
 			':'                     

@@ -157,8 +157,6 @@ COMPILER DesignScriptParser
 
     // Recognize: 
     //     { "foo" :   
-    // OR   
-    //     { foo :
     private bool IsDictionaryExpression()
     {
         short state = 0;
@@ -176,7 +174,7 @@ COMPILER DesignScriptParser
                     }
                     goto fail;
                 case 1:
-                    if (pt.kind == _textstring || pt.kind ==_ident)
+                    if (pt.kind == _textstring)
                     {
                         state = 2;
                         pt = scanner.Peek();
