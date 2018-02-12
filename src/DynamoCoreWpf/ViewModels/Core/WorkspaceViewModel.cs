@@ -220,10 +220,7 @@ namespace Dynamo.ViewModels
         /// of Graph.Json.
         /// </summary>
         [JsonProperty("Camera")]
-        public CameraData Camera
-        {
-            get { return DynamoViewModel.BackgroundPreviewViewModel.GetCameraInformation(); }
-        }
+        public CameraData Camera => DynamoViewModel.BackgroundPreviewViewModel.GetCameraInformation() ?? new CameraData();
 
         /// <summary>
         /// ViewModel that is used in InCanvasSearch in context menu and called by Shift+DoubleClick.
@@ -537,6 +534,25 @@ namespace Dynamo.ViewModels
             try
             {
                 // Stage 1: Serialize the workspace.
+                string fileName = string.Empty;
+                try
+                {
+                    fileName = Path.GetFileName(filePath);
+                    string extension = Path.GetExtension(filePath);
+                    if (extension == ".dyn" || extension == ".dyf")
+                    {
+                      fileName = Path.GetFileNameWithoutExtension(filePath);
+                    }
+                }
+                catch (ArgumentException)
+                {
+                }
+
+                if (fileName != string.Empty)
+                {
+                    Model.Name = fileName;
+                }
+              
                 var json = Model.ToJson(engine);
 
                 // Stage 2: Add the View.

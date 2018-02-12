@@ -400,7 +400,7 @@ namespace Dynamo.Tests
             }
             catch (System.Exception e)
             {
-                Assert.IsTrue(e is System.Xml.XmlException);
+                Assert.IsTrue(e is System.Xml.XmlException || e is Newtonsoft.Json.JsonReaderException);
             }
         }
 

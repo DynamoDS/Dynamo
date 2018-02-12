@@ -367,11 +367,7 @@ namespace Dynamo.Graph.Workspaces
         public event Action<ConnectorModel> ConnectorDeleted;
         protected virtual void OnConnectorDeleted(ConnectorModel obj)
         {
-            if (hasNodeInSyncWithDefinition)
-            {
-                undoRecorder.RecordModelAsOffTrack(obj.GUID);
-            }
-
+           
             var handler = ConnectorDeleted;
             if (handler != null) handler(obj);
             //Check if the workspace is loaded, i.e all the nodes are

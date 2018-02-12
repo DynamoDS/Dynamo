@@ -37,11 +37,11 @@ namespace FFITarget
         public static DummyPoint ByCoordinates(double x, double y, double z)
         {
             DummyPoint ret = new DummyPoint()
-                {
-                    X = x,
-                    Y = y,
-                    Z = z
-                };
+            {
+                X = x,
+                Y = y,
+                Z = z
+            };
 
             return ret;
         }

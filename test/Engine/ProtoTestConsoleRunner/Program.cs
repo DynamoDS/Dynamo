@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using ProtoCore;
 using ProtoScript.Runners;
 using ProtoCore.DSASM.Mirror;

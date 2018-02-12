@@ -238,7 +238,7 @@ Default value: 1</value>
     <value>Your file cannot be opened</value>
   </data>
   <data name="DisplayEngineFailureMessageDescription" xml:space="preserve">
-    <value>The virtual machine that powers Dynamo is experiencing some unexpected errors internally and is likely "having great difficulties pulling itself together. It is "recommended that you save your work now and reload the file. Giving the Dynamo VM a new lease of life can potentially make it feel happier and behave better. 
+    <value>The virtual machine that powers Dynamo is experiencing some unexpected errors internally and is likely having great difficulties pulling itself together. It is recommended that you save your work now and reload the file. Giving the Dynamo VM a new lease of life can potentially make it feel happier and behave better. 
 
 If you don't mind, it would be helpful for you to send us your file. That will make it quicker for us to get these issues fixed.</value>
   </data>
@@ -670,5 +670,8 @@ value : bool = false</value>
   </data>
   <data name="UnresolvedNodesWarningTitle" xml:space="preserve">
     <value>Graph Contains Unresolved Nodes and Cannot Be Saved.</value>
+  </data>
+  <data name="CodeBlockTempIdentifierOutputLabel" xml:space="preserve">
+    <value>Value of expression at line {0}</value>
   </data>
 </root>

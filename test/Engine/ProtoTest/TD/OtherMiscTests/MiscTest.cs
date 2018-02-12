@@ -134,7 +134,7 @@ c = a + b;";
 @"a;
 [Associative]
 {
-	a = {1001.1,1002, true};
+	a = [1001.1,1002, true];
     x = a[0];
     y = a[1];
     z = a[2];
@@ -245,8 +245,8 @@ TwoD1 = TwoD[1];
 	
 	return = numberOfItemsInArray;
 }
-input1 = {0.0, 10.0, 20.0, 30.0, 50.0};
-input2 = {10.0, 20};
+input1 = [0.0, 10.0, 20.0, 30.0, 50.0];
+input2 = [10.0, 20];
 result1 = Count(input1);
 result2 = Count(input2);
 ";
@@ -260,9 +260,9 @@ result2 = Count(input2);
         {
             String code =
 @"
-input1d = {0.0, 10.0, 20.0, 30.0, 50.0};
-input2d = {{10, 20},{30,40}};
-input2dJagged = {{10.0, 20},{null,40}, {true}, {0}};
+input1d = [0.0, 10.0, 20.0, 30.0, 50.0];
+input2d = [[10, 20],[30,40]];
+input2dJagged = [[10.0, 20],[null,40], [true], [0]];
 inputDouble = 10.0;
 inputNull = null;
 inputInteger = 1;
@@ -412,11 +412,11 @@ def Create2DArray( col : int)
 {
 	result = [Imperative]
     {
-		array = { 1, 2 };
+		array = [ 1, 2 ];
 		counter = 0;
 		while( counter < col)
 		{
-			array[counter] = { 1, 2};
+			array[counter] = [ 1, 2];
 			counter = counter + 1;
 		}
 		return = array;
@@ -520,8 +520,8 @@ return = t;
         {
             String code =
             @"
-                a = {1.0,2.0};
-                b={1,2};
+                a = [1.0,2.0];
+                b=[1,2];
             ";
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);

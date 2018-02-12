@@ -155,22 +155,22 @@ e;
 		}
 		d = b;
 		e = c;	
-                g2 = g1;	
+        g2 = g1;	
 	}
 	f = a * 2;
-        g1 = 3;
-        g3 = g2;
+    g1 = 3;
+    g3 = g2;
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
             thisTest.Verify("a", 4);
-            thisTest.Verify("b", 4);
+            thisTest.Verify("b", 6);
             thisTest.Verify("f", 8);
             thisTest.Verify("g1", 3);
             thisTest.Verify("g3", null);
-            thisTest.Verify("d", 4);
-            thisTest.Verify("c", 0);
-            thisTest.Verify("e", 0);
+            thisTest.Verify("d", null);
+            thisTest.Verify("c", null);
+            thisTest.Verify("e", null);
         }
 
         [Test]
@@ -365,7 +365,7 @@ c3;
 b;
 [Associative]
 {
-	a = {{1,2},3.5};
+	a = [[1,2],3.5];
 	c = a[1];
 	d = a[0][1];
         a[0][1] = 5;
@@ -416,26 +416,19 @@ b;
         [Category("SmokeTest")]
         public void T22_TestAssignmentToNegativeNumbers()
         {
-            string src = @"a;
-b;
-c;
-d;
-e;
-[Associative]
+            string src = @"
+a = [Associative]
 {
 	a = -1;
 	b = -111;
 	c = -0.1;
 	d = -1.99;
 	e = 1.99;
+    return [a, b, c, d, e];
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            thisTest.Verify("a", -1);
-            thisTest.Verify("b", -111);
-            thisTest.Verify("c", -0.1);
-            thisTest.Verify("d", -1.99);
-            thisTest.Verify("e", 1.99);
+            thisTest.Verify("a", new[] {-1, -111, -0.1, -1.99, 1.99});
         }
 
         [Test]
@@ -531,7 +524,7 @@ y1;
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
             thisTest.Verify("x", 1);
             thisTest.Verify("y", null);
-            thisTest.Verify("x1", 1);
+            thisTest.Verify("x1", null);
             thisTest.Verify("y1", null);
         }
 
@@ -829,7 +822,7 @@ e;
 b;
 c;
 d;
-[Imperative]
+i=[Imperative]
 {
 	a = null;
 	b = a * 2;
@@ -856,15 +849,10 @@ d;
 	{
 	    d = d + 3;
 	}
-	
-	
-	
+	return [a,b,c,d];
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            thisTest.Verify("a", null);
-            thisTest.Verify("b", null);
-            thisTest.Verify("c", null);
-            thisTest.Verify("d", 3);
+            thisTest.Verify("i", new object[] {null, null, null, 3});
 
         }
 
@@ -966,7 +954,7 @@ def foo()
 {
     return = 0;
 }
-x = { 1, 2 };
+x = [ 1, 2 ];
 x[foo()] = 3;
 y = x;
 ";
@@ -1051,7 +1039,7 @@ y = x;
             String errmsg = "[Design Issue] conditionals with empty arrays and ararys with different ranks";
             string src = @"[Associative]
 {
-	x = {} == null;
+	x = [] == null;
 }
 ";
             thisTest.VerifyRunScriptSource(src, errmsg);
@@ -1400,14 +1388,15 @@ c = foo2(""Hello \""DesignScript\""!"");
 def foo()
 {
     returnValue = 0;
-    [Imperative]
+    i=[Imperative]
     {
-        for(i in { 1, 2 })
+        for(i in [ 1, 2 ])
         {
             returnValue = returnValue + i;; 
         }
+        return returnValue;
     }
-    return = returnValue;
+    return = i;
 }
 x = foo();
 ";

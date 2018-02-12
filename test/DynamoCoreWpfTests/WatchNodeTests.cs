@@ -231,5 +231,25 @@ namespace DynamoCoreWpfTests
 
             Assert.AreEqual("Function", watchVM.NodeLabel);
         }
+
+        [Test]
+        public void WatchNestedDictionary()
+        {
+            string openPath = Path.Combine(TestDirectory, @"core\watch\watchNestedDictionaryList.dyn");
+            ViewModel.OpenCommand.Execute(openPath);
+            ViewModel.HomeSpace.Run();
+
+            var watchNode = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<CodeBlockNodeModel>();
+            var watchVM = ViewModel.WatchHandler.GenerateWatchViewModelForData(
+                watchNode.CachedValue, watchNode.OutPorts.Select(p => p.Name),
+                ViewModel.Model.EngineController.LiveRunnerRuntimeCore,
+                watchNode.AstIdentifierForPreview.Name);
+
+            watchVM.CountNumberOfItems();
+            watchVM.CountLevels();
+
+            Assert.AreEqual(3, watchVM.Levels.ElementAt(0));
+            Assert.AreEqual(2, watchVM.NumberOfItems);
+        }
     }
 }

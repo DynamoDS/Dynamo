@@ -107,7 +107,7 @@ namespace ProtoCore.Lang
                 case ProtoCore.Lang.BuiltInMethods.MethodID.RangeExpression:
                     try
                     {
-                        ret = RangeExpressionUntils.RangeExpression(formalParameters[0],
+                        ret = RangeExpressionUtils.RangeExpression(formalParameters[0],
                                                                     formalParameters[1],
                                                                     formalParameters[2],
                                                                     formalParameters[3],
@@ -1014,7 +1014,7 @@ namespace ProtoCore.Lang
             return targetRangeMin + (targetRangeMax - targetRangeMin) * percent;
         }
     }
-    internal class RangeExpressionUntils
+    internal class RangeExpressionUtils
     {
         // For to include start and end. 
         internal static StackValue[] GenerateRangeByStepNumber(decimal start, decimal end, int stepnum, bool isIntRange)

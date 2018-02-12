@@ -19,60 +19,60 @@ namespace ProtoTest.TD.MultiLangTests
 
         def testFlatten()
 	{
-		index = Flatten({1..4,0});
+		index = Flatten([1..4,0]);
 		return = index;
 	}
 	def testCount()
 	{
-		a = {true,{false,false},true};
+		a = [true,[false,false],true];
 		b = Count(a);
 		return = b;
 	}	
 	def testContains()
 	{
-		a = {true,{false,false},true};
-		b = Contains(a,{false,false});
+		a = [true,[false,false],true];
+		b = Contains(a,[false,false]);
 		return = b;
 	}
 	def testCountFalse()
 	{
-		a = {true,{false,false},true};
+		a = [true,[false,false],true];
 		b = CountFalse(a);
 		return = b;
 	}
 	def testCountTrue()
 	{
-		a = {true,{false,false},true};
+		a = [true,[false,false],true];
 		b = CountTrue(a);
 		return = b;
 	}
 	def testSomeFalse()
 	{
-		a = {true,{false,false},true};
+		a = [true,[false,false],true];
 		b = SomeFalse(a);
 		return = b;
 	}
 	def testSomeTrue()
 	{
-		a = {true,{false,false},true};
+		a = [true,[false,false],true];
 		b = SomeTrue(a);
 		return = b;
 	}
 	def testToString()
 	{
-		a = {true,{false,false},true};
+		a = [true,[false,false],true];
 		b = __ToStringFromArray(a);
 		return = b;
 	}
 	def testTranspose()
 	{
-		a = {{3,-4},{4,5}};
+		a = [[3,-4],[4,5]];
 		b = Transpose(a);
 		return = b;
 	}
 	def testNormalizeDepth()
 	{
-		index = NormalizeDepth({{1.1},{{2.3,3}},""5"",{{{{true}}}}},2);
+		index = NormalizeDepth([[1.1],[[2.3,3]],""5"",[[[[true]]]]],2);
 		return = index;
 	}
 
@@ -130,19 +130,19 @@ t15 = testNormalizeDepth();
 	b12;
 	b13;
 	b14;
-b = Flatten({1..4,0});
-a = {true,{false,false},true};
+b = Flatten([1..4,0]);
+a = [true,[false,false],true];
 b1 = Count(a);
-b2 = Contains(a,{false,false});
+b2 = Contains(a,[false,false]);
 b3 = CountFalse(a);
 b4 = CountTrue(a);
 b5 = SomeFalse(a);
 b6 = SomeTrue(a);
 b7 = __ToStringFromArray(a);
-a1 = {{3,-4},{4,5}};
+a1 = [[3,-4],[4,5]];
 b8 = Transpose(a1);
 a2 = 3.5;
-b14 = NormalizeDepth({{1.1},{{2.3,3}},""5"",{{{{true}}}}},2);
+b14 = NormalizeDepth([[1.1],[[2.3,3]],""5"",[[[[true]]]]],2);
 t0 = b;
 t1 = b1;
 t2 = b2;
@@ -187,23 +187,23 @@ def ret_count(ee : int[])
 {
 return =  Count(ee[1..Count(ee)]);
 }
-a = {1,2,3,0};
+a = [1,2,3,0];
 b = Count(a); //4
-c = {1.1,-1.2,3,4};
+c = [1.1,-1.2,3,4];
 d = Count(c) ; //4
-e1 = {{1,2},{3,4},{4,5}};
+e1 = [[1,2],[3,4],[4,5]];
 f = Count(e1);//3
 g = ret_count(e1); //{2,2,2}
 h = Count(e1[1..Count(e1)-1]);//3
 i = Count(e1[0]); //2
-j = Count({{{{1,3},2},{1}},{2,3}}); //2
+j = Count([[[[1,3],2],[1]],[2,3]]); //2
 //negative testing
 a1 = ""s"";
 b1 = Count(a1); //0
 a2 = DummyPoint.ByCartesianCoordinates(CoordinateSystem(),0,0,0);
 b2 = Count(a2); //0
 b3 = Count(null); //null
-a4 = {};
+a4 = [];
 b4 = Count(a4); //0";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             Object[] v1 = new Object[] { 2, 2, 2 };
@@ -223,7 +223,7 @@ b4 = Count(a4); //0";
             // TODO pratapa: Regression post introduction of Get.ValueAtIndex due to array promotion
             string code = @"
 import(""FFITarget.dll"");
-raggedCollection = { 1, { 2, 3 } };
+raggedCollection = [ 1, [ 2, 3 ] ];
 isUniformDepthRagged = IsUniformDepth(raggedCollection);//false
 average = Average(raggedCollection);
 sum = Sum(raggedCollection); // works (=6), but complains that the ""Variable is over indexed""
@@ -249,7 +249,7 @@ reverseCollection = Reverse(flattenedCollection);
 count = Count(reverseCollection);
 contains = Contains(reverseCollection, 2);
 indexOf = IndexOf(reverseCollection, 2);
-reordedCollection = Reorder(flattenedCollection, { 2, 0, 1 }); // (={3,1,2}
+reordedCollection = Reorder(flattenedCollection, [ 2, 0, 1 ]); // (={3,1,2}
 indexByValue = SortIndexByValue(reordedCollection); // (={1,2,0}) not sure thsis is correct
 def sorterFunction(a:double, b:double)
 {
@@ -258,7 +258,7 @@ def sorterFunction(a:double, b:double)
 sort = Sort(sorterFunction, reordedCollection);  // (=null) something wrong here
 newArray = noramlisedDepthCollection;
 newArray[0][1] = 6; // directly add a member to a 2D array.. good
-newArray[2] = { 7, 8, 9 }; // and good
+newArray[2] = [ 7, 8, 9 ]; // and good
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
 
@@ -321,7 +321,7 @@ newArray[2] = { 7, 8, 9 }; // and good
         {
             string code = @"
 import(""BuiltIn.ds"");
-set = { true, { false, true } };
+set = [ true, [ false, true ] ];
 allFalseSet = AllFalse(set);
 someFalseSet = SomeFalse(set);
 someTrueSet = SomeTrue(set);
@@ -340,8 +340,8 @@ removeDuplicatesSetInsert = RemoveDuplicates(setInsert);
 flattenSetInsert = Flatten(setInsert);
 removeDuplicatesSetInsertFalttened = RemoveDuplicates(flattenSetInsert);
 removeIfNotSetInsert = List.RemoveIfNot(flattenSetInsert, ""bool""); // (={})... this looks incorrect
-one1Dcollection = { 3, 1 };
-other1Dcollection = { 0, 1, 2, 3, 4 };
+one1Dcollection = [ 3, 1 ];
+other1Dcollection = [ 0, 1, 2, 3, 4 ];
 setDifferenceA = SetDifference(one1Dcollection, other1Dcollection);
 setDifferenceB = SetDifference(other1Dcollection, one1Dcollection);
 setIntersection = SetIntersection(other1Dcollection, one1Dcollection);

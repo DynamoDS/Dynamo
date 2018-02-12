@@ -2,7 +2,7 @@
   <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
   <CreateNodeCommand NodeId="cd2c5358-61e0-45b8-bf04-daaec9032702" NodeName="Code Block" X="108" Y="204" DefaultPosition="false" TransformCoordinates="true" />
   <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
-  <UpdateModelValueCommand ModelGuid="cd2c5358-61e0-45b8-bf04-daaec9032702" Name="Code" Value="{0..2,1..3};" />
+  <UpdateModelValueCommand ModelGuid="cd2c5358-61e0-45b8-bf04-daaec9032702" Name="Code" Value="[0..2,1..3];" />
   <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
   <CreateNodeCommand NodeId="1d8354e5-93e0-43be-916d-28dd8bdf85d4" NodeName="Code Block" X="314" Y="255" DefaultPosition="false" TransformCoordinates="true" />
   <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />

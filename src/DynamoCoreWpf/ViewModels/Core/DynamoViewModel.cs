@@ -1112,9 +1112,10 @@ namespace Dynamo.ViewModels
             {
                 var newVm = new WorkspaceViewModel(item, this);
 
-                // For Json Workspaces, workspace view info need to be read agin from file
+                // For Json Workspaces, workspace view info need to be read again from file
                 string fileContents;
-                if (DynamoUtilities.PathHelper.isValidJson(newVm.Model.FileName, out fileContents))
+                Exception ex;
+                if (DynamoUtilities.PathHelper.isValidJson(newVm.Model.FileName, out fileContents, out ex))
                 {
                     ExtraWorkspaceViewInfo viewInfo = WorkspaceViewModel.ExtraWorkspaceViewInfoFromJson(fileContents);
                     newVm.Model.UpdateWithExtraWorkspaceViewInfo(viewInfo);
@@ -1253,7 +1254,7 @@ namespace Dynamo.ViewModels
                     {
                         errorMsgString = String.Format(e.Message, filePath);
                     }
-                    else if (e is System.Xml.XmlException)
+                    else if (e is System.Xml.XmlException || e is Newtonsoft.Json.JsonReaderException)
                     {
                         errorMsgString = String.Format(Resources.MessageFailedToOpenCorruptedFile, filePath);
                     }
@@ -1426,7 +1427,7 @@ namespace Dynamo.ViewModels
         /// <param name="path">The path to the file.</param>
         /// <exception cref="IOException"></exception>
         /// <exception cref="UnauthorizedAccessException"></exception>
-        internal void SaveAs(string path, bool isBackup = false)
+        public void SaveAs(string path, bool isBackup = false)
         {
             try
             {
@@ -2046,18 +2047,6 @@ namespace Dynamo.ViewModels
         internal bool CanToggleConsoleShowing(object parameter)
         {
             return true;
-        }
-
-        /// <summary>
-        /// Obsolete method toggles Showing Preview Bubbles globally
-        /// Using of this class will produce compile warnings
-        /// TODO: To be removed in Dynamo 2.0
-        /// </summary>
-        /// <param name="parameter">Command parameter</param>
-        [System.Obsolete("This method is obsolete, set DynamoViewModel.ShowPreviewBubbles directly instead.")]
-        public void TogglePreviewBubblesShowing(object parameter)
-        {
-            ShowPreviewBubbles = !ShowPreviewBubbles;
         }
 
         public void SelectNeighbors(object parameters)

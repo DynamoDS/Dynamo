@@ -203,8 +203,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PythonNodeModels", "Librari
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfVisualizationTests", "VisualizationTests\WpfVisualizationTests.csproj", "{C4964946-B367-44EE-9ED2-451FF2A83D32}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShapewaysClient", "ShapewaysClient\ShapewaysClient.csproj", "{756CEBA5-4E20-4403-8448-C3C47957975B}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Watch3DNodeModels", "Libraries\Watch3DNodeModels\Watch3DNodeModels.csproj", "{31183026-DE70-49CB-BC7C-0DFD0A088F62}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoManipulation", "DynamoManipulation\DynamoManipulation.csproj", "{33F88E8C-CC3C-4237-8AA9-CC891EFCABFA}"
@@ -471,10 +469,6 @@ Global
 		{C4964946-B367-44EE-9ED2-451FF2A83D32}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C4964946-B367-44EE-9ED2-451FF2A83D32}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C4964946-B367-44EE-9ED2-451FF2A83D32}.Release|Any CPU.Build.0 = Release|Any CPU
-		{756CEBA5-4E20-4403-8448-C3C47957975B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{756CEBA5-4E20-4403-8448-C3C47957975B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{756CEBA5-4E20-4403-8448-C3C47957975B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{756CEBA5-4E20-4403-8448-C3C47957975B}.Release|Any CPU.Build.0 = Release|Any CPU
 		{31183026-DE70-49CB-BC7C-0DFD0A088F62}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{31183026-DE70-49CB-BC7C-0DFD0A088F62}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{31183026-DE70-49CB-BC7C-0DFD0A088F62}.Release|Any CPU.ActiveCfg = Release|Any CPU

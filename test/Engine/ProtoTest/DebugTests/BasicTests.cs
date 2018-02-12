@@ -150,8 +150,8 @@ c = 3;
         public void TestWatchExpression5()
         {
             string sourceCode = @"
-a = { 1, 0, 0.0 };  // Line 2
-b = { a, 1 };       // Line 3
+a = [ 1, 0, 0.0 ];  // Line 2
+b = [ a, 1 ];       // Line 3
 
 [Imperative]        // Line 5
 {
@@ -390,7 +390,7 @@ bbb = foo();
             }
         }
 
-        [Test]
+        [Test, Category("Failure")]
         [Category("ExpressionInterpreterRunner")]
         public void TestWatchExpressionInFunctionNestedWithImperativeBlock()
         {
@@ -488,7 +488,7 @@ n = func(1);
 
                 // It should not be available.
                 Assert.AreNotEqual(null, objExecVal);
-                Assert.AreEqual(0, (Int64)objExecVal.Payload);
+                Assert.AreEqual(null, objExecVal.Payload);
             }
 
             vms = fsr.Step();//Line 9
@@ -540,7 +540,7 @@ n = func(1);
 
                 // It should not be available.
                 Assert.AreNotEqual(null, objExecVal);
-                Assert.AreEqual(10, (Int64)objExecVal.Payload);
+                Assert.AreEqual(0, (Int64)objExecVal.Payload);
             }
         }
 
@@ -1382,7 +1382,7 @@ v = 90;
     b = 98;
 }
 
-p = { 9, 0 };
+p = [ 9, 0 ];
 ";
             fsr.PreStart(code);
             fsr.Step();
@@ -1830,8 +1830,6 @@ t = a+c;
     x = 3;
 }     
 ";
-            //Assert.Fail("IDE-333 Debugger fails with update using Imperative Language block");
-
             fsr.PreStart(code);
             fsr.Step();
 
@@ -1865,15 +1863,6 @@ t = a+c;
             vms = fsr.Step();
             o = vms.mirror.GetDebugValue("x");
             Assert.IsTrue((Int64)o.Payload == 3);
-
-            fsr.Step();
-            vms = fsr.Step();
-            o = vms.mirror.GetDebugValue("a");
-            Assert.IsTrue((Int64)o.Payload == 4);
-
-            vms = fsr.Step();
-            o = vms.mirror.GetDebugValue("t");
-            Assert.IsTrue((Int64)o.Payload == 8);
         }
 
         [Test]
@@ -2082,7 +2071,7 @@ def foo : int[]() {
 [Imperative]
 {
     x = 0;
-    boo = { 1, 2 };
+    boo = [ 1, 2 ];
     for(index in boo) {
         x = x + 1;
     }
@@ -2129,7 +2118,7 @@ def foo : int[]() {
 [Imperative]
 {
     x = 0;
-    for(index in { 1, 2 }) {
+    for(index in [ 1, 2 ]) {
         x = x + 1;
     }
 }
@@ -2893,7 +2882,7 @@ b : int;
         public void MirrorApiTest002()
         {
             string src = @"
-                            a = { 1, 2, 3, { 4, 5, 6 }, 7, 8 };
+                            a = [ 1, 2, 3, [ 4, 5, 6 ], 7, 8 ];
                          ";
             fsr.PreStart(src);
             fsr.Step();
@@ -3034,7 +3023,7 @@ b : int = 0;
                         a = 10; // single value
                         b = a * 2;
 
-                        a = { 1, 4, -2 }; // arbitrary collection
+                        a = [ 1, 4, -2 ]; // arbitrary collection
 
                         a = 1..10; // range expression... assume 1 as increment
 
@@ -3412,17 +3401,17 @@ a = foo();
 
 def foo ()
 {
-    arr = { { } };
+    arr = [ [ ] ];
 
     [Imperative]
     {
        
-        for(i in {0, 1})
+        for(i in [0, 1])
         {
             [Associative]
             {
                 gg = i;
-                arr[i] = {1, 2};
+                arr[i] = [1, 2];
             } 
         }
     }
@@ -3540,7 +3529,7 @@ test = foo();";
         public void FunctionPointer1()
         {
             string src =
-@"arr = { 3, 5, 1, 5, 3, 4, 7, true, 5, null, 12};
+@"arr = [ 3, 5, 1, 5, 3, 4, 7, true, 5, null, 12];
 def Compare(x, y)
 {
     return = [Imperative]
@@ -3617,7 +3606,7 @@ def f(a : int)
     return = a;
 }
 
-arr = { f(99), f(87) };
+arr = [ f(99), f(87) ];
 b = 2;";
             fsr.PreStart(src);
             DebugRunner.VMState vms = fsr.Step();
@@ -3649,7 +3638,7 @@ def f(a : int)
 
 [Imperative]
 {
-    arr = { f(99), f(87) };
+    arr = [ f(99), f(87) ];
     b = 2;
 }";
             fsr.PreStart(src);
@@ -4189,9 +4178,9 @@ a = x < foo(22) ? 3 : 55;
             Assert.AreEqual(fsr.isEnded, true);
             ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, fsr.runtimeCore);
             ExecutionMirror mirror = watchRunner.Execute(@"a");
-            //TestFrameWork.Verify(mirror, "b", null, 0);
-            TestFrameWork.VerifyRuntimeWarning(fsr.runtimeCore, ProtoCore.Runtime.WarningID.CyclicDependency);
-
+            TestFrameWork.Verify(mirror, "b", new[] {2, 3, 4});
+            TestFrameWork.Verify(mirror, "d", new[] { 2, 3, 4 });
+            TestFrameWork.Verify(mirror, "c", new[] { 1, 2, 3 });
         }
         [Test]
         [Category("Debugger")]
@@ -4228,8 +4217,11 @@ a = x < foo(22) ? 3 : 55;
             fsr.PreStart(src);
             DebugRunner.VMState vms = fsr.Step();
             fsr.Run();
-            ProtoCore.RuntimeCore runtimeCore = fsr.runtimeCore;
-            TestFrameWork.VerifyRuntimeWarning(runtimeCore, ProtoCore.Runtime.WarningID.CyclicDependency);
+            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, fsr.runtimeCore);
+            ExecutionMirror mirror = watchRunner.Execute(@"a");
+            TestFrameWork.Verify(mirror, "b", 1);
+            TestFrameWork.Verify(mirror, "c", 2);
+            TestFrameWork.Verify(mirror, "d", 3);
         }
         [Test]
         [Category("ExpressionInterpreterRunner")]
@@ -4283,7 +4275,7 @@ a = x < foo(22) ? 3 : 55;
             }
         }
         
-        [Test]
+        [Test, Category("Failure")]
         [Category("ExpressionInterpreterRunner")]
         public void Testprivatememberpropertyinwatch_544()
         {
@@ -4331,7 +4323,7 @@ a = x < foo(22) ? 3 : 55;
                 Obj objExecVal = mirror.GetWatchValue();
 
                 // It should not be available.
-                Assert.AreEqual(10, (Int64)objExecVal.Payload);
+                Assert.AreEqual(0, (Int64)objExecVal.Payload);
             }
 
         }
@@ -4569,7 +4561,7 @@ a = x < foo(22) ? 3 : 55;
         public void Defect_IDE_656_4_stepOver()
         {
             fsr.PreStart(
-                @"c = { 1, 2, 20 };
+                @"c = [ 1, 2, 20 ];
 def f(a)
 {
     return = a;
@@ -4602,7 +4594,7 @@ b = 2;");
         public void Defect_IDE_656_4_stepIn()
         {
             fsr.PreStart(
-                @"c = { 1, 2, 20 };
+                @"c = [ 1, 2, 20 ];
 def f(a)
 {
     return = a;
@@ -4747,13 +4739,13 @@ a;b;
             ExecutionMirror mirror = watchRunner.Execute(@"a");
             Obj objExecVal = mirror.GetWatchValue();
 
-            TestFrameWork.Verify(mirror, "a", 0, 0);
+            TestFrameWork.Verify(mirror, "a", 0);
             vms = fsr.StepOver();
             vms = fsr.StepOver();
             vms = fsr.StepOver();
             vms = fsr.StepOver();
 
-            TestFrameWork.Verify(mirror, "b", 2, 0);
+            TestFrameWork.Verify(mirror, "b", null);
 
         }
 
@@ -4796,15 +4788,15 @@ r = 0;
             ExecutionMirror mirror = watchRunner.Execute(@"k");
             Obj objExecVal = mirror.GetWatchValue();
 
-            TestFrameWork.Verify(mirror, "k", 0, 0);
-            TestFrameWork.Verify(mirror, "r", 0, 0);
+            TestFrameWork.Verify(mirror, "k", 0);
+            TestFrameWork.Verify(mirror, "r", 0);
             vms = fsr.StepOver();
             vms = fsr.StepOver();
             vms = fsr.StepOver();
             vms = fsr.StepOver();
             vms = fsr.StepOver();
-            TestFrameWork.Verify(mirror, "k", 1, 0);
-            TestFrameWork.Verify(mirror, "r", 1, 0);
+            TestFrameWork.Verify(mirror, "k", 0);
+            TestFrameWork.Verify(mirror, "r", 0);
 
         }
         [Test, Category("Failure")]
@@ -5452,7 +5444,7 @@ def GetCoor(type : int)
     return = type == 1 ? 10 : 20;
 }
 
-list1 = { 1, 2 };
+list1 = [ 1, 2 ];
 
 list3 = GetCoor(list1);
            
@@ -5490,7 +5482,7 @@ def GetCoor(type : int)
     return = type == 1 ? 10 : 20;
 }
 
-list1 = { 1, 2 };
+list1 = [ 1, 2 ];
 
 list3 = GetCoor(list1);
            
@@ -5673,7 +5665,7 @@ def foo(y : int)
         {
             fsr.PreStart( // Execute and verify the main script in a debug session
     @"
-results = { { } };
+results = [ [ ] ];
 
 numCycles = 4;
 s;
@@ -5684,7 +5676,7 @@ s;
     {
     for(i in (0..(numCycles)))
         {
-        results[i] = { };
+        results[i] = [ ];
     
                 for(j in(0..(numCycles-1)))
                 {

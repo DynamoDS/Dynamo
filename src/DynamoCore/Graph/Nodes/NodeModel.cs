@@ -1772,9 +1772,7 @@ namespace Dynamo.Graph.Nodes
 
         private void OnPortConnected(PortModel port, ConnectorModel connector)
         {
-            var handler = PortConnected;
-            if (null != handler) handler(port, connector);
-
+          
             if (port.PortType != PortType.Input) return;
 
             var data = InPorts.IndexOf(port);
@@ -1782,6 +1780,10 @@ namespace Dynamo.Graph.Nodes
             var outData = startPort.Owner.OutPorts.IndexOf(startPort);
             ConnectInput(data, outData, startPort.Owner);
             startPort.Owner.ConnectOutput(outData, data, this);
+
+            var handler = PortConnected;
+            if (null != handler) handler(port, connector);
+
             OnConnectorAdded(connector);
 
             OnNodeModified();

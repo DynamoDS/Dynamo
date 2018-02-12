@@ -898,14 +898,6 @@ Imperative_NameReference<ref ProtoCore.AST.ImperativeAST.ImperativeNode node>
                                     .)
         )
         |
-        IF(IsDictionaryExpression())
-        (
-            Imperative_DictionaryExpression<out node>
-                                    (.
-                                        nameNode = node as ProtoCore.AST.ImperativeAST.ArrayNameNode;
-                                    .)
-        )
-        |
         (
             Imperative_ExprList<out node>
                                     (.
@@ -913,8 +905,24 @@ Imperative_NameReference<ref ProtoCore.AST.ImperativeAST.ImperativeNode node>
                                     .)
         )
         |
+        IF(core.ParseDeprecatedListSyntax && IsDeprecatedListExpression())
         (
             Imperative_DeprecatedExprList<out node>
+                                    (.
+                                        nameNode = node as ProtoCore.AST.ImperativeAST.ArrayNameNode;
+                                    .)
+        )
+		|
+		IF(!core.ParseDeprecatedListSyntax && IsNonEmptyDeprecatedListExpression())
+		(
+            Imperative_DeprecatedExprList<out node>
+                                    (.
+										errors.SemErr(t.line, t.col, Resources.DeprecatedListInitializationSyntax);
+                                    .)
+        )
+		|
+        (
+            Imperative_DictionaryExpression<out node>
                                     (.
                                         nameNode = node as ProtoCore.AST.ImperativeAST.ArrayNameNode;
                                     .)
@@ -1040,40 +1048,29 @@ Imperative_DictionaryExpression<out ProtoCore.AST.ImperativeAST.ImperativeNode n
 =
 '{'                                     (. var dictBuilder = new ProtoCore.AST.ImperativeAST.DictionaryExpressionBuilder(); .)
                                         (. dictBuilder.SetNodeStartLocation(t); .)
-    [
-        (
-            textstring	(. var str = new ProtoCore.AST.ImperativeAST.StringNode {Value = t.val.Trim('"')}; .)  
-                        (. dictBuilder.AddKey(str); .) 
-        ) 
-        |
-        (
-            ident		(. var ident = new ProtoCore.AST.ImperativeAST.IdentifierNode(t.val); .)
-                        (. NodeUtils.SetNodeLocation(ident, t); .)
-                        (. dictBuilder.AddKey(ident); .)
-        )
-    ]
-    ':'                     
-    Imperative_expr<out node>            (. dictBuilder.AddValue(node); .)
-    {
-        ','
-        [
-            (
-                textstring	(. var str = new ProtoCore.AST.ImperativeAST.StringNode { Value = t.val.Trim('"') }; .)
-                            (. dictBuilder.AddKey(str); .)  
-            )
-            |
-            (
-                ident		(. var ident = new ProtoCore.AST.ImperativeAST.IdentifierNode(t.val); .)
-                            (. NodeUtils.SetNodeLocation(ident, t); .)
-                            (. dictBuilder.AddKey(ident); .)
-            ) 
-        ]
-        ':'                     
-        Imperative_expr<out node>       (. dictBuilder.SetNodeEndLocation(t); .)
-                                        (. dictBuilder.AddValue(node); .)
-    }
-                                        
-    
+	[
+		(
+			(
+				textstring	(. var key = new ProtoCore.AST.ImperativeAST.StringNode {Value = t.val.Trim('"')}; .)  
+							(. dictBuilder.AddKey(key); .) 
+			) 
+		)
+		':'                     
+		Imperative_expr<out node>            (. dictBuilder.AddValue(node); .)
+		{
+			','
+			(
+				(
+					textstring	(. var nextkey = new ProtoCore.AST.ImperativeAST.StringNode { Value = t.val.Trim('"') }; .)
+								(. dictBuilder.AddKey(nextkey); .)  
+				)
+			)
+			':'                     
+			Imperative_expr<out node>       (. dictBuilder.SetNodeEndLocation(t); .)
+											(. dictBuilder.AddValue(node); .)
+		}
+	]
+                                       
 '}'                                     (. dictBuilder.SetNodeEndLocation(t); .)
                                         (. node = dictBuilder.ToFunctionCall(); .)
 .

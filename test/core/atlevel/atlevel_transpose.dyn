@@ -3,7 +3,7 @@
     <ClassMap partialName="List" resolvedName="DSCore.List" assemblyName="DSCoreNodes.dll" />
   </NamespaceResolutionMap>
   <Elements>
-    <Dynamo.Graph.Nodes.CodeBlockNodeModel guid="4a26f8d9-01e3-4748-968e-245e0d6613f7" type="Dynamo.Graph.Nodes.CodeBlockNodeModel" nickname="Code Block" x="161" y="160" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false" CodeText="xs = {{{0..2, 3..5}, {6..8, 9..11}}};" ShouldFocus="false">
+    <Dynamo.Graph.Nodes.CodeBlockNodeModel guid="4a26f8d9-01e3-4748-968e-245e0d6613f7" type="Dynamo.Graph.Nodes.CodeBlockNodeModel" nickname="Code Block" x="161" y="160" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false" CodeText="xs = [[[0..2, 3..5], [6..8, 9..11]]];" ShouldFocus="false">
       <OutPortInfo LineIndex="0" />
     </Dynamo.Graph.Nodes.CodeBlockNodeModel>
     <Dynamo.Graph.Nodes.CodeBlockNodeModel guid="2bc82773-3dd9-4491-bca2-d2ee9adb9d81" type="Dynamo.Graph.Nodes.CodeBlockNodeModel" nickname="Code Block" x="579" y="187" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="true" CodeText="List.Transpose(xs@L3&lt;1&gt;);" ShouldFocus="false">

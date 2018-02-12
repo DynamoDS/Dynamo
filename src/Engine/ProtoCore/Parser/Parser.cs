@@ -175,6 +175,11 @@ public Node root { get; set; }
         scanner.ResetPeek();
         return false;
     }
+	
+    private bool IsListExpression()
+    {
+        return la.val == "[" && !IsLanguageBlock();
+    }
 
     private bool IsLanguageBlock()
     {
@@ -195,6 +200,7 @@ public Node root { get; set; }
                 case 1:
                     if (pt.val == "Associative" || pt.val == "Imperative")
                     {
+                        scanner.ResetPeek();
                         return true;
                     }
                     goto fail;
@@ -205,11 +211,26 @@ public Node root { get; set; }
         scanner.ResetPeek();
         return false;
     }
+	
+	private bool IsEmptyDictionaryExpression() {
+		if (la.val == "{") {
+			var isCloseCurlyBracket = scanner.Peek().val == "}";
+			scanner.ResetPeek();
+			return isCloseCurlyBracket;
+		}
+		return false;
+	}
+
+	private bool IsDeprecatedListExpression() {
+		return la.val == "{" && !IsDictionaryExpression();
+	}
+
+	private bool IsNonEmptyDeprecatedListExpression() {
+		return la.val == "{" && !IsEmptyDictionaryExpression() && !IsDictionaryExpression();
+	}
 
     // Recognize: 
     //     { "foo" :   
-    // OR   
-    //     { foo :
     private bool IsDictionaryExpression()
     {
         short state = 0;
@@ -227,7 +248,7 @@ public Node root { get; set; }
                     }
                     goto fail;
                 case 1:
-                    if (pt.kind == _textstring || pt.kind ==_ident)
+                    if (pt.kind == _textstring)
                     {
                         state = 2;
                         pt = scanner.Peek();
@@ -622,6 +643,11 @@ public Node root { get; set; }
      // use by associative
      private bool IsNotAttributeFunctionClass()
      {
+		 if (IsListExpression())
+         {
+             return true;
+         }
+
         if (la.val == "[")
         {
             Token t = scanner.Peek();
@@ -651,6 +677,11 @@ public Node root { get; set; }
      // used by imperative
      private bool IsNotAttributeFunction()
      {
+	    if (IsListExpression())
+		{
+			return true;
+		}
+
         if (la.val == "[")
         {
             Token t = scanner.Peek();
@@ -2364,38 +2395,22 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 		Expect(46);
 		var dictBuilder = new ProtoCore.AST.AssociativeAST.DictionaryExpressionBuilder(); 
 		dictBuilder.SetNodeStartLocation(t); 
-		if (la.kind == 1 || la.kind == 4) {
-			if (la.kind == 4) {
-				Get();
-				var str = new StringNode {Value = t.val.Trim('"')}; 
-				dictBuilder.AddKey(str); 
-			} else {
-				Get();
-				var ident = new IdentifierNode(t.val); 
-				NodeUtils.SetNodeLocation(ident, t); 
-				dictBuilder.AddKey(ident); 
-			}
-		}
-		Expect(48);
-		Associative_Expression(out node);
-		dictBuilder.AddValue(node); 
-		while (la.kind == 52) {
+		if (la.kind == 4) {
 			Get();
-			if (la.kind == 1 || la.kind == 4) {
-				if (la.kind == 4) {
-					Get();
-					var str = new StringNode { Value = t.val.Trim('"') }; 
-					dictBuilder.AddKey(str); 
-				} else {
-					Get();
-					var ident = new IdentifierNode(t.val); 
-					NodeUtils.SetNodeLocation(ident, t); 
-					dictBuilder.AddKey(ident); 
-				}
-			}
+			var key = new StringNode {Value = t.val.Trim('"')}; 
+			dictBuilder.AddKey(key); 
 			Expect(48);
 			Associative_Expression(out node);
 			dictBuilder.AddValue(node); 
+			while (la.kind == 52) {
+				Get();
+				Expect(4);
+				var nextkey = new StringNode { Value = t.val.Trim('"') }; 
+				dictBuilder.AddKey(nextkey); 
+				Expect(48);
+				Associative_Expression(out node);
+				dictBuilder.AddValue(node); 
+			}
 		}
 		Expect(47);
 		dictBuilder.SetNodeEndLocation(t); 
@@ -2435,16 +2450,20 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 			Associative_Ident(out node);
 			nameNode = node as ProtoCore.AST.AssociativeAST.ArrayNameNode; 
 			
-		} else if (IsDictionaryExpression()) {
-			Associative_DictionaryExpression(out node);
-			nameNode = node as ProtoCore.AST.AssociativeAST.ArrayNameNode;
-			
 		} else if (la.kind == 10) {
 			Associative_ExprList(out node);
 			nameNode = node as ProtoCore.AST.AssociativeAST.ArrayNameNode;
 			
-		} else if (la.kind == 46) {
+		} else if (core.ParseDeprecatedListSyntax && IsDeprecatedListExpression()) {
 			Associative_DeprecatedExprList(out node);
+			nameNode = node as ProtoCore.AST.AssociativeAST.ArrayNameNode;
+			
+		} else if (!core.ParseDeprecatedListSyntax && IsNonEmptyDeprecatedListExpression()) {
+			Associative_DeprecatedExprList(out node);
+			errors.SemErr(t.line, t.col, Resources.DeprecatedListInitializationSyntax);
+			
+		} else if (la.kind == 46) {
+			Associative_DictionaryExpression(out node);
 			nameNode = node as ProtoCore.AST.AssociativeAST.ArrayNameNode;
 			
 		} else SynErr(94);
@@ -3253,16 +3272,20 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 			Imperative_Ident(out node);
 			nameNode = node as ProtoCore.AST.ImperativeAST.ArrayNameNode;
 			
-		} else if (IsDictionaryExpression()) {
-			Imperative_DictionaryExpression(out node);
-			nameNode = node as ProtoCore.AST.ImperativeAST.ArrayNameNode;
-			
 		} else if (la.kind == 10) {
 			Imperative_ExprList(out node);
 			nameNode = node as ProtoCore.AST.ImperativeAST.ArrayNameNode;
 			
-		} else if (la.kind == 46) {
+		} else if (core.ParseDeprecatedListSyntax && IsDeprecatedListExpression()) {
 			Imperative_DeprecatedExprList(out node);
+			nameNode = node as ProtoCore.AST.ImperativeAST.ArrayNameNode;
+			
+		} else if (!core.ParseDeprecatedListSyntax && IsNonEmptyDeprecatedListExpression()) {
+			Imperative_DeprecatedExprList(out node);
+			errors.SemErr(t.line, t.col, Resources.DeprecatedListInitializationSyntax);
+			                         
+		} else if (la.kind == 46) {
+			Imperative_DictionaryExpression(out node);
 			nameNode = node as ProtoCore.AST.ImperativeAST.ArrayNameNode;
 			
 		} else SynErr(109);
@@ -3783,49 +3806,6 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 		
 	}
 
-	void Imperative_DictionaryExpression(out ProtoCore.AST.ImperativeAST.ImperativeNode node) {
-		Expect(46);
-		var dictBuilder = new ProtoCore.AST.ImperativeAST.DictionaryExpressionBuilder(); 
-		dictBuilder.SetNodeStartLocation(t); 
-		if (la.kind == 1 || la.kind == 4) {
-			if (la.kind == 4) {
-				Get();
-				var str = new ProtoCore.AST.ImperativeAST.StringNode {Value = t.val.Trim('"')}; 
-				dictBuilder.AddKey(str); 
-			} else {
-				Get();
-				var ident = new ProtoCore.AST.ImperativeAST.IdentifierNode(t.val); 
-				NodeUtils.SetNodeLocation(ident, t); 
-				dictBuilder.AddKey(ident); 
-			}
-		}
-		Expect(48);
-		Imperative_expr(out node);
-		dictBuilder.AddValue(node); 
-		while (la.kind == 52) {
-			Get();
-			if (la.kind == 1 || la.kind == 4) {
-				if (la.kind == 4) {
-					Get();
-					var str = new ProtoCore.AST.ImperativeAST.StringNode { Value = t.val.Trim('"') }; 
-					dictBuilder.AddKey(str); 
-				} else {
-					Get();
-					var ident = new ProtoCore.AST.ImperativeAST.IdentifierNode(t.val); 
-					NodeUtils.SetNodeLocation(ident, t); 
-					dictBuilder.AddKey(ident); 
-				}
-			}
-			Expect(48);
-			Imperative_expr(out node);
-			dictBuilder.SetNodeEndLocation(t); 
-			dictBuilder.AddValue(node); 
-		}
-		Expect(47);
-		dictBuilder.SetNodeEndLocation(t); 
-		node = dictBuilder.ToFunctionCall(); 
-	}
-
 	void Imperative_ExprList(out ProtoCore.AST.ImperativeAST.ImperativeNode node) {
 		Expect(10);
 		var exprlist = new ProtoCore.AST.ImperativeAST.ExprListNode();
@@ -3864,6 +3844,33 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 		NodeUtils.SetNodeEndLocation(exprlist, t);
 		node = exprlist;
 		
+	}
+
+	void Imperative_DictionaryExpression(out ProtoCore.AST.ImperativeAST.ImperativeNode node) {
+		Expect(46);
+		var dictBuilder = new ProtoCore.AST.ImperativeAST.DictionaryExpressionBuilder(); 
+		dictBuilder.SetNodeStartLocation(t); 
+		if (la.kind == 4) {
+			Get();
+			var key = new ProtoCore.AST.ImperativeAST.StringNode {Value = t.val.Trim('"')}; 
+			dictBuilder.AddKey(key); 
+			Expect(48);
+			Imperative_expr(out node);
+			dictBuilder.AddValue(node); 
+			while (la.kind == 52) {
+				Get();
+				Expect(4);
+				var nextkey = new ProtoCore.AST.ImperativeAST.StringNode { Value = t.val.Trim('"') }; 
+				dictBuilder.AddKey(nextkey); 
+				Expect(48);
+				Imperative_expr(out node);
+				dictBuilder.SetNodeEndLocation(t); 
+				dictBuilder.AddValue(node); 
+			}
+		}
+		Expect(47);
+		dictBuilder.SetNodeEndLocation(t); 
+		node = dictBuilder.ToFunctionCall(); 
 	}
 
 

@@ -414,9 +414,9 @@ namespace DynamoCoreWpfTests
             var jsonText1 = File.ReadAllText(openPath);
             var jobject1 = JObject.Parse(jsonText1);
 
-            // We need to replace the camera with null so it will match the null camera produced by the 
+            // We need to replace the camera with default camera so it will match the deafult camera produced by the 
             // save without a real view below.
-            jobject1["View"]["Camera"] = null;
+            jobject1["View"]["Camera"] = JToken.FromObject(new CameraData());
             jsonText1 = jobject1.ToString();
             jobject1 = JObject.Parse(jsonText1);
           
@@ -902,6 +902,8 @@ namespace DynamoCoreWpfTests
         [Test]
         public void NewCustomNodeSaveAndLoadPt2()
         {
+            // This unit test is a follow-up of NewCustomNodeSaveAndLoadPt1 test to make sure the newly created
+            // custom node will be loaded once DynamoCore restarted
             var funcguid = GuidUtility.Create(GuidUtility.UrlNamespace, "NewCustomNodeSaveAndLoad");
             var functionnode = this.ViewModel.Model.CustomNodeManager.CreateCustomNodeInstance(funcguid,"testnode",true);
             Assert.IsTrue(functionnode.IsCustomFunction);

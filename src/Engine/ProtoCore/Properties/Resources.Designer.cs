@@ -19,7 +19,7 @@ namespace ProtoCore.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class Resources {
@@ -301,6 +301,15 @@ namespace ProtoCore.Properties {
         public static string dashdash_expected {
             get {
                 return ResourceManager.GetString("dashdash_expected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Curly braces are no longer used for list creation. Use square brackets instead, like [] or [1,2,3]..
+        /// </summary>
+        public static string DeprecatedListInitializationSyntax {
+            get {
+                return ResourceManager.GetString("DeprecatedListInitializationSyntax", resourceCulture);
             }
         }
         
@@ -1358,7 +1367,7 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Sequence node supports only ASCII characters.
+        ///   Looks up a localized string similar to Range and Sequence expressions support only ASCII characters.
         /// </summary>
         public static string kInvalidUnicodeArgumentInRangeExpression {
             get {
@@ -1439,7 +1448,7 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to One or more of the input types are not matching. Couldn&apos;t find a version of {0} that takes arguments of type {1}.
+        ///   Looks up a localized string similar to There is no version of {0} that accepts argument type(s) ({1})..
         /// </summary>
         public static string kMethodResolutionFailureWithTypes {
             get {
@@ -1948,6 +1957,15 @@ namespace ProtoCore.Properties {
         public static string NoConstructorForAttribute {
             get {
                 return ResourceManager.GetString("NoConstructorForAttribute", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} expects argument type(s) ({1}), but was called with ({2})..
+        /// </summary>
+        public static string NonOverloadMethodResolutionError {
+            get {
+                return ResourceManager.GetString("NonOverloadMethodResolutionError", resourceCulture);
             }
         }
         
