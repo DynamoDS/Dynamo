@@ -21,32 +21,7 @@ namespace ProtoTest.TD.MultiLangTests
             base.TearDown();
             fsr = null;
         }
-
-        [Test]
-        [Category("SmokeTest")]
-        public void T01_Update_Variable_Across_Language_Scope()
-        {
-            string code = @"
-a;b;c;d;
-[Associative]
-{
-    a = 0;
-	d = a + 1;
-    [Imperative]
-    {
-		b = 2 + a;
-		a = 1.5;
-		
-    }
-	c = 2;
-}";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("a", 1.5, 0);
-            thisTest.Verify("b", 2, 0);
-            thisTest.Verify("c", 2, 0);
-            thisTest.Verify("d", 2.5, 0);
-
-        }
+        
 
         [Test]
         [Category("SmokeTest")]
@@ -60,9 +35,9 @@ def foo ( a1 : double )
 }
 b = foo ( c ) ;
 c = a + 1;
-[Imperative]
+a = [Imperative]
 {
-    a = 2.5;
+    return 2.5;
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -83,9 +58,9 @@ def foo ( a1 : int )
 }
 b = foo ( c ) ;
 c = a + 1;
-[Imperative]
+a=[Imperative]
 {
-    a = 2.5;
+    return 2.5;
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -105,9 +80,9 @@ import(""FFITarget.dll"");
 t1 = 1;
 a1 = ClassFunctionality.ClassFunctionality(t1);
 b1 = a1.OverloadedAdd(t1);
-[Imperative]
+t1=[Imperative]
 {
-	t1 = 2;
+	return 2;
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -134,10 +109,11 @@ b = [ Imperative ]
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            Object[] v0 = new Object[] { 1, 2, 3 };
             Object[] v1 = new Object[] { 2, 3, 4 };
-            thisTest.Verify("a", v1, 0);
+            thisTest.Verify("a", v0, 0);
             thisTest.Verify("b", v1, 0);
-            thisTest.Verify("c", v1, 0);
+            thisTest.Verify("c", v0, 0);
         }
 
         [Test]
@@ -148,7 +124,7 @@ b = [ Imperative ]
             string code = @"
 a = 1..3;
 c = a;
-b = [ Imperative ]
+a = [ Imperative ]
 {
     count = 0;
 	for ( i in a )
@@ -174,18 +150,15 @@ d = [ Imperative ]
 	}
 	return = a;
 }
-e = b;
+e = c;
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.CyclicDependency);
-            /*
             Object[] v2 = new Object[] { 3, 4, 5 };
             Object[] v1 = new Object[] { 2, 3, 4 };
-            thisTest.Verify("a", v2, 0);
+            thisTest.Verify("a", v1, 0);
             thisTest.Verify("e", v1, 0);
-            thisTest.Verify("c", v2, 0);
+            thisTest.Verify("c", v1, 0);
             thisTest.Verify("d", v2, 0);
-            */
         }
 
         [Test]
@@ -209,14 +182,11 @@ e = c;
 f = d;
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.CyclicDependency);
 
-            /*
             thisTest.Verify("d", 3, 0);
-            thisTest.Verify("b", 3, 0);
+            thisTest.Verify("b", 1, 0);
             thisTest.Verify("e", 2, 0);
             thisTest.Verify("f", 3, 0);
-            */
         }
 
         [Test]
@@ -240,10 +210,11 @@ d = [ Imperative ]
 e = c;
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Object[] v1 = new Object[] { 10, 20, 3 };
+            Object[] v0 = new Object[] { 1, 2, 3 };
+            Object[] v1 = new Object[] { 1, 20, 3 };
             Object[] v2 = new Object[] { 10, 2, 3 };
             thisTest.Verify("d", v1, 0);
-            thisTest.Verify("b", v1, 0);
+            thisTest.Verify("b", v0, 0);
             thisTest.Verify("e", v2, 0);
         }
 
@@ -311,8 +282,8 @@ f = c + 1;";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
 
             // There is no cycle as 'a' is only modified to a different value once
-            thisTest.Verify("b", 12, 0);
-            thisTest.Verify("f", 16, 0);
+            thisTest.Verify("b", 9, 0);
+            thisTest.Verify("f", 13, 0);
         }
 
         [Test]
@@ -424,16 +395,16 @@ def foo ( b1 : ClassFunctionality )
 b1 = ClassFunctionality.ClassFunctionality( 1 );
 x = b1.IntVal;
 y = foo ( b1 );
-[Imperative]
+b1 = [Imperative]
 {
-	b1 = ClassFunctionality.ClassFunctionality( 2 );	
+	return ClassFunctionality.ClassFunctionality( 2 );	
 }
 b2 = ClassFunctionality.ClassFunctionality( 2 );
 x2 = b2.IntVal;
 y2 = foo ( b2 );
-[Imperative]
+b2 = [Imperative]
 {
-	b2 = null;
+	return null;
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -454,9 +425,9 @@ y2 = foo ( b2 );
 import(""FFITarget.dll"");
 b3 = ClassFunctionality.ClassFunctionality( 2 );
 x3 = b3.IntVal;
-[Imperative]
+b3 = [Imperative]
 {
-	b3 = [ ClassFunctionality.ClassFunctionality( 1 ), ClassFunctionality.ClassFunctionality( 2 ) ] ;
+	return [ ClassFunctionality.ClassFunctionality( 1 ), ClassFunctionality.ClassFunctionality( 2 ) ] ;
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -521,9 +492,9 @@ x = 1;
 y = foo (x );
 x = 2;
 x = 3;
-[Imperative]
+x = [Imperative]
 {
-    x = 4;
+    return 4;
 }
 z = x;
 ";
@@ -548,9 +519,9 @@ def foo ( a )
 }
 x = 1;
 y = foo (x );
-[Imperative]
+x = [Imperative]
 {
-    x = 2;
+    return 2;
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -662,7 +633,7 @@ c = 2;
 b = c * 2;
 x = b;
 d;
-[Imperative]
+i=[Imperative]
 {
     c = 1;
 	b = c + 1;
@@ -674,13 +645,19 @@ d;
 		c = 4;
 		z = 1;
 	}
+    return [b,c,d,y,z];
 }
+b = i[0];
+c = i[1];
+d = i[2];
+y = i[3];
+z = i[4];
 b = c + 3;
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("c", 4);
             thisTest.Verify("b", 7);
-            thisTest.Verify("x", null);
+            thisTest.Verify("x", 7);
             thisTest.Verify("d", 3);
 
         }
@@ -697,9 +674,9 @@ def foo ( a1 : double )
 }
 b = foo ( c ) ;
 c = a + 1;
-[Imperative]
+a = [Imperative]
 {
-    a = 2.5;
+    return 2.5;
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -719,9 +696,9 @@ def foo ( a1 : double[] )
 }
 b = foo ( c ) ;
 c = [ a, a ];
-[Imperative]
+a = [Imperative]
 {
-    a = 2.5;
+    return 2.5;
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -739,9 +716,9 @@ def foo ( a1 : double )
     return = a1 + 1;
 }
 b = foo ( a ) ;
-[Imperative]
+a = [Imperative]
 {
-   a = foo(2);
+   return foo(2);
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -760,7 +737,7 @@ def foo ( a : int)
 }
 y1 = [ 1, 2 ];
 y2 = foo ( y1);
-[Imperative]
+y1=[Imperative]
 { 
 	count = 0;
 	for ( i in y1)
@@ -768,6 +745,7 @@ y2 = foo ( y1);
 	    y1[count] = y1[count] + 1;	
         count = count + 1;		
 	}
+    return y1;
 }
 t1 = y2[0];
 t2 = y2[1];
@@ -787,10 +765,10 @@ c;
 {
     a = 0;
     d = a + 1;
-    [Imperative]
+    a = [Imperative]
     {
        b = 2 + a;
-       a = 1.5;
+       return 1.5;
               
     }
     c = a + 2; // fail : runtime assertion 
@@ -1040,12 +1018,11 @@ a;
 		b = true;
 		return = [ a , b ];
 	}
-e;
-[Imperative]
+e = [Imperative]
 {
 	c = 3;
 	d = 4;
-	e = foo( c , d );
+	return foo( c , d );
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             Object[] v = new Object[] { null, true };
@@ -1110,8 +1087,7 @@ x  = [0,0,0,0];
 count = 0;
 i = 0;
 sum  = 0;
-test = sum;
-[Imperative]
+imp = [Imperative]
 {
     for  ( i in x ) 
     {
@@ -1124,13 +1100,16 @@ test = sum;
         sum = x[j]+ sum;
         j = j + 1;
     }
+    return [x, sum];
 }
-y = x;";
+y = imp[0];
+test = imp[1];
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             Object[] v1 = new Object[] { 0, 1, 2, 3 };
 
             thisTest.Verify("test", 6);
-            thisTest.Verify("x", v1);
+            thisTest.Verify("y", v1);
         }
 
         [Test]
@@ -1195,12 +1174,8 @@ c = [Imperative]
 	return = b;
 }
 ";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            thisTest.RunAndVerifySemanticError(code, ProtoImperative.Properties.Resources.ImperativeSymbolsAreReadOnly);
 
-            //Assert.Fail("1466071 - Sprint 22 : rev 2396 : Update issue : when a property is updated in imperative scope, it does not update the outer associative scope variable ");
-
-            thisTest.Verify("x", 3);
-            thisTest.Verify("c", 1);
         }
 
         [Test]
@@ -1428,7 +1403,7 @@ t = 0..2;
             thisTest.VerifyRunScriptSource(code, error);
 
             thisTest.Verify("x", 0.0);
-            thisTest.Verify("c1", 1);
+            thisTest.Verify("c1", 3);
         }
 
         [Test]
@@ -1769,14 +1744,11 @@ a = ClassFunctionality.ClassFunctionality();
 b1 = a.IntVal;
 c = [Imperative]
 {
-a.IntVal = 4;
-return = a.IntVal;
+    a.IntVal = 4;
+    return = a.IntVal;
 } 
 ";
-            string errmsg = "";//1467385: Sprint 27 - rev 4219 - valid update testcase throws cyclic dependancy error ";
-            ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.Verify("c", 4);
-            thisTest.Verify("b1", 4);
+            thisTest.RunAndVerifySemanticError(code, ProtoImperative.Properties.Resources.ImperativeSymbolsAreReadOnly);
         }
 
         [Test]
@@ -1834,13 +1806,12 @@ i = 0;
         }
 
         [Test]
-        [Category("DSDefinedClass_Ported")]
+        [Category("DSDefinedClass_Ported"), Category("Failure")]
         [Category("SmokeTest")]
         public void T49_Defect_1461985_4()
         {
             String code =
  @"
-import(""FFITarget.dll"");
 totalLength = 0;
 i = 4;
 b = 0;
@@ -1851,7 +1822,7 @@ b = 0;
 		[Associative] // within that loop build an associative model
 		{
 			a = 0..i;
-			[Imperative] // within the associative model start some imperative scripting
+			a = [Imperative] // within the associative model start some imperative scripting
 			{
 				for (j in a) 
 				{
@@ -1860,12 +1831,14 @@ b = 0;
 						a[j] = 0;
 					}
 				}
+                return a;
 			}		
 			b = a + 1;
 			totalLength  = totalLength +1;
 		}
 		i = i + 1; 
 	}
+    return [b, i, totalLength];
 }
 ";
             //Assert.Fail("Suspected of crashing NUnit");
@@ -2152,7 +2125,7 @@ c = a + 1;
             string code = @"
 import(""FFITarget.dll"");
 i = 0;
-[Imperative]
+i=[Imperative]
 {
     while (i < 2)
     {
@@ -2174,6 +2147,7 @@ i = 0;
         }
 		i = i + 1;
     }
+    return i;
 }";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
 
@@ -2191,7 +2165,7 @@ import(""FFITarget.dll"");
 x = [ 1, 2 ];
 y1 =ClassFunctionality.ClassFunctionality(x);
 y2 = [ y1[0].IntVal, y1[1].IntVal ];
-[Imperative]
+x=[Imperative]
 {
     count = 0;
     for ( i in 0..1)
@@ -2199,6 +2173,7 @@ y2 = [ y1[0].IntVal, y1[1].IntVal ];
         x[count] = x[count] + 1;
         count = count + 1;
     }
+    return x;
 }
 ";
             string errmsg = "";
@@ -2225,9 +2200,7 @@ y2 = [ y1[0].IntVal, y1[1].IntVal ];
     }
 }
 ";
-            string errmsg = "";
-            ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.Verify("y2", new Object[] { 1, 2 });
+           thisTest.RunAndVerifySemanticError(code, ProtoImperative.Properties.Resources.ImperativeSymbolsAreReadOnly);
         }
 
         [Test]
@@ -2416,11 +2389,11 @@ a = 33;
 import(""FFITarget.dll"");
 c = 0;
 x = c > 5 ? 1 : 2;
-[Imperative]{ c = 10; }
+c = [Imperative]{ return 10; }
 a = DummyPoint.ByCoordinates(10, 20, 30);
 b = a;
 c = Print(b);
-[Imperative]{ a = [ 1, 2, 3, 4, [ 5, [ 6, [ 7, [ 8.9 ] ] ] ] ]; }
+a=[Imperative]{ return [ 1, 2, 3, 4, [ 5, [ 6, [ 7, [ 8.9 ] ] ] ] ]; }
 ";
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -2529,19 +2502,20 @@ a = 3;
         public void T63_NoInfiniteLoop()
         {
             String code = @"
-b;
-[Imperative]
+b = [Imperative]
 {
     a = 1;
+    b = null;
     [Associative]
     {
         b = a;
-        [Imperative]
+        a = [Imperative]
         {
             c = a;
-            a = [2];
+            return [2];
         }
     }
+    return b;
 }
 ";
             string errmsg = "1467501- Infinite loop for this script";
@@ -2554,19 +2528,20 @@ b;
         public void T63_NoInfiniteLoop_1467501()
         {
             String code = @"
-b;
-[Imperative]
+b = [Imperative]
 {
     a = 1;
+    b = null;
     [Associative]
     {
         b = a;
-        [Imperative]
+        a = [Imperative]
         {
             c = a;
-            a = [2];
+            return [2];
         }
     }
+    return b;
 }
 ";
             string errmsg = "1467501- Infinite loop for this script";
@@ -2575,23 +2550,25 @@ b;
         }
 
         [Test]
-        [Category("SmokeTest")]
+        [Category("SmokeTest"), Category("Failure")]
         public void T63_NoInfiniteLoop_1467501_2()
         {
             String code = @"
-[Imperative]
+b = [Imperative]
 {
     a = 1;
+    b = null;
     [Associative]
     {
         b = a;
-        [Imperative]
+        a = [Imperative]
         {
             c = a;
             d = b;
-            a = [ 2 ];
+            return [ 2 ];
         }
     }
+    return b;
 }
 ";
             string errmsg = "1467501- Infinite loop for this script";
@@ -2661,12 +2638,13 @@ def XPlusY(NextPoint : DummyPoint)
     temp = x + y;
     return = temp;
 }
-pt1;
-pt2;
-[Imperative]
+pt1 = i[0];
+pt2 = i[1];
+i = [Imperative]
 {
     pt1 = DummyPoint.ByCoordinates(0,0,0);
     pt2 = XPlusY(pt1);
+    return [pt1, pt2];
 }
 ";
             string errmsg = "";
@@ -2703,17 +2681,18 @@ pt3 = XPlusY(pt2);
         public void T66_1467512_RighthandsideUpdate_imperative()
         {
             String code = @"
-            a = 1 ;
-                b;
-                [Imperative]
+                a = 1 ;
+                b=[Imperative]
                 {
-                   c = 3;
-                   i = 0;
+                    b = null;
+                    c = 3;
+                    i = 0;
                     c = [ 1, 2, 3 ];
                     for(i in c)
                     {
                         b = a;
                     }
+                    return b;
                 }
                 a = 2;
 ";
@@ -2728,19 +2707,18 @@ pt3 = XPlusY(pt2);
         public void T66_1467512_RighthandsideUpdate_imperative_2()
         {
             String code = @"
-            a = 1 ;
-                b;
-                [Imperative]
+                a = 1 ;
+                b=[Imperative]
                 {
                    c = 3;
                    i = 0;
-    
+                   b = null;
                    while(i < c)
                     {
                         b = a;
                         i = i + 1;
                     }
-                  
+                  return b;
                 }
                 a = 2;
                 ";
@@ -2755,9 +2733,9 @@ pt3 = XPlusY(pt2);
         {
             String code = @"
             a = 1 ;
-            b;
-            [Imperative]
+            b=[Imperative]
             {
+                b = null;
                c = 3;
                i = 0;
                 if (d)
@@ -2768,6 +2746,7 @@ pt3 = XPlusY(pt2);
                 {
                     b = a;
                 }
+                return b;
             }
             a = 2;
                 ";
@@ -2782,9 +2761,9 @@ pt3 = XPlusY(pt2);
         {
             String code = @"
             a = 1 ;
-            b;
-            [Imperative]
+            b=[Imperative]
             {
+                b = null;
                c = 3;
                i = 0;
                 d=1;
@@ -2796,6 +2775,7 @@ pt3 = XPlusY(pt2);
                 {
                     b = a;
                 }
+                return b;
             }
             a = 2;
                 ";
@@ -2810,11 +2790,11 @@ pt3 = XPlusY(pt2);
         {
             String code = @"
            a = 1 ;
-            b;
-            [Imperative]
+            b=[Imperative]
             {
                c = 3;
                i = 0;
+                b= null;
                 e;
                 if (d)
                 {
@@ -2828,6 +2808,7 @@ pt3 = XPlusY(pt2);
                 {
                     b = a;
                 }
+                return b;
             }
             a = 2;
                 ";
@@ -2863,15 +2844,15 @@ pt3 = XPlusY(pt2);
             String code = @"
  a=1;
  d=100;
- [Imperative]
+ d =[Imperative]
  {
-    d = a;
+    return a;
    
  }
  [Associative]
-    {
-        a = 5;
-    }
+{
+    a = 5;
+}
 ";
             string errmsg = "1467520 [Regression] Cross language update is not correct if a variable used in imperative is modified in associative";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -3127,8 +3108,7 @@ a = 10;
         {
             String code = @"
 a = 1;
-b;
-[Imperative]
+b=[Imperative]
 {
     b = a;
     [Associative]
@@ -3136,6 +3116,7 @@ b;
            a = 2;
         // expect b = 2, but b = 1
     }
+    return b;
 }
 ";
             string errmsg = "1467532 - a variable used inside an inner associative within an imperative does not trigger update";
@@ -3232,19 +3213,20 @@ b;
         {
             String code = @"
 a = 1;
-b;
-[Imperative]
+b=[Imperative]
 {
+    b= null;
     [Associative]
     {
            b = a;
     }
+    return b;
 }
 [Associative]
 {
-    [Imperative]
+    a = [Imperative]
     {
-        a = 2;
+        return 2;
     }
 }
 ";
@@ -3366,14 +3348,15 @@ a = 10;
         public void T74_TestUpdate_1467531_3()
         {
             String code = @"
-a;b;
-[Imperative]
+a=i[0];b=i[1];
+i = [Imperative]
 {
-a = 1;
-b = 2;
+    a = 1;
+    b = 2;
     b = b + a;
     a = 10;
     //expected 13 , received - 12
+    return [a, b];
 }
 ";
             string errmsg = "1467531 - final result is wrong when self referencing the object";
@@ -3389,10 +3372,9 @@ b = 2;
             String code = @"
 a = 1;
 b = 2;
-[Imperative]
+b = [Imperative]
 {
-    b = b + a;
-  
+    return b + a;
     //expected 13 , received - 12
 }
   a = 10;
@@ -3410,9 +3392,9 @@ b = 2;
             String code = @"
 a = 1;
 b = 2;
-[Imperative]
+ b =[Imperative]
 {
-    b = b + a;
+   return b + a;
   
     //expected 13 , received - 12
 }
@@ -3442,10 +3424,11 @@ def f(p : DummyPoint)
 p1 = DummyPoint.ByCoordinates(1,1,1);
 p2 = DummyPoint.ByCoordinates(2,2,2);
 j = 0;
-i = [Imperative]
+j = [Imperative]
 {
     j = j + 1;
-    return = p1.f(p2);
+    f(p2);
+    return j;
 }
 p2 = DummyPoint.ByCoordinates(3,3,3);
 ";
@@ -3462,9 +3445,9 @@ p2 = DummyPoint.ByCoordinates(3,3,3);
             a = 1;
             b;
             d;
-            [Imperative]
+            b = [Imperative]
             {
-               b = a;
+               return a;
             }
             [Associative]
             {
@@ -3541,7 +3524,7 @@ d;
 a = 1;
 b;
 z;
-[Imperative]
+i=[Imperative]
 {
  
     [Associative]
@@ -3549,16 +3532,19 @@ z;
         b = a;
     }
  
-        if (d)
+    if (d)
     {
         z = 1;
     }
+    return [b,z];
 }
+b = i[0];
+z = i[1];
 [Associative]
 {
     a = 2;
 }
-    d = a;
+d = a;
 ";
             string errmsg = "1467520 -Cross language update is not correct if a variable used in imperative is modified in associative ";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -3644,26 +3630,27 @@ d;
 a = 1;
 b;
 d;
-[Imperative]
+b = [Imperative]
 {
     for(c in 0..2)
     {
         if (d)
         {
-    [Associative]
-    {
-        b = a;
-    }
+            [Associative]
+            {
+                b = a;
+            }
         }
     }
+    return b;
 }
 [Associative]
 {
     a = 2;
 }
-[Imperative]
+d = [Imperative]
 {
-    d = 1;
+    return 1;
 }
 ";
             string errmsg = "1467520 -Cross language update is not correct if a variable used in imperative is modified in associative ";
@@ -3706,9 +3693,9 @@ a = 2;
 a = 1;
 b;
 d;
-[Imperative]
+b =[Imperative]
 {
-    b = a;
+     return a;
 }
 [Associative]
 {
@@ -3730,9 +3717,9 @@ a = 2;
 a = 1;
 b;
 d;
-[Imperative]
+b = [Imperative]
 {
-    b = a;
+    return a;
 }
 [Associative]
 {
@@ -3759,9 +3746,9 @@ import(""FFITarget.dll"");
 a1 = ClassFunctionality.ClassFunctionality();
 x1 = 3;
 y = a1.SetAndReturn( x1 ); 
-[Imperative]
+x1 = [Imperative]
 {
-    x1 = 4;
+    return 4;
 }
 ";
             string errmsg = "";
@@ -3779,12 +3766,15 @@ import(""FFITarget.dll"");
 x1 = 3;
 y = 0;
 test = 0;
-[Imperative]
+i = [Imperative]
 {
     a1 = ClassFunctionality.ClassFunctionality();    
     y = a1.SetAndReturn( x1 ); 
     test = a1.IntVal;
+    return [y, test];
 }
+y = i[0];
+test = i[1];
 x1 = 4;
 ";
             string errmsg = "";
@@ -3852,7 +3842,7 @@ x1 = 4;
 import(""FFITarget.dll"");
 x1 = 3;
 y = 0;
-[Imperative]
+y = [Imperative]
 {
     a1 = ClassFunctionality.ClassFunctionality();
     if( x1 == 3)
@@ -3863,6 +3853,7 @@ y = 0;
     {
         y = a1.SetAndReturn(x1+1);
     }
+    return y;
 }
 x1 = 4;
 ";
@@ -3880,13 +3871,14 @@ x1 = 4;
 import(""FFITarget.dll"");
 x1 = 3;
 y = 0;
-[Imperative]
+y = [Imperative]
 {
     a1 = ClassFunctionality.ClassFunctionality();
     for(i in 0..1)
     {
         y = y + a1.SetAndReturn(x1);
     }
+    return y;
 }
 x1 = 4;
 ";
@@ -3905,7 +3897,7 @@ import(""FFITarget.dll"");
 y = 0;
 x1 = 3;
 y = 0;
-[Imperative]
+y = [Imperative]
 {
     a1 = ClassFunctionality.ClassFunctionality();
     i = 1;
@@ -3914,6 +3906,7 @@ y = 0;
         y = y + a1.SetAndReturn(x1);
         i = i+1;
     }
+    return y;
 }
 x1 = 4;
 ";
@@ -3965,17 +3958,18 @@ x1 = 4;
         {
             String code = @"
  
-         a; x; b;
-[Associative]
+    a; x; b;
+    [Associative]
   	{
       	a = 1;
-      	[Imperative]
+      	b = [Imperative]
       	{
 			b = 10;
 			[Associative]
 			{
           		x = a;
 			}
+            return b;
       	}	
       	a = 10;
 	}
@@ -3989,15 +3983,15 @@ x1 = 4;
 
         [Test]
         [Category("SmokeTest")]
-        public void T89_1467414_cyclic()
+        public void T89_1467414()
         {
             String code = @"
  
-         a; x;
+            a; x;
             a = 1;
             b = a + 1;
             d;
-            [Imperative]
+            i = [Imperative]
             {
                 a = 2;
                 c = b + 1;
@@ -4011,12 +4005,13 @@ x1 = 4;
                 }
                 b = a + 4;
                 a = 3;	
+				return [a, b, d];
             }
-            f = a + b;
+            f = i[0] + i[1] + i[2];
 ";
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.CyclicDependency);
+            thisTest.Verify("f", 13.5);
         }
 
         [Test]
@@ -4159,14 +4154,14 @@ e1 = d1(b1);
         {
             return = a < 100? foo: bar;
         }
-z;
 a;
-        [Imperative]
+        z = [Imperative]
         {
             a = 10;
             t = ding(a);
             z = t();
             a = 200;
+            return z;
         }
 ";
             string errmsg = "";

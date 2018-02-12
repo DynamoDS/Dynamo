@@ -122,7 +122,7 @@ v1;
 __GC();
 v2 = DisposeCounter.x; // 2";
             ExecutionMirror mirror = thisTest.RunScriptSource(code, "", testCasePath);
-            thisTest.Verify("v1", 1);
+            thisTest.Verify("v1", null);
             thisTest.Verify("v2", 2);
         }
 

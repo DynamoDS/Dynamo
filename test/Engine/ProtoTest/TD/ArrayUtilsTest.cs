@@ -43,7 +43,8 @@ import(""FFITarget.dll"");
 ";
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             ProtoCore.RuntimeCore runtimeCore = null;
-            runtimeCore = fsr.Execute(code, core); ExecutionMirror mirror = runtimeCore.Mirror;
+            runtimeCore = fsr.Execute(code, core);
+            ExecutionMirror mirror = runtimeCore.Mirror;
             StackValue svA = mirror.GetRawFirstValue("a");
             StackValue svB = mirror.GetRawFirstValue("b");
             Assert.IsTrue(svA.metaData.type != svB.metaData.type);
@@ -90,107 +91,6 @@ import(""FFITarget.dll"");
             StackValue svA = mirror.GetRawFirstValue("b");
             StackValue svB = mirror.GetRawFirstValue("c");
             Assert.IsTrue(svA.metaData.type != svB.metaData.type);
-        }
-
-        [Test]
-        public void TestArrayLayerStatsSimple()
-        {
-            String code =
-@"
-a;b;c;
-[Imperative]
-{
-	a = [1,2,3];
-    b = [1.0, 2.0, 3.0, 3.0];
-    c = [1.0, 2.0, 9];
-}
-";
-            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
-            ProtoCore.RuntimeCore runtimeCore = null;
-            runtimeCore = fsr.Execute(code, core); ExecutionMirror mirror = runtimeCore.Mirror;
-            StackValue svA = mirror.GetRawFirstValue("a");
-            var dict = ProtoCore.Utils.ArrayUtils.GetTypeStatisticsForLayer(svA, runtimeCore);
-            Assert.IsTrue(dict[dict.Keys.First()] == 3);
-            StackValue svB = mirror.GetRawFirstValue("b");
-            var dict2 = ProtoCore.Utils.ArrayUtils.GetTypeStatisticsForLayer(svB, runtimeCore);
-            Assert.IsTrue(dict2[dict2.Keys.First()] == 4);
-            StackValue svC = mirror.GetRawFirstValue("c");
-            var dict3 = ProtoCore.Utils.ArrayUtils.GetTypeStatisticsForLayer(svC, runtimeCore);
-            Assert.IsTrue(dict3[dict3.Keys.First()] == 2);
-            Assert.IsTrue(dict3[dict3.Keys.Last()] == 1);
-
-            // Assert.IsTrue((Int64)o.Payload == 5);
-        }
-
-        [Test]
-        public void TestArrayRankSimple()
-        {
-            String code =
-@"a;b;c;d;e;
-[Imperative]
-{
-	a = [1,2,3];
-    b = [1.0, 2.0, 3.0, 3.0];
-    c = [1.0, 2.0, 9];
-    d = [[1], [1], [1]];
-    e = [[1, 2, 3], [1, 2, 3], [1, 2, 3]];
-}
-";
-            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
-            ProtoCore.RuntimeCore runtimeCore = null;
-            runtimeCore = fsr.Execute(code, core); ExecutionMirror mirror = runtimeCore.Mirror;
-            StackValue svA = mirror.GetRawFirstValue("a");
-            StackValue svB = mirror.GetRawFirstValue("b");
-            StackValue svC = mirror.GetRawFirstValue("c");
-            StackValue svD = mirror.GetRawFirstValue("d");
-            StackValue svE = mirror.GetRawFirstValue("e");
-            var a = ProtoCore.Utils.ArrayUtils.GetMaxRankForArray(svA, runtimeCore);
-            Assert.IsTrue(a == 1);
-            var b = ProtoCore.Utils.ArrayUtils.GetMaxRankForArray(svB, runtimeCore);
-            Assert.IsTrue(b == 1);
-            var c = ProtoCore.Utils.ArrayUtils.GetMaxRankForArray(svC, runtimeCore);
-            Assert.IsTrue(c == 1);
-            var d = ProtoCore.Utils.ArrayUtils.GetMaxRankForArray(svD, runtimeCore);
-            Assert.IsTrue(d == 2);
-            var e = ProtoCore.Utils.ArrayUtils.GetMaxRankForArray(svE, runtimeCore);
-            Assert.IsTrue(e == 2);
-            // Assert.IsTrue((Int64)o.Payload == 5);
-        }
-
-        [Test]
-        public void TestArrayRankJagged()
-        {
-            String code =
-@"
-a;b;c;d;e;
-[Imperative]
-{
-	a = [1,[2],3];
-    b = [1.0, [2.0, 3.0, 3.0]];
-    c = [1.0, [2.0, [9]]];
-    d = [[1], [], [1]];
-    e = [[1, 2, 3], [1, [2], 3], [[[1]], 2, 3]];
-}
-";
-            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
-            ProtoCore.RuntimeCore runtimeCore = null;
-            runtimeCore = fsr.Execute(code, core); ExecutionMirror mirror = runtimeCore.Mirror;
-            StackValue svA = mirror.GetRawFirstValue("a");
-            StackValue svB = mirror.GetRawFirstValue("b");
-            StackValue svC = mirror.GetRawFirstValue("c");
-            StackValue svD = mirror.GetRawFirstValue("d");
-            StackValue svE = mirror.GetRawFirstValue("e");
-            var a = ProtoCore.Utils.ArrayUtils.GetMaxRankForArray(svA, runtimeCore);
-            Assert.IsTrue(a == 2);
-            var b = ProtoCore.Utils.ArrayUtils.GetMaxRankForArray(svB, runtimeCore);
-            Assert.IsTrue(b == 2);
-            var c = ProtoCore.Utils.ArrayUtils.GetMaxRankForArray(svC, runtimeCore);
-            Assert.IsTrue(c == 3);
-            var d = ProtoCore.Utils.ArrayUtils.GetMaxRankForArray(svD, runtimeCore);
-            Assert.IsTrue(d == 2);
-            var e = ProtoCore.Utils.ArrayUtils.GetMaxRankForArray(svE, runtimeCore);
-            Assert.IsTrue(e == 4);
-            // Assert.IsTrue((Int64)o.Payload == 5);
         }
 
         [Test]
@@ -467,13 +367,17 @@ rBH = [b,h];
         public void IsArrayTest()
         {
             String code =
-@"a;b;c;
-[Imperative]
+@"
+i=[Imperative]
 {
 	a = [1,2,3];
     b = 1;
     c = a;
+    return [a,b,c];
 }
+a=i[0];
+b=i[1];
+c=i[2];
 ";
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             ProtoCore.RuntimeCore runtimeCore = null;
@@ -481,9 +385,11 @@ rBH = [b,h];
             StackValue svA = mirror.GetRawFirstValue("a");
             StackValue svB = mirror.GetRawFirstValue("b");
             StackValue svC = mirror.GetRawFirstValue("c");
-            Assert.IsTrue(svA.IsArray);
+            StackValue svI = mirror.GetRawFirstValue("i");
+            Assert.IsTrue(!svA.IsArray);
             Assert.IsTrue(!svB.IsArray);
-            Assert.IsTrue(svC.IsArray);
+            Assert.IsTrue(!svC.IsArray);
+            Assert.IsTrue(svI.IsArray);
         }
 
         [Test]

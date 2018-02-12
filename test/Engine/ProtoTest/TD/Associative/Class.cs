@@ -356,17 +356,16 @@ def foo ( a : int[] )
 }
 a1;
 b1;
-[Imperative]
+i=[Imperative]
 {
     a1 = foo( [ 0, 1 ] );
     b1 = foo( [ 1, 2 ] );
-	
+	return [a1,b1];
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             //Verification           
-            thisTest.Verify("a1", 0);
-            thisTest.Verify("b1", 2);
+            thisTest.Verify("i", new[] {0, 2});
         }
 
         [Test]

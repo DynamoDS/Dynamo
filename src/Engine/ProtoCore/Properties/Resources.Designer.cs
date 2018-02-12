@@ -1367,7 +1367,7 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Sequence node supports only ASCII characters.
+        ///   Looks up a localized string similar to Range and Sequence expressions support only ASCII characters.
         /// </summary>
         public static string kInvalidUnicodeArgumentInRangeExpression {
             get {

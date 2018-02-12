@@ -48,15 +48,14 @@ def foo : int( a:int )
         public void T02_Function_In_Imp_Scope()
         {
             string code = @"
-a;
     def foo : double( a:double, b : int )
     {
 	   return = a * b;
 	}
-[Imperative]
+a=[Imperative]
 {
 	
-    a = foo( 2.5, 2 );
+    return foo( 2.5, 2 );
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("a",5.0);
@@ -67,12 +66,11 @@ a;
         public void T03_Function_In_Nested_Scope()
         {
             string code = @"
-a;b;
     def foo : double( a:double, b : int )
     {
 	   return = a * b;
 	}
-[Imperative]
+i=[Imperative]
 {
 	a = 3;
 	[Associative]
@@ -85,10 +83,10 @@ a;b;
 		a = foo( 2.5, 1 );
 		return = a;
 	}
+    return [a,b];
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("a",2.5);
-            thisTest.Verify("b",2.5);
+            thisTest.Verify("i", new[] { 2.5, 2.5 });
         }
 
         [Test]
@@ -96,104 +94,38 @@ a;b;
         public void T04_Function_In_Nested_Scope()
         {
             string code = @"
-a;b;
+a=x[0];b=x[1];
 def foo : int( a:int, b : int )
 {
    return = a * b;
 }
-[Associative]
+x=[Associative]
 {
-	a = 3.5;
-	[Imperative]
+	i = [Imperative]
 	{
-		a = foo( 2, 1 );
+		return foo( 2, 1 );
 	}
-	b = 
-	[Imperative]
+	j = [Imperative]
 	{
-		a = foo( 2, 1 );
-		return = a;
+		return foo( 2, 1 );
 	}
+    return [i, j];
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("a", 2);
             thisTest.Verify("b", 2);
-        }
-
-        [Test]
-        [Category("SmokeTest")]
-        public void T05_Function_outside_Any_Block()
-        {
-            string code = @"
-def foo : int( a:int, b : int )
-{
-    return = a * b;
-}
-a = 3.5;
-b = 3.5;
-[Associative]
-{
-	a = 3.5;
-	[Imperative]
-	{
-		a = foo( 2, 1 );
-	}
-	b = 
-	[Imperative]
-	{
-		a = foo( 2, 1 );
-		return = a;
-	}
-}";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("a", 2);
-            thisTest.Verify("b", 2);
-        }
-
-        [Test]
-        [Category("Smoke Test")]
-        public void T06_Function_Imp_Inside_Assoc()
-        {
-            string code = @"
-a;b;
-def foo : int( a:int, b : int )
-{
-    return = a * b;
-}
-[Associative]
-{
-	a = 3.5;
-	b = 3.5;
-
-	[Imperative]
-	{
-		a = foo( 2, 1 );
-	}
-	b = 
-	[Imperative]
-	{
-		c = foo( 2, 1 );
-		return = c;
-	}
-}
-";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-
-            thisTest.Verify("a", 2);
-            thisTest.Verify("b", 2);
-
         }
 
         [Test]
         [Category("SmokeTest")]
         public void T07_Function_Assoc_Inside_Imp()
         {
-            string src = @"a;b;
+            string src = @"a=i[0];b=i[1];
 	def foo : int( a:int, b : int )
 	{
 		return = a * b;
 	}
-[Imperative]
+i = [Imperative]
 {
 	a = 3.5;
 	b = 3.5;
@@ -201,12 +133,12 @@ def foo : int( a:int, b : int )
 	{
 		a = foo( 2, 1 );
 	}
-	b = 
-	[Associative]
+	b = [Associative]
 	{
 		c = foo( 2, 1 );
 		return = c;
 	}
+    return [a,b];
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
 
@@ -243,7 +175,7 @@ a;b;
         public void T13_Function_From_Inside_Function()
         {
             string code = @"
-a;b;
+a=i[0];b=i[1];
 def add_1 : double( a:double )
 {
 	return = a + 1;
@@ -252,11 +184,11 @@ def add_2 : double( a:double )
 {
     return = add_1( a ) + 1;
 }
-[Imperative]
+i = [Imperative]
 {
 	a = 1.5;
 	b = add_2 (a );
-	
+	return [a,b];
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("a",1.5);
@@ -268,10 +200,11 @@ def add_2 : double( a:double )
         public void T18_Function_Recursive_associative()
         {
             string code = @"
-a;b;
-	def factorial : int( n : int )
-	{
-    return = [Imperative]{
+a=i[0];b=i[1];
+def factorial : int( n : int )
+{
+    return = [Imperative]
+    {
 		if ( n > 1 ) 
 		{
 		    return = n * factorial ( n - 1 );
@@ -280,12 +213,13 @@ a;b;
 		{
 		    return = 1;
 		}		
+    }
 }
-	}
-[Imperative]
+i = [Imperative]
 {
 	a = 3;
 	b = factorial (a );
+    return [a,b];
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("a", 3);
@@ -297,16 +231,15 @@ a;b;
         public void T17_Function_From_Parallel_Blocks()
         {
             string code = @"
-a;b;
 def foo : int( n : int )
 {
     return = n * n;	
 }
-[Associative]
+b = [Associative]
 {
 	a = 3;
-	b = foo (a );
-}";
+	return foo (a);
+};";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("b", 9);
         }
@@ -316,13 +249,13 @@ def foo : int( n : int )
         public void T19_Function_From_Imperative_While_And_For_Loops()
         {
             string code = @"
-x;y;
-	def foo : int( n : int )
-	{
-		return = n * n;	
-	}
+x=i[0];y=i[1];
+def foo : int( n : int )
+{
+	return = n * n;	
+}
 	
-[Imperative]
+i = [Imperative]
 {
 
 	a = [ 0, 1, 2, 3, 4, 5 ];
@@ -339,7 +272,7 @@ x;y;
 	    y = y + foo ( a[j] );
 		j = j + 1;
 	}
-	
+	return [x, y];
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -353,14 +286,16 @@ x;y;
         public void T20_Function_From_Imperative_If_Block()
         {
             string code = @"
-x;y;z;
+x = a[0];
+y = a[1];
+z = a[2];
 def foo : int( n : int )
 {
     return = n * n;	
 }
-[Associative]
+a = [Associative]
 {
-	[Imperative]
+	return [Imperative]
 	{
 	
 		a = [ 0, 1, 2, 3, 4, 5 ];
@@ -406,6 +341,7 @@ def foo : int( n : int )
 		{
 		    z = foo (5);
 		}
+        return [x, y, z];
 	}
 	
 }
@@ -421,12 +357,12 @@ def foo : int( n : int )
         public void T21_Function_From_Nested_Imperative_Loops()
         {
             string code = @"
-x;y;
+x=i[0];y=i[1];
 	def foo : int( n : int )
 	{
 		return = n ;	
 	}
-[Imperative]
+i = [Imperative]
 {
 	
 	a = [ 0, 1, 2, 3, 4, 5 ];
@@ -459,7 +395,7 @@ x;y;
 		    x = x + foo (x );
 		}
 	}
-	
+	return [x,y];
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -568,23 +504,13 @@ def foo_2 : double ( a : double , b :double )
         public void T25_Function_Call_In_Mathematical_And_Logical_Expr()
         {
             string code = @"
-a1;a2;a3;a4;
-def foo : double ( a : double , b :double )
-{
-    return = a + b ;	
-}
-	
-[Associative]
-{
-	a1 = 1 + foo(2,3);
-	a2 = 2.0 / foo(2,3);
-	a3 = 1 && foo(2,2);	
-}
+a1=i[0];a2=i[1];a3=i[2];a4=i[3];
+
 def foo_2 : double( a : double , b :double )
 {
     return = a + b ;	
 }
-[Imperative]
+i = [Imperative]
 {
 	a1 = 1 + foo_2(2,3);
 	a2 = 2.0 / foo_2(2,3);
@@ -595,7 +521,7 @@ def foo_2 : double( a : double , b :double )
 	{
 	    a4 = 1;
 	}
-	
+	return [a1, a2, a3, a4];
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -611,12 +537,12 @@ def foo_2 : double( a : double , b :double )
         public void T26_Function_Call_In_Mathematical_And_Logical_Expr()
         {
             string code = @"
-x;a4;
+x=i[0];a4=i[1];
 def foo_2 : double ( a : double , b :double )
 {
     return = a + b ;	
 }
-[Imperative]
+i = [Imperative]
 {
 	a4 = 0;
 	if( foo_2(1,2) < foo_2(1,0) )
@@ -642,7 +568,7 @@ def foo_2 : double ( a : double , b :double )
 		    x = x + 1;
 		}
 	}
-	
+	return [x,a4];
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -687,23 +613,23 @@ def foo : int (a : int)
         public void T29_Function_With_Different_Arguments()
         {
             string code = @"
-y;
 	 def foo : double ( a : int, b : double, c : bool, d : int[], e : double[][], f:int[]..[], g : bool[] )
 	 {
-    return = [Imperative]{
-	     x = -1;
-		 if ( c == true && g[0] == true)
-		 {
-		     x = x + a + b + d[0] + e[0][0];
-		 }
-		 else
-		 {
-		     x = 0;
-		 }
-         return  = x;
-    }   
+        return [Imperative]
+        {
+	         x = -1;
+		     if ( c == true && g[0] == true)
+		     {
+		         x = x + a + b + d[0] + e[0][0];
+		     }
+		     else
+		     {
+		         x = 0;
+		     }
+             return x;
+        }   
 	 }
-[Imperative]
+y = [Imperative]
 { 
 	 
 	 a = 1;
@@ -714,7 +640,7 @@ y;
 	 f = [ [0, 1], 2 ];
 	 g = [ true, false ];
 	 
-	 y = foo ( a, b, c, d, e, f, g );
+	 return foo ( a, b, c, d, e, f, g );
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -729,16 +655,15 @@ y;
             //Assert.Throws(typeof(ProtoCore.Exceptions.RuntimeException), () =>
             //{
             string code = @"
-b1;
 	 def foo1 : double ( a : double )
 	 {
 	    return = true;
 	 }
-[Imperative]
+b1 = [Imperative]
 { 
 	 dummyArg = 1.5;
 	
-	b1 = foo1 ( dummyArg );
+	return foo1 ( dummyArg );
 	
 }
 ";
@@ -752,18 +677,15 @@ b1;
         public void T31_Function_With_Mismatching_Return_Type()
         {
             string code = @"
-b2;
 	 def foo2 : double ( a : double )
 	 {
 	    return = 5;
 	 }
-[Imperative]
+b2 = [Imperative]
 { 
-	 
 	dummyArg = 1.5;
 	
-	b2 = foo2 ( dummyArg );
-	
+	return foo2 ( dummyArg );
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -777,18 +699,16 @@ b2;
             //Assert.Throws(typeof(ProtoCore.Exceptions.RuntimeException), () =>
             //{
             string code = @"
-b2;
-	 def foo3 : int ( a : double )
-	 {
-	    return = 5.5;
-	 }
+def foo3 : int ( a : double )
+{
+    return = 5.5;
+}
 	 
-[Imperative]
+b2 = [Imperative]
 { 
 	dummyArg = 1.5;
 	
-	b2 = foo3 ( dummyArg );
-	
+	return foo3 ( dummyArg );
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -803,11 +723,11 @@ b2;
         {
             string code = @"
 import(""FFITarget.dll"");
-	 def foo3 : int ( a : double )
-	 {
-	    temp = ClassFunctionality.ClassFunctionality(1);
-		return = temp;
-	 }
+def foo3 : int ( a : double )
+{
+    temp = ClassFunctionality.ClassFunctionality(1);
+    return = temp;
+}
 b2 = [Imperative]
 { 
 	dummyArg = 1.5;
@@ -827,8 +747,7 @@ b2 = [Imperative]
             //Assert.Throws(typeof(ProtoCore.Exceptions.RuntimeException), () =>
             //{
             string code = @"
-b1;
-[Associative]
+b1 = [Associative]
 { 
 	 def foo1 : double ( a : double )
 	 {
@@ -837,7 +756,7 @@ b1;
 	 
 	 dummyArg = 1.5;
 	
-	b1 = foo1 ( dummyArg );
+	return foo1 ( dummyArg );
 	
 }
 ";
@@ -851,18 +770,16 @@ b1;
         public void T35_Function_With_Mismatching_Return_Type()
         {
             string code = @"
-b2;
 	 def foo2 : double ( a : double )
 	 {
 	    return = 5;
 	 }
 	 
-[Associative]
+b2 = [Associative]
 { 
 	dummyArg = 1.5;
 	
-	b2 = foo2 ( dummyArg );
-	
+	return foo2 ( dummyArg );
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -876,17 +793,16 @@ b2;
             //Assert.Throws(typeof(ProtoCore.Exceptions.RuntimeException), () =>
             //{
             string code = @"
-b2;
 	 def foo3 : int ( a : double )
 	 {
 	    return = 5.5;
 	 }
 	 
-[Associative]
+b2 = [Associative]
 { 
 	dummyArg = 1.5;
 	
-	b2 = foo3 ( dummyArg );
+	return foo3 ( dummyArg );
 	
 }
 ";
@@ -932,17 +848,16 @@ b2 = [Associative]
             //{
             //Assert.Fail("1467156 - Sprint 25 - Rev 3026 type checking of return types at run time ");
             string code = @"
-b2;
 	 def foo3 : int[] ( a : double )
 	 {
 	    return = a;
 	 }
 	 
-[Associative]
+b2 = [Associative]
 { 
 	dummyArg = 1.5;
 	
-	b2 = foo3 ( dummyArg );	
+	return foo3 ( dummyArg );	
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -955,17 +870,16 @@ b2;
         {
             //Assert.Fail("1467156 - Sprint 25 - Rev 3026 type checking of return types at run time ");
             string code = @"
-b2;
 	 def foo3 : int ( a : double )
 	 {
 	    return = [1, 2];
 	 }
 	 
-[Associative]
+b2 = [Associative]
 { 
 	dummyArg = 1.5;
 	
-	b2 = foo3 ( dummyArg );	
+	return foo3 ( dummyArg );	
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -1019,17 +933,16 @@ b2;
         public void T42_Function_With_Mismatching_Return_Type()
         {
             string code = @"
-b2;
 	 def foo3 : bool[]..[] ( a : double )
 	 {
 	    return = [ [2], 3];
 	 }
 	 
-[Associative]
+b2 = [Associative]
 { 
 	dummyArg = 1.5;
 	
-	b2 = foo3 ( dummyArg );	
+	return foo3 ( dummyArg );	
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -1041,17 +954,16 @@ b2;
         public void T43_Function_With_Matching_Return_Type()
         {
             string code = @"
-b2;
 	 def foo3 : int[]..[] ( a : double )
 	 {
 	    return = [ [ 0, 2 ], [ 1 ] ];
 	 }
 	 
-[Associative]
+b2 = [Associative]
 { 
 	dummyArg = 1.5;
 	
-	b2 = foo3 ( dummyArg )[0][0];	
+	return foo3 ( dummyArg )[0][0];	
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -1063,14 +975,13 @@ b2;
         public void T44_Function_With_Null_Argument()
         {
             string code = @"
-b2;
-	 def foo : double ( a : double )
-	 {
-	    return = 1.5;
-     }
-[Imperative]
+def foo : double ( a : double )
+{
+    return = 1.5;
+}
+b2 = [Imperative]
 { 
-	 b2 = foo ( null );	
+	 return foo ( null );	
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -1082,15 +993,14 @@ b2;
         public void T45_Function_With_Mismatching_Argument_Type()
         {
             string code = @"
-b2;
 	 def foo : double ( a : double )
 	 {
 	    return = 1.5;
      }
 	
-[Associative]
+b2 = [Associative]
 { 
-	 b2 = foo ( 1 );	
+	 return foo ( 1 );	
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -1103,15 +1013,14 @@ b2;
         public void T46_Function_With_Mismatching_Argument_Type()
         {
             string code = @"
-c;
 	 def foo : double ( a : int )
 	 {
 	    return = 1.5;
      }
-[Imperative]
+c = [Imperative]
 { 
 	 b2 = foo ( 1.5);
-     c = 3;	 
+     return 3;	 
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -1123,16 +1032,15 @@ c;
         public void T47_Function_With_Mismatching_Argument_Type()
         {
             string code = @"
-c;
 	 def foo : double ( a : double )
 	 {
 	    return = 1.5;
      }
 	
-[Associative]
+c = [Associative]
 { 
 	 b2 = foo ( true);	
-	 c = 3;	
+	return 3;	
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -1168,16 +1076,15 @@ c = [Associative]
         public void T50_Function_With_Mismatching_Argument_Type()
         {
             string code = @"
-c;
 	 def foo : double ( a : int[] )
 	 {
 	    return = 1.5;
      }
-[Associative]
+c = [Associative]
 { 
 	 aa = [ ];
 	 b2 = foo ( aa );	
-	 c = 3;	
+	return 3;	
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -1189,16 +1096,15 @@ c;
         public void T51_Function_With_Mismatching_Argument_Type()
         {
             string code = @"
-c;
 	 def foo : double ( a : double[] )
 	 {
 	    return = 1.5;
      }
-[Associative]
+c = [Associative]
 { 
 	 aa = [1, 2 ];
 	 b2 = foo ( aa );	
-	 c = 3;	
+	 return 3;	
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -1210,16 +1116,15 @@ c;
         public void T52_Function_With_Mismatching_Argument_Type()
         {
             string code = @"
-c;
 	 def foo : double ( a : double[] )
 	 {
 	    return = 1.5;
      }
-[Associative]
+c = [Associative]
 { 
 	 aa = 1.5;
 	 b2 = foo ( aa );	
-	 c = 3;	
+	 return 3;	
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -1255,17 +1160,18 @@ aa;b2;c;
         public void T54_Function_Updating_Argument_Values()
         {
             string code = @"
-aa;b2;c;
+aa=i[0];b2=i[1];c=i[2];
 	 def foo : double ( a : double )
 	 {
 	    a = 4.5;
 		return = a;
      }  
-[Imperative]
+i = [Imperative]
 { 
 	 aa = 1.5;
 	 b2 = foo ( aa );	
 	 c = 3;	
+    return [aa, b2, c];
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -1280,17 +1186,18 @@ aa;b2;c;
         {
 
             string code = @"
-aa;b2;c;
+aa=i[0];b2=i[1];c=i[2];
 	 def foo : int ( a : double )
 	 {
 	    a = 5;
 		return = a;
      }
-[Imperative]
+i=[Imperative]
 { 
 	 aa = 5.0;
 	 b2 = foo ( aa );	
 	 c = 3;	
+return [aa, b2, c];
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -1316,6 +1223,7 @@ aa;bb;c;
 	 bb = foo ( aa );	
 	 
 	 c = 3;	
+    
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -1369,9 +1277,9 @@ c1;c2;
 		c1 = foo();	
      }
 	 
-	 [Imperative]
+	 c2 = [Imperative]
 	 { 
-		c2 = foo();	
+		return foo();	
      }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -1483,18 +1391,18 @@ x = [Imperative]
         public void T65_Function_With_No_Return_Type()
         {
             string code = @"
-a;b;
+a=i[0];b=i[1];
 	def foo (  )
 	{
 		return = true;			
 	}
 	
-[Imperative]
+i = [Imperative]
 {
 
 	a = foo();
 	b = 3;
-            
+     return [a, b];       
 }
 	 
 	 
@@ -1509,18 +1417,18 @@ a;b;
         public void T66_Function_Returning_Null()
         {
             string code = @"
-a;b;c;
+a=i[0];b=i[1];c=i[2];
 	def foo : int ( a : int )
 	{
 		c = d + a;
         return = c;		
 	}	
-[Imperative]
+i=[Imperative]
 {
 	a = 1;
 	b = foo(a);
 	c = b + 2;
-            
+    return [a, b, c];      
 }
 	 
 	 
@@ -1536,17 +1444,17 @@ a;b;c;
         public void T67_Function_Returning_Collection()
         {
             string code = @"
-a;b;
+a=i[0];b=i[1];
 	def foo : int[] ( a : int )
 	{
 		c = [ a + 1, a + 2.5 ];
         return = c;		
 	}
-[Imperative]
+i=[Imperative]
 {
 	a = 1;
 	b = foo(a);
-            
+    return [a,b];       
 }
 	 
 	 
@@ -1564,17 +1472,17 @@ a;b;
         public void T68_Function_Returning_Null()
         {
             string code = @"
-a;b;
+a=i[0];b=i[1];
 	def foo : int[] ( a : int )
 	{
 		c = [ a + 1, a + 2.5 ];
         return = null;		
 	}
-[Imperative]
+i=[Imperative]
 {
 	a = 1;
 	b = foo(a);
-            
+    return [a,b];      
 }
 	 
 	 
@@ -1699,16 +1607,16 @@ a;b;
         public void T74_Function_With_Simple_Replication_Imperative()
         {
             string code = @"
-x;y;
+x=i[0];y=i[1];
     def foo : int ( a : int )
 	{
 		return  = a + 1;
 	}
-[Imperative]
+i=[Imperative]
 {
 	x = [ 1, 2, 3 ];
 	y = foo(x);
-	
+	return [x, y];
 }	 
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -1723,17 +1631,19 @@ x;y;
         public void T74_Function_With_Simple_Replication_Associative()
         {
             string code = @"
-x;y;
+x=a[0];
+y=a[1];
 def foo : int ( a : int )
 {
     return  = a + 1;
 }
-	
-[Associative]
+
+a=[Associative]
 {
-	x = [ 1, 2, 3 ];
-	y = foo(x);
-}
+	i = [ 1, 2, 3 ];
+	j = foo(i);
+	return [i, j];
+};
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             object[] expectedResult1 = { 1, 2, 3 };
@@ -1858,7 +1768,7 @@ def foo : int ( a : int, b : int )
         public void T79_Function_call_By_Reference()
         {
             string code = @"
-c;d;
+c=i[0];d=i[1];
 def foo : int ( a : int, b : int )
 {
     return = [Imperative] {
@@ -1867,16 +1777,14 @@ def foo : int ( a : int, b : int )
     return  = a + b;
     }
 }
-[Imperative]
+i=[Imperative]
 {
 	a = 1;
 	b = 2;
 	c = foo (a, b );
 	d = a + b;
-	
+	return [c,d];
 }
-	 
-	 
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
 
@@ -1953,29 +1861,29 @@ def foo : int ( a : int )
         public void T82_Function_Calling_Assoc_From_Imp()
         {
             string code = @"
-b;
     def foo : int ( a : int )
 	{
-    return = [Imperative]{
-		d = 0;
-		if( a > 1 )
-	    {
-		     d = [Associative]
-			 {
-			     return = a + 1;
-			 }
-		}
-		else
-		{
-		    d = a + 2;
-		}
-		return  = a + d;
-    }
+        return = [Imperative]
+        {
+		    d = 0;
+		    if( a > 1 )
+	        {
+		         d = [Associative]
+			     {
+			         return = a + 1;
+			     }
+		    }
+		    else
+		    {
+		        d = a + 2;
+		    }
+		    return  = a + d;
+        }
 	}
-[Imperative]
+b = [Imperative]
 {
 	a = 2;
-	b = foo (a );	
+	return foo (a );	
 }
 	 
 	 
@@ -2030,14 +1938,14 @@ z = y.IntVal;";
             // Assert.Fail("1467080 - sprint23 : rev 2681 : method overload issue over functions with same name and signature in multiple language blocks");
 
             string code = @"
-a11;a21;a31;
+a11=i[0];a21=i[1];a31=i[2];
 a12;a22;a32;
 	def foo( a )
 	{
 		a = a + 1;
 		return = a;
 	}
-[Imperative]
+i=[Imperative]
 {
 	c = [ 1,2,3 ];
 	d = foo ( c ) ;
@@ -2045,6 +1953,7 @@ a12;a22;a32;
 	a11 = d[0];
 	a21 = d[1];
 	a31 = d[2];
+    return [a11, a21, a31];
 }
 [Associative]
 {
@@ -2075,17 +1984,18 @@ a12;a22;a32;
         public void T86_Function_With_For_Loop()
         {
             string code = @"
-a1;a2;a3;
-	def foo: int( a : int )
-	{
-    return = [Imperative]{
+a1=i[0];a2=i[1];a3=i[2];
+def foo: int( a : int )
+{
+    return = [Imperative]
+    {
 		for( i in a )		
 		{					
 		}		
 		return = a;	
     }
-	}	
-[Imperative]
+}	
+i=[Imperative]
 {	
 	d = [ 1,2,3 ];	
 	//c = foo( d );	
@@ -2098,6 +2008,7 @@ a1;a2;a3;
 	a1 = d[0];	
 	a2 = d[1];	
 	a3 = d[2];
+    return [a1, a2, a3];
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("a1", 2, 0);
@@ -2200,12 +2111,13 @@ def foo:double(x:int = 2, y:double = 5.0)
 a = foo();
 b = foo(1, 3.0);
 c = foo();
-d;e;f;
-[Imperative]
+d=i[0];e=i[1];f=i[2];
+i=[Imperative]
 {
 	d = foo();
 	e = foo(1, 3.0);
 	f = foo();
+    return [d,e,f];
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             //Verification
@@ -2262,28 +2174,29 @@ e = foo(1, 2.0, 3); // not found, null
         [Category("SmokeTest")]
         public void TV00_Function_With_If_Statements()
         {
-            string src = @"a;
+            string src = @"
 	def foo:int( a:int, b:int, c:int )
 	{
-    return = [Imperative]{
-		if( a < b )
-		{
-			if( a < c ) 
-				return = a;
-		}
+        return = [Imperative]
+        {
+		    if( a < b )
+		    {
+			    if( a < c ) 
+				    return = a;
+		    }
 	
-		else if ( b < c ) 
-			return = b;
+		    else if ( b < c ) 
+			    return = b;
 		
-		else if (a == b && b == c ) 
-			return  = 1;
+		    else if (a == b && b == c ) 
+			    return  = 1;
 			
-		return = c;
-    }
+		    return = c;
+        }
 	}	
-[Imperative]
+a = [Imperative]
 {
-	a = foo( -9,3,-7 );
+	return foo( -9,3,-7 );
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
             thisTest.Verify("a", -9);
@@ -2293,24 +2206,25 @@ e = foo(1, 2.0, 3); // not found, null
         [Category("SmokeTest")]
         public void TV01_Function_With_While_Statements()
         {
-            string src = @"d;
+            string src = @"
 	def foo:int( a:int, b:int)
 	{	
-    return = [Imperative]{
-		c = 1;
+        return = [Imperative]
+        {
+		    c = 1;
 		
-		while( b > 0 )
-		{
-			c = c * a;
-			b = b - 1;
-		}
+		    while( b > 0 )
+		    {
+			    c = c * a;
+			    b = b - 1;
+		    }
 	
-		return = c;
-    }
+		    return = c;
+        }
 	}
-[Imperative]
+d = [Imperative]
 {
-	d = foo( 2,3 );
+	return foo( 2,3 );
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
             thisTest.Verify("d", 8);
@@ -2320,29 +2234,30 @@ e = foo(1, 2.0, 3); // not found, null
         [Category("SmokeTest")]
         public void TV02_Function_With_For_Statements()
         {
-            string src = @"d;
+            string src = @"
 	def foo:int( a:int )
 	{	
-    return = [Imperative]{
-		c = [ 1,2,3,4,5 ];
-		temp = 0;
+        return = [Imperative]
+        {
+		    c = [ 1,2,3,4,5 ];
+		    temp = 0;
 		
-		for( i in c )
-		{
-			if( i == a )
-			temp = 1;
+		    for( i in c )
+		    {
+			    if( i == a )
+			        temp = 1;
 			
-		}
+		    }
 	
-		if(temp) 
-			return = a;
+		    if(temp) 
+			    return = a;
 		
-		return = 0;
-    }
+		    return = 0;
+        }
 	}
-[Imperative]
+d = [Imperative]
 {
-	d = foo( 6 );
+	return foo( 6 );
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
             thisTest.Verify("d", 0);
@@ -2355,20 +2270,21 @@ e = foo(1, 2.0, 3); // not found, null
             string src = @"x;
 	def factorial: int( a:int )
 	{	
-    return = [Imperative]{
-		if(!a)
-			return = 1;
+        return = [Imperative]
+        {
+		    if(!a)
+			    return = 1;
 		
-		if( a < 0 )
-			return = 0;
+		    if( a < 0 )
+			    return = 0;
 			
-		else 
-			return = a * factorial( a - 1 );
-}       
+		    else 
+			    return = a * factorial( a - 1 );
+        }       
 	}
-[Imperative]
+x = [Imperative]
 {
-		x = factorial(5);
+	return factorial(5);
 }
 		";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
@@ -2388,9 +2304,9 @@ e = foo(1, 2.0, 3); // not found, null
 		
 		return = sum + 0.5;
 	}   
-[Imperative]
+d = [Imperative]
 {
-	d = foo( 1 );
+	return foo( 1 );
 }
 		";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
@@ -2404,21 +2320,22 @@ e = foo(1, 2.0, 3); // not found, null
             string src = @"a;d;
 	def foo: int( a:int[] )
 	{
-    return = [Imperative]{
-		sum = 0;
+        return = [Imperative]
+        {
+		    sum = 0;
 		
-		for( i in a )
-		{
-			sum = sum + i ;
-		}
-		return = sum;
-    }
+		    for( i in a )
+		    {
+			    sum = sum + i ;
+		    }
+		    return = sum;
+        }
 	}
-[Imperative]
+d = [Imperative]
 {
 	a = 2..4..#3;
 	
-	d = foo( a );
+	return foo( a );
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
             thisTest.Verify("d", 9);
@@ -2431,21 +2348,22 @@ e = foo(1, 2.0, 3); // not found, null
             string src = @"a;
 	def foo:int( a:int , b:int, c:int )
 	{
-    return = [Imperative]{
-		if(a > 0 || b > 0 || c > 0)
-		{
-			if((a > 0 && b < 0)||(a > 0 && c < 0))
-				return = a;
-			else
-				return = 0;
-		}
+        return = [Imperative]
+        {
+		    if(a > 0 || b > 0 || c > 0)
+		    {
+			    if((a > 0 && b < 0)||(a > 0 && c < 0))
+				    return = a;
+			    else
+				    return = 0;
+		    }
 		
-		return = 1;
-    }
+		    return = 1;
+        }
 	}
-[Imperative]
+a = [Imperative]
 {
-	a = foo( 2,3,4 );
+	return foo( 2,3,4 );
 }
 			
 			";
@@ -2480,13 +2398,13 @@ e = foo(1, 2.0, 3); // not found, null
 		
 		}	
 	}
-[Imperative]
+a = [Imperative]
 {
 	a = 18;
 	b = 2;
 	c = 1;
 	
-	a = math(a,b,2+1);
+	return math(a,b,2+1);
 }";
             thisTest.RunScriptSource(code);
             thisTest.Verify("a", 36.0);
@@ -2496,15 +2414,15 @@ e = foo(1, 2.0, 3); // not found, null
         [Category("SmokeTest")]
         public void TV08_Function_With_Outer_Function_Calls()
         {
-            string src = @"x;y;
+            string src = @"x=i[0];y=i[1];
 	def is_negative:int(a :int)
 	{
-    return = [Imperative]{
-		if( a < 0 )
-			return = 1;
+        return = [Imperative]{
+		    if( a < 0 )
+			    return = 1;
 			
-			return = 0;
-    }
+			    return = 0;
+        }
 	}
 	def make_negative:int(a :int)
 	{
@@ -2512,18 +2430,19 @@ e = foo(1, 2.0, 3); // not found, null
 	}
 	def absolute:int(a :int)
 	{
-    return = [Imperative]{
-		if(is_negative(a))
-			a = make_negative(a);
+        return = [Imperative]{
+		    if(is_negative(a))
+			    a = make_negative(a);
 		
-		return = a;
-    }
+		    return = a;
+        }
 	}
-[Imperative]
+i=[Imperative]
 {
 	x = -7;
 	x = absolute(x);
 	y = absolute(11);
+    return [x,y];
 }	
 		";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
@@ -2535,7 +2454,7 @@ e = foo(1, 2.0, 3); // not found, null
         [Category("SmokeTest")]
         public void TV09_Function_With_Argument_Update_Imperative()
         {
-            string src = @"e;f;
+            string src = @"e=i[0];f=i[1];
 	def update:int( a:int, b:int )
 	{
 		a = a + 1;
@@ -2543,13 +2462,14 @@ e = foo(1, 2.0, 3); // not found, null
 		return = a + b;
 	}
 	
-[Imperative]
+i=[Imperative]
 {
 	c = 5;
 	d = 5;
 	e = update(c,d);
 	e = c;
 	f = d;
+    return [e, f];
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
             thisTest.Verify("e", 5);
@@ -2889,10 +2809,10 @@ def foo:int ( a : int, b : int, c: int )
 }
 c = foo( 1 );
 d = foo( 3, 2, 0 );
-a;
+a=
 [Imperative]
 {
-	a = foo( 1, 2, 3 );
+	return foo( 1, 2, 3 );
 }	
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -2916,10 +2836,10 @@ def foo:int ( a : double )
 }
 	b = foo( 2 );
 	c = foo(3.4);
-d;
+d=
 [Imperative]
 {
-	d = foo(-2.4);
+	return foo(-2.4);
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("b", 4);
@@ -2954,13 +2874,14 @@ def foo : int ( a = 5, b = 5 )
 {
 	return =  a +  b;
 }
-c1;c2;c3;c4;
-[Imperative]
+c1=i[0];c2=i[1];c3=i[2];c4=i[3];
+i = [Imperative]
 {
 	c1 = foo (  );
 	c2 = foo ( 1 );
 	c3 = foo ( 1, 2 );
 	c4 = foo ( 1, 2, 3 );
+    return [c1, c2, c3, c4];
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -2985,13 +2906,14 @@ def foo  ( a : double = 5, b : double = 5.5, c : bool = true )
 {
 	return = c == true ? a  : b;
 }
-c1;c2;c3;c4;
-[Imperative]
+c1=i[0];c2=i[1];c3=i[2];c4=i[3];
+i=[Imperative]
 {
 	c1 = foo (  );
 	c2 = foo ( 1 );
 	c3 = foo ( 1.5, 2 );
 	c4 = foo ( 1, 2, 0 );
+    return [c1, c2, c3, c4];
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -3051,13 +2973,14 @@ def foo  ( a : double = 6, b : double = 5.5, c : bool = true )
 {
 	return = c == true ? a  : b;
 }
-c1;c2;c3;c4;
-[Imperative]
+c1=i[0];c2=i[1];c3=i[2];c4=i[3];
+i=[Imperative]
 {
 	c1 = foo (  );
 	c2 = foo ( 1 );
 	c3 = foo ( 1.5, 2 );
 	c4 = foo ( 1, 2, 0 );
+    return = [ c1, c2, c3, c4 ];
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -3081,12 +3004,13 @@ def foo  ( a : double, b : double , c : int  )
 {
 	return = b;
 }
-c4;c5;c6;
-[Imperative]
+c4=i[0];c5=i[1];c6=i[2];
+i = [Imperative]
 {
 	c4 = foo ( 1, 2, 0 );
 	c5 = foo ( 1.5, 2.5, 0 );
 	c6 = foo ( 1.5, 2.5, true );
+    return [c4, c5, c6];
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -3126,17 +3050,17 @@ f = foo ( 1, 2 );
         public void TV34_Implicit_Conversion_Int_To_Bool()
         {
             string code = @"
-b;c;d;
+b=i[0];c=i[1];d=i[2];
 	def foo:int ( a : bool )
 	{
-    return = [Imperative]{
-		if(a)
-			return = 1;
-		else
-			return = 0;
-}
+        return = [Imperative]{
+		    if(a)
+			    return = 1;
+		    else
+			    return = 0;
+        }
 	}
-[Imperative]
+i=[Imperative]
 {
 	b = foo( 1 );
 	c = foo( 1.5 );
@@ -3145,6 +3069,7 @@ b;c;d;
 	{
 	    d = 3;
 	}
+    return [b,c,d];
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("b", 1);
@@ -3162,10 +3087,10 @@ def foo : double ( a: double )
 	return = a + 2.5;
 }
 	b = foo( 2 );
-	c;
+	c=
 [Imperative]
 {
-	c = foo( 3 );
+	return foo( 3 );
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
 
@@ -3221,11 +3146,12 @@ d = foo ( 2.3, 2 );
         public void TV38_Defect_1449956()
         {
             string code = @"
-x;
-y;
-	def factorial: int( a:int )
-	{	
-    return = [Imperative]{
+x=i[0];
+y=i[1];
+def factorial: int( a:int )
+{	
+    return = [Imperative]
+    {
 		if(!a)
 			return = 1;
 		
@@ -3234,13 +3160,14 @@ y;
 			
 		else 
 			return = a * factorial( a - 1 );
+    }
 }
-	}
-[Imperative]
+i=[Imperative]
 {
-		x = factorial(5);
-		y = factorial(7);
-		}
+	x = factorial(5);
+	y = factorial(7);
+    return [x,y];
+}
 	";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("x", 120, 0);
@@ -3309,7 +3236,6 @@ x;y;
         {
             string code = @"
 result;
-a;
  def Level1 : int (a : int)
  {
   return = Level2(a+1);
@@ -3329,11 +3255,10 @@ a;
  {
      return = a + 1;
  }
-[Imperative]
+a = [Imperative]
 {
- 
  b = 1;
- a = foo(b);
+ return foo(b);
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("result", 5);
@@ -3387,12 +3312,12 @@ def foo2 ( a )
         {
             string code = @"
 a1;b1;c1;
-a2;b2;c2;
+a2=i[0];b2=i[1];c2=i[2];
 	 def foo1 : int[] ( a : int[] )
 	 {
 	    a[0] = 0;
-            return = a;
-         }
+        return = a;
+    }
 [Associative]
 { 
 	 aa = [ 1, 2 ];
@@ -3405,18 +3330,19 @@ a2;b2;c2;
 	 };	
 	 c1 = cc[0];
 }
-	 def foo  ( a : int[] )
-	 {
-	    a[0] = 0;
-            return = a;
-         }
-[Imperative]
+def foo  ( a : int[] )
+{
+    a[0] = 0;
+    return = a;
+}
+i = [Imperative]
 { 
 	 aa = [ 1, 2 ];
 	 bb = foo ( aa );	
 	 a2 = aa[0];
 	 b2 = bb[0];
 	 c2 = 3;	
+    return [a2, b2, c2];
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -3457,7 +3383,7 @@ def foo : int ( x : int )
         public void TV45_Defect_1455278()
         {
             string code = @"
-b1;b2;
+b1;
     def foo : int ( a : int )
 	{
 		c = [Imperative]
@@ -3495,10 +3421,10 @@ b1;b2;
 		return  = a + c;
 		
 	}
-[Imperative]
+b2 = [Imperative]
 {
 	a = 2;
-	b2 = foo2 (a );	
+	return foo2 (a );	
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -3552,13 +3478,14 @@ def foo : int ( a : int, b : double )
 {
 	return = 3;
 }
-a;b;c;d;
-[Imperative]
+a=i[0];b=i[1];c=i[2];d=i[3];
+i=[Imperative]
 {
 	a = foo ( 1, 2 );
 	b = foo ( 2.5, 2.5 );
 	c = foo ( 1, 2.3 );
 	d = foo ( 2.3, 2 );
+    return [a, b, c, d];
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -3609,10 +3536,9 @@ def recursion : int(a : int)
     return = loc;
 }
 a = 10;
-x;
-[Imperative]
+x = [Imperative]
 {
-	x = recursion(a); 
+	return recursion(a); 
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -3627,16 +3553,17 @@ x;
 c;
 	def collection:int[](a : int[] )
 	{
-    return = [Imperative]{
-		j = 0;
-		for ( i in a )
-		{
-			a[j] = a[j] + 1;
-			j = j + 1;
-		}
+        return = [Imperative]
+        {
+		    j = 0;
+		    for ( i in a )
+		    {
+			    a[j] = a[j] + 1;
+			    j = j + 1;
+		    }
 		
-		return = a;
-    }
+		    return = a;
+        }
 	}
 [Imperative]
 {
@@ -3656,25 +3583,25 @@ c;
         public void TV51_Defect_1456108_2()
         {
             string code = @"
-c;
 	def collection:double[](a : double[] )
 	{
-    return = [Imperative]{
-		j = 0;
-		for ( i in a )
-		{
-			a[j] = a[j] + 1;
-			j = j + 1;
-		}
+        return = [Imperative]
+        {
+		    j = 0;
+		    for ( i in a )
+		    {
+			    a[j] = a[j] + 1;
+			    j = j + 1;
+		    }
 		
-		return = a;
-}
+		    return = a;
+        }
 	}
-[Imperative]
+c = [Imperative]
 {
 	c = [ 1.0,2.0,3.0 ];
 	c = collection( c );
-	
+	return c;
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             object[] expectedResult = { 2.0, 3.0, 4.0 };
@@ -3867,7 +3794,6 @@ b1 = [Imperative]
         public void TV54_Defect_1456397_3()
         {
             string code = @"
-b1;
 	def CreateVal ( a )
 	{
 		x = 1;
@@ -3877,10 +3803,9 @@ b1;
 		}
 		return = x + y;
 	}
-[Imperative]
+b1 = [Imperative]
 {
-
-	b1 = CreateVal( 1 );
+	return CreateVal( 1 );
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -3895,11 +3820,11 @@ b1;
 def foo(arr)
 {
     retArr = 3;	
-	[Imperative]
+	return [Imperative]
     {
 		retArr = 5;
+        return retArr;
 	}
-    return = retArr;
 }
 	x = 0.5;
 	x = foo(x);";
@@ -3919,14 +3844,13 @@ def foo(arr)
     {
 		retArr = 5;
 	}
-    return = retArr;
+    return retArr;
 }
-x;
-	[Imperative]
-	{
-		x = 0.5;
-		x = foo(x);
-	}";
+x = [Imperative]
+{
+	x = 0.5;
+	return foo(x);
+}";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("x", 5);
         }
@@ -4044,17 +3968,17 @@ def multiply : double[] (a : double[])
         public void TV61_Defect_1456100()
         {
             string code = @"
-d;
 	def foo: int( a : int )
 	{
-    return = [Imperative]{
-		for( i in a )
-		{
-		}
-		return = a;
-    }
+        return = [Imperative]
+        {
+		    for( i in a )
+		    {
+		    }
+		    return = a;
+        }
 	}
-[Imperative]
+d = [Imperative]
 {
 	d = [ 1,2,3 ];
 	j = 0;
@@ -4064,6 +3988,7 @@ d;
 		d[j] = i + 1;
 		j = j + 1;
 	}
+    return d;
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             object[] ExpectedResult = { 2, 3, 4 };
@@ -4104,15 +4029,12 @@ d;
 	
 	a = foo( a );
 	c = a[0];
-	d;
-	[Imperative]
+	d = [Imperative]
 	{
 		b = [ [2.3], [2.5] ];
 		b = foo( b );
-		d = b[0];
+		return b[0];
 	}
-	
-	
 	";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             object[] expectedResult2 = { 2.5, 3.5 };
@@ -4126,26 +4048,27 @@ d;
         public void TV64_Defect_1455090_3()
         {
             string code = @"
-c;d;
-	def foo ( a : double[]..[] )
-	{
-		a[0][0] = 2.5;
-		return = a;
-	}
-[Imperative]
+c = i[0];
+d = i[1];
+def foo ( a : double[]..[] )
+{
+	a[0][0] = 2.5;
+	return = a;
+}
+i=[Imperative]
 {
 	a = [ [2.3,3.5],[4.5,5.5] ];
-	
 	a = foo( a );
 	c = a[0];
-	
-	[Associative]
+
+	d = [Associative]
 	{
 		b = [ [2.3], [2.5] ];
-		b = foo( b );
-		d = b[0];
+		return foo( b )[0];
+
 	}
-}";
+    return [c,d];
+};";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             object[] expectedResult2 = { 2.5, 3.5 };
             object[] expectedResult = { 2.5 };
@@ -4370,14 +4293,14 @@ class BSplineCurve
 	    P = ptOnCurve;
     }
 }
-bcurvePtX;
-[Imperative]
+bcurvePtX = [Imperative]
 {
 	pt1 = Point.ByCoordinates(0);
 	pt2 = Point.ByCoordinates(5);
 	pts = [pt1, pt2];
 	bcurve = BSplineCurve.ByPoints(pts);
 	bcurvePtX = bcurve.P[1].X;
+    return bcurvePtX;
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -4410,23 +4333,23 @@ X = p.X;
         public void TV71_Defect_1456108()
         {
             string code = @"
-c;
+
 def collectioninc: int[]( a : int[] )
-	{
+{
     return = [Imperative]{
-		j = 0;
-		for( i in a )
-		{
-			a[j] = a[j] + 1;
-			j = j + 1;
-		}
-		return = a;
+	    j = 0;
+	    for( i in a )
+	    {
+		    a[j] = a[j] + 1;
+		    j = j + 1;
+	    }
+	    return = a;
     }
-	}
-[Imperative]
+}
+c = [Imperative]
 {
 	d = [ 1,2,3 ];
-	c = collectioninc( d );
+	return collectioninc( d );
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -4440,7 +4363,7 @@ def collectioninc: int[]( a : int[] )
         public void TV71_Defect_1456108_2()
         {
             string code = @"
-        def collectioninc: int[]( a : int[] )
+    def collectioninc: int[]( a : int[] )
 	{
 		j = 0;
 		a = [Imperative]
@@ -4456,10 +4379,9 @@ def collectioninc: int[]( a : int[] )
 	}
 	d = [ 1,2,3 ];
 	c = collectioninc( d );
-	b;
-        [Imperative]
+	b = [Imperative]
 	{
-		b = collectioninc( d );
+		return collectioninc( d );
 	}
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -4475,13 +4397,13 @@ def collectioninc: int[]( a : int[] )
         public void TV72_Defect_1454541_1()
         {
             string code = @"
-d1;d2;
+d1;
 def singleLine1 : int( a:int ) { return = a * 10; } 
 d1 = singleLine1( 2 );
 def singleLine2 : int( a:int ) { return = a * 10; } 
-[Imperative]
+d2 = [Imperative]
 {
-    d2 = singleLine2( 2 );
+     return singleLine2( 2 );
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -4544,7 +4466,7 @@ def foo1 : int ( a : int )
 	return  = a + c;
 }
 b1 = foo1(3);
-b2;b3;
+b2;
 	
 def foo : int ( a : int )
 {
@@ -4563,9 +4485,10 @@ def foo : int ( a : int )
 {
 	b2 = foo (2 );	
 }
-    def foo2 : int ( a : int )
-	{
-    return = [Imperative]{
+def foo2 : int ( a : int )
+{
+    return = [Imperative]
+    {
 		
 		d = 0;
 		if( a > 1 )
@@ -4575,11 +4498,10 @@ def foo : int ( a : int )
 			
 		return = a + d;
     }
-	}
-[Imperative]
+}
+b3 = [Imperative]
 {
-	
-	b3 = foo2 (4 );	
+	return foo2 (4 );	
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -4654,14 +4576,15 @@ def foo1 : double (arr : double[][])
 {
     return = arr[0][0];
 }
-sum1;sum2;
-[Imperative]
+sum1=i[0];sum2=i[1];
+i = [Imperative]
 {
 	arr1 = [ [1, 2.0], [true, 4] ];
 	sum1 = foo1(arr);
 	x = 1;
 	arr2 = [ [1, 2.0], [x, 4] ];
 	sum2 = foo1(arr2);
+    return [sum1, sum2];
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -4686,16 +4609,16 @@ def foo2 : int ( a : int )
 	return  = a + 1;
 }
 x1;y11;y21;
-x2;y12;y22;
-    def foo : int ( a : int )
-	{
-		return  = a + 1;
-	}
+x2 = i[0];y12 = i[1];y22 = i[2];
+def foo : int ( a : int )
+{
+	return  = a + 1;
+}
 	
-	def foo1  ( a  )
-	{
-		return  = a + 1;
-	}
+def foo1  ( a  )
+{
+	return  = a + 1;
+}
 [Associative]
 {
 	x1 = 1;
@@ -4703,12 +4626,12 @@ x2;y12;y22;
 	y21 = foo1(x1);
 	
 }
-[Imperative]
+i=[Imperative]
 {
 	x2 = 1;	
 	y12 = foo(x2);
 	y22 = foo1(x2);
-	
+	return [x2, y12, y22];
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -5124,29 +5047,27 @@ def greater ( a , b )
 		else
 		   return = b;
 	}
-	return  = c ;
+	return c ;
 }
 def greatest ( a : double[], greater : function )
 {
     c = a[0];
-	[Imperative]
+	return [Imperative]
 	{
 	    for ( i in a )
 		{
 		    c = greater( i, c );
-		}	
+		}
+        return c;	
 	}
-	return  = c ;
 }
 def foo ( a : double[], greatest : function , greater : function)
 {
-    return  = greatest ( a, greater );
+    return greatest ( a, greater );
 }
-a;
-[Imperative]
+a = [Imperative]
 {
-	a = foo ( [ 1.5, 6, 3, -1, 0 ], greatest, greater );
-	
+	return foo ( [ 1.5, 6, 3, -1, 0 ], greatest, greater );
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -5386,7 +5307,7 @@ def bar ( x : bool )
 }
 def foo: bool ( x : bool, y : bool )
 {
-	[Imperative]
+	return [Imperative]
 	{
 		if( x == false )
         {
@@ -5396,8 +5317,8 @@ def foo: bool ( x : bool, y : bool )
         {
 			y = false;
         }
+        return y;
 	}		
-	return = y;
 }
 
 c = bar ( 6 );
@@ -5493,11 +5414,12 @@ def foo2  ( a : int, a1: var)
 	return  = a + a1;
 }
     
-b;c;d;
-[Imperative]
+b=i[0];c=i[1];
+i=[Imperative]
 {
 	b = Create(1);
 	c = foo2(1, b);
+    return [b,c];
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -6117,14 +6039,14 @@ t = foo()[0];";
         {
             // Assert.Fail("1467131- Sprint 24 - Rev 2910 method overload with replication , throws error WARNING: Multiple type+pattern match parameters found, non-deterministic dispatch" );
             string code = @"
-t;
+
 def foo()
 {
 return = [1,2];
 }
-[Imperative]
+t=[Imperative]
 {
-t = foo()[0];
+return foo()[0];
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("t", 1);

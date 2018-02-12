@@ -133,11 +133,11 @@ def sqrt : double  (val : double )
              }
     return = result;
 }
-ten;
-[Imperative]
+ten=[Imperative]
 {
     val = 10;
     ten = sqrt(val);
+    return ten;
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(dscode);
@@ -286,7 +286,7 @@ z1 = 2;";
             string code = @"
 x;
 y;
-[Imperative]
+i=[Imperative]
 {
 	x = 0;
 	b = 0..3; //{ 0, 1, 2, 3 }
@@ -294,11 +294,10 @@ y;
 	{
 		x = y + x;
 	}
-	
+	return [x,y];
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("x", 6, 0);
-            thisTest.Verify("y", 3, 0);
+            thisTest.Verify("i", new object[] {6, null});
         }
 
         [Test]
@@ -346,7 +345,7 @@ return = [Imperative]{
 			return = 0;
 }
 	}
-[Imperative]
+i=[Imperative]
 {
 
 	
@@ -357,12 +356,11 @@ return = [Imperative]{
 	{
 	    d = 3;
 	}
+    return [b,c,d];
 }
 ";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("b", 1, 0);
-            thisTest.Verify("c", 1, 0);
-            thisTest.Verify("d", 3, 0);
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("i", new[] {1, 1, 3});
         }
 
         [Test]
@@ -391,21 +389,18 @@ def foo2(a : int[])
 }
 a3;
 a4;
-[Imperative]
+i=[Imperative]
 {
 	x1 = [ 1, 2, 3, 4 ];
 	a = Create(x1);
 	a2 = foo(x1);	
 	a3 = foo1(x1[0]);
 	a4 = foo2(x1);
+    return [x1,a,a2,a3,a4];
 }";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Object[] x1 = new Object[] { 1.0, 2.0, 3.0, 4.0 };
-            Object[] a = new Object[] { 1.0, 2.0, 3.0, 4.0 };
-            Object[] a1 = new Object[] { 1, 2, 3, 4 };
-            Object[] a2 = new Object[] { 1, 2, 3, 4 };
-            thisTest.Verify("a3", 1, 0);
-            thisTest.Verify("a4", 3, 0);
+            thisTest.RunScriptSource(code);
+            var x1 = new Object[] { 1.0, 2.0, 3.0, 4.0 };
+            thisTest.Verify("i", new object[] {x1, null, x1, 1, 3});
         }
 
         [Test]
@@ -562,11 +557,10 @@ c= call(value);";
         [Category("SmokeTest")]
         public void Regress_1454966_7()
         {
-            Object[] x = new Object[] { 1.0, 2.0, 3.0 };
+            var x = new Object[] { 1.0, 2.0, 3.0 };
             string code = @"
 import(""FFITarget.dll"");
-a1;
-[Imperative]
+a1=[Imperative]
 {	
 	d = [ 1,2,3 ];	
 	val=[0,0,0];
@@ -577,10 +571,10 @@ a1;
 	    j = j + 1;	
 	}	
 	a1 = val;	
-	
+	return a1;
 }";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("a1", x, 0);
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("a1", x);
         }
 
         [Test]
@@ -720,8 +714,7 @@ j=2*i;";
         public void Regress_1454511()
         {
             string code = @"
-x;
-[Imperative]
+x=[Imperative]
 {
 	x = 0;
 	
@@ -729,6 +722,7 @@ x;
 	{
 		x = x + 1;
 	}
+    return x;
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -1261,7 +1255,7 @@ e1;
 			return = a;
         }
 	}
-[Imperative]
+e1=[Imperative]
 {
 	x = 1..3..1;
 	y = 1..9..2;
@@ -1271,9 +1265,10 @@ e1;
 	e1 = even(y)..even(z)..1;
 	f = even(e1[0])..even(e1[1]); 
 	g = even(y)..even(z)..f[0][1]; 
+    return e1;
 }
 ";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            thisTest.RunScriptSource(code);
             object[] e1 = {  new object[] {2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12},
                                new object[] {4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14},
                                new object[] {6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16},
@@ -1708,7 +1703,7 @@ x;
 {
 	a = [ 4,5 ];
    
-	[Imperative]
+	x=[Imperative]
 	{
 	       //a = { 4,5 }; // works fine
 		x = 0;
@@ -1716,6 +1711,7 @@ x;
 		{
 			x = x + y;
 		}
+        return x;
 	}
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -1761,22 +1757,23 @@ def length : int (C : double[])
 {
     counter = 0;
 		
-	[Imperative]
+	return [Imperative]
     {          
         for(pt in C)
         {
             counter = counter + 1;
-        }           
+        } 
+        return counter;          
     }
-    return = counter;
+    
 }
 arr = [ 0.0, 1.0, 2.0, 3.0 ];
 num = length(arr);
 ";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Object[] arr = new object[] { 0.0, 1.0, 2.0, 3.0 };
-            thisTest.Verify("arr", arr, 0);
-            thisTest.Verify("num", 4, 0);
+            thisTest.RunScriptSource(code);
+            var arr = new object[] { 0.0, 1.0, 2.0, 3.0 };
+            thisTest.Verify("arr", arr);
+            thisTest.Verify("num", 4);
         }
 
         [Test]
@@ -1918,7 +1915,7 @@ d = [Imperative]
     if(c[0].IntVal == 0 )
     {
         c[0] = 0;
-    p[0] = 0;
+        p[0] = 0;
     }
     if(c[0].IntVal == 0 )
     {

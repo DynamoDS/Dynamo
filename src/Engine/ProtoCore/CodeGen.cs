@@ -1014,34 +1014,33 @@ namespace ProtoCore
 
                 return hasThisSymbol;
             }
-            else if (functionScope != Constants.kGlobalScope)
+
+            if (functionScope != Constants.kGlobalScope)
             {
                 symbol = core.GetFirstVisibleSymbol(name, Constants.kGlobalScope, functionScope, currentCodeBlock);
                 isAccessible = symbol != null;
                 return symbol != null;
             }
-            else
-            {
-                CodeBlock searchBlock = currentCodeBlock;
-                while (symbolIndex == Constants.kInvalidIndex && searchBlock != null)
-                {
-                    symbolIndex = searchBlock.symbolTable.IndexOf(name, Constants.kGlobalScope, Constants.kGlobalScope);
-                    if (symbolIndex != Constants.kInvalidIndex)
-                    {
-                        symbol = searchBlock.symbolTable.symbolList[symbolIndex];
-                        bool ignoreImportedSymbols = !string.IsNullOrEmpty(symbol.ExternLib) && core.IsParsingCodeBlockNode;
-                        if (ignoreImportedSymbols)
-                        {
-                            return false;
-                        }
-                        isAccessible = true;
-                        return true;
-                    }
-                    searchBlock = searchBlock.parent;
-                }
 
-                return false;
+            CodeBlock searchBlock = currentCodeBlock;
+            while (symbolIndex == Constants.kInvalidIndex && searchBlock != null)
+            {
+                symbolIndex = searchBlock.symbolTable.IndexOf(name, Constants.kGlobalScope, Constants.kGlobalScope);
+                if (symbolIndex != Constants.kInvalidIndex)
+                {
+                    symbol = searchBlock.symbolTable.symbolList[symbolIndex];
+                    bool ignoreImportedSymbols = !string.IsNullOrEmpty(symbol.ExternLib) && core.IsParsingCodeBlockNode;
+                    if (ignoreImportedSymbols)
+                    {
+                        return false;
+                    }
+                    isAccessible = true;
+                    return true;
+                }
+                searchBlock = searchBlock.parent;
             }
+
+            return false;
         }
 
         protected bool IsProperty(string name)

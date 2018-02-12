@@ -380,23 +380,24 @@ a=numpts.IntVal;
         {
             string code =
                 @"
-b;c;d;
-def foo( a : bool )
-                            {
-                            c=[a];
-                            return = c; 
-                            }
-                      [Imperative]
-                            {
-                            c=[];
-                            b = foo( 1 );
-                            c = foo( 1.5 );
-                            d = 0;
-                            if(1.5 == true )
-                            {
+                    b=i[0];c=i[1];d=i[2];
+                    def foo( a : bool )
+                    {
+                        c=[a];
+                        return = c; 
+                    }
+                    i = [Imperative]
+                    {
+                        c=[];
+                        b = foo( 1 );
+                        c = foo( 1.5 );
+                        d = 0;
+                        if(1.5 == true )
+                        {
                             d = 3;
-                            }
-                            }
+                        }
+                        return [b,c,d];
+                    }
 ";
             //Assert.Fail("1467172 - sprint 25 - Rev 3146 - [Design Issue ] the type conversion between int/double to bool not allowed ");
             thisTest.RunScriptSource(code);
@@ -411,23 +412,22 @@ def foo( a : bool )
         {
             string code =
                 @"
-b;c;d;
-def foo:bool( a  )
-                            {
-                            
-                            return = a; 
-                            }
-                      [Imperative]
-                            {
-                        
-                            b = foo( 1 );
-                            c = foo( 1.5 );
-                            d = 0;
-                            if(1.5 == true )
-                            {
+                    b=i[0];c=i[1];d=i[2];
+                    def foo:bool( a  )
+                    {
+                        return = a; 
+                    }
+                    i = [Imperative]
+                    {
+                        b = foo( 1 );
+                        c = foo( 1.5 );
+                        d = 0;
+                        if(1.5 == true )
+                        {
                             d = 3;
-                            }
-                            }
+                        }
+                        return [b,c,d];
+                    }
 ";
             //Assert.Fail("1467172 - sprint 25 - Rev 3146 - [Design Issue ] the type conversion between int/double to bool not allowed ");
             thisTest.RunScriptSource(code);
@@ -441,15 +441,15 @@ def foo:bool( a  )
         public void TS019_conditional_cantevaluate_1467170()
         {
             string code =
-                @"A;
-                     [Imperative]
-                        {
-                        A = 1;
-                        if (0)
+                @"A=[Imperative]
+                {
+                    A = 1;
+                    if (0)
                         A = 2;
-                        else
+                    else
                         A= 3;
-                        }
+                    return A;
+                }
                    
                         ";
             thisTest.RunScriptSource(code);
@@ -462,15 +462,15 @@ def foo:bool( a  )
         {
             string code =
                 @"
-                     A;
-                     [Imperative]
-                        {
-                            A = 1;
-                            if (!0)
-                                A = 2;
-                            else
-                                A= 3;
-                        }
+                    A=[Imperative]
+                    {
+                        A = 1;
+                        if (!0)
+                            A = 2;
+                        else
+                            A= 3;
+                        return A;
+                    }
                       
                         ";
             thisTest.RunScriptSource(code);
@@ -502,16 +502,16 @@ def foo:bool( a  )
         public void TS020_conditional_cantevaluate_1467170()
         {
             string code =
-                @"A;
-                     [Imperative]
-                        {
-                        A = 1;
-                        B=1;
-                        if (B)
+                @"A=[Imperative]
+                {
+                    A = 1;
+                    B=1;
+                    if (B)
                         A = 2;
-                        else
+                    else
                         A= 3;
-                        }
+                    return A;
+                }
                       
                         ";
             thisTest.RunScriptSource(code);
@@ -537,11 +537,11 @@ def foo(a)
     }
     return = d;
 }
-z;
-[Imperative]
+z = [Imperative]
 {
   a = [ 1, 2 ];
   z = foo(a);
+    return z;
 }
 ";
             thisTest.RunScriptSource(code);
@@ -569,11 +569,10 @@ def foo(a)
     return = d;
 }
 
-z;
-[Imperative]
+z=[Imperative]
 {
     a = [ 1, 2 ];
-    z = foo(a);
+    return foo(a);
 }
                         
                         ";
@@ -687,18 +686,19 @@ import(""FFITarget.dll"");
         public void TS022_conditional_cantevaluate_1467170()
         {
             string code =
-                @"A;
-                     [Imperative]
-                        {
+                @"A=
+                    [Imperative]
+                    {
                         A = 1;
                         B=1;
                         if (null)
-                        A = 2;
+                            A = 2;
                         else
-                        A= 3;
-                        }
-                        //expected A=1;
-                        //Received A=3;
+                            A= 3;
+                        return A;
+                    }
+                    //expected A=1;
+                    //Received A=3;
                         ";
             thisTest.RunScriptSource(code);
             thisTest.Verify("A", 3);
@@ -710,15 +710,15 @@ import(""FFITarget.dll"");
         {
             string code =
                 @"
-                     A;                   
-                        [Imperative]
+                     A=[Imperative]
                         {
-                        A = 1;
-                        B=1;
-                        if (!null)
-                            A = 2;
-                        else
-                            A= 3;
+                            A = 1;
+                            B=1;
+                            if (!null)
+                                A = 2;
+                            else
+                                A= 3;
+                            return A;
                         }
                         //expected A=1;
                         //Received A=3;
@@ -733,15 +733,16 @@ import(""FFITarget.dll"");
         {
             string code =
                 @"
-                     a = [ 1, 2 ];
-                     b = 0;
-                     [Imperative]
+                    a = [ 1, 2 ];
+                    b = [Imperative]
+                    {
+                        b = 0;
+                        if (a!= null)
                         {
-                            if (a!= null)
-                            {
-                                b = 1;
-                            }
+                            b = 1;
                         }
+                        return b;
+                    }
                         ";
             thisTest.RunScriptSource(code);
             thisTest.Verify("b", 1);
@@ -1448,11 +1449,10 @@ import(""FFITarget.dll"");
         public void TS43_null_toBool_1467231_positive()
         {
             string code =
-                @"b;
-                [Imperative]
-                    {
+                @"b = [Imperative]
+                {
                     a=null;
-                    b;
+                    b = 0;
                     if (a) 
                     {
 	                    b=1;
@@ -1461,7 +1461,8 @@ import(""FFITarget.dll"");
                     {
 	                    b=2;
                     }
-                    }"; //expected :true, received : null
+                    return b;
+                }"; //expected :true, received : null
             thisTest.RunScriptSource(code);
             thisTest.Verify("b", 2);
         }
@@ -2412,10 +2413,10 @@ import(""FFITarget.dll"");
         {
             string code =
                 @"
-a;
-                [Imperative]
+                a= [Imperative]
                 { 
                     a : int = 3.2;
+                    return a;
                 }
                                                  ";
             thisTest.RunScriptSource(code);
@@ -2766,10 +2767,11 @@ import(""FFITarget.dll"");
         {
             string code =
                 @"
-import(""FFITarget.dll"");
-d;
-                    [Imperative]{
+                    import(""FFITarget.dll"");
+                    d = [Imperative]
+                    {
                          d:bool=ClassFunctionality.ClassFunctionality(5); // user def to bool - > if not null true
+                        return d;
                     }";
             string error = "1467287 Sprint 26 - 3721 user defined to bool conversion does not happen in imperative ";
             thisTest.RunScriptSource(code, error);

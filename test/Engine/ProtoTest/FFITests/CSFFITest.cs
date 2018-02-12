@@ -720,7 +720,7 @@ a11;
 a12;
 b11;
 b12;
-               [Imperative]
+               arr = [Imperative]
                {
                     a    = [ [pt1,pt2], [pt3,pt4] ];
                     a11  = [a[0][0].X,a[0][0].Y,a[0][0].Z];
@@ -733,17 +733,15 @@ b12;
                     b12  = [b[0][0].X,b[0][0].Y,b[0][0].Z];
                     e    = b[0];
                     e12  = [e[0].X,e[0].Y,e[0].Z];
+                    
+                    return [a11, a12, b11, b12];
                }
             ";
-            object[] c = new object[] { 1.0, 1.0, 1.0 };
-            object[] d = new object[] { 4.0, 4.0, 4.0 };
-            object[] e = new object[] { 3.0, 3.0, 3.0 };
-            object[] f = new object[] { 6.0, 6.0, 6.0 };
-            ValidationData[] data = { new ValidationData { ValueName = "a11", ExpectedValue = c, BlockIndex = 0 },
-                                      new ValidationData { ValueName = "a12", ExpectedValue = f, BlockIndex = 0 },
-                                      new ValidationData { ValueName = "b11", ExpectedValue = c, BlockIndex = 0 },
-                                      new ValidationData { ValueName = "b12", ExpectedValue = e, BlockIndex = 0 },
-                                      new ValidationData { ValueName = "b12", ExpectedValue = e, BlockIndex = 0 }};
+            var c = new[] {1.0, 1.0, 1.0};
+            var e = new[] {3.0, 3.0, 3.0};
+            var f = new[] {6.0, 6.0, 6.0};
+            var res = new[] {c, f, c, e};
+            ValidationData[] data = { new ValidationData { ValueName = "arr", ExpectedValue = res, BlockIndex = 0 }};
             ExecuteAndVerify(code, data);
         }
 
@@ -760,7 +758,7 @@ b12;
                 pt3=DummyPoint.ByCoordinates(3,3,3);
 a11;
 a12;
-                [Imperative]
+                arr = [Imperative]
                 {
                     a = [ pt1, pt2, pt3 ];
                     a11=[a[0].X,a[0].Y,a[0].Z];
@@ -768,19 +766,17 @@ a12;
  
                     for (y in a )
                     {
-                    
-                    a[x]=pt3;
-                    a12=[a[0].X,a[0].Y,a[0].Z];
-                    x=x+1;
+                        a[x]=pt3;
+                        a12=[a[0].X,a[0].Y,a[0].Z];
+                        x=x+1;
                     }
-                    
+                    return [a11, a12];
                  } 
             ";
-            object[] c = new object[] { 1.0, 1.0, 1.0 };
-            object[] e = new object[] { 3.0, 3.0, 3.0 };
-            ValidationData[] data = { new ValidationData { ValueName = "a11", ExpectedValue = c, BlockIndex = 0 },
-                                      new ValidationData { ValueName = "a12", ExpectedValue = e, BlockIndex = 0 }
-                                    };
+            var c = new[] { 1.0, 1.0, 1.0 };
+            var e = new[] { 3.0, 3.0, 3.0 };
+            var res = new[] {c, e};
+            ValidationData[] data = { new ValidationData { ValueName = "arr", ExpectedValue = res, BlockIndex = 0 } };
             ExecuteAndVerify(code, data);
         }
 
@@ -810,35 +806,32 @@ a12;
             @"
                import(""FFITarget.dll"");
          
-a1;
-ptcoords;
-                [Imperative]
+                ptcoords;
+                i = [Imperative]
                 {
-                pt1=DummyPoint.ByCoordinates(1,1,1);
+                    pt1=DummyPoint.ByCoordinates(1,1,1);
+                    a1 = 10;
  
-                 a1 = 10;
- 
-                 if( a1>=10 )
-                 {
-                pt1=DummyPoint.ByCoordinates(2,2,2);
-                ptcoords=[pt1.X,pt1.Y,pt1.Z];
-                a1=1;
-                 }
- 
-                 elseif( a1<2 )
-                 {
-                 pt1=DummyPoint.ByCoordinates(3,3,3);
-                 }
-                 else 
-                 {
-                pt1=DummyPoint.ByCoordinates(4,4,4);
-                 }
+                    if( a1>=10 )
+                    {
+                       pt1=DummyPoint.ByCoordinates(2,2,2);
+                       ptcoords=[pt1.X,pt1.Y,pt1.Z];
+                       a1=1;
+                    }
+                    elseif( a1<2 )
+                    {
+                       pt1=DummyPoint.ByCoordinates(3,3,3);
+                    }
+                    else 
+                    {
+                       pt1=DummyPoint.ByCoordinates(4,4,4);
+                    }
+                    return [a1, ptcoords];
                 }
         
             ";
-            object[] d = new object[] { 2.0, 2.0, 2.0 };
-            ValidationData[] data = { new ValidationData { ValueName = "a1", ExpectedValue = 1, BlockIndex = 0 } ,
-                                      new ValidationData { ValueName = "ptcoords", ExpectedValue = d, BlockIndex = 0 } };
+            var d = new object[] {1, new[] {2.0, 2.0, 2.0}};
+            ValidationData[] data = { new ValidationData { ValueName = "i", ExpectedValue = d, BlockIndex = 0 } };
             ExecuteAndVerify(code, data);
         }
 
@@ -850,9 +843,8 @@ ptcoords;
                import(""FFITarget.dll"");
                 pt1=DummyPoint.ByCoordinates(1,1,1);
                 pt2=DummyPoint.ByCoordinates(2,2,2);
-s11;
-l11;
-                [Imperative]
+
+                i = [Imperative]
                 {
                     a	=	10;				
                     b	=	20;
@@ -860,13 +852,15 @@ l11;
                     largest	=   a	>   b   ?   pt1	:	pt2;
                     s11=[smallest.X,smallest.Y,smallest.Z];
                     l11=[largest.X,largest.Y,largest.Z];
+                    return [s11, l11];
                  }
         
             ";
-            object[] c = new object[] { 1.0, 1.0, 1.0 };
-            object[] d = new object[] { 2.0, 2.0, 2.0 };
-            ValidationData[] data = { new ValidationData { ValueName = "s11", ExpectedValue = c, BlockIndex = 0 } ,
-                                      new ValidationData { ValueName = "l11", ExpectedValue = d, BlockIndex = 0 } };
+            var c = new [] { 1.0, 1.0, 1.0 };
+            var d = new [] { 2.0, 2.0, 2.0 };
+            var e = new[] {c, d};
+
+            ValidationData[] data = { new ValidationData { ValueName = "i", ExpectedValue = e, BlockIndex = 0 } };
             ExecuteAndVerify(code, data);
         }
 
@@ -878,20 +872,19 @@ l11;
                import(""Builtin.dll"");
                import(""FFITarget.dll"");
                  
-                    a=1;
-                    a12;
-                    [Imperative]
-                    {
-                        a = 1/2..1/4..-1/4;
-                    }
-                    [Associative]
-                    {
+                a=1;
+                a12;
+                a = [Imperative]
+                {
+                    return 1/2..1/4..-1/4;
+                }
+                [Associative]
+                {
                     pt=DummyPoint.ByCoordinates(a[0],0,0);
                     a12=[pt.X,pt.Y,pt.Z];
-                    }
-        
+                }
             ";
-            object[] c = new object[] { 0.5, 0.0, 0.0 };
+            var c = new[] { 0.5, 0.0, 0.0 };
             ValidationData[] data = { new ValidationData { ValueName = "a12", ExpectedValue = c, BlockIndex = 0 } 
                                       };
             ExecuteAndVerify(code, data);
@@ -939,9 +932,10 @@ l11;
             @"
                import(""FFITarget.dll"");
                pt=[0,0,0,0,0,0];
-p11;
-               [Imperative]
+
+               x = [Imperative]
                {
+                    p11;
                     i=0;
                     temp=0;
                     while( i <= 5 )
@@ -950,12 +944,12 @@ p11;
                         pt[i]=DummyPoint.ByCoordinates(i,1,1);
                         p11=[pt[i].X,pt[i].Y,pt[i].Z];
                     }
-                    
+                    return p11;
                 }
             ";
             object[] a = new object[] { 6.0, 1.0, 1.0 };
             thisTest.RunScriptSource(code);
-            thisTest.Verify("p11", a);
+            thisTest.Verify("x", a);
         }
 
         [Test]

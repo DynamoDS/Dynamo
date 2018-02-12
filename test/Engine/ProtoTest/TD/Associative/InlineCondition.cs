@@ -186,7 +186,7 @@ x1;
 x2;
 x3;
 x4;
-[Imperative]
+i=[Imperative]
 {
 	a = [ 0, 1, 2];
 	b = [ 3, 11 ];
@@ -207,7 +207,7 @@ x4;
 	{
 		c1 = c1 + 1;
 	}
-	x2 = 5 > b ? b : 5; // expected:f
+	x2 = 5 > b ? b : 5; // expected:5
 	t3 = x2[0];
 	t4 = x2[1];
 	c2 = 0;
@@ -229,6 +229,7 @@ x4;
 	{
 		c4 = c4 + 1;
 	}
+    return [xx,x1,x2,x3,x4];
 }
 /*
 Expected : 
@@ -246,11 +247,7 @@ thisTest.Verification(mirror, ""t7"", 0, 1);
 thisTest.Verification(mirror, ""c4"", 1, 1);*/
 ";
             thisTest.VerifyRunScriptSource(src, errmsg);
-            thisTest.Verify("xx", 5);
-            thisTest.Verify("x1", 5);
-            thisTest.Verify("x2", 5);
-            thisTest.Verify("x3", new object[] { 10 });
-            thisTest.Verify("x4", new object[] { 0, 1 });
+            thisTest.Verify("i", new object[] {5, 5, 5, new object[] {10}, new object[] {0, 1}});
         }
 
 
@@ -344,9 +341,9 @@ x = c > 1 ? 3 : 4;
     c = 3;            
 }
 test = x;";
-            string errmsg = "";//1467290 sprint25: rev 3731 : REGRESSION : Update with inline condition across multiple language blocks is not working as expected";
+            string errmsg = "";
             thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.Verify("x", 3);
+            thisTest.Verify("x", 4);
         }
 
 
@@ -365,9 +362,9 @@ x = c > 1 ? a : b;
     a = 2;           
 }
 test = x;";
-            string errmsg = "";//1467290 sprint25: rev 3731 : REGRESSION : Update with inline condition across multiple language blocks is not working as expected";
+            string errmsg = "";
             thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.Verify("x", new object[] {2, 2});
+            thisTest.Verify("x", new object[] {1, 2});
         }
 
 
@@ -416,9 +413,9 @@ x = c > 1 ? a : a +1;
     }           
 }
 test = x;";
-            string errmsg = "";//1467290 sprint25: rev 3731 : REGRESSION : Update with inline condition across multiple language blocks is not working as expected";
+            string errmsg = "";
             thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.Verify("x", new Object[] { 1, 2 });
+            thisTest.Verify("x", new Object[] { 2, 3 });
         }
 
 
@@ -535,11 +532,11 @@ d = c!= true;
         public void T017_conditionequalto_1467482_3()
         {
             string code = @"
-d;
-[Imperative]
+d=[Imperative]
 {
     c = true;
     d = c== true;
+    return d;
 }
 ";
             string errmsg = "";
@@ -553,11 +550,11 @@ d;
         public void T018_conditionequalto_1467482_4()
         {
             string code = @"
-            d;
-            [Imperative]
+            d=[Imperative]
             {
                 c = false;
                 d = c!= true;
+                return d;
             }
             ";
             string errmsg = "";
@@ -677,11 +674,11 @@ d;
         public void T018_conditionequalto_1467403_11()
         {
             string code = @"
-            d;
-            [Imperative]
+            d=[Imperative]
             {
                 c = null;
                 d = c== null;
+                return d;
             }
         ";
             string errmsg = "";
@@ -695,11 +692,11 @@ d;
         public void T018_conditionequalto_1467403_12()
         {
             string code = @"
-            d;
-            [Imperative]
+            d=[Imperative]
             {
                 c = null;
                 d = c!= null;
+                return d;
             }
         ";
             string errmsg = "1467403 -in conditional it throws error could not decide which function to execute , for valid code a,d gives the correct result as well ";
@@ -729,12 +726,12 @@ d;
         public void T018_conditionequalto_1467504_14()
         {
             string code = @"
-            e;
-            [Imperative]
+            e=[Imperative]
             {
                 c : int = 1;
                 d : int[] = [ 1, 0 ];
                 e = c == d;
+                return e;
             }
         ";
             string errmsg = "1467504-conditonal - comparison with an single vs array returns null in imperative block ";
@@ -939,17 +936,18 @@ def foo2 ( x )
 }
 a = [-1, 1];
 z;
-[Imperative]
+i=[Imperative]
 {
     for ( i in 0..1 )
     {
         z[i] = foo2 ( a[i] > 0 ? foo(1) : foo(2)  );
     }
+    return z;
 }
 ";
             string errmsg = "";
             thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.Verify("z", new Object[] { 2, 1 });
+            thisTest.Verify("i", new Object[] { 2, 1 });
         }
     }
 }

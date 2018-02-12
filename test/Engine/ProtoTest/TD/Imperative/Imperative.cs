@@ -16,14 +16,13 @@ namespace ProtoTest.TD.Imperative
         {
             String code =
              @"
-                a : int[];
-                [Imperative]
+                a = [Imperative]
                 {
                     a[0] = 0;
-                    a[1] = ""dummy"";                  
+                    a[1] = ""dummy"";  
+                    return a;                
                 }
-
-t1 = a;
+                t1 = a;
              ";
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
