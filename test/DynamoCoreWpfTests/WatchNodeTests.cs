@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using CoreNodeModels;
 using Dynamo.Graph.Nodes;
+using Dynamo.Graph.Nodes.ZeroTouch;
 using Dynamo.Tests;
 
 namespace DynamoCoreWpfTests 
@@ -18,7 +19,9 @@ namespace DynamoCoreWpfTests
         {
             libraries.Add("VMDataBridge.dll");
             libraries.Add("ProtoGeometry.dll");
+            libraries.Add("Builtin.dll");
             libraries.Add("FunctionObject.ds");
+            libraries.Add("FFITarget.dll");
             base.GetLibrariesToPreload(libraries);
         }
 
@@ -250,6 +253,27 @@ namespace DynamoCoreWpfTests
 
             Assert.AreEqual(3, watchVM.Levels.ElementAt(0));
             Assert.AreEqual(2, watchVM.NumberOfItems);
+        }
+
+        [Test]
+        public void WatchMultiReturnNodeOrder()
+        {
+            string openPath = Path.Combine(TestDirectory, @"core\watch\MultiReturnNodePreviewOrder.dyn");
+            ViewModel.OpenCommand.Execute(openPath);
+            ViewModel.HomeSpace.Run();
+
+            var watchNode = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<DSFunction>();
+            var watchVM = ViewModel.WatchHandler.GenerateWatchViewModelForData(
+                watchNode.CachedValue, watchNode.OutPorts.Select(p => p.Name),
+                ViewModel.Model.EngineController.LiveRunnerRuntimeCore,
+                watchNode.AstIdentifierForPreview.Name);
+
+            var children = watchVM.Children;
+            Assert.AreEqual(4, children.Count);
+            Assert.AreEqual("false", children[0].NodeLabel);
+            Assert.AreEqual("3", children[1].NodeLabel);
+            Assert.AreEqual("2", children[2].NodeLabel);
+            Assert.AreEqual("1", children[3].NodeLabel);
         }
     }
 }
