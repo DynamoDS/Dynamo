@@ -1,0 +1,98 @@
+{
+  "Uuid": "a8ab4d73-0ccd-4907-9790-c6752ec981c0",
+  "IsCustomNode": false,
+  "Description": null,
+  "Name": "MultiReturnNodePreviewOrder",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "FFITarget.DummyCollection.ReturnNestedDictionary",
+      "Id": "4738fa0c55c04cb8be51b9c026f420a2",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "3801c7b34fab453a8d05500f9339f6a2",
+          "Name": "H",
+          "Description": "var",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "993a3ab116814515a80a460cbba5973e",
+          "Name": "G",
+          "Description": "var",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "bcf6d890ce114a229da0ad258671330b",
+          "Name": "F",
+          "Description": "var",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "148ba5c6ca364b5baaffd5ea6bfa9b2d",
+          "Name": "E",
+          "Description": "var",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "DummyCollection.ReturnNestedDictionary ( ): var[]..[]"
+    }
+  ],
+  "Connectors": [],
+  "Dependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.0.0.4076",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "DummyCollection.ReturnNestedDictionary",
+        "Id": "4738fa0c55c04cb8be51b9c026f420a2",
+        "Excluded": false,
+        "X": 259.0,
+        "Y": 123.0
+      }
+    ],
+    "Annotations": [],
+    "X": 0.0,
+    "Y": 0.0,
+    "Zoom": 1.0
+  }
+}
