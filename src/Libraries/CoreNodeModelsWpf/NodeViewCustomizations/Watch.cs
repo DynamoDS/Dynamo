@@ -1,5 +1,6 @@
 using System;
 using System.ComponentModel;
+using System.Linq;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
@@ -162,6 +163,7 @@ namespace CoreNodeModelsWpf.Nodes
 
             return watchHandler.GenerateWatchViewModelForData(
                 watch.CachedValue,
+                watch.OutPorts.Select(p => p.Name),
                 core,
                 inputVar,
                 rootWatchViewModel.ShowRawData);
