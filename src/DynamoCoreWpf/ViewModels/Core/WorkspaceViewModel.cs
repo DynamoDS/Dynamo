@@ -496,7 +496,7 @@ namespace Dynamo.ViewModels
             Model.ConnectorAdded -= Connectors_ConnectorAdded;
             Model.ConnectorDeleted -= Connectors_ConnectorDeleted;
             Model.PropertyChanged -= ModelPropertyChanged;
-            Model.PopulateJSONWorkspace += Model_PopulateJSONWorkspace;
+            Model.PopulateJSONWorkspace -= Model_PopulateJSONWorkspace;
 
             DynamoSelection.Instance.Selection.CollectionChanged -= RefreshViewOnSelectionChange;
 
