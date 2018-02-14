@@ -444,6 +444,9 @@ namespace Dynamo.Tests
         public static string jsonNonGuidFolderName = "json_nonGuidIds";
         public static string jsonFolderName = "json";
 
+        public const string coreTestsGuidPath = "DynamoTestsJSON/DynamoCoreTests/Guid";
+        public const string coreTestsNonGuidPath = "DynamoTestsJSON/DynamoCoreTests/NonGuid";
+
         private TimeSpan lastExecutionDuration = new TimeSpan();
         private Dictionary<Guid, string> modelsGuidToIdMap = new Dictionary<Guid, string>();
 
@@ -800,7 +803,7 @@ namespace Dynamo.Tests
             Assert.IsNotNullOrEmpty(jo.ToString());
 
             // Call structured copy function
-            SaveJsonTempWithFolderStructure("DynamoTestsJSON/DynamoCoreTests/Guid", filePathBase, jo);
+            SaveJsonTempWithFolderStructure(coreTestsGuidPath, filePathBase, jo);
 
             var tempPath = Path.GetTempPath();
             var jsonFolder = Path.Combine(tempPath, jsonFolderName);
@@ -829,7 +832,7 @@ namespace Dynamo.Tests
             Assert.IsNotNullOrEmpty(jo.ToString());
 
             // Call structured copy function
-            SaveJsonTempWithFolderStructure("DynamoTestsJSON/DynamoCoreTests/NonGuid", filePathBase, jo);
+            SaveJsonTempWithFolderStructure(coreTestsNonGuidPath, filePathBase, jo);
 
             var tempPath = Path.GetTempPath();
             var jsonFolder = Path.Combine(tempPath, jsonNonGuidFolderName);
