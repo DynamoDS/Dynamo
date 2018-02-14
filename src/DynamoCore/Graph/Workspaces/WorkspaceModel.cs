@@ -407,6 +407,19 @@ namespace Dynamo.Graph.Workspaces
             if (handler != null) handler(obj);
         }
 
+        /// <summary>
+        /// This event is used to get the workspace model in JSON format.
+        /// This event is raised in the view model.
+        /// This is used for instrumentation. 
+        /// </summary>
+        internal delegate string PopulateJSONWorkspaceHandler(string modelData);
+        internal event PopulateJSONWorkspaceHandler PopulateJSONWorkspace;
+        protected virtual void OnPopulateJSONWorkspace(string modelData)
+        {
+            var handler = PopulateJSONWorkspace;
+            if (handler != null) handler(modelData);
+        }
+
         private void OnSyncWithDefinitionStart(NodeModel nodeModel)
         {
             hasNodeInSyncWithDefinition = true;
@@ -1501,22 +1514,17 @@ namespace Dynamo.Graph.Workspaces
 
         internal string GetStringRepOfWorkspace()
         {
-            // Create the xml document to write to.
-            var document = new XmlDocument();
-            document.CreateXmlDeclaration("1.0", null, null);
-            document.AppendChild(document.CreateElement("Workspace"));
+            //Send the data in JSON format
+            //step 1: convert the model to json
+            var json = this.ToJson(null);
 
-            //This is only used for computing relative offsets, it's not actually created
-            string virtualFileName = Path.Combine(Path.GetTempPath(), "DynamoTemp.dyn");
-            Utils.SetDocumentXmlPath(document, virtualFileName);
+            //step 2: raise the event to populate the view block
+            if (PopulateJSONWorkspace != null)
+            {
+                json = PopulateJSONWorkspace(json);
+            }
 
-            if (!PopulateXmlDocument(document))
-                return String.Empty;
-
-            //Now unset the temp file name again
-            Utils.SetDocumentXmlPath(document, null);
-
-            return document.OuterXml;
+            return json;
         }
 
         #region ILogSource implementation

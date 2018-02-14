@@ -451,6 +451,7 @@ namespace Dynamo.ViewModels
             Model.ConnectorAdded += Connectors_ConnectorAdded;
             Model.ConnectorDeleted += Connectors_ConnectorDeleted;
             Model.PropertyChanged += ModelPropertyChanged;
+            Model.PopulateJSONWorkspace += Model_PopulateJSONWorkspace;
             
             DynamoSelection.Instance.Selection.CollectionChanged += RefreshViewOnSelectionChange;
 
@@ -466,6 +467,16 @@ namespace Dynamo.ViewModels
 
             InCanvasSearchViewModel = new SearchViewModel(DynamoViewModel);
             InCanvasSearchViewModel.Visible = true;
+        }
+        /// <summary>
+        /// This event is triggred from Workspace Model. Used in instrumentation
+        /// </summary>
+        /// <param name="modelData"> Workspace model data as JSON </param>
+        /// <returns>workspace model with view block in string format</returns>
+        private string Model_PopulateJSONWorkspace(string modelData)
+        {
+             var jsonData = AddViewBlockToJSON(modelData);
+             return jsonData.ToString();
         }
 
         public override void Dispose()
@@ -485,6 +496,7 @@ namespace Dynamo.ViewModels
             Model.ConnectorAdded -= Connectors_ConnectorAdded;
             Model.ConnectorDeleted -= Connectors_ConnectorDeleted;
             Model.PropertyChanged -= ModelPropertyChanged;
+            Model.PopulateJSONWorkspace += Model_PopulateJSONWorkspace;
 
             DynamoSelection.Instance.Selection.CollectionChanged -= RefreshViewOnSelectionChange;
 
@@ -556,9 +568,7 @@ namespace Dynamo.ViewModels
                 var json = Model.ToJson(engine);
 
                 // Stage 2: Add the View.
-                var jo = JObject.Parse(json);
-                var token = JToken.Parse(this.ToJson());
-                jo.Add("View", token);
+                var jo = AddViewBlockToJSON(json);
 
                 // Stage 3: Save
                 File.WriteAllText(filePath, jo.ToString());
@@ -576,6 +586,18 @@ namespace Dynamo.ViewModels
                 Debug.WriteLine(ex.Message + " : " + ex.StackTrace);
                 throw (ex);
             }
+        }
+        /// <summary>
+        /// This function appends view block to the model json
+        /// </summary>
+        /// <param name="data">Workspace Model data in JSON format</param>
+        private JObject AddViewBlockToJSON(string modelData)
+        {
+            var jo = JObject.Parse(modelData);
+            var token = JToken.Parse(this.ToJson());
+            jo.Add("View", token);
+
+            return jo;
         }
 
         /// <summary>
