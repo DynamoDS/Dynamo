@@ -662,7 +662,7 @@ namespace Dynamo.Tests
 
             ConvertCurrentWorkspaceToDesignScriptAndSave(filePathBase);
 
-            string json = saveFunction(model, filePathBase);
+            string json = saveFunction(model, filePath);
 
             workspaceDataSaveFunction(wcd1, filePathBase, lastExecutionDuration, modelsGuidToIdMap);
 
@@ -759,12 +759,48 @@ namespace Dynamo.Tests
             Assert.IsTrue(inputs.SequenceEqual(inputs2));
         }
 
+        private static string SaveJsonTempWithFolderStructure(string folder, string filePath, JObject jo)
+        {
+            // Get all folder structure following "\\test"
+            var expectedStructure = filePath.Split(new string[] { "\\test" }, StringSplitOptions.None).Last();
+            // Update workspace name to be a file path, see QNTM-2973
+            jo["Name"] = expectedStructure.Replace("\\", "/");
 
+            // Current test fileName
+            var fileName = Path.GetFileName(filePath);
+
+            // Get temp folder path
+            var tempPath = Path.GetTempPath();
+            var jsonFolder = Path.Combine(tempPath, folder);
+            jsonFolder += Path.GetDirectoryName(expectedStructure);
+
+            if (!System.IO.Directory.Exists(jsonFolder))
+            {
+                System.IO.Directory.CreateDirectory(jsonFolder);
+            }
+
+            // Combine directory with test file name
+            var jsonPath = jsonFolder + "/" + fileName;
+
+            if (File.Exists(jsonPath))
+            {
+                File.Delete(jsonPath);
+            }
+
+            File.WriteAllText(jsonPath, jo.ToString());
+
+            return jo.ToString();
+        }
 
         private static string ConvertCurrentWorkspaceToJsonAndSave(DynamoModel model, string filePathBase)
         {
             var json = model.CurrentWorkspace.ToJson(model.EngineController);
+            var jo = JObject.Parse(json);
             Assert.IsNotNullOrEmpty(json);
+            Assert.IsNotNullOrEmpty(jo.ToString());
+
+            // Call structured copy function
+            SaveJsonTempWithFolderStructure("DynamoTestsJSON/DynamoCoreTests/Guid", filePathBase, jo);
 
             var tempPath = Path.GetTempPath();
             var jsonFolder = Path.Combine(tempPath, jsonFolderName);
@@ -787,10 +823,13 @@ namespace Dynamo.Tests
         private string ConvertCurrentWorkspaceToNonGuidJsonAndSave(DynamoModel model, string filePathBase)
         {
             var json = model.CurrentWorkspace.ToJson(model.EngineController);
-
             json = serializationTestUtils.replaceModelIdsWithNonGuids(json, model.CurrentWorkspace, modelsGuidToIdMap);
-
+            var jo = JObject.Parse(json);
             Assert.IsNotNullOrEmpty(json);
+            Assert.IsNotNullOrEmpty(jo.ToString());
+
+            // Call structured copy function
+            SaveJsonTempWithFolderStructure("DynamoTestsJSON/DynamoCoreTests/NonGuid", filePathBase, jo);
 
             var tempPath = Path.GetTempPath();
             var jsonFolder = Path.Combine(tempPath, jsonNonGuidFolderName);

@@ -580,17 +580,19 @@ namespace DynamoCoreWpfTests
 
         }
 
-        private static string SaveJsonTempWithFolderStructure(DynamoViewModel viewModel, string filePath, JObject jo)
+        private static string SaveJsonTempWithFolderStructure(string folder, string filePath, JObject jo)
         {   
             // Get all folder structure following "\\test"
             var expectedStructure = filePath.Split(new string[] { "\\test" }, StringSplitOptions.None).Last();
-
+            // Update workspace name to be a file path, see QNTM-2973
+            jo["Name"]=expectedStructure.Replace("\\", "/");
+            
             // Current test fileName
             var fileName = Path.GetFileName(filePath);
 
             // Get temp folder path
             var tempPath = Path.GetTempPath();
-            var jsonFolder = Path.Combine(tempPath, "DynamoTestJSON");
+            var jsonFolder = Path.Combine(tempPath, folder);
             jsonFolder += Path.GetDirectoryName(expectedStructure);
 
             if (!System.IO.Directory.Exists(jsonFolder))
@@ -599,7 +601,7 @@ namespace DynamoCoreWpfTests
             }
 
             // Combine directory with test file name
-            var jsonPath = jsonFolder + "\\" + fileName;
+            var jsonPath = jsonFolder + "/" + fileName;
 
             if (File.Exists(jsonPath))
             {
@@ -624,8 +626,8 @@ namespace DynamoCoreWpfTests
             Assert.IsNotNullOrEmpty(jsonModel);
             Assert.IsNotNullOrEmpty(jo.ToString());
 
-            // Call new structured copy function
-            SaveJsonTempWithFolderStructure(viewModel, filePath, jo);
+            // Call structured copy function
+            SaveJsonTempWithFolderStructure("DynamoTestsJSON/DynamoCoreWPFTests/Guid", filePath, jo);
 
             var tempPath = Path.GetTempPath();
             var jsonFolder = Path.Combine(tempPath, jsonFolderName);
@@ -662,8 +664,8 @@ namespace DynamoCoreWpfTests
 
             Assert.IsNotNullOrEmpty(json);
 
-            // Call new structured copy function
-            SaveJsonTempWithFolderStructure(viewModel, filePath, jo);
+            // Call structured copy function
+            SaveJsonTempWithFolderStructure("DynamoTestsJSON/DynamoCoreWPFTests/NonGuid", filePath, jo);
 
             var tempPath = Path.GetTempPath();
             var jsonFolder = Path.Combine(tempPath, jsonNonGuidFolderName);
