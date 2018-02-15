@@ -588,9 +588,10 @@ namespace DynamoCoreWpfTests
         /// <param name="filePath">original test file path</param>
         /// <param name="jo">test json object</param>
         private static void SaveJsonTempWithFolderStructure(string filePath, JObject jo)
-        {   
+        {
             // Get all folder structure following "\\test"
-            var expectedStructure = filePath.Split(new string[] { "\\test" }, StringSplitOptions.None).Last();
+            int subStringIndex = filePath.IndexOf("\\test") + 5;
+            var expectedStructure = filePath.Substring(subStringIndex);
             jo["Name"] = expectedStructure.Replace("\\", "/");
 
             // Current test fileName
