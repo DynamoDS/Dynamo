@@ -1374,7 +1374,7 @@ i=[Imperative]
         [Test, Category("Failure")]
         public void TestStringForloop()
         {
-            // TODO pratapa: Regression post Dictionary changes. Now returns null!
+            // TODO pratapa: Regression: Strings can no longer be indexed into
             string code = 
 @"
 r = [Imperative]
