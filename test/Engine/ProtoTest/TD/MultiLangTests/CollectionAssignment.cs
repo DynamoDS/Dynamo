@@ -3249,15 +3249,17 @@ test = foo().IntVal;
             thisTest.Verify("r", 5);
         }
 
-        [Test]
+        [Test, Category("Failure")]
         [Category("DSDefinedClass_Ported")]
         public void T60_DictionaryDotOperator()
         {
+            // TODO pratapa: Expressions not supported for Dictionary keys (can only be identifiers or strings currently)
             String code =
             @"
 def foo(c:int)
 {
-    a = { ""x"" : c, ""y"" : c + 1};
+    b = {""x"", ""y""};
+    a = { b[0] : c, b[1] : c + 1};
     return = a;
 }
 y = foo(5);
@@ -3267,15 +3269,16 @@ x = y[b];
 
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("x", new object[] { 5, 6 });
-        }
 
-        [Test]
+        }
+        [Test, Category("Failure")]
         public void T69_DictionaryDynamicArray()
         {
+            // TODO pratapa: Support expression for keys in Dictionary
             String code =
             @"
                 b = {""x"",""y""};
-                a = {""x"": 5, ""y"" : 6};
+                a = {b[0]: 5, b[1] : 6};
                 r = a[b];
             ";
 

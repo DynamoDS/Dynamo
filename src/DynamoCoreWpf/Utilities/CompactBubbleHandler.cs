@@ -59,8 +59,7 @@ namespace Dynamo.Wpf.Utilities
                     }
                     : null;
             }
-
-            if (mirrorData.IsPointer && mirrorData.Data is DesignScript.Builtin.Dictionary)
+            else if (mirrorData.IsPointer && mirrorData.Data is DesignScript.Builtin.Dictionary)
             {
                 var dict = mirrorData.Data as DesignScript.Builtin.Dictionary;
 
