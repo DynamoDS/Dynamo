@@ -10,7 +10,6 @@ using Dynamo.Wpf.Utilities;
 using ProtoCore.Mirror;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
@@ -371,10 +370,8 @@ namespace Dynamo.UI.Controls
             RunOnSchedulerSync(
                 () =>
                 {
-                    var preferredDictionaryOrdering = nodeViewModel.NodeModel.OutPorts.Select(p => p.Name);
                     newViewModel = nodeViewModel.DynamoViewModel.WatchHandler.GenerateWatchViewModelForData(
-                        nodeViewModel.NodeModel.CachedValue, preferredDictionaryOrdering, 
-                        null, nodeViewModel.NodeModel.AstIdentifierForPreview.Name, false);
+                        nodeViewModel.NodeModel.CachedValue, null, nodeViewModel.NodeModel.AstIdentifierForPreview.Name, false);
 
                 },
                 (m) =>
