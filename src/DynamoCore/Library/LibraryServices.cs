@@ -604,7 +604,7 @@ namespace Dynamo.Engine
             }
             catch (Exception e)
             {
-                OnLibraryLoadFailed(new LibraryLoadFailedEventArgs(library, e.Message));
+                OnLibraryLoadFailed(new LibraryLoadFailedEventArgs(library, e.Message, !isExplicitlyImportedLib));
                 return false;
             }
 
