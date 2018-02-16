@@ -205,7 +205,8 @@ namespace Dynamo.Graph.Nodes
         {
             get
             {
-                return !inPorts.Any();
+
+                return !inPorts.Any() && !IsCustomFunction;
             }
         }
 
