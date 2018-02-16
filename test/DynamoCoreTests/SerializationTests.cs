@@ -117,12 +117,12 @@ namespace Dynamo.Tests
                     NodeTypeMap.Add(n.GUID, n.GetType());
                     NodeReplicationMap.Add(n.GUID, n.ArgumentLacing.ToString());
                     //save input nodes to inputs block
-                    if (n.IsSetAsInput)
+                    if (n.IsSetAsInput && n.InputData != null)
                     {
                         InputsMap.Add(n.GUID, n.InputData);
                     }
                     //save output nodes to outputs block
-                    if (n.IsSetAsOutput)
+                    if (n.IsSetAsOutput && n.OutputData != null)
                     {
                         OutputsMap.Add(n.GUID, n.OutputData);
                     }
