@@ -353,12 +353,40 @@ namespace Dynamo.Tests
                                 ReferenceLoopHandling = ReferenceLoopHandling.Ignore
                             });
 
-            var dataPath = filePathBase + ".data";
-            if (File.Exists(dataPath))
+            // If "jsonWithView" test copy .data file to additional structured folder location
+            if (!filePathBase.Contains("jsonWithView"))
             {
-                File.Delete(dataPath);
+                var dataPath = filePathBase + ".data";
+                var tempDir = Path.GetTempPath();
+                var fileName = Path.GetFileName(dataPath);
+                var flattenedPath = tempDir + "jsonWithView\\" + fileName;
+
+                if (File.Exists(dataPath))
+                {
+                    File.Delete(dataPath);
+                }
+
+                // Write to structured path
+                File.WriteAllText(dataPath, dataMapStr);
+
+                if (File.Exists(flattenedPath))
+                {
+                    File.Delete(flattenedPath);
+                }
+
+                // Write to flattened path
+                File.WriteAllText(flattenedPath, dataMapStr);
             }
-            File.WriteAllText(dataPath, dataMapStr);
+
+            else
+            {
+                var dataPath = filePathBase + ".data";
+                if (File.Exists(dataPath))
+                {
+                    File.Delete(dataPath);
+                }
+                File.WriteAllText(dataPath, dataMapStr);
+            }
         }
 
         /// <summary>
