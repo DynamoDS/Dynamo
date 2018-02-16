@@ -968,6 +968,8 @@ namespace DynamoCoreWpfTests
             public bool Excluded { get; set; }
             public double X { get; set; }
             public double Y { get; set; }
+            public bool IsInput { get; set; }
+            public bool IsOutput { get; set; }
 
             public override bool Equals(object obj)
             {
@@ -977,7 +979,9 @@ namespace DynamoCoreWpfTests
                     other.Name == this.Name &&
                     other.Excluded == this.Excluded &&
                     Math.Abs(other.X - this.X) < .0001 &&
-                    Math.Abs(other.Y - this.Y) < .0001;
+                    Math.Abs(other.Y - this.Y) < .0001 &&
+                    other.IsInput == this.IsInput &&
+                    other.IsOutput == this.IsOutput;
             }
         }
 
@@ -1027,7 +1031,8 @@ namespace DynamoCoreWpfTests
                         Excluded = n.IsFrozenExplicitly,
                         X = n.X,
                         Y = n.Y,
-
+                        IsInput = n.IsSetAsInput,
+                        IsOutput = n.IsSetAsOutput
                     });
                 }
 
