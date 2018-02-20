@@ -750,7 +750,11 @@ namespace Dynamo.Tests
 
             //assert that the inputs in the saved json file are the same as those we can gather from the 
             //graph at runtime - because we don't deserialize these directly we check the json itself.
-            var jObject = JObject.Parse(json);
+            //Use load vs parse to preserve date time strings.
+            var jsonReader = new JsonTextReader(new StringReader(json));
+            jsonReader.DateParseHandling = DateParseHandling.None;
+            var jObject = JObject.Load(jsonReader);
+
             var jToken = jObject["Inputs"];
             var inputs = jToken.ToArray().Select(x => x.ToObject<NodeInputData>()).ToList();
             var inputs2 = ws1.Nodes.Where(x => x.IsSetAsInput == true && x.InputData != null).Select(input => input.InputData).ToList();
