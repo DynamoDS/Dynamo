@@ -1522,7 +1522,8 @@ namespace Dynamo.Graph.Workspaces
             {
                 json = PopulateJSONWorkspace(json);
             }
-
+            //If there is any parse error when serializing View block
+            //then the entire json becomes null.
             return json;
         }
 
