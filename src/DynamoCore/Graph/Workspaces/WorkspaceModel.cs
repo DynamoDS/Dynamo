@@ -25,6 +25,7 @@ using ProtoCore.Namespace;
 using Utils = Dynamo.Graph.Nodes.Utilities;
 using Dynamo.Engine;
 using Dynamo.Scheduler;
+using Newtonsoft.Json.Linq;
 
 namespace Dynamo.Graph.Workspaces
 {
@@ -411,9 +412,9 @@ namespace Dynamo.Graph.Workspaces
         /// This handler handles the workspaceModel's request to populate a JSON with view data.
         /// This is used to construct a full workspace for instrumentation.
         /// </summary>
-        internal delegate string PopulateJSONWorkspaceHandler(string modelData);
+        internal delegate string PopulateJSONWorkspaceHandler(JObject modelData);
         internal event PopulateJSONWorkspaceHandler PopulateJSONWorkspace;
-        protected virtual void OnPopulateJSONWorkspace(string modelData)
+        protected virtual void OnPopulateJSONWorkspace(JObject modelData)
         {
             var handler = PopulateJSONWorkspace;
             if (handler != null) handler(modelData);
@@ -1513,18 +1514,28 @@ namespace Dynamo.Graph.Workspaces
 
         internal string GetStringRepOfWorkspace()
         {
-            //Send the data in JSON format
-            //step 1: convert the model to json
-            var json = this.ToJson(null);
-
-            //step 2: raise the event to populate the view block
-            if (PopulateJSONWorkspace != null)
+            try
             {
-                json = PopulateJSONWorkspace(json);
+                //Send the data in JSON format
+                //step 1: convert the model to json
+                var json = this.ToJson(null);
+
+                //step2 : parse it as JObject
+                var jo = JObject.Parse(json);
+
+                //step 2: raise the event to populate the view block
+                if (PopulateJSONWorkspace != null)
+                {
+                    json = PopulateJSONWorkspace(jo);
+                }
+
+                return json;
             }
-            //If there is any parse error when serializing View block
-            //then the entire json becomes null.
-            return json;
+            catch (Exception ex)
+            {
+                return ex.InnerException.ToString();
+            }
+          
         }
 
         #region ILogSource implementation

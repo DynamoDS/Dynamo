@@ -473,7 +473,7 @@ namespace Dynamo.ViewModels
         /// </summary>
         /// <param name="modelData"> Workspace model data as JSON </param>
         /// <returns>workspace model with view block in string format</returns>
-        private string Model_PopulateJSONWorkspace(string modelData)
+        private string Model_PopulateJSONWorkspace(JObject modelData)
         {
              var jsonData = AddViewBlockToJSON(modelData);
              return jsonData.ToString();
@@ -566,9 +566,10 @@ namespace Dynamo.ViewModels
                 }
               
                 var json = Model.ToJson(engine);
+                var json_parsed = JObject.Parse(json);
 
                 // Stage 2: Add the View.
-                var jo = AddViewBlockToJSON(json);
+                var jo = AddViewBlockToJSON(json_parsed);
 
                 // Stage 3: Save
                 File.WriteAllText(filePath, jo.ToString());
@@ -591,21 +592,12 @@ namespace Dynamo.ViewModels
         /// This function appends view block to the model json
         /// </summary>
         /// <param name="modelData">Workspace Model data in JSON format</param>
-        private JObject AddViewBlockToJSON(string modelData)
+        private JObject AddViewBlockToJSON(JObject modelData)
         {
-            JObject jo = null;
-            try
-            {
-                jo = JObject.Parse(modelData);
-                var token = JToken.Parse(this.ToJson());
-                jo.Add("View", token);
-            }
-            catch(Exception ex)
-            {
-                return jo;
-            }
-           
-            return jo;
+            var token = JToken.Parse(this.ToJson());
+            modelData.Add("View", token);
+
+            return modelData;
         }
 
         /// <summary>
