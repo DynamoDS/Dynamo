@@ -21,6 +21,7 @@ using Dynamo.Models;
 using Dynamo.Graph.Workspaces;
 using Dynamo.ViewModels;
 using Dynamo.Engine;
+using Dynamo.Engine.NodeToCode;
 using Dynamo.Wpf.ViewModels.Core;
 using Dynamo.Wpf.ViewModels.Watch3D;
 using Newtonsoft.Json;
@@ -603,7 +604,7 @@ namespace DynamoCoreWpfTests
         /// </summary>
         /// <param name="filePath">original test file path</param>
         /// <param name="jo">test json object</param>
-        private static void SaveJsonTempWithFolderStructure(string filePath, JObject jo)
+        private static void SaveJsonTempWithFolderStructure(string filePath, JObject jo, DynamoModel currentDynamoModel)
         {
             // Get all folder structure following "\\test"
             var expectedStructure = filePath.Remove(0, SerializationTests.TestDirectory.Length);
@@ -632,6 +633,11 @@ namespace DynamoCoreWpfTests
             }
 
             File.WriteAllText(jsonPath, jo.ToString());
+
+            // Write DesignScript file
+            string dsFileName = Path.GetFileNameWithoutExtension(fileName);
+            string dsPath = jsonFolder + "\\" + dsFileName;
+            ConvertCurrentWorkspaceToDesignScriptAndSave(dsPath, currentDynamoModel);
         }
 
         private static string ConvertCurrentWorkspaceViewToJsonAndSave(DynamoViewModel viewModel, string filePath)
@@ -649,7 +655,7 @@ namespace DynamoCoreWpfTests
 
             // Call structured copy function for CoGS testing, see QNTM-2973
             // Only called for CoreWPFTests w/ Guids
-            SaveJsonTempWithFolderStructure(filePath, jo);
+            SaveJsonTempWithFolderStructure(filePath, jo, viewModel.Model);
 
             var tempPath = Path.GetTempPath();
             var jsonFolder = Path.Combine(tempPath, jsonFolderName);
@@ -704,6 +710,39 @@ namespace DynamoCoreWpfTests
             File.WriteAllText(jsonPath, json);
 
             return json;
+        }
+
+        private static void ConvertCurrentWorkspaceToDesignScriptAndSave(string filePathBase, DynamoModel currentDynamoModel)
+        {
+            try
+            {
+                var workspace = currentDynamoModel.CurrentWorkspace;
+
+                var libCore = currentDynamoModel.EngineController.LibraryServices.LibraryManagementCore;
+                var libraryServices = new LibraryCustomizationServices(currentDynamoModel.PathManager);
+                var nameProvider = new NamingProvider(libCore, libraryServices);
+                var controller = currentDynamoModel.EngineController;
+                var resolver = currentDynamoModel.CurrentWorkspace.ElementResolver;
+                var namingProvider = new NamingProvider(controller.LibraryServices.LibraryManagementCore, libraryServices);
+
+                var result = NodeToCodeCompiler.NodeToCode(libCore, workspace.Nodes, workspace.Nodes, namingProvider);
+                NodeToCodeCompiler.ReplaceWithShortestQualifiedName(
+                        controller.LibraryServices.LibraryManagementCore.ClassTable, result.AstNodes, resolver);
+                var codegen = new ProtoCore.CodeGenDS(result.AstNodes);
+                var ds = codegen.GenerateCode();
+
+                var dsPath = filePathBase + ".ds";
+                if (File.Exists(dsPath))
+                {
+                    File.Delete(dsPath);
+                }
+                File.WriteAllText(dsPath, ds);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                Assert.Inconclusive("The current workspace could not be converted to Design Script.");
+            }
         }
 
         private void CompareWorkspaceViews(WorkspaceViewComparisonData a, WorkspaceViewComparisonData b)
@@ -786,8 +825,6 @@ namespace DynamoCoreWpfTests
                 a.NodeViewDataMap[kvp.Key].Name, valueA, valueB));
             }
         }
-
-
 
         [TestFixtureSetUp]
         public void FixtureSetup()
@@ -940,7 +977,6 @@ namespace DynamoCoreWpfTests
             File.Delete(savePath);
 
         }
-
 
         [Test]
         public void AllTypesSerialize()
