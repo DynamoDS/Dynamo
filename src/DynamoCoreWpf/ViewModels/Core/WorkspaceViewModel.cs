@@ -590,13 +590,21 @@ namespace Dynamo.ViewModels
         /// <summary>
         /// This function appends view block to the model json
         /// </summary>
-        /// <param name="data">Workspace Model data in JSON format</param>
+        /// <param name="modelData">Workspace Model data in JSON format</param>
         private JObject AddViewBlockToJSON(string modelData)
         {
-            var jo = JObject.Parse(modelData);
-            var token = JToken.Parse(this.ToJson());
-            jo.Add("View", token);
-
+            JObject jo = null;
+            try
+            {
+                jo = JObject.Parse(modelData);
+                var token = JToken.Parse(this.ToJson());
+                jo.Add("View", token);
+            }
+            catch(Exception ex)
+            {
+                return jo;
+            }
+           
             return jo;
         }
 

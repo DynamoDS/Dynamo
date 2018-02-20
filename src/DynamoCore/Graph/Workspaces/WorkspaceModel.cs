@@ -408,9 +408,8 @@ namespace Dynamo.Graph.Workspaces
         }
 
         /// <summary>
-        /// This event is used to get the workspace model in JSON format.
-        /// This event is raised in the view model.
-        /// This is used for instrumentation. 
+        /// This handler handles the workspaceModel's request to populate a JSON with view data.
+        /// This is used to construct a full workspace for instrumentation.
         /// </summary>
         internal delegate string PopulateJSONWorkspaceHandler(string modelData);
         internal event PopulateJSONWorkspaceHandler PopulateJSONWorkspace;
