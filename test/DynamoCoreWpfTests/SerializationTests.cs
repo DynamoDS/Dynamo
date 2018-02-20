@@ -637,7 +637,7 @@ namespace DynamoCoreWpfTests
             // Write DesignScript file
             string dsFileName = Path.GetFileNameWithoutExtension(fileName);
             string dsPath = jsonFolder + "\\" + dsFileName;
-            ConvertCurrentWorkspaceToDesignScriptAndSave(dsPath, currentDynamoModel);
+            serializationTestUtils.ConvertCurrentWorkspaceToDesignScriptAndSave(dsPath, currentDynamoModel);
         }
 
         private static string ConvertCurrentWorkspaceViewToJsonAndSave(DynamoViewModel viewModel, string filePath)
@@ -710,39 +710,6 @@ namespace DynamoCoreWpfTests
             File.WriteAllText(jsonPath, json);
 
             return json;
-        }
-
-        private static void ConvertCurrentWorkspaceToDesignScriptAndSave(string filePathBase, DynamoModel currentDynamoModel)
-        {
-            try
-            {
-                var workspace = currentDynamoModel.CurrentWorkspace;
-
-                var libCore = currentDynamoModel.EngineController.LibraryServices.LibraryManagementCore;
-                var libraryServices = new LibraryCustomizationServices(currentDynamoModel.PathManager);
-                var nameProvider = new NamingProvider(libCore, libraryServices);
-                var controller = currentDynamoModel.EngineController;
-                var resolver = currentDynamoModel.CurrentWorkspace.ElementResolver;
-                var namingProvider = new NamingProvider(controller.LibraryServices.LibraryManagementCore, libraryServices);
-
-                var result = NodeToCodeCompiler.NodeToCode(libCore, workspace.Nodes, workspace.Nodes, namingProvider);
-                NodeToCodeCompiler.ReplaceWithShortestQualifiedName(
-                        controller.LibraryServices.LibraryManagementCore.ClassTable, result.AstNodes, resolver);
-                var codegen = new ProtoCore.CodeGenDS(result.AstNodes);
-                var ds = codegen.GenerateCode();
-
-                var dsPath = filePathBase + ".ds";
-                if (File.Exists(dsPath))
-                {
-                    File.Delete(dsPath);
-                }
-                File.WriteAllText(dsPath, ds);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex);
-                Assert.Inconclusive("The current workspace could not be converted to Design Script.");
-            }
         }
 
         private void CompareWorkspaceViews(WorkspaceViewComparisonData a, WorkspaceViewComparisonData b)
