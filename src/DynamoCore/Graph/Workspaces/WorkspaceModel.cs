@@ -1531,14 +1531,27 @@ namespace Dynamo.Graph.Workspaces
 
                 return json;
             }
-            catch (Exception ex)
+            catch (JsonReaderException ex)
             {
-                JArray array = new JArray {ex.InnerException.ToString()};
-                JObject jo = new JObject {["exception"] = array};
+                JArray array = new JArray();
+                array.Add(ex.Message);
+
+                JObject jo = new JObject();
+                jo["exception"] = array;
 
                 return jo.ToString();
             }
-          
+            catch (Exception ex)
+            {
+                JArray array = new JArray();
+                array.Add(ex.InnerException.ToString());
+
+                JObject jo = new JObject();
+                jo["exception"] = array;
+
+                return jo.ToString();
+            }
+
         }
 
         #region ILogSource implementation
