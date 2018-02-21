@@ -1533,7 +1533,10 @@ namespace Dynamo.Graph.Workspaces
             }
             catch (Exception ex)
             {
-                return ex.InnerException.ToString();
+                JArray array = new JArray {ex.InnerException.ToString()};
+                JObject jo = new JObject {["exception"] = array};
+
+                return jo.ToString();
             }
           
         }
