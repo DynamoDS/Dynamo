@@ -205,11 +205,12 @@ namespace Dynamo.Graph.Nodes
         {
             get
             {
-                return !inPorts.Any();
+
+                return !inPorts.Any() && !IsCustomFunction;
             }
         }
 
-        private bool isSetAsInput = true;
+        private bool isSetAsInput = false;
         /// <summary>
         /// This property is user-controllable via a checkbox and is set to true when a user wishes to include
         /// this node in a Customizer as an interactive control.
@@ -228,6 +229,43 @@ namespace Dynamo.Graph.Nodes
             set
             {
                 isSetAsInput = value;
+            }
+        }
+
+        /// <summary>
+        /// Output nodes are used by applications that consume graphs outside of Dynamo such as Optioneering, Optimization, 
+        /// and Dynamo Player. Output nodes can be any node that returns a single output or a dictionary. Code block nodes and
+        /// Custom nodes are specifically excluded at this time even though they can return a single output for sake of clarity. 
+        /// </summary>
+        [JsonIgnore]
+        public virtual bool IsOutputNode
+        {
+            get
+            {
+                return !IsCustomFunction;
+            }
+        }
+
+        private bool isSetAsOutput = false;
+
+        /// <summary>
+        /// This property is user-controllable via a checkbox and is set to true when a user wishes to include
+        /// this node in the OutputData block of the Dyn file.
+        /// </summary>
+        [JsonIgnore]
+        public bool IsSetAsOutput
+        {
+            get
+            {
+                if (!IsOutputNode)
+                    return false;
+
+                return isSetAsOutput;
+            }
+
+            set
+            {
+                isSetAsOutput = value;
             }
         }
 
@@ -836,6 +874,32 @@ namespace Dynamo.Graph.Nodes
         public virtual NodeInputData InputData
         {
            get { return null; }
+        }
+
+        [JsonIgnore]
+        public virtual NodeOutputData OutputData
+        {
+            get
+            {
+                // Determine if the output type can be determined at this time
+                // Current enum supports String, Integer, Float, Boolean, and unknown
+                // When CachedValue is null, type is set to unknown
+                // When Concrete type is dictionary or other type not expressed in enum, type is set to unknown
+                object returnObj = CachedValue?.Data?? new object();
+                var returnType = NodeOutputData.getNodeOutputTypeFromType(returnObj.GetType());
+
+                // IntialValue is returned when the Type enum does not equal unknown
+                var returnValue = (returnType != NodeOutputTypes.unknownOutput) ? returnObj.ToString() : String.Empty; 
+                
+                return new NodeOutputData()
+                {
+                    Id = this.GUID,
+                    Name = this.Name,
+                    Type = returnType,
+                    Description = this.Description,
+                    IntitialValue = returnValue
+                };
+            }
         }
 
         #endregion
@@ -2041,6 +2105,7 @@ namespace Dynamo.Graph.Nodes
             helper.SetAttribute("isVisible", IsVisible);
             helper.SetAttribute("lacing", ArgumentLacing.ToString());
             helper.SetAttribute("isSelectedInput", IsSetAsInput.ToString());
+            helper.SetAttribute("isSelectedOutput", IsSetAsOutput.ToString());
             helper.SetAttribute("IsFrozen", isFrozenExplicitly);
             helper.SetAttribute("isPinned", PreviewPinned);
 
@@ -2097,7 +2162,8 @@ namespace Dynamo.Graph.Nodes
             Y = helper.ReadDouble("y", 0.0);
             isVisible = helper.ReadBoolean("isVisible", true);
             argumentLacing = helper.ReadEnum("lacing", LacingStrategy.Disabled);
-            IsSetAsInput = helper.ReadBoolean("isSelectedInput", true);
+            IsSetAsInput = helper.ReadBoolean("isSelectedInput", false);
+            IsSetAsOutput = helper.ReadBoolean("isSelectedOutput", false);
             isFrozenExplicitly = helper.ReadBoolean("IsFrozen", false);
             PreviewPinned = helper.ReadBoolean("isPinned", false);
 

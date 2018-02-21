@@ -1451,6 +1451,9 @@ Uninstall the following dependent packages: {1}?</value>
   <data name="NodeContextMenuIsInput" xml:space="preserve">
     <value>Is Input</value>
   </data>
+  <data name="NodeContextMenuIsOutput" xml:space="preserve">
+    <value>Is Output</value>
+  </data>
   <data name="NodeContextMenuPreview" xml:space="preserve">
     <value>Preview</value>
     <comment>Context menu item - preview geometry</comment>
