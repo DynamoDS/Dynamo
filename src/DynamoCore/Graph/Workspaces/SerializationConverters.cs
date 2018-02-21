@@ -138,7 +138,29 @@ namespace Dynamo.Graph.Workspaces
             else if (type == typeof(CodeBlockNodeModel))
             {
                 var code = obj["Code"].Value<string>();
-                node = new CodeBlockNodeModel(code, guid, 0.0, 0.0, libraryServices, ElementResolver);
+                CodeBlockNodeModel codeBlockNode = new CodeBlockNodeModel(code, guid, 0.0, 0.0, libraryServices, ElementResolver);
+                node = codeBlockNode;
+
+                if (node.IsInErrorState)
+                {
+                    List<string> inPortNames = new List<string>();
+                    var inputNames = obj["InPortNames"];
+                    foreach (string inputName in inputNames)
+                    {
+                        inPortNames.Add(inputName);
+                    }
+
+                    codeBlockNode.SetErrorStateInputPorts(inPortNames);
+
+                    List<int> outPortLineIndexes = new List<int>();
+                    var outputLineIndexes = obj["OutPortLineIndexes"];
+                    foreach (int outputLineIndex in outputLineIndexes)
+                    {
+                        outPortLineIndexes.Add(outputLineIndex);
+                    }
+
+                    codeBlockNode.SetErrorStateOutputPorts(outPortLineIndexes);
+                }
             }
             else if (typeof(DSFunctionBase).IsAssignableFrom(type))
             {
@@ -582,9 +604,9 @@ namespace Dynamo.Graph.Workspaces
                 throw new ArgumentException("originalContent is not JSON compatible.");
 
             originalContent.WriteTo(writer);
-    }
+        }
 
-    public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
             throw new NotImplementedException();
         }

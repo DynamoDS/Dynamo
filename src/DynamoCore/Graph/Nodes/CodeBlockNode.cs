@@ -239,6 +239,46 @@ namespace Dynamo.Graph.Nodes
             private set { code = value; }
         }
 
+        private List<string> inPortNames = new List<string>();
+
+        /// <summary>
+        ///     Returns a list of in port names
+        /// </summary>
+        private List<string> InPortNames
+        {
+            set
+            {
+                inPortNames = value;
+            }
+            get
+            {
+                inPortNames = new List<string>();
+                foreach (var inPort in InPorts)
+                {
+                    inPortNames.Add(inPort.Name);
+                }
+
+                return inPortNames;
+            }
+        }
+
+        /// <summary>
+        ///     Returns a list of out port indexes
+        /// </summary>
+        private List<int> OutPortLineIndexes
+        {
+            get
+            {
+                List<int> outPortIndexes = new List<int>();
+                foreach (var outPort in OutPorts)
+                {
+                    outPortIndexes.Add(outPort.LineIndex);
+                }
+
+                return outPortIndexes;
+            }
+        }
+
         /// <summary>
         /// Sets string content of CodeBlock node.
         /// </summary>
@@ -657,6 +697,7 @@ namespace Dynamo.Graph.Nodes
                     errorMessage = string.Join("\n", parseParam.Errors.Select(m => m.Message));
                     ProcessError();
                     CreateInputOutputPorts();
+
                     return;
                 }
 
@@ -787,19 +828,47 @@ namespace Dynamo.Graph.Nodes
             RegisterAllPorts();
         }
 
+        internal void SetErrorStateInputPorts(List<string> inputPortNames)
+        {
+            if (inputPortNames != null)
+            {
+                this.inputPortNames = inputPortNames;
+            }
+
+            SetInputPorts();
+        }
+
         private void SetInputPorts()
         {
-            //this extension method is used instead because 
-            //observableCollection has very odd behavior when cleared - 
-            //there is no way to reference the cleared items and so they 
-            //cannot be cleaned up properly
+            // This extension method is used instead because 
+            // observableCollection has very odd behavior when cleared - 
+            // there is no way to reference the cleared items and so they 
+            // cannot be cleaned up properly
 
-           InPorts.RemoveAll((p) => { return true; });
+            InPorts.RemoveAll((p) => { return true; });
 
             // Generate input port data list from the unbound identifiers.
             var inportData = CodeBlockUtils.GenerateInputPortData(inputPortNames);
             foreach (var portData in inportData)
                 InPorts.Add(new PortModel(PortType.Input, this, portData));
+        }
+
+        internal void SetErrorStateOutputPorts(List<int> outputPortIndexes)
+        {
+            if (outputPortIndexes != null)
+            {
+                foreach (var outputPortIndex in outputPortIndexes)
+                {
+                  var tooltip = string.Format(Resources.CodeBlockTempIdentifierOutputLabel, outputPortIndex);
+                  OutPorts.Add(new PortModel(PortType.Output, this, new PortData(string.Empty, tooltip)
+                  {
+                    LineIndex = outputPortIndex, // Logical line index.
+                    Height = Configurations.CodeBlockPortHeightInPixels
+                  }));
+                }
+            }
+
+            SetOutputPorts();
         }
 
         private void SetOutputPorts()
@@ -809,11 +878,12 @@ namespace Dynamo.Graph.Nodes
             if (allDefs.Any() == false)
                 return;
 
-            //this extension method is used instead because 
-            //observableCollection has very odd behavior when cleared - 
-            //there is no way to reference the cleared items and so they 
-            //cannot be cleaned up properly
-            //Clear out all the output port models
+            // This extension method is used instead because 
+            // observableCollection has very odd behavior when cleared - 
+            // there is no way to reference the cleared items and so they 
+            // cannot be cleaned up properly
+            
+            // Clear out all the output port models
             OutPorts.RemoveAll((p) => { return true; });
 
             foreach (var def in allDefs)
