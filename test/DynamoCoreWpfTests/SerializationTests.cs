@@ -548,7 +548,7 @@ namespace DynamoCoreWpfTests
                 // Get structured test path
                 var testPath = filePath.Remove(0, SerializationTests.TestDirectory.Length);
                 var tempPath = Path.GetTempPath();
-                var fullPath = System.IO.Path.ChangeExtension(tempPath + jsonStructuredFolderName + testPath, null);
+                var fullPath = System.IO.Path.ChangeExtension(tempPath + jsonStructuredFolderName + testPath + fi.Extension, null);
                 workspaceViewDataSaveFunction(wcd1, fullPath, lastExecutionDuration, this.modelsGuidToIdMap);
             }
 
@@ -636,6 +636,16 @@ namespace DynamoCoreWpfTests
 
             // Write DesignScript file
             string dsFileName = Path.GetFileNameWithoutExtension(fileName);
+            string extension = Path.GetExtension(filePath);
+
+            // Determine if .dyn or .dyf
+            // If .dyn and .dyf share common file name .ds and .data files is collide
+            // To avoid this append _dyf to .data and .ds files for all .dyf files
+            if (extension == ".dyf")
+            {
+                dsFileName += "_dyf";
+            }
+
             string dsPath = jsonFolder + "\\" + dsFileName;
             serializationTestUtils.ConvertCurrentWorkspaceToDesignScriptAndSave(dsPath, currentDynamoModel);
         }
