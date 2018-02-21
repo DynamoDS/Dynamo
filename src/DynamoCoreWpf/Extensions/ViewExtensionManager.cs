@@ -51,7 +51,6 @@ namespace Dynamo.Wpf.Extensions
         }
         private IViewExtension RequestLoadViewExtensionHandler(string extensionPath)
         {
-            //TODO might be able to get rid of this check.
             // If the path is a viewExtension - load it.
             if ((extensionPath.Contains("_ViewExtensionDefinition")))
             {
