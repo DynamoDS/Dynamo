@@ -1,0 +1,4 @@
+﻿<ViewExtensionDefinition>
+  <AssemblyPath>..\DynamoPackagesWPF.dll</AssemblyPath>
+  <TypeName>Dynamo.PackageManager.UI.PackageManagerViewExtension</TypeName>
+</ViewExtensionDefinition>

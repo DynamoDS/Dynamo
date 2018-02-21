@@ -17,19 +17,18 @@ namespace Dynamo.Extensions
         /// <summary>
         /// Event that is raised when the ExtensionSource requests an Extension be loaded.
         /// </summary>
-        event Func<string, dynamic> RequestLoadExtension;
+        event Func<string, IExtension> RequestLoadExtension;
 
         /// <summary>
         /// Event that is raised when ExtensionSource requests an Extension to be added to 
         /// list of currently loaded extensions.
         /// </summary>
-        event Action<dynamic> RequestAddExtension;
+        event Action<IExtension> RequestAddExtension;
 
         /// <summary>
-        /// A map of the extension manifest paths which the package loader found during package load
-        /// and has requested be loaded. The result of the load request is mapped to the requested path.
+        /// Collection of Extensions this ExtensionSource has requested be loaded.
         /// </summary>
-        Dictionary<string, dynamic> RequestedExtensions { get;}
+        IEnumerable<IExtension> RequestedExtensions { get;}
     }
 
     /// <summary>

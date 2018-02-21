@@ -7,6 +7,28 @@ using System.Collections.Generic;
 
 namespace Dynamo.Wpf.Extensions
 {
+    /// <summary>
+    /// An object which may request ViewExtensions to be loaded and added to the ViewExtensionsManager.
+    /// </summary>
+    public interface IViewExtensionSource
+    {
+        /// <summary>
+        /// Event that is raised when the ViewExtensionSource requests a ViewExtension be loaded.
+        /// </summary>
+        event Func<string, IViewExtension> RequestLoadExtension;
+
+        /// <summary>
+        /// Event that is raised when ViewExtensionSource requests a ViewExtension to be added to 
+        /// list of currently loaded ViewExtensions.
+        /// </summary>
+        event Action<IViewExtension> RequestAddExtension;
+
+        /// <summary>
+        /// Collection of ViewExtensions the ViewExtensionSource requested be loaded.
+        /// </summary>
+        IEnumerable<IViewExtension> RequestedExtensions { get; }
+    }
+
     internal class ViewExtensionManager : IViewExtensionManager, ILogSource
     {
         private readonly List<IViewExtension> viewExtensions = new List<IViewExtension>();
@@ -19,7 +41,7 @@ namespace Dynamo.Wpf.Extensions
             this.ExtensionRemoved += UnsubscribeViewExtension;
         }
 
-        private void RequestAddViewExtensionHandler(dynamic viewExtension)
+        private void RequestAddViewExtensionHandler(IViewExtension viewExtension)
         {
             if (viewExtension is IViewExtension)
             {
@@ -29,6 +51,7 @@ namespace Dynamo.Wpf.Extensions
         }
         private IViewExtension RequestLoadViewExtensionHandler(string extensionPath)
         {
+            //TODO might be able to get rid of this check.
             // If the path is a viewExtension - load it.
             if ((extensionPath.Contains("_ViewExtensionDefinition")))
             {
@@ -40,21 +63,19 @@ namespace Dynamo.Wpf.Extensions
 
         private void UnsubscribeViewExtension(IViewExtension obj)
         {
-            if (obj is IExtensionSource)
+            if (obj is IViewExtensionSource)
             {
-                (obj as IExtensionSource).RequestLoadExtension -= RequestLoadViewExtensionHandler;
-                (obj as IExtensionSource).RequestAddExtension -= RequestAddViewExtensionHandler ;
+                (obj as IViewExtensionSource).RequestLoadExtension -= RequestLoadViewExtensionHandler;
+                (obj as IViewExtensionSource).RequestAddExtension -= RequestAddViewExtensionHandler ;
             }
         }
 
         private void SubscribeViewExtension(IViewExtension obj)
         {
-            //if this extension could be a source of other extensions (like packageManagerExtension) then
-            //lets handle those requests.
-            if (obj is IExtensionSource)
+            if (obj is IViewExtensionSource)
             {
-                (obj as IExtensionSource).RequestLoadExtension += RequestLoadViewExtensionHandler;
-                (obj as IExtensionSource).RequestAddExtension += RequestAddViewExtensionHandler;
+                (obj as IViewExtensionSource).RequestLoadExtension += RequestLoadViewExtensionHandler;
+                (obj as IViewExtensionSource).RequestAddExtension += RequestAddViewExtensionHandler;
             }
 
         }

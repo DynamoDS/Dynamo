@@ -62,7 +62,7 @@ namespace Dynamo.PackageManager.Tests
             var pkg = loader.ScanPackageDirectory(pkgDir);
             loader.Load(pkg);
 
-            Assert.IsTrue(loader.RequestedExtensions.Count == 1);
+            Assert.IsTrue(loader.RequestedExtensions.Count() == 1);
             Assert.IsTrue(extensionLoad);
             Assert.IsTrue(extensionAdd);
             Assert.IsTrue(extensionReady);
@@ -93,7 +93,7 @@ namespace Dynamo.PackageManager.Tests
             var pkg = loader.ScanPackageDirectory(pkgDir);
             loader.Load(pkg);
 
-            Assert.IsTrue(loader.RequestedExtensions.Count == 1);
+            Assert.IsTrue(loader.RequestedExtensions.Count() == 1);
             Assert.IsTrue(viewExtensionLoad);
             //will be false as we return null.
             Assert.IsFalse(viewExtensionAdd);

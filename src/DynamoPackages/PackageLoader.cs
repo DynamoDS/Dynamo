@@ -30,15 +30,37 @@ namespace Dynamo.PackageManager
     {
         internal event Action<Assembly> RequestLoadNodeLibrary;
         internal event Func<string, IEnumerable<CustomNodeInfo>> RequestLoadCustomNodeDirectory;
-        internal event Func<string, dynamic> RequestLoadExtension;
-        internal event Action<dynamic> RequestAddExtension;
-        public event Action<Package> PackageAdded;
-        public event Action<Package> PackageRemoved;
+        internal event Func<string, IExtension> RequestLoadExtension;
+        internal event Action<IExtension> RequestAddExtension;
+
         /// <summary>
-        /// A map of the extension manifest paths which the package loader found during package load
-        /// and has requested be loaded. The result of the load request is mapped to the requested path.
+        /// This event is raised when a package is first added to the list of packages this package loader is loading.
+        /// This event occurs before the package is fully loaded. 
         /// </summary>
-        public Dictionary<string, dynamic> RequestedExtensions { get; private set; } = new Dictionary<string, dynamic>();
+        public event Action<Package> PackageAdded;
+
+        /// <summary>
+        /// This event is raised when a package is fully loaded. It will be true that when this event is raised
+        /// Packge.Loaded will be true for the package.
+        /// </summary>
+        public event Action<Package> PackgeLoaded;
+
+        /// <summary>
+        /// This event is raised when the package is removed from the list of packages loaded by this packageLoader.
+        /// </summary>
+        public event Action<Package> PackageRemoved;
+
+        private readonly List<IExtension> requestedExtensions = new List<IExtension>();
+        /// <summary>
+        /// Collection of ViewExtensions the ViewExtensionSource requested be loaded.
+        /// </summary>
+        public IEnumerable<IExtension> RequestedExtensions
+        {
+            get
+            {
+                return requestedExtensions;
+            }
+        }
 
         private readonly List<Package> localPackages = new List<Package>();
         public IEnumerable<Package> LocalPackages { get { return localPackages; } }
@@ -159,22 +181,21 @@ namespace Dynamo.PackageManager
                 package.LoadedCustomNodes.AddRange(customNodes);
 
                 package.EnumerateAdditionalFiles();
-                // If the additional files contained an extension or extensionView manifest then request it be loaded.
+                // If the additional files contained an extension manifest, then request it be loaded.
                 var extensionManifests = package.AdditionalFiles.Where(
-                    file => file.Model.Name.Contains("ExtensionDefinition.xml")).ToList();
+                    file => file.Model.Name.Contains("ExtensionDefinition.xml") && !(file.Model.Name.Contains("ViewExtensionDefinition.xml"))).ToList();
                 foreach (var extPath in extensionManifests)
                 {
                     var extension = RequestLoadExtension?.Invoke(extPath.Model.FullName);
                     if (extension != null)
                     {
                         RequestAddExtension?.Invoke(extension);
-                        
                     }
-                    // Add this extension to the dict of extensions we've requested to be loaded.
-                    this.RequestedExtensions[extPath.Model.FullName] = extension;
+                    this.requestedExtensions.Add(extension);
                 }
 
                 package.Loaded = true;
+                this.PackgeLoaded?.Invoke(package);
             }
             catch (Exception e)
             {

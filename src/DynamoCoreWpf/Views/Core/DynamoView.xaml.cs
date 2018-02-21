@@ -145,12 +145,10 @@ namespace Dynamo.Controls
             {
                 viewExtensions.AddRange(viewExtensionManager.ExtensionLoader.LoadDirectory(dir));
 
-                //grab the viewExtensions from the packageLoader which we deferred loading, and load them now.
-                var requestedExtensionPaths = this.dynamoViewModel.Model.GetPackageManagerExtension().PackageLoader.RequestedExtensions.Keys;
-                var packageViewExtensionPaths = requestedExtensionPaths.Where(path => path.Contains("_ViewExtensionDefinition"));
-                var viewExtensionsFromPackages = packageViewExtensionPaths.Select(path => viewExtensionManager.ExtensionLoader.Load(path));
-
-                viewExtensions.AddRange(viewExtensionsFromPackages);
+                //grab the requested viewExtensions from the viewExtensionSources and add them to viewExtensions list
+                //this cause startup() to be called on them.
+                var requestedExtensions = this.viewExtensionManager.ViewExtensions.OfType<IViewExtensionSource>().SelectMany(x=>x.RequestedExtensions);
+                viewExtensions.AddRange(requestedExtensions);
 
             }
 

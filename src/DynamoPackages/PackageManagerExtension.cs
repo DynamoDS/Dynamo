@@ -20,11 +20,10 @@ namespace Dynamo.PackageManager
         private Action<Assembly> RequestLoadNodeLibraryHandler;
         private event Func<string, IEnumerable<CustomNodeInfo>> RequestLoadCustomNodeDirectoryHandler;
        
-        public event Func<string, dynamic> RequestLoadExtension;
-        public event Action<dynamic> RequestAddExtension;
+        public event Func<string, IExtension> RequestLoadExtension;
+        public event Action<IExtension> RequestAddExtension;
 
         public event Action<ILogMessage> MessageLogged;
-
 
         public string Name { get { return "DynamoPackageManager"; } }
 
@@ -38,10 +37,7 @@ namespace Dynamo.PackageManager
         /// </summary>
         public PackageLoader PackageLoader { get; private set; }
 
-        /// <summary>
-        ///   
-        /// </summary>
-        public Dictionary<string,dynamic> RequestedExtensions => this.PackageLoader.RequestedExtensions;
+        public IEnumerable<IExtension> RequestedExtensions => this.PackageLoader.RequestedExtensions;
 
         /// <summary>
         ///     Dynamo Package Manager Instance.

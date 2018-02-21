@@ -762,7 +762,7 @@ namespace Dynamo.Models
                         // then we can start the extension(s) (B) that it requested be loaded.
                         if(ext is IExtensionSource)
                         {
-                           foreach(var loadedExtension in((ext as IExtensionSource).RequestedExtensions.Values))
+                           foreach(var loadedExtension in((ext as IExtensionSource).RequestedExtensions))
                             {
                                 if(loadedExtension is IExtension)
                                 {
