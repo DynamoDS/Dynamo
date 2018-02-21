@@ -47,7 +47,6 @@ namespace Dynamo.Wpf.Extensions
             {
                 this.Add(viewExtension as IViewExtension);
             }
-
         }
         private IViewExtension RequestLoadViewExtensionHandler(string extensionPath)
         {
@@ -58,7 +57,6 @@ namespace Dynamo.Wpf.Extensions
             }
             return null;
         }
-
 
         private void UnsubscribeViewExtension(IViewExtension obj)
         {
@@ -76,7 +74,6 @@ namespace Dynamo.Wpf.Extensions
                 (obj as IViewExtensionSource).RequestLoadExtension += RequestLoadViewExtensionHandler;
                 (obj as IViewExtensionSource).RequestAddExtension += RequestAddViewExtensionHandler;
             }
-
         }
         public ViewExtensionLoader ExtensionLoader
         {
