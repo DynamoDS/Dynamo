@@ -1523,7 +1523,7 @@ namespace Dynamo.Graph.Workspaces
                 //step2 : parse it as JObject
                 var jo = JObject.Parse(json);
 
-                //step 2: raise the event to populate the view block
+                //step 3: raise the event to populate the view block
                 if (PopulateJSONWorkspace != null)
                 {
                     json = PopulateJSONWorkspace(jo);
