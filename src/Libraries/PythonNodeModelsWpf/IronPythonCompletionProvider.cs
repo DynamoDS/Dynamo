@@ -608,20 +608,8 @@ namespace Dynamo.Python
                 
                 if (left.Length == 1 && right.Length > 1)
                 {
-                    //check if we broke up a list/dict assignment, else assume it's a tuple assignment
-                    if (LIST_VARIABLE.IsMatch(_right) )
-                    {
-                        assignments[left[0]] = typeof(IronPython.Runtime.List);
-                    }
-                    else if (DICT_VARIABLE.IsMatch(_right))
-                    {
-                        assignments[left[0]] = typeof(PythonDictionary);
-                    }
-                    else
-                    {
-                        assignments[left[0]] = typeof(PythonTuple);
-                    }
-                    continue;
+                    //most likely we broke up an iterable assignment
+                    right = new string[]{_right};
                 }
                 
                 //try to resolve each variable, assignment pair
