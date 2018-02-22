@@ -541,8 +541,8 @@ namespace DynamoCoreWpfTests
 
             string json = saveFunction(this.ViewModel, filePath);
 
-            // If "jsonWithView" test copy .data file to additional structured folder location
-            if (dirName == jsonFolderName)
+            // If "jsonWithView_nonGuidIds" test copy .data file to additional structured folder location
+            if (dirName == jsonNonGuidFolderName)
             {
                 // Get structured test path
                 var testPath = filePath.Remove(0, SerializationTests.TestDirectory.Length);
@@ -662,10 +662,6 @@ namespace DynamoCoreWpfTests
             Assert.IsNotNullOrEmpty(jsonModel);
             Assert.IsNotNullOrEmpty(jo.ToString());
 
-            // Call structured copy function for CoGS testing, see QNTM-2973
-            // Only called for CoreWPFTests w/ Guids
-            SaveJsonTempWithFolderStructure(filePath, jo, viewModel.Model);
-
             var tempPath = Path.GetTempPath();
             var jsonFolder = Path.Combine(tempPath, jsonFolderName);
 
@@ -700,6 +696,10 @@ namespace DynamoCoreWpfTests
             json = serializationTestUtils.replaceModelIdsWithNonGuids(json, model.CurrentWorkspace ,modelsGuidToIdMap);
 
             Assert.IsNotNullOrEmpty(json);
+
+            // Call structured copy function for CoGS testing, see QNTM-2973
+            // Only called for CoreWPFTests nonGuids
+            SaveJsonTempWithFolderStructure(filePath, jo, viewModel.Model);
 
             var tempPath = Path.GetTempPath();
             var jsonFolder = Path.Combine(tempPath, jsonNonGuidFolderName);

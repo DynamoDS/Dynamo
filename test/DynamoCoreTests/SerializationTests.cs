@@ -385,56 +385,12 @@ namespace Dynamo.Tests
                                 ReferenceLoopHandling = ReferenceLoopHandling.Ignore
                             });
 
-            // If "jsonWithView" test copy .data file to additional structured folder location
-            if (!filePathBase.Contains("jsonWithView"))
+            var dataPath = filePathBase + ".data";
+            if (File.Exists(dataPath))
             {
-                string dataPath;
-                string extension = Path.GetExtension(filePathBase);
-                string pathWithoutExt = filePathBase.Substring(0, filePathBase.Length - extension.Length);
-
-                // Determine if .dyn or .dyf
-                // If .dyn and .dyf share common file name .ds and .data files is collide
-                // To avoid this append _dyf to .data and .ds files for all .dyf files
-                if (extension == ".dyf")
-                {
-                    dataPath = pathWithoutExt + "_dyf.data";
-                }
-
-                else
-                {
-                    dataPath = pathWithoutExt + ".data";
-                }
-
-                var tempDir = Path.GetTempPath();
-                var fileName = Path.GetFileName(dataPath);
-                var flattenedPath = tempDir + "jsonWithView\\" + fileName;
-
-                // Write to structured path
-                if (File.Exists(dataPath))
-                {
-                    File.Delete(dataPath);
-                }
-
-                File.WriteAllText(dataPath, dataMapStr);
-
-                // Write to flattened path
-                if (File.Exists(flattenedPath))
-                {
-                    File.Delete(flattenedPath);
-                }
-
-                File.WriteAllText(flattenedPath, dataMapStr);
+                File.Delete(dataPath);
             }
-
-            else
-            {
-                var dataPath = filePathBase + ".data";
-                if (File.Exists(dataPath))
-                {
-                    File.Delete(dataPath);
-                }
-                File.WriteAllText(dataPath, dataMapStr);
-            }
+            File.WriteAllText(dataPath, dataMapStr);
         }
 
         /// <summary>
@@ -475,12 +431,56 @@ namespace Dynamo.Tests
                 dataMapStr = dataMapStr.Replace(guidKey.ToString(), modelsGuidToIdMap[guidKey]);
             }
 
-            var dataPath = filePathBase + ".data";
-            if (File.Exists(dataPath))
+            // If "jsonWithView_nonGuidIds" test copy .data file to additional structured folder location
+            if (!filePathBase.Contains("jsonWithView_nonGuidIds"))
             {
-                File.Delete(dataPath);
+                string dataPath;
+                string extension = Path.GetExtension(filePathBase);
+                string pathWithoutExt = filePathBase.Substring(0, filePathBase.Length - extension.Length);
+
+                // Determine if .dyn or .dyf
+                // If .dyn and .dyf share common file name .ds and .data files is collide
+                // To avoid this append _dyf to .data and .ds files for all .dyf files
+                if (extension == ".dyf")
+                {
+                    dataPath = pathWithoutExt + "_dyf.data";
+                }
+
+                else
+                {
+                    dataPath = pathWithoutExt + ".data";
+                }
+
+                var tempDir = Path.GetTempPath();
+                var fileName = Path.GetFileName(dataPath);
+                var flattenedPath = tempDir + "jsonWithView_nonGuidIds\\" + fileName;
+
+                // Write to structured path
+                if (File.Exists(dataPath))
+                {
+                    File.Delete(dataPath);
+                }
+
+                File.WriteAllText(dataPath, dataMapStr);
+
+                // Write to flattened path
+                if (File.Exists(flattenedPath))
+                {
+                    File.Delete(flattenedPath);
+                }
+
+                File.WriteAllText(flattenedPath, dataMapStr);
             }
-            File.WriteAllText(dataPath, dataMapStr);
+
+            else
+            {
+                var dataPath = filePathBase + ".data";
+                if (File.Exists(dataPath))
+                {
+                    File.Delete(dataPath);
+                }
+                File.WriteAllText(dataPath, dataMapStr);
+            }
         }
 
         public class PortComparisonData
