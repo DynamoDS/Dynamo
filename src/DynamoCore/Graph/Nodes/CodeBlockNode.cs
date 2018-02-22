@@ -240,73 +240,6 @@ namespace Dynamo.Graph.Nodes
         }
 
         /// <summary>
-        ///     Contains data needed to reconstruct input and output ports during deserialization 
-        ///     when there is an error in a code block node.
-        /// </summary>
-        public class ErrorStatePortInfo
-        {
-            internal List<string> inPortNames;
-            internal List<int> outPortLineIndexes;
-
-            internal ErrorStatePortInfo(
-                IEnumerable<PortModel> inPorts,
-                IEnumerable<PortModel> outPorts)
-            {
-                inPortNames = new List<string>();
-                foreach (var inPort in inPorts)
-                    inPortNames.Add(inPort.Name);
-
-                outPortLineIndexes = new List<int>();
-                foreach (var outPort in outPorts)
-                    outPortLineIndexes.Add(outPort.LineIndex);
-            }
-
-            /// <summary>
-            ///     Contains data needed to reconstruct input ports during deserialization 
-            ///     when there is an error in a code block node.
-            /// </summary>
-            public List<string> InPortNames
-            {
-                get
-                {
-                  return inPortNames;
-                }
-            }
-
-            /// <summary>
-            ///     Contains data needed to reconstruct output ports during deserialization 
-            ///     when there is an error in a code block node.
-            /// </summary>
-            public List<int> OutPortLineIndexes
-            {
-                get
-                {
-                  return outPortLineIndexes;
-                }
-            }
-        }
-
-        /// <summary>
-        ///     Contains data needed to reconstruct input and output ports during deserialization 
-        ///     when there is an error in a code block node.
-        ///     Note that if the code block node is not in an error state the data returned will be null.
-        ///     This is to avoid serializing the error data if it is not needed.
-        ///     Also note that this property is only for JSON serialization, and is here to avoid needing
-        ///     to create a special converter for code block nodes (due to the complicated serialization
-        ///     of code block nodes).
-        /// </summary>
-        public ErrorStatePortInfo ErrorStatePortData
-        {
-            get
-            {
-                if (!IsInErrorState)
-                    return null;
-
-                return new ErrorStatePortInfo(InPorts, OutPorts);
-            }
-        }
-
-        /// <summary>
         /// Sets string content of CodeBlock node.
         /// </summary>
         /// <param name="newCode">New content of the code block</param>
@@ -855,16 +788,6 @@ namespace Dynamo.Graph.Nodes
             RegisterAllPorts();
         }
 
-        internal void SetErrorStateInputPorts(List<string> inputPortNames)
-        {
-            if (inputPortNames != null)
-            {
-                this.inputPortNames = inputPortNames;
-            }
-
-            SetInputPorts();
-        }
-
         private void SetInputPorts()
         {
             // This extension method is used instead because 
@@ -880,8 +803,15 @@ namespace Dynamo.Graph.Nodes
                 InPorts.Add(new PortModel(PortType.Input, this, portData));
         }
 
-        internal void SetErrorStateOutputPorts(List<int> outputPortIndexes)
+        internal void SetErrorStatePortData(List<string> inputPortNames, List<int> outputPortIndexes)
         {
+            if (inputPortNames != null)
+            {
+                this.inputPortNames = inputPortNames;
+            }
+
+            SetInputPorts();
+
             if (outputPortIndexes != null)
             {
                 foreach (var outputPortIndex in outputPortIndexes)

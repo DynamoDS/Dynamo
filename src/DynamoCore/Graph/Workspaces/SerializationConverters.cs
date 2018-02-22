@@ -20,9 +20,9 @@ using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
 using ProtoCore;
 using ProtoCore.Namespace;
-using ProtoCore.Utils;
 using Type = System.Type;
 using System.Reflection;
+using System.Text.RegularExpressions;
 
 namespace Dynamo.Graph.Workspaces
 {
@@ -145,27 +145,25 @@ namespace Dynamo.Graph.Workspaces
                 // and initialize the input and output ports
                 if (node.IsInErrorState)
                 {
-                    var errorStatePortData = obj["ErrorStatePortData"];
-                    if (errorStatePortData != null)
+                    List<string> inPortNames = new List<string>();
+                    var inputs = obj["Inputs"];
+                    foreach (var input in inputs)
                     {
-                        List<string> inPortNames = new List<string>();
-                        var inputNames = errorStatePortData["InPortNames"];
-                        foreach (string inputName in inputNames)
-                        {
-                            inPortNames.Add(inputName);
-                        }
-
-                        codeBlockNode.SetErrorStateInputPorts(inPortNames);
-
-                        List<int> outPortLineIndexes = new List<int>();
-                        var outputLineIndexes = errorStatePortData["OutPortLineIndexes"];
-                        foreach (int outputLineIndex in outputLineIndexes)
-                        {
-                            outPortLineIndexes.Add(outputLineIndex);
-                        }
-
-                        codeBlockNode.SetErrorStateOutputPorts(outPortLineIndexes);
+                        inPortNames.Add(input["Name"].ToString());
                     }
+
+                    List<int> outPortLineIndexes = new List<int>();
+                    var outputs = obj["Outputs"];
+                    foreach (var output in outputs)
+                    {
+                        // NOTE: This is parsing the line index from the description string
+                        //       It is not a great way to get the value, but we do not currently
+                        //       serialize the line indexes for ooutputs in code block nodes directly
+                        string lineIndexString = Regex.Match(output["Description"].ToString(), @"\d+").Value;
+                        outPortLineIndexes.Add(Int32.Parse(lineIndexString) - 1);
+                    }
+
+                    codeBlockNode.SetErrorStatePortData(inPortNames, outPortLineIndexes);
                 }
             }
             else if (typeof(DSFunctionBase).IsAssignableFrom(type))
