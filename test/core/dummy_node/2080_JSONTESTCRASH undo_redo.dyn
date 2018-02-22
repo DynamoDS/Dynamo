@@ -7,6 +7,7 @@
     "ResolutionMap": {}
   },
   "Inputs": [],
+  "Outputs": [],
   "Nodes": [
     {
       "ConcreteType": "Dynamo.Graph.Nodes.UNKNOWNTYPE, DynamoCore",
@@ -80,7 +81,9 @@
         "Id": "158f8f25ddb746c88323ae262e87611e",
         "Excluded": false,
         "X": 76.8,
-        "Y": 65.3999999999999
+        "Y": 65.3999999999999,
+        "IsInput": false,
+        "IsOutput": false
       },
       {
         "ShowGeometry": true,
@@ -88,7 +91,9 @@
         "Id": "6cbd0760736f4235a03b38fb359e9957",
         "Excluded": false,
         "X": 76.8,
-        "Y": 162.4
+        "Y": 162.4,
+        "IsInput": false,
+        "IsOutput": false
       }
     ],
     "Annotations": [],
