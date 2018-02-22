@@ -22,7 +22,7 @@ namespace Dynamo.PackageManager.UI
         {
             get
             {
-                return "PackageManagerViewExtension - ViewExtensionLoader";
+                return "PackageManagerViewExtension";
             }
         }
 

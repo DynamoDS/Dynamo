@@ -43,6 +43,12 @@ namespace Dynamo.PackageManager.Tests
             var extensionLoad = false;
             var extensionAdd = false;
             var extensionReady = false;
+            var packageLoaded = false;
+
+            loader.PackgeLoaded += (package) =>
+            {
+                packageLoaded = true;
+            };
 
             loader.RequestLoadExtension += (extensionPath) =>
             {
@@ -51,7 +57,6 @@ namespace Dynamo.PackageManager.Tests
                 mockExtension.Setup(ext => ext.Startup(It.IsAny<StartupParams>())).Callback(() => { Assert.Fail(); });
                 mockExtension.Setup(ext => ext.Ready(It.IsAny<ReadyParams>()))
                .Callback(() => { extensionReady = true; });
-
                 return mockExtension.Object;
             };
             loader.RequestAddExtension += (extension) =>
@@ -66,19 +71,17 @@ namespace Dynamo.PackageManager.Tests
             Assert.IsTrue(extensionLoad);
             Assert.IsTrue(extensionAdd);
             Assert.IsTrue(extensionReady);
-
+            Assert.IsTrue(packageLoaded);
         }
 
-        //
         [Test]
-        public void PackageLoaderRequestsViewExtensionsBeLoaded()
+        public void PackageLoaderDoesNotRequestsViewExtensionsBeLoaded()
         {
             var loader = GetPackageLoader();
             var pkgDir = Path.Combine(PackagesDirectory, "SampleViewExtension");
 
             var viewExtensionLoad = false;
             var viewExtensionAdd = false;
-
 
             loader.RequestLoadExtension += (extensionPath) =>
             {
@@ -93,11 +96,9 @@ namespace Dynamo.PackageManager.Tests
             var pkg = loader.ScanPackageDirectory(pkgDir);
             loader.Load(pkg);
 
-            Assert.IsTrue(loader.RequestedExtensions.Count() == 1);
-            Assert.IsTrue(viewExtensionLoad);
-            //will be false as we return null.
+            Assert.IsTrue(loader.RequestedExtensions.Count() == 0);
+            Assert.IsFalse(viewExtensionLoad);
             Assert.IsFalse(viewExtensionAdd);
-
         }
 
         [Test]
@@ -117,7 +118,7 @@ namespace Dynamo.PackageManager.Tests
                 Preferences = this.CurrentDynamoModel.PreferenceSettings
             });
 
-            // There are four packages in "GitHub\Dynamo\test\pkgs"
+            // There are 6 packages in "GitHub\Dynamo\test\pkgs"
             Assert.AreEqual(6, loader.LocalPackages.Count());
         }
 

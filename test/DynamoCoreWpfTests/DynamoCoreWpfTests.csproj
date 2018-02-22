@@ -149,6 +149,7 @@
     <Compile Include="GraphLayoutTests.cs" />
     <Compile Include="NodeToCodeTests.cs" />
     <Compile Include="PackageManagerExtensionLoadingTests.cs" />
+    <Compile Include="PackageManagerViewExtensionTests.cs" />
     <Compile Include="PresetPromptTests.cs" />
     <Compile Include="AnnotationViewModelTests.cs" />
     <Compile Include="AnnotationViewTests.cs" />
@@ -197,6 +198,10 @@
       <Project>{51bb6014-43f7-4f31-b8d3-e3c37ebedaf4}</Project>
       <Name>DynamoCoreWpf</Name>
       <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\src\DynamoPackagesWPF\DynamoPackagesWPF.csproj">
+      <Project>{47D2166C-5261-4093-9660-E72B7035E666}</Project>
+      <Name>DynamoPackagesWPF</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\src\DynamoPackages\DynamoPackages.csproj">
       <Project>{47533b7c-0e1a-44a4-8511-b438645f052a}</Project>
