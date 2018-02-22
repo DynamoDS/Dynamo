@@ -607,7 +607,6 @@ namespace DynamoCoreWpfTests
         {
             // Get all folder structure following "\\test"
             var expectedStructure = filePath.Remove(0, SerializationTests.TestDirectory.Length);
-            jo["Name"] = expectedStructure.Replace("\\", "/");
 
             // Current test fileName
             var fileName = Path.GetFileName(filePath);
@@ -685,6 +684,9 @@ namespace DynamoCoreWpfTests
         private string ConvertCurrentWorkspaceViewToNonGuidJsonAndSave(DynamoViewModel viewModel, string filePath)
         {
             // Stage 1: Serialize the workspace.
+            // Update WS name based on file path to generate unique UUIDs
+            var testFileStructure = filePath.Remove(0, SerializationTests.TestDirectory.Length);
+            viewModel.Model.CurrentWorkspace.Name = testFileStructure.Replace("\\", "/");
             var jsonModel = viewModel.Model.CurrentWorkspace.ToJson(viewModel.Model.EngineController);
             // Stage 2: Add the View.
             var jo = JObject.Parse(jsonModel);
@@ -699,7 +701,8 @@ namespace DynamoCoreWpfTests
 
             // Call structured copy function for CoGS testing, see QNTM-2973
             // Only called for CoreWPFTests nonGuids
-            SaveJsonTempWithFolderStructure(filePath, jo, viewModel.Model);
+            var nonGuidsJson = JObject.Parse(json);
+            SaveJsonTempWithFolderStructure(filePath, nonGuidsJson, viewModel.Model);
 
             var tempPath = Path.GetTempPath();
             var jsonFolder = Path.Combine(tempPath, jsonNonGuidFolderName);
