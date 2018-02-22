@@ -141,25 +141,31 @@ namespace Dynamo.Graph.Workspaces
                 CodeBlockNodeModel codeBlockNode = new CodeBlockNodeModel(code, guid, 0.0, 0.0, libraryServices, ElementResolver);
                 node = codeBlockNode;
 
+                // If the code block node is in an error state read the extra port data
+                // and initialize the input and output ports
                 if (node.IsInErrorState)
                 {
-                    List<string> inPortNames = new List<string>();
-                    var inputNames = obj["InPortNames"];
-                    foreach (string inputName in inputNames)
+                    var errorStatePortData = obj["ErrorStatePortData"];
+                    if (errorStatePortData != null)
                     {
-                        inPortNames.Add(inputName);
+                        List<string> inPortNames = new List<string>();
+                        var inputNames = errorStatePortData["InPortNames"];
+                        foreach (string inputName in inputNames)
+                        {
+                            inPortNames.Add(inputName);
+                        }
+
+                        codeBlockNode.SetErrorStateInputPorts(inPortNames);
+
+                        List<int> outPortLineIndexes = new List<int>();
+                        var outputLineIndexes = errorStatePortData["OutPortLineIndexes"];
+                        foreach (int outputLineIndex in outputLineIndexes)
+                        {
+                            outPortLineIndexes.Add(outputLineIndex);
+                        }
+
+                        codeBlockNode.SetErrorStateOutputPorts(outPortLineIndexes);
                     }
-
-                    codeBlockNode.SetErrorStateInputPorts(inPortNames);
-
-                    List<int> outPortLineIndexes = new List<int>();
-                    var outputLineIndexes = obj["OutPortLineIndexes"];
-                    foreach (int outputLineIndex in outputLineIndexes)
-                    {
-                        outPortLineIndexes.Add(outputLineIndex);
-                    }
-
-                    codeBlockNode.SetErrorStateOutputPorts(outPortLineIndexes);
                 }
             }
             else if (typeof(DSFunctionBase).IsAssignableFrom(type))

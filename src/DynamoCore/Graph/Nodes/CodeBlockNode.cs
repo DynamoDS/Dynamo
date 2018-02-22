@@ -239,43 +239,70 @@ namespace Dynamo.Graph.Nodes
             private set { code = value; }
         }
 
-        private List<string> inPortNames = new List<string>();
-
         /// <summary>
-        ///     Returns a list of in port names
+        ///     Contains data needed to reconstruct input and output ports during deserialization 
+        ///     when there is an error in a code block node.
         /// </summary>
-        private List<string> InPortNames
+        public class ErrorStatePortInfo
         {
-            set
-            {
-                inPortNames = value;
-            }
-            get
+            internal List<string> inPortNames;
+            internal List<int> outPortLineIndexes;
+
+            internal ErrorStatePortInfo(
+                IEnumerable<PortModel> inPorts,
+                IEnumerable<PortModel> outPorts)
             {
                 inPortNames = new List<string>();
-                foreach (var inPort in InPorts)
-                {
+                foreach (var inPort in inPorts)
                     inPortNames.Add(inPort.Name);
-                }
 
-                return inPortNames;
+                outPortLineIndexes = new List<int>();
+                foreach (var outPort in outPorts)
+                    outPortLineIndexes.Add(outPort.LineIndex);
+            }
+
+            /// <summary>
+            ///     Contains data needed to reconstruct input ports during deserialization 
+            ///     when there is an error in a code block node.
+            /// </summary>
+            public List<string> InPortNames
+            {
+                get
+                {
+                  return inPortNames;
+                }
+            }
+
+            /// <summary>
+            ///     Contains data needed to reconstruct output ports during deserialization 
+            ///     when there is an error in a code block node.
+            /// </summary>
+            public List<int> OutPortLineIndexes
+            {
+                get
+                {
+                  return outPortLineIndexes;
+                }
             }
         }
 
         /// <summary>
-        ///     Returns a list of out port indexes
+        ///     Contains data needed to reconstruct input and output ports during deserialization 
+        ///     when there is an error in a code block node.
+        ///     Note that if the code block node is not in an error state the data returned will be null.
+        ///     This is to avoid serializing the error data if it is not needed.
+        ///     Also note that this property is only for JSON serialization, and is here to avoid needing
+        ///     to create a special converter for code block nodes (due to the complicated serialization
+        ///     of code block nodes).
         /// </summary>
-        private List<int> OutPortLineIndexes
+        public ErrorStatePortInfo ErrorStatePortData
         {
             get
             {
-                List<int> outPortIndexes = new List<int>();
-                foreach (var outPort in OutPorts)
-                {
-                    outPortIndexes.Add(outPort.LineIndex);
-                }
+                if (!IsInErrorState)
+                    return null;
 
-                return outPortIndexes;
+                return new ErrorStatePortInfo(InPorts, OutPorts);
             }
         }
 
