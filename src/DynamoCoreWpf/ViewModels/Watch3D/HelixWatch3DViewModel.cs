@@ -95,6 +95,25 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             UpY = defaultCameraUpDirection.Y;
             UpZ = defaultCameraUpDirection.Z;
         }
+        
+        public override bool Equals(object obj)
+        {
+            var other = obj as CameraData;
+            return obj is CameraData && this.Name == other.Name
+                   && Math.Abs(this.EyeX - other.EyeX) < 0.0001
+                   && Math.Abs(this.EyeY - other.EyeY) < 0.0001
+                   && Math.Abs(this.EyeZ - other.EyeZ) < 0.0001
+                   && Math.Abs(this.LookX - other.LookX) < 0.0001
+                   && Math.Abs(this.LookY - other.LookY) < 0.0001
+                   && Math.Abs(this.LookZ - other.LookZ) < 0.0001
+                   && Math.Abs(this.UpX - other.UpX) < 0.0001
+                   && Math.Abs(this.UpY - other.UpY) < 0.0001
+                   && Math.Abs(this.UpZ - other.UpZ) < 0.0001
+                   && Math.Abs(this.NearPlaneDistance - other.NearPlaneDistance) < 0.0001
+                   && Math.Abs(this.FarPlaneDistance - other.FarPlaneDistance) < 0.0001;
+        }
+
+
     }
 
     /// <summary>

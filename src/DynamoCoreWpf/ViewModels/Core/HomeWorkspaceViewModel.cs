@@ -140,7 +140,7 @@ namespace Dynamo.Wpf.ViewModels.Core
 
         void hwm_EvaluationCompleted(object sender, EvaluationCompletedEventArgs e)
         {
-            bool hasWarnings = Model.Nodes.Any(n => n.State == ElementState.Warning);
+            bool hasWarnings = Model.Nodes.Any(n => n.State == ElementState.Warning || n.State == ElementState.PersistentWarning);
 
             if (!hasWarnings)
             {

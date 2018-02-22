@@ -414,9 +414,9 @@ namespace DynamoCoreWpfTests
             var jsonText1 = File.ReadAllText(openPath);
             var jobject1 = JObject.Parse(jsonText1);
 
-            // We need to replace the camera with null so it will match the null camera produced by the 
+            // We need to replace the camera with default camera so it will match the deafult camera produced by the 
             // save without a real view below.
-            jobject1["View"]["Camera"] = null;
+            jobject1["View"]["Camera"] = JToken.FromObject(new CameraData());
             jsonText1 = jobject1.ToString();
             jobject1 = JObject.Parse(jsonText1);
           
@@ -968,6 +968,8 @@ namespace DynamoCoreWpfTests
             public bool Excluded { get; set; }
             public double X { get; set; }
             public double Y { get; set; }
+            public bool IsInput { get; set; }
+            public bool IsOutput { get; set; }
 
             public override bool Equals(object obj)
             {
@@ -977,7 +979,9 @@ namespace DynamoCoreWpfTests
                     other.Name == this.Name &&
                     other.Excluded == this.Excluded &&
                     Math.Abs(other.X - this.X) < .0001 &&
-                    Math.Abs(other.Y - this.Y) < .0001;
+                    Math.Abs(other.Y - this.Y) < .0001 &&
+                    other.IsInput == this.IsInput &&
+                    other.IsOutput == this.IsOutput;
             }
         }
 
@@ -1027,7 +1031,8 @@ namespace DynamoCoreWpfTests
                         Excluded = n.IsFrozenExplicitly,
                         X = n.X,
                         Y = n.Y,
-
+                        IsInput = n.IsSetAsInput,
+                        IsOutput = n.IsSetAsOutput
                     });
                 }
 

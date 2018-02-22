@@ -220,10 +220,7 @@ namespace Dynamo.ViewModels
         /// of Graph.Json.
         /// </summary>
         [JsonProperty("Camera")]
-        public CameraData Camera
-        {
-            get { return DynamoViewModel.BackgroundPreviewViewModel.GetCameraInformation(); }
-        }
+        public CameraData Camera => DynamoViewModel.BackgroundPreviewViewModel.GetCameraInformation() ?? new CameraData();
 
         /// <summary>
         /// ViewModel that is used in InCanvasSearch in context menu and called by Shift+DoubleClick.
@@ -454,6 +451,7 @@ namespace Dynamo.ViewModels
             Model.ConnectorAdded += Connectors_ConnectorAdded;
             Model.ConnectorDeleted += Connectors_ConnectorDeleted;
             Model.PropertyChanged += ModelPropertyChanged;
+            Model.PopulateJSONWorkspace += Model_PopulateJSONWorkspace;
             
             DynamoSelection.Instance.Selection.CollectionChanged += RefreshViewOnSelectionChange;
 
@@ -469,6 +467,16 @@ namespace Dynamo.ViewModels
 
             InCanvasSearchViewModel = new SearchViewModel(DynamoViewModel);
             InCanvasSearchViewModel.Visible = true;
+        }
+        /// <summary>
+        /// This event is triggred from Workspace Model. Used in instrumentation
+        /// </summary>
+        /// <param name="modelData"> Workspace model data as JSON </param>
+        /// <returns>workspace model with view block in string format</returns>
+        private string Model_PopulateJSONWorkspace(JObject modelData)
+        {
+             var jsonData = AddViewBlockToJSON(modelData);
+             return jsonData.ToString();
         }
 
         public override void Dispose()
@@ -488,6 +496,7 @@ namespace Dynamo.ViewModels
             Model.ConnectorAdded -= Connectors_ConnectorAdded;
             Model.ConnectorDeleted -= Connectors_ConnectorDeleted;
             Model.PropertyChanged -= ModelPropertyChanged;
+            Model.PopulateJSONWorkspace -= Model_PopulateJSONWorkspace;
 
             DynamoSelection.Instance.Selection.CollectionChanged -= RefreshViewOnSelectionChange;
 
@@ -541,6 +550,11 @@ namespace Dynamo.ViewModels
                 try
                 {
                     fileName = Path.GetFileName(filePath);
+                    string extension = Path.GetExtension(filePath);
+                    if (extension == ".dyn" || extension == ".dyf")
+                    {
+                      fileName = Path.GetFileNameWithoutExtension(filePath);
+                    }
                 }
                 catch (ArgumentException)
                 {
@@ -552,11 +566,10 @@ namespace Dynamo.ViewModels
                 }
               
                 var json = Model.ToJson(engine);
+                var json_parsed = JObject.Parse(json);
 
                 // Stage 2: Add the View.
-                var jo = JObject.Parse(json);
-                var token = JToken.Parse(this.ToJson());
-                jo.Add("View", token);
+                var jo = AddViewBlockToJSON(json_parsed);
 
                 // Stage 3: Save
                 File.WriteAllText(filePath, jo.ToString());
@@ -574,6 +587,17 @@ namespace Dynamo.ViewModels
                 Debug.WriteLine(ex.Message + " : " + ex.StackTrace);
                 throw (ex);
             }
+        }
+        /// <summary>
+        /// This function appends view block to the model json
+        /// </summary>
+        /// <param name="modelData">Workspace Model data in JSON format</param>
+        private JObject AddViewBlockToJSON(JObject modelData)
+        {
+            var token = JToken.Parse(this.ToJson());
+            modelData.Add("View", token);
+
+            return modelData;
         }
 
         /// <summary>

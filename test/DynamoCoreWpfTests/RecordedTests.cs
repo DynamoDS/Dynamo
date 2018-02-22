@@ -5384,6 +5384,22 @@ namespace DynamoCoreWpfTests
                 }
             });
         }
+
+        [Test]
+        public void TestConnectedCBNInErrorStateDoesNotCrash()
+        {
+            RunCommandsFromFile("CBN_error_crash.xml", (commandTag) =>
+            {
+                if (commandTag == "Run")
+                {
+                    var workspace = ViewModel.Model.CurrentWorkspace;
+                    var node = workspace.NodeFromWorkspace<CodeBlockNodeModel>("ca808fc5-f269-4a03-aee9-b4f1b156ed16");
+                    Assert.IsNotNull(node);
+                    Assert.IsTrue(node.IsInErrorState);
+                    Assert.AreEqual(1, node.AllConnectors.Count());
+                }
+            });
+        }
     }
 
 }

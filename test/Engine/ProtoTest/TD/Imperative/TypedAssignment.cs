@@ -15,8 +15,8 @@ namespace ProtoTest.TD.Imperative
             string code = @"
 def Create ( a : int)
 {
-	    x : int  = 2;
-		return = x + a ;
+	x : int  = 2;
+	return = x + a ;
 }
 	
 def foo : int ( )
@@ -31,15 +31,8 @@ def foo : int ( a : int )
     x : int = 2;
 	return = x + a ;
 }
-i1;i2;
-d1;d2;
-isTrue1;isTrue2;
-isFalse1;isFalse2;
-x1;x2;
-x11;x12;
-b1;b2;
-y1;y2;
-[Imperative]
+
+i = [Imperative]
 {
     i1 : int = 5;
     d1 : double = 5.2;
@@ -50,9 +43,9 @@ y1;y2;
 	b1 = foo(a1);
 	x11:int = 2.3;
 	y1:double = 2;
-    
+    return [i1, d1, isTrue1, isFalse1, x1, a1, b1, x11, y1];
 }
-[Associative]
+a = [Associative]
 {
     i2 : int = 5;
     d2 : double = 5.2;
@@ -63,25 +56,12 @@ y1;y2;
 	b2 = foo(a2);
 	x12:int = 2.3;
 	y2:double = 2;
-    
+    return [i2, d2, isTrue2, isFalse2, x2, a2, b2, x12, y2];
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("i1", 5);
-            thisTest.Verify("d1", 5.2);
-            thisTest.Verify("isTrue1", true);
-            thisTest.Verify("isFalse1", false);
-            thisTest.Verify("x1", 3);
-            thisTest.Verify("b1", 5);
-            thisTest.Verify("x11", 2);
-            thisTest.Verify("y1", 2.0);
-            thisTest.Verify("i2", 5);
-            thisTest.Verify("d2", 5.2);
-            thisTest.Verify("isTrue2", true);
-            thisTest.Verify("isFalse2", false);
-            thisTest.Verify("x2", 3);
-            thisTest.Verify("b2", 5);
-            thisTest.Verify("x12", 2);
-            thisTest.Verify("y2", 2.0);
+            thisTest.Verify("i", new object[] {5, 5.2, true, false, 3, 3, 5, 2, 2.0});
+
+            thisTest.Verify("a", new object[] {5, 5.2, true, false, 3, 3, 5, 2, 2.0});
         }
     }
 }

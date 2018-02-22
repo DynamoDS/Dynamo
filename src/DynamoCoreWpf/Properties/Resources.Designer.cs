@@ -3013,7 +3013,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to We can&apos;t save &quot;{0}&quot; because the file is read only. To keep your changes, you&apos;ll need to save it with a new name or in a different location..
+        ///   Looks up a localized string similar to We can&apos;t save &quot;{0}&quot; because the file is read-only or contains unresolved XML nodes. To keep changes, would you like to &quot;Save As...&quot; with a different name or path?.
         /// </summary>
         public static string MessageConfirmToSaveReadOnlyCustomNode {
             get {
@@ -3374,6 +3374,15 @@ namespace Dynamo.Wpf.Properties {
         public static string NodeContextMenuIsInput {
             get {
                 return ResourceManager.GetString("NodeContextMenuIsInput", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Is Output.
+        /// </summary>
+        public static string NodeContextMenuIsOutput {
+            get {
+                return ResourceManager.GetString("NodeContextMenuIsOutput", resourceCulture);
             }
         }
         

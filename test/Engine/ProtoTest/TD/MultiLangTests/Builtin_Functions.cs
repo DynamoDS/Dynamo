@@ -124,7 +124,7 @@ def foo(x:var[]..[])
 {
 	a = [];
 	i = 0;
-	[Imperative]
+	arr = [Imperative]
 	{
 		for(j in x)
 		{
@@ -134,8 +134,9 @@ def foo(x:var[]..[])
 				i = i+1;
 			}
 		}
+		return a;
 	}
-	return  = Count(a);
+	return Count(arr);
 }
 b = [
 [null],
@@ -170,13 +171,12 @@ n = foo(l);
         public void T006_SomeNulls_Inline()
         {
             string code = @"
-result;
-[Imperative]
+result = [Imperative]
 {
-a = [null,1];
+    a = [null,1];
 b = [];
 c = [1,2,3];
-result = SomeNulls(c)?SomeNulls(b):SomeNulls(a);
+    return SomeNulls(c)?SomeNulls(b):SomeNulls(a);
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("result", true, 0);
@@ -214,14 +214,6 @@ return = -1;
         public void T008_SomeNulls_Replication()
         {
             string code = @"
-/*
-[Imerative]
-{
-	a = 1..5;
-	i = 0..3;
-	x = a[i];
-}
-*/
 a = [
 [[null, 1],1],
 [null],
@@ -229,29 +221,17 @@ a = [
 ];
 i = 0..2;
 j = 0;
-[Imperative]
+r = [Imperative]
 {
-		if(SomeNulls(a[i]))
-		{
-			j = j+1;
-		}
-		
-} 
-//Note : the following works fine : 
-/*
-[Imperative]
-{
-	for ( x in  i) 
-	{		
-	    if(SomeNulls(a[x]))
-	    {
-                j = j+1;
-	    }
+	if(SomeNulls(a[i]))
+	{
+		j = j+1;
 	}
-}
-*/";
+	return j;
+} 
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("j", 1, 0);
+            thisTest.Verify("r", 1, 0);
         }
 
         [Test]
@@ -318,37 +298,40 @@ n;
         public void T010_SomeNulls_AssociativeImperative_02()
         {
             string code = @"
-m;
-n;
-[Imperative]
+
+i = [Imperative]
 {
 	a = [false];
 	if(!SomeNulls(a))
 	{
-	[Associative]
-	{
-		
-		b = a;
-		a = [null];
-		
-		m = SomeNulls(b);//true,false
-		[Imperative]
-		{
-			c = a;
-			a = [2];
-			n = SomeNulls(c);//true
-		}
-		
+	    x = [Associative]
+	    {
+
+		    b = a;
+		   a = [null];
+
+		    m = SomeNulls(b); //true,false;
+		    n = [Imperative]
+		    {
+			    c = a;
+			    a = [2];
+			    return SomeNulls(c); //true;
+
+		    }
+			return [m,n];
+	    }
+        return [x[0], x[1]];
 	}
-	}else
+    else
 	{
-	m = false;
-	n = false;
+	    m = false;
+	    n = false;
+	    return [m, n];
 	}
-}";
+    
+};";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("m", false, 0);
-            thisTest.Verify("n", true, 0);
+            thisTest.Verify("i", new[] {true, true});
         }
 
         [Test]
@@ -463,15 +446,15 @@ def foo(x:var[]..[])
 {
 	a = [];
 	i = 0;
-	[Imperative]
+	return [Imperative]
 	{
 		for(j in x)
 		{
 			a[i] = CountTrue(j);
 			i = i+1;
 		}
+        return a;
 	}
-	return  = a;
 }
 b = [
 [null],//0
@@ -516,21 +499,22 @@ n = foo(b, m);
         public void T017_CountTrue_Inline()
         {
             string code = @"
-result;
+
 def foo(x:var[]..[])
 {
-    return = [Imperative]{
-	if(CountTrue(x) > 0)
-		return = true;
-	return = false;
+    return [Imperative]
+    {
+	    if(CountTrue(x) > 0)
+		    return = true;
+	    return = false;
     }
 }
-[Imperative]
+result = [Imperative]
 {
-a = [null,1];//0
+    a = [null,1];//0
 b = [null,20,30,null,[10,0],true,[false,0,[true,[false],5,2,false]]];//2
 c = [1,2,foo(b)];
-result = CountTrue(c) > 0 ? CountTrue(a):CountTrue(b);
+    return CountTrue(c) > 0 ? CountTrue(a):CountTrue(b);
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("result", 0, 0);
@@ -541,21 +525,21 @@ result = CountTrue(c) > 0 ? CountTrue(a):CountTrue(b);
         public void T018_CountTrue_RangeExpression_01()
         {
             string code = @"
-a;
-result = 
-[Imperative]
+
+i = [Imperative]
 {
 	a1 = [1,true, null];//1
 	a2 = 8;
 	a3 = [2,[true,[true,1]],[false,x, true]];//3
 	a = CountTrue(a1)..a2..CountTrue(a3);//{1,4,7}
 	
-	return = CountTrue(a);
+	result = CountTrue(a);
+    return [result, a];
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("result", 0, 0);
-            Object[] v1 = new Object[] { 1, 4, 7 };
-            thisTest.Verify("a", v1, 0);
+            var v1 = new Object[] { 1, 4, 7 };
+
+            thisTest.Verify("i", new object[] {0, v1});
         }
         /* 
 [Test]
@@ -574,23 +558,20 @@ result =
         {
             //Assert.Fail("");
             string code = @"
-a;
-result = 
-[Imperative]
+a = [Imperative]
 {
 	a1 = [1,true, null];//1
+//1;
 	a2 = 8;
 	a3 = [2,[true,[true,1]],[false,x, true]];//3
-	a = [1.0,4.0,7.0];
-	//a = CountTrue(a1)..a2..#CountTrue(a3);//{}
-	return = CountTrue(a);
-}";
+//3;
+
+	return CountTrue(a1)..a2..#CountTrue(a3);
+
+};";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Object[] v1 = new Object[] { 1.0, 4.0, 7.0 };
+            Object[] v1 = new Object[] { 1, 4.5, 8 };
             thisTest.Verify("a", v1, 0);
-            //thisTest.Verify("result", 0);
-            //List<Object> li = new List<Object>() { 1, 4, 7 };
-            //Assert.IsTrue(mirror.CompareArrays("a", li, typeof(System.Int64)));
         }
 
         [Test]
@@ -618,9 +599,8 @@ result = foo(arr);";
         public void T020_CountTrue_DynamicArray()
         {
             string code = @"
-a2;
-result = 
-[Imperative]
+
+i = [Imperative]
 {
 	a1 = [
 	[[true],[]],
@@ -641,42 +621,39 @@ result =
 		}
 		i = i+1;
 	}
-	return = CountTrue(a2);
+	return [a2, CountTrue(a2)];
 } ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             Object[] v1 = new Object[] { true };
             Object[] v2 = new Object[] { };
             Object[] v3 = new Object[] { v1, v2 };
             Object[] v4 = new Object[] { v3 };
-            thisTest.Verify("a2", v4, 0);
-            thisTest.Verify("result", 1, 0);
+            thisTest.Verify("i", new object[] { v4, 1 });
         }
         [Test]
         [Category("SmokeTest")]
         public void T022_CountTrue_ImperativeAssociative()
         {
             string code = @"
-b;
-c;
-[Imperative]
+
+i = [Imperative]
 {
-	a1 = [true,0,1,1.0,null];
-	a2 = [false, CountTrue(a1),0.0];
-	a3 = a1;
-	[Associative]
+	a1 = [true,0,1,1.0,null];           // {true, 0, 1, 1, null}
+	a2 = [false, CountTrue(a1),0.0];    // {false, 1, 0}
+	a3 = a1;                            // {true, 0, 1, 1, null}
+	b = [Associative]
 	{
-		a1 = [true,[true]];
-		a4 = a2;
-		a2 = [true];
-		b = CountTrue(a4);//1
+		a1 = [true,[true]];             // {true,{true}}
+		a4 = a2;                        // {true}
+		a2 = [true];                    // {true}
+		return CountTrue(a4);              // 1
 	}
 	
-	c = CountTrue(a3);//1
-	
+	c = CountTrue(a3);                  //1
+	return [b, c];
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("b", 1, 0);
-            thisTest.Verify("c", 1, 0);
+            thisTest.Verify("i", new[] { 1, 1 });
         }
 
         [Test]
@@ -767,15 +744,15 @@ def foo(x:var[]..[])
 {
 	a = [];
 	i = 0;
-	[Imperative]
+	return [Imperative]
 	{
 		for(j in x)
 		{
 			a[i] = CountFalse(j);
 			i = i+1;
 		}
+        return a;
 	}
-	return  = a;
 }
 b = [
 [null],//0
@@ -796,21 +773,21 @@ result = foo(b);
         public void T028_CountFalse_Inline()
         {
             string code = @"
-result;
 def foo(x:var[]..[])
 {
-    return = [Imperative]{
-	if(CountFalse(x) > 0)
-		return = true;
-	return = false;
+    return = [Imperative]
+    {
+	    if(CountFalse(x) > 0)
+		    return true;
+	    return false;
     }
 }
-[Imperative]
+result = [Imperative]
 {
-a = [null,0];//0
+    a = [null,0];//0
 b = [null,20,30,null,[10,0],false,[true,0,[true,[false],5,2,true]]];//2
 c = [1,2,foo(b)];
-result = CountFalse(c) > 0 ? CountFalse(a):CountFalse(b);
+    return CountFalse(c) > 0 ? CountFalse(a):CountFalse(b);
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("result", 2, 0);
@@ -821,21 +798,19 @@ result = CountFalse(c) > 0 ? CountFalse(a):CountFalse(b);
         public void T029_CountFalse_RangeExpression_01()
         {
             string code = @"
-a;
-result = 
-[Imperative]
+result = [Imperative]
 {
 	a1 = [0,false, null];//1
 	a2 = 8;
 	a3 = [2,[false,[false,1]],[false,x, true]];//3
 	a = CountFalse(a1)..a2..CountFalse(a3);//{1,4,7}
 	
-	return = CountFalse(a);
+	return [CountFalse(a), a];
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("result", 0, 0);
             Object[] v1 = new Object[] { 1, 4, 7 };
-            thisTest.Verify("a", v1, 0);
+
+            thisTest.Verify("result", new object[] { 0, v1 });
         }
 
         [Test]
@@ -844,23 +819,16 @@ result =
         {
             //Assert.Fail("");
             string code = @"
-a;
-result = 
-[Imperative]
+a = [Imperative]
 {
 	a1 = [1,false, null];//1
 	a2 = 8;
 	a3 = [2,[false,[false,1]],[false,x, true]];//3
-	a = [1.0,4.0,7.0];
-	//a = CountFalse(a1)..a2..#CountFalse(a3);//{}
-	return = CountFalse(a);
+	return CountFalse(a1)..a2..#CountFalse(a3);//{}
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Object[] v1 = new Object[] { 1.0, 4.0, 7.0 };
+            Object[] v1 = new Object[] { 1, 4.5, 8 };
             thisTest.Verify("a", v1, 0);
-            //thisTest.Verify("result", 0);
-            //List<Object> li = new List<Object>() { 1, 4, 7 };
-            //Assert.IsTrue(mirror.CompareArrays("a", li, typeof(System.Int64)));
         }
 
         [Test]
@@ -888,7 +856,6 @@ result = foo(arr);";
         public void T031_CountFalse_DynamicArray()
         {
             string code = @"
-a2;
 result = 
 [Imperative]
 {
@@ -911,15 +878,14 @@ result =
 		}
 		i = i+1;
 	}
-	return = CountFalse(a2);
+	return = [a2, CountFalse(a2)];
 } ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             Object[] v1 = new Object[] { false };
             Object[] v2 = new Object[] { };
             Object[] v3 = new Object[] { v1, v2 };
             Object[] v4 = new Object[] { v3 };
-            thisTest.Verify("a2", v4, 0);
-            thisTest.Verify("result", 1, 0);
+            thisTest.Verify("result", new object[] { v4, 1 });
         }
 
         [Test]
@@ -927,27 +893,25 @@ result =
         public void T033_CountFalse_ImperativeAssociative()
         {
             string code = @"
-b;
-c;
+i = 
 [Imperative]
 {
 	a1 = [false,0,1,1.0,null];
 	a2 = [true, CountFalse(a1),0.0];
 	a3 = a1;
-	[Associative]
+	b = [Associative]
 	{
 		a1 = [false,[false]];
 		a4 = a2;
 		a2 = [false];
-		b = CountFalse(a4);//1
+		return CountFalse(a4);//1
 	}
 	
 	c = CountFalse(a3);//1
-	
+	return [b, c];
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("b", 1, 0);
-            thisTest.Verify("c", 1, 0);
+            thisTest.Verify("i", new[] { 1, 1 });
         }
 
         [Test]
@@ -958,9 +922,9 @@ c;
 a = [false, false];//true
 b = [[false]];//true
 c = [false, 0];//false
-result = [];
-[Imperative]
+result = [Imperative]
 {
+    result = {};
 	if(AllFalse(a)){
 		a[2] = 0;
 		result[0] = AllFalse(a);//false
@@ -973,6 +937,7 @@ result = [];
 	if(!AllFalse(c)){
 		result[2] = AllFalse(c);
 	}
+    return result;
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             Object[] v1 = new Object[] { false, null, false };
@@ -2010,12 +1975,11 @@ z = Insert(x, y, -1);
         {
             string code =
 @"
-z;
-[Imperative]
+z = [Imperative]
 {
     x = [ 1, 2 ];
     y = [3,3];
-    z = Insert(x, y, -1);  
+    return Insert(x, y, -1);  
 }
 ";
             string error = "";
@@ -2236,17 +2200,14 @@ y=z.create();
         {
             String code =
 @"
-sort;
-a1;
 def sorterFunction(a : double, b : int)
 {
-    return = a > b ? 1 : -1;
+    return a > b ? 1 : -1;
 }
-[Imperative]
+sort = [Imperative]
 {
     a1 =  [ 3, 1, 2 ];
-   // c = Flatten(a1);
-sort = Sort(sorterFunction,a1);
+    return Sort(sorterFunction, a1);
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -2258,17 +2219,14 @@ sort = Sort(sorterFunction,a1);
         {//1467446
             String code =
             @"
-            sort;
-            a1;
             def sorterFunction(a : double, b : int)
             {
                 return = a > b ? 1 : -1;
             }
-            [Imperative]
+            sort = [Imperative]
             {
                 a1 =  [ 3, 1, 2 ];
-               // c = Flatten(a1);
-            sort = Sort(sorterFunction,a1);
+                return Sort(sorterFunction,a1);
             }
             ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -2280,26 +2238,23 @@ sort = Sort(sorterFunction,a1);
         {//1467446
             String code =
             @"
-                sort;
-                a1;
                 def sorterFunction(a : double, b : int)
                 {
                     return = a > b ? 1 : -1;
                 }
-                [Associative]
+                sort = [Associative]
                 {
-                [Imperative]
-                {
-                [Associative]
-                {
-                [Imperative]
-                {
-                a1 = [ 3, 1, 2 ];
-                // c = Flatten(a1);
-                sort = Sort(sorterFunction, a1);
-                }
-                }
-                }
+                    return [Imperative]
+                    {
+                        return [Associative]
+                        {
+                            return [Imperative]
+                            {
+                                a1 = [ 3, 1, 2 ];
+                                return Sort(sorterFunction, a1);
+                            }
+                        }
+                    }
                 } 
             ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -2414,32 +2369,33 @@ a1 = [ [ 4, 2, 3 ], [ 2, 5, 1 ],[ 2,11,7], [ 8, 4, 6 ]  ];
         {//1467446
             String code =
             @"
- sort;
-a1;
 a1 = [ [ 4, 2, 3 ], [ 2, 5, 1 ], [ 8, 4, 6 ] ];
 def sorterFunction(a : int, b : int)
 {
-    return = a > b ? 1 : -1;
+    return a > b ? 1 : -1;
 }
-d = [ ];
-    def foo(a : int[])
-    {
-        sort = Sort(sorterFunction, a);
-        return = sort;
-    }
-[Imperative]
+
+d = [];
+
+def foo(a : int[])
+{
+    return Sort(sorterFunction, a);
+}
+
+i = [Imperative]
 {
     dim = Count(a1);
     i = 0;
     while(i < dim)
     {
-        d[i ] = foo(a1[i ]);
+        d[i] = foo(a1[i]);
         i = i + 1;
     }
-}
+    return d;
+};
             ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("d", new object[] { new object[] { 2, 3, 4 }, new object[] { 1, 2, 5 }, new object[] { 4, 6, 8 } });
+            thisTest.Verify("i", new object[] { new object[] { 2, 3, 4 }, new object[] { 1, 2, 5 }, new object[] { 4, 6, 8 } });
         }
 
         [Test]
@@ -2544,14 +2500,13 @@ d = [ ];
 
         [Test]
         public void BIM54_RemoveDuplicates_imperative_1467447()
-        {//1467446
+        {
             String code =
             @"
-            result;
-            [Imperative]
+            result = [Imperative]
             {
                 a = [ true, true, [ false, true ] ];
-                result = RemoveDuplicates(a); //
+                return RemoveDuplicates(a); 
             }
             ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -2637,17 +2592,18 @@ d = ImportFromCSV(c);
         {
             String code =
 @"
-d;
-[Imperative]
+d = [Imperative]
 {
-a = ""../../../test/Engine/ProtoTest/ImportFiles/CSV/Set2/test.csv"";
-b = ""../../../test/Engine/ProtoTest/ImportFiles/CSV/Set2/test2.csv"";
-c = [ a, b ];
-d = ImportFromCSV(c);
+    a = ""../../../test/Engine/ProtoTest/ImportFiles/CSV/Set2/test.csv"";
+    b = ""../../../test/Engine/ProtoTest/ImportFiles/CSV/Set2/test2.csv"";
+    c = [ a, b ];
+    d = ImportFromCSV(c);
+    return d;
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("d", new object[] { new object[] { new object[] { 1.0, 2.0, 3.0, 4.0, 5.0 }, new object[] { 2.0, 3.0, 4.0, 5.0, 6.0 }, new object[] { 3.0, 4.0, 5.0, 6.0, 7.0 } }, new object[] { new object[] { 11.0, 12.0, 13.0, 14.0, 15.0 }, new object[] { 12.0, 13.0, 14.0, 15.0, 16.0 }, new object[] { 13.0, 14.0, 15.0, 16.0, 17.0 } } }
+            thisTest.Verify("d", 
+                new object[] { new object[] { new object[] { 1.0, 2.0, 3.0, 4.0, 5.0 }, new object[] { 2.0, 3.0, 4.0, 5.0, 6.0 }, new object[] { 3.0, 4.0, 5.0, 6.0, 7.0 } }, new object[] { new object[] { 11.0, 12.0, 13.0, 14.0, 15.0 }, new object[] { 12.0, 13.0, 14.0, 15.0, 16.0 }, new object[] { 13.0, 14.0, 15.0, 16.0, 17.0 } } }
 );
         }
 
@@ -2699,11 +2655,10 @@ b = List.RemoveIfNot(a, ""bool"");
             String code =
 @"
 import(""BuiltIn.ds"");
-b;
-[Imperative]
+b = [Imperative]
 {
     a = [ true,null,false,true];
-    b = List.RemoveIfNot(a, ""bool"");
+    return List.RemoveIfNot(a, ""bool"");
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -2876,18 +2831,18 @@ c = Transpose(Transpose(foo()));
             String code =
 @"
  a = [ 1, [ 2, 3 ], [ 4, 5, [ 6, 7 ] ] ];
- b;
-c;
- [Imperative]
+ i = [Imperative]
  {
     b = Transpose(a);
     c = Transpose(Transpose(a));
+    return [b, c];
  }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("a", new object[] { 1, new object[] { 2, 3 }, new object[] { 4, 5, new object[] { 6, 7 } } });
-            thisTest.Verify("b", new object[] { new object[] { 1, 2, 4 }, new object[] { null, 3, 5 }, new object[] { null, null, new object[] { 6, 7 } } });
-            thisTest.Verify("c", new object[] { new object[] { 1, null, null }, new object[] { 2, 3, null }, new object[] { 4, 5, new object[] { 6, 7 } } });
+            var b = new object[] { new object[] { 1, 2, 4 }, new object[] { null, 3, 5 }, new object[] { null, null, new object[] { 6, 7 } } };
+            var c = new object[] { new object[] { 1, null, null }, new object[] { 2, 3, null }, new object[] { 4, 5, new object[] { 6, 7 } } };
+            thisTest.Verify("i", new object[] {b, c});
         }
 
         [Test]

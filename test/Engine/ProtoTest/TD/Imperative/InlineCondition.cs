@@ -11,13 +11,12 @@ namespace ProtoTest.TD.Imperative
         [Category("SmokeTest")]
         public void T001_Inline_Using_Function_Call()
         {
-            string src = @"smallest2;
-largest2;
+            string src = @"
 	def fo1 : int(a1 : int)
 	{
-		return = a1 * a1;
+		return a1 * a1;
 	}
-[Imperative]
+i = [Imperative]
 {
 	a	=	10;				
 	b	=	20;
@@ -27,13 +26,13 @@ largest2;
 	d = fo1(a);
 	smallest2   =   (fo1(a))	<   (fo1(b))  ?   (fo1(a))	:	(fo1(a));	//100
 	largest2	=   (fo1(a)) >   (fo1(b))  ?   (fo1(a))	:	(fo1(b)); //400
+    return [smallest2, largest2];
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            // expected "StatementUsedInAssignment" warning
-            thisTest.Verify("smallest2", 100);
-            thisTest.Verify("largest2", 400);
+            thisTest.Verify("i", new[] {100, 400});
         }
+
         [Ignore]
         [Category("SmokeTest")]
         public void T002_Inline_Using_Math_Lib_Functions()
@@ -169,17 +168,17 @@ largest2  =   sqrt(fo1(a)) >   sqrt(fo1(b))  ?   sqrt(fo1(a))  :     sqrt(fo1(b)
         [Category("SmokeTest")]
         public void T008_Inline_Returing_Different_Ranks()
         {
-            string src = @"x;
-[Imperative]
+            string src = @"
+x = [Imperative]
 {
 	a = [ 0, 1, 2, 4];
 	x = a > 1 ? 0 : [1,1]; // { 1, 1} ? 
 	x_0 = x[0];
 	x_1 = x[1];
+    return x;
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            // expected "StatementUsedInAssignment" warning
             List<Object> x = new List<object> { 1, 1 };
             thisTest.Verify("x", x);
         }
@@ -216,15 +215,8 @@ largest2  =   sqrt(fo1(a)) >   sqrt(fo1(b))  ?   sqrt(fo1(a))  :     sqrt(fo1(b)
         [Category("SmokeTest")]
         public void T010_Inline_Using_Literal_Values()
         {
-            string src = @"a;
-b;
-c;
-d;
-e;
-f;
-g;
-h;
-[Imperative]
+            string src = @"
+i = [Imperative]
 {
 	a = 1 > 2.5 ? false: 1;
 	b = 0.55 == 1 ? true : false;
@@ -234,17 +226,11 @@ h;
 	f = true == true ? 1 : 0.5;
 	g = (1/3.0) > 0 ? (1/3.0) : (4/3);
 	h = (1/3.0) < 0 ? (1/3.0) : (4/3);
+    return [a, b, c, d, e, f, g, h];
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            thisTest.Verify("a", 1);
-            thisTest.Verify("b", false);
-            thisTest.Verify("c", 4);
-            thisTest.Verify("d", true);
-            thisTest.Verify("e", false);
-            thisTest.Verify("f", 1);
-            thisTest.Verify("g", 0.33333333333333331);
-            thisTest.Verify("h", 1);
+            thisTest.Verify("i", new object[] {1, false, 4, true, false, 1, 0.33333333333333331, 1});
         }
 
         [Test]
@@ -254,13 +240,7 @@ h;
         {
             string code = @"
 import(""FFITarget.dll"");
-x1;
-x2;
-x3;
-x4;
-x5;
-temp;
-[Imperative]
+i = [Imperative]
 {
 	a = 1;
 	b = 0.5;
@@ -279,16 +259,11 @@ temp;
     x5 = f != g ? h : h.IntVal;	
 	
 	temp = x3.IntVal;
+    return [x1, x2, x4, x5, x3, temp];
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Object n1 = null;
-            thisTest.Verify("x1", -1);
-            thisTest.Verify("x2", true);
-            thisTest.Verify("x4", 1);
-            thisTest.Verify("x5", 1);
-            thisTest.Verify("x3", 1);
-            thisTest.Verify("temp", n1);
+            thisTest.Verify("i", new object[] {-1, true, 1, 1, 1, null });
         }
 
         [Test]
@@ -495,10 +470,9 @@ a2 = foo2(3);
             string code = @"
 b = true;
 a1 = b && true ? -1 : 1;
-a2;
-[Imperative]
+a2 = [Imperative]
 {
-	a2 = b && true ? -1 : 1;
+	return b && true ? -1 : 1;
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -530,11 +504,10 @@ a3 = 1 > 2 ? true : b;";
         public void T22_Defect_1467166()
         {
             String code =
-@"xx;
-[Imperative] 
+@"xx = [Imperative] 
 {
     a = [ 0, 1, 2]; 
-    xx = a < 1 ? 1 : 0;
+    return a < 1 ? 1 : 0;
 }
 ";
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
@@ -548,11 +521,10 @@ a3 = 1 > 2 ? true : b;";
         public void T22_Defect_1467166_2()
         {
             String code =
-@"xx;
-[Imperative] 
+@"xx = [Imperative] 
 {
     a = [ 0, 1, 2]; 
-    xx = 2 > 1 ? a : 0;
+    return 2 > 1 ? a : 0;
 }
 ";
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
@@ -567,28 +539,24 @@ a3 = 1 > 2 ? true : b;";
         {
             String code =
 @"
-x1;x2;x3;x4;x5;
 def foo()
 {
-    return = null;
+    return null;
 }
-[Imperative] 
+i = [Imperative] 
 {
    x1 = null == null ? 1 : 0;
    x2 = null != null ? 1 : 0;
    x3 = null == a ? 1 : 0;
    x4 = foo2(1) == a ? 1 : 0;
    x5 = foo() == null ? 1 : 0;
+   return [x1, x2, x3, x4, x5];
 }
 ";
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.Verify("x1", 1);
-            thisTest.Verify("x2", 0);
-            thisTest.Verify("x3", 1);
-            thisTest.Verify("x4", 1);
-            thisTest.Verify("x5", 1);
+            thisTest.Verify("i", new[] {1, 0, 1, 1, 1});
         }
 
 
