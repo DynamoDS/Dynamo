@@ -441,7 +441,7 @@ namespace Dynamo.Tests
             // If "jsonWithView_nonGuidIds" test copy .data file to additional structured folder location
             if (!filePathBase.Contains("jsonWithView_nonGuidIds"))
             {
-                string dataPath;
+                string structuredTestPath;
                 string extension = Path.GetExtension(filePathBase);
                 string pathWithoutExt = filePathBase.Substring(0, filePathBase.Length - extension.Length);
 
@@ -450,33 +450,29 @@ namespace Dynamo.Tests
                 // To avoid this append _dyf to .data and .ds files for all .dyf files
                 if (extension == ".dyf")
                 {
-                    dataPath = pathWithoutExt + "_dyf.data";
+                    structuredTestPath = pathWithoutExt + "_dyf.data";
                 }
 
                 else
                 {
-                    dataPath = pathWithoutExt + ".data";
+                    structuredTestPath = pathWithoutExt + ".data";
                 }
-
-                var tempDir = Path.GetTempPath();
-                var fileName = Path.GetFileName(dataPath);
-                var flattenedPath = tempDir + "jsonWithView_nonGuidIds\\" + fileName;
 
                 // Write to structured path
-                if (File.Exists(dataPath))
+                if (File.Exists(structuredTestPath))
                 {
-                    File.Delete(dataPath);
+                    File.Delete(structuredTestPath);
                 }
 
-                File.WriteAllText(dataPath, dataMapStr);
+                File.WriteAllText(structuredTestPath, dataMapStr);
 
                 // Write to flattened path
-                if (File.Exists(flattenedPath))
+                if (File.Exists(filePathBase + ".data"))
                 {
-                    File.Delete(flattenedPath);
+                    File.Delete(filePathBase + ".data");
                 }
 
-                File.WriteAllText(flattenedPath, dataMapStr);
+                File.WriteAllText(filePathBase + ".data", dataMapStr);
             }
 
             else
