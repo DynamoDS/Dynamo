@@ -607,6 +607,12 @@ namespace DynamoCoreWpfTests
         {
             // Get all folder structure following "\\test"
             var expectedStructure = filePath.Remove(0, SerializationTests.TestDirectory.Length);
+            var newWSName = expectedStructure.Replace("\\", "/");
+            // Update WS name to original test file path
+            jo["Name"] = newWSName;
+            var nameBasedGuid = GuidUtility.Create(currentDynamoModel.CurrentWorkspace.Guid, newWSName);
+            // Update Uuid to be unique based on new WS name
+            jo["Uuid"] = nameBasedGuid;
 
             // Current test fileName
             var fileName = Path.GetFileName(filePath);
@@ -684,9 +690,6 @@ namespace DynamoCoreWpfTests
         private string ConvertCurrentWorkspaceViewToNonGuidJsonAndSave(DynamoViewModel viewModel, string filePath)
         {
             // Stage 1: Serialize the workspace.
-            // Update WS name based on file path to generate unique UUIDs
-            var testFileStructure = filePath.Remove(0, SerializationTests.TestDirectory.Length);
-            viewModel.Model.CurrentWorkspace.Name = testFileStructure.Replace("\\", "/");
             var jsonModel = viewModel.Model.CurrentWorkspace.ToJson(viewModel.Model.EngineController);
             // Stage 2: Add the View.
             var jo = JObject.Parse(jsonModel);
