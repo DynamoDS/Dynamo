@@ -165,7 +165,7 @@ namespace Dynamo.Tests
         {
             if (value.IsCollection)
             {
-                return value.GetElements().Select(x => GetDataOfValue(x)).ToList<object>();
+                return value.GetElements().Select(GetDataOfValue).ToList();
             }
 
             if (!value.IsPointer)
@@ -176,6 +176,11 @@ namespace Dynamo.Tests
                 {
                     return data;
                 }
+            }
+            else if (value.Data is DesignScript.Builtin.Dictionary)
+            {
+                var dict = (DesignScript.Builtin.Dictionary) value.Data;
+                return dict.Keys.Zip(dict.Values, (num, str) => new {num, str }).ToDictionary(ns => ns.num, ns => ns.str);
             }
 
             return value.StringData;
