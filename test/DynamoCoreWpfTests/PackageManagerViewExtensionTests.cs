@@ -205,7 +205,7 @@ namespace DynamoCoreWpfTests
                 Assert.AreEqual(0, startCount);
             };
 
-            DispatcherUtil.DoEvents();
+            ViewExtensionTests.RaiseLoadedEvent(this.View);
             Assert.IsTrue(viewLoaded, "view was never loaded, invalid test");
 
         }
