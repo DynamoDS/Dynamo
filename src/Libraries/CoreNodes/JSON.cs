@@ -1,0 +1,116 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Autodesk.DesignScript.Runtime;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+
+namespace DSCore
+{
+    public static class JSON
+    {
+        /// <summary>
+        ///     Parse converts an arbitrary JSON string to a value. It is the opposite of JSON.Stringify.
+        /// </summary>
+        /// <param name="json">A JSON string</param>
+        /// <returns name="result"></returns>
+        public static object Parse(string json)
+        {
+            return ToNative(JToken.Parse(json));
+        }
+
+        private static object ToNative(JToken token)
+        {
+            switch (token.Type)
+            {
+                case JTokenType.Object:
+                    var obj = token as JObject;
+                    var dict = new Dictionary<string, object>();
+                    foreach (var kv in obj)
+                    {
+                        dict[kv.Key] = ToNative(kv.Value);
+                    }
+                    return dict;
+                case JTokenType.Array:
+                    var arr = token as JArray;
+                    return arr.Select(ToNative);
+                case JTokenType.Null:
+                    return null;
+                case JTokenType.Integer:
+                case JTokenType.Float:
+                case JTokenType.String:
+                case JTokenType.Boolean:
+                case JTokenType.Date:
+                case JTokenType.TimeSpan:
+                    return (token as JValue).Value;
+                case JTokenType.Guid:
+                case JTokenType.Uri:
+                    return (token as JValue).Value.ToString();
+                default:
+                    return null;
+            }
+        }
+
+        /// <summary>
+        ///     Stringify converts an arbitrary value to JSON. It is the opposite of JSON.Parse.
+        /// </summary>
+        /// <param name="value">Any value</param>
+        /// <returns name="json">The resultant JSON.</returns>
+        public static string Stringify(object value)
+        {
+            return JsonConvert.SerializeObject(value, new DictConverter());
+        }
+
+        /// <summary>
+        ///     Stringify converts a list of arbitrary values to JSON. It is similar to JSON.Stringify, except it doesn't replicate.
+        /// </summary>
+        /// <param name="values">A List of values</param>
+        /// <returns name="json">The resultant JSON</returns>
+        public static string StringifyList([ArbitraryDimensionArrayImport] object values)
+        {
+            return JsonConvert.SerializeObject(values, new DictConverter());
+        }
+
+        private class DictConverter : JsonConverter
+        {
+            public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+            {
+                object obj;
+                if (value is DesignScript.Builtin.Dictionary)
+                {
+                    var dict = value as DesignScript.Builtin.Dictionary;
+                    var rdict = new Dictionary<string, object>();
+                    foreach (var key in dict.Keys)
+                    {
+                        rdict[key] = dict.ValueAtKey(key);
+                    }
+                    obj = rdict;
+                }
+                else
+                {
+                    obj = value;
+                }
+
+                serializer.Serialize(writer, obj);
+            }
+
+            public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+            {
+                throw new NotImplementedException("Unnecessary because CanRead is false. The type will skip the converter.");
+            }
+
+            public override bool CanRead
+            {
+                get { return false; }
+            }
+
+            public override bool CanConvert(Type objectType)
+            {
+                return objectType == typeof(DesignScript.Builtin.Dictionary);
+            }
+        }
+
+    }
+}
