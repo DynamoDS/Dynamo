@@ -160,7 +160,21 @@ namespace Dynamo.Graph.Workspaces
                         //       It is not a great way to get the value, but we do not currently
                         //       serialize the line indexes for ooutputs in code block nodes directly
                         string lineIndexString = Regex.Match(output["Description"].ToString(), @"\d+").Value;
-                        outPortLineIndexes.Add(Int32.Parse(lineIndexString) - 1);
+                        if (!string.IsNullOrEmpty(lineIndexString))
+                        {
+                            try
+                            {
+                                outPortLineIndexes.Add(Int32.Parse(lineIndexString) - 1);
+                            }
+                            catch (FormatException)
+                            {
+                                // If the string is in an incorrect format do nothing
+                            }
+                            catch (OverflowException)
+                            {
+                                // If the integer is overflowing a 32 bit number do nothing
+                            }
+                        }
                     }
 
                     codeBlockNode.SetErrorStatePortData(inPortNames, outPortLineIndexes);
