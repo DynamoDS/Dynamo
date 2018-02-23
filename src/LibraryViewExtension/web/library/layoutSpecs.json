@@ -1049,6 +1049,9 @@
                 },
                 {
                   "path": "DSCoreNodes.DSCore.JSON.Stringify"
+                },
+                {
+                  "path": "DSCoreNodes.DSCore.JSON.StringifyList"
                 }
               ],
               "childElements": [ ]
