@@ -15,12 +15,13 @@ using DynamoCoreWpfTests.Utility;
 using DynamoShapeManager;
 using NUnit.Framework;
 using TestServices;
+using Dynamo.Interfaces;
 
 namespace DynamoCoreWpfTests
 {
     public class DynamoTestUIBase
     {
-        private Preloader preloader;
+        protected Preloader preloader;
 
         protected DynamoViewModel ViewModel { get; set; }
         protected DynamoView View { get; set; }
@@ -62,13 +63,7 @@ namespace DynamoCoreWpfTests
             }
 
             Model = DynamoModel.Start(
-                new DynamoModel.DefaultStartConfiguration()
-                {
-                    StartInTestMode = true,
-                    PathResolver = pathResolver,
-                    GeometryFactoryPath = preloader.GeometryFactoryPath,
-                    ProcessMode = TaskProcessMode.Synchronous
-                });
+               this.CreateStartConfiguration(pathResolver));
 
             ViewModel = DynamoViewModel.Start(
                 new DynamoViewModel.StartConfiguration()
@@ -81,6 +76,21 @@ namespace DynamoCoreWpfTests
             View.Show();
 
             SynchronizationContext.SetSynchronizationContext(new SynchronizationContext());
+        }
+
+        /// <summary>
+        /// Derived test classes can override this method to provide different configurations.
+        /// </summary>
+        /// <param name="pathResolver">A path resolver to pass to the DynamoModel. </param>
+        protected virtual DynamoModel.IStartConfiguration CreateStartConfiguration(IPathResolver pathResolver)
+        {
+            return new DynamoModel.DefaultStartConfiguration()
+            {
+                PathResolver = pathResolver,
+                StartInTestMode = true,
+                GeometryFactoryPath = preloader.GeometryFactoryPath,
+                ProcessMode = TaskProcessMode.Synchronous
+            };
         }
 
         [TearDown]
