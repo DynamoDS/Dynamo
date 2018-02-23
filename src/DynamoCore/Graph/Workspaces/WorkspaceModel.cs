@@ -25,6 +25,7 @@ using ProtoCore.Namespace;
 using Utils = Dynamo.Graph.Nodes.Utilities;
 using Dynamo.Engine;
 using Dynamo.Scheduler;
+using Newtonsoft.Json.Linq;
 
 namespace Dynamo.Graph.Workspaces
 {
@@ -55,6 +56,8 @@ namespace Dynamo.Graph.Workspaces
         public double Y;
         public bool ShowGeometry;
         public bool Excluded;
+        public bool IsInput;
+        public bool IsOutput;
     }
 
     /// <summary>
@@ -405,6 +408,18 @@ namespace Dynamo.Graph.Workspaces
         {
             var handler = Saving;
             if (handler != null) handler(obj);
+        }
+
+        /// <summary>
+        /// This handler handles the workspaceModel's request to populate a JSON with view data.
+        /// This is used to construct a full workspace for instrumentation.
+        /// </summary>
+        internal delegate string PopulateJSONWorkspaceHandler(JObject modelData);
+        internal event PopulateJSONWorkspaceHandler PopulateJSONWorkspace;
+        protected virtual void OnPopulateJSONWorkspace(JObject modelData)
+        {
+            var handler = PopulateJSONWorkspace;
+            if (handler != null) handler(modelData);
         }
 
         private void OnSyncWithDefinitionStart(NodeModel nodeModel)
@@ -1501,22 +1516,44 @@ namespace Dynamo.Graph.Workspaces
 
         internal string GetStringRepOfWorkspace()
         {
-            // Create the xml document to write to.
-            var document = new XmlDocument();
-            document.CreateXmlDeclaration("1.0", null, null);
-            document.AppendChild(document.CreateElement("Workspace"));
+            try
+            {
+                //Send the data in JSON format
+                //step 1: convert the model to json
+                var json = this.ToJson(null);
 
-            //This is only used for computing relative offsets, it's not actually created
-            string virtualFileName = Path.Combine(Path.GetTempPath(), "DynamoTemp.dyn");
-            Utils.SetDocumentXmlPath(document, virtualFileName);
+                //step2 : parse it as JObject
+                var jo = JObject.Parse(json);
 
-            if (!PopulateXmlDocument(document))
-                return String.Empty;
+                //step 3: raise the event to populate the view block
+                if (PopulateJSONWorkspace != null)
+                {
+                    json = PopulateJSONWorkspace(jo);
+                }
 
-            //Now unset the temp file name again
-            Utils.SetDocumentXmlPath(document, null);
+                return json;
+            }
+            catch (JsonReaderException ex)
+            {
+                JArray array = new JArray();
+                array.Add(ex.Message);
 
-            return document.OuterXml;
+                JObject jo = new JObject();
+                jo["exception"] = array;
+
+                return jo.ToString();
+            }
+            catch (Exception ex)
+            {
+                JArray array = new JArray();
+                array.Add(ex.InnerException.ToString());
+
+                JObject jo = new JObject();
+                jo["exception"] = array;
+
+                return jo.ToString();
+            }
+
         }
 
         #region ILogSource implementation
@@ -1653,6 +1690,8 @@ namespace Dynamo.Graph.Workspaces
                     nodeModel.X = nodeViewInfo.X;
                     nodeModel.Y = nodeViewInfo.Y;
                     nodeModel.IsFrozen = nodeViewInfo.Excluded;
+                    nodeModel.IsSetAsInput = nodeViewInfo.IsInput;
+                    nodeModel.IsSetAsOutput = nodeViewInfo.IsOutput;
 
                     // NOTE: The name needs to be set using UpdateValue to cause the view to update
                     nodeModel.UpdateValue(new UpdateValueParams("Name", nodeViewInfo.Name));

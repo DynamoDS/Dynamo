@@ -126,6 +126,7 @@ namespace Dynamo.Tests
             public Dictionary<Guid, int> OutportCountMap { get; set; }
             public Dictionary<Guid, PortComparisonData> PortDataMap { get; set; }
             public Dictionary<Guid, NodeInputData> InputsMap { get; set; }
+            public Dictionary<Guid, NodeOutputData> OutputsMap { get; set; }
             public string DesignScript { get; set; }
 
             public WorkspaceComparisonData(WorkspaceModel workspace, EngineController controller)
@@ -141,15 +142,21 @@ namespace Dynamo.Tests
                 PortDataMap = new Dictionary<Guid, PortComparisonData>();
                 NodeReplicationMap = new Dictionary<Guid, string>();
                 InputsMap = new Dictionary<Guid, NodeInputData>();
+                OutputsMap = new Dictionary<Guid, NodeOutputData>();
 
                 foreach (var n in workspace.Nodes)
                 {
                     NodeTypeMap.Add(n.GUID, n.GetType());
                     NodeReplicationMap.Add(n.GUID, n.ArgumentLacing.ToString());
                     //save input nodes to inputs block
-                    if (n.IsSetAsInput)
+                    if (n.IsSetAsInput && n.InputData != null)
                     {
                         InputsMap.Add(n.GUID, n.InputData);
+                    }
+                    //save output nodes to outputs block
+                    if (n.IsSetAsOutput && n.OutputData != null)
+                    {
+                        OutputsMap.Add(n.GUID, n.OutputData);
                     }
 
                     var portvalues = n.OutPorts.Select(p =>
@@ -818,8 +825,12 @@ namespace Dynamo.Tests
             }
 
             //assert that the inputs in the saved json file are the same as those we can gather from the 
-            //grah at runtime - because we don't deserialize these directly we check the json itself.
-            var jObject = JObject.Parse(json);
+            //graph at runtime - because we don't deserialize these directly we check the json itself.
+            //Use load vs parse to preserve date time strings.
+            var jsonReader = new JsonTextReader(new StringReader(json));
+            jsonReader.DateParseHandling = DateParseHandling.None;
+            var jObject = JObject.Load(jsonReader);
+
             var jToken = jObject["Inputs"];
             var inputs = jToken.ToArray().Select(x => x.ToObject<NodeInputData>()).ToList();
             var inputs2 = ws1.Nodes.Where(x => x.IsSetAsInput == true && x.InputData != null).Select(input => input.InputData).ToList();
@@ -833,6 +844,22 @@ namespace Dynamo.Tests
                 }
             }
             Assert.IsTrue(inputs.SequenceEqual(inputs2));
+
+            //assert that the outputs in the saved json file are the same as those we can gather from the 
+            //graph at runtime - because we don't deserialize these directly we check the json itself.
+            var jTokenOutput = jObject["Outputs"];
+            var outputs = jTokenOutput.ToArray().Select(x => x.ToObject<NodeOutputData>()).ToList();
+            var outputs2 = ws1.Nodes.Where(x => x.IsSetAsOutput == true && x.OutputData != null).Select(output => output.OutputData).ToList();
+
+            //Outputs2 might come from a WS with non guids, so we need to replace the ids with guids if they exist in the map
+            foreach (var output in outputs2)
+            {
+                if (modelsGuidToIdMap.ContainsKey(output.Id))
+                {
+                    output.Id = GuidUtility.Create(GuidUtility.UrlNamespace, modelsGuidToIdMap[output.Id]);
+                }
+            }
+            Assert.IsTrue(outputs.SequenceEqual(outputs2));
         }
 
 

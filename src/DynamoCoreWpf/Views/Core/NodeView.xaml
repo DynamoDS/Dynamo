@@ -104,6 +104,11 @@
                           IsChecked="{Binding Path=IsSetAsInput,Mode=TwoWay}"
                           Visibility="{Binding Path=IsInput, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"
                           IsCheckable="True" />
+                <MenuItem Name="isOutput_cm"
+                          Header="{x:Static p:Resources.NodeContextMenuIsOutput}"
+                          IsChecked="{Binding Path=IsSetAsOutput,Mode=TwoWay}"
+                          Visibility="{Binding Path=IsOutput, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"
+                          IsCheckable="True" />
                 <MenuItem Name="help_cm"
                           Header="{x:Static p:Resources.NodeContextMenuHelp}"
                           Command="{Binding Path=ShowHelpCommand}" />

@@ -16,6 +16,7 @@ namespace Dynamo.Extensions
     public class ReadyParams
     {
         private readonly DynamoModel dynamoModel;
+        private readonly StartupParams startupParams;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ReadyParams"/> class.
@@ -26,6 +27,21 @@ namespace Dynamo.Extensions
             dynamoModel = dynamoM;
             dynamoModel.PropertyChanged += OnDynamoModelPropertyChanged;
             dynamoM.Logger.NotificationLogged += OnNotificationRecieved;
+            startupParams = new StartupParams(dynamoModel.AuthenticationManager.AuthProvider,
+                dynamoModel.PathManager, new ExtensionLibraryLoader(dynamoModel), dynamoModel.CustomNodeManager,
+                new Version(dynamoModel.Version), dynamoModel.PreferenceSettings);
+        }
+
+        /// <summary>
+        /// A reference to the <see cref="StartupParams"/> class.
+        /// Useful if this extension will be loaded from a package as its startup method, will not be called.
+        /// </summary>
+        public StartupParams StartupParams
+        {
+            get
+            {
+                return startupParams;
+            }
         }
 
         /// <summary>
@@ -54,7 +70,7 @@ namespace Dynamo.Extensions
         /// <summary>
         /// Extension specific implementation to execute Recordable commands on DynamoModel
         /// </summary>
-        public virtual ICommandExecutive CommandExecutive 
+        public virtual ICommandExecutive CommandExecutive
         {
             get { return commandExecutive ?? (commandExecutive = new ExtensionCommandExecutive(dynamoModel)); }
         }

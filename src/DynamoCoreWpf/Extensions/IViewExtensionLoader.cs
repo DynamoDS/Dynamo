@@ -11,5 +11,10 @@ namespace Dynamo.Wpf.Extensions
     {
         IViewExtension Load(string extensionPath);
         IEnumerable<IViewExtension> LoadDirectory(string extensionsPath);
+
+        /// <summary>
+        /// An event that is raised when an extension starts loading.
+        /// </summary>
+        event Action<IViewExtension> ExtensionLoading;
     }
 }

@@ -151,7 +151,7 @@ namespace Dynamo.ViewModels
             }
         }
 
-        [JsonIgnore]
+        [JsonProperty("IsInput")]
         public bool IsSetAsInput
         {
             get
@@ -168,6 +168,31 @@ namespace Dynamo.ViewModels
             }
         }
 
+        [JsonIgnore]
+        public bool IsOutput
+        {
+            get
+            {
+                return nodeLogic.IsOutputNode;
+            }
+        }
+
+        [JsonProperty("IsOutput")]
+        public bool IsSetAsOutput
+        {
+            get
+            {
+                return nodeLogic.IsSetAsOutput;
+            }
+            set
+            {
+                if (nodeLogic.IsSetAsOutput != value)
+                {
+                    nodeLogic.IsSetAsOutput = value;
+                    RaisePropertyChanged("IsSetAsOutput");
+                }
+            }
+        }
         /// <summary>
         /// The Name of the nodemodel this view points to
         /// this is the name of the node as it is displayed in the UI.

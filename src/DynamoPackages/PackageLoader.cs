@@ -9,6 +9,7 @@ using Dynamo.Utilities;
 using DynamoPackages.Properties;
 using DynamoUtilities;
 using Dynamo.Core;
+using Dynamo.Extensions;
 
 namespace Dynamo.PackageManager
 {
@@ -29,8 +30,37 @@ namespace Dynamo.PackageManager
     {
         internal event Action<Assembly> RequestLoadNodeLibrary;
         internal event Func<string, IEnumerable<CustomNodeInfo>> RequestLoadCustomNodeDirectory;
+        internal event Func<string, IExtension> RequestLoadExtension;
+        internal event Action<IExtension> RequestAddExtension;
+
+        /// <summary>
+        /// This event is raised when a package is first added to the list of packages this package loader is loading.
+        /// This event occurs before the package is fully loaded. 
+        /// </summary>
         public event Action<Package> PackageAdded;
+
+        /// <summary>
+        /// This event is raised when a package is fully loaded. It will be true that when this event is raised
+        /// Packge.Loaded will be true for the package.
+        /// </summary>
+        public event Action<Package> PackgeLoaded;
+
+        /// <summary>
+        /// This event is raised when the package is removed from the list of packages loaded by this packageLoader.
+        /// </summary>
         public event Action<Package> PackageRemoved;
+
+        private readonly List<IExtension> requestedExtensions = new List<IExtension>();
+        /// <summary>
+        /// Collection of ViewExtensions the ViewExtensionSource requested be loaded.
+        /// </summary>
+        public IEnumerable<IExtension> RequestedExtensions
+        {
+            get
+            {
+                return requestedExtensions;
+            }
+        }
 
         private readonly List<Package> localPackages = new List<Package>();
         public IEnumerable<Package> LocalPackages { get { return localPackages; } }
@@ -139,7 +169,7 @@ namespace Dynamo.PackageManager
                         {
                             OnRequestLoadNodeLibrary(assem.Assembly);
                         }
-                        catch(Dynamo.Exceptions.LibraryLoadFailedException ex)
+                        catch (Dynamo.Exceptions.LibraryLoadFailedException ex)
                         {
                             Log(ex.GetType() + ": " + ex.Message);
                         }
@@ -151,7 +181,21 @@ namespace Dynamo.PackageManager
                 package.LoadedCustomNodes.AddRange(customNodes);
 
                 package.EnumerateAdditionalFiles();
+                // If the additional files contained an extension manifest, then request it be loaded.
+                var extensionManifests = package.AdditionalFiles.Where(
+                    file => file.Model.Name.Contains("ExtensionDefinition.xml") && !(file.Model.Name.Contains("ViewExtensionDefinition.xml"))).ToList();
+                foreach (var extPath in extensionManifests)
+                {
+                    var extension = RequestLoadExtension?.Invoke(extPath.Model.FullName);
+                    if (extension != null)
+                    {
+                        RequestAddExtension?.Invoke(extension);
+                    }
+                    this.requestedExtensions.Add(extension);
+                }
+
                 package.Loaded = true;
+                this.PackgeLoaded?.Invoke(package);
             }
             catch (Exception e)
             {
@@ -175,8 +219,8 @@ namespace Dynamo.PackageManager
                     if (File.Exists(pkg.BinaryDirectory))
                     {
                         pathManager.AddResolutionPath(pkg.BinaryDirectory);
-                    } 
-                    
+                    }
+
                 }
             }
 
@@ -187,7 +231,8 @@ namespace Dynamo.PackageManager
         }
         public void LoadCustomNodesAndPackages(LoadPackageParams loadPackageParams, CustomNodeManager customNodeManager)
         {
-            foreach(var path in loadPackageParams.Preferences.CustomPackageFolders){
+            foreach (var path in loadPackageParams.Preferences.CustomPackageFolders)
+            {
                 customNodeManager.AddUninitializedCustomNodesInPath(path, false, false);
                 if (!this.packagesDirectories.Contains(path))
                 {
@@ -340,7 +385,7 @@ namespace Dynamo.PackageManager
 
         public bool IsUnderPackageControl(Assembly t)
         {
-            return LocalPackages.Any(package => package.LoadedAssemblies.Any(x => x.Assembly == t ));
+            return LocalPackages.Any(package => package.LoadedAssemblies.Any(x => x.Assembly == t));
         }
 
         public Package GetPackageFromRoot(string path)

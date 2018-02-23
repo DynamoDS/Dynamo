@@ -1,0 +1,4 @@
+﻿<ViewExtensionDefinition>
+  <AssemblyPath>..\bin\SampleViewExtension.dll</AssemblyPath>
+  <TypeName>SampleViewExtension.SampleViewExtension</TypeName>
+</ViewExtensionDefinition>
