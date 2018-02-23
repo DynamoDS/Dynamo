@@ -67,7 +67,7 @@
                     console.log("Error: no search result.");
                     return;
                 }
-
+                csharpController.AddInstrumentation("Search", text);
                 callback(searchLoadedTypesJson);
             });
         }
@@ -95,6 +95,10 @@
             if (section == "Add-ons") {
                 csharpController.importLibrary();
             }
+        });
+
+        libController.on(libController.FilterCategoryEventName, function (item) {
+            console.log(item);
         });
 
         csharpController.on("error", function (msg) {

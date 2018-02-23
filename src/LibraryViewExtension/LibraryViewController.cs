@@ -12,6 +12,7 @@ using Dynamo.Extensions;
 using Dynamo.LibraryUI.Handlers;
 using Dynamo.LibraryUI.ViewModels;
 using Dynamo.LibraryUI.Views;
+using Dynamo.Logging;
 using Dynamo.Models;
 using Dynamo.Search;
 using Dynamo.Search.SearchElements;
@@ -137,6 +138,7 @@ namespace Dynamo.LibraryUI
                 //Create the node of given item name
                 var cmd = new DynamoModel.CreateNodeCommand(Guid.NewGuid().ToString(), nodeName, -1, -1, true, false);
                 commandExecutive.ExecuteCommand(cmd, Guid.NewGuid().ToString(), ViewExtension.ExtensionName);
+                AddInstrumentation("Search-NodeAdded", nodeName);
             }));
         }
 
@@ -148,6 +150,11 @@ namespace Dynamo.LibraryUI
             dynamoWindow.Dispatcher.BeginInvoke(new Action(() =>
                 dynamoViewModel.ImportLibraryCommand.Execute(null)
             ));
+        }
+
+        internal void AddInstrumentation(string eventName, string data)
+        {
+            Analytics.LogPiiInfo(eventName,data);
         }
 
         /// <summary>
