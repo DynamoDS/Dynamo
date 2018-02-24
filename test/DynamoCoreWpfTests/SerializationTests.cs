@@ -470,6 +470,8 @@ namespace DynamoCoreWpfTests
         public static string jsonNonGuidFolderName = "jsonWithView_nonGuidIds";
         public static string jsonFolderName = "jsonWithView";
 
+        private const string jsonStructuredFolderName = "DynamoCoreWPFTests";
+
         private TimeSpan lastExecutionDuration = new TimeSpan();
         private Dictionary<Guid, string> modelsGuidToIdMap = new Dictionary<Guid, string>();
 
@@ -539,7 +541,20 @@ namespace DynamoCoreWpfTests
 
             string json = saveFunction(this.ViewModel, filePath);
 
-            workspaceViewDataSaveFunction(wcd1, filePathBase, lastExecutionDuration,this.modelsGuidToIdMap);
+            // If "jsonWithView_nonGuidIds" test copy .data file to additional structured folder location
+            if (dirName == jsonNonGuidFolderName)
+            {
+                // Get structured test path
+                var testPath = filePath.Remove(0, SerializationTests.TestDirectory.Length);
+                var tempPath = Path.GetTempPath();
+                var fullPath = System.IO.Path.ChangeExtension(tempPath + jsonStructuredFolderName + testPath + fi.Extension, null);
+                workspaceViewDataSaveFunction(wcd1, fullPath, lastExecutionDuration, this.modelsGuidToIdMap);
+            }
+
+            else
+            {
+                workspaceViewDataSaveFunction(wcd1, filePathBase, lastExecutionDuration, this.modelsGuidToIdMap);
+            }
 
             lastExecutionDuration = new TimeSpan();
 
@@ -580,17 +595,31 @@ namespace DynamoCoreWpfTests
 
         }
 
-        private static string SaveJsonTempWithFolderStructure(DynamoViewModel viewModel, string filePath, JObject jo)
-        {   
+        /// <summary>
+        /// Copy test file to specified folder while 
+        /// maintaining original directory structure
+        /// and assigning file path as workspace name.
+        /// These are .dyn or .dyf files.
+        /// </summary>
+        /// <param name="filePath">original test file path</param>
+        /// <param name="jo">test json object</param>
+        private static void SaveJsonTempWithFolderStructure(string filePath, JObject jo, DynamoModel currentDynamoModel)
+        {
             // Get all folder structure following "\\test"
-            var expectedStructure = filePath.Split(new string[] { "\\test" }, StringSplitOptions.None).Last();
+            var expectedStructure = filePath.Remove(0, SerializationTests.TestDirectory.Length);
+            var newWSName = expectedStructure.Replace("\\", "/");
+            // Update WS name to original test file path
+            jo["Name"] = newWSName;
+            var nameBasedGuid = GuidUtility.Create(currentDynamoModel.CurrentWorkspace.Guid, newWSName);
+            // Update Uuid to be unique based on new WS name
+            jo["Uuid"] = nameBasedGuid;
 
             // Current test fileName
             var fileName = Path.GetFileName(filePath);
 
             // Get temp folder path
             var tempPath = Path.GetTempPath();
-            var jsonFolder = Path.Combine(tempPath, "DynamoTestJSON");
+            var jsonFolder = Path.Combine(tempPath, jsonStructuredFolderName);
             jsonFolder += Path.GetDirectoryName(expectedStructure);
 
             if (!System.IO.Directory.Exists(jsonFolder))
@@ -598,6 +627,7 @@ namespace DynamoCoreWpfTests
                 System.IO.Directory.CreateDirectory(jsonFolder);
             }
 
+            // TODO add check to make sure a .dyn or .dyf with the same name does not exist
             // Combine directory with test file name
             var jsonPath = jsonFolder + "\\" + fileName;
 
@@ -608,7 +638,20 @@ namespace DynamoCoreWpfTests
 
             File.WriteAllText(jsonPath, jo.ToString());
 
-            return jo.ToString();
+            // Write DesignScript file
+            string dsFileName = Path.GetFileNameWithoutExtension(fileName);
+            string extension = Path.GetExtension(filePath);
+
+            // Determine if .dyn or .dyf
+            // If .dyn and .dyf share common file name .ds and .data files is collide
+            // To avoid this append _dyf to .data and .ds files for all .dyf files
+            if (extension == ".dyf")
+            {
+                dsFileName += "_dyf";
+            }
+
+            string dsPath = jsonFolder + "\\" + dsFileName;
+            serializationTestUtils.ConvertCurrentWorkspaceToDesignScriptAndSave(dsPath, currentDynamoModel);
         }
 
         private static string ConvertCurrentWorkspaceViewToJsonAndSave(DynamoViewModel viewModel, string filePath)
@@ -623,9 +666,6 @@ namespace DynamoCoreWpfTests
 
             Assert.IsNotNullOrEmpty(jsonModel);
             Assert.IsNotNullOrEmpty(jo.ToString());
-
-            // Call new structured copy function
-            SaveJsonTempWithFolderStructure(viewModel, filePath, jo);
 
             var tempPath = Path.GetTempPath();
             var jsonFolder = Path.Combine(tempPath, jsonFolderName);
@@ -662,8 +702,10 @@ namespace DynamoCoreWpfTests
 
             Assert.IsNotNullOrEmpty(json);
 
-            // Call new structured copy function
-            SaveJsonTempWithFolderStructure(viewModel, filePath, jo);
+            // Call structured copy function for CoGS testing, see QNTM-2973
+            // Only called for CoreWPFTests nonGuids
+            var nonGuidsJson = JObject.Parse(json);
+            SaveJsonTempWithFolderStructure(filePath, nonGuidsJson, viewModel.Model);
 
             var tempPath = Path.GetTempPath();
             var jsonFolder = Path.Combine(tempPath, jsonNonGuidFolderName);
@@ -765,8 +807,6 @@ namespace DynamoCoreWpfTests
                 a.NodeViewDataMap[kvp.Key].Name, valueA, valueB));
             }
         }
-
-
 
         [TestFixtureSetUp]
         public void FixtureSetup()
@@ -919,7 +959,6 @@ namespace DynamoCoreWpfTests
             File.Delete(savePath);
 
         }
-
 
         [Test]
         public void AllTypesSerialize()

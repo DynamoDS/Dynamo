@@ -77,6 +77,38 @@ namespace Dynamo.Tests
             return json;
         }
 
+        public static void ConvertCurrentWorkspaceToDesignScriptAndSave(string filePathBase, DynamoModel currentDynamoModel)
+        {
+            try
+            {
+                var workspace = currentDynamoModel.CurrentWorkspace;
+
+                var libCore = currentDynamoModel.EngineController.LibraryServices.LibraryManagementCore;
+                var libraryServices = new LibraryCustomizationServices(currentDynamoModel.PathManager);
+                var nameProvider = new NamingProvider(libCore, libraryServices);
+                var controller = currentDynamoModel.EngineController;
+                var resolver = currentDynamoModel.CurrentWorkspace.ElementResolver;
+                var namingProvider = new NamingProvider(controller.LibraryServices.LibraryManagementCore, libraryServices);
+
+                var result = NodeToCodeCompiler.NodeToCode(libCore, workspace.Nodes, workspace.Nodes, namingProvider);
+                NodeToCodeCompiler.ReplaceWithShortestQualifiedName(
+                        controller.LibraryServices.LibraryManagementCore.ClassTable, result.AstNodes, resolver);
+                var codegen = new ProtoCore.CodeGenDS(result.AstNodes);
+                var ds = codegen.GenerateCode();
+
+                var dsPath = filePathBase + ".ds";
+                if (File.Exists(dsPath))
+                {
+                    File.Delete(dsPath);
+                }
+                File.WriteAllText(dsPath, ds);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                Assert.Inconclusive("The current workspace could not be converted to Design Script.");
+            }
+        }
 
         /// <summary>
         /// Caches workspaces data for comparison.
@@ -406,12 +438,52 @@ namespace Dynamo.Tests
                 dataMapStr = dataMapStr.Replace(guidKey.ToString(), modelsGuidToIdMap[guidKey]);
             }
 
-            var dataPath = filePathBase + ".data";
-            if (File.Exists(dataPath))
+            // If "jsonWithView_nonGuidIds" test copy .data file to additional structured folder location
+            if (!filePathBase.Contains("jsonWithView_nonGuidIds"))
             {
-                File.Delete(dataPath);
+                string structuredTestPath;
+                string extension = Path.GetExtension(filePathBase);
+                string pathWithoutExt = filePathBase.Substring(0, filePathBase.Length - extension.Length);
+
+                // Determine if .dyn or .dyf
+                // If .dyn and .dyf share common file name .ds and .data files is collide
+                // To avoid this append _dyf to .data and .ds files for all .dyf files
+                if (extension == ".dyf")
+                {
+                    structuredTestPath = pathWithoutExt + "_dyf.data";
+                }
+
+                else
+                {
+                    structuredTestPath = pathWithoutExt + ".data";
+                }
+
+                // Write to structured path
+                if (File.Exists(structuredTestPath))
+                {
+                    File.Delete(structuredTestPath);
+                }
+
+                File.WriteAllText(structuredTestPath, dataMapStr);
+
+                // Write to flattened path
+                if (File.Exists(filePathBase + ".data"))
+                {
+                    File.Delete(filePathBase + ".data");
+                }
+
+                File.WriteAllText(filePathBase + ".data", dataMapStr);
             }
-            File.WriteAllText(dataPath, dataMapStr);
+
+            else
+            {
+                var dataPath = filePathBase + ".data";
+                if (File.Exists(dataPath))
+                {
+                    File.Delete(dataPath);
+                }
+                File.WriteAllText(dataPath, dataMapStr);
+            }
         }
 
         public class PortComparisonData
@@ -667,7 +739,7 @@ namespace Dynamo.Tests
             var fi = new FileInfo(filePath);
             var filePathBase = dirPath + @"\" + Path.GetFileNameWithoutExtension(fi.Name);
 
-            ConvertCurrentWorkspaceToDesignScriptAndSave(filePathBase);
+            serializationTestUtils.ConvertCurrentWorkspaceToDesignScriptAndSave(filePathBase, CurrentDynamoModel);
 
             string json = saveFunction(model, filePathBase);
 
@@ -835,39 +907,6 @@ namespace Dynamo.Tests
             File.WriteAllText(jsonPath, json);
 
             return json;
-        }
-
-        private void ConvertCurrentWorkspaceToDesignScriptAndSave(string filePathBase)
-        {
-            try
-            {
-                var workspace = CurrentDynamoModel.CurrentWorkspace;
-
-                var libCore = CurrentDynamoModel.EngineController.LibraryServices.LibraryManagementCore;
-                var libraryServices = new LibraryCustomizationServices(CurrentDynamoModel.PathManager);
-                var nameProvider = new NamingProvider(libCore, libraryServices);
-                var controller = CurrentDynamoModel.EngineController;
-                var resolver = CurrentDynamoModel.CurrentWorkspace.ElementResolver;
-                var namingProvider = new NamingProvider(controller.LibraryServices.LibraryManagementCore, libraryServices);
-
-                var result = NodeToCodeCompiler.NodeToCode(libCore, workspace.Nodes, workspace.Nodes, namingProvider);
-                NodeToCodeCompiler.ReplaceWithShortestQualifiedName(
-                        controller.LibraryServices.LibraryManagementCore.ClassTable, result.AstNodes, resolver);
-                var codegen = new ProtoCore.CodeGenDS(result.AstNodes);
-                var ds = codegen.GenerateCode();
-
-                var dsPath = filePathBase + ".ds";
-                if (File.Exists(dsPath))
-                {
-                    File.Delete(dsPath);
-                }
-                File.WriteAllText(dsPath, ds);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex);
-                Assert.Inconclusive("The current workspace could not be converted to Design Script.");
-            }
         }
     }
 }
