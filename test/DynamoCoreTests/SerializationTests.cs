@@ -160,7 +160,7 @@ namespace Dynamo.Tests
                     }
 
                     var portvalues = n.OutPorts.Select(p =>
-                        GetDataOfValue(n.GetValue(p.Index, controller))).ToList<object>();
+                        ProtoCore.Utils.CoreUtils.GetDataOfValue(n.GetValue(p.Index, controller))).ToList();
 
                     n.InPorts.ToList().ForEach(p =>
                     {
@@ -192,27 +192,7 @@ namespace Dynamo.Tests
                 }
             }
         }
-
-        private static object GetDataOfValue(ProtoCore.Mirror.MirrorData value)
-        {
-            if (value.IsCollection)
-            {
-                return value.GetElements().Select(x => GetDataOfValue(x)).ToList<object>();
-            }
-
-            if (!value.IsPointer)
-            {
-                var data = value.Data;
-
-                if (data != null)
-                {
-                    return data;
-                }
-            }
-
-            return value.StringData;
-        }
-
+        
         /// <summary>
         /// compare two workspace comparison objects that represent workspace models
         /// </summary>
