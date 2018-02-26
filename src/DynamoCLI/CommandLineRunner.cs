@@ -69,8 +69,20 @@ namespace DynamoCLI
                     var resultsdict = new Dictionary<Guid, List<object>>();
                     foreach (var node in model.CurrentWorkspace.Nodes)
                     {
-                        var portvalues = node.OutPorts.Select(p =>
-                        ProtoCore.Utils.CoreUtils.GetDataOfValue(node.GetValue(p.Index, model.EngineController))).ToList();
+                        var portvalues = new List<object>();
+                        foreach (var port in node.OutPorts)
+                        {
+                            var value = node.GetValue(port.Index, model.EngineController);
+                            if (value.IsCollection)
+                            {
+                                portvalues.Add(GetStringRepOfCollection(value));
+                            }
+                            else
+                            {
+                                portvalues.Add(value.StringData);
+                            }
+
+                        }
 
                         resultsdict.Add(node.GUID, portvalues);
                     }
