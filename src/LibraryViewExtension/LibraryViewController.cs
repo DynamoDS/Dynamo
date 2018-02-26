@@ -88,6 +88,7 @@ namespace Dynamo.LibraryUI
         private ResourceHandlerFactory resourceFactory;
         private IDisposable observer;
         private ChromiumWebBrowser browser;
+        private const string CreateNodeInstrumentationString = "Search-NodeAdded";
 
         /// <summary>
         /// Creates LibraryViewController
@@ -139,7 +140,7 @@ namespace Dynamo.LibraryUI
                 //Create the node of given item name
                 var cmd = new DynamoModel.CreateNodeCommand(Guid.NewGuid().ToString(), nodeName, -1, -1, true, false);
                 commandExecutive.ExecuteCommand(cmd, Guid.NewGuid().ToString(), ViewExtension.ExtensionName);
-                AddInstrumentation("Search-NodeAdded", nodeName);
+                LogEventsToInstrumentation(CreateNodeInstrumentationString, nodeName);
             }));
         }
 
@@ -153,11 +154,11 @@ namespace Dynamo.LibraryUI
             ));
         }
         /// <summary>
-        /// This function adds the events to instrumentation
+        /// This function logs events to instrumentation if it matches a set of known events
         /// </summary>
-        /// <param name="eventName"> Event Name</param>
-        /// <param name="data">Data</param>
-        public void AddInstrumentation(string eventName, string data)
+        /// <param name="eventName">Event Name that gets logged to instrumentation</param>
+        /// <param name="data"> Data that gets logged to instrumentation </param>
+        public void LogEventsToInstrumentation(string eventName, string data)
         {
             if (eventName == "Search" || eventName == "Filter-Categories" || eventName == "Search-NodeAdded")
             {

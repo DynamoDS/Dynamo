@@ -67,7 +67,7 @@
                     console.log("Error: no search result.");
                     return;
                 }
-                csharpController.addInstrumentation("Search", text);
+                csharpController.logEventsToInstrumentation("Search", text);
                 callback(searchLoadedTypesJson);
             });
         }
@@ -104,7 +104,7 @@
                 categories.push(catString); 
             });
 
-            csharpController.addInstrumentation("Filter-Categories", categories.join(","));
+            csharpController.logEventsToInstrumentation("Filter-Categories", categories.join(","));
         });
 
         csharpController.on("error", function (msg) {
