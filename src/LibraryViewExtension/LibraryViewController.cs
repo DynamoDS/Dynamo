@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using CefSharp;
@@ -151,10 +152,17 @@ namespace Dynamo.LibraryUI
                 dynamoViewModel.ImportLibraryCommand.Execute(null)
             ));
         }
-
-        internal void AddInstrumentation(string eventName, string data)
+        /// <summary>
+        /// This function adds the events to instrumentation
+        /// </summary>
+        /// <param name="eventName"> Event Name</param>
+        /// <param name="data">Data</param>
+        public void AddInstrumentation(string eventName, string data)
         {
-            Analytics.LogPiiInfo(eventName,data);
+            if (eventName == "Search" || eventName == "Filter-Categories" || eventName == "Search-NodeAdded")
+            {
+                Analytics.LogPiiInfo(eventName, data);
+            }
         }
 
         /// <summary>

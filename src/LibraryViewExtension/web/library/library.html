@@ -67,7 +67,7 @@
                     console.log("Error: no search result.");
                     return;
                 }
-                csharpController.AddInstrumentation("Search", text);
+                csharpController.addInstrumentation("Search", text);
                 callback(searchLoadedTypesJson);
             });
         }
@@ -98,7 +98,13 @@
         });
 
         libController.on(libController.FilterCategoryEventName, function (item) {
-            console.log(item);
+            var categories = [];
+            item.forEach((elem) => {
+                var catString = elem.name + ":" + (elem.checked ? "Selected" : "Unselected");
+                categories.push(catString); 
+            });
+
+            csharpController.addInstrumentation("Filter-Categories", categories.join(","));
         });
 
         csharpController.on("error", function (msg) {
