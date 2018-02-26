@@ -15,7 +15,7 @@ namespace DSCore
         ///     Parse converts an arbitrary JSON string to a value. It is the opposite of JSON.Stringify.
         /// </summary>
         /// <param name="json">A JSON string</param>
-        /// <returns name="result"></returns>
+        /// <returns name="result">The result type depends on the content of the input string. The result type can be a primitive value (e.g. string, boolean, double), a List, or a Dictionary.</returns>
         public static object Parse(string json)
         {
             return ToNative(JToken.Parse(json));
@@ -57,22 +57,25 @@ namespace DSCore
         ///     Stringify converts an arbitrary value to JSON. It is the opposite of JSON.Parse.
         /// </summary>
         /// <param name="value">Any value</param>
-        /// <returns name="json">The resultant JSON.</returns>
+        /// <returns name="json">A JSON string where primitive types (e.g. double, int, boolean), Lists, and Dictionary's will be turned into the associated JSON type.</returns>
         public static string Stringify(object value)
         {
             return JsonConvert.SerializeObject(value, new DictConverter());
         }
 
         /// <summary>
-        ///     Stringify converts a list of arbitrary values to JSON. It is similar to JSON.Stringify, except it doesn't replicate.
+        ///     StringifyList converts a list of arbitrary values to JSON. JSON.StringifyList is similar to JSON.Stringify, except it doesn't replicate.
         /// </summary>
         /// <param name="values">A List of values</param>
-        /// <returns name="json">The resultant JSON</returns>
+        /// <returns name="json">A JSON string where primitive types (e.g. double, int, boolean), Lists, and Dictionary's will be turned into the associated JSON type.</returns>
         public static string StringifyList([ArbitraryDimensionArrayImport] object values)
         {
             return JsonConvert.SerializeObject(values, new DictConverter());
         }
 
+        /// <summary>
+        /// Ensures DesignScript.Builtin.Dictionary's, which deliberately don't implement IDictionary, are transformed into JSON objects.
+        /// </summary>
         private class DictConverter : JsonConverter
         {
             public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
