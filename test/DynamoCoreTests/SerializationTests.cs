@@ -422,6 +422,7 @@ namespace Dynamo.Tests
             if (!filePathBase.Contains("jsonWithView_nonGuidIds"))
             {
                 string structuredTestPath;
+                string flattenedTestPath = Path.GetTempPath() + "jsonWithView_nonGuidIds";
                 string extension = Path.GetExtension(filePathBase);
                 string pathWithoutExt = filePathBase.Substring(0, filePathBase.Length - extension.Length);
 
@@ -447,12 +448,12 @@ namespace Dynamo.Tests
                 File.WriteAllText(structuredTestPath, dataMapStr);
 
                 // Write to flattened path
-                if (File.Exists(filePathBase + ".data"))
+                if (File.Exists(flattenedTestPath + ".data"))
                 {
-                    File.Delete(filePathBase + ".data");
+                    File.Delete(flattenedTestPath + ".data");
                 }
 
-                File.WriteAllText(filePathBase + ".data", dataMapStr);
+                File.WriteAllText(flattenedTestPath + ".data", dataMapStr);
             }
 
             else
