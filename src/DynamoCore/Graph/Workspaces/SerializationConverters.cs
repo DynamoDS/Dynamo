@@ -152,32 +152,15 @@ namespace Dynamo.Graph.Workspaces
                         inPortNames.Add(input["Name"].ToString());
                     }
 
+                    // NOTE: This could be done in a simpler way, but is being implemented
+                    //       in this manner to allow for possible future port line number
+                    //       information being available in the file
                     List<int> outPortLineIndexes = new List<int>();
                     var outputs = obj["Outputs"];
+                    int outputLineIndex = 0;
                     foreach (var output in outputs)
                     {
-                        // NOTE: This is parsing the line index from the description string
-                        //       It is not a great way to get the value, but we do not currently
-                        //       serialize the line indexes for ooutputs in code block nodes directly.
-                        //       The string (in English) is of the format "Value of expression at line nnn"
-                        //       where "nnn" is the line index.
-                        string descriptionString = output["Description"].ToString();
-                        string lineIndexString = Regex.Match(descriptionString, @"\d+").Value;
-                        if (!string.IsNullOrEmpty(lineIndexString))
-                        {
-                            try
-                            {
-                                outPortLineIndexes.Add(Int32.Parse(lineIndexString) - 1);
-                            }
-                            catch (FormatException)
-                            {
-                                // If the string is in an incorrect format do nothing
-                            }
-                            catch (OverflowException)
-                            {
-                                // If the integer is overflowing a 32 bit number do nothing
-                            }
-                        }
+                        outPortLineIndexes.Add(outputLineIndex++);
                     }
 
                     codeBlockNode.SetErrorStatePortData(inPortNames, outPortLineIndexes);
