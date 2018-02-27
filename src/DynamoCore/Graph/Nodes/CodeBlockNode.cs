@@ -958,28 +958,45 @@ namespace Dynamo.Graph.Nodes
             List<int> undefinedIndices = new List<int>();
             for (int i = 0; i < OutPorts.Count; i++)
             {
-                string varName = OutPorts[i].ToolTip;
-                if (outportConnections.Contains(varName))
+                // If a code block is in an error state the indexes are not always
+                // known (after the code block node is loaded in an error state), 
+                // so matching the connector by name can result in the port being 
+                // on the wrong line, just store the index to match in step 2 next
+                if (IsInErrorState)
                 {
-                    if (outportConnections[varName] != null)
-                    {
-                        foreach (var oldConnector in (outportConnections[varName] as List<ConnectorModel>))
-                        {
-                            var endPortModel = oldConnector.End;
-                            NodeModel endNode = endPortModel.Owner;
-                            var connector = ConnectorModel.Make(this, endNode, i, endPortModel.Index);
-                            //during an undo operation we should set the new output connector
-                            //to have the same id as the old connector.
-                            if (context == SaveContext.Undo)
-                            {
-                                connector.GUID = oldConnector.GUID;
-                            }
-                        }
-                        outportConnections[varName] = null;
-                    }
-                }
-                else
                     undefinedIndices.Add(i);
+                    continue;
+                }
+
+                // Attempting to match the connector by name failed, 
+                // store the index to match in step 2 next
+                string varName = OutPorts[i].ToolTip;
+                if (!outportConnections.Contains(varName))
+                {
+                    undefinedIndices.Add(i);
+                    continue;
+                }
+
+                // Attempting to match the connector by name succeeded, 
+                // create the connector using the matched port index
+                if (outportConnections[varName] != null)
+                {
+                    foreach (var oldConnector in (outportConnections[varName] as List<ConnectorModel>))
+                    {
+                        var endPortModel = oldConnector.End;
+                        NodeModel endNode = endPortModel.Owner;
+                        var connector = ConnectorModel.Make(this, endNode, i, endPortModel.Index);
+                        
+                        // During an undo operation we should set the new output connector
+                        // to have the same id as the old connector.
+                        if (context == SaveContext.Undo)
+                        {
+                            connector.GUID = oldConnector.GUID;
+                        }
+                    }
+
+                    outportConnections[varName] = null;
+                }
             }
 
             /*
