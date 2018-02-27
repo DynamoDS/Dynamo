@@ -75,6 +75,7 @@ namespace Dynamo.Utilities
                 return null;
 
             var targetType = obj.GetType();
+            if (typeof(long) == targetType) obj = Convert.ToInt32(obj);
 
             Converter<object, object> marshaler;
             if (marshalers.TryGetValue(targetType, out marshaler) || cache.TryGetValue(targetType, out marshaler))
