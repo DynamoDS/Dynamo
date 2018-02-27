@@ -422,7 +422,8 @@ namespace Dynamo.Tests
             if (!filePathBase.Contains("jsonWithView_nonGuidIds"))
             {
                 string structuredTestPath;
-                string flattenedTestPath = Path.GetTempPath() + "jsonWithView_nonGuidIds";
+                string fileName = Path.GetFileNameWithoutExtension(filePathBase);
+                string flattenedTestPath = Path.GetTempPath() + "jsonWithView_nonGuidIds\\" + fileName;
                 string extension = Path.GetExtension(filePathBase);
                 string pathWithoutExt = filePathBase.Substring(0, filePathBase.Length - extension.Length);
 
