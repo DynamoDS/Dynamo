@@ -398,8 +398,11 @@ namespace Dynamo.Graph.Nodes
                     .ToList();
             SetInputPorts();
 
-            // clear the output ports before we try adding more.
-            OutPorts.RemoveAll((p) => { return true; });
+            // if we're in an error state - clear the output ports before we try adding more.
+            if (IsInErrorState)
+            {
+                OutPorts.RemoveAll((p) => { return true; });
+            }
             var outputPortHelpers =
                 childNodes.Where(node => node.Name.Equals("OutPortInfo")).Select(x => new XmlElementHelper(x));
             var lineNumbers = outputPortHelpers.Select(x => x.ReadInteger("LineIndex")).ToList();
