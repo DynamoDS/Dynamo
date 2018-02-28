@@ -616,8 +616,11 @@ namespace DynamoCoreWpfTests
             if (extension == ".dyf")
             {
                 // If .dyf file use the existing Uuid
-                var customNodeWS = (CustomNodeWorkspaceModel) currentDynamoModel.CurrentWorkspace;
-                jo["Uuid"] = customNodeWS.CustomNodeId;
+                var customNodeWS = currentDynamoModel.CurrentWorkspace as CustomNodeWorkspaceModel;
+                if(customNodeWS != null)
+                {
+                    jo["Uuid"] = customNodeWS.CustomNodeId;
+                }
             }
 
             else
