@@ -418,10 +418,12 @@ namespace Dynamo.Tests
                 dataMapStr = dataMapStr.Replace(guidKey.ToString(), modelsGuidToIdMap[guidKey]);
             }
 
-            // If "jsonWithView_nonGuidIds" test copy .data file to additional structured folder location
-            if (!filePathBase.Contains("jsonWithView_nonGuidIds"))
+            // If "DynamoCoreWPFTests" test copy .data file to additional structured folder location
+            if (filePathBase.Contains("DynamoCoreWPFTests"))
             {
                 string structuredTestPath;
+                string fileName = Path.GetFileNameWithoutExtension(filePathBase);
+                string flattenedTestPath = Path.GetTempPath() + "jsonWithView_nonGuidIds\\" + fileName;
                 string extension = Path.GetExtension(filePathBase);
                 string pathWithoutExt = filePathBase.Substring(0, filePathBase.Length - extension.Length);
 
@@ -447,12 +449,12 @@ namespace Dynamo.Tests
                 File.WriteAllText(structuredTestPath, dataMapStr);
 
                 // Write to flattened path
-                if (File.Exists(filePathBase + ".data"))
+                if (File.Exists(flattenedTestPath + ".data"))
                 {
-                    File.Delete(filePathBase + ".data");
+                    File.Delete(flattenedTestPath + ".data");
                 }
 
-                File.WriteAllText(filePathBase + ".data", dataMapStr);
+                File.WriteAllText(flattenedTestPath + ".data", dataMapStr);
             }
 
             else
