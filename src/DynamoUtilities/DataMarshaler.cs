@@ -75,6 +75,9 @@ namespace Dynamo.Utilities
                 return null;
 
             var targetType = obj.GetType();
+
+            // TODO: Remove this conversion after updating IronPython version in 2.1
+            // in which IronPython will support Int64
             if (typeof (long) == targetType)
             {
                 obj = Convert.ToInt32(obj);
