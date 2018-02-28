@@ -608,11 +608,24 @@ namespace DynamoCoreWpfTests
             // Get all folder structure following "\\test"
             var expectedStructure = filePath.Remove(0, SerializationTests.TestDirectory.Length);
             var newWSName = expectedStructure.Replace("\\", "/");
+            var extension = Path.GetExtension(filePath);
+
             // Update WS name to original test file path
             jo["Name"] = newWSName;
-            var nameBasedGuid = GuidUtility.Create(currentDynamoModel.CurrentWorkspace.Guid, newWSName);
-            // Update Uuid to be unique based on new WS name
-            jo["Uuid"] = nameBasedGuid;
+
+            if (extension == ".dyf")
+            {
+                // If .dyf file use the existing Uuid
+                var customNodeWS = (CustomNodeWorkspaceModel) currentDynamoModel.CurrentWorkspace;
+                jo["Uuid"] = customNodeWS.CustomNodeId;
+            }
+
+            else
+            {
+                // If .dyn file update Uuid to be unique based on new WS name
+                var nameBasedGuid = GuidUtility.Create(currentDynamoModel.CurrentWorkspace.Guid, newWSName);
+                jo["Uuid"] = nameBasedGuid;
+            }
 
             // Current test fileName
             var fileName = Path.GetFileName(filePath);
@@ -640,7 +653,6 @@ namespace DynamoCoreWpfTests
 
             // Write DesignScript file
             string dsFileName = Path.GetFileNameWithoutExtension(fileName);
-            string extension = Path.GetExtension(filePath);
 
             // Determine if .dyn or .dyf
             // If .dyn and .dyf share common file name .ds and .data files is collide
