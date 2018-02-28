@@ -20,9 +20,9 @@ using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
 using ProtoCore;
 using ProtoCore.Namespace;
-using ProtoCore.Utils;
 using Type = System.Type;
 using System.Reflection;
+using System.Text.RegularExpressions;
 
 namespace Dynamo.Graph.Workspaces
 {
@@ -138,7 +138,33 @@ namespace Dynamo.Graph.Workspaces
             else if (type == typeof(CodeBlockNodeModel))
             {
                 var code = obj["Code"].Value<string>();
-                node = new CodeBlockNodeModel(code, guid, 0.0, 0.0, libraryServices, ElementResolver);
+                CodeBlockNodeModel codeBlockNode = new CodeBlockNodeModel(code, guid, 0.0, 0.0, libraryServices, ElementResolver);
+                node = codeBlockNode;
+
+                // If the code block node is in an error state read the extra port data
+                // and initialize the input and output ports
+                if (node.IsInErrorState)
+                {
+                    List<string> inPortNames = new List<string>();
+                    var inputs = obj["Inputs"];
+                    foreach (var input in inputs)
+                    {
+                        inPortNames.Add(input["Name"].ToString());
+                    }
+
+                    // NOTE: This could be done in a simpler way, but is being implemented
+                    //       in this manner to allow for possible future port line number
+                    //       information being available in the file
+                    List<int> outPortLineIndexes = new List<int>();
+                    var outputs = obj["Outputs"];
+                    int outputLineIndex = 0;
+                    foreach (var output in outputs)
+                    {
+                        outPortLineIndexes.Add(outputLineIndex++);
+                    }
+
+                    codeBlockNode.SetErrorStatePortData(inPortNames, outPortLineIndexes);
+                }
             }
             else if (typeof(DSFunctionBase).IsAssignableFrom(type))
             {
@@ -604,9 +630,9 @@ namespace Dynamo.Graph.Workspaces
                 throw new ArgumentException("originalContent is not JSON compatible.");
 
             originalContent.WriteTo(writer);
-    }
+        }
 
-    public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
             throw new NotImplementedException();
         }

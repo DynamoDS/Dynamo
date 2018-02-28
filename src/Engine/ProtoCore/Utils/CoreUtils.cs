@@ -745,7 +745,7 @@ namespace ProtoCore.Utils
                     return data;
                 }
             }
-            else if (value.Data is DesignScript.Builtin.Dictionary)
+            else if (value.IsDictionary)
             {
                 var dict = (DesignScript.Builtin.Dictionary)value.Data;
                 return dict.Keys.Zip(dict.Values, (key, val) => new { key, val }).ToDictionary(ns => ns.key, ns => ns.val);

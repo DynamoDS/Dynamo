@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using CefSharp;
@@ -12,6 +13,7 @@ using Dynamo.Extensions;
 using Dynamo.LibraryUI.Handlers;
 using Dynamo.LibraryUI.ViewModels;
 using Dynamo.LibraryUI.Views;
+using Dynamo.Logging;
 using Dynamo.Models;
 using Dynamo.Search;
 using Dynamo.Search.SearchElements;
@@ -86,6 +88,7 @@ namespace Dynamo.LibraryUI
         private ResourceHandlerFactory resourceFactory;
         private IDisposable observer;
         private ChromiumWebBrowser browser;
+        private const string CreateNodeInstrumentationString = "Search-NodeAdded";
 
         /// <summary>
         /// Creates LibraryViewController
@@ -137,6 +140,7 @@ namespace Dynamo.LibraryUI
                 //Create the node of given item name
                 var cmd = new DynamoModel.CreateNodeCommand(Guid.NewGuid().ToString(), nodeName, -1, -1, true, false);
                 commandExecutive.ExecuteCommand(cmd, Guid.NewGuid().ToString(), ViewExtension.ExtensionName);
+                LogEventsToInstrumentation(CreateNodeInstrumentationString, nodeName);
             }));
         }
 
@@ -148,6 +152,18 @@ namespace Dynamo.LibraryUI
             dynamoWindow.Dispatcher.BeginInvoke(new Action(() =>
                 dynamoViewModel.ImportLibraryCommand.Execute(null)
             ));
+        }
+        /// <summary>
+        /// This function logs events to instrumentation if it matches a set of known events
+        /// </summary>
+        /// <param name="eventName">Event Name that gets logged to instrumentation</param>
+        /// <param name="data"> Data that gets logged to instrumentation </param>
+        public void LogEventsToInstrumentation(string eventName, string data)
+        {
+            if (eventName == "Search" || eventName == "Filter-Categories" || eventName == "Search-NodeAdded")
+            {
+                Analytics.LogPiiInfo(eventName, data);
+            }
         }
 
         /// <summary>

@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
 using System.Threading;
 using System.IO;
+using DesignScript.Builtin;
 using Dynamo.Models;
 using DynamoUtilities;
 using Dynamo.Applications;
@@ -69,8 +71,23 @@ namespace DynamoCLI
                     var resultsdict = new Dictionary<Guid, List<object>>();
                     foreach (var node in model.CurrentWorkspace.Nodes)
                     {
-                        var portvalues = node.OutPorts.Select(p =>
-                        ProtoCore.Utils.CoreUtils.GetDataOfValue(node.GetValue(p.Index, model.EngineController))).ToList();
+                        var portvalues = new List<object>();
+                        foreach (var port in node.OutPorts)
+                        {
+                            var value = node.GetValue(port.Index, model.EngineController);
+                            if (value.IsCollection)
+                            {
+                                portvalues.Add(GetStringRepOfCollection(value));
+                            }
+                            else if (value.IsDictionary)
+                            {
+                                portvalues.Add(GetStringRepOfDictionary(value.Data));
+                            }
+                            else
+                            {
+                                portvalues.Add(value.StringData);
+                            }
+                        }
 
                         resultsdict.Add(node.GUID, portvalues);
                     }
@@ -84,12 +101,46 @@ namespace DynamoCLI
             return doc;
         }
 
-        private static string GetStringRepOfCollection(ProtoCore.Mirror.MirrorData collection)
+        private static string GetStringRepOfCollection(ProtoCore.Mirror.MirrorData value)
         {
+            var items = string.Join(",",
+                value.GetElements().Select(x =>
+                {
+                    if(x.IsCollection) return GetStringRepOfCollection(x);
+                    return x.IsDictionary ? GetStringRepOfDictionary(x.Data) : x.StringData;
+                }));
+            return "{" + items + "}";
+        }
 
-           var items = string.Join(",", collection.GetElements().Select(x => x.IsCollection ? GetStringRepOfCollection(x) : x.StringData));
-            return "{"+items +"}";
-
+        private static string GetStringRepOfDictionary(object value)
+        {
+            if (value is DesignScript.Builtin.Dictionary || value is IDictionary)
+            {
+                IEnumerable<string> keys;
+                IEnumerable<object> values;
+                var dictionary = value as Dictionary;
+                if (dictionary != null)
+                {
+                    var dict = dictionary;
+                    keys = dict.Keys;
+                    values = dict.Values;
+                }
+                else
+                {
+                    var dict = (IDictionary) value;
+                    keys = dict.Keys.Cast<string>();
+                    values = dict.Values.Cast<object>();
+                }
+                var items = string.Join(", ", keys.Zip(values, (str, obj) => str + " : " + GetStringRepOfDictionary(obj)));
+                return "{" + items + "}";
+            }
+            if (!(value is string) && value is IEnumerable)
+            {
+                var list = ((IEnumerable) value).Cast<dynamic>().ToList();
+                var items = string.Join(", ", list.Select(x => GetStringRepOfDictionary(x)));
+                return "{" + items + "}";
+            }
+            return value.ToString();
         }
 
         private static void populateXmlDocWithResults(XmlDocument doc, List<Dictionary<Guid, List<object>>> resultsDict)
