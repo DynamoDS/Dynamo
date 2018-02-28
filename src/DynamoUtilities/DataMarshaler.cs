@@ -76,6 +76,14 @@ namespace Dynamo.Utilities
 
             var targetType = obj.GetType();
 
+            // TODO: Remove this conversion after updating IronPython version in 2.1
+            // in which IronPython will support Int64
+            if (typeof (long) == targetType)
+            {
+                obj = Convert.ToInt32(obj);
+                targetType = obj.GetType();
+            }
+
             Converter<object, object> marshaler;
             if (marshalers.TryGetValue(targetType, out marshaler) || cache.TryGetValue(targetType, out marshaler))
                 return marshaler(obj);
