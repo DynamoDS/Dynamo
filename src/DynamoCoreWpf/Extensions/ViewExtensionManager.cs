@@ -1,4 +1,5 @@
-﻿using Dynamo.Interfaces;
+﻿using Dynamo.Extensions;
+using Dynamo.Interfaces;
 using Dynamo.Logging;
 
 using System;
@@ -6,6 +7,28 @@ using System.Collections.Generic;
 
 namespace Dynamo.Wpf.Extensions
 {
+    /// <summary>
+    /// An object which may request ViewExtensions to be loaded and added to the ViewExtensionsManager.
+    /// </summary>
+    public interface IViewExtensionSource
+    {
+        /// <summary>
+        /// Event that is raised when the ViewExtensionSource requests a ViewExtension be loaded.
+        /// </summary>
+        event Func<string, IViewExtension> RequestLoadExtension;
+
+        /// <summary>
+        /// Event that is raised when ViewExtensionSource requests a ViewExtension to be added to 
+        /// list of currently loaded ViewExtensions.
+        /// </summary>
+        event Action<IViewExtension> RequestAddExtension;
+
+        /// <summary>
+        /// Collection of ViewExtensions the ViewExtensionSource requested be loaded.
+        /// </summary>
+        IEnumerable<IViewExtension> RequestedExtensions { get; }
+    }
+
     internal class ViewExtensionManager : IViewExtensionManager, ILogSource
     {
         private readonly List<IViewExtension> viewExtensions = new List<IViewExtension>();
@@ -14,8 +37,44 @@ namespace Dynamo.Wpf.Extensions
         public ViewExtensionManager()
         {
             viewExtensionLoader.MessageLogged += Log;
+            this.ExtensionLoader.ExtensionLoading += SubscribeViewExtension;
+            this.ExtensionRemoved += UnsubscribeViewExtension;
         }
 
+        private void RequestAddViewExtensionHandler(IViewExtension viewExtension)
+        {
+            if (viewExtension is IViewExtension)
+            {
+                this.Add(viewExtension as IViewExtension);
+            }
+        }
+        private IViewExtension RequestLoadViewExtensionHandler(string extensionPath)
+        {
+            // If the path is a viewExtension - load it.
+            if ((extensionPath.Contains("_ViewExtensionDefinition")))
+            {
+                return this.ExtensionLoader.Load(extensionPath);
+            }
+            return null;
+        }
+
+        private void UnsubscribeViewExtension(IViewExtension obj)
+        {
+            if (obj is IViewExtensionSource)
+            {
+                (obj as IViewExtensionSource).RequestLoadExtension -= RequestLoadViewExtensionHandler;
+                (obj as IViewExtensionSource).RequestAddExtension -= RequestAddViewExtensionHandler ;
+            }
+        }
+
+        private void SubscribeViewExtension(IViewExtension obj)
+        {
+            if (obj is IViewExtensionSource)
+            {
+                (obj as IViewExtensionSource).RequestLoadExtension += RequestLoadViewExtensionHandler;
+                (obj as IViewExtensionSource).RequestAddExtension += RequestAddViewExtensionHandler;
+            }
+        }
         public ViewExtensionLoader ExtensionLoader
         {
             get { return viewExtensionLoader; }
@@ -76,6 +135,7 @@ namespace Dynamo.Wpf.Extensions
         public event Action<IViewExtension> ExtensionAdded;
 
         public event Action<IViewExtension> ExtensionRemoved;
+
 
         public void Dispose()
         {

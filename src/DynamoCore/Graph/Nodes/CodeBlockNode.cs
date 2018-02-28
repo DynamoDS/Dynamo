@@ -77,9 +77,19 @@ namespace Dynamo.Graph.Nodes
         public ElementResolver ElementResolver { get; set; }
 
         /// <summary>
-        ///     Indicates whether node is input node
+        ///     Indicates whether node is input node.
+        ///     Used to bind visibility of UI for user selection.
         /// </summary>
         public override bool IsInputNode
+        {
+            get { return false; }
+        }
+
+        /// <summary>
+        ///     Indicates whether node is an output node.
+        ///     Used to bind visibility of UI for user selection.
+        /// </summary>
+        public override bool IsOutputNode
         {
             get { return false; }
         }

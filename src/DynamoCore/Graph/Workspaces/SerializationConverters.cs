@@ -366,6 +366,21 @@ namespace Dynamo.Graph.Workspaces
                 }
             }
 
+            var outputsToken = obj["Outputs"];
+            if (outputsToken != null)
+            {
+                var outputs = outputsToken.ToArray().Select(x => x.ToObject<NodeOutputData>()).ToList();
+                //using the inputs lets set the correct properties on the nodes.
+                foreach (var outputData in outputs)
+                {
+                    var matchingNode = nodes.Where(x => x.GUID == outputData.Id).FirstOrDefault();
+                    if (matchingNode != null)
+                    {
+                        matchingNode.IsSetAsOutput = true;
+                    }
+                }
+            }
+
             // notes
             //TODO: Check this when implementing ReadJSON in ViewModel.
             //var notes = obj["Notes"].ToObject<IEnumerable<NoteModel>>(serializer);
@@ -506,6 +521,13 @@ namespace Dynamo.Graph.Workspaces
             var inputNodeDatas = ws.Nodes.Where((node) => node.IsSetAsInput == true && node.InputData != null)
                 .Select(inputNode => inputNode.InputData).ToList();
             serializer.Serialize(writer, inputNodeDatas);
+
+            //outputs
+            writer.WritePropertyName("Outputs");
+            //find nodes which are outputs and get their outputData if its not null.
+            var outputNodeDatas = ws.Nodes.Where((node) => node.IsSetAsOutput == true && node.OutputData != null)
+                .Select(outputNode => outputNode.OutputData).ToList();
+            serializer.Serialize(writer, outputNodeDatas);
 
             //nodes
             writer.WritePropertyName("Nodes");

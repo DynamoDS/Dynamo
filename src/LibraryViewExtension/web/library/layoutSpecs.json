@@ -1391,13 +1391,6 @@
       ]
     },
     {
-      "text": "Miscellaneous",
-      "elementType": "section",
-      "showHeader": true,
-      "include": [ ],
-      "childElements": [ ]
-    },
-    {
       "text": "Add-ons",
       "iconUrl": "./dist/resources/plus-symbol.svg",
       "elementType": "section",

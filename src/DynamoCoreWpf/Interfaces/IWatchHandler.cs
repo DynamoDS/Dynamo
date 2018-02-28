@@ -167,7 +167,7 @@ namespace Dynamo.Interfaces
                 return node;
             }
 
-            if (data.IsPointer && data.Data is DesignScript.Builtin.Dictionary)
+            if (data.IsPointer && data.IsDictionary)
             {
                 var dict = data.Data as DesignScript.Builtin.Dictionary;
 
