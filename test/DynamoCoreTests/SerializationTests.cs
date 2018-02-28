@@ -418,8 +418,8 @@ namespace Dynamo.Tests
                 dataMapStr = dataMapStr.Replace(guidKey.ToString(), modelsGuidToIdMap[guidKey]);
             }
 
-            // If "jsonWithView_nonGuidIds" test copy .data file to additional structured folder location
-            if (!filePathBase.Contains("jsonWithView_nonGuidIds"))
+            // If "DynamoCoreWPFTests" test copy .data file to additional structured folder location
+            if (filePathBase.Contains("DynamoCoreWPFTests"))
             {
                 string structuredTestPath;
                 string fileName = Path.GetFileNameWithoutExtension(filePathBase);
