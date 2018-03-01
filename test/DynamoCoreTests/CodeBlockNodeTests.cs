@@ -528,10 +528,9 @@ b = c[w][x][y][z];";
             Assert.AreEqual(3, cbn.OutPorts.Count);
             Assert.AreEqual(2, cbn.AllConnectors.Count());
 
-            // Verify the input port line indexes here
-            // TODO: Figure out why tis is -1?
-            Assert.AreEqual(-1, cbn.InPorts[0].LineIndex); 
-
+            // NOTE: Input ports are matched by name instead of index, so there
+            //       is no checking of the input line indexes here or below
+      
             // Verify the output port line indexes here
             Assert.AreEqual(0, cbn.OutPorts[0].LineIndex);
             Assert.AreEqual(1, cbn.OutPorts[1].LineIndex);
@@ -555,10 +554,6 @@ b = c[w][x][y][z];";
             Assert.AreEqual(1, cbn.InPorts.Count);
             Assert.AreEqual(3, cbn.OutPorts.Count);
             Assert.AreEqual(2, cbn.AllConnectors.Count());
-
-            // Verify the input and output port line indexes here
-            // TODO: Is this still -1?
-            Assert.AreEqual(-1, cbn.InPorts[0].LineIndex); 
 
             // Verify the output port line indexes here
             Assert.AreEqual(0, cbn.OutPorts[0].LineIndex);
