@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using Dynamo.Wpf.ViewModels.Core.Converters;
+using System.Globalization;
 
 namespace Dynamo.Wpf.ViewModels.Core
 {
@@ -28,6 +29,7 @@ namespace Dynamo.Wpf.ViewModels.Core
                 ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
                 TypeNameHandling = TypeNameHandling.Auto,
                 Formatting = Formatting.Indented,
+                Culture = CultureInfo.InvariantCulture,
                 Converters = new List<JsonConverter>{
                     new WorkspaceViewWriteConverter(),
                     new AnnotationViewModelConverter()

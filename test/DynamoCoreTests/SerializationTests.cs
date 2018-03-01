@@ -14,6 +14,7 @@ using Dynamo.Events;
 using System.Text.RegularExpressions;
 using Dynamo.Utilities;
 using Newtonsoft.Json.Linq;
+using System.Globalization;
 
 namespace Dynamo.Tests
 {
@@ -369,7 +370,8 @@ namespace Dynamo.Tests
                             new JsonSerializerSettings()
                             {
                                 Formatting = Formatting.Indented,
-                                ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+                                ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+                                Culture = CultureInfo.InvariantCulture
                             });
 
             var dataPath = filePathBase + ".data";
@@ -410,7 +412,8 @@ namespace Dynamo.Tests
                             new JsonSerializerSettings()
                             {
                                 Formatting = Formatting.Indented,
-                                ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+                                ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+                                Culture = CultureInfo.InvariantCulture
                             });
             //replace all the guids in the data file with all of our remapped ids.
             foreach (var guidKey in modelsGuidToIdMap.Keys)
