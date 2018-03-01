@@ -667,6 +667,7 @@ namespace Dynamo.Graph.Nodes
                     errorMessage = string.Join("\n", parseParam.Errors.Select(m => m.Message));
                     ProcessError();
                     CreateInputOutputPorts();
+
                     return;
                 }
 
@@ -799,17 +800,42 @@ namespace Dynamo.Graph.Nodes
 
         private void SetInputPorts()
         {
-            //this extension method is used instead because 
-            //observableCollection has very odd behavior when cleared - 
-            //there is no way to reference the cleared items and so they 
-            //cannot be cleaned up properly
+            // This extension method is used instead because 
+            // observableCollection has very odd behavior when cleared - 
+            // there is no way to reference the cleared items and so they 
+            // cannot be cleaned up properly
 
-           InPorts.RemoveAll((p) => { return true; });
+            InPorts.RemoveAll((p) => { return true; });
 
             // Generate input port data list from the unbound identifiers.
             var inportData = CodeBlockUtils.GenerateInputPortData(inputPortNames);
             foreach (var portData in inportData)
                 InPorts.Add(new PortModel(PortType.Input, this, portData));
+        }
+
+        internal void SetErrorStatePortData(List<string> inputPortNames, List<int> outputPortIndexes)
+        {
+            if (inputPortNames != null)
+            {
+                this.inputPortNames = inputPortNames;
+            }
+
+            SetInputPorts();
+
+            if (outputPortIndexes != null)
+            {
+                foreach (var outputPortIndex in outputPortIndexes)
+                {
+                  var tooltip = string.Format(Resources.CodeBlockTempIdentifierOutputLabel, outputPortIndex);
+                  OutPorts.Add(new PortModel(PortType.Output, this, new PortData(string.Empty, tooltip)
+                  {
+                    LineIndex = outputPortIndex, // Logical line index.
+                    Height = Configurations.CodeBlockPortHeightInPixels
+                  }));
+                }
+            }
+
+            SetOutputPorts();
         }
 
         private void SetOutputPorts()
@@ -819,11 +845,12 @@ namespace Dynamo.Graph.Nodes
             if (allDefs.Any() == false)
                 return;
 
-            //this extension method is used instead because 
-            //observableCollection has very odd behavior when cleared - 
-            //there is no way to reference the cleared items and so they 
-            //cannot be cleaned up properly
-            //Clear out all the output port models
+            // This extension method is used instead because 
+            // observableCollection has very odd behavior when cleared - 
+            // there is no way to reference the cleared items and so they 
+            // cannot be cleaned up properly
+            
+            // Clear out all the output port models
             OutPorts.RemoveAll((p) => { return true; });
 
             foreach (var def in allDefs)
@@ -941,28 +968,45 @@ namespace Dynamo.Graph.Nodes
             List<int> undefinedIndices = new List<int>();
             for (int i = 0; i < OutPorts.Count; i++)
             {
-                string varName = OutPorts[i].ToolTip;
-                if (outportConnections.Contains(varName))
+                // If a code block is in an error state the indexes are not always
+                // known (after the code block node is loaded in an error state), 
+                // so matching the connector by name can result in the port being 
+                // on the wrong line, just store the index to match in step 2 next
+                if (IsInErrorState)
                 {
-                    if (outportConnections[varName] != null)
-                    {
-                        foreach (var oldConnector in (outportConnections[varName] as List<ConnectorModel>))
-                        {
-                            var endPortModel = oldConnector.End;
-                            NodeModel endNode = endPortModel.Owner;
-                            var connector = ConnectorModel.Make(this, endNode, i, endPortModel.Index);
-                            //during an undo operation we should set the new output connector
-                            //to have the same id as the old connector.
-                            if (context == SaveContext.Undo)
-                            {
-                                connector.GUID = oldConnector.GUID;
-                            }
-                        }
-                        outportConnections[varName] = null;
-                    }
-                }
-                else
                     undefinedIndices.Add(i);
+                    continue;
+                }
+
+                // Attempting to match the connector by name failed, 
+                // store the index to match in step 2 next
+                string varName = OutPorts[i].ToolTip;
+                if (!outportConnections.Contains(varName))
+                {
+                    undefinedIndices.Add(i);
+                    continue;
+                }
+
+                // Attempting to match the connector by name succeeded, 
+                // create the connector using the matched port index
+                if (outportConnections[varName] != null)
+                {
+                    foreach (var oldConnector in (outportConnections[varName] as List<ConnectorModel>))
+                    {
+                        var endPortModel = oldConnector.End;
+                        NodeModel endNode = endPortModel.Owner;
+                        var connector = ConnectorModel.Make(this, endNode, i, endPortModel.Index);
+                        
+                        // During an undo operation we should set the new output connector
+                        // to have the same id as the old connector.
+                        if (context == SaveContext.Undo)
+                        {
+                            connector.GUID = oldConnector.GUID;
+                        }
+                    }
+
+                    outportConnections[varName] = null;
+                }
             }
 
             /*

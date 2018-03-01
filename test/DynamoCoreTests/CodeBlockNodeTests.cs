@@ -504,6 +504,64 @@ b = c[w][x][y][z];";
         }
 
         [Test]
+        public void Test_PortErrorBehavior_CodeBlockErrorsInFile()
+        {
+            // ---------------------------------------------------------------
+            // STEP 1: Load a file with the code block node in an error state
+            //         and verify the ports, port line indexes, and connections 
+
+            string openPath = Path.Combine(TestDirectory,
+                @"core\dsevaluation\Test_PortErrorBehavior_CodeBlockErrorsInFile.dyn");
+            OpenModel(openPath);
+            Assert.AreEqual(3, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+
+            var cbn = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace<CodeBlockNodeModel>(
+                Guid.Parse("dad587d1-acee-445c-890d-98500b408ec6"));
+
+            // Verify that the code block node is in an error state
+            Assert.IsNotNull(cbn);
+            Assert.AreEqual(ElementState.Error, cbn.State);
+            Assert.IsTrue(!cbn.CodeStatements.Any());
+
+            // Verify that input ports, output ports, and any expected connections exist
+            Assert.AreEqual(1, cbn.InPorts.Count);
+            Assert.AreEqual(3, cbn.OutPorts.Count);
+            Assert.AreEqual(2, cbn.AllConnectors.Count());
+
+            // NOTE: Input ports are matched by name instead of index, so there
+            //       is no checking of the input line indexes here or below
+      
+            // Verify the output port line indexes here
+            Assert.AreEqual(0, cbn.OutPorts[0].LineIndex);
+            Assert.AreEqual(1, cbn.OutPorts[1].LineIndex);
+            Assert.AreEqual(2, cbn.OutPorts[2].LineIndex);
+
+            // ---------------------------------------------------------------
+            // STEP 2: Fix the code block node error and verify the ports, 
+            //         connections, and port line indexes  
+
+            // Fix the code block node error
+            var brokenCode = cbn.Code;
+            var fixedCode = brokenCode.Replace("{val};", "{};");
+            UpdateCodeBlockNodeContent(cbn, fixedCode);
+
+            // Verify that the code block node is no longer in an error state
+            Assert.AreEqual(ElementState.Active, cbn.State);
+            Assert.IsTrue(cbn.CodeStatements.Any());
+
+            // Verify that input ports, output ports, and any expected connections exist
+            // and that the number of each has not changed
+            Assert.AreEqual(1, cbn.InPorts.Count);
+            Assert.AreEqual(3, cbn.OutPorts.Count);
+            Assert.AreEqual(2, cbn.AllConnectors.Count());
+
+            // Verify the output port line indexes here
+            Assert.AreEqual(0, cbn.OutPorts[0].LineIndex);
+            Assert.AreEqual(5, cbn.OutPorts[1].LineIndex);
+            Assert.AreEqual(6, cbn.OutPorts[2].LineIndex);
+        }
+
+        [Test]
         [Category("RegressionTests")]
         public void Defect_MAGN_4946()
         {
