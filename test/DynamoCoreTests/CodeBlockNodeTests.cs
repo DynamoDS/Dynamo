@@ -310,6 +310,65 @@ b = c[w][x][y][z];";
             Assert.AreEqual(3, codeBlockNode2.CachedValue.Data);
 
         }
+        [Test]
+        public void UndoRedoCodeBlockErrorStateDoesNotCrashOutputs()
+        {
+            RunCurrentModel();
+            // Create the initial code block node.
+            var codeBlockNode1 = CreateCodeBlockNode();
+            UpdateCodeBlockNodeContent(codeBlockNode1, "1;");
+            RunCurrentModel();
+
+            UpdateCodeBlockNodeContent(codeBlockNode1, "{1};");
+            RunCurrentModel();
+
+            Assert.IsTrue(codeBlockNode1.IsInErrorState);
+
+            UpdateCodeBlockNodeContent(codeBlockNode1, "{1];");
+            RunCurrentModel();
+
+            Assert.DoesNotThrow(() =>
+            {
+                CurrentDynamoModel.CurrentWorkspace.Undo();
+                RunCurrentModel();
+                CurrentDynamoModel.CurrentWorkspace.Redo();
+                RunCurrentModel();
+                CurrentDynamoModel.CurrentWorkspace.Undo();
+                RunCurrentModel();
+            });
+
+            Assert.IsTrue(codeBlockNode1.IsInErrorState);
+        }
+
+        [Test]
+        public void UndoRedoCodeBlockErrorStateDoesNotCrashInputs()
+        {
+            RunCurrentModel();
+            // Create the initial code block node.
+            var codeBlockNode1 = CreateCodeBlockNode();
+            UpdateCodeBlockNodeContent(codeBlockNode1, "x;");
+            RunCurrentModel();
+
+            UpdateCodeBlockNodeContent(codeBlockNode1, "{x};");
+            RunCurrentModel();
+
+            Assert.IsTrue(codeBlockNode1.IsInErrorState);
+
+            UpdateCodeBlockNodeContent(codeBlockNode1, "{x];");
+            RunCurrentModel();
+
+            Assert.DoesNotThrow(() =>
+            {
+                CurrentDynamoModel.CurrentWorkspace.Undo();
+                RunCurrentModel();
+                CurrentDynamoModel.CurrentWorkspace.Redo();
+                RunCurrentModel();
+                CurrentDynamoModel.CurrentWorkspace.Undo();
+                RunCurrentModel();
+            });
+
+            Assert.IsTrue(codeBlockNode1.IsInErrorState);
+        }
 
         [Test]
         public void UndoRedoCodeBlockDeletionDoesNotCrash()
@@ -1338,6 +1397,7 @@ var06 = g;
         }
 
         [Test, Category("Failure")]
+        [Ignore("Test Loops Forever. Danger.")]
         public void TestImperativeLanguageBlock()
         {
             // TODO pratapa: Return to fix this test - result of difference in indexing behavior after ValueAtIndex
