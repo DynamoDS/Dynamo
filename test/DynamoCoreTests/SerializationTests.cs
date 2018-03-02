@@ -72,7 +72,7 @@ namespace Dynamo.Tests
             foreach (var annotationModels in model.Annotations.Select(x=>x.Nodes))
             {
                 var annotationList = annotationModels.ToList();
-                for (var i = 0; i < Enumerable.Count(annotationList.ToList()); i++)
+                for (var i = 0; i < annotationList.Count(); i++)
                 {
                     if (annotationList[i] is NoteModel)
                     {
