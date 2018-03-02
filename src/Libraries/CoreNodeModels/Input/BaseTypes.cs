@@ -751,7 +751,6 @@ namespace CoreNodeModels.Input
 
             public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
             {
-                return reader.Value.ToString();
             }
 
             public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
