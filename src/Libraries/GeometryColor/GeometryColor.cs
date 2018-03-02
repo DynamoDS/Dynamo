@@ -103,7 +103,7 @@ namespace Modifiers
         /// will result in an exception. </param>
         /// <returns>A Display object.</returns>
         public static GeometryColor BySurfaceColors([KeepReferenceAttribute]Surface surface,
-            [DefaultArgument("{{Color.ByARGB(255,255,0,0),Color.ByARGB(255,255,255,0)},{Color.ByARGB(255,0,255,255),Color.ByARGB(255,0,0,255)}};")] Color[][] colors)
+            [DefaultArgument("[[Color.ByARGB(255,255,0,0),Color.ByARGB(255,255,255,0)],[Color.ByARGB(255,0,255,255),Color.ByARGB(255,0,0,255)]];")] Color[][] colors)
         {
             if (surface == null)
             {

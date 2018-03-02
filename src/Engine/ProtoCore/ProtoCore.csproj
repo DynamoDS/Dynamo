@@ -90,6 +90,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <DefineConstants>TRACE;DEBUG</DefineConstants>
     <Prefer32Bit>false</Prefer32Bit>
+    <NoWarn>CS3008, CS3003</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
     <DefineConstants>TRACE</DefineConstants>
@@ -101,7 +102,10 @@
       <Link>Properties\AssemblySharedInfo.cs</Link>
     </Compile>
     <Compile Include="AssociativeGraph.cs" />
-    <Compile Include="DSASM\HeapObjects.cs" />
+    <Compile Include="DSASM\DSArray.cs" />
+    <Compile Include="DSASM\DSObject.cs" />
+    <Compile Include="DSASM\DSString.cs" />
+    <Compile Include="FFI\CLRObjectMarshaler.cs" />
     <Compile Include="Lang\InternalAttributes.cs" />
     <Compile Include="Lang\Replication\ArgumentAtLevel.cs" />
     <Compile Include="AttributeEntry.cs" />
@@ -114,6 +118,7 @@
     <Compile Include="Compiler.cs" />
     <Compile Include="CompilerOptions.cs" />
     <Compile Include="MigrationRewriter.cs" />
+    <Compile Include="Parser\DictionaryBuilder.cs" />
     <Compile Include="SyntaxAnalysis\AssociativeAstVisitor.cs" />
     <Compile Include="SyntaxAnalysis\AstVisitor.cs" />
     <Compile Include="SyntaxAnalysis\Interface\Associative.cs" />
@@ -123,7 +128,7 @@
     <Compile Include="Core.cs" />
     <Compile Include="ClassTable.cs" />
     <Compile Include="DebuggerProperties.cs" />
-    <Compile Include="DSASM\DSasmDefs.cs" />
+    <Compile Include="DSASM\Defs.cs" />
     <Compile Include="DSASM\Interpreter.cs" />
     <Compile Include="DSASM\Executable.cs" />
     <Compile Include="DSASM\Executive.cs" />
@@ -167,7 +172,6 @@
     <Compile Include="DynamicFunctionTable.cs" />
     <Compile Include="Exceptions\DebugHalting.cs" />
     <Compile Include="FFI\CLRFFIFunctionPointer.cs" />
-    <Compile Include="FFI\CLRObjectMarshler.cs" />
     <Compile Include="FFI\ImportModuleHandler.cs" />
     <Compile Include="Parser\AssociativeAST.cs" />
     <Compile Include="Parser\AST.cs" />
@@ -240,6 +244,10 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Libraries\Builtin\Builtin.csproj">
+      <Project>{c0d6dee5-5532-4345-9c66-4c00d7fdb8be}</Project>
+      <Name>Builtin</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\NodeServices\DynamoServices.csproj">
       <Project>{ef879a10-041d-4c68-83e7-3192685f1bae}</Project>
       <Name>DynamoServices</Name>

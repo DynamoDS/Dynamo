@@ -19,9 +19,9 @@ namespace ProtoTest.Associative
         {
             String code =
 @"
-a = {null,20,30,null,{10,0},0,5,2};
-b = {1,2,3};
-e = {3,20,30,4,{null,0},0,5,2};
+a = [null,20,30,null,[10,0],0,5,2];
+b = [1,2,3];
+e = [3,20,30,4,[null,0],0,5,2];
 c = SomeNulls(a);
 d = SomeNulls(b);
 f = SomeNulls(e);
@@ -37,9 +37,9 @@ f = SomeNulls(e);
         public void BIM02_CountTrue()
         {
             String code =
-@"a = {true,true,true,false,{true,false},true,{false,false,{true,{false},true,true,false}}};
-b = {true,true,true,false,true,true};
-c = {true,true,true,true,true,true,true};
+@"a = [true,true,true,false,[true,false],true,[false,false,[true,[false],true,true,false]]];
+b = [true,true,true,false,true,true];
+c = [true,true,true,true,true,true,true];
 w = CountTrue(a);
 x = CountTrue(b);
 y = CountTrue(c);
@@ -55,9 +55,9 @@ y = CountTrue(c);
         public void BIM03_CountFalse()
         {
             String code =
-@"a = {true,true,true,false,{true,false},true,{false,false,{true,{false},true,true,false}}};
-b = {true,true,true,false,true,true};
-c = {true,true,true,true,true,true,true};
+@"a = [true,true,true,false,[true,false],true,[false,false,[true,[false],true,true,false]]];
+b = [true,true,true,false,true,true];
+c = [true,true,true,true,true,true,true];
 e = CountFalse(a);
 f = CountFalse(b);
 g = CountFalse(c);
@@ -74,9 +74,9 @@ g = CountFalse(c);
         {
             String code =
 @"
-a = {true};
-b = {false,false,{false,{false,{false,false,{false},false}}},false};
-c = {true,true,true,true,{true,true},true,{true,true,{true, true,{true},true,true,true}}};
+a = [true];
+b = [false,false,[false,[false,[false,false,[false],false]]],false];
+c = [true,true,true,true,[true,true],true,[true,true,[true, true,[true],true,true,true]]];
 d = AllTrue(a);
 e = AllTrue(b);
 f = AllTrue(c);
@@ -98,11 +98,11 @@ i = AllFalse(c);
         public void BIM05_IsHomogeneous()
         {
             String code =
-@"a = {1,2,3,4,5};
-b = {false, true, false};
-c = {{1},{1.0,2.0}};
-d = {null,1,2,3};
-e = {};
+@"a = [1,2,3,4,5];
+b = [false, true, false];
+c = [[1],[1.0,2.0]];
+d = [null,1,2,3];
+e = [];
 ca = IsHomogeneous(a);
 cb = IsHomogeneous(b);
 cc = IsHomogeneous(c);
@@ -123,8 +123,8 @@ ce = IsHomogeneous(e);
         {
             String code =
 @"
-b = {1,2,{3,4,{5,{6,{7},8,{9,10},11}},12,13,14,{15}},16};
-c = {1.2,2.2,{3.2,4.2,{5.2,{6.2,{7.2},8.2,{9.2,10.2},11.2}},12.2,13.2,14.2,{15.2}},16.2};
+b = [1,2,[3,4,[5,[6,[7],8,[9,10],11]],12,13,14,[15]],16];
+c = [1.2,2.2,[3.2,4.2,[5.2,[6.2,[7.2],8.2,[9.2,10.2],11.2]],12.2,13.2,14.2,[15.2]],16.2];
 x = Average(b);
 y = Sum(b);
 z = Average(c);
@@ -143,9 +143,9 @@ s = Sum(c);
         public void BIM07_SomeTrue_SomeFalse()
         {
             String code =
-@"a = {true,true,true,{false,false,{true, true,{false},true,true,false}}};
-b = {true,true,{true,true,true,{true,{true},true},true},true};
-c = {true, false, false};
+@"a = [true,true,true,[false,false,[true, true,[false],true,true,false]]];
+b = [true,true,[true,true,true,[true,[true],true],true],true];
+c = [true, false, false];
 p = SomeTrue(a);
 q = SomeTrue(b);
 r = SomeTrue(c);
@@ -167,8 +167,9 @@ u = SomeFalse(c);
         public void BIM08_Remove_RemoveDuplicate()
         {
             String code =
-@"a = {null,20,30,null,20,15,true,true,5,false};
-b = {1,2,3,4,9,4,2,5,6,7,8,7,1,0,2};
+@"
+a = [null,20,30,null,20,15,true,true,5,false];
+b = [1,2,3,4,9,4,2,5,6,7,8,7,1,0,2];
 rda = RemoveDuplicates(a);
 rdb = RemoveDuplicates(b);
 ra = Remove(a,3);
@@ -190,8 +191,8 @@ y = rb[2];
         public void BIM09_RemoveNulls()
         {
             String code =
-@"a = {1,{6,null,7,{null,null}},7,null,2};
-b = {null,{null,{null,{null},null},null},null};
+@"a = [1,[6,null,7,[null,null]],7,null,2];
+b = [null,[null,[null,[null],null],null],null];
 p = RemoveNulls(a);
 q = RemoveNulls(b);
 x = p[3];
@@ -208,7 +209,7 @@ y = p[1][1];
         {
             String code =
 @"import(""BuiltIn.ds"");
-a = {""This is "",""a very complex "",""array"",1,2.0,3,false,4.0,5,6.0,true,{2,3.1415926},null,false,'c'};
+a = [""This is "",""a very complex "",""array"",1,2.0,3,false,4.0,5,6.0,true,[2,3.1415926],null,false,'c'];
 b = List.RemoveIfNot(a, ""int"");
 c = List.RemoveIfNot(a, ""double"");
 d = List.RemoveIfNot(a, ""bool"");
@@ -230,8 +231,8 @@ t = e[0][0];
         public void BIM11_Reverse()
         {
             String code =
-@"a = {1,{{1},{3.1415}},null,1.0,12.3};
-b = {1,2,{3}};
+@"a = [1,[[1],[3.1415]],null,1.0,12.3];
+b = [1,2,[3]];
 p = Reverse(a);
 q = Reverse(b);
 x = p[0];
@@ -247,14 +248,14 @@ y = q[0][0];
         public void BIM12_Contains()
         {
             String code =
-@"a = {1,{{1},{3.1415}},null,1.0,12.3};
-b = {1,2,{3}};
-x = {{1},{3.1415}};
+@"a = [1,[[1],[3.1415]],null,1.0,12.3];
+b = [1,2,[3]];
+x = [[1],[3.1415]];
 r = Contains(a, 3.0);
 s = Contains(a, x);
 t = Contains(a, null);
 u = Contains(b, b);
-v = Contains(b, {3});
+v = Contains(b, [3]);
 w = Contains(b, 3);
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -272,14 +273,14 @@ w = Contains(b, 3);
         public void BIM13_IndexOf()
         {
             String code =
-@"a = {1,{{1},{3.1415}},null,1.0,12,3};
-b = {1,2,{3}};
-c = {1,2,{3}};
-d = {{1},{3.1415}};
+@"a = [1,[[1],[3.1415]],null,1.0,12,3];
+b = [1,2,[3]];
+c = [1,2,[3]];
+d = [[1],[3.1415]];
 r = IndexOf(a, d);
 s = IndexOf(a, 1);
 t = IndexOf(a, null);
-u = IndexOf(b, {3});
+u = IndexOf(b, [3]);
 v = IndexOf(b, 3);
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -295,8 +296,8 @@ v = IndexOf(b, 3);
         public void BIM14_Sort()
         {
             String code =
-@"a = {1,3,5,7,9,8,6,4,2,0};
-b = {1.3,2,0.8,2,null,2,2.0,2,null};
+@"a = [1,3,5,7,9,8,6,4,2,0];
+b = [1.3,2,0.8,2,null,2,2.0,2,null];
 x = Sort(a);
 x1 = Sort(a,true);
 x2 = Sort(a,false);
@@ -322,8 +323,8 @@ t = y[7];
         public void BIM15_SortIndexByValue()
         {
             String code =
-@"a = {1,3,5,7,9,8,6,4,2,0};
-b = {1.3,2,0.8,2,null,2,2.0,2,null};
+@"a = [1,3,5,7,9,8,6,4,2,0];
+b = [1.3,2,0.8,2,null,2,2.0,2,null];
 x = SortIndexByValue(a);
 x1 = SortIndexByValue(a,true);
 x2 = SortIndexByValue(a,false);
@@ -349,11 +350,11 @@ t = y[7];
         public void BIM16_Insert()
         {
             String code =
-@"a = {false,2,3.1415926,null,{false}};
+@"a = [false,2,3.1415926,null,[false]];
 b = 1;
-c = {1};
-d = {};
-e = {{1},2,3.0};
+c = [1];
+d = [];
+e = [[1],2,3.0];
 p = Insert(a,b,1);
 q = Insert(a,c,1);
 r = Insert(a,d,0);
@@ -366,7 +367,7 @@ x = s[5][0][0];
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("u", 1);
             thisTest.Verify("v", 1);
-            thisTest.Verify("w", null);
+            thisTest.Verify("w", false);
             thisTest.Verify("x", 1);
         }
 
@@ -375,8 +376,8 @@ x = s[5][0][0];
         public void BIM17_SetDifference_SetUnion_SetIntersection()
         {
             String code =
-@"a = {false,15,6.0,15,false,null,15.0};
-b = {10,20,false,12,21,6.0,15,null,8.2};
+@"a = [false,15,6.0,15,false,null,15.0];
+b = [10,20,false,12,21,6.0,15,null,8.2];
 c = SetDifference(a,b);
 d = SetDifference(b,a);
 e = SetIntersection(a,b);
@@ -398,8 +399,8 @@ s = f[1];
         public void BIM18_Reorder()
         {
             String code =
-@"a = {1,4,3,8.0,2.0,0};
-b = {2,1,0,3,4};
+@"a = [1,4,3,8.0,2.0,0];
+b = [2,1,0,3,4];
 c = Reorder(a,b);
 p = c[0];
 q = c[1];
@@ -416,8 +417,8 @@ r = c[2];
         {
             String code =
 @"
-x = {1, 2, 3};
-y = {-1};
+x = [1, 2, 3];
+y = [-1];
 z = Reorder(x,y);
 ";
             thisTest.RunScriptSource(code);
@@ -429,10 +430,10 @@ z = Reorder(x,y);
         public void BIM19_IsUniformDepth()
         {
             String code =
-@"a = {};
-b = {1,2,3};
-c = {{1},{2,3}};
-d = {1,{2},{{3}}};
+@"a = [];
+b = [1,2,3];
+c = [[1],[2,3]];
+d = [1,[2],[[3]]];
 p = IsUniformDepth(a);
 q = IsUniformDepth(b);
 r = IsUniformDepth(c);
@@ -450,7 +451,7 @@ s = IsUniformDepth(d);
         public void BIM20_NormalizeDepth()
         {
             String code =
-@"a = {{1,{2,3,4,{5}}}};
+@"a = [[1,[2,3,4,[5]]]];
 p = NormalizeDepth(a,1);
 q = NormalizeDepth(a,2);
 r = NormalizeDepth(a,4);
@@ -485,7 +486,7 @@ b = MapTo(0.0, 100.0 ,25.0, 80.0, 90.0);
         public void BIM22_Transpose()
         {
             String code =
-@"a = {{1,2,3},{1,2},{1,2,3,4,5,6,7}};
+@"a = [[1,2,3],[1,2],[1,2,3,4,5,6,7]];
 p = Transpose(a);
 q = Transpose(p);
 x = p[6][0];
@@ -499,7 +500,7 @@ y = q[2][6];
         [Test]
         public void TransposeEmpty2DArray()
         {
-            string code = @"x = {{}}; y = Transpose(x);";
+            string code = @"x = [[]]; y = Transpose(x);";
             var mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("y", new object[] { });
         }
@@ -542,9 +543,9 @@ x = b[0][2];
         public void BIM24_Count()
         {
             String code =
-@"a = {1, 2, 3, 4};
-b = { { 1, { 2, 3, 4, { 5 } } } };
-c = { { 2, null }, 1, ""str"", { 2, { 3, 4 } } };
+@"a = [1, 2, 3, 4];
+b = [ [ 1, [ 2, 3, 4, [ 5 ] ] ] ];
+c = [ [ 2, null ], 1, ""str"", [ 2, [ 3, 4 ] ] ];
 x = Count(a);
 y = Count(b);
 z = Count(c);
@@ -560,9 +561,9 @@ z = Count(c);
         public void BIM25_Rank()
         {
             String code =
-@"a = { { 1 }, 2, 3, 4 };
-b = { ""good"", { { null } }, { 1, { 2, 3, 4, { 5, { ""good"" }, { null } } } } };
-c = { { null }, { 2, ""good"" }, 1, null, { 2, { 3, 4 } } };
+@"a = [ [ 1 ], 2, 3, 4 ];
+b = [ ""good"", [ [ null ] ], [ 1, [ 2, 3, 4, [ 5, [ ""good"" ], [ null ] ] ] ] ];
+c = [ [ null ], [ 2, ""good"" ], 1, null, [ 2, [ 3, 4 ] ] ];
 x = Rank(a);
 y = Rank(b);
 z = Rank(c);
@@ -578,9 +579,9 @@ z = Rank(c);
         public void BIM26_Flatten()
         {
             String code =
-@"a = {1, 2, 3, 4};
-b = { ""good"", { 1, { 2, 3, 4, { 5 } } } };
-c = { null, { 2, ""good""}, 1, null, { 2, { 3, 4 } } };
+@"a = [1, 2, 3, 4];
+b = [ ""good"", [ 1, [ 2, 3, 4, [ 5 ] ] ] ];
+c = [ null, [ 2, ""good""], 1, null, [ 2, [ 3, 4 ] ] ];
 q = Flatten(a);
 p = Flatten(b);
 r = Flatten(c);
@@ -601,8 +602,8 @@ s = p[0];
         public void BIM27_Conversion_Resolution_Cases()
         {
             String code =
-@"a = {null,20,30,null,{10,0},true,{false,0,{true,{false},5,2,false}}};
-b = {1,2,{3,4,9},4,2,5,{6,7,{8}},7,1,0,2};
+@"a = [null,20,30,null,[10,0],true,[false,0,[true,[false],5,2,false]]];
+b = [1,2,[3,4,9],4,2,5,[6,7,[8]],7,1,0,2];
 x = CountTrue(a);
 y = CountFalse(a);
 z = AllTrue(a);
@@ -623,9 +624,9 @@ t = RemoveDuplicates(b);
         public void BIM28_IsRectangular()
         {
             String code =
-@"a = {{1,{2,3}},{4, 5, 6}};
-b= {{1, 2, 3, 4}, {5, 6, 7, 8}};
-c= {};
+@"a = [[1,[2,3]],[4, 5, 6]];
+b= [[1, 2, 3, 4], [5, 6, 7, 8]];
+c= [];
 x = IsRectangular(a);
 y = IsRectangular(b);
 z = IsRectangular(c);
@@ -641,7 +642,7 @@ z = IsRectangular(c);
         {
             string code = @"
 import(""BuiltIn.ds"");
-a = { true,null,false,true};
+a = [ true,null,false,true];
 b = List.RemoveIfNot(a, ""bool""); 
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -655,13 +656,13 @@ b = List.RemoveIfNot(a, ""bool"");
             String code =
 @"
 import(""FFITarget.dll"");
-a = {null,20,30,null,20,15,true,true,5,false};
-b = {1,2,3,4,9,4,2,5,6,7,8,7,1,0,2};
+a = [null,20,30,null,20,15,true,true,5,false];
+b = [1,2,3,4,9,4,2,5,6,7,8,7,1,0,2];
 rda = RemoveDuplicates(a);
 rdb = RemoveDuplicates(b);
-rdd = RemoveDuplicates({{1,2,{5,{6}}}, {1,2,{5,6}}, {1,2,{5,{6}}}});
-rde = RemoveDuplicates({""hello2"", ""hello"", 'r', ""hello2"", 's', 's', ""hello"", ' '});
-rdf = RemoveDuplicates({});
+rdd = RemoveDuplicates([[1,2,[5,[6]]], [1,2,[5,6]], [1,2,[5,[6]]]]);
+rde = RemoveDuplicates([""hello2"", ""hello"", 'r', ""hello2"", 's', 's', ""hello"", ' ']);
+rdf = RemoveDuplicates([]);
 p = rda[3];
 q = rdb[4];
 m2 = rdd[0][2][0];
@@ -689,7 +690,7 @@ res6 = Count(rdf);
         public void BIM31_Sort()
         {
             String code =
-@"a = { 3, 1, 2 };
+@"a = [ 3, 1, 2 ];
 def sorterFunction(a : double, b : int)
 {
     return = a > b ? 1 : -1;
@@ -705,7 +706,7 @@ sort = Sort(sorterFunction, a);
         public void BIM31_Sort_null()
         {
             String code =
-@"c = { 3, 1, 2,null };
+@"c = [ 3, 1, 2,null ];
 def sorterFunction(a : int, b : int)
 {
     return = [Imperative]
@@ -728,7 +729,7 @@ sort = Sort(sorterFunction, c);
         public void BIM31_Sort_duplicate()
         {
             String code =
-@"c = { 3, 1, 2, 2,null };
+@"c = [ 3, 1, 2, 2,null ];
 def sorterFunction(a : int, b : int)
 {
     return = [Imperative]
@@ -756,7 +757,7 @@ def foo(x, y, z)
     return = x + y + z;
 }
 
-param = { 2, 3, 4 };
+param = [ 2, 3, 4 ];
 x = Evaluate(foo, param, true);
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -778,9 +779,9 @@ def foo(x, y)
     return = x * y;
 }
 
-param = { 2, 3, 4 };
+param = [ 2, 3, 4 ];
 x = Evaluate(foo, param, true);
-param = { 5, 6 };
+param = [ 5, 6 ];
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("x", 30);
@@ -802,7 +803,7 @@ def bar(x, y, z)
 }
 
 t = foo;
-param = { 2, 3, 4 };
+param = [ 2, 3, 4 ];
 x = Evaluate(t, param, true);
 t = bar;
 ";
@@ -826,8 +827,8 @@ def bar(x, y, z)
     return = x * y * z;
 }
 
-param = {2, 3, 4 };
-x = Evaluate({ foo, bar }, param, true);
+param = [2, 3, 4 ];
+x = Evaluate([ foo, bar ], param, true);
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("x", new object[] { 9, 24 });
@@ -844,7 +845,7 @@ def foo(x, y, z)
     return = x + y + z;
 }
 
-param = {{2, 3, 4}, {5,6,7}, {8, 9, 10} };
+param = [[2, 3, 4], [5,6,7], [8, 9, 10] ];
 // e.q. 
 // foo({2,3,4}, {5,6,7}, {8, 9, 10});
 x = Evaluate(foo, param, true);
@@ -869,7 +870,7 @@ def foo(f : function, x, y)
     return = f(x, y);
 }
 
-x = Evaluate(foo, { bar, 2, 3 }, true);
+x = Evaluate(foo, [ bar, 2, 3 ], true);
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("x", 6);
@@ -888,15 +889,15 @@ def multiplyBy2(z)
 
 def bar(y, z)
 {
-    return = y * Evaluate(multiplyBy2, { z }, true);
+    return = y * Evaluate(multiplyBy2, [ z ], true);
 }
 
 def foo(x, y, z)
 {
-    return = x + Evaluate(bar, { y, z }, true);
+    return = x + Evaluate(bar, [ y, z ], true);
 }
 
-x = Evaluate(foo, { 2, 3, 4 }, true);
+x = Evaluate(foo, [ 2, 3, 4 ], true);
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("x", 26);
@@ -923,7 +924,7 @@ def foo(evalFunction : function, fptr : function, param : var[])
     return = evalFunction(fptr, param, true);
 }
 
-x = foo({ Evaluate, Evaluate }, { f1, f2 }, { { 41 }, { 42 } });
+x = foo([ Evaluate, Evaluate ], [ f1, f2 ], [ [ 41 ], [ 42 ] ]);
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("x", new object[] { 82, 126 });
@@ -946,7 +947,7 @@ def foo(x)
         }
         else
         {
-            return = x * Evaluate(foo, { x - 1 }, true);
+            return = x * Evaluate(foo, [ x - 1 ], true);
         }
     }
 }
@@ -960,128 +961,111 @@ x = foo(5);
             //Assert.Fail("This test case crashes Nunit");
         }
 
-        [Test]
-        public void TestTryGetValueFromNestedDictionaries01()
-        {
-            string code = @"
-a = {};
-a[""in""] = 42;
-r = __TryGetValueFromNestedDictionaries(a, ""in"");
+       [Test]
+       public void TestTryGetValueFromNestedDictionaries01()
+       {
+           string code = @"
+a = { ""in"" : 42 };
+r = Dictionary.ValueAtKey(a, ""in"");
 ";
-            var mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("r", 42);
-        }
+           var mirror = thisTest.RunScriptSource(code);
+           thisTest.Verify("r", 42);
+       }
 
-        [Test]
-        public void TestTryGetValuesFromDictionary02()
-        {
-            string code = @"
-a = {};
+       [Test]
+       public void TestTryGetValuesFromDictionary02()
+       {
+           string code = @"
+a = { ""in"" : 42 };
 key = ""in"";
-a[key] = 42;
-r = __TryGetValueFromNestedDictionaries(a, key);
+r = Dictionary.ValueAtKey(a, key);
 ";
-            var mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("r", 42);
-        }
+           var mirror = thisTest.RunScriptSource(code);
+           thisTest.Verify("r", 42);
+       }
 
-        [Test]
-        public void TestTryGetValuesFromDictionary03()
-        {
-            string code = @"
-a = {};
-a[""in""] = 42;
-a[""out""] = 24;
-b = {};
-b[""in""] = 24;
-b[""out""] = 42;
-c = {a, b};
-r1 = __TryGetValueFromNestedDictionaries(c, ""in"");
-r2 = __TryGetValueFromNestedDictionaries(c, ""out"");
+       [Test]
+       public void TestTryGetValuesFromDictionary03()
+       {
+           string code = @"
+a = {""in"": 42, ""out"" : 24};
+
+b = { ""in"": 24, ""out"" : 42};
+
+c = [ a, b];
+
+r1 = Dictionary.ValueAtKey(c, ""in"");
+r2 = Dictionary.ValueAtKey(c, ""out"");
 ";
-            var mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("r1", new object[] { 42, 24 });
-            thisTest.Verify("r2", new object[] { 24, 42 });
-        }
+           var mirror = thisTest.RunScriptSource(code);
+           thisTest.Verify("r1", new object[] { 42, 24 });
+           thisTest.Verify("r2", new object[] { 24, 42 });
+       }
 
-        [Test]
-        public void TestTryGetValuesFromDictionary04()
-        {
-            string code = @"
-a = {};
-a[""in""] = 42;
-a[""out""] = 24;
-b = {};
-b[""in""] = 24;
-b[""out""] = 42;
-c = {{a}, {b}};
-r1 = __TryGetValueFromNestedDictionaries(c, ""in"");
-r2 = __TryGetValueFromNestedDictionaries(c, ""out"");
+       [Test]
+       public void TestTryGetValuesFromDictionary04()
+       {
+           string code = @"
+a = { ""in"" : 42, ""out"" : 24 };
+b = { ""in"" : 24, ""out"" : 42 };
+c = [[a], [b]];
+r1 = Dictionary.ValueAtKey(c, ""in"");
+r2 = Dictionary.ValueAtKey(c, ""out"");
 ";
-            var mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("r1", new object[] { new object[] { 42 }, new object[] { 24 } });
-            thisTest.Verify("r2", new object[] { new object[] { 24 }, new object[] { 42 } });
-        }
+           var mirror = thisTest.RunScriptSource(code);
+           thisTest.Verify("r1", new object[] { new object[] { 42 }, new object[] { 24 } });
+           thisTest.Verify("r2", new object[] { new object[] { 24 }, new object[] { 42 } });
+       }
 
-        [Test]
-        public void TestTryGetValuesFromDictionary05()
-        {
-            string code = @"
-a = {};
-a[""in""] = 42;
-a[""out""] = 24;
-b = {};
-b[""in""] = 24;
-b[""out""] = 42;
-c = {a, {b}};
-r1 = __TryGetValueFromNestedDictionaries(c, ""in"");
-r2 = __TryGetValueFromNestedDictionaries(c, ""out"");
+       [Test]
+       public void TestTryGetValuesFromDictionary05()
+       {
+           string code = @"
+a = { ""in"" : 42, ""out"" : 24 };
+b = { ""in"" : 24, ""out"" : 42 };
+c = [a, [b]];
+r1 = Dictionary.ValueAtKey(c, ""in"");
+r2 = Dictionary.ValueAtKey(c, ""out"");
 ";
-            var mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("r1", new object[] { 42, new object[] { 24 } });
-            thisTest.Verify("r2", new object[] { 24, new object[] { 42 } });
-        }
+           var mirror = thisTest.RunScriptSource(code);
+           thisTest.Verify("r1", new object[] { 42, new object[] { 24 } });
+           thisTest.Verify("r2", new object[] { 24, new object[] { 42 } });
+       }
 
-        [Test]
-        public void TestTryGetValuesFromDictionary06()
-        {
-            string code = @"
-a = {};
-a[""in""] = 42;
-a[""out""] = 24;
-b = {};
-b[""in""] = 24;
-b[""out""] = 42;
-c = {a, {b}};
-r = __TryGetValueFromNestedDictionaries(c, ""nonexist"");
+       [Test]
+       public void TestTryGetValuesFromDictionary06()
+       {
+           string code = @"
+a = { ""in"" : 42, ""out"" : 24 };
+b = { ""in"" : 24, ""out"" : 42 };
+c = [a, [b]];
+r = Dictionary.ValueAtKey(c, ""nonexist"");
 ";
-            var mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("r", null);
-        }
+           var mirror = thisTest.RunScriptSource(code);
+            thisTest.Verify("r", new object[] { null, new object[] { null } });
+       }
 
-        [Test]
-        public void TestTryGetValuesFromDictionary07()
-        {
-            string code = @"
-a = {};
-a[""in""] = 42;
-a[""out""] = 24;
-r = __TryGetValueFromNestedDictionaries(a, ""nonexist"");
+       [Test]
+       public void TestTryGetValuesFromDictionary07()
+       {
+           string code = @"
+a = { ""in"" : 42, ""out"" : 24 };
+r = Dictionary.ValueAtKey(a, ""nonexist"");
 ";
-            var mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("r", null);
-        }
+           var mirror = thisTest.RunScriptSource(code);
+           thisTest.Verify("r", null);
+       }
 
-        [Test]
-        public void TestTryGetValuesFromDictionary08()
-        {
-            string code = @"
+       [Test]
+       public void TestTryGetValuesFromDictionary08()
+       {
+           string code = @"
 a = 42;
-r = __TryGetValueFromNestedDictionaries(a, ""nonexist"");
+r = Dictionary.ValueAtKey(a, ""nonexist"");
 ";
-            var mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("r", null);
-        }
+           var mirror = thisTest.RunScriptSource(code);
+           thisTest.Verify("r", null);
+       }
 
         [Test]
         public void TestGetKeysFromNonArray()

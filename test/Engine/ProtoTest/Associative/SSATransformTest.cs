@@ -31,34 +31,30 @@ p.IntVal = 10;
             String code =
 @"
 // Script must not cycle
-a={0,1,2};
-x={10,11,12};
+a=[0,1,2];
+x=[10,11,12];
 a[0] = x[0];
 x[1] = a[1];
 y = x[1]; // 1
 ";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("y", 1);
+            thisTest.RunAndVerifyBuildWarning(code, ProtoCore.BuildData.WarningID.InvalidStaticCyclicDependency);
         }
 
         [Test]
-        [Category("Failure")]
         public void ArrayAssignmentNoCycle2()
         {
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4117
             String code =
 @"
 // Script must not cycle
-a={0,1,2};
-x={10,11,12};
+a=[0,1,2];
+x=[10,11,12];
 i = 1;
 a[0] = x[0];
 x[i] = a[i];
 y = x[i]; // 1
 ";
-            string err = "MAGN-4117 SSA Issue: Script must not cycle";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code, err);
-            thisTest.Verify("y", 1);
+            thisTest.RunAndVerifyBuildWarning(code, ProtoCore.BuildData.WarningID.InvalidStaticCyclicDependency);
         }
 
         [Test]
@@ -66,8 +62,8 @@ y = x[i]; // 1
         {
             String code =
 @"
-a = {1,2};
-b = {1,2};
+a = [1,2];
+b = [1,2];
 c = a<1> + b<2>;
 x = c[0];
 y = c[1];
@@ -82,8 +78,8 @@ y = c[1];
         {
             String code =
 @"
-a = {1,2};
-b = {1,2};
+a = [1,2];
+b = [1,2];
 a = a<1> + b<2>;
 x = a[0];
 y = a[1];
@@ -100,11 +96,11 @@ y = a[1];
 @"
 def f()
 {
-    return = { 1, 2 };
+    return = [ 1, 2 ];
 }
 def g()
 {
-    return = { 3, 4 };
+    return = [ 3, 4 ];
 }
 x = f()<1> + g()<2>;
 ";
@@ -120,7 +116,7 @@ x = f()<1> + g()<2>;
 @"
 def foo()
 {
-    return = {1, 2, 3};
+    return = [1, 2, 3];
 }
 x = foo()[0];
 ";

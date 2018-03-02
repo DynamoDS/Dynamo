@@ -77,12 +77,12 @@ cleanB = mtcB.WasCreatedWithTrace();
 @"import(""FFITarget.dll"");
 mtcA = IncrementerTracedClass.IncrementerTracedClass(0..3);
 cleanA = mtcA.WasCreatedWithTrace();
-//cleanA == {false, false, false, false}
+//cleanA == [false, false, false, false]
 
 
 mtcB =  IncrementerTracedClass.IncrementerTracedClass(0..2);
 cleanB = mtcB.WasCreatedWithTrace();
-//cleanB == {false, false, false}
+//cleanB == [false, false, false]
 
 "
 );
@@ -108,7 +108,7 @@ x = 0..3;
 mtcA = IncrementerTracedClass.IncrementerTracedClass(x);
 cleanA = mtcA.WasCreatedWithTrace();
 ids = mtcA.ID;
-//cleanA == {false, false, false, false}
+//cleanA == [false, false, false, false]
 
 x = 1..4;
 
@@ -1499,8 +1499,8 @@ mtcAWasTraced = mtcA.WasCreatedWithTrace(); ";
 
             string setupCode =
             @"import(""FFITarget.dll""); 
-x = {90, 91, 92}; 
-fail = {false, false, false};
+x = [90, 91, 92]; 
+fail = [false, false, false];
 mtcA = IncrementerTracedClass.IncrementerTracedClass(x, fail); 
 mtcAID = mtcA.ID;
 mtcAWasTraced = mtcA.WasCreatedWithTrace(); ";
@@ -1532,7 +1532,7 @@ mtcAWasTraced = mtcA.WasCreatedWithTrace(); ";
             //Force exception to be thrown
             Guid guid3 = System.Guid.NewGuid();
             added = new List<Subtree>();
-            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid3, "fail = {true, true, true};"));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid3, "fail = [true, true, true];"));
 
 
             syncData = new GraphSyncData(null, added, null);
@@ -1547,7 +1547,7 @@ mtcAWasTraced = mtcA.WasCreatedWithTrace(); ";
             // Simulate a new  CBN
             Guid guid4 = System.Guid.NewGuid();
             added = new List<Subtree>();
-            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid4, "fail = {false, false, false};"));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid4, "fail = [false, false, false];"));
 
 
             syncData = new GraphSyncData(null, added, null);
@@ -1573,8 +1573,8 @@ mtcAWasTraced = mtcA.WasCreatedWithTrace(); ";
 
             string setupCode =
             @"import(""FFITarget.dll""); 
-x = {90, 91}; 
-fail = {false, false};
+x = [90, 91]; 
+fail = [false, false];
 mtcA = IncrementerTracedClass.IncrementerTracedClass(x, fail); 
 mtcAID = mtcA.ID;";
 
@@ -1604,7 +1604,7 @@ mtcAID = mtcA.ID;";
             //Force exception to be thrown
             Guid guid3 = System.Guid.NewGuid();
             added = new List<Subtree>();
-            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid3, "x = {44, 54}; fail = {false, true};"));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid3, "x = [44, 54]; fail = [false, true];"));
 
 
             syncData = new GraphSyncData(null, added, null);
@@ -1619,7 +1619,7 @@ mtcAID = mtcA.ID;";
             // Simulate a new  CBN
             Guid guid4 = System.Guid.NewGuid();
             added = new List<Subtree>();
-            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid4, "x = {47, 67}; fail = {false, false};"));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid4, "x = [47, 67]; fail = [false, false];"));
 
 
             syncData = new GraphSyncData(null, added, null);
@@ -1636,7 +1636,7 @@ mtcAID = mtcA.ID;";
             //Force exception to be thrown
             Guid guid5 = System.Guid.NewGuid();
             added = new List<Subtree>();
-            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid5, "x = {4, 5, 6};")); //shortest lacing will cap this to 2 values
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid5, "x = [4, 5, 6];")); //shortest lacing will cap this to 2 values
 
 
             syncData = new GraphSyncData(null, added, null);
@@ -1665,8 +1665,8 @@ mtcAID = mtcA.ID;";
 
             string setupCode =
             @"import(""FFITarget.dll""); 
-x = {90, 91}; 
-fail = {false, false};
+x = [90, 91]; 
+fail = [false, false];
 mtcA = IncrementerTracedClass.IncrementerTracedClass(x, fail); 
 mtcAID = mtcA.ID;";
 
@@ -1696,7 +1696,7 @@ mtcAID = mtcA.ID;";
             //Force exception to be thrown
             Guid guid3 = System.Guid.NewGuid();
             added = new List<Subtree>();
-            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid3, "x = {44, 54};"));// fail = {false, false};"));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid3, "x = [44, 54];"));// fail = {false, false};"));
 
 
             syncData = new GraphSyncData(null, added, null);
@@ -1711,7 +1711,7 @@ mtcAID = mtcA.ID;";
             // Simulate a new  CBN
             Guid guid4 = System.Guid.NewGuid();
             added = new List<Subtree>();
-            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid4, "x = {47, 67};"));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid4, "x = [47, 67];"));
 
 
             syncData = new GraphSyncData(null, added, null);
@@ -1728,7 +1728,7 @@ mtcAID = mtcA.ID;";
             //Force exception to be thrown
             Guid guid5 = System.Guid.NewGuid();
             added = new List<Subtree>();
-            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid5, "x = {4, 5, 6};"));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid5, "x = [4, 5, 6];"));
 
 
             syncData = new GraphSyncData(null, added, null);

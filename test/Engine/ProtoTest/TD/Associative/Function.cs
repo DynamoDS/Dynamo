@@ -186,7 +186,7 @@ def Foo : int(input : int)
     multiply = 5;
     divide = 10;
 
-    return = {input*multiply, input/divide};
+    return = [input*multiply, input/divide];
 }
 [Associative]
 {
@@ -383,7 +383,7 @@ def Level2 : int (a : int)
         return = array[0];
     }
     
-    arr = {1.0,2.0,3.0};
+    arr = [1.0,2.0,3.0];
     arr2 = Twice(arr);";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
             thisTest.Verify("arr2", 1.0);
@@ -398,11 +398,11 @@ def Level2 : int (a : int)
 import(""FFITarget.dll"");
 def VectorProperties(v : DummyVector)
 {
- return = {
+ return = [
 	v.X(),
 	v.X(),
 	v.X()	
- };
+ ];
 }
 test=VectorProperties(null);
 ";
@@ -417,9 +417,9 @@ test=VectorProperties(null);
         {
             string src = @"def function1 (arr :  double[] )
 {
-    return = { arr[0], arr [1] };
+    return = [ arr[0], arr [1] ];
 }
-a = function1({null,null});
+a = function1([null,null]);
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
             Object[] v1 = { null, null };

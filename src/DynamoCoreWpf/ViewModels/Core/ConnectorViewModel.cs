@@ -258,6 +258,16 @@ namespace Dynamo.ViewModels
             Redraw();
         }
 
+        public virtual void Dispose()
+        {
+            _model.PropertyChanged -= Model_PropertyChanged;
+            _model.Start.Owner.PropertyChanged -= StartOwner_PropertyChanged;
+            _model.End.Owner.PropertyChanged -= EndOwner_PropertyChanged;
+
+            workspaceViewModel.DynamoViewModel.PropertyChanged -= DynamoViewModel_PropertyChanged;
+            Nodevm.PropertyChanged -= nodeViewModel_PropertyChanged;
+        }
+
         private void nodeViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             switch (e.PropertyName)

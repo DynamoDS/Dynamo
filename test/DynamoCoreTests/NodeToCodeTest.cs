@@ -27,6 +27,7 @@ namespace Dynamo.Tests
         protected override void GetLibrariesToPreload(List<string> libraries)
         {
             libraries.Add("ProtoGeometry.dll");
+            libraries.Add("Builtin.dll");
             libraries.Add("DSCoreNodes.dll");
             base.GetLibrariesToPreload(libraries);
         }
@@ -172,26 +173,25 @@ namespace Dynamo.Tests
             // Code blocks:
             //  
             //    a = 1;
-            //    a = 2;
             //
-            //    a = 3;
+            //    a = 2;
             OpenModel(@"core\node2code\sameNames2.dyn");
             var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
             var engine = CurrentDynamoModel.EngineController;
 
             var result = engine.ConvertNodesToCode(nodes, nodes);
-            // We should get 3 ast nodes, but their order is not important. 
+            // We should get 2 ast nodes, but their order is not important. 
             Assert.IsNotNull(result);
             Assert.IsNotNull(result.AstNodes);
-            Assert.AreEqual(3, result.AstNodes.Count());
+            Assert.AreEqual(2, result.AstNodes.Count());
             Assert.True(result.AstNodes.All(n => n is BinaryExpressionNode));
 
             var exprs = String.Concat(result.AstNodes
                                             .Cast<BinaryExpressionNode>()
                                             .Select(e => e.ToString().Replace(" ", String.Empty)));
 
-            Assert.IsTrue(((exprs.Contains("a1=1") && exprs.Contains("a1=2") && exprs.Contains("a=3"))
-                || ((exprs.Contains("a=1") && exprs.Contains("a=2") && exprs.Contains("a1=3")))));
+            Assert.IsTrue(((exprs.Contains("a1=1") && exprs.Contains("a=2"))
+                || ((exprs.Contains("a=1") && exprs.Contains("a1=2")))));
         }
 
         [Test]
@@ -1011,7 +1011,7 @@ namespace Dynamo.Tests
             var binaryExpr = assignment as BinaryExpressionNode;
             Assert.IsNotNull(binaryExpr);
 
-            Assert.AreEqual("{t1, t2}", binaryExpr.RightNode.ToString());
+            Assert.AreEqual("[t1, t2]", binaryExpr.RightNode.ToString());
         }
 
         [Test]

@@ -76,93 +76,6 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void CanOpenAndSetSpecifcStateInDynWithCommandLineRunner()
-        {
-
-            string openpath = Path.Combine(TestDirectory, @"core\commandline\addmultwithstatesindyn.dyn");
-            var runner = new CommandLineRunner(this.CurrentDynamoModel);
-            string commandstring = "/o" + " " + openpath + " " + "/s" + " " + "state2";
-
-            runner.Run(CommandstringToArgs(commandstring));
-            AssertPreviewValue("6e2d89d1-d5e8-4030-b065-f9d98b3adb45", 31);
-        }
-
-        [Test]
-        public void CanOpenAndSetSpecifcStateFromImportedPresetsFileWithCommandLineRunner()
-        {
-
-            string openpath = Path.Combine(TestDirectory, @"core\commandline\addmultwithoutstates.dyn");
-            string presetspath = Path.Combine(TestDirectory, @"core\commandline\statesOnly.xml");
-            var runner = new CommandLineRunner(this.CurrentDynamoModel);
-            string commandstring = "/o" + " " + openpath + " " + "/s" + " " + "state2" + " " + "/p" + " " + presetspath;
-
-            runner.Run(CommandstringToArgs(commandstring));
-            AssertPreviewValue("6e2d89d1-d5e8-4030-b065-f9d98b3adb45", 31);
-        }
-
-        [Test]
-        public void CanOpenAndRunSpecifcStateAndOutputToFileWithCommandLineRunner()
-        {
-            string openpath = Path.Combine(TestDirectory, @"core\commandline\addmultwithstatesindyn.dyn");
-            var newPath = GetNewFileNameOnTempPath("xml");
-
-            var runner = new CommandLineRunner(this.CurrentDynamoModel);
-            string commandstring = "/o" + " " + openpath + " " + "/s" + " " + "state2" + " " + "/v" + " " + newPath;
-            runner.Run(CommandstringToArgs(commandstring));
-
-            var output = new XmlDocument();
-            output.Load(newPath);
-            AssertOutputValuesForGuid("6e2d89d1-d5e8-4030-b065-f9d98b3adb45", new List<Tuple<int, string>> { Tuple.Create(0, "31")}, output);
-
-        }
-
-        [Test]
-        public void CanOpenAndRunAllImportedStatesWithCommandLineRunner()
-        {
-            string openPath = Path.Combine(TestDirectory, @"core\commandline\addmultwithoutstates.dyn");
-            string presetsPath = Path.Combine(TestDirectory, @"core\commandline\statesOnly.xml");
-            var newPath = GetNewFileNameOnTempPath("xml");
-
-            var runner = new CommandLineRunner(this.CurrentDynamoModel);
-            string commandstring = "/o" + " " + openPath + " " + "/s" + " " + "all" + " " + "/p" + " " + presetsPath + " " + "/v" + " " + newPath;
-            runner.Run(CommandstringToArgs(commandstring));
-
-            var output = new XmlDocument();
-            output.Load(newPath);
-            AssertOutputValuesForGuid("6e2d89d1-d5e8-4030-b065-f9d98b3adb45", new List<Tuple<int, string>> { Tuple.Create(0, "10"), Tuple.Create(0, "31"), Tuple.Create(0, "20") }, output);
-
-        }
-
-        [Test]
-        public void CanOpenAndRunAllImportedStatesFromDynamoCLIexe()
-        {
-            string openpath = Path.Combine(TestDirectory, @"core\commandline\addmultwithoutstates.dyn");
-            string presetspath = Path.Combine(TestDirectory, @"core\commandline\statesOnly.xml");
-            var newPath = GetNewFileNameOnTempPath("xml");
-            string commandstring = "/o" + " " + openpath + " " + "/s" + " " + "all" + " " + "/p" + " " + presetspath + " " + "/v" + " " + newPath;
-
-            DynamoCLI.Program.Main(CommandStringToStringArray(commandstring));
-            var output = new XmlDocument();
-            output.Load(newPath);
-            AssertOutputValuesForGuid("6e2d89d1-d5e8-4030-b065-f9d98b3adb45", new List<Tuple<int, string>> { Tuple.Create(0, "10"), Tuple.Create(0, "31"), Tuple.Create(0, "20") }, output);
-
-        }
-
-        [Test]
-        public void CanOpenAndRunSpecifcStateAndOutputToFileFromDynamoCLIexe()
-        {
-            string openpath = Path.Combine(TestDirectory, @"core\commandline\addmultwithstatesindyn.dyn");
-            var newpath = GetNewFileNameOnTempPath("xml");
-            string commandstring = "/o" + " " + openpath + " " + "/s" + " " + "state2" + " " + "/v" + " " + newpath;
-
-            DynamoCLI.Program.Main(CommandStringToStringArray(commandstring));
-            var output = new XmlDocument();
-            output.Load(newpath);
-            AssertOutputValuesForGuid("6e2d89d1-d5e8-4030-b065-f9d98b3adb45", new List<Tuple<int, string>> { Tuple.Create(0, "31") }, output);
-
-        }
-
-        [Test]
         public void CanOpenAndRunFileWihtListsCorrectlyToOutputFileFromDynamoCLIexe()
         {
             string openpath = Path.Combine(TestDirectory, @"core\commandline\simplelists.dyn");
@@ -174,6 +87,21 @@ namespace Dynamo.Tests
             output.Load(newpath);
             AssertOutputValuesForGuid("47b78c9b-98b3-4852-935f-0d03f52a65b3", new List<Tuple<int, string>> { Tuple.Create(0, "{1000,2,3,{1,2,3}}") }, output);
             AssertOutputValuesForGuid("8229dec7-b4ae-463b-a7ac-e36671fefef0", new List<Tuple<int, string>> { Tuple.Create(0, "{Surface,Surface,Surface,Surface,Surface,Surface}") }, output);
+
+        }
+
+        [Test]
+        public void CanOpenAndRunFileWithDictionaryCorrectlyToOutputFileFromDynamoCLIexe()
+        {
+            string openpath = Path.Combine(TestDirectory, @"core\commandline\simpleDict.dyn");
+            var newpath = GetNewFileNameOnTempPath("xml");
+            string commandstring = "/o" + " " + openpath + " " + "/v" + " " + newpath;
+
+            DynamoCLI.Program.Main(CommandStringToStringArray(commandstring));
+            var output = new XmlDocument();
+            output.Load(newpath);
+            AssertOutputValuesForGuid("36c30251-c867-4d73-9a3b-24f3e9ab00e5", new List<Tuple<int, string>> { Tuple.Create(0, "{e : 6, d : {4, 5}, a : 1, c : {bar : 999, foo : 99}, b : 2}") }, output);
+            AssertOutputValuesForGuid("6a5bcff0-ce40-4773-aee6-88d99104b4a7", new List<Tuple<int, string>> { Tuple.Create(0, "{a,b,c,d,e}"), Tuple.Create(1, "{1,2,{bar : 999, foo : 99},{4,5},6}") }, output);
 
         }
     }

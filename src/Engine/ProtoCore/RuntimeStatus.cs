@@ -5,6 +5,7 @@ using System.Text;
 using ProtoCore.DSASM;
 using ProtoCore.Utils;
 using System.Linq;
+using ProtoCore.DSDefinitions;
 using ProtoCore.Runtime;
 using ProtoCore.Properties;
 
@@ -37,6 +38,7 @@ namespace ProtoCore
             RangeExpressionOutOfMemory,
             MoreThanOneDominantList,
             RunOutOfMemory,
+            InvalidArrayIndexType,
         }
 
         public struct WarningEntry
@@ -348,13 +350,24 @@ namespace ProtoCore
         }
 
 
-        public void LogMethodResolutionWarning(string methodName,
+        public void LogMethodResolutionWarning(FunctionGroup funcGroup, 
+                                               string methodName,
                                                int classScope = Constants.kGlobalScope,
                                                List<StackValue> arguments = null)
         {
             string message;
             string propertyName;
             Operator op;
+
+            var qualifiedMethodName = methodName;
+
+            if (classScope != Constants.kGlobalScope)
+            {
+                var className = runtimeCore.DSExecutable.classTable.ClassNodes[classScope].Name;
+                var classNameSimple = className.Split('.').Last();
+
+                qualifiedMethodName = classNameSimple + "." + methodName;
+            }
 
             if (CoreUtils.TryGetPropertyName(methodName, out propertyName))
             {
@@ -370,30 +383,45 @@ namespace ProtoCore
             }
             else if (CoreUtils.TryGetOperator(methodName, out op))
             {
-                string strOp = Op.GetOpSymbol(op);
+                var strOp = Op.GetOpSymbol(op);
                 message = String.Format(Resources.kMethodResolutionFailureForOperator,
                                         strOp,
-                                        runtimeCore.DSExecutable.TypeSystem.GetType(arguments[0].metaData.type),
-                                        runtimeCore.DSExecutable.TypeSystem.GetType(arguments[1].metaData.type));
+                                        GetTypeName(arguments[0]),
+                                        GetTypeName(arguments[1]));
             }
-            else
+            else if (funcGroup.FunctionEndPoints.Count == 1) // non-overloaded case
             {
-                StringBuilder sb = new StringBuilder();
-                sb.Append("(");
-                foreach (StackValue sv in arguments)
-                {
-                    sb.Append(runtimeCore.DSExecutable.TypeSystem.GetType(sv.metaData.type));
-                    sb.Append(",");
-                }
-                String outString = sb.ToString();
-                String typesList = outString.Substring(0, outString.Length - 1); //Drop trailing ','
-                typesList = typesList + ")";
+                var argsJoined = string.Join(", ", arguments.Select(GetTypeName));
+                
+                var fep = funcGroup.FunctionEndPoints[0];
+                var formalParamsJoined = string.Join(", ", fep.FormalParams.Select(x => x.ToShortString()));
 
-
-                message = string.Format(Resources.kMethodResolutionFailureWithTypes, methodName, typesList);
+                message = string.Format(Resources.NonOverloadMethodResolutionError, qualifiedMethodName, formalParamsJoined, argsJoined);
+            }
+            else // overloaded case
+            {
+                var argsJoined = string.Join(", ", arguments.Select(GetTypeName));
+                message = string.Format(Resources.kMethodResolutionFailureWithTypes, qualifiedMethodName, argsJoined);
             }
 
             LogWarning(WarningID.MethodResolutionFailure, message);
+        }
+
+        private string GetTypeName(StackValue v)
+        {
+            var type = runtimeCore.DSExecutable.TypeSystem.GetType(v.metaData.type);
+            if (type != Keyword.Array)
+            {
+                return type;
+            }
+
+            var c = ArrayUtils.GetGreatestCommonSubclassForArray(v, runtimeCore);
+            if (c == null) // empty array case
+            {
+                return "var[]";
+            }
+
+            return c.Name + "[]";
         }
 
         public void LogMethodNotAccessibleWarning(string methodName)

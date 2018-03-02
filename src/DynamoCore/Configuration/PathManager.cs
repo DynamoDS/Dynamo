@@ -5,9 +5,11 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Xml;
 using Dynamo.Configuration;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Interfaces;
+using Dynamo.Logging;
 using Dynamo.Properties;
 using DynamoUtilities;
 
@@ -60,6 +62,7 @@ namespace Dynamo.Core
         public const string GalleryDirectoryName = "gallery";
         public const string BackupDirectoryName = "backup";
         public const string PreferenceSettingsFileName = "DynamoSettings.xml";
+        public const string PythonTemplateFileName = "PythonTemplate.py";
         public const string GalleryContentsFileName = "GalleryContents.xml";
 
         private readonly int majorFileVersion;
@@ -75,6 +78,7 @@ namespace Dynamo.Core
         private readonly string backupDirectory;
         private readonly string preferenceFilePath;
         private readonly string galleryFilePath;
+        private string pythonTemplateFilePath;
 
         private readonly List<string> rootDirectories;
         private readonly HashSet<string> nodeDirectories;
@@ -167,6 +171,11 @@ namespace Dynamo.Core
         public string PreferenceFilePath
         {
             get { return preferenceFilePath; }
+        }
+
+        public string PythonTemplateFilePath
+        {
+            get { return pythonTemplateFilePath; }
         }
 
         public string GalleryFilePath
@@ -329,6 +338,7 @@ namespace Dynamo.Core
                                         LogsDirectoryName);
 
             preferenceFilePath = Path.Combine(userDataDir, PreferenceSettingsFileName);
+            pythonTemplateFilePath = Path.Combine(userDataDir, PythonTemplateFileName);
             backupDirectory = Path.Combine(userDataDirNoVersion, BackupDirectoryName);
 
             // Common directories.
@@ -410,6 +420,28 @@ namespace Dynamo.Core
             }
 
             return Path.Combine(BackupDirectory, fileName);
+        }
+
+        /// <summary>
+        /// Backup the XML file.
+        /// </summary>
+        /// <param name="xmlDoc">The XML document.</param>
+        /// <param name="filePath">The file path.</param>
+        /// <returns></returns>
+        internal bool BackupXMLFile(XmlDocument xmlDoc, string filePath)
+        {
+            try
+            {
+                var fileName = Path.GetFileNameWithoutExtension(filePath) + "_xml";
+                var extension = Path.GetExtension(filePath);
+                var savePath = Path.Combine(this.BackupDirectory, fileName + extension);
+                xmlDoc.Save(savePath);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
         }
 
         #endregion

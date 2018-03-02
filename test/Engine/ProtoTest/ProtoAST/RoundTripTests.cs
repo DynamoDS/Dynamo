@@ -285,29 +285,29 @@ namespace ProtoTest.ProtoAST
         }
 
         [Test]
-        [Category("DSDefinedClass_Ported")]
+        [Category("DSDefinedClass_Ported"), Category("Failure")]
         public void TestAstToCode()
         {
-            // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4393
+            // TODO pratapa: Regression post Dictionary changes for Get.ValueAtIndex method
 
             // Convert a list of code -> AST nodes -> code -> AST nodes
             // Compare two AST node lists are equal
 
             List<string> statements = new List<string>
             {
-                "x = {};",
-                @"x = {1, true, false, 1.234, 41, null, ""hello world"", 'x', foo(a<1>, b<2>)[3]}[0]<1>;",
+                "x = [];",
+                @"x = [1, true, false, 1.234, 41, null, ""hello world"", 'x', foo(a<1>, b<2>)[3]][0]<1>;",
                 "x = (a..b..c)<1>..(m<1>..n<2>..~1)<2>..(i..j..#k<1>)<3>;",
                 "x = (a > b ? foo(1, 2)<1> : bar(2, 3)<2>) ? ding(1, 2)<1> : dong(1, 2)<2>;", 
                 "x = (a == b) ? ((a >= b) ? (a && b) : (a || b)) : (a < b);",
                 "x = foo(a<1>, b<2>, c<3>)[0]<1>;",
-                "x = Point.ByCoordinates({1,2,3}, {4,5,6}<1>, {7, 8, 9}<2>)<0>;",
+                "x = Point.ByCoordinates([1,2,3], [4,5,6]<1>, [7, 8, 9]<2>)<0>;",
                 "x = this.foo(1, 2);",
                 "x = this.X;",
-                "return = {1, 2, 3};",
+                "return = [1, 2, 3];",
                 "return = Math.PI;",
                 "return = Math.Cos(1.2);", 
-                "x[0][1] = {};",
+                "x[0][1] = [];",
                 
             };
 

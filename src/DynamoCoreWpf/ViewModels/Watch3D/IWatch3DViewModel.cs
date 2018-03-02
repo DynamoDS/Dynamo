@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media.Media3D;
-using Autodesk.DesignScript.Interfaces;
+using Dynamo.Visualization;
 using Dynamo.Graph.Nodes;
 
 namespace Dynamo.Wpf.ViewModels.Watch3D
@@ -45,20 +45,9 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         /// </summary>
         public const string ManipulatorPlane  = "E75B2B0E31F1";
     }
-    /// <summary>
-    /// interface that defines properties of the Watch3dView required for preference serialization.
-    /// this interface should be merged with IWatch3dViewModel at Dynamo 2.0
-    /// </summary>
-    public interface IWatchPreferenceProperties
-    {
-        /// <summary>
-        /// Represents the name of current IWatch3DViewModel which will be saved in preference settings
-        /// </summary>
-        string PreferenceWatchName { get; }
-    }
     
     /// <summary>
-    /// An interface to expose API's on the Watch UI Viewmodel to extensions
+    /// An interface to expose API's on the Watch UI ViewModel to extensions
     /// </summary>
     public interface IWatch3DViewModel
     {
@@ -71,7 +60,11 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         /// <returns></returns>
         IRay GetClickRay(MouseEventArgs args);
 
-       
+        /// <summary>
+        /// Represents the name of current IWatch3DViewModel which will be saved in preference settings
+        /// </summary>
+        string PreferenceWatchName { get; }
+
         /// <summary>
         /// Returns the current camera position of the 3D background preview
         /// Note: GetCameraInformation returns the camera position but without the correct
@@ -95,7 +88,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         /// <param name="packages">render packages to be drawn</param>
         /// <param name="forceAsyncCall">set to 'true' if calling from UI thread and still need to queue 
         /// the creation of display geometry for asynchronous execution</param>
-        void AddGeometryForRenderPackages(IEnumerable<IRenderPackage> packages, bool forceAsyncCall = false);
+        void AddGeometryForRenderPackages(RenderPackageCache packages, bool forceAsyncCall = false);
 
         /// <summary>
         /// Finds a geometry corresponding to a string identifier

@@ -6,6 +6,8 @@ using System.Linq;
 using Autodesk.DesignScript.Geometry;
 using Autodesk.DesignScript.Runtime;
 
+using Newtonsoft.Json;
+
 namespace DSCore
 {
     public class Color
@@ -19,6 +21,7 @@ namespace DSCore
         ///     Find the red component of a color, 0 to 255.
         /// </summary>
         /// <returns name="red">int between 0 and 255 inclusive.</returns>
+        [JsonProperty(PropertyName = "R")]
         public byte Red
         {
             get { return color.R; }
@@ -28,6 +31,7 @@ namespace DSCore
         ///     Find the green component of a color, 0 to 255.
         /// </summary>
         /// <returns name="green">int between 0 and 255 inclusive.</returns>
+        [JsonProperty(PropertyName = "G")]
         public byte Green
         {
             get { return color.G; }
@@ -37,6 +41,7 @@ namespace DSCore
         ///     Find the blue component of a color, 0 to 255.
         /// </summary>
         /// <returns name="blue">int between 0 and 255 inclusive.</returns>
+        [JsonProperty(PropertyName = "B")]
         public byte Blue
         {
             get { return color.B; }
@@ -46,6 +51,7 @@ namespace DSCore
         ///     Find the alpha component of a color, 0 to 255.
         /// </summary>
         /// <returns name="alpha">int between 0 and 255 inclusive.</returns>
+        [JsonProperty(PropertyName = "A")]
         public byte Alpha
         {
             get { return color.A; }
@@ -121,7 +127,10 @@ namespace DSCore
         /// <summary>
         ///     Lists the components for the color in the order: alpha, red, green, blue.
         /// </summary>
-        /// <returns name="val">Saturation value for the color.</returns>
+        /// <returns name="a">alpha value</returns>
+        /// <returns name="r">red value</returns>
+        /// <returns name="g">green value</returns>
+        /// <returns name="b">blue value</returns>
         /// <search>alpha,red,green,blue</search>
         [MultiReturn("a", "r", "g", "b")]
         public static Dictionary<string, byte> Components(Color c)

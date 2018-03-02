@@ -148,6 +148,7 @@ namespace DynamoCoreWpfTests
 
         protected override void GetLibrariesToPreload(List<string> libraries)
         {
+            libraries.Add("Builtin.dll");
             libraries.Add("DSCoreNodes.dll");
             libraries.Add("FFITarget.dll");
             base.GetLibrariesToPreload(libraries);
@@ -1738,7 +1739,7 @@ namespace DynamoCoreWpfTests
             var cbn = GetNode("fc209d2f-1724-4485-bde4-92670802aaa3") as CodeBlockNodeModel;
             Assert.NotNull(cbn);
 
-            Assert.AreEqual(1, cbn.InPorts.Count);
+            Assert.AreEqual(2, cbn.InPorts.Count);
             Assert.AreEqual("b", cbn.InPorts[0].ToolTip);
         }
 
@@ -1913,39 +1914,12 @@ namespace DynamoCoreWpfTests
 
         [Test, RequiresSTA]
         [Category("RegressionTests")]
-        public void Defect_MAGN_624()
-        {
-            // Details steps are here : http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-624
-
-            RunCommandsFromFile("Defect_MAGN_624.xml");
-
-            //Check the nodes and connectors count
-            var nodes = workspaceViewModel.Nodes;
-            var connectors = workspaceViewModel.Connectors;
-            Assert.NotNull(nodes);
-            Assert.AreEqual(1, nodes.Count);
-            Assert.AreEqual(0, connectors.Count());
-
-            //Check the CBN for input and output ports count
-            var cbn = GetNode("8bc43138-d655-40f6-973e-614f1695874c") as CodeBlockNodeModel;
-            Assert.AreNotEqual(ElementState.Error, cbn.State);
-            Assert.AreEqual(1, cbn.OutPorts.Count);
-            Assert.AreEqual(0, cbn.InPorts.Count);
-
-            //Check the position of ports
-            Assert.AreEqual("a", cbn.OutPorts[0].ToolTip);
-            Assert.AreEqual(1, cbn.OutPorts[0].LineIndex);
-        }
-
-        [Test, RequiresSTA]
-        [Category("RegressionTests")]
         public void Defect_MAGN_624_1()
         {
             // Further testing of this defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-624
             // a={1,2,3};
-            // a[0] = 3; // first create CBN with first two lines and then add two more. the below one.
+            // a[0] = 3; // first create CBN with first two lines and then add one more. the below one.
             // b = 1;
-            // a = 0;
 
             RunCommandsFromFile("Defect_MAGN_624_1.xml");
 
@@ -1963,11 +1937,11 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(0, cbn.InPorts.Count);
 
             //Check the position of ports
-            Assert.AreEqual("b", cbn.OutPorts[0].ToolTip);
-            Assert.AreEqual(3, cbn.OutPorts[0].LineIndex);
+            Assert.AreEqual("a", cbn.OutPorts[0].ToolTip);
+            Assert.AreEqual(0, cbn.OutPorts[0].LineIndex);
 
-            Assert.AreEqual("a", cbn.OutPorts[1].ToolTip);
-            Assert.AreEqual(5, cbn.OutPorts[1].LineIndex);
+            Assert.AreEqual("b", cbn.OutPorts[1].ToolTip);
+            Assert.AreEqual(3, cbn.OutPorts[1].LineIndex);
         }
 
         [Test, RequiresSTA]
@@ -5412,47 +5386,17 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
-        public void MAGN10382()
+        public void TestConnectedCBNInErrorStateDoesNotCrash()
         {
-            var nodeGuid = "86107112-5c2d-43ae-9d7c-e2d756a80bf3";
-
-            // github issue: https://github.com/DynamoDS/Dynamo/issues/7151
-            RunCommandsFromFile("CodeBlockNode_DefineDictionary.xml", (commandTag) =>
+            RunCommandsFromFile("CBN_error_crash.xml", (commandTag) =>
             {
-                switch (commandTag)
+                if (commandTag == "Run")
                 {
-                    case "CreateDictionary":
-                    case "ChangeName1":
-                    case "ChangeName2":
-                    case "ChangeName4":
-                    case "ChangeName3":
-                        AssertPreviewValue(nodeGuid, new object[] { 1, 2, 3 });
-                        break;
-                    default:
-                        break;
-                }
-            });
-        }
-
-        [Test]
-        public void MAGN9507()
-        {
-            // a = 1; ----> x = a; x = x + 1;
-            // a = 2;
-
-            var nodeGuid = "f00bc4f2-c20b-48be-a45b-cc13432db328";
-            RunCommandsFromFile("regress9507.xml", (commandTag) =>
-            {
-                switch (commandTag)
-                {
-                    case "FirstRun":
-                        AssertPreviewValue(nodeGuid, 2);
-                        break;
-                    case "SecondRun":
-                        AssertPreviewValue(nodeGuid, 3);
-                        break;
-                    default:
-                        break;
+                    var workspace = ViewModel.Model.CurrentWorkspace;
+                    var node = workspace.NodeFromWorkspace<CodeBlockNodeModel>("ca808fc5-f269-4a03-aee9-b4f1b156ed16");
+                    Assert.IsNotNull(node);
+                    Assert.IsTrue(node.IsInErrorState);
+                    Assert.AreEqual(1, node.AllConnectors.Count());
                 }
             });
         }

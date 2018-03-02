@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -136,6 +136,22 @@ namespace ProtoTestFx.TD
             Validity.Assert(testCore.BuildStatus.Errors.Count() > 0);
             var syntaxErrors = testCore.BuildStatus.Errors.Where(e => e.ID == ProtoCore.BuildData.ErrorType.SyntaxError);
             Validity.Assert(syntaxErrors.Count() > 0);
+        }
+
+        public void RunAndVerifySemanticError(string code, string errorMessage = null)
+        {
+            Assert.Throws(typeof(ProtoCore.Exceptions.CompileErrorsOccured), () =>
+            {
+                RunScriptSource(code);
+            });
+            Assert.IsTrue(testCore.BuildStatus.Errors.Any());
+            var errors = testCore.BuildStatus.Errors.Where(e => e.ID == ProtoCore.BuildData.ErrorType.SemanticError);
+            Assert.IsTrue(errors.Any());
+            if (!string.IsNullOrEmpty(errorMessage))
+            {
+                var errorsWithmsgs = errors.Where(e => e.Message.Contains(errorMessage));
+                Assert.IsTrue(errorsWithmsgs.Any());
+            }
         }
 
         /// <summary>
@@ -382,7 +398,8 @@ namespace ProtoTestFx.TD
         /// <returns></returns>
         public virtual ExecutionMirror RunScriptSource(string sourceCode, string errorstring = "", string includePath = "")
         {
-            
+            sourceCode = sourceCode.Insert(0, "import(\"Builtin.dll\");");
+
             if (testImport)
             {
                 Guid g;
@@ -407,7 +424,8 @@ namespace ProtoTestFx.TD
                 return testMirror = RunScriptFile(importDir, importFileName);
 
             }
-            else if (testDebug)
+
+            if (testDebug)
             {
                 Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
                 if (!String.IsNullOrEmpty(includePath))
@@ -421,7 +439,6 @@ namespace ProtoTestFx.TD
                         Console.WriteLine(String.Format("Path: {0} does not exist.", includePath));
                     }
                 }
-
                 StringReader file = new StringReader(sourceCode);
                 WatchTestFx.GeneratePrintStatements(file, ref map);
 
@@ -432,41 +449,39 @@ namespace ProtoTestFx.TD
                 
                 return testMirror;
             }
-            else
+
+            SetupTestCore();
+            if (!String.IsNullOrEmpty(includePath))
             {
-                SetupTestCore();
-                if (!String.IsNullOrEmpty(includePath))
+                if (System.IO.Directory.Exists(includePath))
                 {
-                    if (System.IO.Directory.Exists(includePath))
-                    {
-                        testCore.Options.IncludeDirectories.Add(includePath);
-                    }
-                    else
-                    {
-                        Console.WriteLine(String.Format("Path: {0} does not exist.", includePath));
-                    }
+                    testCore.Options.IncludeDirectories.Add(includePath);
                 }
-                testRuntimeCore = runner.Execute(sourceCode, testCore);
-                testMirror = testRuntimeCore.Mirror;
-                
-                if (dumpDS )
+                else
                 {
-
-                    String fileName = TestContext.CurrentContext.Test.Name + ".ds";
-                    String folderName = TestContext.CurrentContext.Test.FullName;
-
-                    string[] substrings = folderName.Split('.');
-
-                    string path = "..\\..\\..\\test\\core\\dsevaluation\\DSFiles\\";
-                    if (!System.IO.Directory.Exists(path))
-                        System.IO.Directory.CreateDirectory(path);
-
-                    createDSFile(fileName, path, sourceCode);
+                    Console.WriteLine(String.Format("Path: {0} does not exist.", includePath));
                 }
-
-                SetErrorMessage(errorstring);
-                return testMirror;
             }
+            testRuntimeCore = runner.Execute(sourceCode, testCore);
+            testMirror = testRuntimeCore.Mirror;
+                
+            if (dumpDS )
+            {
+
+                String fileName = TestContext.CurrentContext.Test.Name + ".ds";
+                String folderName = TestContext.CurrentContext.Test.FullName;
+
+                string[] substrings = folderName.Split('.');
+
+                string path = "..\\..\\..\\test\\core\\dsevaluation\\DSFiles\\";
+                if (!System.IO.Directory.Exists(path))
+                    System.IO.Directory.CreateDirectory(path);
+
+                createDSFile(fileName, path, sourceCode);
+            }
+
+            SetErrorMessage(errorstring);
+            return testMirror;
         }
 
         /// <summary>
@@ -758,6 +773,12 @@ namespace ProtoTestFx.TD
             Assert.IsTrue(warningCount == count, mErrorMessage);
         }
 
+        public void VerifyBuildWarningMessage(string message)
+        {
+            var warnings = testCore.BuildStatus.Warnings.Where(w => w.Message.Contains(message));
+            Assert.IsTrue(warnings.Any());
+        }
+
         public static void VerifyRuntimeWarning(ProtoCore.Runtime.WarningID id)
         {
             VerifyRuntimeWarning(testRuntimeCore, id);
@@ -794,7 +815,7 @@ namespace ProtoTestFx.TD
         string GetFFIObjectStringValue(string dsVariable, int startBlock = 1, int arrayIndex = -1)
         {
             var helper = DLLFFIHandler.GetModuleHelper(FFILanguage.CSharp);
-            var marshaller = helper.GetMarshaller(TestFrameWork.testRuntimeCore);
+            var marshaller = helper.GetMarshaler(TestFrameWork.testRuntimeCore);
             Obj val = testMirror.GetFirstValue(dsVariable, startBlock);
             StackValue sv;
 

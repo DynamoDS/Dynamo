@@ -4,7 +4,7 @@ using ProtoTestFx;
 
 namespace ProtoTest.DebugTests
 {
-    [TestFixture]
+    [TestFixture, Category("Debugger")]
     public class RunEqualityTests
     {
 
@@ -59,9 +59,9 @@ a = 4;
         {
             String code =
                 @"
-a = {null,20,30,null,{10,0},0,5,2};
-b = {1,2,3};
-e = {3,20,30,4,{null,0},0,5,2};
+a = [null,20,30,null,[10,0],0,5,2];
+b = [1,2,3];
+e = [3,20,30,4,[null,0],0,5,2];
 c = SomeNulls(a);
 d = SomeNulls(b);
 f = SomeNulls(e);
@@ -73,9 +73,9 @@ f = SomeNulls(e);
         public void DebugEQBIM02_CountTrue()
         {
             String code =
-                @"a = {true,true,true,false,{true,false},true,{false,false,{true,{false},true,true,false}}};
-b = {true,true,true,false,true,true};
-c = {true,true,true,true,true,true,true};
+                @"a = [true,true,true,false,[true,false],true,[false,false,[true,[false],true,true,false]]];
+b = [true,true,true,false,true,true];
+c = [true,true,true,true,true,true,true];
 w = CountTrue(a);
 x = CountTrue(b);
 y = CountTrue(c);
@@ -87,9 +87,9 @@ y = CountTrue(c);
         public void DebugEQBIM03_CountFalse()
         {
             String code =
-                @"a = {true,true,true,false,{true,false},true,{false,false,{true,{false},true,true,false}}};
-b = {true,true,true,false,true,true};
-c = {true,true,true,true,true,true,true};
+                @"a = [true,true,true,false,[true,false],true,[false,false,[true,[false],true,true,false]]];
+b = [true,true,true,false,true,true];
+c = [true,true,true,true,true,true,true];
 e = CountFalse(a);
 f = CountFalse(b);
 g = CountFalse(c);
@@ -103,9 +103,9 @@ g = CountFalse(c);
         {
             String code =
                 @"
-a = {true};
-b = {false,false,{false,{false,{false,false,{false},false}}},false};
-c = {true,true,true,true,{true,true},true,{true,true,{true, true,{true},true,true,true}}};
+a = [true];
+b = [false,false,[false,[false,[false,false,[false],false]]],false];
+c = [true,true,true,true,[true,true],true,[true,true,[true, true,[true],true,true,true]]];
 d = AllTrue(a);
 e = AllTrue(b);
 f = AllTrue(c);
@@ -121,11 +121,11 @@ i = AllFalse(c);
         public void DebugEQBIM05_IsHomogeneous()
         {
             String code =
-                @"a = {1,2,3,4,5};
-b = {false, true, false};
-c = {{1},{1.0,2.0}};
-d = {null,1,2,3};
-e = {};
+                @"a = [1,2,3,4,5];
+b = [false, true, false];
+c = [[1],[1.0,2.0]];
+d = [null,1,2,3];
+e = [];
 ca = IsHomogeneous(a);
 cb = IsHomogeneous(b);
 cc = IsHomogeneous(c);
@@ -141,8 +141,8 @@ ce = IsHomogeneous(e);
         {
             String code =
                 @"
-b = {1,2,{3,4,{5,{6,{7},8,{9,10},11}},12,13,14,{15}},16};
-c = {1.2,2.2,{3.2,4.2,{5.2,{6.2,{7.2},8.2,{9.2,10.2},11.2}},12.2,13.2,14.2,{15.2}},16.2};
+b = [1,2,[3,4,[5,[6,[7],8,[9,10],11]],12,13,14,[15]],16];
+c = [1.2,2.2,[3.2,4.2,[5.2,[6.2,[7.2],8.2,[9.2,10.2],11.2]],12.2,13.2,14.2,[15.2]],16.2];
 x = Average(b);
 y = Sum(b);
 z = Average(c);
@@ -156,9 +156,9 @@ s = Sum(c);
         public void DebugEQBIM07_SomeTrue_SomeFalse()
         {
             String code =
-                @"a = {true,true,true,{false,false,{true, true,{false},true,true,false}}};
-b = {true,true,{true,true,true,{true,{true},true},true},true};
-c = {true, false, false};
+                @"a = [true,true,true,[false,false,[true, true,[false],true,true,false]]];
+b = [true,true,[true,true,true,[true,[true],true],true],true];
+c = [true, false, false];
 p = SomeTrue(a);
 q = SomeTrue(b);
 r = SomeTrue(c);
@@ -174,8 +174,8 @@ u = SomeFalse(c);
         public void DebugEQBIM08_Remove_RemoveDuplicate()
         {
             String code =
-                @"a = {null,20,30,null,20,15,true,true,5,false};
-b = {1,2,3,4,9,4,2,5,6,7,8,7,1,0,2};
+                @"a = [null,20,30,null,20,15,true,true,5,false];
+b = [1,2,3,4,9,4,2,5,6,7,8,7,1,0,2];
 rda = RemoveDuplicates(a);
 rdb = RemoveDuplicates(b);
 ra = Remove(a,3);
@@ -193,8 +193,8 @@ y = rb[2];
         public void DebugEQBIM09_RemoveNulls()
         {
             String code =
-                @"a = {1,{6,null,7,{null,null}},7,null,2};
-b = {null,{null,{null,{null},null},null},null};
+                @"a = [1,[6,null,7,[null,null]],7,null,2];
+b = [null,[null,[null,[null],null],null],null];
 p = RemoveNulls(a);
 q = RemoveNulls(b);
 x = p[3];
@@ -208,7 +208,7 @@ y = p[1][1];
         public void DebugEQBIM10_RemoveIfNot()
         {
             String code =
-                @"a = {""This is "",""a very complex "",""array"",1,2.0,3,false,4.0,5,6.0,true,{2,3.1415926},null,false,'c'};
+                @"a = [""This is "",""a very complex "",""array"",1,2.0,3,false,4.0,5,6.0,true,[2,3.1415926],null,false,'c'];
 b = RemoveIfNot(a, ""int"");
 c = RemoveIfNot(a, ""double"");
 d = RemoveIfNot(a, ""bool"");
@@ -226,8 +226,8 @@ t = e[0][0];
         public void DebugEQBIM11_Reverse()
         {
             String code =
-                @"a = {1,{{1},{3.1415}},null,1.0,12.3};
-b = {1,2,{3}};
+                @"a = [1,[[1],[3.1415]],null,1.0,12.3];
+b = [1,2,[3]];
 p = Reverse(a);
 q = Reverse(b);
 x = p[0];
@@ -241,14 +241,14 @@ y = q[0][0];
         public void DebugEQBIM12_Contains()
         {
             String code =
-                @"a = {1,{{1},{3.1415}},null,1.0,12.3};
-b = {1,2,{3}};
-x = {{1},{3.1415}};
+                @"a = [1,[[1],[3.1415]],null,1.0,12.3];
+b = [1,2,[3]];
+x = [[1],[3.1415]];
 r = Contains(a, 3.0);
 s = Contains(a, x);
 t = Contains(a, null);
 u = Contains(b, b);
-v = Contains(b, {3});
+v = Contains(b, [3]);
 w = Contains(b, 3);
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
@@ -259,14 +259,14 @@ w = Contains(b, 3);
         public void DebugEQBIM13_IndexOf()
         {
             String code =
-                @"a = {1,{{1},{3.1415}},null,1.0,12,3};
-b = {1,2,{3}};
-c = {1,2,{3}};
-d = {{1},{3.1415}};
+                @"a = [1,[[1],[3.1415]],null,1.0,12,3];
+b = [1,2,[3]];
+c = [1,2,[3]];
+d = [[1],[3.1415]];
 r = IndexOf(a, d);
 s = IndexOf(a, 1);
 t = IndexOf(a, null);
-u = IndexOf(b, {3});
+u = IndexOf(b, [3]);
 v = IndexOf(b, 3);
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
@@ -277,8 +277,8 @@ v = IndexOf(b, 3);
         public void DebugEQBIM14_Sort()
         {
             String code =
-                @"a = {1,3,5,7,9,8,6,4,2,0};
-b = {1.3,2,0.8,2,null,2,2.0,2,null};
+                @"a = [1,3,5,7,9,8,6,4,2,0];
+b = [1.3,2,0.8,2,null,2,2.0,2,null];
 x = Sort(a);
 x1 = Sort(a,true);
 x2 = Sort(a,false);
@@ -298,8 +298,8 @@ t = y[7];
         public void DebugEQBIM15_SortIndexByValue()
         {
             String code =
-                @"a = {1,3,5,7,9,8,6,4,2,0};
-b = {1.3,2,0.8,2,null,2,2.0,2,null};
+                @"a = [1,3,5,7,9,8,6,4,2,0];
+b = [1.3,2,0.8,2,null,2,2.0,2,null];
 x = SortIndexByValue(a);
 x1 = SortIndexByValue(a,true);
 x2 = SortIndexByValue(a,false);
@@ -319,11 +319,11 @@ t = y[7];
         public void DebugEQBIM16_Insert()
         {
             String code =
-                @"a = {false,2,3.1415926,null,{false}};
+                @"a = [false,2,3.1415926,null,[false]];
 b = 1;
-c = {1};
-d = {};
-e = {{1},2,3.0};
+c = [1];
+d = [];
+e = [[1],2,3.0];
 p = Insert(a,b,1);
 q = Insert(a,c,1);
 r = Insert(a,d,0);
@@ -341,8 +341,8 @@ x = s[5][0][0];
         public void DebugEQBIM17_SetDifference_SetUnion_SetIntersection()
         {
             String code =
-                @"a = {false,15,6.0,15,false,null,15.0};
-b = {10,20,false,12,21,6.0,15,null,8.2};
+                @"a = [false,15,6.0,15,false,null,15.0];
+b = [10,20,false,12,21,6.0,15,null,8.2];
 c = SetDifference(a,b);
 d = SetDifference(b,a);
 e = SetIntersection(a,b);
@@ -360,8 +360,8 @@ s = f[1];
         public void DebugEQBIM18_Reorder()
         {
             String code =
-                @"a = {1,4,3,8.0,2.0,0};
-b = {2,1,0,3,4};
+                @"a = [1,4,3,8.0,2.0,0];
+b = [2,1,0,3,4];
 c = Reorder(a,b);
 p = c[0];
 q = c[1];
@@ -375,10 +375,10 @@ r = c[2];
         public void DebugEQBIM19_IsUniformDepth()
         {
             String code =
-                @"a = {};
-b = {1,2,3};
-c = {{1},{2,3}};
-d = {1,{2},{{3}}};
+                @"a = [];
+b = [1,2,3];
+c = [[1],[2,3]];
+d = [1,[2],[[3]]];
 p = IsUniformDepth(a);
 q = IsUniformDepth(b);
 r = IsUniformDepth(c);
@@ -392,7 +392,7 @@ s = IsUniformDepth(d);
         public void DebugEQBIM20_NormalizeDepth()
         {
             String code =
-                @"a = {{1,{2,3,4,{5}}}};
+                @"a = [[1,[2,3,4,[5]]]];
 p = NormalizeDepth(a,1);
 q = NormalizeDepth(a,2);
 r = NormalizeDepth(a,4);
@@ -421,7 +421,7 @@ b = MapTo(0.0, 100.0 ,25.0, 80.0, 90.0);
         public void DebugEQBIM22_Transpose()
         {
             String code =
-                @"a = {{1,2,3},{1,2},{1,2,3,4,5,6,7}};
+                @"a = [[1,2,3],[1,2],[1,2,3,4,5,6,7]];
 p = Transpose(a);
 q = Transpose(p);
 x = p[6][0];
@@ -451,9 +451,9 @@ z = d[0][2];
         public void DebugEQBIM24_Count()
         {
             String code =
-                @"a = {1, 2, 3, 4};
-b = { { 1, { 2, 3, 4, { 5 } } } };
-c = { { 2, null }, 1, ""str"", { 2, { 3, 4 } } };
+                @"a = [1, 2, 3, 4];
+b = [ [ 1, [ 2, 3, 4, [ 5 ] ] ] ];
+c = [ [ 2, null ], 1, ""str"", [ 2, [ 3, 4 ] ] ];
 x = Count(a);
 y = Count(b);
 z = Count(c);
@@ -466,9 +466,9 @@ z = Count(c);
         public void DebugEQBIM25_Rank()
         {
             String code =
-                @"a = { { 1 }, 2, 3, 4 };
-b = { ""good"", { { null } }, { 1, { 2, 3, 4, { 5, { ""good"" }, { null } } } } };
-c = { { null }, { 2, ""good"" }, 1, null, { 2, { 3, 4 } } };
+                @"a = [ [ 1 ], 2, 3, 4 ];
+b = [ ""good"", [ [ null ] ], [ 1, [ 2, 3, 4, [ 5, [ ""good"" ], [ null ] ] ] ] ];
+c = [ [ null ], [ 2, ""good"" ], 1, null, [ 2, [ 3, 4 ] ] ];
 x = Rank(a);
 y = Rank(b);
 z = Rank(c);
@@ -481,9 +481,9 @@ z = Rank(c);
         public void DebugEQBIM26_Flatten()
         {
             String code =
-                @"a = {1, 2, 3, 4};
-b = { ""good"", { 1, { 2, 3, 4, { 5 } } } };
-c = { null, { 2, ""good""}, 1, null, { 2, { 3, 4 } } };
+                @"a = [1, 2, 3, 4];
+b = [ ""good"", [ 1, [ 2, 3, 4, [ 5 ] ] ] ];
+c = [ null, [ 2, ""good""], 1, null, [ 2, [ 3, 4 ] ] ];
 q = Flatten(a);
 p = Flatten(b);
 r = Flatten(c);
@@ -500,8 +500,8 @@ s = p[0];
         public void DebugEQBIM27_Conversion_Resolution_Cases()
         {
             String code =
-                @"a = {null,20,30,null,{10,0},true,{false,0,{true,{false},5,2,false}}};
-b = {1,2,{3,4,9},4,2,5,{6,7,{8}},7,1,0,2};
+                @"a = [null,20,30,null,[10,0],true,[false,0,[true,[false],5,2,false]]];
+b = [1,2,[3,4,9],4,2,5,[6,7,[8]],7,1,0,2];
 x = CountTrue(a);
 y = CountFalse(a);
 z = AllTrue(a);
@@ -530,7 +530,7 @@ t = RemoveDuplicates(b);
                             {
                                     return = 123;
                             }
-                            a = {B.B(), A.A(), B.B()};
+                            a = [B.B(), A.A(), B.B()];
                             val = Test(a);
                             ";
             DebugTestFx.CompareDebugAndRunResults(code);
@@ -676,7 +676,7 @@ t = RemoveDuplicates(b);
             String code =
                 @"[Associative]
 {
-	a = {1001,1002};
+	a = [1001,1002];
     x = a[0];
     y = a[1];
     a[0] = 23;
@@ -696,7 +696,7 @@ t = RemoveDuplicates(b);
         return = a[0];
     }
             
-    arr = {100, 200};            
+    arr = [100, 200];            
     b = foo(arr);
 }
 ";
@@ -708,8 +708,8 @@ t = RemoveDuplicates(b);
         {
             String code =
                 @"
-a = {0,1,2};
-t = {10,11,12};
+a = [0,1,2];
+t = [10,11,12];
 a[0] = t[0];
 t[1] = a[1];
 ";
@@ -723,9 +723,9 @@ t[1] = a[1];
                 @"
 [Imperative]
 {
-    arr1 = {true, false};
-    arr2 = {1, 2, 3};
-    arr3 = {false, true};
+    arr1 = [true, false];
+    arr2 = [1, 2, 3];
+    arr3 = [false, true];
     t = arr2[1][0];
 }
 ";
@@ -737,7 +737,7 @@ t[1] = a[1];
         {
             String code =
                 @"
-a = {10,20};
+a = [10,20];
 a[2] = 100;
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
@@ -748,7 +748,7 @@ a[2] = 100;
         {
             String code =
                 @"
-t = {};
+t = [];
 t[0] = 100;
 t[1] = 200;
 t[2] = 300;
@@ -761,7 +761,7 @@ t[2] = 300;
         {
             String code =
                 @"
-t = {};
+t = [];
 t[0][0] = 1;
 t[0][1] = 2;
 a = t[0][0];
@@ -775,7 +775,7 @@ b = t[0][1];
         {
             String code =
                 @"
-t = {};
+t = [];
 t[0][0] = 1;
 t[0][1] = 2;
 t[1][0] = 10;
@@ -791,8 +791,8 @@ b = t[1][1];
         {
             String code =
                 @"
-t = {0,{20,30}};
-t[1][1] = {40,50};
+t = [0,[20,30]];
+t[1][1] = [40,50];
 a = t[1][1][0];
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
@@ -805,7 +805,7 @@ a = t[1][1][0];
                 @"
 [Imperative]
 {
-    t = {};
+    t = [];
     t[0][0] = 1;
     t[0][1] = 2;
     t[1][0] = 3;
@@ -852,7 +852,7 @@ a[3] = 1;
         {
             String code = @"
 a = false;
-a[1][1] = {3};
+a[1][1] = [3];
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
         }
@@ -891,7 +891,7 @@ a[-3] = 2;
         public void DebugEQTestDynamicArray014()
         {
             String code = @"
-a = {1, 2};
+a = [1, 2];
 a[3] = 3;
 a[-5] = 100;
 ";
@@ -912,7 +912,7 @@ a[-2][-1] = 3;
         public void DebugEQTestDynamicArray016()
         {
             String code = @"
-a = {{1, 2}, {3, 4}};
+a = [[1, 2], [3, 4]];
 a[-3][-1] = 5;
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
@@ -932,7 +932,7 @@ a[1..2] = 2;
         public void DebugEQTestArrayIndexReplication02()
         {
             string code = @"
-a = {1, 2, 3};
+a = [1, 2, 3];
 b = a[1..2];
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
@@ -942,7 +942,7 @@ b = a[1..2];
         public void DebugEQTestTypeArrayAssign4()
         {
             string code = @"
-a:int[] = {1, 2, 3};
+a:int[] = [1, 2, 3];
 a[0] = false;
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
@@ -952,7 +952,7 @@ a[0] = false;
         public void DebugEQTestTypeArrayAssign5()
         {
             string code = @"
-a = {false, 2, true};
+a = [false, 2, true];
 b:int[] = a;
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
@@ -1175,7 +1175,7 @@ a[1] = 3;;
         {
             String code =
                 @"
-a = {11,12,10};
+a = [11,12,10];
 t = 10;
 b = a > t ? 2 : 1;
 x = b[0];
@@ -1198,7 +1198,7 @@ def g()
 {
     return = 1;
 }
-a = {10,0,10};
+a = [10,0,10];
 t = 1;
 b = a > t ? f(10) : g();
 x = b[0];
@@ -1238,7 +1238,7 @@ z = b[2];
         {
             String code =
                 @"
-                    a = {1, 2, 3, 4};
+                    a = [1, 2, 3, 4];
                     b = a[-2]; // 3
                 ";
             DebugTestFx.CompareDebugAndRunResults(code);
@@ -1249,7 +1249,7 @@ z = b[2];
         {
             String code =
                 @"
-                    a = { { 1, 2 }, { 3, 4 } };
+                    a = [ [ 1, 2 ], [ 3, 4 ] ];
                     b = a[-1][-2]; // 3
                 ";
             DebugTestFx.CompareDebugAndRunResults(code);
@@ -1317,7 +1317,7 @@ a = 3;
         {
             String code =
                 @"
-a = {10,11,12};
+a = [10,11,12];
 t = 0;
 i = a[t];
 t = 2;
@@ -1402,8 +1402,8 @@ a = 2;
 result =
 [Imperative]
 {
-	arr1 = {1,null};
-	arr2 = {1,2};
+	arr1 = [1,null];
+	arr2 = [1,2];
 	if(SomeNulls(arr1))
 	{
 		arr2 = arr1;
@@ -1421,8 +1421,8 @@ result =
 result =
 [Imperative]
 {
-	arr1 = {};
-	arr2 = {1,2};
+	arr1 = [];
+	arr2 = [1,2];
 	if(SomeNulls(arr1))
 	{
 		arr2 = arr1;
@@ -1516,7 +1516,7 @@ a = a + 2;	// I am assuming that this statement (on line 27) is executed after t
 
             string code = @"
 import (""..\\..\\..\\test\\Engine\\ProtoTest\\ImportFiles\\basicImport.ds"");
-a = {1.1,2.2};
+a = [1.1,2.2];
 b = 2;
 c = Scale(a,b);
 ";
@@ -1533,12 +1533,12 @@ c = Scale(a,b);
 result = 
 [Imperative]
 {
-	a = {1,3,5,7,{}};
-	b = {null,null,true};
-	c = {SomeNulls({1,null})};
-	d = {a,b,c};
+	a = [1,3,5,7,[]];
+	b = [null,null,true];
+	c = [SomeNulls([1,null])];
+	d = [a,b,c];
 	j = 0;
-	e = {};
+	e = [];
 	
 	for(i in d)
 	{
@@ -1613,7 +1613,7 @@ b = a>5? 0:1;
         {
             string code = @"
 import (""../basicImport.ds"");
-a = {1.1,2.2};
+a = [1.1,2.2];
 b = 2;
 c = Scale(a,b);
 ";
@@ -1632,7 +1632,7 @@ c = Scale(a,b);
 	Rameshwar = 80;
 	Jun = 68;
 	Roham = 50;
-	Smartness = { BenBarnes, BenGoh, Jun, Rameshwar, Roham }; // { 1, 0, 1, 1, 0 }
+	Smartness = [ BenBarnes, BenGoh, Jun, Rameshwar, Roham ]; // { 1, 0, 1, 1, 0 }
 	Results = Smartness > Einstein ? Passed : Failed;
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
@@ -1652,7 +1652,7 @@ c = Scale(a,b);
 	Rameshwar = 80;
 	Jun = 68;
 	Roham = 50;
-	Smartness = { BenBarnes, BenGoh, Jun, Rameshwar, Roham }; // { 1, 0, 1, 1, 0 }
+	Smartness = [ BenBarnes, BenGoh, Jun, Rameshwar, Roham ]; // { 1, 0, 1, 1, 0 }
 	Results = Smartness > Einstein ? Passed : Failed;
 	
 }
@@ -1687,15 +1687,15 @@ c = Scale(a,b);
 result = 
 [Imperative]
 {
-	a = {1,3,5,7,{}};
-	b = {null,null,true};
-	c = {{}};
+	a = [1,3,5,7,[]];
+	b = [null,null,true];
+	c = [[]];
 	
-	d = {a,b,c};
+	d = [a,b,c];
 	
 	i = 0;
 	j = 0;
-	e = {};
+	e = [];
 	
 	while(i<Count(d))
 	{
@@ -1760,7 +1760,7 @@ e1 = foo3(a);
         {
             string code = @"
 import ("".\basicImport.ds"");
-a = {1.1,2.2};
+a = [1.1,2.2];
 b = 2;
 c = Scale(a,b);
 ";
@@ -1794,7 +1794,7 @@ c = Scale(a,b);
             string code = @"
 def foo(x:var[]..[])
 {
-	a = {};
+	a = [];
 	i = 0;
 	[Imperative]
 	{
@@ -1809,11 +1809,11 @@ def foo(x:var[]..[])
 	}
 	return  = Count(a);
 }
-b = {
-{null},
-{1,2,3,{}},
-{0}
-};
+b = [
+[null],
+[1,2,3,[]],
+[0]
+];
 result = foo(b);
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
@@ -1882,7 +1882,7 @@ a  = a2 + b;    // 6
         {
             string code = @"
 import ("".\\ExtraFolderToTestRelativePath\\basicImport.ds"");
-a = {1.1,2.2};
+a = [1.1,2.2];
 b = 2;
 c = Scale(a,b);
 ";
@@ -1962,7 +1962,7 @@ c = Scale(a,b);
 a=1;
 b=2;
 c=4;
-collection = {a,b,c};
+collection = [a,b,c];
 collection[1] = collection[1] + 0.5;
 d = collection[1];
 d = d + 0.1; // updates the result of accessing the collection
@@ -1996,7 +1996,7 @@ b = b + 0.1; // updates the source member of the collection
         {
             string code = @"
 import (""basicImport.ds"");
-a = {1.1,2.2};
+a = [1.1,2.2];
 b = 2;
 c = Scale(a,b);
 d = Sin(30.0);
@@ -2014,9 +2014,9 @@ d = Sin(30.0);
 	d = ((c - c / 2 * 2) > 0)? c : c+1 ; //5 
 	e1 = ((b>(d-b+d))) ? d : (d+1); //5
 	//inline conditional, returning different sized collections
-	c1 = {1,2,3};
-	c2 = {1,2};
-	a1 = {1, 2, 3, 4};
+	c1 = [1,2,3];
+	c2 = [1,2];
+	a1 = [1, 2, 3, 4];
 	b1 = a1>3?true:a1; // expected : {1, 2, 3, true}
 	b2 = a1>3?true:c1; // expected : {1, 2, 3}
 	b3 = a1>3?c1:c2;   // expected : {1, 2}
@@ -2036,9 +2036,9 @@ d = Sin(30.0);
 	d = ((c - c / 2 * 2) > 0)? c : c+1 ; //5 
 	e1 = ((b>(d-b+d))) ? d : (d+1); //5
 	//inline conditional, returning different sized collections
-	c1 = {1,2,3};
-	c2 = {1,2};
-	a1 = {1, 2, 3, 4};
+	c1 = [1,2,3];
+	c2 = [1,2];
+	a1 = [1, 2, 3, 4];
 	b1 = a1>3?true:a1; // expected : {1, 2, 3, true}
 	b2 = a1>3?true:c1; // expected : {1, 2, 3}
 	b3 = a1>3?c1:c2;   // expected : {1, 2}
@@ -2082,9 +2082,9 @@ d = Sin(30.0);
             string code = @"
 [Imperative]
 {
-a = {null,1};
-b = {};
-c = {1,2,3};
+a = [null,1];
+b = [];
+c = [1,2,3];
 result = SomeNulls(c)?SomeNulls(b):SomeNulls(a);
 }
 ";
@@ -2179,7 +2179,7 @@ result =
 [Imperative]
 {
 i = 0;
-arr = {{1,1.2} , {null,0}, {true, false} };
+arr = [[1,1.2] , [null,0], [true, false] ];
 a1 = 0;
 a2 = 2;
 d = 1;
@@ -2222,8 +2222,8 @@ return = -1;
         public void DebugEQT008_Inline_Returing_Different_Ranks__2_()
         {
             string code = @"
-	a = { 0, 1, 2, 4};
-	x = a > 1 ? 0 : {1,1}; // { 1, 1} ? 
+	a = [ 0, 1, 2, 4];
+	x = a > 1 ? 0 : [1,1]; // { 1, 1} ? 
 	x_0 = x[0];
 	x_1 = x[1];
 ";
@@ -2236,8 +2236,8 @@ return = -1;
             string code = @"
 [Imperative]
 {
-	a = { 0, 1, 2, 4};
-	x = a > 1 ? 0 : {1,1}; // { 1, 1} ? 
+	a = [ 0, 1, 2, 4];
+	x = a > 1 ? 0 : [1,1]; // { 1, 1} ? 
 	x_0 = x[0];
 	x_1 = x[1];
 }
@@ -2277,11 +2277,11 @@ return = -1;
 	x = a[i];
 }
 */
-a = {
-{{null, 1},1},
-{null},
-{1,2,false}
-};
+a = [
+[[null, 1],1],
+[null],
+[1,2,false]
+];
 i = 0..2;
 j = 0;
 [Imperative]
@@ -2320,7 +2320,7 @@ j = 0;
 		multiply = 5;
 		divide = 10;
 	
-		return = {input*multiply, input/divide};
+		return = [input*multiply, input/divide];
 	}
 	
 	input = 20;
@@ -2426,11 +2426,11 @@ x = 1 > 2 ? foo() + 1 : foo() + 2;
             string code = @"
 [Imperative]
 {
-	a = { 0, 1, 2};
-	b = { 3, 11 };
+	a = [ 0, 1, 2];
+	b = [ 3, 11 ];
 	c = 5;
-	d = { 6, 7, 8, 9};
-	e = { 10 };
+	d = [ 6, 7, 8, 9];
+	e = [ 10 ];
 	xx = 1 < a ? a : 5;
         yy = 0;
 	if( 1 < a )
@@ -2460,7 +2460,7 @@ x = 1 > 2 ? foo() + 1 : foo() + 2;
 	{
 		c3 = c3 + 1;
 	}
-	x4 = b > e ? d : { 0, 1};
+	x4 = b > e ? d : [ 0, 1];
 	t7 = x4[0]; 
 	c4 = 0;
 	for (i in x4)
@@ -2535,15 +2535,15 @@ thisTest.Verification(mirror, ""c4"", 1, 1);*/
             string code = @"
 [Imperative]
 {
-	a = {1,2,null};
-	b = {null, null};
+	a = [1,2,null];
+	b = [null, null];
 	
 	[Associative]
 	{
-		a = {1};
+		a = [1];
 		b = a;
 		m = SomeNulls(b);
-		a = {1,null,{}};
+		a = [1,null,[]];
 		n = m;
 	}
 }
@@ -2556,20 +2556,20 @@ thisTest.Verification(mirror, ""c4"", 1, 1);*/
             string code = @"
 [Imperative]
 {
-	a = {false};
+	a = [false];
 	if(!SomeNulls(a))
 	{
 	[Associative]
 	{
 		
 		b = a;
-		a = {null};
+		a = [null];
 		
 		m = SomeNulls(b);//true,false
 		[Imperative]
 		{
 			c = a;
-			a = {2};
+			a = [2];
 			n = SomeNulls(c);//true
 		}
 		
@@ -2589,17 +2589,17 @@ thisTest.Verification(mirror, ""c4"", 1, 1);*/
         {
             string code = @"
 	
-	a = {{}};
+	a = [[]];
 	b = a;
 	
 	m = SomeNulls(b);//false
 	[Imperative]
 	{
 		c = a;
-		a = {null,{}};
+		a = [null,[]];
 		m = SomeNulls(c);//false
 	}
-	a = {null};
+	a = [null];
 	n = SomeNulls(b);//true;
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
@@ -2611,7 +2611,7 @@ thisTest.Verification(mirror, ""c4"", 1, 1);*/
             string code = @"
 s1 = 3;
 s2 = s1 -1;
-s1 = { 3, 4 } ;
+s1 = [ 3, 4 ] ;
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
         }
@@ -2657,10 +2657,10 @@ s1 = { 3, 4 } ;
         public void DebugEQT011_Defect_1467281_conditionals()
         {
             string code = @"
- x = 2 == { }; 
- y = {}==null;
- z = {{1}}=={1};
- z2 = {{1}}==1;
+ x = 2 == [ ]; 
+ y = []==null;
+ z = [[1]]==[1];
+ z2 = [[1]]==1;
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
         }
@@ -2750,8 +2750,8 @@ b = a;
 result =
 [Imperative]
 {
-	arr1 = {true,{{{{true}}}},null};
-	arr2 = {{true},{false},null};
+	arr1 = [true,[[[[true]]]],null];
+	arr2 = [[true],[false],null];
 	if(CountTrue(arr1) > 1)
 	{
 		arr2 = arr1;
@@ -2842,13 +2842,13 @@ r1 = true;
 result = 
 [Imperative]
 {
-	a = {1,3,5,7,{}};
-	b = {null,null,{1,true}};
-	c = {CountTrue({1,null})};
+	a = [1,3,5,7,[]];
+	b = [null,null,[1,true]];
+	c = [CountTrue([1,null])];
 	
-	d = {a,b,c};
+	d = [a,b,c];
 	j = 0;
-	e = {};
+	e = [];
 	
 	for(i in d)
 	{
@@ -2897,15 +2897,15 @@ result =
 result = 
 [Imperative]
 {
-	a = {1,3,5,7,{1}};//0
-	b = {1,null,true};//1
-	c = {{false}};//0
+	a = [1,3,5,7,[1]];//0
+	b = [1,null,true];//1
+	c = [[false]];//0
 	
-	d = {a,b,c};
+	d = [a,b,c];
 	
 	i = 0;
 	j = 0;
-	e = {};
+	e = [];
 	
 	while(i<Count(d))
 	{
@@ -2925,11 +2925,11 @@ result =
             string code = @"
 [Imperative]
 {
-	a = { 0, 1, 2};
-	b = { 3, 11 };
+	a = [ 0, 1, 2];
+	b = [ 3, 11 ];
 	c = 5;
-	d = { 6, 7, 8, 9};
-	e = { 10 };
+	d = [ 6, 7, 8, 9];
+	e = [ 10 ];
 	x1 = a < 5 ? b : 5;
 	t1 = x1[0];
 	t2 = x1[1];
@@ -2956,7 +2956,7 @@ result =
 		c3 = c3 + 1;
 	}
 	
-	x4 = b > e ? d : { 0, 1};
+	x4 = b > e ? d : [ 0, 1];
 	t7 = x4[0];	
 	c4 = 0;
 	for (i in x4)
@@ -3024,7 +3024,7 @@ result =
             string code = @"
 def foo(x:var[]..[])
 {
-	a = {};
+	a = [];
 	i = 0;
 	[Imperative]
 	{
@@ -3036,13 +3036,13 @@ def foo(x:var[]..[])
 	}
 	return  = a;
 }
-b = {
-{null},//0
-{1,2,3,{true}},//1
-{0},//0
-{true, true,1,true, null},//3
-{x, null}//0
-};
+b = [
+[null],//0
+[1,2,3,[true]],//1
+[0],//0
+[true, true,1,true, null],//3
+[x, null]//0
+];
 result = foo(b);
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
@@ -3118,8 +3118,8 @@ c = 2> 1 && 4>3 ? 1 : 0;
 d = 1 == 1 || (1 == 0) ? 1 : 0;
 e1 = a > b && c > d ? 1 : 0;
 f = a <= b || c <= d ? 1 : 0;
-g = foo({ 1, 2 }) > 3+ foo({4,5,6}) ?  1 : 3+ foo({4,5,6});
-i = {1,3} > 2 ? 1: 0;
+g = foo([ 1, 2 ]) > 3+ foo([4,5,6]) ?  1 : 3+ foo([4,5,6]);
+i = [1,3] > 2 ? 1: 0;
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
         }
@@ -3216,9 +3216,9 @@ a2 = foo2(3);
 result = 
 [Imperative]
 {
-	a1 = {1,true, null};//1
+	a1 = [1,true, null];//1
 	a2 = 8;
-	a3 = {2,{true,{true,1}},{false,x, true}};//3
+	a3 = [2,[true,[true,1]],[false,x, true]];//3
 	a = CountTrue(a1)..a2..CountTrue(a3);//{1,4,7}
 	
 	return = CountTrue(a);
@@ -3234,9 +3234,9 @@ result =
 result = 
 [Imperative]
 {
-	a1 = {1,true, null};//1
+	a1 = [1,true, null];//1
 	a2 = 8;
-	a3 = {2,{true,{true,1}},{false,x, true}};//3
+	a3 = [2,[true,[true,1]],[false,x, true]];//3
 	a = CountTrue(a1)..a2..~CountTrue(a3);//{}
 	return = CountTrue(a);
 }
@@ -3251,10 +3251,10 @@ result =
 result = 
 [Imperative]
 {
-	a1 = {1,true, null};//1
+	a1 = [1,true, null];//1
 	a2 = 8;
-	a3 = {2,{true,{true,1}},{false,x, true}};//3
-	a = {1.0,4.0,7.0};
+	a3 = [2,[true,[true,1]],[false,x, true]];//3
+	a = [1.0,4.0,7.0];
 	//a = CountTrue(a1)..a2..#CountTrue(a3);//{}
 	return = CountTrue(a);
 }
@@ -3270,11 +3270,11 @@ def foo(x:int)
 {
 	return = x +1;
 }
-a = {true,{true},1};//2
-b = {null};
-c = {{{true}}};//1
-d = {{true},{false,{true,true}}};//3
-arr = {CountTrue(a),CountTrue(b),CountTrue(c),CountTrue(d)};
+a = [true,[true],1];//2
+b = [null];
+c = [[[true]]];//1
+d = [[true],[false,[true,true]]];//3
+arr = [CountTrue(a),CountTrue(b),CountTrue(c),CountTrue(d)];
 result = foo(arr);
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
@@ -3313,8 +3313,8 @@ test = X + Y;
         public void DebugEQT01_Arithmatic_List_And_List_Different_Length()
         {
             string code = @"
-list1 = { 1, 4, 7, 2};
-list2 = { 5, 8, 3, 6, 7, 9 };
+list1 = [ 1, 4, 7, 2];
+list2 = [ 5, 8, 3, 6, 7, 9 ];
 list3 = list1 + list2; // { 6, 12, 10, 8 }
 list4 = list1 - list2; // { -4, -4, 4, -4}
 list5 = list1 * list2; // { 5, 32, 21, 12 }
@@ -3388,17 +3388,17 @@ b = foo(3); //b=3;
             string code = @"
 [Imperative]
 {
-	a = { {1,2}, {3,4} };
+	a = [ [1,2], [3,4] ];
 	
-	a[1] = {-1,-2,3};
+	a[1] = [-1,-2,3];
 	
 	c = a[1][1];
 	
 	d = a[0];
 	
-	b = { 1, 2 };
+	b = [ 1, 2 ];
 	
-	b[0] = {2,2};
+	b[0] = [2,2];
 	e = b[0];
 }
 ";
@@ -3536,12 +3536,12 @@ result =
  b4 = -101.99;
  b5 = 10.0009;
  
- c1 = { 0, 1, 2, 3};
- c2 = { 1, 0.2};
- c3 = { 0, 1.4, true };
- c4 = {{0,1}, {2,3 } };
+ c1 = [ 0, 1, 2, 3];
+ c2 = [ 1, 0.2];
+ c3 = [ 0, 1.4, true ];
+ c4 = [[0,1], [2,3 ] ];
  
- x = {0, 0, 0, 0};
+ x = [0, 0, 0, 0];
  if(a1 == 2 ) // pass condition
  {
      x[0] = 1;
@@ -3560,7 +3560,7 @@ result =
  }
  
  
- y = {0, 0, 0, 0, 0};
+ y = [0, 0, 0, 0, 0];
  if(b1 == 1.0 ) // pass condition
  {
      y[0] = 1;
@@ -3583,7 +3583,7 @@ result =
  }
  
  
- z = {0, 0, 0, 0};
+ z = [0, 0, 0, 0];
  if(c1[0] == 0 ) // pass condition
  {
      z[0] = 1;
@@ -3678,7 +3678,7 @@ result =
             string code = @"
 import (""basicImport1.ds"");
 import (""basicImport3.ds"");
-arr = { 1.0, 2.0, 3.0 };
+arr = [ 1.0, 2.0, 3.0 ];
 a1 = Scale( arr, 4.0 );
 b = a * 2;
 ";
@@ -3691,7 +3691,7 @@ b = a * 2;
             string code = @"
 a1 =  1 > 2 ? true : 2 > 1 ? 2 : 1;
 a2 =  1 > 2 ? true : 0..3;
-b = {0,1,2,3};
+b = [0,1,2,3];
 a3 = 1 > 2 ? true : b;
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
@@ -3736,7 +3736,7 @@ b = a * 2;
             string code = @"
 [Imperative] 
 {
-    a = { 0, 1, 2}; 
+    a = [ 0, 1, 2]; 
     xx = a < 1 ? 1 : 0;
 }
 ";
@@ -3749,8 +3749,8 @@ b = a * 2;
             string code = @"
 import (Dummy from ""FFITarget.dll"");
 dummy = Dummy.Dummy();
-arr = {0.0,1.0,2.0,3.0,4.0,5.0,6.0,7.0,8.0,9.0,10.0};
-sum_1_10 = dummy.SumAll(arr);
+arr = [0.0,1.0,2.0,3.0,4.0,5.0,6.0,7.0,8.0,9.0,10.0];
+sum_1_10 = dummy.SumAll1D(arr);
 twice_arr = dummy.Twice(arr);
 	
 ";
@@ -3763,14 +3763,14 @@ twice_arr = dummy.Twice(arr);
             string code = @"
 [Imperative]
 {
-	a1 = {true,0,1,1.0,null};
-	a2 = {false, CountTrue(a1),0.0};
+	a1 = [true,0,1,1.0,null];
+	a2 = [false, CountTrue(a1),0.0];
 	a3 = a1;
 	[Associative]
 	{
-		a1 = {true,{true}};
+		a1 = [true,[true]];
 		a4 = a2;
-		a2 = {true};
+		a2 = [true];
 		b = CountTrue(a4);//1
 	}
 	
@@ -3787,7 +3787,7 @@ twice_arr = dummy.Twice(arr);
             string code = @"
 import (""basicImport1.ds"");
 import (""basicImport3.ds"");
-arr1 = { 1, 3, 5 };
+arr1 = [ 1, 3, 5 ];
 temp = Scale( arr1, a );
 a = a;
 b = 2 * a;
@@ -3832,8 +3832,8 @@ b = 2 * a;
 result =
 [Imperative]
 {
-	arr1 = {false,{{{{false}}}},null,0};
-	arr2 = {{true},{false},null,null};
+	arr1 = [false,[[[[false]]]],null,0];
+	arr2 = [[true],[false],null,null];
 	if(CountFalse(arr1) > 1)
 	{
 		arr2 = arr1;
@@ -3877,13 +3877,13 @@ result =
 result = 
 [Imperative]
 {
-	a = {1,3,5,7,{}};
-	b = {null,null,{0,false}};
-	c = {CountFalse({{false},null})};
+	a = [1,3,5,7,[]];
+	b = [null,null,[0,false]];
+	c = [CountFalse([[false],null])];
 	
-	d = {a,b,c};
+	d = [a,b,c];
 	j = 0;
-	e = {};
+	e = [];
 	
 	for(i in d)
 	{
@@ -3939,11 +3939,11 @@ test = foo();
         public void DebugEQT024_Defect_1459470_4()
         {
             string code = @"
-a = {1,2,3,4};
+a = [1,2,3,4];
 b = a;
 c = b[2];
 d = a[2];
-a[0..1] = {1, 2};
+a[0..1] = [1, 2];
 b[2..3] = 5;
 	
 ";
@@ -3957,15 +3957,15 @@ b[2..3] = 5;
 result = 
 [Imperative]
 {
-	a = {1,3,5,7,{0}};//0
-	b = {1,null,false};//1
-	c = {{true}};//0
+	a = [1,3,5,7,[0]];//0
+	b = [1,null,false];//1
+	c = [[true]];//0
 	
-	d = {a,b,c};
+	d = [a,b,c];
 	
 	i = 0;
 	j = 0;
-	e = {};
+	e = [];
 	
 	while(i<Count(d))
 	{
@@ -4022,7 +4022,7 @@ c = a;
             string code = @"
 def foo(x:var[]..[])
 {
-	a = {};
+	a = [];
 	i = 0;
 	[Imperative]
 	{
@@ -4034,13 +4034,13 @@ def foo(x:var[]..[])
 	}
 	return  = a;
 }
-b = {
-{null},//0
-{1,2,3,{false}},//1
-{0},//0
-{false, false,0,false, null},//3
-{x, null}//0
-};
+b = [
+[null],//0
+[1,2,3,[false]],//1
+[0],//0
+[false, false,0,false, null],//3
+[x, null]//0
+];
 result = foo(b);
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
@@ -4084,9 +4084,9 @@ result = foo(b);
 result = 
 [Imperative]
 {
-	a1 = {0,false, null};//1
+	a1 = [0,false, null];//1
 	a2 = 8;
-	a3 = {2,{false,{false,1}},{false,x, true}};//3
+	a3 = [2,[false,[false,1]],[false,x, true]];//3
 	a = CountFalse(a1)..a2..CountFalse(a3);//{1,4,7}
 	
 	return = CountFalse(a);
@@ -4102,10 +4102,10 @@ result =
 result = 
 [Imperative]
 {
-	a1 = {1,false, null};//1
+	a1 = [1,false, null];//1
 	a2 = 8;
-	a3 = {2,{false,{false,1}},{false,x, true}};//3
-	a = {1.0,4.0,7.0};
+	a3 = [2,[false,[false,1]],[false,x, true]];//3
+	a = [1.0,4.0,7.0];
 	//a = CountFalse(a1)..a2..#CountFalse(a3);//{}
 	return = CountFalse(a);
 }
@@ -4169,8 +4169,8 @@ test = X + Y;
         public void DebugEQT02_Arithmatic_List_And_List_Same_Length()
         {
             string code = @"
-list1 = { 1, 4, 7, 2};
-list2 = { 5, 8, 3, 6 };
+list1 = [ 1, 4, 7, 2];
+list2 = [ 5, 8, 3, 6 ];
 list3 = list1 + list2; // { 6, 12, 10, 8 }
 list4 = list1 - list2; // { -4, -4, 4, -4}
 list5 = list1 * list2; // { 5, 32, 21, 12 }
@@ -4187,17 +4187,17 @@ list6 = list2 / list1; // { 5, 2, 0, 3 }
             string code = @"
 [Associative]
 {
-	a = { {1,2}, {3,4} };
+	a = [ [1,2], [3,4] ];
 	
-	a[1] = {-1,-2,3};
+	a[1] = [-1,-2,3];
 	
 	c = a[1][1];
 	
 	d = a[0];
 	
-	b = { 1, 2 };
+	b = [ 1, 2 ];
 	
-	b[0] = {2,2};
+	b[0] = [2,2];
 	e = b[0];
 }
 ";
@@ -4389,11 +4389,11 @@ def foo(x:int)
 {
 	return = x +1;
 }
-a = {false,{false},0};//2
-b = {CountFalse({a[2]})};
-c = {{{false}}};//1
-d = {{false},{false,{true,false,0}}};//3
-arr = {CountFalse(a),CountFalse(b),CountFalse(c),CountFalse(d)};
+a = [false,[false],0];//2
+b = [CountFalse([a[2]])];
+c = [[[false]]];//1
+d = [[false],[false,[true,false,0]]];//3
+arr = [CountFalse(a),CountFalse(b),CountFalse(c),CountFalse(d)];
 result = foo(arr);
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
@@ -4425,14 +4425,14 @@ a = 10;
             string code = @"
 [Imperative]
 {
-	a1 = {false,0,1,1.0,null};
-	a2 = {true, CountFalse(a1),0.0};
+	a1 = [false,0,1,1.0,null];
+	a2 = [true, CountFalse(a1),0.0];
 	a3 = a1;
 	[Associative]
 	{
-		a1 = {false,{false}};
+		a1 = [false,[false]];
 		a4 = a2;
-		a2 = {false};
+		a2 = [false];
 		b = CountFalse(a4);//1
 	}
 	
@@ -4448,10 +4448,10 @@ a = 10;
         public void DebugEQT034_AllFalse_IfElse()
         {
             string code = @"
-a = {false, false};//true
-b = {{false}};//true
-c = {false, 0};//false
-result = {};
+a = [false, false];//true
+b = [[false]];//true
+c = [false, 0];//false
+result = [];
 [Imperative]
 {
 	if(AllFalse(a)){
@@ -4478,17 +4478,17 @@ result = {};
 result = 
 [Imperative]
 {
-	a = {false,false0,0,null,x};//false
-	b = {false,false0,x};//false
-	c = {};//false
-	d = {{}};//false
+	a = [false,false0,0,null,x];//false
+	b = [false,false0,x];//false
+	c = [];//false
+	d = [[]];//false
 	
-	h = {
-	{{0}},
-	{false}
-};
-	e = {a,b ,c ,d,h};
-	f = {};
+	h = [
+	[[0]],
+	[false]
+];
+	e = [a,b ,c ,d,h];
+	f = [];
 	j = 0;
 	for(i in e)
 	{	
@@ -4520,13 +4520,13 @@ result = null;
 result = 
 [Imperative]
 {
-	a = {false,false0,0,null,x};//false
-	b = {false,false0,x};//false
-	c = {};//false
-	d = {{}};//false
-	e = {a,b ,c ,d};
+	a = [false,false0,0,null,x];//false
+	b = [false,false0,x];//false
+	c = [];//false
+	d = [[]];//false
+	e = [a,b ,c ,d];
 	i = 0;
-	f = {};
+	f = [];
 	j = 0;
 	while(!AllFalse(e[i])&& i < Count(e))
 	{	
@@ -4551,11 +4551,11 @@ def foo( x : bool)
 {	
 	return = !x;
 }
-a1 = {0};
-a2 = {null};
-a3 = {!true};
-b = {a1,a2,a3};
-result = {foo(AllFalse(a1)),foo(AllFalse(a2)),foo(AllFalse(a3))};//true,true,false
+a1 = [0];
+a2 = [null];
+a3 = [!true];
+b = [a1,a2,a3];
+result = [foo(AllFalse(a1)),foo(AllFalse(a2)),foo(AllFalse(a3))];//true,true,false
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
         }
@@ -4564,11 +4564,11 @@ result = {foo(AllFalse(a1)),foo(AllFalse(a2)),foo(AllFalse(a3))};//true,true,fal
         public void DebugEQT039_AllFalse_Inline()
         {
             string code = @"
-a1 = {false,{false}};
+a1 = [false,[false]];
 a = AllFalse(a1);//true
-b1 = {null,null};
+b1 = [null,null];
 b = AllFalse(b1);//false
-c = AllFalse({b});//t
+c = AllFalse([b]);//t
 result = a? c:b;//t
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
@@ -4578,8 +4578,8 @@ result = a? c:b;//t
         public void DebugEQT03_Arithmatic_Mixed()
         {
             string code = @"
-list1 = { 13, 23, 42, 65, 23 };
-list2 = { 12, 8, 45, 64 };
+list1 = [ 13, 23, 42, 65, 23 ];
+list2 = [ 12, 8, 45, 64 ];
 list3 = 3 * 6 + 3 * (list1 + 10) - list2 + list1 * list2 / 3 + list1 / list2; // { 128, 172, 759, 1566 }
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
@@ -4594,7 +4594,7 @@ def foo ( a:int[] )
 	a[0] = 0;
 	return = a;
 }
-	a = {1,2,3};
+	a = [1,2,3];
 	c = foo ( a  );
 	d = c[0];
 	e = c[1];
@@ -4608,7 +4608,7 @@ def foo ( a:int[] )
             string code = @"
 [Associative]
 {
-	a = { {1,2,3},{4,5,6} };
+	a = [ [1,2,3],[4,5,6] ];
 	
 	[Imperative]
 	{
@@ -4629,7 +4629,7 @@ def foo ( a:int[] )
 [Imperative]
 {
     sum = 0;
-    for (x in {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13})
+    for (x in [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13])
     {
         if (x >= 11)
             break;
@@ -4784,10 +4784,10 @@ c = a + 1;
         public void DebugEQT040_AllFalse_Replication()
         {
             string code = @"
-a = {
-	{{0}},
-	{false}
-};
+a = [
+	[[0]],
+	[false]
+];
 c = AllFalse(a);
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
@@ -4797,9 +4797,9 @@ c = AllFalse(a);
         public void DebugEQT042_AllFalse_DynamicArray()
         {
             string code = @"
-b = {};
-a = {{true},{false},{false},
-	{false,{true,false}}};
+b = [];
+a = [[true],[false],[false],
+	[false,[true,false]]];
 	
 	i = 0;
 	result2 = 
@@ -4823,16 +4823,16 @@ a = {{true},{false},{false},
             string code = @"
 [Imperative]
 {
-	a = {false||true};
-	b = {""false""};
+	a = [false||true];
+	b = [""false""];
 	c = a;
-	a = {false};
+	a = [false];
 	[Associative]
 	{
 		
 		d = b;
 		
-		b = {false};
+		b = [false];
 		
 		m = AllFalse(c);//f
 		n = AllFalse(d);//t
@@ -4846,9 +4846,9 @@ a = {{true},{false},{false},
         public void DebugEQT045_Defect_CountArray_1()
         {
             string code = @"
-a = {0,1,null};
-b = {m,{},a};
-c={};
+a = [0,1,null];
+b = [m,[],a];
+c=[];
 c[0] = 1;
 c[1] = true;
 c[2] = 0;
@@ -4856,7 +4856,7 @@ c[3] = 0;
 a1 = Count(a);
 b1 = Count(b);
 c1 = Count(c);
-result = {a1,b1,c1};
+result = [a1,b1,c1];
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
         }
@@ -4868,7 +4868,7 @@ result = {a1,b1,c1};
 result=
 [Imperative]
 {
-a = {};
+a = [];
 b = a;
 a[0] = b;
 a[1] = ""true"";
@@ -4884,8 +4884,8 @@ return = Count(a);
         public void DebugEQT045_Defect_CountArray_3()
         {
             string code = @"
-a = {};
-b = {null,1+2};
+a = [];
+b = [null,1+2];
 a[0] = b;
 a[1] = b[1];
 result = Count(a);
@@ -4900,15 +4900,15 @@ result = Count(a);
 result = 
 [Imperative]
 {
-	a = {1,2,3,4};
-	b = {1.0,2.0,3.0,4.0};
-	c = {1.0,2,3,4.0};
-	d = {};
-	e = {{1,2,3,4}};
-	f = {true,1,2,3,4};
-	g = {null};
+	a = [1,2,3,4];
+	b = [1.0,2.0,3.0,4.0];
+	c = [1.0,2,3,4.0];
+	d = [];
+	e = [[1,2,3,4]];
+	f = [true,1,2,3,4];
+	g = [null];
 	
-	m= {-1,-1,-1,-1,-1,-1,-1};
+	m= [-1,-1,-1,-1,-1,-1,-1];
 	
 	if(Sum(a)>=0) m[0] = Sum(a);	
 	if(Sum(b)>=0) m[1] = Sum(b);
@@ -4931,11 +4931,11 @@ result =
 result = 
 [Imperative]
 {
-	a = {0,0.0};
-	b = {{}};
-	c = {m,Sum(a),b,10.0};
+	a = [0,0.0];
+	b = [[]];
+	c = [m,Sum(a),b,10.0];
 	
-	d = {a,b,c};
+	d = [a,b,c];
 	j = 0;
 	
 	for(i in d)
@@ -4957,14 +4957,14 @@ result =
 result = 
 [Imperative]
 {
-	a = {-2,0.0};
-	b = {{}};
-	c = {m,Sum(a),b,10.0};
+	a = [-2,0.0];
+	b = [[]];
+	c = [m,Sum(a),b,10.0];
 	
-	d = {a,b,c};
+	d = [a,b,c];
 	j = 0;
 	k = 0;
-	e = {};
+	e = [];
 	
 	while(j<Count(d))
 	{
@@ -4994,9 +4994,9 @@ def foo(x:var[])
 		return = Sum(x);
 	}
 }
-a = {-0.1,true,{},null,1};
-b = {m+n,{{{1}}}};
-c = {Sum(a),Sum(b)};
+a = [-0.1,true,[],null,1];
+b = [m+n,[[[1]]]];
+c = [Sum(a),Sum(b)];
 result = foo(c);
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
@@ -5006,7 +5006,7 @@ result = foo(c);
         public void DebugEQT04_Arithmatic_Single_List_And_Integer()
         {
             string code = @"
-list1 = { 1, 2, 3, 4, 5 };
+list1 = [ 1, 2, 3, 4, 5 ];
 a = 5;
 list2 = a + list1; // { 6, 7, 8, 9, 10 }
 list3 = list1 + a; // { 6, 7, 8, 9, 10 }
@@ -5026,15 +5026,15 @@ list9 = list1 / a;
             string code = @"
 [Associative]
 {
-	a = { {1,2,3},{4,5,6} };
+	a = [ [1,2,3],[4,5,6] ];
 	
-	b = { a[0], 4 };
+	b = [ a[0], 4 ];
 	
 	c = b[0];
 	
 	d = b[1];
 	
-	e = { a[0][0], a[0][1], a[1][0] };
+	e = [ a[0][0], a[0][1], a[1][0] ];
 	
 }
 	
@@ -5076,7 +5076,7 @@ x = f(""hello"");
 [Imperative]
 {
     sum = 0;
-    for (x in {1, 2, 3, 4, 5, 6, 7, 8, 9, 10})
+    for (x in [1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
     {
         sum = sum + x;
         if (x <= 5)
@@ -5139,10 +5139,10 @@ x = f(""hello"");
         public void DebugEQT051_Sum_Inline()
         {
             string code = @"
-a = {1,{2,-3.00}};//0.0
+a = [1,[2,-3.00]];//0.0
 sum = Sum(a);
 b = Sum(a) -1;//-1.0
-c = Sum({a,b,-1});//-2.0;
+c = Sum([a,b,-1]);//-2.0;
 result = Sum(a)==0&& b==-1.00? b :c;
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
@@ -5155,9 +5155,9 @@ result = Sum(a)==0&& b==-1.00? b :c;
 result = 
 [Imperative]
 {
-	a1 = {1,true, null};//1
+	a1 = [1,true, null];//1
 	a2 = 8;
-	a3 = {2,{true,{true,1.0}},{false,x, true}};//3.0
+	a3 = [2,[true,[true,1.0]],[false,x, true]];//3.0
 	a = Sum(a1)..a2..Sum(a3);//{1,4,7}
 	
 	return = Sum(a);//12.0
@@ -5170,7 +5170,7 @@ result =
         public void DebugEQT053_Sum_Replication()
         {
             string code = @"
-a = {1,2,3};
+a = [1,2,3];
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
         }
@@ -5179,12 +5179,12 @@ a = {1,2,3};
         public void DebugEQT054_Sum_DynamicArr()
         {
             string code = @"
-a = {};
-b = {1.0,2,3.0};
-c = {null,m,""1""};
+a = [];
+b = [1.0,2,3.0];
+c = [null,m,""1""];
 a[0]=Sum(b);//6.0
 a[1] = Sum(c);//0
-a[2] = Sum({a[0],a[1]});//6.0
+a[2] = Sum([a[0],a[1]]);//6.0
 result = Sum(a);//12.0
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
@@ -5219,10 +5219,10 @@ b1 = {b,1}
         public void DebugEQT057_Average_DataType_01()
         {
             string code = @"
-a = {};
-b = {1,2,3};
-c = {0.1,0.2,0.3,1};
-d = {true, false, 1};
+a = [];
+b = [1,2,3];
+c = [0.1,0.2,0.3,1];
+d = [true, false, 1];
 a1 = Average(a);
 b1 = Average(b);
 c1 = Average(c);
@@ -5237,8 +5237,8 @@ d1 = Average(d);
             string code = @"
 a = 0..10..5;
 b = 20..30..2;
-c = {a, b};
-d = Flatten({a,b});
+c = [a, b];
+d = Flatten([a,b]);
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
         }
@@ -5247,9 +5247,9 @@ d = Flatten({a,b});
         public void DebugEQT059_Defect_Flatten_RangeExpression_1()
         {
             string code = @"
-a = {{null}};
-b = {1,2,{3}};
-c = {a,b};
+a = [[null]];
+b = [1,2,[3]];
+c = [a,b];
 d = Flatten(c);
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
@@ -5287,13 +5287,13 @@ b = 3.5;
         public void DebugEQT05_Logic_List_And_List_Different_Value()
         {
             string code = @"
-list1 = { 1, 8, 10, 4, 7 };
-list2 = { 2, 6, 10, 3, 5, 20 };
+list1 = [ 1, 8, 10, 4, 7 ];
+list2 = [ 2, 6, 10, 3, 5, 20 ];
 list3 = list1 > list2; // { false, true, false, true, true }
 list4 = list1 < list2;	// { true, false, false, false, false }
 list5 = list1 >= list2; // { false, true, true, true, true }
 list6 = list1 <= list2; // { true, false, true, false, false }
-list9 = { true, false, true };
+list9 = [ true, false, true ];
 list7 = list9 && list5; // { false, false, true }
 list8 = list9 || list6; // { true, false, true }
 ";
@@ -5330,11 +5330,11 @@ list8 = list9 || list6; // { true, false, true }
             string code = @"
 [Associative]
 {
-	a = { 4, 5 };
+	a = [ 4, 5 ];
 	[Imperative]
 	{
 		x = 0;
-		b = { 2,3 };
+		b = [ 2,3 ];
 		for( y in b )
 		{
 			x = y + x;
@@ -5390,12 +5390,12 @@ list8 = list9 || list6; // { true, false, true }
 result = 
 [Imperative]
 {
-	a = {};
-	b = {1,{2},{{2},1}};
-	c = {true, false, null, 10};
-	d = {a,b,c};
+	a = [];
+	b = [1,[2],[[2],1]];
+	c = [true, false, null, 10];
+	d = [a,b,c];
 	
-	e = {};
+	e = [];
 	j = 0;
 	
 	for(i in d)
@@ -5420,10 +5420,10 @@ def foo : double (x :var[]..[])
 	
 	return = Average(x);
 }
-a = {1,2,2,1};
-b = {1,{}};
+a = [1,2,2,1];
+b = [1,[]];
 c = Average(a);
-result = {foo(a),foo(b)};
+result = [foo(a),foo(b)];
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
         }
@@ -5432,8 +5432,8 @@ result = {foo(a),foo(b)};
         public void DebugEQT063_Average_Inline()
         {
             string code = @"
-a = {1.0,2};
-b = {{0},1.0,{2}};
+a = [1.0,2];
+b = [[0],1.0,[2]];
 result = Average(a)>Average(b)?true:false;
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
@@ -5447,7 +5447,7 @@ a = 0..6..3;//0,3,6
 b = 0..10..~3;//0,3.3,6.6,10
 m = Average(a);//3
 n = Average(b);//5.0
-c = Average({m})..Average({n});//3.0,4.0,5.0
+c = Average([m])..Average([n]);//3.0,4.0,5.0
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
         }
@@ -5468,7 +5468,7 @@ a = 1;
         public void DebugEQT067_Print_Arr()
         {
             string code = @"
-arr = { 0, 1 ,2};
+arr = [ 0, 1 ,2];
 r1 = Print(arr);
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
@@ -5531,8 +5531,8 @@ r1 = Print(arr);
         public void DebugEQT06_Logic_List_And_List_Same_Length()
         {
             string code = @"
-list1 = { 1, 8, 10, 4, 7 };
-list2 = { 2, 6, 10, 3, 5 };
+list1 = [ 1, 8, 10, 4, 7 ];
+list2 = [ 2, 6, 10, 3, 5 ];
 list3 = list1 > list2; // { false, true, false, true, true }
 list4 = list1 < list2;	// { true, false, false, false, false }
 list5 = list1 >= list2; // { false, true, true, true, true }
@@ -5564,7 +5564,7 @@ list8 = list4 || list6; // { true, false, true, false, false }
             string code = @"
 [Associative]
 {
-	a = { 4,5 };
+	a = [ 4,5 ];
 	b =[Imperative]
 	{
 	
@@ -5611,7 +5611,7 @@ def collection :int[] ( a :int[] , b:int , c:int )
 	a[2] = c;
 	return= a;
 }
-	a = { 1,0,0 };
+	a = [ 1,0,0 ];
 	[Imperative]
 	{
 		a = collection( a, 2, 3 );
@@ -5624,8 +5624,8 @@ def collection :int[] ( a :int[] , b:int , c:int )
         public void DebugEQT07_Logic_Mixed()
         {
             string code = @"
-list1 = { 1, 5, 8, 3, 6 };
-list2 = { 4, 1, 6, 3 };
+list1 = [ 1, 5, 8, 3, 6 ];
+list2 = [ 4, 1, 6, 3 ];
 list3 = (list1 > 1) && (list2 > list1) || (list2 < 5); // { true, true, false , true }
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
@@ -5660,7 +5660,7 @@ list3 = (list1 > 1) && (list2 > list1) || (list2 < 5); // { true, true, false , 
         {
             string code = @"
 a = ""a"";
-bcd = {""b"",""c"",""d""};
+bcd = [""b"",""c"",""d""];
 r = a +bcd;
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
@@ -5670,8 +5670,8 @@ r = a +bcd;
         public void DebugEQT07_String_Replication_1()
         {
             string code = @"
-a = {""a""};
-bc = {""b"",""c""};
+a = [""a""];
+bc = [""b"",""c""];
 str = a + bc;
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
@@ -5682,7 +5682,7 @@ str = a + bc;
         {
             string code = @"
 a = ""a"";
-b = {{""b""},{""c""}};
+b = [[""b""],[""c""]];
 str = a +b;
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
@@ -5695,7 +5695,7 @@ str = a +b;
             string code = @"
 [Imperative]
 {
-	a = { 1, 2, 3, 4, 5 };
+	a = [ 1, 2, 3, 4, 5 ];
 	x = 0;
 	for( y in a )
 	{
@@ -5754,11 +5754,11 @@ def foo ( a )
 {
 	return= a;
 }
-	a = { 1, foo( 2 ) , 3 };
+	a = [ 1, foo( 2 ) , 3 ];
 	
 	[Imperative]
 	{
-		b = { foo( 4 ), 5, 6 };
+		b = [ foo( 4 ), 5, 6 ];
 	}
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
@@ -5810,7 +5810,7 @@ a = foo2;
         public void DebugEQT08_Logic_Single_List_And_Value()
         {
             string code = @"
-list1 = { 1, 2, 3, 4, 5 };
+list1 = [ 1, 2, 3, 4, 5 ];
 a = 3;
 list2 = a > list1; // { true, true, false, false, false }
 list3 = list1 > a; // { false, false, false, true, true }
@@ -6098,7 +6098,7 @@ def foo(x:var)
             string code = @"
 [Imperative]
 {
-	a = { 1,2,3 };
+	a = [ 1,2,3 ];
 	x = 0;
 	for( i in a )
 	{
@@ -6209,7 +6209,7 @@ f = d;
 		a[0][0] = 1;
 		return= a;
 	}
-	b = { {0,2,3}, {4,5,6} };
+	b = [ [0,2,3], [4,5,6] ];
 	d = foo( b );
 	c = d[0];
 		
@@ -6241,7 +6241,7 @@ f = d;
             string code = @"
 [Imperative]
 {
-	a = { 1,2,3 };
+	a = [ 1,2,3 ];
 	x = 0;
 	for ( i in a )
 	{
@@ -6278,7 +6278,7 @@ a = 1..3;
 b = a;
 c = [Imperative ]
 {
-    x = { 10, a[1], a[2] };
+    x = [ 10, a[1], a[2] ];
 	a[0] = 10;
 	return = x;
 }
@@ -6298,11 +6298,11 @@ e = c;
             string code = @"
 [Imperative]
 {
-	a = { {1,2,3}, {4}, {5,6} };
+	a = [ [1,2,3], [4], [5,6] ];
 	b = a[1];
 	a[1] = 2;
 	a[1] = a[1] + 1;
-	a[2] = {7,8};
+	a[2] = [7,8];
 	c = a[1];
 	d = a[2][1];
 }	
@@ -6341,7 +6341,7 @@ m = m+n;
             string code = @"
 [Imperative]
 {
-	a = {1};
+	a = [1];
 	b = 1;
 	x = 0;
  
@@ -6434,7 +6434,7 @@ a;b;c1;c2;
 	
 	b = [Imperative]
 	{
-		c = { 1,2,3 };
+		c = [ 1,2,3 ];
 		if( c[1] <= 3 )
 		return= c;
 	}
@@ -6504,7 +6504,7 @@ def add_1 : double( a:double )
             string code = @"
 [Imperative]
 {
-	a = {{1},{2,3},{4,5,6}};
+	a = [[1],[2,3],[4,5,6]];
 	x = 0;
 	i = 0;
     for (y in a)
@@ -6601,7 +6601,7 @@ c1;c2;
 	
 	b = [Imperative]
 	{
-		c = { { 1,2,3 } , { 4,5,6 } } ;
+		c = [ [ 1,2,3 ] , [ 4,5,6 ] ] ;
 		return= c;
 	}
 	
@@ -6668,8 +6668,8 @@ c1;c2;
             string code = @"
 [Imperative]
 {
-	a = { -1,-3,-5 };
-	b = { 2.5,3.5,4.2 };
+	a = [ -1,-3,-5 ];
+	b = [ 2.5,3.5,4.2 ];
 	x = 0;
 	y = 0;
     for ( i in a )
@@ -6741,9 +6741,9 @@ f = c + 1;
         public void DebugEQT14_2D_Collection_Assignment_Using_For_Loop()
         {
             string code = @"
-pts = {{0,1,2},{0,1,2}};
-x = {1,2};
-y = {1,2,3};
+pts = [[0,1,2],[0,1,2]];
+x = [1,2];
+y = [1,2,3];
 [Imperative]
 {
     c1 = 0;
@@ -6824,7 +6824,7 @@ a = foo + 2;
             string code = @"
 [Imperative]
 { 
-	a = { true, false, true, true };
+	a = [ true, false, true, true ];
 	x = false;
 	
 	for( i in a )
@@ -6886,9 +6886,9 @@ a = foo + 2;
             string code = @"
 [Imperative]
 {
-	pts = {{0,1,2},{0,1,2}};
-	x = {1,2,3};
-	y = {1,2,3};
+	pts = [[0,1,2],[0,1,2]];
+	x = [1,2,3];
+	y = [1,2,3];
     i = 0;
 	while ( i < 2 )
 	{		
@@ -6980,14 +6980,14 @@ x = false;
             string code = @"
 [Imperative]
 {
-	a = { -2, 3, 4.5 };
+	a = [ -2, 3, 4.5 ];
 	x = 1;
 	for ( y in a )
 	{
 		x = x * y;       
     }
 	
-	a = { -2, 3, 4.5, true };
+	a = [ -2, 3, 4.5, true ];
 	y = 1;
 	for ( i in a )
 	{
@@ -7029,7 +7029,7 @@ test2 = a2;
 a2 = 3.0;
 a2 = 3.3;
 t2 = test2; // expected : 3.3; recieved : 3.0
-a1 = { 1.0, 2.0};
+a1 = [ 1.0, 2.0];
 test1 = a1[1]; 
 a1[1] = 3.0;
 a1[1] = 3.3;
@@ -7108,7 +7108,7 @@ y = foo (x );
 [Imperative]
 {
 	a = 1;
-	b = { 2,3,4 };
+	b = [ 2,3,4 ];
 	if( a == 1 )
 	{
 		for( y in b )
@@ -7174,7 +7174,7 @@ y = foo (x );
             string code = @"
 [Imperative]
 {
-	a = { 1,2,3,4,5 };
+	a = [ 1,2,3,4,5 ];
 	for( y in a )
 	{
 		x = 5;
@@ -7188,7 +7188,7 @@ y = foo (x );
         public void DebugEQT17_Assigning_Collection_And_Updating()
         {
             string code = @"
-a = {1, 2, 3};
+a = [1, 2, 3];
 b = a;
 b[0] = 100;
 t = a[0];       // t = 100, as expected
@@ -7201,7 +7201,7 @@ t = a[0];       // t = 100, as expected
         public void DebugEQT17_Defect_1459759_2()
         {
             string code = @"
-a1 = { 1, 2 };
+a1 = [ 1, 2 ];
 y = a1[1] + 1;
 a1[1] = 3;
 a1 = 5;
@@ -7281,7 +7281,7 @@ c = foo1(b, 3);
 [Imperative]
 {
 	a = 1;
-	b = { 2,3,4 };
+	b = [ 2,3,4 ];
 	c = 1;
 	if( a == 1 )
 	{
@@ -7383,7 +7383,7 @@ def A (a: int [])
 {
     return = a;
 }
-val = {1,2,3};
+val = [1,2,3];
 b = A(val);
 t = b;
 t[0] = 100;    // 
@@ -7444,7 +7444,7 @@ c = foo1(a, 3);
 [Imperative]
 {
 	a = 1;
-	b = { 1,1,1 };
+	b = [ 1,1,1 ];
 	x = 0;
 	
 	if( a == 1 )
@@ -7576,7 +7576,7 @@ def A (a: int [])
 {
     return = a;
 }
-val = {1,2,3};
+val = [1,2,3];
 b = A(val);
 b[0] = 100;     
 z = val[0];     
@@ -7669,7 +7669,7 @@ z = val[0];
             string code = @"
 [Associative]
 {
-	a = {{1,2},3.5};
+	a = [[1,2],3.5];
 	c = a[1];
 	d = a[0][1];
         a[0][1] = 5;
@@ -7685,7 +7685,7 @@ z = val[0];
             string code = @"
 [Imperative]
 {
-	a = {{1,2},3.5};
+	a = [[1,2],3.5];
 	c = a[1];
 	d = a[0][1];
         a[0][1] = 5;
@@ -7703,7 +7703,7 @@ z = val[0];
 [Imperative]
 {
 	i = 1;
-	a = {1,2,3,4,5};
+	a = [1,2,3,4,5];
 	x = 0;
 	
 	while( i <= 5 )
@@ -7866,7 +7866,7 @@ def foo ( a1 : double[] )
     return = a1[0] + a1[1];
 }
 b = foo ( c ) ;
-c = { a, a };
+c = [ a, a ];
 [Imperative]
 {
     a = 2.5;
@@ -7901,7 +7901,7 @@ def foo ( a : int)
 {
     return = a;
 }
-y1 = { 1, 2 };
+y1 = [ 1, 2 ];
 y2 = foo ( y1);
 [Imperative]
 { 
@@ -7932,7 +7932,7 @@ t2 = y2[1];
 	[Imperative]
 	{
 	
-		a = { 0, 1, 2, 3, 4, 5 };
+		a = [ 0, 1, 2, 3, 4, 5 ];
 		x = 0;
 		for ( i in a )
 		{
@@ -7988,7 +7988,7 @@ t2 = y2[1];
             string code = @"
 [Imperative]
 {
-	a = { 1, 2, 3 };
+	a = [ 1, 2, 3 ];
     x = 0;
 	
 	for( y in a )
@@ -8034,11 +8034,11 @@ def Create2DArray( col : int)
 {
 	result = [Imperative]
     {
-		array = { 1, 2 };
+		array = [ 1, 2 ];
 		counter = 0;
 		while( counter < col)
 		{
-			array[counter] = { 1, 2};
+			array[counter] = [ 1, 2];
 			counter = counter + 1;
 		}
 		return = array;
@@ -8056,7 +8056,7 @@ x = Create2DArray( 2) ;
             string code = @"
 [Imperative]
 {
-    b = { };
+    b = [ ];
     count = 0;
     a = 1..5..2;
     for ( i in a )
@@ -8079,7 +8079,7 @@ def CreateArray ( x : var[] , i )
     x[i] = i;
 	return = x;
 }
-b = {0, 1};
+b = [0, 1];
 count = 0..1;
 b = CreateArray ( b, count );
 ";
@@ -8137,7 +8137,7 @@ f = a + b;
             string code = @"
 [Imperative]
 {
-    a = { 0, 4, 2, 3 };
+    a = [ 0, 4, 2, 3 ];
 	b = 1;
     c = 0;
 	if(a > b)
@@ -8187,7 +8187,7 @@ f = a + b;
             string code = @"
 [Imperative]
 {
-	a = { 1,2,3,4,5 };
+	a = [ 1,2,3,4,5 ];
 	x = 0;
 	
 	for ( i in a )
@@ -8239,10 +8239,10 @@ x = test();
             string code = @"
 [Imperative]
 {
-    d = {{}};
+    d = [[]];
     r = c = 0;
-    a = { 0, 1, 2 };
-	b = { 3, 4, 5 };
+    a = [ 0, 1, 2 ];
+	b = [ 3, 4, 5 ];
     for ( i in a )
     {
         c = 0;
@@ -8327,7 +8327,7 @@ x2 = test(0);
             string code = @"
 [Imperative]
 {
-    a = { 0, 4, 2, 3 };
+    a = [ 0, 4, 2, 3 ];
 	b = 1;
     c = 0;
 	if(a[0] > b)
@@ -8383,7 +8383,7 @@ x2 = test(0);
             string code = @"
 [Imperative]
 {
-	a = { 1,2,3 };
+	a = [ 1,2,3 ];
 	x = 0;
 	
 	for( y in a )
@@ -8438,8 +8438,8 @@ x2 = test(0);
             string code = @"
 [Imperative]
 {
-	a = {0, 0, 0, 0, 0, 0};
-	b = {5, 4, 3, 2, 1, 0, -1, -2};
+	a = [0, 0, 0, 0, 0, 0];
+	b = [5, 4, 3, 2, 1, 0, -1, -2];
 	i = 5;
 	for( x in b )
 	{
@@ -8504,7 +8504,7 @@ x2 = test(0);
 	}
 [Associative]
 {
-cy={};
+cy=[];
 cy[0]=10;
 cy[1]=12;
 b1=foo(cy);
@@ -8523,7 +8523,7 @@ b1=foo(cy);
 	}
 [Associative]
 {
-cy={};
+cy=[];
 cy[0]=10;
 cy[1]=null;
 b1=foo(cy);
@@ -8540,7 +8540,7 @@ def createArray( p : int[] )
 {  
     a = [Imperative]  
     {    
-        collection = {};	
+        collection = [];	
 	lineCnt = 0;
 	while ( lineCnt < 2 )
 	{
@@ -8551,7 +8551,7 @@ def createArray( p : int[] )
     }
     return = a;
 }
-x = createArray ( { 1, 2, 3, 4 } );
+x = createArray ( [ 1, 2, 3, 4 ] );
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
         }
@@ -8562,10 +8562,10 @@ x = createArray ( { 1, 2, 3, 4 } );
             string code = @"
 t = [Imperative]
 {
-    d = { { } };
+    d = [ [ ] ];
     r = c = 0;
-    a = { 0, 1, 2 };
-    b = { 3, 4, 5 };
+    a = [ 0, 1, 2 ];
+    b = [ 3, 4, 5 ];
     for ( i in a )
     {
         c = 0;
@@ -8594,8 +8594,8 @@ def foo ( d : var[] )
     [Imperative]
     {
 	r = c = 0;
-	a = { 0, 1, 2 };
-	b1 = { 3, 4, 5 };
+	a = [ 0, 1, 2 ];
+	b1 = [ 3, 4, 5 ];
 	for ( i in a )
 	{
 	    c = 0;
@@ -8609,7 +8609,7 @@ def foo ( d : var[] )
     }
     return = d;
 }
-b = {};
+b = [];
 b = foo ( b ) ;     
 a = b;
 ";
@@ -8625,8 +8625,8 @@ def foo ( d : var[]..[] )
     [Imperative]
     {
 	r = c = 0;
-	a = { 0, 1, 2 };
-	b1 = { 3, 4, 5 };
+	a = [ 0, 1, 2 ];
+	b1 = [ 3, 4, 5 ];
 	for ( i in a )
 	{
 	    c = 0;
@@ -8640,7 +8640,7 @@ def foo ( d : var[]..[] )
     }
     return = d;
 }
-b = { {} };
+b = [ [] ];
 b = foo ( b ) ;     
 a = b;
 ";
@@ -8653,7 +8653,7 @@ a = b;
             string code = @"
 [Imperative]
 {
-	a = {1,2,3,4,5,6,7};
+	a = [1,2,3,4,5,6,7];
 	i = 0;
 	for( x in a )
 	{
@@ -8715,9 +8715,9 @@ a = b;
 a = 0..2;
 a[3] = 3;
 b = a;
-x = { { 0, 0 } , { 1, 1 } };
+x = [ [ 0, 0 ] , [ 1, 1 ] ];
 x[1][2] = 1;
-x[2] = {2,2,2,2};
+x[2] = [2,2,2,2];
 y = x;
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
@@ -8730,10 +8730,10 @@ y = x;
 def add ( x : var[]..[] ) 
 {
     x[1][2] = 1;
-    x[2] = { 2, 2, 2, 2 };
+    x[2] = [ 2, 2, 2, 2 ];
     return = x;
 }
-x = { { 0, 0 } , { 1, 1 } };
+x = [ [ 0, 0 ] , [ 1, 1 ] ];
 x = add(x);
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
@@ -8754,7 +8754,7 @@ p1 = true;
         public void DebugEQT25_Defect_1459759_2()
         {
             string code = @"
-a1 = { 1, 2 };
+a1 = [ 1, 2 ];
 y = a1[1] + 1;
 a1[1] = 3;
 a1 = 5;
@@ -8766,11 +8766,11 @@ a1 = 5;
         public void DebugEQT25_Defect_1459759_3()
         {
             string code = @"
-a = { 2 , b ,3 };
+a = [ 2 , b ,3 ];
 b = 3;
 c = a[1] + 2;
 d = c + 1;
-b = { 1,2 };
+b = [ 1,2 ];
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
         }
@@ -8801,7 +8801,7 @@ b = { 1,2 };
 	a = 2;
 	x = [Associative]
 	{
-		b = { 2, 3 };
+		b = [ 2, 3 ];
 		c = b[1] + 1;
 		b = 2;
 		return = c;
@@ -8820,7 +8820,7 @@ b = { 1,2 };
 	{
 		a = b + 1;
 		b = true;
-		return = { a , b };
+		return = [ a , b ];
 	}
 [Imperative]
 {
@@ -8868,7 +8868,7 @@ a=(5..1).. (1..5);
             string code = @"
 [Imperative]
 {
-	a = {};
+	a = [];
 	x = 0;
 	for( i in a )
 	{
@@ -8919,7 +8919,7 @@ a=(5..1).. (1..5);
         {
             string code = @"
 a=1;
-a={a,2};
+a=[a,2];
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
         }
@@ -8928,10 +8928,10 @@ a={a,2};
         public void DebugEQT26_Defct_DNL_1459616_2()
         {
             string code = @"
-a={1,2};
+a=[1,2];
 [Imperative]
 {
-    a={a,2};
+    a=[a,2];
 }
 b = a;
 ";
@@ -8942,15 +8942,15 @@ b = a;
         public void DebugEQT26_Defct_DNL_1459616_3()
         {
             string code = @"
-a={1,2};
+a=[1,2];
 [Imperative]
 {
-    a={a,2};
+    a=[a,2];
 }
-b = { 1, 2 };
+b = [ 1, 2 ];
 def foo ( )
 {
-    b =  { b[1], b[1] };
+    b =  [ b[1], b[1] ];
     return = null;
 }
 dummy = foo ();
@@ -9084,7 +9084,7 @@ def CreateArray ( x : var[] , i )
 x[i] = i;
 return = x;
 }
-b = { }; // Note : b = { 0, 0} works fine
+b = [ ]; // Note : b = { 0, 0} works fine
 count = 0..1;
 t2 = CreateArray ( b, count );
 t1=b;
@@ -9097,7 +9097,7 @@ t1=b;
         public void DebugEQT27_DynamicArray_Invalid_Index_1465614_1()
         {
             string code = @"
-a={};
+a=[];
 b=a[2];
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
@@ -9149,7 +9149,7 @@ c=twice(4);
 		c=2*(1..a);
 		return = c;
 	}
-    d={1,2,3,4};
+    d=[1,2,3,4];
 	z1=twice(d);
 //	z1 = 1..twice(4)..twice(1);
 }
@@ -9185,7 +9185,7 @@ def CreateArray ( x : var[] , i )
 x[i] = i;
 return = x;
 }
-b = { }; // Note : b = { 0, 0} works fine
+b = [ ]; // Note : b = { 0, 0} works fine
 count = 0..1;
 t2 = CreateArray ( b, count );
 t1=b;
@@ -9202,7 +9202,7 @@ def CreateArray ( x : var[] , i )
 x[i] = i;
 return = x;
 }
-b = { }; // Note : b = { 0, 0} works fine
+b = [ ]; // Note : b = { 0, 0} works fine
 count = 0..1;
 t2 = CreateArray ( b, count );
 t1=b;
@@ -9217,7 +9217,7 @@ count = -2..-1;
             string code = @"
 [Imperative]
 {
-	a = { 1,2,3 };
+	a = [ 1,2,3 ];
 	x = 0;
 	for ( i in a )
 	{
@@ -9250,7 +9250,7 @@ a2 = 4;
         {
             string code = @"
 x = 3;
-a1 = { 1, 2};
+a1 = [ 1, 2];
 a2 = 3;
 a = x > 2 ? a2: a1;
 a2 = 5;
@@ -9266,7 +9266,7 @@ a1[0] = 0;
             string code = @"
 [Imperative]
 {
-	a = {{6},{5,4},{3,2,1}};
+	a = [[6],[5,4],[3,2,1]];
 	x = 0;
 	
     for ( i in a )
@@ -9286,7 +9286,7 @@ a1[0] = 0;
         {
             string code = @"
    
-    basePoint = {  };
+    basePoint = [  ];
     
     basePoint [ 4 ] =3;
     test = basePoint;
@@ -9295,14 +9295,14 @@ a1[0] = 0;
     b = basePoint[ 4] + 1;
     c = basePoint [ 8 ] + 1;
     
-    d = { 0,1 };
+    d = [ 0,1 ];
     e1 = d [ 8] + 1;
     
-    x = { };
-    y = { };    
+    x = [ ];
+    y = [ ];    
     t = [Imperative]
     {
-        k = { };
+        k = [ ];
 	for ( i in 0..1 )
 	{
 	    x[i] = i;
@@ -9327,7 +9327,7 @@ a1[0] = 0;
             string code = @"
 [Imperative]
 {
-	a = { 1,null,null };
+	a = [ 1,null,null ];
 	x = 1;
 	
 	for( i in a )
@@ -9344,7 +9344,7 @@ a1[0] = 0;
         public void DebugEQT30_Update_Global_Variables_Imperative_Scope()
         {
             string code = @"
-x  = {0,0,0,0};
+x  = [0,0,0,0];
 count = 0;
 i = 0;
 sum  = 0;
@@ -9390,7 +9390,7 @@ test = sum;
         j = j + 1;
     }
 }
-x  = {0,0,0,0};
+x  = [0,0,0,0];
 y = x;
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
@@ -9485,10 +9485,10 @@ z1 = y1;
         public void DebugEQT33_ForLoopToReplaceReplicationGuides()
         {
             string code = @"
-a = { 1, 2 };
-b = { 3, 4 };
+a = [ 1, 2 ];
+b = [ 3, 4 ];
 //c = a<1> + b <2>;
-dummyArray = { { 0, 0 }, { 0, 0 } };
+dummyArray = [ [ 0, 0 ], [ 0, 0 ] ];
 counter1 = 0;
 counter2 = 0;
 [Imperative]
@@ -9553,7 +9553,7 @@ a4 = dummyArray[1][1];
             string code = @"
 [Imperative]
 {
-	a = { 1, 2, 3, 4 };
+	a = [ 1, 2, 3, 4 ];
 	sum = 0;
 	
 	for(i in a )
@@ -9613,7 +9613,7 @@ a4 = dummyArray[1][1];
             string code = @"
 [Imperative]
 {
-	a = { {1, 2, 3}, {4}, {5,6} };
+	a = [ [1, 2, 3], [4], [5,6] ];
 	sum = 0;
 	
 	for(i in a )
@@ -9699,7 +9699,7 @@ a4 = dummyArray[1][1];
             string code = @"
 [Associative]
 {
-	a = { {1, 2, 3}, {4}, {5,6} };
+	a = [ [1, 2, 3], [4], [5,6] ];
 	
 	def forloop :int ( a: int[]..[] )
 	{
@@ -9792,7 +9792,7 @@ a4 = dummyArray[1][1];
         public void DebugEQT37_Defect_1454517()
         {
             string code = @"
-	a = { 4,5 };
+	a = [ 4,5 ];
 	
 	b =[Imperative]
 	{
@@ -9813,7 +9813,7 @@ a4 = dummyArray[1][1];
         public void DebugEQT37_Modify_Collections_Referencing_Each_Other()
         {
             string code = @"
-a = {1,2,3};
+a = [1,2,3];
 b = a;
 c1 = a[0];
 b[0] = 10;
@@ -9885,7 +9885,7 @@ testArrayMember2 = c2;
         public void DebugEQT38_Defect_1454517_2()
         {
             string code = @"
-	a = { 4,5 };
+	a = [ 4,5 ];
 	x = 0;
 	
 	[Imperative]
@@ -9917,7 +9917,7 @@ def foo ( a : int [] )
 	}
 	return = x;
 }
-a = { 4,5 };	
+a = [ 4,5 ];	
 [Imperative]
 {
 	b = foo(a);
@@ -10021,7 +10021,7 @@ d=0;
             string code = @"
 [Associative]
 {
-	a = { 4,5 };
+	a = [ 4,5 ];
    
 	[Imperative]
 	{
@@ -10045,7 +10045,7 @@ d=0;
 { 
 	 def foo3 : int ( a : double )
 	 {
-	    return = {1, 2};
+	    return = [1, 2];
 	 }
 	 
 	dummyArg = 1.5;
@@ -10060,10 +10060,10 @@ d=0;
         public void DebugEQT40_Create_3_Dim_Collection_Using_For_Loop()
         {
             string code = @"
-x = { { { 0, 0} , { 0, 0} }, { { 0, 0 }, { 0, 0} }};
-a = { 0, 1 };
-b = { 2, 3};
-c = { 4, 5 };
+x = [ [ [ 0, 0] , [ 0, 0] ], [ [ 0, 0 ], [ 0, 0] ]];
+a = [ 0, 1 ];
+b = [ 2, 3];
+c = [ 4, 5 ];
 y = [Imperative]
 {
 	c1 = 0;
@@ -10157,7 +10157,7 @@ p9 = x [1][1][1];
 { 
 	 def foo3 : int[][] ( a : double )
 	 {
-	    return = { {2.5}, {3.5}};
+	    return = [ [2.5], [3.5]];
 	 }
 	 
 	dummyArg = 1.5;
@@ -10176,7 +10176,7 @@ def foo()
 {    
 return = 0;
 }
-x = { 1, 2 };
+x = [ 1, 2 ];
 x[foo()] = 3;
 y = x;
 ";
@@ -10191,7 +10191,7 @@ def foo :int[]..[]( a : int[], b:int[], c :int[])
 {
 	y = [Imperative]
 	{
-		x = { { { 0, 0} , { 0, 0} }, { { 0, 0 }, { 0, 0} }};
+		x = [ [ [ 0, 0] , [ 0, 0] ], [ [ 0, 0 ], [ 0, 0] ]];
 		c1 = 0;
 		for ( i in a)
 		{
@@ -10212,9 +10212,9 @@ def foo :int[]..[]( a : int[], b:int[], c :int[])
 	}
 	return = y;
 }
-a = { 0, 1 };
-b = { 2, 3};
-c = { 4, 5 };
+a = [ 0, 1 ];
+b = [ 2, 3];
+c = [ 4, 5 ];
 y = foo ( a, b, c );
 p1 = y[0][0][0];
 p2 = y[0][0][1];
@@ -10262,7 +10262,7 @@ p8 = y[1][1][1];
 { 
 	 def foo3 : int[][] ( a : double )
 	 {
-	    return = { {2.5}, 3};
+	    return = [ [2.5], 3];
 	 }
 	 
 	dummyArg = 1.5;
@@ -10281,8 +10281,8 @@ def foo : int(a : int, b : int)
 {
 	return = a * b;
 }
-list1 = { { 1, 2, 3 }, { 4, 5, 6 }, { 7, 8, 9 } };
-list2 = { { 1, 2, 3, 4 }, { 5, 6, 7, 8 } };
+list1 = [ [ 1, 2, 3 ], [ 4, 5, 6 ], [ 7, 8, 9 ] ];
+list2 = [ [ 1, 2, 3, 4 ], [ 5, 6, 7, 8 ] ];
 list3 = foo(list1, list2); // { { 1, 4, 9 }, { 20, 30, 42 } }
 x = list3[0];
 y = list3[1];
@@ -10390,7 +10390,7 @@ y = [Imperative]
 { 
 	 def foo3 : bool[]..[] ( a : double )
 	 {
-	    return = { {2}, 3};
+	    return = [ [2], 3];
 	 }
 	 
 	dummyArg = 1.5;
@@ -10409,9 +10409,9 @@ def foo : int(a : int, b : int, c : int)
 {
 	return = a * b - c;
 }
-list1 = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
-list2 = { 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0, -1, -2, -3 };
-list3 = {1, 4, 7, 2, 5, 8, 3 };
+list1 = [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ];
+list2 = [ 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0, -1, -2, -3 ];
+list3 = [1, 4, 7, 2, 5, 8, 3 ];
 list4 = foo(list1, list2, list3); // { 9, 14, 17, 26, 25, 22, 25 }
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
@@ -10424,7 +10424,7 @@ list4 = foo(list1, list2, list3); // { 9, 14, 17, 26, 25, 22, 25 }
             string code = @"
 [Imperative]
 {
-	a = { -2,3,4.5,true };
+	a = [ -2,3,4.5,true ];
 	x = 1;
 	for ( y in a )
 	{
@@ -10487,7 +10487,7 @@ d = a + b;
 { 
 	 def foo3 : int[]..[] ( a : double )
 	 {
-	    return = { { 0, 2 }, { 1 } };
+	    return = [ [ 0, 2 ], [ 1 ] ];
 	 }
 	 
 	dummyArg = 1.5;
@@ -10506,9 +10506,9 @@ def foo : int(a : int, b : int, c : int, d : int, e : int)
 {
 	return = a * b - c / d + e;
 }
-list1 = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
-list2 = { 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0, -1, -2, -3 };
-list3 = {1, 4, 7, 2, 5, 8, 3 };
+list1 = [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ];
+list2 = [ 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0, -1, -2, -3 ];
+list3 = [1, 4, 7, 2, 5, 8, 3 ];
 list4 = foo(list1, list2, list3, 4, 23);
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
@@ -10542,9 +10542,9 @@ def foo : int(a : int, b : int, c : int)
 {
 	return = a * b - c;
 }
-list1 = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
-list2 = { 10, 9, 8, 7, 6, 5, 4, 3, 2, 1 };
-list3 = {1, 4, 7, 2, 5, 8, 3, 6, 9, 0 };
+list1 = [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ];
+list2 = [ 10, 9, 8, 7, 6, 5, 4, 3, 2, 1 ];
+list3 = [1, 4, 7, 2, 5, 8, 3, 6, 9, 0 ];
 list4 = foo(list1, list2, list3); // { 9, 14, 17, 26, 25, 22, 25, 18, 9, 10 }
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
@@ -10642,9 +10642,9 @@ def foo : int(a : int, b : int, c : int, d : int, e : int)
 {
 	return = a * b - c * d + e;
 }
-list1 = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
-list2 = { 10, 9, 8, 7, 6, 5, 4, 3, 2, 1 };
-list3 = {1, 4, 7, 2, 5, 8, 3, 6, 9, 0 };
+list1 = [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ];
+list2 = [ 10, 9, 8, 7, 6, 5, 4, 3, 2, 1 ];
+list3 = [1, 4, 7, 2, 5, 8, 3, 6, 9, 0 ];
 list4 = foo(list1, list2, list3, 26, 43); // { 27, -43, -115, 19, -57, -135, -7, -89, -173, 53 }  
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
@@ -10682,7 +10682,7 @@ def foo : int(a : int)
 {
 	return = a * a;
 }
-list1 = { 1, 2, 3, 4, 5 };
+list1 = [ 1, 2, 3, 4, 5 ];
 list3 = foo(foo(foo(list1))); // { 1, 256, 6561, 65536, 390625 }
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
@@ -10839,7 +10839,7 @@ def foo : int(a : int)
 {
 	return = a * a;
 }
-list1 = { { 1, 2, 3 }, { 4, 5, 6 }, { 7, 8, 9 } };
+list1 = [ [ 1, 2, 3 ], [ 4, 5, 6 ], [ 7, 8, 9 ] ];
 list2 = foo(list1); // { { 1, 4, 9 }, { 16, 25, 36 }, { 49, 64, 81 } }
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
@@ -10875,7 +10875,7 @@ def foo : int(num : int)
 {
 	return = num * num;
 }
-list1 = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+list1 = [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ];
 list2 = foo(list1);  // { 1, 4, 9, 16, 25, 36, 49, 64, 81, 100 }
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
@@ -10908,7 +10908,7 @@ def foo : int(num : int, num2 : int, num3 : int)
 {
 	return = num * num2 - num3;
 }
-list1 = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+list1 = [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ];
 list2 = foo(list1, 34, 18); // { 16, 50, 84, 118, 152, 186, 220, 254, 288, 322 }
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
@@ -10935,13 +10935,13 @@ list2 = foo(list1, 34, 18); // { 16, 50, 84, 118, 152, 186, 220, 254, 288, 322 }
         public void DebugEQT50_1_of_3_Exprs_is_List()
         {
             string code = @"
-list1 = { true, false, true, false, true };
+list1 = [ true, false, true, false, true ];
 list2 = list1 ? 1 : 0; // { 1, 0, 1, 0, 1 }
 list3 = true ? 10 : list2; // { 10, 10, 10, 10, 10 }
 list4 = false ? 10 : list2; // { 1, 0, 1, 0, 1 }
-a = { 1, 2, 3, 4, 5 };
-b = {5, 4, 3, 2, 1 };
-c = { 4, 3, 2, 1 };
+a = [ 1, 2, 3, 4, 5 ];
+b = [5, 4, 3, 2, 1 ];
+c = [ 4, 3, 2, 1 ];
 list5 = a > b ? 1 : 0; // { 0, 0, 0, 1, 1 }
 list6 = c > a ? 1 : 0; // { 1, 1, 0, 0 }
 ";
@@ -10970,7 +10970,7 @@ b = a * 3;
 	 {
 	    return = 1.5;
      }
-	 aa = { };
+	 aa = [ ];
 	 b2 = foo ( aa );	
 	 c = 3;	
 }
@@ -10982,16 +10982,16 @@ b = a * 3;
         public void DebugEQT51_2_of_3_Exprs_are_Lists_Different_Length()
         {
             string code = @"
-list1 = { 1, 2, 3, 4, 5 };
-list2 = { true, false, true, false };
+list1 = [ 1, 2, 3, 4, 5 ];
+list2 = [ true, false, true, false ];
 list3 = list2 ? list1 : 0; // { 1, 0, 3, 0 }
 list4 = list2 ? 0 : list1; // { 0, 2, 0, 4 }
-list5 = { -1, -2, -3, -4, -5, -6 };
+list5 = [ -1, -2, -3, -4, -5, -6 ];
 list6 = true ? list1 : list5; // { 1, 2, 3, 4, 5 }
 list7 = false ? list1 : list5; // { -1, -2, -3, -4, -5 }  
-a = { 1, 2, 3, 4 };
-b = { 5, 4, 3, 2, 1 };
-c = { 1, 4, 7 };
+a = [ 1, 2, 3, 4 ];
+b = [ 5, 4, 3, 2, 1 ];
+c = [ 1, 4, 7 ];
 list8 = a >= b ? a + c : 10; // { 10, 10, 10 }
 list9 = a < b ? 10 : a + c; // { 10, 10, 10 }
 ";
@@ -11002,7 +11002,7 @@ list9 = a < b ? 10 : a + c; // { 10, 10, 10 }
         public void DebugEQT51_Assignment_Using_Negative_Index()
         {
             string code = @"
-a = { 0, 1, 2, 3 };
+a = [ 0, 1, 2, 3 ];
 c1 = a [-1];
 c2 = a [-2];
 c3 = a [-3];
@@ -11041,7 +11041,7 @@ c6 = a [-1.5];
 	 {
 	    return = 1.5;
      }
-	 aa = {1, 2 };
+	 aa = [1, 2 ];
 	 b2 = foo ( aa );	
 	 c = 3;	
 }
@@ -11053,14 +11053,14 @@ c6 = a [-1.5];
         public void DebugEQT52_2_of_3_Exprs_are_Lists_Same_Length()
         {
             string code = @"
-list1 = { 1, 2, 3, 4, 5 };
-list2 = { true, false, true, false, true };
+list1 = [ 1, 2, 3, 4, 5 ];
+list2 = [ true, false, true, false, true ];
 list3 = list2 ? list1 : 0; // { 1, 0, 3, 0, 5 }
 list4 = list2 ? 0 : list1; // { 0, 2, 0, 4, 0 }
 list5 = true ? list3 : list4; // { 1, 0, 3, 0, 5 }
 list6 = true ? list4 : list3; // {0, 2, 0, 4, 0 }
-a = { 1, 2, 3, 4, 5 };
-b = { 5, 4, 3, 2 };
+a = [ 1, 2, 3, 4, 5 ];
+b = [ 5, 4, 3, 2 ];
 list7 = a > b ? a + b : 10; // { 10, 10, 10, 6 }
 list8 = a <= b ? 10 : a + b; // { 10, 10, 10, 6 }
 ";
@@ -11120,9 +11120,9 @@ list8 = a <= b ? 10 : a + b; // { 10, 10, 10, 6 }
         public void DebugEQT53_3_of_3_Exprs_are_different_dimension_list()
         {
             string code = @"
-a = { { 1, 2, 3 }, { 4, 5, 6 } };
-b = { { 1, 2 },  { 3, 4 }, { 5, 6 } };
-c = { { 1, 2, 3, 4 }, { 5, 6, 7, 8 }, { 9, 10, 11, 12 } };
+a = [ [ 1, 2, 3 ], [ 4, 5, 6 ] ];
+b = [ [ 1, 2 ],  [ 3, 4 ], [ 5, 6 ] ];
+c = [ [ 1, 2, 3, 4 ], [ 5, 6, 7, 8 ], [ 9, 10, 11, 12 ] ];
 list = a > b ? b + c : a + c; // { { 2, 4, }, { 8, 10 } } 
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
@@ -11136,7 +11136,7 @@ def foo()
 {
     return = 0;
 }
-x = { 1, 2 };
+x = [ 1, 2 ];
 x[foo()] = 3;
 y = x;
 ";
@@ -11194,16 +11194,16 @@ y = test.foo (1);
         public void DebugEQT54_3_of_3_Exprs_are_Lists_Different_Length()
         {
             string code = @"
-list1 = { true, false, true, true, false };
-list2 = { 1, 2, 3, 4 };
-list3 = { -1, -2, -3, -4, -5, -6 };
+list1 = [ true, false, true, true, false ];
+list2 = [ 1, 2, 3, 4 ];
+list3 = [ -1, -2, -3, -4, -5, -6 ];
 list4 = list1 ? list2 : list3; // { 1, -2, 3, 4 }
 list5 = !list1 ? list2 : list4; // { 1, 2, 3, 4 }
-list6 = { -1, -2, -3, -4, -5 };
+list6 = [ -1, -2, -3, -4, -5 ];
 list7 = list1 ? list2 : list6; // { 1, -2, 3, 4 }
-a = { 3, 0, -1 };
-b = { 2, 1, 0, 3 };
-c = { -2, 4, 1, 2, 0 };
+a = [ 3, 0, -1 ];
+b = [ 2, 1, 0, 3 ];
+c = [ -2, 4, 1, 2, 0 ];
 list8 = a < c ? b + c : a + c; // { 1, 4, 1 }
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
@@ -11213,14 +11213,14 @@ list8 = a < c ? b + c : a + c; // { 1, 4, 1 }
         public void DebugEQT55_3_of_3_Exprs_are_Lists_Same_Length()
         {
             string code = @"
-list1 = { true, false, false, true };
-list2 = { 1, 2, 3, 4 };
-list3 = { -1, -2, -3, -4 };
+list1 = [ true, false, false, true ];
+list2 = [ 1, 2, 3, 4 ];
+list3 = [ -1, -2, -3, -4 ];
 list4 = list1 ? list2 : list3; // { 1, -2, -3, 4 }
 list5 = !list1 ? list2 : list3; // { -1, 2, 3, -4 }
-a = { 1, 4, 7 };
-b = { 2, 8, 5 };
-c = { 6, 9, 3 };
+a = [ 1, 4, 7 ];
+b = [ 2, 8, 5 ];
+c = [ 6, 9, 3 ];
 list6 = a > b ? b + c : b - c; // { -4, -1, 8 }
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
@@ -11232,7 +11232,7 @@ list6 = a > b ? b + c : b - c; // { -4, -1, 8 }
             string code = @"
 [Associative]
 {
-	x = {} == null;
+	x = [] == null;
 }
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
@@ -11269,7 +11269,7 @@ list6 = a > b ? b + c : b - c; // { -4, -1, 8 }
 	    a[0] = 0;
 		return = a;
      }
-	 aa = { 1, 2 };
+	 aa = [ 1, 2 ];
 	 bb = foo ( aa );	
 	 
 	 c = 3;	
@@ -11282,7 +11282,7 @@ list6 = a > b ? b + c : b - c; // { -4, -1, 8 }
         public void DebugEQT56_UnaryOperator()
         {
             string code = @"
-list1 = { true, true, false, false, true, false };
+list1 = [ true, true, false, false, true, false ];
 list2 = !list1; // { false, false, true, true, false, true }
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
@@ -11316,9 +11316,9 @@ list2 = !list1; // { false, false, true, true, false, true }
             string code = @"
 [Associative]
 {
-    a2 = { 0, 1 };
+    a2 = [ 0, 1 ];
 	b2 = 1;
-	d2 = a2 > b2 ? true : { false, false};
+	d2 = a2 > b2 ? true : [ false, false];
     //f2 = a2 > b2;	
 }
 ";
@@ -11331,7 +11331,7 @@ list2 = !list1; // { false, false, true, true, false, true }
             string code = @"
 [Associative]
 {
-    a2 = { 0, 1 };
+    a2 = [ 0, 1 ];
     b2 = 1;	
     f2 = a2 > b2;	
 }
@@ -11345,9 +11345,9 @@ list2 = !list1; // { false, false, true, true, false, true }
             string code = @"
 [Associative]
 {
-    a2 = { 0, 1 };
+    a2 = [ 0, 1 ];
     b2 = 1;
-    d2 = a2 > b2 ? true : { false, false};
+    d2 = a2 > b2 ? true : [ false, false];
     f2 = a2 > b2;	
 }
 ";
@@ -11360,7 +11360,7 @@ list2 = !list1; // { false, false, true, true, false, true }
             string code = @"
 [Imperative]
 {
-    a = { 0, 1 };
+    a = [ 0, 1 ];
 	b = 1;
 	c = -1;
 	if(a > b)
@@ -11371,7 +11371,7 @@ list2 = !list1; // { false, false, true, true, false, true }
 	{
 		c = 1;
 	}
-    d = a > b ? true : { false, false};
+    d = a > b ? true : [ false, false];
     f = a > b;
 	
 }
@@ -11480,7 +11480,7 @@ def foo ()
 		{
 			b = b + 4;
 		}
-        return = { b, d };		
+        return = [ b, d ];		
 	}	
 	return = c;
 }
@@ -11739,22 +11739,8 @@ def foo(a:int[])
 }
 x[0]=5;
 a = foo(x);
-c = {100};
+c = [100];
 t = x;
-";
-            DebugTestFx.CompareDebugAndRunResults(code);
-        }
-
-        [Test]
-        public void DebugEQT63_Dynamic_array_onthefly_function_return()
-        {
-            string code = @"
-def foo()
-{
-return =b[0]=5;
-}
-a = foo();
-c = {100};
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
         }
@@ -11765,7 +11751,7 @@ c = {100};
             string code = @"
 z=true;
 b=z;
-z[0]={1};
+z[0]=[1];
 z=5;
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
@@ -11777,7 +11763,7 @@ z=5;
             string code = @"
 [Imperative]
 {
-    a = { 1, 0.5, null, {2,3 } ,{{0.4, 5}, true } };
+    a = [ 1, 0.5, null, [2,3 ] ,[[0.4, 5], true ] ];
 	
 }
 ";
@@ -11788,7 +11774,7 @@ z=5;
         public void DebugEQT64_Modify_itemInAnArray_1467093()
         {
             string code = @"
-a = {1, 2, 3};
+a = [1, 2, 3];
 a[1] = a; 
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
@@ -11800,7 +11786,7 @@ a[1] = a;
             string code = @"
 [Imperative]
 {
-a = {};
+a = [];
 b = a;
 a[0] = b;
 //hangs here
@@ -11814,7 +11800,7 @@ c = a;
         public void DebugEQT65_Array_Alias_ByVal_1467165()
         {
             string code = @"
-a = {0,1,2,3};
+a = [0,1,2,3];
 b=a;
 a[0]=9;
 b[0]=10;
@@ -11826,7 +11812,7 @@ b[0]=10;
         public void DebugEQT65_Array_Alias_ByVal_1467165_3()
         {
             string code = @"
-a = {0,1,2,3};
+a = [0,1,2,3];
 b=a;
 a[0]=9;
 b[0]=false;
@@ -11838,7 +11824,7 @@ b[0]=false;
         public void DebugEQT65_Array_Alias_ByVal_1467165_6()
         {
             string code = @"
-a = {0,1,2,3};
+a = [0,1,2,3];
 b=a;
 a[0]=null;
 b[0]=false;
@@ -11852,8 +11838,8 @@ b[0]=false;
             string code = @"
 [Imperative]
 {
-    a = {3,1,2}; 
-    x = {10,11,12,13,14,15}; 
+    a = [3,1,2]; 
+    x = [10,11,12,13,14,15]; 
     x[a] = 2;
 }
 ";
@@ -11866,8 +11852,8 @@ b[0]=false;
             string code = @"
 [Imperative]
 {
-    a = {3,1,2}; 
-    x = {10,11,12,13,14,15}; 
+    a = [3,1,2]; 
+    x = [10,11,12,13,14,15]; 
     x[a] = 2;
 }
 ";
@@ -11878,7 +11864,7 @@ b[0]=false;
         public void DebugEQT67_Array_Remove_Item()
         {
             string code = @"
-a={1,2,3,4,5,6,7};
+a=[1,2,3,4,5,6,7];
 a=Remove(a,0);// expected :{2,3,4,5,6,7}
 a=Remove(a,4);//expected {1,2,3,4,6,7}
 ";
@@ -11889,7 +11875,7 @@ a=Remove(a,4);//expected {1,2,3,4,6,7}
         public void DebugEQT67_Array_Remove_Item_2()
         {
             string code = @"
-a={1,2,3,4,5,6,7};
+a=[1,2,3,4,5,6,7];
 a=Remove(a,0);// expected :{2,3,4,5,6,7}
 a=Insert(a,4,6);//expected {1,2,3,4,6,7}
 ";
@@ -11902,7 +11888,7 @@ a=Insert(a,4,6);//expected {1,2,3,4,6,7}
             string code = @"
 [Associative]
 {
-a = { 1, 2, 3};
+a = [ 1, 2, 3];
 b = a;
 b[0] = 10;
 test = a[0]; //= 10Ö i.e. a change in ëbí causes a change to ëaí
@@ -11922,7 +11908,7 @@ test = a[0]; //= 10Ö i.e. a change in ëbí causes a change to ëaí
 		return  = a + 1;
 	}
 	
-	x = { 1, 2, 3 };
+	x = [ 1, 2, 3 ];
 	y = foo(x);
 	
 }
@@ -11943,8 +11929,8 @@ test = a[0]; //= 10Ö i.e. a change in ëbí causes a change to ëaí
 		return  = a + b;
 	}
 	
-	x1 = { 1, 2, 3 };
-	x2 = { 1, 2, 3 };
+	x1 = [ 1, 2, 3 ];
+	x2 = [ 1, 2, 3 ];
 	
 	y = foo ( x1, x2 );
 	
@@ -11966,7 +11952,7 @@ test = a[0]; //= 10Ö i.e. a change in ëbí causes a change to ëaí
 		return  = a + b;
 	}
 	
-	x1 = { 1, 2, 3 };
+	x1 = [ 1, 2, 3 ];
 	x2 = 1;
 	
 	y = foo ( x1, x2 );
@@ -11995,14 +11981,14 @@ b = a;
             string code = @"
 [Imperative]
 {
-	a = {};
+	a = [];
 	b = a;
 	a[0] = b;
 	c = Count(a);
 }
 [Associative]
 {
-	a1 = {0};
+	a1 = [0];
 	b1 = a1;
 	a1[0] = b1;
 	c1 = Count(a1);
@@ -12022,8 +12008,8 @@ b = a;
 		return  = a + b;
 	}
 	
-	x1 = { 1, 2 };
-	x2 = { 1, 2 };
+	x1 = [ 1, 2 ];
+	x2 = [ 1, 2 ];
 	y = foo( x1<1> , x2<2> );
 	a1 = y[0][0];
 	a2 = y[0][1];
@@ -12163,7 +12149,7 @@ def foo : double (arr : double[])
 {
     return = 0;
 }
-arr = {1,2,3,4};
+arr = [1,2,3,4];
 sum = foo(arr);
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
@@ -12177,7 +12163,7 @@ def foo : double (arr1 : double[], arr2 : double[] )
 {
     return  = arr1[0] + arr2[0];
 }
-arr = {  {2.5,3}, {1.5,2} };
+arr = [  [2.5,3], [1.5,2] ];
 two = foo (arr, arr);
 t1 = two[0];
 t2 = two[1];
@@ -12636,7 +12622,7 @@ c = 5;
             string code = @"
 def foo()
 {
-return = {1,2};
+return = [1,2];
 }
 t = foo()[0];
 ";
@@ -12649,11 +12635,11 @@ t = foo()[0];
             string code = @"
 	def foo()
 	{
-		return = {foo2()[0],foo2()[1]};
+		return = [foo2()[0],foo2()[1]];
 	}
 def foo2()
 {
-return = {1,2};
+return = [1,2];
 }
 a=test.test()[0];
 t = foo()[0];
@@ -12667,7 +12653,7 @@ t = foo()[0];
             string code = @"
 def foo()
 {
-return = {};
+return = [];
 }
 t = foo()[0];
 ";
@@ -12680,7 +12666,7 @@ t = foo()[0];
             string code = @"
 def foo()
 {
-return = {1,2};
+return = [1,2];
 }
 t = foo()[0];
 ";
@@ -12693,7 +12679,7 @@ t = foo()[0];
             string code = @"
 def foo()
 {
-return = {1};
+return = [1];
 }
 t = foo()[0];
 ";
@@ -12997,11 +12983,11 @@ def foo : int ( a = 5, b = 5 )
             string code = @"
 def foo  ( a : int = 5, b : double = 5.5, c : bool = true )
 {
-	return = x = c == true ? a  : b;
+	return = c == true ? a  : b;
 }
 def foo  ( a : double = 5, b : double = 5.5, c : bool = true )
 {
-	return = x = c == true ? a  : b;
+	return = c == true ? a  : b;
 }
 [Imperative]
 {
@@ -13020,11 +13006,11 @@ def foo  ( a : double = 5, b : double = 5.5, c : bool = true )
             string code = @"
 def foo  ( a : int, b : double = 5, c : bool = true)
 {
-	return = x = c == true ? a  : b;
+	return = c == true ? a  : b;
 }
 def foo2  ( a , b = 5, c = true)
 {
-	return = x = c == true ? a  : b;
+	return = c == true ? a  : b;
 }
 d1 = foo2 (  );
 d2 = foo2 ( 1 );
@@ -13037,7 +13023,7 @@ d5 =
 	c2 = foo ( 1 );
 	c3 = foo ( 2, 3 );
 	c4 = foo ( 4, 5, false );
-	return = { c1, c2, c3, c4 };
+	return = [ c1, c2, c3, c4 ];
 }
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
@@ -13049,11 +13035,11 @@ d5 =
             string code = @"
 def foo  ( a : int = 5, b : double = 5.5, c : bool = true )
 {
-	return = x = c == true ? a  : b;
+	return = c == true ? a  : b;
 }
 def foo  ( a : double = 6, b : double = 5.5, c : bool = true )
 {
-	return = x = c == true ? a  : b;
+	return = c == true ? a  : b;
 }
 [Imperative]
 {
@@ -13352,7 +13338,7 @@ def foo(arr)
 		a[0][0] = 1;
 		return = a;
 	}
-	b = { {0,2,3}, {4,5,6} };
+	b = [ [0,2,3], [4,5,6] ];
 	d = foo( b );
 	c = d[0];
 ";
@@ -13367,7 +13353,7 @@ def multiply : double[] (a : double[])
 {    
 	temp = [Imperative]
     { 
-		b = {0, 10};
+		b = [0, 10];
 		counter = 0; 
 		
 		for( y in a ) 
@@ -13381,7 +13367,7 @@ def multiply : double[] (a : double[])
 	return = temp;
 }
 	
-	x = {2.5,10.0};
+	x = [2.5,10.0];
 	x_squared = multiply( x );
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
@@ -13395,7 +13381,7 @@ def multiply : double[] (a : double[])
 {    
 	temp = [Imperative]
     { 
-		b = {0, 10};
+		b = [0, 10];
 		counter = 0; 
 		
 		for( y in a ) 
@@ -13409,7 +13395,7 @@ def multiply : double[] (a : double[])
 	return = temp;
 }
 	
-	x = {2.5,10};
+	x = [2.5,10];
 	x_squared = multiply( x );
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
@@ -13505,7 +13491,7 @@ def multiply : double[] (a : double[])
 		a[0][0] = 1;
 		return = a;
 	}
-	b = { {0,2,3}, {4,5,6} };
+	b = [ [0,2,3], [4,5,6] ];
 	d = foo( b );
 	c = d[0];
 ";
@@ -13522,14 +13508,14 @@ def multiply : double[] (a : double[])
 		return = a;
 	}
 	
-	a = { {2.3,3.5},{4.5,5.5} };
+	a = [ [2.3,3.5],[4.5,5.5] ];
 	
 	a = foo( a );
 	c = a[0];
 	
 	[Imperative]
 	{
-		b = { {2.3}, {2.5} };
+		b = [ [2.3], [2.5] ];
 		b = foo( b );
 		d = b[0];
 	}
@@ -13558,7 +13544,7 @@ def multiply : double[] (a : double[])
 		}
 		return = a;
 	}
-	d = { 1,2,3 };
+	d = [ 1,2,3 ];
 	c = collectioninc( d );
     b;
         [Imperative]
@@ -13645,13 +13631,13 @@ def foo1 : double (arr : double[])
 {
     return = 0;
 }
-arr = {1,2,3,4};
+arr = [1,2,3,4];
 sum = foo1(arr);
 def foo2 : double (arr : double)
 {
     return = 0;
 }
-arr1 = {1.0,2.0,3.0,4.0};
+arr1 = [1.0,2.0,3.0,4.0];
 sum1 = foo2(arr1);
 sum2 = foo1(arr);
 ";
@@ -13668,10 +13654,10 @@ def foo1 : double (arr : double[][])
 }
 [Imperative]
 {
-	arr1 = { {1, 2.0}, {true, 4} };
+	arr1 = [ [1, 2.0], [true, 4] ];
 	sum1 = foo1(arr);
 	x = 1;
-	arr2 = { {1, 2.0}, {x, 4} };
+	arr2 = [ [1, 2.0], [x, 4] ];
 	sum2 = foo1(arr2);
 }
 ";
@@ -13780,7 +13766,7 @@ def foo ( b : bool[]..[], f1 : function )
 {
     return = count( b );
 }
-a = foo ( { true, false, { true, true } },  count );
+a = foo ( [ true, false, [ true, true ] ],  count );
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
         }
@@ -13806,7 +13792,7 @@ def foo ( b : double[], f1 : function )
 {
     return = count( b );
 }
-a = foo ( { 1.0, 2.6 },  count );
+a = foo ( [ 1.0, 2.6 ],  count );
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
         }
@@ -13832,7 +13818,7 @@ def foo ( b : int[]..[], f1 : function )
 {
     return = count( b );
 }
-a = foo ( { 1, 2 , {3, 4} },  count );
+a = foo ( [ 1, 2 , [3, 4] ],  count );
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
         }
@@ -13858,8 +13844,8 @@ def foo ( b : int[], f1 : function )
 {
     return = count( b );
 }
-a = foo ( { 1, 2,  { 3, 4 } },  count );
-d = foo ( { 2, 2.5, { 1, 1.5 }, 1 , false},  count );
+a = foo ( [ 1, 2,  [ 3, 4 ] ],  count );
+d = foo ( [ 2, 2.5, [ 1, 1.5 ], 1 , false],  count );
 // boolean can't be converted to double, so the following statement
 // will generate a method resultion fail exception
 // b = foo ( { true, false },  count );
@@ -13890,8 +13876,8 @@ def foo ( b : int[], f1 : function )
 }
 [Imperative]
 {
-	a = foo ( { 1, 2,  { 3, 4 } },  count );
-	d = foo ( { 2, 2.5, { 1, 1.5 }, 1 , false},  count );
+	a = foo ( [ 1, 2,  [ 3, 4 ] ],  count );
+	d = foo ( [ 2, 2.5, [ 1, 1.5 ], 1 , false],  count );
 }
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
@@ -13926,7 +13912,7 @@ def greatest ( a : double[], f : function )
 }
 [Imperative]
 {
-	a = greatest ( { 1.5, 6, 3, -1, 0 }, greater2 );
+	a = greatest ( [ 1.5, 6, 3, -1, 0 ], greater2 );
 	
 }
 ";
@@ -13966,7 +13952,7 @@ def foo ( a : double[], greatest : function , greater : function)
 }
 [Imperative]
 {
-	a = foo ( { 1.5, 6, 3, -1, 0 }, greatest, greater );
+	a = foo ( [ 1.5, 6, 3, -1, 0 ], greatest, greater );
 	
 }
 ";
@@ -13983,10 +13969,10 @@ def f1 (arr :  double[] )
 }
 def f2 (arr :  double[] )
 {
-    return = { arr[0], arr[1] };
+    return = [ arr[0], arr[1] ];
 }
-a = f1( { null, null } );
-b = f2( { null, null } );
+a = f1( [ null, null ] );
+b = f2( [ null, null ] );
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
         }
@@ -14038,7 +14024,7 @@ def foo ( x : double[])
 {
     return = x;
 }
-a2 = { 2, 4, 3.5 };
+a2 = [ 2, 4, 3.5 ];
 b2 = foo (a2);
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
@@ -14052,7 +14038,7 @@ def foo ( x : double[])
 {
     return = x;
 }
-a2 = { 2, 4, 3};
+a2 = [ 2, 4, 3];
 b2 = foo ( a2 );
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
@@ -14066,7 +14052,7 @@ def foo ( x : int[])
 {
     return = x;
 }
-a1 = { 2, 4.1, 3.5};
+a1 = [ 2, 4.1, 3.5];
 b1 = foo ( a1 );
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
@@ -14080,7 +14066,7 @@ def foo ( x : int)
 {
     return = x;
 }
-a1 = { 2, 4.1, false};
+a1 = [ 2, 4.1, false];
 b1 = foo ( a1 );
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
@@ -14094,7 +14080,7 @@ def foo ( x : int[])
 {
     return = x;
 }
-a1 = { 2, 4.1, {1,2}};
+a1 = [ 2, 4.1, [1,2]];
 b1 = foo ( a1 );
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
@@ -14108,7 +14094,7 @@ def foo ( x : int[])
 {
     return = x;
 }
-a1 = { null, 5, 6.0};
+a1 = [ null, 5, 6.0];
 b1 = foo ( a1 );
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
@@ -14122,7 +14108,7 @@ def foo ( x : int[])
 {
     return = x;
 }
-a1 = { null, null, null};
+a1 = [ null, null, null];
 b1 = foo ( a1 );
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
@@ -14136,7 +14122,7 @@ def foo:int[]( x : int[])
 {
     return = x;
 }
-a1 = {1.1,2.0,3};
+a1 = [1.1,2.0,3];
 b1 = foo ( a1 );
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
@@ -14150,7 +14136,7 @@ def foo ( x : int[])
 {
     return = x;
 }
-a1 = { 1, null, 6.0};
+a1 = [ 1, null, 6.0];
 b1 = foo ( a1 );
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
@@ -14195,11 +14181,11 @@ def foo ( x : double)
 {
     return = x;
 }
-a1 = { 2.5, 4 };
+a1 = [ 2.5, 4 ];
 b1 = foo ( a1 );
-a2 = { 3, 4, 2.5 };
+a2 = [ 3, 4, 2.5 ];
 b2 = foo ( a2 );
-a3 = { 3, 4, 2 };
+a3 = [ 3, 4, 2 ];
 b3 = foo ( a3 );
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
@@ -14222,7 +14208,7 @@ def foo(x : int[][])
     return = 0;
 }
     
-x = foo ( { { 0,1}, {2, 3} } );
+x = foo ( [ [ 0,1], [2, 3] ] );
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
         }
@@ -14235,7 +14221,7 @@ def A (a: int [])
 {
 return = a;
 }
-val = {1,2,3};
+val = [1,2,3];
 b = A(val);
 b[0] = 100; 
 t = val[0]; //expected 100, received 1
@@ -14247,7 +14233,7 @@ t = val[0]; //expected 100, received 1
         public void DebugEQTestBasicArrayMethods()
         {
             string code = @"
-a = { 1, 2, { 3, 4, 5, { 6, 7, { 8, 9, { { 11 } } } } }, { 12, 13 } };
+a = [ 1, 2, [ 3, 4, 5, [ 6, 7, [ 8, 9, [ [ 11 ] ] ] ] ], [ 12, 13 ] ];
 c = Count(a);
 r = Rank(a);
 a2 = Flatten(a);
@@ -14345,7 +14331,7 @@ s9=s7+s8;
 	r7 = ""ab"" == ""ab"";
 	ns = s;
 	ns[0] = 1;
-	r8 = ns == {1, 'b'};
+	r8 = ns == [1, 'b'];
 	//r9 = """" == """";
 	//r10 = ("""" == null);
     r9 = s != ""ab"";
@@ -14379,10 +14365,10 @@ r3 = 'h' + 1;
 a = 5;
 b = 7;
 c = 9;
-d = {a, b};
+d = [a, b];
 f = Contains(d, a); // true
 g = Contains(d, c); // false
-h = Contains({10,11},11); // true collection built ëon the flyí
+h = Contains([10,11],11); // true collection built ëon the flyí
 				  // with ëliteralí values
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
@@ -14395,7 +14381,7 @@ h = Contains({10,11},11); // true collection built ëon the flyí
 a = 5;
 b = 7;
 c = 9;
-d = {a, b, c};
+d = [a, b, c];
 f = IndexOf(d, b); // 1
 g = d[f+1]; // c
 ";
@@ -14406,7 +14392,7 @@ g = d[f+1]; // c
         public void DebugEQTest_4_13_Transpose()
         {
             string code = @"
-a ={{1,2},{3,4}};
+a =[[1,2],[3,4]];
 b = a[0][0]; // b = 1
 c = a [0][1]; // c = 2
 a = Transpose(a); // b = 1; c =3
@@ -14418,7 +14404,7 @@ a = Transpose(a); // b = 1; c =3
         public void DebugEQTest_4_14_isUniformDepth()
         {
             string code = @"
-myNonUniformDepth2Dcollection = {{1, 2, 3}, {4, 5}, 6};
+myNonUniformDepth2Dcollection = [[1, 2, 3], [4, 5], 6];
 individualMemberB = myNonUniformDepth2Dcollection [0][1]; // OK, = B
 individualMemberD = myNonUniformDepth2Dcollection [2][0]; // would fail
 individualMemberE = myNonUniformDepth2Dcollection [2];    // OK, = 6
@@ -14434,13 +14420,13 @@ testForDeepestDepth  = Rank(myNonUniformDepth2Dcollection); // = 2; current limi
         public void DebugEQTest_4_9_count()
         {
             string code = @"
-count_test1=Count({1,2});   // 2 .. count of collection
-a = {{1,2},3};		   // define a nested/ragged collection
+count_test1=Count([1,2]);   // 2 .. count of collection
+a = [[1,2],3];		   // define a nested/ragged collection
 count_test2=Count(a);       // 2 .. count of collection
 count_test3=Count(a[0]);    // 2 .. count of sub collection
 count_test4=Count(a[0][0]); // 0 .. count of single member
 count_test5=Count(a[1]);    // 0 .. count of single member
-count_test6=Count({}); 	   // 0 .. count of an empty collection
+count_test6=Count([]); 	   // 0 .. count of an empty collection
 count_test7=Count(3); 	   // 0 .. count of single value
 count_test8=Count(null);    // 0 .. count of null
 ";
@@ -14455,11 +14441,11 @@ def Create2DArray( col : int)
 {
 	result = [Imperative]
     {
-		array = { 1, 2 };
+		array = [ 1, 2 ];
 		counter = 0;
 		while( counter < col)
 		{
-			array[counter] = { 1, 2};
+			array[counter] = [ 1, 2];
 			counter = counter + 1;
 		}
 		return = array;
@@ -14480,7 +14466,7 @@ x = Create2DArray( 2) ;
         return = array[0];
     }
     
-    arr = {1.0,2.0,3.0};
+    arr = [1.0,2.0,3.0];
     arr2 = Twice(arr);
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
@@ -14512,9 +14498,9 @@ x = Create2DArray( 2) ;
             string code = @"
 def function1 (arr :  double[] )
 {
-    return = { arr[0], arr [1] };
+    return = [ arr[0], arr [1] ];
 }
-a = function1({null,null});
+a = function1([null,null]);
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
         }
@@ -14544,8 +14530,8 @@ def foo ( a : int[] )
 }
 [Imperative]
 {
-    a1 = foo( { 0, 1 } );
-    b1 = foo( { 1, 2 } );
+    a1 = foo( [ 0, 1 ] );
+    b1 = foo( [ 1, 2 ] );
 	
 }
 ";
@@ -14579,8 +14565,8 @@ y :int = 0;
 xSize :int = 2;
 ySize :int = 3;
 result :int = 0;
-somelist : int[] = {11,102,1003,1004};
-somelist2 : int[] = {x, y, xSize * 4, 1004 * ySize};
+somelist : int[] = [11,102,1003,1004];
+somelist2 : int[] = [x, y, xSize * 4, 1004 * ySize];
 // Populate a multi-dimensional array
 list2d[2][3];
 list2d[0][0] = 10;
@@ -14671,7 +14657,7 @@ result = result / size;
 	d[2][2] = 2;
 	d[3][3] = x;
 	*/
-	e = {10,{20,30}};
+	e = [10,[20,30]];
 	e[1][1] = 40;
 	dd = e[0];
 	dd = e[1][0];
@@ -15082,19 +15068,19 @@ count = 10;
             string code = @"
 [Imperative]
 {
-    a = {10,20,30,40};
+    a = [10,20,30,40];
     x = 0;
     for (val in a)
     {
         x = x + val;
     }
     x = 0;
-    for (val in {100,200,300,400})
+    for (val in [100,200,300,400])
     {
         x = x + val;
     }
     x = 0;
-    for (val in {{100,101},{200,201},{300,301},{400,401}})
+    for (val in [[100,101],[200,201],[300,301],[400,401]])
     {
         x = x + val[1];
     }
@@ -15151,10 +15137,10 @@ count = 10;
 	ySize = 3;
 	result = 0;
     
-	somelist = {11,102,1003,1004};
-	somelist2 = {x, y, xSize * 4, 1004 * ySize};
+	somelist = [11,102,1003,1004];
+	somelist2 = [x, y, xSize * 4, 1004 * ySize];
 	// Populate a multi-dimensional array
-	list2d = {{10,20,30},{40,50,60}};
+	list2d = [[10,20,30],[40,50,60]];
 	// do somthing with those values
 	while( x < xSize )
 	{
@@ -15169,7 +15155,7 @@ count = 10;
 	result = result * 10;
     
 	// Populate an array of ints
-	list = {10, 20, 30, 40, 50};
+	list = [10, 20, 30, 40, 50];
     
 	// Declare counters and result storage
 	n = 0;
@@ -15468,7 +15454,7 @@ def length : int (pts : int[])
     }
     return = numPts;
 }
-z=length({1,2});
+z=length([1,2]);
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
         }
@@ -15477,7 +15463,7 @@ z=length({1,2});
         public void DebugEQtest__4_()
         {
             string code = @"
-a = {};
+a = [];
 b = Average(a);
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
@@ -15563,7 +15549,7 @@ b = ++a;
 
     }
 
-    [TestFixture]
+    [TestFixture, Category("Debugger")]
     public class DebugUseCaseTesting
     {
         [Test]
@@ -15625,7 +15611,7 @@ b : int;
         {
             String src =
                 @" 
-results = { { } };
+results = [ [ ] ];
 numCycles = 4;
 [Imperative]
 {
@@ -15651,13 +15637,13 @@ numCycles = 4;
         {
             String src =
                 @" 
-results = { { } };
+results = [ [ ] ];
 numCycles = 4;
 [Imperative]
 {
     for(i in (0..(numCycles)))
 	{
-    	results[i] = { };
+    	results[i] = [ ];
     
 		for(j in(0..(numCycles-1)))
 		{
@@ -15679,7 +15665,7 @@ s = Print(results);
         {
             String src =
                 @" 
-set = { true, { false, true } };
+set = [ true, [ false, true ] ];
 allFalseSet = AllFalse(set);
 someFalseSet = SomeFalse(set);
 someTrueSet = SomeTrue(set);
@@ -15698,8 +15684,8 @@ removeDuplicatesSetInsert = RemoveDuplicates(setInsert);
 flattenSetInsert = Flatten(setInsert);
 removeDuplicatesSetInsertFalttened = RemoveDuplicates(flattenSetInsert);
 removeIfNotSetInsert = RemoveIfNot(flattenSetInsert, ""bool""); // (={})... this looks incorrect
-one1Dcollection = { 3, 1 };
-other1Dcollection = { 0, 1, 2, 3, 4 };
+one1Dcollection = [ 3, 1 ];
+other1Dcollection = [ 0, 1, 2, 3, 4 ];
 setDifferenceA = SetDifference(one1Dcollection, other1Dcollection);
 setDifferenceB = SetDifference(other1Dcollection, one1Dcollection);
 setIntersection = SetIntersection(other1Dcollection, one1Dcollection);

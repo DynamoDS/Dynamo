@@ -1,6 +1,8 @@
 ﻿using System;
 using System.IO;
 using System.Security.AccessControl;
+using System.Xml;
+using Newtonsoft.Json;
 
 namespace DynamoUtilities
 {
@@ -87,6 +89,63 @@ namespace DynamoUtilities
             }
 
             return writeAllow && !writeDeny;
+        }
+
+        /// <summary>
+        /// This is a utility method for checking if given path contains valid XML document.
+        /// </summary>
+        /// <param name="path">path to the target xml file</param>
+        /// <param name="xmlDoc">System.Xml.XmlDocument repensentation of target xml file</param>
+        /// <returns>Return true if file is Json, false if file is not Json, exception as out param</returns>
+        public static bool isValidXML(string path, out XmlDocument xmlDoc, out Exception ex)
+        {
+            // Based on https://msdn.microsoft.com/en-us/library/875kz807(v=vs.110).aspx
+            // Exception thrown indicate invalid XML document path or due to other failure
+            try
+            {
+                xmlDoc = new XmlDocument();
+                xmlDoc.Load(path);
+                ex = null;
+                return true;
+            }
+            catch(Exception e)
+            {
+                Console.WriteLine(e.ToString());
+                xmlDoc = null;
+                ex = e;
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// This is a utility method for checking if given path contains valid Json document.
+        /// </summary>
+        /// <param name="path">path to the target json file</param>
+        /// <param name="fileContents"> string contents of target json file</param>
+        /// <returns>Return true if file is Json, false if file is not Json, exception as out param</returns>
+        public static bool isValidJson(string path, out string fileContents, out Exception ex)
+        {
+            fileContents = "";
+            try
+            {
+                fileContents = File.ReadAllText(path);
+                fileContents = fileContents.Trim();
+                if ((fileContents.StartsWith("{") && fileContents.EndsWith("}")) || //For object
+                    (fileContents.StartsWith("[") && fileContents.EndsWith("]"))) //For array
+                {
+                    var obj = Newtonsoft.Json.Linq.JToken.Parse(fileContents);
+                    ex = null;
+                    return true;
+                }
+                ex = new JsonReaderException();
+                return false;
+            }
+            catch (Exception e) //some other exception
+            {
+                Console.WriteLine(e.ToString());
+                ex = e;
+                return false;
+            }
         }
     }
 }

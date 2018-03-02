@@ -1,5 +1,7 @@
 ﻿namespace ProtoCore.AST
 {
+    using System.Collections.Generic;
+
     public abstract class Node
     {
         private static int sID;
@@ -7,9 +9,14 @@
         public int col { get; set; }
         public int endLine { get; set; }
         public int endCol { get; set; }
+        public int charPos { get; set; }
+        public int endCharPos { get; set; }
         public string Name { get; set; }
         public int ID { get; private set; }
         public bool skipMe { get; set; }
+
+        internal static readonly string BuiltinGetValueAtIndexTypeName = typeof(DesignScript.Builtin.Get).FullName;
+        internal static readonly string BuiltinValueAtIndexMethodName = nameof(DesignScript.Builtin.Get.ValueAtIndex);
 
         public Node()
         {
@@ -18,6 +25,8 @@
             col = ProtoCore.DSASM.Constants.kInvalidIndex;
             endLine = ProtoCore.DSASM.Constants.kInvalidIndex;
             endCol = ProtoCore.DSASM.Constants.kInvalidIndex;
+            charPos = ProtoCore.DSASM.Constants.kInvalidIndex;
+            endCharPos = ProtoCore.DSASM.Constants.kInvalidIndex;
             skipMe = false;
             Name = string.Empty;
         }
@@ -29,6 +38,8 @@
             col = rhs.col;
             endLine = rhs.endLine;
             endCol = rhs.endCol;
+            charPos = rhs.charPos;
+            endCharPos = rhs.charPos;
             Name = rhs.Name;
             skipMe = rhs.skipMe;
         }
@@ -41,5 +52,7 @@
         {
             ID = id;
         }
+
+        public abstract IEnumerable<Node> Children();
     }
 }

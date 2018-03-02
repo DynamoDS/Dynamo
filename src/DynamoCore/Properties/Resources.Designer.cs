@@ -19,7 +19,7 @@ namespace Dynamo.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class Resources {
@@ -196,6 +196,15 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Value of expression at line {0}.
+        /// </summary>
+        public static string CodeBlockTempIdentifierOutputLabel {
+            get {
+                return ResourceManager.GetString("CodeBlockTempIdentifierOutputLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Composes two single parameter functions into one function..
         /// </summary>
         public static string ComposeFunctionNodeDescription {
@@ -322,6 +331,15 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Home.
+        /// </summary>
+        public static string DefaultHomeWorkspaceName {
+            get {
+                return ResourceManager.GetString("DefaultHomeWorkspaceName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Default value.
         /// </summary>
         public static string DefaultValue {
@@ -358,7 +376,7 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The virtual machine that powers Dynamo is experiencing some unexpected errors internally and is likely &quot;having great difficulties pulling itself together. It is &quot;recommended that you save your work now and reload the file. Giving the Dynamo VM a new lease of life can potentially make it feel happier and behave better. 
+        ///   Looks up a localized string similar to The virtual machine that powers Dynamo is experiencing some unexpected errors internally and is likely having great difficulties pulling itself together. It is recommended that you save your work now and reload the file. Giving the Dynamo VM a new lease of life can potentially make it feel happier and behave better. 
         ///
         ///If you don&apos;t mind, it would be helpful for you to send us your file. That will make it quicker for us to get these issues fixed..
         /// </summary>
@@ -1080,6 +1098,33 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Python template set to default file.
+        /// </summary>
+        public static string PythonTemplateDefaultFile {
+            get {
+                return ResourceManager.GetString("PythonTemplateDefaultFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Python template : no valid template found..
+        /// </summary>
+        public static string PythonTemplateInvalid {
+            get {
+                return ResourceManager.GetString("PythonTemplateInvalid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Python template set to user file.
+        /// </summary>
+        public static string PythonTemplateUserFile {
+            get {
+                return ResourceManager.GetString("PythonTemplateUserFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Range end could not be parsed..
         /// </summary>
         public static string RangeEndCouldNotBeParsed {
@@ -1436,6 +1481,33 @@ namespace Dynamo.Properties {
         public static string UnknownVersion {
             get {
                 return ResourceManager.GetString("UnknownVersion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This graph currently contains some unresolved nodes, and cannot be saved until the nodes are resolved. If the graph is saved using SaveAs - the unresolved nodes will be removed from the file..
+        /// </summary>
+        public static string UnresolvedNodesWarningMessage {
+            get {
+                return ResourceManager.GetString("UnresolvedNodesWarningMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This graph cannot be saved until unresolved nodes are removed or resolved..
+        /// </summary>
+        public static string UnresolvedNodesWarningShortMessage {
+            get {
+                return ResourceManager.GetString("UnresolvedNodesWarningShortMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Graph Contains Unresolved Nodes and Cannot Be Saved..
+        /// </summary>
+        public static string UnresolvedNodesWarningTitle {
+            get {
+                return ResourceManager.GetString("UnresolvedNodesWarningTitle", resourceCulture);
             }
         }
         

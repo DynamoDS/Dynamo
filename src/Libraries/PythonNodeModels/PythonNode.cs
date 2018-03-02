@@ -11,6 +11,8 @@ using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
 using ProtoCore.AST.AssociativeAST;
 using Newtonsoft.Json;
+using System.IO;
+using Dynamo.Configuration;
 
 namespace PythonNodeModels
 {
@@ -21,7 +23,7 @@ namespace PythonNodeModels
         /// </summary>
         /// <param name="inPorts">A collection of <see cref="PortModel"/> objects.</param>
         /// <param name="outPorts">A collection of <see cref="PortModel"/> objects.</param>
-        protected PythonNodeBase(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base( inPorts, outPorts)
+        protected PythonNodeBase(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
         {
             ArgumentLacing = LacingStrategy.Disabled;
         }
@@ -92,6 +94,25 @@ namespace PythonNodeModels
         }
 
         /// <summary>
+        /// The default Python code template. Code comments are saved in *.resx for localisation.
+        /// </summary>
+        private string defaultPythonTemplateCode
+        {
+            get
+            {
+                return  "# " + Properties.Resources.PythonScriptEditorImports + Environment.NewLine +
+                        "import clr" + Environment.NewLine +
+                        "clr.AddReference('ProtoGeometry')" + Environment.NewLine +
+                        "from Autodesk.DesignScript.Geometry import *" + Environment.NewLine + Environment.NewLine +
+                        "# " + Properties.Resources.PythonScriptEditorInputComment + Environment.NewLine +
+                        "dataEnteringNode = IN" + Environment.NewLine + Environment.NewLine +
+                        "# " + Properties.Resources.PythonScriptEditorCodeComment + Environment.NewLine + Environment.NewLine +
+                        "# " + Properties.Resources.PythonScriptEditorOutputComment + Environment.NewLine +
+                        "OUT = 0";
+            }
+        }
+
+        /// <summary>
         /// Private constructor used for serialization.
         /// </summary>
         /// <param name="inPorts">A collection of <see cref="PortModel"/> objects.</param>
@@ -101,12 +122,11 @@ namespace PythonNodeModels
 
         public PythonNode()
         {
-            script = "import clr\nclr.AddReference('ProtoGeometry')\n"
-                + "from Autodesk.DesignScript.Geometry import *\n"
-                + "#" + Properties.Resources.PythonScriptEditorInputComment + "\n"
-                + "dataEnteringNode = IN\n\n"
-                + "#" + Properties.Resources.PythonScriptEditorOutputComment + "\n"
-                + "OUT = 0";
+            var pythonTemplatePath = PreferenceSettings.GetPythonTemplateFilePath();
+            if (!String.IsNullOrEmpty(pythonTemplatePath) && File.Exists(pythonTemplatePath))
+                script = File.ReadAllText(pythonTemplatePath);
+            else
+                script = defaultPythonTemplateCode;
 
             AddInput();
         }

@@ -922,15 +922,7 @@
     },
     {
       "fullyQualifiedName": "Autodesk.DesignScript.Geometry.Curve.SplitByParameter",
-      "iconUrl": "http://localhost/icons/Autodesk.DesignScript.Geometry.Curve.SplitByParameter.double.Small?path=ProtoGeometry.dll",
-      "contextData": "Autodesk.DesignScript.Geometry.Curve.SplitByParameter@double",
-      "parameters": "(parameter)",
-      "itemType": "action",
-      "keywords": "cutinto, divide, curve2curves, cut"
-    },
-    {
-      "fullyQualifiedName": "Autodesk.DesignScript.Geometry.Curve.SplitByParameter",
-      "iconUrl": "http://localhost/icons/Autodesk.DesignScript.Geometry.Curve.SplitByParameter.double1.Small?path=ProtoGeometry.dll",
+      "iconUrl": "http://localhost/icons/Autodesk.DesignScript.Geometry.Curve.SplitByParameter.Small?path=ProtoGeometry.dll",
       "contextData": "Autodesk.DesignScript.Geometry.Curve.SplitByParameter@double[]",
       "parameters": "(parameters)",
       "itemType": "action",
@@ -1298,15 +1290,7 @@
     },
     {
       "fullyQualifiedName": "Autodesk.DesignScript.Geometry.Geometry.SerializeAsSAB",
-      "iconUrl": "http://localhost/icons/Autodesk.DesignScript.Geometry.Geometry.SerializeAsSAB..Small?path=ProtoGeometry.dll",
-      "contextData": "Autodesk.DesignScript.Geometry.Geometry.SerializeAsSAB",
-      "parameters": "()",
-      "itemType": "action",
-      "keywords": ""
-    },
-    {
-      "fullyQualifiedName": "Autodesk.DesignScript.Geometry.Geometry.SerializeAsSAB",
-      "iconUrl": "http://localhost/icons/Autodesk.DesignScript.Geometry.Geometry.SerializeAsSAB.Geometry1.Small?path=ProtoGeometry.dll",
+      "iconUrl": "http://localhost/icons/Autodesk.DesignScript.Geometry.Geometry.SerializeAsSAB.Small?path=ProtoGeometry.dll",
       "contextData": "Autodesk.DesignScript.Geometry.Geometry.SerializeAsSAB@Autodesk.DesignScript.Geometry.Geometry[]",
       "parameters": "(geometry)",
       "itemType": "action",
@@ -2962,15 +2946,7 @@
     },
     {
       "fullyQualifiedName": "Autodesk.DesignScript.Geometry.PolySurface.BySweep",
-      "iconUrl": "http://localhost/icons/Autodesk.DesignScript.Geometry.PolySurface.BySweep.Curve-Curve1.Small?path=ProtoGeometry.dll",
-      "contextData": "Autodesk.DesignScript.Geometry.PolySurface.BySweep@Autodesk.DesignScript.Geometry.Curve,Autodesk.DesignScript.Geometry.Curve[]",
-      "parameters": "(rail, crossSection)",
-      "itemType": "create",
-      "keywords": "sweep, rail, guide, sweep1"
-    },
-    {
-      "fullyQualifiedName": "Autodesk.DesignScript.Geometry.PolySurface.BySweep",
-      "iconUrl": "http://localhost/icons/Autodesk.DesignScript.Geometry.PolySurface.BySweep.Curve-Curve.Small?path=ProtoGeometry.dll",
+      "iconUrl": "http://localhost/icons/Autodesk.DesignScript.Geometry.PolySurface.BySweep.Small?path=ProtoGeometry.dll",
       "contextData": "Autodesk.DesignScript.Geometry.PolySurface.BySweep@Autodesk.DesignScript.Geometry.Curve,Autodesk.DesignScript.Geometry.Curve",
       "parameters": "(rail, profile)",
       "itemType": "create",
@@ -4043,7 +4019,7 @@
     {
       "fullyQualifiedName": "DSCore.DateTime.Format",
       "iconUrl": "http://localhost/icons/DSCore.DateTime.Format.Small?path=DSCoreNodes.dll",
-      "contextData": "DSCore.DateTime.Format@var,string",
+      "contextData": "DSCore.DateTime.Format",
       "parameters": null,
       "itemType": "action",
       "keywords": ""
@@ -5401,137 +5377,145 @@
       "keywords": ""
     },
     {
-      "fullyQualifiedName": "DSCore.IO.File.ReadText",
-      "iconUrl": "http://localhost/icons/DSCore.IO.File.ReadText.var.Small?path=DSCoreNodes.dll",
-      "contextData": "DSCore.IO.File.ReadText@var",
+      "fullyQualifiedName": "DSCore.IO.FileSytem.AppendText",
+      "iconUrl": "http://localhost/icons/DSCore.IO.FileSystem.AppendText.Small?path=DSCoreNodes.dll",
+      "contextData": "DSCore.IO.FileSystem.AppendText",
+      "parameters": null,
+      "itemType": "action",
+      "keywords": "append"
+    },
+    {
+      "fullyQualifiedName": "DSCore.IO.FileSytem.ReadText",
+      "iconUrl": "http://localhost/icons/DSCore.IO.FileSystem.ReadText.var.Small?path=DSCoreNodes.dll",
+      "contextData": "DSCore.IO.FileSystem.ReadText@var",
       "parameters": "(file)",
       "itemType": "action",
       "keywords": "read file, text, file"
     },
     {
-      "fullyQualifiedName": "DSCore.IO.File.Move",
-      "iconUrl": "http://localhost/icons/DSCore.IO.File.Move.Small?path=DSCoreNodes.dll",
-      "contextData": "DSCore.IO.File.Move@string,string,bool",
+      "fullyQualifiedName": "DSCore.IO.FileSystem.MoveFile",
+      "iconUrl": "http://localhost/icons/DSCore.IO.FileSystem.MoveFile.Small?path=DSCoreNodes.dll",
+      "contextData": "DSCore.IO.FileSystem.MoveFile@string,string,bool",
       "parameters": null,
       "itemType": "action",
       "keywords": ""
     },
     {
-      "fullyQualifiedName": "DSCore.IO.File.Delete",
-      "iconUrl": "http://localhost/icons/DSCore.IO.File.Delete.Small?path=DSCoreNodes.dll",
-      "contextData": "DSCore.IO.File.Delete@string",
+      "fullyQualifiedName": "DSCore.IO.FileSystem.DeleteFile",
+      "iconUrl": "http://localhost/icons/DSCore.IO.FileSystem.DeleteFile.Small?path=DSCoreNodes.dll",
+      "contextData": "DSCore.IO.FileSystem.DeleteFile@string",
       "parameters": null,
       "itemType": "action",
       "keywords": ""
     },
     {
-      "fullyQualifiedName": "DSCore.IO.File.Copy",
-      "iconUrl": "http://localhost/icons/DSCore.IO.File.Copy.Small?path=DSCoreNodes.dll",
-      "contextData": "DSCore.IO.File.Copy@var,string,bool",
+      "fullyQualifiedName": "DSCore.IO.FileSystem.CopyFile",
+      "iconUrl": "http://localhost/icons/DSCore.IO.FileSystem.CopyFile.Small?path=DSCoreNodes.dll",
+      "contextData": "DSCore.IO.FileSystem.CopyFile@var,string,bool",
       "parameters": null,
       "itemType": "action",
       "keywords": ""
     },
     {
-      "fullyQualifiedName": "DSCore.IO.File.Exists",
-      "iconUrl": "http://localhost/icons/DSCore.IO.File.Exists.Small?path=DSCoreNodes.dll",
-      "contextData": "DSCore.IO.File.Exists@string",
+      "fullyQualifiedName": "DSCore.IO.FileSystem.FileExists",
+      "iconUrl": "http://localhost/icons/DSCore.IO.FileSystem.FileExists.Small?path=DSCoreNodes.dll",
+      "contextData": "DSCore.IO.FileSystem.FileExists@string",
       "parameters": null,
       "itemType": "action",
       "keywords": "filepath"
     },
     {
-      "fullyQualifiedName": "DSCore.IO.File.WriteText",
-      "iconUrl": "http://localhost/icons/DSCore.IO.File.WriteText.Small?path=DSCoreNodes.dll",
-      "contextData": "DSCore.IO.File.WriteText@string,string",
+      "fullyQualifiedName": "DSCore.IO.FileSystem.WriteText",
+      "iconUrl": "http://localhost/icons/DSCore.IO.FileSystem.WriteText.Small?path=DSCoreNodes.dll",
+      "contextData": "DSCore.IO.FileSystem.WriteText@string,string",
       "parameters": null,
       "itemType": "action",
       "keywords": "write file, text, file, filepath"
     },
     {
-      "fullyQualifiedName": "DSCore.IO.File.CombinePath",
-      "iconUrl": "http://localhost/icons/DSCore.IO.File.CombinePath.Small?path=DSCoreNodes.dll",
-      "contextData": "DSCore.IO.File.CombinePath@string[]",
+      "fullyQualifiedName": "DSCore.IO.FileSytem.CombinePath",
+      "iconUrl": "http://localhost/icons/DSCore.IO.FileSystem.CombinePath.Small?path=DSCoreNodes.dll",
+      "contextData": "DSCore.IO.FileSystem.CombinePath@string[]",
       "parameters": null,
       "itemType": "action",
       "keywords": ""
     },
     {
-      "fullyQualifiedName": "DSCore.IO.File.FileExtension",
-      "iconUrl": "http://localhost/icons/DSCore.IO.File.FileExtension.Small?path=DSCoreNodes.dll",
-      "contextData": "DSCore.IO.File.FileExtension@string",
+      "fullyQualifiedName": "DSCore.IO.FileSystem.FileExtension",
+      "iconUrl": "http://localhost/icons/DSCore.IO.FileSystem.FileExtension.Small?path=DSCoreNodes.dll",
+      "contextData": "DSCore.IO.FileSystem.FileExtension@string",
       "parameters": null,
       "itemType": "action",
       "keywords": ""
     },
     {
-      "fullyQualifiedName": "DSCore.IO.File.ChangePathExtension",
-      "iconUrl": "http://localhost/icons/DSCore.IO.File.ChangePathExtension.Small?path=DSCoreNodes.dll",
-      "contextData": "DSCore.IO.File.ChangePathExtension@string,string",
+      "fullyQualifiedName": "DSCore.IO.FileSystem.ChangePathExtension",
+      "iconUrl": "http://localhost/icons/DSCore.IO.FileSystem.ChangePathExtension.Small?path=DSCoreNodes.dll",
+      "contextData": "DSCore.IO.FileSystem.ChangePathExtension@string,string",
       "parameters": null,
       "itemType": "action",
       "keywords": ""
     },
     {
-      "fullyQualifiedName": "DSCore.IO.File.DirectoryName",
-      "iconUrl": "http://localhost/icons/DSCore.IO.File.DirectoryName.Small?path=DSCoreNodes.dll",
-      "contextData": "DSCore.IO.File.DirectoryName@string",
+      "fullyQualifiedName": "DSCore.IO.FileSystem.DirectoryName",
+      "iconUrl": "http://localhost/icons/DSCore.IO.FileSystem.DirectoryName.Small?path=DSCoreNodes.dll",
+      "contextData": "DSCore.IO.FileSystem.DirectoryName@string",
       "parameters": null,
       "itemType": "action",
       "keywords": "directorypath"
     },
     {
-      "fullyQualifiedName": "DSCore.IO.File.FileName",
-      "iconUrl": "http://localhost/icons/DSCore.IO.File.FileName.Small?path=DSCoreNodes.dll",
-      "contextData": "DSCore.IO.File.FileName@string,bool",
+      "fullyQualifiedName": "DSCore.IO.FileSystem.FileName",
+      "iconUrl": "http://localhost/icons/DSCore.IO.FileSystem.FileName.Small?path=DSCoreNodes.dll",
+      "contextData": "DSCore.IO.FileSystem.FileName@string,bool",
       "parameters": null,
       "itemType": "action",
       "keywords": ""
     },
     {
-      "fullyQualifiedName": "DSCore.IO.File.FileHasExtension",
-      "iconUrl": "http://localhost/icons/DSCore.IO.File.FileHasExtension.Small?path=DSCoreNodes.dll",
-      "contextData": "DSCore.IO.File.FileHasExtension@string",
+      "fullyQualifiedName": "DSCore.IO.FileSystem.FileHasExtension",
+      "iconUrl": "http://localhost/icons/DSCore.IO.FileSystem.FileHasExtension.Small?path=DSCoreNodes.dll",
+      "contextData": "DSCore.IO.FileSystem.FileHasExtension@string",
       "parameters": null,
       "itemType": "action",
       "keywords": ""
     },
     {
-      "fullyQualifiedName": "DSCore.IO.File.GetDirectoryContents",
-      "iconUrl": "http://localhost/icons/DSCore.IO.File.GetDirectoryContents.Small?path=DSCoreNodes.dll",
-      "contextData": "DSCore.IO.File.GetDirectoryContents@var,string",
+      "fullyQualifiedName": "DSCore.IO.FileSystem.GetDirectoryContents",
+      "iconUrl": "http://localhost/icons/DSCore.IO.FileSystem.GetDirectoryContents.Small?path=DSCoreNodes.dll",
+      "contextData": "DSCore.IO.FileSystem.GetDirectoryContents@var,string",
       "parameters": null,
       "itemType": "action",
       "keywords": ""
     },
     {
-      "fullyQualifiedName": "DSCore.IO.File.CopyDirectory",
-      "iconUrl": "http://localhost/icons/DSCore.IO.File.CopyDirectory.Small?path=DSCoreNodes.dll",
-      "contextData": "DSCore.IO.File.CopyDirectory@var,string,bool",
+      "fullyQualifiedName": "DSCore.IO.FileSystem.CopyDirectory",
+      "iconUrl": "http://localhost/icons/DSCore.IO.FileSystem.CopyDirectory.Small?path=DSCoreNodes.dll",
+      "contextData": "DSCore.IO.FileSystem.CopyDirectory@var,string,bool",
       "parameters": null,
       "itemType": "action",
       "keywords": ""
     },
     {
-      "fullyQualifiedName": "DSCore.IO.File.DeleteDirectory",
-      "iconUrl": "http://localhost/icons/DSCore.IO.File.DeleteDirectory.Small?path=DSCoreNodes.dll",
-      "contextData": "DSCore.IO.File.DeleteDirectory@string,bool",
+      "fullyQualifiedName": "DSCore.IO.FileSystem.DeleteDirectory",
+      "iconUrl": "http://localhost/icons/DSCore.IO.FileSystem.DeleteDirectory.Small?path=DSCoreNodes.dll",
+      "contextData": "DSCore.IO.FileSystem.DeleteDirectory@string,bool",
       "parameters": null,
       "itemType": "action",
       "keywords": ""
     },
     {
-      "fullyQualifiedName": "DSCore.IO.File.DirectoryExists",
-      "iconUrl": "http://localhost/icons/DSCore.IO.File.DirectoryExists.Small?path=DSCoreNodes.dll",
-      "contextData": "DSCore.IO.File.DirectoryExists@string",
+      "fullyQualifiedName": "DSCore.IO.FileSystem.DirectoryExists",
+      "iconUrl": "http://localhost/icons/DSCore.IO.FileSystem.DirectoryExists.Small?path=DSCoreNodes.dll",
+      "contextData": "DSCore.IO.FileSystem.DirectoryExists@string",
       "parameters": null,
       "itemType": "action",
       "keywords": "directorypath"
     },
     {
-      "fullyQualifiedName": "DSCore.IO.File.MoveDirectory",
-      "iconUrl": "http://localhost/icons/DSCore.IO.File.MoveDirectory.Small?path=DSCoreNodes.dll",
-      "contextData": "DSCore.IO.File.MoveDirectory@string,string,bool",
+      "fullyQualifiedName": "DSCore.IO.FileSystem.MoveDirectory",
+      "iconUrl": "http://localhost/icons/DSCore.IO.FileSystem.MoveDirectory.Small?path=DSCoreNodes.dll",
+      "contextData": "DSCore.IO.FileSystem.MoveDirectory@string,string,bool",
       "parameters": null,
       "itemType": "action",
       "keywords": ""

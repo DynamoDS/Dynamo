@@ -120,6 +120,12 @@
   <data name="EditHeader" xml:space="preserve">
     <value>Edit...</value>
   </data>
+  <data name="DeletingPythonNodeWithOpenEditorMessage" xml:space="preserve">
+    <value>The Python node "{0}" still has a script editor window open. Are you sure you want to close the editor and delete the node?</value>
+  </data>
+  <data name="DeletingPythonNodeWithOpenEditorTitle" xml:space="preserve">
+    <value>Script Editor Open</value>
+  </data>
   <data name="PythonNodePortDataOutputToolTip" xml:space="preserve">
     <value>Result of the python script</value>
   </data>
@@ -127,14 +133,23 @@
     <value>Runs an embedded IronPython script.</value>
     <comment>Description for Python Script</comment>
   </data>
-  <data name="PythonScriptEditoCancelButton" xml:space="preserve">
-    <value>Cancel</value>
+  <data name="PythonScriptEditorSaveChangesButton" xml:space="preserve">
+    <value>Save Changes</value>
   </data>
-  <data name="PythonScriptEditorAcceptChangesButton" xml:space="preserve">
-    <value>Accept Changes</value>
+  <data name="PythonScriptEditorRunButton" xml:space="preserve">
+    <value>Run</value>
+  </data>
+  <data name="PythonScriptEditorRevertButton" xml:space="preserve">
+    <value>Revert</value>
   </data>
   <data name="PythonScriptEditorCaption" xml:space="preserve">
     <value>Edit Python Script...</value>
+  </data>
+  <data name="PythonScriptEditorCodeComment" xml:space="preserve">
+    <value>Place your code below this line</value>
+  </data>
+  <data name="PythonScriptEditorImports" xml:space="preserve">
+    <value>Enable Python support and load DesignScript library</value>
   </data>
   <data name="PythonScriptEditorInputComment" xml:space="preserve">
     <value>The inputs to this node will be stored as a list in the IN variables.</value>

@@ -288,8 +288,8 @@ namespace ProtoCore.DSASM
                     if (classnode.IsImportedClass)
                     {
                         var helper = ProtoFFI.DLLFFIHandler.GetModuleHelper(ProtoFFI.FFILanguage.CSharp);
-                        var marshaller1 = helper.GetMarshaller(rtCore1);
-                        var marshaller2 = helper.GetMarshaller(rtCore2);
+                        var marshaller1 = helper.GetMarshaler(rtCore1);
+                        var marshaller2 = helper.GetMarshaler(rtCore2);
                         try
                         {
                             //the interpreter is passed as null as it is not expected to be sued while unmarshalling in this scenario

@@ -134,7 +134,7 @@ namespace Dynamo.Graph.Nodes
                 this.StepValue == converted.StepValue &&
                 this.Type == converted.Type &&
                 //check if the value is the same or if the value is a number check is it similar
-                ((this.Value == converted.Value) || valNumberComparison || this.Value.ToString() == this.Value.ToString());
+                ((this.Value == converted.Value) || valNumberComparison || this.Value.ToString() == converted.Value.ToString());
         }
     }
 

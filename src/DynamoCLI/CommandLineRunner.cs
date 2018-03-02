@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
 using System.Threading;
 using System.IO;
+using DesignScript.Builtin;
 using Dynamo.Models;
 using DynamoUtilities;
 using Dynamo.Applications;
@@ -14,10 +16,9 @@ namespace DynamoCLI
 {
 
     /// <summary>
-    /// This class invokes a dynamo model's run methods in a headless mode from the CLI using a set of flags
-    /// that set the graph to different preset states. This class also has a very limited method for exporting 
-    /// the graph evaluation to an xml file, so that the results from invoking dynamo from the command line 
-    /// are useable.
+    /// This class invokes a dynamo model's run methods in a headless mode from the CLI using a set of flags.
+    /// This class also has a very limited method for exporting the graph evaluation to an xml file, so that 
+    /// the results from invoking dynamo from the command line are useable.
     /// </summary>
     public class CommandLineRunner
     {
@@ -44,57 +45,18 @@ namespace DynamoCLI
             Console.WriteLine("loaded file");
             model.EvaluationCompleted += (o, args) => { evalComplete = true; };
 
-            if (!string.IsNullOrEmpty(cmdLineArgs.PresetFilePath))
-            {
-                //first load the openfile nodegraph
-                var originalGraphdoc = XmlHelper.CreateDocument("tempworkspace");
-                originalGraphdoc.Load(cmdLineArgs.OpenFilePath);
-                var graph = NodeGraph.LoadGraphFromXml(originalGraphdoc, model.NodeFactory);
-
-                //then load the presetsfile nodegraph (this should only contain presets),
-                var presetsDoc = XmlHelper.CreateDocument("presetstempworkspace");
-                presetsDoc.Load(cmdLineArgs.PresetFilePath);
-                //when we load the presets we need to pass in the nodeModels from the original graph
-                var presets = NodeGraph.LoadPresetsFromXml(presetsDoc, graph.Nodes);
-
-                //load the presets contained in the presetsfile into the workspace,
-                model.CurrentWorkspace.ImportPresets(presets);
-            }
-
-            //build a list of states, for now, none, a single state, or all of them
-            //this must be done after potentially loading states from external file
+            // Build a list of states, by default there is only a single state `default`
+            // If the desire is to have additional states you can add logic here to build
+            // up a list and iterate through each state in the list using the loop below.
+            // This must be done after potentially loading states from an external file.
             var stateNames = new List<String>();
-            if (!string.IsNullOrEmpty(cmdLineArgs.PresetStateID))
-            {
-                if (cmdLineArgs.PresetStateID == "all")
-                {
-                    foreach (var state in model.CurrentWorkspace.Presets)
-                    {
-                        stateNames.Add(state.Name);
-                    }
-                }
-                else
-                {
-                    stateNames.Add(cmdLineArgs.PresetStateID);
-                }
-            }
-            else
-            {
-                stateNames.Add("default");
-            }
+            stateNames.Add("default");
 
             var outputresults = new List<Dictionary<Guid, List<object>>>();
             XmlDocument doc = null;
             foreach (var stateName in stateNames)
             {
-                Guid stateGuid = Guid.Empty;
-                var state = model.CurrentWorkspace.Presets.Where(x => x.Name == stateName).FirstOrDefault();
-                if (state != null)
-                {
-                    stateGuid = state.GUID;
-                }
-                
-                model.ExecuteCommand(new DynamoModel.ApplyPresetCommand(model.CurrentWorkspace.Guid, stateGuid));
+                // Graph execution
                 model.ExecuteCommand(new DynamoModel.RunCancelCommand(false, false));
 
                 while (evalComplete == false)
@@ -117,12 +79,16 @@ namespace DynamoCLI
                             {
                                 portvalues.Add(GetStringRepOfCollection(value));
                             }
+                            else if (value.IsDictionary)
+                            {
+                                portvalues.Add(GetStringRepOfDictionary(value.Data));
+                            }
                             else
                             {
                                 portvalues.Add(value.StringData);
                             }
-                            
                         }
+
                         resultsdict.Add(node.GUID, portvalues);
                     }
                     outputresults.Add(resultsdict);
@@ -132,16 +98,49 @@ namespace DynamoCLI
 
             }
 
-
             return doc;
         }
 
-        private static string GetStringRepOfCollection(ProtoCore.Mirror.MirrorData collection)
+        private static string GetStringRepOfCollection(ProtoCore.Mirror.MirrorData value)
         {
+            var items = string.Join(",",
+                value.GetElements().Select(x =>
+                {
+                    if(x.IsCollection) return GetStringRepOfCollection(x);
+                    return x.IsDictionary ? GetStringRepOfDictionary(x.Data) : x.StringData;
+                }));
+            return "{" + items + "}";
+        }
 
-           var items = string.Join(",", collection.GetElements().Select(x => x.IsCollection ? GetStringRepOfCollection(x) : x.StringData));
-            return "{"+items +"}";
-
+        private static string GetStringRepOfDictionary(object value)
+        {
+            if (value is DesignScript.Builtin.Dictionary || value is IDictionary)
+            {
+                IEnumerable<string> keys;
+                IEnumerable<object> values;
+                var dictionary = value as Dictionary;
+                if (dictionary != null)
+                {
+                    var dict = dictionary;
+                    keys = dict.Keys;
+                    values = dict.Values;
+                }
+                else
+                {
+                    var dict = (IDictionary) value;
+                    keys = dict.Keys.Cast<string>();
+                    values = dict.Values.Cast<object>();
+                }
+                var items = string.Join(", ", keys.Zip(values, (str, obj) => str + " : " + GetStringRepOfDictionary(obj)));
+                return "{" + items + "}";
+            }
+            if (!(value is string) && value is IEnumerable)
+            {
+                var list = ((IEnumerable) value).Cast<dynamic>().ToList();
+                var items = string.Join(", ", list.Select(x => GetStringRepOfDictionary(x)));
+                return "{" + items + "}";
+            }
+            return value.ToString();
         }
 
         private static void populateXmlDocWithResults(XmlDocument doc, List<Dictionary<Guid, List<object>>> resultsDict)

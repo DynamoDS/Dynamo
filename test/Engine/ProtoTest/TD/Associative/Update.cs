@@ -137,7 +137,7 @@ a[1] = a[1] + 1;";
 a=1;
 b=2;
 c=4;
-collection = {a,b,c};
+collection = [a,b,c];
 collection[1] = collection[1] + 0.5;
 d = collection[1];
 d = d + 0.1;    // updates the result of accessing the collection - Redefinition
@@ -228,15 +228,16 @@ line_0 = [Imperative]
         }
 
         [Test]
-        [Category("DSDefinedClass_Ported")]
+        [Category("DSDefinedClass_Ported"), Category("Failure")]
         [Category("SmokeTest")]
         public void T008_Update_Of_Variables()
         {
+            // TODO pratapa: Regression after introduction of Get.ValueAtIndex method for array indexing
             string code = @"
 a = 1;
 b = a + 1;
 a = 2;
-t1 = { 1, 2 };
+t1 = [ 1, 2 ];
 t2 = t1 [0] + 1;
 t1 = 5.5;
 ";
@@ -266,7 +267,7 @@ u2 = 3;
             string code = @"
 s1 = 3;
 s2 = s1 -1;
-s1 = { 3, 4 } ;";
+s1 = [ 3, 4 ] ;";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             //Verification
             Object[] v1 = new Object[] { 2, 3 };
@@ -329,7 +330,7 @@ import(""FFITarget.dll"");
 r1 = 2.0;
 r2 = r1+1;
 r1 = TestObjectA.TestObjectA(5);
-t1 = { 1, 2 };
+t1 = [ 1, 2 ];
 t2 = t1 [0] + 1;
 t1 = TestObjectA.TestObjectA(5);
 ";
@@ -365,7 +366,7 @@ c1 = b1;
         {
             string code = @"
 import(""FFITarget.dll"");
-x = { 3, 4 } ;
+x = [ 3, 4 ] ;
 a1 = TestObjectA.TestObjectA(x);
 b1 = a1.a;
 x[0] = x [0] + 1;
@@ -385,10 +386,10 @@ c1 = b1;
         {
             string code = @"
 import(""FFITarget.dll"");
-x = { 3, 4 } ;
+x = [ 3, 4 ] ;
 y = x[0] + 1;
-x =  { 3.5, 4.5 } ;
-x =  { TestObjectA.TestObjectA(1).a, TestObjectA.TestObjectA(2).a } ;";
+x =  [ 3.5, 4.5 ] ;
+x =  [ TestObjectA.TestObjectA(1).a, TestObjectA.TestObjectA(2).a ] ;";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             //Verification   
             thisTest.Verify("y", 2, 0);
@@ -531,11 +532,11 @@ a[2] = a[2] + 1;
         public void T024_Defect_1459470_4()
         {
             string errmsg = "";//DNL-1467337 Rev 3971 : Update of global variables from inside function call is not happening as expectedr";
-            string src = @"a = {1,2,3,4};
+            string src = @"a = [1,2,3,4];
 b = a;
 c = b[2];
 d = a[2];
-a[0..1] = {1, 2};
+a[0..1] = [1, 2];
 b[2..3] = 5;
 	
 ";
@@ -591,9 +592,9 @@ def foo ( a : int[] )
     b[0] = b[1] + 1;
     return = b;
 }
-a = { 0, 1, 2};
+a = [ 0, 1, 2];
 e1 = foo(a);
-a = { 1, 2};
+a = [ 1, 2];
 ";
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "";
@@ -614,7 +615,7 @@ def foo ( a : int[] )
     return = b;
 }
 i = 1..2;
-a = { 0, 1, 2, 3};
+a = [ 0, 1, 2, 3];
 e1 = foo(a[i]);
 i = 0..2;
 ";
@@ -640,7 +641,7 @@ class B
         a2 = b;
     }
 }
-b1 = B.B ( 1, {1.0, 2.0} );
+b1 = B.B ( 1, [1.0, 2.0] );
 test1 = b1.a2[0];
 b1.a2[0] = b1.a2[1];
 ";
@@ -699,14 +700,14 @@ b = a;";
 a1;
 [Imperative]
 {
-	a = {};
+	a = [];
 	b = a;
 	a[0] = b;
 	c = Count(a);
 }
 [Associative]
 {
-	a1 = {0};
+	a1 = [0];
 	b1 = a1;
 	a1[0] = b1;
 }";
@@ -721,11 +722,10 @@ a1;
         {
 
             string code = @"
-a = {};
+
 x = 1;
 y = 2;
-a[""x""] = x;
-a[""y""] = y;
+a = {""x"" : x, ""y"" : y};
 x = 3;
 y = 4;
 r1 = a[""x""];

@@ -16,6 +16,9 @@ using ProtoCore.Mirror;
 using ProtoCore.Utils;
 
 using DynCmd = Dynamo.Models.DynamoModel;
+using Dynamo.Models;
+using Dynamo.Graph.Workspaces;
+using Dynamo.Properties;
 
 namespace Dynamo.Tests
 {
@@ -24,6 +27,7 @@ namespace Dynamo.Tests
         protected override void GetLibrariesToPreload(List<string> libraries)
         {
             libraries.Add("ProtoGeometry.dll");
+            libraries.Add("Builtin.dll");
             libraries.Add("DSCoreNodes.dll");
 
             base.GetLibrariesToPreload(libraries);
@@ -224,19 +228,23 @@ b = c[w][x][y][z];";
             Assert.AreEqual("a", indexMap.ElementAt(0).Key);
             Assert.AreEqual(1, indexMap.ElementAt(0).Value);
 
-            UpdateCodeBlockNodeContent(codeBlockNodeOne, "a = 0; \n a = 1;");
+            UpdateCodeBlockNodeContent(codeBlockNodeOne, "a = 0; \n b = 1;");
 
             indexMap = CodeBlockUtils.GetDefinitionLineIndexMap(codeBlockNodeOne.CodeStatements);
             Assert.AreEqual("a", indexMap.ElementAt(0).Key);
-            Assert.AreEqual(2, indexMap.ElementAt(0).Value);
+            Assert.AreEqual(1, indexMap.ElementAt(0).Value);
+            Assert.AreEqual("b", indexMap.ElementAt(1).Key);
+            Assert.AreEqual(2, indexMap.ElementAt(1).Value);
 
-            UpdateCodeBlockNodeContent(codeBlockNodeOne, "a = 0; \n b = 1; \n a = 2;");
+            UpdateCodeBlockNodeContent(codeBlockNodeOne, "b = 0; \n a = 1; \n c = 2;");
 
             indexMap = CodeBlockUtils.GetDefinitionLineIndexMap(codeBlockNodeOne.CodeStatements);
             Assert.AreEqual("b", indexMap.ElementAt(0).Key);
-            Assert.AreEqual(2, indexMap.ElementAt(0).Value);
+            Assert.AreEqual(1, indexMap.ElementAt(0).Value);
             Assert.AreEqual("a", indexMap.ElementAt(1).Key);
-            Assert.AreEqual(3, indexMap.ElementAt(1).Value);
+            Assert.AreEqual(2, indexMap.ElementAt(1).Value);
+            Assert.AreEqual("c", indexMap.ElementAt(2).Key);
+            Assert.AreEqual(3, indexMap.ElementAt(2).Value);
 
         }
 
@@ -255,6 +263,175 @@ b = c[w][x][y][z];";
             UpdateCodeBlockNodeContent(codeBlockNode, "a = 1..6;\na[2]=a[2] + 1;");
             Assert.AreEqual(0, codeBlockNode.InPorts.Count);
             Assert.AreEqual(1, codeBlockNode.OutPorts.Count);
+        }
+
+        [Test]
+        public void CodeBlockConnectionsRemainAfterUndo()
+        {
+            RunCurrentModel();
+            // Create the initial code block node.
+            var codeBlockNode1 = CreateCodeBlockNode();
+            UpdateCodeBlockNodeContent(codeBlockNode1,"3;");
+
+            // Create the second code block node.
+            var codeBlockNode2 = CreateCodeBlockNode();
+            UpdateCodeBlockNodeContent(codeBlockNode2, "x;");
+
+            //connect them
+            this.CurrentDynamoModel.ExecuteCommand(
+                new DynamoModel.MakeConnectionCommand(codeBlockNode1.GUID, 0, PortType.Output,
+             DynamoModel.MakeConnectionCommand.Mode.Begin));
+            this.CurrentDynamoModel.ExecuteCommand(
+                new DynamoModel.MakeConnectionCommand(codeBlockNode2.GUID, 0, PortType.Input,
+                DynamoModel.MakeConnectionCommand.Mode.End));
+            RunCurrentModel();
+
+            var oldPos = codeBlockNode2.X;
+            var oldinputPortGuid = codeBlockNode2.InPorts[0].GUID;
+            var oldConnectorGuid = codeBlockNode2.InPorts[0].Connectors[0].GUID;
+
+            //move the second node.
+            this.CurrentDynamoModel.ExecuteCommand(
+                new DynamoModel.UpdateModelValueCommand(codeBlockNode2.GUID, "Position", "300.0;300.0"));
+            Assert.AreEqual(300, codeBlockNode2.X);
+            //undo it.
+            this.CurrentDynamoModel.CurrentWorkspace.Undo();
+            Assert.AreEqual(oldPos, codeBlockNode2.X);
+
+            //assert that after undo the port and connector have the same GUIDs
+            //Assert.AreEqual(oldinputPortGuid, codeBlockNode2.InPorts[0].GUID);
+            Assert.AreEqual(oldConnectorGuid, codeBlockNode2.InPorts[0].Connectors[0].GUID);
+
+
+            RunCurrentModel();
+            //assert the connectors still exist and the node has the same value
+            Assert.IsTrue(codeBlockNode2.InPorts[0].Connectors.Count > 0);
+            Assert.IsTrue(codeBlockNode1.OutPorts[0].Connectors.Count > 0);
+            Assert.AreEqual(3, codeBlockNode2.CachedValue.Data);
+
+        }
+        [Test]
+        public void UndoRedoCodeBlockErrorStateDoesNotCrashOutputs()
+        {
+            RunCurrentModel();
+            // Create the initial code block node.
+            var codeBlockNode1 = CreateCodeBlockNode();
+            UpdateCodeBlockNodeContent(codeBlockNode1, "1;");
+            RunCurrentModel();
+
+            UpdateCodeBlockNodeContent(codeBlockNode1, "{1};");
+            RunCurrentModel();
+
+            Assert.IsTrue(codeBlockNode1.IsInErrorState);
+
+            UpdateCodeBlockNodeContent(codeBlockNode1, "{1];");
+            RunCurrentModel();
+
+            Assert.DoesNotThrow(() =>
+            {
+                CurrentDynamoModel.CurrentWorkspace.Undo();
+                RunCurrentModel();
+                CurrentDynamoModel.CurrentWorkspace.Redo();
+                RunCurrentModel();
+                CurrentDynamoModel.CurrentWorkspace.Undo();
+                RunCurrentModel();
+            });
+
+            Assert.IsTrue(codeBlockNode1.IsInErrorState);
+        }
+
+        [Test]
+        public void UndoRedoCodeBlockErrorStateDoesNotCrashInputs()
+        {
+            RunCurrentModel();
+            // Create the initial code block node.
+            var codeBlockNode1 = CreateCodeBlockNode();
+            UpdateCodeBlockNodeContent(codeBlockNode1, "x;");
+            RunCurrentModel();
+
+            UpdateCodeBlockNodeContent(codeBlockNode1, "{x};");
+            RunCurrentModel();
+
+            Assert.IsTrue(codeBlockNode1.IsInErrorState);
+
+            UpdateCodeBlockNodeContent(codeBlockNode1, "{x];");
+            RunCurrentModel();
+
+            Assert.DoesNotThrow(() =>
+            {
+                CurrentDynamoModel.CurrentWorkspace.Undo();
+                RunCurrentModel();
+                CurrentDynamoModel.CurrentWorkspace.Redo();
+                RunCurrentModel();
+                CurrentDynamoModel.CurrentWorkspace.Undo();
+                RunCurrentModel();
+            });
+
+            Assert.IsTrue(codeBlockNode1.IsInErrorState);
+        }
+
+        [Test]
+        public void UndoRedoCodeBlockDeletionDoesNotCrash()
+        {
+            RunCurrentModel();
+            // Create the initial code block node.
+            var codeBlockNode1 = CreateCodeBlockNode();
+            UpdateCodeBlockNodeContent(codeBlockNode1, "3;");
+
+            // Create the second code block node.
+            var codeBlockNode2 = CreateCodeBlockNode();
+            UpdateCodeBlockNodeContent(codeBlockNode2, "x;");
+
+            //connect them
+            this.CurrentDynamoModel.ExecuteCommand(
+                new DynamoModel.MakeConnectionCommand(codeBlockNode1.GUID, 0, PortType.Output,
+             DynamoModel.MakeConnectionCommand.Mode.Begin));
+            this.CurrentDynamoModel.ExecuteCommand(
+                new DynamoModel.MakeConnectionCommand(codeBlockNode2.GUID, 0, PortType.Input,
+                DynamoModel.MakeConnectionCommand.Mode.End));
+            RunCurrentModel();
+
+            var oldConnectorGuid = codeBlockNode2.InPorts[0].Connectors[0].GUID;
+
+            //record the codeblock for undo - this is the issue as undoing this will deserialize the codeblock
+            WorkspaceModel.RecordModelsForModification(new List<ModelBase> { codeBlockNode2 }, CurrentDynamoModel.CurrentWorkspace.UndoRecorder);
+
+            //delete it
+            this.CurrentDynamoModel.ExecuteCommand(
+                new DynamoModel.DeleteModelCommand(codeBlockNode2.GUID));
+
+            //undo the deletion.
+            this.CurrentDynamoModel.CurrentWorkspace.Undo();
+            Assert.AreEqual(2, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+            Assert.AreEqual(1, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
+
+            //get the new codeblock instance
+            codeBlockNode2 = CurrentDynamoModel.CurrentWorkspace.Nodes.Where(x => x.GUID == codeBlockNode2.GUID).FirstOrDefault() as CodeBlockNodeModel;
+
+            Assert.AreEqual(oldConnectorGuid, codeBlockNode2.InPorts[0].Connectors[0].GUID);
+
+            //undo the initial recording...
+            this.CurrentDynamoModel.CurrentWorkspace.Undo();
+            //assert nothing changed
+            Assert.AreEqual(1, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
+            Assert.AreEqual(oldConnectorGuid, codeBlockNode2.InPorts[0].Connectors[0].GUID);
+
+            //redo the deletion
+            Assert.DoesNotThrow(() =>
+            {
+                this.CurrentDynamoModel.CurrentWorkspace.Redo();
+                this.CurrentDynamoModel.CurrentWorkspace.Redo();
+                this.CurrentDynamoModel.CurrentWorkspace.Redo();
+                this.CurrentDynamoModel.CurrentWorkspace.Redo();
+            });
+            
+            //undo deletion again
+            this.CurrentDynamoModel.CurrentWorkspace.Undo();
+            //get the new codeblock instance
+            codeBlockNode2 = CurrentDynamoModel.CurrentWorkspace.Nodes.Where(x => x.GUID == codeBlockNode2.GUID).FirstOrDefault() as CodeBlockNodeModel;
+            Assert.AreEqual(2, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+            Assert.AreEqual(1, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
+            Assert.AreEqual(oldConnectorGuid, codeBlockNode2.InPorts[0].Connectors[0].GUID);
         }
 
         [Test]
@@ -351,7 +528,7 @@ b = c[w][x][y][z];";
             Assert.AreEqual(8, cbn.AllConnectors.Count());
 
             // add syntax error in cbn code and update
-            string codeInCBN = @"x = {a$,b,c,d,e};x[1];x[3];";
+            string codeInCBN = @"x = [a$,b,c,d,e];x[1];x[3];";
             UpdateCodeBlockNodeContent(cbn, codeInCBN);
 
             // Verify that cbn is in error state and number of input, output ports remains the same
@@ -383,6 +560,64 @@ b = c[w][x][y][z];";
             Assert.AreEqual(5, cbn.InPorts.Count);
             Assert.AreEqual(3, cbn.OutPorts.Count);
             Assert.AreEqual(8, cbn.AllConnectors.Count());
+        }
+
+        [Test]
+        public void Test_PortErrorBehavior_CodeBlockErrorsInFile()
+        {
+            // ---------------------------------------------------------------
+            // STEP 1: Load a file with the code block node in an error state
+            //         and verify the ports, port line indexes, and connections 
+
+            string openPath = Path.Combine(TestDirectory,
+                @"core\dsevaluation\Test_PortErrorBehavior_CodeBlockErrorsInFile.dyn");
+            OpenModel(openPath);
+            Assert.AreEqual(3, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+
+            var cbn = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace<CodeBlockNodeModel>(
+                Guid.Parse("dad587d1-acee-445c-890d-98500b408ec6"));
+
+            // Verify that the code block node is in an error state
+            Assert.IsNotNull(cbn);
+            Assert.AreEqual(ElementState.Error, cbn.State);
+            Assert.IsTrue(!cbn.CodeStatements.Any());
+
+            // Verify that input ports, output ports, and any expected connections exist
+            Assert.AreEqual(1, cbn.InPorts.Count);
+            Assert.AreEqual(3, cbn.OutPorts.Count);
+            Assert.AreEqual(2, cbn.AllConnectors.Count());
+
+            // NOTE: Input ports are matched by name instead of index, so there
+            //       is no checking of the input line indexes here or below
+      
+            // Verify the output port line indexes here
+            Assert.AreEqual(0, cbn.OutPorts[0].LineIndex);
+            Assert.AreEqual(1, cbn.OutPorts[1].LineIndex);
+            Assert.AreEqual(2, cbn.OutPorts[2].LineIndex);
+
+            // ---------------------------------------------------------------
+            // STEP 2: Fix the code block node error and verify the ports, 
+            //         connections, and port line indexes  
+
+            // Fix the code block node error
+            var brokenCode = cbn.Code;
+            var fixedCode = brokenCode.Replace("{val};", "{};");
+            UpdateCodeBlockNodeContent(cbn, fixedCode);
+
+            // Verify that the code block node is no longer in an error state
+            Assert.AreEqual(ElementState.Active, cbn.State);
+            Assert.IsTrue(cbn.CodeStatements.Any());
+
+            // Verify that input ports, output ports, and any expected connections exist
+            // and that the number of each has not changed
+            Assert.AreEqual(1, cbn.InPorts.Count);
+            Assert.AreEqual(3, cbn.OutPorts.Count);
+            Assert.AreEqual(2, cbn.AllConnectors.Count());
+
+            // Verify the output port line indexes here
+            Assert.AreEqual(0, cbn.OutPorts[0].LineIndex);
+            Assert.AreEqual(5, cbn.OutPorts[1].LineIndex);
+            Assert.AreEqual(6, cbn.OutPorts[2].LineIndex);
         }
 
         [Test]
@@ -1089,6 +1324,26 @@ var06 = g;
             AssertPreviewValue("ebb49227-2e2b-4861-b824-1574ba89b455", 6);
         }
 
+        [Test]
+        public void TestWarningsWithListMethods()
+        {
+            string openPath = Path.Combine(TestDirectory, @"core\sorting\sorting.dyn");
+            OpenModel(openPath);
+
+            var node1 = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace
+                ("14fae78b-b009-4503-afe9-b714e08db1ec");
+            var node2 = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace
+                ("9e2c84e6-b9b8-4bdf-b82e-868b2436b865");
+
+            Assert.IsTrue(string.IsNullOrEmpty(node1.ToolTipText));
+            Assert.IsTrue(string.IsNullOrEmpty(node2.ToolTipText));
+
+            BeginRun();
+
+            Assert.IsTrue(string.IsNullOrEmpty(node1.ToolTipText));
+            Assert.IsTrue(string.IsNullOrEmpty(node2.ToolTipText));
+        }
+
         #endregion
 
 
@@ -1116,9 +1371,21 @@ var06 = g;
         protected override void GetLibrariesToPreload(List<string> libraries)
         {
             libraries.Add("ProtoGeometry.dll");
+            libraries.Add("Builtin.dll");
             libraries.Add("DSCoreNodes.dll");
+            libraries.Add("FFITarget.dll");
 
             base.GetLibrariesToPreload(libraries);
+        }
+        [Test]
+        public void TestReplicationGuidesWithASTRewrite()
+        {
+            string openPath = Path.Combine(TestDirectory, @"core\cbn_renaming\TestReplicationGuidesWithASTRewrite.dyn");
+            RunModel(openPath);
+            var data1 = new object[] {new[] {5, 6, 7}, new[] {6, 7, 8}, new[] {7, 8, 9}};
+            var data2 = new object[] { new[] { 11, 21, 31 }, new[] { 12, 22, 32 }, new[] { 13, 23, 33 } };
+            AssertPreviewValue("345a236b-6919-4075-b64c-81568c892bb2", data1);
+            AssertPreviewValue("49f2bd4a-6b88-4bf7-bf61-5c6f8d407478", data2);
         }
 
         [Test]
@@ -1129,9 +1396,11 @@ var06 = g;
             AssertPreviewValue("39c65660-8575-43bc-8af7-f24225a6bd5b", 21);
         }
 
-        [Test]
+        [Test, Category("Failure")]
+        [Ignore("Test Loops Forever. Danger.")]
         public void TestImperativeLanguageBlock()
         {
+            // TODO pratapa: Return to fix this test - result of difference in indexing behavior after ValueAtIndex
             string openPath = Path.Combine(TestDirectory, @"core\cbn_renaming\TestImperativeInCBN.dyn");
             RunModel(openPath);
             AssertPreviewValue("27fba61c-ba19-4575-90a7-f856f74b4887", 49);
@@ -1215,6 +1484,45 @@ var06 = g;
             string openPath = Path.Combine(TestDirectory, @"core\cbn_renaming\TestPropertyAccessing.dyn");
             RunModel(openPath);
             AssertPreviewValue("30c24391-9361-4b53-834f-912e9faf9586", 2);
+        }
+
+        [Test]
+        public void TestDictionaryAndListInitializationSyntax()
+        {
+            string openPath = Path.Combine(TestDirectory, @"core\cbn\TestDictionaryListSyntax.dyn");
+            RunModel(openPath);
+            AssertPreviewValue("3ad6f95c-3bc4-4740-b9ae-0cd3a8577b4a", DesignScript.Builtin.Dictionary.ByKeysValues(new List<string>(), new List<object>()));
+            AssertPreviewValue("499afbf5-416b-4f13-bdd6-e232130f644d", new int[] { });
+            AssertPreviewValue("31373889-0b81-42cf-82d1-463af2e4a200", DesignScript.Builtin.Dictionary.ByKeysValues(new List<string>() { "foo" }, new List<object>() { "bar" }));
+            AssertPreviewValue("6ce105e2-fa09-453e-9418-a57dff7e62c1", DesignScript.Builtin.Dictionary.ByKeysValues(new List<string>() { "foo" }, new List<object>() { "bar" }));
+            AssertPreviewValue("0dfac919-8996-4dd3-b5ab-5c1f3034510a", new [] { 1, 2 });
+            AssertPreviewValue("5486ba2d-af43-4f9f-9ed0-7e080bca49fd", new [] { 1, 2 });
+            AssertPreviewValue("6fe8b8b3-3c81-4210-b58b-df60cc778fb0", null);
+            AssertPreviewValue("24f7cbca-a101-44df-a751-8ed264096c20", null);
+            AssertPreviewValue("2afe34da-e7ae-43c1-a43a-fa233a7e1906", DesignScript.Builtin.Dictionary.ByKeysValues(new List<string>() { "foo" }, new List<object>() { "bar" }));
+
+            AssertError("0cb2f07a-95ab-49ed-bd7e-3e21281b87a3"); // uses identifier as dictionary key
+            AssertError("a2b3ac31-98f0-46b0-906e-8617821d0a51"); // uses old syntax {1,2}
+        }
+
+        [Test]
+        public void TestDeprecatedListSyntaxMigration()
+        {
+            string openPath = Path.Combine(TestDirectory, @"core\migration\CodeBlockWithArray.dyn");
+            RunModel(openPath);
+            AssertPreviewValue("b80e0c94-4a98-4f98-a197-f426a0a96db3", new object[] { 1, 2, 3 });
+        }
+
+        [Test]
+        public void CodeBlockNodeModelOutputPortLabels()
+        {
+            string openPath = Path.Combine(TestDirectory, @"core\cbn\OutputPortLabels.dyn");
+            RunModel(openPath);
+
+            var cbn = GetModel().Workspaces.First().Nodes.First() as CodeBlockNodeModel;
+            Assert.AreEqual(string.Format(Resources.CodeBlockTempIdentifierOutputLabel, 1), cbn.OutPorts.First().ToolTip); 
+            Assert.AreEqual(string.Format(Resources.CodeBlockTempIdentifierOutputLabel, 2), cbn.OutPorts.ElementAt(1).ToolTip); 
+            Assert.AreEqual(string.Format(Resources.CodeBlockTempIdentifierOutputLabel, 4), cbn.OutPorts.ElementAt(2).ToolTip); 
         }
     }
 

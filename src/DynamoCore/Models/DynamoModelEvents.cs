@@ -5,6 +5,8 @@ using Dynamo.Core;
 using Dynamo.Events;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Workspaces;
+using System.Collections.Generic;
+using Dynamo.Graph;
 
 namespace Dynamo.Models
 {
@@ -162,10 +164,21 @@ namespace Dynamo.Models
         /// <summary>
         /// Called when Deletion started.
         /// </summary>
-        public virtual void OnDeletionStarted()
+        public virtual void OnDeletionStarted(List<ModelBase> modelsToDelete, CancelEventArgs cancelEventArgs)
         {
+            foreach (var model in modelsToDelete)
+            {
+                model.OnDeletionStarted(cancelEventArgs);
+                if (cancelEventArgs.Cancel)
+                {
+                    return;
+                }
+            }
+
             if (DeletionStarted != null)
+            {
                 DeletionStarted();
+            }
         }
 
         /// <summary>
@@ -328,6 +341,20 @@ namespace Dynamo.Models
             var homeWorkspaceModel = sender as HomeWorkspaceModel;
             if (RefreshCompleted != null && homeWorkspaceModel != null)
                 RefreshCompleted(homeWorkspaceModel);
+        }
+
+        /// <summary>
+        /// This Event is raised after the compute section of the workspace is deserialized
+        /// </summary>
+        internal event Action ComputeModelDeserialized;
+
+        /// <summary>
+        /// Triggers ComputeModelSerialized event
+        /// </summary>
+        internal virtual void OnComputeModelDeserialized()
+        {
+            if (ComputeModelDeserialized != null)
+                ComputeModelDeserialized();
         }
 
         #endregion

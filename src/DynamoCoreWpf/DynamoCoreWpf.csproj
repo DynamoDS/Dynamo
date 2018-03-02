@@ -424,6 +424,7 @@
     <Compile Include="ViewModels\Preview\Watch3DFullscreenViewModel.cs" />
     <Compile Include="ViewModels\Preview\WatchViewModel.cs" />
     <Compile Include="ViewModels\Core\WorkspaceViewModel.cs" />
+    <Compile Include="Windows\ModelessChildWindow.cs" />
   </ItemGroup>
   <ItemGroup>
     <Page Include="Controls\GraphUpdateNotificationControl.xaml">
@@ -1225,6 +1226,14 @@
       <Project>{7A9E0314-966F-4584-BAA3-7339CBB849D1}</Project>
       <Name>ProtoCore</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Libraries\Builtin\Builtin.csproj">
+      <Project>{c0d6dee5-5532-4345-9c66-4c00d7fdb8be}</Project>
+      <Name>Builtin</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Libraries\CoreNodes\CoreNodes.csproj">
+      <Project>{87550b2b-6cb8-461e-8965-dfafe3aafb5c}</Project>
+      <Name>CoreNodes</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Libraries\DynamoUnits\Units.csproj">
       <Project>{6e0a079e-85f1-45a1-ad5b-9855e4344809}</Project>
       <Name>Units</Name>
@@ -1236,11 +1245,6 @@
     <ProjectReference Include="..\NodeServices\DynamoServices.csproj">
       <Project>{ef879a10-041d-4c68-83e7-3192685f1bae}</Project>
       <Name>DynamoServices</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\ShapewaysClient\ShapewaysClient.csproj">
-      <Project>{756ceba5-4e20-4403-8448-c3c47957975b}</Project>
-      <Name>ShapewaysClient</Name>
       <Private>False</Private>
     </ProjectReference>
   </ItemGroup>

@@ -2,12 +2,12 @@
   <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
   <SelectInRegionCommand X="37" Y="52" Width="0" Height="0" IsCrossSelection="false" />
   <CreateNodeCommand X="37" Y="52" DefaultPosition="false" TransformCoordinates="true">
-    <Dynamo.Nodes.CodeBlockNodeModel guid="0cce4b2d-47d5-427a-8235-514d3c2e90ed" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="15" y="32" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="{&quot;a&quot;,&quot;b&quot;,&quot;ce&quot;,&quot;dgesf&quot;,&quot;Tyrian&quot;};" ShouldFocus="false" />
+    <Dynamo.Nodes.CodeBlockNodeModel guid="0cce4b2d-47d5-427a-8235-514d3c2e90ed" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="15" y="32" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="[&quot;a&quot;,&quot;b&quot;,&quot;ce&quot;,&quot;dgesf&quot;,&quot;Tyrian&quot;];" ShouldFocus="false" />
   </CreateNodeCommand>
   <SelectModelCommand ModelGuid="0cce4b2d-47d5-427a-8235-514d3c2e90ed" Modifiers="0" />
   <DragSelectionCommand X="33" Y="48" DragOperation="0" />
   <DragSelectionCommand X="103" Y="59" DragOperation="1" />
-  <UpdateModelValueCommand Name="Code" Value="{&quot;a&quot;,&quot;b&quot;,&quot;ce&quot;,&quot;dgesf&quot;,&quot;Tyrian&quot;};" WorkspaceGuid="1965ec3f-6b3e-4b24-b6d2-bf4f6dd4447a">
+  <UpdateModelValueCommand Name="Code" Value="[&quot;a&quot;,&quot;b&quot;,&quot;ce&quot;,&quot;dgesf&quot;,&quot;Tyrian&quot;];" WorkspaceGuid="1965ec3f-6b3e-4b24-b6d2-bf4f6dd4447a">
     <ModelGuid>0cce4b2d-47d5-427a-8235-514d3c2e90ed</ModelGuid>
   </UpdateModelValueCommand>
   <CreateNodeCommand X="0" Y="0" DefaultPosition="true" TransformCoordinates="true">

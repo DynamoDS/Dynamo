@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Diagnostics;
 using System.Globalization;
@@ -269,17 +269,35 @@ namespace DSOffice
         /// <param name="file">File representing the Microsoft Excel spreadsheet.</param>
         /// <param name="sheetName">Name of the worksheet containing the data.</param>
         /// <param name="readAsStrings">toggle to switch between reading Excel file as strings only or not</param>
+        /// <param name="showExcel">toggle to switch between showing and hiding the main Excel window</param>
         /// <returns name="data">Rows of data from the Excel worksheet.</returns>
         /// <search>office,excel,spreadsheet,ifequalreturnindex</search>
         [IsVisibleInDynamoLibrary(false)]
-        public static object[][] ReadFromFile(FileInfo file, string sheetName, bool readAsStrings = false)
+        public static object[][] ReadFromFile(FileInfo file, string sheetName, bool readAsStrings = false, bool showExcel = true)
         {
-            WorkBook wb = WorkBook.ReadExcelFile(file.FullName);
+        	object[][] data;
+        	
+        	if(!showExcel)
+        	{
+        		ExcelInterop.ShowOnStartup = false;
+        	}
+        	WorkBook wb = WorkBook.ReadExcelFile(file.FullName);
             WorkSheet ws = wb.GetWorksheetByName(sheetName);
             if (readAsStrings)
-                return ws.GetData(true);
-
-            return ws.Data;
+            {
+            	data = ws.GetData(true);
+            }
+            else
+            {
+            	data = ws.Data;
+            }
+            if(!showExcel)
+            {
+            	wb.CloseHidden();
+            	ExcelInterop.ShowOnStartup = true;
+            }
+            
+            return data;
         }
 
         [NodeObsolete("ReadObsolete", typeof(Properties.Resources))]
@@ -598,6 +616,15 @@ namespace DSOffice
             else
                 wb = ExcelInterop.App.Workbooks.Add();
         }
+        
+        /// <summary>
+        /// Helper method for reading workbooks with a disabled visibility.
+        /// </summary>
+        internal void CloseHidden()
+        {
+        	wb.Close();
+        	wb = null;
+        }
 
         /// <summary>
         /// (SaveAsExcelWorkbook node)
@@ -683,7 +710,7 @@ namespace DSOffice
         /// <search>write,text,file</search>
         public static void ExportCSV(string filePath, object[][] data)
         {
-            using (var writer = new StreamWriter(DSCore.IO.File.AbsolutePath(filePath)))
+            using (var writer = new StreamWriter(DSCore.IO.FileSystem.AbsolutePath(filePath)))
             {
                 foreach (var line in data)
                 {
@@ -709,7 +736,7 @@ namespace DSOffice
         /// <search>import,csv,comma,file,list,separate,transpose</search>
         public static IList ImportCSV(string filePath, bool transpose = false)
         {
-            if (string.IsNullOrEmpty(filePath) || !DSCore.IO.File.Exists(filePath))
+            if (string.IsNullOrEmpty(filePath) || !DSCore.IO.FileSystem.FileExists(filePath))
             {
                 // File not existing.
                 throw new FileNotFoundException();
@@ -772,11 +799,40 @@ namespace DSOffice
             else return DSCore.List.Transpose(CSVdatalist);
         }
 
-        public static object[][] ImportExcel(FileInfo file, string sheetName, bool readAsStrings = false)
+        /// <summary>
+        ///     Read data from a Microsoft Excel spreadsheet. Data is read by row and
+        ///     returned in a series of lists by row. Rows and columns are zero-indexed;
+        ///     for example, the value in cell A1 will appear in the data list at [0,0].
+        ///     This node requires Microsoft Excel to be installed.
+        /// </summary>
+        /// <param name="file">File representing the Microsoft Excel spreadsheet.</param>
+        /// <param name="sheetName">Name of the worksheet containing the data.</param>
+        /// <param name="readAsStrings">Toggle to switch between reading Excel file as strings.</param>
+        /// <param name="showExcel">Toggle to switch between showing and hiding the main Excel window.</param>
+        /// <returns name="data">Rows of data from the Excel worksheet.</returns>
+        /// <search>office,excel,spreadsheet,ifequalreturnindex</search>
+        public static object[][] ImportExcel(FileInfo file, string sheetName, bool readAsStrings = false, bool showExcel = true)
         {
-            return Excel.ReadFromFile(file, sheetName, readAsStrings);
+            return Excel.ReadFromFile(file, sheetName, readAsStrings, showExcel);
         }
 
+        /// <summary>
+        ///     Write data to a Microsoft Excel spreadsheet. Data is written by row
+        ///     with sublists to be written in successive rows. Rows and columns are
+        ///     zero-indexed; for example, the value in the data list at [0,0] will
+        ///     be written to cell A1. Null values and empty lists are written to Excel 
+        ///     as empty cells. This node requires Microsoft Excel to be installed. 
+        /// </summary>
+        /// <param name="filePath">File path to the Microsoft Excel spreadsheet.</param>
+        /// <param name="sheetName">Name of the workseet to write data to.</param>
+        /// <param name="startRow">Start row for writing data. Enter 0 for Row 1, 1 for Row 2, etc.</param>
+        /// <param name="startCol">
+        ///     Start column for writing data. Enter 0 for Column A, 1 for Column B, etc.
+        /// </param>
+        /// <param name="data">Data to write to the spreadsheet.</param>
+        /// <param name="overWrite"></param>
+        /// <returns name="data">Data written to the spreadsheet.</returns>
+        /// <search>office,excel,spreadsheet</search>
         public static object[][] ExportExcel(string filePath, string sheetName, int startRow, int startCol, object[][] data, bool overWrite = false)
         {
             return Excel.WriteToFile(filePath, sheetName, startRow, startCol, data, overWrite);

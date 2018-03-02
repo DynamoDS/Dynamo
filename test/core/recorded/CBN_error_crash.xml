@@ -1,0 +1,82 @@
+<Commands CommandIntervalInMs="20" PauseAfterPlaybackInMs="10" ExitAfterPlayback="true">
+
+
+<SelectModelCommand Modifiers="0">
+
+<ModelGuid>00000000-0000-0000-0000-000000000000</ModelGuid>
+
+</SelectModelCommand>
+
+
+<CreateNodeCommand TransformCoordinates="true" DefaultPosition="false" Y="191" X="246">
+
+<ModelGuid>ca808fc5-f269-4a03-aee9-b4f1b156ed16</ModelGuid>
+
+
+<Dynamo.Graph.Nodes.CodeBlockNodeModel ShouldFocus="false" CodeText="sa=;" isPinned="false" IsFrozen="false" isSelectedInput="False" lacing="Disabled" isVisible="true" y="160" x="154" nickname="Code Block" type="Dynamo.Graph.Nodes.CodeBlockNodeModel" guid="ca808fc5-f269-4a03-aee9-b4f1b156ed16">
+
+<OutPortInfo LineIndex="0"/>
+
+</Dynamo.Graph.Nodes.CodeBlockNodeModel>
+
+</CreateNodeCommand>
+
+
+<UpdateModelValueCommand WorkspaceGuid="ef390b46-c40f-41f7-a7ad-8bd9a9b179bc" Value="sa=57" Name="Code">
+
+<ModelGuid>ca808fc5-f269-4a03-aee9-b4f1b156ed16</ModelGuid>
+
+</UpdateModelValueCommand>
+
+
+<SelectModelCommand Modifiers="0">
+
+<ModelGuid>00000000-0000-0000-0000-000000000000</ModelGuid>
+
+</SelectModelCommand>
+
+
+<CreateNodeCommand TransformCoordinates="true" DefaultPosition="false" Y="261" X="415">
+
+<ModelGuid>44115db6-bf0b-478a-90f6-2719eb65b70d</ModelGuid>
+
+
+<CoreNodeModels.Watch isPinned="false" IsFrozen="false" isSelectedInput="False" lacing="Disabled" isVisible="true" y="261" x="415" nickname="Watch" type="CoreNodeModels.Watch" guid="44115db6-bf0b-478a-90f6-2719eb65b70d">
+
+<PortInfo default="False" index="0"/>
+
+</CoreNodeModels.Watch>
+
+</CreateNodeCommand>
+
+
+<MakeConnectionCommand ConnectionMode="0" Type="1" PortIndex="0">
+
+<ModelGuid>ca808fc5-f269-4a03-aee9-b4f1b156ed16</ModelGuid>
+
+</MakeConnectionCommand>
+
+
+<MakeConnectionCommand ConnectionMode="1" Type="0" PortIndex="0">
+
+<ModelGuid>44115db6-bf0b-478a-90f6-2719eb65b70d</ModelGuid>
+
+</MakeConnectionCommand>
+
+
+<SelectModelCommand Modifiers="0">
+
+<ModelGuid>00000000-0000-0000-0000-000000000000</ModelGuid>
+
+</SelectModelCommand>
+
+
+<UpdateModelValueCommand WorkspaceGuid="ef390b46-c40f-41f7-a7ad-8bd9a9b179bc" Value="sa=;" Name="Code">
+
+<ModelGuid>ca808fc5-f269-4a03-aee9-b4f1b156ed16</ModelGuid>
+
+</UpdateModelValueCommand>
+
+<PausePlaybackCommand Tag="Run" PauseDurationInMs="20" />
+
+</Commands>

@@ -1,5 +1,6 @@
 using System;
 using System.ComponentModel;
+using System.Linq;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
@@ -129,6 +130,12 @@ namespace CoreNodeModelsWpf.Nodes
                 || astBeingComputed == null) return;
 
             var astBeingWatched = input.Item2.GetAstIdentifierForOutputIndex(input.Item1);
+
+            // In the case of code block nodes in error state, astBeingWatched can return null 
+            // but since we still wish to retain its connectors (https://github.com/DynamoDS/Dynamo/pull/7401) 
+            // we simply return from here.
+            if (astBeingWatched == null) return;
+
             if (astBeingComputed.Value != astBeingWatched.Value)
             {
                 // the input node has changed, we clear preview
@@ -156,6 +163,7 @@ namespace CoreNodeModelsWpf.Nodes
 
             return watchHandler.GenerateWatchViewModelForData(
                 watch.CachedValue,
+                watch.OutPorts.Select(p => p.Name),
                 core,
                 inputVar,
                 rootWatchViewModel.ShowRawData);

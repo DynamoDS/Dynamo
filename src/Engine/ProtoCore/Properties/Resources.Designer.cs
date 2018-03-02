@@ -19,7 +19,7 @@ namespace ProtoCore.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class Resources {
@@ -305,6 +305,15 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Curly braces are no longer used for list creation. Use square brackets instead, like [] or [1,2,3]..
+        /// </summary>
+        public static string DeprecatedListInitializationSyntax {
+            get {
+                return ResourceManager.GetString("DeprecatedListInitializationSyntax", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Determines whether two object instances are equal.
         /// </summary>
         public static string DeterminesObjectsAreEqual {
@@ -400,6 +409,15 @@ namespace ProtoCore.Properties {
         public static string FailedToCastFromNull {
             get {
                 return ResourceManager.GetString("FailedToCastFromNull", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot convert List to Dictionary type..
+        /// </summary>
+        public static string FailedToConvertArrayToDictionary {
+            get {
+                return ResourceManager.GetString("FailedToConvertArrayToDictionary", resourceCulture);
             }
         }
         
@@ -953,6 +971,15 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to List indices must be numeric..
+        /// </summary>
+        public static string InvalidArrayIndexType {
+            get {
+                return ResourceManager.GetString("InvalidArrayIndexType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Not an valid function..
         /// </summary>
         public static string InvalidFunction {
@@ -967,15 +994,6 @@ namespace ProtoCore.Properties {
         public static string InvalidLanguageBlockIdentifier {
             get {
                 return ResourceManager.GetString("InvalidLanguageBlockIdentifier", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Return statement is invalid. Do you mean: return = {0} ?.
-        /// </summary>
-        public static string InvalidReturnStatement {
-            get {
-                return ResourceManager.GetString("InvalidReturnStatement", resourceCulture);
             }
         }
         
@@ -1349,7 +1367,7 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Sequence node supports only ASCII characters.
+        ///   Looks up a localized string similar to Range and Sequence expressions support only ASCII characters.
         /// </summary>
         public static string kInvalidUnicodeArgumentInRangeExpression {
             get {
@@ -1430,7 +1448,7 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to One or more of the input types are not matching. Couldn&apos;t find a version of {0} that takes arguments of type {1}.
+        ///   Looks up a localized string similar to There is no version of {0} that accepts argument type(s) ({1})..
         /// </summary>
         public static string kMethodResolutionFailureWithTypes {
             get {
@@ -1939,6 +1957,15 @@ namespace ProtoCore.Properties {
         public static string NoConstructorForAttribute {
             get {
                 return ResourceManager.GetString("NoConstructorForAttribute", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} expects argument type(s) ({1}), but was called with ({2})..
+        /// </summary>
+        public static string NonOverloadMethodResolutionError {
+            get {
+                return ResourceManager.GetString("NonOverloadMethodResolutionError", resourceCulture);
             }
         }
         
@@ -2471,6 +2498,24 @@ namespace ProtoCore.Properties {
         public static string ValidForImperativeBlockOnly {
             get {
                 return ResourceManager.GetString("ValidForImperativeBlockOnly", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Variable {0} is used in the same statement that you defined it. Recursive dependency is not allowed..
+        /// </summary>
+        public static string VariableRecursiveReference {
+            get {
+                return ResourceManager.GetString("VariableRecursiveReference", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Variable {0} has been defined in this code block node. You cannot define a variable more than once..
+        /// </summary>
+        public static string VariableRedifinitionError {
+            get {
+                return ResourceManager.GetString("VariableRedifinitionError", resourceCulture);
             }
         }
         

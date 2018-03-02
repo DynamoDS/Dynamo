@@ -6,7 +6,7 @@
   <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
   <CreateNodeCommand NodeId="72a80af5-938b-4af9-93b9-a06c756a8186" NodeName="Code Block" X="390" Y="187" DefaultPosition="false" TransformCoordinates="true" />
   <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
-  <UpdateModelValueCommand ModelGuid="72a80af5-938b-4af9-93b9-a06c756a8186" Name="Code" Value="{a,b,c,d};" />
+  <UpdateModelValueCommand ModelGuid="72a80af5-938b-4af9-93b9-a06c756a8186" Name="Code" Value="[a,b,c,d];" />
   <SelectModelCommand ModelGuid="72a80af5-938b-4af9-93b9-a06c756a8186" Modifiers="0" />
   <DragSelectionCommand X="396" Y="175" DragOperation="0" />
   <DragSelectionCommand X="796" Y="179" DragOperation="1" />
@@ -58,8 +58,8 @@
   <MakeConnectionCommand NodeId="ae25b50c-c644-440e-861b-0824c14b7632" PortIndex="0" Type="0" ConnectionMode="1" />
   <RunCancelCommand ShowErrors="false" CancelRun="false" />
   <SelectModelCommand ModelGuid="ae25b50c-c644-440e-861b-0824c14b7632" Modifiers="0" />
-  <UpdateModelValueCommand ModelGuid="72a80af5-938b-4af9-93b9-a06c756a8186" Name="Code" Value="{a,b,d,c};" />
+  <UpdateModelValueCommand ModelGuid="72a80af5-938b-4af9-93b9-a06c756a8186" Name="Code" Value="[a,b,d,c];" />
   <RunCancelCommand ShowErrors="false" CancelRun="false" />
-  <UpdateModelValueCommand ModelGuid="72a80af5-938b-4af9-93b9-a06c756a8186" Name="Code" Value="{b,a,d,c};" />
+  <UpdateModelValueCommand ModelGuid="72a80af5-938b-4af9-93b9-a06c756a8186" Name="Code" Value="[b,a,d,c];" />
   <RunCancelCommand ShowErrors="false" CancelRun="false" />
 </Commands>

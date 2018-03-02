@@ -98,17 +98,17 @@ namespace ProtoTest
 @"
 import(""FFITarget.dll"");
 x;y;
-[Imperative]
+i=[Imperative]
 {
 	p = ClassFunctionality.ClassFunctionality(16);
     x = p.IntVal;
     p.IntVal = 32;
     y = p.IntVal;
+    return [x,y];
 }
 ";
             thisTest.RunScriptSource(code);
-            thisTest.Verify("x", 16);
-            thisTest.Verify("y", 32);
+            thisTest.Verify("i", new[] {16, 32});
         }
     }
 }

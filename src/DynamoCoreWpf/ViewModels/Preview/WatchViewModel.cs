@@ -10,7 +10,6 @@ namespace Dynamo.ViewModels
 {
     public class WatchViewModel : NotificationObject
     {
-
         #region Events
 
         public event Action Clicked;
@@ -26,6 +25,8 @@ namespace Dynamo.ViewModels
         #region Properties/Fields
         public const string EMPTY_LIST = "Empty List";
         public const string LIST = "List";
+        public const string EMPTY_DICTIONARY = "Empty Dictionary";
+        public const string DICTIONARY = "Dictionary";
 
         private ObservableCollection<WatchViewModel> _children = new ObservableCollection<WatchViewModel>();
         private string _label;
@@ -98,7 +99,6 @@ namespace Dynamo.ViewModels
                 if (splits.Count() == 1)
                     return string.Empty;
                 return splits.Any() ? string.Format(NodeLabel == LIST ? "{0}" : " {0} ", splits.Last()) : string.Empty;
-                //return _path;
             }
         }
 
@@ -151,7 +151,6 @@ namespace Dynamo.ViewModels
                 RaisePropertyChanged("IsOneRowContent");
             }
         }
-
 
         /// <summary>
         /// Number of items in the overall list if node output is a list
@@ -211,7 +210,7 @@ namespace Dynamo.ViewModels
             this.tagGeometry = tagGeometry;
             numberOfItems = 0;
             maxListLevel = 0;
-            isCollection = label == WatchViewModel.LIST;
+            isCollection = label == WatchViewModel.LIST || label == WatchViewModel.DICTIONARY;
         }
 
         private bool CanFindNodeForPath(object obj)
@@ -255,13 +254,17 @@ namespace Dynamo.ViewModels
             {
                 return GetMaximumDepthAndItemNumber(wvm.Children[0]);
             }
-            else
+
+            // if it's a list, recurse
+            if (wvm.NodeLabel == LIST)
             {
                 var depthAndNumbers = wvm.Children.Select(GetMaximumDepthAndItemNumber);
                 var maxDepth = depthAndNumbers.Select(t => t.Item1).DefaultIfEmpty(1).Max() + 1;
                 var itemNumber = depthAndNumbers.Select(t => t.Item2).Sum();
                 return new Tuple<int, int>(maxDepth, itemNumber);
             }
+
+            return new Tuple<int, int>(1,1);
         }
 
         /// <summary>

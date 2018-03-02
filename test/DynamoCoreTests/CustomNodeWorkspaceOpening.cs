@@ -62,7 +62,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void CanOpenCustomNodeWorkspace()
+        public void CanOpenXmlCustomNodeWorkspace()
         {
             OpenTestFile(@"core\combine", "Sequence2.dyf");
 
@@ -72,12 +72,43 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void CustomNodeWorkspaceIsAddedToSearchOnOpening()
+        public void XmlCustomNodeWorkspaceIsAddedToSearchOnOpening()
         {
             OpenTestFile(@"core\combine", "Sequence2.dyf");
             
             var res = CurrentDynamoModel.SearchModel.Search("Sequence2");
             Assert.AreEqual("Sequence2", res.First().Name);
+        }
+
+        [Test]
+        public void CanOpenJsonCustomNodeWorkspace()
+        {
+            OpenTestFile(@"core\combine", "Sequence_Json.dyf");
+
+            var nodeWorkspace = CurrentDynamoModel.Workspaces.FirstOrDefault(x => x is CustomNodeWorkspaceModel);
+            Assert.IsNotNull(nodeWorkspace);
+            Assert.AreEqual(CurrentDynamoModel.CurrentWorkspace.Name, "Sequence2");
+        }
+
+        [Test]
+        public void JsonCustomNodeWorkspaceIsAddedToSearchOnOpeningDyf()
+        {
+            OpenTestFile(@"core\combine", "Sequence_Json.dyf");
+
+            var res = CurrentDynamoModel.SearchModel.Search("Sequence2");
+            Assert.AreEqual("Sequence2", res.First().Name);
+        }
+
+        [Test]
+        public void JsonCustomNodeWorkspaceIsAddedToSearchOnOpeningDyn()
+        {
+            // Opening a dyn should automatically add any dyf in the same
+            // folder as CustomNodeWorkspace and maintain the saved category
+            OpenTestFile(@"core\combine", "combine-with-three.dyn");
+
+            var res = CurrentDynamoModel.SearchModel.Search("Sequence2");
+            Assert.AreEqual("Sequence2", res.First().Name);
+            Assert.AreEqual("Misc", res.First().FullCategoryName);
         }
     }
 

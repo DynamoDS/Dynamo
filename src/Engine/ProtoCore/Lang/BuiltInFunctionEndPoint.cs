@@ -107,7 +107,7 @@ namespace ProtoCore.Lang
                 case ProtoCore.Lang.BuiltInMethods.MethodID.RangeExpression:
                     try
                     {
-                        ret = RangeExpressionUntils.RangeExpression(formalParameters[0],
+                        ret = RangeExpressionUtils.RangeExpression(formalParameters[0],
                                                                     formalParameters[1],
                                                                     formalParameters[2],
                                                                     formalParameters[3],
@@ -301,9 +301,6 @@ namespace ProtoCore.Lang
                     }
                     break;
                 case ProtoCore.Lang.BuiltInMethods.MethodID.Print:
-                    ret = FileIOBuiltIns.Print(formalParameters[0], interpreter);
-                    break;
-                case ProtoCore.Lang.BuiltInMethods.MethodID.PrintIndexable:
                     ret = FileIOBuiltIns.Print(formalParameters[0], interpreter);
                     break;
                 case ProtoCore.Lang.BuiltInMethods.MethodID.GetElapsedTime:
@@ -527,17 +524,6 @@ namespace ProtoCore.Lang
                         interpreter, 
                         stackFrame);
                     break;
-                case BuiltInMethods.MethodID.TryGetValueFromNestedDictionaries:
-                    ret = StackValue.Null;
-
-                    if (formalParameters[0].IsArray)
-                    {
-                        StackValue value;
-                        var parameterArray = runtimeCore.Heap.ToHeapObject<DSArray>(formalParameters[0]);
-                        if (parameterArray.TryGetValueFromNestedDictionaries(formalParameters[1], out value, runtimeCore))
-                            ret = value;
-                    }
-                    break;
                 case BuiltInMethods.MethodID.NodeAstFailed:
                     var nodeFullName = formalParameters[0];
                     var fullName = StringUtils.GetStringValue(nodeFullName, runtimeCore);
@@ -748,7 +734,7 @@ namespace ProtoCore.Lang
             IContextDataProvider provider = runtimeCore.DSExecutable.ContextDataMngr.GetDataProvider(appname);
             ProtoCore.Utils.Validity.Assert(null != provider, string.Format("Couldn't locate data provider for {0}", appname));
 
-            CLRObjectMarshler marshaler = CLRObjectMarshler.GetInstance(runtimeCore);
+            CLRObjectMarshaler marshaler = CLRObjectMarshaler.GetInstance(runtimeCore);
 
             Dictionary<string, Object> parameters = new Dictionary<string, object>();
             if (!svConnectionParameters.IsArray)
@@ -779,7 +765,7 @@ namespace ProtoCore.Lang
             {
                 objects.Add(item.Data);
             }
-            ProtoCore.Type type = PrimitiveMarshler.CreateType(ProtoCore.PrimitiveType.Var);
+            ProtoCore.Type type = PrimitiveMarshaler.CreateType(ProtoCore.PrimitiveType.Var);
             Object obj = objects;
             if (objects.Count == 1)
                 obj = objects[0];
@@ -1028,7 +1014,7 @@ namespace ProtoCore.Lang
             return targetRangeMin + (targetRangeMax - targetRangeMin) * percent;
         }
     }
-    internal class RangeExpressionUntils
+    internal class RangeExpressionUtils
     {
         // For to include start and end. 
         internal static StackValue[] GenerateRangeByStepNumber(decimal start, decimal end, int stepnum, bool isIntRange)

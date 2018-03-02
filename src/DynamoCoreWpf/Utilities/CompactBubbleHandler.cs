@@ -60,6 +60,18 @@ namespace Dynamo.Wpf.Utilities
                     : null;
             }
 
+            if (mirrorData.IsPointer && mirrorData.IsDictionary)
+            {
+                var dict = mirrorData.Data as DesignScript.Builtin.Dictionary;
+
+                return generateViewModel
+                    ? new CompactBubbleViewModel(true)
+                    {
+                        NodeLabel = dict.Values.Any() ? WatchViewModel.DICTIONARY : WatchViewModel.EMPTY_DICTIONARY
+                    }
+                    : null;
+            }
+
             items++;
 
             if (!generateViewModel) return null;

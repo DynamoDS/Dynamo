@@ -1,0 +1,4 @@
+﻿<ExtensionDefinition>
+  <AssemblyPath>..\bin\SampleExtension.dll</AssemblyPath>
+  <TypeName>SampleExtension.Extension</TypeName>
+</ExtensionDefinition>

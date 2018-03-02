@@ -99,7 +99,7 @@ c = TestOverloadC.TestOverloadC();
 val = c.execute(c);
                 ";
             thisTest.RunScriptSource(code);
-            thisTest.Verify("val", 2);
+            thisTest.Verify("val", 1);
         }
 
         [Test]
@@ -116,34 +116,13 @@ val = c.unique(c);
         }
 
         [Test]
-        public void TestMethodOverloadArray()
-        {
-            string code =
-                @"
-                def execute(a : var)
-                { 
-                    return = -1; 
-                }
-                def execute(arr : var[])
-                {
-                    return = 2;
-                }
-                arr = {1, 2, 3};
-                val = execute(arr);
-                ";
-            thisTest.RunScriptSource(code);
-            thisTest.Verify("val", 2);
-            thisTest.VerifyBuildWarningCount(0);
-        }
-
-        [Test]
         public void TestMethodOverlaodAndArrayInput2()
         {
             string code =
                 @"
 import (""FFITarget.dll"");
 b = TestOverloadB.TestOverloadB();
-arr = {TestOverloadC.TestOverloadC(), TestOverloadB.TestOverloadB(), TestOverloadB.TestOverloadB()};
+arr = [TestOverloadC.TestOverloadC(), TestOverloadB.TestOverloadB(), TestOverloadB.TestOverloadB()];
 val = b.execute(arr);
                 ";
             thisTest.RunScriptSource(code);
@@ -160,7 +139,7 @@ val = b.execute(arr);
 {
 	return = 100; 
 }
-arr = {3};
+arr = [3];
 v = execute(arr);
 val = v[0];
                 ";
@@ -179,7 +158,7 @@ val = v[0];
 {
     return = 100; 
 }
-arr = {};
+arr = [];
 v = execute(arr);
 val = v[0];
                 ";
@@ -195,7 +174,7 @@ val = v[0];
                             {
                                 return = 123;
                             }
-                            a = {3, 4, 5};
+                            a = [3, 4, 5];
                             val = Test(a);
                             ";
             thisTest.RunScriptSource(code);
@@ -217,73 +196,12 @@ val = v[0];
                             {
                                 return = 123;
                             }
-                            a = {B.B(), A.A(), B.B()};
+                            a = [B.B(), A.A(), B.B()];
                             val = Test(a);
                             ";
             thisTest.RunScriptSource(code);
             thisTest.VerifyBuildWarningCount(0);
             thisTest.Verify("val", 123);
-        }
-
-        [Test]
-        [Category("Method Resolution")]
-        [Category("DSDefinedClass_Ported")]
-        public void TestMethodWithArrayInputOverload()
-        {
-            string code = @"
-                            def foo(x : double)
-                            { return = 1; }
-                            def foo(x : double[]) 
-	                        { return = 2; }
-	                        def foo(x : double[][]) 
-	                        { return = 3; }
-                            arr = 1..20..2;
-                            val = foo(arr);
-                            ";
-            thisTest.RunScriptSource(code);
-            thisTest.VerifyBuildWarningCount(0);
-            thisTest.Verify("val", 2);
-        }
-
-        [Test]
-        [Category("Method Resolution")]
-        [Category("DSDefinedClass_Ported")]
-        public void TestMethodWithArrayInputOverloadDirectType()
-        {
-            string code = @"
-                            def foo(x : int)
-                            { return = 1; }
-                            def foo(x : int[]) 
-	                        { return = 2; }
-	                        def foo(x : int[][]) 
-	                        { return = 3; }
-                            arr = 1..20..2;
-                            val = foo(arr);
-                            ";
-            thisTest.RunScriptSource(code);
-            thisTest.VerifyBuildWarningCount(0);
-            thisTest.Verify("val", 2);
-        }
-
-        [Test]
-        [Category("Failure")]
-        public void TestMethodResolutionForSingleton()
-        {
-            // Tracked by: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4116
-            string code = @"
-def foo(x:var[]..[])
-{
-    return = 2;
-}
-def foo(x:var[])
-{
-    return = 1;
-}
-d = foo(2);
-";
-            string error = "MAGN-4116 DesignIssue: Method resolution - When a single value is passed to overloads with different rank, which one is chosen";
-            thisTest.VerifyRunScriptSource(code, error);
-            thisTest.Verify("d", 2);
         }
 
         [Test]
@@ -298,9 +216,9 @@ def foo(val : var)
 {
     return = 2;
 }
-arr1 = { true, null, false };
+arr1 = [ true, null, false ];
 r1 = foo(arr1);   // r1 = {1, 1, 1}
-arr2 = { null, true, false };
+arr2 = [ null, true, false ];
 r2 = foo(arr2);   // r2 = {2, 2, 2}";
             string error = "";
             thisTest.VerifyRunScriptSource(code, error);
@@ -338,7 +256,7 @@ def foo(x : NonExistClass[][])
 {
     return = x;
 }
-z = foo({ 1, 2 });  
+z = foo([ 1, 2 ]);  
 ";
             string error = "";
             thisTest.VerifyRunScriptSource(code, error);
@@ -359,9 +277,9 @@ def foo(val : double)
     return = false;
 }
 
-r1 = foo({1, 2});   // r1 = {true, true}
-r2 = foo({1.0, 2.0});   // r1 = {false, false}
-r3 = foo({1, 2.0});
+r1 = foo([1, 2]);   // r1 = {true, true}
+r2 = foo([1.0, 2.0]);   // r1 = {false, false}
+r3 = foo([1, 2.0]);
 ";
             string error = "";
             thisTest.VerifyRunScriptSource(code, error);
@@ -383,9 +301,9 @@ def foo(val : double)
     return = false;
 }
 
-r1 = foo({1, 2}<1>);   // r1 = {true, true}
-r2 = foo({1.0, 2.0}<1>);   // r1 = {false, false}
-r3 = foo({1, 2.0}<1>);
+r1 = foo([1, 2]<1>);   // r1 = {true, true}
+r2 = foo([1.0, 2.0]<1>);   // r1 = {false, false}
+r3 = foo([1, 2.0]<1>);
 ";
             string error = "";
             thisTest.VerifyRunScriptSource(code, error);
@@ -407,7 +325,7 @@ def foo(val : double)
     return = false;
 }
 
-r3 = foo({1, 2.0}<1>);
+r3 = foo([1, 2.0]<1>);
 ";
             string error = "";
             thisTest.VerifyRunScriptSource(code, error);
@@ -428,7 +346,7 @@ def foo(val : double)
     return = false;
 }
 
-r3 = foo({1, 2.0});
+r3 = foo([1, 2.0]);
 ";
             string error = "";
             thisTest.VerifyRunScriptSource(code, error);
@@ -467,8 +385,8 @@ def qux2()
     }
 }
 
-x = foo({1,2,3});
-y = bar({4,5,6});
+x = foo([1,2,3]);
+y = bar([4,5,6]);
 z1 = qux1();
 z2 = qux2();
 ";

@@ -407,7 +407,7 @@ You will get a chance to save your work.</value>
     <value>Custom Node Property Error</value>
   </data>
   <data name="CustomNodePropertyWindowCategory" xml:space="preserve">
-    <value>Category</value>
+    <value>Add-ons Category</value>
     <comment>Label - specify custom node category</comment>
   </data>
   <data name="CustomNodePropertyWindowDescription" xml:space="preserve">
@@ -425,6 +425,10 @@ You will get a chance to save your work.</value>
   <data name="CustomNodePropertyWindowNameHint" xml:space="preserve">
     <value>Name of Custom Node</value>
     <comment>Text box hint</comment>
+  </data>
+  <data name="CustomNodePropertyWindowLocationNote" xml:space="preserve">
+    <value>Custom Nodes will be placed in the Add-Ons section of the library.</value>
+    <comment>Note regarding Custom Node library location</comment>
   </data>
   <data name="CustomNodePropertyWindowTitle" xml:space="preserve">
     <value>Custom Node Properties</value>
@@ -1302,7 +1306,7 @@ Would you like to save your changes?</value>
 Would you like to save your changes?</value>
   </data>
   <data name="MessageConfirmToSaveReadOnlyCustomNode" xml:space="preserve">
-    <value>We can't save "{0}" because the file is read only. To keep your changes, you'll need to save it with a new name or in a different location.</value>
+    <value>We can't save "{0}" because the file is read-only or contains unresolved XML nodes. To keep changes, would you like to "Save As..." with a different name or path?</value>
     <comment>Message box content</comment>
   </data>
   <data name="MessageConfirmToUninstallPackage" xml:space="preserve">
@@ -1446,6 +1450,9 @@ Uninstall the following dependent packages: {1}?</value>
   </data>
   <data name="NodeContextMenuIsInput" xml:space="preserve">
     <value>Is Input</value>
+  </data>
+  <data name="NodeContextMenuIsOutput" xml:space="preserve">
+    <value>Is Output</value>
   </data>
   <data name="NodeContextMenuPreview" xml:space="preserve">
     <value>Preview</value>
@@ -1610,6 +1617,15 @@ Next assemblies were loaded several times:
   <data name="PackagePathViewToolTipUp" xml:space="preserve">
     <value>Move the selected path upward</value>
     <comment>Tool-tip for up arrow</comment>
+  </data>
+  <data name="PackagePathAutoAddNotificationTitle" xml:space="preserve">
+    <value>Package Path Added</value>
+  </data>
+  <data name="PackagePathAutoAddNotificationShortDescription" xml:space="preserve">
+    <value>A library (*.dll, *.ds) was recently imported into Dynamo. Its path was automatically added to "Settings > Manage Node and Package Paths..."</value>
+  </data>
+  <data name="PackagePathAutoAddNotificationDetailedDescription" xml:space="preserve">
+    <value>The import path "{0}" was added to "Manage Node and Package Paths". If you want to update or remove this path, please open "Settings > Manage Node and Package Paths..."</value>
   </data>
   <data name="PackageSearchStateNoResult" xml:space="preserve">
     <value>Search returned no results!</value>

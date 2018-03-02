@@ -121,6 +121,12 @@ namespace Dynamo.Tests
             }
         }
 
+        protected void AssertError(string guid)
+        {
+            var node = GetModel().CurrentWorkspace.Nodes.First(n => n.GUID.ToString() == guid);
+            Assert.True(node.IsInErrorState);
+        }
+
         protected void AssertPreviewValue(string guid, object value)
         {
             string previewVariable = GetVarName(guid);
@@ -184,6 +190,33 @@ namespace Dynamo.Tests
             else if (data.IsPointer && data.Class.ClassName == "Function")
             {
                 Assert.AreEqual(data.Class.ClassName, value);
+            }
+            else if (data.IsPointer && value is DesignScript.Builtin.Dictionary)
+            {
+                var thisData = data.Data as DesignScript.Builtin.Dictionary;
+
+                if (thisData == null)
+                {
+                    Assert.Fail("Data is expected to be DS Dictionary but is not.");
+                }
+                var otherVal = (DesignScript.Builtin.Dictionary) value;
+
+                if (otherVal.Count != thisData.Count)
+                {
+                    Assert.Fail("Data and expected value are 2 different dictionaries.");
+                }
+                foreach (var key in otherVal.Keys)
+                {
+                    var val = thisData.ValueAtKey(key);
+                    if (val == null)
+                    {
+                        Assert.Fail("Data and expected value are 2 different dictionaries.");
+                    }
+                    if (val.GetType().IsValueType)
+                    {
+                        Assert.AreEqual(val, thisData.ValueAtKey(key));
+                    }
+                }
             }
             else
                 Assert.AreEqual(value, data.Data);

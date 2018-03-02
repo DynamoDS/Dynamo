@@ -6,11 +6,13 @@ using NUnit.Framework;
 namespace Dynamo.Tests
 {
     [TestFixture]
+    [Category("JsonTestExclude")]
     class MigrationTestFramework : DynamoModelTestBase
     {
         protected override void GetLibrariesToPreload(List<string> libraries)
         {
             libraries.Add("ProtoGeometry.dll");
+            libraries.Add("Builtin.dll");
             libraries.Add("DSCoreNodes.dll");
             libraries.Add("DSOffice.dll");
             libraries.Add("FunctionObject.ds");

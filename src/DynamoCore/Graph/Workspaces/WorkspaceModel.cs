@@ -25,6 +25,7 @@ using ProtoCore.Namespace;
 using Utils = Dynamo.Graph.Nodes.Utilities;
 using Dynamo.Engine;
 using Dynamo.Scheduler;
+using Newtonsoft.Json.Linq;
 
 namespace Dynamo.Graph.Workspaces
 {
@@ -54,8 +55,9 @@ namespace Dynamo.Graph.Workspaces
         public double X;
         public double Y;
         public bool ShowGeometry;
-        public bool IsUpstreamVisible;
         public bool Excluded;
+        public bool IsInput;
+        public bool IsOutput;
     }
 
     /// <summary>
@@ -79,21 +81,49 @@ namespace Dynamo.Graph.Workspaces
     /// </summary>
     public class ExtraAnnotationViewInfo
     {
-      public string Title;
-      public IEnumerable<string> Nodes;
-      public double FontSize;
-      public string Background;
+        public string Title;
+        public IEnumerable<string> Nodes;
+        public double FontSize;
+        public string Background;
+        public string Id;
 
-      // TODO, QNTM-1099: Determine if these are required
-      // public string Id;
-      // public double Left;
-      // public double Top;
-      // public double Width;
-      // public double Height;
-      // public double InitialTop;
-      // public double InitialHeight;
-      // public double TextBlockHeight;
-  }
+        // TODO, Determine if these are required
+        public double Left;
+        public double Top;
+        public double Width;
+        public double Height;
+        public double InitialTop;
+        public double InitialHeight;
+        public double TextBlockHeight;
+
+        private bool tolerantDoubleCompare(double a, double b)
+        {
+            return Math.Abs(a - b) < .0001;
+        }
+
+        public override bool Equals(object obj)
+        {
+            var other = obj as ExtraAnnotationViewInfo;
+            return other != null &&
+                this.Id == other.Id &&
+                this.Title == other.Title &&
+                this.Nodes.SequenceEqual(other.Nodes) &&
+                this.FontSize == other.FontSize &&
+                this.Background == other.Background;
+
+                //TODO try to get rid of these if possible
+                //needs investigation if we are okay letting them get 
+                //calculated at runtime. currently checking them will fail as we do
+                //not deserialize them.
+
+                //tolerantDoubleCompare(this.Left, other.Left) &&
+                //tolerantDoubleCompare(this.Top, other.Top) &&
+                //tolerantDoubleCompare(this.InitialTop, other.InitialTop);
+                //this.Width == other.Width &&
+                //this.Height == other.Height &&
+                //this.TextBlockHeight == other.TextBlockHeight;
+        }
+    }
 
     /// <summary>
     /// Represents base class for all kind of workspaces which contains general data
@@ -340,11 +370,7 @@ namespace Dynamo.Graph.Workspaces
         public event Action<ConnectorModel> ConnectorDeleted;
         protected virtual void OnConnectorDeleted(ConnectorModel obj)
         {
-            if (hasNodeInSyncWithDefinition)
-            {
-                undoRecorder.RecordModelAsOffTrack(obj.GUID);
-            }
-
+           
             var handler = ConnectorDeleted;
             if (handler != null) handler(obj);
             //Check if the workspace is loaded, i.e all the nodes are
@@ -382,6 +408,18 @@ namespace Dynamo.Graph.Workspaces
         {
             var handler = Saving;
             if (handler != null) handler(obj);
+        }
+
+        /// <summary>
+        /// This handler handles the workspaceModel's request to populate a JSON with view data.
+        /// This is used to construct a full workspace for instrumentation.
+        /// </summary>
+        internal delegate string PopulateJSONWorkspaceHandler(JObject modelData);
+        internal event PopulateJSONWorkspaceHandler PopulateJSONWorkspace;
+        protected virtual void OnPopulateJSONWorkspace(JObject modelData)
+        {
+            var handler = PopulateJSONWorkspace;
+            if (handler != null) handler(modelData);
         }
 
         private void OnSyncWithDefinitionStart(NodeModel nodeModel)
@@ -435,7 +473,7 @@ namespace Dynamo.Graph.Workspaces
                 {
                     foreach (var node in this.Nodes.OfType<Function>())
                     {
-                        dependencies.Add(node.FunctionUuid);
+                        dependencies.Add(node.FunctionSignature);
                     }
                 }
                 //else the workspace is a customnode - and we can add the dependencies directly
@@ -504,8 +542,9 @@ namespace Dynamo.Graph.Workspaces
         /// Returns if current workspace is readonly.
         /// </summary>
         public bool IsReadOnly
-        {
-            get { return isReadOnly; }
+        {   
+            //if the workspace contains xmlDummyNodes it's effectively a readonly graph.
+            get { return isReadOnly || this.containsXmlDummyNodes(); }
             set
             {
                 isReadOnly = value;
@@ -1058,6 +1097,7 @@ namespace Dynamo.Graph.Workspaces
                 functionNode.Controller.SyncWithDefinitionEnd -= OnSyncWithDefinitionEnd;
             }
             node.ConnectorAdded -= OnConnectorAdded;
+            node.UpdateASTCollection -= OnToggleNodeFreeze;
             node.Modified -= NodeModified;
             node.Dispose();
         }
@@ -1293,6 +1333,15 @@ namespace Dynamo.Graph.Workspaces
         #endregion
 
         #region private/internal methods
+        /// <summary>
+        /// Returns true if the graph currently contains dummy node which point to XML content.
+        /// These nodes cannot be serialized to json correctly.
+        /// </summary>
+        /// <returns></returns>
+        internal bool containsXmlDummyNodes()
+        {
+            return this.Nodes.OfType<DummyNode>().Where(node => node.OriginalNodeContent is XmlElement).Count()> 0;
+        }
 
         private void SerializeElementResolver(XmlDocument xmlDoc)
         {
@@ -1467,22 +1516,44 @@ namespace Dynamo.Graph.Workspaces
 
         internal string GetStringRepOfWorkspace()
         {
-            // Create the xml document to write to.
-            var document = new XmlDocument();
-            document.CreateXmlDeclaration("1.0", null, null);
-            document.AppendChild(document.CreateElement("Workspace"));
+            try
+            {
+                //Send the data in JSON format
+                //step 1: convert the model to json
+                var json = this.ToJson(null);
 
-            //This is only used for computing relative offsets, it's not actually created
-            string virtualFileName = Path.Combine(Path.GetTempPath(), "DynamoTemp.dyn");
-            Utils.SetDocumentXmlPath(document, virtualFileName);
+                //step2 : parse it as JObject
+                var jo = JObject.Parse(json);
 
-            if (!PopulateXmlDocument(document))
-                return String.Empty;
+                //step 3: raise the event to populate the view block
+                if (PopulateJSONWorkspace != null)
+                {
+                    json = PopulateJSONWorkspace(jo);
+                }
 
-            //Now unset the temp file name again
-            Utils.SetDocumentXmlPath(document, null);
+                return json;
+            }
+            catch (JsonReaderException ex)
+            {
+                JArray array = new JArray();
+                array.Add(ex.Message);
 
-            return document.OuterXml;
+                JObject jo = new JObject();
+                jo["exception"] = array;
+
+                return jo.ToString();
+            }
+            catch (Exception ex)
+            {
+                JArray array = new JArray();
+                array.Add(ex.InnerException.ToString());
+
+                JObject jo = new JObject();
+                jo["exception"] = array;
+
+                return jo.ToString();
+            }
+
         }
 
         #region ILogSource implementation
@@ -1535,6 +1606,8 @@ namespace Dynamo.Graph.Workspaces
             EngineController engineController, DynamoScheduler scheduler, NodeFactory factory,
             bool isTestMode, bool verboseLogging, CustomNodeManager manager)
         {
+            var logger = engineController != null ? engineController.AsLogger() : null;
+
             var settings = new JsonSerializerSettings
             {
                 Error = (sender, args) =>
@@ -1546,9 +1619,10 @@ namespace Dynamo.Graph.Workspaces
                 TypeNameHandling = TypeNameHandling.Auto,
                 Formatting = Newtonsoft.Json.Formatting.Indented,
                 Converters = new List<JsonConverter>{
-                        new ConnectorConverter(),
+                        new ConnectorConverter(logger),
                         new WorkspaceReadConverter(engineController, scheduler, factory, isTestMode, verboseLogging),
-                        new NodeReadConverter(manager, libraryServices),
+                        new NodeReadConverter(manager, libraryServices,isTestMode),
+                        new TypedParameterConverter()
                     },
                 ReferenceResolverProvider = () => { return new IdReferenceResolver(); }
             };
@@ -1566,11 +1640,48 @@ namespace Dynamo.Graph.Workspaces
         /// <param name="workspaceViewInfo">The extra view information from the workspace to update the model with.</param>
         public void UpdateWithExtraWorkspaceViewInfo(ExtraWorkspaceViewInfo workspaceViewInfo)
         {
+            if (workspaceViewInfo == null)
+              return;
+
             X = workspaceViewInfo.X;
             Y = workspaceViewInfo.Y;
             Zoom = workspaceViewInfo.Zoom; 
 
-            foreach (ExtraNodeViewInfo nodeViewInfo in workspaceViewInfo.NodeViews)
+            OnCurrentOffsetChanged(
+                this,
+                new PointEventArgs(new Point2D(X, Y)));
+
+            // This function loads standard nodes
+            LoadNodes(workspaceViewInfo.NodeViews);
+
+            // This function loads notes from the Notes array in the JSON format
+            // NOTE: This is here to support early JSON graphs
+            // IMPORTANT: All notes must be loaded before annotations are loaded to
+            //            ensure that any contained notes are contained properly
+            LoadLegacyNotes(workspaceViewInfo.Notes);
+
+            // This function loads notes from the Annotations array in the JSON format
+            // that have an empty nodes collection
+            // IMPORTANT: All notes must be loaded before annotations are loaded to
+            //            ensure that any contained notes are contained properly
+            LoadNotesFromAnnotations(workspaceViewInfo.Annotations);
+
+            // This function loads annotations from the Annotations array in the JSON format
+            // that have a non-empty nodes collection
+            LoadAnnotations(workspaceViewInfo.Annotations);
+
+            // TODO, QNTM-1099: These items are not in the extra view info
+            // Name = info.Name;
+            // Description = info.Description;
+            // FileName = info.FileName;
+        }
+
+        private void LoadNodes(IEnumerable<ExtraNodeViewInfo> nodeViews)
+        {
+            if (nodeViews == null)
+              return;
+
+            foreach (ExtraNodeViewInfo nodeViewInfo in nodeViews)
             {
                 var guidValue = IdToGuidConverter(nodeViewInfo.Id);
                 var nodeModel = Nodes.FirstOrDefault(node => node.GUID == guidValue);
@@ -1578,17 +1689,32 @@ namespace Dynamo.Graph.Workspaces
                 {
                     nodeModel.X = nodeViewInfo.X;
                     nodeModel.Y = nodeViewInfo.Y;
-                    nodeModel.Name = nodeViewInfo.Name;
                     nodeModel.IsFrozen = nodeViewInfo.Excluded;
+                    nodeModel.IsSetAsInput = nodeViewInfo.IsInput;
+                    nodeModel.IsSetAsOutput = nodeViewInfo.IsOutput;
 
-                    // Note: These parameters are not directly accessible due to undo/redo considerations
+                    // NOTE: The name needs to be set using UpdateValue to cause the view to update
+                    nodeModel.UpdateValue(new UpdateValueParams("Name", nodeViewInfo.Name));
+
+                    // NOTE: These parameters are not directly accessible due to undo/redo considerations
                     //       which should not be used during deserialization (see "ArgumentLacing" for details)
                     nodeModel.UpdateValue(new UpdateValueParams("IsVisible", nodeViewInfo.ShowGeometry.ToString()));
-                    nodeModel.UpdateValue(new UpdateValueParams("IsUpstreamVisible", nodeViewInfo.IsUpstreamVisible.ToString()));
+                }
+                else
+                {   
+                    this.Log(string.Format("This graph has a nodeview with id:{0} and name:{1}, but does not contain a matching nodeModel", 
+                        guidValue.ToString(),nodeViewInfo.Name)
+                        , WarningLevel.Moderate);
                 }
             }
+        }
 
-            foreach (ExtraNoteViewInfo noteViewInfo in workspaceViewInfo.Notes)
+        private void LoadLegacyNotes(IEnumerable<ExtraNoteViewInfo> noteViews)
+        {
+            if (noteViews == null)
+              return;
+
+            foreach (ExtraNoteViewInfo noteViewInfo in noteViews)
             {
                 var guidValue = IdToGuidConverter(noteViewInfo.Id);
 
@@ -1596,55 +1722,90 @@ namespace Dynamo.Graph.Workspaces
                 var noteModel = new NoteModel(noteViewInfo.X, noteViewInfo.Y, noteViewInfo.Text, guidValue);
                 this.AddNote(noteModel);
             }
+        }
 
-            foreach (ExtraAnnotationViewInfo annotationViewInfo in workspaceViewInfo.Annotations)
+        private void LoadNotesFromAnnotations(IEnumerable<ExtraAnnotationViewInfo> annotationViews)
+        {
+            if (annotationViews == null)
+              return;
+
+            foreach (ExtraAnnotationViewInfo annotationViewInfo in annotationViews)
             {
-                // TODO, QNTM-1099: Determine where to set the ID for annotations
-                // Guid guidValue = IdToGuidConverter(annotationInfo.Id);
+                if (annotationViewInfo.Nodes == null)
+                    continue;
+
+                // If count is not zero, this is an annotation, not a note
+                if (annotationViewInfo.Nodes.Count() != 0)
+                    continue;
+
+                var annotationGuidValue = IdToGuidConverter(annotationViewInfo.Id);
+                var text = annotationViewInfo.Title;
+
+                var noteModel = new NoteModel(
+                    annotationViewInfo.Left, 
+                    annotationViewInfo.Top, 
+                    text, 
+                    annotationGuidValue);
+                this.AddNote(noteModel);
+            }
+        }
+
+        private void LoadAnnotations(IEnumerable<ExtraAnnotationViewInfo> annotationViews)
+        {
+            if (annotationViews == null)
+              return;
+
+            foreach (ExtraAnnotationViewInfo annotationViewInfo in annotationViews)
+            {
+                if (annotationViewInfo.Nodes == null)
+                    continue;
+
+                // If count is zero, this is a note, not an annotation
+                if (annotationViewInfo.Nodes.Count() == 0)
+                    continue;
+
+                var annotationGuidValue = IdToGuidConverter(annotationViewInfo.Id);
+                var text = annotationViewInfo.Title;
 
                 // Create a collection of nodes in the given annotation
                 var nodes = new List<NodeModel>();
                 foreach (string nodeId in annotationViewInfo.Nodes)
                 {
-                  var guidValue = IdToGuidConverter(nodeId);
-                  if (guidValue == null)
-                    continue;
+                    var guidValue = IdToGuidConverter(nodeId);
+                    if (guidValue == null)
+                      continue;
 
-                  // NOTE: Some nodes may be annotations and not be found here
-                  var nodeModel = Nodes.FirstOrDefault(node => node.GUID == guidValue);
-                  if (nodeModel == null)
-                    continue;
+                    // NOTE: Some nodes may be annotations and not be found here
+                    var nodeModel = Nodes.FirstOrDefault(node => node.GUID == guidValue);
+                    if (nodeModel == null)
+                      continue;
 
-                  nodes.Add(nodeModel);
+                    nodes.Add(nodeModel);
                 }
 
                 // Create a collection of notes in the given annotation
                 var notes = new List<NoteModel>();
                 foreach (string noteId in annotationViewInfo.Nodes)
                 {
-                  var guidValue = IdToGuidConverter(noteId);
-                  if (guidValue == null)
-                    continue;
+                    var guidValue = IdToGuidConverter(noteId);
+                    if (guidValue == null)
+                      continue;
 
-                  // NOTE: Some nodes may not be annotations and not be found here
-                  var noteModel = Notes.FirstOrDefault(note => note.GUID == guidValue);
-                  if (noteModel == null)
-                    continue;
+                    // NOTE: Some nodes may not be annotations and not be found here
+                    var noteModel = Notes.FirstOrDefault(note => note.GUID == guidValue);
+                    if (noteModel == null)
+                      continue;
 
-                  notes.Add(noteModel);
+                    notes.Add(noteModel);
                 }
 
                 var annotationModel = new AnnotationModel(nodes, notes);
-                annotationModel.AnnotationText = annotationViewInfo.Title;
+                annotationModel.AnnotationText = text;
                 annotationModel.FontSize = annotationViewInfo.FontSize;
                 annotationModel.Background = annotationViewInfo.Background;
+                annotationModel.GUID = annotationGuidValue;
                 this.AddNewAnnotation(annotationModel);
             }
-
-            // TODO, QNTM-1099: These items are not in the extra view info
-            // Name = info.Name;
-            // Description = info.Description;
-            // FileName = info.FileName;
         }
 
         private Guid IdToGuidConverter(string id)

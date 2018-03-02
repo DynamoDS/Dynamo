@@ -97,7 +97,7 @@ import(""FFITarget.dll"");
                         }
                         pt1 = ClassFunctionality.ClassFunctionality( );
                         pt2 = ClassFunctionality.ClassFunctionality(  );
-                        pts = {pt1, pt2};
+                        pts = [pt1, pt2];
                         numpts = length(pts); 
                         a=numpts.IntVal;
                        
@@ -117,7 +117,7 @@ import(""FFITarget.dll"");
                         {
                             return = pts[0];
                         }
-                        pts = {1, 2};
+                        pts = [1, 2];
                         numpts = length(pts); 
                         a=numpts;
                        
@@ -164,7 +164,7 @@ import(""FFITarget.dll"");
                     }
                     pt1 = ClassFunctionality.ClassFunctionality();
                     pt2 = ClassFunctionality.ClassFunctionality();
-                    pts = {pt1, pt2};
+                    pts = [pt1, pt2];
                     numpts = length(pts); 
                     a=numpts.IntVal;
                 ";
@@ -188,7 +188,7 @@ def length : double (pts : ClassFunctionality[])
 }
 pt1 = ClassFunctionality.ClassFunctionality( );
 pt2 = ClassFunctionality.ClassFunctionality( );
-pts = {pt1, pt2};
+pts = [pt1, pt2];
 numpts = length(pts); 
 a=numpts.IntVal;
                  
@@ -311,7 +311,7 @@ a=numpts.IntVal;
                 @"
                        def foo:int()
                        {
-                            return = {1, 2, 3};
+                            return = [1, 2, 3];
                        }              
                        r = foo();                              
                 ";
@@ -330,7 +330,7 @@ a=numpts.IntVal;
                       {
                              return = x + 1;
                       }
-                      r = foo({true, false}); // method resolution failure, r= null
+                      r = foo([true, false]); // method resolution failure, r= null
                               
                 ";
             //Assert.Fail("1467200 - Sprint 25 - rev 3242 type checking negative cases failing ");
@@ -346,7 +346,7 @@ a=numpts.IntVal;
                 @"
                        def foo:int()
                        {
-                              return = {true, false};
+                              return = [true, false];
                        }              
                        r = foo();                             
                 ";
@@ -362,7 +362,7 @@ a=numpts.IntVal;
         {
             string code =
                 @"
-                            a = {1,2};
+                            a = [1,2];
                             b=a;
                             a[0] = 100;
                             b[0] = ""false"";
@@ -380,23 +380,24 @@ a=numpts.IntVal;
         {
             string code =
                 @"
-b;c;d;
-def foo( a : bool )
-                            {
-                            c={a};
-                            return = c; 
-                            }
-                      [Imperative]
-                            {
-                            c={};
-                            b = foo( 1 );
-                            c = foo( 1.5 );
-                            d = 0;
-                            if(1.5 == true )
-                            {
+                    b=i[0];c=i[1];d=i[2];
+                    def foo( a : bool )
+                    {
+                        c=[a];
+                        return = c; 
+                    }
+                    i = [Imperative]
+                    {
+                        c=[];
+                        b = foo( 1 );
+                        c = foo( 1.5 );
+                        d = 0;
+                        if(1.5 == true )
+                        {
                             d = 3;
-                            }
-                            }
+                        }
+                        return [b,c,d];
+                    }
 ";
             //Assert.Fail("1467172 - sprint 25 - Rev 3146 - [Design Issue ] the type conversion between int/double to bool not allowed ");
             thisTest.RunScriptSource(code);
@@ -411,23 +412,22 @@ def foo( a : bool )
         {
             string code =
                 @"
-b;c;d;
-def foo:bool( a  )
-                            {
-                            
-                            return = a; 
-                            }
-                      [Imperative]
-                            {
-                        
-                            b = foo( 1 );
-                            c = foo( 1.5 );
-                            d = 0;
-                            if(1.5 == true )
-                            {
+                    b=i[0];c=i[1];d=i[2];
+                    def foo:bool( a  )
+                    {
+                        return = a; 
+                    }
+                    i = [Imperative]
+                    {
+                        b = foo( 1 );
+                        c = foo( 1.5 );
+                        d = 0;
+                        if(1.5 == true )
+                        {
                             d = 3;
-                            }
-                            }
+                        }
+                        return [b,c,d];
+                    }
 ";
             //Assert.Fail("1467172 - sprint 25 - Rev 3146 - [Design Issue ] the type conversion between int/double to bool not allowed ");
             thisTest.RunScriptSource(code);
@@ -441,15 +441,15 @@ def foo:bool( a  )
         public void TS019_conditional_cantevaluate_1467170()
         {
             string code =
-                @"A;
-                     [Imperative]
-                        {
-                        A = 1;
-                        if (0)
+                @"A=[Imperative]
+                {
+                    A = 1;
+                    if (0)
                         A = 2;
-                        else
+                    else
                         A= 3;
-                        }
+                    return A;
+                }
                    
                         ";
             thisTest.RunScriptSource(code);
@@ -462,15 +462,15 @@ def foo:bool( a  )
         {
             string code =
                 @"
-                     A;
-                     [Imperative]
-                        {
-                            A = 1;
-                            if (!0)
-                                A = 2;
-                            else
-                                A= 3;
-                        }
+                    A=[Imperative]
+                    {
+                        A = 1;
+                        if (!0)
+                            A = 2;
+                        else
+                            A= 3;
+                        return A;
+                    }
                       
                         ";
             thisTest.RunScriptSource(code);
@@ -502,16 +502,16 @@ def foo:bool( a  )
         public void TS020_conditional_cantevaluate_1467170()
         {
             string code =
-                @"A;
-                     [Imperative]
-                        {
-                        A = 1;
-                        B=1;
-                        if (B)
+                @"A=[Imperative]
+                {
+                    A = 1;
+                    B=1;
+                    if (B)
                         A = 2;
-                        else
+                    else
                         A= 3;
-                        }
+                    return A;
+                }
                       
                         ";
             thisTest.RunScriptSource(code);
@@ -537,11 +537,11 @@ def foo(a)
     }
     return = d;
 }
-z;
-[Imperative]
+z = [Imperative]
 {
-  a = { 1, 2 };
+  a = [ 1, 2 ];
   z = foo(a);
+    return z;
 }
 ";
             thisTest.RunScriptSource(code);
@@ -569,11 +569,10 @@ def foo(a)
     return = d;
 }
 
-z;
-[Imperative]
+z=[Imperative]
 {
-    a = { 1, 2 };
-    z = foo(a);
+    a = [ 1, 2 ];
+    return foo(a);
 }
                         
                         ";
@@ -602,7 +601,7 @@ def foo(a)
     return = d;
 }
 
-a = { 1, 2 };
+a = [ 1, 2 ];
 z = foo(a);
 ";
             thisTest.RunScriptSource(code);
@@ -629,7 +628,7 @@ z = foo(a);
                             return = d;
                         }
                         z;
-                        a = { 1, 2 };
+                        a = [ 1, 2 ];
                         z = foo(a);
                         ";
             thisTest.RunScriptSource(code);
@@ -687,18 +686,19 @@ import(""FFITarget.dll"");
         public void TS022_conditional_cantevaluate_1467170()
         {
             string code =
-                @"A;
-                     [Imperative]
-                        {
+                @"A=
+                    [Imperative]
+                    {
                         A = 1;
                         B=1;
                         if (null)
-                        A = 2;
+                            A = 2;
                         else
-                        A= 3;
-                        }
-                        //expected A=1;
-                        //Received A=3;
+                            A= 3;
+                        return A;
+                    }
+                    //expected A=1;
+                    //Received A=3;
                         ";
             thisTest.RunScriptSource(code);
             thisTest.Verify("A", 3);
@@ -710,15 +710,15 @@ import(""FFITarget.dll"");
         {
             string code =
                 @"
-                     A;                   
-                        [Imperative]
+                     A=[Imperative]
                         {
-                        A = 1;
-                        B=1;
-                        if (!null)
-                            A = 2;
-                        else
-                            A= 3;
+                            A = 1;
+                            B=1;
+                            if (!null)
+                                A = 2;
+                            else
+                                A= 3;
+                            return A;
                         }
                         //expected A=1;
                         //Received A=3;
@@ -733,15 +733,16 @@ import(""FFITarget.dll"");
         {
             string code =
                 @"
-                     a = { 1, 2 };
-                     b = 0;
-                     [Imperative]
+                    a = [ 1, 2 ];
+                    b = [Imperative]
+                    {
+                        b = 0;
+                        if (a!= null)
                         {
-                            if (a!= null)
-                            {
-                                b = 1;
-                            }
+                            b = 1;
                         }
+                        return b;
+                    }
                         ";
             thisTest.RunScriptSource(code);
             thisTest.Verify("b", 1);
@@ -790,7 +791,7 @@ import(""FFITarget.dll"");
                 @"
                         def twice : int []( a : double )
                         {
-                            return = {{1,1},{1,1}};
+                            return = [[1,1],[1,1]];
                         }
                         d=1..4;
                         d=twice(4);
@@ -806,7 +807,7 @@ import(""FFITarget.dll"");
         {
             string code =
                 @"
-                  a={1,2,3,4,5};
+                  a=[1,2,3,4,5];
                     x=2.5;
                     b=a[x];
                         ";
@@ -852,7 +853,7 @@ import(""FFITarget.dll"");
                 @"
                  def foo:int[]()
                     {
-                         return = {3.5}; 
+                         return = [3.5]; 
                     }
                     a=foo();
                         ";
@@ -885,7 +886,7 @@ import(""FFITarget.dll"");
                 @"
                   def foo:int[]()
                   {
-                      return = {3.5}; 
+                      return = [3.5]; 
                   }
                   a=foo()[0];
                         ";
@@ -1448,11 +1449,10 @@ import(""FFITarget.dll"");
         public void TS43_null_toBool_1467231_positive()
         {
             string code =
-                @"b;
-                [Imperative]
-                    {
+                @"b = [Imperative]
+                {
                     a=null;
-                    b;
+                    b = 0;
                     if (a) 
                     {
 	                    b=1;
@@ -1461,7 +1461,8 @@ import(""FFITarget.dll"");
                     {
 	                    b=2;
                     }
-                    }"; //expected :true, received : null
+                    return b;
+                }"; //expected :true, received : null
             thisTest.RunScriptSource(code);
             thisTest.Verify("b", 2);
         }
@@ -1519,18 +1520,18 @@ import(""FFITarget.dll"");
                 @"
 import(""FFITarget.dll"");
 
-                    a:double[]= {1,2,3}; 
+                    a:double[]= [1,2,3]; 
                     
-                    b:int[] =  {1,2,3}; 
-                    c:string[]={""a"",""b"",""c""}; 
-                    d:char []= {'c','d','e'};
+                    b:int[] =  [1,2,3]; 
+                    c:string[]=[""a"",""b"",""c""]; 
+                    d:char []= ['c','d','e'];
                     x1= ClassFunctionality.ClassFunctionality(1);
                     y1= ClassFunctionality.ClassFunctionality(1);
                     z1= ClassFunctionality.ClassFunctionality(1);
-                    e:ClassFunctionality []= {x1,y1,z1};
+                    e:ClassFunctionality []= [x1,y1,z1];
                     e1=e.IntVal;
-                    f:bool []= {true,false,null};
-                    g []={ null,null,null};
+                    f:bool []= [true,false,null];
+                    g []=[ null,null,null];
 ";
             thisTest.RunScriptSource(code);
             thisTest.Verify("a", new object[] { 1.0, 2.0, 3.0 });
@@ -1581,16 +1582,16 @@ import(""FFITarget.dll"");
             string code =
                 @"
 import(""FFITarget.dll"");
-                    a:double[][]= {1}; 
+                    a:double[][]= [1]; 
                     
-                    b:int[][] =  {1.1}; 
-                    c:string[][]={""a""}; 
-                    d:char [][]= {'c'};
+                    b:int[][] =  [1.1]; 
+                    c:string[][]=[""a""]; 
+                    d:char [][]= ['c'];
                     x1= ClassFunctionality.ClassFunctionality(1);
-                    e:ClassFunctionality [][]= {x1};
+                    e:ClassFunctionality [][]= [x1];
                     e1=e.IntVal;
-                    f:bool [][]= {true};
-                    g [][]={null};";
+                    f:bool [][]= [true];
+                    g [][]=[null];";
 
 
             // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3973
@@ -1734,16 +1735,16 @@ import(""FFITarget.dll"");
             string code =
                 @"
 import(""FFITarget.dll"");
-                    a:double[][]= {1}; 
+                    a:double[][]= [1]; 
                     
-                    b:double[][] =  {1.1}; 
-                    c:double[][]={""a""}; 
-                    d:double[][]= {'c'};
+                    b:double[][] =  [1.1]; 
+                    c:double[][]=[""a""]; 
+                    d:double[][]= ['c'];
                     x1= ClassFunctionality.ClassFunctionality(1);
-                    e:double[][]= {x1};
+                    e:double[][]= [x1];
                     e1=e.IntVal;
-                    f:double[][]= {true};
-                    g :double[][]={null};";
+                    f:double[][]= [true];
+                    g :double[][]=[null];";
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1670
             string error = "MAGN-1670 Sprint 27 - Rev 3956 {null} to array upgrdation must null out";
             thisTest.RunScriptSource(code, error);
@@ -1794,15 +1795,15 @@ import(""FFITarget.dll"");
             string code =
                 @"
 import(""FFITarget.dll"");
-                    a:bool[][]= {1}; 
+                    a:bool[][]= [1]; 
                     
-                    b:bool[][] =  {1.1}; 
-                    c:bool[][]={""a""}; 
-                    d:bool[][]= {'c'};
+                    b:bool[][] =  [1.1]; 
+                    c:bool[][]=[""a""]; 
+                    d:bool[][]= ['c'];
                     x1= ClassFunctionality.ClassFunctionality(1);
-                    e:bool[][]= {x1};
+                    e:bool[][]= [x1];
                     e1=e.IntVal;
-                    f:bool[][]= {true};";
+                    f:bool[][]= [true];";
             //string error = "1467295- Sprint 26 : rev 3766 null gets converted into an array of nulls (while converting into array of any type) when the conversion is not allowed ";
             string error = "1467332  - Sprint 27 - Rev 3956 {null} to array upgrdation must null out ";
             thisTest.RunScriptSource(code, error);
@@ -1853,16 +1854,16 @@ import(""FFITarget.dll"");
             string code =
                 @"
 import(""FFITarget.dll"");
-                    a:string[][]= {1}; 
+                    a:string[][]= [1]; 
                     
-                    b:string[][] =  {1.0}; 
-                    c:string[][]={""test""}; 
-                    d:string[][]= {'1'};
+                    b:string[][] =  [1.0]; 
+                    c:string[][]=[""test""]; 
+                    d:string[][]= ['1'];
                     x1= ClassFunctionality.ClassFunctionality(1);
-                    e:string[][]= {x1};
+                    e:string[][]= [x1];
                     e1=e.IntVal;
-                    f:string[][]= {false};
-                    g :string[][]={null};";
+                    f:string[][]= [false];
+                    g :string[][]=[null];";
 
             string error = "MAGN-1670 Sprint 27 - Rev 3956 {null} to array upgrdation must null out";
             thisTest.RunScriptSource(code, error);
@@ -2216,15 +2217,15 @@ import(""FFITarget.dll"");
 	                        b1= x ;
 	                        return =b1;
                         }
-                        a = foo({ 1.5, 2.5 });
-                        z:var[]={ 1.5,2.5 };
+                        a = foo([ 1.5, 2.5 ]);
+                        z:var[]=[ 1.5,2.5 ];
                         a1=foo(z);
-                        b = foo({ 1, 0 });
-                        c = foo({ ""1.5"" ,""""});
-                        c1 = foo( {'1','0'});
-                        d = foo({ ClassFunctionality.ClassFunctionality(1),ClassFunctionality.ClassFunctionality(1) });
-                        e = foo({ false,true });
-                        f = foo({ null, null });";
+                        b = foo([ 1, 0 ]);
+                        c = foo([ ""1.5"" ,""""]);
+                        c1 = foo( ['1','0']);
+                        d = foo([ ClassFunctionality.ClassFunctionality(1),ClassFunctionality.ClassFunctionality(1) ]);
+                        e = foo([ false,true ]);
+                        f = foo([ null, null ]);";
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1664
             string error = "MAGN-1664 Sprint 26 - Rev 3781 - array of nulls to bool array , not working correctly in case of function arguments";
             thisTest.RunScriptSource(code, error);
@@ -2248,7 +2249,7 @@ import(""FFITarget.dll"");
                     {
                         return = a;
                     }
-                    a = func({null}); ";
+                    a = func([null]); ";
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1664
             string error = "MAGN-1664 Sprint 26 - Rev 3781 - array of nulls to bool array , not working correctly in case of function arguments";
             thisTest.RunScriptSource(code, error);
@@ -2265,7 +2266,7 @@ import(""FFITarget.dll"");
                     {
                         return = a;
                     }
-                    a = func({null,null}); ";
+                    a = func([null,null]); ";
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1664
             string error = "MAGN-1664 Sprint 26 - Rev 3781 - array of nulls to bool array , not working correctly in case of function arguments";
             thisTest.RunScriptSource(code, error);
@@ -2285,15 +2286,15 @@ import(""FFITarget.dll"");
 	                        b1= x ;
 	                        return =b1;
                         }
-                        a = foo({ 1.5, 2.5 });
-                        z:var []={ 1.5,2.5 };
+                        a = foo([ 1.5, 2.5 ]);
+                        z:var []=[ 1.5,2.5 ];
                         a1=foo(z);
-                        b = foo({ 1, 0 });
-                        c = foo({ ""1.5"" ,""""});
-                        d = foo( {'1','0'});
-                        e = foo({ ClassFunctionality.ClassFunctionality(1),ClassFunctionality.ClassFunctionality(1) });
-                        f = foo({ false,true });
-                        g = foo({ null, null });
+                        b = foo([ 1, 0 ]);
+                        c = foo([ ""1.5"" ,""""]);
+                        d = foo( ['1','0']);
+                        e = foo([ ClassFunctionality.ClassFunctionality(1),ClassFunctionality.ClassFunctionality(1) ]);
+                        f = foo([ false,true ]);
+                        g = foo([ null, null ]);
                                                   ";
             // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3968
             string error = "MAGN-3968: Type conversion from var to bool array promotion is not happening ";
@@ -2321,13 +2322,13 @@ import(""FFITarget.dll"");
 		 	                    b1= x ;
 	                             return =b1;
                             }
-                    a = foo({ 1.5, 2.5 });
-                    z:var={ 1.5,2.5 };
+                    a = foo([ 1.5, 2.5 ]);
+                    z:var=[ 1.5,2.5 ];
                     a1=foo(z);
-                    b = foo({ 1, 0 });
-                    c = foo({ ""1.5"" ,""""});
-                    d = foo({ '1', '0' });
-                     e = d = foo({ ClassFunctionality.ClassFunctionality(1),ClassFunctionality.ClassFunctionality(1) });
+                    b = foo([ 1, 0 ]);
+                    c = foo([ ""1.5"" ,""""]);
+                    d = foo([ '1', '0' ]);
+                     e = d = foo([ ClassFunctionality.ClassFunctionality(1),ClassFunctionality.ClassFunctionality(1) ]);
                                                   ";
             string error = "1467258 - sprint 26 - Rev 3541 if the return type is bool array , type conversion does not happen for some cases  ";
             thisTest.RunScriptSource(code, error);
@@ -2350,12 +2351,12 @@ import(""FFITarget.dll"");
 		 	                    b1= x ;
 	                             return =b1;
                             }
-                    a = foo({ 1.5, 2.5 });
-                    z:var={ 1.5,2.5 };
+                    a = foo([ 1.5, 2.5 ]);
+                    z:var=[ 1.5,2.5 ];
                     a1=foo(z);
-                    b = foo({ 1, 0 });
-                    c = foo({ ""1.5"" ,""""});
-                    d = foo({ '1', '0' });
+                    b = foo([ 1, 0 ]);
+                    c = foo([ ""1.5"" ,""""]);
+                    d = foo([ '1', '0' ]);
                                                   ";
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1665
             string error = "MAGN-1665 Sprint 26 - Rev 3782  adds an additonal rank while returning as array, when the rank matches";
@@ -2412,10 +2413,10 @@ import(""FFITarget.dll"");
         {
             string code =
                 @"
-a;
-                [Imperative]
+                a= [Imperative]
                 { 
                     a : int = 3.2;
+                    return a;
                 }
                                                  ";
             thisTest.RunScriptSource(code);
@@ -2493,7 +2494,7 @@ a;
         {
             string code =
                 @"
-                    a={1,2,3,4,5};
+                    a=[1,2,3,4,5];
                     x=2.5;
                     b=a[x];
                     c=a[2.1];       
@@ -2514,7 +2515,7 @@ a;
         {
             string code =
                 @"
-                    a = { 1, { 2 }, 3, 4, 5 };
+                    a = [ 1, [ 2 ], 3, 4, 5 ];
                     x=-0.1;
                     b = a[1][x];";
             string error = "1467214 - Sprint 26- Rev 3313 Type Conversion from Double to Int not happening while indexing into array ";
@@ -2766,10 +2767,11 @@ import(""FFITarget.dll"");
         {
             string code =
                 @"
-import(""FFITarget.dll"");
-d;
-                    [Imperative]{
+                    import(""FFITarget.dll"");
+                    d = [Imperative]
+                    {
                          d:bool=ClassFunctionality.ClassFunctionality(5); // user def to bool - > if not null true
+                        return d;
                     }";
             string error = "1467287 Sprint 26 - 3721 user defined to bool conversion does not happen in imperative ";
             thisTest.RunScriptSource(code, error);
@@ -3131,7 +3133,7 @@ import(""FFITarget.dll"");
         {
             string code =
                     @"
-                    x:int[] = { };
+                    x:int[] = [ ];
                     x = 0;
 ";
             thisTest.VerifyRunScriptSource(code);
@@ -3148,8 +3150,8 @@ import(""FFITarget.dll"");
                     @"
 	                    def foo ( y : int )
 	                    {
-                            x = { };
-                            x =  {y,y+1} ;
+                            x = [ ];
+                            x =  [y,y+1] ;
                             return = x;
 	                    }
                     
@@ -3170,8 +3172,8 @@ import(""FFITarget.dll"");
                     @"
 	                    def foo ( y : int )
 	                    {
-                            x = { };
-                            x =  {y,{y+1}} ;
+                            x = [ ];
+                            x =  [y,[y+1]] ;
                             return = x;
 	                    }
                     d = foo(0);
@@ -3339,7 +3341,7 @@ import(""FFITarget.dll"");
             string code =
                     @"
 import(""FFITarget.dll"");
-                    v = {ClassFunctionality.ClassFunctionality(), ClassFunctionality.ClassFunctionality()};
+                    v = [ClassFunctionality.ClassFunctionality(), ClassFunctionality.ClassFunctionality()];
                     b:bool[] = v;
                     ";
             string error = "147310 - Sprint 26 - Rev 3786 user defined to bool array - array conversion does not happen ";
@@ -3372,7 +3374,7 @@ import(""FFITarget.dll"");
                     @"
 import(""FFITarget.dll"");
                     def foo(b : bool[]) { return = 1; }
-                    v = {ClassFunctionality.ClassFunctionality(), ClassFunctionality.ClassFunctionality()};
+                    v = [ClassFunctionality.ClassFunctionality(), ClassFunctionality.ClassFunctionality()];
                     o = foo(v);
                     ";
             string error = "147310 - Sprint 26 - Rev 3786 user defined to bool array - array conversion does not happen ";
@@ -3487,7 +3489,7 @@ import(""FFITarget.dll"");
                         {
                             return = x;
                         }
-                        a1 = { null, 5, 6.0};
+                        a1 = [ null, 5, 6.0];
                         b1 = foo ( a1 );
                     ";
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1667
@@ -3523,7 +3525,7 @@ import(""FFITarget.dll"");
                     @"
                     def A : int[](y : int)
 	                {
-		                x = { y, { y + 1 } };
+		                x = [ y, [ y + 1 ] ];
 		                return = x; 
 	                }
 	                c = A(0);
@@ -3540,7 +3542,7 @@ import(""FFITarget.dll"");
                     @"
                     def A : int[](y : int)
 	                {
-		                x = { y, { y + 1 } };
+		                x = [ y, [ y + 1 ] ];
 		                return = x; 
 	                }
 	                c = A(0);
@@ -3557,7 +3559,7 @@ import(""FFITarget.dll"");
                     @"
                     def A : double[](y : int)
 	                {
-		                x = { y, { y + 1 } };
+		                x = [ y, [ y + 1 ] ];
 		                return = x; 
 	                }
 	                c = A(0);
@@ -3574,7 +3576,7 @@ import(""FFITarget.dll"");
                     @"
                     def A : bool[](y : int)
 	                {
-		                x = { y, { y + 1 } };
+		                x = [ y, [ y + 1 ] ];
 		                return = x; 
 	                }
 	                c = A(0);
@@ -3591,7 +3593,7 @@ import(""FFITarget.dll"");
                     @"
                     def A : string[](y : int)
 	                {
-		                x = { y, { y + 1 } };
+		                x = [ y, [ y + 1 ] ];
 		                return = x; 
 	                }
 	                c = A(0);
@@ -3614,7 +3616,7 @@ import(""FFITarget.dll"");
                         b : ClassFunctionality = x;
                         return = b;
                     }
-                    points = { ClassFunctionality.ClassFunctionality(1234), ClassFunctionality.ClassFunctionality(1234) };
+                    points = [ ClassFunctionality.ClassFunctionality(1234), ClassFunctionality.ClassFunctionality(1234) ];
                     def CreateLine(points: var[] )
                     {
                         return = foo(points[0], points[1]);
@@ -3660,7 +3662,7 @@ import(""FFITarget.dll"");
                     @"
                         def foo ( y : int )
                         {
-                            x = { };
+                            x = [ ];
                             x =  y ;
                             return = x;
                         }
@@ -3681,16 +3683,16 @@ import(""FFITarget.dll"");
             string code =
                 @"
 import(""FFITarget.dll"");
-                    a:var[]..[]= {1,{2,3},{{4},3}}; 
+                    a:var[]..[]= [1,[2,3],[[4],3]]; 
                     
-                    b:var[]..[] =  {1.1,{2.2,3.3}}; 
-                    c:var[]..[]={""a"",{""a""}}; 
-                    d:var[]..[]= {'c',{'c'}};
+                    b:var[]..[] =  [1.1,[2.2,3.3]]; 
+                    c:var[]..[]=[""a"",[""a""]]; 
+                    d:var[]..[]= ['c',['c']];
                     x1= ClassFunctionality.ClassFunctionality(1);
-                    e:var[]..[]= {x1,{x1}};
+                    e:var[]..[]= [x1,[x1]];
                     e1=e.IntVal;
-                    f:var[]..[]= {true,{true}};
-                    g :var[]..[]={null,{null}};
+                    f:var[]..[]= [true,[true]];
+                    g :var[]..[]=[null,[null]];
 ";
 
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1701
@@ -3715,16 +3717,16 @@ import(""FFITarget.dll"");
             string code =
                 @"
 import(""FFITarget.dll"");
-                    a:int[]..[]= {1,{2,{3}}}; 
+                    a:int[]..[]= [1,[2,[3]]]; 
                     
-                    b:int[]..[] =  {1.1,{1.1}}; 
-                    c:int[]..[]={""a"",{""a""}}; 
-                    d:int[]..[]= {'c',{'c'}};
+                    b:int[]..[] =  [1.1,[1.1]]; 
+                    c:int[]..[]=[""a"",[""a""]]; 
+                    d:int[]..[]= ['c',['c']];
                     x1= ClassFunctionality.ClassFunctionality(1);
-                    e:int[]..[]= {x1,{x1}};
+                    e:int[]..[]= [x1,[x1]];
                     e1=e.IntVal;
-                    f:int[]..[]= {true,{true}};
-                    g :int[]..[]={null,{null}};";
+                    f:int[]..[]= [true,[true]];
+                    g :int[]..[]=[null,[null]];";
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1701
             string error = "MAGN-1701 Regression : Dot operation on jagged arrays is giving unexpected null";
             thisTest.VerifyRunScriptSource(code, error);
@@ -3746,16 +3748,16 @@ import(""FFITarget.dll"");
             string code =
                 @"
 import(""FFITarget.dll"");
-                    a:double[]= {1,{1}}; 
+                    a:double[]= [1,[1]]; 
                     
-                    b:double[] =  {1.1,{-3}}; 
-                    c:double[]={""a"",{""ds""}}; 
-                    d:double[]= {'c',{'1'}};
+                    b:double[] =  [1.1,[-3]]; 
+                    c:double[]=[""a"",[""ds""]]; 
+                    d:double[]= ['c',['1']];
                     x1= ClassFunctionality.ClassFunctionality(1);
-                    e:double[]= {x1,{x1}};
+                    e:double[]= [x1,[x1]];
                     e1=e.IntVal;
-                    f:double[]= {true,{true}};
-                    g :double[]={null,{null}};";
+                    f:double[]= [true,[true]];
+                    g :double[]=[null,[null]];";
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1670
             string error = "MAGN-1670 Sprint 27 - Rev 3956 {null} to array upgrdation must null out";
 
@@ -3779,16 +3781,16 @@ import(""FFITarget.dll"");
             string code =
                 @"
 import(""FFITarget.dll"");
-                    a:bool[]..[]= {1,{1}}; 
+                    a:bool[]..[]= [1,[1]]; 
                     
-                    b:bool[] ..[]=  {1.1,{1.1}}; 
-                    c:bool[]..[]={""a"",{""a""}}; 
-                    d:bool[]..[]= {'c',{'c'}};
+                    b:bool[] ..[]=  [1.1,[1.1]]; 
+                    c:bool[]..[]=[""a"",[""a""]]; 
+                    d:bool[]..[]= ['c',['c']];
                     x1= ClassFunctionality.ClassFunctionality(1);
-                    e:bool[]..[]= {x1,{x1}};
+                    e:bool[]..[]= [x1,[x1]];
                     e1=e.IntVal;
-                    f:bool[]..[]= {true,{true}};
-                    g :bool[]..[]={null,{null}};";
+                    f:bool[]..[]= [true,[true]];
+                    g :bool[]..[]=[null,[null]];";
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1670
             string error = "MAGN-1670 Sprint 27 - Rev 3956 {null} to array upgrdation must null out";
             thisTest.RunScriptSource(code, error);
@@ -3811,16 +3813,16 @@ import(""FFITarget.dll"");
             string code =
                 @"
 import(""FFITarget.dll"");
-                    a:string[]..[]= {1,{1}}; 
+                    a:string[]..[]= [1,[1]]; 
                     
-                    b:string[] ..[]=  {1.0,{1.0}}; 
-                    c:string[]..[]={""test"",{""test""}}; 
-                    d:string[]..[]= {'1',{'1'}};
+                    b:string[] ..[]=  [1.0,[1.0]]; 
+                    c:string[]..[]=[""test"",[""test""]]; 
+                    d:string[]..[]= ['1',['1']];
                     x1= ClassFunctionality.ClassFunctionality(1);
-                    e:string[]..[]= {x1,{x1}};
+                    e:string[]..[]= [x1,[x1]];
                     e1=e.IntVal;
-                    f:string[]..[]= {false,{true}};
-                    g :string[]..[]={null,{null}};";
+                    f:string[]..[]= [false,[true]];
+                    g :string[]..[]=[null,[null]];";
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1670
             string error = "MAGN-1670 Sprint 27 - Rev 3956 {null} to array upgrdation must null out";
             thisTest.RunScriptSource(code, error);
@@ -3842,16 +3844,16 @@ import(""FFITarget.dll"");
             string code =
                 @"
 import(""FFITarget.dll"");
-                    a:char[]..[]= {1,{1}}; 
+                    a:char[]..[]= [1,[1]]; 
                     
-                    b:char[]..[] =  {1.0,{1.0}}; 
-                    c:char[]..[]={""test"",{""test""}}; 
-                    d:char[]..[]= {'1',{'1'}};
+                    b:char[]..[] =  [1.0,[1.0]]; 
+                    c:char[]..[]=[""test"",[""test""]]; 
+                    d:char[]..[]= ['1',['1']];
                     x1= ClassFunctionality.ClassFunctionality(1);
-                    e:char[]..[]= {x1,{x1}};
+                    e:char[]..[]= [x1,[x1]];
                     e1=e.IntVal;
-                    f:char[]..[]= {false,{false}};
-                    g :char[]..[]={null,{null}};";
+                    f:char[]..[]= [false,[false]];
+                    g :char[]..[]=[null,[null]];";
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1670
             string error = "MAGN-1670 Sprint 27 - Rev 3956 {null} to array upgrdation must null out";
             thisTest.RunScriptSource(code, error);
@@ -3875,7 +3877,7 @@ import(""FFITarget.dll"");
                             return = x;
     
                         }
-                        z = foo({  3  });
+                        z = foo([  3  ]);
                     ";
             var mirror = thisTest.RunScriptSource(code);
             TestFrameWork.Verify(mirror, "z", new object[] { new object[] { 3 } });
@@ -3892,7 +3894,7 @@ import(""FFITarget.dll"");
                             return = x;
     
                         }
-                        z = foo({  3  });
+                        z = foo([  3  ]);
                     ";
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1668
             var mirror = thisTest.RunScriptSource(code);
@@ -3912,16 +3914,16 @@ import(""FFITarget.dll"");
                             return = x;
     
                         }
-                        a = foo({ 3 });
-                        b = foo({ 3.0 });
-                        c = foo({ true });
-                        d = foo({ ""1.5""});
-                        e = foo({ '1' });
+                        a = foo([ 3 ]);
+                        b = foo([ 3.0 ]);
+                        c = foo([ true ]);
+                        d = foo([ ""1.5""]);
+                        e = foo([ '1' ]);
                         f : var = 3;
-                        f1 = foo({ f });
-                        h = foo({ClassFunctionality.ClassFunctionality()});
+                        f1 = foo([ f ]);
+                        h = foo([ClassFunctionality.ClassFunctionality()]);
                         h1=h.IntVal;
-                        i = foo({ null });
+                        i = foo([ null ]);
                     ";
             string error = "1467326 Sprint 27 - Rev 3905 when there is rank mismatch for function , array upagrades to 1 dimension higer than expected ";
             var mirror = thisTest.RunScriptSource(code, error);
@@ -3948,16 +3950,16 @@ import(""FFITarget.dll"");
                             return = x;
     
                         }
-                        a = foo({ 3 });
-                        b = foo({ 3.0 });
-                        c = foo({ true });
-                        d = foo({ ""1.5""});
-                        e = foo({ '1' });
+                        a = foo([ 3 ]);
+                        b = foo([ 3.0 ]);
+                        c = foo([ true ]);
+                        d = foo([ ""1.5""]);
+                        e = foo([ '1' ]);
                         f : var = 3;
-                        f1 = foo({ f });
-                         h = foo({ClassFunctionality.ClassFunctionality()});
+                        f1 = foo([ f ]);
+                         h = foo([ClassFunctionality.ClassFunctionality()]);
                         h1=h.IntVal;
-                        i = foo({ null });
+                        i = foo([ null ]);
                     ";
             string error = "1467326 Sprint 27 - Rev 3905 when there is rank mismatch for function , array upagrades to 1 dimension higer than expected ";
             var mirror = thisTest.RunScriptSource(code, error);
@@ -3984,16 +3986,16 @@ import(""FFITarget.dll"");
                             return = x;
     
                         }
-                        a = foo({ 3 });
-                        b = foo({ 3.0 });
-                        c = foo({ true });
-                        d = foo({ ""1.5""});
-                        e = foo({ '1' });
+                        a = foo([ 3 ]);
+                        b = foo([ 3.0 ]);
+                        c = foo([ true ]);
+                        d = foo([ ""1.5""]);
+                        e = foo([ '1' ]);
                         f : var = 3;
-                        f1 = foo({ f });
-                        h = foo({ClassFunctionality.ClassFunctionality()});
+                        f1 = foo([ f ]);
+                        h = foo([ClassFunctionality.ClassFunctionality()]);
                         h1=h.IntVal;
-                        i = foo({ null });
+                        i = foo([ null ]);
                     ";
             string error = "1467326 Sprint 27 - Rev 3905 when there is rank mismatch for function , array upagrades to 1 dimension higer than expected ";
             var mirror = thisTest.RunScriptSource(code, error);
@@ -4021,16 +4023,16 @@ import(""FFITarget.dll"");
                             return = x;
     
                         }
-                        a = foo({ 3 });
-                        b = foo({ 3.0 });
-                        c = foo({ true });
-                        d = foo({ ""1.5""});
-                        e = foo({ '1' });
+                        a = foo([ 3 ]);
+                        b = foo([ 3.0 ]);
+                        c = foo([ true ]);
+                        d = foo([ ""1.5""]);
+                        e = foo([ '1' ]);
                         f : var = 3.0;
-                        f1 = foo({ f });
-                        h = foo({ClassFunctionality.ClassFunctionality()});
+                        f1 = foo([ f ]);
+                        h = foo([ClassFunctionality.ClassFunctionality()]);
                         h1=h.IntVal;
-                        i = foo({ null });
+                        i = foo([ null ]);
                     ";
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1668
             string error = "MAGN-1668: Dot Operation on instances using replication returns single null where multiple nulls are expected";
@@ -4058,16 +4060,16 @@ import(""FFITarget.dll"");
                             return = x;
     
                         }
-                        a = foo({ 3 });
-                        b = foo({ 3.0 });
-                        c = foo({ true });
-                        d = foo({ ""1.5""});
-                        e = foo({ '1' });
+                        a = foo([ 3 ]);
+                        b = foo([ 3.0 ]);
+                        c = foo([ true ]);
+                        d = foo([ ""1.5""]);
+                        e = foo([ '1' ]);
                         f : var = 3.0;
-                        f1 = foo({ f });
-                        h = foo({ClassFunctionality.ClassFunctionality()});
+                        f1 = foo([ f ]);
+                        h = foo([ClassFunctionality.ClassFunctionality()]);
                         h1=h.IntVal;
-                        i = foo({ null });
+                        i = foo([ null ]);
                     ";
             string error = "1467326 Sprint 27 - Rev 3905 when there is rank mismatch for function , array upagrades to 1 dimension higer than expected ";
             var mirror = thisTest.RunScriptSource(code, error);
@@ -4095,16 +4097,16 @@ import(""FFITarget.dll"");
                             return = x;
     
                         }
-                        a = foo({ 3 });
-                        b = foo({ 3.0 });
-                        c = foo({ true });
-                        d = foo({ ""1.5""});
-                        e = foo({ '1' });
+                        a = foo([ 3 ]);
+                        b = foo([ 3.0 ]);
+                        c = foo([ true ]);
+                        d = foo([ ""1.5""]);
+                        e = foo([ '1' ]);
                         f : var = 3;
-                        f1 = foo({ f });
-                        h = foo({ClassFunctionality.ClassFunctionality()});
+                        f1 = foo([ f ]);
+                        h = foo([ClassFunctionality.ClassFunctionality()]);
                         h1=h.IntVal;
-                        i = foo({ null });
+                        i = foo([ null ]);
                     ";
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1668
             string error = "MAGN-1668: Dot Operation on instances using replication returns single null where multiple nulls are expected";
@@ -4132,16 +4134,16 @@ import(""FFITarget.dll"");
                             return = x;
     
                         }
-                        a = foo({ 3 });
-                        b = foo({ 3.0 });
-                        c = foo({ true });
-                        d = foo({ ""1.5""});
-                        e = foo({ '1' });
+                        a = foo([ 3 ]);
+                        b = foo([ 3.0 ]);
+                        c = foo([ true ]);
+                        d = foo([ ""1.5""]);
+                        e = foo([ '1' ]);
                         f : var = 3.0;
-                        f1 = foo({ f });
-                        h = foo({ClassFunctionality.ClassFunctionality()});
+                        f1 = foo([ f ]);
+                        h = foo([ClassFunctionality.ClassFunctionality()]);
                         h1=h.IntVal;
-                        i = foo({ null });
+                        i = foo([ null ]);
                     ";
             string error = "1467326 Sprint 27 - Rev 3905 when there is rank mismatch for function , array upagrades to 1 dimension higer than expected ";
             var mirror = thisTest.RunScriptSource(code, error);
@@ -4168,16 +4170,16 @@ import(""FFITarget.dll"");
                             return = x;
     
                         }
-                        a = foo({ 3 });
-                        b = foo({ 3.0 });
-                        c = foo({ true });
-                        d = foo({ ""1.5""});
-                        e = foo({ '1' });
+                        a = foo([ 3 ]);
+                        b = foo([ 3.0 ]);
+                        c = foo([ true ]);
+                        d = foo([ ""1.5""]);
+                        e = foo([ '1' ]);
                         f : var = 3;
-                        f1 = foo({ f });
-                        h = foo({ClassFunctionality.ClassFunctionality()});
+                        f1 = foo([ f ]);
+                        h = foo([ClassFunctionality.ClassFunctionality()]);
                         h1=h.IntVal;
-                        i = foo({ null });
+                        i = foo([ null ]);
                     ";
             string error = "1467326 Sprint 27 - Rev 3905 when there is rank mismatch for function , array upagrades to 1 dimension higer than expected ";
             var mirror = thisTest.RunScriptSource(code, error);
@@ -4204,16 +4206,16 @@ import(""FFITarget.dll"");
                             return = x;
     
                         }
-                        a = foo({ 3 });
-                        b = foo({ 3.0 });
-                        c = foo({ true });
-                        d = foo({ ""1.5""});
-                        e = foo({ '1' });
+                        a = foo([ 3 ]);
+                        b = foo([ 3.0 ]);
+                        c = foo([ true ]);
+                        d = foo([ ""1.5""]);
+                        e = foo([ '1' ]);
                         f : var = 3.0;
-                        f1 = foo({ f });
-                        h = foo({ClassFunctionality.ClassFunctionality()});
+                        f1 = foo([ f ]);
+                        h = foo([ClassFunctionality.ClassFunctionality()]);
                         h1=h.IntVal;
-                        i = foo({ null });
+                        i = foo([ null ]);
                     ";
             string error = "1467326 Sprint 27 - Rev 3905 when there is rank mismatch for function , array upagrades to 1 dimension higer than expected ";
             var mirror = thisTest.RunScriptSource(code, error);
@@ -4241,16 +4243,16 @@ import(""FFITarget.dll"");
                             return = x;
     
                         }
-                        a = foo({ 3 });
-                        b = foo({ 3.0 });
-                        c = foo({ true });
-                        d = foo({ ""1.5""});
-                        e = foo({ '1' });
+                        a = foo([ 3 ]);
+                        b = foo([ 3.0 ]);
+                        c = foo([ true ]);
+                        d = foo([ ""1.5""]);
+                        e = foo([ '1' ]);
                         f : var = 3;
-                        f1 = foo({ f });
-                        h = foo({ClassFunctionality.ClassFunctionality()});
+                        f1 = foo([ f ]);
+                        h = foo([ClassFunctionality.ClassFunctionality()]);
                         h1=h.IntVal;
-                        i = foo({ null });
+                        i = foo([ null ]);
                     ";
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1668
             string error = "MAGN-1668: Dot Operation on instances using replication returns single null where multiple nulls are expected";
@@ -4278,16 +4280,16 @@ import(""FFITarget.dll"");
                             return = x;
     
                         }
-                        a = foo({ 3 });
-                        b = foo({ 3.0 });
-                        c = foo({ true });
-                        d = foo({ ""1.5""});
-                        e = foo({ '1' });
+                        a = foo([ 3 ]);
+                        b = foo([ 3.0 ]);
+                        c = foo([ true ]);
+                        d = foo([ ""1.5""]);
+                        e = foo([ '1' ]);
                         f : var = 3.0;
-                        f1 = foo({ f });
-                        h = foo({ClassFunctionality.ClassFunctionality()});
+                        f1 = foo([ f ]);
+                        h = foo([ClassFunctionality.ClassFunctionality()]);
                         h1=h.IntVal;
-                        i = foo({ null });
+                        i = foo([ null ]);
                     ";
             string error = "1467326 Sprint 27 - Rev 3905 when there is rank mismatch for function , array upagrades to 1 dimension higer than expected ";
             var mirror = thisTest.RunScriptSource(code, error);
@@ -4315,16 +4317,16 @@ import(""FFITarget.dll"");
                             return = x;
     
                         }
-                        a = foo({ 3 });
-                        b = foo({ 3.0 });
-                        c = foo({ true });
-                        d = foo({ ""1.5""});
-                        e = foo({ '1' });
+                        a = foo([ 3 ]);
+                        b = foo([ 3.0 ]);
+                        c = foo([ true ]);
+                        d = foo([ ""1.5""]);
+                        e = foo([ '1' ]);
                         f : var = 3;
-                        f1 = foo({ f });
-                        h = foo({ClassFunctionality.ClassFunctionality()});
+                        f1 = foo([ f ]);
+                        h = foo([ClassFunctionality.ClassFunctionality()]);
                         h1=h.IntVal;
-                        i = foo({ null });
+                        i = foo([ null ]);
                     ";
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1668
             string error = "MAGN-1668:  Dot Operation on instances using replication returns single null where multiple nulls are expected";
@@ -4353,16 +4355,16 @@ import(""FFITarget.dll"");
                             return = x;
     
                         }
-                        a = foo({ 3,{3} });
-                        b = foo({ 3.0 ,{3.0}});
-                        c = foo({ true ,{false}});
-                        d = foo({ ""1"",{""1.5""}});
-                        e = foo({ '1',{'1'} });
+                        a = foo([ 3,[3] ]);
+                        b = foo([ 3.0 ,[3.0]]);
+                        c = foo([ true ,[false]]);
+                        d = foo([ ""1"",[""1.5""]]);
+                        e = foo([ '1',['1'] ]);
                         f : var = 3;
-                        f1 = foo({ f,{f} });
-                        h = foo({ClassFunctionality.ClassFunctionality(),{ClassFunctionality.ClassFunctionality()}});
+                        f1 = foo([ f,[f] ]);
+                        h = foo([ClassFunctionality.ClassFunctionality(),[ClassFunctionality.ClassFunctionality()]]);
                         h1=h.IntVal;
-                        i = foo({ null ,{null}});
+                        i = foo([ null ,[null]]);
                     ";
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1668
             string error = "MAGN-1668 Sprint 27 - Rev 3905 when there is rank mismatch for function , array upagrades to 1 dimension higer than expected";
@@ -4391,16 +4393,16 @@ import(""FFITarget.dll"");
                           return = x;
     
                       }
-                      a = foo({ 3,{3} });
-                      b = foo({ 3.0 ,{3.0}});
-                      c = foo({ true ,{false}});
-                      d = foo({ ""1"",{""1.5""}});
-                      e = foo({ '1',{'1'} });
+                      a = foo([ 3,[3] ]);
+                      b = foo([ 3.0 ,[3.0]]);
+                      c = foo([ true ,[false]]);
+                      d = foo([ ""1"",[""1.5""]]);
+                      e = foo([ '1',['1'] ]);
                       f : var = 3;
-                      f1 = foo({ f,{f} });
-                      h = foo({ClassFunctionality.ClassFunctionality(),{ClassFunctionality.ClassFunctionality()}});
+                      f1 = foo([ f,[f] ]);
+                      h = foo([ClassFunctionality.ClassFunctionality(),[ClassFunctionality.ClassFunctionality()]]);
                       h1=h.IntVal;
-                      i = foo({ null ,{null}});
+                      i = foo([ null ,[null]]);
                   ";
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1671
             string error = "MAGN-1671 Sprint 27 - Rev 3966 - when return type is arbitrary rank , type conversion reduces array rank , where it is not expected to";
@@ -4429,16 +4431,16 @@ import(""FFITarget.dll"");
                          return = x;
     
                      }
-                     a = foo({ 3,{3} });
-                     b = foo({ 3.0 ,{3.0}});
-                     c = foo({ true ,{false}});
-                     d = foo({ ""1.5"",{""1""}});
-                     e = foo({ '1' ,{'1'}});
+                     a = foo([ 3,[3] ]);
+                     b = foo([ 3.0 ,[3.0]]);
+                     c = foo([ true ,[false]]);
+                     d = foo([ ""1.5"",[""1""]]);
+                     e = foo([ '1' ,['1']]);
                      f : var = 3.0;
-                     f1 = foo({ f ,{f}});
-                     h = foo({ClassFunctionality.ClassFunctionality(),{ClassFunctionality.ClassFunctionality()}});
+                     f1 = foo([ f ,[f]]);
+                     h = foo([ClassFunctionality.ClassFunctionality(),[ClassFunctionality.ClassFunctionality()]]);
                      h1=h.IntVal;
-                     i = foo({ null ,{null}});
+                     i = foo([ null ,[null]]);
                  ";
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1671
             string error = "MAGN-1671 Sprint 27 - Rev 3966 - when return type is arbitrary rank , type conversion reduces array rank , where it is not expected to";
@@ -4467,16 +4469,16 @@ import(""FFITarget.dll"");
                          return = x;
     
                      }
-                     a = foo({ 3,{3} });
-                     b = foo({ 3.0 ,{3.0}});
-                     c = foo({ true ,{false}});
-                     d = foo({ ""1.5"",{""1""}});
-                     e = foo({ '1' ,{'1'}});
+                     a = foo([ 3,[3] ]);
+                     b = foo([ 3.0 ,[3.0]]);
+                     c = foo([ true ,[false]]);
+                     d = foo([ ""1.5"",[""1""]]);
+                     e = foo([ '1' ,['1']]);
                      f : var = 3.0;
-                     f1 = foo({ f ,{f}});
-                     h = foo({ClassFunctionality.ClassFunctionality(),{ClassFunctionality.ClassFunctionality()}});
+                     f1 = foo([ f ,[f]]);
+                     h = foo([ClassFunctionality.ClassFunctionality(),[ClassFunctionality.ClassFunctionality()]]);
                      h1=h.IntVal;
-                     i = foo({ null ,{null}});
+                     i = foo([ null ,[null]]);
                  ";
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1671
             string error = "MAGN-1671 Sprint 27 - Rev 3966 - when return type is arbitrary rank , type conversion reduces array rank , where it is not expected to";
@@ -4504,16 +4506,16 @@ import(""FFITarget.dll"");
                          return = x;
     
                      }
-                     a = foo({ 3,{3} });
-                     b = foo({ 3.0 ,{3.0}});
-                     c = foo({ true ,{false}});
-                     d = foo({ ""1.5"",{""1""}});
-                     e = foo({ '1' ,{'1'}});
+                     a = foo([ 3,[3] ]);
+                     b = foo([ 3.0 ,[3.0]]);
+                     c = foo([ true ,[false]]);
+                     d = foo([ ""1.5"",[""1""]]);
+                     e = foo([ '1' ,['1']]);
                      f : var = 3.0;
-                     f1 = foo({ f ,{f}});
-                     h = foo({ClassFunctionality.ClassFunctionality(),{ClassFunctionality.ClassFunctionality()}});
+                     f1 = foo([ f ,[f]]);
+                     h = foo([ClassFunctionality.ClassFunctionality(),[ClassFunctionality.ClassFunctionality()]]);
                      h1=h.IntVal;
-                     i = foo({ null ,{null}});
+                     i = foo([ null ,[null]]);
                  ";
             // string error = "1467326 Sprint 27 - Rev 3905 when there is rank mismatch for function , array upagrades to 1 dimension higer than expected ";
             string error = "1467334 - Sprint 27 - Rev 3966 - when return type is arbitrary rank , type conversion reduces array rank , where it is not expected to ";
@@ -4541,16 +4543,16 @@ import(""FFITarget.dll"");
                          return = x;
     
                      }
-                     a = foo({ 3,{3} });
-                     b = foo({ 3.0 ,{3.0}});
-                     c = foo({ true ,{false}});
-                     d = foo({ ""1.5"",{""1""}});
-                     e = foo({ '1' ,{'1'}});
+                     a = foo([ 3,[3] ]);
+                     b = foo([ 3.0 ,[3.0]]);
+                     c = foo([ true ,[false]]);
+                     d = foo([ ""1.5"",[""1""]]);
+                     e = foo([ '1' ,['1']]);
                      f : var = 3.0;
-                     f1 = foo({ f ,{f}});
-                     h = foo({ClassFunctionality.ClassFunctionality(),{ClassFunctionality.ClassFunctionality()}});
+                     f1 = foo([ f ,[f]]);
+                     h = foo([ClassFunctionality.ClassFunctionality(),[ClassFunctionality.ClassFunctionality()]]);
                      h1=h.IntVal;
-                     i = foo({ null ,{null}});
+                     i = foo([ null ,[null]]);
                  ";
             string error = "1467326 Sprint 27 - Rev 3905 when there is rank mismatch for function , array upagrades to 1 dimension higer than expected ";
             var mirror = thisTest.RunScriptSource(code, error);
@@ -4578,16 +4580,16 @@ import(""FFITarget.dll"");
                          return = x;
     
                      }
-                     a = foo({ 3,{3} });
-                     b = foo({ 3.0 ,{3.0}});
-                     c = foo({ true ,{false}});
-                     d = foo({ ""1.5"",{""""}});
-                     e = foo({ '1',{'0'} });
+                     a = foo([ 3,[3] ]);
+                     b = foo([ 3.0 ,[3.0]]);
+                     c = foo([ true ,[false]]);
+                     d = foo([ ""1.5"",[""""]]);
+                     e = foo([ '1',['0'] ]);
                      f : var = 3.0;
-                     f1 = foo({ f ,{f}});
-                     h = foo({ClassFunctionality.ClassFunctionality(),{ClassFunctionality.ClassFunctionality()}});
+                     f1 = foo([ f ,[f]]);
+                     h = foo([ClassFunctionality.ClassFunctionality(),[ClassFunctionality.ClassFunctionality()]]);
                      h1=h.IntVal;
-                     i = foo({ null ,{null}});
+                     i = foo([ null ,[null]]);
                  ";
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1668
             string error = "MAGN-1668 Sprint 27 - Rev 3905 when there is rank mismatch for function , array upagrades to 1 dimension higer than expected";
@@ -4616,16 +4618,16 @@ import(""FFITarget.dll"");
                          return = x;
     
                      }
-                     a = foo({ 3,{3} });
-                     b = foo({ 3.0 ,{3.0}});
-                     c = foo({ true ,{false}});
-                     d = foo({ ""1.5"",{""""}});
-                     e = foo({ '1',{'0'} });
+                     a = foo([ 3,[3] ]);
+                     b = foo([ 3.0 ,[3.0]]);
+                     c = foo([ true ,[false]]);
+                     d = foo([ ""1.5"",[""""]]);
+                     e = foo([ '1',['0'] ]);
                      f : var = 3.0;
-                     f1 = foo({ f ,{f}});
-                     h = foo({ClassFunctionality.ClassFunctionality(),{ClassFunctionality.ClassFunctionality()}});
+                     f1 = foo([ f ,[f]]);
+                     h = foo([ClassFunctionality.ClassFunctionality(),[ClassFunctionality.ClassFunctionality()]]);
                      h1=h.IntVal;
-                     i = foo({ null ,{null}});
+                     i = foo([ null ,[null]]);
                  ";
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1671
             string error = "MAGN-1671 Sprint 27 - Rev 3966 - when return type is arbitrary rank , type conversion reduces array rank , where it is not expected to";
@@ -4654,16 +4656,16 @@ import(""FFITarget.dll"");
                            return = x;
     
                        }
-                       a1 = foo({ 3,0,{3} });
-                       b = foo({ 3.0,{0.0} });
-                       c = foo({ true ,{true},false});
-                       d = foo({ ""1.5"",{""1.5""}});
-                       e = foo({ '1',{'1'} });
+                       a1 = foo([ 3,0,[3] ]);
+                       b = foo([ 3.0,[0.0] ]);
+                       c = foo([ true ,[true],false]);
+                       d = foo([ ""1.5"",[""1.5""]]);
+                       e = foo([ '1',['1'] ]);
                        f : var = 3;
-                       f1 = foo({ f,{f} });
-                       h = foo({ClassFunctionality.ClassFunctionality(),{ClassFunctionality.ClassFunctionality()}});
+                       f1 = foo([ f,[f] ]);
+                       h = foo([ClassFunctionality.ClassFunctionality(),[ClassFunctionality.ClassFunctionality()]]);
                        h1=h.IntVal;
-                       i = foo({ null ,{null}});
+                       i = foo([ null ,[null]]);
                    ";
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1668
             string error = "MAGN-1668 Sprint 27 - Rev 3905 when there is rank mismatch for function , array upagrades to 1 dimension higer than expected";
@@ -4692,16 +4694,16 @@ import(""FFITarget.dll"");
                            return = x;
     
                        }
-                       a1 = foo({ 3,{3} });
-                       b = foo({ 3.0,{0.0} });
-                       c = foo({ true ,{true},false});
-                       d = foo({ ""1.5"",{""1.5""}});
-                       e = foo({ '1',{'1'} });
+                       a1 = foo([ 3,[3] ]);
+                       b = foo([ 3.0,[0.0] ]);
+                       c = foo([ true ,[true],false]);
+                       d = foo([ ""1.5"",[""1.5""]]);
+                       e = foo([ '1',['1'] ]);
                        f : var = 3;
-                       f1 = foo({ f,{f} });
-                       h = foo({ClassFunctionality.ClassFunctionality(),{ClassFunctionality.ClassFunctionality()}});
+                       f1 = foo([ f,[f] ]);
+                       h = foo([ClassFunctionality.ClassFunctionality(),[ClassFunctionality.ClassFunctionality()]]);
                        h1=h.IntVal;
-                       i = foo({ null ,{null}});
+                       i = foo([ null ,[null]]);
                    ";
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1670
             string error = "MAGN-1670 Sprint 27 - Rev 3956 {null} to array upgrdation must null out";
@@ -4729,16 +4731,16 @@ import(""FFITarget.dll"");
                           return = x;
     
                       }
-                      a1 = foo({ 3,{3} });
-                      b = foo({ 3.0 ,{3.0},1.0});
-                      c = foo({ true ,{{true},false}});
-                      d = foo({ ""1.5"",{""1.5""}});
-                      e = foo({ '1',{'1'} });
+                      a1 = foo([ 3,[3] ]);
+                      b = foo([ 3.0 ,[3.0],1.0]);
+                      c = foo([ true ,[[true],false]]);
+                      d = foo([ ""1.5"",[""1.5""]]);
+                      e = foo([ '1',['1'] ]);
                       f : var = 3;
-                      f1 = foo({ f ,{f}});
-                      h = foo({ClassFunctionality.ClassFunctionality(),{ClassFunctionality.ClassFunctionality()}});
+                      f1 = foo([ f ,[f]]);
+                      h = foo([ClassFunctionality.ClassFunctionality(),[ClassFunctionality.ClassFunctionality()]]);
                       h1=h.IntVal;
-                      i = foo({ null ,{null}});
+                      i = foo([ null ,[null]]);
                   ";
             string error = "1467326 Sprint 27 - Rev 3905 when there is rank mismatch for function , array upagrades to 1 dimension higer than expected ";
             var mirror = thisTest.RunScriptSource(code, error);
@@ -4766,16 +4768,16 @@ import(""FFITarget.dll"");
                           return = x;
     
                       }
-                      a1 = foo({ 3,{3}});
-                      b = foo({ 3.0 ,{3.0},1.0});
-                      c = foo({ true,{{true},false}});
-                      d = foo({ ""1.5"",{""1.5""}});
-                      e = foo({ '1',{'1'} });
+                      a1 = foo([ 3,[3]]);
+                      b = foo([ 3.0 ,[3.0],1.0]);
+                      c = foo([ true,[[true],false]]);
+                      d = foo([ ""1.5"",[""1.5""]]);
+                      e = foo([ '1',['1'] ]);
                       f : var = 3;
-                      f1 = foo({ f,{f}});
-                      h = foo({ClassFunctionality.ClassFunctionality(),{ClassFunctionality.ClassFunctionality()}});
+                      f1 = foo([ f,[f]]);
+                      h = foo([ClassFunctionality.ClassFunctionality(),[ClassFunctionality.ClassFunctionality()]]);
                       h1=h.IntVal;
-                      i = foo({ null,{null}});
+                      i = foo([ null,[null]]);
                   ";
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1668
             string error = "MAGN-1668 Sprint 27 - Rev 3905 when there is rank mismatch for function , array upagrades to 1 dimension higer than expected";
@@ -4804,11 +4806,11 @@ import(""FFITarget.dll"");
     
                         }
                         f : var = 3;
-                        a = foo({ 3,3.0,true ,""1"",'1',f});
-                        b = foo({ 3,3.0,true ,""1"",'1',f,ClassFunctionality.ClassFunctionality().IntVal});
-                        c = foo({ 3,3.0,true ,""1"",'1',f,ClassFunctionality.ClassFunctionality().IntVal,null});
-                        d = foo({ 3,3.0,true ,""1"",'1',f,null});
-                        e = foo({ null ,3,3.0,true ,""1"",'1',f});
+                        a = foo([ 3,3.0,true ,""1"",'1',f]);
+                        b = foo([ 3,3.0,true ,""1"",'1',f,ClassFunctionality.ClassFunctionality().IntVal]);
+                        c = foo([ 3,3.0,true ,""1"",'1',f,ClassFunctionality.ClassFunctionality().IntVal,null]);
+                        d = foo([ 3,3.0,true ,""1"",'1',f,null]);
+                        e = foo([ null ,3,3.0,true ,""1"",'1',f]);
                     ";
             string error = "1467326 Sprint 27 - Rev 3905 when there is rank mismatch for function , array upagrades to 1 dimension higer than expected ";
             var mirror = thisTest.RunScriptSource(code, error);
@@ -4913,7 +4915,7 @@ e = foo(5);
                 @"
 def foo(a : var[]..[]) { return = 1; }
 def foo(a : int) { return = 2; }
-e = foo({5});
+e = foo([5]);
                     ";
             string error = "DNL-1467307 Sprint 25 - Rev 3784 : Method resolution failure on member function when actual parameter is the subtype of the formal parameter type";
             var mirror = thisTest.RunScriptSource(code, error);
@@ -4928,7 +4930,7 @@ e = foo({5});
                 @"
 def foo(a : var[]..[]) { return = 1; }
 def foo(a : double) { return = 2; }
-e = foo({5});
+e = foo([5]);
                     ";
             string error = "DNL-1467307 Sprint 25 - Rev 3784 : Method resolution failure on member function when actual parameter is the subtype of the formal parameter type";
             var mirror = thisTest.RunScriptSource(code, error);
@@ -4949,11 +4951,11 @@ e = foo({5});
     
                         }
                         f : var = 3;
-                        a = foo({ 3,3.0,true ,""1"",'1',f});
-                        b = foo({ 3,3.0,true ,""1"",'1',f,ClassFunctionality.ClassFunctionality().IntVal});
-                        c = foo({ 3,3.0,true ,""1"",'1',f,ClassFunctionality.ClassFunctionality().IntVal,null});
-                        d = foo({ 3,3.0,true ,""1"",'1',f,null});
-                        e = foo({ null ,3,3.0,true ,""1"",'1',f});
+                        a = foo([ 3,3.0,true ,""1"",'1',f]);
+                        b = foo([ 3,3.0,true ,""1"",'1',f,ClassFunctionality.ClassFunctionality().IntVal]);
+                        c = foo([ 3,3.0,true ,""1"",'1',f,ClassFunctionality.ClassFunctionality().IntVal,null]);
+                        d = foo([ 3,3.0,true ,""1"",'1',f,null]);
+                        e = foo([ null ,3,3.0,true ,""1"",'1',f]);
                     ";
             string error = "1467326 Sprint 27 - Rev 3905 when there is rank mismatch for function , array upagrades to 1 dimension higer than expected ";
             var mirror = thisTest.RunScriptSource(code, error);
@@ -4978,11 +4980,11 @@ e = foo({5});
     
                         }
                         f : var = 3;
-                        a = foo({ 3,3.0,true ,""1"",'1',f});
-                        b = foo({ 3,3.0,true ,""1"",'1',f,ClassFunctionality.ClassFunctionality().IntVal});
-                        c = foo({ 3,3.0,true ,""1"",'1',f,ClassFunctionality.ClassFunctionality().IntVal,null});
-                        d = foo({ 3,3.0,true ,""1"",'1',f,null});
-                        e = foo({ null ,3,3.0,true ,""1"",'1',f});
+                        a = foo([ 3,3.0,true ,""1"",'1',f]);
+                        b = foo([ 3,3.0,true ,""1"",'1',f,ClassFunctionality.ClassFunctionality().IntVal]);
+                        c = foo([ 3,3.0,true ,""1"",'1',f,ClassFunctionality.ClassFunctionality().IntVal,null]);
+                        d = foo([ 3,3.0,true ,""1"",'1',f,null]);
+                        e = foo([ null ,3,3.0,true ,""1"",'1',f]);
                     ";
             string error = "1467326 Sprint 27 - Rev 3905 when there is rank mismatch for function , array upagrades to 1 dimension higer than expected ";
             var mirror = thisTest.RunScriptSource(code, error);
@@ -5007,11 +5009,11 @@ e = foo({5});
     
                         }
                         f : var = 3;
-                        a = foo({ 3,3.0,true ,""1"",'1',f});
-                        b = foo({ 3,3.0,true ,""1"",'1',f,ClassFunctionality.ClassFunctionality().IntVal});
-                        c = foo({ 3,3.0,true ,""1"",'1',f,ClassFunctionality.ClassFunctionality().IntVal,null});
-                        d = foo({ 3,3.0,true ,""1"",'1',f,null});
-                        e = foo({ null ,3,3.0,true ,""1"",'1',f});
+                        a = foo([ 3,3.0,true ,""1"",'1',f]);
+                        b = foo([ 3,3.0,true ,""1"",'1',f,ClassFunctionality.ClassFunctionality().IntVal]);
+                        c = foo([ 3,3.0,true ,""1"",'1',f,ClassFunctionality.ClassFunctionality().IntVal,null]);
+                        d = foo([ 3,3.0,true ,""1"",'1',f,null]);
+                        e = foo([ null ,3,3.0,true ,""1"",'1',f]);
                     ";
             string error = "1467326 Sprint 27 - Rev 3905 when there is rank mismatch for function , array upagrades to 1 dimension higer than expected ";
             var mirror = thisTest.RunScriptSource(code, error);
@@ -5036,11 +5038,11 @@ e = foo({5});
     
                         }
                         f : var = 3;
-                        a = foo({ 3,3.0,true ,""1"",'1',f});
-                        b = foo({ 3,3.0,true ,""1"",'1',f,ClassFunctionality.ClassFunctionality()});
-                        c = foo({ 3,3.0,true ,""1"",'1',f,ClassFunctionality.ClassFunctionality(),null});
-                        d = foo({ 3,3.0,true ,""1"",'1',f,null});
-                        e = foo({ null ,3,3.0,true ,""1"",'1',f});
+                        a = foo([ 3,3.0,true ,""1"",'1',f]);
+                        b = foo([ 3,3.0,true ,""1"",'1',f,ClassFunctionality.ClassFunctionality()]);
+                        c = foo([ 3,3.0,true ,""1"",'1',f,ClassFunctionality.ClassFunctionality(),null]);
+                        d = foo([ 3,3.0,true ,""1"",'1',f,null]);
+                        e = foo([ null ,3,3.0,true ,""1"",'1',f]);
                     ";
             string error = "1467326 Sprint 27 - Rev 3905 when there is rank mismatch for function , array upagrades to 1 dimension higer than expected ";
             var mirror = thisTest.RunScriptSource(code, error);
@@ -5066,12 +5068,12 @@ e = foo({5});
     
                         }
                         f : var = 3;
-                        a = foo({ 3,3.0,true ,""1"",'1',f});
-                        b = foo({ 3,3.0,true ,""1"",'1',f,ClassFunctionality.ClassFunctionality()});
-                        c = foo({ 3,3.0,true ,""1"",'1',f,ClassFunctionality.ClassFunctionality(),null});
-                        d = foo({ 3,3.0,true ,""1"",'1',f,null});
-                        e = foo({ null ,3,3.0,true ,""1"",'1',f});
-                        f =foo({ true,""1"",3,3.0,'1',f,null});
+                        a = foo([ 3,3.0,true ,""1"",'1',f]);
+                        b = foo([ 3,3.0,true ,""1"",'1',f,ClassFunctionality.ClassFunctionality()]);
+                        c = foo([ 3,3.0,true ,""1"",'1',f,ClassFunctionality.ClassFunctionality(),null]);
+                        d = foo([ 3,3.0,true ,""1"",'1',f,null]);
+                        e = foo([ null ,3,3.0,true ,""1"",'1',f]);
+                        f =foo([ true,""1"",3,3.0,'1',f,null]);
                     ";
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1672
             string error = "MAGN-1672 Sprint 27 - Rev 4011 function does not replicate when hetrogenous array with type mismatch are passed as argument";
@@ -5098,11 +5100,11 @@ e = foo({5});
     
                         }
                         f : var = 3;
-                        a = foo({ 3,3.0,true ,""1"",'1',f});
-                        b = foo({ 3,3.0,true ,""1"",'1',f,ClassFunctionality.ClassFunctionality()});
-                        c = foo({ 3,3.0,true ,""1"",'1',f,ClassFunctionality.ClassFunctionality(),null});
-                        d = foo({ 3,3.0,true ,""1"",'1',f,null});
-                        e = foo({ null ,3,3.0,true ,""1"",'1',f});
+                        a = foo([ 3,3.0,true ,""1"",'1',f]);
+                        b = foo([ 3,3.0,true ,""1"",'1',f,ClassFunctionality.ClassFunctionality()]);
+                        c = foo([ 3,3.0,true ,""1"",'1',f,ClassFunctionality.ClassFunctionality(),null]);
+                        d = foo([ 3,3.0,true ,""1"",'1',f,null]);
+                        e = foo([ null ,3,3.0,true ,""1"",'1',f]);
                     ";
             string error = "1467326 Sprint 27 - Rev 3905 when there is rank mismatch for function , array upagrades to 1 dimension higer than expected ";
             var mirror = thisTest.RunScriptSource(code, error);
@@ -5128,13 +5130,13 @@ e = foo({5});
     
                         }
                         f : var = 3;
-                        a = foo({ 3,3.0,true ,""1"",'1',f});
-                        b = foo({ 3,3.0,true ,""1"",'1',f,ClassFunctionality.ClassFunctionality()});
-                        b1 = {b[0] ,b[1],b[2] ,b[3],b[4],b[5],ClassFunctionality.ClassFunctionality().IntVal};
-                        c = foo({ 3,3.0,true ,""1"",'1',f,ClassFunctionality.ClassFunctionality(),null});
-                        c1 = {c[0] ,c[1],c[2] ,c[3],c[4],c[5],ClassFunctionality.ClassFunctionality().IntVal,c[7]};
-                        d = foo({ 3,3.0,true ,""1"",'1',f,null});
-                        e = foo({ null ,3,3.0,true ,""1"",'1',f});
+                        a = foo([ 3,3.0,true ,""1"",'1',f]);
+                        b = foo([ 3,3.0,true ,""1"",'1',f,ClassFunctionality.ClassFunctionality()]);
+                        b1 = [b[0] ,b[1],b[2] ,b[3],b[4],b[5],ClassFunctionality.ClassFunctionality().IntVal];
+                        c = foo([ 3,3.0,true ,""1"",'1',f,ClassFunctionality.ClassFunctionality(),null]);
+                        c1 = [c[0] ,c[1],c[2] ,c[3],c[4],c[5],ClassFunctionality.ClassFunctionality().IntVal,c[7]];
+                        d = foo([ 3,3.0,true ,""1"",'1',f,null]);
+                        e = foo([ null ,3,3.0,true ,""1"",'1',f]);
                     ";
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1679
             string error = "MAGN-1679 Sprint 27 - rev 4184 - when heterogenous array is passed and the type is user defined , it does not replicate unless the first item is user defined";
@@ -5156,7 +5158,7 @@ e = foo({5});
                         {
                             return = x+y;
                         }
-                        b1 = foo({ 1, 2 }, { 1, 2 });
+                        b1 = foo([ 1, 2 ], [ 1, 2 ]);
                     ";
             string error = "";
             var mirror = thisTest.RunScriptSource(code, error);
@@ -5173,7 +5175,7 @@ e = foo({5});
                         {
                             return = x+y;
                         }
-                        b1 = foo({ 1, 2 }, { {1, 2 },{2,4}});
+                        b1 = foo([ 1, 2 ], [ [1, 2 ],[2,4]]);
                     ";
             string error = "";
             var mirror = thisTest.RunScriptSource(code, error);
@@ -5190,10 +5192,10 @@ e = foo({5});
                         {
                             return = x + y;
                         }
-                        a = foo(1, { 1, 2 } );
-                        b = foo({ 1, 2 }, { { 1, 2 }, { 2, 4 } });
-                        c = foo({ 1, 2 }, { 1, 2 });
-                        d = foo(1, { { 1, 2 }, { 2, 4 } });
+                        a = foo(1, [ 1, 2 ] );
+                        b = foo([ 1, 2 ], [ [ 1, 2 ], [ 2, 4 ] ]);
+                        c = foo([ 1, 2 ], [ 1, 2 ]);
+                        d = foo(1, [ [ 1, 2 ], [ 2, 4 ] ]);
                     ";
             string error = "";
             var mirror = thisTest.RunScriptSource(code, error);
@@ -5215,10 +5217,10 @@ e = foo({5});
                             return = x + y;
                         }
                     
-                        a = foo(1, { 1, 2 } );
-                        b = foo({ 1, 2 }, { { 1, 2 }, { 2, 4 } });
-                        c = foo({ 1, 2 }, { 1, 2 });
-                        d = foo(1, { { 1, 2 }, { 2, 4 } });
+                        a = foo(1, [ 1, 2 ] );
+                        b = foo([ 1, 2 ], [ [ 1, 2 ], [ 2, 4 ] ]);
+                        c = foo([ 1, 2 ], [ 1, 2 ]);
+                        d = foo(1, [ [ 1, 2 ], [ 2, 4 ] ]);
                     ";
             string error = "";
             var mirror = thisTest.RunScriptSource(code, error);
@@ -5240,10 +5242,10 @@ e = foo({5});
                             return = x + y;
                         }
                     
-                        a = foo(1, { 1, 2 } );
-                        b = foo({ 1, 2 }, { { 1, 2 }, { 2, 4 } });
-                        c = foo({ 1, 2 }, { 1, 2 });
-                        d = foo(1, { { 1, 2 }, { 2, 4 } });
+                        a = foo(1, [ 1, 2 ] );
+                        b = foo([ 1, 2 ], [ [ 1, 2 ], [ 2, 4 ] ]);
+                        c = foo([ 1, 2 ], [ 1, 2 ]);
+                        d = foo(1, [ [ 1, 2 ], [ 2, 4 ] ]);
                     ";
             string error = "";
             var mirror = thisTest.RunScriptSource(code, error);
@@ -5263,7 +5265,7 @@ e = foo({5});
                         {
                             return = x+y;
                         }
-                        b1 = foo({ 1, 2 }, { 1, 2 });
+                        b1 = foo([ 1, 2 ], [ 1, 2 ]);
                     ";
             string error = "";
             var mirror = thisTest.RunScriptSource(code, error);
@@ -5280,7 +5282,7 @@ e = foo({5});
                         {
                             return = x+y;
                         }
-                        b1 = foo({ 1, 2 }, { {1, 2 },{2,4}});
+                        b1 = foo([ 1, 2 ], [ [1, 2 ],[2,4]]);
                     ";
             string error = "1467355 - Sprint 27 Rev 4014 , it replicates with maximum combination where as its expected to zipped ";
             var mirror = thisTest.RunScriptSource(code, error);
@@ -5297,7 +5299,7 @@ e = foo({5});
                         {
                             return = x + y;
                         }
-                        b1 = foo({ 1, 2 }, { { 1, 2 }, { 2, 4 } });
+                        b1 = foo([ 1, 2 ], [ [ 1, 2 ], [ 2, 4 ] ]);
                     ";
             string error = "";
             var mirror = thisTest.RunScriptSource(code, error);
@@ -5314,7 +5316,7 @@ e = foo({5});
                         {
                             return = x + y;
                         }
-                        b1 = foo({ 1, 2 }, { { 1, 2 }, { 2, 4 } });
+                        b1 = foo([ 1, 2 ], [ [ 1, 2 ], [ 2, 4 ] ]);
                     ";
             string error = "";
             var mirror = thisTest.RunScriptSource(code, error);
@@ -5331,9 +5333,9 @@ e = foo({5});
 import(""FFITarget.dll"");
                     def foo(x : bool, y : ClassFunctionality[])
                     {
-                        return = { x, y.IntVal };
+                        return = [ x, y.IntVal ];
                     }
-                    b1 = foo({ true, false }, { { ClassFunctionality.ClassFunctionality(1), ClassFunctionality.ClassFunctionality(1) }, { ClassFunctionality.ClassFunctionality(1), ClassFunctionality.ClassFunctionality(1) } });
+                    b1 = foo([ true, false ], [ [ ClassFunctionality.ClassFunctionality(1), ClassFunctionality.ClassFunctionality(1) ], [ ClassFunctionality.ClassFunctionality(1), ClassFunctionality.ClassFunctionality(1) ] ]);
                     ";
             string error = "1467355 - Sprint 27 Rev 4014 , it replicates with maximum combination where as its expected to zipped ";
             var mirror = thisTest.RunScriptSource(code, error);
@@ -5350,7 +5352,7 @@ import(""FFITarget.dll"");
                     {
                         return = x;
                     }
-                    a1 = {  1 , 2 ,  3 , { 4 } }; 
+                    a1 = [  1 , 2 ,  3 , [ 4 ] ]; 
  
                     b1 = foo(a1); // received {1,2,3,null}, expected : {  1 , 2 ,  3 , { 4 } }
                     ";
@@ -5370,7 +5372,7 @@ import(""FFITarget.dll"");
                         {
                             return = x + y;
                         }
-                        b1 = foo({ { 1, 2 }, { 2, 4 } },{ 1, 2 });
+                        b1 = foo([ [ 1, 2 ], [ 2, 4 ] ],[ 1, 2 ]);
                     ";
             string error = "1467355 Sprint 27 Rev 4014 , it replicates with maximum combination where as its expected to zipped ";
             var mirror = thisTest.RunScriptSource(code, error);
@@ -5387,63 +5389,11 @@ import(""FFITarget.dll"");
                         {
                             return = x + y;
                         }
-                        b1 = foo({ { 1, 2 }, { 2,3} }, 1);
+                        b1 = foo([ [ 1, 2 ], [ 2,3] ], 1);
                     ";
 
             var mirror = thisTest.RunScriptSource(code);
             TestFrameWork.Verify(mirror, "b1", new object[] { new object[] { 2, 3 }, new object[] { 3, 4 } });
-        }
-
-
-        [Test]
-        [Category("Type System")]
-        public void TS0180_typeconversion_replication()
-        {
-            string code =
-                @"
-              def foo(x : int[], y : int[])
-                    {
-                        return =  x + y ;
-                    }
-                    def foo(x : int, y : int)
-                    {
-                        return = x - y;
-                    }
-                    a = foo({ 1, 2 }, 1);
-                    b = foo(1, { 1, 2 });
-                    c = foo( { 1, 2 }, { 1, 2 } );
-                    ";
-
-            var mirror = thisTest.RunScriptSource(code);
-            TestFrameWork.Verify(mirror, "a", new object[] { 0, 1 });
-            TestFrameWork.Verify(mirror, "b", new object[] { 0, -1 });
-            TestFrameWork.Verify(mirror, "c", new object[] { 2, 4 });
-        }
-
-        [Test]
-        [Category("DSDefinedClass_Ported")]
-        [Category("Type System")]
-        public void TS0181_typeconversion_replication_class()
-        {
-            string code =
-                @"
-                    def foo(x : int[], y : int[])
-                    {
-                        return =  x + y ;
-                    }
-                    def foo(x : int, y : int)
-                    {
-                        return = x - y;
-                    }
-                    
-                    a = foo({ 1, 2 }, 1);
-                    b = foo(1, { 1, 2 });
-                    c = foo( { 1, 2 }, { 1, 2 } );
-                    ";
-            var mirror = thisTest.RunScriptSource(code);
-            TestFrameWork.Verify(mirror, "a", new object[] { 0, 1 });
-            TestFrameWork.Verify(mirror, "b", new object[] { 0, -1 });
-            TestFrameWork.Verify(mirror, "c", new object[] { 2, 4 });
         }
 
         [Test]
@@ -5452,8 +5402,8 @@ import(""FFITarget.dll"");
         {
             string code =
                 @"
-                 a = { 1 ,2.3};
-                 b = { 2 ,3};
+                 a = [ 1 ,2.3];
+                 b = [ 2 ,3];
                  c = a + b;
                         ";
             string error = "1467359 - Sprint 27 - rev 4017 arithematic operations , the type must be converted higer up in the chain , currently does based on the first item in the array";
@@ -5467,8 +5417,8 @@ import(""FFITarget.dll"");
         {
             string code =
                 @"
-                 a = { 1 ,2.3};
-                 b = { 2 ,3};
+                 a = [ 1 ,2.3];
+                 b = [ 2 ,3];
                  c = a + b;
                         ";
             string error = "1467359 - Sprint 27 - rev 4017 arithematic operations , the type must be converted higer up in the chain , currently does based on the first item in the array";
@@ -5484,7 +5434,7 @@ import(""FFITarget.dll"");
             string code =
                 @"
 import(""FFITarget.dll"");
-                    arr = { 0, ClassFunctionality.ClassFunctionality() };
+                    arr = [ 0, ClassFunctionality.ClassFunctionality() ];
                     x = arr[1];
                     test = x.SetAndReturn(1);
                                             ";
@@ -5501,7 +5451,7 @@ import(""FFITarget.dll"");
             string code =
                 @"
 import(""FFITarget.dll"");
-                    arr = { ClassFunctionality.ClassFunctionality(), 1, { 2, ClassFunctionality.ClassFunctionality() }, 5 };
+                    arr = [ ClassFunctionality.ClassFunctionality(), 1, [ 2, ClassFunctionality.ClassFunctionality() ], 5 ];
                     x = arr[2][1];
                     test = x.SetAndReturn(1);
                                             ";
@@ -5516,7 +5466,7 @@ import(""FFITarget.dll"");
         {
             string code =
                 @"
-                    a : int[] = { 2, 2, 3 };
+                    a : int[] = [ 2, 2, 3 ];
                     a[0] = false;
                                             ";
             string error = "1467291 - Assigning a value to a typed array doesn't respect the type ";
@@ -5534,7 +5484,7 @@ import(""FFITarget.dll"");
                     {
                         return = x;
                     }
-                    a1 = {1.1,2.0,3}; 
+                    a1 = [1.1,2.0,3]; 
                     b1 = foo ( a1 );//received -  b1 = {{1},{2},{3}}
                                             ";
             string error = "";
@@ -5549,7 +5499,7 @@ import(""FFITarget.dll"");
         {
             string code =
                 @"
-                  sum2 = Sum({ { 2,1,true}, 1 });
+                  sum2 = Sum([ [ 2,1,true], 1 ]);
                                             ";
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1675
             string error = "MAGN-1675 Sprint 27 - Rev 4048 function Sum fails if non convertible types are given as input";
@@ -5564,12 +5514,12 @@ import(""FFITarget.dll"");
         {
             string code =
                 @"
-                  x=2=={ };  
-                  y={}==null;
-                  z={{1}}=={1};
-                  z2={{1}}== 1;
-                  z3=1=={{1}};
-                  z4={1}=={{1}};
+                  x=2==[ ];  
+                  y=[]==null;
+                  z=[[1]]==[1];
+                  z2=[[1]]== 1;
+                  z3=1==[[1]];
+                  z4=[1]==[[1]];
                                             ";
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3941
             string error = "MAGN-3941 Errors with conditionals with empty arrays and ararys with different ranks";
@@ -5637,11 +5587,11 @@ import(""FFITarget.dll"");
     
                         }
                         f : var = 3;
-                        a = foo({ 3,3.0,true ,""1"",'1',f});
-                        b = foo({ 3,3.0,true ,""1"",'1',f,ClassFunctionality.ClassFunctionality().IntVal});
-                        c = foo({ 3,3.0,true ,""1"",'1',f,ClassFunctionality.ClassFunctionality().IntVal,null});
-                        d = foo({ 3,3.0,true ,""1"",'1',f,null});
-                        e = foo({ null ,3,3.0,true ,""1"",'1',f});
+                        a = foo([ 3,3.0,true ,""1"",'1',f]);
+                        b = foo([ 3,3.0,true ,""1"",'1',f,ClassFunctionality.ClassFunctionality().IntVal]);
+                        c = foo([ 3,3.0,true ,""1"",'1',f,ClassFunctionality.ClassFunctionality().IntVal,null]);
+                        d = foo([ 3,3.0,true ,""1"",'1',f,null]);
+                        e = foo([ null ,3,3.0,true ,""1"",'1',f]);
                     ";
             string error = "";
             var mirror = thisTest.RunScriptSource(code, error);
@@ -5667,11 +5617,11 @@ import(""FFITarget.dll"");
     
                         }
                         f : var = 3;
-                        a = foo({ 3,3.0,true ,""1"",'1',f});
-                        b = foo({ 3,3.0,true ,""1"",'1',f,ClassFunctionality.ClassFunctionality()});
-                        c = foo({ 3,3.0,true ,""1"",'1',f,ClassFunctionality.ClassFunctionality(),null});
-                        d = foo({ 3,3.0,true ,""1"",'1',f,null});
-                        e = foo({ null ,3,3.0,true ,""1"",'1',f});
+                        a = foo([ 3,3.0,true ,""1"",'1',f]);
+                        b = foo([ 3,3.0,true ,""1"",'1',f,ClassFunctionality.ClassFunctionality()]);
+                        c = foo([ 3,3.0,true ,""1"",'1',f,ClassFunctionality.ClassFunctionality(),null]);
+                        d = foo([ 3,3.0,true ,""1"",'1',f,null]);
+                        e = foo([ null ,3,3.0,true ,""1"",'1',f]);
                     ";
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1660
             string error = "MAGN-1660 Sprint25: rev 3352: Type conversion - method dispatch over heterogeneous array is not correct";
@@ -5698,12 +5648,12 @@ import(""FFITarget.dll"");
     
                         }
                         f : var = 3;
-                        a = foo({ 3,3.0,true ,""1"",'1',f});
-                        b = foo({ 3,3.0,true ,""1"",'1',f,ClassFunctionality.ClassFunctionality()});
-                        c = foo({ 3,3.0,true ,""1"",'1',f,ClassFunctionality.ClassFunctionality(),null});
-                        d = foo({ 3,3.0,true ,""1"",'1',f,null});
-                        e = foo({ null ,3,3.0,true ,""1"",'1',f});
-                        f =foo({ true,""1"",3,3.0,'1',f,null});
+                        a = foo([ 3,3.0,true ,""1"",'1',f]);
+                        b = foo([ 3,3.0,true ,""1"",'1',f,ClassFunctionality.ClassFunctionality()]);
+                        c = foo([ 3,3.0,true ,""1"",'1',f,ClassFunctionality.ClassFunctionality(),null]);
+                        d = foo([ 3,3.0,true ,""1"",'1',f,null]);
+                        e = foo([ null ,3,3.0,true ,""1"",'1',f]);
+                        f =foo([ true,""1"",3,3.0,'1',f,null]);
                     ";
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1660
             string error = "MAGN-1660 Sprint25: rev 3352: Type conversion - method dispatch over heterogeneous array is not correct"; 
@@ -5731,11 +5681,11 @@ import(""FFITarget.dll"");
     
                         }
                         f : var = 3;
-                        a = foo({ 3,3.0,true ,""1"",'1',f});
-                        b = foo({ 3,3.0,true ,""1"",'1',f,ClassFunctionality.ClassFunctionality()});
-                        c = foo({ 3,3.0,true ,""1"",'1',f,ClassFunctionality.ClassFunctionality(),null});
-                        d = foo({ 3,3.0,true ,""1"",'1',f,null});
-                        e = foo({ null ,3,3.0,true ,""1"",'1',f});
+                        a = foo([ 3,3.0,true ,""1"",'1',f]);
+                        b = foo([ 3,3.0,true ,""1"",'1',f,ClassFunctionality.ClassFunctionality()]);
+                        c = foo([ 3,3.0,true ,""1"",'1',f,ClassFunctionality.ClassFunctionality(),null]);
+                        d = foo([ 3,3.0,true ,""1"",'1',f,null]);
+                        e = foo([ null ,3,3.0,true ,""1"",'1',f]);
                     ";
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1660
             string error = "MAGN-1660 Sprint25: rev 3352: Type conversion - method dispatch over heterogeneous array is not correct"; 
@@ -5762,13 +5712,13 @@ import(""FFITarget.dll"");
     
                         }
                         f : var = 3;
-                        a = foo({ 3,3.0,true ,""1"",'1',f});
-                        b = foo({ 3,3.0,true ,""1"",'1',f,ClassFunctionality.ClassFunctionality()});
-                        b1 = {b[0] ,b[1],b[2] ,b[3],b[4],b[5],ClassFunctionality.ClassFunctionality().IntVal};
-                        c = foo({ 3,3.0,true ,""1"",'1',f,ClassFunctionality.ClassFunctionality(),null});
-                        c1 = {c[0] ,c[1],c[2] ,c[3],c[4],c[5],ClassFunctionality.ClassFunctionality().IntVal,c[7]};
-                        d = foo({ 3,3.0,true ,""1"",'1',f,null});
-                        e = foo({ null ,3,3.0,true ,""1"",'1',f});
+                        a = foo([ 3,3.0,true ,""1"",'1',f]);
+                        b = foo([ 3,3.0,true ,""1"",'1',f,ClassFunctionality.ClassFunctionality()]);
+                        b1 = [b[0] ,b[1],b[2] ,b[3],b[4],b[5],ClassFunctionality.ClassFunctionality().IntVal];
+                        c = foo([ 3,3.0,true ,""1"",'1',f,ClassFunctionality.ClassFunctionality(),null]);
+                        c1 = [c[0] ,c[1],c[2] ,c[3],c[4],c[5],ClassFunctionality.ClassFunctionality().IntVal,c[7]];
+                        d = foo([ 3,3.0,true ,""1"",'1',f,null]);
+                        e = foo([ null ,3,3.0,true ,""1"",'1',f]);
                     ";
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1679
             string error = "MAGN-1679 Sprint 27 - rev 4184 - when heterogenous array is passed and the type is user defined , it does not replicate unless the first item is user defined";
@@ -5793,8 +5743,8 @@ import(""FFITarget.dll"");
                             return = x;
     
                         }
-                   a = foo({ 1,ClassFunctionality.ClassFunctionality(), ClassFunctionality.ClassFunctionality() });
-                   b = {null,0,0};
+                   a = foo([ 1,ClassFunctionality.ClassFunctionality(), ClassFunctionality.ClassFunctionality() ]);
+                   b = [null,0,0];
                     ";
             string error = "1467376 - Sprint 27 - rev 4184 - when heterogenous array is passed and the type is user defined , it does not replicate unless the first item is user defined ";
             var mirror = thisTest.RunScriptSource(code, error);
@@ -5816,89 +5766,13 @@ import(""FFITarget.dll"");
                             return = x;
     
                         }
-                   a = foo({ 1,ClassFunctionality.ClassFunctionality(), ClassFunctionality.ClassFunctionality() });
-                   b = {null,a[1].IntVal,a[2].IntVal};
+                   a = foo([ 1,ClassFunctionality.ClassFunctionality(), ClassFunctionality.ClassFunctionality() ]);
+                   b = [null,a[1].IntVal,a[2].IntVal];
                     ";
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1679
             string error = "MAGN-1679 Sprint 27 - rev 4184 - when heterogenous array is passed and the type is user defined , it does not replicate unless the first item is user defined";
             var mirror = thisTest.RunScriptSource(code, error);
             TestFrameWork.Verify(mirror, "b", new object[] { null, 0, 0 });
-        }
-
-        [Test]
-        [Category("DSDefinedClass_Ported")]
-        [Category("Type System")]
-        public void TS0198_method_resolution_1467273()
-        {
-            string code =
-                @"
-                        def foo(x : var[]..[])
-                        {
-                        return = 3;
-                        }
-                        def foo(x:var[][])
-                        {
-                        return = 2;
-                        }
-                        def foo(x:var[])
-                        {
-                        return = 1;
-                        }
-                        def foo(x:var)
-                        {
-                        return = 0;
-                        }
-                        u = foo({ 1, 2 });
-                        v = foo({ { 1 }, 2 });
-                        w = foo({ 1, { 2 } });
-                        x = foo({ { 1 }, { 2 } });
-                        y = foo({ { { 1 }, { 2 } } });
-                    ";
-            string error = "1467419 - Sprint 29 - Rev 4502 - the .operator is doing rank reduction where it is expected to replicate ";
-            var mirror = thisTest.RunScriptSource(code, error);
-            TestFrameWork.Verify(mirror, "u", 1);
-            TestFrameWork.Verify(mirror, "v", 2);
-            TestFrameWork.Verify(mirror, "w", 2);
-            TestFrameWork.Verify(mirror, "x", 2);
-            TestFrameWork.Verify(mirror, "y", 3);
-        }
-
-        [Test]
-        [Category("DSDefinedClass_Ported")]
-        [Category("Type System")]
-        public void TS0198_method_resolution_1467273_2()
-        {
-            string code =
-                @"
-                        def foo(x : int[]..[])
-                        {
-                        return = 3;
-                        }
-                        def foo(x:double[][])
-                        {
-                        return = 2;
-                        }
-                        def foo(x:int[])
-                        {
-                        return = 1;
-                        }
-                        def foo(x:var)
-                        {
-                        return = 0;
-                        }
-                        u = foo({ 1, 2 });
-                        v = foo({ { 1 }, 2 });
-                        w = foo({ 1, { 2 } });
-                        x = foo({ { 1 }, { 2 } });
-                        y = foo({ { { 1 }, { 2 } } });
-                    ";
-            string error = "1467419 - Sprint 29 - Rev 4502 - the .operator is doing rank reduction where it is expected to replicate ";
-            var mirror = thisTest.RunScriptSource(code, error);
-            TestFrameWork.Verify(mirror, "u", 1);
-            TestFrameWork.Verify(mirror, "v", 3);
-            TestFrameWork.Verify(mirror, "w", 3);
-            TestFrameWork.Verify(mirror, "x", 3);
-            TestFrameWork.Verify(mirror, "y", 3);
         }
 
         [Test]
@@ -5924,11 +5798,11 @@ import(""FFITarget.dll"");
                         {
                         return = 0;
                         }
-                        u = foo({ 1, 2 });
-                        v = foo({ { 1 }, 2 });
-                        w = foo({ 1, { 2 } });
-                        x = foo({ { 1 }, { 2 } });
-                        y = foo({ { { 1 }, { 2 } } });
+                        u = foo([ 1, 2 ]);
+                        v = foo([ [ 1 ], 2 ]);
+                        w = foo([ 1, [ 2 ] ]);
+                        x = foo([ [ 1 ], [ 2 ] ]);
+                        y = foo([ [ [ 1 ], [ 2 ] ] ]);
                     ";
             string error = "1467419 - Sprint 29 - Rev 4502 - the .operator is doing rank reduction where it is expected to replicate ";
             var mirror = thisTest.RunScriptSource(code, error);
@@ -5946,7 +5820,7 @@ import(""FFITarget.dll"");
             string code =
                 @"
 c = 40;
-d = { 1.0+ { { c + 5 }, { c + 5.5 }, { c + 6 } } };// received {46.0,47.00,47.00}
+d = [ 1.0+ [ [ c + 5 ], [ c + 5.5 ], [ c + 6 ] ] ];// received {46.0,47.00,47.00}
 ";
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1690
             string error = "MAGN-1690 Sprint 29 - Rev 4596 , error thrown where not expected";
@@ -5960,8 +5834,8 @@ d = { 1.0+ { { c + 5 }, { c + 5.5 }, { c + 6 } } };// received {46.0,47.00,47.00
         {
             string code =
                 @"
-                x : var[] = { 1, 2, 3, 4 };
-                x[2..3] = { 1, 2 };
+                x : var[] = [ 1, 2, 3, 4 ];
+                x[2..3] = [ 1, 2 ];
                 ";
             var mirror = thisTest.RunScriptSource(code);
             TestFrameWork.Verify(mirror, "x", new object[] { 1, 2, 1, 2 });
@@ -5972,8 +5846,8 @@ d = { 1.0+ { { c + 5 }, { c + 5.5 }, { c + 6 } } };// received {46.0,47.00,47.00
         {
             string code =
                 @"
-                x : int[] = { 1, 2, 3, 4 };
-                x[2..3] = { 1, 2 };
+                x : int[] = [ 1, 2, 3, 4 ];
+                x[2..3] = [ 1, 2 ];
                 ";
             var mirror = thisTest.RunScriptSource(code);
             TestFrameWork.Verify(mirror, "x", new object[] { 1, 2, 1, 2 });
@@ -5984,8 +5858,8 @@ d = { 1.0+ { { c + 5 }, { c + 5.5 }, { c + 6 } } };// received {46.0,47.00,47.00
         {
             string code =
                 @"
-                x : int[] = { 1, 2, 3, 4 };
-                x[2..3] = { 1, 2 };
+                x : int[] = [ 1, 2, 3, 4 ];
+                x[2..3] = [ 1, 2 ];
                 ";
             var mirror = thisTest.RunScriptSource(code);
             TestFrameWork.Verify(mirror, "x", new object[] { 1, 2, 1, 2 });
@@ -5996,8 +5870,8 @@ d = { 1.0+ { { c + 5 }, { c + 5.5 }, { c + 6 } } };// received {46.0,47.00,47.00
         {
             string code =
                 @"
-                x : bool[] = { true, false, true, false };
-                x[2..3] = { true, 2 };
+                x : bool[] = [ true, false, true, false ];
+                x[2..3] = [ true, 2 ];
                 ";
             var mirror = thisTest.RunScriptSource(code);
             TestFrameWork.Verify(mirror, "x", new object[] { true, false, true, 2 });
@@ -6008,8 +5882,8 @@ d = { 1.0+ { { c + 5 }, { c + 5.5 }, { c + 6 } } };// received {46.0,47.00,47.00
         {
             string code =
                 @"
-                x : var[] = { 1, false,""q"", 1.3 };//jagged
-                x[2..3] = { true, 2 };
+                x : var[] = [ 1, false,""q"", 1.3 ];//jagged
+                x[2..3] = [ true, 2 ];
                 ";
             var mirror = thisTest.RunScriptSource(code);
             TestFrameWork.Verify(mirror, "x", new object[] { 1, false, true, 2 });
@@ -6023,8 +5897,8 @@ d = { 1.0+ { { c + 5 }, { c + 5.5 }, { c + 6 } } };// received {46.0,47.00,47.00
             string code =
                 @"
 import(""FFITarget.dll"");
-                x : var[] = { ClassFunctionality.ClassFunctionality(1),ClassFunctionality.ClassFunctionality(1),ClassFunctionality.ClassFunctionality(1),ClassFunctionality.ClassFunctionality(1)};//var 
-                x[2..3] = { ClassFunctionalityMirror.ClassFunctionalityMirror(2),ClassFunctionalityMirror.ClassFunctionalityMirror(2)};
+                x : var[] = [ ClassFunctionality.ClassFunctionality(1),ClassFunctionality.ClassFunctionality(1),ClassFunctionality.ClassFunctionality(1),ClassFunctionality.ClassFunctionality(1)];//var 
+                x[2..3] = [ ClassFunctionalityMirror.ClassFunctionalityMirror(2),ClassFunctionalityMirror.ClassFunctionalityMirror(2)];
                  y = x.IntVal;
                 ";
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1693
@@ -6040,8 +5914,8 @@ import(""FFITarget.dll"");
             string code =
                 @"
 import(""FFITarget.dll"");
-                x : ClassFunctionality[] = { ClassFunctionality.ClassFunctionality(1),ClassFunctionality.ClassFunctionality(1),ClassFunctionality.ClassFunctionality(1),ClassFunctionality.ClassFunctionality(1)};//class
-                x[2..3] = {ClassFunctionalityMirror.ClassFunctionalityMirror(2),ClassFunctionalityMirror.ClassFunctionalityMirror(2)};
+                x : ClassFunctionality[] = [ ClassFunctionality.ClassFunctionality(1),ClassFunctionality.ClassFunctionality(1),ClassFunctionality.ClassFunctionality(1),ClassFunctionality.ClassFunctionality(1)];//class
+                x[2..3] = [ClassFunctionalityMirror.ClassFunctionalityMirror(2),ClassFunctionalityMirror.ClassFunctionalityMirror(2)];
                 y = x.IntVal;
                 ";
             var mirror = thisTest.RunScriptSource(code);
@@ -6056,7 +5930,7 @@ import(""FFITarget.dll"");
                 @"
                 def foo()
                 {
-                    x3 : double[]..[] = {  1.5 , 2.5 };
+                    x3 : double[]..[] = [  1.5 , 2.5 ];
                     return = x3;
                 }
                 y=foo();
@@ -6075,7 +5949,7 @@ import(""FFITarget.dll"");
                 @"
                     def foo()
                     {
-                        x3 : int[]..[]= {  1 , 2};
+                        x3 : int[]..[]= [  1 , 2];
                         return = x3;
                     }
                 
@@ -6098,7 +5972,7 @@ import(""FFITarget.dll"");
 import(""FFITarget.dll"");
                     def foo()
                     {
-                        x3 : ClassFunctionality[]..[] = {  ClassFunctionality.ClassFunctionality(1) , ClassFunctionality.ClassFunctionality(1) };
+                        x3 : ClassFunctionality[]..[] = [  ClassFunctionality.ClassFunctionality(1) , ClassFunctionality.ClassFunctionality(1) ];
                         return = x3;
                     }
                 

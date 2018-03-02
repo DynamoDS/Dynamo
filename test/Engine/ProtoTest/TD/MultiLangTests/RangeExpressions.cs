@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using NUnit.Framework;
 using ProtoCore.DSASM.Mirror;
+using ProtoCore.Runtime;
 using ProtoTestFx.TD;
 namespace ProtoTest.TD.MultiLangTests
 {
@@ -11,8 +12,9 @@ namespace ProtoTest.TD.MultiLangTests
         [Category("SmokeTest")]
         public void T01_SimpleRangeExpression()
         {
-            string src = @"a;a1;a2;a3;a4;a5;a6;a7;a8;a9;a10;a11;a12;a13;a14;a17;
-[Imperative]
+            string src = @"
+a=i[0];a1=i[1];a2=i[2];a3=i[3];a4=i[4];a5=i[5];a6=i[6];a7=i[7];a8=i[8];a9=i[9];a10=i[10];a11=i[11];a12=i[12];a13=i[13];a14=i[14];a15=i[15];
+i = [Imperative]
 {
 	a = 1..-6..-2;
 	a1 = 2..6..~2.5; 
@@ -29,8 +31,8 @@ namespace ProtoTest.TD.MultiLangTests
 	a12 = 0.4..1..0.1;
 	a13 = 0.3..1..0.1;
 	a14 = 0.2..1..0.1;
-	a17 = (0.5)..(0.25)..(-0.25);
-	
+	a15 = (0.5)..(0.25)..(-0.25);
+	return [a, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15];
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
@@ -65,15 +67,15 @@ namespace ProtoTest.TD.MultiLangTests
             List<Object> result13 = new List<Object> { 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1 };
             thisTest.Verify("a14", result13);
             List<Object> result14 = new List<Object> { 0.5, 0.25 };
-            thisTest.Verify("a17", result14);
+            thisTest.Verify("a15", result14);
         }
 
         [Test]
         [Category("SmokeTest")]
         public void T02_SimpleRangeExpression()
         {
-            string src = @"a15;a16;a18;a19;a20;
-[Imperative]
+            string src = @"a15=i[0];a16=i[1];a18=i[2];a19=i[3];a20=i[4];
+i = [Imperative]
 {
 	a15 = 1/2..1/4..-1/4;
 	a16 = (1/2)..(1/4)..(-1/4);
@@ -81,6 +83,7 @@ namespace ProtoTest.TD.MultiLangTests
 	a19 = (1.0/2.0)..(1.0/4.0)..(-1.0/4.0);
 	a20 = 1..3*2; 
 	//a21 = 1..-6;
+    return [a15, a16, a18, a19, a20];
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
             List<Object> result = new List<Object> { 0.5, 0.25 };
@@ -98,8 +101,8 @@ namespace ProtoTest.TD.MultiLangTests
         [Test]
         public void T03_SimpleRangeExpressionUsingCollection()
         {
-            string src = @"w1;w2;w3;w4;w5;
-[Imperative]
+            string src = @"w1=i[0];w2=i[1];w3=i[2];w4=i[3];w5=i[4];
+i = [Imperative]
 {
 	a = 3 ;
 	b = 2 ;
@@ -111,6 +114,7 @@ namespace ProtoTest.TD.MultiLangTests
 	w3 = e1..f; //correct
 	w4 = (3-2)..(w3[1][1])..(c+2) ; //correct
 	w5 = (w3[1][1]-2)..(w3[1][1])..(w3[0][1]-1) ; //correct
+    return [w1, w2, w3, w4, w5];
 }
 /* expected results : 
     Updated variable a = 3
@@ -137,12 +141,12 @@ namespace ProtoTest.TD.MultiLangTests
         [Category("SmokeTest")]
         public void T04_SimpleRangeExpressionUsingFunctions()
         {
-            string src = @"z1;z2;z3;z4;z5;z7;
+            string src = @"z1=i[0];z2=i[1];z3=i[2];z4=i[3];z5=i[4];z7=i[5];
 	def twice : double( a : double ) 
 	{
 		return = 2 * a;
 	}
-[Imperative]
+i = [Imperative]
 {
 	z1 = 1..twice(4)..twice(1);
 	z2 = 1..twice(4)..twice(1)-1;
@@ -151,7 +155,7 @@ namespace ProtoTest.TD.MultiLangTests
 	z5 = (2*twice(1))..1..-1;
 	//z6 = z5 - z2 + 0.3;
 	z7 = (z3[0]+0.3)..4..#1 ; 
-   
+   return [z1, z2, z3, z4, z5, z7];
 }
 /*
 Succesfully created function 'twice' 
@@ -182,8 +186,8 @@ Succesfully created function 'twice'
         [Category("SmokeTest")]
         public void T05_RangeExpressionWithIncrement()
         {
-            string src = @"d;e1;f;g;h;i;j;k;l;m;
-[Imperative]
+            string src = @"d=x[0];e1=x[1];f=x[2];g=x[3];h=x[4];i=x[5];j=x[6];k=x[7];l=x[8];m=x[9];
+x=[Imperative]
 {
 	d = 0.9..1..0.1;
 	e1 = -0.4..-0.5..-0.1;
@@ -198,6 +202,7 @@ Succesfully created function 'twice'
 	n = 0.1..0.9..~0.3;
 	k = 0.02..0.03..#3;
 	l = 0.9..1..#5;
+    return [d,e1,f,g,h,i,j,k,l,m];
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
@@ -227,12 +232,15 @@ Succesfully created function 'twice'
         [Category("SmokeTest")]
         public void T06_RangeExpressionWithIncrement()
         {
-            string src = @"a;b;c;
-[Imperative]
+            string src = @"a=i[0];
+b=i[1];
+c=i[2];
+i = [Imperative]
 {
 	a = 0.3..0.1..-0.1;
 	b = 0.1..0.3..0.2;
 	c = 0.1..0.3..0.1;
+    return [a, b, c];
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
             List<Object> result = new List<Object> { 0.3, 0.2, 0.1 };
@@ -248,27 +256,29 @@ Succesfully created function 'twice'
         public void T07_RangeExpressionWithIncrementUsingFunctionCall()
         {
             string code = @"
-d;f;
+d=i[0];f=i[1];
 	def increment : double[] (x : double[]) 
 	{
-    return = [Imperative]{
-		j = 0;
-		for( i in x )
-		{
-			x[j] = x[j] + 1 ;
-			j = j + 1;
-		}
-		return = x;
-    }
+        return = [Imperative]
+        {
+		    j = 0;
+		    for( i in x )
+		    {
+			    x[j] = x[j] + 1 ;
+			    j = j + 1;
+		    }
+		    return = x;
+        }
 	}
-[Imperative]
+i = [Imperative]
 {
-	a = {1,2,3};
-	b = {3,4,5} ;
-	c = {1.5,2.5,4,3.65};
-	f = {7,8*2,9+1,5-3,-1,-0.34};
+	a = [1,2,3];
+	b = [3,4,5] ;
+	c = [1.5,2.5,4,3.65];
+	f = [7,8*2,9+1,5-3,-1,-0.34];
 	//nested collection
-	d = {3.5,increment(c)};
+	d = [3.5,increment(c)];
+    return [d, f];
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             List<Object> l1 = new List<object> { 3.5, new List<Object> { 2.5, 3.5, 5, 4.65 } };
@@ -280,12 +290,12 @@ d;f;
         [Test]
         public void T08_RangeExpressionWithIncrementUsingVariables()
         {
-            string src = @"h;i;j;k;l;
+            string src = @"h=x[0];i=x[1];j=x[2];k=x[3];l=x[4];
 	def square : double ( x :double ) 
 	{
 		return = x * x;
 	}
-[Imperative]
+x = [Imperative]
 {
 	z = square(4);
 	x = 1 ;
@@ -307,6 +317,7 @@ d;f;
 	m = 0.8..square(1)..0.1; 
 	n = square(1)..0.8..-0.1;
 	o = 0.8..square(0.9)..0.01; 
+    return [h, i, j, k, l];
 }
 /*
 result
@@ -341,12 +352,12 @@ o = {0.800000,0.810000}
         [Category("SmokeTest")]
         public void T09_RangeExpressionWithApproximateIncrement()
         {
-            string src = @"a;b;f;g;h;j;k;l;
+            string src = @"a=i[0];b=i[1];f=i[2];g=i[3];h=i[4];j=i[5];k=i[6];l=i[7];
 	def square : double ( x: double ) 
 	{
 		return = x * x;
 	}
-[Imperative]
+i=[Imperative]
 {
 	x = 0.1; 
 	a = 0..2..~0.5;
@@ -358,6 +369,7 @@ o = {0.800000,0.810000}
 	j = 0.8..0.5..~-0.3;
 	k = 0.5..0.8..~0.3; 
 	l = 0.2..0.3..~0.0;
+    return [a, b, f, g, h, j, k, l];
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
@@ -383,8 +395,8 @@ o = {0.800000,0.810000}
         {
             //Assert.Fail("1454507 - Sprint15 : Rev 666 : Nested range expressions are throwing NullReferenceException ");
             //Assert.Fail("Replication guides are not implmented");
-            string src = @"a;b;
-[Imperative]
+            string src = @"a = i[0];b = i[1];
+i = [Imperative]
 {
 	//step value greater than the end value
 	a = 1..2..3;
@@ -395,6 +407,7 @@ o = {0.800000,0.810000}
 	f = e1[1]..d[2]..0.5;
 	g = e1..d..0.2;
 	h = e1[2]..d[1]..0.5;
+    return [a, b];
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
@@ -413,8 +426,8 @@ o = {0.800000,0.810000}
         [Test]
         public void T12_RangeExpressionUsingNestedRangeExpressions()
         {
-            string src = @"b;c;d;e1;f;g;h;i;j;
-[Imperative]
+            string src = @"b=x[0];c=x[1];d=x[2];e1=x[3];f=x[4];g=x[5];h=x[6];i=x[7];j=x[8];
+x=[Imperative]
 {
 	x = 1..5..2; // {1,3,5}
 	y = 0..6..2; // {0,2,4,6}
@@ -430,6 +443,7 @@ o = {0.800000,0.810000}
 	i = x[0]..y[3]..#10;//1..6..#10
 	j = 1..0.9..#4;// {1.0, 0.96,.93,0.9}
 	k= 1..3..#0;//null
+    return [b,c,d,e1,f,g,h,i,j];
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
             thisTest.Verify("b", new object[] { 3.0, 2.4, 1.8, 1.2, 0.6 });
@@ -447,17 +461,18 @@ o = {0.800000,0.810000}
         [Category("SmokeTest")]
         public void T13_RangeExpressionWithStartEndValuesUsingFunctionCall()
         {
-            string src = @"x;b;c;e1;f;g;
+            string src = @"x=i[0];b=i[1];c=i[2];e1=i[3];f=i[4];g=i[5];
 	def even : double (a : int) 
 	{
-    return = [Imperative]{
-		if((a % 2)>0)
-		return = (a+(a * 0.5));
-		else
-		return = (a-(a * 0.5));
-    }
+        return = [Imperative]
+        {
+		    if((a % 2)>0)
+		        return = (a+(a * 0.5));
+		    else
+		        return = (a-(a * 0.5));
+        }
     }	
-[Imperative]
+i = [Imperative]
 {
 	d = 3;
 	x = 1..2..#d;
@@ -468,6 +483,7 @@ o = {0.800000,0.810000}
 	e1 = e..4..#3;  //e takes default value 2.17
 	f = even(3)..(even(8)+4*0.5)..#3;
 	g = even(2)+1..1..#5;
+    return [x, b, c, e1, f, g];
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
@@ -488,8 +504,8 @@ o = {0.800000,0.810000}
         [Category("SmokeTest")]
         public void T15_SimpleRangeExpression_1()
         {
-            string src = @"a;b;d;f;g;h;i;l;
-[Imperative]
+            string src = @"a=x[0];b=x[1];d=x[2];f=x[3];g=x[4];h=x[5];i=x[6];l=x[7];
+x = [Imperative]
 {
 	a = 1..2.2..#3;
 	b = 0.1..0.2..#4;
@@ -503,6 +519,7 @@ o = {0.800000,0.810000}
 	j = 0.8..0.99..#10;
 	//k = 0.9..1..#1;
 	l = 0.9..1..0.1;
+    return [a, b, d, f, g, h, i, l];
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
@@ -530,8 +547,8 @@ o = {0.800000,0.810000}
         [Category("SmokeTest")]
         public void T16_SimpleRangeExpression_2()
         {
-            string src = @"a;b;c;d;e1;f;g;h;
-[Imperative]
+            string src = @"a=i[0];b=i[1];c=i[2];d=i[3];e1=i[4];f=i[5];g=i[6];h=i[7];
+i = [Imperative]
 {
 	a = 1.2..1.3..0.1;
 	b = 2..3..0.1;
@@ -542,6 +559,7 @@ o = {0.800000,0.810000}
 	f = 3..3.2..~0.2;
 	g = 3.6..3.8..~0.2; 
 	h = 3.8..4..~0.2; 
+    return [a, b, c, d, e1, f, g, h];
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
             List<Object> result = new List<Object> { 1.2, 1.3 };
@@ -566,8 +584,8 @@ o = {0.800000,0.810000}
         [Category("SmokeTest")]
         public void T17_SimpleRangeExpression_3()
         {
-            string src = @"a;b;c;d;e1;f;g;h;i;j;k;
-[Imperative]
+            string src = @"a=x[0];b=x[1];c=x[2];d=x[3];e1=x[4];f=x[5];g=x[6];h=x[7];i=x[8];j=x[9];k=x[10];
+x=[Imperative]
 {
 	a = 1..2.2..~0.2;
 	b = 1..2..#3;
@@ -580,6 +598,7 @@ o = {0.800000,0.810000}
 	i = 0.9..1.1..0.1;
 	j = 1..0.9..-0.05;
 	k = 1.2..1.3..~0.1;
+    return [a,b,c,d,e1,f,g,h,i,j,k];
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
             List<Object> result = new List<Object> { 1, 1.2, 1.4, 1.6, 1.8, 2, 2.2 };
@@ -610,8 +629,8 @@ o = {0.800000,0.810000}
         [Category("SmokeTest")]
         public void T18_SimpleRangeExpression_4()
         {
-            string src = @"a;b;c;d;e1;f;g;h;
-[Imperative]
+            string src = @"a=i[0];b=i[1];c=i[2];d=i[3];e1=i[4];f=i[5];g=i[6];h=i[7];
+i = [Imperative]
 {
 	a = 2.3..2.6..0.3;
 	b = 4.3..4..-0.3;
@@ -622,6 +641,7 @@ o = {0.800000,0.810000}
 	g = 0.4..0.45..0.05;
 	h = 0.4..0.45..~0.05; 
 	g = 0.4..0.6..~0.05;
+    return [a,b,c,d,e1,f,g,h];
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
             List<Object> result = new List<Object> { 2.3, 2.6 };
@@ -646,8 +666,8 @@ o = {0.800000,0.810000}
         [Category("SmokeTest")]
         public void T19_SimpleRangeExpression_5()
         {
-            string src = @"b;c;d;e1;f;g;h;i;
-[Imperative]
+            string src = @"b=x[0];c=x[1];d=x[2];e1=x[3];f=x[4];g=x[5];h=x[6];i=x[7];
+x=[Imperative]
 {
 	//a = 0.1..0.2..#1; //giving error
 	b = 0.1..0.2..#2;
@@ -658,6 +678,7 @@ o = {0.800000,0.810000}
 	g = 0.9..0.8..#3;
 	h = 0.9..0.7..#5;
 	i = 0.6..1..#4;
+    return [b,c,d,e1,f,g,h,i];
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
@@ -685,20 +706,21 @@ o = {0.800000,0.810000}
         [Category("SmokeTest")]
         public void T20_RangeExpressionsUsingPowerOperator()
         {
-            string src = @"e1;f;
+            string src = @"e1=i[0];f=i[1];
 	def power : double (a:double,b:int) 
 	{
-    return = [Imperative]{
-		temp = 1;
-		while( b > 0 )
-		{
-			temp = temp * a;
-			b = b - 1;
-		}
-		return = temp;
-    }
+        return = [Imperative]
+        {
+		    temp = 1;
+		    while( b > 0 )
+		    {
+			    temp = temp * a;
+			    b = b - 1;
+		    }
+		    return = temp;
+        }
 	}
-[Imperative]
+i=[Imperative]
 {
 	a = 3;
 	b = 2; 
@@ -713,6 +735,7 @@ o = {0.800000,0.810000}
 	l = power(1.2,1)..power(1.3,1)..~power(0.1,1); 
 	m = power(0.8,1)..power(0.9,1)..~power(0.1,1);
 	n = power(0.08,1)..power(0.3,2)..~power(0.1,2); */
+    return [e1, f];
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
             List<Object> result = new List<Object> { 2, 4, 6, 8 };
@@ -739,18 +762,19 @@ o = {0.800000,0.810000}
         [Category("SmokeTest")]
         public void T21_RangeExpressionsUsingEvenFunction()
         {
-            string src = @"c;d;e1;f;g;
+            string src = @"c=x[0];d=x[1];e1=x[2];f=x[3];g=x[4];
 	def even : int (a : int) 
 	{	
-    return = [Imperative]{
-		if(( a % 2 ) > 0 )
-			return = a + 1;
+        return = [Imperative]
+        {
+		    if(( a % 2 ) > 0 )
+			    return = a + 1;
 		
-		else 
-			return = a;
-    }
+		    else 
+			    return = a;
+        }
 	}
-[Imperative]
+x=[Imperative]
 {
 	x = 1..3..1;
 	y = 1..9..2;
@@ -762,6 +786,7 @@ o = {0.800000,0.810000}
    /*  {2,4,4,6,6,8,8,10,10,12,12} .. {4,6,6,8,8,10,10,12,12,14,14}
 */ 
 	g = even(y)..even(z)..f[0][1];  // {2,4,6,8,10} .. {12,14,16,18,20} .. 3
+    return [c,d,e1,f,g];
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
@@ -783,11 +808,12 @@ o = {0.800000,0.810000}
         [Category("SmokeTest")]
         public void TA01_RangeExpressionWithIntegerIncrement()
         {
-            string src = @"a1;a2;
-[Imperative]
+            string src = @"a1=i[0];a2=i[1];
+i = [Imperative]
 {
 	a1 = 1..5..2;
 	a2 = 12.5..20..2;
+    return [a1, a2];
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
@@ -801,11 +827,12 @@ o = {0.800000,0.810000}
         [Category("SmokeTest")]
         public void TA02_RangeExpressionWithDecimalIncrement()
         {
-            string src = @"a1;a2;
-[Imperative]
+            string src = @"a1=i[0];a2=i[1];
+i=[Imperative]
 {
 	a1 = 2..9..2.7;
 	a2 = 10..11.5..0.3;
+     return [a1, a2];
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
             List<Object> result = new List<Object> { 2, 4.7, 7.4 };
@@ -818,12 +845,13 @@ o = {0.800000,0.810000}
         [Category("SmokeTest")]
         public void TA03_RangeExpressionWithNegativeIncrement()
         {
-            string src = @"a;b;c;
-[Imperative]
+            string src = @"a=i[0];b=i[1];c=i[2];
+i=[Imperative]
 {
 	a = 10..-1..-2;
 	b = -2..-10..-1;
 	c = 10..3..-1.5;
+     return [a, b, c];
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
@@ -839,11 +867,12 @@ o = {0.800000,0.810000}
         [Category("SmokeTest")]
         public void TA04_RangeExpressionWithNullIncrement()
         {
-            string src = @"a;b;
-[Imperative]
+            string src = @"a=i[0];b=i[1];
+i=[Imperative]
 {
 	a = 1..5..null;
 	b = 0..6..(null);
+    return [a,b];
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
             thisTest.Verify("a", null);
@@ -854,11 +883,12 @@ o = {0.800000,0.810000}
         [Category("SmokeTest")]
         public void TA05_RangeExpressionWithBooleanIncrement()
         {
-            string src = @"a;b;
-[Imperative]
+            string src = @"a=i[0];b=i[1];
+i=[Imperative]
 {
 	a = 2.5..6..(true);
 	b = 3..7..false;
+return [a,b];
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
@@ -870,11 +900,12 @@ o = {0.800000,0.810000}
         [Category("SmokeTest")]
         public void TA06_RangeExpressionWithIntegerTildeValue()
         {
-            string src = @"a;b;
-[Imperative]
+            string src = @"a=i[0];b=i[1];
+i=[Imperative]
 {
 	a = 1..10..~4;
 	b = -2.5..10..~5;
+    return [a,b];
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
             List<Object> result = new List<Object> { 1, 5.5, 10 };
@@ -888,11 +919,12 @@ o = {0.800000,0.810000}
         public void TA07_RangeExpressionWithDecimalTildeValue()
         {
             string code = @"
-a;b;
-[Imperative]
+a=i[0];b=i[1];
+i=[Imperative]
 {
 	a = 0.2..0.3..~0.2; //divide by zero error
 	b = 6..13..~1.3;
+    return [a,b];
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -906,11 +938,12 @@ a;b;
         [Category("SmokeTest")]
         public void TA08_RangeExpressionWithNegativeTildeValue()
         {
-            string src = @"a;b;
-[Imperative]
+            string src = @"a=i[0];b=i[1];
+i=[Imperative]
 {
 	a = 3..1..~-0.5;
 	b = 18..13..~-1.3;
+    return [a,b];
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
             List<Object> result = new List<Object> { 3, 2.5, 2, 1.5, 1 };
@@ -923,11 +956,12 @@ a;b;
         [Category("SmokeTest")]
         public void TA09_RangeExpressionWithNullTildeValue()
         {
-            string src = @"a;b;
-[Imperative]
+            string src = @"a=i[0];b=i[1];
+i=[Imperative]
 {
 	a = 1..5..~null;
 	b = 5..2..~(null);
+    return [a,b];
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
             thisTest.Verify("a", null);
@@ -938,11 +972,12 @@ a;b;
         [Category("SmokeTest")]
         public void TA10_RangeExpressionWithBooleanTildeValue()
         {
-            string src = @"a;b;
-[Imperative]
+            string src = @"a=i[0];b=i[1];
+i=[Imperative]
 {
 	a = 1..3..(true);
 	b = 2..2..false;
+    return [a,b];
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
             thisTest.Verify("a", null);
@@ -953,12 +988,13 @@ a;b;
         [Category("SmokeTest")]
         public void TA11_RangeExpressionWithIntegerHashValue()
         {
-            string src = @"a;b;c;
-[Imperative]
+            string src = @"a=i[0];b=i[1];c=i[2];
+i=[Imperative]
 {
 	a = 1..3.3..#5;
 	b = 3..3..#3;
 	c = 3..3..#1;
+    return [a,b,c];
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
             List<Object> result = new List<Object> { 1, 1.575, 2.150, 2.725, 3.3 };
@@ -973,14 +1009,14 @@ a;b;
         [Category("SmokeTest")]
         public void TA12_RangeExpressionWithDecimalHashValue()
         {
-            string src = @"a;b;
-[Imperative]
+            string src = @"a=i[0];b=i[1];
+i=[Imperative]
 {
 	a = 1..7..#2.5;
 	b = 2..10..#2.4;
+    return [a,b];
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            thisTest.VerifyBuildWarningCount(2);
             TestFrameWork.VerifyBuildWarning(ProtoCore.BuildData.WarningID.InvalidRangeExpression);
         }
 
@@ -988,10 +1024,9 @@ a;b;
         [Category("SmokeTest")]
         public void TA13_RangeExpressionWithNegativeHashValue()
         {
-            string src = @"a;
-[Imperative]
+            string src = @"a=[Imperative]
 {
-	a = 7.5..-2..#-9;
+	return 7.5..-2..#-9;
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
             thisTest.Verify("a", null);
@@ -1001,10 +1036,9 @@ a;b;
         [Category("SmokeTest")]
         public void TA14_RangeExpressionWithNullHashValue()
         {
-            string src = @"a;
-[Imperative]
+            string src = @"a=[Imperative]
 {
-	a = 2..10..#null;
+	return 2..10..#null;
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
             thisTest.Verify("a", null);
@@ -1014,11 +1048,12 @@ a;b;
         [Category("SmokeTest")]
         public void TA15_RangeExpressionWithBooleanHashValue()
         {
-            string src = @"a;b;
-[Imperative]
+            string src = @"a=i[0];b=i[1];
+i=[Imperative]
 {
 	b = 12..12..#false;
 	a = 12..12..#(true);
+    return [a,b];
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
             thisTest.Verify("a", null);
@@ -1029,10 +1064,9 @@ a;b;
         [Category("SmokeTest")]
         public void TA16_RangeExpressionWithIncorrectLogic_1()
         {
-            string src = @"a;
-[Imperative]
+            string src = @"a=[Imperative]
 {
-	a = 5..1..2;
+	return 5..1..2;
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
             thisTest.Verify("a", null);
@@ -1042,10 +1076,9 @@ a;b;
         [Category("SmokeTest")]
         public void TA17_RangeExpressionWithIncorrectLogic_2()
         {
-            string src = @"a;
-[Imperative]
+            string src = @"a=[Imperative]
 {
-	a = 5.5..10.7..-2;
+	return 5.5..10.7..-2;
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
             thisTest.Verify("a", null);
@@ -1055,12 +1088,13 @@ a;b;
         [Category("SmokeTest")]
         public void TA18_RangeExpressionWithIncorrectLogic_3()
         {
-            string src = @"a;b;c;
-[Imperative]
+            string src = @"a=i[0];b=i[1];c=i[2];
+i=[Imperative]
 {
 	a = 7..7..5;
 	b = 8..8..~3;
 	c = 9..9..#1;
+    return [a, b, c];
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
             List<Object> result1 = new List<Object> { 7 };
@@ -1075,10 +1109,9 @@ a;b;
         [Category("SmokeTest")]
         public void TA19_RangeExpressionWithIncorrectLogic_4()
         {
-            string src = @"a;
-[Imperative]
+            string src = @"a=[Imperative]
 {
-	a = null..8..2;
+	return null..8..2;
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
             thisTest.Verify("a", null);
@@ -1089,10 +1122,7 @@ a;b;
         public void TA21_Defect_1454692()
         {
             string code = @"
-x;
-b;
-y;
-[Imperative]
+x=[Imperative]
 {
 	x = 0;
 	b = 0..3; //{ 0, 1, 2, 3 }
@@ -1100,7 +1130,7 @@ y;
 	{
 		x = y + x;
 	}
-	
+	return x;
 }	";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("x", 6, 0);
@@ -1183,8 +1213,8 @@ def foo(i : int[])
 }	
     
 arr = 0.0..3.0;//{0.0,1.0,2.0,3.0};
-c;x;
-[Imperative]
+c=i[0];x=i[1];
+i=[Imperative]
 {
 	x = 0;
 	b = 0..3; //{ 0, 1, 2, 3 }
@@ -1194,6 +1224,7 @@ c;x;
 	}
 	x1 = 0..3;
 	c = foo(x1);
+    return [c, x];
 }
 	";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -1247,12 +1278,12 @@ a=(5..1).. (1..5);
         {
             // 1467121
             string code = @"
-x;a;b;f;g;h;j;k;l;m;
+x=i[0];a=i[1];b=i[2];f=i[3];g=i[4];h=i[5];j=i[6];k=i[7];l=i[8];m=i[9];
 	def square : double ( x: double ) 
 	{
 		return = x * x;
 	}
-[Imperative]
+i=[Imperative]
 {
 	x = 0.1; 
 	a = 0..2..~0.5;
@@ -1264,7 +1295,8 @@ x;a;b;f;g;h;j;k;l;m;
 	j = 0.8..0.5..~-0.3;
 	k = 0.5..0.8..~0.3; 
 	l = 0.2..0.3..~0.0;
-	m = 0.2..0.3..~1/2; // division 
+	m = 0.2..0.3..~1/2; // division
+    return [x,a,b,f,g,h,j,k,l,m]; 
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -1297,14 +1329,14 @@ x;a;b;f;g;h;j;k;l;m;
         {
             // 1467121
             string code = @"
-x;a;b;f;g;h;j;k;l;m;
+x=i[0];a=i[1];b=i[2];f=i[3];g=i[4];h=i[5];j=i[6];k=i[7];l=i[8];m=i[9];
 def square : double ( x: double ) 
 {
     return = x * x;
 }
-[Associative]
+i = [Associative]
 {
-    [Imperative]
+    return [Imperative]
     {
         x = 0.1; 
         a = 0..2..~0.5;
@@ -1317,6 +1349,7 @@ def square : double ( x: double )
         k = 0.5..0.8..~0.3; 
         l = 0.2..0.3..~0.0;
         m = 0.2..0.3..~1/2; // division 
+        return [x, a, b, f, g, h, j, k, l, m];
     }
 }
 ";
@@ -1347,7 +1380,7 @@ def square : double ( x: double )
         {
             // 1467121
             string code = @"
-x;a;b;f;g;h;j;k;l;m;
+x=i[0];a=i[1];b=i[2];f=i[3];g=i[4];h=i[5];j=i[6];k=i[7];l=i[8];m=i[9];
 [Associative]
 {
 	def square : double ( x: double ) 
@@ -1355,7 +1388,7 @@ x;a;b;f;g;h;j;k;l;m;
 		return = x * x;
 	}
 }
-[Imperative]
+i=[Imperative]
 {
 	x = 0.1; 
 	a = 0..2..~0.5;
@@ -1368,6 +1401,7 @@ x;a;b;f;g;h;j;k;l;m;
 	k = 0.5..0.8..~0.3; 
 	l = 0.2..0.3..~0.0;
 	m = 0.2..0.3..~1/2; // division 
+    return [x, a, b, f, g, h, j, k, l, m];
 }
 	
 ";
@@ -1468,7 +1502,7 @@ def twice : int[]( a : int )
 }
 [Associative]
 {
-    d={1,2,3,4};
+    d=[1,2,3,4];
 	z1=twice(d);
 //	z1 = 1..twice(4)..twice(1);
 }
@@ -1688,7 +1722,7 @@ d1;d2;d3;d4;d5;
             // Crash when step range expression come to infinity.
             // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-5111
 
-            string code = @"x = 0..0..360/{0,0};";
+            string code = @"x = 0..0..360/[0,0];";
             thisTest.RunScriptSource(code);
             thisTest.Verify("x", new object[] { null, null });
             thisTest.VerifyRuntimeWarningCount(2);
@@ -1714,8 +1748,18 @@ b = 0..10..a;
         [Category("SmokeTest")]
         public void AlphabetRangeImperative()
         {
-            string src = @"a1;a2;a3;a4;a5;a6;a7;a8;a9;a10;
-[Imperative]
+            string src = @"
+a1 = i[0];
+a2 = i[1];
+a3 = i[2];
+a4 = i[3];
+a5 = i[4];
+a6 = i[5];
+a7 = i[6];
+a8 = i[7];
+a9 = i[8];
+a10 = i[9];
+i = [Imperative]
 {
 	a1 = ""a""..""c""..1;
     a2 = ""A""..""E""..1;
@@ -1727,6 +1771,7 @@ b = 0..10..a;
     a8 = ""a""..""z""..3;
     a9 = ""A""..""D"";
     a10 = ""o""..""q"";
+    return [a1, a2, a3, a4, a5, a6, a7, a8, a9, a10];
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
@@ -1866,8 +1911,14 @@ b = 0..10..a;
         [Category("SmokeTest")]
         public void AlphabetSequenceImperative()
         {
-            string src = @"a1;a2;a3;a4;a5;a6;
-[Imperative]
+            string src = @"
+a1 = i[0];
+a2 = i[1];
+a3 = i[2];
+a4 = i[3];
+a5 = i[4];
+a6 = i[5];
+i = [Imperative]
 {
 	a1 = ""a""..#3..2;
     a2 = ""A""..#3..2;
@@ -1875,6 +1926,7 @@ b = 0..10..a;
     a4 = ""z""..#5..1;
     a5 = ""A""..#3..-1;
     a6 = ""z""..#3..-1;
+    return [a1, a2, a3, a4, a5, a6];
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
             List<Object> result = new List<Object> { "a", "c", "e" };
@@ -1900,12 +1952,16 @@ b = 0..10..a;
         [Category("SmokeTest")]
         public void AlphabetSequenceNegativeTestCasesImperative()
         {
-            string src = @"a1;a2;a3;
-[Imperative]
+            string src = @"
+a1 = i[0];
+a2 = i[1];
+a3 = i[2];
+i = [Imperative]
 {
 	a1 = ""л""..#3..2;    
     a2 = ""I""..#-5..1;
     a3 = ""z""..#0..1;
+    return [a1, a2, a3];
 }";
             thisTest.RunScriptSource(src);
 
@@ -1913,7 +1969,7 @@ b = 0..10..a;
             thisTest.Verify("a2", null);
             thisTest.Verify("a3", new List<Object>());
 
-            thisTest.VerifyRuntimeWarningCount(2);
+            TestFrameWork.VerifyRuntimeWarning(WarningID.InvalidArguments);
         }
 
         [Test]
