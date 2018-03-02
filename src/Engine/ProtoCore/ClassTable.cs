@@ -296,9 +296,9 @@ namespace ProtoCore.DSASM
                 return null;
             }
 
-            return  ProcTable.GetFunctionsByNameAndArgumentNumber(procName, argCount)
-                          .Where(p => p.IsConstructor)
-                          .FirstOrDefault();
+            return  ProcTable
+                          .GetFunctionsByNameAndArgumentNumber(procName, argCount)
+                          .FirstOrDefault(p => p.IsConstructor);
         }
 
         public ProcedureNode GetFirstStaticFunctionBy(string procName)

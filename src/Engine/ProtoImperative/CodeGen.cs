@@ -329,7 +329,7 @@ namespace ProtoImperative
                     int realType;
                     procNode = classNode.GetMemberFunction(procName, arglist, globalClassIndex, out isAccessible, out realType, isStaticOrConstructor);
 
-                    if (isStaticOrConstructor && procNode == null)
+                    if (isStaticOrConstructor)
                     {
                         procNode = classNode.GetFirstConstructorBy(procName, arglist.Count);
                         if (procNode == null)
@@ -340,7 +340,7 @@ namespace ProtoImperative
                         if (procNode != null)
                         {
                             isAccessible = procNode.AccessModifier == ProtoCore.CompilerDefinitions.AccessModifier.Public;
-                            realType = refClassIndex;
+                            realType = refClassIndex = procNode.ClassID;
                         }
                     }
 
@@ -350,7 +350,6 @@ namespace ProtoImperative
 
                         if (!isAccessible)
                         {
-                            type = lefttype = realType;
                             string message = String.Format(ProtoCore.Properties.Resources.kMethodIsInaccessible, procName);
                             buildStatus.LogWarning(WarningID.AccessViolation, message, core.CurrentDSFileName, funcCall.line, funcCall.col, graphNode);
                             hasLogError = true;
