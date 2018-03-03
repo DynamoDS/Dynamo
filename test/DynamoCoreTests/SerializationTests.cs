@@ -12,6 +12,7 @@ using Newtonsoft.Json;
 using Dynamo.Engine;
 using Dynamo.Events;
 using System.Text.RegularExpressions;
+using Dynamo.Graph.Notes;
 using Dynamo.Utilities;
 using Newtonsoft.Json.Linq;
 
@@ -65,6 +66,21 @@ namespace Dynamo.Tests
                 modelsGuidToIdMap.Add(connector.GUID, idcount.ToString());
                 json = json.Replace(connector.GUID.ToString("N"), idcount.ToString());
                 idcount = idcount + 1;
+            }
+
+            //alter the output json so that all Notemodel ids are not guids
+            foreach (var annotationModels in model.Annotations.Select(x=>x.Nodes))
+            {
+                var annotationList = annotationModels.ToList();
+                for (var i = 0; i < annotationList.Count(); i++)
+                {
+                    if (annotationList[i] is NoteModel)
+                    {
+                        modelsGuidToIdMap.Add(annotationList[i].GUID, idcount.ToString());
+                        json = json.Replace(annotationList[i].GUID.ToString("N"), idcount.ToString());
+                        idcount = idcount + 1;
+                    }
+                }
             }
             //alter the output json so that all annotationModel ids are not guids
             foreach (var annotation in model.Annotations)
