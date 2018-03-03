@@ -279,7 +279,7 @@ namespace Dynamo.Graph.Nodes
                 ProcessCode(ref errorMessage, ref warningMessage, workspaceElementResolver);
 
                 //Recreate connectors that can be reused
-                LoadAndCreateConnectors(inportConnections, outportConnections,SaveContext.None);
+                LoadAndCreateConnectors(inportConnections, outportConnections, SaveContext.None);
 
                 RaisePropertyChanged("Code");
 
@@ -293,7 +293,7 @@ namespace Dynamo.Graph.Nodes
                 else if (!string.IsNullOrEmpty(warningMessage))
                 {
                     // Build warnings must persist so that they are not cleared by runtime warnings
-                    Warning(warningMessage, isPersistent:true);
+                    Warning(warningMessage, isPersistent: true);
                 }
 
                 this.OnRequestSilenceModifiedEvents(false);
@@ -321,7 +321,7 @@ namespace Dynamo.Graph.Nodes
         /// </summary>
         protected override void SetNodeStateBasedOnConnectionAndDefaults()
         {
-            if(!CodeStatements.Any() && OutPorts.Any())
+            if (!CodeStatements.Any() && OutPorts.Any())
                 State = ElementState.Error;
             else
                 base.SetNodeStateBasedOnConnectionAndDefaults();
@@ -339,7 +339,7 @@ namespace Dynamo.Graph.Nodes
             value = CodeBlockUtils.FormatUserText(value);
 
             if (!value.Equals(Code))
-               SetCodeContent(value, workspaceElementResolver);
+                SetCodeContent(value, workspaceElementResolver);
 
             return true;
         }
@@ -390,15 +390,19 @@ namespace Dynamo.Graph.Nodes
                 childNodes.Where(node => node.Name.Equals("PortInfo")).Select(x => new XmlElementHelper(x));
 
 
-            //set the input ports and outputPorts incase this node is in an error state after processing code.
-            // read and set input port info
+            // set the inputPorts and outputPorts incase this node is in an error state after processing code.
+            // read and set input port info.
             inputPortNames =
                 inputPortHelpers.Select(x => x.ReadString("name", String.Empty))
                     .Where(y => !string.IsNullOrEmpty(y))
                     .ToList();
             SetInputPorts();
 
-           
+            // if we're in an error state - clear the output ports before we try adding more.
+            if (IsInErrorState)
+            {
+                OutPorts.RemoveAll((p) => { return true; });
+            }
             var outputPortHelpers =
                 childNodes.Where(node => node.Name.Equals("OutPortInfo")).Select(x => new XmlElementHelper(x));
             var lineNumbers = outputPortHelpers.Select(x => x.ReadInteger("LineIndex")).ToList();
@@ -413,8 +417,8 @@ namespace Dynamo.Graph.Nodes
             }
 
             ProcessCodeDirect();
-             //Recreate connectors that can be reused
-             LoadAndCreateConnectors(inportConnections, outportConnections,SaveContext.Undo);
+            //Recreate connectors that can be reused
+            LoadAndCreateConnectors(inportConnections, outportConnections, SaveContext.Undo);
         }
 
         internal override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes, CompilationContext context)
@@ -625,7 +629,7 @@ namespace Dynamo.Graph.Nodes
             else if (!string.IsNullOrEmpty(warningMessage))
             {
                 // Build warnings must persist so that they are not cleared by runtime warnings
-                Warning(warningMessage, isPersistent:true);
+                Warning(warningMessage, isPersistent: true);
             }
 
             // Mark node for update
@@ -667,6 +671,7 @@ namespace Dynamo.Graph.Nodes
                     errorMessage = string.Join("\n", parseParam.Errors.Select(m => m.Message));
                     ProcessError();
                     CreateInputOutputPorts();
+
                     return;
                 }
 
@@ -783,7 +788,7 @@ namespace Dynamo.Graph.Nodes
         /// 
         private void CreateInputOutputPorts()
         {
-            
+
             if ((codeStatements == null || (codeStatements.Count == 0))
                 && (inputIdentifiers == null || (inputIdentifiers.Count == 0)))
             {
@@ -799,17 +804,42 @@ namespace Dynamo.Graph.Nodes
 
         private void SetInputPorts()
         {
-            //this extension method is used instead because 
-            //observableCollection has very odd behavior when cleared - 
-            //there is no way to reference the cleared items and so they 
-            //cannot be cleaned up properly
+            // This extension method is used instead because 
+            // observableCollection has very odd behavior when cleared - 
+            // there is no way to reference the cleared items and so they 
+            // cannot be cleaned up properly
 
-           InPorts.RemoveAll((p) => { return true; });
+            InPorts.RemoveAll((p) => { return true; });
 
             // Generate input port data list from the unbound identifiers.
             var inportData = CodeBlockUtils.GenerateInputPortData(inputPortNames);
             foreach (var portData in inportData)
                 InPorts.Add(new PortModel(PortType.Input, this, portData));
+        }
+
+        internal void SetErrorStatePortData(List<string> inputPortNames, List<int> outputPortIndexes)
+        {
+            if (inputPortNames != null)
+            {
+                this.inputPortNames = inputPortNames;
+            }
+
+            SetInputPorts();
+
+            if (outputPortIndexes != null)
+            {
+                foreach (var outputPortIndex in outputPortIndexes)
+                {
+                  var tooltip = string.Format(Resources.CodeBlockTempIdentifierOutputLabel, outputPortIndex);
+                  OutPorts.Add(new PortModel(PortType.Output, this, new PortData(string.Empty, tooltip)
+                  {
+                    LineIndex = outputPortIndex, // Logical line index.
+                    Height = Configurations.CodeBlockPortHeightInPixels
+                  }));
+                }
+            }
+
+            SetOutputPorts();
         }
 
         private void SetOutputPorts()
@@ -819,11 +849,12 @@ namespace Dynamo.Graph.Nodes
             if (allDefs.Any() == false)
                 return;
 
-            //this extension method is used instead because 
-            //observableCollection has very odd behavior when cleared - 
-            //there is no way to reference the cleared items and so they 
-            //cannot be cleaned up properly
-            //Clear out all the output port models
+            // This extension method is used instead because 
+            // observableCollection has very odd behavior when cleared - 
+            // there is no way to reference the cleared items and so they 
+            // cannot be cleaned up properly
+            
+            // Clear out all the output port models
             OutPorts.RemoveAll((p) => { return true; });
 
             foreach (var def in allDefs)
@@ -866,7 +897,7 @@ namespace Dynamo.Graph.Nodes
             //Delete the connectors
             foreach (PortModel inport in InPorts)
                 inport.DestroyConnectors();
-            
+
             //----------------------------Outputs---------------------------------
             for (int i = 0; i < OutPorts.Count; i++)
             {
@@ -887,7 +918,7 @@ namespace Dynamo.Graph.Nodes
             //Delete the connectors
             foreach (PortModel outport in OutPorts)
                 outport.DestroyConnectors();
-            
+
         }
 
         /// <summary>
@@ -897,7 +928,7 @@ namespace Dynamo.Graph.Nodes
         /// <param name="inportConnections"></param>
         /// <param name="outportConnections"> List of the connections that were killed</param>
         /// <param name="context">context this operation is being performed in</param>
-        private void LoadAndCreateConnectors(OrderedDictionary inportConnections, OrderedDictionary outportConnections,SaveContext context)
+        private void LoadAndCreateConnectors(OrderedDictionary inportConnections, OrderedDictionary outportConnections, SaveContext context)
         {
             //----------------------------Inputs---------------------------------
             /* Input Port connections are matched only if the name is the same */
@@ -919,7 +950,7 @@ namespace Dynamo.Graph.Nodes
                                 i);
                             //during an undo operation we should set the new input connector
                             //to have the same id as the old connector.
-                            if(context == SaveContext.Undo)
+                            if (context == SaveContext.Undo)
                             {
                                 connector.GUID = oldConnector.GUID;
                             }
@@ -941,28 +972,45 @@ namespace Dynamo.Graph.Nodes
             List<int> undefinedIndices = new List<int>();
             for (int i = 0; i < OutPorts.Count; i++)
             {
-                string varName = OutPorts[i].ToolTip;
-                if (outportConnections.Contains(varName))
+                // If a code block is in an error state the indexes are not always
+                // known (after the code block node is loaded in an error state), 
+                // so matching the connector by name can result in the port being 
+                // on the wrong line, just store the index to match in step 2 next
+                if (IsInErrorState)
                 {
-                    if (outportConnections[varName] != null)
-                    {
-                        foreach (var oldConnector in (outportConnections[varName] as List<ConnectorModel>))
-                        {
-                            var endPortModel = oldConnector.End;
-                            NodeModel endNode = endPortModel.Owner;
-                            var connector = ConnectorModel.Make(this, endNode, i, endPortModel.Index);
-                            //during an undo operation we should set the new output connector
-                            //to have the same id as the old connector.
-                            if (context == SaveContext.Undo)
-                            {
-                                connector.GUID = oldConnector.GUID;
-                            }
-                        }
-                        outportConnections[varName] = null;
-                    }
-                }
-                else
                     undefinedIndices.Add(i);
+                    continue;
+                }
+
+                // Attempting to match the connector by name failed, 
+                // store the index to match in step 2 next
+                string varName = OutPorts[i].ToolTip;
+                if (!outportConnections.Contains(varName))
+                {
+                    undefinedIndices.Add(i);
+                    continue;
+                }
+
+                // Attempting to match the connector by name succeeded, 
+                // create the connector using the matched port index
+                if (outportConnections[varName] != null)
+                {
+                    foreach (var oldConnector in (outportConnections[varName] as List<ConnectorModel>))
+                    {
+                        var endPortModel = oldConnector.End;
+                        NodeModel endNode = endPortModel.Owner;
+                        var connector = ConnectorModel.Make(this, endNode, i, endPortModel.Index);
+                        
+                        // During an undo operation we should set the new output connector
+                        // to have the same id as the old connector.
+                        if (context == SaveContext.Undo)
+                        {
+                            connector.GUID = oldConnector.GUID;
+                        }
+                    }
+
+                    outportConnections[varName] = null;
+                }
             }
 
             /*
@@ -979,7 +1027,7 @@ namespace Dynamo.Graph.Nodes
                 int index = undefinedIndices[i];
                 if (index < outportConnections.Count && outportConnections[index] != null)
                 {
-                    foreach (PortModel endPortModel in (outportConnections[index] as List<ConnectorModel>).Select(connector=>connector.End))
+                    foreach (PortModel endPortModel in (outportConnections[index] as List<ConnectorModel>).Select(connector => connector.End))
                     {
                         NodeModel endNode = endPortModel.Owner;
                         var connector = ConnectorModel.Make(this, endNode, index, endPortModel.Index);
@@ -1001,7 +1049,7 @@ namespace Dynamo.Graph.Nodes
             List<List<PortModel>> unusedConnections =
                 outportConnections.Values.Cast<List<ConnectorModel>>()
                     .Where(connectorList => connectorList != null).Select(list => list.Select(x => x.End).ToList()).ToList();
-                    
+
 
             while (undefinedIndices.Count > 0 && unusedConnections.Count != 0)
             {
@@ -1024,8 +1072,8 @@ namespace Dynamo.Graph.Nodes
 
         private bool ShouldBeRenamed(string ident)
         {
-            return !ident.Equals(AstIdentifierForPreview.Value) && GetDefinedVariableNames().Contains(ident);  
-        } 
+            return !ident.Equals(AstIdentifierForPreview.Value) && GetDefinedVariableNames().Contains(ident);
+        }
 
         private string LocalizeIdentifier(string identifierName)
         {
@@ -1161,7 +1209,7 @@ namespace Dynamo.Graph.Nodes
 
         #endregion
 
-        
+
         [NodeMigration(version: "1.9.0.0")]
         public static NodeMigrationData Migrate_2_0_0(NodeMigrationData data)
         {
@@ -1372,7 +1420,7 @@ namespace Dynamo.Graph.Nodes
 
         private static IdentifierNode GetDefinedIdentifier(Node leftNode)
         {
-            if(leftNode is TypedIdentifierNode)
+            if (leftNode is TypedIdentifierNode)
                 return new IdentifierNode(leftNode as IdentifierNode);
             if (leftNode is IdentifierNode)
             {
