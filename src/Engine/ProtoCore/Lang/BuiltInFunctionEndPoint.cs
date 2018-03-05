@@ -446,74 +446,22 @@ namespace ProtoCore.Lang
 
                 case BuiltInMethods.MethodID.GetKeys:
                     {
-                        StackValue array = formalParameters[0];
-                        if (!array.IsArray)
-                        {
-                            runtimeCore.RuntimeStatus.LogWarning(WarningID.OverIndexing, Resources.kArrayOverIndexed);
-                            ret = StackValue.Null;
-                        }
-                        else
-                        {
-                            var result = runtimeCore.Heap.ToHeapObject<DSArray>(array).Keys.ToArray();
-                            try
-                            {
-                                ret = rmem.Heap.AllocateArray(result);
-                            }
-                            catch (RunOutOfMemoryException)
-                            {
-                                runtimeCore.RuntimeStatus.LogWarning(WarningID.RunOutOfMemory, Resources.RunOutOfMemory);
-                                ret = StackValue.Null;
-                            }
-                        }
+                        ret = StackValue.Null;
                         break;
                     }
                 case BuiltInMethods.MethodID.GetValues:
                     {
-                        StackValue array = formalParameters[0];
-                        if (!array.IsArray)
-                        {
-                            runtimeCore.RuntimeStatus.LogWarning(WarningID.OverIndexing, Resources.kArrayOverIndexed);
-                            ret = StackValue.Null;
-                        }
-                        else
-                        {
-                            var result = runtimeCore.Heap.ToHeapObject<DSArray>(array).Values;
-                            try
-                            {
-                                ret = rmem.Heap.AllocateArray(result.ToArray());
-                            }
-                            catch (RunOutOfMemoryException)
-                            {
-                                runtimeCore.RuntimeStatus.LogWarning(WarningID.RunOutOfMemory, Resources.RunOutOfMemory);
-                                ret = StackValue.Null;
-                            }
-                        }
+                        ret = StackValue.Null;
                         break;
                     }
                 case BuiltInMethods.MethodID.ContainsKey:
                     {
-                        StackValue array = formalParameters[0];
-                        StackValue key = formalParameters[1];
-                        if (array.IsArray)
-                        {
-                            bool result = runtimeCore.Heap.ToHeapObject<DSArray>(array).ContainsKey(key);
-                            ret = StackValue.BuildBoolean(result);
-                        }
-                        else
-                        {
-                            ret = StackValue.BuildBoolean(false);
-                        }
+                        ret = StackValue.Null;
                         break;
                     }
                 case BuiltInMethods.MethodID.RemoveKey:
                     {
-                        StackValue array = formalParameters[0];
-                        StackValue key = formalParameters[1];
-                        if (array.IsArray)
-                        {
-                            runtimeCore.Heap.ToHeapObject<DSArray>(array).RemoveKey(key);
-                        }
-                        return array;
+                        ret = StackValue.Null;
                         break;
                     }
                 case BuiltInMethods.MethodID.Evaluate:
