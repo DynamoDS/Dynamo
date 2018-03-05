@@ -200,24 +200,6 @@
 			<param name="connectionParameters"></param>
             <search>import,data</search>
         </member>
-		<member name="GetKeys">
-			<param name="list">list of values</param>
-            <search>keys</search>
-        </member>
-		<member name="GetValues">
-			<param name="list">list of values</param>
-            <search>values</search>
-        </member>
-		<member name="RemoveKey">
-			<param name="list">list of values</param>
-			<param name="key"></param>
-            <search>remove,key</search>
-        </member>
-		<member name="ContainsKey">
-			<param name="list">list of values</param>
-			<param name="key"></param>
-            <search>contain,key</search>
-        </member>
 		<member name="Evaluate">
 			<param name="functionPointer"></param>
 			<param name="params"></param>
