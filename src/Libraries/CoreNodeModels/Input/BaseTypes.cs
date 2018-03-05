@@ -757,7 +757,7 @@ namespace CoreNodeModels.Input
             public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
             {
                 double d = 0.0;
-                double.TryParse((string)value, out d);
+                double.TryParse((string)value, NumberStyles.Any, CultureInfo.InvariantCulture, out d);
                 writer.WriteValue(d);
             }
         }
