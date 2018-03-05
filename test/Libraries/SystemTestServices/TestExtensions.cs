@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
@@ -42,6 +43,11 @@ namespace Dynamo.Tests
         public static T FirstNodeFromWorkspace<T>(this WorkspaceModel model) where T : NodeModel
         {
             return model.Nodes.OfType<T>().FirstOrDefault();
+        }
+
+        public static IEnumerable<T> NodesFromWorkspace<T>(this WorkspaceModel model) where T : NodeModel
+        {
+            return model.Nodes.OfType<T>();
         }
 
         public static NodeModel GetDSFunctionNodeFromWorkspace(this WorkspaceModel model, string nodeName)

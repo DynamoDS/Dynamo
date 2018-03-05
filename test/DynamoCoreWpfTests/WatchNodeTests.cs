@@ -9,6 +9,8 @@ using CoreNodeModels;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.ZeroTouch;
 using Dynamo.Tests;
+using System.Globalization;
+using System.Threading;
 
 namespace DynamoCoreWpfTests 
 {
@@ -253,6 +255,28 @@ namespace DynamoCoreWpfTests
 
             Assert.AreEqual(3, watchVM.Levels.ElementAt(0));
             Assert.AreEqual(2, watchVM.NumberOfItems);
+        }
+
+        [Test]
+        public void WatchNumber()
+        {
+            var culture = CultureInfo.CreateSpecificCulture("fr-FR");
+            Thread.CurrentThread.CurrentCulture = culture;
+            Thread.CurrentThread.CurrentUICulture = culture;
+
+            string openPath = Path.Combine(TestDirectory, @"core\watch\WatchNumber.dyn");
+            ViewModel.OpenCommand.Execute(openPath);
+            ViewModel.HomeSpace.Run();
+
+            foreach (var watchNode in ViewModel.Model.CurrentWorkspace.NodesFromWorkspace<Watch>())
+            {
+                var watchVM = ViewModel.WatchHandler.GenerateWatchViewModelForData(
+                    watchNode.CachedValue, watchNode.OutPorts.Select(p => p.Name),
+                    ViewModel.Model.EngineController.LiveRunnerRuntimeCore,
+                    watchNode.InPorts[0].Connectors[0].Start.Owner.AstIdentifierForPreview.Name);
+
+                Assert.AreEqual("3.14", watchVM.NodeLabel);
+            }
         }
 
         [Test]
