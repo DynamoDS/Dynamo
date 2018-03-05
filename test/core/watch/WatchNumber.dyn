@@ -6,7 +6,27 @@
   "ElementResolver": {
     "ResolutionMap": {}
   },
-  "Inputs": [],
+  "Inputs": [
+    {
+      "Id": "e899730e3ed7479e8c6906a6bfceab91",
+      "Name": "Number",
+      "Type": "number",
+      "Value": "3.14",
+      "NumberType": "Double",
+      "Description": "Creates a number."
+    },
+    {
+      "Id": "443ce407f315452f96aa85835e6ec67f",
+      "Name": "Number Slider",
+      "Type": "number",
+      "Value": "3.14",
+      "MaximumValue": 100.0,
+      "MinimumValue": 0.0,
+      "StepValue": 0.1,
+      "NumberType": "Double",
+      "Description": "A slider that produces numeric values."
+    }
+  ],
   "Outputs": [],
   "Nodes": [
     {
@@ -207,7 +227,7 @@
         "ShowGeometry": true,
         "Name": "Number",
         "Id": "e899730e3ed7479e8c6906a6bfceab91",
-        "IsInput": false,
+        "IsInput": true,
         "IsOutput": false,
         "Excluded": false,
         "X": 90.580152450210548,
@@ -227,7 +247,7 @@
         "ShowGeometry": true,
         "Name": "Number Slider",
         "Id": "443ce407f315452f96aa85835e6ec67f",
-        "IsInput": false,
+        "IsInput": true,
         "IsOutput": false,
         "Excluded": false,
         "X": -31.010160637845331,
