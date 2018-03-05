@@ -241,15 +241,10 @@ namespace ProtoCore
                 // Note we assume the graph node is the top-level graph node here.
                 // The callsite id is the concatenation of all graphnodes' callsite
                 // identifier along the nested function call. 
-                var matchingCallSitesQuery = (from cs in CallsiteCache
+                var matchingCallSites = (from cs in CallsiteCache
                                          from gn in graphNodeIds
                                          where !string.IsNullOrEmpty(gn) && cs.Key.StartsWith(gn)
                                          select new { cs.Key, cs.Value });
-                List<KeyValuePair<string, CallSite>> matchingCallSites = new List<KeyValuePair<string, CallSite>>();
-                foreach (var queryItem in matchingCallSitesQuery)
-                {
-                    matchingCallSites.Add(new KeyValuePair<string, CallSite>(queryItem.Key, queryItem.Value));
-                }
 
                 // Append each callsite element under node element.
                 var serializedCallsites = new List<CallSite.RawTraceData>();
