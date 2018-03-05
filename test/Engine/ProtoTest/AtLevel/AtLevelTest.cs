@@ -451,5 +451,30 @@ r = foo(xs@@L1, ys@@L1);
             thisTest.RunAndVerifyRuntimeWarning(code, ProtoCore.Runtime.WarningID.MoreThanOneDominantList);
             thisTest.Verify("r", new object[] { 5, 7, 9 });
         }
+
+        [Test]
+        public void TestNestedListStructureAtLevel1()
+        {
+            string code = @"
+import(""DSCoreNodes.dll"");
+import(""BuiltIn.ds"");
+l = List.Transpose([""test"", 1..3]@@L1<1>);
+";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("l",
+                new object[] {null, new object[] {new[] {1}, new[] {2}, new[] {3}}});
+        }
+
+        [Test]
+        public void TestNestedListAtLevel1()
+        {
+            string code = @"
+import(""DSCoreNodes.dll"");
+import(""BuiltIn.ds"");
+l = DSCore.Object.IsNull([""test"", 1..3]@L1);
+";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("l", new object[] { false, false, false });
+        }
     }
 }

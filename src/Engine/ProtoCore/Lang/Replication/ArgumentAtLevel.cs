@@ -77,11 +77,9 @@ namespace ProtoCore.Lang.Replication
     {
         private static List<ElementAtLevel> GetElementsAtLevel(StackValue argument, int level, List<int> indices, bool recordIndices, RuntimeCore runtimeCore)
         {
+            if(!argument.IsArray) return new List<ElementAtLevel>();
+
             var array = runtimeCore.Heap.ToHeapObject<DSArray>(argument);
-            if (array == null)
-            {
-                return new List<ElementAtLevel>();
-            }
 
             int count = array.Values.Count();
             if (level == 0)
