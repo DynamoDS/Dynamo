@@ -218,9 +218,13 @@ namespace Dynamo.Interfaces
 
         private static string ToString(object obj)
         {
-            return ReferenceEquals(obj, null)
-                ? Resources.NullString
-                : (obj is bool ? obj.ToString().ToLower() : obj is double? ((double)obj).ToString(CultureInfo.InvariantCulture) : obj.ToString());
+            return ReferenceEquals(obj, null)? 
+                Resources.NullString
+                : (obj is bool ? 
+                    obj.ToString().ToLower()
+                    : obj is double?
+                        ((double)obj).ToString(CultureInfo.InvariantCulture)
+                        : obj.ToString());
         }
 
         public WatchViewModel Process(dynamic value, IEnumerable<string> preferredDictionaryOrdering, ProtoCore.RuntimeCore runtimeCore, string tag, bool showRawData, WatchHandlerCallback callback)

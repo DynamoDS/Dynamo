@@ -45,17 +45,6 @@ namespace Dynamo.Tests
             return model.Nodes.OfType<T>().FirstOrDefault();
         }
 
-        /// <summary>
-        /// Return all the nodes with same type in a workspace
-        /// </summary>
-        /// <typeparam name="T">Node Type</typeparam>
-        /// <param name="model"></param>
-        /// <returns></returns>
-        public static IEnumerable<T> NodesFromWorkspace<T>(this WorkspaceModel model) where T : NodeModel
-        {
-            return model.Nodes.OfType<T>();
-        }
-
         public static NodeModel GetDSFunctionNodeFromWorkspace(this WorkspaceModel model, string nodeName)
         {
             return model.Nodes.FirstOrDefault(node => node is DSFunction &&

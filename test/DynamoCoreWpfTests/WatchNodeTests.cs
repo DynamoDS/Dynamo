@@ -270,7 +270,7 @@ namespace DynamoCoreWpfTests
             ViewModel.OpenCommand.Execute(openPath);
             ViewModel.HomeSpace.Run();
 
-            foreach (var watchNode in ViewModel.Model.CurrentWorkspace.NodesFromWorkspace<Watch>())
+            foreach (var watchNode in ViewModel.Model.CurrentWorkspace.Nodes.OfType<Watch>())
             {
                 var watchVM = ViewModel.WatchHandler.GenerateWatchViewModelForData(
                     watchNode.CachedValue, watchNode.OutPorts.Select(p => p.Name),
