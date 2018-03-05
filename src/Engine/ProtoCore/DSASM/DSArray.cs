@@ -53,6 +53,52 @@ namespace ProtoCore.DSASM
             }
         }
 
+        /// <summary>
+        /// Returns true if array contain key or not.
+        /// </summary>
+        public bool ContainsKey(StackValue key)
+        {
+            if (key.IsNumeric)
+            {
+                var index = (int)key.ToInteger().IntegerValue;
+                if (index < 0)
+                {
+                    index = index + Count;
+                }
+                return (index >= 0 && index < Count);
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Remove a key from array. Return true if key exsits.
+        /// </summary>
+        public bool RemoveKey(StackValue key)
+        {
+            if (key.IsNumeric)
+            {
+                int index = (int)key.ToInteger().IntegerValue;
+                if (index < 0)
+                {
+                    index = index + Count;
+                }
+
+                if (index >= 0 && index < Count)
+                {
+                    SetValueAt(index, StackValue.Null);
+
+                    if (index == Count - 1)
+                    {
+                        Count -= 1;
+                    }
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         public IDictionary<StackValue,StackValue> ToDictionary()
         {
             return Enumerable.Range(0, Count)

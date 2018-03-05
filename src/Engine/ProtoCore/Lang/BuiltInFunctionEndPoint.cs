@@ -446,22 +446,74 @@ namespace ProtoCore.Lang
 
                 case BuiltInMethods.MethodID.GetKeys:
                     {
-                        ret = StackValue.Null;
+                        StackValue array = formalParameters[0];
+                        if (!array.IsArray)
+                        {
+                            runtimeCore.RuntimeStatus.LogWarning(WarningID.OverIndexing, Resources.kArrayOverIndexed);
+                            ret = StackValue.Null;
+                        }
+                        else
+                        {
+                            var result = runtimeCore.Heap.ToHeapObject<DSArray>(array).Keys.ToArray();
+                            try
+                            {
+                                ret = rmem.Heap.AllocateArray(result);
+                            }
+                            catch (RunOutOfMemoryException)
+                            {
+                                runtimeCore.RuntimeStatus.LogWarning(WarningID.RunOutOfMemory, Resources.RunOutOfMemory);
+                                ret = StackValue.Null;
+                            }
+                        }
                         break;
                     }
                 case BuiltInMethods.MethodID.GetValues:
                     {
-                        ret = StackValue.Null;
+                        StackValue array = formalParameters[0];
+                        if (!array.IsArray)
+                        {
+                            runtimeCore.RuntimeStatus.LogWarning(WarningID.OverIndexing, Resources.kArrayOverIndexed);
+                            ret = StackValue.Null;
+                        }
+                        else
+                        {
+                            var result = runtimeCore.Heap.ToHeapObject<DSArray>(array).Values;
+                            try
+                            {
+                                ret = rmem.Heap.AllocateArray(result.ToArray());
+                            }
+                            catch (RunOutOfMemoryException)
+                            {
+                                runtimeCore.RuntimeStatus.LogWarning(WarningID.RunOutOfMemory, Resources.RunOutOfMemory);
+                                ret = StackValue.Null;
+                            }
+                        }
                         break;
                     }
                 case BuiltInMethods.MethodID.ContainsKey:
                     {
-                        ret = StackValue.Null;
+                        StackValue array = formalParameters[0];
+                        StackValue key = formalParameters[1];
+                        if (array.IsArray)
+                        {
+                            bool result = runtimeCore.Heap.ToHeapObject<DSArray>(array).ContainsKey(key);
+                            ret = StackValue.BuildBoolean(result);
+                        }
+                        else
+                        {
+                            ret = StackValue.BuildBoolean(false);
+                        }
                         break;
                     }
                 case BuiltInMethods.MethodID.RemoveKey:
                     {
-                        ret = StackValue.Null;
+                        StackValue array = formalParameters[0];
+                        StackValue key = formalParameters[1];
+                        if (array.IsArray)
+                        {
+                            runtimeCore.Heap.ToHeapObject<DSArray>(array).RemoveKey(key);
+                        }
+                        return array;
                         break;
                     }
                 case BuiltInMethods.MethodID.Evaluate:

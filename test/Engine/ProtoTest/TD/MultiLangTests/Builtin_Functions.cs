@@ -3369,7 +3369,7 @@ x = 0;
 y = List.RemoveKey(x, x);
 ";
             thisTest.RunScriptSource(code);
-            thisTest.Verify("y", null);
+            thisTest.Verify("y", 0);
         }
 
         [Test]
@@ -3381,7 +3381,7 @@ x = 0;
 y = List.ContainsKey(x, x);
 ";
             Assert.DoesNotThrow(() => thisTest.RunScriptSource(code));
-            thisTest.Verify("y", null);
+            thisTest.Verify("y", false);
         }
 
         [Test]
