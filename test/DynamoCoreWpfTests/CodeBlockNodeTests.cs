@@ -35,7 +35,7 @@ namespace DynamoCoreWpfTests
         }
 
         //Run the CBN without an input to get the error message
-        //Connent a input to the CBN and run
+        //Connect an input to the CBN and run
         //Change the value of the input and run 
         //  : the result will not be updated
 

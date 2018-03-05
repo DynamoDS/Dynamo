@@ -663,7 +663,8 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     },
                     ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
                     TypeNameHandling = TypeNameHandling.Auto,
-                    Formatting = Newtonsoft.Json.Formatting.Indented
+                    Formatting = Newtonsoft.Json.Formatting.Indented,
+                    Culture = CultureInfo.InvariantCulture
                 };
 
                 var cameraData = JsonConvert.DeserializeObject<CameraData>(cameraJson, settings);
