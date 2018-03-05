@@ -824,7 +824,7 @@ namespace ProtoCore.Lang
                         new KeyValuePair<string, Type>("list", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, Constants.kArbitraryRank))
                     },
                     ID = MethodID.GetKeys,
-                     MethodAttributes = new MethodAttributes(true, false, "This node is obsolete, please use Dictionary data type with Dictionary.Keys"){Description = Resources.GetKeys}
+                     MethodAttributes = new MethodAttributes(true, false){Description = Resources.GetKeys}
                         
                     //MAGN_3382 MethodAttributes = new MethodAttributes(true),
                 },
@@ -837,7 +837,7 @@ namespace ProtoCore.Lang
                         new KeyValuePair<string, Type>("list", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, Constants.kArbitraryRank))
                     },
                     ID = MethodID.GetValues,
-                     MethodAttributes = new MethodAttributes(true, false, "This node is obsolete, please use Dictionary data type with Dictionary.Values"){Description = Resources.GetValues}
+                     MethodAttributes = new MethodAttributes(true, false){Description = Resources.GetValues}
                     //MAGN_3382 MethodAttributes = new MethodAttributes(true),
                 },
 
@@ -850,7 +850,7 @@ namespace ProtoCore.Lang
                         new KeyValuePair<string, Type>("key", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, 0))
                     },
                     ID = MethodID.RemoveKey,
-                    MethodAttributes = new MethodAttributes(true, false, "This node is obsolete, please use Dictionary data type with Dictionary.RemoveKeys"){Description = Resources.RemoveKeys}
+                    MethodAttributes = new MethodAttributes(true, false){Description = Resources.RemoveKeys}
                     //MethodAttributes = new MethodAttributes(true), MAGN-3382
                 },
 
@@ -863,7 +863,7 @@ namespace ProtoCore.Lang
                         new KeyValuePair<string, Type>("key", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, 0))
                     },
                     ID = MethodID.ContainsKey,
-                    MethodAttributes = new MethodAttributes(true, false, "This node is obsolete, please use Dictionary data type with Dictionary.Keys & List.Contains"){Description = Resources.ContainsKeys}
+                    MethodAttributes = new MethodAttributes(true, false){Description = Resources.ContainsKeys}
                     //MAGN-3382 MethodAttributes = new MethodAttributes(true),
                 },
 
