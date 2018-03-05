@@ -260,10 +260,12 @@ namespace DynamoCoreWpfTests
         [Test]
         public void WatchNumber()
         {
+            // Switch to a culture where decimal is used for thousands
             var culture = CultureInfo.CreateSpecificCulture("fr-FR");
             Thread.CurrentThread.CurrentCulture = culture;
             Thread.CurrentThread.CurrentUICulture = culture;
 
+            // Open the sample graph and check if all three watch nodes are displaying expected value
             string openPath = Path.Combine(TestDirectory, @"core\watch\WatchNumber.dyn");
             ViewModel.OpenCommand.Execute(openPath);
             ViewModel.HomeSpace.Run();
