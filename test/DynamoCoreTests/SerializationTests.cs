@@ -68,19 +68,13 @@ namespace Dynamo.Tests
                 idcount = idcount + 1;
             }
 
+
             //alter the output json so that all Notemodel ids are not guids
-            foreach (var annotationModels in model.Annotations.Select(x=>x.Nodes))
+            foreach (var note in model.Notes)
             {
-                var annotationList = annotationModels.ToList();
-                for (var i = 0; i < annotationList.Count(); i++)
-                {
-                    if (annotationList[i] is NoteModel)
-                    {
-                        modelsGuidToIdMap.Add(annotationList[i].GUID, idcount.ToString());
-                        json = json.Replace(annotationList[i].GUID.ToString("N"), idcount.ToString());
-                        idcount = idcount + 1;
-                    }
-                }
+                modelsGuidToIdMap.Add(note.GUID, idcount.ToString());
+                json = json.Replace(note.GUID.ToString("N"), idcount.ToString());
+                idcount = idcount + 1;
             }
             //alter the output json so that all annotationModel ids are not guids
             foreach (var annotation in model.Annotations)
