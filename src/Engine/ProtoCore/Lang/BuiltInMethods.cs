@@ -121,10 +121,10 @@ namespace ProtoCore.Lang
             "SetUnion",                 // kUnion
             Constants.kInlineConditionalMethodName,
             "Break",                    // kBreak
-            "__GetKeys",                  // kGetKeys    
-            "__GetValues",                // kGetValues    
-            "__RemoveKey",                // kRemoveKey
-            "__ContainsKey",              // kContainsKey
+            "GetKeys",                  // kGetKeys    
+            "GetValues",                // kGetValues    
+            "RemoveKey",                // kRemoveKey
+            "ContainsKey",              // kContainsKey
             "Evaluate",                 // kEvaluateFunctionPointer
             Constants.kNodeAstFailed,   // kNodeAstFailed
             "__GC",                     // kGC

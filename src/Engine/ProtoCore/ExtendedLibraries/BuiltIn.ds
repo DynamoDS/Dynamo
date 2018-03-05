@@ -41,25 +41,5 @@ class List extends DSCore.List
 	{
 		return __TrueForAny(list, predicate);
 	}
-
-	public static def RemoveKey(list: var[]..[], key: var)
-	{
-		return __RemoveKey(list, key);
-	}
-
-	public static def GetValues(list: var[]..[])
-	{
-		return __GetValues(list);
-	}
-
-	public static def GetKeys(list: var[]..[])
-	{
-		return __GetKeys(list);
-	}
-
-	public static def ContainsKey: bool(list: var[]..[], key: var)
-	{
-		return __ContainsKey(list, key);
-	}
 }
 
