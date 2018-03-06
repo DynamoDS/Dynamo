@@ -594,6 +594,13 @@ namespace ProtoCore.Utils
                 BinaryExpressionNode bnode = node as BinaryExpressionNode;
                 if (bnode == null || bnode.Optr != Operator.assign)
                 {
+                    var fNode = node as FunctionDefinitionNode;
+                    if (fNode != null)
+                    {
+                        var body = fNode.FunctionBody.Body;
+                        warnings.AddRange(Check(body));
+                    }
+                    
                     continue;
                 }
 
@@ -610,6 +617,17 @@ namespace ProtoCore.Utils
                     scope.Add(variable);
 
                     VariableFinder finder = new VariableFinder(variable);
+
+                    var langNode = bnode.RightNode as LanguageBlockNode;
+                    if (langNode != null)
+                    {
+                        var n = langNode.CodeBlockNode as CodeBlockNode;
+                        if (n != null)
+                        {
+                            warnings.AddRange(Check(n.Body));
+                        }
+                        continue;
+                    }
                     bnode.RightNode.Accept(finder);
 
                     if (finder.Found) 
