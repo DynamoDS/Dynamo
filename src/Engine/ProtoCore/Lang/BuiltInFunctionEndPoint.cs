@@ -457,7 +457,7 @@ namespace ProtoCore.Lang
                             var result = runtimeCore.Heap.ToHeapObject<DSArray>(array).Keys.ToArray();
                             try
                             {
-                                runtimeCore.RuntimeStatus.LogWarning(WarningID.Default, "\"GetKeys\" is deprecated, please use Dictionary data type with Dictionary.Keys");
+                                runtimeCore.RuntimeStatus.LogWarning(WarningID.Default, string.Format(Resources.ListMethodDeprecated, "GetKeys", "Dictionary.Keys"));
                                 ret = rmem.Heap.AllocateArray(result);
                             }
                             catch (RunOutOfMemoryException)
@@ -481,7 +481,7 @@ namespace ProtoCore.Lang
                             var result = runtimeCore.Heap.ToHeapObject<DSArray>(array).Values;
                             try
                             {
-                                runtimeCore.RuntimeStatus.LogWarning(WarningID.Default, "\"GetValues\" is deprecated, please use Dictionary data type with Dictionary.Values");
+                                runtimeCore.RuntimeStatus.LogWarning(WarningID.Default, string.Format(Resources.ListMethodDeprecated, "GetValues", "Dictionary.Values"));
                                 ret = rmem.Heap.AllocateArray(result.ToArray());
                             }
                             catch (RunOutOfMemoryException)
@@ -499,7 +499,7 @@ namespace ProtoCore.Lang
                         if (array.IsArray)
                         {
                             bool result = runtimeCore.Heap.ToHeapObject<DSArray>(array).ContainsKey(key);
-                            runtimeCore.RuntimeStatus.LogWarning(WarningID.Default, "\"ContainsKey\" is deprecated, please use Dictionary data type with Dictionary.Keys & List.Contains");
+                            runtimeCore.RuntimeStatus.LogWarning(WarningID.Default, string.Format(Resources.ListMethodDeprecated, "ContainsKey", "Dictionary.Keys & List.Contains"));
                             ret = StackValue.BuildBoolean(result);
                         }
                         else
@@ -514,7 +514,7 @@ namespace ProtoCore.Lang
                         StackValue key = formalParameters[1];
                         if (array.IsArray)
                         {
-                            runtimeCore.RuntimeStatus.LogWarning(WarningID.Default, "\"RemoveKey\" is deprecated, please use Dictionary data type with Dictionary.RemoveKeys");
+                            runtimeCore.RuntimeStatus.LogWarning(WarningID.Default, string.Format(Resources.ListMethodDeprecated, "RemoveKey", "Dictionary.RemoveKeys"));
                             runtimeCore.Heap.ToHeapObject<DSArray>(array).RemoveKey(key);
                         }
                         return array;
