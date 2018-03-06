@@ -121,10 +121,10 @@ namespace ProtoCore.Lang
             "SetUnion",                 // kUnion
             Constants.kInlineConditionalMethodName,
             "Break",                    // kBreak
-            "__GetKeys",                  // kGetKeys    
-            "__GetValues",                // kGetValues    
-            "__RemoveKey",                // kRemoveKey
-            "__ContainsKey",              // kContainsKey
+            "GetKeys",                  // kGetKeys    
+            "GetValues",                // kGetValues    
+            "RemoveKey",                // kRemoveKey
+            "ContainsKey",              // kContainsKey
             "Evaluate",                 // kEvaluateFunctionPointer
             Constants.kNodeAstFailed,   // kNodeAstFailed
             "__GC",                     // kGC
@@ -824,7 +824,8 @@ namespace ProtoCore.Lang
                         new KeyValuePair<string, Type>("list", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, Constants.kArbitraryRank))
                     },
                     ID = MethodID.GetKeys,
-                     MethodAttributes = new MethodAttributes(){Description = Resources.GetKeys}
+                     MethodAttributes = new MethodAttributes(hiddenInLibrary: true){Description = Resources.GetKeys}
+                        
                     //MAGN_3382 MethodAttributes = new MethodAttributes(true),
                 },
 
@@ -836,7 +837,7 @@ namespace ProtoCore.Lang
                         new KeyValuePair<string, Type>("list", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, Constants.kArbitraryRank))
                     },
                     ID = MethodID.GetValues,
-                     MethodAttributes = new MethodAttributes(){Description = Resources.GetValues}
+                     MethodAttributes = new MethodAttributes(hiddenInLibrary: true){Description = Resources.GetValues}
                     //MAGN_3382 MethodAttributes = new MethodAttributes(true),
                 },
 
@@ -849,7 +850,7 @@ namespace ProtoCore.Lang
                         new KeyValuePair<string, Type>("key", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, 0))
                     },
                     ID = MethodID.RemoveKey,
-                    MethodAttributes = new MethodAttributes(){Description = Resources.RemoveKeys}
+                    MethodAttributes = new MethodAttributes(hiddenInLibrary: true){Description = Resources.RemoveKeys}
                     //MethodAttributes = new MethodAttributes(true), MAGN-3382
                 },
 
@@ -862,7 +863,7 @@ namespace ProtoCore.Lang
                         new KeyValuePair<string, Type>("key", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, 0))
                     },
                     ID = MethodID.ContainsKey,
-                    MethodAttributes = new MethodAttributes(){Description = Resources.ContainsKeys}
+                    MethodAttributes = new MethodAttributes(hiddenInLibrary: true){Description = Resources.ContainsKeys}
                     //MAGN-3382 MethodAttributes = new MethodAttributes(true),
                 },
 

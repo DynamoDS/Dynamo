@@ -5665,38 +5665,6 @@
       "keywords": ""
     },
     {
-      "fullyQualifiedName": "List.RemoveKey",
-      "iconUrl": "http://localhost/icons/List.RemoveKey.Small?path=BuiltIn.ds",
-      "contextData": "List.RemoveKey@var[]..[],var",
-      "parameters": null,
-      "itemType": "action",
-      "keywords": ""
-    },
-    {
-      "fullyQualifiedName": "List.GetValues",
-      "iconUrl": "http://localhost/icons/List.GetValues.Small?path=BuiltIn.ds",
-      "contextData": "List.GetValues@var[]..[]",
-      "parameters": null,
-      "itemType": "action",
-      "keywords": ""
-    },
-    {
-      "fullyQualifiedName": "List.GetKeys",
-      "iconUrl": "http://localhost/icons/List.GetKeys.Small?path=BuiltIn.ds",
-      "contextData": "List.GetKeys@var[]..[]",
-      "parameters": null,
-      "itemType": "action",
-      "keywords": ""
-    },
-    {
-      "fullyQualifiedName": "List.ContainsKey",
-      "iconUrl": "http://localhost/icons/List.ContainsKey.Small?path=BuiltIn.ds",
-      "contextData": "List.ContainsKey@var[]..[],var",
-      "parameters": null,
-      "itemType": "action",
-      "keywords": ""
-    },
-    {
       "fullyQualifiedName": "DynamoUnits.Location.Name",
       "iconUrl": "http://localhost/icons/DynamoUnits.Location.Name.Small?path=DynamoUnits.dll",
       "contextData": "DynamoUnits.Location.Name",
