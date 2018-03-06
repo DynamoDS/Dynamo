@@ -7,7 +7,7 @@
     "ResolutionMap": {
       "DesignScript.Builtin.Dictionary": {
         "Key": "DesignScript.Builtin.Dictionary",
-        "Value": "Builtin.dll"
+        "Value": "DesignScriptBuiltin.dll"
       }
     }
   },
