@@ -35,6 +35,7 @@
       <HintPath>..\..\packages\System.Collections.Immutable.1.4.0\lib\portable-net45+win8+wp8+wpa81\System.Collections.Immutable.dll</HintPath>
     </Reference>
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -58,6 +59,57 @@
       <Project>{ef879a10-041d-4c68-83e7-3192685f1bae}</Project>
       <Name>DynamoServices</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="BuiltInNodeImages.resx" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Builtin.DesignScript.Builtin.Dictionary.ValueAtKey.Small.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Builtin.DesignScript.Builtin.Dictionary.Values.Small.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Builtin.DesignScript.Builtin.Dictionary.ByKeyValues.Small.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Builtin.DesignScript.Builtin.Dictionary.Components.Small.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Builtin.DesignScript.Builtin.Dictionary.Count.Small.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Builtin.DesignScript.Builtin.Dictionary.Keys.Small.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Builtin.DesignScript.Builtin.Dictionary.RemoveKeys.Small.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Builtin.DesignScript.Builtin.Dictionary.SetValueAtKeys.Small.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Builtin.DesignScript.Builtin.Dictionary.Count.Large.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Builtin.DesignScript.Builtin.Dictionary.Keys.Large.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Builtin.DesignScript.Builtin.Dictionary.RemoveKeys.Large.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Builtin.DesignScript.Builtin.Dictionary.SetValueAtKeys.Large.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Builtin.DesignScript.Builtin.Dictionary.ValueAtKey.Large.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Builtin.DesignScript.Builtin.Dictionary.Values.Large.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Builtin.DesignScript.Builtin.Dictionary.ByKeyValues.Large.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Builtin.DesignScript.Builtin.Dictionary.Components.Large.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
