@@ -398,7 +398,7 @@ namespace ProtoTestFx.TD
         /// <returns></returns>
         public virtual ExecutionMirror RunScriptSource(string sourceCode, string errorstring = "", string includePath = "")
         {
-            sourceCode = sourceCode.Insert(0, "import(\"Builtin.dll\");");
+            sourceCode = sourceCode.Insert(0, "import(\"DesignScriptBuiltin.dll\");");
 
             if (testImport)
             {
