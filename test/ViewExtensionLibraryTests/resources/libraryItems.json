@@ -5775,6 +5775,70 @@
       "parameters": null,
       "itemType": "create",
       "keywords": ""
+    },
+    {
+      "fullyQualifiedName": "DesignScript.Builtin.Dictionary.ByKeysValues",
+      "iconUrl": "http://localhost/icons/DesignScript.Builtin.Dictionary.ByKeysValues.Small?path=Builtin.dll",
+      "contextData": "Dictionary.ByKeysValues",
+      "parameters": null,
+      "itemType": "create",
+      "keywords": "Dictionary, ByKeysValues"
+    },
+    {
+      "fullyQualifiedName": "DesignScript.Builtin.Dictionary.Components",
+      "iconUrl": "http://localhost/icons/DesignScript.Builtin.Dictionary.Components.Small?path=Builtin.dll",
+      "contextData": "Dictionary.Components",
+      "parameters": null,
+      "itemType": "action",
+      "keywords": "Dictionary, Components"
+    },
+    {
+      "fullyQualifiedName": "DesignScript.Builtin.Dictionary.RemoveKeys",
+      "iconUrl": "http://localhost/icons/DesignScript.Builtin.Dictionary.RemoveKeys.Small?path=Builtin.dll",
+      "contextData": "Dictionary.RemoveKeys",
+      "parameters": null,
+      "itemType": "action",
+      "keywords": "Dictionary, RemoveKeys"
+    },
+    {
+      "fullyQualifiedName": "DesignScript.Builtin.Dictionary.SetValueAtKeys",
+      "iconUrl": "http://localhost/icons/DesignScript.Builtin.Dictionary.SetValueAtKeys.Small?path=Builtin.dll",
+      "contextData": "Dictionary.SetValueAtKeys",
+      "parameters": null,
+      "itemType": "action",
+      "keywords": "Dictionary, SetValueAtKeys"
+    },
+    {
+      "fullyQualifiedName": "DesignScript.Builtin.Dictionary.ValueAtKey",
+      "iconUrl": "http://localhost/icons/DesignScript.Builtin.Dictionary.ValueAtKey.Small?path=Builtin.dll",
+      "contextData": "Dictionary.ValueAtKey",
+      "parameters": null,
+      "itemType": "action",
+      "keywords": "Dictionary, ValueAtKey"
+    },
+    {
+      "fullyQualifiedName": "DesignScript.Builtin.Dictionary.Count",
+      "iconUrl": "http://localhost/icons/DesignScript.Builtin.Dictionary.Count.Small?path=Builtin.dll",
+      "contextData": "Dictionary.Count",
+      "parameters": null,
+      "itemType": "query",
+      "keywords": "Dictionary, Count"
+    },
+    {
+      "fullyQualifiedName": "DesignScript.Builtin.Dictionary.Keys",
+      "iconUrl": "http://localhost/icons/DesignScript.Builtin.Dictionary.Keys.Small?path=Builtin.dll",
+      "contextData": "Dictionary.Keys",
+      "parameters": null,
+      "itemType": "query",
+      "keywords": "Dictionary, Keys"
+    },
+    {
+      "fullyQualifiedName": "DesignScript.Builtin.Dictionary.Values",
+      "iconUrl": "http://localhost/icons/DesignScript.Builtin.Dictionary.Values.Small?path=Builtin.dll",
+      "contextData": "Dictionary.Values",
+      "parameters": null,
+      "itemType": "query",
+      "keywords": "Dictionary, Values"
     }
   ]
 }
