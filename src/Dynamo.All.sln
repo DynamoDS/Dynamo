@@ -217,7 +217,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GeometryColorTests", "..\te
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ViewExtensionLibraryTests", "..\test\ViewExtensionLibraryTests\ViewExtensionLibraryTests.csproj", "{AE7F2579-104A-4AF4-AA7B-614AE9E79279}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Builtin", "Libraries\Builtin\Builtin.csproj", "{C0D6DEE5-5532-4345-9C66-4C00D7FDB8BE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DesignScriptBuiltin", "Libraries\DesignScriptBuiltin\DesignScriptBuiltin.csproj", "{C0D6DEE5-5532-4345-9C66-4C00D7FDB8BE}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoPackagesWPF", "DynamoPackagesWPF\DynamoPackagesWPF.csproj", "{47D2166C-5261-4093-9660-E72B7035E666}"
 EndProject

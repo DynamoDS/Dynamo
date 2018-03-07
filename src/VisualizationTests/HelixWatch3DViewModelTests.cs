@@ -55,7 +55,7 @@ namespace WpfVisualizationTests
         {
             libraries.Add("ProtoGeometry.dll");
             libraries.Add("DSIronPython.dll");
-            libraries.Add("Builtin.dll");
+            libraries.Add("DesignScriptBuiltin.dll");
             libraries.Add("DSCoreNodes.dll");
             libraries.Add("GeometryColor.dll");
             libraries.Add("VMDataBridge.dll");
