@@ -486,7 +486,7 @@ namespace Dynamo.Engine
         internal bool IsFunctionBuiltIn(string library, string name = "")
         {
             // For Nodes with not .dll specific Assembly tag
-            if (library == Categories.BuiltIn || library == Categories.Operators)
+            if (library == Categories.BuiltInNodes || library == Categories.Operators)
             {
                 return builtinFunctionGroups.ContainsKey(name);
             }
@@ -818,11 +818,11 @@ namespace Dynamo.Engine
                                                                 IsBuiltIn = true,
                                                                 IsPackageMember = false,
                                                                 ObsoleteMsg = obsoleteMsg,
-                                                                Assembly = Categories.BuiltIn
+                                                                Assembly = Categories.BuiltInNodes
                                                             });
 
             AddBuiltinFunctions(functions);
-            LoadLibraryMigrations(Categories.BuiltIn);
+            LoadLibraryMigrations(Categories.BuiltInNodes);
         }
 
         private static IEnumerable<TypedParameter> GetBinaryFuncArgs()
@@ -1100,7 +1100,7 @@ namespace Dynamo.Engine
 
         public static class Categories
         {
-            public const string BuiltIn = "BuiltIn";
+            public const string BuiltInNodes = "BuiltInNodes";
             public const string Operators = "Operators";
             public const string Constructors = "Create";
             public const string MemberFunctions = "Actions";

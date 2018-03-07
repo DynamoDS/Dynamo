@@ -277,10 +277,10 @@ namespace Dynamo.Tests
             name = "=="; categoryName = "";
             Assert.IsFalse(libraryServices.IsFunctionBuiltIn(categoryName, name));
 
-            name = "AllFalse"; categoryName = LibraryServices.Categories.BuiltIn;
+            name = "AllFalse"; categoryName = LibraryServices.Categories.BuiltInNodes;
             Assert.IsTrue(libraryServices.IsFunctionBuiltIn(categoryName, name));
 
-            name = "SetUnion"; categoryName = LibraryServices.Categories.BuiltIn;
+            name = "SetUnion"; categoryName = LibraryServices.Categories.BuiltInNodes;
             Assert.IsTrue(libraryServices.IsFunctionBuiltIn(categoryName, name));
 
             name = "Reorder"; categoryName = "";
@@ -289,7 +289,7 @@ namespace Dynamo.Tests
             name = ""; categoryName = "";
             Assert.IsFalse(libraryServices.IsFunctionBuiltIn(categoryName, name));
 
-            name = ""; categoryName = LibraryServices.Categories.BuiltIn;
+            name = ""; categoryName = LibraryServices.Categories.BuiltInNodes;
             Assert.IsFalse(libraryServices.IsFunctionBuiltIn(categoryName, name));
 
         }

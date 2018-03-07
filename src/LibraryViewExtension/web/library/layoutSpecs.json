@@ -37,7 +37,7 @@
                   "path": "DSCoreNodes.DSCore.List.Contains"
                 },
                 {
-                  "path": "BuiltIn.Rank"
+                  "path": "BuiltIn.List.Rank"
                 },
                 {
                   "path": "DSCoreNodes.DSCore.List.IsHomogeneous"

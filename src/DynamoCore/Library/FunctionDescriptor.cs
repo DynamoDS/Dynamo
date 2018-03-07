@@ -551,7 +551,7 @@ namespace Dynamo.Engine
             {
                 return CoreUtils.IsInternalMethod(FunctionName)
                     ? LibraryServices.Categories.Operators
-                    : LibraryServices.Categories.BuiltIn;
+                    : LibraryServices.Categories.BuiltInNodes;
             }
 
             LibraryCustomization cust = LibraryCustomizationServices.GetForAssembly(Assembly, pathManager);

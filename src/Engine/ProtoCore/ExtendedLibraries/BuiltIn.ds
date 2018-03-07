@@ -41,5 +41,10 @@ class List extends DSCore.List
 	{
 		return __TrueForAny(list, predicate);
 	}
+
+	public static def Rank(list: var[]..[])
+	{		
+		return __Rank(list);
+	}
 }
 
