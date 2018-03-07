@@ -19,58 +19,16 @@
     </member>
 		<member name="List.Equals">
       <summary>Determines whether two object instances are equal.</summary>
-      <param name="first object"></param>
-			<param name="second object"></param>
+      <param name="objectA">first object</param>
+			<param name="objectB">second object</param>
             <search>equals</search>
         </member>
     <member name="List.SortByFunction">
-            <summary>Use a function to determine how list items should be sorted</summary>
+            <summary>Use a function to determine how list items should be sorted.</summary>
             <param name="list">list of values</param>
             <param name="function"></param>
             <search>sort,order</search>
     </member>
-		<member name="Print">
-            <param name="msg"></param>
-            <search>print</search>
-        </member>
-		<member name="GetElapsedTime">
-            <search>time,elapsed</search>
-        </member>
-		<member name="ToString">
-            <param name="object">some object</param>
-            <search>string</search>
-        </member>
-		<member name="__ToStringFromObject">
-            <param name="object">some object</param>
-            <search>string,from,object</search>
-        </member>
-		<member name="__ToStringFromArray">
-            <param name="list">some list</param>
-            <search>string,from,array</search>
-        </member>
-		<member name="ImportData">
-            <param name="appname"></param>
-			<param name="connectionParameters"></param>
-            <search>import,data</search>
-        </member>
-		<member name="GetKeys">
-			<param name="list">list of values</param>
-            <search>keys</search>
-        </member>
-		<member name="GetValues">
-			<param name="list">list of values</param>
-            <search>values</search>
-        </member>
-		<member name="RemoveKey">
-			<param name="list">list of values</param>
-			<param name="key"></param>
-            <search>remove,key</search>
-        </member>
-		<member name="ContainsKey">
-			<param name="list">list of values</param>
-			<param name="key"></param>
-            <search>contain,key</search>
-        </member>
 		<member name="Evaluate">
 			<param name="functionPointer"></param>
 			<param name="params"></param>
@@ -102,14 +60,16 @@
 			<param name="arg"></param>
             <search>compose,buffered</search>
         </member>
-		<member name="MinimumItemByKey">
+		<member name="List.MinimumItemByKey">
+      <summary>Returns the items from the list that generate the minimum values for the function supplied as the key projector</summary>
 			<param name="list">list of values</param>
-			<param name="keyProjector"></param>
+			<param name="keyProjector">function applied to the list items for which they return the minimum values</param>
             <search>min,item,key</search>
         </member>
-		<member name="MaximumItemByKey">
+		<member name="List.MaximumItemByKey">
+      <summary>Returns the items from the list that generate the maximum values for the function supplied as the key projector</summary>
 			<param name="list">list of values</param>
-			<param name="keyProjector"></param>
+			<param name="keyProjector">function applied to the list items for which they return the maximum values</param>
             <search>max,item,key</search>
         </member>
 		<member name="__Replace">
@@ -166,18 +126,20 @@
 			<param name="lists"></param>
             <search>reduce</search>
         </member>
-		<member name="GroupByFunction">
-      <summary>Use a function to determine how list items should be grouped</summary>
+		<member name="List.GroupByFunction">
+      <summary>Use a function to determine how list items should be grouped.</summary>
       <param name="list">list of values</param>
       <param name="function"></param>
       <search>group,function</search>
     </member>
-		<member name="TrueForAll">
+		<member name="List.TrueForAll">
+      <summary>Returns true if all items in the list evaluate to true with the given predicate.</summary>
 			<param name="list">list of values</param>
 			<param name="predicate"></param>
             <search>true,all</search>
         </member>
-		<member name="TrueForAny">
+		<member name="List.TrueForAny">
+      <summary>Returns true if one or more items in the list evaluate to true with the given predicate.</summary>
 			<param name="list">list of values</param>
 			<param name="predicate"></param>
             <search>true,any</search>
@@ -188,9 +150,10 @@
             <search>foreach</search>
         </member>
 		<member name="LoopWhile">
-			<param name="init"></param>
-			<param name="continueWhile"></param>
-			<param name="loopBody"></param>
+      <summary>Constructs a while loop node given an initial value, a condition and a loop body.</summary>
+			<param name="init">initial value</param>
+			<param name="continueWhile">while loop condition</param>
+			<param name="loopBody">while loop body</param>
             <search>loop,while,repeat</search>
         </member>
     </members>

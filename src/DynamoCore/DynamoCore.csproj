@@ -288,6 +288,7 @@ limitations under the License.
     <Compile Include="Visualization\RenderPackageCache.cs" />
     <EmbeddedResource Include="BuiltInAndOperators\BuiltInImages.resx">
       <LastGenOutput>OperatorsImages.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="BuiltInAndOperators\OperatorsImages.resx">
       <LastGenOutput>OperatorsImages.Designer.cs</LastGenOutput>

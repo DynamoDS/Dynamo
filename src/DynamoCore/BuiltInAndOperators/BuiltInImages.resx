@@ -673,7 +673,7 @@
         dgVxDYnrl9x/6QAAAABJRU5ErkJggg==
 </value>
   </data>
-  <data name="Rank.Large" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+  <data name="List.Rank.Large" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAADimHc4AAAABGdBTUEAALGPC/xhBQAAABl0RVh0U29m
         dHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAL9SURBVHhe7dnRiVVJAIThCcEQDEUfBR8MYUIwBDMQ
@@ -692,7 +692,7 @@
         qqqqqqqqqqqq+ovu7n4BY/pDDlaYXSwAAAAASUVORK5CYII=
 </value>
   </data>
-  <data name="Rank.Small" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+  <data name="List.Rank.Small" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABGdBTUEAALGPC/xhBQAAABl0RVh0U29m
         dHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAACcSURBVFhH7ZLRCcJAEESvBEtIKfoppAhLsQYbSAmW
