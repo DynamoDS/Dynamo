@@ -991,6 +991,20 @@ namespace Dynamo.Graph.Workspaces
             try
             {
                 // Stage 1: Serialize the workspace.
+                string fileName = string.Empty;
+                try
+                {
+                    fileName = Path.GetFileName(filePath);
+                    string extension = Path.GetExtension(filePath);
+                    if (extension == ".dyn" || extension == ".dyf")
+                    {
+                        fileName = Path.GetFileNameWithoutExtension(filePath);
+                    }
+                }
+                catch (ArgumentException)
+                {
+                }
+
                 var json = this.ToJson(engine);
 
                 // Stage 2: Save
@@ -1001,6 +1015,13 @@ namespace Dynamo.Graph.Workspaces
                 if (!isBackup)
                 {
                     FileName = filePath;
+                    // only update the name if this is not a backup save
+                    // and this is a homeworkspace. (don't update customNode based on filePath
+                    // as customNode names are set via properties.
+                    if (fileName != string.Empty && this is HomeWorkspaceModel)
+                    {
+                        this.Name = fileName;
+                    }
                     OnSaved();
                 }
             }
