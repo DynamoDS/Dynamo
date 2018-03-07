@@ -15,6 +15,47 @@ namespace FFITarget
         public int Y { get; set; }
     }
 
+    public class NonDerivedTest
+    {
+        public int Y { get; set; }
+    }
+
+    public interface InterfaceA
+    {
+        int Foo();
+    }
+
+    public class DerivedFromInterfaceA: InterfaceA
+    {
+        public int Foo()
+        {
+            return 1;
+        }
+    }
+    public class NotDerivedFromInterfaceA
+    {
+        public int Foo()
+        {
+            return 2;
+        }
+    }
+
+    public class ClassA
+    {
+        public int Bar()
+        {
+            return 0;
+        }
+    }
+
+    public class HidesMethodFromClassA: ClassA
+    {
+        public int Var()
+        {
+            return 3;
+        }
+    }
+
     public class InheritenceDriver
     
 

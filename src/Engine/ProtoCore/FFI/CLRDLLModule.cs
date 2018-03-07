@@ -342,6 +342,20 @@ namespace ProtoFFI
                 CLRModuleType.GetInstance(baseType, Module, string.Empty);
             }
 
+            classnode.IsInterface = type.IsInterface;
+
+            foreach (var interf in type.GetInterfaces())
+            {
+                if (!CLRObjectMarshaler.IsMarshaledAsNativeType(interf))
+                {
+                    string interfName = CLRObjectMarshaler.GetTypeName(interf);
+
+                    classnode.Interfaces.Add(interfName);
+                    //Make sure that base class is imported properly.
+                    CLRModuleType.GetInstance(baseType, Module, string.Empty);
+                }
+            }
+
             // There is no static class in runtime. static class is simply 
             // marked as sealed and abstract. 
             classnode.IsStatic = type.IsAbstract && type.IsSealed;

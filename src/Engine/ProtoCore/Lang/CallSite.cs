@@ -16,6 +16,7 @@ using StackFrame = ProtoCore.DSASM.StackFrame;
 using ProtoCore.Properties;
 using ProtoCore.Runtime;
 using WarningID = ProtoCore.Runtime.WarningID;
+using System.Collections.ObjectModel;
 
 namespace ProtoCore
 {
@@ -978,6 +979,44 @@ namespace ProtoCore
             return fep;
         }
 
+        private bool Inherits(ReadOnlyCollection<ClassNode> classNodes, int parentIndex, int childIndex)
+        {
+            if (parentIndex < 0 || parentIndex >= classNodes.Count || childIndex < 0 || childIndex >= classNodes.Count)
+            {
+                return false;
+            }
+
+            return Inherits(classNodes, classNodes[parentIndex], classNodes[childIndex]);
+        }
+
+        private bool Inherits(ReadOnlyCollection<ClassNode> classNodes, ClassNode parent, ClassNode child)
+        {
+            if (child == parent)
+            {
+                return true;
+            }
+
+            if (child.Base != Constants.kInvalidIndex)
+            {
+                var baseClassNode = classNodes[child.Base];
+                if (Inherits(classNodes, parent, baseClassNode))
+                {
+                    return true;
+                }
+            }
+
+            foreach (var interf in child.Interfaces)
+            {
+                var interfNode = classNodes[interf];
+                if (Inherits(classNodes, parent, interfNode))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         /// <summary>
         /// Returns the function group associated with this callsite
         /// </summary>
@@ -989,10 +1028,12 @@ namespace ProtoCore
                 var firstArg = arguments.First();
                 if (firstArg.IsPointer && firstArg.metaData.type != classScope)
                 {
-                    var fg = FirstFunctionGroupInInheritanceChain(runtimeCore, firstArg.metaData.type);
-                    if (fg != null)
-                    {
-                        return fg;
+                    if (Inherits(runtimeCore.DSExecutable.classTable.ClassNodes, classScope, firstArg.metaData.type)) {
+                        var fg = FirstFunctionGroupInInheritanceChain(runtimeCore, firstArg.metaData.type);
+                        if (fg != null)
+                        {
+                            return fg;
+                        }
                     }
                 }
             }

@@ -108,7 +108,7 @@
     <Compile Include="FFI\CLRObjectMarshaler.cs" />
     <Compile Include="Lang\InternalAttributes.cs" />
     <Compile Include="Lang\Replication\ArgumentAtLevel.cs" />
-    <Compile Include="AttributeEntry.cs" />
+    <Compile Include="DSASM\AttributeEntry.cs" />
     <Compile Include="BuildStatus.cs" />
     <Compile Include="CodeBlock.cs" />
     <Compile Include="CodeGen.cs" />
