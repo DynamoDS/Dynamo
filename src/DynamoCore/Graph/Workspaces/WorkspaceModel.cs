@@ -186,6 +186,33 @@ namespace Dynamo.Graph.Workspaces
         /// </summary>
         private bool workspaceLoaded;
 
+        /// <summary>
+        /// sets the name property of the model based on filename,backup state and model type.
+        /// </summary>
+        /// <param name="filePath">Full filepath to file to save.</param>
+        /// <param name="isBackup">Indicates if this save represents a backup save.</param>
+        internal void setNameBasedOnFileName(string filePath, bool isBackup)
+        {
+            string fileName = string.Empty;
+            try
+            {
+                fileName = Path.GetFileName(filePath);
+                string extension = Path.GetExtension(filePath);
+                if (extension == ".dyn" || extension == ".dyf")
+                {
+                    fileName = Path.GetFileNameWithoutExtension(filePath);
+                }
+            }
+            catch (ArgumentException)
+            {
+            }
+            // Don't change name property if backup save or this is a customnode
+            if (fileName != string.Empty && isBackup == false && this is HomeWorkspaceModel)
+            {
+                this.Name = fileName;
+            }
+        }
+
         #endregion
 
         #region events
@@ -990,21 +1017,10 @@ namespace Dynamo.Graph.Workspaces
 
             try
             {
-                // Stage 1: Serialize the workspace.
-                string fileName = string.Empty;
-                try
-                {
-                    fileName = Path.GetFileName(filePath);
-                    string extension = Path.GetExtension(filePath);
-                    if (extension == ".dyn" || extension == ".dyf")
-                    {
-                        fileName = Path.GetFileNameWithoutExtension(filePath);
-                    }
-                }
-                catch (ArgumentException)
-                {
-                }
+                //set the name before serializing model.
+                setNameBasedOnFileName(filePath, isBackup);
 
+                // Stage 1: Serialize the workspace.
                 var json = this.ToJson(engine);
 
                 // Stage 2: Save
@@ -1015,13 +1031,6 @@ namespace Dynamo.Graph.Workspaces
                 if (!isBackup)
                 {
                     FileName = filePath;
-                    // only update the name if this is not a backup save
-                    // and this is a homeworkspace. (don't update customNode based on filePath
-                    // as customNode names are set via properties.
-                    if (fileName != string.Empty && this is HomeWorkspaceModel)
-                    {
-                        this.Name = fileName;
-                    }
                     OnSaved();
                 }
             }

@@ -546,6 +546,8 @@ namespace Dynamo.ViewModels
 
             try
             {
+                //set the name before serializing model.
+                this.Model.setNameBasedOnFileName(filePath, isBackup);
                 // Stage 1: Serialize the workspace.
                 var json = Model.ToJson(engine);
                 var json_parsed = JObject.Parse(json);
