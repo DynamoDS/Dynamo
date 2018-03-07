@@ -291,7 +291,7 @@
         },
         {
           "text": "Dictionary",
-          "iconUrl": "",
+          "iconUrl": "./dist/resources/Category.Dictionary.svg",
           "elementType": "category",
           "include": [
             {
