@@ -4,15 +4,11 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Reflection.Emit;
-using System.Text;
 using System.Xml.Serialization;
 using Dynamo.Configuration;
 using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Updates;
-using ProtoCore.AST.AssociativeAST;
-using ProtoCore.Lang;
 
 namespace Dynamo.Core
 {
@@ -170,22 +166,14 @@ namespace Dynamo.Core
         /// /// <returns>new migrator instance after migration</returns>
         protected virtual DynamoMigratorBase MigrateFrom(DynamoMigratorBase sourceMigrator)
         {
-            Copy(sourceMigrator.PackagesDirectory, PackagesDirectory);
-            Copy(sourceMigrator.DefinitionsDirectory, DefinitionsDirectory);
-
             PreferenceSettings = sourceMigrator.PreferenceSettings;
             if (PreferenceSettings == null) return this;
 
             // All preference settings are copied over including custom package folders
             // However if one of the custom folder locations points to the user data directory
             // of the previous version, it needs to be replaced with that of the current version
-            var folders = PreferenceSettings.CustomPackageFolders;
-            var indexToReplace = folders.FindIndex(f => f.Contains(sourceMigrator.UserDataDirectory));
-            
-            if (indexToReplace <= -1) return this;
-
-            folders.RemoveAt(indexToReplace);
-            folders.Insert(indexToReplace, UserDataDirectory);
+            PreferenceSettings.CustomPackageFolders.Clear();
+            PreferenceSettings.CustomPackageFolders.Insert(0, UserDataDirectory);
             
             return this;
         }
@@ -387,86 +375,10 @@ namespace Dynamo.Core
 
             return new DynamoMigratorBase(version);
         }
-
-        #endregion
-
-        #region private methods
-
-        // Reference: https://msdn.microsoft.com/en-us/library/system.io.directoryinfo.aspx
-        private static void Copy(string sourceDirectory, string targetDirectory)
-        {
-            var diSource = new DirectoryInfo(sourceDirectory);
-            var diTarget = new DirectoryInfo(targetDirectory);
-
-            CopyAll(diSource, diTarget);
-        }
-
-        private static void CopyAll(DirectoryInfo source, DirectoryInfo target)
-        {
-            // Check if the target directory exists; if not, create it.
-            if (Directory.Exists(target.FullName) == false)
-            {
-                Directory.CreateDirectory(target.FullName);
-            }
-
-            // Copy each file into the new directory.
-            foreach (FileInfo fi in source.GetFiles())
-            {
-                fi.CopyTo(Path.Combine(target.FullName, fi.Name), true);
-            }
-
-            // Copy each subdirectory using recursion.
-            foreach (DirectoryInfo diSourceSubDir in source.GetDirectories())
-            {
-                DirectoryInfo nextTargetSubDir = target.CreateSubdirectory(diSourceSubDir.Name);
-                CopyAll(diSourceSubDir, nextTargetSubDir);
-            }
-        }
-
         #endregion
 
     }
 
-    internal class DynamoMigrator07 : DynamoMigratorBase
-    {
-        public DynamoMigrator07(FileVersion version)
-            : base(version)
-        {
-        }
-
-        // These overridden functions are strictly not required as they simply duplicate base class functionality
-        // They are implemented here simply to serve as templates for further class extensions from DynamoMigratorBase
-        protected override PreferenceSettings ReadPreferences()
-        {
-            return base.ReadPreferences();
-        }
-
-        protected override DynamoMigratorBase MigrateFrom(DynamoMigratorBase sourceMigrator)
-        {
-            // We should not be migrating from a previous version into Dynamo 0.7
-            throw new NotImplementedException();
-        }
-    }
-
-    internal class DynamoMigrator08 : DynamoMigratorBase
-    {
-        public DynamoMigrator08(FileVersion version)
-            : base(version)
-        {
-        }
-
-        // These overridden functions are strictly not required as they simply duplicate base class functionality
-        // They are implemented here simply to serve as templates for further class extensions from DynamoMigratorBase
-        protected override PreferenceSettings ReadPreferences()
-        {
-            return base.ReadPreferences();
-        }
-
-        protected override DynamoMigratorBase MigrateFrom(DynamoMigratorBase sourceMigrator)
-        {
-            return base.MigrateFrom(sourceMigrator);
-        }
-    }
 
     class MigrationPathResolver : IPathResolver
     {
