@@ -370,7 +370,7 @@
     },
     {
       "fullyQualifiedName": "List.Rank",
-      "iconUrl": "http://localhost/icons/List.RemoveIfNot.Small?path=BuiltIn.ds",
+      "iconUrl": "http://localhost/icons/List.Rank.Small?path=BuiltIn.ds",
       "contextData": "List.Rank@var[]..[]",
       "parameters": null,
       "itemType": "action",
