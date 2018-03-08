@@ -12,11 +12,24 @@ using Dynamo.Wpf.ViewModels;
 
 using NUnit.Framework;
 using Dynamo.ViewModels;
+using Dynamo.Utilities;
+using CoreNodeModels.Input;
+using Dynamo.Graph.Connectors;
+using Dynamo.Graph.Nodes;
 
 namespace Dynamo.Tests
 {
+    [TestFixture]
     public class WorkspaceSaving : DynamoViewModelUnitTest
     {
+
+        protected override void GetLibrariesToPreload(List<string> libraries)
+        {
+            libraries.Add("VMDataBridge.dll");
+            libraries.Add("Builtin.dll");
+            libraries.Add("DSCoreNodes.dll");
+            base.GetLibrariesToPreload(libraries);
+        }
 
         [Test]
         [Category("UnitTests")]
@@ -507,7 +520,7 @@ namespace Dynamo.Tests
         }
 
         // TODO: Enable when Open() is expanded to open Json
-        [Test, Ignore]
+        [Test]
         [Category("UnitTests")]
         public void CanSaveAndReadWorkspaceDescription()
         {
@@ -551,6 +564,86 @@ namespace Dynamo.Tests
             // load
             ViewModel.Model.OpenFileFromPath(filePath);
             Assert.AreEqual(fileName, ViewModel.Model.CurrentWorkspace.Name);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void BackUpSaveDoesNotChangeName()
+        {
+            // get empty workspace
+            var dynamoModel = ViewModel.Model;
+            Assert.IsNotNull(dynamoModel.CurrentWorkspace);
+            Assert.AreEqual("Home", ViewModel.Model.CurrentWorkspace.Name);
+
+            // get file path and name of file
+            var filePath = GetNewFileNameOnTempPath("dyn");
+            var fileName = Path.GetFileName(filePath);
+            string extension = Path.GetExtension(filePath);
+            if (extension == ".dyn" || extension == ".dyf")
+            {
+                fileName = Path.GetFileNameWithoutExtension(filePath);
+            }
+
+            // save
+            ViewModel.SaveAs(filePath,true);
+
+            // load
+            ViewModel.Model.OpenFileFromPath(filePath);
+            Assert.AreEqual("Home", ViewModel.Model.CurrentWorkspace.Name);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void CustomNodeSaveDoesNotChangeName()
+        {
+
+            var funcguid = GuidUtility.Create(GuidUtility.UrlNamespace, "NewCustomNodeSaveAndLoad");
+            //first create a new custom node.
+            this.ViewModel.ExecuteCommand(new DynamoModel.CreateCustomNodeCommand(funcguid, "testnode", "testcategory", "atest", true));
+            var outnode1 = new Output();
+            outnode1.Symbol = "out1";
+            var outnode2 = new Output();
+            outnode1.Symbol = "out2";
+
+            var cbn = new CodeBlockNodeModel(this.ViewModel.EngineController.LibraryServices);
+            cbn.SetCodeContent("5;",this.ViewModel.CurrentSpace.ElementResolver);
+
+            ViewModel.FocusCustomNodeWorkspace(funcguid);
+
+            this.ViewModel.CurrentSpace.AddAndRegisterNode(cbn);
+            this.ViewModel.CurrentSpace.AddAndRegisterNode(outnode1);
+            this.ViewModel.CurrentSpace.AddAndRegisterNode(outnode2);
+
+            new ConnectorModel(cbn.OutPorts.FirstOrDefault(), outnode1.InPorts.FirstOrDefault(), Guid.NewGuid());
+            new ConnectorModel(cbn.OutPorts.FirstOrDefault(), outnode2.InPorts.FirstOrDefault(), Guid.NewGuid());
+
+            var savePath = GetNewFileNameOnTempPath("dyf");
+           this.ViewModel.SaveAs(savePath);
+
+            //assert the filesaved
+            Assert.IsTrue(File.Exists(savePath));
+            Assert.IsFalse(string.IsNullOrEmpty(File.ReadAllText(savePath)));
+
+            // get file path and name of file
+            var fileName = Path.GetFileName(savePath);
+            string extension = Path.GetExtension(savePath);
+            if (extension == ".dyn" || extension == ".dyf")
+            {
+                fileName = Path.GetFileNameWithoutExtension(savePath);
+            }
+
+            Assert.IsTrue(ViewModel.CurrentSpace is CustomNodeWorkspaceModel);
+            //close the customNode so we can reopen it.
+            this.ViewModel.Model.RemoveWorkspace(ViewModel.CurrentSpace);
+
+            // load
+            ViewModel.OpenCommand.Execute(savePath);
+            ViewModel.FocusCustomNodeWorkspace(funcguid);
+
+            Assert.IsTrue(ViewModel.CurrentSpace is CustomNodeWorkspaceModel);
+            //assert the current workspace is the customNode.
+            Assert.IsTrue(File.Exists(savePath));
+            Assert.AreEqual("testnode", ViewModel.Model.CurrentWorkspace.Name);
         }
 
         [Test]
@@ -1067,9 +1160,9 @@ namespace Dynamo.Tests
             var def = dynamoModel.CustomNodeManager.CreateCustomNode(nodeName, catName, "");
 
             var tempPath1 = Path.Combine(TempFolder, nodeName + ".dyf");
-            
+
             // Create the folder first incase it does not exist
-            Directory.CreateDirectory(Path.Combine(TempFolder, nodeName, nodeName));
+            System.IO.Directory.CreateDirectory(Path.Combine(TempFolder, nodeName, nodeName));
             var tempPath2 = Path.Combine(TempFolder, nodeName, nodeName + ".dyf");
 
             def.Save(tempPath1);

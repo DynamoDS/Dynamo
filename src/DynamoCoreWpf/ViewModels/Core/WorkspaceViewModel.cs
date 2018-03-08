@@ -26,6 +26,7 @@ using Newtonsoft.Json;
 using Dynamo.Wpf.ViewModels.Core;
 using System.Diagnostics;
 using Dynamo.Engine;
+using System.Globalization;
 
 namespace Dynamo.ViewModels
 {
@@ -545,26 +546,9 @@ namespace Dynamo.ViewModels
 
             try
             {
+                //set the name before serializing model.
+                this.Model.setNameBasedOnFileName(filePath, isBackup);
                 // Stage 1: Serialize the workspace.
-                string fileName = string.Empty;
-                try
-                {
-                    fileName = Path.GetFileName(filePath);
-                    string extension = Path.GetExtension(filePath);
-                    if (extension == ".dyn" || extension == ".dyf")
-                    {
-                      fileName = Path.GetFileNameWithoutExtension(filePath);
-                    }
-                }
-                catch (ArgumentException)
-                {
-                }
-
-                if (fileName != string.Empty)
-                {
-                    Model.Name = fileName;
-                }
-              
                 var json = Model.ToJson(engine);
                 var json_parsed = JObject.Parse(json);
 
@@ -621,7 +605,8 @@ namespace Dynamo.ViewModels
                 },
                 ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
                 TypeNameHandling = TypeNameHandling.Auto,
-                Formatting = Newtonsoft.Json.Formatting.Indented
+                Formatting = Newtonsoft.Json.Formatting.Indented,
+                Culture = CultureInfo.InvariantCulture
             };
 
             return JsonConvert.DeserializeObject<ExtraWorkspaceViewInfo>(viewBlock.ToString(), settings);

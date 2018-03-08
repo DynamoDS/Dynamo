@@ -3361,30 +3361,6 @@ def foo ()
         }
 
         [Test]
-        public void TestRemoveKeyNoThrow()
-        {
-            string code = @"
-import(""BuiltIn.ds"");
-x = 0;
-y = List.RemoveKey(x, x);
-";
-            thisTest.RunScriptSource(code);
-            thisTest.Verify("y", 0);
-        }
-
-        [Test]
-        public void TestContainsKeyNoThrow()
-        {
-            string code = @"
-import(""BuiltIn.ds"");
-x = 0;
-y = List.ContainsKey(x, x);
-";
-            Assert.DoesNotThrow(() => thisTest.RunScriptSource(code));
-            thisTest.Verify("y", false);
-        }
-
-        [Test]
         public void TestMapToWithReverserRange()
         {
             string code = @"

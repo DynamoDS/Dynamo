@@ -12,8 +12,10 @@ using Newtonsoft.Json;
 using Dynamo.Engine;
 using Dynamo.Events;
 using System.Text.RegularExpressions;
+using Dynamo.Graph.Notes;
 using Dynamo.Utilities;
 using Newtonsoft.Json.Linq;
+using System.Globalization;
 
 namespace Dynamo.Tests
 {
@@ -64,6 +66,15 @@ namespace Dynamo.Tests
             {
                 modelsGuidToIdMap.Add(connector.GUID, idcount.ToString());
                 json = json.Replace(connector.GUID.ToString("N"), idcount.ToString());
+                idcount = idcount + 1;
+            }
+
+
+            //alter the output json so that all Notemodel ids are not guids
+            foreach (var note in model.Notes)
+            {
+                modelsGuidToIdMap.Add(note.GUID, idcount.ToString());
+                json = json.Replace(note.GUID.ToString("N"), idcount.ToString());
                 idcount = idcount + 1;
             }
             //alter the output json so that all annotationModel ids are not guids
@@ -369,7 +380,8 @@ namespace Dynamo.Tests
                             new JsonSerializerSettings()
                             {
                                 Formatting = Formatting.Indented,
-                                ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+                                ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+                                Culture = CultureInfo.InvariantCulture
                             });
 
             var dataPath = filePathBase + ".data";
@@ -410,7 +422,8 @@ namespace Dynamo.Tests
                             new JsonSerializerSettings()
                             {
                                 Formatting = Formatting.Indented,
-                                ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+                                ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+                                Culture = CultureInfo.InvariantCulture
                             });
             //replace all the guids in the data file with all of our remapped ids.
             foreach (var guidKey in modelsGuidToIdMap.Keys)

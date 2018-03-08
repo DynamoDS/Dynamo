@@ -46,6 +46,7 @@ using Utils = Dynamo.Graph.Nodes.Utilities;
 
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System.Globalization;
 
 namespace Dynamo.Models
 {
@@ -1473,7 +1474,8 @@ namespace Dynamo.Models
                 },
                 ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
                 TypeNameHandling = TypeNameHandling.Auto,
-                Formatting = Newtonsoft.Json.Formatting.Indented
+                Formatting = Newtonsoft.Json.Formatting.Indented,
+                Culture = CultureInfo.InvariantCulture
             };
 
             return JsonConvert.DeserializeObject<DynamoPreferencesData>(dynamoBlock.ToString(), settings);
