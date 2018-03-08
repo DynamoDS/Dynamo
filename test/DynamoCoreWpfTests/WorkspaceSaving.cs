@@ -15,14 +15,17 @@ using Dynamo.ViewModels;
 using Dynamo.Utilities;
 using CoreNodeModels.Input;
 using Dynamo.Graph.Connectors;
+using Dynamo.Graph.Nodes;
 
 namespace Dynamo.Tests
 {
+    [TestFixture]
     public class WorkspaceSaving : DynamoViewModelUnitTest
     {
 
         protected override void GetLibrariesToPreload(List<string> libraries)
         {
+            libraries.Add("VMDataBridge.dll");
             libraries.Add("Builtin.dll");
             libraries.Add("DSCoreNodes.dll");
             base.GetLibrariesToPreload(libraries);
@@ -602,16 +605,17 @@ namespace Dynamo.Tests
             var outnode2 = new Output();
             outnode1.Symbol = "out2";
 
-            var numberNode = new DoubleInput();
-            numberNode.Value = "5";
+            var cbn = new CodeBlockNodeModel(this.ViewModel.EngineController.LibraryServices);
+            cbn.SetCodeContent("5;",this.ViewModel.CurrentSpace.ElementResolver);
+
             ViewModel.FocusCustomNodeWorkspace(funcguid);
 
-            this.ViewModel.CurrentSpace.AddAndRegisterNode(numberNode);
+            this.ViewModel.CurrentSpace.AddAndRegisterNode(cbn);
             this.ViewModel.CurrentSpace.AddAndRegisterNode(outnode1);
             this.ViewModel.CurrentSpace.AddAndRegisterNode(outnode2);
 
-            new ConnectorModel(numberNode.OutPorts.FirstOrDefault(), outnode1.InPorts.FirstOrDefault(), Guid.NewGuid());
-            new ConnectorModel(numberNode.OutPorts.FirstOrDefault(), outnode2.InPorts.FirstOrDefault(), Guid.NewGuid());
+            new ConnectorModel(cbn.OutPorts.FirstOrDefault(), outnode1.InPorts.FirstOrDefault(), Guid.NewGuid());
+            new ConnectorModel(cbn.OutPorts.FirstOrDefault(), outnode2.InPorts.FirstOrDefault(), Guid.NewGuid());
 
             var savePath = GetNewFileNameOnTempPath("dyf");
            this.ViewModel.SaveAs(savePath);
