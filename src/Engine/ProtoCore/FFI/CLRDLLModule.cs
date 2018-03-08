@@ -351,8 +351,7 @@ namespace ProtoFFI
                     string interfName = CLRObjectMarshaler.GetTypeName(interf);
 
                     classnode.Interfaces.Add(interfName);
-                    //Make sure that base class is imported properly.
-                    CLRModuleType.GetInstance(baseType, Module, string.Empty);
+                    CLRModuleType.GetInstance(interf, Module, string.Empty);
                 }
             }
 
