@@ -546,26 +546,9 @@ namespace Dynamo.ViewModels
 
             try
             {
+                //set the name before serializing model.
+                this.Model.setNameBasedOnFileName(filePath, isBackup);
                 // Stage 1: Serialize the workspace.
-                string fileName = string.Empty;
-                try
-                {
-                    fileName = Path.GetFileName(filePath);
-                    string extension = Path.GetExtension(filePath);
-                    if (extension == ".dyn" || extension == ".dyf")
-                    {
-                      fileName = Path.GetFileNameWithoutExtension(filePath);
-                    }
-                }
-                catch (ArgumentException)
-                {
-                }
-
-                if (fileName != string.Empty)
-                {
-                    Model.Name = fileName;
-                }
-              
                 var json = Model.ToJson(engine);
                 var json_parsed = JObject.Parse(json);
 
