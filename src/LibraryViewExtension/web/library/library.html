@@ -115,6 +115,7 @@
         csharpController.on("libraryDataUpdated", function (items) {
             console.log(items);
             refreshLibraryView(libController);
+            csharpController.closeNodeTooltip(true);
         });
 
     </script>
