@@ -70,8 +70,8 @@ namespace DesignScript
             ///     Produce a new Dictionary with a list of keys set to the new values, possibly overwriting existing key-value pairs. 
             ///     These two lists are expected to be of the same length. If not, the shorter of the two bounds the number of insertions.
             /// </summary>
-            /// <param name="key">The keys in the Dictionary to set. If the same key already exists, the value at that key will be modified.</param>
-            /// <param name="value">The corresponding values to insert.</param>
+            /// <param name="keys">The keys in the Dictionary to set. If the same key already exists, the value at that key will be modified.</param>
+            /// <param name="values">The corresponding values to insert.</param>
             /// <returns name="dictionary">A new Dictionary with the entries inserted.</returns>
             /// <search>insert,add</search>
             public Dictionary SetValueAtKeys(IList<string> keys,

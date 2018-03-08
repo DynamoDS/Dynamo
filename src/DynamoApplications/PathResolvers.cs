@@ -29,7 +29,7 @@ namespace Dynamo.Applications
             {
                 "VMDataBridge.dll",
                 "ProtoGeometry.dll",
-                "Builtin.dll",
+                "DesignScriptBuiltin.dll",
                 "DSCoreNodes.dll",
                 "DSOffice.dll",
                 "DSIronPython.dll",
@@ -94,7 +94,7 @@ namespace Dynamo.Applications
             {
                 "VMDataBridge.dll",
                 "ProtoGeometry.dll",
-                "Builtin.dll",
+                "DesignScriptBuiltin.dll",
                 "DSCoreNodes.dll",
                 "DSIronPython.dll",
                 "FunctionObject.ds",
