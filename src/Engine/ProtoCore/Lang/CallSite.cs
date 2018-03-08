@@ -979,6 +979,7 @@ namespace ProtoCore
             return fep;
         }
 
+
         private bool Inherits(ReadOnlyCollection<ClassNode> classNodes, int parentIndex, int childIndex)
         {
             if (parentIndex < 0 || parentIndex >= classNodes.Count || childIndex < 0 || childIndex >= classNodes.Count)
@@ -1017,8 +1018,6 @@ namespace ProtoCore
             return false;
         }
 
-
-
         /// <summary>
         /// Returns the function group associated with this callsite
         /// </summary>
@@ -1037,7 +1036,8 @@ namespace ProtoCore
 
                 if (firstArg.IsPointer && firstArg.metaData.type != classScope)
                 {
-                    if (Inherits(runtimeCore.DSExecutable.classTable.ClassNodes, classScope, firstArg.metaData.type)) {
+                    if (Inherits(runtimeCore.DSExecutable.classTable.ClassNodes, classScope, firstArg.metaData.type))
+                    {
                         var fg = FirstFunctionGroupInInheritanceChain(runtimeCore, firstArg.metaData.type);
                         if (fg != null)
                         {
@@ -1378,7 +1378,7 @@ namespace ProtoCore
 
             //@PERF: Possible optimisation point here, to deal with static dispatches that don't need replication analysis
             //Handle resolution Pass 1: Name -> Method Group
-            var funcGroup = GetFuncGroup(runtimeCore, arguments);
+            FunctionGroup funcGroup = GetFuncGroup(runtimeCore, arguments);
             if (funcGroup == null)
             {
                 log.AppendLine("Function group not located");
