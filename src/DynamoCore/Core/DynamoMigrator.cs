@@ -61,13 +61,9 @@ namespace Dynamo.Core
 
     /// <summary>
     /// Base class for all versions of Dynamo classes relating to
-    /// migrating preferences, packages and definitions from older versions
-    /// For version specific migration, derived classes will override base class methods
-    /// The naming convention for derived classes is "DynamoMigrator{MajorVersion}{MinorVersion}"
-    /// For e.g. derived migrator class for verion 0.7 is "DynamoMigrator07"
-    /// Derived migrator class for version 0.8 is "DynamoMigrator08" and so on.
-    /// Constructors of classes derived from DynamoMigratorBase need to be public
-    /// as their instances are created through reflection.
+    /// migrating preferences from older versions
+    /// For version specific migration, derived classes 
+    /// should override base class methods
     /// </summary>
     internal class DynamoMigratorBase
     {
@@ -109,6 +105,8 @@ namespace Dynamo.Core
             }
         }
 
+        #endregion
+
         private PreferenceSettings preferenceSettings;
         public PreferenceSettings PreferenceSettings
         {
@@ -118,8 +116,6 @@ namespace Dynamo.Core
             }
             set { preferenceSettings = value; }
         }
-
-        #endregion
 
         protected DynamoMigratorBase(FileVersion version)
         {
@@ -158,20 +154,18 @@ namespace Dynamo.Core
         }
 
         /// <summary>
-        /// Migrates preference settings, packages, custom node definitions, etc. 
+        /// Migrates preference settings, customized migration step in derived class. 
         /// from source migrator version to current version.
         /// This function can be overridden by version specific migrator classes
         /// </summary>
         /// <param name="sourceMigrator"> source migrator version from which to migrate from </param>
-        /// /// <returns>new migrator instance after migration</returns>
+        /// <returns>new migrator instance after migration</returns>
         protected virtual DynamoMigratorBase MigrateFrom(DynamoMigratorBase sourceMigrator)
         {
             PreferenceSettings = sourceMigrator.PreferenceSettings;
             if (PreferenceSettings == null) return this;
 
-            // All preference settings are copied over including custom package folders
-            // However if one of the custom folder locations points to the user data directory
-            // of the previous version, it needs to be replaced with that of the current version
+            // All preference settings are copied over except for custom package folders
             PreferenceSettings.CustomPackageFolders.Clear();
             PreferenceSettings.CustomPackageFolders.Insert(0, UserDataDirectory);
             
