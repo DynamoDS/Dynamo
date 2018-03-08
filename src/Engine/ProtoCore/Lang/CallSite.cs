@@ -1017,6 +1017,8 @@ namespace ProtoCore
             return false;
         }
 
+
+
         /// <summary>
         /// Returns the function group associated with this callsite
         /// </summary>
@@ -1026,6 +1028,13 @@ namespace ProtoCore
             if (arguments.Count > 0)
             {
                 var firstArg = arguments.First();
+
+                var firstNonArray = firstArg;
+                if (firstArg.IsArray && ArrayUtils.GetFirstNonArrayStackValue(firstArg, ref firstNonArray, runtimeCore))
+                {
+                    firstArg = firstNonArray;
+                }
+
                 if (firstArg.IsPointer && firstArg.metaData.type != classScope)
                 {
                     if (Inherits(runtimeCore.DSExecutable.classTable.ClassNodes, classScope, firstArg.metaData.type)) {
