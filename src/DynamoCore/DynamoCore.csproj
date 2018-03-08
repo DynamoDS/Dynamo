@@ -286,7 +286,7 @@ limitations under the License.
     <Compile Include="Search\SearchDictionary.cs" />
     <Compile Include="Utilities\ResourceLoader.cs" />
     <Compile Include="Visualization\RenderPackageCache.cs" />
-    <EmbeddedResource Include="BuiltInAndOperators\BuiltInImages.resx">
+    <EmbeddedResource Include="BuiltInAndOperators\BuiltInNodesImages.resx">
       <LastGenOutput>OperatorsImages.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
@@ -364,7 +364,7 @@ limitations under the License.
     </Resource>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="BuiltInAndOperators\BuiltIn.Migrations.xml" />
+    <Resource Include="BuiltInAndOperators\BuiltInNodes.Migrations.xml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Ionic.Zip.xml" />
@@ -408,7 +408,7 @@ limitations under the License.
     <Copy SourceFiles="@(LocalizedResources)" DestinationFolder="$(OutputPath)%(RecursiveDir)" />
     <Copy SourceFiles="$(ProjectDir)\BuiltInAndOperators\Operators.xml" DestinationFolder="$(OutputPath)\$(UICulture)" />
     <Copy SourceFiles="$(ProjectDir)\BuiltInAndOperators\BuiltInNodes.xml" DestinationFolder="$(OutputPath)\$(UICulture)" />
-    <Copy SourceFiles="$(ProjectDir)\BuiltInAndOperators\BuiltIn.Migrations.xml" DestinationFolder="$(OutputPath)" />
+    <Copy SourceFiles="$(ProjectDir)\BuiltInAndOperators\BuiltInNodes.Migrations.xml" DestinationFolder="$(OutputPath)" />
   </Target>
   <Target Name="AfterBuild" Condition=" '$(OS)' != 'Unix' ">
     <!-- Get System.Drawing.dll -->
@@ -426,7 +426,7 @@ limitations under the License.
     <GenerateResource UseSourcePath="true" Sources="$(ProjectDir)/BuiltInAndOperators/OperatorsImages.resx" OutputResources="$(ProjectDir)/BuiltInAndOperators/OperatorsImages.resources" References="$(FrameworkAssembliesPath)System.Drawing.dll" />
     <AL TargetType="library" EmbedResources="$(ProjectDir)/BuiltInAndOperators/OperatorsImages.resources" OutputAssembly="$(OutDir)Operators.customization.dll" Version="%(DynamoCoreInfo.Version)" />
     <!-- Generate customization dll for BuiltIn -->
-    <GenerateResource UseSourcePath="true" Sources="$(ProjectDir)/BuiltInAndOperators/BuiltInImages.resx" OutputResources="$(ProjectDir)/BuiltInAndOperators/BuiltInImages.resources" References="$(FrameworkAssembliesPath)System.Drawing.dll" />
+    <GenerateResource UseSourcePath="true" Sources="$(ProjectDir)/BuiltInAndOperators/BuiltInNodesImages.resx" OutputResources="$(ProjectDir)/BuiltInAndOperators/BuiltInImages.resources" References="$(FrameworkAssembliesPath)System.Drawing.dll" />
     <AL TargetType="library" EmbedResources="$(ProjectDir)/BuiltInAndOperators/BuiltInImages.resources" OutputAssembly="$(OutDir)BuiltIn.customization.dll" Version="%(DynamoCoreInfo.Version)" />
   </Target>
 </Project>
