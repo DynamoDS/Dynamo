@@ -171,53 +171,70 @@ namespace ProtoCore
 
         #region Trace Data Serialization Methods/Members
 
+        private IEnumerable<GraphNode> GetGraphNodeData(Executable executable)
+        {
+            // No executable, nothing to return
+            if (executable == null)
+              return null;
+
+            // No stream data to query
+            var stream = executable.instrStreamList;
+            if (stream == null || stream.Length == 0)
+              return null;
+
+            // Get the list of graph node if one exists
+            var graph = stream[0].dependencyGraph;
+            if (graph == null)
+              return null;
+
+            return graph.GraphList;
+        }
+
         /// <summary>
         /// Call this method to obtain serialized trace data for a list of nodes.
         /// </summary>
         /// <param name="nodeGuids">A list of System.Guid of nodes whose 
         /// serialized trace data is to be retrieved. This parameter cannot be 
         /// null.</param>
+        /// <param name="executable">A container of callsite data for the nodes in the graph.</param>
         /// <returns>Returns a dictionary that maps each node Guid to its 
         /// corresponding list of serialized callsite trace data.</returns>
-        /// 
         public IDictionary<Guid, List<CallSite.RawTraceData>>
-            GetTraceDataForNodes(IEnumerable<Guid> nodeGuids, Executable executable)
+                GetTraceDataForNodes(IEnumerable<Guid> nodeGuids, Executable executable)
         {
             if (nodeGuids == null)
                 throw new ArgumentNullException("nodeGuids");
 
             var nodeDataPairs = new Dictionary<Guid, List<CallSite.RawTraceData>>();
 
-            if (!nodeGuids.Any()) // Nothing to persist now.
+            // Nothing to persist now
+            if (!nodeGuids.Any())
                 return nodeDataPairs;
 
-            // Attempt to get the list of graph node if one exists.
-            IEnumerable<GraphNode> graphNodes = null;
+            IEnumerable<GraphNode> graphNodeData = GetGraphNodeData(executable);
+            if (graphNodeData == null)
+              return nodeDataPairs;
+
+            Dictionary<Guid, List<string>> callsiteMap = new Dictionary<Guid, List<string>>();
+            foreach (GraphNode graphNode in graphNodeData)
             {
-                if (executable != null)
+                Guid guid = graphNode.guid;
+
+                List<string> callsSiteData;
+                if (!callsiteMap.TryGetValue(guid, out callsSiteData))
                 {
-                    var stream = executable.instrStreamList;
-                    if (stream != null && (stream.Length > 0))
-                    {
-                        var graph = stream[0].dependencyGraph;
-                        if (graph != null)
-                            graphNodes = graph.GraphList;
-                    }
+                    callsSiteData = new List<string>();
+                    callsiteMap[guid] = callsSiteData;
                 }
 
-                if (graphNodes == null) // No execution has taken place.
-                    return nodeDataPairs;
+                callsSiteData.Add(graphNode.CallsiteIdentifier);
             }
 
             foreach (Guid nodeGuid in nodeGuids)
             {
-                // Get a list of GraphNode objects that correspond to this node.
-                var graphNodeIds = graphNodes.
-                    Where(gn => gn.guid == nodeGuid).
-                    Select(gn => gn.CallsiteIdentifier);
-
-                if (!graphNodeIds.Any())
-                    continue;
+                List<string> graphNodeIds;
+                if (!callsiteMap.TryGetValue(nodeGuid, out graphNodeIds))
+                  continue;
 
                 // Get all callsites that match the graph node ids.
                 // 

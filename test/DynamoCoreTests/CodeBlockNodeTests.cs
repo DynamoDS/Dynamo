@@ -1779,7 +1779,7 @@ var06 = g;
             var codeCompletionServices = new CodeCompletionServices(libraryServicesCore);
 
             string functionPrefix = "List";
-            string functionName = "ContainsKey";
+            string functionName = "RemoveIfNot";
 
             string code = "";
             var overloads = codeCompletionServices.GetFunctionSignatures(code, functionName, functionPrefix);
@@ -1791,7 +1791,7 @@ var06 = g;
             {
                 Assert.AreEqual(functionName, overload.Text);
             }
-            Assert.AreEqual("ContainsKey : bool (list : [], key : var)", overloads.ElementAt(0).Stub);
+            Assert.AreEqual("RemoveIfNot : [] (list : [], type : string)", overloads.ElementAt(0).Stub);
         }
 
         [Test]
