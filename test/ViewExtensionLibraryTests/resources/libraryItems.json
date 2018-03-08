@@ -378,7 +378,7 @@
     },
     {
       "fullyQualifiedName": "LoopWhile",
-      "iconUrl": "http://localhost/icons/LoopWhile.Small?path=BuiltIn",
+      "iconUrl": "http://localhost/icons/LoopWhile.Small?path=BuiltInNodes",
       "contextData": "LoopWhile@var[]..[],Function,Function",
       "parameters": null,
       "itemType": "action",
