@@ -1,0 +1,165 @@
+{
+  "Uuid": "bd301b2d-088f-4f78-8023-0b0f14e8a597",
+  "IsCustomNode": false,
+  "Description": null,
+  "Name": "inheritanceE",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "FFITarget.ClassA.ClassA",
+      "Id": "a0108b3247ec4f9383f69393ce11ef7d",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "bc192f3dbf584e08aba103d30fbbba73",
+          "Name": "ClassA",
+          "Description": "ClassA",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "ClassA.ClassA ( ): ClassA"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "FFITarget.HidesMethodFromClassA.Bar",
+      "Id": "968031ae975f4095a51364d95d65e16a",
+      "Inputs": [
+        {
+          "Id": "7516b934879b419cbb59b78ce71475bf",
+          "Name": "hidesMethodFromClassA",
+          "Description": "FFITarget.HidesMethodFromClassA",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "6ab1aaf800a0463e8e2631c7d343333f",
+          "Name": "int",
+          "Description": "int",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "HidesMethodFromClassA.Bar ( ): int"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "FFITarget.ClassA.Bar",
+      "Id": "c09cde583e624adc821d3885ef769410",
+      "Inputs": [
+        {
+          "Id": "6b7defc55d854b0ab4b43715d346b41e",
+          "Name": "classA",
+          "Description": "FFITarget.ClassA",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "d9b516bc66d9420d83c9649ad1e34933",
+          "Name": "int",
+          "Description": "int",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "ClassA.Bar ( ): int"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "bc192f3dbf584e08aba103d30fbbba73",
+      "End": "6b7defc55d854b0ab4b43715d346b41e",
+      "Id": "b67778f6b65b4e94b872134550614c9e"
+    },
+    {
+      "Start": "bc192f3dbf584e08aba103d30fbbba73",
+      "End": "7516b934879b419cbb59b78ce71475bf",
+      "Id": "a508cd2f707046bf8dde60e63a82fb4d"
+    }
+  ],
+  "Dependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.0.0.2821",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Default Camera",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "ClassA.ClassA",
+        "Id": "a0108b3247ec4f9383f69393ce11ef7d",
+        "IsInput": false,
+        "IsOutput": false,
+        "Excluded": false,
+        "X": 6.7493295691516551,
+        "Y": 1532.5663611434904
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "HidesMethodFromClassA.Bar",
+        "Id": "968031ae975f4095a51364d95d65e16a",
+        "IsInput": false,
+        "IsOutput": false,
+        "Excluded": false,
+        "X": 389.64234577493835,
+        "Y": 1672.79215154649
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "ClassA.Bar",
+        "Id": "c09cde583e624adc821d3885ef769410",
+        "IsInput": false,
+        "IsOutput": false,
+        "Excluded": false,
+        "X": 396.59810620613229,
+        "Y": 1484.425411108854
+      }
+    ],
+    "Annotations": [],
+    "X": 249.94338616256721,
+    "Y": 21.639245440318518,
+    "Zoom": 0.51095654822044756
+  }
+}

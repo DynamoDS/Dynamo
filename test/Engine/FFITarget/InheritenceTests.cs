@@ -50,7 +50,7 @@ namespace FFITarget
 
     public class HidesMethodFromClassA: ClassA
     {
-        public int Var()
+        public int Bar()
         {
             return 3;
         }
