@@ -96,6 +96,7 @@ namespace Dynamo.Tests
         [Test, Category("Failure")]
         public void TestStaticMethodFromBothClasses()
         {
+            // TODO: This causes a Crash! Tracked here: https://jira.autodesk.com/browse/QNTM-3648
             string openPath = Path.Combine(TestDirectory, @"core\inheritance\inheritanceG.dyn");
             RunModel(openPath);
             AssertPreviewValue("ca0398e0-f871-4b5f-a06d-e9f6b5963ed3", 23);

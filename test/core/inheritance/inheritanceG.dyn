@@ -1,0 +1,104 @@
+{
+  "Uuid": "f1bc584c-d97f-4d0d-9a4f-6874652fcba5",
+  "IsCustomNode": false,
+  "Description": null,
+  "Name": "inheritanceG",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "FFITarget.HidesMethodFromClassA.Baz",
+      "Id": "ca0398e0f8714b5fa06de9f6b5963ed3",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "ae7db55a9c1648b4b0f24ce27a2404fc",
+          "Name": "int",
+          "Description": "int",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "HidesMethodFromClassA.Baz ( ): int"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "FFITarget.ClassA.Baz",
+      "Id": "49a8b4d4b18448928d88476753d603f7",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "b69baaadeae046aaa7bbe69a88322446",
+          "Name": "int",
+          "Description": "int",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "ClassA.Baz ( ): int"
+    }
+  ],
+  "Connectors": [],
+  "Dependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.0.0.4321",
+      "RunType": "Manual",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "HidesMethodFromClassA.Baz",
+        "Id": "ca0398e0f8714b5fa06de9f6b5963ed3",
+        "IsInput": false,
+        "IsOutput": false,
+        "Excluded": false,
+        "X": 320.0,
+        "Y": 262.0
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "ClassA.Baz",
+        "Id": "49a8b4d4b18448928d88476753d603f7",
+        "IsInput": false,
+        "IsOutput": false,
+        "Excluded": false,
+        "X": 381.0,
+        "Y": 139.0
+      }
+    ],
+    "Annotations": [],
+    "X": 0.0,
+    "Y": 0.0,
+    "Zoom": 1.0
+  }
+}
