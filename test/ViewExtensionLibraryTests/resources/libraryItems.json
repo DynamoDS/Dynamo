@@ -369,9 +369,9 @@
       "keywords": "Dynamo.Nodes.dyn3DPreview, Dynamo.Nodes.3DPreview, Dynamo.Nodes.Watch3D, DynamoWatch3D.Watch3D, Watch 3D"
     },
     {
-      "fullyQualifiedName": "Rank",
-      "iconUrl": "http://localhost/icons/Rank.Small?path=BuiltIn",
-      "contextData": "Rank@var[]..[]",
+      "fullyQualifiedName": "List.Rank",
+      "iconUrl": "http://localhost/icons/List.Rank.Small?path=BuiltIn",
+      "contextData": "List.Rank@var[]..[]",
       "parameters": null,
       "itemType": "action",
       "keywords": "rank, depth, nesting, ranks"
