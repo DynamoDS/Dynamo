@@ -37,7 +37,7 @@
                   "path": "DSCoreNodes.DSCore.List.Contains"
                 },
                 {
-                  "path": "BuiltIn.Rank"
+                  "path": "BuiltIn.List.Rank"
                 },
                 {
                   "path": "DSCoreNodes.DSCore.List.IsHomogeneous"
@@ -766,7 +766,7 @@
               "elementType": "group",
               "include": [
                 {
-                  "path": "BuiltIn.LoopWhile"
+                  "path": "BuiltInNodes.LoopWhile"
                 },
                 {
                   "path": "Core.Logic.ScopeIf"

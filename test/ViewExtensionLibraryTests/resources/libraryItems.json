@@ -369,16 +369,16 @@
       "keywords": "Dynamo.Nodes.dyn3DPreview, Dynamo.Nodes.3DPreview, Dynamo.Nodes.Watch3D, DynamoWatch3D.Watch3D, Watch 3D"
     },
     {
-      "fullyQualifiedName": "Rank",
-      "iconUrl": "http://localhost/icons/Rank.Small?path=BuiltIn",
-      "contextData": "Rank@var[]..[]",
+      "fullyQualifiedName": "List.Rank",
+      "iconUrl": "http://localhost/icons/List.Rank.Small?path=BuiltIn.ds",
+      "contextData": "List.Rank@var[]..[]",
       "parameters": null,
       "itemType": "action",
       "keywords": "rank, depth, nesting, ranks"
     },
     {
       "fullyQualifiedName": "LoopWhile",
-      "iconUrl": "http://localhost/icons/LoopWhile.Small?path=BuiltIn",
+      "iconUrl": "http://localhost/icons/LoopWhile.Small?path=BuiltInNodes",
       "contextData": "LoopWhile@var[]..[],Function,Function",
       "parameters": null,
       "itemType": "action",

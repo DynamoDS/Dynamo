@@ -98,7 +98,7 @@ namespace ProtoCore.Lang
             "MapTo",                    // kMapTo
             "NormalizeDepth",           // kNormalizeDepth
             "Print",                    // kPrint
-            "Rank",                     // kRank
+            "__Rank",                     // kRank
             "Remove",                   // kRemove
             "RemoveDuplicates",         // kRemoveDuplicates
             "RemoveNulls",              // kRemoveNulls
