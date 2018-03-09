@@ -105,6 +105,10 @@
     <newName>List.RemoveIfNot</newName>
   </priorNameHint>
   <priorNameHint>
+    <oldName>Rank</oldName>
+    <newName>List.Rank</newName>
+  </priorNameHint>
+  <priorNameHint>
     <oldName>Equals</oldName>
     <newName>List.Equals</newName>
   </priorNameHint>

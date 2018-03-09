@@ -37,7 +37,7 @@
                   "path": "DSCoreNodes.DSCore.List.Contains"
                 },
                 {
-                  "path": "BuiltIn.Rank"
+                  "path": "BuiltIn.List.Rank"
                 },
                 {
                   "path": "DSCoreNodes.DSCore.List.IsHomogeneous"
@@ -295,28 +295,28 @@
           "elementType": "category",
           "include": [
             {
-              "path": "Builtin.DesignScript.Builtin.Dictionary.ByKeysValues"
+              "path": "DesignScriptBuiltin.DesignScript.Builtin.Dictionary.ByKeysValues"
             },
             {
-              "path": "Builtin.DesignScript.Builtin.Dictionary.Components"
+              "path": "DesignScriptBuiltin.DesignScript.Builtin.Dictionary.Components"
             },
             {
-              "path": "Builtin.DesignScript.Builtin.Dictionary.RemoveKeys"
+              "path": "DesignScriptBuiltin.DesignScript.Builtin.Dictionary.RemoveKeys"
             },
             {
-              "path": "Builtin.DesignScript.Builtin.Dictionary.SetValueAtKeys"
+              "path": "DesignScriptBuiltin.DesignScript.Builtin.Dictionary.SetValueAtKeys"
             },
             {
-              "path": "Builtin.DesignScript.Builtin.Dictionary.ValueAtKey"
+              "path": "DesignScriptBuiltin.DesignScript.Builtin.Dictionary.ValueAtKey"
             },
             {
-              "path": "Builtin.DesignScript.Builtin.Dictionary.Count"
+              "path": "DesignScriptBuiltin.DesignScript.Builtin.Dictionary.Count"
             },
             {
-              "path": "Builtin.DesignScript.Builtin.Dictionary.Keys"
+              "path": "DesignScriptBuiltin.DesignScript.Builtin.Dictionary.Keys"
             },
             {
-              "path": "Builtin.DesignScript.Builtin.Dictionary.Values"
+              "path": "DesignScriptBuiltin.DesignScript.Builtin.Dictionary.Values"
             }
           ],
           "childElements": [ ]
