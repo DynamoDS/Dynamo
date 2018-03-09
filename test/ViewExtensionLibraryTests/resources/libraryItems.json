@@ -5746,7 +5746,7 @@
     },
     {
       "fullyQualifiedName": "DesignScript.Builtin.Dictionary.ByKeysValues",
-      "iconUrl": "http://localhost/icons/DesignScript.Builtin.Dictionary.ByKeysValues.Small?path=Builtin.dll",
+      "iconUrl": "http://localhost/icons/DesignScript.Builtin.Dictionary.ByKeysValues.Small?path=DesignScriptBuiltin.dll",
       "contextData": "Dictionary.ByKeysValues",
       "parameters": null,
       "itemType": "create",
@@ -5754,7 +5754,7 @@
     },
     {
       "fullyQualifiedName": "DesignScript.Builtin.Dictionary.Components",
-      "iconUrl": "http://localhost/icons/DesignScript.Builtin.Dictionary.Components.Small?path=Builtin.dll",
+      "iconUrl": "http://localhost/icons/DesignScript.Builtin.Dictionary.Components.Small?path=DesignScriptBuiltin.dll",
       "contextData": "Dictionary.Components",
       "parameters": null,
       "itemType": "action",
@@ -5762,7 +5762,7 @@
     },
     {
       "fullyQualifiedName": "DesignScript.Builtin.Dictionary.RemoveKeys",
-      "iconUrl": "http://localhost/icons/DesignScript.Builtin.Dictionary.RemoveKeys.Small?path=Builtin.dll",
+      "iconUrl": "http://localhost/icons/DesignScript.Builtin.Dictionary.RemoveKeys.Small?path=DesignScriptBuiltin.dll",
       "contextData": "Dictionary.RemoveKeys",
       "parameters": null,
       "itemType": "action",
@@ -5770,7 +5770,7 @@
     },
     {
       "fullyQualifiedName": "DesignScript.Builtin.Dictionary.SetValueAtKeys",
-      "iconUrl": "http://localhost/icons/DesignScript.Builtin.Dictionary.SetValueAtKeys.Small?path=Builtin.dll",
+      "iconUrl": "http://localhost/icons/DesignScript.Builtin.Dictionary.SetValueAtKeys.Small?path=DesignScriptBuiltin.dll",
       "contextData": "Dictionary.SetValueAtKeys",
       "parameters": null,
       "itemType": "action",
@@ -5778,7 +5778,7 @@
     },
     {
       "fullyQualifiedName": "DesignScript.Builtin.Dictionary.ValueAtKey",
-      "iconUrl": "http://localhost/icons/DesignScript.Builtin.Dictionary.ValueAtKey.Small?path=Builtin.dll",
+      "iconUrl": "http://localhost/icons/DesignScript.Builtin.Dictionary.ValueAtKey.Small?path=DesignScriptBuiltin.dll",
       "contextData": "Dictionary.ValueAtKey",
       "parameters": null,
       "itemType": "action",
@@ -5786,7 +5786,7 @@
     },
     {
       "fullyQualifiedName": "DesignScript.Builtin.Dictionary.Count",
-      "iconUrl": "http://localhost/icons/DesignScript.Builtin.Dictionary.Count.Small?path=Builtin.dll",
+      "iconUrl": "http://localhost/icons/DesignScript.Builtin.Dictionary.Count.Small?path=DesignScriptBuiltin.dll",
       "contextData": "Dictionary.Count",
       "parameters": null,
       "itemType": "query",
@@ -5794,7 +5794,7 @@
     },
     {
       "fullyQualifiedName": "DesignScript.Builtin.Dictionary.Keys",
-      "iconUrl": "http://localhost/icons/DesignScript.Builtin.Dictionary.Keys.Small?path=Builtin.dll",
+      "iconUrl": "http://localhost/icons/DesignScript.Builtin.Dictionary.Keys.Small?path=DesignScriptBuiltin.dll",
       "contextData": "Dictionary.Keys",
       "parameters": null,
       "itemType": "query",
@@ -5802,7 +5802,7 @@
     },
     {
       "fullyQualifiedName": "DesignScript.Builtin.Dictionary.Values",
-      "iconUrl": "http://localhost/icons/DesignScript.Builtin.Dictionary.Values.Small?path=Builtin.dll",
+      "iconUrl": "http://localhost/icons/DesignScript.Builtin.Dictionary.Values.Small?path=DesignScriptBuiltin.dll",
       "contextData": "Dictionary.Values",
       "parameters": null,
       "itemType": "query",
