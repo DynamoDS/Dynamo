@@ -597,8 +597,13 @@ namespace ProtoCore.Utils
                     var fNode = node as FunctionDefinitionNode;
                     if (fNode != null)
                     {
-                        var body = fNode.FunctionBody.Body;
+                        var fbody = NodeUtils.Clone(fNode.FunctionBody) as CodeBlockNode;
+                        var body = fbody.Body;
+
                         warnings.AddRange(Check(body));
+
+                        fNode.FunctionBody.Body.Clear();
+                        fNode.FunctionBody.Body.AddRange(body.Where(n => !n.skipMe));
                     }
                     
                     continue;
@@ -621,10 +626,15 @@ namespace ProtoCore.Utils
                     var langNode = bnode.RightNode as LanguageBlockNode;
                     if (langNode != null)
                     {
-                        var n = langNode.CodeBlockNode as CodeBlockNode;
-                        if (n != null)
+                        var cbn = langNode.CodeBlockNode as CodeBlockNode;
+                        if (cbn != null)
                         {
-                            warnings.AddRange(Check(n.Body));
+                            var copy = NodeUtils.Clone(cbn) as CodeBlockNode;
+
+                            warnings.AddRange(Check(copy.Body));
+
+                            cbn.Body.Clear();
+                            cbn.Body.AddRange(copy.Body.Where(n => !n.skipMe));
                         }
                         continue;
                     }
