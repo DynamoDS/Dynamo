@@ -2965,6 +2965,7 @@ namespace ProtoAssociative
                 thisClass.TypeSystem = core.TypeSystem;
                 thisClass.ClassAttributes = classDecl.ClassAttributes;
                 thisClass.IsStatic = classDecl.IsStatic;
+                thisClass.IsInterface = classDecl.IsInterface;
 
                 thisClass.ExternLib = classDecl.ExternLibName ?? Path.GetFileName(core.CurrentDSFileName);
 
@@ -3065,6 +3066,9 @@ namespace ProtoAssociative
                         }
                     }
                 }
+
+                // Verify and store the list of interfaces it inherits from
+                thisClass.Interfaces = classDecl.Interfaces.Select(iname => core.ClassTable.GetClassId(iname)).ToList();
             }
             else if (ProtoCore.CompilerDefinitions.CompilePass.ClassMemVar == compilePass)
             {
