@@ -751,13 +751,13 @@ namespace CoreNodeModels.Input
 
             public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
             {
-                return reader.Value.ToString();
+                return ((double)reader.Value).ToString(CultureInfo.InvariantCulture);
             }
 
             public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
             {
                 double d = 0.0;
-                double.TryParse((string)value, out d);
+                double.TryParse((string)value, NumberStyles.Any, CultureInfo.InvariantCulture, out d);
                 writer.WriteValue(d);
             }
         }

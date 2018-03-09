@@ -185,15 +185,6 @@
               "elementType": "group",
               "include": [
                 {
-                  "path": "BuiltIn.List.ContainsKey"
-                },
-                {
-                  "path": "BuiltIn.List.GetKeys"
-                },
-                {
-                  "path": "BuiltIn.List.GetValues"
-                },
-                {
                   "path": "DSCoreNodes.DSCore.List.GroupByKey"
                 },
                 {
@@ -207,10 +198,6 @@
                 },
                 {
                   "path": "DSCoreNodes.DSCore.List.NormalizeDepth"
-                },
-
-                {
-                  "path": "BuiltIn.List.RemoveKey"
                 },
                 {
                   "path": "DSCoreNodes.DSCore.List.Reverse"
@@ -304,7 +291,7 @@
         },
         {
           "text": "Dictionary",
-          "iconUrl": "",
+          "iconUrl": "./dist/resources/Category.Dictionary.svg",
           "elementType": "category",
           "include": [
             {
@@ -821,7 +808,7 @@
             {
               "text": "Color",
               "iconUrl": "",
-              "elementType": "classType",
+              "elementType": "group",
               "include": [
                 {
                   "path": "DSCoreNodes.DSCore.Color.Red"
@@ -868,7 +855,7 @@
             {
               "text": "Color Range",
               "iconUrl": "",
-              "elementType": "classType",
+              "elementType": "group",
               "include": [
                 {
                   "path": "Core.Color.Color Range"
@@ -885,7 +872,7 @@
             {
               "text": "Watch",
               "iconUrl": "",
-              "elementType": "classType",
+              "elementType": "group",
               "include": [
                 {
                   "path": "Core.View.Watch"
