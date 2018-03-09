@@ -361,11 +361,11 @@ namespace ProtoCore
 
             var qualifiedMethodName = methodName;
 
+            var className = runtimeCore.DSExecutable.classTable.ClassNodes[classScope].Name;
+            var classNameSimple = className.Split('.').Last();
+
             if (classScope != Constants.kGlobalScope)
             {
-                var className = runtimeCore.DSExecutable.classTable.ClassNodes[classScope].Name;
-                var classNameSimple = className.Split('.').Last();
-
                 qualifiedMethodName = classNameSimple + "." + methodName;
             }
 
@@ -373,8 +373,22 @@ namespace ProtoCore
             {
                 if (classScope != Constants.kGlobalScope)
                 {
-                    string classname = runtimeCore.DSExecutable.classTable.ClassNodes[classScope].Name;
-                    message = string.Format(Resources.kPropertyOfClassNotFound, propertyName, classname);
+                    var classNode = runtimeCore.DSExecutable.classTable.ClassNodes[classScope];
+                    var procNodes = classNode.ProcTable.GetFunctionsByName(methodName);
+
+                    if (procNodes.Any() && arguments != null && arguments.Any())
+                    {
+                        qualifiedMethodName = classNameSimple + "." + propertyName;
+
+                        // if the property is found on the class, it must be a static getter being called on 
+                        // an instance argument type not matching the property
+                        message = string.Format(Resources.NonOverloadMethodResolutionError, qualifiedMethodName,
+                            className, GetTypeName(arguments[0]));
+                    }
+                    else
+                    {
+                        message = string.Format(Resources.kPropertyOfClassNotFound, propertyName, className);
+                    }
                 }
                 else
                 {
