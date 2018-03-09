@@ -213,6 +213,106 @@ b = c[w][x][y][z];";
 
         [Test]
         [Category("UnitTests")]
+        public void TestVarRedefinitionInFunctionDef()
+        {
+            string openPath = Path.Combine(TestDirectory,
+                @"core\dsevaluation\TestVarRedefinitionInFunctionDef.dyn");
+            OpenModel(openPath);
+            Assert.AreEqual(1, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+
+            var guid = "bbf7919d-d578-4b54-90b1-7df8f01483c6";
+            var cbn = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace<CodeBlockNodeModel>(
+                Guid.Parse(guid));
+            
+
+            Assert.IsNotNull(cbn);
+            Assert.AreEqual(ElementState.PersistentWarning, cbn.State);
+
+            Assert.IsTrue(cbn.CodeStatements.Any());
+
+            Assert.AreEqual(0, cbn.InPorts.Count);
+            Assert.AreEqual(1, cbn.OutPorts.Count);
+            Assert.AreEqual(0, cbn.AllConnectors.Count());
+            AssertPreviewValue(guid, 3);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TestVarRecursiveDepInFunctionDef()
+        {
+            string openPath = Path.Combine(TestDirectory,
+                @"core\dsevaluation\TestVarRecursiveDepInFunctionDef.dyn");
+            OpenModel(openPath);
+            Assert.AreEqual(1, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+
+            var guid = "bbf7919d-d578-4b54-90b1-7df8f01483c6";
+            var cbn = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace<CodeBlockNodeModel>(
+                Guid.Parse(guid));
+
+
+            Assert.IsNotNull(cbn);
+            Assert.AreEqual(ElementState.PersistentWarning, cbn.State);
+
+            Assert.IsTrue(cbn.CodeStatements.Any());
+
+            Assert.AreEqual(0, cbn.InPorts.Count);
+            Assert.AreEqual(1, cbn.OutPorts.Count);
+            Assert.AreEqual(0, cbn.AllConnectors.Count());
+            AssertPreviewValue(guid, 2);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TestVarRecursiveDepInAssocBlock()
+        {
+            string openPath = Path.Combine(TestDirectory,
+                @"core\dsevaluation\TestVarRecursiveDepInAssocBlock.dyn");
+            OpenModel(openPath);
+            Assert.AreEqual(1, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+
+            var guid = "bbf7919d-d578-4b54-90b1-7df8f01483c6";
+            var cbn = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace<CodeBlockNodeModel>(
+                Guid.Parse(guid));
+
+
+            Assert.IsNotNull(cbn);
+            Assert.AreEqual(ElementState.PersistentWarning, cbn.State);
+
+            Assert.IsTrue(cbn.CodeStatements.Any());
+
+            Assert.AreEqual(0, cbn.InPorts.Count);
+            Assert.AreEqual(1, cbn.OutPorts.Count);
+            Assert.AreEqual(0, cbn.AllConnectors.Count());
+            AssertPreviewValue(guid, null);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TestVarRedefinitionInAssocBlock()
+        {
+            string openPath = Path.Combine(TestDirectory,
+                @"core\dsevaluation\TestVarRedefinitionInAssocBlock.dyn");
+            OpenModel(openPath);
+            Assert.AreEqual(1, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+
+            var guid = "6fbbc611-c805-43c6-809e-69b9ab317a9b";
+            var cbn = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace<CodeBlockNodeModel>(
+                Guid.Parse(guid));
+
+
+            Assert.IsNotNull(cbn);
+            Assert.AreEqual(ElementState.PersistentWarning, cbn.State);
+
+            Assert.IsTrue(cbn.CodeStatements.Any());
+
+            Assert.AreEqual(0, cbn.InPorts.Count);
+            Assert.AreEqual(1, cbn.OutPorts.Count);
+            Assert.AreEqual(0, cbn.AllConnectors.Count());
+            AssertPreviewValue(guid, 3);
+        }
+
+        [Test]
+        [Category("UnitTests")]
         public void TestDefenitionLineIndexMap()
         {
             var codeBlockNodeOne = CreateCodeBlockNode();
