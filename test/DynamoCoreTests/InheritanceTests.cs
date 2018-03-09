@@ -77,5 +77,30 @@ namespace Dynamo.Tests
             AssertPreviewValue("968031ae-975f-4095-a513-64d95d65e16a", 0);
             AssertPreviewValue("c09cde58-3e62-4adc-821d-3885ef769410", 0);
         }
+
+        [Test]
+        public void TestInheritanceOverridesMethodFromClassA()
+        {
+            string openPath = Path.Combine(TestDirectory, @"core\inheritance\inheritanceF.dyn");
+            RunModel(openPath);
+            AssertPreviewValue("4e62c57d-14d3-43b2-8737-f7b221192b4b", 100);
+            AssertPreviewValue("165fe6fa-412a-4031-ab7f-3b19c3add6cf", 99);
+            AssertPreviewValue("b54994bc-6ec4-4a5d-8abc-10c6045879d9", 99);
+            AssertPreviewValue("08793bd5-0b8f-49bc-af70-72182b718a15", 100);
+            AssertPreviewValue("2eecd234-ee7b-4f7f-a290-315e61e4ed86", 0);
+            AssertPreviewValue("94ec01cd-ba19-4ae2-a268-7592db1eca20", 3);
+            AssertPreviewValue("7740d481-c057-4171-a51f-2d8d05168a0e", 3);
+            AssertPreviewValue("b0f78fb9-f5c4-40ac-b40a-a8da606d5f77", 0);
+        }
+
+        [Test, Category("Failure")]
+        public void TestStaticMethodFromBothClasses()
+        {
+            string openPath = Path.Combine(TestDirectory, @"core\inheritance\inheritanceG.dyn");
+            RunModel(openPath);
+            AssertPreviewValue("ca0398e0-f871-4b5f-a06d-e9f6b5963ed3", 23);
+            AssertPreviewValue("49a8b4d4-b184-4892-8d88-476753d603f7", 234);
+            
+        }
     }
 }
