@@ -46,13 +46,34 @@ namespace FFITarget
         {
             return 0;
         }
+
+        public static int Baz()
+        {
+            return 234;
+        }
+
+        public virtual int Foo()
+        {
+            return 99;
+        }
     }
 
     public class HidesMethodFromClassA: ClassA
     {
         public int Bar()
         {
-            return 3;
+            
+            return 3; 
+        }
+
+        public static int Baz()
+        {
+            return 23;
+        }
+
+        public override int Foo()
+        {
+            return base.Foo() + 1;
         }
     }
 
