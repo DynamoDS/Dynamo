@@ -361,13 +361,12 @@ namespace ProtoCore
 
             var qualifiedMethodName = methodName;
 
-            ClassNode classNode = null;
             var className = string.Empty;
             var classNameSimple = string.Empty;
 
             if (classScope != Constants.kGlobalScope)
             {
-                classNode = runtimeCore.DSExecutable.classTable.ClassNodes[classScope];
+                var classNode = runtimeCore.DSExecutable.classTable.ClassNodes[classScope];
                 className = classNode.Name;
                 classNameSimple = className.Split('.').Last();
                 qualifiedMethodName = classNameSimple + "." + methodName;
@@ -377,9 +376,7 @@ namespace ProtoCore
             {
                 if (classScope != Constants.kGlobalScope)
                 {
-                    var procNodes = classNode.ProcTable.GetFunctionsByName(methodName);
-
-                    if (procNodes.Any() && arguments != null && arguments.Any())
+                    if (arguments != null && arguments.Any())
                     {
                         qualifiedMethodName = classNameSimple + "." + propertyName;
 
