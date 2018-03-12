@@ -1385,7 +1385,7 @@ namespace Dynamo.Graph.Nodes
             if (!onlyTopLevel)
             {
                 foreach (Statement subStatement in s.subStatements)
-                    names.AddRange(GetReferencedVariableNames(subStatement, onlyTopLevel));
+                    names.AddRange(GetReferencedVariableNames(subStatement, onlyTopLevel: false));
             }
             return names;
         }
@@ -1420,20 +1420,22 @@ namespace Dynamo.Graph.Nodes
 
         private static IdentifierNode GetDefinedIdentifier(Node leftNode)
         {
-            if (leftNode is TypedIdentifierNode)
-                return new IdentifierNode(leftNode as IdentifierNode);
-            if (leftNode is IdentifierNode)
+            var lhs = leftNode as TypedIdentifierNode;
+            if (lhs != null)
+                return new IdentifierNode((IdentifierNode) leftNode);
+
+            var identiferNode = leftNode as IdentifierNode;
+            if (identiferNode != null)
             {
-                var identiferNode = leftNode as IdentifierNode;
-                if (identiferNode.ArrayDimensions != null)
-                    return null;
-                else
-                    return identiferNode;
+                //if (identiferNode.ArrayDimensions != null)
+                //    return null;
+
+                return identiferNode;
             }
-            else if (leftNode is IdentifierListNode || leftNode is FunctionCallNode)
+            if (leftNode is IdentifierListNode || leftNode is FunctionCallNode)
                 return null;
-            else
-                throw new ArgumentException("Left node type incorrect");
+
+            throw new ArgumentException("Left node type incorrect");
         }
         #endregion
 

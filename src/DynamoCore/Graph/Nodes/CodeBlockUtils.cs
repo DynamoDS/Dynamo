@@ -76,16 +76,9 @@ namespace Dynamo.Graph.Nodes
             IEnumerable<Statement> statements, bool onlyTopLevel)
         {
             if (statements == null)
-                throw new ArgumentNullException("statements");
+                throw new ArgumentNullException(nameof(statements));
 
-            var definedVariables = new List<List<string>>();
-            foreach (var statement in statements)
-            {
-                definedVariables.Add(Statement.GetDefinedVariableNames(
-                    statement, onlyTopLevel));
-            }
-
-            return definedVariables;
+            return statements.Select(statement => Statement.GetDefinedVariableNames(statement, onlyTopLevel)).ToList();
         }
 
         /// <summary>

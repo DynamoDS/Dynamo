@@ -10,6 +10,7 @@ using ProtoCore.AssociativeGraph;
 using ProtoCore.BuildData;
 using System.Linq;
 using ProtoAssociative.Properties;
+using ProtoCore.CompilerDefinitions;
 
 namespace ProtoAssociative
 {
@@ -5148,6 +5149,7 @@ namespace ProtoAssociative
                         }
                         return;
                     }
+
                 }
             }
             else //(ProtoCore.DSASM.Operator.assign != b.Optr)
@@ -5483,7 +5485,21 @@ namespace ProtoAssociative
                     {
                         if (!isAllocated)
                         {
-                            symbolnode = Allocate(globalClassIndex, globalClassIndex, globalProcIndex, t.Name, inferedType, line: bnode.line, col: bnode.col); 
+                            //if (dimensions > 0)
+                            //{
+                            //    // a[0] = x; => a = null; a[0] = x;
+                            //    var arrIdent = new IdentifierNode(t.Name);
+                            //    var nullArr = new NullNode();
+                            //    var arrInit = new BinaryExpressionNode(arrIdent, nullArr, Operator.assign);
+                            //    //EmitBinaryExpressionNode(arrInit, ref inferedType);
+                            //    DfsTraverse(arrInit, ref inferedType, isBooleanOp, null, subPass);
+                            //    isAllocated = VerifyAllocation(t.Name, globalClassIndex, globalProcIndex, out symbolnode, out isAccessible);
+                            //    symbolnode.datatype.rank = dimensions;
+                            //}
+                            //else
+                                symbolnode = Allocate(globalClassIndex, globalClassIndex, globalProcIndex, t.Name, 
+                                    inferedType, line: bnode.line, col: bnode.col); 
+
                             if (core.Options.RunMode == ProtoCore.DSASM.InterpreterMode.Expression)
                             {
                                 core.watchSymbolList.Add(symbolnode);
@@ -5491,8 +5507,8 @@ namespace ProtoAssociative
 
                             if (dimensions > 0)
                             {
-                                string message = String.Format(ProtoCore.Properties.Resources.kUnboundIdentifierMsg, t.Value);
-                                buildStatus.LogUnboundVariableWarning(symbolnode, message, core.CurrentDSFileName, t.line, t.col, graphNode);
+                                //string message = String.Format(ProtoCore.Properties.Resources.kUnboundIdentifierMsg, t.Value);
+                                //buildStatus.LogUnboundVariableWarning(symbolnode, message, core.CurrentDSFileName, t.line, t.col, graphNode);
                                 symbolnode.datatype.rank = dimensions;
                             }
                         }
