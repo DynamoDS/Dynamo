@@ -1227,7 +1227,7 @@ var06 = g;
             Assert.Throws<ArgumentNullException>(() =>
             {
                 // Null as argument will cause exception.
-                CodeBlockUtils.GetStatementVariables(null, true);
+                CodeBlockUtils.GetStatementVariables(null);
             });
         }
 
@@ -1246,7 +1246,7 @@ var06 = g;
                 Statement.CreateInstance(binExprNode)
             };
 
-            var vars = CodeBlockUtils.GetStatementVariables(statements, true);
+            var vars = CodeBlockUtils.GetStatementVariables(statements);
             Assert.IsNotNull(vars);
             Assert.AreEqual(1, vars.Count());
 
