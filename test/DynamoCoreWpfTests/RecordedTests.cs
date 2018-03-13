@@ -1933,15 +1933,15 @@ namespace DynamoCoreWpfTests
             //Check the CBN for input and output ports count
             var cbn = GetNode("c9929987-69c8-42bd-9cda-04ef90d029cb") as CodeBlockNodeModel;
             Assert.AreNotEqual(ElementState.Error, cbn.State);
-            Assert.AreEqual(2, cbn.OutPorts.Count);
+            Assert.AreEqual(3, cbn.OutPorts.Count);
             Assert.AreEqual(0, cbn.InPorts.Count);
 
             //Check the position of ports
             Assert.AreEqual("a", cbn.OutPorts[0].ToolTip);
             Assert.AreEqual(0, cbn.OutPorts[0].LineIndex);
 
-            Assert.AreEqual("b", cbn.OutPorts[1].ToolTip);
-            Assert.AreEqual(3, cbn.OutPorts[1].LineIndex);
+            Assert.AreEqual("b", cbn.OutPorts[2].ToolTip);
+            Assert.AreEqual(3, cbn.OutPorts[2].LineIndex);
         }
 
         [Test, RequiresSTA]
@@ -2110,7 +2110,7 @@ namespace DynamoCoreWpfTests
             //Check the CBN for input and output ports count
             var cbn = GetNode("3c7c3458-70be-4588-b162-b1099cf30ebc") as CodeBlockNodeModel;
             Assert.AreNotEqual(ElementState.Error, cbn.State);
-            Assert.AreEqual(1, cbn.OutPorts.Count);
+            Assert.AreEqual(4, cbn.OutPorts.Count);
             Assert.AreEqual(0, cbn.InPorts.Count);
 
             //Check the position of ports
