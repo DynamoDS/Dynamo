@@ -1258,6 +1258,45 @@ var06 = g;
 
         [Test]
         [Category("UnitTests")]
+        public void GetStatementVariablesForOutports00()
+        {
+            var cb = ParserUtils.Parse(@"a[0] = 1234; a[1] = ""abcd"";");
+
+            var binExprNode = cb.Body[0] as BinaryExpressionNode;
+
+            var statements = new List<Statement>
+            {
+                Statement.CreateInstance(binExprNode)
+            };
+
+            var vars = CodeBlockUtils.GetStatementVariablesForOutports(statements);
+            Assert.IsNotNull(vars);
+            Assert.AreEqual(1, vars.Count());
+
+            var variables = vars.ElementAt(0);
+            Assert.IsNotNull(variables);
+            Assert.AreEqual(1, variables.Count());
+            Assert.AreEqual("a[0]", variables.ElementAt(0));
+
+            binExprNode = cb.Body[1] as BinaryExpressionNode;
+
+            statements = new List<Statement>
+            {
+                Statement.CreateInstance(binExprNode)
+            };
+
+            vars = CodeBlockUtils.GetStatementVariablesForOutports(statements);
+            Assert.IsNotNull(vars);
+            Assert.AreEqual(1, vars.Count());
+
+            variables = vars.ElementAt(0);
+            Assert.IsNotNull(variables);
+            Assert.AreEqual(1, variables.Count());
+            Assert.AreEqual("a[1]", variables.ElementAt(0));
+        }
+
+        [Test]
+        [Category("UnitTests")]
         public void StatementRequiresOutputPort00()
         {
             Assert.Throws<ArgumentNullException>(() =>

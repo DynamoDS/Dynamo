@@ -502,16 +502,6 @@ namespace ProtoCore.Utils
                             {
                                 warning.displayName = bNode.LeftNode.Name;
                             }
-                            //var lNode = bNode.LeftNode;
-                            //if (warning.displayName == lNode.Name)
-                            //{
-                            //    var iNode = lNode as IdentifierNode;
-                            //    // if undefined lhs identifier is an array assignment
-                            //    // skip creation of input port. For e.g. in the case "arr[0] = "foo";"
-                            //    // do not allow "arr" to be an input variable in code block node.
-                            //    if (iNode != null && iNode.ArrayDimensions != null)
-                            //        continue;
-                            //}
                             variableLineList.Add(warning);
                         }
                     }

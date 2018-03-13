@@ -5485,20 +5485,8 @@ namespace ProtoAssociative
                     {
                         if (!isAllocated)
                         {
-                            //if (dimensions > 0)
-                            //{
-                            //    // a[0] = x; => a = null; a[0] = x;
-                            //    var arrIdent = new IdentifierNode(t.Name);
-                            //    var nullArr = new NullNode();
-                            //    var arrInit = new BinaryExpressionNode(arrIdent, nullArr, Operator.assign);
-                            //    //EmitBinaryExpressionNode(arrInit, ref inferedType);
-                            //    DfsTraverse(arrInit, ref inferedType, isBooleanOp, null, subPass);
-                            //    isAllocated = VerifyAllocation(t.Name, globalClassIndex, globalProcIndex, out symbolnode, out isAccessible);
-                            //    symbolnode.datatype.rank = dimensions;
-                            //}
-                            //else
-                                symbolnode = Allocate(globalClassIndex, globalClassIndex, globalProcIndex, t.Name, 
-                                    inferedType, line: bnode.line, col: bnode.col); 
+                            symbolnode = Allocate(globalClassIndex, globalClassIndex, globalProcIndex, t.Name,
+                                inferedType, line: bnode.line, col: bnode.col);
 
                             if (core.Options.RunMode == ProtoCore.DSASM.InterpreterMode.Expression)
                             {
@@ -5507,8 +5495,6 @@ namespace ProtoAssociative
 
                             if (dimensions > 0)
                             {
-                                //string message = String.Format(ProtoCore.Properties.Resources.kUnboundIdentifierMsg, t.Value);
-                                //buildStatus.LogUnboundVariableWarning(symbolnode, message, core.CurrentDSFileName, t.line, t.col, graphNode);
                                 symbolnode.datatype.rank = dimensions;
                             }
                         }

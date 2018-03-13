@@ -192,27 +192,6 @@ namespace Dynamo.Graph.Nodes
             return cbn.inputIdentifiers.IndexOf(variableName);
         }
 
-        /// <summary>
-        ///  Returns the corresponding output port index for a given defined variable 
-        /// </summary>
-        /// <param name="variableName"></param>
-        /// <returns></returns>
-        //internal int GetOutportIndex(string variableName)
-        //{
-        //    var svs = CodeBlockUtils.GetStatementVariables(codeStatements, true);
-        //    for (int i = 0; i < codeStatements.Count; i++)
-        //    {
-        //        Statement s = codeStatements[i];
-        //        if (CodeBlockUtils.DoesStatementRequireOutputPort(svs, i))
-        //        {
-        //            List<string> varNames = Statement.GetDefinedVariableNames(s, true);
-        //            if (varNames.Contains(variableName))
-        //                return i;
-        //        }
-        //    }
-        //    return -1;
-        //}
-
         #endregion
 
         #region Properties
@@ -1355,24 +1334,7 @@ namespace Dynamo.Graph.Nodes
                 //Or node not completely implemented YET
             }
         }
-
-        /// <summary>
-        ///     Returns the names of the variables that have been referenced in the statement
-        /// </summary>
-        /// <param name="s"> Statement whose variable names to be got.</param>
-        /// <param name="onlyTopLevel"> Bool to check if required to return reference variables in sub statements as well</param>
-        /// <returns></returns>
-        //public static List<string> GetReferencedVariableNames(Statement s, bool onlyTopLevel)
-        //{
-        //    var names = s.referencedVariables.Select(refVar => refVar.Name).ToList();
-        //    if (!onlyTopLevel)
-        //    {
-        //        foreach (Statement subStatement in s.subStatements)
-        //            names.AddRange(GetReferencedVariableNames(subStatement, onlyTopLevel));
-        //    }
-        //    return names;
-        //}
-
+        
         /// <summary>
         /// Returns the names of the variables that have been declared in the statement
         /// </summary>
@@ -1392,7 +1354,7 @@ namespace Dynamo.Graph.Nodes
         /// <returns></returns>
         public static List<string> GetDefinedVariableNamesForOutports(Statement s)
         {
-            return s.definedVariables.Select(outVar => outVar.VarName).ToList();
+            return s.definedVariables.Select(outVar => outVar.NameWithIndex).ToList();
         }
 
         /// <summary>
@@ -1432,9 +1394,6 @@ namespace Dynamo.Graph.Nodes
             var identiferNode = leftNode as IdentifierNode;
             if (identiferNode != null)
             {
-                //if (identiferNode.ArrayDimensions != null)
-                //    return null;
-
                 return identiferNode;
             }
             if (leftNode is IdentifierListNode || leftNode is FunctionCallNode)
@@ -1551,7 +1510,13 @@ namespace Dynamo.Graph.Nodes
         /// </summary>
         public string Name { get; private set; }
 
-        public string VarName { get; private set; }
+        /// <summary>
+        /// This returns the name of the list including its index. 
+        /// E.g. for "a[0] = 5;", NameWithIndex will be "a[0]".
+        /// It simply returns the name of the variable otherwise.
+        /// E.g. for "a = 5;" NameWithIndex will be "a".
+        /// </summary>
+        public string NameWithIndex { get; private set; }
 
         #region Private Methods
 
@@ -1577,22 +1542,11 @@ namespace Dynamo.Graph.Nodes
                 throw new ArgumentNullException();
 
             Name = identNode.Name;
-            VarName = identNode.ToString();
+            NameWithIndex = identNode.ToString();
             Row = identNode.line;
             StartColumn = identNode.col;
         }
-
-        /// <summary>
-        /// Creates variable
-        /// </summary>
-        /// <param name="name">Name</param>
-        /// <param name="line">line</param>
-        //public Variable(string name, int line)
-        //{
-        //    Name = name;
-        //    Row = line;
-        //}
-
+        
         /// <summary>
         /// Moves column index back only if variable is not an expression.
         /// </summary>

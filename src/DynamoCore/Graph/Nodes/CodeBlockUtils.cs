@@ -252,7 +252,7 @@ namespace Dynamo.Graph.Nodes
             // Get all defined variables and their locations
             var definedVars = codeStatements.Select(s => new KeyValuePair<Variable, int>(s.FirstDefinedVariable, s.StartLine))
                                             .Where(pair => pair.Key != null)
-                                            .Select(pair => new KeyValuePair<string, int>(pair.Key.VarName, pair.Value))
+                                            .Select(pair => new KeyValuePair<string, int>(pair.Key.NameWithIndex, pair.Value))
                                             .OrderBy(pair => pair.Key)
                                             .GroupBy(pair => pair.Key);
 
