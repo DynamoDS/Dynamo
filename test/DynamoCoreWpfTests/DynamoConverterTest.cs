@@ -157,8 +157,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(ConversionUnit.Decimeters, converterNode.SelectedToConversion);
 
             ViewModel.HomeSpace.Run();
-            Thread.Sleep(500);
-
+            
             AssertPreviewValue("45f1ee23-5d81-4233-975e-faf218203de5", 100.0);
 
             /* Again convert from Meters to MilliMeters */
@@ -167,8 +166,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(ConversionUnit.Millimeters, converterNode.SelectedToConversion);
 
             ViewModel.HomeSpace.Run();
-            Thread.Sleep(500);
-
+            
             AssertPreviewValue("45f1ee23-5d81-4233-975e-faf218203de5", 10000.0);
 
             /*Convert from CubicMilliMeters to CubicMeters */
