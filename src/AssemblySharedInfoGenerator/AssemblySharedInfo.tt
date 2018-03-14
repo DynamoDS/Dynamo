@@ -69,8 +69,6 @@ using System.Runtime.InteropServices;
 <#+
 int MajorVersion = 2;
 int MinorVersion = 0;
-int BuildNumber = 1;
-// The datetime baseline we choose using this algorithm will affect build number and all nuget packages uploaded
-// Please only change when major version got incremented
+int BuildNumber = 0;
 int RevisionNumber = ((int)(DateTime.UtcNow - new DateTime(2017,1,1)).TotalDays)*10+((int)DateTime.UtcNow.Hour)/3;
 #>

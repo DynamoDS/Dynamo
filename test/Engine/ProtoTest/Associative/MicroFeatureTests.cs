@@ -2471,12 +2471,10 @@ x = getx(p);
         [Test]
         public void TestBasicArrayMethods()
         {
-            string src = @"
-import(""BuiltIn.ds"");
-a = [ 1, 2, [ 3, 4, 5, [ 6, 7, [ 8, 9, [ [ 11 ] ] ] ] ], [ 12, 13 ] ];
-c = List.Count(a);
-r = List.Rank(a);
-a2 = List.Flatten(a);";
+            string src = @"a = [ 1, 2, [ 3, 4, 5, [ 6, 7, [ 8, 9, [ [ 11 ] ] ] ] ], [ 12, 13 ] ];
+c = Count(a);
+r = Rank(a);
+a2 = Flatten(a);";
             thisTest.RunScriptSource(src);
             thisTest.Verify("c",4);
             thisTest.Verify("r",6);

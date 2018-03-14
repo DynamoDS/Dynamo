@@ -776,7 +776,6 @@ d2 = TestData.SumList([1, 2, [3, 4], [5, [6, [7]]]]);
             String code =
             @"
                 import(""DesignScriptBuiltin.dll"");
-                import(""BuiltIn.ds"");
                 import (TestData from ""FFITarget.dll"");
 
                 d = TestData.TestData();
@@ -784,10 +783,10 @@ d2 = TestData.SumList([1, 2, [3, 4], [5, [6, [7]]]]);
                 arr2 = TestData.JoinList([d, d, d]);
 
                 type1 = ToString(arr1[0]);
-                rank1 = List.Rank(arr1);
+                rank1 = Rank(arr1);
 
                 type2 = ToString(arr2[0]);
-                rank2 = List.Rank(arr2);
+                rank2 = Rank(arr2);
             ";
             ValidationData[] data = { 
                 new ValidationData { ValueName = "type1", ExpectedValue = "FFITarget.TestData", BlockIndex = 0 }, 

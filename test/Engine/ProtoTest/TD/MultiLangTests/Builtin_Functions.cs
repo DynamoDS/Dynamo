@@ -1661,17 +1661,15 @@ x6 = Average([null]) ;// returns 0.0
         }
 
         [Test]
-        [Category("Built in Functions"), Category("Failure")]
+        [Category("Built in Functions")]
         public void TV_1467348_Rank()
         {
-            // TODO pratapa: List.Rank() should throw method not found warning
             string code = @"
-import(""BuiltIn.ds"");
-r1 = List.Rank(); //null
-r2 = List.Rank(1);//0
-r3 = List.Rank([ ]);//1
-r4 = List.Rank([ [  ] ]);//2
-r5 = List.Rank([ [ ""123"" ] ]);//2
+r1 = Rank(); //null
+r2 = Rank(1);//0
+r3 = Rank([ ]);//1
+r4 = Rank([ [  ] ]);//2
+r5 = Rank([ [ ""123"" ] ]);//2
                ";
             thisTest.RunScriptSource(code);
             //thisTest.SetErrorMessage("1467348 - Language: Rank(3) should return 0");
@@ -1752,12 +1750,11 @@ r = CountTrue(arr);
         public void TV_1467348_Rank_2()
         {
             String code =
-@"import(""BuiltIn.ds"");
-a = List.Rank(1);
-a1 =List.Rank([ ]);
-a2 =List.Rank([ [ ] ]);
-a3 =List.Rank([ 1 ]);
-a4 =List.Rank([ [ [ 1 ] ] ]);
+@"a = Rank(1);
+a1 = Rank([ ]);
+a2 = Rank([ [ ] ]);
+a3 = Rank([ 1 ]);
+a4 = Rank([ [ [ 1 ] ] ]);
 ";
             thisTest.RunScriptSource(code);
             thisTest.Verify("a", 0);

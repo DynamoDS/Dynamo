@@ -137,10 +137,10 @@ namespace DynamoCoreWpfTests
             string openPath = Path.Combine(TestDirectory, @"core\ConvertBetweenUnitsTest.dyn");
             RunModel(openPath);
 
-            var node1 = model.CurrentWorkspace.NodeFromWorkspace("1371db60-371d-406b-a613-2f71ee43ccee");
+            var node1 = model.CurrentWorkspace.NodeFromWorkspace("1371db60-371d-406b-a613-2f71ee43ccee") as DoubleInput;
             Assert.NotNull(node1);
             Assert.IsAssignableFrom(typeof(DoubleInput), node1);
-            Assert.AreEqual("10", ((DoubleInput)node1).Value);
+            Assert.AreEqual("10", node1.Value);
 
             /* Initial Conversion from Meters to MilliMeters */
             var converterNode =
@@ -157,7 +157,6 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(ConversionUnit.Decimeters, converterNode.SelectedToConversion);
 
             ViewModel.HomeSpace.Run();
-            Thread.Sleep(500);
 
             AssertPreviewValue("45f1ee23-5d81-4233-975e-faf218203de5", 100.0);
 
@@ -167,9 +166,14 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(ConversionUnit.Millimeters, converterNode.SelectedToConversion);
 
             ViewModel.HomeSpace.Run();
-            Thread.Sleep(500);
-
+            
             AssertPreviewValue("45f1ee23-5d81-4233-975e-faf218203de5", 10000.0);
+
+            /* Convert from CubicMillimeter to CubicMeter */
+            node1.Value = "1000000000";
+            converterNode.SelectedFromConversion = ConversionUnit.CubicMillimeter;
+            converterNode.SelectedToConversion = ConversionUnit.CubicMeters;
+            ViewModel.HomeSpace.Run();
         }
 
         [Test]
