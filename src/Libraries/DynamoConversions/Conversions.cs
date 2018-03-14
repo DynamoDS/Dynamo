@@ -47,7 +47,7 @@ namespace DynamoConversions
             {ConversionUnit.CubicYards,0.765},         
             {ConversionUnit.CubicInches,1/61023.7},
             {ConversionUnit.CubicCentimeter,0.000001}, 
-            {ConversionUnit.CubicMillimeter,0.000000001},
+            {ConversionUnit.CubicMillimeter,0.00000001},
             {ConversionUnit.Litres,0.001}, 
             {ConversionUnit.USGallons,0.003785}, 
         };
