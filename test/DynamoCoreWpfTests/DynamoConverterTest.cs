@@ -170,6 +170,7 @@ namespace DynamoCoreWpfTests
             AssertPreviewValue("45f1ee23-5d81-4233-975e-faf218203de5", 10000.0);
 
             /*Convert from CubicMilliMeters to CubicMeters */
+             * https://jira.autodesk.com/browse/QNTM-1304 */
             node1.Value = "1000000000";
             converterNode.SelectedFromConversion = ConversionUnit.CubicMillimeter;
             converterNode.SelectedToConversion = ConversionUnit.CubicMeters;
