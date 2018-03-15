@@ -3096,15 +3096,6 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Failed to perform code block autocomplete with exception:.
-        /// </summary>
-        public static string MessageFailedToAutocomple {
-            get {
-                return ResourceManager.GetString("MessageFailedToAutocomple", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Failed to download package with id: {0}.  Please try again and report the package if you continue to have problems..
         /// </summary>
         public static string MessageFailedToDownloadPackage {
