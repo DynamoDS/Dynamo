@@ -388,10 +388,6 @@
                 },
                 {
                   "path": "DSCoreNodes.DSCore.DateTime.Format"
-                },
-                {
-                  "path": "DSCoreNodes.DSCore.DayOfWeek",
-                  "iconUrl": "./dist/resources/DSCore.DayOfWeek.png"
                 }
               ],
               "childElements": [ ]
