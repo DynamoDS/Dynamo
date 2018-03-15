@@ -1,0 +1,170 @@
+{
+  "Uuid": "b6a9f6bc-890c-4af6-ad80-8222c6346a84",
+  "IsCustomNode": false,
+  "Description": null,
+  "Name": "tostaticproperty",
+  "ElementResolver": {
+    "ResolutionMap": {
+      "ValueContainer": {
+        "Key": "FFITarget.ValueContainer",
+        "Value": "FFITarget.dll"
+      }
+    }
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "FFITarget.ValueContainer.ValueContainer@int",
+      "Id": "17b2026026004a6a977a4a301a4aac62",
+      "Inputs": [
+        {
+          "Id": "c8852371c3cd4889bb4a8df0365de37c",
+          "Name": "value",
+          "Description": "int",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "5ff094cd5f2246fab8852e48350b63e8",
+          "Name": "ValueContainer",
+          "Description": "ValueContainer",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "ValueContainer.ValueContainer (value: int): ValueContainer"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "23;",
+      "Id": "6cdfcd16cea24043b04f672d94f11a7b",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "e4f56ac3eaa049f4b25e809e48d358c0",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "FFITarget.ValueContainer.SomeValue",
+      "Id": "f9684cff87eb4a96bdc341dfa862ae81",
+      "Inputs": [
+        {
+          "Id": "6d24cceb6fe841f289d2438e8c873845",
+          "Name": "valueContainer",
+          "Description": "FFITarget.ValueContainer",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "2273f0d5a22f42b39ab469e142b6c3c2",
+          "Name": "int",
+          "Description": "int",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "ValueContainer.SomeValue: int"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "5ff094cd5f2246fab8852e48350b63e8",
+      "End": "6d24cceb6fe841f289d2438e8c873845",
+      "Id": "99297dae14624c819437a4ffd6c311b6"
+    },
+    {
+      "Start": "e4f56ac3eaa049f4b25e809e48d358c0",
+      "End": "c8852371c3cd4889bb4a8df0365de37c",
+      "Id": "dda95b412b21480e82b3814785e795a1"
+    }
+  ],
+  "Dependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.0.1.4375",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "ValueContainer.ValueContainer",
+        "Id": "17b2026026004a6a977a4a301a4aac62",
+        "IsInput": false,
+        "IsOutput": false,
+        "Excluded": false,
+        "X": 316.0,
+        "Y": 161.0
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "6cdfcd16cea24043b04f672d94f11a7b",
+        "IsInput": false,
+        "IsOutput": false,
+        "Excluded": false,
+        "X": 88.0,
+        "Y": 180.0
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "ValueContainer.SomeValue",
+        "Id": "f9684cff87eb4a96bdc341dfa862ae81",
+        "IsInput": false,
+        "IsOutput": false,
+        "Excluded": false,
+        "X": 649.0,
+        "Y": 163.0
+      }
+    ],
+    "Annotations": [],
+    "X": -3.7660932678041945,
+    "Y": 2.5987276706231341,
+    "Zoom": 0.97676875
+  }
+}
