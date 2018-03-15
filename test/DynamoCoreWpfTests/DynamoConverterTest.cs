@@ -174,6 +174,8 @@ namespace DynamoCoreWpfTests
             converterNode.SelectedFromConversion = ConversionUnit.CubicMillimeter;
             converterNode.SelectedToConversion = ConversionUnit.CubicMeters;
             ViewModel.HomeSpace.Run();
+
+            AssertPreviewValue("45f1ee23-5d81-4233-975e-faf218203de5", 1);
         }
 
         [Test]
