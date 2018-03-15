@@ -1572,9 +1572,6 @@ Do you want to install the latest Dynamo update?</value>
   <data name="MessageFailedToAttachToRowColumn" xml:space="preserve">
     <value>'AttachmentToRowColumnConverter' expects a 'ConverterParameter' value to be either 'Row' or 'Column'</value>
   </data>
-  <data name="MessageFailedToAutocomple" xml:space="preserve">
-    <value>Failed to perform code block autocomplete with exception:</value>
-  </data>
   <data name="MessageFailedToFindNodeById" xml:space="preserve">
     <value>No node could be found with that Id.</value>
   </data>

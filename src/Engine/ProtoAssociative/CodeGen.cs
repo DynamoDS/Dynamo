@@ -10,6 +10,7 @@ using ProtoCore.AssociativeGraph;
 using ProtoCore.BuildData;
 using System.Linq;
 using ProtoAssociative.Properties;
+using ProtoCore.CompilerDefinitions;
 
 namespace ProtoAssociative
 {
@@ -1006,7 +1007,7 @@ namespace ProtoAssociative
         {
             ProcedureNode procCallNode = null;
 
-            var dotCallType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, 0); ;
+            var dotCallType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, 0);
 
             bool isConstructor = false;
             bool isStaticCall = false;
@@ -5158,6 +5159,7 @@ namespace ProtoAssociative
                         }
                         return;
                     }
+
                 }
             }
             else //(ProtoCore.DSASM.Operator.assign != b.Optr)
@@ -5493,7 +5495,9 @@ namespace ProtoAssociative
                     {
                         if (!isAllocated)
                         {
-                            symbolnode = Allocate(globalClassIndex, globalClassIndex, globalProcIndex, t.Name, inferedType, line: bnode.line, col: bnode.col); 
+                            symbolnode = Allocate(globalClassIndex, globalClassIndex, globalProcIndex, t.Name,
+                                inferedType, line: bnode.line, col: bnode.col);
+
                             if (core.Options.RunMode == ProtoCore.DSASM.InterpreterMode.Expression)
                             {
                                 core.watchSymbolList.Add(symbolnode);
@@ -5501,8 +5505,6 @@ namespace ProtoAssociative
 
                             if (dimensions > 0)
                             {
-                                string message = String.Format(ProtoCore.Properties.Resources.kUnboundIdentifierMsg, t.Value);
-                                buildStatus.LogUnboundVariableWarning(symbolnode, message, core.CurrentDSFileName, t.line, t.col, graphNode);
                                 symbolnode.datatype.rank = dimensions;
                             }
                         }
