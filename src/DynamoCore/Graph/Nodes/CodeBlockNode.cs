@@ -175,7 +175,7 @@ namespace Dynamo.Graph.Nodes
             // Then get all variabled on the LHS of the statements
             foreach (Statement stmnt in codeStatements)
             {
-                defVarNames.AddRange(Statement.GetDefinedVariableNames(stmnt, true));
+                defVarNames.AddRange(Statement.GetDefinedVariableNames(stmnt));
             }
 
             return defVarNames;
@@ -190,27 +190,6 @@ namespace Dynamo.Graph.Nodes
         internal static int GetInportIndex(CodeBlockNodeModel cbn, string variableName)
         {
             return cbn.inputIdentifiers.IndexOf(variableName);
-        }
-
-        /// <summary>
-        ///  Returns the corresponding output port index for a given defined variable 
-        /// </summary>
-        /// <param name="variableName"></param>
-        /// <returns></returns>
-        internal int GetOutportIndex(string variableName)
-        {
-            var svs = CodeBlockUtils.GetStatementVariables(codeStatements, true);
-            for (int i = 0; i < codeStatements.Count; i++)
-            {
-                Statement s = codeStatements[i];
-                if (CodeBlockUtils.DoesStatementRequireOutputPort(svs, i))
-                {
-                    List<string> varNames = Statement.GetDefinedVariableNames(s, true);
-                    if (varNames.Contains(variableName))
-                        return i;
-                }
-            }
-            return -1;
         }
 
         #endregion
@@ -473,7 +452,7 @@ namespace Dynamo.Graph.Nodes
             // port index.
             // 
             Statement statement = null;
-            var svs = CodeBlockUtils.GetStatementVariables(codeStatements, true);
+            var svs = CodeBlockUtils.GetStatementVariablesForOutports(codeStatements);
             for (int stmt = 0, port = 0; stmt < codeStatements.Count; stmt++)
             {
                 if (CodeBlockUtils.DoesStatementRequireOutputPort(svs, stmt))
@@ -699,7 +678,7 @@ namespace Dynamo.Graph.Nodes
                     inputIdentifiers = new List<string>();
                     inputPortNames = new List<string>();
 
-                    var definedVariables = new HashSet<string>(CodeBlockUtils.GetStatementVariables(codeStatements, true).SelectMany(s => s));
+                    var definedVariables = new HashSet<string>(CodeBlockUtils.GetStatementVariables(codeStatements).SelectMany(s => s));
                     foreach (var kvp in parseParam.UnboundIdentifiers)
                     {
                         if (!definedVariables.Contains(kvp.Value))
@@ -1355,39 +1334,27 @@ namespace Dynamo.Graph.Nodes
                 //Or node not completely implemented YET
             }
         }
-
+        
         /// <summary>
-        ///     Returns the names of the variables that have been referenced in the statement
+        /// Returns the names of the variables that have been declared in the statement
         /// </summary>
-        /// <param name="s"> Statement whose variable names to be got.</param>
-        /// <param name="onlyTopLevel"> Bool to check if required to return reference variables in sub statements as well</param>
+        /// <param name="s"> Statement whose variable names to be queried.</param>
         /// <returns></returns>
-        public static List<string> GetReferencedVariableNames(Statement s, bool onlyTopLevel)
+        public static List<string> GetDefinedVariableNames(Statement s)
         {
-            var names = s.referencedVariables.Select(refVar => refVar.Name).ToList();
-            if (!onlyTopLevel)
-            {
-                foreach (Statement subStatement in s.subStatements)
-                    names.AddRange(GetReferencedVariableNames(subStatement, onlyTopLevel));
-            }
-            return names;
+            return s.definedVariables.Select(defVar => defVar.Name).ToList();
         }
 
         /// <summary>
-        ///     Returns the names of the variables that have been declared in the statement
+        /// Returns the names of the variables that have been declared in the statement
+        /// for code block node output ports. 
+        /// Example: "a[0] = x; a[1] = y;" will return 2 output ports, one for each list index.
         /// </summary>
         /// <param name="s"> Statement whose variable names to be queried.</param>
-        /// <param name="onlyTopLevel"> Bool to check if required to return reference variables in sub statements as well</param>
         /// <returns></returns>
-        public static List<string> GetDefinedVariableNames(Statement s, bool onlyTopLevel)
+        internal static List<string> GetDefinedVariableNamesForOutports(Statement s)
         {
-            var names = s.definedVariables.Select(refVar => refVar.Name).ToList();
-            if (!onlyTopLevel)
-            {
-                foreach (Statement subStatement in s.subStatements)
-                    names.AddRange(GetReferencedVariableNames(subStatement, onlyTopLevel));
-            }
-            return names;
+            return s.definedVariables.Select(outVar => outVar.NameWithIndex).ToList();
         }
 
         /// <summary>
@@ -1420,20 +1387,19 @@ namespace Dynamo.Graph.Nodes
 
         private static IdentifierNode GetDefinedIdentifier(Node leftNode)
         {
-            if (leftNode is TypedIdentifierNode)
-                return new IdentifierNode(leftNode as IdentifierNode);
-            if (leftNode is IdentifierNode)
+            var lhs = leftNode as TypedIdentifierNode;
+            if (lhs != null)
+                return new IdentifierNode((IdentifierNode) leftNode);
+
+            var identiferNode = leftNode as IdentifierNode;
+            if (identiferNode != null)
             {
-                var identiferNode = leftNode as IdentifierNode;
-                if (identiferNode.ArrayDimensions != null)
-                    return null;
-                else
-                    return identiferNode;
+                return identiferNode;
             }
-            else if (leftNode is IdentifierListNode || leftNode is FunctionCallNode)
+            if (leftNode is IdentifierListNode || leftNode is FunctionCallNode)
                 return null;
-            else
-                throw new ArgumentException("Left node type incorrect");
+
+            throw new ArgumentException("Left node type incorrect");
         }
         #endregion
 
@@ -1544,6 +1510,14 @@ namespace Dynamo.Graph.Nodes
         /// </summary>
         public string Name { get; private set; }
 
+        /// <summary>
+        /// This returns the name of the list including its index. 
+        /// E.g. for "a[0] = 5;", NameWithIndex will be "a[0]".
+        /// It simply returns the name of the variable otherwise.
+        /// E.g. for "a = 5;" NameWithIndex will be "a".
+        /// </summary>
+        public string NameWithIndex { get; private set; }
+
         #region Private Methods
 
         private void MoveColumnBack(int line)
@@ -1568,21 +1542,11 @@ namespace Dynamo.Graph.Nodes
                 throw new ArgumentNullException();
 
             Name = identNode.Name;
+            NameWithIndex = identNode.ToString();
             Row = identNode.line;
             StartColumn = identNode.col;
         }
-
-        /// <summary>
-        /// Creates variable
-        /// </summary>
-        /// <param name="name">Name</param>
-        /// <param name="line">line</param>
-        public Variable(string name, int line)
-        {
-            Name = name;
-            Row = line;
-        }
-
+        
         /// <summary>
         /// Moves column index back only if variable is not an expression.
         /// </summary>
