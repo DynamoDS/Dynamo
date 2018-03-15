@@ -1071,6 +1071,17 @@ r = foo(xs<1>, ys<1>);
             thisTest.Verify("r", new object[] { null, 10, null });
         }
 
+        [Test]
+        public void NonStaticPropertyLookupOnClassName_DoesNotCrash()
+        {
+            var code = @"
+import(""FFITarget.dll"");
+
+a = DummyPoint.X;
+";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("a", null);
+        }
     }
 }
 

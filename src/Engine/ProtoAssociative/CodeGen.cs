@@ -1155,7 +1155,16 @@ namespace ProtoAssociative
 
                         if (!isStaticCall && !isConstructor)
                         {
-                            if (subPass == ProtoCore.CompilerDefinitions.SubCompilePass.None)
+                            // This checks if there is a static property like Point.X(arg) 
+                            // and if so renames it to Point.get_X(arg) so that it can be 
+                            // found as a static getter in the class declaration.
+                            if (argCount == 1)
+                            {
+                                procName = Constants.kGetterPrefix + procName;
+                                procCallNode = classNode.GetFirstStaticFunctionBy(procName);
+                                isStaticCall = procCallNode != null;
+                            }
+                            else if (subPass == ProtoCore.CompilerDefinitions.SubCompilePass.None)
                             {
                                 string message = String.Format(ProtoCore.Properties.Resources.kStaticMethodNotFound,
                                                                className,
@@ -1169,9 +1178,10 @@ namespace ProtoAssociative
                                                        graphNode);
 
                                 EmitNullNode(new NullNode(), ref inferedType);
-                            }
 
-                            return null;
+                                return null;
+                            }
+                            
                         }
                     }
                 }
