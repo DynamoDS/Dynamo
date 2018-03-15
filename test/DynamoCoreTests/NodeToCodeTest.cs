@@ -839,7 +839,7 @@ namespace Dynamo.Tests
             NodeToCodeCompiler.ReplaceWithShortestQualifiedName(engine.LibraryServices.LibraryManagementCore.ClassTable, result.AstNodes);
             Assert.IsTrue(result != null && result.AstNodes != null);
 
-            var rhs = result.AstNodes.Skip(1).Select(b => (b as BinaryExpressionNode).RightNode.ToString().Contains("get_X"));
+            var rhs = result.AstNodes.Skip(1).Select(b => (b as BinaryExpressionNode).RightNode.ToString().Contains("X"));
             Assert.IsTrue(rhs.All(r => r));
         }
 
@@ -864,7 +864,37 @@ namespace Dynamo.Tests
             var rhs = result.AstNodes.Skip(1).Select(b => (b as BinaryExpressionNode).RightNode.ToString().EndsWith("ElementResolverTarget.StaticProperty"));
             Assert.IsTrue(rhs.All(r => r));
         }
- 
+
+        [Test]
+        public void TestPropertyToStaticPropertyInvocation()
+        {
+            string libraryPath = "FFITarget.dll";
+            if (!CurrentDynamoModel.EngineController.LibraryServices.IsLibraryLoaded(libraryPath))
+            {
+                CurrentDynamoModel.EngineController.LibraryServices.ImportLibrary(libraryPath);
+            }
+
+            OpenModel(@"core\node2code\tostaticproperty.dyn");
+            var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
+            var engine = CurrentDynamoModel.EngineController;
+
+            var result = engine.ConvertNodesToCode(nodes, nodes);
+            result = NodeToCodeCompiler.ConstantPropagationForTemp(result, Enumerable.Empty<string>());
+            NodeToCodeCompiler.ReplaceWithShortestQualifiedName(engine.LibraryServices.LibraryManagementCore.ClassTable, result.AstNodes);
+            Assert.IsTrue(result != null && result.AstNodes != null);
+
+            var rhs = result.AstNodes.Skip(1).Select(b => (b as BinaryExpressionNode).RightNode.ToString().Contains("ValueContainer.SomeValue"));
+            Assert.IsTrue(rhs.All(r => r));
+
+            CurrentDynamoModel.ForceRun();
+
+            var cbn = CurrentDynamoModel.CurrentWorkspace.Nodes.OfType<CodeBlockNodeModel>().FirstOrDefault();
+            Assert.IsNotNull(cbn);
+
+            var guid = cbn.GUID.ToString();
+            AssertPreviewValue(guid, 23);
+        }
+
 
         private void TestNodeToCodeUndoBase(string filePath)
         {
