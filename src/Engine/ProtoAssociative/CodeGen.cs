@@ -1007,7 +1007,7 @@ namespace ProtoAssociative
         {
             ProcedureNode procCallNode = null;
 
-            var dotCallType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, 0); ;
+            var dotCallType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, 0);
 
             bool isConstructor = false;
             bool isStaticCall = false;

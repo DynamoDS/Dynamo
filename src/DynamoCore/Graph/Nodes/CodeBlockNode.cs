@@ -1352,7 +1352,7 @@ namespace Dynamo.Graph.Nodes
         /// </summary>
         /// <param name="s"> Statement whose variable names to be queried.</param>
         /// <returns></returns>
-        public static List<string> GetDefinedVariableNamesForOutports(Statement s)
+        internal static List<string> GetDefinedVariableNamesForOutports(Statement s)
         {
             return s.definedVariables.Select(outVar => outVar.NameWithIndex).ToList();
         }

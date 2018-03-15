@@ -70,7 +70,7 @@ namespace Dynamo.Graph.Nodes
         /// all variables defined in nested Statement objects.</param>
         /// <returns>Returns a list of lists of variables defined by the given 
         /// set of Statement objects.</returns>
-        internal static IEnumerable<IEnumerable<string>> GetStatementVariables(
+        internal static List<List<string>> GetStatementVariables(
             IEnumerable<Statement> statements)
         {
             if (statements == null)
@@ -89,7 +89,7 @@ namespace Dynamo.Graph.Nodes
         /// be null.</param>
         /// <returns>Returns a list of lists of variables defined by the given 
         /// set of Statement objects.</returns>
-        internal static IEnumerable<IEnumerable<string>> GetStatementVariablesForOutports(
+        internal static List<List<string>> GetStatementVariablesForOutports(
             IEnumerable<Statement> statements)
         {
             if (statements == null)
