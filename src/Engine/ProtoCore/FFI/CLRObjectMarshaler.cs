@@ -724,9 +724,8 @@ namespace ProtoFFI
                 return marshaler.UnMarshal(dsObject, context, dsi, expectedCLRType);
 
             //The dsObject must be of pointer type
-            Validity.Assert(dsObject.IsPointer || dsObject.IsFunctionPointer || dsObject.IsDefaultArgument, 
-                string.Format("Operand type {0} not supported for marshalling", 
-                dsObject.optype));
+            Validity.Assert(dsObject.IsPointer || dsObject.IsFunctionPointer, 
+                string.Format("Operand type {0} not supported for marshalling", dsObject.optype));
 
             if (dsObject.IsFunctionPointer)
             {
