@@ -57,7 +57,7 @@ namespace FFITarget
             get { return 99; }
         }
 
-        public int get_Property { get { return 88; } }
+        public int get_Property { get { return IntVal; } }
 
         public static int get_StaticMethod()
         {

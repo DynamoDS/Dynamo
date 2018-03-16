@@ -1095,16 +1095,14 @@ namespace ProtoAssociative
 
                     //    y = Bar.bar;   // static property getter OR function pointer
                     //    Bar.bar_2 = z; // static property setter
-                    var property = String.Empty;
+                    string property;
                     if (CoreUtils.TryGetPropertyName(procName, out property))
                     {
-                        if (procCallNode == null)
-                        {
-                            procCallNode = classNode.GetFirstStaticFunctionBy(procName);
-                            isStaticCall = procCallNode != null;
-                        }
+                        procCallNode = classNode.GetFirstStaticFunctionBy(procName);
+                        isStaticCall = procCallNode != null;
+
+                        // function pointer to non-static property, e.g. p = Point.X;
                         int argCount = dotCall.FunctionCall.FormalArguments.Count;
-                        // non-static property, function pointer, e.g. p = Point.X;
                         if (procCallNode != null && argCount == 0
                             && CoreUtils.IsNonStaticPropertyLookupOnClass(procCallNode, className))
                         {
