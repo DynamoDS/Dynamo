@@ -754,6 +754,12 @@ namespace ProtoCore.Utils
             return value.StringData;
         }
 
+        //public static bool IsP(ProcedureNode procCallNode)
+        //{
+        //    return procCallNode.ArgumentInfos.Count == 1
+        //           && procCallNode.ArgumentInfos[0].Name == Constants.kThisPointerArgName;
+        //}
+
         public static ProcedureNode GetFunctionByName(string name, CodeBlock codeBlock)
         {
             if (null == codeBlock)
