@@ -1078,9 +1078,51 @@ r = foo(xs<1>, ys<1>);
 import(""FFITarget.dll"");
 
 a = DummyPoint.X;
+d = DummyPoint.ByCoordinates(89,0,0);
+b = a(d);
 ";
             thisTest.RunScriptSource(code);
-            thisTest.Verify("a", null);
+            thisTest.Verify("b", 89);
+        }
+        
+        [Test]
+        public void StaticMethodPropertyLookupsOnClassName()
+        {
+            var code = @"
+import(""FFITarget.dll"");
+
+a = ClassFunctionality.get_StaticProperty;
+
+c = ClassFunctionality.ClassFunctionality(78);
+b = ClassFunctionality.get_Property;
+d = b(c);
+
+e = ClassFunctionality.get_StaticMethod();
+
+f = ClassFunctionality.get_StaticMethod;
+g = f();
+
+h = ClassFunctionality.get_Method;
+i = h(c);
+
+j = ClassFunctionality.get_Method(c);
+
+k = ClassFunctionality.StaticFunction();
+l = ClassFunctionality.StaticProp;
+
+m = ClassFunctionality.IntVal;
+n = m(c);
+";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("a", 99);
+            thisTest.Verify("d", 78);
+            thisTest.Verify("e", 99);
+            thisTest.Verify("g", 99);
+            thisTest.Verify("i", 78);
+            thisTest.Verify("j", 78);
+            thisTest.Verify("k", 0);
+            thisTest.Verify("l", 0);
+            thisTest.Verify("n", 78);
         }
     }
 }
