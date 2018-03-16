@@ -1017,9 +1017,8 @@ namespace ProtoAssociative
             string className = string.Empty;
 
             var dotCall = new FunctionDotCallNode(node as FunctionDotCallNode);
-            // procName is get_X for "a.X" and is X for "a.X()"
+            // procName is get_X for dot-call node "a.X" and is X for "a.X()"
             var procName = dotCall.FunctionCall.Function.Name;
-            //var procName = dotCall.FunctionCall.Function.ToString();
 
             var firstArgument = dotCall.Arguments[0];
             if (firstArgument is FunctionDotCallNode)
@@ -1104,9 +1103,10 @@ namespace ProtoAssociative
                             procCallNode = classNode.GetFirstStaticFunctionBy(procName);
                             isStaticCall = procCallNode != null;
                         }
+                        int argCount = dotCall.FunctionCall.FormalArguments.Count;
                         // non-static property, function pointer, e.g. p = Point.X;
-                        if (procCallNode != null && procCallNode.ArgumentInfos.Count == 1 
-                            && procCallNode.ArgumentInfos[0].Name == Constants.kThisPointerArgName)
+                        if (procCallNode != null && argCount == 0
+                            && CoreUtils.IsNonStaticPropertyLookupOnClass(procCallNode, className))
                         {
                             if (subPass != SubCompilePass.None)
                             {

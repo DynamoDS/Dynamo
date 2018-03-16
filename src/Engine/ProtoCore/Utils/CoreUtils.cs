@@ -754,11 +754,12 @@ namespace ProtoCore.Utils
             return value.StringData;
         }
 
-        //public static bool IsP(ProcedureNode procCallNode)
-        //{
-        //    return procCallNode.ArgumentInfos.Count == 1
-        //           && procCallNode.ArgumentInfos[0].Name == Constants.kThisPointerArgName;
-        //}
+        public static bool IsNonStaticPropertyLookupOnClass(ProcedureNode procCallNode, string className)
+        {
+            return procCallNode.ArgumentInfos.Count == 1
+                   && procCallNode.ArgumentInfos[0].Name == Constants.kThisPointerArgName
+                   && procCallNode.ArgumentTypes[0].Name == className;
+        }
 
         public static ProcedureNode GetFunctionByName(string name, CodeBlock codeBlock)
         {
