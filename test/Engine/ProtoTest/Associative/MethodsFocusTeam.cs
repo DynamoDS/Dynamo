@@ -1107,11 +1107,10 @@ i = h(c);
 
 j = ClassFunctionality.get_Method(c);
 
-k = ClassFunctionality.StaticFunction();
-l = ClassFunctionality.StaticProp;
-
 m = ClassFunctionality.IntVal;
-n = m(c);
+k = m(c);
+
+l = ValueContainer.SomeStaticProperty;
 ";
             thisTest.RunScriptSource(code);
             thisTest.Verify("a", 99);
@@ -1120,9 +1119,8 @@ n = m(c);
             thisTest.Verify("g", 99);
             thisTest.Verify("i", 78);
             thisTest.Verify("j", 78);
-            thisTest.Verify("k", 0);
-            thisTest.Verify("l", 0);
-            thisTest.Verify("n", 78);
+            thisTest.Verify("k", 78);
+            thisTest.Verify("l", 123);
         }
     }
 }

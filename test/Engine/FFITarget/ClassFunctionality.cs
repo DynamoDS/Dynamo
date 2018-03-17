@@ -118,6 +118,8 @@ namespace FFITarget
         }
 
         public int SomeValue { get; set; }
+
+        public static int SomeStaticProperty { get { return 123; } }
     }
 
 
