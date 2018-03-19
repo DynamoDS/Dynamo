@@ -19,6 +19,7 @@ namespace Dynamo.Tests
             libraries.Add("DSCoreNodes.dll");   // Required for built-in nodes.
             libraries.Add("DSIronPython.dll");  // Required for Python tests.
             libraries.Add("FunctionObject.ds"); // Required for partially applied nodes.
+            libraries.Add("DSOffice.dll"); // Required for Excel testing.
             base.GetLibrariesToPreload(libraries);
         }
 
