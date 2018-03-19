@@ -5943,6 +5943,12 @@
             </summary>
             <returns>Json formatted string</returns>
         </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Geometry.Approximate">
+            <summary>
+            Convert internal structure of geometry from analytics to splines
+            </summary>
+            <returns></returns>
+        </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.ImportFromSAT(System.IO.FileInfo)">
             <summary>
             Imports a SAT file and returns an array of imported geometries
