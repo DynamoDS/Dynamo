@@ -1,0 +1,165 @@
+{
+  "Uuid": "bd301b2d-088f-4f78-8023-0b0f14e8a597",
+  "IsCustomNode": false,
+  "Description": null,
+  "Name": "inheritanceA",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "FFITarget.NotDerivedFromInterfaceA.Foo",
+      "Id": "1115abe3eddb4f189aae01f34a8fe0e9",
+      "Inputs": [
+        {
+          "Id": "7d97db2a7ec74ad2a4270c7d700e775c",
+          "Name": "notDerivedFromInterfaceA",
+          "Description": "FFITarget.NotDerivedFromInterfaceA",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "7706249f6cd14dd991a44be77b60e778",
+          "Name": "int",
+          "Description": "int",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "NotDerivedFromInterfaceA.Foo ( ): int"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "FFITarget.NotDerivedFromInterfaceA.NotDerivedFromInterfaceA",
+      "Id": "5c0599229f2d4499810b9e71927103f3",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "f90e107c11734ba88bc66c5fe1673479",
+          "Name": "NotDerivedFromInterfaceA",
+          "Description": "NotDerivedFromInterfaceA",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "NotDerivedFromInterfaceA.NotDerivedFromInterfaceA ( ): NotDerivedFromInterfaceA"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "FFITarget.InterfaceA.Foo",
+      "Id": "c8b71784357040fb86d419437963d263",
+      "Inputs": [
+        {
+          "Id": "f292c988345540289be6904256024de6",
+          "Name": "interfaceA",
+          "Description": "FFITarget.InterfaceA",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "d5a972834f7e4ba8a8688b34d183f8c6",
+          "Name": "int",
+          "Description": "int",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "InterfaceA.Foo ( ): int"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "f90e107c11734ba88bc66c5fe1673479",
+      "End": "7d97db2a7ec74ad2a4270c7d700e775c",
+      "Id": "3f04ecbf51d3402185e17a82fb254de7"
+    },
+    {
+      "Start": "f90e107c11734ba88bc66c5fe1673479",
+      "End": "f292c988345540289be6904256024de6",
+      "Id": "16dca3caae0b48f79cb796c2c6766da9"
+    }
+  ],
+  "Dependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.0.0.2821",
+      "RunType": "Manual",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Default Camera",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "NotDerivedFromInterfaceA.Foo",
+        "Id": "1115abe3eddb4f189aae01f34a8fe0e9",
+        "IsInput": false,
+        "IsOutput": false,
+        "Excluded": false,
+        "X": 528.0,
+        "Y": 29.333333333333258
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "NotDerivedFromInterfaceA.NotDerivedFromInterfaceA",
+        "Id": "5c0599229f2d4499810b9e71927103f3",
+        "IsInput": false,
+        "IsOutput": false,
+        "Excluded": false,
+        "X": 26.000000000000057,
+        "Y": 114.00000000000006
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "InterfaceA.Foo",
+        "Id": "c8b71784357040fb86d419437963d263",
+        "IsInput": false,
+        "IsOutput": false,
+        "Excluded": false,
+        "X": 538.0,
+        "Y": 198.6666666666668
+      }
+    ],
+    "Annotations": [],
+    "X": 203.27671949590047,
+    "Y": 26.305912106985147,
+    "Zoom": 0.51095654822044756
+  }
+}

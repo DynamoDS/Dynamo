@@ -1,29 +1,293 @@
-<Workspace Version="0.9.0.3067" X="-3732.93901097413" Y="-827.405442288027" zoom="1.30071118175869" Name="Home" Description="" RunType="Manual" RunPeriod="1000" HasRunWithoutCrash="False">
-  <NamespaceResolutionMap />
-  <Elements>
-    <Dynamo.Nodes.DoubleInput guid="a8d28be4-5b93-4b68-a182-6e7d09b6147e" type="Dynamo.Nodes.DoubleInput" nickname="Number" x="2898.69722477541" y="870.914556274731" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="True">
-      <System.Double value="2" />
-    </Dynamo.Nodes.DoubleInput>
-    <Dynamo.Nodes.DSFunction guid="0d2e1e9d-21dc-4e5b-b105-e3bedca3b1f9" type="Dynamo.Nodes.DSFunction" nickname="+" x="3345.38395751019" y="870.914556274731" isVisible="true" isUpstreamVisible="true" lacing="Shortest" isSelectedInput="False" assembly="Operators" function="+@var[]..[],var[]..[]" />
-    <Dynamo.Nodes.Watch guid="89ef21b0-95e1-4b46-aabc-c02f16589b8d" type="Dynamo.Nodes.Watch" nickname="Watch" x="3592.79738563383" y="870.914556274731" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" />
-    <Dynamo.Nodes.DoubleInput guid="52048c47-73fb-4d5f-9221-e4c6b2b41126" type="Dynamo.Nodes.DoubleInput" nickname="Number" x="2898.69722477541" y="951.121650146262" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="True">
-      <System.Double value="6" />
-    </Dynamo.Nodes.DoubleInput>
-  </Elements>
-  <Connectors>
-    <Dynamo.Models.ConnectorModel start="a8d28be4-5b93-4b68-a182-6e7d09b6147e" start_index="0" end="0d2e1e9d-21dc-4e5b-b105-e3bedca3b1f9" end_index="0" portType="0" />
-    <Dynamo.Models.ConnectorModel start="0d2e1e9d-21dc-4e5b-b105-e3bedca3b1f9" start_index="0" end="89ef21b0-95e1-4b46-aabc-c02f16589b8d" end_index="0" portType="0" />
-  </Connectors>
-  <Notes>
-    <Dynamo.Models.NoteModel guid="1d089d46-305e-464b-8714-d8f6d762775a" text="Basic functional inputs, like Numbers and Strings can be selected by either browsing or searching from the library on the left of the canvas.&#xD;&#xA;&#xD;&#xA;Operations to execute on data, like math or geometric transformations, are also found in the library" x="2898.69722477541" y="719.863361861887" />
-    <Dynamo.Models.NoteModel guid="07d8f330-cb43-4fce-a050-bf864d5ebc10" text="Dynamo is a Visual Programming language.  Like other languages it works by linking simple elements together to form more complex ideas" x="2898.69722477541" y="651.054850598851" />
-    <Dynamo.Models.NoteModel guid="a0293ecc-9633-4321-9704-a7c84f4749c8" text="Pull a connector out of the &quot;&gt;&quot; port on the Number node and connect it to the &quot;y&quot; port on the + node, then push the &quot;Run&quot; button in the lower left corner of the application." x="3019.41135857941" y="945.489143900592" />
-    <Dynamo.Models.NoteModel guid="5cefc103-8b54-4158-bd2b-ae09ec296510" text="Data Can be visualized by clicking on the Run button in the lower right of the application.  If you enable &quot;Run automatically&quot; the application will constantly update.&#xD;&#xA;&#xD;&#xA;You can see the data either by using a Watch node or clicking on the small sqare at the bottom of most nodes." x="3711.71399193364" y="874.778613476432" />
-    <Dynamo.Models.NoteModel guid="d053df48-c7af-4d8c-80c1-b151bf2fc884" text="More Sample files can be found in the Help menu, or close this file by clicking the &quot;X&quot; on the tab to return to the welcome page" x="2898.69722477541" y="1040.84161272577" />
-  </Notes>
-  <Annotations />
-  <Presets />
-  <Cameras>
-    <Camera Name="Background Preview" eyeX="-16.9655136013663" eyeY="24.341577725171" eyeZ="50.6494323150915" lookX="12.4441040333119" lookY="-13.0110656299395" lookZ="-58.5449065206009" upX="-0.0812375695793365" upY="0.920504853452448" upZ="0.38219271586380" />
-  </Cameras>
-</Workspace>
+{
+  "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "Basics_Basic01",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [
+    {
+      "Id": "a8d28be45b934b68a1826e7d09b6147e",
+      "Name": "Number",
+      "Type": "number",
+      "Value": "2",
+      "NumberType": "Double",
+      "Description": "Creates a number."
+    },
+    {
+      "Id": "52048c4773fb4d5f9221e4c6b2b41126",
+      "Name": "Number",
+      "Type": "number",
+      "Value": "6",
+      "NumberType": "Double",
+      "Description": "Creates a number."
+    }
+  ],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "CoreNodeModels.Input.DoubleInput, CoreNodeModels",
+      "NodeType": "NumberInputNode",
+      "NumberType": "Double",
+      "InputValue": 2.0,
+      "Id": "a8d28be45b934b68a1826e7d09b6147e",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "bdaed298000c4de4bdc989adbaff5222",
+          "Name": "",
+          "Description": "Double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Creates a number."
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "+@var[]..[],var[]..[]",
+      "Id": "0d2e1e9d21dc4e5bb105e3bedca3b1f9",
+      "Inputs": [
+        {
+          "Id": "c0d7f6cc642d478bb12abfe5f56511b3",
+          "Name": "x",
+          "Description": "x value.\n\nvar[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "fb7fa087ab954539b0675d83c4bccf13",
+          "Name": "y",
+          "Description": "y value.\n\nvar[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "389b70a9ba80459e9958f594230c86b6",
+          "Name": "var[]..[]",
+          "Description": "var[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Adds x to y.\n\n+ (x: var[]..[], y: var[]..[]): var[]..[]"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "89ef21b095e14b46aabcc02f16589b8d",
+      "Inputs": [
+        {
+          "Id": "9bacd0cbbe68470d8deb2f0dfc31155f",
+          "Name": "",
+          "Description": "Node to evaluate.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "23f3b9f8740a47bcaee0a48699e61066",
+          "Name": "",
+          "Description": "Watch contents.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualize the output of node."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.DoubleInput, CoreNodeModels",
+      "NodeType": "NumberInputNode",
+      "NumberType": "Double",
+      "InputValue": 6.0,
+      "Id": "52048c4773fb4d5f9221e4c6b2b41126",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "cf0239002fdd43f3948cfda6b24f7cdf",
+          "Name": "",
+          "Description": "Double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Creates a number."
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "bdaed298000c4de4bdc989adbaff5222",
+      "End": "c0d7f6cc642d478bb12abfe5f56511b3",
+      "Id": "6feab043fa8449dc8a04f277b7be1416"
+    },
+    {
+      "Start": "389b70a9ba80459e9958f594230c86b6",
+      "End": "9bacd0cbbe68470d8deb2f0dfc31155f",
+      "Id": "826d74aa54124dc4a7d5c7cfa1295511"
+    }
+  ],
+  "Dependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.0.0.2821",
+      "RunType": "Manual",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -16.965513229370117,
+      "EyeY": 24.341577529907227,
+      "EyeZ": 50.649433135986328,
+      "LookX": 12.444104194641113,
+      "LookY": -13.011065483093262,
+      "LookZ": -58.544906616210938,
+      "UpX": -0.081237569451332092,
+      "UpY": 0.9205048680305481,
+      "UpZ": 0.3821927011013031
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "Number",
+        "Id": "a8d28be45b934b68a1826e7d09b6147e",
+        "IsInput": true,
+        "IsOutput": false,
+        "Excluded": false,
+        "X": 2898.69722477541,
+        "Y": 870.914556274731
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "+",
+        "Id": "0d2e1e9d21dc4e5bb105e3bedca3b1f9",
+        "IsInput": false,
+        "IsOutput": false,
+        "Excluded": false,
+        "X": 3345.38395751019,
+        "Y": 870.914556274731
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Watch",
+        "Id": "89ef21b095e14b46aabcc02f16589b8d",
+        "IsInput": false,
+        "IsOutput": false,
+        "Excluded": false,
+        "X": 3592.79738563383,
+        "Y": 870.914556274731
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Number",
+        "Id": "52048c4773fb4d5f9221e4c6b2b41126",
+        "IsInput": true,
+        "IsOutput": false,
+        "Excluded": false,
+        "X": 2898.69722477541,
+        "Y": 951.121650146262
+      }
+    ],
+    "Annotations": [
+      {
+        "Id": "1d089d46305e464b8714d8f6d762775a",
+        "Title": "Basic functional inputs, like Numbers and Strings can be selected by either browsing or searching from the library on the left of the canvas.\r\n\r\nOperations to execute on data, like math or geometric transformations, are also found in the library",
+        "Nodes": [],
+        "Left": 2898.69722477541,
+        "Top": 719.863361861887,
+        "Width": 0.0,
+        "Height": 0.0,
+        "FontSize": 36.0,
+        "InitialTop": 0.0,
+        "InitialHeight": 0.0,
+        "TextblockHeight": 0.0,
+        "Background": "#FFC1D676"
+      },
+      {
+        "Id": "07d8f330cb434fcea050bf864d5ebc10",
+        "Title": "Dynamo is a Visual Programming language.  Like other languages it works by linking simple elements together to form more complex ideas",
+        "Nodes": [],
+        "Left": 2898.69722477541,
+        "Top": 651.054850598851,
+        "Width": 0.0,
+        "Height": 0.0,
+        "FontSize": 36.0,
+        "InitialTop": 0.0,
+        "InitialHeight": 0.0,
+        "TextblockHeight": 0.0,
+        "Background": "#FFC1D676"
+      },
+      {
+        "Id": "a0293ecc963343219704a7c84f4749c8",
+        "Title": "Pull a connector out of the \">\" port on the Number node and connect it to the \"y\" port on the + node, then push the \"Run\" button in the lower left corner of the application.",
+        "Nodes": [],
+        "Left": 3019.41135857941,
+        "Top": 945.489143900592,
+        "Width": 0.0,
+        "Height": 0.0,
+        "FontSize": 36.0,
+        "InitialTop": 0.0,
+        "InitialHeight": 0.0,
+        "TextblockHeight": 0.0,
+        "Background": "#FFC1D676"
+      },
+      {
+        "Id": "5cefc1038b544158bd2bae09ec296510",
+        "Title": "Data Can be visualized by clicking on the Run button in the lower right of the application.  If you enable \"Run automatically\" the application will constantly update.\r\n\r\nYou can see the data either by using a Watch node or clicking on the small sqare at the bottom of most nodes.",
+        "Nodes": [],
+        "Left": 3711.71399193364,
+        "Top": 874.778613476432,
+        "Width": 0.0,
+        "Height": 0.0,
+        "FontSize": 36.0,
+        "InitialTop": 0.0,
+        "InitialHeight": 0.0,
+        "TextblockHeight": 0.0,
+        "Background": "#FFC1D676"
+      },
+      {
+        "Id": "d053df48c7af4d8c80c1b151bf2fc884",
+        "Title": "More Sample files can be found in the Help menu, or close this file by clicking the \"X\" on the tab to return to the welcome page",
+        "Nodes": [],
+        "Left": 2898.69722477541,
+        "Top": 1040.84161272577,
+        "Width": 0.0,
+        "Height": 0.0,
+        "FontSize": 36.0,
+        "InitialTop": 0.0,
+        "InitialHeight": 0.0,
+        "TextblockHeight": 0.0,
+        "Background": "#FFC1D676"
+      }
+    ],
+    "X": -3732.93901097413,
+    "Y": -827.405442288027,
+    "Zoom": 1.30071118175869
+  }
+}

@@ -941,4 +941,7 @@ Parameter name: {0}</value>
   <data name="DeprecatedListInitializationSyntax" xml:space="preserve">
     <value>Curly braces are no longer used for list creation. Use square brackets instead, like [] or [1,2,3].</value>
   </data>
+  <data name="ListMethodDeprecated" xml:space="preserve">
+    <value>Method '{0}' has been deprecated, please use method '{1}' instead with Dictionary type</value>
+  </data>
 </root>

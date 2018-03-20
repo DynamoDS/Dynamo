@@ -254,7 +254,7 @@ x;
             Type derived1 = typeof (FFITarget.Derived1);
             Type testdispose = typeof (FFITarget.TestDispose);
             Type dummydispose = typeof (FFITarget.DummyDispose);
-            code = string.Format("import(\"Builtin.dll\");\r\nimport(\"{0}\");\r\nimport(\"{1}\");\r\nimport(\"{2}\");\r\nimport(\"{3}\");\r\n{4}",
+            code = string.Format("import(\"DesignScriptBuiltin.dll\");\r\nimport(\"{0}\");\r\nimport(\"{1}\");\r\nimport(\"{2}\");\r\nimport(\"{3}\");\r\n{4}",
                 dummy.AssemblyQualifiedName, derived1.AssemblyQualifiedName, testdispose.AssemblyQualifiedName, dummydispose.AssemblyQualifiedName, code);
             ValidationData[] data = { new ValidationData { ValueName = "value", ExpectedValue = 128.0, BlockIndex = 0 } };
             ExecuteAndVerify(code, data);
@@ -284,7 +284,7 @@ x;
             Type derived1 = typeof (FFITarget.Derived1);
             Type testdispose = typeof (FFITarget.TestDispose);
             Type dummydispose = typeof (FFITarget.DummyDispose);
-            code = string.Format("import(\"Builtin.dll\");\r\nimport(\"{0}\");\r\nimport(\"{1}\");\r\nimport(\"{2}\");\r\nimport(\"{3}\");\r\n{4}",
+            code = string.Format("import(\"DesignScriptBuiltin.dll\");\r\nimport(\"{0}\");\r\nimport(\"{1}\");\r\nimport(\"{2}\");\r\nimport(\"{3}\");\r\n{4}",
                 dummy.AssemblyQualifiedName, derived1.AssemblyQualifiedName, testdispose.AssemblyQualifiedName, dummydispose.AssemblyQualifiedName, code);
             ValidationData[] data = { new ValidationData { ValueName = "value", ExpectedValue = 128.0, BlockIndex = 0 } };
             Assert.IsTrue(ExecuteAndVerify(code, data) == 0); //runs without any error
@@ -707,7 +707,7 @@ sum;
         {
             String code =
             @"
-                import(""Builtin.dll"");
+                import(""DesignScriptBuiltin.dll"");
                import(""FFITarget.dll"");
               
                pt1=DummyPoint.ByCoordinates(1,1,1);
@@ -750,7 +750,7 @@ b12;
         {
             String code =
             @"
-                import(""Builtin.dll"");
+                import(""DesignScriptBuiltin.dll"");
                 import(""FFITarget.dll"");
                 
                 pt1=DummyPoint.ByCoordinates(1,1,1);
@@ -869,7 +869,7 @@ a12;
         {
             String code =
             @"
-               import(""Builtin.dll"");
+               import(""DesignScriptBuiltin.dll"");
                import(""FFITarget.dll"");
                  
                 a=1;

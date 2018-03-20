@@ -1,0 +1,148 @@
+{
+  "Uuid": "fa4e888f-3d98-43d7-a67a-f9c5b754f425",
+  "IsCustomNode": false,
+  "Description": null,
+  "Name": "simpleDict",
+  "ElementResolver": {
+    "ResolutionMap": {
+      "DesignScript.Builtin.Dictionary": {
+        "Key": "DesignScript.Builtin.Dictionary",
+        "Value": "DesignScriptBuiltin.dll"
+      }
+    }
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DesignScript.Builtin.Dictionary.ByKeysValues@string[],var[]..[]",
+      "Id": "36c30251c8674d739a3b24f3e9ab00e5",
+      "Inputs": [
+        {
+          "Id": "cc0bce467aba418bb8be76e08566c966",
+          "Name": "keys",
+          "Description": "string[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "c288033466014b77a8c893b497bbdff5",
+          "Name": "values",
+          "Description": "var[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "9902fd8cd326485b98a5df1c702d3e91",
+          "Name": "Dictionary",
+          "Description": "Dictionary",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Dictionary.ByKeysValues (keys: string[], values: var[]..[]): Dictionary"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "\"a\"..\"e\";\n[1,2,{\"foo\":99, \"bar\":999}, [4, 5], 6];",
+      "Id": "6a5bcff0ce404773aee688d99104b4a7",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "ed6f8ca5d375404497bcda20c8dab90a",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "e06c32d83aab4a25bfa31094316dd558",
+          "Name": "",
+          "Description": "Value of expression at line 2",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "ed6f8ca5d375404497bcda20c8dab90a",
+      "End": "cc0bce467aba418bb8be76e08566c966",
+      "Id": "d19d7c35d34f498e8022765be599f4e4"
+    },
+    {
+      "Start": "e06c32d83aab4a25bfa31094316dd558",
+      "End": "c288033466014b77a8c893b497bbdff5",
+      "Id": "d6870e1e06124bb693a9b20c59dee20b"
+    }
+  ],
+  "Dependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.0.0.4221",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "Dictionary.ByKeysValues",
+        "Id": "36c30251c8674d739a3b24f3e9ab00e5",
+        "IsInput": false,
+        "IsOutput": false,
+        "Excluded": false,
+        "X": 468.0,
+        "Y": 112.0
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "6a5bcff0ce404773aee688d99104b4a7",
+        "IsInput": false,
+        "IsOutput": false,
+        "Excluded": false,
+        "X": 10.0,
+        "Y": 118.0
+      }
+    ],
+    "Annotations": [],
+    "X": 0.0,
+    "Y": 0.0,
+    "Zoom": 1.0
+  }
+}

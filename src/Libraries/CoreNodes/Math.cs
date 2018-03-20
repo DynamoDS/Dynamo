@@ -88,7 +88,7 @@ namespace DSCore
         /// <param name="rangeMax">The maximum value of the input range.</param>
         /// <param name="inputValue">The number to be mapped.</param>
         /// <returns name="double">The mapped value.</returns>
-        /// <search>map,range,minimum,maximum,normalize</search>
+        /// <search>map,range,minimum,maximum,normalize,scale,remap</search>
         public static double Map(double rangeMin, double rangeMax, double inputValue)
         {
             double result = (inputValue - rangeMin) / (rangeMax - rangeMin);
@@ -115,7 +115,7 @@ namespace DSCore
         /// <param name="targetRangeMin">The minimum value of the new range.</param>
         /// <param name="targetRangeMax">The maximum value of the new range.</param>
         /// <returns name="double">The mapped value.</returns>
-        /// <search>map,range,mapto,minimum,maximum,normalize</search>
+        /// <search>map,range,mapto,minimum,maximum,normalize,scale,remap</search>
         public static double MapTo(double rangeMin, double rangeMax, double inputValue, double targetRangeMin, double targetRangeMax)
         {
             double percent = Map(rangeMin, rangeMax, inputValue);

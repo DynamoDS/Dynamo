@@ -1,0 +1,165 @@
+{
+  "Uuid": "bd301b2d-088f-4f78-8023-0b0f14e8a597",
+  "IsCustomNode": false,
+  "Description": null,
+  "Name": "inheritanceD",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "FFITarget.ClassA.Bar",
+      "Id": "68d8ddfe4e394450b87258fc30a78997",
+      "Inputs": [
+        {
+          "Id": "0330503aba7940e7bb19ad6de96df1e0",
+          "Name": "classA",
+          "Description": "FFITarget.ClassA",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "f9d2790355994d11bbd4e63a4db0d08d",
+          "Name": "int",
+          "Description": "int",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "ClassA.Bar ( ): int"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "FFITarget.HidesMethodFromClassA.Bar",
+      "Id": "0089e5a4ed09414c96574312d9ad0ed5",
+      "Inputs": [
+        {
+          "Id": "cf9c489a0c6145588f286e6681b04fe3",
+          "Name": "hidesMethodFromClassA",
+          "Description": "FFITarget.HidesMethodFromClassA",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "026d76bac5a541e2a85a3477b28526ce",
+          "Name": "int",
+          "Description": "int",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "HidesMethodFromClassA.Bar ( ): int"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "FFITarget.HidesMethodFromClassA.HidesMethodFromClassA",
+      "Id": "bec9b19b60f04e35b983512f54a863bf",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "5fd0d30608fe4a2b8605bbadf7f8b716",
+          "Name": "HidesMethodFromClassA",
+          "Description": "HidesMethodFromClassA",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "HidesMethodFromClassA.HidesMethodFromClassA ( ): HidesMethodFromClassA"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "5fd0d30608fe4a2b8605bbadf7f8b716",
+      "End": "cf9c489a0c6145588f286e6681b04fe3",
+      "Id": "cd2f9e524e004001927583e0cf4e0903"
+    },
+    {
+      "Start": "5fd0d30608fe4a2b8605bbadf7f8b716",
+      "End": "0330503aba7940e7bb19ad6de96df1e0",
+      "Id": "8c1ccb3297ad451899466b8a6617f692"
+    }
+  ],
+  "Dependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.0.0.2821",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Default Camera",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "ClassA.Bar",
+        "Id": "68d8ddfe4e394450b87258fc30a78997",
+        "IsInput": false,
+        "IsOutput": false,
+        "Excluded": false,
+        "X": 385.42906714859635,
+        "Y": 975.53527027566247
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "HidesMethodFromClassA.Bar",
+        "Id": "0089e5a4ed09414c96574312d9ad0ed5",
+        "IsInput": false,
+        "IsOutput": false,
+        "Excluded": false,
+        "X": 374.20132110045859,
+        "Y": 1257.3516960839313
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "HidesMethodFromClassA.HidesMethodFromClassA",
+        "Id": "bec9b19b60f04e35b983512f54a863bf",
+        "IsInput": false,
+        "IsOutput": false,
+        "Excluded": false,
+        "X": -128.80170185613292,
+        "Y": 976.65804488047581
+      }
+    ],
+    "Annotations": [],
+    "X": 249.94338616256721,
+    "Y": 21.639245440318518,
+    "Zoom": 0.51095654822044756
+  }
+}

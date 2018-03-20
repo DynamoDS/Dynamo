@@ -678,6 +678,7 @@ namespace Dynamo.Core
                     //we pass null for engine and scheduler as apparently the custom node constructor doesn't need them.
                     newWorkspace = (CustomNodeWorkspaceModel)WorkspaceModel.FromJson(jsonDoc, this.libraryServices, null, null, nodeFactory, false, true, this);
                     newWorkspace.FileName = workspaceInfo.FileName;
+                    newWorkspace.Category = workspaceInfo.Category;
                 }
 
             }

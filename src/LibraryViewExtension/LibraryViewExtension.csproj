@@ -168,6 +168,7 @@
     <EmbeddedResource Include="web\library\resources\library-query.svg" />
     <EmbeddedResource Include="web\library\resources\plus-symbol.svg" />
     <EmbeddedResource Include="web\library\resources\Dynamo.svg" />
+    <EmbeddedResource Include="web\library\resources\Category.Dictionary.svg" />
     <EmbeddedResource Include="web\library\resources\Category.Display.svg" />
     <EmbeddedResource Include="web\library\resources\Category.Geometry.svg" />
     <EmbeddedResource Include="web\library\resources\Category.ImportExport.svg" />

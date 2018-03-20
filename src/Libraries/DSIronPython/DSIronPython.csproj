@@ -39,6 +39,10 @@
     <Reference Include="IronPython">
       <HintPath>..\..\..\extern\IronPython\IronPython.dll</HintPath>
     </Reference>
+    <Reference Include="IronPython.Modules, Version=2.7.0.40, Culture=neutral, PublicKeyToken=7f709c5b713576e1, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\extern\IronPython\IronPython.Modules.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Scripting">
       <HintPath>..\..\..\extern\IronPython\Microsoft.Scripting.dll</HintPath>
       <Private>True</Private>

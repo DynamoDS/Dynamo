@@ -801,6 +801,8 @@ namespace Dynamo.Engine
                                                                     argType))
                                                         let visibleInLibrary =
                                                             (method.MethodAttribute == null || !method.MethodAttribute.HiddenInLibrary)
+                                                        let obsoleteMsg =
+                                                            (method.MethodAttribute != null ? method.MethodAttribute.ObsoleteMessage: String.Empty)
                                                         let description = 
                                                             (method.MethodAttribute != null ? method.MethodAttribute.Description :String.Empty)
                                                         select
@@ -815,6 +817,7 @@ namespace Dynamo.Engine
                                                                 IsVisibleInLibrary = visibleInLibrary,
                                                                 IsBuiltIn = true,
                                                                 IsPackageMember = false,
+                                                                ObsoleteMsg = obsoleteMsg,
                                                                 Assembly = Categories.BuiltIn
                                                             });
 

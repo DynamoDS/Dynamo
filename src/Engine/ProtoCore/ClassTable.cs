@@ -25,6 +25,8 @@ namespace ProtoCore.DSASM
         public bool IsImportedClass { get; set; }
         public ClassAttributes ClassAttributes { get; set; }
         public bool IsStatic { get; set; }
+        public bool IsInterface { get; set; }
+        public List<int> Interfaces { get; set; }
 
         /// <summary>
         /// String description of where the classnode was loaded from 
@@ -65,6 +67,8 @@ namespace ProtoCore.DSASM
             ProcTable = new ProcedureTable(classRuntimProc);
             Base = Constants.kInvalidIndex;
             ExternLib = string.Empty;
+            IsInterface = false;
+            Interfaces = new List<int>();
 
             // Set default allowed coerce types
             CoerceTypes = new Dictionary<int, int>();
@@ -98,6 +102,8 @@ namespace ProtoCore.DSASM
             ExternLib = rhs.ExternLib;
             TypeSystem = rhs.TypeSystem;
             CoerceTypes = new Dictionary<int, int>(rhs.CoerceTypes);
+            IsInterface = rhs.IsInterface;
+            Interfaces = new List<int>(rhs.Interfaces);
         }
 
         public bool ConvertibleTo(int type)
@@ -296,9 +302,9 @@ namespace ProtoCore.DSASM
                 return null;
             }
 
-            return  ProcTable.GetFunctionsByNameAndArgumentNumber(procName, argCount)
-                          .Where(p => p.IsConstructor)
-                          .FirstOrDefault();
+            return  ProcTable
+                          .GetFunctionsByNameAndArgumentNumber(procName, argCount)
+                          .FirstOrDefault(p => p.IsConstructor);
         }
 
         public ProcedureNode GetFirstStaticFunctionBy(string procName)
@@ -381,10 +387,7 @@ namespace ProtoCore.DSASM
             }
             return disposeMethod;
         }
-
     }
-
-
 
     public class ClassTable
     {

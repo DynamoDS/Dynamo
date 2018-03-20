@@ -105,6 +105,10 @@
     <newName>List.RemoveIfNot</newName>
   </priorNameHint>
   <priorNameHint>
+    <oldName>Rank</oldName>
+    <newName>List.Rank</newName>
+  </priorNameHint>
+  <priorNameHint>
     <oldName>Equals</oldName>
     <newName>List.Equals</newName>
   </priorNameHint>
@@ -139,21 +143,5 @@
   <priorNameHint>
     <oldName>TrueForAny</oldName>
     <newName>List.TrueForAny</newName>
-  </priorNameHint>
-  <priorNameHint>
-    <oldName>RemoveKey</oldName>
-    <newName>List.RemoveKey</newName>
-  </priorNameHint>
-  <priorNameHint>
-    <oldName>GetValues</oldName>
-    <newName>List.GetValues</newName>
-  </priorNameHint>
-  <priorNameHint>
-    <oldName>GetKeys</oldName>
-    <newName>List.GetKeys</newName>
-  </priorNameHint>
-  <priorNameHint>
-    <oldName>ContainsKey</oldName>
-    <newName>List.ContainsKey</newName>
   </priorNameHint>
 </migrations>

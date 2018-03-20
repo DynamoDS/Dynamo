@@ -1508,6 +1508,7 @@ namespace ProtoCore.AST.AssociativeAST
         {
             Variables = new List<AssociativeNode>();
             Procedures = new List<AssociativeNode>();
+            Interfaces = new List<string>();
             IsImportedClass = false;
         }
 
@@ -1522,6 +1523,10 @@ namespace ProtoCore.AST.AssociativeAST
 
             BaseClass = rhs.BaseClass;
 
+            Interfaces = new List<string>();
+            if (null != rhs.Interfaces)
+                Interfaces.AddRange(rhs.Interfaces);
+
             Variables = new List<AssociativeNode>();
             if (null != rhs.Variables)
                 Variables.AddRange(rhs.Variables.Select(NodeUtils.Clone));
@@ -1534,11 +1539,13 @@ namespace ProtoCore.AST.AssociativeAST
             ExternLibName = rhs.ExternLibName;
         }
 
+        public bool IsInterface { get; set; }
         public bool IsStatic { get; set; }
         public bool IsImportedClass { get; set; }
         public string ClassName { get; set; }
         public List<AssociativeNode> Attributes { get; set; }
         public string BaseClass { get; set; }
+        public List<string> Interfaces { get; set; }
         public List<AssociativeNode> Variables { get; set; }
         public List<AssociativeNode> Procedures { get; set; }
         public bool IsExternLib { get; set; }

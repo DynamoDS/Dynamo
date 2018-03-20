@@ -725,6 +725,41 @@ namespace ProtoCore.Utils
             }
             return codeblock;
         }
+        
+        /// <summary>
+        /// Returns the CLR object for a given mirror data
+        /// </summary>
+        public static object GetDataOfValue(Mirror.MirrorData value)
+        {
+            if (value.IsCollection)
+            {
+                return value.GetElements().Select(GetDataOfValue).ToList();
+            }
+
+            if (!value.IsPointer)
+            {
+                var data = value.Data;
+
+                if (data != null)
+                {
+                    return data;
+                }
+            }
+            else if (value.IsDictionary)
+            {
+                var dict = (DesignScript.Builtin.Dictionary)value.Data;
+                return dict.Keys.Zip(dict.Values, (key, val) => new { key, val }).ToDictionary(ns => ns.key, ns => ns.val);
+            }
+
+            return value.StringData;
+        }
+
+        public static bool IsNonStaticPropertyLookupOnClass(ProcedureNode procCallNode, string className)
+        {
+            return procCallNode.ArgumentInfos.Count == 1
+                   && procCallNode.ArgumentInfos[0].Name == Constants.kThisPointerArgName
+                   && procCallNode.ArgumentTypes[0].Name == className;
+        }
 
         public static ProcedureNode GetFunctionByName(string name, CodeBlock codeBlock)
         {

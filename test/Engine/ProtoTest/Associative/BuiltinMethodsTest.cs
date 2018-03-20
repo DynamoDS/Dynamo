@@ -561,12 +561,14 @@ z = Count(c);
         public void BIM25_Rank()
         {
             String code =
-@"a = [ [ 1 ], 2, 3, 4 ];
+@"
+import(""BuiltIn.ds"");
+a = [ [ 1 ], 2, 3, 4 ];
 b = [ ""good"", [ [ null ] ], [ 1, [ 2, 3, 4, [ 5, [ ""good"" ], [ null ] ] ] ] ];
 c = [ [ null ], [ 2, ""good"" ], 1, null, [ 2, [ 3, 4 ] ] ];
-x = Rank(a);
-y = Rank(b);
-z = Rank(c);
+x = List.Rank(a);
+y = List.Rank(b);
+z = List.Rank(c);
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("x", 2);

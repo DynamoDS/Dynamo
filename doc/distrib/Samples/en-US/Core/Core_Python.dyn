@@ -1,106 +1,832 @@
-<Workspace Version="0.8.0.684" X="-1750.21068804189" Y="-360.563028682983" zoom="0.594707840266692" Name="Home" RunType="Automatic" RunPeriod="100" HasRunWithoutCrash="True">
-  <NamespaceResolutionMap />
-  <Elements>
-    <DSIronPythonNode.PythonNode guid="7183a2fe-9a6a-4eeb-b223-3525a80ab2f2" type="DSIronPythonNode.PythonNode" nickname="Python Script" x="3215.13835438171" y="846.688270498232" isVisible="true" isUpstreamVisible="true" lacing="Disabled" inputcount="2">
-      <Script># Python script to find add or subtract a series of numbers. 
-
-# Boiler-plate import statments included out-of-the-box
-import clr
-clr.AddReference('ProtoGeometry')
-from Autodesk.DesignScript.Geometry import *
-
-# The inputs to this node will be stored as a list in the IN variable.
-sign = IN[0]  # -1 for subtract all, 0 for do nothing, 1 for add all
-nums = IN[1]  # List of numbers to subtract or add
-
-partials = [] # Empty array to contain partial sums or differences
-result = 0    # Initialize the sum or difference to 0
-
-# Loop through each item and add it or subtract it from the result.
-for index in range(len(nums)):
-	if sign &gt; 0:
-		result = result + nums[index]
-		partials.append(result)
-	elif sign == 0:
-		partials.append(result)
-		continue
-	else:
-		result = result - nums[index]
-		partials.append(result)
-
-# Assign the output to the OUT variable
-#OUT = results  # Use this to output only the result.
-OUT = []
-OUT.append(result)
-OUT.append(partials)</Script>
-    </DSIronPythonNode.PythonNode>
-    <DSCoreNodesUI.Input.IntegerSlider guid="9e561a4f-9f86-4d4e-ac53-e30110ffb406" type="DSCoreNodesUI.Input.IntegerSlider" nickname="Integer Slider" x="2871.40422094826" y="828.642616909402" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
-      <System.Int32>1</System.Int32>
-      <Range min="-1" max="1" step="1" />
-    </DSCoreNodesUI.Input.IntegerSlider>
-    <Dynamo.Nodes.CodeBlockNodeModel guid="fb28178d-f0ca-4db0-8510-5202c26f64cf" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="2872.28054522067" y="1012.27636998279" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="0..10;" ShouldFocus="false" />
-    <Dynamo.Nodes.Watch guid="041d63bf-1838-4c6b-b45d-fa9a7a549434" type="Dynamo.Nodes.Watch" nickname="Watch" x="2991.9094591014" y="1010.18757478804" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
-    <Dynamo.Nodes.Watch guid="ecc8630f-a9b0-4061-9046-b47ce8ba4f2c" type="Dynamo.Nodes.Watch" nickname="Watch" x="3845.01662316494" y="969.304297020235" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
-    <Dynamo.Nodes.DSFunction guid="b1be50ed-f93c-4d9c-b7c4-55d97e820672" type="Dynamo.Nodes.DSFunction" nickname="List.GetItemAtIndex" x="3624.32630503776" y="781.810948955188" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="DSCoreNodes.dll" function="DSCore.List.GetItemAtIndex@var[]..[],int" />
-    <Dynamo.Nodes.CodeBlockNodeModel guid="340d812d-3963-4fff-bb4e-cfadea6b01ca" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="3508.59019600975" y="855.243976544362" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="0;" ShouldFocus="false" />
-    <Dynamo.Nodes.DSFunction guid="e14a4953-9115-4344-ac65-e7243e4975e3" type="Dynamo.Nodes.DSFunction" nickname="List.GetItemAtIndex" x="3640.83645994993" y="969.473453628049" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="DSCoreNodes.dll" function="DSCore.List.GetItemAtIndex@var[]..[],int" />
-    <Dynamo.Nodes.CodeBlockNodeModel guid="e9ae05b8-9942-4d33-a193-6e955dedaf77" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="3504.42671637494" y="1022.23284667024" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="1;" ShouldFocus="false" />
-    <Dynamo.Nodes.Watch guid="c44ca111-4bbf-48cc-9b35-8b339af6c19e" type="Dynamo.Nodes.Watch" nickname="Watch" x="3847.38013703903" y="789.874626772135" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
-    <DSIronPythonNode.PythonNode guid="9094d23b-3338-4e5c-af7b-7d08e547cc25" type="DSIronPythonNode.PythonNode" nickname="Python Script" x="3143.47979203481" y="1275.01071132024" isVisible="true" isUpstreamVisible="true" lacing="Disabled" inputcount="0">
-      <Script>import clr
-clr.AddReference('ProtoGeometry')
-from Autodesk.DesignScript.Geometry import *
-#The inputs to this node will be stored as a list in the IN variable.
-dataEnteringNode = IN
-
-p1 = Point.ByCoordinates(0, 0, 0);
-p2 = Point.ByCoordinates(-10, -10, -10);
-
-l = Line.ByStartPointEndPoint(p1, p2);
-
-pts = [
-	Point.ByCoordinates(0, 0, 0),
-	Point.ByCoordinates(10, 10, 0),
-	Point.ByCoordinates(20, 0, 0),
-	Point.ByCoordinates(30, 10, 0),
-	Point.ByCoordinates(40, 0, 0) ]
-	
-spline = NurbsCurve.ByPoints(pts)
-
-surf = spline.Extrude(Vector.ByCoordinates(0, 0, 1), 10)
-
-#Assign your output to the OUT variable
-OUT = [l, spline, surf]</Script>
-    </DSIronPythonNode.PythonNode>
-    <Dynamo.Nodes.CodeBlockNodeModel guid="b643c0d1-43e4-4370-9bdf-07f448fb8195" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="3307.37532591059" y="1279.29449571708" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="output[0];&#xA;output[1];&#xA;output[2];" ShouldFocus="false" />
-    <Dynamo.Nodes.Watch guid="df5d88d2-dfc5-42d4-b5dd-2ded5c79980c" type="Dynamo.Nodes.Watch" nickname="Watch" x="3544.30564693834" y="1495.20280457839" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
-    <Dynamo.Nodes.Watch guid="516af144-3b9d-45b3-9f0f-4864055cf9e0" type="Dynamo.Nodes.Watch" nickname="Watch" x="3544.30564693834" y="1280.46515293515" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
-    <Dynamo.Nodes.Watch guid="6d21b7b3-7073-42ed-8927-34d225a90f1a" type="Dynamo.Nodes.Watch" nickname="Watch" x="3544.30564693834" y="1398.20062400851" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
-  </Elements>
-  <Connectors>
-    <Dynamo.Models.ConnectorModel start="7183a2fe-9a6a-4eeb-b223-3525a80ab2f2" start_index="0" end="b1be50ed-f93c-4d9c-b7c4-55d97e820672" end_index="0" portType="0" />
-    <Dynamo.Models.ConnectorModel start="7183a2fe-9a6a-4eeb-b223-3525a80ab2f2" start_index="0" end="e14a4953-9115-4344-ac65-e7243e4975e3" end_index="0" portType="0" />
-    <Dynamo.Models.ConnectorModel start="9e561a4f-9f86-4d4e-ac53-e30110ffb406" start_index="0" end="7183a2fe-9a6a-4eeb-b223-3525a80ab2f2" end_index="0" portType="0" />
-    <Dynamo.Models.ConnectorModel start="fb28178d-f0ca-4db0-8510-5202c26f64cf" start_index="0" end="041d63bf-1838-4c6b-b45d-fa9a7a549434" end_index="0" portType="0" />
-    <Dynamo.Models.ConnectorModel start="041d63bf-1838-4c6b-b45d-fa9a7a549434" start_index="0" end="7183a2fe-9a6a-4eeb-b223-3525a80ab2f2" end_index="1" portType="0" />
-    <Dynamo.Models.ConnectorModel start="b1be50ed-f93c-4d9c-b7c4-55d97e820672" start_index="0" end="c44ca111-4bbf-48cc-9b35-8b339af6c19e" end_index="0" portType="0" />
-    <Dynamo.Models.ConnectorModel start="340d812d-3963-4fff-bb4e-cfadea6b01ca" start_index="0" end="b1be50ed-f93c-4d9c-b7c4-55d97e820672" end_index="1" portType="0" />
-    <Dynamo.Models.ConnectorModel start="e14a4953-9115-4344-ac65-e7243e4975e3" start_index="0" end="ecc8630f-a9b0-4061-9046-b47ce8ba4f2c" end_index="0" portType="0" />
-    <Dynamo.Models.ConnectorModel start="e9ae05b8-9942-4d33-a193-6e955dedaf77" start_index="0" end="e14a4953-9115-4344-ac65-e7243e4975e3" end_index="1" portType="0" />
-    <Dynamo.Models.ConnectorModel start="9094d23b-3338-4e5c-af7b-7d08e547cc25" start_index="0" end="b643c0d1-43e4-4370-9bdf-07f448fb8195" end_index="0" portType="0" />
-    <Dynamo.Models.ConnectorModel start="b643c0d1-43e4-4370-9bdf-07f448fb8195" start_index="0" end="516af144-3b9d-45b3-9f0f-4864055cf9e0" end_index="0" portType="0" />
-    <Dynamo.Models.ConnectorModel start="b643c0d1-43e4-4370-9bdf-07f448fb8195" start_index="1" end="6d21b7b3-7073-42ed-8927-34d225a90f1a" end_index="0" portType="0" />
-    <Dynamo.Models.ConnectorModel start="b643c0d1-43e4-4370-9bdf-07f448fb8195" start_index="2" end="df5d88d2-dfc5-42d4-b5dd-2ded5c79980c" end_index="0" portType="0" />
-  </Connectors>
-  <Notes>
-    <Dynamo.Models.NoteModel text="Choose the sign for the operation&#xD;&#xA;    number &lt; 0      subtract each&#xD;&#xA;    number = 0      0&#xD;&#xA;    number &gt; 0      add each" x="2873.0012257937" y="738.742301001746" />
-    <Dynamo.Models.NoteModel text="Create any list" x="2922.19540784441" y="967.126374113737" />
-    <Dynamo.Models.NoteModel text="The total result." x="3842.61997028563" y="750.757472727614" />
-    <Dynamo.Models.NoteModel text="The series of partial results." x="3829.01437238512" y="931.517559120053" />
-    <Dynamo.Models.NoteModel text="PYTHON&#xD;&#xA;&#xD;&#xA;Dynamo supports Iron Python through one of two types of Python nodes. (A second type of Python node, not shown here, can read a script from an external file to be executed.)&#xD;&#xA;&#xD;&#xA;Double click on the Python node to see the script it contains.&#xD;&#xA;&#xD;&#xA;Input is contained in the IN array.  Output must be assigned to the OUT variable.  The output can be a single value or an array itself." x="2875.2220283401" y="354.253134658213" />
-    <Dynamo.Models.NoteModel text="The output from OUT is an array, where the first item is a single value and the second item is a list of values.  This data structure was specified in the Python definition itself.  Specifying an array allows you to send any number of outputs to the Dynamo graph." x="3484.07180339376" y="606.071235830205" />
-    <Dynamo.Models.NoteModel text="This example will add or subtract all of the items in a list.  It's inputs are a number, whose sign determines whether addition or subtraction is used, and a list of numbers." x="2875.17380386808" y="608.290733888623" />
-    <Dynamo.Models.NoteModel text="Tip: Use a Code Block to&#xD;&#xA;access certain items in a list." x="3305.43376158355" y="1438.23569178961" />
-    <Dynamo.Models.NoteModel text="This Python example has no inputs.  It demonstrates how to create geometry using Dynamo's protogeometry library.  Since the Python node creates visible geometry, selecting it, just like any other node, will cause the geometry to be highlighted." x="3148.01673456083" y="1143.16719941238" />
-  </Notes>
-</Workspace>
+{
+  "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "Core_Python",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "PythonNodeModels.PythonNode, PythonNodeModels",
+      "NodeType": "PythonScriptNode",
+      "Code": "# Python script to find add or subtract a series of numbers. \r\n\r\n# Boiler-plate import statments included out-of-the-box\r\nimport clr\r\nclr.AddReference('ProtoGeometry')\r\nfrom Autodesk.DesignScript.Geometry import *\r\n\r\n# The inputs to this node will be stored as a list in the IN variable.\r\nsign = IN[0]  # -1 for subtract all, 0 for do nothing, 1 for add all\r\nnums = IN[1]  # List of numbers to subtract or add\r\n\r\npartials = [] # Empty array to contain partial sums or differences\r\nresult = 0    # Initialize the sum or difference to 0\r\n\r\n# Loop through each item and add it or subtract it from the result.\r\nfor index in range(len(nums)):\r\n\tif sign > 0:\r\n\t\tresult = result + nums[index]\r\n\t\tpartials.append(result)\r\n\telif sign == 0:\r\n\t\tpartials.append(result)\r\n\t\tcontinue\r\n\telse:\r\n\t\tresult = result - nums[index]\r\n\t\tpartials.append(result)\r\n\r\n# Assign the output to the OUT variable\r\n#OUT = results  # Use this to output only the result.\r\nOUT = []\r\nOUT.append(result)\r\nOUT.append(partials)",
+      "VariableInputPorts": true,
+      "Id": "7183a2fe9a6a4eebb2233525a80ab2f2",
+      "Inputs": [
+        {
+          "Id": "41353cdece124df2b3cf6bb2b47d9f8b",
+          "Name": "IN[0]",
+          "Description": "Input #0",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "39a36c06db324c54819b6a5b7426e711",
+          "Name": "IN[1]",
+          "Description": "Input #1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "354f304cf9974f69a0c6aaf6799535cb",
+          "Name": "OUT",
+          "Description": "Result of the python script",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Runs an embedded IronPython script."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.IntegerSlider, CoreNodeModels",
+      "NodeType": "NumberInputNode",
+      "NumberType": "Integer",
+      "InputValue": 1,
+      "MaximumValue": 1,
+      "MinimumValue": -1,
+      "StepValue": 1,
+      "Id": "9e561a4f9f864d4eac53e30110ffb406",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "6a3b56ad54214fa1814ed6d9c4336d14",
+          "Name": "",
+          "Description": "Int32",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "A slider that produces integer values."
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "0..10;",
+      "Id": "fb28178df0ca4db085105202c26f64cf",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "30ec0136279d47edacf06a1f0ae3d56a",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "041d63bf18384c6bb45dfa9a7a549434",
+      "Inputs": [
+        {
+          "Id": "2c99500649ac4a0fbdda7e8d5c5394e3",
+          "Name": "",
+          "Description": "Node to evaluate.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "bbd65533e9e5454e95e316fce80d747c",
+          "Name": "",
+          "Description": "Watch contents.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualize the output of node."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "ecc8630fa9b040619046b47ce8ba4f2c",
+      "Inputs": [
+        {
+          "Id": "fc6b6de408b34bd18b99d188f934948f",
+          "Name": "",
+          "Description": "Node to evaluate.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "54a9b51572504f0c90b4c5ddbad208f7",
+          "Name": "",
+          "Description": "Watch contents.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualize the output of node."
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DSCore.List.GetItemAtIndex@var[]..[],int",
+      "Id": "b1be50edf93c4d9cb7c455d97e820672",
+      "Inputs": [
+        {
+          "Id": "98136c591df845b5a7fcc43ee5ab038b",
+          "Name": "list",
+          "Description": "List to fetch an item from.\n\nvar[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "9b76cdd0155c4c8bbce734543e2dd0f1",
+          "Name": "index",
+          "Description": "Index of the item to be fetched.\n\nint",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "a403056ec1e54e7fb27b9d32d78859a4",
+          "Name": "item",
+          "Description": "Item in the list at the given index.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Returns an item from the given list that's located at the specified index.\n\nList.GetItemAtIndex (list: var[]..[], index: int): var[]..[]"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "0;",
+      "Id": "340d812d39634fffbb4ecfadea6b01ca",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "08a98db6988e4ae3943f8c84d4ee8bd2",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DSCore.List.GetItemAtIndex@var[]..[],int",
+      "Id": "e14a495391154344ac65e7243e4975e3",
+      "Inputs": [
+        {
+          "Id": "f1986b0c6336414fbd50afd83eeadac9",
+          "Name": "list",
+          "Description": "List to fetch an item from.\n\nvar[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "dc288af0453f45fcb783786b86d0a1c2",
+          "Name": "index",
+          "Description": "Index of the item to be fetched.\n\nint",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "8672fa33a64b40ed98370ac556d920ba",
+          "Name": "item",
+          "Description": "Item in the list at the given index.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Returns an item from the given list that's located at the specified index.\n\nList.GetItemAtIndex (list: var[]..[], index: int): var[]..[]"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "1;",
+      "Id": "e9ae05b899424d33a1936e955dedaf77",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "e74a6d9e041f45498775d1e07a81e84b",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "c44ca1114bbf48cc9b358b339af6c19e",
+      "Inputs": [
+        {
+          "Id": "d6844988eb0b40bdb93bcc5fdcc8f7f0",
+          "Name": "",
+          "Description": "Node to evaluate.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "4150d8445c9144b69fbccef79db57aff",
+          "Name": "",
+          "Description": "Watch contents.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualize the output of node."
+    },
+    {
+      "ConcreteType": "PythonNodeModels.PythonNode, PythonNodeModels",
+      "NodeType": "PythonScriptNode",
+      "Code": "import clr\r\nclr.AddReference('ProtoGeometry')\r\nfrom Autodesk.DesignScript.Geometry import *\r\n#The inputs to this node will be stored as a list in the IN variable.\r\ndataEnteringNode = IN\r\n\r\np1 = Point.ByCoordinates(0, 0, 0);\r\np2 = Point.ByCoordinates(-10, -10, -10);\r\n\r\nl = Line.ByStartPointEndPoint(p1, p2);\r\n\r\npts = [\r\n\tPoint.ByCoordinates(0, 0, 0),\r\n\tPoint.ByCoordinates(10, 10, 0),\r\n\tPoint.ByCoordinates(20, 0, 0),\r\n\tPoint.ByCoordinates(30, 10, 0),\r\n\tPoint.ByCoordinates(40, 0, 0) ]\r\n\t\r\nspline = NurbsCurve.ByPoints(pts)\r\n\r\nsurf = spline.Extrude(Vector.ByCoordinates(0, 0, 1), 10)\r\n\r\n#Assign your output to the OUT variable\r\nOUT = [l, spline, surf]",
+      "VariableInputPorts": true,
+      "Id": "9094d23b33384e5caf7b7d08e547cc25",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "0aa978274d144f5aad5c99ead2877477",
+          "Name": "OUT",
+          "Description": "Result of the python script",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Runs an embedded IronPython script."
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "output[0];\noutput[1];\noutput[2];",
+      "Id": "b643c0d143e443709bdf07f448fb8195",
+      "Inputs": [
+        {
+          "Id": "0c4d53416c174de38763275c166d441c",
+          "Name": "output",
+          "Description": "output",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "59d88e24f9a74bff9929b2d9143d29c8",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "0ab66368430d41f2a3854c7b4ff9da7a",
+          "Name": "",
+          "Description": "Value of expression at line 2",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "6a006dc2cf674e36a423c6ef2d9aba6c",
+          "Name": "",
+          "Description": "Value of expression at line 3",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "df5d88d2dfc542d4b5dd2ded5c79980c",
+      "Inputs": [
+        {
+          "Id": "5d176dc4f4e248e5a94727ffe7f50a75",
+          "Name": "",
+          "Description": "Node to evaluate.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "4ac892f578cf4514ab1f01b904347893",
+          "Name": "",
+          "Description": "Watch contents.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualize the output of node."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "516af1443b9d45b39f0f4864055cf9e0",
+      "Inputs": [
+        {
+          "Id": "6b70fab44360492b93f9686389353196",
+          "Name": "",
+          "Description": "Node to evaluate.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "cfb18f13538e4cb38c68f8714c4194a2",
+          "Name": "",
+          "Description": "Watch contents.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualize the output of node."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "6d21b7b3707342ed892734d225a90f1a",
+      "Inputs": [
+        {
+          "Id": "d33eb5c806f24d118b5d31d6bc437313",
+          "Name": "",
+          "Description": "Node to evaluate.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "fa45a97732094754af58da09da6c1861",
+          "Name": "",
+          "Description": "Watch contents.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualize the output of node."
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "354f304cf9974f69a0c6aaf6799535cb",
+      "End": "98136c591df845b5a7fcc43ee5ab038b",
+      "Id": "2ce189996f594865839a1f958b26efe6"
+    },
+    {
+      "Start": "354f304cf9974f69a0c6aaf6799535cb",
+      "End": "f1986b0c6336414fbd50afd83eeadac9",
+      "Id": "489ff8bbcd88438daaa371c561fe110d"
+    },
+    {
+      "Start": "6a3b56ad54214fa1814ed6d9c4336d14",
+      "End": "41353cdece124df2b3cf6bb2b47d9f8b",
+      "Id": "b6f3108e063f4cc5b237a3ab5684dad5"
+    },
+    {
+      "Start": "30ec0136279d47edacf06a1f0ae3d56a",
+      "End": "2c99500649ac4a0fbdda7e8d5c5394e3",
+      "Id": "898221148f5248a190907b9880fd3083"
+    },
+    {
+      "Start": "bbd65533e9e5454e95e316fce80d747c",
+      "End": "39a36c06db324c54819b6a5b7426e711",
+      "Id": "9dcb7b7d54594248a410503cfd1139c7"
+    },
+    {
+      "Start": "a403056ec1e54e7fb27b9d32d78859a4",
+      "End": "d6844988eb0b40bdb93bcc5fdcc8f7f0",
+      "Id": "143e1a7649684b708bb12795ff89b79f"
+    },
+    {
+      "Start": "08a98db6988e4ae3943f8c84d4ee8bd2",
+      "End": "9b76cdd0155c4c8bbce734543e2dd0f1",
+      "Id": "60cd8bdcecfd4d0da6fe12d01c7dc3d2"
+    },
+    {
+      "Start": "8672fa33a64b40ed98370ac556d920ba",
+      "End": "fc6b6de408b34bd18b99d188f934948f",
+      "Id": "191e10879a844580b6733e4b052db2c8"
+    },
+    {
+      "Start": "e74a6d9e041f45498775d1e07a81e84b",
+      "End": "dc288af0453f45fcb783786b86d0a1c2",
+      "Id": "c333488a935e46a28d99048132412599"
+    },
+    {
+      "Start": "0aa978274d144f5aad5c99ead2877477",
+      "End": "0c4d53416c174de38763275c166d441c",
+      "Id": "7fd0e793c7c741c7ade1beb6567ce210"
+    },
+    {
+      "Start": "59d88e24f9a74bff9929b2d9143d29c8",
+      "End": "6b70fab44360492b93f9686389353196",
+      "Id": "9e040aefc3bf446fb596a60ef7c61f87"
+    },
+    {
+      "Start": "0ab66368430d41f2a3854c7b4ff9da7a",
+      "End": "d33eb5c806f24d118b5d31d6bc437313",
+      "Id": "d1d6a4bb6c824d529aed91043895fd1c"
+    },
+    {
+      "Start": "6a006dc2cf674e36a423c6ef2d9aba6c",
+      "End": "5d176dc4f4e248e5a94727ffe7f50a75",
+      "Id": "5157568f320a4064ba09c073f9311a86"
+    }
+  ],
+  "Dependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.0.0.2821",
+      "RunType": "Automatic",
+      "RunPeriod": "100"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "Python Script",
+        "Id": "7183a2fe9a6a4eebb2233525a80ab2f2",
+        "IsInput": false,
+        "IsOutput": false,
+        "Excluded": false,
+        "X": 3215.13835438171,
+        "Y": 846.688270498232
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Integer Slider",
+        "Id": "9e561a4f9f864d4eac53e30110ffb406",
+        "IsInput": false,
+        "IsOutput": false,
+        "Excluded": false,
+        "X": 2871.40422094826,
+        "Y": 828.642616909402
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "fb28178df0ca4db085105202c26f64cf",
+        "IsInput": false,
+        "IsOutput": false,
+        "Excluded": false,
+        "X": 2872.28054522067,
+        "Y": 1012.27636998279
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Watch",
+        "Id": "041d63bf18384c6bb45dfa9a7a549434",
+        "IsInput": false,
+        "IsOutput": false,
+        "Excluded": false,
+        "X": 2991.9094591014,
+        "Y": 1010.18757478804
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Watch",
+        "Id": "ecc8630fa9b040619046b47ce8ba4f2c",
+        "IsInput": false,
+        "IsOutput": false,
+        "Excluded": false,
+        "X": 3845.01662316494,
+        "Y": 969.304297020235
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "List.GetItemAtIndex",
+        "Id": "b1be50edf93c4d9cb7c455d97e820672",
+        "IsInput": false,
+        "IsOutput": false,
+        "Excluded": false,
+        "X": 3624.32630503776,
+        "Y": 781.810948955188
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "340d812d39634fffbb4ecfadea6b01ca",
+        "IsInput": false,
+        "IsOutput": false,
+        "Excluded": false,
+        "X": 3508.59019600975,
+        "Y": 855.243976544362
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "List.GetItemAtIndex",
+        "Id": "e14a495391154344ac65e7243e4975e3",
+        "IsInput": false,
+        "IsOutput": false,
+        "Excluded": false,
+        "X": 3640.83645994993,
+        "Y": 969.473453628049
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "e9ae05b899424d33a1936e955dedaf77",
+        "IsInput": false,
+        "IsOutput": false,
+        "Excluded": false,
+        "X": 3504.42671637494,
+        "Y": 1022.23284667024
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Watch",
+        "Id": "c44ca1114bbf48cc9b358b339af6c19e",
+        "IsInput": false,
+        "IsOutput": false,
+        "Excluded": false,
+        "X": 3847.38013703903,
+        "Y": 789.874626772135
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Python Script",
+        "Id": "9094d23b33384e5caf7b7d08e547cc25",
+        "IsInput": false,
+        "IsOutput": false,
+        "Excluded": false,
+        "X": 3143.47979203481,
+        "Y": 1275.01071132024
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "b643c0d143e443709bdf07f448fb8195",
+        "IsInput": false,
+        "IsOutput": false,
+        "Excluded": false,
+        "X": 3307.37532591059,
+        "Y": 1279.29449571708
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Watch",
+        "Id": "df5d88d2dfc542d4b5dd2ded5c79980c",
+        "IsInput": false,
+        "IsOutput": false,
+        "Excluded": false,
+        "X": 3544.30564693834,
+        "Y": 1495.20280457839
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Watch",
+        "Id": "516af1443b9d45b39f0f4864055cf9e0",
+        "IsInput": false,
+        "IsOutput": false,
+        "Excluded": false,
+        "X": 3544.30564693834,
+        "Y": 1280.46515293515
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Watch",
+        "Id": "6d21b7b3707342ed892734d225a90f1a",
+        "IsInput": false,
+        "IsOutput": false,
+        "Excluded": false,
+        "X": 3544.30564693834,
+        "Y": 1398.20062400851
+      }
+    ],
+    "Annotations": [
+      {
+        "Id": "921d119036464fc2a9854b4693a6c026",
+        "Title": "Choose the sign for the operation\r\n    number < 0      subtract each\r\n    number = 0      0\r\n    number > 0      add each",
+        "Nodes": [],
+        "Left": 2873.0012257937,
+        "Top": 738.742301001746,
+        "Width": 0.0,
+        "Height": 0.0,
+        "FontSize": 36.0,
+        "InitialTop": 0.0,
+        "InitialHeight": 0.0,
+        "TextblockHeight": 0.0,
+        "Background": "#FFC1D676"
+      },
+      {
+        "Id": "b5550f99c810408f878200d172d5757a",
+        "Title": "Create any list",
+        "Nodes": [],
+        "Left": 2922.19540784441,
+        "Top": 967.126374113737,
+        "Width": 0.0,
+        "Height": 0.0,
+        "FontSize": 36.0,
+        "InitialTop": 0.0,
+        "InitialHeight": 0.0,
+        "TextblockHeight": 0.0,
+        "Background": "#FFC1D676"
+      },
+      {
+        "Id": "761ae015acea41aab066b54b694f39a3",
+        "Title": "The total result.",
+        "Nodes": [],
+        "Left": 3842.61997028563,
+        "Top": 750.757472727614,
+        "Width": 0.0,
+        "Height": 0.0,
+        "FontSize": 36.0,
+        "InitialTop": 0.0,
+        "InitialHeight": 0.0,
+        "TextblockHeight": 0.0,
+        "Background": "#FFC1D676"
+      },
+      {
+        "Id": "0d7f597b1e7c46b6b55091eda861b848",
+        "Title": "The series of partial results.",
+        "Nodes": [],
+        "Left": 3829.01437238512,
+        "Top": 931.517559120053,
+        "Width": 0.0,
+        "Height": 0.0,
+        "FontSize": 36.0,
+        "InitialTop": 0.0,
+        "InitialHeight": 0.0,
+        "TextblockHeight": 0.0,
+        "Background": "#FFC1D676"
+      },
+      {
+        "Id": "3316bcb825c946cbbb71e61d1f449192",
+        "Title": "PYTHON\r\n\r\nDynamo supports Iron Python through one of two types of Python nodes. (A second type of Python node, not shown here, can read a script from an external file to be executed.)\r\n\r\nDouble click on the Python node to see the script it contains.\r\n\r\nInput is contained in the IN array.  Output must be assigned to the OUT variable.  The output can be a single value or an array itself.",
+        "Nodes": [],
+        "Left": 2875.2220283401,
+        "Top": 354.253134658213,
+        "Width": 0.0,
+        "Height": 0.0,
+        "FontSize": 36.0,
+        "InitialTop": 0.0,
+        "InitialHeight": 0.0,
+        "TextblockHeight": 0.0,
+        "Background": "#FFC1D676"
+      },
+      {
+        "Id": "fc54c00a15034189a61233646c89b0da",
+        "Title": "The output from OUT is an array, where the first item is a single value and the second item is a list of values.  This data structure was specified in the Python definition itself.  Specifying an array allows you to send any number of outputs to the Dynamo graph.",
+        "Nodes": [],
+        "Left": 3484.07180339376,
+        "Top": 606.071235830205,
+        "Width": 0.0,
+        "Height": 0.0,
+        "FontSize": 36.0,
+        "InitialTop": 0.0,
+        "InitialHeight": 0.0,
+        "TextblockHeight": 0.0,
+        "Background": "#FFC1D676"
+      },
+      {
+        "Id": "ee76b77e33f840539f33dc43aa97fd98",
+        "Title": "This example will add or subtract all of the items in a list.  It's inputs are a number, whose sign determines whether addition or subtraction is used, and a list of numbers.",
+        "Nodes": [],
+        "Left": 2875.17380386808,
+        "Top": 608.290733888623,
+        "Width": 0.0,
+        "Height": 0.0,
+        "FontSize": 36.0,
+        "InitialTop": 0.0,
+        "InitialHeight": 0.0,
+        "TextblockHeight": 0.0,
+        "Background": "#FFC1D676"
+      },
+      {
+        "Id": "2d664edce60d414bad938c09c2e549c0",
+        "Title": "Tip: Use a Code Block to\r\naccess certain items in a list.",
+        "Nodes": [],
+        "Left": 3305.43376158355,
+        "Top": 1438.23569178961,
+        "Width": 0.0,
+        "Height": 0.0,
+        "FontSize": 36.0,
+        "InitialTop": 0.0,
+        "InitialHeight": 0.0,
+        "TextblockHeight": 0.0,
+        "Background": "#FFC1D676"
+      },
+      {
+        "Id": "8d0cb3fc32db4220b727887b354d2867",
+        "Title": "This Python example has no inputs.  It demonstrates how to create geometry using Dynamo's protogeometry library.  Since the Python node creates visible geometry, selecting it, just like any other node, will cause the geometry to be highlighted.",
+        "Nodes": [],
+        "Left": 3148.01673456083,
+        "Top": 1143.16719941238,
+        "Width": 0.0,
+        "Height": 0.0,
+        "FontSize": 36.0,
+        "InitialTop": 0.0,
+        "InitialHeight": 0.0,
+        "TextblockHeight": 0.0,
+        "Background": "#FFC1D676"
+      }
+    ],
+    "X": -1688.859336804082,
+    "Y": -232.66191808709573,
+    "Zoom": 0.69242724670602906
+  }
+}

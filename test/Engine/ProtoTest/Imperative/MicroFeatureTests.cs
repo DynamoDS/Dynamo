@@ -1093,6 +1093,71 @@ a = [Imperative]
         }
 
         [Test]
+        public void CallBaseClassMethodWithDerivedClass()
+        {
+            var code =
+@"
+import(""FFITarget.dll"");
+
+d = [Imperative]
+{
+	d = DummyPoint.ByCoordinates(0,0,0);
+	return UnknownPoint.Translate(d, 1, 0, 0);
+};
+a = d.X;
+  ";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("a", 1);
+
+        }
+
+        [Test]
+        public void CallBaseClassCtorWithDerivedClass_Fails()
+        {
+            var code =
+@"
+import(""DSCoreNodes.dll"");
+import(""BuiltIn.ds"");
+import(""FFITarget.dll"");
+
+a = [Imperative]
+{
+	l = [];
+	d = DummyPoint.ByCoordinates(0,0,0);
+	l = List.AddItemToEnd(d, l);
+	return UnknownPoint.Centroid(l);
+};
+  ";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("a", null);
+
+        }
+
+        [Test]
+        public void CallBaseClassCtorWithBaseClass()
+        {
+            var code =
+@"
+import(""DSCoreNodes.dll"");
+import(""BuiltIn.ds"");
+import(""FFITarget.dll"");
+
+a = [Imperative]
+{
+	l = [];
+	d1 = DummyPoint.ByCoordinates(0,9,0);
+	l = List.AddItemToEnd(d1, l);
+	d2 = DummyPoint.ByCoordinates(0,10,0);
+	l = List.AddItemToEnd(d2, l);
+	return DummyPoint.Centroid(l).Y;
+};
+  ";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("a", 9.5);
+
+        }
+
+        [Test]
         public void NegativeIndexOnCollection003()
         {
             String code =

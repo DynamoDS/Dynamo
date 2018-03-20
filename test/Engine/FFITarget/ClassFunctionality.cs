@@ -50,7 +50,24 @@ namespace FFITarget
             return this.IntVal == cf.IntVal;
         }
 
-        static public int StaticProp { get; set; }
+        public static int StaticProp { get; set; }
+
+        public static int get_StaticProperty
+        {
+            get { return 99; }
+        }
+
+        public int get_Property { get { return IntVal; } }
+
+        public static int get_StaticMethod()
+        {
+            return get_StaticProperty;
+        }
+
+        public int get_Method()
+        {
+            return get_Property;
+        }
 
         public int AddWithValueContainer(ValueContainer valueContainer)
         {
@@ -84,6 +101,8 @@ namespace FFITarget
         {
             StaticProp++;
         }
+        
+        
     }
 
     public class ValueContainer
@@ -99,6 +118,8 @@ namespace FFITarget
         }
 
         public int SomeValue { get; set; }
+
+        public static int SomeStaticProperty { get { return 123; } }
     }
 
 

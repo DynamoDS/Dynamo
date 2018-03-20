@@ -1661,15 +1661,17 @@ x6 = Average([null]) ;// returns 0.0
         }
 
         [Test]
-        [Category("Built in Functions")]
+        [Category("Built in Functions"), Category("Failure")]
         public void TV_1467348_Rank()
         {
+            // TODO pratapa: List.Rank() should throw method not found warning
             string code = @"
-r1 = Rank(); //null
-r2 = Rank(1);//0
-r3 = Rank([ ]);//1
-r4 = Rank([ [  ] ]);//2
-r5 = Rank([ [ ""123"" ] ]);//2
+import(""BuiltIn.ds"");
+r1 = List.Rank(); //null
+r2 = List.Rank(1);//0
+r3 = List.Rank([ ]);//1
+r4 = List.Rank([ [  ] ]);//2
+r5 = List.Rank([ [ ""123"" ] ]);//2
                ";
             thisTest.RunScriptSource(code);
             //thisTest.SetErrorMessage("1467348 - Language: Rank(3) should return 0");
@@ -1750,11 +1752,12 @@ r = CountTrue(arr);
         public void TV_1467348_Rank_2()
         {
             String code =
-@"a = Rank(1);
-a1 = Rank([ ]);
-a2 = Rank([ [ ] ]);
-a3 = Rank([ 1 ]);
-a4 = Rank([ [ [ 1 ] ] ]);
+@"import(""BuiltIn.ds"");
+a = List.Rank(1);
+a1 =List.Rank([ ]);
+a2 =List.Rank([ [ ] ]);
+a3 =List.Rank([ 1 ]);
+a4 =List.Rank([ [ [ 1 ] ] ]);
 ";
             thisTest.RunScriptSource(code);
             thisTest.Verify("a", 0);
@@ -3358,30 +3361,6 @@ def foo ()
             thisTest.Verify("b", new object[] { new object[] { 10, 40 }, new object[] { 20, 50 },
             new object[] { 30, 60 }, new object[] { null, null } }
 );
-        }
-
-        [Test]
-        public void TestRemoveKeyNoThrow()
-        {
-            string code = @"
-import(""BuiltIn.ds"");
-x = 0;
-y = List.RemoveKey(x, x);
-";
-            thisTest.RunScriptSource(code);
-            thisTest.Verify("y", 0);
-        }
-
-        [Test]
-        public void TestContainsKeyNoThrow()
-        {
-            string code = @"
-import(""BuiltIn.ds"");
-x = 0;
-y = List.ContainsKey(x, x);
-";
-            Assert.DoesNotThrow(() => thisTest.RunScriptSource(code));
-            thisTest.Verify("y", false);
         }
 
         [Test]

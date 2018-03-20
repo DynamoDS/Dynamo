@@ -9,6 +9,8 @@ using CoreNodeModels;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.ZeroTouch;
 using Dynamo.Tests;
+using System.Globalization;
+using System.Threading;
 
 namespace DynamoCoreWpfTests 
 {
@@ -19,7 +21,7 @@ namespace DynamoCoreWpfTests
         {
             libraries.Add("VMDataBridge.dll");
             libraries.Add("ProtoGeometry.dll");
-            libraries.Add("Builtin.dll");
+            libraries.Add("DesignScriptBuiltin.dll");
             libraries.Add("FunctionObject.ds");
             libraries.Add("FFITarget.dll");
             base.GetLibrariesToPreload(libraries);
@@ -253,6 +255,30 @@ namespace DynamoCoreWpfTests
 
             Assert.AreEqual(3, watchVM.Levels.ElementAt(0));
             Assert.AreEqual(2, watchVM.NumberOfItems);
+        }
+
+        [Test]
+        public void WatchNumber()
+        {
+            // Switch to a culture where decimal is used for thousands
+            var culture = CultureInfo.CreateSpecificCulture("fr-FR");
+            Thread.CurrentThread.CurrentCulture = culture;
+            Thread.CurrentThread.CurrentUICulture = culture;
+
+            // Open the sample graph and check if all three watch nodes are displaying expected value
+            string openPath = Path.Combine(TestDirectory, @"core\watch\WatchNumber.dyn");
+            ViewModel.OpenCommand.Execute(openPath);
+            ViewModel.HomeSpace.Run();
+
+            foreach (var watchNode in ViewModel.Model.CurrentWorkspace.Nodes.OfType<Watch>())
+            {
+                var watchVM = ViewModel.WatchHandler.GenerateWatchViewModelForData(
+                    watchNode.CachedValue, watchNode.OutPorts.Select(p => p.Name),
+                    ViewModel.Model.EngineController.LiveRunnerRuntimeCore,
+                    watchNode.InPorts[0].Connectors[0].Start.Owner.AstIdentifierForPreview.Name);
+
+                Assert.AreEqual("3.14", watchVM.NodeLabel);
+            }
         }
 
         [Test]

@@ -1425,6 +1425,7 @@ namespace Dynamo.ViewModels
         /// exception is written to the console.
         /// </summary>
         /// <param name="path">The path to the file.</param>
+        /// <param name="isBackup">Indicates if an automated backup save has called this function.</param>
         /// <exception cref="IOException"></exception>
         /// <exception cref="UnauthorizedAccessException"></exception>
         public void SaveAs(string path, bool isBackup = false)

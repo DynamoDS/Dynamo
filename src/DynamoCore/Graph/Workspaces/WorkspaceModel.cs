@@ -186,6 +186,33 @@ namespace Dynamo.Graph.Workspaces
         /// </summary>
         private bool workspaceLoaded;
 
+        /// <summary>
+        /// sets the name property of the model based on filename,backup state and model type.
+        /// </summary>
+        /// <param name="filePath">Full filepath to file to save.</param>
+        /// <param name="isBackup">Indicates if this save represents a backup save.</param>
+        internal void setNameBasedOnFileName(string filePath, bool isBackup)
+        {
+            string fileName = string.Empty;
+            try
+            {
+                fileName = Path.GetFileName(filePath);
+                string extension = Path.GetExtension(filePath);
+                if (extension == ".dyn" || extension == ".dyf")
+                {
+                    fileName = Path.GetFileNameWithoutExtension(filePath);
+                }
+            }
+            catch (ArgumentException)
+            {
+            }
+            // Don't change name property if backup save or this is a customnode
+            if (fileName != string.Empty && isBackup == false && this is HomeWorkspaceModel)
+            {
+                this.Name = fileName;
+            }
+        }
+
         #endregion
 
         #region events
@@ -990,6 +1017,9 @@ namespace Dynamo.Graph.Workspaces
 
             try
             {
+                //set the name before serializing model.
+                setNameBasedOnFileName(filePath, isBackup);
+
                 // Stage 1: Serialize the workspace.
                 var json = this.ToJson(engine);
 
@@ -1618,6 +1648,7 @@ namespace Dynamo.Graph.Workspaces
                 ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
                 TypeNameHandling = TypeNameHandling.Auto,
                 Formatting = Newtonsoft.Json.Formatting.Indented,
+                Culture = CultureInfo.InvariantCulture,
                 Converters = new List<JsonConverter>{
                         new ConnectorConverter(logger),
                         new WorkspaceReadConverter(engineController, scheduler, factory, isTestMode, verboseLogging),
