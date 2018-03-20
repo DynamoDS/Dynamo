@@ -1425,6 +1425,29 @@ var06 = g;
                 "Method 'DSCore.IO.CSV.WriteToFile' has been deprecated, please use method 'DSOffice.Data.ExportCSV' instead"));
         }
 
+        [Test]
+        public void ChangeListSyntax_CodeBlockInErrorState()
+        {
+            string openPath = Path.Combine(TestDirectory, @"core\dsevaluation\colorRangeBad.dyn");
+            RunModel(openPath);
+
+            Assert.AreEqual(13, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+            Assert.AreEqual(19, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
+
+            var cbn = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace<CodeBlockNodeModel>
+                ("d2401c4d-840a-4100-9789-6083193b9a24");
+
+            Assert.IsNotNull(cbn);
+            string code = "[red,green,blue];{0,num,1};";
+            UpdateCodeBlockNodeContent(cbn, code);
+
+            RunCurrentModel();
+
+            Assert.IsTrue(cbn.IsInErrorState);
+            Assert.IsTrue(cbn.ToolTipText.Contains(
+                ProtoCore.Properties.Resources.DeprecatedListInitializationSyntax));
+        }
+
         #endregion
 
         #region Codeblock Namespace Resolution Tests
