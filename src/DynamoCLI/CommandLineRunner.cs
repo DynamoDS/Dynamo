@@ -7,20 +7,18 @@ using System.Threading;
 using System.IO;
 using DesignScript.Builtin;
 using Dynamo.Models;
-using DynamoUtilities;
 using Dynamo.Applications;
-using Dynamo.Graph;
 using Dynamo.Graph.Workspaces;
+using Dynamo.Visualization;
 
 namespace DynamoCLI
 {
-
     /// <summary>
     /// This class invokes a dynamo model's run methods in a headless mode from the CLI using a set of flags.
     /// This class also has a very limited method for exporting the graph evaluation to an xml file, so that 
     /// the results from invoking dynamo from the command line are useable.
     /// </summary>
-    public class CommandLineRunner
+    public partial class CommandLineRunner
     {
         private readonly DynamoModel model;
 
@@ -56,6 +54,7 @@ namespace DynamoCLI
             XmlDocument doc = null;
             foreach (var stateName in stateNames)
             {
+
                 // Graph execution
                 model.ExecuteCommand(new DynamoModel.RunCancelCommand(false, false));
 
@@ -67,6 +66,13 @@ namespace DynamoCLI
                 //if verbose was true, then print all nodes to the console
                 if (!String.IsNullOrEmpty(cmdLineArgs.Verbose))
                 {
+                    IRenderPackageFactory renderPackageFactory = new DefaultRenderPackageFactory();
+                    List<GeometryHolder> nodeGeometries = new List<GeometryHolder>();
+                    foreach (var node in model.CurrentWorkspace.Nodes)
+                    {
+                        nodeGeometries.Add(new GeometryHolder(model, renderPackageFactory, node));
+                    }
+
                     doc = new XmlDocument();
                     var resultsdict = new Dictionary<Guid, List<object>>();
                     foreach (var node in model.CurrentWorkspace.Nodes)
@@ -93,6 +99,24 @@ namespace DynamoCLI
                     }
                     outputresults.Add(resultsdict);
                     populateXmlDocWithResults(doc, outputresults);
+
+                    var jsonFilename = Path.ChangeExtension(cmdLineArgs.Verbose, "json");
+
+                    using (StreamWriter jsonFile = new StreamWriter(jsonFilename))
+                    {
+                        jsonFile.WriteLine("[");
+                        foreach (var holder in nodeGeometries)
+                        {
+                            if (holder.HasGeometry)
+                            {
+                                jsonFile.WriteLine("[");
+                                string json = holder.GeometryJson;
+                                jsonFile.WriteLine(json);
+                                jsonFile.WriteLine("]");
+                            }
+                        }
+                        jsonFile.WriteLine("]");
+                    }
                 }
                 evalComplete = false;
 
