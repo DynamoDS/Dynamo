@@ -679,8 +679,10 @@ namespace Dynamo.Core
                     newWorkspace = (CustomNodeWorkspaceModel)WorkspaceModel.FromJson(jsonDoc, this.libraryServices, null, null, nodeFactory, false, true, this);
                     newWorkspace.FileName = workspaceInfo.FileName;
                     newWorkspace.Category = workspaceInfo.Category;
+                    // Mark the custom node workspace as having no changes - when we set the category on the above line
+                    // this marks the workspace as changed.
+                    newWorkspace.HasUnsavedChanges = false;
                 }
-
             }
 
             RegisterCustomNodeWorkspace(newWorkspace);
