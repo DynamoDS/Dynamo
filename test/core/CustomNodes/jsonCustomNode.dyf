@@ -1,0 +1,117 @@
+{
+  "Uuid": "4c15f5e0-efb9-4faa-b140-966a1f0a954d",
+  "IsCustomNode": true,
+  "Category": "Customnodes",
+  "Description": "a jsoncustomNode",
+  "Name": "test2",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CustomNodes.Symbol, DynamoCore",
+      "NodeType": "InputNode",
+      "Parameter": {
+        "Name": "s",
+        "TypeName": "var",
+        "TypeRank": -1,
+        "DefaultValue": null
+      },
+      "Id": "5a6bdadb4de24f13bd1d80ec436860db",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "f1b7628c02ab4d209444f86989f57bac",
+          "Name": "",
+          "Description": "Symbol",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "A function parameter, use with custom nodes.\r\n\r\nYou can specify the type and default value for parameter. E.g.,\r\n\r\ninput : var[]..[]\r\nvalue : bool = false"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CustomNodes.Output, DynamoCore",
+      "NodeType": "OutputNode",
+      "ElementResolver": null,
+      "Symbol": "d",
+      "Id": "00e4510fc3cf485a896202a95d434cea",
+      "Inputs": [
+        {
+          "Id": "104f30743ad943f19b55580191c179b1",
+          "Name": "",
+          "Description": "",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [],
+      "Replication": "Disabled",
+      "Description": "A function output, use with custom nodes"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "f1b7628c02ab4d209444f86989f57bac",
+      "End": "104f30743ad943f19b55580191c179b1",
+      "Id": "3491acf554214a0b81b4aa38fde9cd9f"
+    }
+  ],
+  "Dependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": false,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.0.1.4456",
+      "RunType": "Manual",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "Input",
+        "Id": "5a6bdadb4de24f13bd1d80ec436860db",
+        "IsInput": false,
+        "IsOutput": false,
+        "Excluded": false,
+        "X": 222.65968586387436,
+        "Y": 444.31413612565444
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Output",
+        "Id": "00e4510fc3cf485a896202a95d434cea",
+        "IsInput": false,
+        "IsOutput": false,
+        "Excluded": false,
+        "X": 363.39267015706804,
+        "Y": 335.74869109947645
+      }
+    ],
+    "Annotations": [],
+    "X": 0.0,
+    "Y": 0.0,
+    "Zoom": 1.0
+  }
+}
