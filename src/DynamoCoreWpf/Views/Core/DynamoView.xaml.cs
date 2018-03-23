@@ -1817,7 +1817,11 @@ namespace Dynamo.Controls
 
         private void Window_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
-            HidePopupWhenWindowDeactivated();
+            //if original sender was scroll bar(i.e Thumb) don't close the popup.
+            if(!(e.OriginalSource is Thumb))
+            {
+                HidePopupWhenWindowDeactivated();
+            }
         }
 
         public void Dispose()
