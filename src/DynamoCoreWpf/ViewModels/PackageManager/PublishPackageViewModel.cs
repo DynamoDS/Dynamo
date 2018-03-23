@@ -749,7 +749,7 @@ namespace Dynamo.PackageManager
 
         }
 
-        private IEnumerable<string> GetAllFiles()
+        internal IEnumerable<string> GetAllFiles()
         {
             // get all function defs
             var allFuncs = AllFuncDefs().ToList();

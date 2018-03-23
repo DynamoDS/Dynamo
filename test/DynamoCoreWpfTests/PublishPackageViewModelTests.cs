@@ -75,6 +75,26 @@ namespace DynamoCoreWpfTests
 
         }
 
+        [Test]
+        public void CanPublishLateInitializedJsonCustomNode()
+        {
+
+            string nodePath = Path.Combine(TestDirectory,"core","CustomNodes", "jsonCustomNode.dyf");
+
+            //add this customNode to the package without opening it.
+            var vm = new PublishPackageViewModel(this.ViewModel);
+            ViewModel.OnRequestPackagePublishDialog(vm);
+            vm.AddFile(nodePath);
+
+            //assert we don't raise any exceptions during getAllFiles
+            //- this will check the customNode has no unsaved changes.
+
+            Assert.AreEqual(1, vm.CustomNodeDefinitions.Count);
+            Assert.DoesNotThrow(() => {vm.GetAllFiles();});
+            Assert.AreEqual(nodePath, vm.GetAllFiles().First());
+
+        }
+
 
         [Test]
         public void NewPackageVersionUpload_DoesNotThrowExceptionWhenDLLIsLoadedSeveralTimes()
