@@ -1036,7 +1036,7 @@ namespace Dynamo.Graph.Nodes
             SetNameFromNodeNameAttribute();
 
             IsSelected = false;
-            State = ElementState.Dead;
+            SetNodeStateBasedOnConnectionAndDefaults();
             ArgumentLacing = LacingStrategy.Disabled;
 
             RaisesModificationEvents = true;
