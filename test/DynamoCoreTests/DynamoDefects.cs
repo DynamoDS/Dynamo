@@ -24,7 +24,7 @@ namespace Dynamo.Tests
             base.GetLibrariesToPreload(libraries);
         }
 
-        // Note: Pelease only add test cases those are related to defects.
+        // Note: Please only add test cases those are related to defects.
 
         [Test, Category("RegressionTests")]
         public void T01_Defect_MAGN_110()
