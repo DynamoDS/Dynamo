@@ -999,7 +999,7 @@ namespace Dynamo.Tests
             var curveParam = inputs.FirstOrDefault();
             Assert.IsNotNull(curveParam);
 
-            Assert.AreEqual("Curve", curveParam.Parameter.DisplayTypeName);
+            Assert.AreEqual("Autodesk.DesignScript.Geometry.Curve", curveParam.Parameter.DisplayTypeName);
         }
 
         [Test]

@@ -140,7 +140,7 @@ namespace Dynamo.Library
         [JsonIgnore]
         public string DisplayTypeName
         {
-            get { return Type.ToShortString(); }
+            get { return Type.ToString(); }
         }
 
         internal void UpdateFunctionDescriptor(FunctionDescriptor funcDesc)
