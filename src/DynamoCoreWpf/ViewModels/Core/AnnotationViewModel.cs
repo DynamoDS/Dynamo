@@ -186,8 +186,22 @@ namespace Dynamo.ViewModels
         public AnnotationViewModel(WorkspaceViewModel workspaceViewModel, AnnotationModel model)
         {             
             annotationModel = model;           
-            this.WorkspaceViewModel = workspaceViewModel;                                     
+            this.WorkspaceViewModel = workspaceViewModel;
             model.PropertyChanged += model_PropertyChanged;
+            //https://jira.autodesk.com/browse/QNTM-3770
+            //Notes and Groups are serialized as annotations. Do not unselect the node selection during
+            //Notes serialization
+            if (model.Nodes.Count() > 0)
+            {
+                // Group is created already.So just populate it.
+                var selectNothing = new DynamoModel.SelectModelCommand(Guid.Empty, System.Windows.Input.ModifierKeys.None.AsDynamoType());
+                WorkspaceViewModel.DynamoViewModel.ExecuteCommand(selectNothing);
+            }
+            
+        }
+
+        internal void ClearSelection()
+        {
             // Group is created already.So just populate it.
             var selectNothing = new DynamoModel.SelectModelCommand(Guid.Empty, System.Windows.Input.ModifierKeys.None.AsDynamoType());
             WorkspaceViewModel.DynamoViewModel.ExecuteCommand(selectNothing);
