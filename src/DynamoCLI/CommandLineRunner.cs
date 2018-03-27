@@ -70,7 +70,10 @@ namespace DynamoCLI
                     List<GeometryHolder> nodeGeometries = new List<GeometryHolder>();
                     foreach (var node in model.CurrentWorkspace.Nodes)
                     {
-                        nodeGeometries.Add(new GeometryHolder(model, renderPackageFactory, node));
+                        if (node.ShouldDisplayPreview)
+                        {
+                            nodeGeometries.Add(new GeometryHolder(model, renderPackageFactory, node));
+                        }
                     }
 
                     doc = new XmlDocument();
@@ -101,21 +104,18 @@ namespace DynamoCLI
                     populateXmlDocWithResults(doc, outputresults);
 
                     var jsonFilename = Path.ChangeExtension(cmdLineArgs.Verbose, "json");
+                    
 
                     using (StreamWriter jsonFile = new StreamWriter(jsonFilename))
                     {
-                        jsonFile.WriteLine("[");
                         foreach (var holder in nodeGeometries)
                         {
                             if (holder.HasGeometry)
                             {
-                                jsonFile.WriteLine("[");
                                 string json = holder.GeometryJson;
                                 jsonFile.WriteLine(json);
-                                jsonFile.WriteLine("]");
                             }
                         }
-                        jsonFile.WriteLine("]");
                     }
                 }
                 evalComplete = false;
