@@ -18,7 +18,7 @@
 	</GalleryContent>
 	<GalleryContent>
 		<Header>Finding and Placing Nodes</Header>
-		<Body>The Dynamo Library is located on left side of the screen.&#10;[1] SEARCH: use the Library Search to find nodes&#10;[2] BROWSE: discover nodes in the Library Categories&#10;[3] ADD NODES: after you find a node in the Library, just hit enter or click on it or drag it over to the canvas to place it.</Body>
+		<Body>The Dynamo Library is located on left side of the screen.&#10;[1] SEARCH: use the Library Search to find nodes&#10;[2] BROWSE: discover nodes in the Library Categories&#10;[3] ADD NODES: after you find a node in the Library, just hit enter or click on it to place it on the canvas.</Body>
 		<ImagePath>04-Place-L.png</ImagePath>
 	</GalleryContent>
 	<GalleryContent>
@@ -28,7 +28,7 @@
 	</GalleryContent>
 	<GalleryContent>
 		<Header>Graph View  vs. Background 3D Preview</Header>
-		<Body>In Dynamo, you will see 2 views simultaneously: the Graph View (where nodes are edited) and the Background 3d Preview (where geometry output is visualized).&#10;[1]Switch from Graph View to the Background 3d Preview&#10;[2] Use Zoom to Fit and independently control the Zoom of each view&#10;[3] Pan around each view by dragging the mouse</Body>
+		<Body>In Dynamo, you will see 2 views simultaneously: the Graph View (where nodes are edited) and the Background 3d Preview (where geometry output is visualized).&#10;[1] Switch from Graph View to the Background 3d Preview&#10;[2] Use Zoom to Fit and independently control the Zoom of each view&#10;[3] Pan around each view by dragging the mouse</Body>
 		<ImagePath>06-View-L.png</ImagePath>
 	</GalleryContent>
 	<GalleryContent>
@@ -43,7 +43,7 @@
 	</GalleryContent>
 	<GalleryContent>
 		<Header>Need More Help?</Header>
-		<Body>There are more resources to help you learn more about Dynamo.&#10;- OFFICIAL WEBSITE: dynamobim.com&#10;- USERS' GUIDE: dynamoprimer.com&#10;- SAMPLE FILES: check out examples in the application menu under "Help > Samples"</Body>
+		<Body>There are more resources to help you learn more about Dynamo.&#10;- OFFICIAL WEBSITE: dynamobim.com&#10;- USERS' GUIDE: dynamoprimer.com&#10;- NODE DICTIONARY: dictionary.dynamobim.com&#10;- SAMPLE FILES: check out examples in the application menu under "Help > Samples"</Body>
 		<ImagePath>10-Help.png</ImagePath>
 	</GalleryContent>
 	</GalleryUiContents>
