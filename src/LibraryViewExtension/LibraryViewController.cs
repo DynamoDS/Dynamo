@@ -20,6 +20,7 @@ using Dynamo.Search.SearchElements;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Interfaces;
 using Dynamo.Wpf.ViewModels;
+using Dynamo.Core;
 
 namespace Dynamo.LibraryUI
 {
@@ -299,20 +300,35 @@ namespace Dynamo.LibraryUI
             System.Diagnostics.Trace.Write(e.Message);
         }
 
-        internal static IDisposable SetupSearchModelEventsObserver(NodeSearchModel model, IEventController controller, ILibraryViewCustomization customization, int throttleTime = 200)
+        internal static IDisposable SetupSearchModelEventsObserver(CustomNodeManager customNodeManager,NodeSearchModel model, IEventController controller, ILibraryViewCustomization customization, int throttleTime = 200)
         {
             customization.SpecificationUpdated += (o, e) => controller.RaiseEvent("libraryDataUpdated");
 
             var observer = new EventObserver<NodeSearchElement, IEnumerable<NodeSearchElement>>(
-                    elements => NotifySearchModelUpdate(customization, elements), CollectToList
+                    elements => NotifySearchModelUpdate(customization,elements), CollectToList
                 ).Throttle(TimeSpan.FromMilliseconds(throttleTime));
 
-            Action<NodeSearchElement> onRemove = e => observer.OnEvent(null);
+            Action<NodeSearchElement> handler = (searchElement) =>
+             {
+                // If the searchElement is customNodeSearchElement, only raise events
+                // to the library if it has been registered - when this has occured the customNodeManager will
+                // have its workspace loaded - if not, return.
+                if (searchElement is CustomNodeSearchElement)
+                 {
+                     if (customNodeManager.GetWorkspaceById((searchElement as CustomNodeSearchElement).ID) == null)
+                     {
+                         return;
+                     }
+                 }
+
+                 observer.OnEvent(searchElement);
+             };
+            Action<NodeSearchElement> onRemove = e => handler(null);
 
             //Set up the event callback
-            model.EntryAdded += observer.OnEvent;
+            model.EntryAdded += handler;
             model.EntryRemoved += onRemove;
-            model.EntryUpdated += observer.OnEvent;
+            model.EntryUpdated += handler;
 
             //Set up the dispose event handler
             observer.Disposed += () =>
@@ -346,15 +362,20 @@ namespace Dynamo.LibraryUI
         /// specification and raise specification changed event.</param>
         /// <param name="elements">List of updated elements</param>
         private static void NotifySearchModelUpdate(ILibraryViewCustomization customization, IEnumerable<NodeSearchElement> elements)
-        {
-            var includes = elements
-                .Select(NodeItemDataProvider.GetFullyQualifiedName)
-                .Select(name => name.Split('.').First())
-                .Distinct()
-                .SkipWhile(s => s.Contains("://"))
-                .Select(p => new LayoutIncludeInfo() { path = p });
+        {  
+            //elements might be null if we have removed an element.
+            if (elements != null)
+            {
+                var includes = elements
+               .Select(NodeItemDataProvider.GetFullyQualifiedName)
+               .Select(name => name.Split('.').First())
+               .Distinct()
+               .SkipWhile(s => s.Contains("://"))
+               .Select(p => new LayoutIncludeInfo() { path = p });
 
-            customization.AddIncludeInfo(includes, "Add-ons");
+               customization.AddIncludeInfo(includes, "Add-ons");
+
+            }
         }
 
         private void InitializeResourceStreams(DynamoModel model, LibraryViewCustomization customization)
@@ -392,7 +413,7 @@ namespace Dynamo.LibraryUI
             resourceFactory.RegisterProvider("/layoutSpecs", new LayoutSpecProvider(customization, "Dynamo.LibraryUI.web.library.layoutSpecs.json"));
 
             //Setup the event observer for NodeSearchModel to update customization/spec provider.
-            observer = SetupSearchModelEventsObserver(model.SearchModel, this, customization);
+            observer = SetupSearchModelEventsObserver(model.CustomNodeManager,model.SearchModel, this, customization);
 
             //Register provider for searching node data
             resourceFactory.RegisterProvider(SearchResultDataProvider.serviceIdentifier, new SearchResultDataProvider(model.SearchModel));
