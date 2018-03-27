@@ -118,6 +118,7 @@ namespace Dynamo.Models
         #endregion
 
         #region events
+
         internal delegate void FunctionNamePromptRequestHandler(object sender, FunctionNamePromptEventArgs e);
         internal event FunctionNamePromptRequestHandler RequestsFunctionNamePrompt;
         internal void OnRequestsFunctionNamePrompt(Object sender, FunctionNamePromptEventArgs e)
@@ -1051,7 +1052,9 @@ namespace Dynamo.Models
                 {
                     if (info.FunctionId == newInfo.FunctionId)
                     {
-                        bool isCategoryChanged = searchElement.FullCategoryName != newInfo.Category;
+                        var group = SearchElementGroup.None;
+                        var processedName = SearchModel.ProcessNodeCategory(newInfo.Category,ref group);
+                        bool isCategoryChanged = searchElement.FullCategoryName != newInfo.Category && searchElement.FullCategoryName != processedName;
                         searchElement.SyncWithCustomNodeInfo(newInfo);
                         SearchModel.Update(searchElement, isCategoryChanged);
                     }

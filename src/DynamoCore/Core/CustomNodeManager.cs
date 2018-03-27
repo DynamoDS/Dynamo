@@ -95,6 +95,8 @@ namespace Dynamo.Core
 
         #endregion
 
+        #region Events
+
         /// <summary>
         ///     An event that is fired when a definition is updated
         /// </summary>
@@ -125,6 +127,7 @@ namespace Dynamo.Core
             var handler = CustomNodeRemoved;
             if (handler != null) handler(functionId);
         }
+        #endregion
 
         /// <summary>
         ///     Creates a new Custom Node Instance.
@@ -701,7 +704,6 @@ namespace Dynamo.Core
         private void RegisterCustomNodeWorkspace(
             CustomNodeWorkspaceModel newWorkspace, CustomNodeInfo info, CustomNodeDefinition definition)
         {
-            loadedWorkspaceModels[newWorkspace.CustomNodeId] = newWorkspace;
 
             SetFunctionDefinition(definition);
             OnDefinitionUpdated(definition);
@@ -713,6 +715,8 @@ namespace Dynamo.Core
             };
 
             SetNodeInfo(info);
+            loadedWorkspaceModels[newWorkspace.CustomNodeId] = newWorkspace;
+
             newWorkspace.InfoChanged += () =>
             {
                 var newInfo = newWorkspace.CustomNodeInfo;
