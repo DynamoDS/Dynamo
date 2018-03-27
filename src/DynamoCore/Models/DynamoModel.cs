@@ -1052,9 +1052,7 @@ namespace Dynamo.Models
                 {
                     if (info.FunctionId == newInfo.FunctionId)
                     {
-                        var group = SearchElementGroup.None;
-                        var processedName = SearchModel.ProcessNodeCategory(newInfo.Category,ref group);
-                        bool isCategoryChanged = searchElement.FullCategoryName != newInfo.Category && searchElement.FullCategoryName != processedName;
+                        bool isCategoryChanged = searchElement.FullCategoryName != newInfo.Category;
                         searchElement.SyncWithCustomNodeInfo(newInfo);
                         SearchModel.Update(searchElement, isCategoryChanged);
                     }
