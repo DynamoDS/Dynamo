@@ -1078,5 +1078,16 @@ namespace Dynamo.Tests
             var previewValue = GetPreviewValue(customInstance.GUID.ToString());
             Assert.AreEqual(21, previewValue);
         }
+
+        [Test]
+        public void Regress3786_InputNodesDeserilization()
+        {
+            var filePath = Path.Combine(TestDirectory, @"core\CustomNodes\DateTime.IsEarlier_JSON.dyf");
+            OpenModel(filePath);
+
+            var node = CurrentDynamoModel.CurrentWorkspace.Nodes.OfType<Symbol>().First();
+            Assert.IsNotNull(node);
+            Assert.AreEqual("dateTime1: System.DateTime", node.Parameter.ToNameString());
+        }
     }
 }

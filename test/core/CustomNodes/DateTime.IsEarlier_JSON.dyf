@@ -1,0 +1,245 @@
+{
+  "Uuid": "2508111f-a0a4-4144-8c3d-0c7cfd82d90a",
+  "IsCustomNode": true,
+  "Category": "Clockwork.Core.DateTime.Actions",
+  "Description": "Determines if a given date and time are earlier than another given date and time.",
+  "Name": "DateTime.IsEarlier",
+  "ElementResolver": {
+    "ResolutionMap": {
+      "File": {
+        "Key": "DSCore.IO.File",
+        "Value": "DSCoreNodes.dll"
+      },
+      "System.IO.FileInfo": {
+        "Key": "System.IO.FileInfo",
+        "Value": ""
+      },
+      "List.Empty": {
+        "Key": "DSCore.List",
+        "Value": "DSCoreNodes.dll"
+      },
+      "FilePath": {
+        "Key": "DSCore.IO.FilePath",
+        "Value": "DSCoreNodes.dll"
+      },
+      "String": {
+        "Key": "DSCore.String",
+        "Value": "DSCoreNodes.dll"
+      },
+      "List": {
+        "Key": "DSCore.List",
+        "Value": "DSCoreNodes.dll"
+      },
+      "DSOffice.Excel": {
+        "Key": "DSOffice.Excel",
+        "Value": "DSOffice.dll"
+      },
+      "System.DateTime": {
+        "Key": "System.DateTime",
+        "Value": ""
+      }
+    }
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "PythonNodeModels.PythonNode, PythonNodeModels",
+      "NodeType": "PythonScriptNode",
+      "Code": "import clr\n\ndef isEarlier(date1, date2):\n\treturn date1 < date2\n\ndates1 = IN[0]\ndates2 = IN[1]\n\nif not dates1 or not dates2: OUT = None\nelif isinstance(dates1, list) and isinstance(dates2, list): OUT = [isEarlier(x, y) for x,y in zip(dates1, dates2)]\nelif isinstance(dates1, list): OUT = [isEarlier(x, dates2) for x in dates1]\nelif isinstance(dates2, list): OUT = [isEarlier(dates1, x) for x in dates2]\nelse: OUT = isEarlier(dates1, dates2)",
+      "VariableInputPorts": true,
+      "Id": "21e42b3c39824adb897b47065ebc9adb",
+      "Inputs": [
+        {
+          "Id": "3441e5f038254712ac22df9e225fb1e4",
+          "Name": "IN[0]",
+          "Description": "Input #0",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "3dc1aa161a914cf0a4c837829154c7cd",
+          "Name": "IN[1]",
+          "Description": "Input #1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "fa10f37a4685450b8623d566450c9f2b",
+          "Name": "OUT",
+          "Description": "Result of the python script",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Runs an embedded IronPython script."
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CustomNodes.Symbol, DynamoCore",
+      "NodeType": "InputNode",
+      "Parameter": {
+        "Name": "dateTime1",
+        "TypeName": "System.DateTime",
+        "TypeRank": 0,
+        "DefaultValue": null
+      },
+      "Id": "ccf64b2026254c98a556da8de12e81a4",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "999a4c7dded7419a865ad51efe664a5d",
+          "Name": "",
+          "Description": "Symbol",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "A function parameter, use with custom nodes.\r\n\r\nYou can specify the type and default value for parameter. E.g.,\r\n\r\ninput : var[]..[]\r\nvalue : bool = false"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CustomNodes.Symbol, DynamoCore",
+      "NodeType": "InputNode",
+      "Parameter": {
+        "Name": "dateTime2",
+        "TypeName": "System.DateTime",
+        "TypeRank": 0,
+        "DefaultValue": null
+      },
+      "Id": "6653114df6c04a90af9a848c142f0b9b",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "6a570682a15e4c67a9834d74565be92d",
+          "Name": "",
+          "Description": "Symbol",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "A function parameter, use with custom nodes.\r\n\r\nYou can specify the type and default value for parameter. E.g.,\r\n\r\ninput : var[]..[]\r\nvalue : bool = false"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CustomNodes.Output, DynamoCore",
+      "NodeType": "OutputNode",
+      "ElementResolver": null,
+      "Symbol": "bool",
+      "Id": "e0907e2d55a442c0a1c18f259e7f303b",
+      "Inputs": [
+        {
+          "Id": "5629c14bae19402799b2dafef5624d0d",
+          "Name": "",
+          "Description": "",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [],
+      "Replication": "Disabled",
+      "Description": "A function output, use with custom nodes"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "fa10f37a4685450b8623d566450c9f2b",
+      "End": "5629c14bae19402799b2dafef5624d0d",
+      "Id": "0c1dc5cdaddc4d04905f6a093f3d544a"
+    },
+    {
+      "Start": "999a4c7dded7419a865ad51efe664a5d",
+      "End": "3441e5f038254712ac22df9e225fb1e4",
+      "Id": "35b7aa012bf94367b8a9311979c53633"
+    },
+    {
+      "Start": "6a570682a15e4c67a9834d74565be92d",
+      "End": "3dc1aa161a914cf0a4c837829154c7cd",
+      "Id": "c7be1d0879ee4da5b72b57abb1024ead"
+    }
+  ],
+  "Dependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": false,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.0.1.4516",
+      "RunType": "Manual",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "NodeViews": [
+      {
+        "Id": "21e42b3c39824adb897b47065ebc9adb",
+        "IsInput": false,
+        "IsOutput": false,
+        "Name": "Python Script",
+        "ShowGeometry": true,
+        "Excluded": false,
+        "X": 289.0,
+        "Y": 62.0
+      },
+      {
+        "Id": "ccf64b2026254c98a556da8de12e81a4",
+        "IsInput": false,
+        "IsOutput": false,
+        "Name": "Input",
+        "ShowGeometry": true,
+        "Excluded": false,
+        "X": -64.0,
+        "Y": 33.0
+      },
+      {
+        "Id": "6653114df6c04a90af9a848c142f0b9b",
+        "IsInput": false,
+        "IsOutput": false,
+        "Name": "Input",
+        "ShowGeometry": true,
+        "Excluded": false,
+        "X": -64.0,
+        "Y": 117.0
+      },
+      {
+        "Id": "e0907e2d55a442c0a1c18f259e7f303b",
+        "IsInput": false,
+        "IsOutput": false,
+        "Name": "Output",
+        "ShowGeometry": true,
+        "Excluded": false,
+        "X": 513.0,
+        "Y": 62.0
+      }
+    ],
+    "Annotations": [],
+    "X": 166.0,
+    "Y": 22.0,
+    "Zoom": 1.0
+  }
+}
