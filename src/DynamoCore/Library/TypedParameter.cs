@@ -140,7 +140,7 @@ namespace Dynamo.Library
         [JsonIgnore]
         public string DisplayTypeName
         {
-            get { return Type.ToString() ; }
+            get { return Type.ToShortString() ; }
         }
 
         internal void UpdateFunctionDescriptor(FunctionDescriptor funcDesc)
@@ -159,6 +159,23 @@ namespace Dynamo.Library
         public override string ToString()
         {
             string str = Name + ": " + DisplayTypeName;
+            if (defaultValueString != null)
+            {
+                str = str + " = " + defaultValueString;
+            }
+
+            return str;
+        }
+
+        /// <summary>
+        /// Returns a string in a specific format (Name:Type.Name)
+        /// ex: dateTime1:System.DateTime,  test:Autodesk.DesignScript.Geomtery.Curve
+        /// Refer to https://jira.autodesk.com/browse/QNTM-3786
+        /// </summary>
+        /// <returns></returns>
+        internal string ToNameString()
+        {
+            string str = Name + ": " + Type.ToString();
             if (defaultValueString != null)
             {
                 str = str + " = " + defaultValueString;
