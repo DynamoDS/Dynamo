@@ -82,7 +82,7 @@ namespace ProtoCore
         public string ToShortString()
         {
 
-            if (!string.IsNullOrEmpty(Name) && Name.Contains(".") && !Name.Contains("System"))
+            if (!string.IsNullOrEmpty(Name) && Name.Contains("."))
             {
                 return Name.Split('.').Last() + RankString; 
             }
