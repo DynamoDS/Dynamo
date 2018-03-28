@@ -1,0 +1,617 @@
+
+<!DOCTYPE HTML>
+<html lang="" >
+    <head>
+        <meta charset="UTF-8">
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <title>Zero-Touch Case Study - Grid Node · GitBook</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="description" content="">
+        <meta name="generator" content="GitBook 3.2.3">
+        
+        
+        
+    
+    <link rel="stylesheet" href="../gitbook/style.css">
+
+    
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-highlight/website.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-search/search.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-fontsettings/website.css">
+                
+            
+        
+
+    
+
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+
+        
+    
+    
+    <meta name="HandheldFriendly" content="true"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="../gitbook/images/apple-touch-icon-precomposed-152.png">
+    <link rel="shortcut icon" href="../gitbook/images/favicon.ico" type="image/x-icon">
+
+    
+    <link rel="next" href="3-3-python-scripts-in-csharp.html" />
+    
+    
+    <link rel="prev" href="3-1-getting-started.html" />
+    
+
+    </head>
+    <body>
+        
+<div class="book">
+    <div class="book-summary">
+        
+            
+<div id="book-search-input" role="search">
+    <input type="text" placeholder="Type to search" />
+</div>
+
+            
+                <nav role="navigation">
+                
+
+
+<ul class="summary">
+    
+    
+
+    
+
+    
+        
+        
+    
+        <li class="chapter " data-level="1.1" data-path="../">
+            
+                <a href="../">
+            
+                    
+                    About
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2" data-path="../01-Introduction/1-0-introduction.html">
+            
+                <a href="../01-Introduction/1-0-introduction.html">
+            
+                    
+                    Introduction
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3" data-path="../02-Build-Dynamo-From-Source/2-0-build-dynamo-from-source.html">
+            
+                <a href="../02-Build-Dynamo-From-Source/2-0-build-dynamo-from-source.html">
+            
+                    
+                    Build Dynamo from Source
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.3.1" data-path="../02-Build-Dynamo-From-Source/2-1-build-dynamo-revit-from-source.html">
+            
+                <a href="../02-Build-Dynamo-From-Source/2-1-build-dynamo-revit-from-source.html">
+            
+                    
+                    Build DynamoRevit from Source
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4" data-path="3-0-developing-for-dynamo.html">
+            
+                <a href="3-0-developing-for-dynamo.html">
+            
+                    
+                    Developing for Dynamo
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.4.1" data-path="3-1-getting-started.html">
+            
+                <a href="3-1-getting-started.html">
+            
+                    
+                    Getting Started
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter active" data-level="1.4.2" data-path="3-2-zerotouch-example.html">
+            
+                <a href="3-2-zerotouch-example.html">
+            
+                    
+                    Zero-Touch Case Study - Grid Node
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.3" data-path="3-3-python-scripts-in-csharp.html">
+            
+                <a href="3-3-python-scripts-in-csharp.html">
+            
+                    
+                    Zero-Touch Case Study - Python Scripts in C#
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.4" data-path="3-4-zerotouch-nodes.html">
+            
+                <a href="3-4-zerotouch-nodes.html">
+            
+                    
+                    Going Further with Zero-Touch
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.5" data-path="3-5-nodemodel-derived-nodes.html">
+            
+                <a href="3-5-nodemodel-derived-nodes.html">
+            
+                    
+                    NodeModel Case Study - Custom UI
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.6" data-path="3-6-extensions.html">
+            
+                <a href="3-6-extensions.html">
+            
+                    
+                    Extensions
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5" data-path="../04-Testing/4-0-testing.html">
+            
+                <a href="../04-Testing/4-0-testing.html">
+            
+                    
+                    Testing
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.5.1" data-path="../04-Testing/4-1-revit-testing.html">
+            
+                <a href="../04-Testing/4-1-revit-testing.html">
+            
+                    
+                    Testing for DynamoRevit
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6" data-path="../05-Package-Deployment/5-0-package-deployment.html">
+            
+                <a href="../05-Package-Deployment/5-0-package-deployment.html">
+            
+                    
+                    Package Deployment
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.6.1" data-path="../05-Package-Deployment/5-1-build-package-from-vs.html">
+            
+                <a href="../05-Package-Deployment/5-1-build-package-from-vs.html">
+            
+                    
+                    Build a Package From Visual Studio
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7" data-path="../06-Pull-Requests/6-0-pull-requests.html">
+            
+                <a href="../06-Pull-Requests/6-0-pull-requests.html">
+            
+                    
+                    Pull Requests
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8" data-path="../07-Examples/7-0-examples.html">
+            
+                <a href="../07-Examples/7-0-examples.html">
+            
+                    
+                    Examples
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+    
+
+    <li class="divider"></li>
+
+    <li>
+        <a href="https://www.gitbook.com" target="blank" class="gitbook-link">
+            Published with GitBook
+        </a>
+    </li>
+</ul>
+
+
+                </nav>
+            
+        
+    </div>
+
+    <div class="book-body">
+        
+            <div class="body-inner">
+                
+                    
+
+<div class="book-header" role="navigation">
+    
+
+    <!-- Title -->
+    <h1>
+        <i class="fa fa-circle-o-notch fa-spin"></i>
+        <a href=".." >Zero-Touch Case Study - Grid Node</a>
+    </h1>
+</div>
+
+
+
+
+                    <div class="page-wrapper" tabindex="-1" role="main">
+                        <div class="page-inner">
+                            
+<div id="book-search-results">
+    <div class="search-noresults">
+    
+                                <section class="normal markdown-section">
+                                
+                                <h1 id="zero-touch-case-study---grid-node">Zero-Touch Case Study - Grid Node</h1>
+<p>With a Visual Studio project up and running, we will walk through how to build a custom node that creates a rectangular grid of cells. Though we could create this with several standard nodes, it is a useful tool that can be easily contained in a Zero-Touch node. As opposed to grid lines, cells can be scaled about their center points, queried for their corner vertices, or built into faces.</p>
+<p>This example will touch on a few of the features and concepts to be aware of when creating a Zero-Touch node. After we build the custom node and add it to Dynamo, make sure review the Going Further with Zero-Touch page for a deeper look at default input values, returning multiple values, documentation, objects, using Dynamo geometry types, and migrations.</p>
+<p><img src="../assets/cover-image.png" alt=""></p>
+<h3 id="custom-rectangular-grid-node">Custom Rectangular Grid Node</h3>
+<p>To start building the grid node, create a new Visual Studio class library project. Refer to the Getting Started page for an in-depth walk-through of how to set up a project.</p>
+<p><img src="../assets/vs-new-project.jpg" alt=""></p>
+<blockquote>
+<ol>
+<li>Choose <code>Class Library</code> for the project type</li>
+<li>Name the project <code>CustomNodes</code></li>
+</ol>
+</blockquote>
+<p>Since we will be creating geometry, we need to reference the appropriate NuGet package. Install the ZeroTouchLibrary package from the Nuget Package Manager. This package is necessary for the <code>using Autodesk.DesignScript.Geometry;</code> statement.</p>
+<p><img src="../assets/vs-nugetpackage.jpg" alt=""></p>
+<blockquote>
+<ol>
+<li>Browse for the ZeroTouchLibrary package</li>
+<li>We will be using this node in the current build of Dynamo Studio, which is 1.3. Select the package version that matches this.</li>
+<li>Notice that we have also renamed the class file to <code>Grids.cs</code></li>
+</ol>
+</blockquote>
+<p>Next, we need to establish a namespace and class in which the RectangularGrid method will live. The node will be named in Dynamo according to the method and class names. We don&apos;t have to copy this into Visual Studio yet.</p>
+<pre><code class="lang-csharp"><span class="hljs-keyword">using</span> Autodesk.DesignScript.Geometry;
+<span class="hljs-keyword">using</span> System.Collections.Generic;
+
+<span class="hljs-keyword">namespace</span> <span class="hljs-title">CustomNodes</span>
+{
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">Grids</span>
+    {
+        <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> List&lt;Rectangle&gt; <span class="hljs-title">RectangularGrid</span>(<span class="hljs-params"><span class="hljs-keyword">int</span> xCount, <span class="hljs-keyword">int</span> yCount</span>)
+        </span>{
+        <span class="hljs-comment">//The method for creating a rectangular grid will live in here</span>
+        }
+    }
+}
+</code></pre>
+<blockquote>
+<p><code>Autodesk.DesignScript.Geometry;</code> references the ProtoGeometry.dll in the ZeroTouchLibrary package
+<code>System.Collections.Generic</code> is necessary for creating lists</p>
+</blockquote>
+<p>Now we can add the method for drawing the rectangles. The class file should look like this and can be copied into Visual Studio.</p>
+<pre><code class="lang-csharp"><span class="hljs-keyword">using</span> Autodesk.DesignScript.Geometry;
+<span class="hljs-keyword">using</span> System.Collections.Generic;
+
+<span class="hljs-keyword">namespace</span> <span class="hljs-title">CustomNodes</span>
+{
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">Grids</span>
+    {
+        <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> List&lt;Rectangle&gt; <span class="hljs-title">RectangularGrid</span>(<span class="hljs-params"><span class="hljs-keyword">int</span> xCount, <span class="hljs-keyword">int</span> yCount</span>)
+        </span>{
+            <span class="hljs-keyword">double</span> x = <span class="hljs-number">0</span>;
+            <span class="hljs-keyword">double</span> y = <span class="hljs-number">0</span>;
+
+            <span class="hljs-keyword">var</span> pList = <span class="hljs-keyword">new</span> List&lt;Rectangle&gt;();
+
+            <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; xCount; i++)
+            {
+                y++;
+                x = <span class="hljs-number">0</span>;
+                <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> j = <span class="hljs-number">0</span>; j &lt; yCount; j++)
+                {
+                    x++;
+                    Point pt = Point.ByCoordinates(x, y);
+                    Vector vec = Vector.ZAxis();
+                    Plane bP = Plane.ByOriginNormal(pt, vec);
+                    Rectangle rect = Rectangle.ByWidthLength(bP, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>);
+                    pList.Add(rect);
+                }
+            }
+            <span class="hljs-keyword">return</span> pList;
+        }
+    }
+}
+</code></pre>
+<p>If the project looks similar to this, go ahead and try to build the <code>.dll</code>.</p>
+<p><img src="../assets/vs-grids.jpg" alt=""></p>
+<blockquote>
+<ol>
+<li>Choose Build &gt; Build Solution</li>
+</ol>
+</blockquote>
+<p>Check the project&apos;s <code>bin</code> folder for a <code>.dll</code>. If the build was successful, we can add the <code>.dll</code> to Dynamo.</p>
+<p><img src="../assets/RectangularGrid-Dynamo.jpg" alt=""></p>
+<blockquote>
+<ol>
+<li>The custom RectangularGrids node in the Dynamo Library</li>
+<li>The custom node on the canvas</li>
+<li>The Add button for adding the <code>.dll</code> to Dynamo</li>
+</ol>
+</blockquote>
+<h3 id="custom-node-modifications">Custom Node Modifications</h3>
+<p>In the example above, we created a fairly simple node that didn&apos;t define much else outside of the <code>RectangularGrids</code> method. However, we may want to create tooltips for input ports or give the node a summary like the standard Dynamo nodes. Adding these features to custom nodes makes them easier to use, especially if a user wants to search for them in the Library.</p>
+<p><img src="../assets/nodemodification.png" alt=""></p>
+<blockquote>
+<ol>
+<li>A default input value</li>
+<li>A tool tip for the xCount input</li>
+</ol>
+</blockquote>
+<p>The RectangularGrid node needs some of these basic features. In the code below, we have added input and output port descriptions, a summary, and default input values.</p>
+<pre><code class="lang-csharp"><span class="hljs-keyword">using</span> Autodesk.DesignScript.Geometry;
+<span class="hljs-keyword">using</span> System.Collections.Generic;
+
+<span class="hljs-keyword">namespace</span> <span class="hljs-title">CustomNodes</span>
+{
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">Grids</span>
+    {
+        <span class="hljs-comment"><span class="hljs-doctag">///</span> <span class="hljs-doctag">&lt;summary&gt;</span></span>
+        <span class="hljs-comment"><span class="hljs-doctag">///</span> This method creates a rectangular grid from an X and Y count.</span>
+        <span class="hljs-comment"><span class="hljs-doctag">///</span> <span class="hljs-doctag">&lt;/summary&gt;</span></span>
+        <span class="hljs-comment"><span class="hljs-doctag">///</span> <span class="hljs-doctag">&lt;param name=&quot;xCount&quot;&gt;</span>Number of grid cells in the X direction<span class="hljs-doctag">&lt;/param&gt;</span></span>
+        <span class="hljs-comment"><span class="hljs-doctag">///</span> <span class="hljs-doctag">&lt;param name=&quot;yCount&quot;&gt;</span>Number of grid cells in the Y direction<span class="hljs-doctag">&lt;/param&gt;</span></span>
+        <span class="hljs-comment"><span class="hljs-doctag">///</span> <span class="hljs-doctag">&lt;returns&gt;</span>A list of rectangles<span class="hljs-doctag">&lt;/returns&gt;</span></span>
+        <span class="hljs-comment"><span class="hljs-doctag">///</span> <span class="hljs-doctag">&lt;search&gt;</span>grid, rectangle<span class="hljs-doctag">&lt;/search&gt;</span></span>
+        <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> List&lt;Rectangle&gt; <span class="hljs-title">RectangularGrid</span>(<span class="hljs-params"><span class="hljs-keyword">int</span> xCount = <span class="hljs-number">10</span>, <span class="hljs-keyword">int</span> yCount = <span class="hljs-number">10</span></span>)
+        </span>{
+            <span class="hljs-keyword">double</span> x = <span class="hljs-number">0</span>;
+            <span class="hljs-keyword">double</span> y = <span class="hljs-number">0</span>;
+
+            <span class="hljs-keyword">var</span> pList = <span class="hljs-keyword">new</span> List&lt;Rectangle&gt;();
+
+            <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; xCount; i++)
+            {
+                y++;
+                x = <span class="hljs-number">0</span>;
+                <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> j = <span class="hljs-number">0</span>; j &lt; yCount; j++)
+                {
+                    x++;
+                    Point pt = Point.ByCoordinates(x, y);
+                    Vector vec = Vector.ZAxis();
+                    Plane bP = Plane.ByOriginNormal(pt, vec);
+                    Rectangle rect = Rectangle.ByWidthLength(bP, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>);
+                    pList.Add(rect);
+                    Point cPt = rect.Center();
+                }
+            }
+            <span class="hljs-keyword">return</span> pList;
+        }
+    }
+}
+</code></pre>
+<ul>
+<li><p>Give the inputs default values by assigning values to the method parameters: <code>RectangularGrid(int xCount = 10, int yCount = 10)</code></p>
+</li>
+<li><p>Create input and output tooltips, search keywords, and a summary with XML documentation preceded by <code>///</code>. </p>
+</li>
+</ul>
+<p>To add tooltips, we need an xml file in the project directory. A <code>.xml</code> can be automatically generated by Visual Studio by enabling the option.</p>
+<p><img src="../assets/vs-xml.jpg" alt=""></p>
+<blockquote>
+<ol>
+<li>Enable XML documentation file here and specify a file path. This generates an XML file.</li>
+</ol>
+</blockquote>
+<p>That&apos;s it! We have created a new node with several standard features. The following chapter Zero-Touch Basics goes into greater detail about Zero-Touch node development and the issues to be aware of.</p>
+
+                                
+                                </section>
+                            
+    </div>
+    <div class="search-results">
+        <div class="has-results">
+            
+            <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+            <ul class="search-results-list"></ul>
+            
+        </div>
+        <div class="no-results">
+            
+            <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+            
+        </div>
+    </div>
+</div>
+
+                        </div>
+                    </div>
+                
+            </div>
+
+            
+                
+                <a href="3-1-getting-started.html" class="navigation navigation-prev " aria-label="Previous page: Getting Started">
+                    <i class="fa fa-angle-left"></i>
+                </a>
+                
+                
+                <a href="3-3-python-scripts-in-csharp.html" class="navigation navigation-next " aria-label="Next page: Zero-Touch Case Study - Python Scripts in C#">
+                    <i class="fa fa-angle-right"></i>
+                </a>
+                
+            
+        
+    </div>
+
+    <script>
+        var gitbook = gitbook || [];
+        gitbook.push(function() {
+            gitbook.page.hasChanged({"page":{"title":"Zero-Touch Case Study - Grid Node","level":"1.4.2","depth":2,"next":{"title":"Zero-Touch Case Study - Python Scripts in C#","level":"1.4.3","depth":2,"path":"03-Development-Options/3-3-python-scripts-in-csharp.md","ref":"03-Development-Options/3-3-python-scripts-in-csharp.md","articles":[]},"previous":{"title":"Getting Started","level":"1.4.1","depth":2,"path":"03-Development-Options/3-1-getting-started.md","ref":"03-Development-Options/3-1-getting-started.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":[],"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"03-Development-Options/3-2-zerotouch-example.md","mtime":"2018-03-28T17:54:40.659Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2018-03-28T18:04:00.400Z"},"basePath":"..","book":{"language":""}});
+        });
+    </script>
+</div>
+
+        
+    <script src="../gitbook/gitbook.js"></script>
+    <script src="../gitbook/theme.js"></script>
+    
+        
+        <script src="../gitbook/gitbook-plugin-search/search-engine.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-search/search.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-lunr/lunr.min.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-lunr/search-lunr.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-sharing/buttons.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-fontsettings/fontsettings.js"></script>
+        
+    
+
+    </body>
+</html>
+

@@ -1,0 +1,617 @@
+
+<!DOCTYPE HTML>
+<html lang="" >
+    <head>
+        <meta charset="UTF-8">
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <title>Build Dynamo from Source · GitBook</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="description" content="">
+        <meta name="generator" content="GitBook 3.2.3">
+        
+        
+        
+    
+    <link rel="stylesheet" href="../gitbook/style.css">
+
+    
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-highlight/website.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-search/search.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-fontsettings/website.css">
+                
+            
+        
+
+    
+
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+
+        
+    
+    
+    <meta name="HandheldFriendly" content="true"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="../gitbook/images/apple-touch-icon-precomposed-152.png">
+    <link rel="shortcut icon" href="../gitbook/images/favicon.ico" type="image/x-icon">
+
+    
+    <link rel="next" href="2-1-build-dynamo-revit-from-source.html" />
+    
+    
+    <link rel="prev" href="../01-Introduction/1-0-introduction.html" />
+    
+
+    </head>
+    <body>
+        
+<div class="book">
+    <div class="book-summary">
+        
+            
+<div id="book-search-input" role="search">
+    <input type="text" placeholder="Type to search" />
+</div>
+
+            
+                <nav role="navigation">
+                
+
+
+<ul class="summary">
+    
+    
+
+    
+
+    
+        
+        
+    
+        <li class="chapter " data-level="1.1" data-path="../">
+            
+                <a href="../">
+            
+                    
+                    About
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2" data-path="../01-Introduction/1-0-introduction.html">
+            
+                <a href="../01-Introduction/1-0-introduction.html">
+            
+                    
+                    Introduction
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter active" data-level="1.3" data-path="2-0-build-dynamo-from-source.html">
+            
+                <a href="2-0-build-dynamo-from-source.html">
+            
+                    
+                    Build Dynamo from Source
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.3.1" data-path="2-1-build-dynamo-revit-from-source.html">
+            
+                <a href="2-1-build-dynamo-revit-from-source.html">
+            
+                    
+                    Build DynamoRevit from Source
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4" data-path="../03-Development-Options/3-0-developing-for-dynamo.html">
+            
+                <a href="../03-Development-Options/3-0-developing-for-dynamo.html">
+            
+                    
+                    Developing for Dynamo
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.4.1" data-path="../03-Development-Options/3-1-getting-started.html">
+            
+                <a href="../03-Development-Options/3-1-getting-started.html">
+            
+                    
+                    Getting Started
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.2" data-path="../03-Development-Options/3-2-zerotouch-example.html">
+            
+                <a href="../03-Development-Options/3-2-zerotouch-example.html">
+            
+                    
+                    Zero-Touch Case Study - Grid Node
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.3" data-path="../03-Development-Options/3-3-python-scripts-in-csharp.html">
+            
+                <a href="../03-Development-Options/3-3-python-scripts-in-csharp.html">
+            
+                    
+                    Zero-Touch Case Study - Python Scripts in C#
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.4" data-path="../03-Development-Options/3-4-zerotouch-nodes.html">
+            
+                <a href="../03-Development-Options/3-4-zerotouch-nodes.html">
+            
+                    
+                    Going Further with Zero-Touch
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.5" data-path="../03-Development-Options/3-5-nodemodel-derived-nodes.html">
+            
+                <a href="../03-Development-Options/3-5-nodemodel-derived-nodes.html">
+            
+                    
+                    NodeModel Case Study - Custom UI
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.6" data-path="../03-Development-Options/3-6-extensions.html">
+            
+                <a href="../03-Development-Options/3-6-extensions.html">
+            
+                    
+                    Extensions
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5" data-path="../04-Testing/4-0-testing.html">
+            
+                <a href="../04-Testing/4-0-testing.html">
+            
+                    
+                    Testing
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.5.1" data-path="../04-Testing/4-1-revit-testing.html">
+            
+                <a href="../04-Testing/4-1-revit-testing.html">
+            
+                    
+                    Testing for DynamoRevit
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6" data-path="../05-Package-Deployment/5-0-package-deployment.html">
+            
+                <a href="../05-Package-Deployment/5-0-package-deployment.html">
+            
+                    
+                    Package Deployment
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.6.1" data-path="../05-Package-Deployment/5-1-build-package-from-vs.html">
+            
+                <a href="../05-Package-Deployment/5-1-build-package-from-vs.html">
+            
+                    
+                    Build a Package From Visual Studio
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7" data-path="../06-Pull-Requests/6-0-pull-requests.html">
+            
+                <a href="../06-Pull-Requests/6-0-pull-requests.html">
+            
+                    
+                    Pull Requests
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8" data-path="../07-Examples/7-0-examples.html">
+            
+                <a href="../07-Examples/7-0-examples.html">
+            
+                    
+                    Examples
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+    
+
+    <li class="divider"></li>
+
+    <li>
+        <a href="https://www.gitbook.com" target="blank" class="gitbook-link">
+            Published with GitBook
+        </a>
+    </li>
+</ul>
+
+
+                </nav>
+            
+        
+    </div>
+
+    <div class="book-body">
+        
+            <div class="body-inner">
+                
+                    
+
+<div class="book-header" role="navigation">
+    
+
+    <!-- Title -->
+    <h1>
+        <i class="fa fa-circle-o-notch fa-spin"></i>
+        <a href=".." >Build Dynamo from Source</a>
+    </h1>
+</div>
+
+
+
+
+                    <div class="page-wrapper" tabindex="-1" role="main">
+                        <div class="page-inner">
+                            
+<div id="book-search-results">
+    <div class="search-noresults">
+    
+                                <section class="normal markdown-section">
+                                
+                                <h1 id="build-dynamo-from-source">Build Dynamo from Source</h1>
+<p>Dynamo&apos;s source is hosted on Github for anyone to clone and make contributions to. In this chapter, we will walk through how to clone the repository using git, compile the source files with Visual Studio, run and debug a local build, and pull any new changes  from Github.</p>
+<h3 id="locating-the-dynamo-repositories-on-github">Locating the Dynamo repositories on Github</h3>
+<p>Github is a hosting service based on <a href="https://help.github.com/articles/git-and-github-learning-resources/" target="_blank">git</a>, a version control system for tracking changes and coordinating work between people. Git is a tool we can leverage to download Dynamo&apos;s source files, and keep them updated with a few commands. Using this method will avoid the unnecessary and inherently messy work of downloading and manually replacing the source files at every update. The git version control system will track any differences between a local and remote code repository.</p>
+<p>Dynamo&apos;s source is hosted on the DynamoDS Github in this repository: <a href="https://github.com/DynamoDS/Dynamo" target="_blank">https://github.com/DynamoDS/Dynamo</a></p>
+<p><img src="../assets/github.jpg" alt=""></p>
+<blockquote>
+<p>The Dynamo source files.  </p>
+<ol>
+<li>Clone or download the entire repository  </li>
+<li>View other DynamoDS repositories  </li>
+<li>Dynamo&apos;s source files  </li>
+<li>Git specific files</li>
+</ol>
+</blockquote>
+<h3 id="pulling-the-dynamo-repository-using-git">Pulling the Dynamo repository using git</h3>
+<p>Before we can clone the repository, we need to install git. Follow this <a href="https://help.github.com/articles/set-up-git/#setting-up-git" target="_blank">short guide</a> for installation steps, and how to setup a gihub username and email. For this example, we will be using git on the command line. This guide assumes you will be using windows but you can also use git on mac or linux to clone the dynamo source.</p>
+<p>We need a URL for the Dynamo repository to clone from. This can be found in the &quot;Clone or download&quot; button on the repository page. Copy the URL to paste into command prompt.</p>
+<p><img src="../assets/github-clone.jpg" alt=""></p>
+<blockquote>
+<ol>
+<li>Select &quot;Clone or download&quot;</li>
+<li>Copy the URL</li>
+</ol>
+</blockquote>
+<p>With git installed, we can clone the Dynamo repository. Start by opening command prompt. Then use the change directory command <code>cd</code>  to navigate to the folder where we want the source files to be cloned to. In this case, we have created a folder called <code>Github</code> in <code>Documents</code>.</p>
+<p><code>cd C:\Users\username\Documents\GitHub</code></p>
+<blockquote>
+<p>Replace &quot;username&quot; with your user name</p>
+</blockquote>
+<p><img src="../assets/cli-1.jpg" alt=""></p>
+<p>In the next step we will run a git command to clone the Dynamo repository to the location we specified. The URL in the command is obtained by clicking on the &quot;Clone or Download&quot; button on Github. Run this command in the command terminal. Note that this will clone the Dynamo repo master branch which is most updated code for Dynamo, and will contain to the latest version of Dynamo code. This branch changes daily.</p>
+<p><code>git clone https://github.com/DynamoDS/Dynamo.git</code></p>
+<p><img src="../assets/cli-2.jpg" alt=""></p>
+<p>We know git is working if the cloning operation completed successfully. In the file explorer, navigate to the directory where you cloned to see the source files. the directory structure should look identical to the Dynamo repository&apos;s master branch on Github.</p>
+<p><img src="../assets/source-files.jpg" alt=""></p>
+<blockquote>
+<ol>
+<li>Dynamo&apos;s source files</li>
+<li>Git files</li>
+</ol>
+</blockquote>
+<h3 id="building-the-repository-using-visual-studio">Building the repository using Visual Studio</h3>
+<p>With the source files now cloned to our local machine, we can build an executable file for Dynamo. In order to do this, we will need to set up the Visual Studio IDE and ensure that the .NET Framework and DirectX are installed.</p>
+<ul>
+<li>Download and install <a href="https://my.visualstudio.com/Downloads/Results" target="_blank">Microsoft Visual Studio Community 2015</a>, a free, fully-featured IDE (integrated development environment - later versions may work as well)</li>
+<li>Download and install <a href="https://www.microsoft.com/en-us/download/details.aspx?id=30653" target="_blank">Microsoft .NET Framework 4.5</a> or later</li>
+<li>Install Microsoft DirectX from the local Dynamo repository (<code>Dynamo\tools\install\Extra\DirectX\DXSETUP.exe</code>)</li>
+</ul>
+<blockquote>
+<p>.NET and DirectX may already be installed.</p>
+</blockquote>
+<p>Once everything is finished installing, we can start Visual Studio and open the <code>Dynamo.All.sln</code> solution located in <code>Dynamo\src</code>.</p>
+<p><img src="../assets/vs-open-dynamo.JPG" alt=""></p>
+<blockquote>
+<ol>
+<li>Select <code>File &gt; Open &gt; Project/Solution</code></li>
+<li>Browse to the Dynamo repository and open the <code>src</code> folder</li>
+<li>Select the <code>Dynamo.All.sln</code> solution file</li>
+<li>Select <code>Open</code></li>
+</ol>
+</blockquote>
+<p>Before we can build the solution, a few settings should be specified. We should first build a debug version of Dynamo so visual studio can gather more information while debugging to help us develop, and we want to target AnyCPU.</p>
+<p><img src="../assets/vs-dynamo-build-settings.jpg" alt=""></p>
+<blockquote>
+<p>These will become folders inside the <code>bin</code> folder  </p>
+<ol>
+<li>For this example we chose <code>Debug</code> as the Solution Configuration   </li>
+<li>Set the Solution Platform to <code>Any CPU</code></li>
+</ol>
+</blockquote>
+<p>With the project open, we can build the solution. This process will create a DynamoSandbox.exe file that we can run.</p>
+<p><img src="../assets/vs-build-dynamo.jpg" alt=""></p>
+<blockquote>
+<p>Building the project will restore NuGet dependencies.  </p>
+<ol>
+<li>Select <code>Build &gt; Build Solution</code>  </li>
+<li>Verify that the build was successful in the Output window, it should read similar to <code>==== Build: 69 succeeded, 0 failed, 0 up-to-date, 0 skipped ====</code></li>
+</ol>
+</blockquote>
+<h3 id="running-a-local-build">Running a local build</h3>
+<p>If Dynamo builds successfully, a <code>bin</code> folder will be created in the Dynamo repository with the DynamoSandbox.exe file. In our case, we&apos;re building with the Debug option, so the executable file is located in <code>bin\AnyCPU\Debug</code>. Running this will open a local build of Dynamo.</p>
+<p><img src="../assets/ex-dynamosandbox.JPG" alt=""></p>
+<blockquote>
+<ol>
+<li>The DynamoSandbox executable we just built. Run this to start Dynamo.</li>
+</ol>
+</blockquote>
+<p>Now we are almost fully set up to start developing for Dynamo.</p>
+<p>For instructions on building Dynamo for other platforms (e.g. Linux or OS X) visit this <a href="https://github.com/DynamoDS/Dynamo/wiki/Dynamo-on-Linux,-Mac" target="_blank">wiki page</a>.</p>
+<h3 id="debugging-a-local-build-using-visual-studio">Debugging a local build using Visual Studio</h3>
+<p>Debugging is a process of identifying, isolating, and correcting a bug or issue. Once Dynamo has been successfully built from source, we can use several tools in Visual Studio to debug a running application, the DynamoRevit add-in for example. We can  analyze its source code to find the root of an issue, or watch the currently executing code. For a more detailed explanation of how to debug and navigate code in Visual Studio, refer to the <a href="https://docs.microsoft.com/en-us/visualstudio/debugger/navigating-through-code-with-the-debugger" target="_blank">Visual Studio Docs</a>.</p>
+<p>For the standalone Dynamo application, DynamoSandbox, we will cover two options for debugging:</p>
+<ul>
+<li>Build and start Dynamo directly from Visual Studio</li>
+<li>Attach Visual Studio to a running process of Dynamo</li>
+</ul>
+<p>Starting Dynamo from Visual Studio rebuilds the solution for every debugging session if required, so if we made changes to the source they will be incorporated when debugging. With the <code>Dynamo.All.sln</code> solution still open, select <code>Debug</code>, <code>AnyCPU</code>, and <code>DynamoSandbox</code> from the drop-down menus and then click <code>Start</code>. This will build Dynamo and start a new process (DynamoSandbox.exe), and attach Visual Studio&apos;s debugger to it.</p>
+<p><img src="../assets/vs-debug-options.jpg" alt=""></p>
+<blockquote>
+<p>Build and start the application directly from Visual Studio  </p>
+<ol>
+<li>Set configuration to <code>Debug</code>  </li>
+<li>Set platform to <code>Any CPU</code>  </li>
+<li>Set startup project to <code>DynamoSandbox</code>  </li>
+<li>Click <code>Start</code> to begin the debugging process</li>
+</ol>
+</blockquote>
+<p>Alternatively, we may want to debug a Dynamo process that is already running to troubleshoot an issue with a specific graph open or package. For this purpose, we would open the project&apos;s source files in Visual Studio and attach to a running Dynamo process using the <code>Attach to Process</code> debug menu item.</p>
+<p><img src="../assets/vs-attach-dynamosandbox.JPG" alt=""></p>
+<blockquote>
+<p>Attach a running process to Visual Studio  </p>
+<ol>
+<li>Select <code>Debug &gt; Attach to Process...</code>  </li>
+<li>Choose <code>DynamoSandbox.exe</code>  </li>
+<li>Select <code>Attach</code></li>
+</ol>
+</blockquote>
+<p>In both situations we are attaching the debugger to a process we wish to debug. We can set break points in the code before or after starting the debugger that will cause the process to pause immediately before executing that line of code. If an uncaught exception is thrown while debugging, Visual Studio will jump to where it occurred in the source code. This is an efficient method for finding simple crashes, unhandled exceptions, and to understand the execution flow of an application.</p>
+<p><img src="../assets/vs-debug-dynamocore.JPG" alt=""></p>
+<blockquote>
+<p>While debugging DynamoSandbox, we set a breakpoint in the Color.ByARGB node&apos;s constructor that causes the Dynamo process to pause when the node is instantiated. If this node was throwing an exception or causing Dynamo to crash, we could step through each line in the constructor to find where the issue was occurring.   </p>
+<ol>
+<li>The breakpoint  </li>
+<li>The call stack showing the function which is currently being executed and previous function calls.</li>
+</ol>
+</blockquote>
+<p>In the next section, <strong>Build DynamoRevit from Source,</strong> we will walk through a specific example of debugging, and explain how to set break points, step through code, and read the call stack.</p>
+<h3 id="pulling-latest-build">Pulling latest build</h3>
+<p>Since the Dynamo source is hosted on Github, the easiest way to keep local source files updated is by pulling changes using git commands.</p>
+<p>Using the command line, set the current directory to the Dynamo repository:</p>
+<p><code>cd C:\Users\username\Documents\GitHub\Dynamo</code></p>
+<blockquote>
+<p>Replace <code>&quot;username&quot;</code> with your username</p>
+</blockquote>
+<p>Use the following command to pull the latest changes:</p>
+<p><code>git pull origin master</code></p>
+<p><img src="../assets/cli-pull-changes.jpg" alt=""></p>
+<blockquote>
+<ol>
+<li>Here we can see that the local repository has been updated with changes from the remote.</li>
+</ol>
+</blockquote>
+<p>In addition to pulling updates, there are four more git workflows to be familiar with.</p>
+<ul>
+<li><p><strong>Fork</strong> the Dynamo repository to create a copy separate from the original. Any changes made here will not affect the original repository and updates can be fetched from or submitted with pull requests. Fork is not a git command, but is a workflow that github adds -  the fork, pull request model is one of the most common workflows for contributing to open source projects online. It is worth learning if you want to contribute to Dynamo.</p>
+</li>
+<li><p><strong>Branch</strong> - work on experiments or new features isolated from other work in branches. This makes sending pull requests easier.</p>
+</li>
+<li><p>Make <strong>commits</strong> often, after completing a unit of work, and after a change that may want to be undone. A commit records changes to the repository and will be visible when making a pull request to the main Dynamo repository.</p>
+</li>
+<li><p>Create <strong>pull requests</strong> when  changes are ready to be officially proposed to the main Dynamo repository.</p>
+</li>
+</ul>
+<p>The Dynamo team has specific instructions on creating pull requests. Refer to the Pull Requests section in this documentation for more detailed items to address.</p>
+<p>See this <a href="https://git-scm.com/docs" target="_blank">documentation page</a> for a reference list of git commands.</p>
+
+                                
+                                </section>
+                            
+    </div>
+    <div class="search-results">
+        <div class="has-results">
+            
+            <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+            <ul class="search-results-list"></ul>
+            
+        </div>
+        <div class="no-results">
+            
+            <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+            
+        </div>
+    </div>
+</div>
+
+                        </div>
+                    </div>
+                
+            </div>
+
+            
+                
+                <a href="../01-Introduction/1-0-introduction.html" class="navigation navigation-prev " aria-label="Previous page: Introduction">
+                    <i class="fa fa-angle-left"></i>
+                </a>
+                
+                
+                <a href="2-1-build-dynamo-revit-from-source.html" class="navigation navigation-next " aria-label="Next page: Build DynamoRevit from Source">
+                    <i class="fa fa-angle-right"></i>
+                </a>
+                
+            
+        
+    </div>
+
+    <script>
+        var gitbook = gitbook || [];
+        gitbook.push(function() {
+            gitbook.page.hasChanged({"page":{"title":"Build Dynamo from Source","level":"1.3","depth":1,"next":{"title":"Build DynamoRevit from Source","level":"1.3.1","depth":2,"path":"02-Build-Dynamo-From-Source/2-1-build-dynamo-revit-from-source.md","ref":"02-Build-Dynamo-From-Source/2-1-build-dynamo-revit-from-source.md","articles":[]},"previous":{"title":"Introduction","level":"1.2","depth":1,"path":"01-Introduction/1-0-introduction.md","ref":"01-Introduction/1-0-introduction.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":[],"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"02-Build-Dynamo-From-Source/2-0-build-dynamo-from-source.md","mtime":"2018-03-28T17:54:40.658Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2018-03-28T18:04:00.400Z"},"basePath":"..","book":{"language":""}});
+        });
+    </script>
+</div>
+
+        
+    <script src="../gitbook/gitbook.js"></script>
+    <script src="../gitbook/theme.js"></script>
+    
+        
+        <script src="../gitbook/gitbook-plugin-search/search-engine.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-search/search.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-lunr/lunr.min.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-lunr/search-lunr.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-sharing/buttons.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-fontsettings/fontsettings.js"></script>
+        
+    
+
+    </body>
+</html>
+

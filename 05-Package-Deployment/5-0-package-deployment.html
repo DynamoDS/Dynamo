@@ -1,0 +1,525 @@
+
+<!DOCTYPE HTML>
+<html lang="" >
+    <head>
+        <meta charset="UTF-8">
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <title>Package Deployment · GitBook</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="description" content="">
+        <meta name="generator" content="GitBook 3.2.3">
+        
+        
+        
+    
+    <link rel="stylesheet" href="../gitbook/style.css">
+
+    
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-highlight/website.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-search/search.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-fontsettings/website.css">
+                
+            
+        
+
+    
+
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+
+        
+    
+    
+    <meta name="HandheldFriendly" content="true"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="../gitbook/images/apple-touch-icon-precomposed-152.png">
+    <link rel="shortcut icon" href="../gitbook/images/favicon.ico" type="image/x-icon">
+
+    
+    <link rel="next" href="5-1-build-package-from-vs.html" />
+    
+    
+    <link rel="prev" href="../04-Testing/4-1-revit-testing.html" />
+    
+
+    </head>
+    <body>
+        
+<div class="book">
+    <div class="book-summary">
+        
+            
+<div id="book-search-input" role="search">
+    <input type="text" placeholder="Type to search" />
+</div>
+
+            
+                <nav role="navigation">
+                
+
+
+<ul class="summary">
+    
+    
+
+    
+
+    
+        
+        
+    
+        <li class="chapter " data-level="1.1" data-path="../">
+            
+                <a href="../">
+            
+                    
+                    About
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2" data-path="../01-Introduction/1-0-introduction.html">
+            
+                <a href="../01-Introduction/1-0-introduction.html">
+            
+                    
+                    Introduction
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3" data-path="../02-Build-Dynamo-From-Source/2-0-build-dynamo-from-source.html">
+            
+                <a href="../02-Build-Dynamo-From-Source/2-0-build-dynamo-from-source.html">
+            
+                    
+                    Build Dynamo from Source
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.3.1" data-path="../02-Build-Dynamo-From-Source/2-1-build-dynamo-revit-from-source.html">
+            
+                <a href="../02-Build-Dynamo-From-Source/2-1-build-dynamo-revit-from-source.html">
+            
+                    
+                    Build DynamoRevit from Source
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4" data-path="../03-Development-Options/3-0-developing-for-dynamo.html">
+            
+                <a href="../03-Development-Options/3-0-developing-for-dynamo.html">
+            
+                    
+                    Developing for Dynamo
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.4.1" data-path="../03-Development-Options/3-1-getting-started.html">
+            
+                <a href="../03-Development-Options/3-1-getting-started.html">
+            
+                    
+                    Getting Started
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.2" data-path="../03-Development-Options/3-2-zerotouch-example.html">
+            
+                <a href="../03-Development-Options/3-2-zerotouch-example.html">
+            
+                    
+                    Zero-Touch Case Study - Grid Node
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.3" data-path="../03-Development-Options/3-3-python-scripts-in-csharp.html">
+            
+                <a href="../03-Development-Options/3-3-python-scripts-in-csharp.html">
+            
+                    
+                    Zero-Touch Case Study - Python Scripts in C#
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.4" data-path="../03-Development-Options/3-4-zerotouch-nodes.html">
+            
+                <a href="../03-Development-Options/3-4-zerotouch-nodes.html">
+            
+                    
+                    Going Further with Zero-Touch
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.5" data-path="../03-Development-Options/3-5-nodemodel-derived-nodes.html">
+            
+                <a href="../03-Development-Options/3-5-nodemodel-derived-nodes.html">
+            
+                    
+                    NodeModel Case Study - Custom UI
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.6" data-path="../03-Development-Options/3-6-extensions.html">
+            
+                <a href="../03-Development-Options/3-6-extensions.html">
+            
+                    
+                    Extensions
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5" data-path="../04-Testing/4-0-testing.html">
+            
+                <a href="../04-Testing/4-0-testing.html">
+            
+                    
+                    Testing
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.5.1" data-path="../04-Testing/4-1-revit-testing.html">
+            
+                <a href="../04-Testing/4-1-revit-testing.html">
+            
+                    
+                    Testing for DynamoRevit
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter active" data-level="1.6" data-path="5-0-package-deployment.html">
+            
+                <a href="5-0-package-deployment.html">
+            
+                    
+                    Package Deployment
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.6.1" data-path="5-1-build-package-from-vs.html">
+            
+                <a href="5-1-build-package-from-vs.html">
+            
+                    
+                    Build a Package From Visual Studio
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7" data-path="../06-Pull-Requests/6-0-pull-requests.html">
+            
+                <a href="../06-Pull-Requests/6-0-pull-requests.html">
+            
+                    
+                    Pull Requests
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8" data-path="../07-Examples/7-0-examples.html">
+            
+                <a href="../07-Examples/7-0-examples.html">
+            
+                    
+                    Examples
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+    
+
+    <li class="divider"></li>
+
+    <li>
+        <a href="https://www.gitbook.com" target="blank" class="gitbook-link">
+            Published with GitBook
+        </a>
+    </li>
+</ul>
+
+
+                </nav>
+            
+        
+    </div>
+
+    <div class="book-body">
+        
+            <div class="body-inner">
+                
+                    
+
+<div class="book-header" role="navigation">
+    
+
+    <!-- Title -->
+    <h1>
+        <i class="fa fa-circle-o-notch fa-spin"></i>
+        <a href=".." >Package Deployment</a>
+    </h1>
+</div>
+
+
+
+
+                    <div class="page-wrapper" tabindex="-1" role="main">
+                        <div class="page-inner">
+                            
+<div id="book-search-results">
+    <div class="search-noresults">
+    
+                                <section class="normal markdown-section">
+                                
+                                <h1 id="publish-a-package">Publish a Package</h1>
+<p>Packages are a convenient way to store and share nodes with the Dynamo community. A package can contain everything from Custom Nodes created in the Dynamo workspace to NodeModel derived nodes. Packages are published and installed using the Package Manager. In addition to this page the <a href="http://dynamoprimer.com/en/10_Packages/10-1_Introduction.html" target="_blank">Primer</a> has a general guide on packages.</p>
+<h3 id="what-is-a-package-manager">What is a Package Manager?</h3>
+<p>The Dynamo Package Manager is a Software Registry (similar to npm) that can be accessed from Dynamo or in a web browser. The Package Manager includes installing, publishing, updating, and viewing packages. Like npm,  it maintains different versions of packages. It also helps to manage the dependencies of your project.</p>
+<p>In the browser, search for packages and view statistics: <a href="http://dynamopackages.com/" target="_blank">http://dynamopackages.com/</a></p>
+<ul>
+<li>In Dynamo, the Package Manager includes install, publish, and update packages.</li>
+</ul>
+<p><img src="../assets/dynamopackagemanager.JPG" alt="packagemanager-browser"></p>
+<blockquote>
+<ol>
+<li>Search for packages online: <code>Packages &gt; Search for a Package...</code></li>
+<li>View/edit installed packages: <code>Packages &gt; Manage Packages...</code></li>
+<li>Publish a new package: <code>Packages &gt; Publish New Package...</code></li>
+</ol>
+</blockquote>
+<h3 id="publishing-a-package">Publishing a package</h3>
+<p>Packages are published from Package Manager within Dynamo. The recommended process is to publish locally, test the package and then publish online to share with the community. Using the NodeModel Case Study, we will go through the necessary steps to publish the RectangularGrid node as a package locally and then on online.</p>
+<p>Start Dynamo and select <code>Packages &gt; Publish New Package...</code> to open the <code>Publish a Package</code> window.</p>
+<p><img src="../assets/dyn-publish-package-add-files.jpg" alt=""></p>
+<blockquote>
+<ol>
+<li>Select <code>Add file...</code> to browse for files to add to the package</li>
+<li>Select the two <code>.dll</code> files from the NodeModel Case Study</li>
+<li>Select <code>Ok</code></li>
+</ol>
+</blockquote>
+<p>With the files added to the package contents, give the package a name, description, and version. Publishing a package using Dynamo automatically creates a <code>pkg.json</code> file.</p>
+<p><img src="../assets/dyn-publish-package.jpg" alt=""></p>
+<blockquote>
+<p>A package ready to be published.</p>
+<ol>
+<li>Supply the required information for name, description, and version.</li>
+<li>Publish by clicking &quot;Publish Locally&quot; and select Dynamo&apos;s package folder: <code>AppData\Roaming\Dynamo\Dynamo Core\1.3\packages</code> to have the node available in Core. Always publish locally until the package is ready to share.</li>
+</ol>
+</blockquote>
+<p>After publishing a package, the nodes will be available in the Dynamo Library under the category<code>CustomNodeModel</code>.</p>
+<p><img src="../assets/dyn-publish-package-library.jpg" alt=""></p>
+<blockquote>
+<ol>
+<li>The package we just created in the Dynamo Library</li>
+</ol>
+</blockquote>
+<p>Once the package is ready to publish online, open the Package Manager and choose <code>Publish</code> and then <code>Publish Online</code>.</p>
+<p><img src="../assets/dyn-publish-package-directory.jpg" alt=""></p>
+<blockquote>
+<ol>
+<li>To see how Dynamo has formatted the package, click on the three vertical dots to the right of &quot;CustomNodeModel&quot; and choose &quot;Show Root Directory&quot;</li>
+<li>Select <code>Publish</code> then <code>Publish Online</code> in the &quot;Publish a Dynamo Package&quot; window.</li>
+<li>To uninstall a package, select <code>Uninstall...</code>.</li>
+</ol>
+</blockquote>
+<h3 id="how-do-i-update-a-package">How do I update a package?</h3>
+<p>Updating a package is a similar process to publishing. Open the Package Manager and select <code>Publish Version...</code> on the package that needs to be updated and enter a higher version.</p>
+<p><img src="../assets/dyn-publish-package-version.jpg" alt=""></p>
+<blockquote>
+<ol>
+<li>Select <code>Publish Version</code> to update an existing package with new files in the root directory, then choose whether it should be published locally or online.</li>
+</ol>
+</blockquote>
+<h3 id="package-manager-web-client">Package Manager web client</h3>
+<p>The Package Manager web client is used exclusively for searching and viewing package data such as versioning and download statistics.</p>
+<p>The Package Manager web client can be accessed at this link: <a href="http://dynamopackages.com/" target="_blank">http://dynamopackages.com/</a></p>
+<p><img src="../assets/packagemanager-browser.JPG" alt="package manager in the browser"></p>
+
+                                
+                                </section>
+                            
+    </div>
+    <div class="search-results">
+        <div class="has-results">
+            
+            <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+            <ul class="search-results-list"></ul>
+            
+        </div>
+        <div class="no-results">
+            
+            <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+            
+        </div>
+    </div>
+</div>
+
+                        </div>
+                    </div>
+                
+            </div>
+
+            
+                
+                <a href="../04-Testing/4-1-revit-testing.html" class="navigation navigation-prev " aria-label="Previous page: Testing for DynamoRevit">
+                    <i class="fa fa-angle-left"></i>
+                </a>
+                
+                
+                <a href="5-1-build-package-from-vs.html" class="navigation navigation-next " aria-label="Next page: Build a Package From Visual Studio">
+                    <i class="fa fa-angle-right"></i>
+                </a>
+                
+            
+        
+    </div>
+
+    <script>
+        var gitbook = gitbook || [];
+        gitbook.push(function() {
+            gitbook.page.hasChanged({"page":{"title":"Package Deployment","level":"1.6","depth":1,"next":{"title":"Build a Package From Visual Studio","level":"1.6.1","depth":2,"path":"05-Package-Deployment/5-1-build-package-from-vs.md","ref":"05-Package-Deployment/5-1-build-package-from-vs.md","articles":[]},"previous":{"title":"Testing for DynamoRevit","level":"1.5.1","depth":2,"path":"04-Testing/4-1-revit-testing.md","ref":"04-Testing/4-1-revit-testing.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":[],"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"05-Package-Deployment/5-0-package-deployment.md","mtime":"2018-03-28T17:54:40.661Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2018-03-28T18:04:00.400Z"},"basePath":"..","book":{"language":""}});
+        });
+    </script>
+</div>
+
+        
+    <script src="../gitbook/gitbook.js"></script>
+    <script src="../gitbook/theme.js"></script>
+    
+        
+        <script src="../gitbook/gitbook-plugin-search/search-engine.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-search/search.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-lunr/lunr.min.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-lunr/search-lunr.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-sharing/buttons.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-fontsettings/fontsettings.js"></script>
+        
+    
+
+    </body>
+</html>
+

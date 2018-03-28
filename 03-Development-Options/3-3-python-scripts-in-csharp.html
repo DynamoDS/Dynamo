@@ -1,0 +1,568 @@
+
+<!DOCTYPE HTML>
+<html lang="" >
+    <head>
+        <meta charset="UTF-8">
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <title>Zero-Touch Case Study - Python Scripts in C# · GitBook</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="description" content="">
+        <meta name="generator" content="GitBook 3.2.3">
+        
+        
+        
+    
+    <link rel="stylesheet" href="../gitbook/style.css">
+
+    
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-highlight/website.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-search/search.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-fontsettings/website.css">
+                
+            
+        
+
+    
+
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+
+        
+    
+    
+    <meta name="HandheldFriendly" content="true"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="../gitbook/images/apple-touch-icon-precomposed-152.png">
+    <link rel="shortcut icon" href="../gitbook/images/favicon.ico" type="image/x-icon">
+
+    
+    <link rel="next" href="3-4-zerotouch-nodes.html" />
+    
+    
+    <link rel="prev" href="3-2-zerotouch-example.html" />
+    
+
+    </head>
+    <body>
+        
+<div class="book">
+    <div class="book-summary">
+        
+            
+<div id="book-search-input" role="search">
+    <input type="text" placeholder="Type to search" />
+</div>
+
+            
+                <nav role="navigation">
+                
+
+
+<ul class="summary">
+    
+    
+
+    
+
+    
+        
+        
+    
+        <li class="chapter " data-level="1.1" data-path="../">
+            
+                <a href="../">
+            
+                    
+                    About
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2" data-path="../01-Introduction/1-0-introduction.html">
+            
+                <a href="../01-Introduction/1-0-introduction.html">
+            
+                    
+                    Introduction
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3" data-path="../02-Build-Dynamo-From-Source/2-0-build-dynamo-from-source.html">
+            
+                <a href="../02-Build-Dynamo-From-Source/2-0-build-dynamo-from-source.html">
+            
+                    
+                    Build Dynamo from Source
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.3.1" data-path="../02-Build-Dynamo-From-Source/2-1-build-dynamo-revit-from-source.html">
+            
+                <a href="../02-Build-Dynamo-From-Source/2-1-build-dynamo-revit-from-source.html">
+            
+                    
+                    Build DynamoRevit from Source
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4" data-path="3-0-developing-for-dynamo.html">
+            
+                <a href="3-0-developing-for-dynamo.html">
+            
+                    
+                    Developing for Dynamo
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.4.1" data-path="3-1-getting-started.html">
+            
+                <a href="3-1-getting-started.html">
+            
+                    
+                    Getting Started
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.2" data-path="3-2-zerotouch-example.html">
+            
+                <a href="3-2-zerotouch-example.html">
+            
+                    
+                    Zero-Touch Case Study - Grid Node
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter active" data-level="1.4.3" data-path="3-3-python-scripts-in-csharp.html">
+            
+                <a href="3-3-python-scripts-in-csharp.html">
+            
+                    
+                    Zero-Touch Case Study - Python Scripts in C#
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.4" data-path="3-4-zerotouch-nodes.html">
+            
+                <a href="3-4-zerotouch-nodes.html">
+            
+                    
+                    Going Further with Zero-Touch
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.5" data-path="3-5-nodemodel-derived-nodes.html">
+            
+                <a href="3-5-nodemodel-derived-nodes.html">
+            
+                    
+                    NodeModel Case Study - Custom UI
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.6" data-path="3-6-extensions.html">
+            
+                <a href="3-6-extensions.html">
+            
+                    
+                    Extensions
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5" data-path="../04-Testing/4-0-testing.html">
+            
+                <a href="../04-Testing/4-0-testing.html">
+            
+                    
+                    Testing
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.5.1" data-path="../04-Testing/4-1-revit-testing.html">
+            
+                <a href="../04-Testing/4-1-revit-testing.html">
+            
+                    
+                    Testing for DynamoRevit
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6" data-path="../05-Package-Deployment/5-0-package-deployment.html">
+            
+                <a href="../05-Package-Deployment/5-0-package-deployment.html">
+            
+                    
+                    Package Deployment
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.6.1" data-path="../05-Package-Deployment/5-1-build-package-from-vs.html">
+            
+                <a href="../05-Package-Deployment/5-1-build-package-from-vs.html">
+            
+                    
+                    Build a Package From Visual Studio
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7" data-path="../06-Pull-Requests/6-0-pull-requests.html">
+            
+                <a href="../06-Pull-Requests/6-0-pull-requests.html">
+            
+                    
+                    Pull Requests
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8" data-path="../07-Examples/7-0-examples.html">
+            
+                <a href="../07-Examples/7-0-examples.html">
+            
+                    
+                    Examples
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+    
+
+    <li class="divider"></li>
+
+    <li>
+        <a href="https://www.gitbook.com" target="blank" class="gitbook-link">
+            Published with GitBook
+        </a>
+    </li>
+</ul>
+
+
+                </nav>
+            
+        
+    </div>
+
+    <div class="book-body">
+        
+            <div class="body-inner">
+                
+                    
+
+<div class="book-header" role="navigation">
+    
+
+    <!-- Title -->
+    <h1>
+        <i class="fa fa-circle-o-notch fa-spin"></i>
+        <a href=".." >Zero-Touch Case Study - Python Scripts in C#</a>
+    </h1>
+</div>
+
+
+
+
+                    <div class="page-wrapper" tabindex="-1" role="main">
+                        <div class="page-inner">
+                            
+<div id="book-search-results">
+    <div class="search-noresults">
+    
+                                <section class="normal markdown-section">
+                                
+                                <h1 id="executing-python-scripts-in-zero-touch-nodes-c">Executing Python Scripts in Zero-Touch Nodes (C#)</h1>
+<p>If you are comfortable writing scripts in Python and want more functionality out of the standard Dynamo Python nodes, we can use Zero-Touch to create our own. Let&apos;s start with a simple example that allows us to pass a python script as a string to a Zero-Touch node where the script is executed and a result is returned. This case study will build on the walk-throughs and examples in the Getting Started section, please refer to those if you are completely new to creating Zero-Touch nodes.</p>
+<p><img src="../assets/python-case-study.png" alt=""></p>
+<blockquote>
+<p>A Zero-Touch node that will execute a Python script string</p>
+</blockquote>
+<h3 id="python-engine">Python Engine</h3>
+<p>This node relies on an instance of the IronPython scripting engine.  To do this, we need to reference a few additional assemblies. Follow the steps below to setup a basic template in Visual Studio:</p>
+<ul>
+<li>Create a new Visual Studio class project</li>
+<li>Add a reference to the <code>IronPython.dll</code> located in <code>C:\Program Files (x86)\IronPython 2.7\IronPython.dll</code></li>
+<li>Add a reference to the <code>Microsoft.Scripting.dll</code> located in <code>C:\Program Files (x86)\IronPython 2.7\Platforms\Net40\Microsoft.Scripting.dll</code></li>
+<li>Include the <code>IronPython.Hosting</code> and <code>Microsoft.Scripting.Hosting</code> <code>using</code> statements in your class</li>
+<li>Add an private empty constructor to prevent an additional node from being added to the Dynamo library with our package</li>
+<li>Create a new method that takes a single string as an input parameter</li>
+<li>Within this method we will instantiate a new Python engine, and create an empty script scope.  You can imagine this scope as the global variables within an instance of the Python interpreter</li>
+<li>Next, call <code>Execute</code> on the engine passing the input string and the scope as parameters</li>
+<li>Finally, retrieve and return the results of the script by calling <code>GetVariable</code> on the scope and passing the name of the variable from your Python script that contains the value you are trying to return.  (See the example below for further details)</li>
+</ul>
+<p>The following code provides an example for the step mentioned above. Building the solution will create a new <code>.dll</code> located in the bin folder of our project.  This <code>.dll</code> can now be imported into Dynamo as part of a package or by navigating to<code>File &lt;  Import Library...</code></p>
+<pre><code class="lang-csharp"><span class="hljs-keyword">using</span> IronPython.Hosting;
+<span class="hljs-keyword">using</span> Microsoft.Scripting.Hosting;
+
+<span class="hljs-keyword">namespace</span> <span class="hljs-title">PythonLibrary</span>
+{
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">PythonZT</span>
+    {
+        <span class="hljs-comment">// Unless a constructor is provided, Dynamo will automatically create one and add it to the library</span>
+        <span class="hljs-comment">// To avoid this, create a private constructor</span>
+        <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-title">PythonZT</span>(<span class="hljs-params"></span>) </span>{ }
+
+        <span class="hljs-comment">// The method that executes the Python string</span>
+        <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">string</span> <span class="hljs-title">executePyString</span>(<span class="hljs-params"><span class="hljs-keyword">string</span> pyString</span>)
+        </span>{
+            ScriptEngine engine = Python.CreateEngine();
+            ScriptScope scope = engine.CreateScope();
+            engine.Execute(pyString, scope);
+            <span class="hljs-comment">// Return the value of the &apos;output&apos; variable from the Python script below</span>
+            <span class="hljs-keyword">var</span> output = scope.GetVariable(<span class="hljs-string">&quot;output&quot;</span>);
+            <span class="hljs-keyword">return</span> (output);
+        }
+    }
+}
+</code></pre>
+<p>The Python script is returning the variable <code>output</code>, which means we will need an <code>output</code> variable in the Python script. Use this sample script to test the node in Dynamo. If you have ever used the Python node in Dynamo the following should look familiar. For more information check out the <a href="http://dynamoprimer.com/en/09_Custom-Nodes/9-4_Python.html" target="_blank">Python section of the primer</a>.</p>
+<pre><code class="lang-py"><span class="hljs-keyword">import</span> clr
+clr.AddReference(<span class="hljs-string">&apos;ProtoGeometry&apos;</span>)
+<span class="hljs-keyword">from</span> Autodesk.DesignScript.Geometry <span class="hljs-keyword">import</span> *
+
+cube = Cuboid.ByLengths(<span class="hljs-number">10</span>,<span class="hljs-number">10</span>,<span class="hljs-number">10</span>);
+volume = cube.Volume
+output = str(volume)
+</code></pre>
+<h3 id="multiple-outputs">Multiple Outputs</h3>
+<p>One limitation of the standard Python nodes is that they only have a single output port so if we wish to return multiple object we must construct a list and retrieve each object in. If we modify the example above to return a dictionary, we can add as many output ports as we want. Refer to the Returning Multiple Values section in Going Further With Zero-Touch for more specifics on dictionaries.</p>
+<p><img src="../assets/python-multi-case-study.png" alt=""></p>
+<blockquote>
+<p>This node is allowing us to return both the cuboid&apos;s volume and its centroid.</p>
+</blockquote>
+<p>Let&apos;s modify the previous example with these steps:</p>
+<ul>
+<li>Add a reference to <code>DynamoServices.dll</code> from the NuGet package manager</li>
+<li>In addition to the previous assemblies include <code>System.Collections.Generic</code> and <code>Autodesk.DesignScript.Runtime</code></li>
+<li>Modify the return type on our method to return a dictionary which will contain our outputs</li>
+<li>Each output must be individually retrieved from the scope (consider setting up a simple loop for larger sets of outputs)</li>
+</ul>
+<pre><code class="lang-csharp"><span class="hljs-keyword">using</span> IronPython.Hosting;
+<span class="hljs-keyword">using</span> Microsoft.Scripting.Hosting;
+<span class="hljs-keyword">using</span> System.Collections.Generic;
+<span class="hljs-keyword">using</span> Autodesk.DesignScript.Runtime;
+
+<span class="hljs-keyword">namespace</span> <span class="hljs-title">PythonLibrary</span>
+{
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">PythonZT</span>
+    {
+        <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-title">PythonZT</span>(<span class="hljs-params"></span>) </span>{ }
+
+        [MultiReturn(<span class="hljs-keyword">new</span>[] { <span class="hljs-string">&quot;output1&quot;</span>, <span class="hljs-string">&quot;output2&quot;</span> })]
+        <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> Dictionary&lt;<span class="hljs-keyword">string</span>, <span class="hljs-keyword">object</span>&gt; executePyString(<span class="hljs-keyword">string</span> pyString)
+        {
+            ScriptEngine engine = Python.CreateEngine();
+            ScriptScope scope = engine.CreateScope();
+            engine.Execute(pyString, scope);
+            <span class="hljs-comment">// Return the value of &apos;output1&apos; from script</span>
+            <span class="hljs-keyword">var</span> output1 = scope.GetVariable(<span class="hljs-string">&quot;output1&quot;</span>);
+            <span class="hljs-comment">// Return the value of &apos;output2&apos; from script</span>
+            <span class="hljs-keyword">var</span> output2 = scope.GetVariable(<span class="hljs-string">&quot;output2&quot;</span>);
+            <span class="hljs-comment">// Define the names of outputs and the objects to return</span>
+            <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Dictionary&lt;<span class="hljs-keyword">string</span>, <span class="hljs-keyword">object</span>&gt; {
+                { <span class="hljs-string">&quot;output1&quot;</span>, (output1) },
+                { <span class="hljs-string">&quot;output2&quot;</span>, (output2) }
+            };
+        }
+    }
+}
+</code></pre>
+<p>We have also added an additional output variable (<code>output2</code>) to the sample python script. Keep in mind that these variables can use any legal Python naming conventions, output has been used strictly for the sake of clarity in this example.</p>
+<pre><code class="lang-py"><span class="hljs-keyword">import</span> clr
+clr.AddReference(<span class="hljs-string">&apos;ProtoGeometry&apos;</span>)
+<span class="hljs-keyword">from</span> Autodesk.DesignScript.Geometry <span class="hljs-keyword">import</span> *
+
+cube = Cuboid.ByLengths(<span class="hljs-number">10</span>,<span class="hljs-number">10</span>,<span class="hljs-number">10</span>);
+centroid = Cuboid.Centroid(cube);
+volume = cube.Volume
+output1 = str(volume)
+output2 = str(centroid)
+</code></pre>
+
+                                
+                                </section>
+                            
+    </div>
+    <div class="search-results">
+        <div class="has-results">
+            
+            <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+            <ul class="search-results-list"></ul>
+            
+        </div>
+        <div class="no-results">
+            
+            <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+            
+        </div>
+    </div>
+</div>
+
+                        </div>
+                    </div>
+                
+            </div>
+
+            
+                
+                <a href="3-2-zerotouch-example.html" class="navigation navigation-prev " aria-label="Previous page: Zero-Touch Case Study - Grid Node">
+                    <i class="fa fa-angle-left"></i>
+                </a>
+                
+                
+                <a href="3-4-zerotouch-nodes.html" class="navigation navigation-next " aria-label="Next page: Going Further with Zero-Touch">
+                    <i class="fa fa-angle-right"></i>
+                </a>
+                
+            
+        
+    </div>
+
+    <script>
+        var gitbook = gitbook || [];
+        gitbook.push(function() {
+            gitbook.page.hasChanged({"page":{"title":"Zero-Touch Case Study - Python Scripts in C#","level":"1.4.3","depth":2,"next":{"title":"Going Further with Zero-Touch","level":"1.4.4","depth":2,"path":"03-Development-Options/3-4-zerotouch-nodes.md","ref":"03-Development-Options/3-4-zerotouch-nodes.md","articles":[]},"previous":{"title":"Zero-Touch Case Study - Grid Node","level":"1.4.2","depth":2,"path":"03-Development-Options/3-2-zerotouch-example.md","ref":"03-Development-Options/3-2-zerotouch-example.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":[],"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"03-Development-Options/3-3-python-scripts-in-csharp.md","mtime":"2018-03-28T17:54:40.659Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2018-03-28T18:04:00.400Z"},"basePath":"..","book":{"language":""}});
+        });
+    </script>
+</div>
+
+        
+    <script src="../gitbook/gitbook.js"></script>
+    <script src="../gitbook/theme.js"></script>
+    
+        
+        <script src="../gitbook/gitbook-plugin-search/search-engine.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-search/search.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-lunr/lunr.min.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-lunr/search-lunr.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-sharing/buttons.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-fontsettings/fontsettings.js"></script>
+        
+    
+
+    </body>
+</html>
+

@@ -1,0 +1,548 @@
+
+<!DOCTYPE HTML>
+<html lang="" >
+    <head>
+        <meta charset="UTF-8">
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <title>Developing for Dynamo · GitBook</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="description" content="">
+        <meta name="generator" content="GitBook 3.2.3">
+        
+        
+        
+    
+    <link rel="stylesheet" href="../gitbook/style.css">
+
+    
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-highlight/website.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-search/search.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-fontsettings/website.css">
+                
+            
+        
+
+    
+
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+
+        
+    
+    
+    <meta name="HandheldFriendly" content="true"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="../gitbook/images/apple-touch-icon-precomposed-152.png">
+    <link rel="shortcut icon" href="../gitbook/images/favicon.ico" type="image/x-icon">
+
+    
+    <link rel="next" href="3-1-getting-started.html" />
+    
+    
+    <link rel="prev" href="../02-Build-Dynamo-From-Source/2-1-build-dynamo-revit-from-source.html" />
+    
+
+    </head>
+    <body>
+        
+<div class="book">
+    <div class="book-summary">
+        
+            
+<div id="book-search-input" role="search">
+    <input type="text" placeholder="Type to search" />
+</div>
+
+            
+                <nav role="navigation">
+                
+
+
+<ul class="summary">
+    
+    
+
+    
+
+    
+        
+        
+    
+        <li class="chapter " data-level="1.1" data-path="../">
+            
+                <a href="../">
+            
+                    
+                    About
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2" data-path="../01-Introduction/1-0-introduction.html">
+            
+                <a href="../01-Introduction/1-0-introduction.html">
+            
+                    
+                    Introduction
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3" data-path="../02-Build-Dynamo-From-Source/2-0-build-dynamo-from-source.html">
+            
+                <a href="../02-Build-Dynamo-From-Source/2-0-build-dynamo-from-source.html">
+            
+                    
+                    Build Dynamo from Source
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.3.1" data-path="../02-Build-Dynamo-From-Source/2-1-build-dynamo-revit-from-source.html">
+            
+                <a href="../02-Build-Dynamo-From-Source/2-1-build-dynamo-revit-from-source.html">
+            
+                    
+                    Build DynamoRevit from Source
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter active" data-level="1.4" data-path="3-0-developing-for-dynamo.html">
+            
+                <a href="3-0-developing-for-dynamo.html">
+            
+                    
+                    Developing for Dynamo
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.4.1" data-path="3-1-getting-started.html">
+            
+                <a href="3-1-getting-started.html">
+            
+                    
+                    Getting Started
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.2" data-path="3-2-zerotouch-example.html">
+            
+                <a href="3-2-zerotouch-example.html">
+            
+                    
+                    Zero-Touch Case Study - Grid Node
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.3" data-path="3-3-python-scripts-in-csharp.html">
+            
+                <a href="3-3-python-scripts-in-csharp.html">
+            
+                    
+                    Zero-Touch Case Study - Python Scripts in C#
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.4" data-path="3-4-zerotouch-nodes.html">
+            
+                <a href="3-4-zerotouch-nodes.html">
+            
+                    
+                    Going Further with Zero-Touch
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.5" data-path="3-5-nodemodel-derived-nodes.html">
+            
+                <a href="3-5-nodemodel-derived-nodes.html">
+            
+                    
+                    NodeModel Case Study - Custom UI
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.6" data-path="3-6-extensions.html">
+            
+                <a href="3-6-extensions.html">
+            
+                    
+                    Extensions
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5" data-path="../04-Testing/4-0-testing.html">
+            
+                <a href="../04-Testing/4-0-testing.html">
+            
+                    
+                    Testing
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.5.1" data-path="../04-Testing/4-1-revit-testing.html">
+            
+                <a href="../04-Testing/4-1-revit-testing.html">
+            
+                    
+                    Testing for DynamoRevit
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6" data-path="../05-Package-Deployment/5-0-package-deployment.html">
+            
+                <a href="../05-Package-Deployment/5-0-package-deployment.html">
+            
+                    
+                    Package Deployment
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.6.1" data-path="../05-Package-Deployment/5-1-build-package-from-vs.html">
+            
+                <a href="../05-Package-Deployment/5-1-build-package-from-vs.html">
+            
+                    
+                    Build a Package From Visual Studio
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7" data-path="../06-Pull-Requests/6-0-pull-requests.html">
+            
+                <a href="../06-Pull-Requests/6-0-pull-requests.html">
+            
+                    
+                    Pull Requests
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8" data-path="../07-Examples/7-0-examples.html">
+            
+                <a href="../07-Examples/7-0-examples.html">
+            
+                    
+                    Examples
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+    
+
+    <li class="divider"></li>
+
+    <li>
+        <a href="https://www.gitbook.com" target="blank" class="gitbook-link">
+            Published with GitBook
+        </a>
+    </li>
+</ul>
+
+
+                </nav>
+            
+        
+    </div>
+
+    <div class="book-body">
+        
+            <div class="body-inner">
+                
+                    
+
+<div class="book-header" role="navigation">
+    
+
+    <!-- Title -->
+    <h1>
+        <i class="fa fa-circle-o-notch fa-spin"></i>
+        <a href=".." >Developing for Dynamo</a>
+    </h1>
+</div>
+
+
+
+
+                    <div class="page-wrapper" tabindex="-1" role="main">
+                        <div class="page-inner">
+                            
+<div id="book-search-results">
+    <div class="search-noresults">
+    
+                                <section class="normal markdown-section">
+                                
+                                <h1 id="developing-for-dynamo">Developing for Dynamo</h1>
+<p>Regardless of experience level, the Dynamo platform is designed for all users to be contributors. There are several development options that target different abilities and skill levels, each with its strengths and weaknesses depending on the goal. Below we will outline the different options and how to choose one over another.</p>
+<p><img src="../assets/developing-for-dynamo.png" alt=""></p>
+<blockquote>
+<p>Three development environments: Visual Studio, Python Editor, and Code Block DesignScript</p>
+</blockquote>
+<h3 id="what-are-my-options">What are my options?</h3>
+<p>Development options for Dynamo fall primarily into two categories: <em>for</em> Dynamo versus <em>in</em> Dynamo. The two categories can be thought about as; &quot;in&quot; Dynamo implies content that is created using the Dynamo IDE to be used in Dynamo, and &quot;for&quot; Dynamo implies using external tools to create content to be imported into Dynamo to be used. Though this guide is focused on development <em>for</em> Dynamo, resources for all processes are described below.</p>
+<h3 id="for-dynamo">For Dynamo</h3>
+<p>These nodes allow for the highest degree of customization. Many packages are built with this method, and it is necessary for contributing to Dynamo&apos;s source. The process of building them will be covered in this guide.</p>
+<ul>
+<li>Zero-Touch Nodes</li>
+<li>NodeModel derived Nodes</li>
+<li>Extensions</li>
+</ul>
+<blockquote>
+<p>The Primer has a guide on <a href="http://dynamoprimer.com/en/10_Packages/10-5_Zero-Touch.html" target="_blank">importing Zero-Touch libraries</a>.</p>
+</blockquote>
+<p>For the discussion below Visual Studio is used as the development environment for Zero-Touch and NodeModel nodes.</p>
+<p><img src="../assets/vs-devenv.jpg" alt=""></p>
+<blockquote>
+<p>The Visual Studio interface with a project that we will be developing</p>
+</blockquote>
+<h3 id="in-dynamo">In Dynamo</h3>
+<p>Though these processes exist in the visual programming workspace and are relatively straight forward, they are all viable options for customizing Dynamo. The Primer covers these extensively and provides scripting tips and best practices in the <a href="http://dynamoprimer.com/en/12_Best-Practice/12-1_Scripting-Strategies.html" target="_blank">Scripting Strategies</a> chapter.</p>
+<ul>
+<li><p>Code Blocks expose DesignScript in the visual programming environment, allowing for flexible text-script and node workflows. A function in a code block can be called by anything in the workspace. </p>
+<blockquote>
+<p><a href="datasets/Code-Block-Example.dyn">Download a Code Block example</a> (Right-click and save as) or see a detailed walk-through in the <a href="http://dynamoprimer.com/en/07_Code-Block/7-1_what-is-a-code-block.html" target="_blank">Primer</a>.</p>
+</blockquote>
+</li>
+<li><p>Custom Nodes are containers for collections of nodes or even entire graphs. They are an effective way to collect frequently used routines and share them with the community.</p>
+<blockquote>
+<p><a href="03-Development-Options/datasets/MapToSurface.dyf">Download a Custom Node example</a> (Right-click and save as) or see a detailed walk-through in the <a href="http://dynamoprimer.com/en/09_Custom-Nodes/9-1_Introduction.html" target="_blank">Primer</a>.</p>
+</blockquote>
+</li>
+<li><p>Python Nodes are a scripting interface in the visual programming workspace, similar to code blocks. The Autodesk.DesignScript libraries use a dot notation similar to DesignScript.</p>
+<blockquote>
+<p><a href="03-Development-Options/datasets/Python-CustomNode.dyn">Download a Python Node example</a> (Right-click and save as) or see a detailed walk-through in the <a href="http://dynamoprimer.com/en/09_Custom-Nodes/9-4_Python.html" target="_blank">Primer</a></p>
+</blockquote>
+</li>
+</ul>
+<p>Developing in the Dynamo workspace is a powerful tool for getting immediate feedback.</p>
+<p><img src="../assets/python-example.JPG" alt=""></p>
+<blockquote>
+<p>Developing in the Dynamo workspace with the Python Node</p>
+</blockquote>
+<h3 id="what-are-the-advantagesdisadvantages-of-each">What are the advantages/disadvantages of each?</h3>
+<p>Development options for Dynamo have been designed to address the complexity of a customization need. Whether the goal is to write a recursive script in Python or build an entirely custom node UI, there are options for implementing code that involve only what&apos;s necessary to get up and running.</p>
+<p><strong>Code Blocks, the Python Node and Custom Nodes in Dynamo</strong></p>
+<p>These are straightforward options for writing code in the Dynamo visual programming environment. The Dynamo visual programming workspace provides access to Python, DesignScript, and the ability to contain multiple nodes inside of a Custom Node.</p>
+<p><img src="../assets/Development-Icons.png" alt=""></p>
+<p>With these methods we can:</p>
+<ul>
+<li>Get started writing Python or DesignScript with little to no setup.</li>
+<li>Import Python libraries into Dynamo.</li>
+<li>Share Code Blocks, Python Nodes, and Custom Nodes with the Dynamo community as part of a package.</li>
+</ul>
+<p><strong>Zero-Touch Nodes</strong></p>
+<p>Zero-Touch refers to a simple point-and-click method for importing C# libraries. Dynamo will read the public methods of a <code>.dll</code> and convert them to Dynamo nodes. You can use Zero-Touch to develop your own custom nodes and packages.</p>
+<p><img src="../assets/ZTImport.png" alt=""></p>
+<p>With this method we can:</p>
+<ul>
+<li>Import a library which was not necessarily developed for Dynamo and automatically create a suite of new nodes, such as the <a href="http://dynamoprimer.com/en/10_Packages/10-5_Zero-Touch.html" target="_blank">A-Forge example</a> in the Primer</li>
+<li>Write C# methods and easily use the methods as nodes in Dynamo</li>
+<li>Share a C# library as nodes with the Dynamo community in a package</li>
+</ul>
+<p><strong>NodeModel derived Nodes</strong></p>
+<p>These nodes are a step deeper into the structure of Dynamo. They are based on the <code>NodeModel</code> class and written in C#. While this method provides the most flexibility and power, most aspects of the node have to be explicitly defined and functions need to live in a separate assembly.</p>
+<p><img src="../assets/Development-Icons-NodeModel.png" alt=""></p>
+<p>With this method we can:</p>
+<ul>
+<li>Create fully a customizable node UI with sliders, images, color, etc (e.g. ColorRange node)</li>
+<li>Access and affect what&apos;s happening in the Dynamo canvas</li>
+<li>Customize lacing</li>
+<li>Load into Dynamo as a package</li>
+</ul>
+<h3 id="understanding-dynamo-versioning-and-api-changes-1x-&#x2192;-2x">Understanding Dynamo versioning and API changes (1.x &#x2192; 2.x)</h3>
+<p>Since Dynamo is being regularly updated, changes might be made to part of the API that a package uses. Tracking these changes is important to ensure that existing packages continue to work properly.</p>
+<p>API changes are tracked on the <a href="https://github.com/DynamoDS/Dynamo/wiki/API-Changes" target="_blank">Dynamo Github Wiki</a>. This covers changes to DynamoCore, Libraries, and Workspaces.</p>
+<p><img src="../assets/api-changes.jpg" alt=""></p>
+<p>An example of an upcoming, significant change is the transition from XML to JSON file format in version 2.0. NodeModel derived nodes will now need a <a href="https://github.com/DynamoDS/Dynamo/wiki/Write-a-Json-Constructor-for-a-NodeModel-Node" target="_blank">JSON constructor</a> otherwise they won&apos;t open in Dynamo 2.0.</p>
+<p>Dynamo&apos;s API documentation currently covers the core functionality: <a href="http://dynamods.github.io/DynamoAPI" target="_blank">http://dynamods.github.io/DynamoAPI</a></p>
+<p><img src="../assets/api-docs.jpg" alt=""></p>
+<h3 id="permission-to-distribute-binaries-in-a-package">Permission to distribute binaries in a package</h3>
+<p>Be aware of .dll&apos;s included in a package being uploaded to the package manager. If the package author did not create the .dll, they must have the rights to share it.</p>
+<p>If a package includes binaries, users must be prompted upon downloading that the package contains binaries.</p>
+
+                                
+                                </section>
+                            
+    </div>
+    <div class="search-results">
+        <div class="has-results">
+            
+            <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+            <ul class="search-results-list"></ul>
+            
+        </div>
+        <div class="no-results">
+            
+            <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+            
+        </div>
+    </div>
+</div>
+
+                        </div>
+                    </div>
+                
+            </div>
+
+            
+                
+                <a href="../02-Build-Dynamo-From-Source/2-1-build-dynamo-revit-from-source.html" class="navigation navigation-prev " aria-label="Previous page: Build DynamoRevit from Source">
+                    <i class="fa fa-angle-left"></i>
+                </a>
+                
+                
+                <a href="3-1-getting-started.html" class="navigation navigation-next " aria-label="Next page: Getting Started">
+                    <i class="fa fa-angle-right"></i>
+                </a>
+                
+            
+        
+    </div>
+
+    <script>
+        var gitbook = gitbook || [];
+        gitbook.push(function() {
+            gitbook.page.hasChanged({"page":{"title":"Developing for Dynamo","level":"1.4","depth":1,"next":{"title":"Getting Started","level":"1.4.1","depth":2,"path":"03-Development-Options/3-1-getting-started.md","ref":"03-Development-Options/3-1-getting-started.md","articles":[]},"previous":{"title":"Build DynamoRevit from Source","level":"1.3.1","depth":2,"path":"02-Build-Dynamo-From-Source/2-1-build-dynamo-revit-from-source.md","ref":"02-Build-Dynamo-From-Source/2-1-build-dynamo-revit-from-source.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":[],"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"03-Development-Options/3-0-developing-for-dynamo.md","mtime":"2018-03-28T17:54:40.659Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2018-03-28T18:04:00.400Z"},"basePath":"..","book":{"language":""}});
+        });
+    </script>
+</div>
+
+        
+    <script src="../gitbook/gitbook.js"></script>
+    <script src="../gitbook/theme.js"></script>
+    
+        
+        <script src="../gitbook/gitbook-plugin-search/search-engine.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-search/search.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-lunr/lunr.min.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-lunr/search-lunr.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-sharing/buttons.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-fontsettings/fontsettings.js"></script>
+        
+    
+
+    </body>
+</html>
+

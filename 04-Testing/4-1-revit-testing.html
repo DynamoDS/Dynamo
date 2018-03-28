@@ -1,0 +1,648 @@
+
+<!DOCTYPE HTML>
+<html lang="" >
+    <head>
+        <meta charset="UTF-8">
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <title>Testing for DynamoRevit · GitBook</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="description" content="">
+        <meta name="generator" content="GitBook 3.2.3">
+        
+        
+        
+    
+    <link rel="stylesheet" href="../gitbook/style.css">
+
+    
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-highlight/website.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-search/search.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-fontsettings/website.css">
+                
+            
+        
+
+    
+
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+
+        
+    
+    
+    <meta name="HandheldFriendly" content="true"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="../gitbook/images/apple-touch-icon-precomposed-152.png">
+    <link rel="shortcut icon" href="../gitbook/images/favicon.ico" type="image/x-icon">
+
+    
+    <link rel="next" href="../05-Package-Deployment/5-0-package-deployment.html" />
+    
+    
+    <link rel="prev" href="4-0-testing.html" />
+    
+
+    </head>
+    <body>
+        
+<div class="book">
+    <div class="book-summary">
+        
+            
+<div id="book-search-input" role="search">
+    <input type="text" placeholder="Type to search" />
+</div>
+
+            
+                <nav role="navigation">
+                
+
+
+<ul class="summary">
+    
+    
+
+    
+
+    
+        
+        
+    
+        <li class="chapter " data-level="1.1" data-path="../">
+            
+                <a href="../">
+            
+                    
+                    About
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2" data-path="../01-Introduction/1-0-introduction.html">
+            
+                <a href="../01-Introduction/1-0-introduction.html">
+            
+                    
+                    Introduction
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3" data-path="../02-Build-Dynamo-From-Source/2-0-build-dynamo-from-source.html">
+            
+                <a href="../02-Build-Dynamo-From-Source/2-0-build-dynamo-from-source.html">
+            
+                    
+                    Build Dynamo from Source
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.3.1" data-path="../02-Build-Dynamo-From-Source/2-1-build-dynamo-revit-from-source.html">
+            
+                <a href="../02-Build-Dynamo-From-Source/2-1-build-dynamo-revit-from-source.html">
+            
+                    
+                    Build DynamoRevit from Source
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4" data-path="../03-Development-Options/3-0-developing-for-dynamo.html">
+            
+                <a href="../03-Development-Options/3-0-developing-for-dynamo.html">
+            
+                    
+                    Developing for Dynamo
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.4.1" data-path="../03-Development-Options/3-1-getting-started.html">
+            
+                <a href="../03-Development-Options/3-1-getting-started.html">
+            
+                    
+                    Getting Started
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.2" data-path="../03-Development-Options/3-2-zerotouch-example.html">
+            
+                <a href="../03-Development-Options/3-2-zerotouch-example.html">
+            
+                    
+                    Zero-Touch Case Study - Grid Node
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.3" data-path="../03-Development-Options/3-3-python-scripts-in-csharp.html">
+            
+                <a href="../03-Development-Options/3-3-python-scripts-in-csharp.html">
+            
+                    
+                    Zero-Touch Case Study - Python Scripts in C#
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.4" data-path="../03-Development-Options/3-4-zerotouch-nodes.html">
+            
+                <a href="../03-Development-Options/3-4-zerotouch-nodes.html">
+            
+                    
+                    Going Further with Zero-Touch
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.5" data-path="../03-Development-Options/3-5-nodemodel-derived-nodes.html">
+            
+                <a href="../03-Development-Options/3-5-nodemodel-derived-nodes.html">
+            
+                    
+                    NodeModel Case Study - Custom UI
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.6" data-path="../03-Development-Options/3-6-extensions.html">
+            
+                <a href="../03-Development-Options/3-6-extensions.html">
+            
+                    
+                    Extensions
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5" data-path="4-0-testing.html">
+            
+                <a href="4-0-testing.html">
+            
+                    
+                    Testing
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter active" data-level="1.5.1" data-path="4-1-revit-testing.html">
+            
+                <a href="4-1-revit-testing.html">
+            
+                    
+                    Testing for DynamoRevit
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6" data-path="../05-Package-Deployment/5-0-package-deployment.html">
+            
+                <a href="../05-Package-Deployment/5-0-package-deployment.html">
+            
+                    
+                    Package Deployment
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.6.1" data-path="../05-Package-Deployment/5-1-build-package-from-vs.html">
+            
+                <a href="../05-Package-Deployment/5-1-build-package-from-vs.html">
+            
+                    
+                    Build a Package From Visual Studio
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7" data-path="../06-Pull-Requests/6-0-pull-requests.html">
+            
+                <a href="../06-Pull-Requests/6-0-pull-requests.html">
+            
+                    
+                    Pull Requests
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8" data-path="../07-Examples/7-0-examples.html">
+            
+                <a href="../07-Examples/7-0-examples.html">
+            
+                    
+                    Examples
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+    
+
+    <li class="divider"></li>
+
+    <li>
+        <a href="https://www.gitbook.com" target="blank" class="gitbook-link">
+            Published with GitBook
+        </a>
+    </li>
+</ul>
+
+
+                </nav>
+            
+        
+    </div>
+
+    <div class="book-body">
+        
+            <div class="body-inner">
+                
+                    
+
+<div class="book-header" role="navigation">
+    
+
+    <!-- Title -->
+    <h1>
+        <i class="fa fa-circle-o-notch fa-spin"></i>
+        <a href=".." >Testing for DynamoRevit</a>
+    </h1>
+</div>
+
+
+
+
+                    <div class="page-wrapper" tabindex="-1" role="main">
+                        <div class="page-inner">
+                            
+<div id="book-search-results">
+    <div class="search-noresults">
+    
+                                <section class="normal markdown-section">
+                                
+                                <h1 id="testing-for-dynamorevit">Testing for DynamoRevit</h1>
+<p>If we are developing a package for Revit or working with the DynamoRevit source code, the tests we write need to incorporate both Revit and Dynamo functionality. A test could involve opening both a Revit file and Dynamo file, then adding a DynamoRevit node to the workspace to simulate how a user would create a graph. Writing a test for DynamoRevit will generally follow the walk-through in the Testing section with the addition of several steps. Running tests for Revit and DynamoRevit is a more involved process since we are launching multiple applications and referencing other libraries.</p>
+<h3 id="the-revit-test-framework">The Revit Test Framework</h3>
+<p>The Revit Test Framework (RTF) allows for remote testing on Revit. RTF creates a journal file for running Revit, specifies a model for it to open, and a specific test or fixture of tests to run. A model can also be specified to open before testing to run several tests with.</p>
+<p>The Revit Test Framework is open source and hosted on Github: <a href="https://github.com/DynamoDS/RevitTestFramework" target="_blank">https://github.com/DynamoDS/RevitTestFramework</a></p>
+<p><img src="../assets/rft-github.JPG" alt=""></p>
+<p>Using the same git commands from the walk-through in Build DynamoRevit From Source, we can clone and build the repository to run RTF. Open a new command prompt and enter the following commands:</p>
+<ul>
+<li><code>cd &quot;C:\Users\username\Documents\GitHub&quot;</code> to set the directory into which the repository will be cloned</li>
+<li><code>git clone https://github.com/DynamoDS/RevitTestFramework.git</code> to clone the repository from its URL</li>
+<li><code>cd &quot;C:\Users\username\Documents\GitHub\RevitTestFramework&quot;</code> to set the current directory to the repository</li>
+<li><code>git checkout Revit2018</code> switches to a branch of RTF matching the installed Revit version, similar to the process in building DynamoRevit from source</li>
+</ul>
+<p>Once the repository is cloned, open the solution file in Visual Studio and build the solution. In the <code>bin</code> folder are two options for running RTF:</p>
+<ul>
+<li><strong>RevitTestFrameworkGUI.exe</strong> provides a visual interface to select tests from a treeview and visualize the results of the tests as they are run. Testing configurations can be saved to run again later.</li>
+<li><strong>RevitTestFrameworkConsole.exe</strong> is a console application which allows running RTF from a command line. All the settings in the GUI are available here as well.</li>
+</ul>
+<h3 id="how-to-run-a-test-for-dynamorevit-in-the-gui">How to run a test for DynamoRevit in the GUI</h3>
+<p>Tests are run in the RevitTestFramework by specifying an assembly containing the tests and any supporting references. We can start by running a test that comes with the DynamoRevit repository in the GUI application. Start by opening the <code>RevitTestFrameworkGUI.exe</code> application in the <code>bin</code> folder of the build.</p>
+<p><img src="../assets/rtf-open.JPG" alt=""></p>
+<blockquote>
+<p>RTF loads a default test from its <code>bin</code> folder when it starts  </p>
+<ol>
+<li>Select <code>File</code> to save or load a local RTF config  </li>
+<li>Set the <code>Test Assembly</code> path, the location of the assembly containing the tests to run. (e.x. RevitNodesTests.dll, RevitSystemTests.dll, RevitServicesTests.dll which can be found usually in DynamoRevit bin folder)  </li>
+<li>Set the <code>Results File Path</code>, the result file is an.xml file that will contain the test results. If the path points to an existing file, RTF will overwrite it  </li>
+<li>Set the <code>Working Directory</code>, the location of the testing files  </li>
+<li>Set the <code>Additional Resolution Directories</code> to assemblies that the test assembly will need to load (e.x. the Dynamo Core location when it is not set in the <code>Dynamo.Config</code> in DynamoRevit bin folder)  </li>
+<li>Specify the <code>Revit version</code> to run the tests with  </li>
+<li>Select <code>Debug</code> to launch a debugging session with the test  </li>
+<li>Select <code>Run Selected Tests</code> to run the tests</li>
+</ol>
+</blockquote>
+<p>For this example we will run one test from <code>RevitSystemTests</code>. Add the <code>RevitSystemTests</code> assembly from DynamoRevit and select <code>CreateWallByFace</code> under <code>WallTests</code>. If the assembly does not load, try adding <code>SystemTestServices.dll</code> to <code>Additional Resolution Directories</code> from DynamoCore.</p>
+<p><img src="../assets/rtf-test.JPG" alt=""></p>
+<blockquote>
+<p>The test passed, shown by the green highlighting. The name of the Revit model associated with a test will turn green if the working directory is set correctly.  </p>
+<ol>
+<li>Set the <code>Test Assembly</code>, <code>Results File Path</code>, and the <code>Working Directory</code>  </li>
+<li>Select only the <code>CreateWallByFace</code> test  </li>
+<li>Select <code>Run Selected Tests</code></li>
+</ol>
+</blockquote>
+<p>Whether a test passes or fails, it will write its results to the file specified in <code>Results File Path</code>. The output file from a test run is an NUnit-formatted results file compatible with many CI systems. Open the <code>Test_Results.xml</code> file for more information on the test we just ran.</p>
+<pre><code class="lang-xml">&#xFEFF;<span class="php"><span class="hljs-meta">&lt;?</span>xml version=<span class="hljs-string">&quot;1.0&quot;</span> encoding=<span class="hljs-string">&quot;utf-8&quot;</span><span class="hljs-meta">?&gt;</span></span>
+<span class="hljs-comment">&lt;!--This file represents the results of running a test suite--&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">test-results</span> <span class="hljs-attr">name</span>=<span class="hljs-string">&quot;C:\Users\paul\Documents\DynamoRevit\bin\AnyCPU\Debug\Revit_2018\RevitSystemTests.dll&quot;</span> <span class="hljs-attr">total</span>=<span class="hljs-string">&quot;1&quot;</span> <span class="hljs-attr">failures</span>=<span class="hljs-string">&quot;0&quot;</span> <span class="hljs-attr">not-run</span>=<span class="hljs-string">&quot;0&quot;</span> <span class="hljs-attr">date</span>=<span class="hljs-string">&quot;2018-01-02&quot;</span> <span class="hljs-attr">time</span>=<span class="hljs-string">&quot;22:00:03&quot;</span> <span class="hljs-attr">errors</span>=<span class="hljs-string">&quot;0&quot;</span> <span class="hljs-attr">inconclusive</span>=<span class="hljs-string">&quot;0&quot;</span> <span class="hljs-attr">ignored</span>=<span class="hljs-string">&quot;0&quot;</span> <span class="hljs-attr">skipped</span>=<span class="hljs-string">&quot;0&quot;</span> <span class="hljs-attr">invalid</span>=<span class="hljs-string">&quot;0&quot;</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">test-suite</span> <span class="hljs-attr">name</span>=<span class="hljs-string">&quot;DynamoTestFrameworkTests&quot;</span> <span class="hljs-attr">description</span>=<span class="hljs-string">&quot;Unit tests in Revit.&quot;</span> <span class="hljs-attr">time</span>=<span class="hljs-string">&quot;5.6363755&quot;</span> <span class="hljs-attr">asserts</span>=<span class="hljs-string">&quot;6&quot;</span> <span class="hljs-attr">type</span>=<span class="hljs-string">&quot;TestFixture&quot;</span> <span class="hljs-attr">result</span>=<span class="hljs-string">&quot;Success&quot;</span> <span class="hljs-attr">executed</span>=<span class="hljs-string">&quot;True&quot;</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">results</span>&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">test-suite</span> <span class="hljs-attr">name</span>=<span class="hljs-string">&quot;WallTests&quot;</span> <span class="hljs-attr">description</span>=<span class="hljs-string">&quot;Unit tests in Revit.&quot;</span> <span class="hljs-attr">time</span>=<span class="hljs-string">&quot;5.6363755&quot;</span> <span class="hljs-attr">asserts</span>=<span class="hljs-string">&quot;6&quot;</span> <span class="hljs-attr">type</span>=<span class="hljs-string">&quot;TestFixture&quot;</span> <span class="hljs-attr">result</span>=<span class="hljs-string">&quot;Success&quot;</span> <span class="hljs-attr">executed</span>=<span class="hljs-string">&quot;True&quot;</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">results</span>&gt;</span>
+          <span class="hljs-tag">&lt;<span class="hljs-name">test-case</span> <span class="hljs-attr">name</span>=<span class="hljs-string">&quot;CreateWallByFace&quot;</span> <span class="hljs-attr">success</span>=<span class="hljs-string">&quot;True&quot;</span> <span class="hljs-attr">time</span>=<span class="hljs-string">&quot;5.6363755&quot;</span> <span class="hljs-attr">executed</span>=<span class="hljs-string">&quot;True&quot;</span> <span class="hljs-attr">asserts</span>=<span class="hljs-string">&quot;6&quot;</span> <span class="hljs-attr">result</span>=<span class="hljs-string">&quot;Success&quot;</span> /&gt;</span>
+        <span class="hljs-tag">&lt;/<span class="hljs-name">results</span>&gt;</span>
+      <span class="hljs-tag">&lt;/<span class="hljs-name">test-suite</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">results</span>&gt;</span>
+  <span class="hljs-tag">&lt;/<span class="hljs-name">test-suite</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">test-results</span>&gt;</span>
+</code></pre>
+<p>Since this test configuration is working, we can save these settings for another session in a <code>.xml</code> file.</p>
+<p><img src="../assets/rtf-saveconfig.jpg" alt=""></p>
+<blockquote>
+<ol>
+<li>Select <code>File &gt; Save As...</code></li>
+</ol>
+</blockquote>
+<h3 id="how-to-run-a-test-for-dynamorevit-in-the-console">How to run a test for DynamoRevit in the Console</h3>
+<p>Alternatively, we can run tests from the command line with all the options we had in the GUI application. Open a command prompt from the directory of the <code>RevitTestFrameworkConsole.exe</code> application and enter the following command:</p>
+<ul>
+<li><code>RevitTestFrameworkConsole -h</code> shows all available commands</li>
+</ul>
+<pre><code>  Options:   
+         --dir=[VALUE]          The full path to the working directory. The working directory is the directory in which RTF will generate the journal and the addin to Run Revit. Revit&apos;s run-by-journal capability requires that all addins which need to be loaded are in the same directory as the journal file. So, if you&apos;re testing other addins on top of Revit using RTF, you&apos;ll need to put those addins in whatever directory you specify as the working directory.  
+    -a,  --assembly=[VALUE]     The full path to the assembly containing your tests.  
+    -r,  --results=[VALUE]      This is the full path to an .xml file that will contain the results. 
+    -f,  --fixture=[VALUE]      The full name (with namespace) of a test fixture to run. If no fixture, no category and no test names are specified, RTF will run all tests in the assembly.(OPTIONAL)  
+    -t,  --testName[=VALUE]     The name of a test to run. If no fixture, no category and no test names are specified, RTF will run all tests in the assembly. (OPTIONAL)    
+         --category[=VALUE]     The name of a test category to run. If no fixture, no category and no test names are specified, RTF will run all tests in the assembly. (OPTIONAL)   
+         --exclude[=VALUE]      The name of a test category to exclude. This has a higher priortiy than other settings. If a specified category is set here, any test cases that belongs to that category will not be run. (OPTIONAL)  
+    -c,  --concatenate          Concatenate the results from this run of RTF with an existing results file if one exists at the path specified. The default behavior is to replace the existing results file. (OPTIONAL)  
+         --revit[=VALUE]        The Revit executable to be used for testing. If no executable is specified, RTF will use the first version of Revit that is found on the machine using the RevitAddinUtility. (OPTIONAL)  
+         --copyAddins           Specify whether to copy the addins from the Revit folder to the current working directory. Copying the addins from the Revit folder will cause the test process to simulate the typical setup on your machine. (OPTIONAL)  
+         --dry                  Conduct a dry run. (OPTIONAL)  
+    -x,  --clean                Cleanup journal files after test completion. (OPTIONAL)   
+         --continuous           Run all selected tests in one Revit session. (OPTIONAL)  
+         --time                 The time, in milliseconds, after which RTF will close the testing process automatically. (OPTIONAL)  
+    -d,  --debug                Should RTF attempt to attach to a debugger?. (OPTIONAL)  
+    -h,  --help                 Show this message and exit. (OPTIONAL)
+</code></pre><p>If we wanted to run the same test that we did in the GUI, we can specify all options in a single command separated by spaces.</p>
+<ul>
+<li><code>RevitTestFrameworkConsole</code> precedes the options</li>
+<li><code>--dir=&quot;C:\Users\username\Documents\DynamoRevit\test\System&quot;</code> sets the working directory</li>
+<li><code>-a=&quot;C:\Users\username\Documents\DynamoRevit\bin\AnyCPU\Debug\Revit_2017\RevitSystemTests.dll&quot;</code> sets the test assembly</li>
+<li><code>-r=&quot;C:\Users\username\Documents\RevitTestFramework\bin\AnyCPU\Debug\Test_Results.xml&quot;</code> sets the results file path</li>
+<li><code>-t=CreateWallByFace</code> specifies the test to run</li>
+</ul>
+<h3 id="how-to-write-dynamorevit-tests">How to write DynamoRevit tests</h3>
+<p>Writing a test that involves Dynamo and Revit requires the same setup covered in testing for Dynamo Core with a few extra steps. In addition to the test libraries provided for Dynamo, DynamoRevit provides <code>RevitTestServices.dll</code>, a library containing base classes and methods for testing with Revit. This walk-through will cover how to setup a Visual Studio project for writing a Revit test. First, we need to reference <code>RevitTestServices.dll</code> and a few other assemblies. Create a new Visual Studio project or open an existing one and add the following references.</p>
+<ul>
+<li><code>RevitTestServices.dll</code> contains two base classes, <code>RevitNodeTestBase</code> and <code>RevitSystemTestBase</code>, for unit and system testing that involves Revit</li>
+<li><code>SystemTestServices.dll</code> is provided by DynamoCore and is required for <code>RevitTestServices.dll</code></li>
+<li><code>RevitTestFrameworkTypes.dll</code> is provided by RTF and contains <code>TestModelAttribute</code> for specifying a Revit model to open when a test runs</li>
+<li><code>DynamoCore.dll</code> contains Dynamo&apos;s core model</li>
+</ul>
+<p>We also need to reference these assemblies for this specific example.</p>
+<ul>
+<li><code>DynamoCoreWpf.dll</code> for accessing Dynamo&apos;s view model</li>
+<li><code>RevitNodes.dll</code> for using DynamoRevit nodes</li>
+</ul>
+<p><img src="../assets/vs-rt-references.JPG" alt=""></p>
+<blockquote>
+<ol>
+<li>Right click on <code>References</code> and select <code>Add Reference...</code></li>
+<li>Browse to the locations of each reference</li>
+<li>All six references we need for this project</li>
+<li>Select <code>Ok</code></li>
+</ol>
+</blockquote>
+<p>By default, these assemblies will be set to <code>Copy Local = True</code>. Once they are added, select them and change this property to <code>False</code>.</p>
+<p><img src="../assets/vs-rt-copyfalse.JPG" alt=""></p>
+<blockquote>
+<ol>
+<li>Select the assemblies we referenced</li>
+<li>Set <code>Copy Local</code> to <code>False</code></li>
+</ol>
+</blockquote>
+<p>For this example, we can use the <code>CreateWallByFace</code> test as the sample test. Add the following code to an empty class in the project.</p>
+<pre><code class="lang-csharp"><span class="hljs-keyword">using</span> System.IO;
+<span class="hljs-keyword">using</span> NUnit.Framework;
+<span class="hljs-keyword">using</span> RevitTestServices;
+<span class="hljs-keyword">using</span> RTF.Framework;
+
+<span class="hljs-keyword">namespace</span> <span class="hljs-title">RevitSystemTests</span>
+{
+    [TestFixture]
+    <span class="hljs-keyword">class</span> <span class="hljs-title">WallTests</span> : <span class="hljs-title">RevitSystemTestBase</span>
+    {
+        [Test]
+        [TestModel(<span class="hljs-string">@&quot;.\InPlaceMass.rvt&quot;</span>)]
+        <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">CreateWallByFace</span>(<span class="hljs-params"></span>)
+        </span>{
+            <span class="hljs-keyword">var</span> model = ViewModel.Model;
+
+            <span class="hljs-keyword">string</span> samplePath = Path.Combine(workingDirectory, <span class="hljs-string">@&quot;.\Wall\WallByFace.dyn&quot;</span>);
+            <span class="hljs-keyword">string</span> testPath = Path.GetFullPath(samplePath);
+
+            ViewModel.OpenCommand.Execute(testPath);
+
+            RunCurrentModel();
+
+            <span class="hljs-keyword">var</span> wall = GetPreviewValue(<span class="hljs-string">&quot;e3e5735c-98d2-47ac-97fb-90a5f08c416e&quot;</span>);
+            Assert.IsNotNull(wall);
+            Assert.IsTrue(wall.GetType() == <span class="hljs-keyword">typeof</span>(Revit.Elements.FaceWall));
+        }
+    }
+}
+</code></pre>
+<p>The structure of the test is similar to DynamoCore tests with several key differences.</p>
+<ul>
+<li>The <code>RevitTestServices</code> using statement provides Revit test base classes</li>
+<li>The <code>RTF.Framework</code> using statement provides an attribute used to specify a Revit model</li>
+<li>A class that inherits <code>RevitSystemTestBase</code> to use functions specific to Revit System tests</li>
+<li>A <code>[TestModel(@&quot;.\InPlaceMass.rvt&quot;)]</code> attribute from RTF to specify a Revit model with which to run the test</li>
+<li>A Dynamo file path <code>string samplePath = Path.Combine(workingDirectory, @&quot;.\Wall\WallByFace.dyn&quot;);</code> that specifies a Dynamo file to run</li>
+<li>A <code>RunCurrentModel()</code> method to run the Dynamo file</li>
+</ul>
+<p>Notice that the test uses a test model <code>InPlaceMass.rvt</code> and a Dynamo file <code>WallByFace.dyn</code>. Create a <code>test</code> folder in the project directory and copy these files from the DynamoRevit <code>test</code> folder into it.</p>
+<p><img src="../assets/fe-rt-structure.jpg" alt=""></p>
+<blockquote>
+<ol>
+<li>The Dynamo and Revit files copied from the DynamoRevit repository</li>
+<li>The <code>test</code> folder inside the project directory that will serve as the working directory</li>
+</ol>
+</blockquote>
+<p>Now build the project and run the test in the RTF GUI application.</p>
+<p><img src="../assets/rtf-sampletest-success.JPG" alt=""></p>
+<blockquote>
+<ol>
+<li>Set the test assembly path to the <code>Test.dll</code> we just built</li>
+<li>Specify a results file</li>
+<li>Set the working directory to the location of the copied Revit and Dynamo files</li>
+<li>Make sure the correct version of Revit is selected, 2018 in this example</li>
+<li>Select <code>Run Selected Tests</code></li>
+<li>The test will become highlighted green if it runs successfully, otherwise it will become highlighted red if it failed</li>
+</ol>
+</blockquote>
+<p>The DynamoRevit repository has many tests to use as a reference when writing new ones for a package under <code>Tests &gt; Libraries</code> in the Visual Studio Solution Explorer.</p>
+
+                                
+                                </section>
+                            
+    </div>
+    <div class="search-results">
+        <div class="has-results">
+            
+            <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+            <ul class="search-results-list"></ul>
+            
+        </div>
+        <div class="no-results">
+            
+            <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+            
+        </div>
+    </div>
+</div>
+
+                        </div>
+                    </div>
+                
+            </div>
+
+            
+                
+                <a href="4-0-testing.html" class="navigation navigation-prev " aria-label="Previous page: Testing">
+                    <i class="fa fa-angle-left"></i>
+                </a>
+                
+                
+                <a href="../05-Package-Deployment/5-0-package-deployment.html" class="navigation navigation-next " aria-label="Next page: Package Deployment">
+                    <i class="fa fa-angle-right"></i>
+                </a>
+                
+            
+        
+    </div>
+
+    <script>
+        var gitbook = gitbook || [];
+        gitbook.push(function() {
+            gitbook.page.hasChanged({"page":{"title":"Testing for DynamoRevit","level":"1.5.1","depth":2,"next":{"title":"Package Deployment","level":"1.6","depth":1,"path":"05-Package-Deployment/5-0-package-deployment.md","ref":"05-Package-Deployment/5-0-package-deployment.md","articles":[{"title":"Build a Package From Visual Studio","level":"1.6.1","depth":2,"path":"05-Package-Deployment/5-1-build-package-from-vs.md","ref":"05-Package-Deployment/5-1-build-package-from-vs.md","articles":[]}]},"previous":{"title":"Testing","level":"1.5","depth":1,"path":"04-Testing/4-0-testing.md","ref":"04-Testing/4-0-testing.md","articles":[{"title":"Testing for DynamoRevit","level":"1.5.1","depth":2,"path":"04-Testing/4-1-revit-testing.md","ref":"04-Testing/4-1-revit-testing.md","articles":[]}]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":[],"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"04-Testing/4-1-revit-testing.md","mtime":"2018-03-28T17:54:40.661Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2018-03-28T18:04:00.400Z"},"basePath":"..","book":{"language":""}});
+        });
+    </script>
+</div>
+
+        
+    <script src="../gitbook/gitbook.js"></script>
+    <script src="../gitbook/theme.js"></script>
+    
+        
+        <script src="../gitbook/gitbook-plugin-search/search-engine.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-search/search.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-lunr/lunr.min.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-lunr/search-lunr.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-sharing/buttons.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-fontsettings/fontsettings.js"></script>
+        
+    
+
+    </body>
+</html>
+

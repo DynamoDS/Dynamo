@@ -1,0 +1,796 @@
+
+<!DOCTYPE HTML>
+<html lang="" >
+    <head>
+        <meta charset="UTF-8">
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <title>NodeModel Case Study - Custom UI · GitBook</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="description" content="">
+        <meta name="generator" content="GitBook 3.2.3">
+        
+        
+        
+    
+    <link rel="stylesheet" href="../gitbook/style.css">
+
+    
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-highlight/website.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-search/search.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-fontsettings/website.css">
+                
+            
+        
+
+    
+
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+
+        
+    
+    
+    <meta name="HandheldFriendly" content="true"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="../gitbook/images/apple-touch-icon-precomposed-152.png">
+    <link rel="shortcut icon" href="../gitbook/images/favicon.ico" type="image/x-icon">
+
+    
+    <link rel="next" href="3-6-extensions.html" />
+    
+    
+    <link rel="prev" href="3-4-zerotouch-nodes.html" />
+    
+
+    </head>
+    <body>
+        
+<div class="book">
+    <div class="book-summary">
+        
+            
+<div id="book-search-input" role="search">
+    <input type="text" placeholder="Type to search" />
+</div>
+
+            
+                <nav role="navigation">
+                
+
+
+<ul class="summary">
+    
+    
+
+    
+
+    
+        
+        
+    
+        <li class="chapter " data-level="1.1" data-path="../">
+            
+                <a href="../">
+            
+                    
+                    About
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2" data-path="../01-Introduction/1-0-introduction.html">
+            
+                <a href="../01-Introduction/1-0-introduction.html">
+            
+                    
+                    Introduction
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3" data-path="../02-Build-Dynamo-From-Source/2-0-build-dynamo-from-source.html">
+            
+                <a href="../02-Build-Dynamo-From-Source/2-0-build-dynamo-from-source.html">
+            
+                    
+                    Build Dynamo from Source
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.3.1" data-path="../02-Build-Dynamo-From-Source/2-1-build-dynamo-revit-from-source.html">
+            
+                <a href="../02-Build-Dynamo-From-Source/2-1-build-dynamo-revit-from-source.html">
+            
+                    
+                    Build DynamoRevit from Source
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4" data-path="3-0-developing-for-dynamo.html">
+            
+                <a href="3-0-developing-for-dynamo.html">
+            
+                    
+                    Developing for Dynamo
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.4.1" data-path="3-1-getting-started.html">
+            
+                <a href="3-1-getting-started.html">
+            
+                    
+                    Getting Started
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.2" data-path="3-2-zerotouch-example.html">
+            
+                <a href="3-2-zerotouch-example.html">
+            
+                    
+                    Zero-Touch Case Study - Grid Node
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.3" data-path="3-3-python-scripts-in-csharp.html">
+            
+                <a href="3-3-python-scripts-in-csharp.html">
+            
+                    
+                    Zero-Touch Case Study - Python Scripts in C#
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.4" data-path="3-4-zerotouch-nodes.html">
+            
+                <a href="3-4-zerotouch-nodes.html">
+            
+                    
+                    Going Further with Zero-Touch
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter active" data-level="1.4.5" data-path="3-5-nodemodel-derived-nodes.html">
+            
+                <a href="3-5-nodemodel-derived-nodes.html">
+            
+                    
+                    NodeModel Case Study - Custom UI
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.6" data-path="3-6-extensions.html">
+            
+                <a href="3-6-extensions.html">
+            
+                    
+                    Extensions
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5" data-path="../04-Testing/4-0-testing.html">
+            
+                <a href="../04-Testing/4-0-testing.html">
+            
+                    
+                    Testing
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.5.1" data-path="../04-Testing/4-1-revit-testing.html">
+            
+                <a href="../04-Testing/4-1-revit-testing.html">
+            
+                    
+                    Testing for DynamoRevit
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6" data-path="../05-Package-Deployment/5-0-package-deployment.html">
+            
+                <a href="../05-Package-Deployment/5-0-package-deployment.html">
+            
+                    
+                    Package Deployment
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.6.1" data-path="../05-Package-Deployment/5-1-build-package-from-vs.html">
+            
+                <a href="../05-Package-Deployment/5-1-build-package-from-vs.html">
+            
+                    
+                    Build a Package From Visual Studio
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7" data-path="../06-Pull-Requests/6-0-pull-requests.html">
+            
+                <a href="../06-Pull-Requests/6-0-pull-requests.html">
+            
+                    
+                    Pull Requests
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8" data-path="../07-Examples/7-0-examples.html">
+            
+                <a href="../07-Examples/7-0-examples.html">
+            
+                    
+                    Examples
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+    
+
+    <li class="divider"></li>
+
+    <li>
+        <a href="https://www.gitbook.com" target="blank" class="gitbook-link">
+            Published with GitBook
+        </a>
+    </li>
+</ul>
+
+
+                </nav>
+            
+        
+    </div>
+
+    <div class="book-body">
+        
+            <div class="body-inner">
+                
+                    
+
+<div class="book-header" role="navigation">
+    
+
+    <!-- Title -->
+    <h1>
+        <i class="fa fa-circle-o-notch fa-spin"></i>
+        <a href=".." >NodeModel Case Study - Custom UI</a>
+    </h1>
+</div>
+
+
+
+
+                    <div class="page-wrapper" tabindex="-1" role="main">
+                        <div class="page-inner">
+                            
+<div id="book-search-results">
+    <div class="search-noresults">
+    
+                                <section class="normal markdown-section">
+                                
+                                <h1 id="nodemodel-case-study---custom-ui">NodeModel Case Study - Custom UI</h1>
+<p>NodeModel based nodes provides significantly more flexibility and power than the Zero-Touch nodes. In this example, we will take the Zero-Touch grid node to the next level by adding an integrated slider that randomizes the rectangle size.</p>
+<p><img src="../assets/cover-image.jpg" alt=""></p>
+<blockquote>
+<p>The slider scales the cells relative to their size so the user doesn&apos;t have to provide a slider with the correct range.</p>
+</blockquote>
+<h3 id="the-model-view-viewmodel-pattern">The Model-View-Viewmodel Pattern</h3>
+<p>Dynamo is based on the <a href="https://en.wikipedia.org/wiki/Model&#x2013;view&#x2013;viewmodel" target="_blank">model-view-viewmodel</a> (MVVM) software architecture pattern to keep the UI separate from the back-end. When creating ZeroTouch nodes, Dynamo does the data bind between a node&apos;s data and its UI . To create a custom UI, we have  to add the data-binding logic.</p>
+<p>At a high-level there are two parts to establishing a model-view relationship in Dynamo:</p>
+<ul>
+<li>A <code>NodeModel</code> class to establish the core logic of the node (the &quot;model&quot;)</li>
+<li>A <code>INodeViewCustomization</code> class to customize how the <code>NodeModel</code> is being viewed (the &quot;view&quot;)</li>
+</ul>
+<blockquote>
+<p>NodeModel objects already have an associated view-model (NodeViewModel), so we can just focus on the model and view for custom UI.</p>
+</blockquote>
+<h3 id="how-to-implement-nodemodel">How To Implement NodeModel</h3>
+<p>NodeModel nodes have several significant differences from Zero-Touch nodes that we will cover in this example. Before we jump into UI customization, let&apos;s start by building out the NodeModel logic.</p>
+<p><strong>1. Create project structure:</strong></p>
+<p>A NodeModel node can only call functions, so we need to separate the NodeModel and functions into different libraries. The standard way of doing this for Dynamo packages is creating separate projects for each. Start by creating a new Solution to encompass the projects.</p>
+<p><img src="../assets/vs-new-solution.JPG" alt=""></p>
+<blockquote>
+<ol>
+<li>Select <code>File &gt; New &gt; Project</code></li>
+<li>Select <code>Other Project Types</code> to bring up the Solution option</li>
+<li>Select <code>Blank Solution</code></li>
+<li>Name the solution <code>CustomNodeModel</code></li>
+<li>Select <code>Ok</code></li>
+</ol>
+</blockquote>
+<p>Create two C# class library projects in the solution: one for functions and one to implement the NodeModel interface.</p>
+<p><img src="../assets/vs-new-class-projects.jpg" alt=""></p>
+<blockquote>
+<ol>
+<li>Right-click on the Solution and select <code>Add &gt; New Project</code></li>
+<li>Choose Class Library</li>
+<li>Name it <code>CustomNodeModel</code></li>
+<li>Click <code>Ok</code></li>
+<li>Repeat the process to add another project named <code>CustomNodeModelFunctions</code></li>
+</ol>
+</blockquote>
+<p>Next, we need to rename the class libraries that were automatically created and add one to the <code>CustomNodeModel</code> project. The class <code>GridNodeModel</code> implements the abstract NodeModel class, <code>GridNodeView</code> is used to customize the view, and <code>GridFunction</code> contains any functions we need to call.</p>
+<p><img src="../assets/vs-new-class.jpg" alt=""></p>
+<blockquote>
+<ol>
+<li>Add another class by right-clicking on the <code>CustomNodeModel</code> project, selecting <code>Add &gt; New Item...</code> and choose <code>Class</code>.</li>
+<li>In the <code>CustomNodeModel</code> project, we need <code>GridNodeModel.cs</code> and <code>GridNodeView.cs</code> class</li>
+<li>In the <code>CustomNodeModelFunction</code> project, we need a <code>GridFunctions.cs</code> class</li>
+</ol>
+</blockquote>
+<p>Before we add any code to the classes, add the necessary packages for this project. <code>CustomNodeModel</code> will need ZeroTouchLibrary and WpfUILibrary, and <code>CustomNodeModelFunction</code> will only need ZeroTouchLibrary. The WpfUILibrary will be used in the UI customization we do later on, and ZeroTouchLibrary will be used for creating geometry. Packages can be added individually for projects. Since these packages have dependencies, Core and DynamoServices will be automatically installed.</p>
+<p><img src="../assets/vs-add-packages.jpg" alt=""></p>
+<blockquote>
+<ol>
+<li>Right-click on a project and select <code>Manage NuGet Packages</code></li>
+<li>Install only the required packages for that project</li>
+</ol>
+</blockquote>
+<p>Visual Studio will copy the NuGet packages we referenced to the build directory. This can be set to false so we don&apos;t have any unnecessary files in the package.</p>
+<p><img src="../assets/vs-disable-package-copying.jpg" alt=""></p>
+<blockquote>
+<ol>
+<li>Select Dynamo NuGet Packages</li>
+<li>Set <code>Copy Local</code> to false</li>
+</ol>
+</blockquote>
+<p><strong>2. Inherit the NodeModel class</strong></p>
+<p>As mentioned previously, the primary aspect that makes a NodeModel node different from a ZeroTouch node is its implementation of the <code>NodeModel</code> class. A NodeModel node needs several functions from this class, and we can get them by adding <code>:NodeModel</code> after the class name.</p>
+<p>Copy the following code into the <code>GridNodeModel.cs</code>.</p>
+<pre><code class="lang-csharp"><span class="hljs-keyword">using</span> System;
+<span class="hljs-keyword">using</span> System.Collections.Generic;
+<span class="hljs-keyword">using</span> Dynamo.Graph.Nodes;
+<span class="hljs-keyword">using</span> CustomNodeModel.CustomNodeModelFunction;
+<span class="hljs-keyword">using</span> ProtoCore.AST.AssociativeAST;
+<span class="hljs-keyword">using</span> Autodesk.DesignScript.Geometry;
+
+<span class="hljs-keyword">namespace</span> <span class="hljs-title">CustomNodeModel.CustomNodeModel</span>
+{
+    [NodeName(<span class="hljs-string">&quot;RectangularGrid&quot;</span>)]
+    [NodeDescription(<span class="hljs-string">&quot;An example NodeModel node that creates a rectangular grid. The slider randomly scales the cells.&quot;</span>)]
+    [NodeCategory(<span class="hljs-string">&quot;CustomNodeModel&quot;</span>)]
+    [InPortNames(<span class="hljs-string">&quot;xCount&quot;</span>, <span class="hljs-string">&quot;yCount&quot;</span>)]
+    [InPortTypes(<span class="hljs-string">&quot;double&quot;</span>, <span class="hljs-string">&quot;double&quot;</span>)]
+    [InPortDescriptions(<span class="hljs-string">&quot;Number of cells in the X direction&quot;</span>, <span class="hljs-string">&quot;Number of cells in the Y direction&quot;</span>)]
+    [OutPortNames(<span class="hljs-string">&quot;Rectangles&quot;</span>)]
+    [OutPortTypes(<span class="hljs-string">&quot;Autodesk.DesignScript.Geometry.Rectangle[]&quot;</span>)]
+    [OutPortDescriptions(<span class="hljs-string">&quot;A list of rectangles&quot;</span>)]
+    [IsDesignScriptCompatible]
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">GridNodeModel</span> : <span class="hljs-title">NodeModel</span>
+    {
+        <span class="hljs-keyword">private</span> <span class="hljs-keyword">double</span> _sliderValue;
+        <span class="hljs-keyword">public</span> <span class="hljs-keyword">double</span> SliderValue
+        {
+            <span class="hljs-keyword">get</span> { <span class="hljs-keyword">return</span> _sliderValue; }
+            <span class="hljs-keyword">set</span>
+            {
+                _sliderValue = <span class="hljs-keyword">value</span>;
+                RaisePropertyChanged(<span class="hljs-string">&quot;SliderValue&quot;</span>);
+                OnNodeModified(<span class="hljs-keyword">false</span>);
+            }
+        }
+        <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">GridNodeModel</span>(<span class="hljs-params"></span>)
+        </span>{
+            RegisterAllPorts();
+        }
+        <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">override</span> IEnumerable&lt;AssociativeNode&gt; <span class="hljs-title">BuildOutputAst</span>(<span class="hljs-params">List&lt;AssociativeNode&gt; inputAstNodes</span>)
+        </span>{
+            <span class="hljs-keyword">if</span> (!HasConnectedInput(<span class="hljs-number">0</span>) || !HasConnectedInput(<span class="hljs-number">1</span>))
+            {
+                <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span>[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(<span class="hljs-number">0</span>), AstFactory.BuildNullNode()) };
+            }
+            <span class="hljs-keyword">var</span> sliderValue = AstFactory.BuildDoubleNode(SliderValue);
+            <span class="hljs-keyword">var</span> functionCall =
+              AstFactory.BuildFunctionCall(
+                <span class="hljs-keyword">new</span> Func&lt;<span class="hljs-keyword">int</span>, <span class="hljs-keyword">int</span>, <span class="hljs-keyword">double</span>, List&lt;Rectangle&gt;&gt;(GridFunction.RectangularGrid),
+                <span class="hljs-keyword">new</span> List&lt;AssociativeNode&gt; { inputAstNodes[<span class="hljs-number">0</span>], inputAstNodes[<span class="hljs-number">1</span>], sliderValue });
+
+            <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span>[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(<span class="hljs-number">0</span>), functionCall) };
+        }
+    }
+}
+</code></pre>
+<p>This different from Zero-Touch nodes. Let&apos;s understand what each part is doing.</p>
+<ul>
+<li><p>Specify the Node attributes like Name, Category, InPort/OutPort names, InPort/OutPort types, descriptions.</p>
+</li>
+<li><p><code>public class GridNodeModel : NodeModel</code> is a class that inherits the <code>NodeModel</code> class from <code>Dynamo.Graph.Nodes</code>.</p>
+</li>
+<li><p><code>public GridNodeModel() { RegisterAllPorts(); }</code> is a constructor that registers the node inputs and outputs.</p>
+</li>
+<li><p><code>BuildOutputAst()</code> returns an AST (Abstract Syntax Tree), the required structure for returning data from a NodeModel node.</p>
+</li>
+<li><p><code>AstFactory.BuildFunctionCall()</code> calls the RectangularGrid function from <code>GridFunctions.cs</code>.</p>
+</li>
+<li><p><code>new Func&lt;int, int, double, List&lt;Rectangle&gt;&gt;(GridFunction.RectangularGrid)</code> specifies the function and  its parameters .</p>
+</li>
+<li><p><code>new List&lt;AssociativeNode&gt; { inputAstNodes[0], inputAstNodes[1], sliderValue });</code> maps the node inputs to function parameters</p>
+</li>
+<li><p><code>AstFactory.BuildNullNode()</code> builds a null node if the input ports are not connected. This is to avoid displaying a warning on the node.</p>
+</li>
+<li><p><code>RaisePropertyChanged(&quot;SliderValue&quot;)</code>Notifies the UI when the slider value changes</p>
+</li>
+<li><p><code>var sliderValue = AstFactory.BuildDoubleNode(SliderValue)</code>Build a node in the AST that represents the slider value</p>
+</li>
+<li><p>Change an input to the <code>sliderValue</code> variable in the functionCall variable <code>new List&lt;AssociativeNode&gt; { inputAstNodes[0], sliderValue });</code></p>
+</li>
+</ul>
+<p><strong>3. Call a function</strong></p>
+<p>The <code>CustomNodeModelFunction</code> project will be built into a separate assembly from <code>CustomNodeModel</code> so that it can be called.</p>
+<p>Copy the following code into <code>GridFunction.cs</code>.</p>
+<pre><code class="lang-csharp"><span class="hljs-keyword">using</span> Autodesk.DesignScript.Geometry;
+<span class="hljs-keyword">using</span> Autodesk.DesignScript.Runtime;
+<span class="hljs-keyword">using</span> System;
+<span class="hljs-keyword">using</span> System.Collections.Generic;
+
+<span class="hljs-keyword">namespace</span> <span class="hljs-title">CustomNodeModel.CustomNodeModelFunction</span>
+{
+    [IsVisibleInDynamoLibrary(<span class="hljs-keyword">false</span>)]
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">GridFunction</span>
+    {
+        [IsVisibleInDynamoLibrary(<span class="hljs-keyword">false</span>)]
+        <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> List&lt;Rectangle&gt; <span class="hljs-title">RectangularGrid</span>(<span class="hljs-params"><span class="hljs-keyword">int</span> xCount = <span class="hljs-number">10</span>, <span class="hljs-keyword">int</span> yCount = <span class="hljs-number">10</span>, <span class="hljs-keyword">double</span> rand = <span class="hljs-number">1</span></span>)
+        </span>{
+            <span class="hljs-keyword">double</span> x = <span class="hljs-number">0</span>;
+            <span class="hljs-keyword">double</span> y = <span class="hljs-number">0</span>;
+
+            Point pt = <span class="hljs-keyword">null</span>;
+            Vector vec = <span class="hljs-keyword">null</span>;
+            Plane bP = <span class="hljs-keyword">null</span>;
+
+            Random rnd = <span class="hljs-keyword">new</span> Random(<span class="hljs-number">2</span>);
+
+            <span class="hljs-keyword">var</span> pList = <span class="hljs-keyword">new</span> List&lt;Rectangle&gt;();
+            <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; xCount; i++)
+            {
+                y++;
+                x = <span class="hljs-number">0</span>;
+                <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> j = <span class="hljs-number">0</span>; j &lt; yCount; j++)
+                {
+                    <span class="hljs-keyword">double</span> rNum = rnd.NextDouble();
+                    <span class="hljs-keyword">double</span> scale = rNum * (<span class="hljs-number">1</span> - rand) + rand;
+                    x++;
+                    pt = Point.ByCoordinates(x, y);
+                    vec = Vector.ZAxis();
+                    bP = Plane.ByOriginNormal(pt, vec);
+                    Rectangle rect = Rectangle.ByWidthLength(bP, scale, scale);
+                    pList.Add(rect);
+                }
+            }
+            pt.Dispose();
+            vec.Dispose();
+            bP.Dispose();
+            <span class="hljs-keyword">return</span> pList;
+        }
+    }
+}
+</code></pre>
+<p>This function class is very similar to the Zero-Touch Grid case study with one difference:</p>
+<ul>
+<li><code>[IsVisibleInDynamoLibrary(false)]</code> prevents Dynamo from &quot;seeing&quot; the following method and class since the function is already being called from <code>CustomNodeModel</code>.</li>
+</ul>
+<p>Just as we added references for NuGet packages, <code>CustomNodeModel</code> will need to reference <code>CustomNodeModelFunction</code> to call the function.</p>
+<p><img src="../assets/vs-add-project-reference.jpg" alt=""></p>
+<blockquote>
+<p>The using statement for CustomNodeModel will be inactive until we reference the function  </p>
+<ol>
+<li>Right-click on <code>CustomNodeModel</code> and select <code>Add &gt; Reference</code>  </li>
+<li>Choose <code>Projects &gt; Solution</code>  </li>
+<li>Check <code>CustomNodeModelFunction</code>  </li>
+<li>Click <code>Ok</code></li>
+</ol>
+</blockquote>
+<p><strong>4. Customize the view</strong></p>
+<p>To create a slider, we need to customize the UI by implementing the <code>INodeViewCustomization</code> interface.</p>
+<p>Copy the following code into <code>GridNodeView.cs</code></p>
+<pre><code class="lang-csharp">using Dynamo.Controls;
+using Dynamo.Wpf;
+
+namespace CustomNodeModel.CustomNodeModel
+{
+    public class CustomNodeModelView : INodeViewCustomization&lt;GridNodeModel&gt;
+    {
+        public void CustomizeView(GridNodeModel model, NodeView nodeView)
+        {
+            var slider = new Slider();
+            nodeView.inputGrid.Children.Add(slider);
+            slider.DataContext = model;
+        }
+
+        public void Dispose()
+        {
+        }
+    }
+}
+</code></pre>
+<ul>
+<li><code>public class CustomNodeModelView : INodeViewCustomization&lt;GridNodeModel&gt;</code> defines the necessary functions  to customize the UI. </li>
+</ul>
+<p>After the structure of the project is set up,  use Visual Studio&apos;s design environment to build a user control and define its parameters in an <code>.xaml</code> file. From the tool box, add a slider to <code>&lt;Grid&gt;...&lt;/Grid&gt;</code>.</p>
+<p><img src="../assets/vs-usercontrol.jpg" alt=""></p>
+<blockquote>
+<ol>
+<li>Right click on <code>CustomNodeModel</code> and select <code>Add &gt; New Item</code></li>
+<li>Select <code>WPF</code></li>
+<li>Name the user control <code>Slider</code></li>
+<li>Click <code>Add</code></li>
+</ol>
+</blockquote>
+<p>Copy the following code into <code>Slider.xaml</code></p>
+<pre><code class="lang-xml"><span class="hljs-tag">&lt;<span class="hljs-name">UserControl</span> <span class="hljs-attr">x:Class</span>=<span class="hljs-string">&quot;CustomNodeModel.CustomNodeModel.Slider&quot;</span>
+             <span class="hljs-attr">xmlns</span>=<span class="hljs-string">&quot;http://schemas.microsoft.com/winfx/2006/xaml/presentation&quot;</span>
+             <span class="hljs-attr">xmlns:x</span>=<span class="hljs-string">&quot;http://schemas.microsoft.com/winfx/2006/xaml&quot;</span>
+             <span class="hljs-attr">xmlns:mc</span>=<span class="hljs-string">&quot;http://schemas.openxmlformats.org/markup-compatibility/2006&quot;</span> 
+             <span class="hljs-attr">xmlns:d</span>=<span class="hljs-string">&quot;http://schemas.microsoft.com/expression/blend/2008&quot;</span> 
+             <span class="hljs-attr">xmlns:local</span>=<span class="hljs-string">&quot;clr-namespace:CustomNodeModel.CustomNodeModel&quot;</span>
+             <span class="hljs-attr">mc:Ignorable</span>=<span class="hljs-string">&quot;d&quot;</span> 
+             <span class="hljs-attr">d:DesignHeight</span>=<span class="hljs-string">&quot;75&quot;</span> <span class="hljs-attr">d:DesignWidth</span>=<span class="hljs-string">&quot;100&quot;</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">Grid</span> <span class="hljs-attr">Margin</span>=<span class="hljs-string">&quot;10&quot;</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">Slider</span> <span class="hljs-attr">Grid.Row</span>=<span class="hljs-string">&quot;0&quot;</span> <span class="hljs-attr">Width</span>=<span class="hljs-string">&quot;80&quot;</span> <span class="hljs-attr">Minimum</span>=<span class="hljs-string">&quot;0&quot;</span> <span class="hljs-attr">Maximum</span>=<span class="hljs-string">&quot;1&quot;</span> <span class="hljs-attr">IsSnapToTickEnabled</span>=<span class="hljs-string">&quot;True&quot;</span> <span class="hljs-attr">TickFrequency</span>=<span class="hljs-string">&quot;0.01&quot;</span> <span class="hljs-attr">Value</span>=<span class="hljs-string">&quot;{Binding SliderValue}&quot;</span>/&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">Grid</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">UserControl</span>&gt;</span>
+</code></pre>
+<ul>
+<li><p>The parameters of the slider control is defined in In the <code>.xaml</code> file. <em>Minimum and Maximum</em> attributes defines the the numerical range of this slider.</p>
+</li>
+<li><p>Inside <code>&lt;Grid&gt;...&lt;/Grid&gt;</code> we can place  different user controls from the Visual Studio Toolbox</p>
+</li>
+</ul>
+<p>When we created the <code>Slider.xaml</code> file, Visual Studio automatically created a C# file called <code>Slider.xaml.cs</code> that initializes the slider. Change the namespace in this file.</p>
+<pre><code class="lang-csharp"><span class="hljs-keyword">using</span> System.Windows.Controls;
+
+<span class="hljs-keyword">namespace</span> <span class="hljs-title">CustomNodeModel.CustomNodeModel</span>
+{
+    <span class="hljs-comment"><span class="hljs-doctag">///</span> <span class="hljs-doctag">&lt;summary&gt;</span></span>
+    <span class="hljs-comment"><span class="hljs-doctag">///</span> Interaction logic for Slider.xaml</span>
+    <span class="hljs-comment"><span class="hljs-doctag">///</span> <span class="hljs-doctag">&lt;/summary&gt;</span></span>
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">partial</span> <span class="hljs-keyword">class</span> <span class="hljs-title">Slider</span> : <span class="hljs-title">UserControl</span>
+    {
+        <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">Slider</span>(<span class="hljs-params"></span>)
+        </span>{
+            InitializeComponent();
+        }
+    }
+}
+</code></pre>
+<ul>
+<li>The namespace should be <code>CustomNodeModel.CustomNodeModel</code></li>
+</ul>
+<p>The <code>GridNodeModel.cs</code>, defines the slider computation logic.</p>
+<p><strong>5. Configure as a package</strong></p>
+<p>Before we build the project, the final step is to add a <code>pkg.json</code> file so that Dynamo can read the package.</p>
+<p><img src="../assets/vs-pkg-json.jpg" alt=""></p>
+<blockquote>
+<ol>
+<li>Right-click on <code>CustomNodeModel</code> and select <code>Add &gt; New Item</code></li>
+<li>Select <code>Web</code></li>
+<li>Select <code>JSON File</code></li>
+<li>Name the file <code>pkg.json</code></li>
+<li>Click <code>Add</code></li>
+</ol>
+</blockquote>
+<ul>
+<li>Copy the following code into <code>pkg.json</code></li>
+</ul>
+<pre><code class="lang-json">{
+  <span class="hljs-string">&quot;license&quot;</span>: <span class="hljs-string">&quot;MIT&quot;</span>,
+  <span class="hljs-string">&quot;file_hash&quot;</span>: <span class="hljs-literal">null</span>,
+  <span class="hljs-string">&quot;name&quot;</span>: <span class="hljs-string">&quot;CustomNodeModel&quot;</span>,
+  <span class="hljs-string">&quot;version&quot;</span>: <span class="hljs-string">&quot;1.0.0&quot;</span>,
+  <span class="hljs-string">&quot;description&quot;</span>: <span class="hljs-string">&quot;Sample node&quot;</span>,
+  <span class="hljs-string">&quot;group&quot;</span>: <span class="hljs-string">&quot;CustomNodes&quot;</span>,
+  <span class="hljs-string">&quot;keywords&quot;</span>: [ <span class="hljs-string">&quot;grid&quot;</span>, <span class="hljs-string">&quot;random&quot;</span> ],
+  <span class="hljs-string">&quot;dependencies&quot;</span>: [],
+  <span class="hljs-string">&quot;contents&quot;</span>: <span class="hljs-string">&quot;Sample node&quot;</span>,
+  <span class="hljs-string">&quot;engine_version&quot;</span>: <span class="hljs-string">&quot;1.3.0&quot;</span>,
+  <span class="hljs-string">&quot;engine&quot;</span>: <span class="hljs-string">&quot;dynamo&quot;</span>,
+  <span class="hljs-string">&quot;engine_metadata&quot;</span>: <span class="hljs-string">&quot;&quot;</span>,
+  <span class="hljs-string">&quot;site_url&quot;</span>: <span class="hljs-string">&quot;&quot;</span>,
+  <span class="hljs-string">&quot;repository_url&quot;</span>: <span class="hljs-string">&quot;&quot;</span>,
+  <span class="hljs-string">&quot;contains_binaries&quot;</span>: <span class="hljs-literal">true</span>,
+  <span class="hljs-string">&quot;node_libraries&quot;</span>: [
+    <span class="hljs-string">&quot;CustomNodeModel, Version=1.0.0, Culture=neutral, PublicKeyToken=null&quot;</span>,
+    <span class="hljs-string">&quot;CustomNodeModelFunction, Version=1.0.0, Culture=neutral, PublicKeyToken=null&quot;</span>
+  ]
+}
+</code></pre>
+<ul>
+<li><p><code>&quot;name&quot;:</code> determines the name of the package and its group in the Dynamo Library</p>
+</li>
+<li><p><code>&quot;keywords&quot;:</code> provide search terms for searching the Dynamo Library</p>
+</li>
+<li><p><code>&quot;node_libraries&quot;: []</code>  the libraries associated with the package</p>
+<p>The last step is to build the solution and publish as a Dynamo package. Please see the Package Deployment chapter for how to create a local package before publishing online and how to build a package right out of Visual Studio.</p>
+</li>
+</ul>
+
+                                
+                                </section>
+                            
+    </div>
+    <div class="search-results">
+        <div class="has-results">
+            
+            <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+            <ul class="search-results-list"></ul>
+            
+        </div>
+        <div class="no-results">
+            
+            <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+            
+        </div>
+    </div>
+</div>
+
+                        </div>
+                    </div>
+                
+            </div>
+
+            
+                
+                <a href="3-4-zerotouch-nodes.html" class="navigation navigation-prev " aria-label="Previous page: Going Further with Zero-Touch">
+                    <i class="fa fa-angle-left"></i>
+                </a>
+                
+                
+                <a href="3-6-extensions.html" class="navigation navigation-next " aria-label="Next page: Extensions">
+                    <i class="fa fa-angle-right"></i>
+                </a>
+                
+            
+        
+    </div>
+
+    <script>
+        var gitbook = gitbook || [];
+        gitbook.push(function() {
+            gitbook.page.hasChanged({"page":{"title":"NodeModel Case Study - Custom UI","level":"1.4.5","depth":2,"next":{"title":"Extensions","level":"1.4.6","depth":2,"path":"03-Development-Options/3-6-extensions.md","ref":"03-Development-Options/3-6-extensions.md","articles":[]},"previous":{"title":"Going Further with Zero-Touch","level":"1.4.4","depth":2,"path":"03-Development-Options/3-4-zerotouch-nodes.md","ref":"03-Development-Options/3-4-zerotouch-nodes.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":[],"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"03-Development-Options/3-5-nodemodel-derived-nodes.md","mtime":"2018-03-28T17:54:40.660Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2018-03-28T18:04:00.400Z"},"basePath":"..","book":{"language":""}});
+        });
+    </script>
+</div>
+
+        
+    <script src="../gitbook/gitbook.js"></script>
+    <script src="../gitbook/theme.js"></script>
+    
+        
+        <script src="../gitbook/gitbook-plugin-search/search-engine.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-search/search.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-lunr/lunr.min.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-lunr/search-lunr.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-sharing/buttons.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-fontsettings/fontsettings.js"></script>
+        
+    
+
+    </body>
+</html>
+

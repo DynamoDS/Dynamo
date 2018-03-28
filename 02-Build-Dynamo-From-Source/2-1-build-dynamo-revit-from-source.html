@@ -1,0 +1,664 @@
+
+<!DOCTYPE HTML>
+<html lang="" >
+    <head>
+        <meta charset="UTF-8">
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <title>Build DynamoRevit from Source · GitBook</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="description" content="">
+        <meta name="generator" content="GitBook 3.2.3">
+        
+        
+        
+    
+    <link rel="stylesheet" href="../gitbook/style.css">
+
+    
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-highlight/website.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-search/search.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-fontsettings/website.css">
+                
+            
+        
+
+    
+
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+
+        
+    
+    
+    <meta name="HandheldFriendly" content="true"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="../gitbook/images/apple-touch-icon-precomposed-152.png">
+    <link rel="shortcut icon" href="../gitbook/images/favicon.ico" type="image/x-icon">
+
+    
+    <link rel="next" href="../03-Development-Options/3-0-developing-for-dynamo.html" />
+    
+    
+    <link rel="prev" href="2-0-build-dynamo-from-source.html" />
+    
+
+    </head>
+    <body>
+        
+<div class="book">
+    <div class="book-summary">
+        
+            
+<div id="book-search-input" role="search">
+    <input type="text" placeholder="Type to search" />
+</div>
+
+            
+                <nav role="navigation">
+                
+
+
+<ul class="summary">
+    
+    
+
+    
+
+    
+        
+        
+    
+        <li class="chapter " data-level="1.1" data-path="../">
+            
+                <a href="../">
+            
+                    
+                    About
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2" data-path="../01-Introduction/1-0-introduction.html">
+            
+                <a href="../01-Introduction/1-0-introduction.html">
+            
+                    
+                    Introduction
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3" data-path="2-0-build-dynamo-from-source.html">
+            
+                <a href="2-0-build-dynamo-from-source.html">
+            
+                    
+                    Build Dynamo from Source
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter active" data-level="1.3.1" data-path="2-1-build-dynamo-revit-from-source.html">
+            
+                <a href="2-1-build-dynamo-revit-from-source.html">
+            
+                    
+                    Build DynamoRevit from Source
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4" data-path="../03-Development-Options/3-0-developing-for-dynamo.html">
+            
+                <a href="../03-Development-Options/3-0-developing-for-dynamo.html">
+            
+                    
+                    Developing for Dynamo
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.4.1" data-path="../03-Development-Options/3-1-getting-started.html">
+            
+                <a href="../03-Development-Options/3-1-getting-started.html">
+            
+                    
+                    Getting Started
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.2" data-path="../03-Development-Options/3-2-zerotouch-example.html">
+            
+                <a href="../03-Development-Options/3-2-zerotouch-example.html">
+            
+                    
+                    Zero-Touch Case Study - Grid Node
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.3" data-path="../03-Development-Options/3-3-python-scripts-in-csharp.html">
+            
+                <a href="../03-Development-Options/3-3-python-scripts-in-csharp.html">
+            
+                    
+                    Zero-Touch Case Study - Python Scripts in C#
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.4" data-path="../03-Development-Options/3-4-zerotouch-nodes.html">
+            
+                <a href="../03-Development-Options/3-4-zerotouch-nodes.html">
+            
+                    
+                    Going Further with Zero-Touch
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.5" data-path="../03-Development-Options/3-5-nodemodel-derived-nodes.html">
+            
+                <a href="../03-Development-Options/3-5-nodemodel-derived-nodes.html">
+            
+                    
+                    NodeModel Case Study - Custom UI
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.6" data-path="../03-Development-Options/3-6-extensions.html">
+            
+                <a href="../03-Development-Options/3-6-extensions.html">
+            
+                    
+                    Extensions
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5" data-path="../04-Testing/4-0-testing.html">
+            
+                <a href="../04-Testing/4-0-testing.html">
+            
+                    
+                    Testing
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.5.1" data-path="../04-Testing/4-1-revit-testing.html">
+            
+                <a href="../04-Testing/4-1-revit-testing.html">
+            
+                    
+                    Testing for DynamoRevit
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6" data-path="../05-Package-Deployment/5-0-package-deployment.html">
+            
+                <a href="../05-Package-Deployment/5-0-package-deployment.html">
+            
+                    
+                    Package Deployment
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.6.1" data-path="../05-Package-Deployment/5-1-build-package-from-vs.html">
+            
+                <a href="../05-Package-Deployment/5-1-build-package-from-vs.html">
+            
+                    
+                    Build a Package From Visual Studio
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7" data-path="../06-Pull-Requests/6-0-pull-requests.html">
+            
+                <a href="../06-Pull-Requests/6-0-pull-requests.html">
+            
+                    
+                    Pull Requests
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8" data-path="../07-Examples/7-0-examples.html">
+            
+                <a href="../07-Examples/7-0-examples.html">
+            
+                    
+                    Examples
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+    
+
+    <li class="divider"></li>
+
+    <li>
+        <a href="https://www.gitbook.com" target="blank" class="gitbook-link">
+            Published with GitBook
+        </a>
+    </li>
+</ul>
+
+
+                </nav>
+            
+        
+    </div>
+
+    <div class="book-body">
+        
+            <div class="body-inner">
+                
+                    
+
+<div class="book-header" role="navigation">
+    
+
+    <!-- Title -->
+    <h1>
+        <i class="fa fa-circle-o-notch fa-spin"></i>
+        <a href=".." >Build DynamoRevit from Source</a>
+    </h1>
+</div>
+
+
+
+
+                    <div class="page-wrapper" tabindex="-1" role="main">
+                        <div class="page-inner">
+                            
+<div id="book-search-results">
+    <div class="search-noresults">
+    
+                                <section class="normal markdown-section">
+                                
+                                <h1 id="build-dynamorevit-from-source">Build DynamoRevit from Source</h1>
+<p>The DynamoRevit source files are also hosted on the DynamoDS Github for developers to make contributions and build beta versions. Building DynamoRevit from source generally follows the same process as Dynamo with the exception of a few important details:</p>
+<ul>
+<li>DynamoRevit references Dynamo assemblies, so these should be built with matching NuGet packages. For example, DynamoRevit 2.x will not load into Dynamo 1.3.</li>
+<li>DynamoRevit is specific to Revit versions, for example: the DynamoRevit 2018 branch should run on Revit 2018.</li>
+</ul>
+<p>For this guide we will use the following:</p>
+<ul>
+<li>Revit 2018</li>
+<li>The latest DynamoRevit build on branch <code>Revit2018</code></li>
+<li>The latest Dynamo build</li>
+</ul>
+<p>To ensure a successful build we will clone and build both the Dynamo and DynamoRevit repositories to use in this walk-through. </p>
+<p><em>Note: building Dynamo manually before DynamoRevit is only required if you are building Dynamo 1.x and DynamoRevit 1.x - newer versions of the DynamoRevit repository rely on the nuget package manager for the Dynamo dependencies required to build. While a build of DynamoRevit 2.x does not require pulling Dynamo manually you&apos;ll still need the core dlls somewhere else to actually run the DynamoRevit addin - so it&apos;s worth pulling and building Dynamo anyway. See more below: </em><a href="#building-dynamo-revit"><em>Building the repository using Visual Studio</em></a></p>
+<h3 id="locating-the-dynamorevit-repository-on-github">Locating the DynamoRevit repository on Github</h3>
+<p>The code for the DynamoRevit project lives in a separate repository on Github from the core Dynamo source code. This repo contains the the source files for Revit-specific nodes and the Revit addin which loads Dynamo. Builds of DynamoRevit for different versions of Revit (2016, 2017, or 2018, for example) are organized as branches in the repository.</p>
+<p>DynamoRevit&apos;s source is hosted here: <a href="https://github.com/DynamoDS/DynamoRevit" target="_blank">https://github.com/DynamoDS/DynamoRevit</a></p>
+<p><img src="../assets/github-dynamorevit.JPG" alt=""></p>
+<blockquote>
+<ol>
+<li>Clone or download the repository</li>
+<li>DynamoRevit&apos;s branches reference Revit versions</li>
+</ol>
+</blockquote>
+<h3 id="cloning-the-repository-using-git">Cloning the repository using git</h3>
+<p>In a similar process to pulling the Dynamo repository we will use the git clone command to clone DynamoRevit and specify the branch that matches our Revit version. To get started, we will open a command line interface and set the current directory to the location where we want to clone the files to.</p>
+<p><code>cd C:\Users\username\Documents\GitHub</code> changes the current directory</p>
+<blockquote>
+<p>Replace <code>username</code> with your username</p>
+</blockquote>
+<p><img src="../assets/cli-cd-revit.JPG" alt=""></p>
+<p>We can now clone the repository into this directory. Though we will need to specify a branch of the repository, we can switch to this branch after cloning.</p>
+<p><code>git clone https://github.com/DynamoDS/DynamoRevit.git</code> clones the repository from a remote URL and by default switches to the master branch.</p>
+<p><img src="../assets/cli-clone-revit.JPG" alt=""></p>
+<p>Once the repository has finished cloning, change the current directory to the repository folder and switch to the branch that matches the installed version of Revit. For this example, we are using Revit 2018. All remote branches can be viewed on the Github page in the Branch drop-down menu.</p>
+<p><code>cd C:\Users\username\Documents\GitHub\DynamoRevit</code> changes the directory to DynamoRevit.<br><code>git checkout Revit2018</code> sets the current branch to <code>Revit2018</code>.<br><code>git branch</code> verifies which branch we are on and shows the others that exist locally.</p>
+<p><img src="../assets/cli-branch-revit.JPG" alt=""></p>
+<blockquote>
+<p>The branch with an asterisk is the one currently checked out. The <code>Revit2017</code> branch is showing because we previously checked it out, so it exists locally.</p>
+</blockquote>
+<p>It is important to choose the correct branch of the repository to ensure that when the project builds in Visual Studio it will reference assemblies in the correct version of Revit&apos;s installation directory, specifically <code>RevitAPI.dll</code> and <code>RevitAPIUI.dll</code>.</p>
+<h3 id="building-dynamo-revit">Building the repository using Visual Studio </h3>
+<p>Before building the repository, we will need to restore the NuGet packages with the <code>restorepackages.bat</code> file located in the <code>src</code> folder. This bat file uses the <a href="https://www.nuget.org/" target="_blank">nuget</a> package manager to pull built binaries of dynamo core, which DynamoRevit needs. You might also choose to build these manually, but if you are only making changes to DynamoRevit and not Dynamo core. this makes getting started faster. Make sure to run this file as an admin.</p>
+<p><img src="../assets/fe-restorepackages.jpg" alt=""></p>
+<blockquote>
+<ol>
+<li>Right-click <code>restorepackages.bat</code> and select <code>Run as administrator</code></li>
+</ol>
+</blockquote>
+<p>If the packages are successfully restored, a <code>packages</code> folder will be added to the <code>src</code> folder with the latest beta NuGet packages.</p>
+<p><img src="../assets/fe-packages.JPG" alt=""></p>
+<blockquote>
+<ol>
+<li>The latest beta Dynamo NuGet packages</li>
+</ol>
+</blockquote>
+<p>With the packages restored, open the <code>Dynamo.Revit.2013.sln</code> Visual Studio solution file in <code>src</code> and build the solution. The build may initially have trouble finding <code>AssemblySharedInfo.cs</code>. If so, rerunning the build will resolve this issue.</p>
+<p><img src="../assets/vs-build-dynamorevit.jpg" alt=""></p>
+<blockquote>
+<ol>
+<li>Select <code>Build &gt; Build Solution</code></li>
+<li>Verify that the build was successful in the Output window. A message should read <code>===== Build: 13 succeeded, 0 failed, 0 up-to-date, 0 skipped =====</code>.</li>
+</ol>
+</blockquote>
+<h3 id="running-a-local-build-of-dynamorevit-in-revit">Running a local build of DynamoRevit in Revit</h3>
+<p>Revit requires an add-in file to recognize DynamoRevit, something the <a href="http://dynamobim.org/download/" target="_blank">installer</a> would create automatically. In development we need to manually create an add-in file that points to the build of DynamoRevit we want to use, specifically the <code>DynamoRevitDS.dll</code> assembly. We also need to point DynamoRevit to a build of Dynamo.</p>
+<p>Create a <code>Dynamo.addin</code> file in Revit&apos;s add-in folder located in <code>C:\ProgramData\Autodesk\Revit\Addins\2018</code>. We already had a version of DynamoRevit installed, so we will just edit the existing file to point to the new build.</p>
+<pre><code class="lang-xml"><span class="php"><span class="hljs-meta">&lt;?</span>xml version=<span class="hljs-string">&quot;1.0&quot;</span> encoding=<span class="hljs-string">&quot;utf-8&quot;</span> standalone=<span class="hljs-string">&quot;no&quot;</span><span class="hljs-meta">?&gt;</span></span>
+<span class="hljs-tag">&lt;<span class="hljs-name">RevitAddIns</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">AddIn</span> <span class="hljs-attr">Type</span>=<span class="hljs-string">&quot;Application&quot;</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">Name</span>&gt;</span>Dynamo For Revit<span class="hljs-tag">&lt;/<span class="hljs-name">Name</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">Assembly</span>&gt;</span>&quot;C:\Users\username\Documents\GitHub\DynamoRevit\bin\AnyCPU\Debug\Revit_2018\DynamoRevitDS.dll&quot;<span class="hljs-tag">&lt;/<span class="hljs-name">Assembly</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">AddInId</span>&gt;</span>8D83C886-B739-4ACD-A9DB-1BC78F315B2B<span class="hljs-tag">&lt;/<span class="hljs-name">AddInId</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">FullClassName</span>&gt;</span>Dynamo.Applications.DynamoRevitApp<span class="hljs-tag">&lt;/<span class="hljs-name">FullClassName</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">VendorId</span>&gt;</span>ADSK<span class="hljs-tag">&lt;/<span class="hljs-name">VendorId</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">VendorDescription</span>&gt;</span>Dynamo<span class="hljs-tag">&lt;/<span class="hljs-name">VendorDescription</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">AddIn</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">RevitAddIns</span>&gt;</span>
+</code></pre>
+<ul>
+<li>Specify the file path of <code>DynamoRevitDS.dll</code> inside of <code>&lt;Assembly&gt;...&lt;/Assembly&gt;</code>.</li>
+</ul>
+<p>Alternatively, we can have the add-in load the version selector instead of a specific assembly.</p>
+<pre><code class="lang-xml"><span class="php"><span class="hljs-meta">&lt;?</span>xml version=<span class="hljs-string">&quot;1.0&quot;</span> encoding=<span class="hljs-string">&quot;utf-8&quot;</span> standalone=<span class="hljs-string">&quot;no&quot;</span><span class="hljs-meta">?&gt;</span></span>
+<span class="hljs-tag">&lt;<span class="hljs-name">RevitAddIns</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">AddIn</span> <span class="hljs-attr">Type</span>=<span class="hljs-string">&quot;Application&quot;</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">Name</span>&gt;</span>Dynamo For Revit<span class="hljs-tag">&lt;/<span class="hljs-name">Name</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">Assembly</span>&gt;</span>&quot;C:\Users\username\Documents\GitHub\DynamoRevit\bin\AnyCPU\Debug\Revit_2018\DynamoRevitVersionSelector.dll&quot;<span class="hljs-tag">&lt;/<span class="hljs-name">Assembly</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">AddInId</span>&gt;</span>8D83C886-B739-4ACD-A9DB-1BC78F315B2B<span class="hljs-tag">&lt;/<span class="hljs-name">AddInId</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">FullClassName</span>&gt;</span>Dynamo.Applications.VersionLoader<span class="hljs-tag">&lt;/<span class="hljs-name">FullClassName</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">VendorId</span>&gt;</span>ADSK<span class="hljs-tag">&lt;/<span class="hljs-name">VendorId</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">VendorDescription</span>&gt;</span>Dynamo<span class="hljs-tag">&lt;/<span class="hljs-name">VendorDescription</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">AddIn</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">RevitAddIns</span>&gt;</span>
+</code></pre>
+<ul>
+<li>Set the <code>&lt;Assembly&gt;...&lt;/Assembly&gt;</code> file path to <code>DynamoRevitVersionSelector.dll</code></li>
+<li><code>&lt;FullClassName&gt;...&lt;/FullClassName&gt;</code> specifies what class to instantiate from the assembly which we pointed to with the assembly element path above. This class will be the entry point for our addin.</li>
+</ul>
+<p>The second step is to add a file path for the Dynamo core assemblies to the <code>Dynamo.config</code> file in DynamoRevit&apos;s <code>bin</code> folder. DynamoRevit will load these when the add-in is opened in Revit. This config file lets you point your DynamoRevit addin to different versions of the dynamo core for developing and testing changes in both core and DynamoRevit. </p>
+<p>The code should look like this:</p>
+<pre><code class="lang-xml"><span class="php"><span class="hljs-meta">&lt;?</span>xml version=<span class="hljs-string">&quot;1.0&quot;</span> encoding=<span class="hljs-string">&quot;utf-8&quot;</span><span class="hljs-meta">?&gt;</span></span>
+<span class="hljs-tag">&lt;<span class="hljs-name">configuration</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">appSettings</span>&gt;</span>
+     <span class="hljs-tag">&lt;<span class="hljs-name">add</span> <span class="hljs-attr">key</span>=<span class="hljs-string">&quot;DynamoRuntime&quot;</span> <span class="hljs-attr">value</span>=<span class="hljs-string">&quot;C:\Users\username\Documents\GitHub\Dynamo\bin\AnyCPU\Debug&quot;</span>/&gt;</span>
+  <span class="hljs-tag">&lt;/<span class="hljs-name">appSettings</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">configuration</span>&gt;</span>
+</code></pre>
+<ul>
+<li>Add the <code>bin</code> folder&apos;s directory path to <code>&lt;add key/&gt;</code></li>
+</ul>
+<blockquote>
+<p>We cloned and built Dynamo right before this walk-through to ensure that it will work well with DynamoRevit. The directory path points to this build.</p>
+</blockquote>
+<p>Now when we open Revit, there should be a Dynamo add-in located in the Manage tab.</p>
+<p><img src="../assets/revit-dynamo.JPG" alt=""></p>
+<blockquote>
+<ol>
+<li>Select <code>Manage</code></li>
+<li>Click the Dynamo add-in icon</li>
+<li>An instance of DynamoRevit</li>
+</ol>
+</blockquote>
+<p>If an error dialog window appears showing missing assemblies, it is likely that there was a mismatch between the versions of DynamoCore that you built against and the ones you are loading at runtime. For example, DynamoRevit with the latest 2.0 beta packages of DynamoCore will not work if you try to start it using  Dynamo 1.3 dlls. Make sure that both repos are of the same version and DynamoRevit is pulling a matching version of the nuget dependencies. These are defined in the <code>package.json</code>  file of the DynamoRevit repo.</p>
+<h3 id="debugging-dynamorevit-using-visual-studio">Debugging DynamoRevit using Visual Studio</h3>
+<p>In the previous section, <a href="2-0-build-dynamo-from-source.html"><strong>Build Dynamo from Source</strong></a>, we briefly introduced debugging in Visual Studio and how to attach visual studio to a process. Using an exception in the Wall.ByCurveAndHeight node as an example, we will walk through how to attach to a process, set break points, step through code, and use the call stack to determine the exception&apos;s source. These debugging tools apply generally to .net development workflows, and are worth exploring outside of this guide.</p>
+<ul>
+<li><p><strong>Attach to process</strong> links a running application to Visual Studio for debugging. If we want to debug behavior occurring in a build of DynamoRevit, we can open the DynamoRevit source files in Visual Studio and attach the <code>Revit.exe</code> process, which is the parent process of the DynamoRevit addin. Visual Studio uses a <a href="https://msdn.microsoft.com/en-us/library/ms241613.aspx" target="_blank">symbol file</a> (<code>.pbd</code>) to make the connection between the assemblies DynamoRevit is executing and the source code.</p>
+</li>
+<li><p><strong>Break points</strong> establish lines in the source code where the application will pause before executing. If a node is causing DynamoRevit to crash or return an unexpected result, we can add a break point to the node&apos;s source to pause the process,  step into the code, and inspect live values of variables until we find the root of the problem</p>
+</li>
+<li><p><strong>Stepping through code</strong> walks through the source line by line. We can run functions one by one, step into a function call, or jump out of the function we&apos;re currently executing.</p>
+</li>
+<li><p><strong>The Call stack</strong> shows the function that a process is currently running relative to the previous function calls which invoked this function call. Visual Studio has a Call Stack window to display this. For example, if we reach an exception outside of the source code, we can see the path to the calling code in the call stack.</p>
+<blockquote>
+<p><a href="https://csharp.2000things.com/2013/05/20/847-how-the-call-stack-works/" target="_blank">2,000 Things You Should Know About C#</a> has a more in-depth explanation of call stacks</p>
+</blockquote>
+</li>
+</ul>
+<p>The <strong>Wall.ByCurveAndHeight</strong> node throws an exception when given a PolyCurve as its curve input with the message: <em>&quot;To BSPlineCurve Not Implemented&quot;</em>. With debugging we can figure out why exactly the node won&apos;t accept this geometry type as an input for the curve parameter. For this example, we are assuming that DynamoRevit has been successfully built and can be run as an add-in for Revit.</p>
+<p><img src="../assets/dyn-wallbycurveandheight.jpg" alt=""></p>
+<blockquote>
+<ol>
+<li>The Wall.ByCurveAndHeight node throwing an exception</li>
+</ol>
+</blockquote>
+<p>Start by opening the <code>DynamoRevit.2013.sln</code> solution file, start Revit, and start the DynamoRevit add-in. Then attach Visual Studio to the Revit process with the <code>Attach to Process</code> window.</p>
+<p><img src="../assets/vs-debug-attachprocess.JPG" alt=""></p>
+<blockquote>
+<p>Revit and DynamoRevit need to be running to show as an available process  </p>
+<ol>
+<li>Open the <code>Attach to Process</code> window by selecting <code>Debug &gt; Attach to Process...</code>  </li>
+<li>Set <code>Transport</code> to <code>Default</code>  </li>
+<li>Select <code>Revit.exe</code>  </li>
+<li>Select <code>Attach</code></li>
+</ol>
+</blockquote>
+<p>With Visual Studio attached to Revit, open the Wall.ByCurveAndHeight source code in <code>Wall.cs</code>. We can find this in the Solution Explorer under <code>Libraries &gt; RevitNodes &gt; Elements</code> in the <code>Public static constructors</code> region of the file. Set a break point in the constructor of the wall type so that when node is executed in Dynamo, the process will break and we can step through each line of code individually. Usually Dynamo zero touch type constructors start with <code>By&lt;parameters&gt;</code>.</p>
+<p><img src="../assets/vs-debugging-breakpoint.JPG" alt=""></p>
+<blockquote>
+<ol>
+<li>The class file with the constructor for Wall.ByCurveAndHeight</li>
+<li>Set a breakpoint by either clicking left of the line number or right-clicking on the line of code and select <code>Breakpoint &gt; Insert Breakpoint</code>.</li>
+</ol>
+</blockquote>
+<p>With the breakpoint set, we need the process to run through the Wall.ByCurveAndHeight function. The function can be executed again in Dynamo by reconnecting a wire to one of its ports, which will force the node to re-execute. The breakpoint will be hit in Visual Studio.</p>
+<p><img src="../assets/vs-breakpoint.JPG" alt=""></p>
+<blockquote>
+<ol>
+<li>The breakpoint icon changes when it is hit</li>
+<li>The Call Stack window showing the method that is up next</li>
+</ol>
+</blockquote>
+<p>Now step over each line in the constructor until we hit the exception. Code highlighted in yellow is the next statement to be run.</p>
+<p><img src="../assets/vs-stepover.JPG" alt=""></p>
+<blockquote>
+<ol>
+<li>The debugging tools for navigating code</li>
+<li>Press <code>Step Over</code> to run the highlighted code then suspend execution after the function returns</li>
+<li>The next statement to run indicated by the yellow highlight and arrow</li>
+</ol>
+</blockquote>
+<p>If we keep stepping through the function, we will hit the exception that displayed in the DynamoRevit window. Looking at the Call Stack window, we can see that the exception is coming from the <code>Autodesk.LibG.PolyCurve.to_nurbs_curve()</code> method in <code>LibG.Managed.dll</code>. Thankfully the exception is handled here so Dynamo did not crash. The debugging process has provided context for the issue by bringing us to another method in the source code. </p>
+<p><code>LibG.managed.dll</code> is not an open source library so we cannot make changes there - now that we have more information we can report the issue with more context by filing a github <a href="https://guides.github.com/features/issues/" target="_blank">issue</a> or we could propose a workaround for this issue making a pull request. </p>
+<p><img src="../assets/vs-exception.JPG" alt=""></p>
+<blockquote>
+<ol>
+<li>When we hit the statement causing the exception in <code>Walls.cs</code>, the debugging process brings us as close as it could to the root of the issue in the user code inside <code>ProtoToRevitCurve.cs</code></li>
+<li>The statement causing the exception in <code>ProtoToRevitCurve.cs</code></li>
+<li>In the Call Stack, we can see that the exception is coming from non-user code in <code>LibG.Managed.dll</code></li>
+<li>A pop-up window giving us information about the exception</li>
+</ol>
+</blockquote>
+<p>This process can be applied to any source files we are working with. If we are developing a library of Zero-Touch nodes for Dynamo Studio, we can open the library&apos;s source and attach a Dynamo process to debug the node library. Even if everything is functioning perfectly, debugging is a great way to explore code and find out how things are working.</p>
+<h3 id="pull-latest-build">Pull latest build</h3>
+<p>This process is nearly identical to pulling changes for Dynamo, except that we will need to ensure that we are on the correct branch. Use the <code>git branch</code> command in the DynamoRevit repository to see which branches are available locally and which are currently checked out.</p>
+<p><code>cd C:\Users\username\Documents\GitHub\DynamoRevit</code> sets the current directory to the DynamoRevit repository.<br><code>git branch</code> verifies we are on the correct branch, <code>Revit2017</code>.<br><code>git pull origin Revit2017</code> pulls changes from the remote origin <code>Revit2017</code> branch. </p>
+<p>Origin simply points to the original url we cloned.</p>
+<p><img src="../assets/cli-pull-revit.JPG" alt=""></p>
+<blockquote>
+<p>We want to be mindful here of which branch we are currently on and which one we are pulling from to avoid pulling changes from <code>Revit2018</code> into <code>Revit2017</code> for example.</p>
+</blockquote>
+<p>As mentioned in <a href="2-0-build-dynamo-from-source.html"><strong>Build Dynamo from Source</strong></a>, when we are ready to submit a change to the DynamoRevit repository we can create a pull request following the Dynamo team&apos;s guidelines laid out in the Pull Requests section.</p>
+
+                                
+                                </section>
+                            
+    </div>
+    <div class="search-results">
+        <div class="has-results">
+            
+            <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+            <ul class="search-results-list"></ul>
+            
+        </div>
+        <div class="no-results">
+            
+            <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+            
+        </div>
+    </div>
+</div>
+
+                        </div>
+                    </div>
+                
+            </div>
+
+            
+                
+                <a href="2-0-build-dynamo-from-source.html" class="navigation navigation-prev " aria-label="Previous page: Build Dynamo from Source">
+                    <i class="fa fa-angle-left"></i>
+                </a>
+                
+                
+                <a href="../03-Development-Options/3-0-developing-for-dynamo.html" class="navigation navigation-next " aria-label="Next page: Developing for Dynamo">
+                    <i class="fa fa-angle-right"></i>
+                </a>
+                
+            
+        
+    </div>
+
+    <script>
+        var gitbook = gitbook || [];
+        gitbook.push(function() {
+            gitbook.page.hasChanged({"page":{"title":"Build DynamoRevit from Source","level":"1.3.1","depth":2,"next":{"title":"Developing for Dynamo","level":"1.4","depth":1,"path":"03-Development-Options/3-0-developing-for-dynamo.md","ref":"03-Development-Options/3-0-developing-for-dynamo.md","articles":[{"title":"Getting Started","level":"1.4.1","depth":2,"path":"03-Development-Options/3-1-getting-started.md","ref":"03-Development-Options/3-1-getting-started.md","articles":[]},{"title":"Zero-Touch Case Study - Grid Node","level":"1.4.2","depth":2,"path":"03-Development-Options/3-2-zerotouch-example.md","ref":"03-Development-Options/3-2-zerotouch-example.md","articles":[]},{"title":"Zero-Touch Case Study - Python Scripts in C#","level":"1.4.3","depth":2,"path":"03-Development-Options/3-3-python-scripts-in-csharp.md","ref":"03-Development-Options/3-3-python-scripts-in-csharp.md","articles":[]},{"title":"Going Further with Zero-Touch","level":"1.4.4","depth":2,"path":"03-Development-Options/3-4-zerotouch-nodes.md","ref":"03-Development-Options/3-4-zerotouch-nodes.md","articles":[]},{"title":"NodeModel Case Study - Custom UI","level":"1.4.5","depth":2,"path":"03-Development-Options/3-5-nodemodel-derived-nodes.md","ref":"03-Development-Options/3-5-nodemodel-derived-nodes.md","articles":[]},{"title":"Extensions","level":"1.4.6","depth":2,"path":"03-Development-Options/3-6-extensions.md","ref":"03-Development-Options/3-6-extensions.md","articles":[]}]},"previous":{"title":"Build Dynamo from Source","level":"1.3","depth":1,"path":"02-Build-Dynamo-From-Source/2-0-build-dynamo-from-source.md","ref":"02-Build-Dynamo-From-Source/2-0-build-dynamo-from-source.md","articles":[{"title":"Build DynamoRevit from Source","level":"1.3.1","depth":2,"path":"02-Build-Dynamo-From-Source/2-1-build-dynamo-revit-from-source.md","ref":"02-Build-Dynamo-From-Source/2-1-build-dynamo-revit-from-source.md","articles":[]}]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":[],"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"02-Build-Dynamo-From-Source/2-1-build-dynamo-revit-from-source.md","mtime":"2018-03-28T17:54:40.658Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2018-03-28T18:04:00.400Z"},"basePath":"..","book":{"language":""}});
+        });
+    </script>
+</div>
+
+        
+    <script src="../gitbook/gitbook.js"></script>
+    <script src="../gitbook/theme.js"></script>
+    
+        
+        <script src="../gitbook/gitbook-plugin-search/search-engine.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-search/search.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-lunr/lunr.min.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-lunr/search-lunr.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-sharing/buttons.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-fontsettings/fontsettings.js"></script>
+        
+    
+
+    </body>
+</html>
+

@@ -1,0 +1,529 @@
+
+<!DOCTYPE HTML>
+<html lang="" >
+    <head>
+        <meta charset="UTF-8">
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <title>Build a Package From Visual Studio · GitBook</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="description" content="">
+        <meta name="generator" content="GitBook 3.2.3">
+        
+        
+        
+    
+    <link rel="stylesheet" href="../gitbook/style.css">
+
+    
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-highlight/website.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-search/search.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-fontsettings/website.css">
+                
+            
+        
+
+    
+
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+
+        
+    
+    
+    <meta name="HandheldFriendly" content="true"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="../gitbook/images/apple-touch-icon-precomposed-152.png">
+    <link rel="shortcut icon" href="../gitbook/images/favicon.ico" type="image/x-icon">
+
+    
+    <link rel="next" href="../06-Pull-Requests/6-0-pull-requests.html" />
+    
+    
+    <link rel="prev" href="5-0-package-deployment.html" />
+    
+
+    </head>
+    <body>
+        
+<div class="book">
+    <div class="book-summary">
+        
+            
+<div id="book-search-input" role="search">
+    <input type="text" placeholder="Type to search" />
+</div>
+
+            
+                <nav role="navigation">
+                
+
+
+<ul class="summary">
+    
+    
+
+    
+
+    
+        
+        
+    
+        <li class="chapter " data-level="1.1" data-path="../">
+            
+                <a href="../">
+            
+                    
+                    About
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2" data-path="../01-Introduction/1-0-introduction.html">
+            
+                <a href="../01-Introduction/1-0-introduction.html">
+            
+                    
+                    Introduction
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3" data-path="../02-Build-Dynamo-From-Source/2-0-build-dynamo-from-source.html">
+            
+                <a href="../02-Build-Dynamo-From-Source/2-0-build-dynamo-from-source.html">
+            
+                    
+                    Build Dynamo from Source
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.3.1" data-path="../02-Build-Dynamo-From-Source/2-1-build-dynamo-revit-from-source.html">
+            
+                <a href="../02-Build-Dynamo-From-Source/2-1-build-dynamo-revit-from-source.html">
+            
+                    
+                    Build DynamoRevit from Source
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4" data-path="../03-Development-Options/3-0-developing-for-dynamo.html">
+            
+                <a href="../03-Development-Options/3-0-developing-for-dynamo.html">
+            
+                    
+                    Developing for Dynamo
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.4.1" data-path="../03-Development-Options/3-1-getting-started.html">
+            
+                <a href="../03-Development-Options/3-1-getting-started.html">
+            
+                    
+                    Getting Started
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.2" data-path="../03-Development-Options/3-2-zerotouch-example.html">
+            
+                <a href="../03-Development-Options/3-2-zerotouch-example.html">
+            
+                    
+                    Zero-Touch Case Study - Grid Node
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.3" data-path="../03-Development-Options/3-3-python-scripts-in-csharp.html">
+            
+                <a href="../03-Development-Options/3-3-python-scripts-in-csharp.html">
+            
+                    
+                    Zero-Touch Case Study - Python Scripts in C#
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.4" data-path="../03-Development-Options/3-4-zerotouch-nodes.html">
+            
+                <a href="../03-Development-Options/3-4-zerotouch-nodes.html">
+            
+                    
+                    Going Further with Zero-Touch
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.5" data-path="../03-Development-Options/3-5-nodemodel-derived-nodes.html">
+            
+                <a href="../03-Development-Options/3-5-nodemodel-derived-nodes.html">
+            
+                    
+                    NodeModel Case Study - Custom UI
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.6" data-path="../03-Development-Options/3-6-extensions.html">
+            
+                <a href="../03-Development-Options/3-6-extensions.html">
+            
+                    
+                    Extensions
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5" data-path="../04-Testing/4-0-testing.html">
+            
+                <a href="../04-Testing/4-0-testing.html">
+            
+                    
+                    Testing
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.5.1" data-path="../04-Testing/4-1-revit-testing.html">
+            
+                <a href="../04-Testing/4-1-revit-testing.html">
+            
+                    
+                    Testing for DynamoRevit
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6" data-path="5-0-package-deployment.html">
+            
+                <a href="5-0-package-deployment.html">
+            
+                    
+                    Package Deployment
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter active" data-level="1.6.1" data-path="5-1-build-package-from-vs.html">
+            
+                <a href="5-1-build-package-from-vs.html">
+            
+                    
+                    Build a Package From Visual Studio
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7" data-path="../06-Pull-Requests/6-0-pull-requests.html">
+            
+                <a href="../06-Pull-Requests/6-0-pull-requests.html">
+            
+                    
+                    Pull Requests
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8" data-path="../07-Examples/7-0-examples.html">
+            
+                <a href="../07-Examples/7-0-examples.html">
+            
+                    
+                    Examples
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+    
+
+    <li class="divider"></li>
+
+    <li>
+        <a href="https://www.gitbook.com" target="blank" class="gitbook-link">
+            Published with GitBook
+        </a>
+    </li>
+</ul>
+
+
+                </nav>
+            
+        
+    </div>
+
+    <div class="book-body">
+        
+            <div class="body-inner">
+                
+                    
+
+<div class="book-header" role="navigation">
+    
+
+    <!-- Title -->
+    <h1>
+        <i class="fa fa-circle-o-notch fa-spin"></i>
+        <a href=".." >Build a Package From Visual Studio</a>
+    </h1>
+</div>
+
+
+
+
+                    <div class="page-wrapper" tabindex="-1" role="main">
+                        <div class="page-inner">
+                            
+<div id="book-search-results">
+    <div class="search-noresults">
+    
+                                <section class="normal markdown-section">
+                                
+                                <h1 id="build-a-package-from-visual-studio">Build a Package From Visual Studio</h1>
+<p>If you are developing assemblies to be published as a package for Dynamo, the project can be configured to group all the necessary assets and put them in a package-compatible directory structure. This will enable the project to be quickly tested as a package and simulate a user&apos;s experience.</p>
+<h3 id="how-to-build-directly-to-the-package-folder">How to build directly to the package folder</h3>
+<p>There are two methods for building a package in Visual Studio:</p>
+<ul>
+<li>Add post-build events through the Project Settings dialogue that use xcopy or Python scripts to copy the necessary files</li>
+<li>Use the &quot;AfterBuild&quot; build target in the <code>.csproj</code> file to create file and directory copy tasks</li>
+</ul>
+<p>&quot;AfterBuild&quot; is the preferred method for these types of operations (and the one covered in this guide) as it does not rely on  file copying which may not be available on the build machine.</p>
+<h3 id="copy-package-files-with-the-afterbuild-method">Copy package files with the AfterBuild Method</h3>
+<p>Set up the directory structure in the repository so that the source files are separate from the package files. Working with the CustomNodeModel case study, place the Visual Studio project and all associated files into a new <code>src</code> folder. You will be storing all packages generated by the project in this folder. The folder structure should now look like this:</p>
+<pre><code>CustomNodeModel
+&gt; src
+  &gt; CustomNodeModel
+  &gt; CustomNodeModelFunction
+  &gt; packages
+  &gt; CustomNodeModel.sln
+</code></pre><p><img src="../assets/fe-proj-directory.jpg" alt=""></p>
+<blockquote>
+<ol>
+<li>Move the project files into the new <code>src</code> folder</li>
+</ol>
+</blockquote>
+<p>Now that the source files are in a separate folder, add a <code>AfterBuild</code> target to the <code>CustomNodeModel.csproj</code> file in Visual Studio. This should copy the necessary files into a new package folder. Open the <code>CustomNodeModel.csproj</code> file in a text editor (we used <a href="https://atom.io/" target="_blank">Atom</a>) and place the build target before the closing <code>&lt;/Project&gt;</code> tag. This AfterBuild target will copy all .dll, .pbd, .xml, and .config files into a new bin folder and creates a dyf and extra folders.</p>
+<pre><code class="lang-xml">  <span class="hljs-tag">&lt;<span class="hljs-name">Target</span> <span class="hljs-attr">Name</span>=<span class="hljs-string">&quot;AfterBuild&quot;</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">ItemGroup</span>&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">Dlls</span> <span class="hljs-attr">Include</span>=<span class="hljs-string">&quot;$(OutDir)*.dll&quot;</span> /&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">Pdbs</span> <span class="hljs-attr">Include</span>=<span class="hljs-string">&quot;$(OutDir)*.pdb&quot;</span> /&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">Xmls</span> <span class="hljs-attr">Include</span>=<span class="hljs-string">&quot;$(OutDir)*.xml&quot;</span> /&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">Configs</span> <span class="hljs-attr">Include</span>=<span class="hljs-string">&quot;$(OutDir)*.config&quot;</span> /&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">ItemGroup</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">Copy</span> <span class="hljs-attr">SourceFiles</span>=<span class="hljs-string">&quot;@(Dlls)&quot;</span> <span class="hljs-attr">DestinationFolder</span>=<span class="hljs-string">&quot;$(SolutionDir)..\packages\CustomNodeModel\bin\&quot;</span> /&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">Copy</span> <span class="hljs-attr">SourceFiles</span>=<span class="hljs-string">&quot;@(Pdbs)&quot;</span> <span class="hljs-attr">DestinationFolder</span>=<span class="hljs-string">&quot;$(SolutionDir)..\packages\CustomNodeModel\bin\&quot;</span> /&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">Copy</span> <span class="hljs-attr">SourceFiles</span>=<span class="hljs-string">&quot;@(Xmls)&quot;</span> <span class="hljs-attr">DestinationFolder</span>=<span class="hljs-string">&quot;$(SolutionDir)..\packages\CustomNodeModel\bin\&quot;</span> /&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">Copy</span> <span class="hljs-attr">SourceFiles</span>=<span class="hljs-string">&quot;@(Configs)&quot;</span> <span class="hljs-attr">DestinationFolder</span>=<span class="hljs-string">&quot;$(SolutionDir)..\packages\CustomNodeModel\bin\&quot;</span> /&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">MakeDir</span> <span class="hljs-attr">Directories</span>=<span class="hljs-string">&quot;$(SolutionDir)..\packages\CustomNodeModel\dyf&quot;</span> /&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">MakeDir</span> <span class="hljs-attr">Directories</span>=<span class="hljs-string">&quot;$(SolutionDir)..\packages\CustomNodeModel\extra&quot;</span> /&gt;</span>
+  <span class="hljs-tag">&lt;/<span class="hljs-name">Target</span>&gt;</span>
+</code></pre>
+<p><img src="../assets/atom-afterbuild.jpg" alt=""></p>
+<blockquote>
+<p>We will need to make sure that the target has been added to the <code>CustomNodeModel.csproj</code> file (not another project file) and that the project does not have any existing Post-Build settings.   </p>
+<ol>
+<li>Place AfterBuild target before the end <code>&lt;/Project&gt;</code> tag.</li>
+</ol>
+</blockquote>
+<p>In the <code>&lt;ItemGroup&gt;</code> section, a number of variables are defined to represent specific file types. For example, the <code>Dll</code> variable represents all files in the ouput directory whose extension is <code>.dll</code>.</p>
+<pre><code class="lang-xml"><span class="hljs-tag">&lt;<span class="hljs-name">ItemGroup</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">Dlls</span> <span class="hljs-attr">Include</span>=<span class="hljs-string">&quot;$(OutDir)*.dll&quot;</span> /&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">ItemGroup</span>&gt;</span>
+</code></pre>
+<p> <code>Copy</code> task is to copy all <code>.dll</code> files to a directory, specifically the package folder to which we are building.</p>
+<pre><code class="lang-xml"><span class="hljs-tag">&lt;<span class="hljs-name">Copy</span> <span class="hljs-attr">SourceFiles</span>=<span class="hljs-string">&quot;@(Dlls)&quot;</span> <span class="hljs-attr">DestinationFolder</span>=<span class="hljs-string">&quot;$(SolutionDir)..\packages\CustomNodeModel\bin\&quot;</span> /&gt;</span>
+</code></pre>
+<p>Dynamo packages typically have a <code>dyf</code> and <code>extra</code> folder for Dynamo Custom Nodes and other assets such as images. To create these folders, we need to use a <code>MakeDir</code> task. This task will create a folder if it does not exist. You can add files manually to this folder.</p>
+<pre><code class="lang-xml"><span class="hljs-tag">&lt;<span class="hljs-name">MakeDir</span> <span class="hljs-attr">Directories</span>=<span class="hljs-string">&quot;$(SolutionDir)..\packages\CustomNodeModel\extra&quot;</span> /&gt;</span>
+</code></pre>
+<p>If you build the project, the project folder should now have a <code>packages</code> folder alongside the <code>src</code> folder previously created. Inside the <code>packages</code> directory is a folder containing everything needed for the package. We also need to copy the <code>pkg.json</code> file into the package folder so that Dynamo knows to load the package.</p>
+<p><img src="../assets/fe-proj-directory-package.jpg" alt=""></p>
+<blockquote>
+<ol>
+<li>The new packages folder that the AfterBuild target created</li>
+<li>The existing src folder with the project</li>
+<li>The <code>dyf</code> and <code>extra</code> folders created from the AfterBuild target</li>
+<li>Manually copy the <code>pkg.json</code> file.</li>
+</ol>
+</blockquote>
+<p>Now you can publish the package using Dynamo&apos;s package manager or directly copy it into Dynamo&apos;s package directory: <code>&lt;user&gt;\AppData\Roaming\Dynamo\1.3\packages</code>.</p>
+
+                                
+                                </section>
+                            
+    </div>
+    <div class="search-results">
+        <div class="has-results">
+            
+            <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+            <ul class="search-results-list"></ul>
+            
+        </div>
+        <div class="no-results">
+            
+            <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+            
+        </div>
+    </div>
+</div>
+
+                        </div>
+                    </div>
+                
+            </div>
+
+            
+                
+                <a href="5-0-package-deployment.html" class="navigation navigation-prev " aria-label="Previous page: Package Deployment">
+                    <i class="fa fa-angle-left"></i>
+                </a>
+                
+                
+                <a href="../06-Pull-Requests/6-0-pull-requests.html" class="navigation navigation-next " aria-label="Next page: Pull Requests">
+                    <i class="fa fa-angle-right"></i>
+                </a>
+                
+            
+        
+    </div>
+
+    <script>
+        var gitbook = gitbook || [];
+        gitbook.push(function() {
+            gitbook.page.hasChanged({"page":{"title":"Build a Package From Visual Studio","level":"1.6.1","depth":2,"next":{"title":"Pull Requests","level":"1.7","depth":1,"path":"06-Pull-Requests/6-0-pull-requests.md","ref":"06-Pull-Requests/6-0-pull-requests.md","articles":[]},"previous":{"title":"Package Deployment","level":"1.6","depth":1,"path":"05-Package-Deployment/5-0-package-deployment.md","ref":"05-Package-Deployment/5-0-package-deployment.md","articles":[{"title":"Build a Package From Visual Studio","level":"1.6.1","depth":2,"path":"05-Package-Deployment/5-1-build-package-from-vs.md","ref":"05-Package-Deployment/5-1-build-package-from-vs.md","articles":[]}]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":[],"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"05-Package-Deployment/5-1-build-package-from-vs.md","mtime":"2018-03-28T17:54:40.661Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2018-03-28T18:04:00.400Z"},"basePath":"..","book":{"language":""}});
+        });
+    </script>
+</div>
+
+        
+    <script src="../gitbook/gitbook.js"></script>
+    <script src="../gitbook/theme.js"></script>
+    
+        
+        <script src="../gitbook/gitbook-plugin-search/search-engine.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-search/search.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-lunr/lunr.min.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-lunr/search-lunr.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-sharing/buttons.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-fontsettings/fontsettings.js"></script>
+        
+    
+
+    </body>
+</html>
+
