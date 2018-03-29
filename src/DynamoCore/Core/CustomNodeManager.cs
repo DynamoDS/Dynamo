@@ -704,7 +704,7 @@ namespace Dynamo.Core
         private void RegisterCustomNodeWorkspace(
             CustomNodeWorkspaceModel newWorkspace, CustomNodeInfo info, CustomNodeDefinition definition)
         {
-
+            loadedWorkspaceModels[newWorkspace.CustomNodeId] = newWorkspace;
             SetFunctionDefinition(definition);
             OnDefinitionUpdated(definition);
             newWorkspace.DefinitionUpdated += () =>
@@ -715,7 +715,6 @@ namespace Dynamo.Core
             };
 
             SetNodeInfo(info);
-            loadedWorkspaceModels[newWorkspace.CustomNodeId] = newWorkspace;
 
             newWorkspace.InfoChanged += () =>
             {

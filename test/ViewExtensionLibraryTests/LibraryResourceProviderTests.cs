@@ -381,7 +381,7 @@ namespace ViewExtensionLibraryTests
 
             var customization = new LibraryViewCustomization();
 
-            var disposable = LibraryViewController.SetupSearchModelEventsObserver(null,model, controller.Object, customization, timeout);
+            var disposable = LibraryViewController.SetupSearchModelEventsObserver(model, controller.Object, customization, timeout);
             controller.Verify(c => c.RaiseEvent(libraryDataUpdated, It.IsAny<object[]>()), Times.Never);
 
             var d1 = MockNodeSearchElement("A", "B");
