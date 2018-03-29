@@ -362,6 +362,7 @@ namespace Dynamo.Graph.Workspaces
                     if(matchingNode != null)
                     {
                         matchingNode.IsSetAsInput = true;
+                        matchingNode.Name = inputData.Name;
                     }
                 }
             }
@@ -377,6 +378,7 @@ namespace Dynamo.Graph.Workspaces
                     if (matchingNode != null)
                     {
                         matchingNode.IsSetAsOutput = true;
+                        matchingNode.Name = outputData.Name;
                     }
                 }
             }
