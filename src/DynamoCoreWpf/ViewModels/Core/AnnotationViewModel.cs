@@ -188,9 +188,16 @@ namespace Dynamo.ViewModels
             annotationModel = model;           
             this.WorkspaceViewModel = workspaceViewModel;                                     
             model.PropertyChanged += model_PropertyChanged;
-            // Group is created already.So just populate it.
-            var selectNothing = new DynamoModel.SelectModelCommand(Guid.Empty, System.Windows.Input.ModifierKeys.None.AsDynamoType());
-            WorkspaceViewModel.DynamoViewModel.ExecuteCommand(selectNothing);
+            //https://jira.autodesk.com/browse/QNTM-3770
+            //Notes and Groups are serialized as annotations. Do not unselect the node selection during
+            //Notes serialization
+            if (model.Nodes.Count() > 0)
+            {
+                // Group is created already.So just populate it.
+                var selectNothing = new DynamoModel.SelectModelCommand(Guid.Empty, System.Windows.Input.ModifierKeys.None.AsDynamoType());
+                WorkspaceViewModel.DynamoViewModel.ExecuteCommand(selectNothing);
+            }
+
         }
 
         private bool CanChangeFontSize(object obj)
