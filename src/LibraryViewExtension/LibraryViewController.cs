@@ -90,6 +90,8 @@ namespace Dynamo.LibraryUI
         private IDisposable observer;
         private ChromiumWebBrowser browser;
         private const string CreateNodeInstrumentationString = "Search-NodeAdded";
+        // TODO remove this when we can control the library state from Dynamo more precisely.
+        private bool disableObserver = false;
 
         /// <summary>
         /// Creates LibraryViewController
@@ -138,10 +140,19 @@ namespace Dynamo.LibraryUI
         {
             dynamoWindow.Dispatcher.BeginInvoke(new Action(() =>
             {
+                //if the node we're trying to create is a customNode, lets disable the eventObserver.
+                // this will stop the libraryController from refreshing the libraryView on custom node creation.
+                var resultGuid = Guid.Empty;
+                if (Guid.TryParse(nodeName,out resultGuid))
+                {
+                    this.disableObserver = true;
+                }
                 //Create the node of given item name
                 var cmd = new DynamoModel.CreateNodeCommand(Guid.NewGuid().ToString(), nodeName, -1, -1, true, false);
                 commandExecutive.ExecuteCommand(cmd, Guid.NewGuid().ToString(), ViewExtension.ExtensionName);
                 LogEventsToInstrumentation(CreateNodeInstrumentationString, nodeName);
+
+                this.disableObserver = false;
             }));
         }
 
@@ -300,7 +311,7 @@ namespace Dynamo.LibraryUI
             System.Diagnostics.Trace.Write(e.Message);
         }
 
-        internal static IDisposable SetupSearchModelEventsObserver(CustomNodeManager customNodeManager,NodeSearchModel model, IEventController controller, ILibraryViewCustomization customization, int throttleTime = 200)
+        internal static IDisposable SetupSearchModelEventsObserver(NodeSearchModel model, IEventController controller, ILibraryViewCustomization customization, int throttleTime = 200)
         {
             customization.SpecificationUpdated += (o, e) => controller.RaiseEvent("libraryDataUpdated");
 
@@ -310,15 +321,9 @@ namespace Dynamo.LibraryUI
 
             Action<NodeSearchElement> handler = (searchElement) =>
              {
-                // If the searchElement is customNodeSearchElement, only raise events
-                // to the library if it has been registered - when this has occured the customNodeManager will
-                // have its workspace loaded - if not, return.
-                if (searchElement is CustomNodeSearchElement)
+                if ((controller as LibraryViewController).disableObserver)
                  {
-                     if (customNodeManager.GetWorkspaceById((searchElement as CustomNodeSearchElement).ID) == null)
-                     {
-                         return;
-                     }
+                     return;
                  }
 
                  observer.OnEvent(searchElement);
@@ -333,9 +338,9 @@ namespace Dynamo.LibraryUI
             //Set up the dispose event handler
             observer.Disposed += () =>
             {
-                model.EntryAdded -= observer.OnEvent;
+                model.EntryAdded -= handler;
                 model.EntryRemoved -= onRemove;
-                model.EntryUpdated -= observer.OnEvent;
+                model.EntryUpdated -= handler;
             };
 
             return observer;
@@ -413,7 +418,7 @@ namespace Dynamo.LibraryUI
             resourceFactory.RegisterProvider("/layoutSpecs", new LayoutSpecProvider(customization, "Dynamo.LibraryUI.web.library.layoutSpecs.json"));
 
             //Setup the event observer for NodeSearchModel to update customization/spec provider.
-            observer = SetupSearchModelEventsObserver(model.CustomNodeManager,model.SearchModel, this, customization);
+            observer = SetupSearchModelEventsObserver(model.SearchModel, this, customization);
 
             //Register provider for searching node data
             resourceFactory.RegisterProvider(SearchResultDataProvider.serviceIdentifier, new SearchResultDataProvider(model.SearchModel));
