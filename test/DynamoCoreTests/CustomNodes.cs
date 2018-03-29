@@ -1087,7 +1087,7 @@ namespace Dynamo.Tests
 
             var node = CurrentDynamoModel.CurrentWorkspace.Nodes.FirstOrDefault(x => x is Symbol) as Symbol;
             Assert.IsNotNull(node);
-            Assert.AreEqual("dateTime1: System.DateTime", node.Parameter.ToNameString());
+            Assert.AreEqual("var1: Autodesk.DesignScript.Geometry.Point", node.Parameter.ToNameString());
         }
     }
 }

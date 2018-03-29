@@ -1,7 +1,7 @@
 {
   "Uuid": "2508111f-a0a4-4144-8c3d-0c7cfd82d90a",
   "IsCustomNode": true,
-  "Category": "Clockwork.Core.DateTime.Actions",
+  "Category": null,
   "Description": "Determines if a given date and time are earlier than another given date and time.",
   "Name": "DateTime.IsEarlier",
   "ElementResolver": {
@@ -33,10 +33,6 @@
       "DSOffice.Excel": {
         "Key": "DSOffice.Excel",
         "Value": "DSOffice.dll"
-      },
-      "System.DateTime": {
-        "Key": "System.DateTime",
-        "Value": ""
       }
     }
   },
@@ -87,8 +83,8 @@
       "ConcreteType": "Dynamo.Graph.Nodes.CustomNodes.Symbol, DynamoCore",
       "NodeType": "InputNode",
       "Parameter": {
-        "Name": "dateTime1",
-        "TypeName": "System.DateTime",
+        "Name": "var1",
+        "TypeName": "Autodesk.DesignScript.Geometry.Point",
         "TypeRank": 0,
         "DefaultValue": null
       },
@@ -112,8 +108,8 @@
       "ConcreteType": "Dynamo.Graph.Nodes.CustomNodes.Symbol, DynamoCore",
       "NodeType": "InputNode",
       "Parameter": {
-        "Name": "dateTime2",
-        "TypeName": "System.DateTime",
+        "Name": "var2",
+        "TypeName": "Autodesk.DesignScript.Geometry.Point",
         "TypeRank": 0,
         "DefaultValue": null
       },
@@ -179,7 +175,7 @@
       "ScaleFactor": 1.0,
       "HasRunWithoutCrash": false,
       "IsVisibleInDynamoLibrary": true,
-      "Version": "2.0.1.4516",
+      "Version": "2.0.1.4525",
       "RunType": "Manual",
       "RunPeriod": "1000"
     },
@@ -203,8 +199,8 @@
         "Name": "Python Script",
         "ShowGeometry": true,
         "Excluded": false,
-        "X": 289.0,
-        "Y": 62.0
+        "X": 397.0,
+        "Y": 61.0
       },
       {
         "Id": "ccf64b2026254c98a556da8de12e81a4",
@@ -213,8 +209,8 @@
         "Name": "Input",
         "ShowGeometry": true,
         "Excluded": false,
-        "X": -64.0,
-        "Y": 33.0
+        "X": -134.0,
+        "Y": 39.0
       },
       {
         "Id": "6653114df6c04a90af9a848c142f0b9b",
@@ -233,8 +229,8 @@
         "Name": "Output",
         "ShowGeometry": true,
         "Excluded": false,
-        "X": 513.0,
-        "Y": 62.0
+        "X": 604.0,
+        "Y": 105.0
       }
     ],
     "Annotations": [],
