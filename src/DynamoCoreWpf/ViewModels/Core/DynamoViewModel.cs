@@ -1210,7 +1210,7 @@ namespace Dynamo.ViewModels
             }
             else
             {
-                this.ExecuteCommand(command);
+                this.OpenCommand.Execute(new Tuple<string,bool>(command.FilePath, command.ForceManualExecutionMode));
                 this.ShowStartPage = false;
             }
         }
