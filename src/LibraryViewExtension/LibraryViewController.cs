@@ -131,7 +131,6 @@ namespace Dynamo.LibraryUI
             toggleBrowserVisibility(this.browser);
         }
 
-
         /// <summary>
         /// Call this method to create a new node in Dynamo canvas.
         /// </summary>
@@ -143,7 +142,7 @@ namespace Dynamo.LibraryUI
                 //if the node we're trying to create is a customNode, lets disable the eventObserver.
                 // this will stop the libraryController from refreshing the libraryView on custom node creation.
                 var resultGuid = Guid.Empty;
-                if (Guid.TryParse(nodeName,out resultGuid))
+                if (Guid.TryParse(nodeName, out resultGuid))
                 {
                     this.disableObserver = true;
                 }
@@ -316,12 +315,13 @@ namespace Dynamo.LibraryUI
             customization.SpecificationUpdated += (o, e) => controller.RaiseEvent("libraryDataUpdated");
 
             var observer = new EventObserver<NodeSearchElement, IEnumerable<NodeSearchElement>>(
-                    elements => NotifySearchModelUpdate(customization,elements), CollectToList
+                    elements => NotifySearchModelUpdate(customization, elements), CollectToList
                 ).Throttle(TimeSpan.FromMilliseconds(throttleTime));
 
             Action<NodeSearchElement> handler = (searchElement) =>
              {
-                if ((controller as LibraryViewController).disableObserver)
+                 var libraryViewController = (controller as LibraryViewController);
+                 if ((libraryViewController != null) && (libraryViewController.disableObserver))
                  {
                      return;
                  }
@@ -367,7 +367,7 @@ namespace Dynamo.LibraryUI
         /// specification and raise specification changed event.</param>
         /// <param name="elements">List of updated elements</param>
         private static void NotifySearchModelUpdate(ILibraryViewCustomization customization, IEnumerable<NodeSearchElement> elements)
-        {  
+        {
             //elements might be null if we have removed an element.
             if (elements != null)
             {
@@ -378,7 +378,7 @@ namespace Dynamo.LibraryUI
                .SkipWhile(s => s.Contains("://"))
                .Select(p => new LayoutIncludeInfo() { path = p });
 
-               customization.AddIncludeInfo(includes, "Add-ons");
+                customization.AddIncludeInfo(includes, "Add-ons");
 
             }
         }
