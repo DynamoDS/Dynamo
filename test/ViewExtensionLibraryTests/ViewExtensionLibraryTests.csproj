@@ -86,6 +86,7 @@
     <Compile Include="..\..\src\AssemblySharedInfoGenerator\AssemblySharedInfo.cs">
       <Link>Properties\AssemblySharedInfo.cs</Link>
     </Compile>
+    <Compile Include="LibraryViewControllerTests.cs" />
     <Compile Include="LibraryViewCustomizationTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -110,10 +111,18 @@
       <Name>LibraryViewExtension</Name>
       <Private>False</Private>
     </ProjectReference>
+    <ProjectReference Include="..\..\src\Tools\DynamoShapeManager\DynamoShapeManager.csproj">
+      <Project>{263FA9C1-F81E-4A8E-95E0-8CDAE20F177B}</Project>
+      <Name>DynamoShapeManager</Name>
+    </ProjectReference>
     <ProjectReference Include="..\DynamoCoreTests\DynamoCoreTests.csproj">
       <Project>{472084ed-1067-4b2c-8737-3839a6143eb2}</Project>
       <Name>DynamoCoreTests</Name>
       <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\DynamoCoreWpfTests\DynamoCoreWpfTests.csproj">
+      <Project>{7DD8077A-201E-4C56-96C5-3C901A51BDF3}</Project>
+      <Name>DynamoCoreWpfTests</Name>
     </ProjectReference>
     <ProjectReference Include="..\Libraries\SystemTestServices\SystemTestServices.csproj">
       <Project>{89563cd0-509b-40a5-8728-9d3ec6fe8410}</Project>

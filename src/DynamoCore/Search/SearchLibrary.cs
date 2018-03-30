@@ -45,7 +45,9 @@ namespace Dynamo.Search
                 keys.Add(entry.Description.ToLower(), 0.1);
 
                 foreach (var tag in entry.SearchTags.Select(x => x.ToLower()))
+                {
                     keys.Add(tag, 0.5);
+                }
 
                 OnEntryUpdated(entry);
                 return; // Entry updated.
