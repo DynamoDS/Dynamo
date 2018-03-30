@@ -82,7 +82,7 @@
         "Excluded": false,
         "X": 76.8,
         "Y": 65.3999999999999,
-        "IsInput": false,
+        "IsSetAsInput": false,
         "IsOutput": false
       },
       {
@@ -92,7 +92,7 @@
         "Excluded": false,
         "X": 76.8,
         "Y": 162.4,
-        "IsInput": false,
+        "IsSetAsInput": false,
         "IsOutput": false
       }
     ],
