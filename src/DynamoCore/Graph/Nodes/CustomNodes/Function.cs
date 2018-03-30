@@ -433,15 +433,20 @@ namespace Dynamo.Graph.Nodes.CustomNodes
                                 Properties.Resources.WarningCannotFindType,
                                 identifierNode.datatype.Name);
                             this.Warning(warningMessage);
+                            //https://jira.autodesk.com/browse/QNTM-3872 
+                            //For Unknow node types, don't change the node type in serialization
+                            var ltype = identifierNode.datatype;
+                            Parameter = new TypedParameter(name, ltype, defaultValue, null, comment);
                         }
                         else
                         {
                             type = identifierNode.datatype;
+                            Parameter = new TypedParameter(name, type, defaultValue, null, comment);
                         }
                     }
                 }
 
-                Parameter = new TypedParameter(name, type, defaultValue, null, comment);
+                
 
                 OnNodeModified();
                 RaisePropertyChanged("InputSymbol");

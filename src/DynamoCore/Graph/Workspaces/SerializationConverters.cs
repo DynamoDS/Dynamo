@@ -399,6 +399,9 @@ namespace Dynamo.Graph.Workspaces
             var connectors = obj["Connectors"].ToObject<IEnumerable<ConnectorModel>>(serializer);
 
             var info = new WorkspaceInfo(guid.ToString(), name, description, Dynamo.Models.RunType.Automatic);
+            //https://jira.autodesk.com/browse/QNTM-3872 
+            //Category should be set explictly from custom node workspace.
+            info.Category = obj["Description"].Value<string>();
 
             //Build an empty annotations. Annotations are defined in the view block. If the file has View block
             //serialize view block first and build the annotations.
