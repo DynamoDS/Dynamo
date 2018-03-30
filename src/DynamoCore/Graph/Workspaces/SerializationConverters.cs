@@ -351,7 +351,7 @@ namespace Dynamo.Graph.Workspaces
             var nodes = obj["Nodes"].ToObject<IEnumerable<NodeModel>>(serializer);
 
             // Setting Inputs
-            // Required in UI less mode by Dynamo Player that NodeModel.Name and NodeModel.IsSetAsInput are set
+            // Required in headless mode by Dynamo Player that NodeModel.Name and NodeModel.IsSetAsInput are set
             var inputsToken = obj["Inputs"];
             if(inputsToken != null)
             {
@@ -386,7 +386,7 @@ namespace Dynamo.Graph.Workspaces
             }
 
             // Setting Inputs based on view layer info
-            // TODO: It is currently duplicating the effort with Input Block which should be cleaned up once
+            // TODO: It is currently duplicating the effort with Input Block parsing which should be cleaned up once
             // Dynamo supports both selection and drop down nodes in Inputs block
             var view = obj["View"];
             if (view != null)
