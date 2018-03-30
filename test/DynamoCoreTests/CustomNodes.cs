@@ -1097,6 +1097,10 @@ namespace Dynamo.Tests
             var filePath = Path.Combine(TestDirectory, @"core\CustomNodes\QNTM3872_InputNodesUnknownTypes.dyf");
             OpenModel(filePath);
 
+            var customNodeWs = CurrentDynamoModel.CurrentWorkspace as CustomNodeWorkspaceModel;
+            Assert.IsNotNull(customNodeWs);
+            Assert.AreEqual("Clockwork.Core.DateTime.Actions", customNodeWs.CustomNodeInfo.Category);
+
             var node1 = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace("ccf64b20-2625-4c98-a556-da8de12e81a4") as Symbol;
             Assert.IsNotNull(node1);
             Assert.AreEqual("var1: System.DateTime", node1.Parameter.ToNameString());
