@@ -434,7 +434,7 @@ namespace Dynamo.Graph.Nodes.CustomNodes
                                 identifierNode.datatype.Name);
                             this.Warning(warningMessage);
                             //https://jira.autodesk.com/browse/QNTM-3872 
-                            //For Unknow node types, don't change the node type in serialization
+                            //For Unknown node types, don't change the node type in serialization
                             var ltype = identifierNode.datatype;
                             Parameter = new TypedParameter(name, ltype, defaultValue, null, comment);
                         }
