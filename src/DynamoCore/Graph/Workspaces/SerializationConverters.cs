@@ -383,6 +383,49 @@ namespace Dynamo.Graph.Workspaces
                 }
             }
 
+            var view = obj["View"];
+            if (view != null)
+            {
+                var nodesView = view["NodeViews"];
+                if (nodesView != null)
+                {
+                    var inputsView = nodesView.ToArray().Select(x => x.ToObject<Dictionary<string, string>>()).ToList();
+                    foreach (var inputViewData in inputsView)
+                    {
+                        string isInput = "";
+                        if (!inputViewData.TryGetValue("IsInput", out isInput) || isInput == bool.FalseString)
+                        {
+                            continue;
+                        }
+
+                        string inputId = "";
+                        if (inputViewData.TryGetValue("Id", out inputId))
+                        {
+                            Guid inputGuid;
+                            try
+                            {
+                                inputGuid = Guid.Parse(inputId);
+                            }
+                            catch
+                            {
+                                continue;
+                            }
+
+                            var matchingNode = nodes.Where(x => x.GUID == inputGuid).FirstOrDefault();
+                            if (matchingNode != null)
+                            {
+                                matchingNode.IsSetAsInput = true;
+                                string inputName = "";
+                                if (inputViewData.TryGetValue("Name", out inputName))
+                                {
+                                    matchingNode.Name = inputName;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
             // notes
             //TODO: Check this when implementing ReadJSON in ViewModel.
             //var notes = obj["Notes"].ToObject<IEnumerable<NoteModel>>(serializer);
