@@ -32,3 +32,4 @@ using System.Windows;
 [assembly: InternalsVisibleTo("DynamoSandbox")]
 [assembly: InternalsVisibleTo("WpfVisualizationTests")]
 [assembly: InternalsVisibleTo("DynamoPackagesUITests")]
+[assembly: InternalsVisibleTo("ViewExtensionLibraryTests")]
