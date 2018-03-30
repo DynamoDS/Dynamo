@@ -1078,5 +1078,16 @@ namespace Dynamo.Tests
             var previewValue = GetPreviewValue(customInstance.GUID.ToString());
             Assert.AreEqual(21, previewValue);
         }
+
+        [Test]
+        public void Regress3786_InputNodesDeserilization()
+        {
+            var filePath = Path.Combine(TestDirectory, @"core\CustomNodes\QNTM3786_InputNodes.dyf");
+            OpenModel(filePath);
+
+            var node = CurrentDynamoModel.CurrentWorkspace.Nodes.FirstOrDefault(x => x is Symbol) as Symbol;
+            Assert.IsNotNull(node);
+            Assert.AreEqual("var1: Autodesk.DesignScript.Geometry.Point", node.Parameter.ToNameString());
+        }
     }
 }

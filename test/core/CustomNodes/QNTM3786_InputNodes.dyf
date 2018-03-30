@@ -1,0 +1,249 @@
+{
+  "Uuid": "2508111f-a0a4-4144-8c3d-0c7cfd82d90a",
+  "IsCustomNode": true,
+  "Category": "Clockwork.Core.DateTime.Actions",
+  "Description": "Determines if a given date and time are earlier than another given date and time.",
+  "Name": "DateTime.IsEarlier",
+  "ElementResolver": {
+    "ResolutionMap": {
+      "File": {
+        "Key": "DSCore.IO.File",
+        "Value": "DSCoreNodes.dll"
+      },
+      "System.IO.FileInfo": {
+        "Key": "System.IO.FileInfo",
+        "Value": ""
+      },
+      "List.Empty": {
+        "Key": "DSCore.List",
+        "Value": "DSCoreNodes.dll"
+      },
+      "FilePath": {
+        "Key": "DSCore.IO.FilePath",
+        "Value": "DSCoreNodes.dll"
+      },
+      "String": {
+        "Key": "DSCore.String",
+        "Value": "DSCoreNodes.dll"
+      },
+      "List": {
+        "Key": "DSCore.List",
+        "Value": "DSCoreNodes.dll"
+      },
+      "DSOffice.Excel": {
+        "Key": "DSOffice.Excel",
+        "Value": "DSOffice.dll"
+      },
+      "System.DateTime": {
+        "Key": "System.DateTime",
+        "Value": ""
+      },
+      "Autodesk.DesignScript.Geometry.Point": {
+        "Key": "Autodesk.DesignScript.Geometry.Point",
+        "Value": "ProtoGeometry.dll"
+      }
+    }
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "PythonNodeModels.PythonNode, PythonNodeModels",
+      "NodeType": "PythonScriptNode",
+      "Code": "import clr\n\ndef isEarlier(date1, date2):\n\treturn date1 < date2\n\ndates1 = IN[0]\ndates2 = IN[1]\n\nif not dates1 or not dates2: OUT = None\nelif isinstance(dates1, list) and isinstance(dates2, list): OUT = [isEarlier(x, y) for x,y in zip(dates1, dates2)]\nelif isinstance(dates1, list): OUT = [isEarlier(x, dates2) for x in dates1]\nelif isinstance(dates2, list): OUT = [isEarlier(dates1, x) for x in dates2]\nelse: OUT = isEarlier(dates1, dates2)",
+      "VariableInputPorts": true,
+      "Id": "21e42b3c39824adb897b47065ebc9adb",
+      "Inputs": [
+        {
+          "Id": "a139ff8e13dc4a7aa204dc7d2a484981",
+          "Name": "IN[0]",
+          "Description": "Input #0",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "d2723877fa3d4a419692956704b45cd5",
+          "Name": "IN[1]",
+          "Description": "Input #1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "a90b1f3792454b98b6449e5f837ed31c",
+          "Name": "OUT",
+          "Description": "Result of the python script",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Runs an embedded IronPython script."
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CustomNodes.Symbol, DynamoCore",
+      "NodeType": "InputNode",
+      "Parameter": {
+        "Name": "var1",
+        "TypeName": "Autodesk.DesignScript.Geometry.Point",
+        "TypeRank": 0,
+        "DefaultValue": null
+      },
+      "Id": "ccf64b2026254c98a556da8de12e81a4",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "a71bddd6a4804048ac325742fbbb2987",
+          "Name": "",
+          "Description": "Symbol",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "A function parameter, use with custom nodes.\r\n\r\nYou can specify the type and default value for parameter. E.g.,\r\n\r\ninput : var[]..[]\r\nvalue : bool = false"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CustomNodes.Symbol, DynamoCore",
+      "NodeType": "InputNode",
+      "Parameter": {
+        "Name": "var2",
+        "TypeName": "Autodesk.DesignScript.Geometry.Point",
+        "TypeRank": 0,
+        "DefaultValue": null
+      },
+      "Id": "6653114df6c04a90af9a848c142f0b9b",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "407f37ec98104e97a421ddf3884b57f1",
+          "Name": "",
+          "Description": "Symbol",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "A function parameter, use with custom nodes.\r\n\r\nYou can specify the type and default value for parameter. E.g.,\r\n\r\ninput : var[]..[]\r\nvalue : bool = false"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CustomNodes.Output, DynamoCore",
+      "NodeType": "OutputNode",
+      "ElementResolver": null,
+      "Symbol": "bool",
+      "Id": "e0907e2d55a442c0a1c18f259e7f303b",
+      "Inputs": [
+        {
+          "Id": "b8dc7f88fe8f4fbfa52543d380435817",
+          "Name": "",
+          "Description": "",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [],
+      "Replication": "Disabled",
+      "Description": "A function output, use with custom nodes"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "a90b1f3792454b98b6449e5f837ed31c",
+      "End": "b8dc7f88fe8f4fbfa52543d380435817",
+      "Id": "11d8f50d328b43a48d62e9c774d3cb4f"
+    },
+    {
+      "Start": "a71bddd6a4804048ac325742fbbb2987",
+      "End": "a139ff8e13dc4a7aa204dc7d2a484981",
+      "Id": "f3c326abda4b4b56894b7379764784b1"
+    },
+    {
+      "Start": "407f37ec98104e97a421ddf3884b57f1",
+      "End": "d2723877fa3d4a419692956704b45cd5",
+      "Id": "79113290c5114f9a8ef9d06d36066dca"
+    }
+  ],
+  "Dependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": false,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.0.1.4534",
+      "RunType": "Manual",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "Python Script",
+        "Id": "21e42b3c39824adb897b47065ebc9adb",
+        "IsInput": false,
+        "IsOutput": false,
+        "Excluded": false,
+        "X": 354.0,
+        "Y": 80.0
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Input",
+        "Id": "ccf64b2026254c98a556da8de12e81a4",
+        "IsInput": false,
+        "IsOutput": false,
+        "Excluded": false,
+        "X": -64.0,
+        "Y": 33.0
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Input",
+        "Id": "6653114df6c04a90af9a848c142f0b9b",
+        "IsInput": false,
+        "IsOutput": false,
+        "Excluded": false,
+        "X": -64.0,
+        "Y": 117.0
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Output",
+        "Id": "e0907e2d55a442c0a1c18f259e7f303b",
+        "IsInput": false,
+        "IsOutput": false,
+        "Excluded": false,
+        "X": 513.0,
+        "Y": 62.0
+      }
+    ],
+    "Annotations": [],
+    "X": 166.0,
+    "Y": 22.0,
+    "Zoom": 1.0
+  }
+}
