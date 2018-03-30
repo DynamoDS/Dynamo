@@ -1082,7 +1082,7 @@ namespace Dynamo.Tests
         [Test]
         public void Regress3786_InputNodesDeserilization()
         {
-            var filePath = Path.Combine(TestDirectory, @"core\CustomNodes\DateTime_IsEarlier_JSON.dyf");
+            var filePath = Path.Combine(TestDirectory, @"core\CustomNodes\QNTM3786_InputNodes.dyf");
             OpenModel(filePath);
 
             var node = CurrentDynamoModel.CurrentWorkspace.Nodes.FirstOrDefault(x => x is Symbol) as Symbol;

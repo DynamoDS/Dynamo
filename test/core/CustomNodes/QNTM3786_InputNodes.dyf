@@ -1,7 +1,7 @@
 {
   "Uuid": "2508111f-a0a4-4144-8c3d-0c7cfd82d90a",
   "IsCustomNode": true,
-  "Category": null,
+  "Category": "Clockwork.Core.DateTime.Actions",
   "Description": "Determines if a given date and time are earlier than another given date and time.",
   "Name": "DateTime.IsEarlier",
   "ElementResolver": {
@@ -33,6 +33,14 @@
       "DSOffice.Excel": {
         "Key": "DSOffice.Excel",
         "Value": "DSOffice.dll"
+      },
+      "System.DateTime": {
+        "Key": "System.DateTime",
+        "Value": ""
+      },
+      "Autodesk.DesignScript.Geometry.Point": {
+        "Key": "Autodesk.DesignScript.Geometry.Point",
+        "Value": "ProtoGeometry.dll"
       }
     }
   },
@@ -47,7 +55,7 @@
       "Id": "21e42b3c39824adb897b47065ebc9adb",
       "Inputs": [
         {
-          "Id": "3441e5f038254712ac22df9e225fb1e4",
+          "Id": "a139ff8e13dc4a7aa204dc7d2a484981",
           "Name": "IN[0]",
           "Description": "Input #0",
           "UsingDefaultValue": false,
@@ -56,7 +64,7 @@
           "KeepListStructure": false
         },
         {
-          "Id": "3dc1aa161a914cf0a4c837829154c7cd",
+          "Id": "d2723877fa3d4a419692956704b45cd5",
           "Name": "IN[1]",
           "Description": "Input #1",
           "UsingDefaultValue": false,
@@ -67,7 +75,7 @@
       ],
       "Outputs": [
         {
-          "Id": "fa10f37a4685450b8623d566450c9f2b",
+          "Id": "a90b1f3792454b98b6449e5f837ed31c",
           "Name": "OUT",
           "Description": "Result of the python script",
           "UsingDefaultValue": false,
@@ -92,7 +100,7 @@
       "Inputs": [],
       "Outputs": [
         {
-          "Id": "999a4c7dded7419a865ad51efe664a5d",
+          "Id": "a71bddd6a4804048ac325742fbbb2987",
           "Name": "",
           "Description": "Symbol",
           "UsingDefaultValue": false,
@@ -117,7 +125,7 @@
       "Inputs": [],
       "Outputs": [
         {
-          "Id": "6a570682a15e4c67a9834d74565be92d",
+          "Id": "407f37ec98104e97a421ddf3884b57f1",
           "Name": "",
           "Description": "Symbol",
           "UsingDefaultValue": false,
@@ -137,7 +145,7 @@
       "Id": "e0907e2d55a442c0a1c18f259e7f303b",
       "Inputs": [
         {
-          "Id": "5629c14bae19402799b2dafef5624d0d",
+          "Id": "b8dc7f88fe8f4fbfa52543d380435817",
           "Name": "",
           "Description": "",
           "UsingDefaultValue": false,
@@ -153,19 +161,19 @@
   ],
   "Connectors": [
     {
-      "Start": "fa10f37a4685450b8623d566450c9f2b",
-      "End": "5629c14bae19402799b2dafef5624d0d",
-      "Id": "0c1dc5cdaddc4d04905f6a093f3d544a"
+      "Start": "a90b1f3792454b98b6449e5f837ed31c",
+      "End": "b8dc7f88fe8f4fbfa52543d380435817",
+      "Id": "11d8f50d328b43a48d62e9c774d3cb4f"
     },
     {
-      "Start": "999a4c7dded7419a865ad51efe664a5d",
-      "End": "3441e5f038254712ac22df9e225fb1e4",
-      "Id": "35b7aa012bf94367b8a9311979c53633"
+      "Start": "a71bddd6a4804048ac325742fbbb2987",
+      "End": "a139ff8e13dc4a7aa204dc7d2a484981",
+      "Id": "f3c326abda4b4b56894b7379764784b1"
     },
     {
-      "Start": "6a570682a15e4c67a9834d74565be92d",
-      "End": "3dc1aa161a914cf0a4c837829154c7cd",
-      "Id": "c7be1d0879ee4da5b72b57abb1024ead"
+      "Start": "407f37ec98104e97a421ddf3884b57f1",
+      "End": "d2723877fa3d4a419692956704b45cd5",
+      "Id": "79113290c5114f9a8ef9d06d36066dca"
     }
   ],
   "Dependencies": [],
@@ -175,7 +183,7 @@
       "ScaleFactor": 1.0,
       "HasRunWithoutCrash": false,
       "IsVisibleInDynamoLibrary": true,
-      "Version": "2.0.1.4525",
+      "Version": "2.0.1.4534",
       "RunType": "Manual",
       "RunPeriod": "1000"
     },
@@ -193,44 +201,44 @@
     },
     "NodeViews": [
       {
+        "ShowGeometry": true,
+        "Name": "Python Script",
         "Id": "21e42b3c39824adb897b47065ebc9adb",
         "IsInput": false,
         "IsOutput": false,
-        "Name": "Python Script",
-        "ShowGeometry": true,
         "Excluded": false,
-        "X": 397.0,
-        "Y": 61.0
+        "X": 354.0,
+        "Y": 80.0
       },
       {
+        "ShowGeometry": true,
+        "Name": "Input",
         "Id": "ccf64b2026254c98a556da8de12e81a4",
         "IsInput": false,
         "IsOutput": false,
-        "Name": "Input",
-        "ShowGeometry": true,
         "Excluded": false,
-        "X": -134.0,
-        "Y": 39.0
+        "X": -64.0,
+        "Y": 33.0
       },
       {
+        "ShowGeometry": true,
+        "Name": "Input",
         "Id": "6653114df6c04a90af9a848c142f0b9b",
         "IsInput": false,
         "IsOutput": false,
-        "Name": "Input",
-        "ShowGeometry": true,
         "Excluded": false,
         "X": -64.0,
         "Y": 117.0
       },
       {
+        "ShowGeometry": true,
+        "Name": "Output",
         "Id": "e0907e2d55a442c0a1c18f259e7f303b",
         "IsInput": false,
         "IsOutput": false,
-        "Name": "Output",
-        "ShowGeometry": true,
         "Excluded": false,
-        "X": 604.0,
-        "Y": 105.0
+        "X": 513.0,
+        "Y": 62.0
       }
     ],
     "Annotations": [],
