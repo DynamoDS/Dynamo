@@ -177,8 +177,8 @@
         "ShowGeometry": true,
         "Name": "Number",
         "Id": "a8d28be45b934b68a1826e7d09b6147e",
-        "IsInput": true,
-        "IsOutput": false,
+        "IsSetAsInput": true,
+        "IsSetAsOutput": false,
         "Excluded": false,
         "X": 2898.69722477541,
         "Y": 870.914556274731
@@ -187,8 +187,8 @@
         "ShowGeometry": true,
         "Name": "+",
         "Id": "0d2e1e9d21dc4e5bb105e3bedca3b1f9",
-        "IsInput": false,
-        "IsOutput": false,
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
         "Excluded": false,
         "X": 3345.38395751019,
         "Y": 870.914556274731
@@ -197,8 +197,8 @@
         "ShowGeometry": true,
         "Name": "Watch",
         "Id": "89ef21b095e14b46aabcc02f16589b8d",
-        "IsInput": false,
-        "IsOutput": false,
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
         "Excluded": false,
         "X": 3592.79738563383,
         "Y": 870.914556274731
@@ -207,8 +207,8 @@
         "ShowGeometry": true,
         "Name": "Number",
         "Id": "52048c4773fb4d5f9221e4c6b2b41126",
-        "IsInput": true,
-        "IsOutput": false,
+        "IsSetAsInput": true,
+        "IsSetAsOutput": false,
         "Excluded": false,
         "X": 2898.69722477541,
         "Y": 951.121650146262
