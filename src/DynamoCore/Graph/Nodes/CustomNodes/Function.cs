@@ -445,8 +445,10 @@ namespace Dynamo.Graph.Nodes.CustomNodes
                         }
                     }
                 }
-
-                
+                else
+                {
+                    Parameter = new TypedParameter(name, type, defaultValue, null, comment);
+                }
 
                 OnNodeModified();
                 RaisePropertyChanged("InputSymbol");
