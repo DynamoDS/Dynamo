@@ -450,6 +450,13 @@ namespace Dynamo.Graph.Workspaces
 
             var info = new WorkspaceInfo(guid.ToString(), name, description, Dynamo.Models.RunType.Automatic);
 
+            //https://jira.autodesk.com/browse/QNTM-3872 
+            //Category should be set explicitly from custom node workspace.
+            if (obj["Category"] != null)
+            {
+                info.Category = obj["Category"].Value<string>();
+            }
+
             //Build an empty annotations. Annotations are defined in the view block. If the file has View block
             //serialize view block first and build the annotations.
             var annotations = new List<AnnotationModel>();
