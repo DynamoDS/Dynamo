@@ -397,8 +397,21 @@ namespace Dynamo.Graph.Workspaces
                     var inputsView = nodesView.ToArray().Select(x => x.ToObject<Dictionary<string, string>>()).ToList();
                     foreach (var inputViewData in inputsView)
                     {
+                        bool updateIsSetAsInput = true;
                         string isSetAsInput = "";
                         if (!inputViewData.TryGetValue("IsSetAsInput", out isSetAsInput) || isSetAsInput == bool.FalseString)
+                        {
+                            updateIsSetAsInput = false;
+                        }
+
+                        bool updateIsFrozen = true;
+                        string isFrozen = "";
+                        if (!inputViewData.TryGetValue("IsFrozen", out isFrozen) || isFrozen == bool.FalseString)
+                        {
+                            updateIsFrozen = false;
+                        }
+
+                        if (updateIsSetAsInput == false && updateIsFrozen == false)
                         {
                             continue;
                         }
@@ -419,7 +432,8 @@ namespace Dynamo.Graph.Workspaces
                             var matchingNode = nodes.Where(x => x.GUID == inputGuid).FirstOrDefault();
                             if (matchingNode != null)
                             {
-                                matchingNode.IsSetAsInput = true;
+                                matchingNode.IsSetAsInput = updateIsSetAsInput;
+                                matchingNode.IsFrozen = updateIsFrozen;
                                 string inputName = "";
                                 if (inputViewData.TryGetValue("Name", out inputName))
                                 {
@@ -427,7 +441,9 @@ namespace Dynamo.Graph.Workspaces
                                 }
                             }
                         }
+
                     }
+
                 }
             }
 
