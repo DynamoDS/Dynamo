@@ -404,6 +404,13 @@ namespace Dynamo.Graph.Workspaces
                             updateIsSetAsInput = false;
                         }
 
+                        bool updateIsSetAsOutput = true;
+                        string isSetAsOutput = "";
+                        if (!inputViewData.TryGetValue("IsSetAsOutput", out isSetAsOutput) || isSetAsOutput == bool.FalseString)
+                        {
+                            updateIsSetAsOutput = false;
+                        }
+
                         bool updateIsFrozen = true;
                         string isFrozen = "";
                         if (!inputViewData.TryGetValue("IsFrozen", out isFrozen) || isFrozen == bool.FalseString)
@@ -411,7 +418,7 @@ namespace Dynamo.Graph.Workspaces
                             updateIsFrozen = false;
                         }
 
-                        if (updateIsSetAsInput == false && updateIsFrozen == false)
+                        if (updateIsSetAsInput == false && updateIsSetAsOutput == false && updateIsFrozen == false)
                         {
                             continue;
                         }
@@ -433,6 +440,7 @@ namespace Dynamo.Graph.Workspaces
                             if (matchingNode != null)
                             {
                                 matchingNode.IsSetAsInput = updateIsSetAsInput;
+                                matchingNode.IsSetAsOutput = updateIsSetAsOutput;
                                 matchingNode.IsFrozen = updateIsFrozen;
                                 string inputName = "";
                                 if (inputViewData.TryGetValue("Name", out inputName))
