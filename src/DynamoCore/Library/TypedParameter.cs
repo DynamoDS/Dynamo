@@ -166,6 +166,25 @@ namespace Dynamo.Library
 
             return str;
         }
+
+        /// <summary>
+        /// Returns a string in a specific format (Name:Type.Name)
+        /// ex: dateTime1:System.DateTime,  test:Autodesk.DesignScript.Geomtery.Curve
+        /// Refer to https://jira.autodesk.com/browse/QNTM-3786
+        /// </summary>
+        /// <returns></returns>
+        internal string ToNameString()
+        {
+            string str = Name + ": " + Type.ToString();
+            if (defaultValueString != null)
+            {
+                str = str + " = " + defaultValueString;
+            }
+
+            return str;
+        }
     }
 
 }
+
+
