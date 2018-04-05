@@ -444,6 +444,10 @@ namespace Dynamo.Graph.Nodes.CustomNodes
                             Parameter = new TypedParameter(name, type, defaultValue, null, comment);
                         }
                     }
+                    else
+                    {
+                        Parameter = new TypedParameter(name, type, defaultValue, null, comment);
+                    }
                 }
                 else
                 {
