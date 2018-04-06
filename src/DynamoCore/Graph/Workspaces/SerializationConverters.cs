@@ -350,7 +350,8 @@ namespace Dynamo.Graph.Workspaces
             // nodes
             var nodes = obj["Nodes"].ToObject<IEnumerable<NodeModel>>(serializer);
 
-            // nodes
+            // Setting Inputs
+            // Required in headless mode by Dynamo Player that NodeModel.Name and NodeModel.IsSetAsInput are set
             var inputsToken = obj["Inputs"];
             if(inputsToken != null)
             {
@@ -362,10 +363,12 @@ namespace Dynamo.Graph.Workspaces
                     if(matchingNode != null)
                     {
                         matchingNode.IsSetAsInput = true;
+                        matchingNode.Name = inputData.Name;
                     }
                 }
             }
 
+            // Setting Outputs
             var outputsToken = obj["Outputs"];
             if (outputsToken != null)
             {
@@ -377,6 +380,53 @@ namespace Dynamo.Graph.Workspaces
                     if (matchingNode != null)
                     {
                         matchingNode.IsSetAsOutput = true;
+                        matchingNode.Name = outputData.Name;
+                    }
+                }
+            }
+
+            // Setting Inputs based on view layer info
+            // TODO: It is currently duplicating the effort with Input Block parsing which should be cleaned up once
+            // Dynamo supports both selection and drop down nodes in Inputs block
+            var view = obj["View"];
+            if (view != null)
+            {
+                var nodesView = view["NodeViews"];
+                if (nodesView != null)
+                {
+                    var inputsView = nodesView.ToArray().Select(x => x.ToObject<Dictionary<string, string>>()).ToList();
+                    foreach (var inputViewData in inputsView)
+                    {
+                        string isSetAsInput = "";
+                        if (!inputViewData.TryGetValue("IsSetAsInput", out isSetAsInput) || isSetAsInput == bool.FalseString)
+                        {
+                            continue;
+                        }
+
+                        string inputId = "";
+                        if (inputViewData.TryGetValue("Id", out inputId))
+                        {
+                            Guid inputGuid;
+                            try
+                            {
+                                inputGuid = Guid.Parse(inputId);
+                            }
+                            catch
+                            {
+                                continue;
+                            }
+
+                            var matchingNode = nodes.Where(x => x.GUID == inputGuid).FirstOrDefault();
+                            if (matchingNode != null)
+                            {
+                                matchingNode.IsSetAsInput = true;
+                                string inputName = "";
+                                if (inputViewData.TryGetValue("Name", out inputName))
+                                {
+                                    matchingNode.Name = inputName;
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -399,6 +449,12 @@ namespace Dynamo.Graph.Workspaces
             var connectors = obj["Connectors"].ToObject<IEnumerable<ConnectorModel>>(serializer);
 
             var info = new WorkspaceInfo(guid.ToString(), name, description, Dynamo.Models.RunType.Automatic);
+            //https://jira.autodesk.com/browse/QNTM-3872 
+            //Category should be set explicitly from custom node workspace.
+            if (obj["Category"] != null)
+            {
+                info.Category = obj["Category"].Value<string>();
+            }
 
             //Build an empty annotations. Annotations are defined in the view block. If the file has View block
             //serialize view block first and build the annotations.

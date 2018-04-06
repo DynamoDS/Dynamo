@@ -71,7 +71,7 @@
       "ScaleFactor": 1.0,
       "HasRunWithoutCrash": false,
       "IsVisibleInDynamoLibrary": true,
-      "Version": "2.0.0.4456",
+      "Version": "2.0.0.4397",
       "RunType": "Manual",
       "RunPeriod": "1000"
     },
@@ -92,8 +92,8 @@
         "ShowGeometry": true,
         "Name": "Input",
         "Id": "5a6bdadb4de24f13bd1d80ec436860db",
-        "IsInput": false,
-        "IsOutput": false,
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
         "Excluded": false,
         "X": 222.65968586387436,
         "Y": 444.31413612565444
@@ -102,8 +102,8 @@
         "ShowGeometry": true,
         "Name": "Output",
         "Id": "00e4510fc3cf485a896202a95d434cea",
-        "IsInput": false,
-        "IsOutput": false,
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
         "Excluded": false,
         "X": 363.39267015706804,
         "Y": 335.74869109947645

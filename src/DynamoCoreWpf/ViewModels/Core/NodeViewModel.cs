@@ -151,7 +151,6 @@ namespace Dynamo.ViewModels
             }
         }
 
-        [JsonProperty("IsInput")]
         public bool IsSetAsInput
         {
             get
@@ -177,7 +176,6 @@ namespace Dynamo.ViewModels
             }
         }
 
-        [JsonProperty("IsOutput")]
         public bool IsSetAsOutput
         {
             get
