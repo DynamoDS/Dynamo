@@ -113,10 +113,10 @@ namespace DynamoCoreWpfTests
 
             return watchHandler.GenerateWatchViewModelForData(
                 watch.CachedValue,
-                watch.OutPorts.Select(p => p.Name),
                 core,
                 inputVar,
-                false );
+                false,
+                watch.OutPorts.Select(p => p.Name));
         }
         
         [Test]
@@ -194,9 +194,9 @@ namespace DynamoCoreWpfTests
 
             var watchNode = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<Watch>();
             var watchVM = ViewModel.WatchHandler.GenerateWatchViewModelForData(
-                watchNode.CachedValue, watchNode.OutPorts.Select(p => p.Name),
-                ViewModel.Model.EngineController.LiveRunnerRuntimeCore,
-                watchNode.InPorts[0].Connectors[0].Start.Owner.AstIdentifierForPreview.Name);
+                watchNode.CachedValue, ViewModel.Model.EngineController.LiveRunnerRuntimeCore,
+                watchNode.InPorts[0].Connectors[0].Start.Owner.AstIdentifierForPreview.Name, true,
+                watchNode.OutPorts.Select(p => p.Name));
 
             Assert.AreEqual("Function", watchVM.NodeLabel);
         }
@@ -212,9 +212,9 @@ namespace DynamoCoreWpfTests
             foreach (var watchNode in watchNodes)
             {
                 var watchVM = ViewModel.WatchHandler.GenerateWatchViewModelForData(
-                    watchNode.CachedValue, watchNode.OutPorts.Select(p => p.Name),
-                    ViewModel.Model.EngineController.LiveRunnerRuntimeCore,
-                    watchNode.InPorts[0].Connectors[0].Start.Owner.AstIdentifierForPreview.Name);
+                    watchNode.CachedValue, ViewModel.Model.EngineController.LiveRunnerRuntimeCore,
+                    watchNode.InPorts[0].Connectors[0].Start.Owner.AstIdentifierForPreview.Name, true,
+                    watchNode.OutPorts.Select(p => p.Name));
                 Assert.IsTrue(watchVM.NodeLabel.StartsWith("function"));
             }
         }
@@ -230,9 +230,9 @@ namespace DynamoCoreWpfTests
 
             var watchNode = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<Watch>();
             var watchVM = ViewModel.WatchHandler.GenerateWatchViewModelForData(
-                watchNode.CachedValue, watchNode.OutPorts.Select(p => p.Name),
-               ViewModel.Model.EngineController.LiveRunnerRuntimeCore,
-                watchNode.InPorts[0].Connectors[0].Start.Owner.AstIdentifierForPreview.Name);
+                watchNode.CachedValue, ViewModel.Model.EngineController.LiveRunnerRuntimeCore, 
+                watchNode.InPorts[0].Connectors[0].Start.Owner.AstIdentifierForPreview.Name, true, 
+                watchNode.OutPorts.Select(p => p.Name));
 
             Assert.AreEqual("Function", watchVM.NodeLabel);
         }
@@ -246,9 +246,10 @@ namespace DynamoCoreWpfTests
 
             var watchNode = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<CodeBlockNodeModel>();
             var watchVM = ViewModel.WatchHandler.GenerateWatchViewModelForData(
-                watchNode.CachedValue, watchNode.OutPorts.Select(p => p.Name),
+                watchNode.CachedValue, 
                 ViewModel.Model.EngineController.LiveRunnerRuntimeCore,
-                watchNode.AstIdentifierForPreview.Name);
+                watchNode.AstIdentifierForPreview.Name, true,
+                watchNode.OutPorts.Select(p => p.Name));
 
             watchVM.CountNumberOfItems();
             watchVM.CountLevels();
@@ -273,9 +274,10 @@ namespace DynamoCoreWpfTests
             foreach (var watchNode in ViewModel.Model.CurrentWorkspace.Nodes.OfType<Watch>())
             {
                 var watchVM = ViewModel.WatchHandler.GenerateWatchViewModelForData(
-                    watchNode.CachedValue, watchNode.OutPorts.Select(p => p.Name),
+                    watchNode.CachedValue,
                     ViewModel.Model.EngineController.LiveRunnerRuntimeCore,
-                    watchNode.InPorts[0].Connectors[0].Start.Owner.AstIdentifierForPreview.Name);
+                    watchNode.InPorts[0].Connectors[0].Start.Owner.AstIdentifierForPreview.Name, true,
+                    watchNode.OutPorts.Select(p => p.Name));
 
                 Assert.AreEqual("3.14", watchVM.NodeLabel);
             }
@@ -290,9 +292,10 @@ namespace DynamoCoreWpfTests
 
             var watchNode = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<DSFunction>();
             var watchVM = ViewModel.WatchHandler.GenerateWatchViewModelForData(
-                watchNode.CachedValue, watchNode.OutPorts.Select(p => p.Name),
+                watchNode.CachedValue,
                 ViewModel.Model.EngineController.LiveRunnerRuntimeCore,
-                watchNode.AstIdentifierForPreview.Name);
+                watchNode.AstIdentifierForPreview.Name, true,
+                watchNode.OutPorts.Select(p => p.Name));
 
             var children = watchVM.Children;
             Assert.AreEqual(4, children.Count);
