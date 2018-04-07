@@ -163,10 +163,10 @@ namespace CoreNodeModelsWpf.Nodes
 
             return watchHandler.GenerateWatchViewModelForData(
                 watch.CachedValue,
-                watch.OutPorts.Select(p => p.Name),
                 core,
                 inputVar,
-                rootWatchViewModel.ShowRawData);
+                rootWatchViewModel.ShowRawData,
+                watch.OutPorts.Select(p => p.Name));
         }
 
         private void ResetWatch()

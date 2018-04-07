@@ -424,11 +424,24 @@ namespace FFITarget
             return x.GetValue();
         }
 
-        [MultiReturnAttribute(new string[]{"color", "weight", "ok"})]
+        [MultiReturn("color", "dict", "nums", "weight", "ok")]
+        public Dictionary<string, object> ReturnNestedDictionary()
+        {
+            return new Dictionary<string, object>() 
+            {
+                {"color", "green"},
+                {"weight", 42},
+                {"ok", false},
+                {"dict", new Dictionary<string, int> { {"foo", 123} } },
+                {"nums", new[] {101, 202}}
+            };
+        }
+
+        [MultiReturnAttribute(new string[] { "color", "weight", "ok" })]
         [RuntimeRequirement(RequireTracing = true)]
         public Dictionary<string, object> GetDictionary()
         {
-            return new Dictionary<string, object>() 
+            return new Dictionary<string, object>()
             {
                 {"color", "green"},
                 {"weight", 42},
