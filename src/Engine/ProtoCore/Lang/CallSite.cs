@@ -1551,7 +1551,7 @@ namespace ProtoCore
 
                 //We determine if the input paramaters are homogenious to set the final function endpoint once
                 List<StackValue> finalFormalParameters = new List<StackValue>();
-                var homogenious = areInputsHomogenious(formalParameters, runtimeCore, finalFormalParameters);
+                var homogenious = AreParametersHomogenious(formalParameters, runtimeCore, finalFormalParameters);
                 if (homogenious)
                     finalFuntionEndPoint = SelectFinalFep(c, functionEndPoint, finalFormalParameters, stackFrame, runtimeCore);
 
@@ -1681,7 +1681,7 @@ namespace ProtoCore
                 if (cartIndex == 0)
                 {
                     List<StackValue> finalFormalParameters = new List<StackValue>();
-                    var homogenious = areInputsHomogenious(formalParameters, runtimeCore, finalFormalParameters);
+                    var homogenious = AreParametersHomogenious(formalParameters, runtimeCore, finalFormalParameters);
 
                     if(homogenious)
                         finalFuntionEndPoint = SelectFinalFep(c, functionEndPoint, finalFormalParameters, stackFrame, runtimeCore);
@@ -1873,7 +1873,7 @@ namespace ProtoCore
         /// Determine if the formalParameters are homogenious and intialize a flat list of final formalParameters
         /// </summary>
         /// <returns>true if the formalParameters are homogenious</returns>
-        private static bool areInputsHomogenious(List<StackValue> formalParameters, RuntimeCore runtimeCore, List<StackValue> finalFormalParameters)
+        private static bool AreParametersHomogenious(List<StackValue> formalParameters, RuntimeCore runtimeCore, List<StackValue> finalFormalParameters)
         {
             bool isHomogenious = true;
 
