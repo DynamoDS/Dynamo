@@ -438,7 +438,8 @@ namespace ProtoCore.Namespace
         /// <returns>Array of matching symbols or empty array</returns>
         public Symbol[] TryGetSymbols(string name, Func<Symbol, bool> predicate)
         {
-            string symbolName = name.Split('.').Last();
+            var index = name.LastIndexOf('.');
+            string symbolName = index == -1 ? name: name.Substring(index + 1);
             HashSet<Symbol> symbolSet = GetAllSymbols(symbolName);
             if (null != symbolSet)
                 return symbolSet.Where(predicate).ToArray();
