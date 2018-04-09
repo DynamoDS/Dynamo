@@ -1909,9 +1909,11 @@ namespace ProtoCore
                             break;
                     }
                 }
-
-                //For single parameter add it to pass for evalutation in SelectFinalFep
-                finalFormalParameters.Add(formalParameter);
+                else
+                {
+                    //For single parameter add it to pass for evalutation in SelectFinalFep
+                    finalFormalParameters.Add(formalParameter);
+                }
             }
 
             //formalParameteres evaluated as homegenious
