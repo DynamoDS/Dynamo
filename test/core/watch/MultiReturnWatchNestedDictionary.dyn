@@ -115,7 +115,7 @@
       "ScaleFactor": 1.0,
       "HasRunWithoutCrash": true,
       "IsVisibleInDynamoLibrary": true,
-      "Version": "2.0.1.4606",
+      "Version": "2.0.0.4635",
       "RunType": "Automatic",
       "RunPeriod": "1000"
     },
