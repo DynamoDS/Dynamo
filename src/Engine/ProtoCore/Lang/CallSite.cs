@@ -1875,57 +1875,47 @@ namespace ProtoCore
         /// <returns>true if the formalParameters are homogenious</returns>
         private static bool AreParametersHomogenious(List<StackValue> formalParameters, RuntimeCore runtimeCore, List<StackValue> finalFormalParameters)
         {
-            bool isHomogenious = true;
-
-            for (int i = 0; i < formalParameters.Count; i++)
-            {
-                if (!isHomogenious)
-                    break;
-
-                var formalParameter = formalParameters[i];
-
+            foreach (var formalParameter in formalParameters)
+            { 
                 //expand array if required to compare inputs
                 if (formalParameter.IsArray)
                 {
                     DSArray array = runtimeCore.Heap.ToHeapObject<DSArray>(formalParameter);
                     StackValue[] flatParameters = array.Values.ToArray();
 
-                    if (flatParameters.Length == 0)
+                    switch (flatParameters.Length)
                     {
-                        //set flag to false and exit the loop due to empty list
-                        isHomogenious = false;
-                        break;
-                    }
-                    else if (flatParameters.Length == 1)
-                    {
-                        //Add single sample parameter to pass for evalutation in SelectFinalFep
-                        finalFormalParameters.Add(flatParameters[0]);
-                    }
-                    else
-                    {
-                        for (int j = 0; j < flatParameters.Length - 1; j++)
-                        {
-                            //Compare the type data for subsequent items
-                            if (flatParameters[j].optype != flatParameters[j + 1].optype ||
-                                flatParameters[j].metaData.type != flatParameters[j + 1].metaData.type)
+                        case 0:
+                            //set function result false and exit due to empty list
+                            return false;
+                        case 1:
+                            //Add single sample parameter to pass for evalutation in SelectFinalFep
+                            finalFormalParameters.Add(flatParameters[0]);
+                            break;
+                        default:
+                            for (int j = 0; j < flatParameters.Length - 1; j++)
                             {
-                                //set flag to false and exit the loop
-                                isHomogenious = false;
-                                break;
+                                //Compare the type data for subsequent items
+                                if (flatParameters[j].optype != flatParameters[j + 1].optype ||
+                                    flatParameters[j].metaData.type != flatParameters[j + 1].metaData.type)
+                                {
+                                    //set function result false and exit due to disimilar function parameters
+                                    return false;
+                                }
                             }
-                        }
 
-                        //Add single sample parameter to pass for evalutation in SelectFinalFep
-                        finalFormalParameters.Add(flatParameters[0]);
+                            //Add single sample parameter to pass for evalutation in SelectFinalFep
+                            finalFormalParameters.Add(flatParameters[0]);
+                            break;
                     }
-
                 }
 
-                //Add parameter to pass for evalutation in SelectFinalFep
+                //For single parameter add it to pass for evalutation in SelectFinalFep
                 finalFormalParameters.Add(formalParameter);
             }
 
-            return isHomogenious;
+            //formalParameteres evaluated as homegenious
+            return true;
         }
 
 
