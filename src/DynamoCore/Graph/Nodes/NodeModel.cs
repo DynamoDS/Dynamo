@@ -185,7 +185,7 @@ namespace Dynamo.Graph.Nodes
                 return isVisible;
             }
 
-            private set // Private setter, see "ArgumentLacing" for details.
+            set
             {
                 if (isVisible != value)
                 {
