@@ -40,6 +40,14 @@ Dynamo is an open-source project and would be nothing without its community.  Yo
 
 ## Releases ##
 
+### 1.3.3 ###
+New Functionality: 
+
+- Compatibility with Revit 2019
+
+Known Issues:
+- Keyboard Shortcuts do not work for all Dynamo versions in Revit 2019
+
 ### 1.3 ###
 See http://dynamobim.org/dynamo-1-3-release/ for a full report
 
