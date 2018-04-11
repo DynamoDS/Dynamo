@@ -25,6 +25,7 @@
     }
   },
   "Inputs": [],
+  "Outputs": [],
   "Nodes": [
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
@@ -55,7 +56,7 @@
         {
           "Id": "ccb197383cbb45dd815346676701adc9",
           "Name": "",
-          "Description": "t6BBA4B28C5E54CF89F300D510499A00E_0",
+          "Description": "Value of expression at line 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -161,7 +162,7 @@
       "ScaleFactor": 1.0,
       "HasRunWithoutCrash": false,
       "IsVisibleInDynamoLibrary": true,
-      "Version": "2.0.0.2486",
+      "Version": "2.0.0.4397",
       "RunType": "Manual",
       "RunPeriod": "1000"
     },
@@ -179,43 +180,46 @@
     },
     "NodeViews": [
       {
-        "Id": "2ab5fe4cd3584ec49782d120b367d97e",
-        "Name": "Code Block",
         "ShowGeometry": true,
-        "IsUpstreamVisible": true,
+        "Name": "Code Block",
+        "Id": "2ab5fe4cd3584ec49782d120b367d97e",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
         "Excluded": false,
         "X": 551.0,
         "Y": 406.0
       },
       {
-        "Id": "4b3ef2466ef649ea95db607b1f083d0c",
-        "Name": "Input",
         "ShowGeometry": true,
-        "IsUpstreamVisible": true,
+        "Name": "Input",
+        "Id": "4b3ef2466ef649ea95db607b1f083d0c",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
         "Excluded": false,
         "X": 49.0,
         "Y": 196.0
       },
       {
-        "Id": "e2efe8b186cd477995f6fb4cf28038a5",
-        "Name": "Input",
         "ShowGeometry": true,
-        "IsUpstreamVisible": true,
+        "Name": "Input",
+        "Id": "e2efe8b186cd477995f6fb4cf28038a5",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
         "Excluded": false,
         "X": 225.0,
         "Y": 402.0
       },
       {
-        "Id": "6a547116e7344efbbdfb4058c4a05928",
-        "Name": "Output",
         "ShowGeometry": true,
-        "IsUpstreamVisible": true,
+        "Name": "Output",
+        "Id": "6a547116e7344efbbdfb4058c4a05928",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
         "Excluded": false,
         "X": 1371.0,
         "Y": 378.0
       }
     ],
-    "Notes": [],
     "Annotations": [],
     "X": 0.0,
     "Y": 0.0,

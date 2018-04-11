@@ -20,6 +20,7 @@ using Dynamo.Search.SearchElements;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Interfaces;
 using Dynamo.Wpf.ViewModels;
+using Dynamo.Core;
 
 namespace Dynamo.LibraryUI
 {
@@ -89,6 +90,8 @@ namespace Dynamo.LibraryUI
         private IDisposable observer;
         private ChromiumWebBrowser browser;
         private const string CreateNodeInstrumentationString = "Search-NodeAdded";
+        // TODO remove this when we can control the library state from Dynamo more precisely.
+        private bool disableObserver = false;
 
         /// <summary>
         /// Creates LibraryViewController
@@ -128,7 +131,6 @@ namespace Dynamo.LibraryUI
             toggleBrowserVisibility(this.browser);
         }
 
-
         /// <summary>
         /// Call this method to create a new node in Dynamo canvas.
         /// </summary>
@@ -137,10 +139,19 @@ namespace Dynamo.LibraryUI
         {
             dynamoWindow.Dispatcher.BeginInvoke(new Action(() =>
             {
+                //if the node we're trying to create is a customNode, lets disable the eventObserver.
+                // this will stop the libraryController from refreshing the libraryView on custom node creation.
+                var resultGuid = Guid.Empty;
+                if (Guid.TryParse(nodeName, out resultGuid))
+                {
+                    this.disableObserver = true;
+                }
                 //Create the node of given item name
                 var cmd = new DynamoModel.CreateNodeCommand(Guid.NewGuid().ToString(), nodeName, -1, -1, true, false);
                 commandExecutive.ExecuteCommand(cmd, Guid.NewGuid().ToString(), ViewExtension.ExtensionName);
                 LogEventsToInstrumentation(CreateNodeInstrumentationString, nodeName);
+
+                this.disableObserver = false;
             }));
         }
 
@@ -307,19 +318,29 @@ namespace Dynamo.LibraryUI
                     elements => NotifySearchModelUpdate(customization, elements), CollectToList
                 ).Throttle(TimeSpan.FromMilliseconds(throttleTime));
 
-            Action<NodeSearchElement> onRemove = e => observer.OnEvent(null);
+            Action<NodeSearchElement> handler = (searchElement) =>
+             {
+                 var libraryViewController = (controller as LibraryViewController);
+                 if ((libraryViewController != null) && (libraryViewController.disableObserver))
+                 {
+                     return;
+                 }
+
+                 observer.OnEvent(searchElement);
+             };
+            Action<NodeSearchElement> onRemove = e => handler(null);
 
             //Set up the event callback
-            model.EntryAdded += observer.OnEvent;
+            model.EntryAdded += handler;
             model.EntryRemoved += onRemove;
-            model.EntryUpdated += observer.OnEvent;
+            model.EntryUpdated += handler;
 
             //Set up the dispose event handler
             observer.Disposed += () =>
             {
-                model.EntryAdded -= observer.OnEvent;
+                model.EntryAdded -= handler;
                 model.EntryRemoved -= onRemove;
-                model.EntryUpdated -= observer.OnEvent;
+                model.EntryUpdated -= handler;
             };
 
             return observer;
@@ -347,14 +368,19 @@ namespace Dynamo.LibraryUI
         /// <param name="elements">List of updated elements</param>
         private static void NotifySearchModelUpdate(ILibraryViewCustomization customization, IEnumerable<NodeSearchElement> elements)
         {
-            var includes = elements
-                .Select(NodeItemDataProvider.GetFullyQualifiedName)
-                .Select(name => name.Split('.').First())
-                .Distinct()
-                .SkipWhile(s => s.Contains("://"))
-                .Select(p => new LayoutIncludeInfo() { path = p });
+            //elements might be null if we have removed an element.
+            if (elements != null)
+            {
+                var includes = elements
+               .Select(NodeItemDataProvider.GetFullyQualifiedName)
+               .Select(name => name.Split('.').First())
+               .Distinct()
+               .SkipWhile(s => s.Contains("://"))
+               .Select(p => new LayoutIncludeInfo() { path = p });
 
-            customization.AddIncludeInfo(includes, "Add-ons");
+                customization.AddIncludeInfo(includes, "Add-ons");
+
+            }
         }
 
         private void InitializeResourceStreams(DynamoModel model, LibraryViewCustomization customization)

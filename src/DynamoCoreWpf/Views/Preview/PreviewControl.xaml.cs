@@ -373,7 +373,7 @@ namespace Dynamo.UI.Controls
                 {
                     var preferredDictionaryOrdering = nodeViewModel.NodeModel.OutPorts.Select(p => p.Name);
                     newViewModel = nodeViewModel.DynamoViewModel.WatchHandler.GenerateWatchViewModelForData(
-                        nodeViewModel.NodeModel.CachedValue, preferredDictionaryOrdering, 
+                        nodeViewModel.NodeModel.CachedValue, preferredDictionaryOrdering,
                         null, nodeViewModel.NodeModel.AstIdentifierForPreview.Name, false);
 
                 },
