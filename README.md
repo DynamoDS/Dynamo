@@ -46,7 +46,7 @@ New Functionality:
 - Compatibility with Revit 2019
 
 Known Issues:
-- Keyboard Shortcuts do not work for all Dynamo versions in Revit 2019
+- Some keyboard shortcuts do not work in Dynamo for Revit 2019. These include Ctrl+Z for Undo and Ctrl+C/Ctrl+V for Copy/Paste.
 
 ### 1.3 ###
 See http://dynamobim.org/dynamo-1-3-release/ for a full report
