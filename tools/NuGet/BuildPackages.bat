@@ -1,4 +1,4 @@
-:: Argument %1: path to template folder
+﻿:: Argument %1: path to template folder
 :: Argument %2: path to dynamo build directory
 ::
 
@@ -29,7 +29,7 @@ for /f %%f in ('cscript //Nologo ..\install\GetFileVersion.vbs %harvestPath%\Dyn
   set /a count=!count!+1
 )
 setlocal DisableDelayedExpansion
-set version=%Major%.%Minor%.%Build%
+set version=%Major%.%Minor%.%Build%.%Revision%
 
 :: Clean files generated from the previous run
 if exist *.nupkg ( del *.nupkg )
