@@ -66,10 +66,6 @@ namespace DynamoCLI
 
                     foreach (IRenderPackage p in renderPackages.Packages)
                     {
-                        if (p.MeshVertexCount == 0)
-                        {
-                            continue;
-                        }
                         verts.Add(p.MeshVertices.ToArray());
                         normals.Add(p.MeshNormals.ToArray());
                         points.Add(p.PointVertices.ToList());
