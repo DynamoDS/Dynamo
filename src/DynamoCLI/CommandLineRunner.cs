@@ -66,16 +66,6 @@ namespace DynamoCLI
                 //if verbose was true, then print all nodes to the console
                 if (!String.IsNullOrEmpty(cmdLineArgs.Verbose))
                 {
-                    IRenderPackageFactory renderPackageFactory = new DefaultRenderPackageFactory();
-                    List<GeometryHolder> nodeGeometries = new List<GeometryHolder>();
-                    foreach (var node in model.CurrentWorkspace.Nodes)
-                    {
-                        if (node.ShouldDisplayPreview)
-                        {
-                            nodeGeometries.Add(new GeometryHolder(model, renderPackageFactory, node));
-                        }
-                    }
-
                     doc = new XmlDocument();
                     var resultsdict = new Dictionary<Guid, List<object>>();
                     foreach (var node in model.CurrentWorkspace.Nodes)
@@ -102,10 +92,21 @@ namespace DynamoCLI
                     }
                     outputresults.Add(resultsdict);
                     populateXmlDocWithResults(doc, outputresults);
+                }
 
-                    var jsonFilename = Path.ChangeExtension(cmdLineArgs.Verbose, "json");
-                    
+                if (!String.IsNullOrEmpty(cmdLineArgs.GeometryFilePath))
+                {
+                    IRenderPackageFactory renderPackageFactory = new DefaultRenderPackageFactory();
+                    List<GeometryHolder> nodeGeometries = new List<GeometryHolder>();
+                    foreach (var node in model.CurrentWorkspace.Nodes)
+                    {
+                        if (node.ShouldDisplayPreview)
+                        {
+                            nodeGeometries.Add(new GeometryHolder(model, renderPackageFactory, node));
+                        }
+                    }
 
+                    var jsonFilename = cmdLineArgs.GeometryFilePath;
                     using (StreamWriter jsonFile = new StreamWriter(jsonFilename))
                     {
                         foreach (var holder in nodeGeometries)
@@ -118,6 +119,7 @@ namespace DynamoCLI
                         }
                     }
                 }
+
                 evalComplete = false;
 
             }
