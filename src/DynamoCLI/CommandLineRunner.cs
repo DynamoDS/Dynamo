@@ -100,10 +100,7 @@ namespace DynamoCLI
                     List<GeometryHolder> nodeGeometries = new List<GeometryHolder>();
                     foreach (var node in model.CurrentWorkspace.Nodes)
                     {
-                        if (node.ShouldDisplayPreview)
-                        {
-                            nodeGeometries.Add(new GeometryHolder(model, renderPackageFactory, node));
-                        }
+                        nodeGeometries.Add(new GeometryHolder(model, renderPackageFactory, node));
                     }
 
                     var jsonFilename = cmdLineArgs.GeometryFilePath;
