@@ -450,7 +450,8 @@ namespace Dynamo.Graph.Workspaces
                                 matchingNode.IsSetAsInput = updateIsSetAsInput;
                                 matchingNode.IsSetAsOutput = updateIsSetAsOutput;
                                 matchingNode.IsFrozen = updateIsFrozen;
-                                matchingNode.IsVisible = updateIsVisible;
+                                matchingNode.UpdateValue(new UpdateValueParams("IsVisible", updateIsVisible.ToString()));
+
                                 string inputName = "";
                                 if (inputViewData.TryGetValue("Name", out inputName))
                                 {
