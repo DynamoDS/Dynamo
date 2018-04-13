@@ -27,12 +27,12 @@ namespace Dynamo.Interfaces
         WatchViewModel Process(dynamic value, IEnumerable<string> preferredDictionaryOrdering, ProtoCore.RuntimeCore runtimeCore, string tag, bool showRawData, WatchHandlerCallback callback);
     }
 
-    public delegate WatchViewModel WatchHandlerCallback(dynamic value, ProtoCore.RuntimeCore runtimeCore, string tag, bool showRawData, IEnumerable<string> preferredDictionaryOrdering = null);
+    public delegate WatchViewModel WatchHandlerCallback(dynamic value, IEnumerable<string> preferredDictionaryOrdering, ProtoCore.RuntimeCore runtimeCore, string tag, bool showRawData);
 
     public static class WatchHandler
     {
-        public static WatchViewModel GenerateWatchViewModelForData(this IWatchHandler handler, dynamic value, 
-            ProtoCore.RuntimeCore runtimeCore, string tag, bool showRawData = true, IEnumerable<string> preferredDictionaryOrdering = null)
+        public static WatchViewModel GenerateWatchViewModelForData(this IWatchHandler handler, dynamic value,
+            IEnumerable<string> preferredDictionaryOrdering, ProtoCore.RuntimeCore runtimeCore, string tag, bool showRawData = true)
         {
             return handler.Process(value, preferredDictionaryOrdering, runtimeCore, tag, showRawData, new WatchHandlerCallback(handler.GenerateWatchViewModelForData));
 
@@ -92,7 +92,7 @@ namespace Dynamo.Interfaces
                 var node = new WatchViewModel(list.Count == 0 ? WatchViewModel.EMPTY_LIST : WatchViewModel.LIST, tag, RequestSelectGeometry, true);
                 foreach (var e in list.Select((element, idx) => new { element, idx }))
                 {
-                    node.Children.Add(callback(e.element, runtimeCore, tag + ":" + e.idx, showRawData));
+                    node.Children.Add(callback(e.element, null, runtimeCore, tag + ":" + e.idx, showRawData));
                 }
 
                 return node;
@@ -213,7 +213,7 @@ namespace Dynamo.Interfaces
             }
 
             //Finally for all else get the string representation of data as watch content.
-            return callback(data.Data, runtimeCore, tag, showRawData);
+            return callback(data.Data, null, runtimeCore, tag, showRawData);
         }
 
         private static string ToString(object obj)
