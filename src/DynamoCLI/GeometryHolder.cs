@@ -44,7 +44,7 @@ namespace DynamoCLI
             {
                 node = nodeModel;
                 nodeModel.RenderPackagesUpdated += NodeRenderPackagesUpdated;
-                if (!nodeModel.RequestVisualUpdateAsync(model.Scheduler, model.EngineController, factory, true))
+                if (!nodeModel.RequestVisualUpdateAsync(model.Scheduler, model.EngineController, factory))
                 {
                     Done.Set();
                 }
@@ -57,6 +57,7 @@ namespace DynamoCLI
 
             private void NodeRenderPackagesUpdated(NodeModel nodeModel, RenderPackageCache renderPackages)
             {
+
                 if (renderPackages.Packages.Count() > 0)
                 {
                     List<double[]> verts = new List<double[]>();
@@ -71,26 +72,22 @@ namespace DynamoCLI
                         points.Add(p.PointVertices.ToList());
                         lines.Add(p.LineStripVertices.ToList());
                     }
-                    if (verts.Count > 0 || normals.Count > 0 || points.Count > 0 || lines.Count > 0)
-                    {
-                        Dictionary<string, Object> groupData = new Dictionary<string, object>();
-                        groupData.Add("name", node.GUID.ToString());
-                        groupData.Add("transactionType", "update");
-                        groupData.Add("displayPreview", node.ShouldDisplayPreview);
-                        groupData.Add("vertices", verts);
-                        groupData.Add("normals", normals);
-                        groupData.Add("points", points);
-                        groupData.Add("lines", lines);
 
-                        GeometryJson = JsonConvert.SerializeObject(groupData);
-                        HasGeometry = true;
-                    }
+                    Dictionary<string, Object> groupData = new Dictionary<string, object>();
+                    groupData.Add("name", node.GUID.ToString());
+                    groupData.Add("transactionType", "update");
+                    groupData.Add("displayPreview", node.ShouldDisplayPreview);
+                    groupData.Add("vertices", verts);
+                    groupData.Add("normals", normals);
+                    groupData.Add("points", points);
+                    groupData.Add("lines", lines);
 
+                    GeometryJson = JsonConvert.SerializeObject(groupData);
+                    HasGeometry = true;
                 }
 
                 Done.Set();
             }
-
         }
     }
 }
