@@ -398,30 +398,30 @@ namespace Dynamo.Graph.Workspaces
                     var inputsView = nodesView.ToArray().Select(x => x.ToObject<Dictionary<string, string>>()).ToList();
                     foreach (var inputViewData in inputsView)
                     {
-                        bool updateIsSetAsInput = true;
+                        bool updateIsSetAsInput = false;
                         string isSetAsInput = "";
-                        if (!inputViewData.TryGetValue("IsSetAsInput", out isSetAsInput) || isSetAsInput == bool.FalseString)
+                        if (inputViewData.TryGetValue("IsSetAsInput", out isSetAsInput) && isSetAsInput == bool.TrueString)
                         {
-                            updateIsSetAsInput = false;
+                            updateIsSetAsInput = true;
                         }
 
-                        bool updateIsSetAsOutput = true;
+                        bool updateIsSetAsOutput = false;
                         string isSetAsOutput = "";
-                        if (!inputViewData.TryGetValue("IsSetAsOutput", out isSetAsOutput) || isSetAsOutput == bool.FalseString)
+                        if (inputViewData.TryGetValue("IsSetAsOutput", out isSetAsOutput) && isSetAsOutput == bool.TrueString)
                         {
-                            updateIsSetAsOutput = false;
+                            updateIsSetAsOutput = true;
                         }
 
-                        bool updateIsFrozen = true;
+                        bool updateIsFrozen = false;
                         string isFrozen = "";
-                        if (!inputViewData.TryGetValue("IsFrozen", out isFrozen) || isFrozen == bool.FalseString)
+                        if (inputViewData.TryGetValue("IsFrozen", out isFrozen) && isFrozen == bool.TrueString)
                         {
-                            updateIsFrozen = false;
+                            updateIsFrozen = true;
                         }
 
                         bool updateIsVisible = true;
                         string isVisible = "";
-                        if (!inputViewData.TryGetValue("ShowGeometry", out isVisible) || isVisible == bool.FalseString)
+                        if (inputViewData.TryGetValue("ShowGeometry", out isVisible) && isVisible == bool.FalseString)
                         {
                             updateIsVisible = false;
                         }
