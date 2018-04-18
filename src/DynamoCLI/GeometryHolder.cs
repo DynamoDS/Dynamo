@@ -70,19 +70,45 @@ namespace DynamoCLI
 
                     foreach (IRenderPackage p in renderPackages.Packages)
                     {
-                        verts.Add(p.MeshVertices.ToArray());
-                        vertColors.Add(p.MeshVertexColors.ToList());
-                        normals.Add(p.MeshNormals.ToArray());
-                        points.Add(p.PointVertices.ToList());
-                        pointColors.Add(p.PointVertexColors.ToList());
-                        lines.Add(p.LineStripVertices.ToList());
-                        lineColors.Add(p.LineStripVertexColors.ToList());
+                        var meshVertices = p.MeshVertices.ToArray();
+                        if (meshVertices.Length > 0)
+                        {
+                            verts.Add(meshVertices);
+                        }
+                        var meshVertexColors = p.MeshVertexColors.ToList();
+                        if(meshVertexColors.Count > 0)
+                        {
+                            vertColors.Add(meshVertexColors);
+                        }
+                        var meshNormals = p.MeshNormals.ToArray();
+                        if (meshNormals.Length > 0)
+                        {
+                            normals.Add(meshNormals);
+                        }
+                        var pointVertices = p.PointVertices.ToList();
+                        if (pointVertices.Count > 0)
+                        {
+                            points.Add(pointVertices);
+                        }
+                        var pointVertexColors = p.PointVertexColors.ToList();
+                        if (pointVertexColors.Count > 0)
+                        {
+                            pointColors.Add(pointVertexColors);
+                        }
+                        var lineStripVertices = p.LineStripVertices.ToList();
+                        if (lineStripVertices.Count > 0)
+                        {
+                            lines.Add(lineStripVertices);
+                        }
+                        var lineStripVertexColors = p.LineStripVertexColors.ToList();
+                        if (lineStripVertexColors.Count > 0)
+                        {
+                            lineColors.Add(lineStripVertexColors);
+                        }
                     }
 
                     Dictionary<string, Object> groupData = new Dictionary<string, object>();
-                    groupData.Add("name", node.GUID.ToString());
-                    groupData.Add("transactionType", "update");
-                    groupData.Add("displayPreview", node.ShouldDisplayPreview);
+                    groupData.Add("name", nodeModel.GUID.ToString());
                     groupData.Add("vertices", verts);
                     groupData.Add("verticeColors", vertColors);
                     groupData.Add("normals", normals);
