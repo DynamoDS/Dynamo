@@ -1880,8 +1880,8 @@ namespace ProtoCore
                 //expand array if required to compare inputs
                 if (formalParameter.IsArray)
                 {
-                    DSArray array = runtimeCore.Heap.ToHeapObject<DSArray>(formalParameter);
-                    StackValue[] flatParameters = array.Values.ToArray();
+                    var array = runtimeCore.Heap.ToHeapObject<DSArray>(formalParameter);
+                    var flatParameters = array.Values.ToArray();
 
                     switch (flatParameters.Length)
                     {
