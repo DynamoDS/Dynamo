@@ -1549,7 +1549,7 @@ namespace ProtoCore
                         throw new ReplicationCaseNotCurrentlySupported(Resources.AlgorithmNotSupported);
                 }
 
-                //We determine if the input paramaters are homogeneous to set the final function endpoint once
+                //We determine if the input parameters are homogeneous to set the final function endpoint once
                 List<StackValue> finalFormalParameters = new List<StackValue>();
                 var homogeneous = AreParametersHomogeneous(formalParameters, runtimeCore, finalFormalParameters);
                 if (homogeneous)
@@ -1677,7 +1677,7 @@ namespace ProtoCore
                 //We will call the subsequent reductions n times
                 int cartIndex = ri.CartesianIndex;
 
-                //We determine if the input paramaters are homogeneous to set the final function endpoint once
+                //We determine if the input parameters are homogeneous to set the final function endpoint once
                 if (cartIndex == 0)
                 {
                     List<StackValue> finalFormalParameters = new List<StackValue>();
@@ -1870,7 +1870,7 @@ namespace ProtoCore
         }
 
         /// <summary>
-        /// Determine if the formalParameters are homogeneous and intialize a flat list of final formalParameters
+        /// Determine if the formalParameters are homogeneous and initialize a flat list of final formalParameters
         /// </summary>
         /// <returns>true if the formalParameters are homogeneous</returns>
         private static bool AreParametersHomogeneous(List<StackValue> formalParameters, RuntimeCore runtimeCore, List<StackValue> finalFormalParameters)
@@ -1889,7 +1889,7 @@ namespace ProtoCore
                             //set function result false and exit due to empty list
                             return false;
                         case 1:
-                            //Add single sample parameter to pass for evalutation in SelectFinalFep
+                            //Add single sample parameter to pass for evaluation in SelectFinalFep
                             finalFormalParameters.Add(flatParameters[0]);
                             break;
                         default:
@@ -1899,24 +1899,24 @@ namespace ProtoCore
                                 if (flatParameters[j].optype != flatParameters[j + 1].optype ||
                                     flatParameters[j].metaData.type != flatParameters[j + 1].metaData.type)
                                 {
-                                    //set function result false and exit due to disimilar function parameters
+                                    //set function result false and exit due to dissimilar function parameters
                                     return false;
                                 }
                             }
 
-                            //Add single sample parameter to pass for evalutation in SelectFinalFep
+                            //Add single sample parameter to pass for evaluation in SelectFinalFep
                             finalFormalParameters.Add(flatParameters[0]);
                             break;
                     }
                 }
                 else
                 {
-                    //For single parameter add it to pass for evalutation in SelectFinalFep
+                    //For single parameter add it to pass for evaluation in SelectFinalFep
                     finalFormalParameters.Add(formalParameter);
                 }
             }
 
-            //formalParameteres evaluated as homegenious
+            //formalParameteres evaluated as homogeneous
             return true;
         }
 
