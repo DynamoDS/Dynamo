@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-08-14 16:01-0700\n"
+"POT-Creation-Date: 2018-04-11 00:41-0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -478,9 +478,6 @@ msgstr ""
 msgid "Could not add EDGEs to consume when joining curves"
 msgstr ""
 
-msgid "Could not set PolyCurve join tolerance"
-msgstr ""
-
 msgid "Could not make WIRE for PolyCurve"
 msgstr ""
 
@@ -490,7 +487,7 @@ msgstr ""
 msgid "Curve join produced more than one WIRE in PolyCurve"
 msgstr ""
 
-msgid "PolyCurves may not be branching"
+msgid "PolyCurves may be branching"
 msgstr ""
 
 msgid "Get EDGEs operation failed when creating PolyCurve"
@@ -805,6 +802,9 @@ msgstr ""
 msgid "Unable to slice bodies"
 msgstr ""
 
+msgid "Unable to transform the entity!"
+msgstr ""
+
 msgid "Unable to get EDGEs while decomposing BODY"
 msgstr ""
 
@@ -880,10 +880,19 @@ msgstr ""
 msgid "Unable to compute closest approach on BoundingBox face"
 msgstr ""
 
+msgid "Can't get curve from coedge"
+msgstr ""
+
+msgid "The CoEdge belongs to a degenerate Edge."
+msgstr ""
+
 msgid "Error getting loop coedges!"
 msgstr ""
 
 msgid "Cast object is not Loop"
+msgstr ""
+
+msgid "Failed to define loop direction"
 msgstr ""
 
 msgid "Error getting adjacent edges of a vertex!"
@@ -1085,9 +1094,6 @@ msgstr ""
 msgid "Spans should be greater than or equal to 1"
 msgstr ""
 
-msgid "Error loading TSM"
-msgstr ""
-
 msgid "No objects were loaded"
 msgstr ""
 
@@ -1095,6 +1101,9 @@ msgid "Error saving TSM"
 msgstr ""
 
 msgid "Error saving TSS"
+msgstr ""
+
+msgid "Error loading TSM"
 msgstr ""
 
 msgid "This T-Spline is not BRep convertible"
@@ -1211,6 +1220,12 @@ msgid "Faces valence must be greater than 0."
 msgstr ""
 
 msgid "Snapping tolerance must be greater than 0."
+msgstr ""
+
+msgid "Edge can't be creased: "
+msgstr ""
+
+msgid "Edge can't be uncreased: "
 msgstr ""
 
 msgid "Vertex can't be creased: "
@@ -1651,6 +1666,9 @@ msgid "Unable to set loop on face!"
 msgstr ""
 
 msgid "Unable to create entity!"
+msgstr ""
+
+msgid "Unable to trim surface as the input loop geometry could be illegal"
 msgstr ""
 
 msgid ""
