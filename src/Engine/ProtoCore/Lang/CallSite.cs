@@ -1549,10 +1549,10 @@ namespace ProtoCore
                         throw new ReplicationCaseNotCurrentlySupported(Resources.AlgorithmNotSupported);
                 }
 
-                //We determine if the input paramaters are homogenious to set the final function endpoint once
+                //We determine if the input paramaters are homogeneous to set the final function endpoint once
                 List<StackValue> finalFormalParameters = new List<StackValue>();
-                var homogenious = AreParametersHomogenious(formalParameters, runtimeCore, finalFormalParameters);
-                if (homogenious)
+                var homogeneous = AreParametersHomogeneous(formalParameters, runtimeCore, finalFormalParameters);
+                if (homogeneous)
                     finalFuntionEndPoint = SelectFinalFep(c, functionEndPoint, finalFormalParameters, stackFrame, runtimeCore);
 
                 bool hasEmptyArg = false;
@@ -1677,13 +1677,13 @@ namespace ProtoCore
                 //We will call the subsequent reductions n times
                 int cartIndex = ri.CartesianIndex;
 
-                //We determine if the input paramaters are homogenious to set the final function endpoint once
+                //We determine if the input paramaters are homogeneous to set the final function endpoint once
                 if (cartIndex == 0)
                 {
                     List<StackValue> finalFormalParameters = new List<StackValue>();
-                    var homogenious = AreParametersHomogenious(formalParameters, runtimeCore, finalFormalParameters);
+                    var homogeneous = AreParametersHomogeneous(formalParameters, runtimeCore, finalFormalParameters);
 
-                    if(homogenious)
+                    if(homogeneous)
                         finalFuntionEndPoint = SelectFinalFep(c, functionEndPoint, finalFormalParameters, stackFrame, runtimeCore);
                 }
 
@@ -1870,10 +1870,10 @@ namespace ProtoCore
         }
 
         /// <summary>
-        /// Determine if the formalParameters are homogenious and intialize a flat list of final formalParameters
+        /// Determine if the formalParameters are homogeneous and intialize a flat list of final formalParameters
         /// </summary>
-        /// <returns>true if the formalParameters are homogenious</returns>
-        private static bool AreParametersHomogenious(List<StackValue> formalParameters, RuntimeCore runtimeCore, List<StackValue> finalFormalParameters)
+        /// <returns>true if the formalParameters are homogeneous</returns>
+        private static bool AreParametersHomogeneous(List<StackValue> formalParameters, RuntimeCore runtimeCore, List<StackValue> finalFormalParameters)
         {
             foreach (var formalParameter in formalParameters)
             { 
