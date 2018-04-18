@@ -281,7 +281,7 @@ namespace Dynamo.Applications
                         output.Add(new FileLoadException(
                             string.Format(Resources.MismatchedAssemblyVersion, assembly.FullName, currentReferencedAssembly.FullName)
                             + Environment.NewLine + Resources.MismatchedAssemblyList + Environment.NewLine +
-                            String.Join(", ", referencingNewerVersions.Select(x => x.Name).ToArray())));
+                            String.Join(", ", referencingNewerVersions.Select(x => x.Name).Distinct().ToArray())));
                     }
                 }
             }
