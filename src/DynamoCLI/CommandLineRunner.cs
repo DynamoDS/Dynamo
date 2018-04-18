@@ -10,6 +10,7 @@ using Dynamo.Models;
 using Dynamo.Applications;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Visualization;
+using Newtonsoft.Json;
 
 namespace DynamoCLI
 {
@@ -106,14 +107,16 @@ namespace DynamoCLI
                     var jsonFilename = cmdLineArgs.GeometryFilePath;
                     using (StreamWriter jsonFile = new StreamWriter(jsonFilename))
                     {
+                        List<Object> geometry = new List<object>();
                         foreach (var holder in nodeGeometries)
                         {
                             if (holder.HasGeometry)
                             {
-                                string json = holder.GeometryJson;
-                                jsonFile.WriteLine(json);
+                                geometry.Add(holder.Geometry);
                             }
                         }
+                        string json = JsonConvert.SerializeObject(geometry);
+                        jsonFile.Write(json);
                     }
                 }
 

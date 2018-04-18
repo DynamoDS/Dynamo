@@ -6,7 +6,6 @@ using Dynamo.Models;
 using Dynamo.Graph.Nodes;
 using Dynamo.Visualization;
 using Autodesk.DesignScript.Interfaces;
-using Newtonsoft.Json;
 
 namespace DynamoCLI
 {
@@ -16,17 +15,16 @@ namespace DynamoCLI
         {
             private NodeModel node;
             private ManualResetEvent done = new ManualResetEvent(false);
-            private string geometryJson = "";
+            private Dictionary<string, Object> groupData = new Dictionary<string, object>();
             private bool hasGeometry = false;
 
-            public string GeometryJson
+            public Object Geometry
             {
                 get
                 {
                     Done.WaitOne();
-                    return geometryJson;
+                    return groupData;
                 }
-                private set => geometryJson = value;
             }
 
             public ManualResetEvent Done { get => done; private set => done = value; }
@@ -75,31 +73,37 @@ namespace DynamoCLI
                         {
                             verts.Add(meshVertices);
                         }
+
                         var meshVertexColors = p.MeshVertexColors.ToList();
                         if(meshVertexColors.Count > 0)
                         {
                             vertColors.Add(meshVertexColors);
                         }
+
                         var meshNormals = p.MeshNormals.ToArray();
                         if (meshNormals.Length > 0)
                         {
                             normals.Add(meshNormals);
                         }
+
                         var pointVertices = p.PointVertices.ToList();
                         if (pointVertices.Count > 0)
                         {
                             points.Add(pointVertices);
                         }
+
                         var pointVertexColors = p.PointVertexColors.ToList();
                         if (pointVertexColors.Count > 0)
                         {
                             pointColors.Add(pointVertexColors);
                         }
+
                         var lineStripVertices = p.LineStripVertices.ToList();
                         if (lineStripVertices.Count > 0)
                         {
                             lines.Add(lineStripVertices);
                         }
+
                         var lineStripVertexColors = p.LineStripVertexColors.ToList();
                         if (lineStripVertexColors.Count > 0)
                         {
@@ -107,7 +111,6 @@ namespace DynamoCLI
                         }
                     }
 
-                    Dictionary<string, Object> groupData = new Dictionary<string, object>();
                     groupData.Add("name", nodeModel.GUID.ToString());
                     groupData.Add("vertices", verts);
                     groupData.Add("verticeColors", vertColors);
@@ -117,7 +120,6 @@ namespace DynamoCLI
                     groupData.Add("lines", lines);
                     groupData.Add("lineColors", lineColors);
 
-                    GeometryJson = JsonConvert.SerializeObject(groupData);
                     HasGeometry = true;
                 }
 
