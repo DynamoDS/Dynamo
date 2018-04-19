@@ -27,7 +27,18 @@ namespace DynamoCLI
                 }
             }
 
-            public ManualResetEvent Done { get => done; private set => done = value; }
+            public ManualResetEvent Done
+            {
+                get
+                {
+                    return done;
+                }
+
+                private set
+                {
+                    done = value;
+                }
+            }
             public bool HasGeometry
             {
                 get
@@ -35,7 +46,10 @@ namespace DynamoCLI
                     Done.WaitOne();
                     return hasGeometry;
                 }
-                private set => hasGeometry = value;
+                private set
+                {
+                    hasGeometry = value;
+                }
             }
 
             public GeometryHolder(DynamoModel model, IRenderPackageFactory factory, NodeModel nodeModel)
