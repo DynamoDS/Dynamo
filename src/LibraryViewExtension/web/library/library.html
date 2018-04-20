@@ -24,8 +24,8 @@
     <script>
         //Get hold of object registered from C#
         let csharpController = window["controller"];
-        //check if one of our methods does not exist
-        if (csharpController.closeNodeTooltip == null) {
+        //Check if the controller is null or one of our methods does not exist.
+        if (csharpController == null || csharpController.closeNodeTooltip == null) {
             throw new Error("The c# LibraryViewController was not registered into the browser correctly.")
         }
 
