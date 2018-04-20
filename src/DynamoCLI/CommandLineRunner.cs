@@ -19,7 +19,7 @@ namespace DynamoCLI
     /// This class also has a very limited method for exporting the graph evaluation to an xml file, so that 
     /// the results from invoking dynamo from the command line are useable.
     /// </summary>
-    public partial class CommandLineRunner
+    public class CommandLineRunner
     {
         private readonly DynamoModel model;
 
