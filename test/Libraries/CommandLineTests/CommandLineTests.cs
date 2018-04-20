@@ -138,12 +138,6 @@ namespace Dynamo.Tests
                     Assert.IsTrue(JToken.DeepEquals(geometryJson, newGeometryJson));
                 }
             }
-
-            //            var output = new XmlDocument();
-            //            output.Load(newpath);
-            //            AssertOutputValuesForGuid("36c30251-c867-4d73-9a3b-24f3e9ab00e5", new List<Tuple<int, string>> { Tuple.Create(0, "{e : 6, d : {4, 5}, a : 1, c : {bar : 999, foo : 99}, b : 2}") }, output);
-            //            AssertOutputValuesForGuid("6a5bcff0-ce40-4773-aee6-88d99104b4a7", new List<Tuple<int, string>> { Tuple.Create(0, "{a,b,c,d,e}"), Tuple.Create(1, "{1,2,{bar : 999, foo : 99},{4,5},6}") }, output);
-
         }
 
     }
