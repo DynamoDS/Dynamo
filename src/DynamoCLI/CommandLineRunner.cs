@@ -97,8 +97,8 @@ namespace DynamoCLI
 
                 if (!String.IsNullOrEmpty(cmdLineArgs.GeometryFilePath))
                 {
-                    IRenderPackageFactory renderPackageFactory = new DefaultRenderPackageFactory();
-                    List<GeometryHolder> nodeGeometries = new List<GeometryHolder>();
+                    var renderPackageFactory = new DefaultRenderPackageFactory();
+                    var nodeGeometries = new List<GeometryHolder>();
                     foreach (var node in model.CurrentWorkspace.Nodes)
                     {
                         nodeGeometries.Add(new GeometryHolder(model, renderPackageFactory, node));
@@ -107,7 +107,7 @@ namespace DynamoCLI
                     var jsonFilename = cmdLineArgs.GeometryFilePath;
                     using (StreamWriter jsonFile = new StreamWriter(jsonFilename))
                     {
-                        List<Object> geometry = new List<object>();
+                        var geometry = new List<object>();
                         foreach (var holder in nodeGeometries)
                         {
                             if (holder.HasGeometry)
