@@ -1,6 +1,7 @@
 ﻿using System;
 using Dynamo.Applications;
 using Dynamo.Models;
+using Dynamo.ViewModels;
 
 namespace DynamoCLI
 {
@@ -15,7 +16,13 @@ namespace DynamoCLI
                 var cmdLineArgs = StartupUtils.CommandLineArguments.Parse(args);
                 var locale = StartupUtils.SetLocale(cmdLineArgs);
                 var model = StartupUtils.MakeModel(true);
-                var runner = new CommandLineRunner(model);
+                var viewModel = DynamoViewModel.Start(
+                    new DynamoViewModel.StartConfiguration()
+                    {
+                        DynamoModel = model
+                    });
+
+                var runner = new CommandLineRunner(viewModel);
                 runner.Run(cmdLineArgs);
                 
             }

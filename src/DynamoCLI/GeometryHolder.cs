@@ -46,7 +46,7 @@ namespace DynamoCLI
         {
             node = nodeModel;
             nodeModel.RenderPackagesUpdated += NodeRenderPackagesUpdated;
-            if (!nodeModel.RequestVisualUpdateAsync(model.Scheduler, model.EngineController, factory))
+            if (!nodeModel.RequestVisualUpdateAsync(model.Scheduler, model.EngineController, factory, true))
             {
                 Done.Set();
             }

@@ -37,7 +37,7 @@ namespace Dynamo.Graph.Workspaces
         private LibraryServices libraryServices;
         private bool isTestMode;
 
-
+        
         public ElementResolver ElementResolver { get; set; }
         //map of all loaded assemblies including LoadFrom context assemblies
         private Dictionary<string, List<Assembly>> loadedAssemblies;
@@ -56,18 +56,17 @@ namespace Dynamo.Graph.Workspaces
             }
         }
 
-        private Dictionary<string, List<Assembly>> buildMapOfLoadedAssemblies()
+        private Dictionary<string,List<Assembly>> buildMapOfLoadedAssemblies()
         {
             var allAssemblies = AppDomain.CurrentDomain.GetAssemblies();
             var dict = new Dictionary<string, List<Assembly>>();
-            foreach (var assembly in allAssemblies)
+            foreach(var assembly in allAssemblies)
             {
                 if (!dict.ContainsKey(assembly.GetName().Name))
                 {
                     dict[assembly.GetName().Name] = new List<Assembly>() { assembly };
                 }
-                else
-                {
+                else{
                     dict[assembly.GetName().Name].Add(assembly);
                 }
             }
@@ -90,7 +89,7 @@ namespace Dynamo.Graph.Workspaces
             //using Assembly.LoadFrom using the assemblyHelper - which loads dlls into loadFrom context - 
             //dlls loaded with LoadFrom context cannot be found using Type.GetType() - this should
             //not be an issue during normal dynamo use but if it is we can enable this code.
-            if (type == null && this.isTestMode == true)
+            if(type == null && this.isTestMode == true)
             {
                 List<Assembly> resultList;
 
@@ -99,10 +98,10 @@ namespace Dynamo.Graph.Workspaces
                 var assemblyName = obj["$type"].Value<string>().Split(',').Skip(1).FirstOrDefault().Trim();
                 if (assemblyName != null)
                 {
-                    if (this.loadedAssemblies.TryGetValue(assemblyName, out resultList))
+                    if(this.loadedAssemblies.TryGetValue(assemblyName, out resultList))
                     {
                         var matchingTypes = resultList.Select(x => x.GetType(typeName)).ToList();
-                        type = matchingTypes.FirstOrDefault();
+                        type =  matchingTypes.FirstOrDefault();
                     }
                 }
             }
@@ -111,7 +110,7 @@ namespace Dynamo.Graph.Workspaces
             var guid = GuidUtility.tryParseOrCreateGuid(obj["Id"].Value<string>());
 
             var replication = obj["Replication"].Value<string>();
-
+           
             var inPorts = obj["Inputs"].ToArray().Select(t => t.ToObject<PortModel>()).ToArray();
             var outPorts = obj["Outputs"].ToArray().Select(t => t.ToObject<PortModel>()).ToArray();
 
@@ -134,7 +133,7 @@ namespace Dynamo.Graph.Workspaces
                 node = function;
 
                 if (isUnresolved)
-                    function.UpdatePortsForUnresolved(inPorts, outPorts);
+                  function.UpdatePortsForUnresolved(inPorts, outPorts);
             }
             else if (type == typeof(CodeBlockNodeModel))
             {
@@ -225,7 +224,7 @@ namespace Dynamo.Graph.Workspaces
 
             foreach (var p in node.OutPorts)
                 serializer.ReferenceResolver.AddReference(serializer.Context, p.GUID.ToString(), p);
-
+            
             return node;
         }
 
@@ -268,7 +267,7 @@ namespace Dynamo.Graph.Workspaces
             }
         }
 
-        private static void setPortDataOnNewPort(PortModel newPort, PortModel deserializedPort)
+        private static void setPortDataOnNewPort(PortModel newPort, PortModel deserializedPort )
         {
             //set the appropriate properties on the new port.
             newPort.GUID = deserializedPort.GUID;
@@ -314,7 +313,7 @@ namespace Dynamo.Graph.Workspaces
         bool isTestMode;
         bool verboseLogging;
 
-        public WorkspaceReadConverter(EngineController engine,
+        public WorkspaceReadConverter(EngineController engine, 
             DynamoScheduler scheduler, NodeFactory factory, bool isTestMode, bool verboseLogging)
         {
             this.scheduler = scheduler;
@@ -354,14 +353,14 @@ namespace Dynamo.Graph.Workspaces
             // Setting Inputs
             // Required in headless mode by Dynamo Player that NodeModel.Name and NodeModel.IsSetAsInput are set
             var inputsToken = obj["Inputs"];
-            if (inputsToken != null)
+            if(inputsToken != null)
             {
-                var inputs = inputsToken.ToArray().Select(x => x.ToObject<NodeInputData>()).ToList();
-                //using the inputs lets set the correct properties on the nodes.
-                foreach (var inputData in inputs)
+               var inputs = inputsToken.ToArray().Select(x => x.ToObject<NodeInputData>()).ToList();
+               //using the inputs lets set the correct properties on the nodes.
+               foreach(var inputData in inputs)
                 {
                     var matchingNode = nodes.Where(x => x.GUID == inputData.Id).FirstOrDefault();
-                    if (matchingNode != null)
+                    if(matchingNode != null)
                     {
                         matchingNode.IsSetAsInput = true;
                         matchingNode.Name = inputData.Name;
@@ -398,35 +397,8 @@ namespace Dynamo.Graph.Workspaces
                     var inputsView = nodesView.ToArray().Select(x => x.ToObject<Dictionary<string, string>>()).ToList();
                     foreach (var inputViewData in inputsView)
                     {
-                        bool updateIsSetAsInput = false;
                         string isSetAsInput = "";
-                        if (inputViewData.TryGetValue("IsSetAsInput", out isSetAsInput) && isSetAsInput == bool.TrueString)
-                        {
-                            updateIsSetAsInput = true;
-                        }
-
-                        bool updateIsSetAsOutput = false;
-                        string isSetAsOutput = "";
-                        if (inputViewData.TryGetValue("IsSetAsOutput", out isSetAsOutput) && isSetAsOutput == bool.TrueString)
-                        {
-                            updateIsSetAsOutput = true;
-                        }
-
-                        bool updateIsFrozen = false;
-                        string isFrozen = "";
-                        if (inputViewData.TryGetValue("IsFrozen", out isFrozen) && isFrozen == bool.TrueString)
-                        {
-                            updateIsFrozen = true;
-                        }
-
-                        bool updateIsVisible = true;
-                        string isVisible = "";
-                        if (inputViewData.TryGetValue("ShowGeometry", out isVisible) && isVisible == bool.FalseString)
-                        {
-                            updateIsVisible = false;
-                        }
-
-                        if (updateIsSetAsInput == false && updateIsSetAsOutput == false && updateIsFrozen == false && updateIsVisible == true)
+                        if (!inputViewData.TryGetValue("IsSetAsInput", out isSetAsInput) || isSetAsInput == bool.FalseString)
                         {
                             continue;
                         }
@@ -447,11 +419,7 @@ namespace Dynamo.Graph.Workspaces
                             var matchingNode = nodes.Where(x => x.GUID == inputGuid).FirstOrDefault();
                             if (matchingNode != null)
                             {
-                                matchingNode.IsSetAsInput = updateIsSetAsInput;
-                                matchingNode.IsSetAsOutput = updateIsSetAsOutput;
-                                matchingNode.IsFrozen = updateIsFrozen;
-                                matchingNode.UpdateValue(new UpdateValueParams("IsVisible", updateIsVisible.ToString()));
-
+                                matchingNode.IsSetAsInput = true;
                                 string inputName = "";
                                 if (inputViewData.TryGetValue("Name", out inputName))
                                 {
@@ -459,9 +427,7 @@ namespace Dynamo.Graph.Workspaces
                                 }
                             }
                         }
-
                     }
-
                 }
             }
 
@@ -528,14 +494,14 @@ namespace Dynamo.Graph.Workspaces
             WorkspaceModel ws;
             if (isCustomNode)
             {
-                ws = new CustomNodeWorkspaceModel(factory, nodes, notes, annotations,
+                ws = new CustomNodeWorkspaceModel(factory, nodes, notes, annotations, 
                     Enumerable.Empty<PresetModel>(), elementResolver, info);
             }
             else
             {
                 ws = new HomeWorkspaceModel(guid, engine, scheduler, factory,
-                    loadedTraceData, nodes, notes, annotations,
-                    Enumerable.Empty<PresetModel>(), elementResolver,
+                    loadedTraceData, nodes, notes, annotations, 
+                    Enumerable.Empty<PresetModel>(), elementResolver, 
                     info, verboseLogging, isTestMode);
             }
 
@@ -651,8 +617,8 @@ namespace Dynamo.Graph.Workspaces
                 // a DSVarArgFunction or a CodeBlockNodeModel into a list.
                 var nodeGuids =
                     ws.Nodes.Where(
-                            n => n is DSFunction || n is DSVarArgFunction || n is CodeBlockNodeModel || n is Function ||
-                            n.GetType().GetCustomAttributes(typeof(DynamoServices.RegisterForTraceAttribute), false).Any())
+                            n => n is DSFunction || n is DSVarArgFunction || n is CodeBlockNodeModel || n is Function || 
+                            n.GetType().GetCustomAttributes(typeof(DynamoServices.RegisterForTraceAttribute),false).Any() )
                         .Select(n => n.GUID);
 
                 var nodeTraceDataList = engine.LiveRunnerRuntimeCore.RuntimeData.GetTraceDataForNodes(nodeGuids,
@@ -739,7 +705,7 @@ namespace Dynamo.Graph.Workspaces
     public class ConnectorConverter : JsonConverter
     {
         private Logging.ILogger logger;
-
+        
         /// <summary>
         /// Constructs a ConnectorConverter.
         /// </summary>
@@ -771,32 +737,32 @@ namespace Dynamo.Graph.Workspaces
             // If the start or end ports can't be found in the resolver,
             // try to resolve them from the resolver's map, which maps
             // the persisted port ids to the new port ids.
-            if (startPort == null)
+            if(startPort == null)
             {
                 startPort = (PortModel)resolver.ResolveReferenceFromMap(serializer.Context, startIdGuid.ToString());
             }
 
-            if (endPort == null)
+            if(endPort == null)
             {
                 endPort = (PortModel)resolver.ResolveReferenceFromMap(serializer.Context, endIdGuid.ToString());
             }
 
             //if the id is not a guid, makes a guid based on the id of the model
             Guid connectorId = GuidUtility.tryParseOrCreateGuid(obj["Id"].Value<string>());
-            if (startPort != null && endPort != null)
+            if(startPort != null && endPort != null)
             {
                 return new ConnectorModel(startPort, endPort, connectorId);
             }
             else
             {
-                if (this.logger != null)
+                if (this.logger!=null)
                 {
                     this.logger.LogWarning(
                        string.Format("connector {0} could not be created, start or end port does not exist", connectorId),
                        Logging.WarningLevel.Moderate);
 
                 }
-
+                
                 return null;
             }
         }
@@ -896,7 +862,7 @@ namespace Dynamo.Graph.Workspaces
             if (modelMap.ContainsKey(oldId))
             {
                 throw new InvalidOperationException(@"the map already contains a model with this id, the id must
-                    be unique for the workspace that is currently being deserialized: " + oldId);
+                    be unique for the workspace that is currently being deserialized: "+oldId);
             }
             modelMap.Add(oldId, newObject);
         }
@@ -907,7 +873,7 @@ namespace Dynamo.Graph.Workspaces
             if (models.ContainsKey(id))
             {
                 throw new InvalidOperationException(@"the map already contains a model with this id, the id must
-                    be unique for the workspace that is currently being deserialized :" + id);
+                    be unique for the workspace that is currently being deserialized :"+id);
             }
             models[id] = value;
         }

@@ -9,6 +9,7 @@ using System.Text.RegularExpressions;
 using System.Xml;
 using Dynamo;
 using Dynamo.Applications;
+using Dynamo.ViewModels;
 using DynamoCLI;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -70,7 +71,13 @@ namespace Dynamo.Tests
         public void CanOpenAndRunDynamoModelWithCommandLineRunner()
         {
             string openpath = Path.Combine(TestDirectory, @"core\math\Add.dyn");
-            var runner = new CommandLineRunner(this.CurrentDynamoModel);
+            var viewModel = DynamoViewModel.Start(
+                new DynamoViewModel.StartConfiguration()
+                {
+                    DynamoModel = this.CurrentDynamoModel
+                });
+
+            var runner = new CommandLineRunner(viewModel);
             string commandstring = "/o" + " " + openpath;
 
             runner.Run(CommandstringToArgs(commandstring));
