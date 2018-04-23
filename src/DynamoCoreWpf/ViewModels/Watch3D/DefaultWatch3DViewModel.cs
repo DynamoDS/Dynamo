@@ -224,7 +224,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             }
         }
 
-        public bool CanBeActivated { get; internal set; }
+        public bool CanBeActivated { get; set; }
 
         /// <summary>
         /// The DefaultWatch3DViewModel is used in contexts where a complete rendering environment
