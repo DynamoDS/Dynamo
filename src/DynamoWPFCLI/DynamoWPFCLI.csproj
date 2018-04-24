@@ -55,7 +55,7 @@
     <Compile Include="..\AssemblySharedInfoGenerator\AssemblySharedInfo.cs">
       <Link>AssemblySharedInfo.cs</Link>
     </Compile>
-    <Compile Include="CommandLineRunner.cs" />
+    <Compile Include="CommandLineRunnerWPF.cs" />
     <Compile Include="GeometryHolder.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -69,6 +69,10 @@
       <Project>{aa782772-fe61-4226-baa4-eb529fa1646b}</Project>
       <Name>DynamoApplications</Name>
       <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\DynamoCLI\DynamoCLI.csproj">
+      <Project>{5F9AE581-6781-4A4C-A262-1B06CD27208B}</Project>
+      <Name>DynamoCLI</Name>
     </ProjectReference>
     <ProjectReference Include="..\DynamoCoreWpf\DynamoCoreWpf.csproj">
       <Project>{51bb6014-43f7-4f31-b8d3-e3c37ebedaf4}</Project>

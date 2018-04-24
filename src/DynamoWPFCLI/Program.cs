@@ -28,7 +28,7 @@ namespace DynamoWPFCLI
                         }
                     });
 
-                var runner = new CommandLineRunner(viewModel);
+                var runner = new CommandLineRunnerWPF(viewModel);
                 runner.Run(cmdLineArgs);
                 
             }

@@ -124,7 +124,7 @@ namespace Dynamo.Tests
                 DynamoModel = this.CurrentDynamoModel
             });
 
-            var runner = new DynamoWPFCLI.CommandLineRunner(viewModel);
+            var runner = new DynamoWPFCLI.CommandLineRunnerWPF(viewModel);
             string commandstring = "/o" + " " + openpath;
 
             runner.Run(CommandstringToArgs(commandstring));
