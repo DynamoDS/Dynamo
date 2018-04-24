@@ -85,6 +85,10 @@
       <Name>DynamoSandbox</Name>
       <Private>False</Private>
     </ProjectReference>
+    <ProjectReference Include="..\..\..\src\DynamoWPFCLI\DynamoWPFCLI.csproj">
+      <Project>{f7fd9395-35d5-474d-8ad1-9904817e70d3}</Project>
+      <Name>DynamoWPFCLI</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\src\Engine\ProtoCore\ProtoCore.csproj">
       <Project>{7a9e0314-966f-4584-baa3-7339cbb849d1}</Project>
       <Name>ProtoCore</Name>

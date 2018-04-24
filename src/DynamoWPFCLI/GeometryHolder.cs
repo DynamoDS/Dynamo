@@ -7,7 +7,7 @@ using Dynamo.Graph.Nodes;
 using Dynamo.Visualization;
 using Autodesk.DesignScript.Interfaces;
 
-namespace DynamoCLI
+namespace DynamoWPFCLI
 {
     internal class GeometryHolder
     {

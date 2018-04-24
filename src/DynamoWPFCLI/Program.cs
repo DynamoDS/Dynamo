@@ -1,8 +1,10 @@
 ﻿using System;
 using Dynamo.Applications;
 using Dynamo.Models;
+using Dynamo.ViewModels;
+using Dynamo.Wpf.ViewModels.Watch3D;
 
-namespace DynamoCLI
+namespace DynamoWPFCLI
 {
     internal class Program
     {
@@ -15,7 +17,18 @@ namespace DynamoCLI
                 var cmdLineArgs = StartupUtils.CommandLineArguments.Parse(args);
                 var locale = StartupUtils.SetLocale(cmdLineArgs);
                 var model = StartupUtils.MakeModel(true);
-                var runner = new CommandLineRunner(model);
+                var viewModel = DynamoViewModel.Start(
+                    new DynamoViewModel.StartConfiguration()
+                    {
+                        DynamoModel = model,
+                        Watch3DViewModel = new DefaultWatch3DViewModel(null, new Watch3DViewModelStartupParams(model))
+                        {
+                            Active = false,
+                            CanBeActivated = false
+                        }
+                    });
+
+                var runner = new CommandLineRunner(viewModel);
                 runner.Run(cmdLineArgs);
                 
             }

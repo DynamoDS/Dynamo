@@ -9,10 +9,12 @@ using DesignScript.Builtin;
 using Dynamo.Models;
 using Dynamo.Applications;
 using Dynamo.Graph.Workspaces;
+using Dynamo.ViewModels;
+using Dynamo.Visualization;
+using Newtonsoft.Json;
 
-namespace DynamoCLI
+namespace DynamoWPFCLI
 {
-
     /// <summary>
     /// This class invokes a dynamo model's run methods in a headless mode from the CLI using a set of flags.
     /// This class also has a very limited method for exporting the graph evaluation to an xml file, so that 
@@ -20,14 +22,14 @@ namespace DynamoCLI
     /// </summary>
     public class CommandLineRunner
     {
-        private readonly DynamoModel model;
+        private readonly DynamoViewModel viewModel;
 
-        public CommandLineRunner(DynamoModel model)
+        public CommandLineRunner(DynamoViewModel viewModel)
         {
-            this.model = model;
+            this.viewModel = viewModel;
         }
 
-        private static XmlDocument RunCommandLineArgs(DynamoModel model, StartupUtils.CommandLineArguments cmdLineArgs)
+        private static XmlDocument RunCommandLineArgs(DynamoViewModel viewModel, StartupUtils.CommandLineArguments cmdLineArgs)
         {
             var evalComplete = false;
             if (string.IsNullOrEmpty(cmdLineArgs.OpenFilePath))
@@ -36,17 +38,12 @@ namespace DynamoCLI
             }
             if (!(string.IsNullOrEmpty(cmdLineArgs.CommandFilePath)))
             {
-                Console.WriteLine("commandFilePath option is only available when running DynamoSandbox, not DynamoCLI");
+                Console.WriteLine("commandFilePath option is only available when running DynamoSandbox, not DynamoWPFCLI");
             }
 
-            if (!(string.IsNullOrEmpty(cmdLineArgs.GeometryFilePath)))
-            {
-                Console.WriteLine("geometryFilePath option is only available when running DynamoWPFCLI, not DynamoCLI");
-            }
-
-            model.OpenFileFromPath(cmdLineArgs.OpenFilePath, true);
+            viewModel.OpenCommand.Execute(new Tuple<string, bool>(cmdLineArgs.OpenFilePath, true));
             Console.WriteLine("loaded file");
-            model.EvaluationCompleted += (o, args) => { evalComplete = true; };
+            viewModel.Model.EvaluationCompleted += (o, args) => { evalComplete = true; };
 
             // Build a list of states, by default there is only a single state `default`
             // If the desire is to have additional states you can add logic here to build
@@ -59,8 +56,9 @@ namespace DynamoCLI
             XmlDocument doc = null;
             foreach (var stateName in stateNames)
             {
+
                 // Graph execution
-                model.ExecuteCommand(new DynamoModel.RunCancelCommand(false, false));
+                viewModel.Model.ExecuteCommand(new DynamoModel.RunCancelCommand(false, false));
 
                 while (evalComplete == false)
                 {
@@ -72,12 +70,12 @@ namespace DynamoCLI
                 {
                     doc = new XmlDocument();
                     var resultsdict = new Dictionary<Guid, List<object>>();
-                    foreach (var node in model.CurrentWorkspace.Nodes)
+                    foreach (var node in viewModel.Model.CurrentWorkspace.Nodes)
                     {
                         var portvalues = new List<object>();
                         foreach (var port in node.OutPorts)
                         {
-                            var value = node.GetValue(port.Index, model.EngineController);
+                            var value = node.GetValue(port.Index, viewModel.Model.EngineController);
                             if (value.IsCollection)
                             {
                                 portvalues.Add(GetStringRepOfCollection(value));
@@ -97,6 +95,32 @@ namespace DynamoCLI
                     outputresults.Add(resultsdict);
                     populateXmlDocWithResults(doc, outputresults);
                 }
+
+                if (!String.IsNullOrEmpty(cmdLineArgs.GeometryFilePath))
+                {
+                    var renderPackageFactory = new DefaultRenderPackageFactory();
+                    var nodeGeometries = new List<GeometryHolder>();
+                    foreach (var node in viewModel.Model.CurrentWorkspace.Nodes)
+                    {
+                        nodeGeometries.Add(new GeometryHolder(viewModel.Model, renderPackageFactory, node));
+                    }
+
+                    var jsonFilename = cmdLineArgs.GeometryFilePath;
+                    using (StreamWriter jsonFile = new StreamWriter(jsonFilename))
+                    {
+                        var geometry = new List<object>();
+                        foreach (var holder in nodeGeometries)
+                        {
+                            if (holder.HasGeometry)
+                            {
+                                geometry.Add(holder.Geometry);
+                            }
+                        }
+                        string json = JsonConvert.SerializeObject(geometry);
+                        jsonFile.Write(json);
+                    }
+                }
+
                 evalComplete = false;
 
             }
@@ -175,12 +199,12 @@ namespace DynamoCLI
             }
         }
 
-        private static void OpenWorkspaceAndConvert(DynamoModel model, string dynPath)
+        private static void OpenWorkspaceAndConvert(DynamoViewModel viewModel, string dynPath)
         {
-            model.OpenFileFromPath(dynPath);
+            viewModel.OpenCommand.Execute(dynPath);
 
-            var ws = model.CurrentWorkspace;
-            var json = ws.ToJson(model.EngineController);
+            var ws = viewModel.Model.CurrentWorkspace;
+            var json = ws.ToJson(viewModel.Model.EngineController);
 
             var newFilePath = Path.Combine(Path.GetDirectoryName(dynPath), Path.GetFileNameWithoutExtension(dynPath) + ".json");
             File.WriteAllText(newFilePath, json);
@@ -190,11 +214,11 @@ namespace DynamoCLI
         {
             if (args.ConvertFile)
             {
-                OpenWorkspaceAndConvert(model, args.OpenFilePath);
+                OpenWorkspaceAndConvert(viewModel, args.OpenFilePath);
                 return;
             }
 
-            var doc = RunCommandLineArgs(this.model, args);
+            var doc = RunCommandLineArgs(this.viewModel, args);
             if (doc != null && Directory.Exists(new FileInfo(args.Verbose).Directory.FullName))
             {
                 //if it exists and the path is valid, save the output file
