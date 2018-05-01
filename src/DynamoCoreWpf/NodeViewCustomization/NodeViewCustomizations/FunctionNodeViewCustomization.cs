@@ -113,6 +113,7 @@ namespace Dynamo.Wpf
                     var newJObject = Newtonsoft.Json.Linq.JObject.Parse(newJson);
                     newJObject.Add("View", originalJson.SelectToken("View"));
 
+                    // Save the updated dyf
                     File.WriteAllText(ws.FileName, newJObject.ToString());
                 }
             }
