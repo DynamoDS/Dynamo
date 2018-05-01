@@ -1,3 +1,4 @@
+using System.IO;
 using System.Windows.Controls;
 using Dynamo.Controls;
 using Dynamo.Graph.Nodes.CustomNodes;
@@ -102,7 +103,17 @@ namespace Dynamo.Wpf
 
                 if (!string.IsNullOrEmpty(ws.FileName))
                 {
-                    ws.Save(ws.FileName, false, dynamoViewModel.EngineController);
+                    string fileContents = File.ReadAllText(ws.FileName);
+                    var originalJson = Newtonsoft.Json.Linq.JObject.Parse(fileContents);
+
+                    // Serialize the custom node workspace.
+                    var newJson = ws.ToJson(dynamoViewModel.EngineController);
+
+                    // Append the View block since it is unchanged
+                    var newJObject = Newtonsoft.Json.Linq.JObject.Parse(newJson);
+                    newJObject.Add("View", originalJson.SelectToken("View"));
+
+                    File.WriteAllText(ws.FileName, newJObject.ToString());
                 }
             }
         }
