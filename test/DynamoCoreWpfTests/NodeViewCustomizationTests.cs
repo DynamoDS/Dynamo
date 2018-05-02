@@ -137,7 +137,7 @@ namespace DynamoCoreWpfTests
 
         }
 
-        //these tests live here as they have a dependencey on CoreNodesWpf which
+        //these tests live here as they have a dependency on CoreNodesWpf which
         //is only accessible at test time after it is loaded via Dynamo 
         [Test]
         [Category("UnitTests")]
@@ -414,8 +414,8 @@ namespace DynamoCoreWpfTests
             OpenAndRun(@"UI\InvalidValueShouldNotCrashColorRangeNode.dyn");
             var node0 = Model.CurrentWorkspace.Nodes.First(n => n.GUID == guid0);
             var node1 = Model.CurrentWorkspace.Nodes.First(n => n.GUID == guid1);
-            node0.OnNodeModified(); // Mark node as dirty to tigger an immediate run.
-            node1.OnNodeModified(); // Mark node as dirty to tigger an immediate run.
+            node0.OnNodeModified(); // Mark node as dirty to trigger an immediate run.
+            node1.OnNodeModified(); // Mark node as dirty to trigger an immediate run.
 
             Assert.Pass(); // We should reach here safely without exception.
         }

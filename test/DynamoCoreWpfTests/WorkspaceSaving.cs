@@ -792,6 +792,37 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        public void CustomNodeEditNodeDescriptionKeepingViewBlockInDyf()
+        {
+            // new custom node
+            // Set file path
+            // custom node update description and node name
+            // Check if serialized workspace still have view block
+
+            var dynamoModel = ViewModel.Model;
+            var nodeName = "Cool node";
+            var catName = "Custom Nodes";
+            var initialId = Guid.NewGuid();
+
+            var def = dynamoModel.CustomNodeManager.CreateCustomNode(nodeName, catName, "", initialId);
+            var workspace = (CustomNodeWorkspaceModel)def;
+            workspace.FileName = GetNewFileNameOnTempPath("dyf");
+
+            Dynamo.Wpf.FunctionNodeViewCustomization temp = new Dynamo.Wpf.FunctionNodeViewCustomization();
+            FunctionNamePromptEventArgs args = new FunctionNamePromptEventArgs();
+            args.Success = true;
+            args.Name = "Cool node_v2";
+            args.Category = "Custom Nodes";
+            args.Description = "test";
+
+            temp.EditCustomNodeProperties(null, args);
+
+            string fileContents = File.ReadAllText(workspace.FileName);
+            var Jobject = Newtonsoft.Json.Linq.JObject.Parse(fileContents);
+            Assert.IsTrue(Jobject["View"] != null);
+        }
+
+        [Test]
         public void CustomNodeSaveAsAddsNewIdToEnvironmentAndMaintainsOldOne()
         {
             // open custom node
@@ -952,7 +983,7 @@ namespace Dynamo.Tests
         {
             // open custom node
             // SaveAs
-            // two nodes are returned in search on custom node name, difer 
+            // two nodes are returned in search on custom node name, differ 
 
             var model = ViewModel.Model;
             var examplePath = Path.Combine(TestDirectory, @"core\custom_node_saving", "Constant2.dyf");
@@ -1004,7 +1035,7 @@ namespace Dynamo.Tests
         {
             // open custom node
             // SaveAs
-            // two nodes are returned in search on custom node name, difer 
+            // two nodes are returned in search on custom node name, differ 
 
             var model = ViewModel.Model;
             var examplePath = Path.Combine(TestDirectory, @"core\custom_node_saving", "Constant2.dyf");

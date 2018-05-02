@@ -65,7 +65,7 @@ namespace Dynamo.Wpf
             nodeView.UpdateLayout();
         }
 
-        private void EditCustomNodeProperties()
+        internal void EditCustomNodeProperties()
         {
             CustomNodeInfo info;
             var model = dynamoViewModel.Model;
