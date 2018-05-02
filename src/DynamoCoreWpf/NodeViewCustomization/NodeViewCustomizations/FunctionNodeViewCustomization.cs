@@ -103,18 +103,10 @@ namespace Dynamo.Wpf
 
                 if (!string.IsNullOrEmpty(ws.FileName))
                 {
-                    string fileContents = File.ReadAllText(ws.FileName);
-                    var originalJson = Newtonsoft.Json.Linq.JObject.Parse(fileContents);
-
-                    // Serialize the custom node workspace.
-                    var newJson = ws.ToJson(dynamoViewModel.EngineController);
-
-                    // Append the View block since it is unchanged
-                    var newJObject = Newtonsoft.Json.Linq.JObject.Parse(newJson);
-                    newJObject.Add("View", originalJson.SelectToken("View"));
-
-                    // Save the updated dyf
-                    File.WriteAllText(ws.FileName, newJObject.ToString());
+                    // Construct a temp WorkspaceViewModel based on for serializing
+                    WorkspaceViewModel temp = new WorkspaceViewModel(ws, dynamoViewModel);
+                    temp.Save(ws.FileName);
+                    temp.Dispose();
                 }
             }
         }
