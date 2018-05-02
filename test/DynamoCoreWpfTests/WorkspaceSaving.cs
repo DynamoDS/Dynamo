@@ -16,6 +16,7 @@ using Dynamo.Utilities;
 using CoreNodeModels.Input;
 using Dynamo.Graph.Connectors;
 using Dynamo.Graph.Nodes;
+using Dynamo.Wpf;
 
 namespace Dynamo.Tests
 {
@@ -796,7 +797,7 @@ namespace Dynamo.Tests
         {
             // new custom node
             // Set file path
-            // custom node update description and node name
+            // custom node update node name
             // Check if serialized workspace still have view block
 
             var dynamoModel = ViewModel.Model;
@@ -807,15 +808,37 @@ namespace Dynamo.Tests
             var def = dynamoModel.CustomNodeManager.CreateCustomNode(nodeName, catName, "", initialId);
             var workspace = (CustomNodeWorkspaceModel)def;
             workspace.FileName = GetNewFileNameOnTempPath("dyf");
+            // search common base name
+            ViewModel.SearchViewModel.Visible = true;
+            ViewModel.SearchViewModel.SearchAndUpdateResults("Cool");
+            // results are correct
+            Assert.AreEqual(1, ViewModel.SearchViewModel.FilteredResults.Count());
 
-            Dynamo.Wpf.FunctionNodeViewCustomization temp = new Dynamo.Wpf.FunctionNodeViewCustomization();
-            FunctionNamePromptEventArgs args = new FunctionNamePromptEventArgs();
-            args.Success = true;
-            args.Name = "Cool node_v2";
-            args.Category = "Custom Nodes";
-            args.Description = "test";
+            //FunctionNamePromptEventArgs args = new FunctionNamePromptEventArgs
+            //{
+            //    Success = true,
+            //    Name = "Cool node_v2",
+            //    Category = "Custom Nodes",
+            //    CanEditName = false
+            //};
 
-            temp.EditCustomNodeProperties(null, args);
+            var newCustNodeInstance = dynamoModel.CustomNodeManager.CreateCustomNodeInstance(initialId);
+            dynamoModel.CurrentWorkspace.AddAndRegisterNode(newCustNodeInstance, false);
+
+            // run expression
+            Assert.AreEqual(1, dynamoModel.CurrentWorkspace.Nodes.Count());
+
+            DynamoModel.FunctionNamePromptRequestHandler del = (sender, args) =>
+            {
+                args.Category = "Custom Nodes";
+                args.Name = "Cool node_v2";
+                args.Success = true;
+            };
+
+            dynamoModel.RequestsFunctionNamePrompt += del;
+            var arg = new FunctionNamePromptEventArgs();
+            dynamoModel.OnRequestsFunctionNamePrompt(null, arg);
+            Assert.IsTrue(arg.Success);
 
             string fileContents = File.ReadAllText(workspace.FileName);
             var Jobject = Newtonsoft.Json.Linq.JObject.Parse(fileContents);
