@@ -1,4 +1,3 @@
-using System.IO;
 using System.Windows.Controls;
 using Dynamo.Controls;
 using Dynamo.Graph.Nodes.CustomNodes;
