@@ -65,7 +65,7 @@ namespace Dynamo.Wpf
             nodeView.UpdateLayout();
         }
 
-        internal void EditCustomNodeProperties()
+        private void EditCustomNodeProperties()
         {
             CustomNodeInfo info;
             var model = dynamoViewModel.Model;
@@ -93,20 +93,31 @@ namespace Dynamo.Wpf
 
             if (args.Success)
             {
-                CustomNodeWorkspaceModel ws;
-                model.CustomNodeManager.TryGetFunctionWorkspace(
-                    functionNodeModel.Definition.FunctionId,
-                    DynamoModel.IsTestMode,
-                    out ws);
-                ws.SetInfo(args.Name, args.Category, args.Description);
+                updateSavedCustomNodeWorkspace(args, dynamoViewModel, functionNodeModel);
+            }
+        }
 
-                if (!string.IsNullOrEmpty(ws.FileName))
-                {
-                    // Construct a temp WorkspaceViewModel based on for serializing
-                    WorkspaceViewModel temp = new WorkspaceViewModel(ws, dynamoViewModel);
-                    temp.Save(ws.FileName);
-                    temp.Dispose();
-                }
+        /// <summary>
+        /// Serialize and update dyf based on FunctionNamePromptEventArgs
+        /// </summary>
+        /// <param name="args">FunctionNamePromptEventArgs which contains updated dyf info</param>
+        /// <param name="dynamoViewModel">Dynamo View Model</param>
+        /// <param name="functionNodeModel">Custom Node</param>
+        internal void updateSavedCustomNodeWorkspace(FunctionNamePromptEventArgs args, DynamoViewModel dynamoViewModel, Function functionNodeModel)
+        {
+            CustomNodeWorkspaceModel ws;
+            dynamoViewModel.Model.CustomNodeManager.TryGetFunctionWorkspace(
+                functionNodeModel.Definition.FunctionId,
+                DynamoModel.IsTestMode,
+                out ws);
+            ws.SetInfo(args.Name, args.Category, args.Description);
+
+            if (!string.IsNullOrEmpty(ws.FileName))
+            {
+                // Construct a temp WorkspaceViewModel based on for serializing
+                WorkspaceViewModel temp = new WorkspaceViewModel(ws, dynamoViewModel);
+                temp.Save(ws.FileName);
+                temp.Dispose();
             }
         }
 

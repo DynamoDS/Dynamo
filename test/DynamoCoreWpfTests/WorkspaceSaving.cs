@@ -796,10 +796,6 @@ namespace Dynamo.Tests
         public void CustomNodeEditNodeDescriptionKeepingViewBlockInDyf()
         {
             // new custom node
-            // Set file path
-            // custom node update node name
-            // Check if serialized workspace still have view block
-
             var dynamoModel = ViewModel.Model;
             var nodeName = "Cool node";
             var catName = "Custom Nodes";
@@ -807,6 +803,8 @@ namespace Dynamo.Tests
 
             var def = dynamoModel.CustomNodeManager.CreateCustomNode(nodeName, catName, "", initialId);
             var workspace = (CustomNodeWorkspaceModel)def;
+
+            // Set file path
             workspace.FileName = GetNewFileNameOnTempPath("dyf");
             // search common base name
             ViewModel.SearchViewModel.Visible = true;
@@ -814,35 +812,28 @@ namespace Dynamo.Tests
             // results are correct
             Assert.AreEqual(1, ViewModel.SearchViewModel.FilteredResults.Count());
 
-            //FunctionNamePromptEventArgs args = new FunctionNamePromptEventArgs
-            //{
-            //    Success = true,
-            //    Name = "Cool node_v2",
-            //    Category = "Custom Nodes",
-            //    CanEditName = false
-            //};
-
             var newCustNodeInstance = dynamoModel.CustomNodeManager.CreateCustomNodeInstance(initialId);
             dynamoModel.CurrentWorkspace.AddAndRegisterNode(newCustNodeInstance, false);
 
             // run expression
             Assert.AreEqual(1, dynamoModel.CurrentWorkspace.Nodes.Count());
 
-            DynamoModel.FunctionNamePromptRequestHandler del = (sender, args) =>
+            // Mimic UI behavior so that custom node updates node name
+            FunctionNodeViewCustomization temp = new FunctionNodeViewCustomization();
+            FunctionNamePromptEventArgs args = new FunctionNamePromptEventArgs
             {
-                args.Category = "Custom Nodes";
-                args.Name = "Cool node_v2";
-                args.Success = true;
+                Success = true,
+                Name = "Cool node_v2",
+                Category = "Custom Nodes",
+                CanEditName = false
             };
+            temp.updateSavedCustomNodeWorkspace(args, ViewModel, newCustNodeInstance);
 
-            dynamoModel.RequestsFunctionNamePrompt += del;
-            var arg = new FunctionNamePromptEventArgs();
-            dynamoModel.OnRequestsFunctionNamePrompt(null, arg);
-            Assert.IsTrue(arg.Success);
-
+            // Check if serialized workspace still have view block
             string fileContents = File.ReadAllText(workspace.FileName);
             var Jobject = Newtonsoft.Json.Linq.JObject.Parse(fileContents);
             Assert.IsTrue(Jobject["View"] != null);
+            Assert.IsTrue(Jobject["Name"].ToString() == "Cool node_v2");
         }
 
         [Test]
