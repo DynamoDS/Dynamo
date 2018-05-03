@@ -116,6 +116,10 @@ namespace DynamoWPFCLI
             File.WriteAllText(newFilePath, json);
         }
 
+        /// <summary>
+        /// Run the CLI with the command line arguments in "args" <see cref="StartupUtils.CommandLineArguments"/>
+        /// </summary>
+        /// <param name="args">Command line arguments</param>
         public new void Run(StartupUtils.CommandLineArguments args)
         {
             if (args.ConvertFile)

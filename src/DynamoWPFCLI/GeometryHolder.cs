@@ -44,10 +44,14 @@ namespace DynamoWPFCLI
 
         public GeometryHolder(DynamoModel model, IRenderPackageFactory factory, NodeModel nodeModel)
         {
+            // Schedule the generation of render packages for this node. NodeRenderPackagesUpdated will be
+            // called with the render packages when they are ready. The node will be set do 'Done' if the 
+            // sheduling for some reason is not successful (usually becuase the node have no geometry or is inivisible)
             node = nodeModel;
             nodeModel.RenderPackagesUpdated += NodeRenderPackagesUpdated;
             if (!nodeModel.RequestVisualUpdateAsync(model.Scheduler, model.EngineController, factory, true))
             {
+                // The node has no geometry so we are 'Done'
                 Done.Set();
             }
         }
@@ -118,9 +122,11 @@ namespace DynamoWPFCLI
                 groupData.Add("lines", lines);
                 groupData.Add("lineColors", lineColors);
 
+                // We have geometry
                 HasGeometry = true;
             }
 
+            // We are 'Done'
             Done.Set();
         }
     }
