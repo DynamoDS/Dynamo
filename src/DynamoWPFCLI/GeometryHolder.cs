@@ -52,11 +52,6 @@ namespace DynamoWPFCLI
             }
         }
 
-        public void Dispose()
-        {
-            node.RenderPackagesUpdated -= NodeRenderPackagesUpdated;
-        }
-
         private void NodeRenderPackagesUpdated(NodeModel nodeModel, RenderPackageCache renderPackages)
         {
             if (renderPackages.Packages.Count() > 0)
