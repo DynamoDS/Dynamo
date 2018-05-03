@@ -24,11 +24,12 @@ namespace Dynamo.Library
         /// <param name="TypeRank">parameter TypeRank, serialized rank of ProtoCore.Type</param>
         /// <param name="defaultValue">parameter defaultValue</param>
         [JsonConstructor]
-        public TypedParameter(string name = "", string TypeName = "", int TypeRank = -1, string defaultValue = "")
+        public TypedParameter(string name = "", string TypeName = "", int TypeRank = -1, string defaultValue = "", string summary = null)
         {
             Name = name;
             Type = new ProtoCore.Type(TypeName, TypeRank);
             defaultValueString = defaultValue;
+            this.summary = summary;
         }
         
         
@@ -173,9 +174,13 @@ namespace Dynamo.Library
         /// Refer to https://jira.autodesk.com/browse/QNTM-3786
         /// </summary>
         /// <returns></returns>
-        internal string ToNameString()
+        internal string ToCommentNameString()
         {
             string str = Name + ": " + Type.ToString();
+
+            if (!String.IsNullOrEmpty(Summary)){
+                str = "/*"+this.Summary+"*/" + Environment.NewLine + str;
+            }
             if (defaultValueString != null)
             {
                 str = str + " = " + defaultValueString;

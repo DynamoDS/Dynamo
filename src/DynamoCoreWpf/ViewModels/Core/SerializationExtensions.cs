@@ -32,7 +32,8 @@ namespace Dynamo.Wpf.ViewModels.Core
                 Culture = CultureInfo.InvariantCulture,
                 Converters = new List<JsonConverter>{
                     new WorkspaceViewWriteConverter(),
-                    new AnnotationViewModelConverter()
+                    new AnnotationViewModelConverter(),
+                    new NodeViewModelWriteConverter(),
                 }
             };
 
