@@ -93,7 +93,7 @@ namespace Dynamo.Wpf
 
             if (args.Success)
             {
-                updateSavedCustomNodeWorkspace(args, dynamoViewModel, functionNodeModel);
+                SerializeCustomNodeWorkspaceWithNewInfo(args, dynamoViewModel, functionNodeModel);
             }
         }
 
@@ -103,7 +103,7 @@ namespace Dynamo.Wpf
         /// <param name="args">FunctionNamePromptEventArgs which contains updated dyf info</param>
         /// <param name="dynamoViewModel">Dynamo View Model</param>
         /// <param name="functionNodeModel">Custom Node</param>
-        internal void updateSavedCustomNodeWorkspace(FunctionNamePromptEventArgs args, DynamoViewModel dynamoViewModel, Function functionNodeModel)
+        internal void SerializeCustomNodeWorkspaceWithNewInfo(FunctionNamePromptEventArgs args, DynamoViewModel dynamoViewModel, Function functionNodeModel)
         {
             CustomNodeWorkspaceModel ws;
             dynamoViewModel.Model.CustomNodeManager.TryGetFunctionWorkspace(

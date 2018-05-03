@@ -827,7 +827,7 @@ namespace Dynamo.Tests
                 Category = "Custom Nodes",
                 CanEditName = false
             };
-            temp.updateSavedCustomNodeWorkspace(args, ViewModel, newCustNodeInstance);
+            temp.SerializeCustomNodeWorkspaceWithNewInfo(args, ViewModel, newCustNodeInstance);
 
             // Check if serialized workspace still have view block
             string fileContents = File.ReadAllText(workspace.FileName);
