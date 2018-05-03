@@ -1,4 +1,4 @@
-![Image](https://ci.appveyor.com/api/projects/status/github/DynamoDS/Dynamo?branch=master) ![Image](https://travis-ci.org/DynamoDS/Dynamo.svg?branch=master)
+![Image](https://travis-ci.org/DynamoDS/Dynamo.svg?branch=master)
 
 ![Image](https://raw.github.com/ikeough/Dynamo/master/doc/distrib/Images/dynamo_logo_dark.png)
 Dynamo is a visual programming tool that aims to be accessible to both non-programmers and programmers alike. It gives users the ability to visually script behavior, define custom pieces of logic, and script using various textual programming languages.
