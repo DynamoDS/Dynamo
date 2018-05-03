@@ -33,3 +33,5 @@ using System.Windows;
 [assembly: InternalsVisibleTo("WpfVisualizationTests")]
 [assembly: InternalsVisibleTo("DynamoPackagesUITests")]
 [assembly: InternalsVisibleTo("ViewExtensionLibraryTests")]
+[assembly: InternalsVisibleTo("DynamoWPFCLI")]
+[assembly: InternalsVisibleTo("CommandLineTests")]

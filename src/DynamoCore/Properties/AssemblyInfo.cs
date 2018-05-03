@@ -20,6 +20,7 @@ using System.Runtime.CompilerServices;
 [assembly: InternalsVisibleTo("GeometryUI")]
 [assembly: InternalsVisibleTo("RevitSystemTests")]
 [assembly: InternalsVisibleTo("DynamoCLI")]
+[assembly: InternalsVisibleTo("DynamoWPFCLI")]
 [assembly: InternalsVisibleTo("DynamicProxyGenAssembly2")] // Dynamic assembly created by Moq
 [assembly: InternalsVisibleTo("DynamoStudio")]
 [assembly: InternalsVisibleTo("WpfVisualizationTests")]
