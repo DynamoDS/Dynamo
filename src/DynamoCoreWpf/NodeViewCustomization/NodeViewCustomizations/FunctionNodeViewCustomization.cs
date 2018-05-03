@@ -114,7 +114,9 @@ namespace Dynamo.Wpf
 
             if (!string.IsNullOrEmpty(ws.FileName))
             {
-                // Construct a temp WorkspaceViewModel based on for serializing
+                // Construct a temp WorkspaceViewModel based on the CustomNodeWorkspaceModel
+                // for serialization. We need to do so because only CustomNodeWorkspaceModel
+                // is accessible at this point, the dyf is not guaranteed to be opened
                 WorkspaceViewModel temp = new WorkspaceViewModel(ws, dynamoViewModel);
                 temp.Save(ws.FileName);
                 temp.Dispose();
