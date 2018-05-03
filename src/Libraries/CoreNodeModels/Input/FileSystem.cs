@@ -88,6 +88,12 @@ namespace CoreNodeModels.Input
                 HintPath = subNode.InnerText;
             }
         }
+
+        public override NodeInputData InputData
+        {
+            //There is not yet an appropriate input type for CoGs related to File Path or Directory Path
+            get { return null; }
+        }
     }
 
     [NodeName("File Path")]
