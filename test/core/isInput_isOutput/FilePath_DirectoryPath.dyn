@@ -1,0 +1,106 @@
+{
+  "Uuid": "a11ee45f-bfac-4431-a32d-be6932b05561",
+  "IsCustomNode": false,
+  "Description": null,
+  "Name": "FilePath",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "CoreNodeModels.Input.Filename, CoreNodeModels",
+      "HintPath": "No file selected.",
+      "InputValue": "No file selected.",
+      "NodeType": "ExtensionNode",
+      "Id": "3c3955202373444da29a1e1bd4804023",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "4dcec3cf8f2046b9afbf5f556baade5c",
+          "Name": "",
+          "Description": "Filename",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows you to select a file on the system to get its filename"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.Directory, CoreNodeModels",
+      "HintPath": "No file selected.",
+      "InputValue": "No file selected.",
+      "NodeType": "ExtensionNode",
+      "Id": "1bc0f8dce2974dbfb9e52ded278e3c9d",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "052b45cfead84d818ae9a954a9d1bfbd",
+          "Name": "",
+          "Description": "Directory",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows you to select a directory on the system to get its path"
+    }
+  ],
+  "Connectors": [],
+  "Dependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.0.1.4395",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "File Path",
+        "Id": "3c3955202373444da29a1e1bd4804023",
+        "IsSetAsInput": true,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 277.5,
+        "Y": 251.75
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Directory Path",
+        "Id": "1bc0f8dce2974dbfb9e52ded278e3c9d",
+        "IsSetAsInput": true,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 278.5,
+        "Y": 373.75
+      }
+    ],
+    "Annotations": [],
+    "X": 0.0,
+    "Y": 0.0,
+    "Zoom": 1.0
+  }
+}
