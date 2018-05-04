@@ -23,6 +23,7 @@ namespace Dynamo.Library
         /// <param name="TypeName">parameter TypeName, serialized name of ProtoCore.Type</param>
         /// <param name="TypeRank">parameter TypeRank, serialized rank of ProtoCore.Type</param>
         /// <param name="defaultValue">parameter defaultValue</param>
+        /// <param name="summary">parameter summary = can include comments and documentation. </param>
         [JsonConstructor]
         public TypedParameter(string name = "", string TypeName = "", int TypeRank = -1, string defaultValue = "", string summary = null)
         {
@@ -93,9 +94,9 @@ namespace Dynamo.Library
         }
 
         /// <summary>
-        /// Returns summary of the parameter.
+        /// Returns summary of the parameter. This may include comments or documentation.
         /// </summary>
-        [JsonIgnore]
+        [JsonProperty("Description")]
         public string Summary
         {
             get

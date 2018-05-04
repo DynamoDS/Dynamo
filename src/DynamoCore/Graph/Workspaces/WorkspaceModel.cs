@@ -59,8 +59,6 @@ namespace Dynamo.Graph.Workspaces
         public bool Excluded;
         public bool IsSetAsInput;
         public bool IsSetAsOutput;
-        // only valid for symbol nodes serialized with symbolNodeViewModel.
-        public string Summary;
     }
 
     /// <summary>
@@ -1733,21 +1731,6 @@ namespace Dynamo.Graph.Workspaces
                     // NOTE: These parameters are not directly accessible due to undo/redo considerations
                     //       which should not be used during deserialization (see "ArgumentLacing" for details)
                     nodeModel.UpdateValue(new UpdateValueParams("IsVisible", nodeViewInfo.ShowGeometry.ToString()));
-                    
-                    //if the summary property has been set, and the nodeModel is a symbol node then we
-                    //should update the associated typeParameter's input comment.
-                    if ( !String.IsNullOrEmpty(nodeViewInfo.Summary) && (nodeModel is Nodes.CustomNodes.Symbol))
-                    {
-                        var existingParameter = (nodeModel as Nodes.CustomNodes.Symbol).Parameter;
-                        //rebuild a new typeParamter
-                        var  updatedParam = new TypedParameter(existingParameter.Name,
-                            existingParameter.Type.Name,
-                            existingParameter.Type.rank,
-                            existingParameter.DefaultValueString,
-                            nodeViewInfo.Summary);
-                        //use that to update the inputSymbol string for the inputNodeModel.
-                        (nodeModel as Nodes.CustomNodes.Symbol).InputSymbol = updatedParam.ToCommentNameString(); 
-                    }
                 }
                 else
                 {   

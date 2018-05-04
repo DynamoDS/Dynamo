@@ -33,7 +33,6 @@ namespace Dynamo.Wpf.ViewModels.Core
                 Converters = new List<JsonConverter>{
                     new WorkspaceViewWriteConverter(),
                     new AnnotationViewModelConverter(),
-                    new NodeViewModelWriteConverter(),
                 }
             };
 

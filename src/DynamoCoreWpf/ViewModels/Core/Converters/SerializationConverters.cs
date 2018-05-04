@@ -81,32 +81,6 @@ namespace Dynamo.Wpf.ViewModels.Core.Converters
         }
     }
 
-    public class NodeViewModelWriteConverter : JsonConverter
-    {
-        public override bool CanConvert(Type objectType)
-        {
-            return objectType == typeof(NodeViewModel);
-        }
-
-        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
-        {
-            throw new NotImplementedException();
-        }
-
-        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
-        {
-            var directSerialization = JsonConvert.SerializeObject(value);
-            var jobject = JObject.Parse(directSerialization);
-            //if the nodeView's model is a symbol node add some extra data.
-            if ((value as NodeViewModel).NodeModel is Symbol)
-            {
-                jobject.Add("Summary", ((value as NodeViewModel).NodeModel as Symbol).Parameter.Summary);
-            }
-
-            jobject.WriteTo(writer);
-        }
-    }
-
     /// <summary>
     /// The AnnotationViewModelConverter is used to serialize AnnotationViewModels.
     /// </summary>
