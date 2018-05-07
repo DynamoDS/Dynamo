@@ -23,12 +23,14 @@ namespace Dynamo.Library
         /// <param name="TypeName">parameter TypeName, serialized name of ProtoCore.Type</param>
         /// <param name="TypeRank">parameter TypeRank, serialized rank of ProtoCore.Type</param>
         /// <param name="defaultValue">parameter defaultValue</param>
+        /// <param name="summary">parameter Summary, can include comments and documentation. </param>
         [JsonConstructor]
-        public TypedParameter(string name = "", string TypeName = "", int TypeRank = -1, string defaultValue = "")
+        public TypedParameter(string name = "", string TypeName = "", int TypeRank = -1, string defaultValue = "", string summary = null)
         {
             Name = name;
             Type = new ProtoCore.Type(TypeName, TypeRank);
             defaultValueString = defaultValue;
+            this.summary = summary;
         }
         
         
@@ -92,9 +94,9 @@ namespace Dynamo.Library
         }
 
         /// <summary>
-        /// Returns summary of the parameter.
+        /// Returns summary of the parameter. This may include comments or documentation.
         /// </summary>
-        [JsonIgnore]
+        [JsonProperty("Description")]
         public string Summary
         {
             get
@@ -159,6 +161,27 @@ namespace Dynamo.Library
         public override string ToString()
         {
             string str = Name + ": " + DisplayTypeName;
+            if (defaultValueString != null)
+            {
+                str = str + " = " + defaultValueString;
+            }
+
+            return str;
+        }
+
+        /// <summary>
+        /// Returns a string in a specific format (Name:Type.Name)
+        /// ex: dateTime1:System.DateTime,  test:Autodesk.DesignScript.Geomtery.Curve
+        /// Refer to https://jira.autodesk.com/browse/QNTM-3786
+        /// </summary>
+        /// <returns></returns>
+        internal string ToCommentNameString()
+        {
+            string str = Name + ": " + Type.ToString();
+
+            if (!String.IsNullOrEmpty(Summary)){
+                str = "/*"+this.Summary+"*/" + Environment.NewLine + str;
+            }
             if (defaultValueString != null)
             {
                 str = str + " = " + defaultValueString;

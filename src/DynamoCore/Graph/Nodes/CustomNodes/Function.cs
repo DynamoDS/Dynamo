@@ -394,7 +394,7 @@ namespace Dynamo.Graph.Nodes.CustomNodes
         public Symbol(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts, TypedParameter parameter) : base(inPorts, outPorts)
         {
             ArgumentLacing = LacingStrategy.Disabled;
-            InputSymbol = parameter.ToString();
+            InputSymbol = parameter.ToCommentNameString();
             ElementResolver = new ElementResolver();
         }
 
