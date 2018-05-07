@@ -470,7 +470,7 @@ namespace Dynamo.ViewModels
             InCanvasSearchViewModel.Visible = true;
         }
         /// <summary>
-        /// This event is triggred from Workspace Model. Used in instrumentation
+        /// This event is triggered from Workspace Model. Used in instrumentation
         /// </summary>
         /// <param name="modelData"> Workspace model data as JSON </param>
         /// <returns>workspace model with view block in string format</returns>

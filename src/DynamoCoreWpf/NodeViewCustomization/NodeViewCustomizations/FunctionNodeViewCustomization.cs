@@ -93,17 +93,33 @@ namespace Dynamo.Wpf
 
             if (args.Success)
             {
-                CustomNodeWorkspaceModel ws;
-                model.CustomNodeManager.TryGetFunctionWorkspace(
-                    functionNodeModel.Definition.FunctionId,
-                    DynamoModel.IsTestMode,
-                    out ws);
-                ws.SetInfo(args.Name, args.Category, args.Description);
+                SerializeCustomNodeWorkspaceWithNewInfo(args, dynamoViewModel, functionNodeModel);
+            }
+        }
 
-                if (!string.IsNullOrEmpty(ws.FileName))
-                {
-                    ws.Save(ws.FileName, false, dynamoViewModel.EngineController);
-                }
+        /// <summary>
+        /// Serialize and update dyf based on FunctionNamePromptEventArgs
+        /// </summary>
+        /// <param name="args">FunctionNamePromptEventArgs which contains updated dyf info</param>
+        /// <param name="dynamoViewModel">Dynamo View Model</param>
+        /// <param name="functionNodeModel">Custom Node</param>
+        internal void SerializeCustomNodeWorkspaceWithNewInfo(FunctionNamePromptEventArgs args, DynamoViewModel dynamoViewModel, Function functionNodeModel)
+        {
+            CustomNodeWorkspaceModel ws;
+            dynamoViewModel.Model.CustomNodeManager.TryGetFunctionWorkspace(
+                functionNodeModel.Definition.FunctionId,
+                DynamoModel.IsTestMode,
+                out ws);
+            ws.SetInfo(args.Name, args.Category, args.Description);
+
+            if (!string.IsNullOrEmpty(ws.FileName))
+            {
+                // Construct a temp WorkspaceViewModel based on the CustomNodeWorkspaceModel
+                // for serialization. We need to do so because only CustomNodeWorkspaceModel
+                // is accessible at this point, the dyf is not guaranteed to be opened
+                WorkspaceViewModel temp = new WorkspaceViewModel(ws, dynamoViewModel);
+                temp.Save(ws.FileName);
+                temp.Dispose();
             }
         }
 
