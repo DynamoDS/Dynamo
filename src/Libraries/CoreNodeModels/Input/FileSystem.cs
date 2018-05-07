@@ -111,15 +111,6 @@ namespace CoreNodeModels.Input
         {
             ShouldDisplayPreviewCore = false;
         }
-
-        /// <summary>
-        ///     Indicates whether node is input node.
-        ///     Used to bind visibility of UI for user selection.
-        /// </summary>
-        public override bool IsInputNode
-        {
-        get { return false; }
-        }
     }
 
     [NodeName("Directory Path")]
