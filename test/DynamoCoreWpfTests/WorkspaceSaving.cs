@@ -16,6 +16,7 @@ using Dynamo.Utilities;
 using CoreNodeModels.Input;
 using Dynamo.Graph.Connectors;
 using Dynamo.Graph.Nodes;
+using Dynamo.Wpf;
 
 namespace Dynamo.Tests
 {
@@ -792,6 +793,50 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        public void CustomNodeEditNodeDescriptionKeepingViewBlockInDyf()
+        {
+            // new custom node
+            var dynamoModel = ViewModel.Model;
+            var nodeName = "Cool node";
+            var catName = "Custom Nodes";
+            var initialId = Guid.NewGuid();
+
+            var def = dynamoModel.CustomNodeManager.CreateCustomNode(nodeName, catName, "", initialId);
+            var workspace = (CustomNodeWorkspaceModel)def;
+
+            // Set file path
+            workspace.FileName = GetNewFileNameOnTempPath("dyf");
+            // search common base name
+            ViewModel.SearchViewModel.Visible = true;
+            ViewModel.SearchViewModel.SearchAndUpdateResults("Cool");
+            // results are correct
+            Assert.AreEqual(1, ViewModel.SearchViewModel.FilteredResults.Count());
+
+            var newCustNodeInstance = dynamoModel.CustomNodeManager.CreateCustomNodeInstance(initialId);
+            dynamoModel.CurrentWorkspace.AddAndRegisterNode(newCustNodeInstance, false);
+
+            // run expression
+            Assert.AreEqual(1, dynamoModel.CurrentWorkspace.Nodes.Count());
+
+            // Mimic UI behavior so that custom node updates node name
+            FunctionNodeViewCustomization temp = new FunctionNodeViewCustomization();
+            FunctionNamePromptEventArgs args = new FunctionNamePromptEventArgs
+            {
+                Success = true,
+                Name = "Cool node_v2",
+                Category = "Custom Nodes",
+                CanEditName = false
+            };
+            temp.SerializeCustomNodeWorkspaceWithNewInfo(args, ViewModel, newCustNodeInstance);
+
+            // Check if serialized workspace still have view block
+            string fileContents = File.ReadAllText(workspace.FileName);
+            var Jobject = Newtonsoft.Json.Linq.JObject.Parse(fileContents);
+            Assert.IsTrue(Jobject["View"] != null);
+            Assert.IsTrue(Jobject["Name"].ToString() == "Cool node_v2");
+        }
+
+        [Test]
         public void CustomNodeSaveAsAddsNewIdToEnvironmentAndMaintainsOldOne()
         {
             // open custom node
@@ -952,7 +997,7 @@ namespace Dynamo.Tests
         {
             // open custom node
             // SaveAs
-            // two nodes are returned in search on custom node name, difer 
+            // two nodes are returned in search on custom node name, differ 
 
             var model = ViewModel.Model;
             var examplePath = Path.Combine(TestDirectory, @"core\custom_node_saving", "Constant2.dyf");
@@ -1004,7 +1049,7 @@ namespace Dynamo.Tests
         {
             // open custom node
             // SaveAs
-            // two nodes are returned in search on custom node name, difer 
+            // two nodes are returned in search on custom node name, differ 
 
             var model = ViewModel.Model;
             var examplePath = Path.Combine(TestDirectory, @"core\custom_node_saving", "Constant2.dyf");
