@@ -838,6 +838,8 @@ namespace Dynamo.Graph.Workspaces
             writer.WriteValue(((TypedParameter)value).Type.rank);
             writer.WritePropertyName("DefaultValue");
             writer.WriteValue(((TypedParameter)value).DefaultValueString);
+            writer.WritePropertyName("Description");
+            writer.WriteValue(((TypedParameter)value).Summary);
             writer.WriteEndObject();
         }
     }
