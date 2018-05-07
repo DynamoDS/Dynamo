@@ -2,11 +2,26 @@
   "Uuid": "a11ee45f-bfac-4431-a32d-be6932b05561",
   "IsCustomNode": false,
   "Description": null,
-  "Name": "FilePath",
+  "Name": "FilePath_DirectoryPath",
   "ElementResolver": {
     "ResolutionMap": {}
   },
-  "Inputs": [],
+  "Inputs": [
+    {
+      "Id": "3c3955202373444da29a1e1bd4804023",
+      "Name": "File Path",
+      "Type": "string",
+      "Value": "No file selected.",
+      "Description": "Allows you to select a file on the system to get its filename"
+    },
+    {
+      "Id": "1bc0f8dce2974dbfb9e52ded278e3c9d",
+      "Name": "Directory Path",
+      "Type": "string",
+      "Value": "No file selected.",
+      "Description": "Allows you to select a directory on the system to get its path"
+    }
+  ],
   "Outputs": [],
   "Nodes": [
     {
