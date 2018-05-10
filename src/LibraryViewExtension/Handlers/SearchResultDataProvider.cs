@@ -40,6 +40,8 @@ namespace Dynamo.LibraryUI.Handlers
             var pathAndQuery = uri.PathAndQuery;
             var index = url.IndexOf(serviceIdentifier);
             var text = url.Substring(index + serviceIdentifier.Length + 1);
+            // unescape query before searching
+            text = Uri.UnescapeDataString(text);
 
             var elements = model.Search(text);
 

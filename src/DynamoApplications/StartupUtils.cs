@@ -85,6 +85,9 @@ namespace Dynamo.Applications
 
                 var convertFile = false;
 
+                // Generate geometry json file
+                var geometryFilePath = string.Empty;
+
                 bool showHelp = false;
                 var optionsSet = new OptionSet().Add("o=|O=", "OpenFilePath, Instruct Dynamo to open headless and run a dyn file at this path", o => openfilepath = o)
                 .Add("c=|C=", "CommandFilePath, Instruct Dynamo to open a commandfile and run the commands it contains at this path," +
@@ -93,7 +96,8 @@ namespace Dynamo.Applications
                 .Add("v=|V=", "Verbose, Instruct Dynamo to output all evalautions it performs to an xml file at this path", v => verbose = v)
                 .Add("x|X", "When used in combination with the 'O' flag, opens a .dyn file from the specified path and converts it to .json." + 
                 "File will have the .json extension and be located in the same directory as the original file.", x => convertFile = x != null)
-                .Add("h|H|help", "Get some help", h => showHelp = h != null);
+                .Add("h|H|help", "Get some help", h => showHelp = h != null)
+                .Add("g=|G=|geometry", "Geometry, Instruct Dynamo to output geometry from all evaluations to a json file at this path", g => geometryFilePath = g);
 
                 optionsSet.Parse(args);
 
@@ -113,7 +117,8 @@ namespace Dynamo.Applications
                     CommandFilePath = commandFilePath,
                     OpenFilePath = openfilepath,
                     Verbose = verbose,
-                    ConvertFile = convertFile
+                    ConvertFile = convertFile,
+                    GeometryFilePath = geometryFilePath
                 };
             }
 
@@ -127,8 +132,8 @@ namespace Dynamo.Applications
             public string CommandFilePath { get; set; }
             public string OpenFilePath { get; set; }
             public string Verbose { get; set; }
-            
             public bool ConvertFile { get; set; }
+            public string GeometryFilePath { get; set; }
         }
 
         public static void PreloadShapeManager(ref string geometryFactoryPath, ref string preloaderLocation)
