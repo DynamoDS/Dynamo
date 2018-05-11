@@ -25,6 +25,7 @@
       <dependency id="Prism" version="4.1"/>
       <dependency id="NUnit" version="2.6.3"/>
       <dependency id="DynamoVisualProgramming.ZeroTouchLibrary" version="@VERSION@"/>
+      <dependency id="Newtonsoft.Json" version="8.0.3"/>
     </dependencies>
   </metadata>
   <files>
