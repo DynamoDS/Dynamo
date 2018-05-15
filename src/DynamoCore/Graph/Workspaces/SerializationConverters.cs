@@ -23,6 +23,7 @@ using ProtoCore.Namespace;
 using Type = System.Type;
 using System.Reflection;
 using System.Text.RegularExpressions;
+using Dynamo.Logging;
 
 namespace Dynamo.Graph.Workspaces
 {
@@ -47,7 +48,6 @@ namespace Dynamo.Graph.Workspaces
             this.manager = manager;
             this.libraryServices = libraryServices;
             this.isTestMode = isTestMode;
-
             //we only do this in test mode because it should not be required-
             //see comment below in NodeReadConverter.ReadJson - and it could be slow.
             if (this.isTestMode)
@@ -169,7 +169,6 @@ namespace Dynamo.Graph.Workspaces
             else if (typeof(DSFunctionBase).IsAssignableFrom(type))
             {
                 var mangledName = obj["FunctionSignature"].Value<string>();
-
                 var functionDescriptor = libraryServices.GetFunctionDescriptor(mangledName);
                 if (functionDescriptor == null)
                 {
@@ -209,7 +208,10 @@ namespace Dynamo.Graph.Workspaces
             }
 
             if (remapPorts)
-                RemapPorts(node, inPorts, outPorts, resolver);
+            {
+                RemapPorts(node, inPorts, outPorts, resolver, manager.AsLogger());
+            }
+               
 
             // Cannot set Lacing directly as property is protected
             node.UpdateValue(new UpdateValueParams("ArgumentLacing", replication));
@@ -251,19 +253,46 @@ namespace Dynamo.Graph.Workspaces
         /// <param name="inPorts">The deserialized input ports.</param>
         /// <param name="outPorts">The deserialized output ports.</param>
         /// <param name="resolver">The IdReferenceResolver used during deserialization.</param>
-        private static void RemapPorts(NodeModel node, PortModel[] inPorts, PortModel[] outPorts, IdReferenceResolver resolver)
+        private static void RemapPorts(NodeModel node, PortModel[] inPorts, PortModel[] outPorts, IdReferenceResolver resolver, ILogger logger)
         {
             foreach (var p in node.InPorts)
             {
-                var deserializedPort = inPorts[p.Index];
-                resolver.AddToReferenceMap(deserializedPort.GUID, p);
-                setPortDataOnNewPort(p, deserializedPort);
+                //check that the port index is not out of range of the loaded ports
+                if (p.Index < inPorts.Length)
+                {
+                    var deserializedPort = inPorts[p.Index];
+                    resolver.AddToReferenceMap(deserializedPort.GUID, p);
+                    setPortDataOnNewPort(p, deserializedPort);
+                }
+                else
+                {
+                    if (logger != null)
+                    {
+                        logger.Log(
+                            string.Format("while loading node {0} we could not find a port for the parameter {1} at index {2}",node.Name,p.Name,p.Index)
+                            );
+                    }
+                }
+              
             }
             foreach (var p in node.OutPorts)
             {
-                var deserializedPort = outPorts[p.Index];
-                resolver.AddToReferenceMap(deserializedPort.GUID, p);
-                setPortDataOnNewPort(p, deserializedPort);
+                //check that the port index is not out of range of the loaded ports
+                if (p.Index < outPorts.Length)
+                {
+                    var deserializedPort = outPorts[p.Index];
+                    resolver.AddToReferenceMap(deserializedPort.GUID, p);
+                    setPortDataOnNewPort(p, deserializedPort);
+                }
+                else
+                {
+                    if (logger != null)
+                    {
+                        logger.Log(
+                            string.Format("while loading node {0} we could not find a port for the retrunkey {1} at index {2}", node.Name, p.Name, p.Index)
+                            );
+                    }
+                }
             }
         }
 
