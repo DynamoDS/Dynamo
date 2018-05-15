@@ -16,6 +16,7 @@ using Dynamo.Graph.Notes;
 using Dynamo.Utilities;
 using Newtonsoft.Json.Linq;
 using System.Globalization;
+using Dynamo.Graph.Nodes.ZeroTouch;
 
 namespace Dynamo.Tests
 {
@@ -614,6 +615,24 @@ namespace Dynamo.Tests
             DoWorkspaceOpenAndCompare(customNodeTestPath, "json", ConvertCurrentWorkspaceToJsonAndSave,
                 serializationTestUtils.CompareWorkspaceModels,
                 serializationTestUtils.SaveWorkspaceComparisonData);
+        }
+
+        [Test, Category("JsonTestExclude")]
+        public void FunctionNodeLoadsWhenSignatureChanges()
+        {
+            var testFile = Path.Combine(TestDirectory, @"core\serialization\functionSignatureDifferentNumParamsThanGraph.dyn");
+            OpenModel(testFile);
+            //assert that the nodes are loaded even though their signature changed and we don't have the
+            //same number of serialized ports as the functionSignature implies.
+            var polyCurveConstructors = this.CurrentDynamoModel.CurrentWorkspace.Nodes.OfType<DSFunction>().Where(x => x.FunctionSignature.Contains("PolyCurve.By"));
+            Assert.AreEqual(polyCurveConstructors.Count(), 2);
+            Assert.AreEqual(polyCurveConstructors.ElementAt(0).InPorts.Count, 2);
+            Assert.AreEqual(polyCurveConstructors.ElementAt(0).OutPorts.Count, 1);
+            Assert.AreEqual(polyCurveConstructors.ElementAt(0).InPorts.ElementAt(1).UsingDefaultValue, true);
+
+            //assert all the first ports of the polycurve nodes are connected.
+            Assert.True(polyCurveConstructors.All(x => x.InPorts[0].IsConnected));
+
         }
 
         [Test, Category("JsonTestExclude")]
