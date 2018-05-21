@@ -839,24 +839,16 @@ namespace Dynamo.Tests
         [Test]
         public void CustomNodeEditNodeDescriptionKeepingIsVisibleInDynamoLibraryInDyf()
         {
-            // new custom node
+            // Open an existing dyf
             var dynamoModel = ViewModel.Model;
-            var nodeName = "Cool node";
-            var catName = "Custom Nodes";
-            var initialId = Guid.NewGuid();
+            var examplePath = Path.Combine(TestDirectory, @"core\combine", "Sequence_Json.dyf");
+            ViewModel.OpenCommand.Execute(examplePath);
+            var customNodeWorkspace = dynamoModel.CurrentWorkspace;
 
-            var def = dynamoModel.CustomNodeManager.CreateCustomNode(nodeName, catName, "", initialId);
-            var workspace = (CustomNodeWorkspaceModel)def;
-
-            // Set file path
-            workspace.FileName = GetNewFileNameOnTempPath("dyf");
-            // search common base name
-            ViewModel.SearchViewModel.Visible = true;
-            ViewModel.SearchViewModel.SearchAndUpdateResults("Cool");
-            // results are correct
-            Assert.AreEqual(1, ViewModel.SearchViewModel.FilteredResults.Count());
-
+            var initialId = new Guid("6aecda57-7679-4afb-aa02-05a75cc3433e");
             var newCustNodeInstance = dynamoModel.CustomNodeManager.CreateCustomNodeInstance(initialId);
+            // Switch HomeWorkspace and place custom node on it
+            dynamoModel.CurrentWorkspace = dynamoModel.Workspaces.First();
             dynamoModel.CurrentWorkspace.AddAndRegisterNode(newCustNodeInstance, false);
 
             // run expression
@@ -867,20 +859,19 @@ namespace Dynamo.Tests
             FunctionNamePromptEventArgs args = new FunctionNamePromptEventArgs
             {
                 Success = true,
-                Name = "Cool node_v2",
-                Category = "Custom Nodes",
-                CanEditName = false
+                Name = "Sequence2",
+                Category = "Misc",
+                CanEditName = false,
+                Description = "test node"
             };
             temp.SerializeCustomNodeWorkspaceWithNewInfo(args, ViewModel, newCustNodeInstance);
 
-            // Check if serialized workspace still have same value of IsVisibleInDynamoLibrary
-            string fileContents = File.ReadAllText(workspace.FileName);
+            // Check if serialized workspace still have view block
+            string fileContents = File.ReadAllText(customNodeWorkspace.FileName);
             var Jobject = Newtonsoft.Json.Linq.JObject.Parse(fileContents);
             Assert.IsTrue(Jobject["View"] != null);
-            // Baseline
-            Assert.IsTrue(workspace.IsVisibleInDynamoLibrary);
             // Expect matching value
-            Assert.IsTrue(Jobject["View"]["Dynamo"]["IsVisibleInDynamoLibrary"].ToString() == "true");
+            Assert.IsTrue(Jobject["View"]["Dynamo"]["IsVisibleInDynamoLibrary"].ToString() == "True");
         }
 
         [Test]
