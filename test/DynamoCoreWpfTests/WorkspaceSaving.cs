@@ -837,6 +837,44 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        public void CustomNodeEditNodeDescriptionKeepingIsVisibleInDynamoLibraryInDyf()
+        {
+            // Open an existing dyf
+            var dynamoModel = ViewModel.Model;
+            var examplePath = Path.Combine(TestDirectory, @"core\combine", "Sequence_Json.dyf");
+            ViewModel.OpenCommand.Execute(examplePath);
+            var customNodeWorkspace = dynamoModel.CurrentWorkspace;
+
+            var initialId = new Guid("6aecda57-7679-4afb-aa02-05a75cc3433e");
+            var newCustNodeInstance = dynamoModel.CustomNodeManager.CreateCustomNodeInstance(initialId);
+            // Switch HomeWorkspace and place custom node on it
+            dynamoModel.CurrentWorkspace = dynamoModel.Workspaces.First();
+            dynamoModel.CurrentWorkspace.AddAndRegisterNode(newCustNodeInstance, false);
+
+            // run expression
+            Assert.AreEqual(1, dynamoModel.CurrentWorkspace.Nodes.Count());
+
+            // Mimic UI behavior so that custom node updates node name
+            FunctionNodeViewCustomization temp = new FunctionNodeViewCustomization();
+            FunctionNamePromptEventArgs args = new FunctionNamePromptEventArgs
+            {
+                Success = true,
+                Name = "Sequence2",
+                Category = "Misc",
+                CanEditName = false,
+                Description = "test node"
+            };
+            temp.SerializeCustomNodeWorkspaceWithNewInfo(args, ViewModel, newCustNodeInstance);
+
+            // Check if serialized workspace still have view block
+            string fileContents = File.ReadAllText(customNodeWorkspace.FileName);
+            var Jobject = Newtonsoft.Json.Linq.JObject.Parse(fileContents);
+            Assert.IsTrue(Jobject["View"] != null);
+            // Expect matching value
+            Assert.IsTrue(Jobject["View"]["Dynamo"]["IsVisibleInDynamoLibrary"].ToString() == "True");
+        }
+
+        [Test]
         public void CustomNodeSaveAsAddsNewIdToEnvironmentAndMaintainsOldOne()
         {
             // open custom node
