@@ -480,7 +480,7 @@ namespace Dynamo.Graph.Workspaces
 
             var info = new WorkspaceInfo(guid.ToString(), name, description, Dynamo.Models.RunType.Automatic);
             // IsVisibleInDynamoLibrary and Category should be set explicitly for custom node workspace
-            if (obj["View"]["Dynamo"]["IsVisibleInDynamoLibrary"] != null)
+            if (obj["View"] != null && obj["View"]["Dynamo"] !=null && obj["View"]["Dynamo"]["IsVisibleInDynamoLibrary"] != null)
             {
                 info.IsVisibleInDynamoLibrary = obj["View"]["Dynamo"]["IsVisibleInDynamoLibrary"].Value<bool>();
             }
