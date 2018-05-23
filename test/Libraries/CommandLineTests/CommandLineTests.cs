@@ -205,10 +205,10 @@ namespace Dynamo.Tests
                     var newGeometry = newFile.ReadToEnd();
 
                     Assert.IsNotNullOrEmpty(geometry);
-                    var geometryJson = JsonConvert.DeserializeObject(geometry) as JArray;
+                    var geometryJson = JsonConvert.DeserializeObject(geometry) as JObject;
 
                     Assert.IsNotNullOrEmpty(newGeometry);
-                    var newGeometryJson = JsonConvert.DeserializeObject(newGeometry) as JArray;
+                    var newGeometryJson = JsonConvert.DeserializeObject(newGeometry) as JObject;
 
                     Assert.IsNotNull(geometryJson);
                     Assert.IsNotNull(newGeometryJson);

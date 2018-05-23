@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Threading;
 using Dynamo.Models;
 using Dynamo.Graph.Nodes;
@@ -9,11 +11,155 @@ using Autodesk.DesignScript.Interfaces;
 
 namespace DynamoWPFCLI
 {
+    internal class GraphicPrimitives
+    {
+        /// <summary>
+        /// The class that represents data for drawing a graphic primitive 
+        /// </summary>
+        [DataMember]
+        public string Colors { get; set; }
+
+        [DataMember] public string TriangleTextureCoordinates { get; set; }
+
+        [DataMember] public string ColorsStride { get; set; }
+
+        [DataMember] public string PointVertices { get; set; }
+
+        [DataMember] public string PointVertexColors { get; set; }
+
+        [DataMember] public string TriangleVertices { get; set; }
+
+        [DataMember] public string TriangleNormals { get; set; }
+
+        [DataMember] public string TriangleVertexColors { get; set; }
+
+        [DataMember] public string LineStripVertices { get; set; }
+
+        [DataMember] public string LineStripCounts { get; set; }
+
+        [DataMember] public string LineStripColors { get; set; }
+
+        [DataMember] public bool RequiresPerVertexColoration { get; set; }
+    }
+
+    internal class GeometryData
+    {
+        /// <summary>
+        /// Guid of the specified node
+        /// </summary>
+        [DataMember]
+        public string Id { get; private set; }
+
+        /// <summary>
+        /// List of the graphic primitives that result object consist of.
+        /// It is empty for nongraphic objects
+        /// </summary>
+        [DataMember]
+        public IEnumerable<GraphicPrimitives> GeometryEntries { get; private set; }
+
+//        [JsonConstructor]
+//        public GeometryData(string NodeId, IEnumerable<GraphicPrimitives> GraphicPrimitivesData)
+//        {
+//            this.NodeId = NodeId;
+//            this.GraphicPrimitivesData = GraphicPrimitivesData;
+//        }
+
+
+        public GeometryData(string id)
+        {
+            this.Id = id;
+        }
+
+        public GeometryData(string id, IEnumerable<IRenderPackage> packages)
+        {
+            this.Id = id;
+            GeneratePrimitives(packages);
+        }
+
+        private void GeneratePrimitives(IEnumerable<IRenderPackage> packages)
+        {
+            if (packages == null || !packages.Any())
+                return;
+
+            var data = new List<GraphicPrimitives>();
+
+            foreach (var package in packages)
+            {
+                string triangleTextureCoordinates = String.Empty,
+                    colorsStride = String.Empty,
+                    colors = String.Empty;
+
+                if (package.Colors != null)
+                {
+                    colors = EncodeNumbers(package.Colors);
+                    triangleTextureCoordinates = EncodeNumbers(package.MeshTextureCoordinates);
+                    colorsStride = package.ColorsStride.ToString();
+                }
+
+                string pointVertices = EncodeNumbers(package.PointVertices);
+                string pointVertexColors = EncodeNumbers(package.PointVertexColors);
+
+                string triangleVertices = EncodeNumbers(package.MeshVertices);
+                string triangleNormals = EncodeNumbers(package.MeshNormals);
+                string triangleVertexColors = EncodeNumbers(package.MeshVertexColors);
+
+                string lineStripVertices = EncodeNumbers(package.LineStripVertices);
+                string lineStripCounts = EncodeNumbers(package.LineStripVertexCounts);
+                string lineStripColors = EncodeNumbers(package.LineStripVertexColors);
+
+                data.Add(new GraphicPrimitives()
+                {
+                    Colors = colors,
+                    TriangleTextureCoordinates = triangleTextureCoordinates,
+                    ColorsStride = colorsStride,
+                    PointVertexColors = pointVertexColors,
+                    PointVertices = pointVertices,
+                    TriangleNormals = triangleNormals,
+                    TriangleVertexColors = triangleVertexColors,
+                    TriangleVertices = triangleVertices,
+                    LineStripColors = lineStripColors,
+                    LineStripCounts = lineStripCounts,
+                    LineStripVertices = lineStripVertices,
+                    RequiresPerVertexColoration = package.RequiresPerVertexColoration,
+                });
+            }
+
+            this.GeometryEntries = data;
+        }
+
+        private static string EncodeNumbers<T>(IEnumerable<T> coordinates)
+        {
+            var stream = new MemoryStream();
+            using (var writer = new BinaryWriter(stream))
+            {
+                if (typeof(T) == typeof(double))
+                {
+                    foreach (T value in coordinates)
+                        writer.Write(Convert.ToSingle(value));
+                }
+                else
+                {
+                    foreach (T value in coordinates)
+                        writer.Write(value as dynamic);
+                }
+            }
+
+            return Convert.ToBase64String(stream.ToArray());
+        }
+
+    }
     internal class GeometryHolder
     {
-        private NodeModel node;
+        /// <summary>
+        /// Guid of the specified node
+        /// </summary>
+        /// <summary>
+        /// List of the graphic primitives that result object consist of.
+        /// It is empty for nongraphic objects
+        /// </summary>
+        private GeometryData data;
+
         private ManualResetEvent done = new ManualResetEvent(false);
-        private Dictionary<string, Object> groupData = new Dictionary<string, object>();
         private bool hasGeometry = false;
 
         public Object Geometry
@@ -21,7 +167,7 @@ namespace DynamoWPFCLI
             get
             {
                 Done.WaitOne();
-                return groupData;
+                return data;
             }
         }
 
@@ -44,10 +190,11 @@ namespace DynamoWPFCLI
 
         public GeometryHolder(DynamoModel model, IRenderPackageFactory factory, NodeModel nodeModel)
         {
+            data = new GeometryData(nodeModel.GUID.ToString());
+
             // Schedule the generation of render packages for this node. NodeRenderPackagesUpdated will be
             // called with the render packages when they are ready. The node will be set do 'Done' if the 
             // sheduling for some reason is not successful (usually becuase the node have no geometry or is inivisible)
-            node = nodeModel;
             nodeModel.RenderPackagesUpdated += NodeRenderPackagesUpdated;
             if (!nodeModel.RequestVisualUpdateAsync(model.Scheduler, model.EngineController, factory, true))
             {
@@ -58,69 +205,9 @@ namespace DynamoWPFCLI
 
         private void NodeRenderPackagesUpdated(NodeModel nodeModel, RenderPackageCache renderPackages)
         {
-            if (renderPackages.Packages.Count() > 0)
+            if (renderPackages.Packages.Any())
             {
-                List<double[]> verts = new List<double[]>();
-                List<List<byte>> vertColors = new List<List<byte>>();
-                List<double[]> normals = new List<double[]>();
-                List<List<double>> points = new List<List<double>>();
-                List<List<byte>> pointColors = new List<List<byte>>();
-                List<List<double>> lines = new List<List<double>>();
-                List<List<byte>> lineColors = new List<List<byte>>();
-
-                foreach (IRenderPackage p in renderPackages.Packages)
-                {
-                    var meshVertices = p.MeshVertices.ToArray();
-                    if (meshVertices.Length > 0)
-                    {
-                        verts.Add(meshVertices);
-                    }
-
-                    var meshVertexColors = p.MeshVertexColors.ToList();
-                    if (meshVertexColors.Count > 0)
-                    {
-                        vertColors.Add(meshVertexColors);
-                    }
-
-                    var meshNormals = p.MeshNormals.ToArray();
-                    if (meshNormals.Length > 0)
-                    {
-                        normals.Add(meshNormals);
-                    }
-
-                    var pointVertices = p.PointVertices.ToList();
-                    if (pointVertices.Count > 0)
-                    {
-                        points.Add(pointVertices);
-                    }
-
-                    var pointVertexColors = p.PointVertexColors.ToList();
-                    if (pointVertexColors.Count > 0)
-                    {
-                        pointColors.Add(pointVertexColors);
-                    }
-
-                    var lineStripVertices = p.LineStripVertices.ToList();
-                    if (lineStripVertices.Count > 0)
-                    {
-                        lines.Add(lineStripVertices);
-                    }
-
-                    var lineStripVertexColors = p.LineStripVertexColors.ToList();
-                    if (lineStripVertexColors.Count > 0)
-                    {
-                        lineColors.Add(lineStripVertexColors);
-                    }
-                }
-
-                groupData.Add("name", nodeModel.GUID.ToString());
-                groupData.Add("vertices", verts);
-                groupData.Add("verticeColors", vertColors);
-                groupData.Add("normals", normals);
-                groupData.Add("points", points);
-                groupData.Add("pointColors", pointColors);
-                groupData.Add("lines", lines);
-                groupData.Add("lineColors", lineColors);
+                data = new GeometryData(nodeModel.GUID.ToString(), renderPackages.Packages);
 
                 // We have geometry
                 HasGeometry = true;
