@@ -1,0 +1,692 @@
+
+<!DOCTYPE HTML>
+<html lang="" >
+    <head>
+        <meta charset="UTF-8">
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <title>Upgrade Nodes for Dynamo 2.0 · GitBook</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="description" content="">
+        <meta name="generator" content="GitBook 3.2.3">
+        
+        
+        
+    
+    <link rel="stylesheet" href="../gitbook/style.css">
+
+    
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-highlight/website.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-search/search.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-fontsettings/website.css">
+                
+            
+        
+
+    
+
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+
+        
+    
+    
+    <meta name="HandheldFriendly" content="true"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="../gitbook/images/apple-touch-icon-precomposed-152.png">
+    <link rel="shortcut icon" href="../gitbook/images/favicon.ico" type="image/x-icon">
+
+    
+    <link rel="next" href="3-6-extensions.html" />
+    
+    
+    <link rel="prev" href="3-5-nodemodel-derived-nodes.html" />
+    
+
+    </head>
+    <body>
+        
+<div class="book">
+    <div class="book-summary">
+        
+            
+<div id="book-search-input" role="search">
+    <input type="text" placeholder="Type to search" />
+</div>
+
+            
+                <nav role="navigation">
+                
+
+
+<ul class="summary">
+    
+    
+
+    
+
+    
+        
+        
+    
+        <li class="chapter " data-level="1.1" data-path="../">
+            
+                <a href="../">
+            
+                    
+                    About
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2" data-path="../01-Introduction/1-0-introduction.html">
+            
+                <a href="../01-Introduction/1-0-introduction.html">
+            
+                    
+                    Introduction
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3" data-path="../02-Build-Dynamo-From-Source/2-0-build-dynamo-from-source.html">
+            
+                <a href="../02-Build-Dynamo-From-Source/2-0-build-dynamo-from-source.html">
+            
+                    
+                    Build Dynamo from Source
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.3.1" data-path="../02-Build-Dynamo-From-Source/2-1-build-dynamo-revit-from-source.html">
+            
+                <a href="../02-Build-Dynamo-From-Source/2-1-build-dynamo-revit-from-source.html">
+            
+                    
+                    Build DynamoRevit from Source
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4" data-path="3-0-developing-for-dynamo.html">
+            
+                <a href="3-0-developing-for-dynamo.html">
+            
+                    
+                    Developing for Dynamo
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.4.1" data-path="3-1-getting-started.html">
+            
+                <a href="3-1-getting-started.html">
+            
+                    
+                    Getting Started
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.2" data-path="3-2-zerotouch-example.html">
+            
+                <a href="3-2-zerotouch-example.html">
+            
+                    
+                    Zero-Touch Case Study - Grid Node
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.3" data-path="3-3-python-scripts-in-csharp.html">
+            
+                <a href="3-3-python-scripts-in-csharp.html">
+            
+                    
+                    Zero-Touch Case Study - Python Scripts in C#
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.4" data-path="3-4-zerotouch-nodes.html">
+            
+                <a href="3-4-zerotouch-nodes.html">
+            
+                    
+                    Going Further with Zero-Touch
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.5" data-path="3-5-nodemodel-derived-nodes.html">
+            
+                <a href="3-5-nodemodel-derived-nodes.html">
+            
+                    
+                    NodeModel Case Study - Custom UI
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter active" data-level="1.4.6" data-path="upgrade-nodes-for-dynamo-20.html">
+            
+                <a href="upgrade-nodes-for-dynamo-20.html">
+            
+                    
+                    Upgrade Nodes for Dynamo 2.0
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.7" data-path="3-6-extensions.html">
+            
+                <a href="3-6-extensions.html">
+            
+                    
+                    Extensions
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5" data-path="../04-Testing/4-0-testing.html">
+            
+                <a href="../04-Testing/4-0-testing.html">
+            
+                    
+                    Testing
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.5.1" data-path="../04-Testing/4-1-revit-testing.html">
+            
+                <a href="../04-Testing/4-1-revit-testing.html">
+            
+                    
+                    Testing for DynamoRevit
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6" data-path="../05-Package-Deployment/5-0-package-deployment.html">
+            
+                <a href="../05-Package-Deployment/5-0-package-deployment.html">
+            
+                    
+                    Package Deployment
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.6.1" data-path="../05-Package-Deployment/5-1-build-package-from-vs.html">
+            
+                <a href="../05-Package-Deployment/5-1-build-package-from-vs.html">
+            
+                    
+                    Build a Package From Visual Studio
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7" data-path="../06-Pull-Requests/6-0-pull-requests.html">
+            
+                <a href="../06-Pull-Requests/6-0-pull-requests.html">
+            
+                    
+                    Pull Requests
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8" data-path="../07-Examples/7-0-examples.html">
+            
+                <a href="../07-Examples/7-0-examples.html">
+            
+                    
+                    Examples
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+    
+
+    <li class="divider"></li>
+
+    <li>
+        <a href="https://www.gitbook.com" target="blank" class="gitbook-link">
+            Published with GitBook
+        </a>
+    </li>
+</ul>
+
+
+                </nav>
+            
+        
+    </div>
+
+    <div class="book-body">
+        
+            <div class="body-inner">
+                
+                    
+
+<div class="book-header" role="navigation">
+    
+
+    <!-- Title -->
+    <h1>
+        <i class="fa fa-circle-o-notch fa-spin"></i>
+        <a href=".." >Upgrade Nodes for Dynamo 2.0</a>
+    </h1>
+</div>
+
+
+
+
+                    <div class="page-wrapper" tabindex="-1" role="main">
+                        <div class="page-inner">
+                            
+<div id="book-search-results">
+    <div class="search-noresults">
+    
+                                <section class="normal markdown-section">
+                                
+                                <h1 id="updating-your-packages-and-dynamo-libraries-for-dynamo-2x">Updating your Packages and Dynamo libraries for Dynamo 2.x.</h1>
+<h1 id="introduction">Introduction:</h1>
+<p>Dynamo 2.0 is a major release and some APIs have been changed or removed. One of the largest changes that will effect node and package authors is our move to a JSON file format.</p>
+<p>In general Zero Touch node authors will have little to no work to do to get their packages running in 2.0.</p>
+<p>UI nodes and nodes that derive directly from NodeModel will take more work to get running in 2.x.</p>
+<p>Extension authors may also have some potential changes to make - depending on how much of the Dynamo core APIs they use in their extensions.</p>
+<hr>
+<h2 id="general-packaging-rules">General packaging rules:</h2>
+<ul>
+<li><p>Do not bundle Dynamo or Dynamo Revit .dlls with your package. These dlls will already be loaded by dynamo. If you bundle a different version than the user has loaded <em>(ie you distribute dynamo core 1.3 but the user is running your package on dynamo 2.0)</em> mysterious runtime bugs will occur. This includes dlls like <code>DynamoCore.dll</code>, <code>DynamoServices.dll</code>, <code>DSCodeNodes.dll</code>, <code>ProtoGeometry.dll</code></p>
+</li>
+<li><p>Do not bundle and distribute <code>newtonsoft.json.net</code> with your package if you can avoid it. This dll will also be loaded by dynamo 2.x already. The same issue as above can occur.</p>
+</li>
+<li><p>Do not bundle and distribute <code>CEFSharp</code> with your package if you can avoid it. This dll will also be loaded by Dynamo 2.x already. The same issue as above can occur.</p>
+</li>
+<li><p>In general avoid sharing dependencies with dynamo or revit if you need to control the version of that dependency.</p>
+</li>
+</ul>
+<hr>
+<h2 id="common-issues">Common Issues:</h2>
+<p>1) Upon opening a graph some nodes have multiple ports with the same name, but the graph looked fine when saving. This issue can have a few causes.</p>
+<p>The common root cause is because the node was created using a constructor that recreated the ports. Instead a constructor which loaded the ports should have been used. These constructors are usually marked <code>[JsonConstructor]</code> <em>see below for examples</em></p>
+<p><img src="../assets/broken json.png" alt=""></p>
+<p>This can occur because:</p>
+<ul>
+<li><p>There was simply no matching <code>[JsonConstructor]</code>, or it was not passed the <code>Inports</code> and <code>Outports</code> from the JSON .dyn.</p>
+</li>
+<li><p>There were two versions of JSON.net loaded into the same process at the same time causing .net runtime failure so that the <code>[JsonConstructor]</code> attribute could not be used correctly to mark the constructor.</p>
+</li>
+<li><p>DynamoServices.dll with a different version than the current dynamo version has been bundled with the package and is causing the .net runtime to fail to identify the <code>[MultiReturn]</code> attribute so zero touch nodes marked with various attributes will fail to have them applied. You might find that a node returns a single dictionary output instead of multiple ports.</p>
+</li>
+</ul>
+<p>2) Nodes are completely missing upon loading the graph with some errors in the console.</p>
+<ul>
+<li>This might occur if your deserialization failed for some reason. It&apos;s good practice to serialize only properties you need. We can use <code>[JsonIgnore]</code> on complex properties you don&apos;t need to load or save to ignore them. Properties like a <code>function pointer, delegate, action,</code> or  <code>event</code> etc. These should not be serialized as they will usually fail to deserialize and cause a runtime error.</li>
+</ul>
+<hr>
+<h1 id="upgrading-in-depth">Upgrading In Depth:</h1>
+<h2 id="custom-nodes-13----20">Custom Nodes 1.3 - &gt; 2.0</h2>
+<p><a href="https://github.com/DynamoDS/Dynamo/wiki/Library-2.0-Add-Ons-Organization#customnodes" target="_blank">Organizing Custom Nodes in librarie.js</a></p>
+<p>Known Issues:</p>
+<ul>
+<li><p>A coinciding custom node name and category name at the same level in librarie.js causes unexpected behavior. <a href="https://jira.autodesk.com/browse/QNTM-3653" target="_blank">QNTM-3653</a> - avoid using the same names for category and nodes.</p>
+</li>
+<li><p>Comments will be turned into block comments instead of line comments.</p>
+</li>
+<li><p>Short type names will be replaced with full names. For example if you did not specify a type when you load the custom node again you will see <code>var[]..[]</code> - as this is the default type.</p>
+</li>
+</ul>
+<hr>
+<h2 id="zero-touch-nodes-13---20">Zero Touch Nodes 1.3 -&gt; 2.0</h2>
+<ul>
+<li><p>In Dynamo 2.0 List and Dictionary types have been split and the syntax for creating Lists and Dictionaries has been changed. Lists are initialized using <code>[]</code> while dictionaries use <code>{}</code>.<br>If you were previously using the <code>DefaultArgument</code> attribute to mark parameters on your zero touch nodes and used list syntax to default to a specific list like <code>someFunc([DefaultArgument(&quot;{0,1,2}&quot;)])</code> - this will no longer be valid, and you will need to modify the DesignScript snippet to use the new initialization syntax for lists.</p>
+</li>
+<li><p>As noted above do not distribute Dynamo dlls with your packages. (<code>DynamoCore</code>, <code>DynamoServices</code> etc).</p>
+</li>
+</ul>
+<hr>
+<h2 id="node-model-nodes-13---20">Node Model Nodes 1.3 -&gt; 2.0</h2>
+<p>Node Model nodes require the most work to update to Dynamo 2.x. At a high level you will need to implement constructors that will only be used for loading your nodes from json in addition to the regular nodeModel constructors that are used for instantiating new instances of your node types. To differentiate between these you mark the load time constructors with <code>[JsonConstructor]</code> which is an attribute from newtonsoft.Json.net.</p>
+<p>The names of the parameters in the constructor should generally match the names of the JSON properties - though this mapping gets more complicated if you override the names that are serialized using [JsonProperty] attributes.<br><a href="https://www.newtonsoft.com/json/help/html/Introduction.htm" target="_blank">See the Json.net documentation for more information.</a></p>
+<hr>
+<h3 id="json-constructors">JSON Constructors</h3>
+<p>The most common change required for updating nodes derived from the <code>NodeModel</code> base class (or other dynamo core base classes, ie <code>DSDropDownBase</code>) is the need to add a JSON constructor to your class.</p>
+<p>Your original parameter-less constructor will still handle initializing a new node that is created within Dynamo (via the library for example).  The JSON constructor is required to initialize a node that is deserialized <em>(loaded)</em> from a saved .dyn or .dyf file.</p>
+<p>The JSON constructor differs from the base constructor in that it has <code>PortModel</code> parameters for the <code>inPorts</code> and <code>outPorts</code>, which are provided by the JSON loading logic. The call to register the ports for the node are not required here, as the data exists in the .dyn file.  An example of a JSON constructor looks like this:</p>
+<p><code>using Newtonsoft.Json; //New dependency for Json</code></p>
+<p>&#x2026;&#x2026;&#x2026;</p>
+<p><code>[JsonConstructor] //Attribute required to identity the Json constructor</code></p>
+<p><code>//Minimum constructor implementation.  Note that the base method invocation must also be present.</code></p>
+<p><code>FooNode(IEnumerable&lt;PortModel&gt; inPorts, IEnumerable&lt;PortModel&gt; outPorts) : base(inPorts, outPorts) { }</code></p>
+<p>This syntax <code>:base(Inports,outPorts){}</code> calls the base <code>nodeModel</code> constructor and passes the deserialized ports to it.</p>
+<p>Any special logic that existed in the class constructor that involves initialization of specific data that is serialized into the .dyn file <em>(for example setting Port registration, lacing strategy, etc)</em> are not required to be repeated in this constructor as these values can be read from the JSON.</p>
+<p>This is the major difference between the JSON constructor and non-JSON constructors for your nodeModels. JSON constructors are invoked when loading from a file and are passed loaded data.  Other user logic however must be duplicated in the JSON constructor <em>(for example, initializing event handlers for the node or attaching)</em>.</p>
+<p>Examples can be found here in the DynamoSamples repo -&gt; <a href="https://github.com/DynamoDS/DynamoSamples/blob/master/src/SampleLibraryUI/Examples/ButtonCustomNodeModel.cs#L156" target="_blank">ButtonCustomNodeModel</a>, <a href="https://github.com/DynamoDS/DynamoSamples/blob/master/src/SampleLibraryUI/Examples/DropDown.cs#L23" target="_blank">DropDown</a>, or <a href="https://github.com/DynamoDS/DynamoSamples/blob/master/src/SampleLibraryUI/Examples/SliderCustomNodeModel.cs#L123" target="_blank">SliderCustomNodeModel</a></p>
+<hr>
+<h3 id="public-properties-and-serialization">Public Properties and Serialization</h3>
+<p>Previously a developer could serialize and deserialize specific model data to the xml document via the <code>SerializeCore</code> and <code>DeserializeCore</code> methods.  These methods still exist in the API but will be deprecated in a future release of Dynamo (an example can be found <a href="https://github.com/DynamoDS/Dynamo/blob/master/src/Libraries/CoreNodeModels/Input/DoubleSlider.cs#L140" target="_blank">here</a>). With the JSON.NET implementation now <code>public</code> properties on the NodeModel derived class can be serialized to the .dyn file directly.  JSON.Net provides multiple attributes to control how the property is serialized.</p>
+<p>This example which specifies a <code>PropertyName</code> is found <a href="https://github.com/DynamoDS/Dynamo/blob/master/src/Libraries/CoreNodeModels/Input/ColorPalette.cs#L38" target="_blank">here</a> in the Dynamo repo.</p>
+<p><code>[JsonProperty(PropertyName = &quot;InputValue&quot;)]</code></p>
+<p><code>public DSColor DsColor {...</code></p>
+<hr>
+<h3 id="converters">Converters:</h3>
+<p><strong>Note</strong><br> If you make your own JSON.net converter class, Dynamo does not currently have a mechanism to let you inject it into the load and save methods and so even if you mark your class with the <code>[JsonConverter]</code> attribute it may not be used - instead you can call your converter directly in your setter or getter. <em>//TODO need confirmation of this limitation. Any evidence is welcome.</em></p>
+<p>An example that specifies a serialization method to convert the property to a string is found <a href="https://github.com/DynamoDS/Dynamo/blob/master/src/Libraries/CoreNodeModels/DynamoConvert.cs#L66" target="_blank">here</a> in the Dynamo repo.</p>
+<p><code>[JsonProperty(&quot;MeasurementType&quot;), JsonConverter(typeof(StringEnumConverter))]</code></p>
+<p><code>public ConversionMetricUnit SelectedMetricConversion{...</code></p>
+<hr>
+<h3 id="ignoring-properties">Ignoring Properties</h3>
+<p><code>public</code> properties that are not meant for serialization need to have the <code>[JsonIgnore]</code> attribute added.  When the nodes is saved to the .dyn file this insures this data is ignored by the serialization mechanism and will not cause unexpected consequences when the graph is opened again.  An example of this can be <a href="https://github.com/DynamoDS/Dynamo/blob/master/src/Libraries/CoreNodeModels/DynamoConvert.cs#L45" target="_blank">here</a> in the Dynamo repo.</p>
+<hr>
+<h3 id="undoredo">Undo/Redo</h3>
+<p>As mentioned above <code>SerializeCore</code> and <code>DeserializeCore</code> methods were used in the past to save and load nodes into the xml .dyn file. In addition they were also used to save and load the node state for undo/redo and <strong>still are!</strong> If you wish to implement complex undo/redo functionality for your nodeModel UI node then you will need to implement these methods and serialize into the XML document object provided as a parameter to these methods. This should be a rare use case except for complex UI nodes.</p>
+<hr>
+<h3 id="input-and-output-port-apis">Input and Output Port APIs</h3>
+<p>One common occurrence in nodeModel nodes affected by 2.0 API changes is port registration in the node constructor.  Looking at examples in the Dynamo or DynamoSamples repo you previously will have found use of the <code>InPortData.Add()</code> or <code>OutPortData.Add()</code> methods.  Previously in the Dynamo API the <code>InPortData</code> and <code>OutPortData</code> public properties were marked as deprecated.  In 2.0 these properties have been removed.  Developers should now use <code>InPorts.Add()</code> and <code>OutPorts.Add()</code> methods.  Additionally these two <code>Add()</code> methods have slightly different signatures:</p>
+<p><code>InPortData.Add(new PortData(&quot;Port Name&quot;, &quot;Port Description&quot;)); //Old version valid in 1.3 but now deprecated</code></p>
+<p>vs</p>
+<p><code>InPorts.Add(new PortModel(PortType.Input, this, new PortData(&quot;Port Name&quot;, &quot;Port Description&quot;))); //Recommended 2.0</code></p>
+<p>Examples of converted code can be found here in the Dynamo Repo -&gt; <a href="https://github.com/DynamoDS/Dynamo/blob/RC2.0.0_master/src/Libraries/CoreNodeModels/DynamoConvert.cs#L142" target="_blank">DynamoConvert.cs</a>, or <a href="https://github.com/DynamoDS/Dynamo/blob/RC2.0.0_master/src/Libraries/CoreNodeModels/Input/FileSystem.cs#L281" target="_blank">FileSystem.cs</a></p>
+<p>The other common use case that is affected by the 2.0 API changes relates to the methods commonly used in the <code>BuildAst()</code> method to determine node behavior based on the presence or absence of port connectors.  Previously <code>HasConnectedInput(index)</code> was used to validate a connected port state.  Developers should now use the <code>InPorts[0].IsConnected</code> property to check the port connection state.  An example of the this con be found in <a href="https://github.com/DynamoDS/Dynamo/blob/RC2.0.0_master/src/Libraries/CoreNodeModels/ColorRange.cs#L83" target="_blank">ColorRange.cs</a> in the Dynamo Repo.</p>
+<hr>
+<h2 id="examples">Examples:</h2>
+<p>Let&apos;s walk through upgrading a 1.3 UI node to Dynamo 2.x.</p>
+<pre><code class="lang-csharp"><span class="hljs-keyword">using</span> System;
+<span class="hljs-keyword">using</span> System.Collections.Generic;
+<span class="hljs-keyword">using</span> Dynamo.Graph.Nodes;
+<span class="hljs-keyword">using</span> CustomNodeModel.CustomNodeModelFunction;
+<span class="hljs-keyword">using</span> ProtoCore.AST.AssociativeAST;
+<span class="hljs-keyword">using</span> Autodesk.DesignScript.Geometry;
+
+<span class="hljs-keyword">namespace</span> <span class="hljs-title">CustomNodeModel.CustomNodeModel</span>
+{
+    [NodeName(<span class="hljs-string">&quot;RectangularGrid&quot;</span>)]
+    [NodeDescription(<span class="hljs-string">&quot;An example NodeModel node that creates a rectangular grid. The slider randomly scales the cells.&quot;</span>)]
+    [NodeCategory(<span class="hljs-string">&quot;CustomNodeModel&quot;</span>)]
+    [InPortNames(<span class="hljs-string">&quot;xCount&quot;</span>, <span class="hljs-string">&quot;yCount&quot;</span>)]
+    [InPortTypes(<span class="hljs-string">&quot;double&quot;</span>, <span class="hljs-string">&quot;double&quot;</span>)]
+    [InPortDescriptions(<span class="hljs-string">&quot;Number of cells in the X direction&quot;</span>, <span class="hljs-string">&quot;Number of cells in the Y direction&quot;</span>)]
+    [OutPortNames(<span class="hljs-string">&quot;Rectangles&quot;</span>)]
+    [OutPortTypes(<span class="hljs-string">&quot;Autodesk.DesignScript.Geometry.Rectangle[]&quot;</span>)]
+    [OutPortDescriptions(<span class="hljs-string">&quot;A list of rectangles&quot;</span>)]
+    [IsDesignScriptCompatible]
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">GridNodeModel</span> : <span class="hljs-title">NodeModel</span>
+    {
+        <span class="hljs-keyword">private</span> <span class="hljs-keyword">double</span> _sliderValue;
+        <span class="hljs-keyword">public</span> <span class="hljs-keyword">double</span> SliderValue
+        {
+            <span class="hljs-keyword">get</span> { <span class="hljs-keyword">return</span> _sliderValue; }
+            <span class="hljs-keyword">set</span>
+            {
+                _sliderValue = <span class="hljs-keyword">value</span>;
+                RaisePropertyChanged(<span class="hljs-string">&quot;SliderValue&quot;</span>);
+                OnNodeModified(<span class="hljs-keyword">false</span>);
+            }
+        }
+        <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">GridNodeModel</span>(<span class="hljs-params"></span>)
+        </span>{
+            RegisterAllPorts();
+        }
+        <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">override</span> IEnumerable&lt;AssociativeNode&gt; <span class="hljs-title">BuildOutputAst</span>(<span class="hljs-params">List&lt;AssociativeNode&gt; inputAstNodes</span>)
+        </span>{
+            <span class="hljs-keyword">if</span> (!HasConnectedInput(<span class="hljs-number">0</span>) || !HasConnectedInput(<span class="hljs-number">1</span>))
+            {
+                <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span>[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(<span class="hljs-number">0</span>), AstFactory.BuildNullNode()) };
+            }
+            <span class="hljs-keyword">var</span> sliderValue = AstFactory.BuildDoubleNode(SliderValue);
+            <span class="hljs-keyword">var</span> functionCall =
+              AstFactory.BuildFunctionCall(
+                <span class="hljs-keyword">new</span> Func&lt;<span class="hljs-keyword">int</span>, <span class="hljs-keyword">int</span>, <span class="hljs-keyword">double</span>, List&lt;Rectangle&gt;&gt;(GridFunction.RectangularGrid),
+                <span class="hljs-keyword">new</span> List&lt;AssociativeNode&gt; { inputAstNodes[<span class="hljs-number">0</span>], inputAstNodes[<span class="hljs-number">1</span>], sliderValue });
+
+            <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span>[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(<span class="hljs-number">0</span>), functionCall) };
+        }
+    }
+}
+</code></pre>
+<p>All we need to do to this <code>nodeModel</code> class to get it loading and saving correctly in 2.0 is add a jsonConstructor to handle loading of the ports. We simply pass the ports on the base constructor and this implementation is empty.</p>
+<pre><code class="lang-csharp">[JsonConstructor]
+<span class="hljs-function"><span class="hljs-keyword">protected</span> <span class="hljs-title">GridNodeModel</span>(<span class="hljs-params">IEnumerable&lt;PortModel&gt; Inports, IEnumerable&lt;PortModel&gt; Outports </span>) :
+<span class="hljs-title">base</span>(<span class="hljs-params">Inports,Outports</span>)
+</span>{
+
+}
+</code></pre>
+<p>Note: Do not call <code>RegisterPorts()</code> or some variation of that in your JsonConstructor - this will use the input and output parameter attributes on your node class to construct new ports! <strong>We don&apos;t want this</strong>, since we want to use the loaded ports which are passed to your constructor.</p>
+<pre><code>[InPortNames(&quot;xCount&quot;, &quot;yCount&quot;)]
+[InPortTypes(&quot;double&quot;, &quot;double&quot;)]
+</code></pre><p>This example adds the minimal loading JSON constructor possible. But what if we need to do some more complex construction logic, like setup some listeners for event handling inside the constructor. The next sample taken from the<br><a href="https://github.com/DynamoDS/DynamoSamples" target="_blank">DynamoSamples Repo</a> is linked above in the <code>JsonConstructors Section</code> of this document.</p>
+<p>Here is a more complex constructor for a UI node:</p>
+<pre><code class="lang-csharp"> <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">ButtonCustomNodeModel</span>(<span class="hljs-params"></span>)
+        </span>{
+            <span class="hljs-comment">// When you create a UI node, you need to do the</span>
+            <span class="hljs-comment">// work of setting up the ports yourself. To do this,</span>
+            <span class="hljs-comment">// you can populate the InPorts and the OutPorts</span>
+            <span class="hljs-comment">// collections with PortData objects describing your ports.</span>
+            InPorts.Add(<span class="hljs-keyword">new</span> PortModel(PortType.Input, <span class="hljs-keyword">this</span>, <span class="hljs-keyword">new</span> PortData(<span class="hljs-string">&quot;inputString&quot;</span>, <span class="hljs-string">&quot;a string value displayed on our button&quot;</span>)));
+
+            <span class="hljs-comment">// Nodes can have an arbitrary number of inputs and outputs.</span>
+            <span class="hljs-comment">// If you want more ports, just create more PortData objects.</span>
+            OutPorts.Add(<span class="hljs-keyword">new</span> PortModel(PortType.Output, <span class="hljs-keyword">this</span>, <span class="hljs-keyword">new</span> PortData(<span class="hljs-string">&quot;button value&quot;</span>, <span class="hljs-string">&quot;returns the string value displayed on our button&quot;</span>)));
+            OutPorts.Add(<span class="hljs-keyword">new</span> PortModel(PortType.Output, <span class="hljs-keyword">this</span>, <span class="hljs-keyword">new</span> PortData(<span class="hljs-string">&quot;window value&quot;</span>, <span class="hljs-string">&quot;returns the string value displayed in our window when button is pressed&quot;</span>)));
+
+            <span class="hljs-comment">// This call is required to ensure that your ports are</span>
+            <span class="hljs-comment">// properly created.</span>
+            RegisterAllPorts();
+
+            <span class="hljs-comment">// Listen for input port disconnection to trigger button UI update</span>
+            <span class="hljs-keyword">this</span>.PortDisconnected += ButtonCustomNodeModel_PortDisconnected;
+
+            <span class="hljs-comment">// The arugment lacing is the way in which Dynamo handles</span>
+            <span class="hljs-comment">// inputs of lists. If you don&apos;t want your node to</span>
+            <span class="hljs-comment">// support argument lacing, you can set this to LacingStrategy.Disabled.</span>
+            ArgumentLacing = LacingStrategy.Disabled;
+
+            <span class="hljs-comment">// We create a DelegateCommand object which will be </span>
+            <span class="hljs-comment">// bound to our button in our custom UI. Clicking the button </span>
+            <span class="hljs-comment">// will call the ShowMessage method.</span>
+            ButtonCommand = <span class="hljs-keyword">new</span> DelegateCommand(ShowMessage, CanShowMessage);
+
+            <span class="hljs-comment">// Setting our property here will trigger a </span>
+            <span class="hljs-comment">// property change notification and the UI </span>
+            <span class="hljs-comment">// will be updated to reflect the new value.</span>
+            ButtonText = defaultButtonText;
+            WindowText = defaultWindowText;
+        }
+</code></pre>
+<p>When we add a JSON constructor for loading this node from a file we have to recreate some of this logic, but note that we do not include the code that creates ports, sets lacing, or sets the default values for properties which we can load from the file.</p>
+<pre><code class="lang-csharp">        <span class="hljs-comment">// This constructor is called when opening a Json graph.</span>
+
+        [JsonConstructor]
+        ButtonCustomNodeModel(IEnumerable&lt;PortModel&gt; inPorts, IEnumerable&lt;PortModel&gt; outPorts) : <span class="hljs-keyword">base</span>(inPorts, outPorts)
+        {
+            <span class="hljs-keyword">this</span>.PortDisconnected += ButtonCustomNodeModel_PortDisconnected;
+            ButtonCommand = <span class="hljs-keyword">new</span> DelegateCommand(ShowMessage, CanShowMessage);
+        }
+</code></pre>
+<p>Note that other public properties that were serialized into the JSON like <code>ButtonText</code> and <code>WindowText</code> will not to be added as explicit parameters to the constructor - they are set automatically by JSON.net using the setters for those properties.</p>
+
+                                
+                                </section>
+                            
+    </div>
+    <div class="search-results">
+        <div class="has-results">
+            
+            <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+            <ul class="search-results-list"></ul>
+            
+        </div>
+        <div class="no-results">
+            
+            <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+            
+        </div>
+    </div>
+</div>
+
+                        </div>
+                    </div>
+                
+            </div>
+
+            
+                
+                <a href="3-5-nodemodel-derived-nodes.html" class="navigation navigation-prev " aria-label="Previous page: NodeModel Case Study - Custom UI">
+                    <i class="fa fa-angle-left"></i>
+                </a>
+                
+                
+                <a href="3-6-extensions.html" class="navigation navigation-next " aria-label="Next page: Extensions">
+                    <i class="fa fa-angle-right"></i>
+                </a>
+                
+            
+        
+    </div>
+
+    <script>
+        var gitbook = gitbook || [];
+        gitbook.push(function() {
+            gitbook.page.hasChanged({"page":{"title":"Upgrade Nodes for Dynamo 2.0","level":"1.4.6","depth":2,"next":{"title":"Extensions","level":"1.4.7","depth":2,"path":"03-Development-Options/3-6-extensions.md","ref":"03-Development-Options/3-6-extensions.md","articles":[]},"previous":{"title":"NodeModel Case Study - Custom UI","level":"1.4.5","depth":2,"path":"03-Development-Options/3-5-nodemodel-derived-nodes.md","ref":"03-Development-Options/3-5-nodemodel-derived-nodes.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":[],"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"03-Development-Options/upgrade-nodes-for-dynamo-20.md","mtime":"2018-05-14T19:56:55.355Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2018-05-23T10:03:44.805Z"},"basePath":"..","book":{"language":""}});
+        });
+    </script>
+</div>
+
+        
+    <script src="../gitbook/gitbook.js"></script>
+    <script src="../gitbook/theme.js"></script>
+    
+        
+        <script src="../gitbook/gitbook-plugin-search/search-engine.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-search/search.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-lunr/lunr.min.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-lunr/search-lunr.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-sharing/buttons.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-fontsettings/fontsettings.js"></script>
+        
+    
+
+    </body>
+</html>
+
