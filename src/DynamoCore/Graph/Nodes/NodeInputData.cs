@@ -91,7 +91,8 @@ namespace Dynamo.Graph.Nodes
             { typeof(Boolean),NodeInputTypes.booleanInput},
             { typeof(DateTime),NodeInputTypes.dateInput},
             { typeof(double),NodeInputTypes.numberInput},
-            { typeof(int),NodeInputTypes.numberInput},
+            { typeof(Int32),NodeInputTypes.numberInput},
+            { typeof(Int64),NodeInputTypes.numberInput},
             {typeof(float),NodeInputTypes.numberInput},
         };
         public static NodeInputTypes getNodeInputTypeFromType(Type type)

@@ -1,0 +1,162 @@
+{
+  "Uuid": "3b9f3504-6a50-424b-a8ec-fc54547290d5",
+  "IsCustomNode": true,
+  "Category": "misc",
+  "Description": "testing comment 7",
+  "Name": "testing comment s7",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CustomNodes.Output, DynamoCore",
+      "NodeType": "OutputNode",
+      "ElementResolver": null,
+      "Symbol": "output",
+      "Id": "7f651db5773f4069902cb9812bcb8e23",
+      "Inputs": [
+        {
+          "Id": "34cf55054cee4acda249b9a6de038814",
+          "Name": "",
+          "Description": "",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [],
+      "Replication": "Disabled",
+      "Description": "A function output, use with custom nodes"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CustomNodes.Symbol, DynamoCore",
+      "NodeType": "InputNode",
+      "Parameter": {
+        "Name": "inputName",
+        "TypeName": "string",
+        "TypeRank": 0,
+        "DefaultValue": "\"a def string\"",
+        "Description": " commentsssss"
+      },
+      "Id": "439c78cf2b4d4671863c0127056578fc",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "af1be6c1d6ff423da28eb020fe729507",
+          "Name": "",
+          "Description": "Symbol",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "A function parameter, use with custom nodes.\r\n\r\nYou can specify the type and default value for parameter. E.g.,\r\n\r\ninput : var[]..[]\r\nvalue : bool = false"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "b953a689759645a585ffbf06a4ac4b42",
+      "Inputs": [
+        {
+          "Id": "5ec4b44f6d834bfc9325f41d1e7f60c8",
+          "Name": "",
+          "Description": "Node to evaluate.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "9c2f8999609348759b0e68911edc8c1f",
+          "Name": "",
+          "Description": "Watch contents.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualize the output of node."
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "af1be6c1d6ff423da28eb020fe729507",
+      "End": "5ec4b44f6d834bfc9325f41d1e7f60c8",
+      "Id": "691ee06f21f94f58a24d6ce6932e02f8"
+    },
+    {
+      "Start": "9c2f8999609348759b0e68911edc8c1f",
+      "End": "34cf55054cee4acda249b9a6de038814",
+      "Id": "bec04278677748578d4b2e84b38b6a4c"
+    }
+  ],
+  "Dependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": false,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.0.1.4885",
+      "RunType": "Manual",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "NodeViews": [
+      {
+        "Id": "7f651db5773f4069902cb9812bcb8e23",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Name": "Output",
+        "ShowGeometry": true,
+        "Excluded": false,
+        "X": 282.97382198952891,
+        "Y": 363.8952879581152
+      },
+      {
+        "Id": "439c78cf2b4d4671863c0127056578fc",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Name": "Input",
+        "ShowGeometry": true,
+        "Excluded": false,
+        "X": 284.98429319371729,
+        "Y": 253.31937172774872
+      },
+      {
+        "Id": "b953a689759645a585ffbf06a4ac4b42",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Name": "Watch",
+        "ShowGeometry": true,
+        "Excluded": false,
+        "X": 629.79057591623052,
+        "Y": 249.05759162303667
+      }
+    ],
+    "Annotations": [],
+    "X": 0.0,
+    "Y": 0.0,
+    "Zoom": 1.0
+  }
+}

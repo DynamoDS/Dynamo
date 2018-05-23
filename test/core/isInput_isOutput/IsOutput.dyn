@@ -1,0 +1,244 @@
+{
+  "Uuid": "6dd689fc-ac7c-4f1f-93b0-752aec78f9ef",
+  "IsCustomNode": false,
+  "Description": null,
+  "Name": "IsOutput",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [
+    {
+      "Id": "c275ece023164e278d51915257374c1e",
+      "Name": "Boolean",
+      "Type": "boolean",
+      "IntitialValue": "True",
+      "Description": "Selection between a true and false."
+    },
+    {
+      "Id": "5a7d8a03e09c49dfa269379e1d72baeb",
+      "Name": "Integer Slider",
+      "Type": "integer",
+      "IntitialValue": "1",
+      "Description": "A slider that produces integer values."
+    },
+    {
+      "Id": "c5b69bb0535d46a9bbb6c8b8babae72b",
+      "Name": "Number",
+      "Type": "float",
+      "IntitialValue": "1.32",
+      "Description": "Creates a number."
+    },
+    {
+      "Id": "a37e7e8f5d0e4cf6b3c6650dd00ab1c3",
+      "Name": "String",
+      "Type": "string",
+      "IntitialValue": "Test",
+      "Description": "Creates a string."
+    },
+    {
+      "Id": "435a1a78077e4e4bb70fa5a9e71773d7",
+      "Name": "Watch",
+      "Type": "unknown",
+      "IntitialValue": "",
+      "Description": "Visualize the output of node."
+    }
+  ],
+  "Nodes": [
+    {
+      "ConcreteType": "CoreNodeModels.Input.BoolSelector, CoreNodeModels",
+      "NodeType": "BooleanInputNode",
+      "InputValue": true,
+      "Id": "c275ece023164e278d51915257374c1e",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "85b5d6a299fc46afb9bcd62c0aed4ab4",
+          "Name": "",
+          "Description": "Boolean",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Selection between a true and false."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.IntegerSlider, CoreNodeModels",
+      "NodeType": "NumberInputNode",
+      "NumberType": "Integer",
+      "InputValue": 1,
+      "MaximumValue": 100,
+      "MinimumValue": 0,
+      "StepValue": 1,
+      "Id": "5a7d8a03e09c49dfa269379e1d72baeb",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "012846c38cf843c3960a3c748485d153",
+          "Name": "",
+          "Description": "Int32",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "A slider that produces integer values."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.DoubleInput, CoreNodeModels",
+      "NodeType": "NumberInputNode",
+      "NumberType": "Double",
+      "InputValue": 1.32,
+      "Id": "c5b69bb0535d46a9bbb6c8b8babae72b",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "cf49dec9970645dda5c5d3f0cbb7d8b3",
+          "Name": "",
+          "Description": "Double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Creates a number."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.StringInput, CoreNodeModels",
+      "NodeType": "StringInputNode",
+      "InputValue": "Test",
+      "Id": "a37e7e8f5d0e4cf6b3c6650dd00ab1c3",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "cc6b125c92744da5a8911371a8137e6e",
+          "Name": "",
+          "Description": "String",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Creates a string."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "435a1a78077e4e4bb70fa5a9e71773d7",
+      "Inputs": [
+        {
+          "Id": "8d2b776845684bd496f6a24610b2b1ff",
+          "Name": "",
+          "Description": "Node to evaluate.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "6af4b8f6bf694834b76efcd3f72a925f",
+          "Name": "",
+          "Description": "Watch contents.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualize the output of node."
+    }
+  ],
+  "Connectors": [],
+  "Dependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.0.1.4395",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "Boolean",
+        "Id": "c275ece023164e278d51915257374c1e",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": true,
+        "Excluded": false,
+        "X": 179.5,
+        "Y": 154.75
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Integer Slider",
+        "Id": "5a7d8a03e09c49dfa269379e1d72baeb",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": true,
+        "Excluded": false,
+        "X": 178.5,
+        "Y": 251.75
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Number",
+        "Id": "c5b69bb0535d46a9bbb6c8b8babae72b",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": true,
+        "Excluded": false,
+        "X": 183.5,
+        "Y": 344.75
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "String",
+        "Id": "a37e7e8f5d0e4cf6b3c6650dd00ab1c3",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": true,
+        "Excluded": false,
+        "X": 181.5,
+        "Y": 441.75
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Watch",
+        "Id": "435a1a78077e4e4bb70fa5a9e71773d7",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": true,
+        "Excluded": false,
+        "X": 186.73435934904228,
+        "Y": 531.92901872150935
+      }
+    ],
+    "Annotations": [],
+    "X": 56.031296034510405,
+    "Y": -49.228806982134643,
+    "Zoom": 0.78436932804482717
+  }
+}
