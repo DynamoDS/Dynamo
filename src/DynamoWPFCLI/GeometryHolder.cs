@@ -19,27 +19,38 @@ namespace DynamoWPFCLI
         [DataMember]
         public string Colors { get; set; }
 
-        [DataMember] public string TriangleTextureCoordinates { get; set; }
+        [DataMember] 
+        public string TriangleTextureCoordinates { get; set; }
 
-        [DataMember] public string ColorsStride { get; set; }
+        [DataMember] 
+        public string ColorsStride { get; set; }
 
-        [DataMember] public string PointVertices { get; set; }
+        [DataMember] 
+        public string PointVertices { get; set; }
 
-        [DataMember] public string PointVertexColors { get; set; }
+        [DataMember] 
+        public string PointVertexColors { get; set; }
 
-        [DataMember] public string TriangleVertices { get; set; }
+        [DataMember] 
+        public string TriangleVertices { get; set; }
 
-        [DataMember] public string TriangleNormals { get; set; }
+        [DataMember] 
+        public string TriangleNormals { get; set; }
 
-        [DataMember] public string TriangleVertexColors { get; set; }
+        [DataMember] 
+        public string TriangleVertexColors { get; set; }
 
-        [DataMember] public string LineStripVertices { get; set; }
+        [DataMember] 
+        public string LineStripVertices { get; set; }
 
-        [DataMember] public string LineStripCounts { get; set; }
+        [DataMember] 
+        public string LineStripCounts { get; set; }
 
-        [DataMember] public string LineStripColors { get; set; }
+        [DataMember] 
+        public string LineStripColors { get; set; }
 
-        [DataMember] public bool RequiresPerVertexColoration { get; set; }
+        [DataMember] 
+        public bool RequiresPerVertexColoration { get; set; }
     }
 
     internal class GeometryData
@@ -56,14 +67,6 @@ namespace DynamoWPFCLI
         /// </summary>
         [DataMember]
         public IEnumerable<GraphicPrimitives> GeometryEntries { get; private set; }
-
-//        [JsonConstructor]
-//        public GeometryData(string NodeId, IEnumerable<GraphicPrimitives> GraphicPrimitivesData)
-//        {
-//            this.NodeId = NodeId;
-//            this.GraphicPrimitivesData = GraphicPrimitivesData;
-//        }
-
 
         public GeometryData(string id)
         {
