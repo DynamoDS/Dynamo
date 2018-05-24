@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Runtime.Serialization;
 using System.Threading;
 using Dynamo.Models;
 using Dynamo.Graph.Nodes;
@@ -16,40 +15,28 @@ namespace DynamoWPFCLI
         /// <summary>
         /// The class that represents data for drawing a graphic primitive 
         /// </summary>
-        [DataMember]
         public string Colors { get; set; }
 
-        [DataMember] 
         public string TriangleTextureCoordinates { get; set; }
 
-        [DataMember] 
         public string ColorsStride { get; set; }
 
-        [DataMember] 
         public string PointVertices { get; set; }
 
-        [DataMember] 
         public string PointVertexColors { get; set; }
 
-        [DataMember] 
         public string TriangleVertices { get; set; }
 
-        [DataMember] 
         public string TriangleNormals { get; set; }
 
-        [DataMember] 
         public string TriangleVertexColors { get; set; }
 
-        [DataMember] 
         public string LineStripVertices { get; set; }
 
-        [DataMember] 
         public string LineStripCounts { get; set; }
 
-        [DataMember] 
         public string LineStripColors { get; set; }
 
-        [DataMember] 
         public bool RequiresPerVertexColoration { get; set; }
     }
 
@@ -58,14 +45,12 @@ namespace DynamoWPFCLI
         /// <summary>
         /// Guid of the specified node
         /// </summary>
-        [DataMember]
         public string Id { get; private set; }
 
         /// <summary>
         /// List of the graphic primitives that result object consist of.
         /// It is empty for nongraphic objects
         /// </summary>
-        [DataMember]
         public IEnumerable<GraphicPrimitives> GeometryEntries { get; private set; }
 
         public GeometryData(string id)
