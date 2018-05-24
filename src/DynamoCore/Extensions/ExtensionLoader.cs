@@ -19,8 +19,8 @@ namespace Dynamo.Extensions
     /// 
     /// Example:
     /// <ExtensionDefinition>
-    ///   <AssemblyPath>..\ExtansionName.dll</AssemblyPath>
-    ///   <TypeName>Dynamo.ExtansionName.ExtansionTypeName</TypeName>
+    ///   <AssemblyPath>..\ExtensionName.dll</AssemblyPath>
+    ///   <TypeName>Dynamo.ExtensionName.ExtensionTypeName</TypeName>
     /// </ExtensionDefinition>
     /// </summary>
     public class ExtensionLoader: IExtensionLoader, ILogSource
