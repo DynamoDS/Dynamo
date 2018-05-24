@@ -15,28 +15,41 @@ namespace DynamoWPFCLI
         /// <summary>
         /// The class that represents data for drawing a graphic primitive 
         /// </summary>
-        public string Colors { get; set; }
-
-        public string TriangleTextureCoordinates { get; set; }
-
-        public string ColorsStride { get; set; }
-
-        public string PointVertices { get; set; }
-
-        public string PointVertexColors { get; set; }
-
+        
+        // Base-64 encoded array of 32 bit floats, 3 per vertex.
         public string TriangleVertices { get; set; }
 
+        // Base-64 encoded array of 32 bit floats, 3 per vertex.
         public string TriangleNormals { get; set; }
 
+        // Base-64 encoded array of 32 bit unsigned integers, 1 per vertex, in RGBA format.
         public string TriangleVertexColors { get; set; }
 
+        // Base-64 encoded array of 32 bit floats, 2 per vertex.
+        public string TriangleTextureCoordinates { get; set; }
+
+        // Base-64 encoded array of 32 bit floats, 3 per vertex.
         public string LineStripVertices { get; set; }
 
+        // Base-64 encoded array of 32 bit unsigned integers, 1 per line strip, giving the number of vertices in the strip.
         public string LineStripCounts { get; set; }
 
+        // Base-64 encoded array of 32 bit unsigned integers, 1 per vertex, in RGBA format.
         public string LineStripColors { get; set; }
 
+        // Base-64 encoded array of 32 bit floats, 3 per vertex.
+        public string PointVertices { get; set; }
+
+        // Base-64 encoded array of 32 bit unsigned integers, 1 per vertex, in RGBA format.
+        public string PointVertexColors { get; set; }
+
+        // Base-64 encoded array of 32 bit unsigned integers in RGBA format, definining a texture to apply to the triangles.
+        public string Colors { get; set; }
+
+        // Number of values per row in the `Colors` array.
+        public string ColorsStride { get; set; }
+
+        //  Whether or not the individual vertices should be colored using the data in the corresponding arrays.
         public bool RequiresPerVertexColoration { get; set; }
     }
 
