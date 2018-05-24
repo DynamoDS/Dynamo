@@ -55,23 +55,32 @@ namespace DynamoWPFCLI
 
         public GeometryData(string id)
         {
-            this.Id = id;
+            Id = id;
+            GeometryEntries = new List<GraphicPrimitives>();
         }
 
         public GeometryData(string id, IEnumerable<IRenderPackage> packages)
         {
-            this.Id = id;
+            Id = id;
             GeneratePrimitives(packages);
         }
 
         private void GeneratePrimitives(IEnumerable<IRenderPackage> packages)
         {
-            if (packages == null || !packages.Any())
+            if (packages == null)
+            {
                 return;
+            }
+
+            var renderPackages = packages.ToList();
+            if (!renderPackages.Any())
+            {
+                return;
+            }
 
             var data = new List<GraphicPrimitives>();
 
-            foreach (var package in packages)
+            foreach (var package in renderPackages)
             {
                 string triangleTextureCoordinates = String.Empty,
                     colorsStride = String.Empty,
@@ -112,7 +121,7 @@ namespace DynamoWPFCLI
                 });
             }
 
-            this.GeometryEntries = data;
+            GeometryEntries = data;
         }
 
         private static string EncodeNumbers<T>(IEnumerable<T> coordinates)
@@ -162,8 +171,6 @@ namespace DynamoWPFCLI
         public ManualResetEvent Done
         {
             get { return done; }
-
-            private set { done = value; }
         }
 
         public bool HasGeometry
