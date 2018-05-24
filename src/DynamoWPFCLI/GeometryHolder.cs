@@ -10,12 +10,12 @@ using Autodesk.DesignScript.Interfaces;
 
 namespace DynamoWPFCLI
 {
+    /// <summary>
+    /// The class that represents data for drawing a graphic primitive 
+    /// </summary>
+       
     internal class GraphicPrimitives
     {
-        /// <summary>
-        /// The class that represents data for drawing a graphic primitive 
-        /// </summary>
-        
         // Base-64 encoded array of 32 bit floats, 3 per vertex.
         public string TriangleVertices { get; set; }
 
