@@ -100,9 +100,7 @@ namespace DynamoWPFCLI
                         geometry.Add(holder.Geometry);
                     }
                 }
-                var jsonGeometry = new Dictionary<string, object>();
-                jsonGeometry.Add("Geometry", geometry);
-                string json = JsonConvert.SerializeObject(jsonGeometry);
+                string json = JsonConvert.SerializeObject(geometry);
                 jsonFile.Write(json);
             }
         }
