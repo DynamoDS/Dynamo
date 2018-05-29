@@ -11,11 +11,38 @@ using Autodesk.DesignScript.Interfaces;
 namespace DynamoWPFCLI
 {
     /// <summary>
-    /// The class that represents data for drawing a graphic primitive 
+    /// The class that represents json data for drawing a graphic primitive 
     /// </summary>
        
     internal class GraphicPrimitives
     {
+        public GraphicPrimitives(IRenderPackage package)
+        {
+            TriangleTextureCoordinates = String.Empty;
+            ColorsStride = String.Empty;
+            Colors = String.Empty;
+
+            if (package.Colors != null)
+            {
+                Colors = EncodeNumbers(package.Colors);
+                TriangleTextureCoordinates = EncodeNumbers(package.MeshTextureCoordinates);
+                ColorsStride = package.ColorsStride.ToString();
+            }
+
+            PointVertices = EncodeNumbers(package.PointVertices);
+            PointVertexColors = EncodeNumbers(package.PointVertexColors);
+
+            TriangleVertices = EncodeNumbers(package.MeshVertices);
+            TriangleNormals = EncodeNumbers(package.MeshNormals);
+            TriangleVertexColors = EncodeNumbers(package.MeshVertexColors);
+
+            LineStripVertices = EncodeNumbers(package.LineStripVertices);
+            LineStripCounts = EncodeNumbers(package.LineStripVertexCounts);
+            LineStripColors = EncodeNumbers(package.LineStripVertexColors);
+
+            RequiresPerVertexColoration = package.RequiresPerVertexColoration;
+        }
+
         // Base-64 encoded array of 32 bit floats, 3 per vertex.
         public string TriangleVertices { get; set; }
 
@@ -51,6 +78,26 @@ namespace DynamoWPFCLI
 
         //  Whether or not the individual vertices should be colored using the data in the corresponding arrays.
         public bool RequiresPerVertexColoration { get; set; }
+
+        private static string EncodeNumbers<T>(IEnumerable<T> coordinates)
+        {
+            var stream = new MemoryStream();
+            using (var writer = new BinaryWriter(stream))
+            {
+                if (typeof(T) == typeof(double))
+                {
+                    foreach (T value in coordinates)
+                        writer.Write(Convert.ToSingle(value));
+                }
+                else
+                {
+                    foreach (T value in coordinates)
+                        writer.Write(value as dynamic);
+                }
+            }
+
+            return Convert.ToBase64String(stream.ToArray());
+        }
     }
 
     internal class GeometryData
@@ -95,68 +142,11 @@ namespace DynamoWPFCLI
 
             foreach (var package in renderPackages)
             {
-                string triangleTextureCoordinates = String.Empty,
-                    colorsStride = String.Empty,
-                    colors = String.Empty;
-
-                if (package.Colors != null)
-                {
-                    colors = EncodeNumbers(package.Colors);
-                    triangleTextureCoordinates = EncodeNumbers(package.MeshTextureCoordinates);
-                    colorsStride = package.ColorsStride.ToString();
-                }
-
-                string pointVertices = EncodeNumbers(package.PointVertices);
-                string pointVertexColors = EncodeNumbers(package.PointVertexColors);
-
-                string triangleVertices = EncodeNumbers(package.MeshVertices);
-                string triangleNormals = EncodeNumbers(package.MeshNormals);
-                string triangleVertexColors = EncodeNumbers(package.MeshVertexColors);
-
-                string lineStripVertices = EncodeNumbers(package.LineStripVertices);
-                string lineStripCounts = EncodeNumbers(package.LineStripVertexCounts);
-                string lineStripColors = EncodeNumbers(package.LineStripVertexColors);
-
-                data.Add(new GraphicPrimitives()
-                {
-                    Colors = colors,
-                    TriangleTextureCoordinates = triangleTextureCoordinates,
-                    ColorsStride = colorsStride,
-                    PointVertexColors = pointVertexColors,
-                    PointVertices = pointVertices,
-                    TriangleNormals = triangleNormals,
-                    TriangleVertexColors = triangleVertexColors,
-                    TriangleVertices = triangleVertices,
-                    LineStripColors = lineStripColors,
-                    LineStripCounts = lineStripCounts,
-                    LineStripVertices = lineStripVertices,
-                    RequiresPerVertexColoration = package.RequiresPerVertexColoration,
-                });
+                data.Add(new GraphicPrimitives(package));
             }
 
             GeometryEntries = data;
         }
-
-        private static string EncodeNumbers<T>(IEnumerable<T> coordinates)
-        {
-            var stream = new MemoryStream();
-            using (var writer = new BinaryWriter(stream))
-            {
-                if (typeof(T) == typeof(double))
-                {
-                    foreach (T value in coordinates)
-                        writer.Write(Convert.ToSingle(value));
-                }
-                else
-                {
-                    foreach (T value in coordinates)
-                        writer.Write(value as dynamic);
-                }
-            }
-
-            return Convert.ToBase64String(stream.ToArray());
-        }
-
     }
     internal class GeometryHolder
     {
