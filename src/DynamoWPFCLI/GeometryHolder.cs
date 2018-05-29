@@ -14,7 +14,7 @@ namespace DynamoWPFCLI
     /// The class that represents json data for drawing a graphic primitive 
     /// </summary>
        
-    internal class GraphicPrimitives
+    internal class GraphicPrimitives : IGraphicPrimitives
     {
         public GraphicPrimitives(IRenderPackage package)
         {
@@ -111,12 +111,12 @@ namespace DynamoWPFCLI
         /// List of the graphic primitives that result object consist of.
         /// It is empty for nongraphic objects
         /// </summary>
-        public IEnumerable<GraphicPrimitives> GeometryEntries { get; private set; }
+        public IEnumerable<IGraphicPrimitives> GeometryEntries { get; private set; }
 
         public GeometryData(string id)
         {
             Id = id;
-            GeometryEntries = new List<GraphicPrimitives>();
+            GeometryEntries = new List<IGraphicPrimitives>();
         }
 
         public GeometryData(string id, IEnumerable<IRenderPackage> packages)
@@ -138,7 +138,7 @@ namespace DynamoWPFCLI
                 return;
             }
 
-            var data = new List<GraphicPrimitives>();
+            var data = new List<IGraphicPrimitives>();
 
             foreach (var package in renderPackages)
             {
