@@ -14,9 +14,9 @@ namespace DynamoWPFCLI
     /// The class that represents json data for drawing a graphic primitive 
     /// </summary>
        
-    internal class GraphicPrimitives : IGraphicPrimitives
+    internal class DefaultGraphicPrimitives : IGraphicPrimitives
     {
-        public GraphicPrimitives(IRenderPackage package)
+        public DefaultGraphicPrimitives(IRenderPackage package)
         {
             TriangleTextureCoordinates = String.Empty;
             ColorsStride = String.Empty;
@@ -142,7 +142,7 @@ namespace DynamoWPFCLI
 
             foreach (var package in renderPackages)
             {
-                data.Add(new GraphicPrimitives(package));
+                data.Add(new DefaultGraphicPrimitives(package));
             }
 
             GeometryEntries = data;
