@@ -18,7 +18,7 @@ These samples use the [Dynamo NuGet packages](https://www.nuget.org/packages?q=D
 
 The [API Changes](https://github.com/DynamoDS/Dynamo/wiki/API-Changes) document explains changes made to the Dynamo API with every version.
 
-You can learn more about developing libraries for Dynamo on the [Dynamo wiki](https://github.com/DynamoDS/Dynamo/wiki/Zero-Touch-Plugin-Development).
+You can learn more about developing libraries for Dynamo on the [Dynamo wiki](https://github.com/DynamoDS/Dynamo/wiki/Zero-Touch-Plugin-Development) or the [Developer page](http://developer.dynamobim.org/).
 
 ### Build Dynamo from Source ###
 You will need the following to build Dynamo:
