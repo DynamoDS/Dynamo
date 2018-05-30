@@ -801,6 +801,31 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        public void CanOpenDoubleInputFile()
+        {
+            string openPath = Path.Combine(TestDirectory,
+                @"core\number\TestNumberDeserialization.dyn");
+            OpenModel(openPath);
+
+            Assert.AreEqual(3, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+
+            var node1 = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace<DoubleInput>(
+                Guid.Parse("6fc905f8533f433a90fe4b9181463d53"));
+            Assert.IsNotNull(node1);
+            Assert.AreEqual(node1.Value, "1");
+
+            var node2 = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace<DoubleInput>(
+                Guid.Parse("d40969e40f3449dfb7eb20317ff91752"));
+            Assert.IsNotNull(node2);
+            Assert.AreEqual(node2.Value, "1");
+
+            var node3 = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace<DoubleInput>(
+                Guid.Parse("8d298e3f574a420b8c789829951da295"));
+            Assert.IsNotNull(node3);
+            Assert.AreEqual(node3.Value, "1.1");
+        }
+
+        [Test]
         [Category("UnitTests")]
         public void SelectionDoesNotChangeWhenAddingAlreadySelectedNode()
         {
