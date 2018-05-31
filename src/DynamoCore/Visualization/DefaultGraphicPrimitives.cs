@@ -41,40 +41,40 @@ namespace Dynamo.Visualization
         }
 
         // Base-64 encoded array of 32 bit floats, 3 per vertex.
-        public string TriangleVertices { get; set; }
+        public string TriangleVertices { get; private set; }
 
         // Base-64 encoded array of 32 bit floats, 3 per vertex.
-        public string TriangleNormals { get; set; }
+        public string TriangleNormals { get; private set; }
 
         // Base-64 encoded array of 32 bit unsigned integers, 1 per vertex, in RGBA format.
-        public string TriangleVertexColors { get; set; }
+        public string TriangleVertexColors { get; private set; }
 
         // Base-64 encoded array of 32 bit floats, 2 per vertex.
-        public string TriangleTextureCoordinates { get; set; }
+        public string TriangleTextureCoordinates { get; private set; }
 
         // Base-64 encoded array of 32 bit floats, 3 per vertex.
-        public string LineStripVertices { get; set; }
+        public string LineStripVertices { get; private set; }
 
         // Base-64 encoded array of 32 bit unsigned integers, 1 per line strip, giving the number of vertices in the strip.
-        public string LineStripCounts { get; set; }
+        public string LineStripCounts { get; private set; }
 
         // Base-64 encoded array of 32 bit unsigned integers, 1 per vertex, in RGBA format.
-        public string LineStripColors { get; set; }
+        public string LineStripColors { get; private set; }
 
         // Base-64 encoded array of 32 bit floats, 3 per vertex.
-        public string PointVertices { get; set; }
+        public string PointVertices { get; private set; }
 
         // Base-64 encoded array of 32 bit unsigned integers, 1 per vertex, in RGBA format.
-        public string PointVertexColors { get; set; }
+        public string PointVertexColors { get; private set; }
 
         // Base-64 encoded array of 32 bit unsigned integers in RGBA format, definining a texture to apply to the triangles.
-        public string Colors { get; set; }
+        public string Colors { get; private set; }
 
         // Number of values per row in the `Colors` array.
-        public string ColorsStride { get; set; }
+        public string ColorsStride { get; private set; }
 
         //  Whether or not the individual vertices should be colored using the data in the corresponding arrays.
-        public bool RequiresPerVertexColoration { get; set; }
+        public bool RequiresPerVertexColoration { get; private set; }
 
         private static string EncodeNumbers<T>(IEnumerable<T> coordinates)
         {
