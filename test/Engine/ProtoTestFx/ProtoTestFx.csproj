@@ -96,6 +96,7 @@
     </Reference>
     <Reference Include="nunit.framework">
       <HintPath>$(NunitPath)\nunit.framework.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
