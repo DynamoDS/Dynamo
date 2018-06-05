@@ -804,10 +804,21 @@ namespace Dynamo.Python
                 try
                 {
                     string libName = MATCH_FIRST_QUOTED_NAME.Match(statement).Groups[1].Value;
-                    if (!clrModules.Contains(libName) && AppDomain.CurrentDomain.GetAssemblies().Any(x => x.GetName().Name == libName))
+                    if (!clrModules.Contains(libName))
                     {
-                        engine.CreateScriptSourceFromString(statement, SourceCodeKind.SingleStatement).Execute(scope);
-                        clrModules.Add(libName);
+                        if (statement.Contains("AddReferenceToFileAndPath"))
+                        {
+                            engine.CreateScriptSourceFromString(statement, SourceCodeKind.SingleStatement).Execute(scope);
+                            //it's an assembly path, don't check the current appdomain
+                            clrModules.Add(libName);
+                            continue;
+                        }
+                        
+                        if(AppDomain.CurrentDomain.GetAssemblies().Any(x => x.GetName().Name == libName))
+                        {
+                            engine.CreateScriptSourceFromString(statement, SourceCodeKind.SingleStatement).Execute(scope);
+                            clrModules.Add(libName);
+                        }
                     }
                 }
                 catch (Exception e)
