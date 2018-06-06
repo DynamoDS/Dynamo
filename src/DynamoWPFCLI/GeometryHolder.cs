@@ -41,15 +41,14 @@ namespace DynamoWPFCLI
                 return;
             }
 
-            var renderPackages = packages.ToList();
-            if (!renderPackages.Any())
+            if (!packages.Any())
             {
                 return;
             }
 
             var data = new List<IGraphicPrimitives>();
 
-            foreach (var package in renderPackages)
+            foreach (var package in packages)
             {
                 data.Add(new DefaultGraphicPrimitives(package));
             }

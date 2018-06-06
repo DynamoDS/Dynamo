@@ -331,7 +331,7 @@ namespace Autodesk.DesignScript.Interfaces
     }
 
     /// <summary>
-    /// The class that represents json data for drawing a graphic primitive 
+    /// The interface that represents json data for drawing a graphic primitive 
     /// </summary>
     internal interface IGraphicPrimitives
     {
