@@ -85,6 +85,7 @@ limitations under the License.
       <HintPath>..\packages\Unofficial.Ionic.Zip.1.9.1.8\lib\Ionic.Zip.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Microsoft.CSharp" />
     <Reference Include="Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.8.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
@@ -144,6 +145,7 @@ limitations under the License.
     <Compile Include="Interfaces\IDynamoModel.cs" />
     <Compile Include="Library\ILibraryLoader.cs" />
     <Compile Include="Graph\Workspaces\ICustomNodeWorkspaceModel.cs" />
+    <Compile Include="Visualization\DefaultGraphicPrimitives.cs" />
     <Compile Include="Visualization\IRenderPackageSource.cs" />
     <Compile Include="Graph\Workspaces\IWorkspaceModel.cs" />
     <Compile Include="Logging\LogMessage.cs" />
