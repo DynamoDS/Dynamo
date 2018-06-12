@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <AnalyseParams>
-	<Executable><!-- Required.   -->C:\Program Files (x86)\NUnit 2.6.2\bin\nunit-console.exe</Executable>
+	<Executable><!-- Required.   -->C:\Program Files (x86)\NUnit 2.6.3\bin\nunit-console.exe</Executable>
 	<Arguments>DataBridgeTests.dll DynamoCoreWpfTests.dll DSCoreNodesTests.dll DynamoServicesTests.dll DynamoPythonTests.dll DynamoMSOfficeTests.dll DynamoCoreTests.dll DynamoUtilitiesTests.dll IntegrationTests.dll   ProtoTest.dll WorkflowTests.dll CommandLineTests.dll --labels=On /noshadow /exclude:Failure /xml=nunit-result.xml</Arguments> 
 	<WorkingDir>..\bin\AnyCPU\Release\</WorkingDir>
 	<Output>Coverage.html</Output> <!-- Change the value to html-->
