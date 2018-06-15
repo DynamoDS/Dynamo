@@ -579,6 +579,18 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        public void TestPartialCustomMultiOutputNode()
+        {
+            RunModel(@"core\multiout\partial-multiout-customnode.dyn");
+            AssertPreviewValue("0ce0d95c-a644-4268-8820-065d7edb2778", new[] { 2, 0.5, 0 });
+
+            var guid = Guid.Parse("0ce0d95c-a644-4268-8820-065d7edb2778");
+            var node = CurrentDynamoModel.CurrentWorkspace.Nodes.FirstOrDefault(n => n.GUID == guid);
+            Assert.IsTrue(node.State != ElementState.Warning);
+
+        }
+
+        [Test]
         public void PartialApplicationWithMultipleOutputs()
         {
             string openPath = Path.Combine(TestDirectory, @"core\multiout\partial-multi-custom.dyn");
