@@ -60,7 +60,8 @@ namespace Dynamo.Graph.Nodes
             { typeof(String),NodeOutputTypes.stringOutput},
             { typeof(Boolean),NodeOutputTypes.booleanOutput},
             { typeof(double),NodeOutputTypes.floatOutput},
-            { typeof(int),NodeOutputTypes.integerOutput},
+            { typeof(Int32),NodeOutputTypes.integerOutput},
+            { typeof(Int64),NodeOutputTypes.integerOutput},
             { typeof(float),NodeOutputTypes.floatOutput},
         };
         public static NodeOutputTypes getNodeOutputTypeFromType(Type type)

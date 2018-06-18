@@ -51,7 +51,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="nunit.framework">
-      <NunitPath Condition=" '$(NunitPath)' == '' ">C:\Program Files (x86)\NUnit 2.6.2\bin\Debug\framework\nunit.framework.dll</NunitPath>
+      <NunitPath Condition=" '$(NunitPath)' == '' ">C:\Program Files (x86)\NUnit 2.6.3\bin\Debug\framework\nunit.framework.dll</NunitPath>
       <Hintpath>$(NunitPath)</Hintpath>
     </Reference>
     <Reference Include="System" />

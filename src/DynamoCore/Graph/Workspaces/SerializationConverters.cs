@@ -23,6 +23,7 @@ using ProtoCore.Namespace;
 using Type = System.Type;
 using System.Reflection;
 using System.Text.RegularExpressions;
+using Dynamo.Logging;
 
 namespace Dynamo.Graph.Workspaces
 {
@@ -47,7 +48,6 @@ namespace Dynamo.Graph.Workspaces
             this.manager = manager;
             this.libraryServices = libraryServices;
             this.isTestMode = isTestMode;
-
             //we only do this in test mode because it should not be required-
             //see comment below in NodeReadConverter.ReadJson - and it could be slow.
             if (this.isTestMode)
@@ -169,7 +169,6 @@ namespace Dynamo.Graph.Workspaces
             else if (typeof(DSFunctionBase).IsAssignableFrom(type))
             {
                 var mangledName = obj["FunctionSignature"].Value<string>();
-
                 var functionDescriptor = libraryServices.GetFunctionDescriptor(mangledName);
                 if (functionDescriptor == null)
                 {
@@ -209,7 +208,10 @@ namespace Dynamo.Graph.Workspaces
             }
 
             if (remapPorts)
-                RemapPorts(node, inPorts, outPorts, resolver);
+            {
+                RemapPorts(node, inPorts, outPorts, resolver, manager.AsLogger());
+            }
+               
 
             // Cannot set Lacing directly as property is protected
             node.UpdateValue(new UpdateValueParams("ArgumentLacing", replication));
@@ -251,19 +253,46 @@ namespace Dynamo.Graph.Workspaces
         /// <param name="inPorts">The deserialized input ports.</param>
         /// <param name="outPorts">The deserialized output ports.</param>
         /// <param name="resolver">The IdReferenceResolver used during deserialization.</param>
-        private static void RemapPorts(NodeModel node, PortModel[] inPorts, PortModel[] outPorts, IdReferenceResolver resolver)
+        private static void RemapPorts(NodeModel node, PortModel[] inPorts, PortModel[] outPorts, IdReferenceResolver resolver, ILogger logger)
         {
             foreach (var p in node.InPorts)
             {
-                var deserializedPort = inPorts[p.Index];
-                resolver.AddToReferenceMap(deserializedPort.GUID, p);
-                setPortDataOnNewPort(p, deserializedPort);
+                //check that the port index is not out of range of the loaded ports
+                if (p.Index < inPorts.Length)
+                {
+                    var deserializedPort = inPorts[p.Index];
+                    resolver.AddToReferenceMap(deserializedPort.GUID, p);
+                    setPortDataOnNewPort(p, deserializedPort);
+                }
+                else
+                {
+                    if (logger != null)
+                    {
+                        logger.Log(
+                            string.Format("while loading node {0} we could not find a port for the parameter {1} at index {2}",node.Name,p.Name,p.Index)
+                            );
+                    }
+                }
+              
             }
             foreach (var p in node.OutPorts)
             {
-                var deserializedPort = outPorts[p.Index];
-                resolver.AddToReferenceMap(deserializedPort.GUID, p);
-                setPortDataOnNewPort(p, deserializedPort);
+                //check that the port index is not out of range of the loaded ports
+                if (p.Index < outPorts.Length)
+                {
+                    var deserializedPort = outPorts[p.Index];
+                    resolver.AddToReferenceMap(deserializedPort.GUID, p);
+                    setPortDataOnNewPort(p, deserializedPort);
+                }
+                else
+                {
+                    if (logger != null)
+                    {
+                        logger.Log(
+                            string.Format("while loading node {0} we could not find a port for the retrunkey {1} at index {2}", node.Name, p.Name, p.Index)
+                            );
+                    }
+                }
             }
         }
 
@@ -353,14 +382,14 @@ namespace Dynamo.Graph.Workspaces
             // Setting Inputs
             // Required in headless mode by Dynamo Player that NodeModel.Name and NodeModel.IsSetAsInput are set
             var inputsToken = obj["Inputs"];
-            if(inputsToken != null)
+            if (inputsToken != null)
             {
-               var inputs = inputsToken.ToArray().Select(x => x.ToObject<NodeInputData>()).ToList();
-               //using the inputs lets set the correct properties on the nodes.
-               foreach(var inputData in inputs)
+                var inputs = inputsToken.ToArray().Select(x => x.ToObject<NodeInputData>()).ToList();
+                //using the inputs lets set the correct properties on the nodes.
+                foreach (var inputData in inputs)
                 {
                     var matchingNode = nodes.Where(x => x.GUID == inputData.Id).FirstOrDefault();
-                    if(matchingNode != null)
+                    if (matchingNode != null)
                     {
                         matchingNode.IsSetAsInput = true;
                         matchingNode.Name = inputData.Name;
@@ -385,7 +414,7 @@ namespace Dynamo.Graph.Workspaces
                 }
             }
 
-            // Setting Inputs based on view layer info
+            #region Setting Inputs based on view layer info
             // TODO: It is currently duplicating the effort with Input Block parsing which should be cleaned up once
             // Dynamo supports both selection and drop down nodes in Inputs block
             var view = obj["View"];
@@ -430,6 +459,7 @@ namespace Dynamo.Graph.Workspaces
                     }
                 }
             }
+            #endregion
 
             // notes
             //TODO: Check this when implementing ReadJSON in ViewModel.
@@ -449,8 +479,12 @@ namespace Dynamo.Graph.Workspaces
             var connectors = obj["Connectors"].ToObject<IEnumerable<ConnectorModel>>(serializer);
 
             var info = new WorkspaceInfo(guid.ToString(), name, description, Dynamo.Models.RunType.Automatic);
-            //https://jira.autodesk.com/browse/QNTM-3872 
-            //Category should be set explicitly from custom node workspace.
+
+            // IsVisibleInDynamoLibrary and Category should be set explicitly for custom node workspace
+            if (obj["View"] != null && obj["View"]["Dynamo"] !=null && obj["View"]["Dynamo"]["IsVisibleInDynamoLibrary"] != null)
+            {
+                info.IsVisibleInDynamoLibrary = obj["View"]["Dynamo"]["IsVisibleInDynamoLibrary"].Value<bool>();
+            }
             if (obj["Category"] != null)
             {
                 info.Category = obj["Category"].Value<string>();
@@ -464,9 +498,9 @@ namespace Dynamo.Graph.Workspaces
             //serialize view block first and build the notes.
             var notes = new List<NoteModel>();
 
+            #region Restore trace data
             // Trace Data
             Dictionary<Guid, List<CallSite.RawTraceData>> loadedTraceData = new Dictionary<Guid, List<CallSite.RawTraceData>>();
-
             // Restore trace data if bindings are present in json
             if (obj["Bindings"] != null && obj["Bindings"].Children().Count() > 0)
             {
@@ -490,6 +524,7 @@ namespace Dynamo.Graph.Workspaces
                     loadedTraceData.Add(nodeId, callsiteTraceData);
                 }
             }
+            #endregion
 
             WorkspaceModel ws;
             if (isCustomNode)
