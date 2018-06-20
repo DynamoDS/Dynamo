@@ -688,7 +688,7 @@
                                 <TextBlock Text="{x:Static p:Resources.DynamoViewSettingMenuLowRenderPrecision}"
                                            Margin="0,0,10,0"></TextBlock>
                                 <Slider Width="100"
-                                        Minimum="12"
+                                        Minimum="8"
                                         Maximum="512"
                                         Value="{Binding Path=RenderPackageFactoryViewModel.MaxTessellationDivisions, Mode=TwoWay}"></Slider>
                                 <TextBlock Text="{x:Static p:Resources.DynamoViewSettingMenuHighRenderPrecision}"

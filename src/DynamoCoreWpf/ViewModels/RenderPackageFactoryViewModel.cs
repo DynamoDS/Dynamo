@@ -31,7 +31,13 @@ namespace Dynamo.Wpf.ViewModels
             set
             {
                 if (factory.TessellationParameters.MaxTessellationDivisions == value) return;
+
                 factory.TessellationParameters.MaxTessellationDivisions = value;
+                if (value >= 8 && value <= 12)
+                    factory.TessellationParameters.Tolerance = 0;
+                else
+                    factory.TessellationParameters.Tolerance = -1;
+
                 RaisePropertyChanged("MaxTessellationDivisions");
             }
         }
