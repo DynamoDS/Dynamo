@@ -26,6 +26,7 @@ using Utils = Dynamo.Graph.Nodes.Utilities;
 using Dynamo.Engine;
 using Dynamo.Scheduler;
 using Newtonsoft.Json.Linq;
+using Dynamo.Library;
 
 namespace Dynamo.Graph.Workspaces
 {
@@ -56,8 +57,8 @@ namespace Dynamo.Graph.Workspaces
         public double Y;
         public bool ShowGeometry;
         public bool Excluded;
-        public bool IsInput;
-        public bool IsOutput;
+        public bool IsSetAsInput;
+        public bool IsSetAsOutput;
     }
 
     /// <summary>
@@ -1721,8 +1722,8 @@ namespace Dynamo.Graph.Workspaces
                     nodeModel.X = nodeViewInfo.X;
                     nodeModel.Y = nodeViewInfo.Y;
                     nodeModel.IsFrozen = nodeViewInfo.Excluded;
-                    nodeModel.IsSetAsInput = nodeViewInfo.IsInput;
-                    nodeModel.IsSetAsOutput = nodeViewInfo.IsOutput;
+                    nodeModel.IsSetAsInput = nodeViewInfo.IsSetAsInput;
+                    nodeModel.IsSetAsOutput = nodeViewInfo.IsSetAsOutput;
 
                     // NOTE: The name needs to be set using UpdateValue to cause the view to update
                     nodeModel.UpdateValue(new UpdateValueParams("Name", nodeViewInfo.Name));

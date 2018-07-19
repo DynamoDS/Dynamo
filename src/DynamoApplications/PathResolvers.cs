@@ -89,18 +89,21 @@ namespace Dynamo.Applications
 
             additionalNodeDirectories = new List<string>();
 
-            //this is a subset of libraries loaded for sandbox
             preloadedLibraryPaths = new List<string>
             {
                 "VMDataBridge.dll",
                 "ProtoGeometry.dll",
                 "DesignScriptBuiltin.dll",
                 "DSCoreNodes.dll",
+                "DSOffice.dll",
                 "DSIronPython.dll",
                 "FunctionObject.ds",
                 "BuiltIn.ds",
                 "DynamoConversions.dll",
                 "DynamoUnits.dll",
+                "Tessellation.dll",
+                "Analysis.dll",
+                "GeometryColor.dll"
             };
 
         }

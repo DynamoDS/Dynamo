@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-08-14 16:01-0700\n"
+"POT-Creation-Date: 2018-05-10 01:32-0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,6 +16,18 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
+
+msgid "Unable to open file"
+msgstr ""
+
+msgid "Unable to restore entities"
+msgstr ""
+
+msgid "Unable to get units"
+msgstr ""
+
+msgid "Unable to delete entity"
+msgstr ""
 
 msgid "Unable to get param range for FACE while faceting"
 msgstr ""
@@ -41,60 +53,22 @@ msgstr ""
 msgid "Could not get face results"
 msgstr ""
 
-msgid "Cast object is not a Ellipse"
+msgid "Cast object is not a Sphere"
 msgstr ""
 
-msgid ""
-"Error creating an ellipse!\n"
-" Ellipse radius must be non-zero"
+msgid "Sphere::by_four_points needs 4 points."
 msgstr ""
 
-msgid "Error creating an ellipse!"
+msgid "Failed to make Sphere by four points."
 msgstr ""
 
-msgid "Cast object is not a SubDivisionMesh"
+msgid "Sphere::by_four_points needs more than 4 points."
 msgstr ""
 
-msgid "Casted object is not an EllipseArc"
+msgid "Failed to fit Sphere."
 msgstr ""
 
-msgid "EllipseArc radius must be non-zero"
-msgstr ""
-
-msgid "EllipseArc sweep angle must be non-zero"
-msgstr ""
-
-msgid "Unexpected error creating the EllipseArc!"
-msgstr ""
-
-msgid "Error creating an arc!"
-msgstr ""
-
-msgid "Unable to extend curve equally. Curves differ by: "
-msgstr ""
-
-msgid "Cast object is not a Vector"
-msgstr ""
-
-msgid "attempt to set length of zero length vector"
-msgstr ""
-
-msgid "Cast object is not a Point"
-msgstr ""
-
-msgid "Unable to set vertex position"
-msgstr ""
-
-msgid "Unable to post process VERTEX ENTITY"
-msgstr ""
-
-msgid "Unable to set VERTEX position"
-msgstr ""
-
-msgid "Unable to create brep around Point"
-msgstr ""
-
-msgid "Unable to get extremum point"
+msgid "Unable to create sphere"
 msgstr ""
 
 msgid "Cast object is not a Plane"
@@ -123,606 +97,22 @@ msgstr ""
 msgid "Best fit plane needs 3 or more points."
 msgstr ""
 
-msgid "Unable to create a BoundingBox around the input Geometry"
+msgid "Casted object is not an EllipseArc"
 msgstr ""
 
-msgid "Unable to create a BoundingBox around the input Geometries"
+msgid "EllipseArc radius must be non-zero"
 msgstr ""
 
-msgid "Unable to get the maximum x value."
+msgid "EllipseArc sweep angle must be non-zero"
 msgstr ""
 
-msgid "Unable to get the minimum x value."
+msgid "Unexpected error creating the EllipseArc!"
 msgstr ""
 
-msgid "Unable to get the maximum y value."
+msgid "Error creating an arc!"
 msgstr ""
 
-msgid "Unable to get the minimum y value."
-msgstr ""
-
-msgid "Unable to get the maximum z value."
-msgstr ""
-
-msgid "Unable to get the minimum z value."
-msgstr ""
-
-msgid "Cast object is not a Sphere"
-msgstr ""
-
-msgid "Sphere::by_four_points needs 4 points."
-msgstr ""
-
-msgid "Failed to make Sphere by four points."
-msgstr ""
-
-msgid "Sphere::by_four_points needs more than 4 points."
-msgstr ""
-
-msgid "Failed to fit Sphere."
-msgstr ""
-
-msgid "Unable to create sphere"
-msgstr ""
-
-msgid "Cast object is not a PolySurface"
-msgstr ""
-
-msgid "The input is not valid"
-msgstr ""
-
-msgid "Could not extract FACEs from PolySurface BODY"
-msgstr ""
-
-msgid "Error creating PolySurface, BODY has no FACEs"
-msgstr ""
-
-msgid "Nonmanifold boundary contains non-EDGEs"
-msgstr ""
-
-msgid "Cannot convert base body to double sided"
-msgstr ""
-
-msgid "Cannot convert tool body to double sided"
-msgstr ""
-
-msgid "Unable to stitch Surfaces into a single PolySurface."
-msgstr ""
-
-msgid "Not Implemented"
-msgstr ""
-
-msgid "Could not extract EDGEs from PolySurface BODY"
-msgstr ""
-
-msgid "Unable to extract curve from edge"
-msgstr ""
-
-msgid "Unable to set PolySurface Edges to fillet"
-msgstr ""
-
-msgid "Unable to compute fillet"
-msgstr ""
-
-msgid "Unable to set PolySurface Edges to chamfer"
-msgstr ""
-
-msgid "Could not determine parameter of non-manifold Surface"
-msgstr ""
-
-msgid "Could not make combined polysurface."
-msgstr ""
-
-msgid "Could not combine Surfaces"
-msgstr ""
-
-msgid "Unable to transform the body!"
-msgstr ""
-
-msgid "Error getting faces!"
-msgstr ""
-
-msgid "Error getting edges!"
-msgstr ""
-
-msgid "Error getting vertices!"
-msgstr ""
-
-msgid ""
-"Non-uniform transformations on PolySurface is not supported at the moment"
-msgstr ""
-
-msgid "Unable to loft!"
-msgstr ""
-
-msgid "Unable to loft to make polysurface!"
-msgstr ""
-
-msgid "Unable to set sweep profile and path to make Polysurface"
-msgstr ""
-
-msgid "Unable to set the result to be not solid  to make Polysurface"
-msgstr ""
-
-msgid "Unable to compute surface sweep on rail  to make Polysurface"
-msgstr ""
-
-msgid "Unable to attach cellular analyzer to Polysurface"
-msgstr ""
-
-msgid "Unable to extract solids from Polysurface"
-msgstr ""
-
-msgid "Unable to get point status to extract some solids from Polysurface"
-msgstr ""
-
-msgid "Could not project_point on polysurface."
-msgstr ""
-
-msgid "Could not make patched polysurface."
-msgstr ""
-
-msgid "Unable to get edges from polysurface"
-msgstr ""
-
-msgid "Cannot create a PolySurface from an empty list"
-msgstr ""
-
-msgid "Could not find parameter at Point"
-msgstr ""
-
-msgid "Could not find sub Curve in parameter range"
-msgstr ""
-
-msgid "Casted object is not a Cylinder"
-msgstr ""
-
-msgid "Casted object is not a Circle"
-msgstr ""
-
-msgid "Arc by by_best_fit needs 3 or more points"
-msgstr ""
-
-msgid "Arc by by_best_fit could not determine plane for arc"
-msgstr ""
-
-msgid "Arc by by_best_fit could not best fit arc"
-msgstr ""
-
-msgid "Circle radius must be non-zero"
-msgstr ""
-
-msgid "Error creating a circle!"
-msgstr ""
-
-msgid "Circle normal must be non-zero"
-msgstr ""
-
-msgid "Cast object is not a Solid"
-msgstr ""
-
-msgid "Cannot facet Solid: it is a wire body"
-msgstr ""
-
-msgid "Unable to get volume"
-msgstr ""
-
-msgid "Unable to get area"
-msgstr ""
-
-msgid "Unable union two Solids"
-msgstr ""
-
-msgid "Cannot union an empty list"
-msgstr ""
-
-msgid "Unable difference two Solids"
-msgstr ""
-
-msgid "Unable intersect two Solids"
-msgstr ""
-
-msgid "Unable to set the sections or the centerline!"
-msgstr ""
-
-msgid "Unable to sweep open polycurve: should be closed."
-msgstr ""
-
-msgid "Unable to sweep non-planar polycurve: should be planar."
-msgstr ""
-
-msgid "Unable to set the profile and the path for sweep!"
-msgstr ""
-
-msgid "Unable to set the result to be solid or not for sweep!"
-msgstr ""
-
-msgid "Unable to set the miter type for sweep!"
-msgstr ""
-
-msgid "Unable to set whether to retain mergeable edges for sweep!"
-msgstr ""
-
-msgid "Unable to set the draft angle for sweep!"
-msgstr ""
-
-msgid "Unable to set the gap type for sweep!"
-msgstr ""
-
-msgid "Unable to make solid by sweep"
-msgstr ""
-
-msgid "Empty solid returned by sweep"
-msgstr ""
-
-msgid "Cannot intersect a closed Curve with a Solid."
-msgstr ""
-
-msgid "The profile Curve must be planar to perform sweep"
-msgstr ""
-
-msgid "Unable to set the profile and the path!"
-msgstr ""
-
-msgid "Unable to set the result to be solid or not!"
-msgstr ""
-
-msgid "Unable to set the miter type!"
-msgstr ""
-
-msgid "Unable to set whether to retain mergeable edges!"
-msgstr ""
-
-msgid "Unable to set the draft angle!"
-msgstr ""
-
-msgid "Unable to set the gap type!"
-msgstr ""
-
-msgid "Unable to update solid by sweep"
-msgstr ""
-
-msgid "get_shells on Solid not implemented"
-msgstr ""
-
-msgid "get_cells on Solid not implemented"
-msgstr ""
-
-msgid "Error getting shells!"
-msgstr ""
-
-msgid "Error getting cells!"
-msgstr ""
-
-msgid "Error getting vertices"
-msgstr ""
-
-msgid "Thicknesses must be positive"
-msgstr ""
-
-msgid "Could not set shelling body"
-msgstr ""
-
-msgid "Unable to set the external thickness"
-msgstr ""
-
-msgid "Unable to set the internal thickness"
-msgstr ""
-
-msgid "Unable to compute shell"
-msgstr ""
-
-msgid "Unable to set Solid Edges to fillet"
-msgstr ""
-
-msgid "Unable to set Solid edges t ochamfer"
-msgstr ""
-
-msgid "Unable to compute chamfer"
-msgstr ""
-
-msgid "ByJoinedSurfaces requires at least one Surface"
-msgstr ""
-
-msgid "Surfaces could not be joined into a closed Solid!"
-msgstr ""
-
-msgid "Surfaces could not be joined into a closed Solid, even with refinement!"
-msgstr ""
-
-msgid "Not implemented"
-msgstr ""
-
-msgid "Profile Curve must be closed"
-msgstr ""
-
-msgid "Unable set up two rail sweep operation."
-msgstr ""
-
-msgid "Cannot instruct ASM to make a Solid."
-msgstr ""
-
-msgid "Cannot set linear map for two-rail sweeping."
-msgstr ""
-
-msgid "Unable to sweep profile Curve."
-msgstr ""
-
-msgid "Cannot union an empty list of Solids"
-msgstr ""
-
-msgid "Cannot create Solid, Curves are not closed"
-msgstr ""
-
-msgid "Cast object is not a Line"
-msgstr ""
-
-msgid "Unable to create Line. Points are likely coincident"
-msgstr ""
-
-msgid "Best fit line needs 2 points or more!"
-msgstr ""
-
-msgid "Cast object is not a PolyCurve"
-msgstr ""
-
-msgid "Cannot create a PolyCurve without any Points."
-msgstr ""
-
-msgid "Cannot make a PolyCurve from an empty list"
-msgstr ""
-
-msgid "Unable to compute edge from curve"
-msgstr ""
-
-msgid "Could not add EDGEs to consume when joining curves"
-msgstr ""
-
-msgid "Could not set PolyCurve join tolerance"
-msgstr ""
-
-msgid "Could not make WIRE for PolyCurve"
-msgstr ""
-
-msgid "Could not get wires out of WIRE SMI"
-msgstr ""
-
-msgid "Curve join produced more than one WIRE in PolyCurve"
-msgstr ""
-
-msgid "PolyCurves may not be branching"
-msgstr ""
-
-msgid "Get EDGEs operation failed when creating PolyCurve"
-msgstr ""
-
-msgid "Failed to find start Edge"
-msgstr ""
-
-msgid "Curve geometry is degenerate or invalid"
-msgstr ""
-
-msgid ""
-"The second curve was a PolyCurve and its sub-curves could not be extracted"
-msgstr ""
-
-msgid "Invalid Curve index"
-msgstr ""
-
-msgid "Could not find parameter at distance"
-msgstr ""
-
-msgid "Parameter at chord length Not Implemented"
-msgstr ""
-
-msgid "Param Trim Segments Not Implemented"
-msgstr ""
-
-msgid "Param Trim Interior Not Implemented"
-msgstr ""
-
-msgid "Param Trim Start Not Implemented"
-msgstr ""
-
-msgid "Param Trim End Not Implemented"
-msgstr ""
-
-msgid "Parm Trim Not Implemented"
-msgstr ""
-
-msgid "Get Aligning CS Not Implemented"
-msgstr ""
-
-msgid "To BSPlineCurve Not Implemented"
-msgstr ""
-
-msgid "Merge Not Implemented"
-msgstr ""
-
-msgid "Get Length Not Implemented"
-msgstr ""
-
-msgid "Could not make edge from curve"
-msgstr ""
-
-msgid "Could not determine is polycurve is planar"
-msgstr ""
-
-msgid "Could not make EDGE from Curve"
-msgstr ""
-
-msgid "Could not determine if PolyCurve is planar"
-msgstr ""
-
-msgid "Request for Plane of non-planar PolyCurve"
-msgstr ""
-
-msgid "Can not close polycurve."
-msgstr ""
-
-msgid "Can not determine plane of polycurve extension."
-msgstr ""
-
-msgid "Could not add length of a full circle or more."
-msgstr ""
-
-msgid "Different sign of radii values."
-msgstr ""
-
-msgid "Unable to create coedge array"
-msgstr ""
-
-msgid "Unable to set sweep profile and path"
-msgstr ""
-
-msgid "Unable to compute surface sweep on rail"
-msgstr ""
-
-msgid "Could not sweep PolyCurve"
-msgstr ""
-
-msgid "Unable to set edge to consume"
-msgstr ""
-
-msgid "Unable to make wire from edge body"
-msgstr ""
-
-msgid "PolyCurves cannot be converted to EDGEs. Aborting."
-msgstr ""
-
-msgid "Could not make patch surfaces"
-msgstr ""
-
-msgid "Could not patch PolyCurve"
-msgstr ""
-
-msgid " Could not offset polycurve."
-msgstr ""
-
-msgid "Could not fillet polycurve."
-msgstr ""
-
-msgid " Could not fillet polycurve."
-msgstr ""
-
-msgid "Unable divide polycurve equally by length"
-msgstr ""
-
-msgid "input segment length must be greater or equal to zero"
-msgstr ""
-
-msgid "Unable divide polycurve equally by distance"
-msgstr ""
-
-msgid "Unable to divide polycurve equally by distance"
-msgstr ""
-
-msgid "could not solve for equal distances"
-msgstr ""
-
-msgid "Unable divide polycurve by length"
-msgstr ""
-
-msgid "Casted object is not a BSplineSurface"
-msgstr ""
-
-msgid "Unable to create surface from points"
-msgstr ""
-
-msgid "Unable to create surface from points and tangents"
-msgstr ""
-
-msgid "NurbsSurfaces must have at least one more control points than degree"
-msgstr ""
-
-msgid "Unable to create NurbsCurve from control points."
-msgstr ""
-
-msgid "Unable to create face from spline"
-msgstr ""
-
-msgid "Cast object is not a TransformableItem"
-msgstr ""
-
-msgid ""
-"The distance between base and the first pick point must be greater than 0."
-msgstr ""
-
-msgid ""
-"The distance between base and the second pick point must be greater than 0."
-msgstr ""
-
-msgid "The base point and first pick point must not be coincident!"
-msgstr ""
-
-msgid ""
-"The scale factor is 0!  The base point and second pick point may be "
-"coincident!"
-msgstr ""
-
-msgid "Cast object is not a helix"
-msgstr ""
-
-msgid "Cannot make helix"
-msgstr ""
-
-msgid "Casted object is not an Arc"
-msgstr ""
-
-msgid ""
-"Error creating an arc!\n"
-"Start angle cannot be the same as end angle"
-msgstr ""
-
-msgid ""
-"Error creating an arc!\n"
-"Sweep angle must be non-zero"
-msgstr ""
-
-msgid "Cannot create Arc: base object NULL"
-msgstr ""
-
-msgid "Cannot create an Arc with a NULL input object."
-msgstr ""
-
-msgid ""
-"Arc by fillet: ends of curves on equal distance, could not orient arc. "
-"Please trim curves to determine orientation based on closest ends"
-msgstr ""
-
-msgid "Arc by fillet failed"
-msgstr ""
-
-msgid "Arc by fillet could not be computed"
-msgstr ""
-
-msgid "Arc by by_fillet_tangent_to_curve failed"
-msgstr ""
-
-msgid "could not solve for arc"
-msgstr ""
-
-msgid " tangent vectors should be coplanar relatie to points to make bi_arc"
-msgstr ""
-
-msgid "Cannot build bi arc for coincident lines"
-msgstr ""
-
-msgid "Cannot build bi arc facing corner of tangent intersections"
-msgstr ""
-
-msgid ""
-"Error creating arc!\n"
-"End point lies in direction of Tangent vector"
-msgstr ""
-
-msgid "Casted object is not a Rectangle"
-msgstr ""
-
-msgid "Rectangle needs 4 corner points"
-msgstr ""
-
-msgid "Input Points don't form a valid Rectangle"
+msgid "Unable to extend curve equally. Curves differ by: "
 msgstr ""
 
 msgid "Casted object is not a Cone"
@@ -731,10 +121,16 @@ msgstr ""
 msgid "Error getting edges"
 msgstr ""
 
+msgid "Error getting vertices"
+msgstr ""
+
 msgid "Unable to set attrubitues on Cone"
 msgstr ""
 
 msgid "Unable to create cone or cylinder"
+msgstr ""
+
+msgid "Unable to transform the body!"
 msgstr ""
 
 msgid "Unable to find attributes after transformation"
@@ -743,192 +139,222 @@ msgstr ""
 msgid "Could not get point from vertex"
 msgstr ""
 
-msgid "Cast object is not a Cuboid"
+msgid "Cast object is not a Point"
 msgstr ""
 
-msgid "Could not construct Cuboid vertices"
+msgid "Unable to set vertex position"
 msgstr ""
 
-msgid "Unable to create block"
+msgid "Unable to post process VERTEX ENTITY"
 msgstr ""
 
-msgid "Could not get Cuboid vertices after transform"
+msgid "Unable to set VERTEX position"
 msgstr ""
 
-msgid "Cast object is not Text"
+msgid "Unable to create brep around Point"
 msgstr ""
 
-msgid "Cast object is not a CoordinateSystem"
+msgid "Unable to get extremum point"
 msgstr ""
 
-msgid "Error creating cooridnate system from raw data"
+msgid "Cast object is not a Curve"
 msgstr ""
 
-msgid "Cast object is not a PolyMesh"
+msgid "Could not test curve equality"
+msgstr ""
+
+msgid "Unable to find parameter at point"
+msgstr ""
+
+msgid "Unable to compute tangent at curve"
+msgstr ""
+
+msgid "Unable to compute Curve point at parameter"
+msgstr ""
+
+msgid "Cannot make sheet from coplanar wires"
+msgstr ""
+
+msgid "Can't get faces"
+msgstr ""
+
+msgid "Cannot get surface cog"
+msgstr ""
+
+msgid "Not implemented"
+msgstr ""
+
+msgid "Curve has infinite length"
+msgstr ""
+
+msgid "Unable to join curves"
+msgstr ""
+
+msgid "Unable to compute edge from curve"
+msgstr ""
+
+msgid "Not implemented for discontinuous curves!"
+msgstr ""
+
+msgid "Unable to set edge to consume"
+msgstr ""
+
+msgid "Unable to make wire from edge body"
+msgstr ""
+
+msgid "Unable to create coedge array"
+msgstr ""
+
+msgid "Curve is not planar: cannot get Curve normal."
+msgstr ""
+
+msgid "Unable to determine if curve is planar"
+msgstr ""
+
+msgid "Could not approximate curve"
+msgstr ""
+
+msgid "Unable to set extrusion wire"
+msgstr ""
+
+msgid "Unable to compute extrude curve"
+msgstr ""
+
+msgid "Unable to convert sheet to double sided"
+msgstr ""
+
+msgid "Cannot create a Solid from an open Curve"
+msgstr ""
+
+msgid "Unable to set Curve and Vector for extrusion."
+msgstr ""
+
+msgid "Unable to instruct ASM to extrude Curve as a Solid."
+msgstr ""
+
+msgid "Unable to extrude curve."
+msgstr ""
+
+msgid "Extrusion computed but cannot determine result type"
+msgstr ""
+
+msgid "Unable to set sweep profile and path"
+msgstr ""
+
+msgid "Unable to set the result to be solid or not!"
+msgstr ""
+
+msgid "Unable to compute surface sweep on rail"
+msgstr ""
+
+msgid "Unable to revolve curve"
+msgstr ""
+
+msgid "Unable to set as solid or not"
+msgstr ""
+
+msgid "Unable to set as double sided"
+msgstr ""
+
+msgid "Unable to retain mergeable edges"
+msgstr ""
+
+msgid "Unable to compute revolve"
+msgstr ""
+
+msgid "Base curve isn't planar. Cannot offset"
+msgstr ""
+
+msgid "Unable to offset curve"
+msgstr ""
+
+msgid "Unable to get wires from body"
+msgstr ""
+
+msgid "Unable to get edge from wire"
+msgstr ""
+
+msgid "WireCurve does not support wires with more than one edge"
+msgstr ""
+
+msgid "Unable to extract curve from edge"
+msgstr ""
+
+msgid "Curve geometry is degenerate or invalid"
+msgstr ""
+
+msgid "Unable to blend between curves"
+msgstr ""
+
+msgid "Unable to make parameter line on surface"
+msgstr ""
+
+msgid "Unable to make geodesic curves with ASM 219"
+msgstr ""
+
+msgid "Unable to make iso curve on surface"
+msgstr ""
+
+msgid "Unable to project curve on plane"
+msgstr ""
+
+msgid "Unable to compute Curve projection on Surface"
+msgstr ""
+
+msgid "Unable to pull Curve onto Surface"
+msgstr ""
+
+msgid "Unable to make geodesic curves"
+msgstr ""
+
+msgid "Unable to approximate curve with arc and line segments"
 msgstr ""
 
 msgid ""
-"One or more IndexGroups supplied contained an out of bounds vertex index!  "
-"All IndexGroup indices are zero-based and must be less than the number of "
-"vertices supplied."
+"Conversion to Arcs and Lines failed, some parts of Curve could not be "
+"converted"
 msgstr ""
 
-msgid "Cast object is not a Polygon"
+msgid "Curve must be divided into one or more parts"
 msgstr ""
 
-msgid "You must supply more than 2 points to create a polygon"
+msgid "Unable to divide infinite curve equally by length"
 msgstr ""
 
-msgid ""
-"There were not enough edges to form a polygon!  Some of the vertices may be "
-"coincident."
+msgid "Unable to divide curve equally by length"
 msgstr ""
 
-msgid "Could not text containment for non-planar polygon"
+msgid "Input segment length must be greater than 0"
 msgstr ""
 
-msgid "Could not text containment for self-intersecting polygon"
+msgid "Unable to divide infinite curve by length"
 msgstr ""
 
-msgid "Regular polygon shoudl have 3 or more sides"
+msgid "Unable to divide infinite curve equally by distance"
 msgstr ""
 
-msgid "Cast object is not Geometry"
+msgid "Unable to divide curve equally by distance"
 msgstr ""
 
-msgid "Could not find distance."
+msgid "could not solve for equal distances"
 msgstr ""
 
-msgid "Unable to create intersection boolean"
+msgid "could not solve for equal chord lengths"
 msgstr ""
 
-msgid "Unable to slice bodies"
+msgid "Unable to divide curve by distance"
 msgstr ""
 
-msgid "Unable to get EDGEs while decomposing BODY"
+msgid "Cannot simplify Curve"
 msgstr ""
 
-msgid "Unable to get WIREs while decomposing BODY"
+msgid "Cannot simplify a curve below 1.0e-9 tolerance"
 msgstr ""
 
-msgid "Colud not separate BODYs before decomposition"
+msgid "Unable to approximate simplified spline"
 msgstr ""
 
-msgid "Could not get EDGEs from BODY when extracting Curves"
-msgstr ""
-
-msgid "Could not get COEDGEs from BODY when extracting Curves"
-msgstr ""
-
-msgid "Could not get EDGEs from FACE when extracting Curves"
-msgstr ""
-
-msgid "Unable to create Curve from COEDGE when extracting Curves"
-msgstr ""
-
-msgid "Error getting length of the edge"
-msgstr ""
-
-msgid "Unable to get start Point of zero length EDGE"
-msgstr ""
-
-msgid "Could not compare Geometry"
-msgstr ""
-
-msgid "Unable to get FACE from BODY: no faces in BODY"
-msgstr ""
-
-msgid "Unable to create body from face"
-msgstr ""
-
-msgid "Unable to make sheet double sided"
-msgstr ""
-
-msgid "Unable to create brep around face"
-msgstr ""
-
-msgid "Unable to create Brep BODY from FACEs"
-msgstr ""
-
-msgid "Unable make FACEs BODY double sided."
-msgstr ""
-
-msgid "Unable to create non regular subtraction boolean"
-msgstr ""
-
-msgid "Unable to approximate body"
-msgstr ""
-
-msgid "Unable to compute equality between bodies"
-msgstr ""
-
-msgid " doesn't support Vertex query operation!"
-msgstr ""
-
-msgid " doesn't support Edge query operation!"
-msgstr ""
-
-msgid " doesn't support Face query operation!"
-msgstr ""
-
-msgid "Unable to extract a bounding box from ASM ENTITY"
-msgstr ""
-
-msgid "Unable to create planar face of BoundingBox"
-msgstr ""
-
-msgid "Unable to compute closest approach on BoundingBox face"
-msgstr ""
-
-msgid "Error getting loop coedges!"
-msgstr ""
-
-msgid "Cast object is not Loop"
-msgstr ""
-
-msgid "Error getting adjacent edges of a vertex!"
-msgstr ""
-
-msgid "Error getting adjacent faces of a vertex!"
-msgstr ""
-
-msgid " doesn't support point geometry query operation on it's Vertex!"
-msgstr ""
-
-msgid "Could not get vertex point"
-msgstr ""
-
-msgid "Error getting coedges of the edge!"
-msgstr ""
-
-msgid "Cast object is not an Edge"
-msgstr ""
-
-msgid " doesn't support curve geometry query operation on it's Edge!"
-msgstr ""
-
-msgid "Error copying an edge!"
-msgstr ""
-
-msgid "Error creating a wire from edges!"
-msgstr ""
-
-msgid "Unable to transform EDGE"
-msgstr ""
-
-msgid "Could not test EDGE equality"
-msgstr ""
-
-msgid "Error getting face vertices!"
-msgstr ""
-
-msgid "Error getting face edges!"
-msgstr ""
-
-msgid "Error getting face loops!"
-msgstr ""
-
-msgid "Cast object is not Face"
+msgid "Unable to simplify spline"
 msgstr ""
 
 msgid "Cannot construct FACE from surface"
@@ -993,21 +419,6 @@ msgid "Impossible to get edges from face"
 msgstr ""
 
 msgid "Impossible to get curve from edge"
-msgstr ""
-
-msgid "Number of symmetric segments must be greater than or equal to 2"
-msgstr ""
-
-msgid "Reflection has null parent"
-msgstr ""
-
-msgid "Reflection has invalid index"
-msgstr ""
-
-msgid "Reflection has invalid plane"
-msgstr ""
-
-msgid "Reflection has unimplemented symmetry type"
 msgstr ""
 
 msgid "Failed to combine T-Spline Surfaces"
@@ -1085,9 +496,6 @@ msgstr ""
 msgid "Spans should be greater than or equal to 1"
 msgstr ""
 
-msgid "Error loading TSM"
-msgstr ""
-
 msgid "No objects were loaded"
 msgstr ""
 
@@ -1095,6 +503,9 @@ msgid "Error saving TSM"
 msgstr ""
 
 msgid "Error saving TSS"
+msgstr ""
+
+msgid "Error loading TSM"
 msgstr ""
 
 msgid "This T-Spline is not BRep convertible"
@@ -1213,6 +624,12 @@ msgstr ""
 msgid "Snapping tolerance must be greater than 0."
 msgstr ""
 
+msgid "Edge can't be creased: "
+msgstr ""
+
+msgid "Edge can't be uncreased: "
+msgstr ""
+
 msgid "Vertex can't be creased: "
 msgstr ""
 
@@ -1274,6 +691,81 @@ msgid "Face normal has not-a-number coordinates"
 msgstr ""
 
 msgid "Num symmetric faces must be greater than zero."
+msgstr ""
+
+msgid "Number of symmetric segments must be greater than or equal to 2"
+msgstr ""
+
+msgid "Reflection has null parent"
+msgstr ""
+
+msgid "Reflection has invalid index"
+msgstr ""
+
+msgid "Reflection has invalid plane"
+msgstr ""
+
+msgid "Reflection has unimplemented symmetry type"
+msgstr ""
+
+msgid "Cast Edge is not a TSplineEdge"
+msgstr ""
+
+msgid "Cast object is not a TSplineEdge"
+msgstr ""
+
+msgid "Edge has invalid parent"
+msgstr ""
+
+msgid "Edge index is invalid"
+msgstr ""
+
+msgid "Cast Coedge is not a TSplineCoedge"
+msgstr ""
+
+msgid "Cast Vertex is not a TSplineVertex"
+msgstr ""
+
+msgid "Cast object is not a TSplineVertex"
+msgstr ""
+
+msgid "Vertex has invalid parent"
+msgstr ""
+
+msgid "Vertex index is invalid"
+msgstr ""
+
+msgid "Cast Loop is not a TSplineLoop"
+msgstr ""
+
+msgid "Invalid topology index"
+msgstr ""
+
+msgid "Cast object is not a TSplineTopology"
+msgstr ""
+
+msgid "Vertex with given index is not present on the t-spline"
+msgstr ""
+
+msgid "Edge with given index is not present on the t-spline"
+msgstr ""
+
+msgid "Face with given index is not present on the t-spline"
+msgstr ""
+
+msgid "Cast Face is not a TSplineFace"
+msgstr ""
+
+msgid "Cast object is not a TSplineFace"
+msgstr ""
+
+msgid "Face has invalid parent"
+msgstr ""
+
+msgid "Surface creation error."
+msgstr ""
+
+msgid "Face index is invalid"
 msgstr ""
 
 msgid "Point list should contain 4 points."
@@ -1363,231 +855,378 @@ msgstr ""
 msgid "T-Spline Surface Quadball creation failed"
 msgstr ""
 
-msgid "Invalid topology index"
+msgid "Cast object is not Geometry"
 msgstr ""
 
-msgid "Cast Face is not a TSplineFace"
+msgid "Could not find distance."
 msgstr ""
 
-msgid "Cast object is not a TSplineFace"
+msgid "Unable to create intersection boolean"
 msgstr ""
 
-msgid "Face has invalid parent"
+msgid "Unable to slice bodies"
 msgstr ""
 
-msgid "Surface creation error."
+msgid "Unable to transform the entity!"
 msgstr ""
 
-msgid "Face index is invalid"
+msgid "Unable to get EDGEs while decomposing BODY"
 msgstr ""
 
-msgid "Cast Vertex is not a TSplineVertex"
+msgid "Unable to get WIREs while decomposing BODY"
 msgstr ""
 
-msgid "Cast object is not a TSplineVertex"
+msgid "Colud not separate BODYs before decomposition"
 msgstr ""
 
-msgid "Vertex has invalid parent"
+msgid "Could not get EDGEs from BODY when extracting Curves"
 msgstr ""
 
-msgid "Vertex index is invalid"
+msgid "Could not get COEDGEs from BODY when extracting Curves"
 msgstr ""
 
-msgid "Cast Coedge is not a TSplineCoedge"
+msgid "Could not get EDGEs from FACE when extracting Curves"
 msgstr ""
 
-msgid "Cast object is not a TSplineTopology"
+msgid "Unable to create Curve from COEDGE when extracting Curves"
 msgstr ""
 
-msgid "Vertex with given index is not present on the t-spline"
+msgid "Error getting length of the edge"
 msgstr ""
 
-msgid "Edge with given index is not present on the t-spline"
+msgid "Unable to get start Point of zero length EDGE"
 msgstr ""
 
-msgid "Face with given index is not present on the t-spline"
+msgid "Unable to get area"
 msgstr ""
 
-msgid "Cast Edge is not a TSplineEdge"
+msgid "Could not compare Geometry"
 msgstr ""
 
-msgid "Cast object is not a TSplineEdge"
+msgid "Unable to get FACE from BODY: no faces in BODY"
 msgstr ""
 
-msgid "Edge has invalid parent"
+msgid "Unable to create body from face"
 msgstr ""
 
-msgid "Edge index is invalid"
+msgid "Unable to make sheet double sided"
 msgstr ""
 
-msgid "Cast Loop is not a TSplineLoop"
+msgid "Unable to create brep around face"
 msgstr ""
 
-msgid "Cast object is not a Curve"
+msgid "Unable to create Brep BODY from FACEs"
 msgstr ""
 
-msgid "Could not test curve equality"
+msgid "Unable make FACEs BODY double sided."
 msgstr ""
 
-msgid "Unable to find parameter at point"
+msgid "Error getting vertices!"
 msgstr ""
 
-msgid "Unable to compute tangent at curve"
+msgid "Unable to create non regular subtraction boolean"
 msgstr ""
 
-msgid "Unable to compute Curve point at parameter"
+msgid "Unable to approximate body"
 msgstr ""
 
-msgid "Cannot make sheet from coplanar wires"
+msgid "Unable to compute equality between bodies"
 msgstr ""
 
-msgid "Can't get faces"
+msgid " doesn't support Vertex query operation!"
 msgstr ""
 
-msgid "Cannot get surface cog"
+msgid "Error getting edges!"
 msgstr ""
 
-msgid "Curve has infinite length"
+msgid " doesn't support Edge query operation!"
 msgstr ""
 
-msgid "Unable to join curves"
+msgid "Error getting faces!"
 msgstr ""
 
-msgid "Not implemented for discontinuous curves!"
+msgid " doesn't support Face query operation!"
 msgstr ""
 
-msgid "Curve is not planar: cannot get Curve normal."
+msgid "Unable to extract a bounding box from ASM ENTITY"
 msgstr ""
 
-msgid "Unable to determine if curve is planar"
+msgid "Unable to create planar face of BoundingBox"
 msgstr ""
 
-msgid "Could not approximate curve"
+msgid "Unable to compute closest approach on BoundingBox face"
 msgstr ""
 
-msgid "Unable to set extrusion wire"
+msgid "Cast object is not a helix"
 msgstr ""
 
-msgid "Unable to compute extrude curve"
+msgid "Cannot make helix"
 msgstr ""
 
-msgid "Unable to convert sheet to double sided"
+msgid "Cast object is not Text"
 msgstr ""
 
-msgid "Cannot create a Solid from an open Curve"
+msgid "Casted object is not a BSplineCurve"
 msgstr ""
 
-msgid "Unable to set Curve and Vector for extrusion."
+msgid "NurbsCurves require degree to be greater than 0"
 msgstr ""
 
-msgid "Unable to instruct ASM to extrude Curve as a Solid."
+msgid "NurbsCurves require at least 2 points for interpolation"
 msgstr ""
 
-msgid "Unable to extrude curve."
+msgid "Unable to fit curve to points"
 msgstr ""
 
-msgid "Extrusion computed but cannot determine result type"
+msgid "Unable to get curves from curve fit"
 msgstr ""
 
-msgid "Unable to revolve curve"
+msgid "Error creating a bspline curve!"
 msgstr ""
 
-msgid "Unable to set as solid or not"
+msgid "NurbsCurves must have at least one more control points than degree"
 msgstr ""
 
-msgid "Unable to set as double sided"
+msgid "Unable to create BSplineCurve from vertices"
 msgstr ""
 
-msgid "Unable to retain mergeable edges"
+msgid "Unable to convert asm_curve to BSplineCurve"
 msgstr ""
 
-msgid "Unable to compute revolve"
+msgid "Negative extension not supported"
 msgstr ""
 
-msgid "Base curve isn't planar. Cannot offset"
+msgid "Could not extend start of bspline curve"
 msgstr ""
 
-msgid "Unable to offset curve"
+msgid "Error creating a straight edge!"
 msgstr ""
 
-msgid "Unable to get wires from body"
+msgid "Unabe to set edge to consume"
 msgstr ""
 
-msgid "Unable to get edge from wire"
+msgid "Cast object is not a Solid"
 msgstr ""
 
-msgid "WireCurve does not support wires with more than one edge"
+msgid "Cannot facet Solid: it is a wire body"
 msgstr ""
 
-msgid "Unable to blend between curves"
+msgid "Unable to get volume"
 msgstr ""
 
-msgid "Unable to make parameter line on surface"
+msgid "Unable union two Solids"
 msgstr ""
 
-msgid "Unable to make geodesic curves with ASM 219"
+msgid "Cannot union an empty list"
 msgstr ""
 
-msgid "Unable to make iso curve on surface"
+msgid "Unable difference two Solids"
 msgstr ""
 
-msgid "Unable to project curve on plane"
+msgid "Unable intersect two Solids"
 msgstr ""
 
-msgid "Unable to compute Curve projection on Surface"
+msgid "Unable to loft!"
 msgstr ""
 
-msgid "Unable to pull Curve onto Surface"
+msgid "Unable to set the sections or the centerline!"
 msgstr ""
 
-msgid "Unable to make geodesic curves"
+msgid "Unable to sweep open polycurve: should be closed."
 msgstr ""
 
-msgid "Unable to approximate curve with arc and line segments"
+msgid "Unable to sweep non-planar polycurve: should be planar."
+msgstr ""
+
+msgid "Unable to set the profile and the path for sweep!"
+msgstr ""
+
+msgid "Unable to set the result to be solid or not for sweep!"
+msgstr ""
+
+msgid "Unable to set the miter type for sweep!"
+msgstr ""
+
+msgid "Unable to set whether to retain mergeable edges for sweep!"
+msgstr ""
+
+msgid "Unable to set the draft angle for sweep!"
+msgstr ""
+
+msgid "Unable to set the gap type for sweep!"
+msgstr ""
+
+msgid "Unable to make solid by sweep"
+msgstr ""
+
+msgid "Empty solid returned by sweep"
+msgstr ""
+
+msgid "Cannot intersect a closed Curve with a Solid."
+msgstr ""
+
+msgid "The profile Curve must be planar to perform sweep"
+msgstr ""
+
+msgid "Unable to set the profile and the path!"
+msgstr ""
+
+msgid "Unable to set the miter type!"
+msgstr ""
+
+msgid "Unable to set whether to retain mergeable edges!"
+msgstr ""
+
+msgid "Unable to set the draft angle!"
+msgstr ""
+
+msgid "Unable to set the gap type!"
+msgstr ""
+
+msgid "Unable to update solid by sweep"
+msgstr ""
+
+msgid "get_shells on Solid not implemented"
+msgstr ""
+
+msgid "get_cells on Solid not implemented"
+msgstr ""
+
+msgid "Error getting shells!"
+msgstr ""
+
+msgid "Error getting cells!"
+msgstr ""
+
+msgid "Thicknesses must be positive"
+msgstr ""
+
+msgid "Could not set shelling body"
+msgstr ""
+
+msgid "Unable to set the external thickness"
+msgstr ""
+
+msgid "Unable to set the internal thickness"
+msgstr ""
+
+msgid "Unable to compute shell"
+msgstr ""
+
+msgid "Unable to set Solid Edges to fillet"
+msgstr ""
+
+msgid "Unable to compute fillet"
+msgstr ""
+
+msgid "Unable to set Solid edges t ochamfer"
+msgstr ""
+
+msgid "Unable to compute chamfer"
+msgstr ""
+
+msgid "ByJoinedSurfaces requires at least one Surface"
+msgstr ""
+
+msgid "Surfaces could not be joined into a closed Solid!"
+msgstr ""
+
+msgid "Surfaces could not be joined into a closed Solid, even with refinement!"
+msgstr ""
+
+msgid "Profile Curve must be closed"
+msgstr ""
+
+msgid "Unable set up two rail sweep operation."
+msgstr ""
+
+msgid "Cannot instruct ASM to make a Solid."
+msgstr ""
+
+msgid "Cannot set linear map for two-rail sweeping."
+msgstr ""
+
+msgid "Unable to sweep profile Curve."
+msgstr ""
+
+msgid "Cannot union an empty list of Solids"
+msgstr ""
+
+msgid "Cannot create Solid, Curves are not closed"
+msgstr ""
+
+msgid "Casted object is not a BSplineSurface"
+msgstr ""
+
+msgid "Unable to create surface from points"
+msgstr ""
+
+msgid "Unable to create surface from points and tangents"
+msgstr ""
+
+msgid "NurbsSurfaces must have at least one more control points than degree"
+msgstr ""
+
+msgid "Unable to create NurbsCurve from control points."
+msgstr ""
+
+msgid "Unable to create face from spline"
+msgstr ""
+
+msgid "Casted object is not an Arc"
 msgstr ""
 
 msgid ""
-"Conversion to Arcs and Lines failed, some parts of Curve could not be "
-"converted"
+"Error creating an arc!\n"
+"Start angle cannot be the same as end angle"
 msgstr ""
 
-msgid "Curve must be divided into one or more parts"
+msgid ""
+"Error creating an arc!\n"
+"Sweep angle must be non-zero"
 msgstr ""
 
-msgid "Unable to divide infinite curve equally by length"
+msgid "Cannot create Arc: base object NULL"
 msgstr ""
 
-msgid "Unable to divide curve equally by length"
+msgid "Cannot create an Arc with a NULL input object."
 msgstr ""
 
-msgid "Input segment length must be greater than 0"
+msgid ""
+"Arc by fillet: ends of curves on equal distance, could not orient arc. "
+"Please trim curves to determine orientation based on closest ends"
 msgstr ""
 
-msgid "Unable to divide infinite curve by length"
+msgid "Arc by fillet failed"
 msgstr ""
 
-msgid "Unable to divide infinite curve equally by distance"
+msgid "Arc by fillet could not be computed"
 msgstr ""
 
-msgid "Unable to divide curve equally by distance"
+msgid "Arc by by_fillet_tangent_to_curve failed"
 msgstr ""
 
-msgid "could not solve for equal chord lengths"
+msgid "could not solve for arc"
 msgstr ""
 
-msgid "Unable to divide curve by distance"
+msgid "Arc by by_best_fit needs 3 or more points"
 msgstr ""
 
-msgid "Cannot simplify Curve"
+msgid "Arc by by_best_fit could not determine plane for arc"
 msgstr ""
 
-msgid "Cannot simplify a curve below 1.0e-9 tolerance"
+msgid " tangent vectors should be coplanar relatie to points to make bi_arc"
 msgstr ""
 
-msgid "Unable to approximate simplified spline"
+msgid "Cannot build bi arc for coincident lines"
 msgstr ""
 
-msgid "Unable to simplify spline"
+msgid "Cannot build bi arc facing corner of tangent intersections"
+msgstr ""
+
+msgid ""
+"Error creating arc!\n"
+"End point lies in direction of Tangent vector"
 msgstr ""
 
 msgid "Cast object is not a Surface"
@@ -1653,6 +1292,9 @@ msgstr ""
 msgid "Unable to create entity!"
 msgstr ""
 
+msgid "Unable to trim surface as the input loop geometry could be illegal"
+msgstr ""
+
 msgid ""
 "Unable to get the FACE's range while setting and limiting backing Surface"
 msgstr ""
@@ -1699,6 +1341,9 @@ msgstr ""
 msgid "Unable to evaluate normal of Surface."
 msgstr ""
 
+msgid "Not Implemented"
+msgstr ""
+
 msgid ""
 "Unable to get FACE's range while determining if it is closed in U direction"
 msgstr ""
@@ -1714,58 +1359,431 @@ msgstr ""
 msgid "Cannot instruct ASM to make a Surface."
 msgstr ""
 
-msgid "Casted object is not a BSplineCurve"
+msgid "Cast object is not a PolyCurve"
 msgstr ""
 
-msgid "NurbsCurves require degree to be greater than 0"
+msgid "Cannot create a PolyCurve without any Points."
 msgstr ""
 
-msgid "NurbsCurves require at least 2 points for interpolation"
+msgid "Cannot make a PolyCurve from an empty list"
 msgstr ""
 
-msgid "Unable to fit curve to points"
+msgid "Could not add EDGEs to consume when joining curves"
 msgstr ""
 
-msgid "Unable to get curves from curve fit"
+msgid "Could not set PolyCurve join tolerance"
 msgstr ""
 
-msgid "Error creating a bspline curve!"
+msgid "Could not make WIRE for PolyCurve"
 msgstr ""
 
-msgid "NurbsCurves must have at least one more control points than degree"
+msgid "Could not get wires out of WIRE SMI"
 msgstr ""
 
-msgid "Unable to create BSplineCurve from vertices"
+msgid "Curve join produced more than one WIRE in PolyCurve"
 msgstr ""
 
-msgid "Unable to convert asm_curve to BSplineCurve"
+msgid "PolyCurves may be branching"
 msgstr ""
 
-msgid "Negative extension not supported"
+msgid "Get EDGEs operation failed when creating PolyCurve"
 msgstr ""
 
-msgid "Could not extend start of bspline curve"
+msgid "Failed to find start Edge"
 msgstr ""
 
-msgid "Error creating a straight edge!"
+msgid ""
+"The second curve was a PolyCurve and its sub-curves could not be extracted"
 msgstr ""
 
-msgid "Unabe to set edge to consume"
+msgid "Invalid Curve index"
 msgstr ""
 
-msgid "Unable to write entity list as sat"
+msgid "Could not find sub Curve in parameter range"
 msgstr ""
 
-msgid "Unable to open file"
+msgid "Could not find parameter at distance"
 msgstr ""
 
-msgid "Unable to restore entities"
+msgid "Could not find parameter at Point"
 msgstr ""
 
-msgid "Unable to get units"
+msgid "Parameter at chord length Not Implemented"
 msgstr ""
 
-msgid "Unable to delete entity"
+msgid "Param Trim Segments Not Implemented"
+msgstr ""
+
+msgid "Param Trim Interior Not Implemented"
+msgstr ""
+
+msgid "Param Trim Start Not Implemented"
+msgstr ""
+
+msgid "Param Trim End Not Implemented"
+msgstr ""
+
+msgid "Parm Trim Not Implemented"
+msgstr ""
+
+msgid "Get Aligning CS Not Implemented"
+msgstr ""
+
+msgid "To BSPlineCurve Not Implemented"
+msgstr ""
+
+msgid "Merge Not Implemented"
+msgstr ""
+
+msgid "Get Length Not Implemented"
+msgstr ""
+
+msgid "Could not make edge from curve"
+msgstr ""
+
+msgid "Could not determine is polycurve is planar"
+msgstr ""
+
+msgid "Could not make EDGE from Curve"
+msgstr ""
+
+msgid "Could not determine if PolyCurve is planar"
+msgstr ""
+
+msgid "Request for Plane of non-planar PolyCurve"
+msgstr ""
+
+msgid "Can not close polycurve."
+msgstr ""
+
+msgid "Can not determine plane of polycurve extension."
+msgstr ""
+
+msgid "Could not add length of a full circle or more."
+msgstr ""
+
+msgid "Different sign of radii values."
+msgstr ""
+
+msgid "Could not sweep PolyCurve"
+msgstr ""
+
+msgid "PolyCurves cannot be converted to EDGEs. Aborting."
+msgstr ""
+
+msgid "Could not make patch surfaces"
+msgstr ""
+
+msgid "Could not patch PolyCurve"
+msgstr ""
+
+msgid " Could not offset polycurve."
+msgstr ""
+
+msgid "Could not fillet polycurve."
+msgstr ""
+
+msgid " Could not fillet polycurve."
+msgstr ""
+
+msgid "Unable divide polycurve equally by length"
+msgstr ""
+
+msgid "input segment length must be greater or equal to zero"
+msgstr ""
+
+msgid "Unable divide polycurve equally by distance"
+msgstr ""
+
+msgid "Unable to divide polycurve equally by distance"
+msgstr ""
+
+msgid "Unable divide polycurve by length"
+msgstr ""
+
+msgid "Casted object is not a Rectangle"
+msgstr ""
+
+msgid "Rectangle needs 4 corner points"
+msgstr ""
+
+msgid "Input Points don't form a valid Rectangle"
+msgstr ""
+
+msgid "Cast object is not a PolySurface"
+msgstr ""
+
+msgid "The input is not valid"
+msgstr ""
+
+msgid "Could not extract FACEs from PolySurface BODY"
+msgstr ""
+
+msgid "Error creating PolySurface, BODY has no FACEs"
+msgstr ""
+
+msgid "Nonmanifold boundary contains non-EDGEs"
+msgstr ""
+
+msgid "Cannot convert base body to double sided"
+msgstr ""
+
+msgid "Cannot convert tool body to double sided"
+msgstr ""
+
+msgid "Unable to stitch Surfaces into a single PolySurface."
+msgstr ""
+
+msgid "Could not extract EDGEs from PolySurface BODY"
+msgstr ""
+
+msgid "Unable to set PolySurface Edges to fillet"
+msgstr ""
+
+msgid "Unable to set PolySurface Edges to chamfer"
+msgstr ""
+
+msgid "Could not determine parameter of non-manifold Surface"
+msgstr ""
+
+msgid "Could not make combined polysurface."
+msgstr ""
+
+msgid "Could not combine Surfaces"
+msgstr ""
+
+msgid ""
+"Non-uniform transformations on PolySurface is not supported at the moment"
+msgstr ""
+
+msgid "Unable to loft to make polysurface!"
+msgstr ""
+
+msgid "Unable to set sweep profile and path to make Polysurface"
+msgstr ""
+
+msgid "Unable to set the result to be not solid  to make Polysurface"
+msgstr ""
+
+msgid "Unable to compute surface sweep on rail  to make Polysurface"
+msgstr ""
+
+msgid "Unable to attach cellular analyzer to Polysurface"
+msgstr ""
+
+msgid "Unable to extract solids from Polysurface"
+msgstr ""
+
+msgid "Unable to get point status to extract some solids from Polysurface"
+msgstr ""
+
+msgid "Could not project_point on polysurface."
+msgstr ""
+
+msgid "Could not make patched polysurface."
+msgstr ""
+
+msgid "Unable to get edges from polysurface"
+msgstr ""
+
+msgid "Cannot create a PolySurface from an empty list"
+msgstr ""
+
+msgid "Cast object is not a Line"
+msgstr ""
+
+msgid "Unable to create Line. Points are likely coincident"
+msgstr ""
+
+msgid "Best fit line needs 2 points or more!"
+msgstr ""
+
+msgid "Cast object is not a Vector"
+msgstr ""
+
+msgid "attempt to set length of zero length vector"
+msgstr ""
+
+msgid "Cast object is not a PolyMesh"
+msgstr ""
+
+msgid ""
+"One or more IndexGroups supplied contained an out of bounds vertex index!  "
+"All IndexGroup indices are zero-based and must be less than the number of "
+"vertices supplied."
+msgstr ""
+
+msgid "Cast object is not a SubDivisionMesh"
+msgstr ""
+
+msgid "Casted object is not a Cylinder"
+msgstr ""
+
+msgid "Cast object is not a Polygon"
+msgstr ""
+
+msgid "You must supply more than 2 points to create a polygon"
+msgstr ""
+
+msgid ""
+"There were not enough edges to form a polygon!  Some of the vertices may be "
+"coincident."
+msgstr ""
+
+msgid "Could not text containment for non-planar polygon"
+msgstr ""
+
+msgid "Could not text containment for self-intersecting polygon"
+msgstr ""
+
+msgid "Regular polygon shoudl have 3 or more sides"
+msgstr ""
+
+msgid "Unable to create a BoundingBox around the input Geometry"
+msgstr ""
+
+msgid "Unable to create a BoundingBox around the input Geometries"
+msgstr ""
+
+msgid "Unable to get the maximum x value."
+msgstr ""
+
+msgid "Unable to get the minimum x value."
+msgstr ""
+
+msgid "Unable to get the maximum y value."
+msgstr ""
+
+msgid "Unable to get the minimum y value."
+msgstr ""
+
+msgid "Unable to get the maximum z value."
+msgstr ""
+
+msgid "Unable to get the minimum z value."
+msgstr ""
+
+msgid "Cast object is not a Cuboid"
+msgstr ""
+
+msgid "Could not construct Cuboid vertices"
+msgstr ""
+
+msgid "Unable to create block"
+msgstr ""
+
+msgid "Could not get Cuboid vertices after transform"
+msgstr ""
+
+msgid "Cast object is not a CoordinateSystem"
+msgstr ""
+
+msgid "Error creating cooridnate system from raw data"
+msgstr ""
+
+msgid "Error getting coedges of the edge!"
+msgstr ""
+
+msgid "Cast object is not an Edge"
+msgstr ""
+
+msgid " doesn't support curve geometry query operation on it's Edge!"
+msgstr ""
+
+msgid "Error copying an edge!"
+msgstr ""
+
+msgid "Error creating a wire from edges!"
+msgstr ""
+
+msgid "Unable to transform EDGE"
+msgstr ""
+
+msgid "Could not test EDGE equality"
+msgstr ""
+
+msgid "Error getting face vertices!"
+msgstr ""
+
+msgid "Error getting face edges!"
+msgstr ""
+
+msgid "Error getting face loops!"
+msgstr ""
+
+msgid "Cast object is not Face"
+msgstr ""
+
+msgid "Error getting adjacent edges of a vertex!"
+msgstr ""
+
+msgid "Error getting adjacent faces of a vertex!"
+msgstr ""
+
+msgid " doesn't support point geometry query operation on it's Vertex!"
+msgstr ""
+
+msgid "Could not get vertex point"
+msgstr ""
+
+msgid "Can't get curve from coedge"
+msgstr ""
+
+msgid "The CoEdge belongs to a degenerate Edge."
+msgstr ""
+
+msgid "Error getting loop coedges!"
+msgstr ""
+
+msgid "Cast object is not Loop"
+msgstr ""
+
+msgid "Failed to define loop direction"
+msgstr ""
+
+msgid "Cast object is not a TransformableItem"
+msgstr ""
+
+msgid ""
+"The distance between base and the first pick point must be greater than 0."
+msgstr ""
+
+msgid ""
+"The distance between base and the second pick point must be greater than 0."
+msgstr ""
+
+msgid "The base point and first pick point must not be coincident!"
+msgstr ""
+
+msgid ""
+"The scale factor is 0!  The base point and second pick point may be "
+"coincident!"
+msgstr ""
+
+msgid "Casted object is not a Circle"
+msgstr ""
+
+msgid "Arc by by_best_fit could not best fit arc"
+msgstr ""
+
+msgid "Circle radius must be non-zero"
+msgstr ""
+
+msgid "Error creating a circle!"
+msgstr ""
+
+msgid "Circle normal must be non-zero"
+msgstr ""
+
+msgid "Cast object is not a Ellipse"
+msgstr ""
+
+msgid ""
+"Error creating an ellipse!\n"
+" Ellipse radius must be non-zero"
+msgstr ""
+
+msgid "Error creating an ellipse!"
 msgstr ""
 
 msgid "Can not get the default history stream!"
@@ -1922,6 +1940,9 @@ msgid "One part of curve is not linear!"
 msgstr ""
 
 msgid "Failed to approximate curve"
+msgstr ""
+
+msgid "Unable to write entity list as sat"
 msgstr ""
 
 msgid "Unable to multiply Matrix by Vector"

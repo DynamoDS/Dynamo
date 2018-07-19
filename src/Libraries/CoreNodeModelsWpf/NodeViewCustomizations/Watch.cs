@@ -162,8 +162,7 @@ namespace CoreNodeModelsWpf.Nodes
             var watchHandler = this.dynamoViewModel.WatchHandler;
 
             return watchHandler.GenerateWatchViewModelForData(
-                watch.CachedValue,
-                watch.OutPorts.Select(p => p.Name),
+                watch.CachedValue, watch.OutPorts.Select(p => p.Name),
                 core,
                 inputVar,
                 rootWatchViewModel.ShowRawData);

@@ -7,9 +7,7 @@ using System.Threading;
 using System.IO;
 using DesignScript.Builtin;
 using Dynamo.Models;
-using DynamoUtilities;
 using Dynamo.Applications;
-using Dynamo.Graph;
 using Dynamo.Graph.Workspaces;
 
 namespace DynamoCLI
@@ -41,6 +39,11 @@ namespace DynamoCLI
                 Console.WriteLine("commandFilePath option is only available when running DynamoSandbox, not DynamoCLI");
             }
 
+            if (!(string.IsNullOrEmpty(cmdLineArgs.GeometryFilePath)))
+            {
+                Console.WriteLine("geometryFilePath option is only available when running DynamoWPFCLI, not DynamoCLI");
+            }
+
             model.OpenFileFromPath(cmdLineArgs.OpenFilePath, true);
             Console.WriteLine("loaded file");
             model.EvaluationCompleted += (o, args) => { evalComplete = true; };
@@ -52,7 +55,6 @@ namespace DynamoCLI
             var stateNames = new List<String>();
             stateNames.Add("default");
 
-            var outputresults = new List<Dictionary<Guid, List<object>>>();
             XmlDocument doc = null;
             foreach (var stateName in stateNames)
             {
@@ -67,33 +69,9 @@ namespace DynamoCLI
                 //if verbose was true, then print all nodes to the console
                 if (!String.IsNullOrEmpty(cmdLineArgs.Verbose))
                 {
-                    doc = new XmlDocument();
-                    var resultsdict = new Dictionary<Guid, List<object>>();
-                    foreach (var node in model.CurrentWorkspace.Nodes)
-                    {
-                        var portvalues = new List<object>();
-                        foreach (var port in node.OutPorts)
-                        {
-                            var value = node.GetValue(port.Index, model.EngineController);
-                            if (value.IsCollection)
-                            {
-                                portvalues.Add(GetStringRepOfCollection(value));
-                            }
-                            else if (value.IsDictionary)
-                            {
-                                portvalues.Add(GetStringRepOfDictionary(value.Data));
-                            }
-                            else
-                            {
-                                portvalues.Add(value.StringData);
-                            }
-                        }
-
-                        resultsdict.Add(node.GUID, portvalues);
-                    }
-                    outputresults.Add(resultsdict);
-                    populateXmlDocWithResults(doc, outputresults);
+                    doc = CreateXMLDoc(model);
                 }
+
                 evalComplete = false;
 
             }
@@ -101,7 +79,7 @@ namespace DynamoCLI
             return doc;
         }
 
-        private static string GetStringRepOfCollection(ProtoCore.Mirror.MirrorData value)
+        protected static string GetStringRepOfCollection(ProtoCore.Mirror.MirrorData value)
         {
             var items = string.Join(",",
                 value.GetElements().Select(x =>
@@ -112,7 +90,7 @@ namespace DynamoCLI
             return "{" + items + "}";
         }
 
-        private static string GetStringRepOfDictionary(object value)
+        protected static string GetStringRepOfDictionary(object value)
         {
             if (value is DesignScript.Builtin.Dictionary || value is IDictionary)
             {
@@ -172,6 +150,40 @@ namespace DynamoCLI
             }
         }
 
+        protected static XmlDocument CreateXMLDoc(DynamoModel model)
+        {
+            var outputresults = new List<Dictionary<Guid, List<object>>>();
+            XmlDocument doc = new XmlDocument();
+            var resultsdict = new Dictionary<Guid, List<object>>();
+
+            foreach (var node in model.CurrentWorkspace.Nodes)
+            {
+                var portvalues = new List<object>();
+                foreach (var port in node.OutPorts)
+                {
+                    var value = node.GetValue(port.Index, model.EngineController);
+                    if (value.IsCollection)
+                    {
+                        portvalues.Add(GetStringRepOfCollection(value));
+                    }
+                    else if (value.IsDictionary)
+                    {
+                        portvalues.Add(GetStringRepOfDictionary(value.Data));
+                    }
+                    else
+                    {
+                        portvalues.Add(value.StringData);
+                    }
+                }
+
+                resultsdict.Add(node.GUID, portvalues);
+            }
+            outputresults.Add(resultsdict);
+            populateXmlDocWithResults(doc, outputresults);
+
+            return doc;
+        }
+
         private static void OpenWorkspaceAndConvert(DynamoModel model, string dynPath)
         {
             model.OpenFileFromPath(dynPath);
@@ -183,6 +195,10 @@ namespace DynamoCLI
             File.WriteAllText(newFilePath, json);
         }
 
+        /// <summary>
+        /// Run the CLI with the command line arguments in "args" <see cref="StartupUtils.CommandLineArguments"/>
+        /// </summary>
+        /// <param name="args">Command line arguments</param>
         public void Run(StartupUtils.CommandLineArguments args)
         {
             if (args.ConvertFile)

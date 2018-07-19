@@ -394,7 +394,7 @@ namespace Dynamo.Graph.Nodes.CustomNodes
         public Symbol(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts, TypedParameter parameter) : base(inPorts, outPorts)
         {
             ArgumentLacing = LacingStrategy.Disabled;
-            InputSymbol = parameter.ToString();
+            InputSymbol = parameter.ToCommentNameString();
             ElementResolver = new ElementResolver();
         }
 
@@ -433,15 +433,26 @@ namespace Dynamo.Graph.Nodes.CustomNodes
                                 Properties.Resources.WarningCannotFindType,
                                 identifierNode.datatype.Name);
                             this.Warning(warningMessage);
+                            //https://jira.autodesk.com/browse/QNTM-3872 
+                            //For Unknown node types, don't change the node type in serialization
+                            var ltype = identifierNode.datatype;
+                            Parameter = new TypedParameter(name, ltype, defaultValue, null, comment);
                         }
                         else
                         {
                             type = identifierNode.datatype;
+                            Parameter = new TypedParameter(name, type, defaultValue, null, comment);
                         }
                     }
+                    else
+                    {
+                        Parameter = new TypedParameter(name, type, defaultValue, null, comment);
+                    }
                 }
-
-                Parameter = new TypedParameter(name, type, defaultValue, null, comment);
+                else
+                {
+                    Parameter = new TypedParameter(name, type, defaultValue, null, comment);
+                }
 
                 OnNodeModified();
                 RaisePropertyChanged("InputSymbol");

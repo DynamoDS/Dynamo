@@ -1,0 +1,161 @@
+{
+  "Uuid": "54005164-56af-428b-8529-58c61ef16aa8",
+  "IsCustomNode": false,
+  "Description": null,
+  "Name": "MultiReturnWatchNestedDictionary",
+  "ElementResolver": {
+    "ResolutionMap": {
+      "DesignScript.Builtin.Dictionary": {
+        "Key": "DesignScript.Builtin.Dictionary",
+        "Value": "DesignScriptBuiltin.dll"
+      }
+    }
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "FFITarget.TestData.ReturnNestedDictionary",
+      "Id": "4166417ab5334fc9b86abd3cc6fad58a",
+      "Inputs": [
+        {
+          "Id": "68c4739e4c7a4761aa0bd529d098c1c2",
+          "Name": "testData",
+          "Description": "FFITarget.TestData",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "5b00549753134f1bb720d6e044e2078a",
+          "Name": "color",
+          "Description": "var",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "59ccbd4f3ce146e09cdd0443ccd66ff2",
+          "Name": "dict",
+          "Description": "var",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "d422d096601145d0937d4b2b035442b9",
+          "Name": "nums",
+          "Description": "var",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "22707d5021b841f0bfdfca95cd188fb3",
+          "Name": "weight",
+          "Description": "var",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "867d4092bf334de89d6766e0bdfa5b37",
+          "Name": "ok",
+          "Description": "var",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "TestData.ReturnNestedDictionary ( ): var[]..[]"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "FFITarget.TestData.TestData",
+      "Id": "5fcbad36491b41a7a9abe1d1ed93895a",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "474d4557bb1f40399ec81ce1ad0bd890",
+          "Name": "TestData",
+          "Description": "TestData",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "TestData.TestData ( ): TestData"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "474d4557bb1f40399ec81ce1ad0bd890",
+      "End": "68c4739e4c7a4761aa0bd529d098c1c2",
+      "Id": "13fbf50422b547ae88c5371c98b6a327"
+    }
+  ],
+  "Dependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.0.1.4606",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "TestData.ReturnNestedDictionary",
+        "Id": "4166417ab5334fc9b86abd3cc6fad58a",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1006.0079372263947,
+        "Y": 74.01544093681261
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "TestData.TestData",
+        "Id": "5fcbad36491b41a7a9abe1d1ed93895a",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 677.09197085519452,
+        "Y": 247.70320889303318
+      }
+    ],
+    "Annotations": [],
+    "X": -666.95399345769283,
+    "Y": -24.211141487995008,
+    "Zoom": 1.1917937712929565
+  }
+}

@@ -136,7 +136,7 @@
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Arc.ByFillet(Autodesk.DesignScript.Geometry.Curve,Autodesk.DesignScript.Geometry.Curve,System.Double)">
             <summary>
-            Create an arc by filleting twp curves with given radius
+            Create an arc by filleting two curves with given radius
             </summary>
             <param name="curve1"> First curve </param>
             <param name="curve2"> Second curve </param>
@@ -2554,11 +2554,12 @@
             Get a string representation of the PolyCurve
             </summary>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByJoinedCurves(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve})">
+        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByJoinedCurves(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Double)">
             <summary>
-            Make PolyCurve by joining curves. Flips curve as needed for connectivity
+            Make PolyCurve by joining curves. Flips curve as needed for connectivity. Choose a preferred join tolerance between 1e-6 and 1e-3 units.
             </summary>
             <param name="curves"> Curves to join into polycurve </param>
+            <param name="joinTolerance"> Tolerance to determine size of gap allowed between curves to be joined </param>
             <returns>  </returns>
             <search>
             segments,joincurves

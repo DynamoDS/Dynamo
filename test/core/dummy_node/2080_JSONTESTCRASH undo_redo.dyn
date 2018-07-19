@@ -2,7 +2,7 @@
   "Uuid": "edd9e95c-26a5-4ec2-bd1b-ca2a80bc827b",
   "IsCustomNode": false,
   "Description": "",
-  "Name": "Home",
+  "Name": "2080_JSONTESTCRASH undo_redo",
   "ElementResolver": {
     "ResolutionMap": {}
   },
@@ -79,21 +79,21 @@
         "ShowGeometry": true,
         "Name": "Code Block",
         "Id": "158f8f25ddb746c88323ae262e87611e",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 76.8,
-        "Y": 65.3999999999999,
-        "IsInput": false,
-        "IsOutput": false
+        "X": 179.8,
+        "Y": 160.39999999999992
       },
       {
         "ShowGeometry": true,
         "Name": "Code Block",
         "Id": "6cbd0760736f4235a03b38fb359e9957",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
         "Excluded": false,
         "X": 76.8,
-        "Y": 162.4,
-        "IsInput": false,
-        "IsOutput": false
+        "Y": 162.4
       }
     ],
     "Annotations": [],
