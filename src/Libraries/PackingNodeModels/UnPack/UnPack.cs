@@ -10,6 +10,9 @@ using System.Threading.Tasks;
 
 namespace PackingNodeModels.UnPack
 {
+    /// <summary>
+    /// Creates a node that takes in a Dictionary (or ArrayList of Dictionary) and a TypeDefinition to output the unpacked data from the dictionary.
+    /// </summary>
     [NodeName("UnPack")]
     [NodeCategory(BuiltinNodeCategories.CORE_PACKING)]
     [NodeDescription("UnPackNodeDescription", typeof(Resource))]
@@ -23,13 +26,18 @@ namespace PackingNodeModels.UnPack
             ArgumentLacing = LacingStrategy.Longest;
         }
 
+        /// <summary>
+        /// Private constructor used for serialization.
+        /// </summary>
+        /// <param name="inPorts">A collection of <see cref="PortModel"/> objects.</param>
+        /// <param name="outPorts">A collection of <see cref="PortModel"/> objects.</param>
         [JsonConstructor]
         protected UnPack(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts)
             : base(inPorts, outPorts)
         {
             ArgumentLacing = LacingStrategy.Longest;
         }
-
+        
         protected override void RefreshTypeDefinitionPorts()
         {
             OutPorts.ToList().ForEach(portModel => OutPorts.Remove(portModel));

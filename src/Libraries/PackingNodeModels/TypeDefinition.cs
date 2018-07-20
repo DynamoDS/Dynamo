@@ -9,6 +9,9 @@ using System.Threading.Tasks;
 
 namespace PackingNodeModels
 {
+    /// <summary>
+    /// Defines a Type by its name and its properties.
+    /// </summary>
     [IsVisibleInDynamoLibrary(false)]
     public class TypeDefinition
     {
@@ -17,6 +20,9 @@ namespace PackingNodeModels
         public Dictionary<string, PropertyType> Properties { get; set; }
     }
 
+    /// <summary>
+    /// Define a Type as a string name and whether it is a collection or not.
+    /// </summary>
     [IsVisibleInDynamoLibrary(false)]
     public class PropertyType
     {
@@ -29,6 +35,15 @@ namespace PackingNodeModels
         }
     }
 
+    /// <summary>
+    /// Typescript-like parser to create TypeDefinitions out of formatted strings.
+    /// i.e.:
+    /// "Type MyType {
+    ///    property1 : String,
+    ///    property2 : Float64,
+    ///    property3 : Point[]
+    ///  }"
+    /// </summary>
     [IsVisibleInDynamoLibrary(false)]
     internal class TypeDefinitionParser
     {
@@ -77,6 +92,11 @@ namespace PackingNodeModels
             from cB in ClosingCurlyBracket.End()
             select new TypeDefinition { Name = name, Properties = properties.ToDictionary(pair => pair.Key, pair => pair.Value) };
 
+        /// <summary>
+        /// Parses a string and returns the corresponding TypeDefinition or throws a Sprache.ParseException.
+        /// </summary>
+        /// <param name="text">Formatted string definining a TypeDefinition</param>
+        /// <returns>The parsed TypeDefinition</returns>
         public static TypeDefinition ParseType(string text)
         {
             return TypeDefinition.Parse(text);

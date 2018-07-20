@@ -8,39 +8,57 @@ using System.Threading.Tasks;
 
 namespace PackingNodeModels.Pack.Validation
 {
-    public class PortValidator
+    /// <summary>
+    /// Used to validate that a given value matches the type defined by the PortModel+PropertyType combination of a Pack node InPort.
+    /// Comes with a basic mapping of known types to Dynamo Types. Assumes that an unknown type is coming from another Pack node.
+    /// </summary>
+    internal class PortValidator
     {
+        /// <summary>
+        /// "Primitive" known to Pack node.
+        /// </summary>
         private static Dictionary<string, List<Type>> CompatibleTypes = new Dictionary<string, List<Type>>
         {
             { "String", new List<Type>() { typeof(string) } },
             { "Float64", new List<Type>() { typeof(float), typeof(double), typeof(Int32), typeof(Int64) } },
-            { "autodesk.aec.primitive:arc-1.0.0", new List<Type>() { typeof(Autodesk.DesignScript.Geometry.Arc) } },
-            { "autodesk.aec.primitive:circle-1.0.0", new List<Type>() { typeof(Autodesk.DesignScript.Geometry.Circle) } },
-            { "autodesk.aec.primitive:coordinatesystem-1.0.0", new List<Type>() { typeof(Autodesk.DesignScript.Geometry.CoordinateSystem) } },
-            { "autodesk.aec.primitive:cone-1.0.0", new List<Type>() { typeof(Autodesk.DesignScript.Geometry.Cone) } },
-            { "autodesk.aec.primitive:curve-1.0.0", new List<Type>() { typeof(Autodesk.DesignScript.Geometry.Curve) } },
-            { "autodesk.aec.primitive:cuboid-1.0.0", new List<Type>() { typeof(Autodesk.DesignScript.Geometry.Cuboid) } },
-            { "autodesk.aec.primitive:cylinder-1.0.0", new List<Type>() { typeof(Autodesk.DesignScript.Geometry.Cylinder) } },
-            { "autodesk.aec.primitive:ellipse-1.0.0", new List<Type>() { typeof(Autodesk.DesignScript.Geometry.Ellipse) } },
-            { "autodesk.aec.primitive:line-1.0.0", new List<Type>() { typeof(Autodesk.DesignScript.Geometry.Line) } },
-            { "autodesk.aec.primitive:plane-1.0.0", new List<Type>() { typeof(Autodesk.DesignScript.Geometry.Plane) } },
-            { "autodesk.aec.primitive:point-1.0.0", new List<Type>() { typeof(Autodesk.DesignScript.Geometry.Point) } },
-            { "autodesk.aec.primitive:polycurve-1.0.0", new List<Type>() { typeof(Autodesk.DesignScript.Geometry.PolyCurve) } },
-            { "autodesk.aec.primitive:polygon-1.0.0", new List<Type>() { typeof(Autodesk.DesignScript.Geometry.Polygon) } },
-            { "autodesk.aec.primitive:rectangle-1.0.0", new List<Type>() { typeof(Autodesk.DesignScript.Geometry.Rectangle) } },
-            { "autodesk.aec.primitive:sphere-1.0.0", new List<Type>() { typeof(Autodesk.DesignScript.Geometry.Sphere) } },
-            { "autodesk.aec.primitive:vector-1.0.0", new List<Type>() { typeof(Autodesk.DesignScript.Geometry.Vector) } },
-            { "autodesk.aec.primitive:surface-1.0.0", new List<Type>() { typeof(Autodesk.DesignScript.Geometry.Surface) } },
-            { "autodesk.soliddef:model-1.0.0", new List<Type>() { typeof(Autodesk.DesignScript.Geometry.Geometry) } } //TODO double check soliddef's type.
+            { "Arc", new List<Type>() { typeof(Autodesk.DesignScript.Geometry.Arc) } },
+            { "Circle", new List<Type>() { typeof(Autodesk.DesignScript.Geometry.Circle) } },
+            { "CoordinateSystem", new List<Type>() { typeof(Autodesk.DesignScript.Geometry.CoordinateSystem) } },
+            { "Cone", new List<Type>() { typeof(Autodesk.DesignScript.Geometry.Cone) } },
+            { "Curve", new List<Type>() { typeof(Autodesk.DesignScript.Geometry.Curve) } },
+            { "Cuboid", new List<Type>() { typeof(Autodesk.DesignScript.Geometry.Cuboid) } },
+            { "Cylinder", new List<Type>() { typeof(Autodesk.DesignScript.Geometry.Cylinder) } },
+            { "Ellipse", new List<Type>() { typeof(Autodesk.DesignScript.Geometry.Ellipse) } },
+            { "Line", new List<Type>() { typeof(Autodesk.DesignScript.Geometry.Line) } },
+            { "Plane", new List<Type>() { typeof(Autodesk.DesignScript.Geometry.Plane) } },
+            { "Point", new List<Type>() { typeof(Autodesk.DesignScript.Geometry.Point) } },
+            { "PolyCurve", new List<Type>() { typeof(Autodesk.DesignScript.Geometry.PolyCurve) } },
+            { "Polygon", new List<Type>() { typeof(Autodesk.DesignScript.Geometry.Polygon) } },
+            { "Rectangle", new List<Type>() { typeof(Autodesk.DesignScript.Geometry.Rectangle) } },
+            { "Sphere", new List<Type>() { typeof(Autodesk.DesignScript.Geometry.Sphere) } },
+            { "Vector", new List<Type>() { typeof(Autodesk.DesignScript.Geometry.Vector) } },
+            { "Surface", new List<Type>() { typeof(Autodesk.DesignScript.Geometry.Surface) } },
+            { "Geometry", new List<Type>() { typeof(Autodesk.DesignScript.Geometry.Geometry) } } //TODO SolidDef or Geometry?
         };
 
+        /// <summary>
+        /// Validates a value against its port's associated property.
+        /// </summary>
+        /// <param name="property"></param>
+        /// <param name="value"></param>
+        /// <param name="portModel"></param>
+        /// <returns></returns>
         public static string Validate(KeyValuePair<string,PropertyType> property, object value, PortModel portModel)
         {
             if (value == null)
+            {
                 return $"Input {property.Key} expected type {property.Value.Type} but received null.";
+            }
 
             if (property.Value.IsCollection)
+            {
                 return ValidateCollection(property, value, portModel);
+            }
 
             return ValidateSingleValue(property, value, portModel);
         }
@@ -48,7 +66,9 @@ namespace PackingNodeModels.Pack.Validation
         private static string ValidateSingleValue(KeyValuePair<string, PropertyType> property, object value, PortModel portModel)
         {
             if (value is ArrayList arrayList)
+            {
                 return ValidateSingleValueLacing(property, arrayList, portModel);
+            }
 
             return ValidateTypeMatch(property, value, portModel);
         }
@@ -56,7 +76,9 @@ namespace PackingNodeModels.Pack.Validation
         private static string ValidateSingleValueLacing(KeyValuePair<string, PropertyType> property, ArrayList values, PortModel portModel)
         {
             if (ContainsCollections(values))
+            {
                 return $"Input {property.Key} expected a single value of type {property.Value.Type} but received a list of values.";
+            }
 
             return ValidateValues(property, values, portModel);
         }
@@ -64,15 +86,21 @@ namespace PackingNodeModels.Pack.Validation
         private static string ValidateCollection(KeyValuePair<string, PropertyType> property, object value, PortModel portModel)
         {
             if (!(value is ArrayList))
+            {
                 return $"Input {property.Key} expected an array of type {property.Value.Type} but received a single value.";
+            }
 
             var values = value as ArrayList;
 
             if (IsMixedCombinationOfCollectionAndSingleValues(values))
+            {
                 return $"Input {property.Key} expected an array of type {property.Value.Type} but received a mixed combination of single values and arrays.";
+            }
 
             if (ContainsCollections(values))
+            {
                 return ValidateArrayLacing(property, values, portModel);
+            }
 
             return ValidateValues(property, values, portModel);
         }
@@ -85,12 +113,13 @@ namespace PackingNodeModels.Pack.Validation
                 {
                     //Deeper arrays not allowed
                     if (subValue is ArrayList)
+                    {
                         return $"Input {property.Key} expected an array of type {property.Value.Type} but received a nested array.";
+                    }
                     else
                     {
                         var validation = ValidateTypeMatch(property, subValue, portModel);
-                        if (!string.IsNullOrEmpty(validation))
-                            return validation;
+                        if (!string.IsNullOrEmpty(validation)) return validation;
                     }
                         
                 }
@@ -104,7 +133,9 @@ namespace PackingNodeModels.Pack.Validation
             if (IsKnownType(property.Value.Type))
             {
                 if (!IsTypeMatch(value, property.Value.Type))
+                {
                     return $"Input {property.Key} expected type {property.Value.Type} but received {value?.GetType()}.";
+                }
 
                 return null;
             }
@@ -118,8 +149,7 @@ namespace PackingNodeModels.Pack.Validation
             {
                 var validation = ValidateTypeMatch(property, value, portModel);
 
-                if (!string.IsNullOrEmpty(validation))
-                    return validation;
+                if (!string.IsNullOrEmpty(validation)) return validation;
             }
 
             return null;
@@ -154,8 +184,7 @@ namespace PackingNodeModels.Pack.Validation
 
         private static bool IsTypeMatch(object value, string expectedType)
         {
-            if (!CompatibleTypes.ContainsKey(expectedType))
-                return true;
+            if (!CompatibleTypes.ContainsKey(expectedType)) return true;
 
             return CompatibleTypes[expectedType].Exists(x => x == value?.GetType());
         }

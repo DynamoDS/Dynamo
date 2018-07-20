@@ -6,11 +6,12 @@ using ProtoCore.AST.AssociativeAST;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PackingNodeModels.Pack
 {
+    /// <summary>
+    /// Creates a node that takes in a TypeDefinition and input values defined by the given TypeDefinition and outputs it as dictionary.
+    /// </summary>
     [NodeName("Pack")]
     [NodeCategory(BuiltinNodeCategories.CORE_PACKING)]
     [NodeDescription("PackNodeDescription", typeof(Resource))]
@@ -28,6 +29,11 @@ namespace PackingNodeModels.Pack
             validationManager = new ValidationManager(this);
         }
 
+        /// <summary>
+        /// Private constructor used for serialization.
+        /// </summary>
+        /// <param name="inPorts">A collection of <see cref="PortModel"/> objects.</param>
+        /// <param name="outPorts">A collection of <see cref="PortModel"/> objects.</param>
         [JsonConstructor]
         protected Pack(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts)
             : base(inPorts, outPorts)
@@ -58,7 +64,9 @@ namespace PackingNodeModels.Pack
                 for (int i = 1; i < values.Count; ++i)
                 {
                     if (cachedValues == null || cachedValues.Count <= i || values[i] != cachedValues[i])
+                    {
                         valuesByIndex[i] = values[i];
+                    }
                 }
 
                 validationManager.HandleValidation(valuesByIndex);
@@ -69,7 +77,9 @@ namespace PackingNodeModels.Pack
             //FIXME This doesn't seem right. Is there a way to build a conditional node that would depend on validation inputs, instead of building the output twice?
             //Right now, it's ran once, then the DataBridge is invoked, which runs the validation and re-trigger the building of the ouput if warnings are gone/new.
             if (wasInWarningState != validationManager.Warnings.Any())
+            {
                 OnNodeModified(true);
+            }
         }
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)

@@ -11,10 +11,20 @@ namespace DSCore
     [IsVisibleInDynamoLibrary(false)]
     public class PackFunctions
     {
+        /// <summary>
+        /// Packs data to a dictionary while manually handling lacing in a "Longest" strategy.
+        /// 
+        /// </summary>
+        /// <param name="keys">Ordered list of keys to use in the output dictionary</param>
+        /// <param name="isCollection">Ordered list of whether a value is a collection or not, which helps differenciating Lacing from a normal array value.</param>
+        /// <param name="data">Ordered ArrayList or List of ArrayList defining the data to be packed.</param>
+        /// <returns>List of Dictionary matching the ordered keys and data lists.</returns>
         public static object PackOutputAsDictionary(List<string> keys, List<bool> isCollection, [ArbitraryDimensionArrayImport] object data)
         {
             if (keys == null || keys.Count == 0 || isCollection == null || isCollection.Count == 0 || data == null)
+            {
                 return null;
+            }
 
             var result = new List<Dictionary<string, object>>();
 
@@ -23,7 +33,9 @@ namespace DSCore
             var outputCount = GetOuputCountFrom(isCollection, inputs);
 
             for (int outputIndex = 0; outputIndex < outputCount; ++outputIndex)
+            {
                 result.Add(CreateOuputDictionary(keys, isCollection, inputs, outputIndex));
+            }
 
             return result;
         }
@@ -65,14 +77,15 @@ namespace DSCore
                 .Where(i => i is ArrayList)
                 .Cast<ArrayList>();
 
-            if (!subArrays.Any())
-                return 1;
+            if (!subArrays.Any()) return 1;
 
             return subArrays.Max(subArray =>
             {
                 var index = inputs.IndexOf(subArray);
                 if (!isCollection[index] || (subArray[0] is ArrayList))
+                {
                     return subArray.Count;
+                }
 
                 return 1;
             });
@@ -82,10 +95,15 @@ namespace DSCore
     [IsVisibleInDynamoLibrary(false)]
     public class UnPackFunctions
     {
+        /// <summary>
+        /// Returns the value of dictionary at a given key.
+        /// </summary>
+        /// <param name="dictionary">Dictionary exposing all available values</param>
+        /// <param name="key">The key of the value to retrieve</param>
+        /// <returns>The value retrieved from the dictionary at the given key</returns>
         public static object UnPackOutputByKey(DesignScript.Builtin.Dictionary dictionary, string key)
         {
-            if (dictionary == null)
-                return null;
+            if (dictionary == null) return null;
 
             return dictionary.ValueAtKey(key);
         }
