@@ -113,7 +113,11 @@ namespace PackingNodeModels
             if (obj is ArrayList inputValues)
             {
                 CheckTypeDefinition(inputValues);
-                ValidateInputs(inputValues.Cast<object>().ToList());
+
+                if (TypeDefinition != null)
+                {
+                    ValidateInputs(inputValues.Cast<object>().ToList());
+                }
             }
         }
 
@@ -136,6 +140,7 @@ namespace PackingNodeModels
                         }
                         catch (Sprache.ParseException e)
                         {
+                            TypeDefinition = null;
                             Warning(e.Message, true);
                         }
                     }
