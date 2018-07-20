@@ -79,6 +79,60 @@ namespace PackingNodeModels.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Input {0} expected a single value of type {1} but received a list of values..
+        /// </summary>
+        internal static string PortValidatorArrayInsteadOfSingleValueMessage {
+            get {
+                return ResourceManager.GetString("PortValidatorArrayInsteadOfSingleValueMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Input {0} expected an array of type {1} but received a mixed combination of single values and arrays..
+        /// </summary>
+        internal static string PortValidatorMixedCombinationMessage {
+            get {
+                return ResourceManager.GetString("PortValidatorMixedCombinationMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Input {0} expected an array of type {1} but received a nested array..
+        /// </summary>
+        internal static string PortValidatorNestedArrayMessage {
+            get {
+                return ResourceManager.GetString("PortValidatorNestedArrayMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Input {0} expected type {1} but received null..
+        /// </summary>
+        internal static string PortValidatorNullValueMessage {
+            get {
+                return ResourceManager.GetString("PortValidatorNullValueMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Input {0} expected an array of type {1} but received a single value..
+        /// </summary>
+        internal static string PortValidatorSingleValueInsteadOfArrayMessage {
+            get {
+                return ResourceManager.GetString("PortValidatorSingleValueInsteadOfArrayMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Input {0} expected type {1} but received {2}..
+        /// </summary>
+        internal static string PortValidatorWrongTypeMessage {
+            get {
+                return ResourceManager.GetString("PortValidatorWrongTypeMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Type.
         /// </summary>
         internal static string TypePortName {

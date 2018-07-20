@@ -123,6 +123,24 @@
   <data name="PackNodeOutputPortName" xml:space="preserve">
     <value>Out</value>
   </data>
+  <data name="PortValidatorArrayInsteadOfSingleValueMessage" xml:space="preserve">
+    <value>Input {0} expected a single value of type {1} but received a list of values.</value>
+  </data>
+  <data name="PortValidatorMixedCombinationMessage" xml:space="preserve">
+    <value>Input {0} expected an array of type {1} but received a mixed combination of single values and arrays.</value>
+  </data>
+  <data name="PortValidatorNestedArrayMessage" xml:space="preserve">
+    <value>Input {0} expected an array of type {1} but received a nested array.</value>
+  </data>
+  <data name="PortValidatorNullValueMessage" xml:space="preserve">
+    <value>Input {0} expected type {1} but received null.</value>
+  </data>
+  <data name="PortValidatorSingleValueInsteadOfArrayMessage" xml:space="preserve">
+    <value>Input {0} expected an array of type {1} but received a single value.</value>
+  </data>
+  <data name="PortValidatorWrongTypeMessage" xml:space="preserve">
+    <value>Input {0} expected type {1} but received {2}.</value>
+  </data>
   <data name="TypePortName" xml:space="preserve">
     <value>Type</value>
   </data>

@@ -1,4 +1,5 @@
 ﻿using Dynamo.Graph.Nodes;
+using PackingNodeModels.Properties;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -52,7 +53,7 @@ namespace PackingNodeModels.Pack.Validation
         {
             if (value == null)
             {
-                return $"Input {property.Key} expected type {property.Value.Type} but received null.";
+                return string.Format(Resource.PortValidatorNullValueMessage, property.Key, property.Value.Type);
             }
 
             if (property.Value.IsCollection)
@@ -77,7 +78,7 @@ namespace PackingNodeModels.Pack.Validation
         {
             if (ContainsCollections(values))
             {
-                return $"Input {property.Key} expected a single value of type {property.Value.Type} but received a list of values.";
+                return string.Format(Resource.PortValidatorArrayInsteadOfSingleValueMessage, property.Key, property.Value.Type);
             }
 
             return ValidateValues(property, values, portModel);
@@ -87,14 +88,14 @@ namespace PackingNodeModels.Pack.Validation
         {
             if (!(value is ArrayList))
             {
-                return $"Input {property.Key} expected an array of type {property.Value.Type} but received a single value.";
+                return string.Format(Resource.PortValidatorSingleValueInsteadOfArrayMessage, property.Key, property.Value.Type);
             }
 
             var values = value as ArrayList;
 
             if (IsMixedCombinationOfCollectionAndSingleValues(values))
             {
-                return $"Input {property.Key} expected an array of type {property.Value.Type} but received a mixed combination of single values and arrays.";
+                return string.Format(Resource.PortValidatorMixedCombinationMessage, property.Key, property.Value.Type);
             }
 
             if (ContainsCollections(values))
@@ -114,7 +115,7 @@ namespace PackingNodeModels.Pack.Validation
                     //Deeper arrays not allowed
                     if (subValue is ArrayList)
                     {
-                        return $"Input {property.Key} expected an array of type {property.Value.Type} but received a nested array.";
+                        return string.Format(Resource.PortValidatorNestedArrayMessage, property.Key, property.Value.Type);
                     }
                     else
                     {
@@ -134,7 +135,7 @@ namespace PackingNodeModels.Pack.Validation
             {
                 if (!IsTypeMatch(value, property.Value.Type))
                 {
-                    return $"Input {property.Key} expected type {property.Value.Type} but received {value?.GetType()}.";
+                    return string.Format(Resource.PortValidatorWrongTypeMessage, property.Key, property.Value.Type, value?.GetType());
                 }
 
                 return null;
@@ -161,7 +162,7 @@ namespace PackingNodeModels.Pack.Validation
             var owner = portModel.Connectors[0].Start.Owner as Pack;
             if (owner == null || !property.Value.Type.Equals(owner.TypeDefinition.Name, StringComparison.InvariantCultureIgnoreCase))
             {
-                return $"Input {property.Key} expected type {property.Value.Type} but received {owner?.TypeDefinition.Name ?? value?.GetType().ToString()}.";
+                return string.Format(Resource.PortValidatorWrongTypeMessage, property.Key, property.Value.Type, owner?.TypeDefinition.Name ?? value?.GetType().ToString());
             }
 
             return null;
