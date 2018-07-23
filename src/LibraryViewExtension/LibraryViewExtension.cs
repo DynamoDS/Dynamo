@@ -1,7 +1,9 @@
 ﻿using Dynamo.Models;
 using Dynamo.PackageManager;
+using Dynamo.ViewModels;
 using Dynamo.Wpf.Extensions;
 using Dynamo.Wpf.Interfaces;
+using System.Windows.Controls;
 
 namespace Dynamo.LibraryUI
 {
@@ -38,6 +40,14 @@ namespace Dynamo.LibraryUI
                 controller = new LibraryViewController(p.DynamoWindow, p.CommandExecutive, customization);
                 controller.AddLibraryView();
             }
+
+            var sampleMenuItem = new MenuItem { Header = "Dictionary Dump" };
+            sampleMenuItem.Click += (sender, args) =>
+            {
+                controller.DictionaryDump((p.DynamoWindow.DataContext as DynamoViewModel).Model);
+            };
+            p.AddMenuItem(MenuBarType.View,sampleMenuItem);
+
         }
 
         public void Shutdown()
