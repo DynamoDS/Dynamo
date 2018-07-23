@@ -86,14 +86,16 @@ namespace PackingNodeModels.Pack
         {
             var baseOutput = base.BuildOutputAst(inputAstNodes).ToList();
 
-            if (inputAstNodes == null || !IsValidInputState(inputAstNodes))
+            if (inputAstNodes == null || !IsValidInputState(inputAstNodes) || TypeDefinition == null)
             {
                 baseOutput.Add(AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), AstFactory.BuildNullNode()));
                 return baseOutput;
             }
 
             inputAstNodes = inputAstNodes.Skip(1).ToList();
+            inputAstNodes.Add(AstFactory.BuildStringNode(TypeDefinition.Name));
             var keys = TypeDefinition.Properties.Select(input => AstFactory.BuildStringNode(input.Key) as AssociativeNode).ToList();
+            keys.Add(AstFactory.BuildStringNode("typeid"));
             //FIXME Only way I found to pass in the context to the output function call so it knows how replications should work. 
             //Maybe a tuple of keys,context would be better?
             var isCollectionInputs = TypeDefinition.Properties.Select(input => AstFactory.BuildBooleanNode(input.Value.IsCollection) as AssociativeNode).ToList();

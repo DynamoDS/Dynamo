@@ -20,6 +20,8 @@ namespace PackingNodeModels.Pack.Validation
         /// </summary>
         private static Dictionary<string, List<Type>> CompatibleTypes = new Dictionary<string, List<Type>>
         {
+            { "Bool", new List<Type>() { typeof(bool), typeof(Boolean) } },
+            { "Int32", new List<Type>() { typeof(int), typeof(Int32) } },
             { "String", new List<Type>() { typeof(string) } },
             { "Float64", new List<Type>() { typeof(float), typeof(double), typeof(Int32), typeof(Int64) } },
             { "Arc", new List<Type>() { typeof(Autodesk.DesignScript.Geometry.Arc) } },

@@ -55,7 +55,7 @@ namespace PackingNodeModels.UnPack
         {
             var baseOutput = base.BuildOutputAst(inputAstNodes).ToList();
 
-            if (!IsValidInputState(inputAstNodes))
+            if (!IsValidInputState(inputAstNodes) || TypeDefinition == null)
             {
                 baseOutput.Add(AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), AstFactory.BuildNullNode()));
                 return baseOutput;
