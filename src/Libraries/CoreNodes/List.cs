@@ -1399,7 +1399,7 @@ namespace DSCore
         /// </summary>
         private static object DoubleConverter(object obj)
         {
-            if (obj is int)
+            if (obj is int || obj is long)
                 return Convert.ToDouble(obj);
             return obj;
         }
