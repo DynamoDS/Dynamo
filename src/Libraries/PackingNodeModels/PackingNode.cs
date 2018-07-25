@@ -1,5 +1,7 @@
 ﻿using Dynamo.Controls;
+using Dynamo.Graph.Connectors;
 using Dynamo.Graph.Nodes;
+using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
 using Dynamo.Scheduler;
 using Dynamo.ViewModels;
@@ -30,6 +32,7 @@ namespace PackingNodeModels
         /// Event made to communicate with the NodeViewCustomization and request a scheduled action.
         /// </summary>
         public event Action<Action> RequestScheduledTask;
+        public event Action RequestExecution;
 
         private string _cachedTypeDefinition;
         private TypeDefinition _typeDefinition;
@@ -78,6 +81,7 @@ namespace PackingNodeModels
             InPorts.Add(new PortModel(PortType.Input, this, new PortData(TypeDefinitionPortName, Resource.TypePortTooltip)));
 
             RegisterAllPorts();
+            RegisterPortEvents();
         }
 
         /// <summary>
@@ -86,7 +90,10 @@ namespace PackingNodeModels
         /// <param name="inPorts">A collection of <see cref="PortModel"/> objects.</param>
         /// <param name="outPorts">A collection of <see cref="PortModel"/> objects.</param>
         protected PackingNode(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts)
-            : base(inPorts, outPorts) { }
+            : base(inPorts, outPorts)
+        {
+            RegisterPortEvents();
+        }
 
         protected override void OnBuilt()
         {
@@ -157,8 +164,38 @@ namespace PackingNodeModels
             return InPorts[0].Connectors.Any() && inputAstNodes.Count > 1 && IsInValidState && !inputAstNodes.Exists(node => node is NullNode);
         }
 
+        private void RegisterPortEvents()
+        {
+            PortConnected += OnPortConnected;
+
+            PortDisconnected += OnPortDisconnected;
+        }
+
+        private void OnPortConnected(PortModel port, ConnectorModel connector)
+        {
+            if (IsTypePort(port))
+            {
+                RequestExecution?.Invoke();
+            }
+        }
+
+        private void OnPortDisconnected(PortModel port)
+        {
+            if (IsTypePort(port))
+            {
+                RequestExecution?.Invoke();
+            }
+        }
+
+        private bool IsTypePort(PortModel port)
+        {
+            return port.Name == TypeDefinitionPortName && port.Index == 0;
+        }
+
         public override void Dispose()
         {
+            PortConnected -= OnPortConnected;
+            PortDisconnected -= OnPortDisconnected;
             base.Dispose();
             DataBridge.Instance.UnregisterCallback(GUID.ToString());
         }
@@ -173,6 +210,7 @@ namespace PackingNodeModels
         private DynamoViewModel dynamoViewModel;
         private DispatcherSynchronizationContext syncContext;
         private PackingNode node;
+        private NodeView view;
 
         public void CustomizeView(PackingNode nodeModel, NodeView nodeView)
         {
@@ -181,6 +219,9 @@ namespace PackingNodeModels
             syncContext = new DispatcherSynchronizationContext(nodeView.Dispatcher);
             node = nodeModel;
             node.RequestScheduledTask += OnRequestScheduledTask;
+            view = nodeView;
+
+            node.RequestExecution += OnRequestExecution;
         }
 
         private void OnRequestScheduledTask(Action action)
@@ -197,6 +238,15 @@ namespace PackingNodeModels
             }, syncContext);
 
             s.ScheduleForExecution(t);
+        }
+
+        private void OnRequestExecution()
+        {
+            if (view.ViewModel.WorkspaceViewModel.Model is HomeWorkspaceModel homeWorkspaceModel &&
+                homeWorkspaceModel.RunSettings.RunType != RunType.Automatic)
+            {
+                    dynamoModel.ForceRun();
+            }
         }
 
         public void Dispose()
