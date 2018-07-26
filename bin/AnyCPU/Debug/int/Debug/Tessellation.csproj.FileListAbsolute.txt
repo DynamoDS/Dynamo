@@ -1,9 +1,0 @@
-C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\Tessellation.csprojResolveAssemblyReference.cache
-C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\Tessellation.TessellationImages.resources
-C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\Tessellation.csproj.GenerateResource.Cache
-C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\Tessellation.dll
-C:\GitHub\Dynamo\bin\AnyCPU\Debug\en-US\Tessellation.XML
-C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\Tessellation.pdb
-C:\GitHub\Dynamo\bin\AnyCPU\Debug\Tessellation.dll
-C:\GitHub\Dynamo\bin\AnyCPU\Debug\Tessellation.pdb
-C:\GitHub\Dynamo\bin\AnyCPU\Debug\Tessellation.XML

@@ -1,7 +1,0 @@
-C:\GitHub\Dynamo\bin\AnyCPU\Debug\Revit_2017\int\Debug\RevitNodesUI.csprojResolveAssemblyReference.cache
-C:\GitHub\Dynamo\bin\AnyCPU\Debug\Revit_2017\int\Debug\LocationControl.baml
-C:\GitHub\Dynamo\bin\AnyCPU\Debug\Revit_2017\int\Debug\LocationControl.g.cs
-C:\GitHub\Dynamo\bin\AnyCPU\Debug\Revit_2017\int\Debug\DSRevitNodesUI_MarkupCompile.cache
-C:\GitHub\Dynamo\bin\AnyCPU\Debug\Revit_2017\int\Debug\DSRevitNodesUI.Properties.Resources.resources
-C:\GitHub\Dynamo\bin\AnyCPU\Debug\Revit_2017\int\Debug\DSRevitNodesUI.Properties.Resources.en-US.resources
-C:\GitHub\Dynamo\bin\AnyCPU\Debug\Revit_2017\int\Debug\RevitNodesUI.csproj.GenerateResource.Cache

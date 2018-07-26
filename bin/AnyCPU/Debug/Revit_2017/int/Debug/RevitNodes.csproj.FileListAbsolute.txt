@@ -1,3 +1,0 @@
-C:\GitHub\Dynamo\bin\AnyCPU\Debug\Revit_2017\int\Debug\Revit.Properties.Resources.resources
-C:\GitHub\Dynamo\bin\AnyCPU\Debug\Revit_2017\int\Debug\Revit.Properties.Resources.en-US.resources
-C:\GitHub\Dynamo\bin\AnyCPU\Debug\Revit_2017\int\Debug\RevitNodes.csproj.GenerateResource.Cache

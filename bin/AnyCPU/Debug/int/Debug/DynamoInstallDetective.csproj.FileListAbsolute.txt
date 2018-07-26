@@ -1,4 +1,0 @@
-C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\DynamoInstallDetective.dll
-C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\DynamoInstallDetective.pdb
-C:\GitHub\Dynamo\bin\AnyCPU\Debug\DynamoInstallDetective.dll
-C:\GitHub\Dynamo\bin\AnyCPU\Debug\DynamoInstallDetective.pdb

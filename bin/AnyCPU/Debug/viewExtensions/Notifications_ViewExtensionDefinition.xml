@@ -1,4 +1,0 @@
-<ViewExtensionDefinition>
-  <AssemblyPath>..\Notifications.dll</AssemblyPath>
-  <TypeName>Dynamo.Notifications.NotificationsViewExtension</TypeName>
-</ViewExtensionDefinition>

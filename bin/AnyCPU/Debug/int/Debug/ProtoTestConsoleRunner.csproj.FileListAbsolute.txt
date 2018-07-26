@@ -1,6 +1,0 @@
-C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\ProtoTestConsoleRunner.csprojResolveAssemblyReference.cache
-C:\GitHub\Dynamo\bin\AnyCPU\Debug\ProtoTestConsoleRunner.exe.config
-C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\ProtoTestConsoleRunner.exe
-C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\ProtoTestConsoleRunner.pdb
-C:\GitHub\Dynamo\bin\AnyCPU\Debug\ProtoTestConsoleRunner.exe
-C:\GitHub\Dynamo\bin\AnyCPU\Debug\ProtoTestConsoleRunner.pdb

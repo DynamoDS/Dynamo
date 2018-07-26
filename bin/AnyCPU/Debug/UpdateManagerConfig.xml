@@ -1,8 +1,0 @@
-<?xml version="1.0"?>
-<UpdateManagerConfiguration xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <DownloadSourcePath>http://dyn-builds-data.s3.amazonaws.com/</DownloadSourcePath>
-  <SignatureSourcePath>http://dyn-builds-data-sig.s3.amazonaws.com/</SignatureSourcePath>
-  <CheckNewerDailyBuild>false</CheckNewerDailyBuild>
-  <ForceUpdate>false</ForceUpdate>
-  <InstallerNameBase>DynamoInstall</InstallerNameBase>
-</UpdateManagerConfiguration>

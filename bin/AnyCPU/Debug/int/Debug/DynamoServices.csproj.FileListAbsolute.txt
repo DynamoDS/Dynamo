@@ -1,5 +1,0 @@
-C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\DynamoServices.dll
-C:\GitHub\Dynamo\bin\AnyCPU\Debug\DynamoServices.XML
-C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\DynamoServices.pdb
-C:\GitHub\Dynamo\bin\AnyCPU\Debug\DynamoServices.dll
-C:\GitHub\Dynamo\bin\AnyCPU\Debug\DynamoServices.pdb

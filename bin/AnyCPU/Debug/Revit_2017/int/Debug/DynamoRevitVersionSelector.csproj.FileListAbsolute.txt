@@ -1,6 +1,0 @@
-C:\GitHub\Dynamo\bin\AnyCPU\Debug\Revit_2017\int\Debug\DynamoVersionSelector.baml
-C:\GitHub\Dynamo\bin\AnyCPU\Debug\Revit_2017\int\Debug\DynamoVersionSelector.g.cs
-C:\GitHub\Dynamo\bin\AnyCPU\Debug\Revit_2017\int\Debug\DynamoRevitVersionSelector_MarkupCompile.cache
-C:\GitHub\Dynamo\bin\AnyCPU\Debug\Revit_2017\int\Debug\DynamoRevitVersionSelector.Properties.Resources.resources
-C:\GitHub\Dynamo\bin\AnyCPU\Debug\Revit_2017\int\Debug\DynamoRevitVersionSelector.Properties.Resources.en-US.resources
-C:\GitHub\Dynamo\bin\AnyCPU\Debug\Revit_2017\int\Debug\DynamoRevitVersionSelector.csproj.GenerateResource.Cache

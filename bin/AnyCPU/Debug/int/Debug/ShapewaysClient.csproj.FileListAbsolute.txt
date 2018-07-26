@@ -1,5 +1,0 @@
-C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\ShapewaysClient.csprojResolveAssemblyReference.cache
-C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\ShapewaysClient.dll
-C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\ShapewaysClient.pdb
-C:\GitHub\Dynamo\bin\AnyCPU\Debug\ShapewaysClient.dll
-C:\GitHub\Dynamo\bin\AnyCPU\Debug\ShapewaysClient.pdb

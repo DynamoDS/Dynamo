@@ -1,4 +1,0 @@
-C:\GitHub\Dynamo\src\AssemblySharedInfoGenerator\bin\Debug\AssemblyInfoGenerator.dll
-C:\GitHub\Dynamo\src\AssemblySharedInfoGenerator\bin\Debug\AssemblyInfoGenerator.pdb
-C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\AssemblyInfoGenerator.dll
-C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\AssemblyInfoGenerator.pdb

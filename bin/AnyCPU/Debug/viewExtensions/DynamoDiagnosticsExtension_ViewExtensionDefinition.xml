@@ -1,4 +1,0 @@
-<ViewExtensionDefinition>
-  <AssemblyPath>..\DynamoDiagnostics.dll</AssemblyPath>
-  <TypeName>Dynamo.Diagnostics.DiagnosticsExtension</TypeName>
-</ViewExtensionDefinition>
