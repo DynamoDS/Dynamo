@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Librarie.js sample page stuff did this work</title>
+    <title>Librarie.js sample page</title>
     <style>
         body {
             padding: 0;
@@ -22,7 +22,6 @@
     <script src='./dist/librarie.min.js'></script>
     
     <script>
-        console.log("stuff");
         //Get hold of object registered from C#
         let csharpController = window["controller"];
         //Check if the controller is null or one of our methods does not exist.
@@ -52,94 +51,13 @@
             });
         }
 
-        function nodeItem(name, imageFile, dynFile, folderPath, inDepth,sorting) {
-            this.Name = name;
-            this.imageFile = imageFile;
-            this.dynFile = dynFile;
-            this.folderPath = folderPath;
-            this.inDepth = inDepth;
-            this.sorting = sorting;
-        }
-
-        function compareStrings(a, b) {
-            // Assuming you want case-insensitive comparison
-            a = a.toLowerCase();
-            b = b.toLowerCase();
-
-            return (a < b) ? -1 : (a > b) ? 1 : 0;
-        }
-
-        function createActionQuery(itemType){
-            switch(itemType){
-                case "create":
-                    return "A";
-                case "action":
-                    return "B";
-                case "query":
-                    return "C";
-            }
-        }
-
-        function dictionaryDump(libraryController) {
-            var jsonDump = [];
-            //entire library output
-            let generatedSections = libContainer.generatedSections[0].childItems;
-            var category;
-            var subcategory;
-            var className;
-            var lowLevel;
-            var path;
-            
-            //iterate through different namespaces/top categories
-            for (i = 0; i < generatedSections.length; i++) {
-                category = generatedSections[i];
-                for (j = 0; j < category.childItems.length; j++) {
-                    subcategory = category.childItems[j];
-                    path = category.text;
-                    if (subcategory.childItems.length == 0) {
-                        var node = new nodeItem(subcategory.text + " " + subcategory.parameters, [subcategory.text + " " + subcategory.parameters], [subcategory.text + " " + subcategory.parameters], path + "/" + subcategory.itemType.charAt(0).toUpperCase() + subcategory.itemType.slice(1), "", path + createActionQuery(subcategory.itemType) + subcategory.text);
-                        jsonDump.push(node);
-                    } else {
-                        for (k = 0; k < subcategory.childItems.length; k++) {
-                            className = subcategory.childItems[k];
-                            path = category.text+"/"+subcategory.text;
-                            if(className.childItems.length == 0){
-                                var node = new nodeItem(className.text + " " + className.parameters, [className.text + " " + className.parameters], [className.text + " " + className.parameters], path + "/" + className.itemType.charAt(0).toUpperCase() + className.itemType.slice(1), "", (path + createActionQuery(className.itemType) + className.text).replace(/ /g, ''));
-                                jsonDump.push(node);
-                            } else {
-                                for (l = 0; l < className.childItems.length; l++) {
-                                    lowLevel = className.childItems[l];
-                                    path = category.text + "/" + subcategory.text + "/" + className.text;
-                                    if (lowLevel.childItems.length == 0) {
-                                        var node = new nodeItem(lowLevel.text + " " + lowLevel.parameters, [lowLevel.text + " " + lowLevel.parameters], [lowLevel.text + " " + lowLevel.parameters], path + "/" + lowLevel.itemType.charAt(0).toUpperCase() + lowLevel.itemType.slice(1), "", (path + createActionQuery(lowLevel.itemType) + lowLevel.text).replace(/ /g, ''));
-                                        jsonDump.push(node);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-                jsonDump.sort(function(a, b) {
-                    return compareStrings(a.sorting, b.sorting);
-                })
-            }
-            jsonDump.forEach(function (v) { delete v.sorting });
-
-            var txtFile = "/tmp/test.txt";
-            var jsonFile = new File(txtFile, "write");
-        }
-
         //Create library controller
         let libController = LibraryEntryPoint.CreateLibraryController();
 
         //Create library view
         let libContainer = libController.createLibraryByElementId("libraryContainerPlaceholder");
-        
         //Update the view with contents
         refreshLibraryView(libController);
-
-        //return all nodes as JSON
-        //for (i=0; i < libContainer.)
 
         libController.searchLibraryItemsHandler = function (text, callback) {
             let url = "nodeSearch" + "/" + text;
@@ -150,7 +68,7 @@
                 let searchLoadedTypesJson = downloaded[url];
 
                 if (!searchLoadedTypesJson) {
-                    //console.log("Error: no search result.");
+                    console.log("Error: no search result.");
                     return;
                 }
                 csharpController.logEventsToInstrumentation("Search", text);
@@ -161,11 +79,9 @@
         // Register event handlers for various events on library controller and package controller.
 
         libController.on(libController.ItemClickedEventName, function (nodeCreationName) {
-            //console.log('Library Node Clicked: ' + nodeCreationName);
+            console.log('Library Node Clicked: ' + nodeCreationName);
             //csharpController.closeDetailsView(); //ensure that the details view is closed.
             csharpController.createNode(nodeCreationName);
-            dictionaryDump(libController);
-            
         });
 
         libController.on(libController.ItemMouseEnterEventName, function (arg) {
@@ -179,7 +95,7 @@
         });
 
         libController.on(libController.SectionIconClickedEventName, function (section) {
-            //console.log("Section clicked: " + section);
+            console.log("Section clicked: " + section);
             if (section == "Add-ons") {
                 csharpController.importLibrary();
             }
@@ -196,15 +112,14 @@
         });
 
         csharpController.on("error", function (msg) {
-            //console.log("Error: " + msg);
+            console.log("Error: " + msg);
             pkgController.raiseEvent("error", msg);
         });
 
         csharpController.on("libraryDataUpdated", function (items) {
-            //console.log(items);
+            console.log(items);
             refreshLibraryView(libController);
             csharpController.closeNodeTooltip(true);
-
         });
 
     </script>

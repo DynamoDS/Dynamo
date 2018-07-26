@@ -426,9 +426,9 @@ namespace Dynamo.LibraryUI
 
         public void DictionaryDump(DynamoModel model)
         {
-            var nodes = new NodeItemDataProvider(model.SearchModel);
+            var x = new NodeItemDataProvider(model.SearchModel);
             string y;
-            var stream = nodes.GetResource(null,out y);
+            var stream = x.GetResource(null,out y);
             /*foreach(var stuff in (stream as MemoryStream).ToArray())
             {
                 stuff.ToString();
