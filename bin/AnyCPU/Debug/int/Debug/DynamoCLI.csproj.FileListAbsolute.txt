@@ -1,0 +1,6 @@
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\DynamoCLI.csprojResolveAssemblyReference.cache
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\DynamoCLI.exe.config
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\DynamoCLI.exe
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\DynamoCLI.pdb
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\DynamoCLI.exe
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\DynamoCLI.pdb

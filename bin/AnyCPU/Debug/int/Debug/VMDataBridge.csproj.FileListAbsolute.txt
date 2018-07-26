@@ -1,0 +1,5 @@
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\VMDataBridge.csprojResolveAssemblyReference.cache
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\VMDataBridge.dll
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\VMDataBridge.pdb
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\VMDataBridge.dll
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\VMDataBridge.pdb

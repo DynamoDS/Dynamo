@@ -1,0 +1,11 @@
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\DynamoPackages.csprojResolveAssemblyReference.cache
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\DynamoPackages.Properties.Resources.resources
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\DynamoPackages.Properties.Resources.en-US.resources
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\DynamoPackages.csproj.GenerateResource.Cache
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\en-US\DynamoPackages.resources.dll
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\DynamoPackages.dll.config
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\DynamoPackages.dll
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\DynamoPackages.pdb
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\DynamoPackages.dll
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\DynamoPackages.pdb
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\en-US\DynamoPackages.resources.dll

@@ -1,0 +1,4 @@
+<ViewExtensionDefinition>
+  <AssemblyPath>..\DynamoManipulation.dll</AssemblyPath>
+  <TypeName>Dynamo.Manipulation.DynamoManipulationExtension</TypeName>
+</ViewExtensionDefinition>

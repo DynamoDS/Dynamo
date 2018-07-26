@@ -1,0 +1,14 @@
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\CoreNodes.csprojResolveAssemblyReference.cache
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\DSCore.DSCoreNodesImages.resources
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\DSCore.Properties.Resources.resources
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\DSCore.Properties.Resources.en-US.resources
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\CoreNodes.csproj.GenerateResource.Cache
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\en-US\DSCoreNodes.resources.dll
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\DSCoreNodes.Migrations.xml
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\DSCoreNodes.dll
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\en-US\DSCoreNodes.xml
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\DSCoreNodes.pdb
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\DSCoreNodes.dll
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\DSCoreNodes.pdb
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\DSCoreNodes.xml
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\en-US\DSCoreNodes.resources.dll

@@ -1,0 +1,12 @@
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\Arduino.csprojResolveAssemblyReference.cache
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\Dynamo.Nodes.Properties.Resources.resources
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\Dynamo.Nodes.Properties.Resources.en-US.resources
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\Arduino.csproj.GenerateResource.Cache
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\en-US\DynamoArduino.resources.dll
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\DynamoArduino.dll
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\en-US\DynamoArduino.XML
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\DynamoArduino.pdb
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\DynamoArduino.dll
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\DynamoArduino.pdb
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\DynamoArduino.XML
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\en-US\DynamoArduino.resources.dll

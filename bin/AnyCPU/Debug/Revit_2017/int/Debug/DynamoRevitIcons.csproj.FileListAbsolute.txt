@@ -1,0 +1,9 @@
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\Revit_2017\int\Debug\DynamoRevitIcons.DSRevitNodesUIImages.resources
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\Revit_2017\int\Debug\DynamoRevitIcons.DynamoRaaSImages.resources
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\Revit_2017\int\Debug\DynamoRevitIcons.RevitNodesImages.resources
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\Revit_2017\int\Debug\DynamoRevitIcons.SimpleRaaSImages.resources
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\Revit_2017\int\Debug\DynamoRevitIcons.csproj.GenerateResource.Cache
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\Revit_2017\int\Debug\DynamoRevitIcons.dll
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\Revit_2017\int\Debug\DynamoRevitIcons.pdb
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\Revit_2017\DynamoRevitIcons.dll
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\Revit_2017\DynamoRevitIcons.pdb

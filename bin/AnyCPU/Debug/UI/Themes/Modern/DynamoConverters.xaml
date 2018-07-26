@@ -1,0 +1,200 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:controls="clr-namespace:Dynamo.Controls;assembly=DynamoCoreWpf"
+                    xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf">
+
+    <ResourceDictionary.MergedDictionaries>
+        <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoColorsAndBrushesDictionaryUri}" />
+    </ResourceDictionary.MergedDictionaries>
+
+    <controls:WorkspaceTypeConverter x:Key="WorkspaceTypeConverter" />
+    <controls:WorkspaceBackgroundColorConverter x:Key="WorkspaceBackgroundColorConverter"
+                                                HomeBackgroundColor="{StaticResource WorkspaceBackgroundHome}"
+                                                CustomBackgroundColor="{StaticResource WorkspaceBackgroundCustom}">
+    </controls:WorkspaceBackgroundColorConverter>
+    <controls:WorkspaceBackgroundBrushConverter x:Key="WorkspaceBackgroundBrushConverter"
+                                                HomeBackgroundBrush="{StaticResource WorkspaceBackgroundHomeBrush}"
+                                                CustomBackgroundBrush="{StaticResource WorkspaceBackgroundCustomBrush}">
+    </controls:WorkspaceBackgroundBrushConverter>
+
+    <controls:MarginConverter x:Key="MarginConverter" />
+
+    <controls:BooleanToBrushConverter x:Key="BooleanToBrushConverter" 
+                                      TrueBrush="#4192D9" 
+                                      FalseBrush="Black">
+    </controls:BooleanToBrushConverter>
+    
+    <controls:BooleanToBrushConverter x:Key="PortConnectedBooleanToBrushConverter"
+                                      TrueBrush="Black"
+                                      FalseBrush="White">
+    </controls:BooleanToBrushConverter>
+
+    <controls:BooleanToSelectionColorConverter x:Key="BooleanToSelectionColorConverter" 
+                                True="#4192D9" 
+                                False="#444">
+    </controls:BooleanToSelectionColorConverter>
+
+    <controls:ConnectionStateToColorConverter x:Key="ConnectionStateToColorConverter"
+                                              ExecutionPreview="#F2930C"
+                                              Selection="#4192D9"
+                                              None="#444">
+        
+    </controls:ConnectionStateToColorConverter>
+
+    <controls:ConnectionStateToBrushConverter x:Key="ConnectionStateToBrushConverter"
+                                              ExecutionPreviewBrush="#F2930C"
+                                              SelectionBrush="#4192D9"
+                                              NoneBrush="#444">
+    </controls:ConnectionStateToBrushConverter>
+
+    <controls:ConnectionStateToVisibilityCollapsedConverter x:Key="ConnectionStateToVisibilityCollapsedConverter"/>
+                                                            
+    <controls:StateToColorConverter x:Key="StateToColorConverter"
+                                    HeaderBackgroundInactive="{StaticResource headerBackgroundInactive}"
+                                    HeaderForegroundInactive="{StaticResource headerForegroundInactive}"
+                                    HeaderBorderInactive="{StaticResource headerBorderInactive}"
+                                    OuterBorderInactive="{StaticResource outerBorderInactive}"
+                                    BodyBackgroundInactive="{StaticResource bodyBackgroundInactive}"
+                                    HeaderBackgroundActive="{StaticResource headerBackgroundActive}"
+                                    HeaderForegroundActive="{StaticResource headerForegroundActive}"
+                                    HeaderBorderActive="{StaticResource headerBorderActive}"
+                                    OuterBorderActive="{StaticResource outerBorderActive}"
+                                    BodyBackgroundActive="{StaticResource bodyBackgroundActive}"
+                                    HeaderBackgroundWarning="{StaticResource headerBackgroundWarning}"
+                                    HeaderForegroundWarning="{StaticResource headerForegroundWarning}"
+                                    HeaderBorderWarning="{StaticResource headerBorderWarning}"
+                                    OuterBorderWarning="{StaticResource outerBorderWarning}"
+                                    BodyBackgroundWarning="{StaticResource bodyBackgroundWarning}"
+                                    HeaderBackgroundError="{StaticResource headerBackgroundError}"
+                                    HeaderForegroundError="{StaticResource headerForegroundError}"
+                                    HeaderBorderError="{StaticResource headerBorderError}"
+                                    OuterBorderError="{StaticResource outerBorderError}"
+                                    BodyBackgroundError="{StaticResource bodyBackgroundError}"
+                                    HeaderBackgroundBroken="{StaticResource headerBackgroundBroken}"
+                                    HeaderForegroundBroken="{StaticResource headerForegroundBroken}"
+                                    HeaderBorderBroken="{StaticResource headerBorderBroken}"
+                                    OuterBorderBroken="{StaticResource outerBorderBroken}"
+                                    BodyBackgroundBroken="{StaticResource bodyBackgroundBroken}"
+                                    OuterBorderSelection="{StaticResource outerBorderSelection}">
+    </controls:StateToColorConverter>
+
+    <controls:AttachmentToPathConverter x:Key="AttachmentToPathConverter" />
+    <controls:AttachmentToRowColumnConverter x:Key="AttachmentToRowColumnConverter" />
+    <controls:PortToAttachmentConverter x:Key="PortToAttachmentConverter" />
+    <controls:PortNameConverter x:Key="PortNameConverter" />
+    <controls:NodeSearchElementVMToBoolConverter x:Key="NodeSearchElementVMToBoolConverter" />
+    <controls:FilePathDisplayConverter x:Key="FilePathDisplayConverter" />
+    <controls:PathToFileNameConverter x:Key="PathToFileNameConverter" />
+    <controls:PathToSaveStateConverter x:Key="PathToSaveStateConverter" />
+    <controls:InverseBooleanConverter x:Key="InverseBooleanConverter" />
+    <controls:ConsoleHeightToBooleanConverter x:Key="ConsoleHeightToBoolConverter" />
+    <controls:ShowHideFullscreenWatchMenuItemConverter x:Key="ShowHideFullscreenWatchMenuConverter" />
+    <controls:PackageSearchStateToStringConverter x:Key="PackageSearchStateToStringConverter" />
+    <controls:EmptyStringToCollapsedConverter x:Key="EmptyStringToCollapsedConverter" />
+    <controls:NonEmptyStringToCollapsedConverter x:Key="NonEmptyStringToCollapsedConverter" />
+    <controls:SearchResultsToVisibilityConverter x:Key="SearchResultsToVisibilityConverter" />
+    <controls:EnumToBooleanConverter x:Key="EnumToBoolConverter" />
+    <controls:PackageUploadStateToStringConverter x:Key="PackageUploadStateToStringConverter" />
+    <controls:PackageDownloadStateToStringConverter x:Key="PackageDownloadStateToStringConverter" />
+    <controls:ShowHideClassicNavigatorMenuItemConverter x:Key="ShowHideClassicNavigatorMenuItemConverter" />
+    <controls:PortTypeToMarginConverter x:Key="PortTypeToMarginConverter" />
+    <controls:PortTypeToTextAlignmentConverter x:Key="PortTypeToTextAlignmentConverter" />
+    <controls:PortTypeToGridColumnConverter x:Key="PortTypeToGridColumnConverter" />
+    <controls:PortTypeToClipConverter x:Key="PortTypeToClipConverter" />
+    <controls:ConsoleHeightConverter x:Key="ConsoleHeightConverter" />
+    <controls:BoolToFullscreenWatchVisibilityConverter x:Key="BoolToFullscreenWatchVisibilityConverter" />
+    <controls:BoolToCanvasCursorConverter x:Key="BoolToCanvasCursorConverter" />
+    <controls:LacingToVisibilityConverter x:Key="LacingToVisibilityConverter" />
+    <controls:AutoLacingToVisibilityConverter x:Key="AutoLacingToVisibilityConverter" />
+    <controls:LacingToAbbreviationConverter x:Key="LacingToAbbreviationConverter" />
+    <controls:LacingToTooltipConverter x:Key="LacingToTooltipConverter" />
+    <controls:BoolToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+    <controls:BoolToVisibilityCollapsedConverter x:Key="BooleanToVisibilityCollapsedConverter" />
+    <controls:InverseBooleanToVisibilityCollapsedConverter x:Key="InverseBoolToVisibilityCollapsedConverter" />
+    <controls:NavigationToOpacityConverter x:Key="NavigationToOpacityConverter" />
+    <controls:ViewButtonClipRectConverter x:Key="ViewButtonClipRectConverter" />
+    <controls:ZoomToVisibilityConverter x:Key="ZoomToVisibilityConverter" />
+    <controls:ZoomToBooleanConverter x:Key="ZoomToBooleanConverter" />
+    <controls:PortNameToWidthConverter x:Key="PortNameToWidthConverter" />
+    <controls:TooltipLengthTruncater x:Key="TooltipLengthTruncater" />
+    <controls:TabSizeConverter x:Key="TabSizeConverter" />
+    <controls:WarningLevelToColorConverter x:Key="WarningLevelToColorConverter" />
+    <controls:BoolToScrollBarVisibilityConverter x:Key="BoolToScrollBarVisibilityConverter" />
+    <controls:IsUpdateAvailableToTextConverter x:Key="IsUpdateAvailableToTextConverter"/>
+    <controls:IsUpdateAvailableBrushConverter x:Key="IsUpdateAvailableBrushConverter"/>
+    <controls:NumberFormatToBoolConverter x:Key="NumberFormatToBoolConverter"/>
+    <controls:DoubleDisplay x:Key="DoubleDisplayConverter"/>
+    <controls:IntegerDisplay x:Key="IntegerDisplayConverter"/>   
+    <controls:SnapRegionMarginConverter x:Key="SnapRegionMarginConverter"/>
+    <controls:InverseBoolToVisibilityConverter x:Key="InverseBoolToVisibilityConverter"/>
+    <controls:RunPreviewConverter x:Key="RunPreviewConverter"/>
+    <controls:RunPreviewToolTipConverter x:Key="RunPreviewToolTipConverter"/>
+    <controls:MenuItemCheckConverter x:Key="MenuItemCheckConverter"/>
+    <controls:AnnotationTextConverter x:Key="AnnotationTextConverter"/>
+    <controls:ViewModeToVisibilityConverter x:Key="ViewModeToVisibilityConverter" />
+    <controls:ElementTypeToBoolConverter x:Key="ElementTypeToBoolConverter" />
+    <controls:FullyQualifiedNameToDisplayConverter x:Key="FullyQualifiedNameToDisplayConverter" />
+    <controls:RootElementVMToBoolConverter x:Key="RootElementToBoolConverter" />
+    <controls:NodeCategoryVMToBoolConverter x:Key="NodeCategoryVMToBoolConverter" />
+    <controls:FullCategoryNameToMarginConverter x:Key="FullCategoryNameToMarginConverter" />
+    <controls:IntToVisibilityConverter x:Key="IntToVisibilityConverter" />
+    <controls:LibraryTreeItemsHostVisibilityConverter x:Key="LibraryTreeItemsHostVisibilityConverter" />
+    <controls:NullValueToCollapsedConverter x:Key="NullValueToCollapsedConverter" />
+    <controls:NullValueToGridRow1Converter x:Key="NullValueToGridRow1Converter"/>
+    <controls:SearchHighlightMarginConverter x:Key="SearchHighlightMarginConverter" />
+    <controls:InOutParamTypeConverter x:Key="InOutParamTypeConverter" />
+    <controls:NodeTypeToColorConverter x:Key="NodeTypeToColorConverter"
+                                       TrueBrush="#cccccc"
+                                       FalseBrush="#777777" />
+    <controls:BooleanToBrushConverter x:Key="DescriptionToColorConverter"
+                                      TrueBrush="#cccccc"
+                                      FalseBrush="#666666" />
+    <controls:GroupFontSizeToEditorEnabledConverter x:Key="GroupFontSizeToEditorEnabledConverter"/>
+    <controls:ElementTypeToShortConverter x:Key="ElementTypeToShortConverter" />
+    <controls:GroupTitleVisibilityConverter x:Key="GroupTitleVisibilityConverter"/>
+    <controls:LibraryViewModeToBoolConverter x:Key="LibraryViewModeToBoolConverter" />
+    <controls:WorkspaceContextMenuHeightConverter x:Key="WorkspaceContextMenuHeightConverter" />
+    <controls:TreeViewLineConverter x:Key="TreeViewLineConverter" />
+    <controls:TreeViewLineMarginConverter x:Key="TreeViewLineMarginConverter" />
+    <controls:TreeViewHLineMarginConverter x:Key="TreeViewHLineMarginConverter" />
+    <controls:TreeViewVLineMarginConverter x:Key="TreeViewVLineMarginConverter" />
+    <controls:TreeViewMarginCheck x:Key="TreeViewMarginCheck"/>
+    <controls:LeftThicknessConverter x:Key="LeftThicknessConverter" />
+    <controls:ListIndexBackgroundConverter x:Key="ListIndexBackgroundConverter" />
+    <controls:ListIndexMarginConverter x:Key="ListIndexMarginConverter" />
+    <controls:TopLevelLabelMarginConverter x:Key="TopLevelLabelMarginConverter"/>
+    <controls:NestedContentMarginConverter x:Key="NestedContentMarginConverter"/>
+    <controls:ClassViewMarginConverter x:Key="ClassViewMarginConverter" />
+    <controls:ElementGroupToColorConverter x:Key="ElementGroupToColorConverter" />
+    <controls:RgbaStringToBrushConverter x:Key="RgbaStringToBrushConverter" />
+    <controls:BooleanToBrushConverter x:Key="FilterIsSelertedCategoryToBrushConverter"
+                                      TrueBrush="{StaticResource CommonSidebarTextColor}"
+                                      FalseBrush="{StaticResource FilterCategoryIsNotSelectedColor}">
+    </controls:BooleanToBrushConverter>
+    <controls:BooleanToBrushConverter x:Key="FilterIconForegroundConverter"
+                                      TrueBrush="{StaticResource FilterIconColor}"
+                                      FalseBrush="{StaticResource LibraryItemHostBackground}">
+    </controls:BooleanToBrushConverter>
+    <controls:BooleanToBrushConverter x:Key="FilterIsSelertedCategoryForegroundConverter"
+                                      TrueBrush="{StaticResource NodeNameForeground}"
+                                      FalseBrush="{StaticResource NodeCategoryForeground}">
+    </controls:BooleanToBrushConverter>
+    <controls:BooleanToBrushConverter x:Key="CompactLayoutForegroundConverter"
+                                      TrueBrush="{StaticResource UnSelectedLayoutForeground}"
+                                      FalseBrush="{StaticResource NodeNameForeground}">
+    </controls:BooleanToBrushConverter>
+    <controls:BooleanToBrushConverter x:Key="DetailedLayoutForegroundConverter"
+                                      TrueBrush="{StaticResource NodeNameForeground}"
+                                      FalseBrush="{StaticResource UnSelectedLayoutForeground}">
+    </controls:BooleanToBrushConverter>
+    <controls:BooleanToBrushConverter x:Key="PinIconForegroundConverter"
+                                      TrueBrush="{StaticResource PinnedIconForegroundColor}"
+                                      FalseBrush="{StaticResource UnpinnedIconForegroundColor}">
+    </controls:BooleanToBrushConverter>
+    <controls:BooleanToBrushConverter x:Key="KeepListStructureHighlighColorConverter"
+                                      TrueBrush="{StaticResource KeepListStructureHighlight}"
+                                      FalseBrush="{StaticResource NotKeepListStructureHighlight}">
+    </controls:BooleanToBrushConverter>
+    
+    
+</ResourceDictionary>

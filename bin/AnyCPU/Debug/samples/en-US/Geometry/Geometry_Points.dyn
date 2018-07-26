@@ -1,0 +1,707 @@
+{
+  "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "Geometry_Points",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double,double",
+      "Id": "5b9ce6ead88f4d2d9eac159ed8f3a277",
+      "Inputs": [
+        {
+          "Id": "26b70b8ac9e545d8ad487fd432f00100",
+          "Name": "x",
+          "Description": "double\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "7835459af7c642bda84fb06ff760b569",
+          "Name": "y",
+          "Description": "double\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "704fe2d8004c4734972f7534c32b6cff",
+          "Name": "z",
+          "Description": "double\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "521d036bc8aa4819a637542c93eb0af7",
+          "Name": "Point",
+          "Description": "Point",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Form a Point given 3 cartesian coordinates\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double,double",
+      "Id": "0aa5294eaf814a938b6a14a8944d8478",
+      "Inputs": [
+        {
+          "Id": "f9d9da6219f34b6aa15abc1ad0fea28b",
+          "Name": "x",
+          "Description": "double\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "e0ba072f2609431288f4e14469c5744b",
+          "Name": "y",
+          "Description": "double\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "f25fce624cc54aaab4bd22155c9cd371",
+          "Name": "z",
+          "Description": "double\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "7964e7cae0ae49ba8f89a4420ce2c1fa",
+          "Name": "Point",
+          "Description": "Point",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Form a Point given 3 cartesian coordinates\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Range, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "a6083d4a6070490692041541f146010c",
+      "Inputs": [
+        {
+          "Id": "960ac7e87b2a40ddac10d3f8ca34e33c",
+          "Name": "start",
+          "Description": "Number or letter to start the sequence at\r\nDefault value: 0 (disabled)",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "f7c07b57d9e146128a3fb595e703068e",
+          "Name": "end",
+          "Description": "Number or letter to end the sequence at\r\nDefault value: 9 (disabled)",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "5129143afc3045deb52cbc84bcac3a13",
+          "Name": "step",
+          "Description": "Space between numbers or letters\r\nDefault value: 1 (disabled)",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "082fbef8d8b148b6b83859e7d3f8edf9",
+          "Name": "seq",
+          "Description": "New sequence",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Longest",
+      "Description": "Creates a sequence of numbers or letters in the specified range."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.DoubleInput, CoreNodeModels",
+      "NodeType": "NumberInputNode",
+      "NumberType": "Double",
+      "InputValue": 0.0,
+      "Id": "07aadec530d945388fa949115d20a81f",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "8554eccdf807442281356f71e4ce7da7",
+          "Name": "",
+          "Description": "Double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Creates a number."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.DoubleInput, CoreNodeModels",
+      "NodeType": "NumberInputNode",
+      "NumberType": "Double",
+      "InputValue": 10.0,
+      "Id": "33d6893160a64f90bfed1213d0256ac1",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "852d142951bd42fb8f913cea9cf6a1d2",
+          "Name": "",
+          "Description": "Double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Creates a number."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "aaa8dff2a34b4d7a950c3aeeb70e82c7",
+      "Inputs": [
+        {
+          "Id": "329a754afae64710b64441d8e411f9b2",
+          "Name": "",
+          "Description": "Node to evaluate.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "e4fbc3bfd0984d5788c3645e38aa2cf3",
+          "Name": "",
+          "Description": "Watch contents.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualize the output of node."
+    },
+    {
+      "ConcreteType": "Watch3DNodeModels.Watch3D, Watch3DNodeModels",
+      "WatchWidth": 220.0,
+      "WatchHeight": 339.0,
+      "WasExecuted": true,
+      "Camera": {
+        "Name": "0e500d65-fbc3-406a-9aef-67574bc1f2a5 Preview",
+        "EyeX": -17.0,
+        "EyeY": 24.0,
+        "EyeZ": 50.0,
+        "LookX": 12.0,
+        "LookY": -13.0,
+        "LookZ": -58.0,
+        "UpX": 0.0,
+        "UpY": 1.0,
+        "UpZ": 0.0
+      },
+      "NodeType": "ExtensionNode",
+      "Id": "0e500d65fbc3406a9aef67574bc1f2a5",
+      "Inputs": [
+        {
+          "Id": "37ede02780104521ab5d2706f36ace1d",
+          "Name": "",
+          "Description": "Incoming geometry objects.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "f826cf25885446df986a61e59f6f991d",
+          "Name": "",
+          "Description": "Incoming geometry objects.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Shows a dynamic preview of geometry."
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Point.Add@Autodesk.DesignScript.Geometry.Vector",
+      "Id": "227c1a9c02d14a9c91aaea7e67d222fb",
+      "Inputs": [
+        {
+          "Id": "4511a1facd2f45888026aeed210e41ad",
+          "Name": "point",
+          "Description": "Autodesk.DesignScript.Geometry.Point",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "c982d730ba5f4c86a8c4757165838211",
+          "Name": "vectorToAdd",
+          "Description": "Vector",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "b1447c8eba3145aab2d5ac63bdb53081",
+          "Name": "Point",
+          "Description": "Point",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Add a vector to a point. The same as Translate(Vector).\n\nPoint.Add (vectorToAdd: Vector): Point"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.DoubleSlider, CoreNodeModels",
+      "NodeType": "NumberInputNode",
+      "NumberType": "Double",
+      "MaximumValue": 10.0,
+      "MinimumValue": 0.0,
+      "StepValue": 0.1,
+      "InputValue": 5.638,
+      "Id": "f6a164cc92e048a0a83befaa476990d0",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "d01407572ef4460dbd4e8cf8feed1089",
+          "Name": "",
+          "Description": "Double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "A slider that produces numeric values."
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Point.Z",
+      "Id": "3c918558fc8a44199ecb187fc5686802",
+      "Inputs": [
+        {
+          "Id": "ac47db572abe4a27bc6b2978761bb6f3",
+          "Name": "point",
+          "Description": "Autodesk.DesignScript.Geometry.Point",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "bcc01ec6dba54a299d07b27211568d6b",
+          "Name": "double",
+          "Description": "double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Get the Z component of a Point\n\nPoint.Z: double"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.DoubleInput, CoreNodeModels",
+      "NodeType": "NumberInputNode",
+      "NumberType": "Double",
+      "InputValue": 1.0,
+      "Id": "0427125066d94802aaba0410c552b831",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "319bd5e7ce4146f880fc72d9d2f6f3dd",
+          "Name": "",
+          "Description": "Double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Creates a number."
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Point.AsVector",
+      "Id": "ae64d918eefe417b9a57e9a56509cb26",
+      "Inputs": [
+        {
+          "Id": "16e1a04a787949eb82c577f39fe3dcbe",
+          "Name": "point",
+          "Description": "Autodesk.DesignScript.Geometry.Point",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "0caed96f91934b4d8f989e96c128ea7c",
+          "Name": "Vector",
+          "Description": "Vector",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Get the Vector with the same X, Y, and Z component\n\nPoint.AsVector ( ): Vector"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "521d036bc8aa4819a637542c93eb0af7",
+      "End": "37ede02780104521ab5d2706f36ace1d",
+      "Id": "dc326be7af3e4f9783bd3c62aad9a678"
+    },
+    {
+      "Start": "521d036bc8aa4819a637542c93eb0af7",
+      "End": "329a754afae64710b64441d8e411f9b2",
+      "Id": "4bbeee3ebb7345fd9c6f61b4c66cd66b"
+    },
+    {
+      "Start": "521d036bc8aa4819a637542c93eb0af7",
+      "End": "ac47db572abe4a27bc6b2978761bb6f3",
+      "Id": "e813a04d15044605964e819997c99317"
+    },
+    {
+      "Start": "7964e7cae0ae49ba8f89a4420ce2c1fa",
+      "End": "4511a1facd2f45888026aeed210e41ad",
+      "Id": "6be506f895164503a242c260296efb37"
+    },
+    {
+      "Start": "082fbef8d8b148b6b83859e7d3f8edf9",
+      "End": "e0ba072f2609431288f4e14469c5744b",
+      "Id": "7af249c2d3e948a09bf3b2549c539b09"
+    },
+    {
+      "Start": "8554eccdf807442281356f71e4ce7da7",
+      "End": "960ac7e87b2a40ddac10d3f8ca34e33c",
+      "Id": "48e40cd257d443d59727fcd92ad53f24"
+    },
+    {
+      "Start": "852d142951bd42fb8f913cea9cf6a1d2",
+      "End": "f7c07b57d9e146128a3fb595e703068e",
+      "Id": "00b6e88f151e46789a26f2437ff3a58f"
+    },
+    {
+      "Start": "e4fbc3bfd0984d5788c3645e38aa2cf3",
+      "End": "16e1a04a787949eb82c577f39fe3dcbe",
+      "Id": "f69842d1c1dd4b99a968186f206a42d7"
+    },
+    {
+      "Start": "d01407572ef4460dbd4e8cf8feed1089",
+      "End": "704fe2d8004c4734972f7534c32b6cff",
+      "Id": "607df6f700fe4c09b0bdb4e5de8d5c1d"
+    },
+    {
+      "Start": "319bd5e7ce4146f880fc72d9d2f6f3dd",
+      "End": "5129143afc3045deb52cbc84bcac3a13",
+      "Id": "b9603e569da74358a4e0f40813b854cf"
+    },
+    {
+      "Start": "0caed96f91934b4d8f989e96c128ea7c",
+      "End": "c982d730ba5f4c86a8c4757165838211",
+      "Id": "3ef4fad70c2744c8872ec32242bd196c"
+    }
+  ],
+  "Dependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.0.0.2821",
+      "RunType": "Automatic",
+      "RunPeriod": "100"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "Point.ByCoordinates",
+        "Id": "5b9ce6ead88f4d2d9eac159ed8f3a277",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -24492.8726906649,
+        "Y": -19896.652824505
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Point.ByCoordinates",
+        "Id": "0aa5294eaf814a938b6a14a8944d8478",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -24475.5123494032,
+        "Y": -19298.4741738685
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Range",
+        "Id": "a6083d4a6070490692041541f146010c",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -24769.1187272669,
+        "Y": -19298.4741738685
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Number",
+        "Id": "07aadec530d945388fa949115d20a81f",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -24970.789680203,
+        "Y": -19298.4741738685
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Number",
+        "Id": "33d6893160a64f90bfed1213d0256ac1",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -24972.5011674131,
+        "Y": -19236.9837983206
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Watch",
+        "Id": "aaa8dff2a34b4d7a950c3aeeb70e82c7",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -24160.7622888382,
+        "Y": -19471.6201986717
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Watch 3D",
+        "Id": "0e500d65fbc3406a9aef67574bc1f2a5",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -24177.0903888257,
+        "Y": -20169.9179062821
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Point.Add",
+        "Id": "227c1a9c02d14a9c91aaea7e67d222fb",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -23433.1018389433,
+        "Y": -19304.6919184607
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Number Slider",
+        "Id": "f6a164cc92e048a0a83befaa476990d0",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -24873.7258592866,
+        "Y": -19832.6842644348
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Point.Z",
+        "Id": "3c918558fc8a44199ecb187fc5686802",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -24177.0903888257,
+        "Y": -19653.6670613887
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Number",
+        "Id": "0427125066d94802aaba0410c552b831",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -24974.9875469409,
+        "Y": -19172.8116354338
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Point.AsVector",
+        "Id": "ae64d918eefe417b9a57e9a56509cb26",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -23766.2211671275,
+        "Y": -19459.7617313085
+      }
+    ],
+    "Annotations": [
+      {
+        "Id": "ad3945ee5bd749a6bc9a876ca3acaa2a",
+        "Title": "Basic Geometric Elements have default values for numerical inputs.  ",
+        "Nodes": [],
+        "Left": -24563.5023638902,
+        "Top": -19956.5969680633,
+        "Width": 0.0,
+        "Height": 0.0,
+        "FontSize": 36.0,
+        "InitialTop": 0.0,
+        "InitialHeight": 0.0,
+        "TextblockHeight": 0.0,
+        "Background": "#FFC1D676"
+      },
+      {
+        "Id": "af4d2a95f2da4a3f828329089eefa229",
+        "Title": "After hitting \"Run\" or with Run Automatically enabled, see the geometric entity either in the Background Peview, in Watch 3d, or as data in a Watch node.  Elements will highlight in Background when the node is selected",
+        "Nodes": [],
+        "Left": -24177.0903888257,
+        "Top": -20287.4502956788,
+        "Width": 0.0,
+        "Height": 0.0,
+        "FontSize": 36.0,
+        "InitialTop": 0.0,
+        "InitialHeight": 0.0,
+        "TextblockHeight": 0.0,
+        "Background": "#FFC1D676"
+      },
+      {
+        "Id": "877cc2b8dff5481d9a7cf30738b0b96e",
+        "Title": "Arrays of Geometry can be created using Sequences, Ranges, and Lists ",
+        "Nodes": [],
+        "Left": -24868.7393184764,
+        "Top": -19358.0035515424,
+        "Width": 0.0,
+        "Height": 0.0,
+        "FontSize": 36.0,
+        "InitialTop": 0.0,
+        "InitialHeight": 0.0,
+        "TextblockHeight": 0.0,
+        "Background": "#FFC1D676"
+      },
+      {
+        "Id": "4741129b8b5849c1999307042d54795a",
+        "Title": "Information Can be pulled out of Geometry using tools in the Query subcategory of the entiry",
+        "Nodes": [],
+        "Left": -24177.0903888257,
+        "Top": -19709.0244140629,
+        "Width": 0.0,
+        "Height": 0.0,
+        "FontSize": 36.0,
+        "InitialTop": 0.0,
+        "InitialHeight": 0.0,
+        "TextblockHeight": 0.0,
+        "Background": "#FFC1D676"
+      },
+      {
+        "Id": "03f561a9a88e4323bc332353f2776382",
+        "Title": "Derivative elements can be created by using tools in the Actions subcategory of the entity",
+        "Nodes": [],
+        "Left": -23501.9576318459,
+        "Top": -19376.5158562362,
+        "Width": 0.0,
+        "Height": 0.0,
+        "FontSize": 36.0,
+        "InitialTop": 0.0,
+        "InitialHeight": 0.0,
+        "TextblockHeight": 0.0,
+        "Background": "#FFC1D676"
+      },
+      {
+        "Id": "d55cd027705a41c9b364ba3f46b7dd08",
+        "Title": "Make 1, 2, and 3 dimensional arrays by passing Ranges into the points x, y, and z ports, then changing the Lacing properties in the right click menue for the node ",
+        "Nodes": [],
+        "Left": -24525.2047171741,
+        "Top": -19377.8954802656,
+        "Width": 0.0,
+        "Height": 0.0,
+        "FontSize": 36.0,
+        "InitialTop": 0.0,
+        "InitialHeight": 0.0,
+        "TextblockHeight": 0.0,
+        "Background": "#FFC1D676"
+      }
+    ],
+    "X": 17229.897829892332,
+    "Y": 13889.664433342597,
+    "Zoom": 0.68338122777692856
+  }
+}

@@ -1,0 +1,12 @@
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\Python.csprojResolveAssemblyReference.cache
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\DynamoPython.Properties.Resources.resources
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\DynamoPython.Properties.Resources.en-US.resources
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\Python.csproj.GenerateResource.Cache
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\en-US\DynamoPython.resources.dll
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\DynamoPython.dll
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\en-US\DynamoPython.XML
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\DynamoPython.pdb
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\DynamoPython.dll
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\DynamoPython.pdb
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\DynamoPython.XML
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\en-US\DynamoPython.resources.dll

@@ -1,0 +1,244 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Analysis</name>
+    </assembly>
+    <members>
+        <member name="T:Analysis.AnalysisResources">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:Analysis.AnalysisResources.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:Analysis.AnalysisResources.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:Analysis.AnalysisResources.EmptyColorsMessage">
+            <summary>
+              Looks up a localized string similar to There are no colors specified..
+            </summary>
+        </member>
+        <member name="P:Analysis.AnalysisResources.EmptyPointsMessage">
+            <summary>
+              Looks up a localized string similar to There are no points specified..
+            </summary>
+        </member>
+        <member name="P:Analysis.AnalysisResources.EmptyUVsMessage">
+            <summary>
+              Looks up a localized string similar to There are no UVs specified..
+            </summary>
+        </member>
+        <member name="P:Analysis.AnalysisResources.EmptyValuesMessage">
+            <summary>
+              Looks up a localized string similar to There are no values specified..
+            </summary>
+        </member>
+        <member name="P:Analysis.AnalysisResources.InputsNotEquivalentMessage">
+            <summary>
+              Looks up a localized string similar to You must supply an equivalent number of points and values..
+            </summary>
+        </member>
+        <member name="P:Analysis.IStructuredData`2.ValueLocations">
+            <summary>
+            A collection of calculation locations.
+            </summary>
+        </member>
+        <member name="P:Analysis.IStructuredData`2.Values">
+            <summary>
+            A list of values corresponding to each location.
+            </summary>
+        </member>
+        <member name="P:Analysis.ISurfaceData`2.Surface">
+            <summary>
+            The analysis surface.
+            </summary>
+        </member>
+        <member name="P:Analysis.ICurveData`2.Curve">
+            <summary>
+            The analysis curve.
+            </summary>
+        </member>
+        <member name="T:Analysis.IAnalysisModel`2">
+            <summary>
+            An analysis model.
+            </summary>
+            <typeparam name="TLocation">The analysis location type. (i.e. UV, Point)</typeparam>
+            <typeparam name="TValue">The analysis return type. (i.e. double, vector, SIUnit)</typeparam>
+        </member>
+        <member name="M:Analysis.Label.ByPointAndString(Autodesk.DesignScript.Geometry.Point,System.String)">
+            <summary>
+            Returns a Label object given a point object and a string label.
+            </summary>
+            <param name="point"></param>
+            <param name="label"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Analysis.PointData">
+            <summary>
+            A class for storing structure point analysis data.
+            </summary>
+        </member>
+        <member name="P:Analysis.PointData.ValueLocations">
+            <summary>
+            A list of Points.
+            </summary>
+        </member>
+        <member name="P:Analysis.PointData.Values">
+            <summary>
+            A dictionary of lists of double values.
+            </summary>
+        </member>
+        <member name="M:Analysis.PointData.ByPointsAndValues(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point},System.Collections.Generic.IList{System.Double})">
+            <summary>
+            Create a PointAnalysisData object.
+            </summary>
+            <param name="points">A list of Points.</param>
+            <param name="values">A list of double values.</param>
+        </member>
+        <member name="T:Analysis.Properties.Resources">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:Analysis.Properties.Resources.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:Analysis.Properties.Resources.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:Analysis.Properties.Resources.ByPointsAndValueObsolete">
+            <summary>
+              Looks up a localized string similar to Use Point nodes and Number nodes as direct inputs to nodes which previously used PointData nodes.
+            </summary>
+        </member>
+        <member name="P:Analysis.Properties.Resources.BySurfacePointObsolete">
+            <summary>
+              Looks up a localized string similar to Use Surface and UV nodes as direct inputs to nodes which previously used SurfaceData nodes.
+            </summary>
+        </member>
+        <member name="P:Analysis.Properties.Resources.BySurfacePointsAndValues">
+            <summary>
+              Looks up a localized string similar to Use Surface, UV, and Number nodes as direct inputs to nodes which previously used SurfaceData nodes.
+            </summary>
+        </member>
+        <member name="P:Analysis.Properties.Resources.SurfaceObsolete">
+            <summary>
+              Looks up a localized string similar to Use the Surface available elsewhere in your graph.
+            </summary>
+        </member>
+        <member name="P:Analysis.Properties.Resources.ValueLocationObsolete">
+            <summary>
+              Looks up a localized string similar to Use the Points available elsewhere in your graph.
+            </summary>
+        </member>
+        <member name="P:Analysis.Properties.Resources.ValueLocationsObsolete">
+            <summary>
+              Looks up a localized string similar to Use the UV locations available elsewhere in your graph..
+            </summary>
+        </member>
+        <member name="P:Analysis.Properties.Resources.ValuesObsolete">
+            <summary>
+              Looks up a localized string similar to Use the values provided by the node conducting the analysis..
+            </summary>
+        </member>
+        <member name="P:Analysis.Properties.Resources.ValueSurfaceObsolete">
+            <summary>
+              Looks up a localized string similar to Use the values provided by the node conducting the analysis.
+            </summary>
+        </member>
+        <member name="P:Analysis.Properties.Resources.VectorValueObsolete">
+            <summary>
+              Looks up a localized string similar to Use Vector nodes and Number nodes as direct inputs to nodes which previously used VectorData nodes.
+            </summary>
+        </member>
+        <member name="T:Analysis.SurfaceData">
+            <summary>
+            A class for storing structured surface analysis data.
+            </summary>
+        </member>
+        <member name="P:Analysis.SurfaceData.Surface">
+            <summary>
+            The surface which contains the locations.
+            </summary>
+        </member>
+        <member name="P:Analysis.SurfaceData.ValueLocations">
+            <summary>
+            A list of UV locations on the surface.
+            </summary>
+        </member>
+        <member name="P:Analysis.SurfaceData.Values">
+            <summary>
+            A dictionary of lists of doubles.
+            </summary>
+        </member>
+        <member name="M:Analysis.SurfaceData.BySurfaceAndPoints(Autodesk.DesignScript.Geometry.Surface,System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.UV})">
+            <summary>
+            Create a SurfaceData object without values.
+            </summary>
+            <param name="surface">The surface which contains the locations.</param>
+            <param name="uvs">A list of UV locations on the surface.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Analysis.SurfaceData.BySurfacePointsAndValues(Autodesk.DesignScript.Geometry.Surface,System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.UV},System.Collections.Generic.IList{System.Double})">
+            <summary>
+            Create a SurfaceData object.
+            </summary>
+            <param name="surface">The surface which contains the locations.</param>
+            <param name="uvs">A list of UV locations on the surface.</param>
+            <param name="values">A list of double values.</param>
+        </member>
+        <member name="M:Analysis.SurfaceData.CullCalculationLocations(Autodesk.DesignScript.Geometry.Surface,System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.UV})">
+            <summary>
+            Cull calculation locations that aren't within 1e-6 of the surface.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Analysis.AnalysisExtensions.IsAlmostEqualTo(Autodesk.DesignScript.Geometry.UV,Autodesk.DesignScript.Geometry.UV)">
+            <summary>
+            Takes two planes (of type UV) and returns True if the difference between the two planes is smaller than 1.0e-6 and returns False otherwise.
+            </summary>
+            <param name="a"></param>
+            <param name="b"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Analysis.Utils.ValueLocation`1">
+            <summary>
+            A class for storing a value at a location.
+            </summary>
+        </member>
+        <member name="T:Analysis.VectorData">
+            <summary>
+            A class for storing structured vector analysis data.
+            </summary>
+        </member>
+        <member name="P:Analysis.VectorData.ValueLocations">
+            <summary>
+            A list of calculation locations.
+            </summary>
+        </member>
+        <member name="P:Analysis.VectorData.Values">
+            <summary>
+            A dictionary of results.
+            </summary>
+        </member>
+        <member name="M:Analysis.VectorData.ByPointsAndValues(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point},System.Collections.Generic.IList{Autodesk.DesignScript.Geometry.Vector})">
+            <summary>
+            Create a VectorAnalysisData object.
+            </summary>
+            <param name="points">A list of Points.</param>
+            <param name="values">A list of Vector values.</param>
+        </member>
+    </members>
+</doc>

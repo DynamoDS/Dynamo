@@ -1,0 +1,115 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!--a good color picker-->
+    <!--http://www.colorspire.com/rgb-color-wheel/-->
+    
+    <!--Workspaces-->
+    <SolidColorBrush Color="#353535" x:Key="DynamoWindowBrush"/>
+    <SolidColorBrush Color="#232323" x:Key="WorkspaceBackgroundBrush"/>
+
+    <Color x:Key="WorkspaceBackgroundHome">#F9F9F9</Color>
+    <Color x:Key="WorkspaceBackgroundCustom">#FFFFDC</Color>
+    <SolidColorBrush Color="#BBBBBB" x:Key="WorkspaceTabHeaderActiveTextBrush"></SolidColorBrush>
+    <SolidColorBrush Color="#777777" x:Key="WorkspaceTabHeaderInactiveTextBrush"></SolidColorBrush>
+    <SolidColorBrush Color="{StaticResource WorkspaceBackgroundHome}" x:Key="WorkspaceBackgroundHomeBrush"></SolidColorBrush>
+    <SolidColorBrush Color="{StaticResource WorkspaceBackgroundCustom}" x:Key="WorkspaceBackgroundCustomBrush"></SolidColorBrush>
+
+    <SolidColorBrush x:Key="WorkspaceTabBorderSelectedTrue" Color="#353535"/>
+    <SolidColorBrush x:Key="WorkspaceTabBorderSelectedFalse" Color="#232323"/>    
+
+    <!--Nodes-->
+
+    <!-- Node colors in inactive state -->
+    <SolidColorBrush x:Key="headerBackgroundInactive" Color="#cbc6be" />
+    <SolidColorBrush x:Key="headerForegroundInactive" Color="#4c4b4a" />
+    <SolidColorBrush x:Key="headerBorderInactive" Color="#7f7e7d" />
+    <SolidColorBrush x:Key="outerBorderInactive" Color="#7f7e7d" />
+    <SolidColorBrush x:Key="bodyBackgroundInactive" Color="#dbd7d1" />
+
+    <!-- Node colors in active state -->
+    <SolidColorBrush x:Key="headerBackgroundActive" Color="#5e5c5a" />
+    <SolidColorBrush x:Key="headerForegroundActive" Color="#ffffff" />
+    <SolidColorBrush x:Key="headerBorderActive" Color="#5e5c5a" />
+    <SolidColorBrush x:Key="outerBorderActive" Color="#5e5c5a" />
+    <SolidColorBrush x:Key="bodyBackgroundActive" Color="#cbc6be" />
+
+    <!-- Node colors in warning state -->
+    <SolidColorBrush x:Key="headerBackgroundWarning" Color="#5e5543" />
+    <SolidColorBrush x:Key="headerForegroundWarning" Color="#ffffff" />
+    <SolidColorBrush x:Key="headerBorderWarning" Color="#5e5543" />
+    <SolidColorBrush x:Key="outerBorderWarning" Color="#5e5543" />
+    <SolidColorBrush x:Key="bodyBackgroundWarning" Color="#fcdc95" />
+
+    <!-- Node colors in erroneous state -->
+    <SolidColorBrush x:Key="headerBackgroundError" Color="#c14c49" />
+    <SolidColorBrush x:Key="headerForegroundError" Color="#ffffff" />
+    <SolidColorBrush x:Key="headerBorderError" Color="#c14c49" />
+    <SolidColorBrush x:Key="outerBorderError" Color="#c14c49" />
+    <SolidColorBrush x:Key="bodyBackgroundError" Color="#f8bcbd" />
+
+    <!-- Node colors in ast build broken state -->
+    <SolidColorBrush x:Key="headerBackgroundBroken" Color="#c14c49" />
+    <SolidColorBrush x:Key="headerForegroundBroken" Color="#ffffff" />
+    <SolidColorBrush x:Key="headerBorderBroken" Color="#c14c49" />
+    <SolidColorBrush x:Key="outerBorderBroken" Color="#c14c49" />
+    <SolidColorBrush x:Key="bodyBackgroundBroken" Color="#f8bcbd" />
+
+    <!-- Node colors in selected state -->
+    <SolidColorBrush x:Key="outerBorderSelection" Color="#4192d9" />
+
+    <!--Update Manager-->
+    <SolidColorBrush x:Key="UpdateManagerUpdateAvailableBrush" Color="OrangeRed"/>
+    <SolidColorBrush x:Key="UpdateManagerUpToDateBrush" Color="Green"/>
+    
+    <!--3D-->
+    <Color x:Key="EdgeColor">#000000</Color>
+    <Color x:Key="PointColor">#000000</Color>
+    <Color x:Key="SelectionColor">#009EFF</Color>
+    <Color x:Key="MaterialColor">#efede4</Color>
+
+    <!--Sidebar-->
+    
+    <!-- Library background-->
+    <SolidColorBrush x:Key="SearchTextBoxBackground" Color="#F1F2F2" />
+    <SolidColorBrush x:Key="LibraryCommonBackground" Color="#333333" />
+    <SolidColorBrush x:Key="LibraryMemberOnHover" Color="#404040" />
+    <SolidColorBrush x:Key="LibraryItemHostBackground" Color="#353535" />
+    <SolidColorBrush x:Key="RootElementBackground" Color="#282828" />
+    <SolidColorBrush x:Key="RootElementOnHover" Color="#222222" />
+    <SolidColorBrush x:Key="ClassButtonClickedBackground" Color="#272727" />
+
+    <!-- Library text colors-->
+    <SolidColorBrush x:Key="MemberButtonText" Color="#aaaaaa" />
+    <SolidColorBrush x:Key="DeafultSearchTextBlockText"
+                     Color="#6D6E71" />
+    <SolidColorBrush x:Key="CommonSidebarTextColor" Color="#CCCCCC" />
+    <SolidColorBrush x:Key="SearchBoxBackgroundColor" Color="#231F20" />
+    <SolidColorBrush x:Key="NestedMemberTextColor" Color="#989898" />
+    <SolidColorBrush x:Key="VariableTypeTextColor" Color="#777777" />
+    <SolidColorBrush x:Key="SearchDarkGreyTextColor" Color="#808285" />
+    <SolidColorBrush x:Key="CreateMembersColor" Color="#7B9F2D" />
+    <SolidColorBrush x:Key="ActionMembersColor" Color="#D56867" />
+    <SolidColorBrush x:Key="QueryMembersColor" Color="#65999A" />
+    <SolidColorBrush x:Key="SearchElementLineDeterminerColor" Color="#4D4D4D" />
+    <SolidColorBrush x:Key="FilterIconColor" Color="#787878" />
+    <SolidColorBrush x:Key="FilterPopupBorderColor" Color="#808080" />
+    <SolidColorBrush x:Key="FilterPopupBackgroundColor" Color="#666666" />
+    <SolidColorBrush x:Key="SelectedFilterButtonTextColor" Color="#4D4D4D" />
+    <SolidColorBrush x:Key="FilterCategoryIsNotSelectedColor" Color="#737373" />
+    <SolidColorBrush x:Key="NodeNameForeground" Color="#ffffff" />
+    <SolidColorBrush x:Key="UnSelectedLayoutForeground" Color="#999999" />
+    <SolidColorBrush x:Key="NodeCategoryForeground" Color="#b3b3b3" />
+    
+    <!-- Bubble preview -->
+    <SolidColorBrush x:Key="BubblePreviewBorderColor" Color="#aaaaaa" />
+    <SolidColorBrush x:Key="UnpinnedIconForegroundColor" Color="#808080" />
+    <SolidColorBrush x:Key="PinnedIconForegroundColor" Color="#FFFFFF" />
+    <SolidColorBrush x:Key="UnpinnedIconBackgroundColor" Color="White" />
+    <SolidColorBrush x:Key="PinnedIconBackgroundColor" Color="#FF5E5C5A" />
+    <SolidColorBrush x:Key="PinnedIconHoverBackgroundColor" Color="#c6c6c6" />
+
+    <!-- Port color -->
+    <SolidColorBrush x:Key="KeepListStructureHighlight" Color="#66AAD7"/>
+    <SolidColorBrush x:Key="NotKeepListStructureHighlight" Color="White"/>
+</ResourceDictionary>

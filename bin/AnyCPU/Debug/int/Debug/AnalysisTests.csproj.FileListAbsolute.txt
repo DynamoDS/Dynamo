@@ -1,0 +1,6 @@
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\AnalysisTests.csprojResolveAssemblyReference.cache
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\DSCoreNodes.Migrations.xml
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\AnalysisTests.dll
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\AnalysisTests.pdb
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\AnalysisTests.dll
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\AnalysisTests.pdb

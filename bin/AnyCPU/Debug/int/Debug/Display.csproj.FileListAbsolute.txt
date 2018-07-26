@@ -1,0 +1,11 @@
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\Display.csprojResolveAssemblyReference.cache
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\Display.Properties.Resources.resources
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\Display.Properties.Resources.en-US.resources
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\Display.csproj.GenerateResource.Cache
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\en-US\Display.resources.dll
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\Display.dll
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\Display.XML
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\Display.pdb
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\Display.dll
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\Display.pdb
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\en-US\Display.resources.dll

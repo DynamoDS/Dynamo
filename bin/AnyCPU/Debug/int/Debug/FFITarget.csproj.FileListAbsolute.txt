@@ -1,0 +1,5 @@
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\FFITarget.csprojResolveAssemblyReference.cache
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\FFITarget.dll
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\FFITarget.pdb
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\FFITarget.dll
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\FFITarget.pdb

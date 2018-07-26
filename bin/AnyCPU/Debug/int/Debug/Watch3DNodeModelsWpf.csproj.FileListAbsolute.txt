@@ -1,0 +1,12 @@
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\nodes\Assimp32.dll
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\nodes\Assimp64.dll
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\nodes\Watch3DNodeModelsWpf.dll
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\nodes\Watch3DNodeModelsWpf.pdb
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\nodes\en-US\Watch3DNodeModelsWpf.resources.dll
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\Watch3DNodeModelsWpf.csprojResolveAssemblyReference.cache
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\Watch3DNodeModelsWpf.Properties.Resources.resources
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\Watch3DNodeModelsWpf.Properties.Resources.en-US.resources
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\Watch3DNodeModelsWpf.csproj.GenerateResource.Cache
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\en-US\Watch3DNodeModelsWpf.resources.dll
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\Watch3DNodeModelsWpf.dll
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\Watch3DNodeModelsWpf.pdb

@@ -1,0 +1,6 @@
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\GeometryColorTests.csprojResolveAssemblyReference.cache
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\GeometryColor_DynamoCustomization.xml
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\DisplayTests.dll
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\DisplayTests.pdb
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\DisplayTests.dll
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\DisplayTests.pdb

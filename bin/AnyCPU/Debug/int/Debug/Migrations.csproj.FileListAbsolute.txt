@@ -1,0 +1,5 @@
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\nodes\Migrations.dll
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\nodes\Migrations.pdb
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\Migrations.csprojResolveAssemblyReference.cache
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\Migrations.dll
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\Migrations.pdb

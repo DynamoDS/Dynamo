@@ -1,0 +1,12 @@
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\InstallUpdate.csprojResolveAssemblyReference.cache
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\InstallUpdate.Resources.resources
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\InstallUpdate.Resources.en-US.resources
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\InstallUpdate.csproj.GenerateResource.Cache
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\en-US\InstallUpdate.resources.dll
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\Dynamo.cer
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\InstallUpdate.exe.config
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\InstallUpdate.exe
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\InstallUpdate.pdb
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\InstallUpdate.exe
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\InstallUpdate.pdb
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\en-US\InstallUpdate.resources.dll

@@ -1,0 +1,13 @@
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\GeometryColor.csprojResolveAssemblyReference.cache
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\GeometryColor.Resources.GeometryColor.resources
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\GeometryColor.Properties.Resources.resources
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\GeometryColor.Properties.Resources.en-US.resources
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\GeometryColor.csproj.GenerateResource.Cache
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\en-US\GeometryColor.resources.dll
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\GeometryColor_DynamoCustomization.xml
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\GeometryColor.dll
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\GeometryColor.xml
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\GeometryColor.pdb
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\GeometryColor.dll
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\GeometryColor.pdb
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\en-US\GeometryColor.resources.dll

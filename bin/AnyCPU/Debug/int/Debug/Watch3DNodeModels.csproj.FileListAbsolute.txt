@@ -1,0 +1,11 @@
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\nodes\Watch3DNodeModels.dll
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\nodes\Watch3DNodeModels.pdb
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\nodes\en-US\Watch3DNodeModels.resources.dll
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\Watch3DNodeModels.csprojResolveAssemblyReference.cache
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\Watch3DNodeModels.Properties.Resources.resources
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\Watch3DNodeModels.Watch3DNodeModelsImages.resources
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\Watch3DNodeModels.Properties.Resources.en-US.resources
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\Watch3DNodeModels.csproj.GenerateResource.Cache
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\en-US\Watch3DNodeModels.resources.dll
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\Watch3DNodeModels.dll
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\Watch3DNodeModels.pdb

@@ -1,0 +1,9 @@
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\en-US\DesignScriptBuiltin.xml
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\DesignScriptBuiltin.dll
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\DesignScriptBuiltin.pdb
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\DesignScriptBuiltin.xml
+C:\GitHub\Dynamo\src\Libraries\DesignScriptBuiltin\obj\Debug\DesignScriptBuiltin.csprojResolveAssemblyReference.cache
+C:\GitHub\Dynamo\src\Libraries\DesignScriptBuiltin\obj\Debug\Builtin.DesignScriptBuiltinImages.resources
+C:\GitHub\Dynamo\src\Libraries\DesignScriptBuiltin\obj\Debug\DesignScriptBuiltin.csproj.GenerateResource.Cache
+C:\GitHub\Dynamo\src\Libraries\DesignScriptBuiltin\obj\Debug\DesignScriptBuiltin.dll
+C:\GitHub\Dynamo\src\Libraries\DesignScriptBuiltin\obj\Debug\DesignScriptBuiltin.pdb
