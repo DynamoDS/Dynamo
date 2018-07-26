@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <!--
+    Files are no longer copied as part of this targets file.
+    For projects other than CefSharp define a target to copy the files.
+    Checkout the CefSharp.Common.targets file for an example
+    -->
+  
+  <!--
+    If this packages contains the x86 folder then set the 32bit properties, 
+	if it contains the x64 folder than set the 64bit properties.
+	Example if this is a x64 package, their will be a x64 folder in the CEF
+    directory, if that's the case this package contains the x64 files, so we'll
+	define those properties.
+    -->
+  <ItemGroup Condition="Exists('$(MSBuildThisFileDirectory)..\CEF\x86')">
+    <CefBinaries32 Include="$(MSBuildThisFileDirectory)..\CEF\x86\*.*" />
+    <CefPakFiles32 Include="$(MSBuildThisFileDirectory)..\CEF\*.*" />
+    <CefLocales32 Include="$(MSBuildThisFileDirectory)..\CEF\locales\*.*" />
+  </ItemGroup>
+  
+  <ItemGroup Condition="Exists('$(MSBuildThisFileDirectory)..\CEF\x64')">
+    <CefBinaries64 Include="$(MSBuildThisFileDirectory)..\CEF\x64\*.*" />
+    <CefPakFiles64 Include="$(MSBuildThisFileDirectory)..\CEF\*.*" />
+    <CefLocales64 Include="$(MSBuildThisFileDirectory)..\CEF\locales\*.*" />
+  </ItemGroup>
+</Project>

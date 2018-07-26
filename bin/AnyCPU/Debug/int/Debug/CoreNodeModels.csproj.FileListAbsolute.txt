@@ -1,0 +1,12 @@
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\nodes\CoreNodeModels.XML
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\nodes\CoreNodeModels.dll
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\nodes\CoreNodeModels.pdb
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\nodes\en-US\CoreNodeModels.resources.dll
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\CoreNodeModels.csprojResolveAssemblyReference.cache
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\CoreNodeModels.CoreNodeModelsImages.resources
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\CoreNodeModels.Properties.Resources.resources
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\CoreNodeModels.Properties.Resources.en-US.resources
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\CoreNodeModels.csproj.GenerateResource.Cache
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\en-US\CoreNodeModels.resources.dll
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\CoreNodeModels.dll
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\CoreNodeModels.pdb

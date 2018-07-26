@@ -1,0 +1,5 @@
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\nodes\TestUINodes.dll
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\nodes\TestUINodes.pdb
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\TestUINodes.csprojResolveAssemblyReference.cache
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\TestUINodes.dll
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\TestUINodes.pdb

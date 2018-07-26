@@ -1,0 +1,515 @@
+
+<!DOCTYPE HTML>
+<html lang="" >
+    <head>
+        <meta charset="UTF-8">
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <title>Deploying Extensions on the Package Manager · GitBook</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="description" content="">
+        <meta name="generator" content="GitBook 3.2.3">
+        
+        
+        
+    
+    <link rel="stylesheet" href="../gitbook/style.css">
+
+    
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-highlight/website.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-search/search.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-fontsettings/website.css">
+                
+            
+        
+
+    
+
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+
+        
+    
+    
+    <meta name="HandheldFriendly" content="true"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="../gitbook/images/apple-touch-icon-precomposed-152.png">
+    <link rel="shortcut icon" href="../gitbook/images/favicon.ico" type="image/x-icon">
+
+    
+    <link rel="next" href="../06-Pull-Requests/6-0-pull-requests.html" />
+    
+    
+    <link rel="prev" href="5-1-build-package-from-vs.html" />
+    
+
+    </head>
+    <body>
+        
+<div class="book">
+    <div class="book-summary">
+        
+            
+<div id="book-search-input" role="search">
+    <input type="text" placeholder="Type to search" />
+</div>
+
+            
+                <nav role="navigation">
+                
+
+
+<ul class="summary">
+    
+    
+
+    
+
+    
+        
+        
+    
+        <li class="chapter " data-level="1.1" data-path="../">
+            
+                <a href="../">
+            
+                    
+                    About
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2" data-path="../01-Introduction/1-0-introduction.html">
+            
+                <a href="../01-Introduction/1-0-introduction.html">
+            
+                    
+                    Introduction
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3" data-path="../02-Build-Dynamo-From-Source/2-0-build-dynamo-from-source.html">
+            
+                <a href="../02-Build-Dynamo-From-Source/2-0-build-dynamo-from-source.html">
+            
+                    
+                    Build Dynamo from Source
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.3.1" data-path="../02-Build-Dynamo-From-Source/2-1-build-dynamo-revit-from-source.html">
+            
+                <a href="../02-Build-Dynamo-From-Source/2-1-build-dynamo-revit-from-source.html">
+            
+                    
+                    Build DynamoRevit from Source
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4" data-path="../03-Development-Options/3-0-developing-for-dynamo.html">
+            
+                <a href="../03-Development-Options/3-0-developing-for-dynamo.html">
+            
+                    
+                    Developing for Dynamo
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.4.1" data-path="../03-Development-Options/3-1-getting-started.html">
+            
+                <a href="../03-Development-Options/3-1-getting-started.html">
+            
+                    
+                    Getting Started
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.2" data-path="../03-Development-Options/3-2-zerotouch-example.html">
+            
+                <a href="../03-Development-Options/3-2-zerotouch-example.html">
+            
+                    
+                    Zero-Touch Case Study - Grid Node
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.3" data-path="../03-Development-Options/3-3-python-scripts-in-csharp.html">
+            
+                <a href="../03-Development-Options/3-3-python-scripts-in-csharp.html">
+            
+                    
+                    Zero-Touch Case Study - Python Scripts in C#
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.4" data-path="../03-Development-Options/3-4-zerotouch-nodes.html">
+            
+                <a href="../03-Development-Options/3-4-zerotouch-nodes.html">
+            
+                    
+                    Going Further with Zero-Touch
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.5" data-path="../03-Development-Options/3-5-nodemodel-derived-nodes.html">
+            
+                <a href="../03-Development-Options/3-5-nodemodel-derived-nodes.html">
+            
+                    
+                    NodeModel Case Study - Custom UI
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.6" data-path="../03-Development-Options/upgrade-nodes-for-dynamo-20.html">
+            
+                <a href="../03-Development-Options/upgrade-nodes-for-dynamo-20.html">
+            
+                    
+                    Upgrade Nodes for Dynamo 2.0
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.7" data-path="../03-Development-Options/3-6-extensions.html">
+            
+                <a href="../03-Development-Options/3-6-extensions.html">
+            
+                    
+                    Extensions
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5" data-path="../04-Testing/4-0-testing.html">
+            
+                <a href="../04-Testing/4-0-testing.html">
+            
+                    
+                    Testing
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.5.1" data-path="../04-Testing/4-1-revit-testing.html">
+            
+                <a href="../04-Testing/4-1-revit-testing.html">
+            
+                    
+                    Testing for DynamoRevit
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6" data-path="5-0-package-deployment.html">
+            
+                <a href="5-0-package-deployment.html">
+            
+                    
+                    Package Manager Deployment
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.6.1" data-path="5-1-build-package-from-vs.html">
+            
+                <a href="5-1-build-package-from-vs.html">
+            
+                    
+                    Build a Package From Visual Studio
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter active" data-level="1.6.2" data-path="deploying-extensions-on-the-package-manager.html">
+            
+                <a href="deploying-extensions-on-the-package-manager.html">
+            
+                    
+                    Deploying Extensions on the Package Manager
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7" data-path="../06-Pull-Requests/6-0-pull-requests.html">
+            
+                <a href="../06-Pull-Requests/6-0-pull-requests.html">
+            
+                    
+                    Pull Requests
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8" data-path="../07-Examples/7-0-examples.html">
+            
+                <a href="../07-Examples/7-0-examples.html">
+            
+                    
+                    Examples
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+    
+
+    <li class="divider"></li>
+
+    <li>
+        <a href="https://www.gitbook.com" target="blank" class="gitbook-link">
+            Published with GitBook
+        </a>
+    </li>
+</ul>
+
+
+                </nav>
+            
+        
+    </div>
+
+    <div class="book-body">
+        
+            <div class="body-inner">
+                
+                    
+
+<div class="book-header" role="navigation">
+    
+
+    <!-- Title -->
+    <h1>
+        <i class="fa fa-circle-o-notch fa-spin"></i>
+        <a href=".." >Deploying Extensions on the Package Manager</a>
+    </h1>
+</div>
+
+
+
+
+                    <div class="page-wrapper" tabindex="-1" role="main">
+                        <div class="page-inner">
+                            
+<div id="book-search-results">
+    <div class="search-noresults">
+    
+                                <section class="normal markdown-section">
+                                
+                                <h1 id="extensions-as-packages">Extensions as Packages</h1>
+<h2 id="overview">Overview</h2>
+<p>Dynamo extensions can be deployed to the package manager just like regular Dynamo node libraries.  When an installed package contains a view extension the extension is loaded at runtime when Dynamo loads.  You can check the Dynamo console to verify the extension has properly loaded.</p>
+<h2 id="package-structure">Package Structure</h2>
+<p>The structure of an extension package is the same as a normal package containing...</p>
+<pre><code>C:\Users\User\AppData\Roaming\Dynamo\Dynamo Core\2.1\packages\Sample View Extension
+&#x2502;   pkg.json
+&#x251C;&#x2500;&#x2500;&#x2500;bin
+&#x2502;       SampleViewExtension.dll
+&#x251C;&#x2500;&#x2500;&#x2500;dyf
+&#x2514;&#x2500;&#x2500;&#x2500;extra
+        SampleViewExtension_ViewExtensionDefinition.xml
+</code></pre><p>Assuming you have already built your extension you will (at a minimum) have a .NET assebly and a manifest file.  The assembly should contain a class which implements <code>IViewExtension</code> or <code>IExtension</code>.  The manifest .XML file tells Dynamo which class to instantiate in order to launch your extension.  For the package manager to correctly locate the extension the manifest file should accurately correspond to the assembly location and naming.</p>
+<p>Place any assembly files in the <code>bin</code> folder and the manifest file in the <code>extra</code> folder.  Any additional assets can also be placed in this folder.</p>
+<p>Example manifest .XML file:</p>
+<pre><code class="lang-xml"><span class="hljs-tag">&lt;<span class="hljs-name">ViewExtensionDefinition</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">AssemblyPath</span>&gt;</span>..\bin\MyViewExtension.dll<span class="hljs-tag">&lt;/<span class="hljs-name">AssemblyPath</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">TypeName</span>&gt;</span>MyViewExtension.MyViewExtension<span class="hljs-tag">&lt;/<span class="hljs-name">TypeName</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">ViewExtensionDefinition</span>&gt;</span>
+</code></pre>
+<h2 id="uploading">Uploading</h2>
+<p>Once you have a folder containing the sub-directories outlined above you are ready to push (upload) to the package manager.  One thing to be aware of is you currently cannot publish packages from Dynamo Sandbox.  This means you need to be using Dynamo Revit.  Once inside Dynamo Revit navigate to Packages =&gt; Publish New Package.  This will prompt the user to login to their Autodesk account they wish to associate the package with.</p>
+<p>At this point you should be at the normal publish package window where you will enter all the require fields regarding your package/extension.  There is one <strong>very important</strong> additional step which requires you to make sure none of your assembly files are marked as a node library.  This is done by right clicking on the files you have imported (the package folder created above).  A context menu will appear which gives you the option to check (or un-check) this option.  All extension assemblies should be un-checked.</p>
+<p><img src="../assets/ViewExtension_PM_Upload.JPG" alt=""></p>
+<p>Before publishing publicly you should always publish locally to make sure everything is functioning as expected.  One this has been verified you are ready to go live by selecting publish.</p>
+<h2 id="pulling">Pulling</h2>
+<p>To verify your package has been succesffully uploaded you should be able to search for it given the naming and keywords specificed in the publishing step.  Finally, it is important to note that same extensions will require a reboot of Dynamo before functioning.  Usually these extensions require parameters specified when Dynamo boots up.</p>
+<p><img src="../assets/ViewExtension_Search.png" alt=""></p>
+
+                                
+                                </section>
+                            
+    </div>
+    <div class="search-results">
+        <div class="has-results">
+            
+            <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+            <ul class="search-results-list"></ul>
+            
+        </div>
+        <div class="no-results">
+            
+            <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+            
+        </div>
+    </div>
+</div>
+
+                        </div>
+                    </div>
+                
+            </div>
+
+            
+                
+                <a href="5-1-build-package-from-vs.html" class="navigation navigation-prev " aria-label="Previous page: Build a Package From Visual Studio">
+                    <i class="fa fa-angle-left"></i>
+                </a>
+                
+                
+                <a href="../06-Pull-Requests/6-0-pull-requests.html" class="navigation navigation-next " aria-label="Next page: Pull Requests">
+                    <i class="fa fa-angle-right"></i>
+                </a>
+                
+            
+        
+    </div>
+
+    <script>
+        var gitbook = gitbook || [];
+        gitbook.push(function() {
+            gitbook.page.hasChanged({"page":{"title":"Deploying Extensions on the Package Manager","level":"1.6.2","depth":2,"next":{"title":"Pull Requests","level":"1.7","depth":1,"path":"06-Pull-Requests/6-0-pull-requests.md","ref":"06-Pull-Requests/6-0-pull-requests.md","articles":[]},"previous":{"title":"Build a Package From Visual Studio","level":"1.6.1","depth":2,"path":"05-Package-Deployment/5-1-build-package-from-vs.md","ref":"05-Package-Deployment/5-1-build-package-from-vs.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":[],"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"05-Package-Deployment/deploying-extensions-on-the-package-manager.md","mtime":"2018-07-26T15:10:01.989Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2018-07-26T15:11:02.108Z"},"basePath":"..","book":{"language":""}});
+        });
+    </script>
+</div>
+
+        
+    <script src="../gitbook/gitbook.js"></script>
+    <script src="../gitbook/theme.js"></script>
+    
+        
+        <script src="../gitbook/gitbook-plugin-search/search-engine.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-search/search.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-lunr/lunr.min.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-lunr/search-lunr.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-sharing/buttons.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-fontsettings/fontsettings.js"></script>
+        
+    
+
+    </body>
+</html>
+

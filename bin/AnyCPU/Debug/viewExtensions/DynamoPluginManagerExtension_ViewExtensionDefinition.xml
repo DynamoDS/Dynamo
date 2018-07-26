@@ -1,0 +1,4 @@
+<ViewExtensionDefinition>
+  <AssemblyPath>..\PluginManager.dll</AssemblyPath>
+  <TypeName>Dynamo.PluginManager.PluginManagerExtension</TypeName>
+</ViewExtensionDefinition>

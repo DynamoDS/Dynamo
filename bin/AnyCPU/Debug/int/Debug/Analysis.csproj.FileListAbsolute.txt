@@ -1,0 +1,15 @@
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\Analysis.csprojResolveAssemblyReference.cache
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\Analysis.AnalysisImages.resources
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\Analysis.AnalysisResources.resources
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\Analysis.Properties.Resources.resources
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\Analysis.AnalysisResources.en-US.resources
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\Analysis.Properties.Resources.en-US.resources
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\Analysis.csproj.GenerateResource.Cache
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\en-US\Analysis.resources.dll
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\Analysis.dll
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\en-US\Analysis.xml
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\Analysis.pdb
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\Analysis.dll
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\Analysis.pdb
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\Analysis.xml
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\en-US\Analysis.resources.dll

@@ -1,0 +1,5 @@
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\DSIronPython.csprojResolveAssemblyReference.cache
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\DSIronPython.dll
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\DSIronPython.pdb
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\DSIronPython.dll
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\DSIronPython.pdb

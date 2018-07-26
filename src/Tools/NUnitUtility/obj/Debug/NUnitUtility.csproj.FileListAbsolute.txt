@@ -1,0 +1,5 @@
+C:\GitHub\Dynamo\src\Tools\NUnitUtility\bin\Debug\NUnitUtility.exe.config
+C:\GitHub\Dynamo\src\Tools\NUnitUtility\bin\Debug\NUnitUtility.exe
+C:\GitHub\Dynamo\src\Tools\NUnitUtility\bin\Debug\NUnitUtility.pdb
+C:\GitHub\Dynamo\src\Tools\NUnitUtility\obj\Debug\NUnitUtility.exe
+C:\GitHub\Dynamo\src\Tools\NUnitUtility\obj\Debug\NUnitUtility.pdb

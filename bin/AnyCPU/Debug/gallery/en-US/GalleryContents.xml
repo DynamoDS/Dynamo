@@ -1,0 +1,50 @@
+<?xml version="1.0"?>
+<GalleryContents xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<GalleryUiContents>
+	<GalleryContent>
+		<Header>Getting Started with Dynamo</Header>
+		<Body>Dynamo is a visual scripting program that will help you compose custom algorithms to process data and generate geometry. With Dynamo, you can generate code without having to know how to code. Learn about the basics of Dynamo on the next few pages.&#10;&#10;Find this guide in the application menu under "Help > Getting Started"</Body>
+		<ImagePath>01-Welcome.png</ImagePath>
+	</GalleryContent>
+	<GalleryContent>
+		<Header>The Building Blocks of Dynamo</Header>
+		<Body>[1] Nodes represent objects or functions.&#10;[2] You can wire nodes together to form a set of instructions on how to process data and/or build geometry.&#10;[3] How nodes are wired together will determine the order of operations. Data flows between the nodes and is executed in the graph from left to right.  </Body>
+		<ImagePath>02-BuildingBlock-L.png</ImagePath>
+	</GalleryContent>
+	<GalleryContent>
+		<Header>Node Anatomy: Input, Output, Previews</Header>
+		<Body>[1] INPUT PORT: hover over it to reveal the default value and what type of input the port accepts. Override the default by connecting a node to it.&#10;[2] OUTPUT PORT: hover over it to reveal the type of output the node returns&#10;[3] PREVIEW BUBBLE: hover over the node to reveal more output details. Preview bubbles can’t be typed into, and you can expand and keep them open by clicking on the pin icon.</Body>
+		<ImagePath>03-Anatomy-L.png</ImagePath>
+	</GalleryContent>
+	<GalleryContent>
+		<Header>Finding and Placing Nodes</Header>
+		<Body>The Dynamo Library is located on left side of the screen.&#10;[1] SEARCH: use the Library Search to find nodes&#10;[2] BROWSE: discover nodes in the Library Categories&#10;[3] ADD NODES: after you find a node in the Library, just hit enter or click on it to place it on the canvas.</Body>
+		<ImagePath>04-Place-L.png</ImagePath>
+	</GalleryContent>
+	<GalleryContent>
+		<Header>Wiring Nodes to Build a Set of Instructions</Header>
+		<Body>[1] Click on the output port of one node, then [2] drag the wire to the input port of another, and click again to connect.&#10;[3] Click on an empty spot in the canvas to delete a dashed, unconnected wire.&#10;[4] DELETING WIRES: click on the port at the right end of the wire. Then, drag it away and click on an empty spot in the canvas.</Body>
+		<ImagePath>05-Wiring-L.png</ImagePath>
+	</GalleryContent>
+	<GalleryContent>
+		<Header>Graph View  vs. Background 3D Preview</Header>
+		<Body>In Dynamo, you will see 2 views simultaneously: the Graph View (where nodes are edited) and the Background 3d Preview (where geometry output is visualized).&#10;[1] Switch from Graph View to the Background 3d Preview&#10;[2] Use Zoom to Fit and independently control the Zoom of each view&#10;[3] Pan around each view by dragging the mouse</Body>
+		<ImagePath>06-View-L.png</ImagePath>
+	</GalleryContent>
+	<GalleryContent>
+		<Header>Packages</Header>
+		<Body>Can’t find a node that does what you want? Search and download user-authored collections of nodes, also known as packages, in the Package Manager. &#10;&#10;The Package Manager can be accessed from the application menu under "Packages".</Body>
+		<ImagePath>07-Packages.png</ImagePath>
+	</GalleryContent>
+	<GalleryContent>
+		<Header>Tips and Tricks</Header>
+		<Body>[1] CODE BLOCK NODE: double-click on the canvas to add a node that you can use to enter numbers, strings and DesignScript, Dynamo’s scripting language.&#10;[2] WATCH NODES: display a permanent view of a node’s output&#10;[3] RANGE SYNTAX: easily make a list of numbers or letters&#10;[4] IN-CANVAS SEARCH: right-click in the canvas to quickly bring up a search bar</Body>
+		<ImagePath>09-Tips-L.png</ImagePath>
+	</GalleryContent>
+	<GalleryContent>
+		<Header>Need More Help?</Header>
+		<Body>There are more resources to help you learn more about Dynamo.&#10;- OFFICIAL WEBSITE: dynamobim.com&#10;- USERS' GUIDE: dynamoprimer.com&#10;- NODE DICTIONARY: dictionary.dynamobim.com&#10;- SAMPLE FILES: check out examples in the application menu under "Help > Samples"</Body>
+		<ImagePath>10-Help.png</ImagePath>
+	</GalleryContent>
+	</GalleryUiContents>
+</GalleryContents>

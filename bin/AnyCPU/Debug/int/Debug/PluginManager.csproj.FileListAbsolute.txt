@@ -1,0 +1,17 @@
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\PluginManager.csprojResolveAssemblyReference.cache
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\PluginScriptEditor.baml
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\PluginManagerView.g.cs
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\PluginScriptEditor.g.cs
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\GeneratedInternalTypeHelper.g.cs
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\PluginManager_MarkupCompile.cache
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\PluginManager_MarkupCompile.lref
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\PluginManager.Properties.Resources.resources
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\PluginManager.csproj.GenerateResource.Cache
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\PluginManagerView.baml
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\PluginManager.g.en-US.resources
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\en-US\PluginManager.resources.dll
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\PluginManager.dll
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\PluginManager.pdb
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\PluginManager.dll
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\PluginManager.pdb
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\en-US\PluginManager.resources.dll

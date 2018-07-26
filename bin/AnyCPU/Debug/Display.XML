@@ -1,0 +1,106 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Display</name>
+    </assembly>
+    <members>
+        <member name="M:Display.Display.ByGeometryColor(Autodesk.DesignScript.Geometry.Geometry,DSCore.Color)">
+            <summary>
+            Display geometry using a color.
+            </summary>
+            <param name="geometry">The geometry to which you would like to apply color.</param>
+            <param name="color">The color.</param>
+            <returns>A Display object.</returns>
+        </member>
+        <member name="M:Display.Display.BySurfaceColors(Autodesk.DesignScript.Geometry.Surface,DSCore.Color[][])">
+            <summary>
+            Display color values on a surface.
+            
+            The colors provided are converted internally to an image texture which is
+            mapped to the surface. 
+            </summary>
+            <param name="surface">The surface on which to apply the colors.
+            </param>
+            <param name="colors">A two dimensional list of Colors.
+            
+            The list of colors must be square. Attempting to pass a jagged array
+            will result in an exception. </param>
+            <returns>A Display object.</returns>
+        </member>
+        <member name="M:Display.Display.ByPointsColors(Autodesk.DesignScript.Geometry.Point[],DSCore.Color[])">
+            <summary>
+            Create a colored mesh using points and colors.
+            
+            The list of points supplied is used to construct a triangulated mesh, with
+            non-joined vertices.
+            </summary>
+            <param name="points">A list of Points. 
+            
+            Only triangular meshes are currently supported. Each triplet of points in the list will form one 
+            triangle in the mesh. Points should be ordered CCW. 
+            Attempting to pass a list of vertices whose count is not divisble by 3 will throw an exception.</param>
+            <param name="colors">A list of colors. 
+            
+            The number of colors must match the number of vertices. Attempting pass a list of colors which does not
+            have the same number of Colors as the list of points will throw an exception.</param>
+            <returns>A Display object.</returns>
+        </member>
+        <member name="M:Display.Display.ComputeColorMap(Autodesk.DesignScript.Geometry.Surface,System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.UV},DSCore.Color[],System.Int32,System.Int32)">
+            <summary>
+            Compute a set of color maps from a set of SurfaceData objects.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Display.Display.ComputeSamplesFromNormalizedValue(System.Double,System.Int32,System.Int32)">
+            <summary>
+            This method remaps a number between 0.0 and 1.0 to an integer value between lowestPower and highestPower
+            </summary>
+        </member>
+        <member name="T:Display.Properties.Resources">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:Display.Properties.Resources.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:Display.Properties.Resources.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:Display.Properties.Resources.JaggedListExceptionMessage">
+            <summary>
+              Looks up a localized string similar to The list of colors must not be a jagged list..
+            </summary>
+        </member>
+        <member name="P:Display.Properties.Resources.NoColorsExceptionMessage">
+            <summary>
+              Looks up a localized string similar to You must provide some colors..
+            </summary>
+        </member>
+        <member name="P:Display.Properties.Resources.NoVertexExceptionMessage">
+            <summary>
+              Looks up a localized string similar to You must provide some vertices..
+            </summary>
+        </member>
+        <member name="P:Display.Properties.Resources.TwoDimensionalListExceptionMessage">
+            <summary>
+              Looks up a localized string similar to You must supply a two dimensional list of Colors..
+            </summary>
+        </member>
+        <member name="P:Display.Properties.Resources.VertexColorCountMismatchExceptionMessage">
+            <summary>
+              Looks up a localized string similar to The number of colors supplied must match the number of vertices..
+            </summary>
+        </member>
+        <member name="P:Display.Properties.Resources.VerticesDivisibleByThreeExceptionMessage">
+            <summary>
+              Looks up a localized string similar to The number of vertices supplied must be divisible by three..
+            </summary>
+        </member>
+    </members>
+</doc>

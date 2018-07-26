@@ -1,0 +1,261 @@
+﻿<!--
+// Copyright (c) 2010-2014 SharpDX - Alexandre Mutel
+// 
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+// 
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+// 
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+-->
+
+<!--
+This Target file must be imported in a project using SharpDX
+It adds automatically references to SharpDX assemblies for 
+Toolkit based on the current .NET framework (select net20, net40 or winrt)
+It compiles all files of type ToolkitFxc/ToolkitFont
+-->
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="TestMessage">
+
+  <PropertyGroup>
+    <SharpDXIncludeReferences Condition="'$(SharpDXIncludeReferences)' == ''">false</SharpDXIncludeReferences>
+  </PropertyGroup>
+
+  <!--Add ToolkitFxc as a new Build Action accessible on each File Properties-->
+  <ItemGroup>
+    <AvailableItemName Include="ToolkitFxc"/>
+    <AvailableItemName Include="ToolkitFont"/>
+    <AvailableItemName Include="ToolkitModel"/>
+    <!-- Currently, toolkit texture is mostly a passthrough and copies the texture to the output directory -->
+    <!--But a future version may provide compression/rescale on the fly, so we need to introduce it now -->
+    <!--in order to keep project compatible-->
+    <AvailableItemName Include="ToolkitTexture"/>
+    <AvailableItemName Include="ToolkitAudio"/>
+  </ItemGroup>
+
+  <!-- If we are on desktop, we can safely add a reference to Compiler -->
+  <ItemGroup Condition="Exists('$(SharpDXPackageBinDir)\SharpDX.Toolkit.Compiler.dll') and '$(TargetFrameworkIdentifier)' == '.NETFramework'">
+    <Reference Include="SharpDX.Toolkit.Compiler">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>$(SharpDXPackageBinDir)\SharpDX.Toolkit.Compiler.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup Condition="Exists('$(SharpDXPackageBinDir)\SharpDX.D3DCompiler.dll') and '$(TargetFrameworkIdentifier)' == '.NETFramework'">
+    <Reference Include="SharpDX.D3DCompiler">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>$(SharpDXPackageBinDir)\SharpDX.D3DCompiler.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <!--Copy Assimp32 / Assimp64 dll on desktop-->
+  <ItemGroup Condition="Exists('$(SharpDXPackageBinDir)\Assimp32.dll') and '$(TargetFrameworkIdentifier)' == '.NETFramework'">
+    <Content Include="$(SharpDXPackageBinDir)\Assimp32.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Link>Assimp32.dll</Link>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup Condition="Exists('$(SharpDXPackageBinDir)\Assimp64.dll') and '$(TargetFrameworkIdentifier)' == '.NETFramework'">
+    <Content Include="$(SharpDXPackageBinDir)\Assimp64.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Link>Assimp64.dll</Link>
+    </Content>
+  </ItemGroup>
+
+  <!-- If we are on desktop or WinRT, we can safely add a reference to Direct2D1 -->
+  <ItemGroup Condition="Exists('$(SharpDXPackageBinDir)\SharpDX.Direct2D1.dll') and ('$(TargetFrameworkIdentifier)' == '.NETFramework' or '$(SharpDXNETFramework)' == 'winrt' or '$(TargetPlatformIdentifier)' == 'WindowsPhoneApp')">
+    <Reference Include="SharpDX.Direct2D1">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>$(SharpDXPackageBinDir)\SharpDX.Direct2D1.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <Choose>
+    <!--
+    Automatically include SharpDX Toolkit assemblies references when the following property is set to true.
+    This should be used only in advanced scenarios when using SharpDX built from source - it allows to avoid downloading nuget packages and referencing everything via them.
+    Nuget referencing is the preferred way and should be used instead, unless absolutely necessary.
+    -->
+    <When Condition="'$(SharpDXIncludeReferences)' == 'true'">
+      <ItemGroup>
+
+        <Reference Include="SharpDX" Condition="Exists('$(SharpDXPackageBinDir)\SharpDX.dll')">
+          <SpecificVersion>False</SpecificVersion>
+          <HintPath>$(SharpDXPackageBinDir)\SharpDX.dll</HintPath>
+        </Reference>
+        <Reference Include="SharpDX.DXGI" Condition="Exists('$(SharpDXPackageBinDir)\SharpDX.DXGI.dll')">
+          <SpecificVersion>False</SpecificVersion>
+          <HintPath>$(SharpDXPackageBinDir)\SharpDX.DXGI.dll</HintPath>
+        </Reference>
+        <Reference Include="SharpDX.Direct3D11" Condition="Exists('$(SharpDXPackageBinDir)\SharpDX.Direct3D11.dll')">
+          <SpecificVersion>False</SpecificVersion>
+          <HintPath>$(SharpDXPackageBinDir)\SharpDX.Direct3D11.dll</HintPath>
+        </Reference>
+        <Reference Include="SharpDX.XAudio2.dll" Condition="Exists('$(SharpDXPackageBinDir)\SharpDX.XAudio2.dll')">
+          <SpecificVersion>False</SpecificVersion>
+          <HintPath>$(SharpDXPackageBinDir)\SharpDX.XAudio2.dll</HintPath>
+        </Reference>
+        <Reference Include="SharpDX.Toolkit" Condition="Exists('$(SharpDXPackageBinDir)\SharpDX.Toolkit.dll')">
+          <SpecificVersion>False</SpecificVersion>
+          <HintPath>$(SharpDXPackageBinDir)\SharpDX.Toolkit.dll</HintPath>
+        </Reference>
+        <Reference Include="SharpDX.Toolkit.Graphics" Condition="Exists('$(SharpDXPackageBinDir)\SharpDX.Toolkit.Graphics.dll')">
+          <SpecificVersion>False</SpecificVersion>
+          <HintPath>$(SharpDXPackageBinDir)\SharpDX.Toolkit.Graphics.dll</HintPath>
+        </Reference>
+        <Reference Include="SharpDX.Toolkit.Game" Condition="Exists('$(SharpDXPackageBinDir)\SharpDX.Toolkit.Game.dll')">
+          <SpecificVersion>False</SpecificVersion>
+          <HintPath>$(SharpDXPackageBinDir)\SharpDX.Toolkit.Game.dll</HintPath>
+        </Reference>
+        <Reference Include="SharpDX.Toolkit.Input" Condition="Exists('$(SharpDXPackageBinDir)\SharpDX.Toolkit.Input.dll')">
+          <SpecificVersion>False</SpecificVersion>
+          <HintPath>$(SharpDXPackageBinDir)\SharpDX.Toolkit.Input.dll</HintPath>
+        </Reference>
+        <Reference Include="SharpDX.Toolkit.Yaml" Condition="Exists('$(SharpDXPackageBinDir)\SharpDX.Toolkit.Yaml.dll')">
+          <SpecificVersion>False</SpecificVersion>
+          <HintPath>$(SharpDXPackageBinDir)\SharpDX.Toolkit.Yaml.dll</HintPath>
+        </Reference>
+        <Reference Include="SharpDX.Toolkit.Audio" Condition="Exists('$(SharpDXPackageBinDir)\SharpDX.Toolkit.Audio.dll')">
+          <SpecificVersion>False</SpecificVersion>
+          <HintPath>$(SharpDXPackageBinDir)\SharpDX.Toolkit.Audio.dll</HintPath>
+        </Reference>
+
+      </ItemGroup>
+    </When>
+  </Choose>
+
+  <!--
+    From C:\Program Files (x86)\MSBuild\Microsoft\XNA Game Studio\v4.0\Microsoft.Xna.GameStudio.Common.targets
+    In VS 2008, a new feature was introduced to speed up the "F5" scenario when
+    no changes have occurred. It does this by skipping the build entirely if the
+    IDE believes there are no changes. This is fast, but unreliable because it
+    does not check all the same files as msbuild does. In XNA game projects, for
+    example, the IDE does not check if any content needs to be rebuilt. As a
+    result, F5 is way faster, but you may start debugging a project that is out
+    of date. To disable the new feature, we set DisableFastUpToDateCheck to true.
+  -->
+  <!--<PropertyGroup>
+    <DisableFastUpToDateCheck>true</DisableFastUpToDateCheck>
+  </PropertyGroup>-->
+
+  <UsingTask TaskName="SharpDX.Toolkit.EffectCompilerTask" AssemblyFile="$(SharpDXSdkToolsDir)\SharpDX.Toolkit.CompilerTask.dll"/>
+  <UsingTask TaskName="SharpDX.Toolkit.FontCompilerTask" AssemblyFile="$(SharpDXSdkToolsDir)\SharpDX.Toolkit.CompilerTask.dll"/>
+  <UsingTask TaskName="SharpDX.Toolkit.CompilerDependencyTask" AssemblyFile="$(SharpDXSdkToolsDir)\SharpDX.Toolkit.CompilerTask.dll"/>
+  <UsingTask TaskName="SharpDX.Toolkit.ModelCompilerTask" AssemblyFile="$(SharpDXSdkToolsDir)\SharpDX.Toolkit.CompilerTask.dll"/>
+  <UsingTask TaskName="SharpDX.Toolkit.TextureCompilerTask" AssemblyFile="$(SharpDXSdkToolsDir)\SharpDX.Toolkit.CompilerTask.dll"/>
+  <UsingTask TaskName="SharpDX.Toolkit.AudioCompilerTask" AssemblyFile="$(SharpDXSdkToolsDir)\SharpDX.Toolkit.CompilerTask.dll"/>
+
+  <!-- Plugs all dependency listing in AssignTargetPathsDependsOn - in order to support generated output to be copied as part of the build  -->
+  <PropertyGroup>
+    <BuildDependsOn>
+      TkCompileTarget;
+      $(BuildDependsOn);
+    </BuildDependsOn>
+
+    <AssignTargetPathsDependsOn>
+      $(AssignTargetPathsDependsOn);
+      TkListContentAndCompileTarget;
+    </AssignTargetPathsDependsOn>
+
+    <IsBuildInDebug>true</IsBuildInDebug>
+    <IsBuildInDebug Condition="$(Optimize) == 'true'">false</IsBuildInDebug>
+
+    <!--By default turn-on debugging on tkfxc when compiling in debug (no optimize)-->
+    <ToolkitFxcDebugOption Condition="'$(ToolkitFxcDebugOption)' == ''">$(IsBuildInDebug)</ToolkitFxcDebugOption>
+
+    <!--By default turn-on dynamic compiling on tkfxc when compiling in debug (no optimize)-->
+    <ToolkitFxcDynamicCompilingOption Condition="'$(ToolkitFxcDynamicCompilingOption)' == ''">$(IsBuildInDebug)</ToolkitFxcDynamicCompilingOption>
+  </PropertyGroup>
+
+  <!-- Target used to calculate dependency output -->
+  <Target Name="TkListContentAndCompileTarget">
+    <!--<Message Importance="high" Text="AssignTargetPathsDependsOn @(ToolkitFxc)"/>-->
+
+    <CompilerDependencyTask
+        ProjectDirectory="$(ProjectDir)"
+        IntermediateDirectory="$(IntermediateOutputPath)"
+        Debug="$(ToolkitFxcDebugOption)"
+        Files="@(ToolkitFxc);@(ToolkitFont);@(ToolkitModel);@(ToolkitTexture);@(ToolkitAudio)"
+        RootNamespace="$(RootNamespace)"
+        >
+      <Output TaskParameter="ContentFiles" ItemName="TkContent"/>
+      <Output TaskParameter="CompileFiles" ItemName="TkCompile"/>
+    </CompilerDependencyTask>
+
+    <ItemGroup>
+      <!--List Of fxo compiled file-->
+      <Content Include="@(TkContent)" KeepMetadata="Link;CopyToOutputDirectory"/>
+
+      <!--List of cs compiled file-->
+      <Compile Include="@(TkCompile)"/>
+    </ItemGroup>
+  </Target>
+
+  <!-- Target used to compile content (Font/Fx files...) -->
+  <Target Name="TkCompileTarget">
+    <EffectCompilerTask
+        ProjectDirectory="$(ProjectDir)"
+        IntermediateDirectory="$(IntermediateOutputPath)"
+        DynamicCompiling="$(ToolkitFxcDynamicCompilingOption)"
+        Debug="$(ToolkitFxcDebugOption)"
+        Files="@(ToolkitFxc)"
+        RootNamespace="$(RootNamespace)"
+        >
+    </EffectCompilerTask>
+
+    <!--TODO Merge both task into a single one?-->
+    <FontCompilerTask
+        ProjectDirectory="$(ProjectDir)"
+        IntermediateDirectory="$(IntermediateOutputPath)"
+        DynamicCompiling="$(ToolkitFxcDynamicCompilingOption)"
+        Debug="$(ToolkitFxcDebugOption)"
+        Files="@(ToolkitFont)"
+        RootNamespace="$(RootNamespace)"
+        >
+    </FontCompilerTask>
+
+    <!--TODO Merge both task into a single one?-->
+    <ModelCompilerTask
+        ProjectDirectory="$(ProjectDir)"
+        IntermediateDirectory="$(IntermediateOutputPath)"
+        DynamicCompiling="$(ToolkitFxcDynamicCompilingOption)"
+        Debug="$(ToolkitFxcDebugOption)"
+        Files="@(ToolkitModel)"
+        RootNamespace="$(RootNamespace)"
+        >
+    </ModelCompilerTask>
+
+    <!--TODO Merge both task into a single one?-->
+    <TextureCompilerTask
+        ProjectDirectory="$(ProjectDir)"
+        IntermediateDirectory="$(IntermediateOutputPath)"
+        DynamicCompiling="$(ToolkitFxcDynamicCompilingOption)"
+        Debug="$(ToolkitFxcDebugOption)"
+        Files="@(ToolkitTexture)"
+        RootNamespace="$(RootNamespace)"
+        >
+    </TextureCompilerTask>
+
+    <AudioCompilerTask
+        ProjectDirectory="$(ProjectDir)"
+        IntermediateDirectory="$(IntermediateOutputPath)"
+        DynamicCompiling="$(ToolkitFxcDynamicCompilingOption)"
+        Debug="$(ToolkitFxcDebugOption)"
+        Files="@(ToolkitAudio)"
+        RootNamespace="$(RootNamespace)"
+        >
+    </AudioCompilerTask>
+  </Target>
+</Project>

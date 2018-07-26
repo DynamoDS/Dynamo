@@ -1,0 +1,68 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>DesignScriptBuiltin</name>
+    </assembly>
+    <members>
+        <member name="M:DesignScript.Builtin.Dictionary.ByKeysValues(System.Collections.Generic.IList{System.String},System.Collections.Generic.IList{System.Object})">
+            <summary>
+                Produces a Dictionary with the supplied keys and values. The number of entries is 
+                the shorter of keys or values.
+            </summary>
+            <param name="keys">The string keys of the Dictionary</param>
+            <param name="values">The values of the Dictionary</param>
+            <returns name="dictionary">The result Dictionary</returns>
+            <search>map,{},table</search>
+        </member>
+        <member name="M:DesignScript.Builtin.Dictionary.Components">
+            <summary>
+                Produces the components of a Dictionary. The reverse of Dictionary.ByKeysValues.
+            </summary>
+            <returns name="keys">The keys of the Dictionary</returns>
+            <returns name="values">The values of the Dictionary</returns>
+        </member>
+        <member name="P:DesignScript.Builtin.Dictionary.Keys">
+            <summary>
+                Produces the keys in a Dictionary.
+            </summary>
+            <returns name="keys">The keys of the Dictionary</returns>
+        </member>
+        <member name="P:DesignScript.Builtin.Dictionary.Values">
+            <summary>
+                Produces the values in a Dictionary.
+            </summary>
+            <returns name="values">The values of the Dictionary</returns>
+        </member>
+        <member name="P:DesignScript.Builtin.Dictionary.Count">
+            <summary>
+                The number of key value pairs in a Dictionary.
+            </summary>
+        </member>
+        <member name="M:DesignScript.Builtin.Dictionary.SetValueAtKeys(System.Collections.Generic.IList{System.String},System.Collections.Generic.IList{System.Object})">
+            <summary>
+                Produce a new Dictionary with a list of keys set to the new values, possibly overwriting existing key-value pairs. 
+                These two lists are expected to be of the same length. If not, the shorter of the two bounds the number of insertions.
+            </summary>
+            <param name="keys">The keys in the Dictionary to set. If the same key already exists, the value at that key will be modified.</param>
+            <param name="values">The corresponding values to insert.</param>
+            <returns name="dictionary">A new Dictionary with the entries inserted.</returns>
+            <search>insert,add</search>
+        </member>
+        <member name="M:DesignScript.Builtin.Dictionary.RemoveKeys(System.Collections.Generic.IList{System.String})">
+            <summary>
+                Produce a new Dictionary with the given keys removed.
+            </summary>
+            <param name="keys">The key in the Dictionary to remove</param>
+            <returns name="dictionary">A new Dictionary with the key removed</returns>
+            <search>drop,delete</search>
+        </member>
+        <member name="M:DesignScript.Builtin.Dictionary.ValueAtKey(System.String)">
+            <summary>
+                Obtain the value at a specified key
+            </summary>
+            <param name="key">The key in the Dictionary to obtain.</param>
+            <returns name="value">The value at the specified key or null if it is not set.</returns>
+            <search>lookup,valueatkey,find</search>
+        </member>
+    </members>
+</doc>

@@ -1,0 +1,7 @@
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\Units.csprojResolveAssemblyReference.cache
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\DynamoUnits.DynamoUnitsImages.resources
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\Units.csproj.GenerateResource.Cache
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\DynamoUnits.dll
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\DynamoUnits.pdb
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\DynamoUnits.dll
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\DynamoUnits.pdb

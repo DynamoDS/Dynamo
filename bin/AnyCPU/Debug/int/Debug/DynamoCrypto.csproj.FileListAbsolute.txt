@@ -1,0 +1,5 @@
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\Dynamo.cer
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\DynamoCrypto.dll
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\DynamoCrypto.pdb
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\DynamoCrypto.dll
+C:\GitHub\Dynamo\bin\AnyCPU\Debug\DynamoCrypto.pdb

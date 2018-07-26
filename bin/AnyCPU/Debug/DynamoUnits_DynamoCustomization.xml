@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>DynamoUnits</name>
+    </assembly>
+    <namespaces>
+        <namespace name="DynamoUnits">
+            <category>Core</category>
+        </namespace>
+    </namespaces>
+</doc>
