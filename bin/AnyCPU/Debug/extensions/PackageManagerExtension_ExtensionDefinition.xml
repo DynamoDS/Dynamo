@@ -1,4 +1,0 @@
-<ExtensionDefinition>
-  <AssemblyPath>..\DynamoPackages.dll</AssemblyPath>
-  <TypeName>Dynamo.PackageManager.PackageManagerExtension</TypeName>
-</ExtensionDefinition>

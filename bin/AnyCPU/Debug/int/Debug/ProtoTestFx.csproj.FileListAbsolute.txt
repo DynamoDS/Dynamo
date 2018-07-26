@@ -1,5 +1,0 @@
-C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\ProtoTestFx.csprojResolveAssemblyReference.cache
-C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\ProtoTestFx.dll
-C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\ProtoTestFx.pdb
-C:\GitHub\Dynamo\bin\AnyCPU\Debug\ProtoTestFx.dll
-C:\GitHub\Dynamo\bin\AnyCPU\Debug\ProtoTestFx.pdb

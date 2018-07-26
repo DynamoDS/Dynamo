@@ -1,5 +1,0 @@
-C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\DynamoServicesTests.csprojResolveAssemblyReference.cache
-C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\DynamoServicesTests.dll
-C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\DynamoServicesTests.pdb
-C:\GitHub\Dynamo\bin\AnyCPU\Debug\DynamoServicesTests.dll
-C:\GitHub\Dynamo\bin\AnyCPU\Debug\DynamoServicesTests.pdb

@@ -1,4 +1,0 @@
-C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\DynamoShapeManager.dll
-C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\DynamoShapeManager.pdb
-C:\GitHub\Dynamo\bin\AnyCPU\Debug\DynamoShapeManager.dll
-C:\GitHub\Dynamo\bin\AnyCPU\Debug\DynamoShapeManager.pdb

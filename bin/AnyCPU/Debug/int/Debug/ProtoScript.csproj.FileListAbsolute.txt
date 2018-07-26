@@ -1,5 +1,0 @@
-C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\ProtoScript.csprojResolveAssemblyReference.cache
-C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\ProtoScript.dll
-C:\GitHub\Dynamo\bin\AnyCPU\Debug\int\Debug\ProtoScript.pdb
-C:\GitHub\Dynamo\bin\AnyCPU\Debug\ProtoScript.dll
-C:\GitHub\Dynamo\bin\AnyCPU\Debug\ProtoScript.pdb
