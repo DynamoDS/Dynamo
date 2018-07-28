@@ -533,7 +533,7 @@ namespace ProtoFFI
             {
                 try
                 {
-                    targetDict[key] = Convert.ChangeType(d.ValueAtKey(key), valueType);
+                    targetDict[key] = d.ValueAtKey(key);
                 }
                 catch (Exception e)
                 {
