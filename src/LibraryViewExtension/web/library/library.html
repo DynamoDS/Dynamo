@@ -80,6 +80,16 @@
             }
         }
 
+
+        function download(content, fileName, contentType) {
+            var a = document.createElement("a");
+            var file = new Blob([content], { type: contentType });
+            a.href = URL.createObjectURL(file);
+            console.log(a);
+            a.download = fileName;
+            a.click();
+        }
+
         function dictionaryDump(libraryController) {
             var jsonDump = [];
             //entire library output
@@ -89,6 +99,7 @@
             var className;
             var lowLevel;
             var path;
+            var params;
             
             //iterate through different namespaces/top categories
             for (i = 0; i < generatedSections.length; i++) {
@@ -97,21 +108,36 @@
                     subcategory = category.childItems[j];
                     path = category.text;
                     if (subcategory.childItems.length == 0) {
-                        var node = new nodeItem(subcategory.text + " " + subcategory.parameters, [subcategory.text + " " + subcategory.parameters], [subcategory.text + " " + subcategory.parameters], path + "/" + subcategory.itemType.charAt(0).toUpperCase() + subcategory.itemType.slice(1), "", path + createActionQuery(subcategory.itemType) + subcategory.text);
+                        if (subcategory.parameters != null) {
+                            params = " " + subcategory.parameters;
+                        } else {
+                            params = "";
+                        }
+                        var node = new nodeItem(subcategory.text + params, [subcategory.text + params], [subcategory.text + params], path + "/" + subcategory.itemType.charAt(0).toUpperCase() + subcategory.itemType.slice(1), "", path + createActionQuery(subcategory.itemType) + subcategory.text);
                         jsonDump.push(node);
                     } else {
                         for (k = 0; k < subcategory.childItems.length; k++) {
                             className = subcategory.childItems[k];
                             path = category.text+"/"+subcategory.text;
-                            if(className.childItems.length == 0){
-                                var node = new nodeItem(className.text + " " + className.parameters, [className.text + " " + className.parameters], [className.text + " " + className.parameters], path + "/" + className.itemType.charAt(0).toUpperCase() + className.itemType.slice(1), "", (path + createActionQuery(className.itemType) + className.text).replace(/ /g, ''));
+                            if (className.childItems.length == 0) {
+                                if (className.parameters != null) {
+                                    params = " " + className.parameters;
+                                } else {
+                                    params = "";
+                                }
+                                var node = new nodeItem(className.text + params, [className.text + params], [className.text + params], path + "/" + className.itemType.charAt(0).toUpperCase() + className.itemType.slice(1), "", (path + createActionQuery(className.itemType) + className.text).replace(/ /g, ''));
                                 jsonDump.push(node);
                             } else {
                                 for (l = 0; l < className.childItems.length; l++) {
                                     lowLevel = className.childItems[l];
                                     path = category.text + "/" + subcategory.text + "/" + className.text;
                                     if (lowLevel.childItems.length == 0) {
-                                        var node = new nodeItem(lowLevel.text + " " + lowLevel.parameters, [lowLevel.text + " " + lowLevel.parameters], [lowLevel.text + " " + lowLevel.parameters], path + "/" + lowLevel.itemType.charAt(0).toUpperCase() + lowLevel.itemType.slice(1), "", (path + createActionQuery(lowLevel.itemType) + lowLevel.text).replace(/ /g, ''));
+                                        if (lowLevel.parameters != null) {
+                                            params = " " + lowLevel.parameters;
+                                        } else {
+                                            params = "";
+                                        }
+                                        var node = new nodeItem(lowLevel.text + params, [lowLevel.text + params], [lowLevel.text + params ], path + "/" + lowLevel.itemType.charAt(0).toUpperCase() + lowLevel.itemType.slice(1), "", (path + createActionQuery(lowLevel.itemType) + lowLevel.text).replace(/ /g, ''));
                                         jsonDump.push(node);
                                     }
                                 }
@@ -124,9 +150,54 @@
                 })
             }
             jsonDump.forEach(function (v) { delete v.sorting });
+            //console.log(jsonDump);
+            //download(JSON.stringify(jsonDump), 'C:/Users/williar/AppData/Local/Temp/json.txt', 'text/plain');
+            var result = loadJSON(function (json) {
+                var jsonFinal = jsonMerge(jsonDump, json);
+                console.log(jsonFinal);
+                download(JSON.stringify(jsonDump), 'C:/Users/williar/AppData/Local/Temp/json.txt', 'text/plain');
+            });
+            
+            
+        }
 
-            var txtFile = "/tmp/test.txt";
-            var jsonFile = new File(txtFile, "write");
+        function jsonMerge(jsonNew,jsonOrig) {
+            //console.log(jsonOrig);
+            for (i in jsonOrig) {
+                for (k in jsonNew) {
+                    var newCat = jsonNew[k].folderPath.split('/')[0];
+                    if (jsonNew[k].Name == jsonOrig[i].Name) {
+                        switch (newCat) {
+                            case "Dictionary":
+                                jsonNew[k].inDepth = "";
+                                break;
+                            case "Geometry":
+                                if (jsonNew[k].folderPath.split('/')[2] == jsonOrig[i].folderPath.split('/')[1]) {
+                                    jsonNew[k].inDepth = jsonOrig[i].inDepth;
+                                } else {
+                                    jsonNew[k].inDepth = jsonOrig[i].inDepth;
+                                }
+                                break;
+                            default:
+                                jsonNew[k].inDepth = jsonOrig[i].inDepth;
+                                break;
+                        }
+                    } 
+                }
+            }
+            return jsonNew;
+        }
+
+        function loadJSON(callback) {
+            var xobj = new XMLHttpRequest();
+            xobj.overrideMimeType("application/json");
+            xobj.open('GET', './dist/Dynamo_Nodes_Documentation.json', true);
+            xobj.onreadystatechange = function () {
+                if (xobj.readyState == 4 && xobj.status == "200") {
+                    callback(JSON.parse(xobj.responseText));
+                }
+            };
+            xobj.send(null);
         }
 
         //Create library controller
