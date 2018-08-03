@@ -1,19 +1,15 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text.RegularExpressions;
-using Dynamo;
-using Dynamo.Interfaces;
-using Dynamo.Utilities;
 using Dynamo.Logging;
 using ICSharpCode.AvalonEdit.CodeCompletion;
-using IronPython.Hosting;
 using IronPython.Runtime;
 using IronPython.Runtime.Types;
+using Microsoft.Scripting;
 using Microsoft.Scripting.Actions;
 using Microsoft.Scripting.Hosting;
-using Microsoft.Scripting;
-using System.Reflection;
 
 namespace Dynamo.Python
 {
@@ -99,6 +95,7 @@ namespace Dynamo.Python
         public static string basicImportRegex = @"(import)";
         public static string fromImportRegex = @"^(from)";
         
+        private static readonly Regex MATCH_LAST_NAMESPACE = new Regex(@"[\w.]+$", RegexOptions.Compiled);
         private static readonly Regex MATCH_LAST_WORD = new Regex(@"\w+$", RegexOptions.Compiled);
         private static readonly Regex MATCH_FIRST_QUOTED_NAME = new Regex(quotesStringRegex, RegexOptions.Compiled);
         private static readonly Regex MATCH_VALID_TYPE_NAME_CHARACTERS_ONLY = new Regex(@"^\w+", RegexOptions.Compiled);
@@ -207,8 +204,9 @@ namespace Dynamo.Python
         /// scope and discovering variable assignments.
         /// </summary>
         /// <param name="code">The code to parse</param>
+        /// <param name="expand">Optionally recurse and extend the search to the entire namespace</param>
         /// <returns>Return a list of IronPythonCompletionData </returns>
-        public ICompletionData[] GetCompletionData(string code)
+        public ICompletionData[] GetCompletionData(string code, bool expand=false)
         {
             var items = new List<IronPythonCompletionData>();
             
@@ -220,15 +218,14 @@ namespace Dynamo.Python
             UpdateImportedTypes(code);
             UpdateVariableTypes(code); // this is where hindley-milner could come into play
             
-            string name = GetLastName(code);
+            string name = expand ? GetLastNameSpace(code) : GetLastName(code);
             if (!String.IsNullOrEmpty(name))
             {
                 try
                 {
                     AutocompletionInProgress = true;
-
-                    // is it a CLR type?
-                    var type = TryGetType(name);
+                    //is it a known type?
+                    Type type = expand ? TryGetTypeFromFullName(name) : TryGetType(name);
                     if (type != null)
                     {
                         items = EnumerateMembers(type, name);
@@ -242,9 +239,10 @@ namespace Dynamo.Python
                     else
                     {
                         var mem = LookupMember(name);
-                        if (mem is NamespaceTracker)
+                        var namespaceTracker = mem as NamespaceTracker;
+                        if (namespaceTracker != null)
                         {
-                            items = EnumerateMembers(mem as NamespaceTracker, name);
+                            items = EnumerateMembers(namespaceTracker, name);
                         }
                         else
                         {
@@ -263,16 +261,18 @@ namespace Dynamo.Python
                                 }
                             }
                         }
-
                     }
                 }
-                catch
+                catch (Exception ex)
                 {
-                    //Dynamo.this.logger.Log("EXCEPTION: GETTING COMPLETION DATA");
+                    Log(ex.ToString());
                 }
                 AutocompletionInProgress = false;
             }
-
+            if (!items.Any() && !expand)
+            {
+                return GetCompletionData(code, true);
+            }
             return items.ToArray();
         }
 
@@ -342,7 +342,7 @@ namespace Dynamo.Python
             var methodInfo = type.GetMethods();
             var propertyInfo = type.GetProperties();
             var fieldInfo = type.GetFields();
-
+            
             foreach (MethodInfo methodInfoItem in methodInfo)
             {
                 if ( (methodInfoItem.IsPublic)
@@ -367,7 +367,16 @@ namespace Dynamo.Python
                 if (!completionsList.ContainsKey(fieldInfoItem.Name))
                     completionsList.Add(fieldInfoItem.Name, IronPythonCompletionData.CompletionType.FIELD);
             }
-
+            
+            if (type.IsEnum)
+            {
+                foreach (string en in type.GetEnumNames())
+                {
+                    if (!completionsList.ContainsKey(en))
+                        completionsList.Add(en, IronPythonCompletionData.CompletionType.FIELD);
+                }
+            }
+            
             foreach (var completionPair in completionsList)
             {
                 items.Add(new IronPythonCompletionData(completionPair.Key, name, true, completionPair.Value, this));
@@ -504,6 +513,35 @@ namespace Dynamo.Python
         }
         
         /// <summary>
+        /// A list of short assembly names used with the TryGetTypeFromFullName method
+        /// </summary>
+        private static string[] knownAssemblies = {
+            "mscorlib",
+            "RevitAPI",
+            "RevitAPIUI",
+            "ProtoGeometry"
+        };
+        
+        /// <summary>
+        /// check if a full type name is found in one of the known pre-loaded assemblies and return the type
+        /// </summary>
+        /// <param name="name">a full type name</param>
+        /// <returns></returns>
+        private Type TryGetTypeFromFullName(string name)
+        {
+            Type foundType;
+            foreach (var asName in knownAssemblies)
+            {
+                foundType = Type.GetType(String.Format("{0},{1}", name, asName));
+                if (foundType != null)
+                {
+                    return foundType;
+                }
+            }
+            return null;
+        }
+        
+        /// <summary>
         ///     Returns a type from a name.  For example: System.Collections or System.Collections.ArrayList
         /// </summary>
         /// <param name="name">The name</param>
@@ -551,6 +589,11 @@ namespace Dynamo.Python
             var importMatches = MATCH_IMPORT_STATEMENTS.Matches(code);
             foreach (Match m in importMatches)
             {
+                if (m.Value.EndsWith("."))
+                {
+                    continue; //incomplete statement
+                }
+                
                 var names = m.Groups[1].Value.Trim().Split(new char[]{','}).Select(x => x.Trim() );
                 foreach (string n in names)
                 {
@@ -765,7 +808,6 @@ namespace Dynamo.Python
                 paramMatches.Add(name, val);
             }
             return paramMatches;
-
         }
         
         
@@ -793,7 +835,6 @@ namespace Dynamo.Python
             var refs = findClrReferences(code);
             foreach (var statement in refs)
             {
-                
                 int previousTries = 0;
                 badStatements.TryGetValue(statement, out previousTries);
                 if (previousTries > 3)
@@ -892,7 +933,6 @@ namespace Dynamo.Python
         public Dictionary<string, Tuple<string, int, Type> > FindAllVariables(string code)
         {
             var variables = new Dictionary<string, Tuple<string, int, Type> >();
-
             var variableStatements = Regex.Matches(code, variableName + spacesOrNone + equalsRegex + spacesOrNone + @"(.*)", RegexOptions.Multiline);
 
             for (var i = 0; i < variableStatements.Count; i++)
@@ -957,6 +997,16 @@ namespace Dynamo.Python
         string GetLastName(string text)
         {
             return MATCH_LAST_WORD.Match(text.Trim('.').Trim()).Value;
+        }
+        
+        /// <summary>
+        /// Returns the entire namespace from the end of the input line. The regex ignores tabs, spaces, the first new line, etc.
+        /// </summary>
+        /// <param name="text"></param>
+        /// <returns></returns>
+        string GetLastNameSpace(string text)
+        {
+            return MATCH_LAST_NAMESPACE.Match(text.Trim('.').Trim()).Value;
         }
         
         /// <summary>
