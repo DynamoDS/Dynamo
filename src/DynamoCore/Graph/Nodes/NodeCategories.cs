@@ -30,6 +30,7 @@ namespace Dynamo.Graph.Nodes
         public const string CORE_SCRIPTING = "Core.Scripting";
         public const string CORE_IO = "Core.File";
         public const string CORE_UNITS = "Core.Units";
+        public const string CORE_PACKING = "Core.Packing";
 
         public const string LOGIC = "Core.Logic";
         public const string LOGIC_MATH_OPTIMIZE = "Logic.Math.Optimize";

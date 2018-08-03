@@ -885,6 +885,21 @@
           ]
         },
         {
+          "text": "Packing",
+          "iconUrl": "",
+          "elementType": "category",
+          "include": [
+            {
+              "path": "Core.Packing.Pack"
+            },
+            {
+              "path": "Core.Packing.UnPack"
+            }
+          ],
+          "childElements": [
+          ]
+        },
+        {
           "text": "ImportExport",
           "iconUrl": "./dist/resources/Category.ImportExport.svg",
           "elementType": "category",

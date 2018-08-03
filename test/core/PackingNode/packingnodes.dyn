@@ -1,0 +1,121 @@
+{
+  "Uuid": "1e3be5e6-78bb-4665-af10-7dd3c94e217c",
+  "IsCustomNode": false,
+  "Description": null,
+  "Name": "packingnodes",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "PackingNodeModels.Pack.Pack, PackingNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "19e41724d5bd494ca0fa2c104f34b3ff",
+      "Inputs": [
+        {
+          "Id": "829d359c072c47f89bf8740359a019fd",
+          "Name": "Type",
+          "Description": "TypeDefinition as a string",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "65b92271fcfd4bedad04fa1350649810",
+          "Name": "Out",
+          "Description": "Dictionary",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Pack Node"
+    },
+    {
+      "ConcreteType": "PackingNodeModels.UnPack.UnPack, PackingNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "71f86e45fe1c4100a6cdec7506bc0119",
+      "Inputs": [
+        {
+          "Id": "c34caedab5aa44768a40e48dcabb761c",
+          "Name": "Type",
+          "Description": "TypeDefinition as a string",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "dbcda1643c8040c38b6754a9a1bb7c0c",
+          "Name": "In",
+          "Description": "Dictionary",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [],
+      "Replication": "Longest",
+      "Description": "UnPack Node"
+    }
+  ],
+  "Connectors": [],
+  "Dependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.1.0.5634",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "Pack",
+        "Id": "19e41724d5bd494ca0fa2c104f34b3ff",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 455.5,
+        "Y": 350.0
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "UnPack",
+        "Id": "71f86e45fe1c4100a6cdec7506bc0119",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 777.5,
+        "Y": 344.0
+      }
+    ],
+    "Annotations": [],
+    "X": 0.0,
+    "Y": 0.0,
+    "Zoom": 1.0
+  }
+}
