@@ -73,6 +73,12 @@ namespace CoreNodeModels.Input
             RegisterAllPorts();
         }
 
+        protected BasicInteractive(string outPortName, string outPortToolTip)
+        {
+            OutPorts.Add(new PortModel(PortType.Output, this, new PortData(outPortName, outPortToolTip)));
+            RegisterAllPorts();
+        }
+
         public override string PrintExpression()
         {
             return Value.ToString();
