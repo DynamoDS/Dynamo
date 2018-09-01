@@ -178,7 +178,7 @@ namespace Dynamo.Tests
             VerifyEventTracking(Times.Exactly(1));
             //1 ApplicationLifecycle Start + 3 for exception + 6 other events
             trackerMoq.Verify(t => t.Track(It.IsAny<AnalyticsEvent>(), factoryMoq.Object), Times.AtLeast(10));
-            loggerMoq.Verify(l => l.Log(It.IsAny<string>(), It.IsAny<string>()), Times.Exactly(1));
+            loggerMoq.Verify(l => l.Log(It.IsAny<string>(), It.IsAny<string>()), Times.Exactly(2));
         }
 
         [Test]
