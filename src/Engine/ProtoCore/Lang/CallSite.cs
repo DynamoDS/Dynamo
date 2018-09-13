@@ -1490,14 +1490,17 @@ namespace ProtoCore
         }
 
         /// <summary>
-        /// Excecute an arbitrary depth replication using the full slow path algorithm
+        /// Execute an arbitrary depth replication using the full slow path algorithm
         /// </summary>
-        /// <param name="functionEndPoint"> </param>
+        /// <param name="functionEndPoint"></param>
         /// <param name="c"></param>
         /// <param name="formalParameters"></param>
         /// <param name="replicationInstructions"></param>
         /// <param name="stackFrame"></param>
-        /// <param name="core"></param>
+        /// <param name="runtimeCore"></param>
+        /// <param name="previousTraceData"></param>
+        /// <param name="newTraceData"></param>
+        /// <param name="finalFuntionEndPoint"></param>
         /// <returns></returns>
         private StackValue ExecWithRISlowPath(
             List<FunctionEndPoint> functionEndPoint,
