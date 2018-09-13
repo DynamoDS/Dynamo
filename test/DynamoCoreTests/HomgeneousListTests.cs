@@ -130,11 +130,11 @@ namespace Dynamo.Tests
             return ret;
         }
 
-        private List<double> TrimRange(IEnumerable<double> values, double stdDev, int multiplyer = 1)
+        private List<double> TrimRange(IEnumerable<double> values, double stdDev, int multiplier = 1)
         {
             double avg = values.Average();
             var newList =
-                values.Where(value => value <= avg + stdDev * multiplyer && value >= avg - stdDev * multiplyer);
+                values.Where(value => value <= avg + stdDev * multiplier && value >= avg - stdDev * multiplier);
             return newList.ToList();
         }
 
