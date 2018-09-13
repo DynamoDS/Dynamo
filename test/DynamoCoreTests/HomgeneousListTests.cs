@@ -38,10 +38,7 @@ namespace Dynamo.Tests
 
             //Run once to complete initialization
 
-            for (int i = 0; i < 50; i++)
-            {
-                RunModel(@"core\HomogeneousList\HomogeneousInputs.dyn");
-            }
+            RunModel(@"core\HomogeneousList\HomogeneousInputs.dyn");
 
             var timeHeterogeneousFirst = new List<double>();
             for (int i = 0; i < 50; i++)
