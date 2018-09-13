@@ -1552,11 +1552,15 @@ namespace ProtoCore
                         throw new ReplicationCaseNotCurrentlySupported(Resources.AlgorithmNotSupported);
                 }
 
-                //We determine if the input parameters are homogeneous to set the final function endpoint once
-                List<StackValue> finalFormalParameters = new List<StackValue>();
-                var homogeneous = AreParametersHomogeneous(formalParameters, runtimeCore, finalFormalParameters);
-                if (homogeneous)
+                //We determine if the input parameters are of homogeneous types to set the final function endpoint once
+
+                var homogeneousReturn = AreParametersHomogeneousTypes(formalParameters, runtimeCore);
+                var isHomogeneous = homogeneousReturn.Item1;
+                if (isHomogeneous)
+                {
+                    var finalFormalParameters = homogeneousReturn.Item2;
                     finalFuntionEndPoint = SelectFinalFep(c, functionEndPoint, finalFormalParameters, stackFrame, runtimeCore);
+                }
 
                 bool hasEmptyArg = false;
                 foreach (int repIndex in repIndecies)
@@ -1683,11 +1687,13 @@ namespace ProtoCore
                 //We determine if the input parameters are homogeneous to set the final function endpoint once
                 if (cartIndex == 0)
                 {
-                    List<StackValue> finalFormalParameters = new List<StackValue>();
-                    var homogeneous = AreParametersHomogeneous(formalParameters, runtimeCore, finalFormalParameters);
-
-                    if(homogeneous)
+                    var homogeneousReturn = AreParametersHomogeneousTypes(formalParameters, runtimeCore);
+                    var isHomogeneous = homogeneousReturn.Item1;
+                    if (isHomogeneous)
+                    {
+                        var finalFormalParameters = homogeneousReturn.Item2;
                         finalFuntionEndPoint = SelectFinalFep(c, functionEndPoint, finalFormalParameters, stackFrame, runtimeCore);
+                    }
                 }
 
                 //this will hold the heap elements for all the arrays that are going to be replicated over
@@ -1876,8 +1882,11 @@ namespace ProtoCore
         /// Determine if the formalParameters are homogeneous and initialize a flat list of final formalParameters
         /// </summary>
         /// <returns>true if the formalParameters are homogeneous</returns>
-        private static bool AreParametersHomogeneous(List<StackValue> formalParameters, RuntimeCore runtimeCore, List<StackValue> finalFormalParameters)
+        private static Tuple<bool, List<StackValue>> AreParametersHomogeneousTypes(List<StackValue> formalParameters, RuntimeCore runtimeCore)
         {
+
+            var finalFormalParameters = new List<StackValue>();
+
             foreach (var formalParameter in formalParameters)
             { 
                 //expand array if required to compare inputs
@@ -1890,7 +1899,7 @@ namespace ProtoCore
                     {
                         case 0:
                             //set function result false and exit due to empty list
-                            return false;
+                            return new Tuple<bool, List<StackValue>> (false, null);
                         case 1:
                             //Add single sample parameter to pass for evaluation in SelectFinalFep
                             finalFormalParameters.Add(flatParameters[0]);
@@ -1903,7 +1912,7 @@ namespace ProtoCore
                                     flatParameters[j].metaData.type != flatParameters[j + 1].metaData.type)
                                 {
                                     //set function result false and exit due to dissimilar function parameters
-                                    return false;
+                                    return new Tuple<bool, List<StackValue>>(false, null);
                                 }
                             }
 
@@ -1920,7 +1929,7 @@ namespace ProtoCore
             }
 
             //formalParameteres evaluated as homogeneous
-            return true;
+            return new Tuple<bool, List<StackValue>>(true, finalFormalParameters);
         }
 
 
