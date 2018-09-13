@@ -1500,7 +1500,7 @@ namespace ProtoCore
         /// <param name="runtimeCore"></param>
         /// <param name="previousTraceData"></param>
         /// <param name="newTraceData"></param>
-        /// <param name="finalFuntionEndPoint"></param>
+        /// <param name="finalFunctionEndPoint"></param>
         /// <returns></returns>
         private StackValue ExecWithRISlowPath(
             List<FunctionEndPoint> functionEndPoint,
@@ -1511,7 +1511,7 @@ namespace ProtoCore
             RuntimeCore runtimeCore,
             SingleRunTraceData previousTraceData,
             SingleRunTraceData newTraceData,
-            FunctionEndPoint finalFuntionEndPoint = null)
+            FunctionEndPoint finalFunctionEndPoint = null)
         {
             if (runtimeCore.Options.ExecutionMode == ExecutionMode.Parallel)
                 throw new NotImplementedException("Parallel mode disabled: {BF417AD5-9EA9-4292-ABBC-3526FC5A149E}");
@@ -1519,7 +1519,7 @@ namespace ProtoCore
             //Recursion base case
             if (replicationInstructions.Count == 0)
             {
-                return ExecWithZeroRI(functionEndPoint, c, formalParameters, stackFrame, runtimeCore, previousTraceData, newTraceData, finalFuntionEndPoint);
+                return ExecWithZeroRI(functionEndPoint, c, formalParameters, stackFrame, runtimeCore, previousTraceData, newTraceData, finalFunctionEndPoint);
             }
 
             //Get the replication instruction that this call will deal with
@@ -1558,7 +1558,7 @@ namespace ProtoCore
                 if (isHomogeneous)
                 {
                     var finalFormalParameters = homogeneousReturn.Item2;
-                    finalFuntionEndPoint = SelectFinalFep(c, functionEndPoint, finalFormalParameters, stackFrame, runtimeCore);
+                    finalFunctionEndPoint = SelectFinalFep(c, functionEndPoint, finalFormalParameters, stackFrame, runtimeCore);
                 }
 
                 bool hasEmptyArg = false;
@@ -1657,7 +1657,7 @@ namespace ProtoCore
 
                     SingleRunTraceData cleanRetTrace = new SingleRunTraceData();
 
-                    retSVs[i] = ExecWithRISlowPath(functionEndPoint, c, newFormalParams, newRIs, stackFrame, runtimeCore, lastExecTrace, cleanRetTrace, finalFuntionEndPoint);
+                    retSVs[i] = ExecWithRISlowPath(functionEndPoint, c, newFormalParams, newRIs, stackFrame, runtimeCore, lastExecTrace, cleanRetTrace, finalFunctionEndPoint);
 
                     runtimeCore.AddCallSiteGCRoot(CallSiteID, retSVs[i]);
 
@@ -1691,7 +1691,7 @@ namespace ProtoCore
                     if (isHomogeneous)
                     {
                         var finalFormalParameters = homogeneousReturn.Item2;
-                        finalFuntionEndPoint = SelectFinalFep(c, functionEndPoint, finalFormalParameters, stackFrame, runtimeCore);
+                        finalFunctionEndPoint = SelectFinalFep(c, functionEndPoint, finalFormalParameters, stackFrame, runtimeCore);
                     }
                 }
 
@@ -1733,7 +1733,7 @@ namespace ProtoCore
                     List<StackValue> newFormalParams = new List<StackValue>();
                     newFormalParams.AddRange(formalParameters);
 
-                    return ExecWithRISlowPath(functionEndPoint, c, newFormalParams, newRIs, stackFrame, runtimeCore, previousTraceData, newTraceData, finalFuntionEndPoint);
+                    return ExecWithRISlowPath(functionEndPoint, c, newFormalParams, newRIs, stackFrame, runtimeCore, previousTraceData, newTraceData, finalFunctionEndPoint);
                 }
 
                 //Now iterate over each of these options
@@ -1778,7 +1778,7 @@ namespace ProtoCore
                     //previousTraceData = lastExecTrace;
                     SingleRunTraceData cleanRetTrace = new SingleRunTraceData();
 
-                    retSVs[i] = ExecWithRISlowPath(functionEndPoint, c, newFormalParams, newRIs, stackFrame, runtimeCore, lastExecTrace, cleanRetTrace, finalFuntionEndPoint);
+                    retSVs[i] = ExecWithRISlowPath(functionEndPoint, c, newFormalParams, newRIs, stackFrame, runtimeCore, lastExecTrace, cleanRetTrace, finalFunctionEndPoint);
 
                     runtimeCore.AddCallSiteGCRoot(CallSiteID, retSVs[i]);
 
