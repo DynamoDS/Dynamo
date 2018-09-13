@@ -110,7 +110,6 @@ namespace DynamoUtilities
             }
             catch(Exception e)
             {
-                Console.WriteLine(e.ToString());
                 xmlDoc = null;
                 ex = e;
                 return false;
