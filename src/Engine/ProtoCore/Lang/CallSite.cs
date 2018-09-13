@@ -1553,7 +1553,6 @@ namespace ProtoCore
                 }
 
                 //We determine if the input parameters are of homogeneous types to set the final function endpoint once
-
                 var homogeneousReturn = AreParametersHomogeneousTypes(formalParameters, runtimeCore);
                 var isHomogeneous = homogeneousReturn.Item1;
                 if (isHomogeneous)
@@ -1684,7 +1683,7 @@ namespace ProtoCore
                 //We will call the subsequent reductions n times
                 int cartIndex = ri.CartesianIndex;
 
-                //We determine if the input parameters are homogeneous to set the final function endpoint once
+                //We determine if the input parameters are of homogeneous types to set the final function endpoint once
                 if (cartIndex == 0)
                 {
                     var homogeneousReturn = AreParametersHomogeneousTypes(formalParameters, runtimeCore);
@@ -1879,12 +1878,13 @@ namespace ProtoCore
         }
 
         /// <summary>
-        /// Determine if the formalParameters are homogeneous and initialize a flat list of final formalParameters
+        /// Determine if the formalParameters are homogeneous types and initialize a flat list of final formalParameters
         /// </summary>
-        /// <returns>true if the formalParameters are homogeneous</returns>
+        /// <param name="formalParameters"></param>
+        /// <param name="runtimeCore"></param>
+        /// <returns>item1: true if the formalParameters are homogeneous, item2: finalformalParameters</returns>
         private static Tuple<bool, List<StackValue>> AreParametersHomogeneousTypes(List<StackValue> formalParameters, RuntimeCore runtimeCore)
         {
-
             var finalFormalParameters = new List<StackValue>();
 
             foreach (var formalParameter in formalParameters)
