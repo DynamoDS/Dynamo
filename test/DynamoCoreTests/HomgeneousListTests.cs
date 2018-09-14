@@ -11,6 +11,12 @@ using NUnit.Framework;
 
 namespace Dynamo.Tests
 {
+    /// <summary>
+    /// Tests to validate VM method resolution performance optimization for input lists of homogeneous types
+    /// This performance optimization occurs in Callsite.cs in ExecWithRISlowPath()
+    /// Note these test requires DynamoModelTestBase as the optimization is less apparent 
+    /// when running the VM in isolation. 
+    /// </summary>
     [TestFixture]
     class HomogeneousListTests : DynamoModelTestBase
     {
@@ -18,6 +24,7 @@ namespace Dynamo.Tests
 
         protected override void GetLibrariesToPreload(List<string> libraries)
         {
+            // Add multiple libraries to better simulate typical Dynamo application usage.
             libraries.Add("ProtoGeometry.dll");
             libraries.Add("DesignScriptBuiltin.dll");
             libraries.Add("DSCoreNodes.dll");
@@ -40,6 +47,8 @@ namespace Dynamo.Tests
 
             RunModel(@"core\HomogeneousList\HomogeneousInputs.dyn");
 
+            //Run timed tests of a list of Heterogeneous input types (first item is double vs int).  
+            //Store graph execution time.
             var timeHeterogeneousFirst = new List<double>();
             for (int i = 0; i < 50; i++)
             {
@@ -49,6 +58,8 @@ namespace Dynamo.Tests
                 timeHeterogeneousFirst.Add(lastExecutionDuration.TotalMilliseconds);
             }
 
+            //Run timed tests of a list of Heterogeneous input types (last item is double vs int). 
+            //Store graph execution time.
             var timeHeterogeneousLast = new List<double>();
             for (int i = 0; i < 50; i++)
             {
@@ -58,6 +69,8 @@ namespace Dynamo.Tests
                 timeHeterogeneousLast.Add(lastExecutionDuration.TotalMilliseconds);
             }
 
+            //Run timed tests of a list of Homogeneous input types (all items are int).  
+            //Store graph execution time.
             var timeHomogeneous = new List<double>();
             for (int i = 0; i < 50; i++)
             {  
@@ -67,13 +80,14 @@ namespace Dynamo.Tests
 
             }
 
-            var homogeneousStdDev = CalculateStdDev(timeHomogeneous);
-            var heterogeneousFirstStdDev = CalculateStdDev(timeHeterogeneousFirst);
-            var heterogeneousLastStdDev = CalculateStdDev(timeHeterogeneousLast);
+            //Filter time data to remove outliers 
+            var homogeneousStdDev = CalculateListStdDev(timeHomogeneous);
+            var heterogeneousFirstStdDev = CalculateListStdDev(timeHeterogeneousFirst);
+            var heterogeneousLastStdDev = CalculateListStdDev(timeHeterogeneousLast);
 
-            var aveHomogeneous = TrimRange(timeHomogeneous, homogeneousStdDev, 2).Average();
-            var aveHeterogeneousFirstItem = TrimRange(timeHeterogeneousFirst, heterogeneousFirstStdDev, 2).Average();
-            var aveHeterogeneousLastItem = TrimRange(timeHeterogeneousLast, heterogeneousLastStdDev, 2).Average();
+            var aveHomogeneous = TrimListOutliers(timeHomogeneous, homogeneousStdDev, 2).Average();
+            var aveHeterogeneousFirstItem = TrimListOutliers(timeHeterogeneousFirst, heterogeneousFirstStdDev, 2).Average();
+            var aveHeterogeneousLastItem = TrimListOutliers(timeHeterogeneousLast, heterogeneousLastStdDev, 2).Average();
 
             Assert.LessOrEqual(aveHomogeneous, aveHeterogeneousFirstItem);
             Assert.LessOrEqual(aveHomogeneous, aveHeterogeneousLastItem);
@@ -120,7 +134,12 @@ namespace Dynamo.Tests
             ExecutionEvents.GraphPostExecution -= ExecutionEvents_GraphPostExecution;
         }
 
-        private double CalculateStdDev(IEnumerable<double> values)
+        /// <summary>
+        /// Determine standard deviation of values in a list.
+        /// </summary>
+        /// <param name="values"></param>
+        /// <returns>Standard deviation.</returns>
+        private double CalculateListStdDev(IEnumerable<double> values)
         {
 
             double avg = values.Average();    
@@ -130,7 +149,15 @@ namespace Dynamo.Tests
             return ret;
         }
 
-        private List<double> TrimRange(IEnumerable<double> values, double stdDev, int multiplier = 1)
+        /// <summary>
+        /// Remove outliers from a list based on their difference from the average.
+        /// Use multiple of standard deviation to determine range of exclusion.
+        /// </summary>
+        /// <param name="values"></param>
+        /// <param name="stdDev"></param>
+        /// <param name="multiplier"></param>
+        /// <returns>List of values within the acceptable range of standard deviation.</returns>
+        private List<double> TrimListOutliers(IEnumerable<double> values, double stdDev, int multiplier = 1)
         {
             double avg = values.Average();
             var newList =
