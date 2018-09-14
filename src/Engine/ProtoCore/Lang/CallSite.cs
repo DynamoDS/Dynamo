@@ -1811,8 +1811,10 @@ namespace ProtoCore
                 throw new ExecutionCancelledException();
             }
 
-            if(finalFep == null)
+            if (finalFep == null)
+            {
                 finalFep = SelectFinalFep(c, functionEndPoint, formalParameters, stackFrame, runtimeCore);
+            }
 
             if (functionEndPoint == null)
             {
