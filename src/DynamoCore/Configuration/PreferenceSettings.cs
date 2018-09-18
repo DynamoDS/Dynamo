@@ -156,7 +156,10 @@ namespace Dynamo.Configuration
         }
 
         /// <summary>
-        /// Indicates whether surface and solid edges will 
+        /// Indicate which render precision will be used
+        /// </summary>
+        public int RenderPrecision { get; set; }
+
         /// be rendered.
         /// </summary>
         public bool ShowEdges { get; set; }
@@ -326,6 +329,7 @@ namespace Dynamo.Configuration
             UseHardwareAcceleration = true;
             PackageDownloadTouAccepted = false;
             maxNumRecentFiles = DefaultMaxNumRecentFiles;
+            RenderPrecision = 128;
             ShowEdges = false;
             OpenFileInManualExecutionMode = false;
             ShowDetailedLayout = true;

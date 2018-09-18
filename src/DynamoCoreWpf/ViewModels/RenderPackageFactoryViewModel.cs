@@ -46,7 +46,7 @@ namespace Dynamo.Wpf.ViewModels
         {
             this.factory = new HelixRenderPackageFactory()
             {
-                TessellationParameters = { ShowEdges = preferenceSettings.ShowEdges }
+                TessellationParameters = { ShowEdges = preferenceSettings.ShowEdges, MaxTessellationDivisions = preferenceSettings.RenderPrecision }
             };
         }
     }
