@@ -117,6 +117,7 @@ namespace Dynamo.Interfaces
         ///Indicate which render precision will be used
         ///</summary>
         int RenderPrecision { get; set; }
+
         /// <summary>
         /// Indicates whether surface and solid edges will 
         /// be rendered.
