@@ -63,7 +63,7 @@ namespace WpfVisualizationTests
 
         protected override void StartDynamo(TestSessionConfiguration testConfig)
         {
-            var preloader = new Preloader(testConfig.DynamoCorePath, testConfig.RequestedLibraryVersion);
+            var preloader = new Preloader(testConfig.DynamoCorePath, new[] { testConfig.RequestedLibraryVersion2 });
             preloader.Preload();
 
             var preloadedLibraries = new List<string>();
