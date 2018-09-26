@@ -87,7 +87,11 @@ namespace DynamoShapeManager
             return LibraryVersion.None;
         }
 
-        public static Version GetInstalledAsmVersion2(List<Version> versions, ref string location, string rootFolder)
+        public static Version GetInstalledAsmVersion2(
+            List<Version> versions, 
+            ref string location,
+            string rootFolder,
+            Func<string,IEnumerable> getASMInstallsFunc = null)
         {
             if (string.IsNullOrEmpty(rootFolder))
                 throw new ArgumentNullException("rootFolder");
@@ -102,7 +106,12 @@ namespace DynamoShapeManager
 
             try
             {
-                var installations = GetAsmInstallations(rootFolder);
+                // use the passed lookup function if it exists,
+                // else use the default asm install lookup -
+                // this is used for testing
+                getASMInstallsFunc = getASMInstallsFunc ?? GetAsmInstallations;
+                var installations = getASMInstallsFunc(rootFolder);
+
                 //first find the closest matches using major, minor and build version.
                 foreach (var version in versions)
                 {
@@ -231,8 +240,7 @@ namespace DynamoShapeManager
                 throw new DirectoryNotFoundException(string.Format(
                     "Directory not found: {0}", rootFolder));
             }
-            //TODO we need to align the format here with libG folder names - how much padding etc..
-            //or create a version from all libG folders and use version comparison to find the folder.
+            //IMPORTANT_ Going forward libg folders will be named as follows: libg_major_minor_build - in reference to ASM.
 
             var libGFolderName = string.Format("libg_{0}_{1}_{2}", version.Major, version.Minor, version.Build);
             var libGFolder = Path.Combine(rootFolder, libGFolderName);
