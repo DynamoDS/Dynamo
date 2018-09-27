@@ -17,7 +17,6 @@ namespace DynamoShapeManager
         public static readonly string PreloaderMethodName = "PreloadAsmLibraries";
 
 
-        //TODO remove useage of this method from this codebase.
         /// <summary>
         /// Call this method to determine the version of ASM that is installed 
         /// on the user machine. The method scans through a list of known Autodesk 
@@ -81,7 +80,7 @@ namespace DynamoShapeManager
 
                     location = dir.FullName;
                     return v; // Found version.
-                }                
+                }
             }
             catch (Exception)
             {
@@ -91,17 +90,33 @@ namespace DynamoShapeManager
             return LibraryVersion.None;
         }
 
-        public static Version GetInstalledAsmVersion2(
-            List<Version> versions, 
-            ref string location,
-            string rootFolder,
-            Func<string,IEnumerable> getASMInstallsFunc = null)
+        /// <summary>
+        /// Call this method to determine the version of ASM that is installed 
+        /// on the user machine. The method scans through a list of known Autodesk 
+        /// product folders for ASM binaries with the targeted version.
+        /// </summary>
+        /// <param name="versions">A IEnumerable of version numbers to check for in order 
+        /// of preference. This argument cannot be null or empty.</param>
+        /// <param name="location">The full path of the directory in which targeted
+        /// ASM binaries are found. This argument cannot be null.</param>
+        /// <param name="rootFolder">This method makes use of DynamoInstallDetective
+        /// to determine the installation location of various Autodesk products. This 
+        /// argument is not optional and must represent the full path to the folder 
+        /// which contains DynamoInstallDetective.dll. An exception is thrown if the 
+        /// assembly cannot be located.</param>
+        /// <param name="getASMInstallsFunc"> A delegate which can be used to replace the default ASM install
+        /// lookup method. This is primarily used for testing. The delegate should return an IEnumerable
+        /// of Tuples - these represent versions of ASM which are located on the user's machine.</param>
+        /// <returns>Returns System.Version of ASM if any installed ASM is found, 
+        /// or null otherwise.</returns>
+        /// 
+        public static Version GetInstalledAsmVersion2(IEnumerable<Version> versions, ref string location, string rootFolder, Func<string, IEnumerable> getASMInstallsFunc = null)
         {
             if (string.IsNullOrEmpty(rootFolder))
                 throw new ArgumentNullException("rootFolder");
             if (!Directory.Exists(rootFolder))
                 throw new DirectoryNotFoundException(rootFolder);
-            if ((versions == null) || versions.Count <= 0)
+            if ((versions == null) || versions.Count() <= 0)
                 throw new ArgumentNullException("versions");
             if (location == null)
                 throw new ArgumentNullException("location");
@@ -122,8 +137,8 @@ namespace DynamoShapeManager
                     foreach (KeyValuePair<string, Tuple<int, int, int, int>> install in installations)
                     {
                         var installVersion = new Version(install.Value.Item1, install.Value.Item2, install.Value.Item3);
-                        if (version.Major == installVersion.Major && 
-                            version.Minor == installVersion.Minor && 
+                        if (version.Major == installVersion.Major &&
+                            version.Minor == installVersion.Minor &&
                             version.Build == installVersion.Build)
                         {
                             location = install.Key;
@@ -136,7 +151,7 @@ namespace DynamoShapeManager
                 //contain ASM dlls.
                 foreach (var v in versions)
                 {
-                    var folderName = string.Format("libg_{0}_{1}_{2}", v.Major,v.Minor,v.Build);
+                    var folderName = string.Format("libg_{0}_{1}_{2}", v.Major, v.Minor, v.Build);
                     var dir = new DirectoryInfo(Path.Combine(rootFolder, folderName));
                     if (!dir.Exists)
                         continue;
@@ -213,7 +228,7 @@ namespace DynamoShapeManager
         /// FileNotFoundException.</param>
         /// <returns>The full path to GeometryFactoryAssembly assembly.</returns>
         /// 
-        [Obsolete("Please use methods marked with 2, and use specific versions instances to select a suported geometry library version to load")]
+        [Obsolete("Please use GetGeometryFactoryPath2(string rootFolder, Version version).")]
         public static string GetGeometryFactoryPath(string rootFolder, LibraryVersion version)
         {
             return GetGeometryFactoryPath2(rootFolder, Preloader.ASMLibVersionToVersion[version]);
