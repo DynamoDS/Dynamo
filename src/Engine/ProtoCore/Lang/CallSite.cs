@@ -1490,14 +1490,17 @@ namespace ProtoCore
         }
 
         /// <summary>
-        /// Excecute an arbitrary depth replication using the full slow path algorithm
+        /// Execute an arbitrary depth replication using the full slow path algorithm
         /// </summary>
-        /// <param name="functionEndPoint"> </param>
+        /// <param name="functionEndPoint"></param>
         /// <param name="c"></param>
         /// <param name="formalParameters"></param>
         /// <param name="replicationInstructions"></param>
         /// <param name="stackFrame"></param>
-        /// <param name="core"></param>
+        /// <param name="runtimeCore"></param>
+        /// <param name="previousTraceData"></param>
+        /// <param name="newTraceData"></param>
+        /// <param name="finalFunctionEndPoint"></param>
         /// <returns></returns>
         private StackValue ExecWithRISlowPath(
             List<FunctionEndPoint> functionEndPoint,
@@ -1507,7 +1510,8 @@ namespace ProtoCore
             StackFrame stackFrame,
             RuntimeCore runtimeCore,
             SingleRunTraceData previousTraceData,
-            SingleRunTraceData newTraceData)
+            SingleRunTraceData newTraceData,
+            FunctionEndPoint finalFunctionEndPoint = null)
         {
             if (runtimeCore.Options.ExecutionMode == ExecutionMode.Parallel)
                 throw new NotImplementedException("Parallel mode disabled: {BF417AD5-9EA9-4292-ABBC-3526FC5A149E}");
@@ -1515,7 +1519,7 @@ namespace ProtoCore
             //Recursion base case
             if (replicationInstructions.Count == 0)
             {
-                return ExecWithZeroRI(functionEndPoint, c, formalParameters, stackFrame, runtimeCore, previousTraceData, newTraceData);
+                return ExecWithZeroRI(functionEndPoint, c, formalParameters, stackFrame, runtimeCore, previousTraceData, newTraceData, finalFunctionEndPoint);
             }
 
             //Get the replication instruction that this call will deal with
@@ -1548,6 +1552,14 @@ namespace ProtoCore
                         throw new ReplicationCaseNotCurrentlySupported(Resources.AlgorithmNotSupported);
                 }
 
+                //We determine if the input parameters are of homogeneous types to set the final function endpoint once
+                var homogeneousReturn = AreParametersHomogeneousTypes(formalParameters, runtimeCore);
+                var isHomogeneous = homogeneousReturn.Item1;
+                if (isHomogeneous)
+                {
+                    var finalFormalParameters = homogeneousReturn.Item2;
+                    finalFunctionEndPoint = SelectFinalFep(c, functionEndPoint, finalFormalParameters, stackFrame, runtimeCore);
+                }
 
                 bool hasEmptyArg = false;
                 foreach (int repIndex in repIndecies)
@@ -1645,7 +1657,7 @@ namespace ProtoCore
 
                     SingleRunTraceData cleanRetTrace = new SingleRunTraceData();
 
-                    retSVs[i] = ExecWithRISlowPath(functionEndPoint, c, newFormalParams, newRIs, stackFrame, runtimeCore, lastExecTrace, cleanRetTrace);
+                    retSVs[i] = ExecWithRISlowPath(functionEndPoint, c, newFormalParams, newRIs, stackFrame, runtimeCore, lastExecTrace, cleanRetTrace, finalFunctionEndPoint);
 
                     runtimeCore.AddCallSiteGCRoot(CallSiteID, retSVs[i]);
 
@@ -1670,6 +1682,18 @@ namespace ProtoCore
 
                 //We will call the subsequent reductions n times
                 int cartIndex = ri.CartesianIndex;
+
+                //We determine if the input parameters are of homogeneous types to set the final function endpoint once
+                if (cartIndex == 0)
+                {
+                    var homogeneousReturn = AreParametersHomogeneousTypes(formalParameters, runtimeCore);
+                    var isHomogeneous = homogeneousReturn.Item1;
+                    if (isHomogeneous)
+                    {
+                        var finalFormalParameters = homogeneousReturn.Item2;
+                        finalFunctionEndPoint = SelectFinalFep(c, functionEndPoint, finalFormalParameters, stackFrame, runtimeCore);
+                    }
+                }
 
                 //this will hold the heap elements for all the arrays that are going to be replicated over
                 bool supressArray = false;
@@ -1709,7 +1733,7 @@ namespace ProtoCore
                     List<StackValue> newFormalParams = new List<StackValue>();
                     newFormalParams.AddRange(formalParameters);
 
-                    return ExecWithRISlowPath(functionEndPoint, c, newFormalParams, newRIs, stackFrame, runtimeCore, previousTraceData, newTraceData);
+                    return ExecWithRISlowPath(functionEndPoint, c, newFormalParams, newRIs, stackFrame, runtimeCore, previousTraceData, newTraceData, finalFunctionEndPoint);
                 }
 
                 //Now iterate over each of these options
@@ -1754,7 +1778,7 @@ namespace ProtoCore
                     //previousTraceData = lastExecTrace;
                     SingleRunTraceData cleanRetTrace = new SingleRunTraceData();
 
-                    retSVs[i] = ExecWithRISlowPath(functionEndPoint, c, newFormalParams, newRIs, stackFrame, runtimeCore, lastExecTrace, cleanRetTrace);
+                    retSVs[i] = ExecWithRISlowPath(functionEndPoint, c, newFormalParams, newRIs, stackFrame, runtimeCore, lastExecTrace, cleanRetTrace, finalFunctionEndPoint);
 
                     runtimeCore.AddCallSiteGCRoot(CallSiteID, retSVs[i]);
 
@@ -1780,15 +1804,17 @@ namespace ProtoCore
         /// </summary>
         private StackValue ExecWithZeroRI(List<FunctionEndPoint> functionEndPoint, Context c,
                                           List<StackValue> formalParameters, StackFrame stackFrame, RuntimeCore runtimeCore,
-                                          SingleRunTraceData previousTraceData, SingleRunTraceData newTraceData)
+                                          SingleRunTraceData previousTraceData, SingleRunTraceData newTraceData, FunctionEndPoint finalFep = null)
         {
             if (runtimeCore.CancellationPending)
             {
                 throw new ExecutionCancelledException();
             }
 
-            //@PERF: Todo add a fast path here for the case where we have a homogenious array so we can directly dispatch
-            FunctionEndPoint finalFep = SelectFinalFep(c, functionEndPoint, formalParameters, stackFrame, runtimeCore);
+            if (finalFep == null)
+            {
+                finalFep = SelectFinalFep(c, functionEndPoint, formalParameters, stackFrame, runtimeCore);
+            }
 
             if (functionEndPoint == null)
             {
@@ -1852,6 +1878,62 @@ namespace ProtoCore
             }
             return ret;
         }
+
+        /// <summary>
+        /// Determine if the formalParameters are homogeneous types and initialize a flat list of final formalParameters
+        /// </summary>
+        /// <param name="formalParameters"></param>
+        /// <param name="runtimeCore"></param>
+        /// <returns>item1: true if the formalParameters are homogeneous, item2: finalformalParameters</returns>
+        private static Tuple<bool, List<StackValue>> AreParametersHomogeneousTypes(List<StackValue> formalParameters, RuntimeCore runtimeCore)
+        {
+            var finalFormalParameters = new List<StackValue>();
+
+            foreach (var formalParameter in formalParameters)
+            { 
+                //expand array if required to compare inputs
+                if (formalParameter.IsArray)
+                {
+                    var array = runtimeCore.Heap.ToHeapObject<DSArray>(formalParameter);
+                    var flatParameters = array.Values.ToArray();
+
+                    switch (flatParameters.Length)
+                    {
+                        case 0:
+                            //set function result false and exit due to empty list
+                            return new Tuple<bool, List<StackValue>> (false, null);
+                        case 1:
+                            //Add single sample parameter to pass for evaluation in SelectFinalFep
+                            finalFormalParameters.Add(flatParameters[0]);
+                            break;
+                        default:
+                            for (int j = 0; j < flatParameters.Length - 1; j++)
+                            {
+                                //Compare the type data for subsequent items
+                                if (flatParameters[j].optype != flatParameters[j + 1].optype ||
+                                    flatParameters[j].metaData.type != flatParameters[j + 1].metaData.type)
+                                {
+                                    //set function result false and exit due to dissimilar function parameters
+                                    return new Tuple<bool, List<StackValue>>(false, null);
+                                }
+                            }
+
+                            //Add single sample parameter to pass for evaluation in SelectFinalFep
+                            finalFormalParameters.Add(flatParameters[0]);
+                            break;
+                    }
+                }
+                else
+                {
+                    //For single parameter add it to pass for evaluation in SelectFinalFep
+                    finalFormalParameters.Add(formalParameter);
+                }
+            }
+
+            //formalParameteres evaluated as homogeneous
+            return new Tuple<bool, List<StackValue>>(true, finalFormalParameters);
+        }
+
 
         /// <summary>
         /// If all the arguments that have rep guides are single values, then strip the rep guides
