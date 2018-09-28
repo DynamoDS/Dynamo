@@ -88,7 +88,7 @@ namespace TestServices
             // else try to load the older one and convert it to a known precise version
             else if (Enum.TryParse<LibraryVersion>(versionStrOld, out libVersion))
             {
-                var realVersion = Preloader.ASMLibVersionToVersion[libVersion];
+                var realVersion = Preloader.MapLibGVersionEnumToFullVersion(libVersion);
                 RequestedLibraryVersion2 = realVersion;
 
             }

@@ -227,7 +227,7 @@ namespace DynamoShapeManager
         [Obsolete("Please use GetGeometryFactoryPath2(string rootFolder, Version version).")]
         public static string GetGeometryFactoryPath(string rootFolder, LibraryVersion version)
         {
-            return GetGeometryFactoryPath2(rootFolder, Preloader.ASMLibVersionToVersion[version]);
+            return GetGeometryFactoryPath2(rootFolder, Preloader.MapLibGVersionEnumToFullVersion(version));
         }
 
         /// <summary>

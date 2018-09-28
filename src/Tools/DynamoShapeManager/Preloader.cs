@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.IO;
 using System.Linq;
 
@@ -40,7 +39,7 @@ namespace DynamoShapeManager
         private static string preloadedShapeManagerPath = string.Empty;
         [Obsolete("Please use the Version2 Property instead.")]
         public LibraryVersion Version { get { return (LibraryVersion)version.Major; } }
-        public Version Version2 { get {return version; } }
+        public Version Version2 { get { return version; } }
 
         public string PreloaderLocation { get { return preloaderLocation; } }
         public string GeometryFactoryPath { get { return geometryFactoryPath; } }
@@ -72,7 +71,7 @@ namespace DynamoShapeManager
         }
 
         //used to convert libraryVersions to the real asm versions they represented
-        internal static Dictionary<LibraryVersion, Version> ASMLibVersionToVersion = new Dictionary<LibraryVersion, Version>()
+        private static Dictionary<LibraryVersion, Version> ASMLibVersionToVersion = new Dictionary<LibraryVersion, Version>()
         {
             { LibraryVersion.Version221, new Version(221,0,0) },
             { LibraryVersion.Version222, new Version(222,0,0) },
@@ -80,6 +79,21 @@ namespace DynamoShapeManager
             { LibraryVersion.Version224, new Version(224,0,1) },
 
         };
+
+        internal static Version MapLibGVersionEnumToFullVersion(LibraryVersion libVersion)
+        {
+            Version version;
+            if (ASMLibVersionToVersion.TryGetValue(libVersion, out version))
+            {
+                return version;
+            }
+            else
+            {
+                version = new Version((int)libVersion, 0, 0);
+                Console.WriteLine("Could not find a full version mapping for LibGVersion: " + libVersion + "returning: " + version.ToString());
+                return version;
+            }
+        }
 
         /// <summary>
         /// Constructs a preloader object to help preload a specific version of 
@@ -93,12 +107,11 @@ namespace DynamoShapeManager
         /// <param name="versions">A list of version numbers to check for in order 
         /// of preference. This argument cannot be null or empty.</param>
         /// 
-        [Obsolete ("please use constructor Preloader constructor with signature Preloader(string,IEnumerable<Version>)")]
+        [Obsolete("please use constructor Preloader constructor with signature Preloader(string,IEnumerable<Version>)")]
         public Preloader(string rootFolder, IEnumerable<LibraryVersion> versions) :
-            this(rootFolder, versions.Select(libVersion => ASMLibVersionToVersion[libVersion]))
+            this(rootFolder, versions.Select(libVersion => MapLibGVersionEnumToFullVersion(libVersion)))
         {
-        //TODO make this asmLib map fallback to some version like none or throw clear error.
-        //failure to load preloader should not crash dynamo.!
+
         }
 
         /// <summary>
@@ -113,7 +126,7 @@ namespace DynamoShapeManager
         /// <param name="versions">A list of version numbers to check for in order 
         /// of preference. This argument cannot be null or empty.</param>
         /// 
-        public Preloader (string rootFolder, IEnumerable<Version> versions)
+        public Preloader(string rootFolder, IEnumerable<Version> versions)
         {
             if (string.IsNullOrEmpty(rootFolder))
                 throw new ArgumentNullException("rootFolder");
@@ -161,9 +174,8 @@ namespace DynamoShapeManager
 
             if (version == LibraryVersion.None)
                 throw new ArgumentOutOfRangeException("version");
-            
-            //TODO fallback or raise clear error if not found in map
-            this.version = ASMLibVersionToVersion[version];
+
+            this.version = MapLibGVersionEnumToFullVersion(version);
             this.shapeManagerPath = shapeManagerPath;
 
             var libGFolderName = string.Format("libg_{0}_{1}_{2}", this.version.Major, this.version.Minor, this.version.Build);
