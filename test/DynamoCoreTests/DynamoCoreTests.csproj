@@ -82,9 +82,6 @@
     <Compile Include="AnalyticsTests.cs" />
     <Compile Include="AtLevelTest.cs" />
     <Compile Include="AttributeTest.cs" />
-    <Compile Include="DummyNodeTests.cs" />
-    <Compile Include="ImperativeClodeBlockTest.cs" />
-    <Compile Include="InheritanceTests.cs" />
     <Compile Include="libGPreloaderTests.cs" />
     <Compile Include="ListAtLevelTests.cs" />
     <Compile Include="MultiOutputNodeTest.cs" />
