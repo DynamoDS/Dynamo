@@ -24,7 +24,9 @@ namespace Dynamo.LibraryUI.Views
             if (!Cef.IsInitialized)
             {
                 var settings = new CefSettings { RemoteDebuggingPort = 8088 };
-                //Matching the API with  version 55
+
+                CefSharpSettings.LegacyJavascriptBindingEnabled = true;
+                CefSharpSettings.SubprocessExitIfParentProcessClosed = true;
                 Cef.Initialize(settings);
             }
             
