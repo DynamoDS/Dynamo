@@ -27,7 +27,7 @@ namespace Dynamo.LibraryUI.Views
 
                 CefSharpSettings.LegacyJavascriptBindingEnabled = true;
                 CefSharpSettings.SubprocessExitIfParentProcessClosed = true;
-                Cef.Initialize(settings);
+                Cef.Initialize(settings, performDependencyCheck: true, browserProcessHandler: null);
             }
             
             InitializeComponent();

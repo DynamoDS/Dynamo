@@ -191,7 +191,7 @@ namespace Dynamo.LibraryUI
             this.browser = browser;
             sidebarGrid.Children.Add(view);
             browser.RegisterAsyncJsObject("controller", this);
-            //RegisterResources(browser);
+            RegisterResources(browser);
 
             view.Loaded += OnLibraryViewLoaded;
             browser.SizeChanged += Browser_SizeChanged;
