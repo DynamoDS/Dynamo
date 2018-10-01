@@ -113,22 +113,21 @@ namespace Dynamo.LibraryUI
         //if the window is resized toggle visibility of browser to force redraw
         private void DynamoWindow_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            toggleBrowserVisibility(this.browser);
+            browser.InvalidateVisual();
         }
 
         private void toggleBrowserVisibility(ChromiumWebBrowser browser)
         {
             if (browser != null)
             {
-                browser.Visibility = Visibility.Hidden;
-                browser.Visibility = Visibility.Visible;
+                browser.InvalidateVisual();
             }
         }
 
         //if the dynamo window is minimized and then restored, force a layout update.
         private void DynamoWindowStateChanged(object sender, EventArgs e)
         {
-            toggleBrowserVisibility(this.browser);
+            browser.InvalidateVisual();
         }
 
         /// <summary>
@@ -196,15 +195,6 @@ namespace Dynamo.LibraryUI
             view.Loaded += OnLibraryViewLoaded;
             browser.SizeChanged += Browser_SizeChanged;
             browser.LoadError += Browser_LoadError;
-            //wait for the browser to load before setting the resources
-            browser.LoadingStateChanged += (sender, args) =>
-            {
-                //Wait for the Page to finish loading
-                if (args.IsLoading == false)
-                {
-                    RegisterResources(browser);
-                }
-            };
 
             return view;
         }
@@ -219,7 +209,7 @@ namespace Dynamo.LibraryUI
         //if the browser window itself is resized, toggle visibility to force redraw.
         private void Browser_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            toggleBrowserVisibility(this.browser);
+            browser.InvalidateVisual();
         }
 
         #region Tooltip
