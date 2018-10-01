@@ -4,6 +4,8 @@ using System.IO;
 using System.Reflection;
 
 using DynamoShapeManager;
+using System.Collections.Generic;
+using System;
 
 namespace TestServices
 {
@@ -18,7 +20,9 @@ namespace TestServices
         private const string CONFIG_FILE_NAME = "TestServices.dll.config";
 
         public string DynamoCorePath { get; private set; }
-        public LibraryVersion RequestedLibraryVersion { get; private set; }
+        [Obsolete("Please use the Version2 Property instead.")]
+        public LibraryVersion RequestedLibraryVersion { get { return (LibraryVersion)this.RequestedLibraryVersion2.Major; }}
+        public Version RequestedLibraryVersion2 { get; private set; }
 
         public TestSessionConfiguration()
             : this(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)){}
@@ -49,15 +53,16 @@ namespace TestServices
             if (!File.Exists(configPath))
             {
                 DynamoCorePath = dynamoCoreDirectory;
-                var versions = new List<LibraryVersion>
+                var versions = new List<Version>
                 {
-                    LibraryVersion.Version221,
-                    LibraryVersion.Version222,
-                    LibraryVersion.Version223,
-                    LibraryVersion.Version224
+                    new Version(224,4,0),
+                    new Version(224,0,1),
+                    new Version(223,0,1),
+                    new Version(222,0,0),
+                    new Version(221,0,0)
                 };
                 var shapeManagerPath = string.Empty;
-                RequestedLibraryVersion = Utilities.GetInstalledAsmVersion(versions, ref shapeManagerPath, dynamoCoreDirectory);
+                RequestedLibraryVersion2 = Utilities.GetInstalledAsmVersion2(versions, ref shapeManagerPath, dynamoCoreDirectory);
                 return;
             }
 
@@ -69,12 +74,29 @@ namespace TestServices
             var dir = GetAppSetting(config, "DynamoBasePath");
             DynamoCorePath = string.IsNullOrEmpty(dir) ? dynamoCoreDirectory : dir;
 
-            var versionStr = GetAppSetting(config, "RequestedLibraryVersion");
+            //if an old client supplies an older format test config we should still load it.
+            var versionStrOld = GetAppSetting(config, "RequestedLibraryVersion");
+            var versionStr = GetAppSetting(config, "RequestedLibraryVersion2");
 
-            LibraryVersion version;
-            RequestedLibraryVersion = LibraryVersion.TryParse(versionStr, out version) ? 
-                version : LibraryVersion.Version221;
-            
+            Version version;
+            LibraryVersion libVersion;
+            // first try to load the requested library in the more precise format
+            if (Version.TryParse(versionStr, out version))
+            {
+                RequestedLibraryVersion2 = version;
+            }
+            // else try to load the older one and convert it to a known precise version
+            else if (Enum.TryParse<LibraryVersion>(versionStrOld, out libVersion))
+            {
+                var realVersion = Preloader.MapLibGVersionEnumToFullVersion(libVersion);
+                RequestedLibraryVersion2 = realVersion;
+
+            }
+            // fallback to a mid range version
+            else
+            {
+                RequestedLibraryVersion2 = new Version(223, 0, 1);
+            } 
         }
 
         private static string GetAppSetting(Configuration config, string key)
