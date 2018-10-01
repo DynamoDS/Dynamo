@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.IO;
 using System.Linq;
 
 namespace DynamoShapeManager
 {
+    [Obsolete("Please use system.version instead of this enum to specify geometry library versions to load")]
     public enum LibraryVersion
     {
         None,
@@ -26,7 +26,7 @@ namespace DynamoShapeManager
     {
         #region Class Data Members and Properties
 
-        private readonly LibraryVersion version;
+        private readonly Version version;
         private readonly string shapeManagerPath;
         private readonly string preloaderLocation;
         private readonly string geometryFactoryPath;
@@ -37,8 +37,10 @@ namespace DynamoShapeManager
         /// more than one ASM gets preloaded in the same address space.
         /// </summary>
         private static string preloadedShapeManagerPath = string.Empty;
+        [Obsolete("Please use the Version2 Property instead.")]
+        public LibraryVersion Version { get { return (LibraryVersion)version.Major; } }
+        public Version Version2 { get { return version; } }
 
-        public LibraryVersion Version { get { return version; } }
         public string PreloaderLocation { get { return preloaderLocation; } }
         public string GeometryFactoryPath { get { return geometryFactoryPath; } }
 
@@ -58,12 +60,38 @@ namespace DynamoShapeManager
         public Preloader(string rootFolder)
             : this(rootFolder, new[]
             {
-                LibraryVersion.Version224,
-                LibraryVersion.Version223, 
-                LibraryVersion.Version222,
-                LibraryVersion.Version221
+                    new Version(224,4,0),
+                    new Version(224,0,1),
+                    new Version(223,0,1),
+                    new Version(222,0,0),
+                    new Version(221,0,0)
             })
         {
+        }
+
+        //used to convert libraryVersions to the real asm versions they represented
+        private static Dictionary<LibraryVersion, Version> ASMLibVersionToVersion = new Dictionary<LibraryVersion, Version>()
+        {
+            { LibraryVersion.Version221, new Version(221,0,0) },
+            { LibraryVersion.Version222, new Version(222,0,0) },
+            { LibraryVersion.Version223, new Version(223,0,1) },
+            { LibraryVersion.Version224, new Version(224,0,1) },
+
+        };
+
+        internal static Version MapLibGVersionEnumToFullVersion(LibraryVersion libVersion)
+        {
+            Version version;
+            if (ASMLibVersionToVersion.TryGetValue(libVersion, out version))
+            {
+                return version;
+            }
+            else
+            {
+                version = new Version((int)libVersion, 0, 0);
+                Console.WriteLine("Could not find a full version mapping for LibGVersion: " + libVersion + "returning: " + version.ToString());
+                return version;
+            }
         }
 
         /// <summary>
@@ -78,7 +106,26 @@ namespace DynamoShapeManager
         /// <param name="versions">A list of version numbers to check for in order 
         /// of preference. This argument cannot be null or empty.</param>
         /// 
-        public Preloader(string rootFolder, IEnumerable<LibraryVersion> versions)
+        [Obsolete("please use constructor Preloader constructor with signature Preloader(string,IEnumerable<Version>)")]
+        public Preloader(string rootFolder, IEnumerable<LibraryVersion> versions) :
+            this(rootFolder, versions.Select(libVersion => MapLibGVersionEnumToFullVersion(libVersion)))
+        {
+
+        }
+
+        /// <summary>
+        /// Constructs a preloader object to help preload a specific version of 
+        /// shape manager.
+        /// </summary>
+        /// <param name="rootFolder">Full path of the directory that contains 
+        /// LibG_major_minor_build folder. In a 
+        /// typical setup this would be the same directory that contains Dynamo 
+        /// core modules. This must represent a valid directory.
+        /// </param>
+        /// <param name="versions">A list of version numbers to check for in order 
+        /// of preference. This argument cannot be null or empty.</param>
+        /// 
+        public Preloader(string rootFolder, IEnumerable<Version> versions)
         {
             if (string.IsNullOrEmpty(rootFolder))
                 throw new ArgumentNullException("rootFolder");
@@ -90,9 +137,9 @@ namespace DynamoShapeManager
             var versionList = versions.ToList();
 
             shapeManagerPath = string.Empty; // Folder that contains ASM binaries.
-            version = Utilities.GetInstalledAsmVersion(versionList, ref shapeManagerPath, rootFolder);
-            
-            var libGFolderName = string.Format("libg_{0}", ((int) version));
+            version = Utilities.GetInstalledAsmVersion2(versionList, ref shapeManagerPath, rootFolder);
+
+            var libGFolderName = string.Format("libg_{0}_{1}_{2}", version.Major, version.Minor, version.Build);
             preloaderLocation = Path.Combine(rootFolder, libGFolderName);
             geometryFactoryPath = Path.Combine(preloaderLocation,
                 Utilities.GeometryFactoryAssembly);
@@ -111,6 +158,7 @@ namespace DynamoShapeManager
         /// binaries can be preloaded from.</param>
         /// <param name="version">The version of shape manager.</param>
         /// 
+        [Obsolete("please use Preloader constructor with signature Preloader(string,IEnumerable<Version>)")]
         public Preloader(string rootFolder, string shapeManagerPath, LibraryVersion version)
         {
             if (string.IsNullOrEmpty(rootFolder))
@@ -126,10 +174,10 @@ namespace DynamoShapeManager
             if (version == LibraryVersion.None)
                 throw new ArgumentOutOfRangeException("version");
 
-            this.version = version;
+            this.version = MapLibGVersionEnumToFullVersion(version);
             this.shapeManagerPath = shapeManagerPath;
 
-            var libGFolderName = string.Format("libg_{0}", ((int) version));
+            var libGFolderName = string.Format("libg_{0}_{1}_{2}", this.version.Major, this.version.Minor, this.version.Build);
             preloaderLocation = Path.Combine(rootFolder, libGFolderName);
             geometryFactoryPath = Path.Combine(preloaderLocation,
                 Utilities.GeometryFactoryAssembly);
@@ -145,12 +193,17 @@ namespace DynamoShapeManager
         /// </param>
         /// <param name="version">The version of shape manager.</param>
         /// <returns></returns>
+        [Obsolete("please use constructor Preloader constructor with signature Preloader(string,IEnumerable<Version>)")]
         public Preloader(string rootFolder, LibraryVersion version)
             : this(rootFolder, new[] { version }) { }
 
+        /// <summary>
+        /// Attempts to load the geometry library binaries using the version and location
+        /// specified when the Preloader was constructed.
+        /// </summary>
         public void Preload()
         {
-            if (version == LibraryVersion.None)
+            if (version == null)
                 return;
 
             if (!string.IsNullOrEmpty(preloadedShapeManagerPath))
