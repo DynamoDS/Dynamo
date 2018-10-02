@@ -22,6 +22,12 @@ namespace TestServices
         public string DynamoCorePath { get; private set; }
         [Obsolete("Please use the Version2 Property instead.")]
         public LibraryVersion RequestedLibraryVersion { get { return (LibraryVersion)this.RequestedLibraryVersion2.Major; }}
+        /// <summary>
+        /// The requested libG library version as a full system.version string.
+        /// If the key is not present in the config file a default value will be selected.
+        /// If the key is set to 'HostDefault' - the version will be set to null, and
+        /// Hosts will be responsible for loading libG and providing a version to load.
+        /// </summary>
         public Version RequestedLibraryVersion2 { get; private set; }
 
         public TestSessionConfiguration()
@@ -91,6 +97,11 @@ namespace TestServices
                 var realVersion = Preloader.MapLibGVersionEnumToFullVersion(libVersion);
                 RequestedLibraryVersion2 = realVersion;
 
+            }
+            //if the config is set to HostDefault
+            else if(versionStr.ToLower().Contains("hostdefault"))
+            {
+                RequestedLibraryVersion2 = null;
             }
             // fallback to a mid range version
             else
