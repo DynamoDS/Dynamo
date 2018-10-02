@@ -24,10 +24,14 @@ namespace TestServices
         /// <summary>
         /// The requested libG library version as a full system.version string.
         /// If the key is not present in the config file a default value will be selected.
-        /// If the key is set to 'HostDefault' - the version will be set to null, and
-        /// Hosts will be responsible for loading libG and providing a version to load.
         /// </summary>
         public Version RequestedLibraryVersion2 { get; private set; }
+        /// <summary>
+        /// Did the TestSessionConfiguration load a valid config file or could one not be found.
+        /// This can be used to indicate if the TestSessionConfiguration is valid or a set of defaults.
+        /// </summary>
+        public bool LoadedValidConfigFile { get; private set; } = true;
+        
 
         public TestSessionConfiguration()
             : this(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)){}
@@ -69,6 +73,7 @@ namespace TestServices
                 };
                 var shapeManagerPath = string.Empty;
                 RequestedLibraryVersion2 = Utilities.GetInstalledAsmVersion2(versions, ref shapeManagerPath, dynamoCoreDirectory);
+                LoadedValidConfigFile = false;
                 return;
             }
 
@@ -97,11 +102,6 @@ namespace TestServices
                 var realVersion = Preloader.MapLibGVersionEnumToFullVersion(libVersion);
                 RequestedLibraryVersion2 = realVersion;
 
-            }
-            //if the config is set to HostDefault
-            else if(versionStr.ToLower().Contains("hostdefault"))
-            {
-                RequestedLibraryVersion2 = null;
             }
             // fallback to a mid range version
             else
