@@ -18,6 +18,14 @@ namespace TestServices
     public class TestSessionConfiguration
     {
         private const string CONFIG_FILE_NAME = "TestServices.dll.config";
+        private  List<Version> supportedLibGVersions = new List<Version>
+                {
+                    new Version(224,4,0),
+                    new Version(224,0,1),
+                    new Version(223,0,1),
+                    new Version(222,0,0),
+                    new Version(221,0,0)
+                };
 
         public string DynamoCorePath { get; private set; }
         [Obsolete("Please use the Version2 Property instead.")]
@@ -27,12 +35,18 @@ namespace TestServices
         /// If the key is not present in the config file a default value will be selected.
         /// </summary>
         public Version RequestedLibraryVersion2 { get; private set; }
+  
         /// <summary>
-        /// Did the TestSessionConfiguration load a valid config file or could one not be found.
-        /// This can be used to indicate if the TestSessionConfiguration is valid or a set of defaults.
+        /// This constructor does not read configuration from a config file, is set by the parameters passed to this 
+        /// constructor. It can be used by test fixtures that know which libG version should load.
         /// </summary>
-        public bool LoadedValidConfigFile { get; private set; } = true;
-        
+        /// <param name="dynamoCoreDirectory"></param>
+        /// <param name="requestedVersion"></param>
+        public TestSessionConfiguration(string dynamoCoreDirectory, Version requestedVersion)
+        {
+            DynamoCorePath = dynamoCoreDirectory;
+            RequestedLibraryVersion2 = requestedVersion;
+        }
 
         public TestSessionConfiguration()
             : this(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)){}
@@ -63,17 +77,9 @@ namespace TestServices
             if (!File.Exists(configPath))
             {
                 DynamoCorePath = dynamoCoreDirectory;
-                var versions = new List<Version>
-                {
-                    new Version(224,4,0),
-                    new Version(224,0,1),
-                    new Version(223,0,1),
-                    new Version(222,0,0),
-                    new Version(221,0,0)
-                };
+
                 var shapeManagerPath = string.Empty;
-                RequestedLibraryVersion2 = Utilities.GetInstalledAsmVersion2(versions, ref shapeManagerPath, dynamoCoreDirectory);
-                LoadedValidConfigFile = false;
+                RequestedLibraryVersion2 = Utilities.GetInstalledAsmVersion2(supportedLibGVersions, ref shapeManagerPath, dynamoCoreDirectory);
                 return;
             }
 
@@ -103,10 +109,11 @@ namespace TestServices
                 RequestedLibraryVersion2 = realVersion;
 
             }
-            // fallback to a mid range version
+            // find an installed ASM version if could not find a specified version in the config file
             else
             {
-                RequestedLibraryVersion2 = new Version(223, 0, 1);
+                var shapeManagerPath = string.Empty;
+                RequestedLibraryVersion2 = Utilities.GetInstalledAsmVersion2(supportedLibGVersions, ref shapeManagerPath, dynamoCoreDirectory);
             } 
         }
 
