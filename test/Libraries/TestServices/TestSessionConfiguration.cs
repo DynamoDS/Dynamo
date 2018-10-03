@@ -30,6 +30,7 @@ namespace TestServices
         public string DynamoCorePath { get; private set; }
         [Obsolete("Please use the Version2 Property instead.")]
         public LibraryVersion RequestedLibraryVersion { get { return (LibraryVersion)this.RequestedLibraryVersion2.Major; }}
+
         /// <summary>
         /// The requested libG library version as a full system.version string.
         /// If the key is not present in the config file a default value will be selected.
@@ -37,8 +38,9 @@ namespace TestServices
         public Version RequestedLibraryVersion2 { get; private set; }
   
         /// <summary>
-        /// This constructor does not read configuration from a config file, is set by the parameters passed to this 
-        /// constructor. It can be used by test fixtures that know which libG version should load.
+        /// This constructor does not read configuration from a config file, the configuration properties are
+        /// set directly by the parameters passed to this constructor. 
+        /// It can be used by test fixtures that know which libG version should be loaded.
         /// </summary>
         /// <param name="dynamoCoreDirectory"></param>
         /// <param name="requestedVersion"></param>
@@ -91,25 +93,25 @@ namespace TestServices
             var dir = GetAppSetting(config, "DynamoBasePath");
             DynamoCorePath = string.IsNullOrEmpty(dir) ? dynamoCoreDirectory : dir;
 
-            //if an old client supplies an older format test config we should still load it.
+            // if an old client supplies an older format test config we should still load it.
             var versionStrOld = GetAppSetting(config, "RequestedLibraryVersion");
             var versionStr = GetAppSetting(config, "RequestedLibraryVersion2");
 
             Version version;
             LibraryVersion libVersion;
-            // first try to load the requested library in the more precise format
+            // first try to load the requested library in the more precise format.
             if (Version.TryParse(versionStr, out version))
             {
                 RequestedLibraryVersion2 = version;
             }
-            // else try to load the older one and convert it to a known precise version
+            // else try to load the older one and convert it to a known precise version.
             else if (Enum.TryParse<LibraryVersion>(versionStrOld, out libVersion))
             {
                 var realVersion = Preloader.MapLibGVersionEnumToFullVersion(libVersion);
                 RequestedLibraryVersion2 = realVersion;
 
             }
-            // find an installed ASM version if could not find a specified version in the config file
+            // find an installed ASM version if we could not find a specified version in the config file.
             else
             {
                 var shapeManagerPath = string.Empty;
