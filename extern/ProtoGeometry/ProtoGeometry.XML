@@ -4458,7 +4458,23 @@
             <param name="inSmoothMode">Show T-Spline Surface in box or smooth visualization</param>
             <search>tspline,line,build</search>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.BuildPipes(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Double,System.Double,System.Boolean,System.Collections.Generic.IEnumerable{System.Int32},System.Boolean,System.Boolean,System.Collections.Generic.IEnumerable{System.Double},System.Collections.Generic.IEnumerable{System.Double},System.Collections.Generic.IEnumerable{System.Double},System.Collections.Generic.IEnumerable{System.Double},System.Collections.Generic.IEnumerable{System.Double},System.Collections.Generic.IEnumerable{System.Double})">
+        <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.BuildPipes(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Double,System.Double,System.Collections.Generic.IEnumerable{System.Int32},System.Collections.Generic.IEnumerable{System.Double},System.Collections.Generic.IEnumerable{System.Double},System.Collections.Generic.IEnumerable{System.Double},System.Boolean)">
+            <summary>
+            Make a piped surface out of a network of curves or lines.
+            A smooth joint is created at each curve intersection.
+            Some parameter take single value or list - two valies per curve.
+            </summary>
+            <param name="curves">A list of curves to create pipes from</param>
+            <param name="defaultRadius">Default radius for created pipes</param>
+            <param name="snappingTolerance">The tolerance used to detect curve intersections</param>
+            <param name="segmentsCount">Numbers of segments in each pipe. Single value or list, two times longer than curves count, are allowed</param>
+            <param name="endRotations">Values of end rotations for each pipe (in degrees). Single value or list, two times longer than curves count, are allowed</param>
+            <param name="endRadii">Values of end radiuses for each pipe. Single value or list, two times longer than curves count, are allowed</param>
+            <param name="endPercentage">Values (0 to 1) from the end of each input curve to start of the pipe mesh. Single value or list, two times longer than curves count, are allowed</param>
+            <param name="inSmoothMode">Show T-Spline Surface in box or smooth visualization</param>
+            <search>tspline,create,pipe,curve</search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.BuildPipes(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Double,System.Double,System.Collections.Generic.IEnumerable{System.Int32},System.Boolean,System.Boolean,System.Collections.Generic.IEnumerable{System.Double},System.Collections.Generic.IEnumerable{System.Double},System.Collections.Generic.IEnumerable{System.Double},System.Collections.Generic.IEnumerable{System.Double},System.Collections.Generic.IEnumerable{System.Double},System.Collections.Generic.IEnumerable{System.Double},System.Boolean)">
             <summary>
             Make a piped surface out of a network of curves or lines.
             A smooth joint is created at each curve intersection.
@@ -4468,15 +4484,15 @@
             <param name="inSmoothMode">Show T-Spline Surface in box or smooth visualization</param>
             <param name="defaultRadius">Default radius for created pipes</param>
             <param name="snappingTolerance">The tolerance used to detect curve intersections</param>
-            <param name="segmentCounts">Numbers of segments for each curve. The size of the list can be the curve count or 1 for replication or 0 for automatic determination.</param>
+            <param name="segmentsCount">Numbers of segments for each curve. The size of the list can be the curve count or 1 for replication or 0 for automatic determination.</param>
             <param name="autoHandleStart">If true, the parameters of the handle at the start of each curve are automatically generated, and the custom parameters of rotationsAtStart, radiiAtStart, and positionsAtStart are ignored.</param>
             <param name="autoHandleEnd">If true, the parameters of the handle at the end of each curve are automatically generated, and the custom parameters of rotationsAtEnd, radiiAtEnd, and positionsAtEnd are ignored.</param>
-            <param name="rotationsAtStart">Custom rotation angle in degrees for each pipe handle at the start of each curve. This parameter is ignored when autoHandleStart is true. The size of the list can be the curve count or 1 for replication.</param>
-            <param name="rotationsAtEnd">Custom rotation angle in degrees for each pipe handle at the end of each curve. This parameter is ignored when autoHandleEnd is true. The size of the list can be the curve count or 1 for replication.</param>
-            <param name="radiiAtStart">Custom radius for each pipe handle at the start of each curve. This parameter is ignored when autoHandleStart is true. The size of the list can be the curve count or 1 for replication.</param>
-            <param name="radiiAtEnd">Custom radius for each pipe handle at the end of each curve. This parameter is ignored when autoHandleEnd is true. The size of the list can be the curve count or 1 for replication.</param>
-            <param name="positionsAtStart">Custom position of each pipe handle at the start of each curve in percentage between 0 and 1 along the curve's arc-length. This parameter is ignored when autoHandleStart is true. The size of the list can be the curve count or 1 for replication.</param>
-            <param name="positionsAtEnd">Custom position of each pipe handle at the end of each curve in percentage between 0 and 1 along the curve's arc-length. This parameter is ignored when autoHandleEnd is true. The size of the list can be the curve count or 1 for replication.</param>
+            <param name="startRotations">Custom rotation angle in degrees for each pipe handle at the start of each curve. This parameter is ignored when autoHandleStart is true. The size of the list can be the curve count or 1 for replication.</param>
+            <param name="endRotations">Custom rotation angle in degrees for each pipe handle at the end of each curve. This parameter is ignored when autoHandleEnd is true. The size of the list can be the curve count or 1 for replication.</param>
+            <param name="startRadii">Custom radius for each pipe handle at the start of each curve. This parameter is ignored when autoHandleStart is true. The size of the list can be the curve count or 1 for replication.</param>
+            <param name="endRadii">Custom radius for each pipe handle at the end of each curve. This parameter is ignored when autoHandleEnd is true. The size of the list can be the curve count or 1 for replication.</param>
+            <param name="startPositions">Custom position of each pipe handle at the start of each curve in percentage between 0 and 1 along the curve's arc-length. This parameter is ignored when autoHandleStart is true. The size of the list can be the curve count or 1 for replication.</param>
+            <param name="endPositions">Custom position of each pipe handle at the end of each curve in percentage between 0 and 1 along the curve's arc-length. This parameter is ignored when autoHandleEnd is true. The size of the list can be the curve count or 1 for replication.</param>
             <search>tspline,create,pipe,curve</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ByCombinedTSplineSurfaces(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.TSpline.TSplineSurface})">
@@ -4639,6 +4655,25 @@
             <returns>TSpline surface with unwelded vertices</returns>
             <search>tspline,unweld,vertex</search>
         </member>
+        <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.CreateMatch(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.TSpline.TSplineEdge},System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Int32,System.Boolean,System.Boolean,System.Int32,System.Double,System.Boolean,System.Double,System.Double,System.Double,System.Boolean)">
+            <summary>
+            Create match with T-Spline and closed loop of curves
+            </summary>
+            <param name="tsEdges">Closed T-Spline edge loop to create match with</param>
+            <param name="curves">Closed curve loop to create match with</param>
+            <param name="continuity">Geometry continuity to attempt to match: G0, G1, G2</param>
+            <param name="useArclength">Wether to use arcLength alignment while building match</param>
+            <param name="useRefinement">If true, extra control points will be added to the T-spline to match the surfaces within a given tole­rance.</param>
+            <param name="numRefinementSteps">Max number of refinement steps. Ignored if useRefinement is set to false</param>
+            <param name="refinementTolerance">Tolerance to hit. Ignored if useRefinement is set to false</param>
+            <param name="usePropagation">Whether to use propagation while building match</param>
+            <param name="widthOfPropagation">Determines how much of the surface is affected by the match. Ignored if usePropagation is set to false</param>
+            <param name="tangentScale">Tangent scale. If continuity is not set to G1 is ignored</param>
+            <param name="curvParamWeight">Carvature param weight. If continuity is not set to G2 is ignored</param>
+            <param name="flipSourceTargetAlignment">Whether to reverse the alignment direction</param>
+            <returns>T-Spline surface positioned between given T-Spline border edges and curve loop</returns>
+            <search>tspline,match,curve</search>
+        </member>
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.CreateMatch(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.TSpline.TSplineEdge},System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Int32,System.Boolean,System.Boolean,System.Int32,System.Double,System.Boolean,System.Double,System.Double,System.Boolean)">
             <summary>
             Create match with T-Spline and closed loop of curves
@@ -4656,6 +4691,26 @@
             <param name="flipSourceTargetAlignment">Whether to reverse the alignment direction</param>
             <returns>T-Spline surface positioned between given T-Spline border edges and curve loop</returns>
             <search>tspline,match,curve</search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.CreateMatch(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.TSpline.TSplineEdge},System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Edge},System.Int32,System.Boolean,System.Boolean,System.Int32,System.Double,System.Boolean,System.Double,System.Double,System.Double,System.Boolean)">
+            <summary>
+            Create match with T-Spline and closed loop of BRep edges. First,
+            edge loop is converted to curve loop and then match is performed
+            </summary>
+            <param name="tsEdges">Closed T-Spline edge loop to create match with</param>
+            <param name="brepEdges">Closed BRep edge loop to create match with</param>
+            <param name="continuity">Geometry continuity to attempt to match: G0, G1, G2</param>
+            <param name="useArclength">Wether to use arcLength alignment while building match</param>
+            <param name="useRefinement">If true, extra control points will be added to the T-spline to match the surfaces within a given tole­rance.</param>
+            <param name="numRefinementSteps">Max number of refinement steps. Ignored if useRefinement is set to false</param>
+            <param name="refinementTolerance">Tolerance to hit. Ignored if useRefinement is set to false</param>
+            <param name="usePropagation">Whether to use propagation while building match</param>
+            <param name="widthOfPropagation">Determines how much of the surface is affected by the match. Ignored if usePropagation is set to false</param>
+            <param name="tangentScale">Tangent scale. If continuity is not set to G1 is ignored</param>
+            <param name="curvParamWeight">Carvature param weight. If continuity is not set to G2 is ignored</param>
+            <param name="flipSourceTargetAlignment">Whether to reverse the alignment direction</param>
+            <returns>T-Spline surface positioned between given T-Spline border edges and BRep edge loop</returns>
+            <search>tspline,match,brep</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.CreateMatch(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.TSpline.TSplineEdge},System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Edge},System.Int32,System.Boolean,System.Boolean,System.Int32,System.Double,System.Boolean,System.Double,System.Double,System.Boolean)">
             <summary>
