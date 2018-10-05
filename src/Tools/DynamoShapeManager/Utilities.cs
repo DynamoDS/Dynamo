@@ -172,7 +172,6 @@ namespace DynamoShapeManager
             return null;
         }
 
-
         /// <summary>
         /// Call this method to preload ASM binaries from a specific location. This 
         /// method does not have a return value, any failures in loading ASM binaries
@@ -186,12 +185,32 @@ namespace DynamoShapeManager
         /// 
         public static void PreloadAsmFromPath(string preloaderLocation, string asmLocation)
         {
-            if (string.IsNullOrEmpty(preloaderLocation) || !Directory.Exists(preloaderLocation))
+            // this will with be empty, the originally requested preloaderLocation or a remapped location
+            // based on the old libG version number.
+            var preloaderLocationToLoad = "";
+
+            // if we can't find the preloader location directly as passed
+            // try converting it to a precise version location.
+            if (!Directory.Exists(preloaderLocation))
+            {
+                // Path/To/Extern/LibG_223 ->  Path/To/Extern/LibG_223_0_1
+                preloaderLocationToLoad = RemapOldLibGPathToNewVersionPath(preloaderLocation);
+            }
+            // the directory exists, just load it.
+            else
+            {
+                preloaderLocationToLoad = preloaderLocation;
+            }
+
+            if (string.IsNullOrEmpty(preloaderLocationToLoad))
+            {
                 throw new ArgumentException("preloadedPath");
+
+            }
             if (string.IsNullOrEmpty(asmLocation) || !Directory.Exists(asmLocation))
                 throw new ArgumentException("asmLocation");
 
-            var preloaderPath = Path.Combine(preloaderLocation, PreloaderAssembly);
+            var preloaderPath = Path.Combine(preloaderLocationToLoad, PreloaderAssembly);
 
             Debug.WriteLine(string.Format("ASM Preloader: {0}", preloaderPath));
             Debug.WriteLine(string.Format("ASM Location: {0}", asmLocation));
@@ -212,6 +231,32 @@ namespace DynamoShapeManager
             preloadMethod.Invoke(null, methodParams);
 
             Debug.WriteLine("Successfully loaded ASM binaries");
+        }
+
+        /// <summary>
+        /// Attempts to remap a an old LibG path to a new one using a version map.
+        /// We assume that 
+        /// </summary>
+        /// <param name="preloaderLocation"></param>
+        /// <returns> returns "" if the path does not appear to be a valid old libG path.</returns>
+        internal static string RemapOldLibGPathToNewVersionPath(string preloaderLocation)
+        {
+            var folderName = Path.GetFileName(preloaderLocation);
+            var splitName = folderName.Split('_');
+            if (splitName.Count() == 2)
+            {
+                LibraryVersion outVersion;
+                if (Enum.TryParse<LibraryVersion>(string.Format("Version{0}", splitName[1]), out outVersion))
+                {
+                    var version = DynamoShapeManager.Preloader.MapLibGVersionEnumToFullVersion(outVersion);
+                    return Path.Combine(
+                        Path.GetDirectoryName(preloaderLocation),
+                        string.Format("libg_{0}_{1}_{2}", version.Major, version.Minor, version.Build)
+                        );
+                }
+            }
+
+            return "";
         }
 
         /// <summary>
