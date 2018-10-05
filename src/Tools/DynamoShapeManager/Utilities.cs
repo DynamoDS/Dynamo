@@ -231,7 +231,7 @@ namespace DynamoShapeManager
 
         /// <summary>
         /// Attempts to remap a an old LibG path to a new one using a version map.
-        /// We assume that 
+        /// We assume that the leaf directory is of the form LibG_[Version].
         /// </summary>
         /// <param name="preloaderLocation"></param>
         /// <returns> returns "" if the path does not appear to be a valid old libG path.</returns>
