@@ -181,7 +181,7 @@ namespace DynamoShapeManager
         /// 
         public static void PreloadAsmFromPath(string preloaderLocation, string asmLocation)
         {
-            // this will with be empty, the originally requested preloaderLocation or a remapped location
+            // this will either be empty, the originally requested preloaderLocation, or a remapped location
             // based on the old libG version number.
             var preloaderLocationToLoad = "";
 
