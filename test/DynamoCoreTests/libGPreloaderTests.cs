@@ -198,5 +198,13 @@ namespace Dynamo.Tests
             libG22440path.Delete(true);
             libG22401path.Delete(true);
         }
+
+        [Test]
+        public void LoadASMFromPathShouldWorkWithOldPath()
+        {
+            var oldPath = Path.Combine("C","Dynamo","Extern","FakePath","LibG_223");
+            var newPath = DynamoShapeManager.Utilities.RemapOldLibGPathToNewVersionPath(oldPath);
+            Assert.AreEqual(new DirectoryInfo(Path.Combine("C", "Dynamo", "Extern", "FakePath", "LibG_223_0_1")), new DirectoryInfo(newPath));
+        }
     }
 }
