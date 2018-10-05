@@ -800,7 +800,31 @@ namespace Dynamo.ViewModels
 
         public static void ReportABug(object parameter)
         {
-            Process.Start(new ProcessStartInfo("explorer.exe", Configurations.GitHubBugReportingLink));
+            if (parameter != null)
+            {
+                UriBuilder baseUri = new UriBuilder(Configurations.GitHubBugReportingLink);
+
+                string title = "title=" + string.Format(
+                    Resources.CrashPromptGithubNewIssueTitle,
+                    AssemblyHelper.GetDynamoVersion().ToString()
+                    );
+                string body = "body=" + parameter.ToString();
+
+                // if the base Uri has pre-existing parameters, we need to append to them
+                // otherwise it's safe to directly assign
+                if (baseUri.Query != null && baseUri.Query.Length > 1)
+                    baseUri.Query = baseUri.Query.Substring(1) + "&" + title + "&" + body;
+                else
+                    baseUri.Query = title + "&" + body;
+
+                // this will properly format & escape the string for use as a uri
+                var combinedUrl = baseUri.ToString();
+
+                // launching the process using explorer.exe will format the URL incorrectly
+                // and Github will not recognise the query parameters in the URL
+                Process.Start(new ProcessStartInfo(combinedUrl));
+            }
+            else Process.Start(new ProcessStartInfo("explorer.exe", Configurations.GitHubBugReportingLink));
         }
 
         public static void ReportABug()
