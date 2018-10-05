@@ -2188,4 +2188,7 @@ Want to publish a different package?</value>
     <value>Custom Nodes will be placed in the Add-Ons section of the library.</value>
     <comment>Note regarding Custom Node library location</comment>
   </data>
+  <data name="CrashPromptGithubNewIssueTitle" xml:space="preserve">
+    <value>Crash report from Dynamo {0}</value>
+  </data>
 </root>
