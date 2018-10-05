@@ -196,6 +196,22 @@ namespace Dynamo.LibraryUI
             browser.SizeChanged += Browser_SizeChanged;
             browser.LoadError += Browser_LoadError;
 
+            // TODO - this was added Fall 2017 due to issues with 
+            // library failing to load due to timing issues.  DYN-944 
+            // is a testing task that should make the final determination
+            // as it no longer seems required in CEF v65.0.1
+            /*
+            //wait for the browser to load before setting the resources
+            browser.LoadingStateChanged += (sender, args) =>
+            {
+                //Wait for the Page to finish loading
+                if (args.IsLoading == false)
+                {
+                    RegisterResources(browser);
+                }
+            };
+            */
+
             return view;
         }
 
