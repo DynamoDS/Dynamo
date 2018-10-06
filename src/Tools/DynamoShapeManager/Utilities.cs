@@ -234,7 +234,7 @@ namespace DynamoShapeManager
         /// We assume that the leaf directory is of the form LibG_[Version].
         /// </summary>
         /// <param name="preloaderLocation"></param>
-        /// <returns> returns "" if the path does not appear to be a valid old libG path.</returns>
+        /// <returns> new version LibG path or Empty string if the path could not be remapped.</returns>
         internal static string RemapOldLibGPathToNewVersionPath(string preloaderLocation)
         {
             var folderName = Path.GetFileName(preloaderLocation);
