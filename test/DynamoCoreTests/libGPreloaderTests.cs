@@ -206,5 +206,19 @@ namespace Dynamo.Tests
             var newPath = DynamoShapeManager.Utilities.RemapOldLibGPathToNewVersionPath(oldPath);
             Assert.AreEqual(new DirectoryInfo(Path.Combine("C", "Dynamo", "Extern", "FakePath", "LibG_223_0_1")), new DirectoryInfo(newPath));
         }
+        [Test]
+        public void RemapPathShouldReturnEmptyStringForNewPath()
+        {
+            var oldPath = Path.Combine("C", "Dynamo", "Extern", "FakePath", "LibG_223_0_1");
+            var newPath = DynamoShapeManager.Utilities.RemapOldLibGPathToNewVersionPath(oldPath);
+            Assert.AreEqual(String.Empty, newPath);
+        }
+        [Test]
+        public void RemapPathShouldReturnEmptyStringForNullPath()
+        {
+            string oldPath = null;
+            var newPath = DynamoShapeManager.Utilities.RemapOldLibGPathToNewVersionPath(oldPath);
+            Assert.AreEqual(string.Empty, newPath);
+        }
     }
 }

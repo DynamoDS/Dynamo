@@ -241,6 +241,10 @@ namespace DynamoShapeManager
         /// <returns> new version LibG path or Empty string if the path could not be remapped.</returns>
         internal static string RemapOldLibGPathToNewVersionPath(string preloaderLocation)
         {
+            if (String.IsNullOrEmpty(preloaderLocation))
+            {
+                return string.Empty;
+            }
             var folderName = Path.GetFileName(preloaderLocation);
             var splitName = folderName.Split('_');
             if (splitName.Count() == 2)
