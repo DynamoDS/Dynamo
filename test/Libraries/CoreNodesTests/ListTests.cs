@@ -1076,6 +1076,19 @@ namespace DSCoreNodesTests
 
         [Test]
         [Category("UnitTests")]
+        public static void Chop6()
+        {
+            var list = new ArrayList { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+            var lengths = new List<int> { 1, 0, 3 };
+
+            var output = List.Chop(list, lengths);
+            var expected = new ArrayList { new ArrayList { 1 }, new ArrayList {}, new ArrayList { 2, 3, 4 },
+                new ArrayList { 5, 6, 7 }, new ArrayList { 8, 9, 10 } };
+            Assert.AreEqual(expected, output);
+        }
+
+        [Test]
+        [Category("UnitTests")]
         public static void SortByKey1()
         {
             var list = new ArrayList { "item1", "item2" };
