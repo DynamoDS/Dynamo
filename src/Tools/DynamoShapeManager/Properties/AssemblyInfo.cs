@@ -7,3 +7,4 @@ using System.Runtime.CompilerServices;
 [assembly: AssemblyTitle("DynamoShapeManager")]
 [assembly: AssemblyCulture("")]
 [assembly: InternalsVisibleTo("TestServices")]
+[assembly: InternalsVisibleTo("DynamoCoreTests")]
