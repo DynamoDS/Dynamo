@@ -1444,7 +1444,7 @@ namespace Dynamo.Models
 
                     if (DynamoUtilities.PathHelper.isValidJson(filePath, out fileContents, out ex))
                     {
-                        OpenJsonFileFromPath(fileContents, filePath, forceManualExecutionMode);
+                        OpenJsonFileFromPath(fileContents, forceManualExecutionMode, filePath);
                         return;
                     }
                     else
@@ -1486,11 +1486,11 @@ namespace Dynamo.Models
         /// Opens a Dynamo workspace from a path to an JSON file on disk.
         /// </summary>
         /// <param name="fileContents">Json file contents</param>
-        /// <param name="filePath">Path to file</param>
         /// <param name="forceManualExecutionMode">Set this to true to discard
+        /// <param name="filePath">Optional Path to file on disk. This is used to register dyf files in the same directory</param>
         /// execution mode specified in the file and set manual mode</param>
         /// <returns>True if workspace was opened successfully</returns>
-        private bool OpenJsonFileFromPath(string fileContents, string filePath, bool forceManualExecutionMode)
+        public bool OpenJsonFileFromPath(string fileContents, bool forceManualExecutionMode, string filePath = null)
         {
             try
             {
