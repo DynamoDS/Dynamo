@@ -16,7 +16,7 @@ namespace Dynamo.Graph.Workspaces
         /// Save a Workspace to json.
         /// </summary>
         /// <returns>A string representing the serialized WorkspaceModel.</returns>
-        internal static string ToJson(this WorkspaceModel workspace, EngineController engine)
+        public static string ToJson(this WorkspaceModel workspace, EngineController engine)
         {
             var logger = engine != null ? engine.AsLogger() : null;
 
