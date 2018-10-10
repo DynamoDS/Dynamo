@@ -409,5 +409,16 @@ namespace DynamoPythonTests
             Assert.AreNotEqual(0, matches.Length);
             //Assert.AreEqual(typeof(IronPython.Runtime.PythonDictionary), matches["a"].Item3);
         }
+
+        [Test]
+        [Category("UnitTests")]
+        public void VerifyExpectedVersionOfIPIsLoaded()
+        {
+            var completionProvider = new IronPythonCompletionProvider();
+            string version = completionProvider.Engine.LanguageVersion.ToString();
+
+            // Verify correct version of Iron Python is loaded
+            Assert.AreEqual("2.7.8.0", version);
+        }
     }
 }
