@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Linq;
@@ -414,11 +415,18 @@ namespace DynamoPythonTests
         [Category("UnitTests")]
         public void VerifyExpectedVersionOfIPIsLoaded()
         {
-            var completionProvider = new IronPythonCompletionProvider();
-            string version = completionProvider.Engine.LanguageVersion.ToString();
+            // TODO - Remove this before merging
+            var process = Process.GetCurrentProcess();
 
-            // Verify correct version of Iron Python is loaded
-            Assert.AreEqual("2.7.8.0", version);
+            Console.WriteLine("ABOUT TO LIST LOADED MODULES! \n");
+
+            foreach (ProcessModule module in process.Modules)
+            {
+                Console.WriteLine(string.Format("Module: {0}", module.ModuleName));
+                Console.WriteLine(string.Format("Module: {0}", module.FileName));
+                Console.WriteLine();
+            }
+
         }
     }
 }
