@@ -57,8 +57,8 @@ namespace Dynamo.Graph.Nodes
         [Obsolete("Property will be deprecated in Dynamo 3.0, please use InitialValue")]
         public string IntitialValue
         {
-            get => InitialValue;
-            set => InitialValue = value;
+            get { return InitialValue; }
+            set { InitialValue = value; }
         }
         /// <summary>
         /// Description displayed to user of this output node.
