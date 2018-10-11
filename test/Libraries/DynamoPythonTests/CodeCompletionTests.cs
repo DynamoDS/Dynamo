@@ -420,10 +420,10 @@ namespace DynamoPythonTests
 
             Console.WriteLine("ABOUT TO LIST LOADED MODULES! \n");
 
-            foreach (ProcessModule module in process.Modules)
+            foreach (var module in AppDomain.CurrentDomain.GetAssemblies())
             {
-                Console.WriteLine(string.Format("Module: {0}", module.ModuleName));
-                Console.WriteLine(string.Format("Module: {0}", module.FileName));
+                Console.WriteLine(string.Format("Module: {0}", module.FullName));
+                Console.WriteLine(string.Format("Module: {0}", module.Location));
                 Console.WriteLine();
             }
 
