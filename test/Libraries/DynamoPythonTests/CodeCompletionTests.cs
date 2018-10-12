@@ -420,7 +420,9 @@ namespace DynamoPythonTests
 
             Console.WriteLine("ABOUT TO LIST LOADED MODULES! \n");
 
-            foreach (var module in AppDomain.CurrentDomain.GetAssemblies())
+            var assemblies = AppDomain.CurrentDomain.GetAssemblies().Where(p => !p.IsDynamic);
+
+            foreach (var module in assemblies)
             {
                 Console.WriteLine(string.Format("Module: {0}", module.FullName));
                 Console.WriteLine(string.Format("Module: {0}", module.Location));
