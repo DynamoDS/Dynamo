@@ -897,7 +897,8 @@ namespace DSCore
                 return list;
             }
 
-            foreach (object obj in list)
+            int i = 0;
+            while (i < list.Count)
             {
                 // If number of items in current list equals length in list of lengths,
                 // we should add current list in final list.
@@ -910,11 +911,18 @@ namespace DSCore
                     {
                         lengthIndex++;
                     }
+                    else if(lengths[lengthIndex] <= 0)
+                    {
+                        break;
+                    }
                     count = 0;
                 }
-
-                currList.Add(obj);
-                count++;
+                if (lengths[lengthIndex] > 0)
+                {
+                    currList.Add(list[i]);
+                    count++;
+                    i++;
+                }
             }
 
             if (currList.Count > 0)
