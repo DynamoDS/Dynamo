@@ -17,6 +17,7 @@ using CoreNodeModels.Input;
 using Dynamo.Graph.Connectors;
 using Dynamo.Graph.Nodes;
 using Dynamo.Wpf;
+using Newtonsoft.Json.Linq;
 
 namespace Dynamo.Tests
 {
@@ -48,6 +49,62 @@ namespace Dynamo.Tests
             dynamoModel.CurrentWorkspace.Save(newPath);
 
             Assert.IsTrue(File.Exists(newPath));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void EnsureGetCurrentWorkspaceModelAndViewJsonReturnsPropperJson()
+        {
+            //openFile
+            string openPath = Path.Combine(TestDirectory, @"core\isInput_isOutput\IsInput.dyn");
+            ViewModel.OpenCommand.Execute(openPath);
+
+            //Get file json contents
+            var fileContents = File.ReadAllText(openPath);
+            var fileObj = Newtonsoft.Json.Linq.JToken.Parse(fileContents);
+
+            //Get json from DynamoViewModel
+            var json = ViewModel.GetCurrentWorkspaceModelAndViewJson();
+            var jsonObj = Newtonsoft.Json.Linq.JToken.Parse(json);
+
+            //Check file json and json provided are the same
+            //Exclude "View" property as "View.Dynamo.Version" value may vary
+            foreach (var token in fileObj.Children())
+            {
+                var prop = token as JProperty;
+
+                if (prop.Name != "View")
+                {
+                    Assert.AreEqual(prop.Value, jsonObj[prop.Name]);
+                }
+            }
+
+            //Check file "View" property vs json "View" provided
+            //Exclude "Dynamo" property as "Dynamo.Version" value may vary
+            foreach (var token in fileObj["View"].Children())
+            {
+                var prop = token as JProperty;
+
+                if (prop.Name != "Dynamo")
+                {
+                    Assert.AreEqual(prop.Value, jsonObj["View"][prop.Name]);
+                }
+            }
+
+            //Check file "Dynamo" property vs json "Dynamo" provided
+            //Exclude "Version" property as "Version" value may vary
+            foreach (var token in fileObj["View"]["Dynamo"].Children())
+            {
+                var prop = token as JProperty;
+
+                if (prop.Name != "Version")
+                {
+                    Assert.AreEqual(prop.Value, jsonObj["View"]["Dynamo"][prop.Name]);
+                }
+            }
+
+            //Verify "Version" poperty included
+            Assert.NotNull(jsonObj["View"]["Dynamo"]["Version"]);
         }
 
         [Test]
