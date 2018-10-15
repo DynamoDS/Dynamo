@@ -17,6 +17,7 @@ using Dynamo.Utilities;
 using Newtonsoft.Json.Linq;
 using System.Globalization;
 using Dynamo.Graph.Nodes.ZeroTouch;
+using System.Threading;
 
 namespace Dynamo.Tests
 {
@@ -664,6 +665,33 @@ namespace Dynamo.Tests
             DoWorkspaceOpenAndCompare(filePath, jsonFolderName, ConvertCurrentWorkspaceToJsonAndSave,
                 serializationTestUtils.CompareWorkspaceModels,
                 serializationTestUtils.SaveWorkspaceComparisonData);
+        }
+
+        /// <summary>
+        /// This parameterized test finds all .dyn files in directories within
+        /// the test directory, opens them and executes, then converts them to
+        /// json and executes again, comparing the values from the two runs
+        /// while being in a different culture.
+        /// </summary>
+        /// <param name="filePath">The path to a .dyn file. This parameter is supplied
+        /// by the test framework.</param>
+        [Test, TestCaseSource("FindWorkspaces"), Category("JsonTestExclude")]
+        public void SerializationTestInDifferentCulture(string filePath)
+        {
+            var frCulture = CultureInfo.CreateSpecificCulture("fr-FR");
+            
+            var currentCulture = Thread.CurrentThread.CurrentCulture;
+            var currentUICulture = Thread.CurrentThread.CurrentUICulture;
+
+            Thread.CurrentThread.CurrentCulture = frCulture;
+            Thread.CurrentThread.CurrentUICulture = frCulture;
+
+            DoWorkspaceOpenAndCompare(filePath, jsonFolderName, ConvertCurrentWorkspaceToJsonAndSave,
+                serializationTestUtils.CompareWorkspaceModels,
+                serializationTestUtils.SaveWorkspaceComparisonData);
+
+            Thread.CurrentThread.CurrentCulture = currentCulture;
+            Thread.CurrentThread.CurrentUICulture = currentUICulture;
         }
 
         /// <summary>
