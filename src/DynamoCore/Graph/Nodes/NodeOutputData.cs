@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
@@ -84,7 +85,7 @@ namespace Dynamo.Graph.Nodes
             var valNumberComparison = false;
             try
             {
-                valNumberComparison = Math.Abs(Convert.ToDouble(this.IntitialValue) - Convert.ToDouble(converted.IntitialValue)) < .000001;
+                valNumberComparison = Math.Abs(Convert.ToDouble(this.IntitialValue, CultureInfo.InvariantCulture) - Convert.ToDouble(converted.IntitialValue, CultureInfo.InvariantCulture)) < .000001;
             }
             catch (Exception e)
             {
