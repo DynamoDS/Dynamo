@@ -26,9 +26,13 @@ namespace Dynamo.LibraryUI.Views
             {
                 var settings = new CefSettings { RemoteDebuggingPort = 8088 };
 
+                // Revit Settings: 
+                // https://git.autodesk.com/revit/revit/blob/082a2eda25c595a37890475bbd4a35d7bab0f939/Source/UIFramework/UIFramework/Utility/CefSharpUtility.cs
                 CefSharpSettings.LegacyJavascriptBindingEnabled = true;
                 CefSharpSettings.SubprocessExitIfParentProcessClosed = true;
-                Cef.Initialize(settings, performDependencyCheck: true, browserProcessHandler: null);
+                CefSharpSettings.ShutdownOnExit = false;
+
+                Cef.Initialize(settings);
             }
             
             InitializeComponent();
