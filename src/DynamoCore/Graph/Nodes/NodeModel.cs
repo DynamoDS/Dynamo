@@ -903,7 +903,7 @@ namespace Dynamo.Graph.Nodes
                     Name = this.Name,
                     Type = returnType,
                     Description = this.Description,
-                    IntitialValue = returnValue
+                    InitialValue = returnValue
                 };
             }
         }
