@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Linq;
@@ -409,26 +408,6 @@ namespace DynamoPythonTests
 
             Assert.AreNotEqual(0, matches.Length);
             //Assert.AreEqual(typeof(IronPython.Runtime.PythonDictionary), matches["a"].Item3);
-        }
-
-        [Test]
-        [Category("UnitTests")]
-        public void VerifyExpectedVersionOfIPIsLoaded()
-        {
-            // TODO - Remove this before merging
-            var process = Process.GetCurrentProcess();
-
-            Console.WriteLine("ABOUT TO LIST LOADED MODULES! \n");
-
-            var assemblies = AppDomain.CurrentDomain.GetAssemblies().Where(p => !p.IsDynamic);
-
-            foreach (var module in assemblies)
-            {
-                Console.WriteLine(string.Format("Module: {0}", module.FullName));
-                Console.WriteLine(string.Format("Module: {0}", module.Location));
-                Console.WriteLine();
-            }
-
         }
     }
 }
