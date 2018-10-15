@@ -21,6 +21,7 @@ namespace Dynamo.LibraryUI.Views
         {
             this.DataContext = viewModel;
 
+            // CEF should already be initiallized if running within Revit
             if (!Cef.IsInitialized)
             {
                 var settings = new CefSettings { RemoteDebuggingPort = 8088 };
