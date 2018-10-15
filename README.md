@@ -1,5 +1,3 @@
-# WARNING THIS IS A WIP BRANCH TESTING CEF v65.0.1 AND IS NOT YET STABLE
-
 ![Image](https://travis-ci.org/DynamoDS/Dynamo.svg?branch=master)
 
 ![Image](https://raw.github.com/ikeough/Dynamo/master/doc/distrib/Images/dynamo_logo_dark.png)
