@@ -76,7 +76,6 @@ namespace Dynamo.LibraryUI
         }
     }
 
-
     /// <summary>
     /// This class holds methods and data to be called from javascript
     /// </summary>
@@ -114,14 +113,6 @@ namespace Dynamo.LibraryUI
         private void DynamoWindow_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             browser.InvalidateVisual();
-        }
-
-        private void toggleBrowserVisibility(ChromiumWebBrowser browser)
-        {
-            if (browser != null)
-            {
-                browser.InvalidateVisual();
-            }
         }
 
         //if the dynamo window is minimized and then restored, force a layout update.
