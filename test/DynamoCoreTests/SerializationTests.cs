@@ -680,23 +680,22 @@ namespace Dynamo.Tests
         public void SerializationInDifferentCultureTest(string filePath)
         {
             var frCulture = CultureInfo.CreateSpecificCulture("fr-FR");
-            
+
+            // Save current culture - usually "en-US"
             var currentCulture = Thread.CurrentThread.CurrentCulture;
             var currentUICulture = Thread.CurrentThread.CurrentUICulture;
 
+            // Set "fr-FR"
             Thread.CurrentThread.CurrentCulture = frCulture;
-            Assert.AreEqual(Thread.CurrentThread.CurrentCulture.Name, frCulture.Name);
             Thread.CurrentThread.CurrentUICulture = frCulture;
-            Assert.AreEqual(Thread.CurrentThread.CurrentUICulture.Name, frCulture.Name);
 
             DoWorkspaceOpenAndCompare(filePath, jsonFolderNameDifferentCulture, ConvertCurrentWorkspaceToJsonAndSave,
                 serializationTestUtils.CompareWorkspaceModels,
                 serializationTestUtils.SaveWorkspaceComparisonData);
 
+            // Restore "en-US"
             Thread.CurrentThread.CurrentCulture = currentCulture;
-            Assert.AreEqual(Thread.CurrentThread.CurrentCulture.Name, currentCulture.Name);
             Thread.CurrentThread.CurrentUICulture = currentUICulture;
-            Assert.AreEqual(Thread.CurrentThread.CurrentUICulture.Name, currentUICulture.Name);
         }
 
         /// <summary>
