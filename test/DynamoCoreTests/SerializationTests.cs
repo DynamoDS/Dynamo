@@ -519,6 +519,7 @@ namespace Dynamo.Tests
     {
         public static string jsonNonGuidFolderName = "json_nonGuidIds";
         public static string jsonFolderName = "json";
+        public static string jsonFolderNameDifferentCulture = "json_differentCulture";
 
         private TimeSpan lastExecutionDuration = new TimeSpan();
         private Dictionary<Guid, string> modelsGuidToIdMap = new Dictionary<Guid, string>();
@@ -676,7 +677,7 @@ namespace Dynamo.Tests
         /// <param name="filePath">The path to a .dyn file. This parameter is supplied
         /// by the test framework.</param>
         [Test, TestCaseSource("FindWorkspaces"), Category("JsonTestExclude")]
-        public void SerializationTestInDifferentCulture(string filePath)
+        public void SerializationInDifferentCultureTest(string filePath)
         {
             var frCulture = CultureInfo.CreateSpecificCulture("fr-FR");
             
@@ -684,14 +685,18 @@ namespace Dynamo.Tests
             var currentUICulture = Thread.CurrentThread.CurrentUICulture;
 
             Thread.CurrentThread.CurrentCulture = frCulture;
+            Assert.AreEqual(Thread.CurrentThread.CurrentCulture.Name, frCulture.Name);
             Thread.CurrentThread.CurrentUICulture = frCulture;
+            Assert.AreEqual(Thread.CurrentThread.CurrentUICulture.Name, frCulture.Name);
 
-            DoWorkspaceOpenAndCompare(filePath, jsonFolderName, ConvertCurrentWorkspaceToJsonAndSave,
+            DoWorkspaceOpenAndCompare(filePath, jsonFolderNameDifferentCulture, ConvertCurrentWorkspaceToJsonAndSave,
                 serializationTestUtils.CompareWorkspaceModels,
                 serializationTestUtils.SaveWorkspaceComparisonData);
 
             Thread.CurrentThread.CurrentCulture = currentCulture;
+            Assert.AreEqual(Thread.CurrentThread.CurrentCulture.Name, currentCulture.Name);
             Thread.CurrentThread.CurrentUICulture = currentUICulture;
+            Assert.AreEqual(Thread.CurrentThread.CurrentUICulture.Name, currentUICulture.Name);
         }
 
         /// <summary>
