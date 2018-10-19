@@ -1492,22 +1492,6 @@
             The radius of the Cylinder
             </summary>
         </member>
-        <member name="P:Autodesk.DesignScript.Geometry.Cylinder.Height">
-            <summary>
-            The total height
-            </summary>
-            <search>
-            cylinder
-            </search>
-        </member>
-        <member name="P:Autodesk.DesignScript.Geometry.Cylinder.Axis">
-            <summary>
-            Axis of the cylinder
-            </summary>
-            <search>
-            cylinder
-            </search>
-        </member>
         <member name="M:Autodesk.DesignScript.Geometry.Edge.ToString">
             <summary>
             Get a string representation of the Edge
@@ -2554,12 +2538,11 @@
             Get a string representation of the PolyCurve
             </summary>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByJoinedCurves(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Double)">
+        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByJoinedCurves(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve})">
             <summary>
-            Make PolyCurve by joining curves. Flips curve as needed for connectivity. Choose a preferred join tolerance between 1e-6 and 1e-3 units.
+            Make PolyCurve by joining curves. Flips curve as needed for connectivity.
             </summary>
             <param name="curves"> Curves to join into polycurve </param>
-            <param name="joinTolerance"> Tolerance to determine size of gap allowed between curves to be joined </param>
             <returns>  </returns>
             <search>
             segments,joincurves
@@ -4039,6 +4022,11 @@
             </summary>
             <returns>  </returns>
         </member>
+        <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ToString">
+            <summary>
+            Get a string representation of the TSplineSurface
+            </summary>
+        </member>
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ByPlaneOriginNormal(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Vector,Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point,System.Int32,System.Int32,Autodesk.DesignScript.Geometry.TSpline.TSplineInitialSymmetry,System.Boolean)">
             <summary>
             Create a T-Spline Plane centered at root Point, with input normal Vector.
@@ -4481,7 +4469,6 @@
             Some parameters take single value or list - one value per curve.
             </summary>
             <param name="curves">A list of curves to create pipes from</param>
-            <param name="inSmoothMode">Show T-Spline Surface in box or smooth visualization</param>
             <param name="defaultRadius">Default radius for created pipes</param>
             <param name="snappingTolerance">The tolerance used to detect curve intersections</param>
             <param name="segmentsCount">Numbers of segments for each curve. The size of the list can be the curve count or 1 for replication or 0 for automatic determination.</param>
@@ -4493,6 +4480,7 @@
             <param name="endRadii">Custom radius for each pipe handle at the end of each curve. This parameter is ignored when autoHandleEnd is true. The size of the list can be the curve count or 1 for replication.</param>
             <param name="startPositions">Custom position of each pipe handle at the start of each curve in percentage between 0 and 1 along the curve's arc-length. This parameter is ignored when autoHandleStart is true. The size of the list can be the curve count or 1 for replication.</param>
             <param name="endPositions">Custom position of each pipe handle at the end of each curve in percentage between 0 and 1 along the curve's arc-length. This parameter is ignored when autoHandleEnd is true. The size of the list can be the curve count or 1 for replication.</param>
+            <param name="inSmoothMode">Show T-Spline Surface in box or smooth visualization</param>
             <search>tspline,create,pipe,curve</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ByCombinedTSplineSurfaces(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.TSpline.TSplineSurface})">
@@ -4639,7 +4627,7 @@
             <returns>TSpline surface without coincident vertices</returns>
             <search>tspline,weld,coincident,vertex</search>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.UnweldEdges(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.TSpline.TSplineEdge})">
+        <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.Unweld(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.TSpline.TSplineEdge})">
             <summary>
             Unweld all the given edges, It will unweld each vertex on all the edges.
             </summary>
@@ -4647,7 +4635,7 @@
             <returns>TSpline surface with unwelded edges</returns>
             <search>tspline,unweld,edge</search>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.UnweldVertices(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.TSpline.TSplineVertex})">
+        <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.Unweld(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.TSpline.TSplineVertex})">
             <summary>
             Unweld all the specified vertices. All edges on every vertex will be unwelded.
             </summary>
@@ -5996,18 +5984,6 @@
             </summary>
             <search>bounds</search>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Geometry.ToSolidDef">
-            <summary>
-            Convert geometry to Solid Def json
-            </summary>
-            <returns>Json formatted string</returns>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Geometry.Approximate">
-            <summary>
-            Convert internal structure of geometry from analytics to splines
-            </summary>
-            <returns></returns>
-        </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.ImportFromSAT(System.IO.FileInfo)">
             <summary>
             Imports a SAT file and returns an array of imported geometries
@@ -6021,13 +5997,6 @@
             </summary>
             <param name="filePath">Path to the SAT file</param>
             <returns>List of imported geometries</returns>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Geometry.FromSolidDef(System.String)">
-            <summary>
-            Imports a JSON string and returns an array of imported geometries
-            </summary>
-            <param name="solidDefJson">Json string containg solid def formated geometry</param>
-            <returns>List of converted geometries</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.ExportToSAT(System.String)">
             <summary>
@@ -6236,12 +6205,12 @@
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.LowerModelerExtentExceeded">
             <summary>
-              Looks up a localized string similar to Lower modeling extent exceeded, consider  choosing a modeling range between {0} and {1}.
+              Looks up a localized string similar to Your inputs lie outside of the allowable modeling range, consider  choosing the {0} setting with a modeling range between {1} and {2} from the &quot;Settings =&gt; Geometry Working Range&quot; dialog.
             </summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.ModelerExtentsExceeded">
             <summary>
-              Looks up a localized string similar to Modeling extents are exceeded, consider choosing smaller values.
+              Looks up a localized string similar to You have exceeded the allowable modeling extents, consider choosing smaller values.
             </summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.NoImplementationException">
@@ -6321,7 +6290,7 @@
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.UpperModelerExtentExceeded">
             <summary>
-              Looks up a localized string similar to Upper modeling extent exceeded, consider choosing a modeling range between {0} and {1}.
+              Looks up a localized string similar to Your inputs lie outside of the allowable modeling range, consider choosing the {0} setting with a modeling range between {1} and {2} from the &quot;Settings =&gt; Geometry Working Range&quot; dialog.
             </summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.VertexColorNotSupported">
