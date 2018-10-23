@@ -76,7 +76,6 @@ namespace Dynamo.LibraryUI
         }
     }
 
-
     /// <summary>
     /// This class holds methods and data to be called from javascript
     /// </summary>
@@ -113,22 +112,13 @@ namespace Dynamo.LibraryUI
         //if the window is resized toggle visibility of browser to force redraw
         private void DynamoWindow_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            toggleBrowserVisibility(this.browser);
-        }
-
-        private void toggleBrowserVisibility(ChromiumWebBrowser browser)
-        {
-            if (browser != null)
-            {
-                browser.Visibility = Visibility.Hidden;
-                browser.Visibility = Visibility.Visible;
-            }
+            browser.InvalidateVisual();
         }
 
         //if the dynamo window is minimized and then restored, force a layout update.
         private void DynamoWindowStateChanged(object sender, EventArgs e)
         {
-            toggleBrowserVisibility(this.browser);
+            browser.InvalidateVisual();
         }
 
         /// <summary>
@@ -191,11 +181,17 @@ namespace Dynamo.LibraryUI
             this.browser = browser;
             sidebarGrid.Children.Add(view);
             browser.RegisterAsyncJsObject("controller", this);
-            //RegisterResources(browser);
+            RegisterResources(browser);
 
             view.Loaded += OnLibraryViewLoaded;
             browser.SizeChanged += Browser_SizeChanged;
             browser.LoadError += Browser_LoadError;
+
+            // TODO - this was added Fall 2017 due to issues with 
+            // library failing to load due to timing issues.  DYN-944 
+            // is a testing task that should make the final determination
+            // as it no longer seems required in CEF v65.0.1
+            /*
             //wait for the browser to load before setting the resources
             browser.LoadingStateChanged += (sender, args) =>
             {
@@ -205,6 +201,7 @@ namespace Dynamo.LibraryUI
                     RegisterResources(browser);
                 }
             };
+            */
 
             return view;
         }
@@ -219,7 +216,7 @@ namespace Dynamo.LibraryUI
         //if the browser window itself is resized, toggle visibility to force redraw.
         private void Browser_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            toggleBrowserVisibility(this.browser);
+            browser.InvalidateVisual();
         }
 
         #region Tooltip

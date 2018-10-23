@@ -1752,7 +1752,13 @@ namespace Dynamo.Graph.Workspaces
 
                 // TODO, QNTM-1099: Figure out if ZIndex needs to be set here as well
                 var noteModel = new NoteModel(noteViewInfo.X, noteViewInfo.Y, noteViewInfo.Text, guidValue);
-                this.AddNote(noteModel);
+
+                //if this note does not exist, add it to the workspace.
+                var matchingNote = this.Notes.FirstOrDefault(x => x.GUID == noteModel.GUID);
+                if (matchingNote == null)
+                {
+                    this.AddNote(noteModel);
+                }
             }
         }
 
@@ -1778,7 +1784,14 @@ namespace Dynamo.Graph.Workspaces
                     annotationViewInfo.Top, 
                     text, 
                     annotationGuidValue);
-                this.AddNote(noteModel);
+
+                //if this note does not exist, add it to the workspace.
+                var matchingNote = this.Notes.FirstOrDefault(x => x.GUID == noteModel.GUID);
+                if (matchingNote == null)
+                {
+                    this.AddNote(noteModel);
+                }
+           
             }
         }
 
@@ -1836,7 +1849,13 @@ namespace Dynamo.Graph.Workspaces
                 annotationModel.FontSize = annotationViewInfo.FontSize;
                 annotationModel.Background = annotationViewInfo.Background;
                 annotationModel.GUID = annotationGuidValue;
-                this.AddNewAnnotation(annotationModel);
+
+                //if this group/annotation does not exist, add it to the workspace.
+                var matchingAnnotation = this.Annotations.FirstOrDefault(x => x.GUID == annotationModel.GUID);
+                if (matchingAnnotation == null)
+                {
+                    this.AddNewAnnotation(annotationModel);
+                }
             }
         }
 

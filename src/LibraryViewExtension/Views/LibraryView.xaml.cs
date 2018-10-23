@@ -21,10 +21,16 @@ namespace Dynamo.LibraryUI.Views
         {
             this.DataContext = viewModel;
 
+            // CEF should already be initiallized if running within Revit
             if (!Cef.IsInitialized)
             {
                 var settings = new CefSettings { RemoteDebuggingPort = 8088 };
-                //Matching the API with  version 55
+
+                // Matching Revit 2020 CefSharp Initialization Settings: 
+                CefSharpSettings.LegacyJavascriptBindingEnabled = true;
+                CefSharpSettings.SubprocessExitIfParentProcessClosed = true;
+                CefSharpSettings.ShutdownOnExit = false;
+
                 Cef.Initialize(settings);
             }
             

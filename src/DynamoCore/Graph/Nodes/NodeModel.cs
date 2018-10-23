@@ -887,9 +887,15 @@ namespace Dynamo.Graph.Nodes
                 // When Concrete type is dictionary or other type not expressed in enum, type is set to unknown
                 object returnObj = CachedValue?.Data?? new object();
                 var returnType = NodeOutputData.getNodeOutputTypeFromType(returnObj.GetType());
+                var returnValue = String.Empty;
 
                 // IntialValue is returned when the Type enum does not equal unknown
-                var returnValue = (returnType != NodeOutputTypes.unknownOutput) ? returnObj.ToString() : String.Empty; 
+                if(returnType != NodeOutputTypes.unknownOutput)
+                {
+                    var formattableReturnObj = returnObj as IFormattable;
+                    returnValue = formattableReturnObj != null ? formattableReturnObj.ToString(null, CultureInfo.InvariantCulture) : returnObj.ToString();
+                }
+
                 
                 return new NodeOutputData()
                 {
@@ -897,7 +903,7 @@ namespace Dynamo.Graph.Nodes
                     Name = this.Name,
                     Type = returnType,
                     Description = this.Description,
-                    IntitialValue = returnValue
+                    InitialValue = returnValue
                 };
             }
         }
