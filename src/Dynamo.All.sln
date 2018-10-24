@@ -221,6 +221,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DesignScriptBuiltin", "Libr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoPackagesWPF", "DynamoPackagesWPF\DynamoPackagesWPF.csproj", "{47D2166C-5261-4093-9660-E72B7035E666}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoWPFCLI", "DynamoWPFCLI\DynamoWPFCLI.csproj", "{F7FD9395-35D5-474D-8AD1-9904817E70D3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -507,6 +509,10 @@ Global
 		{47D2166C-5261-4093-9660-E72B7035E666}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{47D2166C-5261-4093-9660-E72B7035E666}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{47D2166C-5261-4093-9660-E72B7035E666}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F7FD9395-35D5-474D-8AD1-9904817E70D3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F7FD9395-35D5-474D-8AD1-9904817E70D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F7FD9395-35D5-474D-8AD1-9904817E70D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F7FD9395-35D5-474D-8AD1-9904817E70D3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

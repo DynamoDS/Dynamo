@@ -1,0 +1,240 @@
+{
+  "Uuid": "6dd689fc-ac7c-4f1f-93b0-752aec78f9ef",
+  "IsCustomNode": false,
+  "Description": null,
+  "Name": "IsInput",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [
+    {
+      "Id": "c275ece023164e278d51915257374c1e",
+      "Name": "Boolean",
+      "Type": "boolean",
+      "Value": "true",
+      "Description": "Selection between a true and false."
+    },
+    {
+      "Id": "5a7d8a03e09c49dfa269379e1d72baeb",
+      "Name": "Integer Slider",
+      "Type": "number",
+      "Value": "1",
+      "MaximumValue": 100.0,
+      "MinimumValue": 0.0,
+      "StepValue": 1.0,
+      "NumberType": "Integer",
+      "Description": "A slider that produces integer values."
+    },
+    {
+      "Id": "c5b69bb0535d46a9bbb6c8b8babae72b",
+      "Name": "Number",
+      "Type": "number",
+      "Value": "0",
+      "NumberType": "Double",
+      "Description": "Creates a number."
+    },
+    {
+      "Id": "a37e7e8f5d0e4cf6b3c6650dd00ab1c3",
+      "Name": "String",
+      "Type": "string",
+      "Value": "Test",
+      "Description": "Creates a string."
+    },
+    {
+      "Id": "63f4fd45ade2450e91a42df05c498afd",
+      "Name": "Date Time",
+      "Type": "date",
+      "Value": "2018-05-02T15:40:00Z",
+      "Description": "Create a DateTime object from a formatted date and time string. Date and time must be of the format \"April 12, 1977 12:00 PM\""
+    }
+  ],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "CoreNodeModels.Input.BoolSelector, CoreNodeModels",
+      "NodeType": "BooleanInputNode",
+      "InputValue": true,
+      "Id": "c275ece023164e278d51915257374c1e",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "85b5d6a299fc46afb9bcd62c0aed4ab4",
+          "Name": "",
+          "Description": "Boolean",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Selection between a true and false."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.IntegerSlider, CoreNodeModels",
+      "NodeType": "NumberInputNode",
+      "NumberType": "Integer",
+      "InputValue": 1,
+      "MaximumValue": 100,
+      "MinimumValue": 0,
+      "StepValue": 1,
+      "Id": "5a7d8a03e09c49dfa269379e1d72baeb",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "012846c38cf843c3960a3c748485d153",
+          "Name": "",
+          "Description": "Int32",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "A slider that produces integer values."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.DoubleInput, CoreNodeModels",
+      "NodeType": "NumberInputNode",
+      "NumberType": "Double",
+      "InputValue": 0.0,
+      "Id": "c5b69bb0535d46a9bbb6c8b8babae72b",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "cf49dec9970645dda5c5d3f0cbb7d8b3",
+          "Name": "",
+          "Description": "Double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Creates a number."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.StringInput, CoreNodeModels",
+      "NodeType": "StringInputNode",
+      "InputValue": "Test",
+      "Id": "a37e7e8f5d0e4cf6b3c6650dd00ab1c3",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "cc6b125c92744da5a8911371a8137e6e",
+          "Name": "",
+          "Description": "String",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Creates a string."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.DateTime, CoreNodeModels",
+      "NodeType": "DateTimeInputNode",
+      "InputValue": "2018-05-02T15:40:00Z",
+      "Id": "63f4fd45ade2450e91a42df05c498afd",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "d016d2d6011f4cbbad535c4d37312aaa",
+          "Name": "",
+          "Description": "DateTime",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Create a DateTime object from a formatted date and time string. Date and time must be of the format \"April 12, 1977 12:00 PM\""
+    }
+  ],
+  "Connectors": [],
+  "Dependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.0.1.4395",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "Boolean",
+        "Id": "c275ece023164e278d51915257374c1e",
+        "IsSetAsInput": true,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 179.5,
+        "Y": 154.75
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Integer Slider",
+        "Id": "5a7d8a03e09c49dfa269379e1d72baeb",
+        "IsSetAsInput": true,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 178.5,
+        "Y": 251.75
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Number",
+        "Id": "c5b69bb0535d46a9bbb6c8b8babae72b",
+        "IsSetAsInput": true,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 183.5,
+        "Y": 344.75
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "String",
+        "Id": "a37e7e8f5d0e4cf6b3c6650dd00ab1c3",
+        "IsSetAsInput": true,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 181.5,
+        "Y": 441.75
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Date Time",
+        "Id": "63f4fd45ade2450e91a42df05c498afd",
+        "IsSetAsInput": true,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 180.0812863442,
+        "Y": 536.431404869832
+      }
+    ],
+    "Annotations": [],
+    "X": 56.031296034510405,
+    "Y": -49.228806982134643,
+    "Zoom": 0.78436932804482717
+  }
+}
