@@ -4039,6 +4039,11 @@
             </summary>
             <returns>  </returns>
         </member>
+        <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ToString">
+            <summary>
+            Get a string representation of the TSplineSurface
+            </summary>
+        </member>
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ByPlaneOriginNormal(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Vector,Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point,System.Int32,System.Int32,Autodesk.DesignScript.Geometry.TSpline.TSplineInitialSymmetry,System.Boolean)">
             <summary>
             Create a T-Spline Plane centered at root Point, with input normal Vector.
@@ -6236,12 +6241,12 @@
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.LowerModelerExtentExceeded">
             <summary>
-              Looks up a localized string similar to Lower modeling extent exceeded, consider  choosing a modeling range between {0} and {1}.
+              Looks up a localized string similar to Your inputs lie outside of the allowable modeling range, consider  choosing the {0} setting with a modeling range between {1} and {2} from the &quot;Settings =&gt; Geometry Working Range&quot; dialog.
             </summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.ModelerExtentsExceeded">
             <summary>
-              Looks up a localized string similar to Modeling extents are exceeded, consider choosing smaller values.
+              Looks up a localized string similar to You have exceeded the allowable modeling extents, consider choosing smaller values.
             </summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.NoImplementationException">
@@ -6321,7 +6326,7 @@
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.UpperModelerExtentExceeded">
             <summary>
-              Looks up a localized string similar to Upper modeling extent exceeded, consider choosing a modeling range between {0} and {1}.
+              Looks up a localized string similar to Your inputs lie outside of the allowable modeling range, consider choosing the {0} setting with a modeling range between {1} and {2} from the &quot;Settings =&gt; Geometry Working Range&quot; dialog.
             </summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.VertexColorNotSupported">
