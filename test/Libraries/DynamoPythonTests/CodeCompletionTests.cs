@@ -413,7 +413,7 @@ namespace DynamoPythonTests
 
         [Test]
         [Category("UnitTests")]
-        public void ListLoadedModules()
+        public void VerifyIronPythonLoadedAssemblies()
         {
             // Verify IronPython assebmlies are loaded a single time
             List<string> matches = new List<string>();
