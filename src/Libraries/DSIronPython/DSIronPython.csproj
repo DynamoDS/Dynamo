@@ -84,9 +84,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="DSIronPython_DynamoCustomization.xml">
-      <SubType>Designer</SubType>
-    </Content>
+    <Content Include="DSIronPython_DynamoCustomization.xml" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\DynamoUtilities\DynamoUtilities.csproj">
