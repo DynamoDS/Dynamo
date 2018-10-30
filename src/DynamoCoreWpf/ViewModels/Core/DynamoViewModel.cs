@@ -810,18 +810,15 @@ namespace Dynamo.ViewModels
                     );
                 string body = "body=" + parameter.ToString();
 
-                // if the base Uri has pre-existing parameters, we need to append to them
-                // otherwise it's safe to directly assign
-                if (baseUri.Query != null && baseUri.Query.Length > 1)
-                    baseUri.Query = baseUri.Query.Substring(1) + "&" + title + "&" + body;
-                else
-                    baseUri.Query = title + "&" + body;
+                // append the title and body to the URL as query parameters
+                baseUri.Query = title + "&" + body;
 
                 // this will properly format & escape the string for use as a uri
                 var combinedUrl = baseUri.ToString();
 
                 // launching the process using explorer.exe will format the URL incorrectly
                 // and Github will not recognise the query parameters in the URL
+                // so launch with default operating system web browser
                 Process.Start(new ProcessStartInfo(combinedUrl));
             }
             else Process.Start(new ProcessStartInfo("explorer.exe", Configurations.GitHubBugReportingLink));
