@@ -815,9 +815,9 @@ namespace Dynamo.ViewModels
             return Model.CustomNodeManager.Contains((Guid)parameters);
         }
 
-        public static void ReportABug(object parameter)
+        public static void ReportABug(object bodyContent)
         {
-            if (parameter != null)
+            if (bodyContent != null)
             {
                 UriBuilder baseUri = new UriBuilder(Configurations.GitHubBugReportingLink);
 
@@ -825,18 +825,18 @@ namespace Dynamo.ViewModels
                     Resources.CrashPromptGithubNewIssueTitle,
                     AssemblyHelper.GetDynamoVersion().ToString()
                     );
-                string body = "body=" + parameter.ToString();
+                string body = "body=" + bodyContent.ToString();
 
                 // append the title and body to the URL as query parameters
                 baseUri.Query = title + "&" + body;
 
                 // this will properly format & escape the string for use as a uri
-                var combinedUrl = baseUri.ToString();
+                var urlWithParameters = baseUri.ToString();
 
                 // launching the process using explorer.exe will format the URL incorrectly
                 // and Github will not recognise the query parameters in the URL
                 // so launch with default operating system web browser
-                Process.Start(new ProcessStartInfo(combinedUrl));
+                Process.Start(new ProcessStartInfo(urlWithParameters));
             }
             else Process.Start(new ProcessStartInfo("explorer.exe", Configurations.GitHubBugReportingLink));
         }
