@@ -66,4 +66,8 @@
     <Prefer32Bit>false</Prefer32Bit>
 	<UICulture>en-US</UICulture>
   </PropertyGroup>
+  <!--This is used to set the framework version for icon resource dll generation (lookup of system.drawing.dll)-->
+  <PropertyGroup>
+    <ResourceGeneration_FrameworkVersion>v4.7</ResourceGeneration_FrameworkVersion>
+  </PropertyGroup>
 </Project>
