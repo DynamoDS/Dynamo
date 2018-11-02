@@ -143,10 +143,11 @@ namespace Dynamo.Applications
 
             var versions = new[]
             {
-                LibraryVersion.Version224,
-                LibraryVersion.Version223, 
-                LibraryVersion.Version222,
-                LibraryVersion.Version221
+                    new Version(224,4,0),
+                    new Version(224,0,1),
+                    new Version(223,0,1),
+                    new Version(222,0,0),
+                    new Version(221,0,0)
             };
 
             var preloader = new Preloader(rootFolder, versions);
@@ -286,7 +287,7 @@ namespace Dynamo.Applications
                         output.Add(new FileLoadException(
                             string.Format(Resources.MismatchedAssemblyVersion, assembly.FullName, currentReferencedAssembly.FullName)
                             + Environment.NewLine + Resources.MismatchedAssemblyList + Environment.NewLine +
-                            String.Join(", ", referencingNewerVersions.Select(x => x.Name).ToArray())));
+                            String.Join(", ", referencingNewerVersions.Select(x => x.Name).Distinct().ToArray())));
                     }
                 }
             }

@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
@@ -49,7 +50,17 @@ namespace Dynamo.Graph.Nodes
         /// The value of the output when the graph was saved.
         /// This should always be a string for all types.
         /// </summary>
-        public string IntitialValue { get; set; }
+        public string InitialValue { get; set; }
+        /// <summary>
+        /// Obsolete property due to typo in API.  Please use InitialValue.
+        /// </summary>
+        [JsonIgnore]
+        [Obsolete("Property will be deprecated in Dynamo 3.0, please use InitialValue")]
+        public string IntitialValue
+        {
+            get { return InitialValue; }
+            set { InitialValue = value; }
+        }
         /// <summary>
         /// Description displayed to user of this output node.
         /// </summary>
@@ -84,7 +95,7 @@ namespace Dynamo.Graph.Nodes
             var valNumberComparison = false;
             try
             {
-                valNumberComparison = Math.Abs(Convert.ToDouble(this.IntitialValue) - Convert.ToDouble(converted.IntitialValue)) < .000001;
+                valNumberComparison = Math.Abs(Convert.ToDouble(this.InitialValue, CultureInfo.InvariantCulture) - Convert.ToDouble(converted.InitialValue, CultureInfo.InvariantCulture)) < .000001;
             }
             catch (Exception e)
             {
@@ -99,7 +110,7 @@ namespace Dynamo.Graph.Nodes
                 //this.Name == converted.Name &&
                 this.Type == converted.Type &&
                 //check if the value is the same or if the value is a number check is it similar
-                ((this.IntitialValue == converted.IntitialValue) || valNumberComparison || this.IntitialValue.ToString() == converted.IntitialValue.ToString());
+                ((this.InitialValue == converted.InitialValue) || valNumberComparison || this.InitialValue.ToString() == converted.InitialValue.ToString());
         }
     }
 

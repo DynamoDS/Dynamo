@@ -371,7 +371,8 @@ namespace Dynamo.UI.Controls
             RunOnSchedulerSync(
                 () =>
                 {
-                    var preferredDictionaryOrdering = nodeViewModel.NodeModel.OutPorts.Select(p => p.Name);
+                    var preferredDictionaryOrdering = 
+                    nodeViewModel.NodeModel.OutPorts.Select(p => p.Name).Where(n => !String.IsNullOrEmpty(n));
                     newViewModel = nodeViewModel.DynamoViewModel.WatchHandler.GenerateWatchViewModelForData(
                         nodeViewModel.NodeModel.CachedValue, preferredDictionaryOrdering,
                         null, nodeViewModel.NodeModel.AstIdentifierForPreview.Name, false);

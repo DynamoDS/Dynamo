@@ -18,7 +18,7 @@
     <!-- Placeholders must exist before all other scripts that try to access them -->
     <div class="OuterMostContainer" id="libraryContainerPlaceholder"></div>
     
-    <!-- The main library view compoment -->
+    <!-- The main library view component -->
     <script src='./dist/librarie.min.js'></script>
     
     <script>
@@ -60,7 +60,8 @@
         refreshLibraryView(libController);
 
         libController.searchLibraryItemsHandler = function (text, callback) {
-            let url = "nodeSearch" + "/" + text;
+			let encodedText = encodeURIComponent(text);
+            let url = "nodeSearch" + "/" + encodedText;
             let jsonUrls = [url];
             let downloader = LibraryEntryPoint.CreateJsonDownloader(jsonUrls, function (jsonUrl, jsonObject) {
 
@@ -71,7 +72,7 @@
                     console.log("Error: no search result.");
                     return;
                 }
-                csharpController.logEventsToInstrumentation("Search", text);
+                csharpController.logEventsToInstrumentation("Search", encodedText);
                 callback(searchLoadedTypesJson);
             });
         }
