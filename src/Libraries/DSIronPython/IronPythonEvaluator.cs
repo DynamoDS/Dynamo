@@ -1,8 +1,12 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using Autodesk.DesignScript.Runtime;
 using Dynamo.Utilities;
+using DynamoInstallDetective;
 using IronPython.Hosting;
 
 using Microsoft.Scripting.Hosting;
@@ -29,6 +33,34 @@ namespace DSIronPython
         private static string prev_code { get; set; }
         /// <summary> stores a copy of the previously compiled engine</summary>
         private static ScriptSource prev_script { get; set; }
+        /// <summary> stores a reference to the executing Dynamo Core directory</summary>
+        private static string dynamoCorePath { get; set; }
+
+        /// <summary>
+        /// Attempts to build a path referencing the Python Standard Library in Dynamo Core,
+        /// returns null if unable to retrieve a valid path.
+        /// </summary>
+        /// <returns>path to the Python Standard Library in Dynamo Core</returns>
+        private static string pythonStandardLibPath()
+        {
+            // Attempt to get and cache the Dynamo Core directory path
+            if(string.IsNullOrEmpty(dynamoCorePath))
+            {
+                // Gather executing assembly info
+                Assembly assembly = Assembly.GetExecutingAssembly();
+                Version version = assembly.GetName().Version;
+                string dynamoRoot = Path.GetDirectoryName(assembly.Location);
+
+                // Attempt to return the Dynamo Core execution path, returns null if attempt fails
+                try { dynamoCorePath = DynamoProducts.GetDynamoPath(version, dynamoRoot); }
+                catch { dynamoCorePath = null; }
+            }
+
+            // Return the standard library path
+            if (!string.IsNullOrEmpty(dynamoCorePath))
+            { return dynamoCorePath + @"\IronPython.StdLib.2.7.8"; }
+            else { return null; }
+        }
 
         /// <summary>
         ///     Executes a Python script with custom variable names. Script may be a string
@@ -44,9 +76,32 @@ namespace DSIronPython
             IList bindingNames,
             [ArbitraryDimensionArrayImport] IList bindingValues)
         {
+            // TODO - it would be nice if users could modify a preference
+            // setting enabling the ability to load additional paths
+
+            // Container for paths that will be imported in the PythonEngine
+            List<string> paths = new List<string>();
+
+            // Attempt to get the Standard Python Library
+            string stdLib = pythonStandardLibPath();
+
             if (code != prev_code)
             {
-                ScriptSource script = Python.CreateEngine().CreateScriptSourceFromString(code);
+                ScriptEngine PythonEngine = Python.CreateEngine();
+                if (!string.IsNullOrEmpty(stdLib))
+                {
+                    code = "import sys" + System.Environment.NewLine + code;
+                    paths = PythonEngine.GetSearchPaths().ToList();
+                    paths.Add(stdLib);
+                }
+
+                // If any paths were successfully retrieved, append them
+                if (paths.Count > 0)
+                {
+                    PythonEngine.SetSearchPaths(paths);
+                }
+
+                ScriptSource script = PythonEngine.CreateScriptSourceFromString(code);
                 script.Compile();
                 prev_script = script;
                 prev_code = code;

@@ -97,6 +97,10 @@
       <Name>DynamoServices</Name>
       <Private>False</Private>
     </ProjectReference>
+    <ProjectReference Include="..\..\Tools\DynamoInstallDetective\DynamoInstallDetective.csproj">
+      <Project>{98692887-b389-4f73-a71a-9fc516738dab}</Project>
+      <Name>DynamoInstallDetective</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -105,4 +109,7 @@
   <Target Name="AfterBuild">
     <Copy SourceFiles="$(ProjectDir)DSIronPython_DynamoCustomization.xml" DestinationFolder="$(OutputPath)" />
   </Target>
+  <PropertyGroup>
+    <PostBuildEvent>xcopy "$(ProjectDir)..\..\packages\IronPython.StdLib.2.7.8.1\contentFiles\any\any\Lib" "$(TargetDir)IronPython.StdLib.2.7.8\" /Y /E</PostBuildEvent>
+  </PropertyGroup>
 </Project>
