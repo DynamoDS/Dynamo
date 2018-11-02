@@ -121,7 +121,7 @@
       <Output TaskParameter="Assemblies" ItemName="AssemblyInfo" />
     </GetAssemblyIdentity>
     <!-- Generate customization dll -->
-    <GenerateResource UseSourcePath="true" Sources="$(ProjectDir)GeometryUIImages.resx" OutputResources="$(ProjectDir)GeometryUIImages.resources" References="$(FrameworkAssembliesPath)System.Drawing.dll" />
-    <AL TargetType="library" EmbedResources="$(ProjectDir)GeometryUIImages.resources" OutputAssembly="$(OutDir)GeometryUI.customization.dll" Version="%(AssemblyInfo.Version)" />
+    <GenerateResource SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" UseSourcePath="true" Sources="$(ProjectDir)GeometryUIImages.resx" OutputResources="$(ProjectDir)GeometryUIImages.resources" References="$(FrameworkAssembliesPath)System.Drawing.dll" />
+    <AL SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" TargetType="library" EmbedResources="$(ProjectDir)GeometryUIImages.resources" OutputAssembly="$(OutDir)GeometryUI.customization.dll" Version="%(AssemblyInfo.Version)" />
   </Target>
 </Project>

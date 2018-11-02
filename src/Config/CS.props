@@ -69,6 +69,6 @@
   <!--This is used to set the framework version for icon resource dll generation (lookup of system.drawing.dll)-->
   <!--TODO For now this is set to 4.6 to support build machines without vs2017- but should be set to match the project targets-currently 4.7-->
   <PropertyGroup>
-    <ResourceGeneration_FrameworkVersion>v4.5</ResourceGeneration_FrameworkVersion>
+    <ResourceGeneration_FrameworkVersion>v4.6</ResourceGeneration_FrameworkVersion>
   </PropertyGroup>
 </Project>

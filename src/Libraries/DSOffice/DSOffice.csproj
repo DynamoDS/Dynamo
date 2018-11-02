@@ -133,7 +133,7 @@
       <Output TaskParameter="Assemblies" ItemName="AssemblyInfo" />
     </GetAssemblyIdentity>
     <!-- Generate customization dll -->
-    <GenerateResource UseSourcePath="true" Sources="$(ProjectDir)DSOfficeImages.resx" OutputResources="$(ProjectDir)DSOfficeImages.resources" References="$(FrameworkAssembliesPath)System.Drawing.dll" />
-    <AL TargetType="library" EmbedResources="$(ProjectDir)DSOfficeImages.resources" OutputAssembly="$(OutDir)DSOffice.customization.dll" Version="%(AssemblyInfo.Version)" />
+    <GenerateResource SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" UseSourcePath="true" Sources="$(ProjectDir)DSOfficeImages.resx" OutputResources="$(ProjectDir)DSOfficeImages.resources" References="$(FrameworkAssembliesPath)System.Drawing.dll" />
+    <AL SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" TargetType="library" EmbedResources="$(ProjectDir)DSOfficeImages.resources" OutputAssembly="$(OutDir)DSOffice.customization.dll" Version="%(AssemblyInfo.Version)" />
   </Target>
 </Project>

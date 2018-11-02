@@ -111,7 +111,7 @@
       <Output TaskParameter="Assemblies" ItemName="AssemblyInfo" />
     </GetAssemblyIdentity>
     <!-- Generate customization dll -->
-    <GenerateResource UseSourcePath="true" Sources="$(ProjectDir)Watch3DNodeModelsImages.resx" OutputResources="$(ProjectDir)Watch3DNodeModelsImages.resources" References="$(FrameworkAssembliesPath)System.Drawing.dll" />
-    <AL TargetType="library" EmbedResources="$(ProjectDir)Watch3DNodeModelsImages.resources" OutputAssembly="$(OutDir)Watch3DNodeModels.customization.dll" Version="%(AssemblyInfo.Version)" />
+    <GenerateResource SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" UseSourcePath="true" Sources="$(ProjectDir)Watch3DNodeModelsImages.resx" OutputResources="$(ProjectDir)Watch3DNodeModelsImages.resources" References="$(FrameworkAssembliesPath)System.Drawing.dll" />
+    <AL SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" TargetType="library" EmbedResources="$(ProjectDir)Watch3DNodeModelsImages.resources" OutputAssembly="$(OutDir)Watch3DNodeModels.customization.dll" Version="%(AssemblyInfo.Version)" />
   </Target>
 </Project>
