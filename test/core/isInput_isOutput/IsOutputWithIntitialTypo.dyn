@@ -12,35 +12,35 @@
       "Id": "c275ece023164e278d51915257374c1e",
       "Name": "Boolean",
       "Type": "boolean",
-      "InitialValue": "True",
+      "IntitialValue": "True",
       "Description": "Selection between a true and false."
     },
     {
       "Id": "5a7d8a03e09c49dfa269379e1d72baeb",
       "Name": "Integer Slider",
       "Type": "integer",
-      "InitialValue": "1",
+      "IntitialValue": "1",
       "Description": "A slider that produces integer values."
     },
     {
       "Id": "c5b69bb0535d46a9bbb6c8b8babae72b",
       "Name": "Number",
       "Type": "float",
-      "InitialValue": "1.32",
+      "IntitialValue": "1.32",
       "Description": "Creates a number."
     },
     {
       "Id": "a37e7e8f5d0e4cf6b3c6650dd00ab1c3",
       "Name": "String",
       "Type": "string",
-      "InitialValue": "Test",
+      "IntitialValue": "Test",
       "Description": "Creates a string."
     },
     {
       "Id": "435a1a78077e4e4bb70fa5a9e71773d7",
       "Name": "Watch",
       "Type": "unknown",
-      "InitialValue": "",
+      "IntitialValue": "",
       "Description": "Visualize the output of node."
     }
   ],

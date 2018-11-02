@@ -39,22 +39,24 @@ namespace Dynamo.LibraryUI.Handlers
         {
             try
             {
-                IResourceHandler handler;
+                DefaultResourceHandlerFactoryItem handlerItem;
 #if DEBUG
-                
+
                 if (logger != null)
                 {
                     logger.Log("Requested URL", request.Url);
                 }
 
 #endif
-                
-                if(!Handlers.TryGetValue(request.Url, out handler))
+                if(!Handlers.TryGetValue(request.Url, out handlerItem))
                 {
-                    handler = this.GetResourceHandler(request);
+                    IResourceHandler handler = this.GetResourceHandler(request);
+                    // TODO - verify bool param - determines whether or not the handler
+                    // should be used once(true) or until manually unregistered
+                    handlerItem = new DefaultResourceHandlerFactoryItem(handler, false);
                 }
 
-                return handler;
+                return handlerItem.Handler;
             }
             finally
             {

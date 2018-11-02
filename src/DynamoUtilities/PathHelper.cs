@@ -95,7 +95,7 @@ namespace DynamoUtilities
         /// This is a utility method for checking if given path contains valid XML document.
         /// </summary>
         /// <param name="path">path to the target xml file</param>
-        /// <param name="xmlDoc">System.Xml.XmlDocument repensentation of target xml file</param>
+        /// <param name="xmlDoc">System.Xml.XmlDocument representation of target xml file</param>
         /// <returns>Return true if file is Json, false if file is not Json, exception as out param</returns>
         public static bool isValidXML(string path, out XmlDocument xmlDoc, out Exception ex)
         {
