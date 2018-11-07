@@ -12,7 +12,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>DSIronPython</RootNamespace>
     <AssemblyName>DSIronPython</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
   </PropertyGroup>
@@ -107,6 +107,10 @@
     <ItemGroup>
       <PythonStdLib Include="$(ProjectDir)..\..\packages\IronPython.StdLib.2.7.8.1\contentFiles\any\any\Lib\**\*.*" />
     </ItemGroup>
-    <Copy SourceFiles="@(PythonStdLib)" DestinationFiles="@(PythonStdLib->'$(TargetDir)IronPython.StdLib.2.7.8\%(RecursiveDir)%(Filename)%(Extension)')" SkipUnchangedFiles="true" />
+    <Copy 
+      SourceFiles="@(PythonStdLib)"
+      DestinationFiles="@(PythonStdLib->'$(TargetDir)IronPython.StdLib.2.7.8\%(RecursiveDir)%(Filename)%(Extension)')"
+      SkipUnchangedFiles="true"
+    />
   </Target>
 </Project>
