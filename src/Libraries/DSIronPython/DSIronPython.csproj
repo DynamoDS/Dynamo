@@ -97,10 +97,6 @@
       <Name>DynamoServices</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\..\Tools\DynamoInstallDetective\DynamoInstallDetective.csproj">
-      <Project>{98692887-b389-4f73-a71a-9fc516738dab}</Project>
-      <Name>DynamoInstallDetective</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

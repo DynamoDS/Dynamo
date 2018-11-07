@@ -6,7 +6,6 @@ using System.Linq;
 using System.Reflection;
 using Autodesk.DesignScript.Runtime;
 using Dynamo.Utilities;
-using DynamoInstallDetective;
 using IronPython.Hosting;
 
 using Microsoft.Scripting.Hosting;
@@ -49,11 +48,7 @@ namespace DSIronPython
                 // Gather executing assembly info
                 Assembly assembly = Assembly.GetExecutingAssembly();
                 Version version = assembly.GetName().Version;
-                string dynamoRoot = Path.GetDirectoryName(assembly.Location);
-
-                // Attempt to return the Dynamo Core execution path, returns null if attempt fails
-                try { dynamoCorePath = DynamoProducts.GetDynamoPath(version, dynamoRoot); }
-                catch { dynamoCorePath = null; }
+                dynamoCorePath = Path.GetDirectoryName(assembly.Location);
             }
 
             // Return the standard library path
