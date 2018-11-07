@@ -14,7 +14,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 -->
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ImportGroup Label="PropertySheets">
     <Import Project="$(SolutionDir)/Config/CS.props" />
     <Import Project="$(SolutionDir)Config/Cleanup.targets" />
@@ -29,7 +29,7 @@ limitations under the License.
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Dynamo</RootNamespace>
     <AssemblyName>DynamoCore</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <WarningLevel>4</WarningLevel>
     <FileUpgradeFlags>
@@ -96,8 +96,7 @@ limitations under the License.
       <HintPath>..\..\extern\ProtoGeometry\ProtoGeometry.dll</HintPath>
     </Reference>
     <Reference Include="RestSharp, Version=105.2.3.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\RestSharp.105.2.3\lib\net45\RestSharp.dll</HintPath>
-      <Private>True</Private>
+      <HintPath>..\packages\RestSharp.105.2.3\lib\net46\RestSharp.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
@@ -396,14 +395,12 @@ limitations under the License.
     <Copy SourceFiles="@(ExternProtoGeometryXml)" DestinationFolder="$(OutputPath)\$(UICulture)" />
     <Copy SourceFiles="@(ExternProtoGeometryUICulture)" DestinationFolder="$(OutputPath)\$(UICulture)" />
     <Copy SourceFiles="@(ExternProtoGeometryLibGLocale)" DestinationFolder="$(OutputPath)\libg_locale\%(RecursiveDir)" />
-    
     <Copy SourceFiles="@(ExternLibG220)" DestinationFolder="$(OutputPath)libg_220_0_0\" />
     <Copy SourceFiles="@(ExternLibG221)" DestinationFolder="$(OutputPath)libg_221_0_0\" />
     <Copy SourceFiles="@(ExternLibG222)" DestinationFolder="$(OutputPath)libg_222_0_0\" />
     <Copy SourceFiles="@(ExternLibG223)" DestinationFolder="$(OutputPath)libg_223_0_1\" />
     <Copy SourceFiles="@(ExternLibG224)" DestinationFolder="$(OutputPath)libg_224_0_1\" />
     <Copy SourceFiles="@(ExternLibG2244)" DestinationFolder="$(OutputPath)libg_224_4_0\" />
-
     <Copy SourceFiles="@(ExternSimplexNoise)" DestinationFolder="$(OutputPath)" />
     <Copy SourceFiles="@(ExternAnalytics)" DestinationFolder="$(OutputPath)" />
     <Copy SourceFiles="@(SampleFiles)" DestinationFolder="$(OutputPath)samples\%(RecursiveDir)" />
@@ -415,7 +412,7 @@ limitations under the License.
   </Target>
   <Target Name="AfterBuild" Condition=" '$(OS)' != 'Unix' ">
     <!-- Get System.Drawing.dll -->
-    <GetReferenceAssemblyPaths TargetFrameworkMoniker=".NETFramework, Version=v2.0">
+    <GetReferenceAssemblyPaths TargetFrameworkMoniker=".NETFramework, Version=$(ResourceGeneration_FrameworkVersion)">
       <Output TaskParameter="FullFrameworkReferenceAssemblyPaths" PropertyName="FrameworkAssembliesPath" />
     </GetReferenceAssemblyPaths>
     <!-- Get DynamoCore -->
@@ -423,13 +420,13 @@ limitations under the License.
       <Output TaskParameter="Assemblies" ItemName="DynamoCoreInfo" />
     </GetAssemblyIdentity>
     <!-- Generate customization dll for DynamoCore -->
-    <GenerateResource UseSourcePath="true" Sources="$(ProjectDir)DynamoCoreImages.resx" OutputResources="$(ProjectDir)DynamoCoreImages.resources" References="$(FrameworkAssembliesPath)System.Drawing.dll" />
-    <AL TargetType="library" EmbedResources="$(ProjectDir)DynamoCoreImages.resources" OutputAssembly="$(OutDir)DynamoCore.customization.dll" Version="%(DynamoCoreInfo.Version)" />
+    <GenerateResource SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" UseSourcePath="true" Sources="$(ProjectDir)DynamoCoreImages.resx" OutputResources="$(ProjectDir)DynamoCoreImages.resources" References="$(FrameworkAssembliesPath)System.Drawing.dll" />
+    <AL SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" TargetType="library" EmbedResources="$(ProjectDir)DynamoCoreImages.resources" OutputAssembly="$(OutDir)DynamoCore.customization.dll" Version="%(DynamoCoreInfo.Version)" />
     <!-- Generate customization dll for Operators -->
-    <GenerateResource UseSourcePath="true" Sources="$(ProjectDir)/BuiltInAndOperators/OperatorsImages.resx" OutputResources="$(ProjectDir)/BuiltInAndOperators/OperatorsImages.resources" References="$(FrameworkAssembliesPath)System.Drawing.dll" />
-    <AL TargetType="library" EmbedResources="$(ProjectDir)/BuiltInAndOperators/OperatorsImages.resources" OutputAssembly="$(OutDir)Operators.customization.dll" Version="%(DynamoCoreInfo.Version)" />
+    <GenerateResource SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" UseSourcePath="true" Sources="$(ProjectDir)/BuiltInAndOperators/OperatorsImages.resx" OutputResources="$(ProjectDir)/BuiltInAndOperators/OperatorsImages.resources" References="$(FrameworkAssembliesPath)System.Drawing.dll" />
+    <AL SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" TargetType="library" EmbedResources="$(ProjectDir)/BuiltInAndOperators/OperatorsImages.resources" OutputAssembly="$(OutDir)Operators.customization.dll" Version="%(DynamoCoreInfo.Version)" />
     <!-- Generate customization dll for BuiltIn -->
-    <GenerateResource UseSourcePath="true" Sources="$(ProjectDir)/BuiltInAndOperators/BuiltInImages.resx" OutputResources="$(ProjectDir)/BuiltInAndOperators/BuiltInImages.resources" References="$(FrameworkAssembliesPath)System.Drawing.dll" />
-    <AL TargetType="library" EmbedResources="$(ProjectDir)/BuiltInAndOperators/BuiltInImages.resources" OutputAssembly="$(OutDir)BuiltIn.customization.dll" Version="%(DynamoCoreInfo.Version)" />
+    <GenerateResource SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" UseSourcePath="true" Sources="$(ProjectDir)/BuiltInAndOperators/BuiltInImages.resx" OutputResources="$(ProjectDir)/BuiltInAndOperators/BuiltInImages.resources" References="$(FrameworkAssembliesPath)System.Drawing.dll" />
+    <AL SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" TargetType="library" EmbedResources="$(ProjectDir)/BuiltInAndOperators/BuiltInImages.resources" OutputAssembly="$(OutDir)BuiltIn.customization.dll" Version="%(DynamoCoreInfo.Version)" />
   </Target>
 </Project>
