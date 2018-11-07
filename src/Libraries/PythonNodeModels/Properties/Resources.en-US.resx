@@ -149,7 +149,7 @@
     <value>Place your code below this line</value>
   </data>
   <data name="PythonScriptEditorImports" xml:space="preserve">
-    <value>Enable Python support and load DesignScript library</value>
+    <value>Load the Python Standard and DesignScript Libraries</value>
   </data>
   <data name="PythonScriptEditorInputComment" xml:space="preserve">
     <value>The inputs to this node will be stored as a list in the IN variables.</value>

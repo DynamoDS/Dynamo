@@ -149,7 +149,7 @@
     <value>Place your code below this line</value>
   </data>
   <data name="PythonScriptEditorImports" xml:space="preserve">
-    <value>Enable Python support and load DesignScript library</value>
+    <value>Load the Python Standard and DesignScript Libraries</value>
     <comment>Description for the common import statements that puzzle beginners.</comment>
   </data>
   <data name="PythonScriptEditorInputComment" xml:space="preserve">

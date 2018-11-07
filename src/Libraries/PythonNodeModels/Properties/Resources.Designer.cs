@@ -124,7 +124,7 @@ namespace PythonNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Enable Python support and load DesignScript library.
+        ///   Looks up a localized string similar to Load the Python Standard and DesignScript Libraries.
         /// </summary>
         public static string PythonScriptEditorImports {
             get {
