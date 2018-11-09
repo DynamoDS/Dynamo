@@ -17,15 +17,7 @@ namespace Dynamo.LibraryUI.Handlers
         private HashSet<string> supportedSchemes = new HashSet<string>();
         private DynamoLogger logger;
 
-        //TODO: Remove this after testing.
-        //For testing purpose.
-        public ResourceHandlerFactory()
-        {
-            
-        }
-
-        //TODO: Remove this after testing.
-        //For testing purpose.
+        // Log for testing purposes
         public ResourceHandlerFactory(DynamoLogger log)
         {
             this.logger = log;
@@ -48,12 +40,14 @@ namespace Dynamo.LibraryUI.Handlers
                 }
 
 #endif
+                // Create a handlerItem for the new resource,
+                // if the resource has already been loaded don't load it again
                 if(!Handlers.TryGetValue(request.Url, out handlerItem))
                 {
                     IResourceHandler handler = this.GetResourceHandler(request);
-                    // TODO - verify bool param - determines whether or not the handler
-                    // should be used once(true) or until manually unregistered
-                    handlerItem = new DefaultResourceHandlerFactoryItem(handler, false);
+
+                    // Make sure the handler is unregistered after use
+                    handlerItem = new DefaultResourceHandlerFactoryItem(handler, true);
                 }
 
                 return handlerItem.Handler;
