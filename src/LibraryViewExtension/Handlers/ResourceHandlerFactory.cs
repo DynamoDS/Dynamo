@@ -17,6 +17,12 @@ namespace Dynamo.LibraryUI.Handlers
         private HashSet<string> supportedSchemes = new HashSet<string>();
         private DynamoLogger logger;
 
+        // For Library testing purposes
+        public ResourceHandlerFactory()
+        {
+
+        }
+
         // Log for testing purposes
         public ResourceHandlerFactory(DynamoLogger log)
         {
