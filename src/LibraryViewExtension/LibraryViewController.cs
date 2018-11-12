@@ -195,9 +195,11 @@ namespace Dynamo.LibraryUI
                 string msg = "Successfully loaded library resources on first attempt.";
                 this.dynamoViewModel.Model.Logger.Log(msg);
             }
-            catch
+            catch(Exception ex)
             {
-                string error = "The library browser is still loading, another attempt to load the resources will be made when loading is complete.";
+                string error = "The library browser is still loading, another attempt to load the resources will be made when loading is complete." +
+                    System.Environment.NewLine +
+                    "Exception: " + ex;
                 this.dynamoViewModel.Model.Logger.LogError(error);
             }
 
@@ -219,9 +221,11 @@ namespace Dynamo.LibraryUI
                     string msg = "Successfully loaded library resources after a browser loading state change.";
                     this.dynamoViewModel.Model.Logger.Log(msg);
                 }
-                catch
+                catch(Exception ex)
                 {
-                    string error = "Failed to The library loaded library resources after a browser loading state change.";
+                    string error = "Failed to The library loaded library resources after a browser loading state change." +
+                        System.Environment.NewLine +
+                        "Exception: " + ex;
                     this.dynamoViewModel.Model.Logger.LogError(error);
                 }
             }
