@@ -55,6 +55,7 @@ namespace Dynamo.LibraryUI.Handlers
                     IResourceHandler handler = this.GetResourceHandler(request);
 
                     // Make sure the handler is unregistered after use
+                    // See: https://cefsharp.github.io/api/63.0.0/html/T_CefSharp_DefaultResourceHandlerFactoryItem.htm
                     handlerItem = new DefaultResourceHandlerFactoryItem(handler, true);
                 }
 
