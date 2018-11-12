@@ -39,7 +39,6 @@
                 let layoutSpecsJson = downloaded["layoutSpecs"];
 
                 if (!loadedTypesJson || (!layoutSpecsJson)) {
-                    console.log("Error: Couldn't get enough data to load library.");
                     return; // Not fully downloaded yet, bail.
                 }
 
