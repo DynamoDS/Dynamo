@@ -199,7 +199,7 @@ namespace Dynamo.LibraryUI
             {
                 string error = "The library browser is still loading, another attempt to load the resources will be made when loading is complete." +
                     System.Environment.NewLine +
-                    "Exception: " + ex;
+                    "Exception: " + ex.Message;
                 this.dynamoViewModel.Model.Logger.LogError(error);
             }
 
@@ -225,7 +225,7 @@ namespace Dynamo.LibraryUI
                 {
                     string error = "Failed to The library loaded library resources after a browser loading state change." +
                         System.Environment.NewLine +
-                        "Exception: " + ex;
+                        "Exception: " + ex.Message;
                     this.dynamoViewModel.Model.Logger.LogError(error);
                 }
             }
