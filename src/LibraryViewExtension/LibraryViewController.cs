@@ -183,57 +183,29 @@ namespace Dynamo.LibraryUI
             browser.RegisterAsyncJsObject("controller", this);
 
             view.Loaded += OnLibraryViewLoaded;
+            browser.Loaded += BrowserLoaded;
             browser.SizeChanged += Browser_SizeChanged;
             browser.LoadError += Browser_LoadError;
-            browser.LoadingStateChanged += LoadingStateChanged;
-
-            // Attempt to register required resources, but if the browser is still loading
-            // another attempt will be made when the loading state of the browser changes (see event above)
-            try
-            {
-                RegisterResources(browser);
-                string msg = "Successfully loaded library resources on first attempt.";
-                this.dynamoViewModel.Model.Logger.Log(msg);
-            }
-            catch(Exception ex)
-            {
-                string error = "The library browser is still loading, another attempt to load the resources will be made when loading is complete." +
-                    System.Environment.NewLine +
-                    "Exception: " + ex.Message;
-                this.dynamoViewModel.Model.Logger.LogError(error);
-            }
 
             return view;
         }
 
-        // This event is trigger twice,
-        // Once when loading is initiated either programmatically or by user action, 
-        // and once when loading is terminated due to completion, cancellation of failure.
-        private void LoadingStateChanged(object send, LoadingStateChangedEventArgs browserArgs)
+        // Load library resources once the browser is ready for interaction
+        private void BrowserLoaded(object sender, RoutedEventArgs e)
         {
-            // If the loading state has changed and the page has finished loading
-            if (!browserArgs.IsLoading)
+            // Attempt to load resources
+            try
             {
-                // Attempt to load resources
-                try
-                {
-                    RegisterResources(browser);
-                    string msg = "Successfully loaded library resources after a browser loading state change.";
-                    this.dynamoViewModel.Model.Logger.Log(msg);
-                }
-                catch(Exception ex)
-                {
-                    string error = "Failed to The library loaded library resources after a browser loading state change." +
-                        System.Environment.NewLine +
-                        "Exception: " + ex.Message;
-                    this.dynamoViewModel.Model.Logger.LogError(error);
-                }
+                RegisterResources(this.browser);
+                string msg = "Successfully loaded the library resources.";
+                this.dynamoViewModel.Model.Logger.Log(msg);
             }
-            // Browser is still loading or a browser failure has occured
-            else
+            catch (Exception ex)
             {
-                string error = "The library browser is still loading or an error has occured, another attempt to load the resources will be made if loading can be completed.";
-                this.dynamoViewModel.Model.Logger.Log(error);
+                string error = "Failed to load the library resources." +
+                    Environment.NewLine +
+                    "Exception: " + ex.Message;
+                this.dynamoViewModel.Model.Logger.LogError(error);
             }
         }
 
