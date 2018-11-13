@@ -840,74 +840,75 @@ namespace ProtoImperative
 
         private void EmitLanguageBlockNode(ImperativeNode node, ref ProtoCore.Type inferedType, ProtoCore.AssociativeGraph.GraphNode propogateUpdateGraphNode = null)
         {
-            if (!IsParsingGlobal()) return;
-
-            LanguageBlockNode langblock = node as LanguageBlockNode;
-            if (ProtoCore.Language.NotSpecified == langblock.codeblock.Language)
+            if (IsParsingGlobal())
             {
-                throw new ProtoCore.Exceptions.CompileErrorsOccured("Invalid language block");
-            }
-
-            ProtoCore.CompileTime.Context context = new ProtoCore.CompileTime.Context();
-            // Save the guid of the current scope (which is stored in the current graphnodes) to the nested language block.
-            // This will be passed on to the nested language block that will be compiled
-            if (propogateUpdateGraphNode != null)
-            {
-                context.guid = propogateUpdateGraphNode.guid;
-            }
-
-            int entry = 0;
-            int blockId = ProtoCore.DSASM.Constants.kInvalidIndex;
-            if (ProtoCore.Language.Imperative == langblock.codeblock.Language)
-            {
-                // TODO Jun: Move the associative and all common string into some table
-                buildStatus.LogSyntaxError(Resources.InvalidNestedImperativeBlock, core.CurrentDSFileName, langblock.line, langblock.col);
-            }
-
-            if (globalProcIndex != ProtoCore.DSASM.Constants.kInvalidIndex && core.ProcNode == null)
-                core.ProcNode = codeBlock.procedureTable.Procedures[globalProcIndex];
-
-            core.Compilers[langblock.codeblock.Language].Compile(out blockId, codeBlock, langblock.codeblock, context, codeBlock.EventSink, langblock.CodeBlockNode);
-
-            if (propogateUpdateGraphNode != null)
-            {
-                propogateUpdateGraphNode.languageBlockId = blockId;
-                CodeBlock childBlock = core.CompleteCodeBlockList[blockId];
-                foreach (var subGraphNode in childBlock.instrStream.dependencyGraph.GraphList)
+                LanguageBlockNode langblock = node as LanguageBlockNode;
+                if (ProtoCore.Language.NotSpecified == langblock.codeblock.Language)
                 {
-                    foreach (var depentNode in subGraphNode.dependentList)
+                    throw new ProtoCore.Exceptions.CompileErrorsOccured("Invalid language block");
+                }
+
+                ProtoCore.CompileTime.Context context = new ProtoCore.CompileTime.Context();
+                // Save the guid of the current scope (which is stored in the current graphnodes) to the nested language block.
+                // This will be passed on to the nested language block that will be compiled
+                if (propogateUpdateGraphNode != null)
+                {
+                    context.guid = propogateUpdateGraphNode.guid;
+                }
+
+                int entry = 0;
+                int blockId = ProtoCore.DSASM.Constants.kInvalidIndex;
+                if (ProtoCore.Language.Imperative == langblock.codeblock.Language)
+                {
+                    // TODO Jun: Move the associative and all common string into some table
+                    buildStatus.LogSyntaxError(Resources.InvalidNestedImperativeBlock, core.CurrentDSFileName, langblock.line, langblock.col);
+                }
+
+                if (globalProcIndex != ProtoCore.DSASM.Constants.kInvalidIndex && core.ProcNode == null)
+                    core.ProcNode = codeBlock.procedureTable.Procedures[globalProcIndex];
+
+                core.Compilers[langblock.codeblock.Language].Compile(out blockId, codeBlock, langblock.codeblock, context, codeBlock.EventSink, langblock.CodeBlockNode);
+
+                if (propogateUpdateGraphNode != null)
+                {
+                    propogateUpdateGraphNode.languageBlockId = blockId;
+                    CodeBlock childBlock = core.CompleteCodeBlockList[blockId];
+                    foreach (var subGraphNode in childBlock.instrStream.dependencyGraph.GraphList)
                     {
-                        if (depentNode.updateNodeRefList != null 
-                            && depentNode.updateNodeRefList.Count > 0 
-                            && depentNode.updateNodeRefList[0].nodeList != null
-                            && depentNode.updateNodeRefList[0].nodeList.Count > 0)
+                        foreach (var depentNode in subGraphNode.dependentList)
                         {
-                            SymbolNode dependentSymbol = depentNode.updateNodeRefList[0].nodeList[0].symbol;
-                            int symbolBlockId = dependentSymbol.codeBlockId;
-                            if (symbolBlockId != Constants.kInvalidIndex)
+                            if (depentNode.updateNodeRefList != null 
+                                && depentNode.updateNodeRefList.Count > 0 
+                                && depentNode.updateNodeRefList[0].nodeList != null
+                                && depentNode.updateNodeRefList[0].nodeList.Count > 0)
                             {
-                                CodeBlock symbolBlock = core.CompleteCodeBlockList[symbolBlockId];
-                                if (!symbolBlock.IsMyAncestorBlock(codeBlock.codeBlockId))
+                                SymbolNode dependentSymbol = depentNode.updateNodeRefList[0].nodeList[0].symbol;
+                                int symbolBlockId = dependentSymbol.codeBlockId;
+                                if (symbolBlockId != Constants.kInvalidIndex)
                                 {
-                                    propogateUpdateGraphNode.PushDependent(depentNode);
+                                    CodeBlock symbolBlock = core.CompleteCodeBlockList[symbolBlockId];
+                                    if (!symbolBlock.IsMyAncestorBlock(codeBlock.codeBlockId))
+                                    {
+                                        propogateUpdateGraphNode.PushDependent(depentNode);
+                                    }
                                 }
                             }
                         }
                     }
                 }
+
+                setBlkId(blockId);
+                inferedType = core.InferedType;
+                codeBlock.children[codeBlock.children.Count - 1].Attributes = PopulateAttributes(langblock.Attributes);
+
+                EmitInstrConsole("bounce " + blockId + ", " + entry.ToString());
+                EmitBounceIntrinsic(blockId, entry);
+
+                // The callee language block will have stored its result into the RX register. 
+                EmitInstrConsole(ProtoCore.DSASM.kw.push, ProtoCore.DSASM.kw.regRX);
+                StackValue opRes = StackValue.BuildRegister(Registers.RX);
+                EmitPush(opRes);
             }
-
-            setBlkId(blockId);
-            inferedType = core.InferedType;
-            codeBlock.children[codeBlock.children.Count - 1].Attributes = PopulateAttributes(langblock.Attributes);
-
-            EmitInstrConsole("bounce " + blockId + ", " + entry.ToString());
-            EmitBounceIntrinsic(blockId, entry);
-
-            // The callee language block will have stored its result into the RX register. 
-            EmitInstrConsole(ProtoCore.DSASM.kw.push, ProtoCore.DSASM.kw.regRX);
-            StackValue opRes = StackValue.BuildRegister(Registers.RX);
-            EmitPush(opRes);
         }
 
         private void EmitConstructorDefinitionNode(ImperativeNode node)
