@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 
 namespace FFITarget
@@ -123,6 +124,18 @@ namespace FFITarget
             public static string PropertyD { get; set; }
             public static string PropertyE { get; set; }
             public static string PropertyF { get; set; }
+        }
+    }
+
+    [IsVisibleInDynamoLibrary(false)]
+    [Serializable]
+    public class TraceableId : ISerializable
+    {
+        public int IntID { get; set; }
+
+        public void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            info.AddValue("intID", IntID, typeof(int));
         }
     }
 }

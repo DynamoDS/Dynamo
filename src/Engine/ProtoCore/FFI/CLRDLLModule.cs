@@ -354,6 +354,10 @@ namespace ProtoFFI
                     CLRModuleType.GetInstance(interf, Module, string.Empty);
                 }
             }
+            if(classnode.IsInterface)
+            {
+                return classnode;
+            }
 
             // There is no static class in runtime. static class is simply 
             // marked as sealed and abstract. 
