@@ -181,36 +181,46 @@ namespace Dynamo.LibraryUI
             this.browser = browser;
             sidebarGrid.Children.Add(view);
             browser.RegisterAsyncJsObject("controller", this);
-            RegisterResources(browser);
 
             view.Loaded += OnLibraryViewLoaded;
+            browser.Loaded += BrowserLoaded;
             browser.SizeChanged += Browser_SizeChanged;
             browser.LoadError += Browser_LoadError;
-
-            // TODO - this was added Fall 2017 due to issues with 
-            // library failing to load due to timing issues.  DYN-944 
-            // is a testing task that should make the final determination
-            // as it no longer seems required in CEF v65.0.1
-            /*
-            //wait for the browser to load before setting the resources
-            browser.LoadingStateChanged += (sender, args) =>
-            {
-                //Wait for the Page to finish loading
-                if (args.IsLoading == false)
-                {
-                    RegisterResources(browser);
-                }
-            };
-            */
 
             return view;
         }
 
+        // Load library resources once the browser is ready for interaction
+        private void BrowserLoaded(object sender, RoutedEventArgs e)
+        {
+            // Attempt to load resources
+            try
+            {
+                RegisterResources(this.browser);
+                string msg = "Successfully loaded the library resources.";
+                this.dynamoViewModel.Model.Logger.Log(msg);
+            }
+            catch (Exception ex)
+            {
+                string error = "Failed to load the library resources." +
+                    Environment.NewLine +
+                    "Exception: " + ex.Message;
+                this.dynamoViewModel.Model.Logger.LogError(error);
+            }
+        }
+
+        // Browser LoadError events occur when the resource load for a navigation fails or is canceled
         private void Browser_LoadError(object sender, LoadErrorEventArgs e)
         {
             System.Diagnostics.Trace.WriteLine("*****Chromium Browser Messages******");
             System.Diagnostics.Trace.Write(e.ErrorText);
+
+            // TODO - ERR_ABORTED error in Dynamo Console occurs after browser initialization only on startup,
+            // possibly because the initial resource loading is cancelled and retriggered when the browser is loaded
+            // http://cefsharp.github.io/api/55.0.0/html/E_CefSharp_WinForms_ChromiumWebBrowser_LoadError.htm
+#if DEBUG
             this.dynamoViewModel.Model.Logger.LogError(e.ErrorText);
+#endif
         }
 
         //if the browser window itself is resized, toggle visibility to force redraw.
