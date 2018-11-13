@@ -209,11 +209,18 @@ namespace Dynamo.LibraryUI
             }
         }
 
+        // Browser LoadError events occur when the resource load for a navigation fails or is canceled
         private void Browser_LoadError(object sender, LoadErrorEventArgs e)
         {
             System.Diagnostics.Trace.WriteLine("*****Chromium Browser Messages******");
             System.Diagnostics.Trace.Write(e.ErrorText);
+
+            // TODO - ERR_ABORTED error in Dynamo Console occurs after browser initialization only on startup,
+            // possibly because the initial resource loading is cancelled and retriggered when the browser is loaded
+            // http://cefsharp.github.io/api/55.0.0/html/E_CefSharp_WinForms_ChromiumWebBrowser_LoadError.htm
+#if DEBUG
             this.dynamoViewModel.Model.Logger.LogError(e.ErrorText);
+#endif
         }
 
         //if the browser window itself is resized, toggle visibility to force redraw.
