@@ -8,6 +8,7 @@ using Dynamo.ViewModels;
 using NUnit.Framework;
 using ProtoCore;
 using System;
+using System.Linq;
 using System.Xml;
 using TestServices;
 
@@ -150,6 +151,56 @@ namespace DynamoCoreWpfTests
                     // normal function.Description: Excel.ReadFromFile (file: var, sheetName: string): var[][]
                 }
             }
+        }
+
+        [Test]
+        public void SearchHiddenInterfaceNodeTest()
+        {
+            var searchViewModel = new SearchViewModel(new NodeSearchModel());
+
+            LibraryLoaded = false;
+
+            string libraryPath = "FFITarget.dll";
+
+            // All we need to do here is to ensure that the target has been loaded
+            // at some point, so if it's already here, don't try and reload it
+            if (!libraryServices.IsLibraryLoaded(libraryPath))
+            {
+                libraryServices.ImportLibrary(libraryPath);
+                Assert.IsTrue(LibraryLoaded);
+            }
+
+            var fgToCompare = libraryServices.GetFunctionGroups(libraryPath);
+            foreach (var funcGroup in fgToCompare)
+            {
+                foreach (var functionDescriptor in funcGroup.Functions)
+                {
+                    if (functionDescriptor.IsVisibleInLibrary && !functionDescriptor.DisplayName.Contains("GetType"))
+                    {
+                        searchViewModel.Model.Add(new ZeroTouchSearchElement(functionDescriptor));
+                    }
+                }
+            }
+
+            var searchString = "InterfaceA";
+            var nodes = searchViewModel.Search(searchString);
+            var foundNodes = nodes.Where(n => n.Class.Equals(searchString));
+            Assert.IsFalse(foundNodes.Any());
+
+            searchString = "DerivedFromInterfaceA";
+            nodes = searchViewModel.Search(searchString);
+            foundNodes = nodes.Where(n => n.Class.Equals(searchString));
+            Assert.AreEqual(2, foundNodes.Count());
+
+            searchString = "TraceableId";
+            nodes = searchViewModel.Search(searchString);
+            foundNodes = nodes.Where(n => n.Class.Equals(searchString));
+            Assert.IsFalse(foundNodes.Any());
+
+            searchString = "ISerializable";
+            nodes = searchViewModel.Search(searchString);
+            foundNodes = nodes.Where(n => n.Class.Equals(searchString));
+            Assert.IsFalse(foundNodes.Any());
         }
     }
 }

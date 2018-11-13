@@ -1225,6 +1225,7 @@ namespace ProtoFFI
             if (type == null)
                 throw new ArgumentNullException("type");
 
+            // Hide all interfaces from library and search
             if (type.IsInterface) HiddenInLibrary = true;
 
             attributes = type.GetCustomAttributes(false).Cast<Attribute>().ToArray();
