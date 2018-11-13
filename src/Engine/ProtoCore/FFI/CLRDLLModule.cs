@@ -47,8 +47,8 @@ namespace ProtoFFI
         /// given type is not found, it creates a new one. If CLRDLLModule is
         /// passed as null, it creates empty CLRModuleType.
         /// </summary>
-        /// <param name="module">CLRDLLModule which imports this type</param>
         /// <param name="type">System.Type to be imported in DesignScript</param>
+        /// <param name="module">CLRDLLModule which imports this type</param>
         /// <param name="alias">Alias name, if any. For now its not supported.</param>
         public static CLRModuleType GetInstance(Type type, CLRDLLModule module, string alias)
         {
@@ -354,19 +354,15 @@ namespace ProtoFFI
                     CLRModuleType.GetInstance(interf, Module, string.Empty);
                 }
             }
-            if(classnode.IsInterface)
-            {
-                return classnode;
-            }
 
             // There is no static class in runtime. static class is simply 
             // marked as sealed and abstract. 
             classnode.IsStatic = type.IsAbstract && type.IsSealed;
             
+            // If all methods are static, it doesn't make sense to expose
+            // constructor. 
             if (!classnode.IsStatic)
             {
-                // If all methods are static, it doesn't make sense to expose
-                // constructor. 
                 ConstructorInfo[] ctors = type.GetConstructors();
                 foreach (var c in ctors)
                 {
@@ -1228,6 +1224,8 @@ namespace ProtoFFI
         {
             if (type == null)
                 throw new ArgumentNullException("type");
+
+            if (type.IsInterface) HiddenInLibrary = true;
 
             attributes = type.GetCustomAttributes(false).Cast<Attribute>().ToArray();
             foreach (var attr in attributes)
