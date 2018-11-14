@@ -663,23 +663,24 @@ namespace ProtoFFI
             return varDeclNode;
         }
 
-        private ProtoCore.AST.AssociativeAST.FunctionDefinitionNode ParseFieldAccessor(FieldInfo f)
+        private FunctionDefinitionNode ParseFieldAccessor(FieldInfo f)
         {
             if (null == f || SupressesImport(f))
                 return null;
 
-            ProtoCore.AST.AssociativeAST.FunctionDefinitionNode func = new ProtoCore.AST.AssociativeAST.FunctionDefinitionNode();
-            func.Name = string.Format("{0}{1}", Constants.kGetterPrefix, f.Name);
-            func.Signature = new ProtoCore.AST.AssociativeAST.ArgumentSignatureNode();
-            func.ReturnType = CLRModuleType.GetProtoCoreType(f.FieldType, Module);
-            func.FunctionBody = null;
-            func.Access = ProtoCore.CompilerDefinitions.AccessModifier.Public;
-            func.IsExternLib = true;
-            func.ExternLibName = Module.Name;
-            func.IsStatic = f.IsStatic;
-            //Set the method attribute for Enum properties.
-            func.MethodAttributes = new FFIMethodAttributes(f);
-
+            var func = new FunctionDefinitionNode
+            {
+                Name = string.Format("{0}{1}", Constants.kGetterPrefix, f.Name),
+                Signature = new ArgumentSignatureNode(),
+                ReturnType = CLRModuleType.GetProtoCoreType(f.FieldType, Module),
+                FunctionBody = null,
+                Access = ProtoCore.CompilerDefinitions.AccessModifier.Public,
+                IsExternLib = true,
+                ExternLibName = Module.Name,
+                IsStatic = f.IsStatic,
+                MethodAttributes = new FFIMethodAttributes(f),
+            };
+            
             return func;
         }
 
@@ -1271,24 +1272,45 @@ namespace ProtoFFI
         {
             var atts = f.GetCustomAttributes(false).Cast<Attribute>();
 
+            var parentAtts = f.DeclaringType.GetCustomAttributes(false).Cast<Attribute>();
+            var isObsolete = false;
+            var hidden = false;
+            var message = "";
+            foreach(var attr in parentAtts)
+            {
+                if(attr is ObsoleteAttribute)
+                {
+                    isObsolete = true;
+                    message = (attr as ObsoleteAttribute).Message;
+                    if (string.IsNullOrEmpty(message))
+                        message = "Obsolete";
+                }
+
+                if (attr is IsVisibleInDynamoLibraryAttribute)
+                {
+                    hidden = !((IsVisibleInDynamoLibraryAttribute)attr).Visible;
+                }
+            }
+
             foreach (var attr in atts)
             {
                 //Set the obsolete message for enum fields.
-                if (attr is IsObsoleteAttribute)
-                {
-                    HiddenInLibrary = true;
-                    ObsoleteMessage = (attr as IsObsoleteAttribute).Message;
-                    if (string.IsNullOrEmpty(ObsoleteMessage))
-                        ObsoleteMessage = "Obsolete";
-                }
-                else if (attr is ObsoleteAttribute)
+                if (attr is ObsoleteAttribute)
                 {
                     HiddenInLibrary = true;
                     ObsoleteMessage = (attr as ObsoleteAttribute).Message;
                     if (string.IsNullOrEmpty(ObsoleteMessage))
                         ObsoleteMessage = "Obsolete";
                 }
-
+                else if(attr is IsVisibleInDynamoLibraryAttribute)
+                {
+                    HiddenInLibrary = !((IsVisibleInDynamoLibraryAttribute)attr).Visible;
+                }
+                else if(isObsolete || hidden)
+                {
+                    HiddenInLibrary = true;
+                    if(isObsolete) ObsoleteMessage = message;
+                }
             }
         }
 
