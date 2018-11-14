@@ -1,4 +1,5 @@
-﻿using Dynamo.Models;
+﻿using Dynamo.LibraryUI.ViewModels;
+using Dynamo.Models;
 using Dynamo.PackageManager;
 using Dynamo.Wpf.Extensions;
 using Dynamo.Wpf.Interfaces;
@@ -11,6 +12,7 @@ namespace Dynamo.LibraryUI
         private ViewStartupParams viewStartupParams;
         private LibraryViewCustomization customization = new LibraryViewCustomization();
         private LibraryViewController controller;
+        private LibraryViewModel model = new LibraryViewModel("http://localhost/library.html");
 
         public string UniqueId
         {
@@ -36,7 +38,7 @@ namespace Dynamo.LibraryUI
             {
                 viewLoadedParams = p;
                 controller = new LibraryViewController(p.DynamoWindow, p.CommandExecutive, customization);
-                controller.AddLibraryView();
+                controller.AddLibraryView(model);
             }
         }
 

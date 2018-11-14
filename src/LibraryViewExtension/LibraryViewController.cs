@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using CefSharp;
@@ -20,7 +18,6 @@ using Dynamo.Search.SearchElements;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Interfaces;
 using Dynamo.Wpf.ViewModels;
-using Dynamo.Core;
 
 namespace Dynamo.LibraryUI
 {
@@ -171,23 +168,18 @@ namespace Dynamo.LibraryUI
         /// Creates and add the library view to the WPF visual tree
         /// </summary>
         /// <returns>LibraryView control</returns>
-        internal LibraryView AddLibraryView()
+        internal void AddLibraryView(LibraryViewModel model)
         {
             var sidebarGrid = dynamoWindow.FindName("sidebarGrid") as Grid;
-            var model = new LibraryViewModel("http://localhost/library.html");
             var view = new LibraryView(model);
-
-            var browser = view.Browser;
-            this.browser = browser;
-            sidebarGrid.Children.Add(view);
-            browser.RegisterAsyncJsObject("controller", this);
-
             view.Loaded += OnLibraryViewLoaded;
+            sidebarGrid.Children.Add(view);
+
+            browser = view.Browser;
+            browser.RegisterAsyncJsObject("controller", this);
             browser.Loaded += BrowserLoaded;
             browser.SizeChanged += Browser_SizeChanged;
             browser.LoadError += Browser_LoadError;
-
-            return view;
         }
 
         // Load library resources once the browser is ready for interaction
@@ -197,7 +189,7 @@ namespace Dynamo.LibraryUI
             try
             {
                 RegisterResources(this.browser);
-                string msg = "Successfully loaded the library resources.";
+                string msg = "Preparing to load the library resources.";
                 this.dynamoViewModel.Model.Logger.Log(msg);
             }
             catch (Exception ex)
@@ -214,10 +206,6 @@ namespace Dynamo.LibraryUI
         {
             System.Diagnostics.Trace.WriteLine("*****Chromium Browser Messages******");
             System.Diagnostics.Trace.Write(e.ErrorText);
-
-            // TODO - ERR_ABORTED error in Dynamo Console occurs after browser initialization only on startup,
-            // possibly because the initial resource loading is cancelled and retriggered when the browser is loaded
-            // http://cefsharp.github.io/api/55.0.0/html/E_CefSharp_WinForms_ChromiumWebBrowser_LoadError.htm
 #if DEBUG
             this.dynamoViewModel.Model.Logger.LogError(e.ErrorText);
 #endif
