@@ -1306,11 +1306,11 @@ namespace ProtoFFI
                 {
                     HiddenInLibrary = !((IsVisibleInDynamoLibraryAttribute)attr).Visible;
                 }
-                else if(isObsolete || hidden)
-                {
-                    HiddenInLibrary = true;
-                    if(isObsolete) ObsoleteMessage = message;
-                }
+            }
+            if (isObsolete || hidden)
+            {
+                HiddenInLibrary = true;
+                if (isObsolete) ObsoleteMessage = message;
             }
         }
 

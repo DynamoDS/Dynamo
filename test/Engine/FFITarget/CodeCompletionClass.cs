@@ -138,4 +138,16 @@ namespace FFITarget
             info.AddValue("intID", IntID, typeof(int));
         }
     }
+
+    [IsVisibleInDynamoLibrary(false)]
+    public enum Days
+    {
+        Sunday,
+        Monday,
+        Tuesday,
+        Wednesday,
+        Thursday,
+        Friday,
+        Saturday
+    }
 }
