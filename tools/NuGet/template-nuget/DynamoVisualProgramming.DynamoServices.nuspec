@@ -17,7 +17,7 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="DynamoServices.dll" target="lib\net45" />
-    <file src="DynamoServices.xml" target="build\net45" />
+    <file src="DynamoServices.dll" target="lib\net47" />
+    <file src="DynamoServices.xml" target="build\net47" />
   </files>
 </package>

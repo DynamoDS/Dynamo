@@ -19,8 +19,8 @@
   </dependencies>
  </metadata>
   <files>
-    <file src="DynamoUnits.dll" target="lib\net45" />
-    <file src="ProtoGeometry.dll" target="lib\net45" />
-    <file src="ProtoGeometry.xml" target="build\net45" />
+    <file src="DynamoUnits.dll" target="lib\net47" />
+    <file src="ProtoGeometry.dll" target="lib\net47" />
+    <file src="ProtoGeometry.xml" target="build\net47" />
   </files>
 </package>
