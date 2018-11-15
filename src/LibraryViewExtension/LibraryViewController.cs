@@ -188,7 +188,8 @@ namespace Dynamo.LibraryUI
         // Load library resources once the browser is ready for interaction
         private void Browser_LoadingStateChanged(object sender, LoadingStateChangedEventArgs args)
         {
-            if(!args.IsLoading)
+            // https://github.com/cefsharp/CefSharp/wiki/General-Usage#when-can-i-start-executing-javascript
+            if (!args.IsLoading)
             {
                 // Attempt to load resources
                 try
