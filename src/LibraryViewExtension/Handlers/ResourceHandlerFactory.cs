@@ -41,10 +41,12 @@ namespace Dynamo.LibraryUI.Handlers
             {
                 DefaultResourceHandlerFactoryItem handlerItem;
 #if DEBUG
+
                 if (logger != null)
                 {
                     logger.Log("Requested URL", request.Url);
                 }
+
 #endif
                 // Create a handlerItem for the new resource,
                 // if the resource has already been loaded don't load it again

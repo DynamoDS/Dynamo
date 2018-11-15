@@ -178,11 +178,29 @@ namespace Dynamo.LibraryUI
             sidebarGrid.Children.Add(view);
 
             browser = view.Browser;
+            browser.RegisterAsyncJsObject("controller", this);
+
+            browser.Loaded += Browser_Loaded;
             browser.SizeChanged += Browser_SizeChanged;
             browser.LoadError += Browser_LoadError;
+        }
 
-            browser.RegisterAsyncJsObject("controller", this);
-            RegisterResources(browser);
+        private void Browser_Loaded(object sender, RoutedEventArgs e)
+        {
+            // Attempt to load resources
+            try
+            {
+                RegisterResources(this.browser);
+                string msg = "Preparing to load the library resources.";
+                this.dynamoViewModel.Model.Logger.Log(msg);
+            }
+            catch (Exception ex)
+            {
+                string error = "Failed to load the library resources." +
+                    Environment.NewLine +
+                    "Exception: " + ex.Message;
+                this.dynamoViewModel.Model.Logger.LogError(error);
+            }
         }
 
         // Browser LoadError events occur when the resource load for a navigation fails or is canceled
@@ -192,8 +210,13 @@ namespace Dynamo.LibraryUI
             System.Diagnostics.Trace.Write(e.ErrorText);
 
 #if DEBUG
-            // This error is expected to occur if the loadedTypesJson or layoutSpecsJson was not fully loaded.  When the
-            // resources are ready the browser is refreshed/reloaded which terminates the previous load and throws this error.
+            // TODO - The browser should not be loaded before the loadedTypesJson or layoutSpecsJson are fully loaded.
+            // Since these assets get loaded via a Javascript function in the html there is no way to guarantee this without moving the logic.
+            // A better strategy is required for preloading these assests before the browser attempts to initialize in order to prevent a reload.
+            // Having long running javascript in the Library.html file is problematic as it doesn't complete before the C# layer continues to execute.
+
+            // This error is expected to occur if the loadedTypesJson or layoutSpecsJson was not fully loaded
+            // on the first loading attempt.  When the resources are ready the browser is refreshed/reloaded.
             // See this thread for more details: https://magpcss.org/ceforum/viewtopic.php?f=10&t=11507 
             if (e.ErrorText == "ERR_ABORTED")
             {
