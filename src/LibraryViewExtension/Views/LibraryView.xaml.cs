@@ -1,14 +1,9 @@
 using System;
-using System.IO;
-using System.Reflection;
-using System.Windows;
+using System.Threading.Tasks;
 using System.Windows.Controls;
-using System.Windows.Threading;
 using CefSharp;
 using CefSharp.Wpf;
-using Dynamo.Extensions;
 using Dynamo.LibraryUI.ViewModels;
-using Dynamo.Models;
 
 namespace Dynamo.LibraryUI.Views
 {
@@ -36,7 +31,41 @@ namespace Dynamo.LibraryUI.Views
             
             InitializeComponent();
 
+            MainAsync(viewModel.Address, this.Browser);
+
             this.Browser.MenuHandler = new LibraryViewContextMenuHandler();
+        }
+
+        private static async void MainAsync(string address, ChromiumWebBrowser browser)
+        {
+            // Verify browser is initialized
+            await LoadPageAsync(browser);
+            // Load library address
+            await LoadPageAsync(browser, address);
+        }
+
+        public static Task LoadPageAsync(IWebBrowser browser, string address = null)
+        {
+            var tcs = new TaskCompletionSource<bool>();
+
+            EventHandler<LoadingStateChangedEventArgs> handler = null;
+            handler += (sender, args) =>
+            {
+                // Wait for while page to finish loading not just the first frame
+                if (!args.IsLoading)
+                {
+                    browser.LoadingStateChanged -= handler;
+                    tcs.TrySetResult(true);
+                }
+            };
+
+            browser.LoadingStateChanged += handler;
+
+            if (!string.IsNullOrEmpty(address))
+            {
+                browser.Load(address);
+            }
+            return tcs.Task;
         }
 
         private class LibraryViewContextMenuHandler : IContextMenuHandler

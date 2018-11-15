@@ -19,16 +19,12 @@ namespace Dynamo.LibraryUI.ViewModels
         }
 
         /// <summary>
-        /// Returns Web URL to bind
+        /// Returns Web URL
         /// </summary>
         public string Address
         {
             get { return address; }
-            set
-            {
-                address = value;
-                RaisePropertyChanged("Address");
-            }
+            set { address = value; }
         }
 
         /// <summary>
