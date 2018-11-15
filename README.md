@@ -21,12 +21,14 @@ The [API Changes](https://github.com/DynamoDS/Dynamo/wiki/API-Changes) document 
 You can learn more about developing libraries for Dynamo on the [Dynamo wiki](https://github.com/DynamoDS/Dynamo/wiki/Zero-Touch-Plugin-Development) or the [Developer page](http://developer.dynamobim.org/).
 
 ### Build Dynamo from Source ###
-You will need the following to build Dynamo:
+You will need the following to build Dynamo `master` branch:
 
 - Microsoft Visual Studio 2017
-- [GitHub for Windows](https://windows.github.com/)
 - Microsoft .NET Framework 4.7.
+- [GitHub for Windows](https://windows.github.com/)
 - Microsoft DirectX (install from %GitHub%\Dynamo\tools\install\Extra\DirectX\DXSETUP.exe)
+
+If you are working on legacy branches, you need to install legacy .Net Framework archives [here](https://www.microsoft.com/net/download/archives).
 
 Directions for building Dynamo on other platforms (e.g. Linux or OS X) can be found [here](https://github.com/DynamoDS/Dynamo/wiki/Dynamo-on-Linux,-Mac).  
 
