@@ -1,5 +1,4 @@
-﻿using Dynamo.LibraryUI.ViewModels;
-using Dynamo.Models;
+﻿using Dynamo.Models;
 using Dynamo.PackageManager;
 using Dynamo.Wpf.Extensions;
 using Dynamo.Wpf.Interfaces;
