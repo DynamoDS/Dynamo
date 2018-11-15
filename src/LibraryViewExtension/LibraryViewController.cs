@@ -168,15 +168,18 @@ namespace Dynamo.LibraryUI
         /// Creates and add the library view to the WPF visual tree
         /// </summary>
         /// <returns>LibraryView control</returns>
-        internal void AddLibraryView(LibraryViewModel model)
+        internal void AddLibraryView()
         {
-            var sidebarGrid = dynamoWindow.FindName("sidebarGrid") as Grid;
-            var view = new LibraryView(model);
+            LibraryViewModel model = new LibraryViewModel("http://localhost/library.html");
+            LibraryView view = new LibraryView(model);
             view.Loaded += OnLibraryViewLoaded;
+
+            var sidebarGrid = dynamoWindow.FindName("sidebarGrid") as Grid;
             sidebarGrid.Children.Add(view);
 
             browser = view.Browser;
             browser.RegisterAsyncJsObject("controller", this);
+            
             browser.Loaded += BrowserLoaded;
             browser.SizeChanged += Browser_SizeChanged;
             browser.LoadError += Browser_LoadError;
@@ -206,8 +209,19 @@ namespace Dynamo.LibraryUI
         {
             System.Diagnostics.Trace.WriteLine("*****Chromium Browser Messages******");
             System.Diagnostics.Trace.Write(e.ErrorText);
+
 #if DEBUG
-            this.dynamoViewModel.Model.Logger.LogError(e.ErrorText);
+            // This error is expected to occur if the loadedTypesJson or layoutSpecsJson was not fully loaded
+            // on the first loading attempt.  When the resources are ready the browser is refreshed/reloaded/
+            // See this thread for more details: https://magpcss.org/ceforum/viewtopic.php?f=10&t=11507 
+            if (e.ErrorText == "ERR_ABORTED")
+            {
+                this.dynamoViewModel.Model.Logger.LogError("An inprogress load of the library browser window was terminated by a reload.");
+            }
+            else
+            {
+                this.dynamoViewModel.Model.Logger.LogError(e.ErrorText);
+            }
 #endif
         }
 
