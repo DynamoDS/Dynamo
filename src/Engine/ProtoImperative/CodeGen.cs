@@ -2322,9 +2322,9 @@ namespace ProtoImperative
             if (identList.LeftNode is IdentifierListNode)
             {
                 // Check if identList.LeftNode is not a valid class before emitting getters
-                //var className = CoreUtils.GetIdentifierExceptMethodName((IdentifierListNode)identList.LeftNode);
-                //int ci = core.ClassTable.IndexOf(className);
-                if (inferedType.UID == Constants.kInvalidIndex)
+                var className = CoreUtils.GetIdentifierExceptMethodName((IdentifierListNode)identList.LeftNode);
+                int ci = core.ClassTable.IndexOf(className);
+                if (ci == Constants.kInvalidIndex)
                 {
                     var leftIdentList = identList.LeftNode;
                     var retNode = EmitGettersForRHSIdentList(leftIdentList, ref inferedType, graphNode);
@@ -2391,7 +2391,6 @@ namespace ProtoImperative
             {
                 var className = CoreUtils.GetIdentifierExceptMethodName((IdentifierListNode)inode.LeftNode);
                 ci = core.ClassTable.IndexOf(className);
-                inferedType.UID = ci;
             }
 
             if (ci == Constants.kInvalidIndex)

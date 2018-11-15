@@ -639,20 +639,19 @@ namespace ProtoCore
 
                 // Check if node.LeftNode is a valid class
                 var identListNode = bnode.LeftNode as AST.ImperativeAST.IdentifierListNode;
-                //int ci = Constants.kInvalidIndex;
+                int ci = Constants.kInvalidIndex;
 
                 if (identListNode != null && finalType.UID != Constants.kInvalidIndex)
                 {
-                    //var className = CoreUtils.GetIdentifierExceptMethodName(identListNode);
-                    //ci = core.ClassTable.IndexOf(className);
-                    //if (ci != Constants.kInvalidIndex)
-                    //{
-                    //    finalType.UID = lefttype.UID = ci;
-                    //}
+                    var className = CoreUtils.GetIdentifierExceptMethodName(identListNode);
+                    ci = core.ClassTable.IndexOf(className);
+                    if (ci != Constants.kInvalidIndex)
+                    {
+                        finalType.UID = lefttype.UID = ci;
+                    }
                     lefttype.UID = finalType.UID;
                 }
-                //if (ci == Constants.kInvalidIndex)
-                if(finalType.UID == Constants.kInvalidIndex)
+                if (ci == Constants.kInvalidIndex)
                 {
                     DfsEmitIdentList(bnode.LeftNode, bnode, contextClassScope, ref lefttype, ref depth, ref finalType, isLeftidentList, graphNode, subPass);
 
