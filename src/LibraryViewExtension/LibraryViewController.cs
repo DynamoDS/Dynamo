@@ -211,8 +211,13 @@ namespace Dynamo.LibraryUI
             System.Diagnostics.Trace.Write(e.ErrorText);
 
 #if DEBUG
+            // TODO - The browser should not be loaded before the loadedTypesJson or layoutSpecsJson are fully loaded.
+            // Since the browser is instantiated before these heavy JSON downloads are complete the browser refreshes when loaded is finished.
+            // A better strategy is required for preloading these assests before the browse attempts to initialize 
+            // Having long running javascript in the Library.html file seems problematic as it doesn't complete before the C# layer continues to execute.
+
             // This error is expected to occur if the loadedTypesJson or layoutSpecsJson was not fully loaded
-            // on the first loading attempt.  When the resources are ready the browser is refreshed/reloaded/
+            // on the first loading attempt.  When the resources are ready the browser is refreshed/reloaded.
             // See this thread for more details: https://magpcss.org/ceforum/viewtopic.php?f=10&t=11507 
             if (e.ErrorText == "ERR_ABORTED")
             {
