@@ -180,31 +180,26 @@ namespace Dynamo.LibraryUI
             browser = view.Browser;
             browser.RegisterAsyncJsObject("controller", this);
 
-            browser.LoadingStateChanged += Browser_LoadingStateChanged;
+            browser.Loaded += Browser_Loaded;
             browser.SizeChanged += Browser_SizeChanged;
             browser.LoadError += Browser_LoadError;
         }
 
-        // Load library resources once the browser is ready for interaction
-        private void Browser_LoadingStateChanged(object sender, LoadingStateChangedEventArgs args)
+        private void Browser_Loaded(object sender, RoutedEventArgs e)
         {
-            // https://github.com/cefsharp/CefSharp/wiki/General-Usage#when-can-i-start-executing-javascript
-            if (!args.IsLoading)
+            // Attempt to load resources
+            try
             {
-                // Attempt to load resources
-                try
-                {
-                    RegisterResources(this.browser);
-                    string msg = "Preparing to load the library resources.";
-                    this.dynamoViewModel.Model.Logger.Log(msg);
-                }
-                catch (Exception ex)
-                {
-                    string error = "Failed to load the library resources." +
-                        Environment.NewLine +
-                        "Exception: " + ex.Message;
-                    this.dynamoViewModel.Model.Logger.LogError(error);
-                }
+                RegisterResources(this.browser);
+                string msg = "Preparing to load the library resources.";
+                this.dynamoViewModel.Model.Logger.Log(msg);
+            }
+            catch (Exception ex)
+            {
+                string error = "Failed to load the library resources." +
+                    Environment.NewLine +
+                    "Exception: " + ex.Message;
+                this.dynamoViewModel.Model.Logger.LogError(error);
             }
         }
 
