@@ -310,10 +310,15 @@ namespace ProtoImperative
             int refClassIndex = Constants.kInvalidIndex;
             if (parentNode != null && parentNode is IdentifierListNode)
             {
-                ProtoCore.AST.Node leftnode = (parentNode as IdentifierListNode).LeftNode;
+                var leftnode = (parentNode as IdentifierListNode).LeftNode;
                 if (leftnode != null && leftnode is IdentifierNode)
                 {
                     refClassIndex = core.ClassTable.IndexOf(leftnode.Name);
+                }
+                else if(leftnode is IdentifierListNode)
+                {
+                    var className = CoreUtils.GetIdentifierExceptMethodName((IdentifierListNode)leftnode);
+                    refClassIndex = core.ClassTable.IndexOf(className);
                 }
             }
 
@@ -2316,11 +2321,17 @@ namespace ProtoImperative
 
             if (identList.LeftNode is IdentifierListNode)
             {
-                ProtoCore.AST.Node leftIdentList = identList.LeftNode;
-                IdentifierNode retNode = EmitGettersForRHSIdentList(leftIdentList, ref inferedType, graphNode);
-                if (retNode != null)
+                // Check if identList.LeftNode is not a valid class before emitting getters
+                //var className = CoreUtils.GetIdentifierExceptMethodName((IdentifierListNode)identList.LeftNode);
+                //int ci = core.ClassTable.IndexOf(className);
+                if (inferedType.UID == Constants.kInvalidIndex)
                 {
-                    identList.LeftNode = retNode;
+                    var leftIdentList = identList.LeftNode;
+                    var retNode = EmitGettersForRHSIdentList(leftIdentList, ref inferedType, graphNode);
+                    if (retNode != null)
+                    {
+                        identList.LeftNode = retNode;
+                    }
                 }
             }
 
@@ -2331,7 +2342,7 @@ namespace ProtoImperative
                 IdentifierNode thisNode = identList.RightNode as IdentifierNode;
 
                 // a.x; => a.get_x(); 
-                string getterName = ProtoCore.DSASM.Constants.kGetterPrefix + thisNode.Name;
+                string getterName = Constants.kGetterPrefix + thisNode.Name;
                 identList.RightNode = nodeBuilder.BuildFunctionCall(getterName, new List<ImperativeNode>()); ;
 
                 // %t = a.get_x();
@@ -2355,7 +2366,6 @@ namespace ProtoImperative
                     result.ArrayDimensions = arrayDimension;
                 }
             }
-
             return result;
         }
 
@@ -2375,26 +2385,37 @@ namespace ProtoImperative
                 return;
             }
 
-
-            // If the left-most property is not "this", insert a "this" node 
-            // so a.b.c will be converted to this.a.b.c. Otherwise we have to 
-            // specially deal with the left-most property.
-            //
-            // Imperative language block doesn't need this preprocessing.
-            IdentifierListNode leftMostIdentList = inode;
-            while (leftMostIdentList.LeftNode is IdentifierListNode)
+            // Skip check for property if left node is found to be valid class 
+            int ci = Constants.kInvalidIndex;
+            if(inode.LeftNode is IdentifierListNode)
             {
-                leftMostIdentList = leftMostIdentList.LeftNode as IdentifierListNode;
+                var className = CoreUtils.GetIdentifierExceptMethodName((IdentifierListNode)inode.LeftNode);
+                ci = core.ClassTable.IndexOf(className);
+                inferedType.UID = ci;
             }
-            if (leftMostIdentList.LeftNode is IdentifierNode)
+
+            if (ci == Constants.kInvalidIndex)
             {
-                IdentifierNode leftMostIdent = leftMostIdentList.LeftNode as IdentifierNode;
-                if (!string.Equals(ProtoCore.DSDefinitions.Keyword.This, leftMostIdent.Name) &&
-                    IsProperty(leftMostIdent.Name))
+                // If the left-most property is not "this", insert a "this" node 
+                // so a.b.c will be converted to this.a.b.c. Otherwise we have to 
+                // specially deal with the left-most property.
+                //
+                // Imperative language block doesn't need this preprocessing.
+                IdentifierListNode leftMostIdentList = inode;
+                while (leftMostIdentList.LeftNode is IdentifierListNode)
                 {
-                    var thisIdent = Parser.BuildImperativeIdentifier(ProtoCore.DSDefinitions.Keyword.This);
-                    var thisIdentList = nodeBuilder.BuildIdentList(thisIdent, leftMostIdent);
-                    leftMostIdentList.LeftNode = thisIdentList;
+                    leftMostIdentList = leftMostIdentList.LeftNode as IdentifierListNode;
+                }
+                if (leftMostIdentList.LeftNode is IdentifierNode)
+                {
+                    IdentifierNode leftMostIdent = leftMostIdentList.LeftNode as IdentifierNode;
+                    if (!string.Equals(ProtoCore.DSDefinitions.Keyword.This, leftMostIdent.Name) &&
+                        IsProperty(leftMostIdent.Name))
+                    {
+                        var thisIdent = Parser.BuildImperativeIdentifier(ProtoCore.DSDefinitions.Keyword.This);
+                        var thisIdentList = nodeBuilder.BuildIdentList(thisIdent, leftMostIdent);
+                        leftMostIdentList.LeftNode = thisIdentList;
+                    }
                 }
             }
 
@@ -2479,14 +2500,13 @@ namespace ProtoImperative
             }
             else
             {
-                IdentifierNode retnode = EmitGettersForRHSIdentList(node, ref inferedType, graphNode);
+                var retnode = EmitGettersForRHSIdentList(node, ref inferedType, graphNode);
                 if (retnode != null)
                 {
                     EmitIdentifierNode(retnode, ref inferedType, false);
                     isCollapsed = true;
                 }
             }
-
         }     
 
         private void EmitPushDepData(List<ProtoCore.DSASM.SymbolNode> symbolList)

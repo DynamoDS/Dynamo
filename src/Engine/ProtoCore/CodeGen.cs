@@ -627,44 +627,61 @@ namespace ProtoCore
             Node binaryExpNode = null)
         {
             dynamic node = pNode;
-            if (node is ProtoCore.AST.ImperativeAST.IdentifierListNode || node is ProtoCore.AST.AssociativeAST.IdentifierListNode)
+            if (node is AST.ImperativeAST.IdentifierListNode || node is AST.AssociativeAST.IdentifierListNode)
             {
                 dynamic bnode = node;
-                if (ProtoCore.DSASM.Operator.dot != bnode.Optr)
+                if (Operator.dot != bnode.Optr)
                 {
                     string message = "The left hand side of an operation can only contain an indirection operator '.' (48D67B9B)";
                     buildStatus.LogSemanticError(message, core.CurrentDSFileName, bnode.line, bnode.col);
                     throw new BuildHaltException(message);
                 }
 
-                DfsEmitIdentList(bnode.LeftNode, bnode, contextClassScope, ref lefttype, ref depth, ref finalType, isLeftidentList, graphNode, subPass);
+                // Check if node.LeftNode is a valid class
+                var identListNode = bnode.LeftNode as AST.ImperativeAST.IdentifierListNode;
+                //int ci = Constants.kInvalidIndex;
 
-                if (lefttype.rank > 0)
+                if (identListNode != null && finalType.UID != Constants.kInvalidIndex)
                 {
-                    lefttype.UID = finalType.UID = (int)PrimitiveType.Null;
-                    EmitPushNull();
-                    return false;
+                    //var className = CoreUtils.GetIdentifierExceptMethodName(identListNode);
+                    //ci = core.ClassTable.IndexOf(className);
+                    //if (ci != Constants.kInvalidIndex)
+                    //{
+                    //    finalType.UID = lefttype.UID = ci;
+                    //}
+                    lefttype.UID = finalType.UID;
+                }
+                //if (ci == Constants.kInvalidIndex)
+                if(finalType.UID == Constants.kInvalidIndex)
+                {
+                    DfsEmitIdentList(bnode.LeftNode, bnode, contextClassScope, ref lefttype, ref depth, ref finalType, isLeftidentList, graphNode, subPass);
+
+                    if (lefttype.rank > 0)
+                    {
+                        lefttype.UID = finalType.UID = (int)PrimitiveType.Null;
+                        EmitPushNull();
+                        return false;
+                    }
                 }
                 node = bnode.RightNode;
             }
 
-            if (node is ProtoCore.AST.ImperativeAST.GroupExpressionNode)
+            if (node is AST.ImperativeAST.GroupExpressionNode)
             {
-                ProtoCore.AST.ImperativeAST.ArrayNode array = node.ArrayDimensions;
+                AST.ImperativeAST.ArrayNode array = node.ArrayDimensions;
                 node = node.Expression;
                 node.ArrayDimensions = array;
             }
-            else if (node is ProtoCore.AST.AssociativeAST.GroupExpressionNode)
+            else if (node is AST.AssociativeAST.GroupExpressionNode)
             {
-                ProtoCore.AST.AssociativeAST.ArrayNode array = node.ArrayDimensions;
-                List<ProtoCore.AST.AssociativeAST.AssociativeNode> replicationGuides = node.ReplicationGuides;
+                var array = node.ArrayDimensions;
+                var replicationGuides = node.ReplicationGuides;
 
                 node = node.Expression;
                 node.ArrayDimensions = array;
                 node.ReplicationGuides = replicationGuides;
             }
-
-            if (node is ProtoCore.AST.ImperativeAST.IdentifierNode || node is ProtoCore.AST.AssociativeAST.IdentifierNode)
+            else if (node is AST.ImperativeAST.IdentifierNode || node is AST.AssociativeAST.IdentifierNode)
             {
                 dynamic identnode = node;
 
@@ -828,7 +845,7 @@ namespace ProtoCore
                 }
                 return true;
             }
-            else if (node is ProtoCore.AST.ImperativeAST.FunctionCallNode || node is ProtoCore.AST.AssociativeAST.FunctionCallNode)
+            else if (node is AST.ImperativeAST.FunctionCallNode || node is AST.AssociativeAST.FunctionCallNode)
             {
                 // A function call must always track dependents
                 bool allowDependents = true;
@@ -842,7 +859,7 @@ namespace ProtoCore
                 {
                     ProtoCore.Utils.NodeUtils.SetNodeLocation(node, binaryExpNode, binaryExpNode);
                 }
-                ProtoCore.DSASM.ProcedureNode procnode = TraverseFunctionCall(node, pNode, lefttype.UID, depth, ref finalType, graphNode, subPass, binaryExpNode);
+                ProcedureNode procnode = TraverseFunctionCall(node, pNode, lefttype.UID, depth, ref finalType, graphNode, subPass, binaryExpNode);
 
                 // Restore the graphNode dependent state
                 if (null != graphNode)
@@ -2033,24 +2050,24 @@ namespace ProtoCore
             }
         }
 
-        protected void EmitIdentifierListNode(Node node, ref ProtoCore.Type inferedType, bool isBooleanOp = false, 
-            ProtoCore.AssociativeGraph.GraphNode graphNode = null, 
-            ProtoCore.CompilerDefinitions.SubCompilePass subPass = ProtoCore.CompilerDefinitions.SubCompilePass.None, 
-            ProtoCore.AST.Node bnode = null)
+        protected void EmitIdentifierListNode(Node node, ref Type inferedType, bool isBooleanOp = false,
+            AssociativeGraph.GraphNode graphNode = null,
+            CompilerDefinitions.SubCompilePass subPass = CompilerDefinitions.SubCompilePass.None,
+            Node bnode = null)
         {
-            if (subPass == ProtoCore.CompilerDefinitions.SubCompilePass.UnboundIdentifier)
+            if (subPass == CompilerDefinitions.SubCompilePass.UnboundIdentifier)
             {
                 //to process all unbounded parameters if any
                 dynamic iNode = node;
-                while (iNode is ProtoCore.AST.AssociativeAST.IdentifierListNode || iNode is ProtoCore.AST.ImperativeAST.IdentifierListNode)
+                while (iNode is AST.AssociativeAST.IdentifierListNode || iNode is AST.ImperativeAST.IdentifierListNode)
                 {
                     dynamic rightNode = iNode.RightNode;
-                    if (rightNode is ProtoCore.AST.AssociativeAST.FunctionCallNode || rightNode is ProtoCore.AST.ImperativeAST.FunctionCallNode)
+                    if (rightNode is AST.AssociativeAST.FunctionCallNode || rightNode is AST.ImperativeAST.FunctionCallNode)
                     {
                         foreach (dynamic paramNode in rightNode.FormalArguments)
                         {
-                            ProtoCore.Type paramType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, 0);
-                            DfsTraverse(paramNode, ref paramType, false, graphNode, ProtoCore.CompilerDefinitions.SubCompilePass.UnboundIdentifier);
+                            Type paramType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, 0);
+                            DfsTraverse(paramNode, ref paramType, false, graphNode, CompilerDefinitions.SubCompilePass.UnboundIdentifier);
                         }
                     }
                     iNode = iNode.LeftNode;
@@ -2060,16 +2077,16 @@ namespace ProtoCore
 
             int depth = 0;
 
-            ProtoCore.Type leftType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.InvalidType, 0);
+            Type leftType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.InvalidType, 0);
 
             BuildSSADependency(node, graphNode);
             if (core.Options.GenerateSSA)
             {
                 BuildRealDependencyForIdentList(graphNode);
 
-                if (node is ProtoCore.AST.AssociativeAST.IdentifierListNode)
+                if (node is AST.AssociativeAST.IdentifierListNode)
                 {
-                    if ((node as ProtoCore.AST.AssociativeAST.IdentifierListNode).IsLastSSAIdentListFactor)
+                    if ((node as AST.AssociativeAST.IdentifierListNode).IsLastSSAIdentListFactor)
                     {
                         Validity.Assert(null != ssaPointerStack);
                         ssaPointerStack.Pop();
