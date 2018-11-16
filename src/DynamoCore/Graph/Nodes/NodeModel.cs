@@ -228,7 +228,11 @@ namespace Dynamo.Graph.Nodes
 
             set
             {
-                isSetAsInput = value;
+                if (isSetAsInput != value)
+                {
+                    isSetAsInput = value;
+                    this.OnNodeModified();
+                }
             }
         }
 
@@ -265,7 +269,11 @@ namespace Dynamo.Graph.Nodes
 
             set
             {
-                isSetAsOutput = value;
+                if (isSetAsOutput != value)
+                {
+                    isSetAsOutput = value;
+                    this.OnNodeModified();
+                }
             }
         }
 
