@@ -641,7 +641,7 @@ namespace ProtoCore
                 var identListNode = bnode.LeftNode as AST.ImperativeAST.IdentifierListNode;
                 int ci = Constants.kInvalidIndex;
 
-                if (identListNode != null && finalType.UID != Constants.kInvalidIndex)
+                if (identListNode != null)
                 {
                     var className = CoreUtils.GetIdentifierExceptMethodName(identListNode);
                     ci = core.ClassTable.IndexOf(className);
@@ -649,7 +649,6 @@ namespace ProtoCore
                     {
                         finalType.UID = lefttype.UID = ci;
                     }
-                    lefttype.UID = finalType.UID;
                 }
                 if (ci == Constants.kInvalidIndex)
                 {
@@ -667,7 +666,7 @@ namespace ProtoCore
 
             if (node is AST.ImperativeAST.GroupExpressionNode)
             {
-                AST.ImperativeAST.ArrayNode array = node.ArrayDimensions;
+                var array = node.ArrayDimensions;
                 node = node.Expression;
                 node.ArrayDimensions = array;
             }
@@ -680,7 +679,8 @@ namespace ProtoCore
                 node.ArrayDimensions = array;
                 node.ReplicationGuides = replicationGuides;
             }
-            else if (node is AST.ImperativeAST.IdentifierNode || node is AST.AssociativeAST.IdentifierNode)
+
+            if (node is AST.ImperativeAST.IdentifierNode || node is AST.AssociativeAST.IdentifierNode)
             {
                 dynamic identnode = node;
 
@@ -739,7 +739,7 @@ namespace ProtoCore
                         }
                         else
                         {
-                            DSASM.DyanmicVariableNode dynamicVariableNode = new DSASM.DyanmicVariableNode(identnode.Value, globalProcIndex, globalClassIndex);
+                            var dynamicVariableNode = new DSASM.DyanmicVariableNode(identnode.Value, globalProcIndex, globalClassIndex);
                             core.DynamicVariableTable.variableTable.Add(dynamicVariableNode);
                             int dim = 0;
                             if (null != identnode.ArrayDimensions)
@@ -788,8 +788,8 @@ namespace ProtoCore
                     StackValue op = StackValue.Null;
                     if (0 == depth || (symbolnode != null && symbolnode.isStatic))
                     {
-                        if (ProtoCore.DSASM.Constants.kGlobalScope == symbolnode.functionIndex
-                            && ProtoCore.DSASM.Constants.kInvalidIndex != symbolnode.classScope)
+                        if (Constants.kGlobalScope == symbolnode.functionIndex
+                            && Constants.kInvalidIndex != symbolnode.classScope)
                         {
                             // member var
                             if (symbolnode.isStatic)
@@ -822,7 +822,7 @@ namespace ProtoCore
                     else
                     {
                         // change to dynamic call to facilitate update mechanism
-                        DSASM.DyanmicVariableNode dynamicVariableNode = new DSASM.DyanmicVariableNode(identnode.Name, globalProcIndex, globalClassIndex);
+                        var dynamicVariableNode = new DSASM.DyanmicVariableNode(identnode.Name, globalProcIndex, globalClassIndex);
                         core.DynamicVariableTable.variableTable.Add(dynamicVariableNode);
                         StackValue dynamicOp = StackValue.BuildDynamic(core.DynamicVariableTable.variableTable.Count - 1);
                         EmitInstrConsole(ProtoCore.DSASM.kw.pushm, identnode.Value + "[dynamic]");
@@ -858,7 +858,7 @@ namespace ProtoCore
                 {
                     ProtoCore.Utils.NodeUtils.SetNodeLocation(node, binaryExpNode, binaryExpNode);
                 }
-                ProcedureNode procnode = TraverseFunctionCall(node, pNode, lefttype.UID, depth, ref finalType, graphNode, subPass, binaryExpNode);
+                var procnode = TraverseFunctionCall(node, pNode, lefttype.UID, depth, ref finalType, graphNode, subPass, binaryExpNode);
 
                 // Restore the graphNode dependent state
                 if (null != graphNode)
