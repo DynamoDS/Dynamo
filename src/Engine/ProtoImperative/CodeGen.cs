@@ -317,8 +317,12 @@ namespace ProtoImperative
                 }
                 else if(leftnode is IdentifierListNode)
                 {
-                    var className = CoreUtils.GetIdentifierExceptMethodName((IdentifierListNode)leftnode);
-                    refClassIndex = core.ClassTable.IndexOf(className);
+                    var isFunctionCall = ((IdentifierListNode)leftnode).RightNode is FunctionCallNode;
+                    if (!isFunctionCall)
+                    {
+                        var className = CoreUtils.GetIdentifierExceptMethodName((IdentifierListNode)leftnode);
+                        refClassIndex = core.ClassTable.IndexOf(className);
+                    }
                 }
             }
 
@@ -2321,10 +2325,12 @@ namespace ProtoImperative
 
             if (identList.LeftNode is IdentifierListNode)
             {
+                var leftNode = (IdentifierListNode)identList.LeftNode;
                 // Check if identList.LeftNode is not a valid class before emitting getters
-                var className = CoreUtils.GetIdentifierExceptMethodName((IdentifierListNode)identList.LeftNode);
+                var className = CoreUtils.GetIdentifierExceptMethodName(leftNode);
                 int ci = core.ClassTable.IndexOf(className);
-                if (ci == Constants.kInvalidIndex)
+                var isIdentifierOrFunction = leftNode.RightNode is IdentifierNode || leftNode.RightNode is FunctionCallNode;
+                if (ci == Constants.kInvalidIndex || isIdentifierOrFunction)
                 {
                     var leftIdentList = identList.LeftNode;
                     var retNode = EmitGettersForRHSIdentList(leftIdentList, ref inferedType, graphNode);
@@ -2337,6 +2343,7 @@ namespace ProtoImperative
 
             IdentifierNode result = null;
 
+            // If RightNode is property
             if (identList.RightNode is IdentifierNode)
             {
                 IdentifierNode thisNode = identList.RightNode as IdentifierNode;
@@ -2386,14 +2393,14 @@ namespace ProtoImperative
             }
 
             // Skip check for property if left node is found to be valid class 
-            int ci = Constants.kInvalidIndex;
-            if(inode.LeftNode is IdentifierListNode)
-            {
-                var className = CoreUtils.GetIdentifierExceptMethodName((IdentifierListNode)inode.LeftNode);
-                ci = core.ClassTable.IndexOf(className);
-            }
+            //int ci = Constants.kInvalidIndex;
+            //if(inode.LeftNode is IdentifierListNode)
+            //{
+            //    var className = CoreUtils.GetIdentifierExceptMethodName((IdentifierListNode)inode.LeftNode);
+            //    ci = core.ClassTable.IndexOf(className);
+            //}
 
-            if (ci == Constants.kInvalidIndex)
+            //if (ci == Constants.kInvalidIndex)
             {
                 // If the left-most property is not "this", insert a "this" node 
                 // so a.b.c will be converted to this.a.b.c. Otherwise we have to 
@@ -2582,7 +2589,7 @@ namespace ProtoImperative
             return !InsideFunction();
         }
 
-        protected void EmitIdentifierListNode(ProtoCore.AST.ImperativeAST.ImperativeNode node, ref ProtoCore.Type inferedType, ProtoCore.AssociativeGraph.GraphNode graphNode = null, ProtoCore.AST.Node parentNode = null)
+        protected void EmitIdentifierListNode(ImperativeNode node, ref ProtoCore.Type inferedType, ProtoCore.AssociativeGraph.GraphNode graphNode = null, ProtoCore.AST.Node parentNode = null)
         {
             if (parentNode == null && !IsParsingGlobal())
                 return;

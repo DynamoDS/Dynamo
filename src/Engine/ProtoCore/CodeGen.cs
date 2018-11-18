@@ -640,17 +640,20 @@ namespace ProtoCore
                 // Check if node.LeftNode is a valid class
                 var identListNode = bnode.LeftNode as AST.ImperativeAST.IdentifierListNode;
                 int ci = Constants.kInvalidIndex;
+                bool isImpIdentOrFunc = true;
 
                 if (identListNode != null)
                 {
+                    isImpIdentOrFunc = identListNode.RightNode is AST.ImperativeAST.IdentifierNode || 
+                                        identListNode.RightNode is AST.ImperativeAST.FunctionCallNode;
                     var className = CoreUtils.GetIdentifierExceptMethodName(identListNode);
                     ci = core.ClassTable.IndexOf(className);
-                    if (ci != Constants.kInvalidIndex)
+                    if (ci != Constants.kInvalidIndex && !isImpIdentOrFunc)
                     {
                         finalType.UID = lefttype.UID = ci;
                     }
                 }
-                if (ci == Constants.kInvalidIndex)
+                if (ci == Constants.kInvalidIndex || isImpIdentOrFunc)
                 {
                     DfsEmitIdentList(bnode.LeftNode, bnode, contextClassScope, ref lefttype, ref depth, ref finalType, isLeftidentList, graphNode, subPass);
 
@@ -2049,7 +2052,9 @@ namespace ProtoCore
             }
         }
 
-        protected void EmitIdentifierListNode(Node node, ref Type inferedType, bool isBooleanOp = false,
+        protected void EmitIdentifierListNode(Node node, 
+            ref Type inferedType, 
+            bool isBooleanOp = false,
             AssociativeGraph.GraphNode graphNode = null,
             CompilerDefinitions.SubCompilePass subPass = CompilerDefinitions.SubCompilePass.None,
             Node bnode = null)

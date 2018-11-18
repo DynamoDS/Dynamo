@@ -724,7 +724,7 @@ namespace ProtoCore.Utils
             return newIdentList;
         }
 
-        public static AST.ImperativeAST.ImperativeNode CreateNodeByCombiningIdentifiers(IList<AST.ImperativeAST.ImperativeNode> nodeList)
+        private static AST.ImperativeAST.ImperativeNode CreateNodeByCombiningIdentifiers(IList<AST.ImperativeAST.ImperativeNode> nodeList)
         {
             int count = nodeList.Count;
             if (count == 0)
