@@ -74,9 +74,7 @@ namespace Dynamo.LibraryUI.Handlers
         protected virtual object CreateObjectForSerialization(IEnumerable<NodeSearchElement> searchEntries)
         {
             var data = new LoadedTypeData<LoadedTypeItem>();
-            data.loadedTypes = searchEntries
-                //.Where(e => !e.ElementType.HasFlag(ElementTypes.Packaged))
-                .Select(e => CreateLoadedTypeItem<LoadedTypeItem>(e)).ToList();
+            data.loadedTypes = searchEntries.ToList().Select(e => CreateLoadedTypeItem<LoadedTypeItem>(e)).ToList();
             return data;
         }
 
