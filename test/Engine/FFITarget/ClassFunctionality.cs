@@ -52,6 +52,11 @@ namespace FFITarget
 
         public static int StaticProp { get; set; }
 
+        public static ClassFunctionality Instance
+        {
+            get { return new ClassFunctionality(2349); }
+        }
+
         public static int get_StaticProperty
         {
             get { return 99; }
