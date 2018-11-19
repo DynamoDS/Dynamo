@@ -641,7 +641,6 @@ sum;
                             val = a.Value;
                             ";
             Type dummy = typeof (FFITarget.DummyDispose);
-            code = string.Format("import(\"{0}\");\r\n{1}", dummy.AssemblyQualifiedName, code);
             ValidationData[] data = { new ValidationData { ValueName = "val", ExpectedValue = (Int64)(20), BlockIndex = 0 } };
             ExecuteAndVerify(code, data);
         }
