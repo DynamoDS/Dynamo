@@ -2328,12 +2328,6 @@ namespace ProtoImperative
                 var leftNode = (IdentifierListNode)identList.LeftNode;
                 // Check if leftNode is not a valid class before emitting getters
                 int ci = Constants.kInvalidIndex;
-                //if (leftNode.RightNode is FunctionCallNode)
-                //{
-                //    var className = CoreUtils.GetIdentifierExceptMethodName(leftNode);
-                //    ci = core.ClassTable.IndexOf(className);
-                //}
-                //else
                 var isFuncCall = leftNode.RightNode is FunctionCallNode;
                 if(!isFuncCall)
                 {
@@ -2403,39 +2397,28 @@ namespace ProtoImperative
                 return;
             }
 
-            // Skip check for property if left node is found to be valid class 
-            //int ci = Constants.kInvalidIndex;
-            //if(inode.LeftNode is IdentifierListNode)
-            //{
-            //    var className = CoreUtils.GetIdentifierExceptMethodName((IdentifierListNode)inode.LeftNode);
-            //    ci = core.ClassTable.IndexOf(className);
-            //}
-
-            //if (ci == Constants.kInvalidIndex)
+            // If the left-most property is not "this", insert a "this" node 
+            // so a.b.c will be converted to this.a.b.c. Otherwise we have to 
+            // specially deal with the left-most property.
+            //
+            // Imperative language block doesn't need this preprocessing.
+            IdentifierListNode leftMostIdentList = inode;
+            while (leftMostIdentList.LeftNode is IdentifierListNode)
             {
-                // If the left-most property is not "this", insert a "this" node 
-                // so a.b.c will be converted to this.a.b.c. Otherwise we have to 
-                // specially deal with the left-most property.
-                //
-                // Imperative language block doesn't need this preprocessing.
-                IdentifierListNode leftMostIdentList = inode;
-                while (leftMostIdentList.LeftNode is IdentifierListNode)
+                leftMostIdentList = leftMostIdentList.LeftNode as IdentifierListNode;
+            }
+            if (leftMostIdentList.LeftNode is IdentifierNode)
+            {
+                IdentifierNode leftMostIdent = leftMostIdentList.LeftNode as IdentifierNode;
+                if (!string.Equals(ProtoCore.DSDefinitions.Keyword.This, leftMostIdent.Name) &&
+                    IsProperty(leftMostIdent.Name))
                 {
-                    leftMostIdentList = leftMostIdentList.LeftNode as IdentifierListNode;
-                }
-                if (leftMostIdentList.LeftNode is IdentifierNode)
-                {
-                    IdentifierNode leftMostIdent = leftMostIdentList.LeftNode as IdentifierNode;
-                    if (!string.Equals(ProtoCore.DSDefinitions.Keyword.This, leftMostIdent.Name) &&
-                        IsProperty(leftMostIdent.Name))
-                    {
-                        var thisIdent = Parser.BuildImperativeIdentifier(ProtoCore.DSDefinitions.Keyword.This);
-                        var thisIdentList = nodeBuilder.BuildIdentList(thisIdent, leftMostIdent);
-                        leftMostIdentList.LeftNode = thisIdentList;
-                    }
+                    var thisIdent = Parser.BuildImperativeIdentifier(ProtoCore.DSDefinitions.Keyword.This);
+                    var thisIdentList = nodeBuilder.BuildIdentList(thisIdent, leftMostIdent);
+                    leftMostIdentList.LeftNode = thisIdentList;
                 }
             }
-
+            
             // If this identifier list appears on the left hand side of an 
             // assignment statement, we need to emit setter for the last propery
             // on this identifier list. Two cases: the last (right-most) property

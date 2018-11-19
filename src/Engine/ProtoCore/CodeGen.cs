@@ -645,12 +645,6 @@ namespace ProtoCore
                 if (identListNode != null)
                 {
                     isImperativeFunc = identListNode.RightNode is AST.ImperativeAST.FunctionCallNode;
-                    //if (isImperativeFunc)
-                    //{
-                    //    var className = CoreUtils.GetIdentifierExceptMethodName(identListNode);
-                    //    ci = core.ClassTable.IndexOf(className);
-                    //}
-                    //else
                     if(!isImperativeFunc)
                     {
                         var className = CoreUtils.GetIdentifierStringUntilFirstParenthesis(identListNode);
