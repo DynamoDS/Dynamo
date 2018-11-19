@@ -1,12 +1,47 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using NUnit.Framework;
+using SystemTestServices;
+using System.IO;
 
 namespace DynamoCoreWpfTests
 {
+
+    [TestFixture]
+    public class ListAtLevelInteractionTests : SystemTestBase
+    {
+        protected override void GetLibrariesToPreload(List<string> libraries)
+        {
+            libraries.Add("DesignScriptBuiltin.dll");
+            libraries.Add("DSCoreNodes.dll");
+            libraries.Add("FunctionObject.ds");
+            libraries.Add("BuiltIn.ds");
+            base.GetLibrariesToPreload(libraries);
+        }
+
+        [Test]
+        public void ShouldKeepListStructureChangesOutput()
+        {
+            var openPath = Path.Combine(GetTestDirectory(ExecutingDirectory), @"UI\keepListStructure.dyn");
+            ViewModel.OpenCommand.Execute(openPath);
+            var rankNode = this.Model.CurrentWorkspace.Nodes.Where(x => x.Name == "List.Rank").FirstOrDefault();
+            Assert.NotNull(rankNode);
+            Assert.AreEqual(4, this.Model.CurrentWorkspace.Nodes.Count());
+            RunCurrentModel();
+
+            var rank = rankNode.CachedValue.Data;
+            Assert.AreEqual(2, rank);
+
+            var addNode = this.Model.CurrentWorkspace.Nodes.Where(x => x.Name == "+").FirstOrDefault();
+            Assert.NotNull(addNode);
+            addNode.InPorts.First().KeepListStructure = true;
+
+            RunCurrentModel();
+            rank = rankNode.CachedValue.Data;
+            Assert.AreEqual(3, rank);
+        }
+    }
+
     [TestFixture]
     public class ListAtLevelTest : RecordedUnitTestBase
     {
