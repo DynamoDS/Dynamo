@@ -222,6 +222,40 @@ a1 = test();
         }
 
         [Test]
+        public void TestNamespaceQualifiedStaticProperty()
+        {
+            String code =
+             @"
+			 import(""FFITarget.dll"");
+
+                a=[Imperative]
+                {
+                    ClassFunctionality.StaticProp = 1133;
+                    return FFITarget.ClassFunctionality.StaticProp;
+                };
+            ";
+            ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code);
+            thisTest.Verify("a", 1133);
+        }
+
+        [Test]
+        public void TestNamespaceQualifiedStaticPropertyChaining()
+        {
+            String code =
+             @"
+			 import(""FFITarget.dll"");
+
+                a=[Imperative]
+                {
+                    ClassFunctionality.StaticProp = 1133;
+                    return [FFITarget.ClassFunctionality.Instance.StaticFunction(), FFITarget.ClassFunctionality.Instance.IntVal];
+                };
+            ";
+            ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code);
+            thisTest.Verify("a", new double[] { 1133, 2349 });
+        }
+
+        [Test]
         [Category("DSDefinedClass_Ported")]
         public void T012_ClassConstructorNestedScope_ImplicitTypeConversion()
         {
