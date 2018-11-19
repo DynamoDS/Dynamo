@@ -640,20 +640,28 @@ namespace ProtoCore
                 // Check if node.LeftNode is a valid class
                 var identListNode = bnode.LeftNode as AST.ImperativeAST.IdentifierListNode;
                 int ci = Constants.kInvalidIndex;
-                bool isImpIdentOrFunc = true;
+                bool isImperativeFunc = true;
 
                 if (identListNode != null)
                 {
-                    isImpIdentOrFunc = identListNode.RightNode is AST.ImperativeAST.IdentifierNode || 
-                                        identListNode.RightNode is AST.ImperativeAST.FunctionCallNode;
-                    var className = CoreUtils.GetIdentifierExceptMethodName(identListNode);
-                    ci = core.ClassTable.IndexOf(className);
-                    if (ci != Constants.kInvalidIndex && !isImpIdentOrFunc)
+                    isImperativeFunc = identListNode.RightNode is AST.ImperativeAST.FunctionCallNode;
+                    //if (isImperativeFunc)
+                    //{
+                    //    var className = CoreUtils.GetIdentifierExceptMethodName(identListNode);
+                    //    ci = core.ClassTable.IndexOf(className);
+                    //}
+                    //else
+                    if(!isImperativeFunc)
+                    {
+                        var className = CoreUtils.GetIdentifierStringUntilFirstParenthesis(identListNode);
+                        ci = core.ClassTable.IndexOf(className);
+                    }
+                    if (ci != Constants.kInvalidIndex && !isImperativeFunc)
                     {
                         finalType.UID = lefttype.UID = ci;
                     }
                 }
-                if (ci == Constants.kInvalidIndex || isImpIdentOrFunc)
+                if (ci == Constants.kInvalidIndex || isImperativeFunc)
                 {
                     DfsEmitIdentList(bnode.LeftNode, bnode, contextClassScope, ref lefttype, ref depth, ref finalType, isLeftidentList, graphNode, subPass);
 

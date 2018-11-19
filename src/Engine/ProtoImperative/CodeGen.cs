@@ -315,7 +315,7 @@ namespace ProtoImperative
                 {
                     refClassIndex = core.ClassTable.IndexOf(leftnode.Name);
                 }
-                else if(leftnode is IdentifierListNode)
+                else if (leftnode is IdentifierListNode)
                 {
                     var isFunctionCall = ((IdentifierListNode)leftnode).RightNode is FunctionCallNode;
                     if (!isFunctionCall)
@@ -2326,11 +2326,22 @@ namespace ProtoImperative
             if (identList.LeftNode is IdentifierListNode)
             {
                 var leftNode = (IdentifierListNode)identList.LeftNode;
-                // Check if identList.LeftNode is not a valid class before emitting getters
-                var className = CoreUtils.GetIdentifierExceptMethodName(leftNode);
-                int ci = core.ClassTable.IndexOf(className);
-                var isIdentifierOrFunction = leftNode.RightNode is IdentifierNode || leftNode.RightNode is FunctionCallNode;
-                if (ci == Constants.kInvalidIndex || isIdentifierOrFunction)
+                // Check if leftNode is not a valid class before emitting getters
+                int ci = Constants.kInvalidIndex;
+                //if (leftNode.RightNode is FunctionCallNode)
+                //{
+                //    var className = CoreUtils.GetIdentifierExceptMethodName(leftNode);
+                //    ci = core.ClassTable.IndexOf(className);
+                //}
+                //else
+                var isFuncCall = leftNode.RightNode is FunctionCallNode;
+                if(!isFuncCall)
+                {
+                    var className = CoreUtils.GetIdentifierStringUntilFirstParenthesis(leftNode);
+                    ci = core.ClassTable.IndexOf(className);
+                }
+
+                if (ci == Constants.kInvalidIndex || isFuncCall)
                 {
                     var leftIdentList = identList.LeftNode;
                     var retNode = EmitGettersForRHSIdentList(leftIdentList, ref inferedType, graphNode);

@@ -478,8 +478,13 @@ namespace ProtoCore.Utils
         /// </summary>
         /// <param name="identList"></param>
         /// <returns></returns>
-        public static string GetIdentifierStringUntilFirstParenthesis(IdentifierListNode identList)
+        public static string GetIdentifierStringUntilFirstParenthesis(AST.Node node)
         {
+            dynamic identList = node as IdentifierListNode;
+            if(identList == null)
+            {
+                identList = node as AST.ImperativeAST.IdentifierListNode;
+            }
             Validity.Assert(null != identList);
             string identListString = identList.ToString();
             int removeIndex = identListString.IndexOf('(');
@@ -724,7 +729,7 @@ namespace ProtoCore.Utils
             return newIdentList;
         }
 
-        private static AST.ImperativeAST.ImperativeNode CreateNodeByCombiningIdentifiers(IList<AST.ImperativeAST.ImperativeNode> nodeList)
+        public static AST.ImperativeAST.ImperativeNode CreateNodeByCombiningIdentifiers(IList<AST.ImperativeAST.ImperativeNode> nodeList)
         {
             int count = nodeList.Count;
             if (count == 0)
