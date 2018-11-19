@@ -637,13 +637,18 @@ namespace ProtoCore
                     throw new BuildHaltException(message);
                 }
 
-                // Check if node.LeftNode is a valid class
                 var identListNode = bnode.LeftNode as AST.ImperativeAST.IdentifierListNode;
                 int ci = Constants.kInvalidIndex;
                 bool isImperativeFunc = true;
 
                 if (identListNode != null)
                 {
+                    // Check if identListNode is a valid class 
+                    // A valid class exists for the following cases of identListNode:
+                    // A.B.ClassName
+                    // A valid class is not found for the following, in which case, continue recursing into LeftNode:
+                    // A.B.ClassName.foo() where identListNode.RightNode is the function foo()
+                    // A.B.ClassName.Property
                     isImperativeFunc = identListNode.RightNode is AST.ImperativeAST.FunctionCallNode;
                     if(!isImperativeFunc)
                     {

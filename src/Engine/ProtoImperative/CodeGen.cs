@@ -2327,6 +2327,11 @@ namespace ProtoImperative
             {
                 var leftNode = (IdentifierListNode)identList.LeftNode;
                 // Check if leftNode is not a valid class before emitting getters
+                // A valid class exists for the following cases of leftNode:
+                // A.B.ClassName
+                // A valid class is not found for the following, in which case, continue recursing into LeftNode:
+                // A.B.ClassName.foo() where leftNode.RightNode is the function foo()
+                // A.B.ClassName.Property
                 int ci = Constants.kInvalidIndex;
                 var isFuncCall = leftNode.RightNode is FunctionCallNode;
                 if(!isFuncCall)
