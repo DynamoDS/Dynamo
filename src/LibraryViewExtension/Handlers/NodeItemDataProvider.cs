@@ -74,6 +74,8 @@ namespace Dynamo.LibraryUI.Handlers
         protected virtual object CreateObjectForSerialization(IEnumerable<NodeSearchElement> searchEntries)
         {
             var data = new LoadedTypeData<LoadedTypeItem>();
+
+            // Converting searchEntries to another list so as to avoid modifying the actual searchEntries list when iterating through it. 
             data.loadedTypes = searchEntries.ToList().Select(e => CreateLoadedTypeItem<LoadedTypeItem>(e)).ToList();
             return data;
         }
