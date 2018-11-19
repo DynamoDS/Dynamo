@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using Dynamo.Graph;
 using Dynamo.Models;
+using Dynamo.Graph.Nodes;
 using NUnit.Framework;
 using DynCmd = Dynamo.Models.DynamoModel;
 
@@ -127,6 +128,45 @@ namespace Dynamo.Tests
 
             // script is edited
             Assert.AreEqual(pynode.Script, newScript);
+        }
+
+        [Test]
+        public void VerifyPythonLoadsFromCore()
+        {
+            // This test graphs verifies the following:
+            // 1 - IronPython version 2.7.8 is loaded
+            // 2 - IronPython StdLib 2.7.8 is loaded from Core location
+            // 3 - StdLib modules are loaded
+            // 4 - Legacy import statements are not influenced by 2.7.8 upgrade
+            
+            // open test graph
+            var model = ViewModel.Model;
+            var examplePath = Path.Combine(TestDirectory, @"core\python", "IronPythonInfo_TestGraph.dyn");
+            ViewModel.OpenCommand.Execute(examplePath);
+
+            // reference to specific testing nodes in test graph
+            string[] testingNodeGUIDS = new string[]
+            {
+                "845d532fdf874d939f2ed66509413ea6",
+                "cb037a9debd54ce79a4007b6ea11de25",
+                "a9bb1b12fbbd4aa19299f0d30c9f99b2",
+                "b6bd3049034f488a9bed0373f05fd021"
+            };
+
+            // get test nodes
+            var allNodes = model.CurrentWorkspace.Nodes;
+
+            foreach(NodeModel node in allNodes) {
+                var guid = node.GUID.ToString();
+
+                // if node is a test node, verify truthy value
+                if (testingNodeGUIDS.Contains(guid) ) {
+                    AssertPreviewValue(guid, true);
+                }
+            }
+
+            var pynode = model.CurrentWorkspace.Nodes.OfType<PythonNode>().First();
+            Assert.NotNull(pynode);
         }
 
         private void UpdatePythonNodeContent(ModelBase pythonNode, string value)
