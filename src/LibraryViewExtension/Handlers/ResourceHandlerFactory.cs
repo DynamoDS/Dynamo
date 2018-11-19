@@ -21,7 +21,7 @@ namespace Dynamo.LibraryUI.Handlers
         //For testing purpose.
         public ResourceHandlerFactory()
         {
-            
+
         }
 
         //TODO: Remove this after testing.
@@ -39,22 +39,27 @@ namespace Dynamo.LibraryUI.Handlers
         {
             try
             {
-                IResourceHandler handler;
+                DefaultResourceHandlerFactoryItem handlerItem;
 #if DEBUG
-                
+
                 if (logger != null)
                 {
                     logger.Log("Requested URL", request.Url);
                 }
 
 #endif
-                
-                if(!Handlers.TryGetValue(request.Url, out handler))
+                // Create a handlerItem for the new resource,
+                // if the resource has already been loaded don't load it again
+                if(!Handlers.TryGetValue(request.Url, out handlerItem))
                 {
-                    handler = this.GetResourceHandler(request);
+                    IResourceHandler handler = this.GetResourceHandler(request);
+
+                    // Make sure the handler is unregistered after use
+                    // See: https://cefsharp.github.io/api/63.0.0/html/T_CefSharp_DefaultResourceHandlerFactoryItem.htm
+                    handlerItem = new DefaultResourceHandlerFactoryItem(handler, true);
                 }
 
-                return handler;
+                return handlerItem.Handler;
             }
             finally
             {

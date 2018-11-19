@@ -42,6 +42,10 @@ https://helixtoolkit.codeplex.com/license
 http://ironpython.net/
 http://opensource.org/licenses/apache2.0.php
 
+###Python Standard Library###
+https://www.python.org/
+https://www.python.org/download/releases/2.7/license/
+
 ###libiconv###
 https://www.gnu.org/software/libiconv/
 https://www.gnu.org/software/gettext/manual/html_node/GNU-LGPL.html#GNU-LGPL
