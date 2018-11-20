@@ -369,7 +369,10 @@ namespace DSCore.IO
                         y =>
                             Enumerable.Range(0, numX)
                                 .Select(x =>
-                                     Color.ByColor(image.GetPixel(x * (image.Width / (numX-1)), y * (image.Height / (numY-1)))))
+                                     Color.ByColor(image.GetPixel(
+                                     (int)(x * ((float)(image.Width-1) / (numX-1))),
+                                     (int)(y * ((float)(image.Height-1) / (numY-1))))
+                                     ))
                                 .ToArray())
                     .ToArray();
         }
