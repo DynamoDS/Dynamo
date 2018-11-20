@@ -11,7 +11,6 @@ namespace ProtoTest.DebugTests
     {
         [Test]
         [Category("Trace")]
-        [Category("Failure")]
         public void DupImportTest()
         {
             var mirror = thisTest.RunScriptSource(
@@ -23,10 +22,9 @@ b = B.DupTargetTest.DupTargetTest();
 bO = b.Foo();
 "
 );
-            // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1947
-            string defectID = "MAGN-1947 IntegrationTests.NamespaceConflictTest.DupImportTest";
+            thisTest.VerifyBuildWarningCount(ProtoCore.BuildData.WarningID.MultipleSymbolFoundFromName, 1);
             thisTest.Verify("aO", 1);
-            thisTest.Verify("bO", 2);
+            thisTest.Verify("bO", null);
 
         }
 
@@ -53,19 +51,6 @@ p = a;
 );
             thisTest.VerifyBuildWarningCount(ProtoCore.BuildData.WarningID.MultipleSymbolFoundFromName, 1);
             thisTest.Verify("p", null);
-        }
-
-
-        [Test]
-        [Category("Trace")]
-        public void DupImportTestNeg()
-        {
-            var mirror = thisTest.RunScriptSource(
-@"import(""FFITarget.dll"");
-a = DupTargetTest.DupTargetTest(); 
-aO = a.Foo();
-"
-);
         }
     }
 }
