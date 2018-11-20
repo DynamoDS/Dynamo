@@ -222,6 +222,10 @@ namespace ProtoCore.Namespace
                         break;
                 }
                 Debug.Assert(!shortNamespaces.ContainsKey(symbol));
+                if(string.IsNullOrEmpty(shortName))
+                {
+                    shortName = symbol.FullName;
+                }
                 shortNamespaces.Add(symbol, shortName);
             }
             return shortNamespaces;
