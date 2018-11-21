@@ -885,14 +885,30 @@ namespace Dynamo.Tests
 
             var rhs = result.AstNodes.Skip(1).Select(b => (b as BinaryExpressionNode).RightNode.ToString().Contains("ValueContainer.SomeValue"));
             Assert.IsTrue(rhs.All(r => r));
+        }
 
-            CurrentDynamoModel.ForceRun();
+        [Test]
+        public void NonUniqueNamespaceConflict_on_node2code_doesNotCrash()
+        {
+            string libraryPath = "FFITarget.dll";
+            if (!CurrentDynamoModel.EngineController.LibraryServices.IsLibraryLoaded(libraryPath))
+            {
+                CurrentDynamoModel.EngineController.LibraryServices.ImportLibrary(libraryPath);
+            }
 
-            var cbn = CurrentDynamoModel.CurrentWorkspace.Nodes.OfType<CodeBlockNodeModel>().FirstOrDefault();
+            // this graph contains a single "FFITarget.B.DupTargetTest" node that conflicts non-uniquely with namespace "FFITarget.C.B.DupTargetTest"
+            OpenModel(@"core\node2code\NonUniqueNamespaceConflict_throwsNodeWarning.dyn");
+            var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
+            SelectAll(nodes);
+            var command = new DynamoModel.ConvertNodesToCodeCommand();
+            CurrentDynamoModel.ExecuteCommand(command);
+
+            nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
+            var cbn = nodes.OfType<CodeBlockNodeModel>().FirstOrDefault();
             Assert.IsNotNull(cbn);
 
-            var guid = cbn.GUID.ToString();
-            AssertPreviewValue(guid, 23);
+            var error = "Multiple definitions for 'FFITarget.B.DupTargetTest' are found as FFITarget.C.B.DupTargetTest, FFITarget.B.DupTargetTest";
+            Assert.IsTrue(cbn.ToolTipText.Contains(error));
         }
 
 

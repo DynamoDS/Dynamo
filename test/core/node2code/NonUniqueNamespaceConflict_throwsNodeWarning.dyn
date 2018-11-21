@@ -1,0 +1,74 @@
+{
+  "Uuid": "d975bf5b-a5ef-45af-b39b-ae5704b9b814",
+  "IsCustomNode": false,
+  "Description": null,
+  "Name": "NonUniqueNamespaceConflict_throwsNodeWarning",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "FFITarget.B.DupTargetTest.DupTargetTest",
+      "Id": "ebb33bb13f4143d5b9ba64c8c421f1c3",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "70a9cb93033a431d88de21406cef4241",
+          "Name": "DupTargetTest",
+          "Description": "DupTargetTest",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "DupTargetTest.DupTargetTest ( ): DupTargetTest"
+    }
+  ],
+  "Connectors": [],
+  "Dependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.1.0.6876",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "DupTargetTest.DupTargetTest",
+        "Id": "ebb33bb13f4143d5b9ba64c8c421f1c3",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 301.333333333333,
+        "Y": 250.666666666667
+      }
+    ],
+    "Annotations": [],
+    "X": 0.0,
+    "Y": 0.0,
+    "Zoom": 1.0
+  }
+}

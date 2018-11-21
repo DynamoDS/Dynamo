@@ -1290,31 +1290,27 @@ a12;
         }
 
         [Test]
-        [Category("Failure")]
         public void TestNamespaceClassResolution()
         {
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1947
             string code =
                 @"import(""FFITarget.dll"");
                     import(""BuiltIn.ds"");
-                    x = 1..2;
 
+                    x = 1..2;
                     Xo = x[0];
 
-                    aDup = A.DupTargetTest(x);
+                    aDup = A.DupTargetTest.DupTargetTest(x);
                     aReadback = aDup.Prop[0];
 
-                    bDup = B.DupTargetTest(x);
-                    bReadback = bDup.Prop[1];
-
-                    check = List.Equals(aDup.Prop,bDup.Prop);";
+                    bDup = B.DupTargetTest.DupTargetTest(x);
+                    bReadback = bDup.Prop[1];";
 
             thisTest.RunScriptSource(code);
-            thisTest.Verify("check", true);
             thisTest.Verify("Xo", 1);
 
             thisTest.Verify("aReadback", 1);
-            thisTest.Verify("bReadback", 2);
+            thisTest.Verify("bReadback", null);
 
             TestFrameWork.VerifyBuildWarning(ProtoCore.BuildData.WarningID.MultipleSymbolFound);
             string[] classes = thisTest.GetAllMatchingClasses("DupTargetTest");
@@ -1322,30 +1318,24 @@ a12;
         }
 
         [Test]
-        [Category("Failure")]
         public void TestSubNamespaceClassResolution()
         {
-            // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1947
             string code =
                 @"import(""FFITarget.dll"");
                     import(""BuiltIn.ds"");
-                    aDup = A.DupTargetTest(0);
+                    aDup = A.DupTargetTest.DupTargetTest(0);
                     aReadback = aDup.Prop;
 
-                    bDup = B.DupTargetTest(1); //This should match exactly BClass.DupTargetTest
+                    bDup = B.DupTargetTest.DupTargetTest(1);
                     bReadback = bDup.Prop;
-                    
-                    cDup = C.B.DupTargetTest(2);
-                    cReadback = cDup.Prop;
 
-                    check = List.Equals(aDup.Prop,bDup.Prop);
-                    check = List.Equals(bDup.Prop,cDup.Prop);
+                    cDup = C.B.DupTargetTest.DupTargetTest(2);
+                    cReadback = cDup.Prop;
 ";
-            string err = "MAGN-1947 IntegrationTests.NamespaceConflictTest.DupImportTest";
-            thisTest.RunScriptSource(code, err);
-            thisTest.Verify("check", true);
+            thisTest.RunScriptSource(code);
             thisTest.Verify("aReadback", 0);
-            thisTest.Verify("bReadback", 1);
+            thisTest.Verify("bDup", null);
+            thisTest.Verify("bReadback", null);
             thisTest.Verify("cReadback", 2);
 
             TestFrameWork.VerifyBuildWarning(ProtoCore.BuildData.WarningID.MultipleSymbolFound);
