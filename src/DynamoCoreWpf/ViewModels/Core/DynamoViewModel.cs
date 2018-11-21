@@ -410,6 +410,16 @@ namespace Dynamo.ViewModels
             }
         }
 
+        public bool ExperimentalSearch
+        {
+            get { return model.DebugSettings.ExperimentalSearch; }
+            set
+            {
+                model.DebugSettings.ExperimentalSearch = value;
+                RaisePropertyChanged("ExperimentalSearch");
+            }
+        }
+
         internal Dispatcher UIDispatcher { get; set; }
 
         public IWatchHandler WatchHandler { get; private set; }

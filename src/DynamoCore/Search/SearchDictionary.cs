@@ -310,6 +310,10 @@ namespace Dynamo.Search
             query = query.ToLower();
 
             var subPatterns = SplitOnWhiteSpace(query);
+            var subPatternsList = subPatterns.ToList();
+            subPatternsList.Add(query);
+            subPatterns = (subPatternsList).ToArray();
+
             foreach (var pair in tagDictionary.Where(x => MatchWithQueryString(x.Key, subPatterns)))
             {
                 ComputeWeightAndAddToDictionary(query, pair, searchDict);
