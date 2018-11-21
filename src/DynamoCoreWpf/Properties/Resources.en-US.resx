@@ -881,7 +881,7 @@ It does not contain your graph or any personal data</value>
     <comment>Settings menu | Geometry Scaling</comment>
   </data>
   <data name="DynamoViewSettingsMenuIsolationMode" xml:space="preserve">
-    <value>Isolate Selected Geometries</value>
+    <value>Isolate Selected Geometry</value>
   </data>
   <data name="DynamoViewSettingsMenuShowEdges" xml:space="preserve">
     <value>Show Edges</value>
@@ -1619,10 +1619,10 @@ Next assemblies were loaded several times:
     <value>Package Path Added</value>
   </data>
   <data name="PackagePathAutoAddNotificationShortDescription" xml:space="preserve">
-    <value>A library (*.dll, *.ds) was recently imported into Dynamo. Its path was automatically added to "Settings > Manage Node and Package Paths..."</value>
+    <value>A library (*.dll, *.ds) was recently imported into Dynamo. Its path was automatically added to "Settings &gt; Manage Node and Package Paths..."</value>
   </data>
   <data name="PackagePathAutoAddNotificationDetailedDescription" xml:space="preserve">
-    <value>The import path "{0}" was added to "Manage Node and Package Paths". If you want to update or remove this path, please open "Settings > Manage Node and Package Paths..."</value>
+    <value>The import path "{0}" was added to "Manage Node and Package Paths". If you want to update or remove this path, please open "Settings &gt; Manage Node and Package Paths..."</value>
   </data>
   <data name="PackageSearchStateNoResult" xml:space="preserve">
     <value>Search returned no results!</value>
@@ -1854,9 +1854,6 @@ Want to publish a different package?</value>
   </data>
   <data name="PublishPackageViewPackageVersion" xml:space="preserve">
     <value>Version (major minor build)</value>
-  </data>
-  <data name="DynamoViewSettingsMenuIsolationMode" xml:space="preserve">
-    <value>Isolate Selected Geometry</value>
   </data>
   <data name="PublishPackageViewPackageVersionTooltip" xml:space="preserve">
     <value>A version name helps a submitter keep track of updates to the package.  A new version of a package will be REJECTED if this is not incremeneted.</value>
@@ -2198,5 +2195,9 @@ Do you want to install the latest Dynamo update?</value>
   </data>
   <data name="RerunButtonToolTip" xml:space="preserve">
     <value>Rerun the graph.</value>
+  </data>
+  <data name="DynamoViewDebugMenuExperimentalSearch" xml:space="preserve">
+    <value>Experimental Search</value>
+    <comment>Debug menu | Experimental Search</comment>
   </data>
 </root>

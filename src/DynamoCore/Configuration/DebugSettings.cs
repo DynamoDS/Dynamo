@@ -10,6 +10,7 @@ namespace Dynamo.Configuration
     {
         private bool showDebugASTs = false;
         private bool verboseLogging = false;
+        private bool experimentalSearch = false;
 
         /// <summary>
         /// Enable verbose logging this is a lot of data
@@ -34,6 +35,19 @@ namespace Dynamo.Configuration
             {
                 showDebugASTs = value;
                 RaisePropertyChanged("ShowDebugASTs");
+            }
+        }
+
+        /// <summary>
+        /// Shows near node view its AST compiled node.
+        /// </summary>
+        internal bool ExperimentalSearch
+        {
+            get { return experimentalSearch; }
+            set
+            {
+                experimentalSearch = value;
+                RaisePropertyChanged("ExperimentalSearch");
             }
         }
     }
