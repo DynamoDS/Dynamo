@@ -35,6 +35,8 @@ namespace Dynamo.Graph.Nodes
         private LacingStrategy argumentLacing = LacingStrategy.Auto;
         private bool displayLabels;
         private bool isVisible;
+        private bool isSetAsInput = false;
+        private bool isSetAsOutput = false;
         private bool canUpdatePeriodically;
         private string name;
         private ElementState state;
@@ -210,7 +212,6 @@ namespace Dynamo.Graph.Nodes
             }
         }
 
-        private bool isSetAsInput = false;
         /// <summary>
         /// This property is user-controllable via a checkbox and is set to true when a user wishes to include
         /// this node in a Customizer as an interactive control.
@@ -231,7 +232,7 @@ namespace Dynamo.Graph.Nodes
                 if (isSetAsInput != value)
                 {
                     isSetAsInput = value;
-                    this.OnNodeModified();
+                    RaisePropertyChanged("IsSetAsInput");
                 }
             }
         }
@@ -249,8 +250,6 @@ namespace Dynamo.Graph.Nodes
                 return !IsCustomFunction;
             }
         }
-
-        private bool isSetAsOutput = false;
 
         /// <summary>
         /// This property is user-controllable via a checkbox and is set to true when a user wishes to include
@@ -272,7 +271,7 @@ namespace Dynamo.Graph.Nodes
                 if (isSetAsOutput != value)
                 {
                     isSetAsOutput = value;
-                    this.OnNodeModified();
+                    RaisePropertyChanged("IsSetAsOutput");
                 }
             }
         }
