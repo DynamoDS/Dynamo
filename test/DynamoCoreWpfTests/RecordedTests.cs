@@ -710,6 +710,13 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
+        public void TestCustomNodeSyntaxError_DoesNotCrash()
+        {
+            Assert.DoesNotThrow(() => RunCommandsFromFile("CreateCustomNodeSyntaxError.xml"));
+        }
+
+
+        [Test]
         public void TestCustomNodeUI()
         {
             RunCommandsFromFile("CustomNodeUI.xml", (commandTag) =>
