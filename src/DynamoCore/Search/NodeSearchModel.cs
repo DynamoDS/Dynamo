@@ -14,6 +14,10 @@ namespace Dynamo.Search
     /// </summary>
     public class NodeSearchModel : SearchLibrary<NodeSearchElement, NodeModel>
     {
+        /*internal NodeSearchModel(bool experimentalSearch)
+        {
+            this.experimentalSearch = experimentalSearch;
+        }*/
         internal override void Add(NodeSearchElement entry)
         {
             SearchElementGroup group = SearchElementGroup.None;

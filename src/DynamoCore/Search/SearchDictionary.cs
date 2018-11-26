@@ -15,6 +15,8 @@ namespace Dynamo.Search
         protected readonly Dictionary<V, Dictionary<string, double>> entryDictionary =
             new Dictionary<V, Dictionary<string, double>>();
 
+        public bool experimentalSearch = false;
+
         /// <summary>
         ///     All the current entries in search.
         /// </summary>
@@ -310,9 +312,15 @@ namespace Dynamo.Search
             query = query.ToLower();
 
             var subPatterns = SplitOnWhiteSpace(query);
-            var subPatternsList = subPatterns.ToList();
-            subPatternsList.Add(query);
-            subPatterns = (subPatternsList).ToArray();
+
+            // Experimental Search
+            if (false || experimentalSearch)
+            {
+                var subPatternsList = subPatterns.ToList();
+                subPatternsList.Add(query);
+                subPatterns = (subPatternsList).ToArray();
+                //subPatterns = new string[] { "test" };
+            }
 
             foreach (var pair in tagDictionary.Where(x => MatchWithQueryString(x.Key, subPatterns)))
             {
