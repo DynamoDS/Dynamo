@@ -1072,21 +1072,12 @@ namespace Dynamo.Graph.Workspaces
             node.Modified += NodeModified;
             node.ConnectorAdded += OnConnectorAdded;
             node.UpdateASTCollection +=OnToggleNodeFreeze;
-            node.PropertyChanged += Node_PropertyChanged;
 
             var functionNode = node as Function;
             if (functionNode != null)
             {
                 functionNode.Controller.SyncWithDefinitionStart += OnSyncWithDefinitionStart;
                 functionNode.Controller.SyncWithDefinitionEnd += OnSyncWithDefinitionEnd;
-            }
-        }
-
-        private void Node_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-        {
-            if(e.PropertyName == "IsSetAsInput" || e.PropertyName == "IsSetAsOutput")
-            {
-                this.HasUnsavedChanges = true;
             }
         }
 
