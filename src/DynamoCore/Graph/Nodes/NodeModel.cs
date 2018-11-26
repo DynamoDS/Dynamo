@@ -232,7 +232,7 @@ namespace Dynamo.Graph.Nodes
                 if (isSetAsInput != value)
                 {
                     isSetAsInput = value;
-                    RaisePropertyChanged("IsSetAsInput");
+                    RaisePropertyChanged(nameof(IsSetAsInput));
                 }
             }
         }
@@ -271,7 +271,7 @@ namespace Dynamo.Graph.Nodes
                 if (isSetAsOutput != value)
                 {
                     isSetAsOutput = value;
-                    RaisePropertyChanged("IsSetAsOutput");
+                    RaisePropertyChanged(nameof(IsSetAsOutput));
                 }
             }
         }
