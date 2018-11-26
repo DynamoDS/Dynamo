@@ -712,6 +712,13 @@ namespace DynamoCoreWpfTests
         [Test]
         public void TestCustomNodeSyntaxError_DoesNotCrash()
         {
+            //Create custom node
+            //Scenario:
+            //1. Create custom node 
+            //2. Create code block node
+            //3. Type in a range expression (1..10) and commit the node
+            //4. Update the code block by introducing syntax error like "1...10"
+            //5. Test for crash
             Assert.DoesNotThrow(() => RunCommandsFromFile("CreateCustomNodeSyntaxError.xml"));
         }
 
