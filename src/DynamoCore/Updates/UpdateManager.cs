@@ -139,6 +139,11 @@ namespace Dynamo.Updates
         IUpdateManagerConfiguration Configuration { get; }
 
         /// <summary>
+        /// Returns or Sets a reference to disable Update Request.
+        /// </summary>
+        IUpdateManagerConfiguration2 Configuration2 { get; set; }
+
+        /// <summary>
         /// Event fires, when something should be logged.
         /// </summary>
         event LogEventHandler Log;
@@ -227,6 +232,17 @@ namespace Dynamo.Updates
         /// Returns IDynamoLookUp interface to search Dynamo installations on the system.
         /// </summary>
         IDynamoLookUp DynamoLookUp { get; set; }
+    }
+
+    /// <summary>
+    /// This interface represents configuration properties for disable update.
+    /// </summary>
+    public interface IUpdateManagerConfiguration2
+    {
+        /// <summary>
+        /// Specifies whether to disable update, default value is false.
+        /// </summary>
+        bool DisableUpdateRequests { get; set; }
     }
 
     /// <summary>
@@ -552,6 +568,43 @@ namespace Dynamo.Updates
     }
 
     /// <summary>
+    /// Specifies the disable update requests settings.
+    /// </summary>
+    public class DisableUpdateSettings : IUpdateManagerConfiguration2
+    {
+        private bool disableUpdate;
+
+        /// <summary>
+        /// Set disableUpdate, true is to disable update requests.
+        /// </summary>
+        public bool DisableUpdateRequests
+        {
+            get { return disableUpdate; }
+            set
+            {
+                disableUpdate = value;
+            }
+        }
+
+        /// <summary>
+        /// Default constructor.
+        /// </summary>
+        public DisableUpdateSettings()
+        {
+            this.disableUpdate = false;
+        }
+
+        /// <summary>
+        /// Specifies whether to disable update requests, default is false.
+        /// </summary>
+        /// <param name="disableUpdate"></param>
+        public DisableUpdateSettings(bool disableUpdate)
+        {
+            this.disableUpdate = disableUpdate;
+        }
+    }
+
+    /// <summary>
     /// This class provides services for product update management.
     /// </summary>
     internal sealed class UpdateManager : NotificationObject, IUpdateManager
@@ -567,6 +620,7 @@ namespace Dynamo.Updates
         private int currentDownloadProgress = -1;
         private IAppVersionInfo downloadedUpdateInfo;
         private IUpdateManagerConfiguration configuration = null;
+        private IUpdateManagerConfiguration2 configuration2 = null;
         private int hostApplicationProcessId = -1;
 
         #endregion
@@ -743,6 +797,21 @@ namespace Dynamo.Updates
             get 
             {
                 return configuration ?? (configuration = UpdateManagerConfiguration.GetSettings(null, this));
+            }
+        }
+
+        /// <summary>
+        /// Returns or Sets the disable update requests settings.
+        /// </summary>
+        public IUpdateManagerConfiguration2 Configuration2
+        {
+            get
+            {
+                return configuration2 ?? (configuration2 = new DisableUpdateSettings());
+            }
+            set
+            {
+                configuration2 = value;
             }
         }
 
@@ -1288,7 +1357,8 @@ namespace Dynamo.Updates
             //If we already have higher version installed, don't look for product update.
             if(manager.Configuration.DynamoLookUp != null && manager.Configuration.DynamoLookUp.LatestProduct > manager.ProductVersion)
                 return;
-
+            if (manager.Configuration2.DisableUpdateRequests)
+                return;
             var downloadUri = new Uri(manager.Configuration.DownloadSourcePath);
             manager.CheckForProductUpdate(new UpdateRequest(downloadUri, manager));
         }
