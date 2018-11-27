@@ -18,7 +18,7 @@
     <!-- Placeholders must exist before all other scripts that try to access them -->
     <div class="OuterMostContainer" id="libraryContainerPlaceholder"></div>
     
-    <!-- The main library view compoment -->
+    <!-- The main library view component -->
     <script src='./dist/librarie.min.js'></script>
     
     <script>
@@ -39,7 +39,6 @@
                 let layoutSpecsJson = downloaded["layoutSpecs"];
 
                 if (!loadedTypesJson || (!layoutSpecsJson)) {
-                    console.log("Error: Couldn't get enough data to load library.");
                     return; // Not fully downloaded yet, bail.
                 }
 

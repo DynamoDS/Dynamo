@@ -60,7 +60,7 @@ namespace Dynamo.Wpf.Interfaces
         /// <returns>LibraryLayoutSpec object or null</returns>
         public static LayoutSpecification FromJSONStream(Stream stream)
         {
-            //Ensure that the stream is positioned at the begining.
+            //Ensure that the stream is positioned at the beginning.
             stream.Position = 0;
 
             var sr = new StreamReader(stream);
