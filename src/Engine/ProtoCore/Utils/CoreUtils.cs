@@ -670,7 +670,7 @@ namespace ProtoCore.Utils
         /// <returns></returns>
         public static AssociativeNode CreateNodeFromString(string name)
         {
-            if (name == null)
+            if (string.IsNullOrEmpty(name))
                 return null;
 
             string[] strIdentList = name.Split('.');
