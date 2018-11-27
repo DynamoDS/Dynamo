@@ -478,8 +478,13 @@ namespace ProtoCore.Utils
         /// </summary>
         /// <param name="identList"></param>
         /// <returns></returns>
-        public static string GetIdentifierStringUntilFirstParenthesis(IdentifierListNode identList)
+        public static string GetIdentifierStringUntilFirstParenthesis(AST.Node node)
         {
+            dynamic identList = node as IdentifierListNode;
+            if(identList == null)
+            {
+                identList = node as AST.ImperativeAST.IdentifierListNode;
+            }
             Validity.Assert(null != identList);
             string identListString = identList.ToString();
             int removeIndex = identListString.IndexOf('(');
@@ -535,6 +540,60 @@ namespace ProtoCore.Utils
 
             }
             if (leftNode is FunctionCallNode)
+            {
+                intermediateNodes.Clear();
+                return "";
+            }
+            intermediateNodes.Insert(0, leftNode);
+
+            return CreateNodeByCombiningIdentifiers(intermediateNodes).ToString();
+        }
+
+        /// <summary>
+        /// Retrieves the string format of the identifier list from left to right, leaving out any symbols after the last identifier.
+        /// Given: A.B()
+        ///     Return: "A"
+        /// Given: A.B.C()[0]
+        ///     Return: "A.B"
+        /// Given: A.B().C
+        ///     Return: "A"
+        /// Given: A.B[0].C
+        ///     Return: "A.B[0].C"
+        /// Given: A().B (global function)
+        ///     Return: empty string
+        /// Given: A.B[0].C()
+        ///     Return: "A.B[0]"
+        /// </summary>
+        /// <param name="identList"></param>
+        /// <returns></returns>
+        public static string GetIdentifierExceptMethodName(AST.ImperativeAST.IdentifierListNode identList)
+        {
+            Validity.Assert(null != identList);
+
+            var leftNode = identList.LeftNode;
+            var rightNode = identList.RightNode;
+
+            var intermediateNodes = new List<AST.ImperativeAST.ImperativeNode>();
+            if (!(rightNode is AST.ImperativeAST.FunctionCallNode))
+            {
+                intermediateNodes.Insert(0, rightNode);
+            }
+
+            while (leftNode is AST.ImperativeAST.IdentifierListNode)
+            {
+                rightNode = ((AST.ImperativeAST.IdentifierListNode)leftNode).RightNode;
+                if (rightNode is AST.ImperativeAST.FunctionCallNode)
+                {
+                    intermediateNodes.Clear();
+                }
+                else
+                {
+                    intermediateNodes.Insert(0, rightNode);
+                }
+                leftNode = ((AST.ImperativeAST.IdentifierListNode)leftNode).LeftNode;
+
+            }
+            if (leftNode is AST.ImperativeAST.FunctionCallNode)
             {
                 intermediateNodes.Clear();
                 return "";
@@ -659,6 +718,38 @@ namespace ProtoCore.Utils
             for (var n = 2; n < count; ++n)
             {
                 var subIdentList = new IdentifierListNode
+                {
+                    LeftNode = newIdentList,
+                    RightNode = nodeList[n],
+                    Optr = Operator.dot
+                };
+                newIdentList = subIdentList;
+            }
+
+            return newIdentList;
+        }
+
+        private static AST.ImperativeAST.ImperativeNode CreateNodeByCombiningIdentifiers(IList<AST.ImperativeAST.ImperativeNode> nodeList)
+        {
+            int count = nodeList.Count;
+            if (count == 0)
+                return null;
+
+            if (count == 1)
+            {
+                return nodeList[0];
+            }
+
+            var newIdentList = new AST.ImperativeAST.IdentifierListNode
+            {
+                LeftNode = nodeList[0],
+                RightNode = nodeList[1],
+                Optr = Operator.dot
+            };
+
+            for (var n = 2; n < count; ++n)
+            {
+                var subIdentList = new AST.ImperativeAST.IdentifierListNode
                 {
                     LeftNode = newIdentList,
                     RightNode = nodeList[n],

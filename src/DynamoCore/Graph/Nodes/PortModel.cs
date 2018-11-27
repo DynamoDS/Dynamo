@@ -287,7 +287,8 @@ namespace Dynamo.Graph.Nodes
         /// Returns true if the port has connectors or if the 
         /// default value is enabled and not null. Otherwise, returns false.
         /// </summary>
-        internal bool IsConnected
+        [JsonIgnore]
+        public bool IsConnected
         {
             get
             {

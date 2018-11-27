@@ -1,0 +1,32 @@
+<Commands ExitAfterPlayback="true" PauseAfterPlaybackInMs="10" CommandIntervalInMs="20">
+  <SelectModelCommand Modifiers="0">
+    <ModelGuid>00000000-0000-0000-0000-000000000000</ModelGuid>
+  </SelectModelCommand>
+  <CreateCustomNodeCommand Name="fdg" Category="Fdsg" Description="fdgs" MakeCurrent="true">
+    <ModelGuid>0ebfb690-5ed7-4cc1-ac59-f797c3c330a2</ModelGuid>
+  </CreateCustomNodeCommand>
+  <SelectModelCommand Modifiers="0">
+    <ModelGuid>00000000-0000-0000-0000-000000000000</ModelGuid>
+  </SelectModelCommand>
+  <CreateNodeCommand X="357.333333333333" Y="231.333333333333" DefaultPosition="false" TransformCoordinates="true">
+    <ModelGuid>d826ffc3-759e-4eb6-968e-82c0fa0a13f2</ModelGuid>
+    <Dynamo.Graph.Nodes.CodeBlockNodeModel guid="d826ffc3-759e-4eb6-968e-82c0fa0a13f2" type="Dynamo.Graph.Nodes.CodeBlockNodeModel" nickname="Code Block" x="265" y="200" isVisible="true" lacing="Disabled" isSelectedInput="False" isSelectedOutput="False" IsFrozen="false" isPinned="false" CodeText="1...10;" ShouldFocus="false">
+      <OutPortInfo LineIndex="0" />
+    </Dynamo.Graph.Nodes.CodeBlockNodeModel>
+  </CreateNodeCommand>
+  <UpdateModelValueCommand Name="Code" Value="1...10" WorkspaceGuid="e6953cd6-586f-442f-845c-cd7d93dacbc6">
+    <ModelGuid>d826ffc3-759e-4eb6-968e-82c0fa0a13f2</ModelGuid>
+  </UpdateModelValueCommand>
+  <SelectModelCommand Modifiers="0">
+    <ModelGuid>00000000-0000-0000-0000-000000000000</ModelGuid>
+  </SelectModelCommand>
+  <UpdateModelValueCommand Name="Code" Value="1..10;" WorkspaceGuid="e6953cd6-586f-442f-845c-cd7d93dacbc6">
+    <ModelGuid>d826ffc3-759e-4eb6-968e-82c0fa0a13f2</ModelGuid>
+  </UpdateModelValueCommand>
+  <SelectModelCommand Modifiers="0">
+    <ModelGuid>00000000-0000-0000-0000-000000000000</ModelGuid>
+  </SelectModelCommand>
+  <UpdateModelValueCommand Name="Code" Value="1...10;" WorkspaceGuid="e6953cd6-586f-442f-845c-cd7d93dacbc6">
+    <ModelGuid>d826ffc3-759e-4eb6-968e-82c0fa0a13f2</ModelGuid>
+  </UpdateModelValueCommand>
+</Commands>
