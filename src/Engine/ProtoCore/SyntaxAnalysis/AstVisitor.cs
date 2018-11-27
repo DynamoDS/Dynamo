@@ -383,6 +383,9 @@ namespace ProtoCore.SyntaxAnalysis
 
         public override AssociativeNode VisitIdentifierNode(IdentifierNode node)
         {
+            if (node == null)
+                return null;
+
             if (node.ArrayDimensions != null)
             {
                 var newArrayDimensions = node.ArrayDimensions.Accept(this);

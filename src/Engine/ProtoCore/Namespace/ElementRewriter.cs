@@ -64,6 +64,8 @@ namespace ProtoCore.Namespace
                 return node;
 
             var identListNode = CoreUtils.CreateNodeFromString(node.TypeAlias);
+            if (identListNode == null)
+                return null;
 
             // Rewrite node with resolved name
             if (identListNode is IdentifierNode)
@@ -136,6 +138,8 @@ namespace ProtoCore.Namespace
                 return false;
 
             newIdentList = CoreUtils.CreateNodeFromString(resolvedName);
+            if (newIdentList == null)
+                return false;
             
             var symbol = new Symbol(resolvedName);
             return symbol.Matches(identifierList.ToString());
@@ -183,6 +187,8 @@ namespace ProtoCore.Namespace
             var identListNode = identifierList as IdentifierListNode;
 
             var newIdentList = CoreUtils.CreateNodeFromString(resolvedName);
+            if (newIdentList == null)
+                return null;
 
             // If the original input node matches with the resolved name, simply return 
             // the identifier list constructed from the resolved name

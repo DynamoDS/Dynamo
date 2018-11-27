@@ -79,6 +79,8 @@ namespace ProtoCore
         private IdentifierListNode GenerateNewIdentifierList(string newNodeName, FunctionCallNode funcCall)
         {
             var newNode = CoreUtils.CreateNodeFromString(newNodeName);
+            if (newNode == null)
+                return null;
 
             // append argument list from original method to newNode
             var newMethodName = ((IdentifierListNode)newNode).RightNode.Name;
