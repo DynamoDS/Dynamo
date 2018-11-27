@@ -15,6 +15,9 @@ namespace Dynamo.Search
         protected readonly Dictionary<V, Dictionary<string, double>> entryDictionary =
             new Dictionary<V, Dictionary<string, double>>();
 
+        /// <summary>
+        ///     Indicates whether experimental search settings are turned on.
+        /// </summary>
         public bool experimentalSearch = false;
 
         /// <summary>
@@ -319,7 +322,6 @@ namespace Dynamo.Search
                 var subPatternsList = subPatterns.ToList();
                 subPatternsList.Add(query);
                 subPatterns = (subPatternsList).ToArray();
-                subPatterns = new string[] { "test" };
             }
 
             foreach (var pair in tagDictionary.Where(x => MatchWithQueryString(x.Key, subPatterns)))
