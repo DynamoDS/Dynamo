@@ -97,6 +97,9 @@ namespace ProtoCore.Namespace
 
         public override AssociativeNode VisitIdentifierListNode(IdentifierListNode node)
         {
+            if (node == null)
+                return null;
+
             // If node is a reserved method call, skip rewriting it.
             if (ReservedMethods.Any(reservedMethod => node.ToString().Contains(reservedMethod)))
             {

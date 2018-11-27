@@ -97,6 +97,9 @@ namespace ProtoCore.SyntaxAnalysis
 
         public virtual bool VisitFunctionCallNode(FunctionCallNode node)
         {
+            if (node == null)
+                return false;
+
             for (int i = 0; i < node.FormalArguments.Count; ++i)
             {
                 node.FormalArguments[i].Accept(this);
@@ -477,6 +480,9 @@ namespace ProtoCore.SyntaxAnalysis
 
         public override AssociativeNode VisitIdentifierListNode(IdentifierListNode node)
         {
+            if (node == null)
+                return null;
+
             var newLeftNode = node.LeftNode.Accept(this);
             if (newLeftNode != node.LeftNode)
                 node.LeftNode = newLeftNode;
@@ -490,6 +496,9 @@ namespace ProtoCore.SyntaxAnalysis
 
         public override AssociativeNode VisitFunctionCallNode(FunctionCallNode node)
         {
+            if (node == null)
+                return null;
+
             var func = node.Function.Accept(this);
             if (node.Function != func)
                 node.Function = func;

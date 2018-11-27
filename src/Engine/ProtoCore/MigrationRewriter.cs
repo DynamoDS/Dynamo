@@ -42,6 +42,9 @@ namespace ProtoCore
 
         public override AssociativeNode VisitIdentifierListNode(IdentifierListNode node)
         {
+            if (node == null)
+                return null;
+
             var leftNodeName = node.LeftNode.ToString();
             var rightNode = node.RightNode as FunctionCallNode;
             string rightNodeName = string.Empty;
@@ -60,6 +63,9 @@ namespace ProtoCore
 
         public override AssociativeNode VisitFunctionCallNode(FunctionCallNode node)
         {
+            if (node == null)
+                return null;
+
             var functionName = node.Function.Name;
 
             string newNodeName;
