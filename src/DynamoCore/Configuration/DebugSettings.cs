@@ -10,7 +10,6 @@ namespace Dynamo.Configuration
     {
         private bool showDebugASTs = false;
         private bool verboseLogging = false;
-        private bool experimentalSearch = false;
 
         /// <summary>
         /// Enable verbose logging this is a lot of data

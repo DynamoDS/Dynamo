@@ -293,11 +293,10 @@ namespace Dynamo.ViewModels
 
         public bool ExperimentalSearch
         {
-            get { return model.DebugSettings.ExperimentalSearch; }
+            get { return model.SearchModel.experimentalSearch; }
             set
             {
                 model.SearchModel.experimentalSearch = value;
-                //RaisePropertyChanged("ExperimentalSearch");
             }
         }
 
