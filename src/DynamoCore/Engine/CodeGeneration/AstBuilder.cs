@@ -472,7 +472,7 @@ namespace Dynamo.Engine.CodeGeneration
             else
             {
                 // For single output, directly return that identifier or null.
-                AssociativeNode returnValue = outputs.Count == 1 ? outputs[0] : new NullNode();
+                AssociativeNode returnValue = outputs.Count == 1 && outputs[0] != null ? outputs[0] : new NullNode();
                 functionBody.Body.Add(AstFactory.BuildReturnStatement(returnValue));
             }
 
