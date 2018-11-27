@@ -314,12 +314,12 @@ namespace Dynamo.Search
             var subPatterns = SplitOnWhiteSpace(query);
 
             // Experimental Search
-            if (false || experimentalSearch)
+            if (experimentalSearch)
             {
                 var subPatternsList = subPatterns.ToList();
                 subPatternsList.Add(query);
                 subPatterns = (subPatternsList).ToArray();
-                //subPatterns = new string[] { "test" };
+                subPatterns = new string[] { "test" };
             }
 
             foreach (var pair in tagDictionary.Where(x => MatchWithQueryString(x.Key, subPatterns)))

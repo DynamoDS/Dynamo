@@ -724,6 +724,11 @@
                                   IsCheckable="True"
                                   IsChecked="{Binding EnableTSpline}"
                                   Header="{x:Static p:Resources.DynamoViewSettingEnableTSplineNodes}" />
+                            <MenuItem Focusable="False"
+                                  Name="ExperimentalSearch"
+                                  IsCheckable="True"
+                                  IsChecked="{Binding ExperimentalSearch}"
+                                  Header="{x:Static p:Resources.DynamoViewDebugMenuExperimentalSearch}" />
                         </MenuItem>
                     </MenuItem>
 
@@ -784,11 +789,6 @@
                                   IsCheckable="True"
                                   Header="{x:Static p:Resources.DynamoViewDebugMenuShowDebugAST}"
                                   IsChecked="{Binding ShowDebugASTs}"></MenuItem>
-                        <MenuItem Focusable="False"
-                                  Name="ExperimentalSearch"
-                                  IsCheckable="True"
-                                  IsChecked="{Binding ExperimentalSearch}"
-                                  Header="{x:Static p:Resources.DynamoViewDebugMenuExperimentalSearch}" />
                         <MenuItem Focusable="False"
                                   Name="ForceReexec"
                                   Header="{x:Static p:Resources.DynamoViewDebugMenuForceReExecute}"

@@ -37,18 +37,5 @@ namespace Dynamo.Configuration
                 RaisePropertyChanged("ShowDebugASTs");
             }
         }
-
-        /// <summary>
-        /// Shows near node view its AST compiled node.
-        /// </summary>
-        internal bool ExperimentalSearch
-        {
-            get { return experimentalSearch; }
-            set
-            {
-                experimentalSearch = value;
-                RaisePropertyChanged("ExperimentalSearch");
-            }
-        }
     }
 }

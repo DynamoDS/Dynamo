@@ -291,6 +291,16 @@ namespace Dynamo.ViewModels
             }
         }
 
+        public bool ExperimentalSearch
+        {
+            get { return model.DebugSettings.ExperimentalSearch; }
+            set
+            {
+                model.SearchModel.experimentalSearch = value;
+                //RaisePropertyChanged("ExperimentalSearch");
+            }
+        }
+
         public int LibraryWidth
         {
             get
@@ -407,16 +417,6 @@ namespace Dynamo.ViewModels
             {
                 model.DebugSettings.ShowDebugASTs = value;
                 RaisePropertyChanged("ShowDebugASTs");
-            }
-        }
-
-        public bool ExperimentalSearch
-        {
-            get { return model.DebugSettings.ExperimentalSearch; }
-            set
-            {
-                model.DebugSettings.ExperimentalSearch = value;
-                RaisePropertyChanged("ExperimentalSearch");
             }
         }
 
