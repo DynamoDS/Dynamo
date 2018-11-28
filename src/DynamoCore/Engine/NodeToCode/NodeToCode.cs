@@ -244,6 +244,9 @@ namespace Dynamo.Engine.NodeToCode
 
         public override bool VisitIdentifierListNode(IdentifierListNode node)
         {
+            if (node == null)
+                return false;
+
             if (node.LeftNode is IdentifierNode || node.LeftNode is IdentifierListNode)
             {
                 if (node.RightNode is FunctionCallNode || node.RightNode is IdentifierNode)
@@ -319,6 +322,9 @@ namespace Dynamo.Engine.NodeToCode
 
         public override AssociativeNode VisitIdentifierListNode(IdentifierListNode node)
         {
+            if (node == null)
+                return null;
+
             // First pass attempt to resolve the node class name 
             // and shorten it before traversing it deeper
             AssociativeNode shortNameNode;
@@ -471,6 +477,9 @@ namespace Dynamo.Engine.NodeToCode
 
         public override bool VisitIdentifierListNode(IdentifierListNode node)
         {
+            if (node == null)
+                return false;
+
             if (forDefinition)
                 return false;
 
@@ -479,6 +488,9 @@ namespace Dynamo.Engine.NodeToCode
 
         public override bool VisitFunctionCallNode(FunctionCallNode node)
         {
+            if (node == null)
+                return false;
+
             if (forDefinition)
                 return false;
 
