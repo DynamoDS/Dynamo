@@ -16,7 +16,7 @@ namespace Dynamo.Search
             new Dictionary<V, Dictionary<string, double>>();
 
         /// <summary>
-        ///     Indicates whether experimental search settings are turned on.
+        ///     Indicates whether experimental search mode is turned on.
         /// </summary>
         public bool experimentalSearch = false;
 
