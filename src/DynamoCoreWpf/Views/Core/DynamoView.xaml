@@ -728,7 +728,7 @@
                                   Name="ExperimentalSearch"
                                   IsCheckable="True"
                                   IsChecked="{Binding ExperimentalSearch}"
-                                  Header="{x:Static p:Resources.DynamoViewDebugMenuExperimentalSearch}" />
+                                  Header="{x:Static p:Resources.DynamoViewSettingExperimentalSearch}" />
                         </MenuItem>
                     </MenuItem>
 

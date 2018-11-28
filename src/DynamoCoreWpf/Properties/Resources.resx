@@ -2196,4 +2196,8 @@ Want to publish a different package?</value>
     <value>Custom Nodes will be placed in the Add-Ons section of the library.</value>
     <comment>Note regarding Custom Node library location</comment>
   </data>
+  <data name="DynamoViewSettingExperimentalSearch" xml:space="preserve">
+    <value>Experimental Search</value>
+    <comment>Setting Menu | Experimental | Experimental Search</comment>
+  </data>
 </root>

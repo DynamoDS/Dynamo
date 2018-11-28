@@ -1558,6 +1558,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Experimental Search.
+        /// </summary>
+        public static string DynamoViewSettingExperimentalSearch {
+            get {
+                return ResourceManager.GetString("DynamoViewSettingExperimentalSearch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to _Settings.
         /// </summary>
         public static string DynamoViewSettingMenu {
