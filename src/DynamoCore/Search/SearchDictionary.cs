@@ -14,11 +14,17 @@ namespace Dynamo.Search
     {
         protected readonly Dictionary<V, Dictionary<string, double>> entryDictionary =
             new Dictionary<V, Dictionary<string, double>>();
+        
+        private bool experimentalSearch = false;
 
         /// <summary>
         ///     Indicates whether experimental search mode is turned on.
         /// </summary>
-        public bool experimentalSearch = false;
+        internal bool ExperimentalSearch
+        {
+            get { return experimentalSearch; }
+            set { experimentalSearch = value;  }
+        }
 
         /// <summary>
         ///     All the current entries in search.
