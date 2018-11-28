@@ -141,7 +141,7 @@ namespace Dynamo.Updates
         /// <summary>
         /// Returns or Sets a reference to disable Update Request.
         /// </summary>
-        IinstallButtonSettings InstallButtonSetting { get; set; }
+        IUpdateManagerConfiguration2 Configuration2 { get; set; }
 
         /// <summary>
         /// Event fires, when something should be logged.
@@ -237,8 +237,8 @@ namespace Dynamo.Updates
     /// <summary>
     /// This interface represents configuration properties for disable update.
     /// </summary>
-    public interface IinstallButtonSettings
-   {
+    public interface IUpdateManagerConfiguration2
+    {
         /// <summary>
         /// Specifies whether to disable update, default value is false.
         /// </summary>
@@ -570,7 +570,7 @@ namespace Dynamo.Updates
     /// <summary>
     /// Specifies the disable update requests settings.
     /// </summary>
-    public class InstallButtonSettings : IinstallButtonSettings
+    public class DisableUpdateSettings : IUpdateManagerConfiguration2
     {
         private bool disableUpdate;
 
@@ -589,7 +589,7 @@ namespace Dynamo.Updates
         /// <summary>
         /// Default constructor.
         /// </summary>
-        public InstallButtonSettings()
+        public DisableUpdateSettings()
         {
             this.disableUpdate = false;
         }
@@ -598,7 +598,7 @@ namespace Dynamo.Updates
         /// Specifies whether to disable update requests, default is false.
         /// </summary>
         /// <param name="disableUpdate"></param>
-        public InstallButtonSettings(bool disableUpdate)
+        public DisableUpdateSettings(bool disableUpdate)
         {
             this.disableUpdate = disableUpdate;
         }
@@ -620,7 +620,7 @@ namespace Dynamo.Updates
         private int currentDownloadProgress = -1;
         private IAppVersionInfo downloadedUpdateInfo;
         private IUpdateManagerConfiguration configuration = null;
-        private IinstallButtonSettings installButtonSetting = null;
+        private IUpdateManagerConfiguration2 configuration2 = null;
         private int hostApplicationProcessId = -1;
 
         #endregion
@@ -803,15 +803,15 @@ namespace Dynamo.Updates
         /// <summary>
         /// Returns or Sets the disable update requests settings.
         /// </summary>
-        public IinstallButtonSettings InstallButtonSetting
+        public IUpdateManagerConfiguration2 Configuration2
         {
             get
             {
-                return installButtonSetting ?? (installButtonSetting = new InstallButtonSettings());
+                return configuration2 ?? (configuration2 = new DisableUpdateSettings());
             }
             set
             {
-                installButtonSetting = value;
+                configuration2 = value;
             }
         }
 
@@ -1357,7 +1357,7 @@ namespace Dynamo.Updates
             //If we already have higher version installed, don't look for product update.
             if(manager.Configuration.DynamoLookUp != null && manager.Configuration.DynamoLookUp.LatestProduct > manager.ProductVersion)
                 return;
-            if (manager.InstallButtonSetting.DisableUpdateRequests)
+            if (manager.Configuration2.DisableUpdateRequests)
                 return;
             var downloadUri = new Uri(manager.Configuration.DownloadSourcePath);
             manager.CheckForProductUpdate(new UpdateRequest(downloadUri, manager));
