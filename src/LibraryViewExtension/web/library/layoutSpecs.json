@@ -1026,7 +1026,15 @@
                 },
                 {
                   "path": "DSOffice.DSOffice.Data.ExportCSV"
-                },
+                }
+              ],
+              "childElements": [ ]
+            },
+            {
+              "text": "JSON",
+              "iconUrl": "",
+              "elementType": "group",
+              "include": [
                 {
                   "path": "DSCoreNodes.DSCore.JSON.Parse"
                 },
