@@ -973,6 +973,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Experimental Search.
+        /// </summary>
+        public static string DynamoViewDebugMenuExperimentalSearch {
+            get {
+                return ResourceManager.GetString("DynamoViewDebugMenuExperimentalSearch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Force Re-execute.
         /// </summary>
         public static string DynamoViewDebugMenuForceReExecute {
@@ -1554,15 +1563,6 @@ namespace Dynamo.Wpf.Properties {
         public static string DynamoViewSettingExperimental {
             get {
                 return ResourceManager.GetString("DynamoViewSettingExperimental", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Experimental Search.
-        /// </summary>
-        public static string DynamoViewSettingExperimentalSearch {
-            get {
-                return ResourceManager.GetString("DynamoViewSettingExperimentalSearch", resourceCulture);
             }
         }
         

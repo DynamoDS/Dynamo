@@ -788,7 +788,7 @@
                                   Name="ExperimentalSearch"
                                   IsCheckable="True"
                                   IsChecked="{Binding ExperimentalSearch}"
-                                  Header="{x:Static p:Resources.DynamoViewSettingExperimentalSearch}" />
+                                  Header="{x:Static p:Resources.DynamoViewDebugMenuExperimentalSearch}" />
                         <MenuItem Focusable="False"
                                   Name="ForceReexec"
                                   Header="{x:Static p:Resources.DynamoViewDebugMenuForceReExecute}"
