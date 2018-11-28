@@ -320,7 +320,7 @@ namespace Dynamo.Search
             if (experimentalSearch)
             {
                 var subPatternsList = subPatterns.ToList();
-                subPatternsList.Add(query);
+                subPatternsList.Insert(0, query);
                 subPatterns = (subPatternsList).ToArray();
             }
 
