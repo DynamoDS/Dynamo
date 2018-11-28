@@ -294,7 +294,7 @@ namespace Dynamo.ViewModels
         /// <summary>
         /// Indicates whether experimental search mode is turned on.
         /// </summary>
-        public bool ExperimentalSearch
+        private bool ExperimentalSearch
         {
             get { return model.SearchModel.experimentalSearch; }
             set
