@@ -26,8 +26,8 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="DynamoCoreWpf.dll" target="lib\net45" />
-    <file src="nodes\CoreNodeModels.dll" target="lib\net45" />
-    <file src="nodes\CoreNodeModelsWpf.dll" target="lib\net45" />
+    <file src="DynamoCoreWpf.dll" target="lib\net47" />
+    <file src="nodes\CoreNodeModels.dll" target="lib\net47" />
+    <file src="nodes\CoreNodeModelsWpf.dll" target="lib\net47" />
   </files>
 </package>

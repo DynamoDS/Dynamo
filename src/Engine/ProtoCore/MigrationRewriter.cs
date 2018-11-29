@@ -42,6 +42,9 @@ namespace ProtoCore
 
         public override AssociativeNode VisitIdentifierListNode(IdentifierListNode node)
         {
+            if (node == null)
+                return null;
+
             var leftNodeName = node.LeftNode.ToString();
             var rightNode = node.RightNode as FunctionCallNode;
             string rightNodeName = string.Empty;
@@ -60,6 +63,9 @@ namespace ProtoCore
 
         public override AssociativeNode VisitFunctionCallNode(FunctionCallNode node)
         {
+            if (node == null)
+                return null;
+
             var functionName = node.Function.Name;
 
             string newNodeName;
@@ -79,6 +85,8 @@ namespace ProtoCore
         private IdentifierListNode GenerateNewIdentifierList(string newNodeName, FunctionCallNode funcCall)
         {
             var newNode = CoreUtils.CreateNodeFromString(newNodeName);
+            if (newNode == null)
+                return null;
 
             // append argument list from original method to newNode
             var newMethodName = ((IdentifierListNode)newNode).RightNode.Name;
