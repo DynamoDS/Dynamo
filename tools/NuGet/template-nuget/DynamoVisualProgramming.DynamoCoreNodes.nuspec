@@ -22,11 +22,11 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="Analysis.dll" target="lib\net45" />
-    <file src="Analysis.xml" target="build\net45" />
-    <file src="GeometryColor.dll" target="lib\net45" />
-    <file src="GeometryColor.xml" target="build\net45" />
-    <file src="DSCoreNodes.dll" target="lib\net45" />
-    <file src="DSCoreNodes.xml" target="build\net45" />
+    <file src="Analysis.dll" target="lib\net47" />
+    <file src="Analysis.xml" target="build\net47" />
+    <file src="GeometryColor.dll" target="lib\net47" />
+    <file src="GeometryColor.xml" target="build\net47" />
+    <file src="DSCoreNodes.dll" target="lib\net47" />
+    <file src="DSCoreNodes.xml" target="build\net47" />
   </files>
 </package>

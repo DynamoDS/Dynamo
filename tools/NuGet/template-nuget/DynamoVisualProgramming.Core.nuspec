@@ -29,15 +29,15 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="DSIronPython.dll" target="lib\net45" />
-    <file src="DynamoApplications.dll" target="lib\net45" />
-    <file src="DynamoCore.dll" target="lib\net45" />
-    <file src="DynamoCore.xml" target="build\net45" />
-    <file src="DynamoInstallDetective.dll" target="lib\net45" />
-    <file src="DynamoShapeManager.dll" target="lib\net45" />
-    <file src="DynamoUtilities.dll" target="lib\net45" />
-    <file src="ProtoCore.dll" target="lib\net45" />
-    <file src="DesignScriptBuiltin.dll" target="lib\net45" />
-    <file src="VMDataBridge.dll" target="lib\net45" />
+    <file src="DSIronPython.dll" target="lib\net47" />
+    <file src="DynamoApplications.dll" target="lib\net47" />
+    <file src="DynamoCore.dll" target="lib\net47" />
+    <file src="DynamoCore.xml" target="build\net47" />
+    <file src="DynamoInstallDetective.dll" target="lib\net47" />
+    <file src="DynamoShapeManager.dll" target="lib\net47" />
+    <file src="DynamoUtilities.dll" target="lib\net47" />
+    <file src="ProtoCore.dll" target="lib\net47" />
+    <file src="DesignScriptBuiltin.dll" target="lib\net47" />
+    <file src="VMDataBridge.dll" target="lib\net47" />
   </files>
 </package>
