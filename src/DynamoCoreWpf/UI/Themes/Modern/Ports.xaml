@@ -109,7 +109,7 @@
                     </Rectangle.Margin>
                 </Rectangle>
                 <Rectangle Name="highlightOverlay"
-                       Fill="{Binding Path=ShouldKeepListStructure, Converter={StaticResource KeepListStructureHighlighColorConverter}}"
+                       Fill="{Binding Path=ShouldKeepListStructure, Converter={StaticResource KeepListStructureHighlightColorConverter}}"
                        MinWidth="19"
                        Margin="0,0,0,1"
                        IsHitTestVisible="True">
@@ -174,7 +174,7 @@
                   Visibility="{Binding Path=UseLevelVisibility}">
                 <Rectangle
                     Name="highlightOverlayForArrow" 
-                    Fill="{Binding Path=ShouldKeepListStructure, Converter={StaticResource KeepListStructureHighlighColorConverter}}"
+                    Fill="{Binding Path=ShouldKeepListStructure, Converter={StaticResource KeepListStructureHighlightColorConverter}}"
                     MinWidth="10"
                     Margin="0,0,0,1"
                     IsHitTestVisible="True">
