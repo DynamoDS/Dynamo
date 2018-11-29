@@ -136,7 +136,7 @@ namespace Dynamo.Updates
         /// <summary>
         /// Returns a reference to Update Manager Configuration settings.
         /// </summary>
-        IUpdateManagerConfiguration Configuration { get; }
+        UpdateManagerConfiguration Configuration { get; }
 
         /// <summary>
         /// Event fires, when something should be logged.
@@ -226,13 +226,19 @@ namespace Dynamo.Updates
         /// <summary>
         /// Returns IDynamoLookUp interface to search Dynamo installations on the system.
         /// </summary>
-        IDynamoLookUp DynamoLookUp { get; set; }
-
+        IDynamoLookUp DynamoLookUp { get; set; }        
+   }
+    
+    /// <summary>
+    /// 
+    /// </summary>
+    public interface IDisableUpdateConfig
+    {
         /// <summary>
         /// Specifies whether to disable update, default value is false. 
         /// </summary>
         Boolean DisableUpdates { get; set; }
-   }
+    }
 
    /// <summary>
    /// An interface to describe available
@@ -390,7 +396,7 @@ namespace Dynamo.Updates
     /// <summary>
     /// Specifies Update Manager Configuration settings.
     /// </summary>
-    public class UpdateManagerConfiguration : IUpdateManagerConfiguration
+    public class UpdateManagerConfiguration : IUpdateManagerConfiguration,IDisableUpdateConfig
     {
         private const string PRODUCTION_SOURCE_PATH_S = "http://dyn-builds-data.s3.amazonaws.com/";
         private const string PRODUCTION_SIG_SOURCE_PATH_S = "http://dyn-builds-data-sig.s3.amazonaws.com/";
@@ -577,7 +583,7 @@ namespace Dynamo.Updates
         private string updateFileLocation;
         private int currentDownloadProgress = -1;
         private IAppVersionInfo downloadedUpdateInfo;
-        private IUpdateManagerConfiguration configuration = null;
+        private UpdateManagerConfiguration configuration = null;
         private int hostApplicationProcessId = -1;
 
         #endregion
@@ -749,7 +755,7 @@ namespace Dynamo.Updates
         /// <summary>
         /// Returns the configuration settings.
         /// </summary>
-        public IUpdateManagerConfiguration Configuration
+        public UpdateManagerConfiguration Configuration
         {
             get 
             {
@@ -759,7 +765,7 @@ namespace Dynamo.Updates
 
         #endregion
 
-        public UpdateManager(IUpdateManagerConfiguration configuration)
+        public UpdateManager(UpdateManagerConfiguration configuration)
         {
             this.configuration = configuration;
             PropertyChanged += UpdateManager_PropertyChanged;
