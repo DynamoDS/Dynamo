@@ -1,22 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Autodesk.DesignScript.Runtime;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace DSCore
 {
-    public static class JSON
+    public static class Data
     {
         /// <summary>
         ///     Parse converts an arbitrary JSON string to a value. It is the opposite of JSON.Stringify.
         /// </summary>
         /// <param name="json">A JSON string</param>
         /// <returns name="result">The result type depends on the content of the input string. The result type can be a primitive value (e.g. string, boolean, double), a List, or a Dictionary.</returns>
-        public static object Parse(string json)
+        public static object ParseJSON(string json)
         {
             return ToNative(JToken.Parse(json));
         }
@@ -53,6 +51,7 @@ namespace DSCore
             }
         }
 
+        /*
         /// <summary>
         ///     Stringify converts an arbitrary value to JSON. It is the opposite of JSON.Parse.
         /// </summary>
@@ -62,13 +61,14 @@ namespace DSCore
         {
             return JsonConvert.SerializeObject(value, new DictConverter());
         }
+        */
 
         /// <summary>
-        ///     StringifyList converts a list of arbitrary values to JSON. JSON.StringifyList is similar to JSON.Stringify, except it doesn't replicate.
+        ///     Stringify converts a list of arbitrary values to JSON. Replication can also be used to apply the operation over a list, producing a list of JSON strings.
         /// </summary>
         /// <param name="values">A List of values</param>
         /// <returns name="json">A JSON string where primitive types (e.g. double, int, boolean), Lists, and Dictionary's will be turned into the associated JSON type.</returns>
-        public static string StringifyList([ArbitraryDimensionArrayImport] object values)
+        public static string StringifyJSON([ArbitraryDimensionArrayImport] object values)
         {
             return JsonConvert.SerializeObject(values, new DictConverter());
         }
