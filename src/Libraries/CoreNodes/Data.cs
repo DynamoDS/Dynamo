@@ -51,18 +51,6 @@ namespace DSCore
             }
         }
 
-        /*
-        /// <summary>
-        ///     Stringify converts an arbitrary value to JSON. It is the opposite of JSON.Parse.
-        /// </summary>
-        /// <param name="value">Any value</param>
-        /// <returns name="json">A JSON string where primitive types (e.g. double, int, boolean), Lists, and Dictionary's will be turned into the associated JSON type.</returns>
-        public static string Stringify(object value)
-        {
-            return JsonConvert.SerializeObject(value, new DictConverter());
-        }
-        */
-
         /// <summary>
         ///     Stringify converts a list of arbitrary values to JSON. Replication can also be used to apply the operation over a list, producing a list of JSON strings.
         /// </summary>
