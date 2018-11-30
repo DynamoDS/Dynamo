@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Reflection;
 using Dynamo.PackageManager.Interfaces;
 using Dynamo.Tests;
 using Moq;
 using NUnit.Framework;
+using System.Linq;
 
 namespace Dynamo.PackageManager.Tests
 {
@@ -27,6 +30,68 @@ namespace Dynamo.PackageManager.Tests
 
             // this package upload builder will try to return a zip that is too big
             return new PackageUploadBuilder(pdb.Object, zipper.Object);
+        }
+
+        private class directoryTestClass : IDirectoryInfo
+        {
+            public string FullName { get; set; }
+
+        }
+
+        #endregion
+
+        #region GregFileUtilsTests
+            [Test]
+            public void FileCompressorZipsSamplePackageDirectoryToValidArchive()
+        {
+            var executingLocation = new DirectoryInfo(Assembly.GetExecutingAssembly().Location);
+            var testDirectory = Path.Combine(executingLocation.Parent.Parent.Parent.Parent.FullName, "test");
+            var aPackagePath =  new DirectoryInfo(Path.Combine(testDirectory, "pkgs","sampleExtension"));
+            var preZipfileCount = aPackagePath.GetFiles().Length;
+            var preZipDiskSize = aPackagePath.GetFiles().Sum(x => x.Length);
+
+            var packageDir = new directoryTestClass()
+            {
+                FullName = aPackagePath.FullName
+            };
+
+            var compressor = new MutatingFileCompressor();
+            var zipPath = compressor.Zip(packageDir);
+            Assert.AreEqual(2758, zipPath.Length);
+
+            //unzip the zipped directory
+            var unzipPath = Greg.Utility.FileUtilities.UnZip(zipPath.Name);
+
+            Assert.AreEqual(preZipDiskSize, new DirectoryInfo(unzipPath).GetFiles().Sum(x => x.Length));
+            Assert.AreEqual(preZipfileCount, new DirectoryInfo(unzipPath).GetFiles().Length);
+
+        }
+        [Test]
+        public void FileCompressorZipsRegressionDirectoryToValidArchive()
+        {
+            //https://github.com/DynamoDS/Dynamo/issues/8982
+
+            var executingLocation = new DirectoryInfo(Assembly.GetExecutingAssembly().Location);
+            var testDirectory = Path.Combine(executingLocation.Parent.Parent.Parent.Parent.FullName, "test");
+            var aPackagePath = new DirectoryInfo(Path.Combine(testDirectory, "pkgs", "the-Saurus"));
+            var preZipfileCount = aPackagePath.GetFiles().Length;
+            var preZipDiskSize = aPackagePath.GetFiles().Sum(x => x.Length);
+
+            var packageDir = new directoryTestClass()
+            {
+                FullName = aPackagePath.FullName
+            };
+
+            var compressor = new MutatingFileCompressor();
+            var zipPath = compressor.Zip(packageDir);
+            Assert.AreEqual(1306095, zipPath.Length);
+
+            //unzip the zipped directory
+            var unzipPath = Greg.Utility.FileUtilities.UnZip(zipPath.Name);
+
+            Assert.AreEqual(preZipDiskSize, new DirectoryInfo(unzipPath).GetFiles().Sum(x => x.Length));
+            Assert.AreEqual(preZipfileCount, new DirectoryInfo(unzipPath).GetFiles().Length);
+
         }
 
         #endregion
