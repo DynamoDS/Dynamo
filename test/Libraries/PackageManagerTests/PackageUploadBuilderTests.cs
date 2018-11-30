@@ -84,7 +84,7 @@ namespace Dynamo.PackageManager.Tests
 
             var compressor = new MutatingFileCompressor();
             var zipPath = compressor.Zip(packageDir);
-            Assert.AreEqual(1306268, zipPath.Length);
+            Assert.AreEqual(1306095, zipPath.Length);
 
             //unzip the zipped directory
             var unzipPath = Greg.Utility.FileUtilities.UnZip(zipPath.Name);
