@@ -230,7 +230,7 @@ namespace Dynamo.Updates
    }
     
     /// <summary>
-    /// 
+    /// This interface represents configuration properties for Disable Update.
     /// </summary>
     public interface IDisableUpdateConfig
     {
