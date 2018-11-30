@@ -121,7 +121,7 @@ namespace Dynamo.Tests
                 .Returns<string>(s => Version.Parse("1.2.0.0"));
             
             var um = new DynUpdateManager(NewConfiguration(false,false,lookup.Object));
-            um.Configuration.DisableUpdates=true;
+            (um.Configuration as IDisableUpdateConfig).DisableUpdates=true;
             Assert.IsNotNull(um);
 
             DynUpdateManager.CheckForProductUpdate(um);

@@ -136,7 +136,7 @@ namespace Dynamo.Updates
         /// <summary>
         /// Returns a reference to Update Manager Configuration settings.
         /// </summary>
-        UpdateManagerConfiguration Configuration { get; }
+        IUpdateManagerConfiguration Configuration { get; }
 
         /// <summary>
         /// Event fires, when something should be logged.
@@ -583,7 +583,7 @@ namespace Dynamo.Updates
         private string updateFileLocation;
         private int currentDownloadProgress = -1;
         private IAppVersionInfo downloadedUpdateInfo;
-        private UpdateManagerConfiguration configuration = null;
+        private IUpdateManagerConfiguration configuration = null;
         private int hostApplicationProcessId = -1;
 
         #endregion
@@ -755,7 +755,7 @@ namespace Dynamo.Updates
         /// <summary>
         /// Returns the configuration settings.
         /// </summary>
-        public UpdateManagerConfiguration Configuration
+        public IUpdateManagerConfiguration Configuration
         {
             get 
             {
@@ -765,7 +765,7 @@ namespace Dynamo.Updates
 
         #endregion
 
-        public UpdateManager(UpdateManagerConfiguration configuration)
+        public UpdateManager(IUpdateManagerConfiguration configuration)
         {
             this.configuration = configuration;
             PropertyChanged += UpdateManager_PropertyChanged;
@@ -1305,7 +1305,7 @@ namespace Dynamo.Updates
             //If we already have higher version installed, don't look for product update.
             if(manager.Configuration.DynamoLookUp != null && manager.Configuration.DynamoLookUp.LatestProduct > manager.ProductVersion)
                 return;
-            if(manager.Configuration.DisableUpdates)
+            if((manager.Configuration is IDisableUpdateConfig) && (manager.Configuration as IDisableUpdateConfig).DisableUpdates)
                 return;
             var downloadUri = new Uri(manager.Configuration.DownloadSourcePath);
             manager.CheckForProductUpdate(new UpdateRequest(downloadUri, manager));
