@@ -1,12 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Reflection;
-using Dynamo.PackageManager.Interfaces;
+﻿using Dynamo.PackageManager.Interfaces;
 using Dynamo.Tests;
 using Moq;
 using NUnit.Framework;
+using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Reflection;
+using System.Security.Cryptography;
 
 namespace Dynamo.PackageManager.Tests
 {
@@ -40,15 +41,26 @@ namespace Dynamo.PackageManager.Tests
 
         #endregion
 
+        private string ComputeHash(string filePath)
+        {
+            using (var md5 = MD5.Create())
+            {
+                var hash = Convert.ToBase64String(md5.ComputeHash(File.ReadAllBytes(filePath)));
+                return hash;
+            }
+        }
+
         #region GregFileUtilsTests
-            [Test]
-            public void FileCompressorZipsSamplePackageDirectoryToValidArchive()
+        [Test]
+        public void FileCompressorZipsSamplePackageDirectoryToValidArchive()
         {
             var executingLocation = new DirectoryInfo(Assembly.GetExecutingAssembly().Location);
             var testDirectory = Path.Combine(executingLocation.Parent.Parent.Parent.Parent.FullName, "test");
-            var aPackagePath =  new DirectoryInfo(Path.Combine(testDirectory, "pkgs","sampleExtension"));
-            var preZipfileCount = aPackagePath.GetFiles().Length;
-            var preZipDiskSize = aPackagePath.GetFiles().Sum(x => x.Length);
+            var aPackagePath = new DirectoryInfo(Path.Combine(testDirectory, "pkgs", "sampleExtension"));
+            var allFiles = aPackagePath.GetFiles("*", SearchOption.AllDirectories);
+            var preZipfileCount = allFiles.Count();
+            var preZipDiskSize = allFiles.Sum(x => x.Length);
+            var preZipMD5Map = allFiles.ToDictionary(file => file.Name, file => ComputeHash(file.FullName));
 
             var packageDir = new directoryTestClass()
             {
@@ -57,13 +69,21 @@ namespace Dynamo.PackageManager.Tests
 
             var compressor = new MutatingFileCompressor();
             var zipPath = compressor.Zip(packageDir);
-            Assert.AreEqual(2758, zipPath.Length);
 
             //unzip the zipped directory
             var unzipPath = Greg.Utility.FileUtilities.UnZip(zipPath.Name);
+            var unzippedDirectory = new DirectoryInfo(unzipPath);
+            var allUnzippedFiles = unzippedDirectory.GetFiles("*", SearchOption.AllDirectories);
 
-            Assert.AreEqual(preZipDiskSize, new DirectoryInfo(unzipPath).GetFiles().Sum(x => x.Length));
-            Assert.AreEqual(preZipfileCount, new DirectoryInfo(unzipPath).GetFiles().Length);
+            var postZipMD5Map = allUnzippedFiles.ToDictionary(file => file.Name, file => ComputeHash(file.FullName));
+
+            Assert.AreEqual(preZipDiskSize, allUnzippedFiles.Sum(x => x.Length));
+            Assert.AreEqual(preZipfileCount, allUnzippedFiles.Length);
+            foreach (var pair in preZipMD5Map)
+            {
+                Console.WriteLine(pair);
+                Assert.AreEqual(pair.Value, postZipMD5Map[pair.Key]);
+            }
 
         }
         [Test]
@@ -74,8 +94,11 @@ namespace Dynamo.PackageManager.Tests
             var executingLocation = new DirectoryInfo(Assembly.GetExecutingAssembly().Location);
             var testDirectory = Path.Combine(executingLocation.Parent.Parent.Parent.Parent.FullName, "test");
             var aPackagePath = new DirectoryInfo(Path.Combine(testDirectory, "pkgs", "the-Saurus"));
-            var preZipfileCount = aPackagePath.GetFiles().Length;
-            var preZipDiskSize = aPackagePath.GetFiles().Sum(x => x.Length);
+            var allFiles = aPackagePath.GetFiles("*", SearchOption.AllDirectories);
+            var preZipfileCount = allFiles.Count();
+            var preZipDiskSize = allFiles.Sum(x => x.Length);
+            var preZipMD5Map = allFiles.ToDictionary(file => file.Name, file => ComputeHash(file.FullName));
+
 
             var packageDir = new directoryTestClass()
             {
@@ -84,14 +107,21 @@ namespace Dynamo.PackageManager.Tests
 
             var compressor = new MutatingFileCompressor();
             var zipPath = compressor.Zip(packageDir);
-            Assert.AreEqual(1306095, zipPath.Length);
 
             //unzip the zipped directory
             var unzipPath = Greg.Utility.FileUtilities.UnZip(zipPath.Name);
+            var unzippedDirectory = new DirectoryInfo(unzipPath);
+            var allUnzippedFiles = unzippedDirectory.GetFiles("*", SearchOption.AllDirectories);
 
-            Assert.AreEqual(preZipDiskSize, new DirectoryInfo(unzipPath).GetFiles().Sum(x => x.Length));
-            Assert.AreEqual(preZipfileCount, new DirectoryInfo(unzipPath).GetFiles().Length);
+            var postZipMD5Map = allUnzippedFiles.ToDictionary(file => file.Name, file => ComputeHash(file.FullName));
 
+            Assert.AreEqual(preZipDiskSize, allUnzippedFiles.Sum(x => x.Length));
+            Assert.AreEqual(preZipfileCount, allUnzippedFiles.Length);
+            foreach (var pair in preZipMD5Map)
+            {
+                Console.WriteLine(pair);
+                Assert.AreEqual(pair.Value, postZipMD5Map[pair.Key]);
+            }
         }
 
         #endregion
