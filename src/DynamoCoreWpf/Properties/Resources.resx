@@ -945,7 +945,7 @@ You can always redownload the package.</value>
   </data>
   <data name="MessageCustomNodeNameInvalid" xml:space="preserve">
     <value>Custom Node name cannot contain any of the following special characters:
-           # % * [] {} ? \ : ` ~ or any of the non-printable characters.</value>
+    # % * [] {} ? \ : ` ~ or any of the non-printable characters.</value>
   </data>
   <data name="MessageFailedToDownloadPackage" xml:space="preserve">
     <value>Failed to download package with id: {0}.  Please try again and report the package if you continue to have problems.</value>

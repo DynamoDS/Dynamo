@@ -3043,7 +3043,7 @@ namespace Dynamo.Wpf.Properties {
         
         /// <summary>
         ///   Looks up a localized string similar to Custom Node name cannot contain any of the following special characters:
-        ///           # % * [] {} ? \ : ` ~ or any of the non-printable characters..
+        ///    # % * [] {} ? \ : ` ~ or any of the non-printable characters..
         /// </summary>
         public static string MessageCustomNodeNameInvalid {
             get {
