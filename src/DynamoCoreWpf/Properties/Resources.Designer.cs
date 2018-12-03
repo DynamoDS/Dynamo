@@ -3042,6 +3042,16 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Custom Node name cannot contain any of the following special characters:
+        ///           # % * [] {} ? \ : ` ~ or any of the non-printable characters..
+        /// </summary>
+        public static string MessageCustomNodeNameInvalid {
+            get {
+                return ResourceManager.GetString("MessageCustomNodeNameInvalid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to You must enter a new category or choose one from the existing categories..
         /// </summary>
         public static string MessageCustomNodeNeedNewCategory {

@@ -1323,6 +1323,10 @@ You can always redownload the package.</value>
   <data name="MessageCustomNodeNoName" xml:space="preserve">
     <value>You must supply a name.</value>
   </data>
+  <data name="MessageCustomNodeNameInvalid" xml:space="preserve">
+    <value>Custom Node name cannot contain any of the following special characters:
+           # % * [] {} ? \ : ` ~ or any of the non-printable characters.</value>
+  </data>
   <data name="MessageErrorOpeningFileGeneral" xml:space="preserve">
     <value>Error Opening File</value>
     <comment>Notification Center Title</comment>
