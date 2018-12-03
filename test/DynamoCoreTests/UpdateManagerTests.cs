@@ -176,6 +176,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(config.SignatureSourcePath, savedConfig.SignatureSourcePath);
             Assert.AreEqual(config.DownloadSourcePath, savedConfig.DownloadSourcePath);
             Assert.AreEqual(config.ForceUpdate, savedConfig.ForceUpdate);
+            Assert.AreEqual(config.DisableUpdates, savedConfig.DisableUpdates);
         }
 
         [Test]
