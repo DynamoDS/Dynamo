@@ -3,8 +3,7 @@ using System.Linq;
 using System.Windows;
 using Dynamo.Controls;
 using Dynamo.Utilities;
-using System.IO;
-using System;
+using DynamoUtilities;
 
 namespace Dynamo.Nodes
 {
@@ -39,7 +38,7 @@ namespace Dynamo.Nodes
                   Dynamo.Wpf.Properties.Resources.CustomNodePropertyErrorMessageBoxTitle,
                   MessageBoxButton.OK, MessageBoxImage.Error);
           }
-          else if (!IsFileNameValid(Text))
+          else if (PathHelper.IsFileNameInValid(Text))
           {
               MessageBox.Show(Dynamo.Wpf.Properties.Resources.MessageCustomNodeNameInvalid,
                  Dynamo.Wpf.Properties.Resources.CustomNodePropertyErrorMessageBoxTitle,
@@ -55,18 +54,6 @@ namespace Dynamo.Nodes
           {
               this.DialogResult = true;
           }
-      }
-
-      // Check if the file name contains any special non-printable chatacters.
-      bool IsFileNameValid(string fileName)
-      {
-          // Some other extra characters that are to be checked. 
-          char[] invalidCharactersFileName = { '#', '%', '&', '.', ' ' };
-
-          if (fileName.Any(f => Path.GetInvalidFileNameChars().Contains(f)) || fileName.IndexOfAny(invalidCharactersFileName) > -1)
-              return false;
-
-          return true;
       }
 
       void Cancel_Click(object sender, RoutedEventArgs e)
