@@ -113,6 +113,23 @@ namespace Dynamo.Tests
         }
 
         [Test, Category("UnitTests")]
+        public void DisableUpdateWhenLowerVersionDynamoIsInstalled()
+        {
+            var lookup = new Mock<DynamoLookUp>();
+            lookup.Setup(l => l.GetDynamoInstallLocations()).Returns(new[] { "A" });
+            lookup.Setup(l => l.GetDynamoVersion(It.IsAny<string>()))
+                .Returns<string>(s => Version.Parse("1.2.0.0"));
+            
+            var um = new DynUpdateManager(NewConfiguration(false,false,lookup.Object));
+            (um.Configuration as IDisableUpdateConfig).DisableUpdates=true;
+            Assert.IsNotNull(um);
+
+            DynUpdateManager.CheckForProductUpdate(um);
+            Assert.IsNull(um.UpdateInfo);
+            Assert.IsFalse(um.IsUpdateAvailable);
+        }
+
+        [Test, Category("UnitTests")]
         public void NoUpdateAvailableWhenUpdateInfoIsNotYetDownloaded()
         {
             var updateManager = new DynUpdateManager(NewConfiguration());
@@ -159,6 +176,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(config.SignatureSourcePath, savedConfig.SignatureSourcePath);
             Assert.AreEqual(config.DownloadSourcePath, savedConfig.DownloadSourcePath);
             Assert.AreEqual(config.ForceUpdate, savedConfig.ForceUpdate);
+            Assert.AreEqual(config.DisableUpdates, savedConfig.DisableUpdates);
         }
 
         [Test]
