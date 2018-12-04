@@ -226,14 +226,25 @@ namespace Dynamo.Updates
         /// <summary>
         /// Returns IDynamoLookUp interface to search Dynamo installations on the system.
         /// </summary>
-        IDynamoLookUp DynamoLookUp { get; set; }
+        IDynamoLookUp DynamoLookUp { get; set; }        
+   }
+    
+    /// <summary>
+    /// This interface represents configuration properties for Disable Update.
+    /// </summary>
+    public interface IDisableUpdateConfig
+    {
+        /// <summary>
+        /// Specifies whether to disable update, default value is false. 
+        /// </summary>
+        Boolean DisableUpdates { get; set; }
     }
 
-    /// <summary>
-    /// An interface to describe available
-    /// application update info.
-    /// </summary>
-    public interface IAppVersionInfo
+   /// <summary>
+   /// An interface to describe available
+   /// application update info.
+   /// </summary>
+   public interface IAppVersionInfo
     {
         BinaryVersion Version { get; set; }
         string VersionInfoURL { get; set; }
@@ -385,7 +396,7 @@ namespace Dynamo.Updates
     /// <summary>
     /// Specifies Update Manager Configuration settings.
     /// </summary>
-    public class UpdateManagerConfiguration : IUpdateManagerConfiguration
+    public class UpdateManagerConfiguration : IUpdateManagerConfiguration,IDisableUpdateConfig
     {
         private const string PRODUCTION_SOURCE_PATH_S = "http://dyn-builds-data.s3.amazonaws.com/";
         private const string PRODUCTION_SIG_SOURCE_PATH_S = "http://dyn-builds-data-sig.s3.amazonaws.com/";
@@ -424,6 +435,11 @@ namespace Dynamo.Updates
         public string ConfigFilePath { get; set; }
 
         /// <summary>
+        /// Specifies whether to disable update, default value is false.
+        /// </summary>
+        public Boolean DisableUpdates { get; set; }
+
+        /// <summary>
         /// Default constructor
         /// </summary>
         public UpdateManagerConfiguration()
@@ -433,6 +449,7 @@ namespace Dynamo.Updates
             CheckNewerDailyBuild = false;
             ForceUpdate = false;
             InstallerNameBase = INSTALL_NAME_BASE;
+            DisableUpdates=false;
         }
 
         /// <summary>
@@ -1288,7 +1305,8 @@ namespace Dynamo.Updates
             //If we already have higher version installed, don't look for product update.
             if(manager.Configuration.DynamoLookUp != null && manager.Configuration.DynamoLookUp.LatestProduct > manager.ProductVersion)
                 return;
-
+            if((manager.Configuration is IDisableUpdateConfig) && (manager.Configuration as IDisableUpdateConfig).DisableUpdates)
+                return;
             var downloadUri = new Uri(manager.Configuration.DownloadSourcePath);
             manager.CheckForProductUpdate(new UpdateRequest(downloadUri, manager));
         }
