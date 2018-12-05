@@ -164,6 +164,21 @@ namespace Dynamo.Tests
             AssertPreviewValue("5df5ed6d-6270-4018-a479-4f7cefcf7fe8", true);
         }
 
+        [Test]
+        [Category("UnitTests")]
+        public void ParsingJSONInPythonReturnsSameResult()
+        {
+            // Load test graph
+            string path = Path.Combine(TestDirectory, @"core\json\JSON_Nodes_PythonJSONParsing.dyn");
+            OpenModel(path);
+
+            // Verify keys match when parsing JSON via Python
+            AssertPreviewValue("e4e600d9-12a6-400e-adb3-02c1ad26cddf", true);
+
+            // Verify values match when parsing JSON via Python
+            AssertPreviewValue("cdad5bf1-f5f7-47f4-a119-ad42e5084cfa", true);
+        }
+
         // Helper Functions //
 
         // Get node from a provided workspace by searching GUIDs
