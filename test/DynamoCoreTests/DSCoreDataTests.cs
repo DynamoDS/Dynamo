@@ -152,6 +152,18 @@ namespace Dynamo.Tests
             AssertPreviewValue("a0af3136-aaaf-40c2-b2ef-cee522f9ea45", true);
         }
 
+        [Test]
+        [Category("UnitTests")]
+        public void VerifyDesignScriptMatchesNodes()
+        {
+            // Load test graph
+            string path = Path.Combine(TestDirectory, @"core\json\JSON_Nodes_DesignScript.dyn");
+            OpenModel(path);
+
+            // Verify DesignScript usage of ParseJSON and StringifyJSON results match nodes
+            AssertPreviewValue("5df5ed6d-6270-4018-a479-4f7cefcf7fe8", true);
+        }
+
         // Helper Functions //
 
         // Get node from a provided workspace by searching GUIDs
