@@ -175,9 +175,6 @@ namespace Dynamo.Tests
             string path = Path.Combine(TestDirectory, @"core\json\JSON_Nodes_PythonJSONParsing.dyn");
             OpenModel(path);
 
-            AssertNoDummyNodes();
-            AssertNullValues();
-
             // Verify keys match when parsing JSON via Python
             AssertPreviewValue("e4e600d9-12a6-400e-adb3-02c1ad26cddf", true);
 
