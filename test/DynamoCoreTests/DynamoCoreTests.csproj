@@ -80,6 +80,7 @@
       <Link>Properties\AssemblySharedInfo.cs</Link>
     </Compile>
     <Compile Include="AnalyticsTests.cs" />
+    <Compile Include="DSCoreDataTests.cs" />
     <Compile Include="HomgeneousListTests.cs" />
     <Compile Include="AtLevelTest.cs" />
     <Compile Include="AttributeTest.cs" />
