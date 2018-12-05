@@ -134,6 +134,24 @@ namespace Dynamo.Tests
             AssertPreviewValue(testNode.GUID.ToString(), expectedOutputs);
         }
 
+        [Test]
+        [Category("UnitTests")]
+        public void VerifyStringifyReplication()
+        {
+            // Load test graph
+            string path = Path.Combine(TestDirectory, @"core\json\JSON_Nodes_Replication.dyn");
+            OpenModel(path);
+
+            // Verify applying replication produces different result
+            AssertPreviewValue("b69f2b6e-a328-43cf-a7a3-db42576ce814", true);
+
+            // Verify DesignScript and node stringify functionality produces the same results - no replication.
+            AssertPreviewValue("e81d053f-dbc5-4b1e-86df-075c9b279aa3", true);
+
+            // Verify DesignScript and node stringify functionality produces the same results - with replication.
+            AssertPreviewValue("a0af3136-aaaf-40c2-b2ef-cee522f9ea45", true);
+        }
+
         // Helper Functions //
 
         // Get node from a provided workspace by searching GUIDs
