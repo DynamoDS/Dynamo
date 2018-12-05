@@ -52,7 +52,7 @@ namespace DSCore
         }
 
         /// <summary>
-        ///     Stringify converts a list of arbitrary values to JSON. Replication can also be used to apply the operation over a list, producing a list of JSON strings.
+        ///     Stringify converts an arbitrary value or a list of arbitrary values to JSON. Replication can be used to apply the operation over a list, producing a list of JSON strings.
         /// </summary>
         /// <param name="values">A List of values</param>
         /// <returns name="json">A JSON string where primitive types (e.g. double, int, boolean), Lists, and Dictionary's will be turned into the associated JSON type.</returns>

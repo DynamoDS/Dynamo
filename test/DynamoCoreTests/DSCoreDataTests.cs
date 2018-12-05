@@ -17,6 +17,7 @@ namespace Dynamo.Tests
             libraries.Add("VMDataBridge.dll");
             libraries.Add("DesignScriptBuiltin.dll");
             libraries.Add("DSCoreNodes.dll");
+            libraries.Add("DSIronPython.dll");
             base.GetLibrariesToPreload(libraries);
         }
 
@@ -31,13 +32,14 @@ namespace Dynamo.Tests
             // Load JSON file graph
             string path = Path.Combine(TestDirectory, @"core\json\JSON_Nodes_Test.dyn");
             OpenModel(path);
+            AssertNoDummyNodes();
 
             // Get node data
-            WorkspaceModel workspace = CurrentDynamoModel.CurrentWorkspace;
+            var workspace = CurrentDynamoModel.CurrentWorkspace;
             var engine = CurrentDynamoModel.EngineController;
             // Get Dictionary Components node
-            string testNodeGuid = "aa367b7b-22c5-492e-be30-9690c8a45960";
-            NodeModel testNode = getNodeById(workspace, testNodeGuid);
+            Guid testNodeGuid = Guid.Parse("aa367b7b-22c5-492e-be30-9690c8a45960");
+            NodeModel testNode = workspace.NodeFromWorkspace(testNodeGuid);
 
             // Get test node data
             var rawVal = testNode.GetValue(0, engine).Data;
@@ -93,9 +95,9 @@ namespace Dynamo.Tests
             OpenModel(path);
 
             // Get node data
-            WorkspaceModel workspace = CurrentDynamoModel.CurrentWorkspace;
-            string testNodeGuid = "9dca6adc-dcf2-436a-9317-43a0af5195bc";
-            NodeModel testNode = getNodeById(workspace, testNodeGuid);
+            var workspace = CurrentDynamoModel.CurrentWorkspace;
+            Guid testNodeGuid = Guid.Parse("9dca6adc-dcf2-436a-9317-43a0af5195bc");
+            NodeModel testNode = workspace.NodeFromWorkspace(testNodeGuid);
 
             // Expected parsed types
             string[] expectedOutputs = new string[]
@@ -123,9 +125,9 @@ namespace Dynamo.Tests
             OpenModel(path);
 
             // Get node data
-            WorkspaceModel workspace = CurrentDynamoModel.CurrentWorkspace;
-            string testNodeGuid = "31f973f9-0764-47e1-b770-7b6b97d8803e";
-            NodeModel testNode = getNodeById(workspace, testNodeGuid);
+            var workspace = CurrentDynamoModel.CurrentWorkspace;
+            Guid testNodeGuid = Guid.Parse("31f973f9-0764-47e1-b770-7b6b97d8803e");
+            NodeModel testNode = workspace.NodeFromWorkspace(testNodeGuid);
 
             // Expected parsed types
             List<string> expectedOutputs = Enumerable.Repeat(typeof(System.String).FullName, 8).ToList();
@@ -159,6 +161,7 @@ namespace Dynamo.Tests
             // Load test graph
             string path = Path.Combine(TestDirectory, @"core\json\JSON_Nodes_DesignScript.dyn");
             OpenModel(path);
+            AssertNoDummyNodes();
 
             // Verify DesignScript usage of ParseJSON and StringifyJSON results match nodes
             AssertPreviewValue("5df5ed6d-6270-4018-a479-4f7cefcf7fe8", true);
@@ -172,28 +175,14 @@ namespace Dynamo.Tests
             string path = Path.Combine(TestDirectory, @"core\json\JSON_Nodes_PythonJSONParsing.dyn");
             OpenModel(path);
 
+            AssertNoDummyNodes();
+            AssertNullValues();
+
             // Verify keys match when parsing JSON via Python
             AssertPreviewValue("e4e600d9-12a6-400e-adb3-02c1ad26cddf", true);
 
             // Verify values match when parsing JSON via Python
             AssertPreviewValue("cdad5bf1-f5f7-47f4-a119-ad42e5084cfa", true);
-        }
-
-        // Helper Functions //
-
-        // Get node from a provided workspace by searching GUIDs
-        private NodeModel getNodeById(WorkspaceModel workspace, string guid)
-        {
-            foreach (NodeModel node in workspace.Nodes)
-            {
-                if (node.GUID.ToString() == guid)
-                {
-                    return node;
-                }
-            }
-
-            // Node not found, throw
-            throw new Exception("Unable to locate a node in the workspace associated with the provided GUID.");
         }
     }
 }
