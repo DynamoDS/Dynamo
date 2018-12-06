@@ -3369,15 +3369,6 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Preview Upstream.
-        /// </summary>
-        public static string NodeContextMenuPreviewUpstream {
-            get {
-                return ResourceManager.GetString("NodeContextMenuPreviewUpstream", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Rename Node....
         /// </summary>
         public static string NodeContextMenuRenameNode {
