@@ -265,7 +265,7 @@ namespace Dynamo.ViewModels
                     return false; // No selection.
 
                 // Menu options that are specific to geometry (show/hide all 
-                // geometry previews, upstream previews, etc.) are only enabled
+                // geometry previews, etc.) are only enabled
                 // in the home workspace.
                 // 
                 return (this.Model is HomeWorkspaceModel);
