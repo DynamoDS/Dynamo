@@ -74,6 +74,7 @@
     <Compile Include="Compare.cs" />
     <Compile Include="DateTime.cs" />
     <Compile Include="FileSystem.cs" />
+    <Compile Include="Data.cs" />
     <Compile Include="List.cs" />
     <Compile Include="Math.cs" />
     <Compile Include="Object.cs" />
