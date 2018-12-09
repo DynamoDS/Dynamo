@@ -2869,26 +2869,4 @@ namespace Dynamo.Controls
             throw new NotImplementedException();
         }
     }
-
-    /// <summary>
-    /// Converter is used in WatchTree.xaml 
-    /// It converts the boolean value of WatchViewModel.IsTopLevel to determine the margin of the list node label
-    /// </summary>
-
-    public class TopLevelLabelMarginConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
-        {
-            if ((bool)value)
-            {
-                return new Thickness(-4,0,4,0);
-            }
-            return new Thickness(0,0,4,0);
-        }
-        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
-        {
-            throw new NotImplementedException();
-        }
-    }
-
 }

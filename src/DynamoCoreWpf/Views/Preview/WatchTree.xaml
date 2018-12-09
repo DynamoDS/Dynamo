@@ -312,7 +312,7 @@
                                    Visibility="{Binding Path=NodeLabel, Converter={StaticResource EmptyStringToCollapsedConverter}}"
                                    Width="Auto"
                                    FontFamily="Consolas"
-                                   Margin="{Binding Path =IsTopLevel, Converter={StaticResource TopLevelLabelMarginConverter}}" />
+                                   Margin="0,0,4,0"/>
                         <Button Content="{Binding Path=Link}"
                                 RenderTransformOrigin="0.5,0.5"
                                 Margin="10,2,2,2"
