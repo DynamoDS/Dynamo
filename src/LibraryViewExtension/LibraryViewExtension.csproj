@@ -219,6 +219,7 @@
     <EmbeddedResource Include="web\library\resources\Tessellation.Voronoi.png" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
