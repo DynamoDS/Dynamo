@@ -220,13 +220,5 @@ namespace Dynamo.Tests
             var newPath = DynamoShapeManager.Utilities.RemapOldLibGPathToNewVersionPath(oldPath);
             Assert.AreEqual(string.Empty, newPath);
         }
-        [Test]
-        public void PreloaderThatDoesNotFindASMDoesNotThrow()
-        {
-            Assert.DoesNotThrow(() =>
-            {
-                var preloader = new Preloader(Path.GetTempPath(), new[] { new Version(999, 999, 999) });
-            });
-        }
     }
 }
