@@ -14,24 +14,8 @@ namespace Dynamo.Search
     {
         protected readonly Dictionary<V, Dictionary<string, double>> entryDictionary =
             new Dictionary<V, Dictionary<string, double>>();
-
-        private bool tagDictionaryIsUpToDate = false;
+        
         private List<IGrouping<string, Tuple<V, double>>> tagDictionary;
-        private List<IGrouping<string, Tuple<V, double>>> TagDictionary
-        {
-            get
-            {
-                if (!tagDictionaryIsUpToDate || tagDictionary == null)
-                {
-                    RebuildTagDictionary();
-                }
-                return tagDictionary;
-            }
-            set
-            {
-                tagDictionary = value;
-            }
-        }
 
         /// <summary>
         ///     All the current entries in search.
@@ -66,7 +50,7 @@ namespace Dynamo.Search
         {
             var handler = EntryAdded;
             if (handler != null) handler(entry);
-            tagDictionaryIsUpToDate = false;
+            tagDictionary = null;
         }
 
         /// <summary>
@@ -78,7 +62,7 @@ namespace Dynamo.Search
         {
             var handler = EntryRemoved;
             if (handler != null) handler(entry);
-            tagDictionaryIsUpToDate = false;
+            tagDictionary = null;
         }
 
         /// <summary>
@@ -90,7 +74,7 @@ namespace Dynamo.Search
         {
             var handler = EntryUpdated;
             if (handler != null) handler(entry);
-            tagDictionaryIsUpToDate = false;
+            tagDictionary = null;
         }
 
         /// <summary>
@@ -307,7 +291,7 @@ namespace Dynamo.Search
         /// </summary>
         internal void RebuildTagDictionary()
         {
-            TagDictionary = entryDictionary
+            tagDictionary = entryDictionary
                 .SelectMany(
                     entryAndTags =>
                         entryAndTags.Value.Select(
@@ -322,8 +306,6 @@ namespace Dynamo.Search
                     tagWeightAndEntry => tagWeightAndEntry.Tag,
                     tagWeightAndEntry =>
                         Tuple.Create(tagWeightAndEntry.Entry, tagWeightAndEntry.Weight)).ToList();
-
-            tagDictionaryIsUpToDate = true;
         }
         
         /// <summary>
@@ -335,10 +317,15 @@ namespace Dynamo.Search
         {
             var searchDict = new Dictionary<V, double>();
 
+            if (tagDictionary == null)
+            {
+                RebuildTagDictionary();
+            }
+
             query = query.ToLower();
 
             var subPatterns = SplitOnWhiteSpace(query);
-            foreach (var pair in TagDictionary.Where(x => MatchWithQueryString(x.Key, subPatterns)))
+            foreach (var pair in tagDictionary.Where(x => MatchWithQueryString(x.Key, subPatterns)))
             {
                 ComputeWeightAndAddToDictionary(query, pair, searchDict);
             }
