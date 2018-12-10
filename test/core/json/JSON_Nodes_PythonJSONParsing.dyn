@@ -95,7 +95,7 @@
     {
       "ConcreteType": "PythonNodeModels.PythonNode, PythonNodeModels",
       "NodeType": "PythonScriptNode",
-      "Code": "import json\r\n\r\ndataEnteringNode = IN\r\njsonString = IN[0]\r\nuser = IN[1]\r\n\r\njsonObject = json.loads(jsonString)\r\nuserData = jsonObject[user]\r\n\r\nkeys = []\r\nvalues = []\r\n\r\nfor key in userData:\r\n\tkeys.append(key)\r\n\t# String conversion required until\r\n\t# dictionary marshalling is handled\r\n\tvalues.append(userData[key])\r\n\r\nOUT = [keys, values]",
+      "Code": "import json\r\n\r\ndataEnteringNode = IN\r\njsonString = IN[0]\r\nuser = IN[1]\r\n\r\njsonObject = json.loads(jsonString)\r\nuserData = jsonObject[user]\r\n\r\n\r\nOUT = userData",
       "VariableInputPorts": true,
       "Id": "779061094688496285e56d9a328a5d3a",
       "Inputs": [
@@ -155,11 +155,11 @@
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
       "NodeType": "CodeBlockNode",
-      "Code": "keys = out[0];\nvalues = out[1];",
+      "Code": "keys = out.Keys;\nvalues = out.Values;",
       "Id": "d87d6380630649cca2f86b9e7b053799",
       "Inputs": [
         {
-          "Id": "53003810c5f44358a1cc7909b3243747",
+          "Id": "87ff69c2617446f7a1a3987bfce094b4",
           "Name": "out",
           "Description": "out",
           "UsingDefaultValue": false,
@@ -170,7 +170,7 @@
       ],
       "Outputs": [
         {
-          "Id": "bf7c44f4d39844b68a7d5b088170d216",
+          "Id": "67eafcdb583044248d5cd4c1323c4dd6",
           "Name": "",
           "Description": "keys",
           "UsingDefaultValue": false,
@@ -179,7 +179,7 @@
           "KeepListStructure": false
         },
         {
-          "Id": "34c03b8aa96941c58cfde9e1ab16b29b",
+          "Id": "fde4208a2a4f49d8b0a8c2ffa8329285",
           "Name": "",
           "Description": "values",
           "UsingDefaultValue": false,
@@ -567,8 +567,8 @@
     },
     {
       "Start": "0f2a5482f3344f3882e0d1d6fa538eb3",
-      "End": "53003810c5f44358a1cc7909b3243747",
-      "Id": "e48825e706c64151b9e103d21329cde5"
+      "End": "87ff69c2617446f7a1a3987bfce094b4",
+      "Id": "489639b5e8824525bc0a8beeeeca41d0"
     },
     {
       "Start": "e7f642f033534a228b0e4b9832cad7e2",
@@ -581,14 +581,14 @@
       "Id": "99be5d52197e4fc58d415c5e36901b39"
     },
     {
-      "Start": "bf7c44f4d39844b68a7d5b088170d216",
+      "Start": "67eafcdb583044248d5cd4c1323c4dd6",
       "End": "e98f923977f142988a6388f0822a5692",
-      "Id": "e6e12e1a12db445fbb97dab172c1cf76"
+      "Id": "7311dcc1110e47609c9937874f374abb"
     },
     {
-      "Start": "34c03b8aa96941c58cfde9e1ab16b29b",
+      "Start": "fde4208a2a4f49d8b0a8c2ffa8329285",
       "End": "29310781d81241caa05785f586c9e32c",
-      "Id": "6f58091e4b1f4eddb2fcfc64cd467579"
+      "Id": "fa722d5154f54f34a2770a8228436388"
     },
     {
       "Start": "9b4540e5237944dea8a676bf1eb29110",
@@ -648,7 +648,7 @@
       "ScaleFactor": 1.0,
       "HasRunWithoutCrash": true,
       "IsVisibleInDynamoLibrary": true,
-      "Version": "2.1.0.7035",
+      "Version": "2.1.0.7085",
       "RunType": "Automatic",
       "RunPeriod": "1000"
     },
@@ -835,13 +835,13 @@
           "6ffabd95f6034f2fa6f7da1c1fcc0cae"
         ],
         "Left": 1282.705451720042,
-        "Top": 429.95858662810139,
-        "Width": 433.69415581661428,
-        "Height": 757.51599984258,
+        "Top": 429.62525329476807,
+        "Width": 434.02748914994766,
+        "Height": 774.6826665092467,
         "FontSize": 36.0,
         "InitialTop": 482.95858662810139,
         "InitialHeight": 146.01599984258002,
-        "TextblockHeight": 43.0,
+        "TextblockHeight": 43.333333333333336,
         "Background": "#FF848484"
       },
       {
@@ -853,13 +853,13 @@
           "d87d6380630649cca2f86b9e7b053799"
         ],
         "Left": 1703.6627560043753,
-        "Top": 242.37182159321435,
-        "Width": 560.5344957768707,
-        "Height": 178.18035626119115,
+        "Top": 242.038488259881,
+        "Width": 594.20116244353733,
+        "Height": 178.51368959452449,
         "FontSize": 36.0,
         "InitialTop": 295.37182159321435,
         "InitialHeight": 177.18035626119115,
-        "TextblockHeight": 43.0,
+        "TextblockHeight": 43.333333333333336,
         "Background": "#FF848484"
       },
       {
@@ -877,13 +877,13 @@
           "93d189b6cfd24cc8839ef3f432378ec4"
         ],
         "Left": 2280.0971508009493,
-        "Top": 239.62033666367597,
-        "Width": 916.60628019930482,
-        "Height": 402.372303313242,
+        "Top": 239.28700333034263,
+        "Width": 916.93961353263819,
+        "Height": 402.70563664657539,
         "FontSize": 36.0,
         "InitialTop": 292.62033666367597,
         "InitialHeight": 401.372303313242,
-        "TextblockHeight": 43.0,
+        "TextblockHeight": 43.333333333333336,
         "Background": "#FF848484"
       },
       {
@@ -893,13 +893,13 @@
           "e4e600d912a6400eadb302c1ad26cddf"
         ],
         "Left": 3237.9796812989362,
-        "Top": 246.89355688810986,
+        "Top": 247.06022355477651,
         "Width": 457.05333333333334,
-        "Height": 160.5,
+        "Height": 160.33333333333334,
         "FontSize": 24.0,
         "InitialTop": 314.39355688810986,
         "InitialHeight": 145.0,
-        "TextblockHeight": 57.5,
+        "TextblockHeight": 57.333333333333336,
         "Background": "#FFC1D676"
       },
       {
@@ -909,18 +909,18 @@
           "cdad5bf1f5f747f4a119ad42e5084cfa"
         ],
         "Left": 3236.8826608107138,
-        "Top": 416.77902445834695,
+        "Top": 416.61235779168027,
         "Width": 433.01333333333338,
-        "Height": 189.5,
+        "Height": 189.66666666666669,
         "FontSize": 24.0,
         "InitialTop": 513.279024458347,
         "InitialHeight": 145.0,
-        "TextblockHeight": 86.5,
+        "TextblockHeight": 86.666666666666671,
         "Background": "#FFC1D676"
       }
     ],
-    "X": -937.64951064912168,
-    "Y": -104.09548099844363,
+    "X": -1051.6495106491216,
+    "Y": -110.76214766511026,
     "Zoom": 0.7485460120568
   }
 }
