@@ -118,8 +118,8 @@ namespace Dynamo.PackageManager.Tests
                 Preferences = this.CurrentDynamoModel.PreferenceSettings
             });
 
-            // There are 6 packages in "GitHub\Dynamo\test\pkgs"
-            Assert.AreEqual(6, loader.LocalPackages.Count());
+            // There are 7 packages in "GitHub\Dynamo\test\pkgs"
+            Assert.AreEqual(7, loader.LocalPackages.Count());
         }
 
         [Test]

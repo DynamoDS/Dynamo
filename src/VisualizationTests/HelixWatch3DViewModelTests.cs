@@ -172,7 +172,7 @@ namespace WpfVisualizationTests
         }
 
         [Test]
-        public void Node_PreviewUpstreamToggled_RenderingUpToDate()
+        public void Node_PreviewToggled_RenderingUpToDate()
         {
             var model = ViewModel.Model;
 
@@ -183,7 +183,7 @@ namespace WpfVisualizationTests
             //we start with all previews disabled
             //the graph is two points feeding into a line
 
-            //ensure that visulations match our expectations
+            //ensure that visualizations match our expectations
             Assert.True(BackgroundPreviewGeometry.HasNumberOfPointsCurvesAndMeshes(7, 6, 0));
 
             var watch3D = Model.CurrentWorkspace.FirstNodeFromWorkspace<Watch3D>();

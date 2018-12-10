@@ -3,6 +3,13 @@ using System.Linq;
 using NUnit.Framework;
 using SystemTestServices;
 using System.IO;
+using Dynamo.Utilities;
+using System.Windows.Shapes;
+using Dynamo.Controls;
+using Dynamo.ViewModels;
+using Dynamo.UI;
+using Dynamo.UI.Controls;
+using System.Windows.Media;
 
 namespace DynamoCoreWpfTests
 {
@@ -20,9 +27,9 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
-        public void ShouldKeepListStructureChangesOutput()
+        public void KeepListStructureChangesOutput()
         {
-            var openPath = Path.Combine(GetTestDirectory(ExecutingDirectory), @"UI\keepListStructure.dyn");
+            var openPath = System.IO.Path.Combine(GetTestDirectory(ExecutingDirectory), @"UI\keepListStructure.dyn");
             ViewModel.OpenCommand.Execute(openPath);
             var rankNode = this.Model.CurrentWorkspace.Nodes.Where(x => x.Name == "List.Rank").FirstOrDefault();
             Assert.NotNull(rankNode);
@@ -39,6 +46,52 @@ namespace DynamoCoreWpfTests
             RunCurrentModel();
             rank = rankNode.CachedValue.Data;
             Assert.AreEqual(3, rank);
+        }
+
+        [Test]
+        public void KeepListStructureUpdatesPortViewCorrectly()
+        {
+            var openPath = System.IO.Path.Combine(GetTestDirectory(ExecutingDirectory), @"UI\keepListStructure.dyn");
+            ViewModel.OpenCommand.Execute(openPath);
+            var rankNode = this.Model.CurrentWorkspace.Nodes.Where(x => x.Name == "List.Rank").FirstOrDefault();
+            Assert.NotNull(rankNode);
+            Assert.AreEqual(4, this.Model.CurrentWorkspace.Nodes.Count());
+            RunCurrentModel();
+
+            var rank = rankNode.CachedValue.Data;
+            Assert.AreEqual(2, rank);
+
+            var addNode = this.Model.CurrentWorkspace.Nodes.Where(x => x.Name == "+").FirstOrDefault();
+            Assert.NotNull(addNode);
+            addNode.InPorts.First().KeepListStructure = true;
+
+            RunCurrentModel();
+            rank = rankNode.CachedValue.Data;
+            Assert.AreEqual(3, rank);
+
+            //find the nodeView that has the same dataContext as the addNode.
+            Utility.DispatcherUtil.DoEvents();
+            var nodeViews = WpfUtilities.ChildrenOfType<NodeView>(View);
+            var nodeViewModel = ViewModel.CurrentSpaceViewModel.Nodes.Where(x => x.Id == addNode.GUID).FirstOrDefault();
+            var matchingNodeView = nodeViews.Where(x => (x.DataContext as NodeViewModel).Id == nodeViewModel.Id).FirstOrDefault();
+
+            Assert.NotNull(nodeViewModel);
+            Assert.NotNull(matchingNodeView);
+
+            //when keeplist structure is on highlight should be blue
+            var rectangle = WpfUtilities.ChildrenOfType<Rectangle>(matchingNodeView).Where(x => x.Name == "highlightOverlay").FirstOrDefault();
+            Assert.NotNull(rectangle);
+
+            var trueColor = SharedDictionaryManager.DynamoColorsAndBrushesDictionary["KeepListStructureHighlight"] as SolidColorBrush;
+
+            Assert.AreEqual(trueColor.Color, (rectangle.Fill as SolidColorBrush).Color);
+
+            //when keeplist structure is on text should start with @@.
+            var spinner = WpfUtilities.ChildrenOfType<UseLevelSpinner>(matchingNodeView).FirstOrDefault();
+
+            Assert.True(spinner.ContentText.StartsWith("@@"));
+
+
         }
     }
 
