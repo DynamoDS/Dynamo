@@ -15,16 +15,10 @@ namespace Dynamo.Search
         protected readonly Dictionary<V, Dictionary<string, double>> entryDictionary =
             new Dictionary<V, Dictionary<string, double>>();
         
-        private bool experimentalSearch = false;
-
         /// <summary>
         ///     Indicates whether experimental search mode is turned on.
         /// </summary>
-        internal bool ExperimentalSearch
-        {
-            get { return experimentalSearch; }
-            set { experimentalSearch = value;  }
-        }
+        internal bool ExperimentalSearch { get; set; } = false;
 
         /// <summary>
         ///     All the current entries in search.
@@ -323,7 +317,7 @@ namespace Dynamo.Search
             var subPatterns = SplitOnWhiteSpace(query);
 
             // Experimental Search
-            if (experimentalSearch)
+            if (ExperimentalSearch)
             {
                 var subPatternsList = subPatterns.ToList();
                 subPatternsList.Insert(0, query);
