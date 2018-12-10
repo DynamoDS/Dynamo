@@ -15,6 +15,24 @@ namespace Dynamo.Search
         protected readonly Dictionary<V, Dictionary<string, double>> entryDictionary =
             new Dictionary<V, Dictionary<string, double>>();
 
+        private bool tagDictionaryIsUpToDate = false;
+        private List<IGrouping<string, Tuple<V, double>>> tagDictionary;
+        private List<IGrouping<string, Tuple<V, double>>> TagDictionary
+        {
+            get
+            {
+                if (!tagDictionaryIsUpToDate || tagDictionary == null)
+                {
+                    RebuildTagDictionary();
+                }
+                return tagDictionary;
+            }
+            set
+            {
+                tagDictionary = value;
+            }
+        }
+
         /// <summary>
         ///     All the current entries in search.
         /// </summary>
@@ -48,6 +66,7 @@ namespace Dynamo.Search
         {
             var handler = EntryAdded;
             if (handler != null) handler(entry);
+            tagDictionaryIsUpToDate = false;
         }
 
         /// <summary>
@@ -59,6 +78,7 @@ namespace Dynamo.Search
         {
             var handler = EntryRemoved;
             if (handler != null) handler(entry);
+            tagDictionaryIsUpToDate = false;
         }
 
         /// <summary>
@@ -70,6 +90,7 @@ namespace Dynamo.Search
         {
             var handler = EntryUpdated;
             if (handler != null) handler(entry);
+            tagDictionaryIsUpToDate = false;
         }
 
         /// <summary>
@@ -280,18 +301,13 @@ namespace Dynamo.Search
         #endregion
 
         /// <summary>
-        /// Search for elements in the dictionary based on the query
+        /// Converts entryDictionary from a dictionary of searchElement:(tag,weight)
+        /// to a dictionary of tag:(list(searchelement,weight))
+        /// which contains all nodes which share a tag 
         /// </summary>
-        /// <param name="query"> The query </param>
-        /// <param name="minResultsForTolerantSearch">Minimum number of results in the original search strategy to justify doing more tolerant search</param>
-        internal IEnumerable<V> Search(string query, int minResultsForTolerantSearch = 0)
+        internal void RebuildTagDictionary()
         {
-            var searchDict = new Dictionary<V, double>();
-            // convert from a dictionary of searchElement:<tag,weight>
-            // to a dictionary of tag:<list<searchelement,weight>>
-            // which contains all nodes which share a tag 
-
-            var tagDictionary = entryDictionary
+            TagDictionary = entryDictionary
                 .SelectMany(
                     entryAndTags =>
                         entryAndTags.Value.Select(
@@ -307,10 +323,22 @@ namespace Dynamo.Search
                     tagWeightAndEntry =>
                         Tuple.Create(tagWeightAndEntry.Entry, tagWeightAndEntry.Weight)).ToList();
 
+            tagDictionaryIsUpToDate = true;
+        }
+        
+        /// <summary>
+        /// Search for elements in the dictionary based on the query
+        /// </summary>
+        /// <param name="query"> The query </param>
+        /// <param name="minResultsForTolerantSearch">Minimum number of results in the original search strategy to justify doing more tolerant search</param>
+        internal IEnumerable<V> Search(string query, int minResultsForTolerantSearch = 0)
+        {
+            var searchDict = new Dictionary<V, double>();
+
             query = query.ToLower();
 
             var subPatterns = SplitOnWhiteSpace(query);
-            foreach (var pair in tagDictionary.Where(x => MatchWithQueryString(x.Key, subPatterns)))
+            foreach (var pair in TagDictionary.Where(x => MatchWithQueryString(x.Key, subPatterns)))
             {
                 ComputeWeightAndAddToDictionary(query, pair, searchDict);
             }
