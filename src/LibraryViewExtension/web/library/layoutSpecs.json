@@ -1026,6 +1026,12 @@
                 },
                 {
                   "path": "DSOffice.DSOffice.Data.ExportCSV"
+                },
+                {
+                  "path": "DSCoreNodes.DSCore.Data.ParseJSON"
+                },
+                {
+                  "path": "DSCoreNodes.DSCore.Data.StringifyJSON"
                 }
               ],
               "childElements": [ ]

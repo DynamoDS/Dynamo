@@ -740,10 +740,6 @@ It does not contain your graph or any personal data</value>
     <value>Preview</value>
     <comment>Context menu item - preview geometry</comment>
   </data>
-  <data name="NodeContextMenuPreviewUpstream" xml:space="preserve">
-    <value>Preview Upstream</value>
-    <comment>Context menu item - preview geometry of upstream nodes</comment>
-  </data>
   <data name="NodeContextMenuRenameNode" xml:space="preserve">
     <value>Rename Node...</value>
     <comment>Context menu item - rename this node</comment>
@@ -1706,10 +1702,6 @@ Do you want to install the latest Dynamo update?</value>
     <value>Hide all text bubble</value>
     <comment>Context menu item - Specific to canvas</comment>
   </data>
-  <data name="ContextMenuHideUpstreamPreview" xml:space="preserve">
-    <value>Hide upstream geometry preview</value>
-    <comment>Context menu item - Specific to canvas</comment>
-  </data>
   <data name="ContextMenuInsertCodeBlock" xml:space="preserve">
     <value>Insert code block</value>
     <comment>Context menu item - Specific to canvas</comment>
@@ -1724,10 +1716,6 @@ Do you want to install the latest Dynamo update?</value>
   </data>
   <data name="ContextMenuShowAllTextBubble" xml:space="preserve">
     <value>Show all text buble</value>
-    <comment>Context menu item - Specific to canvas</comment>
-  </data>
-  <data name="ContextMenuShowUpstreamPreview" xml:space="preserve">
-    <value>Show upstream geometry preview</value>
     <comment>Context menu item - Specific to canvas</comment>
   </data>
   <data name="MoreButton" xml:space="preserve">
@@ -1965,10 +1953,10 @@ Do you want to install the latest Dynamo update?</value>
     <value>Package Path Added</value>
   </data>
   <data name="PackagePathAutoAddNotificationShortDescription" xml:space="preserve">
-    <value>A library (*.dll, *.ds) was recently imported into Dynamo. Its path was automatically added to "Settings > Manage Node and Package Paths..."</value>
+    <value>A library (*.dll, *.ds) was recently imported into Dynamo. Its path was automatically added to "Settings &gt; Manage Node and Package Paths..."</value>
   </data>
   <data name="PackagePathAutoAddNotificationDetailedDescription" xml:space="preserve">
-    <value>The import path "{0}" was added to "Manage Node and Package Paths". If you want to update or remove this path, please open "Settings > Manage Node and Package Paths..."</value>
+    <value>The import path "{0}" was added to "Manage Node and Package Paths". If you want to update or remove this path, please open "Settings &gt; Manage Node and Package Paths..."</value>
   </data>
   <data name="NodeContextMenuIsInput" xml:space="preserve">
     <value>Is Input</value>
