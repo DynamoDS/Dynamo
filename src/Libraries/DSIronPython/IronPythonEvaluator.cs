@@ -9,6 +9,7 @@ using Dynamo.Utilities;
 using IronPython.Hosting;
 
 using Microsoft.Scripting.Hosting;
+using Microsoft.Scripting.Utils;
 
 namespace DSIronPython
 {
@@ -54,7 +55,8 @@ namespace DSIronPython
             // Return the standard library path
             if (!string.IsNullOrEmpty(dynamoCorePath))
             { return dynamoCorePath + @"\IronPython.StdLib.2.7.8"; }
-            else { return null; }
+
+            return null;
         }
 
         /// <summary>
@@ -154,6 +156,16 @@ namespace DSIronPython
                                 pyList.Add(item);
                             }
                             return pyList;
+                        });
+                    inputMarshaler.RegisterMarshaler(
+                        delegate (DesignScript.Builtin.Dictionary dict)
+                        {
+                            var pyDict = new IronPython.Runtime.PythonDictionary();
+                            foreach (var key in dict.Keys)
+                            {
+                                pyDict.Add(inputMarshaler.Marshal(key), inputMarshaler.Marshal(dict.ValueAtKey(key)));
+                            }
+                            return pyDict;
                         });
                 }
                 return inputMarshaler;
