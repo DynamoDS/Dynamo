@@ -155,7 +155,7 @@ namespace Dynamo.Tests
             {
                 if (!(value is IEnumerable))
                 {
-                    Assert.Fail("Data is collection but expected vlaue is not.");
+                    Assert.Fail("Data is collection but expected value is not.");
                 }
                 AssertCollection(data, value as IEnumerable);
             }
@@ -180,7 +180,7 @@ namespace Dynamo.Tests
                 try
                 {
                     double mirrorData = Convert.ToDouble(data.Data);
-                    Assert.AreEqual((double)value, Convert.ToDouble(data.Data), 0.00001);
+                    Assert.AreEqual((double)value, mirrorData, 0.00001);
                 }
                 catch (Exception e)
                 {
@@ -191,30 +191,59 @@ namespace Dynamo.Tests
             {
                 Assert.AreEqual(data.Class.ClassName, value);
             }
-            else if (data.IsPointer && value is DesignScript.Builtin.Dictionary)
+            else if (data.IsDictionary) 
             {
                 var thisData = data.Data as DesignScript.Builtin.Dictionary;
 
-                if (thisData == null)
+                if (value is DesignScript.Builtin.Dictionary)
                 {
-                    Assert.Fail("Data is expected to be DS Dictionary but is not.");
-                }
-                var otherVal = (DesignScript.Builtin.Dictionary) value;
+                    var otherVal = (DesignScript.Builtin.Dictionary) value;
 
-                if (otherVal.Count != thisData.Count)
-                {
-                    Assert.Fail("Data and expected value are 2 different dictionaries.");
-                }
-                foreach (var key in otherVal.Keys)
-                {
-                    var val = thisData.ValueAtKey(key);
-                    if (val == null)
+                    if (otherVal.Count != thisData.Count)
                     {
                         Assert.Fail("Data and expected value are 2 different dictionaries.");
                     }
-                    if (val.GetType().IsValueType)
+
+                    foreach (var key in otherVal.Keys)
                     {
-                        Assert.AreEqual(val, thisData.ValueAtKey(key));
+                        var val = thisData.ValueAtKey(key);
+                        if (val == null)
+                        {
+                            Assert.Fail("Data and expected value are 2 different dictionaries.");
+                        }
+
+                        if (val.GetType().IsValueType)
+                        {
+                            Assert.AreEqual(val, thisData.ValueAtKey(key));
+                        }
+                    }
+                }
+                else if (value is IDictionary)
+                {
+                    var otherVal = (IDictionary)value;
+
+                    if (otherVal.Count != thisData.Count)
+                    {
+                        Assert.Fail("Data and expected value are 2 different dictionaries.");
+                    }
+
+                    foreach (var key in otherVal.Keys)
+                    {
+                        if (!(key is string))
+                        {
+                            Assert.Fail("Expected value is a dictionary with non-string key(s).");
+                        }
+                        var strKey = (string) key;
+                        var val = thisData.ValueAtKey(strKey);
+                        if (val == null)
+                        {
+                            Assert.Fail("Data and expected value are 2 different dictionaries.");
+                        }
+
+                        if (val.GetType().IsValueType)
+                        {
+                            Assert.AreEqual(val, thisData.ValueAtKey(strKey));
+                        }
                     }
                 }
             }

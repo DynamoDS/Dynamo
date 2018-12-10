@@ -397,18 +397,6 @@
                           CommandParameter="false"
                           Visibility="{Binding Path=AnyNodeVisible, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
 
-                    <MenuItem IsEnabled="{Binding Path=IsGeometryOperationEnabled}"
-                          Header="{x:Static  p:Resources.ContextMenuShowUpstreamPreview}"
-                          Command="{Binding Path=ShowHideAllUpstreamPreviewCommand}"
-                          CommandParameter="true"
-                          Visibility="{Binding Path=AnyNodeUpstreamVisible, Converter={StaticResource InverseBoolToVisibilityCollapsedConverter}}" />
-
-                    <MenuItem IsEnabled="{Binding Path=IsGeometryOperationEnabled}"
-                          Header="{x:Static p:Resources.ContextMenuHideUpstreamPreview}"
-                          Command="{Binding Path=ShowHideAllUpstreamPreviewCommand}"
-                          CommandParameter="false"
-                          Visibility="{Binding Path=AnyNodeUpstreamVisible, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
-
                     <controls:ParentMenuItem  Header="{x:Static p:Resources.DynamoViewEditMenuAlignSelection}" x:Name="Align">
                         <MenuItem  Header="{x:Static p:Resources.DynamoViewEditMenuAlignXAverage}"
                                Command="{Binding AlignSelectedCommand}"
