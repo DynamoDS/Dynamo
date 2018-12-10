@@ -1,4 +1,5 @@
 ﻿using Dynamo.Utilities;
+using Dynamo.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +14,10 @@ namespace Dynamo.Search
     public class SearchLibrary<TEntry, TItem> : SearchDictionary<TEntry>, ISource<TItem> 
         where TEntry : ISearchEntry, ISource<TItem>
     {
+        internal SearchLibrary(ILogger logger) : base(logger)
+        {
+        }
+
         /// <summary>
         ///     Adds an entry to search.
         /// </summary>

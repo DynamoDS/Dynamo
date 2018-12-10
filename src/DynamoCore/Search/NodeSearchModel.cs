@@ -6,6 +6,7 @@ using Dynamo.Configuration;
 using Dynamo.Graph.Nodes;
 using Dynamo.Search.SearchElements;
 using DynamoUtilities;
+using Dynamo.Logging;
 
 namespace Dynamo.Search
 {
@@ -14,6 +15,10 @@ namespace Dynamo.Search
     /// </summary>
     public class NodeSearchModel : SearchLibrary<NodeSearchElement, NodeModel>
     {
+        internal NodeSearchModel(ILogger logger = null) : base(logger)
+        {
+        }
+
         internal override void Add(NodeSearchElement entry)
         {
             SearchElementGroup group = SearchElementGroup.None;

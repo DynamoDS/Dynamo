@@ -1,9 +1,9 @@
-﻿using System.Diagnostics;
-using Dynamo.Utilities;
+﻿using Dynamo.Utilities;
+using Dynamo.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.RegularExpressions;
+using System.Diagnostics;
 
 namespace Dynamo.Search
 {
@@ -12,6 +12,13 @@ namespace Dynamo.Search
     /// </summary>
     public class SearchDictionary<V>
     {
+        private ILogger logger;
+
+        internal SearchDictionary(ILogger logger = null)
+        {
+            this.logger = logger;
+        }
+
         protected readonly Dictionary<V, Dictionary<string, double>> entryDictionary =
             new Dictionary<V, Dictionary<string, double>>();
 
@@ -286,6 +293,15 @@ namespace Dynamo.Search
         /// <param name="minResultsForTolerantSearch">Minimum number of results in the original search strategy to justify doing more tolerant search</param>
         internal IEnumerable<V> Search(string query, int minResultsForTolerantSearch = 0)
         {
+#if DEBUG
+            Stopwatch stopwatch = null;
+            if (this.logger != null)
+            {
+                stopwatch = new Stopwatch();
+                stopwatch.Start();
+            }
+#endif
+
             var searchDict = new Dictionary<V, double>();
             // convert from a dictionary of searchElement:<tag,weight>
             // to a dictionary of tag:<list<searchelement,weight>>
@@ -315,9 +331,22 @@ namespace Dynamo.Search
                 ComputeWeightAndAddToDictionary(query, pair, searchDict);
             }
 
-            return searchDict
-                .OrderByDescending(x => x.Value)
-                .Select(x => x.Key);
+            var searchResults =
+                searchDict
+                    .OrderByDescending(x => x.Value)
+                    .Select(x => x.Key);
+
+#if DEBUG
+            if (this.logger != null)
+            {
+                stopwatch.Stop();
+
+                var message = string.Format("Search: \"{0}\":{1}ms", query, stopwatch.ElapsedMilliseconds);
+                this.logger.Log(message);
+            }
+#endif
+
+            return searchResults;
         }
 
         private static void ComputeWeightAndAddToDictionary(string query,
