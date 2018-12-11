@@ -341,7 +341,13 @@ namespace Dynamo.Search
             {
                 stopwatch.Stop();
 
-                var message = string.Format("Search: \"{0}\":{1}ms", query, stopwatch.ElapsedMilliseconds);
+                var message = 
+                    string.Format(
+                        "Searching for: \"{0}\", [Entries:{1}, Tags:{2}] : {3}ms", 
+                            query,
+                            entryDictionary.Count,
+                            tagDictionary.Count,
+                            stopwatch.ElapsedMilliseconds);
                 this.logger.Log(message);
             }
 #endif
