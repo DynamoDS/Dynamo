@@ -178,6 +178,7 @@ namespace Dynamo.Graph.Workspaces
                 else
                 { functionDescriptor = null; }
 
+                // Use the functionDescriptor to try and restore the proper node if possible
                 if (functionDescriptor == null)
                 {
                     node = CreateDummyNode(obj, assemblyLocation, inPorts, outPorts);
