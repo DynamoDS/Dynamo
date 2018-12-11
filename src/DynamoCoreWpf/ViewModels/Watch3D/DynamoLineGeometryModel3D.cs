@@ -26,6 +26,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
     /// </summary>
     public class DynamoLineGeometryModel3D : LineGeometryModel3D
     {
+        /* TODO DYN-973
         public override int VertexSizeInBytes
         {
             get
@@ -81,6 +82,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
             Device.ImmediateContext.Flush();
         }
+        */
 
         private DynamoLineVertex[] CreateVertexArray()
         {
@@ -95,11 +97,11 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 Color4 finalColor;
                 if (colors != null && colors.Any())
                 {
-                    finalColor = color * colors[i];
+                    finalColor = color.ToColor4() * colors[i];
                 }
                 else
                 {
-                    finalColor = color;
+                    finalColor = color.ToColor4();
                 }
 
                 var isSelected = (bool)GetValue(AttachedProperties.ShowSelectedProperty);

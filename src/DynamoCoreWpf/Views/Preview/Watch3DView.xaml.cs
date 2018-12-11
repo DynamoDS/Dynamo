@@ -9,7 +9,6 @@ using Dynamo.Visualization;
 using Dynamo.Wpf.ViewModels.Watch3D;
 using HelixToolkit.Wpf.SharpDX;
 using SharpDX;
-using Model3D = HelixToolkit.Wpf.SharpDX.Model3D;
 using Point = System.Windows.Point;
 using Dynamo.Graph.Nodes;
 
@@ -194,11 +193,12 @@ namespace Dynamo.Controls
             }
         }
 
-        private void ViewModelRequestAttachToSceneHandler(Model3D model3D)
+        private void ViewModelRequestAttachToSceneHandler(Element3D elem)
         {
-            if (!model3D.IsAttached && View != null && View.RenderHost != null)
+            if (!elem.IsAttached && View != null && View.RenderHost != null)
             {
-                model3D.Attach(View.RenderHost);
+                // TODO DYN-973
+                //elem.Attach(View.RenderHost);
             }
         }
 

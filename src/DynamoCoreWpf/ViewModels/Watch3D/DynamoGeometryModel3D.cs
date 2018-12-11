@@ -3,6 +3,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows;
 using HelixToolkit.Wpf.SharpDX;
+using HelixToolkit.Wpf.SharpDX.Model.Scene;
 using SharpDX;
 using SharpDX.Direct3D;
 using SharpDX.Direct3D11;
@@ -38,13 +39,10 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
     /// <summary>
     /// A Dynamo mesh class which supports the RenderCustom technique.
     /// </summary>
-    public class DynamoGeometryModel3D : MaterialGeometryModel3D
+    public class DynamoGeometryModel3D : MeshGeometryModel3D
     {
-        private readonly RenderTechnique renderTechniqueInternal;
-
-        public DynamoGeometryModel3D(RenderTechnique renderTechnique)
+        public DynamoGeometryModel3D()
         {
-            renderTechniqueInternal = renderTechnique;
         }
 
         public static readonly DependencyProperty RequiresPerVertexColorationProperty =
@@ -59,6 +57,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             set { SetValue(RequiresPerVertexColorationProperty, value); }
         }
 
+        /* TODO DYN-973
         public override int VertexSizeInBytes
         {
             get
@@ -270,18 +269,18 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 Device.ImmediateContext.DrawIndexed(Geometry.Indices.Count, 0, 0);
             }
         }
-
+        
         public override void Dispose()
         {
             Detach();
         }
-
+        */
         private DynamoMeshVertex[] CreateVertexArray()
         {
             var geometry = (MeshGeometry3D)Geometry;
             var colors = geometry.Colors != null ? geometry.Colors.ToArray() : null;
             var textureCoordinates = geometry.TextureCoordinates != null ? geometry.TextureCoordinates.ToArray() : null;
-            var texScale = TextureCoodScale;
+            var texScale = 1; /* TextureCoodScale; */ // TODO DYN-973
             var normals = geometry.Normals != null ? geometry.Normals.ToArray() : null;
             var tangents = geometry.Tangents != null ? geometry.Tangents.ToArray() : null;
             var bitangents = geometry.BiTangents != null ? geometry.BiTangents.ToArray() : null;

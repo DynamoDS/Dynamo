@@ -491,6 +491,7 @@ namespace Dynamo.Controls
                     BackgroundPreview.View.ZoomExtents();
                     break;
 
+                /* TODO DYN-973
                 case ViewOperationEventArgs.Operation.ZoomIn:
                     var camera1 = BackgroundPreview.View.CameraController;
                     camera1.Zoom(-0.5 * BackgroundPreview.View.ZoomSensitivity);
@@ -500,6 +501,7 @@ namespace Dynamo.Controls
                     var camera2 = BackgroundPreview.View.CameraController;
                     camera2.Zoom(0.5 * BackgroundPreview.View.ZoomSensitivity);
                     break;
+                    */
             }
         }
 

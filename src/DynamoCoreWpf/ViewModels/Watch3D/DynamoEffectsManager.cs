@@ -15,23 +15,25 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
     /// </summary>
     public class DynamoEffectsManager : DefaultEffectsManager
     {
-        public DynamoEffectsManager(IRenderTechniquesManager renderTechniquesManager) : base(renderTechniquesManager) { }
+        public DynamoEffectsManager() : base() {
+            AddDynamoTechniques();
+        }
 
         /// <summary>
-        /// Override the DefaultEffectsManager's InitEffects method to load
-        /// effects used by Dynamo for rendering. Custom input layouts are
+        /// Load effects used by Dynamo for rendering. Custom input layouts are
         /// created which specify extra COLOR components used to hold data 
         /// about the selection state and vertex coloration of objects.
         /// See <see cref="T:DynamoMeshVertex"/>, <see cref="T:DynamoPointVertex"/>, and <see cref="T:DynamoLineVertex"/>
         /// for examples of how these layouts are used.
         /// </summary>
-        protected override void InitEffects()
+        protected void AddDynamoTechniques()
         {
-            var custom = renderTechniquesManager.RenderTechniques["RenderCustom"];
-            var lines = renderTechniquesManager.RenderTechniques[DefaultRenderTechniqueNames.Lines];
-            var points = renderTechniquesManager.RenderTechniques[DefaultRenderTechniqueNames.Points];
-            var text = renderTechniquesManager.RenderTechniques[DefaultRenderTechniqueNames.BillboardText];
-            var blinn = renderTechniquesManager.RenderTechniques[DefaultRenderTechniqueNames.Blinn];
+            var custom = GetTechnique("RenderCustom");
+            var lines = GetTechnique(DefaultRenderTechniqueNames.Lines);
+            var points = GetTechnique(DefaultRenderTechniqueNames.Points);
+            var text = GetTechnique(DefaultRenderTechniqueNames.BillboardText);
+            /*
+            var blinn = GetTechnique(DefaultRenderTechniqueNames.Blinn);
 
             RegisterEffect(Properties.Resources._dynamo, new[] { custom, lines, points, text, blinn });
 
@@ -83,6 +85,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 new InputElement("TEXCOORD", 0, Format.R32G32B32A32_Float,  InputElement.AppendAligned, 0),
             });
             RegisterLayout(new[] { text }, textInputLayout);
+            */
         }
     }
 }

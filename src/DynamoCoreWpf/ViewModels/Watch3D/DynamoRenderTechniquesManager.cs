@@ -2,6 +2,8 @@
 
 namespace Dynamo.Wpf.ViewModels.Watch3D
 {
+    /* TODO DYN-973
+     
     /// <summary>
     /// The DynamoRenderTechniquesManager maintains a dictionary of
     /// available render techniques. A render technique is a single rendering function 
@@ -22,4 +24,5 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             AddRenderTechnique("RenderCustom", source);
         }
     }
+    */
 }

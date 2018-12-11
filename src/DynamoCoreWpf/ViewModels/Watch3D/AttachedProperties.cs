@@ -21,12 +21,12 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             typeof(GeometryModel3D),
             new PropertyMetadata(false, ShowSelectedPropertyChanged));
 
-        public static void SetShowSelected(UIElement element, bool value)
+        public static void SetShowSelected(DependencyObject element, bool value)
         {
             element.SetValue(ShowSelectedProperty, value);
         }
 
-        public static bool GetShowSelected(UIElement element)
+        public static bool GetShowSelected(DependencyObject element)
         {
             return (bool)element.GetValue(ShowSelectedProperty);
         }
@@ -37,12 +37,14 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             {
                 var geom = (GeometryModel3D)obj;
                 
+                /* TODO DYN-973
                 if (geom.IsAttached)
                 {
                     var host = geom.RenderHost;
                     geom.Detach();
                     geom.Attach(host);
                 }
+                */
             }
         }
 
@@ -55,12 +57,12 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             typeof (GeometryModel3D),
             new PropertyMetadata(false));
 
-        public static void SetHasTransparencyProperty(UIElement element, bool value)
+        public static void SetHasTransparencyProperty(DependencyObject element, bool value)
         {
             element.SetValue(HasTransparencyProperty, value);
         }
 
-        public static bool GetHasTransparencyProperty(UIElement element)
+        public static bool GetHasTransparencyProperty(DependencyObject element)
         {
             return (bool) element.GetValue(HasTransparencyProperty);
         }
@@ -79,7 +81,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             element.SetValue(IsFrozenProperty, value);
         }
 
-        public static bool GetIsFrozen(UIElement element)
+        public static bool GetIsFrozen(DependencyObject element)
         {
             return (bool)element.GetValue(IsFrozenProperty) &&
                 !IsSpecialRenderPackage(element);
@@ -118,12 +120,14 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     geom = dynamoGeom3D;
                 }
 
+                /* TODO DYN-973
                 if (geom.IsAttached)
                 {
                     var host = geom.RenderHost;
                     geom.Detach();
                     geom.Attach(host);
                 }
+                */
             }
         }
 
@@ -136,12 +140,12 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             typeof(GeometryModel3D),
             new PropertyMetadata(false, IsolationModePropertyChanged));
 
-        public static void SetIsolationMode(UIElement element, bool value)
+        public static void SetIsolationMode(DependencyObject element, bool value)
         {
             element.SetValue(IsolationModeProperty, value);
         }
 
-        public static bool GetIsolationMode(UIElement element)
+        public static bool GetIsolationMode(DependencyObject element)
         {
             return (bool)element.GetValue(IsolationModeProperty);
         }
@@ -151,13 +155,14 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             if (obj is GeometryModel3D && obj.GetType() != typeof(BillboardTextModel3D))
             {
                 var geom = (GeometryModel3D)obj;
-
+                /* TODO DYN-973
                 if (geom.IsAttached)
                 {
                     var host = geom.RenderHost;
                     geom.Detach();
                     geom.Attach(host);
                 }
+                */
             }
         }
 
@@ -170,12 +175,12 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             typeof(GeometryModel3D),
             new PropertyMetadata(false));
 
-        public static void SetIsSpecialRenderPackage(UIElement element, bool value)
+        public static void SetIsSpecialRenderPackage(DependencyObject element, bool value)
         {
             element.SetValue(IsSpecialRenderPackageProperty, value);
         }
 
-        public static bool IsSpecialRenderPackage(UIElement element)
+        public static bool IsSpecialRenderPackage(DependencyObject element)
         {
             return (bool)element.GetValue(IsSpecialRenderPackageProperty);
         }
