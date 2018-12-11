@@ -172,13 +172,11 @@ namespace Dynamo.Graph.Workspaces
                 var priorNames = libraryServices.GetPriorNames();
                 FunctionDescriptor functionDescriptor;
 
-                try
-                {
-                    var updatedName = priorNames[mangledName];
-                    functionDescriptor = libraryServices.GetFunctionDescriptor(updatedName);
-                }
-                catch { functionDescriptor = null; }
-
+                // Attempt to located a newer migrated version of the node
+                if (priorNames.ContainsKey(mangledName))
+                { functionDescriptor = libraryServices.GetFunctionDescriptor(priorNames[mangledName]); }
+                else
+                { functionDescriptor = null; }
 
                 if (functionDescriptor == null)
                 {
