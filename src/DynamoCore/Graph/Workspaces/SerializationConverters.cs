@@ -169,7 +169,17 @@ namespace Dynamo.Graph.Workspaces
             else if (typeof(DSFunctionBase).IsAssignableFrom(type))
             {
                 var mangledName = obj["FunctionSignature"].Value<string>();
-                var functionDescriptor = libraryServices.GetFunctionDescriptor(mangledName);
+                var priorNames = libraryServices.GetPriorNames();
+                FunctionDescriptor functionDescriptor;
+
+                try
+                {
+                    var updatedName = priorNames[mangledName];
+                    functionDescriptor = libraryServices.GetFunctionDescriptor(updatedName);
+                }
+                catch { functionDescriptor = null; }
+
+
                 if (functionDescriptor == null)
                 {
                     node = CreateDummyNode(obj, assemblyLocation, inPorts, outPorts);
