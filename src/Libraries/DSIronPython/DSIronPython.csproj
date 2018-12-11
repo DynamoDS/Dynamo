@@ -97,6 +97,10 @@
       <Name>DynamoServices</Name>
       <Private>False</Private>
     </ProjectReference>
+    <ProjectReference Include="..\DesignScriptBuiltin\DesignScriptBuiltin.csproj">
+      <Project>{c0d6dee5-5532-4345-9c66-4c00d7fdb8be}</Project>
+      <Name>DesignScriptBuiltin</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -107,10 +111,6 @@
     <ItemGroup>
       <PythonStdLib Include="$(ProjectDir)..\..\packages\IronPython.StdLib.2.7.8.1\contentFiles\any\any\Lib\**\*.*" />
     </ItemGroup>
-    <Copy 
-      SourceFiles="@(PythonStdLib)"
-      DestinationFiles="@(PythonStdLib->'$(TargetDir)IronPython.StdLib.2.7.8\%(RecursiveDir)%(Filename)%(Extension)')"
-      SkipUnchangedFiles="true"
-    />
+    <Copy SourceFiles="@(PythonStdLib)" DestinationFiles="@(PythonStdLib->'$(TargetDir)IronPython.StdLib.2.7.8\%(RecursiveDir)%(Filename)%(Extension)')" SkipUnchangedFiles="true" />
   </Target>
 </Project>
