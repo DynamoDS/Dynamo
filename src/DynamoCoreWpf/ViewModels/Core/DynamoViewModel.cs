@@ -35,6 +35,7 @@ using System.Reflection;
 using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Threading;
+using Newtonsoft.Json.Linq;
 using ISelectable = Dynamo.Selection.ISelectable;
 
 namespace Dynamo.ViewModels
@@ -1481,6 +1482,31 @@ namespace Dynamo.ViewModels
 
             return false;
         }
+
+        /// <summary>
+        /// Provides the combined model and view json data as is found in a Dynamo file. 
+        /// </summary>
+        /// <returns></returns>
+        public string GetCurrentWorkspaceModelAndViewJson()
+        {
+            try
+            {
+                // Serialize the workspace.
+                var json = CurrentSpaceViewModel.Model.ToJson(Model.EngineController);
+                var json_parsed = JObject.Parse(json);
+
+                // Add the View data to the json.
+                var jo = CurrentSpaceViewModel.AddViewBlockToJSON(json_parsed);
+
+                return jo.ToString();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message + " : " + ex.StackTrace);
+                throw (ex);
+            }
+        }
+
 
         internal bool CanVisibilityBeToggled(object parameters)
         {
