@@ -346,10 +346,28 @@ namespace Dynamo.Search
                 ComputeWeightAndAddToDictionary(query, pair, searchDict);
             }
 
-            var searchResults =
-                searchDict
-                    .OrderByDescending(x => x.Value)
-                    .Select(x => x.Key);
+            var orderedSearchDict = searchDict.OrderByDescending(x => x.Value);
+#if DEBUG
+            //if (this.logger != null)
+            //{
+            //    int index = 0;
+            //    foreach (var pair in orderedSearchDict)
+            //    {
+            //        var message =
+            //            string.Format(
+            //                "{0} -> Key = {1}, Value = {2}",
+            //                    index,
+            //                    pair.Key,
+            //                    pair.Value);
+            //        this.logger.Log(message);
+            //    }
+            //}
+#endif
+
+            var searchResults = orderedSearchDict.Select(x => x.Key);
+
+            // TODO: DYN-1326 - Place this behind a debug mode (after running CI in a preliminary test)
+            searchResults = searchResults.Take(20);
 
 #if DEBUG
             if (this.logger != null)
@@ -371,8 +389,10 @@ namespace Dynamo.Search
             return searchResults;
         }
 
-        private static void ComputeWeightAndAddToDictionary(string query,
-            IGrouping<string, Tuple<V, double>> pair, Dictionary<V, double> searchDict)
+        private static void ComputeWeightAndAddToDictionary(
+            string query,
+            IGrouping<string, Tuple<V, double>> pair, 
+            Dictionary<V, double> searchDict)
         {
             // it has a match, how close is it to matching the entire string?
             double matchCloseness = ((double)query.Length) / pair.Key.Length;
