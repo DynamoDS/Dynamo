@@ -26,7 +26,7 @@ namespace DynamoUtilitiesTests
             var lookUp = SetUpProductLookUp(products, null);
 
             var p = new InstalledProducts();
-            p.LookUpAndAddProducts(lookUp);
+            p.LookUpAndInitProducts(lookUp);
 
             Assert.AreEqual("C", p.GetLatestProduct().ProductName);
             Assert.AreEqual("1.2.3.4", p.GetLatestProduct().VersionString);
@@ -49,7 +49,7 @@ namespace DynamoUtilitiesTests
             var lookUp = SetUpProductLookUp(products, null);
 
             var p = new InstalledProducts();
-            p.LookUpAndAddProducts(lookUp);
+            p.LookUpAndInitProducts(lookUp);
 
             Assert.AreEqual("1.2.3.4", p.GetLatestProduct().VersionString);
             Assert.AreEqual(4, p.Products.Count());

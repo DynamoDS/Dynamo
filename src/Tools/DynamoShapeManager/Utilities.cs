@@ -78,7 +78,7 @@ namespace DynamoShapeManager
                     if (!dir.Exists)
                         continue;
 
-                    var files = dir.GetFiles("ASMAHL*.dll");
+                    var files = dir.GetFiles(ASMFileMask);
                     if (!files.Any())
                         continue;
 
@@ -168,7 +168,7 @@ namespace DynamoShapeManager
                     }
                 }
 
-                //Fallback mechanism, look inside libg folders if any of them
+                // Fallback mechanism, look inside libg folders if any of them
                 //contain ASM dlls.
                 foreach (var v in versions)
                 {
@@ -177,7 +177,7 @@ namespace DynamoShapeManager
                     if (!dir.Exists)
                         continue;
 
-                    var files = dir.GetFiles("ASMAHL*.dll");
+                    var files = dir.GetFiles(ASMFileMask);
                     if (!files.Any())
                         continue;
 
@@ -371,7 +371,7 @@ namespace DynamoShapeManager
             }
 
 
-            var methodParams = new object[] { ProductsWithASM, "ASMAHL*.dll" };
+            var methodParams = new object[] { ProductsWithASM, ASMFileMask };
             return installationsMethod.Invoke(null, methodParams) as IEnumerable;
         }
     }

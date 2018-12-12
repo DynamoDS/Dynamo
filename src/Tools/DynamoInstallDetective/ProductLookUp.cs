@@ -113,7 +113,7 @@ namespace DynamoInstallDetective
         /// and append to Products property.
         /// </summary>
         /// <param name="lookUp">LookUp interface</param>
-        void LookUpAndAddProducts(IProductLookUp lookUp);
+        void LookUpAndInitProducts(IProductLookUp lookUp);
     }
 
     /// <summary>
@@ -299,7 +299,7 @@ namespace DynamoInstallDetective
             return Products.LastOrDefault();
         }
 
-        public virtual void LookUpAndAddProducts(IProductLookUp lookUp)
+        public virtual void LookUpAndInitProducts(IProductLookUp lookUp)
         {
             var newProducts = lookUp.GetProductNameList()
                     .Select(lookUp.GetProductFromProductName).Distinct()
@@ -358,11 +358,11 @@ namespace DynamoInstallDetective
         public static DynamoProducts FindDynamoInstallations(string debugPath = null, IProductLookUp lookUp = null)
         {
             var products = new DynamoProducts(debugPath);
-            products.LookUpAndAddProducts(lookUp ?? new InstalledProductLookUp("Dynamo", "*DynamoCore.dll"));
+            products.LookUpAndInitProducts(lookUp ?? new InstalledProductLookUp("Dynamo", "*DynamoCore.dll"));
             return products;
         }
 
-        public override void LookUpAndAddProducts(IProductLookUp lookUp)
+        public override void LookUpAndInitProducts(IProductLookUp lookUp)
         {
             var products = new List<IInstalledProduct>();
             var debugProduct = lookUp.GetProductFromInstallPath(debugPath);
