@@ -14,6 +14,10 @@ namespace Dynamo.Search
     {
         private ILogger logger;
 
+        /// <summary>
+        ///     Construct a SearchDictionary object
+        /// </summary>
+        /// <param name="logger"> (Optional) A logger to use to log search data</param>
         internal SearchDictionary(ILogger logger = null)
         {
             this.logger = logger;
@@ -23,6 +27,11 @@ namespace Dynamo.Search
             new Dictionary<V, Dictionary<string, double>>();
 
         private List<IGrouping<string, Tuple<V, double>>> tagDictionary;
+
+        /// <summary>
+        ///     Indicates whether to truncate the search results (currently to 20 items).
+        /// </summary>
+        internal bool TruncateSearchResults { get; set; } = false;
 
         /// <summary>
         ///     All the current entries in search.
@@ -365,9 +374,10 @@ namespace Dynamo.Search
 #endif
 
             var searchResults = orderedSearchDict.Select(x => x.Key);
-
-            // TODO: DYN-1326 - Place this behind a debug mode (after running CI in a preliminary test)
-            searchResults = searchResults.Take(20);
+            if (TruncateSearchResults)
+            {
+                searchResults = searchResults.Take(20);
+            }
 
 #if DEBUG
             if (this.logger != null)
