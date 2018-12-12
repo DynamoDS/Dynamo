@@ -15,6 +15,10 @@ namespace Dynamo.Search
     /// </summary>
     public class NodeSearchModel : SearchLibrary<NodeSearchElement, NodeModel>
     {
+        /// <summary>
+        ///     Construct a NodeSearchModel object
+        /// </summary>
+        /// <param name="logger"> (Optional) A logger to pass through to SearchLibrary for logging search data</param>
         internal NodeSearchModel(ILogger logger = null) : base(logger)
         {
         }

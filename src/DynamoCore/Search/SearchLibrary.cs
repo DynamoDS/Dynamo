@@ -14,7 +14,11 @@ namespace Dynamo.Search
     public class SearchLibrary<TEntry, TItem> : SearchDictionary<TEntry>, ISource<TItem> 
         where TEntry : ISearchEntry, ISource<TItem>
     {
-        internal SearchLibrary(ILogger logger) : base(logger)
+        /// <summary>
+        ///     Construct a SearchLibrary object
+        /// </summary>
+        /// <param name="logger"> (Optional) A logger to pass through to SearchDictionary for logging search data</param>
+        internal SearchLibrary(ILogger logger = null) : base(logger)
         {
         }
 
