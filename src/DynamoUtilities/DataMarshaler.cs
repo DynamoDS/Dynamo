@@ -18,11 +18,13 @@ namespace Dynamo.Utilities
 
         public DataMarshaler()
         {
-            //RegisterMarshaler((IEnumerable e) => e.Cast<object>().Select(Marshal));
             RegisterMarshaler((IList e) => e.Cast<object>().Select(Marshal).ToList());
             RegisterMarshaler(
                 (IDictionary dict) =>
-                    dict.Cast<dynamic>().ToDictionary(x => Marshal(x.Key), x => Marshal(x.Value)));
+                {
+                    // Dictionary<TKey, TValue> and IronPython.Runtime.PythonDictionary both implement IDictionary
+                    return dict.Keys.Cast<object>().ToDictionary(key => Marshal(key), key => Marshal(dict[key]));
+                });
         }
 
         /// <summary>
