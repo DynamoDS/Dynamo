@@ -55,16 +55,20 @@ namespace DynamoInstallDetective
         /// installations, we can use Dynamo as product search pattern and
         /// DynamoCore.dll as file search pattern.
         /// </summary>
-        /// <param name="productSearchPattern">search key for product</param>
+        /// <param name="productSearchPattern">search keys for product</param>
         /// <param name="fileSearchPattern">search key for files</param>
         /// <returns>List of KeyValuePair of product install location and 
         /// version info as Tuple of the file found in the installation based 
         /// on file search pattern. The returned list is sorted based on version 
         /// info.</returns>
-        public static IEnumerable FindProductInstallations(string productSearchPattern, string fileSearchPattern)
+        public static IEnumerable FindProductInstallations(List<string> productSearchPatterns, string fileSearchPattern)
         {
             var installs = new InstalledProducts();
-            installs.LookUpAndInitProducts(new InstalledProductLookUp(productSearchPattern, fileSearchPattern));
+            // Look up products with ASM installed on user's computer
+            foreach (var productSearchPattern in productSearchPatterns)
+            {
+                installs.LookUpAndAddProducts(new InstalledProductLookUp(productSearchPattern, fileSearchPattern));
+            }
 
             return
                 installs.Products.Select(

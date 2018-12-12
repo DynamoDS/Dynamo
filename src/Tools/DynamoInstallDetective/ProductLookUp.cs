@@ -93,7 +93,7 @@ namespace DynamoInstallDetective
     }
 
     /// <summary>
-    /// Represents collection of installed productss
+    /// Represents collection of installed products
     /// </summary>
     public interface IProductCollection
     {
@@ -109,11 +109,11 @@ namespace DynamoInstallDetective
         IInstalledProduct GetLatestProduct();
 
         /// <summary>
-        /// Returns all installed product on the system using the given lookUp 
-        /// and initializes itself.
+        /// Get all installed products on the system using the given lookUp 
+        /// and append to Products property.
         /// </summary>
         /// <param name="lookUp">LookUp interface</param>
-        void LookUpAndInitProducts(IProductLookUp lookUp);
+        void LookUpAndAddProducts(IProductLookUp lookUp);
     }
 
     /// <summary>
@@ -299,12 +299,18 @@ namespace DynamoInstallDetective
             return Products.LastOrDefault();
         }
 
-        public virtual void LookUpAndInitProducts(IProductLookUp lookUp)
+        public virtual void LookUpAndAddProducts(IProductLookUp lookUp)
         {
-            Products =
-                lookUp.GetProductNameList()
+            var newProducts = lookUp.GetProductNameList()
                     .Select(lookUp.GetProductFromProductName).Distinct()
                     .Where(p => p != null).OrderBy(p => p);
+            if (Products == null)
+            {
+                Products = newProducts;
+            }
+            else {
+                Products = Products.Concat(newProducts);
+            }
         }
     }
 
@@ -352,11 +358,11 @@ namespace DynamoInstallDetective
         public static DynamoProducts FindDynamoInstallations(string debugPath = null, IProductLookUp lookUp = null)
         {
             var products = new DynamoProducts(debugPath);
-            products.LookUpAndInitProducts(lookUp ?? new InstalledProductLookUp("Dynamo", "*DynamoCore.dll"));
+            products.LookUpAndAddProducts(lookUp ?? new InstalledProductLookUp("Dynamo", "*DynamoCore.dll"));
             return products;
         }
 
-        public override void LookUpAndInitProducts(IProductLookUp lookUp)
+        public override void LookUpAndAddProducts(IProductLookUp lookUp)
         {
             var products = new List<IInstalledProduct>();
             var debugProduct = lookUp.GetProductFromInstallPath(debugPath);

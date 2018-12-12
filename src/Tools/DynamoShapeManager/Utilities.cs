@@ -15,6 +15,10 @@ namespace DynamoShapeManager
         public static readonly string PreloaderAssembly = "LibG.AsmPreloader.Managed.dll";
         public static readonly string PreloaderClassName = "Autodesk.LibG.AsmPreloader";
         public static readonly string PreloaderMethodName = "PreloadAsmLibraries";
+        // Key words for Products containing ASM binaries
+        public static readonly List<string> ProductsWithASM = new List<string>() { "Revit", "Civil" };
+        // The mask to filter ASM binary
+        public static readonly string ASMFileMask = "ASMAHL*.dll";
 
 
         /// <summary>
@@ -131,18 +135,35 @@ namespace DynamoShapeManager
                 getASMInstallsFunc = getASMInstallsFunc ?? GetAsmInstallations;
                 var installations = getASMInstallsFunc(rootFolder);
 
-                //first find the closest matches using major, minor and build version.
+                // first find the exact match or the lowest matching within same major version
                 foreach (var version in versions)
                 {
+                    Dictionary<Version, string> versionToLocationDic = new Dictionary<Version, string>();
                     foreach (KeyValuePair<string, Tuple<int, int, int, int>> install in installations)
                     {
                         var installVersion = new Version(install.Value.Item1, install.Value.Item2, install.Value.Item3);
-                        if (version.Major == installVersion.Major &&
-                            version.Minor == installVersion.Minor &&
-                            version.Build == installVersion.Build)
+                        if (version.Major == installVersion.Major) //&&
+                            //version.Minor == installVersion.Minor &&
+                            //version.Build == installVersion.Build)
                         {
-                            location = install.Key;
+                            versionToLocationDic.Add(installVersion, install.Key);
+                        }
+                    }
+
+                    // When there is major version matching, continue the search
+                    if (versionToLocationDic.Count != 0)
+                    {
+                        versionToLocationDic.TryGetValue(version, out location);
+                        // If exact matching version found, return it
+                        if (location != null)
+                        {
                             return version;
+                        }
+                        // If no matching version, return the lowest within same major
+                        else
+                        {
+                            location = versionToLocationDic[versionToLocationDic.Keys.Min()];
+                            return versionToLocationDic.Keys.Min();
                         }
                     }
                 }
@@ -349,7 +370,8 @@ namespace DynamoShapeManager
                 throw new MissingMethodException("Method 'DynamoInstallDetective.Utilities.FindProductInstallations' not found");
             }
 
-            var methodParams = new object[] { "Revit", "ASMAHL*.dll" };
+
+            var methodParams = new object[] { ProductsWithASM, "ASMAHL*.dll" };
             return installationsMethod.Invoke(null, methodParams) as IEnumerable;
         }
     }
