@@ -22,6 +22,8 @@ namespace Dynamo.Search
         protected readonly Dictionary<V, Dictionary<string, double>> entryDictionary =
             new Dictionary<V, Dictionary<string, double>>();
 
+        private List<IGrouping<string, Tuple<V, double>>> tagDictionary;
+
         /// <summary>
         ///     All the current entries in search.
         /// </summary>
@@ -55,6 +57,7 @@ namespace Dynamo.Search
         {
             var handler = EntryAdded;
             if (handler != null) handler(entry);
+            tagDictionary = null;
         }
 
         /// <summary>
@@ -66,6 +69,7 @@ namespace Dynamo.Search
         {
             var handler = EntryRemoved;
             if (handler != null) handler(entry);
+            tagDictionary = null;
         }
 
         /// <summary>
@@ -77,6 +81,7 @@ namespace Dynamo.Search
         {
             var handler = EntryUpdated;
             if (handler != null) handler(entry);
+            tagDictionary = null;
         }
 
         /// <summary>
@@ -287,6 +292,30 @@ namespace Dynamo.Search
         #endregion
 
         /// <summary>
+        /// Converts entryDictionary from a dictionary of searchElement:(tag,weight)
+        /// to a dictionary of tag:(list(searchelement,weight))
+        /// which contains all nodes which share a tag 
+        /// </summary>
+        internal void RebuildTagDictionary()
+        {
+            tagDictionary = entryDictionary
+                .SelectMany(
+                    entryAndTags =>
+                        entryAndTags.Value.Select(
+                            tagAndWeight =>
+                                new
+                                {
+                                    Tag = tagAndWeight.Key,
+                                    Weight = tagAndWeight.Value,
+                                    Entry = entryAndTags.Key
+                                }))
+                .GroupBy(
+                    tagWeightAndEntry => tagWeightAndEntry.Tag,
+                    tagWeightAndEntry =>
+                        Tuple.Create(tagWeightAndEntry.Entry, tagWeightAndEntry.Weight)).ToList();
+        }
+
+        /// <summary>
         /// Search for elements in the dictionary based on the query
         /// </summary>
         /// <param name="query"> The query </param>
@@ -303,25 +332,11 @@ namespace Dynamo.Search
 #endif
 
             var searchDict = new Dictionary<V, double>();
-            // convert from a dictionary of searchElement:<tag,weight>
-            // to a dictionary of tag:<list<searchelement,weight>>
-            // which contains all nodes which share a tag 
 
-            var tagDictionary = entryDictionary
-                .SelectMany(
-                    entryAndTags =>
-                        entryAndTags.Value.Select(
-                            tagAndWeight =>
-                                new
-                                {
-                                    Tag = tagAndWeight.Key,
-                                    Weight = tagAndWeight.Value,
-                                    Entry = entryAndTags.Key
-                                }))
-                .GroupBy(
-                    tagWeightAndEntry => tagWeightAndEntry.Tag,
-                    tagWeightAndEntry =>
-                        Tuple.Create(tagWeightAndEntry.Entry, tagWeightAndEntry.Weight)).ToList();
+            if (tagDictionary == null)
+            {
+                RebuildTagDictionary();
+            }
 
             query = query.ToLower();
 
