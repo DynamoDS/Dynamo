@@ -16,7 +16,7 @@ namespace DynamoShapeManager
         public static readonly string PreloaderClassName = "Autodesk.LibG.AsmPreloader";
         public static readonly string PreloaderMethodName = "PreloadAsmLibraries";
         // Key words for Products containing ASM binaries
-        public static readonly List<string> ProductsWithASM = new List<string>() { "Revit", "Civil" };
+        private static readonly List<string> ProductsWithASM = new List<string>() { "Revit", "Civil", "FormIt" };
         // The mask to filter ASM binary
         public static readonly string ASMFileMask = "ASMAHL*.dll";
 
@@ -142,9 +142,7 @@ namespace DynamoShapeManager
                     foreach (KeyValuePair<string, Tuple<int, int, int, int>> install in installations)
                     {
                         var installVersion = new Version(install.Value.Item1, install.Value.Item2, install.Value.Item3);
-                        if (version.Major == installVersion.Major) //&&
-                            //version.Minor == installVersion.Minor &&
-                            //version.Build == installVersion.Build)
+                        if (version.Major == installVersion.Major)
                         {
                             versionToLocationDic.Add(installVersion, install.Key);
                         }
@@ -168,8 +166,7 @@ namespace DynamoShapeManager
                     }
                 }
 
-                // Fallback mechanism, look inside libg folders if any of them
-                //contain ASM dlls.
+                // Fallback mechanism, look inside libg folders if any of them contains ASM dlls.
                 foreach (var v in versions)
                 {
                     var folderName = string.Format("libg_{0}_{1}_{2}", v.Major, v.Minor, v.Build);
@@ -182,7 +179,7 @@ namespace DynamoShapeManager
                         continue;
 
                     location = dir.FullName;
-                    return v; // Found version.
+                    return v;
                 }
             }
             catch (Exception)
@@ -362,7 +359,7 @@ namespace DynamoShapeManager
             var type = assembly.GetType("DynamoInstallDetective.Utilities");
 
             var installationsMethod = type.GetMethod(
-                "FindProductInstallations",
+                "FindProductInstallations2",
                 BindingFlags.Public | BindingFlags.Static);
 
             if (installationsMethod == null)
