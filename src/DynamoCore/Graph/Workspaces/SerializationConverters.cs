@@ -130,15 +130,10 @@ namespace Dynamo.Graph.Workspaces
                 nodeFactory.ResolveType(unresolvedName, out newType);
 
                 if(newType != null) // If resolved update the type
-                {
-                    //var fullNewName = newName.FullName;
-                    type = newType;
-                }
+                { type = newType; }
 
                 else // If all else fails return a dummy node
-                {
-                    node = CreateDummyNode(obj, assemblyLocation, inPorts, outPorts);
-                }
+                { node = CreateDummyNode(obj, assemblyLocation, inPorts, outPorts); }
             }
 
             // Use resolved type to attempt to create a valid node
