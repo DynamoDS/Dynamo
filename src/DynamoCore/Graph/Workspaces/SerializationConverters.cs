@@ -136,7 +136,7 @@ namespace Dynamo.Graph.Workspaces
                 { node = CreateDummyNode(obj, assemblyLocation, inPorts, outPorts); }
             }
 
-            // Use resolved type to attempt to create a valid node
+            // Attempt to create a valid node using the type
             if (type == typeof(Function))
             {
                 var functionId = Guid.Parse(obj["FunctionSignature"].Value<string>());
