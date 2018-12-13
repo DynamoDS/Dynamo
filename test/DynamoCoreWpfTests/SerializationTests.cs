@@ -27,7 +27,6 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Dynamo.Utilities;
 using Dynamo.Graph.Connectors;
-using DynamoUtilities;
 
 namespace DynamoCoreWpfTests
 {
@@ -975,7 +974,7 @@ namespace DynamoCoreWpfTests
             File.Delete(savePath);
 
         }
- 
+
         [Test]
         public void AllTypesSerialize()
         {
