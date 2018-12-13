@@ -43,7 +43,7 @@ namespace Dynamo.Graph.Workspaces
         //map of all loaded assemblies including LoadFrom context assemblies
         private Dictionary<string, List<Assembly>> loadedAssemblies;
 
-        [Obsolete("Function will be deprecated in Dynamo 3.0, please use alternative NodeReadConverter with additional parameters.")]
+        [Obsolete("This function will be removed in Dynamo 3.0, please use new NodeReadConverter method with additional parameters to support node migration.")]
         public NodeReadConverter(CustomNodeManager manager, LibraryServices libraryServices, bool isTestMode = false)
         {
             this.manager = manager;
@@ -121,6 +121,18 @@ namespace Dynamo.Graph.Workspaces
                 }
             }
 
+            // Check for and attempt to resolve an unknown type before proceeding
+            if (type == null)
+            {
+                // Check to see if the missing type can be resolved (AlsoKnownAs)
+                var unresolvedName = obj["$type"].Value<string>().Split(',').FirstOrDefault();
+                Type newType;
+                nodeFactory.ResolveType(unresolvedName, out newType);
+
+                if (newType != null) // If resolved update the type
+                { type = newType; }
+            }
+
             // If the id is not a guid, makes a guid based on the id of the node
             var guid = GuidUtility.tryParseOrCreateGuid(obj["Id"].Value<string>());
 
@@ -134,23 +146,13 @@ namespace Dynamo.Graph.Workspaces
 
             bool remapPorts = true;
 
-            // Check for a unresolved type before proceeding
+            // If type is still null at this point return a dummy node
             if (type == null)
             {
-                // Check to see if the missing type can be resolved (AlsoKnownAs)
-                var unresolvedName = obj["$type"].Value<string>().Split(',').FirstOrDefault();
-                Type newType;
-                nodeFactory.ResolveType(unresolvedName, out newType);
-
-                if(newType != null) // If resolved update the type
-                { type = newType; }
-
-                else // If all else fails return a dummy node
-                { node = CreateDummyNode(obj, assemblyLocation, inPorts, outPorts); }
+                node = CreateDummyNode(obj, assemblyLocation, inPorts, outPorts);
             }
-
             // Attempt to create a valid node using the type
-            if (type == typeof(Function))
+            else if (type == typeof(Function))
             {
                 var functionId = Guid.Parse(obj["FunctionSignature"].Value<string>());
 
