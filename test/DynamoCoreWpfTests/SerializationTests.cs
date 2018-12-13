@@ -27,6 +27,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Dynamo.Utilities;
 using Dynamo.Graph.Connectors;
+using DynamoUtilities;
 
 namespace DynamoCoreWpfTests
 {
@@ -973,6 +974,29 @@ namespace DynamoCoreWpfTests
             var savePath = Path.Combine(this.ViewModel.Model.PathManager.DefinitionDirectories.FirstOrDefault(), "NewCustomNodeSaveAndLoad.dyf");
             File.Delete(savePath);
 
+        }
+
+        [Test]
+        public void CustomNodeNameError()
+        {
+            var InvalidNameError = false;
+            var specialCharacters = "?./<>";
+            var CustomNodeName = "Test";
+
+            int index = new Random().Next(0, CustomNodeName.Length);
+            var CustomNodeInvalidName = System.String.Concat(CustomNodeName,specialCharacters.ElementAt(index));
+
+            if (PathHelper.IsFileNameInValid(CustomNodeName))
+            {
+                InvalidNameError = true;
+            }
+            Assert.AreEqual(false, InvalidNameError);
+
+            if (PathHelper.IsFileNameInValid(CustomNodeInvalidName))
+            {
+                InvalidNameError = true;
+            }
+            Assert.AreEqual(true, InvalidNameError);
         }
 
         [Test]
