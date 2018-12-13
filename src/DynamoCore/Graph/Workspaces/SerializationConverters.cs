@@ -36,6 +36,7 @@ namespace Dynamo.Graph.Workspaces
     {
         private CustomNodeManager manager;
         private LibraryServices libraryServices;
+        private NodeFactory nodeFactory;
         private bool isTestMode;
 
         
@@ -43,10 +44,11 @@ namespace Dynamo.Graph.Workspaces
         //map of all loaded assemblies including LoadFrom context assemblies
         private Dictionary<string, List<Assembly>> loadedAssemblies;
 
-        public NodeReadConverter(CustomNodeManager manager, LibraryServices libraryServices, bool isTestMode = false)
+        public NodeReadConverter(CustomNodeManager manager, LibraryServices libraryServices, NodeFactory nodeFactory, bool isTestMode = false)
         {
             this.manager = manager;
             this.libraryServices = libraryServices;
+            this.nodeFactory = nodeFactory;
             this.isTestMode = isTestMode;
             //we only do this in test mode because it should not be required-
             //see comment below in NodeReadConverter.ReadJson - and it could be slow.
@@ -118,11 +120,29 @@ namespace Dynamo.Graph.Workspaces
             string assemblyLocation = objectType.Assembly.Location;
 
             bool remapPorts = true;
+
+            // Check for a unresolved type before proceeding
             if (type == null)
             {
-                node = CreateDummyNode(obj, assemblyLocation, inPorts, outPorts);
+                // Check to see if the missing type can be resolved (AlsoKnownAs)
+                var unresolvedName = obj["$type"].Value<string>().Split(',').FirstOrDefault();
+                Type newType;
+                nodeFactory.ResolveType(unresolvedName, out newType);
+
+                if(newType != null) // If resolved update the type
+                {
+                    //var fullNewName = newName.FullName;
+                    type = newType;
+                }
+
+                else // If all else fails return a dummy node
+                {
+                    node = CreateDummyNode(obj, assemblyLocation, inPorts, outPorts);
+                }
             }
-            else if (type == typeof(Function))
+
+            // Use resolved type to attempt to create a valid node
+            if (type == typeof(Function))
             {
                 var functionId = Guid.Parse(obj["FunctionSignature"].Value<string>());
 
