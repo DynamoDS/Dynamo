@@ -976,6 +976,7 @@ namespace DynamoCoreWpfTests
 
         }
 
+        // This test will check if the custom node name is valid or not. 
         [Test]
         public void CustomNodeNameError()
         {
