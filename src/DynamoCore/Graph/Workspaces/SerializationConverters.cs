@@ -39,10 +39,23 @@ namespace Dynamo.Graph.Workspaces
         private NodeFactory nodeFactory;
         private bool isTestMode;
 
-        
         public ElementResolver ElementResolver { get; set; }
         //map of all loaded assemblies including LoadFrom context assemblies
         private Dictionary<string, List<Assembly>> loadedAssemblies;
+
+        [Obsolete("Function will be deprecated in Dynamo 3.0, please use alternative NodeReadConverter with additional parameters.")]
+        public NodeReadConverter(CustomNodeManager manager, LibraryServices libraryServices, bool isTestMode = false)
+        {
+            this.manager = manager;
+            this.libraryServices = libraryServices;
+            this.isTestMode = isTestMode;
+            //we only do this in test mode because it should not be required-
+            //see comment below in NodeReadConverter.ReadJson - and it could be slow.
+            if (this.isTestMode)
+            {
+                this.loadedAssemblies = this.buildMapOfLoadedAssemblies();
+            }
+        }
 
         public NodeReadConverter(CustomNodeManager manager, LibraryServices libraryServices, NodeFactory nodeFactory, bool isTestMode = false)
         {
