@@ -186,10 +186,11 @@ namespace Dynamo.Graph.Workspaces
                 var mangledName = obj["FunctionSignature"].Value<string>();
                 var priorNames = libraryServices.GetPriorNames();
                 var functionDescriptor = libraryServices.GetFunctionDescriptor(mangledName);
+                string newName;
 
                 // Update the function descriptor if a newer migrated version of the node exists
-                if (priorNames.ContainsKey(mangledName))
-                { functionDescriptor = libraryServices.GetFunctionDescriptor(priorNames[mangledName]); }
+                if (priorNames.TryGetValue(mangledName, out newName))
+                { functionDescriptor = libraryServices.GetFunctionDescriptor(newName); }
 
                 // Use the functionDescriptor to try and restore the proper node if possible
                 if (functionDescriptor == null)
