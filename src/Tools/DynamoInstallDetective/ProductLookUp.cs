@@ -304,13 +304,7 @@ namespace DynamoInstallDetective
             var newProducts = lookUp.GetProductNameList()
                     .Select(lookUp.GetProductFromProductName).Distinct()
                     .Where(p => p != null).OrderBy(p => p);
-            if (Products == null)
-            {
-                Products = newProducts;
-            }
-            else {
-                Products = Products.Concat(newProducts);
-            }
+            Products = Products == null ? newProducts : Products.Concat(newProducts);
         }
     }
 
