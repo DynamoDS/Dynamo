@@ -356,22 +356,6 @@ namespace Dynamo.Search
             }
 
             var orderedSearchDict = searchDict.OrderByDescending(x => x.Value);
-#if DEBUG
-            //if (this.logger != null)
-            //{
-            //    int index = 0;
-            //    foreach (var pair in orderedSearchDict)
-            //    {
-            //        var message =
-            //            string.Format(
-            //                "{0} -> Key = {1}, Value = {2}",
-            //                    index,
-            //                    pair.Key,
-            //                    pair.Value);
-            //        this.logger.Log(message);
-            //    }
-            //}
-#endif
 
             var searchResults = orderedSearchDict.Select(x => x.Key);
             if (TruncateSearchResults)
