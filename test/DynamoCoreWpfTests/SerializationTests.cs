@@ -975,31 +975,7 @@ namespace DynamoCoreWpfTests
             File.Delete(savePath);
 
         }
-
-        // This test will check if the custom node name is valid or not. 
-        [Test]
-        public void CustomNodeNameError()
-        {
-            var InvalidNameError = false;
-            var specialCharacters = "?./<>";
-            var CustomNodeName = "Test";
-
-            int index = new Random().Next(0, CustomNodeName.Length);
-            var CustomNodeInvalidName = System.String.Concat(CustomNodeName,specialCharacters.ElementAt(index));
-
-            if (PathHelper.IsFileNameInValid(CustomNodeName))
-            {
-                InvalidNameError = true;
-            }
-            Assert.AreEqual(false, InvalidNameError);
-
-            if (PathHelper.IsFileNameInValid(CustomNodeInvalidName))
-            {
-                InvalidNameError = true;
-            }
-            Assert.AreEqual(true, InvalidNameError);
-        }
-
+ 
         [Test]
         public void AllTypesSerialize()
         {
