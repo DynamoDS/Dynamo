@@ -14,6 +14,8 @@ namespace Dynamo.Search
     {
         protected readonly Dictionary<V, Dictionary<string, double>> entryDictionary =
             new Dictionary<V, Dictionary<string, double>>();
+        
+        private List<IGrouping<string, Tuple<V, double>>> tagDictionary;
 
         /// <summary>
         ///     All the current entries in search.
@@ -48,6 +50,7 @@ namespace Dynamo.Search
         {
             var handler = EntryAdded;
             if (handler != null) handler(entry);
+            tagDictionary = null;
         }
 
         /// <summary>
@@ -59,6 +62,7 @@ namespace Dynamo.Search
         {
             var handler = EntryRemoved;
             if (handler != null) handler(entry);
+            tagDictionary = null;
         }
 
         /// <summary>
@@ -70,6 +74,7 @@ namespace Dynamo.Search
         {
             var handler = EntryUpdated;
             if (handler != null) handler(entry);
+            tagDictionary = null;
         }
 
         /// <summary>
@@ -280,18 +285,13 @@ namespace Dynamo.Search
         #endregion
 
         /// <summary>
-        /// Search for elements in the dictionary based on the query
+        /// Converts entryDictionary from a dictionary of searchElement:(tag,weight)
+        /// to a dictionary of tag:(list(searchelement,weight))
+        /// which contains all nodes which share a tag 
         /// </summary>
-        /// <param name="query"> The query </param>
-        /// <param name="minResultsForTolerantSearch">Minimum number of results in the original search strategy to justify doing more tolerant search</param>
-        internal IEnumerable<V> Search(string query, int minResultsForTolerantSearch = 0)
+        internal void RebuildTagDictionary()
         {
-            var searchDict = new Dictionary<V, double>();
-            // convert from a dictionary of searchElement:<tag,weight>
-            // to a dictionary of tag:<list<searchelement,weight>>
-            // which contains all nodes which share a tag 
-
-            var tagDictionary = entryDictionary
+            tagDictionary = entryDictionary
                 .SelectMany(
                     entryAndTags =>
                         entryAndTags.Value.Select(
@@ -306,6 +306,21 @@ namespace Dynamo.Search
                     tagWeightAndEntry => tagWeightAndEntry.Tag,
                     tagWeightAndEntry =>
                         Tuple.Create(tagWeightAndEntry.Entry, tagWeightAndEntry.Weight)).ToList();
+        }
+        
+        /// <summary>
+        /// Search for elements in the dictionary based on the query
+        /// </summary>
+        /// <param name="query"> The query </param>
+        /// <param name="minResultsForTolerantSearch">Minimum number of results in the original search strategy to justify doing more tolerant search</param>
+        internal IEnumerable<V> Search(string query, int minResultsForTolerantSearch = 0)
+        {
+            var searchDict = new Dictionary<V, double>();
+
+            if (tagDictionary == null)
+            {
+                RebuildTagDictionary();
+            }
 
             query = query.ToLower();
 

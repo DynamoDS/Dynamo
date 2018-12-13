@@ -69,6 +69,8 @@ namespace DSIronPythonTests
                 new ArrayList());
 
             Assert.AreEqual(new[] { 0, 1, 2 }, output);
+
+            marshaler.UnregisterMarshalerOfType<string>();
         }
 
         [Test]
@@ -86,6 +88,8 @@ namespace DSIronPythonTests
                 new ArrayList { new ArrayList { " ", "  " } });
 
             Assert.AreEqual(3, output);
+
+            marshaler.UnregisterMarshalerOfType<string>();
         }
 
         [Test]
