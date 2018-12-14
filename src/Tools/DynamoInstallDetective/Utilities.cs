@@ -61,10 +61,17 @@ namespace DynamoInstallDetective
         /// version info as Tuple of the file found in the installation based 
         /// on file search pattern. The returned list is sorted based on version 
         /// info.</returns>
-        [Obsolete("Function signature will change in Dynamo 3.0, please refer to FindProductInstallations2")]
         public static IEnumerable FindProductInstallations(string productSearchPattern, string fileSearchPattern)
         {
-            return FindProductInstallations2(new List<string>() { productSearchPattern }, fileSearchPattern);
+            var installs = new InstalledProducts();
+            installs.LookUpAndInitProducts(new InstalledProductLookUp(productSearchPattern, fileSearchPattern));
+
+            return
+                installs.Products.Select(
+                    p =>
+                        new KeyValuePair<string, Tuple<int, int, int, int>>(
+                        p.InstallLocation,
+                        p.VersionInfo));
         }
 
         /// <summary>
@@ -79,7 +86,7 @@ namespace DynamoInstallDetective
         /// version info as Tuple of the file found in the installation based 
         /// on file search pattern. The returned list is sorted based on version 
         /// info.</returns>
-        public static IEnumerable FindProductInstallations2(List<string> productSearchPatterns, string fileSearchPattern)
+        public static IEnumerable FindMultipleProductInstallations(List<string> productSearchPatterns, string fileSearchPattern)
         {
             var installs = new InstalledProducts();
             // Look up products with ASM installed on user's computer

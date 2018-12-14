@@ -359,7 +359,7 @@ namespace DynamoShapeManager
             var type = assembly.GetType("DynamoInstallDetective.Utilities");
 
             var installationsMethod = type.GetMethod(
-                "FindProductInstallations2",
+                "FindMultipleProductInstallations",
                 BindingFlags.Public | BindingFlags.Static);
 
             if (installationsMethod == null)
