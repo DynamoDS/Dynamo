@@ -11,14 +11,26 @@ namespace DynamoShapeManager
 {
     public static class Utilities
     {
+        /// <summary>
+        /// Key words for Products containing ASM binaries
+        /// </summary>
+        private static readonly List<string> ProductsWithASM = new List<string>() { "Revit", "Civil", "FormIt" };
+
+        #region public properties
         public static readonly string GeometryFactoryAssembly = "LibG.ProtoInterface.dll";
         public static readonly string PreloaderAssembly = "LibG.AsmPreloader.Managed.dll";
         public static readonly string PreloaderClassName = "Autodesk.LibG.AsmPreloader";
+
+        /// <summary>
+        /// This method is defined in libG.AsmPreloader for actual ASM preload
+        /// </summary>
         public static readonly string PreloaderMethodName = "PreloadAsmLibraries";
-        // Key words for Products containing ASM binaries
-        private static readonly List<string> ProductsWithASM = new List<string>() { "Revit", "Civil", "FormIt" };
-        // The mask to filter ASM binary
+
+        /// <summary>
+        /// The mask to filter ASM binary
+        /// </summary>
         public static readonly string ASMFileMask = "ASMAHL*.dll";
+        #endregion
 
 
         /// <summary>
@@ -223,15 +235,15 @@ namespace DynamoShapeManager
             if (string.IsNullOrEmpty(preloaderLocationToLoad))
             {
                 throw new ArgumentException("preloadedPath");
-
             }
             if (string.IsNullOrEmpty(asmLocation) || !Directory.Exists(asmLocation))
+            {
                 throw new ArgumentException("asmLocation");
-
+            }
             var preloaderPath = Path.Combine(preloaderLocationToLoad, PreloaderAssembly);
 
-            Debug.WriteLine(string.Format("ASM Preloader: {0}", preloaderPath));
-            Debug.WriteLine(string.Format("ASM Location: {0}", asmLocation));
+            Debug.WriteLine(string.Format("LibG ASM Preloader location: {0}", preloaderPath));
+            Debug.WriteLine(string.Format("ASM loading location: {0}", asmLocation));
 
             var libG = Assembly.LoadFrom(preloaderPath);
             var preloadType = libG.GetType(PreloaderClassName);
