@@ -16,6 +16,7 @@ namespace Dynamo.Tests
     {
         protected override void GetLibrariesToPreload(List<string> libraries)
         {
+            libraries.Add("DesignScriptBuiltin.dll");
             libraries.Add("DSIronPython.dll");
             base.GetLibrariesToPreload(libraries);
         }
@@ -159,7 +160,7 @@ namespace Dynamo.Tests
             foreach(NodeModel node in allNodes) {
                 var guid = node.GUID.ToString();
 
-                // if node is a test node, verify truthy value
+                // if node is a test node, verify truth value
                 if (testingNodeGUIDS.Contains(guid) ) {
                     AssertPreviewValue(guid, true);
                 }
@@ -167,6 +168,43 @@ namespace Dynamo.Tests
 
             var pynode = model.CurrentWorkspace.Nodes.OfType<PythonNode>().First();
             Assert.NotNull(pynode);
+        }
+
+        [Test]
+        public void ReturnPythonDictionary_AsDynamoDictionary()
+        {
+            // open test graph
+            var examplePath = Path.Combine(TestDirectory, @"core\python", "python_dict.dyn");
+            ViewModel.OpenCommand.Execute(examplePath);
+
+            var guid = "490a8d54d0fa4782ae18c81f6eef8306";
+
+            AssertPreviewValue(guid, new Dictionary<string, int> { { "abc", 123 }, { "def", 345 } });
+        }
+
+        [Test]
+        public void InputDynamoDictionary_AsPythonDictionary()
+        {
+            // open test graph
+            var examplePath = Path.Combine(TestDirectory, @"core\python", "python_dict2.dyn");
+            ViewModel.OpenCommand.Execute(examplePath);
+
+            var guid = "490a8d54d0fa4782ae18c81f6eef8306";
+
+            AssertPreviewValue(guid,
+                new List<object> {new Dictionary<string, int> {{"abcd", 123}}, new List<int> {1, 2, 3, 4, 5, 6, 7, 8, 9}});
+        }
+
+        [Test]
+        public void ReturnIronPythonDictionary_AsDynamoDictionary()
+        {
+            // open test graph
+            var examplePath = Path.Combine(TestDirectory, @"core\python", "netDict_from_python.dyn");
+            ViewModel.OpenCommand.Execute(examplePath);
+
+            var guid = "490a8d54d0fa4782ae18c81f6eef8306";
+
+            AssertPreviewValue(guid, new Dictionary<string, int> {{"abc", 123}, {"def", 10}});
         }
 
         private void UpdatePythonNodeContent(ModelBase pythonNode, string value)

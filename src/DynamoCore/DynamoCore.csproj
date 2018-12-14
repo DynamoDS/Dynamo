@@ -78,13 +78,8 @@ limitations under the License.
     <Reference Include="Analytics.NET.Google">
       <HintPath>..\..\extern\Analytics.NET\Analytics.NET.Google.dll</HintPath>
     </Reference>
-    <Reference Include="Greg, Version=1.0.6176.18754, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Greg.1.0.6176.18754\lib\net45\Greg.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Ionic.Zip, Version=1.9.1.8, Culture=neutral, PublicKeyToken=edbe51ad942a3f5c, processorArchitecture=MSIL">
-      <HintPath>..\packages\Unofficial.Ionic.Zip.1.9.1.8\lib\Ionic.Zip.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="Greg, Version=1.1.6913.31484, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Greg.1.1.6913.31484\lib\net47\Greg.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
@@ -364,9 +359,6 @@ limitations under the License.
   <ItemGroup>
     <Resource Include="BuiltInAndOperators\BuiltIn.Migrations.xml" />
   </ItemGroup>
-  <ItemGroup>
-    <Content Include="Ionic.Zip.xml" />
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="BeforeBuild">
     <ItemGroup>
@@ -380,6 +372,8 @@ limitations under the License.
       <ExternLibG223 Include="$(SolutionDir)..\extern\LibG_223_0_1\*" />
       <ExternLibG224 Include="$(SolutionDir)..\extern\LibG_224_0_1\*" />
       <ExternLibG2244 Include="$(SolutionDir)..\extern\LibG_224_4_0\*" />
+      <ExternLibG225 Include="$(SolutionDir)..\extern\LibG_225_0_0\*" />
+      <ExternLibG Include="$(SolutionDir)..\extern\LibG_*\*" />
       <ExternSimplexNoise Include="$(SolutionDir)..\extern\SimplexNoise\*" />
       <SampleFiles Include="$(SolutionDir)..\doc\distrib\Samples\**\*.*" />
       <GalleryFiles Include="$(SolutionDir)..\extern\gallery\**\*.*" />
@@ -401,6 +395,8 @@ limitations under the License.
     <Copy SourceFiles="@(ExternLibG223)" DestinationFolder="$(OutputPath)libg_223_0_1\" />
     <Copy SourceFiles="@(ExternLibG224)" DestinationFolder="$(OutputPath)libg_224_0_1\" />
     <Copy SourceFiles="@(ExternLibG2244)" DestinationFolder="$(OutputPath)libg_224_4_0\" />
+    <Copy SourceFiles="@(ExternLibG225)" DestinationFolder="$(OutputPath)libg_225_0_0\" />
+    <Copy SourceFiles="@(ExternLibG)" DestinationFolder="$(OutputPath)\%(RecursiveDir)" />
     <Copy SourceFiles="@(ExternSimplexNoise)" DestinationFolder="$(OutputPath)" />
     <Copy SourceFiles="@(ExternAnalytics)" DestinationFolder="$(OutputPath)" />
     <Copy SourceFiles="@(SampleFiles)" DestinationFolder="$(OutputPath)samples\%(RecursiveDir)" />

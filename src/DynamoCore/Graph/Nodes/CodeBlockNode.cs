@@ -1136,6 +1136,9 @@ namespace Dynamo.Graph.Nodes
 
             public override AssociativeNode VisitIdentifierListNode(IdentifierListNode node)
             {
+                if (node == null)
+                    return null;
+
                 node.LeftNode = node.LeftNode.Accept(this);
 
                 var rightNode = node.RightNode;

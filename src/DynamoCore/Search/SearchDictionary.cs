@@ -1,9 +1,9 @@
-﻿using System.Diagnostics;
-using Dynamo.Utilities;
+﻿using Dynamo.Utilities;
+using Dynamo.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.RegularExpressions;
+using System.Diagnostics;
 
 namespace Dynamo.Search
 {
@@ -12,6 +12,17 @@ namespace Dynamo.Search
     /// </summary>
     public class SearchDictionary<V>
     {
+        private ILogger logger;
+
+        /// <summary>
+        ///     Construct a SearchDictionary object
+        /// </summary>
+        /// <param name="logger"> (Optional) A logger to use to log search data</param>
+        internal SearchDictionary(ILogger logger = null)
+        {
+            this.logger = logger;
+        }
+
         protected readonly Dictionary<V, Dictionary<string, double>> entryDictionary =
             new Dictionary<V, Dictionary<string, double>>();
         
@@ -19,6 +30,13 @@ namespace Dynamo.Search
         ///     Indicates whether experimental search mode is turned on.
         /// </summary>
         internal bool ExperimentalSearch { get; set; } = false;
+
+        private List<IGrouping<string, Tuple<V, double>>> tagDictionary;
+
+        /// <summary>
+        ///     Indicates whether to truncate the search results (currently to 20 items).
+        /// </summary>
+        internal bool TruncateSearchResults { get; set; } = false;
 
         /// <summary>
         ///     All the current entries in search.
@@ -53,6 +71,7 @@ namespace Dynamo.Search
         {
             var handler = EntryAdded;
             if (handler != null) handler(entry);
+            tagDictionary = null;
         }
 
         /// <summary>
@@ -64,6 +83,7 @@ namespace Dynamo.Search
         {
             var handler = EntryRemoved;
             if (handler != null) handler(entry);
+            tagDictionary = null;
         }
 
         /// <summary>
@@ -75,6 +95,7 @@ namespace Dynamo.Search
         {
             var handler = EntryUpdated;
             if (handler != null) handler(entry);
+            tagDictionary = null;
         }
 
         /// <summary>
@@ -285,18 +306,13 @@ namespace Dynamo.Search
         #endregion
 
         /// <summary>
-        /// Search for elements in the dictionary based on the query
+        /// Converts entryDictionary from a dictionary of searchElement:(tag,weight)
+        /// to a dictionary of tag:(list(searchelement,weight))
+        /// which contains all nodes which share a tag 
         /// </summary>
-        /// <param name="query"> The query </param>
-        /// <param name="minResultsForTolerantSearch">Minimum number of results in the original search strategy to justify doing more tolerant search</param>
-        internal IEnumerable<V> Search(string query, int minResultsForTolerantSearch = 0)
+        internal void RebuildTagDictionary()
         {
-            var searchDict = new Dictionary<V, double>();
-            // convert from a dictionary of searchElement:<tag,weight>
-            // to a dictionary of tag:<list<searchelement,weight>>
-            // which contains all nodes which share a tag 
-
-            var tagDictionary = entryDictionary
+            tagDictionary = entryDictionary
                 .SelectMany(
                     entryAndTags =>
                         entryAndTags.Value.Select(
@@ -311,6 +327,30 @@ namespace Dynamo.Search
                     tagWeightAndEntry => tagWeightAndEntry.Tag,
                     tagWeightAndEntry =>
                         Tuple.Create(tagWeightAndEntry.Entry, tagWeightAndEntry.Weight)).ToList();
+        }
+
+        /// <summary>
+        /// Search for elements in the dictionary based on the query
+        /// </summary>
+        /// <param name="query"> The query </param>
+        /// <param name="minResultsForTolerantSearch">Minimum number of results in the original search strategy to justify doing more tolerant search</param>
+        internal IEnumerable<V> Search(string query, int minResultsForTolerantSearch = 0)
+        {
+#if DEBUG
+            Stopwatch stopwatch = null;
+            if (this.logger != null)
+            {
+                stopwatch = new Stopwatch();
+                stopwatch.Start();
+            }
+#endif
+
+            var searchDict = new Dictionary<V, double>();
+
+            if (tagDictionary == null)
+            {
+                RebuildTagDictionary();
+            }
 
             query = query.ToLower();
 
@@ -329,13 +369,38 @@ namespace Dynamo.Search
                 ComputeWeightAndAddToDictionary(query, pair, searchDict);
             }
 
-            return searchDict
-                .OrderByDescending(x => x.Value)
-                .Select(x => x.Key);
+            var orderedSearchDict = searchDict.OrderByDescending(x => x.Value);
+
+            var searchResults = orderedSearchDict.Select(x => x.Key);
+            if (TruncateSearchResults)
+            {
+                searchResults = searchResults.Take(20);
+            }
+
+#if DEBUG
+            if (this.logger != null)
+            {
+                stopwatch.Stop();
+
+                var message = 
+                    string.Format(
+                        "Searching for: \"{0}\", [Entries:{1}, Tags:{2}] : {3}ms -> {4}", 
+                            query,
+                            entryDictionary.Count,
+                            tagDictionary.Count,
+                            stopwatch.ElapsedMilliseconds,
+                            searchResults.Count());
+                this.logger.Log(message);
+            }
+#endif
+
+            return searchResults;
         }
 
-        private static void ComputeWeightAndAddToDictionary(string query,
-            IGrouping<string, Tuple<V, double>> pair, Dictionary<V, double> searchDict)
+        private static void ComputeWeightAndAddToDictionary(
+            string query,
+            IGrouping<string, Tuple<V, double>> pair, 
+            Dictionary<V, double> searchDict)
         {
             // it has a match, how close is it to matching the entire string?
             double matchCloseness = ((double)query.Length) / pair.Key.Length;

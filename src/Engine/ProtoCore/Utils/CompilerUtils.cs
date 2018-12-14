@@ -561,6 +561,9 @@ namespace ProtoCore.Utils
 
             public override bool VisitIdentifierListNode(IdentifierListNode node)
             {
+                if (node == null)
+                    return false;
+
                 if (node.LeftNode is IdentifierNode || node.LeftNode is IdentifierListNode)
                 {
                     if (node.RightNode is FunctionCallNode || node.RightNode is IdentifierNode)

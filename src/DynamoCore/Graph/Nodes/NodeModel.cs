@@ -1835,7 +1835,7 @@ namespace Dynamo.Graph.Nodes
             {
                 case "Level":
                 case "UseLevels":
-                case "ShouldKeepListStructure":
+                case "KeepListStructure":
                     OnNodeModified();
                     break;
                 case "UsingDefaultValue":

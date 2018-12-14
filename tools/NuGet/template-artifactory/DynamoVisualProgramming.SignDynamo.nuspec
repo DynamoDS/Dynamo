@@ -14,9 +14,9 @@
   </metadata>
   <files>
     <!--These assemblies are referenced from the bin directory since they are not harvested for the installer-->
-    <file src="..\..\..\src\Tools\SignDynamo\bin\Release\Dynamo.cer" target="lib\net45" />
-    <file src="..\..\..\src\Tools\SignDynamo\bin\Release\DynamoCrypto.dll" target="lib\net45" />
-    <file src="..\..\..\src\Tools\SignDynamo\bin\Release\NDesk.Options.dll" target="lib\net45" />
-    <file src="..\..\..\src\Tools\SignDynamo\bin\Release\SignDynamo.exe" target="lib\net45" />
+    <file src="..\..\..\src\Tools\SignDynamo\bin\Release\Dynamo.cer" target="lib\net47" />
+    <file src="..\..\..\src\Tools\SignDynamo\bin\Release\DynamoCrypto.dll" target="lib\net47" />
+    <file src="..\..\..\src\Tools\SignDynamo\bin\Release\NDesk.Options.dll" target="lib\net47" />
+    <file src="..\..\..\src\Tools\SignDynamo\bin\Release\SignDynamo.exe" target="lib\net47" />
   </files>
 </package>

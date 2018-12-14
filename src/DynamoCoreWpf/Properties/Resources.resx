@@ -740,10 +740,6 @@ It does not contain your graph or any personal data</value>
     <value>Preview</value>
     <comment>Context menu item - preview geometry</comment>
   </data>
-  <data name="NodeContextMenuPreviewUpstream" xml:space="preserve">
-    <value>Preview Upstream</value>
-    <comment>Context menu item - preview geometry of upstream nodes</comment>
-  </data>
   <data name="NodeContextMenuRenameNode" xml:space="preserve">
     <value>Rename Node...</value>
     <comment>Context menu item - rename this node</comment>
@@ -942,6 +938,10 @@ You can always redownload the package.</value>
   </data>
   <data name="MessageCustomNodeNoName" xml:space="preserve">
     <value>You must supply a name.</value>
+  </data>
+  <data name="MessageCustomNodeNameInvalid" xml:space="preserve">
+    <value>Custom Node name cannot contain any of the following special characters:
+    # % * ? \ : or any of the non-printable characters.</value>
   </data>
   <data name="MessageFailedToDownloadPackage" xml:space="preserve">
     <value>Failed to download package with id: {0}.  Please try again and report the package if you continue to have problems.</value>
@@ -1702,10 +1702,6 @@ Do you want to install the latest Dynamo update?</value>
     <value>Hide all text bubble</value>
     <comment>Context menu item - Specific to canvas</comment>
   </data>
-  <data name="ContextMenuHideUpstreamPreview" xml:space="preserve">
-    <value>Hide upstream geometry preview</value>
-    <comment>Context menu item - Specific to canvas</comment>
-  </data>
   <data name="ContextMenuInsertCodeBlock" xml:space="preserve">
     <value>Insert code block</value>
     <comment>Context menu item - Specific to canvas</comment>
@@ -1720,10 +1716,6 @@ Do you want to install the latest Dynamo update?</value>
   </data>
   <data name="ContextMenuShowAllTextBubble" xml:space="preserve">
     <value>Show all text buble</value>
-    <comment>Context menu item - Specific to canvas</comment>
-  </data>
-  <data name="ContextMenuShowUpstreamPreview" xml:space="preserve">
-    <value>Show upstream geometry preview</value>
     <comment>Context menu item - Specific to canvas</comment>
   </data>
   <data name="MoreButton" xml:space="preserve">
@@ -1961,10 +1953,10 @@ Do you want to install the latest Dynamo update?</value>
     <value>Package Path Added</value>
   </data>
   <data name="PackagePathAutoAddNotificationShortDescription" xml:space="preserve">
-    <value>A library (*.dll, *.ds) was recently imported into Dynamo. Its path was automatically added to "Settings > Manage Node and Package Paths..."</value>
+    <value>A library (*.dll, *.ds) was recently imported into Dynamo. Its path was automatically added to "Settings &gt; Manage Node and Package Paths..."</value>
   </data>
   <data name="PackagePathAutoAddNotificationDetailedDescription" xml:space="preserve">
-    <value>The import path "{0}" was added to "Manage Node and Package Paths". If you want to update or remove this path, please open "Settings > Manage Node and Package Paths..."</value>
+    <value>The import path "{0}" was added to "Manage Node and Package Paths". If you want to update or remove this path, please open "Settings &gt; Manage Node and Package Paths..."</value>
   </data>
   <data name="NodeContextMenuIsInput" xml:space="preserve">
     <value>Is Input</value>
@@ -2196,8 +2188,12 @@ Want to publish a different package?</value>
     <value>Custom Nodes will be placed in the Add-Ons section of the library.</value>
     <comment>Note regarding Custom Node library location</comment>
   </data>
+  <data name="DynamoViewDebugMenuTruncateSearchResults" xml:space="preserve">
+    <value>Truncate Search Results</value>
+    <comment>Debug menu | Truncate Search Results</comment>
+  </data>
   <data name="DynamoViewDebugMenuExperimentalSearch" xml:space="preserve">
     <value>Experimental Search</value>
-    <comment>Debug menu | Experimental Search</comment>
+    <comment>Debug Menu | Experimental Search</comment>
   </data>
 </root>

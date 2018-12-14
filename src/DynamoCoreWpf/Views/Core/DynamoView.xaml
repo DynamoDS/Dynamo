@@ -785,6 +785,11 @@
                                   Header="{x:Static p:Resources.DynamoViewDebugMenuShowDebugAST}"
                                   IsChecked="{Binding ShowDebugASTs}"></MenuItem>
                         <MenuItem Focusable="False"
+                                  Name="TruncateSearchResults"
+                                  IsCheckable="True"
+                                  IsChecked="{Binding TruncateSearchResults}"
+                                  Header="{x:Static p:Resources.DynamoViewDebugMenuTruncateSearchResults}" />
+                        <MenuItem Focusable="False"
                                   Name="ExperimentalSearch"
                                   IsCheckable="True"
                                   IsChecked="{Binding ExperimentalSearch}"

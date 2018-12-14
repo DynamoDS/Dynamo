@@ -13,6 +13,6 @@
     <copyright>Copyright Autodesk 2016</copyright>
   </metadata>
   <files>
-    <file src="**" target="lib\net45" />
+    <file src="**" target="lib\net47" />
   </files>
 </package>

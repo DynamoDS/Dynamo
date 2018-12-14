@@ -383,6 +383,9 @@ namespace ProtoCore.SyntaxAnalysis
 
         public override AssociativeNode VisitIdentifierNode(IdentifierNode node)
         {
+            if (node == null)
+                return null;
+
             if (node.ArrayDimensions != null)
             {
                 var newArrayDimensions = node.ArrayDimensions.Accept(this);
@@ -400,6 +403,9 @@ namespace ProtoCore.SyntaxAnalysis
 
         public override AssociativeNode VisitIdentifierListNode(IdentifierListNode node)
         {
+            if (node == null)
+                return null;
+
             var newLeftNode = node.LeftNode.Accept(this);
             if (newLeftNode != node.LeftNode)
                 node.LeftNode = newLeftNode;
@@ -413,6 +419,9 @@ namespace ProtoCore.SyntaxAnalysis
 
         public override AssociativeNode VisitFunctionCallNode(FunctionCallNode node)
         {
+            if (node == null)
+                return null;
+
             var func = node.Function.Accept(this);
             if (node.Function != func)
                 node.Function = func;
