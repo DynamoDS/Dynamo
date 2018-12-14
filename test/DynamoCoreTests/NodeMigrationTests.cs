@@ -2265,7 +2265,7 @@ namespace Dynamo.Tests
 
             // Load the legacy graph, which contains 4 ZeroTouch/NodeModel test cases that use
             // old class names than were renamed in the version of the package we are loading.
-            // Verify these nodes don't appear as dummy node and are successfully migrated.
+            // Verify these nodes don't appear as dummy nodes and are successfully migrated.
             TestMigration(legacyGraph);
 
             // Verify all 4 nodes exist in the workspace and were properly loaded/opened from above
