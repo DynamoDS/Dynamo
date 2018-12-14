@@ -237,6 +237,14 @@ namespace Dynamo.Controls
                 case "CachedValue":
                     CachedValueChanged();
                     break;
+
+                case "IsSetAsInput":
+                    (this.DataContext as NodeViewModel).DynamoViewModel.CurrentSpace.HasUnsavedChanges = true;
+                    break;
+
+                case "IsSetAsOutput":
+                    (this.DataContext as NodeViewModel).DynamoViewModel.CurrentSpace.HasUnsavedChanges = true;
+                    break;
             }
         }
 

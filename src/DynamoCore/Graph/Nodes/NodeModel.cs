@@ -35,6 +35,8 @@ namespace Dynamo.Graph.Nodes
         private LacingStrategy argumentLacing = LacingStrategy.Auto;
         private bool displayLabels;
         private bool isVisible;
+        private bool isSetAsInput = false;
+        private bool isSetAsOutput = false;
         private bool canUpdatePeriodically;
         private string name;
         private ElementState state;
@@ -210,7 +212,6 @@ namespace Dynamo.Graph.Nodes
             }
         }
 
-        private bool isSetAsInput = false;
         /// <summary>
         /// This property is user-controllable via a checkbox and is set to true when a user wishes to include
         /// this node in a Customizer as an interactive control.
@@ -228,7 +229,11 @@ namespace Dynamo.Graph.Nodes
 
             set
             {
-                isSetAsInput = value;
+                if (isSetAsInput != value)
+                {
+                    isSetAsInput = value;
+                    RaisePropertyChanged(nameof(IsSetAsInput));
+                }
             }
         }
 
@@ -245,8 +250,6 @@ namespace Dynamo.Graph.Nodes
                 return !IsCustomFunction;
             }
         }
-
-        private bool isSetAsOutput = false;
 
         /// <summary>
         /// This property is user-controllable via a checkbox and is set to true when a user wishes to include
@@ -265,7 +268,11 @@ namespace Dynamo.Graph.Nodes
 
             set
             {
-                isSetAsOutput = value;
+                if (isSetAsOutput != value)
+                {
+                    isSetAsOutput = value;
+                    RaisePropertyChanged(nameof(IsSetAsOutput));
+                }
             }
         }
 
@@ -887,9 +894,15 @@ namespace Dynamo.Graph.Nodes
                 // When Concrete type is dictionary or other type not expressed in enum, type is set to unknown
                 object returnObj = CachedValue?.Data?? new object();
                 var returnType = NodeOutputData.getNodeOutputTypeFromType(returnObj.GetType());
+                var returnValue = String.Empty;
 
                 // IntialValue is returned when the Type enum does not equal unknown
-                var returnValue = (returnType != NodeOutputTypes.unknownOutput) ? returnObj.ToString() : String.Empty; 
+                if(returnType != NodeOutputTypes.unknownOutput)
+                {
+                    var formattableReturnObj = returnObj as IFormattable;
+                    returnValue = formattableReturnObj != null ? formattableReturnObj.ToString(null, CultureInfo.InvariantCulture) : returnObj.ToString();
+                }
+
                 
                 return new NodeOutputData()
                 {
@@ -897,7 +910,7 @@ namespace Dynamo.Graph.Nodes
                     Name = this.Name,
                     Type = returnType,
                     Description = this.Description,
-                    IntitialValue = returnValue
+                    InitialValue = returnValue
                 };
             }
         }

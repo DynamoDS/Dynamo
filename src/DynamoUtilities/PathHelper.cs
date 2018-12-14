@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Security.AccessControl;
 using System.Xml;
 using Newtonsoft.Json;
@@ -95,7 +96,7 @@ namespace DynamoUtilities
         /// This is a utility method for checking if given path contains valid XML document.
         /// </summary>
         /// <param name="path">path to the target xml file</param>
-        /// <param name="xmlDoc">System.Xml.XmlDocument repensentation of target xml file</param>
+        /// <param name="xmlDoc">System.Xml.XmlDocument representation of target xml file</param>
         /// <returns>Return true if file is Json, false if file is not Json, exception as out param</returns>
         public static bool isValidXML(string path, out XmlDocument xmlDoc, out Exception ex)
         {
@@ -110,7 +111,6 @@ namespace DynamoUtilities
             }
             catch(Exception e)
             {
-                Console.WriteLine(e.ToString());
                 xmlDoc = null;
                 ex = e;
                 return false;
@@ -146,6 +146,18 @@ namespace DynamoUtilities
                 ex = e;
                 return false;
             }
+        }
+
+        // Check if the file name contains any special non-printable chatacters.
+        public static bool IsFileNameInValid(string fileName)
+        {
+            // Some other extra characters that are to be checked. 
+            char[] invalidCharactersFileName = { '#', '%', '&', '.', ' ' };
+
+            if (fileName.Any(f => Path.GetInvalidFileNameChars().Contains(f)) || fileName.IndexOfAny(invalidCharactersFileName) > -1)
+                return true;
+
+            return false;
         }
     }
 }

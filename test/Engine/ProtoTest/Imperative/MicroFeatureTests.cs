@@ -1158,6 +1158,30 @@ a = [Imperative]
         }
 
         [Test]
+        public void CallNamespaceQualifiedClassMethod()
+        {
+            var code =
+@"
+import(""DSCoreNodes.dll"");
+import(""BuiltIn.ds"");
+import(""FFITarget.dll"");
+
+a = [Imperative]
+{
+    l = [];
+	d1 = FFITarget.DummyPoint.ByCoordinates(0,9,0);
+	l = DSCore.List.AddItemToEnd(d1, l);
+	d2 = DummyPoint.ByCoordinates(0,10,0);
+	l = List.AddItemToEnd(d2, l);
+	return FFITarget.DummyPoint.Centroid(l).Y;
+};
+  ";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("a", 9.5);
+
+        }
+
+        [Test]
         public void NegativeIndexOnCollection003()
         {
             String code =

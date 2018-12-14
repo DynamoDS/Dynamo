@@ -29,7 +29,7 @@ namespace Dynamo.Graph.Nodes
         private bool usingDefaultValue;
         private bool isEnabled = true;
         private bool useLevels = false;
-        private bool shouldKeepListStructure = false;
+        private bool keepListStructure = false;
         private int level = 1;
         private string toolTip;
         #endregion
@@ -271,14 +271,14 @@ namespace Dynamo.Graph.Nodes
         {
             get
             {
-                return shouldKeepListStructure;
+                return keepListStructure;
             }
             set
             {
-                if (shouldKeepListStructure != value)
+                if (keepListStructure != value)
                 {
-                    shouldKeepListStructure = value;
-                    RaisePropertyChanged("ShouldKeepListStructure");
+                    keepListStructure = value;
+                    RaisePropertyChanged(nameof(KeepListStructure));
                 }
             }
         }
@@ -287,7 +287,8 @@ namespace Dynamo.Graph.Nodes
         /// Returns true if the port has connectors or if the 
         /// default value is enabled and not null. Otherwise, returns false.
         /// </summary>
-        internal bool IsConnected
+        [JsonIgnore]
+        public bool IsConnected
         {
             get
             {

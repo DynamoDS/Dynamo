@@ -285,10 +285,6 @@
     <value>Hide all text bubble</value>
     <comment>Context menu item - Specific to canvas</comment>
   </data>
-  <data name="ContextMenuHideUpstreamPreview" xml:space="preserve">
-    <value>Hide upstream geometry preview</value>
-    <comment>Context menu item - Specific to canvas</comment>
-  </data>
   <data name="ContextMenuInsertCodeBlock" xml:space="preserve">
     <value>Insert code block</value>
     <comment>Context menu item - Specific to canvas</comment>
@@ -347,10 +343,6 @@
   </data>
   <data name="ContextMenuShowAllTextBubble" xml:space="preserve">
     <value>Show all text buble</value>
-    <comment>Context menu item - Specific to canvas</comment>
-  </data>
-  <data name="ContextMenuShowUpstreamPreview" xml:space="preserve">
-    <value>Show upstream geometry preview</value>
     <comment>Context menu item - Specific to canvas</comment>
   </data>
   <data name="ContextUnGroupFromSelection" xml:space="preserve">
@@ -881,7 +873,7 @@ It does not contain your graph or any personal data</value>
     <comment>Settings menu | Geometry Scaling</comment>
   </data>
   <data name="DynamoViewSettingsMenuIsolationMode" xml:space="preserve">
-    <value>Isolate Selected Geometries</value>
+    <value>Isolate Selected Geometry</value>
   </data>
   <data name="DynamoViewSettingsMenuShowEdges" xml:space="preserve">
     <value>Show Edges</value>
@@ -1323,6 +1315,10 @@ You can always redownload the package.</value>
   <data name="MessageCustomNodeNoName" xml:space="preserve">
     <value>You must supply a name.</value>
   </data>
+  <data name="MessageCustomNodeNameInvalid" xml:space="preserve">
+    <value>Custom Node name cannot contain any of the following special characters:
+    # % * ? \ : or any of the non-printable characters.</value>
+  </data>
   <data name="MessageErrorOpeningFileGeneral" xml:space="preserve">
     <value>Error Opening File</value>
     <comment>Notification Center Title</comment>
@@ -1454,10 +1450,6 @@ Uninstall the following dependent packages: {1}?</value>
   <data name="NodeContextMenuPreview" xml:space="preserve">
     <value>Preview</value>
     <comment>Context menu item - preview geometry</comment>
-  </data>
-  <data name="NodeContextMenuPreviewUpstream" xml:space="preserve">
-    <value>Preview Upstream</value>
-    <comment>Context menu item - preview geometry of upstream nodes</comment>
   </data>
   <data name="NodeContextMenuRenameNode" xml:space="preserve">
     <value>Rename Node...</value>
@@ -1619,10 +1611,10 @@ Next assemblies were loaded several times:
     <value>Package Path Added</value>
   </data>
   <data name="PackagePathAutoAddNotificationShortDescription" xml:space="preserve">
-    <value>A library (*.dll, *.ds) was recently imported into Dynamo. Its path was automatically added to "Settings > Manage Node and Package Paths..."</value>
+    <value>A library (*.dll, *.ds) was recently imported into Dynamo. Its path was automatically added to "Settings &gt; Manage Node and Package Paths..."</value>
   </data>
   <data name="PackagePathAutoAddNotificationDetailedDescription" xml:space="preserve">
-    <value>The import path "{0}" was added to "Manage Node and Package Paths". If you want to update or remove this path, please open "Settings > Manage Node and Package Paths..."</value>
+    <value>The import path "{0}" was added to "Manage Node and Package Paths". If you want to update or remove this path, please open "Settings &gt; Manage Node and Package Paths..."</value>
   </data>
   <data name="PackageSearchStateNoResult" xml:space="preserve">
     <value>Search returned no results!</value>
@@ -1854,9 +1846,6 @@ Want to publish a different package?</value>
   </data>
   <data name="PublishPackageViewPackageVersion" xml:space="preserve">
     <value>Version (major minor build)</value>
-  </data>
-  <data name="DynamoViewSettingsMenuIsolationMode" xml:space="preserve">
-    <value>Isolate Selected Geometry</value>
   </data>
   <data name="PublishPackageViewPackageVersionTooltip" xml:space="preserve">
     <value>A version name helps a submitter keep track of updates to the package.  A new version of a package will be REJECTED if this is not incremeneted.</value>
@@ -2198,5 +2187,9 @@ Do you want to install the latest Dynamo update?</value>
   </data>
   <data name="RerunButtonToolTip" xml:space="preserve">
     <value>Rerun the graph.</value>
+  </data>
+  <data name="DynamoViewDebugMenuTruncateSearchResults" xml:space="preserve">
+    <value>Truncate Search Results</value>
+    <comment>Debug Menu | Truncate Search Results</comment>
   </data>
 </root>

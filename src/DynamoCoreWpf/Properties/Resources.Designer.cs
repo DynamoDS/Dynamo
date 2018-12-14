@@ -19,7 +19,7 @@ namespace Dynamo.Wpf.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class Resources {
@@ -512,15 +512,6 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Hide upstream geometry preview.
-        /// </summary>
-        public static string ContextMenuHideUpstreamPreview {
-            get {
-                return ResourceManager.GetString("ContextMenuHideUpstreamPreview", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Insert code block.
         /// </summary>
         public static string ContextMenuInsertCodeBlock {
@@ -652,15 +643,6 @@ namespace Dynamo.Wpf.Properties {
         public static string ContextMenuShowAllTextBubble {
             get {
                 return ResourceManager.GetString("ContextMenuShowAllTextBubble", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Show upstream geometry preview.
-        /// </summary>
-        public static string ContextMenuShowUpstreamPreview {
-            get {
-                return ResourceManager.GetString("ContextMenuShowUpstreamPreview", resourceCulture);
             }
         }
         
@@ -1005,6 +987,15 @@ namespace Dynamo.Wpf.Properties {
         public static string DynamoViewDebugMenuShowDebugAST {
             get {
                 return ResourceManager.GetString("DynamoViewDebugMenuShowDebugAST", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Truncate Search Results.
+        /// </summary>
+        public static string DynamoViewDebugMenuTruncateSearchResults {
+            get {
+                return ResourceManager.GetString("DynamoViewDebugMenuTruncateSearchResults", resourceCulture);
             }
         }
         
@@ -3042,6 +3033,16 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Custom Node name cannot contain any of the following special characters:
+        ///    # % * ? \ : or any of the non-printable characters..
+        /// </summary>
+        public static string MessageCustomNodeNameInvalid {
+            get {
+                return ResourceManager.GetString("MessageCustomNodeNameInvalid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to You must enter a new category or choose one from the existing categories..
         /// </summary>
         public static string MessageCustomNodeNeedNewCategory {
@@ -3383,15 +3384,6 @@ namespace Dynamo.Wpf.Properties {
         public static string NodeContextMenuPreview {
             get {
                 return ResourceManager.GetString("NodeContextMenuPreview", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Preview Upstream.
-        /// </summary>
-        public static string NodeContextMenuPreviewUpstream {
-            get {
-                return ResourceManager.GetString("NodeContextMenuPreviewUpstream", resourceCulture);
             }
         }
         
