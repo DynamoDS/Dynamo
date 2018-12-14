@@ -138,29 +138,30 @@ namespace DynamoShapeManager
                 // first find the exact match or the lowest matching within same major version
                 foreach (var version in versions)
                 {
-                    Dictionary<Version, string> versionToLocationDic = new Dictionary<Version, string>();
+                    Dictionary<Version, DirectoryInfo> versionToLocationDic = new Dictionary<Version, DirectoryInfo>();
                     foreach (KeyValuePair<string, Tuple<int, int, int, int>> install in installations)
                     {
                         var installVersion = new Version(install.Value.Item1, install.Value.Item2, install.Value.Item3);
                         if (version.Major == installVersion.Major)
                         {
-                            versionToLocationDic.Add(installVersion, install.Key);
+                            versionToLocationDic.Add(installVersion, new DirectoryInfo(install.Key));
                         }
                     }
 
                     // When there is major version matching, continue the search
                     if (versionToLocationDic.Count != 0)
                     {
-                        versionToLocationDic.TryGetValue(version, out location);
+                        versionToLocationDic.TryGetValue(version, out DirectoryInfo info);
                         // If exact matching version found, return it
-                        if (location != null)
+                        if (info != null)
                         {
+                            location = info.FullName;
                             return version;
                         }
                         // If no matching version, return the lowest within same major
                         else
                         {
-                            location = versionToLocationDic[versionToLocationDic.Keys.Min()];
+                            location = versionToLocationDic[versionToLocationDic.Keys.Min()].FullName;
                             return versionToLocationDic.Keys.Min();
                         }
                     }

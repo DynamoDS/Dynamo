@@ -61,7 +61,7 @@ namespace DynamoInstallDetective
         /// version info as Tuple of the file found in the installation based 
         /// on file search pattern. The returned list is sorted based on version 
         /// info.</returns>
-        [Obsolete("Function will be deprecated in Dynamo 3.0, please use FindProductInstallations2")]
+        [Obsolete("Function signature will change in Dynamo 3.0, please refer to FindProductInstallations2")]
         public static IEnumerable FindProductInstallations(string productSearchPattern, string fileSearchPattern)
         {
             return FindProductInstallations2(new List<string>() { productSearchPattern }, fileSearchPattern);
