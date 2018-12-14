@@ -2184,4 +2184,8 @@ Do you want to install the latest Dynamo update?</value>
   <data name="RerunButtonToolTip" xml:space="preserve">
     <value>Rerun the graph.</value>
   </data>
+  <data name="DynamoViewDebugMenuTruncateSearchResults" xml:space="preserve">
+    <value>Truncate Search Results</value>
+    <comment>Debug Menu | Truncate Search Results</comment>
+  </data>
 </root>
