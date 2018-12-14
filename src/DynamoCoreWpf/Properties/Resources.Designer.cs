@@ -955,6 +955,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Experimental Search.
+        /// </summary>
+        public static string DynamoViewDebugMenuExperimentalSearch {
+            get {
+                return ResourceManager.GetString("DynamoViewDebugMenuExperimentalSearch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Force Re-execute.
         /// </summary>
         public static string DynamoViewDebugMenuForceReExecute {
@@ -987,6 +996,15 @@ namespace Dynamo.Wpf.Properties {
         public static string DynamoViewDebugMenuShowDebugAST {
             get {
                 return ResourceManager.GetString("DynamoViewDebugMenuShowDebugAST", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Truncate Search Results.
+        /// </summary>
+        public static string DynamoViewDebugMenuTruncateSearchResults {
+            get {
+                return ResourceManager.GetString("DynamoViewDebugMenuTruncateSearchResults", resourceCulture);
             }
         }
         
@@ -3020,6 +3038,16 @@ namespace Dynamo.Wpf.Properties {
         public static string MessageCustomNodeNameExist {
             get {
                 return ResourceManager.GetString("MessageCustomNodeNameExist", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Custom Node name cannot contain any of the following special characters:
+        ///    # % * ? \ : or any of the non-printable characters..
+        /// </summary>
+        public static string MessageCustomNodeNameInvalid {
+            get {
+                return ResourceManager.GetString("MessageCustomNodeNameInvalid", resourceCulture);
             }
         }
         

@@ -939,6 +939,10 @@ You can always redownload the package.</value>
   <data name="MessageCustomNodeNoName" xml:space="preserve">
     <value>You must supply a name.</value>
   </data>
+  <data name="MessageCustomNodeNameInvalid" xml:space="preserve">
+    <value>Custom Node name cannot contain any of the following special characters:
+    # % * ? \ : or any of the non-printable characters.</value>
+  </data>
   <data name="MessageFailedToDownloadPackage" xml:space="preserve">
     <value>Failed to download package with id: {0}.  Please try again and report the package if you continue to have problems.</value>
     <comment>Message box content</comment>
@@ -2183,5 +2187,13 @@ Want to publish a different package?</value>
   <data name="CustomNodePropertyWindowLocationNote" xml:space="preserve">
     <value>Custom Nodes will be placed in the Add-Ons section of the library.</value>
     <comment>Note regarding Custom Node library location</comment>
+  </data>
+  <data name="DynamoViewDebugMenuTruncateSearchResults" xml:space="preserve">
+    <value>Truncate Search Results</value>
+    <comment>Debug menu | Truncate Search Results</comment>
+  </data>
+  <data name="DynamoViewDebugMenuExperimentalSearch" xml:space="preserve">
+    <value>Experimental Search</value>
+    <comment>Debug Menu | Experimental Search</comment>
   </data>
 </root>

@@ -291,6 +291,31 @@ namespace Dynamo.ViewModels
             }
         }
 
+        /// <summary>
+        /// Indicates whether experimental search mode is turned on.
+        /// For internal debug use only. Do not use!
+        /// </summary>
+        public bool ExperimentalSearch
+        {
+            get { return model.SearchModel.ExperimentalSearch; }
+            set
+            {
+                model.SearchModel.ExperimentalSearch = value;
+            }
+        }
+
+        /// <summary>
+        /// Indicates whether search results should be truncated (currently to 20 items).
+        /// </summary>
+        public bool TruncateSearchResults
+        {
+            get { return model.SearchModel.TruncateSearchResults; }
+            set
+            {
+                model.SearchModel.TruncateSearchResults = value;
+            }
+        }
+
         public int LibraryWidth
         {
             get
