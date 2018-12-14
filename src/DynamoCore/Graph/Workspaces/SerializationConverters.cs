@@ -46,7 +46,7 @@ namespace Dynamo.Graph.Workspaces
         [Obsolete("This constructor will be removed in Dynamo 3.0, please use new NodeReadConverter constructor with additional parameters to support node migration.")]
         public NodeReadConverter(CustomNodeManager manager, LibraryServices libraryServices, bool isTestMode = false)
         {
-            manager = manager;
+            this.manager = manager;
             this.libraryServices = libraryServices;
             this.isTestMode = isTestMode;
             // We only do this in test mode because it should not be required-
