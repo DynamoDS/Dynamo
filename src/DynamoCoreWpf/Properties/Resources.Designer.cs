@@ -991,6 +991,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Truncate Search Results.
+        /// </summary>
+        public static string DynamoViewDebugMenuTruncateSearchResults {
+            get {
+                return ResourceManager.GetString("DynamoViewDebugMenuTruncateSearchResults", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Verbose Logging.
         /// </summary>
         public static string DynamoViewDebugMenuVerboseLogging {

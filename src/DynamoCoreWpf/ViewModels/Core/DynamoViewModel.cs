@@ -291,6 +291,18 @@ namespace Dynamo.ViewModels
             }
         }
 
+        /// <summary>
+        /// Indicates whether search results should be truncated (currently to 20 items).
+        /// </summary>
+        public bool TruncateSearchResults
+        {
+            get { return model.SearchModel.TruncateSearchResults; }
+            set
+            {
+                model.SearchModel.TruncateSearchResults = value;
+            }
+        }
+
         public int LibraryWidth
         {
             get
