@@ -519,7 +519,7 @@ namespace Dynamo.Graph.Nodes.CustomNodes
             var parseParam = new ParseParam(this.GUID, parseString, resolver);
 
             if (EngineController.CompilationServices.PreCompileCodeBlock(ref parseParam) &&
-                parseParam.ParsedNodes.Any())
+                parseParam.ParsedNodes.Any()) //This is false with spaces in input name
             {
                 var parsedComments = parseParam.ParsedComments;
                 if (parsedComments.Any())
