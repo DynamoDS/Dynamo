@@ -2262,7 +2262,6 @@ namespace Dynamo.Tests
 
             // Assert expected package was loaded
             Assert.AreEqual(pkg.Name, "Dynamo Samples");
-            Assert.AreEqual(3, loader.LocalPackages.Count());
 
             // Load the legacy graph, which contains 4 ZeroTouch/NodeModel test cases that use
             // old class names than were renamed in the version of the package we are loading.
