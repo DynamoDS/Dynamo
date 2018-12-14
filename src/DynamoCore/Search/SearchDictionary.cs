@@ -25,6 +25,11 @@ namespace Dynamo.Search
 
         protected readonly Dictionary<V, Dictionary<string, double>> entryDictionary =
             new Dictionary<V, Dictionary<string, double>>();
+        
+        /// <summary>
+        ///     Indicates whether experimental search mode is turned on.
+        /// </summary>
+        internal bool ExperimentalSearch { get; set; } = false;
 
         private List<IGrouping<string, Tuple<V, double>>> tagDictionary;
 
@@ -350,6 +355,15 @@ namespace Dynamo.Search
             query = query.ToLower();
 
             var subPatterns = SplitOnWhiteSpace(query);
+
+            // Experimental Search
+            if (ExperimentalSearch)
+            {
+                var subPatternsList = subPatterns.ToList();
+                subPatternsList.Insert(0, query);
+                subPatterns = (subPatternsList).ToArray();
+            }
+
             foreach (var pair in tagDictionary.Where(x => MatchWithQueryString(x.Key, subPatterns)))
             {
                 ComputeWeightAndAddToDictionary(query, pair, searchDict);
