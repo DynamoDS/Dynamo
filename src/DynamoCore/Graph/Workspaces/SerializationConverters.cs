@@ -43,7 +43,7 @@ namespace Dynamo.Graph.Workspaces
         //map of all loaded assemblies including LoadFrom context assemblies
         private Dictionary<string, List<Assembly>> loadedAssemblies;
 
-        [Obsolete("This function will be removed in Dynamo 3.0, please use new NodeReadConverter method with additional parameters to support node migration.")]
+        [Obsolete("This constructor will be removed in Dynamo 3.0, please use new NodeReadConverter constructor with additional parameters to support node migration.")]
         public NodeReadConverter(CustomNodeManager manager, LibraryServices libraryServices, bool isTestMode = false)
         {
             this.manager = manager;
