@@ -2192,4 +2192,8 @@ Do you want to install the latest Dynamo update?</value>
     <value>Truncate Search Results</value>
     <comment>Debug Menu | Truncate Search Results</comment>
   </data>
+  <data name="DynamoViewDebugMenuExperimentalSearch" xml:space="preserve">
+    <value>Experimental Search</value>
+    <comment>Debug menu | Experimental Search</comment>
+  </data>
 </root>
