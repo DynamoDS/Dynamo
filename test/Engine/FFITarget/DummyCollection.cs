@@ -101,21 +101,39 @@ namespace FFITarget
             dictionary.Add("G", dict);
             dictionary.Add("H", false);
             return dictionary;
-        } 
+        }
+
+        public static Dictionary<string, object> ReturnArbitraryDictionary()
+        {
+            var dict = ReturnDictionary();
+            var dictionary = new Dictionary<string, object>();
+            dictionary.Add("E", 1);
+            dictionary.Add("F", new Dummy());
+            dictionary.Add("G", dict);
+            dictionary.Add("H", false);
+            dictionary.Add("I", new object[] {1, 2, 3, 4, new DummyCollection()});
+
+            return dictionary;
+        }
 
         public static IDictionary ReturnIDictionary()
         {
-            var dictionary = new Dictionary<string, int>();
-            dictionary.Add("A", 1);
-            dictionary.Add("B", 2);
-            dictionary.Add("C", 3);
-            dictionary.Add("D", 4);
-            return dictionary;
+            return ReturnDictionary();
+        }
+
+        public static IDictionary ReturnNestedIDictionary()
+        {
+            return ReturnNestedDictionary();
         }
 
         public static object ReturnDictionaryAsObject()
         {
             return ReturnIDictionary();
+        }
+         
+        public static IDictionary ReturnIncompatibleDictionary()
+        {
+            return new Dictionary<int, string>() {{1, "abc"}, {2, "def"}};
         }
 
         public static IDictionary AcceptDictionary(Dictionary<string, int> dictionary)
