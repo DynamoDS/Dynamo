@@ -533,9 +533,7 @@ namespace ProtoFFI
             {
                 try
                 {
-                    targetDict[key] = Convert.ChangeType(d.ValueAtKey(key), valueType);
-                    //targetDict[key] = ConvertType(d.ValueAtKey(key));
-                    //targetDict[key] = d.ValueAtKey(key);
+                    targetDict[key] = d.ValueAtKey(key);
                 }
                 catch (Exception e)
                 {
@@ -545,11 +543,6 @@ namespace ProtoFFI
             }
 
             return targetDict;
-        }
-
-        private object ConvertType(object obj, Type valueType)
-        {
-            return  obj;
         }
 
         private ProtoCore.Type GetApproxDSType(object obj)
