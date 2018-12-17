@@ -1,0 +1,211 @@
+{
+  "Uuid": "3c91f94f-9c42-4a29-bf1c-ecdf340a3490",
+  "IsCustomNode": false,
+  "Description": null,
+  "Name": "LegacyDynamoSamples_MigrationTest",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Examples.BasicExample.Create@Autodesk.DesignScript.Geometry.Point",
+      "Id": "da2c975424ea4e1bae46b5272758e3c5",
+      "Inputs": [
+        {
+          "Id": "a48fcf2706044ea3903eaebfa0daa8c9",
+          "Name": "point",
+          "Description": "A point.\n\nPoint\nDefault value : Autodesk.DesignScript.Geometry.Point.ByCoordinates(5, 5, 5)",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "7dc917d968794e26a94d3e2748163633",
+          "Name": "BasicExample",
+          "Description": "A BasicExample object.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Another example of a static constructor which uses a parameter with a default value. The default value is provided as a design script expression.\n\nBasicExample.Create (point: Point = Autodesk.DesignScript.Geometry.Point.ByCoordinates(5, 5, 5)): BasicExample"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Examples.BasicExample.Create@double,double,double",
+      "Id": "c61389b2f09c432ab8727cfd41282f9a",
+      "Inputs": [
+        {
+          "Id": "6b8a7b3b7b9d4bc28369802688120364",
+          "Name": "x",
+          "Description": "The x coordinate of the point.\n\ndouble\nDefault value : 42",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "194e917177a24a27bccd80d4d61ad82e",
+          "Name": "y",
+          "Description": "The y coordinate of the point.\n\ndouble\nDefault value : 42",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "3271aff8d6dd4c80be31a0ba305919fc",
+          "Name": "z",
+          "Description": "The z coordinate of the point.\n\ndouble\nDefault value : 42",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "d1fb031df35d49b688f7d8ef6d160dde",
+          "Name": "BasicExample",
+          "Description": "A HelloDynamoZeroTouch object.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Dynamo uses the pattern of static constructors. Don't forget to fill in the xml comments so that you will get help tips in the UI. You can also use default parameters, as we have here. With default parameters defined, you will not be required to attach any inputs to these ports in Dynamo.\n\nBasicExample.Create (x: double = 42, y: double = 42, z: double = 42): BasicExample"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Examples.BasicExample.MultiReturnExample",
+      "Id": "b932a2ef364945f39b7b1d06da2a0e97",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "54a9e99405ad46c7acdd3a0f66115907",
+          "Name": "thing 1",
+          "Description": "var",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "f0efc366311e458c8dbf8808b0cf0549",
+          "Name": "thing 2",
+          "Description": "var",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "The MultiReturn attribute can be used to specify the names of multiple output ports on a node that returns a dictionary. The node must return a dictionary to be recognized as a multi-out node.\n\nBasicExample.MultiReturnExample ( ): var[]..[]"
+    },
+    {
+      "ConcreteType": "SampleLibraryUI.Examples.DropDownExample, SampleLibraryUI",
+      "SelectedIndex": 2,
+      "NodeType": "ExtensionNode",
+      "Id": "45152d03fc75491baa4a0f2f9565cd61",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "da224d826dcc4469a3941bc070448b1c",
+          "Name": "item",
+          "Description": "The selected item",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "An example drop down node."
+    }
+  ],
+  "Connectors": [],
+  "Dependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.1.0.7116",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "BasicExample.Create",
+        "Id": "da2c975424ea4e1bae46b5272758e3c5",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 264.0,
+        "Y": 34.75
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "BasicExample.Create",
+        "Id": "c61389b2f09c432ab8727cfd41282f9a",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 275.0,
+        "Y": 130.75
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "BasicExample.MultiReturnExample",
+        "Id": "b932a2ef364945f39b7b1d06da2a0e97",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 265.0,
+        "Y": 282.75
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Drop Down Example",
+        "Id": "45152d03fc75491baa4a0f2f9565cd61",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 318.0,
+        "Y": 408.75
+      }
+    ],
+    "Annotations": [],
+    "X": 0.0,
+    "Y": 0.0,
+    "Zoom": 1.0
+  }
+}
