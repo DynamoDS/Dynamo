@@ -101,6 +101,7 @@
     <Compile Include="MessageLogTests.cs" />
     <Compile Include="MockMaker.cs" />
     <Compile Include="NodeConstructionTests.cs" />
+    <Compile Include="Nodes\DictionaryTests.cs" />
     <Compile Include="NodeToCodeTest.cs" />
     <Compile Include="PresetsTests.cs" />
     <Compile Include="PeriodicEvaluationTests.cs" />
@@ -205,6 +206,10 @@
     <ProjectReference Include="..\..\src\Tools\DynamoShapeManager\DynamoShapeManager.csproj">
       <Project>{263fa9c1-f81e-4a8e-95e0-8cdae20f177b}</Project>
       <Name>DynamoShapeManager</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Engine\FFITarget\FFITarget.csproj">
+      <Project>{c70fe632-5500-4c57-b3d6-9b5574137551}</Project>
+      <Name>FFITarget</Name>
     </ProjectReference>
     <ProjectReference Include="..\Libraries\SystemTestServices\SystemTestServices.csproj">
       <Project>{89563cd0-509b-40a5-8728-9d3ec6fe8410}</Project>

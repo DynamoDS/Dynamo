@@ -1104,8 +1104,7 @@ var06 = g;
             int outportBrokenNodeCount = helloBrokenNode.OutPorts.Count;
             Assert.IsFalse(outportCount > 0);
         }
-
-
+        
         #region CodeBlockUtils Specific Tests
         [Test]
         [Category("UnitTests")]
@@ -1667,21 +1666,7 @@ var06 = g;
             AssertError("0cb2f07a-95ab-49ed-bd7e-3e21281b87a3"); // uses identifier as dictionary key
             AssertError("a2b3ac31-98f0-46b0-906e-8617821d0a51"); // uses old syntax {1,2}
         }
-
-
-        [Test]
-        public void TestPassingNestedDictionary()
-        {
-            var dynFilePath = Path.Combine(TestDirectory, @"core\cbn\AcceptNestedDictionary.dyn");
-            OpenModel(dynFilePath);
-
-            var validationData1 = Dictionary.ByKeysValues(new[] { "E", "G", "F", "H" },
-                new object[] { 1, Dictionary.ByKeysValues(new[] { "A", "B", "C", "D" }, new object[] { 1, 2, 3, 4 }), 2, false });
-            AssertPreviewValue("e1bd17cc-9f3d-437b-93bf-a9bc049318a2", validationData1);
-
-        }
-
-
+        
         [Test]
         public void TestDeprecatedListSyntaxMigration()
         {

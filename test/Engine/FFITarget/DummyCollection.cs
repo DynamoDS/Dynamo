@@ -130,11 +130,6 @@ namespace FFITarget
         {
             return ReturnIDictionary();
         }
-         
-        public static IDictionary ReturnIncompatibleDictionary()
-        {
-            return new Dictionary<int, string>() {{1, "abc"}, {2, "def"}};
-        }
 
         public static IDictionary AcceptDictionary(Dictionary<string, int> dictionary)
         {
