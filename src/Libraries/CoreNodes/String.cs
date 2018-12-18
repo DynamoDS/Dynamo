@@ -418,7 +418,7 @@ namespace DSCore
         /// <param name="index">Index to insert at.</param>
         /// <param name="toInsert">String to be inserted.</param>
         /// <returns name="str">String with inserted substring.</returns>
-        /// <search>insert string,insert string</search>
+        /// <search>insertstring,insert string</search>
         public static string Insert(string str, int index, string toInsert)
         {
             return str.Insert(index, toInsert);
