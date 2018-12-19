@@ -1,4 +1,6 @@
 ﻿using Dynamo.Engine;
+using Dynamo.Engine.CodeGeneration;
+using Dynamo.Engine.NodeToCode;
 using Dynamo.Graph;
 using Dynamo.Graph.Annotations;
 using Dynamo.Graph.Connectors;
@@ -16,6 +18,8 @@ using Dynamo.Models;
 using Dynamo.Properties;
 using Dynamo.Selection;
 using Dynamo.Utilities;
+using ProtoCore.AST.AssociativeAST;
+using ProtoCore.Utils;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -674,7 +678,8 @@ namespace Dynamo.Core
                 nodeGraph.ElementResolver,
                 workspaceInfo);
             }
-            else {
+            else
+            {
                 Exception ex;
                 if (DynamoUtilities.PathHelper.isValidJson(workspaceInfo.FileName, out jsonDoc, out ex))
                 {
@@ -1086,14 +1091,37 @@ namespace Dynamo.Core
                             }
                         }
 
+
                         // so the input of custom node has format 
                         //    input_var_name : type
                         if (parameters != null && parameters.Count() > inputReceiverData)
                         {
-                            var typeName = parameters[inputReceiverData].DisplayTypeName;
-                            if (!string.IsNullOrEmpty(typeName))
+                            var typedParameter = parameters[inputReceiverData];
+                            // initially set the type name to the full type name
+                            // then try to shorten it.
+                            if (!string.IsNullOrEmpty(typedParameter.Type.Name))
                             {
-                                node.InputSymbol += " : " + typeName;
+                                try
+                                {
+
+                                    var typeIdentiferNode = CoreUtils.CreateNodeFromString(typedParameter.Type.Name);
+                                    NodeToCodeCompiler.ReplaceWithShortestQualifiedName(
+                                        this.libraryServices.LibraryManagementCore.ClassTable,
+                                        new List<AssociativeNode> { typeIdentiferNode },
+                                        currentWorkspace.ElementResolver);
+
+                                    //new ShortestQualifiedNameReplacer
+                                    var codegen = new ProtoCore.CodeGenDS(new List<AssociativeNode> { typeIdentiferNode });
+                                    var code = codegen.GenerateCode();
+                                    Console.WriteLine(code);
+
+                                    node.InputSymbol += ":" + code;
+                                }
+                                catch(Exception e)
+                                {
+                                    node.InputSymbol += ":" + typedParameter.Type.Name;
+                                    this.AsLogger().LogError($"{e.Message}: could not generate a short type name for {typedParameter.Type.Name}");
+                                }
                             }
                         }
 

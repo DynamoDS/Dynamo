@@ -329,8 +329,20 @@ namespace Dynamo.Engine.NodeToCode
             // and shorten it before traversing it deeper
             AssociativeNode shortNameNode;
             if (TryShortenClassName(node, out shortNameNode))
+            {
+               if(shortNameNode is IdentifierNode)
+                {
+                    node.LeftNode = shortNameNode;
+                    node.RightNode = null;
+                }
+               else if(shortNameNode is IdentifierListNode)
+                {
+                    node.LeftNode =  (shortNameNode as IdentifierListNode).LeftNode ;
+                    node.RightNode = (shortNameNode as IdentifierListNode).RightNode ;
+                }
                 return shortNameNode;
-
+            }
+                
             var rightNode = node.RightNode;
             var leftNode = node.LeftNode;
 
