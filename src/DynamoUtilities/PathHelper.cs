@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Security.AccessControl;
 using System.Xml;
 using Newtonsoft.Json;
@@ -145,6 +146,18 @@ namespace DynamoUtilities
                 ex = e;
                 return false;
             }
+        }
+
+        // Check if the file name contains any special non-printable chatacters.
+        public static bool IsFileNameInValid(string fileName)
+        {
+            // Some other extra characters that are to be checked. 
+            char[] invalidCharactersFileName = { '#', '%', '&', '.', ' ' };
+
+            if (fileName.Any(f => Path.GetInvalidFileNameChars().Contains(f)) || fileName.IndexOfAny(invalidCharactersFileName) > -1)
+                return true;
+
+            return false;
         }
     }
 }

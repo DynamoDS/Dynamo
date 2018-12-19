@@ -1,13 +1,15 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using NUnit.Framework;
+using SystemTestServices;
 using System.Xml;
 using CoreNodeModels;
 using CoreNodeModels.Input;
 using CoreNodeModels.Logic;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.ZeroTouch;
+using Dynamo.PackageManager;
+using NUnit.Framework;
 using PythonNodeModels;
 
 namespace Dynamo.Tests
@@ -2239,6 +2241,35 @@ namespace Dynamo.Tests
             {
                 Assert.Fail("the content of the deprecated node has been changed after saving");
             }
+        }
+        #endregion
+
+        #region Dynamo Package Node Migration Tests
+        [Test]
+        [Category("UnitTests")]
+        public void TestPackageNodeMigrationForJSONGraphs()
+        {
+            // Define package loading reference paths
+            var dir = SystemTestBase.GetTestDirectory(ExecutingDirectory);
+            var pkgDir = Path.Combine(dir, "pkgs\\Dynamo Samples");
+            var legacyGraph = Path.Combine(pkgDir, "extra\\LegacyPackageSampleGraph.dyn");
+            var pkgMan = this.CurrentDynamoModel.GetPackageManagerExtension();
+            var loader = pkgMan.PackageLoader;
+            var pkg = loader.ScanPackageDirectory(pkgDir);
+
+            // Load the sample package which includes migrations
+            loader.Load(pkg);
+
+            // Assert expected package was loaded
+            Assert.AreEqual(pkg.Name, "Dynamo Samples");
+
+            // Load the legacy graph, which contains 4 ZeroTouch/NodeModel test cases that use
+            // old class names than were renamed in the version of the package we are loading.
+            // Verify these nodes don't appear as dummy nodes and are successfully migrated.
+            TestMigration(legacyGraph);
+
+            // Verify all 4 nodes exist in the workspace and were properly loaded/opened from above
+            Assert.AreEqual(4, this.CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
         }
         #endregion
 

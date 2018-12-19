@@ -1315,6 +1315,10 @@ You can always redownload the package.</value>
   <data name="MessageCustomNodeNoName" xml:space="preserve">
     <value>You must supply a name.</value>
   </data>
+  <data name="MessageCustomNodeNameInvalid" xml:space="preserve">
+    <value>Custom Node name cannot contain any of the following special characters:
+    # % * ? \ : or any of the non-printable characters.</value>
+  </data>
   <data name="MessageErrorOpeningFileGeneral" xml:space="preserve">
     <value>Error Opening File</value>
     <comment>Notification Center Title</comment>
@@ -2183,5 +2187,13 @@ Do you want to install the latest Dynamo update?</value>
   </data>
   <data name="RerunButtonToolTip" xml:space="preserve">
     <value>Rerun the graph.</value>
+  </data>
+  <data name="DynamoViewDebugMenuTruncateSearchResults" xml:space="preserve">
+    <value>Truncate Search Results</value>
+    <comment>Debug Menu | Truncate Search Results</comment>
+  </data>
+  <data name="DynamoViewDebugMenuExperimentalSearch" xml:space="preserve">
+    <value>Experimental Search</value>
+    <comment>Debug menu | Experimental Search</comment>
   </data>
 </root>

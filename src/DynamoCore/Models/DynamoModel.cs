@@ -654,7 +654,7 @@ namespace Dynamo.Models
 
             pathManager.Preferences = PreferenceSettings;
 
-            SearchModel = new NodeSearchModel();
+            SearchModel = new NodeSearchModel(Logger);
             SearchModel.ItemProduced +=
                 node => ExecuteCommand(new CreateNodeCommand(node, 0, 0, true, true));
 

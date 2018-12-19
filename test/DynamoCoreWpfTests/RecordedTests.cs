@@ -1243,6 +1243,28 @@ namespace DynamoCoreWpfTests
             AssertPreviewValue("345cd2d4-5f3b-4eb0-9d5f-5dd90c5a7493", 36.0);
         }
 
+        [Test, RequiresSTA]
+        public void TestPreviewToggleConnectionMultiOutputNode()
+        {
+            RunCommandsFromFile("multioutput_node_preview.xml", (commandTag) =>
+            {
+                var dict = DesignScript.Builtin.Dictionary.ByKeysValues(new string[] { "year", "month", "day", "hour", "minute", "second", "millisecond" }, 
+                    new object[] { 1901, 1, 1, 0, 0, 0, 0 });
+                if (commandTag == "FirstRun")
+                {
+                    AssertPreviewValue("060ff703-5cfc-4e8a-ae1a-7066f59e3e26", dict);
+                }
+                else if (commandTag == "SecondRun")
+                {
+                    AssertPreviewValue("060ff703-5cfc-4e8a-ae1a-7066f59e3e26", null);
+                }
+                else if (commandTag == "ThirdRun")
+                {
+                    AssertPreviewValue("060ff703-5cfc-4e8a-ae1a-7066f59e3e26", dict);
+                }
+            });
+        }
+
         #endregion
     }
 
