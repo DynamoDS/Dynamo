@@ -111,17 +111,17 @@ namespace Dynamo.Graph.Nodes.CustomNodes
         {
             base.BuildAstForPartialMultiOutput(model, rhs, resultAst);
 
-            var kvps = Definition.ReturnKeys.Select(
-                (rtnKey, idx) =>
-                    new KeyValuePair<AssociativeNode, AssociativeNode>(AstFactory.BuildStringNode(rtnKey),
-                        model.GetAstIdentifierForOutputIndex(idx)));
-            var dict = new DictionaryExpressionBuilder();
-            foreach (var kvp in kvps)
-            {
-                dict.AddKey(kvp.Key);
-                dict.AddValue(kvp.Value);
-            }
-            resultAst.Add(AstFactory.BuildAssignment(model.AstIdentifierForPreview, dict.ToFunctionCall()));
+            //var kvps = Definition.ReturnKeys.Select(
+            //    (rtnKey, idx) =>
+            //        new KeyValuePair<AssociativeNode, AssociativeNode>(AstFactory.BuildStringNode(rtnKey),
+            //            model.GetAstIdentifierForOutputIndex(idx)));
+            //var dict = new DictionaryExpressionBuilder();
+            //foreach (var kvp in kvps)
+            //{
+            //    dict.AddKey(kvp.Key);
+            //    dict.AddValue(kvp.Value);
+            //}
+            //resultAst.Add(AstFactory.BuildAssignment(model.AstIdentifierForPreview, dict.ToFunctionCall()));
         }
 
         protected override void AssignIdentifiersForFunctionCall(

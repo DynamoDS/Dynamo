@@ -69,6 +69,10 @@ namespace Dynamo.Graph.Nodes
             var missingAmt =
                 Enumerable.Range(0, model.InPorts.Count).Count(x => !model.InPorts[x].IsConnected);
             var tmp = model.AstIdentifierForPreview;
+            //if (model is CustomNodes.Function)
+            //{
+            //    tmp = AstFactory.BuildIdentifier("__partial_" + model.GUID.ToString().Replace('-', '_'));
+            //}
             resultAst.Add(AstFactory.BuildAssignment(tmp, rhs));
             resultAst.AddRange(
                 (Definition.ReturnKeys ?? Enumerable.Empty<string>()).Select(

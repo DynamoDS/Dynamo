@@ -1057,6 +1057,7 @@ namespace Dynamo.Core
                         node = new Symbol
                         {
                             InputSymbol = inputReceiverNode.InPorts[inputReceiverData].Name,
+                            //ElementResolver = currentWorkspace.ElementResolver,
                             X = 0
                         };
 
