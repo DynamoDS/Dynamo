@@ -360,8 +360,8 @@ namespace Dynamo.Search
 
             var searchResults = orderedSearchDict.Select(x => x.Key);
 
-            // return only the top 30 search results
-            searchResults = searchResults.Take(30);
+            // return only the top 20 search results
+            searchResults = searchResults.Take(20);
             
 #if DEBUG
             if (this.logger != null)
