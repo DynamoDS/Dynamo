@@ -5,7 +5,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-
+using System.Text.RegularExpressions;
 
 namespace DynamoShapeManager
 {
@@ -204,6 +204,8 @@ namespace DynamoShapeManager
 
         /// <summary>
         /// Get the corresponding libG preloader location for the target ASM loading version.
+        /// If there is exact match preloader version to the target ASM version, use it, 
+        /// otherwise use the closet below.
         /// </summary>
         /// <param name="version">The target loading version of ASM.</param>
         /// <param name="rootFolder">Full path of the directory that contains 
@@ -227,10 +229,30 @@ namespace DynamoShapeManager
                 return dir.FullName;
             else
             {
-                // This usually means libG version is behind the target version, fallback to use another existing version 
+                // This usually means libG preloader version is behind the target version
                 var rootDir = new DirectoryInfo(rootFolder);
-                // TODO: Sort the existing libG folders somehow and find a folder below the target ASM version
-                return rootDir.GetDirectories().Where(x => x.Name.Contains("LibG_" + version.Major.ToString())).First().FullName;
+
+                // Use regex to get all the libG versions supported
+                var libgFolders = rootDir.EnumerateDirectories("libg_*", SearchOption.TopDirectoryOnly);
+                var regExp = new Regex(@"^libg_(\d\d\d)_(\d)_(\d)$", RegexOptions.IgnoreCase);
+                var preloaderVersions = new List<Version>();
+                foreach (var folder in libgFolders)
+                {
+                    var match = regExp.Match(folder.Name);
+                    if (match.Groups.Count == 4)
+                    {
+                        preloaderVersions.Add(new Version(
+                                Convert.ToInt32(match.Groups[1].Value),
+                                Convert.ToInt32(match.Groups[2].Value),
+                                Convert.ToInt32(match.Groups[3].Value)));
+                    }
+                }
+                preloaderVersions.Sort();
+                preloaderVersions.Reverse();
+                // Pick the closest preloader version below
+                var preloaderVersion = preloaderVersions.First();
+                libGFolderName = string.Format("libg_{0}_{1}_{2}", preloaderVersion.Major, preloaderVersion.Minor, preloaderVersion.Build);
+                return libGFolderName;
             }
         }
 
