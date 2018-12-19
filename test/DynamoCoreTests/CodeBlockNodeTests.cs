@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using CoreNodeModels;
+using DesignScript.Builtin;
 using Dynamo.Engine.CodeCompletion;
 using Dynamo.Graph;
 using Dynamo.Graph.Connectors;
@@ -1103,8 +1104,7 @@ var06 = g;
             int outportBrokenNodeCount = helloBrokenNode.OutPorts.Count;
             Assert.IsFalse(outportCount > 0);
         }
-
-
+        
         #region CodeBlockUtils Specific Tests
         [Test]
         [Category("UnitTests")]
@@ -1666,7 +1666,7 @@ var06 = g;
             AssertError("0cb2f07a-95ab-49ed-bd7e-3e21281b87a3"); // uses identifier as dictionary key
             AssertError("a2b3ac31-98f0-46b0-906e-8617821d0a51"); // uses old syntax {1,2}
         }
-
+        
         [Test]
         public void TestDeprecatedListSyntaxMigration()
         {
