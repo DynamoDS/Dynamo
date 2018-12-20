@@ -65,22 +65,22 @@ namespace DSCore
 
         /// <summary>
         ///     Divides a single string into a list of strings, with divisions
-        ///     determined by the given separater strings.
+        ///     determined by the given separator strings.
         /// </summary>
         /// <param name="str">String to split up.</param>
-        /// <param name="separaters">
+        /// <param name="separators">
         ///     Strings that, if present, determine the end and start of a split.
         /// </param>
         /// <returns name="strings">List of strings made from the input string.</returns>
-        /// <search>divide,separaters,delimiter,cut,csv,comma,</search>
-        public static string[] Split(string str, params string[] separaters)
+        /// <search>divide,separator,delimiter,cut,csv,comma,</search>
+        public static string[] Split(string str, params string[] separators)
         {
-            separaters = separaters.Select(s => s == "\n" ? Environment.NewLine : s).ToArray(); // converts all \n in separater array to Environment Newline (i.e. \r\n)
+            separators = separators.Select(s => s == "\n" ? Environment.NewLine : s).ToArray(); // converts all \n in separater array to Environment Newline (i.e. \r\n)
             str = Regex.Replace(str, "(?<!\r)\n", Environment.NewLine); // converts all \n in String str to Environment.NewLine (i.e. '\r\n')
             
-            return separaters.Contains("")
+            return separators.Contains("")
                 ? str.ToCharArray().Select(char.ToString).ToArray()
-                : str.Split(separaters, StringSplitOptions.RemoveEmptyEntries);
+                : str.Split(separators, StringSplitOptions.RemoveEmptyEntries);
         }
 
         /// <summary>
@@ -212,7 +212,7 @@ namespace DSCore
         }
 
         /// <summary>
-        ///     Replaces all occurrances of text in a string with other text.
+        ///     Replaces all occurrences of text in a string with other text.
         /// </summary>
         /// <param name="str">String to replace substrings in.</param>
         /// <param name="searchFor">Text to be replaced.</param>
@@ -293,7 +293,7 @@ namespace DSCore
         /// <returns name="index">
         ///     Index of the first occurrence of the substring or -1 if not found.
         /// </returns>
-        /// <search>index of,find susbstring,where,search</search>
+        /// <search>index of,find substring,where,search</search>
         public static int IndexOf(string str, string searchFor, bool ignoreCase = false)
         {
             return str.IndexOf(
@@ -330,7 +330,7 @@ namespace DSCore
         /// <returns name="index">
         ///     Index of the last occurrence of the substring or -1 if not found.
         /// </returns>
-		/// <search>last index of,find susbstring,where,search</search>
+		/// <search>last index of,find substring,where,search</search>
         public static int LastIndexOf(string str, string searchFor, bool ignoreCase = false)
         {
             return str.LastIndexOf(
@@ -469,7 +469,7 @@ namespace DSCore
             {
                 // startIndex of an array must be within the string length. 
                 // If after the conversion of negative startIndex, startIndex is still
-                // less than zero, ArgumentOutOfRangeException is occured.
+                // less than zero, ArgumentOutOfRangeException is occurred.
 
                 throw new ArgumentOutOfRangeException("startIndex", Properties.Resources.StringRemoveStartIndexOutOfRangeMessage);
 
