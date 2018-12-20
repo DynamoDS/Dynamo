@@ -1177,7 +1177,7 @@ namespace Dynamo.Tests
         public void TestHeterogenousList()
         {
             // open test graph
-            RunModel(@"core\test_hetereogenous_list.dyn");
+            RunModel(@"core\dsevaluation\test_hetereogenous_list.dyn");
 
             var guidX = "d7c44c9098d647e0bbd4be8fa2c842eb";
             var guidY = "a5463d1fb5d0457da51e563a5707d1cd";
