@@ -205,7 +205,7 @@ namespace DynamoShapeManager
         /// <summary>
         /// Get the corresponding libG preloader location for the target ASM loading version.
         /// If there is exact match preloader version to the target ASM version, use it, 
-        /// otherwise use the closet below.
+        /// otherwise use the closest below.
         /// </summary>
         /// <param name="version">The target loading version of ASM.</param>
         /// <param name="rootFolder">Full path of the directory that contains 
@@ -226,7 +226,9 @@ namespace DynamoShapeManager
             var libGFolderName = string.Format("libg_{0}_{1}_{2}", version.Major, version.Minor, version.Build);
             var dir = new DirectoryInfo(Path.Combine(rootFolder, libGFolderName));
             if (dir.Exists)
+            {
                 return dir.FullName;
+            }
             else
             {
                 // This usually means libG preloader version is behind the target version
@@ -239,7 +241,7 @@ namespace DynamoShapeManager
                 foreach (var folder in libgFolders)
                 {
                     var match = regExp.Match(folder.Name);
-                    if (match.Groups.Count == 4)
+                    if (match.Groups.Count == 4 && Convert.ToInt32(match.Groups[1].Value) <= version.Major)
                     {
                         preloaderVersions.Add(new Version(
                                 Convert.ToInt32(match.Groups[1].Value),
