@@ -1036,6 +1036,7 @@ namespace Dynamo.Core
 
                 var inConnectors = new List<Tuple<NodeModel, int>>();
                 var uniqueInputSenders = new Dictionary<Tuple<NodeModel, int>, Symbol>();
+                var classTable = this.libraryServices.LibraryManagementCore.ClassTable;
 
                 //Step 3: insert variables (reference step 1)
                 foreach (var input in Enumerable.Range(0, inputs.Count).Zip(inputs, Tuple.Create))
@@ -1082,20 +1083,27 @@ namespace Dynamo.Core
                             var funcDesc = dsFunc.Controller.Definition;
                             parameters = funcDesc.Parameters.ToList();
 
+                            // if the node is an instance member the function won't contain a 
+                            // parameter for this type so we need to geneate a new typedParameter.
                             if (funcDesc.Type == Engine.FunctionType.InstanceMethod ||
                                 funcDesc.Type == Engine.FunctionType.InstanceProperty)
                             {
-                                var dummyType = new ProtoCore.Type() { Name = funcDesc.ClassName };
+                                var dummyType = new ProtoCore.Type
+                                {
+                                    Name = funcDesc.ClassName,
+                                    UID = classTable.IndexOf(funcDesc.ClassName)
+                                };
+
                                 var instanceParam = new TypedParameter(funcDesc.ClassName, dummyType);
                                 parameters.Insert(0, instanceParam);
                             }
                         }
 
-
                         // so the input of custom node has format 
                         //    input_var_name : type
                         if (parameters != null && parameters.Count() > inputReceiverData)
                         {
+                            var port = inputReceiverNode.InPorts[inputReceiverData];
                             var typedParameter = parameters[inputReceiverData];
                             // initially set the type name to the full type name
                             // then try to shorten it.
@@ -1104,18 +1112,20 @@ namespace Dynamo.Core
                                 try
                                 {
 
-                                    var typeIdentiferNode = CoreUtils.CreateNodeFromString(typedParameter.Type.Name);
+                                    var typedNode = new TypedIdentifierNode
+                                    {
+                                        Name = port.Name,
+                                        Value = port.Name,
+                                        datatype = typedParameter.Type,
+                                        TypeAlias = typedParameter.Type.Name
+                                    };
+                                 
                                     NodeToCodeCompiler.ReplaceWithShortestQualifiedName(
-                                        this.libraryServices.LibraryManagementCore.ClassTable,
-                                        new List<AssociativeNode> { typeIdentiferNode },
+                                        classTable,
+                                        new List<AssociativeNode> { typedNode },
                                         currentWorkspace.ElementResolver);
 
-                                    //new ShortestQualifiedNameReplacer
-                                    var codegen = new ProtoCore.CodeGenDS(new List<AssociativeNode> { typeIdentiferNode });
-                                    var code = codegen.GenerateCode();
-                                    Console.WriteLine(code);
-
-                                    node.InputSymbol += ":" + code;
+                                    node.InputSymbol = $"{typedNode.Value} :{typedNode.TypeAlias}";
                                 }
                                 catch(Exception e)
                                 {

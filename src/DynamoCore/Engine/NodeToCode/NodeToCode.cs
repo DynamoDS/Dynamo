@@ -15,6 +15,7 @@ using Dynamo.Engine.CodeGeneration;
 using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
 using Dynamo.Interfaces;
+using ProtoCore;
 
 namespace Dynamo.Engine.NodeToCode
 {
@@ -320,6 +321,55 @@ namespace Dynamo.Engine.NodeToCode
             this.resolver = resolver;
         }
 
+        public override AssociativeNode VisitTypedIdentifierNode(TypedIdentifierNode node)
+        {
+            if (node == null)
+                return null;
+
+            // If type is primitive type
+            if (node.datatype.UID != (int)PrimitiveType.InvalidType &&
+                node.datatype.UID < (int)PrimitiveType.MaxPrimitive)
+                return node;
+            
+            // build an idlistnode from the full type name
+            var identListNode = CoreUtils.CreateNodeFromString(node.datatype.Name);
+            if (identListNode == null)
+                return null;
+
+            // visit the idlist 
+            var shortNameNode = identListNode.Accept(this);
+            if(shortNameNode == null)
+                return null;
+            
+
+            var resultingNode = new TypedIdentifierNode();
+            resultingNode.Name = node.Name;
+            resultingNode.Value = node.Name;
+            resultingNode.datatype = node.datatype;
+
+            //return a typedIdNode built from the shortNameId returned above.
+            if (shortNameNode is IdentifierListNode)
+            {
+                var idListNode = (shortNameNode as IdentifierListNode);
+                resultingNode.TypeAlias = idListNode.ToString();
+            }
+
+            else if (shortNameNode is IdentifierNode)
+            {
+                var idNode = (shortNameNode as IdentifierNode);
+                resultingNode.TypeAlias = idNode.Value;
+            }
+
+            //modify the AST node that was passed to the visitor.
+            node.Name = resultingNode.Name;
+            node.Value = resultingNode.Value;
+            node.datatype = resultingNode.datatype;
+            node.TypeAlias = resultingNode.TypeAlias;
+            
+            return node;
+        }
+
+
         public override AssociativeNode VisitIdentifierListNode(IdentifierListNode node)
         {
             if (node == null)
@@ -330,16 +380,6 @@ namespace Dynamo.Engine.NodeToCode
             AssociativeNode shortNameNode;
             if (TryShortenClassName(node, out shortNameNode))
             {
-               if(shortNameNode is IdentifierNode)
-                {
-                    node.LeftNode = shortNameNode;
-                    node.RightNode = null;
-                }
-               else if(shortNameNode is IdentifierListNode)
-                {
-                    node.LeftNode =  (shortNameNode as IdentifierListNode).LeftNode ;
-                    node.RightNode = (shortNameNode as IdentifierListNode).RightNode ;
-                }
                 return shortNameNode;
             }
                 
