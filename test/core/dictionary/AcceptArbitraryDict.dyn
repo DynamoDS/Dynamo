@@ -1,0 +1,186 @@
+{
+  "Uuid": "23d0aaa0-9b42-406d-aad0-5b3962c51e5c",
+  "IsCustomNode": false,
+  "Description": null,
+  "Name": "AcceptArbitraryDict",
+  "ElementResolver": {
+    "ResolutionMap": {
+      "DesignScript.Builtin.Dictionary": {
+        "Key": "DesignScript.Builtin.Dictionary",
+        "Value": "DesignScriptBuiltin.dll"
+      },
+      "DummyCollection.AcceptTypedDictionary": {
+        "Key": "FFITarget.DummyCollection",
+        "Value": "FFITarget.dll"
+      },
+      "DummyCollection": {
+        "Key": "FFITarget.DummyCollection",
+        "Value": "FFITarget.dll"
+      },
+      "Autodesk.Point": {
+        "Key": "Autodesk.DesignScript.Geometry.Point",
+        "Value": "ProtoGeometry.dll"
+      },
+      "Autodesk.DesignScript.Geometry.Point": {
+        "Key": "Autodesk.DesignScript.Geometry.Point",
+        "Value": "ProtoGeometry.dll"
+      }
+    }
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "FFITarget.DummyCollection.ReturnArbitraryDictionary",
+      "Id": "aa3bd7fb68d04aa7828b32f5ea84b69a",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "a16ac3542acd40ab955babd77ca4df6a",
+          "Name": "var[]..[]",
+          "Description": "var[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "DummyCollection.ReturnArbitraryDictionary ( ): var[]..[]"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "FFITarget.DummyCollection.AcceptNestedDictionary@var[]..[]",
+      "Id": "756519ff963e4353a68535047fd50756",
+      "Inputs": [
+        {
+          "Id": "4e2d578d65dd46359b18200ed1bdcbbf",
+          "Name": "dictionary",
+          "Description": "var[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "cbfd706fdcfd4c9583cc6579ee407760",
+          "Name": "var[]..[]",
+          "Description": "var[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "DummyCollection.AcceptNestedDictionary (dictionary: var[]..[]): var[]..[]"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "FFITarget.DummyCollection.AcceptIDictionary@var[]..[]",
+      "Id": "48a84d7d9af14873a76a9e76df4f6058",
+      "Inputs": [
+        {
+          "Id": "5fe6bca5dc394b3cb4fb712e815df82d",
+          "Name": "dictionary",
+          "Description": "var[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "88ac6abfa7f64bf18519eae769ec3dcf",
+          "Name": "var[]..[]",
+          "Description": "var[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "DummyCollection.AcceptIDictionary (dictionary: var[]..[]): var[]..[]"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "a16ac3542acd40ab955babd77ca4df6a",
+      "End": "5fe6bca5dc394b3cb4fb712e815df82d",
+      "Id": "4aa531263c39493eb3256567a5b273d3"
+    },
+    {
+      "Start": "a16ac3542acd40ab955babd77ca4df6a",
+      "End": "4e2d578d65dd46359b18200ed1bdcbbf",
+      "Id": "918b47405dab45b6959b6821f3d4c884"
+    }
+  ],
+  "Dependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.1.0.7151",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "DummyCollection.ReturnArbitraryDictionary",
+        "Id": "aa3bd7fb68d04aa7828b32f5ea84b69a",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -148.27156365836197,
+        "Y": 144.10223561642414
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "DummyCollection.AcceptNestedDictionary",
+        "Id": "756519ff963e4353a68535047fd50756",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 529.290371339342,
+        "Y": 277.8996411628471
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "DummyCollection.AcceptIDictionary",
+        "Id": "48a84d7d9af14873a76a9e76df4f6058",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 322.54673945502464,
+        "Y": -132.05269533490207
+      }
+    ],
+    "Annotations": [],
+    "X": 172.21967525286908,
+    "Y": 136.70300357875988,
+    "Zoom": 0.70167475486246844
+  }
+}

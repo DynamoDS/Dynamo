@@ -11,10 +11,26 @@ namespace DynamoShapeManager
 {
     public static class Utilities
     {
+        /// <summary>
+        /// Key words for Products containing ASM binaries
+        /// </summary>
+        private static readonly List<string> ProductsWithASM = new List<string>() { "Revit", "Civil", "FormIt" };
+
+        #region public properties
         public static readonly string GeometryFactoryAssembly = "LibG.ProtoInterface.dll";
         public static readonly string PreloaderAssembly = "LibG.AsmPreloader.Managed.dll";
         public static readonly string PreloaderClassName = "Autodesk.LibG.AsmPreloader";
+
+        /// <summary>
+        /// This method is defined in libG.AsmPreloader for actual ASM preload
+        /// </summary>
         public static readonly string PreloaderMethodName = "PreloadAsmLibraries";
+
+        /// <summary>
+        /// The mask to filter ASM binary
+        /// </summary>
+        public static readonly string ASMFileMask = "ASMAHL*.dll";
+        #endregion
 
 
         /// <summary>
@@ -74,7 +90,7 @@ namespace DynamoShapeManager
                     if (!dir.Exists)
                         continue;
 
-                    var files = dir.GetFiles("ASMAHL*.dll");
+                    var files = dir.GetFiles(ASMFileMask);
                     if (!files.Any())
                         continue;
 
@@ -131,24 +147,38 @@ namespace DynamoShapeManager
                 getASMInstallsFunc = getASMInstallsFunc ?? GetAsmInstallations;
                 var installations = getASMInstallsFunc(rootFolder);
 
-                //first find the closest matches using major, minor and build version.
+                // first find the exact match or the lowest matching within same major version
                 foreach (var version in versions)
                 {
+                    Dictionary<Version, string> versionToLocationDic = new Dictionary<Version, string>();
                     foreach (KeyValuePair<string, Tuple<int, int, int, int>> install in installations)
                     {
                         var installVersion = new Version(install.Value.Item1, install.Value.Item2, install.Value.Item3);
-                        if (version.Major == installVersion.Major &&
-                            version.Minor == installVersion.Minor &&
-                            version.Build == installVersion.Build)
+                        if (version.Major == installVersion.Major && !versionToLocationDic.ContainsKey(installVersion))
                         {
-                            location = install.Key;
+                            versionToLocationDic.Add(installVersion, install.Key);
+                        }
+                    }
+
+                    // When there is major version matching, continue the search
+                    if (versionToLocationDic.Count != 0)
+                    {
+                        versionToLocationDic.TryGetValue(version, out location);
+                        // If exact matching version found, return it
+                        if (location != null)
+                        {
                             return version;
+                        }
+                        // If no matching version, return the lowest within same major
+                        else
+                        {
+                            location = versionToLocationDic[versionToLocationDic.Keys.Min()];
+                            return versionToLocationDic.Keys.Min();
                         }
                     }
                 }
 
-                //Fallback mechanism, look inside libg folders if any of them
-                //contain ASM dlls.
+                // Fallback mechanism, look inside libg folders if any of them contains ASM dlls.
                 foreach (var v in versions)
                 {
                     var folderName = string.Format("libg_{0}_{1}_{2}", v.Major, v.Minor, v.Build);
@@ -156,12 +186,12 @@ namespace DynamoShapeManager
                     if (!dir.Exists)
                         continue;
 
-                    var files = dir.GetFiles("ASMAHL*.dll");
+                    var files = dir.GetFiles(ASMFileMask);
                     if (!files.Any())
                         continue;
 
                     location = dir.FullName;
-                    return v; // Found version.
+                    return v;
                 }
             }
             catch (Exception)
@@ -205,15 +235,15 @@ namespace DynamoShapeManager
             if (string.IsNullOrEmpty(preloaderLocationToLoad))
             {
                 throw new ArgumentException("preloadedPath");
-
             }
             if (string.IsNullOrEmpty(asmLocation) || !Directory.Exists(asmLocation))
+            {
                 throw new ArgumentException("asmLocation");
-
+            }
             var preloaderPath = Path.Combine(preloaderLocationToLoad, PreloaderAssembly);
 
-            Debug.WriteLine(string.Format("ASM Preloader: {0}", preloaderPath));
-            Debug.WriteLine(string.Format("ASM Location: {0}", asmLocation));
+            Debug.WriteLine(string.Format("LibG ASM Preloader location: {0}", preloaderPath));
+            Debug.WriteLine(string.Format("ASM loading location: {0}", asmLocation));
 
             var libG = Assembly.LoadFrom(preloaderPath);
             var preloadType = libG.GetType(PreloaderClassName);
@@ -341,7 +371,7 @@ namespace DynamoShapeManager
             var type = assembly.GetType("DynamoInstallDetective.Utilities");
 
             var installationsMethod = type.GetMethod(
-                "FindProductInstallations",
+                "FindMultipleProductInstallations",
                 BindingFlags.Public | BindingFlags.Static);
 
             if (installationsMethod == null)
@@ -349,7 +379,8 @@ namespace DynamoShapeManager
                 throw new MissingMethodException("Method 'DynamoInstallDetective.Utilities.FindProductInstallations' not found");
             }
 
-            var methodParams = new object[] { "Revit", "ASMAHL*.dll" };
+
+            var methodParams = new object[] { ProductsWithASM, ASMFileMask };
             return installationsMethod.Invoke(null, methodParams) as IEnumerable;
         }
     }

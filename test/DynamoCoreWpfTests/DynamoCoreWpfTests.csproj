@@ -241,6 +241,10 @@
       <Project>{87550B2B-6CB8-461E-8965-DFAFE3AAFB5C}</Project>
       <Name>CoreNodes</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\src\Libraries\DesignScriptBuiltin\DesignScriptBuiltin.csproj">
+      <Project>{c0d6dee5-5532-4345-9c66-4c00d7fdb8be}</Project>
+      <Name>DesignScriptBuiltin</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\src\Libraries\DynamoConversions\DynamoConversions.csproj">
       <Project>{C5ADC05B-34E8-47BF-8E78-9C7BF96418C2}</Project>
       <Name>DynamoConversions</Name>

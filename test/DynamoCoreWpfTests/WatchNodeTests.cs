@@ -296,7 +296,7 @@ namespace DynamoCoreWpfTests
             var children = watchVM.Children;
             Assert.AreEqual(4, children.Count);
             Assert.AreEqual("false", children[0].NodeLabel);
-            Assert.AreEqual("3", children[1].NodeLabel);
+            Assert.AreEqual("Dictionary", children[1].NodeLabel);
             Assert.AreEqual("2", children[2].NodeLabel);
             Assert.AreEqual("1", children[3].NodeLabel);
         }

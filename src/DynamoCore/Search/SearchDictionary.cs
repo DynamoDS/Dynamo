@@ -1,9 +1,9 @@
-﻿using System.Diagnostics;
-using Dynamo.Utilities;
+﻿using Dynamo.Utilities;
+using Dynamo.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.RegularExpressions;
+using System.Diagnostics;
 
 namespace Dynamo.Search
 {
@@ -12,9 +12,20 @@ namespace Dynamo.Search
     /// </summary>
     public class SearchDictionary<V>
     {
+        private ILogger logger;
+
+        /// <summary>
+        ///     Construct a SearchDictionary object
+        /// </summary>
+        /// <param name="logger"> (Optional) A logger to use to log search data</param>
+        internal SearchDictionary(ILogger logger = null)
+        {
+            this.logger = logger;
+        }
+
         protected readonly Dictionary<V, Dictionary<string, double>> entryDictionary =
             new Dictionary<V, Dictionary<string, double>>();
-        
+
         private List<IGrouping<string, Tuple<V, double>>> tagDictionary;
 
         /// <summary>
@@ -307,7 +318,7 @@ namespace Dynamo.Search
                     tagWeightAndEntry =>
                         Tuple.Create(tagWeightAndEntry.Entry, tagWeightAndEntry.Weight)).ToList();
         }
-        
+
         /// <summary>
         /// Search for elements in the dictionary based on the query
         /// </summary>
@@ -315,6 +326,15 @@ namespace Dynamo.Search
         /// <param name="minResultsForTolerantSearch">Minimum number of results in the original search strategy to justify doing more tolerant search</param>
         internal IEnumerable<V> Search(string query, int minResultsForTolerantSearch = 0)
         {
+#if DEBUG
+            Stopwatch stopwatch = null;
+            if (this.logger != null)
+            {
+                stopwatch = new Stopwatch();
+                stopwatch.Start();
+            }
+#endif
+
             var searchDict = new Dictionary<V, double>();
 
             if (tagDictionary == null)
@@ -325,18 +345,48 @@ namespace Dynamo.Search
             query = query.ToLower();
 
             var subPatterns = SplitOnWhiteSpace(query);
+
+            // Add full (unsplit by whitespace) query to subpatterns
+            var subPatternsList = subPatterns.ToList();
+            subPatternsList.Insert(0, query);
+            subPatterns = (subPatternsList).ToArray();
+
             foreach (var pair in tagDictionary.Where(x => MatchWithQueryString(x.Key, subPatterns)))
             {
                 ComputeWeightAndAddToDictionary(query, pair, searchDict);
             }
 
-            return searchDict
-                .OrderByDescending(x => x.Value)
-                .Select(x => x.Key);
+            var orderedSearchDict = searchDict.OrderByDescending(x => x.Value);
+
+            var searchResults = orderedSearchDict.Select(x => x.Key);
+
+            // return only the top 20 search results
+            searchResults = searchResults.Take(20);
+            
+#if DEBUG
+            if (this.logger != null)
+            {
+                stopwatch.Stop();
+
+                var message = 
+                    string.Format(
+                        "Searching for: \"{0}\", [Entries:{1}, Tags:{2}] : {3}ms -> {4}", 
+                            query,
+                            entryDictionary.Count,
+                            tagDictionary.Count,
+                            stopwatch.ElapsedMilliseconds,
+                            searchResults.Count());
+                this.logger.Log(message);
+            }
+#endif
+
+            return searchResults;
         }
 
-        private static void ComputeWeightAndAddToDictionary(string query,
-            IGrouping<string, Tuple<V, double>> pair, Dictionary<V, double> searchDict)
+        private static void ComputeWeightAndAddToDictionary(
+            string query,
+            IGrouping<string, Tuple<V, double>> pair, 
+            Dictionary<V, double> searchDict)
         {
             // it has a match, how close is it to matching the entire string?
             double matchCloseness = ((double)query.Length) / pair.Key.Length;

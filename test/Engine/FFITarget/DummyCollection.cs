@@ -94,23 +94,36 @@ namespace FFITarget
         [MultiReturn(new string[] {"H", "G", "F", "E"})]
         public static Dictionary<string, object> ReturnNestedDictionary()
         {
-            //var dict = ReturnDictionary();
+            var dict = ReturnDictionary();
             var dictionary = new Dictionary<string, object>();
             dictionary.Add("E", 1);
             dictionary.Add("F", 2);
-            dictionary.Add("G", 3);
+            dictionary.Add("G", dict);
             dictionary.Add("H", false);
             return dictionary;
-        } 
+        }
+
+        public static Dictionary<string, object> ReturnArbitraryDictionary()
+        {
+            var dict = ReturnDictionary();
+            var dictionary = new Dictionary<string, object>();
+            dictionary.Add("E", 1);
+            dictionary.Add("F", new Dummy());
+            dictionary.Add("G", dict);
+            dictionary.Add("H", false);
+            dictionary.Add("I", new object[] {1, 2, 3, 4, new DummyCollection()});
+
+            return dictionary;
+        }
 
         public static IDictionary ReturnIDictionary()
         {
-            var dictionary = new Dictionary<string, int>();
-            dictionary.Add("A", 1);
-            dictionary.Add("B", 2);
-            dictionary.Add("C", 3);
-            dictionary.Add("D", 4);
-            return dictionary;
+            return ReturnDictionary();
+        }
+
+        public static IDictionary ReturnNestedIDictionary()
+        {
+            return ReturnNestedDictionary();
         }
 
         public static object ReturnDictionaryAsObject()
@@ -119,6 +132,11 @@ namespace FFITarget
         }
 
         public static IDictionary AcceptDictionary(Dictionary<string, int> dictionary)
+        {
+            return dictionary;
+        }
+
+        public static IDictionary AcceptNestedDictionary(Dictionary<string, object> dictionary)
         {
             return dictionary;
         }

@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<migrations>
+  <priorNameHint>
+    <oldName>Examples.BasicExample.Create@Autodesk.DesignScript.Geometry.Point</oldName>
+    <newName>Examples.NEWBasicExample.Create@Autodesk.DesignScript.Geometry.Point</newName>
+  </priorNameHint>
+  <priorNameHint>
+    <oldName>Examples.BasicExample.Create@double,double,double</oldName>
+    <newName>Examples.NEWBasicExample.Create@double,double,double</newName>
+  </priorNameHint>
+  <priorNameHint>
+    <oldName>Examples.BasicExample.MultiReturnExample</oldName>
+    <newName>Examples.NEWBasicExample.MultiReturnExample</newName>
+  </priorNameHint>
+</migrations>

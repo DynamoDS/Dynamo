@@ -1,0 +1,141 @@
+{
+  "Uuid": "23d0aaa0-9b42-406d-aad0-5b3962c51e5c",
+  "IsCustomNode": false,
+  "Description": null,
+  "Name": "AcceptDictWithType",
+  "ElementResolver": {
+    "ResolutionMap": {
+      "DesignScript.Builtin.Dictionary": {
+        "Key": "DesignScript.Builtin.Dictionary",
+        "Value": "DesignScriptBuiltin.dll"
+      },
+      "DummyCollection.AcceptTypedDictionary": {
+        "Key": "FFITarget.DummyCollection",
+        "Value": "FFITarget.dll"
+      },
+      "DummyCollection": {
+        "Key": "FFITarget.DummyCollection",
+        "Value": "FFITarget.dll"
+      },
+      "Autodesk.Point": {
+        "Key": "Autodesk.DesignScript.Geometry.Point",
+        "Value": "ProtoGeometry.dll"
+      },
+      "Autodesk.DesignScript.Geometry.Point": {
+        "Key": "Autodesk.DesignScript.Geometry.Point",
+        "Value": "ProtoGeometry.dll"
+      }
+    }
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "FFITarget.DummyCollection.AcceptNestedDictionary@var[]..[]",
+      "Id": "490bab9d915540128ec49a66052eb8b3",
+      "Inputs": [
+        {
+          "Id": "ed9449508a474c4d9c7056faa3c5f0cc",
+          "Name": "dictionary",
+          "Description": "var[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "f688badc053e4c4299f2f81704f7d221",
+          "Name": "var[]..[]",
+          "Description": "var[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "DummyCollection.AcceptNestedDictionary (dictionary: var[]..[]): var[]..[]"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "{\"type\":DummyCollection.DummyCollection(), \"list\":1};",
+      "Id": "5b11edbc1ce742569aea166fbf43efc0",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "63a5ce8e832e4c759e75e799ea4b1c59",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "63a5ce8e832e4c759e75e799ea4b1c59",
+      "End": "ed9449508a474c4d9c7056faa3c5f0cc",
+      "Id": "f73a4eafce7840adb99e830f641bb439"
+    }
+  ],
+  "Dependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.1.0.7151",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "DummyCollection.AcceptNestedDictionary",
+        "Id": "490bab9d915540128ec49a66052eb8b3",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 654.77600888689608,
+        "Y": 204.24760019193337
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "5b11edbc1ce742569aea166fbf43efc0",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -3.8665351207732783,
+        "Y": 137.10919853754916
+      }
+    ],
+    "Annotations": [],
+    "X": 59.561686988824505,
+    "Y": 200.31131255628276,
+    "Zoom": 0.642869557405948
+  }
+}
