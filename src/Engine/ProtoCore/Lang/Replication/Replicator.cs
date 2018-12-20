@@ -212,35 +212,32 @@ namespace ProtoCore.Lang.Replication
                 var indices = ri.Zipped ? ri.ZipIndecies : new List<int> { ri.CartesianIndex };
                 foreach (int index in indices)
                 {
-                    //This should generally be a collection, so we need to do a one phase unboxing
-                    var targets = reducedParams.Select(r => r[index]).ToList();
-                    foreach (var target in targets)
+                    StackValue target = basicList[index];
+
+                    if (!target.IsArray)
                     {
-                        if (!target.IsArray)
-                        {
                             System.Console.WriteLine("WARNING: Replication unbox requested on Singleton. Trap: 437AD20D-9422-40A3-BFFD-DA4BAD7F3E5F");
                             continue;
-                        }
+                    }
 
-                        var array = runtimeCore.Heap.ToHeapObject<DSArray>(target);
-                        if (array.Count == 0)
-                        {
+                    var array = runtimeCore.Heap.ToHeapObject<DSArray>(target);
+                    if (array.Count == 0)
+                    {
                             continue;
-                        }
+                    }
 
-                        var arrayStats = ArrayUtils.GetTypeExamplesForLayer(target, runtimeCore).Values;
+                    var arrayStats = ArrayUtils.GetTypeExamplesForLayer(target, runtimeCore).Values;
 
-                        List<List<StackValue>> clonedList = new List<List<StackValue>>(reducedParams);
-                        reducedParams.Clear();
+                    List<List<StackValue>> clonedList = new List<List<StackValue>>(reducedParams);
+                    reducedParams.Clear();
 
-                        foreach (StackValue sv in arrayStats)
+                    foreach (StackValue sv in arrayStats)
+                    {
+                        foreach (List<StackValue> lst in clonedList)
                         {
-                            foreach (List<StackValue> lst in clonedList)
-                            {
-                                List<StackValue> newArgs = new List<StackValue>(lst);
-                                newArgs[index] = sv;
-                                reducedParams.Add(newArgs);
-                            }
+                            List<StackValue> newArgs = new List<StackValue>(lst);
+                            newArgs[index] = sv;
+                            reducedParams.Add(newArgs);
                         }
                     }
                 }
