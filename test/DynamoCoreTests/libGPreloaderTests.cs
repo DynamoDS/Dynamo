@@ -193,10 +193,12 @@ namespace Dynamo.Tests
             var foundVersion = DynamoShapeManager.Utilities.GetInstalledAsmVersion2(
                 versions, ref foundPath, rootFolder, (path) => { return mockedInstalledASMs; });
 
-            // The found version in this case is a fallback of lowest version within same major which should be 225.0.0
+            // The found ASM version in this case is a fallback of lowest version within same major which should be 225.3.0
             Assert.AreEqual(targetVersion, foundVersion);
             Assert.AreEqual("revit_Prerelease_InstallLocation", foundPath);
-            Assert.AreEqual(libG22500path.Name.ToLower(), DynamoShapeManager.Utilities.GetLibGPreloaderLocation(foundVersion, rootFolder));
+
+            // The found libG preloader version in this case is another fallback of closest version below 225.3.0
+            Assert.AreEqual(libG22500path.FullName.ToLower(), DynamoShapeManager.Utilities.GetLibGPreloaderLocation(foundVersion, rootFolder).ToLower());
             // cleanup
             libG22440path.Delete(true);
             libG22500path.Delete(true);

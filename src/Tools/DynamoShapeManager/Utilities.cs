@@ -250,8 +250,7 @@ namespace DynamoShapeManager
                 preloaderVersions.Reverse();
                 // Pick the closest preloader version below or use the default value when no libG folder found
                 var preloaderVersion = preloaderVersions.FirstOrDefault() == null ? version : preloaderVersions.First();
-                libGFolderName = string.Format("libg_{0}_{1}_{2}", preloaderVersion.Major, preloaderVersion.Minor, preloaderVersion.Build);
-                return libGFolderName;
+                return Path.Combine(rootFolder, string.Format("libg_{0}_{1}_{2}", preloaderVersion.Major, preloaderVersion.Minor, preloaderVersion.Build));
             }
         }
 
