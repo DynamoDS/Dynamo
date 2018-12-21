@@ -1,0 +1,125 @@
+{
+  "Uuid": "ba634e12-5ae3-4056-a3de-233bcf0df7d3",
+  "IsCustomNode": false,
+  "Description": null,
+  "Name": "AcceptNestedDictionary",
+  "ElementResolver": {
+    "ResolutionMap": {
+      "DummyCollection": {
+        "Key": "FFITarget.DummyCollection",
+        "Value": "FFITarget.dll"
+      }
+    }
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "DummyCollection.ReturnNestedDictionary();",
+      "Id": "fcf58d0c0a99488ab895b7c8b36679eb",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "fa8b4b9a761c4cfaa5f18385e4030562",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "FFITarget.DummyCollection.AcceptNestedDictionary@var[]..[]",
+      "Id": "e1bd17cc9f3d437b93bfa9bc049318a2",
+      "Inputs": [
+        {
+          "Id": "ae225dd80336465c842c6ee824bce077",
+          "Name": "dictionary",
+          "Description": "var[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "e851b7003b3142bd907bd6354262ad96",
+          "Name": "var[]..[]",
+          "Description": "var[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "DummyCollection.AcceptNestedDictionary (dictionary: var[]..[]): var[]..[]"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "fa8b4b9a761c4cfaa5f18385e4030562",
+      "End": "ae225dd80336465c842c6ee824bce077",
+      "Id": "cc4282d5b8314b95b593223261cff2bf"
+    }
+  ],
+  "Dependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.1.0.5727",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "fcf58d0c0a99488ab895b7c8b36679eb",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 192.0,
+        "Y": 156.0
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "DummyCollection.AcceptNestedDictionary",
+        "Id": "e1bd17cc9f3d437b93bfa9bc049318a2",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 636.0,
+        "Y": 236.0
+      }
+    ],
+    "Annotations": [],
+    "X": 0.0,
+    "Y": 0.0,
+    "Zoom": 1.0
+  }
+}

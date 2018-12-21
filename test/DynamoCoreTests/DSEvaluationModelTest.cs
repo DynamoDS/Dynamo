@@ -8,7 +8,6 @@ using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.ZeroTouch;
 using NUnit.Framework;
 
-
 namespace Dynamo.Tests
 {
     [Category("DSExecution")]
@@ -1172,6 +1171,20 @@ namespace Dynamo.Tests
             var dynFilePath = Path.Combine(TestDirectory, @"core\dsevaluation\MAGN-9507.dyn");
             OpenModel(dynFilePath);
             AssertPreviewValue("3bf992eb-ecc9-4fcc-a90b-9b1ee7e925e9", 3);
+        }
+
+        [Test, Category("UnitTests")]
+        public void TestHeterogenousList()
+        {
+            // open test graph
+            RunModel(@"core\dsevaluation\test_hetereogenous_list.dyn");
+
+            var guidX = "d7c44c9098d647e0bbd4be8fa2c842eb";
+            var guidY = "a5463d1fb5d0457da51e563a5707d1cd";
+            var guidZ = "d35348ab082c451aac9fc2e8a04f7263";
+            AssertPreviewValue(guidX, new object[] { null, null, null, 5 });
+            AssertPreviewValue(guidY, new object[] { null, null, null, 10.2 });
+            AssertPreviewValue(guidZ, new object[] { null, null, null, 15.2 });
         }
     }
 

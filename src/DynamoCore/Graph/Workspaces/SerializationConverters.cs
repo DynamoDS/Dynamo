@@ -36,20 +36,35 @@ namespace Dynamo.Graph.Workspaces
     {
         private CustomNodeManager manager;
         private LibraryServices libraryServices;
+        private NodeFactory nodeFactory;
         private bool isTestMode;
 
-        
         public ElementResolver ElementResolver { get; set; }
-        //map of all loaded assemblies including LoadFrom context assemblies
+        // Map of all loaded assemblies including LoadFrom context assemblies
         private Dictionary<string, List<Assembly>> loadedAssemblies;
 
+        [Obsolete("This constructor will be removed in Dynamo 3.0, please use new NodeReadConverter constructor with additional parameters to support node migration.")]
         public NodeReadConverter(CustomNodeManager manager, LibraryServices libraryServices, bool isTestMode = false)
         {
             this.manager = manager;
             this.libraryServices = libraryServices;
             this.isTestMode = isTestMode;
-            //we only do this in test mode because it should not be required-
-            //see comment below in NodeReadConverter.ReadJson - and it could be slow.
+            // We only do this in test mode because it should not be required-
+            // see comment below in NodeReadConverter.ReadJson - and it could be slow.
+            if (this.isTestMode)
+            {
+                this.loadedAssemblies = this.buildMapOfLoadedAssemblies();
+            }
+        }
+
+        public NodeReadConverter(CustomNodeManager manager, LibraryServices libraryServices, NodeFactory nodeFactory, bool isTestMode = false)
+        {
+            this.manager = manager;
+            this.libraryServices = libraryServices;
+            this.nodeFactory = nodeFactory;
+            this.isTestMode = isTestMode;
+            // We only do this in test mode because it should not be required-
+            // see comment below in NodeReadConverter.ReadJson - and it could be slow.
             if (this.isTestMode)
             {
                 this.loadedAssemblies = this.buildMapOfLoadedAssemblies();
@@ -84,17 +99,17 @@ namespace Dynamo.Graph.Workspaces
 
             var obj = JObject.Load(reader);
             var type = Type.GetType(obj["$type"].Value<string>());
-            //if we can't find this type - try to look in our load from assemblies,
-            //but only during testing - this is required during testing because some dlls are loaded
-            //using Assembly.LoadFrom using the assemblyHelper - which loads dlls into loadFrom context - 
-            //dlls loaded with LoadFrom context cannot be found using Type.GetType() - this should
-            //not be an issue during normal dynamo use but if it is we can enable this code.
+            // If we can't find this type - try to look in our load from assemblies,
+            // but only during testing - this is required during testing because some dlls are loaded
+            // using Assembly.LoadFrom using the assemblyHelper - which loads dlls into loadFrom context - 
+            // dlls loaded with LoadFrom context cannot be found using Type.GetType() - this should
+            // not be an issue during normal dynamo use but if it is we can enable this code.
             if(type == null && this.isTestMode == true)
             {
                 List<Assembly> resultList;
 
                 var typeName = obj["$type"].Value<string>().Split(',').FirstOrDefault();
-                //this assemblyName does not usually contain version information...
+                // This assemblyName does not usually contain version information...
                 var assemblyName = obj["$type"].Value<string>().Split(',').Skip(1).FirstOrDefault().Trim();
                 if (assemblyName != null)
                 {
@@ -103,6 +118,21 @@ namespace Dynamo.Graph.Workspaces
                         var matchingTypes = resultList.Select(x => x.GetType(typeName)).ToList();
                         type =  matchingTypes.FirstOrDefault();
                     }
+                }
+            }
+
+            // Check for and attempt to resolve an unknown type before proceeding
+            if (type == null)
+            {
+                // Attempt to resolve the type using `AlsoKnownAs`
+                var unresolvedName = obj["$type"].Value<string>().Split(',').FirstOrDefault();
+                Type newType;
+                nodeFactory.ResolveType(unresolvedName, out newType);
+
+                // If resolved update the type
+                if (newType != null)
+                {
+                    type = newType;
                 }
             }
 
@@ -118,10 +148,13 @@ namespace Dynamo.Graph.Workspaces
             string assemblyLocation = objectType.Assembly.Location;
 
             bool remapPorts = true;
+
+            // If type is still null at this point return a dummy node
             if (type == null)
             {
                 node = CreateDummyNode(obj, assemblyLocation, inPorts, outPorts);
             }
+            // Attempt to create a valid node using the type
             else if (type == typeof(Function))
             {
                 var functionId = Guid.Parse(obj["FunctionSignature"].Value<string>());
@@ -169,7 +202,17 @@ namespace Dynamo.Graph.Workspaces
             else if (typeof(DSFunctionBase).IsAssignableFrom(type))
             {
                 var mangledName = obj["FunctionSignature"].Value<string>();
+                var priorNames = libraryServices.GetPriorNames();
                 var functionDescriptor = libraryServices.GetFunctionDescriptor(mangledName);
+                string newName;
+
+                // Update the function descriptor if a newer migrated version of the node exists
+                if (priorNames.TryGetValue(mangledName, out newName))
+                {
+                    functionDescriptor = libraryServices.GetFunctionDescriptor(newName);
+                }
+
+                // Use the functionDescriptor to try and restore the proper node if possible
                 if (functionDescriptor == null)
                 {
                     node = CreateDummyNode(obj, assemblyLocation, inPorts, outPorts);
@@ -257,7 +300,7 @@ namespace Dynamo.Graph.Workspaces
         {
             foreach (var p in node.InPorts)
             {
-                //check that the port index is not out of range of the loaded ports
+                // Check that the port index is not out of range of the loaded ports
                 if (p.Index < inPorts.Length)
                 {
                     var deserializedPort = inPorts[p.Index];
@@ -277,7 +320,7 @@ namespace Dynamo.Graph.Workspaces
             }
             foreach (var p in node.OutPorts)
             {
-                //check that the port index is not out of range of the loaded ports
+                // Check that the port index is not out of range of the loaded ports
                 if (p.Index < outPorts.Length)
                 {
                     var deserializedPort = outPorts[p.Index];
@@ -298,7 +341,7 @@ namespace Dynamo.Graph.Workspaces
 
         private static void setPortDataOnNewPort(PortModel newPort, PortModel deserializedPort )
         {
-            //set the appropriate properties on the new port.
+            // Set the appropriate properties on the new port.
             newPort.GUID = deserializedPort.GUID;
             newPort.UseLevels = deserializedPort.UseLevels;
             newPort.Level = deserializedPort.Level;
@@ -376,7 +419,6 @@ namespace Dynamo.Graph.Workspaces
             var nmc = (NodeReadConverter)serializer.Converters.First(c => c is NodeReadConverter);
             nmc.ElementResolver = elementResolver;
 
-            // nodes
             var nodes = obj["Nodes"].ToObject<IEnumerable<NodeModel>>(serializer);
 
             // Setting Inputs
@@ -385,7 +427,7 @@ namespace Dynamo.Graph.Workspaces
             if (inputsToken != null)
             {
                 var inputs = inputsToken.ToArray().Select(x => x.ToObject<NodeInputData>()).ToList();
-                //using the inputs lets set the correct properties on the nodes.
+                // Use the inputs to set the correct properties on the nodes.
                 foreach (var inputData in inputs)
                 {
                     var matchingNode = nodes.Where(x => x.GUID == inputData.Id).FirstOrDefault();
@@ -402,7 +444,7 @@ namespace Dynamo.Graph.Workspaces
             if (outputsToken != null)
             {
                 var outputs = outputsToken.ToArray().Select(x => x.ToObject<NodeOutputData>()).ToList();
-                //using the inputs lets set the correct properties on the nodes.
+                // Use the outputs to set the correct properties on the nodes.
                 foreach (var outputData in outputs)
                 {
                     var matchingNode = nodes.Where(x => x.GUID == outputData.Id).FirstOrDefault();
@@ -490,12 +532,12 @@ namespace Dynamo.Graph.Workspaces
                 info.Category = obj["Category"].Value<string>();
             }
 
-            //Build an empty annotations. Annotations are defined in the view block. If the file has View block
-            //serialize view block first and build the annotations.
+            // Build an empty annotations. Annotations are defined in the view block. If the file has View block
+            // serialize view block first and build the annotations.
             var annotations = new List<AnnotationModel>();
 
-            //Build an empty notes. Notes are defined in the view block. If the file has View block
-            //serialize view block first and build the notes.
+            // Build an empty notes. Notes are defined in the view block. If the file has View block
+            // serialize view block first and build the notes.
             var notes = new List<NoteModel>();
 
             #region Restore trace data
@@ -602,29 +644,29 @@ namespace Dynamo.Graph.Workspaces
             writer.WritePropertyName("Name");
             writer.WriteValue(ws.Name);
 
-            //element resolver
+            // Element resolver
             writer.WritePropertyName("ElementResolver");
             serializer.Serialize(writer, ws.ElementResolver);
 
-            //inputs
+            // Inputs
             writer.WritePropertyName("Inputs");
-            //find nodes which are inputs and get their inputData if its not null.
+            // Find nodes which are inputs and get their inputData if its not null.
             var inputNodeDatas = ws.Nodes.Where((node) => node.IsSetAsInput == true && node.InputData != null)
                 .Select(inputNode => inputNode.InputData).ToList();
             serializer.Serialize(writer, inputNodeDatas);
 
-            //outputs
+            // Outputs
             writer.WritePropertyName("Outputs");
-            //find nodes which are outputs and get their outputData if its not null.
+            // Find nodes which are outputs and get their outputData if its not null.
             var outputNodeDatas = ws.Nodes.Where((node) => node.IsSetAsOutput == true && node.OutputData != null)
                 .Select(outputNode => outputNode.OutputData).ToList();
             serializer.Serialize(writer, outputNodeDatas);
 
-            //nodes
+            // Nodes
             writer.WritePropertyName("Nodes");
             serializer.Serialize(writer, ws.Nodes);
 
-            //connectors
+            // Connectors
             writer.WritePropertyName("Connectors");
             serializer.Serialize(writer, ws.Connectors);
 
@@ -659,7 +701,7 @@ namespace Dynamo.Graph.Workspaces
                 var nodeTraceDataList = engine.LiveRunnerRuntimeCore.RuntimeData.GetTraceDataForNodes(nodeGuids,
                     this.engine.LiveRunnerRuntimeCore.DSExecutable);
 
-                // serialize given node-data-list pairs into an Json.
+                // Serialize given node-data-list pairs into an Json.
                 if (nodeTraceDataList.Any())
                 {
                     foreach (var pair in nodeTraceDataList)
@@ -782,7 +824,7 @@ namespace Dynamo.Graph.Workspaces
                 endPort = (PortModel)resolver.ResolveReferenceFromMap(serializer.Context, endIdGuid.ToString());
             }
 
-            //if the id is not a guid, makes a guid based on the id of the model
+            // If the id is not a guid, makes a guid based on the id of the model
             Guid connectorId = GuidUtility.tryParseOrCreateGuid(obj["Id"].Value<string>());
             if(startPort != null && endPort != null)
             {
@@ -948,7 +990,7 @@ namespace Dynamo.Graph.Workspaces
             Guid id;
             if (!Guid.TryParse(reference, out id))
             {
-                //if this is not a guid, it won't be in the resolver.
+                // If this is not a guid, it won't be in the resolver.
                 Console.WriteLine("not a guid");
                 return null;
             }
@@ -970,7 +1012,7 @@ namespace Dynamo.Graph.Workspaces
             Guid id;
             if (!Guid.TryParse(reference, out id))
             {
-                //if this is not a guid, it won't be in the resolver.
+                // If this is not a guid, it won't be in the resolver.
                 Console.WriteLine("not a guid");
                 return null;
             }

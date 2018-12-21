@@ -259,7 +259,7 @@
       },
       {
         "Id": "5cefc1038b544158bd2bae09ec296510",
-        "Title": "Data Can be visualized by clicking on the Run button in the lower right of the application.  If you enable \"Run automatically\" the application will constantly update.\r\n\r\nYou can see the data either by using a Watch node or clicking on the small sqare at the bottom of most nodes.",
+        "Title": "Data Can be visualized by clicking on the Run button in the lower right of the application.  If you enable \"Run automatically\" the application will constantly update.\r\n\r\nYou can see the data either by using a Watch node or clicking on the small square at the bottom of most nodes.",
         "Nodes": [],
         "Left": 3711.71399193364,
         "Top": 874.778613476432,
