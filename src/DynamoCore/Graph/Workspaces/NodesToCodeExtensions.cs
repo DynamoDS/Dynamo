@@ -3,6 +3,7 @@ using Dynamo.Engine.NodeToCode;
 using Dynamo.Graph.Connectors;
 using Dynamo.Graph.Nodes;
 using Dynamo.Selection;
+using ProtoCore.Utils;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -94,7 +95,7 @@ namespace Dynamo.Graph.Workspaces
                 var newResult = NodeToCodeCompiler.ConstantPropagationForTemp(nodeToCodeResult, outputVariables);
 
                 // Rewrite the AST using the shortest unique name in case of namespace conflicts
-                NodeToCodeCompiler.ReplaceWithShortestQualifiedName(
+                CoreUtils.ReplaceWithShortestQualifiedName(
                     engineController.LibraryServices.LibraryManagementCore.ClassTable, newResult.AstNodes, workspace.ElementResolver);
                 var codegen = new ProtoCore.CodeGenDS(newResult.AstNodes);
                 var code = codegen.GenerateCode();

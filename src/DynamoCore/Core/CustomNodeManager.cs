@@ -1084,7 +1084,7 @@ namespace Dynamo.Core
                             parameters = funcDesc.Parameters.ToList();
 
                             // if the node is an instance member the function won't contain a 
-                            // parameter for this type so we need to geneate a new typedParameter.
+                            // parameter for this type so we need to generate a new typedParameter.
                             if (funcDesc.Type == Engine.FunctionType.InstanceMethod ||
                                 funcDesc.Type == Engine.FunctionType.InstanceProperty)
                             {
@@ -1119,8 +1119,8 @@ namespace Dynamo.Core
                                         datatype = typedParameter.Type,
                                         TypeAlias = typedParameter.Type.Name
                                     };
-                                 
-                                    NodeToCodeCompiler.ReplaceWithShortestQualifiedName(
+
+                                    CoreUtils.ReplaceWithShortestQualifiedName(
                                         classTable,
                                         new List<AssociativeNode> { typedNode },
                                         currentWorkspace.ElementResolver);

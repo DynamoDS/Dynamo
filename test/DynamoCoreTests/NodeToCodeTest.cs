@@ -18,6 +18,7 @@ using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.ZeroTouch;
 using Dynamo.Interfaces;
+using ProtoCore.Utils;
 
 namespace Dynamo.Tests
 {
@@ -300,7 +301,7 @@ namespace Dynamo.Tests
             var engine = CurrentDynamoModel.EngineController;
 
             var result = engine.ConvertNodesToCode(nodes, nodes);
-            NodeToCodeCompiler.ReplaceWithShortestQualifiedName(engine.LibraryServices.LibraryManagementCore.ClassTable, result.AstNodes);
+            CoreUtils.ReplaceWithShortestQualifiedName(engine.LibraryServices.LibraryManagementCore.ClassTable, result.AstNodes);
             Assert.IsNotNull(result);
             Assert.IsNotNull(result.AstNodes);
             Assert.AreEqual(3, result.AstNodes.Count());
@@ -409,7 +410,7 @@ namespace Dynamo.Tests
             Assert.IsNotNull(result);
             Assert.IsNotNull(result.AstNodes);
 
-            NodeToCodeCompiler.ReplaceWithShortestQualifiedName(engine.LibraryServices.LibraryManagementCore.ClassTable, result.AstNodes);
+            CoreUtils.ReplaceWithShortestQualifiedName(engine.LibraryServices.LibraryManagementCore.ClassTable, result.AstNodes);
             Assert.AreEqual(2, result.AstNodes.Count());
             Assert.True(result.AstNodes.All(n => n is BinaryExpressionNode));
             var rhs = result.AstNodes.Cast<BinaryExpressionNode>().Select(n => n.RightNode.ToString());
@@ -434,7 +435,7 @@ namespace Dynamo.Tests
             var lhs = AstFactory.BuildIdentifier("lhs");
             var ast = AstFactory.BuildBinaryExpression(lhs, functionCall, ProtoCore.DSASM.Operator.assign);
 
-            NodeToCodeCompiler.ReplaceWithShortestQualifiedName(
+            CoreUtils.ReplaceWithShortestQualifiedName(
                 CurrentDynamoModel.EngineController.LibraryServices.LibraryManagementCore.ClassTable, 
                 new [] { ast });
 
@@ -460,7 +461,7 @@ namespace Dynamo.Tests
 
             var result = engine.ConvertNodesToCode(nodes, nodes);
             result = NodeToCodeCompiler.ConstantPropagationForTemp(result, Enumerable.Empty<string>());
-            NodeToCodeCompiler.ReplaceWithShortestQualifiedName(engine.LibraryServices.LibraryManagementCore.ClassTable, result.AstNodes);
+            CoreUtils.ReplaceWithShortestQualifiedName(engine.LibraryServices.LibraryManagementCore.ClassTable, result.AstNodes);
             Assert.IsNotNull(result);
             Assert.IsNotNull(result.AstNodes);
 
@@ -489,7 +490,7 @@ namespace Dynamo.Tests
 
             var result = engine.ConvertNodesToCode(nodes, nodes);
             result = NodeToCodeCompiler.ConstantPropagationForTemp(result, Enumerable.Empty<string>());
-            NodeToCodeCompiler.ReplaceWithShortestQualifiedName(engine.LibraryServices.LibraryManagementCore.ClassTable, result.AstNodes);
+            CoreUtils.ReplaceWithShortestQualifiedName(engine.LibraryServices.LibraryManagementCore.ClassTable, result.AstNodes);
             Assert.IsNotNull(result);
             Assert.IsNotNull(result.AstNodes); ;
 
@@ -518,7 +519,7 @@ namespace Dynamo.Tests
 
             var result = engine.ConvertNodesToCode(nodes, nodes);
             result = NodeToCodeCompiler.ConstantPropagationForTemp(result, Enumerable.Empty<string>());
-            NodeToCodeCompiler.ReplaceWithShortestQualifiedName(engine.LibraryServices.LibraryManagementCore.ClassTable, result.AstNodes);
+            CoreUtils.ReplaceWithShortestQualifiedName(engine.LibraryServices.LibraryManagementCore.ClassTable, result.AstNodes);
             Assert.IsNotNull(result);
             Assert.IsNotNull(result.AstNodes);
 
@@ -547,7 +548,7 @@ namespace Dynamo.Tests
 
             var result = engine.ConvertNodesToCode(nodes, nodes);
             result = NodeToCodeCompiler.ConstantPropagationForTemp(result, Enumerable.Empty<string>());
-            NodeToCodeCompiler.ReplaceWithShortestQualifiedName(engine.LibraryServices.LibraryManagementCore.ClassTable, result.AstNodes);
+            CoreUtils.ReplaceWithShortestQualifiedName(engine.LibraryServices.LibraryManagementCore.ClassTable, result.AstNodes);
             Assert.IsNotNull(result);
             Assert.IsNotNull(result.AstNodes);
 
@@ -573,7 +574,7 @@ namespace Dynamo.Tests
 
             var result = engine.ConvertNodesToCode(nodes, nodes);
             result = NodeToCodeCompiler.ConstantPropagationForTemp(result, Enumerable.Empty<string>());
-            NodeToCodeCompiler.ReplaceWithShortestQualifiedName(engine.LibraryServices.LibraryManagementCore.ClassTable, result.AstNodes);
+            CoreUtils.ReplaceWithShortestQualifiedName(engine.LibraryServices.LibraryManagementCore.ClassTable, result.AstNodes);
             Assert.IsNotNull(result);
             Assert.IsNotNull(result.AstNodes);
 
@@ -599,7 +600,7 @@ namespace Dynamo.Tests
 
             var result = engine.ConvertNodesToCode(nodes, nodes);
             result = NodeToCodeCompiler.ConstantPropagationForTemp(result, Enumerable.Empty<string>());
-            NodeToCodeCompiler.ReplaceWithShortestQualifiedName(engine.LibraryServices.LibraryManagementCore.ClassTable, result.AstNodes);
+            CoreUtils.ReplaceWithShortestQualifiedName(engine.LibraryServices.LibraryManagementCore.ClassTable, result.AstNodes);
             Assert.IsNotNull(result);
             Assert.IsNotNull(result.AstNodes);
 
@@ -631,7 +632,7 @@ namespace Dynamo.Tests
 
             var result = engine.ConvertNodesToCode(nodes, nodes);
             result = NodeToCodeCompiler.ConstantPropagationForTemp(result, Enumerable.Empty<string>());
-            NodeToCodeCompiler.ReplaceWithShortestQualifiedName(engine.LibraryServices.LibraryManagementCore.ClassTable, result.AstNodes);
+            CoreUtils.ReplaceWithShortestQualifiedName(engine.LibraryServices.LibraryManagementCore.ClassTable, result.AstNodes);
             Assert.IsNotNull(result);
             Assert.IsNotNull(result.AstNodes);
 
@@ -660,7 +661,7 @@ namespace Dynamo.Tests
 
             var result = engine.ConvertNodesToCode(nodes, nodes);
             result = NodeToCodeCompiler.ConstantPropagationForTemp(result, Enumerable.Empty<string>());
-            NodeToCodeCompiler.ReplaceWithShortestQualifiedName(engine.LibraryServices.LibraryManagementCore.ClassTable, result.AstNodes);
+            CoreUtils.ReplaceWithShortestQualifiedName(engine.LibraryServices.LibraryManagementCore.ClassTable, result.AstNodes);
             Assert.IsNotNull(result);
             Assert.IsNotNull(result.AstNodes);
 
@@ -689,7 +690,7 @@ namespace Dynamo.Tests
 
             var result = engine.ConvertNodesToCode(nodes, nodes);
             result = NodeToCodeCompiler.ConstantPropagationForTemp(result, Enumerable.Empty<string>());
-            NodeToCodeCompiler.ReplaceWithShortestQualifiedName(engine.LibraryServices.LibraryManagementCore.ClassTable, result.AstNodes);
+            CoreUtils.ReplaceWithShortestQualifiedName(engine.LibraryServices.LibraryManagementCore.ClassTable, result.AstNodes);
             Assert.IsNotNull(result);
             Assert.IsNotNull(result.AstNodes);
 
@@ -813,7 +814,7 @@ namespace Dynamo.Tests
 
             var result = engine.ConvertNodesToCode(nodes, nodes);
             result = NodeToCodeCompiler.ConstantPropagationForTemp(result, Enumerable.Empty<string>());
-            NodeToCodeCompiler.ReplaceWithShortestQualifiedName(engine.LibraryServices.LibraryManagementCore.ClassTable, result.AstNodes);
+            CoreUtils.ReplaceWithShortestQualifiedName(engine.LibraryServices.LibraryManagementCore.ClassTable, result.AstNodes);
             Assert.IsTrue(result != null && result.AstNodes != null);
 
             var expr = result.AstNodes.Last() as BinaryExpressionNode;
@@ -836,7 +837,7 @@ namespace Dynamo.Tests
 
             var result = engine.ConvertNodesToCode(nodes, nodes);
             result = NodeToCodeCompiler.ConstantPropagationForTemp(result, Enumerable.Empty<string>());
-            NodeToCodeCompiler.ReplaceWithShortestQualifiedName(engine.LibraryServices.LibraryManagementCore.ClassTable, result.AstNodes);
+            CoreUtils.ReplaceWithShortestQualifiedName(engine.LibraryServices.LibraryManagementCore.ClassTable, result.AstNodes);
             Assert.IsTrue(result != null && result.AstNodes != null);
 
             var rhs = result.AstNodes.Skip(1).Select(b => (b as BinaryExpressionNode).RightNode.ToString().Contains("X"));
@@ -858,7 +859,7 @@ namespace Dynamo.Tests
 
             var result = engine.ConvertNodesToCode(nodes, nodes);
             result = NodeToCodeCompiler.ConstantPropagationForTemp(result, Enumerable.Empty<string>());
-            NodeToCodeCompiler.ReplaceWithShortestQualifiedName(engine.LibraryServices.LibraryManagementCore.ClassTable, result.AstNodes);
+            CoreUtils.ReplaceWithShortestQualifiedName(engine.LibraryServices.LibraryManagementCore.ClassTable, result.AstNodes);
             Assert.IsTrue(result != null && result.AstNodes != null);
 
             var rhs = result.AstNodes.Skip(1).Select(b => (b as BinaryExpressionNode).RightNode.ToString().EndsWith("ElementResolverTarget.StaticProperty"));
@@ -880,7 +881,7 @@ namespace Dynamo.Tests
 
             var result = engine.ConvertNodesToCode(nodes, nodes);
             result = NodeToCodeCompiler.ConstantPropagationForTemp(result, Enumerable.Empty<string>());
-            NodeToCodeCompiler.ReplaceWithShortestQualifiedName(engine.LibraryServices.LibraryManagementCore.ClassTable, result.AstNodes);
+            CoreUtils.ReplaceWithShortestQualifiedName(engine.LibraryServices.LibraryManagementCore.ClassTable, result.AstNodes);
             Assert.IsTrue(result != null && result.AstNodes != null);
 
             var rhs = result.AstNodes.Skip(1).Select(b => (b as BinaryExpressionNode).RightNode.ToString().Contains("ValueContainer.SomeValue"));
@@ -1281,6 +1282,7 @@ namespace Dynamo.Tests
         protected override void GetLibrariesToPreload(List<string> libraries)
         {
             libraries.Add("ProtoGeometry.dll");
+            libraries.Add("DesignScriptBuiltin.dll");
             base.GetLibrariesToPreload(libraries);
         }
 
@@ -1392,5 +1394,15 @@ namespace Dynamo.Tests
                 }
             }
         }
+        /*
+        TODO these tests were disabled because they are not stable and 
+        their random nature makes them randmoly fail.
+        [Test, TestCaseSource("GetFilesForMutation")]
+        public void TestMutation(string fileName)
+        {
+            MutationTest(fileName);
+        }
+        
+     */
     }
 }
