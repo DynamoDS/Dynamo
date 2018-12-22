@@ -618,6 +618,80 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        public void TestShortestQualifiedNameReplacerTypedIdentiferFFITarget()
+        {
+            string libraryPath = "FFITarget.dll";
+            if (!CurrentDynamoModel.EngineController.LibraryServices.IsLibraryLoaded(libraryPath))
+            {
+                CurrentDynamoModel.EngineController.LibraryServices.ImportLibrary(libraryPath);
+            }
+            var typedIdNode = new TypedIdentifierNode
+            {
+                Name = "aName",
+                Value = "aName",
+                datatype = new ProtoCore.Type("FFITarget.Base", 0),
+                TypeAlias = "FFITarget.Base"
+            };
+            var oldTypeName = typedIdNode.datatype.Name;
+
+            var engine = CurrentDynamoModel.EngineController;
+            CoreUtils.ReplaceWithShortestQualifiedName(engine.LibraryServices.LibraryManagementCore.ClassTable, new List<AssociativeNode>() { typedIdNode});
+
+            Assert.AreEqual("Base", typedIdNode.TypeAlias);
+            Assert.AreEqual(oldTypeName, typedIdNode.datatype.Name);
+            Assert.AreEqual("aName", typedIdNode.Name);
+            Assert.AreEqual("aName", typedIdNode.Value);
+        }
+
+        [Test]
+        public void TestShortestQualifiedNameReplacerTypedIdentifer()
+        {
+            var typedIdNode = new TypedIdentifierNode
+            {
+                Name = "aName",
+                Value = "aName",
+                datatype = new ProtoCore.Type("Autodesk.DesignScript.Geometry.Geometry", 0),
+                TypeAlias = "Autodesk.DesignScript.Geometry.Geometry"
+            };
+            var oldTypeName = typedIdNode.datatype.Name;
+
+            var engine = CurrentDynamoModel.EngineController;
+            CoreUtils.ReplaceWithShortestQualifiedName(engine.LibraryServices.LibraryManagementCore.ClassTable, new List<AssociativeNode>() { typedIdNode });
+
+            Assert.AreEqual("Geometry", typedIdNode.TypeAlias);
+            Assert.AreEqual(oldTypeName, typedIdNode.datatype.Name);
+            Assert.AreEqual("aName", typedIdNode.Name);
+            Assert.AreEqual("aName", typedIdNode.Value);
+        }
+
+        [Test]
+        public void TestShortestQualifiedNameReplacerTypedIdentifer_WithConflict()
+        {
+            string libraryPath = "FFITarget.dll";
+            if (!CurrentDynamoModel.EngineController.LibraryServices.IsLibraryLoaded(libraryPath))
+            {
+                CurrentDynamoModel.EngineController.LibraryServices.ImportLibrary(libraryPath);
+            }
+
+            var typedIdNode = new TypedIdentifierNode
+            {
+                Name = "aName",
+                Value = "aName",
+                datatype = new ProtoCore.Type("Autodesk.DesignScript.Geometry.Point", 0),
+                TypeAlias = "Autodesk.DesignScript.Geometry.Point"
+            };
+            var oldTypeName = typedIdNode.datatype.Name;
+
+            var engine = CurrentDynamoModel.EngineController;
+            CoreUtils.ReplaceWithShortestQualifiedName(engine.LibraryServices.LibraryManagementCore.ClassTable, new List<AssociativeNode>() { typedIdNode });
+
+            Assert.AreEqual("Autodesk.Point", typedIdNode.TypeAlias);
+            Assert.AreEqual(oldTypeName, typedIdNode.datatype.Name);
+            Assert.AreEqual("aName", typedIdNode.Name);
+            Assert.AreEqual("aName", typedIdNode.Value);
+        }
+
+        [Test]
         public void TestShortestQualifiedNameReplacerWithDefaultArgument()
         {
             string libraryPath = "FFITarget.dll";
