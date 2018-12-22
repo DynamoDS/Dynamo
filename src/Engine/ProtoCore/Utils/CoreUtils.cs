@@ -947,28 +947,5 @@ namespace ProtoCore.Utils
             }
             return StackValue.BuildNull();
         }
-
-        /// <summary>
-        /// Replace fully qualified class name with shortest uniquely qualified name. 
-        /// 
-        /// For example, in presence of Rhino.Geometry.Point, replace
-        /// 
-        ///     Autodesk.Geometry.Point.ByCoordinates(...)
-        ///     
-        /// with
-        /// 
-        ///     Autodesk.Point.ByCoordinates(...)
-        /// </summary>
-        /// <param name="classTable"></param>
-        /// <param name="asts">Input ASTs</param>
-        /// <param name="resolver"></param>
-        public static void ReplaceWithShortestQualifiedName(ClassTable classTable, IEnumerable<AssociativeNode> asts, ElementResolver resolver = null)
-        {
-            ShortestQualifiedNameReplacer replacer = new ShortestQualifiedNameReplacer(classTable, resolver);
-            foreach (var ast in asts)
-            {
-                ast.Accept(replacer);
-            }
-        }
     }
 }

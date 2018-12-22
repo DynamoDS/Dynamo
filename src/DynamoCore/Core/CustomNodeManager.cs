@@ -1,5 +1,4 @@
 ﻿using Dynamo.Engine;
-using Dynamo.Engine.CodeGeneration;
 using Dynamo.Engine.NodeToCode;
 using Dynamo.Graph;
 using Dynamo.Graph.Annotations;
@@ -19,7 +18,6 @@ using Dynamo.Properties;
 using Dynamo.Selection;
 using Dynamo.Utilities;
 using ProtoCore.AST.AssociativeAST;
-using ProtoCore.Utils;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -1120,7 +1118,7 @@ namespace Dynamo.Core
                                         TypeAlias = typedParameter.Type.Name
                                     };
 
-                                    CoreUtils.ReplaceWithShortestQualifiedName(
+                                    NodeToCodeCompiler.ReplaceWithShortestQualifiedName(
                                         classTable,
                                         new List<AssociativeNode> { typedNode },
                                         currentWorkspace.ElementResolver);

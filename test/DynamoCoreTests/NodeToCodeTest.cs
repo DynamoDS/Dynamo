@@ -1,24 +1,19 @@
-﻿using System;
-using System.IO;
-using System.Linq;
-using System.Collections.Generic;
-using Dynamo.Scheduler;
-using Dynamo.Selection;
-
-using NUnit.Framework;
-using Dynamo.Models;
-using Dynamo.Nodes;
-using Dynamo.Engine;
-using ProtoCore.AST.AssociativeAST;
-using System.Reflection;
-using System.Threading;
-using System.Globalization;
+﻿using Dynamo.Engine;
 using Dynamo.Engine.NodeToCode;
-using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.ZeroTouch;
-using Dynamo.Interfaces;
+using Dynamo.Models;
+using Dynamo.Scheduler;
+using Dynamo.Selection;
+using NUnit.Framework;
+using ProtoCore.AST.AssociativeAST;
 using ProtoCore.Utils;
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Threading;
 
 namespace Dynamo.Tests
 {
@@ -61,11 +56,11 @@ namespace Dynamo.Tests
             Assert.IsTrue(groups.Count == 2);
             foreach (var group in groups)
             {
-               if (group.Count == 2)
-               {
-                   Assert.IsNotNull(group.Find(n => n.Name == "2"));
-                   Assert.IsNotNull(group.Find(n => n.Name == "3"));
-               } 
+                if (group.Count == 2)
+                {
+                    Assert.IsNotNull(group.Find(n => n.Name == "2"));
+                    Assert.IsNotNull(group.Find(n => n.Name == "3"));
+                }
             }
         }
 
@@ -162,8 +157,8 @@ namespace Dynamo.Tests
             var idents = exprs.Select(e => (e.LeftNode as IdentifierNode).Value);
             var vals = exprs.Select(e => (e.RightNode as IntNode).Value);
 
-            Assert.IsTrue(new [] {"a", "a1", "a2"}.All(x => idents.Contains(x)));
-            Assert.IsTrue(new [] {1, 2, 3}.All(x => vals.Contains(x)));
+            Assert.IsTrue(new[] { "a", "a1", "a2" }.All(x => idents.Contains(x)));
+            Assert.IsTrue(new[] { 1, 2, 3 }.All(x => vals.Contains(x)));
         }
 
         [Test]
@@ -255,10 +250,10 @@ namespace Dynamo.Tests
             // It totally depends on which code block node is compiled firstly.
             // Variables in the first one won't be renamed.
             Assert.IsTrue(
-                ((exprs.Contains("a=1") && exprs.Contains("a1=2") && exprs.Contains("a3=a+a1") 
+                ((exprs.Contains("a=1") && exprs.Contains("a1=2") && exprs.Contains("a3=a+a1")
                 && exprs.Contains("a2=3") && exprs.Contains("a11=4") && exprs.Contains("a21=a2+a11"))
 
-             || ((exprs.Contains("a=3") && exprs.Contains("a1=4") && exprs.Contains("a2=a+a1") 
+             || ((exprs.Contains("a=3") && exprs.Contains("a1=4") && exprs.Contains("a2=a+a1")
                 && exprs.Contains("a3=1") && exprs.Contains("a11=2") && exprs.Contains("a31=a3+a11")))));
         }
 
@@ -301,7 +296,7 @@ namespace Dynamo.Tests
             var engine = CurrentDynamoModel.EngineController;
 
             var result = engine.ConvertNodesToCode(nodes, nodes);
-            CoreUtils.ReplaceWithShortestQualifiedName(engine.LibraryServices.LibraryManagementCore.ClassTable, result.AstNodes);
+            NodeToCodeCompiler.ReplaceWithShortestQualifiedName(engine.LibraryServices.LibraryManagementCore.ClassTable, result.AstNodes);
             Assert.IsNotNull(result);
             Assert.IsNotNull(result.AstNodes);
             Assert.AreEqual(3, result.AstNodes.Count());
@@ -410,7 +405,7 @@ namespace Dynamo.Tests
             Assert.IsNotNull(result);
             Assert.IsNotNull(result.AstNodes);
 
-            CoreUtils.ReplaceWithShortestQualifiedName(engine.LibraryServices.LibraryManagementCore.ClassTable, result.AstNodes);
+            NodeToCodeCompiler.ReplaceWithShortestQualifiedName(engine.LibraryServices.LibraryManagementCore.ClassTable, result.AstNodes);
             Assert.AreEqual(2, result.AstNodes.Count());
             Assert.True(result.AstNodes.All(n => n is BinaryExpressionNode));
             var rhs = result.AstNodes.Cast<BinaryExpressionNode>().Select(n => n.RightNode.ToString());
@@ -429,15 +424,15 @@ namespace Dynamo.Tests
             }
 
             var functionCall = AstFactory.BuildFunctionCall(
-                "Autodesk.DesignScript.Geometry.Point", 
-                "ByCoordinates", 
-                new List<AssociativeNode> { new IntNode(1), new IntNode(2)});
+                "Autodesk.DesignScript.Geometry.Point",
+                "ByCoordinates",
+                new List<AssociativeNode> { new IntNode(1), new IntNode(2) });
             var lhs = AstFactory.BuildIdentifier("lhs");
             var ast = AstFactory.BuildBinaryExpression(lhs, functionCall, ProtoCore.DSASM.Operator.assign);
 
-            CoreUtils.ReplaceWithShortestQualifiedName(
-                CurrentDynamoModel.EngineController.LibraryServices.LibraryManagementCore.ClassTable, 
-                new [] { ast });
+            NodeToCodeCompiler.ReplaceWithShortestQualifiedName(
+                CurrentDynamoModel.EngineController.LibraryServices.LibraryManagementCore.ClassTable,
+                new[] { ast });
 
             // Since there is a conflict with FFITarget.DesignScript.Point and FFITarget.Dynamo.Point,
             // node to code generates the shortest unique name, which in this case will be
@@ -461,7 +456,7 @@ namespace Dynamo.Tests
 
             var result = engine.ConvertNodesToCode(nodes, nodes);
             result = NodeToCodeCompiler.ConstantPropagationForTemp(result, Enumerable.Empty<string>());
-            CoreUtils.ReplaceWithShortestQualifiedName(engine.LibraryServices.LibraryManagementCore.ClassTable, result.AstNodes);
+            NodeToCodeCompiler.ReplaceWithShortestQualifiedName(engine.LibraryServices.LibraryManagementCore.ClassTable, result.AstNodes);
             Assert.IsNotNull(result);
             Assert.IsNotNull(result.AstNodes);
 
@@ -490,7 +485,7 @@ namespace Dynamo.Tests
 
             var result = engine.ConvertNodesToCode(nodes, nodes);
             result = NodeToCodeCompiler.ConstantPropagationForTemp(result, Enumerable.Empty<string>());
-            CoreUtils.ReplaceWithShortestQualifiedName(engine.LibraryServices.LibraryManagementCore.ClassTable, result.AstNodes);
+            NodeToCodeCompiler.ReplaceWithShortestQualifiedName(engine.LibraryServices.LibraryManagementCore.ClassTable, result.AstNodes);
             Assert.IsNotNull(result);
             Assert.IsNotNull(result.AstNodes); ;
 
@@ -519,7 +514,7 @@ namespace Dynamo.Tests
 
             var result = engine.ConvertNodesToCode(nodes, nodes);
             result = NodeToCodeCompiler.ConstantPropagationForTemp(result, Enumerable.Empty<string>());
-            CoreUtils.ReplaceWithShortestQualifiedName(engine.LibraryServices.LibraryManagementCore.ClassTable, result.AstNodes);
+            NodeToCodeCompiler.ReplaceWithShortestQualifiedName(engine.LibraryServices.LibraryManagementCore.ClassTable, result.AstNodes);
             Assert.IsNotNull(result);
             Assert.IsNotNull(result.AstNodes);
 
@@ -548,7 +543,7 @@ namespace Dynamo.Tests
 
             var result = engine.ConvertNodesToCode(nodes, nodes);
             result = NodeToCodeCompiler.ConstantPropagationForTemp(result, Enumerable.Empty<string>());
-            CoreUtils.ReplaceWithShortestQualifiedName(engine.LibraryServices.LibraryManagementCore.ClassTable, result.AstNodes);
+            NodeToCodeCompiler.ReplaceWithShortestQualifiedName(engine.LibraryServices.LibraryManagementCore.ClassTable, result.AstNodes);
             Assert.IsNotNull(result);
             Assert.IsNotNull(result.AstNodes);
 
@@ -574,7 +569,7 @@ namespace Dynamo.Tests
 
             var result = engine.ConvertNodesToCode(nodes, nodes);
             result = NodeToCodeCompiler.ConstantPropagationForTemp(result, Enumerable.Empty<string>());
-            CoreUtils.ReplaceWithShortestQualifiedName(engine.LibraryServices.LibraryManagementCore.ClassTable, result.AstNodes);
+            NodeToCodeCompiler.ReplaceWithShortestQualifiedName(engine.LibraryServices.LibraryManagementCore.ClassTable, result.AstNodes);
             Assert.IsNotNull(result);
             Assert.IsNotNull(result.AstNodes);
 
@@ -600,7 +595,7 @@ namespace Dynamo.Tests
 
             var result = engine.ConvertNodesToCode(nodes, nodes);
             result = NodeToCodeCompiler.ConstantPropagationForTemp(result, Enumerable.Empty<string>());
-            CoreUtils.ReplaceWithShortestQualifiedName(engine.LibraryServices.LibraryManagementCore.ClassTable, result.AstNodes);
+            NodeToCodeCompiler.ReplaceWithShortestQualifiedName(engine.LibraryServices.LibraryManagementCore.ClassTable, result.AstNodes);
             Assert.IsNotNull(result);
             Assert.IsNotNull(result.AstNodes);
 
@@ -635,7 +630,7 @@ namespace Dynamo.Tests
             var oldTypeName = typedIdNode.datatype.Name;
 
             var engine = CurrentDynamoModel.EngineController;
-            CoreUtils.ReplaceWithShortestQualifiedName(engine.LibraryServices.LibraryManagementCore.ClassTable, new List<AssociativeNode>() { typedIdNode});
+            NodeToCodeCompiler.ReplaceWithShortestQualifiedName(engine.LibraryServices.LibraryManagementCore.ClassTable, new List<AssociativeNode>() { typedIdNode });
 
             Assert.AreEqual("Base", typedIdNode.TypeAlias);
             Assert.AreEqual(oldTypeName, typedIdNode.datatype.Name);
@@ -656,7 +651,7 @@ namespace Dynamo.Tests
             var oldTypeName = typedIdNode.datatype.Name;
 
             var engine = CurrentDynamoModel.EngineController;
-            CoreUtils.ReplaceWithShortestQualifiedName(engine.LibraryServices.LibraryManagementCore.ClassTable, new List<AssociativeNode>() { typedIdNode });
+            NodeToCodeCompiler.ReplaceWithShortestQualifiedName(engine.LibraryServices.LibraryManagementCore.ClassTable, new List<AssociativeNode>() { typedIdNode });
 
             Assert.AreEqual("Geometry", typedIdNode.TypeAlias);
             Assert.AreEqual(oldTypeName, typedIdNode.datatype.Name);
@@ -683,7 +678,7 @@ namespace Dynamo.Tests
             var oldTypeName = typedIdNode.datatype.Name;
 
             var engine = CurrentDynamoModel.EngineController;
-            CoreUtils.ReplaceWithShortestQualifiedName(engine.LibraryServices.LibraryManagementCore.ClassTable, new List<AssociativeNode>() { typedIdNode });
+            NodeToCodeCompiler.ReplaceWithShortestQualifiedName(engine.LibraryServices.LibraryManagementCore.ClassTable, new List<AssociativeNode>() { typedIdNode });
 
             Assert.AreEqual("Autodesk.Point", typedIdNode.TypeAlias);
             Assert.AreEqual(oldTypeName, typedIdNode.datatype.Name);
@@ -706,14 +701,14 @@ namespace Dynamo.Tests
 
             var result = engine.ConvertNodesToCode(nodes, nodes);
             result = NodeToCodeCompiler.ConstantPropagationForTemp(result, Enumerable.Empty<string>());
-            CoreUtils.ReplaceWithShortestQualifiedName(engine.LibraryServices.LibraryManagementCore.ClassTable, result.AstNodes);
+            NodeToCodeCompiler.ReplaceWithShortestQualifiedName(engine.LibraryServices.LibraryManagementCore.ClassTable, result.AstNodes);
             Assert.IsNotNull(result);
             Assert.IsNotNull(result.AstNodes);
 
             var expr1 = result.AstNodes.First() as BinaryExpressionNode;
-            
+
             Assert.IsNotNull(expr1);
-            
+
             // Since there is a conflict with FFITarget.DesignScript.Point and FFITarget.Dynamo.Point,
             // node to code generates the shortest unique name, which in this case will be
             // Autodesk.Point for Autodesk.DesignScript.Geometry.Point
@@ -735,7 +730,7 @@ namespace Dynamo.Tests
 
             var result = engine.ConvertNodesToCode(nodes, nodes);
             result = NodeToCodeCompiler.ConstantPropagationForTemp(result, Enumerable.Empty<string>());
-            CoreUtils.ReplaceWithShortestQualifiedName(engine.LibraryServices.LibraryManagementCore.ClassTable, result.AstNodes);
+            NodeToCodeCompiler.ReplaceWithShortestQualifiedName(engine.LibraryServices.LibraryManagementCore.ClassTable, result.AstNodes);
             Assert.IsNotNull(result);
             Assert.IsNotNull(result.AstNodes);
 
@@ -764,7 +759,7 @@ namespace Dynamo.Tests
 
             var result = engine.ConvertNodesToCode(nodes, nodes);
             result = NodeToCodeCompiler.ConstantPropagationForTemp(result, Enumerable.Empty<string>());
-            CoreUtils.ReplaceWithShortestQualifiedName(engine.LibraryServices.LibraryManagementCore.ClassTable, result.AstNodes);
+            NodeToCodeCompiler.ReplaceWithShortestQualifiedName(engine.LibraryServices.LibraryManagementCore.ClassTable, result.AstNodes);
             Assert.IsNotNull(result);
             Assert.IsNotNull(result.AstNodes);
 
@@ -888,7 +883,7 @@ namespace Dynamo.Tests
 
             var result = engine.ConvertNodesToCode(nodes, nodes);
             result = NodeToCodeCompiler.ConstantPropagationForTemp(result, Enumerable.Empty<string>());
-            CoreUtils.ReplaceWithShortestQualifiedName(engine.LibraryServices.LibraryManagementCore.ClassTable, result.AstNodes);
+            NodeToCodeCompiler.ReplaceWithShortestQualifiedName(engine.LibraryServices.LibraryManagementCore.ClassTable, result.AstNodes);
             Assert.IsTrue(result != null && result.AstNodes != null);
 
             var expr = result.AstNodes.Last() as BinaryExpressionNode;
@@ -911,7 +906,7 @@ namespace Dynamo.Tests
 
             var result = engine.ConvertNodesToCode(nodes, nodes);
             result = NodeToCodeCompiler.ConstantPropagationForTemp(result, Enumerable.Empty<string>());
-            CoreUtils.ReplaceWithShortestQualifiedName(engine.LibraryServices.LibraryManagementCore.ClassTable, result.AstNodes);
+            NodeToCodeCompiler.ReplaceWithShortestQualifiedName(engine.LibraryServices.LibraryManagementCore.ClassTable, result.AstNodes);
             Assert.IsTrue(result != null && result.AstNodes != null);
 
             var rhs = result.AstNodes.Skip(1).Select(b => (b as BinaryExpressionNode).RightNode.ToString().Contains("X"));
@@ -933,7 +928,7 @@ namespace Dynamo.Tests
 
             var result = engine.ConvertNodesToCode(nodes, nodes);
             result = NodeToCodeCompiler.ConstantPropagationForTemp(result, Enumerable.Empty<string>());
-            CoreUtils.ReplaceWithShortestQualifiedName(engine.LibraryServices.LibraryManagementCore.ClassTable, result.AstNodes);
+            NodeToCodeCompiler.ReplaceWithShortestQualifiedName(engine.LibraryServices.LibraryManagementCore.ClassTable, result.AstNodes);
             Assert.IsTrue(result != null && result.AstNodes != null);
 
             var rhs = result.AstNodes.Skip(1).Select(b => (b as BinaryExpressionNode).RightNode.ToString().EndsWith("ElementResolverTarget.StaticProperty"));
@@ -955,7 +950,7 @@ namespace Dynamo.Tests
 
             var result = engine.ConvertNodesToCode(nodes, nodes);
             result = NodeToCodeCompiler.ConstantPropagationForTemp(result, Enumerable.Empty<string>());
-            CoreUtils.ReplaceWithShortestQualifiedName(engine.LibraryServices.LibraryManagementCore.ClassTable, result.AstNodes);
+            NodeToCodeCompiler.ReplaceWithShortestQualifiedName(engine.LibraryServices.LibraryManagementCore.ClassTable, result.AstNodes);
             Assert.IsTrue(result != null && result.AstNodes != null);
 
             var rhs = result.AstNodes.Skip(1).Select(b => (b as BinaryExpressionNode).RightNode.ToString().Contains("ValueContainer.SomeValue"));
@@ -1241,7 +1236,7 @@ namespace Dynamo.Tests
             Assert.IsNotNull(cbn);
             Assert.IsFalse(cbn.Code.Contains(guid));
         }
-        
+
         [Test]
         [Category("UnitTests")]
         public void TestNameProvider()
@@ -1256,11 +1251,11 @@ namespace Dynamo.Tests
 
             t = ProtoCore.TypeSystem.BuildPrimitiveTypeObject(ProtoCore.PrimitiveType.Integer);
             name = nameProvider.GetTypeDependentName(t);
-            Assert.AreEqual("num", name); 
+            Assert.AreEqual("num", name);
 
             t = ProtoCore.TypeSystem.BuildPrimitiveTypeObject(ProtoCore.PrimitiveType.Double);
             name = nameProvider.GetTypeDependentName(t);
-            Assert.AreEqual("num", name); 
+            Assert.AreEqual("num", name);
 
             t = ProtoCore.TypeSystem.BuildPrimitiveTypeObject(ProtoCore.PrimitiveType.String);
             name = nameProvider.GetTypeDependentName(t);
@@ -1281,7 +1276,7 @@ namespace Dynamo.Tests
             t.UID = -1;
             name = nameProvider.GetTypeDependentName(t);
             Assert.IsTrue(string.IsNullOrEmpty(name));
-        } 
+        }
 
         private void SelectAll(IEnumerable<NodeModel> nodes)
         {
@@ -1294,7 +1289,7 @@ namespace Dynamo.Tests
         public void TestDoubleValueInDifferentCulture()
         {
             var frCulture = CultureInfo.CreateSpecificCulture("fr-FR");
-            
+
             var currentCulture = Thread.CurrentThread.CurrentCulture;
             var currentUICulture = Thread.CurrentThread.CurrentUICulture;
 
@@ -1418,7 +1413,7 @@ namespace Dynamo.Tests
 
             RunModel(dynFilePath);
             // Block until all tasks are executed
-            while (CurrentDynamoModel.Scheduler.HasPendingTasks);
+            while (CurrentDynamoModel.Scheduler.HasPendingTasks) ;
 
             var allNodes = CurrentDynamoModel.CurrentWorkspace.Nodes.Select(n => n.GUID).ToList();
             int nodeCount = allNodes.Count();
@@ -1439,7 +1434,7 @@ namespace Dynamo.Tests
                 var command = new DynamoModel.ConvertNodesToCodeCommand();
                 CurrentDynamoModel.ExecuteCommand(command);
                 // Block until all tasks are executed
-                while (CurrentDynamoModel.Scheduler.HasPendingTasks);
+                while (CurrentDynamoModel.Scheduler.HasPendingTasks) ;
 
                 foreach (var node in otherNodes)
                 {

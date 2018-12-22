@@ -95,7 +95,7 @@ namespace Dynamo.Graph.Workspaces
                 var newResult = NodeToCodeCompiler.ConstantPropagationForTemp(nodeToCodeResult, outputVariables);
 
                 // Rewrite the AST using the shortest unique name in case of namespace conflicts
-                CoreUtils.ReplaceWithShortestQualifiedName(
+                NodeToCodeCompiler.ReplaceWithShortestQualifiedName(
                     engineController.LibraryServices.LibraryManagementCore.ClassTable, newResult.AstNodes, workspace.ElementResolver);
                 var codegen = new ProtoCore.CodeGenDS(newResult.AstNodes);
                 var code = codegen.GenerateCode();

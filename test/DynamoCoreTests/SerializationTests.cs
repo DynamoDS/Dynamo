@@ -11,14 +11,11 @@ using Dynamo.Models;
 using Newtonsoft.Json;
 using Dynamo.Engine;
 using Dynamo.Events;
-using System.Text.RegularExpressions;
-using Dynamo.Graph.Notes;
 using Dynamo.Utilities;
 using Newtonsoft.Json.Linq;
 using System.Globalization;
 using Dynamo.Graph.Nodes.ZeroTouch;
 using System.Threading;
-using ProtoCore.Utils;
 
 namespace Dynamo.Tests
 {
@@ -105,7 +102,7 @@ namespace Dynamo.Tests
                 var namingProvider = new NamingProvider(controller.LibraryServices.LibraryManagementCore, libraryServices);
 
                 var result = NodeToCodeCompiler.NodeToCode(libCore, workspace.Nodes, workspace.Nodes, namingProvider);
-                CoreUtils.ReplaceWithShortestQualifiedName(
+                NodeToCodeCompiler.ReplaceWithShortestQualifiedName(
                         controller.LibraryServices.LibraryManagementCore.ClassTable, result.AstNodes, resolver);
                 var codegen = new ProtoCore.CodeGenDS(result.AstNodes);
                 var ds = codegen.GenerateCode();
