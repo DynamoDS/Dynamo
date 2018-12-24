@@ -89,6 +89,27 @@ namespace CoreNodeModels
             }
         }
 
+        private string selectedString = "";
+        public string SelectedString
+        {
+            get { return selectedString; }
+            set
+            {
+                if(string.IsNullOrEmpty(selectedString))
+                {
+                    if(Items.Count()>0 && !string.IsNullOrEmpty(value))
+                    {
+                        var item = Items.FirstOrDefault(i => (i.Item).ToString().Equals(value));
+                        SelectedIndex = item != null ?
+                            Items.IndexOf(item) :
+                            -1;
+                    }
+                }
+                selectedString = value;
+                RaisePropertyChanged("SelectedString");
+            }
+        }
+
         protected DSDropDownBase(string outputName)
         {
             OutPorts.Add(new PortModel(PortType.Output, this, new PortData(outputName, string.Format(Resources.DropDownPortDataResultToolTip, outputName))));
