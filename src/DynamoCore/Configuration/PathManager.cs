@@ -9,7 +9,6 @@ using System.Xml;
 using Dynamo.Configuration;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Interfaces;
-using Dynamo.Logging;
 using Dynamo.Properties;
 using DynamoUtilities;
 

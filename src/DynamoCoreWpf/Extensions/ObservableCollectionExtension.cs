@@ -1,7 +1,5 @@
-﻿using Dynamo.Wpf.ViewModels;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
+using Dynamo.Wpf.ViewModels;
 
 namespace Dynamo.Wpf.Extensions
 {

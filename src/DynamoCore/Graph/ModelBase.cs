@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Xml;
 using Dynamo.Core;
 using Dynamo.Logging;
@@ -6,7 +7,6 @@ using Dynamo.Selection;
 using Dynamo.Utilities;
 using Newtonsoft.Json;
 using ProtoCore.Namespace;
-using System.ComponentModel;
 
 namespace Dynamo.Graph
 {

@@ -1,13 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using System.Text;
 
 namespace Dynamo.Utilities
 {
     // From https://github.com/mono/mono/blob/master/mcs/class/WindowsBase/System.Windows/Point.cs
-	public struct Point2D : IFormattable
+    public struct Point2D : IFormattable
 	{
 		public Point2D (double x, double y)
 		{

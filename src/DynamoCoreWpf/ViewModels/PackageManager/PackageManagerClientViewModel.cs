@@ -2,25 +2,24 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
+using System.Reflection;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using Dynamo.Core;
-using Dynamo.Models;
-using Dynamo.PackageManager;
-using Dynamo.Selection;
-using Dynamo.Wpf.Interfaces;
-using Greg.AuthProviders;
-
-using Dynamo.Wpf.Properties;
-using Microsoft.Practices.Prism.Commands;
-using Dynamo.PackageManager.UI;
-using System.Reflection;
-using System.IO;
-using System.Threading;
 using Dynamo.Graph.Nodes.CustomNodes;
 using Dynamo.Graph.Workspaces;
+using Dynamo.Models;
+using Dynamo.PackageManager;
+using Dynamo.PackageManager.UI;
+using Dynamo.Selection;
+using Dynamo.Wpf.Interfaces;
+using Dynamo.Wpf.Properties;
+using Greg.AuthProviders;
+using Microsoft.Practices.Prism.Commands;
 
 namespace Dynamo.ViewModels
 {
