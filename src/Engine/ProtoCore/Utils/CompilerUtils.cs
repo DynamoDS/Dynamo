@@ -281,7 +281,7 @@ namespace ProtoCore.Utils
             List<AssociativeNode> astNodes;
             List<AssociativeNode> comments;
             ParseUserCode(core, parseParams.OriginalCode, postfixGuid, out astNodes, out comments);
-            //parseParams.AppendErrors(core.BuildStatus.Errors);
+            parseParams.AppendErrors(core.BuildStatus.Errors);
             if (parseParams.Errors.Count() > 0)
             {
                 return false;
@@ -344,7 +344,7 @@ namespace ProtoCore.Utils
                 core.IsParsingCodeBlockNode = parsingCbnFlag;
                 core.IsParsingPreloadedAssembly = parsingPreloadFlag;
 
-                //parseParams.AppendErrors(buildStatus.Errors);
+                parseParams.AppendErrors(buildStatus.Errors);
                 parseParams.AppendWarnings(buildStatus.Warnings);
 
                 if (buildStatus.ErrorCount > 0)

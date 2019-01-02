@@ -332,6 +332,7 @@ namespace Dynamo.Graph.Nodes.CustomNodes
         private string inputSymbol = String.Empty;
         private string name = String.Empty;
         private ElementResolver workspaceElementResolver;
+        private List<int> subLocations = new List<int>();
 
         /// <summary>
         /// The NodeType property provides a name which maps to the 
@@ -423,9 +424,19 @@ namespace Dynamo.Graph.Nodes.CustomNodes
                     //    x : type
                     //    x : type = default_value
                     IdentifierNode identifierNode;
-                    if (TryParseInputExpression(inputSymbol, out identifierNode, out defaultValue, out comment))
+                    if (TryParseInputExpression(inputSymbol, out identifierNode, out defaultValue, out comment)) // This is false when input name contains spaces
                     {
                         name = identifierNode.Value;
+                        if (subLocations.Any())
+                        {
+                            var nameChars = name.ToCharArray();
+                            foreach (int i in subLocations)
+                            {
+                                nameChars[i] = ' ';
+                            }
+                            subLocations.Clear();
+                            name = new string(nameChars);
+                        }
 
                         if (identifierNode.datatype.UID == Constants.kInvalidIndex)
                         {
@@ -501,6 +512,22 @@ namespace Dynamo.Graph.Nodes.CustomNodes
             ArgumentLacing = LacingStrategy.Disabled;
         }
 
+        private string TemporarySubstitueSpaces(string value)
+        {
+            var start = value.LastIndexOf('\n') + 1;
+            var end = value.LastIndexOf(':') - 1;
+            var valueChars = value.ToCharArray();
+            for (int i = start; i < end; i++)
+            {
+                if (valueChars[i] == ' ')
+                {
+                    valueChars[i] = '_';
+                    subLocations.Add(i - start);
+                }
+            }
+            return new string(valueChars);
+        }
+
         private bool TryParseInputExpression(string inputSymbol, 
                                              out IdentifierNode identifier, 
                                              out AssociativeNode defaultValue,
@@ -510,7 +537,8 @@ namespace Dynamo.Graph.Nodes.CustomNodes
             defaultValue = null;
             comment = null;
 
-            var parseString = InputSymbol;
+            var parseString = TemporarySubstitueSpaces(InputSymbol);
+            //var parseString = inputSymbol;
             parseString += ";";
             
             // During loading of symbol node from file, the elementResolver from the workspace is unavailable
@@ -518,8 +546,9 @@ namespace Dynamo.Graph.Nodes.CustomNodes
             var resolver = workspaceElementResolver ?? ElementResolver;
             var parseParam = new ParseParam(this.GUID, parseString, resolver);
 
-            if (EngineController.CompilationServices.PreCompileCodeBlock(ref parseParam) &&
-                parseParam.ParsedNodes.Any()) //This is false with spaces in input name
+            var doesPrecompile = EngineController.CompilationServices.PreCompileCodeBlock(ref parseParam);
+            var anyNodesParsed = parseParam.ParsedNodes.Any();
+            if ( doesPrecompile && anyNodesParsed) //This is false with spaces in input name
             {
                 var parsedComments = parseParam.ParsedComments;
                 if (parsedComments.Any())
