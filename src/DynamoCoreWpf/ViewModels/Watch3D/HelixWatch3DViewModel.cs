@@ -22,13 +22,14 @@ using Dynamo.Graph.Workspaces;
 using Dynamo.Logging;
 using Dynamo.Selection;
 using Dynamo.ViewModels;
+using Dynamo.Visualization;
 using Dynamo.Wpf.Properties;
 using Dynamo.Wpf.Rendering;
-using Dynamo.Visualization;
 using DynamoUtilities;
 using HelixToolkit.Wpf;
 using HelixToolkit.Wpf.SharpDX;
 using HelixToolkit.Wpf.SharpDX.Core;
+using Newtonsoft.Json;
 using SharpDX;
 using Color = SharpDX.Color;
 using ColorConverter = System.Windows.Media.ColorConverter;
@@ -38,7 +39,6 @@ using MeshGeometry3D = HelixToolkit.Wpf.SharpDX.MeshGeometry3D;
 using Model3D = HelixToolkit.Wpf.SharpDX.Model3D;
 using PerspectiveCamera = HelixToolkit.Wpf.SharpDX.PerspectiveCamera;
 using TextInfo = HelixToolkit.Wpf.SharpDX.TextInfo;
-using Newtonsoft.Json;
 
 namespace Dynamo.Wpf.ViewModels.Watch3D
 {

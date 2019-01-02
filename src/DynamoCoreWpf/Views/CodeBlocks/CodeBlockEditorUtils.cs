@@ -1,15 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Media;
-using ICSharpCode.AvalonEdit.Highlighting;
-using ICSharpCode.AvalonEdit.Rendering;
-using Dynamo.Engine;
-using ICSharpCode.AvalonEdit.Highlighting.Xshd;
 using System.Xml;
 using Dynamo.Configuration;
+using Dynamo.Engine;
+using ICSharpCode.AvalonEdit.Highlighting;
+using ICSharpCode.AvalonEdit.Highlighting.Xshd;
+using ICSharpCode.AvalonEdit.Rendering;
 
 namespace Dynamo.Wpf.Views
 {

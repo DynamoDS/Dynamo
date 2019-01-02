@@ -2,7 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
-using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Xml;
@@ -13,18 +12,17 @@ using Dynamo.Graph.Connectors;
 using Dynamo.Migration;
 using Dynamo.Properties;
 using Dynamo.Utilities;
+using Newtonsoft.Json;
 using ProtoCore;
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.BuildData;
+using ProtoCore.DSASM;
 using ProtoCore.Namespace;
 using ProtoCore.SyntaxAnalysis;
 using ProtoCore.Utils;
-using ProtoCore.AST;
 using ArrayNode = ProtoCore.AST.AssociativeAST.ArrayNode;
 using Node = ProtoCore.AST.Node;
 using Operator = ProtoCore.DSASM.Operator;
-using Newtonsoft.Json;
-using ProtoCore.DSASM;
 
 namespace Dynamo.Graph.Nodes
 {
