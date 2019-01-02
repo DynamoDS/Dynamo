@@ -3,12 +3,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Windows.Input;
-
-using Dynamo.Wpf.ViewModels;
 using Dynamo.ViewModels;
-
+using Dynamo.Wpf.ViewModels;
 using Greg.Responses;
-
 using Microsoft.Practices.Prism.Commands;
 
 namespace Dynamo.PackageManager.ViewModels

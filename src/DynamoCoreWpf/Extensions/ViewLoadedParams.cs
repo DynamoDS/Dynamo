@@ -4,11 +4,10 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using Dynamo.Controls;
-using Dynamo.ViewModels;
-using Dynamo.Utilities;
 using Dynamo.Extensions;
-using Dynamo.Interfaces;
 using Dynamo.Selection;
+using Dynamo.Utilities;
+using Dynamo.ViewModels;
 using Dynamo.Visualization;
 using Dynamo.Wpf.ViewModels.Watch3D;
 

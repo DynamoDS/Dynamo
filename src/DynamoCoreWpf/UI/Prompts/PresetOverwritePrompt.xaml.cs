@@ -1,11 +1,7 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System;
 using System.Windows;
 using Dynamo.Controls;
 using Dynamo.Utilities;
-using System;
-using Dynamo.ViewModels;
-using ProtoCore.DSASM;
 
 namespace Dynamo.Nodes
 {

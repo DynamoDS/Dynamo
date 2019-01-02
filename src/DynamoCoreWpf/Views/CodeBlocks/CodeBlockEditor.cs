@@ -1,8 +1,8 @@
-﻿﻿using Dynamo.Controls;
-﻿using Dynamo.Core;
-using System;
-﻿using Dynamo.Graph.Nodes;
-﻿using DynCmd = Dynamo.Models.DynamoModel;
+﻿using System;
+using Dynamo.Controls;
+using Dynamo.Core;
+using Dynamo.Graph.Nodes;
+using DynCmd = Dynamo.Models.DynamoModel;
 
 namespace Dynamo.UI.Controls
 {

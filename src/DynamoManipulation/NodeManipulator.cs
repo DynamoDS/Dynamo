@@ -20,7 +20,7 @@ using Vector = Autodesk.DesignScript.Geometry.Vector;
 
 namespace Dynamo.Manipulation
 {
-    
+
     public abstract class NodeManipulatorFactory : INodeManipulatorFactory
     {
         /// <summary>

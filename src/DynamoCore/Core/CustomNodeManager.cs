@@ -1,4 +1,4 @@
-﻿using Dynamo.Engine;
+using Dynamo.Engine;
 using Dynamo.Engine.NodeToCode;
 using Dynamo.Graph;
 using Dynamo.Graph.Annotations;

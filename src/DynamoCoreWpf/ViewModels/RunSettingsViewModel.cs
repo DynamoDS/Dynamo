@@ -1,13 +1,10 @@
 ﻿using System;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Threading;
 using System.Windows;
 using System.Windows.Data;
-
-using Dynamo.Controls;
 using Dynamo.Core;
 using Dynamo.Models;
 using Dynamo.UI.Commands;
