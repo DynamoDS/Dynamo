@@ -921,7 +921,6 @@ namespace Dynamo.Tests
             var inputs = CurrentDynamoModel.CurrentWorkspace.Nodes.OfType<Symbol>().ToList();
             Assert.IsNotNull(inputs);
 
-            var pointParams = inputs;
             inputs.ForEach(x => Assert.NotNull(x));
 
             Assert.IsTrue(inputs.All(t => t.InputSymbol.EndsWith(":Point")));
@@ -962,12 +961,10 @@ namespace Dynamo.Tests
             var inputs = CurrentDynamoModel.CurrentWorkspace.Nodes.OfType<Symbol>().ToList();
             Assert.IsNotNull(inputs);
 
-            var pointParams = inputs;
             inputs.ForEach(x => Assert.NotNull(x));
 
             Assert.IsTrue(inputs.All(t =>
             {
-                Console.WriteLine(t.InputSymbol);
                 return t.InputSymbol.EndsWith(":Autodesk.Point");
             }));
         }
