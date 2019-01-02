@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Xml;
 using Dynamo.Configuration;
 using Dynamo.Graph.Connectors;
+using Dynamo.Graph.Workspaces;
 using Dynamo.Utilities;
 using Newtonsoft.Json;
 using ProtoCore.AST.AssociativeAST;
-using Dynamo.Graph.Workspaces;
-using System.ComponentModel;
 
 namespace Dynamo.Graph.Nodes
 {

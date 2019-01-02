@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
-using Autodesk.DesignScript.Interfaces;
 using Dynamo.Engine.CodeCompletion;
 using Dynamo.Engine.CodeGeneration;
 using Dynamo.Engine.NodeToCode;
@@ -15,7 +14,6 @@ using ProtoCore.Mirror;
 using ProtoCore.Utils;
 using ProtoScript.Runners;
 using BuildWarning = ProtoCore.BuildData.WarningEntry;
-using Constants = ProtoCore.DSASM.Constants;
 using RuntimeWarning = ProtoCore.Runtime.WarningEntry;
 
 namespace Dynamo.Engine

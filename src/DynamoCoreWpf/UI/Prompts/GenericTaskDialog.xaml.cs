@@ -1,11 +1,11 @@
 ﻿using System.Windows;
-using Dynamo.Models;
 using System.Windows.Controls;
 using System.Windows.Media.Imaging;
+using Dynamo.Models;
 
 namespace Dynamo.UI.Prompts
 {
-    
+
     public partial class GenericTaskDialog : Window
     {
         private TaskDialogEventArgs taskDialogParams = null;

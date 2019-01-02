@@ -1,14 +1,10 @@
 ﻿using System;
-using System.Linq;
 using Dynamo.Graph.Annotations;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Notes;
-using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using Type = System.Type;
-using Dynamo.Graph.Nodes.CustomNodes;
 
 namespace Dynamo.Wpf.ViewModels.Core.Converters
 {

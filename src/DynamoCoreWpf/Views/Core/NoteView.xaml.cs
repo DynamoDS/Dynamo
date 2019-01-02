@@ -1,16 +1,15 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
+using Dynamo.Configuration;
 using Dynamo.Selection;
 using Dynamo.UI;
 using Dynamo.UI.Prompts;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using DynCmd = Dynamo.Models.DynamoModel;
-using Dynamo.Configuration;
-using System.Windows.Controls;
 
 namespace Dynamo.Nodes
 {
