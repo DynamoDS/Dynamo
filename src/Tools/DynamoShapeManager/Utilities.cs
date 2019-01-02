@@ -286,11 +286,11 @@ namespace DynamoShapeManager
 
             if (string.IsNullOrEmpty(preloaderLocationToLoad))
             {
-                throw new ArgumentException("preloadedPath");
+                throw new ArgumentException("Invalid LibG preloader location for ASM at " + asmLocation);
             }
             if (string.IsNullOrEmpty(asmLocation) || !Directory.Exists(asmLocation))
             {
-                throw new ArgumentException("asmLocation");
+                throw new ArgumentException("Invalid ASM location " + asmLocation);
             }
             var preloaderPath = Path.Combine(preloaderLocationToLoad, PreloaderAssembly);
 
