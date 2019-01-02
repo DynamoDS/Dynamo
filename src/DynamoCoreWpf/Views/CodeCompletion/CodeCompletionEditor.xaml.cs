@@ -1,15 +1,15 @@
-﻿using Dynamo.Controls;
-using Dynamo.Graph.Nodes;
-using Dynamo.Utilities;
-using Dynamo.ViewModels;
-using Dynamo.Wpf.Views;
-using ICSharpCode.AvalonEdit.CodeCompletion;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using Dynamo.Controls;
+using Dynamo.Graph.Nodes;
+using Dynamo.Utilities;
+using Dynamo.ViewModels;
+using Dynamo.Wpf.Views;
+using ICSharpCode.AvalonEdit.CodeCompletion;
 
 namespace Dynamo.UI.Controls
 {

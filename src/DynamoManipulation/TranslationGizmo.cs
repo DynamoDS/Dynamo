@@ -4,12 +4,12 @@ using System.Linq;
 using System.Windows.Media;
 using Autodesk.DesignScript.Geometry;
 using Autodesk.DesignScript.Interfaces;
-using Dynamo.Wpf.ViewModels.Watch3D;
 using Dynamo.Visualization;
+using Dynamo.Wpf.ViewModels.Watch3D;
 
 namespace Dynamo.Manipulation
 {
-    
+
     /// <summary>
     /// Translation Gizmo, that handles translation.
     /// </summary>

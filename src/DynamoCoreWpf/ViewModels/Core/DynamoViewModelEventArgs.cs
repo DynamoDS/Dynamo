@@ -2,10 +2,8 @@
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Media;
-using Dynamo.Graph;
 using Dynamo.Graph.Notes;
 using Dynamo.Graph.Workspaces;
-using Dynamo.Models;
 
 namespace Dynamo.ViewModels
 {
