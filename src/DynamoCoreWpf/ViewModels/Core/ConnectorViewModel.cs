@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Linq;
-using Dynamo.Graph;
 using Dynamo.Graph.Connectors;
 using Dynamo.Graph.Nodes;
-using Dynamo.Models;
 using Dynamo.Utilities;
 
 using Point = System.Windows.Point;

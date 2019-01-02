@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media.Media3D;
-using Dynamo.Visualization;
 using Dynamo.Graph.Nodes;
+using Dynamo.Visualization;
 
 namespace Dynamo.Wpf.ViewModels.Watch3D
 {

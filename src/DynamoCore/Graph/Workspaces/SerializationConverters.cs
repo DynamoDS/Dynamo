@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using Dynamo.Configuration;
 using Dynamo.Core;
 using Dynamo.Engine;
@@ -13,6 +14,7 @@ using Dynamo.Graph.Nodes.ZeroTouch;
 using Dynamo.Graph.Notes;
 using Dynamo.Graph.Presets;
 using Dynamo.Library;
+using Dynamo.Logging;
 using Dynamo.Scheduler;
 using Dynamo.Utilities;
 using Newtonsoft.Json;
@@ -21,9 +23,6 @@ using Newtonsoft.Json.Serialization;
 using ProtoCore;
 using ProtoCore.Namespace;
 using Type = System.Type;
-using System.Reflection;
-using System.Text.RegularExpressions;
-using Dynamo.Logging;
 
 namespace Dynamo.Graph.Workspaces
 {

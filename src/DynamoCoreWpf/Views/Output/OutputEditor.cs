@@ -1,5 +1,5 @@
-﻿using Dynamo.Graph.Nodes.CustomNodes;
-using Dynamo.Controls;
+﻿using Dynamo.Controls;
+using Dynamo.Graph.Nodes.CustomNodes;
 
 namespace Dynamo.UI.Controls
 {

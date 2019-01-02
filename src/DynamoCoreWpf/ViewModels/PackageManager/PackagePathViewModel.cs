@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using Dynamo.Interfaces;
-using DelegateCommand = Dynamo.UI.Commands.DelegateCommand;
 using Dynamo.Core;
+using Dynamo.Interfaces;
 using Dynamo.PackageManager;
+using DelegateCommand = Dynamo.UI.Commands.DelegateCommand;
 
 namespace Dynamo.ViewModels
 {

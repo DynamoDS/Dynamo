@@ -1,9 +1,9 @@
-﻿using Dynamo.ViewModels;
-using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using Dynamo.Wpf.ViewModels.Core.Converters;
 using System.Globalization;
+using Dynamo.ViewModels;
+using Dynamo.Wpf.ViewModels.Core.Converters;
+using Newtonsoft.Json;
 
 namespace Dynamo.Wpf.ViewModels.Core
 {
