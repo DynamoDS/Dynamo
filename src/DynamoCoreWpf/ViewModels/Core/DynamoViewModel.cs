@@ -592,7 +592,10 @@ namespace Dynamo.ViewModels
                     // A full regeneration is required to get the edge geometry.
                     foreach (var vm in Watch3DViewModels)
                     {
-                        vm.RegenerateAllPackages();
+                        if(vm.GetType() == typeof(Wpf.ViewModels.Watch3D.HelixWatch3DViewModel))
+                        {
+                            vm.RegenerateAllPackages();
+                        }
                     }
                     break;
                 default:
