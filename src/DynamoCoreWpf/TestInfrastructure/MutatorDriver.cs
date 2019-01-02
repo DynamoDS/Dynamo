@@ -1,10 +1,9 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Threading;
 using System.Reflection;
-using System.Collections.Generic;
-using Dynamo.Graph;
+using System.Threading;
 using Dynamo.Graph.Nodes;
 using Dynamo.Models;
 using Dynamo.ViewModels;

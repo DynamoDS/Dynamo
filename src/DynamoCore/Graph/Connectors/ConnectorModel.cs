@@ -1,10 +1,10 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Xml;
 using Dynamo.Graph.Nodes;
-using Dynamo.Utilities;
-using System.Diagnostics;
-using Newtonsoft.Json;
 using Dynamo.Graph.Workspaces;
+using Dynamo.Utilities;
+using Newtonsoft.Json;
 
 namespace Dynamo.Graph.Connectors
 {

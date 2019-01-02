@@ -1,17 +1,11 @@
-﻿using Dynamo.UI.Controls;
+﻿using System;
+using System.Collections.Generic;
+using System.Reflection;
+using System.Windows.Media.Imaging;
 using Dynamo.Engine.CodeCompletion;
 using ICSharpCode.AvalonEdit.CodeCompletion;
 using ICSharpCode.AvalonEdit.Document;
 using ICSharpCode.AvalonEdit.Editing;
-using ProtoCore.Mirror;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Windows.Media.Imaging;
-using Dynamo.Engine;
-using ProtoCore.Namespace;
 
 namespace Dynamo.UI
 {

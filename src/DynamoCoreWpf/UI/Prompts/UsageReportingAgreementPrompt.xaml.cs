@@ -1,9 +1,8 @@
-﻿using System.Windows.Media;
+﻿using System.Windows;
+using System.Windows.Media;
 using Dynamo.Services;
-
-using System.Windows;
-using Dynamo.Wpf.Interfaces;
 using Dynamo.ViewModels;
+using Dynamo.Wpf.Interfaces;
 
 namespace Dynamo.UI.Prompts
 {
