@@ -11,8 +11,6 @@ using Dynamo.Models;
 using Newtonsoft.Json;
 using Dynamo.Engine;
 using Dynamo.Events;
-using System.Text.RegularExpressions;
-using Dynamo.Graph.Notes;
 using Dynamo.Utilities;
 using Newtonsoft.Json.Linq;
 using System.Globalization;
