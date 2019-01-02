@@ -44,6 +44,31 @@ namespace DynamoCLI
                 Console.WriteLine("geometryFilePath option is only available when running DynamoWPFCLI, not DynamoCLI");
             }
 
+            cmdLineArgs.ImportedPaths.ToList().ForEach(path =>
+            {
+                try
+                {
+
+
+                    var filePath = new System.IO.FileInfo(path);
+                    if (!filePath.Exists)
+                    {
+                        Console.WriteLine($"could not find requested import library at path{path}");
+                    }
+                    else
+                    {
+                        Console.WriteLine($"attempting to import assembly {path}");
+                        var assembly = System.Reflection.Assembly.LoadFile(path);
+                        model.LoadNodeLibrary(assembly);
+                    }
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine($"exception while trying to load assembly {path}: {e}");
+                }
+
+            });
+
             model.OpenFileFromPath(cmdLineArgs.OpenFilePath, true);
             Console.WriteLine("loaded file");
             model.EvaluationCompleted += (o, args) => { evalComplete = true; };
