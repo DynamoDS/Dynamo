@@ -95,7 +95,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
                 OnActiveStateChanged();
 
-                if (active && this.GetType() == typeof(Wpf.ViewModels.Watch3D.HelixWatch3DViewModel))
+                if (active && this is Wpf.ViewModels.Watch3D.HelixWatch3DViewModel)
                 {
                     RegenerateAllPackages();
                 }
