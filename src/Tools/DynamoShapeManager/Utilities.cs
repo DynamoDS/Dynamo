@@ -5,7 +5,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-
+using System.Text.RegularExpressions;
 
 namespace DynamoShapeManager
 {
@@ -203,6 +203,58 @@ namespace DynamoShapeManager
         }
 
         /// <summary>
+        /// Get the corresponding libG preloader location for the target ASM loading version.
+        /// If there is exact match preloader version to the target ASM version, use it, 
+        /// otherwise use the closest below.
+        /// </summary>
+        /// <param name="version">The target loading version of ASM.</param>
+        /// <param name="rootFolder">Full path of the directory that contains 
+        /// LibG_major_minor_build folder. In a 
+        /// typical setup this would be the same directory that contains Dynamo 
+        /// core modules. This must represent a valid directory.</param>
+        /// <returns></returns>
+        public static string GetLibGPreloaderLocation(Version version, string rootFolder)
+        {
+            if (version == null)
+            {
+                version = new Version(0, 0, 0);
+            }
+
+            var libGFolderName = string.Format("libg_{0}_{1}_{2}", version.Major, version.Minor, version.Build);
+            var dir = new DirectoryInfo(Path.Combine(rootFolder, libGFolderName));
+            if (dir.Exists)
+            {
+                return dir.FullName;
+            }
+            else
+            {
+                // This usually means libG preloader version is behind the target version
+                var rootDir = new DirectoryInfo(rootFolder);
+
+                // Use regex to get all the libG versions supported
+                var libgFolders = rootDir.EnumerateDirectories("libg_*", SearchOption.TopDirectoryOnly);
+                var regExp = new Regex(@"^libg_(\d\d\d)_(\d)_(\d)$", RegexOptions.IgnoreCase);
+                var preloaderVersions = new List<Version>();
+                foreach (var folder in libgFolders)
+                {
+                    var match = regExp.Match(folder.Name);
+                    if (match.Groups.Count == 4 && Convert.ToInt32(match.Groups[1].Value) <= version.Major)
+                    {
+                        preloaderVersions.Add(new Version(
+                                Convert.ToInt32(match.Groups[1].Value),
+                                Convert.ToInt32(match.Groups[2].Value),
+                                Convert.ToInt32(match.Groups[3].Value)));
+                    }
+                }
+                preloaderVersions.Sort();
+                preloaderVersions.Reverse();
+                // Pick the closest preloader version below or use the default value when no libG folder found
+                var preloaderVersion = preloaderVersions.FirstOrDefault() == null ? version : preloaderVersions.First();
+                return Path.Combine(rootFolder, string.Format("libg_{0}_{1}_{2}", preloaderVersion.Major, preloaderVersion.Minor, preloaderVersion.Build));
+            }
+        }
+
+        /// <summary>
         /// Call this method to preload ASM binaries from a specific location. This 
         /// method does not have a return value, any failures in loading ASM binaries
         /// will result in an exception being thrown.
@@ -234,11 +286,11 @@ namespace DynamoShapeManager
 
             if (string.IsNullOrEmpty(preloaderLocationToLoad))
             {
-                throw new ArgumentException("preloadedPath");
+                throw new ArgumentException("Invalid LibG preloader location for ASM at " + asmLocation);
             }
             if (string.IsNullOrEmpty(asmLocation) || !Directory.Exists(asmLocation))
             {
-                throw new ArgumentException("asmLocation");
+                throw new ArgumentException("Invalid ASM location " + asmLocation);
             }
             var preloaderPath = Path.Combine(preloaderLocationToLoad, PreloaderAssembly);
 
