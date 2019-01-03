@@ -100,7 +100,7 @@ namespace Dynamo.Applications
                 "File will have the .json extension and be located in the same directory as the original file.", x => convertFile = x != null)
                 .Add("h|H|help", "Get some help", h => showHelp = h != null)
                 .Add("g=|G=|geometry", "Geometry, Instruct Dynamo to output geometry from all evaluations to a json file at this path", g => geometryFilePath = g)
-                .Add("-i|I=|import", "Import, Instruct Dynamo to import an assembly as a node library. This argument should be a filepath to a single .dll" +
+                .Add("i=|I=|import", "Import, Instruct Dynamo to import an assembly as a node library. This argument should be a filepath to a single .dll" +
                 " - if you wish to import multiple dlls - use this flag multiple times: -i 'assembly1.dll' -i 'assembly2.dll' ", i=>importPaths.Add(i));
 
                 optionsSet.Parse(args);
