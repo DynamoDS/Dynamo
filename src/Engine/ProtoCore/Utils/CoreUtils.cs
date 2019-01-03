@@ -1,14 +1,12 @@
-﻿using ProtoCore.AST.AssociativeAST;
-using ProtoCore.DSASM;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using ProtoCore.DSASM;
+using ProtoCore.AST.AssociativeAST;
 
 namespace ProtoCore.Utils
 {
     public static class CoreUtils
     {
-
-
         public static void InsertPredefinedAndBuiltinMethods(Core core, CodeBlockNode root)
         {
             if (DSASM.InterpreterMode.Normal == core.Options.RunMode)
