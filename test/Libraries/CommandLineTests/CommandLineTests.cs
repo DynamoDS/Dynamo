@@ -129,7 +129,7 @@ namespace Dynamo.Tests
         [Test]
         public void CanImportMultipleDepsBeforeRunningGraph()
         {
-            //load a graph which requires first loading FFITarget.dll and 
+            //load a graph which requires first loading FFITarget.dll and SampleLibraryZeroTouch.dll
             var openpath = Path.Combine(TestDirectory, @"core\commandLine\multipleDeps.dyn");
             var importPath1 = Path.Combine(ExecutingDirectory, "FFITarget.dll");
             var importPath2 = Path.Combine(TestDirectory,"pkgs", "Dynamo Samples","bin" ,"SampleLibraryZeroTouch.dll");
