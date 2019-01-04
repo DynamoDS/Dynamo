@@ -99,6 +99,7 @@ namespace Dynamo.Tests
             string commandstring = $"/o {openpath} /i {importPath}";
 
             runner.Run(CommandstringToArgs(commandstring));
+            //assert that the FFITarget dummy point node is created with correct properties.
             AssertPreviewValue("fba565f89c8948e290bbb423177fa7bb", 2.0);
             AssertPreviewValue("5a1fae3e13ce4ccfba737ec75057907b", 2.0);
 
@@ -121,6 +122,7 @@ namespace Dynamo.Tests
             string commandstring = $"/o {openpath} /i {importPath}";
 
             runner.Run(CommandstringToArgs(commandstring));
+            //assert that the FFITarget dummy point node is created with correct properties.
             AssertPreviewValue("fba565f89c8948e290bbb423177fa7bb", 2.0);
             AssertPreviewValue("5a1fae3e13ce4ccfba737ec75057907b", 2.0);
 
@@ -138,6 +140,7 @@ namespace Dynamo.Tests
             string commandstring = $"/o {openpath} /i {importPath1} /i \"{importPath2}\"";
 
             runner.Run(CommandstringToArgs(commandstring));
+            //assert that this node from the samples ZT dll produces a correct result.
             AssertPreviewValue("04c1531865e34ecb80a265c7822450aa",  "Point(X = 4.000, Y = 2.000, Z = 2.000)" );
 
         }
