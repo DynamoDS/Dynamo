@@ -71,7 +71,7 @@ namespace CoreNodeModels
             get { return null; }
         }
 
-        private int selectedIndex = 0;
+        private int selectedIndex = -1;
         public int SelectedIndex
         {
             get { return selectedIndex; }
@@ -86,6 +86,29 @@ namespace CoreNodeModels
                 else
                     selectedIndex = value;
                 RaisePropertyChanged("SelectedIndex");
+            }
+        }
+
+        private string selectedString = "";
+        public string SelectedString
+        {
+            get { return selectedString; }
+            set
+            {
+                // when deserializing or first time selecting
+                if (string.IsNullOrEmpty(selectedString))
+                {
+                    if (Items.Count() > 0 && !string.IsNullOrEmpty(value))
+                    {
+                        var item = Items.FirstOrDefault(i => i.Name == value);
+                        SelectedIndex = item != null ?
+                            Items.IndexOf(item) :
+                            -1;
+                    }
+                }
+
+                selectedString = value;
+                RaisePropertyChanged("SelectedString");
             }
         }
 
@@ -122,6 +145,7 @@ namespace CoreNodeModels
                 return;
 
             selectedIndex = ParseSelectedIndex(attrib.Value, Items);
+            selectedString = Items.ElementAt(selectedIndex).Name;
 
             if (selectedIndex < 0)
             {
@@ -139,6 +163,7 @@ namespace CoreNodeModels
                 selectedIndex = ParseSelectedIndex(value, Items);
                 if (selectedIndex < 0)
                     Warning(Dynamo.Properties.Resources.NothingIsSelectedWarning);
+                selectedString = Items.ElementAt(selectedIndex).Name;
                 return true; // UpdateValueCore handled.
             }
 
@@ -210,13 +235,11 @@ namespace CoreNodeModels
 
         public void PopulateItems()
         {
-            var currentSelection = string.Empty;
-            if (SelectedIndex >= 0 && (SelectedIndex < items.Count))
-            {
-                currentSelection = items.ElementAt(SelectedIndex).Name;
-            }
+            var currentSelection = SelectedString;
             var selectionState = PopulateItemsCore(currentSelection);
-            if (selectionState == SelectionState.Restore)
+
+            // Restore the selection when selectedIndex is valid
+            if (selectionState == SelectionState.Restore && !String.IsNullOrEmpty(currentSelection))
             {
                 SelectedIndex = -1;
                 for (int i = 0; i < items.Count; i++)
@@ -224,6 +247,7 @@ namespace CoreNodeModels
                     if ((items.ElementAt(i)).Name.Equals(currentSelection))
                     {
                         SelectedIndex = i;
+                        SelectedString = currentSelection;
                     }
                 }
             }

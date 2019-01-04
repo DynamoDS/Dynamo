@@ -40,18 +40,30 @@ namespace CoreNodeModelsWpf.Nodes
             };
 
             combo.DataContext = model;
-            //bind this combo box to the selected item hash
 
-            var bindingVal = new System.Windows.Data.Binding("Items") { Mode = BindingMode.TwoWay, Source = model };
+            // bind this combo box to the selected item hash
+            var bindingVal = new System.Windows.Data.Binding("Items")
+            {
+                Mode = BindingMode.TwoWay,
+                Source = model
+            };
             combo.SetBinding(ItemsControl.ItemsSourceProperty, bindingVal);
 
-            //bind the selected index to the 
+            // bind the selected index to the model property SelectedIndex
             var indexBinding = new Binding("SelectedIndex")
             {
                 Mode = BindingMode.TwoWay,
                 Source = model
             };
             combo.SetBinding(Selector.SelectedIndexProperty, indexBinding);
+
+            // bind the selected item to the model property SelectedString
+            var itemBinding = new Binding("SelectedString")
+            {
+                Mode = BindingMode.TwoWay,
+                Source = model
+            };
+            combo.SetBinding(Selector.SelectedItemProperty, itemBinding);
         }
 
         public void Dispose()
