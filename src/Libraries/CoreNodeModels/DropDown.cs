@@ -101,8 +101,8 @@ namespace CoreNodeModels
                     if (Items.Count() > 0 && !string.IsNullOrEmpty(value))
                     {
                         var item = Items.FirstOrDefault(i => i.Item.ToString().Equals(value));
-                        // With a valid item from search, set the index based on item, 
-                        // which might be more accurate. Otherwise use the default selectedIndex.
+                        // With a valid item from search, set the index based on item which might be more accurate. 
+                        // If no exact match found, fall back to use the default selectedIndex from deserialization.
                         SelectedIndex = item != null ?
                             Items.IndexOf(item) :
                             SelectedIndex;
