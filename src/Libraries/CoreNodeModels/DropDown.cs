@@ -100,10 +100,12 @@ namespace CoreNodeModels
                 {
                     if (Items.Count() > 0 && !string.IsNullOrEmpty(value))
                     {
-                        var item = Items.FirstOrDefault(i => i.Name == value);
+                        var item = Items.FirstOrDefault(i => i.Item.ToString().Equals(value));
+                        // With a valid item from search, set the index based on item, 
+                        // which might be more accurate. Otherwise use the default selectedIndex.
                         SelectedIndex = item != null ?
                             Items.IndexOf(item) :
-                            -1;
+                            SelectedIndex;
                     }
                 }
 
@@ -134,7 +136,7 @@ namespace CoreNodeModels
         protected override void DeserializeCore(XmlElement nodeElement, SaveContext context)
         {
             base.DeserializeCore(nodeElement, context);
-            // Drop downs previsouly saved their selected index as an int.
+            // Drop downs previously saved their selected index as an int.
             // Between versions of host applications where the number or order of items
             // in a list would vary, this made loading of drop downs un-reliable.
             // We have upgraded drop downs to save their selected index as 
@@ -145,7 +147,7 @@ namespace CoreNodeModels
                 return;
 
             selectedIndex = ParseSelectedIndex(attrib.Value, Items);
-            selectedString = Items.ElementAt(selectedIndex).Name;
+            selectedString = Items.ElementAt(selectedIndex).Item.ToString();
 
             if (selectedIndex < 0)
             {
@@ -163,7 +165,7 @@ namespace CoreNodeModels
                 selectedIndex = ParseSelectedIndex(value, Items);
                 if (selectedIndex < 0)
                     Warning(Dynamo.Properties.Resources.NothingIsSelectedWarning);
-                selectedString = Items.ElementAt(selectedIndex).Name;
+                selectedString = Items.ElementAt(selectedIndex).Item.ToString();
                 return true; // UpdateValueCore handled.
             }
 
