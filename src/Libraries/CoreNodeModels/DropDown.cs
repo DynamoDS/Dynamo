@@ -72,6 +72,10 @@ namespace CoreNodeModels
         }
 
         private int selectedIndex = -1;
+
+        /// <summary>
+        /// Index of current selection
+        /// </summary>
         public int SelectedIndex
         {
             get { return selectedIndex; }
@@ -79,34 +83,40 @@ namespace CoreNodeModels
             {
                 //do not allow selected index to
                 //go out of range of the items collection
-                if (value > Items.Count - 1)
+                if (value > Items.Count - 1 || value == -1)
                 {
                     selectedIndex = -1;
+                    selectedString = String.Empty;
                 }
                 else
+                {
                     selectedIndex = value;
+                    selectedString = Items.ElementAt(value).Item.ToString();
+                }
                 RaisePropertyChanged("SelectedIndex");
             }
         }
 
-        private string selectedString = "";
+        private string selectedString = String.Empty;
+
+        /// <summary>
+        /// String form of current selected item, so derived class
+        /// can save customized data
+        /// </summary>
         public string SelectedString
         {
             get { return selectedString; }
             set
             {
-                // when deserializing or first time selecting
-                if (string.IsNullOrEmpty(selectedString))
+                if (!string.IsNullOrEmpty(value) && value != selectedString)
                 {
-                    if (Items.Count() > 0 && !string.IsNullOrEmpty(value))
-                    {
-                        var item = Items.FirstOrDefault(i => i.Item.ToString().Equals(value));
-                        // With a valid item from search, set the index based on item which might be more accurate. 
-                        // If no exact match found, fall back to use the default selectedIndex from deserialization.
-                        SelectedIndex = item != null ?
-                            Items.IndexOf(item) :
-                            SelectedIndex;
-                    }
+                    var item = Items.FirstOrDefault(i => i.Item.ToString().Equals(value));
+                    // In the case that SelectedString deserialize after SelectedIndex
+                    // With a valid item from search, get the index of item and replace the current one. 
+                    // If no exact match found, fall back to use the default selectedIndex from deserialization.
+                    selectedIndex = item != null ?
+                        Items.IndexOf(item) :
+                        selectedIndex;
                 }
 
                 selectedString = value;
