@@ -1,0 +1,445 @@
+{
+  "Uuid": "9f036fac-5f6d-4d42-ae3e-dcba834f38d0",
+  "IsCustomNode": false,
+  "Description": null,
+  "Name": "multipleDeps",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "FFITarget.DummyPoint2D.ByCoordinates@double,double",
+      "Id": "dcaa059e5b284b55b9a2de81060ae21f",
+      "Inputs": [
+        {
+          "Id": "1cdf99077dae4ceab28b9fa4f5d5ebee",
+          "Name": "x",
+          "Description": "double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "efcf8f1815374aa9a91259daa1843a38",
+          "Name": "y",
+          "Description": "double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "26af6be0393c40b192e52386d20b0b6c",
+          "Name": "DummyPoint2D",
+          "Description": "DummyPoint2D",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "DummyPoint2D.ByCoordinates (x: double, y: double): DummyPoint2D"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "FFITarget.DummyPoint2D.X",
+      "Id": "fba565f89c8948e290bbb423177fa7bb",
+      "Inputs": [
+        {
+          "Id": "e3f5045323774bb385962f6b9a6720d7",
+          "Name": "dummyPoint2D",
+          "Description": "FFITarget.DummyPoint2D",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "4ad83b9c20fc4ab3867fec0850312eb0",
+          "Name": "double",
+          "Description": "double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "DummyPoint2D.X: double"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "FFITarget.DummyPoint2D.Y",
+      "Id": "5a1fae3e13ce4ccfba737ec75057907b",
+      "Inputs": [
+        {
+          "Id": "9a495555dbcf40618ad88b3032d421d9",
+          "Name": "dummyPoint2D",
+          "Description": "FFITarget.DummyPoint2D",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "af3d1a3b5bfc4b8b98945576641b07d5",
+          "Name": "double",
+          "Description": "double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "DummyPoint2D.Y: double"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "2;",
+      "Id": "e6f1c81d062e4dda9c03c5a7e8301048",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "46c95cbd6dfe47259e7b30c38601e2bb",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Examples.NEWBasicExample.Create@double,double,double",
+      "Id": "50359ed1ca3046ed8ba41d69e07348ad",
+      "Inputs": [
+        {
+          "Id": "4203ae945fc44d3eb51c7f90941558f9",
+          "Name": "x",
+          "Description": "double\nDefault value : 42",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "3223ddcfee1a41d3b432d6cb80a303c1",
+          "Name": "y",
+          "Description": "double\nDefault value : 42",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "d8250214d2284325af98a45b3a0e8d3e",
+          "Name": "z",
+          "Description": "double\nDefault value : 42",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "f7bccd52095444f4b5b47b9991cd044e",
+          "Name": "NEWBasicExample",
+          "Description": "NEWBasicExample",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "NEWBasicExample.Create (x: double = 42, y: double = 42, z: double = 42): NEWBasicExample"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Examples.NEWBasicExample.Point",
+      "Id": "065d5eb799ab4cd5897a6dc224c62b76",
+      "Inputs": [
+        {
+          "Id": "8517fc12332d47afabf36b9d9ec25831",
+          "Name": "nEWBasicExample",
+          "Description": "Examples.NEWBasicExample",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "d889e122ea1e4d6d8ec4537c47639489",
+          "Name": "Point",
+          "Description": "Point",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "NEWBasicExample.Point: Point"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "x+y;",
+      "Id": "a62f2d313a1a4dbbba5dbf3eed9bbcfa",
+      "Inputs": [
+        {
+          "Id": "344bcd11e2394669b2510a479a37101a",
+          "Name": "x",
+          "Description": "x",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "d6b9a514f023496dafb6c1bcbcbaf3c7",
+          "Name": "y",
+          "Description": "y",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "f35629641cf94067aa3de706c7272e5c",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.FromObject, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "04c1531865e34ecb80a265c7822450aa",
+      "Inputs": [
+        {
+          "Id": "deb0d650a5434ddb8312dff0954b7c80",
+          "Name": "obj",
+          "Description": "Object to be serialized",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "2cebea23b84a4ec5b92c1fec3b865bd7",
+          "Name": "str",
+          "Description": "Result of math computation",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Convert an object to a string representation."
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "26af6be0393c40b192e52386d20b0b6c",
+      "End": "9a495555dbcf40618ad88b3032d421d9",
+      "Id": "c8c21293596b4e2fb7c4d53f28a2f8ca"
+    },
+    {
+      "Start": "26af6be0393c40b192e52386d20b0b6c",
+      "End": "e3f5045323774bb385962f6b9a6720d7",
+      "Id": "8a96b6f11e7843b6983e3772e6768d73"
+    },
+    {
+      "Start": "4ad83b9c20fc4ab3867fec0850312eb0",
+      "End": "344bcd11e2394669b2510a479a37101a",
+      "Id": "54050ec3158641ae8432b639bcd064fd"
+    },
+    {
+      "Start": "af3d1a3b5bfc4b8b98945576641b07d5",
+      "End": "d6b9a514f023496dafb6c1bcbcbaf3c7",
+      "Id": "4b7b2db4cc4e4956aad2c0b20814bdd9"
+    },
+    {
+      "Start": "46c95cbd6dfe47259e7b30c38601e2bb",
+      "End": "1cdf99077dae4ceab28b9fa4f5d5ebee",
+      "Id": "791e810687854dfc88c05ca89154d181"
+    },
+    {
+      "Start": "46c95cbd6dfe47259e7b30c38601e2bb",
+      "End": "efcf8f1815374aa9a91259daa1843a38",
+      "Id": "bffc4b208df54b6a8b3e14b2d5bc2985"
+    },
+    {
+      "Start": "46c95cbd6dfe47259e7b30c38601e2bb",
+      "End": "3223ddcfee1a41d3b432d6cb80a303c1",
+      "Id": "3db5360d0428447c96706c55217b48ca"
+    },
+    {
+      "Start": "46c95cbd6dfe47259e7b30c38601e2bb",
+      "End": "d8250214d2284325af98a45b3a0e8d3e",
+      "Id": "797ba95c6b7d465ebef73c77bb8ce746"
+    },
+    {
+      "Start": "f7bccd52095444f4b5b47b9991cd044e",
+      "End": "8517fc12332d47afabf36b9d9ec25831",
+      "Id": "3d2ca62916864cefa96336c7b11922f2"
+    },
+    {
+      "Start": "d889e122ea1e4d6d8ec4537c47639489",
+      "End": "deb0d650a5434ddb8312dff0954b7c80",
+      "Id": "0dad12314eb346a2a9563376d326848f"
+    },
+    {
+      "Start": "f35629641cf94067aa3de706c7272e5c",
+      "End": "4203ae945fc44d3eb51c7f90941558f9",
+      "Id": "4493c4acb71f411596093f97d384344e"
+    }
+  ],
+  "Dependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.2.0.3675",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "DummyPoint2D.ByCoordinates",
+        "Id": "dcaa059e5b284b55b9a2de81060ae21f",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 273.5,
+        "Y": 214.25
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "DummyPoint2D.X",
+        "Id": "fba565f89c8948e290bbb423177fa7bb",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 597.5,
+        "Y": 126.25
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "DummyPoint2D.Y",
+        "Id": "5a1fae3e13ce4ccfba737ec75057907b",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 591.5,
+        "Y": 252.25
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "e6f1c81d062e4dda9c03c5a7e8301048",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 124.0,
+        "Y": 230.0
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "NEWBasicExample.Create",
+        "Id": "50359ed1ca3046ed8ba41d69e07348ad",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1011.5,
+        "Y": 266.25
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "NEWBasicExample.Point",
+        "Id": "065d5eb799ab4cd5897a6dc224c62b76",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1286.5,
+        "Y": 273.25
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "a62f2d313a1a4dbbba5dbf3eed9bbcfa",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 896.0,
+        "Y": 191.0
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "String from Object",
+        "Id": "04c1531865e34ecb80a265c7822450aa",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1392.5,
+        "Y": 363.25
+      }
+    ],
+    "Annotations": [],
+    "X": -470.0,
+    "Y": 10.0,
+    "Zoom": 1.0
+  }
+}

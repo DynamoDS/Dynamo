@@ -44,6 +44,12 @@ namespace DynamoCLI
                 Console.WriteLine("geometryFilePath option is only available when running DynamoWPFCLI, not DynamoCLI");
             }
 
+            cmdLineArgs.ImportedPaths.ToList().ForEach(path =>
+            {
+                ImportAssembly(model, path);
+
+            });
+
             model.OpenFileFromPath(cmdLineArgs.OpenFilePath, true);
             Console.WriteLine("loaded file");
             model.EvaluationCompleted += (o, args) => { evalComplete = true; };
@@ -77,6 +83,33 @@ namespace DynamoCLI
             }
 
             return doc;
+        }
+
+        /// <summary>
+        /// Attempts to import an assembly as a node library from a given file path.
+        /// </summary>
+        /// <param name="model"></param>
+        /// <param name="path"></param>
+        protected static void ImportAssembly(DynamoModel model, string path)
+        {
+            try
+            {
+                var filePath = new System.IO.FileInfo(path);
+                if (!filePath.Exists)
+                {
+                    Console.WriteLine($"could not find requested import library at path{path}");
+                }
+                else
+                {
+                    Console.WriteLine($"attempting to import assembly {path}");
+                    var assembly = System.Reflection.Assembly.LoadFile(path);
+                    model.LoadNodeLibrary(assembly);
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"exception while trying to load assembly {path}: {e}");
+            }
         }
 
         protected static string GetStringRepOfCollection(ProtoCore.Mirror.MirrorData value)
