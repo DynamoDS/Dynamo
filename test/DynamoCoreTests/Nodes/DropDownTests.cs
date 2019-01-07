@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using CoreNodeModels;
 using Dynamo.PackageManager;
 using NUnit.Framework;
@@ -37,10 +38,10 @@ namespace Dynamo.Tests.Nodes
             string path = Path.Combine(TestDirectory, "pkgs", "Dynamo Samples", "extra", "DropDownSample.dyn");
             RunModel(path);
 
-            var node = CurrentDynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<DSDropDownBase>();
+            var node = CurrentDynamoModel.CurrentWorkspace.Nodes.FirstOrDefault();
             // Second selection selected
-            Assert.AreEqual(1, node.SelectedIndex);
-            Assert.AreEqual("1", node.SelectedString);
+            Assert.AreEqual(1, node.GetType().GetProperty("SelectedIndex").GetValue(node));
+            Assert.AreEqual("1", node.GetType().GetProperty("SelectedString").GetValue(node));
         }
 
 
@@ -65,10 +66,10 @@ namespace Dynamo.Tests.Nodes
             string path = Path.Combine(TestDirectory, "pkgs", "Dynamo Samples", "extra", "DropDownSampleWithWrongIndex.dyn");
             RunModel(path);
 
-            var node = CurrentDynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<DSDropDownBase>();
+            var node = CurrentDynamoModel.CurrentWorkspace.Nodes.FirstOrDefault();
             // Second selection selected
-            Assert.AreEqual(1, node.SelectedIndex);
-            Assert.AreEqual("1", node.SelectedString);
+            Assert.AreEqual(1, node.GetType().GetProperty("SelectedIndex").GetValue(node));
+            Assert.AreEqual("1", node.GetType().GetProperty("SelectedString").GetValue(node));
         }
 
         [Test]
@@ -91,10 +92,10 @@ namespace Dynamo.Tests.Nodes
             string path = Path.Combine(TestDirectory, "pkgs", "Dynamo Samples", "extra", "DropDownSample_1Dot3.dyn");
             RunModel(path);
 
-            var node = CurrentDynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<DSDropDownBase>();
+            var node = CurrentDynamoModel.CurrentWorkspace.Nodes.FirstOrDefault();
             // Second selection selected
-            Assert.AreEqual(1, node.SelectedIndex);
-            Assert.AreEqual("1", node.SelectedString);
+            Assert.AreEqual(1, node.GetType().GetProperty("SelectedIndex").GetValue(node));
+            Assert.AreEqual("1", node.GetType().GetProperty("SelectedString").GetValue(node));
         }
 
         [Test]
