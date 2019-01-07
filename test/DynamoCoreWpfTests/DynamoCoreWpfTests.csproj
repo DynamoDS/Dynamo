@@ -151,7 +151,6 @@
     <Compile Include="ColorRangeTests.cs" />
     <Compile Include="ConverterTests.cs" />
     <Compile Include="CoreUITests.cs" />
-    <Compile Include="DropDownTests.cs" />
     <Compile Include="DynamoConverterTest.cs" />
     <Compile Include="DynamoTestUIBase.cs" />
     <Compile Include="DynamoViewModelUnitTest.cs" />
