@@ -21,7 +21,6 @@ namespace Dynamo.Tests.Nodes
         [Test]
         public void OpenJsonDYNwithSelectionNode()
         {
-
             // Define package loading reference path
             var dir = SystemTestBase.GetTestDirectory(ExecutingDirectory);
             var pkgDir = Path.Combine(dir, "pkgs\\Dynamo Samples");
@@ -48,7 +47,6 @@ namespace Dynamo.Tests.Nodes
         [Test]
         public void OpenJsonDYNwithSelectionNodeAndWrongSelectionIndexSerialized()
         {
-
             // Define package loading reference path
             var dir = SystemTestBase.GetTestDirectory(ExecutingDirectory);
             var pkgDir = Path.Combine(dir, "pkgs\\Dynamo Samples");
@@ -65,6 +63,32 @@ namespace Dynamo.Tests.Nodes
             // this could be across host versions, index changed in newer version of host
             // node should still deserialize to correct selection
             string path = Path.Combine(TestDirectory, "pkgs", "Dynamo Samples", "extra", "DropDownSampleWithWrongIndex.dyn");
+            RunModel(path);
+
+            var node = CurrentDynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<DSDropDownBase>();
+            // Second selection selected
+            Assert.AreEqual(1, node.SelectedIndex);
+            Assert.AreEqual("1", node.SelectedString);
+        }
+
+        [Test]
+        public void OpenXmlDYNwithSelectionNode()
+        {
+
+            // Define package loading reference path
+            var dir = SystemTestBase.GetTestDirectory(ExecutingDirectory);
+            var pkgDir = Path.Combine(dir, "pkgs\\Dynamo Samples");
+            var pkgMan = this.CurrentDynamoModel.GetPackageManagerExtension();
+            var loader = pkgMan.PackageLoader;
+            var pkg = loader.ScanPackageDirectory(pkgDir);
+
+            // Load the sample package
+            loader.Load(pkg);
+            // Assert expected package was loaded
+            Assert.AreEqual(pkg.Name, "Dynamo Samples");
+
+            // Run the graph with correct info serialized, node should deserialize to correct selection
+            string path = Path.Combine(TestDirectory, "pkgs", "Dynamo Samples", "extra", "DropDownSample_1Dot3.dyn");
             RunModel(path);
 
             var node = CurrentDynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<DSDropDownBase>();
