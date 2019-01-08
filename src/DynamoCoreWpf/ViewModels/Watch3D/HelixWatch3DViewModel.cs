@@ -113,6 +113,16 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                    && Math.Abs(this.FarPlaneDistance - other.FarPlaneDistance) < 0.0001;
         }
 
+        internal bool isNaN()
+        {
+            var numericComponents = new List<double>(){ EyeX, EyeY, EyeZ, LookX, LookY, LookZ, UpX, UpY, UpZ };
+            if (numericComponents.Any(d => (Double.IsNaN(d))))
+            {
+                return true;
+            }
+            return false;
+        }
+
 
     }
 
@@ -637,7 +647,16 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     try
                     {
                         var camData = DeserializeCamera(cameraNode);
-                        SetCameraData(camData);
+                        //check if the cameraData contains any NaNs
+                        if (camData.isNaN())
+                        {
+                            SetCameraData(new CameraData());
+                        }
+                        else
+                        {
+                            SetCameraData(camData);
+                        }
+                      
                     }
                     catch (Exception ex)
                     {
@@ -668,7 +687,16 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 };
 
                 var cameraData = JsonConvert.DeserializeObject<CameraData>(cameraJson, settings);
-                SetCameraData(cameraData);
+
+                //check if the cameraData contains any NaNs
+                if (cameraData.isNaN())
+                {
+                    SetCameraData(new CameraData());
+                }
+                else
+                {
+                    SetCameraData(cameraData);
+                }
             }
         }
 
