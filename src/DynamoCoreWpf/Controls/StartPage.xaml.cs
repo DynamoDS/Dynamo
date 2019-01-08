@@ -1,6 +1,4 @@
-﻿using Dynamo.Utilities;
-using Dynamo.ViewModels;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -11,10 +9,12 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using Microsoft.Practices.Prism.ViewModel;
-using Dynamo.Wpf.Properties;
-using Dynamo.Logging;
 using Dynamo.Configuration;
+using Dynamo.Logging;
+using Dynamo.Utilities;
+using Dynamo.ViewModels;
+using Dynamo.Wpf.Properties;
+using Microsoft.Practices.Prism.ViewModel;
 
 namespace Dynamo.UI.Controls
 {

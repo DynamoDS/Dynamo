@@ -1,4 +1,5 @@
-﻿using Dynamo.Engine;
+using Dynamo.Engine;
+using Dynamo.Engine.NodeToCode;
 using Dynamo.Graph;
 using Dynamo.Graph.Annotations;
 using Dynamo.Graph.Connectors;
@@ -16,6 +17,7 @@ using Dynamo.Models;
 using Dynamo.Properties;
 using Dynamo.Selection;
 using Dynamo.Utilities;
+using ProtoCore.AST.AssociativeAST;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -674,7 +676,8 @@ namespace Dynamo.Core
                 nodeGraph.ElementResolver,
                 workspaceInfo);
             }
-            else {
+            else
+            {
                 Exception ex;
                 if (DynamoUtilities.PathHelper.isValidJson(workspaceInfo.FileName, out jsonDoc, out ex))
                 {
@@ -1031,6 +1034,7 @@ namespace Dynamo.Core
 
                 var inConnectors = new List<Tuple<NodeModel, int>>();
                 var uniqueInputSenders = new Dictionary<Tuple<NodeModel, int>, Symbol>();
+                var classTable = this.libraryServices.LibraryManagementCore.ClassTable;
 
                 //Step 3: insert variables (reference step 1)
                 foreach (var input in Enumerable.Range(0, inputs.Count).Zip(inputs, Tuple.Create))
@@ -1077,10 +1081,17 @@ namespace Dynamo.Core
                             var funcDesc = dsFunc.Controller.Definition;
                             parameters = funcDesc.Parameters.ToList();
 
+                            // if the node is an instance member the function won't contain a 
+                            // parameter for this type so we need to generate a new typedParameter.
                             if (funcDesc.Type == Engine.FunctionType.InstanceMethod ||
                                 funcDesc.Type == Engine.FunctionType.InstanceProperty)
                             {
-                                var dummyType = new ProtoCore.Type() { Name = funcDesc.ClassName };
+                                var dummyType = new ProtoCore.Type
+                                {
+                                    Name = funcDesc.ClassName,
+                                    UID = classTable.IndexOf(funcDesc.ClassName)
+                                };
+
                                 var instanceParam = new TypedParameter(funcDesc.ClassName, dummyType);
                                 parameters.Insert(0, instanceParam);
                             }
@@ -1090,10 +1101,35 @@ namespace Dynamo.Core
                         //    input_var_name : type
                         if (parameters != null && parameters.Count() > inputReceiverData)
                         {
-                            var typeName = parameters[inputReceiverData].DisplayTypeName;
-                            if (!string.IsNullOrEmpty(typeName))
+                            var port = inputReceiverNode.InPorts[inputReceiverData];
+                            var typedParameter = parameters[inputReceiverData];
+                            // initially set the type name to the full type name
+                            // then try to shorten it.
+                            if (!string.IsNullOrEmpty(typedParameter.Type.Name))
                             {
-                                node.InputSymbol += " : " + typeName;
+                                try
+                                {
+
+                                    var typedNode = new TypedIdentifierNode
+                                    {
+                                        Name = port.Name,
+                                        Value = port.Name,
+                                        datatype = typedParameter.Type,
+                                        TypeAlias = typedParameter.Type.Name
+                                    };
+
+                                    NodeToCodeCompiler.ReplaceWithShortestQualifiedName(
+                                        classTable,
+                                        new List<AssociativeNode> { typedNode },
+                                        currentWorkspace.ElementResolver);
+
+                                    node.InputSymbol = $"{typedNode.Value} :{typedNode.TypeAlias}";
+                                }
+                                catch(Exception e)
+                                {
+                                    node.InputSymbol += ":" + typedParameter.Type.Name;
+                                    this.AsLogger().LogError($"{e.Message}: could not generate a short type name for {typedParameter.Type.Name}");
+                                }
                             }
                         }
 

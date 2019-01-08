@@ -1,14 +1,6 @@
-using System;
-using System.IO;
-using System.Reflection;
-using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Threading;
 using CefSharp;
-using CefSharp.Wpf;
-using Dynamo.Extensions;
 using Dynamo.LibraryUI.ViewModels;
-using Dynamo.Models;
 
 namespace Dynamo.LibraryUI.Views
 {

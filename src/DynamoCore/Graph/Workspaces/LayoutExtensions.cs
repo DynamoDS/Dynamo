@@ -1,11 +1,11 @@
-﻿using Dynamo.Graph.Annotations;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using Dynamo.Graph.Annotations;
 using Dynamo.Graph.Connectors;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Notes;
 using Dynamo.Selection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace Dynamo.Graph.Workspaces
 {

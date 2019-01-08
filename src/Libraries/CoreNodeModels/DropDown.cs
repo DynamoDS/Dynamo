@@ -71,7 +71,11 @@ namespace CoreNodeModels
             get { return null; }
         }
 
-        private int selectedIndex = 0;
+        private int selectedIndex = -1;
+
+        /// <summary>
+        /// Index of current selection
+        /// </summary>
         public int SelectedIndex
         {
             get { return selectedIndex; }
@@ -79,13 +83,44 @@ namespace CoreNodeModels
             {
                 //do not allow selected index to
                 //go out of range of the items collection
-                if (value > Items.Count - 1)
+                if (value > Items.Count - 1 || value == -1)
                 {
                     selectedIndex = -1;
+                    selectedString = String.Empty;
                 }
                 else
+                {
                     selectedIndex = value;
+                    selectedString = Items.ElementAt(value).Item.ToString();
+                }
                 RaisePropertyChanged("SelectedIndex");
+            }
+        }
+
+        private string selectedString = String.Empty;
+
+        /// <summary>
+        /// String form of current selected item, so derived class
+        /// can save customized data
+        /// </summary>
+        public string SelectedString
+        {
+            get { return selectedString; }
+            set
+            {
+                if (!string.IsNullOrEmpty(value) && value != selectedString)
+                {
+                    var item = Items.FirstOrDefault(i => i.Item.ToString().Equals(value));
+                    // In the case that SelectedString deserialize after SelectedIndex
+                    // With a valid item from search, get the index of item and replace the current one. 
+                    // If no exact match found, fall back to use the default selectedIndex from deserialization.
+                    selectedIndex = item != null ?
+                        Items.IndexOf(item) :
+                        selectedIndex;
+                }
+
+                selectedString = value;
+                RaisePropertyChanged("SelectedString");
             }
         }
 
@@ -111,7 +146,7 @@ namespace CoreNodeModels
         protected override void DeserializeCore(XmlElement nodeElement, SaveContext context)
         {
             base.DeserializeCore(nodeElement, context);
-            // Drop downs previsouly saved their selected index as an int.
+            // Drop downs previously saved their selected index as an int.
             // Between versions of host applications where the number or order of items
             // in a list would vary, this made loading of drop downs un-reliable.
             // We have upgraded drop downs to save their selected index as 
@@ -122,6 +157,7 @@ namespace CoreNodeModels
                 return;
 
             selectedIndex = ParseSelectedIndex(attrib.Value, Items);
+            selectedString = Items.ElementAt(selectedIndex).Item.ToString();
 
             if (selectedIndex < 0)
             {
@@ -139,6 +175,7 @@ namespace CoreNodeModels
                 selectedIndex = ParseSelectedIndex(value, Items);
                 if (selectedIndex < 0)
                     Warning(Dynamo.Properties.Resources.NothingIsSelectedWarning);
+                selectedString = Items.ElementAt(selectedIndex).Item.ToString();
                 return true; // UpdateValueCore handled.
             }
 
@@ -210,13 +247,11 @@ namespace CoreNodeModels
 
         public void PopulateItems()
         {
-            var currentSelection = string.Empty;
-            if (SelectedIndex >= 0 && (SelectedIndex < items.Count))
-            {
-                currentSelection = items.ElementAt(SelectedIndex).Name;
-            }
+            var currentSelection = SelectedString;
             var selectionState = PopulateItemsCore(currentSelection);
-            if (selectionState == SelectionState.Restore)
+
+            // Restore the selection when selectedIndex is valid
+            if (selectionState == SelectionState.Restore && !String.IsNullOrEmpty(currentSelection))
             {
                 SelectedIndex = -1;
                 for (int i = 0; i < items.Count; i++)
@@ -224,6 +259,7 @@ namespace CoreNodeModels
                     if ((items.ElementAt(i)).Name.Equals(currentSelection))
                     {
                         SelectedIndex = i;
+                        SelectedString = currentSelection;
                     }
                 }
             }

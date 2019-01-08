@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using Dynamo.Search;
-using Dynamo.Search.SearchElements;
 using Dynamo.Wpf.ViewModels;
 
 namespace Dynamo.UI.Controls

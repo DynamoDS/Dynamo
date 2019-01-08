@@ -8,21 +8,17 @@ using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Media;
 using Dynamo.Configuration;
-using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
 using Dynamo.Interfaces;
 using Dynamo.Logging;
-using Dynamo.Nodes;
+using Dynamo.Models;
 using Dynamo.Search;
 using Dynamo.Search.SearchElements;
-using Dynamo.Services;
 using Dynamo.UI;
 using Dynamo.Utilities;
 using Dynamo.Wpf.Services;
 using Dynamo.Wpf.ViewModels;
-
 using Microsoft.Practices.Prism.ViewModel;
-using Dynamo.Models;
 
 namespace Dynamo.ViewModels
 {

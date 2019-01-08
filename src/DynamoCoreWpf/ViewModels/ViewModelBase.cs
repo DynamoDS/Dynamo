@@ -1,6 +1,6 @@
-﻿using Microsoft.Practices.Prism.ViewModel;
+﻿using System;
+using Microsoft.Practices.Prism.ViewModel;
 using Newtonsoft.Json;
-using System;
 
 namespace Dynamo.ViewModels
 {

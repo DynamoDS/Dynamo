@@ -1,5 +1,5 @@
-﻿using System.Windows.Media;
-using System.Linq;
+﻿using System.Linq;
+using System.Windows.Media;
 using Autodesk.DesignScript.Interfaces;
 
 namespace Dynamo.Wpf.Rendering
