@@ -254,7 +254,7 @@ namespace CoreNodeModels
         /// <returns>string to serialize as SelectedString or compare with SelectedString</returns>
         protected virtual string GetSelectedStringFromItem(DynamoDropDownItem item)
         {
-            return item.Name;
+            return item == null || item.Name == null ? string.Empty : item.Name;
         }
 
         public void PopulateItems()
