@@ -815,7 +815,11 @@ namespace Dynamo.ViewModels
             return Model.CustomNodeManager.Contains((Guid)parameters);
         }
 
-
+        /// <summary>
+        /// Opens a new browser window pointing to the Dynamo repo new issue page, pre-filling issue 
+        /// title and content based on crash details. Uses system default browser.
+        /// </summary>
+        /// <param name="bodyContent">Crash details body. If null, nothing will be filled-in.</param>
         public static void ReportABug(object bodyContent)
         {
             if (bodyContent == null)
@@ -824,7 +828,7 @@ namespace Dynamo.ViewModels
                 return;
             }
 
-            UriBuilder baseUri = new UriBuilder(Configurations.GitHubBugReportingLink);
+            var baseUri = new UriBuilder(Configurations.GitHubBugReportingLink);
 
             // provide fallback values for text content in case Resources or Assembly calls fail
             var issueTitle = Resources.CrashPromptGithubNewIssueTitle ?? "Crash report from Dynamo {0}";
