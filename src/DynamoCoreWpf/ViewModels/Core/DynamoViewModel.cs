@@ -821,11 +821,12 @@ namespace Dynamo.ViewModels
             {
                 UriBuilder baseUri = new UriBuilder(Configurations.GitHubBugReportingLink);
 
-                string title = "title=" + string.Format(
-                    Resources.CrashPromptGithubNewIssueTitle,
-                    AssemblyHelper.GetDynamoVersion().ToString()
-                    );
-                string body = "body=" + bodyContent.ToString();
+                // provide fallback values for text content in case Resources or Assembly calls fail
+                var issueTitle = Resources.CrashPromptGithubNewIssueTitle ?? "Crash report from Dynamo {0}";
+                var dynamoVersion = AssemblyHelper.GetDynamoVersion().ToString() ?? "2.1+";
+
+                var title = "title=" + string.Format(issueTitle, dynamoVersion);
+                var body = "body=" + bodyContent.ToString();
 
                 // append the title and body to the URL as query parameters
                 baseUri.Query = title + "&" + body;
