@@ -280,7 +280,17 @@ namespace Dynamo.Core
         {
             Action defUpdatedHandler = () =>
             {
-                node.ResyncWithDefinition(workspace.CustomNodeDefinition);
+                var symbols = workspace.Nodes.OfType<Symbol>().ToList();
+                var removeErrorState = true;
+                foreach (Symbol s in symbols)
+                {
+                    if (!s.Parameter.isValid)
+                    {
+                        node.Error("!");
+                        removeErrorState = false;
+                    }
+                }
+                node.ResyncWithDefinition(workspace.CustomNodeDefinition, removeErrorState);
             };
             workspace.DefinitionUpdated += defUpdatedHandler;
 

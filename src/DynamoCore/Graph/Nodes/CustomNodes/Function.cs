@@ -292,13 +292,13 @@ namespace Dynamo.Graph.Nodes.CustomNodes
 
 #endregion
 
-        private void ValidateDefinition(CustomNodeDefinition def)
+        private void ValidateDefinition(CustomNodeDefinition def, bool removeErrorState = true)
         {
             if (def.IsProxy)
             {
                 this.Error(Properties.Resources.CustomNodeNotLoaded);
             } 
-            else
+            else if (removeErrorState)
             {
                 this.ClearErrorsAndWarnings();
             }
@@ -309,9 +309,9 @@ namespace Dynamo.Graph.Nodes.CustomNodes
         ///     Validates passed Custom Node definition and synchronizes node with it.
         /// </summary>
         /// <param name="def">Custom Node definition.</param>
-        public void ResyncWithDefinition(CustomNodeDefinition def)
+        public void ResyncWithDefinition(CustomNodeDefinition def, bool removeErrorState = true)
         {
-            ValidateDefinition(def);
+            ValidateDefinition(def, removeErrorState);
             Controller.Definition = def;
             Controller.SyncNodeWithDefinition(this);
         }
@@ -414,6 +414,7 @@ namespace Dynamo.Graph.Nodes.CustomNodes
 
                 var type = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var);
                 AssociativeNode defaultValue = null;
+                var errorMessages = new List<ErrorEntry>();
 
                 string comment = null;
 
@@ -424,7 +425,7 @@ namespace Dynamo.Graph.Nodes.CustomNodes
                     //    x : type
                     //    x : type = default_value
                     IdentifierNode identifierNode;
-                    if (TryParseInputExpression(inputSymbol, out identifierNode, out defaultValue, out comment)) // This is false when input name contains spaces
+                    if (TryParseInputExpression(inputSymbol, out identifierNode, out defaultValue, out comment, out errorMessages))
                     {
                         name = identifierNode.Value;
                         if (subLocations.Any())
@@ -457,7 +458,9 @@ namespace Dynamo.Graph.Nodes.CustomNodes
                     }
                     else
                     {
-                        Parameter = new TypedParameter(name, type, defaultValue, null, comment);
+                        Error(errorMessages[0].Message);
+                        Parameter = new TypedParameter("Unnamed_Input", type, defaultValue, null, comment);
+                        Parameter.isValid = false;
                     }
                 }
                 else
@@ -511,34 +514,20 @@ namespace Dynamo.Graph.Nodes.CustomNodes
 
             ArgumentLacing = LacingStrategy.Disabled;
         }
-
-        private string TemporarySubstitueSpaces(string value)
-        {
-            var start = value.LastIndexOf('\n') + 1;
-            var end = value.LastIndexOf(':') - 1;
-            var valueChars = value.ToCharArray();
-            for (int i = start; i < end; i++)
-            {
-                if (valueChars[i] == ' ')
-                {
-                    valueChars[i] = '_';
-                    subLocations.Add(i - start);
-                }
-            }
-            return new string(valueChars);
-        }
+        
 
         private bool TryParseInputExpression(string inputSymbol, 
                                              out IdentifierNode identifier, 
                                              out AssociativeNode defaultValue,
-                                             out string comment)
+                                             out string comment,
+                                             out List<ErrorEntry> errors)
         {
             identifier = null;
             defaultValue = null;
             comment = null;
-
-            var parseString = TemporarySubstitueSpaces(InputSymbol);
-            //var parseString = inputSymbol;
+            errors = new List<ErrorEntry>();
+            
+            var parseString = inputSymbol;
             parseString += ";";
             
             // During loading of symbol node from file, the elementResolver from the workspace is unavailable
@@ -548,7 +537,7 @@ namespace Dynamo.Graph.Nodes.CustomNodes
 
             var doesPrecompile = EngineController.CompilationServices.PreCompileCodeBlock(ref parseParam);
             var anyNodesParsed = parseParam.ParsedNodes.Any();
-            if ( doesPrecompile && anyNodesParsed) //This is false with spaces in input name
+            if ( doesPrecompile && anyNodesParsed)
             {
                 var parsedComments = parseParam.ParsedComments;
                 if (parsedComments.Any())
@@ -592,11 +581,14 @@ namespace Dynamo.Graph.Nodes.CustomNodes
                             this.Warning(parseParam.Warnings.First().Message);
                         }
                     }
-
+                    
                     return identifier != null;
                 }
             }
-
+            foreach (ErrorEntry error in parseParam.Errors)
+            {
+                errors.Add(error);
+            }
             return false;
         }
 

@@ -33,7 +33,7 @@ namespace Dynamo
                 throw new ArgumentException(@"FunctionId invalid.", "functionId");
 
             nodeModels = nodeModels ?? new List<NodeModel>();
-
+            
             #region Find outputs
 
             // Find output elements for the node
@@ -125,7 +125,7 @@ namespace Dynamo
             var inputNodes = nodeModels.OfType<Symbol>().ToList();
             var parameters = inputNodes.Select(x => new TypedParameter(
                                                    x.GetAstIdentifierForOutputIndex(0).Value,
-                                                   x.Parameter.Type, 
+                                                   x.Parameter.Type,
                                                    x.Parameter.DefaultValue,
                                                    null,
                                                    x.Parameter.Summary));
