@@ -171,9 +171,10 @@ namespace ProtoCore
                 }
 
                 int distance = fep.GetConversionDistance(reducedParamSVs, classTable, allowArrayPromotion, runtimeCore);
-                if (distance != 
-                    (int)ProcedureDistance.InvalidDistance)
+                if (distance != (int) ProcedureDistance.InvalidDistance)
+                {
                     ret.Add(fep, distance);
+                }
             }
 
             return ret;
@@ -201,15 +202,15 @@ namespace ProtoCore
 
             foreach (FunctionEndPoint fep in FunctionEndPoints)
             {
+                var ma = fep.procedureNode.MethodAttribute;
+                var allowArrayPromotion = true;
+                if (ma != null)
+                {
+                    allowArrayPromotion = ma.AllowArrayPromotion;
+                }
+
                 foreach (var reducedParam in reducedParams)
                 {
-                    var ma = fep.procedureNode.MethodAttribute;
-                    var allowArrayPromotion = true;
-                    if (ma != null)
-                    {
-                        allowArrayPromotion = ma.AllowArrayPromotion;
-                    }
-
                     int distance = fep.GetConversionDistance(reducedParam, classTable, allowArrayPromotion, runtimeCore);
                     if (distance != (int)ProcedureDistance.InvalidDistance)
                     {

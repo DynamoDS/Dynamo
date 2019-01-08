@@ -1676,6 +1676,7 @@ namespace ProtoCore.AST.AssociativeAST
             HiddenInLibrary = hiddenInLibrary;
             CanUpdatePeriodically = canUpdatePeriodically;
             ObsoleteMessage = msg;
+            AllowArrayPromotion = true;
         }
     }
 
