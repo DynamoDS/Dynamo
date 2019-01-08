@@ -332,7 +332,6 @@ namespace Dynamo.Graph.Nodes.CustomNodes
         private string inputSymbol = String.Empty;
         private string name = String.Empty;
         private ElementResolver workspaceElementResolver;
-        private List<int> subLocations = new List<int>();
 
         /// <summary>
         /// The NodeType property provides a name which maps to the 
@@ -428,16 +427,6 @@ namespace Dynamo.Graph.Nodes.CustomNodes
                     if (TryParseInputExpression(inputSymbol, out identifierNode, out defaultValue, out comment, out errorMessages))
                     {
                         name = identifierNode.Value;
-                        if (subLocations.Any())
-                        {
-                            var nameChars = name.ToCharArray();
-                            foreach (int i in subLocations)
-                            {
-                                nameChars[i] = ' ';
-                            }
-                            subLocations.Clear();
-                            name = new string(nameChars);
-                        }
 
                         if (identifierNode.datatype.UID == Constants.kInvalidIndex)
                         {
@@ -534,10 +523,9 @@ namespace Dynamo.Graph.Nodes.CustomNodes
             // in which case, a local copy of the ER obtained from the symbol node is used
             var resolver = workspaceElementResolver ?? ElementResolver;
             var parseParam = new ParseParam(this.GUID, parseString, resolver);
-
-            var doesPrecompile = EngineController.CompilationServices.PreCompileCodeBlock(ref parseParam);
-            var anyNodesParsed = parseParam.ParsedNodes.Any();
-            if ( doesPrecompile && anyNodesParsed)
+            
+            if (EngineController.CompilationServices.PreCompileCodeBlock(ref parseParam) &&
+                parseParam.ParsedNodes.Any())
             {
                 var parsedComments = parseParam.ParsedComments;
                 if (parsedComments.Any())
@@ -581,10 +569,11 @@ namespace Dynamo.Graph.Nodes.CustomNodes
                             this.Warning(parseParam.Warnings.First().Message);
                         }
                     }
-                    
+
                     return identifier != null;
                 }
             }
+
             foreach (ErrorEntry error in parseParam.Errors)
             {
                 errors.Add(error);

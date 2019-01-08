@@ -16,8 +16,7 @@ namespace Dynamo.Library
         private readonly string defaultValueString;
 
         public bool isValid { get; set; } = true;
-
-
+        
         /// <summary>
         /// This function creates TypedParameter
         /// </summary>
