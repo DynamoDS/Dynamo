@@ -894,6 +894,82 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        public void TestCustomNodeFromCollapsedNodeHasSpecificTypes()
+        {
+            var examplePath = Path.Combine(TestDirectory, @"core\CustomNodes\");
+            OpenModel(Path.Combine(examplePath, "simpleGeometry.dyn"));
+
+            // Convert a DSFunction node Line.ByStartPointEndPoint to custom node.
+            var node = CurrentDynamoModel.CurrentWorkspace.Nodes.OfType<DSFunction>().First();
+
+            var selectionSet = new List<NodeModel> { node };
+            var ws = CurrentDynamoModel.CustomNodeManager.Collapse(
+                selectionSet,
+                Enumerable.Empty<NoteModel>(),
+                CurrentDynamoModel.CurrentWorkspace,
+                true,
+                new FunctionNamePromptEventArgs
+                {
+                    Category = "Testing",
+                    Description = "",
+                    Name = "__CollapseTest__",
+                    Success = true
+                });
+
+            CurrentDynamoModel.AddCustomNodeWorkspace(ws);
+            CurrentDynamoModel.OpenCustomNodeWorkspace(ws.CustomNodeId);
+            var inputs = CurrentDynamoModel.CurrentWorkspace.Nodes.OfType<Symbol>().ToList();
+            Assert.IsNotNull(inputs);
+
+            inputs.ForEach(x => Assert.NotNull(x));
+
+            Assert.IsTrue(inputs.All(t => t.InputSymbol.EndsWith(":Point")));
+        }
+
+        [Test]
+        public void TestCustomNodeFromCollapsedNodeHasSpecificTypes_WithConflict()
+        {
+            //load the FFI target lib so we have some namespace conflicts
+            string libraryPath = "FFITarget.dll";
+            if (!CurrentDynamoModel.EngineController.LibraryServices.IsLibraryLoaded(libraryPath))
+            {
+                CurrentDynamoModel.EngineController.LibraryServices.ImportLibrary(libraryPath);
+            }
+
+            var examplePath = Path.Combine(TestDirectory, @"core\CustomNodes\");
+            OpenModel(Path.Combine(examplePath, "simpleGeometry.dyn"));
+
+            // Convert a DSFunction node Line.ByStartPointEndPoint to custom node.
+            var node = CurrentDynamoModel.CurrentWorkspace.Nodes.OfType<DSFunction>().First();
+
+            var selectionSet = new List<NodeModel> { node };
+            var ws = CurrentDynamoModel.CustomNodeManager.Collapse(
+                selectionSet,
+                Enumerable.Empty<NoteModel>(),
+                CurrentDynamoModel.CurrentWorkspace,
+                true,
+                new FunctionNamePromptEventArgs
+                {
+                    Category = "Testing",
+                    Description = "",
+                    Name = "__CollapseTest__",
+                    Success = true
+                });
+
+            CurrentDynamoModel.AddCustomNodeWorkspace(ws);
+            CurrentDynamoModel.OpenCustomNodeWorkspace(ws.CustomNodeId);
+            var inputs = CurrentDynamoModel.CurrentWorkspace.Nodes.OfType<Symbol>().ToList();
+            Assert.IsNotNull(inputs);
+
+            inputs.ForEach(x => Assert.NotNull(x));
+
+            Assert.IsTrue(inputs.All(t =>
+            {
+                return t.InputSymbol.EndsWith(":Autodesk.Point");
+            }));
+        }
+
+        [Test]
         public void TestCustomNodeInSyncWithDefinition()
         {
             var basePath = Path.Combine(TestDirectory, @"core\CustomNodes\");

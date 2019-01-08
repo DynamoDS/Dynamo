@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using Dynamo.Graph.Workspaces;
-using Dynamo.Interfaces;
 
 namespace Dynamo.Graph.Nodes.CustomNodes
 {

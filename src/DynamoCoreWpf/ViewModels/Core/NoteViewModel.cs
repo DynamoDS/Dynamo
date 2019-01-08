@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Linq;
+using Dynamo.Configuration;
 using Dynamo.Graph;
 using Dynamo.Graph.Notes;
-using Dynamo.Models;
 using Dynamo.Selection;
 using Dynamo.Wpf.ViewModels.Core;
-using Dynamo.Configuration;
 using Newtonsoft.Json;
 
 namespace Dynamo.ViewModels

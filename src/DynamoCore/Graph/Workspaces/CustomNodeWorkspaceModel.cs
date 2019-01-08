@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Xml;
+using Dynamo.Engine;
 using Dynamo.Graph.Annotations;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.CustomNodes;
@@ -12,7 +13,6 @@ using Dynamo.Graph.Nodes.NodeLoaders;
 using Dynamo.Graph.Notes;
 using Dynamo.Graph.Presets;
 using ProtoCore.Namespace;
-using Dynamo.Engine;
 
 namespace Dynamo.Graph.Workspaces
 {

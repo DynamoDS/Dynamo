@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Windows.Input;
-using Dynamo.Utilities;
 
 namespace Dynamo.UI.Commands
 {

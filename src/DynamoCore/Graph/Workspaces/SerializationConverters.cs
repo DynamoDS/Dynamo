@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using Dynamo.Configuration;
 using Dynamo.Core;
 using Dynamo.Engine;
@@ -13,6 +14,7 @@ using Dynamo.Graph.Nodes.ZeroTouch;
 using Dynamo.Graph.Notes;
 using Dynamo.Graph.Presets;
 using Dynamo.Library;
+using Dynamo.Logging;
 using Dynamo.Scheduler;
 using Dynamo.Utilities;
 using Newtonsoft.Json;
@@ -21,9 +23,6 @@ using Newtonsoft.Json.Serialization;
 using ProtoCore;
 using ProtoCore.Namespace;
 using Type = System.Type;
-using System.Reflection;
-using System.Text.RegularExpressions;
-using Dynamo.Logging;
 
 namespace Dynamo.Graph.Workspaces
 {
@@ -168,6 +167,7 @@ namespace Dynamo.Graph.Workspaces
                 if (isUnresolved)
                   function.UpdatePortsForUnresolved(inPorts, outPorts);
             }
+
             else if (type == typeof(CodeBlockNodeModel))
             {
                 var code = obj["Code"].Value<string>();
@@ -245,7 +245,12 @@ namespace Dynamo.Graph.Workspaces
             else
             {
                 node = (NodeModel)obj.ToObject(type);
-
+                
+                // if node is an customNode input symbol - assign the element resolver.
+                if(node is Nodes.CustomNodes.Symbol)
+                {
+                    (node as Nodes.CustomNodes.Symbol).ElementResolver = ElementResolver;
+                }
                 // We don't need to remap ports for any nodes with json constructors which pass ports
                 remapPorts = false;
             }

@@ -1,4 +1,17 @@
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Windows;
+using System.Windows.Data;
+using System.Windows.Input;
 using Dynamo.Configuration;
+using Dynamo.Engine;
 using Dynamo.Graph;
 using Dynamo.Graph.Annotations;
 using Dynamo.Graph.Connectors;
@@ -9,24 +22,11 @@ using Dynamo.Models;
 using Dynamo.Selection;
 using Dynamo.Utilities;
 using Dynamo.Wpf.ViewModels;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Collections.Specialized;
-using System.ComponentModel;
-using System.Linq;
-using System.Windows;
-using System.Windows.Data;
-using System.Windows.Input;
-using Dynamo.Wpf.ViewModels.Watch3D;
-using Function = Dynamo.Graph.Nodes.CustomNodes.Function;
-using Newtonsoft.Json.Linq;
-using System.IO;
-using Newtonsoft.Json;
 using Dynamo.Wpf.ViewModels.Core;
-using System.Diagnostics;
-using Dynamo.Engine;
-using System.Globalization;
+using Dynamo.Wpf.ViewModels.Watch3D;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using Function = Dynamo.Graph.Nodes.CustomNodes.Function;
 
 namespace Dynamo.ViewModels
 {

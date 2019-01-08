@@ -12,6 +12,7 @@ using Dynamo.ViewModels;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Dynamo.Wpf.ViewModels.Watch3D;
+using System.Reflection;
 
 namespace Dynamo.Tests
 {
@@ -19,6 +20,13 @@ namespace Dynamo.Tests
     {
         protected override void GetLibrariesToPreload(List<string> libraries)
         {
+            libraries.Add("VMDataBridge.dll");
+            libraries.Add("DesignScriptBuiltin.dll");
+            libraries.Add("DSCoreNodes.dll");
+            libraries.Add("FunctionObject.ds");
+            libraries.Add("BuiltIn.ds");
+            libraries.Add("ProtoGeometry.dll");
+          
             base.GetLibrariesToPreload(libraries);
         }
 
@@ -52,12 +60,14 @@ namespace Dynamo.Tests
             return args;
         }
 
+        //Only for use during testing. Windows or Posix will handle this when invoking commands.
         protected static string[] CommandStringToStringArray(string commandString)
         {
             //convert string to commandlineargs, 
             var m = Regex.Matches(commandString, "([^\"]\\S*|\".+?\")\\s*");
-            var list = m.Cast<Match>().Select(match => match.Value).ToList();
-
+            var list = m.Cast<Match>().Select(match => match.Value);
+            //trim off leading and trailing "'s - this is handy when paths are passed as args with quotes around them.
+            list = list.Select(arg => arg.Trim(new[] { '"' })).ToList();
             //strip trailing whitespace
             var argarray = list.Select(x => x.Trim()).ToArray();
             return argarray.ToArray();
@@ -76,6 +86,63 @@ namespace Dynamo.Tests
 
             runner.Run(CommandstringToArgs(commandstring));
             AssertPreviewValue("4c5889ac-7b91-4fb5-aaad-a2128b533279", 4.0);
+        }
+
+        [Test]
+        public void ImportingAnAssemblyDoesNotEffectCustomNodePaths()
+        {
+            //load a graph which requires first loading FFITarget.dll
+            var openpath = Path.Combine(TestDirectory, @"core\commandLine\FFITarget.dyn");
+            var importPath = Path.Combine(ExecutingDirectory, "FFITarget.dll");
+
+            var runner = new DynamoCLI.CommandLineRunner(this.CurrentDynamoModel);
+            string commandstring = $"/o {openpath} /i {importPath}";
+
+            runner.Run(CommandstringToArgs(commandstring));
+            //assert that the FFITarget dummy point node is created with correct properties.
+            AssertPreviewValue("fba565f89c8948e290bbb423177fa7bb", 2.0);
+            AssertPreviewValue("5a1fae3e13ce4ccfba737ec75057907b", 2.0);
+
+            //the custom package paths should not be effected by running the CLI.
+            this.CurrentDynamoModel.PreferenceSettings.CustomPackageFolders.ForEach(packagePath =>
+            {
+                Assert.IsFalse(packagePath.Contains(importPath) || packagePath == importPath);
+            });
+
+        }
+
+        [Test]
+        public void CanImportDependencyBeforeRunningGraph()
+        {
+            //load a graph which requires first loading FFITarget.dll
+            var openpath = Path.Combine(TestDirectory, @"core\commandLine\FFITarget.dyn");
+            var importPath = Path.Combine(ExecutingDirectory, "FFITarget.dll");
+
+            var runner = new DynamoCLI.CommandLineRunner(this.CurrentDynamoModel);
+            string commandstring = $"/o {openpath} /i {importPath}";
+
+            runner.Run(CommandstringToArgs(commandstring));
+            //assert that the FFITarget dummy point node is created with correct properties.
+            AssertPreviewValue("fba565f89c8948e290bbb423177fa7bb", 2.0);
+            AssertPreviewValue("5a1fae3e13ce4ccfba737ec75057907b", 2.0);
+
+        }
+
+        [Test]
+        public void CanImportMultipleDepsBeforeRunningGraph()
+        {
+            //load a graph which requires first loading FFITarget.dll and SampleLibraryZeroTouch.dll
+            var openpath = Path.Combine(TestDirectory, @"core\commandLine\multipleDeps.dyn");
+            var importPath1 = Path.Combine(ExecutingDirectory, "FFITarget.dll");
+            var importPath2 = Path.Combine(TestDirectory,"pkgs", "Dynamo Samples","bin" ,"SampleLibraryZeroTouch.dll");
+
+            var runner = new DynamoCLI.CommandLineRunner(this.CurrentDynamoModel);
+            string commandstring = $"/o {openpath} /i {importPath1} /i \"{importPath2}\"";
+
+            runner.Run(CommandstringToArgs(commandstring));
+            //assert that this node from the samples ZT dll produces a correct result.
+            AssertPreviewValue("04c1531865e34ecb80a265c7822450aa",  "Point(X = 4.000, Y = 2.000, Z = 2.000)" );
+
         }
 
         [Test]

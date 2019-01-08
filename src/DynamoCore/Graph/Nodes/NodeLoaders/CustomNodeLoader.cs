@@ -2,7 +2,6 @@ using System;
 using System.Linq;
 using System.Xml;
 using Dynamo.Graph.Nodes.CustomNodes;
-using Dynamo.Interfaces;
 using Dynamo.Utilities;
 using ProtoCore.Namespace;
 

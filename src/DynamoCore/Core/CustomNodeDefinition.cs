@@ -3,13 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using Dynamo.Engine;
 using Dynamo.Engine.CodeGeneration;
-using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.CustomNodes;
 using Dynamo.Library;
-using Dynamo.Models;
-using ProtoCore.AST.AssociativeAST;
 using ProtoCore;
+using ProtoCore.AST.AssociativeAST;
 
 namespace Dynamo
 {
