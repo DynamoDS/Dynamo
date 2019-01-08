@@ -463,7 +463,7 @@ namespace Dynamo.Graph.Nodes.CustomNodes
                     {
                         Error(errorMessages[0].Message);
                         Parameter = new TypedParameter("Unnamed_Input", type, defaultValue, null, comment);
-                        Parameter.isValid = false;
+                        Parameter.nameIsValid = false;
                     }
                 }
                 else

@@ -13,7 +13,7 @@ namespace Dynamo.Library
         private string summary = null; // Indicating that it is not initialized.
         private readonly string defaultValueString;
 
-        public bool isValid { get; set; } = true;
+        public bool nameIsValid { get; set; } = true;
         
         /// <summary>
         /// This function creates TypedParameter
