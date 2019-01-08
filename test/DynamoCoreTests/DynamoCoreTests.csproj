@@ -102,6 +102,7 @@
     <Compile Include="MockMaker.cs" />
     <Compile Include="NodeConstructionTests.cs" />
     <Compile Include="Nodes\DictionaryTests.cs" />
+    <Compile Include="Nodes\DropDownTests.cs" />
     <Compile Include="NodeToCodeTest.cs" />
     <Compile Include="PresetsTests.cs" />
     <Compile Include="PeriodicEvaluationTests.cs" />
