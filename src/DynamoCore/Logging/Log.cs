@@ -313,15 +313,6 @@ namespace Dynamo.Logging
                     return;
 
                 items.Enqueue(item);
-
-                // Write item to file
-                string mydocpath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-                using (System.IO.StreamWriter outputFile = new System.IO.StreamWriter(Path.Combine(mydocpath, "AnalyticsLog.txt"), true))
-                {
-                    byte[] b = Convert.FromBase64String(item["Data"]);
-                    var dataStr = System.Text.Encoding.UTF8.GetString(b);
-                    outputFile.WriteLine("Tag: " + item["Tag"] + "\nData: " + dataStr);
-                }
             }
 
         }
