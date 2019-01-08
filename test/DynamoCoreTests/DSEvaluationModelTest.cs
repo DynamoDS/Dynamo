@@ -17,7 +17,7 @@ namespace Dynamo.Tests
         protected override void GetLibrariesToPreload(List<string> libraries)
         {
             libraries.Add("ProtoGeometry.dll");
-            libraries.Add("Builtin.dll");
+            libraries.Add("DesignScriptBuiltin.dll");
             libraries.Add("DSCoreNodes.dll");
             libraries.Add("DSIronPython.dll");
             libraries.Add("FunctionObject.ds");
@@ -1167,7 +1167,7 @@ namespace Dynamo.Tests
         [Test]
         public void TestMAGN9507()
         {
-            // x = {1, 2, 3};
+            // x = [1, 2, 3];
             // x = Count(x);
             var dynFilePath = Path.Combine(TestDirectory, @"core\dsevaluation\MAGN-9507.dyn");
             OpenModel(dynFilePath);
@@ -1353,7 +1353,7 @@ namespace Dynamo.Tests
         protected override void GetLibrariesToPreload(List<string> libraries)
         {
             libraries.Add("ProtoGeometry.dll");
-            libraries.Add("Builtin.dll");
+            libraries.Add("DesignScriptBuiltin.dll");
             libraries.Add("DSCoreNodes.dll");
             libraries.Add("DSIronPython.dll");
             libraries.Add("FunctionObject.ds");

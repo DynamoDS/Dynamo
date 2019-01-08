@@ -19,7 +19,7 @@ namespace PythonNodeModels.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class Resources {
@@ -57,6 +57,24 @@ namespace PythonNodeModels.Properties {
             }
             set {
                 resourceCulture = value;
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The Python node &quot;{0}&quot; still has a script editor window open. Are you sure you want to close the editor and delete the node?.
+        /// </summary>
+        public static string DeletingPythonNodeWithOpenEditorMessage {
+            get {
+                return ResourceManager.GetString("DeletingPythonNodeWithOpenEditorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Script Editor Open.
+        /// </summary>
+        public static string DeletingPythonNodeWithOpenEditorTitle {
+            get {
+                return ResourceManager.GetString("DeletingPythonNodeWithOpenEditorTitle", resourceCulture);
             }
         }
         
@@ -106,7 +124,7 @@ namespace PythonNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Enable Python support and load DesignScript library.
+        ///   Looks up a localized string similar to Load the Python Standard and DesignScript Libraries.
         /// </summary>
         public static string PythonScriptEditorImports {
             get {

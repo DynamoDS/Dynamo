@@ -1,30 +1,3 @@
-using Dynamo.Configuration;
-using Dynamo.Core;
-using Dynamo.Graph.Nodes;
-using Dynamo.Graph.Notes;
-using Dynamo.Graph.Presets;
-using Dynamo.Graph.Workspaces;
-using Dynamo.Logging;
-using Dynamo.Models;
-using Dynamo.Nodes;
-using Dynamo.Nodes.Prompts;
-using Dynamo.PackageManager;
-using Dynamo.PackageManager.UI;
-using Dynamo.Search;
-using Dynamo.Selection;
-using Dynamo.Services;
-using Dynamo.UI.Controls;
-using Dynamo.Utilities;
-using Dynamo.ViewModels;
-using Dynamo.Views;
-using Dynamo.Wpf;
-using Dynamo.Wpf.Authentication;
-using Dynamo.Wpf.Controls;
-using Dynamo.Wpf.Extensions;
-using Dynamo.Wpf.Utilities;
-using Dynamo.Wpf.ViewModels.Core;
-using Dynamo.Wpf.Views.Gallery;
-using Dynamo.Wpf.Views.PackageManager;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -41,6 +14,33 @@ using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
+using Dynamo.Configuration;
+using Dynamo.Core;
+using Dynamo.Graph.Nodes;
+using Dynamo.Graph.Notes;
+using Dynamo.Graph.Presets;
+using Dynamo.Graph.Workspaces;
+using Dynamo.Logging;
+using Dynamo.Models;
+using Dynamo.Nodes;
+using Dynamo.Nodes.Prompts;
+using Dynamo.PackageManager;
+using Dynamo.PackageManager.UI;
+using Dynamo.Search.SearchElements;
+using Dynamo.Selection;
+using Dynamo.Services;
+using Dynamo.UI.Controls;
+using Dynamo.Utilities;
+using Dynamo.ViewModels;
+using Dynamo.Views;
+using Dynamo.Wpf;
+using Dynamo.Wpf.Authentication;
+using Dynamo.Wpf.Controls;
+using Dynamo.Wpf.Extensions;
+using Dynamo.Wpf.Utilities;
+using Dynamo.Wpf.ViewModels.Core;
+using Dynamo.Wpf.Views.Gallery;
+using Dynamo.Wpf.Views.PackageManager;
 using HelixToolkit.Wpf.SharpDX;
 using ResourceNames = Dynamo.Wpf.Interfaces.ResourceNames;
 using String = System.String;
@@ -66,6 +66,7 @@ namespace Dynamo.Controls
         private readonly LoginService loginService;
         internal ViewExtensionManager viewExtensionManager = new ViewExtensionManager();
         private ShortcutToolbar shortcutBar;
+        private bool loaded = false;
 
         // This is to identify whether the PerformShutdownSequenceOnViewModel() method has been
         // called on the view model and the process is not cancelled
@@ -82,11 +83,11 @@ namespace Dynamo.Controls
             // When the view is constructed, we enable or disable hardware acceleration based on that preference. 
             //This preference is not exposed in the UI and can be used to debug hardware issues only
             // by modifying the preferences xml.
-            RenderOptions.ProcessRenderMode = dynamoViewModel.Model.PreferenceSettings.UseHardwareAcceleration ? 
+            RenderOptions.ProcessRenderMode = dynamoViewModel.Model.PreferenceSettings.UseHardwareAcceleration ?
                 RenderMode.Default : RenderMode.SoftwareOnly;
-            
+
             this.dynamoViewModel = dynamoViewModel;
-            this.dynamoViewModel.UIDispatcher = Dispatcher;            
+            this.dynamoViewModel.UIDispatcher = Dispatcher;
             nodeViewCustomizationLibrary = new NodeViewCustomizationLibrary(this.dynamoViewModel.Model.Logger);
 
             DataContext = dynamoViewModel;
@@ -108,6 +109,9 @@ namespace Dynamo.Controls
 
             SizeChanged += DynamoView_SizeChanged;
             LocationChanged += DynamoView_LocationChanged;
+
+            // Apply appropriate expand/collapse library button state depending on initial width
+            updateCollapseIcon();
 
             // Check that preference bounds are actually within one
             // of the available monitors.
@@ -153,13 +157,34 @@ namespace Dynamo.Controls
                         logSource.MessageLogged += Log;
 
                     ext.Startup(startupParams);
+                    // if we are starting ViewExtension (A) which is a source of other extensions (like packageManager)
+                    // then we can start the ViewExtension(s) (B) that it requested be loaded.
+                    if (ext is IViewExtensionSource)
+                    {
+                        foreach (var loadedExtension in ((ext as IViewExtensionSource).RequestedExtensions))
+                        {
+                            (loadedExtension).Startup(startupParams);
+                        }
+                    }
                     viewExtensionManager.Add(ext);
+
                 }
                 catch (Exception exc)
                 {
                     Log(ext.Name + ": " + exc.Message);
                 }
             }
+
+            // when an extension is added if dynamoView is loaded, call loaded on
+            // that extension (this alerts late loaded extensions).
+            this.viewExtensionManager.ExtensionAdded += (extension) =>
+             {
+                 if (this.loaded)
+                 {
+                     DynamoLoadedViewExtensionHandler(new ViewLoadedParams(this, this.dynamoViewModel),
+                         new List<IViewExtension>() { extension });
+                 }
+             };
 
             this.dynamoViewModel.RequestPaste += OnRequestPaste;
             this.dynamoViewModel.RequestReturnFocusToView += OnRequestReturnFocusToView;
@@ -180,7 +205,7 @@ namespace Dynamo.Controls
             var locatableModels = clipBoard.Where(item => item is NoteModel || item is NodeModel);
 
             var modelBounds = locatableModels.Select(lm =>
-                new Rect {X = lm.X, Y = lm.Y, Height = lm.Height, Width = lm.Width});
+                new Rect { X = lm.X, Y = lm.Y, Height = lm.Height, Width = lm.Width });
 
             // Find workspace view.
             var workspace = this.ChildOfType<WorkspaceView>();
@@ -331,7 +356,7 @@ namespace Dynamo.Controls
 
         private void InitializeLogin()
         {
-            if ( dynamoViewModel.ShowLogin && dynamoViewModel.Model.AuthenticationManager.HasAuthProvider)
+            if (dynamoViewModel.ShowLogin && dynamoViewModel.Model.AuthenticationManager.HasAuthProvider)
             {
                 var login = new Login(dynamoViewModel.PackageManagerClientViewModel);
                 loginGrid.Children.Add(login);
@@ -340,7 +365,7 @@ namespace Dynamo.Controls
 
         private void InitializeShortcutBar()
         {
-            shortcutBar = new ShortcutToolbar(this.dynamoViewModel.Model.UpdateManager) {Name = "ShortcutToolbar"};
+            shortcutBar = new ShortcutToolbar(this.dynamoViewModel.Model.UpdateManager) { Name = "ShortcutToolbar" };
 
             var newScriptButton = new ShortcutBarItem
             {
@@ -476,6 +501,21 @@ namespace Dynamo.Controls
             }
         }
 
+        private void DynamoLoadedViewExtensionHandler(ViewLoadedParams loadedParams, IEnumerable<IViewExtension> extensions)
+        {
+            foreach (var ext in extensions)
+            {
+                try
+                {
+                    ext.Loaded(loadedParams);
+                }
+                catch (Exception exc)
+                {
+                    Log(ext.Name + ": " + exc.Message);
+                }
+            }
+        }
+
         private void DynamoView_Loaded(object sender, EventArgs e)
         {
             // Do an initial load of the cursor collection
@@ -556,22 +596,12 @@ namespace Dynamo.Controls
 
             var loadedParams = new ViewLoadedParams(this, dynamoViewModel);
 
-            foreach (var ext in viewExtensionManager.ViewExtensions)
-            {
-                try
-                {
-                    ext.Loaded(loadedParams);
-                }
-                catch (Exception exc)
-                {
-                    Log(ext.Name + ": " + exc.Message);
-                }
-            }
+            this.DynamoLoadedViewExtensionHandler(loadedParams, viewExtensionManager.ViewExtensions);
 
-            BackgroundPreview = new Watch3DView {Name = BackgroundPreviewName};
+            BackgroundPreview = new Watch3DView { Name = BackgroundPreviewName };
             background_grid.Children.Add(BackgroundPreview);
             BackgroundPreview.DataContext = dynamoViewModel.BackgroundPreviewViewModel;
-            BackgroundPreview.Margin = new System.Windows.Thickness(0,20,0,0);
+            BackgroundPreview.Margin = new System.Windows.Thickness(0, 20, 0, 0);
             var vizBinding = new Binding
             {
                 Source = dynamoViewModel.BackgroundPreviewViewModel,
@@ -588,6 +618,7 @@ namespace Dynamo.Controls
             {
                 this.Deactivated += (s, args) => { HidePopupWhenWindowDeactivated(); };
             }
+            loaded = true;
         }
 
         /// <summary>
@@ -597,9 +628,9 @@ namespace Dynamo.Controls
         private void HidePopupWhenWindowDeactivated()
         {
             var workspace = this.ChildOfType<WorkspaceView>();
-            if(workspace != null)
+            if (workspace != null)
                 workspace.HidePopUp();
-         }
+        }
 
         private void TrackStartupAnalytics()
         {
@@ -607,7 +638,7 @@ namespace Dynamo.Controls
 
             string packages = string.Empty;
             var pkgExtension = dynamoViewModel.Model.GetPackageManagerExtension();
-            if(pkgExtension != null)
+            if (pkgExtension != null)
             {
                 packages = pkgExtension.PackageLoader.LocalPackages
                     .Select(p => string.Format("{0} {1}", p.Name, p.VersionName))
@@ -743,13 +774,14 @@ namespace Dynamo.Controls
 
         private void DynamoViewModelRequestPackagePaths(object sender, EventArgs e)
         {
-            var loadPackagesParams = new LoadPackageParams {
+            var loadPackagesParams = new LoadPackageParams
+            {
                 Preferences = dynamoViewModel.PreferenceSettings,
                 PathManager = dynamoViewModel.Model.PathManager,
             };
             var customNodeManager = dynamoViewModel.Model.CustomNodeManager;
             var packageLoader = dynamoViewModel.Model.GetPackageManagerExtension().PackageLoader;
-            var viewModel = new PackagePathViewModel(packageLoader,loadPackagesParams,customNodeManager);
+            var viewModel = new PackagePathViewModel(packageLoader, loadPackagesParams, customNodeManager);
             var view = new PackagePathView(viewModel) { Owner = this };
             view.ShowDialog();
         }
@@ -763,8 +795,8 @@ namespace Dynamo.Controls
                 {
                     dynamoViewModel.ScaleFactorLog = view.ScaleValue;
                     dynamoViewModel.CurrentSpace.HasUnsavedChanges = true;
-                    
-                    Log(String.Format("Geometry working range changed to {0} ({1}, {2})", 
+
+                    Log(String.Format("Geometry working range changed to {0} ({1}, {2})",
                         view.ScaleRange.Item1, view.ScaleRange.Item2, view.ScaleRange.Item3));
 
                     var allNodes = dynamoViewModel.HomeSpace.Nodes;
@@ -830,7 +862,7 @@ namespace Dynamo.Controls
             }
 
             var buttons = e.AllowCancel ? MessageBoxButton.YesNoCancel : MessageBoxButton.YesNo;
-            var result = System.Windows.MessageBox.Show(this  ,dialogText,
+            var result = System.Windows.MessageBox.Show(this, dialogText,
                 Dynamo.Wpf.Properties.Resources.SaveConfirmationMessageBoxTitle,
                 buttons, MessageBoxImage.Question);
 
@@ -857,7 +889,7 @@ namespace Dynamo.Controls
         {
             dynamoViewModel.CopyCommand.RaiseCanExecuteChanged();
             dynamoViewModel.PasteCommand.RaiseCanExecuteChanged();
-            dynamoViewModel.NodeFromSelectionCommand.RaiseCanExecuteChanged();           
+            dynamoViewModel.NodeFromSelectionCommand.RaiseCanExecuteChanged();
         }
 
         private void Controller_RequestsCrashPrompt(object sender, CrashPromptArgs args)
@@ -929,13 +961,10 @@ namespace Dynamo.Controls
         /// <returns></returns>
         internal void ShowNewFunctionDialog(FunctionNamePromptEventArgs e)
         {
-            var categorized =
-                SearchCategoryUtil.CategorizeSearchEntries(
-                    dynamoViewModel.Model.SearchModel.SearchEntries,
-                    entry => entry.Categories);
+            var elements = dynamoViewModel.Model.SearchModel.SearchEntries;
 
-            var allCategories =
-                categorized.SubCategories.SelectMany(sub => sub.GetAllCategoryNames());
+            // Unique package and custom node categories
+            var allCategories = getUniqueAddOnCategories(elements);
 
             var dialog = new FunctionNamePrompt(allCategories)
             {
@@ -973,11 +1002,51 @@ namespace Dynamo.Controls
         }
 
         /// <summary>
+        /// Helper function returns enum containing all unique package and custom node categories including all nested levels
+        /// </summary>
+        /// <param name="elements"></param>
+        /// <returns></returns>
+        public static IEnumerable<string> getUniqueAddOnCategories(IEnumerable<NodeSearchElement> elements)
+        {
+            List<string> addOns = new List<string>();
+            foreach (var element in elements)
+            {
+                // Only include packages and custom nodes
+                if (element.ElementType.HasFlag(ElementTypes.Packaged) || element.ElementType.HasFlag(ElementTypes.CustomNode))
+                {
+                    // Ordered list of all categories for the search element including all nested categories
+                    var allAddOns = element.Categories.ToList();
+
+                    string category = "";
+
+                    // Construct all categories levels for the element starting at the top level
+                    for (int i = 0; i < allAddOns.Count; i++)
+                    {
+                        // Append nested categories for the given element
+                        if (i != 0)
+                        {
+                            category += "." + allAddOns[i];
+                            addOns.Add(category);
+                        }
+                        // The first list item is the package/custom nodes top level category
+                        else
+                        {
+                            category += allAddOns[i];
+                            addOns.Add(allAddOns[i]);
+                        }
+                    }
+                }
+            }
+
+            return addOns.Distinct();
+        }
+
+        /// <summary>
         /// Handles the request for the presentation of the preset name prompt
         /// </summary>
         /// <param name="e">a parameter object contains default Name and Description,
         /// and Success bool returned from the dialog</param>
-        private void DynamoViewModelRequestPresetNamePrompt (PresetsNamePromptEventArgs e)
+        private void DynamoViewModelRequestPresetNamePrompt(PresetsNamePromptEventArgs e)
         {
             ShowNewPresetDialog(e);
         }
@@ -1007,7 +1076,7 @@ namespace Dynamo.Controls
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
                 };
 
-               
+
                 if (dialog.ShowDialog() != true)
                 {
                     e.Success = false;
@@ -1016,7 +1085,7 @@ namespace Dynamo.Controls
 
                 if (String.IsNullOrEmpty(dialog.Text))
                 {
-                   //if the name is empty, then default to the current time
+                    //if the name is empty, then default to the current time
                     e.Name = System.DateTime.Now.ToString();
                     break;
                 }
@@ -1035,17 +1104,17 @@ namespace Dynamo.Controls
 
         private void ShowPresetWarning()
         {
-            var newDialog = new  PresetOverwritePrompt()
+            var newDialog = new PresetOverwritePrompt()
             {
                 Owner = this,
                 WindowStartupLocation = WindowStartupLocation.CenterOwner,
-                Text =  Wpf.Properties.Resources.PresetWarningMessage,
+                Text = Wpf.Properties.Resources.PresetWarningMessage,
                 IsCancelButtonVisible = Visibility.Collapsed
             };
 
             newDialog.ShowDialog();
         }
-        
+
         private bool PerformShutdownSequenceOnViewModel()
         {
             // Test cases that make use of views (e.g. recorded tests) have 
@@ -1172,7 +1241,7 @@ namespace Dynamo.Controls
                         vm.NavigationKeyIsDown = true;
                     }
                 });
-            }           
+            }
 
             else
             {
@@ -1192,7 +1261,7 @@ namespace Dynamo.Controls
                 dynamoViewModel.BackgroundPreviewViewModel.NavigationKeyIsDown = false;
                 dynamoViewModel.EscapeCommand.Execute(null);
                 e.Handled = true;
-            }            
+            }
         }
 
         private void WorkspaceTabs_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -1225,7 +1294,7 @@ namespace Dynamo.Controls
             // now grab all the states off the set and create a menu item for each one
 
             var statesMenu = (sender as MenuItem);
-            var senderItems =  statesMenu.Items.OfType<MenuItem>().Select(x => x.Tag).ToList();
+            var senderItems = statesMenu.Items.OfType<MenuItem>().Select(x => x.Tag).ToList();
             //only update the states menus if the states have been updated or the user
             // has switched workspace contexts, can check if stateItems List is different
             //from the presets on the current workspace
@@ -1235,18 +1304,18 @@ namespace Dynamo.Controls
                 statesMenu.Items.Clear();
 
                 foreach (var state in PresetSet)
-              {
-                //create a new menu item for each state in the options set
-                //when any of this buttons are clicked we'll call the SetWorkSpaceToStateCommand(state)
-                 var stateItem = new MenuItem
-                        {
-                            Header = state.Name,
-                            Tag = state
-                        };
-                 //the sender was the delete menu
-                 stateItem.Click += DeleteState_Click;
-                 stateItem.ToolTip = state.Description;
-                 ((MenuItem)sender).Items.Add(stateItem);
+                {
+                    //create a new menu item for each state in the options set
+                    //when any of this buttons are clicked we'll call the SetWorkSpaceToStateCommand(state)
+                    var stateItem = new MenuItem
+                    {
+                        Header = state.Name,
+                        Tag = state
+                    };
+                    //the sender was the delete menu
+                    stateItem.Click += DeleteState_Click;
+                    stateItem.ToolTip = state.Description;
+                    ((MenuItem)sender).Items.Add(stateItem);
                 }
             }
         }
@@ -1259,9 +1328,9 @@ namespace Dynamo.Controls
             dynamoViewModel.Model.ExecuteCommand(new DynamoModel.DeleteModelCommand(state.GUID));
             //This is to remove the PATH (>) indicator from the preset submenu header
             //if there are no presets.
-            dynamoViewModel.ShowNewPresetsDialogCommand.RaiseCanExecuteChanged();                       
+            dynamoViewModel.ShowNewPresetsDialogCommand.RaiseCanExecuteChanged();
         }
-        
+
 #if !__NO_SAMPLES_MENU
         /// <summary>
         ///     Setup the "Samples" sub-menu with contents of samples directory.
@@ -1554,51 +1623,88 @@ namespace Dynamo.Controls
         private void Button_MouseEnter(object sender, MouseEventArgs e)
         {
             Grid g = (Grid)sender;
-            TextBlock tb = (TextBlock)(g.Children[1]);
+            StackPanel sp = (StackPanel)(g.Children[0]);
+            TextBlock tb = (TextBlock)(sp.Children[0]);
             var bc = new BrushConverter();
             tb.Foreground = (Brush)bc.ConvertFrom("#cccccc");
-            Image collapseIcon = (Image)g.Children[0];
-            var imageUri = new Uri(@"pack://application:,,,/DynamoCoreWpf;component/UI/Images/expand_hover.png");
+            Image collapseIcon = (Image)sp.Children[1];
 
-            BitmapImage hover = new BitmapImage(imageUri);
-            // hover.Rotation = Rotation.Rotate180;
+            // When hovered swap appropriate expand/collapse button state
+            if (LibraryCollapsed)
+            {
+                Uri imageUri;
+                imageUri = new Uri(@"pack://application:,,,/DynamoCoreWpf;component/UI/Images/expand_hover.png");
+                BitmapImage hover = new BitmapImage(imageUri);
+                collapseIcon.Source = hover;
+            }
+        }
 
-            collapseIcon.Source = hover;
+        private bool libraryCollapsed;
+
+        // Default library width
+        private const int defaultLibraryWidth = 200;
+
+        // Check if library is collapsed or expanded
+        public bool LibraryCollapsed
+        {
+            get
+            {
+                // Threshold that determines if button should be displayed
+                if (LibraryViewColumn.Width.Value < 20)
+                { libraryCollapsed = true; }
+
+                else
+                { libraryCollapsed = false; }
+
+                return libraryCollapsed;
+            }
+        }
+
+        // Check if library is collapsed or expanded and apply appropriate button state
+        private void updateCollapseIcon()
+        {
+            if (LibraryCollapsed)
+            {
+                collapsedSidebar.Visibility = Visibility.Visible;
+            }
+
+            else
+            {
+                collapsedSidebar.Visibility = Visibility.Collapsed;
+            }
         }
 
         private void OnCollapsedSidebarClick(object sender, EventArgs e)
         {
-            LibraryViewColumn.MinWidth = Configurations.MinWidthLibraryView;
-
-            UserControl view = (UserControl)sidebarGrid.Children[0];
-            if (view.Visibility == Visibility.Collapsed)
+            if (LibraryCollapsed)
             {
-                view.Width = double.NaN;
-                view.HorizontalAlignment = HorizontalAlignment.Stretch;
-                view.Height = double.NaN;
-                view.VerticalAlignment = VerticalAlignment.Stretch;
-
-                mainGrid.ColumnDefinitions[0].Width = new GridLength(restoreWidth);
-                verticalSplitter.Visibility = Visibility.Visible;
-                view.Visibility = Visibility.Visible;
-                sidebarGrid.Visibility = Visibility.Visible;
-                collapsedSidebar.Visibility = Visibility.Collapsed;
+                // Restore library to default width (200)
+                LibraryViewColumn.Width = new GridLength(defaultLibraryWidth, GridUnitType.Star);
             }
+
+            else
+            {
+                LibraryViewColumn.Width = new GridLength(0, GridUnitType.Star);
+            }
+
+            updateCollapseIcon();
         }
 
         private void Button_MouseLeave(object sender, MouseEventArgs e)
         {
             Grid g = (Grid)sender;
-            TextBlock tb = (TextBlock)(g.Children[1]);
+            StackPanel sp = (StackPanel)(g.Children[0]);
+            TextBlock tb = (TextBlock)(sp.Children[0]);
             var bc = new BrushConverter();
             tb.Foreground = (Brush)bc.ConvertFromString("#aaaaaa");
-            Image collapseIcon = (Image)g.Children[0];
+            Image collapseIcon = (Image)sp.Children[1];
 
-            // Change the collapse icon and rotate
-            var imageUri = new Uri(@"pack://application:,,,/DynamoCoreWpf;component/UI/Images/expand_normal.png");
+            Uri imageUri;
+            imageUri = new Uri(@"pack://application:,,,/DynamoCoreWpf;component/UI/Images/expand_normal.png");
             BitmapImage hover = new BitmapImage(imageUri);
-
             collapseIcon.Source = hover;
+
+            updateCollapseIcon();
         }
 
         private double restoreWidth = 0;
@@ -1668,6 +1774,9 @@ namespace Dynamo.Controls
         private void WorkspaceTabs_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             ToggleWorkspaceTabVisibility(WorkspaceTabs.SelectedIndex);
+
+            // When workspace is resized apply appropriate library expand/collapse icon
+            updateCollapseIcon();
         }
 
         private void DynamoView_OnDrop(object sender, DragEventArgs e)
@@ -1706,7 +1815,11 @@ namespace Dynamo.Controls
 
         private void Window_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
-            HidePopupWhenWindowDeactivated();
+            //if original sender was scroll bar(i.e Thumb) don't close the popup.
+            if(!(e.OriginalSource is Thumb))
+            {
+                HidePopupWhenWindowDeactivated();
+            }
         }
 
         public void Dispose()

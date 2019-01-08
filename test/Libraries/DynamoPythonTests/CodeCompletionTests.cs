@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Linq;
@@ -408,6 +409,30 @@ namespace DynamoPythonTests
 
             Assert.AreNotEqual(0, matches.Length);
             //Assert.AreEqual(typeof(IronPython.Runtime.PythonDictionary), matches["a"].Item3);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void VerifyIronPythonLoadedAssemblies()
+        {
+            // Verify IronPython assebmlies are loaded a single time
+            List<string> matches = new List<string>();
+
+            Assembly[] assemblies = AppDomain.CurrentDomain.GetAssemblies();
+            foreach (Assembly assembly in assemblies)
+            {
+                if(assembly.FullName.StartsWith("IronPython"))
+                {
+                    if(matches.Contains(assembly.FullName))
+                    {
+                        Assert.Fail("Attempted to load an IronPython assembly multiple times: " + assembly.FullName);
+                    }
+                    else
+                    {
+                        matches.Add(assembly.FullName);
+                    }
+                }
+            }
         }
     }
 }

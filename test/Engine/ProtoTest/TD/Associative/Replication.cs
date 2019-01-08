@@ -15,8 +15,8 @@ namespace ProtoTest.TD.Associative
         {
             //Assert.Fail("1456568 - Sprint 16 : Rev 982 : Replication does not work on operators ");
             string code = @"
-list1 = { 1, 4, 7, 2};
-list2 = { 5, 8, 3, 6, 7, 9 };
+list1 = [ 1, 4, 7, 2];
+list2 = [ 5, 8, 3, 6, 7, 9 ];
 list3 = list1 + list2; // { 6, 12, 10, 8 }
 list4 = list1 - list2; // { -4, -4, 4, -4}
 list5 = list1 * list2; // { 5, 32, 21, 12 }
@@ -41,8 +41,8 @@ list6 = list2 / list1; // { 5, 2, 0, 3 }";
         {
             // Assert.Fail("1456568 - Sprint 16 : Rev 982 : Replication does not work on operators ");
             string code = @"
-list1 = { 1, 4, 7, 2};
-list2 = { 5, 8, 3, 6 };
+list1 = [ 1, 4, 7, 2];
+list2 = [ 5, 8, 3, 6 ];
 list3 = list1 + list2; // { 6, 12, 10, 8 }
 list4 = list1 - list2; // { -4, -4, 4, -4}
 list5 = list1 * list2; // { 5, 32, 21, 12 }
@@ -60,8 +60,8 @@ list6 = list2 / list1; // { 5, 2, 0, 3 }
         public void T03_Arithmatic_Mixed()
         {
             string code = @"
-list1 = { 13, 23, 42, 65, 23 };
-list2 = { 12, 8, 45, 64 };
+list1 = [ 13, 23, 42, 65, 23 ];
+list2 = [ 12, 8, 45, 64 ];
 list3 = 3 * 6 + 3 * (list1 + 10) - list2 + list1 * list2 / 3 + list1 / list2; // { 128, 172, 759, 1566 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             List<Object> _list3 = new List<Object> { 128, 172, 759, 1566 };
@@ -71,7 +71,7 @@ list3 = 3 * 6 + 3 * (list1 + 10) - list2 + list1 * list2 / 3 + list1 / list2; //
         [Category("SmokeTest")]
         public void T04_Arithmatic_Single_List_And_Integer()
         {
-            string src = @"list1 = { 1, 2, 3, 4, 5 };
+            string src = @"list1 = [ 1, 2, 3, 4, 5 ];
 a = 5;
 list2 = a + list1; // { 6, 7, 8, 9, 10 }
 list3 = list1 + a; // { 6, 7, 8, 9, 10 }
@@ -97,13 +97,13 @@ list9 = list1 / a; ";
         public void T05_Logic_List_And_List_Different_Value()
         {
             string code = @"
-list1 = { 1, 8, 10, 4, 7 };
-list2 = { 2, 6, 10, 3, 5, 20 };
+list1 = [ 1, 8, 10, 4, 7 ];
+list2 = [ 2, 6, 10, 3, 5, 20 ];
 list3 = list1 > list2; // { false, true, false, true, true }
 list4 = list1 < list2;	// { true, false, false, false, false }
 list5 = list1 >= list2; // { false, true, true, true, true }
 list6 = list1 <= list2; // { true, false, true, false, false }
-list9 = { true, false, true };
+list9 = [ true, false, true ];
 list7 = list9 && list5; // { false, false, true }
 list8 = list9 || list6; // { true, false, true }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -131,8 +131,8 @@ list8 = list9 || list6; // { true, false, true }";
         public void T06_Logic_List_And_List_Same_Length()
         {
             string code = @"
-list1 = { 1, 8, 10, 4, 7 };
-list2 = { 2, 6, 10, 3, 5 };
+list1 = [ 1, 8, 10, 4, 7 ];
+list2 = [ 2, 6, 10, 3, 5 ];
 list3 = list1 > list2; // { false, true, false, true, true }
 list4 = list1 < list2;	// { true, false, false, false, false }
 list5 = list1 >= list2; // { false, true, true, true, true }
@@ -166,8 +166,8 @@ list8 = list4 || list6; // { true, false, true, false, false }
         public void T07_Logic_Mixed()
         {
             string code = @"
-list1 = { 1, 5, 8, 3, 6 };
-list2 = { 4, 1, 6, 3 };
+list1 = [ 1, 5, 8, 3, 6 ];
+list2 = [ 4, 1, 6, 3 ];
 list3 = (list1 > 1) && (list2 > list1) || (list2 < 5); // { true, true, false , true }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             List<Object> _list3 = new List<Object> { true, true, false, true };
@@ -179,7 +179,7 @@ list3 = (list1 > 1) && (list2 > list1) || (list2 < 5); // { true, true, false , 
         public void T08_Logic_Single_List_And_Value()
         {
             string code = @"
-list1 = { 1, 2, 3, 4, 5 };
+list1 = [ 1, 2, 3, 4, 5 ];
 a = 3;
 list2 = a > list1; // { true, true, false, false, false }
 list3 = list1 > a; // { false, false, false, true, true }
@@ -253,11 +253,11 @@ list13 = false || list2; // { true, true, false, false, false }";
         {
             string code = @"
 import(""FFITarget.dll"");
-list =  {
+list =  [
 			DummyVector.ByCoordinates(1, 2, 3), 
 			DummyVector.ByCoordinates(4, 5, 6),
 			DummyVector.ByCoordinates(7, 8, 9)
-		};
+		];
 		
 list2 = DummyVector.ByVector(list);
 list2_0_x = list2[0].X; // 1
@@ -279,8 +279,8 @@ list2_2_x = list2[2].X; // 7
         {
             string code = @"
 import(""FFITarget.dll"");
-list1 = { 1, 2 };
-list2 = { 11, 12 };
+list1 = [ 1, 2 ];
+list2 = [ 11, 12 ];
 pointList = DummyVector.ByCoordinates(list1, list2, 111);
 x0 = pointList[0].X; // 1
 y0 = pointList[0].Y; // 11
@@ -300,11 +300,11 @@ z0 = pointList[0].Z; // 111
             //Assert.Fail("Test crashes NUnit");
             string code = @"
 import(""FFITarget.dll"");
-p1 = {
+p1 = [
 		Point_1D.ValueCtor(1),
 		Point_1D.ValueCtor(2),
 		Point_1D.ValueCtor(3)
-	 };
+	 ];
 list = Point_3D.Point_1DCtor(p1, p1, Point_1D.ValueCtor(4)); 
 list_0_x = list[0].x; // 1
 list_1_y = list[1].y; // 2
@@ -323,8 +323,8 @@ list_2_z = list[2].z; // 4
         {
             string code = @"
 import(""FFITarget.dll"");
-list1 = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
-list2 = { 11, 12, 13, 14, 15, 16, 17, 18, 19, 20 };
+list1 = [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ];
+list2 = [ 11, 12, 13, 14, 15, 16, 17, 18, 19, 20 ];
 pointList = Point_3D.ValueCtor(list1, list2, 99);
 pointList_0_x = pointList[0].GetValue(); // 111
 pointList_5_x = pointList[5].GetValue(); // 121 
@@ -342,9 +342,9 @@ pointList_9_x = pointList[9].GetValue(); // 129";
         {
             string code = @"
 import(""FFITarget.dll"");
-list1 = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
-list2 = { 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24 };
-list3 = { 25, 26, 27, 28, 29, 30 };
+list1 = [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ];
+list2 = [ 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24 ];
+list3 = [ 25, 26, 27, 28, 29, 30 ];
 pointList = Point_3D.ValueCtor(list1, list2, list3);
 pointList_0_x = pointList[0].GetValue(); // 37
 pointList_3_x = pointList[3].GetValue(); // 46
@@ -362,9 +362,9 @@ pointList_5_x = pointList[5].GetValue(); // 52";
         {
             string code = @"
 import(""FFITarget.dll"");
-list1 = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
-list2 = { 11, 12, 13, 14, 15, 16, 17, 18, 19, 20 };
-list3 = { 21, 22, 23, 24, 25, 26, 27, 28, 29, 30 };
+list1 = [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ];
+list2 = [ 11, 12, 13, 14, 15, 16, 17, 18, 19, 20 ];
+list3 = [ 21, 22, 23, 24, 25, 26, 27, 28, 29, 30 ];
 pointList = Point_3D.ValueCtor(list1, list2, list3);
 pointList_0_x = pointList[0].GetValue(); // 33
 pointList_5_x = pointList[5].GetValue(); // 48
@@ -383,8 +383,8 @@ pointList_9_x = pointList[9].GetValue(); // 60";
             //Assert.Fail("1467075 - Sprint23 : rev 2660 : replication with nested array is not working as expected");
             string code = @"
 import(""FFITarget.dll"");
-list1 = { { 1, 2, 3 }, { 1, 2, 3 }, { 1, 2, 3 } };
-list2 = { { 1, 2, 3, 4 }, { 1, 2, 3, 4 } };
+list1 = [ [ 1, 2, 3 ], [ 1, 2, 3 ], [ 1, 2, 3 ] ];
+list2 = [ [ 1, 2, 3, 4 ], [ 1, 2, 3, 4 ] ];
 list3 = Point_2D.ValueCtor(list1, list2);
 list2_0_0 = list3[0][0].GetValue(); // 1
 list2_0_1 = list3[0][1].GetValue(); // 4
@@ -409,7 +409,7 @@ list2_1_2 = list3[1][2].GetValue(); // 9
         {
             string code = @"
 import(""FFITarget.dll"");
-list1 = { { 1, 2, 3 }, { 1, 2, 3 }, { 1, 2, 3 } };
+list1 = [ [ 1, 2, 3 ], [ 1, 2, 3 ], [ 1, 2, 3 ] ];
 list2 = Point_1D.ValueCtor(list1);
 list2_0_0 = list2[0][0].GetValue(); // 1
 list2_1_1 = list2[1][1].GetValue(); // 4
@@ -429,7 +429,7 @@ list2_2_2 = list2[2][2].GetValue(); // 9
         {
             string code = @"
 import(""FFITarget.dll"");
-list1 = { 1, 2, 3, 4, 5 };
+list1 = [ 1, 2, 3, 4, 5 ];
 list2 = Point_3D.PointOnXCtor(Point_1D.ValueCtor(list1));
 list2_0 = list2[0].GetIndexX(); // 1
 list2_3 = list2[3].GetIndexX(); // 16
@@ -452,7 +452,7 @@ def GetPointIndex : int(p : Point_1D)
 {
 	return = p.x;
 }
-list1 = { 1, 2, 3, 4, 5, 6 };
+list1 = [ 1, 2, 3, 4, 5, 6 ];
 list2 = GetPointIndex(Point_1D.ValueCtor(list1)); // { 1, 2, 3, 4, 5, 6 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -472,7 +472,7 @@ def foo : int(a : int)
 {
 	return = a * a;
 }
-list1 = { 1, 2, 3, 4, 5 };
+list1 = [ 1, 2, 3, 4, 5 ];
 list2 = Point_1D.ValueCtor(foo(foo(list1)));
 list2_0 = list2[0].GetIndex(); // 1
 list2_3 = list2[3].GetIndex(); // 65536
@@ -490,7 +490,7 @@ list2_4 = list2[4].GetIndex(); // 390625";
         {
             string code = @"
 import(""FFITarget.dll"");
-list1 = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+list1 = [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ];
 pointList = Point_1D.ValueCtor(list1);
 pointList_0_x = pointList[0].GetValue(); // 1
 pointList_5_x = pointList[5].GetValue(); // 36
@@ -508,7 +508,7 @@ pointList_9_x = pointList[9].GetValue(); // 100";
         {
             string code = @"
 import(""FFITarget.dll"");
-list1 = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+list1 = [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ];
 pointList = Point_3D.ValueCtor(list1, 66, 88);
 pointList_0_x = pointList[0].GetValue(); // 155
 pointList_5_x = pointList[5].GetValue(); // 160
@@ -526,11 +526,11 @@ pointList_9_x = pointList[9].GetValue(); // 164";
         {
             string code = @"
 import(""FFITarget.dll"");
-list = {
+list = [
 			Integer.ValueCtor(4),
 			Integer.ValueCtor(5),
 			Integer.ValueCtor(7)
-		};
+		];
 i = Integer.ValueCtor(2);
 m = i.Mul(list, i); // { 16, 20, 28 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -545,15 +545,15 @@ m = i.Mul(list, i); // { 16, 20, 28 }";
         {
             string code = @"
 import(""FFITarget.dll"");
-list1 = {
+list1 = [
 			Integer.ValueCtor(4),
 			Integer.ValueCtor(5),
 			Integer.ValueCtor(7)
-		};
-list2 = { 
+		];
+list2 = [ 
 			Integer.ValueCtor(1),
 			Integer.ValueCtor(2)
-		};
+		];
 		
 i = Integer.ValueCtor(2);
 m = i.Mul(list1, list2); // { 8, 20 }";
@@ -568,8 +568,8 @@ m = i.Mul(list1, list2); // { 8, 20 }";
         {
             string code = @"
 import(""FFITarget.dll"");
-list1 = { { 1, 2, 3 }, { 4, 5, 6 }, { 7, 8, 9 } };
-list2 = { { 1, 2, 3, 4 }, { 5, 6, 7, 8 } };
+list1 = [ [ 1, 2, 3 ], [ 4, 5, 6 ], [ 7, 8, 9 ] ];
+list2 = [ [ 1, 2, 3, 4 ], [ 5, 6, 7, 8 ] ];
 m = DummyMath.ValueCtor(2);
 list3 = m.Div(list1, list2);  // { { 1, 2, 3 }, { 4, 5, 6 } }
 ";
@@ -585,9 +585,9 @@ list3 = m.Div(list1, list2);  // { { 1, 2, 3 }, { 4, 5, 6 } }
         {
             string code = @"
 import(""FFITarget.dll"");
-list1 = { 1, 2, 3, 4, 5, 6, 7 };
-list2 = { 1, 2, 3, 4, 5 };
-list3 = { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+list1 = [ 1, 2, 3, 4, 5, 6, 7 ];
+list2 = [ 1, 2, 3, 4, 5 ];
+list3 = [ 1, 2, 3, 4, 5, 6, 7, 8, 9 ];
 m = DummyMath.ValueCtor( 2 ); 
 list4 = m.Div(list1, list2, list3);
 ";
@@ -602,9 +602,9 @@ list4 = m.Div(list1, list2, list3);
         {
             string src = @"
 import(""FFITarget.dll"");
-list1 = { 10, 11, 12, 13, 14, 15, 16 };
-list2 = { 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30 };
-list3 = { 30, 31, 32, 33, 34 };
+list1 = [ 10, 11, 12, 13, 14, 15, 16 ];
+list2 = [ 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30 ];
+list3 = [ 30, 31, 32, 33, 34 ];
 m = DummyMath.ValueCtor(4); 
 listX2 = m.Div(list1, list2, list3, 15, 25); // { 25, 25, 26, 27, 28 }
 ";
@@ -619,9 +619,9 @@ listX2 = m.Div(list1, list2, list3, 15, 25); // { 25, 25, 26, 27, 28 }
         {
             string code = @"
 import(""FFITarget.dll"");
-list1 = { 31, 32, 33, 34, 35, 36, 37, 38, 39, 40 };
-list2 = { 21, 22, 23, 24, 25, 26, 27, 28, 29, 30 };
-list3 = { 11, 12, 13, 14, 15, 16, 17, 18, 19, 20 };
+list1 = [ 31, 32, 33, 34, 35, 36, 37, 38, 39, 40 ];
+list2 = [ 21, 22, 23, 24, 25, 26, 27, 28, 29, 30 ];
+list3 = [ 11, 12, 13, 14, 15, 16, 17, 18, 19, 20 ];
 m = DummyMath.ValueCtor(4); 
 list4 = m.Mul(list1, list2, list3); // { 252, 264, 276, 288, 300, 312, 324, 336, 348, 360 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -636,9 +636,9 @@ list4 = m.Mul(list1, list2, list3); // { 252, 264, 276, 288, 300, 312, 324, 336,
         {
             string src = @"
 import(""FFITarget.dll"");
-list1 = { 10, 11, 12, 13, 14 };
-list2 = { 20, 21, 22, 23, 24 };
-list3 = { 30, 31, 32, 33, 34 };
+list1 = [ 10, 11, 12, 13, 14 ];
+list2 = [ 20, 21, 22, 23, 24 ];
+list3 = [ 30, 31, 32, 33, 34 ];
 m = DummyMath.ValueCtor(4); 
 list2 = m.Div(list1, list2, list3, 15, 25);
 ";
@@ -653,7 +653,7 @@ list2 = m.Div(list1, list2, list3, 15, 25);
         {
             string code = @"
 import(""FFITarget.dll"");
-list1 = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+list1 = [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ];
 m = DummyMath.ValueCtor(10);
 list2 = m.Mul(m.Mul(list1));  // { 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -672,7 +672,7 @@ def foo : int (a : int)
 {
 	return = a * a;
 }
-list1 = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+list1 = [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ];
 m = DummyMath.ValueCtor(10);
 list2 = m.Mul(foo(list1));  // { 10, 40, 90, 160, 250, 360, 490, 640, 810, 1000 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -691,7 +691,7 @@ def foo : int (a : int)
 {
 	return = a * a;
 }
-list1 = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+list1 = [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ];
 m = DummyMath.ValueCtor(10);
 list2 = foo(m.Mul(list1));  // { 100, 400, 900, 1600, 2500, 3600, 4900, 6400, 8100, 10000 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -706,7 +706,7 @@ list2 = foo(m.Mul(list1));  // { 100, 400, 900, 1600, 2500, 3600, 4900, 6400, 81
         {
             string code = @"
 import(""FFITarget.dll"");
-list1 = { { 1, 2, 3 }, { 4, 5, 6 }, { 7, 8, 9 } };
+list1 = [ [ 1, 2, 3 ], [ 4, 5, 6 ], [ 7, 8, 9 ] ];
 m = DummyMath.ValueCtor(10);
 list2 = m.Mul(list1);  // { { 10, 20, 30 }, { 40, 50, 60 }, { 70, 80, 90 } }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -721,7 +721,7 @@ list2 = m.Mul(list1);  // { { 10, 20, 30 }, { 40, 50, 60 }, { 70, 80, 90 } }";
         {
             string code = @"
 import(""FFITarget.dll"");
-list1 = { 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0 };
+list1 = [ 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0 ];
 m = DummyMath.ValueCtor(10.0);
 list2 = m.Mul(list1);  // { 10, 20, 30, 40, 50, 60, 70, 80, 90, 100 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -736,7 +736,7 @@ list2 = m.Mul(list1);  // { 10, 20, 30, 40, 50, 60, 70, 80, 90, 100 }";
         {
             string code = @"
 import(""FFITarget.dll"");
-list1 = { 31, 32, 33, 34, 35, 36, 37, 38, 39, 40 };
+list1 = [ 31, 32, 33, 34, 35, 36, 37, 38, 39, 40 ];
 m = DummyMath.ValueCtor(5);
 list2 = m.Mul(list1, 12, 17); // {300,305,310,315,320,325,330,335,340,345}";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -760,11 +760,11 @@ def GetMidPoint : Point_3D(p1 : Point_3D, p2 : Point_3D)
 									(p1.GetCoor(3) + p2.GetCoor(3)) 
 								);
 }
-list1 = { 
+list1 = [ 
 			Point_3D.ValueCtor(1, 2, 3),
 			Point_3D.ValueCtor(4, 5, 6),
 			Point_3D.ValueCtor(7, 8, 9)
-		};
+		];
 var2 = Point_3D.ValueCtor(10, 10, 10);
 list3 = GetMidPoint(list1, var2);
 list3_0_x = list3[0].GetCoor(1); // 11
@@ -788,12 +788,12 @@ def Square : int(i : Integer)
 {
 	return = i.value * i.value;
 }
-list = 	{
+list = 	[
 			Integer.ValueCtor(2),
 			Integer.ValueCtor(3),
 			Integer.ValueCtor(4),
 			Integer.ValueCtor(5)
-		};
+		];
 		
 list2 = Square(list); // { 4, 9, 16, 25 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -816,15 +816,15 @@ def GetMidPoint : Point_3D(p1 : Point_3D, p2 : Point_3D)
 									(p1.GetCoor(3) + p2.GetCoor(3)) 
 								);
 }
-list1 = { 
+list1 = [ 
 			Point_3D.ValueCtor(1, 2, 3),
 			Point_3D.ValueCtor(4, 5, 6),
 			Point_3D.ValueCtor(7, 8, 9)
-		};
-list2 = {
+		];
+list2 = [
 			Point_3D.ValueCtor(10, 10, 10),
 			Point_3D.ValueCtor(20, 20, 20)
-		};
+		];
 list3 = GetMidPoint(list1, list2);
 list3_0_x = list3[0].GetCoor(1); // 11
 list3_1_y = list3[1].GetCoor(2); // 25
@@ -845,17 +845,17 @@ def Sum : int(i1 : Integer, i2 : Integer, i3 : int)
 {
 	return = i1.value + i2.value + i3;
 }
-list1 = {
+list1 = [
 			Integer.ValueCtor(2),
 			Integer.ValueCtor(5),
 			Integer.ValueCtor(8)
-		};
-list2 = {
+		];
+list2 = [
 			Integer.ValueCtor(3),
 			Integer.ValueCtor(6),
 			Integer.ValueCtor(9),
 			Integer.ValueCtor(12)
-		};
+		];
 list3 = Sum(list1, list2, 10); // { 15, 21, 27 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             List<Object> _list3 = new List<Object> { 15, 21, 27 };
@@ -873,16 +873,16 @@ def Sum : int(i1 : Integer, i2 : Integer, i3 : Integer)
 {
 	return = i1.value + i2.value + i3.value;
 }
-list1 = {
+list1 = [
 			Integer.ValueCtor(2),
 			Integer.ValueCtor(5),
 			Integer.ValueCtor(8)
-		};
-list2 = {
+		];
+list2 = [
 			Integer.ValueCtor(3),
 			Integer.ValueCtor(6),
 			Integer.ValueCtor(9)
-		};
+		];
 list3 = Sum(list1, list2, Integer.ValueCtor(10)); // { 15, 21, 27 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             List<Object> _list3 = new List<Object> { 15, 21, 27 };
@@ -904,16 +904,16 @@ def GetMidPoint : Point_3D(p1 : Point_3D, p2 : Point_3D)
 									(p1.GetCoor(3) + p2.GetCoor(3)) 
 								);
 }
-list1 = { 
+list1 = [ 
 			Point_3D.ValueCtor(1, 2, 3),
 			Point_3D.ValueCtor(4, 5, 6),
 			Point_3D.ValueCtor(7, 8, 9)
-		};
-list2 = { 
+		];
+list2 = [ 
 			Point_3D.ValueCtor(10, 11, 12),
 			Point_3D.ValueCtor(13, 14, 15),
 			Point_3D.ValueCtor(16, 17, 18)
-		};
+		];
 list3 = GetMidPoint(list1, list2);
 list3_0_x = list3[0].GetCoor(1); // 11
 list3_1_y = list3[1].GetCoor(2); // 19
@@ -934,8 +934,8 @@ def foo : int(a : int, b : int)
 {
 	return = a * b;
 }
-list1 = { { 1, 2, 3 }, { 4, 5, 6 }, { 7, 8, 9 } };
-list2 = { { 1, 2, 3, 4 }, { 5, 6, 7, 8 } };
+list1 = [ [ 1, 2, 3 ], [ 4, 5, 6 ], [ 7, 8, 9 ] ];
+list2 = [ [ 1, 2, 3, 4 ], [ 5, 6, 7, 8 ] ];
 list3 = foo(list1, list2); // { { 1, 4, 9 }, { 20, 30, 42 } }
 x = list3[0];
 y = list3[1];";
@@ -956,9 +956,9 @@ def foo : int(a : int, b : int, c : int)
 {
 	return = a * b - c;
 }
-list1 = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
-list2 = { 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0, -1, -2, -3 };
-list3 = {1, 4, 7, 2, 5, 8, 3 };
+list1 = [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ];
+list2 = [ 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0, -1, -2, -3 ];
+list3 = [1, 4, 7, 2, 5, 8, 3 ];
 list4 = foo(list1, list2, list3); // { 9, 14, 17, 26, 25, 22, 25 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             List<Object> _list4 = new List<Object> { 9, 14, 17, 26, 25, 22, 25 };
@@ -973,9 +973,9 @@ list4 = foo(list1, list2, list3); // { 9, 14, 17, 26, 25, 22, 25 }";
 {
 	return = a * b - c / d + e;
 }
-list1 = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
-list2 = { 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0, -1, -2, -3 };
-list3 = {1, 4, 7, 2, 5, 8, 3 };
+list1 = [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ];
+list2 = [ 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0, -1, -2, -3 ];
+list3 = [1, 4, 7, 2, 5, 8, 3 ];
 list4 = foo(list1, list2, list3, 4, 23);";
             thisTest.RunScriptSource(src);
             //Assert.Fail("1467229 - Sprint25 : REGRESSION : rev 3398 : replication over class method causes type conversion issue");
@@ -992,9 +992,9 @@ def foo : int(a : int, b : int, c : int)
 {
 	return = a * b - c;
 }
-list1 = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
-list2 = { 10, 9, 8, 7, 6, 5, 4, 3, 2, 1 };
-list3 = {1, 4, 7, 2, 5, 8, 3, 6, 9, 0 };
+list1 = [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ];
+list2 = [ 10, 9, 8, 7, 6, 5, 4, 3, 2, 1 ];
+list3 = [1, 4, 7, 2, 5, 8, 3, 6, 9, 0 ];
 list4 = foo(list1, list2, list3); // { 9, 14, 17, 26, 25, 22, 25, 18, 9, 10 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             List<Object> _list4 = new List<Object> { 9, 14, 17, 26, 25, 22, 25, 18, 9, 10 };
@@ -1010,9 +1010,9 @@ def foo : int(a : int, b : int, c : int, d : int, e : int)
 {
 	return = a * b - c * d + e;
 }
-list1 = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
-list2 = { 10, 9, 8, 7, 6, 5, 4, 3, 2, 1 };
-list3 = {1, 4, 7, 2, 5, 8, 3, 6, 9, 0 };
+list1 = [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ];
+list2 = [ 10, 9, 8, 7, 6, 5, 4, 3, 2, 1 ];
+list3 = [1, 4, 7, 2, 5, 8, 3, 6, 9, 0 ];
 list4 = foo(list1, list2, list3, 26, 43); // { 27, -43, -115, 19, -57, -135, -7, -89, -173, 53 }  ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             List<Object> _list4 = new List<Object> { 27, -43, -115, 19, -57, -135, -7, -89, -173, 53 };
@@ -1028,7 +1028,7 @@ def foo : int(a : int)
 {
 	return = a * a;
 }
-list1 = { 1, 2, 3, 4, 5 };
+list1 = [ 1, 2, 3, 4, 5 ];
 list3 = foo(foo(foo(list1))); // { 1, 256, 6561, 65536, 390625 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             List<Object> _list3 = new List<Object> { 1, 256, 6561, 65536, 390625 };
@@ -1044,7 +1044,7 @@ def foo : int(a : int)
 {
 	return = a * a;
 }
-list1 = { { 1, 2, 3 }, { 4, 5, 6 }, { 7, 8, 9 } };
+list1 = [ [ 1, 2, 3 ], [ 4, 5, 6 ], [ 7, 8, 9 ] ];
 list2 = foo(list1); // { { 1, 4, 9 }, { 16, 25, 36 }, { 49, 64, 81 } }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -1061,7 +1061,7 @@ def foo : int(num : int)
 {
 	return = num * num;
 }
-list1 = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+list1 = [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ];
 list2 = foo(list1);  // { 1, 4, 9, 16, 25, 36, 49, 64, 81, 100 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             List<Object> _list2 = new List<Object> { 1, 4, 9, 16, 25, 36, 49, 64, 81, 100 };
@@ -1077,7 +1077,7 @@ def foo : int(num : int, num2 : int, num3 : int)
 {
 	return = num * num2 - num3;
 }
-list1 = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+list1 = [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ];
 list2 = foo(list1, 34, 18); // { 16, 50, 84, 118, 152, 186, 220, 254, 288, 322 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             List<Object> _list2 = new List<Object> { 16, 50, 84, 118, 152, 186, 220, 254, 288, 322 };
@@ -1089,13 +1089,13 @@ list2 = foo(list1, 34, 18); // { 16, 50, 84, 118, 152, 186, 220, 254, 288, 322 }
         public void T50_1_of_3_Exprs_is_List()
         {
             string code = @"
-list1 = { true, false, true, false, true };
+list1 = [ true, false, true, false, true ];
 list2 = list1 ? 1 : 0; // { 1, 0, 1, 0, 1 }
 list3 = true ? 10 : list2; // { 10, 10, 10, 10, 10 }
 list4 = false ? 10 : list2; // { 1, 0, 1, 0, 1 }
-a = { 1, 2, 3, 4, 5 };
-b = {5, 4, 3, 2, 1 };
-c = { 4, 3, 2, 1 };
+a = [ 1, 2, 3, 4, 5 ];
+b = [5, 4, 3, 2, 1 ];
+c = [ 4, 3, 2, 1 ];
 list5 = a > b ? 1 : 0; // { 0, 0, 0, 1, 1 }
 list6 = c > a ? 1 : 0; // { 1, 1, 0, 0 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -1114,16 +1114,16 @@ list6 = c > a ? 1 : 0; // { 1, 1, 0, 0 }";
             Object[] a1 = new Object[] { 1, 2, 3, 4, 5 };
             Object[] a2 = new Object[] { 2, 6, 10 };
             string code = @"
-list1 = { 1, 2, 3, 4, 5 };
-list2 = { true, false, true, false };
+list1 = [ 1, 2, 3, 4, 5 ];
+list2 = [ true, false, true, false ];
 list3 = list2 ? list1 : 0; // { 1, 0, 3, 0 }
 list4 = list2 ? 0 : list1; // { 0, 2, 0, 4 }
-list5 = { -1, -2, -3, -4, -5, -6 };
+list5 = [ -1, -2, -3, -4, -5, -6 ];
 list6 = true ? list1 : list5; // { 1, 2, 3, 4, 5 }
 list7 = false ? list1 : list5; // { -1, -2, -3, -4, -5 }  
-a = { 1, 2, 3, 4 };
-b = { 5, 4, 3, 2, 1 };
-c = { 1, 4, 7 };
+a = [ 1, 2, 3, 4 ];
+b = [ 5, 4, 3, 2, 1 ];
+c = [ 1, 4, 7 ];
 list8 = a >= b ? a + c : 10; // { 10, 10, 10 }
 list9 = a < b ? 10 : a + c; // { 10, 10, 10 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -1140,9 +1140,9 @@ list9 = a < b ? 10 : a + c; // { 10, 10, 10 }";
         public void T53_3_of_3_Exprs_are_different_dimension_list()
         {
             string code = @"
-a = { { 1, 2, 3 }, { 4, 5, 6 } };
-b = { { 1, 2 },  { 3, 4 }, { 5, 6 } };
-c = { { 1, 2, 3, 4 }, { 5, 6, 7, 8 }, { 9, 10, 11, 12 } };
+a = [ [ 1, 2, 3 ], [ 4, 5, 6 ] ];
+b = [ [ 1, 2 ],  [ 3, 4 ], [ 5, 6 ] ];
+c = [ [ 1, 2, 3, 4 ], [ 5, 6, 7, 8 ], [ 9, 10, 11, 12 ] ];
 list = a > b ? b + c : a + c; // { { 2, 4, }, { 8, 10 } } ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             //Assert.Fail("1456751 : Sprint16 : Rev 990 : Inline conditions not working with replication over collections");
@@ -1161,16 +1161,16 @@ list = a > b ? b + c : a + c; // { { 2, 4, }, { 8, 10 } } ";
             Object[] list7 = new Object[] { 1, -2, 3, 4 };
             Object[] list8 = new Object[] { 1, 5, 1};
             string code = @"
-list1 = { true, false, true, true, false };
-list2 = { 1, 2, 3, 4 };
-list3 = { -1, -2, -3, -4, -5, -6 };
+list1 = [ true, false, true, true, false ];
+list2 = [ 1, 2, 3, 4 ];
+list3 = [ -1, -2, -3, -4, -5, -6 ];
 list4 = list1 ? list2 : list3; // { 1, -2, 3, 4 }
 list5 = !list1 ? list2 : list4; // { 1, 2, 3, 4 }
-list6 = { -1, -2, -3, -4, -5 };
+list6 = [ -1, -2, -3, -4, -5 ];
 list7 = list1 ? list2 : list6; // { 1, -2, 3, 4 }
-a = { 3, 0, -1 };
-b = { 2, 1, 0, 3 };
-c = { -2, 4, 1, 2, 0 };
+a = [ 3, 0, -1 ];
+b = [ 2, 1, 0, 3 ];
+c = [ -2, 4, 1, 2, 0 ];
 list8 = a < c ? b + c : a + c; // { 1, 5, 1 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             //Assert.Fail("1456751 : Sprint16 : Rev 990 : Inline conditions not working with replication over collections");
@@ -1190,14 +1190,14 @@ list8 = a < c ? b + c : a + c; // { 1, 5, 1 }";
             Object[] list5 = new Object[] { -1, 2, 3, -4 };
             Object[] list4 = new Object[] { 1, -2, -3, 4};
             string code = @"
-list1 = { true, false, false, true };
-list2 = { 1, 2, 3, 4 };
-list3 = { -1, -2, -3, -4 };
+list1 = [ true, false, false, true ];
+list2 = [ 1, 2, 3, 4 ];
+list3 = [ -1, -2, -3, -4 ];
 list4 = list1 ? list2 : list3; // { 1, -2, -3, 4 }
 list5 = !list1 ? list2 : list3; // { -1, 2, 3, -4 }
-a = { 1, 4, 7 };
-b = { 2, 8, 5 };
-c = { 6, 9, 3 };
+a = [ 1, 4, 7 ];
+b = [ 2, 8, 5 ];
+c = [ 6, 9, 3 ];
 list6 = a > b ? b + c : b - c; // { -4, -1, 8 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             //Assert.Fail("1456751 : Sprint16 : Rev 990 : Inline conditions not working with replication over collections");
@@ -1211,7 +1211,7 @@ list6 = a > b ? b + c : b - c; // { -4, -1, 8 }";
         public void T56_UnaryOperator()
         {
             string code = @"
-list1 = { true, true, false, false, true, false };
+list1 = [ true, true, false, false, true, false ];
 list2 = !list1; // { false, false, true, true, false, true }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -1233,13 +1233,12 @@ return =[Imperative]{
 			return = a;
 }
 	}
-c;
-[Imperative]
+c=[Imperative]
 {
 
-    x = { 1, 2, 3 };
+    x = [ 1, 2, 3 ];
 	c = even(x);
-	
+	return c;
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -1273,7 +1272,7 @@ c;
 @"foo;test;
 [Associative]
 {
-	foo = {5};
+	foo = [5];
     test = 2 *foo;
 }
 ";
@@ -1295,7 +1294,7 @@ test;
 	}
 [Associative]
 {
-    test = mult({5});
+    test = mult([5]);
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -1316,7 +1315,7 @@ def f(arr : double[])
 }
 
     
-a = {12.0,13.0,14.0};
+a = [12.0,13.0,14.0];
 x = f(a);
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -1334,7 +1333,7 @@ def f(arr : double)
 {
     return = arr;      
 }
-a = {12.0,13.0,14.0};
+a = [12.0,13.0,14.0];
 t = f(a);
 x1 = t[0];
 x2 = t[1];
@@ -1356,7 +1355,7 @@ def f: int( a : int )
 {
     return = a + 1;
 }
-list = {10,20,30,40};
+list = [10,20,30,40];
 x = f(list);
 y = x[0] + x[1];
 ";
@@ -1382,10 +1381,11 @@ a = fun();
         {
             String code =
 @"def fun : double() { return = 4.0; }
-a;
+a=
 [Imperative]
 {
 a = fun();
+return a;
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("a",4);
@@ -1409,7 +1409,7 @@ a = fun(1.0);
         {
             String code =
 @"def fun : double(arg: double) { return = 4.0; }
-a = fun({1.0});
+a = fun([1.0]);
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("a", new Object[] { 4.0 });
@@ -1421,7 +1421,7 @@ a = fun({1.0});
         {
             String code =
 @"def fun : double(arg: double) { return = 4.0; }
-a = fun({{{{{{{{{1.0}}}}}}}}});
+a = fun([[[[[[[[[1.0]]]]]]]]]);
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             //Assert.Fail("1467075 - Sprint23 : rev 2660 : replication with nested array is not working as expected");
@@ -1435,7 +1435,7 @@ a = fun({{{{{{{{{1.0}}}}}}}}});
         {
             String code =
 @"def fun : double(arg: double) { return = 4.0; }
-a = fun({{{{{{{{{1.0, 1.2}}}}}}}}});
+a = fun([[[[[[[[[1.0, 1.2]]]]]]]]]);
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             TestFrameWork fx = new TestFrameWork();
@@ -1450,7 +1450,7 @@ a = fun({{{{{{{{{1.0, 1.2}}}}}}}}});
         {
             String code =
 @"def fun : double(arg: double) { return = 4.0; }
-a = fun({1.0, 2.0, 3.0, 4.0});
+a = fun([1.0, 2.0, 3.0, 4.0]);
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             TestFrameWork fx = new TestFrameWork();
@@ -1463,7 +1463,7 @@ a = fun({1.0, 2.0, 3.0, 4.0});
         {
             String code =
 @"def fun : double(arg: double) { return = 4.0; }
-a = fun({{1.0, 2.0, 3.0, 4.0}, {5.0, 6.0, 7.0, 8.0 }});
+a = fun([[1.0, 2.0, 3.0, 4.0], [5.0, 6.0, 7.0, 8.0 ]]);
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             //Assert.Fail("1467075 - Sprint23 : rev 2660 : replication with nested array is not working as expected");
@@ -1479,7 +1479,7 @@ a = fun({{1.0, 2.0, 3.0, 4.0}, {5.0, 6.0, 7.0, 8.0 }});
         {
             String code =
 @"def fun : double(arg: double) { return = 4.0; }
-a = fun({{1.0, 2.0, 3.0, 4.0}, {5.0, 6.0}});
+a = fun([[1.0, 2.0, 3.0, 4.0], [5.0, 6.0]]);
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             //Assert.Fail("1467075 - Sprint23 : rev 2660 : replication with nested array is not working as expected");
@@ -1507,7 +1507,7 @@ a = fun(1.0, 2.0);
         {
             String code =
 @"def fun : double(arg: double, arg2:double) { return = 4.0; }
-a = fun(1.0, {10.0, 20.0, 30.0, 40.0});
+a = fun(1.0, [10.0, 20.0, 30.0, 40.0]);
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             TestFrameWork fx = new TestFrameWork();
@@ -1520,7 +1520,7 @@ a = fun(1.0, {10.0, 20.0, 30.0, 40.0});
         {
             String code =
 @"def fun : double(arg: double, arg2:double) { return = 4.0; }
-a = fun({1.0}, {2.0});
+a = fun([1.0], [2.0]);
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             TestFrameWork fx = new TestFrameWork();
@@ -1533,7 +1533,7 @@ a = fun({1.0}, {2.0});
         {
             String code =
 @"def fun : double(arg: double) { return = 4.0; }
-a = fun({{1.0}, {2.0}});
+a = fun([[1.0], [2.0]]);
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             //Assert.Fail("1467075 - Sprint23 : rev 2660 : replication with nested array is not working as expected");
@@ -1550,8 +1550,8 @@ a = fun({{1.0}, {2.0}});
 @"def fun : double(arg: int) { return = 4; }
 v1 = Integer.ValueCtor(0);
 v2 = fun(4);
-v3 = fun ({0, 1});
-v4 = fun ({Integer.ValueCtor(0), Integer.ValueCtor(1)});
+v3 = fun ([0, 1]);
+v4 = fun ([Integer.ValueCtor(0), Integer.ValueCtor(1)]);
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             TestFrameWork fx = new TestFrameWork();
@@ -1563,8 +1563,8 @@ v4 = fun ({Integer.ValueCtor(0), Integer.ValueCtor(1)});
         public void T09_Defect_1456568_Replication_On_Operators()
         {
             String code =
-@"xdata = {1, 2};
-ydata = {3, 4};
+@"xdata = [1, 2];
+ydata = [3, 4];
 z = xdata + ydata;
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -1578,8 +1578,8 @@ z = xdata + ydata;
         public void T09_Defect_1456568_Replication_On_Operators_2()
         {
             String code =
-@"xdata = {1, 2};
-ydata = {3, 4, 5};
+@"xdata = [1, 2];
+ydata = [3, 4, 5];
 z = xdata * ydata;
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -1592,8 +1592,8 @@ z = xdata * ydata;
         public void T09_Defect_1456568_Replication_On_Operators_3()
         {
             String code =
-@"xdata = {1, 2, 5, 7};
-ydata = {3, 4};
+@"xdata = [1, 2, 5, 7];
+ydata = [3, 4];
 z = xdata - ydata;
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -1609,8 +1609,8 @@ z = xdata - ydata;
             String code =
 @"
 a1 = Integer.ValueCtor(0);
-xdata = {null, 0, true, a1 };
-ydata = {1,1,1,1};
+xdata = [null, 0, true, a1 ];
+ydata = [1,1,1,1];
 z = xdata + ydata;
 ";
             //Assert.Fail("1467089 - Sprint23 : rev 2681 : replication issue ComplierInternalException when using replication over array of instances");
@@ -1625,8 +1625,8 @@ z = xdata + ydata;
         {
             String code =
 @"
-xdata = { { 1.5, 2 } , { 1, 2 } };
-ydata = { { 3, 4 } , { 5, 6.0 } };
+xdata = [ [ 1.5, 2 ] , [ 1, 2 ] ];
+ydata = [ [ 3, 4 ] , [ 5, 6.0 ] ];
 z = xdata + ydata;
 x = z[0];
 y = z[1];
@@ -1650,8 +1650,8 @@ def foo ( a : var[], b : var[] )
 {
     return = a - b;
 }
-xdata = { 1, 2 };
-ydata = { 3, 4 };
+xdata = [ 1, 2 ];
+ydata = [ 3, 4 ];
 z2 = foo ( xdata, ydata );
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -1671,10 +1671,10 @@ def foo ( a : var[], b : var[] )
     return = c;
 }
 a1 = A.A( xdata, ydata);
-xdata = { 1, 2 };
-ydata = { 3, 4 };
+xdata = [ 1, 2 ];
+ydata = [ 3, 4 ];
 z1 = foo ( xdata, ydata );
-xdata = { 1.5, 2 };
+xdata = [ 1.5, 2 ];
 ";
             string errmsg = "";//DNL-1467450 Rev 4596 : Regression : Need consistence in error generated for undefined class instances";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -1700,7 +1700,7 @@ xdata = { 1.5, 2 };
                                     return = 2;
                                 }
                                 
-                                arr = { 3, a1, 5 } ;
+                                arr = [ 3, a1, 5 ] ;
                                 s = foo(arr); 
                             ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -1732,7 +1732,7 @@ xdata = { 1.5, 2 };
                                 {
                                     return = 2;
                                 }
-                                arr = { a1, b1 } ;
+                                arr = [ a1, b1 ] ;
                                 s = foo(arr); 
                             ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -1772,7 +1772,7 @@ xdata = { 1.5, 2 };
                                     return = 4;
                                 }
                                 
-                                arr = { a1, b1 } ;
+                                arr = [ a1, b1 ] ;
                                 s = foo(arr); 
                             ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -1802,7 +1802,7 @@ xdata = { 1.5, 2 };
                                     return = 4;
                                 }
                                 
-                                arr = { { 1, 2}, 1, 3.5, {3.5, 2.3}, {1, 2.5}, null } ;
+                                arr = [ [ 1, 2], 1, 3.5, [3.5, 2.3], [1, 2.5], null ] ;
                                 s = foo(arr); 
                             ";
             //string errmsg = "1467090 - Sprint24 : rev 2733 : Replication and Method resolution issue : type conversion should be of lower precedence than exact match";
@@ -1826,8 +1826,8 @@ def foo : int ( a : int, b : int )
 }
 [Associative]
 {
-    x1 = { 1, 2, 3 };
-    x2 = { 1, 2, 3 };
+    x1 = [ 1, 2, 3 ];
+    x2 = [ 1, 2, 3 ];
     y = foo ( x1, x2 );
 }
                             ";
@@ -1846,7 +1846,7 @@ def foo : double (arr1 : double[], arr2 : double[] )
 {
 return = arr1[0] + arr2[0];
 }
-arr = { {2.5,3}, {1.5,2} };
+arr = [ [2.5,3], [1.5,2] ];
 two = foo (arr, arr);
 t1 = two[0];
 t2 = two[1];
@@ -1869,8 +1869,8 @@ def foo : int ( a : int, b : int )
 }
 [Associative]
 {
-    x1 = { 1 };
-    x2 = { 1, 2, 3 };
+    x1 = [ 1 ];
+    x2 = [ 1, 2, 3 ];
     y = foo ( x1, x2 );
 }
                             ";
@@ -1892,8 +1892,8 @@ def foo : int ( a : int, b : int )
 }
 [Associative]
 {
-    x1 = { 1, 2.5, null };
-    x2 = { 1 };
+    x1 = [ 1, 2.5, null ];
+    x2 = [ 1 ];
     y = foo ( x1, x2 );
 }
                             ";
@@ -1915,7 +1915,7 @@ def foo : int ( a : int, b : int )
 }
 [Associative]
 {
-    x1 = { 1, 2.5, null };
+    x1 = [ 1, 2.5, null ];
     x2 =  1 ;
     y = foo ( x1, x2 );
 }
@@ -1939,7 +1939,7 @@ def foo : int ( a : int, b : int )
 [Associative]
 {
     x1 = 0;
-    x2 =  { 1, 2.5, null };
+    x2 =  [ 1, 2.5, null ];
     y = foo ( x1, x2 );
 } ";
             thisTest.RunScriptSource(code);
@@ -1960,9 +1960,9 @@ def foo : int ( a : int, b : int )
     return = x;
 }
 
-x1 = { 3, 4 };
-x2 =  { null, 1 };
-y = foo( {3, 4 }, { null, 1} );
+x1 = [ 3, 4 ];
+x2 =  [ null, 1 ];
+y = foo( [3, 4 ], [ null, 1] );
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             Object[] v1 = new Object[] { null, 5 };
@@ -1982,8 +1982,8 @@ def foo : int ( a : int, b : int )
     return = x;
 }
 a1 = A.A();
-x1 = { 3, 4 };
-x2 =  { null, 1 };
+x1 = [ 3, 4 ];
+x2 =  [ null, 1 ];
 y = foo( x1, x2 );
 ";
             string errmsg = "";
@@ -1998,7 +1998,7 @@ y = foo( x1, x2 );
         {
             String code =
 @"
-list1 = { true, false };
+list1 = [ true, false ];
 list2 = !list1; // { false, true }
                             ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -2012,7 +2012,7 @@ list2 = !list1; // { false, true }
         {
             String code =
 @"
-list1 = { true, null, a1, 0, 0.0, 1.5, 0.5, -1 };
+list1 = [ true, null, a1, 0, 0.0, 1.5, 0.5, -1 ];
 list2 = !list1;
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -2026,7 +2026,7 @@ list2 = !list1;
         {
             String code =
 @"
-list1 = { { true, null}, 0, 1 };
+list1 = [ [ true, null], 0, 1 ];
 list2 = !list1;
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -2044,7 +2044,7 @@ list2 = !list1;
 @"
 import(""FFITarget.dll"");
 a1 = Integer.ValueCtor(0);
-b1 = { true, a1 };
+b1 = [ true, a1 ];
 b = !b1;
 ";
             //Assert.Fail("1467096 - Sprint24: rev 2759 : Replication using unary operators over class instances causes CompilerInternalAssertion");
@@ -2061,7 +2061,7 @@ b = !b1;
             String code =
 @"
 import(""FFITarget.dll"");
-coords = {0,1,2,3,4,5,6,7,8,9};
+coords = [0,1,2,3,4,5,6,7,8,9];
 pts = DummyPoint.ByCoordinates(coords, coords, 1);
 y = Count ( pts );
 ";
@@ -2078,7 +2078,7 @@ y = Count ( pts );
             String code =
 @"
 import(""FFITarget.dll"");
-coords = {0,1,2,3,4,5,6,7,8,9};
+coords = [0,1,2,3,4,5,6,7,8,9];
 vList1 = DummyVector.ByCoordinates(coords,10,20);
 vList2 = DummyVector.ByVector(vList1); 
 v = Count ( vList2 );
@@ -2096,9 +2096,9 @@ v = Count ( vList2 );
             String code =
 @"
 import(""FFITarget.dll"");
-x1 = { 0.0, 1 };
-y1 = { 0, 2.0, 3 };
-z1 = { 0, 1 };
+x1 = [ 0.0, 1 ];
+y1 = [ 0, 2.0, 3 ];
+z1 = [ 0, 1 ];
 pts = DummyPoint.ByCoordinates(x1, y1, z1);
 c1 = Count ( pts );
 ";
@@ -2115,9 +2115,9 @@ c1 = Count ( pts );
             String code =
 @"
 import(""FFITarget.dll"");
-x1 = { { 0.0, 1 } };
-y1 = { 0, 2.0, 3 };
-z1 = { 0, 1 };
+x1 = [ [ 0.0, 1 ] ];
+y1 = [ 0, 2.0, 3 ];
+z1 = [ 0, 1 ];
 pts = DummyPoint.ByCoordinates(x1, y1, z1);
 c1 = Count ( pts );
 ";
@@ -2133,9 +2133,9 @@ c1 = Count ( pts );
             String code =
 @"
 import(""FFITarget.dll"");
-x1 = { 0, 0.0, 1  };
+x1 = [ 0, 0.0, 1  ];
 y1 = 3;
-z1 = { 0, 1 };
+z1 = [ 0, 1 ];
 pts = DummyPoint.ByCoordinates(x1, y1, z1);
 c1 = Count ( pts );
 ";
@@ -2152,7 +2152,7 @@ c1 = Count ( pts );
             String code =
 @"
 import(""FFITarget.dll"");
-x1 = { 0, 0.0, 1  };
+x1 = [ 0, 0.0, 1  ];
 y1 = 3;
 pts = DummyPoint.ByCoordinates(x1, y1);
 c1 = Count ( pts );
@@ -2169,8 +2169,8 @@ c1 = Count ( pts );
             String code =
 @"
 import(""FFITarget.dll"");
-list1 = { { 1, 2, 3 }, { 1, 2, 3 }, { 1, 2, 3 } };
-list2 = { { 1, 2, 3, 4 }, { 1, 2, 3, 4 } };
+list1 = [ [ 1, 2, 3 ], [ 1, 2, 3 ], [ 1, 2, 3 ] ];
+list2 = [ [ 1, 2, 3, 4 ], [ 1, 2, 3, 4 ] ];
 list3 = Point_2D.ValueCtor(list1, list2);
 list2_0_0 = list3[0][0].GetValue(); 
 ";
@@ -2218,7 +2218,7 @@ xHighFrequency = DummyMath.Sin(0..(180*x180ToUse)..#xCount)*highFrequencyAmpitud
 xLowFrequency = DummyMath.Sin(-5..185..#xCount)*lowFrequencyAmpitude;
 yHighFrequency = DummyMath.Sin(0..(180*y180ToUse)..#yCount)*highFrequencyAmpitude;
 yLowFrequency = DummyMath.Sin(-5..185..#yCount)*lowFrequencyAmpitude;
-sinRange = {0.0, 10, 20, 30, 40 ,50, 60 ,70 ,80 , 90 ,100, 110 ,120, 130, 140, 150, 160, 170};
+sinRange = [0.0, 10, 20, 30, 40 ,50, 60 ,70 ,80 , 90 ,100, 110 ,120, 130, 140, 150, 160, 170];
 xHighFrequency = DummyMath.Sin(sinRange) * highFrequencyAmpitude;
 y = Count(xHighFrequency);";
             thisTest.RunScriptSource(code);
@@ -2231,7 +2231,7 @@ y = Count(xHighFrequency);";
         {
             String code =
 @"def fun : double(arg: double) { return = 4.0; }
-a = fun({{1.0}, {2.0}});";
+a = fun([[1.0], [2.0]]);";
             thisTest.RunScriptSource(code);
             //Assert.Fail("1467075 - Sprint23 : rev 2660 : replication with nested array is not working as expected");
             thisTest.Verify("a", new Object[] { new Object[] { 4.0 }, new Object[] { 4.0 } });
@@ -2251,7 +2251,7 @@ a = fun({{1.0}, {2.0}});";
         a = a + 1;
         return = a;
     }
-    c = { 1,2,3 };
+    c = [ 1,2,3 ];
     d = foo ( c ) ;
 }";
             // Tracked by: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4092
@@ -2274,7 +2274,7 @@ def foo( a )
 }
 [Associative]
 {
-    c = { 1,2,3 };
+    c = [ 1,2,3 ];
     d = foo ( c ) ;
 }";
             thisTest.RunScriptSource(code);
@@ -2290,7 +2290,7 @@ def foo( a )
 {
 return = 0;
 }
-arr1 = {1,2,3,4};
+arr1 = [1,2,3,4];
 sum1 = foo2(arr1);";
             thisTest.RunScriptSource(code);
             thisTest.Verify("sum1", new Object[] { 0.0, 0.0, 0.0, 0.0 });
@@ -2309,9 +2309,9 @@ def foo  (x:double )
 {
 return = x + 1;
 }
-arr1 = {1,2.0,3,4};
+arr1 = [1,2.0,3,4];
 sum1 = foo2(arr1);
-arr2 = {1,2.0,3,4};
+arr2 = [1,2.0,3,4];
 sum2 = foo(arr1);";
             thisTest.RunScriptSource(code);
             thisTest.Verify("sum1", new Object[] { 2, 3.0, 4, 5 });
@@ -2324,10 +2324,10 @@ sum2 = foo(arr1);";
         {
             String code =
 @"
-a = {1,2};
-b = { 10, 11 };
-c = { { 1 }, { 2 } };
-d = { {0 } };
+a = [1,2];
+b = [ 10, 11 ];
+c = [ [ 1 ], [ 2 ] ];
+d = [ [0 ] ];
 def foo(x : var, y : var)
 {
     return = x + y;
@@ -2353,10 +2353,10 @@ rad = foo(a, d);
             String code =
             
                 @"
-                    a = {1,2};
-                    b = { 10, 11 };
-                    c = { { 1 }, { 2 } };
-                    d = { {0 } };
+                    a = [1,2];
+                    b = [ 10, 11 ];
+                    c = [ [ 1 ], [ 2 ] ];
+                    d = [ [0 ] ];
                     rab = a<1>*b<2>;
                     rac = a<1>*c<2>;
                     rad = a<1>*d<2>;
@@ -2382,8 +2382,8 @@ rad = foo(a, d);
         {
             String code =
                     @"
-                    a = {1,2};
-                    b = { {10} };
+                    a = [1,2];
+                    b = [ [10] ];
                     rab = a*b;
                     ";
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
@@ -2395,8 +2395,8 @@ rad = foo(a, d);
         public void T66_Defect_1467198_Inline_Condition_With_Jagged_Array()
         {
             String code =
-@"a = { 1, 2};
-b = { {0,2}, 1};
+@"a = [ 1, 2];
+b = [ [0,2], 1];
 x = a < b ? 1 : 0;";
             //string err = "1467198 - Sprint24: rev 3237: Design Issue with Replication on jagged arrays in inline condition";
             string err = "MAGN-1658 Sprint24: rev 3237: Design Issue with Replication on jagged arrays in inline condition";
@@ -2414,7 +2414,7 @@ x = a < b ? 1 : 0;";
             String code =
 @"
 import(""FFITarget.dll"");
-c1 = { TestObjectA.TestObjectA(1), TestObjectA.TestObjectA(2) };
+c1 = [ TestObjectA.TestObjectA(1), TestObjectA.TestObjectA(2) ];
 c2 = c1.a; 
 ";
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
@@ -2430,7 +2430,7 @@ c2 = c1.a;
             String code =
 @"
     import(""FFITarget.dll"");
-    coords = {0,1,2,3,4,5,6,7,8,9};
+    coords = [0,1,2,3,4,5,6,7,8,9];
     pts = DummyPoint.ByCoordinates(coords, 20, 30);
     xs = pts.X;
 ";
@@ -2478,7 +2478,7 @@ p2 = DummyPoint.ByCoordinates(0..2,-30.0, -40.0).X;";
 import(""FFITarget.dll"");
 a1 = TestObjectA.TestObjectA(1);
 b1 = TestObjectA.TestObjectA(2);
-test = {a1, b1}.a;
+test = [a1, b1].a;
 ";
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -2493,7 +2493,7 @@ test = {a1, b1}.a;
             String code =
 @"
 import(""FFITarget.dll"");
-a1 = {ArrayMember.Ctor(1..2), ArrayMember.Ctor(2..3) };
+a1 = [ArrayMember.Ctor(1..2), ArrayMember.Ctor(2..3) ];
 test = a1.X ;
 test2 = a1.X[0];
 test3 = a1.X[1];
@@ -2516,7 +2516,7 @@ test4 = a1[0].X[0];
 @"
 
 import(""FFITarget.dll"");
-a1 = { ArrayMember.Ctor(1..2), ArrayMember.Ctor(2..3) };
+a1 = [ ArrayMember.Ctor(1..2), ArrayMember.Ctor(2..3) ];
 test = a1.X ;
 test2 = a1.X[0];
 test3 = a1.X[1];
@@ -2540,7 +2540,7 @@ test4 = a1[0].X[0][1];
             String code =
 @"
 import(""FFITarget.dll"");
-a1 = { ArrayMember.Ctor(1..2), ArrayMember.Ctor(2..3) };
+a1 = [ ArrayMember.Ctor(1..2), ArrayMember.Ctor(2..3) ];
 test1 = a1.X;
 test2 = a1.X[0];
 test3 = (a1.X[0])[0];
@@ -2560,7 +2560,7 @@ test3 = (a1.X[0])[0];
             String code =
 @"
 import(""FFITarget.dll"");
-a1 = { ArrayMember.Ctor(1..2), ArrayMember.Ctor(2..3) };
+a1 = [ ArrayMember.Ctor(1..2), ArrayMember.Ctor(2..3) ];
 test1 = a1.X;
 test2 = a1.X[0];
 test3 = a1.X[0][0];
@@ -2582,16 +2582,15 @@ x1;x2;x3;
     {
         return = (0..9);
     }
-[Imperative]
+i=[Imperative]
 {
-    x1 = ({1,2,3})[1];
+    x1 = ([1,2,3])[1];
     x2 = (0..9)[3];
     x3 = (foo())[4];
+    return [x1,x2,x3];
 }";
             thisTest.RunScriptSource(code);
-            thisTest.Verify("x1", 2);
-            thisTest.Verify("x2", 3);
-            thisTest.Verify("x3", 4);
+            thisTest.Verify("i", new[] {2, 3, 4});
         }
 
         [Test]
@@ -2600,7 +2599,7 @@ x1;x2;x3;
         {
             string code = @"
 import(""FFITarget.dll"");
-a = ArrayMember.Ctor({1,2,3,4,5});
+a = ArrayMember.Ctor([1,2,3,4,5]);
 t1 = (a.X)[3];
 t2 = (a.foo())[4];
 t3 = (a.foo2())[1][1];
@@ -2618,7 +2617,7 @@ t3 = (a.foo2())[1][1];
         {
             string code = @"
 import(""FFITarget.dll"");
-a = ArrayMember.Ctor({1,2,3,4,5});
+a = ArrayMember.Ctor([1,2,3,4,5]);
 t2 = a.foo()[4];
 t3 = (a.foo2()[1])[1];
 ";
@@ -2636,7 +2635,7 @@ t3 = (a.foo2()[1])[1];
 @"
 
 import(""FFITarget.dll"");
-a1 = { DummyVector.ByCoordinates(1,11,111), DummyVector.ByCoordinates(2,22,222) };
+a1 = [ DummyVector.ByCoordinates(1,11,111), DummyVector.ByCoordinates(2,22,222) ];
 a1.X = 5;
 test = a1.X;
 ";
@@ -2656,7 +2655,7 @@ test = a1.X;
 {
     return=i;
 }
-    a = {2.0, 3.5};
+    a = [2.0, 3.5];
     b = foo(a);
 ";
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
@@ -2687,7 +2686,7 @@ class B extends A
         t = x + 1;
     }
 }
-a1 = { B.B(1), { A.A(2), B.B( 0..1) } };
+a1 = [ B.B(1), [ A.A(2), B.B( 0..1) ] ];
 test = a1.x; //expected :  { 1, { 2, { 0, 1 } } }
 ";
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
@@ -2721,7 +2720,7 @@ class B extends A
         t = x + 1;
     }
 }
-a1 = { B.B(1), { A.A(2), B.B( 0..1) } };
+a1 = [ B.B(1), [ A.A(2), B.B( 0..1) ] ];
 test = a1.x; //expected :  { 1, { 2, { 0, 1 } } }
 a1.x = 5;// expected : test = { 5, { 5, { 5, 5} } }
 ";
@@ -2741,14 +2740,14 @@ a1.x = 5;// expected : test = { 5, { 5, { 5, 5} } }
     return = p;
 }
 i = 0;
-x = { };
+x = [ ];
 [Imperative]
 {
 	while (i == 0)  
 	{
 		[Associative] 
 		{
-			x = foo ( { 1.0,2.0 } );
+			x = foo ( [ 1.0,2.0 ] );
 		}
 		i = i + 1; 
 	}
@@ -2778,10 +2777,10 @@ class B
     a : A[];
     constructor  B ( t1 : var[] )
     {
-        a = { A.A(t1), A.A(t1) };        
+        a = [ A.A(t1), A.A(t1) ];        
     }
 }
-a1 = { B.B(1..2), B.B(2..3) };
+a1 = [ B.B(1..2), B.B(2..3) ];
 test1 = a1.a.X;
 test2 = a1.a.X[0];
 test3 = a1.a.X[0][0];
@@ -2803,7 +2802,7 @@ test3 = a1.a.X[0][0];
 import(""FFITarget.dll"");
 a1 = DummyVector.ByCoordinates(1,11,111);
 b1 = DummyVector.ByCoordinates(2,22,222);
-test = {a1, b1}.X;
+test = [a1, b1].X;
 ";
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "";
@@ -2820,7 +2819,7 @@ test = {a1, b1}.X;
             String code =
 @"
 import(""FFITarget.dll"");
-a = { ArrayMember.Ctor(1..2), ArrayMember.Ctor(4..5) } ;
+a = [ ArrayMember.Ctor(1..2), ArrayMember.Ctor(4..5) ] ;
 test1 = a.X;
 test2 = a.X[0];
 test3 = (a.X)[0];
@@ -2850,10 +2849,10 @@ class B
     a : A[];
     constructor  B ( t1 : var[] )
     {
-        a = { A.A(t1), A.A(t1) };        
+        a = [ A.A(t1), A.A(t1) ];        
     }
 }
-t1 = {{ B.B(1..2), B.B(2..3) }.a}.X;
+t1 = [[ B.B(1..2), B.B(2..3) ].a].X;
 a1 = t1[0];
 ";
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
@@ -2882,11 +2881,11 @@ class B
     b : var[];
     constructor  B ( t1 : var[] )
     {
-       a = {A.A(t1), A.A(t1)};
+       a = [A.A(t1), A.A(t1)];
             
     }
 }
-a1 = {{ B.B(1..2), B.B(2..3) }.a}.X[0];
+a1 = [[ B.B(1..2), B.B(2..3) ].a].X[0];
 ";
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "";//1467265 - Sprint25:rev 3548 : accessing array members/ function calls  using bracket should be allowed";
@@ -2899,7 +2898,7 @@ a1 = {{ B.B(1..2), B.B(2..3) }.a}.X[0];
         public void T72_Defect_1467169()
         {
             String code =
-@"a = { 1, 2 } ;
+@"a = [ 1, 2 ] ;
 i = 0..1; 
 b = a[i] > 0? 1 : 0; 
 ";
@@ -2917,7 +2916,7 @@ b = a[i] > 0? 1 : 0;
             String code =
 @"
 import(""FFITarget.dll"");
-a = { 1, 2 } ;
+a = [ 1, 2 ] ;
 i = 0..1; 
 b = a[i] > 0? TestObjectA.TestObjectA(i) : 0;
 test = b.a; 
@@ -2936,7 +2935,7 @@ test = b.a;
             String code =
 @"
 import(""FFITarget.dll"");
-a = { 1, 2 } ;
+a = [ 1, 2 ] ;
 i = 0..1; 
 b = a[i] > 0? ArrayMember.Ctor(a[i]) : 0;
 test = b.X; 
@@ -2953,8 +2952,8 @@ test = b.X;
         {
             String code =
 @"
-a = { 1, 2 } ;
-b = { 3, 4, 5};
+a = [ 1, 2 ] ;
+b = [ 3, 4, 5];
 test = b[0..1] + a[0..1]; 
 ";
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
@@ -2973,8 +2972,8 @@ def foo ( a : int[], b :int[] )
 {
     return = Count(a) + Count(b);
 }
-a = { 1, 2 } ;
-b = { 3, 4, 5};
+a = [ 1, 2 ] ;
+b = [ 3, 4, 5];
 test = foo (b[0..1], a[0..1]); 
 ";
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
@@ -2993,8 +2992,8 @@ def foo ( a : int[], b :int[] )
 {
     return = Count(a) + Count(b);
 }
-a = { 1, 2 } ;
-b = { {3, 4}, {5, 6}};
+a = [ 1, 2 ] ;
+b = [ [3, 4], [5, 6]];
 test = foo (b[0..1][0..1], a[0..1]); 
 ";
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
@@ -3009,7 +3008,7 @@ test = foo (b[0..1][0..1], a[0..1]);
         {
             String code =
 @"
-x = { };
+x = [ ];
 x[1..2] = 2 ;
 ";
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
@@ -3025,8 +3024,8 @@ x[1..2] = 2 ;
         {
             String code =
 @"
-a = {3,1,2,10};
-x = {10,11,12,13,14,15};
+a = [3,1,2,10];
+x = [10,11,12,13,14,15];
 x[a] = 2;
 y = x;
 ";
@@ -3045,8 +3044,8 @@ y = x;
 @"
 [Imperative]
 {
-    a = {3,1,2,10};
-    x = {10,11,12,13,14,15};
+    a = [3,1,2,10];
+    x = [10,11,12,13,14,15];
     x[a] = 2;
     y = x;
 }
@@ -3066,9 +3065,9 @@ y = x;
         {
             String code =
 @"
-a = {2, 5};
-x = {10,11,12};
-x[a] = {2,2};
+a = [2, 5];
+x = [10,11,12];
+x[a] = [2,2];
 y = x + 1;
 ";
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
@@ -3087,8 +3086,8 @@ y = x + 1;
         {
             String code =
 @"
-a = {1,2};
-x = {10,11,12,13,14,15};
+a = [1,2];
+x = [10,11,12,13,14,15];
 x[a] = 2;
 y1 = x;
 ";
@@ -3115,7 +3114,7 @@ else
 return = a;
 return = 0;
 }
-x = { 1, 2, 3 };
+x = [ 1, 2, 3 ];
 c = even(x);
 }
 ";
@@ -3144,7 +3143,7 @@ def even : int (a : int)
             return = a;
     }
 }
-x = { 1, 2, 3 };
+x = [ 1, 2, 3 ];
 c = even(x);
 ";
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
@@ -3164,8 +3163,8 @@ def sum (a : int, b : int)
 {
     return = a + b;
 }
-a = { 5, 6 };
-b = { 0, 1 };
+a = [ 5, 6 ];
+b = [ 0, 1 ];
 x = sum(a<1>, b<2> );
 y = sum(a, b);
 ";
@@ -3187,8 +3186,8 @@ def sum (a : int, b : int)
 {
     return = a + b;
 }
-a = { {5, 6}, {5,6} };
-b = { {0, 1}, {0,1} };
+a = [ [5, 6], [5,6] ];
+b = [ [0, 1], [0,1] ];
 x = sum(a<1><2>, b<3><4> );
 y = sum(a, b);
 ";
@@ -3218,7 +3217,7 @@ y = sum(a, b);
         {
             String code =
 @"
-a = { {5, 6}, {7, 8} };
+a = [ [5, 6], [7, 8] ];
 x = a[(0..1)<1>][(0..1)<2>];
 ";
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
@@ -3240,8 +3239,8 @@ def sum(a, b)
 {
     return = a + b;
 }
-a = { ArrayMember.Ctor(0..2), ArrayMember.Ctor(3..5) };
-b = { ArrayMember.Ctor(0..2), ArrayMember.Ctor(3..5) };
+a = [ ArrayMember.Ctor(0..2), ArrayMember.Ctor(3..5) ];
+b = [ ArrayMember.Ctor(0..2), ArrayMember.Ctor(3..5) ];
 test = a.X<1> + b.X<2>;
 test2 = sum ( a.X<1>, b.X<2>);
 ";
@@ -3266,8 +3265,8 @@ def sum(a, b)
 }
 def foo()
 {
-    a = { 5, 6 };
-    b = { 0, 1 };
+    a = [ 5, 6 ];
+    b = [ 0, 1 ];
     x = sum(a<1>, b<2>);
     return = x;
 }
@@ -3290,10 +3289,10 @@ def sum ( a, b)
 { 
     return = a + b;
 }
-a = {0,1};
-b = {2,3};
+a = [0,1];
+b = [2,3];
 test = sum ( a<1>, b<2>);
-test1 = sum ( {0,1}<1>, {2,3}<2>);
+test1 = sum ( [0,1]<1>, [2,3]<2>);
 test2 = sum ( (0..1)<1>, (2..3)<2>);
 ";
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
@@ -3310,8 +3309,8 @@ test2 = sum ( (0..1)<1>, (2..3)<2>);
         {
             String code =
 @"
-x = { 0,1,2 };
-y = x [ {0,1} ];
+x = [ 0,1,2 ];
+y = x [ [0,1] ];
 z = x [ 1..3 ];
 z2 = x [ -1..-3 ];
 ";
@@ -3331,8 +3330,8 @@ z2 = x [ -1..-3 ];
         {
             String code =
 @"
-x = { {0,1,2}, {3,4} };
-y = x [ {0,1} ][{0,1}];
+x = [ [0,1,2], [3,4] ];
+y = x [ [0,1] ][[0,1]];
 ";
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "";//DNL-1467284 Sprint25: rev 3705: replication on array indices should follow zipped collection rule";
@@ -3356,8 +3355,8 @@ y = x [ {0,1} ][{0,1}];
                     z2;
                     constructor A()
                     {
-                        x = { 0,1,2 };
-                        y = x [ {0,1} ];
+                        x = [ 0,1,2 ];
+                        y = x [ [0,1] ];
                         z = x [ 1..3 ];
                         z2 = x [ -1..-3 ];
                     }
@@ -3383,8 +3382,8 @@ y = x [ {0,1} ][{0,1}];
         {
             String code =
 @"
-a = {1, 2};
-b = { {10} };
+a = [1, 2];
+b = [ [10] ];
 rab = a*b;
 ";
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
@@ -3401,7 +3400,7 @@ rab = a*b;
         {
             String code =
 @"
-a = {{1, 2}};
+a = [[1, 2]];
 b = 10;
 rab = a*b;
 ";
@@ -3419,7 +3418,7 @@ rab = a*b;
             String code =
 @"
 a = 10;
-b = {{1,2}};
+b = [[1,2]];
 rab = a*b;
 ";
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
@@ -3435,8 +3434,8 @@ rab = a*b;
         {
             String code =
 @"
-a = {{10}};
-b = {{1,2}};
+a = [[10]];
+b = [[1,2]];
 rab = a*b;
 ";
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
@@ -3452,8 +3451,8 @@ rab = a*b;
         {
             String code =
 @"
-a = {1, 2};
-b = {3, 4, 5};
+a = [1, 2];
+b = [3, 4, 5];
 rab = a*b;
 ";
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
@@ -3470,8 +3469,8 @@ rab = a*b;
         {
             String code =
 @"
-a = {1, 2};
-b = {{3, 4, 5}};
+a = [1, 2];
+b = [[3, 4, 5]];
 rab = a*b;
 ";
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
@@ -3489,7 +3488,7 @@ rab = a*b;
         {
             String code =
 @"
-a = {1, 2, 3};
+a = [1, 2, 3];
 i = 0..1;
 b = !a[i];
 ";
@@ -3506,7 +3505,7 @@ b = !a[i];
         {
             String code =
 @"
-a = {1, 2, 3};
+a = [1, 2, 3];
 i = 0..1;
 b = -a[i];
 ";
@@ -3525,7 +3524,7 @@ b = -a[i];
             String code =
 @"
 import(""FFITarget.dll"");
-a1 = ArrayMember.Ctor({ 1, 2, 3});
+a1 = ArrayMember.Ctor([ 1, 2, 3]);
 i = 0..1;
 c = a1.X;
 b = a1.X[i];
@@ -3544,7 +3543,7 @@ b = a1.X[i];
             String code =
 @"
 import(""FFITarget.dll"");
-a1 = ArrayMember.Ctor({ 1, 2, 3});
+a1 = ArrayMember.Ctor([ 1, 2, 3]);
 i = 0..1;
 c = a1.X;
 b = a1.X[i];
@@ -3563,7 +3562,7 @@ b = a1.X[i];
             String code =
 @"
 import(""FFITarget.dll"");
-a1 = ArrayMember.Ctor({ 1, 2, 3});
+a1 = ArrayMember.Ctor([ 1, 2, 3]);
 i = 0..1;
 b = -a1.X[i];
 ";
@@ -3582,7 +3581,7 @@ b = -a1.X[i];
             String code =
 @"
 import(""FFITarget.dll"");
-a1 = ArrayMember.Ctor({ 1, 2, 3});
+a1 = ArrayMember.Ctor([ 1, 2, 3]);
 i = 0..1;
 b = -a1.X[0];
 ";
@@ -3601,7 +3600,7 @@ b = -a1.X[0];
             String code =
 @"
 import(""FFITarget.dll"");
-a1 = ArrayMember.Ctor({ 1, 2, 3});
+a1 = ArrayMember.Ctor([ 1, 2, 3]);
 i = 0..1;
 b = -a1.X;
 ";
@@ -3700,7 +3699,7 @@ class A
         a = -B.B().b;
     }
 }
-b = {A.A(), A.A()}.a;
+b = [A.A(), A.A()].a;
 ";
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "";//DNL-1467297 rev 3769 : parser issue over negating a property of an instance";
@@ -3731,7 +3730,7 @@ class A
         a = -B.B().b;
     }
 }
-b = {-A.A().a, A.A().a};
+b = [-A.A().a, A.A().a];
 ";
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "";//DNL-1467297 rev 3769 : parser issue over negating a property of an instance";
@@ -3750,8 +3749,8 @@ def add(a:int,b:int)
 {
    return = a + b;
 }
-a = {1, 2, 3};
-b = {3, 4, 5};
+a = [1, 2, 3];
+b = [3, 4, 5];
 c1 = add( a[0..1], b[1..2]);
 c2 = add( a<1>, b<2>);
 c3 = add( a[0..1]<1>, b[1..2]<2>); 
@@ -3775,8 +3774,8 @@ def add(a,b)
 {
    return = a + b;
 }
-a = {1, 2, 3};
-b = {3, 4, 5};
+a = [1, 2, 3];
+b = [3, 4, 5];
 c1 = add( a<1>, b<2>); 
 ";
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
@@ -3795,8 +3794,8 @@ def add(a:var,b:var)
 {
    return = a + b;
 }
-a = {1, 2, 3};
-b = {3, 4, 5};
+a = [1, 2, 3];
+b = [3, 4, 5];
 c1 = add( a<1>, b<2>); 
 ";
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
@@ -3815,8 +3814,8 @@ def add(a:int,b:int)
 {
    return = a + b;
 }
-a = {1, 2, 3};
-b = {3, 4, 5};
+a = [1, 2, 3];
+b = [3, 4, 5];
 c1 = add( a<1>, b<2>); 
 ";
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
@@ -3835,8 +3834,8 @@ def add(a:double,b:int)
 {
    return = a + b;
 }
-a = {1, 2, 3};
-b = {3, 4, 5};
+a = [1, 2, 3];
+b = [3, 4, 5];
 c1 = add( a<1>, b<2>); 
 ";
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
@@ -3855,8 +3854,8 @@ def add(a:double,b:double)
 {
    return = a + b;
 }
-a = {1, 2, 3};
-b = {3, 4, 5};
+a = [1, 2, 3];
+b = [3, 4, 5];
 c1 = add( a<1>, b<2>); 
 ";
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
@@ -3875,8 +3874,8 @@ def add(a:double,b:double)
 {
    return = a + b;
 }
-a = {1.0, 2.0, 3.0};
-b = {3.0, 4.0, 5.0};
+a = [1.0, 2.0, 3.0];
+b = [3.0, 4.0, 5.0];
 c1 = add( a<1>, b<2>); 
 ";
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
@@ -3895,8 +3894,8 @@ def add : int (a:double,b:double)
 {
    return = a + b;
 }
-a = {1.0, 2.0, 3.0};
-b = {3.0, 4.0, 5.0};
+a = [1.0, 2.0, 3.0];
+b = [3.0, 4.0, 5.0];
 c1 = add( a<1>, b<2>); 
 ";
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
@@ -3918,7 +3917,7 @@ def execute(b : TestObjectA)
 { 
     return = 100; 
 }
-arr = {TestObjectA.TestObjectA(), null, 3};
+arr = [TestObjectA.TestObjectA(), null, 3];
 v1 = execute(null);
 v2 = execute(3);
 v3 = execute(arr);
@@ -3946,7 +3945,7 @@ def execute(b : TestObjectA)
 { 
     return = 100; 
 }
-arr = {3,3,3};
+arr = [3,3,3];
 v3 = execute(arr);
 ";
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
@@ -3969,7 +3968,7 @@ def execute(b : TestObjectA)
 { 
     return = 100; 
 }
-arr = {null, null};
+arr = [null, null];
 v3 = execute(arr);
 ";
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
@@ -3991,10 +3990,10 @@ def foo ( a : int[] , b : int[])
 }
 def foo2 ( a : int,  b : int)
 {
-    return = foo ( { a,b}, {a,b} );
+    return = foo ( [ a,b], [a,b] );
 }
-arr = {1, 2};
-test = foo2 ( {arr, arr },  { arr, arr} );
+arr = [1, 2];
+test = foo2 ( [arr, arr ],  [ arr, arr] );
 ";
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "";
@@ -4012,8 +4011,8 @@ def foo ( a : int[] , b : int[])
 {
     return = a + b;
 }
-arr = {1, 2};
-test = foo ( {arr, arr },  { arr, arr} );
+arr = [1, 2];
+test = foo ( [arr, arr ],  [ arr, arr] );
 ";
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "";//1467313 - rev 3791: replication on arguments that expect one dimensional array using higher ranks is giving ambiguous output";
@@ -4031,8 +4030,8 @@ def foo ( a : var[] , b : var[])
 {
     return = a + b;
 }
-arr = {1, 2};
-test = foo ( {arr, arr },  { arr, arr} );
+arr = [1, 2];
+test = foo ( [arr, arr ],  [ arr, arr] );
 ";
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "";
@@ -4052,8 +4051,8 @@ def foo ( a : var[] , b : var[])
 {
     return = a + b;
 }
-arr = {1, 2};
-test = foo ( {arr, arr },  { arr, arr} );
+arr = [1, 2];
+test = foo ( [arr, arr ],  [ arr, arr] );
 ";
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "";
@@ -4072,8 +4071,8 @@ def foo( a : var, c : var[])
 {
     return  = a + c;
 }
-arr = {1, 2};
-test2 = foo(arr,  { arr, arr});
+arr = [1, 2];
+test2 = foo(arr,  [ arr, arr]);
 ";
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "";
@@ -4096,9 +4095,9 @@ def foo2 ( a : var , b : var[])
 {
     return = a + b;
 }
-arr = {1, 2};
-test = foo ( {arr, arr },  { arr, arr} );
-test2 = foo2 ( arr,  { arr, arr} );
+arr = [1, 2];
+test = foo ( [arr, arr ],  [ arr, arr] );
+test2 = foo2 ( arr,  [ arr, arr] );
 ";
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "";
@@ -4117,8 +4116,8 @@ def foo ( a : var , b : var)
 {
     return = a + b;
 }
-arr = {1, 2};
-test = foo ( {arr, arr },  { arr, arr} );
+arr = [1, 2];
+test = foo ( [arr, arr ],  [ arr, arr] );
 ";
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "";
@@ -4136,8 +4135,8 @@ def foo ( a : var , b : var[])
 {
     return = a + b;
 }
-arr = {1, 2};
-test = foo ( arr,  { arr, arr} );
+arr = [1, 2];
+test = foo ( arr,  [ arr, arr] );
 ";
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "";
@@ -4151,7 +4150,7 @@ test = foo ( arr,  { arr, arr} );
         {
             String code =
 @"
-x = { };
+x = [ ];
 x[1..2] = 2 ;
 ";
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
@@ -4168,7 +4167,7 @@ x[1..2] = 2 ;
         {
             String code =
 @"
-x = { };
+x = [ ];
 x[1..2][1..2] = 2 ;
 y = x;
 ";
@@ -4185,7 +4184,7 @@ y = x;
         {
             String code =
 @"
-x = { };
+x = [ ];
 x[0..1][0..1][0..1] = 2 ;
 y = x;
 ";
@@ -4202,7 +4201,7 @@ y = x;
         {
             String code =
 @"
-x = { { { 0, 0}, {0,0} }, {{0,0}, {0,0}} };
+x = [ [ [ 0, 0], [0,0] ], [[0,0], [0,0]] ];
 x[0..1][0..1][0..1] = 2 ;
 y = x;
 ";
@@ -4221,10 +4220,10 @@ y = x;
             String code =
 @"
 import(""FFITarget.dll"");
-a1 = ArrayMember.Ctor({ 1, 2, 3});
+a1 = ArrayMember.Ctor([ 1, 2, 3]);
 i = 0..1;
 c = a1.X;
-b = ArrayMember.Ctor({ 1, 2, 3}).X[i];
+b = ArrayMember.Ctor([ 1, 2, 3]).X[i];
 ";
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "";//DNL-1467296 rev 3769 : Replication over array indices not working for class properties";
@@ -4243,7 +4242,7 @@ class B
     b :int[];
     constructor B ()
     {
-        b = { 1, 2, 3,4};
+        b = [ 1, 2, 3,4];
     }
 }
 class A
@@ -4275,7 +4274,7 @@ class B
     b :int[];
     constructor B ()
     {
-        b = { 1, 2, 3,4};
+        b = [ 1, 2, 3,4];
     }
 }
 class A
@@ -4288,7 +4287,7 @@ class A
 }
 a1 = A.A();
 i = 0..1;
-b = { A.A(i).a[i], -A.A(i).a[i] };
+b = [ A.A(i).a[i], -A.A(i).a[i] ];
 ";
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "";//DNL-1467296 rev 3769 : Replication over array indices not working for class properties";
@@ -4307,7 +4306,7 @@ class B
     b :int[];
     constructor B ()
     {
-        b = { 1, 2, 3,4};
+        b = [ 1, 2, 3,4];
     }
 }
 class A
@@ -4320,7 +4319,7 @@ class A
 }
 a1 = A.A();
 i = 0..1;
-b = { A.A(i), A.A(i) }.a[i];
+b = [ A.A(i), A.A(i) ].a[i];
 ";
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "";//DNL-1467296 rev 3769 : Replication over array indices not working for class properties";
@@ -4354,9 +4353,9 @@ x = sum ( (1..2)<1> , (3..4)<2>);
         {
             String code =
 @"
-a = {1,2,3,4};
+a = [1,2,3,4];
 b = a;
-a[0..1] = {0,0};
+a[0..1] = [0,0];
 a[0..1]  = a[2..3];
 ";
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
@@ -4372,7 +4371,7 @@ a[0..1]  = a[2..3];
         {
             String code =
 @"
-a = {1,2,3,4};
+a = [1,2,3,4];
 a[0..1]  = a[2..3];
 ";
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
@@ -4387,13 +4386,13 @@ a[0..1]  = a[2..3];
         {
             String code =
 @"
-a = {1,2,3,4};
+a = [1,2,3,4];
 b = a;
 c = a;
 d = a;
 b[0..1] = 3;
-c[{5,6}] = a[{0,1}];
-d[0..1] = {3};
+c[[5,6]] = a[[0,1]];
+d[0..1] = [3];
 ";
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "";
@@ -4412,14 +4411,14 @@ d[0..1] = {3};
 @"
 def foo ()
 {
-    a = {1,2,3,4};
+    a = [1,2,3,4];
     b = a;
     c = a;
     d = a;
     b[0..1] = 3;
-    c[{5,6}] = a[{0,1}];
-    d[0..1] = {3};
-    return = { a,b,c,d};
+    c[[5,6]] = a[[0,1]];
+    d[0..1] = [3];
+    return = [ a,b,c,d];
 }
 x = foo();
 b1 = x[1];
@@ -4442,10 +4441,10 @@ d1 = x[3];
         {
             String code =
 @"
-a = {1,2,3,4};
+a = [1,2,3,4];
 b = a;
 b[0..1] = b[2..3];
-a = { 5, 6, 7, 8 };
+a = [ 5, 6, 7, 8 ];
 ";
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4112";
@@ -4460,8 +4459,8 @@ a = { 5, 6, 7, 8 };
         {
             String code =
 @"
-a = { { 1, 2 }, { 3, 4 } };
-b = { 5, 6 };
+a = [ [ 1, 2 ], [ 3, 4 ] ];
+b = [ 5, 6 ];
 def foo:int (a:int, b:int) { return = a + b; }
 c = foo(a,b);
 ";
@@ -4481,7 +4480,7 @@ def foo(a : int, b : int)
     c = a + b;
     return = c;
 }
-a = { { {5, 6} }, { {5,6} } };
+a = [ [ [5, 6] ], [ [5,6] ] ];
 y = foo(a<1><2><3>, 1);
 ";
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
@@ -4502,7 +4501,7 @@ def foo(a : int, b : int)
     c = a + b;
     return = c;
 }
-a = { { {5, 6} }, { {5,6} } };
+a = [ [ [5, 6] ], [ [5,6] ] ];
 y = foo(a<1><2><3>, a<1><2><3>);
 ";
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
@@ -4523,7 +4522,7 @@ def foo(a : int, b : int)
     c = a + b;
     return = c;
 }
-a = { { {5, 6} }, { {5,6} } };
+a = [ [ [5, 6] ], [ [5,6] ] ];
 y = foo(a<1><2><3>, a<4><5><6>);
 t1 = y[0][0][0][0][0];
 ";
@@ -4558,7 +4557,7 @@ n = (0..11..#(nums + 2))[1..nums];
             String code =
 @"
 import(""FFITarget.dll"");
-a1 = ArrayMember.Ctor({ 1, 2, 3});
+a1 = ArrayMember.Ctor([ 1, 2, 3]);
 test = [Imperative]
 {
     return = (a1.X)[0];
@@ -4577,7 +4576,7 @@ test = [Imperative]
             String code =
 @"
 import(""FFITarget.dll"");
-t = { 1,2,3};
+t = [ 1,2,3];
 test = [Imperative]
 {
     return = (ArrayMember.Ctor(t).X)[0];
@@ -4599,10 +4598,10 @@ class A
     X : int[];
     constructor  A (t1:int, t2:int)
     {
-        X = {t1,t2};
+        X = [t1,t2];
     }
 }
-t1 = { 1,2};
+t1 = [ 1,2];
 test1 = A.A(t1<1>,t1<2>).X;
 test = (A.A(t1<1>,t1<2>).X)[0][0];
 ";
@@ -4620,11 +4619,11 @@ test = (A.A(t1<1>,t1<2>).X)[0][0];
 @"
 def foo(t1:int, t2:int)
 {
-    return = {t1,t2};
+    return = [t1,t2];
 }    
 def foo()
 {
-    t3 = { 1,2};
+    t3 = [ 1,2];
     test1 = foo(t3<1>,t3<2>);
     return = test1;
 }
@@ -4644,11 +4643,11 @@ test = foo()[0][0];
 @"
 def foo(t1:int, t2:int)
 {
-    return = {t1,t2};
+    return = [t1,t2];
 }    
 def foo()
 {
-    t3 = { 1,2};
+    t3 = [ 1,2];
     test1 = foo(t3<1>,t3<2>);
     return = test1;
 }
@@ -4669,10 +4668,10 @@ test2 = (foo()[0])[0];
             String code =
 @"
 import(""FFITarget.dll"");
-a = {0,1};
-b = {2,3};
+a = [0,1];
+b = [2,3];
 test = DummyPoint2D.ByCoordinates( a<1>, b<2>).X;
-test1 = DummyPoint2D.ByCoordinates( {0,1}<1>, {2,3}<2>).X;
+test1 = DummyPoint2D.ByCoordinates( [0,1]<1>, [2,3]<2>).X;
 test2 = DummyPoint2D.ByCoordinates( (0..1)<1>, (2..3)<2>).X;
 ";
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
@@ -4692,17 +4691,17 @@ def sum ( a, b)
 { 
     return = a + b;
 }
-test = { { } };
-test1 = { { } };
-test2 = { { } } ;
+test = [ [ ] ];
+test1 = [ [ ] ];
+test2 = [ [ ] ] ;
 [Imperative]
 {
     [Associative]
     {
-        a = {0,1};
-        b = {2,3};
+        a = [0,1];
+        b = [2,3];
         test = sum ( a<1>, b<2>);
-        test1 = sum ( {0,1}<1>, {2,3}<2>);
+        test1 = sum ( [0,1]<1>, [2,3]<2>);
         test2 = sum ( (0..1)<1>, (2..3)<2>);
     }
 }
@@ -4724,9 +4723,9 @@ def sum ( a, b)
 { 
     return = a + b;
 }
-a = {0,1};
-b = {2,3};
-test = Count(sum ( {0,1}<1>, {2,3}<2>) );
+a = [0,1];
+b = [2,3];
+test = Count(sum ( [0,1]<1>, [2,3]<2>) );
  
 ";
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
@@ -4744,9 +4743,9 @@ def sum ( a, b)
 { 
     return = a + b;
 }
-a = {0,1};
-b = {2,3};
-test = Count(sum ( {0,1}<1>, {2,3}<2>) ); 
+a = [0,1];
+b = [2,3];
+test = Count(sum ( [0,1]<1>, [2,3]<2>) ); 
 ";
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "";
@@ -4762,9 +4761,9 @@ test = Count(sum ( {0,1}<1>, {2,3}<2>) );
 d2;f2;
 [Associative]
 {
-    a2 = { 0, 1 };
+    a2 = [ 0, 1 ];
     b2 = 1;
-    d2 = a2 > b2 ? true : { false, false};
+    d2 = a2 > b2 ? true : [ false, false];
     f2 = a2 > b2;    
 }
 ";
@@ -4786,9 +4785,9 @@ d2 = [Imperative]
 {
     d2 = [Associative]
     {
-        a2 = { 0, 1 };
+        a2 = [ 0, 1 ];
         b2 = 1;
-        d2 = a2 > b2 ? true : { false, false};
+        d2 = a2 > b2 ? true : [ false, false];
         return = d2;    
     }
     return = d2;
@@ -4812,11 +4811,11 @@ class A
     f2 : bool[]..[];
     constructor A ( a2:int[], b2:int )
     {
-          d2 = a2 > b2 ? 1 : { 0,0};
+          d2 = a2 > b2 ? 1 : [ 0,0];
           f2 = a2 > b2;
     }
 }
-a2 = { 0, 2 };
+a2 = [ 0, 2 ];
 b2 = 1;
 a = A.A(a2,b2);
 test1 = a.d2;
@@ -4854,9 +4853,9 @@ a.X = 2..3;
             String code =
 @"
 a = 3;
-b = { 3, 1 };
-d = { 5 + 6, b + 1 };
-c = { { 3 } } + d;
+b = [ 3, 1 ];
+d = [ 5 + 6, b + 1 ];
+c = [ [ 3 ] ] + d;
 ";
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "MAGN-1691 throws error index out of range  for jagged array arithmetic operation";
@@ -4905,7 +4904,7 @@ def foo(x: int, y: int)
  return = x + y;
 };
 
-a = {};
+a = [];
 o = foo(a, 1);
 ";
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
@@ -4919,9 +4918,9 @@ o = foo(a, 1);
         {
             string code =
 @"
-cond = {true, false};
-vs1 = {2, 4};
-vs2 = {3, 5, 7};
+cond = [true, false];
+vs1 = [2, 4];
+vs2 = [3, 5, 7];
 r = cond<1L> ? vs1<1L> : vs2<1L>;";
 
             thisTest.RunScriptSource(code);

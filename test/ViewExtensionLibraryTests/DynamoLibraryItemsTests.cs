@@ -26,7 +26,7 @@ namespace ViewExtensionLibraryTests
 
         protected override void GetLibrariesToPreload(List<string> libraries)
         {
-            libraries.Add("Builtin.dll");
+            libraries.Add("DesignScriptBuiltin.dll");
             libraries.Add("DSCoreNodes.dll");
             base.GetLibrariesToPreload(libraries);
         }

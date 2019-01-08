@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using ProtoCore.BuildData;
 using ProtoCore.DSASM;
 using ProtoCore.Properties;
 
@@ -24,6 +25,7 @@ namespace ProtoCore
         public enum ErrorType
         {
             SyntaxError,
+            SemanticError,
             MaxErrorID
         }
 
@@ -576,6 +578,7 @@ namespace ProtoCore
 
             BuildData.ErrorEntry errorEntry = new BuildData.ErrorEntry
             {
+                ID = ErrorType.SemanticError,
                 FileName = fileName,
                 Message = msg,
                 Line = line,

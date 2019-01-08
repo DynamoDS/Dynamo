@@ -17,7 +17,7 @@ namespace Dynamo.Tests
         protected override void GetLibrariesToPreload(List<string> libraries)
         {
             libraries.Add("VMDataBridge.dll");
-            libraries.Add("Builtin.dll");
+            libraries.Add("DesignScriptBuiltin.dll");
             libraries.Add("DSCoreNodes.dll");
             libraries.Add("FunctionObject.ds");
             libraries.Add("BuiltIn.ds");
@@ -26,9 +26,22 @@ namespace Dynamo.Tests
 
         string listTestFolder { get { return Path.Combine(TestDirectory, "core", "list"); } }
 
-		#region Test Build Sublist  
+        #region Test Build Sublist  
 
-		[Test]
+        [Test]
+        public void TestListMaxMinItem()
+        {
+            string testFilePath = Path.Combine(listTestFolder, "ListMaximumItem.dyn");
+            RunModel(testFilePath);
+
+            AssertPreviewValue("a3ddba22-39bf-4bd7-9e61-d6119603f5b1", 12.5);
+            AssertPreviewValue("234f6570-a327-44ad-9e27-38e8dbc9f3c9", 3);
+
+            AssertPreviewValue("65286923-306d-4478-854e-d39a4ca3d1b8", 12.5);
+            AssertPreviewValue("b7f5258f-ae1b-4300-bffd-d40d7bfc2ce9", 3);
+        }
+
+        [Test]
 		public void TestBuildSublistsEmptyInput()
 		{
 			string testFilePath = Path.Combine(listTestFolder, "testBuildSubLists_emptyInput.dyn");

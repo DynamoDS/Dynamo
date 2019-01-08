@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using ProtoCore.AST;
+using ProtoCore.AST.AssociativeAST;
+using ProtoCore.SyntaxAnalysis;
 
 namespace ProtoCore.Utils
 {
@@ -53,6 +56,37 @@ namespace ProtoCore.Utils
             return identifier;
         }
 
+        private class ListCollector : AstTraversal
+        {
+            private readonly List<Node> nodes = new List<Node>();
+
+            public override bool VisitExprListNode(ProtoCore.AST.ImperativeAST.ExprListNode node)
+            {
+                nodes.Add(node);
+                return this.VisitAllChildren(node);
+            }
+
+            public override bool VisitExprListNode(ProtoCore.AST.AssociativeAST.ExprListNode node)
+            {
+                nodes.Add(node);
+                return this.VisitAllChildren(node);
+            }
+
+            private ListCollector() { }
+
+            public static IEnumerable<Node> Collect(CodeBlockNode node)
+            {
+                var c = new ListCollector();
+                node.Accept(c);
+                return c.nodes;
+            }
+        }
+
+        public static IEnumerable<Node> FindExprListNodes(CodeBlockNode node)
+        {
+            return ListCollector.Collect(node);
+        }
+
         public static List<string> GetLHSatAssignment(string line, int equalIndex)
         {
             var spaceNormalizationRule = new Regex(@"([^\S]+)");
@@ -60,7 +94,7 @@ namespace ProtoCore.Utils
             // the line could have multiple program statements separated by ';'
             var programStatements = line.Split(';');
 
-            List<string> identifiers = new List<string>();
+            var identifiers = new List<string>();
             foreach (var statement in programStatements)
             {
                 if (statement.Equals(string.Empty))
@@ -101,6 +135,59 @@ namespace ProtoCore.Utils
             return nodes;
         }
 
+        private static Core CodeBlockParserCore()
+        {
+            var core = new Core(new Options());
+            core.Options.ExecutionMode = ExecutionMode.Serial;
+            core.ParsingMode = ParseMode.AllowNonAssignment;
+            core.IsParsingCodeBlockNode = true;
+            core.IsParsingPreloadedAssembly = false;
+            return core;
+        }
+
+        public static AST.AssociativeAST.CodeBlockNode ParseWithDeprecatedListSyntax(string code)
+        {
+            Validity.Assert(code != null);
+
+            var core = CodeBlockParserCore();
+            core.ParseDeprecatedListSyntax = true;
+
+            return ParseWithCore(code, core).CodeBlockNode;
+        }
+
+        public static string TryMigrateDeprecatedListSyntax(string codeText)
+        {
+            try
+            {
+                // convert all deprecated list types to the new syntax
+                var cb = ParseWithDeprecatedListSyntax(codeText);
+
+                var nodes = FindExprListNodes(cb);
+
+                var codeList = codeText.ToCharArray();
+
+                foreach (var n in nodes)
+                {
+                    // ignore nodes not part of original code
+                    if (n.line == ProtoCore.DSASM.Constants.kInvalidIndex)
+                    {
+                        continue;
+                    }
+
+                    codeList[n.charPos] = '[';
+                    codeList[n.endCharPos - 1] = ']';
+                }
+
+                return new String(codeList);
+            }
+            catch
+            {
+            }
+
+            return codeText;
+        }
+
+
         /// <summary>
         /// Parses designscript code and returns a ProtoAST CodeBlockNode
         /// </summary>
@@ -109,38 +196,27 @@ namespace ProtoCore.Utils
         {
             Validity.Assert(code != null);
 
-            Core core = new Core(new Options());
-            core.Options.ExecutionMode = ExecutionMode.Serial;
-            core.ParsingMode = ParseMode.AllowNonAssignment;
-            core.IsParsingCodeBlockNode = true;
-            core.IsParsingPreloadedAssembly = false;
-
-            var parseResult = ParseWithCore(code, core);
-            return parseResult.CodeBlockNode;
+            return ParseWithCore(code, CodeBlockParserCore())
+                .CodeBlockNode;
         }
 
         /// <summary>
         /// Returns a parser for the DS code.
         /// </summary>
-        /// <param name="code"></param>
-        /// <param name="core"></param>
-        /// <param name="hasBuiltInLoaded"></param>
-        /// <returns></returns>
         public static DesignScriptParser.Parser CreateParser(string code, ProtoCore.Core core)
         {
-            byte[] buffer = System.Text.Encoding.UTF8.GetBytes(code);
-            byte[] utf8Buffer = new byte[buffer.Length + 3];
+            var buffer = System.Text.Encoding.UTF8.GetBytes(code);
+            var utf8Buffer = new byte[buffer.Length + 3];
 
             // Add UTF-8 BOM - Coco/R requires UTF-8 stream should contain BOM
-            utf8Buffer[0] = (byte)0xEF;
-            utf8Buffer[1] = (byte)0xBB;
-            utf8Buffer[2] = (byte)0xBF;
+            utf8Buffer[0] = 0xEF;
+            utf8Buffer[1] = 0xBB;
+            utf8Buffer[2] = 0xBF;
             Array.Copy(buffer, 0, utf8Buffer, 3, buffer.Length);
 
-            System.IO.MemoryStream memstream = new System.IO.MemoryStream(utf8Buffer);
-            DesignScriptParser.Scanner scanner = new DesignScriptParser.Scanner(memstream);
-            DesignScriptParser.Parser parser = new DesignScriptParser.Parser(scanner, core, core.builtInsLoaded);
-            return parser;
+            var memstream = new System.IO.MemoryStream(utf8Buffer);
+            var scanner = new DesignScriptParser.Scanner(memstream);
+            return new DesignScriptParser.Parser(scanner, core, core.builtInsLoaded);
         }
 
         /// <summary>
@@ -155,7 +231,7 @@ namespace ProtoCore.Utils
             var p = CreateParser(code, core);
             p.Parse();
 
-            ParseResult result = new ParseResult();
+            var result = new ParseResult();
             result.CodeBlockNode = p.root as AST.AssociativeAST.CodeBlockNode;
             result.CommentBlockNode = p.commentNode as AST.AssociativeAST.CodeBlockNode;
             return result;

@@ -148,7 +148,7 @@ namespace DynamoCoreWpfTests
 
         protected override void GetLibrariesToPreload(List<string> libraries)
         {
-            libraries.Add("Builtin.dll");
+            libraries.Add("DesignScriptBuiltin.dll");
             libraries.Add("DSCoreNodes.dll");
             libraries.Add("FFITarget.dll");
             base.GetLibrariesToPreload(libraries);
@@ -710,6 +710,20 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
+        public void TestCustomNodeSyntaxError_DoesNotCrash()
+        {
+            //Create custom node
+            //Scenario:
+            //1. Create custom node 
+            //2. Create code block node
+            //3. Type in a range expression (1..10) and commit the node
+            //4. Update the code block by introducing syntax error like "1...10"
+            //5. Test for crash
+            Assert.DoesNotThrow(() => RunCommandsFromFile("CreateCustomNodeSyntaxError.xml"));
+        }
+
+
+        [Test]
         public void TestCustomNodeUI()
         {
             RunCommandsFromFile("CustomNodeUI.xml", (commandTag) =>
@@ -1227,6 +1241,28 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(6, customWorkspace.Nodes.Count());
 
             AssertPreviewValue("345cd2d4-5f3b-4eb0-9d5f-5dd90c5a7493", 36.0);
+        }
+
+        [Test, RequiresSTA]
+        public void TestPreviewToggleConnectionMultiOutputNode()
+        {
+            RunCommandsFromFile("multioutput_node_preview.xml", (commandTag) =>
+            {
+                var dict = DesignScript.Builtin.Dictionary.ByKeysValues(new string[] { "year", "month", "day", "hour", "minute", "second", "millisecond" }, 
+                    new object[] { 1901, 1, 1, 0, 0, 0, 0 });
+                if (commandTag == "FirstRun")
+                {
+                    AssertPreviewValue("060ff703-5cfc-4e8a-ae1a-7066f59e3e26", dict);
+                }
+                else if (commandTag == "SecondRun")
+                {
+                    AssertPreviewValue("060ff703-5cfc-4e8a-ae1a-7066f59e3e26", null);
+                }
+                else if (commandTag == "ThirdRun")
+                {
+                    AssertPreviewValue("060ff703-5cfc-4e8a-ae1a-7066f59e3e26", dict);
+                }
+            });
         }
 
         #endregion
@@ -1933,15 +1969,15 @@ namespace DynamoCoreWpfTests
             //Check the CBN for input and output ports count
             var cbn = GetNode("c9929987-69c8-42bd-9cda-04ef90d029cb") as CodeBlockNodeModel;
             Assert.AreNotEqual(ElementState.Error, cbn.State);
-            Assert.AreEqual(2, cbn.OutPorts.Count);
+            Assert.AreEqual(3, cbn.OutPorts.Count);
             Assert.AreEqual(0, cbn.InPorts.Count);
 
             //Check the position of ports
             Assert.AreEqual("a", cbn.OutPorts[0].ToolTip);
             Assert.AreEqual(0, cbn.OutPorts[0].LineIndex);
 
-            Assert.AreEqual("b", cbn.OutPorts[1].ToolTip);
-            Assert.AreEqual(3, cbn.OutPorts[1].LineIndex);
+            Assert.AreEqual("b", cbn.OutPorts[2].ToolTip);
+            Assert.AreEqual(3, cbn.OutPorts[2].LineIndex);
         }
 
         [Test, RequiresSTA]
@@ -2110,7 +2146,7 @@ namespace DynamoCoreWpfTests
             //Check the CBN for input and output ports count
             var cbn = GetNode("3c7c3458-70be-4588-b162-b1099cf30ebc") as CodeBlockNodeModel;
             Assert.AreNotEqual(ElementState.Error, cbn.State);
-            Assert.AreEqual(1, cbn.OutPorts.Count);
+            Assert.AreEqual(4, cbn.OutPorts.Count);
             Assert.AreEqual(0, cbn.InPorts.Count);
 
             //Check the position of ports
@@ -5381,6 +5417,22 @@ namespace DynamoCoreWpfTests
                     var node = workspace.NodeFromWorkspace<Dynamo.Graph.Nodes.ZeroTouch.DSVarArgFunction>("ac563e6a-ebc5-4b88-bd64-3cfe8f9e96d7");
                     Assert.IsNotNull(node);
                     Assert.AreEqual(LacingStrategy.Disabled, node.ArgumentLacing);
+                }
+            });
+        }
+
+        [Test]
+        public void TestConnectedCBNInErrorStateDoesNotCrash()
+        {
+            RunCommandsFromFile("CBN_error_crash.xml", (commandTag) =>
+            {
+                if (commandTag == "Run")
+                {
+                    var workspace = ViewModel.Model.CurrentWorkspace;
+                    var node = workspace.NodeFromWorkspace<CodeBlockNodeModel>("ca808fc5-f269-4a03-aee9-b4f1b156ed16");
+                    Assert.IsNotNull(node);
+                    Assert.IsTrue(node.IsInErrorState);
+                    Assert.AreEqual(1, node.AllConnectors.Count());
                 }
             });
         }

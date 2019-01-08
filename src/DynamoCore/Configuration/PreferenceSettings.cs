@@ -4,10 +4,8 @@ using System.IO;
 using System.Linq;
 using System.Xml.Serialization;
 using Dynamo.Core;
-using Dynamo.Graph;
 using Dynamo.Graph.Connectors;
 using Dynamo.Interfaces;
-using Dynamo.Models;
 
 namespace Dynamo.Configuration
 {
@@ -17,7 +15,7 @@ namespace Dynamo.Configuration
     /// from a XML file from DYNAMO_SETTINGS_FILE.
     /// When GUI is closed, the settings are saved back into the XML file.
     /// </summary>
-    public class PreferenceSettings : NotificationObject, IPreferences, IPreviewBubblePreference, IBackgroundPreviewPreference
+    public class PreferenceSettings : NotificationObject, IPreferences
     {
         private string numberFormat;
         private string lastUpdateDownloadPath;
@@ -142,7 +140,7 @@ namespace Dynamo.Configuration
         /// <summary>
         /// Indicates whether background preview is active or not.
         /// </summary>
-        [Obsolete("Property will be deprecated in Dynamo 2.0, please use BackgroundPreviews")]
+        [Obsolete("Property will be deprecated in Dynamo 3.0, please use BackgroundPreviews")]
         public bool IsBackgroundPreviewActive
         {
             get

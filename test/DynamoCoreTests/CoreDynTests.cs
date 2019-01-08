@@ -17,10 +17,11 @@ namespace Dynamo.Tests
         protected override void GetLibrariesToPreload(List<string> libraries)
         {
             libraries.Add("VMDataBridge.dll");
-            libraries.Add("Builtin.dll");
+            libraries.Add("DesignScriptBuiltin.dll");
             libraries.Add("DSCoreNodes.dll");
             libraries.Add("FunctionObject.ds");
             libraries.Add("BuiltIn.ds");
+            libraries.Add("DSOffice.dll");
             base.GetLibrariesToPreload(libraries);
         }
 
@@ -60,6 +61,46 @@ namespace Dynamo.Tests
 
             // filter - list of 6-10
             AssertPreviewValue("41279a88-2f0b-4bd3-bef1-1be693df5c7e", new[] { 6, 7, 8, 9, 10 });
+        }
+
+        /// <summary>
+        /// Confirm that node model derived nodes deserialize into correct node state.
+        /// </summary>
+        [Test]
+        public void verifyNodeStates()
+        {
+            // Open/Run XML test graph
+            string openPath = Path.Combine(TestDirectory, @"core\NodeStates.dyn");
+            RunModel(openPath);
+
+            // Check dead node XML
+            var deadNode = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace("1237a148-7a90-489d-b677-11038072c288");
+            Assert.AreEqual(ElementState.Dead, deadNode.State);
+            // Check warning node XML
+            var warningNode = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace("50219c24-e583-4b85-887c-409fb062da6e");
+            Assert.AreEqual(ElementState.Warning, warningNode.State);
+            // Check active node XML
+            var activeNode = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace("72136fa9-7aec-4ed5-a23b-1ee1c13294a6");
+            Assert.AreEqual(ElementState.Active, activeNode.State);
+
+            // Save/Open/Run JSON graph
+            string tempPath = Path.Combine(Path.GetTempPath(), "NodeStates.dyn");
+            CurrentDynamoModel.CurrentWorkspace.Save(tempPath);
+            CurrentDynamoModel.OpenFileFromPath(tempPath);
+            CurrentDynamoModel.CurrentWorkspace.RequestRun();
+
+            // Check dead node JSON
+            deadNode = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace("1237a148-7a90-489d-b677-11038072c288");
+            Assert.AreEqual(ElementState.Dead, deadNode.State);
+            // Check warning node JSON
+            warningNode = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace("50219c24-e583-4b85-887c-409fb062da6e");
+            Assert.AreEqual(ElementState.Warning, warningNode.State);
+            // Check active node JSON
+            activeNode = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace("72136fa9-7aec-4ed5-a23b-1ee1c13294a6");
+            Assert.AreEqual(ElementState.Active, activeNode.State);
+
+            // Delete temp graph file
+            File.Delete(tempPath);
         }
 
 
@@ -399,7 +440,7 @@ namespace Dynamo.Tests
             }
             catch (System.Exception e)
             {
-                Assert.IsTrue(e is System.Xml.XmlException);
+                Assert.IsTrue(e is System.Xml.XmlException || e is Newtonsoft.Json.JsonReaderException);
             }
         }
 

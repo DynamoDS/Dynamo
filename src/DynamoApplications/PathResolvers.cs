@@ -1,9 +1,6 @@
-﻿using Dynamo.Interfaces;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
+using Dynamo.Interfaces;
 
 namespace Dynamo.Applications
 {
@@ -29,7 +26,7 @@ namespace Dynamo.Applications
             {
                 "VMDataBridge.dll",
                 "ProtoGeometry.dll",
-                "Builtin.dll",
+                "DesignScriptBuiltin.dll",
                 "DSCoreNodes.dll",
                 "DSOffice.dll",
                 "DSIronPython.dll",
@@ -89,18 +86,21 @@ namespace Dynamo.Applications
 
             additionalNodeDirectories = new List<string>();
 
-            //this is a subset of libraries loaded for sandbox
             preloadedLibraryPaths = new List<string>
             {
                 "VMDataBridge.dll",
                 "ProtoGeometry.dll",
-                "Builtin.dll",
+                "DesignScriptBuiltin.dll",
                 "DSCoreNodes.dll",
+                "DSOffice.dll",
                 "DSIronPython.dll",
                 "FunctionObject.ds",
                 "BuiltIn.ds",
                 "DynamoConversions.dll",
                 "DynamoUnits.dll",
+                "Tessellation.dll",
+                "Analysis.dll",
+                "GeometryColor.dll"
             };
 
         }

@@ -53,7 +53,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
     /// rendering by various render targets. The base class handles the registration
     /// of all necessary event handlers on models, workspaces, and nodes.
     /// </summary>
-    public class DefaultWatch3DViewModel : NotificationObject, IWatch3DViewModel, IDisposable, IWatchPreferenceProperties
+    public class DefaultWatch3DViewModel : NotificationObject, IWatch3DViewModel, IDisposable
     {
         protected readonly NodeModel watchModel;
 
@@ -90,11 +90,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 }
 
                 active = value;
-                if(preferences is IBackgroundPreviewPreference)
-                {
-                   (preferences as IBackgroundPreviewPreference).SetIsBackgroundPreviewActive(PreferenceWatchName, value);
-                }
-               
+                preferences.SetIsBackgroundPreviewActive(PreferenceWatchName, value);               
                 RaisePropertyChanged("Active");
 
                 OnActiveStateChanged();

@@ -1,0 +1,76 @@
+{
+  "Uuid": "b3971a38-9e42-4229-9ebd-7fa012a6ac9b",
+  "IsCustomNode": false,
+  "Description": null,
+  "Name": "watchNestedDictionaryList",
+  "ElementResolver": {
+    "ResolutionMap": {
+      "DesignScript.Builtin.Dictionary": {
+        "Key": "DesignScript.Builtin.Dictionary",
+        "Value": "DesignScriptBuiltin.dll"
+      }
+    }
+  },
+  "Inputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "[[{\"foo\": [1,2]}, {\"bar\": [1,2,3,4], \"baz\": 1}]];",
+      "Id": "937132ee84a64220b496e9f7d86f477a",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "65eb03b27fd64885a55e921c23592d61",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    }
+  ],
+  "Connectors": [],
+  "Dependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.0.0.2821",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Default Camera",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "937132ee84a64220b496e9f7d86f477a",
+        "Excluded": false,
+        "X": 119.0,
+        "Y": 213.0
+      }
+    ],
+    "Annotations": [],
+    "X": 0.0,
+    "Y": 0.0,
+    "Zoom": 1.0
+  }
+}

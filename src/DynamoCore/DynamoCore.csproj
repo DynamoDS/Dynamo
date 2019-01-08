@@ -14,7 +14,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 -->
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ImportGroup Label="PropertySheets">
     <Import Project="$(SolutionDir)/Config/CS.props" />
     <Import Project="$(SolutionDir)Config/Cleanup.targets" />
@@ -29,7 +29,7 @@ limitations under the License.
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Dynamo</RootNamespace>
     <AssemblyName>DynamoCore</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <WarningLevel>4</WarningLevel>
     <FileUpgradeFlags>
@@ -78,14 +78,10 @@ limitations under the License.
     <Reference Include="Analytics.NET.Google">
       <HintPath>..\..\extern\Analytics.NET\Analytics.NET.Google.dll</HintPath>
     </Reference>
-    <Reference Include="Greg, Version=1.0.6176.18754, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Greg.1.0.6176.18754\lib\net45\Greg.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="Greg, Version=1.1.6913.31484, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Greg.1.1.6913.31484\lib\net47\Greg.dll</HintPath>
     </Reference>
-    <Reference Include="Ionic.Zip, Version=1.9.1.8, Culture=neutral, PublicKeyToken=edbe51ad942a3f5c, processorArchitecture=MSIL">
-      <HintPath>..\packages\Unofficial.Ionic.Zip.1.9.1.8\lib\Ionic.Zip.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
+    <Reference Include="Microsoft.CSharp" />
     <Reference Include="Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.8.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
@@ -95,8 +91,7 @@ limitations under the License.
       <HintPath>..\..\extern\ProtoGeometry\ProtoGeometry.dll</HintPath>
     </Reference>
     <Reference Include="RestSharp, Version=105.2.3.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\RestSharp.105.2.3\lib\net45\RestSharp.dll</HintPath>
-      <Private>True</Private>
+      <HintPath>..\packages\RestSharp.105.2.3\lib\net46\RestSharp.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
@@ -117,7 +112,9 @@ limitations under the License.
     <Compile Include="Configuration\DebugSettings.cs" />
     <Compile Include="Configuration\Context.cs" />
     <Compile Include="Core\DynamoMigrator.cs" />
+    <Compile Include="Engine\ShortestQualifiedNameReplacer.cs" />
     <Compile Include="Exceptions\LibraryLoadFailedException.cs" />
+    <Compile Include="Graph\Nodes\NodeOutputData.cs" />
     <Compile Include="Graph\Nodes\NodeInputData.cs" />
     <Compile Include="Graph\Workspaces\LayoutExtensions.cs" />
     <Compile Include="Graph\Workspaces\NodesToCodeExtensions.cs" />
@@ -144,6 +141,7 @@ limitations under the License.
     <Compile Include="Interfaces\IDynamoModel.cs" />
     <Compile Include="Library\ILibraryLoader.cs" />
     <Compile Include="Graph\Workspaces\ICustomNodeWorkspaceModel.cs" />
+    <Compile Include="Visualization\DefaultGraphicPrimitives.cs" />
     <Compile Include="Visualization\IRenderPackageSource.cs" />
     <Compile Include="Graph\Workspaces\IWorkspaceModel.cs" />
     <Compile Include="Logging\LogMessage.cs" />
@@ -336,9 +334,9 @@ limitations under the License.
       <Name>DynamoUtilities</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\Libraries\Builtin\Builtin.csproj">
+    <ProjectReference Include="..\Libraries\DesignScriptBuiltin\DesignScriptBuiltin.csproj">
       <Project>{c0d6dee5-5532-4345-9c66-4c00d7fdb8be}</Project>
-      <Name>Builtin</Name>
+      <Name>DesignScriptBuiltin</Name>
     </ProjectReference>
     <ProjectReference Include="..\Libraries\DynamoUnits\Units.csproj">
       <Project>{6e0a079e-85f1-45a1-ad5b-9855e4344809}</Project>
@@ -362,9 +360,6 @@ limitations under the License.
   <ItemGroup>
     <Resource Include="BuiltInAndOperators\BuiltIn.Migrations.xml" />
   </ItemGroup>
-  <ItemGroup>
-    <Content Include="Ionic.Zip.xml" />
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="BeforeBuild">
     <ItemGroup>
@@ -372,10 +367,14 @@ limitations under the License.
       <ExternProtoGeometryXml Include="$(SolutionDir)..\extern\ProtoGeometry\ProtoGeometry.XML" />
       <ExternProtoGeometryUICulture Include="$(SolutionDir)..\extern\ProtoGeometry\$(UICulture)\*" />
       <ExternProtoGeometryLibGLocale Include="$(SolutionDir)..\extern\ProtoGeometry\libg_locale\**\*.*" />
-      <ExternLibG220 Include="$(SolutionDir)..\extern\LibG_220\*" />
-      <ExternLibG221 Include="$(SolutionDir)..\extern\LibG_221\*" />
-      <ExternLibG222 Include="$(SolutionDir)..\extern\LibG_222\*" />
-      <ExternLibG223 Include="$(SolutionDir)..\extern\LibG_223\*" />
+      <ExternLibG220 Include="$(SolutionDir)..\extern\LibG_220_0_0\*" />
+      <ExternLibG221 Include="$(SolutionDir)..\extern\LibG_221_0_0\*" />
+      <ExternLibG222 Include="$(SolutionDir)..\extern\LibG_222_0_0\*" />
+      <ExternLibG223 Include="$(SolutionDir)..\extern\LibG_223_0_1\*" />
+      <ExternLibG224 Include="$(SolutionDir)..\extern\LibG_224_0_1\*" />
+      <ExternLibG2244 Include="$(SolutionDir)..\extern\LibG_224_4_0\*" />
+      <ExternLibG225 Include="$(SolutionDir)..\extern\LibG_225_0_0\*" />
+      <ExternLibG Include="$(SolutionDir)..\extern\LibG_*\*" />
       <ExternSimplexNoise Include="$(SolutionDir)..\extern\SimplexNoise\*" />
       <SampleFiles Include="$(SolutionDir)..\doc\distrib\Samples\**\*.*" />
       <GalleryFiles Include="$(SolutionDir)..\extern\gallery\**\*.*" />
@@ -391,10 +390,14 @@ limitations under the License.
     <Copy SourceFiles="@(ExternProtoGeometryXml)" DestinationFolder="$(OutputPath)\$(UICulture)" />
     <Copy SourceFiles="@(ExternProtoGeometryUICulture)" DestinationFolder="$(OutputPath)\$(UICulture)" />
     <Copy SourceFiles="@(ExternProtoGeometryLibGLocale)" DestinationFolder="$(OutputPath)\libg_locale\%(RecursiveDir)" />
-    <Copy SourceFiles="@(ExternLibG220)" DestinationFolder="$(OutputPath)libg_220\" />
-    <Copy SourceFiles="@(ExternLibG221)" DestinationFolder="$(OutputPath)libg_221\" />
-    <Copy SourceFiles="@(ExternLibG222)" DestinationFolder="$(OutputPath)libg_222\" />
-    <Copy SourceFiles="@(ExternLibG223)" DestinationFolder="$(OutputPath)libg_223\" />
+    <Copy SourceFiles="@(ExternLibG220)" DestinationFolder="$(OutputPath)libg_220_0_0\" />
+    <Copy SourceFiles="@(ExternLibG221)" DestinationFolder="$(OutputPath)libg_221_0_0\" />
+    <Copy SourceFiles="@(ExternLibG222)" DestinationFolder="$(OutputPath)libg_222_0_0\" />
+    <Copy SourceFiles="@(ExternLibG223)" DestinationFolder="$(OutputPath)libg_223_0_1\" />
+    <Copy SourceFiles="@(ExternLibG224)" DestinationFolder="$(OutputPath)libg_224_0_1\" />
+    <Copy SourceFiles="@(ExternLibG2244)" DestinationFolder="$(OutputPath)libg_224_4_0\" />
+    <Copy SourceFiles="@(ExternLibG225)" DestinationFolder="$(OutputPath)libg_225_0_0\" />
+    <Copy SourceFiles="@(ExternLibG)" DestinationFolder="$(OutputPath)\%(RecursiveDir)" />
     <Copy SourceFiles="@(ExternSimplexNoise)" DestinationFolder="$(OutputPath)" />
     <Copy SourceFiles="@(ExternAnalytics)" DestinationFolder="$(OutputPath)" />
     <Copy SourceFiles="@(SampleFiles)" DestinationFolder="$(OutputPath)samples\%(RecursiveDir)" />
@@ -406,7 +409,7 @@ limitations under the License.
   </Target>
   <Target Name="AfterBuild" Condition=" '$(OS)' != 'Unix' ">
     <!-- Get System.Drawing.dll -->
-    <GetReferenceAssemblyPaths TargetFrameworkMoniker=".NETFramework, Version=v2.0">
+    <GetReferenceAssemblyPaths TargetFrameworkMoniker=".NETFramework, Version=$(ResourceGeneration_FrameworkVersion)">
       <Output TaskParameter="FullFrameworkReferenceAssemblyPaths" PropertyName="FrameworkAssembliesPath" />
     </GetReferenceAssemblyPaths>
     <!-- Get DynamoCore -->
@@ -414,13 +417,13 @@ limitations under the License.
       <Output TaskParameter="Assemblies" ItemName="DynamoCoreInfo" />
     </GetAssemblyIdentity>
     <!-- Generate customization dll for DynamoCore -->
-    <GenerateResource UseSourcePath="true" Sources="$(ProjectDir)DynamoCoreImages.resx" OutputResources="$(ProjectDir)DynamoCoreImages.resources" References="$(FrameworkAssembliesPath)System.Drawing.dll" />
-    <AL TargetType="library" EmbedResources="$(ProjectDir)DynamoCoreImages.resources" OutputAssembly="$(OutDir)DynamoCore.customization.dll" Version="%(DynamoCoreInfo.Version)" />
+    <GenerateResource SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" UseSourcePath="true" Sources="$(ProjectDir)DynamoCoreImages.resx" OutputResources="$(ProjectDir)DynamoCoreImages.resources" References="$(FrameworkAssembliesPath)System.Drawing.dll" />
+    <AL SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" TargetType="library" EmbedResources="$(ProjectDir)DynamoCoreImages.resources" OutputAssembly="$(OutDir)DynamoCore.customization.dll" Version="%(DynamoCoreInfo.Version)" />
     <!-- Generate customization dll for Operators -->
-    <GenerateResource UseSourcePath="true" Sources="$(ProjectDir)/BuiltInAndOperators/OperatorsImages.resx" OutputResources="$(ProjectDir)/BuiltInAndOperators/OperatorsImages.resources" References="$(FrameworkAssembliesPath)System.Drawing.dll" />
-    <AL TargetType="library" EmbedResources="$(ProjectDir)/BuiltInAndOperators/OperatorsImages.resources" OutputAssembly="$(OutDir)Operators.customization.dll" Version="%(DynamoCoreInfo.Version)" />
+    <GenerateResource SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" UseSourcePath="true" Sources="$(ProjectDir)/BuiltInAndOperators/OperatorsImages.resx" OutputResources="$(ProjectDir)/BuiltInAndOperators/OperatorsImages.resources" References="$(FrameworkAssembliesPath)System.Drawing.dll" />
+    <AL SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" TargetType="library" EmbedResources="$(ProjectDir)/BuiltInAndOperators/OperatorsImages.resources" OutputAssembly="$(OutDir)Operators.customization.dll" Version="%(DynamoCoreInfo.Version)" />
     <!-- Generate customization dll for BuiltIn -->
-    <GenerateResource UseSourcePath="true" Sources="$(ProjectDir)/BuiltInAndOperators/BuiltInImages.resx" OutputResources="$(ProjectDir)/BuiltInAndOperators/BuiltInImages.resources" References="$(FrameworkAssembliesPath)System.Drawing.dll" />
-    <AL TargetType="library" EmbedResources="$(ProjectDir)/BuiltInAndOperators/BuiltInImages.resources" OutputAssembly="$(OutDir)BuiltIn.customization.dll" Version="%(DynamoCoreInfo.Version)" />
+    <GenerateResource SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" UseSourcePath="true" Sources="$(ProjectDir)/BuiltInAndOperators/BuiltInImages.resx" OutputResources="$(ProjectDir)/BuiltInAndOperators/BuiltInImages.resources" References="$(FrameworkAssembliesPath)System.Drawing.dll" />
+    <AL SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" TargetType="library" EmbedResources="$(ProjectDir)/BuiltInAndOperators/BuiltInImages.resources" OutputAssembly="$(OutDir)BuiltIn.customization.dll" Version="%(DynamoCoreInfo.Version)" />
   </Target>
 </Project>

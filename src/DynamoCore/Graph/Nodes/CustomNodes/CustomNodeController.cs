@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Xml;
 using ProtoCore.AST.AssociativeAST;
-using System.Diagnostics;
 
 namespace Dynamo.Graph.Nodes.CustomNodes
 {
@@ -104,25 +104,6 @@ namespace Dynamo.Graph.Nodes.CustomNodes
                 count,
                 Enumerable.Range(0, count).Where(index=>model.InPorts[index].IsConnected),
                 inputAstNodes);
-        }
-
-        protected override void BuildAstForPartialMultiOutput(
-            NodeModel model, AssociativeNode rhs, List<AssociativeNode> resultAst)
-        {
-            base.BuildAstForPartialMultiOutput(model, rhs, resultAst);
-
-            var emptyList = AstFactory.BuildExprList(new List<AssociativeNode>());
-            var previewIdInit = AstFactory.BuildAssignment(model.AstIdentifierForPreview, emptyList);
-
-            resultAst.Add(previewIdInit);
-            resultAst.AddRange(
-                Definition.ReturnKeys.Select(
-                    (rtnKey, idx) =>
-                        AstFactory.BuildAssignment(
-                            AstFactory.BuildIdentifier(
-                                model.AstIdentifierForPreview.Name,
-                                AstFactory.BuildStringNode(rtnKey)),
-                            model.GetAstIdentifierForOutputIndex(idx))));
         }
 
         protected override void AssignIdentifiersForFunctionCall(

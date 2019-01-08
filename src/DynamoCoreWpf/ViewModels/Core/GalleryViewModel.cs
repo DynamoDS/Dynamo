@@ -1,11 +1,11 @@
-﻿using Dynamo.Core;
-using Dynamo.UI.Commands;
-using Dynamo.ViewModels;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Xml.Serialization;
 using System.Linq;
+using System.Xml.Serialization;
+using Dynamo.Core;
+using Dynamo.UI.Commands;
+using Dynamo.ViewModels;
 
 namespace Dynamo.Wpf.ViewModels.Core
 {

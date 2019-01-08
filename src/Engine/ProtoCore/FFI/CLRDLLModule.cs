@@ -29,7 +29,7 @@ namespace ProtoFFI
         private CLRModuleType(Type type)
         {
             CLRType = type;
-            string classname = CLRObjectMarshler.GetTypeName(type);
+            string classname = CLRObjectMarshaler.GetTypeName(type);
             ClassNode = CreateEmptyClassNode(classname);
             ClassNode.IsStatic = type.IsAbstract && type.IsSealed;
         }
@@ -47,8 +47,8 @@ namespace ProtoFFI
         /// given type is not found, it creates a new one. If CLRDLLModule is
         /// passed as null, it creates empty CLRModuleType.
         /// </summary>
-        /// <param name="module">CLRDLLModule which imports this type</param>
         /// <param name="type">System.Type to be imported in DesignScript</param>
+        /// <param name="module">CLRDLLModule which imports this type</param>
         /// <param name="alias">Alias name, if any. For now its not supported.</param>
         public static CLRModuleType GetInstance(Type type, CLRDLLModule module, string alias)
         {
@@ -196,7 +196,7 @@ namespace ProtoFFI
             get
             {
                 if (null == mProtoCoreType)
-                    mProtoCoreType = CLRObjectMarshler.GetUserDefinedType(CLRType);
+                    mProtoCoreType = CLRObjectMarshaler.GetUserDefinedType(CLRType);
 
                 return mProtoCoreType.Value;
             }
@@ -226,7 +226,7 @@ namespace ProtoFFI
             if (mTypeMaps.TryGetValue(type, out protoCoreType))
                 return protoCoreType;
 
-            if (type == typeof(object) || !CLRObjectMarshler.IsMarshaledAsNativeType(type))
+            if (type == typeof(object) || !CLRObjectMarshaler.IsMarshaledAsNativeType(type))
             {
                 if (type.IsEnum)
                     protoCoreType = CLRModuleType.GetInstance(type, module, string.Empty).ProtoCoreType;
@@ -234,7 +234,7 @@ namespace ProtoFFI
                     protoCoreType = CLRModuleType.GetInstance(type, null, string.Empty).ProtoCoreType;
             }
             else
-                protoCoreType = CLRObjectMarshler.GetProtoCoreType(type);
+                protoCoreType = CLRObjectMarshaler.GetProtoCoreType(type);
 
             lock (mTypeMaps)
             {
@@ -285,7 +285,7 @@ namespace ProtoFFI
 
             string classname = alias;
             if (string.IsNullOrEmpty(classname))
-                classname = CLRObjectMarshler.GetTypeName(type);
+                classname = CLRObjectMarshaler.GetTypeName(type);
 
             ProtoCore.AST.AssociativeAST.ClassDeclNode classnode = CreateEmptyClassNode(classname);
             classnode.ExternLibName = Module.Name;
@@ -326,30 +326,43 @@ namespace ProtoFFI
 
             string classname = alias;
             if (classname == null | classname == string.Empty)
-                classname = CLRObjectMarshler.GetTypeName(type);
+                classname = CLRObjectMarshaler.GetTypeName(type);
 
             ProtoCore.AST.AssociativeAST.ClassDeclNode classnode = CreateEmptyClassNode(classname);
             classnode.ExternLibName = Module.Name;
             classnode.Name = type.Name;
 
             Type baseType = GetBaseType(type);
-            if (baseType != null && !CLRObjectMarshler.IsMarshaledAsNativeType(baseType))
+            if (baseType != null && !CLRObjectMarshaler.IsMarshaledAsNativeType(baseType))
             {
-                string baseTypeName = CLRObjectMarshler.GetTypeName(baseType);
+                string baseTypeName = CLRObjectMarshaler.GetTypeName(baseType);
 
                 classnode.BaseClass = baseTypeName;
                 //Make sure that base class is imported properly.
                 CLRModuleType.GetInstance(baseType, Module, string.Empty);
             }
 
+            classnode.IsInterface = type.IsInterface;
+
+            foreach (var interf in type.GetInterfaces())
+            {
+                if (!CLRObjectMarshaler.IsMarshaledAsNativeType(interf))
+                {
+                    string interfName = CLRObjectMarshaler.GetTypeName(interf);
+
+                    classnode.Interfaces.Add(interfName);
+                    CLRModuleType.GetInstance(interf, Module, string.Empty);
+                }
+            }
+
             // There is no static class in runtime. static class is simply 
             // marked as sealed and abstract. 
             classnode.IsStatic = type.IsAbstract && type.IsSealed;
             
+            // If all methods are static, it doesn't make sense to expose
+            // constructor. 
             if (!classnode.IsStatic)
             {
-                // If all methods are static, it doesn't make sense to expose
-                // constructor. 
                 ConstructorInfo[] ctors = type.GetConstructors();
                 foreach (var c in ctors)
                 {
@@ -650,23 +663,24 @@ namespace ProtoFFI
             return varDeclNode;
         }
 
-        private ProtoCore.AST.AssociativeAST.FunctionDefinitionNode ParseFieldAccessor(FieldInfo f)
+        private FunctionDefinitionNode ParseFieldAccessor(FieldInfo f)
         {
             if (null == f || SupressesImport(f))
                 return null;
 
-            ProtoCore.AST.AssociativeAST.FunctionDefinitionNode func = new ProtoCore.AST.AssociativeAST.FunctionDefinitionNode();
-            func.Name = string.Format("{0}{1}", Constants.kGetterPrefix, f.Name);
-            func.Signature = new ProtoCore.AST.AssociativeAST.ArgumentSignatureNode();
-            func.ReturnType = CLRModuleType.GetProtoCoreType(f.FieldType, Module);
-            func.FunctionBody = null;
-            func.Access = ProtoCore.CompilerDefinitions.AccessModifier.Public;
-            func.IsExternLib = true;
-            func.ExternLibName = Module.Name;
-            func.IsStatic = f.IsStatic;
-            //Set the method attribute for Enum properties.
-            func.MethodAttributes = new FFIMethodAttributes(f);
-
+            var func = new FunctionDefinitionNode
+            {
+                Name = string.Format("{0}{1}", Constants.kGetterPrefix, f.Name),
+                Signature = new ArgumentSignatureNode(),
+                ReturnType = CLRModuleType.GetProtoCoreType(f.FieldType, Module),
+                FunctionBody = null,
+                Access = ProtoCore.CompilerDefinitions.AccessModifier.Public,
+                IsExternLib = true,
+                ExternLibName = Module.Name,
+                IsStatic = f.IsStatic,
+                MethodAttributes = new FFIMethodAttributes(f),
+            };
+            
             return func;
         }
 
@@ -1094,7 +1108,7 @@ namespace ProtoFFI
             Type[] types = GetTypes(string.Empty);
             foreach (var item in types)
             {
-                if ("Configuration" == CLRObjectMarshler.GetCategory(item))
+                if ("Configuration" == CLRObjectMarshaler.GetCategory(item))
                     return item;
             }
             return null;
@@ -1126,9 +1140,9 @@ namespace ProtoFFI
             return types;
         }
 
-        public override FFIObjectMarshler GetMarshaller(ProtoCore.RuntimeCore runtimeCore)
+        public override FFIObjectMarshaler GetMarshaler(ProtoCore.RuntimeCore runtimeCore)
         {
-            return CLRObjectMarshler.GetInstance(runtimeCore);
+            return CLRObjectMarshaler.GetInstance(runtimeCore);
         }
     }
 
@@ -1187,9 +1201,9 @@ namespace ProtoFFI
             return module;
         }
 
-        public override FFIObjectMarshler GetMarshaller(ProtoCore.RuntimeCore runtimeCore)
+        public override FFIObjectMarshaler GetMarshaler(ProtoCore.RuntimeCore runtimeCore)
         {
-            return CLRObjectMarshler.GetInstance(runtimeCore);
+            return CLRObjectMarshaler.GetInstance(runtimeCore);
         }
     }
 
@@ -1211,6 +1225,9 @@ namespace ProtoFFI
         {
             if (type == null)
                 throw new ArgumentNullException("type");
+
+            // Hide all interfaces from library and search
+            if (type.IsInterface) HiddenInLibrary = true;
 
             attributes = type.GetCustomAttributes(false).Cast<Attribute>().ToArray();
             foreach (var attr in attributes)
@@ -1255,24 +1272,45 @@ namespace ProtoFFI
         {
             var atts = f.GetCustomAttributes(false).Cast<Attribute>();
 
+            var parentAtts = f.DeclaringType.GetCustomAttributes(false).Cast<Attribute>();
+            var isObsolete = false;
+            var hidden = false;
+            var message = "";
+            foreach(var attr in parentAtts)
+            {
+                if(attr is ObsoleteAttribute)
+                {
+                    isObsolete = true;
+                    message = (attr as ObsoleteAttribute).Message;
+                    if (string.IsNullOrEmpty(message))
+                        message = "Obsolete";
+                }
+
+                if (attr is IsVisibleInDynamoLibraryAttribute)
+                {
+                    hidden = !((IsVisibleInDynamoLibraryAttribute)attr).Visible;
+                }
+            }
+
             foreach (var attr in atts)
             {
                 //Set the obsolete message for enum fields.
-                if (attr is IsObsoleteAttribute)
-                {
-                    HiddenInLibrary = true;
-                    ObsoleteMessage = (attr as IsObsoleteAttribute).Message;
-                    if (string.IsNullOrEmpty(ObsoleteMessage))
-                        ObsoleteMessage = "Obsolete";
-                }
-                else if (attr is ObsoleteAttribute)
+                if (attr is ObsoleteAttribute)
                 {
                     HiddenInLibrary = true;
                     ObsoleteMessage = (attr as ObsoleteAttribute).Message;
                     if (string.IsNullOrEmpty(ObsoleteMessage))
                         ObsoleteMessage = "Obsolete";
                 }
-
+                else if(attr is IsVisibleInDynamoLibraryAttribute)
+                {
+                    HiddenInLibrary = !((IsVisibleInDynamoLibraryAttribute)attr).Visible;
+                }
+            }
+            if (isObsolete || hidden)
+            {
+                HiddenInLibrary = true;
+                if (isObsolete) ObsoleteMessage = message;
             }
         }
 
@@ -1410,13 +1448,13 @@ namespace ProtoFFI
         /// <returns>True if the given attribute is of type SupressImportIntoVMAttribute</returns>
         public static bool SupressImportIntoVM(this Attribute attribute)
         {
-            //TODO@Dynamo 2.0 
+            //TODO@Dynamo 3.0 
             //Following code is to fix attribute resolution issue due to
             //presence of DynamoServices.dll in Dynamo Studio folder. The DLL
-            //can be removed in 2.0, once we have removed the dlls we can restore
+            //can be removed in 3.0, once we have removed the dlls we can restore
             //following code.
             //return attribute is SupressImportIntoVMAttribute;
-            
+
             return null != attribute && attribute.GetType().Name == typeof(SupressImportIntoVMAttribute).Name;
         }
 
@@ -1433,12 +1471,6 @@ namespace ProtoFFI
             if (visibleInLibraryAttr != null)
             {
                 return visibleInLibraryAttr.Visible == false;
-            }
-            
-            //TODO@Dynamo 2.0 remove following code in 2.0
-            if (attribute == null || attribute.GetType().Name != typeof(IsVisibleInDynamoLibraryAttribute).Name)
-            {
-                return false;
             }
 
             var propInfo = attribute.GetType().GetProperty("Visible");

@@ -1,11 +1,9 @@
-﻿using Dynamo.Interfaces;
-using Dynamo.Logging;
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Xml;
+using Dynamo.Logging;
 
 namespace Dynamo.Wpf.Extensions
 {
@@ -17,6 +15,7 @@ namespace Dynamo.Wpf.Extensions
             {
                 var assembly = Assembly.LoadFrom(viewExtension.AssemblyPath);
                 var result = assembly.CreateInstance(viewExtension.TypeName) as IViewExtension;
+                ExtensionLoading?.Invoke(result);
                 return result;
             }
             catch
@@ -93,5 +92,10 @@ namespace Dynamo.Wpf.Extensions
         {
             Log(LogMessage.Info(msg));
         }
+
+        /// <summary>
+        /// An event that is raised when an extension starts loading.
+        /// </summary>
+        public event Action<IViewExtension> ExtensionLoading;
     }
 }

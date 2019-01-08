@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Xml;
 using Dynamo.Core;
+using Dynamo.Engine;
 using Dynamo.Engine.CodeGeneration;
 using Dynamo.Events;
 using Dynamo.Graph.Annotations;
@@ -18,13 +19,12 @@ using Dynamo.Graph.Presets;
 using Dynamo.Logging;
 using Dynamo.Models;
 using Dynamo.Properties;
+using Dynamo.Scheduler;
 using Dynamo.Selection;
 using Dynamo.Utilities;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using ProtoCore.Namespace;
-using Utils = Dynamo.Graph.Nodes.Utilities;
-using Dynamo.Engine;
-using Dynamo.Scheduler;
 
 namespace Dynamo.Graph.Workspaces
 {
@@ -55,6 +55,8 @@ namespace Dynamo.Graph.Workspaces
         public double Y;
         public bool ShowGeometry;
         public bool Excluded;
+        public bool IsSetAsInput;
+        public bool IsSetAsOutput;
     }
 
     /// <summary>
@@ -182,6 +184,33 @@ namespace Dynamo.Graph.Workspaces
         /// This is set to false, if the workspace is cleared or disposed.
         /// </summary>
         private bool workspaceLoaded;
+
+        /// <summary>
+        /// sets the name property of the model based on filename,backup state and model type.
+        /// </summary>
+        /// <param name="filePath">Full filepath to file to save.</param>
+        /// <param name="isBackup">Indicates if this save represents a backup save.</param>
+        internal void setNameBasedOnFileName(string filePath, bool isBackup)
+        {
+            string fileName = string.Empty;
+            try
+            {
+                fileName = Path.GetFileName(filePath);
+                string extension = Path.GetExtension(filePath);
+                if (extension == ".dyn" || extension == ".dyf")
+                {
+                    fileName = Path.GetFileNameWithoutExtension(filePath);
+                }
+            }
+            catch (ArgumentException)
+            {
+            }
+            // Don't change name property if backup save or this is a customnode
+            if (fileName != string.Empty && isBackup == false && this is HomeWorkspaceModel)
+            {
+                this.Name = fileName;
+            }
+        }
 
         #endregion
 
@@ -367,11 +396,7 @@ namespace Dynamo.Graph.Workspaces
         public event Action<ConnectorModel> ConnectorDeleted;
         protected virtual void OnConnectorDeleted(ConnectorModel obj)
         {
-            if (hasNodeInSyncWithDefinition)
-            {
-                undoRecorder.RecordModelAsOffTrack(obj.GUID);
-            }
-
+           
             var handler = ConnectorDeleted;
             if (handler != null) handler(obj);
             //Check if the workspace is loaded, i.e all the nodes are
@@ -409,6 +434,18 @@ namespace Dynamo.Graph.Workspaces
         {
             var handler = Saving;
             if (handler != null) handler(obj);
+        }
+
+        /// <summary>
+        /// This handler handles the workspaceModel's request to populate a JSON with view data.
+        /// This is used to construct a full workspace for instrumentation.
+        /// </summary>
+        internal delegate string PopulateJSONWorkspaceHandler(JObject modelData);
+        internal event PopulateJSONWorkspaceHandler PopulateJSONWorkspace;
+        protected virtual void OnPopulateJSONWorkspace(JObject modelData)
+        {
+            var handler = PopulateJSONWorkspace;
+            if (handler != null) handler(modelData);
         }
 
         private void OnSyncWithDefinitionStart(NodeModel nodeModel)
@@ -979,6 +1016,9 @@ namespace Dynamo.Graph.Workspaces
 
             try
             {
+                //set the name before serializing model.
+                setNameBasedOnFileName(filePath, isBackup);
+
                 // Stage 1: Serialize the workspace.
                 var json = this.ToJson(engine);
 
@@ -1505,22 +1545,44 @@ namespace Dynamo.Graph.Workspaces
 
         internal string GetStringRepOfWorkspace()
         {
-            // Create the xml document to write to.
-            var document = new XmlDocument();
-            document.CreateXmlDeclaration("1.0", null, null);
-            document.AppendChild(document.CreateElement("Workspace"));
+            try
+            {
+                //Send the data in JSON format
+                //step 1: convert the model to json
+                var json = this.ToJson(null);
 
-            //This is only used for computing relative offsets, it's not actually created
-            string virtualFileName = Path.Combine(Path.GetTempPath(), "DynamoTemp.dyn");
-            Utils.SetDocumentXmlPath(document, virtualFileName);
+                //step2 : parse it as JObject
+                var jo = JObject.Parse(json);
 
-            if (!PopulateXmlDocument(document))
-                return String.Empty;
+                //step 3: raise the event to populate the view block
+                if (PopulateJSONWorkspace != null)
+                {
+                    json = PopulateJSONWorkspace(jo);
+                }
 
-            //Now unset the temp file name again
-            Utils.SetDocumentXmlPath(document, null);
+                return json;
+            }
+            catch (JsonReaderException ex)
+            {
+                JArray array = new JArray();
+                array.Add(ex.Message);
 
-            return document.OuterXml;
+                JObject jo = new JObject();
+                jo["exception"] = array;
+
+                return jo.ToString();
+            }
+            catch (Exception ex)
+            {
+                JArray array = new JArray();
+                array.Add(ex.InnerException.ToString());
+
+                JObject jo = new JObject();
+                jo["exception"] = array;
+
+                return jo.ToString();
+            }
+
         }
 
         #region ILogSource implementation
@@ -1585,10 +1647,11 @@ namespace Dynamo.Graph.Workspaces
                 ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
                 TypeNameHandling = TypeNameHandling.Auto,
                 Formatting = Newtonsoft.Json.Formatting.Indented,
+                Culture = CultureInfo.InvariantCulture,
                 Converters = new List<JsonConverter>{
                         new ConnectorConverter(logger),
                         new WorkspaceReadConverter(engineController, scheduler, factory, isTestMode, verboseLogging),
-                        new NodeReadConverter(manager, libraryServices),
+                        new NodeReadConverter(manager, libraryServices, factory, isTestMode),
                         new TypedParameterConverter()
                     },
                 ReferenceResolverProvider = () => { return new IdReferenceResolver(); }
@@ -1657,6 +1720,8 @@ namespace Dynamo.Graph.Workspaces
                     nodeModel.X = nodeViewInfo.X;
                     nodeModel.Y = nodeViewInfo.Y;
                     nodeModel.IsFrozen = nodeViewInfo.Excluded;
+                    nodeModel.IsSetAsInput = nodeViewInfo.IsSetAsInput;
+                    nodeModel.IsSetAsOutput = nodeViewInfo.IsSetAsOutput;
 
                     // NOTE: The name needs to be set using UpdateValue to cause the view to update
                     nodeModel.UpdateValue(new UpdateValueParams("Name", nodeViewInfo.Name));
@@ -1685,7 +1750,13 @@ namespace Dynamo.Graph.Workspaces
 
                 // TODO, QNTM-1099: Figure out if ZIndex needs to be set here as well
                 var noteModel = new NoteModel(noteViewInfo.X, noteViewInfo.Y, noteViewInfo.Text, guidValue);
-                this.AddNote(noteModel);
+
+                //if this note does not exist, add it to the workspace.
+                var matchingNote = this.Notes.FirstOrDefault(x => x.GUID == noteModel.GUID);
+                if (matchingNote == null)
+                {
+                    this.AddNote(noteModel);
+                }
             }
         }
 
@@ -1711,7 +1782,14 @@ namespace Dynamo.Graph.Workspaces
                     annotationViewInfo.Top, 
                     text, 
                     annotationGuidValue);
-                this.AddNote(noteModel);
+
+                //if this note does not exist, add it to the workspace.
+                var matchingNote = this.Notes.FirstOrDefault(x => x.GUID == noteModel.GUID);
+                if (matchingNote == null)
+                {
+                    this.AddNote(noteModel);
+                }
+           
             }
         }
 
@@ -1769,7 +1847,13 @@ namespace Dynamo.Graph.Workspaces
                 annotationModel.FontSize = annotationViewInfo.FontSize;
                 annotationModel.Background = annotationViewInfo.Background;
                 annotationModel.GUID = annotationGuidValue;
-                this.AddNewAnnotation(annotationModel);
+
+                //if this group/annotation does not exist, add it to the workspace.
+                var matchingAnnotation = this.Annotations.FirstOrDefault(x => x.GUID == annotationModel.GUID);
+                if (matchingAnnotation == null)
+                {
+                    this.AddNewAnnotation(annotationModel);
+                }
             }
         }
 

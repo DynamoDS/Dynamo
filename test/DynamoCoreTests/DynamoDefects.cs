@@ -17,13 +17,14 @@ namespace Dynamo.Tests
         protected override void GetLibrariesToPreload(List<string> libraries)
         {
             libraries.Add("ProtoGeometry.dll");
-            libraries.Add("Builtin.dll");
+            libraries.Add("DesignScriptBuiltin.dll");
             libraries.Add("DSCoreNodes.dll");
             libraries.Add("FunctionObject.ds");
+            libraries.Add("Analysis.dll");
             base.GetLibrariesToPreload(libraries);
         }
 
-        // Note: Pelase only add test cases those are related to defects.
+        // Note: Please only add test cases those are related to defects.
 
         [Test, Category("RegressionTests")]
         public void T01_Defect_MAGN_110()

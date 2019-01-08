@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ImportGroup Label="PropertySheets">
     <Import Project="$(SolutionDir)Config/CS.props" />
     <Import Project="$(SolutionDir)Config/Cleanup.targets" />
@@ -16,7 +16,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>DynamoCoreWpfTests</RootNamespace>
     <AssemblyName>DynamoCoreWpfTests</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
     <NuGetPackageImportStamp>
@@ -45,9 +45,8 @@
     <ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Greg, Version=1.0.6176.18754, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\src\packages\Greg.1.0.6176.18754\lib\net45\Greg.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="Greg, Version=1.1.6913.31484, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\src\packages\Greg.1.1.6913.31484\lib\net47\Greg.dll</HintPath>
     </Reference>
     <Reference Include="HelixToolkit, Version=2015.1.629.0, Culture=neutral, PublicKeyToken=52aa3500039caf0d, processorArchitecture=MSIL">
       <HintPath>..\..\src\packages\HelixToolkit.2015.1.629\lib\portable-net4+sl4+wp71+win8\HelixToolkit.dll</HintPath>
@@ -66,10 +65,6 @@
       <HintPath>..\..\extern\avalonEdit\ICSharpCode.AvalonEdit.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="Ionic.Zip, Version=1.9.1.8, Culture=neutral, PublicKeyToken=edbe51ad942a3f5c, processorArchitecture=MSIL">
-      <HintPath>..\..\src\packages\Unofficial.Ionic.Zip.1.9.1.8\lib\Ionic.Zip.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.Practices.Prism">
       <HintPath>..\..\extern\prism\Microsoft.Practices.Prism.dll</HintPath>
@@ -84,15 +79,14 @@
       <HintPath>..\..\src\packages\Newtonsoft.Json.8.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="nunit.framework, Version=2.6.2.12296, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
+    <Reference Include="nunit.framework, Version=2.6.3.13283, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>$(NunitPath)\nunit.framework.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="RestSharp, Version=105.2.3.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\src\packages\RestSharp.105.2.3\lib\net45\RestSharp.dll</HintPath>
-      <Private>True</Private>
+      <HintPath>..\..\src\packages\RestSharp.105.2.3\lib\net46\RestSharp.dll</HintPath>
     </Reference>
     <Reference Include="SharpDX, Version=2.6.3.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
       <HintPath>$(SharpDXPackageBinDir)\SharpDX.dll</HintPath>
@@ -148,6 +142,8 @@
     <Compile Include="ElementResolverTests.cs" />
     <Compile Include="GraphLayoutTests.cs" />
     <Compile Include="NodeToCodeTests.cs" />
+    <Compile Include="PackageManagerExtensionLoadingTests.cs" />
+    <Compile Include="PackageManagerViewExtensionTests.cs" />
     <Compile Include="PresetPromptTests.cs" />
     <Compile Include="AnnotationViewModelTests.cs" />
     <Compile Include="AnnotationViewTests.cs" />
@@ -155,7 +151,6 @@
     <Compile Include="ColorRangeTests.cs" />
     <Compile Include="ConverterTests.cs" />
     <Compile Include="CoreUITests.cs" />
-    <Compile Include="DropDownTests.cs" />
     <Compile Include="DynamoConverterTest.cs" />
     <Compile Include="DynamoTestUIBase.cs" />
     <Compile Include="DynamoViewModelUnitTest.cs" />
@@ -196,6 +191,10 @@
       <Project>{51bb6014-43f7-4f31-b8d3-e3c37ebedaf4}</Project>
       <Name>DynamoCoreWpf</Name>
       <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\src\DynamoPackagesWPF\DynamoPackagesWPF.csproj">
+      <Project>{47D2166C-5261-4093-9660-E72B7035E666}</Project>
+      <Name>DynamoPackagesWPF</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\src\DynamoPackages\DynamoPackages.csproj">
       <Project>{47533b7c-0e1a-44a4-8511-b438645f052a}</Project>
@@ -240,6 +239,10 @@
     <ProjectReference Include="..\..\src\Libraries\CoreNodes\CoreNodes.csproj">
       <Project>{87550B2B-6CB8-461E-8965-DFAFE3AAFB5C}</Project>
       <Name>CoreNodes</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\src\Libraries\DesignScriptBuiltin\DesignScriptBuiltin.csproj">
+      <Project>{c0d6dee5-5532-4345-9c66-4c00d7fdb8be}</Project>
+      <Name>DesignScriptBuiltin</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\src\Libraries\DynamoConversions\DynamoConversions.csproj">
       <Project>{C5ADC05B-34E8-47BF-8E78-9C7BF96418C2}</Project>
@@ -292,9 +295,6 @@
   <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Ionic.Zip.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

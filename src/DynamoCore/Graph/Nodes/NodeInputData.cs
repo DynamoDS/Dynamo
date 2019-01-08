@@ -1,12 +1,10 @@
-﻿using Dynamo.Graph.Workspaces;
+﻿using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Runtime.Serialization;
+using Dynamo.Graph.Workspaces;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Dynamo.Graph.Nodes
 {
@@ -91,7 +89,8 @@ namespace Dynamo.Graph.Nodes
             { typeof(Boolean),NodeInputTypes.booleanInput},
             { typeof(DateTime),NodeInputTypes.dateInput},
             { typeof(double),NodeInputTypes.numberInput},
-            { typeof(int),NodeInputTypes.numberInput},
+            { typeof(Int32),NodeInputTypes.numberInput},
+            { typeof(Int64),NodeInputTypes.numberInput},
             {typeof(float),NodeInputTypes.numberInput},
         };
         public static NodeInputTypes getNodeInputTypeFromType(Type type)
@@ -114,7 +113,7 @@ namespace Dynamo.Graph.Nodes
             var valNumberComparison = false;
             try
             {
-                valNumberComparison = Math.Abs(Convert.ToDouble(this.Value) - Convert.ToDouble(converted.Value)) < .000001;
+                valNumberComparison = Math.Abs(Convert.ToDouble(this.Value, CultureInfo.InvariantCulture) - Convert.ToDouble(converted.Value, CultureInfo.InvariantCulture)) < .000001;
             }
             catch (Exception e)
             {
@@ -134,7 +133,7 @@ namespace Dynamo.Graph.Nodes
                 this.StepValue == converted.StepValue &&
                 this.Type == converted.Type &&
                 //check if the value is the same or if the value is a number check is it similar
-                ((this.Value == converted.Value) || valNumberComparison || this.Value.ToString() == this.Value.ToString());
+                ((this.Value == converted.Value) || valNumberComparison || this.Value.ToString() == converted.Value.ToString());
         }
     }
 

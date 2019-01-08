@@ -1,3 +1,17 @@
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.ComponentModel;
+using System.Configuration;
+using System.Diagnostics;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Windows;
+using System.Windows.Forms;
+using System.Windows.Threading;
 using Dynamo.Configuration;
 using Dynamo.Engine;
 using Dynamo.Exceptions;
@@ -22,19 +36,6 @@ using Dynamo.Wpf.ViewModels;
 using Dynamo.Wpf.ViewModels.Core;
 using Dynamo.Wpf.ViewModels.Watch3D;
 using DynamoUtilities;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Collections.Specialized;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Windows;
-using System.Windows.Forms;
-using System.Windows.Threading;
 using ISelectable = Dynamo.Selection.ISelectable;
 
 namespace Dynamo.ViewModels
@@ -507,6 +508,22 @@ namespace Dynamo.ViewModels
 
         protected DynamoViewModel(StartConfiguration startConfiguration)
         {
+
+            // This can be removed after this bug is fixed in .net 4.7
+            // https://developercommunity.visualstudio.com/content/problem/244615/setfinalsizemaxdiscrepancy-getting-stuck-in-an-inf.html
+            // if the key "Switch.System.Windows.Controls.Grid.StarDefinitionsCanExceedAvailableSpace" has a value true in the 
+            // dynamoCoreWpf.config file we will set the switch here before the view is created.
+            var path = this.GetType().Assembly.Location;
+            var config = ConfigurationManager.OpenExeConfiguration(path);
+            var gridSwitchKey = "Switch.System.Windows.Controls.Grid.StarDefinitionsCanExceedAvailableSpace";
+            var gridSwitchKeyValue = config.AppSettings.Settings[gridSwitchKey];
+            bool gridSwitch = false;
+            if(gridSwitchKeyValue != null)
+            {
+                bool.TryParse(gridSwitchKeyValue.Value, out gridSwitch);
+                AppContext.SetSwitch(gridSwitchKey, gridSwitch);
+            }
+
             this.ShowLogin = startConfiguration.ShowLogin;
 
             // initialize core data structures
@@ -1112,9 +1129,10 @@ namespace Dynamo.ViewModels
             {
                 var newVm = new WorkspaceViewModel(item, this);
 
-                // For Json Workspaces, workspace view info need to be read agin from file
+                // For Json Workspaces, workspace view info need to be read again from file
                 string fileContents;
-                if (DynamoUtilities.PathHelper.isValidJson(newVm.Model.FileName, out fileContents))
+                Exception ex;
+                if (DynamoUtilities.PathHelper.isValidJson(newVm.Model.FileName, out fileContents, out ex))
                 {
                     ExtraWorkspaceViewInfo viewInfo = WorkspaceViewModel.ExtraWorkspaceViewInfoFromJson(fileContents);
                     newVm.Model.UpdateWithExtraWorkspaceViewInfo(viewInfo);
@@ -1209,7 +1227,7 @@ namespace Dynamo.ViewModels
             }
             else
             {
-                this.ExecuteCommand(command);
+                this.OpenCommand.Execute(new Tuple<string,bool>(command.FilePath, command.ForceManualExecutionMode));
                 this.ShowStartPage = false;
             }
         }
@@ -1253,7 +1271,7 @@ namespace Dynamo.ViewModels
                     {
                         errorMsgString = String.Format(e.Message, filePath);
                     }
-                    else if (e is System.Xml.XmlException)
+                    else if (e is System.Xml.XmlException || e is Newtonsoft.Json.JsonReaderException)
                     {
                         errorMsgString = String.Format(Resources.MessageFailedToOpenCorruptedFile, filePath);
                     }
@@ -1424,9 +1442,10 @@ namespace Dynamo.ViewModels
         /// exception is written to the console.
         /// </summary>
         /// <param name="path">The path to the file.</param>
+        /// <param name="isBackup">Indicates if an automated backup save has called this function.</param>
         /// <exception cref="IOException"></exception>
         /// <exception cref="UnauthorizedAccessException"></exception>
-        internal void SaveAs(string path, bool isBackup = false)
+        public void SaveAs(string path, bool isBackup = false)
         {
             try
             {
@@ -2046,18 +2065,6 @@ namespace Dynamo.ViewModels
         internal bool CanToggleConsoleShowing(object parameter)
         {
             return true;
-        }
-
-        /// <summary>
-        /// Obsolete method toggles Showing Preview Bubbles globally
-        /// Using of this class will produce compile warnings
-        /// TODO: To be removed in Dynamo 2.0
-        /// </summary>
-        /// <param name="parameter">Command parameter</param>
-        [System.Obsolete("This method is obsolete, set DynamoViewModel.ShowPreviewBubbles directly instead.")]
-        public void TogglePreviewBubblesShowing(object parameter)
-        {
-            ShowPreviewBubbles = !ShowPreviewBubbles;
         }
 
         public void SelectNeighbors(object parameters)

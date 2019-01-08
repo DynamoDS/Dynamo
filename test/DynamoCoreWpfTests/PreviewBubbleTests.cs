@@ -33,21 +33,9 @@ namespace DynamoCoreWpfTests
 
         protected override void GetLibrariesToPreload(List<string> libraries)
         {
-            libraries.Add("Builtin.dll");
+            libraries.Add("DesignScriptBuiltin.dll");
             libraries.Add("DSCoreNodes.dll");
             base.GetLibrariesToPreload(libraries);
-        }
-
-        [Test]
-        public void PreviewBubbleVisible_OpenFile()
-        {
-            Open(@"core\PinnedNodeWorkspace.dyn");
-            var nodeView = NodeViewWithGuid("c86f23ca-2a32-49b5-97c9-d82504801483");
-            nodeView.PreviewControl.RaiseEvent(new RoutedEventArgs(FrameworkElement.LoadedEvent));
-
-            DispatcherUtil.DoEvents();
-
-            Assert.IsTrue(nodeView.PreviewControl.IsExpanded);
         }
 
         [Test]

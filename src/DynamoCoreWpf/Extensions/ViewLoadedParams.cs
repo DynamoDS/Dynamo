@@ -4,11 +4,10 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using Dynamo.Controls;
-using Dynamo.ViewModels;
-using Dynamo.Utilities;
 using Dynamo.Extensions;
-using Dynamo.Interfaces;
 using Dynamo.Selection;
+using Dynamo.Utilities;
+using Dynamo.ViewModels;
 using Dynamo.Visualization;
 using Dynamo.Wpf.ViewModels.Watch3D;
 
@@ -22,6 +21,19 @@ namespace Dynamo.Wpf.Extensions
         private readonly DynamoView dynamoView;
         private readonly DynamoViewModel dynamoViewModel;
         public readonly Menu dynamoMenu;
+        private readonly ViewStartupParams viewStartupParams;
+
+        /// <summary>
+        /// A reference to the <see cref="ViewStartupParams"/> class.
+        /// Useful if this extension will be loaded from a package, as its startup method will not be called.
+        /// </summary>
+        public ViewStartupParams ViewStartupParams
+        {
+            get
+            {
+                return viewStartupParams;
+            }
+        }
 
         /// <summary>
         /// A reference to the background preview viewmodel for geometry selection,
@@ -55,8 +67,9 @@ namespace Dynamo.Wpf.Extensions
             dynamoView = dynamoV;
             dynamoViewModel = dynamoVM;
             dynamoMenu = dynamoView.titleBar.ChildOfType<Menu>();
-
+            viewStartupParams = new ViewStartupParams(dynamoVM);
             DynamoSelection.Instance.Selection.CollectionChanged += OnSelectionCollectionChanged;
+
         }
 
         public void AddMenuItem(MenuBarType type, MenuItem menuItem, int index = -1)

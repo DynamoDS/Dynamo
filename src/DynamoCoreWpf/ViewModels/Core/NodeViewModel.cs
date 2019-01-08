@@ -1,19 +1,19 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
-using System.Collections.ObjectModel;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Windows;
 using Dynamo.Configuration;
 using Dynamo.Engine.CodeGeneration;
-using Dynamo.Models;
-using System.Windows;
 using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.CustomNodes;
 using Dynamo.Graph.Workspaces;
+using Dynamo.Models;
 using Dynamo.Selection;
 using Dynamo.Wpf.ViewModels.Core;
 using Newtonsoft.Json;
@@ -151,7 +151,6 @@ namespace Dynamo.ViewModels
             }
         }
 
-        [JsonIgnore]
         public bool IsSetAsInput
         {
             get
@@ -168,6 +167,30 @@ namespace Dynamo.ViewModels
             }
         }
 
+        [JsonIgnore]
+        public bool IsOutput
+        {
+            get
+            {
+                return nodeLogic.IsOutputNode;
+            }
+        }
+
+        public bool IsSetAsOutput
+        {
+            get
+            {
+                return nodeLogic.IsSetAsOutput;
+            }
+            set
+            {
+                if (nodeLogic.IsSetAsOutput != value)
+                {
+                    nodeLogic.IsSetAsOutput = value;
+                    RaisePropertyChanged("IsSetAsOutput");
+                }
+            }
+        }
         /// <summary>
         /// The Name of the nodemodel this view points to
         /// this is the name of the node as it is displayed in the UI.

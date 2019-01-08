@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Dynamo.Nodes;
-using Dynamo.Controls;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
+using Dynamo.Controls;
 using Dynamo.Graph.Nodes.ZeroTouch;
+using Dynamo.Nodes;
 
 namespace Dynamo.Wpf
 {

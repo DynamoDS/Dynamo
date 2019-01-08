@@ -1,11 +1,8 @@
-﻿using System.Windows;
-using System.Windows.Controls;
+﻿using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Media;
 
 using Dynamo.Controls;
 using Dynamo.Graph.Nodes.CustomNodes;
-using Dynamo.Nodes;
 using Dynamo.UI.Controls;
 
 namespace Dynamo.Wpf

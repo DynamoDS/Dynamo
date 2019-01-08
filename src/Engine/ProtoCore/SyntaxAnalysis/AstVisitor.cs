@@ -1,9 +1,8 @@
 ﻿using ProtoCore.AST;
 using ProtoCore.AST.AssociativeAST;
-using ImperativeNode = ProtoCore.AST.ImperativeAST.ImperativeNode;
-using System;
 using System.Collections.Generic;
 using System.Linq;
+using ImperativeNode = ProtoCore.AST.ImperativeAST.ImperativeNode;
 
 namespace ProtoCore.SyntaxAnalysis
 {
@@ -383,6 +382,9 @@ namespace ProtoCore.SyntaxAnalysis
 
         public override AssociativeNode VisitIdentifierNode(IdentifierNode node)
         {
+            if (node == null)
+                return null;
+
             if (node.ArrayDimensions != null)
             {
                 var newArrayDimensions = node.ArrayDimensions.Accept(this);
@@ -400,6 +402,9 @@ namespace ProtoCore.SyntaxAnalysis
 
         public override AssociativeNode VisitIdentifierListNode(IdentifierListNode node)
         {
+            if (node == null)
+                return null;
+
             var newLeftNode = node.LeftNode.Accept(this);
             if (newLeftNode != node.LeftNode)
                 node.LeftNode = newLeftNode;
@@ -413,6 +418,9 @@ namespace ProtoCore.SyntaxAnalysis
 
         public override AssociativeNode VisitFunctionCallNode(FunctionCallNode node)
         {
+            if (node == null)
+                return null;
+
             var func = node.Function.Accept(this);
             if (node.Function != func)
                 node.Function = func;
@@ -764,6 +772,50 @@ namespace ProtoCore.SyntaxAnalysis
         private List<ImperativeNode> VisitNodeList(List<ImperativeNode> nodes)
         {
             return nodes.Select(n => n.Accept(this)).ToList();
+        }
+    }
+
+    /// <summary>
+    /// AstTraversal visits all nodes of the AST unless the result of a Visit* method is false or you override one of the methods such that
+    /// it doesn't visit all of the Node's child nodes.
+    /// </summary>
+    public abstract class AstTraversal : AstVisitor<bool, bool>
+    {
+        public override bool VisitAssociativeNode(AssociativeNode node)
+        {
+            return VisitAllChildren(node);
+        }
+
+        public override bool VisitImperativeNode(ImperativeNode node)
+        {
+            return VisitAllChildren(node);
+        }
+
+        public bool VisitAllChildren(Node node)
+        {
+            if (node == null) return true;
+
+            var children = node.Children();
+
+            foreach (var n in children)
+            {
+                if (n is AssociativeNode)
+                {
+                    if (!(n as AssociativeNode).Accept(this))
+                    {
+                        return false;
+                    }
+                }
+                else if (n is ImperativeNode)
+                {
+                    if (!(n as ImperativeNode).Accept(this))
+                    {
+                        return false;
+                    }
+                }
+            }
+
+            return true;
         }
     }
 }

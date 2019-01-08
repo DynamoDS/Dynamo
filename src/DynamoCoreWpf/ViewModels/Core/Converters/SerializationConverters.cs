@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Linq;
 using Dynamo.Graph.Annotations;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Notes;
-using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using Type = System.Type;
 
 namespace Dynamo.Wpf.ViewModels.Core.Converters
@@ -41,7 +38,9 @@ namespace Dynamo.Wpf.ViewModels.Core.Converters
             writer.WritePropertyName("NodeViews");
             writer.WriteStartArray();
             foreach (var nodeView in workspaceView.Nodes)
-                serializer.Serialize(writer, nodeView);
+            {
+              serializer.Serialize(writer, nodeView);
+            }
             writer.WriteEndArray();
 
             writer.WritePropertyName("Annotations");

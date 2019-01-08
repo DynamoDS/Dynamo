@@ -7,7 +7,7 @@ using System.Windows.Threading;
 
 namespace DynamoCoreWpfTests.Utility
 {
-    internal static class DispatcherUtil
+    public static class DispatcherUtil
     {
         /// <summary>
         ///     Force the Dispatcher to empty it's queue

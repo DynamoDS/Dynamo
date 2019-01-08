@@ -1,8 +1,10 @@
-<Workspace Version="0.9.1.3340" X="0" Y="0" zoom="1" Name="Home" Description="" RunType="Automatic" RunPeriod="1000" HasRunWithoutCrash="True">
+<Workspace Version="1.3.3.3826" X="0" Y="0" zoom="1" ScaleFactor="1" Name="Home" Description="" RunType="Automatic" RunPeriod="1000" HasRunWithoutCrash="True">
   <NamespaceResolutionMap />
   <Elements>
-    <Dynamo.Graph.Nodes.CodeBlockNodeModel guid="b80e0c94-4a98-4f98-a197-f426a0a96db3" type="Dynamo.Graph.Nodes.CodeBlockNodeModel" nickname="Code Block" x="46" y="85" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="True" IsFrozen="false" CodeText="n = 10;&#xA;sum = 0;&#xA;&#xA;r = [Imperative]&#xA;{&#xA;    for (x in 1..n)&#xA;    {&#xA;        sum = sum + x;&#xA;    }&#xA;    return = null;&#xA;}&#xA;&#xA;v = sum;" ShouldFocus="false" />
-    <DSCoreNodesUI.Watch guid="c031668c-226f-4b99-8e54-011c2199b8c6" type="DSCoreNodesUI.Watch" nickname="Watch" x="403.5" y="144.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" />
+    <Dynamo.Graph.Nodes.CodeBlockNodeModel guid="b80e0c94-4a98-4f98-a197-f426a0a96db3" type="Dynamo.Graph.Nodes.CodeBlockNodeModel" nickname="Code Block" x="46" y="85" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false" CodeText="n = 10;&#xA;sum = 0;&#xA;&#xA;r = [Imperative]&#xA;{&#xA;    for (x in 1..n)&#xA;    {&#xA;        sum = sum + x;&#xA;    }&#xA;    return = sum;&#xA;}&#xA;&#xA;v = r;" ShouldFocus="false" />
+    <CoreNodeModels.Watch guid="c031668c-226f-4b99-8e54-011c2199b8c6" type="CoreNodeModels.Watch" nickname="Watch" x="403.5" y="144.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false">
+      <PortInfo index="0" default="False" />
+    </CoreNodeModels.Watch>
   </Elements>
   <Connectors>
     <Dynamo.Graph.Connectors.ConnectorModel start="b80e0c94-4a98-4f98-a197-f426a0a96db3" start_index="3" end="c031668c-226f-4b99-8e54-011c2199b8c6" end_index="0" portType="0" />

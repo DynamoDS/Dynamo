@@ -3,15 +3,15 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Shapes;
 using System.Windows.Media.Animation;
+using System.Windows.Shapes;
 using Dynamo.Configuration;
 using Dynamo.UI;
+using Dynamo.Utilities;
+using Dynamo.ViewModels;
 using Dynamo.Wpf.UI;
 using Dynamo.Wpf.Utilities;
 using InfoBubbleViewModel = Dynamo.ViewModels.InfoBubbleViewModel;
-using Dynamo.ViewModels;
-using Dynamo.Utilities;
 
 namespace Dynamo.Controls
 {

@@ -6,32 +6,30 @@ using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Media;
+using Dynamo.Configuration;
+using Dynamo.Graph.Nodes;
+using Dynamo.Graph.Workspaces;
+using Dynamo.Logging;
 using Dynamo.PackageManager;
 using Dynamo.Search.SearchElements;
 using Dynamo.UI;
 using Dynamo.UI.Controls;
 using Dynamo.Updates;
+using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Properties;
 using Dynamo.Wpf.ViewModels;
 using DynamoUnits;
-using System.Windows.Controls.Primitives;
-using Dynamo.Configuration;
-using Dynamo.Graph.Nodes;
-using Dynamo.Graph.Workspaces;
-using Dynamo.Logging;
-using Dynamo.Utilities;
 using HelixToolkit.Wpf.SharpDX;
-using RestSharp.Extensions.MonoHttp;
 using Color = System.Windows.Media.Color;
 using FlowDirection = System.Windows.FlowDirection;
 using HorizontalAlignment = System.Windows.HorizontalAlignment;
 using Point = System.Windows.Point;
 using TabControl = System.Windows.Controls.TabControl;
 using Thickness = System.Windows.Thickness;
-using System.Net;
 
 namespace Dynamo.Controls
 {
@@ -949,39 +947,6 @@ namespace Dynamo.Controls
         }
     }
 
-    /// <summary>
-    /// Obsolete class of ShowHideConsoleMenuItemConverter
-    /// Using of this class will produce compile warnings
-    /// TODO: To be removed in Dynamo 2.0
-    /// TODO: Resource String DynamoViewViewMenuHideConsole to be removed in Dynamo 2.0
-    /// </summary>
-    [System.Obsolete("This class is obsolete.")]
-    public class ShowHideConsoleMenuItemConverter : IValueConverter
-    {
-        #region IValueConverter Members
-
-        public object Convert(object value, Type targetType, object parameter,
-            System.Globalization.CultureInfo culture)
-        {
-            if ((int)value > 0)
-            {
-                return Resources.DynamoViewViewMenuHideConsole;
-            }
-            else
-            {
-                return Resources.DynamoViewViewMenuShowConsole;
-            }
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter,
-            System.Globalization.CultureInfo culture)
-        {
-            throw new NotSupportedException();
-        }
-
-        #endregion
-    }
-
     public class ConsoleHeightToBooleanConverter : IValueConverter
     {
         #region IValueConverter Members
@@ -1003,30 +968,6 @@ namespace Dynamo.Controls
             System.Globalization.CultureInfo culture)
         {
             return null;
-        }
-
-        #endregion
-    }
-
-
-    /// <summary>
-    /// Obsolete class of ShowHidePreviewBubblesConverter
-    /// Using of this class will produce compile warnings
-    /// TODO: To be removed in Dynamo 2.0
-    /// </summary>
-    [System.Obsolete("This class is obsolete, string converter for Preview Bubble Display Option only returns single value now. ")]
-    public class ShowHidePreviewBubblesConverter : IValueConverter
-    {
-        #region IValueConverter Members
-
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            return Resources.DynamoViewSettingsMenuShowPreviewBubbles;
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            return (string)value == Resources.DynamoViewSettingsMenuShowPreviewBubbles;
         }
 
         #endregion

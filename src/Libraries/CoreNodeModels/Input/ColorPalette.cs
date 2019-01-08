@@ -180,7 +180,8 @@ namespace CoreNodeModels.Input
         }
 
         /// <summary>
-        ///     Indicates whether node is input node
+        ///     Indicates whether node is input node. 
+        ///     Used to bind visibility of UI for user selection.
         /// </summary>
         public override bool IsInputNode
         {

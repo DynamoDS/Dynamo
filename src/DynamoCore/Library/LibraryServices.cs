@@ -3,25 +3,21 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml;
-
+using Dynamo.Configuration;
+using Dynamo.Exceptions;
 using Dynamo.Interfaces;
 using Dynamo.Library;
-using Dynamo.Utilities;
 using Dynamo.Logging;
-
+using Dynamo.Utilities;
+using ProtoCore;
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.BuildData;
+using ProtoCore.CompilerDefinitions;
 using ProtoCore.DSASM;
+using ProtoCore.Namespace;
 using ProtoCore.Utils;
 using ProtoFFI;
-
-
 using Operator = ProtoCore.DSASM.Operator;
-using ProtoCore;
-using ProtoCore.Namespace;
-using Dynamo.Exceptions;
-using Dynamo.Configuration;
-using ProtoCore.CompilerDefinitions;
 
 namespace Dynamo.Engine
 {
@@ -171,7 +167,12 @@ namespace Dynamo.Engine
         {
             LibraryLoadFailedException ex = new LibraryLoadFailedException(args.LibraryPath, args.Reason);
             Log(ex.Message, WarningLevel.Moderate);
-            throw ex;
+
+            // NOTE: We do not want to throw an exception here if the failure was due
+            // to a missing library that was explicitly (attempted to be) loaded
+            // but was moved or deleted OR if a .DS file with syntax error(s) is loaded
+            if (args.ThrowOnFailure)
+                throw ex;
         }
 
         private void PreloadLibraries(IEnumerable<string> preloadLibraries)
@@ -518,8 +519,9 @@ namespace Dynamo.Engine
         /// <summary>
         ///     Import a library (if it hasn't been imported yet).
         /// </summary>
-        /// <param name="library"></param>
-        internal bool ImportLibrary(string library)
+        /// <param name="library">The library to be loaded</param>
+        /// <param name="isExplicitlyImportedLib">Indicates if the library has been imported using the "File | ImportLibrary" command</param>
+        internal bool ImportLibrary(string library, bool isExplicitlyImportedLib = false)
         {
             if (null == library)
                 throw new ArgumentNullException();
@@ -539,10 +541,19 @@ namespace Dynamo.Engine
                 return false;
             }
 
+            // Copy the library path so that the path can be reported in the case of a failure
+            // to resolve the library path. If there is a failure "library" is set to null.
+            string path = library;
             if (!pathManager.ResolveLibraryPath(ref library))
             {
-                string errorMessage = string.Format(Properties.Resources.LibraryPathCannotBeFound, library);
-                OnLibraryLoadFailed(new LibraryLoadFailedEventArgs(library, errorMessage));
+                string errorMessage = string.Format(Properties.Resources.LibraryPathCannotBeFound, path);
+
+                // In the case that a library was explicitly imported using the "File|Import Library" command
+                // set the load failed args to not throw an exception if the load fails. This can happen after using
+                // File|Import Library and then moving or deleting the library.
+                OnLibraryLoadFailed(new LibraryLoadFailedEventArgs(path, errorMessage,
+                    throwOnFailure: !isExplicitlyImportedLib));
+
                 return false;
             }
 
@@ -590,7 +601,8 @@ namespace Dynamo.Engine
             }
             catch (Exception e)
             {
-                OnLibraryLoadFailed(new LibraryLoadFailedEventArgs(library, e.Message));
+                OnLibraryLoadFailed(new LibraryLoadFailedEventArgs(library, e.Message,
+                    throwOnFailure: !isExplicitlyImportedLib));
                 return false;
             }
 
@@ -785,6 +797,8 @@ namespace Dynamo.Engine
                                                                     argType))
                                                         let visibleInLibrary =
                                                             (method.MethodAttribute == null || !method.MethodAttribute.HiddenInLibrary)
+                                                        let obsoleteMsg =
+                                                            (method.MethodAttribute != null ? method.MethodAttribute.ObsoleteMessage: String.Empty)
                                                         let description = 
                                                             (method.MethodAttribute != null ? method.MethodAttribute.Description :String.Empty)
                                                         select
@@ -799,6 +813,7 @@ namespace Dynamo.Engine
                                                                 IsVisibleInLibrary = visibleInLibrary,
                                                                 IsBuiltIn = true,
                                                                 IsPackageMember = false,
+                                                                ObsoleteMsg = obsoleteMsg,
                                                                 Assembly = Categories.BuiltIn
                                                             });
 
@@ -1088,16 +1103,32 @@ namespace Dynamo.Engine
             public const string Properties = "Query";
         }
 
+        /// <summary>
+        /// Contains arguments to pass to a handler when a library load fails
+        /// </summary>
         public class LibraryLoadFailedEventArgs : EventArgs
         {
-            public LibraryLoadFailedEventArgs(string libraryPath, string reason)
+            public LibraryLoadFailedEventArgs(string libraryPath, string reason, bool throwOnFailure = true)
             {
                 LibraryPath = libraryPath;
                 Reason = reason;
+                ThrowOnFailure = throwOnFailure;
             }
 
+            /// <summary>
+            /// The path to the library that failed to load
+            /// </summary>
             public string LibraryPath { get; private set; }
+
+            /// <summary>
+            /// The reason that the library failed to load
+            /// </summary>
             public string Reason { get; private set; }
+
+            /// <summary>
+            /// Indicates if the failure should result in an exception being thrown
+            /// </summary>
+            public bool ThrowOnFailure { get; private set; }
         }
 
         public class LibraryLoadedEventArgs : EventArgs

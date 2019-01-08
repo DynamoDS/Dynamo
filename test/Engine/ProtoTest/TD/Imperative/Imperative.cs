@@ -16,14 +16,13 @@ namespace ProtoTest.TD.Imperative
         {
             String code =
              @"
-                a : int[];
-                [Imperative]
+                a = [Imperative]
                 {
                     a[0] = 0;
-                    a[1] = ""dummy"";                  
+                    a[1] = ""dummy"";  
+                    return a;                
                 }
-
-t1 = a;
+                t1 = a;
              ";
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -78,7 +77,7 @@ def foo ()
 						c1 = a1 && b1  && !foo();
                         c2 = !a1 || !b1;                    
                     }
-					return={c1,c2};
+					return=[c1,c2];
                 }
 				return=a;
             }
@@ -220,6 +219,40 @@ a1 = test();
             string errmsg = "MAGN-4082: Using the 'mod' operator on double value yields null in imperative scope and an unexpected warning message in associative scope";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("a1", 1.0);
+        }
+
+        [Test]
+        public void TestNamespaceQualifiedStaticProperty()
+        {
+            String code =
+             @"
+			 import(""FFITarget.dll"");
+
+                a=[Imperative]
+                {
+                    ClassFunctionality.StaticProp = 1133;
+                    return FFITarget.ClassFunctionality.StaticProp;
+                };
+            ";
+            ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code);
+            thisTest.Verify("a", 1133);
+        }
+
+        [Test]
+        public void TestNamespaceQualifiedStaticPropertyChaining()
+        {
+            String code =
+             @"
+			 import(""FFITarget.dll"");
+
+                a=[Imperative]
+                {
+                    ClassFunctionality.StaticProp = 1133;
+                    return [FFITarget.ClassFunctionality.Instance.StaticFunction(), FFITarget.ClassFunctionality.Instance.IntVal];
+                };
+            ";
+            ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code);
+            thisTest.Verify("a", new double[] { 1133, 2349 });
         }
 
         [Test]

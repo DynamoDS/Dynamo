@@ -9,8 +9,8 @@ using System.Windows.Threading;
 using Dynamo.Controls;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
-using Dynamo.Wpf.ViewModels;
 using Dynamo.Wpf.Utilities;
+using Dynamo.Wpf.ViewModels;
 
 namespace Dynamo.UI.Views
 {

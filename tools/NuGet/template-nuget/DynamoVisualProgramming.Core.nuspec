@@ -17,7 +17,7 @@
 5) DynamoShapeManager.dll 
 6) DynamoUtilities.dll
 7) ProtoCore.dll
-8) Builtin.dll
+8) DesignScriptBuiltin.dll
 9) VMDataBridge.dll</description>
     <summary>This package contains the core assemblies for Dynamo.</summary>
     <copyright>Copyright Autodesk 2017</copyright>
@@ -25,18 +25,19 @@
       <dependency id="Prism" version="4.1"/>
       <dependency id="NUnit" version="2.6.3"/>
       <dependency id="DynamoVisualProgramming.ZeroTouchLibrary" version="@VERSION@"/>
+      <dependency id="Newtonsoft.Json" version="8.0.3"/>
     </dependencies>
   </metadata>
   <files>
-    <file src="DSIronPython.dll" target="lib\net45" />
-    <file src="DynamoApplications.dll" target="lib\net45" />
-    <file src="DynamoCore.dll" target="lib\net45" />
-    <file src="DynamoCore.xml" target="build\net45" />
-    <file src="DynamoInstallDetective.dll" target="lib\net45" />
-    <file src="DynamoShapeManager.dll" target="lib\net45" />
-    <file src="DynamoUtilities.dll" target="lib\net45" />
-    <file src="ProtoCore.dll" target="lib\net45" />
-    <file src="Builtin.dll" target="lib\net45" />
-    <file src="VMDataBridge.dll" target="lib\net45" />
+    <file src="DSIronPython.dll" target="lib\net47" />
+    <file src="DynamoApplications.dll" target="lib\net47" />
+    <file src="DynamoCore.dll" target="lib\net47" />
+    <file src="DynamoCore.xml" target="build\net47" />
+    <file src="DynamoInstallDetective.dll" target="lib\net47" />
+    <file src="DynamoShapeManager.dll" target="lib\net47" />
+    <file src="DynamoUtilities.dll" target="lib\net47" />
+    <file src="ProtoCore.dll" target="lib\net47" />
+    <file src="DesignScriptBuiltin.dll" target="lib\net47" />
+    <file src="VMDataBridge.dll" target="lib\net47" />
   </files>
 </package>

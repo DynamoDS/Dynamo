@@ -4,7 +4,7 @@
     <Dynamo.Graph.Nodes.ZeroTouch.DSFunction guid="eba368d6-f0cf-4bbe-9cf8-949943ab7789" type="Dynamo.Graph.Nodes.ZeroTouch.DSFunction" nickname="List.Flatten" x="493" y="169" isVisible="true" isUpstreamVisible="true" lacing="Auto" isSelectedInput="False" IsFrozen="false" isPinned="true" assembly="DSCoreNodes.dll" function="DSCore.List.Flatten@var[]..[]">
       <PortInfo index="0" default="False" />
     </Dynamo.Graph.Nodes.ZeroTouch.DSFunction>
-    <Dynamo.Graph.Nodes.CodeBlockNodeModel guid="3d636eec-6927-456a-b21c-f3e2d88734fc" type="Dynamo.Graph.Nodes.CodeBlockNodeModel" nickname="Code Block" x="111" y="173" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false" CodeText="{1,3,5,{2,4,{6},8},7,9,{{0}}};" ShouldFocus="false">
+    <Dynamo.Graph.Nodes.CodeBlockNodeModel guid="3d636eec-6927-456a-b21c-f3e2d88734fc" type="Dynamo.Graph.Nodes.CodeBlockNodeModel" nickname="Code Block" x="111" y="173" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false" CodeText="[1,3,5,[2,4,[6],8],7,9,[[0]]];" ShouldFocus="false">
       <OutPortInfo LineIndex="0" />
     </Dynamo.Graph.Nodes.CodeBlockNodeModel>
     <Dynamo.Graph.Nodes.ZeroTouch.DSFunction guid="6e175514-15ed-43f6-a124-a51dd43f15e7" type="Dynamo.Graph.Nodes.ZeroTouch.DSFunction" nickname="List.Flatten" x="213" y="347" isVisible="true" isUpstreamVisible="true" lacing="Auto" isSelectedInput="False" IsFrozen="false" isPinned="true" assembly="DSCoreNodes.dll" function="DSCore.List.Flatten@var[]..[],int">

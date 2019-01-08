@@ -5,12 +5,14 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.Serialization;
 using System.Xml;
 using Dynamo.Configuration;
 using Dynamo.Engine;
 using Dynamo.Engine.CodeGeneration;
 using Dynamo.Graph.Connectors;
 using Dynamo.Graph.Nodes.CustomNodes;
+using Dynamo.Graph.Workspaces;
 using Dynamo.Migration;
 using Dynamo.Scheduler;
 using Dynamo.Selection;
@@ -23,8 +25,6 @@ using ProtoCore.DSASM;
 using ProtoCore.Mirror;
 using String = System.String;
 using StringNode = ProtoCore.AST.AssociativeAST.StringNode;
-using System.Runtime.Serialization;
-using Dynamo.Graph.Workspaces;
 
 namespace Dynamo.Graph.Nodes
 {
@@ -35,6 +35,8 @@ namespace Dynamo.Graph.Nodes
         private LacingStrategy argumentLacing = LacingStrategy.Auto;
         private bool displayLabels;
         private bool isVisible;
+        private bool isSetAsInput = false;
+        private bool isSetAsOutput = false;
         private bool canUpdatePeriodically;
         private string name;
         private ElementState state;
@@ -205,11 +207,11 @@ namespace Dynamo.Graph.Nodes
         {
             get
             {
-                return !inPorts.Any();
+
+                return !inPorts.Any() && !IsCustomFunction;
             }
         }
 
-        private bool isSetAsInput = true;
         /// <summary>
         /// This property is user-controllable via a checkbox and is set to true when a user wishes to include
         /// this node in a Customizer as an interactive control.
@@ -227,7 +229,50 @@ namespace Dynamo.Graph.Nodes
 
             set
             {
-                isSetAsInput = value;
+                if (isSetAsInput != value)
+                {
+                    isSetAsInput = value;
+                    RaisePropertyChanged(nameof(IsSetAsInput));
+                }
+            }
+        }
+
+        /// <summary>
+        /// Output nodes are used by applications that consume graphs outside of Dynamo such as Optioneering, Optimization, 
+        /// and Dynamo Player. Output nodes can be any node that returns a single output or a dictionary. Code block nodes and
+        /// Custom nodes are specifically excluded at this time even though they can return a single output for sake of clarity. 
+        /// </summary>
+        [JsonIgnore]
+        public virtual bool IsOutputNode
+        {
+            get
+            {
+                return !IsCustomFunction;
+            }
+        }
+
+        /// <summary>
+        /// This property is user-controllable via a checkbox and is set to true when a user wishes to include
+        /// this node in the OutputData block of the Dyn file.
+        /// </summary>
+        [JsonIgnore]
+        public bool IsSetAsOutput
+        {
+            get
+            {
+                if (!IsOutputNode)
+                    return false;
+
+                return isSetAsOutput;
+            }
+
+            set
+            {
+                if (isSetAsOutput != value)
+                {
+                    isSetAsOutput = value;
+                    RaisePropertyChanged(nameof(IsSetAsOutput));
+                }
             }
         }
 
@@ -838,6 +883,38 @@ namespace Dynamo.Graph.Nodes
            get { return null; }
         }
 
+        [JsonIgnore]
+        public virtual NodeOutputData OutputData
+        {
+            get
+            {
+                // Determine if the output type can be determined at this time
+                // Current enum supports String, Integer, Float, Boolean, and unknown
+                // When CachedValue is null, type is set to unknown
+                // When Concrete type is dictionary or other type not expressed in enum, type is set to unknown
+                object returnObj = CachedValue?.Data?? new object();
+                var returnType = NodeOutputData.getNodeOutputTypeFromType(returnObj.GetType());
+                var returnValue = String.Empty;
+
+                // IntialValue is returned when the Type enum does not equal unknown
+                if(returnType != NodeOutputTypes.unknownOutput)
+                {
+                    var formattableReturnObj = returnObj as IFormattable;
+                    returnValue = formattableReturnObj != null ? formattableReturnObj.ToString(null, CultureInfo.InvariantCulture) : returnObj.ToString();
+                }
+
+                
+                return new NodeOutputData()
+                {
+                    Id = this.GUID,
+                    Name = this.Name,
+                    Type = returnType,
+                    Description = this.Description,
+                    InitialValue = returnValue
+                };
+            }
+        }
+
         #endregion
 
         #region freeze execution
@@ -972,7 +1049,7 @@ namespace Dynamo.Graph.Nodes
             SetNameFromNodeNameAttribute();
 
             IsSelected = false;
-            State = ElementState.Dead;
+            SetNodeStateBasedOnConnectionAndDefaults();
             ArgumentLacing = LacingStrategy.Disabled;
 
             RaisesModificationEvents = true;
@@ -1772,9 +1849,7 @@ namespace Dynamo.Graph.Nodes
 
         private void OnPortConnected(PortModel port, ConnectorModel connector)
         {
-            var handler = PortConnected;
-            if (null != handler) handler(port, connector);
-
+          
             if (port.PortType != PortType.Input) return;
 
             var data = InPorts.IndexOf(port);
@@ -1782,6 +1857,10 @@ namespace Dynamo.Graph.Nodes
             var outData = startPort.Owner.OutPorts.IndexOf(startPort);
             ConnectInput(data, outData, startPort.Owner);
             startPort.Owner.ConnectOutput(outData, data, this);
+
+            var handler = PortConnected;
+            if (null != handler) handler(port, connector);
+
             OnConnectorAdded(connector);
 
             OnNodeModified();
@@ -2039,6 +2118,7 @@ namespace Dynamo.Graph.Nodes
             helper.SetAttribute("isVisible", IsVisible);
             helper.SetAttribute("lacing", ArgumentLacing.ToString());
             helper.SetAttribute("isSelectedInput", IsSetAsInput.ToString());
+            helper.SetAttribute("isSelectedOutput", IsSetAsOutput.ToString());
             helper.SetAttribute("IsFrozen", isFrozenExplicitly);
             helper.SetAttribute("isPinned", PreviewPinned);
 
@@ -2095,7 +2175,8 @@ namespace Dynamo.Graph.Nodes
             Y = helper.ReadDouble("y", 0.0);
             isVisible = helper.ReadBoolean("isVisible", true);
             argumentLacing = helper.ReadEnum("lacing", LacingStrategy.Disabled);
-            IsSetAsInput = helper.ReadBoolean("isSelectedInput", true);
+            IsSetAsInput = helper.ReadBoolean("isSelectedInput", false);
+            IsSetAsOutput = helper.ReadBoolean("isSelectedOutput", false);
             isFrozenExplicitly = helper.ReadBoolean("IsFrozen", false);
             PreviewPinned = helper.ReadBoolean("isPinned", false);
 

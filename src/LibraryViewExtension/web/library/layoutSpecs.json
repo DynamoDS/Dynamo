@@ -37,7 +37,7 @@
                   "path": "DSCoreNodes.DSCore.List.Contains"
                 },
                 {
-                  "path": "BuiltIn.Rank"
+                  "path": "BuiltIn.List.Rank"
                 },
                 {
                   "path": "DSCoreNodes.DSCore.List.IsHomogeneous"
@@ -185,15 +185,6 @@
               "elementType": "group",
               "include": [
                 {
-                  "path": "BuiltIn.List.ContainsKey"
-                },
-                {
-                  "path": "BuiltIn.List.GetKeys"
-                },
-                {
-                  "path": "BuiltIn.List.GetValues"
-                },
-                {
                   "path": "DSCoreNodes.DSCore.List.GroupByKey"
                 },
                 {
@@ -207,10 +198,6 @@
                 },
                 {
                   "path": "DSCoreNodes.DSCore.List.NormalizeDepth"
-                },
-
-                {
-                  "path": "BuiltIn.List.RemoveKey"
                 },
                 {
                   "path": "DSCoreNodes.DSCore.List.Reverse"
@@ -304,32 +291,32 @@
         },
         {
           "text": "Dictionary",
-          "iconUrl": "",
-          "elementType": "group",
+          "iconUrl": "./dist/resources/Category.Dictionary.svg",
+          "elementType": "category",
           "include": [
             {
-              "path": "Builtin.DesignScript.Builtin.Dictionary.ByKeysValues"
+              "path": "DesignScriptBuiltin.DesignScript.Builtin.Dictionary.ByKeysValues"
             },
             {
-              "path": "Builtin.DesignScript.Builtin.Dictionary.Components"
+              "path": "DesignScriptBuiltin.DesignScript.Builtin.Dictionary.Components"
             },
             {
-              "path": "Builtin.DesignScript.Builtin.Dictionary.RemoveKeys"
+              "path": "DesignScriptBuiltin.DesignScript.Builtin.Dictionary.RemoveKeys"
             },
             {
-              "path": "Builtin.DesignScript.Builtin.Dictionary.SetValueAtKeys"
+              "path": "DesignScriptBuiltin.DesignScript.Builtin.Dictionary.SetValueAtKeys"
             },
             {
-              "path": "Builtin.DesignScript.Builtin.Dictionary.ValueAtKey"
+              "path": "DesignScriptBuiltin.DesignScript.Builtin.Dictionary.ValueAtKey"
             },
             {
-              "path": "Builtin.DesignScript.Builtin.Dictionary.Count"
+              "path": "DesignScriptBuiltin.DesignScript.Builtin.Dictionary.Count"
             },
             {
-              "path": "Builtin.DesignScript.Builtin.Dictionary.Keys"
+              "path": "DesignScriptBuiltin.DesignScript.Builtin.Dictionary.Keys"
             },
             {
-              "path": "Builtin.DesignScript.Builtin.Dictionary.Values"
+              "path": "DesignScriptBuiltin.DesignScript.Builtin.Dictionary.Values"
             }
           ],
           "childElements": [ ]
@@ -401,10 +388,6 @@
                 },
                 {
                   "path": "DSCoreNodes.DSCore.DateTime.Format"
-                },
-                {
-                  "path": "DSCoreNodes.DSCore.DayOfWeek",
-                  "iconUrl": "./dist/resources/DSCore.DayOfWeek.png"
                 }
               ],
               "childElements": [ ]
@@ -448,9 +431,6 @@
                 },
                 {
                   "path": "Core.Input.Number"
-                },
-                {
-                  "path": "Core.Input.Code Block"
                 },
                 {
                   "path": "Core.Input.Input"
@@ -824,7 +804,7 @@
             {
               "text": "Color",
               "iconUrl": "",
-              "elementType": "classType",
+              "elementType": "group",
               "include": [
                 {
                   "path": "DSCoreNodes.DSCore.Color.Red"
@@ -871,7 +851,7 @@
             {
               "text": "Color Range",
               "iconUrl": "",
-              "elementType": "classType",
+              "elementType": "group",
               "include": [
                 {
                   "path": "Core.Color.Color Range"
@@ -888,7 +868,7 @@
             {
               "text": "Watch",
               "iconUrl": "",
-              "elementType": "classType",
+              "elementType": "group",
               "include": [
                 {
                   "path": "Core.View.Watch"
@@ -1046,6 +1026,12 @@
                 },
                 {
                   "path": "DSOffice.DSOffice.Data.ExportCSV"
+                },
+                {
+                  "path": "DSCoreNodes.DSCore.Data.ParseJSON"
+                },
+                {
+                  "path": "DSCoreNodes.DSCore.Data.StringifyJSON"
                 }
               ],
               "childElements": [ ]
@@ -1392,13 +1378,6 @@
           ]
         }
       ]
-    },
-    {
-      "text": "Miscellaneous",
-      "elementType": "section",
-      "showHeader": true,
-      "include": [ ],
-      "childElements": [ ]
     },
     {
       "text": "Add-ons",

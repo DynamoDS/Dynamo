@@ -136,7 +136,7 @@
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Arc.ByFillet(Autodesk.DesignScript.Geometry.Curve,Autodesk.DesignScript.Geometry.Curve,System.Double)">
             <summary>
-            Create an arc by filleting twp curves with given radius
+            Create an arc by filleting two curves with given radius
             </summary>
             <param name="curve1"> First curve </param>
             <param name="curve2"> Second curve </param>
@@ -2554,11 +2554,12 @@
             Get a string representation of the PolyCurve
             </summary>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByJoinedCurves(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve})">
+        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByJoinedCurves(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Double)">
             <summary>
-            Make PolyCurve by joining curves. Flips curve as needed for connectivity
+            Make PolyCurve by joining curves. Flips curve as needed for connectivity. Choose a preferred join tolerance between 1e-6 and 1e-3 units.
             </summary>
             <param name="curves"> Curves to join into polycurve </param>
+            <param name="joinTolerance"> Tolerance to determine size of gap allowed between curves to be joined </param>
             <returns>  </returns>
             <search>
             segments,joincurves
@@ -3059,7 +3060,7 @@
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Solid.ByRevolve(Autodesk.DesignScript.Geometry.Curve,Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Vector,System.Double,System.Double)">
             <summary>
-            Create a Surface of revolution, sweeping the profile Curve around the axis Ray formed by the origin and the axis Vector, from the start angle in degrees to the sweep angle in degrees.
+            Create a Solid of revolution, sweeping the profile Curve around the axis Ray formed by the origin and the axis Vector, from the start angle in degrees to the sweep angle in degrees.
             </summary>
             <param name="profile">  </param>
             <param name="axisOrigin">  </param>
@@ -4038,6 +4039,11 @@
             </summary>
             <returns>  </returns>
         </member>
+        <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ToString">
+            <summary>
+            Get a string representation of the TSplineSurface
+            </summary>
+        </member>
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ByPlaneOriginNormal(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Vector,Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point,System.Int32,System.Int32,Autodesk.DesignScript.Geometry.TSpline.TSplineInitialSymmetry,System.Boolean)">
             <summary>
             Create a T-Spline Plane centered at root Point, with input normal Vector.
@@ -4473,6 +4479,27 @@
             <param name="inSmoothMode">Show T-Spline Surface in box or smooth visualization</param>
             <search>tspline,create,pipe,curve</search>
         </member>
+        <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.BuildPipes(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Double,System.Double,System.Collections.Generic.IEnumerable{System.Int32},System.Boolean,System.Boolean,System.Collections.Generic.IEnumerable{System.Double},System.Collections.Generic.IEnumerable{System.Double},System.Collections.Generic.IEnumerable{System.Double},System.Collections.Generic.IEnumerable{System.Double},System.Collections.Generic.IEnumerable{System.Double},System.Collections.Generic.IEnumerable{System.Double},System.Boolean)">
+            <summary>
+            Make a piped surface out of a network of curves or lines.
+            A smooth joint is created at each curve intersection.
+            Some parameters take single value or list - one value per curve.
+            </summary>
+            <param name="curves">A list of curves to create pipes from</param>
+            <param name="defaultRadius">Default radius for created pipes</param>
+            <param name="snappingTolerance">The tolerance used to detect curve intersections</param>
+            <param name="segmentsCount">Numbers of segments for each curve. The size of the list can be the curve count or 1 for replication or 0 for automatic determination.</param>
+            <param name="autoHandleStart">If true, the parameters of the handle at the start of each curve are automatically generated, and the custom parameters of rotationsAtStart, radiiAtStart, and positionsAtStart are ignored.</param>
+            <param name="autoHandleEnd">If true, the parameters of the handle at the end of each curve are automatically generated, and the custom parameters of rotationsAtEnd, radiiAtEnd, and positionsAtEnd are ignored.</param>
+            <param name="startRotations">Custom rotation angle in degrees for each pipe handle at the start of each curve. This parameter is ignored when autoHandleStart is true. The size of the list can be the curve count or 1 for replication.</param>
+            <param name="endRotations">Custom rotation angle in degrees for each pipe handle at the end of each curve. This parameter is ignored when autoHandleEnd is true. The size of the list can be the curve count or 1 for replication.</param>
+            <param name="startRadii">Custom radius for each pipe handle at the start of each curve. This parameter is ignored when autoHandleStart is true. The size of the list can be the curve count or 1 for replication.</param>
+            <param name="endRadii">Custom radius for each pipe handle at the end of each curve. This parameter is ignored when autoHandleEnd is true. The size of the list can be the curve count or 1 for replication.</param>
+            <param name="startPositions">Custom position of each pipe handle at the start of each curve in percentage between 0 and 1 along the curve's arc-length. This parameter is ignored when autoHandleStart is true. The size of the list can be the curve count or 1 for replication.</param>
+            <param name="endPositions">Custom position of each pipe handle at the end of each curve in percentage between 0 and 1 along the curve's arc-length. This parameter is ignored when autoHandleEnd is true. The size of the list can be the curve count or 1 for replication.</param>
+            <param name="inSmoothMode">Show T-Spline Surface in box or smooth visualization</param>
+            <search>tspline,create,pipe,curve</search>
+        </member>
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ByCombinedTSplineSurfaces(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.TSpline.TSplineSurface})">
             <summary>
             Combine given T-Spline Surfaces into single one.
@@ -4652,6 +4679,24 @@
             <returns>T-Spline surface positioned between given T-Spline border edges and curve loop</returns>
             <search>tspline,match,curve</search>
         </member>
+        <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.CreateMatch(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.TSpline.TSplineEdge},System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Int32,System.Boolean,System.Boolean,System.Int32,System.Double,System.Boolean,System.Double,System.Double,System.Boolean)">
+            <summary>
+            Create match with T-Spline and closed loop of curves
+            </summary>
+            <param name="tsEdges">Closed T-Spline edge loop to create match with</param>
+            <param name="curves">Closed curve loop to create match with</param>
+            <param name="continuity">Geometry continuity to attempt to match: G0, G1, G2</param>
+            <param name="useArclength">Wether to use arcLength alignment while building match</param>
+            <param name="useRefinement">If true, extra control points will be added to the T-spline to match the surfaces within a given tole­rance.</param>
+            <param name="numRefinementSteps">Max number of refinement steps. Ignored if useRefinement is set to false</param>
+            <param name="refinementTolerance">Tolerance to hit. Ignored if useRefinement is set to false</param>
+            <param name="usePropagation">Whether to use propagation while building match</param>
+            <param name="widthOfPropagation">Determines how much of the surface is affected by the match. Ignored if usePropagation is set to false</param>
+            <param name="scale">Tangent scale for G1 or curvature scale for G2. Ignored if continuity is G0.</param>
+            <param name="flipSourceTargetAlignment">Whether to reverse the alignment direction</param>
+            <returns>T-Spline surface positioned between given T-Spline border edges and curve loop</returns>
+            <search>tspline,match,curve</search>
+        </member>
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.CreateMatch(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.TSpline.TSplineEdge},System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Edge},System.Int32,System.Boolean,System.Boolean,System.Int32,System.Double,System.Boolean,System.Double,System.Double,System.Double,System.Boolean)">
             <summary>
             Create match with T-Spline and closed loop of BRep edges. First,
@@ -4668,6 +4713,25 @@
             <param name="widthOfPropagation">Determines how much of the surface is affected by the match. Ignored if usePropagation is set to false</param>
             <param name="tangentScale">Tangent scale. If continuity is not set to G1 is ignored</param>
             <param name="curvParamWeight">Carvature param weight. If continuity is not set to G2 is ignored</param>
+            <param name="flipSourceTargetAlignment">Whether to reverse the alignment direction</param>
+            <returns>T-Spline surface positioned between given T-Spline border edges and BRep edge loop</returns>
+            <search>tspline,match,brep</search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.CreateMatch(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.TSpline.TSplineEdge},System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Edge},System.Int32,System.Boolean,System.Boolean,System.Int32,System.Double,System.Boolean,System.Double,System.Double,System.Boolean)">
+            <summary>
+            Create match with T-Spline and closed loop of BRep edges. First,
+            edge loop is converted to curve loop and then match is performed
+            </summary>
+            <param name="tsEdges">Closed T-Spline edge loop to create match with</param>
+            <param name="brepEdges">Closed BRep edge loop to create match with</param>
+            <param name="continuity">Geometry continuity to attempt to match: G0, G1, G2</param>
+            <param name="useArclength">Wether to use arcLength alignment while building match</param>
+            <param name="useRefinement">If true, extra control points will be added to the T-spline to match the surfaces within a given tole­rance.</param>
+            <param name="numRefinementSteps">Max number of refinement steps. Ignored if useRefinement is set to false</param>
+            <param name="refinementTolerance">Tolerance to hit. Ignored if useRefinement is set to false</param>
+            <param name="usePropagation">Whether to use propagation while building match</param>
+            <param name="widthOfPropagation">Determines how much of the surface is affected by the match. Ignored if usePropagation is set to false</param>
+            <param name="scale">Tangent scale for G1 or curvature scale for G2. Ignored if continuity is G0.</param>
             <param name="flipSourceTargetAlignment">Whether to reverse the alignment direction</param>
             <returns>T-Spline surface positioned between given T-Spline border edges and BRep edge loop</returns>
             <search>tspline,match,brep</search>
@@ -5943,6 +6007,12 @@
             </summary>
             <returns>Json formatted string</returns>
         </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Geometry.Approximate">
+            <summary>
+            Convert internal structure of geometry from analytics to splines
+            </summary>
+            <returns></returns>
+        </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.ImportFromSAT(System.IO.FileInfo)">
             <summary>
             Imports a SAT file and returns an array of imported geometries
@@ -6171,12 +6241,12 @@
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.LowerModelerExtentExceeded">
             <summary>
-              Looks up a localized string similar to Lower modeling extent exceeded, consider  choosing a modeling range between {0} and {1}.
+              Looks up a localized string similar to Your inputs lie outside of the allowable modeling range, consider  choosing the {0} setting with a modeling range between {1} and {2} from the &quot;Settings =&gt; Geometry Working Range&quot; dialog.
             </summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.ModelerExtentsExceeded">
             <summary>
-              Looks up a localized string similar to Modeling extents are exceeded, consider choosing smaller values.
+              Looks up a localized string similar to You have exceeded the allowable modeling extents, consider choosing smaller values.
             </summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.NoImplementationException">
@@ -6256,7 +6326,7 @@
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.UpperModelerExtentExceeded">
             <summary>
-              Looks up a localized string similar to Upper modeling extent exceeded, consider choosing a modeling range between {0} and {1}.
+              Looks up a localized string similar to Your inputs lie outside of the allowable modeling range, consider choosing the {0} setting with a modeling range between {1} and {2} from the &quot;Settings =&gt; Geometry Working Range&quot; dialog.
             </summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.VertexColorNotSupported">

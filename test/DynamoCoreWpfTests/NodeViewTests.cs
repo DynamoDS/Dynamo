@@ -1,9 +1,15 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
+using Dynamo.Controls;
+using Dynamo.Graph.Workspaces;
+using Dynamo.ViewModels;
 using Dynamo.Selection;
 using DynamoCoreWpfTests.Utility;
 using NUnit.Framework;
 using System.Windows.Input;
+using System.Globalization;
+using System.Threading;
 
 namespace DynamoCoreWpfTests
 {
@@ -136,6 +142,92 @@ namespace DynamoCoreWpfTests
                 Assert.AreEqual(4, nodeView.ViewModel.ZIndex);
                 Assert.AreEqual(2, annotation.ZIndex);
             };
+        }
+
+        [Test]
+        public void NodesHaveCorrectLocationsIndpendentOfCulture()
+        {
+            string openPath = @"core\nodeLocationTest.dyn";
+            Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo("es-AR");
+            Open(openPath);
+
+            Assert.AreEqual(1, this.Model.CurrentWorkspace.Nodes.Count());
+            var node = this.Model.CurrentWorkspace.Nodes.First();
+            Assert.AreEqual(217.952067513811, node.X);
+            Assert.AreEqual(177.041832898393, node.Y);
+
+            Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo("zu-ZA");
+            Open(openPath);
+
+            Assert.AreEqual(1, this.Model.CurrentWorkspace.Nodes.Count());
+            node = this.Model.CurrentWorkspace.Nodes.First();
+            Assert.AreEqual(217.952067513811, node.X);
+            Assert.AreEqual(177.041832898393, node.Y);
+
+            Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo("ja-JP");
+            Open(openPath);
+
+            Assert.AreEqual(1, this.Model.CurrentWorkspace.Nodes.Count());
+            node = this.Model.CurrentWorkspace.Nodes.First();
+            Assert.AreEqual(217.952067513811, node.X);
+            Assert.AreEqual(177.041832898393, node.Y);
+
+            Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo("en-US");
+        }
+
+        [Test]
+        public void SettingNodeAsInputOrOutputMarksGraphAsModified()
+        {
+            Open(@"core\isInput_isOutput\IsInput.dyn");
+
+            // Get the node view for a specific node in the graph
+            NodeView nodeView = NodeViewWithGuid("c275ece0-2316-4e27-8d51-915257374c1e");
+
+            // Get a reference to the current workspace
+            NodeViewModel nodeViewModel = (nodeView.DataContext as NodeViewModel);
+            WorkspaceModel ws = nodeViewModel.DynamoViewModel.CurrentSpace;
+
+            // Verify IsSetAsInput is set to true
+            Assert.AreEqual(nodeViewModel.IsSetAsInput, true);
+            // Verify IsSetAsOutput is set to false
+            Assert.AreEqual(nodeViewModel.IsSetAsOutput, false);
+            // Verify the graph is not marked as modified
+            Assert.AreEqual(ws.HasUnsavedChanges, false);
+
+            // Set IsSetAsInput to false
+            nodeViewModel.IsSetAsInput = false;
+            // Verify graph is marked as modified
+            Assert.AreEqual(nodeViewModel.IsSetAsInput, false);
+            Assert.AreEqual(ws.HasUnsavedChanges, true);
+
+            // Save the graph
+            string tempPath = Path.Combine(Path.GetTempPath(), "IsInput.dyn");
+            ws.Save(tempPath);
+
+            // Verify graph is no longer marked as modified
+            Assert.AreEqual(nodeViewModel.IsSetAsInput, false);
+            Assert.AreEqual(ws.HasUnsavedChanges, false);
+
+            // Repeat process for IsSetAsOutput //
+
+            // Verify IsSetAsOutput is set to false
+            Assert.AreEqual(nodeViewModel.IsSetAsOutput, false);
+            // Set IsSetAsOutput to true
+            nodeViewModel.IsSetAsOutput = true;
+
+            // Verify graph is marked as modified
+            Assert.AreEqual(nodeViewModel.IsSetAsOutput, true);
+            Assert.AreEqual(ws.HasUnsavedChanges, true);
+
+            // Save the graph
+            ws.Save(tempPath);
+
+            // Verify graph is no longer marked as modified
+            Assert.AreEqual(nodeViewModel.IsSetAsOutput, true);
+            Assert.AreEqual(ws.HasUnsavedChanges, false);
+
+            // Delete temp file
+            File.Delete(tempPath);
         }
     }
 }

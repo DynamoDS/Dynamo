@@ -1,8 +1,9 @@
-﻿using Dynamo.Engine;
-using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Text.RegularExpressions;
+using Dynamo.Engine;
+using Newtonsoft.Json;
 
 namespace Dynamo.Graph.Workspaces
 {
@@ -29,6 +30,7 @@ namespace Dynamo.Graph.Workspaces
                 ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
                 TypeNameHandling = TypeNameHandling.Auto,
                 Formatting = Formatting.Indented,
+                Culture = CultureInfo.InvariantCulture,
                 Converters = new List<JsonConverter>{
                         new ConnectorConverter(logger),                        
                         new WorkspaceWriteConverter(engine),

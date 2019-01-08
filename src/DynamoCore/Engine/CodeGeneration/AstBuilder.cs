@@ -3,11 +3,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
-using Dynamo.Interfaces;
 using Dynamo.Library;
-using Dynamo.Models;
 using Dynamo.Logging;
 
 using ProtoCore;
@@ -270,13 +267,8 @@ namespace Dynamo.Engine.CodeGeneration
 
             var inputAstNodes = new List<AssociativeNode>();
             var inPortsCount = node.InPorts.Count;
-            var inPortDataCount = node.InPorts.Count;
-
-            //TODO: inputsCount should be removed in future. 
-            // InPortData won't be used anymore, so we shouldn't take into account InPortData.Count.
-            int inputsCount = inPortsCount > inPortDataCount ? inPortsCount : inPortDataCount;
-
-            for (int index = 0; index < inputsCount; index++)
+            
+            for (int index = 0; index < inPortsCount; index++)
             {
                 Tuple<int, NodeModel> inputTuple;
 
@@ -286,10 +278,10 @@ namespace Dynamo.Engine.CodeGeneration
                     NodeModel inputModel = inputTuple.Item2;
                     AssociativeNode inputNode = inputModel.GetAstIdentifierForOutputIndex(outputIndexOfInput);
 
-#if DEBUG
-                    Validity.Assert(inputNode != null,
-                        "Shouldn't have null nodes in the AST list");
-#endif
+                    // If there are any null AST's (for e.g. if there's an error in the input node),
+                    // graph update for the given node is skipped.
+                    Validity.Assert(inputNode != null, "Shouldn't have null nodes in the AST list");
+
                     inputAstNodes.Add(inputNode);
                 }
                 else
@@ -477,7 +469,7 @@ namespace Dynamo.Engine.CodeGeneration
             else
             {
                 // For single output, directly return that identifier or null.
-                AssociativeNode returnValue = outputs.Count == 1 ? outputs[0] : new NullNode();
+                AssociativeNode returnValue = outputs.Count == 1 && outputs[0] != null ? outputs[0] : new NullNode();
                 functionBody.Body.Add(AstFactory.BuildReturnStatement(returnValue));
             }
 

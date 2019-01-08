@@ -2,6 +2,10 @@ using System.IO;
 using System.Linq;
 
 using NUnit.Framework;
+using Dynamo.Extensions;
+using Moq;
+using System;
+using System.Dynamic;
 
 namespace Dynamo.PackageManager.Tests
 {
@@ -21,13 +25,80 @@ namespace Dynamo.PackageManager.Tests
             Assert.AreEqual("Custom Rounding", pkg.Name);
             Assert.AreEqual("0.1.4", pkg.VersionName);
             Assert.AreEqual("This collection of nodes allows rounding, rounding up and rounding down to a specified precision.", pkg.Description);
-            Assert.AreEqual("Round Up To Precision - Rounds a number *up* to a specified precision, Round Down To Precision - " 
+            Assert.AreEqual("Round Up To Precision - Rounds a number *up* to a specified precision, Round Down To Precision - "
                 + "Rounds a number *down* to a specified precision, Round To Precision - Rounds a number to a specified precision", pkg.Contents);
             Assert.AreEqual("0.5.2.10107", pkg.EngineVersion);
 
             loader.Load(pkg);
 
             Assert.AreEqual(3, pkg.LoadedCustomNodes.Count);
+        }
+
+        [Test]
+        public void PackageLoaderRequestsExtensionsBeLoaded()
+        {
+            var loader = GetPackageLoader();
+            var pkgDir = Path.Combine(PackagesDirectory, "SampleExtension");
+
+            var extensionLoad = false;
+            var extensionAdd = false;
+            var extensionReady = false;
+            var packageLoaded = false;
+
+            loader.PackgeLoaded += (package) =>
+            {
+                packageLoaded = true;
+            };
+
+            loader.RequestLoadExtension += (extensionPath) =>
+            {
+                extensionLoad = true;
+                var mockExtension = new Moq.Mock<IExtension>();
+                mockExtension.Setup(ext => ext.Startup(It.IsAny<StartupParams>())).Callback(() => { Assert.Fail(); });
+                mockExtension.Setup(ext => ext.Ready(It.IsAny<ReadyParams>()))
+               .Callback(() => { extensionReady = true; });
+                return mockExtension.Object;
+            };
+            loader.RequestAddExtension += (extension) =>
+            {
+                extensionAdd = true;
+            };
+
+            var pkg = loader.ScanPackageDirectory(pkgDir);
+            loader.Load(pkg);
+
+            Assert.IsTrue(loader.RequestedExtensions.Count() == 1);
+            Assert.IsTrue(extensionLoad);
+            Assert.IsTrue(extensionAdd);
+            Assert.IsTrue(extensionReady);
+            Assert.IsTrue(packageLoaded);
+        }
+
+        [Test]
+        public void PackageLoaderDoesNotRequestsViewExtensionsBeLoaded()
+        {
+            var loader = GetPackageLoader();
+            var pkgDir = Path.Combine(PackagesDirectory, "SampleViewExtension");
+
+            var viewExtensionLoad = false;
+            var viewExtensionAdd = false;
+
+            loader.RequestLoadExtension += (extensionPath) =>
+            {
+                viewExtensionLoad = true;
+                return null;
+            };
+            loader.RequestAddExtension += (extension) =>
+            {
+                viewExtensionAdd = true;
+            };
+
+            var pkg = loader.ScanPackageDirectory(pkgDir);
+            loader.Load(pkg);
+
+            Assert.IsTrue(loader.RequestedExtensions.Count() == 0);
+            Assert.IsFalse(viewExtensionLoad);
+            Assert.IsFalse(viewExtensionAdd);
         }
 
         [Test]
@@ -47,8 +118,8 @@ namespace Dynamo.PackageManager.Tests
                 Preferences = this.CurrentDynamoModel.PreferenceSettings
             });
 
-            // There are four packages in "GitHub\Dynamo\test\pkgs"
-            Assert.AreEqual(4, loader.LocalPackages.Count());
+            // There are 8 packages in "GitHub\Dynamo\test\pkgs"
+            Assert.AreEqual(8, loader.LocalPackages.Count());
         }
 
         [Test]
@@ -58,7 +129,7 @@ namespace Dynamo.PackageManager.Tests
             var loader = new PackageLoader(pkgDir);
             loader.LoadAll(new LoadPackageParams
             {
-                Preferences = this.CurrentDynamoModel.PreferenceSettings           
+                Preferences = this.CurrentDynamoModel.PreferenceSettings
             });
 
             Assert.AreEqual(0, loader.LocalPackages.Count());

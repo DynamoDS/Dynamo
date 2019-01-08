@@ -69,6 +69,8 @@ namespace DSIronPythonTests
                 new ArrayList());
 
             Assert.AreEqual(new[] { 0, 1, 2 }, output);
+
+            marshaler.UnregisterMarshalerOfType<string>();
         }
 
         [Test]
@@ -86,6 +88,24 @@ namespace DSIronPythonTests
                 new ArrayList { new ArrayList { " ", "  " } });
 
             Assert.AreEqual(3, output);
+
+            marshaler.UnregisterMarshalerOfType<string>();
         }
-    }
+
+        [Test]
+        public void SliceOperator_Output()
+        {
+            var names = new ArrayList { "indx" };
+            var vals = new ArrayList { 3 };
+
+            var output = DSIronPython.IronPythonEvaluator.EvaluateIronPythonScript(
+                "OUT = [1,2,3,4,5,6,7][indx:indx+2]",
+                names,
+                vals);
+
+            var expected = new ArrayList { 4, 5 };
+
+            Assert.AreEqual(expected, output);
+        }
+}
 }

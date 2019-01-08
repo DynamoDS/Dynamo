@@ -111,14 +111,6 @@ namespace CoreNodeModels.Input
         {
             ShouldDisplayPreviewCore = false;
         }
-
-      /// <summary>
-      ///     Indicates whether node is input node
-      /// </summary>
-      public override bool IsInputNode
-      {
-        get { return false; }
-      }
     }
 
     [NodeName("Directory Path")]

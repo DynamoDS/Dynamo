@@ -1,4 +1,4 @@
-﻿﻿using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using NUnit.Framework;
@@ -962,7 +962,7 @@ namespace ProtoTest.LiveRunner
         {
             List<string> codes = new List<string>() 
             {
-@"import(""Builtin.dll"");
+@"import(""DesignScriptBuiltin.dll"");
 a = (1..2) + (1..2); i = a[0];
 ",
 
@@ -1304,8 +1304,8 @@ def f()
             List<string> codes = new List<string>() 
             {
                 "def f() { t = 41; return = t;} x = f();",
-                "def f() { t1 = 41; t2 = 42; return = {t1, t2}; } x = f();",
-                "def f() { t1 = 41; t2 = 42; t3 = 43; return = {t1, t2, t3};} x = f();"
+                "def f() { t1 = 41; t2 = 42; return = [t1, t2]; } x = f();",
+                "def f() { t1 = 41; t2 = 42; t3 = 43; return = [t1, t2, t3];} x = f();"
             };
 
             Guid guid = System.Guid.NewGuid();
@@ -1350,12 +1350,12 @@ def f()
             List<string> codes = new List<string>() 
             {
                 "def f() { t = 41; return = t;} x = f(); r = __Equals(x, 41);",
-                "def f() { t1 = 41; t2 = 42; return = {t1, t2}; } x = f(); r = __Equals(x, {41, 42});",
-                "def f() { t1 = 41; t2 = 42; t3 = 43; return = {t1, t2, t3};} x = f(); r = __Equals(x, {41, 42, 43});",
-                "def f() { t1 = 43; t2 = 42; t3 = 41; return = {t1, t2, t3};} x = f(); r = __Equals(x, {43, 42, 41});",
+                "def f() { t1 = 41; t2 = 42; return = [t1, t2]; } x = f(); r = __Equals(x, [41, 42]);",
+                "def f() { t1 = 41; t2 = 42; t3 = 43; return = [t1, t2, t3];} x = f(); r = __Equals(x, [41, 42, 43]);",
+                "def f() { t1 = 43; t2 = 42; t3 = 41; return = [t1, t2, t3];} x = f(); r = __Equals(x, [43, 42, 41]);",
                 "def f() { t1 = t2 + t3; return = t;} x = f(); r = __Equals(x, null);",
-                "def f() { t1 = 2; t2 = 5; t3 = t1..t2; return = t3;} x = f(); r = __Equals(x, {2, 3, 4, 5});",
-                "def f() { t1 = 2; t2 = 5; t3 = t1..t2..#2; return = t3;} x = f(); r = __Equals(x, {2, 5});",
+                "def f() { t1 = 2; t2 = 5; t3 = t1..t2; return = t3;} x = f(); r = __Equals(x, [2, 3, 4, 5]);",
+                "def f() { t1 = 2; t2 = 5; t3 = t1..t2..#2; return = t3;} x = f(); r = __Equals(x, [2, 5]);",
                 "def f() { a = 1; b = 2; c = (a == b) ? 3 : 4; return = c; } x = f(); r = __Equals(x, 4);",
                 "def f() { a = 2; b = 2; c = (a == b) ? 3 : 4; return = c; } x = f(); r = __Equals(x, 3);",
             };
@@ -1412,10 +1412,10 @@ def f()
 { 
     t1 = 41; 
     t2 = 42; 
-    return = {t1, t2}; 
+    return = [t1, t2]; 
 } 
 x = f(); 
-r = __Equals(x, {41, 42});
+r = __Equals(x, [41, 42]);
 ",
             };
 
@@ -2324,10 +2324,10 @@ r = __Equals(x, {41, 42});
         public void TestFunctionObjectInApply()
         {
             liveRunner = new ProtoScript.Runners.LiveRunner();
-            liveRunner.ResetVMAndResyncGraph(new List<string> { "Builtin.dll", "FunctionObject.ds" });
+            liveRunner.ResetVMAndResyncGraph(new List<string> { "DesignScriptBuiltin.dll", "FunctionObject.ds" });
             string code = @"
  def foo(x,y ) { return = x + y; }
- f = __CreateFunctionObject(foo, 2, {1}, {null, 42}, true); r = __Apply(f, 3);
+ f = __CreateFunctionObject(foo, 2, [1], [null, 42], true); r = __Apply(f, 3);
  ";
 
             Guid guid = System.Guid.NewGuid();
@@ -2727,7 +2727,7 @@ r = __Equals(x, {41, 42});
         {
             List<string> codes = new List<string>() 
             {
-                @"import(""Builtin.dll"");import(""FFITarget.dll"");",
+                @"import(""DesignScriptBuiltin.dll"");import(""FFITarget.dll"");",
                 "x = 0..2; p = DummyPoint.ByCoordinates(x, 0.0, 0.0); p[0] = p[0].Translate(0,5,0);",
                 "x = 0..2; p = DummyPoint.ByCoordinates(x, 0.0, 0.0); p[0] = p[0].Translate(0,5,0); b = p[0].Y;"
             };
@@ -2760,7 +2760,7 @@ r = __Equals(x, {41, 42});
         {
             List<string> codes = new List<string>() 
             {
-                @"import(""Builtin.dll"");import(""FFITarget.dll"");",
+                @"import(""DesignScriptBuiltin.dll"");import(""FFITarget.dll"");",
                 "x = 0..2; p = DummyPoint.ByCoordinates(x, 0.0, 0.0);",
                 "x = 0..2; p = DummyPoint.ByCoordinates(x, 0.0, 0.0); p[0] = p[0].Translate(0,5,0);",
                 "x = 0..2; p = DummyPoint.ByCoordinates(x, 0.0, 0.0); p[0] = p[0].Translate(0,5,0); b = p[0].Y;"
@@ -3478,14 +3478,14 @@ r = __Equals(x, {41, 42});
 dataEnteringNode = IN
 
 #Assign your output to the OUT variable
-OUT = 1"", {""IN""}, {{}}); x = x;",
+OUT = 1"", [""IN""], [[]]); x = x;",
                             @"x = IronPythonEvaluator.EvaluateIronPythonScript(""# Default imports
 
 #The inputs to this node will be stored as a list in the IN variable.
 dataEnteringNode = IN
 
 #Assign your output to the OUT variable
-OUT = 100"", {""IN""}, {{}}); x = x;"
+OUT = 100"", [""IN""], [[]]); x = x;"
             };
 
             Guid guid1 = System.Guid.NewGuid();
@@ -3516,7 +3516,7 @@ OUT = 100"", {""IN""}, {{}}); x = x;"
             List<string> codes = new List<string>() 
             {
                 @"def foo(i:int, j : var[]..[]) { return = i; }",
-                @"x = 1; p = foo(x, {{}});",
+                @"x = 1; p = foo(x, [[]]);",
                 @"x = 10;"
             };
 
@@ -4074,7 +4074,7 @@ OUT = 100"", {""IN""}, {{}}); x = x;"
             Guid guid2 = System.Guid.NewGuid();
             Subtree cbnPt = ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid2, codes[2]);
             Subtree cbnDel = ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid2,
-                "v0 = Function(FFITarget.DummyPoint.ByCoordinates, 3, {}, {null, null, null}, true);");
+                "v0 = Function(FFITarget.DummyPoint.ByCoordinates, 3, [], [null, null, null], true);");
 
             added.Add(cbnPt);
 
@@ -4192,7 +4192,7 @@ OUT = 100"", {""IN""}, {{}}); x = x;"
             Guid guid2 = System.Guid.NewGuid();
             Subtree cbnPt = ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid2, codes[2]);
             Subtree cbnDel = ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid2,
-                "v0 = Function(FFITarget.DummyPoint.ByCoordinates, 3, {}, {null, null, null}, true);");
+                "v0 = Function(FFITarget.DummyPoint.ByCoordinates, 3, [], [null, null, null], true);");
 
             added.Add(cbnPt);
 
@@ -4380,7 +4380,7 @@ a = [Imperative]
         {
             List<string> codes = new List<string>() 
             {
-               @"import(""Builtin.dll"");
+               @"import(""DesignScriptBuiltin.dll"");
 a = [Imperative]
 {
     x = 0;
@@ -4408,7 +4408,7 @@ a = [Imperative]
         {
             List<string> codes = new List<string>() 
             {
-               @"import(""Builtin.dll"");
+               @"import(""DesignScriptBuiltin.dll"");
 a = [Imperative]
 {
     x = 0;
@@ -4928,7 +4928,9 @@ r = func_1(x);
         public void TestNestedLanguageBlockReExecution05()
         {
             string code = @"
-def foo()
+
+
+def foo()
 {
     x2 = 5;
     v1 = [Associative]
@@ -5663,20 +5665,20 @@ d = [Imperative]
         {
             List<string> codes = new List<string>() 
             {
-@"import(""Builtin.dll"");
-i = {1}; 
+@"import(""DesignScriptBuiltin.dll"");
+i = [1]; 
 j = i[0];
 "
 ,
 
 @"
 j = 999;
-i = {};
+i = [];
 i[0] = j;
 "
 ,
 @"
-i = {100}; 
+i = [100]; 
 j = i[0];
 "
             };
@@ -5713,8 +5715,8 @@ j = i[0];
         {
             List<string> codes = new List<string>() 
             {
-@"import(""Builtin.dll"");
-i = {1,2}; 
+@"import(""DesignScriptBuiltin.dll"");
+i = [1,2]; 
 j = i[0];
 k = i[1];
 "
@@ -5723,13 +5725,13 @@ k = i[1];
 @"
 j = 999;
 k = 999;
-i = {};
+i = [];
 i[0] = j;
 i[1] = k;
 "
 ,
 @"
-i = {10,20}; 
+i = [10,20]; 
 j = i[0];
 k = i[1];
 "
@@ -5771,7 +5773,7 @@ k = i[1];
             List<string> codes = new List<string>() 
             {
 @"
-import(""Builtin.dll"");
+import(""DesignScriptBuiltin.dll"");
 import(""FunctionObject.ds"");
 def foosa: var[]..[](a1 : var[]..[], a2 : var[]..[])
 {
@@ -5799,10 +5801,10 @@ k = i[""a""];
 ,
 
 @"
-partialVar = Function(foosa, 2, {0}, {x, null}, true);
-j = Function(__ComposeBuffered, 3, {0, 1}, {{Function(__GetOutput, 2, {1}, {null, ""b""}, true), partialVar}, 1, null}, true);
-i_out1 = Function(__ComposeBuffered, 3, {0, 1}, {{Function(__GetOutput, 2, {1}, {null, ""a""}, true), partialVar}, 1, null}, true);
-i = {};
+partialVar = Function(foosa, 2, [0], [x, null], true);
+j = Function(__ComposeBuffered, 3, [0, 1], [[Function(__GetOutput, 2, [1], [null, ""b""], true), partialVar], 1, null], true);
+i_out1 = Function(__ComposeBuffered, 3, [0, 1], [[Function(__GetOutput, 2, [1], [null, ""a""], true), partialVar], 1, null], true);
+i = [];
 i[""b""] = j;
 i[""a""] = k;
 "

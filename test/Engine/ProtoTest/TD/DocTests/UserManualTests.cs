@@ -121,9 +121,9 @@ y = a[3];
             string code =
 @"
 // create a collection explicitly
-a = { 45, 67, 22 };
+a = [ 45, 67, 22 ];
 // create an empty collection
-b = {};
+b = [];
 // change several of the elements of a collection
 b[0] = 45;
 b[1] = 67;
@@ -144,7 +144,7 @@ y = b[1];
             string code =
 @"
 a = 5..20;
-indices = {1, 3, 5, 7};
+indices = [1, 3, 5, 7];
 // create a collection via a collection of indices
 b = a[indices];
 s = Print(a);
@@ -263,7 +263,7 @@ s = Print(gr);
 @"
 def returnTwoNumbers()
 {
-return = {1, 2};
+return = [1, 2];
 }
 two_nums = returnTwoNumbers();
 x = two_nums[0];
@@ -385,11 +385,11 @@ s = Print(i);
         {
             string code =
 @"
-j = {};
+j = [];
 j[0] = 1;
-j[1] = {2, 3, 4};
+j[1] = [2, 3, 4];
 j[2] = 5;
-j[3] = { {6, 7}, { {8} } };
+j[3] = [ [6, 7], [ [8] ] ];
 j[4] = 9;
 s = Print(j);
 x = j[1][1];
@@ -407,7 +407,7 @@ y = j[3][1][0][0];
             string code =
 @"
 // generate a jagged collection
-j = {1, {2, 3, 4}, 5, {{6, 7}, {{8}}}, 9};
+j = [1, [2, 3, 4], 5, [[6, 7], [[8]]], 9];
 s = Print(j);
 s = Print( j[0] );
 s = Print( j[1][0] );

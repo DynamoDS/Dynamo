@@ -1,13 +1,32 @@
-﻿using Dynamo.Interfaces;
-using Dynamo.Logging;
-
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using Dynamo.Logging;
 
 namespace Dynamo.Extensions
 {
+
+    /// <summary>
+    /// An object which may request extensions to be loaded and added to the extensionsManager.
+    /// </summary>
+    public interface IExtensionSource
+    {
+        /// <summary>
+        /// Event that is raised when the ExtensionSource requests an Extension be loaded.
+        /// </summary>
+        event Func<string, IExtension> RequestLoadExtension;
+
+        /// <summary>
+        /// Event that is raised when ExtensionSource requests an Extension to be added to 
+        /// list of currently loaded extensions.
+        /// </summary>
+        event Action<IExtension> RequestAddExtension;
+
+        /// <summary>
+        /// Collection of Extensions this ExtensionSource has requested be loaded.
+        /// </summary>
+        IEnumerable<IExtension> RequestedExtensions { get;}
+    }
+
     /// <summary>
     ///  This class handles registration, lookup, and disposal of extensions.
     /// </summary>
@@ -23,6 +42,47 @@ namespace Dynamo.Extensions
         public ExtensionManager()
         {
             extensionLoader.MessageLogged += Log;
+            this.extensionLoader.ExtensionLoading += SubscribeExtension;
+            this.ExtensionRemoved += UnsubscribeExtension;
+        }
+
+        private void RequestAddExtensionHandler(dynamic extension)
+        {
+            if(extension is IExtension)
+            {
+                this.Add(extension as IExtension);
+            }
+           
+        }
+        private IExtension RequestLoadExtensionHandler(string extensionPath)
+        {
+            // If the path is not a viewExtension - load it.
+            if (!(extensionPath.Contains("_ViewExtension")))
+            {
+               return this.extensionLoader.Load(extensionPath);
+            }
+            return null;
+        }
+
+        private void UnsubscribeExtension(IExtension obj)
+        {
+            if (obj is IExtensionSource)
+            {
+                (obj as IExtensionSource).RequestLoadExtension -= RequestLoadExtensionHandler;
+                (obj as IExtensionSource).RequestAddExtension -= RequestAddExtensionHandler;
+            }
+        }
+
+        private void SubscribeExtension(IExtension obj)
+        {
+            //if this extension could be a source of other extensions (like packageManagerExtension) then
+            //lets handle those requests.
+            if(obj is IExtensionSource)
+            {
+                (obj as IExtensionSource).RequestLoadExtension += RequestLoadExtensionHandler;
+                (obj as IExtensionSource).RequestAddExtension += RequestAddExtensionHandler;
+            }
+
         }
 
         /// <summary>

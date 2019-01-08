@@ -78,16 +78,6 @@ namespace Dynamo.Applications
                 //
                 var openfilepath = string.Empty;
 
-                // import a set of presets from another dyn or presetfile 
-                // DynamoSandbox.exe /o "C:\file path\graph.dyn" /p "C:\states.dyn"
-                //
-                var presetFile = string.Empty;
-
-                // set current opened graph to state by name 
-                // DynamoSandbox.exe /o "C:\file path\graph.dyn" /s "state1"
-                //
-                var presetStateid = string.Empty;
-
                 // print the resulting values of all nodes to the console 
                 // DynamoSandbox.exe /o "C:\file path\graph.dyn" /v "C:\someoutputfilepath.xml"
                 //
@@ -95,18 +85,23 @@ namespace Dynamo.Applications
 
                 var convertFile = false;
 
+                // Generate geometry json file
+                var geometryFilePath = string.Empty;
+                // dll paths we'll import before running a graph 
+                var importPaths = new List<string>() ;
+
                 bool showHelp = false;
                 var optionsSet = new OptionSet().Add("o=|O=", "OpenFilePath, Instruct Dynamo to open headless and run a dyn file at this path", o => openfilepath = o)
                 .Add("c=|C=", "CommandFilePath, Instruct Dynamo to open a commandfile and run the commands it contains at this path," +
                 "this option is only supported when run from DynamoSandbox", c => commandFilePath = c)
                 .Add("l=|L=", "Running Dynamo under a different locale setting", l => locale = l)
-                .Add("p=|P=", "PresetFile, Instruct Dynamo to import the presets at this path into the opened .dyn", p => presetFile = p)
-                .Add("s=|S=", "PresetStateID, Instruct Dynamo to set the graph to the specified preset by name," +
-                "this can be set to a statename or 'all', which will evaluate all states in the dyn", s => presetStateid = s)
                 .Add("v=|V=", "Verbose, Instruct Dynamo to output all evalautions it performs to an xml file at this path", v => verbose = v)
                 .Add("x|X", "When used in combination with the 'O' flag, opens a .dyn file from the specified path and converts it to .json." + 
                 "File will have the .json extension and be located in the same directory as the original file.", x => convertFile = x != null)
-                .Add("h|H|help", "Get some help", h => showHelp = h != null);
+                .Add("h|H|help", "Get some help", h => showHelp = h != null)
+                .Add("g=|G=|geometry", "Geometry, Instruct Dynamo to output geometry from all evaluations to a json file at this path", g => geometryFilePath = g)
+                .Add("i=|I=|import", "Import, Instruct Dynamo to import an assembly as a node library. This argument should be a filepath to a single .dll" +
+                " - if you wish to import multiple dlls - use this flag multiple times: -i 'assembly1.dll' -i 'assembly2.dll' ", i=>importPaths.Add(i));
 
                 optionsSet.Parse(args);
 
@@ -116,23 +111,22 @@ namespace Dynamo.Applications
                 }
 
                 //check for incompatabile parameters
-                if ((!string.IsNullOrEmpty(presetStateid) || (!string.IsNullOrEmpty(presetFile) || (!string.IsNullOrEmpty(verbose)))) && string.IsNullOrEmpty(openfilepath))
+                if (!string.IsNullOrEmpty(verbose) && string.IsNullOrEmpty(openfilepath))
                 {
-                    Console.WriteLine("you must supply a file to open if you want to load a preset or presetFile, or want to save an evaluation output ");
+                    Console.WriteLine("you must supply a file to open if you want to save an evaluation output ");
                 }
                 return new CommandLineArguments
                 {
                     Locale = locale,
                     CommandFilePath = commandFilePath,
                     OpenFilePath = openfilepath,
-                    PresetStateID = presetStateid,
-                    PresetFilePath = presetFile,
                     Verbose = verbose,
-                    ConvertFile = convertFile
+                    ConvertFile = convertFile,
+                    GeometryFilePath = geometryFilePath,
+                    ImportedPaths = importPaths
                 };
             }
 
-          
             private static void ShowHelp(OptionSet opSet)
             {
                 Console.WriteLine("options:");
@@ -142,11 +136,10 @@ namespace Dynamo.Applications
             public string Locale { get; set; }
             public string CommandFilePath { get; set; }
             public string OpenFilePath { get; set; }
-            public string PresetStateID { get; set; }
-            public string PresetFilePath { get; set; }
             public string Verbose { get; set; }
-            
             public bool ConvertFile { get; set; }
+            public string GeometryFilePath { get; set; }
+            public IEnumerable<String> ImportedPaths { get; set; }
         }
 
         public static void PreloadShapeManager(ref string geometryFactoryPath, ref string preloaderLocation)
@@ -156,9 +149,12 @@ namespace Dynamo.Applications
 
             var versions = new[]
             {
-                LibraryVersion.Version223, 
-                LibraryVersion.Version222,
-                LibraryVersion.Version221
+                    new Version(225,0,0),
+                    new Version(224,4,0),
+                    new Version(224,0,1),
+                    new Version(223,0,1),
+                    new Version(222,0,0),
+                    new Version(221,0,0)
             };
 
             var preloader = new Preloader(rootFolder, versions);
@@ -182,7 +178,6 @@ namespace Dynamo.Applications
 
         public static DynamoModel MakeModel(bool CLImode)
         {
-
             var geometryFactoryPath = string.Empty;
             var preloaderLocation = string.Empty;
             PreloadShapeManager(ref geometryFactoryPath, ref preloaderLocation);
@@ -299,7 +294,7 @@ namespace Dynamo.Applications
                         output.Add(new FileLoadException(
                             string.Format(Resources.MismatchedAssemblyVersion, assembly.FullName, currentReferencedAssembly.FullName)
                             + Environment.NewLine + Resources.MismatchedAssemblyList + Environment.NewLine +
-                            String.Join(", ", referencingNewerVersions.Select(x => x.Name).ToArray())));
+                            String.Join(", ", referencingNewerVersions.Select(x => x.Name).Distinct().ToArray())));
                     }
                 }
             }

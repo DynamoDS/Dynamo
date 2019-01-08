@@ -1,56 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
-using Dynamo.Graph;
 using Dynamo.Graph.Connectors;
-using Dynamo.Models;
 
 namespace Dynamo.Interfaces
 {
-    /// <summary>
-    /// interface that defines settings previewBubble preferences,
-    /// this interface should be merged with IPreferences at Dynamo 2.0
-    /// </summary>
-    public interface IPreviewBubblePreference
-    {
-        /// <summary>
-        /// Indicates if preview bubbles should be displayed on nodes.
-        /// </summary>
-        bool ShowPreviewBubbles { get; set; }
-
-    }
-
-    /// <summary>
-    /// interface that defines settings backgroundPreview preferences,
-    /// this interface should be merged with IPreferences at Dynamo 2.0
-    /// </summary>
-    public interface IBackgroundPreviewPreference
-    {
-        /// <summary>
-        /// Collection of pairs [BackgroundPreviewName;isActive]
-        /// </summary>
-        List<BackgroundPreviewActiveState> BackgroundPreviews { get; set; }
-
-        /// <summary>
-        /// Returns active state of specified background preview 
-        /// </summary>
-        /// <param name="name">Background preview name</param>
-        /// <returns>The active state</returns>
-        bool GetIsBackgroundPreviewActive(string name);
-
-        /// <summary>
-        /// Sets active state of specified background preview 
-        /// </summary>
-        /// <param name="name">Background preview name</param>
-        /// <param name="value">Active state to set</param>
-        void SetIsBackgroundPreviewActive(string name, bool value);
-
-    }
-
     /// <summary>
     /// An interface which defines preference settings.
     /// </summary>
     public interface IPreferences
     {
+        /// <summary>
+        /// Collection of pairs [BackgroundPreviewName;isActive]
+        /// </summary>
+        List<BackgroundPreviewActiveState> BackgroundPreviews { get; set; }
+        /// <summary>
+        /// Indicates if preview bubbles should be displayed on nodes.
+        /// </summary>
+        bool ShowPreviewBubbles { get; set; }
+
         /// <summary>
         /// Returns height of console
         /// </summary>
@@ -75,7 +42,7 @@ namespace Dynamo.Interfaces
         /// <summary>
         /// Indicates whether background preview is active or not.
         /// </summary>
-        [Obsolete("Property will be deprecated in Dynamo 2.0, please use BackgroundPreviews")]
+        [Obsolete("Property will be deprecated in Dynamo 3.0, please use BackgroundPreviews")]
         bool IsBackgroundPreviewActive { get; set; }
 
         /// <summary>
@@ -165,6 +132,19 @@ namespace Dynamo.Interfaces
         /// </summary>
         string PythonTemplateFilePath { get; set; }
 
+        /// <summary>
+        /// Returns active state of specified background preview 
+        /// </summary>
+        /// <param name="name">Background preview name</param>
+        /// <returns>The active state</returns>
+        bool GetIsBackgroundPreviewActive(string name);
+
+        /// <summary>
+        /// Sets active state of specified background preview 
+        /// </summary>
+        /// <param name="name">Background preview name</param>
+        /// <param name="value">Active state to set</param>
+        void SetIsBackgroundPreviewActive(string name, bool value);
     }
 
     /// <summary>

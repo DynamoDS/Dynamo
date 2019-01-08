@@ -203,9 +203,9 @@ temp = test(1, 2);
             {
 	            return = a;
             }
-            c = {1,2,3,4};
+            c = [1,2,3,4];
             d = foo(c);
-            e = foo({5,6,7,8});
+            e = foo([5,6,7,8]);
             ";
             thisTest.RunScriptSource(code);
             thisTest.Verify("d", new [] {1,2,3,4});
@@ -228,7 +228,7 @@ temp = test(1, 2);
     }
     t1 = foo(ding(-1));
     t2 = foo(ding(2));
-    arr = {1, 2};
+    arr = [1, 2];
     arr[1] = 100;
     t3 = foo(arr[1]);    
 ";
@@ -290,7 +290,7 @@ z = line.End.Z;
 mx : var[];
 def vector2D()
 {
-	mx = {10,20}; 
+	mx = [10,20]; 
 }
 def ModifyMe : int()
 {
@@ -438,7 +438,7 @@ class Base
     static x : int[];
 }
 t = Base.x;
-Base.x = { 1, 2 };   
+Base.x = [ 1, 2 ];   
                 ";
             thisTest.RunScriptSource(code);
             thisTest.Verify("t", new object[] { 1, 2 });
@@ -489,7 +489,7 @@ b = S.a;
         [Test]
         public void TestTemporaryArrayIndexing01()
         {
-            string code = @"t = {1,2,3,4}[3]; ";
+            string code = @"t = [1,2,3,4][3]; ";
             thisTest.RunScriptSource(code);
             thisTest.Verify("t", 4);
         }
@@ -498,7 +498,7 @@ b = S.a;
         public void TestTemporaryArrayIndexing02()
         {
             string code = @"
-    t = {{1,2}, {3,4}}[1][1];
+    t = [[1,2], [3,4]][1][1];
 ";
             thisTest.RunScriptSource(code);
             thisTest.Verify("t", 4);
@@ -508,7 +508,7 @@ b = S.a;
         public void TestTemporaryArrayIndexing03()
         {
             string code = @"
-    t = ({{1,2}, {3,4}})[1][1];
+    t = ([[1,2], [3,4]])[1][1];
 ";
             thisTest.RunScriptSource(code);
             thisTest.Verify("t", 4);
@@ -518,7 +518,7 @@ b = S.a;
         public void TestTemporaryArrayIndexing04()
         {
             string code = @"
-    t = ({{1,2}, {3,4}}[1])[1];
+    t = ([[1,2], [3,4]][1])[1];
 ";
             thisTest.RunScriptSource(code);
             thisTest.Verify("t", 4);
@@ -528,7 +528,7 @@ b = S.a;
         public void TestTemporaryArrayIndexing05()
         {
             string code = @"
-    t = {1,2,3,4,5}[1..3];
+    t = [1,2,3,4,5][1..3];
 ";
             thisTest.RunScriptSource(code);
             thisTest.Verify("t", new object[] { 2, 3, 4 });
@@ -548,7 +548,7 @@ b = S.a;
         public void TestTemporaryArrayIndexing07()
         {
             string code = @"
-    t = ({1,2,3} + {4, 5, 6})[1];
+    t = ([1,2,3] + [4, 5, 6])[1];
 ";
             thisTest.RunScriptSource(code);
             thisTest.Verify("t", 7);
@@ -564,7 +564,7 @@ y;
 a;
 [Associative]
 {
-	a = {1001,1002};
+	a = [1001,1002];
     x = a[0];
     y = a[1];
     a[0] = 23;
@@ -585,7 +585,7 @@ a;
         return = a[0];
     }
             
-    arr = {100, 200};            
+    arr = [100, 200];            
     b = foo(arr);
 ";
             thisTest.RunScriptSource(code);
@@ -597,8 +597,8 @@ a;
         {
             String code =
 @"
-a = {0,1,2};
-t = {10,11,12};
+a = [0,1,2];
+t = [10,11,12];
 a[0] = t[0];
 ";
             thisTest.RunScriptSource(code);
@@ -640,11 +640,11 @@ x=[Imperative]
 }
 def ding()
 {
-    return = {{1,2,3}, {4,5,6}};
+    return = [[1,2,3], [4,5,6]];
 }
 def foo()
 {
-    return = {1, 2, 3};
+    return = [1, 2, 3];
 }
 y = foo()[1];
 ";
@@ -661,9 +661,9 @@ y = foo()[1];
             string code = @"
 [Imperative]
 {
-    arr1 = {true, false};
-    arr2 = {1, 2, 3};
-    arr3 = {false, true};
+    arr1 = [true, false];
+    arr2 = [1, 2, 3];
+    arr3 = [false, true];
     t = arr2[1][0];
 }
 ";
@@ -676,7 +676,7 @@ y = foo()[1];
         {
             String code =
 @"
-a = {10,20};
+a = [10,20];
 a[2] = 100;
 ";
             thisTest.RunScriptSource(code);
@@ -688,7 +688,7 @@ a[2] = 100;
         {
             String code =
 @"
-t = {};
+t = [];
 t[0] = 100;
 t[1] = 200;
 t[2] = 300;
@@ -702,7 +702,7 @@ t[2] = 300;
         {
             String code =
 @"
-t = {};
+t = [];
 t[0][0] = 1;
 t[0][1] = 2;
 a = t[0][0];
@@ -718,7 +718,7 @@ b = t[0][1];
         {
             String code =
 @"
-t = {};
+t = [];
 t[0][0] = 1;
 t[0][1] = 2;
 t[1][0] = 10;
@@ -736,8 +736,8 @@ b = t[1][1];
         {
             String code =
 @"
-t = {0,{20,30}};
-t[1][1] = {40,50};
+t = [0,[20,30]];
+t[1][1] = [40,50];
 a = t[1][1][0];
 ";
             thisTest.RunScriptSource(code);
@@ -749,13 +749,10 @@ a = t[1][1][0];
         {
             String code =
 @"
-a;
-b;
-c;
-d;
-[Imperative]
+
+i = [Imperative]
 {
-    t = {};
+    t = [];
     t[0][0] = 1;
     t[0][1] = 2;
     t[1][0] = 3;
@@ -764,7 +761,12 @@ d;
     b = t[0][1];
     c = t[1][0];
     d = t[1][1];
+    return [a, b, c, d];
 }
+a = i[0];
+b = i[1];
+c = i[2];
+d = i[3];
 ";
             thisTest.RunScriptSource(code);
             thisTest.Verify("a",1);
@@ -809,7 +811,7 @@ a[3] = 1;
         {
             String code = @"
 a = false;
-a[1][1] = {3};
+a[1][1] = [3];
 ";
             thisTest.RunScriptSource(code);
             thisTest.Verify("a", new object[] { false, new object[] { null, new object[] { 3 } } });
@@ -852,7 +854,7 @@ a[-3] = 2;
         public void TestDynamicArray014()
         {
             String code = @"
-a = {1, 2};
+a = [1, 2];
 a[3] = 3;
 a[-5] = 100;
 ";
@@ -888,7 +890,7 @@ r = a [""x""];
         {
             // Double value can't be used as a key
             String code = @"
-a = {1, 2, 3};
+a = [1, 2, 3];
 r = a [1.3];
 ";
             thisTest.RunScriptSource(code);
@@ -900,7 +902,7 @@ r = a [1.3];
         {
             // Using boolean value as a key
             String code = @"
-a = {};
+a = [];
 a[0] = 42;
 a[1] = 41;
 r1 = a [1 == 1 ? 0 : 1];
@@ -945,8 +947,8 @@ r = arr[""a""];
             // Test replication on array indexing on LHS
             // using character as a key
             String code = @"
-strs = {""x"", 'c', 'b'};
-arr = { 11, 13, 17};
+strs = [""x"", 'c', 'b'];
+arr = [ 11, 13, 17];
 dict = Dictionary.ByKeysValues(strs, arr);
 r1 = dict[""x""];
 r2 = dict['c'];
@@ -963,8 +965,8 @@ r3 = dict['b'];
         {
             // Test replication on array indexing on RHS
             String code = @"
-strs = {""x"", 'c', 'b'};
-arr = { 11, 13, 17};
+strs = [""x"", 'c', 'b'];
+arr = [ 11, 13, 17];
             dict = Dictionary.ByKeysValues(strs, arr);
             values = dict[strs];
             r1 = values[0];
@@ -982,7 +984,7 @@ arr = { 11, 13, 17};
         {
             // Test for 2D array
             String code = @"
-arr = {{1, 2}, {3, 4}};
+arr = [[1, 2], [3, 4]];
 arr[1] = {""xyz"" : 42};
 r1 = arr[1][""xyz""];
             ";
@@ -1042,7 +1044,7 @@ r = foo(a);
         {
             // Type conversion applied to values as well
             String code = @"
-a:int[] = {1.1, 2.2, 3.3};
+a:int[] = [1.1, 2.2, 3.3];
 a[1] = 42.4;
 r = a;
 ";
@@ -1055,7 +1057,7 @@ r = a;
         {
             // Type conversion applied to values as well
             String code = @"
-a = {1.1, 2.2, 3.3};
+a = [1.1, 2.2, 3.3];
 a[1] = 42.4;
 b:int[] = a;
 r = b[1];
@@ -1069,7 +1071,7 @@ r = b[1];
         {
             // Test for-loop to get values
             String code = @"
-a = {1, 2, 3};
+a = [1, 2, 3];
 a[2] = 42;
 r = [Imperative]
 {
@@ -1090,7 +1092,7 @@ r = [Imperative]
         {
             // Test replication for function call
             String code = @"
-a = {1, 2, 3};
+a = [1, 2, 3];
 a[3] = 42;
 
 def foo(x) { return = x;};
@@ -1106,9 +1108,9 @@ r2 = r1[3];
         {
             // Test replication for function call
             String code = @"
-a = {1, 2, 3};
+a = [1, 2, 3];
 a[3] = 21;
-b = {1, 2, 3};
+b = [1, 2, 3];
 b[3] = 21;
 
 def foo(x, y) { return = x + y;
@@ -1125,9 +1127,9 @@ r = sum[3];
         {
             // Test replication for array indexing
             String code = @"
-a = {1, 2, 3};
+a = [1, 2, 3];
 a[3] = 42;
-b = {};
+b = [];
 b[a] = 1;
 b[42] = 42;
 c = b[a];
@@ -1194,7 +1196,7 @@ r2 = Dictionary.ValueAtKey(r1, ""x"");
             String code = @"
 r = [Imperative]
 {
-    a = {1, 5, 7};
+    a = [1, 5, 7];
     x = 0; 
     for (v in a) 
     {
@@ -1214,7 +1216,7 @@ r = [Imperative]
             String code = @"
 r = [Imperative]
 {
-    a = {};
+    a = [];
     x = 0;
     for (v in a) 
     {
@@ -1231,8 +1233,8 @@ r = [Imperative]
         public void TestDictionaryRegressMAGN337()
         {
             string code = @"
-     a = { 1, 2, 3 };
-    b = {""x"",""y""};
+     a = [ 1, 2, 3 ];
+    b = [""x"",""y""];
                 
 def foo(a1 : var[], b1 : var[])
 {
@@ -1268,7 +1270,7 @@ r = a[""null""];
         {
             // TODO pratapa: Crash typing this code in CBN post Dictionary changes
             string code = @"
-a = {};
+a = [];
 x = ""key"";
 a[x] = 42;
 
@@ -1300,7 +1302,7 @@ r8 = a[z];
         public void TestArrayCopyAssignment01()
         {
             String code = @"
-a = {1, 2, 3};
+a = [1, 2, 3];
 b[1] = a;
 b[1][1] = 100;
 z = a[1];
@@ -1313,8 +1315,8 @@ z = a[1];
         public void TestArrayCopyAssignment02()
         {
             String code = @"
-a = {1, 2, 3};
-b = {1, 2, 3};
+a = [1, 2, 3];
+b = [1, 2, 3];
 b[1] = a;
 b[1][1] = 100;
 z = a[1];
@@ -1327,7 +1329,7 @@ z = a[1];
         public void TestDynamicArray016()
         {
             String code = @"
-a = {{1, 2}, {3, 4}};
+a = [[1, 2], [3, 4]];
 a[-3][-1] = 5;
 ";
             thisTest.RunScriptSource(code);
@@ -1349,7 +1351,7 @@ a[1..2] = 2;
         public void TestArrayIndexReplication02()
         {
             string code = @"
-a = {1, 2, 3};
+a = [1, 2, 3];
 b = a[1..2];
 ";
             thisTest.RunScriptSource(code);
@@ -1385,7 +1387,7 @@ x = (null)[0];
         {
             // Test calling a function on an empty array
             string code = @"
-p = {};
+p = [];
 x = p.f();
 ";
             thisTest.RunScriptSource(code, "");
@@ -1399,11 +1401,11 @@ x = p.f();
             string code = @"
 def f()
 {
-    return = { 1, 2 };
+    return = [ 1, 2 ];
 }
 def g()
 {
-    return = { 3, 4 };
+    return = [ 3, 4 ];
 }
 x = f()<1> + g()<2>;
 a = x[0];
@@ -1447,7 +1449,7 @@ c = f(a<1L>,b<2>);
                         X = a;
                     }
                 }
-                a = {A.A(0..2), A.A(3..5)};
+                a = [A.A(0..2), A.A(3..5)];
                 z = a.X<1> + a.X<2>;
                 ";
             thisTest.RunScriptSource(code);
@@ -1469,7 +1471,7 @@ c = f(a<1L>,b<2>);
         public void TestReplicationGuidesOnDotOps01()
         {
             string code = @"
-v = {1,2};
+v = [1,2];
 c = v<1> + v<2>;
 x = c[0];
 y = c[1];
@@ -1488,8 +1490,8 @@ def f(a:int,b:int)
 {
     return = 1;
 }
-x = {1,2};
-y = {3,4};
+x = [1,2];
+y = [3,4];
 a = f(x<1>, y<2>);
 b = a[0];
 ";
@@ -1506,7 +1508,7 @@ def f(a:int,b:int)
 {
     return = 1;
 }
-a = f({1,2}<1>, {3,4}<2>);
+a = f([1,2]<1>, [3,4]<2>);
 b = a[0];
 ";
             thisTest.RunScriptSource(code);
@@ -1517,7 +1519,7 @@ b = a[0];
         public void TestTypeArrayAssign4()
         {
             string code = @"
-a:int[] = {false, 2, 3};
+a:int[] = [false, 2, 3];
 ";
             thisTest.RunScriptSource(code);
             thisTest.Verify("a", new object[] { null, 2, 3 });
@@ -1527,7 +1529,7 @@ a:int[] = {false, 2, 3};
         public void TestTypeArrayAssign5()
         {
             string code = @"
-a = {false, 2, true};
+a = [false, 2, true];
 b:int[] = a;
 ";
             thisTest.RunScriptSource(code);
@@ -1550,7 +1552,7 @@ a[1] = 3;;
         {
             string code = @"
 x:int[] = 1..4;
-x[{2,3}] = {1, 2};
+x[[2,3]] = [1, 2];
 ";
             thisTest.RunScriptSource(code);
             thisTest.Verify("x", new object[] { 1, 2, 1, 2 });
@@ -1850,7 +1852,7 @@ x4 = 0..#5..10;
         {
             String code =
                         @"
-a = {11,12,10};
+a = [11,12,10];
 t = 10;
 b = a > t ? 2 : 1;
 x = b[0];
@@ -1876,7 +1878,7 @@ def g()
 {
     return = 1;
 }
-a = {10,0,10};
+a = [10,0,10];
 t = 1;
 b = a > t ? f(10) : g();
 x = b[0];
@@ -1945,7 +1947,7 @@ b = 2.1 % 0;
         {
             String code =
                 @"
-                    a = {1, 2, 3, 4};
+                    a = [1, 2, 3, 4];
                     b = a[-2]; // 3
                 ";
             thisTest.RunScriptSource(code);
@@ -1957,7 +1959,7 @@ b = 2.1 % 0;
         {
             String code =
                 @"
-                    a = { { 1, 2 }, { 3, 4 } };
+                    a = [ [ 1, 2 ], [ 3, 4 ] ];
                     b = a[-1][-2]; // 3
                 ";
             thisTest.RunScriptSource(code);
@@ -1975,7 +1977,7 @@ b = 2.1 % 0;
 	
 	                    constructor A()
 	                    {
-		                    x = { B.B(), B.B(), B.B() };
+		                    x = [ B.B(), B.B(), B.B() ];
 	                    }
                     }
                     class B
@@ -1984,10 +1986,10 @@ b = 2.1 % 0;
 	
 	                    constructor B()
 	                    {
-		                    x = { { 1, 2 }, { 3, 4 },  { 5, 6 } };		
+		                    x = [ [ 1, 2 ], [ 3, 4 ],  [ 5, 6 ] ];		
 	                    }
                     }
-                    a = { A.A(), A.A(), A.A() };
+                    a = [ A.A(), A.A(), A.A() ];
                     b = a[-2].x[-3].x[-2][-1]; // 4
                 ";
             thisTest.RunScriptSource(code);
@@ -2006,10 +2008,10 @@ z : var[]..[];
 def A()
 {
 	y = 10;
-    z = { { 40, 50 }, { 60, 70 } };
+    z = [ [ 40, 50 ], [ 60, 70 ] ];
 }
 
-z[1] = { 1, 2 };
+z[1] = [ 1, 2 ];
 watch1 = z[1][0];
 watch2 = z[1][1];
 z[1][0] = 10;
@@ -2101,7 +2103,7 @@ a = 3;
         {
             String code =
                 @"
-a = {10,11,12};
+a = [10,11,12];
 t = 0;
 i = a[t];
 t = 2;
@@ -2299,7 +2301,7 @@ a = 10;
                 @"
 a;
 b;
-[Associative]
+c = [Associative]
 {
     a = 1;
     b = a;
@@ -2307,11 +2309,11 @@ b;
     {
         a = a + 1;
     }
+    return [a, b];
 }
                 ";
             thisTest.RunScriptSource(code);
-            thisTest.Verify("a",2);
-            thisTest.Verify("b",2);
+            thisTest.Verify("c", new[] {1, 1});
         }
 
         [Test]
@@ -2326,9 +2328,9 @@ b;
     a = 1;
     b = a;
     a = 10;
-    [Imperative]
+    a = [Imperative]
     {
-        a = a + 1;
+        return a + 1;
     }
 }
                 ";
@@ -2347,18 +2349,19 @@ a;b;c;d;
 {
     a = 1;
     b = a;
-    c = 100;
+    c = 10;
     d = c;
-    [Imperative]
+    a = [Imperative]
     {
         a = a + 1;
-        c = 10;
+        c = c + a;
+        return c;
     }
 }
                 ";
             thisTest.RunScriptSource(code);
-            thisTest.Verify("a",2);
-            thisTest.Verify("b",2);
+            thisTest.Verify("a",12);
+            thisTest.Verify("b",12);
             thisTest.Verify("c",10);
             thisTest.Verify("d",10);
         }
@@ -2468,10 +2471,12 @@ x = getx(p);
         [Test]
         public void TestBasicArrayMethods()
         {
-            string src = @"a = { 1, 2, { 3, 4, 5, { 6, 7, { 8, 9, { { 11 } } } } }, { 12, 13 } };
-c = Count(a);
-r = Rank(a);
-a2 = Flatten(a);";
+            string src = @"
+import(""BuiltIn.ds"");
+a = [ 1, 2, [ 3, 4, 5, [ 6, 7, [ 8, 9, [ [ 11 ] ] ] ] ], [ 12, 13 ] ];
+c = List.Count(a);
+r = List.Rank(a);
+a2 = List.Flatten(a);";
             thisTest.RunScriptSource(src);
             thisTest.Verify("c",4);
             thisTest.Verify("r",6);
@@ -2552,7 +2557,7 @@ r3 = 'h' + 1;";
         {
             String code =
 @"
-t:int[] = {1,2,3};
+t:int[] = [1,2,3];
 ";
             thisTest.RunScriptSource(code);
             thisTest.Verify("t", new Object[] { 1, 2, 3 });
@@ -2564,7 +2569,7 @@ t:int[] = {1,2,3};
             String code =
 @"
 t:int[];
-t = {1,2,3};
+t = [1,2,3];
 ";
             thisTest.RunScriptSource(code);
             thisTest.Verify("t", new Object[] { 1, 2, 3 });
@@ -2577,7 +2582,7 @@ t = {1,2,3};
             String code =
 @"
 def foo() {
-    t = {1,2,3};
+    t = [1,2,3];
     return = t;
 }
 b = foo();
@@ -2612,11 +2617,7 @@ t4 = 6.1;";
         {
             string code =
 @" 
-t1;
-t2;
-t3;
-t4;
-[Imperative]
+i = [Imperative]
 {
     t1:int = 1;
     t1 = 3.5;
@@ -2628,9 +2629,14 @@ t4;
     t4:int = 3.9;
     t4:var = 5.1;
     t4 = 6.1;
-}";
+    return [t1, t2, t3, t4];
+}
+t1 = i[0];
+t2 = i[1];
+t3 = i[2];
+t4 = i[3];";
             thisTest.RunScriptSource(code);
-            thisTest.Verify("t1", 4);
+            thisTest.Verify("t1", 3.5);
             thisTest.Verify("t2", 4.3);
             thisTest.Verify("t3", 4.9);
             thisTest.Verify("t4", 6.1);
@@ -2685,7 +2691,7 @@ y:bool;
     }
 }
  
-a1 = { A.A(1), A.A(2) };
+a1 = [ A.A(1), A.A(2) ];
 a1.t = 5;
 testx = a1.x;
 test = a1.t;
@@ -2707,7 +2713,7 @@ test = a1.t;
         x = i;
     }
 }
-a = {A.A(10), A.A(20)};
+a = [A.A(10), A.A(20)];
 a.x = 5;
 t = a.x;
 ";
@@ -2783,7 +2789,7 @@ def f(i : int)
     }
     return = loc;
 }
-x = {100,200,300};
+x = [100,200,300];
 y = f(x);
 ";
             thisTest.RunScriptSource(code);
@@ -2860,7 +2866,7 @@ r = foo(3);
         {
             string code =
 @"
-a = {25, 36, 49};
+a = [25, 36, 49];
 r = Minimal.Sqrt(a);
 ";
             code = string.Format("{0}\n{1}", "import(\"FFITarget.dll\");", code);
@@ -3035,7 +3041,7 @@ b = a[0];
         {
             string code =
 @"
-a = {1,2,3};
+a = [1,2,3];
 a[i] = 10;     
 b = a[0];       
             ";
@@ -3510,7 +3516,7 @@ x = [Imperative] {
         {
             string code = @"
 x = [Imperative] {
-    return {2, 3, 5};
+    return [2, 3, 5];
 }";
             thisTest.RunScriptSource(code);
             thisTest.VerifyBuildWarningCount(0);
@@ -3549,7 +3555,7 @@ x = [Imperative] {
         {
             string code = @"
 [Imperative] {
-    return {2, 3, 5};
+    return [2, 3, 5];
 }";
             thisTest.RunScriptSource(code);
             thisTest.VerifyBuildWarningCount(0);
@@ -3604,7 +3610,7 @@ x = [Associative] {
         {
             string code = @"
 x = [Associative] {
-    return {2, 3, 5};
+    return [2, 3, 5];
 }";
             thisTest.RunScriptSource(code);
             thisTest.VerifyBuildWarningCount(0);
@@ -3643,7 +3649,7 @@ x = [Associative] {
         {
             string code = @"
 [Associative] {
-    return {2, 3, 5};
+    return [2, 3, 5];
 }";
             thisTest.RunScriptSource(code);
             thisTest.VerifyBuildWarningCount(0);

@@ -11,9 +11,11 @@ using Dynamo.Models;
 using Newtonsoft.Json;
 using Dynamo.Engine;
 using Dynamo.Events;
-using System.Text.RegularExpressions;
 using Dynamo.Utilities;
 using Newtonsoft.Json.Linq;
+using System.Globalization;
+using Dynamo.Graph.Nodes.ZeroTouch;
+using System.Threading;
 
 namespace Dynamo.Tests
 {
@@ -66,6 +68,15 @@ namespace Dynamo.Tests
                 json = json.Replace(connector.GUID.ToString("N"), idcount.ToString());
                 idcount = idcount + 1;
             }
+
+
+            //alter the output json so that all Notemodel ids are not guids
+            foreach (var note in model.Notes)
+            {
+                modelsGuidToIdMap.Add(note.GUID, idcount.ToString());
+                json = json.Replace(note.GUID.ToString("N"), idcount.ToString());
+                idcount = idcount + 1;
+            }
             //alter the output json so that all annotationModel ids are not guids
             foreach (var annotation in model.Annotations)
             {
@@ -77,6 +88,38 @@ namespace Dynamo.Tests
             return json;
         }
 
+        public static void ConvertCurrentWorkspaceToDesignScriptAndSave(string filePathBase, DynamoModel currentDynamoModel)
+        {
+            try
+            {
+                var workspace = currentDynamoModel.CurrentWorkspace;
+
+                var libCore = currentDynamoModel.EngineController.LibraryServices.LibraryManagementCore;
+                var libraryServices = new LibraryCustomizationServices(currentDynamoModel.PathManager);
+                var nameProvider = new NamingProvider(libCore, libraryServices);
+                var controller = currentDynamoModel.EngineController;
+                var resolver = currentDynamoModel.CurrentWorkspace.ElementResolver;
+                var namingProvider = new NamingProvider(controller.LibraryServices.LibraryManagementCore, libraryServices);
+
+                var result = NodeToCodeCompiler.NodeToCode(libCore, workspace.Nodes, workspace.Nodes, namingProvider);
+                NodeToCodeCompiler.ReplaceWithShortestQualifiedName(
+                        controller.LibraryServices.LibraryManagementCore.ClassTable, result.AstNodes, resolver);
+                var codegen = new ProtoCore.CodeGenDS(result.AstNodes);
+                var ds = codegen.GenerateCode();
+
+                var dsPath = filePathBase + ".ds";
+                if (File.Exists(dsPath))
+                {
+                    File.Delete(dsPath);
+                }
+                File.WriteAllText(dsPath, ds);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                Assert.Inconclusive("The current workspace could not be converted to Design Script.");
+            }
+        }
 
         /// <summary>
         /// Caches workspaces data for comparison.
@@ -94,6 +137,7 @@ namespace Dynamo.Tests
             public Dictionary<Guid, int> OutportCountMap { get; set; }
             public Dictionary<Guid, PortComparisonData> PortDataMap { get; set; }
             public Dictionary<Guid, NodeInputData> InputsMap { get; set; }
+            public Dictionary<Guid, NodeOutputData> OutputsMap { get; set; }
             public string DesignScript { get; set; }
 
             public WorkspaceComparisonData(WorkspaceModel workspace, EngineController controller)
@@ -109,19 +153,25 @@ namespace Dynamo.Tests
                 PortDataMap = new Dictionary<Guid, PortComparisonData>();
                 NodeReplicationMap = new Dictionary<Guid, string>();
                 InputsMap = new Dictionary<Guid, NodeInputData>();
+                OutputsMap = new Dictionary<Guid, NodeOutputData>();
 
                 foreach (var n in workspace.Nodes)
                 {
                     NodeTypeMap.Add(n.GUID, n.GetType());
                     NodeReplicationMap.Add(n.GUID, n.ArgumentLacing.ToString());
                     //save input nodes to inputs block
-                    if (n.IsSetAsInput)
+                    if (n.IsSetAsInput && n.InputData != null)
                     {
                         InputsMap.Add(n.GUID, n.InputData);
                     }
+                    //save output nodes to outputs block
+                    if (n.IsSetAsOutput && n.OutputData != null)
+                    {
+                        OutputsMap.Add(n.GUID, n.OutputData);
+                    }
 
                     var portvalues = n.OutPorts.Select(p =>
-                        GetDataOfValue(n.GetValue(p.Index, controller))).ToList<object>();
+                        ProtoCore.Utils.CoreUtils.GetDataOfValue(n.GetValue(p.Index, controller))).ToList();
 
                     n.InPorts.ToList().ForEach(p =>
                     {
@@ -153,27 +203,7 @@ namespace Dynamo.Tests
                 }
             }
         }
-
-        private static object GetDataOfValue(ProtoCore.Mirror.MirrorData value)
-        {
-            if (value.IsCollection)
-            {
-                return value.GetElements().Select(x => GetDataOfValue(x)).ToList<object>();
-            }
-
-            if (!value.IsPointer)
-            {
-                var data = value.Data;
-
-                if (data != null)
-                {
-                    return data;
-                }
-            }
-
-            return value.StringData;
-        }
-
+        
         /// <summary>
         /// compare two workspace comparison objects that represent workspace models
         /// </summary>
@@ -350,7 +380,8 @@ namespace Dynamo.Tests
                             new JsonSerializerSettings()
                             {
                                 Formatting = Formatting.Indented,
-                                ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+                                ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+                                Culture = CultureInfo.InvariantCulture
                             });
 
             var dataPath = filePathBase + ".data";
@@ -391,7 +422,8 @@ namespace Dynamo.Tests
                             new JsonSerializerSettings()
                             {
                                 Formatting = Formatting.Indented,
-                                ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+                                ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+                                Culture = CultureInfo.InvariantCulture
                             });
             //replace all the guids in the data file with all of our remapped ids.
             foreach (var guidKey in modelsGuidToIdMap.Keys)
@@ -399,12 +431,54 @@ namespace Dynamo.Tests
                 dataMapStr = dataMapStr.Replace(guidKey.ToString(), modelsGuidToIdMap[guidKey]);
             }
 
-            var dataPath = filePathBase + ".data";
-            if (File.Exists(dataPath))
+            // If "DynamoCoreWPFTests" test copy .data file to additional structured folder location
+            if (filePathBase.Contains("DynamoCoreWPFTests"))
             {
-                File.Delete(dataPath);
+                string structuredTestPath;
+                string fileName = Path.GetFileNameWithoutExtension(filePathBase);
+                string flattenedTestPath = Path.GetTempPath() + "jsonWithView_nonGuidIds\\" + fileName;
+                string extension = Path.GetExtension(filePathBase);
+                string pathWithoutExt = filePathBase.Substring(0, filePathBase.Length - extension.Length);
+
+                // Determine if .dyn or .dyf
+                // If .dyn and .dyf share common file name .ds and .data files is collide
+                // To avoid this append _dyf to .data and .ds files for all .dyf files
+                if (extension == ".dyf")
+                {
+                    structuredTestPath = pathWithoutExt + "_dyf.data";
+                }
+
+                else
+                {
+                    structuredTestPath = pathWithoutExt + ".data";
+                }
+
+                // Write to structured path
+                if (File.Exists(structuredTestPath))
+                {
+                    File.Delete(structuredTestPath);
+                }
+
+                File.WriteAllText(structuredTestPath, dataMapStr);
+
+                // Write to flattened path
+                if (File.Exists(flattenedTestPath + ".data"))
+                {
+                    File.Delete(flattenedTestPath + ".data");
+                }
+
+                File.WriteAllText(flattenedTestPath + ".data", dataMapStr);
             }
-            File.WriteAllText(dataPath, dataMapStr);
+
+            else
+            {
+                var dataPath = filePathBase + ".data";
+                if (File.Exists(dataPath))
+                {
+                    File.Delete(dataPath);
+                }
+                File.WriteAllText(dataPath, dataMapStr);
+            }
         }
 
         public class PortComparisonData
@@ -443,6 +517,7 @@ namespace Dynamo.Tests
     {
         public static string jsonNonGuidFolderName = "json_nonGuidIds";
         public static string jsonFolderName = "json";
+        public static string jsonFolderNameDifferentCulture = "json_differentCulture";
 
         private TimeSpan lastExecutionDuration = new TimeSpan();
         private Dictionary<Guid, string> modelsGuidToIdMap = new Dictionary<Guid, string>();
@@ -452,7 +527,7 @@ namespace Dynamo.Tests
         {
             libraries.Add("VMDataBridge.dll");
             libraries.Add("ProtoGeometry.dll");
-            libraries.Add("Builtin.dll");
+            libraries.Add("DesignScriptBuiltin.dll");
             libraries.Add("DSCoreNodes.dll");
             base.GetLibrariesToPreload(libraries);
         }
@@ -543,6 +618,24 @@ namespace Dynamo.Tests
         }
 
         [Test, Category("JsonTestExclude")]
+        public void FunctionNodeLoadsWhenSignatureChanges()
+        {
+            var testFile = Path.Combine(TestDirectory, @"core\serialization\functionSignatureDifferentNumParamsThanGraph.dyn");
+            OpenModel(testFile);
+            //assert that the nodes are loaded even though their signature changed and we don't have the
+            //same number of serialized ports as the functionSignature implies.
+            var polyCurveConstructors = this.CurrentDynamoModel.CurrentWorkspace.Nodes.OfType<DSFunction>().Where(x => x.FunctionSignature.Contains("PolyCurve.By"));
+            Assert.AreEqual(polyCurveConstructors.Count(), 2);
+            Assert.AreEqual(polyCurveConstructors.ElementAt(0).InPorts.Count, 2);
+            Assert.AreEqual(polyCurveConstructors.ElementAt(0).OutPorts.Count, 1);
+            Assert.AreEqual(polyCurveConstructors.ElementAt(0).InPorts.ElementAt(1).UsingDefaultValue, true);
+
+            //assert all the first ports of the polycurve nodes are connected.
+            Assert.True(polyCurveConstructors.All(x => x.InPorts[0].IsConnected));
+
+        }
+
+        [Test, Category("JsonTestExclude")]
         public void AllTypesSerialize()
         {
             var customNodeTestPath = Path.Combine(TestDirectory, @"core\serialization\serialization.dyn");
@@ -571,6 +664,36 @@ namespace Dynamo.Tests
             DoWorkspaceOpenAndCompare(filePath, jsonFolderName, ConvertCurrentWorkspaceToJsonAndSave,
                 serializationTestUtils.CompareWorkspaceModels,
                 serializationTestUtils.SaveWorkspaceComparisonData);
+        }
+
+        /// <summary>
+        /// This parameterized test finds all .dyn files in directories within
+        /// the test directory, opens them and executes, then converts them to
+        /// json and executes again, comparing the values from the two runs
+        /// while being in a different culture.
+        /// </summary>
+        /// <param name="filePath">The path to a .dyn file. This parameter is supplied
+        /// by the test framework.</param>
+        [Test, TestCaseSource("FindWorkspaces"), Category("JsonTestExclude")]
+        public void SerializationInDifferentCultureTest(string filePath)
+        {
+            var frCulture = CultureInfo.CreateSpecificCulture("fr-FR");
+
+            // Save current culture - usually "en-US"
+            var currentCulture = Thread.CurrentThread.CurrentCulture;
+            var currentUICulture = Thread.CurrentThread.CurrentUICulture;
+
+            // Set "fr-FR"
+            Thread.CurrentThread.CurrentCulture = frCulture;
+            Thread.CurrentThread.CurrentUICulture = frCulture;
+
+            DoWorkspaceOpenAndCompare(filePath, jsonFolderNameDifferentCulture, ConvertCurrentWorkspaceToJsonAndSave,
+                serializationTestUtils.CompareWorkspaceModels,
+                serializationTestUtils.SaveWorkspaceComparisonData);
+
+            // Restore "en-US"
+            Thread.CurrentThread.CurrentCulture = currentCulture;
+            Thread.CurrentThread.CurrentUICulture = currentUICulture;
         }
 
         /// <summary>
@@ -660,7 +783,7 @@ namespace Dynamo.Tests
             var fi = new FileInfo(filePath);
             var filePathBase = dirPath + @"\" + Path.GetFileNameWithoutExtension(fi.Name);
 
-            ConvertCurrentWorkspaceToDesignScriptAndSave(filePathBase);
+            serializationTestUtils.ConvertCurrentWorkspaceToDesignScriptAndSave(filePathBase, CurrentDynamoModel);
 
             string json = saveFunction(model, filePathBase);
 
@@ -742,8 +865,12 @@ namespace Dynamo.Tests
             }
 
             //assert that the inputs in the saved json file are the same as those we can gather from the 
-            //grah at runtime - because we don't deserialize these directly we check the json itself.
-            var jObject = JObject.Parse(json);
+            //graph at runtime - because we don't deserialize these directly we check the json itself.
+            //Use load vs parse to preserve date time strings.
+            var jsonReader = new JsonTextReader(new StringReader(json));
+            jsonReader.DateParseHandling = DateParseHandling.None;
+            var jObject = JObject.Load(jsonReader);
+
             var jToken = jObject["Inputs"];
             var inputs = jToken.ToArray().Select(x => x.ToObject<NodeInputData>()).ToList();
             var inputs2 = ws1.Nodes.Where(x => x.IsSetAsInput == true && x.InputData != null).Select(input => input.InputData).ToList();
@@ -757,6 +884,22 @@ namespace Dynamo.Tests
                 }
             }
             Assert.IsTrue(inputs.SequenceEqual(inputs2));
+
+            //assert that the outputs in the saved json file are the same as those we can gather from the 
+            //graph at runtime - because we don't deserialize these directly we check the json itself.
+            var jTokenOutput = jObject["Outputs"];
+            var outputs = jTokenOutput.ToArray().Select(x => x.ToObject<NodeOutputData>()).ToList();
+            var outputs2 = ws1.Nodes.Where(x => x.IsSetAsOutput == true && x.OutputData != null).Select(output => output.OutputData).ToList();
+
+            //Outputs2 might come from a WS with non guids, so we need to replace the ids with guids if they exist in the map
+            foreach (var output in outputs2)
+            {
+                if (modelsGuidToIdMap.ContainsKey(output.Id))
+                {
+                    output.Id = GuidUtility.Create(GuidUtility.UrlNamespace, modelsGuidToIdMap[output.Id]);
+                }
+            }
+            Assert.IsTrue(outputs.SequenceEqual(outputs2));
         }
 
 
@@ -808,39 +951,6 @@ namespace Dynamo.Tests
             File.WriteAllText(jsonPath, json);
 
             return json;
-        }
-
-        private void ConvertCurrentWorkspaceToDesignScriptAndSave(string filePathBase)
-        {
-            try
-            {
-                var workspace = CurrentDynamoModel.CurrentWorkspace;
-
-                var libCore = CurrentDynamoModel.EngineController.LibraryServices.LibraryManagementCore;
-                var libraryServices = new LibraryCustomizationServices(CurrentDynamoModel.PathManager);
-                var nameProvider = new NamingProvider(libCore, libraryServices);
-                var controller = CurrentDynamoModel.EngineController;
-                var resolver = CurrentDynamoModel.CurrentWorkspace.ElementResolver;
-                var namingProvider = new NamingProvider(controller.LibraryServices.LibraryManagementCore, libraryServices);
-
-                var result = NodeToCodeCompiler.NodeToCode(libCore, workspace.Nodes, workspace.Nodes, namingProvider);
-                NodeToCodeCompiler.ReplaceWithShortestQualifiedName(
-                        controller.LibraryServices.LibraryManagementCore.ClassTable, result.AstNodes, resolver);
-                var codegen = new ProtoCore.CodeGenDS(result.AstNodes);
-                var ds = codegen.GenerateCode();
-
-                var dsPath = filePathBase + ".ds";
-                if (File.Exists(dsPath))
-                {
-                    File.Delete(dsPath);
-                }
-                File.WriteAllText(dsPath, ds);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex);
-                Assert.Inconclusive("The current workspace could not be converted to Design Script.");
-            }
         }
     }
 }

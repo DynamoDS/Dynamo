@@ -107,7 +107,7 @@ namespace ProtoCore.Lang
                 case ProtoCore.Lang.BuiltInMethods.MethodID.RangeExpression:
                     try
                     {
-                        ret = RangeExpressionUntils.RangeExpression(formalParameters[0],
+                        ret = RangeExpressionUtils.RangeExpression(formalParameters[0],
                                                                     formalParameters[1],
                                                                     formalParameters[2],
                                                                     formalParameters[3],
@@ -457,6 +457,7 @@ namespace ProtoCore.Lang
                             var result = runtimeCore.Heap.ToHeapObject<DSArray>(array).Keys.ToArray();
                             try
                             {
+                                runtimeCore.RuntimeStatus.LogWarning(WarningID.Default, string.Format(Resources.ListMethodDeprecated, "GetKeys", "Dictionary.Keys"));
                                 ret = rmem.Heap.AllocateArray(result);
                             }
                             catch (RunOutOfMemoryException)
@@ -480,6 +481,7 @@ namespace ProtoCore.Lang
                             var result = runtimeCore.Heap.ToHeapObject<DSArray>(array).Values;
                             try
                             {
+                                runtimeCore.RuntimeStatus.LogWarning(WarningID.Default, string.Format(Resources.ListMethodDeprecated, "GetValues", "Dictionary.Values"));
                                 ret = rmem.Heap.AllocateArray(result.ToArray());
                             }
                             catch (RunOutOfMemoryException)
@@ -497,6 +499,7 @@ namespace ProtoCore.Lang
                         if (array.IsArray)
                         {
                             bool result = runtimeCore.Heap.ToHeapObject<DSArray>(array).ContainsKey(key);
+                            runtimeCore.RuntimeStatus.LogWarning(WarningID.Default, string.Format(Resources.ListMethodDeprecated, "ContainsKey", "Dictionary.Keys & List.Contains"));
                             ret = StackValue.BuildBoolean(result);
                         }
                         else
@@ -511,6 +514,7 @@ namespace ProtoCore.Lang
                         StackValue key = formalParameters[1];
                         if (array.IsArray)
                         {
+                            runtimeCore.RuntimeStatus.LogWarning(WarningID.Default, string.Format(Resources.ListMethodDeprecated, "RemoveKey", "Dictionary.RemoveKeys"));
                             runtimeCore.Heap.ToHeapObject<DSArray>(array).RemoveKey(key);
                         }
                         return array;
@@ -734,7 +738,7 @@ namespace ProtoCore.Lang
             IContextDataProvider provider = runtimeCore.DSExecutable.ContextDataMngr.GetDataProvider(appname);
             ProtoCore.Utils.Validity.Assert(null != provider, string.Format("Couldn't locate data provider for {0}", appname));
 
-            CLRObjectMarshler marshaler = CLRObjectMarshler.GetInstance(runtimeCore);
+            CLRObjectMarshaler marshaler = CLRObjectMarshaler.GetInstance(runtimeCore);
 
             Dictionary<string, Object> parameters = new Dictionary<string, object>();
             if (!svConnectionParameters.IsArray)
@@ -765,7 +769,7 @@ namespace ProtoCore.Lang
             {
                 objects.Add(item.Data);
             }
-            ProtoCore.Type type = PrimitiveMarshler.CreateType(ProtoCore.PrimitiveType.Var);
+            ProtoCore.Type type = PrimitiveMarshaler.CreateType(ProtoCore.PrimitiveType.Var);
             Object obj = objects;
             if (objects.Count == 1)
                 obj = objects[0];
@@ -1014,7 +1018,7 @@ namespace ProtoCore.Lang
             return targetRangeMin + (targetRangeMax - targetRangeMin) * percent;
         }
     }
-    internal class RangeExpressionUntils
+    internal class RangeExpressionUtils
     {
         // For to include start and end. 
         internal static StackValue[] GenerateRangeByStepNumber(decimal start, decimal end, int stepnum, bool isIntRange)

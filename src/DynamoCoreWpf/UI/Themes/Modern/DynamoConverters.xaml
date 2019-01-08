@@ -87,7 +87,6 @@
     <controls:PathToFileNameConverter x:Key="PathToFileNameConverter" />
     <controls:PathToSaveStateConverter x:Key="PathToSaveStateConverter" />
     <controls:InverseBooleanConverter x:Key="InverseBooleanConverter" />
-    <controls:ShowHideConsoleMenuItemConverter x:Key="ShowHideConsoleMenuConverter" />
     <controls:ConsoleHeightToBooleanConverter x:Key="ConsoleHeightToBoolConverter" />
     <controls:ShowHideFullscreenWatchMenuItemConverter x:Key="ShowHideFullscreenWatchMenuConverter" />
     <controls:PackageSearchStateToStringConverter x:Key="PackageSearchStateToStringConverter" />
@@ -192,7 +191,7 @@
                                       TrueBrush="{StaticResource PinnedIconForegroundColor}"
                                       FalseBrush="{StaticResource UnpinnedIconForegroundColor}">
     </controls:BooleanToBrushConverter>
-    <controls:BooleanToBrushConverter x:Key="KeepListStructureHighlighColorConverter"
+    <controls:BooleanToBrushConverter x:Key="KeepListStructureHighlightColorConverter"
                                       TrueBrush="{StaticResource KeepListStructureHighlight}"
                                       FalseBrush="{StaticResource NotKeepListStructureHighlight}">
     </controls:BooleanToBrushConverter>

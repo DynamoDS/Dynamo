@@ -2,7 +2,6 @@
 using System.Linq;
 using Dynamo.Configuration;
 using Dynamo.Search.SearchElements;
-using Dynamo.UI;
 using Dynamo.UI.Controls;
 
 namespace Dynamo.Wpf.ViewModels

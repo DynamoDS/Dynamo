@@ -10,6 +10,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Xml;
+using System.Globalization;
 
 namespace Dynamo.Models
 {
@@ -43,7 +44,8 @@ namespace Dynamo.Models
                 jsonSettings = new JsonSerializerSettings()
                 {
                     TypeNameHandling = TypeNameHandling.Objects,
-                    ContractResolver = new CamelCasePropertyNamesContractResolver()
+                    ContractResolver = new CamelCasePropertyNamesContractResolver(),
+                    Culture = CultureInfo.InvariantCulture
                 };
             }
 

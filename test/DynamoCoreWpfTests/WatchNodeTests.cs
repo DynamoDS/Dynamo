@@ -7,7 +7,10 @@ using System.Collections.Generic;
 using System.Linq;
 using CoreNodeModels;
 using Dynamo.Graph.Nodes;
+using Dynamo.Graph.Nodes.ZeroTouch;
 using Dynamo.Tests;
+using System.Globalization;
+using System.Threading;
 
 namespace DynamoCoreWpfTests 
 {
@@ -18,7 +21,9 @@ namespace DynamoCoreWpfTests
         {
             libraries.Add("VMDataBridge.dll");
             libraries.Add("ProtoGeometry.dll");
+            libraries.Add("DesignScriptBuiltin.dll");
             libraries.Add("FunctionObject.ds");
+            libraries.Add("FFITarget.dll");
             base.GetLibrariesToPreload(libraries);
         }
 
@@ -107,10 +112,10 @@ namespace DynamoCoreWpfTests
             var watchHandler = ViewModel.WatchHandler;
 
             return watchHandler.GenerateWatchViewModelForData(
-                watch.CachedValue,
+                watch.CachedValue, watch.OutPorts.Select(p => p.Name),
                 core,
                 inputVar,
-                false );
+                false);
         }
         
         [Test]
@@ -188,9 +193,9 @@ namespace DynamoCoreWpfTests
 
             var watchNode = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<Watch>();
             var watchVM = ViewModel.WatchHandler.GenerateWatchViewModelForData(
-                watchNode.CachedValue,
+                watchNode.CachedValue, watchNode.OutPorts.Select(p => p.Name), 
                 ViewModel.Model.EngineController.LiveRunnerRuntimeCore,
-                watchNode.InPorts[0].Connectors[0].Start.Owner.AstIdentifierForPreview.Name);
+                watchNode.InPorts[0].Connectors[0].Start.Owner.AstIdentifierForPreview.Name, true);
 
             Assert.AreEqual("Function", watchVM.NodeLabel);
         }
@@ -206,9 +211,9 @@ namespace DynamoCoreWpfTests
             foreach (var watchNode in watchNodes)
             {
                 var watchVM = ViewModel.WatchHandler.GenerateWatchViewModelForData(
-                    watchNode.CachedValue,
+                    watchNode.CachedValue, watchNode.OutPorts.Select(p => p.Name), 
                     ViewModel.Model.EngineController.LiveRunnerRuntimeCore,
-                    watchNode.InPorts[0].Connectors[0].Start.Owner.AstIdentifierForPreview.Name);
+                    watchNode.InPorts[0].Connectors[0].Start.Owner.AstIdentifierForPreview.Name, true);
                 Assert.IsTrue(watchVM.NodeLabel.StartsWith("function"));
             }
         }
@@ -224,11 +229,105 @@ namespace DynamoCoreWpfTests
 
             var watchNode = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<Watch>();
             var watchVM = ViewModel.WatchHandler.GenerateWatchViewModelForData(
-                watchNode.CachedValue,
-               ViewModel.Model.EngineController.LiveRunnerRuntimeCore,
-                watchNode.InPorts[0].Connectors[0].Start.Owner.AstIdentifierForPreview.Name);
+                watchNode.CachedValue, watchNode.OutPorts.Select(p => p.Name),
+                ViewModel.Model.EngineController.LiveRunnerRuntimeCore, 
+                watchNode.InPorts[0].Connectors[0].Start.Owner.AstIdentifierForPreview.Name, true);
 
             Assert.AreEqual("Function", watchVM.NodeLabel);
+        }
+
+        [Test]
+        public void WatchNestedDictionary()
+        {
+            string openPath = Path.Combine(TestDirectory, @"core\watch\watchNestedDictionaryList.dyn");
+            ViewModel.OpenCommand.Execute(openPath);
+            ViewModel.HomeSpace.Run();
+
+            var watchNode = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<CodeBlockNodeModel>();
+            var watchVM = ViewModel.WatchHandler.GenerateWatchViewModelForData(
+                watchNode.CachedValue, watchNode.OutPorts.Select(p => p.Name),
+                ViewModel.Model.EngineController.LiveRunnerRuntimeCore,
+                watchNode.AstIdentifierForPreview.Name, true);
+
+            watchVM.CountNumberOfItems();
+            watchVM.CountLevels();
+
+            Assert.AreEqual(3, watchVM.Levels.ElementAt(0));
+            Assert.AreEqual(2, watchVM.NumberOfItems);
+        }
+
+        [Test]
+        public void WatchNumber()
+        {
+            // Switch to a culture where decimal is used for thousands
+            var culture = CultureInfo.CreateSpecificCulture("fr-FR");
+            Thread.CurrentThread.CurrentCulture = culture;
+            Thread.CurrentThread.CurrentUICulture = culture;
+
+            // Open the sample graph and check if all three watch nodes are displaying expected value
+            string openPath = Path.Combine(TestDirectory, @"core\watch\WatchNumber.dyn");
+            ViewModel.OpenCommand.Execute(openPath);
+            ViewModel.HomeSpace.Run();
+
+            foreach (var watchNode in ViewModel.Model.CurrentWorkspace.Nodes.OfType<Watch>())
+            {
+                var watchVM = ViewModel.WatchHandler.GenerateWatchViewModelForData(
+                    watchNode.CachedValue, watchNode.OutPorts.Select(p => p.Name),
+                    ViewModel.Model.EngineController.LiveRunnerRuntimeCore,
+                    watchNode.InPorts[0].Connectors[0].Start.Owner.AstIdentifierForPreview.Name, true);
+
+                Assert.AreEqual("3.14", watchVM.NodeLabel);
+            }
+        }
+
+        [Test]
+        public void WatchMultiReturnNodeOrder()
+        {
+            string openPath = Path.Combine(TestDirectory, @"core\watch\MultiReturnNodePreviewOrder.dyn");
+            ViewModel.OpenCommand.Execute(openPath);
+            ViewModel.HomeSpace.Run();
+
+            var watchNode = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<DSFunction>();
+            var watchVM = ViewModel.WatchHandler.GenerateWatchViewModelForData(
+                watchNode.CachedValue, watchNode.OutPorts.Select(p => p.Name),
+                ViewModel.Model.EngineController.LiveRunnerRuntimeCore,
+                watchNode.AstIdentifierForPreview.Name, true);
+
+            var children = watchVM.Children;
+            Assert.AreEqual(4, children.Count);
+            Assert.AreEqual("false", children[0].NodeLabel);
+            Assert.AreEqual("Dictionary", children[1].NodeLabel);
+            Assert.AreEqual("2", children[2].NodeLabel);
+            Assert.AreEqual("1", children[3].NodeLabel);
+        }
+
+        [Test]
+        public void WatchNestedDictionaryPreviewFromMlutiReturnNode()
+        {
+            string openPath = Path.Combine(TestDirectory, @"core\watch\MultiReturnWatchNestedDictionary.dyn");
+            ViewModel.OpenCommand.Execute(openPath);
+            ViewModel.HomeSpace.Run();
+
+            var watchNode = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace("4166417a-b533-4fc9-b86a-bd3cc6fad58a");
+            var watchVM = ViewModel.WatchHandler.GenerateWatchViewModelForData(
+                watchNode.CachedValue, watchNode.OutPorts.Select(p => p.Name),
+                ViewModel.Model.EngineController.LiveRunnerRuntimeCore,
+                watchNode.AstIdentifierForPreview.Name, true);
+
+            var children = watchVM.Children;
+            Assert.AreEqual(5, children.Count);
+            Assert.AreEqual("green", children[0].NodeLabel);
+
+            Assert.AreEqual("Dictionary", children[1].NodeLabel);
+            Assert.AreEqual(1, children[1].Children.Count);
+
+            Assert.AreEqual("List", children[2].NodeLabel);
+            Assert.AreEqual(2, children[2].Children.Count);
+            Assert.AreEqual("101", children[2].Children[0].NodeLabel);
+            Assert.AreEqual("202", children[2].Children[1].NodeLabel);
+
+            Assert.AreEqual("42", children[3].NodeLabel);
+            Assert.AreEqual("false", children[4].NodeLabel);
         }
     }
 }

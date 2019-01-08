@@ -1,9 +1,4 @@
-﻿using System;
-using System.ComponentModel;
-using Autodesk.DesignScript.Runtime;
-using System.Collections.Generic;
-
-namespace Autodesk.DesignScript.Interfaces
+﻿namespace Autodesk.DesignScript.Interfaces
 {
     /// <summary>
     /// Provides application configuration

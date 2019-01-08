@@ -22,13 +22,14 @@ using Dynamo.Graph.Workspaces;
 using Dynamo.Logging;
 using Dynamo.Selection;
 using Dynamo.ViewModels;
+using Dynamo.Visualization;
 using Dynamo.Wpf.Properties;
 using Dynamo.Wpf.Rendering;
-using Dynamo.Visualization;
 using DynamoUtilities;
 using HelixToolkit.Wpf;
 using HelixToolkit.Wpf.SharpDX;
 using HelixToolkit.Wpf.SharpDX.Core;
+using Newtonsoft.Json;
 using SharpDX;
 using Color = SharpDX.Color;
 using ColorConverter = System.Windows.Media.ColorConverter;
@@ -38,7 +39,6 @@ using MeshGeometry3D = HelixToolkit.Wpf.SharpDX.MeshGeometry3D;
 using Model3D = HelixToolkit.Wpf.SharpDX.Model3D;
 using PerspectiveCamera = HelixToolkit.Wpf.SharpDX.PerspectiveCamera;
 using TextInfo = HelixToolkit.Wpf.SharpDX.TextInfo;
-using Newtonsoft.Json;
 
 namespace Dynamo.Wpf.ViewModels.Watch3D
 {
@@ -95,6 +95,25 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             UpY = defaultCameraUpDirection.Y;
             UpZ = defaultCameraUpDirection.Z;
         }
+        
+        public override bool Equals(object obj)
+        {
+            var other = obj as CameraData;
+            return obj is CameraData && this.Name == other.Name
+                   && Math.Abs(this.EyeX - other.EyeX) < 0.0001
+                   && Math.Abs(this.EyeY - other.EyeY) < 0.0001
+                   && Math.Abs(this.EyeZ - other.EyeZ) < 0.0001
+                   && Math.Abs(this.LookX - other.LookX) < 0.0001
+                   && Math.Abs(this.LookY - other.LookY) < 0.0001
+                   && Math.Abs(this.LookZ - other.LookZ) < 0.0001
+                   && Math.Abs(this.UpX - other.UpX) < 0.0001
+                   && Math.Abs(this.UpY - other.UpY) < 0.0001
+                   && Math.Abs(this.UpZ - other.UpZ) < 0.0001
+                   && Math.Abs(this.NearPlaneDistance - other.NearPlaneDistance) < 0.0001
+                   && Math.Abs(this.FarPlaneDistance - other.FarPlaneDistance) < 0.0001;
+        }
+
+
     }
 
     /// <summary>
@@ -644,7 +663,8 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     },
                     ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
                     TypeNameHandling = TypeNameHandling.Auto,
-                    Formatting = Newtonsoft.Json.Formatting.Indented
+                    Formatting = Newtonsoft.Json.Formatting.Indented,
+                    Culture = CultureInfo.InvariantCulture
                 };
 
                 var cameraData = JsonConvert.DeserializeObject<CameraData>(cameraJson, settings);

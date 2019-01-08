@@ -1,0 +1,292 @@
+{
+  "Uuid": "902f2c3f-ce44-48dd-9bdd-7721e8a3e82b",
+  "IsCustomNode": false,
+  "Description": null,
+  "Name": "WatchNumber",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [
+    {
+      "Id": "e899730e3ed7479e8c6906a6bfceab91",
+      "Name": "Number",
+      "Type": "number",
+      "Value": "3.14",
+      "NumberType": "Double",
+      "Description": "Creates a number."
+    },
+    {
+      "Id": "443ce407f315452f96aa85835e6ec67f",
+      "Name": "Number Slider",
+      "Type": "number",
+      "Value": "3.14",
+      "MaximumValue": 100.0,
+      "MinimumValue": 0.0,
+      "StepValue": 0.1,
+      "NumberType": "Double",
+      "Description": "A slider that produces numeric values."
+    }
+  ],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "CoreNodeModels.Input.DoubleInput, CoreNodeModels",
+      "NodeType": "NumberInputNode",
+      "NumberType": "Double",
+      "InputValue": 3.14,
+      "Id": "e899730e3ed7479e8c6906a6bfceab91",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "457918d0fd7c4dbd90557c21a8dfd030",
+          "Name": "",
+          "Description": "Double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Creates a number."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "f7b5edc8a596449cb7fe58961edde3db",
+      "Inputs": [
+        {
+          "Id": "16f9148b033a46d38be83791c23eb865",
+          "Name": "",
+          "Description": "Node to evaluate.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "8b9e2670a4a74a0ea08d9f67267ab5e1",
+          "Name": "",
+          "Description": "Watch contents.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualize the output of node."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.DoubleSlider, CoreNodeModels",
+      "NodeType": "NumberInputNode",
+      "NumberType": "Double",
+      "MaximumValue": 100.0,
+      "MinimumValue": 0.0,
+      "StepValue": 0.1,
+      "InputValue": 3.14,
+      "Id": "443ce407f315452f96aa85835e6ec67f",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "98513ad600814073857040b6d5a93b64",
+          "Name": "",
+          "Description": "Double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "A slider that produces numeric values."
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "3.14;",
+      "Id": "d302eb84969441f89adb226ef39af673",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "29aa4a326ff8442087f2e23bd9eaac34",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "4c7f1668e06c403ea88ca3ff47c8e8aa",
+      "Inputs": [
+        {
+          "Id": "470de8581c274387b94cc704319ed52f",
+          "Name": "",
+          "Description": "Node to evaluate.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "4b7456982dd8438b82d8944c0d0dbe41",
+          "Name": "",
+          "Description": "Watch contents.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualize the output of node."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "c91262d62b6d4870a8610e8918b130c8",
+      "Inputs": [
+        {
+          "Id": "61272d82561241e8838d15840229424d",
+          "Name": "",
+          "Description": "Node to evaluate.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "755b1f1e733f4f5daa38104b7e5fc76d",
+          "Name": "",
+          "Description": "Watch contents.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualize the output of node."
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "457918d0fd7c4dbd90557c21a8dfd030",
+      "End": "16f9148b033a46d38be83791c23eb865",
+      "Id": "2d45290293874ffdba9543b9e59c3a18"
+    },
+    {
+      "Start": "98513ad600814073857040b6d5a93b64",
+      "End": "61272d82561241e8838d15840229424d",
+      "Id": "7f51dc9447b24bc4af842966ce7ca871"
+    },
+    {
+      "Start": "29aa4a326ff8442087f2e23bd9eaac34",
+      "End": "470de8581c274387b94cc704319ed52f",
+      "Id": "954c4916d92b4b49ad22b492c1e7c27b"
+    }
+  ],
+  "Dependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.0.0.4397",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "Number",
+        "Id": "e899730e3ed7479e8c6906a6bfceab91",
+        "IsSetAsInput": true,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 90.580152450210548,
+        "Y": 82.28678226666969
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Watch",
+        "Id": "f7b5edc8a596449cb7fe58961edde3db",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 345.8083257278002,
+        "Y": 79.776155108479188
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Number Slider",
+        "Id": "443ce407f315452f96aa85835e6ec67f",
+        "IsSetAsInput": true,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -31.010160637845331,
+        "Y": 338.80596643760714
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "d302eb84969441f89adb226ef39af673",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 88.3985387264542,
+        "Y": 200.99544977827202
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Watch",
+        "Id": "4c7f1668e06c403ea88ca3ff47c8e8aa",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 346.337902169032,
+        "Y": 203.80708794524148
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Watch",
+        "Id": "c91262d62b6d4870a8610e8918b130c8",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 346.02853044647003,
+        "Y": 335.64511739370158
+      }
+    ],
+    "Annotations": [],
+    "X": 64.880425550480311,
+    "Y": 39.554828564586273,
+    "Zoom": 1.0669903361740798
+  }
+}

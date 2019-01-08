@@ -1,4 +1,5 @@
 ﻿using Dynamo.Utilities;
+using Dynamo.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +14,14 @@ namespace Dynamo.Search
     public class SearchLibrary<TEntry, TItem> : SearchDictionary<TEntry>, ISource<TItem> 
         where TEntry : ISearchEntry, ISource<TItem>
     {
+        /// <summary>
+        ///     Construct a SearchLibrary object
+        /// </summary>
+        /// <param name="logger"> (Optional) A logger to pass through to SearchDictionary for logging search data</param>
+        internal SearchLibrary(ILogger logger = null) : base(logger)
+        {
+        }
+
         /// <summary>
         ///     Adds an entry to search.
         /// </summary>
@@ -45,7 +54,9 @@ namespace Dynamo.Search
                 keys.Add(entry.Description.ToLower(), 0.1);
 
                 foreach (var tag in entry.SearchTags.Select(x => x.ToLower()))
+                {
                     keys.Add(tag, 0.5);
+                }
 
                 OnEntryUpdated(entry);
                 return; // Entry updated.

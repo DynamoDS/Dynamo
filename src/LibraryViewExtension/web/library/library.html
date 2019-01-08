@@ -18,12 +18,16 @@
     <!-- Placeholders must exist before all other scripts that try to access them -->
     <div class="OuterMostContainer" id="libraryContainerPlaceholder"></div>
     
-    <!-- The main library view compoment -->
+    <!-- The main library view component -->
     <script src='./dist/librarie.min.js'></script>
     
     <script>
         //Get hold of object registered from C#
         let csharpController = window["controller"];
+        //Check if the controller is null or one of our methods does not exist.
+        if (csharpController == null || csharpController.closeNodeTooltip == null) {
+            throw new Error("The c# LibraryViewController was not registered into the browser correctly.")
+        }
 
         function refreshLibraryView(libraryController) {
             //Create library container
@@ -35,7 +39,6 @@
                 let layoutSpecsJson = downloaded["layoutSpecs"];
 
                 if (!loadedTypesJson || (!layoutSpecsJson)) {
-                    console.log("Error: Couldn't get enough data to load library.");
                     return; // Not fully downloaded yet, bail.
                 }
 
@@ -56,7 +59,8 @@
         refreshLibraryView(libController);
 
         libController.searchLibraryItemsHandler = function (text, callback) {
-            let url = "nodeSearch" + "/" + text;
+			let encodedText = encodeURIComponent(text);
+            let url = "nodeSearch" + "/" + encodedText;
             let jsonUrls = [url];
             let downloader = LibraryEntryPoint.CreateJsonDownloader(jsonUrls, function (jsonUrl, jsonObject) {
 
@@ -67,7 +71,7 @@
                     console.log("Error: no search result.");
                     return;
                 }
-
+                csharpController.logEventsToInstrumentation("Search", encodedText);
                 callback(searchLoadedTypesJson);
             });
         }
@@ -97,6 +101,16 @@
             }
         });
 
+        libController.on(libController.FilterCategoryEventName, function (item) {
+            var categories = [];
+            item.forEach((elem) => {
+                var catString = elem.name + ":" + (elem.checked ? "Selected" : "Unselected");
+                categories.push(catString); 
+            });
+
+            csharpController.logEventsToInstrumentation("Filter-Categories", categories.join(","));
+        });
+
         csharpController.on("error", function (msg) {
             console.log("Error: " + msg);
             pkgController.raiseEvent("error", msg);
@@ -105,6 +119,7 @@
         csharpController.on("libraryDataUpdated", function (items) {
             console.log(items);
             refreshLibraryView(libController);
+            csharpController.closeNodeTooltip(true);
         });
 
     </script>

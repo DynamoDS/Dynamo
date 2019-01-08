@@ -61,8 +61,7 @@ namespace Dynamo.Graph.Nodes
 
         /// <summary>
         /// Call this method to get a list of lists of variables defined in 
-        /// the given set of Statement objects. This method is typically used 
-        /// in conjunction with DoesStatementRequireOutputPort method.
+        /// the given set of Statement objects. 
         /// </summary>
         /// <param name="statements">A list of Statement objects whose defined 
         /// variables are to be retrieved. This list can be empty but it cannot 
@@ -71,21 +70,32 @@ namespace Dynamo.Graph.Nodes
         /// all variables defined in nested Statement objects.</param>
         /// <returns>Returns a list of lists of variables defined by the given 
         /// set of Statement objects.</returns>
-        /// 
-        internal static IEnumerable<IEnumerable<string>> GetStatementVariables(
-            IEnumerable<Statement> statements, bool onlyTopLevel)
+        internal static List<List<string>> GetStatementVariables(
+            IEnumerable<Statement> statements)
         {
             if (statements == null)
-                throw new ArgumentNullException("statements");
+                throw new ArgumentNullException(nameof(statements));
 
-            var definedVariables = new List<List<string>>();
-            foreach (var statement in statements)
-            {
-                definedVariables.Add(Statement.GetDefinedVariableNames(
-                    statement, onlyTopLevel));
-            }
+            return statements.Select(Statement.GetDefinedVariableNames).ToList();
+        }
 
-            return definedVariables;
+        /// <summary>
+        /// Call this method to get a list of lists of variables defined in 
+        /// the given set of Statement objects. This method is typically used 
+        /// in conjunction with DoesStatementRequireOutputPort method.
+        /// </summary>
+        /// <param name="statements">A list of Statement objects whose defined 
+        /// variables are to be retrieved. This list can be empty but it cannot 
+        /// be null.</param>
+        /// <returns>Returns a list of lists of variables defined by the given 
+        /// set of Statement objects.</returns>
+        internal static List<List<string>> GetStatementVariablesForOutports(
+            IEnumerable<Statement> statements)
+        {
+            if (statements == null)
+                throw new ArgumentNullException(nameof(statements));
+
+            return statements.Select(Statement.GetDefinedVariableNamesForOutports).ToList();
         }
 
         /// <summary>
@@ -242,7 +252,7 @@ namespace Dynamo.Graph.Nodes
             // Get all defined variables and their locations
             var definedVars = codeStatements.Select(s => new KeyValuePair<Variable, int>(s.FirstDefinedVariable, s.StartLine))
                                             .Where(pair => pair.Key != null)
-                                            .Select(pair => new KeyValuePair<string, int>(pair.Key.Name, pair.Value))
+                                            .Select(pair => new KeyValuePair<string, int>(pair.Key.NameWithIndex, pair.Value))
                                             .OrderBy(pair => pair.Key)
                                             .GroupBy(pair => pair.Key);
 

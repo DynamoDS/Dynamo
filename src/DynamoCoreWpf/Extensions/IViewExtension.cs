@@ -1,15 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Dynamo.Extensions;
 
 namespace Dynamo.Wpf.Extensions
 {
     /// <summary>
     /// An extension to the UI layer of Dynamo.
     /// </summary>
-    public interface IViewExtension : IDisposable
+    public interface IViewExtension: IDisposable
     {
         /// <summary>
         /// A unique id for this extension instance.  

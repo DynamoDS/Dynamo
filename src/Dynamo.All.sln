@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.26730.16
+# Visual Studio 14
+VisualStudioVersion = 14.0.25123.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoCore", "DynamoCore\DynamoCore.csproj", "{7858FA8C-475F-4B8E-B468-1F8200778CF8}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -203,8 +203,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PythonNodeModels", "Librari
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfVisualizationTests", "VisualizationTests\WpfVisualizationTests.csproj", "{C4964946-B367-44EE-9ED2-451FF2A83D32}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShapewaysClient", "ShapewaysClient\ShapewaysClient.csproj", "{756CEBA5-4E20-4403-8448-C3C47957975B}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Watch3DNodeModels", "Libraries\Watch3DNodeModels\Watch3DNodeModels.csproj", "{31183026-DE70-49CB-BC7C-0DFD0A088F62}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoManipulation", "DynamoManipulation\DynamoManipulation.csproj", "{33F88E8C-CC3C-4237-8AA9-CC891EFCABFA}"
@@ -219,7 +217,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GeometryColorTests", "..\te
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ViewExtensionLibraryTests", "..\test\ViewExtensionLibraryTests\ViewExtensionLibraryTests.csproj", "{AE7F2579-104A-4AF4-AA7B-614AE9E79279}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Builtin", "Libraries\Builtin\Builtin.csproj", "{C0D6DEE5-5532-4345-9C66-4C00D7FDB8BE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DesignScriptBuiltin", "Libraries\DesignScriptBuiltin\DesignScriptBuiltin.csproj", "{C0D6DEE5-5532-4345-9C66-4C00D7FDB8BE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoPackagesWPF", "DynamoPackagesWPF\DynamoPackagesWPF.csproj", "{47D2166C-5261-4093-9660-E72B7035E666}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoWPFCLI", "DynamoWPFCLI\DynamoWPFCLI.csproj", "{F7FD9395-35D5-474D-8AD1-9904817E70D3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -471,10 +473,6 @@ Global
 		{C4964946-B367-44EE-9ED2-451FF2A83D32}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C4964946-B367-44EE-9ED2-451FF2A83D32}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C4964946-B367-44EE-9ED2-451FF2A83D32}.Release|Any CPU.Build.0 = Release|Any CPU
-		{756CEBA5-4E20-4403-8448-C3C47957975B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{756CEBA5-4E20-4403-8448-C3C47957975B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{756CEBA5-4E20-4403-8448-C3C47957975B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{756CEBA5-4E20-4403-8448-C3C47957975B}.Release|Any CPU.Build.0 = Release|Any CPU
 		{31183026-DE70-49CB-BC7C-0DFD0A088F62}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{31183026-DE70-49CB-BC7C-0DFD0A088F62}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{31183026-DE70-49CB-BC7C-0DFD0A088F62}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -507,6 +505,14 @@ Global
 		{C0D6DEE5-5532-4345-9C66-4C00D7FDB8BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C0D6DEE5-5532-4345-9C66-4C00D7FDB8BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C0D6DEE5-5532-4345-9C66-4C00D7FDB8BE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{47D2166C-5261-4093-9660-E72B7035E666}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{47D2166C-5261-4093-9660-E72B7035E666}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{47D2166C-5261-4093-9660-E72B7035E666}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{47D2166C-5261-4093-9660-E72B7035E666}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F7FD9395-35D5-474D-8AD1-9904817E70D3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F7FD9395-35D5-474D-8AD1-9904817E70D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F7FD9395-35D5-474D-8AD1-9904817E70D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F7FD9395-35D5-474D-8AD1-9904817E70D3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

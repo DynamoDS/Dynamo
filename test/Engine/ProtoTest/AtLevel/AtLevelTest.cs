@@ -1,4 +1,4 @@
-﻿using NUnit.Framework;
+using NUnit.Framework;
 
 namespace ProtoTest.Associative
 {
@@ -14,59 +14,59 @@ def foo(x:var[]..[])
 }
 
 xs = 
-     {
-        {
-            {
-                {
+     [
+        [
+            [
+                [
                     1, 
                     2
-                },
+                ],
 
-                {
+                [
                     3,
                     4
-                }
-            },
+                ]
+            ],
             
-            {
-                {
+            [
+                [
                     5,
                     6
-                },
+                ],
 
-                {
+                [
                     7,
                     8
-                }
-            }
-        }, 
+                ]
+            ]
+        ], 
 
-        {
-            {
-                {
+        [
+            [
+                [
                     9, 
                    10 
-                },
+                ],
 
-                {
+                [
                    11,
                    12 
-                }
-            },
+                ]
+            ],
             
-            {
-                {
+            [
+                [
                    13,
                    14 
-                },
+                ],
 
-                {
+                [
                    15,
                    16 
-                }
-            }
-        } 
-    };
+                ]
+            ]
+        ] 
+    ];
     //  -4  -3  -2  -1
 
 r0 = foo(xs@0);
@@ -110,7 +110,7 @@ r5 = foo(xs@-5);
         {
             string code = @"
 import (AtLevelTestClass from ""FFITarget.dll"");
-xs = { { { 1,2}, { 3, 4} } };
+xs = [ [ [ 1,2], [ 3, 4] ] ];
 as = AtLevelTestClass.AtLevelTestClass(xs@@-1);
 r1 = as.V;
             ";
@@ -127,7 +127,7 @@ def foo(xs:var[])
     return = Sum(xs);
 }
 
-xs = {{{1,2}, {3, 4}}, {{5, 6}, {7, 8}}};
+xs = [[[1,2], [3, 4]], [[5, 6], [7, 8]]];
 r1 = foo(xs@@-2);
 ";
             thisTest.RunScriptSource(code);
@@ -143,7 +143,7 @@ def foo(xs:var[])
     return = Sum(xs);
 }
 
-xs = {{{1,2}, {3, 4}}, {{5, 6}, {7, 8}}};
+xs = [[[1,2], [3, 4]], [[5, 6], [7, 8]]];
 r1 = foo(xs@@-1);
 ";
             thisTest.RunScriptSource(code);
@@ -155,7 +155,7 @@ r1 = foo(xs@@-1);
         {
             string code = @"
 import (AtLevelTestClass from ""FFITarget.dll"");
-xs = { { { 1,2}, { 3, 4} }, { { 5, 6}, { 7, 8} } };
+xs = [ [ [ 1,2], [ 3, 4] ], [ [ 5, 6], [ 7, 8] ] ];
 r1 = AtLevelTestClass.Sum(xs@@-2);
 ";
             thisTest.RunScriptSource(code);
@@ -168,7 +168,7 @@ r1 = AtLevelTestClass.Sum(xs@@-2);
             string code = @"
 import (AtLevelTestClass from ""FFITarget.dll"");
 t = AtLevelTestClass();
-xs = { { { 1,2}, { 3, 4} }, { { 5, 6}, { 7, 8} } };
+xs = [ [ [ 1,2], [ 3, 4] ], [ [ 5, 6], [ 7, 8] ] ];
 r1 = t.sum(xs@@-2);
 ";
             thisTest.RunScriptSource(code);
@@ -184,7 +184,7 @@ def foo(xs)
     return = xs + 1;
 }
 
-xs = {{{1,2}, {3, 4}}};
+xs = [[[1,2], [3, 4]]];
 r1 = foo(xs@@-2);
 ";
             thisTest.RunScriptSource(code);
@@ -196,7 +196,7 @@ r1 = foo(xs@@-2);
         {
             string code = @"
 import (AtLevelTestClass from ""FFITarget.dll"");
-xs = {{{1,2}, {3, 4}}};
+xs = [[[1,2], [3, 4]]];
 r1 = AtLevelTestClass.Inc(xs@@-2);
 ";
             thisTest.RunScriptSource(code);
@@ -209,7 +209,7 @@ r1 = AtLevelTestClass.Inc(xs@@-2);
             string code = @"
 import (AtLevelTestClass from ""FFITarget.dll"");
 t = AtLevelTestClass();
-xs = {{{1,2}, {3, 4}}};
+xs = [[[1,2], [3, 4]]];
 r1 = t.inc(xs@@-2);
 ";
             thisTest.RunScriptSource(code);
@@ -225,8 +225,8 @@ def foo(xs:var[], ys)
     return = Sum(xs) + ys;
 }
 
-xs = {{{1,2}, {3, 4}}, {{5, 6}, {7, 8}}};
-ys = {""a"", ""b"", ""c""};
+xs = [[[1,2], [3, 4]], [[5, 6], [7, 8]]];
+ys = [""a"", ""b"", ""c""];
 r1 = foo(xs@@-2, ys@-1);
 ";
             thisTest.RunScriptSource(code);
@@ -238,8 +238,8 @@ r1 = foo(xs@@-2, ys@-1);
         {
             string code = @"
 import (AtLevelTestClass from ""FFITarget.dll"");
-xs = {{{1,2}, {3, 4}}, {{5, 6}, {7, 8}}};
-ys = {""a"", ""b"", ""c""};
+xs = [[[1,2], [3, 4]], [[5, 6], [7, 8]]];
+ys = [""a"", ""b"", ""c""];
 r1 = AtLevelTestClass.SumAndConcat(xs@@-2, ys@-1);
 ";
             thisTest.RunScriptSource(code);
@@ -252,8 +252,8 @@ r1 = AtLevelTestClass.SumAndConcat(xs@@-2, ys@-1);
             string code = @"
 import (AtLevelTestClass from ""FFITarget.dll"");
 t = AtLevelTestClass();
-xs = {{{1,2}, {3, 4}}, {{5, 6}, {7, 8}}};
-ys = {""a"", ""b"", ""c""};
+xs = [[[1,2], [3, 4]], [[5, 6], [7, 8]]];
+ys = [""a"", ""b"", ""c""];
 r1 = t.SumAndConcat(xs@@-2, ys@-1);
 ";
             thisTest.RunScriptSource(code);
@@ -269,8 +269,8 @@ def foo(xs:var[], ys)
     return = Sum(xs) + ys;
 }
 
-xs = {{{1,2}, {3, 4}}, {{5, 6}, {7, 8}}};
-ys = {""a"", ""b"", ""c""};
+xs = [[[1,2], [3, 4]], [[5, 6], [7, 8]]];
+ys = [""a"", ""b"", ""c""];
 r1 = foo(xs@-2, ys@@-1);
 ";
             thisTest.RunScriptSource(code);
@@ -282,8 +282,8 @@ r1 = foo(xs@-2, ys@@-1);
         {
             string code = @"
 import (AtLevelTestClass from ""FFITarget.dll"");
-xs = {{{1,2}, {3, 4}}, {{5, 6}, {7, 8}}};
-ys = {""a"", ""b"", ""c""};
+xs = [[[1,2], [3, 4]], [[5, 6], [7, 8]]];
+ys = [""a"", ""b"", ""c""];
 r1 = AtLevelTestClass.SumAndConcat(xs@-2, ys@@-1);
 ";
             thisTest.RunScriptSource(code);
@@ -296,8 +296,8 @@ r1 = AtLevelTestClass.SumAndConcat(xs@-2, ys@@-1);
             string code = @"
 import (AtLevelTestClass from ""FFITarget.dll"");
 t = AtLevelTestClass();
-xs = {{{1,2}, {3, 4}}, {{5, 6}, {7, 8}}};
-ys = {""a"", ""b"", ""c""};
+xs = [[[1,2], [3, 4]], [[5, 6], [7, 8]]];
+ys = [""a"", ""b"", ""c""];
 r1 = t.sumAndConcat(xs@-2, ys@@-1);
 ";
             thisTest.RunScriptSource(code);
@@ -313,8 +313,8 @@ def foo(xs:var[], ys)
     return = Sum(xs) + ys;
 }
 
-xs = {{{1,2}, {3, 4}}, {{5, 6}, {7, 8}}};
-ys = {""a"", ""b"", ""c""};
+xs = [[[1,2], [3, 4]], [[5, 6], [7, 8]]];
+ys = [""a"", ""b"", ""c""];
 r1 = foo(xs@-2<1L>, ys@@-1<1L>);
 ";
             thisTest.RunScriptSource(code);
@@ -326,8 +326,8 @@ r1 = foo(xs@-2<1L>, ys@@-1<1L>);
         {
             string code = @"
 import (AtLevelTestClass from ""FFITarget.dll"");
-xs = {{{1,2}, {3, 4}}, {{5, 6}, {7, 8}}};
-ys = {""a"", ""b"", ""c""};
+xs = [[[1,2], [3, 4]], [[5, 6], [7, 8]]];
+ys = [""a"", ""b"", ""c""];
 r1 = AtLevelTestClass.SumAndConcat(xs@-2<1L>, ys@@-1<1L>);
 ";
             thisTest.RunScriptSource(code);
@@ -340,8 +340,8 @@ r1 = AtLevelTestClass.SumAndConcat(xs@-2<1L>, ys@@-1<1L>);
             string code = @"
 import (AtLevelTestClass from ""FFITarget.dll"");
 t = AtLevelTestClass();
-xs = {{{1,2}, {3, 4}}, {{5, 6}, {7, 8}}};
-ys = {""a"", ""b"", ""c""};
+xs = [[[1,2], [3, 4]], [[5, 6], [7, 8]]];
+ys = [""a"", ""b"", ""c""];
 r1 = t.sumAndConcat(xs@-2<1L>, ys@@-1<1L>);
 ";
             thisTest.RunScriptSource(code);
@@ -357,8 +357,8 @@ def foo(xs:var[], ys)
 {
     return = Sum(xs) + ys;
 }
-xs = {{{1,2}, {3, 4}}, {{5, 6}}};
-ys = {""a"", ""b"", ""c"", ""d""};
+xs = [[[1,2], [3, 4]], [[5, 6]]];
+ys = [""a"", ""b"", ""c"", ""d""];
 r1 = foo(xs@-2<1L>, ys@@-1<1L>);
 ";
             thisTest.RunScriptSource(code);
@@ -370,8 +370,8 @@ r1 = foo(xs@-2<1L>, ys@@-1<1L>);
         {
             string code = @"
 import (AtLevelTestClass from ""FFITarget.dll"");
-xs = {{{1,2}, {3, 4}}, {{5, 6}}};
-ys = {""a"", ""b"", ""c"", ""d""};
+xs = [[[1,2], [3, 4]], [[5, 6]]];
+ys = [""a"", ""b"", ""c"", ""d""];
 r1 = AtLevelTestClass.SumAndConcat(xs@-2<1L>, ys@@-1<1L>);
 ";
             thisTest.RunScriptSource(code);
@@ -384,8 +384,8 @@ r1 = AtLevelTestClass.SumAndConcat(xs@-2<1L>, ys@@-1<1L>);
             string code = @"
 import (AtLevelTestClass from ""FFITarget.dll"");
 t = AtLevelTestClass();
-xs = {{{1,2}, {3, 4}}, {{5, 6}}};
-ys = {""a"", ""b"", ""c"", ""d""};
+xs = [[[1,2], [3, 4]], [[5, 6]]];
+ys = [""a"", ""b"", ""c"", ""d""];
 r1 = t.sumAndConcat(xs@-2<1L>, ys@@-1<1L>);
 ";
             thisTest.RunScriptSource(code);
@@ -400,8 +400,8 @@ def foo(xs:var[], ys)
 {
     return = Sum(xs) + ys;
 }
-xs = {{{1,2}, {3, 4}}, {{5, 6}, {7, 8}}};
-ys = {""a"", ""b"", ""c""};
+xs = [[[1,2], [3, 4]], [[5, 6], [7, 8]]];
+ys = [""a"", ""b"", ""c""];
 r1 = foo(xs@@-2<1L>, ys@-1<1L>);
 ";
             thisTest.RunScriptSource(code);
@@ -413,8 +413,8 @@ r1 = foo(xs@@-2<1L>, ys@-1<1L>);
         {
             string code = @"
 import (AtLevelTestClass from ""FFITarget.dll"");
-xs = {{{1,2}, {3, 4}}, {{5, 6}, {7, 8}}};
-ys = {""a"", ""b"", ""c""};
+xs = [[[1,2], [3, 4]], [[5, 6], [7, 8]]];
+ys = [""a"", ""b"", ""c""];
 r1 = AtLevelTestClass.SumAndConcat(xs@@-2<1L>, ys@-1<1L>);
 ";
             thisTest.RunScriptSource(code);
@@ -427,8 +427,8 @@ r1 = AtLevelTestClass.SumAndConcat(xs@@-2<1L>, ys@-1<1L>);
             string code = @"
 import (AtLevelTestClass from ""FFITarget.dll"");
 t = AtLevelTestClass();
-xs = {{{1,2}, {3, 4}}, {{5, 6}, {7, 8}}};
-ys = {""a"", ""b"", ""c""};
+xs = [[[1,2], [3, 4]], [[5, 6], [7, 8]]];
+ys = [""a"", ""b"", ""c""];
 r1 = t.sumAndConcat(xs@@L2<1L>, ys@L1<1L>);
 ";
             thisTest.RunScriptSource(code);
@@ -444,12 +444,37 @@ def foo(x, y)
     return = x + y;
 }
 
-xs = {{1,2,3}};
-ys = {{4,5,6}};
+xs = [[1,2,3]];
+ys = [[4,5,6]];
 r = foo(xs@@L1, ys@@L1);
 ";
             thisTest.RunAndVerifyRuntimeWarning(code, ProtoCore.Runtime.WarningID.MoreThanOneDominantList);
             thisTest.Verify("r", new object[] { 5, 7, 9 });
+        }
+
+        [Test]
+        public void TestNestedListStructureAtLevel1()
+        {
+            string code = @"
+import(""DSCoreNodes.dll"");
+import(""BuiltIn.ds"");
+l = List.Transpose([""test"", 1..3]@@L1<1>);
+";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("l",
+                new object[] {null, new object[] {new[] {1}, new[] {2}, new[] {3}}});
+        }
+
+        [Test]
+        public void TestNestedListAtLevel1()
+        {
+            string code = @"
+import(""DSCoreNodes.dll"");
+import(""BuiltIn.ds"");
+l = DSCore.Object.IsNull([""test"", 1..3]@L1);
+";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("l", new object[] { false, false, false });
         }
     }
 }

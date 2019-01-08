@@ -20,7 +20,6 @@ using Microsoft.Practices.Prism.Commands;
 using Double = System.Double;
 using NotificationObject = Microsoft.Practices.Prism.ViewModel.NotificationObject;
 using String = System.String;
-using System.Diagnostics;
 
 namespace Dynamo.PackageManager
 {
@@ -749,7 +748,7 @@ namespace Dynamo.PackageManager
 
         }
 
-        private IEnumerable<string> GetAllFiles()
+        internal IEnumerable<string> GetAllFiles()
         {
             // get all function defs
             var allFuncs = AllFuncDefs().ToList();

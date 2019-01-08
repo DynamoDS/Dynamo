@@ -1,14 +1,9 @@
-﻿using Dynamo.Interfaces;
-using Dynamo.Logging;
-
-using Dynamo.Utilities;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Reflection;
-using System.Text;
 using System.Xml;
+using Dynamo.Logging;
 
 namespace Dynamo.Extensions
 {
@@ -18,19 +13,21 @@ namespace Dynamo.Extensions
     /// *Extension.dll and type name of IExtension inheritor.
     /// 
     /// Example:
-    /// <ViewExtensionDefinition>
-    ///   <AssemblyPath>..\ExtansionName.dll</AssemblyPath>
-    ///   <TypeName>Dynamo.ExtansionName.ExtansionTypeName</TypeName>
-    /// </ViewExtensionDefinition>
+    /// <ExtensionDefinition>
+    ///   <AssemblyPath>..\ExtensionName.dll</AssemblyPath>
+    ///   <TypeName>Dynamo.ExtensionName.ExtensionTypeName</TypeName>
+    /// </ExtensionDefinition>
     /// </summary>
     public class ExtensionLoader: IExtensionLoader, ILogSource
     {
         private IExtension Load(ExtensionDefinition extension)
         {
+            
             try
             {
                 var assembly = Assembly.LoadFrom(extension.AssemblyPath);
                 var result = assembly.CreateInstance(extension.TypeName) as IExtension;
+                ExtensionLoading?.Invoke(result);
                 return result;
             }
             catch(Exception ex)
@@ -122,5 +119,10 @@ namespace Dynamo.Extensions
         {
             Log(LogMessage.Info(msg));
         }
+
+        /// <summary>
+        /// An event that is raised when an extension starts loading.
+        /// </summary>
+        public event Action<IExtension> ExtensionLoading;
     }
 }

@@ -1,17 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Xml;
-using Dynamo.Engine;
+﻿using Dynamo.Engine;
 using Dynamo.Engine.CodeGeneration;
 using Dynamo.Library;
+using Newtonsoft.Json;
 using ProtoCore;
 using ProtoCore.AST.AssociativeAST;
+using ProtoCore.BuildData;
 using ProtoCore.DSASM;
 using ProtoCore.Namespace;
 using ProtoCore.Utils;
-using ProtoCore.BuildData;
-using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Xml;
 
 namespace Dynamo.Graph.Nodes.CustomNodes
 {
@@ -347,6 +347,24 @@ namespace Dynamo.Graph.Nodes.CustomNodes
         }
 
         /// <summary>
+        ///     Indicates whether node is input node.
+        ///     Used to bind visibility of UI for user selection.
+        /// </summary>
+        public override bool IsInputNode
+        {
+            get { return false; }
+        }
+
+        /// <summary>
+        ///     Indicates whether node is output node.
+        ///     Used to bind visibility of UI for user selection.
+        /// </summary>
+        public override bool IsOutputNode
+        {
+            get { return false; }
+        }
+
+        /// <summary>
         ///     Responsible for resolving 
         ///     a partial class name to its fully resolved name
         /// </summary>
@@ -369,14 +387,28 @@ namespace Dynamo.Graph.Nodes.CustomNodes
             ElementResolver = new ElementResolver();
         }
 
+        // TODO - Dynamo 3.0 - use JSONConstructor on this method
+        // and remove custom logic in nodeReadConverter for symbol nodes.
+
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="Symbol"/> class.
+        /// </summary>
+        public Symbol(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts, TypedParameter parameter, ElementResolver elementResolver) : base(inPorts, outPorts)
+        {
+            ArgumentLacing = LacingStrategy.Disabled;
+            InputSymbol = parameter.ToCommentNameString();
+            ElementResolver = elementResolver ?? new ElementResolver();
+        }
+
         /// <summary>
         ///     Initializes a new instance of the <see cref="Symbol"/> class.
         /// </summary>
         [JsonConstructor]
+        [Obsolete("This method will be removed in Dynamo 3.0 - please use the constructor with ElementResolver parameter ")]
         public Symbol(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts, TypedParameter parameter) : base(inPorts, outPorts)
         {
             ArgumentLacing = LacingStrategy.Disabled;
-            InputSymbol = parameter.ToString();
+            InputSymbol = parameter.ToCommentNameString();
             ElementResolver = new ElementResolver();
         }
 
@@ -415,15 +447,26 @@ namespace Dynamo.Graph.Nodes.CustomNodes
                                 Properties.Resources.WarningCannotFindType,
                                 identifierNode.datatype.Name);
                             this.Warning(warningMessage);
+                            //https://jira.autodesk.com/browse/QNTM-3872 
+                            //For Unknown node types, don't change the node type in serialization
+                            var ltype = identifierNode.datatype;
+                            Parameter = new TypedParameter(name, ltype, defaultValue, null, comment);
                         }
                         else
                         {
                             type = identifierNode.datatype;
+                            Parameter = new TypedParameter(name, type, defaultValue, null, comment);
                         }
                     }
+                    else
+                    {
+                        Parameter = new TypedParameter(name, type, defaultValue, null, comment);
+                    }
                 }
-
-                Parameter = new TypedParameter(name, type, defaultValue, null, comment);
+                else
+                {
+                    Parameter = new TypedParameter(name, type, defaultValue, null, comment);
+                }
 
                 OnNodeModified();
                 RaisePropertyChanged("InputSymbol");
@@ -585,6 +628,24 @@ namespace Dynamo.Graph.Nodes.CustomNodes
             {
                 return "OutputNode";
             }
+        }
+
+        /// <summary>
+        ///     Indicates whether node is input node.
+        ///     Used to bind visibility of UI for user selection.
+        /// </summary>
+        public override bool IsInputNode
+        {
+            get { return false; }
+        }
+
+        /// <summary>
+        ///     Indicates whether node is output node.
+        ///     Used to bind visibility of UI for user selection.
+        /// </summary>
+        public override bool IsOutputNode
+        {
+            get { return false; }
         }
 
         /// <summary>

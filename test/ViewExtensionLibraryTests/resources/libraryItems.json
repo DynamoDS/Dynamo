@@ -369,9 +369,9 @@
       "keywords": "Dynamo.Nodes.dyn3DPreview, Dynamo.Nodes.3DPreview, Dynamo.Nodes.Watch3D, DynamoWatch3D.Watch3D, Watch 3D"
     },
     {
-      "fullyQualifiedName": "Rank",
-      "iconUrl": "http://localhost/icons/Rank.Small?path=BuiltIn",
-      "contextData": "Rank@var[]..[]",
+      "fullyQualifiedName": "List.Rank",
+      "iconUrl": "http://localhost/icons/List.Rank.Small?path=BuiltIn",
+      "contextData": "List.Rank@var[]..[]",
       "parameters": null,
       "itemType": "action",
       "keywords": "rank, depth, nesting, ranks"
@@ -5665,38 +5665,6 @@
       "keywords": ""
     },
     {
-      "fullyQualifiedName": "List.RemoveKey",
-      "iconUrl": "http://localhost/icons/List.RemoveKey.Small?path=BuiltIn.ds",
-      "contextData": "List.RemoveKey@var[]..[],var",
-      "parameters": null,
-      "itemType": "action",
-      "keywords": ""
-    },
-    {
-      "fullyQualifiedName": "List.GetValues",
-      "iconUrl": "http://localhost/icons/List.GetValues.Small?path=BuiltIn.ds",
-      "contextData": "List.GetValues@var[]..[]",
-      "parameters": null,
-      "itemType": "action",
-      "keywords": ""
-    },
-    {
-      "fullyQualifiedName": "List.GetKeys",
-      "iconUrl": "http://localhost/icons/List.GetKeys.Small?path=BuiltIn.ds",
-      "contextData": "List.GetKeys@var[]..[]",
-      "parameters": null,
-      "itemType": "action",
-      "keywords": ""
-    },
-    {
-      "fullyQualifiedName": "List.ContainsKey",
-      "iconUrl": "http://localhost/icons/List.ContainsKey.Small?path=BuiltIn.ds",
-      "contextData": "List.ContainsKey@var[]..[],var",
-      "parameters": null,
-      "itemType": "action",
-      "keywords": ""
-    },
-    {
       "fullyQualifiedName": "DynamoUnits.Location.Name",
       "iconUrl": "http://localhost/icons/DynamoUnits.Location.Name.Small?path=DynamoUnits.dll",
       "contextData": "DynamoUnits.Location.Name",
@@ -5775,6 +5743,70 @@
       "parameters": null,
       "itemType": "create",
       "keywords": ""
+    },
+    {
+      "fullyQualifiedName": "DesignScript.Builtin.Dictionary.ByKeysValues",
+      "iconUrl": "http://localhost/icons/DesignScript.Builtin.Dictionary.ByKeysValues.Small?path=DesignScriptBuiltin.dll",
+      "contextData": "Dictionary.ByKeysValues",
+      "parameters": null,
+      "itemType": "create",
+      "keywords": "Dictionary, ByKeysValues"
+    },
+    {
+      "fullyQualifiedName": "DesignScript.Builtin.Dictionary.Components",
+      "iconUrl": "http://localhost/icons/DesignScript.Builtin.Dictionary.Components.Small?path=DesignScriptBuiltin.dll",
+      "contextData": "Dictionary.Components",
+      "parameters": null,
+      "itemType": "action",
+      "keywords": "Dictionary, Components"
+    },
+    {
+      "fullyQualifiedName": "DesignScript.Builtin.Dictionary.RemoveKeys",
+      "iconUrl": "http://localhost/icons/DesignScript.Builtin.Dictionary.RemoveKeys.Small?path=DesignScriptBuiltin.dll",
+      "contextData": "Dictionary.RemoveKeys",
+      "parameters": null,
+      "itemType": "action",
+      "keywords": "Dictionary, RemoveKeys"
+    },
+    {
+      "fullyQualifiedName": "DesignScript.Builtin.Dictionary.SetValueAtKeys",
+      "iconUrl": "http://localhost/icons/DesignScript.Builtin.Dictionary.SetValueAtKeys.Small?path=DesignScriptBuiltin.dll",
+      "contextData": "Dictionary.SetValueAtKeys",
+      "parameters": null,
+      "itemType": "action",
+      "keywords": "Dictionary, SetValueAtKeys"
+    },
+    {
+      "fullyQualifiedName": "DesignScript.Builtin.Dictionary.ValueAtKey",
+      "iconUrl": "http://localhost/icons/DesignScript.Builtin.Dictionary.ValueAtKey.Small?path=DesignScriptBuiltin.dll",
+      "contextData": "Dictionary.ValueAtKey",
+      "parameters": null,
+      "itemType": "action",
+      "keywords": "Dictionary, ValueAtKey"
+    },
+    {
+      "fullyQualifiedName": "DesignScript.Builtin.Dictionary.Count",
+      "iconUrl": "http://localhost/icons/DesignScript.Builtin.Dictionary.Count.Small?path=DesignScriptBuiltin.dll",
+      "contextData": "Dictionary.Count",
+      "parameters": null,
+      "itemType": "query",
+      "keywords": "Dictionary, Count"
+    },
+    {
+      "fullyQualifiedName": "DesignScript.Builtin.Dictionary.Keys",
+      "iconUrl": "http://localhost/icons/DesignScript.Builtin.Dictionary.Keys.Small?path=DesignScriptBuiltin.dll",
+      "contextData": "Dictionary.Keys",
+      "parameters": null,
+      "itemType": "query",
+      "keywords": "Dictionary, Keys"
+    },
+    {
+      "fullyQualifiedName": "DesignScript.Builtin.Dictionary.Values",
+      "iconUrl": "http://localhost/icons/DesignScript.Builtin.Dictionary.Values.Small?path=DesignScriptBuiltin.dll",
+      "contextData": "Dictionary.Values",
+      "parameters": null,
+      "itemType": "query",
+      "keywords": "Dictionary, Values"
     }
   ]
 }

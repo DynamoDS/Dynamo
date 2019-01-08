@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Dynamo.Events;
 
 namespace Autodesk.DesignScript.Interfaces
 {
@@ -328,5 +327,71 @@ namespace Autodesk.DesignScript.Interfaces
         /// be pushed/set.</param>
         /// <param name="parameters">A TessellationParameters object.</param>
         void Tessellate(List<Object> objects, IRenderPackage package, TessellationParameters parameters);
+    }
+
+    /// <summary>
+    /// The interface that represents json data for drawing a graphic primitive 
+    /// </summary>
+    internal interface IGraphicPrimitives
+    {
+        /// <summary>
+        /// Base-64 encoded array of 32 bit floats, 3 per vertex.
+        /// </summary>
+        string TriangleVertices { get; }
+
+        /// <summary>
+        /// Base-64 encoded array of 32 bit floats, 3 per vertex.
+        /// </summary>
+        string TriangleNormals { get; }
+
+        /// <summary>
+        /// Base-64 encoded array of 32 bit unsigned integers, 1 per vertex, in RGBA format.
+        /// </summary>
+        string TriangleVertexColors { get; }
+
+        /// <summary>
+        /// Base-64 encoded array of 32 bit floats, 2 per vertex.
+        /// </summary>
+        string TriangleTextureCoordinates { get; }
+
+        /// <summary>
+        /// Base-64 encoded array of 32 bit floats, 3 per vertex.
+        /// </summary>
+        string LineStripVertices { get; }
+
+        /// <summary>
+        /// Base-64 encoded array of 32 bit unsigned integers, 1 per line strip, giving the number of vertices in the strip.
+        /// </summary>
+        string LineStripCounts { get; }
+
+        /// <summary>
+        /// Base-64 encoded array of 32 bit unsigned integers, 1 per vertex, in RGBA format.
+        /// </summary>
+        string LineStripColors { get; }
+
+        /// <summary>
+        /// Base-64 encoded array of 32 bit floats, 3 per vertex.
+        /// </summary>
+        string PointVertices { get; }
+
+        /// <summary>
+        /// Base-64 encoded array of 32 bit unsigned integers, 1 per vertex, in RGBA format.
+        /// </summary>
+        string PointVertexColors { get; }
+
+        /// <summary>
+        /// Base-64 encoded array of 32 bit unsigned integers in RGBA format, definining a texture to apply to the triangles.
+        /// </summary>
+        string Colors { get; }
+
+        /// <summary>
+        /// Number of values per row in the `Colors` array.
+        /// </summary>
+        string ColorsStride { get; }
+
+        /// <summary>
+        ///  Whether or not the individual vertices should be colored using the data in the corresponding arrays.
+        /// </summary>
+        bool RequiresPerVertexColoration { get; }
     }
 }

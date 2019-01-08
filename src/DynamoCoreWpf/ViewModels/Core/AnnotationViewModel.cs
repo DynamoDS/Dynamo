@@ -1,18 +1,14 @@
-﻿using System.Collections;
+﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
-using System.Windows.Forms;
-using System.Windows.Media;
-using Dynamo.Models;
-using System;
 using System.Windows.Input;
+using System.Windows.Media;
 using Dynamo.Graph;
 using Dynamo.Graph.Annotations;
+using Dynamo.Models;
 using Dynamo.Selection;
 using Dynamo.UI.Commands;
 using Dynamo.Utilities;
-using Dynamo.Views;
 using Newtonsoft.Json;
 using Color = System.Windows.Media.Color;
 
@@ -186,8 +182,22 @@ namespace Dynamo.ViewModels
         public AnnotationViewModel(WorkspaceViewModel workspaceViewModel, AnnotationModel model)
         {             
             annotationModel = model;           
-            this.WorkspaceViewModel = workspaceViewModel;                                     
+            this.WorkspaceViewModel = workspaceViewModel;
             model.PropertyChanged += model_PropertyChanged;
+            //https://jira.autodesk.com/browse/QNTM-3770
+            //Notes and Groups are serialized as annotations. Do not unselect the node selection during
+            //Notes serialization
+            if (model.Nodes.Count() > 0)
+            {
+                // Group is created already.So just populate it.
+                var selectNothing = new DynamoModel.SelectModelCommand(Guid.Empty, System.Windows.Input.ModifierKeys.None.AsDynamoType());
+                WorkspaceViewModel.DynamoViewModel.ExecuteCommand(selectNothing);
+            }
+            
+        }
+
+        internal void ClearSelection()
+        {
             // Group is created already.So just populate it.
             var selectNothing = new DynamoModel.SelectModelCommand(Guid.Empty, System.Windows.Input.ModifierKeys.None.AsDynamoType());
             WorkspaceViewModel.DynamoViewModel.ExecuteCommand(selectNothing);

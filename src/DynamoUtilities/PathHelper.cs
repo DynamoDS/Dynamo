@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Security.AccessControl;
 using System.Xml;
 using Newtonsoft.Json;
@@ -95,21 +96,23 @@ namespace DynamoUtilities
         /// This is a utility method for checking if given path contains valid XML document.
         /// </summary>
         /// <param name="path">path to the target xml file</param>
-        /// <param name="xmlDoc">System.Xml.XmlDocument repensentation of target xml file</param>
-        /// <returns></returns>
-        public static bool isValidXML(string path, out XmlDocument xmlDoc)
+        /// <param name="xmlDoc">System.Xml.XmlDocument representation of target xml file</param>
+        /// <returns>Return true if file is Json, false if file is not Json, exception as out param</returns>
+        public static bool isValidXML(string path, out XmlDocument xmlDoc, out Exception ex)
         {
             // Based on https://msdn.microsoft.com/en-us/library/875kz807(v=vs.110).aspx
-            // Exception thrown indicate invalid XML document path 
+            // Exception thrown indicate invalid XML document path or due to other failure
             try
             {
                 xmlDoc = new XmlDocument();
                 xmlDoc.Load(path);
+                ex = null;
                 return true;
             }
-            catch
+            catch(Exception e)
             {
                 xmlDoc = null;
+                ex = e;
                 return false;
             }
         }
@@ -119,8 +122,8 @@ namespace DynamoUtilities
         /// </summary>
         /// <param name="path">path to the target json file</param>
         /// <param name="fileContents"> string contents of target json file</param>
-        /// <returns></returns>
-        public static bool isValidJson(string path, out string fileContents)
+        /// <returns>Return true if file is Json, false if file is not Json, exception as out param</returns>
+        public static bool isValidJson(string path, out string fileContents, out Exception ex)
         {
             fileContents = "";
             try
@@ -131,21 +134,30 @@ namespace DynamoUtilities
                     (fileContents.StartsWith("[") && fileContents.EndsWith("]"))) //For array
                 {
                     var obj = Newtonsoft.Json.Linq.JToken.Parse(fileContents);
+                    ex = null;
                     return true;
                 }
+                ex = new JsonReaderException();
                 return false;
             }
-            catch (JsonReaderException jex)
+            catch (Exception e) //some other exception
             {
-                //Exception in parsing Json
-                Console.WriteLine(jex.Message);
+                Console.WriteLine(e.ToString());
+                ex = e;
                 return false;
             }
-            catch (Exception ex) //some other exception
-            {
-                Console.WriteLine(ex.ToString());
-                return false;
-            }
+        }
+
+        // Check if the file name contains any special non-printable chatacters.
+        public static bool IsFileNameInValid(string fileName)
+        {
+            // Some other extra characters that are to be checked. 
+            char[] invalidCharactersFileName = { '#', '%', '&', '.', ' ' };
+
+            if (fileName.Any(f => Path.GetInvalidFileNameChars().Contains(f)) || fileName.IndexOfAny(invalidCharactersFileName) > -1)
+                return true;
+
+            return false;
         }
     }
 }

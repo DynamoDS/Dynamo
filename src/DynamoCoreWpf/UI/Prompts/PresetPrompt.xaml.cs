@@ -1,11 +1,10 @@
 ﻿using System.Linq;
 using System.Windows;
-using Dynamo.Controls;
-using Dynamo.Utilities; 
-using System;
 using System.Windows.Controls;
-using Dynamo.ViewModels;
+using Dynamo.Controls;
 using Dynamo.Graph.Workspaces;
+using Dynamo.Utilities;
+using Dynamo.ViewModels;
 
 namespace Dynamo.Nodes
 {

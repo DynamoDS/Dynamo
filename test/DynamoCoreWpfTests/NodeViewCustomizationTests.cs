@@ -137,7 +137,7 @@ namespace DynamoCoreWpfTests
 
         }
 
-        //these tests live here as they have a dependencey on CoreNodesWpf which
+        //these tests live here as they have a dependency on CoreNodesWpf which
         //is only accessible at test time after it is loaded via Dynamo 
         [Test]
         [Category("UnitTests")]
@@ -414,13 +414,13 @@ namespace DynamoCoreWpfTests
             OpenAndRun(@"UI\InvalidValueShouldNotCrashColorRangeNode.dyn");
             var node0 = Model.CurrentWorkspace.Nodes.First(n => n.GUID == guid0);
             var node1 = Model.CurrentWorkspace.Nodes.First(n => n.GUID == guid1);
-            node0.OnNodeModified(); // Mark node as dirty to tigger an immediate run.
-            node1.OnNodeModified(); // Mark node as dirty to tigger an immediate run.
+            node0.OnNodeModified(); // Mark node as dirty to trigger an immediate run.
+            node1.OnNodeModified(); // Mark node as dirty to trigger an immediate run.
 
             Assert.Pass(); // We should reach here safely without exception.
         }
 
-        [Test, Category("DisplayHardwareDependent"), Category("Failure")]
+        [Test, Category("DisplayHardwareDependent")]
         public void WatchConnectDisconnectTest()
         {
             WatchIsEmptyWhenLoaded();
@@ -460,9 +460,9 @@ namespace DynamoCoreWpfTests
                 DynamoModel.MakeConnectionCommand.Mode.Begin));
             Model.ExecuteCommand(new DynamoModel.MakeConnectionCommand(watchGuid, 0, PortType.Input,
                 DynamoModel.MakeConnectionCommand.Mode.End));
-            
-            DispatcherUtil.DoEvents();
+
             Run();
+            DispatcherUtil.DoEvents();
             tree = nodeView.ChildrenOfType<WatchTree>();
             items = tree.First().treeView1.ChildrenOfType<TextBlock>();
             Assert.AreEqual(8, items.Count());

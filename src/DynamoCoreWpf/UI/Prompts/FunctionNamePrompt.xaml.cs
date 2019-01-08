@@ -3,13 +3,14 @@ using System.Linq;
 using System.Windows;
 using Dynamo.Controls;
 using Dynamo.Utilities;
+using DynamoUtilities;
 
 namespace Dynamo.Nodes
 {
-   /// <summary>
-   /// Interaction logic for FunctionNamePrompt.xaml
-   /// </summary>
-   public partial class FunctionNamePrompt : Window
+    /// <summary>
+    /// Interaction logic for FunctionNamePrompt.xaml
+    /// </summary>
+    public partial class FunctionNamePrompt : Window
    {
       public FunctionNamePrompt(IEnumerable<string> categories)
       {
@@ -36,6 +37,12 @@ namespace Dynamo.Nodes
               MessageBox.Show(Dynamo.Wpf.Properties.Resources.MessageCustomNodeNoName,
                   Dynamo.Wpf.Properties.Resources.CustomNodePropertyErrorMessageBoxTitle,
                   MessageBoxButton.OK, MessageBoxImage.Error);
+          }
+          else if (PathHelper.IsFileNameInValid(Text))
+          {
+              MessageBox.Show(Dynamo.Wpf.Properties.Resources.MessageCustomNodeNameInvalid,
+                 Dynamo.Wpf.Properties.Resources.CustomNodePropertyErrorMessageBoxTitle,
+                 MessageBoxButton.OK, MessageBoxImage.Error);
           }
           else if (string.IsNullOrEmpty(Category))
           {

@@ -2,11 +2,12 @@
   "Uuid": "edd9e95c-26a5-4ec2-bd1b-ca2a80bc827b",
   "IsCustomNode": false,
   "Description": "",
-  "Name": "Home",
+  "Name": "2080_JSONTESTCRASH undo_redo",
   "ElementResolver": {
     "ResolutionMap": {}
   },
   "Inputs": [],
+  "Outputs": [],
   "Nodes": [
     {
       "ConcreteType": "Dynamo.Graph.Nodes.UNKNOWNTYPE, DynamoCore",
@@ -18,7 +19,7 @@
         {
           "Id": "cddfa508b4a246fd94f79792d303cbf5",
           "Name": "",
-          "Description": "t6BBA4B28C5E54CF89F300D510499A00E_0",
+          "Description": "Value of expression at line 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -38,7 +39,7 @@
         {
           "Id": "8234ec6cc018433da0605ddfb17cdc2b",
           "Name": "",
-          "Description": "t6BBA4B28C5E54CF89F300D510499A00E_0",
+          "Description": "Value of expression at line 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -78,14 +79,18 @@
         "ShowGeometry": true,
         "Name": "Code Block",
         "Id": "158f8f25ddb746c88323ae262e87611e",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 76.8,
-        "Y": 65.3999999999999
+        "X": 179.8,
+        "Y": 160.39999999999992
       },
       {
         "ShowGeometry": true,
         "Name": "Code Block",
         "Id": "6cbd0760736f4235a03b38fb359e9957",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
         "Excluded": false,
         "X": 76.8,
         "Y": 162.4

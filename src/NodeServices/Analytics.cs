@@ -120,6 +120,15 @@ namespace Dynamo.Logging
         public static void TrackException(Exception ex, bool isFatal)
         {
             if (client != null) client.TrackException(ex, isFatal);
+
+            System.Text.StringBuilder sb = new System.Text.StringBuilder();
+
+            sb.AppendLine("Type: " + ex.GetType());
+            sb.AppendLine("Fatal: " + isFatal);
+            sb.AppendLine("Message: " + ex.Message);
+            sb.AppendLine("StackTrace: " + ex.StackTrace);
+
+            LogPiiInfo("Analytics.TrackException", sb.ToString());
         }
 
         /// <summary>

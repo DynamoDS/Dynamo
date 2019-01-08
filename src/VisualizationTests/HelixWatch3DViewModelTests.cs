@@ -55,7 +55,7 @@ namespace WpfVisualizationTests
         {
             libraries.Add("ProtoGeometry.dll");
             libraries.Add("DSIronPython.dll");
-            libraries.Add("Builtin.dll");
+            libraries.Add("DesignScriptBuiltin.dll");
             libraries.Add("DSCoreNodes.dll");
             libraries.Add("GeometryColor.dll");
             libraries.Add("VMDataBridge.dll");
@@ -64,7 +64,7 @@ namespace WpfVisualizationTests
 
         protected override void StartDynamo(TestSessionConfiguration testConfig)
         {
-            var preloader = new Preloader(testConfig.DynamoCorePath, testConfig.RequestedLibraryVersion);
+            var preloader = new Preloader(testConfig.DynamoCorePath, new[] { testConfig.RequestedLibraryVersion2 });
             preloader.Preload();
 
             var preloadedLibraries = new List<string>();
@@ -172,7 +172,7 @@ namespace WpfVisualizationTests
         }
 
         [Test]
-        public void Node_PreviewUpstreamToggled_RenderingUpToDate()
+        public void Node_PreviewToggled_RenderingUpToDate()
         {
             var model = ViewModel.Model;
 
@@ -183,7 +183,7 @@ namespace WpfVisualizationTests
             //we start with all previews disabled
             //the graph is two points feeding into a line
 
-            //ensure that visulations match our expectations
+            //ensure that visualizations match our expectations
             Assert.True(BackgroundPreviewGeometry.HasNumberOfPointsCurvesAndMeshes(7, 6, 0));
 
             var watch3D = Model.CurrentWorkspace.FirstNodeFromWorkspace<Watch3D>();

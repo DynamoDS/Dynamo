@@ -1,9 +1,7 @@
 ﻿using System;
 
 using Dynamo.Controls;
-using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
-using Dynamo.Models;
 
 namespace Dynamo.Wpf
 {

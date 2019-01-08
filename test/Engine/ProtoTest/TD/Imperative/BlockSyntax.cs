@@ -31,12 +31,8 @@ namespace ProtoTest.TD.Imperative
         [Category("SmokeTest")]
         public void T02_TestAssocInsideImp()
         {
-            string src = @"x;
-y;
-z;
-w;
-f;
-[Imperative]
+            string src = @"
+i = [Imperative]
 {
     x = 5.1;
     z = y;
@@ -49,25 +45,18 @@ f;
         i = 3;
     }
     f = i;
+    return [x, z, y, w, f];
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            thisTest.Verify("x", 35);
-            thisTest.Verify("z", 35);
-            thisTest.Verify("y", 5);
-            thisTest.Verify("w", null);
-            thisTest.Verify("f", null);
+            thisTest.Verify("i", new object[] {35, 35, 5, null, null});
         }
 
         [Test]
         [Category("SmokeTest")]
         public void T03_TestImpInsideAssoc()
         {
-            string src = @"x;
-y;
-z;
-w;
-f;
-[Associative]
+            string src = @"
+a = [Associative]
 {
     x = 5.1;
     z = y;
@@ -80,13 +69,10 @@ f;
         i = 3;
     }
     f = i;
-}";
+    return [x, y, z, w, f];
+};";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            thisTest.Verify("x", 35);
-            thisTest.Verify("z", 5);
-            thisTest.Verify("y", 5);
-            thisTest.Verify("w", 10);
-            thisTest.Verify("f", null);
+            thisTest.Verify("a", new object[] {5.1, null, null, null, null});
         }
 
         [Test]
@@ -173,22 +159,23 @@ f;
         [Category("SmokeTest")]
         public void T09_Defect_1449829()
         {
-            string src = @"b;
-[Associative]
+            string src = @"
+b = [Associative]
 { 
- a = 2;
-[Imperative]
-{   
-	b = 1;
-    if(a == 2 )
-	{
-	b = 2;
+    a = 2;
+    return [Imperative]
+    {   
+    	b = 1;
+        if(a == 2 )
+    	{
+    	b = 2;
+        }
+        else 
+        {
+    	b = 4;
+        }
+        return b;
     }
-    else 
-    {
-	b = 4;
-    }
-}
 }
   ";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
@@ -199,15 +186,15 @@ f;
         [Category("SmokeTest")]
         public void T10_Defect_1449732()
         {
-            string src = @"c;
+            string src = @"
 	def fn1:int(a:int,b:int)
 	{
-	return = a + b -1;
+	    return = a + b -1;
 	}
-[Imperative]
-{
-	c = fn1(3,2);
-} ";
+    c = [Imperative]
+    {
+    	return fn1(3,2);
+    } ";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
             thisTest.Verify("c", 4);
         }
@@ -216,15 +203,15 @@ f;
         [Category("SmokeTest")]
         public void T11_Defect_1450174()
         {
-            string src = @"c;
+            string src = @"
 	def function1:double(a:int,b:double)
 	{ 
-	return = a * b;
+	    return a * b;
 	}	
-[Imperative]
-{
-	c = function1(2 + 3,4.0 + 6.0 / 4.0);
-}
+    c = [Imperative]
+    {
+    	return function1(2 + 3,4.0 + 6.0 / 4.0);
+    }
   ";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
             thisTest.Verify("c", 27.5);
@@ -299,15 +286,15 @@ f;
         [Category("SmokeTest")]
         public void T15_Defect_1452044()
         {
-            string src = @"b;
-[Associative]
+            string src = @"
+b = [Associative]
 {
 	a = 2;
-	[Imperative]
+	return [Imperative]
 	{
-		b = 2 * a;
+		return 2 * a;
 	}
-		
+	
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
             thisTest.Verify("b", 4);
@@ -317,14 +304,16 @@ f;
         [Category("SmokeTest")]
         public void T16__Defect_1452588()
         {
-            string src = @"x;
-[Imperative]
+            string src = @"
+x = [Imperative]
 {
-	a = { 1,2,3,4,5 };
+	a = [ 1,2,3,4,5 ];
+    x = null;
 	for( y in a )
 	{
 		x = 5;
 	}
+    return x;
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
             thisTest.Verify("x", 5);
@@ -334,8 +323,8 @@ f;
         [Category("SmokeTest")]
         public void T17__Defect_1452588_2()
         {
-            string src = @"c;
-[Imperative]
+            string src = @"
+c = [Imperative]
 {
 	a = 1;
 	
@@ -344,9 +333,7 @@ f;
 		if( a + 1 == 2)
 			b = 2;
 	}
-	
-	c = a;
-	
+	return a;
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
             thisTest.Verify("c", 1);
