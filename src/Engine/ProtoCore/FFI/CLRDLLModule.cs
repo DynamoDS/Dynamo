@@ -1387,6 +1387,10 @@ namespace ProtoFFI
                 {
                     IsLacingDisabled = true; 
                 }
+                else if (attr is AllowArrayPromotionAttribute)
+                {
+                    AllowArrayPromotion = (attr as AllowArrayPromotionAttribute).IsAllowed;
+                }
             }
         }
 
