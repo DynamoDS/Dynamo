@@ -256,10 +256,10 @@ namespace CoreNodeModels
                 SelectedIndex = -1;
                 for (int i = 0; i < items.Count; i++)
                 {
-                    if ((items.ElementAt(i)).Name.Equals(currentSelection))
+                    if ((items.ElementAt(i)).Item.ToString().Equals(currentSelection))
                     {
                         SelectedIndex = i;
-                        SelectedString = currentSelection;
+                        break;
                     }
                 }
             }
