@@ -465,8 +465,8 @@ namespace Dynamo.Graph.Nodes.CustomNodes
                         {
                             Error(errorMessages.First().Message);
                         }
-                        Parameter = new TypedParameter("Input", type, defaultValue, null, comment);
-                        Parameter.nameIsValid = false;
+                        Parameter = new TypedParameter("", type, defaultValue, null, comment);
+                        Parameter.NameIsValid = false;
                     }
                 }
                 else

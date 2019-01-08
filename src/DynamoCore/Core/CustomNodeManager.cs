@@ -286,7 +286,7 @@ namespace Dynamo.Core
                 var removeErrorState = true;
                 foreach (Symbol s in symbols)
                 {
-                    if (!s.Parameter.nameIsValid)
+                    if (!s.Parameter.NameIsValid)
                     {
                         node.Error("This custom node contains an input with an invalid name.");
                         removeErrorState = false;
