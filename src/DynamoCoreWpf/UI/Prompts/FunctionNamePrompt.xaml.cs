@@ -7,10 +7,10 @@ using DynamoUtilities;
 
 namespace Dynamo.Nodes
 {
-   /// <summary>
-   /// Interaction logic for FunctionNamePrompt.xaml
-   /// </summary>
-   public partial class FunctionNamePrompt : Window
+    /// <summary>
+    /// Interaction logic for FunctionNamePrompt.xaml
+    /// </summary>
+    public partial class FunctionNamePrompt : Window
    {
       public FunctionNamePrompt(IEnumerable<string> categories)
       {

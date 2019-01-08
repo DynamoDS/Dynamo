@@ -1,11 +1,7 @@
-﻿using Dynamo.Controls;
-using Dynamo.PackageManager;
-using Dynamo.ViewModels;
-using Dynamo.Wpf.Extensions;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using Dynamo.Wpf.Extensions;
 
 namespace Dynamo.PackageManager.UI
 {

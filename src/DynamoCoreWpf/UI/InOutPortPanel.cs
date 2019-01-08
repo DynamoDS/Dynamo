@@ -1,11 +1,7 @@
-﻿using Dynamo.Utilities;
-using Dynamo.ViewModels;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
+using Dynamo.Utilities;
+using Dynamo.ViewModels;
 
 namespace Dynamo.UI.Controls
 {

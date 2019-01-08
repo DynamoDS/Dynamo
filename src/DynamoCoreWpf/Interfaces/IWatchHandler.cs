@@ -4,13 +4,13 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using Dynamo.Configuration;
+using Dynamo.Extensions;
 using Dynamo.ViewModels;
+using Dynamo.Wpf.Properties;
 using DynamoUnits;
 using ProtoCore.DSASM;
 using ProtoCore.Mirror;
 using ProtoCore.Utils;
-using Dynamo.Extensions;
-using Dynamo.Wpf.Properties;
 
 namespace Dynamo.Interfaces
 {

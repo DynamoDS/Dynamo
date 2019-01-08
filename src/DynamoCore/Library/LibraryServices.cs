@@ -3,25 +3,21 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml;
-
+using Dynamo.Configuration;
+using Dynamo.Exceptions;
 using Dynamo.Interfaces;
 using Dynamo.Library;
-using Dynamo.Utilities;
 using Dynamo.Logging;
-
+using Dynamo.Utilities;
+using ProtoCore;
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.BuildData;
+using ProtoCore.CompilerDefinitions;
 using ProtoCore.DSASM;
+using ProtoCore.Namespace;
 using ProtoCore.Utils;
 using ProtoFFI;
-
-
 using Operator = ProtoCore.DSASM.Operator;
-using ProtoCore;
-using ProtoCore.Namespace;
-using Dynamo.Exceptions;
-using Dynamo.Configuration;
-using ProtoCore.CompilerDefinitions;
 
 namespace Dynamo.Engine
 {

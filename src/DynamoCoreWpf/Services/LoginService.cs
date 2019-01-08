@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Threading;
 using System.Windows;
-using System.Windows.Controls;
-using System.Reflection;
 using Dynamo.Wpf.Properties;
 
 namespace Dynamo.Wpf.Authentication

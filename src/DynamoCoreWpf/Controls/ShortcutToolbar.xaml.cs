@@ -1,8 +1,7 @@
-﻿using Dynamo.UI.Commands;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows.Controls;
-
+using Dynamo.UI.Commands;
 using Dynamo.Updates;
 using Dynamo.ViewModels;
 using Microsoft.Practices.Prism.ViewModel;

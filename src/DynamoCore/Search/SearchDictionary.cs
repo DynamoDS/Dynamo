@@ -25,18 +25,8 @@ namespace Dynamo.Search
 
         protected readonly Dictionary<V, Dictionary<string, double>> entryDictionary =
             new Dictionary<V, Dictionary<string, double>>();
-        
-        /// <summary>
-        ///     Indicates whether experimental search mode is turned on.
-        /// </summary>
-        internal bool ExperimentalSearch { get; set; } = false;
 
         private List<IGrouping<string, Tuple<V, double>>> tagDictionary;
-
-        /// <summary>
-        ///     Indicates whether to truncate the search results (currently to 20 items).
-        /// </summary>
-        internal bool TruncateSearchResults { get; set; } = false;
 
         /// <summary>
         ///     All the current entries in search.
@@ -356,13 +346,10 @@ namespace Dynamo.Search
 
             var subPatterns = SplitOnWhiteSpace(query);
 
-            // Experimental Search
-            if (ExperimentalSearch)
-            {
-                var subPatternsList = subPatterns.ToList();
-                subPatternsList.Insert(0, query);
-                subPatterns = (subPatternsList).ToArray();
-            }
+            // Add full (unsplit by whitespace) query to subpatterns
+            var subPatternsList = subPatterns.ToList();
+            subPatternsList.Insert(0, query);
+            subPatterns = (subPatternsList).ToArray();
 
             foreach (var pair in tagDictionary.Where(x => MatchWithQueryString(x.Key, subPatterns)))
             {
@@ -372,11 +359,10 @@ namespace Dynamo.Search
             var orderedSearchDict = searchDict.OrderByDescending(x => x.Value);
 
             var searchResults = orderedSearchDict.Select(x => x.Key);
-            if (TruncateSearchResults)
-            {
-                searchResults = searchResults.Take(20);
-            }
 
+            // return only the top 20 search results
+            searchResults = searchResults.Take(20);
+            
 #if DEBUG
             if (this.logger != null)
             {

@@ -5,12 +5,12 @@ using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
+using Dynamo.Selection;
 using Dynamo.UI;
+using Dynamo.UI.Prompts;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using DynCmd = Dynamo.Models.DynamoModel;
-using Dynamo.Selection;
-using Dynamo.UI.Prompts;
 using TextBox = System.Windows.Controls.TextBox;
 
 namespace Dynamo.Nodes

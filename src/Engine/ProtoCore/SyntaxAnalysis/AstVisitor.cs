@@ -1,9 +1,8 @@
 ﻿using ProtoCore.AST;
 using ProtoCore.AST.AssociativeAST;
-using ImperativeNode = ProtoCore.AST.ImperativeAST.ImperativeNode;
-using System;
 using System.Collections.Generic;
 using System.Linq;
+using ImperativeNode = ProtoCore.AST.ImperativeAST.ImperativeNode;
 
 namespace ProtoCore.SyntaxAnalysis
 {

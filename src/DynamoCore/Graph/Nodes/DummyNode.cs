@@ -1,10 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Xml;
 using Autodesk.DesignScript.Runtime;
 using Dynamo.Utilities;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using System.Collections.Generic;
 
 namespace Dynamo.Graph.Nodes
 {
