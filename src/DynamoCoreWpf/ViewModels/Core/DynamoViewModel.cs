@@ -815,31 +815,34 @@ namespace Dynamo.ViewModels
             return Model.CustomNodeManager.Contains((Guid)parameters);
         }
 
+
         public static void ReportABug(object bodyContent)
         {
-            if (bodyContent != null)
+            if (bodyContent == null)
             {
-                UriBuilder baseUri = new UriBuilder(Configurations.GitHubBugReportingLink);
-
-                // provide fallback values for text content in case Resources or Assembly calls fail
-                var issueTitle = Resources.CrashPromptGithubNewIssueTitle ?? "Crash report from Dynamo {0}";
-                var dynamoVersion = AssemblyHelper.GetDynamoVersion().ToString() ?? "2.1+";
-
-                var title = "title=" + string.Format(issueTitle, dynamoVersion);
-                var body = "body=" + bodyContent.ToString();
-
-                // append the title and body to the URL as query parameters
-                baseUri.Query = title + "&" + body;
-
-                // this will properly format & escape the string for use as a uri
-                var urlWithParameters = baseUri.ToString();
-
-                // launching the process using explorer.exe will format the URL incorrectly
-                // and Github will not recognise the query parameters in the URL
-                // so launch with default operating system web browser
-                Process.Start(new ProcessStartInfo(urlWithParameters));
+                Process.Start(new ProcessStartInfo("explorer.exe", Configurations.GitHubBugReportingLink));
+                return;
             }
-            else Process.Start(new ProcessStartInfo("explorer.exe", Configurations.GitHubBugReportingLink));
+
+            UriBuilder baseUri = new UriBuilder(Configurations.GitHubBugReportingLink);
+
+            // provide fallback values for text content in case Resources or Assembly calls fail
+            var issueTitle = Resources.CrashPromptGithubNewIssueTitle ?? "Crash report from Dynamo {0}";
+            var dynamoVersion = AssemblyHelper.GetDynamoVersion().ToString() ?? "2.1+";
+
+            var title = "title=" + string.Format(issueTitle, dynamoVersion);
+            var body = "body=" + bodyContent.ToString();
+
+            // append the title and body to the URL as query parameters
+            baseUri.Query = title + "&" + body;
+
+            // this will properly format & escape the string for use as a uri
+            var urlWithParameters = baseUri.ToString();
+
+            // launching the process using explorer.exe will format the URL incorrectly
+            // and Github will not recognise the query parameters in the URL
+            // so launch with default operating system web browser
+            Process.Start(new ProcessStartInfo(urlWithParameters));
         }
 
         public static void ReportABug()
