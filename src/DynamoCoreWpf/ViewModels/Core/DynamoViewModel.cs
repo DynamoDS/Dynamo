@@ -822,22 +822,16 @@ namespace Dynamo.ViewModels
         /// <param name="bodyContent">Crash details body. If null, nothing will be filled-in.</param>
         public static void ReportABug(object bodyContent)
         {
-            if (bodyContent == null)
-            {
-                Process.Start(new ProcessStartInfo("explorer.exe", Configurations.GitHubBugReportingLink));
-                return;
-            }
-
             var baseUri = new UriBuilder(Configurations.GitHubBugReportingLink);
 
             // provide fallback values for text content in case Resources or Assembly calls fail
             var issueTitle = Resources.CrashPromptGithubNewIssueTitle ?? "Crash report from Dynamo {0}";
             var dynamoVersion = AssemblyHelper.GetDynamoVersion().ToString() ?? "2.1+";
-
-            var title = "title=" + string.Format(issueTitle, dynamoVersion);
-            var body = "body=" + bodyContent.ToString();
+            var content = bodyContent ?? string.Empty;
 
             // append the title and body to the URL as query parameters
+            var title = "title=" + string.Format(issueTitle, dynamoVersion);
+            var body = "body=" + content;
             baseUri.Query = title + "&" + body;
 
             // this will properly format & escape the string for use as a uri
