@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using CoreNodeModels;
@@ -18,6 +19,20 @@ namespace Dynamo.Tests.Nodes
             base.GetLibrariesToPreload(libraries);
         }
 
+        public class myDropDown: DSDropDownBase
+        {
+
+            protected override SelectionState PopulateItemsCore(string currentSelection)
+            {
+                Items.Clear();
+                // Fake a new type of DropDown which populate several dates
+                Items.Add(new DynamoDropDownItem("Monday", new DateTime(2019, 1, 7, 9,0, 0 )));
+                Items.Add(new DynamoDropDownItem("Tuesday", new DateTime(2019, 1, 8, 9, 0, 0)));
+                Items.Add(new DynamoDropDownItem("Wednesday", new DateTime(2019, 1, 9, 9, 0, 0)));
+                Items.Add(new DynamoDropDownItem("Thursday", new DateTime(2019, 1, 10, 9, 0, 0)));
+                return SelectionState.Restore;
+            }
+        }
 
         [Test]
         public void OpenJsonDYNwithSelectionNode()
@@ -96,6 +111,30 @@ namespace Dynamo.Tests.Nodes
             // Second selection selected
             Assert.AreEqual(1, node.GetType().GetProperty("SelectedIndex").GetValue(node));
             Assert.AreEqual("1", node.GetType().GetProperty("SelectedString").GetValue(node));
+        }
+
+        //[Test]
+        //public void GetSelectedStringFromItemShouldReturnString()
+        //{
+        //    // Initialize the node
+        //    var node = new myDropDown();
+        //    node.PopulateItems();
+        //    Assert.AreEqual("Monday", node.GetType().GetMethod("GetSelectedStringFromItem").Invoke(node, new object[] { node.Items.FirstOrDefault() }));
+        //}
+
+        [Test]
+        public void PopulateItemsShouldNotChangeSelectedIndex()
+        {
+            // Initialize the node
+            var node = new myDropDown();
+            node.PopulateItems();
+            node.SelectedIndex = 3;
+
+            // Populate the items again without modifying the items
+            node.PopulateItems();
+
+            // Index should stay the same
+            Assert.AreEqual(3, node.SelectedIndex);
         }
 
         [Test]
