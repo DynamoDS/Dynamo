@@ -62,13 +62,14 @@ namespace Dynamo.Python
                     // Gather executing assembly info
                     Assembly assembly = Assembly.GetExecutingAssembly();
                     Version version = assembly.GetName().Version;
-                    dynamoCoreDir = Path.GetDirectoryName(assembly.Location);
+                    string nodePath = Path.GetDirectoryName(assembly.Location);
+                    dynamoCoreDir = Path.GetFullPath(Path.Combine(nodePath, @"..\"));
                 }
 
                 // Return the standard library path
                 if (!string.IsNullOrEmpty(dynamoCoreDir))
                 {
-                    return dynamoCoreDir + @"\IronPython.StdLib.2.7.8";
+                    return dynamoCoreDir + @"IronPython.StdLib.2.7.8";
                 }
                 else
                 {
@@ -114,20 +115,24 @@ namespace Dynamo.Python
         internal Dictionary<string, int> badStatements { get; set; }
 
         /// <summary>
-        /// A bunch of regexes for use in introspection
+        /// Maps a basic variable regex to a basic python type.
         /// </summary>
-        internal const string commaDelimitedVariableNamesRegex = @"(([0-9a-zA-Z_]+,?\s?)+)";
-        internal const string variableName = @"([0-9a-zA-Z_]+(\.[a-zA-Z_0-9]+)*)";
+        // TODO - these can all be internal constants - Dynamo 3.0
+        public static string commaDelimitedVariableNamesRegex = @"(([0-9a-zA-Z_]+,?\s?)+)";
+        public static string variableName = @"([0-9a-zA-Z_]+(\.[a-zA-Z_0-9]+)*)";
+        public static string doubleQuoteStringRegex = "(\"[^\"]*\")"; // TODO - Remove in Dynamo 3.0
+        public static string singleQuoteStringRegex = "(\'[^\']*\')"; // TODO - Remove in Dynamo 3.0
+        public static string arrayRegex = "(\\[.*\\])";
+        public static string spacesOrNone = @"(\s*)";
+        public static string atLeastOneSpaceRegex = @"(\s+)";
+        public static string equalsRegex = @"(=)";
+        public static string dictRegex = "({.*})";
+        public static string doubleRegex = @"([-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?)";
+        public static string intRegex = @"([-+]?\d+)[\s\n]*$";
+        public static string basicImportRegex = @"(import)";
+        public static string fromImportRegex = @"^(from)";
+
         internal const string quotesStringRegex = "[\"']([^\"']*)[\"']";
-        internal const string arrayRegex = "(\\[.*\\])";
-        internal const string spacesOrNone = @"(\s*)";
-        internal const string atLeastOneSpaceRegex = @"(\s+)";
-        internal const string equalsRegex = @"(=)";
-        internal const string dictRegex = "({.*})";
-        internal const string doubleRegex = @"([-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?)";
-        internal const string intRegex = @"([-+]?\d+)[\s\n]*$";
-        internal const string basicImportRegex = @"(import)";
-        internal const string fromImportRegex = @"^(from)";
 
         internal static readonly Regex MATCH_LAST_NAMESPACE = new Regex(@"[\w.]+$", RegexOptions.Compiled);
         internal static readonly Regex MATCH_LAST_WORD = new Regex(@"\w+$", RegexOptions.Compiled);
