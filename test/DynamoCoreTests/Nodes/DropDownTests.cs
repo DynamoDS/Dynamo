@@ -113,15 +113,14 @@ namespace Dynamo.Tests.Nodes
             Assert.AreEqual("1", node.GetType().GetProperty("SelectedString").GetValue(node));
         }
 
-        [Test]
-        public void GetSelectedStringFromItemShouldReturnString()
-        {
-            // Initialize the node
-            var node = new myDropDown();
-            node.PopulateItems();
-            //node.GetSelectedStringFromItem(node.Items.FirstOrDefault());
-            Assert.AreEqual("Monday", node.GetType().GetMethod("GetSelectedStringFromItem").Invoke(node, new object[] { node.Items.FirstOrDefault() }));
-        }
+        //[Test]
+        //public void GetSelectedStringFromItemShouldReturnString()
+        //{
+        //    // Initialize the node
+        //    var node = new myDropDown();
+        //    node.PopulateItems();
+        //    Assert.AreEqual("Monday", node.GetType().GetMethod("GetSelectedStringFromItem").Invoke(node, new object[] { node.Items.FirstOrDefault() }));
+        //}
 
         [Test]
         public void PopulateItemsShouldNotChangeSelectedIndex()
