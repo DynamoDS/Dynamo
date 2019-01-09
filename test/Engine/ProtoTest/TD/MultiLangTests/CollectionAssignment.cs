@@ -1658,7 +1658,7 @@ r = i[1];
         return [Imperative]
         {
             loc = [];
-            for(j in i)
+            for(j in [i])
             {
                 loc[j] = j;
             }
@@ -1675,9 +1675,8 @@ i = [Imperative]
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             Object[] a = new Object[] { 3, 4, 5 };
-            Object[] r = new Object[] { 3, 4, 5 };
             thisTest.Verify("a", a);
-            thisTest.Verify("r", r);
+            thisTest.Verify("r", a);
         }
 
         [Test]

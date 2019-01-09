@@ -425,7 +425,7 @@ i = [Imperative]
                         @"x=[Imperative]
                         {
                             x = 0;
-                            for (val in 10)
+                            for (val in [10])
                             {
                                 x = x + val;
                             }
@@ -444,7 +444,7 @@ i = [Imperative]
                         {
                             y = 0;
                             b = 11;
-                            for (val in b)
+                            for (val in [b])
                             {
                                 y = y + val;
                             }
