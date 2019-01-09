@@ -304,11 +304,22 @@ namespace Dynamo.Graph.Nodes.CustomNodes
             }
         }
 
+        /// <summary>
+        ///     Validates passed Custom Node definition and synchronizes node with it.
+        /// </summary>
+        /// <param name="def">Custom Node definition.</param>
+        public void ResyncWithDefinition(CustomNodeDefinition def)
+        {
+            ValidateDefinition(def);
+            Controller.Definition = def;
+            Controller.SyncNodeWithDefinition(this);
+        }
 
         /// <summary>
         ///     Validates passed Custom Node definition and synchronizes node with it.
         /// </summary>
         /// <param name="def">Custom Node definition.</param>
+        /// <param name="removeErrorState">Indicates whether a current error state should be removed</param>
         public void ResyncWithDefinition(CustomNodeDefinition def, bool removeErrorState = true)
         {
             ValidateDefinition(def, removeErrorState);
@@ -427,7 +438,7 @@ namespace Dynamo.Graph.Nodes.CustomNodes
 
                 var type = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var);
                 AssociativeNode defaultValue = null;
-                var errorMessages = new List<ErrorEntry>();
+                var errorMessage = String.Empty;
 
                 string comment = null;
 
@@ -438,7 +449,7 @@ namespace Dynamo.Graph.Nodes.CustomNodes
                     //    x : type
                     //    x : type = default_value
                     IdentifierNode identifierNode;
-                    if (TryParseInputExpression(inputSymbol, out identifierNode, out defaultValue, out comment, out errorMessages))
+                    if (TryParseInputExpression(inputSymbol, out identifierNode, out defaultValue, out comment, out errorMessage))
                     {
                         name = identifierNode.Value;
 
@@ -461,11 +472,8 @@ namespace Dynamo.Graph.Nodes.CustomNodes
                     }
                     else
                     {
-                        if (errorMessages.Any())
-                        {
-                            Error(errorMessages.First().Message);
-                        }
-                        Parameter = new TypedParameter("", type, defaultValue, null, comment);
+                        Error(errorMessage + "\nPlease ensure that the input name\ndoes not contain spaces.");
+                        Parameter = new TypedParameter("input", type, defaultValue, null, comment);
                         Parameter.NameIsValid = false;
                     }
                 }
@@ -526,12 +534,12 @@ namespace Dynamo.Graph.Nodes.CustomNodes
                                              out IdentifierNode identifier, 
                                              out AssociativeNode defaultValue,
                                              out string comment,
-                                             out List<ErrorEntry> errors)
+                                             out string errorMessage)
         {
             identifier = null;
             defaultValue = null;
             comment = null;
-            errors = new List<ErrorEntry>();
+            errorMessage = null;
             
             var parseString = inputSymbol;
             parseString += ";";
@@ -590,10 +598,9 @@ namespace Dynamo.Graph.Nodes.CustomNodes
                     return identifier != null;
                 }
             }
-
-            foreach (ErrorEntry error in parseParam.Errors)
+            if (parseParam.Errors.Any())
             {
-                errors.Add(error);
+                errorMessage =  parseParam.Errors.First().Message;
             }
             return false;
         }

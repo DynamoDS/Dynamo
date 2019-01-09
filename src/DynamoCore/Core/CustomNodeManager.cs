@@ -282,9 +282,8 @@ namespace Dynamo.Core
         {
             Action defUpdatedHandler = () =>
             {
-                var symbols = workspace.Nodes.OfType<Symbol>().ToList();
                 var removeErrorState = true;
-                foreach (Symbol s in symbols)
+                foreach (var s in workspace.Nodes.OfType<Symbol>().ToList())
                 {
                     if (!s.Parameter.NameIsValid)
                     {
