@@ -52,7 +52,7 @@ namespace ProtoFFI
 
     abstract class FFIMemberInfo
     {
-        public MemberInfo Info { get; private set; }
+        protected MemberInfo Info { get; private set; }
         private AllowRankReductionAttribute mRankReducer;
         private bool? mAllowRankReduction;
 
