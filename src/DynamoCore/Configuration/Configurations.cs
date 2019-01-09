@@ -77,7 +77,7 @@ namespace Dynamo.Configuration
         /// <summary>
         /// Link to Dynamo dictionary
         /// </summary>
-        public static string DynamoDictionary = "http://dictionary.dynamobim.com/";
+        public static string DynamoDictionary = "http://dictionary.dynamobim.com/2/";
 
         /// <summary>
         /// Link to Dynamo primer
