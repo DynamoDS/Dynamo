@@ -167,6 +167,43 @@ namespace Dynamo.Tests
             libG22500path.Delete(true);
         }
 
+        [Test]
+        public void GetLibGPreloaderLocation_libGVersionFallback()
+        {
+            var versions = new List<Version>()
+            {
+                    new Version(225,4,0)
+            };
+
+            var mockedInstalledASMs = new Dictionary<string, Tuple<int, int, int, int>>()
+            {
+
+                {"revit_Prerelease_InstallLocation" ,Tuple.Create<int,int,int,int>(225,3,0,0)},
+            };
+
+            var targetVersion = new Version(225, 3, 0);
+
+            // mock a folder with libASMLibVersionToVersionG folders with correct names
+            var foundPath = "";
+            var rootFolder = Path.Combine(Path.GetTempPath(), "LibGTest");
+            // both versions of libG exist
+            var libG22440path = System.IO.Directory.CreateDirectory(Path.Combine(rootFolder, "LibG_224_4_0"));
+            var libG22500path = System.IO.Directory.CreateDirectory(Path.Combine(rootFolder, "LibG_225_0_0"));
+
+            var foundVersion = DynamoShapeManager.Utilities.GetInstalledAsmVersion2(
+                versions, ref foundPath, rootFolder, (path) => { return mockedInstalledASMs; });
+
+            // The found ASM version in this case is a fallback of lowest version within same major which should be 225.3.0
+            Assert.AreEqual(targetVersion, foundVersion);
+            Assert.AreEqual("revit_Prerelease_InstallLocation", foundPath);
+
+            // The found libG preloader version in this case is another fallback of closest version below 225.3.0
+            Assert.AreEqual(libG22500path.FullName.ToLower(), DynamoShapeManager.Utilities.GetLibGPreloaderLocation(foundVersion, rootFolder).ToLower());
+            // cleanup
+            libG22440path.Delete(true);
+            libG22500path.Delete(true);
+        }
+
 
         [Test]
         public void GetInstalledASMVersions2_FindsVersionedLibGFolders_WithRootFolderFallback()
