@@ -91,7 +91,7 @@ namespace CoreNodeModels
                 else
                 {
                     selectedIndex = value;
-                    selectedString = Items.ElementAt(value).Item.ToString();
+                    selectedString = GetSelectedStringFromItem(Items.ElementAt(value));
                 }
                 RaisePropertyChanged("SelectedIndex");
             }
@@ -110,7 +110,7 @@ namespace CoreNodeModels
             {
                 if (!string.IsNullOrEmpty(value) && value != selectedString)
                 {
-                    var item = Items.FirstOrDefault(i => i.Item.ToString().Equals(value));
+                    var item = Items.FirstOrDefault(i => GetSelectedStringFromItem(i).Equals(value));
                     // In the case that SelectedString deserialize after SelectedIndex
                     // With a valid item from search, get the index of item and replace the current one. 
                     // If no exact match found, fall back to use the default selectedIndex from deserialization.
@@ -157,7 +157,7 @@ namespace CoreNodeModels
                 return;
 
             selectedIndex = ParseSelectedIndex(attrib.Value, Items);
-            selectedString = Items.ElementAt(selectedIndex).Item.ToString();
+            selectedString = GetSelectedStringFromItem(Items.ElementAt(selectedIndex));
 
             if (selectedIndex < 0)
             {
@@ -175,7 +175,7 @@ namespace CoreNodeModels
                 selectedIndex = ParseSelectedIndex(value, Items);
                 if (selectedIndex < 0)
                     Warning(Dynamo.Properties.Resources.NothingIsSelectedWarning);
-                selectedString = Items.ElementAt(selectedIndex).Item.ToString();
+                selectedString = GetSelectedStringFromItem(Items.ElementAt(selectedIndex));
                 return true; // UpdateValueCore handled.
             }
 
@@ -245,6 +245,18 @@ namespace CoreNodeModels
             return node.InnerText;
         }
 
+        /// <summary>
+        /// This function is to define what dropdown node need to serialize
+        /// as SelectedString. Child Class can redefine the pattern.
+        /// e.g. Categories node in Revit will override this function.
+        /// </summary>
+        /// <param name="item">Selected DynamoDropDownItem</param>
+        /// <returns>string to serialize as SelectedString or compare with SelectedString</returns>
+        protected virtual string GetSelectedStringFromItem(DynamoDropDownItem item)
+        {
+            return item == null || item.Name == null ? string.Empty : item.Name;
+        }
+
         public void PopulateItems()
         {
             var currentSelection = SelectedString;
@@ -256,10 +268,10 @@ namespace CoreNodeModels
                 SelectedIndex = -1;
                 for (int i = 0; i < items.Count; i++)
                 {
-                    if ((items.ElementAt(i)).Name.Equals(currentSelection))
+                    if (GetSelectedStringFromItem(items.ElementAt(i)).Equals(currentSelection))
                     {
                         SelectedIndex = i;
-                        SelectedString = currentSelection;
+                        break;
                     }
                 }
             }
