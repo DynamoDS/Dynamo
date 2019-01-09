@@ -2457,14 +2457,6 @@
       "keywords": ""
     },
     {
-      "fullyQualifiedName": "Autodesk.DesignScript.Geometry.Surface.Join",
-      "iconUrl": "http://localhost/icons/Autodesk.DesignScript.Geometry.Surface.Join.Small?path=ProtoGeometry.dll",
-      "contextData": "Autodesk.DesignScript.Geometry.Surface.Join@Autodesk.DesignScript.Geometry.Surface[]",
-      "parameters": null,
-      "itemType": "action",
-      "keywords": "topolysurface"
-    },
-    {
       "fullyQualifiedName": "Autodesk.DesignScript.Geometry.Surface.ProjectInputOnto",
       "iconUrl": "http://localhost/icons/Autodesk.DesignScript.Geometry.Surface.ProjectInputOnto.Small?path=ProtoGeometry.dll",
       "contextData": "Autodesk.DesignScript.Geometry.Surface.ProjectInputOnto@Autodesk.DesignScript.Geometry.Geometry,Autodesk.DesignScript.Geometry.Vector",
