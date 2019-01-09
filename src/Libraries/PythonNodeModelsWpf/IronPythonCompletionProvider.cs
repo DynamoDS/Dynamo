@@ -59,10 +59,8 @@ namespace Dynamo.Python
                 // Attempt to get and cache the Dynamo Core directory path
                 if (string.IsNullOrEmpty(dynamoCoreDir))
                 {
-                    // Gather executing assembly info
-                    Assembly assembly = Assembly.GetExecutingAssembly();
-                    Version version = assembly.GetName().Version;
-                    string nodePath = Path.GetDirectoryName(assembly.Location);
+                    // Gather executing assembly location
+                    string nodePath = Assembly.GetExecutingAssembly().Location;
                     dynamoCoreDir = Path.GetFullPath(Path.Combine(nodePath, @"..\"));
                 }
 
