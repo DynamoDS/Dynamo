@@ -242,16 +242,80 @@ namespace Dynamo.Python
         }
 
         /// <summary>
+        /// Generates completion data for the specified text, while import the given types into the 
+        /// scope and discovering variable assignments.
+        /// </summary>
+        /// <param name="line">The code to parse</param>
+        /// <returns>Return a list of IronPythonCompletionData </returns>
+        [Obsolete("Please use GetCompletionData with additional parameters, this method will be removed in Dynamo 3.0.")]
+        public ICompletionData[] GetCompletionData(string line)
+        {
+            var items = new List<IronPythonCompletionData>();
+
+            this.UpdateImportedTypes(line);
+            this.UpdateVariableTypes(line); // this is where hindley-milner could come into play
+
+            string name = GetName(line);
+            if (!String.IsNullOrEmpty(name))
+            {
+                try
+                {
+                    AutocompletionInProgress = true;
+
+                    // is it a CLR type?
+                    var type = TryGetType(name);
+                    if (type != null)
+                    {
+                        items = EnumerateMembers(type, name);
+                    }
+                    // it's a variable?
+                    else if (this.VariableTypes.ContainsKey(name))
+                    {
+                        items = EnumerateMembers(this.VariableTypes[name], name);
+                    }
+                    // is it a namespace or python type?
+                    else
+                    {
+                        var mem = LookupMember(name);
+
+                        if (mem is NamespaceTracker)
+                        {
+                            items = EnumerateMembers(mem as NamespaceTracker, name);
+                        }
+                        else if (mem is PythonModule)
+                        {
+                            items = EnumerateMembers(mem as PythonModule, name);
+                        }
+                        else if (mem is PythonType)
+                        {
+                            // shows static and instance methods in just the same way :(
+                            var value = ClrModule.GetClrType(mem as PythonType);
+                            if (value != null)
+                            {
+                                items = EnumerateMembers(value, name);
+                            }
+                        }
+
+                    }
+                }
+                catch
+                {
+                    //Dynamo.this.logger.Log("EXCEPTION: GETTING COMPLETION DATA");
+                }
+                AutocompletionInProgress = false;
+            }
+
+            return items.ToArray();
+        }
+
+        /// <summary>
         /// Generate completion data for the specified text, while import the given types into the
         /// scope and discovering variable assignments.
         /// </summary>
         /// <param name="code">The code to parse</param>
         /// <returns>Return a list of IronPythonCompletionData </returns>
-        public ICompletionData[] GetCompletionData(string code)
+        public ICompletionData[] GetCompletionData(string code, bool expand = false)
         {
-            // TODO - add optional param in Dynamo 3.0 with default set to false
-            bool expand = false;
-
             var items = new List<IronPythonCompletionData>();
 
             if (code.Contains("\"\"\""))
@@ -325,7 +389,7 @@ namespace Dynamo.Python
 
             if (!items.Any() && !expand)
             {
-                return GetCompletionData(code);
+                return GetCompletionData(code, true);
             }
 
             return items.ToArray();
@@ -1136,6 +1200,22 @@ namespace Dynamo.Python
         {
             var matches = TRIPPLE_QUOTE_STRINGS.Split(code);
             return String.Join("", matches);
+        }
+
+        /// <summary>
+        /// Returns the name from the end of a string.  Matches back to the first space and trims off spaces or ('s
+        /// from the end of the line
+        /// </summary>
+        /// <param name="text"></param>
+        /// <returns></returns>
+        [Obsolete("This method will be removed in Dynamo 3.0")]
+        string GetName(string text)
+        {
+            text = text.Replace("\t", "   ");
+            text = text.Replace("\n", " ");
+            text = text.Replace("\r", " ");
+            int startIndex = text.LastIndexOf(' ');
+            return text.Substring(startIndex + 1).Trim('.').Trim('(');
         }
     }
 }

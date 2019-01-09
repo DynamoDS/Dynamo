@@ -94,7 +94,7 @@ namespace PythonNodeModelsWpf
                 if (e.Text == ".")
                 {
                     var subString = editText.Text.Substring(0, editText.CaretOffset);
-                    var completions = completionProvider.GetCompletionData(subString);
+                    var completions = completionProvider.GetCompletionData(subString, false);
 
                     if (completions.Length == 0)
                         return;
