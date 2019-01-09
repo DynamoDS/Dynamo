@@ -165,10 +165,9 @@ namespace ProtoCore
             foreach (FunctionEndPoint fep in feps)
             {
                 int distance = fep.GetConversionDistance(reducedParamSVs, classTable, allowArrayPromotion, runtimeCore);
-                if (distance != (int) ProcedureDistance.InvalidDistance)
-                {
+                if (distance != 
+                    (int)ProcedureDistance.InvalidDistance)
                     ret.Add(fep, distance);
-                }
             }
 
             return ret;
