@@ -8,12 +8,12 @@ using NUnit.Framework;
 
 namespace Dynamo.Tests
 {
-    public class CrashReportingTests : DynamoViewModelUnitTest
+    class CrashReportingTests : DynamoViewModelUnitTest
     {
-        public List<string> TargetWords = new List<string> { "New Issue", "DynamoDS" };
+        List<string> TargetWords = new List<string> { "New Issue", "DynamoDS" };
 
         [Test]
-        public void CanReportBugWithNoContent()
+        void CanReportBugWithNoContent()
         {
             // report a bug with no details
             Assert.DoesNotThrow( () => DynamoViewModel.ReportABug());
@@ -26,7 +26,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void CanReportBugWithContent()
+        void CanReportBugWithContent()
         {
             // report a bug with details
             var details = "Exception thrown somewhere";
