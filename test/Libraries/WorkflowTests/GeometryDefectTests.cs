@@ -642,8 +642,8 @@ namespace Dynamo.Tests
             RunModel(openPath);
 
             AssertNoDummyNodes();
-            var val = GetPreviewValue("8e31e695-3576-4012-840c-3c60163d126f") as Surface;
-            var val2 = GetPreviewValue("941e3c29-0f34-47ae-b954-a0d62f83d76c") as Surface;
+            var val = GetPreviewValue("6fd810e6-45a3-43df-9303-8a0a6ce59e45") as Surface;
+            var val2 = GetPreviewValue("39df02d4-8b76-4a00-ac05-c0b7beef4db9") as Surface;
             ShouldBeApproximate(val.Area, 2);
             ShouldBeApproximate(val2.Area, 3);
         }
