@@ -1,13 +1,8 @@
-﻿using Dynamo.Graph.Workspaces;
+﻿using System.Collections.Generic;
+using System.IO;
+using Dynamo.Graph.Workspaces;
 using Dynamo.Tests;
 using NUnit.Framework;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
 
 namespace DynamoCoreWpfTests
 {
@@ -32,15 +27,15 @@ namespace DynamoCoreWpfTests
 
             var vectorNode = ws.NodeFromWorkspace("e8c9d601-fdd3-400f-81e8-eb206714e250"); // Vector.ByCoordinates (x, y, z, normalized)
             link = vectorNode.ConstructDictionaryLinkFromLibrary(ViewModel.Model.LibraryServices);
-            Assert.AreEqual("http://dictionary.dynamobim.com/#/Geometry/Vector/Create/ByCoordinates(x_double-y_double-z_double-normalized_bool)", link);
+            Assert.AreEqual("http://dictionary.dynamobim.com/2/#/Geometry/Vector/Create/ByCoordinates(x_double-y_double-z_double-normalized_bool)", link);
 
             var cuboidNode = ws.NodeFromWorkspace("d24c6e0e-4d4d-4c9f-885f-f95244b03931"); // Cuboid.ByLengths(cs, width, length, height)
             link = cuboidNode.ConstructDictionaryLinkFromLibrary(ViewModel.Model.LibraryServices);
-            Assert.AreEqual("http://dictionary.dynamobim.com/#/Geometry/Cuboid/Create/ByLengths(cs_CoordinateSystem-width_double-length_double-height_double)", link);
+            Assert.AreEqual("http://dictionary.dynamobim.com/2/#/Geometry/Cuboid/Create/ByLengths(cs_CoordinateSystem-width_double-length_double-height_double)", link);
             
             var hueNode = ws.NodeFromWorkspace("b2d4cff2-1a19-4da7-b22e-34756fe51a5f"); // Color.Hue
             link = hueNode.ConstructDictionaryLinkFromLibrary(ViewModel.Model.LibraryServices);
-            Assert.AreEqual("http://dictionary.dynamobim.com/#/Core/Color/Action/Hue", link);
+            Assert.AreEqual("http://dictionary.dynamobim.com/2/#/Core/Color/Action/Hue", link);
         }
     }
 }
