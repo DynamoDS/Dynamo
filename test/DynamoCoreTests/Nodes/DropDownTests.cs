@@ -154,7 +154,7 @@ namespace Dynamo.Tests.Nodes
             Assert.AreEqual("Cersei", node.GetType().GetProperty("SelectedString").GetValue(node));
 
             // Call GetSelectedStringFromItem() on DropDownItem should give back SelectedString
-            Assert.AreNotEqual("Cersei", node.GetType().GetMethod("GetSelectedStringFromItem").Invoke(node, new object[] { new DynamoDropDownItem("Tywin", 0) }));
+            Assert.AreNotEqual("Cersei", node.GetType().GetMethod("GetSelectedStringFromItem", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).Invoke(node, new object[] { new DynamoDropDownItem("Tywin", 0) }));
         }
 
         [Test]
