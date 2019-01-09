@@ -61,7 +61,7 @@ namespace Dynamo.Python
                 {
                     // Gather executing assembly location
                     string nodePath = Assembly.GetExecutingAssembly().Location;
-                    dynamoCoreDir = Path.GetFullPath(Path.Combine(nodePath, @"..\"));
+                    dynamoCoreDir = Path.GetFullPath(Path.Combine(nodePath, @"..\\..\\"));
                 }
 
                 // Return the standard library path
@@ -118,12 +118,12 @@ namespace Dynamo.Python
         // TODO - these can all be internal constants - Dynamo 3.0
         public static string commaDelimitedVariableNamesRegex = @"(([0-9a-zA-Z_]+,?\s?)+)";
         public static string variableName = @"([0-9a-zA-Z_]+(\.[a-zA-Z_0-9]+)*)";
-        public static string doubleQuoteStringRegex = "(\"[^\"]*\")"; // TODO - Remove in Dynamo 3.0
-        public static string singleQuoteStringRegex = "(\'[^\']*\')"; // TODO - Remove in Dynamo 3.0
+        public static string doubleQuoteStringRegex = "(\"[^\"]*\")"; // Replaced w/ quotesStringRegex - Remove in Dynamo 3.0
+        public static string singleQuoteStringRegex = "(\'[^\']*\')"; // Replaced w/ quotesStringRegex - Remove in Dynamo 3.0
         public static string arrayRegex = "(\\[.*\\])";
         public static string spacesOrNone = @"(\s*)";
         public static string atLeastOneSpaceRegex = @"(\s+)";
-        public static string equalsRegex = @"(=)";
+        public static string equals = @"(=)"; // Not CLS compliant naming - Remove in Dynamo 3.0
         public static string dictRegex = "({.*})";
         public static string doubleRegex = @"([-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?)";
         public static string intRegex = @"([-+]?\d+)[\s\n]*$";
@@ -131,6 +131,7 @@ namespace Dynamo.Python
         public static string fromImportRegex = @"^(from)";
 
         internal const string quotesStringRegex = "[\"']([^\"']*)[\"']";
+        internal const string equalsRegex = @"(=)";
 
         internal static readonly Regex MATCH_LAST_NAMESPACE = new Regex(@"[\w.]+$", RegexOptions.Compiled);
         internal static readonly Regex MATCH_LAST_WORD = new Regex(@"\w+$", RegexOptions.Compiled);
@@ -148,7 +149,6 @@ namespace Dynamo.Python
         internal static readonly Regex LIST_VARIABLE = new Regex("\\[.*\\]", RegexOptions.Compiled);
         internal static readonly Regex DICT_VARIABLE = new Regex("{.*}", RegexOptions.Compiled);
 
-        // TODO should this be Regex?
         internal static readonly string BAD_ASSIGNEMNT_ENDS = ",([{";
 
         #endregion
@@ -221,12 +221,14 @@ namespace Dynamo.Python
             }
 
             // Determine if the Python Standard Library is available in the given context
-            if (Directory.Exists(pythonLibDir))
+            var pythonStdLib = pythonLibDir;
+
+            if (pythonStdLib != null && Directory.Exists(pythonStdLib))
             {
                 // Try to load Python Standard Library Type for autocomplete
                 try
                 {
-                    var pyLibImports = String.Format("import sys\nsys.path.append(r'{0}')\n", pythonLibDir);
+                    var pyLibImports = String.Format("import sys\nsys.path.append(r'{0}')\n", pythonStdLib);
                     engine.CreateScriptSourceFromString(pyLibImports, SourceCodeKind.Statements).Execute(scope);
                 }
                 catch (Exception e)
@@ -1039,7 +1041,9 @@ namespace Dynamo.Python
             // TODO - add comment
             foreach (var i in importStatements)
             {
-                string module = i.Item1, memberName = i.Item2, asname = i.Item3;
+                string module = i.Item1;
+                string memberName = i.Item2;
+                string asname = i.Item3;
                 string name = asname ?? memberName;
                 string statement = "";
                 var previousTries = 0;
