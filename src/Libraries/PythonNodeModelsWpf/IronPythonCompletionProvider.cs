@@ -315,6 +315,7 @@ namespace Dynamo.Python
         /// scope and discovering variable assignments.
         /// </summary>
         /// <param name="code">The code to parse</param>
+        /// <param name="expand">Determines if the entire namespace should be used</param>
         /// <returns>Return a list of IronPythonCompletionData </returns>
         public ICompletionData[] GetCompletionData(string code, bool expand = false)
         {
@@ -328,6 +329,8 @@ namespace Dynamo.Python
             UpdateImportedTypes(code);
             UpdateVariableTypes(code);  // Possibly use hindley-milner in the future
 
+            // If expand param is true use the entire namespace from the line of code
+            // Else just return the last name of the namespace
             string name = expand ? GetLastNameSpace(code) : GetLastName(code);
             if (!String.IsNullOrEmpty(name))
             {
@@ -389,6 +392,8 @@ namespace Dynamo.Python
                 AutocompletionInProgress = false;
             }
 
+            // If unable to find matching results and expand was set to false,
+            // try again using the full namespace (set expand to true)
             if (!items.Any() && !expand)
             {
                 return GetCompletionData(code, true);
@@ -849,6 +854,9 @@ namespace Dynamo.Python
         /// <returns>A dictionary matching the lib to the code where lib is the library being imported from</returns>
         public static Dictionary<string, string> FindAllTypeImportStatements(string code)
         {
+            // matches the following types:
+            //     from lib import *
+
             var pattern = fromImportRegex +
                           atLeastOneSpaceRegex +
                           variableName +
@@ -1010,6 +1018,7 @@ namespace Dynamo.Python
                 {
                     string libName = MATCH_FIRST_QUOTED_NAME.Match(statement).Groups[1].Value;
 
+                    //  If the library name cannot be found in the loaded clr modules
                     if (!clrModules.Contains(libName))
                     {
                         if (statement.Contains("AddReferenceToFileAndPath"))
@@ -1019,8 +1028,6 @@ namespace Dynamo.Python
                             continue;
                         }
 
-                        // TODO - should there be a map of assemblies which can be used to verify
-                        // the name exists as this lookup appears to occur frequently
                         if (AppDomain.CurrentDomain.GetAssemblies().Any(x => x.GetName().Name == libName))
                         {
                             engine.CreateScriptSourceFromString(statement, SourceCodeKind.SingleStatement).Execute(scope);
@@ -1038,7 +1045,7 @@ namespace Dynamo.Python
 
             var importStatements = FindAllImportStatements(code);
 
-            // TODO - add comment
+            // Format import statements based on available data
             foreach (var i in importStatements)
             {
                 string module = i.Item1;
@@ -1120,6 +1127,7 @@ namespace Dynamo.Python
                     var variableType = TryGetType(possibleTypeName);
                     if (variableType != null)
                     {
+                        // If variable has already been encountered
                         if (variables.ContainsKey(name))
                         {
                             if (currentIndex > variables[name].Item2)
@@ -1127,7 +1135,7 @@ namespace Dynamo.Python
                                 variables[name] = new Tuple<string, int, Type>(typeString, currentIndex, variableType);
                             }
                         }
-                        else // we've never seen it, add the type
+                        else // New type, add it
                         {
                             variables.Add(name, new Tuple<string, int, Type>(typeString, currentIndex, variableType));
                         }
