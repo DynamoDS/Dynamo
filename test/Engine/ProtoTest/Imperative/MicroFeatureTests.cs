@@ -1268,22 +1268,18 @@ a = [Imperative]
             thisTest.Verify("i", new[] {2, 3, 3, -3});
         }
 
-        [Test, Category("Failure")]
+        [Test]
         public void TestArrayOverIndexing01()
         {
-            // TODO pratapa: Zero sub-indexing of array now works due to array promotion 
-            // after introducing Builtin.Get.ValueAtIndex for indexing operator
             string code = @"
 [Imperative]
 {
-    arr1 = [true, false];
     arr2 = [1, 2, 3];
-    arr3 = [false, true];
     t = arr2[1][0];
 }
 ";
             thisTest.RunScriptSource(code);
-            TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.OverIndexing);
+            TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.MethodResolutionFailure);
         }
 
         [Test]
@@ -1460,10 +1456,9 @@ i=[Imperative]
             thisTest.Verify("i", new object[] {true, true, Convert.ToInt64('h') + 1});
         }
 
-        [Test, Category("Failure")]
+        [Test]
         public void TestStringForloop()
         {
-            // TODO pratapa: Regression: Strings can no longer be indexed into
             string code = 
 @"
 r = [Imperative]

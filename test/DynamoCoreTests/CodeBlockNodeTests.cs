@@ -1558,7 +1558,7 @@ var06 = g;
             AssertPreviewValue("39c65660-8575-43bc-8af7-f24225a6bd5b", 21);
         }
 
-        [Test, Category("Failure")]
+        [Test]
         [Ignore("Test Loops Forever. Danger.")]
         public void TestImperativeLanguageBlock()
         {

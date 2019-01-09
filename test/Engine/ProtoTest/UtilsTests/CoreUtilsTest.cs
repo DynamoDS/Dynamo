@@ -21,7 +21,7 @@ namespace ProtoTest.UtilsTests
         public void Test_GetIdentifierStringUntilFirstParenthesis_01()
         {
             // Given: A.B()
-            //     Return: "A.B"
+            //  Return: "A.B"
             string input = "p = A.B();";
             string expected = "A.B";
             Assert.IsTrue(Test_GetIdentifierStringUntilFirstParenthesis(input, expected));

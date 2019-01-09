@@ -450,11 +450,10 @@ b = a[1];";
         }
 
         [Test]
-        [Category("DSDefinedClass_Ported"), Category("Failure")]
+        [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T20_Defect_1458567_2()
         {
-            // TODO pratapa: Regression after introducing Get.ValueAtIndex function
             string code = @"
 import(""FFITarget.dll"");
 startPt = DummyPoint.ByCoordinates(1, 1, 0);
