@@ -308,6 +308,7 @@ namespace Dynamo.Graph.Nodes.CustomNodes
         ///     Validates passed Custom Node definition and synchronizes node with it.
         /// </summary>
         /// <param name="def">Custom Node definition.</param>
+        [Obsolete("Please use the constructor with removeErrorState parameter.")]
         public void ResyncWithDefinition(CustomNodeDefinition def)
         {
             ValidateDefinition(def);

@@ -281,7 +281,7 @@ namespace Dynamo.Core
 
         private static bool ValidateInputSymbolNames(Function node, CustomNodeWorkspaceModel workspace)
         {
-            foreach (var s in workspace.Nodes.OfType<Symbol>().ToList())
+            foreach (var s in workspace.Nodes.OfType<Symbol>())
             {
                 if (!s.Parameter.NameIsValid)
                 {
