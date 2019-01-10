@@ -1070,6 +1070,23 @@ r = Dictionary.ValueAtKey(a, ""nonexist"");
        }
 
         [Test]
+        [Category("Failure")]
+        // To-Do as this use case is failing, re-visit and make sure this test case passes.  
+        public void TestTryGetValuesFromDictionary09()
+        {
+            string code = @"
+a = { ""in"" : 42, ""out"" : 24 };
+b = { ""in"" : 24, ""out"" : 42 };
+c = [[a],[[b]]];
+r1 = Dictionary.ValueAtKey(c, ""in"");
+r2 = Dictionary.ValueAtKey(c, ""out"");
+";
+            var mirror = thisTest.RunScriptSource(code);
+            thisTest.Verify("r1", new object[] { new object[] { 42 } , new object[] { new object[] { 24 } } });
+            thisTest.Verify("r2", new object[] { new object[] { 24 } , new object[] { new object[] { 42 } } });
+        }
+
+        [Test]
         public void TestGetKeysFromNonArray()
         {
             string code = @"
