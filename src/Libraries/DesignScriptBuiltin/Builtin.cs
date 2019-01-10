@@ -2,8 +2,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using Autodesk.DesignScript.Runtime;
+using Builtin.Properties;
 
 namespace DesignScript
 {
@@ -16,7 +18,14 @@ namespace DesignScript
 
             public static object ValueAtIndex(Dictionary dictionary, string key)
             {
-                return dictionary.ValueAtKey(key);
+                try
+                {
+                    return dictionary.ValueAtKey(key);
+                }
+                catch (System.Collections.Generic.KeyNotFoundException e)
+                {
+                    throw new KeyNotFoundException(e.Message);
+                }
             }
 
             [AllowArrayPromotion(false)]
@@ -28,7 +37,15 @@ namespace DesignScript
                     if (count == 0) break;
                     index += count;
                 }
-                return list[index];
+
+                try
+                {
+                    return list[index];
+                }
+                catch (ArgumentOutOfRangeException)
+                {
+                    throw new IndexOutOfRangeException(DesignScriptBuiltin.IndexOutOfRangeExceptionMessage);
+                }
             }
 
             public static object ValueAtIndex(string stringList, int index)
@@ -39,7 +56,15 @@ namespace DesignScript
                     if (count == 0) break;
                     index += count;
                 }
-                return stringList[index];
+
+                try
+                {
+                    return stringList[index];
+                }
+                catch (System.IndexOutOfRangeException)
+                {
+                    throw new StringOverIndexingException(DesignScriptBuiltin.StringOverIndexingExceptionMessage);
+                }
             }
         }
     }

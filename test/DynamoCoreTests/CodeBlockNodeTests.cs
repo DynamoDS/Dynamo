@@ -1308,13 +1308,13 @@ var06 = g;
             // Create a list of another empty list.
             var svs = new List<List<string>> { new List<string>() };
 
-            Assert.Throws<IndexOutOfRangeException>(() =>
+            Assert.Throws<System.IndexOutOfRangeException>(() =>
             {
                 // -1 as index argument will cause exception.
                 CodeBlockUtils.DoesStatementRequireOutputPort(svs, -1);
             });
 
-            Assert.Throws<IndexOutOfRangeException>(() =>
+            Assert.Throws<System.IndexOutOfRangeException>(() =>
             {
                 // Out-of-bound index argument will cause exception.
                 CodeBlockUtils.DoesStatementRequireOutputPort(svs, 1);

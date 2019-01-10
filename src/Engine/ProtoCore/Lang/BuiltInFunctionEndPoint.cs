@@ -2514,11 +2514,11 @@ namespace ProtoCore.Lang
             catch (System.Exception e)
             {
                 if (e.InnerException is Exceptions.CompilerInternalException)
-                    runtimeCore.RuntimeStatus.LogWarning(Runtime.WarningID.ArgumentIsNotExpected, Resources.FailedToResolveSortingFunction);
+                    runtimeCore.RuntimeStatus.LogWarning(Runtime.WarningID.AurgumentIsNotExpected, Resources.FailedToResolveSortingFunction);
                 else if(e.InnerException != null)
-                    runtimeCore.RuntimeStatus.LogWarning(Runtime.WarningID.ArgumentIsNotExpected, e.InnerException.Message);
+                    runtimeCore.RuntimeStatus.LogWarning(Runtime.WarningID.AurgumentIsNotExpected, e.InnerException.Message);
                 else
-                    runtimeCore.RuntimeStatus.LogWarning(Runtime.WarningID.ArgumentIsNotExpected, e.Message);
+                    runtimeCore.RuntimeStatus.LogWarning(Runtime.WarningID.AurgumentIsNotExpected, e.Message);
 
                 return StackValue.Null;
             }
