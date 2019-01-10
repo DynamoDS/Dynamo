@@ -1372,6 +1372,10 @@ namespace Dynamo.Graph.Workspaces
             return this.Nodes.OfType<DummyNode>().Where(node => node.OriginalNodeContent is XmlElement).Count()> 0;
         }
 
+        /// <summary>
+        /// Returns true if the workspace contains input symbols with invalid names.
+        /// </summary>
+        /// <returns></returns>
         internal bool containsInvalidInputSymbols()
         {
             return this.Nodes.OfType<Nodes.CustomNodes.Symbol>().Where(node => !node.Parameter.NameIsValid).Count() > 0;
