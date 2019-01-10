@@ -1,0 +1,147 @@
+{
+  "Uuid": "84e64b34-d249-4cb4-a6aa-1ba05fcc2f1d",
+  "IsCustomNode": false,
+  "Description": null,
+  "Name": "nanCameraData",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double,double",
+      "Id": "871c2f3da790412ca438da5161948470",
+      "Inputs": [
+        {
+          "Id": "2a84d9f1b749434fae6b948fc9ebda2e",
+          "Name": "x",
+          "Description": "double\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "32643d5a90e340079d675dac99036cc9",
+          "Name": "y",
+          "Description": "double\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "2e0440839be647a6a0861db066254078",
+          "Name": "z",
+          "Description": "double\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "00d2e3f6ebaf4b22882e7b751af2b4d9",
+          "Name": "Point",
+          "Description": "Point",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Form a Point given 3 cartesian coordinates\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "6862cade325f43a5b5146aa7214f34e3",
+      "Inputs": [
+        {
+          "Id": "bfd47e95616840b6a773e4dd2c134bfa",
+          "Name": "",
+          "Description": "Node to evaluate.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "7e447799b63e4e928be86111fda99677",
+          "Name": "",
+          "Description": "Watch contents.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualize the output of node."
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "00d2e3f6ebaf4b22882e7b751af2b4d9",
+      "End": "bfd47e95616840b6a773e4dd2c134bfa",
+      "Id": "c8be98af769842ff9b358bd1806d158a"
+    }
+  ],
+  "Dependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.2.0.3735",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": "NaN",
+      "EyeY": "NaN",
+      "EyeZ": "NaN",
+      "LookX": "NaN",
+      "LookY": "NaN",
+      "LookZ": "NaN",
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "Point.ByCoordinates",
+        "Id": "871c2f3da790412ca438da5161948470",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 200.0,
+        "Y": 145.75
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Watch",
+        "Id": "6862cade325f43a5b5146aa7214f34e3",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 126.0,
+        "Y": 294.75
+      }
+    ],
+    "Annotations": [],
+    "X": 0.0,
+    "Y": 0.0,
+    "Zoom": 1.0
+  }
+}
