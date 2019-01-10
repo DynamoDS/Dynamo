@@ -123,7 +123,7 @@ namespace Dynamo.Python
         public static string arrayRegex = "(\\[.*\\])";
         public static string spacesOrNone = @"(\s*)";
         public static string atLeastOneSpaceRegex = @"(\s+)";
-        public static string equals = @"(=)"; // Not CLS compliant naming - Remove in Dynamo 3.0
+        public static string equals = @"(=)"; // Not CLS compliant - replaced with equalsRegex - Remove in Dynamo 3.0
         public static string dictRegex = "({.*})";
         public static string doubleRegex = @"([-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?)";
         public static string intRegex = @"([-+]?\d+)[\s\n]*$";
@@ -264,18 +264,19 @@ namespace Dynamo.Python
                 {
                     AutocompletionInProgress = true;
 
-                    // is it a CLR type?
                     var type = TryGetType(name);
+
+                    // Is it a CLR type?
                     if (type != null)
                     {
                         items = EnumerateMembers(type, name);
                     }
-                    // it's a variable?
+                    // Is it a variable?
                     else if (this.VariableTypes.ContainsKey(name))
                     {
                         items = EnumerateMembers(this.VariableTypes[name], name);
                     }
-                    // is it a namespace or python type?
+                    // Else it is a namespace or python type
                     else
                     {
                         var mem = LookupMember(name);
