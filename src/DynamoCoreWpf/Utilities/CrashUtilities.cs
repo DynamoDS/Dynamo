@@ -49,7 +49,7 @@ namespace Dynamo.Wpf.Utilities
                 "### What did you see instead?" + Environment.NewLine +
                 "(Fill in here)" + Environment.NewLine +
                 "### What packages or external references (if any) were used?" + Environment.NewLine +
-                "(Fill in here)" + Environment.NewLine +
+                "(Fill in here)" + Environment.NewLine + Environment.NewLine +
                 "---" + Environment.NewLine +
                 "OS: " + "`" + Environment.OSVersion + "`" + Environment.NewLine +
                 "CLR: " + "`" + Environment.Version + "`" + Environment.NewLine +
