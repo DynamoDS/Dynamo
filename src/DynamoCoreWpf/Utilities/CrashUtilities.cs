@@ -1,10 +1,6 @@
 ﻿using Dynamo.Configuration;
 using Dynamo.Utilities;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Dynamo.Wpf.Utilities
 {
@@ -44,12 +40,13 @@ namespace Dynamo.Wpf.Utilities
             var dynamoVersion = AssemblyHelper.GetDynamoVersion().ToString() ?? "2.2+";
 
             return
-                "Description: Please outline all steps required to reproduce the crash including all files and packages" + Environment.NewLine +
+                "### Please outline all steps required to reproduce the crash including all files and packages" + Environment.NewLine +
+                "Description: type here please" + Environment.NewLine + Environment.NewLine +
                 "---" + Environment.NewLine +
-                "OS: "      + "`"   + Environment.OSVersion + "`"   + Environment.NewLine +
-                "CLR: "     + "`"   + Environment.Version   + "`"   + Environment.NewLine +
-                "Dynamo: "  + "`"   + dynamoVersion         + "`"   + Environment.NewLine +
-                "Details: "         + Environment.NewLine   + "```" + Environment.NewLine + content + Environment.NewLine + "```";
+                "OS: " + "`" + Environment.OSVersion + "`" + Environment.NewLine +
+                "CLR: " + "`" + Environment.Version + "`" + Environment.NewLine +
+                "Dynamo: " + "`" + dynamoVersion + "`" + Environment.NewLine +
+                "Details: " + Environment.NewLine + "```" + Environment.NewLine + content + Environment.NewLine + "```";
         }
 
     }
