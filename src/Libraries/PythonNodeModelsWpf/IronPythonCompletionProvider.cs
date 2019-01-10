@@ -728,7 +728,7 @@ namespace Dynamo.Python
         /// </summary>
         /// <param name="code">The code to search</param>
         /// <returns>A list of tuples that contain the namespace, the module, and the custom name</returns>
-        public static List<Tuple<string, string, string>> FindAllImportStatements(string code)
+        private static List<Tuple<string, string, string>> FindAllImportStatements(string code)
         {
             var statements = new List<Tuple<string, string, string>>();
 
@@ -983,7 +983,12 @@ namespace Dynamo.Python
             return paramMatches;
         }
 
-        public List<string> findClrReferences(string code)
+        /// <summary>
+        /// Detect all library references given the provided code
+        /// </summary>
+        /// <param name="code">Script code to search for CLR references</param>
+        /// <returns></returns>
+        private List<string> findClrReferences(string code)
         {
             var statements = new List<string>();
             foreach (var line in code.Split(new[] { '\n', ';' }))
