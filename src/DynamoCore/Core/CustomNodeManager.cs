@@ -244,8 +244,7 @@ namespace Dynamo.Core
                 RegisterCustomNodeInstanceForUpdates(node, workspace);
             else
                 RegisterCustomNodeInstanceForLateInitialization(node, id, name, isTestMode);
-
-            ValidateInputSymbolNames(node, workspace);
+            
             return node;
         }
 
@@ -296,8 +295,6 @@ namespace Dynamo.Core
 
         private static void RegisterCustomNodeInstanceForUpdates(Function node, CustomNodeWorkspaceModel workspace)
         {
-            var removeErrorState1 = ValidateInputSymbolNames(node, workspace);
-            node.ResyncWithDefinition(workspace.CustomNodeDefinition, removeErrorState1);
             Action defUpdatedHandler = () =>
             {
                 var removeErrorState = ValidateInputSymbolNames(node, workspace);
