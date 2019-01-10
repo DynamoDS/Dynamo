@@ -473,7 +473,11 @@ namespace Dynamo.Graph.Nodes.CustomNodes
                     }
                     else
                     {
-                        Error(errorMessage + "\nPlease ensure that the input name\ndoes not contain spaces.");
+                        Error("This input symbol is not currently valid, " +
+                              "and cannot be saved until it is fixed. " +
+                              "Valid inputs take the form:\n\n" +
+                              "name : type = defaultValue\n\n" +
+                              "The input name should be a valid variable name, without spaces. An input type and default value are optional."); //TODO: move to resx");
                         Parameter = new TypedParameter("", type, defaultValue, null, comment);
                         Parameter.NameIsValid = false;
                     }

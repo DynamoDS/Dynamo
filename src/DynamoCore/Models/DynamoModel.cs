@@ -1958,7 +1958,7 @@ namespace Dynamo.Models
                 "If the custom node is saved using SaveAs - the invalid inputs will revert to generic inputs. " +
                 "Valid inputs take the form:\n\n" +
                 "name : type = defaultValue\n\n" +
-                "The input name should be a valid variable name, without spaces. Input type and default value are optional."; //TODO: move to resx
+                "The input name should be a valid variable name, without spaces. An input type and default value are optional."; //TODO: move to resx
             const string imageUri = "/DynamoCoreWpf;component/UI/Images/task_dialog_future_file.png";
             var args = new TaskDialogEventArgs(
                new Uri(imageUri, UriKind.Relative),
