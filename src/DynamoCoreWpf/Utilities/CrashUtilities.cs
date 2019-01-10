@@ -32,10 +32,10 @@ namespace Dynamo.Wpf.Utilities
         }
 
         /// <summary>
-        /// Formats crash details & adds metadata for use in Github issue body
+        /// Formats crash details and adds metadata for use in Github issue body
         /// </summary>
         /// <param name="details">Crash details, such as a stack trace.</param>
-        /// <returns>A formatted but not excaped string to use as issue body.</returns>
+        /// <returns>A formatted, but not escaped, string to use as issue body.</returns>
         private static string GithhubCrashReportBody(object details)
         {
             var content = details?.ToString() ?? string.Empty;
