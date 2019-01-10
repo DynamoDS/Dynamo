@@ -1962,7 +1962,7 @@ namespace Dynamo.Models
             const string imageUri = "/DynamoCoreWpf;component/UI/Images/task_dialog_future_file.png";
             var args = new TaskDialogEventArgs(
                new Uri(imageUri, UriKind.Relative),
-               "Graph Contains Unresolved Nodes and Cannot Be Saved.", summary, description); //TODO: move to resx
+               "Custom Node Contains Invalid Inputs and Cannot Be Saved.", summary, description); //TODO: move to resx
 
             args.AddRightAlignedButton((int)ButtonId.Proceed, Resources.OKButton);
             OnRequestTaskDialog(null, args);
