@@ -245,6 +245,7 @@ namespace Dynamo.Core
             else
                 RegisterCustomNodeInstanceForLateInitialization(node, id, name, isTestMode);
 
+            ValidateInputSymbolNames(node, workspace);
             return node;
         }
 
@@ -276,22 +277,30 @@ namespace Dynamo.Core
                 if (!disposed)
                     InfoUpdated -= infoUpdatedHandler;
             };
+
+        }
+
+        private static bool ValidateInputSymbolNames(Function node, CustomNodeWorkspaceModel workspace)
+        {
+            foreach (var s in workspace.Nodes.OfType<Symbol>().ToList())
+            {
+                if (!s.Parameter.NameIsValid)
+                {
+                    node.Warning("This custom node contains an input with an invalid input symbol.\n" +
+                                 "Please fix the input symbol before saving the custom node.");
+                    return false;
+                }
+            }
+            return true;
         }
 
         private static void RegisterCustomNodeInstanceForUpdates(Function node, CustomNodeWorkspaceModel workspace)
         {
+            var removeErrorState1 = ValidateInputSymbolNames(node, workspace);
+            node.ResyncWithDefinition(workspace.CustomNodeDefinition, removeErrorState1);
             Action defUpdatedHandler = () =>
             {
-                var removeErrorState = true;
-                foreach (var s in workspace.Nodes.OfType<Symbol>().ToList())
-                {
-                    if (!s.Parameter.NameIsValid)
-                    {
-                        node.Error("This custom node contains an input with an invalid name.");
-                        removeErrorState = false;
-                        break;
-                    }
-                }
+                var removeErrorState = ValidateInputSymbolNames(node, workspace);
                 node.ResyncWithDefinition(workspace.CustomNodeDefinition, removeErrorState);
             };
             workspace.DefinitionUpdated += defUpdatedHandler;

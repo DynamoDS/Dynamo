@@ -473,7 +473,7 @@ namespace Dynamo.Graph.Nodes.CustomNodes
                     else
                     {
                         Error(errorMessage + "\nPlease ensure that the input name\ndoes not contain spaces.");
-                        Parameter = new TypedParameter("input", type, defaultValue, null, comment);
+                        Parameter = new TypedParameter("", type, defaultValue, null, comment);
                         Parameter.NameIsValid = false;
                     }
                 }
