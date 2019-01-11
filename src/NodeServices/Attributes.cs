@@ -342,4 +342,26 @@ namespace Autodesk.DesignScript.Runtime
     public class IsLacingDisabledAttribute : Attribute
     {
     }
+
+    /// <summary>
+    /// This attribute is applied to a function that has one or more parameters
+    /// as lists. It can be used to control arguments to the function
+    /// from being promoted to arrays or arrays of higher dimension when the VM tries
+    /// to do method resolution and match argument(s) to the function parameter(s). 
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Method)]
+    public class AllowArrayPromotionAttribute : Attribute
+    {
+        public bool IsAllowed { get; private set; }
+
+        public AllowArrayPromotionAttribute()
+        {
+            IsAllowed = true;
+        }
+
+        public AllowArrayPromotionAttribute(bool isAllowed)
+        {
+            IsAllowed = isAllowed;
+        }
+    }
 }

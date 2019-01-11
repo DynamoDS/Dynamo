@@ -5,8 +5,11 @@ using System.Reflection;
 using ProtoCore.DSASM;
 using ProtoCore.Utils;
 using Autodesk.DesignScript.Runtime;
+using DesignScript.Builtin;
 using ProtoCore.Properties;
 using ProtoCore.Exceptions;
+using IndexOutOfRangeException = DesignScript.Builtin.IndexOutOfRangeException;
+using KeyNotFoundException = DesignScript.Builtin.KeyNotFoundException;
 
 namespace ProtoFFI
 {
@@ -361,15 +364,35 @@ namespace ProtoFFI
 
                         dsi.LogWarning(ProtoCore.Runtime.WarningID.InvalidArguments, msg);
                     }
+                    else if (exc is IndexOutOfRangeException)
+                    {
+                        dsi.LogWarning(ProtoCore.Runtime.WarningID.IndexOutOfRange, exc.Message);
+                    }
                     else if (exc is System.ArgumentException)
+                    {
                         dsi.LogWarning(ProtoCore.Runtime.WarningID.InvalidArguments, ErrorString(exc));
+                    }
                     else if (exc is System.NullReferenceException)
+                    {
                         dsi.LogWarning(ProtoCore.Runtime.WarningID.AccessViolation, ErrorString(null));
+                    }
+                    else if (exc is StringOverIndexingException)
+                    {
+                        dsi.LogWarning(ProtoCore.Runtime.WarningID.OverIndexing, exc.Message);
+                    }
+                    else if (exc is KeyNotFoundException)
+                    {
+                        dsi.LogWarning(ProtoCore.Runtime.WarningID.InvalidIndexing, exc.Message);
+                    }
                     else
+                    {
                         dsi.LogWarning(ProtoCore.Runtime.WarningID.AccessViolation, ErrorString(exc));
+                    }
                 }
                 else
+                {
                     dsi.LogWarning(ProtoCore.Runtime.WarningID.AccessViolation, ErrorString(ex));
+                }
             }
             catch (System.Reflection.TargetParameterCountException ex)
             {
@@ -420,7 +443,9 @@ namespace ProtoFFI
                     dsi.LogWarning(ProtoCore.Runtime.WarningID.InvalidArguments, ErrorString(ex.InnerException));
                 }
                 else
+                {
                     dsi.LogWarning(ProtoCore.Runtime.WarningID.InvalidArguments, ErrorString(ex));
+                }
             }
             catch (Exception ex)
             {
@@ -440,8 +465,10 @@ namespace ProtoFFI
                 return ex.Message;
 
             string msg = (ex == null) ? "" : ex.Message;
+
             if (string.IsNullOrEmpty(msg) || msg.Contains("operation failed"))
                 return string.Format(Resources.OperationFailType1, ReflectionInfo.DeclaringType.Name, ReflectionInfo.Name);
+
 
             return string.Format(Resources.OperationFailType2, ReflectionInfo.DeclaringType.Name, ReflectionInfo.Name, msg);
         }
