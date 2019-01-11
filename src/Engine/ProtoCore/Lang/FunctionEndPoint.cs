@@ -245,6 +245,17 @@ namespace ProtoCore
 
         public int GetConversionDistance(List<StackValue> reducedParamSVs, ProtoCore.DSASM.ClassTable classTable, bool allowArrayPromotion, RuntimeCore runtimeCore)
         {
+            // If the replication strategy allows array promotion, first check for the case
+            // where it could be disabled using the [AllowArrayPromotion(false)] attribute
+            // and if so set it from the attribute.
+            if (allowArrayPromotion)
+            {
+                var ma = procedureNode.MethodAttribute;
+                if (ma != null)
+                {
+                    allowArrayPromotion = ma.AllowArrayPromotion;
+                }
+            }
             int dist = ComputeTypeDistance(reducedParamSVs, classTable, runtimeCore, allowArrayPromotion);
             if (dist >= 0 && dist != (int)ProcedureDistance.MaxDistance) //Is it possible to convert to this type?
             {
