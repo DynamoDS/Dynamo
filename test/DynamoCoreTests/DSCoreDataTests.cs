@@ -130,10 +130,16 @@ namespace Dynamo.Tests
             NodeModel testNode = workspace.NodeFromWorkspace(testNodeGuid);
 
             // Expected parsed types
-            List<string> expectedOutputs = Enumerable.Repeat(typeof(System.String).FullName, 8).ToList();
-            
+            var expectedString = typeof(System.String).FullName;
+            var expectedChar = typeof(System.Char).FullName;
+
             // Verify node output types match expected output
-            AssertPreviewValue(testNode.GUID.ToString(), expectedOutputs);
+            AssertPreviewValue(testNode.GUID.ToString(), new[]
+            {
+                expectedString, expectedString, expectedChar, expectedString, expectedString, expectedString,
+                expectedString, expectedString
+
+            });
         }
 
         [Test]
