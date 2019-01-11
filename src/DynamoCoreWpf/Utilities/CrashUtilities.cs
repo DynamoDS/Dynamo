@@ -6,14 +6,13 @@ namespace Dynamo.Wpf.Utilities
 {
     static class CrashUtilities
     {
-
         internal static string GithubNewIssueUrlFromCrashContent(object crashContent)
         {
             var baseUri = new UriBuilder(Configurations.GitHubBugReportingLink);
 
             // provide fallback values for text content in case Resources or Assembly calls fail
             var issueTitle = Properties.Resources.CrashPromptGithubNewIssueTitle ?? "Crash report from Dynamo {0}";
-            var dynamoVersion = AssemblyHelper.GetDynamoVersion().ToString() ?? "2.2+";
+            var dynamoVersion = AssemblyHelper.GetDynamoVersion().ToString() ?? "2.1.0+";
             var content = GithhubCrashReportBody(crashContent);
 
             // append the title and body to the URL as query parameters
@@ -34,28 +33,38 @@ namespace Dynamo.Wpf.Utilities
         /// <returns>A formatted, but not escaped, string to use as issue body.</returns>
         private static string GithhubCrashReportBody(object details)
         {
-            var content = details?.ToString() ?? string.Empty;
+            var stackTrace = details?.ToString() ?? string.Empty;
 
-            // This functionality was not available prior to version 2.2, so it should be the fallback value
-            var dynamoVersion = AssemblyHelper.GetDynamoVersion().ToString() ?? "2.2+";
+            // This functionality was not available prior to version 2.1.0, so it should be the fallback value
+            var dynamoVersion = AssemblyHelper.GetDynamoVersion().ToString() ?? "2.1.0+";
 
-            return
-                "# Issue Description" + Environment.NewLine +
-                "Please fill in the following information to help us reproduce the issue:" + Environment.NewLine +
-                "### What did you do?" + Environment.NewLine +
-                "(Fill in here)" + Environment.NewLine +
-                "### What did you expect to see?" + Environment.NewLine +
-                "(Fill in here)" + Environment.NewLine +
-                "### What did you see instead?" + Environment.NewLine +
-                "(Fill in here)" + Environment.NewLine +
-                "### What packages or external references (if any) were used?" + Environment.NewLine +
-                "(Fill in here)" + Environment.NewLine + Environment.NewLine +
-                "---" + Environment.NewLine +
-                "OS: " + "`" + Environment.OSVersion + "`" + Environment.NewLine +
-                "CLR: " + "`" + Environment.Version + "`" + Environment.NewLine +
-                "Dynamo: " + "`" + dynamoVersion + "`" + Environment.NewLine +
-                "Details: " + Environment.NewLine + "```" + Environment.NewLine + content + Environment.NewLine + "```";
+            return BuildMarkdownContent(dynamoVersion, stackTrace);
         }
 
+        /// <summary>
+        /// Builds a Markdown string that will be posted to our new GitHub issue
+        /// </summary>
+        /// <param name="dynamoVersion">Dynamo version that should be recorded in the issue report</param>
+        /// <param name="stackTrace">The crash stack trace to be included in the issue report</param>
+        /// <returns></returns>
+        internal static string BuildMarkdownContent(string dynamoVersion, string stackTrace)
+        {
+            return
+            "# Issue Description" + Environment.NewLine +
+            "Please fill in the following information to help us reproduce the issue:" + Environment.NewLine +
+            "### What did you do?" + Environment.NewLine +
+            "(Fill in here)" + Environment.NewLine +
+            "### What did you expect to see?" + Environment.NewLine +
+            "(Fill in here)" + Environment.NewLine +
+            "### What did you see instead?" + Environment.NewLine +
+            "(Fill in here)" + Environment.NewLine +
+            "### What packages or external references (if any) were used?" + Environment.NewLine +
+            "(Fill in here)" + Environment.NewLine + Environment.NewLine +
+            "---" + Environment.NewLine +
+            "OS: " + "`" + Environment.OSVersion + "`" + Environment.NewLine +
+            "CLR: " + "`" + Environment.Version + "`" + Environment.NewLine +
+            "Dynamo: " + "`" + dynamoVersion + "`" + Environment.NewLine +
+            "Details: " + Environment.NewLine + "```" + Environment.NewLine + stackTrace + Environment.NewLine + "```";
+        }
     }
 }
