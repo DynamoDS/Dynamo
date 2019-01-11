@@ -237,7 +237,7 @@ namespace DynamoPythonTests
             var completionProvider = new IronPythonCompletionProvider();
             completionProvider.UpdateImportedTypes(str);
 
-            Assert.AreEqual(1, completionProvider.ImportedTypes.Count);
+            Assert.AreEqual(2, completionProvider.ImportedTypes.Count);
             Assert.IsTrue(completionProvider.ImportedTypes.ContainsKey("System"));
         }
 
@@ -249,7 +249,7 @@ namespace DynamoPythonTests
             var completionProvider = new IronPythonCompletionProvider();
             completionProvider.UpdateImportedTypes(str);
 
-            Assert.AreEqual(1, completionProvider.ImportedTypes.Count);
+            Assert.AreEqual(2, completionProvider.ImportedTypes.Count);
             Assert.IsTrue(completionProvider.ImportedTypes.ContainsKey("System"));
         }
 
@@ -266,7 +266,7 @@ namespace DynamoPythonTests
             var completionList = completionData.Select(d => d.Text);
             Assert.IsTrue(completionList.Any());
             Assert.IsTrue(completionList.Intersect(new[] { "IO", "Console", "Reflection" }).Count() == 3);
-            Assert.AreEqual(1, completionProvider.ImportedTypes.Count);
+            Assert.AreEqual(2, completionProvider.ImportedTypes.Count);
             Assert.IsTrue(completionProvider.ImportedTypes.ContainsKey("System"));
 
         }
