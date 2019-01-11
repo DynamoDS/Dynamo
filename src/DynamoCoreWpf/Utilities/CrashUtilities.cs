@@ -12,7 +12,7 @@ namespace Dynamo.Wpf.Utilities
 
             // provide fallback values for text content in case Resources or Assembly calls fail
             var issueTitle = Properties.Resources.CrashPromptGithubNewIssueTitle ?? "Crash report from Dynamo {0}";
-            var dynamoVersion = AssemblyHelper.GetDynamoVersion().ToString() ?? "2.2+";
+            var dynamoVersion = AssemblyHelper.GetDynamoVersion().ToString() ?? "2.1.0+";
             var content = GithhubCrashReportBody(crashContent);
 
             // append the title and body to the URL as query parameters
@@ -35,8 +35,8 @@ namespace Dynamo.Wpf.Utilities
         {
             var stackTrace = details?.ToString() ?? string.Empty;
 
-            // This functionality was not available prior to version 2.2, so it should be the fallback value
-            var dynamoVersion = AssemblyHelper.GetDynamoVersion().ToString() ?? "2.2+";
+            // This functionality was not available prior to version 2.1.0, so it should be the fallback value
+            var dynamoVersion = AssemblyHelper.GetDynamoVersion().ToString() ?? "2.1.0+";
 
             return BuildMarkdownContent(dynamoVersion, stackTrace);
         }
