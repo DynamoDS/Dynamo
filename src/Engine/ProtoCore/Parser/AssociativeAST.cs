@@ -1663,6 +1663,7 @@ namespace ProtoCore.AST.AssociativeAST
         public string ObsoleteMessage { get; protected set; }
         public bool IsObsolete { get { return !string.IsNullOrEmpty(ObsoleteMessage); } }
         public bool IsLacingDisabled { get; protected set; }
+        public bool AllowArrayPromotion { get; protected set; } = true;
 
         /// <summary>
         /// Returns/Sets description for the method.

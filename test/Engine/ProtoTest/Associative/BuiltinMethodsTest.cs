@@ -361,7 +361,7 @@ r = Insert(a,d,0);
 s = Insert(a,e,5);
 u = p[1];
 v = q[1][0];
-w = r[1][0];
+w = r[1];
 x = s[5][0][0];
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
