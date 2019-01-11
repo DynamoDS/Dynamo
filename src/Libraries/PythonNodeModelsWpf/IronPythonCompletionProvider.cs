@@ -45,7 +45,7 @@ namespace Dynamo.Python
         }
 
         /// <summary>
-        /// Cache storing a reference to the Dynamo Core directory
+        /// Store a reference to the Dynamo Core Python Standard Library directory
         /// </summary>
         private string pythonLibDir { get; set; }
 
