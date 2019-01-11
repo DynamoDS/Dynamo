@@ -13,7 +13,7 @@ namespace Dynamo.Wpf.Utilities
             // provide fallback values for text content in case Resources or Assembly calls fail
             var issueTitle = Properties.Resources.CrashPromptGithubNewIssueTitle ?? "Crash report from Dynamo {0}";
             var dynamoVersion = AssemblyHelper.GetDynamoVersion().ToString() ?? "2.1.0+";
-            var content = GithhubCrashReportBody(crashContent);
+            var content = GitHubCrashReportBody(crashContent);
 
             // append the title and body to the URL as query parameters
             // making sure we properly escape content since stack traces may contain characters not suitable
@@ -31,7 +31,7 @@ namespace Dynamo.Wpf.Utilities
         /// </summary>
         /// <param name="details">Crash details, such as a stack trace.</param>
         /// <returns>A formatted, but not escaped, string to use as issue body.</returns>
-        private static string GithhubCrashReportBody(object details)
+        private static string GitHubCrashReportBody(object details)
         {
             var stackTrace = details?.ToString() ?? string.Empty;
 
