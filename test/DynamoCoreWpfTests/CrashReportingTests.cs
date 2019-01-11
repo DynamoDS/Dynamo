@@ -70,7 +70,7 @@ namespace Dynamo.Tests
             var crashReport = Wpf.Utilities.CrashUtilities.BuildMarkdownContent(dynamoVersion, StackTrace);
             Assert.IsNotNullOrEmpty(crashReport);
 
-            // Report a bug with a stack tace
+            // Report a bug with a stack trace
             Assert.DoesNotThrow(() => DynamoViewModel.ReportABug(crashReport));
         }
 
