@@ -47,34 +47,7 @@ namespace Dynamo.Python
         /// <summary>
         /// Cache storing a reference to the Dynamo Core directory
         /// </summary>
-        private static string dynamoCoreDir { get; set; }
-
-        /// <summary>
-        /// Get the location of the Python Standard Library
-        /// </summary>
-        private static string pythonLibDir
-        {
-            get
-            {
-                // Attempt to get and cache the Dynamo Core directory path
-                if (string.IsNullOrEmpty(dynamoCoreDir))
-                {
-                    // Gather executing assembly location
-                    string nodePath = Assembly.GetExecutingAssembly().Location;
-                    dynamoCoreDir = Path.GetFullPath(Path.Combine(nodePath, @"..\\..\\"));
-                }
-
-                // Return the standard library path
-                if (!string.IsNullOrEmpty(dynamoCoreDir))
-                {
-                    return dynamoCoreDir + @"IronPython.StdLib.2.7.8";
-                }
-                else
-                {
-                    return null;
-                }
-            }
-        }
+        private string pythonLibDir { get; set; }
 
         /// <summary>
         /// Already discovered variable types
@@ -156,7 +129,16 @@ namespace Dynamo.Python
         /// <summary>
         /// Class constructor
         /// </summary>
-        public IronPythonCompletionProvider()
+        [Obsolete("Use additional constructor passing the Dynamo Core Directory to enable Python Std Lib autocomplete.")]
+        public IronPythonCompletionProvider() : this("")
+        {
+            // TODO - remove this constructor in Dynamo 3.0)
+        }
+
+        /// <summary>
+        /// Class constructor
+        /// </summary>
+        public IronPythonCompletionProvider(string dynamoCoreDir)
         {
             engine = IronPython.Hosting.Python.CreateEngine();
             scope = engine.CreateScope();
@@ -221,14 +203,17 @@ namespace Dynamo.Python
             }
 
             // Determine if the Python Standard Library is available in the given context
-            var pythonStdLib = pythonLibDir;
+            if(!String.IsNullOrEmpty(dynamoCoreDir))
+            {
+                pythonLibDir = dynamoCoreDir + @"\IronPython.StdLib.2.7.8";
+            }
 
-            if (pythonStdLib != null && Directory.Exists(pythonStdLib))
+            if (!String.IsNullOrEmpty(pythonLibDir) && Directory.Exists(pythonLibDir))
             {
                 // Try to load Python Standard Library Type for autocomplete
                 try
                 {
-                    var pyLibImports = String.Format("import sys\nsys.path.append(r'{0}')\n", pythonStdLib);
+                    var pyLibImports = String.Format("import sys\nsys.path.append(r'{0}')\n", pythonLibDir);
                     engine.CreateScriptSourceFromString(pyLibImports, SourceCodeKind.Statements).Execute(scope);
                 }
                 catch (Exception e)

@@ -39,7 +39,7 @@ namespace PythonNodeModelsWpf
             this.dynamoViewModel = dynamoViewModel;
             this.nodeModel = nodeModel;
 
-            completionProvider = new IronPythonCompletionProvider();
+            completionProvider = new IronPythonCompletionProvider(dynamoViewModel.Model.PathManager.DynamoCoreDirectory);
             completionProvider.MessageLogged += dynamoViewModel.Model.Logger.Log;
 
             InitializeComponent();
