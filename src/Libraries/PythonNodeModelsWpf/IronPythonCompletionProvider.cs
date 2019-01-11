@@ -237,63 +237,7 @@ namespace Dynamo.Python
         [Obsolete("Please use GetCompletionData with additional parameters, this method will be removed in Dynamo 3.0.")]
         public ICompletionData[] GetCompletionData(string line)
         {
-            var items = new List<IronPythonCompletionData>();
-
-            this.UpdateImportedTypes(line);
-            this.UpdateVariableTypes(line); // this is where hindley-milner could come into play
-
-            string name = GetName(line);
-            if (!String.IsNullOrEmpty(name))
-            {
-                try
-                {
-                    AutocompletionInProgress = true;
-
-                    var type = TryGetType(name);
-
-                    // Is it a CLR type?
-                    if (type != null)
-                    {
-                        items = EnumerateMembers(type, name);
-                    }
-                    // Is it a variable?
-                    else if (this.VariableTypes.ContainsKey(name))
-                    {
-                        items = EnumerateMembers(this.VariableTypes[name], name);
-                    }
-                    // Else it is a namespace or python type
-                    else
-                    {
-                        var mem = LookupMember(name);
-
-                        if (mem is NamespaceTracker)
-                        {
-                            items = EnumerateMembers(mem as NamespaceTracker, name);
-                        }
-                        else if (mem is PythonModule)
-                        {
-                            items = EnumerateMembers(mem as PythonModule, name);
-                        }
-                        else if (mem is PythonType)
-                        {
-                            // shows static and instance methods in just the same way :(
-                            var value = ClrModule.GetClrType(mem as PythonType);
-                            if (value != null)
-                            {
-                                items = EnumerateMembers(value, name);
-                            }
-                        }
-
-                    }
-                }
-                catch
-                {
-                    //Dynamo.this.logger.Log("EXCEPTION: GETTING COMPLETION DATA");
-                }
-                AutocompletionInProgress = false;
-            }
-
-            return items.ToArray();
+            return GetCompletionData(line, false);
         }
 
         /// <summary>
