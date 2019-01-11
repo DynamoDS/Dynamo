@@ -1,13 +1,7 @@
 ﻿using System;
 using System.Windows;
-
-using Dynamo.Controls;
-using Dynamo.PackageManager.UI;
-using Dynamo.Search.SearchElements;
 using Dynamo.UI;
-using Dynamo.Utilities;
 using Dynamo.ViewModels;
-using Dynamo.Wpf;
 using DynamoUtilities;
 
 namespace Dynamo.PackageManager

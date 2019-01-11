@@ -1,18 +1,16 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Xml;
-using System.Threading;
 using System.IO;
-using DesignScript.Builtin;
-using Dynamo.Models;
+using System.Linq;
+using System.Threading;
+using System.Xml;
 using Dynamo.Applications;
 using Dynamo.Graph.Workspaces;
+using Dynamo.Models;
 using Dynamo.ViewModels;
 using Dynamo.Visualization;
-using Newtonsoft.Json;
 using DynamoCLI;
+using Newtonsoft.Json;
 
 namespace DynamoWPFCLI
 {
@@ -41,6 +39,11 @@ namespace DynamoWPFCLI
             {
                 Console.WriteLine("commandFilePath option is only available when running DynamoSandbox, not DynamoWPFCLI");
             }
+
+            cmdLineArgs.ImportedPaths.ToList().ForEach(path =>
+            {
+                ImportAssembly(viewModel.Model, path);
+            });
 
             viewModel.OpenCommand.Execute(new Tuple<string, bool>(cmdLineArgs.OpenFilePath, true));
             Console.WriteLine("loaded file");

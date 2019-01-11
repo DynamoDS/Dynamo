@@ -768,10 +768,6 @@ It does not contain your graph or any personal data</value>
     <value>NODE TYPE</value>
     <comment>Title label</comment>
   </data>
-  <data name="NodeHelpWindowDynamoDictionary" xml:space="preserve">
-    <value>See more on the Dynamo Dictionary...</value>
-    <comment>Link to http://dictionary.dynamobim.com/ </comment>
-  </data>
   <data name="StartPageAsk" xml:space="preserve">
     <value>ASK</value>
   </data>

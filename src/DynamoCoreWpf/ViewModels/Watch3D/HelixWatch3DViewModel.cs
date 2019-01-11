@@ -22,13 +22,14 @@ using Dynamo.Graph.Workspaces;
 using Dynamo.Logging;
 using Dynamo.Selection;
 using Dynamo.ViewModels;
+using Dynamo.Visualization;
 using Dynamo.Wpf.Properties;
 using Dynamo.Wpf.Rendering;
-using Dynamo.Visualization;
 using DynamoUtilities;
 using HelixToolkit.Wpf;
 using HelixToolkit.Wpf.SharpDX;
 using HelixToolkit.Wpf.SharpDX.Core;
+using Newtonsoft.Json;
 using SharpDX;
 using Color = SharpDX.Color;
 using ColorConverter = System.Windows.Media.ColorConverter;
@@ -38,7 +39,6 @@ using MeshGeometry3D = HelixToolkit.Wpf.SharpDX.MeshGeometry3D;
 using Model3D = HelixToolkit.Wpf.SharpDX.Model3D;
 using PerspectiveCamera = HelixToolkit.Wpf.SharpDX.PerspectiveCamera;
 using TextInfo = HelixToolkit.Wpf.SharpDX.TextInfo;
-using Newtonsoft.Json;
 
 namespace Dynamo.Wpf.ViewModels.Watch3D
 {
@@ -111,6 +111,20 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                    && Math.Abs(this.UpZ - other.UpZ) < 0.0001
                    && Math.Abs(this.NearPlaneDistance - other.NearPlaneDistance) < 0.0001
                    && Math.Abs(this.FarPlaneDistance - other.FarPlaneDistance) < 0.0001;
+        }
+
+        /// <summary>
+        /// returns true if any of components are NaN.
+        /// </summary>
+        /// <returns></returns>
+        internal bool containsNaN()
+        {
+            var numericComponents = new List<double>(){ EyeX, EyeY, EyeZ, LookX, LookY, LookZ, UpX, UpY, UpZ, NearPlaneDistance, FarPlaneDistance };
+            if (numericComponents.Any(d => (Double.IsNaN(d))))
+            {
+                return true;
+            }
+            return false;
         }
 
 
@@ -637,7 +651,16 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     try
                     {
                         var camData = DeserializeCamera(cameraNode);
-                        SetCameraData(camData);
+                        //check if the cameraData contains any NaNs
+                        if (camData.containsNaN())
+                        {
+                            SetCameraData(new CameraData());
+                        }
+                        else
+                        {
+                            SetCameraData(camData);
+                        }
+                      
                     }
                     catch (Exception ex)
                     {
@@ -668,7 +691,16 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 };
 
                 var cameraData = JsonConvert.DeserializeObject<CameraData>(cameraJson, settings);
-                SetCameraData(cameraData);
+
+                //check if the cameraData contains any NaNs
+                if (cameraData.containsNaN())
+                {
+                    SetCameraData(new CameraData());
+                }
+                else
+                {
+                    SetCameraData(cameraData);
+                }
             }
         }
 

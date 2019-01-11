@@ -4,10 +4,10 @@ using System.Linq;
 using System.Xml;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Notes;
+using Dynamo.Graph.Workspaces;
 using Dynamo.Properties;
 using Dynamo.Utilities;
 using Newtonsoft.Json;
-using Dynamo.Graph.Workspaces;
 
 namespace Dynamo.Graph.Annotations
 {

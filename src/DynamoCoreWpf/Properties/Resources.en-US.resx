@@ -1459,10 +1459,6 @@ Uninstall the following dependent packages: {1}?</value>
     <value>Show Labels</value>
     <comment>Context menu item - show labels</comment>
   </data>
-  <data name="NodeHelpWindowDynamoDictionary" xml:space="preserve">
-    <value>See more on the Dynamo Dictionary...</value>
-    <comment>Link to http://dictionary.dynamobim.com/ </comment>
-  </data>
   <data name="NodeHelpWindowNodeCategory" xml:space="preserve">
     <value>CATEGORY</value>
     <comment>Category label</comment>

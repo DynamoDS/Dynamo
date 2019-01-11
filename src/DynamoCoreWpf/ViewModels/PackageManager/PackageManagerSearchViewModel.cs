@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
@@ -11,12 +10,10 @@ using Dynamo.PackageManager.ViewModels;
 using Dynamo.Search;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
-
+using Dynamo.Wpf.Properties;
 using Greg.Responses;
-
 using Microsoft.Practices.Prism.Commands;
 using Microsoft.Practices.Prism.ViewModel;
-using Dynamo.Wpf.Properties;
 
 namespace Dynamo.PackageManager
 {

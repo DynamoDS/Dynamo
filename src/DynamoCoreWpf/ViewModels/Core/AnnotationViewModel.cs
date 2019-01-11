@@ -1,18 +1,14 @@
-﻿using System.Collections;
+﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
-using System.Windows.Forms;
-using System.Windows.Media;
-using Dynamo.Models;
-using System;
 using System.Windows.Input;
+using System.Windows.Media;
 using Dynamo.Graph;
 using Dynamo.Graph.Annotations;
+using Dynamo.Models;
 using Dynamo.Selection;
 using Dynamo.UI.Commands;
 using Dynamo.Utilities;
-using Dynamo.Views;
 using Newtonsoft.Json;
 using Color = System.Windows.Media.Color;
 

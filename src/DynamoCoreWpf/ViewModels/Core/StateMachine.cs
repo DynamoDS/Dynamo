@@ -10,10 +10,10 @@ using Dynamo.Models;
 using Dynamo.Selection;
 using Dynamo.Utilities;
 using Dynamo.Wpf.Utilities;
+using Newtonsoft.Json;
 using DynCmd = Dynamo.Models.DynamoModel;
 using ModifierKeys = System.Windows.Input.ModifierKeys;
 using Point = System.Windows.Point;
-using Newtonsoft.Json;
 
 namespace Dynamo.ViewModels
 {

@@ -1,14 +1,12 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
-
 using Dynamo.Models;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
-using System;
 
 namespace Dynamo.Controls
 {

@@ -8,10 +8,10 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Dynamo.Manipulation.Properties {
-    using System;
-    
-    
+namespace Dynamo.Manipulation.Properties
+{
+
+
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>

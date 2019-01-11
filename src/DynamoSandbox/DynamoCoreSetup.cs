@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Runtime.InteropServices;
 using System.Windows;
+using Dynamo.Applications;
 using Dynamo.Controls;
+using Dynamo.Core;
+using Dynamo.DynamoSandbox;
+using Dynamo.Logging;
 using Dynamo.Models;
 using Dynamo.ViewModels;
-using Dynamo.Logging;
-using Dynamo.Core;
 using Dynamo.Wpf.ViewModels.Watch3D;
-using Dynamo.DynamoSandbox;
-using Dynamo.Applications;
-using System.Runtime.InteropServices;
 
 namespace DynamoSandbox
 {

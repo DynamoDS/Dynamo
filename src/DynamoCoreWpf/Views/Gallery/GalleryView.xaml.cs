@@ -1,5 +1,5 @@
-﻿using Dynamo.Wpf.ViewModels.Core;
-using System.Windows.Controls;
+﻿using System.Windows.Controls;
+using Dynamo.Wpf.ViewModels.Core;
 
 namespace Dynamo.Wpf.Views.Gallery
 {
