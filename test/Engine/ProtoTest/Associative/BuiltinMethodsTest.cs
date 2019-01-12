@@ -1070,8 +1070,6 @@ r = Dictionary.ValueAtKey(a, ""nonexist"");
        }
 
         [Test]
-        [Category("Failure")]
-        // To-Do as this use case is failing, re-visit and make sure this test case passes.  
         public void TestTryGetValuesFromDictionary09()
         {
             string code = @"
@@ -1102,7 +1100,6 @@ r2 = Dictionary.ValueAtKey(c, ""out"");
         }
 
         [Test]
-        [Category("Failure")]
         public void TestTryGetValuesFromDictionary11()
         {
             string code = @"
@@ -1113,8 +1110,8 @@ r1 = Dictionary.ValueAtKey(c, ""in"");
 r2 = Dictionary.ValueAtKey(c, ""out"");
 ";
             var mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("r1", new object[] { null, new object[] { 24 } });
-            thisTest.Verify("r2", new object[] { null, new object[] { 42 } });
+            thisTest.Verify("r1", new object[] { new object[] { null, null, null, null }, new object[] { 24 } });
+            thisTest.Verify("r2", new object[] { new object[] { null, null, null, null }, new object[] { 42 } });
         }
       
         [Test]
