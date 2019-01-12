@@ -149,7 +149,7 @@ namespace ProtoCore.Utils
                 usageFreq.Add(array.metaData.type, new List<StackValue> {array});
 
                 // return flattened list of unique values
-                return usageFreq.Values.SelectMany(x => x.Select(y => y));
+                return usageFreq.Values.SelectMany(x => x);
             }
 
             //This is the element on the heap that manages the data structure
@@ -176,7 +176,7 @@ namespace ProtoCore.Utils
                 }
             }
             // return flattened list of unique values
-            return usageFreq.Values.SelectMany(x => x.Select(y => y));
+            return usageFreq.Values.SelectMany(x => x);
         }
 
 
