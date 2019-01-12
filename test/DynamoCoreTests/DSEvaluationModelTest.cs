@@ -1187,6 +1187,19 @@ namespace Dynamo.Tests
             RunCurrentModel();
             AssertPreviewValue(guidCurveLength, new object[] { new object[] { 6.283185 }, new object[] { } });
         }
+
+        public void TestHeterogenousList()
+        {
+            // open test graph
+            RunModel(@"core\dsevaluation\test_hetereogenous_list.dyn");
+
+            var guidX = "0cb9b9ea3c004c099c31ddfac1ebbb09";
+            var guidY = "e7711f22858f4ea6bb23112f274b8914";
+            var guidZ = "a8519f77028643d4af2c0bc415a163fc";
+            AssertPreviewValue(guidX, new object[] { null, null, null, 5 });
+            AssertPreviewValue(guidY, new object[] { null, null, null, 10.2 });
+            AssertPreviewValue(guidZ, new object[] { null, null, null, 15.2 });
+        }
     }
 
     [Category("DSCustomNode")]
