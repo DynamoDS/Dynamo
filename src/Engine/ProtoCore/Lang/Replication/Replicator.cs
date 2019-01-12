@@ -201,20 +201,20 @@ namespace ProtoCore.Lang.Replication
             RuntimeCore runtimeCore)
         {
             //Copy the types so unaffected ones get copied back directly
-            List<StackValue> basicList = new List<StackValue>(formalParams);
+            var basicList = new List<StackValue>(formalParams);
 
             //Compute the reduced Type args
-            List<List<StackValue>> reducedParams = new List<List<StackValue>>();
+            var reducedParams = new List<List<StackValue>>();
             reducedParams.Add(basicList);
 
-            foreach (ReplicationInstruction ri in replicationInstructions)
+            foreach (var ri in replicationInstructions)
             {
                 var indices = ri.Zipped ? ri.ZipIndecies : new List<int> { ri.CartesianIndex };
                 foreach (int index in indices)
                 {
                     //This should generally be a collection, so we need to do a one phase unboxing
                     var targets = reducedParams.Select(r => r[index]).ToList();
-                    StackValue target = basicList[index];
+                    var target = basicList[index];
 
                     if (!target.IsArray)
                     {
@@ -229,21 +229,20 @@ namespace ProtoCore.Lang.Replication
                     }
 
                     var arrayStats = new HashSet<StackValue>();
-
                     foreach (var targetTemp in targets)
                     {
-                        List<StackValue> temp = ArrayUtils.GetTypeExamplesForLayer(targetTemp, runtimeCore).Values.ToList();
+                        var temp = ArrayUtils.GetTypeExamplesForLayer(targetTemp, runtimeCore).ToList();
                         arrayStats.UnionWith(temp);
                     }
 
-                    List<List<StackValue>> clonedList = new List<List<StackValue>>(reducedParams);
+                    var clonedList = new List<List<StackValue>>(reducedParams);
                     reducedParams.Clear();
 
-                    foreach (StackValue sv in arrayStats)
+                    foreach (var sv in arrayStats)
                     {
-                        foreach (List<StackValue> lst in clonedList)
+                        foreach (var lst in clonedList)
                         {
-                            List<StackValue> newArgs = new List<StackValue>(lst);
+                            var newArgs = new List<StackValue>(lst);
                             newArgs[index] = sv;
                             reducedParams.Add(newArgs);
                         }

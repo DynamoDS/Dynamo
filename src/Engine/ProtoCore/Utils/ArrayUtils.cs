@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Remoting.Messaging;
 using ProtoCore.DSASM;
 using ProtoCore.Exceptions;
 using ProtoCore.Runtime;
@@ -117,25 +118,43 @@ namespace ProtoCore.Utils
             return runtimeCore.DSExecutable.classTable.ClassNodes[orderedTypes.First()];
         }
 
-        public static Dictionary<int, StackValue> GetTypeExamplesForLayer(StackValue array, RuntimeCore runtimeCore)
+        public static IEnumerable<StackValue> GetTypeExamplesForLayer(StackValue array, RuntimeCore runtimeCore)
         {
-            Dictionary<int, StackValue> usageFreq = new Dictionary<int, StackValue>();
+            var usageFreq = new Dictionary<int, List<StackValue>>();
 
             if (!array.IsArray)
             {
-                usageFreq.Add(array.metaData.type, array);
-                return usageFreq;
+                usageFreq.Add(array.metaData.type, new List<StackValue> {array});
+
+                // return flattened list of unique values
+                return usageFreq.Values.SelectMany(x => x.Select(y => y));
             }
 
             //This is the element on the heap that manages the data structure
             var dsArray = runtimeCore.Heap.ToHeapObject<DSArray>(array);
             foreach (var sv in dsArray.Values)
             {
-                if (!usageFreq.ContainsKey(sv.metaData.type))
-                    usageFreq.Add(sv.metaData.type, sv);
+                // If sv is an array type, continue adding array values to usageFreq dictionary 
+                // as different arrays need not necessarily contain the same types.
+                if (sv.IsArray)
+                {
+                    List<StackValue> list;
+                    if (usageFreq.TryGetValue(sv.metaData.type, out list))
+                    {
+                        list.Add(sv);
+                    }
+                    else
+                    {
+                        usageFreq.Add(sv.metaData.type, new List<StackValue> {sv});
+                    }
+                }
+                else if (!usageFreq.ContainsKey(sv.metaData.type))
+                {
+                    usageFreq.Add(sv.metaData.type, new List<StackValue> {sv});
+                }
             }
-
-            return usageFreq;
+            // return flattened list of unique values
+            return usageFreq.Values.SelectMany(x => x.Select(y => y));
         }
 
 
