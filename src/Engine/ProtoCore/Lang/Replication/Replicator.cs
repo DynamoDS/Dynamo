@@ -231,7 +231,7 @@ namespace ProtoCore.Lang.Replication
                     var arrayStats = new HashSet<StackValue>();
                     foreach (var targetTemp in targets)
                     {
-                        var temp = ArrayUtils.GetTypeExamplesForLayer(targetTemp, runtimeCore).ToList();
+                        var temp = ArrayUtils.GetTypeExamplesForLayer2(targetTemp, runtimeCore).ToList();
                         arrayStats.UnionWith(temp);
                     }
 

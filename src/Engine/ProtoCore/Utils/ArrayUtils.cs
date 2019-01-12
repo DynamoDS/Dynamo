@@ -118,7 +118,29 @@ namespace ProtoCore.Utils
             return runtimeCore.DSExecutable.classTable.ClassNodes[orderedTypes.First()];
         }
 
-        public static IEnumerable<StackValue> GetTypeExamplesForLayer(StackValue array, RuntimeCore runtimeCore)
+        // TODO gantaa/pratapa: Remove this deprecated method in 3.0 and rename GetTypeExamplesForLayer2
+        public static Dictionary<int, StackValue> GetTypeExamplesForLayer(StackValue array, RuntimeCore runtimeCore)
+        {
+            Dictionary<int, StackValue> usageFreq = new Dictionary<int, StackValue>();
+
+            if (!array.IsArray)
+            {
+                usageFreq.Add(array.metaData.type, array);
+                return usageFreq;
+            }
+
+            //This is the element on the heap that manages the data structure
+            var dsArray = runtimeCore.Heap.ToHeapObject<DSArray>(array);
+            foreach (var sv in dsArray.Values)
+            {
+                if (!usageFreq.ContainsKey(sv.metaData.type))
+                    usageFreq.Add(sv.metaData.type, sv);
+            }
+
+            return usageFreq;
+        }
+
+        public static IEnumerable<StackValue> GetTypeExamplesForLayer2(StackValue array, RuntimeCore runtimeCore)
         {
             var usageFreq = new Dictionary<int, List<StackValue>>();
 
