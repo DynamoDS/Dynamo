@@ -1952,17 +1952,12 @@ namespace Dynamo.Models
 
         private void DisplayInvalidInputSymbolWarning()
         {
-            string summary = "This custom node cannot be saved until invalid inputs are removed or fixed."; //TODO: move to resx
-            var description = "This custom node currently contains some invalid inputs, " +
-                "and cannot be saved until the inputs are fixed. " +
-                "If the custom node is saved using SaveAs - the invalid inputs will revert to generic inputs. " +
-                "Valid inputs take the form:\n\n" +
-                "name : type = defaultValue\n\n" +
-                "The input name should be a valid variable name, without spaces. An input type and default value are optional."; //TODO: move to resx
+            string summary = Resources.InvalidInputSymbolWarningShortMessage;
+            var description = Resources.InvalidInputSymbolWarningMessage;
             const string imageUri = "/DynamoCoreWpf;component/UI/Images/task_dialog_future_file.png";
             var args = new TaskDialogEventArgs(
                new Uri(imageUri, UriKind.Relative),
-               "Custom Node Contains Invalid Inputs and Cannot Be Saved.", summary, description); //TODO: move to resx
+               Resources.InvalidInputSymbolWarningTitle, summary, description);
 
             args.AddRightAlignedButton((int)ButtonId.Proceed, Resources.OKButton);
             OnRequestTaskDialog(null, args);

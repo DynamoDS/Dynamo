@@ -14,7 +14,8 @@ namespace Dynamo.Library
         private readonly string defaultValueString;
 
         /// <summary>
-        /// Indicates whether a valid name has been set for this parameter
+        /// Indicates whether a valid name has been set for this parameter.
+        /// This property is not serialized.
         /// </summary>
         public bool NameIsValid { get; set; } = true;
         

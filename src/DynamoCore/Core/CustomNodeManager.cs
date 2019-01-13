@@ -241,7 +241,12 @@ namespace Dynamo.Core
 
             CustomNodeWorkspaceModel workspace = null;
             if (loadedWorkspaceModels.TryGetValue(id, out workspace))
+            {
                 RegisterCustomNodeInstanceForUpdates(node, workspace);
+                // Check for invalid input symbols and do an intial definition sync.
+                var removeErrorState = ValidateInputSymbolNames(node, workspace);
+                node.ResyncWithDefinition(workspace.CustomNodeDefinition, removeErrorState);
+            }
             else
                 RegisterCustomNodeInstanceForLateInitialization(node, id, name, isTestMode);
             
@@ -285,8 +290,7 @@ namespace Dynamo.Core
             {
                 if (!s.Parameter.NameIsValid)
                 {
-                    node.Warning("This custom node contains an input with an invalid input symbol.\n" +
-                                 "Please fix the input symbol before saving the custom node.");
+                    node.Warning(Resources.InvalidInputSymbolCustomNodeWarning, true);
                     return false;
                 }
             }

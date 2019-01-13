@@ -1,6 +1,7 @@
 ﻿using Dynamo.Engine;
 using Dynamo.Engine.CodeGeneration;
 using Dynamo.Library;
+using Dynamo.Properties;
 using Newtonsoft.Json;
 using ProtoCore;
 using ProtoCore.AST.AssociativeAST;
@@ -473,11 +474,7 @@ namespace Dynamo.Graph.Nodes.CustomNodes
                     }
                     else
                     {
-                        Error("This input symbol is not currently valid, " +
-                              "and cannot be saved until it is fixed. " +
-                              "Valid inputs take the form:\n\n" +
-                              "name : type = defaultValue\n\n" +
-                              "The input name should be a valid variable name, without spaces. An input type and default value are optional."); //TODO: move to resx");
+                        Error(Resources.InvalidInputSymbolErrorMessage); 
                         Parameter = new TypedParameter("", type, defaultValue, null, comment);
                         Parameter.NameIsValid = false;
                     }
