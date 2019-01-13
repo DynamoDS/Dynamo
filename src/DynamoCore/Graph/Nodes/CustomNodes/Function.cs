@@ -1,7 +1,6 @@
 ﻿using Dynamo.Engine;
 using Dynamo.Engine.CodeGeneration;
 using Dynamo.Library;
-using Dynamo.Properties;
 using Newtonsoft.Json;
 using ProtoCore;
 using ProtoCore.AST.AssociativeAST;
@@ -474,7 +473,7 @@ namespace Dynamo.Graph.Nodes.CustomNodes
                     }
                     else
                     {
-                        Error(Resources.InvalidInputSymbolErrorMessage); 
+                        Error(Properties.Resources.InvalidInputSymbolErrorMessage); 
                         Parameter = new TypedParameter("", type, defaultValue, null, comment);
                         Parameter.NameIsValid = false;
                     }
