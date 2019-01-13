@@ -747,7 +747,11 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to This input symbol is not currently valid, and cannot be saved until it is fixed. Valid inputs take the form:\n\nname : type = defaultValue\n\nThe input name should be a valid variable name, without spaces. An input type and default value are optional..
+        ///   Looks up a localized string similar to This input symbol is not currently valid, and cannot be saved until it is fixed. Valid inputs take the form:
+        ///
+        ///name : type = defaultValue
+        ///
+        ///The input name should be a valid variable name, without spaces. An input type and default value are optional..
         /// </summary>
         public static string InvalidInputSymbolErrorMessage {
             get {
@@ -756,7 +760,11 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to This custom node currently contains some invalid inputs, and cannot be saved until the inputs are fixed. If the custom node is saved using SaveAs, the invalid inputs will revert to generic inputs. Valid inputs take the form:\n\nname : type = defaultValue\n\nThe input name should be a valid variable name, without spaces. An input type and default value are optional..
+        ///   Looks up a localized string similar to This custom node currently contains some invalid inputs, and cannot be saved until the inputs are fixed. If the custom node is saved using SaveAs, the invalid inputs will revert to generic inputs. Valid inputs take the form:
+        ///
+        ///name : type = defaultValue
+        ///
+        ///The input name should be a valid variable name, without spaces. An input type and default value are optional..
         /// </summary>
         public static string InvalidInputSymbolWarningMessage {
             get {
