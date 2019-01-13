@@ -439,7 +439,6 @@ namespace Dynamo.Graph.Nodes.CustomNodes
 
                 var type = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var);
                 AssociativeNode defaultValue = null;
-                var errorMessage = String.Empty;
 
                 string comment = null;
 
@@ -450,7 +449,7 @@ namespace Dynamo.Graph.Nodes.CustomNodes
                     //    x : type
                     //    x : type = default_value
                     IdentifierNode identifierNode;
-                    if (TryParseInputExpression(inputSymbol, out identifierNode, out defaultValue, out comment, out errorMessage))
+                    if (TryParseInputExpression(inputSymbol, out identifierNode, out defaultValue, out comment))
                     {
                         name = identifierNode.Value;
 
@@ -534,13 +533,11 @@ namespace Dynamo.Graph.Nodes.CustomNodes
         private bool TryParseInputExpression(string inputSymbol, 
                                              out IdentifierNode identifier, 
                                              out AssociativeNode defaultValue,
-                                             out string comment,
-                                             out string errorMessage)
+                                             out string comment)
         {
             identifier = null;
             defaultValue = null;
             comment = null;
-            errorMessage = null;
             
             var parseString = inputSymbol;
             parseString += ";";
@@ -598,10 +595,6 @@ namespace Dynamo.Graph.Nodes.CustomNodes
 
                     return identifier != null;
                 }
-            }
-            if (parseParam.Errors.Any())
-            {
-                errorMessage =  parseParam.Errors.First().Message;
             }
             return false;
         }
