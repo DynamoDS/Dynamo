@@ -92,7 +92,7 @@ namespace Dynamo.Nodes.Prompts
 
         private void PostOnGithub_Click(object sender, RoutedEventArgs e)
         {
-            DynamoViewModel.ReportABug(this.CrashDetailsContent.Text);
+            DynamoViewModel.ReportABug(null);
         }
 
         private void Details_Click(object sender, RoutedEventArgs e)

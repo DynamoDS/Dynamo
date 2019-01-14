@@ -97,7 +97,7 @@ namespace Dynamo.Configuration
         /// <summary>
         /// Link to Dynamo's issues on github
         /// </summary>
-        public static string GitHubBugReportingLink = "https://github.com/DynamoDS/Dynamo/issues/new";
+        public static string GitHubBugReportingLink = "https://github.com/DynamoDS/Dynamo/issues";
         #endregion
 
         #region Canvas Configurations
