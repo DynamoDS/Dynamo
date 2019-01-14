@@ -205,7 +205,7 @@ namespace Dynamo.Python
             // Determine if the Python Standard Library is available in the given context
             if(!String.IsNullOrEmpty(dynamoCoreDir))
             {
-                pythonLibDir = Path.Combine(dynamoCoreDir + @"\IronPython.StdLib.2.7.8");
+                pythonLibDir = Path.Combine(dynamoCoreDir, @"\IronPython.StdLib.2.7.8");
             }
 
             if (!String.IsNullOrEmpty(pythonLibDir) && Directory.Exists(pythonLibDir))
