@@ -1263,10 +1263,10 @@ namespace Dynamo.Tests
             Assert.IsNotNull(customNodeWs);
             var node1 = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace("e058111a-0c58-4dbf-9293-6ab711f530bf") as Symbol;
             Assert.IsNotNull(node1);
-            Assert.AreEqual("x-start: var[]..[]", node1.Parameter.ToCommentNameString());
+            Assert.AreEqual("xStart: var[]..[]", node1.Parameter.ToCommentNameString());
             var node2 = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace("2601b801-c8af-413b-9c58-f8b100d62ed8") as Symbol;
             Assert.IsNotNull(node2);
-            Assert.AreEqual("x-step: var[]..[]", node2.Parameter.ToCommentNameString());
+            Assert.AreEqual("xStep: var[]..[]", node2.Parameter.ToCommentNameString());
         }
 
         [Test]
