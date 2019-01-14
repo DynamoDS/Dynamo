@@ -1346,15 +1346,34 @@ namespace Dynamo.Tests
         [Test]
         public void InputNameWithSpacesShouldCauseErrorStateAndReadOnly()
         {
-            // Custom node has invalid input name, which shoud put the input node in an error state and make the workspace read only
-            var dynFilePath = Path.Combine(TestDirectory, @"core\CustomNodes\invalidInputName.dyf");
+            // Custom node has input symbol with a name that contains spaces
+            var dyfFilePath = Path.Combine(TestDirectory, @"core\CustomNodes\invalidInputName.dyf");
+
+            OpenModel(dyfFilePath);
+
+            var inputSymbolNode = CurrentDynamoModel.CurrentWorkspace.Nodes.OfType<Symbol>().First();
+
+            // The input symbol is invalid, so the input symbol node should show an error
+            Assert.IsTrue(inputSymbolNode.State == ElementState.Error);
+            // The workspace should know that it contains invalid input symbols
+            Assert.IsTrue(CurrentDynamoModel.CurrentWorkspace.containsInvalidInputSymbols());
+            // The workspace should be readonly because it contains invalid input symbols
+            Assert.IsTrue(CurrentDynamoModel.CurrentWorkspace.IsReadOnly);
+        }
+
+        [Test]
+        public void InputNameWithSpacesShouldCauseWarningInGraph()
+        {
+            // Dyn file contains a custom node with an invalid input symbol
+            var dynFilePath = Path.Combine(TestDirectory, @"core\CustomNodes\invalidInputName.dyn");
 
             OpenModel(dynFilePath);
+            var functionNode = CurrentDynamoModel.CurrentWorkspace.Nodes.OfType<Function>().First();
 
-            var node = CurrentDynamoModel.CurrentWorkspace.Nodes.OfType<Symbol>().First();
-            Assert.IsTrue(node.State == ElementState.Error);
-            Assert.IsTrue(CurrentDynamoModel.CurrentWorkspace.containsInvalidInputSymbols());
-            Assert.IsTrue(CurrentDynamoModel.CurrentWorkspace.IsReadOnly);
+            // The custom node should display a warning that it contains invalid input symbols
+            Assert.IsTrue(functionNode.State == ElementState.PersistentWarning);
+            // Despite the invalid input symbol, the custom node should still execute and return the correct value
+            AssertPreviewValue("f91658aeafe84cbaa39d370dec283b53", 8.0);
         }
     }
 }
