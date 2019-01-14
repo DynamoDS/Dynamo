@@ -1944,7 +1944,7 @@ namespace Dynamo.Models
 
         private void CheckForInvalidInputSymbols(WorkspaceModel workspace)
         {
-            if (workspace.containsInvalidInputSymbols())
+            if (workspace.containsInvalidInputSymbols() && !IsTestMode)
             {
                 DisplayInvalidInputSymbolWarning();
             }
