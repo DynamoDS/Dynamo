@@ -12,4 +12,3 @@ using NUnit.Framework;
 [assembly: Guid("0e3a9cb1-69eb-4fc1-ab44-5fa36cfaa906")]
 [assembly: RequiresThread(ApartmentState.STA)]
 [assembly: InternalsVisibleTo("WpfVisualizationTests")]
-[assembly: InternalsVisibleTo("CrashReportingTests")]

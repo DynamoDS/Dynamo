@@ -815,19 +815,9 @@ namespace Dynamo.ViewModels
             return Model.CustomNodeManager.Contains((Guid)parameters);
         }
 
-        /// <summary>
-        /// Opens a new browser window pointing to the Dynamo repo new issue page, pre-filling issue 
-        /// title and content based on crash details. Uses system default browser.
-        /// </summary>
-        /// <param name="bodyContent">Crash details body. If null, nothing will be filled-in.</param>
-        public static void ReportABug(object bodyContent)
+        public static void ReportABug(object parameter)
         {
-            var urlWithParameters = Wpf.Utilities.CrashUtilities.GithubNewIssueUrlFromCrashContent(bodyContent);
-
-            // launching the process using explorer.exe will format the URL incorrectly
-            // and Github will not recognise the query parameters in the URL
-            // so launch with default operating system web browser
-            Process.Start(new ProcessStartInfo(urlWithParameters));
+            Process.Start(new ProcessStartInfo("explorer.exe", Configurations.GitHubBugReportingLink));
         }
 
         public static void ReportABug()
