@@ -4486,7 +4486,6 @@
             Some parameters take single value or list - one value per curve.
             </summary>
             <param name="curves">A list of curves to create pipes from</param>
-            <param name="inSmoothMode">Show T-Spline Surface in box or smooth visualization</param>
             <param name="defaultRadius">Default radius for created pipes</param>
             <param name="snappingTolerance">The tolerance used to detect curve intersections</param>
             <param name="segmentsCount">Numbers of segments for each curve. The size of the list can be the curve count or 1 for replication or 0 for automatic determination.</param>
@@ -4498,6 +4497,7 @@
             <param name="endRadii">Custom radius for each pipe handle at the end of each curve. This parameter is ignored when autoHandleEnd is true. The size of the list can be the curve count or 1 for replication.</param>
             <param name="startPositions">Custom position of each pipe handle at the start of each curve in percentage between 0 and 1 along the curve's arc-length. This parameter is ignored when autoHandleStart is true. The size of the list can be the curve count or 1 for replication.</param>
             <param name="endPositions">Custom position of each pipe handle at the end of each curve in percentage between 0 and 1 along the curve's arc-length. This parameter is ignored when autoHandleEnd is true. The size of the list can be the curve count or 1 for replication.</param>
+            <param name="inSmoothMode">Show T-Spline Surface in box or smooth visualization</param>
             <search>tspline,create,pipe,curve</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ByCombinedTSplineSurfaces(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.TSpline.TSplineSurface})">

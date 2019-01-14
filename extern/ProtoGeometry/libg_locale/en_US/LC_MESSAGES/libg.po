@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-10-25 15:41-0400\n"
+"POT-Creation-Date: 2019-01-07 07:22-0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,107 +17,8 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: LibGCore/src/ds/ds_polycurve.cpp:1553
-msgid " Could not fillet polycurve."
-msgstr ""
-
-#: LibGCore/src/ds/ds_polycurve.cpp:1492
-msgid " Could not offset polycurve."
-msgstr ""
-
-#: LibGCore/src/ds/ds_geometry.cpp:1361
-msgid " doesn't support Edge query operation!"
-msgstr ""
-
-#: LibGCore/src/ds/ds_geometry.cpp:1409
-msgid " doesn't support Face query operation!"
-msgstr ""
-
-#: LibGCore/src/ds/ds_geometry.cpp:1319
-msgid " doesn't support Vertex query operation!"
-msgstr ""
-
-#: LibGCore/src/ds/topology/ds_edge.cpp:61
-msgid " doesn't support curve geometry query operation on it's Edge!"
-msgstr ""
-
-#: LibGCore/src/ds/topology/ds_vertex.cpp:62
-msgid " doesn't support point geometry query operation on it's Vertex!"
-msgstr ""
-
-#: LibGCore/src/ds/ds_arc.cpp:932
-msgid " tangent vectors should be coplanar relatie to points to make bi_arc"
-msgstr ""
-
-#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:139
-msgid ""
-"Align vertices list should have the same length as input contiguous group "
-"count or be empty. Detected contiguous group count: "
-msgstr ""
-
-#: LibGCore/src/ds/ds_circle.cpp:84 LibGCore/src/ds/ds_circle.cpp:95
-msgid "Arc by by_best_fit could not best fit arc"
-msgstr ""
-
-#: LibGCore/src/ds/ds_arc.cpp:788 LibGCore/src/ds/ds_circle.cpp:67
-msgid "Arc by by_best_fit could not determine plane for arc"
-msgstr ""
-
-#: LibGCore/src/ds/ds_arc.cpp:780 LibGCore/src/ds/ds_circle.cpp:59
-msgid "Arc by by_best_fit needs 3 or more points"
-msgstr ""
-
-#: LibGCore/src/ds/ds_arc.cpp:646 LibGCore/src/ds/ds_arc.cpp:648
-#: LibGCore/src/ds/ds_arc.cpp:650
-msgid "Arc by by_fillet_tangent_to_curve failed"
-msgstr ""
-
-#: LibGCore/src/ds/ds_arc.cpp:569
-msgid "Arc by fillet could not be computed"
-msgstr ""
-
-#: LibGCore/src/ds/ds_arc.cpp:566
-msgid "Arc by fillet failed"
-msgstr ""
-
-#: LibGCore/src/ds/ds_arc.cpp:514
-msgid ""
-"Arc by fillet: ends of curves on equal distance, could not orient arc. "
-"Please trim curves to determine orientation based on closest ends"
-msgstr ""
-
-#: LibGCore/src/ds/ds_curve.cpp:1442
-msgid "Base curve isn't planar. Cannot offset"
-msgstr ""
-
-#: LibGCore/src/ds/ds_line.cpp:143
-msgid "Best fit line needs 2 points or more!"
-msgstr ""
-
-#: LibGCore/src/ds/ds_plane.cpp:540
-msgid "Best fit plane needs 3 or more points."
-msgstr ""
-
-#: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:594
-msgid "Both radii cannot be zero"
-msgstr ""
-
-#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:194
-#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:243
-msgid "Bridge cannot be built"
-msgstr ""
-
-#: LibGCore/src/ds/ds_solid.cpp:864
-msgid "ByJoinedSurfaces requires at least one Surface"
-msgstr ""
-
-#: LibGCore/src/ds/ds_polycurve.cpp:937 LibGCore/src/ds/ds_polycurve.cpp:953
-msgid "Can not close polycurve."
-msgstr ""
-
-#: LibGCore/src/ds/ds_polycurve.cpp:1029 LibGCore/src/ds/ds_polycurve.cpp:1035
-#: LibGCore/src/ds/ds_polycurve.cpp:1109 LibGCore/src/ds/ds_polycurve.cpp:1115
-msgid "Can not determine plane of polycurve extension."
+#: LibGCore/include/ds/matrix.h:12
+msgid "Unable to multiply Matrix by Vector"
 msgstr ""
 
 #: LibGCore/src/asm/asmutils.cpp:15
@@ -128,639 +29,156 @@ msgstr ""
 msgid "Can not get the history stream of an entity!"
 msgstr ""
 
-#: LibGCore/src/ds/topology/ds_coedge.cpp:97
-msgid "Can't get curve from coedge"
+#: LibGCore/src/asm/asmutils.cpp:310
+msgid "Error projecting wire on body"
 msgstr ""
 
-#: LibGCore/src/ds/ds_curve.cpp:281
-msgid "Can't get faces"
+#: LibGCore/src/asm/asmutils.cpp:332
+msgid "Error sweep intersecting wire with body"
 msgstr ""
 
-#: LibGCore/src/ds/ds_arc.cpp:1050 LibGCore/src/ds/ds_arc.cpp:1055
-msgid "Cannot build bi arc facing corner of tangent intersections"
+#: LibGCore/src/asm/asmutils.cpp:342 LibGCore/src/asm/asmutils.cpp:399
+msgid "Error getting intersecting of two curves"
 msgstr ""
 
-#: LibGCore/src/ds/ds_arc.cpp:978
-msgid "Cannot build bi arc for coincident lines"
+#: LibGCore/src/asm/asmutils.cpp:430
+msgid "Error ray testing with body"
 msgstr ""
 
-#: LibGCore/src/ds/tspline/ds_tsplineutils.cpp:16
-msgid "Cannot construct FACE from surface"
+#: LibGCore/src/asm/asmutils.cpp:446
+msgid "Error projecting curve to plane"
 msgstr ""
 
-#: LibGCore/src/ds/ds_polysurface.cpp:109
-msgid "Cannot convert base body to double sided"
+#: LibGCore/src/asm/asmutils.cpp:457
+msgid "Error seting contact is collision"
 msgstr ""
 
-#: LibGCore/src/ds/ds_polysurface.cpp:115
-msgid "Cannot convert tool body to double sided"
-msgstr ""
-
-#: LibGCore/src/ds/ds_arc.cpp:342
-msgid "Cannot create Arc: base object NULL"
-msgstr ""
-
-#: LibGCore/src/ds/ds_solid.cpp:1050
-msgid "Cannot create Solid, Curves are not closed"
-msgstr ""
-
-#: LibGCore/src/ds/ds_polycurve.cpp:61
-msgid "Cannot create a PolyCurve without any Points."
-msgstr ""
-
-#: LibGCore/src/ds/ds_polysurface.cpp:1027
-#: LibGCore/src/ds/ds_polysurface.cpp:1249
-msgid "Cannot create a PolySurface from an empty list"
-msgstr ""
-
-#: LibGCore/src/ds/ds_curve.cpp:1210 LibGCore/src/ds/ds_curve.cpp:1217
-msgid "Cannot create a Solid from an open Curve"
-msgstr ""
-
-#: LibGCore/src/ds/ds_arc.cpp:354
-msgid "Cannot create an Arc with a NULL input object."
-msgstr ""
-
-#: LibGCore/src/ds/ds_solid.cpp:53
-msgid "Cannot facet Solid: it is a wire body"
-msgstr ""
-
-#: LibGCore/src/ds/tspline/ds_tsplineutils.cpp:22
-msgid "Cannot get bounding box from FACE"
-msgstr ""
-
-#: LibGCore/src/ds/ds_curve.cpp:288
-msgid "Cannot get surface cog"
-msgstr ""
-
-#: LibGCore/src/ds/ds_solid.cpp:999
-msgid "Cannot instruct ASM to make a Solid."
-msgstr ""
-
-#: LibGCore/src/ds/ds_surface.cpp:1205
-msgid "Cannot instruct ASM to make a Surface."
-msgstr ""
-
-#: LibGCore/src/ds/ds_solid.cpp:575
-msgid "Cannot intersect a closed Curve with a Solid."
-msgstr ""
-
-#: LibGCore/src/ds/ds_polycurve.cpp:79
-msgid "Cannot make a PolyCurve from an empty list"
-msgstr ""
-
-#: LibGCore/src/ds/ds_helix.cpp:41
-msgid "Cannot make helix"
-msgstr ""
-
-#: LibGCore/src/ds/ds_curve.cpp:277
-msgid "Cannot make sheet from coplanar wires"
-msgstr ""
-
-#: LibGCore/src/ds/ds_solid.cpp:1003 LibGCore/src/ds/ds_surface.cpp:1209
-msgid "Cannot set linear map for two-rail sweeping."
-msgstr ""
-
-#: LibGCore/src/ds/ds_curve.cpp:2734
-msgid "Cannot simplify Curve"
-msgstr ""
-
-#: LibGCore/src/ds/ds_curve.cpp:2764
-msgid "Cannot simplify a curve below 1.0e-9 tolerance"
-msgstr ""
-
-#: LibGCore/src/ds/ds_solid.cpp:147 LibGCore/src/ds/ds_solid.cpp:181
-msgid "Cannot union an empty list"
-msgstr ""
-
-#: LibGCore/src/ds/ds_solid.cpp:1022
-msgid "Cannot union an empty list of Solids"
-msgstr ""
-
-#: LibGCore/src/ds/tspline/topology/ds_tsplinecoedge.cpp:14
-msgid "Cast Coedge is not a TSplineCoedge"
-msgstr ""
-
-#: LibGCore/src/ds/tspline/topology/ds_tsplineedge.cpp:14
-msgid "Cast Edge is not a TSplineEdge"
-msgstr ""
-
-#: LibGCore/src/ds/tspline/topology/ds_tsplineface.cpp:14
-msgid "Cast Face is not a TSplineFace"
-msgstr ""
-
-#: LibGCore/src/ds/tspline/topology/ds_tsplineloop.cpp:14
-msgid "Cast Loop is not a TSplineLoop"
-msgstr ""
-
-#: LibGCore/src/ds/tspline/topology/ds_tsplinevertex.cpp:14
-msgid "Cast Vertex is not a TSplineVertex"
-msgstr ""
-
-#: LibGCore/src/ds/topology/ds_face.cpp:56
-msgid "Cast object is not Face"
-msgstr ""
-
-#: LibGCore/src/ds/ds_geometry.cpp:21
-msgid "Cast object is not Geometry"
-msgstr ""
-
-#: LibGCore/src/ds/topology/ds_loop.cpp:37
-msgid "Cast object is not Loop"
-msgstr ""
-
-#: LibGCore/src/ds/ds_text.cpp:116
-msgid "Cast object is not Text"
-msgstr ""
-
-#: LibGCore/src/ds/ds_coordinatesystem.cpp:18
-msgid "Cast object is not a CoordinateSystem"
-msgstr ""
-
-#: LibGCore/src/ds/ds_cuboid.cpp:17
-msgid "Cast object is not a Cuboid"
-msgstr ""
-
-#: LibGCore/src/ds/ds_curve.cpp:30
-msgid "Cast object is not a Curve"
-msgstr ""
-
-#: LibGCore/src/ds/ds_ellipse.cpp:27
-msgid "Cast object is not a Ellipse"
-msgstr ""
-
-#: LibGCore/src/ds/ds_line.cpp:18
-msgid "Cast object is not a Line"
-msgstr ""
-
-#: LibGCore/src/ds/ds_plane.cpp:21
-msgid "Cast object is not a Plane"
-msgstr ""
-
-#: LibGCore/src/ds/ds_point.cpp:16
-msgid "Cast object is not a Point"
-msgstr ""
-
-#: LibGCore/src/ds/ds_polycurve.cpp:22 LibGCore/src/ds/ds_polycurve.cpp:2357
-msgid "Cast object is not a PolyCurve"
-msgstr ""
-
-#: LibGCore/src/ds/ds_polymesh.cpp:19
-msgid "Cast object is not a PolyMesh"
-msgstr ""
-
-#: LibGCore/src/ds/ds_polysurface.cpp:22
-#: LibGCore/src/ds/ds_polysurface.cpp:1470
-msgid "Cast object is not a PolySurface"
-msgstr ""
-
-#: LibGCore/src/ds/ds_polygon.cpp:18
-msgid "Cast object is not a Polygon"
-msgstr ""
-
-#: LibGCore/src/ds/ds_solid.cpp:20
-msgid "Cast object is not a Solid"
-msgstr ""
-
-#: LibGCore/src/ds/ds_sphere.cpp:18
-msgid "Cast object is not a Sphere"
-msgstr ""
-
-#: LibGCore/src/ds/ds_subdivisionmesh.cpp:8
-msgid "Cast object is not a SubDivisionMesh"
-msgstr ""
-
-#: LibGCore/src/ds/ds_surface.cpp:16
-msgid "Cast object is not a Surface"
-msgstr ""
-
-#: LibGCore/src/ds/tspline/topology/ds_tsplineedge.cpp:22
-msgid "Cast object is not a TSplineEdge"
-msgstr ""
-
-#: LibGCore/src/ds/tspline/topology/ds_tsplineface.cpp:22
-msgid "Cast object is not a TSplineFace"
-msgstr ""
-
-#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:289
-msgid "Cast object is not a TSplineSurface"
-msgstr ""
-
-#: LibGCore/src/ds/tspline/topology/ds_tsplinetopology.cpp:19
-msgid "Cast object is not a TSplineTopology"
-msgstr ""
-
-#: LibGCore/src/ds/tspline/topology/ds_tsplinevertex.cpp:22
-msgid "Cast object is not a TSplineVertex"
-msgstr ""
-
-#: LibGCore/src/ds/ds_transformableitem.cpp:11
-msgid "Cast object is not a TransformableItem"
-msgstr ""
-
-#: LibGCore/src/ds/ds_vector.cpp:19
-msgid "Cast object is not a Vector"
-msgstr ""
-
-#: LibGCore/src/ds/ds_helix.cpp:29
-msgid "Cast object is not a helix"
-msgstr ""
-
-#: LibGCore/src/ds/topology/ds_edge.cpp:37
-msgid "Cast object is not an Edge"
-msgstr ""
-
-#: LibGCore/src/ds/ds_bsplinecurve.cpp:32
-msgid "Casted object is not a BSplineCurve"
-msgstr ""
-
-#: LibGCore/src/ds/ds_bsplinesurface.cpp:21
-msgid "Casted object is not a BSplineSurface"
-msgstr ""
-
-#: LibGCore/src/ds/ds_circle.cpp:28
-msgid "Casted object is not a Circle"
-msgstr ""
-
-#: LibGCore/src/ds/ds_cone.cpp:14
-msgid "Casted object is not a Cone"
-msgstr ""
-
-#: LibGCore/src/ds/ds_cylinder.cpp:14
-msgid "Casted object is not a Cylinder"
-msgstr ""
-
-#: LibGCore/src/ds/ds_rectangle.cpp:17
-msgid "Casted object is not a Rectangle"
-msgstr ""
-
-#: LibGCore/src/ds/ds_arc.cpp:16
-msgid "Casted object is not an Arc"
-msgstr ""
-
-#: LibGCore/src/ds/ds_ellipsearc.cpp:15
-msgid "Casted object is not an EllipseArc"
-msgstr ""
-
-#: LibGCore/src/ds/ds_circle.cpp:137
-msgid "Circle major-axis must be non-zero"
-msgstr ""
-
-#: LibGCore/src/ds/ds_circle.cpp:134
-msgid "Circle normal must be non-zero"
-msgstr ""
-
-#: LibGCore/src/ds/ds_circle.cpp:102 LibGCore/src/ds/ds_circle.cpp:131
-msgid "Circle radius must be non-zero"
-msgstr ""
-
-#: LibGCore/src/ds/ds_geometry.cpp:475
-msgid "Colud not separate BODYs before decomposition"
-msgstr ""
-
-#: LibGCore/src/ds/ds_curve.cpp:1883
-msgid ""
-"Conversion to Arcs and Lines failed, some parts of Curve could not be "
-"converted"
-msgstr ""
-
-#: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:520
-#: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:597
-#: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:874
-#: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:921
-#: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:969
-msgid "Coordinate system has zero axis"
-msgstr ""
-
-#: LibGCore/src/ds/ds_polycurve.cpp:152
-msgid "Could not add EDGEs to consume when joining curves"
-msgstr ""
-
-#: LibGCore/src/ds/ds_polycurve.cpp:1059
-msgid "Could not add length of a full circle or more."
-msgstr ""
-
-#: LibGCore/src/ds/ds_curve.cpp:1054 LibGCore/src/ds/ds_curve.cpp:1113
-msgid "Could not approximate curve"
-msgstr ""
-
-#: LibGCore/src/ds/ds_polysurface.cpp:470
-msgid "Could not combine Surfaces"
-msgstr ""
-
-#: LibGCore/src/ds/ds_geometry.cpp:896
-msgid "Could not compare Geometry"
-msgstr ""
-
-#: LibGCore/src/ui/ui_facetingengine.cpp:44
-msgid "Could not compute facets"
-msgstr ""
-
-#: LibGCore/src/ds/ds_cuboid.cpp:69
-msgid "Could not construct Cuboid vertices"
-msgstr ""
-
-#: LibGCore/src/ds/ds_plane.cpp:84
-msgid "Could not create Plane!  Some of the vertices may be coincident!"
-msgstr ""
-
-#: LibGCore/src/ds/ds_plane.cpp:87
-msgid "Could not create Plane!  Some of the vertices may be collinear!"
-msgstr ""
-
-#: LibGCore/src/ds/ds_plane.cpp:64 LibGCore/src/ds/ds_plane.cpp:224
-msgid "Could not create Plane!  The desired axes of this plane are parallel!"
-msgstr ""
-
-#: LibGCore/src/ds/ds_plane.cpp:61 LibGCore/src/ds/ds_plane.cpp:221
-msgid ""
-"Could not create Plane!  one or more of the desired axes of this plane have "
-"zero length!"
-msgstr ""
-
-#: LibGCore/src/asm/asmutils.cpp:508
-msgid "Could not create a half-space face"
+#: LibGCore/src/asm/asmutils.cpp:462
+msgid "Error computing collisions"
 msgstr ""
 
 #: LibGCore/src/asm/asmutils.cpp:480
 msgid "Could not create planar face"
 msgstr ""
 
-#: LibGCore/src/ds/ds_polycurve.cpp:805
-msgid "Could not determine if PolyCurve is planar"
+#: LibGCore/src/asm/asmutils.cpp:490 LibGCore/src/asm/asmutils.cpp:514
+msgid "Unable to add faces to body builder"
 msgstr ""
 
-#: LibGCore/src/ds/ds_polycurve.cpp:783
-msgid "Could not determine is polycurve is planar"
+#: LibGCore/src/asm/asmutils.cpp:492 LibGCore/src/asm/asmutils.cpp:516
+msgid "Unable to make face body double sided"
 msgstr ""
 
-#: LibGCore/src/ds/ds_polysurface.cpp:322
-msgid "Could not determine parameter of non-manifold Surface"
+#: LibGCore/src/asm/asmutils.cpp:494 LibGCore/src/asm/asmutils.cpp:518
+msgid "Unable to make body"
 msgstr ""
 
-#: LibGCore/src/ds/ds_bsplinecurve.cpp:363
-#: LibGCore/src/ds/ds_bsplinecurve.cpp:388
-msgid "Could not extend start of bspline curve"
+#: LibGCore/src/asm/asmutils.cpp:498 LibGCore/src/asm/asmutils.cpp:522
+msgid "Unable to create planar body"
 msgstr ""
 
-#: LibGCore/src/ds/ds_polysurface.cpp:215
-msgid "Could not extract EDGEs from PolySurface BODY"
+#: LibGCore/src/asm/asmutils.cpp:508
+msgid "Could not create a half-space face"
 msgstr ""
 
-#: LibGCore/src/ds/ds_polysurface.cpp:49
-msgid "Could not extract FACEs from PolySurface BODY"
+#: LibGCore/src/asm/asmutils.cpp:540
+msgid "Error doing boolean operation between two bodies!"
 msgstr ""
 
-#: LibGCore/src/ds/ds_polycurve.cpp:1543
-msgid "Could not fillet polycurve."
+#: LibGCore/src/asm/asmutils.cpp:549
+msgid "Error doing the selective boolean             stage one operation!"
+msgstr ""
+
+#: LibGCore/src/asm/asmutils.cpp:781
+msgid "Slice with many not supported"
+msgstr ""
+
+#: LibGCore/src/asm/asmutils.cpp:903
+msgid "Error separating body"
 msgstr ""
 
 #: LibGCore/src/asm/asmutils.cpp:947
 msgid "Could not find distance"
 msgstr ""
 
-#: LibGCore/src/ds/ds_geometry.cpp:120
-msgid "Could not find distance."
+#: LibGCore/src/asm/asmutils.cpp:1040 LibGCore/src/asm/asmutils.cpp:1047
+msgid "Unable to get group of face"
 msgstr ""
 
-#: LibGCore/src/ds/ds_polycurve.cpp:497 LibGCore/src/ds/ds_polysurface.cpp:1296
-msgid "Could not find parameter at Point"
+#: LibGCore/src/asm/asmutils.cpp:1042
+msgid "Unable to unset group face"
 msgstr ""
 
-#: LibGCore/src/ds/ds_polycurve.cpp:476
-msgid "Could not find parameter at distance"
+#: LibGCore/src/asm/asmutils.cpp:1049
+msgid "Unable to unset face to remove"
 msgstr ""
 
-#: LibGCore/src/ds/ds_polycurve.cpp:429 LibGCore/src/ds/ds_polysurface.cpp:1366
-msgid "Could not find sub Curve in parameter range"
+#: LibGCore/src/asm/asmutils.cpp:1061 LibGCore/src/asm/asmutils.cpp:1130
+msgid "Unable to add blank body to trimmer"
 msgstr ""
 
-#: LibGCore/src/ds/ds_geometry.cpp:524
-msgid "Could not get COEDGEs from BODY when extracting Curves"
+#: LibGCore/src/asm/asmutils.cpp:1196
+msgid "The external thickness shouble not be smaller than 0!"
 msgstr ""
 
-#: LibGCore/src/ds/ds_cuboid.cpp:187 LibGCore/src/ds/ds_cuboid.cpp:190
-#: LibGCore/src/ds/ds_cuboid.cpp:193 LibGCore/src/ds/ds_cuboid.cpp:196
-msgid "Could not get Cuboid vertices after transform"
+#: LibGCore/src/asm/asmutils.cpp:1200
+msgid "The internal thickness shouble not be bigger than 0!"
 msgstr ""
 
-#: LibGCore/src/ds/ds_geometry.cpp:511
-msgid "Could not get EDGEs from BODY when extracting Curves"
+#: LibGCore/src/asm/asmutils.cpp:1204
+msgid "Unable to set the external thickness!"
 msgstr ""
 
-#: LibGCore/src/ds/ds_geometry.cpp:545
-msgid "Could not get EDGEs from FACE when extracting Curves"
+#: LibGCore/src/asm/asmutils.cpp:1207
+msgid "Unable to set the internal thickness!"
 msgstr ""
 
-#: LibGCore/src/ds/tspline/topology/ds_tsplineface.cpp:66
-msgid "Could not get bezier patches from the given TSplineFace"
+#: LibGCore/src/asm/asmutils.cpp:1277
+msgid "Unable to determine if object is non manifold"
 msgstr ""
 
-#: LibGCore/src/ui/ui_facetingengine.cpp:20
-msgid "Could not get bounding box"
+#: LibGCore/src/asm/asmutils.cpp:1312
+msgid "Unable to create brep from lump"
 msgstr ""
 
-#: LibGCore/src/ui/ui_facetingengine.cpp:56
-msgid "Could not get face results"
+#: LibGCore/src/asm/asmutils.cpp:1322
+msgid "Unable to copy the ENTITY"
 msgstr ""
 
-#: LibGCore/src/ds/ds_cone.cpp:245
-msgid "Could not get point from vertex"
+#: LibGCore/src/asm/asmutils.cpp:1331
+msgid "Unable to copy the face!"
 msgstr ""
 
-#: LibGCore/src/ds/topology/ds_vertex.cpp:68
-msgid "Could not get vertex point"
+#: LibGCore/src/asm/asmutils.cpp:1335
+msgid "Error getting the transformation of the face!"
 msgstr ""
 
-#: LibGCore/src/ds/ds_polycurve.cpp:166
-msgid "Could not get wires out of WIRE SMI"
+#: LibGCore/src/asm/asmutils.cpp:1346
+msgid "Error applying transformation to the copied face!"
 msgstr ""
 
-#: LibGCore/src/ds/ds_polycurve.cpp:798
-msgid "Could not make EDGE from Curve"
+#: LibGCore/src/asm/asmutils.cpp:1357
+msgid "Unable to copy the edge!"
 msgstr ""
 
-#: LibGCore/src/ds/ds_polycurve.cpp:162
-msgid "Could not make WIRE for PolyCurve"
-msgstr ""
-
-#: LibGCore/src/ds/ds_polysurface.cpp:443
-#: LibGCore/src/ds/ds_polysurface.cpp:1057
-msgid "Could not make combined polysurface."
-msgstr ""
-
-#: LibGCore/src/ds/ds_polycurve.cpp:775
-msgid "Could not make edge from curve"
-msgstr ""
-
-#: LibGCore/src/ds/ds_polycurve.cpp:1440
-msgid "Could not make patch surfaces"
-msgstr ""
-
-#: LibGCore/src/ds/ds_polysurface.cpp:1088
-#: LibGCore/src/ds/ds_polysurface.cpp:1095
-msgid "Could not make patched polysurface."
-msgstr ""
-
-#: LibGCore/src/ds/ds_surface.cpp:687
-msgid "Could not offset surface"
-msgstr ""
-
-#: LibGCore/src/ds/ds_polycurve.cpp:1447
-msgid "Could not patch PolyCurve"
-msgstr ""
-
-#: LibGCore/src/ds/ds_polysurface.cpp:867
-msgid "Could not project_point on polysurface."
-msgstr ""
-
-#: LibGCore/src/asm/asmutils.cpp:1424
-msgid "Could not remove attribute from ENTITY"
-msgstr ""
-
-#: LibGCore/src/ds/ds_polycurve.cpp:156
-msgid "Could not set PolyCurve join tolerance"
-msgstr ""
-
-#: LibGCore/src/ui/ui_facetingengine.cpp:34
-msgid "Could not set facet edge count"
-msgstr ""
-
-#: LibGCore/src/ui/ui_facetingengine.cpp:38
-msgid "Could not set facet tolerance"
-msgstr ""
-
-#: LibGCore/src/ui/ui_facetingengine.cpp:41
-msgid "Could not set max number of grid lines"
-msgstr ""
-
-#: LibGCore/src/ds/ds_solid.cpp:701
-msgid "Could not set shelling body"
-msgstr ""
-
-#: LibGCore/src/ds/ds_polycurve.cpp:1375
-msgid "Could not sweep PolyCurve"
-msgstr ""
-
-#: LibGCore/src/ds/topology/ds_edge.cpp:134
-msgid "Could not test EDGE equality"
-msgstr ""
-
-#: LibGCore/src/ds/ds_curve.cpp:93
-msgid "Could not test curve equality"
-msgstr ""
-
-#: LibGCore/src/ds/ds_polygon.cpp:214
-msgid "Could not text containment for non-planar polygon"
-msgstr ""
-
-#: LibGCore/src/ds/ds_polygon.cpp:217
-msgid "Could not text containment for self-intersecting polygon"
-msgstr ""
-
-#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1821
-msgid "Crease unsuccessfull"
-msgstr ""
-
-#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1452
-#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1456
-msgid "Curve extrusion failed"
-msgstr ""
-
-#: LibGCore/src/ds/ds_curve.cpp:1628 LibGCore/src/ds/ds_polycurve.cpp:238
-msgid "Curve geometry is degenerate or invalid"
-msgstr ""
-
-#: LibGCore/src/ds/ds_curve.cpp:312
-msgid "Curve has infinite length"
-msgstr ""
-
-#: LibGCore/src/ds/ds_curve.cpp:876
-msgid "Curve is not planar: cannot get Curve normal."
-msgstr ""
-
-#: LibGCore/src/ds/ds_polycurve.cpp:169
-msgid "Curve join produced more than one WIRE in PolyCurve"
-msgstr ""
-
-#: LibGCore/src/ds/ds_curve.cpp:1908
-msgid "Curve must be divided into one or more parts"
-msgstr ""
-
-#: LibGCore/src/ds/ds_polycurve.cpp:1125
-msgid "Different sign of radii values."
-msgstr ""
-
-#: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:440
-#: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:909
-msgid "Each span should be greater than or equal to 1"
-msgstr ""
-
-#: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:912
-msgid "Each span should be less than or equal to 128"
-msgstr ""
-
-#: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:443
-msgid "Each span should be less than or equal to 256"
-msgstr ""
-
-#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1761
-msgid "Edge can't be creased: "
-msgstr ""
-
-#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1764
-msgid "Edge can't be uncreased: "
-msgstr ""
-
-#: LibGCore/src/ds/tspline/topology/ds_tsplineedge.cpp:31
-#: LibGCore/src/ds/tspline/topology/ds_tsplineedge.cpp:97
-#: LibGCore/src/ds/tspline/topology/ds_tsplineedge.cpp:112
-#: LibGCore/src/ds/tspline/topology/ds_tsplineedge.cpp:125
-#: LibGCore/src/ds/tspline/topology/ds_tsplineedge.cpp:139
-msgid "Edge has invalid parent"
-msgstr ""
-
-#: LibGCore/src/ds/tspline/topology/ds_tsplineedge.cpp:101
-#: LibGCore/src/ds/tspline/topology/ds_tsplineedge.cpp:116
-#: LibGCore/src/ds/tspline/topology/ds_tsplineedge.cpp:130
-#: LibGCore/src/ds/tspline/topology/ds_tsplineedge.cpp:143
-msgid "Edge index is invalid"
-msgstr ""
-
-#: LibGCore/src/ds/tspline/topology/ds_tsplinetopology.cpp:313
-msgid "Edge with given index is not present on the t-spline"
-msgstr ""
-
-#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1671
-#: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:524
-#: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:647
-#: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:733
-#: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:832
-msgid "Either radial or axial symmetry is allowed, but not both"
-msgstr ""
-
-#: LibGCore/src/ds/ds_ellipsearc.cpp:57
-msgid "EllipseArc radius must be non-zero"
-msgstr ""
-
-#: LibGCore/src/ds/ds_ellipsearc.cpp:59
-msgid "EllipseArc sweep angle must be non-zero"
-msgstr ""
-
-#: LibGCore/src/ds/ds_solid.cpp:548
-msgid "Empty solid returned by sweep"
-msgstr ""
-
-#: LibGCore/src/asm/asmutils.cpp:1429 LibGCore/src/asm/asmutils.cpp:1435
-msgid "Error adding a named attribute!"
+#: LibGCore/src/asm/asmutils.cpp:1361
+msgid "Error getting the transformation of the edge!"
 msgstr ""
 
 #: LibGCore/src/asm/asmutils.cpp:1372
 msgid "Error applying transformation to the copied edge!"
 msgstr ""
 
-#: LibGCore/src/asm/asmutils.cpp:1346
-msgid "Error applying transformation to the copied face!"
+#: LibGCore/src/asm/asmutils.cpp:1382
+msgid "Error getting the position from a vertex!"
+msgstr ""
+
+#: LibGCore/src/asm/asmutils.cpp:1388
+msgid "create body from cells not implemneted"
+msgstr ""
+
+#: LibGCore/src/asm/asmutils.cpp:1394
+msgid "Error copying cells to a body!"
 msgstr ""
 
 #: LibGCore/src/asm/asmutils.cpp:1404
@@ -771,48 +189,49 @@ msgstr ""
 msgid "Error calling selective boolean stage two!"
 msgstr ""
 
-#: LibGCore/src/asm/asmutils.cpp:462
-msgid "Error computing collisions"
+#: LibGCore/src/asm/asmutils.cpp:1415
+msgid "Error regularising a body!"
 msgstr ""
 
-#: LibGCore/src/ds/topology/ds_edge.cpp:74
-msgid "Error copying an edge!"
+#: LibGCore/src/asm/asmutils.cpp:1424
+msgid "Could not remove attribute from ENTITY"
 msgstr ""
 
-#: LibGCore/src/asm/asmutils.cpp:1394
-msgid "Error copying cells to a body!"
+#: LibGCore/src/asm/asmutils.cpp:1429 LibGCore/src/asm/asmutils.cpp:1435
+msgid "Error adding a named attribute!"
 msgstr ""
 
-#: LibGCore/src/ds/ds_polysurface.cpp:52
-msgid "Error creating PolySurface, BODY has no FACEs"
+#: LibGCore/src/asm/asmutils.cpp:1441 LibGCore/src/asm/asmutils.cpp:1457
+#: LibGCore/src/asm/asmutils.cpp:1473 LibGCore/src/asm/asmutils.cpp:1490
+msgid "Error finding attributes for a given name!"
 msgstr ""
 
-#: LibGCore/src/ds/ds_surface.cpp:157
-msgid "Error creating Surface perimeter Curves"
+#: LibGCore/src/asm/asmutils.cpp:1449 LibGCore/src/asm/asmutils.cpp:1465
+msgid "Error getting the value of the attribute!"
 msgstr ""
 
-#: LibGCore/src/ds/ds_surface.cpp:148
-msgid "Error creating Surface: Points are coincident"
+#: LibGCore/src/asm/asmutils.cpp:1480 LibGCore/src/asm/asmutils.cpp:1497
+msgid "The number of attributes is not one!"
 msgstr ""
 
-#: LibGCore/src/ds/ds_bsplinecurve.cpp:164
-#: LibGCore/src/ds/ds_bsplinecurve.cpp:207
-#: LibGCore/src/ds/ds_bsplinecurve.cpp:217
-#: LibGCore/src/ds/ds_bsplinecurve.cpp:247
-msgid "Error creating a bspline curve!"
+#: LibGCore/src/asm/asmutils.cpp:1484 LibGCore/src/asm/asmutils.cpp:1501
+msgid "Error setting the value of the attribute!"
 msgstr ""
 
-#: LibGCore/src/ds/ds_circle.cpp:107 LibGCore/src/ds/ds_circle.cpp:145
-#: LibGCore/src/ds/ds_circle.cpp:162 LibGCore/src/ds/ds_circle.cpp:179
-msgid "Error creating a circle!"
+#: LibGCore/src/asm/asmutils.cpp:1507 LibGCore/src/asm/asmutils.cpp:1514
+msgid "Error setting color attributes!"
 msgstr ""
 
-#: LibGCore/src/ds/ds_bsplinecurve.cpp:462
-msgid "Error creating a straight edge!"
+#: LibGCore/src/asm/asmutils.cpp:1618
+msgid "One part of curve is not linear!"
 msgstr ""
 
-#: LibGCore/src/ds/topology/ds_edge.cpp:80
-msgid "Error creating a wire from edges!"
+#: LibGCore/src/asm/asmutils.cpp:1666 LibGCore/src/asm/asmutils.cpp:1676
+msgid "Failed to approximate curve"
+msgstr ""
+
+#: LibGCore/src/ds/ds_arc.cpp:16
+msgid "Casted object is not an Arc"
 msgstr ""
 
 #: LibGCore/src/ds/ds_arc.cpp:121 LibGCore/src/ds/ds_arc.cpp:209
@@ -832,9 +251,574 @@ msgid ""
 "Sweep angle must be non-zero"
 msgstr ""
 
-#: LibGCore/src/ds/ds_ellipse.cpp:61 LibGCore/src/ds/ds_ellipse.cpp:88
-#: LibGCore/src/ds/ds_ellipse.cpp:101
-msgid "Error creating an ellipse!"
+#: LibGCore/src/ds/ds_arc.cpp:342
+msgid "Cannot create Arc: base object NULL"
+msgstr ""
+
+#: LibGCore/src/ds/ds_arc.cpp:354
+msgid "Cannot create an Arc with a NULL input object."
+msgstr ""
+
+#: LibGCore/src/ds/ds_arc.cpp:377 LibGCore/src/ds/ds_curve.cpp:2227
+#: LibGCore/src/ds/ds_ellipsearc.cpp:146
+msgid "Unable to extend curve equally. Curves differ by: "
+msgstr ""
+
+#: LibGCore/src/ds/ds_arc.cpp:514
+msgid ""
+"Arc by fillet: ends of curves on equal distance, could not orient arc. "
+"Please trim curves to determine orientation based on closest ends"
+msgstr ""
+
+#: LibGCore/src/ds/ds_arc.cpp:566
+msgid "Arc by fillet failed"
+msgstr ""
+
+#: LibGCore/src/ds/ds_arc.cpp:569
+msgid "Arc by fillet could not be computed"
+msgstr ""
+
+#: LibGCore/src/ds/ds_arc.cpp:646 LibGCore/src/ds/ds_arc.cpp:648
+#: LibGCore/src/ds/ds_arc.cpp:650
+msgid "Arc by by_fillet_tangent_to_curve failed"
+msgstr ""
+
+#: LibGCore/src/ds/ds_arc.cpp:753 LibGCore/src/ds/ds_arc.cpp:765
+msgid "could not solve for arc"
+msgstr ""
+
+#: LibGCore/src/ds/ds_arc.cpp:780 LibGCore/src/ds/ds_circle.cpp:59
+msgid "Arc by by_best_fit needs 3 or more points"
+msgstr ""
+
+#: LibGCore/src/ds/ds_arc.cpp:788 LibGCore/src/ds/ds_circle.cpp:67
+msgid "Arc by by_best_fit could not determine plane for arc"
+msgstr ""
+
+#: LibGCore/src/ds/ds_arc.cpp:932
+msgid " tangent vectors should be coplanar relatie to points to make bi_arc"
+msgstr ""
+
+#: LibGCore/src/ds/ds_arc.cpp:978
+msgid "Cannot build bi arc for coincident lines"
+msgstr ""
+
+#: LibGCore/src/ds/ds_arc.cpp:1050 LibGCore/src/ds/ds_arc.cpp:1055
+msgid "Cannot build bi arc facing corner of tangent intersections"
+msgstr ""
+
+#: LibGCore/src/ds/ds_arc.cpp:1088
+msgid ""
+"Error creating arc!\n"
+"End point lies in direction of Tangent vector"
+msgstr ""
+
+#: LibGCore/src/ds/ds_boundingbox.cpp:36
+msgid "Unable to create a BoundingBox around the input Geometry"
+msgstr ""
+
+#: LibGCore/src/ds/ds_boundingbox.cpp:60
+msgid "Unable to create a BoundingBox around the input Geometries"
+msgstr ""
+
+#: LibGCore/src/ds/ds_boundingbox.cpp:284
+msgid "Unable to get the maximum x value."
+msgstr ""
+
+#: LibGCore/src/ds/ds_boundingbox.cpp:288
+msgid "Unable to get the minimum x value."
+msgstr ""
+
+#: LibGCore/src/ds/ds_boundingbox.cpp:292
+msgid "Unable to get the maximum y value."
+msgstr ""
+
+#: LibGCore/src/ds/ds_boundingbox.cpp:296
+msgid "Unable to get the minimum y value."
+msgstr ""
+
+#: LibGCore/src/ds/ds_boundingbox.cpp:300
+msgid "Unable to get the maximum z value."
+msgstr ""
+
+#: LibGCore/src/ds/ds_boundingbox.cpp:304
+msgid "Unable to get the minimum z value."
+msgstr ""
+
+#: LibGCore/src/ds/ds_bsplinecurve.cpp:32
+msgid "Casted object is not a BSplineCurve"
+msgstr ""
+
+#: LibGCore/src/ds/ds_bsplinecurve.cpp:100
+#: LibGCore/src/ds/ds_bsplinecurve.cpp:174
+msgid "NurbsCurves require degree to be greater than 0"
+msgstr ""
+
+#: LibGCore/src/ds/ds_bsplinecurve.cpp:104
+msgid "NurbsCurves require at least 2 points for interpolation"
+msgstr ""
+
+#: LibGCore/src/ds/ds_bsplinecurve.cpp:147
+msgid "Unable to fit curve to points"
+msgstr ""
+
+#: LibGCore/src/ds/ds_bsplinecurve.cpp:157
+msgid "Unable to get curves from curve fit"
+msgstr ""
+
+#: LibGCore/src/ds/ds_bsplinecurve.cpp:164
+#: LibGCore/src/ds/ds_bsplinecurve.cpp:207
+#: LibGCore/src/ds/ds_bsplinecurve.cpp:217
+#: LibGCore/src/ds/ds_bsplinecurve.cpp:247
+msgid "Error creating a bspline curve!"
+msgstr ""
+
+#: LibGCore/src/ds/ds_bsplinecurve.cpp:177
+msgid "NurbsCurves must have at least one more control points than degree"
+msgstr ""
+
+#: LibGCore/src/ds/ds_bsplinecurve.cpp:201
+msgid "Unable to create BSplineCurve from vertices"
+msgstr ""
+
+#: LibGCore/src/ds/ds_bsplinecurve.cpp:240
+msgid "Unable to convert asm_curve to BSplineCurve"
+msgstr ""
+
+#: LibGCore/src/ds/ds_bsplinecurve.cpp:349
+#: LibGCore/src/ds/ds_bsplinecurve.cpp:374
+msgid "Negative extension not supported"
+msgstr ""
+
+#: LibGCore/src/ds/ds_bsplinecurve.cpp:363
+#: LibGCore/src/ds/ds_bsplinecurve.cpp:388
+msgid "Could not extend start of bspline curve"
+msgstr ""
+
+#: LibGCore/src/ds/ds_bsplinecurve.cpp:462
+msgid "Error creating a straight edge!"
+msgstr ""
+
+#: LibGCore/src/ds/ds_bsplinecurve.cpp:476
+msgid "Unabe to set edge to consume"
+msgstr ""
+
+#: LibGCore/src/ds/ds_bsplinecurve.cpp:480 LibGCore/src/ds/ds_curve.cpp:817
+#: LibGCore/src/ds/ds_polycurve.cpp:1418
+msgid "Unable to make wire from edge body"
+msgstr ""
+
+#: LibGCore/src/ds/ds_bsplinesurface.cpp:21
+msgid "Casted object is not a BSplineSurface"
+msgstr ""
+
+#: LibGCore/src/ds/ds_bsplinesurface.cpp:246
+#: LibGCore/src/ds/ds_bsplinesurface.cpp:250
+msgid "Unable to create surface from points"
+msgstr ""
+
+#: LibGCore/src/ds/ds_bsplinesurface.cpp:307
+#: LibGCore/src/ds/ds_bsplinesurface.cpp:311
+#: LibGCore/src/ds/ds_bsplinesurface.cpp:389
+#: LibGCore/src/ds/ds_bsplinesurface.cpp:393
+msgid "Unable to create surface from points and tangents"
+msgstr ""
+
+#: LibGCore/src/ds/ds_bsplinesurface.cpp:417
+msgid "NurbsSurfaces must have at least one more control points than degree"
+msgstr ""
+
+#: LibGCore/src/ds/ds_bsplinesurface.cpp:440
+#: LibGCore/src/ds/ds_bsplinesurface.cpp:467
+msgid "Unable to create NurbsCurve from control points."
+msgstr ""
+
+#: LibGCore/src/ds/ds_bsplinesurface.cpp:643
+#: LibGCore/src/ds/ds_surface.cpp:1167
+msgid "Unable to create face from spline"
+msgstr ""
+
+#: LibGCore/src/ds/ds_circle.cpp:28
+msgid "Casted object is not a Circle"
+msgstr ""
+
+#: LibGCore/src/ds/ds_circle.cpp:84 LibGCore/src/ds/ds_circle.cpp:95
+msgid "Arc by by_best_fit could not best fit arc"
+msgstr ""
+
+#: LibGCore/src/ds/ds_circle.cpp:102 LibGCore/src/ds/ds_circle.cpp:131
+msgid "Circle radius must be non-zero"
+msgstr ""
+
+#: LibGCore/src/ds/ds_circle.cpp:107 LibGCore/src/ds/ds_circle.cpp:145
+#: LibGCore/src/ds/ds_circle.cpp:162 LibGCore/src/ds/ds_circle.cpp:179
+msgid "Error creating a circle!"
+msgstr ""
+
+#: LibGCore/src/ds/ds_circle.cpp:134
+msgid "Circle normal must be non-zero"
+msgstr ""
+
+#: LibGCore/src/ds/ds_circle.cpp:137
+msgid "Circle major-axis must be non-zero"
+msgstr ""
+
+#: LibGCore/src/ds/ds_cone.cpp:14
+msgid "Casted object is not a Cone"
+msgstr ""
+
+#: LibGCore/src/ds/ds_cone.cpp:60 LibGCore/src/ds/ds_cone.cpp:199
+#: LibGCore/src/ds/ds_geometry.cpp:416
+msgid "Error getting edges"
+msgstr ""
+
+#: LibGCore/src/ds/ds_cone.cpp:69 LibGCore/src/ds/ds_cone.cpp:218
+#: LibGCore/src/ds/ds_geometry.cpp:402 LibGCore/src/ds/ds_solid.cpp:688
+msgid "Error getting vertices"
+msgstr ""
+
+#: LibGCore/src/ds/ds_cone.cpp:95
+msgid "Unable to set attrubitues on Cone"
+msgstr ""
+
+#: LibGCore/src/ds/ds_cone.cpp:113 LibGCore/src/ds/ds_cone.cpp:140
+msgid "Unable to create cone or cylinder"
+msgstr ""
+
+#: LibGCore/src/ds/ds_cone.cpp:148 LibGCore/src/ds/ds_cone.cpp:151
+#: LibGCore/src/ds/ds_cuboid.cpp:125 LibGCore/src/ds/ds_cuboid.cpp:128
+#: LibGCore/src/ds/ds_curve.cpp:1668 LibGCore/src/ds/ds_curve.cpp:1671
+#: LibGCore/src/ds/ds_polysurface.cpp:486
+#: LibGCore/src/ds/ds_polysurface.cpp:489 LibGCore/src/ds/ds_solid.cpp:115
+#: LibGCore/src/ds/ds_solid.cpp:118 LibGCore/src/ds/ds_surface.cpp:594
+#: LibGCore/src/ds/ds_surface.cpp:597
+msgid "Unable to transform the body!"
+msgstr ""
+
+#: LibGCore/src/ds/ds_cone.cpp:236
+msgid "Unable to find attributes after transformation"
+msgstr ""
+
+#: LibGCore/src/ds/ds_cone.cpp:245
+msgid "Could not get point from vertex"
+msgstr ""
+
+#: LibGCore/src/ds/ds_coordinatesystem.cpp:18
+msgid "Cast object is not a CoordinateSystem"
+msgstr ""
+
+#: LibGCore/src/ds/ds_coordinatesystem.cpp:231
+msgid "Error creating cooridnate system from raw data"
+msgstr ""
+
+#: LibGCore/src/ds/ds_cuboid.cpp:17
+msgid "Cast object is not a Cuboid"
+msgstr ""
+
+#: LibGCore/src/ds/ds_cuboid.cpp:55 LibGCore/src/ds/ds_cuboid.cpp:160
+#: LibGCore/src/ds/ds_geometry.cpp:1029 LibGCore/src/ds/ds_geometry.cpp:1275
+#: LibGCore/src/ds/ds_geometry.cpp:1290 LibGCore/src/ds/ds_polysurface.cpp:512
+msgid "Error getting vertices!"
+msgstr ""
+
+#: LibGCore/src/ds/ds_cuboid.cpp:69
+msgid "Could not construct Cuboid vertices"
+msgstr ""
+
+#: LibGCore/src/ds/ds_cuboid.cpp:118
+msgid "Unable to create block"
+msgstr ""
+
+#: LibGCore/src/ds/ds_cuboid.cpp:187 LibGCore/src/ds/ds_cuboid.cpp:190
+#: LibGCore/src/ds/ds_cuboid.cpp:193 LibGCore/src/ds/ds_cuboid.cpp:196
+msgid "Could not get Cuboid vertices after transform"
+msgstr ""
+
+#: LibGCore/src/ds/ds_curve.cpp:30
+msgid "Cast object is not a Curve"
+msgstr ""
+
+#: LibGCore/src/ds/ds_curve.cpp:93
+msgid "Could not test curve equality"
+msgstr ""
+
+#: LibGCore/src/ds/ds_curve.cpp:101
+msgid "Unable to find parameter at point"
+msgstr ""
+
+#: LibGCore/src/ds/ds_curve.cpp:124
+msgid "Unable to compute tangent at curve"
+msgstr ""
+
+#: LibGCore/src/ds/ds_curve.cpp:234
+msgid "Unable to compute Curve point at parameter"
+msgstr ""
+
+#: LibGCore/src/ds/ds_curve.cpp:277
+msgid "Cannot make sheet from coplanar wires"
+msgstr ""
+
+#: LibGCore/src/ds/ds_curve.cpp:281
+msgid "Can't get faces"
+msgstr ""
+
+#: LibGCore/src/ds/ds_curve.cpp:288
+msgid "Cannot get surface cog"
+msgstr ""
+
+#: LibGCore/src/ds/ds_curve.cpp:306 LibGCore/src/ds/ds_solid.cpp:960
+msgid "Not implemented"
+msgstr ""
+
+#: LibGCore/src/ds/ds_curve.cpp:312
+msgid "Curve has infinite length"
+msgstr ""
+
+#: LibGCore/src/ds/ds_curve.cpp:772
+msgid "Unable to join curves"
+msgstr ""
+
+#: LibGCore/src/ds/ds_curve.cpp:790 LibGCore/src/ds/ds_polycurve.cpp:144
+msgid "Unable to compute edge from curve"
+msgstr ""
+
+#: LibGCore/src/ds/ds_curve.cpp:803
+msgid "Not implemented for discontinuous curves!"
+msgstr ""
+
+#: LibGCore/src/ds/ds_curve.cpp:813 LibGCore/src/ds/ds_polycurve.cpp:1414
+msgid "Unable to set edge to consume"
+msgstr ""
+
+#: LibGCore/src/ds/ds_curve.cpp:827 LibGCore/src/ds/ds_polycurve.cpp:1298
+#: LibGCore/src/ds/ds_polycurve.cpp:1312
+msgid "Unable to create coedge array"
+msgstr ""
+
+#: LibGCore/src/ds/ds_curve.cpp:876
+msgid "Curve is not planar: cannot get Curve normal."
+msgstr ""
+
+#: LibGCore/src/ds/ds_curve.cpp:888 LibGCore/src/ds/ds_curve.cpp:924
+msgid "Unable to determine if curve is planar"
+msgstr ""
+
+#: LibGCore/src/ds/ds_curve.cpp:1054 LibGCore/src/ds/ds_curve.cpp:1113
+msgid "Could not approximate curve"
+msgstr ""
+
+#: LibGCore/src/ds/ds_curve.cpp:1178
+msgid "Unable to set extrusion wire"
+msgstr ""
+
+#: LibGCore/src/ds/ds_curve.cpp:1187
+msgid "Unable to compute extrude curve"
+msgstr ""
+
+#: LibGCore/src/ds/ds_curve.cpp:1196
+msgid "Unable to convert sheet to double sided"
+msgstr ""
+
+#: LibGCore/src/ds/ds_curve.cpp:1210 LibGCore/src/ds/ds_curve.cpp:1217
+msgid "Cannot create a Solid from an open Curve"
+msgstr ""
+
+#: LibGCore/src/ds/ds_curve.cpp:1226
+msgid "Unable to set Curve and Vector for extrusion."
+msgstr ""
+
+#: LibGCore/src/ds/ds_curve.cpp:1229
+msgid "Unable to instruct ASM to extrude Curve as a Solid."
+msgstr ""
+
+#: LibGCore/src/ds/ds_curve.cpp:1233
+msgid "Unable to extrude curve."
+msgstr ""
+
+#: LibGCore/src/ds/ds_curve.cpp:1238
+msgid "Extrusion computed but cannot determine result type"
+msgstr ""
+
+#: LibGCore/src/ds/ds_curve.cpp:1274 LibGCore/src/ds/ds_polycurve.cpp:1358
+msgid "Unable to set sweep profile and path"
+msgstr ""
+
+#: LibGCore/src/ds/ds_curve.cpp:1279 LibGCore/src/ds/ds_polycurve.cpp:1363
+#: LibGCore/src/ds/ds_solid.cpp:595
+msgid "Unable to set the result to be solid or not!"
+msgstr ""
+
+#: LibGCore/src/ds/ds_curve.cpp:1281 LibGCore/src/ds/ds_polycurve.cpp:1365
+msgid "Unable to compute surface sweep on rail"
+msgstr ""
+
+#: LibGCore/src/ds/ds_curve.cpp:1336
+msgid "Unable to revolve curve"
+msgstr ""
+
+#: LibGCore/src/ds/ds_curve.cpp:1339
+msgid "Unable to set as solid or not"
+msgstr ""
+
+#: LibGCore/src/ds/ds_curve.cpp:1343
+msgid "Unable to set as double sided"
+msgstr ""
+
+#: LibGCore/src/ds/ds_curve.cpp:1347
+msgid "Unable to retain mergeable edges"
+msgstr ""
+
+#: LibGCore/src/ds/ds_curve.cpp:1349
+msgid "Unable to compute revolve"
+msgstr ""
+
+#: LibGCore/src/ds/ds_curve.cpp:1442
+msgid "Base curve isn't planar. Cannot offset"
+msgstr ""
+
+#: LibGCore/src/ds/ds_curve.cpp:1450
+msgid "Unable to offset curve"
+msgstr ""
+
+#: LibGCore/src/ds/ds_curve.cpp:1602
+msgid "Unable to get wires from body"
+msgstr ""
+
+#: LibGCore/src/ds/ds_curve.cpp:1609
+msgid "Unable to get edge from wire"
+msgstr ""
+
+#: LibGCore/src/ds/ds_curve.cpp:1612
+msgid "WireCurve does not support wires with more than one edge"
+msgstr ""
+
+#: LibGCore/src/ds/ds_curve.cpp:1625 LibGCore/src/ds/ds_curve.cpp:1814
+#: LibGCore/src/ds/ds_geometry.cpp:619 LibGCore/src/ds/ds_geometry.cpp:634
+#: LibGCore/src/ds/ds_geometry.cpp:651 LibGCore/src/ds/ds_geometry.cpp:666
+#: LibGCore/src/ds/ds_geometry.cpp:681 LibGCore/src/ds/ds_geometry.cpp:697
+#: LibGCore/src/ds/ds_geometry.cpp:712 LibGCore/src/ds/ds_geometry.cpp:726
+#: LibGCore/src/ds/ds_geometry.cpp:758 LibGCore/src/ds/ds_polycurve.cpp:235
+#: LibGCore/src/ds/ds_polycurve.cpp:334 LibGCore/src/ds/ds_polycurve.cpp:1503
+#: LibGCore/src/ds/ds_polycurve.cpp:1564
+#: LibGCore/src/ds/ds_polysurface.cpp:230
+#: LibGCore/src/ds/ds_polysurface.cpp:901
+#: LibGCore/src/ds/ds_polysurface.cpp:1136
+msgid "Unable to extract curve from edge"
+msgstr ""
+
+#: LibGCore/src/ds/ds_curve.cpp:1628 LibGCore/src/ds/ds_polycurve.cpp:238
+msgid "Curve geometry is degenerate or invalid"
+msgstr ""
+
+#: LibGCore/src/ds/ds_curve.cpp:1694
+msgid "Unable to blend between curves"
+msgstr ""
+
+#: LibGCore/src/ds/ds_curve.cpp:1721
+msgid "Unable to make parameter line on surface"
+msgstr ""
+
+#: LibGCore/src/ds/ds_curve.cpp:1736
+msgid "Unable to make geodesic curves with ASM 219"
+msgstr ""
+
+#: LibGCore/src/ds/ds_curve.cpp:1765
+msgid "Unable to make iso curve on surface"
+msgstr ""
+
+#: LibGCore/src/ds/ds_curve.cpp:1782
+msgid "Unable to project curve on plane"
+msgstr ""
+
+#: LibGCore/src/ds/ds_curve.cpp:1802
+msgid "Unable to compute Curve projection on Surface"
+msgstr ""
+
+#: LibGCore/src/ds/ds_curve.cpp:1832
+msgid "Unable to pull Curve onto Surface"
+msgstr ""
+
+#: LibGCore/src/ds/ds_curve.cpp:1845
+msgid "Unable to make geodesic curves"
+msgstr ""
+
+#: LibGCore/src/ds/ds_curve.cpp:1867
+msgid "Unable to approximate curve with arc and line segments"
+msgstr ""
+
+#: LibGCore/src/ds/ds_curve.cpp:1883
+msgid ""
+"Conversion to Arcs and Lines failed, some parts of Curve could not be "
+"converted"
+msgstr ""
+
+#: LibGCore/src/ds/ds_curve.cpp:1908
+msgid "Curve must be divided into one or more parts"
+msgstr ""
+
+#: LibGCore/src/ds/ds_curve.cpp:1918 LibGCore/src/ds/ds_curve.cpp:1950
+#: LibGCore/src/ds/ds_curve.cpp:1984
+msgid "Unable to divide infinite curve equally by length"
+msgstr ""
+
+#: LibGCore/src/ds/ds_curve.cpp:1933
+msgid "Unable to divide curve equally by length"
+msgstr ""
+
+#: LibGCore/src/ds/ds_curve.cpp:2004 LibGCore/src/ds/ds_curve.cpp:2102
+msgid "Input segment length must be greater than 0"
+msgstr ""
+
+#: LibGCore/src/ds/ds_curve.cpp:2015 LibGCore/src/ds/ds_curve.cpp:2118
+msgid "Unable to divide infinite curve by length"
+msgstr ""
+
+#: LibGCore/src/ds/ds_curve.cpp:2341 LibGCore/src/ds/ds_curve.cpp:2464
+msgid "Unable to divide infinite curve equally by distance"
+msgstr ""
+
+#: LibGCore/src/ds/ds_curve.cpp:2389
+msgid "Unable to divide curve equally by distance"
+msgstr ""
+
+#: LibGCore/src/ds/ds_curve.cpp:2417 LibGCore/src/ds/ds_curve.cpp:2561
+#: LibGCore/src/ds/ds_curve.cpp:2604 LibGCore/src/ds/ds_curve.cpp:2674
+#: LibGCore/src/ds/ds_curve.cpp:2724 LibGCore/src/ds/ds_polycurve.cpp:1925
+#: LibGCore/src/ds/ds_polycurve.cpp:1990
+msgid "could not solve for equal distances"
+msgstr ""
+
+#: LibGCore/src/ds/ds_curve.cpp:2450
+msgid "could not solve for equal chord lengths"
+msgstr ""
+
+#: LibGCore/src/ds/ds_curve.cpp:2531 LibGCore/src/ds/ds_curve.cpp:2576
+#: LibGCore/src/ds/ds_curve.cpp:2644 LibGCore/src/ds/ds_curve.cpp:2698
+msgid "Unable to divide curve by distance"
+msgstr ""
+
+#: LibGCore/src/ds/ds_curve.cpp:2734
+msgid "Cannot simplify Curve"
+msgstr ""
+
+#: LibGCore/src/ds/ds_curve.cpp:2764
+msgid "Cannot simplify a curve below 1.0e-9 tolerance"
+msgstr ""
+
+#: LibGCore/src/ds/ds_curve.cpp:2777
+msgid "Unable to approximate simplified spline"
+msgstr ""
+
+#: LibGCore/src/ds/ds_curve.cpp:2780
+msgid "Unable to simplify spline"
+msgstr ""
+
+#: LibGCore/src/ds/ds_cylinder.cpp:14
+msgid "Casted object is not a Cylinder"
+msgstr ""
+
+#: LibGCore/src/ds/ds_ellipse.cpp:27
+msgid "Cast object is not a Ellipse"
 msgstr ""
 
 #: LibGCore/src/ds/ds_ellipse.cpp:48 LibGCore/src/ds/ds_ellipse.cpp:160
@@ -844,57 +828,1089 @@ msgid ""
 " Ellipse radius must be non-zero"
 msgstr ""
 
-#: LibGCore/src/ds/ds_arc.cpp:1088
-msgid ""
-"Error creating arc!\n"
-"End point lies in direction of Tangent vector"
+#: LibGCore/src/ds/ds_ellipse.cpp:61 LibGCore/src/ds/ds_ellipse.cpp:88
+#: LibGCore/src/ds/ds_ellipse.cpp:101
+msgid "Error creating an ellipse!"
 msgstr ""
 
-#: LibGCore/src/ds/ds_coordinatesystem.cpp:231
-msgid "Error creating cooridnate system from raw data"
+#: LibGCore/src/ds/ds_ellipsearc.cpp:15
+msgid "Casted object is not an EllipseArc"
 msgstr ""
 
-#: LibGCore/src/asm/asmutils.cpp:540
-msgid "Error doing boolean operation between two bodies!"
+#: LibGCore/src/ds/ds_ellipsearc.cpp:57
+msgid "EllipseArc radius must be non-zero"
 msgstr ""
 
-#: LibGCore/src/asm/asmutils.cpp:549
-msgid "Error doing the selective boolean             stage one operation!"
+#: LibGCore/src/ds/ds_ellipsearc.cpp:59
+msgid "EllipseArc sweep angle must be non-zero"
 msgstr ""
 
-#: LibGCore/src/asm/asmutils.cpp:1441 LibGCore/src/asm/asmutils.cpp:1457
-#: LibGCore/src/asm/asmutils.cpp:1473 LibGCore/src/asm/asmutils.cpp:1490
-msgid "Error finding attributes for a given name!"
+#: LibGCore/src/ds/ds_ellipsearc.cpp:99
+msgid "Unexpected error creating the EllipseArc!"
 msgstr ""
 
-#: LibGCore/src/ds/topology/ds_vertex.cpp:20
-msgid "Error getting adjacent edges of a vertex!"
+#: LibGCore/src/ds/ds_geometry.cpp:21
+msgid "Cast object is not Geometry"
 msgstr ""
 
-#: LibGCore/src/ds/topology/ds_vertex.cpp:36
-msgid "Error getting adjacent faces of a vertex!"
+#: LibGCore/src/ds/ds_geometry.cpp:120
+msgid "Could not find distance."
 msgstr ""
 
-#: LibGCore/src/ds/ds_solid.cpp:667
-msgid "Error getting cells!"
+#: LibGCore/src/ds/ds_geometry.cpp:224
+msgid "Unable to create intersection boolean"
+msgstr ""
+
+#: LibGCore/src/ds/ds_geometry.cpp:249
+msgid "Unable to slice bodies"
+msgstr ""
+
+#: LibGCore/src/ds/ds_geometry.cpp:348
+#: LibGCore/src/expt/expt_asmexporter.cpp:21
+#: LibGCore/src/expt/expt_asmexporter.cpp:101
+msgid "Unable to transform the entity!"
+msgstr ""
+
+#: LibGCore/src/ds/ds_geometry.cpp:363
+msgid "Unable to get EDGEs while decomposing BODY"
+msgstr ""
+
+#: LibGCore/src/ds/ds_geometry.cpp:368
+msgid "Unable to get WIREs while decomposing BODY"
 msgstr ""
 
 #: LibGCore/src/ds/ds_geometry.cpp:410
 msgid "Error getting coedges"
 msgstr ""
 
-#: LibGCore/src/ds/topology/ds_edge.cpp:33
-msgid "Error getting coedges of the edge!"
+#: LibGCore/src/ds/ds_geometry.cpp:475
+msgid "Colud not separate BODYs before decomposition"
 msgstr ""
 
-#: LibGCore/src/ds/ds_cone.cpp:60 LibGCore/src/ds/ds_cone.cpp:199
-#: LibGCore/src/ds/ds_geometry.cpp:416
-msgid "Error getting edges"
+#: LibGCore/src/ds/ds_geometry.cpp:511
+msgid "Could not get EDGEs from BODY when extracting Curves"
+msgstr ""
+
+#: LibGCore/src/ds/ds_geometry.cpp:524
+msgid "Could not get COEDGEs from BODY when extracting Curves"
+msgstr ""
+
+#: LibGCore/src/ds/ds_geometry.cpp:545
+msgid "Could not get EDGEs from FACE when extracting Curves"
+msgstr ""
+
+#: LibGCore/src/ds/ds_geometry.cpp:582
+msgid "Unable to create Curve from COEDGE when extracting Curves"
+msgstr ""
+
+#: LibGCore/src/ds/ds_geometry.cpp:744
+msgid "Error getting length of the edge"
+msgstr ""
+
+#: LibGCore/src/ds/ds_geometry.cpp:752
+msgid "Unable to get start Point of zero length EDGE"
+msgstr ""
+
+#: LibGCore/src/ds/ds_geometry.cpp:842 LibGCore/src/ds/ds_solid.cpp:101
+msgid "Unable to get area"
+msgstr ""
+
+#: LibGCore/src/ds/ds_geometry.cpp:896
+msgid "Could not compare Geometry"
+msgstr ""
+
+#: LibGCore/src/ds/ds_geometry.cpp:908
+msgid "Unable to get FACE from BODY: no faces in BODY"
+msgstr ""
+
+#: LibGCore/src/ds/ds_geometry.cpp:927 LibGCore/src/ds/ds_geometry.cpp:931
+#: LibGCore/src/ds/ds_geometry.cpp:933 LibGCore/src/ds/ds_geometry.cpp:935
+#: LibGCore/src/ds/ds_geometry.cpp:937
+msgid "Unable to create body from face"
+msgstr ""
+
+#: LibGCore/src/ds/ds_geometry.cpp:947 LibGCore/src/ds/ds_geometry.cpp:982
+msgid "Unable to make sheet double sided"
+msgstr ""
+
+#: LibGCore/src/ds/ds_geometry.cpp:979
+msgid "Unable to create brep around face"
+msgstr ""
+
+#: LibGCore/src/ds/ds_geometry.cpp:1014
+msgid "Unable to create Brep BODY from FACEs"
+msgstr ""
+
+#: LibGCore/src/ds/ds_geometry.cpp:1017
+msgid "Unable make FACEs BODY double sided."
+msgstr ""
+
+#: LibGCore/src/ds/ds_geometry.cpp:1104
+msgid "Unable to create non regular subtraction boolean"
+msgstr ""
+
+#: LibGCore/src/ds/ds_geometry.cpp:1119 LibGCore/src/ds/ds_geometry.cpp:1591
+msgid "Unable to approximate body"
+msgstr ""
+
+#: LibGCore/src/ds/ds_geometry.cpp:1153
+msgid "Unable to compute equality between bodies"
+msgstr ""
+
+#: LibGCore/src/ds/ds_geometry.cpp:1319
+msgid " doesn't support Vertex query operation!"
 msgstr ""
 
 #: LibGCore/src/ds/ds_geometry.cpp:1342 LibGCore/src/ds/ds_geometry.cpp:1368
 #: LibGCore/src/ds/ds_polysurface.cpp:505 LibGCore/src/ds/ds_solid.cpp:681
 msgid "Error getting edges!"
+msgstr ""
+
+#: LibGCore/src/ds/ds_geometry.cpp:1361
+msgid " doesn't support Edge query operation!"
+msgstr ""
+
+#: LibGCore/src/ds/ds_geometry.cpp:1390 LibGCore/src/ds/ds_geometry.cpp:1416
+#: LibGCore/src/ds/ds_polysurface.cpp:498 LibGCore/src/ds/ds_solid.cpp:674
+msgid "Error getting faces!"
+msgstr ""
+
+#: LibGCore/src/ds/ds_geometry.cpp:1409
+msgid " doesn't support Face query operation!"
+msgstr ""
+
+#: LibGCore/src/ds/ds_geometry.cpp:1450
+msgid "Unable to extract a bounding box from ASM ENTITY"
+msgstr ""
+
+#: LibGCore/src/ds/ds_geometry.cpp:1513
+msgid "Unable to create planar face of BoundingBox"
+msgstr ""
+
+#: LibGCore/src/ds/ds_geometry.cpp:1523
+msgid "Unable to compute closest approach on BoundingBox face"
+msgstr ""
+
+#: LibGCore/src/ds/ds_helix.cpp:29
+msgid "Cast object is not a helix"
+msgstr ""
+
+#: LibGCore/src/ds/ds_helix.cpp:41
+msgid "Cannot make helix"
+msgstr ""
+
+#: LibGCore/src/ds/ds_line.cpp:18
+msgid "Cast object is not a Line"
+msgstr ""
+
+#: LibGCore/src/ds/ds_line.cpp:43
+msgid "Unable to create Line. Points are likely coincident"
+msgstr ""
+
+#: LibGCore/src/ds/ds_line.cpp:143
+msgid "Best fit line needs 2 points or more!"
+msgstr ""
+
+#: LibGCore/src/ds/ds_plane.cpp:21
+msgid "Cast object is not a Plane"
+msgstr ""
+
+#: LibGCore/src/ds/ds_plane.cpp:61 LibGCore/src/ds/ds_plane.cpp:221
+msgid ""
+"Could not create Plane!  one or more of the desired axes of this plane have "
+"zero length!"
+msgstr ""
+
+#: LibGCore/src/ds/ds_plane.cpp:64 LibGCore/src/ds/ds_plane.cpp:224
+msgid "Could not create Plane!  The desired axes of this plane are parallel!"
+msgstr ""
+
+#: LibGCore/src/ds/ds_plane.cpp:84
+msgid "Could not create Plane!  Some of the vertices may be coincident!"
+msgstr ""
+
+#: LibGCore/src/ds/ds_plane.cpp:87
+msgid "Could not create Plane!  Some of the vertices may be collinear!"
+msgstr ""
+
+#: LibGCore/src/ds/ds_plane.cpp:184
+msgid "Unable to split Plane"
+msgstr ""
+
+#: LibGCore/src/ds/ds_plane.cpp:189
+msgid "Unable to trim Plane"
+msgstr ""
+
+#: LibGCore/src/ds/ds_plane.cpp:540
+msgid "Best fit plane needs 3 or more points."
+msgstr ""
+
+#: LibGCore/src/ds/ds_point.cpp:16
+msgid "Cast object is not a Point"
+msgstr ""
+
+#: LibGCore/src/ds/ds_point.cpp:177
+msgid "Unable to set vertex position"
+msgstr ""
+
+#: LibGCore/src/ds/ds_point.cpp:181
+msgid "Unable to post process VERTEX ENTITY"
+msgstr ""
+
+#: LibGCore/src/ds/ds_point.cpp:206
+msgid "Unable to set VERTEX position"
+msgstr ""
+
+#: LibGCore/src/ds/ds_point.cpp:225
+msgid "Unable to create brep around Point"
+msgstr ""
+
+#: LibGCore/src/ds/ds_point.cpp:245
+msgid "Unable to get extremum point"
+msgstr ""
+
+#: LibGCore/src/ds/ds_polycurve.cpp:22 LibGCore/src/ds/ds_polycurve.cpp:2357
+msgid "Cast object is not a PolyCurve"
+msgstr ""
+
+#: LibGCore/src/ds/ds_polycurve.cpp:61
+msgid "Cannot create a PolyCurve without any Points."
+msgstr ""
+
+#: LibGCore/src/ds/ds_polycurve.cpp:79
+msgid "Cannot make a PolyCurve from an empty list"
+msgstr ""
+
+#: LibGCore/src/ds/ds_polycurve.cpp:152
+msgid "Could not add EDGEs to consume when joining curves"
+msgstr ""
+
+#: LibGCore/src/ds/ds_polycurve.cpp:156
+msgid "Could not set PolyCurve join tolerance"
+msgstr ""
+
+#: LibGCore/src/ds/ds_polycurve.cpp:162
+msgid "Could not make WIRE for PolyCurve"
+msgstr ""
+
+#: LibGCore/src/ds/ds_polycurve.cpp:166
+msgid "Could not get wires out of WIRE SMI"
+msgstr ""
+
+#: LibGCore/src/ds/ds_polycurve.cpp:169
+msgid "Curve join produced more than one WIRE in PolyCurve"
+msgstr ""
+
+#: LibGCore/src/ds/ds_polycurve.cpp:174
+msgid "PolyCurves may be branching"
+msgstr ""
+
+#: LibGCore/src/ds/ds_polycurve.cpp:182
+msgid "Get EDGEs operation failed when creating PolyCurve"
+msgstr ""
+
+#: LibGCore/src/ds/ds_polycurve.cpp:217
+msgid "Failed to find start Edge"
+msgstr ""
+
+#: LibGCore/src/ds/ds_polycurve.cpp:328
+msgid ""
+"The second curve was a PolyCurve and its sub-curves could not be extracted"
+msgstr ""
+
+#: LibGCore/src/ds/ds_polycurve.cpp:398
+msgid "Invalid Curve index"
+msgstr ""
+
+#: LibGCore/src/ds/ds_polycurve.cpp:429
+#: LibGCore/src/ds/ds_polysurface.cpp:1366
+msgid "Could not find sub Curve in parameter range"
+msgstr ""
+
+#: LibGCore/src/ds/ds_polycurve.cpp:476
+msgid "Could not find parameter at distance"
+msgstr ""
+
+#: LibGCore/src/ds/ds_polycurve.cpp:497
+#: LibGCore/src/ds/ds_polysurface.cpp:1296
+msgid "Could not find parameter at Point"
+msgstr ""
+
+#: LibGCore/src/ds/ds_polycurve.cpp:597
+msgid "Parameter at chord length Not Implemented"
+msgstr ""
+
+#: LibGCore/src/ds/ds_polycurve.cpp:616
+msgid "Param Trim Segments Not Implemented"
+msgstr ""
+
+#: LibGCore/src/ds/ds_polycurve.cpp:621
+msgid "Param Trim Interior Not Implemented"
+msgstr ""
+
+#: LibGCore/src/ds/ds_polycurve.cpp:707
+msgid "Param Trim Start Not Implemented"
+msgstr ""
+
+#: LibGCore/src/ds/ds_polycurve.cpp:711
+msgid "Param Trim End Not Implemented"
+msgstr ""
+
+#: LibGCore/src/ds/ds_polycurve.cpp:715
+msgid "Parm Trim Not Implemented"
+msgstr ""
+
+#: LibGCore/src/ds/ds_polycurve.cpp:719
+msgid "Get Aligning CS Not Implemented"
+msgstr ""
+
+#: LibGCore/src/ds/ds_polycurve.cpp:723
+msgid "To BSPlineCurve Not Implemented"
+msgstr ""
+
+#: LibGCore/src/ds/ds_polycurve.cpp:727
+msgid "Merge Not Implemented"
+msgstr ""
+
+#: LibGCore/src/ds/ds_polycurve.cpp:731
+msgid "Get Length Not Implemented"
+msgstr ""
+
+#: LibGCore/src/ds/ds_polycurve.cpp:775
+msgid "Could not make edge from curve"
+msgstr ""
+
+#: LibGCore/src/ds/ds_polycurve.cpp:783
+msgid "Could not determine is polycurve is planar"
+msgstr ""
+
+#: LibGCore/src/ds/ds_polycurve.cpp:798
+msgid "Could not make EDGE from Curve"
+msgstr ""
+
+#: LibGCore/src/ds/ds_polycurve.cpp:805
+msgid "Could not determine if PolyCurve is planar"
+msgstr ""
+
+#: LibGCore/src/ds/ds_polycurve.cpp:808
+msgid "Request for Plane of non-planar PolyCurve"
+msgstr ""
+
+#: LibGCore/src/ds/ds_polycurve.cpp:937 LibGCore/src/ds/ds_polycurve.cpp:953
+msgid "Can not close polycurve."
+msgstr ""
+
+#: LibGCore/src/ds/ds_polycurve.cpp:1029 LibGCore/src/ds/ds_polycurve.cpp:1035
+#: LibGCore/src/ds/ds_polycurve.cpp:1109 LibGCore/src/ds/ds_polycurve.cpp:1115
+msgid "Can not determine plane of polycurve extension."
+msgstr ""
+
+#: LibGCore/src/ds/ds_polycurve.cpp:1059
+msgid "Could not add length of a full circle or more."
+msgstr ""
+
+#: LibGCore/src/ds/ds_polycurve.cpp:1125
+msgid "Different sign of radii values."
+msgstr ""
+
+#: LibGCore/src/ds/ds_polycurve.cpp:1375
+msgid "Could not sweep PolyCurve"
+msgstr ""
+
+#: LibGCore/src/ds/ds_polycurve.cpp:1425
+msgid "PolyCurves cannot be converted to EDGEs. Aborting."
+msgstr ""
+
+#: LibGCore/src/ds/ds_polycurve.cpp:1440
+msgid "Could not make patch surfaces"
+msgstr ""
+
+#: LibGCore/src/ds/ds_polycurve.cpp:1447
+msgid "Could not patch PolyCurve"
+msgstr ""
+
+#: LibGCore/src/ds/ds_polycurve.cpp:1492
+msgid " Could not offset polycurve."
+msgstr ""
+
+#: LibGCore/src/ds/ds_polycurve.cpp:1543
+msgid "Could not fillet polycurve."
+msgstr ""
+
+#: LibGCore/src/ds/ds_polycurve.cpp:1553
+msgid " Could not fillet polycurve."
+msgstr ""
+
+#: LibGCore/src/ds/ds_polycurve.cpp:1696
+msgid "Unable divide polycurve equally by length"
+msgstr ""
+
+#: LibGCore/src/ds/ds_polycurve.cpp:1745
+msgid "input segment length must be greater or equal to zero"
+msgstr ""
+
+#: LibGCore/src/ds/ds_polycurve.cpp:1825
+msgid "Unable divide polycurve equally by distance"
+msgstr ""
+
+#: LibGCore/src/ds/ds_polycurve.cpp:1888 LibGCore/src/ds/ds_polycurve.cpp:1937
+#: LibGCore/src/ds/ds_polycurve.cpp:1943 LibGCore/src/ds/ds_polycurve.cpp:1962
+#: LibGCore/src/ds/ds_polycurve.cpp:1969
+msgid "Unable to divide polycurve equally by distance"
+msgstr ""
+
+#: LibGCore/src/ds/ds_polycurve.cpp:2106
+msgid "Unable divide polycurve by length"
+msgstr ""
+
+#: LibGCore/src/ds/ds_polygon.cpp:18
+msgid "Cast object is not a Polygon"
+msgstr ""
+
+#: LibGCore/src/ds/ds_polygon.cpp:32
+msgid "You must supply more than 2 points to create a polygon"
+msgstr ""
+
+#: LibGCore/src/ds/ds_polygon.cpp:53
+msgid ""
+"There were not enough edges to form a polygon!  Some of the vertices may be "
+"coincident."
+msgstr ""
+
+#: LibGCore/src/ds/ds_polygon.cpp:214
+msgid "Could not text containment for non-planar polygon"
+msgstr ""
+
+#: LibGCore/src/ds/ds_polygon.cpp:217
+msgid "Could not text containment for self-intersecting polygon"
+msgstr ""
+
+#: LibGCore/src/ds/ds_polygon.cpp:233
+msgid "Regular polygon shoudl have 3 or more sides"
+msgstr ""
+
+#: LibGCore/src/ds/ds_polymesh.cpp:19
+msgid "Cast object is not a PolyMesh"
+msgstr ""
+
+#: LibGCore/src/ds/ds_polymesh.cpp:60
+msgid ""
+"One or more IndexGroups supplied contained an out of bounds vertex index!  "
+"All IndexGroup indices are zero-based and must be less than the number of "
+"vertices supplied."
+msgstr ""
+
+#: LibGCore/src/ds/ds_polysurface.cpp:22
+#: LibGCore/src/ds/ds_polysurface.cpp:1470
+msgid "Cast object is not a PolySurface"
+msgstr ""
+
+#: LibGCore/src/ds/ds_polysurface.cpp:38
+msgid "The input is not valid"
+msgstr ""
+
+#: LibGCore/src/ds/ds_polysurface.cpp:49
+msgid "Could not extract FACEs from PolySurface BODY"
+msgstr ""
+
+#: LibGCore/src/ds/ds_polysurface.cpp:52
+msgid "Error creating PolySurface, BODY has no FACEs"
+msgstr ""
+
+#: LibGCore/src/ds/ds_polysurface.cpp:98
+msgid "Nonmanifold boundary contains non-EDGEs"
+msgstr ""
+
+#: LibGCore/src/ds/ds_polysurface.cpp:109
+msgid "Cannot convert base body to double sided"
+msgstr ""
+
+#: LibGCore/src/ds/ds_polysurface.cpp:115
+msgid "Cannot convert tool body to double sided"
+msgstr ""
+
+#: LibGCore/src/ds/ds_polysurface.cpp:118
+msgid "Unable to stitch Surfaces into a single PolySurface."
+msgstr ""
+
+#: LibGCore/src/ds/ds_polysurface.cpp:208
+#: LibGCore/src/ds/ds_polysurface.cpp:299
+#: LibGCore/src/ds/ds_polysurface.cpp:314
+#: LibGCore/src/ds/ds_polysurface.cpp:318
+#: LibGCore/src/ds/ds_polysurface.cpp:326
+#: LibGCore/src/ds/ds_polysurface.cpp:330 LibGCore/src/ds/ds_surface.cpp:878
+msgid "Not Implemented"
+msgstr ""
+
+#: LibGCore/src/ds/ds_polysurface.cpp:215
+msgid "Could not extract EDGEs from PolySurface BODY"
+msgstr ""
+
+#: LibGCore/src/ds/ds_polysurface.cpp:269
+msgid "Unable to set PolySurface Edges to fillet"
+msgstr ""
+
+#: LibGCore/src/ds/ds_polysurface.cpp:272
+#: LibGCore/src/ds/ds_polysurface.cpp:290 LibGCore/src/ds/ds_solid.cpp:749
+msgid "Unable to compute fillet"
+msgstr ""
+
+#: LibGCore/src/ds/ds_polysurface.cpp:287
+msgid "Unable to set PolySurface Edges to chamfer"
+msgstr ""
+
+#: LibGCore/src/ds/ds_polysurface.cpp:322
+msgid "Could not determine parameter of non-manifold Surface"
+msgstr ""
+
+#: LibGCore/src/ds/ds_polysurface.cpp:443
+#: LibGCore/src/ds/ds_polysurface.cpp:1057
+msgid "Could not make combined polysurface."
+msgstr ""
+
+#: LibGCore/src/ds/ds_polysurface.cpp:470
+msgid "Could not combine Surfaces"
+msgstr ""
+
+#: LibGCore/src/ds/ds_polysurface.cpp:537
+msgid ""
+"Non-uniform transformations on PolySurface is not supported at the moment"
+msgstr ""
+
+#: LibGCore/src/ds/ds_polysurface.cpp:591 LibGCore/src/ds/ds_solid.cpp:261
+#: LibGCore/src/ds/ds_solid.cpp:301 LibGCore/src/ds/ds_solid.cpp:379
+#: LibGCore/src/ds/ds_solid.cpp:409
+msgid "Unable to loft!"
+msgstr ""
+
+#: LibGCore/src/ds/ds_polysurface.cpp:614
+#: LibGCore/src/ds/ds_polysurface.cpp:632
+#: LibGCore/src/ds/ds_polysurface.cpp:648
+msgid "Unable to loft to make polysurface!"
+msgstr ""
+
+#: LibGCore/src/ds/ds_polysurface.cpp:690
+msgid "Unable to set sweep profile and path to make Polysurface"
+msgstr ""
+
+#: LibGCore/src/ds/ds_polysurface.cpp:693
+msgid "Unable to set the result to be not solid  to make Polysurface"
+msgstr ""
+
+#: LibGCore/src/ds/ds_polysurface.cpp:696
+msgid "Unable to compute surface sweep on rail  to make Polysurface"
+msgstr ""
+
+#: LibGCore/src/ds/ds_polysurface.cpp:722
+msgid "Unable to attach cellular analyzer to Polysurface"
+msgstr ""
+
+#: LibGCore/src/ds/ds_polysurface.cpp:727
+msgid "Unable to extract solids from Polysurface"
+msgstr ""
+
+#: LibGCore/src/ds/ds_polysurface.cpp:792
+#: LibGCore/src/ds/ds_polysurface.cpp:830
+msgid "Unable to get point status to extract some solids from Polysurface"
+msgstr ""
+
+#: LibGCore/src/ds/ds_polysurface.cpp:867
+msgid "Could not project_point on polysurface."
+msgstr ""
+
+#: LibGCore/src/ds/ds_polysurface.cpp:1027
+#: LibGCore/src/ds/ds_polysurface.cpp:1249
+msgid "Cannot create a PolySurface from an empty list"
+msgstr ""
+
+#: LibGCore/src/ds/ds_polysurface.cpp:1088
+#: LibGCore/src/ds/ds_polysurface.cpp:1095
+msgid "Could not make patched polysurface."
+msgstr ""
+
+#: LibGCore/src/ds/ds_polysurface.cpp:1123
+msgid "Unable to get edges from polysurface"
+msgstr ""
+
+#: LibGCore/src/ds/ds_rectangle.cpp:17
+msgid "Casted object is not a Rectangle"
+msgstr ""
+
+#: LibGCore/src/ds/ds_rectangle.cpp:64
+msgid "Rectangle needs 4 corner points"
+msgstr ""
+
+#: LibGCore/src/ds/ds_rectangle.cpp:71
+msgid "Input Points don't form a valid Rectangle"
+msgstr ""
+
+#: LibGCore/src/ds/ds_solid.cpp:20
+msgid "Cast object is not a Solid"
+msgstr ""
+
+#: LibGCore/src/ds/ds_solid.cpp:53
+msgid "Cannot facet Solid: it is a wire body"
+msgstr ""
+
+#: LibGCore/src/ds/ds_solid.cpp:87
+msgid "Unable to get volume"
+msgstr ""
+
+#: LibGCore/src/ds/ds_solid.cpp:137
+msgid "Unable union two Solids"
+msgstr ""
+
+#: LibGCore/src/ds/ds_solid.cpp:147 LibGCore/src/ds/ds_solid.cpp:181
+msgid "Cannot union an empty list"
+msgstr ""
+
+#: LibGCore/src/ds/ds_solid.cpp:171
+msgid "Unable difference two Solids"
+msgstr ""
+
+#: LibGCore/src/ds/ds_solid.cpp:205
+msgid "Unable intersect two Solids"
+msgstr ""
+
+#: LibGCore/src/ds/ds_solid.cpp:406
+msgid "Unable to set the sections or the centerline!"
+msgstr ""
+
+#: LibGCore/src/ds/ds_solid.cpp:417
+msgid "Unable to sweep open polycurve: should be closed."
+msgstr ""
+
+#: LibGCore/src/ds/ds_solid.cpp:420
+msgid "Unable to sweep non-planar polycurve: should be planar."
+msgstr ""
+
+#: LibGCore/src/ds/ds_solid.cpp:526
+msgid "Unable to set the profile and the path for sweep!"
+msgstr ""
+
+#: LibGCore/src/ds/ds_solid.cpp:528
+msgid "Unable to set the result to be solid or not for sweep!"
+msgstr ""
+
+#: LibGCore/src/ds/ds_solid.cpp:530
+msgid "Unable to set the miter type for sweep!"
+msgstr ""
+
+#: LibGCore/src/ds/ds_solid.cpp:532
+msgid "Unable to set whether to retain mergeable edges for sweep!"
+msgstr ""
+
+#: LibGCore/src/ds/ds_solid.cpp:534
+msgid "Unable to set the draft angle for sweep!"
+msgstr ""
+
+#: LibGCore/src/ds/ds_solid.cpp:536
+msgid "Unable to set the gap type for sweep!"
+msgstr ""
+
+#: LibGCore/src/ds/ds_solid.cpp:541
+msgid "Unable to make solid by sweep"
+msgstr ""
+
+#: LibGCore/src/ds/ds_solid.cpp:548
+msgid "Empty solid returned by sweep"
+msgstr ""
+
+#: LibGCore/src/ds/ds_solid.cpp:575
+msgid "Cannot intersect a closed Curve with a Solid."
+msgstr ""
+
+#: LibGCore/src/ds/ds_solid.cpp:585
+msgid "The profile Curve must be planar to perform sweep"
+msgstr ""
+
+#: LibGCore/src/ds/ds_solid.cpp:593
+msgid "Unable to set the profile and the path!"
+msgstr ""
+
+#: LibGCore/src/ds/ds_solid.cpp:597
+msgid "Unable to set the miter type!"
+msgstr ""
+
+#: LibGCore/src/ds/ds_solid.cpp:599
+msgid "Unable to set whether to retain mergeable edges!"
+msgstr ""
+
+#: LibGCore/src/ds/ds_solid.cpp:601
+msgid "Unable to set the draft angle!"
+msgstr ""
+
+#: LibGCore/src/ds/ds_solid.cpp:603
+msgid "Unable to set the gap type!"
+msgstr ""
+
+#: LibGCore/src/ds/ds_solid.cpp:608
+msgid "Unable to update solid by sweep"
+msgstr ""
+
+#: LibGCore/src/ds/ds_solid.cpp:649
+msgid "get_shells on Solid not implemented"
+msgstr ""
+
+#: LibGCore/src/ds/ds_solid.cpp:653
+msgid "get_cells on Solid not implemented"
+msgstr ""
+
+#: LibGCore/src/ds/ds_solid.cpp:660
+msgid "Error getting shells!"
+msgstr ""
+
+#: LibGCore/src/ds/ds_solid.cpp:667
+msgid "Error getting cells!"
+msgstr ""
+
+#: LibGCore/src/ds/ds_solid.cpp:694
+msgid "Thicknesses must be positive"
+msgstr ""
+
+#: LibGCore/src/ds/ds_solid.cpp:701
+msgid "Could not set shelling body"
+msgstr ""
+
+#: LibGCore/src/ds/ds_solid.cpp:706
+msgid "Unable to set the external thickness"
+msgstr ""
+
+#: LibGCore/src/ds/ds_solid.cpp:711
+msgid "Unable to set the internal thickness"
+msgstr ""
+
+#: LibGCore/src/ds/ds_solid.cpp:716
+msgid "Unable to compute shell"
+msgstr ""
+
+#: LibGCore/src/ds/ds_solid.cpp:746
+msgid "Unable to set Solid Edges to fillet"
+msgstr ""
+
+#: LibGCore/src/ds/ds_solid.cpp:763
+msgid "Unable to set Solid edges t ochamfer"
+msgstr ""
+
+#: LibGCore/src/ds/ds_solid.cpp:766
+msgid "Unable to compute chamfer"
+msgstr ""
+
+#: LibGCore/src/ds/ds_solid.cpp:864
+msgid "ByJoinedSurfaces requires at least one Surface"
+msgstr ""
+
+#: LibGCore/src/ds/ds_solid.cpp:873
+msgid "Surfaces could not be joined into a closed Solid!"
+msgstr ""
+
+#: LibGCore/src/ds/ds_solid.cpp:901
+msgid "Surfaces could not be joined into a closed Solid, even with refinement!"
+msgstr ""
+
+#: LibGCore/src/ds/ds_solid.cpp:970 LibGCore/src/ds/ds_solid.cpp:980
+msgid "Profile Curve must be closed"
+msgstr ""
+
+#: LibGCore/src/ds/ds_solid.cpp:996 LibGCore/src/ds/ds_surface.cpp:1202
+msgid "Unable set up two rail sweep operation."
+msgstr ""
+
+#: LibGCore/src/ds/ds_solid.cpp:999
+msgid "Cannot instruct ASM to make a Solid."
+msgstr ""
+
+#: LibGCore/src/ds/ds_solid.cpp:1003 LibGCore/src/ds/ds_surface.cpp:1209
+msgid "Cannot set linear map for two-rail sweeping."
+msgstr ""
+
+#: LibGCore/src/ds/ds_solid.cpp:1007 LibGCore/src/ds/ds_surface.cpp:1213
+msgid "Unable to sweep profile Curve."
+msgstr ""
+
+#: LibGCore/src/ds/ds_solid.cpp:1022
+msgid "Cannot union an empty list of Solids"
+msgstr ""
+
+#: LibGCore/src/ds/ds_solid.cpp:1050
+msgid "Cannot create Solid, Curves are not closed"
+msgstr ""
+
+#: LibGCore/src/ds/ds_sphere.cpp:18
+msgid "Cast object is not a Sphere"
+msgstr ""
+
+#: LibGCore/src/ds/ds_sphere.cpp:31
+msgid "Sphere::by_four_points needs 4 points."
+msgstr ""
+
+#: LibGCore/src/ds/ds_sphere.cpp:46 LibGCore/src/ds/ds_sphere.cpp:59
+#: LibGCore/src/ds/ds_sphere.cpp:69
+msgid "Failed to make Sphere by four points."
+msgstr ""
+
+#: LibGCore/src/ds/ds_sphere.cpp:161
+msgid "Sphere::by_four_points needs more than 4 points."
+msgstr ""
+
+#: LibGCore/src/ds/ds_sphere.cpp:208 LibGCore/src/ds/ds_sphere.cpp:256
+#: LibGCore/src/ds/ds_sphere.cpp:280
+msgid "Failed to fit Sphere."
+msgstr ""
+
+#: LibGCore/src/ds/ds_sphere.cpp:304
+msgid "Unable to create sphere"
+msgstr ""
+
+#: LibGCore/src/ds/ds_subdivisionmesh.cpp:8
+msgid "Cast object is not a SubDivisionMesh"
+msgstr ""
+
+#: LibGCore/src/ds/ds_surface.cpp:16
+msgid "Cast object is not a Surface"
+msgstr ""
+
+#: LibGCore/src/ds/ds_surface.cpp:148
+msgid "Error creating Surface: Points are coincident"
+msgstr ""
+
+#: LibGCore/src/ds/ds_surface.cpp:157
+msgid "Error creating Surface perimeter Curves"
+msgstr ""
+
+#: LibGCore/src/ds/ds_surface.cpp:169
+msgid "Error using perimeter Curves to make Surface"
+msgstr ""
+
+#: LibGCore/src/ds/ds_surface.cpp:172 LibGCore/src/ds/ds_surface.cpp:241
+msgid "Unable to make wire from edges"
+msgstr ""
+
+#: LibGCore/src/ds/ds_surface.cpp:182 LibGCore/src/ds/ds_surface.cpp:251
+msgid "Unable to create polygon"
+msgstr ""
+
+#: LibGCore/src/ds/ds_surface.cpp:194
+msgid "Unable to patch a single, no-closed curve"
+msgstr ""
+
+#: LibGCore/src/ds/ds_surface.cpp:218
+msgid "Unable to patch curve"
+msgstr ""
+
+#: LibGCore/src/ds/ds_surface.cpp:267
+msgid "Invalid face!"
+msgstr ""
+
+#: LibGCore/src/ds/ds_surface.cpp:343
+msgid "trim_with_edge_loops requires all curves to touch surface"
+msgstr ""
+
+#: LibGCore/src/ds/ds_surface.cpp:352
+msgid "Unable to add face!"
+msgstr ""
+
+#: LibGCore/src/ds/ds_surface.cpp:356
+msgid "Unable to set surface!"
+msgstr ""
+
+#: LibGCore/src/ds/ds_surface.cpp:368
+msgid "Unable to add edge!"
+msgstr ""
+
+#: LibGCore/src/ds/ds_surface.cpp:373
+msgid "Unable to set curve!"
+msgstr ""
+
+#: LibGCore/src/ds/ds_surface.cpp:385
+msgid "Unable to add vertex!"
+msgstr ""
+
+#: LibGCore/src/ds/ds_surface.cpp:388
+msgid "Unable to set vertex position!"
+msgstr ""
+
+#: LibGCore/src/ds/ds_surface.cpp:401
+msgid "Unable to set edge vertices!"
+msgstr ""
+
+#: LibGCore/src/ds/ds_surface.cpp:408
+msgid "Unable to add loop!"
+msgstr ""
+
+#: LibGCore/src/ds/ds_surface.cpp:412
+msgid "Unable to set coedges of loop!"
+msgstr ""
+
+#: LibGCore/src/ds/ds_surface.cpp:415
+msgid "Unable to set loop on face!"
+msgstr ""
+
+#: LibGCore/src/ds/ds_surface.cpp:421
+msgid "Unable to create entity!"
+msgstr ""
+
+#: LibGCore/src/ds/ds_surface.cpp:424
+msgid "Unable to trim surface as the input loop geometry could be illegal"
+msgstr ""
+
+#: LibGCore/src/ds/ds_surface.cpp:445
+msgid ""
+"Unable to get the FACE's range while setting and limiting backing Surface"
+msgstr ""
+
+#: LibGCore/src/ds/ds_surface.cpp:475
+msgid "Lofted Curve, but could not convert to double-sided"
+msgstr ""
+
+#: LibGCore/src/ds/ds_surface.cpp:486
+msgid "Swept Curve, but could not convert to double sided"
+msgstr ""
+
+#: LibGCore/src/ds/ds_surface.cpp:503
+msgid "Unable to approx surface"
+msgstr ""
+
+#: LibGCore/src/ds/ds_surface.cpp:607
+msgid "Unable to extrude non-planar face without vector"
+msgstr ""
+
+#: LibGCore/src/ds/ds_surface.cpp:611 LibGCore/src/ds/ds_surface.cpp:632
+msgid "Unable to extrude surface"
+msgstr ""
+
+#: LibGCore/src/ds/ds_surface.cpp:615 LibGCore/src/ds/ds_surface.cpp:636
+msgid "Unabel to compute extrusion of surface"
+msgstr ""
+
+#: LibGCore/src/ds/ds_surface.cpp:655
+msgid "Unable to set BODY thicken data"
+msgstr ""
+
+#: LibGCore/src/ds/ds_surface.cpp:658
+msgid "Unable to set thicken operation to both sides"
+msgstr ""
+
+#: LibGCore/src/ds/ds_surface.cpp:661
+msgid "Unable to compute thickened face"
+msgstr ""
+
+#: LibGCore/src/ds/ds_surface.cpp:682
+msgid "Unable to set BODY offset data"
+msgstr ""
+
+#: LibGCore/src/ds/ds_surface.cpp:684
+msgid "Unable to set whether the result is attached or not"
+msgstr ""
+
+#: LibGCore/src/ds/ds_surface.cpp:687
+msgid "Could not offset surface"
+msgstr ""
+
+#: LibGCore/src/ds/ds_surface.cpp:773
+msgid "Unable to get param range for surface"
+msgstr ""
+
+#: LibGCore/src/ds/ds_surface.cpp:790
+msgid "Unable to evaluate normal of Surface."
+msgstr ""
+
+#: LibGCore/src/ds/ds_surface.cpp:977
+msgid ""
+"Unable to get FACE's range while determining if it is closed in U direction"
+msgstr ""
+
+#: LibGCore/src/ds/ds_surface.cpp:995
+msgid ""
+"Unable to get the FACE's range while determining if it is closed in the V "
+"direction"
+msgstr ""
+
+#: LibGCore/src/ds/ds_surface.cpp:1053 LibGCore/src/ds/ds_surface.cpp:1072
+#: LibGCore/src/ds/ds_surface.cpp:1097 LibGCore/src/ds/ds_surface.cpp:1122
+msgid "can not evaluate curvature"
+msgstr ""
+
+#: LibGCore/src/ds/ds_surface.cpp:1205
+msgid "Cannot instruct ASM to make a Surface."
+msgstr ""
+
+#: LibGCore/src/ds/ds_text.cpp:116
+msgid "Cast object is not Text"
+msgstr ""
+
+#: LibGCore/src/ds/ds_transformableitem.cpp:11
+msgid "Cast object is not a TransformableItem"
+msgstr ""
+
+#: LibGCore/src/ds/ds_transformableitem.cpp:105
+msgid ""
+"The distance between base and the first pick point must be greater than 0."
+msgstr ""
+
+#: LibGCore/src/ds/ds_transformableitem.cpp:108
+msgid ""
+"The distance between base and the second pick point must be greater than 0."
+msgstr ""
+
+#: LibGCore/src/ds/ds_transformableitem.cpp:180
+#: LibGCore/src/ds/ds_transformableitem.cpp:237
+msgid "The base point and first pick point must not be coincident!"
+msgstr ""
+
+#: LibGCore/src/ds/ds_transformableitem.cpp:191
+#: LibGCore/src/ds/ds_transformableitem.cpp:245
+msgid ""
+"The scale factor is 0!  The base point and second pick point may be "
+"coincident!"
+msgstr ""
+
+#: LibGCore/src/ds/ds_vector.cpp:19
+msgid "Cast object is not a Vector"
+msgstr ""
+
+#: LibGCore/src/ds/ds_vector.cpp:237
+msgid "attempt to set length of zero length vector"
+msgstr ""
+
+#: LibGCore/src/ds/topology/ds_coedge.cpp:97
+msgid "Can't get curve from coedge"
+msgstr ""
+
+#: LibGCore/src/ds/topology/ds_coedge.cpp:100
+msgid "The CoEdge belongs to a degenerate Edge."
+msgstr ""
+
+#: LibGCore/src/ds/topology/ds_edge.cpp:33
+msgid "Error getting coedges of the edge!"
+msgstr ""
+
+#: LibGCore/src/ds/topology/ds_edge.cpp:37
+msgid "Cast object is not an Edge"
+msgstr ""
+
+#: LibGCore/src/ds/topology/ds_edge.cpp:61
+msgid " doesn't support curve geometry query operation on it's Edge!"
+msgstr ""
+
+#: LibGCore/src/ds/topology/ds_edge.cpp:74
+msgid "Error copying an edge!"
+msgstr ""
+
+#: LibGCore/src/ds/topology/ds_edge.cpp:80
+msgid "Error creating a wire from edges!"
+msgstr ""
+
+#: LibGCore/src/ds/topology/ds_edge.cpp:85
+msgid "Unable to transform EDGE"
+msgstr ""
+
+#: LibGCore/src/ds/topology/ds_edge.cpp:134
+msgid "Could not test EDGE equality"
+msgstr ""
+
+#: LibGCore/src/ds/topology/ds_face.cpp:18
+msgid "Error getting face vertices!"
 msgstr ""
 
 #: LibGCore/src/ds/topology/ds_face.cpp:36
@@ -905,80 +1921,142 @@ msgstr ""
 msgid "Error getting face loops!"
 msgstr ""
 
-#: LibGCore/src/ds/topology/ds_face.cpp:18
-msgid "Error getting face vertices!"
-msgstr ""
-
-#: LibGCore/src/ds/ds_geometry.cpp:1390 LibGCore/src/ds/ds_geometry.cpp:1416
-#: LibGCore/src/ds/ds_polysurface.cpp:498 LibGCore/src/ds/ds_solid.cpp:674
-msgid "Error getting faces!"
-msgstr ""
-
-#: LibGCore/src/asm/asmutils.cpp:342 LibGCore/src/asm/asmutils.cpp:399
-msgid "Error getting intersecting of two curves"
-msgstr ""
-
-#: LibGCore/src/ds/ds_geometry.cpp:744
-msgid "Error getting length of the edge"
+#: LibGCore/src/ds/topology/ds_face.cpp:56
+msgid "Cast object is not Face"
 msgstr ""
 
 #: LibGCore/src/ds/topology/ds_loop.cpp:33
 msgid "Error getting loop coedges!"
 msgstr ""
 
-#: LibGCore/src/ds/ds_solid.cpp:660
-msgid "Error getting shells!"
+#: LibGCore/src/ds/topology/ds_loop.cpp:37
+msgid "Cast object is not Loop"
 msgstr ""
 
-#: LibGCore/src/asm/asmutils.cpp:1382
-msgid "Error getting the position from a vertex!"
+#: LibGCore/src/ds/topology/ds_loop.cpp:52
+msgid "Failed to define loop direction"
 msgstr ""
 
-#: LibGCore/src/asm/asmutils.cpp:1361
-msgid "Error getting the transformation of the edge!"
+#: LibGCore/src/ds/topology/ds_vertex.cpp:20
+msgid "Error getting adjacent edges of a vertex!"
 msgstr ""
 
-#: LibGCore/src/asm/asmutils.cpp:1335
-msgid "Error getting the transformation of the face!"
+#: LibGCore/src/ds/topology/ds_vertex.cpp:36
+msgid "Error getting adjacent faces of a vertex!"
 msgstr ""
 
-#: LibGCore/src/asm/asmutils.cpp:1449 LibGCore/src/asm/asmutils.cpp:1465
-msgid "Error getting the value of the attribute!"
+#: LibGCore/src/ds/topology/ds_vertex.cpp:62
+msgid " doesn't support point geometry query operation on it's Vertex!"
 msgstr ""
 
-#: LibGCore/src/ds/ds_cone.cpp:69 LibGCore/src/ds/ds_cone.cpp:218
-#: LibGCore/src/ds/ds_geometry.cpp:402 LibGCore/src/ds/ds_solid.cpp:688
-msgid "Error getting vertices"
+#: LibGCore/src/ds/topology/ds_vertex.cpp:68
+msgid "Could not get vertex point"
 msgstr ""
 
-#: LibGCore/src/ds/ds_cuboid.cpp:55 LibGCore/src/ds/ds_cuboid.cpp:160
-#: LibGCore/src/ds/ds_geometry.cpp:1029 LibGCore/src/ds/ds_geometry.cpp:1275
-#: LibGCore/src/ds/ds_geometry.cpp:1290 LibGCore/src/ds/ds_polysurface.cpp:512
-msgid "Error getting vertices!"
+#: LibGCore/src/ds/tspline/ds_tsplineinitialsymmetry.cpp:44
+msgid "Num symmetric faces must be greater than zero."
+msgstr ""
+
+#: LibGCore/src/ds/tspline/ds_tsplinereflection.cpp:41
+msgid "Number of symmetric segments must be greater than or equal to 2"
+msgstr ""
+
+#: LibGCore/src/ds/tspline/ds_tsplinereflection.cpp:53
+msgid "Reflection has null parent"
+msgstr ""
+
+#: LibGCore/src/ds/tspline/ds_tsplinereflection.cpp:57
+msgid "Reflection has invalid index"
+msgstr ""
+
+#: LibGCore/src/ds/tspline/ds_tsplinereflection.cpp:67
+msgid "Reflection has invalid plane"
+msgstr ""
+
+#: LibGCore/src/ds/tspline/ds_tsplinereflection.cpp:83
+msgid "Reflection has unimplemented symmetry type"
+msgstr ""
+
+#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:82
+msgid ""
+"The provided topolology inputs should create equal count of contiguous groups"
+msgstr ""
+
+#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:95
+msgid ""
+"Span counts list should have the same length as input contiguous group "
+"count, 1 for replication or be empty. Detected contiguous group count: "
+msgstr ""
+
+#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:108
+msgid ""
+"Rotation counts list should have the same length as input contiguous group "
+"count, 1 for replication or be empty. Detected contiguous group count: "
+msgstr ""
+
+#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:121
+msgid ""
+"Follow curves list should have the same length as inputcontiguous group "
+"count, 1 for replication or be empty. Detected contiguous group count: "
+msgstr ""
+
+#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:139
+msgid ""
+"Align vertices list should have the same length as input contiguous group "
+"count or be empty. Detected contiguous group count: "
+msgstr ""
+
+#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:151
+msgid ""
+"Flip alignment flags list should have the same length as input contiguous "
+"group count, 1 for replication or be empty. Detected contiguous group count: "
+msgstr ""
+
+#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:177
+msgid "Failed to combine two T-Spline surfaces during bridge operation"
+msgstr ""
+
+#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:194
+#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:243
+msgid "Bridge cannot be built"
+msgstr ""
+
+#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:207
+msgid "Segments count should be greater than or equal to 1"
+msgstr ""
+
+#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:211
+msgid "Segments count should be greater than rotations count"
+msgstr ""
+
+#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:223
+msgid "Wrong first orient vertex"
+msgstr ""
+
+#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:231
+msgid "Wrong second orient vertex"
+msgstr ""
+
+#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:289
+msgid "Cast object is not a TSplineSurface"
+msgstr ""
+
+#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:299
+#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1466
+#: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:960
+msgid "Spans should be greater than or equal to 1"
 msgstr ""
 
 #: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:354
 msgid "Error loading T-Spline surface from the given file path."
 msgstr ""
 
-#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:425
-msgid "Error loading T-Spline surface from the given string."
+#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:363
+msgid "Unable to open the given T-Spline Scene file."
 msgstr ""
 
-#: LibGCore/src/asm/asmutils.cpp:446
-msgid "Error projecting curve to plane"
-msgstr ""
-
-#: LibGCore/src/asm/asmutils.cpp:310
-msgid "Error projecting wire on body"
-msgstr ""
-
-#: LibGCore/src/asm/asmutils.cpp:430
-msgid "Error ray testing with body"
-msgstr ""
-
-#: LibGCore/src/asm/asmutils.cpp:1415
-msgid "Error regularising a body!"
+#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:367
+msgid "Unable to load T-Spline surfaces."
 msgstr ""
 
 #: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:387
@@ -994,49 +2072,237 @@ msgstr ""
 msgid "Error saving a T-Spline surface to a string"
 msgstr ""
 
-#: LibGCore/src/asm/asmutils.cpp:903
-msgid "Error separating body"
+#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:425
+msgid "Error loading T-Spline surface from the given string."
 msgstr ""
 
-#: LibGCore/src/asm/asmutils.cpp:457
-msgid "Error seting contact is collision"
+#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:469
+msgid "This T-Spline is not BRep convertible"
 msgstr ""
 
-#: LibGCore/src/asm/asmutils.cpp:1507 LibGCore/src/asm/asmutils.cpp:1514
-msgid "Error setting color attributes!"
+#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:488
+msgid "Unable to convert to BRep"
 msgstr ""
 
-#: LibGCore/src/asm/asmutils.cpp:1484 LibGCore/src/asm/asmutils.cpp:1501
-msgid "Error setting the value of the attribute!"
+#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:512
+msgid "Minimum segments count must be greater or equal to 0."
 msgstr ""
 
-#: LibGCore/src/asm/asmutils.cpp:332
-msgid "Error sweep intersecting wire with body"
+#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:567
+msgid "The mesh is empty"
 msgstr ""
 
-#: LibGCore/src/ds/ds_surface.cpp:169
-msgid "Error using perimeter Curves to make Surface"
+#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:631
+msgid "Groups sizes don't match."
 msgstr ""
 
-#: LibGCore/src/ds/ds_curve.cpp:1238
-msgid "Extrusion computed but cannot determine result type"
+#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:782
+msgid ""
+"T-Spline Surface is not extractable and can not be displayed in smooth mode"
 msgstr ""
 
-#: LibGCore/src/ds/tspline/topology/ds_tsplineface.cpp:31
-#: LibGCore/src/ds/tspline/topology/ds_tsplineface.cpp:114
-#: LibGCore/src/ds/tspline/topology/ds_tsplineface.cpp:129
-#: LibGCore/src/ds/tspline/topology/ds_tsplineface.cpp:146
-msgid "Face has invalid parent"
+#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:849
+msgid "T-Spline Surface requires segments count to be greater or equal to 1"
 msgstr ""
 
-#: LibGCore/src/ds/tspline/topology/ds_tsplineface.cpp:118
-#: LibGCore/src/ds/tspline/topology/ds_tsplineface.cpp:133
-#: LibGCore/src/ds/tspline/topology/ds_tsplineface.cpp:150
-msgid "Face index is invalid"
+#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:861
+msgid "Failed to bevel edges"
 msgstr ""
 
-#: LibGCore/src/ds/tspline/topology/ds_tsplinetopology.cpp:323
-msgid "Face with given index is not present on the t-spline"
+#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:878
+msgid "Failed to slide edges"
+msgstr ""
+
+#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:898
+msgid "The provided edges should create equal count of groups"
+msgstr ""
+
+#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:904
+msgid "Failed to merge edges."
+msgstr ""
+
+#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:923
+#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:945
+#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:967
+#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:989
+msgid "The input groups cannot be empty"
+msgstr ""
+
+#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1015
+msgid "Only border edges are permitted"
+msgstr ""
+
+#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1017
+msgid "Failed fill hole with given inputs"
+msgstr ""
+
+#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1029
+msgid "T-Spline doesn't have symmetry"
+msgstr ""
+
+#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1073
+msgid "Impossible to add symmetry to the t-spline"
+msgstr ""
+
+#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1158
+msgid "Unable to find closest point to given geometries"
+msgstr ""
+
+#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1186
+msgid "Flatten failed. At least 4 vertices is required"
+msgstr ""
+
+#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1201
+msgid "Flatten failed. At least 3 vertices is required"
+msgstr ""
+
+#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1252
+msgid "Faces with given indices are absent in the surface"
+msgstr ""
+
+#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1266
+msgid "Flipping normals failed."
+msgstr ""
+
+#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1277
+msgid "Making uniform failed."
+msgstr ""
+
+#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1292
+msgid ""
+"Knots technically match, but it's probably just roundoff from a seashell"
+msgstr ""
+
+#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1296
+msgid "Seashell isoparm pattern exists, standardization is impossible"
+msgstr ""
+
+#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1299
+msgid "The t-spline is not manifold"
+msgstr ""
+
+#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1302
+msgid "The matching knots guarantee is not met"
+msgstr ""
+
+#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1305
+msgid "The t-spline contains degenerate faces/zero-length edges"
+msgstr ""
+
+#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1308
+msgid "The t-spline contains valence-2 star points"
+msgstr ""
+
+#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1311
+msgid "Failed to standardize the t-spline"
+msgstr ""
+
+#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1381
+msgid "nu and nv should be non-negative"
+msgstr ""
+
+#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1438
+msgid "Spans parameters shoud be greater or equal to 0"
+msgstr ""
+
+#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1441
+msgid "One of front or back spans number shoud be greater than 0"
+msgstr ""
+
+#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1452
+#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1456
+msgid "Curve extrusion failed"
+msgstr ""
+
+#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1484
+msgid "Failed to sweep curve into TSpline surface"
+msgstr ""
+
+#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1494
+msgid "The given surface vector is empty"
+msgstr ""
+
+#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1506
+msgid "Failed to combine T-spline surfaces"
+msgstr ""
+
+#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1537
+msgid "The size of the segment counts must be 0, 1, or the curve count"
+msgstr ""
+
+#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1539
+msgid ""
+"The size of the rotations at the start of the curves must be either 1 or the "
+"curve count"
+msgstr ""
+
+#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1541
+msgid ""
+"The size of the rotations at the end of the curves must be either 1 or the "
+"curve count"
+msgstr ""
+
+#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1543
+msgid ""
+"The size of the radii at the start of the curves must be either 1 or the "
+"curve count"
+msgstr ""
+
+#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1545
+msgid ""
+"The size of the radii at the end of the curves must be either 1 or the curve "
+"count"
+msgstr ""
+
+#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1547
+msgid ""
+"The size of the positions at the start of the curves must be either 1 or the "
+"curve count"
+msgstr ""
+
+#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1549
+msgid ""
+"The size of the positions at the end of the curves must be either 1 or the "
+"curve count"
+msgstr ""
+
+#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1566
+msgid "Failed to initialize a T-Spline Pipe."
+msgstr ""
+
+#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1642
+msgid "Failed to build a T-Spline Pipe."
+msgstr ""
+
+#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1667
+#: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:514
+#: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:639
+#: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:725
+msgid "Radius spans should be greater or equal to 3"
+msgstr ""
+
+#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1671
+#: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:524
+#: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:647
+#: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:733
+#: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:832
+msgid "Either radial or axial symmetry is allowed, but not both"
+msgstr ""
+
+#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1675
+#: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:528
+#: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:651
+#: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:737
+msgid ""
+"Radius spans should be greater than or equal to 4 when X or Y symmetry is "
+"selected"
+msgstr ""
+
+#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1679
+#: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:532
+#: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:655
+#: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:741
+msgid "Radius spans should be multiple of 4 when X and Y symmetry is selected"
 msgstr ""
 
 #: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1683
@@ -1049,57 +2315,68 @@ msgid ""
 "selected"
 msgstr ""
 
-#: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:561
-#: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:680
-#: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:770
-#: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:867
-msgid ""
-"Faces per span must be less than or equal to 16 when radial symmetry is "
-"selected"
+#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1698
+msgid "T-Spline revolving curve failed"
 msgstr ""
 
 #: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1723
 msgid "Faces valence must be greater than 0."
 msgstr ""
 
-#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1252
-msgid "Faces with given indices are absent in the surface"
-msgstr ""
-
-#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1017
-msgid "Failed fill hole with given inputs"
-msgstr ""
-
-#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1933
-msgid "Failed to add a constraint for the match"
-msgstr ""
-
-#: LibGCore/src/asm/asmutils.cpp:1666 LibGCore/src/asm/asmutils.cpp:1676
-msgid "Failed to approximate curve"
-msgstr ""
-
-#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:861
-msgid "Failed to bevel edges"
-msgstr ""
-
-#: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:203
-msgid "Failed to build Sphere by four points."
-msgstr ""
-
-#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1642
-msgid "Failed to build a T-Spline Pipe."
-msgstr ""
-
-#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1506
-msgid "Failed to combine T-spline surfaces"
-msgstr ""
-
-#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:177
-msgid "Failed to combine two T-Spline surfaces during bridge operation"
+#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1725
+msgid "Snapping tolerance must be greater than 0."
 msgstr ""
 
 #: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1740
 msgid "Failed to construct a TSpline surface from the given lines"
+msgstr ""
+
+#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1761
+msgid "Edge can't be creased: "
+msgstr ""
+
+#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1764
+msgid "Edge can't be uncreased: "
+msgstr ""
+
+#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1791
+msgid "Vertex can't be creased: "
+msgstr ""
+
+#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1794
+msgid "Vertex can't be uncreased: "
+msgstr ""
+
+#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1821
+msgid "Crease unsuccessfull"
+msgstr ""
+
+#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1835
+msgid "Weld unsuccessfull"
+msgstr ""
+
+#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1837
+msgid "Unweld unsuccessfull"
+msgstr ""
+
+#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1852
+msgid "Failed to thicken TSpline surface"
+msgstr ""
+
+#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1869
+msgid "The given edges are empty"
+msgstr ""
+
+#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1877
+msgid "Failed to initialize the match"
+msgstr ""
+
+#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1883
+msgid "Failed to get the aligned edges"
+msgstr ""
+
+#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1892
+msgid "Failed to convert ASM curves to T-Spline NURBS curve interfaces"
 msgstr ""
 
 #: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1899
@@ -1108,33 +2385,33 @@ msgid ""
 "interfaces"
 msgstr ""
 
-#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1892
-msgid "Failed to convert ASM curves to T-Spline NURBS curve interfaces"
+#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1909
+msgid "Failed to set a propagation width"
 msgstr ""
 
-#: LibGCore/src/ds/tspline/ds_tsplineutils.cpp:188
-#: LibGCore/src/ds/tspline/ds_tsplineutils.cpp:241
-msgid "Failed to convert Nurbs curve"
+#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1926
+msgid "Unknown contituity"
 msgstr ""
 
-#: LibGCore/src/ds/tspline/ds_tsplineutils.cpp:314
-msgid "Failed to convert Nurbs surface"
+#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1933
+msgid "Failed to add a constraint for the match"
 msgstr ""
 
-#: LibGCore/src/ds/tspline/ds_tsplineutils.cpp:143
-msgid "Failed to create ASM B-Spline curve"
+#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1940
+msgid "Failed to scale the derivatives for continuity for the given constraint"
 msgstr ""
 
-#: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:688
-msgid "Failed to create cone"
+#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1946
+msgid "Failed to flip the constraint orientation"
 msgstr ""
 
-#: LibGCore/src/impt/impt_asmimporter.cpp:68
-msgid "Failed to create geometry from solid def JSON"
+#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1951
+msgid "Failed to perform the match"
 msgstr ""
 
-#: LibGCore/src/ds/topology/ds_loop.cpp:52
-msgid "Failed to define loop direction"
+#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1963
+#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1987
+msgid "T-Spline Surface requires spans to be greater or equal to 1"
 msgstr ""
 
 #: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1975
@@ -1145,13 +2422,30 @@ msgstr ""
 msgid "Failed to extrude TSpline faces"
 msgstr ""
 
-#: LibGCore/src/ds/ds_polycurve.cpp:217
-msgid "Failed to find start Edge"
+#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:2063
+msgid "Subdivision failed."
 msgstr ""
 
-#: LibGCore/src/ds/ds_sphere.cpp:208 LibGCore/src/ds/ds_sphere.cpp:256
-#: LibGCore/src/ds/ds_sphere.cpp:280
-msgid "Failed to fit Sphere."
+#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:2114
+#: LibGCore/src/ds/tspline/ds_tsplineutils.cpp:341
+#: LibGCore/src/ds/tspline/ds_tsplineutils.cpp:345
+msgid "Unable to build body from T-Spline"
+msgstr ""
+
+#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:2180
+msgid "Ouptut t-spline is invalid."
+msgstr ""
+
+#: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:165
+msgid "Point list should contain 4 points."
+msgstr ""
+
+#: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:203
+msgid "Failed to build Sphere by four points."
+msgstr ""
+
+#: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:228
+msgid "Point list should contain more than 3 points."
 msgstr ""
 
 #: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:265
@@ -1160,97 +2454,49 @@ msgstr ""
 msgid "Failed to fit T-Spline Sphere."
 msgstr ""
 
-#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1946
-msgid "Failed to flip the constraint orientation"
+#: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:440
+#: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:909
+msgid "Each span should be greater than or equal to 1"
 msgstr ""
 
-#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1883
-msgid "Failed to get the aligned edges"
+#: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:443
+msgid "Each span should be less than or equal to 256"
 msgstr ""
 
-#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1566
-msgid "Failed to initialize a T-Spline Pipe."
-msgstr ""
-
-#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1877
-msgid "Failed to initialize the match"
-msgstr ""
-
-#: LibGCore/src/ds/ds_sphere.cpp:46 LibGCore/src/ds/ds_sphere.cpp:59
-#: LibGCore/src/ds/ds_sphere.cpp:69
-msgid "Failed to make Sphere by four points."
-msgstr ""
-
-#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:904
-msgid "Failed to merge edges."
-msgstr ""
-
-#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1951
-msgid "Failed to perform the match"
-msgstr ""
-
-#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1940
-msgid "Failed to scale the derivatives for continuity for the given constraint"
-msgstr ""
-
-#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1909
-msgid "Failed to set a propagation width"
-msgstr ""
-
-#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:878
-msgid "Failed to slide edges"
-msgstr ""
-
-#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1311
-msgid "Failed to standardize the t-spline"
-msgstr ""
-
-#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1484
-msgid "Failed to sweep curve into TSpline surface"
-msgstr ""
-
-#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1852
-msgid "Failed to thicken TSpline surface"
-msgstr ""
-
-#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1201
-msgid "Flatten failed. At least 3 vertices is required"
-msgstr ""
-
-#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1186
-msgid "Flatten failed. At least 4 vertices is required"
-msgstr ""
-
-#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:151
+#: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:447
 msgid ""
-"Flip alignment flags list should have the same length as input contiguous "
-"group count, 1 for replication or be empty. Detected contiguous group count: "
+"X spans should be greater than or equal to 2 if X axis symmetry is selected"
 msgstr ""
 
-#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1266
-msgid "Flipping normals failed."
-msgstr ""
-
-#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:121
+#: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:451
 msgid ""
-"Follow curves list should have the same length as inputcontiguous group "
-"count, 1 for replication or be empty. Detected contiguous group count: "
+"Y spans should be greater than or equal to 2 if Y axis symmetry is selected"
 msgstr ""
 
-#: LibGCore/src/ds/ds_polycurve.cpp:719
-msgid "Get Aligning CS Not Implemented"
+#: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:458
+msgid "Plane has invalid normal"
 msgstr ""
 
-#: LibGCore/src/ds/ds_polycurve.cpp:182
-msgid "Get EDGEs operation failed when creating PolyCurve"
+#: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:465
+msgid "X or Y coordinates of corners are coincedent"
 msgstr ""
 
-#: LibGCore/src/ds/ds_polycurve.cpp:731
-msgid "Get Length Not Implemented"
+#: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:471
+msgid "T-Spline Surface Plane creation failed"
 msgstr ""
 
-#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:631
-msgid "Groups sizes don't match."
+#: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:502
+#: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:626
+#: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:718
+#: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:954
+msgid "Radius should be greater than or equal to 1e-3"
+msgstr ""
+
+#: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:505
+#: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:629
+#: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:721
+#: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:957
+msgid "Radius should be less than or equal to 1e8"
 msgstr ""
 
 #: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:508
@@ -1268,8 +2514,12 @@ msgstr ""
 msgid "Height spans should be greater or equal to 1"
 msgstr ""
 
-#: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:729
-msgid "Height spans should be greater or equal to 2"
+#: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:520
+#: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:597
+#: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:874
+#: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:921
+#: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:969
+msgid "Coordinate system has zero axis"
 msgstr ""
 
 #: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:536
@@ -1278,11 +2528,27 @@ msgid ""
 "Height spans should be greater than or equal to 2 when Z symmetry is selected"
 msgstr ""
 
+#: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:541
+#: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:660
+#: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:750
+msgid ""
+"Radius spans should be less than or equal to 256 when radial symmetry is not "
+"selected"
+msgstr ""
+
 #: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:545
 #: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:664
 #: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:754
 msgid ""
 "Height spans should be less than or equal to 256 when radial symmetry is not "
+"selected"
+msgstr ""
+
+#: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:549
+#: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:668
+#: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:758
+msgid ""
+"Radius spans should be less than or equal to 64 when radial symmetry is "
 "selected"
 msgstr ""
 
@@ -1294,25 +2560,49 @@ msgid ""
 "selected"
 msgstr ""
 
-#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1073
-msgid "Impossible to add symmetry to the t-spline"
+#: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:561
+#: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:680
+#: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:770
+#: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:867
+msgid ""
+"Faces per span must be less than or equal to 16 when radial symmetry is "
+"selected"
 msgstr ""
 
-#: LibGCore/src/ds/tspline/ds_tsplineutils.cpp:429
-msgid "Impossible to get curve from edge"
+#: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:576
+msgid "T-Spline Surface Cylinder creation failed"
 msgstr ""
 
-#: LibGCore/src/ds/tspline/ds_tsplineutils.cpp:410
-msgid "Impossible to get edges from face"
+#: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:594
+msgid "Both radii cannot be zero"
 msgstr ""
 
-#: LibGCore/src/ds/tspline/ds_tsplineutils.cpp:405
-msgid "Impossible to get face from surface"
+#: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:688
+msgid "Failed to create cone"
 msgstr ""
 
-#: LibGCore/src/ds/tspline/ds_tsplineutils.cpp:99
-#: LibGCore/src/ds/tspline/ds_tsplineutils.cpp:498
-msgid "Impossible to refit given surface"
+#: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:729
+msgid "Height spans should be greater or equal to 2"
+msgstr ""
+
+#: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:785
+msgid "T-Spline Surface Sphere creation failed"
+msgstr ""
+
+#: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:815
+msgid "Inner radius should be greater than or equal to 1e-3"
+msgstr ""
+
+#: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:818
+msgid "Inner radius should be less than or equal to 1e8"
+msgstr ""
+
+#: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:821
+msgid "Outer radius should be greater than or equal to 1e-3"
+msgstr ""
+
+#: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:824
+msgid "Outer radius should be less than or equal to 1e8"
 msgstr ""
 
 #: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:828
@@ -1325,17 +2615,20 @@ msgid ""
 "symmetry is selected"
 msgstr ""
 
-#: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:815
-msgid "Inner radius should be greater than or equal to 1e-3"
-msgstr ""
-
-#: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:818
-msgid "Inner radius should be less than or equal to 1e8"
+#: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:842
+msgid ""
+"Outer radius spans should be multiple of 4 when X and Y symmetry is selected"
 msgstr ""
 
 #: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:847
 msgid ""
 "Inner radius spans should be less than or equal to 256 when radial symmetry "
+"is not selected"
+msgstr ""
+
+#: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:851
+msgid ""
+"Outer radius spans should be less than or equal to 256 when radial symmetry "
 "is not selected"
 msgstr ""
 
@@ -1345,1429 +2638,172 @@ msgid ""
 "is selected"
 msgstr ""
 
-#: LibGCore/src/ds/ds_rectangle.cpp:71
-msgid "Input Points don't form a valid Rectangle"
-msgstr ""
-
-#: LibGCore/src/ds/ds_curve.cpp:2004 LibGCore/src/ds/ds_curve.cpp:2102
-msgid "Input segment length must be greater than 0"
-msgstr ""
-
-#: LibGCore/src/ds/ds_polycurve.cpp:398
-msgid "Invalid Curve index"
-msgstr ""
-
-#: LibGCore/src/ds/ds_surface.cpp:267
-msgid "Invalid face!"
-msgstr ""
-
-#: LibGCore/src/ds/tspline/topology/ds_tsplineuvnframe.cpp:36
-msgid "Invalid topology index"
-msgstr ""
-
-#: LibGCore/src/ds/tspline/ds_tsplineutils.cpp:121
-msgid "Knots is not match control vertices"
-msgstr ""
-
-#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1292
-msgid ""
-"Knots technically match, but it's probably just roundoff from a seashell"
-msgstr ""
-
-#: LibGCore/src/ds/ds_surface.cpp:475
-msgid "Lofted Curve, but could not convert to double-sided"
-msgstr ""
-
-#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1277
-msgid "Making uniform failed."
-msgstr ""
-
-#: LibGCore/src/ds/ds_polycurve.cpp:727
-msgid "Merge Not Implemented"
-msgstr ""
-
-#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:512
-msgid "Minimum segments count must be greater or equal to 0."
-msgstr ""
-
-#: LibGCore/src/ds/ds_bsplinecurve.cpp:349
-#: LibGCore/src/ds/ds_bsplinecurve.cpp:374
-msgid "Negative extension not supported"
-msgstr ""
-
-#: LibGCore/src/ds/ds_polysurface.cpp:537
-msgid ""
-"Non-uniform transformations on PolySurface is not supported at the moment"
-msgstr ""
-
-#: LibGCore/src/ds/ds_polysurface.cpp:98
-msgid "Nonmanifold boundary contains non-EDGEs"
-msgstr ""
-
-#: LibGCore/src/ds/ds_polysurface.cpp:208
-#: LibGCore/src/ds/ds_polysurface.cpp:299
-#: LibGCore/src/ds/ds_polysurface.cpp:314
-#: LibGCore/src/ds/ds_polysurface.cpp:318
-#: LibGCore/src/ds/ds_polysurface.cpp:326
-#: LibGCore/src/ds/ds_polysurface.cpp:330 LibGCore/src/ds/ds_surface.cpp:878
-msgid "Not Implemented"
-msgstr ""
-
-#: LibGCore/src/ds/ds_curve.cpp:306 LibGCore/src/ds/ds_solid.cpp:960
-msgid "Not implemented"
-msgstr ""
-
-#: LibGCore/src/ds/ds_curve.cpp:803
-msgid "Not implemented for discontinuous curves!"
-msgstr ""
-
-#: LibGCore/src/ds/tspline/ds_tsplineinitialsymmetry.cpp:44
-msgid "Num symmetric faces must be greater than zero."
-msgstr ""
-
-#: LibGCore/src/ds/tspline/ds_tsplinereflection.cpp:41
-msgid "Number of symmetric segments must be greater than or equal to 2"
-msgstr ""
-
-#: LibGCore/src/ds/ds_bsplinecurve.cpp:177
-msgid "NurbsCurves must have at least one more control points than degree"
-msgstr ""
-
-#: LibGCore/src/ds/ds_bsplinecurve.cpp:104
-msgid "NurbsCurves require at least 2 points for interpolation"
-msgstr ""
-
-#: LibGCore/src/ds/ds_bsplinecurve.cpp:100
-#: LibGCore/src/ds/ds_bsplinecurve.cpp:174
-msgid "NurbsCurves require degree to be greater than 0"
-msgstr ""
-
-#: LibGCore/src/ds/ds_bsplinesurface.cpp:417
-msgid "NurbsSurfaces must have at least one more control points than degree"
-msgstr ""
-
-#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1441
-msgid "One of front or back spans number shoud be greater than 0"
-msgstr ""
-
-#: LibGCore/src/ds/ds_polymesh.cpp:60
-msgid ""
-"One or more IndexGroups supplied contained an out of bounds vertex index!  "
-"All IndexGroup indices are zero-based and must be less than the number of "
-"vertices supplied."
-msgstr ""
-
-#: LibGCore/src/asm/asmutils.cpp:1618
-msgid "One part of curve is not linear!"
-msgstr ""
-
-#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1015
-msgid "Only border edges are permitted"
-msgstr ""
-
-#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:2180
-msgid "Ouptut t-spline is invalid."
-msgstr ""
-
-#: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:821
-msgid "Outer radius should be greater than or equal to 1e-3"
-msgstr ""
-
-#: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:824
-msgid "Outer radius should be less than or equal to 1e8"
-msgstr ""
-
-#: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:851
-msgid ""
-"Outer radius spans should be less than or equal to 256 when radial symmetry "
-"is not selected"
-msgstr ""
-
 #: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:859
 msgid ""
 "Outer radius spans should be less than or equal to 64 when radial symmetry "
 "is selected"
 msgstr ""
 
-#: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:842
-msgid ""
-"Outer radius spans should be multiple of 4 when X and Y symmetry is selected"
+#: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:888
+msgid "T-Spline Surface Torus creation failed"
 msgstr ""
 
-#: LibGCore/src/ds/ds_polycurve.cpp:711
-msgid "Param Trim End Not Implemented"
+#: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:912
+msgid "Each span should be less than or equal to 128"
 msgstr ""
 
-#: LibGCore/src/ds/ds_polycurve.cpp:621
-msgid "Param Trim Interior Not Implemented"
-msgstr ""
-
-#: LibGCore/src/ds/ds_polycurve.cpp:616
-msgid "Param Trim Segments Not Implemented"
-msgstr ""
-
-#: LibGCore/src/ds/ds_polycurve.cpp:707
-msgid "Param Trim Start Not Implemented"
-msgstr ""
-
-#: LibGCore/src/ds/ds_polycurve.cpp:597
-msgid "Parameter at chord length Not Implemented"
-msgstr ""
-
-#: LibGCore/src/ds/ds_polycurve.cpp:715
-msgid "Parm Trim Not Implemented"
-msgstr ""
-
-#: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:458
-msgid "Plane has invalid normal"
-msgstr ""
-
-#: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:165
-msgid "Point list should contain 4 points."
-msgstr ""
-
-#: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:228
-msgid "Point list should contain more than 3 points."
-msgstr ""
-
-#: LibGCore/src/ds/ds_polycurve.cpp:1425
-msgid "PolyCurves cannot be converted to EDGEs. Aborting."
-msgstr ""
-
-#: LibGCore/src/ds/ds_polycurve.cpp:174
-msgid "PolyCurves may be branching"
-msgstr ""
-
-#: LibGCore/src/ds/ds_solid.cpp:970 LibGCore/src/ds/ds_solid.cpp:980
-msgid "Profile Curve must be closed"
-msgstr ""
-
-#: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:502
-#: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:626
-#: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:718
-#: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:954
-msgid "Radius should be greater than or equal to 1e-3"
-msgstr ""
-
-#: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:505
-#: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:629
-#: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:721
-#: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:957
-msgid "Radius should be less than or equal to 1e8"
-msgstr ""
-
-#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1667
-#: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:514
-#: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:639
-#: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:725
-msgid "Radius spans should be greater or equal to 3"
-msgstr ""
-
-#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1675
-#: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:528
-#: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:651
-#: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:737
-msgid ""
-"Radius spans should be greater than or equal to 4 when X or Y symmetry is "
-"selected"
-msgstr ""
-
-#: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:541
-#: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:660
-#: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:750
-msgid ""
-"Radius spans should be less than or equal to 256 when radial symmetry is not "
-"selected"
-msgstr ""
-
-#: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:549
-#: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:668
-#: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:758
-msgid ""
-"Radius spans should be less than or equal to 64 when radial symmetry is "
-"selected"
-msgstr ""
-
-#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1679
-#: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:532
-#: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:655
-#: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:741
-msgid "Radius spans should be multiple of 4 when X and Y symmetry is selected"
-msgstr ""
-
-#: LibGCore/src/ds/ds_rectangle.cpp:64
-msgid "Rectangle needs 4 corner points"
-msgstr ""
-
-#: LibGCore/src/ds/tspline/ds_tsplinereflection.cpp:57
-msgid "Reflection has invalid index"
-msgstr ""
-
-#: LibGCore/src/ds/tspline/ds_tsplinereflection.cpp:67
-msgid "Reflection has invalid plane"
-msgstr ""
-
-#: LibGCore/src/ds/tspline/ds_tsplinereflection.cpp:53
-msgid "Reflection has null parent"
-msgstr ""
-
-#: LibGCore/src/ds/tspline/ds_tsplinereflection.cpp:83
-msgid "Reflection has unimplemented symmetry type"
-msgstr ""
-
-#: LibGCore/src/ds/ds_polygon.cpp:233
-msgid "Regular polygon shoudl have 3 or more sides"
-msgstr ""
-
-#: LibGCore/src/ds/ds_polycurve.cpp:808
-msgid "Request for Plane of non-planar PolyCurve"
-msgstr ""
-
-#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:108
-msgid ""
-"Rotation counts list should have the same length as input contiguous group "
-"count, 1 for replication or be empty. Detected contiguous group count: "
-msgstr ""
-
-#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1296
-msgid "Seashell isoparm pattern exists, standardization is impossible"
-msgstr ""
-
-#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:207
-msgid "Segments count should be greater than or equal to 1"
-msgstr ""
-
-#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:211
-msgid "Segments count should be greater than rotations count"
-msgstr ""
-
-#: LibGCore/src/asm/asmutils.cpp:781
-msgid "Slice with many not supported"
-msgstr ""
-
-#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1725
-msgid "Snapping tolerance must be greater than 0."
-msgstr ""
-
-#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:95
-msgid ""
-"Span counts list should have the same length as input contiguous group "
-"count, 1 for replication or be empty. Detected contiguous group count: "
-msgstr ""
-
-#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1438
-msgid "Spans parameters shoud be greater or equal to 0"
-msgstr ""
-
-#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:299
-#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1466
-#: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:960
-msgid "Spans should be greater than or equal to 1"
-msgstr ""
-
-#: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:963
-msgid "Spans should be less than or equal to 32"
-msgstr ""
-
-#: LibGCore/src/ds/ds_sphere.cpp:31
-msgid "Sphere::by_four_points needs 4 points."
-msgstr ""
-
-#: LibGCore/src/ds/ds_sphere.cpp:161
-msgid "Sphere::by_four_points needs more than 4 points."
-msgstr ""
-
-#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:2063
-msgid "Subdivision failed."
-msgstr ""
-
-#: LibGCore/src/ds/tspline/topology/ds_tsplineface.cpp:98
-msgid "Surface creation error."
-msgstr ""
-
-#: LibGCore/src/ds/ds_solid.cpp:873
-msgid "Surfaces could not be joined into a closed Solid!"
-msgstr ""
-
-#: LibGCore/src/ds/ds_solid.cpp:901
-msgid "Surfaces could not be joined into a closed Solid, even with refinement!"
-msgstr ""
-
-#: LibGCore/src/ds/ds_surface.cpp:486
-msgid "Swept Curve, but could not convert to double sided"
+#: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:915
+msgid "Zero dimensions are not allowed"
 msgstr ""
 
 #: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:934
 msgid "T-Spline Surface Box creation failed"
 msgstr ""
 
-#: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:576
-msgid "T-Spline Surface Cylinder creation failed"
-msgstr ""
-
-#: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:471
-msgid "T-Spline Surface Plane creation failed"
+#: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:963
+msgid "Spans should be less than or equal to 32"
 msgstr ""
 
 #: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:983
 msgid "T-Spline Surface Quadball creation failed"
 msgstr ""
 
-#: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:785
-msgid "T-Spline Surface Sphere creation failed"
+#: LibGCore/src/ds/tspline/ds_tsplineutils.cpp:16
+msgid "Cannot construct FACE from surface"
 msgstr ""
 
-#: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:888
-msgid "T-Spline Surface Torus creation failed"
-msgstr ""
-
-#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:782
-msgid ""
-"T-Spline Surface is not extractable and can not be displayed in smooth mode"
-msgstr ""
-
-#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:849
-msgid "T-Spline Surface requires segments count to be greater or equal to 1"
-msgstr ""
-
-#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1963
-#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1987
-msgid "T-Spline Surface requires spans to be greater or equal to 1"
-msgstr ""
-
-#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1029
-msgid "T-Spline doesn't have symmetry"
-msgstr ""
-
-#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1698
-msgid "T-Spline revolving curve failed"
-msgstr ""
-
-#: LibGCore/src/ds/topology/ds_coedge.cpp:100
-msgid "The CoEdge belongs to a degenerate Edge."
-msgstr ""
-
-#: LibGCore/src/ds/ds_transformableitem.cpp:180
-#: LibGCore/src/ds/ds_transformableitem.cpp:237
-msgid "The base point and first pick point must not be coincident!"
-msgstr ""
-
-#: LibGCore/src/ds/ds_transformableitem.cpp:105
-msgid ""
-"The distance between base and the first pick point must be greater than 0."
-msgstr ""
-
-#: LibGCore/src/ds/ds_transformableitem.cpp:108
-msgid ""
-"The distance between base and the second pick point must be greater than 0."
-msgstr ""
-
-#: LibGCore/src/asm/asmutils.cpp:1196
-msgid "The external thickness shouble not be smaller than 0!"
-msgstr ""
-
-#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1869
-msgid "The given edges are empty"
-msgstr ""
-
-#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1494
-msgid "The given surface vector is empty"
-msgstr ""
-
-#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:923
-#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:945
-#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:967
-#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:989
-msgid "The input groups cannot be empty"
-msgstr ""
-
-#: LibGCore/src/ds/ds_polysurface.cpp:38
-msgid "The input is not valid"
+#: LibGCore/src/ds/tspline/ds_tsplineutils.cpp:22
+msgid "Cannot get bounding box from FACE"
 msgstr ""
 
 #: LibGCore/src/ds/tspline/ds_tsplineutils.cpp:30
 msgid "The input surface must have finite parameter ranges"
 msgstr ""
 
-#: LibGCore/src/asm/asmutils.cpp:1200
-msgid "The internal thickness shouble not be bigger than 0!"
+#: LibGCore/src/ds/tspline/ds_tsplineutils.cpp:99
+#: LibGCore/src/ds/tspline/ds_tsplineutils.cpp:498
+msgid "Impossible to refit given surface"
 msgstr ""
 
-#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1302
-msgid "The matching knots guarantee is not met"
+#: LibGCore/src/ds/tspline/ds_tsplineutils.cpp:121
+msgid "Knots is not match control vertices"
 msgstr ""
 
-#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:567
-msgid "The mesh is empty"
+#: LibGCore/src/ds/tspline/ds_tsplineutils.cpp:143
+msgid "Failed to create ASM B-Spline curve"
 msgstr ""
 
-#: LibGCore/src/asm/asmutils.cpp:1480 LibGCore/src/asm/asmutils.cpp:1497
-msgid "The number of attributes is not one!"
+#: LibGCore/src/ds/tspline/ds_tsplineutils.cpp:188
+#: LibGCore/src/ds/tspline/ds_tsplineutils.cpp:241
+msgid "Failed to convert Nurbs curve"
 msgstr ""
 
-#: LibGCore/src/ds/ds_solid.cpp:585
-msgid "The profile Curve must be planar to perform sweep"
-msgstr ""
-
-#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:898
-msgid "The provided edges should create equal count of groups"
-msgstr ""
-
-#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:82
-msgid ""
-"The provided topolology inputs should create equal count of contiguous groups"
-msgstr ""
-
-#: LibGCore/src/ds/ds_transformableitem.cpp:191
-#: LibGCore/src/ds/ds_transformableitem.cpp:245
-msgid ""
-"The scale factor is 0!  The base point and second pick point may be "
-"coincident!"
-msgstr ""
-
-#: LibGCore/src/ds/ds_polycurve.cpp:328
-msgid ""
-"The second curve was a PolyCurve and its sub-curves could not be extracted"
-msgstr ""
-
-#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1549
-msgid ""
-"The size of the positions at the end of the curves must be either 1 or the "
-"curve count"
-msgstr ""
-
-#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1547
-msgid ""
-"The size of the positions at the start of the curves must be either 1 or the "
-"curve count"
-msgstr ""
-
-#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1545
-msgid ""
-"The size of the radii at the end of the curves must be either 1 or the curve "
-"count"
-msgstr ""
-
-#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1543
-msgid ""
-"The size of the radii at the start of the curves must be either 1 or the "
-"curve count"
-msgstr ""
-
-#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1541
-msgid ""
-"The size of the rotations at the end of the curves must be either 1 or the "
-"curve count"
-msgstr ""
-
-#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1539
-msgid ""
-"The size of the rotations at the start of the curves must be either 1 or the "
-"curve count"
-msgstr ""
-
-#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1537
-msgid "The size of the segment counts must be 0, 1, or the curve count"
-msgstr ""
-
-#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1305
-msgid "The t-spline contains degenerate faces/zero-length edges"
-msgstr ""
-
-#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1308
-msgid "The t-spline contains valence-2 star points"
-msgstr ""
-
-#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1299
-msgid "The t-spline is not manifold"
-msgstr ""
-
-#: LibGCore/src/ds/ds_polygon.cpp:53
-msgid ""
-"There were not enough edges to form a polygon!  Some of the vertices may be "
-"coincident."
-msgstr ""
-
-#: LibGCore/src/ds/ds_solid.cpp:694
-msgid "Thicknesses must be positive"
-msgstr ""
-
-#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:469
-msgid "This T-Spline is not BRep convertible"
-msgstr ""
-
-#: LibGCore/src/ds/ds_polycurve.cpp:723
-msgid "To BSPlineCurve Not Implemented"
-msgstr ""
-
-#: LibGCore/src/ui/ui_facetingengine.cpp:28
-msgid "Too small to facet"
-msgstr ""
-
-#: LibGCore/src/ds/ds_bsplinecurve.cpp:476
-msgid "Unabe to set edge to consume"
-msgstr ""
-
-#: LibGCore/src/ds/ds_surface.cpp:615 LibGCore/src/ds/ds_surface.cpp:636
-msgid "Unabel to compute extrusion of surface"
-msgstr ""
-
-#: LibGCore/src/ds/ds_solid.cpp:171
-msgid "Unable difference two Solids"
-msgstr ""
-
-#: LibGCore/src/ds/ds_polycurve.cpp:2106
-msgid "Unable divide polycurve by length"
-msgstr ""
-
-#: LibGCore/src/ds/ds_polycurve.cpp:1825
-msgid "Unable divide polycurve equally by distance"
-msgstr ""
-
-#: LibGCore/src/ds/ds_polycurve.cpp:1696
-msgid "Unable divide polycurve equally by length"
-msgstr ""
-
-#: LibGCore/src/ds/ds_solid.cpp:205
-msgid "Unable intersect two Solids"
-msgstr ""
-
-#: LibGCore/src/ds/ds_geometry.cpp:1017
-msgid "Unable make FACEs BODY double sided."
-msgstr ""
-
-#: LibGCore/src/ds/ds_solid.cpp:996 LibGCore/src/ds/ds_surface.cpp:1202
-msgid "Unable set up two rail sweep operation."
-msgstr ""
-
-#: LibGCore/src/asm/asmutils.cpp:1061 LibGCore/src/asm/asmutils.cpp:1130
-msgid "Unable to add blank body to trimmer"
-msgstr ""
-
-#: LibGCore/src/ds/ds_surface.cpp:368
-msgid "Unable to add edge!"
-msgstr ""
-
-#: LibGCore/src/ds/ds_surface.cpp:352
-msgid "Unable to add face!"
-msgstr ""
-
-#: LibGCore/src/asm/asmutils.cpp:490 LibGCore/src/asm/asmutils.cpp:514
-msgid "Unable to add faces to body builder"
-msgstr ""
-
-#: LibGCore/src/ds/ds_surface.cpp:408
-msgid "Unable to add loop!"
-msgstr ""
-
-#: LibGCore/src/ds/ds_surface.cpp:385
-msgid "Unable to add vertex!"
-msgstr ""
-
-#: LibGCore/src/ds/ds_surface.cpp:503
-msgid "Unable to approx surface"
-msgstr ""
-
-#: LibGCore/src/ds/ds_geometry.cpp:1119 LibGCore/src/ds/ds_geometry.cpp:1591
-msgid "Unable to approximate body"
-msgstr ""
-
-#: LibGCore/src/ds/ds_curve.cpp:1867
-msgid "Unable to approximate curve with arc and line segments"
-msgstr ""
-
-#: LibGCore/src/ds/ds_curve.cpp:2777
-msgid "Unable to approximate simplified spline"
-msgstr ""
-
-#: LibGCore/src/ds/ds_polysurface.cpp:722
-msgid "Unable to attach cellular analyzer to Polysurface"
-msgstr ""
-
-#: LibGCore/src/ds/ds_curve.cpp:1694
-msgid "Unable to blend between curves"
-msgstr ""
-
-#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:2114
-#: LibGCore/src/ds/tspline/ds_tsplineutils.cpp:341
-#: LibGCore/src/ds/tspline/ds_tsplineutils.cpp:345
-msgid "Unable to build body from T-Spline"
-msgstr ""
-
-#: LibGCore/src/ds/ds_curve.cpp:234
-msgid "Unable to compute Curve point at parameter"
-msgstr ""
-
-#: LibGCore/src/ds/ds_curve.cpp:1802
-msgid "Unable to compute Curve projection on Surface"
-msgstr ""
-
-#: LibGCore/src/ds/ds_solid.cpp:766
-msgid "Unable to compute chamfer"
-msgstr ""
-
-#: LibGCore/src/ds/ds_geometry.cpp:1523
-msgid "Unable to compute closest approach on BoundingBox face"
-msgstr ""
-
-#: LibGCore/src/ds/ds_curve.cpp:790 LibGCore/src/ds/ds_polycurve.cpp:144
-msgid "Unable to compute edge from curve"
-msgstr ""
-
-#: LibGCore/src/ds/ds_geometry.cpp:1153
-msgid "Unable to compute equality between bodies"
-msgstr ""
-
-#: LibGCore/src/ds/ds_curve.cpp:1187
-msgid "Unable to compute extrude curve"
-msgstr ""
-
-#: LibGCore/src/ds/ds_polysurface.cpp:272
-#: LibGCore/src/ds/ds_polysurface.cpp:290 LibGCore/src/ds/ds_solid.cpp:749
-msgid "Unable to compute fillet"
-msgstr ""
-
-#: LibGCore/src/ds/ds_curve.cpp:1349
-msgid "Unable to compute revolve"
-msgstr ""
-
-#: LibGCore/src/ds/ds_solid.cpp:716
-msgid "Unable to compute shell"
-msgstr ""
-
-#: LibGCore/src/ds/ds_curve.cpp:1281 LibGCore/src/ds/ds_polycurve.cpp:1365
-msgid "Unable to compute surface sweep on rail"
-msgstr ""
-
-#: LibGCore/src/ds/ds_polysurface.cpp:696
-msgid "Unable to compute surface sweep on rail  to make Polysurface"
-msgstr ""
-
-#: LibGCore/src/ds/ds_curve.cpp:124
-msgid "Unable to compute tangent at curve"
-msgstr ""
-
-#: LibGCore/src/ds/ds_surface.cpp:661
-msgid "Unable to compute thickened face"
-msgstr ""
-
-#: LibGCore/src/ds/ds_bsplinecurve.cpp:240
-msgid "Unable to convert asm_curve to BSplineCurve"
-msgstr ""
-
-#: LibGCore/src/ds/ds_curve.cpp:1196
-msgid "Unable to convert sheet to double sided"
-msgstr ""
-
-#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:488
-msgid "Unable to convert to BRep"
-msgstr ""
-
-#: LibGCore/src/asm/asmutils.cpp:1322
-msgid "Unable to copy the ENTITY"
-msgstr ""
-
-#: LibGCore/src/asm/asmutils.cpp:1357
-msgid "Unable to copy the edge!"
-msgstr ""
-
-#: LibGCore/src/asm/asmutils.cpp:1331
-msgid "Unable to copy the face!"
-msgstr ""
-
-#: LibGCore/src/ds/ds_bsplinecurve.cpp:201
-msgid "Unable to create BSplineCurve from vertices"
-msgstr ""
-
-#: LibGCore/src/ds/ds_geometry.cpp:1014
-msgid "Unable to create Brep BODY from FACEs"
-msgstr ""
-
-#: LibGCore/src/ds/ds_geometry.cpp:582
-msgid "Unable to create Curve from COEDGE when extracting Curves"
-msgstr ""
-
-#: LibGCore/src/ds/ds_line.cpp:43
-msgid "Unable to create Line. Points are likely coincident"
-msgstr ""
-
-#: LibGCore/src/ds/ds_bsplinesurface.cpp:440
-#: LibGCore/src/ds/ds_bsplinesurface.cpp:467
-msgid "Unable to create NurbsCurve from control points."
-msgstr ""
-
-#: LibGCore/src/ds/ds_boundingbox.cpp:60
-msgid "Unable to create a BoundingBox around the input Geometries"
-msgstr ""
-
-#: LibGCore/src/ds/ds_boundingbox.cpp:36
-msgid "Unable to create a BoundingBox around the input Geometry"
-msgstr ""
-
-#: LibGCore/src/ds/ds_cuboid.cpp:118
-msgid "Unable to create block"
-msgstr ""
-
-#: LibGCore/src/ds/ds_geometry.cpp:927 LibGCore/src/ds/ds_geometry.cpp:931
-#: LibGCore/src/ds/ds_geometry.cpp:933 LibGCore/src/ds/ds_geometry.cpp:935
-#: LibGCore/src/ds/ds_geometry.cpp:937
-msgid "Unable to create body from face"
-msgstr ""
-
-#: LibGCore/src/ds/ds_point.cpp:225
-msgid "Unable to create brep around Point"
-msgstr ""
-
-#: LibGCore/src/ds/ds_geometry.cpp:979
-msgid "Unable to create brep around face"
-msgstr ""
-
-#: LibGCore/src/asm/asmutils.cpp:1312
-msgid "Unable to create brep from lump"
-msgstr ""
-
-#: LibGCore/src/ds/ds_curve.cpp:827 LibGCore/src/ds/ds_polycurve.cpp:1298
-#: LibGCore/src/ds/ds_polycurve.cpp:1312
-msgid "Unable to create coedge array"
-msgstr ""
-
-#: LibGCore/src/ds/ds_cone.cpp:113 LibGCore/src/ds/ds_cone.cpp:140
-msgid "Unable to create cone or cylinder"
-msgstr ""
-
-#: LibGCore/src/ds/ds_surface.cpp:421
-msgid "Unable to create entity!"
-msgstr ""
-
-#: LibGCore/src/ds/ds_bsplinesurface.cpp:643
-#: LibGCore/src/ds/ds_surface.cpp:1167
-msgid "Unable to create face from spline"
-msgstr ""
-
-#: LibGCore/src/ds/ds_geometry.cpp:224
-msgid "Unable to create intersection boolean"
-msgstr ""
-
-#: LibGCore/src/ds/ds_geometry.cpp:1104
-msgid "Unable to create non regular subtraction boolean"
-msgstr ""
-
-#: LibGCore/src/asm/asmutils.cpp:498 LibGCore/src/asm/asmutils.cpp:522
-msgid "Unable to create planar body"
-msgstr ""
-
-#: LibGCore/src/ds/ds_geometry.cpp:1513
-msgid "Unable to create planar face of BoundingBox"
-msgstr ""
-
-#: LibGCore/src/ds/ds_surface.cpp:182 LibGCore/src/ds/ds_surface.cpp:251
-msgid "Unable to create polygon"
-msgstr ""
-
-#: LibGCore/src/ds/ds_sphere.cpp:304
-msgid "Unable to create sphere"
-msgstr ""
-
-#: LibGCore/src/ds/ds_bsplinesurface.cpp:246
-#: LibGCore/src/ds/ds_bsplinesurface.cpp:250
-msgid "Unable to create surface from points"
-msgstr ""
-
-#: LibGCore/src/ds/ds_bsplinesurface.cpp:307
-#: LibGCore/src/ds/ds_bsplinesurface.cpp:311
-#: LibGCore/src/ds/ds_bsplinesurface.cpp:389
-#: LibGCore/src/ds/ds_bsplinesurface.cpp:393
-msgid "Unable to create surface from points and tangents"
-msgstr ""
-
-#: LibGCore/src/impt/impt_asmimporter.cpp:121
-msgid "Unable to delete entity"
-msgstr ""
-
-#: LibGCore/src/ds/ds_curve.cpp:888 LibGCore/src/ds/ds_curve.cpp:924
-msgid "Unable to determine if curve is planar"
-msgstr ""
-
-#: LibGCore/src/asm/asmutils.cpp:1277
-msgid "Unable to determine if object is non manifold"
-msgstr ""
-
-#: LibGCore/src/ds/ds_curve.cpp:2531 LibGCore/src/ds/ds_curve.cpp:2576
-#: LibGCore/src/ds/ds_curve.cpp:2644 LibGCore/src/ds/ds_curve.cpp:2698
-msgid "Unable to divide curve by distance"
-msgstr ""
-
-#: LibGCore/src/ds/ds_curve.cpp:2389
-msgid "Unable to divide curve equally by distance"
-msgstr ""
-
-#: LibGCore/src/ds/ds_curve.cpp:1933
-msgid "Unable to divide curve equally by length"
-msgstr ""
-
-#: LibGCore/src/ds/ds_curve.cpp:2015 LibGCore/src/ds/ds_curve.cpp:2118
-msgid "Unable to divide infinite curve by length"
-msgstr ""
-
-#: LibGCore/src/ds/ds_curve.cpp:2341 LibGCore/src/ds/ds_curve.cpp:2464
-msgid "Unable to divide infinite curve equally by distance"
-msgstr ""
-
-#: LibGCore/src/ds/ds_curve.cpp:1918 LibGCore/src/ds/ds_curve.cpp:1950
-#: LibGCore/src/ds/ds_curve.cpp:1984
-msgid "Unable to divide infinite curve equally by length"
-msgstr ""
-
-#: LibGCore/src/ds/ds_polycurve.cpp:1888 LibGCore/src/ds/ds_polycurve.cpp:1937
-#: LibGCore/src/ds/ds_polycurve.cpp:1943 LibGCore/src/ds/ds_polycurve.cpp:1962
-#: LibGCore/src/ds/ds_polycurve.cpp:1969
-msgid "Unable to divide polycurve equally by distance"
-msgstr ""
-
-#: LibGCore/src/ds/ds_surface.cpp:790
-msgid "Unable to evaluate normal of Surface."
-msgstr ""
-
-#: LibGCore/src/ds/ds_arc.cpp:377 LibGCore/src/ds/ds_curve.cpp:2227
-#: LibGCore/src/ds/ds_ellipsearc.cpp:146
-msgid "Unable to extend curve equally. Curves differ by: "
-msgstr ""
-
-#: LibGCore/src/ds/ds_geometry.cpp:1450
-msgid "Unable to extract a bounding box from ASM ENTITY"
-msgstr ""
-
-#: LibGCore/src/ds/ds_curve.cpp:1625 LibGCore/src/ds/ds_curve.cpp:1814
-#: LibGCore/src/ds/ds_geometry.cpp:619 LibGCore/src/ds/ds_geometry.cpp:634
-#: LibGCore/src/ds/ds_geometry.cpp:651 LibGCore/src/ds/ds_geometry.cpp:666
-#: LibGCore/src/ds/ds_geometry.cpp:681 LibGCore/src/ds/ds_geometry.cpp:697
-#: LibGCore/src/ds/ds_geometry.cpp:712 LibGCore/src/ds/ds_geometry.cpp:726
-#: LibGCore/src/ds/ds_geometry.cpp:758 LibGCore/src/ds/ds_polycurve.cpp:235
-#: LibGCore/src/ds/ds_polycurve.cpp:334 LibGCore/src/ds/ds_polycurve.cpp:1503
-#: LibGCore/src/ds/ds_polycurve.cpp:1564 LibGCore/src/ds/ds_polysurface.cpp:230
-#: LibGCore/src/ds/ds_polysurface.cpp:901
-#: LibGCore/src/ds/ds_polysurface.cpp:1136
-msgid "Unable to extract curve from edge"
-msgstr ""
-
-#: LibGCore/src/ds/ds_polysurface.cpp:727
-msgid "Unable to extract solids from Polysurface"
-msgstr ""
-
-#: LibGCore/src/ds/ds_curve.cpp:1233
-msgid "Unable to extrude curve."
-msgstr ""
-
-#: LibGCore/src/ds/ds_surface.cpp:607
-msgid "Unable to extrude non-planar face without vector"
-msgstr ""
-
-#: LibGCore/src/ds/ds_surface.cpp:611 LibGCore/src/ds/ds_surface.cpp:632
-msgid "Unable to extrude surface"
-msgstr ""
-
-#: LibGCore/src/ds/ds_cone.cpp:236
-msgid "Unable to find attributes after transformation"
-msgstr ""
-
-#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1158
-msgid "Unable to find closest point to given geometries"
-msgstr ""
-
-#: LibGCore/src/ds/ds_curve.cpp:101
-msgid "Unable to find parameter at point"
-msgstr ""
-
-#: LibGCore/src/ds/ds_bsplinecurve.cpp:147
-msgid "Unable to fit curve to points"
-msgstr ""
-
-#: LibGCore/src/ds/ds_geometry.cpp:363
-msgid "Unable to get EDGEs while decomposing BODY"
-msgstr ""
-
-#: LibGCore/src/ds/ds_geometry.cpp:908
-msgid "Unable to get FACE from BODY: no faces in BODY"
-msgstr ""
-
-#: LibGCore/src/ds/ds_surface.cpp:977
-msgid ""
-"Unable to get FACE's range while determining if it is closed in U direction"
-msgstr ""
-
-#: LibGCore/src/ds/ds_geometry.cpp:368
-msgid "Unable to get WIREs while decomposing BODY"
-msgstr ""
-
-#: LibGCore/src/ds/ds_geometry.cpp:842 LibGCore/src/ds/ds_solid.cpp:101
-msgid "Unable to get area"
-msgstr ""
-
-#: LibGCore/src/ds/ds_bsplinecurve.cpp:157
-msgid "Unable to get curves from curve fit"
-msgstr ""
-
-#: LibGCore/src/ds/ds_curve.cpp:1609
-msgid "Unable to get edge from wire"
-msgstr ""
-
-#: LibGCore/src/ds/ds_polysurface.cpp:1123
-msgid "Unable to get edges from polysurface"
-msgstr ""
-
-#: LibGCore/src/ds/ds_point.cpp:245
-msgid "Unable to get extremum point"
-msgstr ""
-
-#: LibGCore/src/asm/asmutils.cpp:1040 LibGCore/src/asm/asmutils.cpp:1047
-msgid "Unable to get group of face"
-msgstr ""
-
-#: LibGCore/src/ui/ui_facetingengine.cpp:11
-msgid "Unable to get param range for FACE while faceting"
-msgstr ""
-
-#: LibGCore/src/ds/ds_surface.cpp:773
-msgid "Unable to get param range for surface"
-msgstr ""
-
-#: LibGCore/src/ds/ds_polysurface.cpp:792
-#: LibGCore/src/ds/ds_polysurface.cpp:830
-msgid "Unable to get point status to extract some solids from Polysurface"
-msgstr ""
-
-#: LibGCore/src/ds/ds_geometry.cpp:752
-msgid "Unable to get start Point of zero length EDGE"
-msgstr ""
-
-#: LibGCore/src/ds/ds_surface.cpp:995
-msgid ""
-"Unable to get the FACE's range while determining if it is closed in the V "
-"direction"
-msgstr ""
-
-#: LibGCore/src/ds/ds_surface.cpp:445
-msgid ""
-"Unable to get the FACE's range while setting and limiting backing Surface"
-msgstr ""
-
-#: LibGCore/src/ds/ds_boundingbox.cpp:284
-msgid "Unable to get the maximum x value."
-msgstr ""
-
-#: LibGCore/src/ds/ds_boundingbox.cpp:292
-msgid "Unable to get the maximum y value."
-msgstr ""
-
-#: LibGCore/src/ds/ds_boundingbox.cpp:300
-msgid "Unable to get the maximum z value."
-msgstr ""
-
-#: LibGCore/src/ds/ds_boundingbox.cpp:288
-msgid "Unable to get the minimum x value."
-msgstr ""
-
-#: LibGCore/src/ds/ds_boundingbox.cpp:296
-msgid "Unable to get the minimum y value."
-msgstr ""
-
-#: LibGCore/src/ds/ds_boundingbox.cpp:304
-msgid "Unable to get the minimum z value."
-msgstr ""
-
-#: LibGCore/src/impt/impt_asmimporter.cpp:101
-msgid "Unable to get units"
-msgstr ""
-
-#: LibGCore/src/ds/ds_solid.cpp:87
-msgid "Unable to get volume"
-msgstr ""
-
-#: LibGCore/src/ds/ds_curve.cpp:1602
-msgid "Unable to get wires from body"
-msgstr ""
-
-#: LibGCore/src/ds/ds_curve.cpp:1229
-msgid "Unable to instruct ASM to extrude Curve as a Solid."
-msgstr ""
-
-#: LibGCore/src/ds/ds_curve.cpp:772
-msgid "Unable to join curves"
-msgstr ""
-
-#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:367
-msgid "Unable to load T-Spline surfaces."
-msgstr ""
-
-#: LibGCore/src/ds/ds_polysurface.cpp:614
-#: LibGCore/src/ds/ds_polysurface.cpp:632
-#: LibGCore/src/ds/ds_polysurface.cpp:648
-msgid "Unable to loft to make polysurface!"
-msgstr ""
-
-#: LibGCore/src/ds/ds_polysurface.cpp:591 LibGCore/src/ds/ds_solid.cpp:261
-#: LibGCore/src/ds/ds_solid.cpp:301 LibGCore/src/ds/ds_solid.cpp:379
-#: LibGCore/src/ds/ds_solid.cpp:409
-msgid "Unable to loft!"
-msgstr ""
-
-#: LibGCore/src/asm/asmutils.cpp:494 LibGCore/src/asm/asmutils.cpp:518
-msgid "Unable to make body"
-msgstr ""
-
-#: LibGCore/src/asm/asmutils.cpp:492 LibGCore/src/asm/asmutils.cpp:516
-msgid "Unable to make face body double sided"
-msgstr ""
-
-#: LibGCore/src/ds/ds_curve.cpp:1845
-msgid "Unable to make geodesic curves"
-msgstr ""
-
-#: LibGCore/src/ds/ds_curve.cpp:1736
-msgid "Unable to make geodesic curves with ASM 219"
-msgstr ""
-
-#: LibGCore/src/ds/ds_curve.cpp:1765
-msgid "Unable to make iso curve on surface"
-msgstr ""
-
-#: LibGCore/src/ds/ds_curve.cpp:1721
-msgid "Unable to make parameter line on surface"
-msgstr ""
-
-#: LibGCore/src/ds/ds_geometry.cpp:947 LibGCore/src/ds/ds_geometry.cpp:982
-msgid "Unable to make sheet double sided"
-msgstr ""
-
-#: LibGCore/src/ds/ds_solid.cpp:541
-msgid "Unable to make solid by sweep"
-msgstr ""
-
-#: LibGCore/src/ds/ds_bsplinecurve.cpp:480 LibGCore/src/ds/ds_curve.cpp:817
-#: LibGCore/src/ds/ds_polycurve.cpp:1418
-msgid "Unable to make wire from edge body"
-msgstr ""
-
-#: LibGCore/src/ds/ds_surface.cpp:172 LibGCore/src/ds/ds_surface.cpp:241
-msgid "Unable to make wire from edges"
-msgstr ""
-
-#: LibGCore/include/ds/matrix.h:12
-msgid "Unable to multiply Matrix by Vector"
-msgstr ""
-
-#: LibGCore/src/ds/ds_curve.cpp:1450
-msgid "Unable to offset curve"
-msgstr ""
-
-#: LibGCore/src/impt/impt_asmimporter.cpp:27
-msgid "Unable to open file"
-msgstr ""
-
-#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:363
-msgid "Unable to open the given T-Spline Scene file."
-msgstr ""
-
-#: LibGCore/src/ds/ds_surface.cpp:194
-msgid "Unable to patch a single, no-closed curve"
-msgstr ""
-
-#: LibGCore/src/ds/ds_surface.cpp:218
-msgid "Unable to patch curve"
-msgstr ""
-
-#: LibGCore/src/ds/ds_point.cpp:181
-msgid "Unable to post process VERTEX ENTITY"
-msgstr ""
-
-#: LibGCore/src/ds/ds_curve.cpp:1782
-msgid "Unable to project curve on plane"
-msgstr ""
-
-#: LibGCore/src/ds/ds_curve.cpp:1832
-msgid "Unable to pull Curve onto Surface"
-msgstr ""
-
-#: LibGCore/src/impt/impt_asmimporter.cpp:52
-#: LibGCore/src/impt/impt_asmimporter.cpp:83
-msgid "Unable to restore entities"
-msgstr ""
-
-#: LibGCore/src/ds/ds_curve.cpp:1347
-msgid "Unable to retain mergeable edges"
-msgstr ""
-
-#: LibGCore/src/ds/ds_curve.cpp:1336
-msgid "Unable to revolve curve"
-msgstr ""
-
-#: LibGCore/src/ds/ds_surface.cpp:682
-msgid "Unable to set BODY offset data"
-msgstr ""
-
-#: LibGCore/src/ds/ds_surface.cpp:655
-msgid "Unable to set BODY thicken data"
-msgstr ""
-
-#: LibGCore/src/ds/ds_curve.cpp:1226
-msgid "Unable to set Curve and Vector for extrusion."
-msgstr ""
-
-#: LibGCore/src/ds/ds_polysurface.cpp:287
-msgid "Unable to set PolySurface Edges to chamfer"
-msgstr ""
-
-#: LibGCore/src/ds/ds_polysurface.cpp:269
-msgid "Unable to set PolySurface Edges to fillet"
-msgstr ""
-
-#: LibGCore/src/ds/ds_solid.cpp:746
-msgid "Unable to set Solid Edges to fillet"
-msgstr ""
-
-#: LibGCore/src/ds/ds_solid.cpp:763
-msgid "Unable to set Solid edges t ochamfer"
+#: LibGCore/src/ds/tspline/ds_tsplineutils.cpp:314
+msgid "Failed to convert Nurbs surface"
 msgstr ""
 
 #: LibGCore/src/ds/tspline/ds_tsplineutils.cpp:331
 msgid "Unable to set T-Spline for conversion"
 msgstr ""
 
-#: LibGCore/src/ds/ds_point.cpp:206
-msgid "Unable to set VERTEX position"
+#: LibGCore/src/ds/tspline/ds_tsplineutils.cpp:405
+msgid "Impossible to get face from surface"
 msgstr ""
 
-#: LibGCore/src/ds/ds_curve.cpp:1343
-msgid "Unable to set as double sided"
+#: LibGCore/src/ds/tspline/ds_tsplineutils.cpp:410
+msgid "Impossible to get edges from face"
 msgstr ""
 
-#: LibGCore/src/ds/ds_curve.cpp:1339
-msgid "Unable to set as solid or not"
+#: LibGCore/src/ds/tspline/ds_tsplineutils.cpp:429
+msgid "Impossible to get curve from edge"
 msgstr ""
 
-#: LibGCore/src/ds/ds_cone.cpp:95
-msgid "Unable to set attrubitues on Cone"
+#: LibGCore/src/ds/tspline/topology/ds_tsplinecoedge.cpp:14
+msgid "Cast Coedge is not a TSplineCoedge"
 msgstr ""
 
-#: LibGCore/src/ds/ds_surface.cpp:412
-msgid "Unable to set coedges of loop!"
+#: LibGCore/src/ds/tspline/topology/ds_tsplineedge.cpp:14
+msgid "Cast Edge is not a TSplineEdge"
 msgstr ""
 
-#: LibGCore/src/ds/ds_surface.cpp:373
-msgid "Unable to set curve!"
+#: LibGCore/src/ds/tspline/topology/ds_tsplineedge.cpp:22
+msgid "Cast object is not a TSplineEdge"
 msgstr ""
 
-#: LibGCore/src/ds/ds_curve.cpp:813 LibGCore/src/ds/ds_polycurve.cpp:1414
-msgid "Unable to set edge to consume"
+#: LibGCore/src/ds/tspline/topology/ds_tsplineedge.cpp:31
+#: LibGCore/src/ds/tspline/topology/ds_tsplineedge.cpp:97
+#: LibGCore/src/ds/tspline/topology/ds_tsplineedge.cpp:112
+#: LibGCore/src/ds/tspline/topology/ds_tsplineedge.cpp:125
+#: LibGCore/src/ds/tspline/topology/ds_tsplineedge.cpp:139
+msgid "Edge has invalid parent"
 msgstr ""
 
-#: LibGCore/src/ds/ds_surface.cpp:401
-msgid "Unable to set edge vertices!"
+#: LibGCore/src/ds/tspline/topology/ds_tsplineedge.cpp:101
+#: LibGCore/src/ds/tspline/topology/ds_tsplineedge.cpp:116
+#: LibGCore/src/ds/tspline/topology/ds_tsplineedge.cpp:130
+#: LibGCore/src/ds/tspline/topology/ds_tsplineedge.cpp:143
+msgid "Edge index is invalid"
 msgstr ""
 
-#: LibGCore/src/ds/ds_curve.cpp:1178
-msgid "Unable to set extrusion wire"
+#: LibGCore/src/ds/tspline/topology/ds_tsplineface.cpp:14
+msgid "Cast Face is not a TSplineFace"
 msgstr ""
 
-#: LibGCore/src/ds/ds_surface.cpp:415
-msgid "Unable to set loop on face!"
+#: LibGCore/src/ds/tspline/topology/ds_tsplineface.cpp:22
+msgid "Cast object is not a TSplineFace"
 msgstr ""
 
-#: LibGCore/src/ds/ds_surface.cpp:356
-msgid "Unable to set surface!"
+#: LibGCore/src/ds/tspline/topology/ds_tsplineface.cpp:31
+#: LibGCore/src/ds/tspline/topology/ds_tsplineface.cpp:114
+#: LibGCore/src/ds/tspline/topology/ds_tsplineface.cpp:129
+#: LibGCore/src/ds/tspline/topology/ds_tsplineface.cpp:146
+msgid "Face has invalid parent"
 msgstr ""
 
-#: LibGCore/src/ds/ds_curve.cpp:1274 LibGCore/src/ds/ds_polycurve.cpp:1358
-msgid "Unable to set sweep profile and path"
+#: LibGCore/src/ds/tspline/topology/ds_tsplineface.cpp:66
+msgid "Could not get bezier patches from the given TSplineFace"
 msgstr ""
 
-#: LibGCore/src/ds/ds_polysurface.cpp:690
-msgid "Unable to set sweep profile and path to make Polysurface"
+#: LibGCore/src/ds/tspline/topology/ds_tsplineface.cpp:98
+msgid "Surface creation error."
 msgstr ""
 
-#: LibGCore/src/ds/ds_solid.cpp:534
-msgid "Unable to set the draft angle for sweep!"
+#: LibGCore/src/ds/tspline/topology/ds_tsplineface.cpp:118
+#: LibGCore/src/ds/tspline/topology/ds_tsplineface.cpp:133
+#: LibGCore/src/ds/tspline/topology/ds_tsplineface.cpp:150
+msgid "Face index is invalid"
 msgstr ""
 
-#: LibGCore/src/ds/ds_solid.cpp:601
-msgid "Unable to set the draft angle!"
+#: LibGCore/src/ds/tspline/topology/ds_tsplineloop.cpp:14
+msgid "Cast Loop is not a TSplineLoop"
 msgstr ""
 
-#: LibGCore/src/ds/ds_solid.cpp:706
-msgid "Unable to set the external thickness"
+#: LibGCore/src/ds/tspline/topology/ds_tsplinetopology.cpp:19
+msgid "Cast object is not a TSplineTopology"
 msgstr ""
 
-#: LibGCore/src/asm/asmutils.cpp:1204
-msgid "Unable to set the external thickness!"
+#: LibGCore/src/ds/tspline/topology/ds_tsplinetopology.cpp:303
+msgid "Vertex with given index is not present on the t-spline"
 msgstr ""
 
-#: LibGCore/src/ds/ds_solid.cpp:536
-msgid "Unable to set the gap type for sweep!"
+#: LibGCore/src/ds/tspline/topology/ds_tsplinetopology.cpp:313
+msgid "Edge with given index is not present on the t-spline"
 msgstr ""
 
-#: LibGCore/src/ds/ds_solid.cpp:603
-msgid "Unable to set the gap type!"
+#: LibGCore/src/ds/tspline/topology/ds_tsplinetopology.cpp:323
+msgid "Face with given index is not present on the t-spline"
 msgstr ""
 
-#: LibGCore/src/ds/ds_solid.cpp:711
-msgid "Unable to set the internal thickness"
+#: LibGCore/src/ds/tspline/topology/ds_tsplineuvnframe.cpp:36
+msgid "Invalid topology index"
 msgstr ""
 
-#: LibGCore/src/asm/asmutils.cpp:1207
-msgid "Unable to set the internal thickness!"
+#: LibGCore/src/ds/tspline/topology/ds_tsplinevertex.cpp:14
+msgid "Cast Vertex is not a TSplineVertex"
 msgstr ""
 
-#: LibGCore/src/ds/ds_solid.cpp:530
-msgid "Unable to set the miter type for sweep!"
-msgstr ""
-
-#: LibGCore/src/ds/ds_solid.cpp:597
-msgid "Unable to set the miter type!"
-msgstr ""
-
-#: LibGCore/src/ds/ds_solid.cpp:526
-msgid "Unable to set the profile and the path for sweep!"
-msgstr ""
-
-#: LibGCore/src/ds/ds_solid.cpp:593
-msgid "Unable to set the profile and the path!"
-msgstr ""
-
-#: LibGCore/src/ds/ds_polysurface.cpp:693
-msgid "Unable to set the result to be not solid  to make Polysurface"
-msgstr ""
-
-#: LibGCore/src/ds/ds_solid.cpp:528
-msgid "Unable to set the result to be solid or not for sweep!"
-msgstr ""
-
-#: LibGCore/src/ds/ds_curve.cpp:1279 LibGCore/src/ds/ds_polycurve.cpp:1363
-#: LibGCore/src/ds/ds_solid.cpp:595
-msgid "Unable to set the result to be solid or not!"
-msgstr ""
-
-#: LibGCore/src/ds/ds_solid.cpp:406
-msgid "Unable to set the sections or the centerline!"
-msgstr ""
-
-#: LibGCore/src/ds/ds_surface.cpp:658
-msgid "Unable to set thicken operation to both sides"
-msgstr ""
-
-#: LibGCore/src/ds/ds_point.cpp:177
-msgid "Unable to set vertex position"
-msgstr ""
-
-#: LibGCore/src/ds/ds_surface.cpp:388
-msgid "Unable to set vertex position!"
-msgstr ""
-
-#: LibGCore/src/ds/ds_surface.cpp:684
-msgid "Unable to set whether the result is attached or not"
-msgstr ""
-
-#: LibGCore/src/ds/ds_solid.cpp:532
-msgid "Unable to set whether to retain mergeable edges for sweep!"
-msgstr ""
-
-#: LibGCore/src/ds/ds_solid.cpp:599
-msgid "Unable to set whether to retain mergeable edges!"
-msgstr ""
-
-#: LibGCore/src/ds/ds_curve.cpp:2780
-msgid "Unable to simplify spline"
-msgstr ""
-
-#: LibGCore/src/ds/ds_geometry.cpp:249
-msgid "Unable to slice bodies"
-msgstr ""
-
-#: LibGCore/src/ds/ds_plane.cpp:184
-msgid "Unable to split Plane"
-msgstr ""
-
-#: LibGCore/src/ds/ds_polysurface.cpp:118
-msgid "Unable to stitch Surfaces into a single PolySurface."
-msgstr ""
-
-#: LibGCore/src/ds/ds_solid.cpp:420
-msgid "Unable to sweep non-planar polycurve: should be planar."
-msgstr ""
-
-#: LibGCore/src/ds/ds_solid.cpp:417
-msgid "Unable to sweep open polycurve: should be closed."
-msgstr ""
-
-#: LibGCore/src/ds/ds_solid.cpp:1007 LibGCore/src/ds/ds_surface.cpp:1213
-msgid "Unable to sweep profile Curve."
-msgstr ""
-
-#: LibGCore/src/ds/topology/ds_edge.cpp:85
-msgid "Unable to transform EDGE"
-msgstr ""
-
-#: LibGCore/src/ds/ds_cone.cpp:148 LibGCore/src/ds/ds_cone.cpp:151
-#: LibGCore/src/ds/ds_cuboid.cpp:125 LibGCore/src/ds/ds_cuboid.cpp:128
-#: LibGCore/src/ds/ds_curve.cpp:1668 LibGCore/src/ds/ds_curve.cpp:1671
-#: LibGCore/src/ds/ds_polysurface.cpp:486
-#: LibGCore/src/ds/ds_polysurface.cpp:489 LibGCore/src/ds/ds_solid.cpp:115
-#: LibGCore/src/ds/ds_solid.cpp:118 LibGCore/src/ds/ds_surface.cpp:594
-#: LibGCore/src/ds/ds_surface.cpp:597
-msgid "Unable to transform the body!"
-msgstr ""
-
-#: LibGCore/src/ds/ds_geometry.cpp:348
-#: LibGCore/src/expt/expt_asmexporter.cpp:21
-#: LibGCore/src/expt/expt_asmexporter.cpp:101
-msgid "Unable to transform the entity!"
-msgstr ""
-
-#: LibGCore/src/ds/ds_plane.cpp:189
-msgid "Unable to trim Plane"
-msgstr ""
-
-#: LibGCore/src/ds/ds_surface.cpp:424
-msgid "Unable to trim surface as the input loop geometry could be illegal"
-msgstr ""
-
-#: LibGCore/src/asm/asmutils.cpp:1049
-msgid "Unable to unset face to remove"
-msgstr ""
-
-#: LibGCore/src/asm/asmutils.cpp:1042
-msgid "Unable to unset group face"
-msgstr ""
-
-#: LibGCore/src/ds/ds_solid.cpp:608
-msgid "Unable to update solid by sweep"
-msgstr ""
-
-#: LibGCore/src/expt/expt_asmexporter.cpp:150
-msgid "Unable to write entity list as sat"
-msgstr ""
-
-#: LibGCore/src/ds/ds_solid.cpp:137
-msgid "Unable union two Solids"
-msgstr ""
-
-#: LibGCore/src/ds/ds_ellipsearc.cpp:99
-msgid "Unexpected error creating the EllipseArc!"
-msgstr ""
-
-#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1926
-msgid "Unknown contituity"
-msgstr ""
-
-#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1837
-msgid "Unweld unsuccessfull"
-msgstr ""
-
-#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1791
-msgid "Vertex can't be creased: "
-msgstr ""
-
-#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1794
-msgid "Vertex can't be uncreased: "
+#: LibGCore/src/ds/tspline/topology/ds_tsplinevertex.cpp:22
+msgid "Cast object is not a TSplineVertex"
 msgstr ""
 
 #: LibGCore/src/ds/tspline/topology/ds_tsplinevertex.cpp:31
@@ -2791,92 +2827,59 @@ msgstr ""
 msgid "Vertex index is invalid"
 msgstr ""
 
-#: LibGCore/src/ds/tspline/topology/ds_tsplinetopology.cpp:303
-msgid "Vertex with given index is not present on the t-spline"
+#: LibGCore/src/expt/expt_asmexporter.cpp:150
+msgid "Unable to write entity list as sat"
 msgstr ""
 
-#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1835
-msgid "Weld unsuccessfull"
+#: LibGCore/src/impt/impt_asmimporter.cpp:27
+msgid "Unable to open file"
 msgstr ""
 
-#: LibGCore/src/ds/ds_curve.cpp:1612
-msgid "WireCurve does not support wires with more than one edge"
+#: LibGCore/src/impt/impt_asmimporter.cpp:52
+#: LibGCore/src/impt/impt_asmimporter.cpp:83
+msgid "Unable to restore entities"
 msgstr ""
 
-#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:223
-msgid "Wrong first orient vertex"
+#: LibGCore/src/impt/impt_asmimporter.cpp:68
+msgid "Failed to create geometry from solid def JSON"
 msgstr ""
 
-#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:231
-msgid "Wrong second orient vertex"
+#: LibGCore/src/impt/impt_asmimporter.cpp:101
+msgid "Unable to get units"
 msgstr ""
 
-#: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:465
-msgid "X or Y coordinates of corners are coincedent"
+#: LibGCore/src/impt/impt_asmimporter.cpp:121
+msgid "Unable to delete entity"
 msgstr ""
 
-#: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:447
-msgid ""
-"X spans should be greater than or equal to 2 if X axis symmetry is selected"
+#: LibGCore/src/ui/ui_facetingengine.cpp:11
+msgid "Unable to get param range for FACE while faceting"
 msgstr ""
 
-#: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:451
-msgid ""
-"Y spans should be greater than or equal to 2 if Y axis symmetry is selected"
+#: LibGCore/src/ui/ui_facetingengine.cpp:20
+msgid "Could not get bounding box"
 msgstr ""
 
-#: LibGCore/src/ds/ds_polygon.cpp:32
-msgid "You must supply more than 2 points to create a polygon"
+#: LibGCore/src/ui/ui_facetingengine.cpp:28
+msgid "Too small to facet"
 msgstr ""
 
-#: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:915
-msgid "Zero dimensions are not allowed"
+#: LibGCore/src/ui/ui_facetingengine.cpp:34
+msgid "Could not set facet edge count"
 msgstr ""
 
-#: LibGCore/src/ds/ds_vector.cpp:237
-msgid "attempt to set length of zero length vector"
+#: LibGCore/src/ui/ui_facetingengine.cpp:38
+msgid "Could not set facet tolerance"
 msgstr ""
 
-#: LibGCore/src/ds/ds_surface.cpp:1053 LibGCore/src/ds/ds_surface.cpp:1072
-#: LibGCore/src/ds/ds_surface.cpp:1097 LibGCore/src/ds/ds_surface.cpp:1122
-msgid "can not evaluate curvature"
+#: LibGCore/src/ui/ui_facetingengine.cpp:41
+msgid "Could not set max number of grid lines"
 msgstr ""
 
-#: LibGCore/src/ds/ds_arc.cpp:753 LibGCore/src/ds/ds_arc.cpp:765
-msgid "could not solve for arc"
+#: LibGCore/src/ui/ui_facetingengine.cpp:44
+msgid "Could not compute facets"
 msgstr ""
 
-#: LibGCore/src/ds/ds_curve.cpp:2450
-msgid "could not solve for equal chord lengths"
-msgstr ""
-
-#: LibGCore/src/ds/ds_curve.cpp:2417 LibGCore/src/ds/ds_curve.cpp:2561
-#: LibGCore/src/ds/ds_curve.cpp:2604 LibGCore/src/ds/ds_curve.cpp:2674
-#: LibGCore/src/ds/ds_curve.cpp:2724 LibGCore/src/ds/ds_polycurve.cpp:1925
-#: LibGCore/src/ds/ds_polycurve.cpp:1990
-msgid "could not solve for equal distances"
-msgstr ""
-
-#: LibGCore/src/asm/asmutils.cpp:1388
-msgid "create body from cells not implemneted"
-msgstr ""
-
-#: LibGCore/src/ds/ds_solid.cpp:653
-msgid "get_cells on Solid not implemented"
-msgstr ""
-
-#: LibGCore/src/ds/ds_solid.cpp:649
-msgid "get_shells on Solid not implemented"
-msgstr ""
-
-#: LibGCore/src/ds/ds_polycurve.cpp:1745
-msgid "input segment length must be greater or equal to zero"
-msgstr ""
-
-#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1381
-msgid "nu and nv should be non-negative"
-msgstr ""
-
-#: LibGCore/src/ds/ds_surface.cpp:343
-msgid "trim_with_edge_loops requires all curves to touch surface"
+#: LibGCore/src/ui/ui_facetingengine.cpp:56
+msgid "Could not get face results"
 msgstr ""
