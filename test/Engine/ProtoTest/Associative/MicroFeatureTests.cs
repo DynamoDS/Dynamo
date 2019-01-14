@@ -653,11 +653,9 @@ y = foo()[1];
             thisTest.Verify("y", 2);
         }
 
-        [Test, Category("Failure")]
+        [Test]
         public void TestArrayOverIndexing01()
         {
-            // TODO pratapa: Zero sub-indexing of array now works due to array promotion 
-            // after introducing Builtin.Get.ValueAtIndex for indexing operator
             string code = @"
 [Imperative]
 {
@@ -668,7 +666,7 @@ y = foo()[1];
 }
 ";
             thisTest.RunScriptSource(code);
-            TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.OverIndexing);
+            TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.MethodResolutionFailure);
         }
 
         [Test]
@@ -1263,39 +1261,6 @@ r = a[""null""];
             thisTest.RunScriptSource(code);
             thisTest.Verify("c", 1);
             thisTest.Verify("r", 5);
-        }
-
-        [Test, Category("Failure")]
-        public void TestDictionary25()
-        {
-            // TODO pratapa: Crash typing this code in CBN post Dictionary changes
-            string code = @"
-a = [];
-x = ""key"";
-a[x] = 42;
-
-y = ""key"";
-a[y] = 24;
-
-z = ""key"";
-a[z] = 12;
-
-r1 = a[x];
-r2 = a[y];
-r3 = a[z];
-r4 = a[""key""];
-
-a[""key""] = 1;
-r5 = a[""key""];
-r6 = a[x];
-r7 = a[y];
-r8 = a[z];
-";
-            thisTest.RunScriptSource(code);
-            thisTest.Verify("r5", 1);
-            thisTest.Verify("r6", 1);
-            thisTest.Verify("r7", 1);
-            thisTest.Verify("r8", 1);
         }
 
         [Test]

@@ -768,10 +768,6 @@ It does not contain your graph or any personal data</value>
     <value>NODE TYPE</value>
     <comment>Title label</comment>
   </data>
-  <data name="NodeHelpWindowDynamoDictionary" xml:space="preserve">
-    <value>See more on the Dynamo Dictionary...</value>
-    <comment>Link to http://dictionary.dynamobim.com/ </comment>
-  </data>
   <data name="StartPageAsk" xml:space="preserve">
     <value>ASK</value>
   </data>
@@ -1953,10 +1949,10 @@ Do you want to install the latest Dynamo update?</value>
     <value>Package Path Added</value>
   </data>
   <data name="PackagePathAutoAddNotificationShortDescription" xml:space="preserve">
-    <value>A library (*.dll, *.ds) was recently imported into Dynamo. Its path was automatically added to "Settings &gt; Manage Node and Package Paths..."</value>
+    <value>A library (*.dll, *.ds) was recently imported into Dynamo. Its path was automatically added to "Settings > Manage Node and Package Paths..."</value>
   </data>
   <data name="PackagePathAutoAddNotificationDetailedDescription" xml:space="preserve">
-    <value>The import path "{0}" was added to "Manage Node and Package Paths". If you want to update or remove this path, please open "Settings &gt; Manage Node and Package Paths..."</value>
+    <value>The import path "{0}" was added to "Manage Node and Package Paths". If you want to update or remove this path, please open "Settings > Manage Node and Package Paths..."</value>
   </data>
   <data name="NodeContextMenuIsInput" xml:space="preserve">
     <value>Is Input</value>
@@ -2187,5 +2183,8 @@ Want to publish a different package?</value>
   <data name="CustomNodePropertyWindowLocationNote" xml:space="preserve">
     <value>Custom Nodes will be placed in the Add-Ons section of the library.</value>
     <comment>Note regarding Custom Node library location</comment>
+  </data>
+  <data name="CrashPromptGithubNewIssueTitle" xml:space="preserve">
+    <value>Crash report from Dynamo {0}</value>
   </data>
 </root>
