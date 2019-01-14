@@ -1342,5 +1342,19 @@ namespace Dynamo.Tests
             Assert.AreEqual(1, this.CurrentDynamoModel.CurrentWorkspace.Annotations.Count());
 
         }
+
+        [Test]
+        public void InputNameWithSpacesShouldCauseErrorStateAndReadOnly()
+        {
+            // Custom node has invalid input name, which shoud put the input node in an error state and make the workspace read only
+            var dynFilePath = Path.Combine(TestDirectory, @"core\CustomNodes\invalidInputName.dyf");
+
+            OpenModel(dynFilePath);
+
+            var node = CurrentDynamoModel.CurrentWorkspace.Nodes.OfType<Symbol>().First();
+            Assert.IsTrue(node.State == ElementState.Error);
+            Assert.IsTrue(CurrentDynamoModel.CurrentWorkspace.containsInvalidInputSymbols());
+            Assert.IsTrue(CurrentDynamoModel.CurrentWorkspace.IsReadOnly);
+        }
     }
 }
