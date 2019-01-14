@@ -538,15 +538,15 @@ namespace Dynamo.Graph.Nodes.CustomNodes
             identifier = null;
             defaultValue = null;
             comment = null;
-            
-            var parseString = inputSymbol;
+
+            var parseString = InputSymbol;
             parseString += ";";
             
             // During loading of symbol node from file, the elementResolver from the workspace is unavailable
             // in which case, a local copy of the ER obtained from the symbol node is used
             var resolver = workspaceElementResolver ?? ElementResolver;
             var parseParam = new ParseParam(this.GUID, parseString, resolver);
-            
+
             if (EngineController.CompilationServices.PreCompileCodeBlock(ref parseParam) &&
                 parseParam.ParsedNodes.Any())
             {
@@ -596,6 +596,7 @@ namespace Dynamo.Graph.Nodes.CustomNodes
                     return identifier != null;
                 }
             }
+
             return false;
         }
 
