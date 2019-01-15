@@ -50,6 +50,16 @@ namespace Dynamo.Python
         private string pythonLibDir { get; set; }
 
         /// <summary>
+        /// A list of short assembly names used with the TryGetTypeFromFullName method
+        /// </summary>
+        private static string[] knownAssemblies = {
+            "mscorlib",
+            "RevitAPI",
+            "RevitAPIUI",
+            "ProtoGeometry"
+        };
+
+        /// <summary>
         /// Already discovered variable types
         /// </summary>
         public Dictionary<string, Type> VariableTypes { get; set; }
@@ -126,6 +136,7 @@ namespace Dynamo.Python
 
         #endregion
 
+        #region Constructors
         /// <summary>
         /// Class constructor
         /// </summary>
@@ -227,7 +238,9 @@ namespace Dynamo.Python
                 Log("Valid IronPython Standard Library not found. Python autocomplete will not see native modules.");
             }
         }
+        #endregion
 
+        #region Methods
         /// <summary>
         /// Generates completion data for the specified text, while import the given types into the 
         /// scope and discovering variable assignments.
@@ -587,16 +600,6 @@ namespace Dynamo.Python
             VariableTypes.Clear();
             VariableTypes = FindAllVariableAssignments(code);
         }
-
-        /// <summary>
-        /// A list of short assembly names used with the TryGetTypeFromFullName method
-        /// </summary>
-        private static string[] knownAssemblies = {
-            "mscorlib",
-            "RevitAPI",
-            "RevitAPIUI",
-            "ProtoGeometry"
-        };
 
         /// <summary>
         /// Check if a full type name is found in one of the known pre-loaded assemblies and return the type
@@ -1173,5 +1176,6 @@ namespace Dynamo.Python
             int startIndex = text.LastIndexOf(' ');
             return text.Substring(startIndex + 1).Trim('.').Trim('(');
         }
+        #endregion
     }
 }
