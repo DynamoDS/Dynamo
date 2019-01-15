@@ -78,6 +78,7 @@ namespace Dynamo.Python
         /// Maps a regex to a particular python type.  Useful for matching things like dicts,
         /// floats, strings, etc.  Initialized by
         /// </summary>
+        [Obsolete("This property has been replaced with BasicVariableTypes and will be removed in Dynamo 3.0")]
         public Dictionary<string, Type> RegexToType = new Dictionary<string, Type>();
 
         /// <summary>
@@ -216,7 +217,7 @@ namespace Dynamo.Python
             // Determine if the Python Standard Library is available in the given context
             if(!String.IsNullOrEmpty(dynamoCoreDir))
             {
-                pythonLibDir = Path.Combine(dynamoCoreDir, @"\IronPython.StdLib.2.7.8");
+                pythonLibDir = Path.Combine(dynamoCoreDir, @"IronPython.StdLib.2.7.8");
             }
 
             if (!String.IsNullOrEmpty(pythonLibDir) && Directory.Exists(pythonLibDir))
@@ -533,6 +534,7 @@ namespace Dynamo.Python
         /// the dot character that triggered the completion. The text can contain the command line prompt
         /// '>>>' as this will be ignored.
         /// </summary>
+        [Obsolete("Please use additional GetDescription method as this one will be removed in Dynamo 3.0.")]
         public void GetDescription(string stub, string item, DescriptionUpdateDelegate updateDescription, bool isInstance)
         {
             string description = this.GetDescription(stub, item, isInstance);
@@ -946,7 +948,7 @@ namespace Dynamo.Python
             {
                 var previousTries = 0;
                 badStatements.TryGetValue(statement, out previousTries);
-                // TODO - why is this 3?  Should this be a constant?
+                // TODO - Why is this 3?  Should this be a constant? Is it related to knownAssembies.Length?
                 if (previousTries > 3)
                 {
                     continue;
@@ -1005,12 +1007,10 @@ namespace Dynamo.Python
                         if (asname == null)
                         {
                             statement = String.Format("import {0}", memberName);
-
                         }
                         else
                         {
                             statement = String.Format("import {0} as {1}", memberName, asname);
-
                         }
                     }
                     else
@@ -1060,7 +1060,8 @@ namespace Dynamo.Python
         public Dictionary<string, Tuple<string, int, Type>> FindAllVariables(string code)
         {
             var variables = new Dictionary<string, Tuple<string, int, Type>>();
-            var variableStatements = Regex.Matches(code, variableName + spacesOrNone + equalsRegex + spacesOrNone + @"(.*)", RegexOptions.Multiline);
+            var pattern = variableName + spacesOrNone + equalsRegex + spacesOrNone + @"(.*)";
+            var variableStatements = Regex.Matches(code, pattern, RegexOptions.Multiline);
 
             for (var i = 0; i < variableStatements.Count; i++)
             {
@@ -1092,9 +1093,9 @@ namespace Dynamo.Python
                 }
 
                 // Match default types (numbers, dicts, arrays, strings)
-                foreach (var pair in RegexToType)
+                foreach (var pair in BasicVariableTypes)
                 {
-                    var matches = Regex.Matches(typeString, "^" + pair.Key + "$", RegexOptions.Singleline);
+                    var matches = Regex.Matches(typeString, "^" + pair.Item1 + "$", RegexOptions.Singleline);
                     if (matches.Count > 0)
                     {
                         // If variable has already been encountered
@@ -1102,12 +1103,12 @@ namespace Dynamo.Python
                         {
                             if (currentIndex > variables[name].Item2)
                             {
-                                variables[name] = new Tuple<string, int, Type>(typeString, currentIndex, pair.Value);
+                                variables[name] = new Tuple<string, int, Type>(typeString, currentIndex, pair.Item2);
                             }
                         }
                         else // New type, add it
                         {
-                            variables.Add(name, new Tuple<string, int, Type>(typeString, currentIndex, pair.Value));
+                            variables.Add(name, new Tuple<string, int, Type>(typeString, currentIndex, pair.Item2));
                         }
 
                         break;
