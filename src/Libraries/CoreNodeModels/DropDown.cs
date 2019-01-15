@@ -83,7 +83,7 @@ namespace CoreNodeModels
             {
                 //do not allow selected index to
                 //go out of range of the items collection
-                if (value > Items.Count - 1 || value == -1)
+                if (value > Items.Count - 1 || value < 0)
                 {
                     selectedIndex = -1;
                     selectedString = String.Empty;
@@ -157,11 +157,14 @@ namespace CoreNodeModels
                 return;
 
             selectedIndex = ParseSelectedIndex(attrib.Value, Items);
-            selectedString = Items.ElementAt(selectedIndex).Item.ToString();
-
             if (selectedIndex < 0)
             {
                 Warning(Dynamo.Properties.Resources.NothingIsSelectedWarning);
+                selectedString = String.Empty;
+            }
+            else
+            {
+                selectedString = selectedIndex > Items.Count - 1? String.Empty: GetSelectedStringFromItem(Items.ElementAt(selectedIndex));
             }
         }
 
@@ -174,8 +177,14 @@ namespace CoreNodeModels
             {
                 selectedIndex = ParseSelectedIndex(value, Items);
                 if (selectedIndex < 0)
+                {
                     Warning(Dynamo.Properties.Resources.NothingIsSelectedWarning);
-                selectedString = Items.ElementAt(selectedIndex).Item.ToString();
+                    selectedString = String.Empty;
+                }
+                else
+                {
+                    selectedString = selectedIndex > Items.Count - 1 ? String.Empty : GetSelectedStringFromItem(Items.ElementAt(selectedIndex));
+                }
                 return true; // UpdateValueCore handled.
             }
 
