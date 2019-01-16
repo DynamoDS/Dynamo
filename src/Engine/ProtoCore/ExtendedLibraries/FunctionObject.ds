@@ -367,7 +367,7 @@ def __LaceLongest(func: Function, lists : var[]..[])
     };
 }
 
-def __ApplyNested(fs: Function, xs: var[]..[], amt: int)
+def __ApplyNested(fs: Function[]..[], xs: var[]..[], amt: int)
 {
     return [Imperative]
     {
