@@ -48,6 +48,25 @@ namespace DesignScript
                 }
             }
 
+            public static object ValueAtIndexInForLoop(IList list, int index)
+            {
+                while (index < 0)
+                {
+                    var count = list.Count;
+                    if (count == 0) break;
+                    index += count;
+                }
+
+                try
+                {
+                    return list[index];
+                }
+                catch (ArgumentOutOfRangeException)
+                {
+                    throw new IndexOutOfRangeException(DesignScriptBuiltin.IndexOutOfRangeExceptionMessage);
+                }
+            }
+
             public static object ValueAtIndex(string stringList, int index)
             {
                 while (index < 0)
