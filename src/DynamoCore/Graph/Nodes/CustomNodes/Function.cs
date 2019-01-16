@@ -292,13 +292,19 @@ namespace Dynamo.Graph.Nodes.CustomNodes
 
 #endregion
 
-        private void ValidateDefinition(CustomNodeDefinition def, bool removeErrorState = true)
+        private void ValidateDefinition(CustomNodeDefinition def)
         {
             if (def.IsProxy)
             {
                 this.Error(Properties.Resources.CustomNodeNotLoaded);
             } 
-            else if (removeErrorState)
+
+            else if (def.ContainsInvalidInput)
+            {
+                this.Warning(Properties.Resources.InvalidInputSymbolCustomNodeWarning, true);
+            }
+
+            else
             {
                 this.ClearErrorsAndWarnings();
             }
@@ -308,22 +314,9 @@ namespace Dynamo.Graph.Nodes.CustomNodes
         ///     Validates passed Custom Node definition and synchronizes node with it.
         /// </summary>
         /// <param name="def">Custom Node definition.</param>
-        [Obsolete("Please use the constructor with removeErrorState parameter.")]
         public void ResyncWithDefinition(CustomNodeDefinition def)
         {
             ValidateDefinition(def);
-            Controller.Definition = def;
-            Controller.SyncNodeWithDefinition(this);
-        }
-
-        /// <summary>
-        ///     Validates passed Custom Node definition and synchronizes node with it.
-        /// </summary>
-        /// <param name="def">Custom Node definition.</param>
-        /// <param name="removeErrorState">Indicates whether a current error state should be removed</param>
-        public void ResyncWithDefinition(CustomNodeDefinition def, bool removeErrorState = true)
-        {
-            ValidateDefinition(def, removeErrorState);
             Controller.Definition = def;
             Controller.SyncNodeWithDefinition(this);
         }

@@ -243,9 +243,6 @@ namespace Dynamo.Core
             if (loadedWorkspaceModels.TryGetValue(id, out workspace))
             {
                 RegisterCustomNodeInstanceForUpdates(node, workspace);
-                // Check for invalid input symbols and do an intial definition sync.
-                var removeErrorState = ValidateInputSymbolNames(node, workspace);
-                //node.ResyncWithDefinition(workspace.CustomNodeDefinition, removeErrorState); // BREAKS TESTS
             }
             else
                 RegisterCustomNodeInstanceForLateInitialization(node, id, name, isTestMode);
@@ -284,25 +281,11 @@ namespace Dynamo.Core
 
         }
 
-        private static bool ValidateInputSymbolNames(Function node, CustomNodeWorkspaceModel workspace)
-        {
-            foreach (var s in workspace.Nodes.OfType<Symbol>())
-            {
-                if (!s.Parameter.NameIsValid)
-                {
-                    node.Warning(Resources.InvalidInputSymbolCustomNodeWarning, true);
-                    return false;
-                }
-            }
-            return true;
-        }
-
         private static void RegisterCustomNodeInstanceForUpdates(Function node, CustomNodeWorkspaceModel workspace)
         {
             Action defUpdatedHandler = () =>
             {
-                var removeErrorState = ValidateInputSymbolNames(node, workspace);
-                node.ResyncWithDefinition(workspace.CustomNodeDefinition, removeErrorState);
+            node.ResyncWithDefinition(workspace.CustomNodeDefinition);
             };
             workspace.DefinitionUpdated += defUpdatedHandler;
 
