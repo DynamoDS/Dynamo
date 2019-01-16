@@ -1939,7 +1939,6 @@ namespace Dynamo.Models
         public void AddCustomNodeWorkspace(CustomNodeWorkspaceModel workspace)
         {
             AddWorkspace(workspace);
-            CheckForInvalidInputSymbols(workspace);
         }
 
         private void CheckForInvalidInputSymbols(WorkspaceModel workspace)
@@ -1993,7 +1992,6 @@ namespace Dynamo.Models
                 if (!Workspaces.OfType<CustomNodeWorkspaceModel>().Contains(customNodeWorkspace))
                 {
                     AddWorkspace(customNodeWorkspace);
-                    CheckForInvalidInputSymbols(customNodeWorkspace);
                 }
 
                 CurrentWorkspace = customNodeWorkspace;
@@ -2396,6 +2394,7 @@ namespace Dynamo.Models
 
             _workspaces.Add(workspace);
             CheckForXMLDummyNodes(workspace);
+            CheckForInvalidInputSymbols(workspace);
             OnWorkspaceAdded(workspace);
         }
 
