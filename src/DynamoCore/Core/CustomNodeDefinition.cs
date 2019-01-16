@@ -164,7 +164,9 @@ namespace Dynamo
         public bool IsProxy { get; private set; }
 
         /// <summary>
-        /// Indicates whether any of this definition's input parameters are invalid
+        /// Indicates whether any of this definition's input parameters are invalid.
+        /// An input is invalid when its input expression fails to parse. For example, 
+        /// this would happen if the input name contained spaces or illegal characters.
         /// </summary>
         public bool ContainsInvalidInput
         {
