@@ -241,12 +241,10 @@ namespace Dynamo.Core
 
             CustomNodeWorkspaceModel workspace = null;
             if (loadedWorkspaceModels.TryGetValue(id, out workspace))
-            {
                 RegisterCustomNodeInstanceForUpdates(node, workspace);
-            }
             else
                 RegisterCustomNodeInstanceForLateInitialization(node, id, name, isTestMode);
-            
+
             return node;
         }
 
@@ -278,14 +276,13 @@ namespace Dynamo.Core
                 if (!disposed)
                     InfoUpdated -= infoUpdatedHandler;
             };
-
         }
 
         private static void RegisterCustomNodeInstanceForUpdates(Function node, CustomNodeWorkspaceModel workspace)
         {
             Action defUpdatedHandler = () =>
             {
-            node.ResyncWithDefinition(workspace.CustomNodeDefinition);
+                node.ResyncWithDefinition(workspace.CustomNodeDefinition);
             };
             workspace.DefinitionUpdated += defUpdatedHandler;
 
