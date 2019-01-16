@@ -1378,7 +1378,7 @@ namespace Dynamo.Graph.Workspaces
         /// <returns></returns>
         internal bool containsInvalidInputSymbols()
         {
-            return this.Nodes.OfType<Nodes.CustomNodes.Symbol>().Where(node => !node.Parameter.NameIsValid).Count() > 0;
+            return this.Nodes.OfType<Nodes.CustomNodes.Symbol>().Any(node => !node.Parameter.NameIsValid);
         }
 
         private void SerializeElementResolver(XmlDocument xmlDoc)

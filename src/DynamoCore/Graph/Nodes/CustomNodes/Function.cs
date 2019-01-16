@@ -521,7 +521,6 @@ namespace Dynamo.Graph.Nodes.CustomNodes
 
             ArgumentLacing = LacingStrategy.Disabled;
         }
-        
 
         private bool TryParseInputExpression(string inputSymbol, 
                                              out IdentifierNode identifier, 
