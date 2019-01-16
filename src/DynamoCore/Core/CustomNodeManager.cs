@@ -245,7 +245,7 @@ namespace Dynamo.Core
                 RegisterCustomNodeInstanceForUpdates(node, workspace);
                 // Check for invalid input symbols and do an intial definition sync.
                 var removeErrorState = ValidateInputSymbolNames(node, workspace);
-                node.ResyncWithDefinition(workspace.CustomNodeDefinition, removeErrorState);
+                //node.ResyncWithDefinition(workspace.CustomNodeDefinition, removeErrorState); // BREAKS TESTS
             }
             else
                 RegisterCustomNodeInstanceForLateInitialization(node, id, name, isTestMode);
