@@ -748,6 +748,15 @@ namespace Dynamo.Wpf.Properties
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Crash report from Dynamo {0}.
+        /// </summary>
+        public static string CrashPromptGithubNewIssueTitle {
+            get {
+                return ResourceManager.GetString("CrashPromptGithubNewIssueTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Create.
         /// </summary>
         public static string CreateMember {

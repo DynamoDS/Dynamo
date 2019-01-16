@@ -94,7 +94,7 @@ a = Transpose(a); // b = 1; c =3
         [Category("SmokeTest")]
         public void Test_4_14_isUniformDepth()
         {
-            // TODO pratapa: Regression after introduction of Get.ValueAtKey for array indexing (due to array promotion)
+            // TODO pratapa: Failure with Rank; this works fine in a code block??
             string errmsg = "";
             string code = @"myNonUniformDepth2Dcollection = [[1, 2, 3], [4, 5], 6];
 individualMemberB = myNonUniformDepth2Dcollection [0][1]; // OK, = B

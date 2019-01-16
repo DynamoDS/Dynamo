@@ -638,7 +638,7 @@ namespace Dynamo.Tests
         public void TestNodeChange_Surface_ByJoin()
         {
             string openPath = Path.Combine(TestDirectory,
-            @"core\WorkflowTestFiles\TestGeometryNodeChanges\TestSurface.Join.dyn");
+            @"core\WorkflowTestFiles\TestGeometryNodeChanges\TestPolySurface.ByJoinedSurfaces.dyn");
             RunModel(openPath);
 
             AssertNoDummyNodes();
