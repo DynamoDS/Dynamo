@@ -48,6 +48,16 @@ namespace DesignScript
                 }
             }
 
+            public static object ValueAtIndexInForLoop(IList list, int index)
+            {
+                return ValueAtIndex(list, index);
+            }
+
+            public static object ValueAtIndexInForLoop(string stringList, int index)
+            {
+                return ValueAtIndex(stringList, index);
+            }
+
             public static object ValueAtIndex(string stringList, int index)
             {
                 while (index < 0)
