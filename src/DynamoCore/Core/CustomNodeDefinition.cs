@@ -121,17 +121,13 @@ namespace Dynamo
 
             //Find function entry point, and then compile
             var inputNodes = nodeModels.OfType<Symbol>().ToList();
-            var parameters = new List<TypedParameter>();
-            foreach (Symbol input in inputNodes)
-            {
-                var param = new TypedParameter(input.GetAstIdentifierForOutputIndex(0).Value,
-                                               input.Parameter.Type,
-                                               input.Parameter.DefaultValue,
-                                               null,
-                                               input.Parameter.Summary);
-                param.NameIsValid = input.Parameter.NameIsValid;
-                parameters.Add(param);
-            }
+            var parameters = inputNodes.Select(x => new TypedParameter(
+                                                   x.GetAstIdentifierForOutputIndex(0).Value,
+                                                   x.Parameter.Type,
+                                                   x.Parameter.DefaultValue,
+                                                   null,
+                                                   x.Parameter.Summary, 
+                                                   x.Parameter.NameIsValid));
             var displayParameters = inputNodes.Select(x => x.Parameter.Name);
 
             #endregion

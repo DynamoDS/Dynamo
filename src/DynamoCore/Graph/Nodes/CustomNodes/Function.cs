@@ -466,8 +466,7 @@ namespace Dynamo.Graph.Nodes.CustomNodes
                     else
                     {
                         Error(Properties.Resources.InvalidInputSymbolErrorMessage); 
-                        Parameter = new TypedParameter("", type, defaultValue, null, comment);
-                        Parameter.NameIsValid = false;
+                        Parameter = new TypedParameter("", type, defaultValue, null, comment, false);
                     }
                 }
                 else
