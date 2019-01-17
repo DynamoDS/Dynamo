@@ -13,6 +13,11 @@ namespace Dynamo.Library
         private string summary = null; // Indicating that it is not initialized.
         private readonly string defaultValueString;
 
+        /// <summary>
+        /// Indicates whether a valid name has been set for this parameter.
+        /// This property is not serialized.
+        /// </summary>
+        public bool NameIsValid { get; private set; } = true;
 
         /// <summary>
         /// This function creates TypedParameter
@@ -30,16 +35,16 @@ namespace Dynamo.Library
             defaultValueString = defaultValue;
             this.summary = summary;
         }
-        
-        
+
+
         /// <summary>
-         /// This function creates TypedParameter
-         /// </summary>
-         /// <param name="name">parameter name</param>
-         /// <param name="type">parameter type</param>
-         /// <param name="defaultValue">parameter default value</param>
-         /// <param name="shortArgumentName">short name is used as tooltip</param>
-         /// <param name="summary">parameter description</param>
+        /// This function creates TypedParameter
+        /// </summary>
+        /// <param name="name">parameter name</param>
+        /// <param name="type">parameter type</param>
+        /// <param name="defaultValue">parameter default value</param>
+        /// <param name="shortArgumentName">short name is used as tooltip</param>
+        /// <param name="summary">parameter description</param>
         public TypedParameter(string name, ProtoCore.Type type, AssociativeNode defaultValue = null, string shortArgumentName = null, string summary = null)
         {
             if (name == null)
@@ -55,6 +60,34 @@ namespace Dynamo.Library
                 defaultValueString = shortArgumentName;
 
             this.summary = summary;
+        }
+
+        /// <summary>
+        /// This function creates TypedParameter
+        /// </summary>
+        /// <param name="name">parameter name</param>
+        /// <param name="type">parameter type</param>
+        /// <param name="defaultValue">parameter default value</param>
+        /// <param name="shortArgumentName">short name is used as tooltip</param>
+        /// <param name="summary">parameter description</param>
+        /// <param name="nameIsValid">indicates whether the name can be parsed</param>
+        public TypedParameter(string name, ProtoCore.Type type, AssociativeNode defaultValue, string shortArgumentName, string summary, bool nameIsValid = true)
+        {
+            if (name == null)
+                throw new ArgumentNullException("parameter");
+
+            Name = name;
+            Type = type;
+            DefaultValue = defaultValue;
+
+            if (defaultValue != null)
+                defaultValueString = defaultValue.ToString();
+            else
+                defaultValueString = shortArgumentName;
+
+            this.summary = summary;
+
+            this.NameIsValid = nameIsValid;
         }
 
         /// <summary>

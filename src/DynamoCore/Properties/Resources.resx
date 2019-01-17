@@ -674,4 +674,27 @@ value : bool = false</value>
   <data name="CodeBlockTempIdentifierOutputLabel" xml:space="preserve">
     <value>Value of expression at line {0}</value>
   </data>
+  <data name="InvalidInputSymbolCustomNodeWarning" xml:space="preserve">
+    <value>This custom node contains an invalid input. Please fix the input before saving the custom node.</value>
+  </data>
+  <data name="InvalidInputSymbolErrorMessage" xml:space="preserve">
+    <value>This input symbol is not currently valid, and cannot be saved until it is fixed. Valid inputs take the form:
+
+name : type = defaultValue
+
+The input name should be a valid variable name, without spaces. An input type and default value are optional.</value>
+  </data>
+  <data name="InvalidInputSymbolWarningMessage" xml:space="preserve">
+    <value>This custom node currently contains some invalid inputs, and cannot be saved until the inputs are fixed. If the custom node is saved using SaveAs, the invalid inputs will revert to generic inputs. Valid inputs take the form:
+
+name : type = defaultValue
+
+The input name should be a valid variable name, without spaces. An input type and default value are optional.</value>
+  </data>
+  <data name="InvalidInputSymbolWarningShortMessage" xml:space="preserve">
+    <value>This custom node cannot be saved until invalid inputs are removed or fixed.</value>
+  </data>
+  <data name="InvalidInputSymbolWarningTitle" xml:space="preserve">
+    <value>Custom Node Contains Invalid Inputs and Cannot Be Saved.</value>
+  </data>
 </root>
