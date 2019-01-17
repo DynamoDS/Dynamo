@@ -250,7 +250,7 @@ namespace DynamoPythonTests
             completionProvider.UpdateImportedTypes(str);
 
             Assert.AreEqual(2, completionProvider.ImportedTypes.Count);
-            Assert.IsTrue(completionProvider.ImportedTypes.ContainsKey("System"));
+            verifyImportedTypes(completionProvider.ImportedTypes);
         }
 
         [Test]
@@ -267,7 +267,7 @@ namespace DynamoPythonTests
             Assert.IsTrue(completionList.Any());
             Assert.IsTrue(completionList.Intersect(new[] { "IO", "Console", "Reflection" }).Count() == 3);
             Assert.AreEqual(2, completionProvider.ImportedTypes.Count);
-            Assert.IsTrue(completionProvider.ImportedTypes.ContainsKey("System"));
+            verifyImportedTypes(completionProvider.ImportedTypes);
         }
 
         [Test]
@@ -304,7 +304,7 @@ namespace DynamoPythonTests
             completionProvider.UpdateImportedTypes(str);
 
             Assert.AreEqual(2, completionProvider.ImportedTypes.Count);
-            Assert.IsTrue(completionProvider.ImportedTypes.ContainsKey("System"));
+            verifyImportedTypes(completionProvider.ImportedTypes);
         }
 
         [Test]
@@ -317,7 +317,6 @@ namespace DynamoPythonTests
             var completionData = completionProvider.GetCompletionData(str);
 
             Assert.AreNotEqual(0, completionData.Length);
-
         }
 
         [Test]
@@ -331,7 +330,6 @@ namespace DynamoPythonTests
             Assert.AreEqual("from math import sin", imports["sin"]);
             Assert.IsTrue( imports.ContainsKey("cos") );
             Assert.AreEqual("from math import cos", imports["cos"]);
-
         }
 
         [Test]
@@ -343,7 +341,6 @@ namespace DynamoPythonTests
             var imports = IronPythonCompletionProvider.FindTypeSpecificImportStatements(str);
             Assert.IsTrue(imports.ContainsKey("sin"));
             Assert.AreEqual("from math import sin", imports["sin"]);
-
         }
 
         [Test]
@@ -355,7 +352,6 @@ namespace DynamoPythonTests
             var imports = IronPythonCompletionProvider.FindTypeSpecificImportStatements(str);
             Assert.IsTrue(imports.ContainsKey("Events"));
             Assert.AreEqual("from Autodesk.Revit.DB import Events", imports["Events"]);
-
         }
 
         [Test]
@@ -367,7 +363,6 @@ namespace DynamoPythonTests
             var imports = IronPythonCompletionProvider.FindAllTypeImportStatements(str);
             Assert.IsTrue(imports.ContainsKey("Autodesk.Revit.DB"));
             Assert.AreEqual("from Autodesk.Revit.DB import *", imports["Autodesk.Revit.DB"]);
-
         }
 
         [Test]
@@ -432,6 +427,20 @@ namespace DynamoPythonTests
                         matches.Add(assembly.FullName);
                     }
                 }
+            }
+        }
+
+        private void verifyImportedTypes(Dictionary<string, Type> importedTypes)
+        {
+            var defaultImports = new string[]
+            {
+                "System",
+                "None"
+            };
+
+            foreach (var type in importedTypes)
+            {
+                Assert.Contains(type.Key, defaultImports);
             }
         }
     }
