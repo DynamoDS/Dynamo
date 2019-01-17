@@ -268,7 +268,6 @@ namespace DynamoPythonTests
             Assert.IsTrue(completionList.Intersect(new[] { "IO", "Console", "Reflection" }).Count() == 3);
             Assert.AreEqual(2, completionProvider.ImportedTypes.Count);
             Assert.IsTrue(completionProvider.ImportedTypes.ContainsKey("System"));
-
         }
 
         [Test]
@@ -293,6 +292,7 @@ namespace DynamoPythonTests
             var matches = IronPythonCompletionProvider.FindBasicImportStatements(str);
 
             Assert.AreEqual(1, matches.Count);
+            Assert.IsTrue(matches.ContainsKey("System"));
         }
 
         [Test]
@@ -303,7 +303,7 @@ namespace DynamoPythonTests
             var completionProvider = new IronPythonCompletionProvider();
             completionProvider.UpdateImportedTypes(str);
 
-            Assert.AreEqual(1, completionProvider.ImportedTypes.Count);
+            Assert.AreEqual(2, completionProvider.ImportedTypes.Count);
             Assert.IsTrue(completionProvider.ImportedTypes.ContainsKey("System"));
         }
 

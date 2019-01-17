@@ -671,12 +671,41 @@ namespace Dynamo.Python
             var importMatches = MATCH_IMPORT_STATEMENTS.Matches(code);
             foreach (Match m in importMatches)
             {
+                var names = new List<string>();
+
+                // If the match ends with '.'
                 if (m.Value.EndsWith("."))
                 {
-                    continue; // Incomplete statement
+                    // For each group in mathces
+                    foreach (Group item in m.Groups)
+                    {
+                        // Clone
+                        var text = m.Value;
+
+                        // Reformat statment
+                        text = text.Replace("\t", "   ")
+                                   .Replace("\n", " ")
+                                   .Replace("\r", " ");
+                        var spaceIndex = text.LastIndexOf(' ');
+                        var equalsIndex = text.LastIndexOf('=');
+                        var clean = text.Substring(Math.Max(spaceIndex, equalsIndex) + 1).Trim('.').Trim('(');
+
+                        // Check for multi-line statement
+                        var allStatements = clean.Trim().Split(new char[] { ',' }).Select(x => x.Trim()).ToList();
+                        
+                        // Build names output
+                        foreach(string statement in allStatements)
+                        {
+                            names.Add(statement);
+                        }
+                    }
+                }
+                else
+                {
+                    // Check for multi-line statement
+                    names = m.Groups[1].Value.Trim().Split(new char[] { ',' }).Select(x => x.Trim()).ToList();
                 }
 
-                var names = m.Groups[1].Value.Trim().Split(new char[] { ',' }).Select(x => x.Trim());
                 foreach (string n in names)
                 {
                     var parts = n.Split(new string[] { " as " }, 2, StringSplitOptions.RemoveEmptyEntries);
