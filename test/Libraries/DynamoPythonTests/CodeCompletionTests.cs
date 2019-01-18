@@ -77,6 +77,13 @@ namespace DynamoPythonTests
 
         private ILogger logger;
 
+        // List of expected default imported types
+        private List<string> defaultImports = new List<string>()
+        {
+            "None",
+            "System"
+        };
+
         [SetUp]
         public void SetupPythonTests()
         {
@@ -250,7 +257,7 @@ namespace DynamoPythonTests
             completionProvider.UpdateImportedTypes(str);
 
             Assert.AreEqual(2, completionProvider.ImportedTypes.Count);
-            verifyImportedTypes(completionProvider.ImportedTypes);
+            Assert.IsTrue(defaultImports.SequenceEqual(completionProvider.ImportedTypes.Keys.ToList()));
         }
 
         [Test]
@@ -267,7 +274,7 @@ namespace DynamoPythonTests
             Assert.IsTrue(completionList.Any());
             Assert.IsTrue(completionList.Intersect(new[] { "IO", "Console", "Reflection" }).Count() == 3);
             Assert.AreEqual(2, completionProvider.ImportedTypes.Count);
-            verifyImportedTypes(completionProvider.ImportedTypes);
+            Assert.IsTrue(defaultImports.SequenceEqual(completionProvider.ImportedTypes.Keys.ToList()));
         }
 
         [Test]
@@ -304,7 +311,7 @@ namespace DynamoPythonTests
             completionProvider.UpdateImportedTypes(str);
 
             Assert.AreEqual(2, completionProvider.ImportedTypes.Count);
-            verifyImportedTypes(completionProvider.ImportedTypes);
+            Assert.IsTrue(defaultImports.SequenceEqual(completionProvider.ImportedTypes.Keys.ToList()));
         }
 
         [Test]
@@ -427,20 +434,6 @@ namespace DynamoPythonTests
                         matches.Add(assembly.FullName);
                     }
                 }
-            }
-        }
-
-        private void verifyImportedTypes(Dictionary<string, Type> importedTypes)
-        {
-            var defaultImports = new string[]
-            {
-                "System",
-                "None"
-            };
-
-            foreach (var type in importedTypes)
-            {
-                Assert.Contains(type.Key, defaultImports);
             }
         }
     }
