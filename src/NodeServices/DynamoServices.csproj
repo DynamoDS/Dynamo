@@ -51,6 +51,7 @@
     <Compile Include="Attributes.cs" />
     <Compile Include="ExecutionEvents.cs" />
     <Compile Include="ExecutionSession.cs" />
+    <Compile Include="ExtensionAppEvents.cs" />
     <Compile Include="GraphicsDataInterfaces.cs" />
     <Compile Include="IAnalyticsClient.cs" />
     <Compile Include="Interfaces.cs" />

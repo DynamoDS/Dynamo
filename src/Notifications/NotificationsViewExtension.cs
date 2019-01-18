@@ -3,7 +3,9 @@ using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using Dynamo.Events;
 using Dynamo.Wpf.Extensions;
+
 
 namespace Dynamo.Notifications
 {
@@ -67,6 +69,17 @@ namespace Dynamo.Notifications
             (notificationsMenuItem.MenuItem.Parent as ContentControl).Content = null;
             //place the menu into the DynamoMenu
             p.dynamoMenu.Items.Add(notificationsMenuItem.MenuItem);
+
+            //TEST TODO REMMOVE
+            //stop libG from shutting down
+            Dynamo.Events.ExtensionAppEvents.TerminatingExtensionApplication += (CancelableExtensionsShutdownArgs args) =>
+            {
+                if (args.ExtensionAppName.Contains("LibG.ExtensionApplication"))
+                {
+                    args.CancelShutdown = true;
+                };
+
+            };
         }
 
         public void Shutdown()

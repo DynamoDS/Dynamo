@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections;
+using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using Autodesk.DesignScript.Interfaces;
+using Dynamo.Events;
 
 namespace ProtoFFI
 {
@@ -12,6 +14,7 @@ namespace ProtoFFI
         System.Collections.Hashtable mExtensionApps = new System.Collections.Hashtable();
         string mProtoInterface = string.Empty;
 
+
         // http://csharpindepth.com/articles/general/singleton.aspx
         private static readonly Lazy<ExtensionAppLoader> lazy = new Lazy<ExtensionAppLoader>(() => new ExtensionAppLoader());
         public static ExtensionAppLoader Instance
@@ -19,6 +22,8 @@ namespace ProtoFFI
             get { return lazy.Value; }
         }
 
+       
+     
         private ExtensionAppLoader()
         {
             var assembly = typeof(IExtensionApplication).Assembly;
@@ -84,7 +89,13 @@ namespace ProtoFFI
                 var app = i.Value as IExtensionApplication;
                 if (null != app)
                 {
-                    app.ShutDown();
+                    var args = new CancelableExtensionsShutdownArgs(app.GetType().FullName);
+                    Dynamo.Events.ExtensionAppEvents.OnTerminateExtensionApplication(args);
+                    //if some consumer canceled shutdown - don't call shutdown.
+                    if (!args.CancelShutdown)
+                    {
+                        app.ShutDown();
+                    }
                 }  
             }
             mExtensionApps.Clear();
@@ -160,6 +171,7 @@ namespace ProtoFFI
                 if (!mAssemblies.ContainsKey(assembly))
                 {
                     extesionApp = (IExtensionApplication)Activator.CreateInstance(appType, true);
+                    Debug.WriteLine($"intializing an extension app from {appType.Name}:{assembly.Location}");
                     mExtensionApps.Add(appType, extesionApp);
                 }
             }
