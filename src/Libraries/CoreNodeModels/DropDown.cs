@@ -240,18 +240,32 @@ namespace CoreNodeModels
 
         protected static string XmlEscape(string unescaped)
         {
-            var doc = new XmlDocument();
-            XmlNode node = doc.CreateElement("root");
-            node.InnerText = unescaped;
-            return node.InnerXml;
+            try
+            {
+                var doc = new XmlDocument();
+                XmlNode node = doc.CreateElement("root");
+                node.InnerText = unescaped;
+                return node.InnerXml;
+            }
+            catch
+            {
+                return unescaped;
+            }
         }
 
         protected static string XmlUnescape(string escaped)
         {
-            var doc = new XmlDocument();
-            XmlNode node = doc.CreateElement("root");
-            node.InnerXml = escaped;
-            return node.InnerText;
+            try
+            {
+                var doc = new XmlDocument();
+                XmlNode node = doc.CreateElement("root");
+                node.InnerXml = escaped;
+                return node.InnerText;
+            }
+            catch
+            {
+                return escaped;
+            }
         }
 
         /// <summary>
