@@ -296,6 +296,18 @@ namespace Dynamo.Tests.Nodes
             Assert.AreEqual(-1, DSDropDownBase.ParseSelectedIndexImpl("2:foo", TestList()));
         }
 
+        [Test]
+        public void Load_SelectionIndexSpecialCharMatch()
+        {
+            Assert.AreEqual(-1, DSDropDownBase.ParseSelectedIndexImpl("2:<foo>", TestList()));
+        }
+
+        [Test]
+        public void Load_SelectionIndexSpecialCharNoMatch()
+        {
+            Assert.AreEqual(2, DSDropDownBase.ParseSelectedIndexImpl("2:<foo>", TestListWithItemWithSpecialChar()));
+        }
+
         private static List<DynamoDropDownItem> TestList()
         {
             var items = new List<DynamoDropDownItem>
@@ -309,5 +321,17 @@ namespace Dynamo.Tests.Nodes
             return items;
         }
 
+        private static List<DynamoDropDownItem> TestListWithItemWithSpecialChar()
+        {
+            var items = new List<DynamoDropDownItem>
+            {
+                new DynamoDropDownItem("cat", "cat"),
+                new DynamoDropDownItem("dog", "dog"),
+                new DynamoDropDownItem("<foo>", "<foo>"),
+                new DynamoDropDownItem("!@#$%%%^&*()", "craziness")
+            };
+
+            return items;
+        }
     }
 }
