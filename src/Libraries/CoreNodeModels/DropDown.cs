@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Security;
 using System.Xml;
 using CoreNodeModels.Properties;
 using Dynamo.Graph;
@@ -199,11 +200,21 @@ namespace CoreNodeModels
         public static int ParseSelectedIndexImpl(string index, IList<DynamoDropDownItem> items)
         {
             int selectedIndex = -1;
-
+            string name;
             var splits = index.Split(':');
             if (splits.Count() > 1)
             {
-                var name = XmlUnescape(index.Substring(index.IndexOf(':') + 1));
+                // Try unescape serialized string, used for Dynamo 1.X XML deserialization
+                // Try-catch block for DynamoPlayer UpdateValueCore call
+                try
+                {
+                    SecurityElement securityElement = SecurityElement.FromString(index.Substring(index.IndexOf(':') + 1));
+                    name = securityElement.Text;
+                }
+                catch
+                {
+                    name = index.Substring(index.IndexOf(':') + 1);
+                }
                 var item = items.FirstOrDefault(i => i.Name == name);
                 selectedIndex = item != null ?
                     items.IndexOf(item) :
@@ -235,37 +246,7 @@ namespace CoreNodeModels
             }
 
             var item = items[index];
-            return string.Format("{0}:{1}", index, XmlEscape(item.Name));
-        }
-
-        protected static string XmlEscape(string unescaped)
-        {
-            try
-            {
-                var doc = new XmlDocument();
-                XmlNode node = doc.CreateElement("root");
-                node.InnerText = unescaped;
-                return node.InnerXml;
-            }
-            catch
-            {
-                return unescaped;
-            }
-        }
-
-        protected static string XmlUnescape(string escaped)
-        {
-            try
-            {
-                var doc = new XmlDocument();
-                XmlNode node = doc.CreateElement("root");
-                node.InnerXml = escaped;
-                return node.InnerText;
-            }
-            catch
-            {
-                return escaped;
-            }
+            return string.Format("{0}:{1}", index, SecurityElement.Escape(item.Name));
         }
 
         /// <summary>
