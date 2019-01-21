@@ -200,21 +200,11 @@ namespace CoreNodeModels
         public static int ParseSelectedIndexImpl(string index, IList<DynamoDropDownItem> items)
         {
             int selectedIndex = -1;
-            string name;
             var splits = index.Split(':');
             if (splits.Count() > 1)
             {
-                // Try unescape serialized string, used for Dynamo 1.X XML deserialization
-                // Try-catch block for DynamoPlayer UpdateValueCore call
-                try
-                {
-                    SecurityElement securityElement = SecurityElement.FromString(index.Substring(index.IndexOf(':') + 1));
-                    name = securityElement.Text;
-                }
-                catch
-                {
-                    name = index.Substring(index.IndexOf(':') + 1);
-                }
+
+                var name = System.Web.HttpUtility.HtmlDecode(index.Substring(index.IndexOf(':') + 1));
                 var item = items.FirstOrDefault(i => i.Name == name);
                 selectedIndex = item != null ?
                     items.IndexOf(item) :
