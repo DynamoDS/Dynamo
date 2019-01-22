@@ -2055,7 +2055,7 @@ namespace ProtoImperative
                     LeftNode = loopvar,
 
                     //RightNode = arrayExpr;
-                    RightNode = AstFactory.BuildIndexExpression(arrayExpr, counter) as ArrayNameNode
+                    RightNode = AstFactory.BuildForLoopIndexExpression(arrayExpr, counter) as ArrayNameNode
                 };
                 NodeUtils.CopyNodeLocation(arrayIndexing, loopvar);
 

@@ -3004,7 +3004,7 @@ namespace Dynamo.Wpf.Properties
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to We can&apos;t save &quot;{0}&quot; because the file is read-only or contains unresolved XML nodes. To keep changes, would you like to &quot;Save As...&quot; with a different name or path?.
+        ///   Looks up a localized string similar to We can&apos;t save &quot;{0}&quot; because the file is read-only or contains unresolved or invalid nodes. To keep changes, would you like to &quot;Save As...&quot; with a different name or path?.
         /// </summary>
         public static string MessageConfirmToSaveReadOnlyCustomNode {
             get {

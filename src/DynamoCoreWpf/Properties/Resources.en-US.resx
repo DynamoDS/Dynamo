@@ -1298,7 +1298,7 @@ Would you like to save your changes?</value>
 Would you like to save your changes?</value>
   </data>
   <data name="MessageConfirmToSaveReadOnlyCustomNode" xml:space="preserve">
-    <value>We can't save "{0}" because the file is read-only or contains unresolved XML nodes. To keep changes, would you like to "Save As..." with a different name or path?</value>
+    <value>We can't save "{0}" because the file is read-only or contains unresolved or invalid nodes. To keep changes, would you like to "Save As..." with a different name or path?</value>
     <comment>Message box content</comment>
   </data>
   <data name="MessageConfirmToUninstallPackage" xml:space="preserve">

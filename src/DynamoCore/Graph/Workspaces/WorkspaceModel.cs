@@ -570,7 +570,7 @@ namespace Dynamo.Graph.Workspaces
         public bool IsReadOnly
         {   
             //if the workspace contains xmlDummyNodes it's effectively a readonly graph.
-            get { return isReadOnly || this.containsXmlDummyNodes(); }
+            get { return isReadOnly || this.containsXmlDummyNodes() || this.containsInvalidInputSymbols(); }
             set
             {
                 isReadOnly = value;
@@ -1370,6 +1370,15 @@ namespace Dynamo.Graph.Workspaces
         internal bool containsXmlDummyNodes()
         {
             return this.Nodes.OfType<DummyNode>().Where(node => node.OriginalNodeContent is XmlElement).Count()> 0;
+        }
+
+        /// <summary>
+        /// Returns true if the workspace contains input symbols with invalid names.
+        /// </summary>
+        /// <returns></returns>
+        internal bool containsInvalidInputSymbols()
+        {
+            return this.Nodes.OfType<Nodes.CustomNodes.Symbol>().Any(node => !node.Parameter.NameIsValid);
         }
 
         private void SerializeElementResolver(XmlDocument xmlDoc)

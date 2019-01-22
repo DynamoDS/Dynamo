@@ -123,10 +123,11 @@ namespace Dynamo
             var inputNodes = nodeModels.OfType<Symbol>().ToList();
             var parameters = inputNodes.Select(x => new TypedParameter(
                                                    x.GetAstIdentifierForOutputIndex(0).Value,
-                                                   x.Parameter.Type, 
+                                                   x.Parameter.Type,
                                                    x.Parameter.DefaultValue,
                                                    null,
-                                                   x.Parameter.Summary));
+                                                   x.Parameter.Summary, 
+                                                   x.Parameter.NameIsValid));
             var displayParameters = inputNodes.Select(x => x.Parameter.Name);
 
             #endregion
@@ -157,6 +158,16 @@ namespace Dynamo
         ///     Is this CustomNodeDefinition properly loaded?
         /// </summary>
         public bool IsProxy { get; private set; }
+
+        /// <summary>
+        /// Indicates whether any of this definition's input parameters are invalid.
+        /// An input is invalid when its input expression fails to parse. For example, 
+        /// this would happen if the input name contained spaces or illegal characters.
+        /// </summary>
+        public bool ContainsInvalidInput
+        {
+            get { return Parameters.Any(p => !p.NameIsValid); }
+        }
 
         /// <summary>
         ///     Function name.

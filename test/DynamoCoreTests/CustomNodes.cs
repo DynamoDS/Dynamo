@@ -1263,10 +1263,10 @@ namespace Dynamo.Tests
             Assert.IsNotNull(customNodeWs);
             var node1 = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace("e058111a-0c58-4dbf-9293-6ab711f530bf") as Symbol;
             Assert.IsNotNull(node1);
-            Assert.AreEqual("x-start: var[]..[]", node1.Parameter.ToCommentNameString());
+            Assert.AreEqual("x_start: var[]..[]", node1.Parameter.ToCommentNameString());
             var node2 = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace("2601b801-c8af-413b-9c58-f8b100d62ed8") as Symbol;
             Assert.IsNotNull(node2);
-            Assert.AreEqual("x-step: var[]..[]", node2.Parameter.ToCommentNameString());
+            Assert.AreEqual("x_step: var[]..[]", node2.Parameter.ToCommentNameString());
         }
 
         [Test]
@@ -1341,6 +1341,39 @@ namespace Dynamo.Tests
             Assert.AreEqual(1, this.CurrentDynamoModel.CurrentWorkspace.Notes.Count());
             Assert.AreEqual(1, this.CurrentDynamoModel.CurrentWorkspace.Annotations.Count());
 
+        }
+
+        [Test]
+        public void InputNameWithSpacesShouldCauseErrorStateAndReadOnly()
+        {
+            // Custom node has input symbol with a name that contains spaces
+            var dyfFilePath = Path.Combine(TestDirectory, @"core\CustomNodes\invalidInputName.dyf");
+
+            OpenModel(dyfFilePath);
+
+            var inputSymbolNode = CurrentDynamoModel.CurrentWorkspace.Nodes.OfType<Symbol>().First();
+
+            // The input symbol is invalid, so the input symbol node should show an error
+            Assert.IsTrue(inputSymbolNode.State == ElementState.Error);
+            // The workspace should know that it contains invalid input symbols
+            Assert.IsTrue(CurrentDynamoModel.CurrentWorkspace.containsInvalidInputSymbols());
+            // The workspace should be readonly because it contains invalid input symbols
+            Assert.IsTrue(CurrentDynamoModel.CurrentWorkspace.IsReadOnly);
+        }
+
+        [Test]
+        public void InputNameWithSpacesShouldCauseWarningInGraph()
+        {
+            // Dyn file contains a custom node with an invalid input symbol
+            var dynFilePath = Path.Combine(TestDirectory, @"core\CustomNodes\invalidInputName.dyn");
+
+            OpenModel(dynFilePath);
+            var functionNode = CurrentDynamoModel.CurrentWorkspace.Nodes.OfType<Function>().First();
+
+            // The custom node should display a warning that it contains invalid input symbols
+            Assert.IsTrue(functionNode.State == ElementState.PersistentWarning);
+            // Despite the invalid input symbol, the custom node should still execute and return the correct value
+            AssertPreviewValue("f91658aeafe84cbaa39d370dec283b53", 8.0);
         }
     }
 }

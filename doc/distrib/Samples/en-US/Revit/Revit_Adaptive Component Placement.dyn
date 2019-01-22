@@ -285,6 +285,7 @@
     {
       "ConcreteType": "DSRevitNodesUI.FamilyTypes, DSRevitNodesUI",
       "SelectedIndex": 2,
+      "SelectedString": "3PointAC_SquareTruss:3PointAC_SquareTruss",
       "NodeType": "ExtensionNode",
       "Id": "2bc4ccefdee54567b97689536f8908ce",
       "Inputs": [],
@@ -478,7 +479,7 @@
     {
       "NodeId": "357e7a53-361c-4c1e-81ae-83e16213a39a",
       "Binding": {
-        "ByPoints_InClassDecl-1_InFunctionScope-1_Instance0_357e7a53-361c-4c1e-81ae-83e16213a39a": "PFNPQVAtRU5WOkVudmVsb3BlIHhtbG5zOnhzaT0iaHR0cDovL3d3dy53My5vcmcvMjAwMS9YTUxTY2hlbWEtaW5zdGFuY2UiIHhtbG5zOnhzZD0iaHR0cDovL3d3dy53My5vcmcvMjAwMS9YTUxTY2hlbWEiIHhtbG5zOlNPQVAtRU5DPSJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy9zb2FwL2VuY29kaW5nLyIgeG1sbnM6U09BUC1FTlY9Imh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3NvYXAvZW52ZWxvcGUvIiB4bWxuczpjbHI9Imh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vc29hcC9lbmNvZGluZy9jbHIvMS4wIiBTT0FQLUVOVjplbmNvZGluZ1N0eWxlPSJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy9zb2FwL2VuY29kaW5nLyI+DQo8U09BUC1FTlY6Qm9keT4NCjxhMTpDYWxsU2l0ZV94MDAyQl9UcmFjZVNlcmlhbGlzZXJIZWxwZXIgaWQ9InJlZi0xIiB4bWxuczphMT0iaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS9jbHIvbnNhc3NlbS9Qcm90b0NvcmUvUHJvdG9Db3JlJTJDJTIwVmVyc2lvbiUzRDIuMC4xLjQzNTclMkMlMjBDdWx0dXJlJTNEbmV1dHJhbCUyQyUyMFB1YmxpY0tleVRva2VuJTNEbnVsbCI+DQo8TnVtYmVyT2ZFbGVtZW50cz4xPC9OdW1iZXJPZkVsZW1lbnRzPg0KPEJhc2UtMF9IYXNEYXRhPnRydWU8L0Jhc2UtMF9IYXNEYXRhPg0KPEJhc2UtMF9EYXRhIGlkPSJyZWYtMyI+UEZOUFFWQXRSVTVXT2tWdWRtVnNiM0JsSUhodGJHNXpPbmh6YVQwaWFIUjBjRG92TDNkM2R5NTNNeTV2Y21jdk1qQXdNUzlZVFV4VFkyaGxiV0V0YVc1emRHRnVZMlVpSUhodGJHNXpPbmh6WkQwaWFIUjBjRG92TDNkM2R5NTNNeTV2Y21jdk1qQXdNUzlZVFV4VFkyaGxiV0VpSUhodGJHNXpPbE5QUVZBdFJVNURQU0pvZEhSd09pOHZjMk5vWlcxaGN5NTRiV3h6YjJGd0xtOXlaeTl6YjJGd0wyVnVZMjlrYVc1bkx5SWdlRzFzYm5NNlUwOUJVQzFGVGxZOUltaDBkSEE2THk5elkyaGxiV0Z6TG5odGJITnZZWEF1YjNKbkwzTnZZWEF2Wlc1MlpXeHZjR1V2SWlCNGJXeHVjenBqYkhJOUltaDBkSEE2THk5elkyaGxiV0Z6TG0xcFkzSnZjMjltZEM1amIyMHZjMjloY0M5bGJtTnZaR2x1Wnk5amJISXZNUzR3SWlCVFQwRlFMVVZPVmpwbGJtTnZaR2x1WjFOMGVXeGxQU0pvZEhSd09pOHZjMk5vWlcxaGN5NTRiV3h6YjJGd0xtOXlaeTl6YjJGd0wyVnVZMjlrYVc1bkx5SStEUW84VTA5QlVDMUZUbFk2UW05a2VUNE5DanhoTVRwTmRXeDBhWEJzWlZObGNtbGhiR2w2WVdKc1pVbGtJR2xrUFNKeVpXWXRNU0lnZUcxc2JuTTZZVEU5SW1oMGRIQTZMeTl6WTJobGJXRnpMbTFwWTNKdmMyOW1kQzVqYjIwdlkyeHlMMjV6WVhOelpXMHZVbVYyYVhSVFpYSjJhV05sY3k1UVpYSnphWE4wWlc1alpTOVNaWFpwZEZObGNuWnBZMlZ6SlRKREpUSXdWbVZ5YzJsdmJpVXpSREl1TUM0d0xqUXpOakFsTWtNbE1qQkRkV3gwZFhKbEpUTkVibVYxZEhKaGJDVXlReVV5TUZCMVlteHBZMHRsZVZSdmEyVnVKVE5FYm5Wc2JDSStEUW84Ym5WdFltVnlUMlpGYkdWdFpXNTBjejQ1UEM5dWRXMWlaWEpQWmtWc1pXMWxiblJ6UGcwS1BITjBjbWx1WjBsRUxUQWdhV1E5SW5KbFppMHpJajR6TldGaE1UazRNeTA0Tm1WaExUUmhNek10WVRZNFl5MHpOVEUzTUdWbFlqTmpZMlF0TURBeE1ERmhPRGc4TDNOMGNtbHVaMGxFTFRBK0RRbzhhVzUwU1VRdE1ENHhNRFUxTXpZNFBDOXBiblJKUkMwd1BnMEtQSE4wY21sdVowbEVMVEVnYVdROUluSmxaaTAwSWo0ek5XRmhNVGs0TXkwNE5tVmhMVFJoTXpNdFlUWTRZeTB6TlRFM01HVmxZak5qWTJRdE1EQXhNREZoT0dROEwzTjBjbWx1WjBsRUxURStEUW84YVc1MFNVUXRNVDR4TURVMU16Y3pQQzlwYm5SSlJDMHhQZzBLUEhOMGNtbHVaMGxFTFRJZ2FXUTlJbkpsWmkwMUlqNHpOV0ZoTVRrNE15MDRObVZoTFRSaE16TXRZVFk0WXkwek5URTNNR1ZsWWpOalkyUXRNREF4TURGaE9UTThMM04wY21sdVowbEVMVEkrRFFvOGFXNTBTVVF0TWo0eE1EVTFNemM1UEM5cGJuUkpSQzB5UGcwS1BITjBjbWx1WjBsRUxUTWdhV1E5SW5KbFppMDJJajR6TldGaE1UazRNeTA0Tm1WaExUUmhNek10WVRZNFl5MHpOVEUzTUdWbFlqTmpZMlF0TURBeE1ERmhPVGs4TDNOMGNtbHVaMGxFTFRNK0RRbzhhVzUwU1VRdE16NHhNRFUxTXpnMVBDOXBiblJKUkMwelBnMEtQSE4wY21sdVowbEVMVFFnYVdROUluSmxaaTAzSWo0ek5XRmhNVGs0TXkwNE5tVmhMVFJoTXpNdFlUWTRZeTB6TlRFM01HVmxZak5qWTJRdE1EQXhNREZoT1dZOEwzTjBjbWx1WjBsRUxUUStEUW84YVc1MFNVUXRORDR4TURVMU16a3hQQzlwYm5SSlJDMDBQZzBLUEhOMGNtbHVaMGxFTFRVZ2FXUTlJbkpsWmkwNElqNHpOV0ZoTVRrNE15MDRObVZoTFRSaE16TXRZVFk0WXkwek5URTNNR1ZsWWpOalkyUXRNREF4TURGaFlUVThMM04wY21sdVowbEVMVFUrRFFvOGFXNTBTVVF0TlQ0eE1EVTFNemszUEM5cGJuUkpSQzAxUGcwS1BITjBjbWx1WjBsRUxUWWdhV1E5SW5KbFppMDVJajR6TldGaE1UazRNeTA0Tm1WaExUUmhNek10WVRZNFl5MHpOVEUzTUdWbFlqTmpZMlF0TURBeE1ERmhZV0k4TDNOMGNtbHVaMGxFTFRZK0RRbzhhVzUwU1VRdE5qNHhNRFUxTkRBelBDOXBiblJKUkMwMlBnMEtQSE4wY21sdVowbEVMVGNnYVdROUluSmxaaTB4TUNJK016VmhZVEU1T0RNdE9EWmxZUzAwWVRNekxXRTJPR010TXpVeE56QmxaV0l6WTJOa0xUQXdNVEF4WVdJeFBDOXpkSEpwYm1kSlJDMDNQZzBLUEdsdWRFbEVMVGMrTVRBMU5UUXdPVHd2YVc1MFNVUXROejROQ2p4emRISnBibWRKUkMwNElHbGtQU0p5WldZdE1URWlQak0xWVdFeE9UZ3pMVGcyWldFdE5HRXpNeTFoTmpoakxUTTFNVGN3WldWaU0yTmpaQzB3TURFd01XRmlOend2YzNSeWFXNW5TVVF0T0Q0TkNqeHBiblJKUkMwNFBqRXdOVFUwTVRVOEwybHVkRWxFTFRnK0RRbzhMMkV4T2sxMWJIUnBjR3hsVTJWeWFXRnNhWHBoWW14bFNXUStEUW84TDFOUFFWQXRSVTVXT2tKdlpIaytEUW84TDFOUFFWQXRSVTVXT2tWdWRtVnNiM0JsUGcwSzwvQmFzZS0wX0RhdGE+DQo8QmFzZS0wX0hhc05lc3RlZERhdGE+ZmFsc2U8L0Jhc2UtMF9IYXNOZXN0ZWREYXRhPg0KPC9hMTpDYWxsU2l0ZV94MDAyQl9UcmFjZVNlcmlhbGlzZXJIZWxwZXI+DQo8L1NPQVAtRU5WOkJvZHk+DQo8L1NPQVAtRU5WOkVudmVsb3BlPg0K"
+        "ByPoints_InClassDecl-1_InFunctionScope-1_Instance0_357e7a53-361c-4c1e-81ae-83e16213a39a": "PFNPQVAtRU5WOkVudmVsb3BlIHhtbG5zOnhzaT0iaHR0cDovL3d3dy53My5vcmcvMjAwMS9YTUxTY2hlbWEtaW5zdGFuY2UiIHhtbG5zOnhzZD0iaHR0cDovL3d3dy53My5vcmcvMjAwMS9YTUxTY2hlbWEiIHhtbG5zOlNPQVAtRU5DPSJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy9zb2FwL2VuY29kaW5nLyIgeG1sbnM6U09BUC1FTlY9Imh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3NvYXAvZW52ZWxvcGUvIiB4bWxuczpjbHI9Imh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vc29hcC9lbmNvZGluZy9jbHIvMS4wIiBTT0FQLUVOVjplbmNvZGluZ1N0eWxlPSJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy9zb2FwL2VuY29kaW5nLyI+DQo8U09BUC1FTlY6Qm9keT4NCjxhMTpDYWxsU2l0ZV94MDAyQl9UcmFjZVNlcmlhbGlzZXJIZWxwZXIgaWQ9InJlZi0xIiB4bWxuczphMT0iaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS9jbHIvbnNhc3NlbS9Qcm90b0NvcmUvUHJvdG9Db3JlJTJDJTIwVmVyc2lvbiUzRDIuMS4wLjc0NTUlMkMlMjBDdWx0dXJlJTNEbmV1dHJhbCUyQyUyMFB1YmxpY0tleVRva2VuJTNEbnVsbCI+DQo8TnVtYmVyT2ZFbGVtZW50cz4xPC9OdW1iZXJPZkVsZW1lbnRzPg0KPEJhc2UtMF9IYXNEYXRhPnRydWU8L0Jhc2UtMF9IYXNEYXRhPg0KPEJhc2UtMF9EYXRhIGlkPSJyZWYtMyI+UEZOUFFWQXRSVTVXT2tWdWRtVnNiM0JsSUhodGJHNXpPbmh6YVQwaWFIUjBjRG92TDNkM2R5NTNNeTV2Y21jdk1qQXdNUzlZVFV4VFkyaGxiV0V0YVc1emRHRnVZMlVpSUhodGJHNXpPbmh6WkQwaWFIUjBjRG92TDNkM2R5NTNNeTV2Y21jdk1qQXdNUzlZVFV4VFkyaGxiV0VpSUhodGJHNXpPbE5QUVZBdFJVNURQU0pvZEhSd09pOHZjMk5vWlcxaGN5NTRiV3h6YjJGd0xtOXlaeTl6YjJGd0wyVnVZMjlrYVc1bkx5SWdlRzFzYm5NNlUwOUJVQzFGVGxZOUltaDBkSEE2THk5elkyaGxiV0Z6TG5odGJITnZZWEF1YjNKbkwzTnZZWEF2Wlc1MlpXeHZjR1V2SWlCNGJXeHVjenBqYkhJOUltaDBkSEE2THk5elkyaGxiV0Z6TG0xcFkzSnZjMjltZEM1amIyMHZjMjloY0M5bGJtTnZaR2x1Wnk5amJISXZNUzR3SWlCVFQwRlFMVVZPVmpwbGJtTnZaR2x1WjFOMGVXeGxQU0pvZEhSd09pOHZjMk5vWlcxaGN5NTRiV3h6YjJGd0xtOXlaeTl6YjJGd0wyVnVZMjlrYVc1bkx5SStEUW84VTA5QlVDMUZUbFk2UW05a2VUNE5DanhoTVRwTmRXeDBhWEJzWlZObGNtbGhiR2w2WVdKc1pVbGtJR2xrUFNKeVpXWXRNU0lnZUcxc2JuTTZZVEU5SW1oMGRIQTZMeTl6WTJobGJXRnpMbTFwWTNKdmMyOW1kQzVqYjIwdlkyeHlMMjV6WVhOelpXMHZVbVYyYVhSVFpYSjJhV05sY3k1UVpYSnphWE4wWlc1alpTOVNaWFpwZEZObGNuWnBZMlZ6SlRKREpUSXdWbVZ5YzJsdmJpVXpSREl1TVM0d0xqYzBOakFsTWtNbE1qQkRkV3gwZFhKbEpUTkVibVYxZEhKaGJDVXlReVV5TUZCMVlteHBZMHRsZVZSdmEyVnVKVE5FYm5Wc2JDSStEUW84Ym5WdFltVnlUMlpGYkdWdFpXNTBjejQ1UEM5dWRXMWlaWEpQWmtWc1pXMWxiblJ6UGcwS1BITjBjbWx1WjBsRUxUQWdhV1E5SW5KbFppMHpJajQyTW1ReVkyWmtOUzB6TkRFeExUUmhPRFl0WW1RME5pMWxNamsyTldJNFl6Qm1aR1l0TURBeE1ESTBZV004TDNOMGNtbHVaMGxFTFRBK0RRbzhhVzUwU1VRdE1ENHhNRFUzT1RZMFBDOXBiblJKUkMwd1BnMEtQSE4wY21sdVowbEVMVEVnYVdROUluSmxaaTAwSWo0Mk1tUXlZMlprTlMwek5ERXhMVFJoT0RZdFltUTBOaTFsTWprMk5XSTRZekJtWkdZdE1EQXhNREkwWWpJOEwzTjBjbWx1WjBsRUxURStEUW84YVc1MFNVUXRNVDR4TURVM09UY3dQQzlwYm5SSlJDMHhQZzBLUEhOMGNtbHVaMGxFTFRJZ2FXUTlJbkpsWmkwMUlqNDJNbVF5WTJaa05TMHpOREV4TFRSaE9EWXRZbVEwTmkxbE1qazJOV0k0WXpCbVpHWXRNREF4TURJMFlqYzhMM04wY21sdVowbEVMVEkrRFFvOGFXNTBTVVF0TWo0eE1EVTNPVGMxUEM5cGJuUkpSQzB5UGcwS1BITjBjbWx1WjBsRUxUTWdhV1E5SW5KbFppMDJJajQyTW1ReVkyWmtOUzB6TkRFeExUUmhPRFl0WW1RME5pMWxNamsyTldJNFl6Qm1aR1l0TURBeE1ESTBZbU04TDNOMGNtbHVaMGxFTFRNK0RRbzhhVzUwU1VRdE16NHhNRFUzT1Rnd1BDOXBiblJKUkMwelBnMEtQSE4wY21sdVowbEVMVFFnYVdROUluSmxaaTAzSWo0Mk1tUXlZMlprTlMwek5ERXhMVFJoT0RZdFltUTBOaTFsTWprMk5XSTRZekJtWkdZdE1EQXhNREkwWXpFOEwzTjBjbWx1WjBsRUxUUStEUW84YVc1MFNVUXRORDR4TURVM09UZzFQQzlwYm5SSlJDMDBQZzBLUEhOMGNtbHVaMGxFTFRVZ2FXUTlJbkpsWmkwNElqNDJNbVF5WTJaa05TMHpOREV4TFRSaE9EWXRZbVEwTmkxbE1qazJOV0k0WXpCbVpHWXRNREF4TURJMFl6WThMM04wY21sdVowbEVMVFUrRFFvOGFXNTBTVVF0TlQ0eE1EVTNPVGt3UEM5cGJuUkpSQzAxUGcwS1BITjBjbWx1WjBsRUxUWWdhV1E5SW5KbFppMDVJajQyTW1ReVkyWmtOUzB6TkRFeExUUmhPRFl0WW1RME5pMWxNamsyTldJNFl6Qm1aR1l0TURBeE1ESTBZMkk4TDNOMGNtbHVaMGxFTFRZK0RRbzhhVzUwU1VRdE5qNHhNRFUzT1RrMVBDOXBiblJKUkMwMlBnMEtQSE4wY21sdVowbEVMVGNnYVdROUluSmxaaTB4TUNJK05qSmtNbU5tWkRVdE16UXhNUzAwWVRnMkxXSmtORFl0WlRJNU5qVmlPR013Wm1SbUxUQXdNVEF5TkdRd1BDOXpkSEpwYm1kSlJDMDNQZzBLUEdsdWRFbEVMVGMrTVRBMU9EQXdNRHd2YVc1MFNVUXROejROQ2p4emRISnBibWRKUkMwNElHbGtQU0p5WldZdE1URWlQall5WkRKalptUTFMVE0wTVRFdE5HRTROaTFpWkRRMkxXVXlPVFkxWWpoak1HWmtaaTB3TURFd01qUmtOVHd2YzNSeWFXNW5TVVF0T0Q0TkNqeHBiblJKUkMwNFBqRXdOVGd3TURVOEwybHVkRWxFTFRnK0RRbzhMMkV4T2sxMWJIUnBjR3hsVTJWeWFXRnNhWHBoWW14bFNXUStEUW84TDFOUFFWQXRSVTVXT2tKdlpIaytEUW84TDFOUFFWQXRSVTVXT2tWdWRtVnNiM0JsUGcwSzwvQmFzZS0wX0RhdGE+DQo8QmFzZS0wX0hhc05lc3RlZERhdGE+ZmFsc2U8L0Jhc2UtMF9IYXNOZXN0ZWREYXRhPg0KPC9hMTpDYWxsU2l0ZV94MDAyQl9UcmFjZVNlcmlhbGlzZXJIZWxwZXI+DQo8L1NPQVAtRU5WOkJvZHk+DQo8L1NPQVAtRU5WOkVudmVsb3BlPg0K"
       }
     }
   ],
@@ -487,7 +488,7 @@
       "ScaleFactor": 1.0,
       "HasRunWithoutCrash": true,
       "IsVisibleInDynamoLibrary": true,
-      "Version": "2.0.1.4357",
+      "Version": "2.1.0.7455",
       "RunType": "Automatic",
       "RunPeriod": "100"
     },
@@ -505,131 +506,131 @@
     },
     "NodeViews": [
       {
-        "ShowGeometry": true,
-        "Name": "AdaptiveComponent.ByPoints",
         "Id": "357e7a53361c4c1e81ae83e16213a39a",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
+        "Name": "AdaptiveComponent.ByPoints",
+        "ShowGeometry": true,
         "Excluded": false,
         "X": 2266.50061471428,
         "Y": 871.04331788143
       },
       {
-        "ShowGeometry": true,
-        "Name": "Select Model Element",
         "Id": "eed8d3895ad24ac0a2707d737f487ad0",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
+        "Name": "Select Model Element",
+        "ShowGeometry": true,
         "Excluded": false,
         "X": 846.35713721073,
         "Y": 804.956539576904
       },
       {
-        "ShowGeometry": true,
-        "Name": "Select Model Element",
         "Id": "f46e385f3b0a446cadeb8d419a480cba",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
+        "Name": "Select Model Element",
+        "ShowGeometry": true,
         "Excluded": false,
         "X": 846.35713721073,
         "Y": 707.416917580937
       },
       {
-        "ShowGeometry": true,
-        "Name": "Select Model Element",
         "Id": "fe4c569fa1b446da8e76d1b1bd5b6ef4",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
+        "Name": "Select Model Element",
+        "ShowGeometry": true,
         "Excluded": false,
         "X": 846.35713721073,
         "Y": 910.636205623684
       },
       {
-        "ShowGeometry": true,
-        "Name": "Curve.PointAtParameter",
         "Id": "83f06d4b59ed4888a25943d12f3d1736",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
+        "Name": "Curve.PointAtParameter",
+        "ShowGeometry": true,
         "Excluded": false,
         "X": 1604.97594529067,
         "Y": 841.170734021938
       },
       {
-        "ShowGeometry": true,
-        "Name": "Create List",
         "Id": "765c3e2512624f2bab2508ece79508f5",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
+        "Name": "Create List",
+        "ShowGeometry": true,
         "Excluded": false,
         "X": 1093.97818501915,
         "Y": 777.087284360294
       },
       {
-        "ShowGeometry": true,
-        "Name": "Code Block",
         "Id": "ddaba6092fa04d18be641443ad3d08f1",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
+        "Name": "Code Block",
+        "ShowGeometry": true,
         "Excluded": false,
         "X": 1222.0,
         "Y": 1047.0
       },
       {
-        "ShowGeometry": true,
-        "Name": "Integer Slider",
         "Id": "cc3ba87acc1f4db699f2769f3020e0df",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
+        "Name": "Integer Slider",
+        "ShowGeometry": true,
         "Excluded": false,
         "X": 853.875547146619,
         "Y": 1051.61572756957
       },
       {
-        "ShowGeometry": true,
-        "Name": "Transpose",
         "Id": "13ca589991cd448bb475a286eb0fbfba",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
+        "Name": "Transpose",
+        "ShowGeometry": true,
         "Excluded": false,
         "X": 1839.06575219627,
         "Y": 837.84231720703
       },
       {
-        "ShowGeometry": true,
-        "Name": "Family Types",
         "Id": "2bc4ccefdee54567b97689536f8908ce",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
+        "Name": "Family Types",
+        "ShowGeometry": true,
         "Excluded": false,
         "X": 1786.66817051115,
         "Y": 953.079173874116
       },
       {
-        "ShowGeometry": true,
-        "Name": "Element.Geometry",
         "Id": "c0c528a3ac5f4504ba8104c08d060ded",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
+        "Name": "Element.Geometry",
+        "ShowGeometry": true,
         "Excluded": false,
         "X": 1264.18967442195,
         "Y": 786.603707522597
       },
       {
-        "ShowGeometry": true,
-        "Name": "PolyCurve.ByPoints",
         "Id": "3ad828dc2d6741fba3a16c288712c421",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
+        "Name": "PolyCurve.ByPoints",
+        "ShowGeometry": true,
         "Excluded": false,
         "X": 2261.14774119977,
         "Y": 679.952054336218
       },
       {
-        "ShowGeometry": true,
-        "Name": "List.Flatten",
         "Id": "0d6c969beb274e27bc1ce9fe072db404",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
+        "Name": "List.Flatten",
+        "ShowGeometry": true,
         "Excluded": false,
         "X": 1425.04893083771,
         "Y": 785.772626996785

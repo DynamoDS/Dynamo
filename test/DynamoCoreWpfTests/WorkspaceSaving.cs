@@ -447,6 +447,12 @@ namespace Dynamo.Tests
 
             //assert the request was made
             Assert.AreEqual(1,eventCount);
+
+            //assert the filePath was upated correctly
+            //use reflection to get a private field: 
+            //TODO(mk) write a better test without reflection or internal which does not raise save dialog in test mode.
+            var filePath = ViewModel.GetType().GetField("filePath", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic).GetValue(ViewModel);
+            Assert.AreEqual(openPath,filePath );
         }
 
         [Test]
