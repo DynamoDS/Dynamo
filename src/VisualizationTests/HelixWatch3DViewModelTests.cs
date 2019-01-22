@@ -64,6 +64,11 @@ namespace WpfVisualizationTests
 
         protected override void StartDynamo(TestSessionConfiguration testConfig)
         {
+            // Add Dynamo Core location to the PATH system environment variable.
+            // This is to make sure dependencies(e.g.Helix assemblies) can be located.
+            var path = Environment.GetEnvironmentVariable("Path", EnvironmentVariableTarget.Process) + ";" + testConfig.DynamoCorePath;
+            Environment.SetEnvironmentVariable("Path", path, EnvironmentVariableTarget.Process);
+
             var preloader = new Preloader(testConfig.DynamoCorePath, new[] { testConfig.RequestedLibraryVersion2 });
             preloader.Preload();
 
