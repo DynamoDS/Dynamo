@@ -165,7 +165,7 @@ namespace CoreNodeModels
             }
             else
             {
-                selectedString = selectedIndex > Items.Count - 1? String.Empty: GetSelectedStringFromItem(Items.ElementAt(selectedIndex));
+                selectedString = selectedIndex > Items.Count - 1 ? String.Empty : GetSelectedStringFromItem(Items.ElementAt(selectedIndex));
             }
         }
 
@@ -200,11 +200,11 @@ namespace CoreNodeModels
         public static int ParseSelectedIndexImpl(string index, IList<DynamoDropDownItem> items)
         {
             int selectedIndex = -1;
+
             var splits = index.Split(':');
             if (splits.Count() > 1)
             {
-
-                var name = System.Web.HttpUtility.HtmlDecode(index.Substring(index.IndexOf(':') + 1));
+                var name = XmlUnescape(index.Substring(index.IndexOf(':') + 1));
                 var item = items.FirstOrDefault(i => i.Name == name);
                 selectedIndex = item != null ?
                     items.IndexOf(item) :
@@ -236,7 +236,33 @@ namespace CoreNodeModels
             }
 
             var item = items[index];
-            return string.Format("{0}:{1}", index, SecurityElement.Escape(item.Name));
+            return string.Format("{0}:{1}", index, XmlEscape(item.Name));
+        }
+
+        /// <summary>
+        /// Escape string which could contain XML forbidden chars.
+        /// </summary>
+        /// <param name="unescaped"></param>
+        /// <returns></returns>
+        protected static string XmlEscape(string unescaped)
+        {
+            // TODO: This function can be simplified in Dynamo 3.0
+            // since it is one line wrapper
+            return SecurityElement.Escape(unescaped);
+        }
+
+        /// <summary>
+        /// Unescape string which could already be escaped before,
+        /// if there is no escaped special char, return as it is
+        /// if there is special char escaped, restore them.
+        /// </summary>
+        /// <param name="escaped"></param>
+        /// <returns></returns>
+        protected static string XmlUnescape(string escaped)
+        {
+            // TODO: This function can be simplified in Dynamo 3.0
+            // since it is one line wrapper
+            return System.Web.HttpUtility.HtmlDecode(escaped);
         }
 
         /// <summary>
