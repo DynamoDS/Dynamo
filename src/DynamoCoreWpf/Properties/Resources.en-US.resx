@@ -702,6 +702,10 @@ You will get a chance to save your work.</value>
     <value>Run</value>
     <comment>Run button</comment>
   </data>
+  <data name="DynamoViewCancelButton" xml:space="preserve">
+    <value>Cancel</value>
+    <comment>Cancel button</comment>
+  </data>
   <data name="DynamoViewRunButtonTooltip" xml:space="preserve">
     <value>Run Workflow (F5)</value>
     <comment>Run button tooltip</comment>

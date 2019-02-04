@@ -47,5 +47,12 @@ namespace Dynamo.Wpf.Controls
             var dynamoVm = dynamoView.DataContext as DynamoViewModel;
             dynamoVm.OnRequestReturnFocusToView();
         }
+
+        private void CancelButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            var dynamoView = WpfUtilities.FindUpVisualTree<DynamoView>(this);
+            var dynamoVm = dynamoView.DataContext as DynamoViewModel;
+            dynamoVm.OnRequestReturnFocusToView();
+        }
     }
 }

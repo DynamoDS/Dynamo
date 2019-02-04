@@ -941,4 +941,7 @@ Parameter name: {0}</value>
   <data name="ListMethodDeprecated" xml:space="preserve">
     <value>Method '{0}' has been deprecated, please use method '{1}' instead with Dictionary type</value>
   </data>
+  <data name="CancelExecutionTwice" xml:space="preserve">
+    <value>Cancellation cannot be requested twice</value>
+  </data>
 </root>

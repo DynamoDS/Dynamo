@@ -114,7 +114,10 @@ namespace Dynamo.Models
         private WorkspaceModel currentWorkspace;
         private Timer backupFilesTimer;
         private Dictionary<Guid, string> backupFilesDict = new Dictionary<Guid, string>();
+        private CancellationTokenSource cts;
+        private CancellationToken token;
         internal readonly Stopwatch stopwatch = Stopwatch.StartNew();
+
         #endregion
 
         #region events
@@ -422,7 +425,7 @@ namespace Dynamo.Models
         /// Returns authentication manager object for oxygen authentication.
         /// </summary>
         public AuthenticationManager AuthenticationManager { get; set; }
-
+        
         #endregion
 
         #region initialization and disposal
@@ -582,6 +585,7 @@ namespace Dynamo.Models
             MigrationManager.MigrationTargets.Add(typeof(WorkspaceMigrations));
 
             var thread = config.SchedulerThread ?? new DynamoSchedulerThread();
+
             Scheduler = new DynamoScheduler(thread, config.ProcessMode);
             Scheduler.TaskStateChanged += OnAsyncTaskStateChanged;
 
@@ -1011,6 +1015,11 @@ namespace Dynamo.Models
             foreach (var ws in _workspaces)
             {
                 ws.Dispose();
+            }
+
+            if (cts != null)
+            {
+                cts.Dispose();
             }
         }
 

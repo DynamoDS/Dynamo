@@ -88,7 +88,6 @@ namespace ProtoCore
             WatchSymbolList = new List<SymbolNode>();
 
             FunctionCallDepth = 0;
-            cancellationPending = false;
 
             watchClassScope = Constants.kInvalidIndex;
 
@@ -145,6 +144,17 @@ namespace ProtoCore
                 FFIExecutionManager.Instance.RegisterExtensionApplicationType(this, type);
             }
         }
+
+        public void RequestCancellation()
+        {
+            if (this.cancellationPending)
+            {
+                throw new InvalidOperationException(Properties.Resources.CancelExecutionTwice);
+            }
+
+            this.cancellationPending = true;
+        }
+
         public RuntimeData RuntimeData { get; set; }
         public IExecutiveProvider ExecutiveProvider { get; set; }
         public Executive ExecutionInstance { get; private set; }

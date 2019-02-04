@@ -1245,7 +1245,15 @@ namespace ProtoScript.Runners
         {
             lock (mutexObject)
             {
-                SynchronizeInternal(syncData);
+                try
+                {
+                    SynchronizeInternal(syncData);
+                }
+                catch (ProtoCore.Exceptions.ExecutionCancelledException)
+                {
+                    runtimeCore.Cleanup();
+                    ReInitializeLiveRunner();
+                }
             }
         }
 
@@ -1290,7 +1298,15 @@ namespace ProtoScript.Runners
         {
             lock (mutexObject)
             {
-                SynchronizeInternal(code);
+                try
+                {
+                    SynchronizeInternal(code);
+                }
+                catch (ProtoCore.Exceptions.ExecutionCancelledException)
+                {
+                    runtimeCore.Cleanup();
+                    ReInitializeLiveRunner();
+                }
             }
         }
 
@@ -1310,7 +1326,7 @@ namespace ProtoScript.Runners
 
         private void Execute(bool isCodeCompiled)
         {
-            try
+            //try
             {
                 SetupRuntimeCoreForExecution(isCodeCompiled);
                 if (isCodeCompiled)
@@ -1322,11 +1338,11 @@ namespace ProtoScript.Runners
                     runner.ExecuteLive(runnerCore, runtimeCore);
                 }
             }
-            catch (ProtoCore.Exceptions.ExecutionCancelledException)
-            {
-                runtimeCore.Cleanup();
-                ReInitializeLiveRunner();
-            }
+            //catch (ProtoCore.Exceptions.ExecutionCancelledException)
+            //{
+            //    runtimeCore.Cleanup();
+            //    ReInitializeLiveRunner();
+            //}
         }
 
         private bool CompileAndExecute(string code)

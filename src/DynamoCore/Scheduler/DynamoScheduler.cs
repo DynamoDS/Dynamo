@@ -111,6 +111,7 @@ namespace Dynamo.Scheduler
         /// The complete collection of all of the currently scheduled tasks
         /// </summary>
         IEnumerable<AsyncTask> Tasks { get; }
+
     }
 
     /// <summary>

@@ -8,10 +8,10 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Dynamo.Wpf.Properties
-{
-
-
+namespace Dynamo.Wpf.Properties {
+    using System;
+    
+    
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -915,6 +915,15 @@ namespace Dynamo.Wpf.Properties
         public static string DynamoUpdateAvailableToolTip {
             get {
                 return ResourceManager.GetString("DynamoUpdateAvailableToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cancel.
+        /// </summary>
+        public static string DynamoViewCancelButton {
+            get {
+                return ResourceManager.GetString("DynamoViewCancelButton", resourceCulture);
             }
         }
         
@@ -3402,15 +3411,6 @@ namespace Dynamo.Wpf.Properties
         public static string NodeContextMenuShowLabels {
             get {
                 return ResourceManager.GetString("NodeContextMenuShowLabels", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to See more on the Dynamo Dictionary....
-        /// </summary>
-        public static string NodeHelpWindowDynamoDictionary {
-            get {
-                return ResourceManager.GetString("NodeHelpWindowDynamoDictionary", resourceCulture);
             }
         }
         
