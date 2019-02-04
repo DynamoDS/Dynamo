@@ -155,7 +155,7 @@ namespace ProtoCore
             this.cancellationPending = true;
         }
 
-        public void ResetCancellationPending()
+        public void ResetCancellation()
         {
             this.cancellationPending = false;
         }
