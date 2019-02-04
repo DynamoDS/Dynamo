@@ -143,7 +143,7 @@ namespace Dynamo.Wpf.ViewModels
 
         public bool CancelButtonEnabled
         {
-            get { return !RunButtonEnabled; }
+            get { return !Model.RunEnabled; }
         }
 
         public string RunButtonToolTip
@@ -258,6 +258,7 @@ namespace Dynamo.Wpf.ViewModels
                     RaisePropertyChanged("RunEnabled");
                     RaisePropertyChanged("RunButtonEnabled");
                     RaisePropertyChanged("RunButtonToolTip");
+                    RaisePropertyChanged("CancelButtonEnabled");
                     if (Application.Current != null)
                     {
                         Application.Current.Dispatcher.Invoke(new Action(() =>

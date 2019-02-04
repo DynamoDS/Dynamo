@@ -114,8 +114,6 @@ namespace Dynamo.Models
         private WorkspaceModel currentWorkspace;
         private Timer backupFilesTimer;
         private Dictionary<Guid, string> backupFilesDict = new Dictionary<Guid, string>();
-        private CancellationTokenSource cts;
-        private CancellationToken token;
         internal readonly Stopwatch stopwatch = Stopwatch.StartNew();
 
         #endregion
@@ -1015,11 +1013,6 @@ namespace Dynamo.Models
             foreach (var ws in _workspaces)
             {
                 ws.Dispose();
-            }
-
-            if (cts != null)
-            {
-                cts.Dispose();
             }
         }
 

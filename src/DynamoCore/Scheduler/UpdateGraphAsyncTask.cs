@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using Dynamo.Engine;
 using ProtoCore.BuildData;
 using ProtoScript.Runners;

@@ -58,26 +58,29 @@ namespace Dynamo.Models
             var model = CurrentWorkspace as HomeWorkspaceModel;
             if (model == null) return;
 
-            if (command.CancelRun)
-            {
-                if (cts != null)
-                {
-                    if (!cts.Token.IsCancellationRequested)
-                    {
-                        cts.Cancel();
-                    }
-                }
-            }
-            else
-            {
-                if (cts != null)
-                {
-                    cts.Dispose();
-                    cts = new CancellationTokenSource();
-                    cts.Token.Register(EngineController.LiveRunnerRuntimeCore.RequestCancellation);
-                }
-                model.Run();
-            }
+            //if (command.CancelRun)
+            //{
+            //    if (cts != null)
+            //    {
+            //        if (!cts.Token.IsCancellationRequested)
+            //        {
+            //            cts.Cancel();
+            //        }
+            //    }
+            //}
+            //else
+            //{
+            //    if (cts != null)
+            //    {
+            //        cts.Dispose();
+            //    }
+
+            //    cts = new CancellationTokenSource();
+            //    cts.Token.Register(EngineController.LiveRunnerRuntimeCore.RequestCancellation);
+
+            //    model.Run();
+            //}
+            model.Run(command.CancelRun);
         }
 
         void ForceRunCancelImpl(ForceRunCancelCommand command)

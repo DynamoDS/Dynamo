@@ -1326,23 +1326,15 @@ namespace ProtoScript.Runners
 
         private void Execute(bool isCodeCompiled)
         {
-            //try
+            SetupRuntimeCoreForExecution(isCodeCompiled);
+            if (isCodeCompiled)
             {
-                SetupRuntimeCoreForExecution(isCodeCompiled);
-                if (isCodeCompiled)
-                {
-                    // If isCodeCompiled is false, nothing to execute but still
-                    // bounce and push stack frame. Need to investigate why 
-                    // previouslsy ExecuteLive() is called when isCodeCompiled is
-                    // false.
-                    runner.ExecuteLive(runnerCore, runtimeCore);
-                }
+                // If isCodeCompiled is false, nothing to execute but still
+                // bounce and push stack frame. Need to investigate why 
+                // previouslsy ExecuteLive() is called when isCodeCompiled is
+                // false.
+                runner.ExecuteLive(runnerCore, runtimeCore);
             }
-            //catch (ProtoCore.Exceptions.ExecutionCancelledException)
-            //{
-            //    runtimeCore.Cleanup();
-            //    ReInitializeLiveRunner();
-            //}
         }
 
         private bool CompileAndExecute(string code)

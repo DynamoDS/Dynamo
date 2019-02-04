@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Runtime.Serialization;
+using System.Threading;
 using System.Xml;
 using Dynamo.Core;
 using Dynamo.Engine;
@@ -32,6 +33,8 @@ namespace Dynamo.Graph.Workspaces
         private readonly bool verboseLogging;
         private bool graphExecuted;
         private IEnumerable<KeyValuePair<Guid, List<CallSite.RawTraceData>>> historicalTraceData;
+        private CancellationTokenSource cts;
+        private CancellationTokenRegistration ctr;
 
         /// <summary>
         ///     Returns <see cref="EngineController"/> object assosiated with thisPreloadedTraceData home workspace
@@ -126,6 +129,8 @@ namespace Dynamo.Graph.Workspaces
         /// <param name="e">The event data.</param>
         public virtual void OnEvaluationStarted(EventArgs e)
         {
+            RefreshCancellationToken();
+
             this.HasRunWithoutCrash = false;
 
             var handler = EvaluationStarted;
@@ -150,6 +155,21 @@ namespace Dynamo.Graph.Workspaces
             if (handler != null) handler(this, e);
 
             this.ScaleFactorChanged = false;
+
+            if (cts != null)
+            {
+                if (cts.Token.IsCancellationRequested)
+                {
+                    // if evaluation has completed due to cancellation
+                    // mark all nodes as modified so that they can be executed again.
+                    foreach (var node in Nodes)
+                    {
+                        node.MarkNodeAsModified();
+                    }
+                }
+            }
+
+            DisposeCancellationToken();
         }
 
         /// <summary>
@@ -307,6 +327,8 @@ namespace Dynamo.Graph.Workspaces
             if (pulseMaker == null) return;
 
             pulseMaker.Stop();
+            
+            DisposeCancellationToken();
         }
 
         protected override void OnNodeRemoved(NodeModel node)
@@ -465,6 +487,27 @@ namespace Dynamo.Graph.Workspaces
             MarkNodesAsModifiedAndRequestRun(nodesToUpdate, true);
         }
 
+        private void RefreshCancellationToken()
+        {
+            if (cts == null)
+            {
+                cts = new CancellationTokenSource();
+                ctr = cts.Token.Register(EngineController.LiveRunnerRuntimeCore.RequestCancellation);
+            }
+            EngineController.LiveRunnerRuntimeCore.ResetCancellationPending();
+        }
+
+        private void DisposeCancellationToken()
+        {
+            if (cts != null)
+            {
+                // Unregister cancellation callback
+                ctr.Dispose();
+
+                cts.Dispose();
+                cts = null;
+            }
+        }
 
         #region evaluation
 
@@ -620,8 +663,19 @@ namespace Dynamo.Graph.Workspaces
         /// in actual graph update (e.g. moving of node on UI), the update task 
         /// will not be scheduled for execution.
         /// </summary>
-        public void Run()
+        public void Run(bool cancelRun = false)
         {
+            if (cancelRun)
+            {
+                if (cts != null)
+                {
+                    if (!cts.Token.IsCancellationRequested)
+                    {
+                        cts.Cancel();
+                    }
+                }
+                return;
+            }
             graphExecuted = true;
 
             // When Dynamo is shut down, the workspace is cleared, which results
