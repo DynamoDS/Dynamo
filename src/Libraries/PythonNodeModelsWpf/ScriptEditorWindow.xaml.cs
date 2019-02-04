@@ -39,7 +39,7 @@ namespace PythonNodeModelsWpf
             this.dynamoViewModel = dynamoViewModel;
             this.nodeModel = nodeModel;
 
-            completionProvider = new IronPythonCompletionProvider();
+            completionProvider = new IronPythonCompletionProvider(dynamoViewModel.Model.PathManager.DynamoCoreDirectory);
             completionProvider.MessageLogged += dynamoViewModel.Model.Logger.Log;
 
             InitializeComponent();
@@ -94,7 +94,7 @@ namespace PythonNodeModelsWpf
                 if (e.Text == ".")
                 {
                     var subString = editText.Text.Substring(0, editText.CaretOffset);
-                    var completions = completionProvider.GetCompletionData(subString);
+                    var completions = completionProvider.GetCompletionData(subString, false);
 
                     if (completions.Length == 0)
                         return;

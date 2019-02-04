@@ -738,6 +738,59 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to This custom node contains an invalid input. Please fix the input before saving the custom node..
+        /// </summary>
+        public static string InvalidInputSymbolCustomNodeWarning {
+            get {
+                return ResourceManager.GetString("InvalidInputSymbolCustomNodeWarning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This input symbol is not currently valid, and cannot be saved until it is fixed. Valid inputs take the form:
+        ///
+        ///name : type = defaultValue
+        ///
+        ///The input name should be a valid variable name, without spaces. An input type and default value are optional..
+        /// </summary>
+        public static string InvalidInputSymbolErrorMessage {
+            get {
+                return ResourceManager.GetString("InvalidInputSymbolErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This custom node currently contains some invalid inputs, and cannot be saved until the inputs are fixed. If the custom node is saved using SaveAs, the invalid inputs will revert to generic inputs. Valid inputs take the form:
+        ///
+        ///name : type = defaultValue
+        ///
+        ///The input name should be a valid variable name, without spaces. An input type and default value are optional..
+        /// </summary>
+        public static string InvalidInputSymbolWarningMessage {
+            get {
+                return ResourceManager.GetString("InvalidInputSymbolWarningMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This custom node cannot be saved until invalid inputs are removed or fixed..
+        /// </summary>
+        public static string InvalidInputSymbolWarningShortMessage {
+            get {
+                return ResourceManager.GetString("InvalidInputSymbolWarningShortMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Custom Node Contains Invalid Inputs and Cannot Be Saved..
+        /// </summary>
+        public static string InvalidInputSymbolWarningTitle {
+            get {
+                return ResourceManager.GetString("InvalidInputSymbolWarningTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Invalid library format..
         /// </summary>
         public static string InvalidLibraryFormat {
