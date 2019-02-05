@@ -262,7 +262,7 @@ namespace ProtoCore
                     }
                 }
                 //if there was no matching assembly, or type, try all assemblies and all types.
-
+                //TODO(DYN-1594 - remove this fallback when we can determine if it is required. It is very slow.)
                 var types = new List<System.Type>();
                 foreach (var a in assemblies)
                 {
