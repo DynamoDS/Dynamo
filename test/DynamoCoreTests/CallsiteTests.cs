@@ -38,6 +38,7 @@ namespace Dynamo.Tests
             libraries.Add("ProtoGeometry.dll");
             libraries.Add("DesignScriptBuiltin.dll");
             libraries.Add("DSCoreNodes.dll");
+            libraries.Add("FFITarget.dll");
             base.GetLibrariesToPreload(libraries);
         }
 
@@ -136,6 +137,23 @@ namespace Dynamo.Tests
             BeginRun();
 
             Assert.Pass();
+        }
+
+        [Test]
+        public void Callsite_ElementBinding()
+        {
+            // This graph has 2 "WrapperObject" creation nodes that is defined in FFITarget.
+            // The node wraps a static ISerializable ID that increments each time you create a new node.
+            // One of the nodes in the graph is created the 2nd time and the other the 3rd time
+            // in the same session. Therefore the ID of the first is 2 and the second is 3 and the graph
+            // stores the trace data for each node. This test tests that on reopening the graph the ID's
+            // of each of these nodes do not change and remain 2 and 3 respectively due to element binding.
+            var ws = Open<HomeWorkspaceModel>(TestDirectory, callsiteDir, "element_binding.dyn");
+
+            BeginRun();
+
+            AssertPreviewValue("c760af7e-042c-4722-a834-3445bf41f549", 2);
+            AssertPreviewValue("5f277520-13aa-4833-aa82-b17a822e6d8c", 3);
         }
     }
 }
