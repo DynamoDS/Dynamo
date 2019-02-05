@@ -10,6 +10,7 @@ using Dynamo.Logging;
 using Dynamo.Scheduler;
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.DSASM.Mirror;
+using ProtoCore.Exceptions;
 using ProtoCore.Mirror;
 using ProtoCore.Utils;
 using ProtoScript.Runners;
@@ -412,7 +413,15 @@ namespace Dynamo.Engine
             // within the execution. Such exception, if any, will be caught by
             // DynamoScheduler.ProcessTaskInternal.
 
-            liveRunnerServices.UpdateGraph(graphSyncData, VerboseLogging);
+            try
+            {
+                liveRunnerServices.UpdateGraph(graphSyncData, VerboseLogging);
+            }
+            catch (ExecutionCancelledException)
+            {
+                // Reload all libraries after resetting VM after cancelling an execution
+                OnLibraryLoaded();
+            }
         }
 
         internal IDictionary<Guid, List<BuildWarning>> GetBuildWarnings()

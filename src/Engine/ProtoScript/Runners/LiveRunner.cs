@@ -1252,7 +1252,7 @@ namespace ProtoScript.Runners
                 catch (ProtoCore.Exceptions.ExecutionCancelledException)
                 {
                     runtimeCore.Cleanup();
-                    ReInitializeLiveRunner();
+                    throw;
                 }
             }
         }
