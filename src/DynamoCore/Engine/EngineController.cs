@@ -351,6 +351,11 @@ namespace Dynamo.Engine
             }
         }
 
+        internal void ResetSyncDataManager()
+        {
+            syncDataManager = new SyncDataManager();
+        }
+
         private bool VerifyGraphSyncData(IEnumerable<NodeModel> nodes)
         {
             GraphSyncData graphSyncdata = syncDataManager.GetSyncData();

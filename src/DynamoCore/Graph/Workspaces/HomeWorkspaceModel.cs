@@ -166,6 +166,7 @@ namespace Dynamo.Graph.Workspaces
                     {
                         node.MarkNodeAsModified();
                     }
+                    EngineController.ResetSyncDataManager();
                 }
             }
 
@@ -494,7 +495,6 @@ namespace Dynamo.Graph.Workspaces
                 cts = new CancellationTokenSource();
                 ctr = cts.Token.Register(EngineController.LiveRunnerRuntimeCore.RequestCancellation);
             }
-            EngineController.LiveRunnerRuntimeCore.ResetCancellation();
         }
 
         private void DisposeCancellationToken()
