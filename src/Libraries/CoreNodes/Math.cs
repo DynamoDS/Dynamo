@@ -206,6 +206,7 @@ namespace DSCore
         /// <param name="integer">A number.</param>
         /// <returns name="absoluteValue">Absolute value of the number.</returns>
         /// <search>absolute value,magnitude</search>
+        [IsVisibleInDynamoLibrary(false)]
         public static long Abs(long integer)
         {
             return CSMath.Abs(integer);
