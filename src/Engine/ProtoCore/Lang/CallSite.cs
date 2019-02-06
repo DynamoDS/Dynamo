@@ -241,7 +241,7 @@ namespace ProtoCore
         /// deserialization in cases where the exact assemlby that was
         /// used in the serialization is not available. 
         /// </summary>
-        private class TraceBinder : SerializationBinder
+        internal class TraceBinder : SerializationBinder
         {
             // Use a custom serialization binder to make the serializer more permissive
             // http://www.codeproject.com/Articles/11079/NET-XML-and-SOAP-Serialization-Samples-Tips
