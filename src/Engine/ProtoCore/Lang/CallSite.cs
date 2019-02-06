@@ -248,7 +248,6 @@ namespace ProtoCore
 
             public override System.Type BindToType(string assemblyName, string typeName)
             {
-                //TODO cache
                 var assemblies = AppDomain.CurrentDomain.GetAssemblies().Where(a => !a.IsDynamic);
                 var assemblyNameObj = new AssemblyName(assemblyName);
                 //find matching assemblies by name, version is not used.

@@ -60,9 +60,11 @@ namespace Dynamo.Tests
          * A + node with the list and the double connected and CARTESIAN PRODUCT lacing.
          */
 
-        [Test, Category("Failure")]
+        [Test]
         public void Callsite_MultiDimensionDecreaseDimensionOnOpenAndRun_OrphanCountCorrect()
         {
+            CurrentDynamoModel.LibraryServices.ImportLibrary(Path.Combine(TestDirectory, "pkgs", "Dynamo Samples", "bin", "SampleLibraryZeroTouch.dll"));
+
             OpenChangeAndCheckOrphans("RebindingMultiDimension.dyn", "0..1", 3);
         }
 
@@ -80,9 +82,11 @@ namespace Dynamo.Tests
          * A + node with the list and the double connected and SINGLE lacing.
          */
 
-        [Test, Category("Failure")]
+        [Test]
         public void Callsite_SingleDimensionDecreaseDimensionOnOpenAndRun()
         {
+            CurrentDynamoModel.LibraryServices.ImportLibrary(Path.Combine(TestDirectory, "pkgs", "Dynamo Samples", "bin", "SampleLibraryZeroTouch.dll"));
+
             OpenChangeAndCheckOrphans("RebindingSingleDimension.dyn", "0..1", 1);
         }
 
@@ -106,9 +110,12 @@ namespace Dynamo.Tests
             BeginRun();
         }
 
-        [Test, Category("Failure")]
+        [Test]
         public void Callsite_DeleteNodeBeforeRun()
         {
+            //load required assembly for test
+            CurrentDynamoModel.LibraryServices.ImportLibrary(Path.Combine(TestDirectory, "pkgs", "Dynamo Samples", "bin", "SampleLibraryZeroTouch.dll"));
+
             var ws = Open<HomeWorkspaceModel>(TestDirectory, callsiteDir, "RebindingSingleDimension.dyn");
 
             CurrentDynamoModel.TraceReconciliationProcessor = new TestTraceReconciliationProcessor(3);
