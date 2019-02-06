@@ -155,11 +155,6 @@ namespace ProtoCore
             this.cancellationPending = true;
         }
 
-        public void ResetCancellation()
-        {
-            this.cancellationPending = false;
-        }
-
         public RuntimeData RuntimeData { get; set; }
         public IExecutiveProvider ExecutiveProvider { get; set; }
         public Executive ExecutionInstance { get; private set; }
