@@ -597,6 +597,7 @@ namespace Dynamo.Models
 
             InitializeInstrumentationLogger();
 
+
             if (!IsTestMode && PreferenceSettings.IsFirstRun)
             {
                 DynamoMigratorBase migrator = null;

@@ -13,6 +13,7 @@ using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.NodeLoaders;
 using Dynamo.Graph.Notes;
 using Dynamo.Graph.Presets;
+using Dynamo.Logging;
 using Dynamo.Models;
 using Dynamo.Scheduler;
 using Newtonsoft.Json;
@@ -35,6 +36,7 @@ namespace Dynamo.Graph.Workspaces
         private IEnumerable<KeyValuePair<Guid, List<CallSite.RawTraceData>>> historicalTraceData;
         private CancellationTokenSource cts;
         private CancellationTokenRegistration ctr;
+        private Daemon daemon;
 
         /// <summary>
         ///     Returns <see cref="EngineController"/> object assosiated with thisPreloadedTraceData home workspace
@@ -494,6 +496,8 @@ namespace Dynamo.Graph.Workspaces
             {
                 cts = new CancellationTokenSource();
                 ctr = cts.Token.Register(EngineController.LiveRunnerRuntimeCore.RequestCancellation);
+
+                daemon = new Daemon(cts);
             }
         }
 
@@ -501,6 +505,8 @@ namespace Dynamo.Graph.Workspaces
         {
             if (cts != null)
             {
+                daemon.Dispose();
+
                 // Unregister cancellation callback
                 ctr.Dispose();
 
