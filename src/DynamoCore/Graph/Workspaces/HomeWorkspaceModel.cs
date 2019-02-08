@@ -669,7 +669,7 @@ namespace Dynamo.Graph.Workspaces
         /// in actual graph update (e.g. moving of node on UI), the update task 
         /// will not be scheduled for execution.
         /// </summary>
-        public void Run(bool cancelRun)
+        public void Run(bool cancelRun = false)
         {
             if (cancelRun)
             {
@@ -732,57 +732,57 @@ namespace Dynamo.Graph.Workspaces
             }
         }
 
-        public void Run()
-        {
-            graphExecuted = true;
+        //public void Run()
+        //{
+        //    graphExecuted = true;
 
-            // When Dynamo is shut down, the workspace is cleared, which results
-            // in Modified() being called. But, we don't want to run when we are
-            // shutting down so we check whether an engine controller is available.
-            if (this.EngineController == null)
-            {
-                return;
-            }
+        //    // When Dynamo is shut down, the workspace is cleared, which results
+        //    // in Modified() being called. But, we don't want to run when we are
+        //    // shutting down so we check whether an engine controller is available.
+        //    if (this.EngineController == null)
+        //    {
+        //        return;
+        //    }
 
-            var traceData = PreloadedTraceData;
-            if ((traceData != null) && traceData.Any())
-            {
-                // If we do have preloaded trace data, set it here first.
-                var setTraceDataTask = new SetTraceDataAsyncTask(scheduler);
-                if (setTraceDataTask.Initialize(EngineController, this))
-                    scheduler.ScheduleForExecution(setTraceDataTask);
-            }
+        //    var traceData = PreloadedTraceData;
+        //    if ((traceData != null) && traceData.Any())
+        //    {
+        //        // If we do have preloaded trace data, set it here first.
+        //        var setTraceDataTask = new SetTraceDataAsyncTask(scheduler);
+        //        if (setTraceDataTask.Initialize(EngineController, this))
+        //            scheduler.ScheduleForExecution(setTraceDataTask);
+        //    }
 
-            // If one or more custom node have been updated, make sure they
-            // are compiled first before the home workspace gets evaluated.
-            // 
-            EngineController.ProcessPendingCustomNodeSyncData(scheduler);
+        //    // If one or more custom node have been updated, make sure they
+        //    // are compiled first before the home workspace gets evaluated.
+        //    // 
+        //    EngineController.ProcessPendingCustomNodeSyncData(scheduler);
 
-            var task = new UpdateGraphAsyncTask(scheduler, verboseLogging);
-            if (task.Initialize(EngineController, this))
-            {
-                task.Completed += OnUpdateGraphCompleted;
-                RunSettings.RunEnabled = false; // Disable 'Run' button.
+        //    var task = new UpdateGraphAsyncTask(scheduler, verboseLogging);
+        //    if (task.Initialize(EngineController, this))
+        //    {
+        //        task.Completed += OnUpdateGraphCompleted;
+        //        RunSettings.RunEnabled = false; // Disable 'Run' button.
 
-                // Reset node states
-                foreach (var node in Nodes)
-                {
-                    node.WasInvolvedInExecution = false;
-                }
+        //        // Reset node states
+        //        foreach (var node in Nodes)
+        //        {
+        //            node.WasInvolvedInExecution = false;
+        //        }
 
-                // The workspace has been built for the first time
-                silenceNodeModifications = false;
+        //        // The workspace has been built for the first time
+        //        silenceNodeModifications = false;
 
-                OnEvaluationStarted(EventArgs.Empty);
-                scheduler.ScheduleForExecution(task);
-            }
-            else
-            {
-                // Notify handlers that evaluation did not take place.
-                var e = new EvaluationCompletedEventArgs(false);
-                OnEvaluationCompleted(e);
-            }
-        }
+        //        OnEvaluationStarted(EventArgs.Empty);
+        //        scheduler.ScheduleForExecution(task);
+        //    }
+        //    else
+        //    {
+        //        // Notify handlers that evaluation did not take place.
+        //        var e = new EvaluationCompletedEventArgs(false);
+        //        OnEvaluationCompleted(e);
+        //    }
+        //}
 
         /// <summary>
         /// This function gets the set of nodes that will get executed in the next run.

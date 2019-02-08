@@ -9,31 +9,42 @@ namespace Dynamo.Logging
         private Thread daemonThread;
         private CancellationTokenSource cts;
         private KeyboardInput keyboard;
+        //private ManualResetEvent mre;
+        private bool eventFired;
 
         public Daemon(CancellationTokenSource cts)
         {
             this.cts = cts;
-            keyboard = new KeyboardInput();
-            keyboard.KeyBoardKeyPressed += keyboard_KeyBoardKeyPressed;
+            //keyboard = new KeyboardInput();
+            
+            //mre = new ManualResetEvent(false);
             daemonThread = new Thread(ThreadProc);
             daemonThread.IsBackground = true;
+            daemonThread.Start();
         }
 
         void ThreadProc()
         {
-            cts.Cancel();
+            keyboard = new KeyboardInput();
+            keyboard.KeyBoardKeyPressed += keyboard_KeyBoardKeyPressed;
+            //mre.WaitOne();
+            while(!eventFired)
+            { }
             keyboard.KeyBoardKeyPressed -= keyboard_KeyBoardKeyPressed;
+            keyboard.Dispose();
         }
 
         void keyboard_KeyBoardKeyPressed(object sender, EventArgs e)
         {
-            daemonThread.Start();
+            cts.Cancel();
+            eventFired = true;
+            //mre.Set();
         }
 
         public void Dispose()
         {
             //keyboard.KeyBoardKeyPressed -= keyboard_KeyBoardKeyPressed;
-            keyboard.Dispose();
+            //keyboard.Dispose();
         }
     }
 
