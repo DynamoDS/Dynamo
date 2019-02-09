@@ -505,7 +505,7 @@ namespace Dynamo.Graph.Workspaces
         {
             if (cts != null)
             {
-                daemon.Dispose();
+                //daemon.Dispose();
 
                 // Unregister cancellation callback
                 ctr.Dispose();

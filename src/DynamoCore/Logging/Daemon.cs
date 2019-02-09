@@ -16,8 +16,7 @@ namespace Dynamo.Logging
         {
             this.cts = cts;
             //keyboard = new KeyboardInput();
-            
-            //mre = new ManualResetEvent(false);
+            //keyboard.KeyBoardKeyPressed += keyboard_KeyBoardKeyPressed;
             daemonThread = new Thread(ThreadProc);
             daemonThread.IsBackground = true;
             daemonThread.Start();
@@ -25,21 +24,23 @@ namespace Dynamo.Logging
 
         void ThreadProc()
         {
-            keyboard = new KeyboardInput();
-            keyboard.KeyBoardKeyPressed += keyboard_KeyBoardKeyPressed;
-            //mre.WaitOne();
-            while(!eventFired)
-            { }
-            keyboard.KeyBoardKeyPressed -= keyboard_KeyBoardKeyPressed;
-            keyboard.Dispose();
+            //keyboard = new KeyboardInput();
+            //keyboard.KeyBoardKeyPressed += keyboard_KeyBoardKeyPressed;
+            while (WindowsHookHelper.GetAsyncKeyState(0x1B) == 0)
+            {
+                Thread.Sleep(100);
+            }
+            cts.Cancel();
+            //keyboard.KeyBoardKeyPressed -= keyboard_KeyBoardKeyPressed;
+            //keyboard.Dispose();
         }
 
-        void keyboard_KeyBoardKeyPressed(object sender, EventArgs e)
-        {
-            cts.Cancel();
-            eventFired = true;
-            //mre.Set();
-        }
+        //void keyboard_KeyBoardKeyPressed(object sender, EventArgs e)
+        //{
+        //    short key = WindowsHookHelper.GetAsyncKeyState(0x1B);
+        //    cts.Cancel();
+        //    eventFired = true;
+        //}
 
         public void Dispose()
         {
@@ -65,6 +66,9 @@ namespace Dynamo.Logging
         public static extern IntPtr SetWindowsHookEx(
             Int32 idHook, HookDelegate lpfn, IntPtr hmod,
             Int32 dwThreadId);
+
+        [DllImport("User32.dll")]
+        public static extern short GetAsyncKeyState(System.Int32 vKey);
     }
 
     public class KeyboardInput : IDisposable
@@ -98,6 +102,8 @@ namespace Dynamo.Logging
             return WindowsHookHelper.CallNextHookEx(
                 keyBoardHandle, Code, wParam, lParam);
         }
+
+        
 
         public void Dispose()
         {
