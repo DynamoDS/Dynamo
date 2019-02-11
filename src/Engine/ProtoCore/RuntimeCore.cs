@@ -338,6 +338,21 @@ namespace ProtoCore
         }
 
         /// <summary>
+        /// Set the value of a variable at runtime
+        /// Returns the entry pc
+        /// </summary>
+        /// <param name="astID"></param>
+        /// <param name="sv"></param>
+        /// <returns></returns>
+        public int SetValue(List<AssociativeNode> modifiedNodes, StackValue sv)
+        {
+            ExecutionInstance.CurrentDSASMExec.SetAssociativeUpdateRegister(sv);
+            GraphNode gnode = AssociativeEngine.Utils.MarkGraphNodesDirtyAtGlobalScope(this, modifiedNodes);
+            Validity.Assert(gnode != null);
+            return gnode.updateBlock.startpc;
+        }
+
+        /// <summary>
         /// This function determines what the starting pc should be for the next execution session
         /// The StartPC takes precedence if set. Otherwise, the entry pc in the global codeblock is the entry point
         /// StartPC is assumed to be reset to kInvalidPC after each execution session

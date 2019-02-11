@@ -5540,6 +5540,18 @@ namespace ProtoAssociative
                             EmitCast(castType.UID, castType.rank);
                         }
 
+                        if (bnode.IsInputExpression)
+                        {
+                            StackValue regLX = StackValue.BuildRegister(Registers.LX);
+                            EmitInstrConsole(ProtoCore.DSASM.kw.pop, ProtoCore.DSASM.kw.regLX);
+                            EmitPop(regLX, globalClassIndex);
+
+                            graphNode.updateBlock.updateRegisterStartPC = pc;
+
+                            EmitInstrConsole(ProtoCore.DSASM.kw.push, ProtoCore.DSASM.kw.regLX);
+                            EmitPush(regLX);
+                        }
+
                         if (core.Options.RunMode != ProtoCore.DSASM.InterpreterMode.Expression)
                         {
                             if (dimensions == 0)

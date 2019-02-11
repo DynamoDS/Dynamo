@@ -111,7 +111,6 @@ namespace ProtoCore.Lang
             interpreter.runtime.TX = StackValue.BuildCallingConversion((int)ProtoCore.DSASM.CallingConvention.BounceType.Implicit);
 
             StackValue svBlockDecl = StackValue.BuildBlockIndex(blockDecl);
-            // interpreter.runtime.SX = svBlockDecl;
 
             List<StackValue> registers = interpreter.runtime.GetRegisters();
             var newStackFrame = new StackFrame(thisPtr, 

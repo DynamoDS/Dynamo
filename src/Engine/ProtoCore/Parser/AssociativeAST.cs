@@ -2081,6 +2081,7 @@ namespace ProtoCore.AST.AssociativeAST
         public AssociativeNode LeftNode { get; set; }
         public Operator Optr { get; set; }
         public AssociativeNode RightNode { get; set; }
+        public bool IsInputExpression { get; set; }
         public bool isSSAPointerAssignment { get; set; }
         public bool IsFirstIdentListNode { get; set; }
 
@@ -2096,6 +2097,7 @@ namespace ProtoCore.AST.AssociativeAST
             LeftNode = left;
             Optr = optr;
             RightNode = right;
+            IsInputExpression = false;
             IsFirstIdentListNode = false;
         }
 
@@ -2116,6 +2118,7 @@ namespace ProtoCore.AST.AssociativeAST
             {
                 RightNode = NodeUtils.Clone(rhs.RightNode);
             }
+            IsInputExpression = rhs.IsInputExpression;
             IsFirstIdentListNode = rhs.IsFirstIdentListNode;
         }
 
@@ -2139,7 +2142,8 @@ namespace ProtoCore.AST.AssociativeAST
              Optr = Operator.assign;
              LeftNode = lhs;
              RightNode = NodeUtils.Clone(rhs);
-             IsFirstIdentListNode = false;
+             IsInputExpression = false;
+            IsFirstIdentListNode = false;
              
          }
 
