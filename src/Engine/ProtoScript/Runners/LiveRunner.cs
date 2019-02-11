@@ -276,9 +276,9 @@ namespace ProtoScript.Runners
             Validity.Assert(bnode.Optr == Operator.assign);
 
             StackValue svSet = StackValue.BuildNull();
-            if (ProtoCore.Utils.CoreUtils.IsPrimitiveASTNode(bnode.RightNode))
+            if (CoreUtils.IsPrimitiveASTNode(bnode.RightNode))
             {
-                svSet = ProtoCore.Utils.CoreUtils.BuildStackValueForPrimitive(bnode.RightNode);
+                svSet = CoreUtils.BuildStackValueForPrimitive(bnode.RightNode);
             }
             else
             {
@@ -725,6 +725,7 @@ namespace ProtoScript.Runners
         {
             var deltaAstList = new List<AssociativeNode>();
             csData.RemovedBinaryNodesFromModification = new List<AssociativeNode>();
+            csData.ModifiedNodesForRuntimeSetValue = new List<AssociativeNode>();
             csData.RemovedFunctionDefNodesFromModification = new List<AssociativeNode>();
             csData.ModifiedFunctions = new List<AssociativeNode>();
             csData.ForceExecuteASTList = new List<AssociativeNode>();
