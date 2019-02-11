@@ -1323,12 +1323,12 @@ namespace ProtoCore.DSASM
 
             // Mark reachable nodes as dirty
             Validity.Assert(reachableGraphNodes != null);
-            int nextPC;
+            //int nextPC;
             if (reachableGraphNodes.Count > 0)
             {
                 // Get the next pc to jump to
-                nextPC = reachableGraphNodes[0].updateBlock.startpc;
-                LX = StackValue.BuildInt(nextPC);
+                //nextPC = reachableGraphNodes[0].updateBlock.startpc;
+                //LX = StackValue.BuildInt(nextPC);
                 for (int n = 0; n < reachableGraphNodes.Count; ++n)
                 {
                     AssociativeGraph.GraphNode gnode = reachableGraphNodes[n];

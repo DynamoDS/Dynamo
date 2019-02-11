@@ -725,7 +725,6 @@ namespace ProtoScript.Runners
         {
             var deltaAstList = new List<AssociativeNode>();
             csData.RemovedBinaryNodesFromModification = new List<AssociativeNode>();
-            csData.ModifiedNodesForRuntimeSetValue = new List<AssociativeNode>();
             csData.RemovedFunctionDefNodesFromModification = new List<AssociativeNode>();
             csData.ModifiedFunctions = new List<AssociativeNode>();
             csData.ForceExecuteASTList = new List<AssociativeNode>();
@@ -909,7 +908,7 @@ namespace ProtoScript.Runners
 
             // We want to process only modified statements
             // If the AST is identical to an existing AST in the same GUID, it means it was not modified
-            List<AssociativeNode> modifiedASTList = new List<AssociativeNode>();
+            var modifiedASTList = new List<AssociativeNode>();
             foreach (AssociativeNode node in subtree.AstNodes)
             {
                 // Check if node exists in the prev AST list
@@ -938,7 +937,7 @@ namespace ProtoScript.Runners
                     else
                     {
                         modifiedASTList.Add(node);
-                        BinaryExpressionNode bnode = node as BinaryExpressionNode;
+                        var bnode = node as BinaryExpressionNode;
                         if (null != bnode)
                         {
                             if (bnode.RightNode is LanguageBlockNode)
@@ -948,7 +947,7 @@ namespace ProtoScript.Runners
                             else if (bnode.LeftNode is IdentifierNode)
                             {
                                 string lhsName = (bnode.LeftNode as IdentifierNode).Name;
-                                Validity.Assert(null != lhsName && string.Empty != lhsName);
+                                Validity.Assert(!string.IsNullOrEmpty(lhsName));
                                 if (CoreUtils.IsSSATemp(lhsName))
                                 {
                                     // If the lhs of this binary expression is an SSA temp, and it existed in the lhs of any cached nodes, 
@@ -956,10 +955,10 @@ namespace ProtoScript.Runners
                                     // Inherit its expression ID 
                                     foreach (AssociativeNode prevNode in st.AstNodes)
                                     {
-                                        BinaryExpressionNode prevBinaryNode = prevNode as BinaryExpressionNode;
+                                        var prevBinaryNode = prevNode as BinaryExpressionNode;
                                         if (null != prevBinaryNode)
                                         {
-                                            IdentifierNode prevIdent = prevBinaryNode.LeftNode as IdentifierNode;
+                                            var prevIdent = prevBinaryNode.LeftNode as IdentifierNode;
                                             if (null != prevIdent)
                                             {
                                                 if (prevIdent.Equals(bnode.LeftNode as IdentifierNode))
