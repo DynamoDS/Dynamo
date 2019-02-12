@@ -20,7 +20,7 @@ namespace ProtoScript.Runners
     /// <summary>
     /// A subtree represents a node in graph. It contains a list of AST node.
     /// </summary>
-    public struct Subtree
+    public class Subtree
     {
         /// <summary>
         /// The GUID of corresponding UI node.
@@ -48,8 +48,8 @@ namespace ProtoScript.Runners
             AstNodes = astNodes;
             ForceExecution = false;
             DeltaComputation = true;
-            IsInput = false;
             ModifiedAstNodes = new List<AssociativeNode>();
+            IsInput = false;
         }
 
         public override string ToString()
@@ -510,7 +510,7 @@ namespace ProtoScript.Runners
                 {
                     // Handle the case where only the GUID of the deleted subtree was provided
                     // Get the cached subtree that is now being deleted
-                    Subtree removeSubTree = new Subtree();
+                    Subtree removeSubTree;
                     if (currentSubTreeList.TryGetValue(st.GUID, out removeSubTree))
                     {
                         if (removeSubTree.AstNodes != null)
@@ -644,15 +644,13 @@ namespace ProtoScript.Runners
 
             if (cachedTreeExists && oldSubTree.AstNodes != null)
             {
-                List<AssociativeNode> removedNodes;
-                if (st.IsInput)
+                List<AssociativeNode> removedNodes = GetInactiveASTList(oldSubTree.AstNodes, st.AstNodes);
+                if (st.IsInput && removedNodes.Any())
                 {
-                    removedNodes = GetInactiveASTList(oldSubTree.AstNodes, st.AstNodes);
                     (modifiedASTList[0] as BinaryExpressionNode).OriginalAstID = (removedNodes[0] as BinaryExpressionNode).OriginalAstID;
                 }
                 else if (!st.ForceExecution)
                 {
-                    removedNodes = GetInactiveASTList(oldSubTree.AstNodes, st.AstNodes);
                     // We only need the removed binary ASTs
                     // Function definitions are handled in ChangeSetData.RemovedFunctionDefNodesFromModification
                     csData.RemovedBinaryNodesFromModification.AddRange(removedNodes.Where(n => n is BinaryExpressionNode));
@@ -929,7 +927,7 @@ namespace ProtoScript.Runners
                     // It can then be handled normally regardless of its ForceExecution state
                     subtree.ForceExecution = false;
 
-                    if (st.IsInput)
+                    if (subtree.IsInput)
                     {
                         // An input node is not re-compiled and executed
                         // It is handled by the ChangeSetApply by re-executing the modified node with the updated changes
@@ -1425,10 +1423,19 @@ namespace ProtoScript.Runners
 
         private bool CompileAndExecute(List<AssociativeNode> astList)
         {
-            bool succeeded = Compile(astList, runnerCore);
+            bool succeeded;
+            if (!astList.Any())
+            {
+                succeeded = true;
+            }
+            else
+            {
+                succeeded = Compile(astList, runnerCore);
+            }
             if (succeeded)
             {
-                Execute(astList.Count > 0);
+                //Execute(astList.Count > 0);
+                Execute(succeeded);
             }
             return succeeded;
         }
@@ -1562,7 +1569,7 @@ namespace ProtoScript.Runners
             // Prior to execution, apply state modifications to the VM given the delta AST's
             bool anyForcedExecutedNodes = changeSetComputer.csData.ForceExecuteASTList.Any();
             changeSetApplier.Apply(runnerCore, runtimeCore, changeSetComputer.csData);
-            if (finalDeltaAstList.Any() || anyForcedExecutedNodes)
+            if (finalDeltaAstList.Any() || anyForcedExecutedNodes || changeSetComputer.csData.ModifiedNodesForRuntimeSetValue.Any())
             {
                 CompileAndExecuteForDeltaExecution(finalDeltaAstList);
             }
