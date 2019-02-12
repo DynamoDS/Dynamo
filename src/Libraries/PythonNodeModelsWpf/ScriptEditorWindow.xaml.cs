@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Windows;
 using System.Windows.Input;
 using System.Xml;
@@ -12,6 +12,8 @@ using ICSharpCode.AvalonEdit.Highlighting;
 using ICSharpCode.AvalonEdit.Highlighting.Xshd;
 using PythonNodeModels;
 using Dynamo.Wpf.Windows;
+using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace PythonNodeModelsWpf
 {
@@ -93,23 +95,11 @@ namespace PythonNodeModelsWpf
             {
                 if (e.Text == ".")
                 {
-                    var subString = editText.Text.Substring(0, editText.CaretOffset);
-                    var completions = completionProvider.GetCompletionData(subString, false);
-
-                    if (completions.Length == 0)
-                        return;
-
-                    completionWindow = new CompletionWindow(editText.TextArea);
-                    var data = completionWindow.CompletionList.CompletionData;
-
-                    foreach (var completion in completions)
-                        data.Add(completion);
-
-                    completionWindow.Show();
-                    completionWindow.Closed += delegate
-                    {
-                        completionWindow = null;
-                    };
+                    ShowStandardCompletionWindow();
+                }
+                else if (completionWindow == null && (e.Text == "_" || Char.IsLetterOrDigit(e.Text, 0)))
+                {
+                    ShowBasicCompletionWindow();
                 }
             }
             catch (Exception ex)
@@ -120,9 +110,116 @@ namespace PythonNodeModelsWpf
             }
         }
 
+        private void ShowStandardCompletionWindow()
+        {
+            var subString = editText.Text.Substring(0, editText.CaretOffset);
+            var completions = completionProvider.GetCompletionData(subString, false);
+
+            if (completions.Length == 0)
+            {
+                return;
+            }
+
+            completionWindow = new CompletionWindow(editText.TextArea);
+            var data = completionWindow.CompletionList.CompletionData;
+
+            foreach (var completion in completions)
+            {
+                data.Add(completion);
+            }
+
+            completionWindow.Show();
+            completionWindow.Closed += delegate
+            {
+                completionWindow = null;
+            };
+        }
+
+        private void ShowBasicCompletionWindow()
+        {
+            string code = editText.Text.Substring(0, editText.CaretOffset);
+            string lastWord = Regex.Match(code, @"\w+$").Value;
+
+            //start autocompleting from the 2nd char and don't try to autocomplete numbers
+            int temp;
+            if (lastWord.Length < 2 || int.TryParse(lastWord, out temp))
+            {
+                return;
+            }
+
+            var completions = BasicCompletionData.PrepareAutocompletion(lastWord, code);
+            if (completions.Any())
+            {
+                completionWindow = new CompletionWindow(editText.TextArea);
+                var data = completionWindow.CompletionList.CompletionData;
+                //                completionWindow.CloseAutomatically = true;
+                completionWindow.StartOffset -= lastWord.Length;
+                completionWindow.PreviewKeyDown += dismissAutocompletion;
+
+                foreach (var c in completions)
+                {
+                    data.Add(c);
+                }
+
+                completionWindow.Show();
+                completionWindow.Closed += delegate
+                {
+                    completionWindow = null;
+                };
+            }
+        }
+
         #endregion
 
         #region Private Event Handlers
+
+        private void dismissAutocompletion(object sender, KeyEventArgs e)
+        {
+            string text = null;
+            bool showStandardCompletionAfter = false;
+            switch (e.Key)
+            {
+                case Key.Space:
+                    text = " "; break;
+                case Key.Oem4:
+                    text = "["; break;
+                case Key.Enter:
+                    text = Environment.NewLine; break;
+                case Key.D9:
+                    text = e.KeyboardDevice.Modifiers.HasFlag(ModifierKeys.Shift) ? "(" : null; break;
+                case Key.D0:
+                    text = e.KeyboardDevice.Modifiers.HasFlag(ModifierKeys.Shift) ? ")" : null; break;
+                case Key.OemComma:
+                    text = e.KeyboardDevice.Modifiers.HasFlag(ModifierKeys.Shift) ? "<" : ","; break;
+                case Key.OemPeriod:
+                    if (e.KeyboardDevice.Modifiers.HasFlag(ModifierKeys.Shift))
+                    {
+                        text = ">";
+                    }
+                    else
+                    {
+                        text = ".";
+                        showStandardCompletionAfter = true;
+                    }
+                    break;
+                case Key.OemPlus:
+                    text = e.KeyboardDevice.Modifiers.HasFlag(ModifierKeys.Shift) ? "+" : "="; break;
+                case Key.OemMinus:
+                    text = e.KeyboardDevice.Modifiers.HasFlag(ModifierKeys.Shift) ? "_" : "-"; break;
+            }
+
+            if (!String.IsNullOrEmpty(text))
+            {
+                completionWindow.PreviewKeyDown -= dismissAutocompletion;
+                completionWindow.Close();
+                e.Handled = true;
+                editText.Document.Insert(editText.CaretOffset, text);
+                if (showStandardCompletionAfter)
+                    ShowStandardCompletionWindow();
+                return;
+            }
+            base.OnPreviewKeyDown(e);
+        }
 
         private void OnSaveClicked(object sender, RoutedEventArgs e)
         {
@@ -161,7 +258,6 @@ namespace PythonNodeModelsWpf
         }
 
         #endregion
-
 
     }
 }
