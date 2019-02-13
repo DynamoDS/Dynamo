@@ -1231,6 +1231,7 @@ namespace Dynamo.ViewModels
             {
                 if (AskUserToSaveWorkspaceOrCancel(HomeSpace))
                 {
+                    this.filePath = command.FilePath;
                     this.ExecuteCommand(command);
                     this.ShowStartPage = false;
                 }
