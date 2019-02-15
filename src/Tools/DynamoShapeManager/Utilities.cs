@@ -417,13 +417,18 @@ namespace DynamoShapeManager
         /// <param name="rootFolder">Full path of the directory that contains 
         /// LibG_xxx_y_z folder, where 'xxx y z' represents the library version of asm. In a 
         /// typical setup this would be the same directory that contains Dynamo 
-        /// core modules. This must represent a valid directory.</param>
+        /// core modules. This must represent a valid directory - it cannot be null.</param>
         /// <param name="tolerantVersion">Version number of the targeted geometry library.
-        /// If the resulting assembly does not exist, this method will look for a lower version match.</param>
+        /// If the resulting assembly does not exist, this method will look for a lower version match.
+        /// This parameter cannot be null. </param>
         /// <returns>The full path to GeometryFactoryAssembly assembly.</returns>
         /// 
         public static string GetGeometryFactoryPathTolerant(string rootFolder, Version tolerantVersion){
-            return Path.Combine(Utilities.GetLibGPreloaderLocation(tolerantVersion, rootFolder), Utilities.GeometryFactoryAssembly);
+            if(tolerantVersion != null && rootFolder != null)
+            {
+                return Path.Combine(Utilities.GetLibGPreloaderLocation(tolerantVersion, rootFolder), Utilities.GeometryFactoryAssembly);
+            }
+            return string.Empty;
         }
 
         private static IEnumerable GetAsmInstallations(string rootFolder)
