@@ -12,4 +12,5 @@ using System.Runtime.InteropServices;
 // [assembly: AssemblyKeyFile("ProtoCore.snk")]
 [assembly: InternalsVisibleTo("ProtoTest")]
 [assembly: InternalsVisibleTo("ProtoTestFx")]
+[assembly: InternalsVisibleTo("DynamoCoreTests")]
 

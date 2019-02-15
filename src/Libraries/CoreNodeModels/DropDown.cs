@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Security;
 using System.Xml;
 using CoreNodeModels.Properties;
 using Dynamo.Graph;
@@ -164,7 +165,7 @@ namespace CoreNodeModels
             }
             else
             {
-                selectedString = selectedIndex > Items.Count - 1? String.Empty: GetSelectedStringFromItem(Items.ElementAt(selectedIndex));
+                selectedString = selectedIndex > Items.Count - 1 ? String.Empty : GetSelectedStringFromItem(Items.ElementAt(selectedIndex));
             }
         }
 
@@ -238,20 +239,30 @@ namespace CoreNodeModels
             return string.Format("{0}:{1}", index, XmlEscape(item.Name));
         }
 
+        /// <summary>
+        /// Escape string which could contain XML forbidden chars.
+        /// </summary>
+        /// <param name="unescaped"></param>
+        /// <returns></returns>
         protected static string XmlEscape(string unescaped)
         {
-            var doc = new XmlDocument();
-            XmlNode node = doc.CreateElement("root");
-            node.InnerText = unescaped;
-            return node.InnerXml;
+            // TODO: This function can be simplified in Dynamo 3.0
+            // since it is one line wrapper
+            return SecurityElement.Escape(unescaped);
         }
 
+        /// <summary>
+        /// Unescape string which could already be escaped before,
+        /// if there is no escaped special char, return as it is
+        /// if there is special char escaped, restore them.
+        /// </summary>
+        /// <param name="escaped"></param>
+        /// <returns></returns>
         protected static string XmlUnescape(string escaped)
         {
-            var doc = new XmlDocument();
-            XmlNode node = doc.CreateElement("root");
-            node.InnerXml = escaped;
-            return node.InnerText;
+            // TODO: This function can be simplified in Dynamo 3.0
+            // since it is one line wrapper
+            return System.Web.HttpUtility.HtmlDecode(escaped);
         }
 
         /// <summary>
