@@ -359,7 +359,7 @@ namespace DynamoShapeManager
         /// FileNotFoundException.</param>
         /// <returns>The full path to GeometryFactoryAssembly assembly.</returns>
         /// 
-        [Obsolete("Please use GetGeometryFactoryPath2(string rootFolder, Version version).")]
+        [Obsolete("Please use GetGeometryFactoryPathTolerant(string rootFolder, Version version).")]
         public static string GetGeometryFactoryPath(string rootFolder, LibraryVersion version)
         {
             return GetGeometryFactoryPath2(rootFolder, Preloader.MapLibGVersionEnumToFullVersion(version));
@@ -379,6 +379,7 @@ namespace DynamoShapeManager
         /// FileNotFoundException.</param>
         /// <returns>The full path to GeometryFactoryAssembly assembly.</returns>
         /// 
+        [Obsolete("Please use GetGeometryFactoryPathTolerant(string rootFolder, Version version).")]
         public static string GetGeometryFactoryPath2(string rootFolder, Version version)
         {
             if (string.IsNullOrEmpty(rootFolder))
@@ -418,17 +419,26 @@ namespace DynamoShapeManager
         /// LibG_xxx_y_z folder, where 'xxx y z' represents the library version of asm. In a 
         /// typical setup this would be the same directory that contains Dynamo 
         /// core modules. This must represent a valid directory - it cannot be null.</param>
-        /// <param name="tolerantVersion">Version number of the targeted geometry library.
+        /// <param name="version">Version number of the targeted geometry library.
         /// If the resulting assembly does not exist, this method will look for a lower version match.
         /// This parameter cannot be null. </param>
         /// <returns>The full path to GeometryFactoryAssembly assembly.</returns>
         /// 
-        public static string GetGeometryFactoryPathTolerant(string rootFolder, Version tolerantVersion){
-            if(tolerantVersion != null && rootFolder != null)
+        public static string GetGeometryFactoryPathTolerant(string rootFolder, Version version){
+            if (string.IsNullOrEmpty(rootFolder))
+                throw new ArgumentNullException("rootFolder");
+
+            if (!Directory.Exists(rootFolder))
             {
-                return Path.Combine(Utilities.GetLibGPreloaderLocation(tolerantVersion, rootFolder), Utilities.GeometryFactoryAssembly);
+                // Root directory must be specified and valid.
+                throw new DirectoryNotFoundException(string.Format(
+                    "Directory not found: {0}", rootFolder));
             }
-            return string.Empty;
+            if (version != null)
+            {
+                return Path.Combine(Utilities.GetLibGPreloaderLocation(version, rootFolder), Utilities.GeometryFactoryAssembly);
+            }
+            throw new ArgumentNullException("version");
         }
 
         private static IEnumerable GetAsmInstallations(string rootFolder)

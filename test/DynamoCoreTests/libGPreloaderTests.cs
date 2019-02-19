@@ -234,7 +234,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(targetVersion, foundVersion);
             Assert.AreEqual("revit_2020_InstallLocation", foundPath);
 
-            // The found libG preloader version in this case is another fallback of closest version below 225.3.0
+            // The found libG preloader version in this case is another fallback of closest version below 225.2.0
             Assert.AreEqual(libG22500path.FullName.ToLower(), DynamoShapeManager.Utilities.GetLibGPreloaderLocation(foundVersion, rootFolder).ToLower());
 
             //assert that the geometryFactoryTolerant method returns the path of the lib225_0_0 path.
@@ -262,8 +262,6 @@ namespace Dynamo.Tests
                 {"someInstallWithNoMatchingASM" ,Tuple.Create<int,int,int,int>(224,0,0,0)},
             };
 
-            var targetVersion = new Version(225, 2, 0);
-
             // mock a folder with libASMLibVersionToVersion folders with correct names
             var foundPath = "";
             var rootFolder = Path.Combine(Path.GetTempPath(), "LibGTest");
@@ -281,17 +279,15 @@ namespace Dynamo.Tests
             // when passed null as a version, GetLibGPreloaderLocation will return LibG_0_0_0
             Assert.IsTrue(DynamoShapeManager.Utilities.GetLibGPreloaderLocation(foundVersion, rootFolder).ToLower().Contains("libg_0_0_0"));
 
+            //when passed a null version this method should throw
+            Assert.Throws<ArgumentNullException>(() => { DynamoShapeManager.Utilities.GetGeometryFactoryPathTolerant(rootFolder, null); });
 
-            //when passed a null version this method should return empty string - as the geometry path was not located
-            Assert.AreEqual(string.Empty,
-                DynamoShapeManager.Utilities.GetGeometryFactoryPathTolerant(rootFolder, null));
+            //when passed a null root directory this method should throw - as a valid root directory is required.
+            Assert.Throws<ArgumentNullException>(() => { DynamoShapeManager.Utilities.GetGeometryFactoryPathTolerant(null, new Version(224, 24, 24)); });
 
-            //when passed a null root directory this method should return empty string - as a valid root directory is required.
-            Assert.AreEqual(string.Empty,
-                DynamoShapeManager.Utilities.GetGeometryFactoryPathTolerant(null, new Version(224, 24, 24)));
-
-            // when passed a non null, non matching version this method should return a path to the version that was supplied - 
-            // but it will likely fail later.
+            // when passed a non null, non matching version and existing root directory
+            // this method should return a path to the version that was supplied - 
+            // but it will likely fail later since this path may not exist.
             Assert.AreEqual(Path.Combine(libGTestPath.FullName, DynamoShapeManager.Utilities.GeometryFactoryAssembly).ToLower(),
                  DynamoShapeManager.Utilities.GetGeometryFactoryPathTolerant(rootFolder, new Version(224,24,24)).ToLower());
 
