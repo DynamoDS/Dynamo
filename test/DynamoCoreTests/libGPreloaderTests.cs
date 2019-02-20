@@ -265,9 +265,8 @@ namespace Dynamo.Tests
             // mock a folder with libASMLibVersionToVersion folders with correct names
             var foundPath = "";
             var rootFolder = Path.Combine(Path.GetTempPath(), "LibGTest");
-            // both versions of libG exist
+            //there is no matching libG for the installed version of asm.
             var libG22500path = System.IO.Directory.CreateDirectory(Path.Combine(rootFolder, "LibG_225_0_0"));
-            var libGTestPath = new DirectoryInfo(Path.Combine(rootFolder, "LibG_224_24_24"));
             var foundVersion = DynamoShapeManager.Utilities.GetInstalledAsmVersion2(
                 versions, ref foundPath, rootFolder, (path) => { return mockedInstalledASMs; });
 
