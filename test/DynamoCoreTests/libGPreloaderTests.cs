@@ -205,7 +205,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void GetGeometryFactoryPathTolerant_libGVersionFallback()
+        public void GetGeometryFactoryPath_libGVersionFallback()
         {
             var versions = new List<Version>()
             {
@@ -226,6 +226,8 @@ namespace Dynamo.Tests
             // both versions of libG exist
             var libG22440path = System.IO.Directory.CreateDirectory(Path.Combine(rootFolder, "LibG_224_4_0"));
             var libG22500path = System.IO.Directory.CreateDirectory(Path.Combine(rootFolder, "LibG_225_0_0"));
+            //create a fake libg interface assembly
+            File.WriteAllText(Path.Combine(libG22500path.FullName, DynamoShapeManager.Utilities.GeometryFactoryAssembly), "someText");
 
             var foundVersion = DynamoShapeManager.Utilities.GetInstalledAsmVersion2(
                 versions, ref foundPath, rootFolder, (path) => { return mockedInstalledASMs; });
@@ -237,11 +239,9 @@ namespace Dynamo.Tests
             // The found libG preloader version in this case is another fallback of closest version below 225.2.0
             Assert.AreEqual(libG22500path.FullName.ToLower(), DynamoShapeManager.Utilities.GetLibGPreloaderLocation(foundVersion, rootFolder).ToLower());
 
-            //assert that the geometryFactoryTolerant method returns the path of the lib225_0_0 path.
+            //assert that the geometryFactory method returns the path of the lib225_0_0 path.
             Assert.AreEqual(Path.Combine(libG22500path.FullName,DynamoShapeManager.Utilities.GeometryFactoryAssembly).ToLower(),
-                DynamoShapeManager.Utilities.GetGeometryFactoryPathTolerant(rootFolder, targetVersion).ToLower());
-            //assert the non tolerant version throws
-            Assert.Throws<DirectoryNotFoundException>(() => { DynamoShapeManager.Utilities.GetGeometryFactoryPath2(rootFolder, targetVersion); });
+                DynamoShapeManager.Utilities.GetGeometryFactoryPath2(rootFolder, targetVersion).ToLower());
 
             // cleanup
             libG22440path.Delete(true);
@@ -280,18 +280,14 @@ namespace Dynamo.Tests
             Assert.IsTrue(DynamoShapeManager.Utilities.GetLibGPreloaderLocation(foundVersion, rootFolder).ToLower().Contains("libg_0_0_0"));
 
             //when passed a null version this method should throw
-            Assert.Throws<ArgumentNullException>(() => { DynamoShapeManager.Utilities.GetGeometryFactoryPathTolerant(rootFolder, null); });
+            Assert.Throws<ArgumentNullException>(() => { DynamoShapeManager.Utilities.GetGeometryFactoryPath2(rootFolder, null); });
 
             //when passed a null root directory this method should throw - as a valid root directory is required.
-            Assert.Throws<ArgumentNullException>(() => { DynamoShapeManager.Utilities.GetGeometryFactoryPathTolerant(null, new Version(224, 24, 24)); });
+            Assert.Throws<ArgumentNullException>(() => { DynamoShapeManager.Utilities.GetGeometryFactoryPath2(null, new Version(224, 24, 24)); });
 
             // when passed a non null, non matching version and existing root directory
-            // this method should return a path to the version that was supplied - 
-            // but it will likely fail later since this path may not exist.
-            Assert.AreEqual(Path.Combine(libGTestPath.FullName, DynamoShapeManager.Utilities.GeometryFactoryAssembly).ToLower(),
-                 DynamoShapeManager.Utilities.GetGeometryFactoryPathTolerant(rootFolder, new Version(224,24,24)).ToLower());
+            // this method should throw.
 
-            //assert the non tolerant version throws
             Assert.Throws<DirectoryNotFoundException>(() => { DynamoShapeManager.Utilities.GetGeometryFactoryPath2(rootFolder, new Version(224, 24, 24)); });
 
             // cleanup

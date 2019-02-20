@@ -359,27 +359,25 @@ namespace DynamoShapeManager
         /// FileNotFoundException.</param>
         /// <returns>The full path to GeometryFactoryAssembly assembly.</returns>
         /// 
-        [Obsolete("Please use GetGeometryFactoryPathTolerant(string rootFolder, Version version).")]
+        [Obsolete("Please use GetGeometryFactoryPath2(string rootFolder, Version version).")]
         public static string GetGeometryFactoryPath(string rootFolder, LibraryVersion version)
         {
             return GetGeometryFactoryPath2(rootFolder, Preloader.MapLibGVersionEnumToFullVersion(version));
         }
 
         /// <summary>
-        /// Call this method to resolve full path to GeometryFactoryAssembly 
-        /// assembly, given the root folder and the version. This method throws 
-        /// an exception if either of the folders or the exact version of the assembly cannot be found.
+        /// This method will return the path to the GeometryFactory assembly location for a requested version of the geometry library.
+        /// This method is tolerant to the requested version in that it will attempt to locate an exact or lower version of the GeometryFactory assembly.
         /// </summary>
         /// <param name="rootFolder">Full path of the directory that contains 
         /// LibG_xxx_y_z folder, where 'xxx y z' represents the library version of asm. In a 
         /// typical setup this would be the same directory that contains Dynamo 
-        /// core modules. This must represent a valid directory.</param>
+        /// core modules. This must represent a valid directory - it cannot be null.</param>
         /// <param name="version">Version number of the targeted geometry library.
-        /// If the resulting folder does not exist, this method throws an 
-        /// FileNotFoundException.</param>
+        /// If the resulting assembly does not exist, this method will look for a lower version match.
+        /// This parameter cannot be null. </param>
         /// <returns>The full path to GeometryFactoryAssembly assembly.</returns>
         /// 
-        [Obsolete("Please use GetGeometryFactoryPathTolerant(string rootFolder, Version version).")]
         public static string GetGeometryFactoryPath2(string rootFolder, Version version)
         {
             if (string.IsNullOrEmpty(rootFolder))
@@ -393,8 +391,14 @@ namespace DynamoShapeManager
             }
             //IMPORTANT_ Going forward libg folders will be named as follows: libg_major_minor_build - in reference to ASM.
 
-            var libGFolderName = string.Format("libg_{0}_{1}_{2}", version.Major, version.Minor, version.Build);
-            var libGFolder = Path.Combine(rootFolder, libGFolderName);
+            if (version == null)
+            {
+                throw new ArgumentNullException("version");
+            }
+
+            //lookup libG with a fallback to older versions which share the major version number.
+            var libGFolder = Utilities.GetLibGPreloaderLocation(version, rootFolder);
+            
             if (!Directory.Exists(libGFolder))
             {
                 // LibG_version folder must be valid.
@@ -411,36 +415,8 @@ namespace DynamoShapeManager
 
             return assemblyPath;
         }
-        /// <summary>
-        /// This method will return the path to the GeometryFactory assembly location for a requested version of the geometry library.
-        /// This method is tolerant to the requested version in that it will attempt to locate an exact or lower version of the GeometryFactory assembly.
-        /// </summary>
-        /// <param name="rootFolder">Full path of the directory that contains 
-        /// LibG_xxx_y_z folder, where 'xxx y z' represents the library version of asm. In a 
-        /// typical setup this would be the same directory that contains Dynamo 
-        /// core modules. This must represent a valid directory - it cannot be null.</param>
-        /// <param name="version">Version number of the targeted geometry library.
-        /// If the resulting assembly does not exist, this method will look for a lower version match.
-        /// This parameter cannot be null. </param>
-        /// <returns>The full path to GeometryFactoryAssembly assembly.</returns>
-        /// 
-        public static string GetGeometryFactoryPathTolerant(string rootFolder, Version version){
-            if (string.IsNullOrEmpty(rootFolder))
-                throw new ArgumentNullException("rootFolder");
-
-            if (!Directory.Exists(rootFolder))
-            {
-                // Root directory must be specified and valid.
-                throw new DirectoryNotFoundException(string.Format(
-                    "Directory not found: {0}", rootFolder));
-            }
-            if (version != null)
-            {
-                return Path.Combine(Utilities.GetLibGPreloaderLocation(version, rootFolder), Utilities.GeometryFactoryAssembly);
-            }
-            throw new ArgumentNullException("version");
-        }
-
+       
+    
         private static IEnumerable GetAsmInstallations(string rootFolder)
         {
             var assemblyPath = Path.Combine(Path.Combine(rootFolder, "DynamoInstallDetective.dll"));
