@@ -346,17 +346,18 @@ namespace DynamoShapeManager
         }
 
         /// <summary>
-        /// Call this method to resolve full path to GeometryFactoryAssembly 
-        /// assembly, given the root folder and the version. This method throws 
-        /// an exception if either of the folders or the exact version of the assembly cannot be found.
+        /// This method will return the path to the GeometryFactory assembly location 
+        /// for a requested version of the geometry library.
+        /// This method is tolerant to the requested version in that it will attempt to 
+        /// locate an exact or lower version of the GeometryFactory assembly.
         /// </summary>
         /// <param name="rootFolder">Full path of the directory that contains 
-        /// LibG_xxx folder, where 'xxx' represents the library version. In a 
+        /// LibG_xxx_y_z folder, where 'xxx y z' represents the library version of asm. In a 
         /// typical setup this would be the same directory that contains Dynamo 
-        /// core modules. This must represent a valid directory.</param>
+        /// core modules. This must represent a valid directory - it cannot be null.</param>
         /// <param name="version">Version number of the targeted geometry library.
-        /// If the resulting folder does not exist, this method throws an 
-        /// FileNotFoundException.</param>
+        /// If the resulting assembly does not exist, this method will look for a lower version match.
+        /// This parameter cannot be null. </param>
         /// <returns>The full path to GeometryFactoryAssembly assembly.</returns>
         /// 
         [Obsolete("Please use GetGeometryFactoryPath2(string rootFolder, Version version).")]
@@ -366,8 +367,10 @@ namespace DynamoShapeManager
         }
 
         /// <summary>
-        /// This method will return the path to the GeometryFactory assembly location for a requested version of the geometry library.
-        /// This method is tolerant to the requested version in that it will attempt to locate an exact or lower version of the GeometryFactory assembly.
+        /// This method will return the path to the GeometryFactory assembly location 
+        /// for a requested version of the geometry library.
+        /// This method is tolerant to the requested version in that it will attempt to 
+        /// locate an exact or lower version of the GeometryFactory assembly.
         /// </summary>
         /// <param name="rootFolder">Full path of the directory that contains 
         /// LibG_xxx_y_z folder, where 'xxx y z' represents the library version of asm. In a 
