@@ -204,6 +204,95 @@ namespace Dynamo.Tests
             libG22500path.Delete(true);
         }
 
+        [Test]
+        public void GetGeometryFactoryPath_libGVersionFallback()
+        {
+            var versions = new List<Version>()
+            {
+                    new Version(225,0,0)
+            };
+
+            var mockedInstalledASMs = new Dictionary<string, Tuple<int, int, int, int>>()
+            {
+
+                {"revit_2020_InstallLocation" ,Tuple.Create<int,int,int,int>(225,2,0,0)},
+            };
+
+            var targetVersion = new Version(225, 2, 0);
+
+            // mock a folder with libASMLibVersionToVersion folders with correct names
+            var foundPath = "";
+            var rootFolder = Path.Combine(Path.GetTempPath(), "LibGTest");
+            // both versions of libG exist
+            var libG22440path = System.IO.Directory.CreateDirectory(Path.Combine(rootFolder, "LibG_224_4_0"));
+            var libG22500path = System.IO.Directory.CreateDirectory(Path.Combine(rootFolder, "LibG_225_0_0"));
+            //create a fake libg interface assembly
+            File.WriteAllText(Path.Combine(libG22500path.FullName, DynamoShapeManager.Utilities.GeometryFactoryAssembly), "someText");
+
+            var foundVersion = DynamoShapeManager.Utilities.GetInstalledAsmVersion2(
+                versions, ref foundPath, rootFolder, (path) => { return mockedInstalledASMs; });
+
+            // The found ASM version in this case is a fallback of lowest version within same major which should be 225.2.0
+            Assert.AreEqual(targetVersion, foundVersion);
+            Assert.AreEqual("revit_2020_InstallLocation", foundPath);
+
+            // The found libG preloader version in this case is another fallback of closest version below 225.2.0
+            Assert.AreEqual(libG22500path.FullName.ToLower(), DynamoShapeManager.Utilities.GetLibGPreloaderLocation(foundVersion, rootFolder).ToLower());
+
+            //assert that the geometryFactory method returns the path of the lib225_0_0 path.
+            Assert.AreEqual(Path.Combine(libG22500path.FullName,DynamoShapeManager.Utilities.GeometryFactoryAssembly).ToLower(),
+                DynamoShapeManager.Utilities.GetGeometryFactoryPath2(rootFolder, targetVersion).ToLower());
+
+            // cleanup
+            libG22440path.Delete(true);
+            libG22500path.Delete(true);
+        }
+
+        [Test]
+        public void GetGeometryFactoryPathTolerant_NoMatch()
+        {
+            var versions = new List<Version>()
+            {
+                    new Version(225,0,0)
+            };
+
+            var mockedInstalledASMs = new Dictionary<string, Tuple<int, int, int, int>>()
+            {
+
+                {"someInstallWithNoMatchingASM" ,Tuple.Create<int,int,int,int>(224,0,0,0)},
+            };
+
+            // mock a folder with libASMLibVersionToVersion folders with correct names
+            var foundPath = "";
+            var rootFolder = Path.Combine(Path.GetTempPath(), "LibGTest");
+            //there is no matching libG for the installed version of asm.
+            var libG22500path = System.IO.Directory.CreateDirectory(Path.Combine(rootFolder, "LibG_225_0_0"));
+            var foundVersion = DynamoShapeManager.Utilities.GetInstalledAsmVersion2(
+                versions, ref foundPath, rootFolder, (path) => { return mockedInstalledASMs; });
+
+            // There is no match, so found version is null.
+            Assert.AreEqual(null, foundVersion);
+            // There is no match, so path to ASM is null.
+            Assert.AreEqual(string.Empty, foundPath);
+
+            // when passed null as a version, GetLibGPreloaderLocation will return LibG_0_0_0
+            Assert.IsTrue(DynamoShapeManager.Utilities.GetLibGPreloaderLocation(foundVersion, rootFolder).ToLower().Contains("libg_0_0_0"));
+
+            //when passed a null version this method should throw
+            Assert.Throws<ArgumentNullException>(() => { DynamoShapeManager.Utilities.GetGeometryFactoryPath2(rootFolder, null); });
+
+            //when passed a null root directory this method should throw - as a valid root directory is required.
+            Assert.Throws<ArgumentNullException>(() => { DynamoShapeManager.Utilities.GetGeometryFactoryPath2(null, new Version(224, 24, 24)); });
+
+            // when passed a non null, non matching version and existing root directory
+            // this method should throw.
+
+            Assert.Throws<DirectoryNotFoundException>(() => { DynamoShapeManager.Utilities.GetGeometryFactoryPath2(rootFolder, new Version(224, 24, 24)); });
+
+            // cleanup
+            libG22500path.Delete(true);
+        }
+
 
         [Test]
         public void GetInstalledASMVersions2_FindsVersionedLibGFolders_WithRootFolderFallback()
