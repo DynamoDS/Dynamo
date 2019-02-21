@@ -135,6 +135,13 @@ namespace WpfVisualizationTests
 
             ViewModel.OpenCommand.Execute(relativePath);
         }
+
+        // With version 2.5 NUnit will call base class TearDown methods after those in the derived classes
+        [TearDown]
+        private void CleanUp()
+        {
+            Model.EvaluationCompleted -= Model_EvaluationCompleted;
+        }
     }
 
     [TestFixture]
