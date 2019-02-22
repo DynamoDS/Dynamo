@@ -126,9 +126,6 @@
   <data name="CheckIfTheElementsInListAreSameType" xml:space="preserve">
     <value>Checks if all the elements in the specified list are of the same type</value>
   </data>
-  <data name="ChecksIfLengthsAreSameInMultiDimentionalList" xml:space="preserve">
-    <value>Checks if each of rows in multidimensional list has the same number of elements </value>
-  </data>
   <data name="ChecksIfListContainsTheElement" xml:space="preserve">
     <value>Checks if the specified element is present in the specified list</value>
   </data>
@@ -159,14 +156,8 @@
   <data name="FunctionCallCannotBeAtLeftSide" xml:space="preserve">
     <value>A function call is not allowed on the left hand side of an assignment</value>
   </data>
-  <data name="GetKeys" xml:space="preserve">
-    <value>Gets all keys from the specified key-value pair list</value>
-  </data>
   <data name="Gettypes" xml:space="preserve">
     <value>Gets the Type of the current instance</value>
-  </data>
-  <data name="GetValues" xml:space="preserve">
-    <value>Gets all values stored in the specified key-value pair list and for a simple list it returns all elements in the list</value>
   </data>
   <data name="ImportFileByGivenFilePath" xml:space="preserve">
     <value>Imports data from a text file containing comma separated values into two-dimensional list</value>

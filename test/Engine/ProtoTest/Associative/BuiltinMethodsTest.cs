@@ -67,32 +67,7 @@ g = CountFalse(c);
             thisTest.Verify("f",1);
             thisTest.Verify("g",0);
         }
-
-        [Test]
-        //Test "AllFalse() & AllTrue()"
-        public void BIM04_AllFalse_AllTrue()
-        {
-            String code =
-@"
-a = [true];
-b = [false,false,[false,[false,[false,false,[false],false]]],false];
-c = [true,true,true,true,[true,true],true,[true,true,[true, true,[true],true,true,true]]];
-d = AllTrue(a);
-e = AllTrue(b);
-f = AllTrue(c);
-g = AllFalse(a);
-h = AllFalse(b);
-i = AllFalse(c);
-";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("d", true);
-            thisTest.Verify("e", false);
-            thisTest.Verify("f", true);
-            thisTest.Verify("g", false);
-            thisTest.Verify("h", true);
-            thisTest.Verify("i", false);
-        }
-
+        
         [Test]
         //Test "IsHomogeneous()"
         public void BIM05_IsHomogeneous()
@@ -1112,16 +1087,6 @@ r2 = Dictionary.ValueAtKey(c, ""out"");
             var mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("r1", new object[] { new object[] { null, null, null, null }, new object[] { 24 } });
             thisTest.Verify("r2", new object[] { new object[] { null, null, null, null }, new object[] { 42 } });
-        }
-      
-        [Test]
-        public void TestGetKeysFromNonArray()
-        {
-            string code = @"
-x = 1;
-k = GetKeys(x);";
-            var mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("k", null);
         }
     }
 }

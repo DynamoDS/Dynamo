@@ -73,6 +73,16 @@
     </additionalAttributes>
   </priorNameHint>
   <priorNameHint>
+    <oldName>RemoveNulls</oldName>
+    <newName>DSCore.List.Clean</newName>
+    <additionalAttributes>
+      <attribute>
+        <name>preserveIndices</name>
+        <value>false</value>
+      </attribute>
+    </additionalAttributes>
+  </priorNameHint>
+  <priorNameHint>
     <oldName>Insert</oldName>
     <newName>DSCore.List.Insert</newName>
   </priorNameHint>
@@ -143,5 +153,21 @@
   <priorNameHint>
     <oldName>TrueForAny</oldName>
     <newName>List.TrueForAny</newName>
+  </priorNameHint>
+  <priorNameHint>
+    <oldName>Remove</oldName>
+    <newName>DSCore.List.RemoveItemAtIndex</newName>
+  </priorNameHint>
+  <priorNameHint>
+    <oldName>Average</oldName>
+    <newName>DSCore.Math.Average</newName>
+  </priorNameHint>
+  <priorNameHint>
+    <oldName>RemoveDuplicates</oldName>
+    <newName>DSCore.List.UniqueItems</newName>
+  </priorNameHint>
+  <priorNameHint>
+    <oldName>Reverse</oldName>
+    <newName>DSCore.List.Reverse</newName>
   </priorNameHint>
 </migrations>

@@ -88,15 +88,5 @@ namespace Dynamo.Tests
             var value = (Int64)mirror.GetData().Data;
             Assert.AreEqual(value, 10);
         }
-
-        [Test, Category("RegressionTests")]
-        public void TestGetKeys()
-        {
-            string openPath = Path.Combine(TestDirectory, @"core\dsfunction\GetKeys.dyn");
-            OpenModel(openPath);
-
-            // no crash
-            Assert.DoesNotThrow(BeginRun);
-        }
     }
 }
