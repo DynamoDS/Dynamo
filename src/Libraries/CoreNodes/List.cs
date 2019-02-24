@@ -78,6 +78,8 @@ namespace DSCore
                 var firstItem = list[0];
                 foreach (var obj in list)
                 {
+                    if (obj == null) return false;
+
                     if (obj.GetType() != firstItem.GetType())
                     {
                         return false;
@@ -1934,6 +1936,7 @@ namespace DSCore
     {
         public int Compare(object x, object y)
         {
+
             Type xType = x.GetType();
             Type yType = y.GetType();
 

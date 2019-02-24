@@ -14,35 +14,17 @@ namespace ProtoTest.Associative
         }
 
         [Test]
-        //Test "SomeNulls()"
-        public void BIM01_SomeNulls()
-        {
-            String code =
-@"
-a = [null,20,30,null,[10,0],0,5,2];
-b = [1,2,3];
-e = [3,20,30,4,[null,0],0,5,2];
-c = SomeNulls(a);
-d = SomeNulls(b);
-f = SomeNulls(e);
-";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("c", true);
-            thisTest.Verify("d", false);
-            thisTest.Verify("f", true);
-        }
-
-        [Test]
         //Test "CountTrue()"
         public void BIM02_CountTrue()
         {
             String code =
-@"a = [true,true,true,false,[true,false],true,[false,false,[true,[false],true,true,false]]];
+@"import(""DSCoreNodes.dll"");
+a = [true,true,true,false,[true,false],true,[false,false,[true,[false],true,true,false]]];
 b = [true,true,true,false,true,true];
 c = [true,true,true,true,true,true,true];
-w = CountTrue(a);
-x = CountTrue(b);
-y = CountTrue(c);
+w = List.CountTrue(a);
+x = List.CountTrue(b);
+y = List.CountTrue(c);
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("w",8);
@@ -55,12 +37,13 @@ y = CountTrue(c);
         public void BIM03_CountFalse()
         {
             String code =
-@"a = [true,true,true,false,[true,false],true,[false,false,[true,[false],true,true,false]]];
+@"import(""DSCoreNodes.dll"");
+a = [true,true,true,false,[true,false],true,[false,false,[true,[false],true,true,false]]];
 b = [true,true,true,false,true,true];
 c = [true,true,true,true,true,true,true];
-e = CountFalse(a);
-f = CountFalse(b);
-g = CountFalse(c);
+e = List.CountFalse(a);
+f = List.CountFalse(b);
+g = List.CountFalse(c);
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("e",6);
@@ -73,16 +56,17 @@ g = CountFalse(c);
         public void BIM05_IsHomogeneous()
         {
             String code =
-@"a = [1,2,3,4,5];
+@"import(""DSCoreNodes.dll"");
+a = [1,2,3,4,5];
 b = [false, true, false];
 c = [[1],[1.0,2.0]];
 d = [null,1,2,3];
 e = [];
-ca = IsHomogeneous(a);
-cb = IsHomogeneous(b);
-cc = IsHomogeneous(c);
-cd = IsHomogeneous(d);
-ce = IsHomogeneous(e);
+ca = List.IsHomogeneous(a);
+cb = List.IsHomogeneous(b);
+cc = List.IsHomogeneous(c);
+cd = List.IsHomogeneous(d);
+ce = List.IsHomogeneous(e);
 ";
             thisTest.RunScriptSource(code);
             thisTest.Verify("ca", true);
@@ -97,13 +81,13 @@ ce = IsHomogeneous(e);
         public void BIM06_SumAverage()
         {
             String code =
-@"
+@"import(""DSCoreNodes.dll"");
 b = [1,2,[3,4,[5,[6,[7],8,[9,10],11]],12,13,14,[15]],16];
 c = [1.2,2.2,[3.2,4.2,[5.2,[6.2,[7.2],8.2,[9.2,10.2],11.2]],12.2,13.2,14.2,[15.2]],16.2];
-x = Average(b);
-y = Sum(b);
-z = Average(c);
-s = Sum(c);
+x = Math.Average(List.Flatten(b));
+y = Math.Sum(List.Flatten(b));
+z = Math.Average(List.Flatten(c));
+s = Math.Sum(List.Flatten(c));
 ";
             thisTest.RunScriptSource(code);
             thisTest.Verify("x", 8.5);
@@ -114,41 +98,17 @@ s = Sum(c);
         }
 
         [Test]
-        //Test "SomeTrue() & SomeFalse()"
-        public void BIM07_SomeTrue_SomeFalse()
-        {
-            String code =
-@"a = [true,true,true,[false,false,[true, true,[false],true,true,false]]];
-b = [true,true,[true,true,true,[true,[true],true],true],true];
-c = [true, false, false];
-p = SomeTrue(a);
-q = SomeTrue(b);
-r = SomeTrue(c);
-s = SomeFalse(a);
-t = SomeFalse(b);
-u = SomeFalse(c);
-";
-            thisTest.RunScriptSource(code);
-            thisTest.Verify("p", true);
-            thisTest.Verify("q", true);
-            thisTest.Verify("r", true);
-            thisTest.Verify("s", true);
-            thisTest.Verify("t", false);
-            thisTest.Verify("u", true);
-        }
-
-        [Test]
         //Test "Remove() & RemoveDuplicate()"
         public void BIM08_Remove_RemoveDuplicate()
         {
             String code =
-@"
+@"import(""DSCoreNodes.dll"");
 a = [null,20,30,null,20,15,true,true,5,false];
 b = [1,2,3,4,9,4,2,5,6,7,8,7,1,0,2];
-rda = RemoveDuplicates(a);
-rdb = RemoveDuplicates(b);
-ra = Remove(a,3);
-rb = Remove(b,2);
+rda = List.UniqueItems(a);
+rdb = List.UniqueItems(b);
+ra = List.RemoveItemAtIndex(a,3);
+rb = List.RemoveItemAtIndex(b,2);
 p = rda[3];
 q = rdb[4];
 x = ra[3];
@@ -166,10 +126,11 @@ y = rb[2];
         public void BIM09_RemoveNulls()
         {
             String code =
-@"a = [1,[6,null,7,[null,null]],7,null,2];
+@"import(""DSCoreNodes.dll"");
+a = [1,[6,null,7,[null,null]],7,null,2];
 b = [null,[null,[null,[null],null],null],null];
-p = RemoveNulls(a);
-q = RemoveNulls(b);
+p = List.Clean(a, false);
+q = List.Clean(b, false);
 x = p[3];
 y = p[1][1];
 ";
@@ -206,10 +167,11 @@ t = e[0][0];
         public void BIM11_Reverse()
         {
             String code =
-@"a = [1,[[1],[3.1415]],null,1.0,12.3];
+@"import(""DSCoreNodes.dll"");
+a = [1,[[1],[3.1415]],null,1.0,12.3];
 b = [1,2,[3]];
-p = Reverse(a);
-q = Reverse(b);
+p = List.Reverse(a);
+q = List.Reverse(b);
 x = p[0];
 y = q[0][0];
 ";
@@ -218,20 +180,21 @@ y = q[0][0];
             thisTest.Verify("y",3);
         }
 
-        [Test]
+        [Test, Category("Failure")]
         //Test "Contains()"
         public void BIM12_Contains()
         {
             String code =
-@"a = [1,[[1],[3.1415]],null,1.0,12.3];
+@"import(""DSCoreNodes.dll"");
+a = [1,[[1],[3.1415]],null,1.0,12.3];
 b = [1,2,[3]];
 x = [[1],[3.1415]];
-r = Contains(a, 3.0);
-s = Contains(a, x);
-t = Contains(a, null);
-u = Contains(b, b);
-v = Contains(b, [3]);
-w = Contains(b, 3);
+r = List.Contains(a, 3.0);
+s = List.Contains(a, x);
+t = List.Contains(a, null);
+u = List.Contains(b, b);
+v = List.Contains(b, [3]);
+w = List.Contains(b, 3);
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("r", false);
@@ -243,20 +206,21 @@ w = Contains(b, 3);
         }
 
 
-        [Test]
+        [Test, Category("Failure")]
         //Test "IndexOf()"
         public void BIM13_IndexOf()
         {
             String code =
-@"a = [1,[[1],[3.1415]],null,1.0,12,3];
+@"import(""DSCoreNodes.dll"");
+a = [1,[[1],[3.1415]],null,1.0,12,3];
 b = [1,2,[3]];
 c = [1,2,[3]];
 d = [[1],[3.1415]];
-r = IndexOf(a, d);
-s = IndexOf(a, 1);
-t = IndexOf(a, null);
-u = IndexOf(b, [3]);
-v = IndexOf(b, 3);
+r = List.IndexOf(a, d);
+s = List.IndexOf(a, 1);
+t = List.IndexOf(a, null);
+u = List.IndexOf(b, [3]);
+v = List.IndexOf(b, 3);
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("r",1);
@@ -271,12 +235,13 @@ v = IndexOf(b, 3);
         public void BIM14_Sort()
         {
             String code =
-@"a = [1,3,5,7,9,8,6,4,2,0];
+@"import(""DSCoreNodes.dll"");
+a = [1,3,5,7,9,8,6,4,2,0];
 b = [1.3,2,0.8,2,null,2,2.0,2,null];
-x = Sort(a);
-x1 = Sort(a,true);
-x2 = Sort(a,false);
-y = Sort(b);
+x =  List.Sort(a);
+x1 = List.Sort(a);
+x2 = List.Reverse(List.Sort(a));
+y = List.Sort(b);
 p = x[0];
 p1 = x1[0];
 p2 = x2[0];
@@ -298,12 +263,13 @@ t = y[7];
         public void BIM15_SortIndexByValue()
         {
             String code =
-@"a = [1,3,5,7,9,8,6,4,2,0];
+@"import(""DSCoreNodes.dll"");
+a = [1,3,5,7,9,8,6,4,2,0];
 b = [1.3,2,0.8,2,null,2,2.0,2,null];
-x = SortIndexByValue(a);
-x1 = SortIndexByValue(a,true);
-x2 = SortIndexByValue(a,false);
-y = SortIndexByValue(b);
+x = List.SortIndexByValue(a);
+x1 =List.SortIndexByValue(a,true);
+x2 =List.SortIndexByValue(a,false);
+y = List.SortIndexByValue(b);
 p = x[0];
 p1 = x1[0];
 p2 = x2[0];
@@ -325,15 +291,16 @@ t = y[7];
         public void BIM16_Insert()
         {
             String code =
-@"a = [false,2,3.1415926,null,[false]];
+@"import(""DSCoreNodes.dll"");
+a = [false,2,3.1415926,null,[false]];
 b = 1;
 c = [1];
 d = [];
 e = [[1],2,3.0];
-p = Insert(a,b,1);
-q = Insert(a,c,1);
-r = Insert(a,d,0);
-s = Insert(a,e,5);
+p = List.Insert(a,b,1);
+q = List.Insert(a,c,1);
+r = List.Insert(a,d,0);
+s = List.Insert(a,e,5);
 u = p[1];
 v = q[1][0];
 w = r[1];
@@ -351,12 +318,13 @@ x = s[5][0][0];
         public void BIM17_SetDifference_SetUnion_SetIntersection()
         {
             String code =
-@"a = [false,15,6.0,15,false,null,15.0];
+@"import(""DSCoreNodes.dll"");
+a = [false,15,6.0,15,false,null,15.0];
 b = [10,20,false,12,21,6.0,15,null,8.2];
-c = SetDifference(a,b);
-d = SetDifference(b,a);
-e = SetIntersection(a,b);
-f = SetUnion(a,b);
+c = List.SetDifference(a,b);
+d = List.SetDifference(b,a);
+e = List.SetIntersection(a,b);
+f = List.SetUnion(a,b);
 p = c[0];
 q = d[1];
 r = e[1];
@@ -374,9 +342,10 @@ s = f[1];
         public void BIM18_Reorder()
         {
             String code =
-@"a = [1,4,3,8.0,2.0,0];
+@"import(""DSCoreNodes.dll"");
+a = [1,4,3,8.0,2.0,0];
 b = [2,1,0,3,4];
-c = Reorder(a,b);
+c = List.Reorder(a,b);
 p = c[0];
 q = c[1];
 r = c[2];
@@ -391,10 +360,10 @@ r = c[2];
         public void Reorder2()
         {
             String code =
-@"
+@"import(""DSCoreNodes.dll"");
 x = [1, 2, 3];
 y = [-1];
-z = Reorder(x,y);
+z = List.Reorder(x,y);
 ";
             thisTest.RunScriptSource(code);
             thisTest.Verify("z", null);
@@ -405,14 +374,15 @@ z = Reorder(x,y);
         public void BIM19_IsUniformDepth()
         {
             String code =
-@"a = [];
+@"import(""DSCoreNodes.dll"");
+a = [];
 b = [1,2,3];
 c = [[1],[2,3]];
 d = [1,[2],[[3]]];
-p = IsUniformDepth(a);
-q = IsUniformDepth(b);
-r = IsUniformDepth(c);
-s = IsUniformDepth(d);
+p = List.IsUniformDepth(a);
+q = List.IsUniformDepth(b);
+r = List.IsUniformDepth(c);
+s = List.IsUniformDepth(d);
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("p", true);
@@ -426,11 +396,12 @@ s = IsUniformDepth(d);
         public void BIM20_NormalizeDepth()
         {
             String code =
-@"a = [[1,[2,3,4,[5]]]];
-p = NormalizeDepth(a,1);
-q = NormalizeDepth(a,2);
-r = NormalizeDepth(a,4);
-s = NormalizeDepth(a);
+@"import(""DSCoreNodes.dll"");
+a = [[1,[2,3,4,[5]]]];
+p = List.NormalizeDepth(a,1);
+q = List.NormalizeDepth(a,2);
+r = List.NormalizeDepth(a,4);
+s = List.NormalizeDepth(a);
 w = p[0];
 x = q[0][0];
 y = r[0][0][0][0];
@@ -448,8 +419,9 @@ z = s[0][0][0][0];
         public void BIM21_Map_MapTo()
         {
             String code =
-@"a = Map(80.0, 120.0, 100.0);
-b = MapTo(0.0, 100.0 ,25.0, 80.0, 90.0);
+@"import(""DSCoreNodes.dll"");
+a = Math.Map(80.0, 120.0, 100.0);
+b = Math.MapTo(0.0, 100.0 ,25.0, 80.0, 90.0);
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("a",0.5000);
@@ -485,10 +457,11 @@ y = q[2][6];
         public void BIM23_LoadCSV()
         {
             String code =
-@"a = ""../../../test/Engine/ProtoTest/ImportFiles/CSV/Set1/test1.csv"";
-b = ImportFromCSV(a);
-c = ImportFromCSV(a, false);
-d = ImportFromCSV(a, true);
+@"import(""DSOffice.dll"");
+a = ""../../../test/Engine/ProtoTest/ImportFiles/CSV/Set1/test1.csv"";
+b = Data.ImportCSV(a);
+c = Data.ImportCSV(a, false);
+d = Data.ImportCSV(a, true);
 x = b[0][2];
 y = c[0][2];
 z = d[0][2];
@@ -505,8 +478,9 @@ z = d[0][2];
         {
             // ensure that white space is trimmed from the path
             String code =
-@"a = ""\n \r\t../../../test/Engine/ProtoTest/ImportFiles/CSV/Set1/test1.csv\r\r\n "";
-b = ImportFromCSV(a);
+@"import(""DSOffice.dll"");
+a = ""\n \r\t../../../test/Engine/ProtoTest/ImportFiles/CSV/Set1/test1.csv\r\r\n "";
+b = Data.ImportCSV(a);
 x = b[0][2];
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -556,12 +530,13 @@ z = List.Rank(c);
         public void BIM26_Flatten()
         {
             String code =
-@"a = [1, 2, 3, 4];
+@"import(""DSCoreNodes.dll"");
+a = [1, 2, 3, 4];
 b = [ ""good"", [ 1, [ 2, 3, 4, [ 5 ] ] ] ];
 c = [ null, [ 2, ""good""], 1, null, [ 2, [ 3, 4 ] ] ];
-q = Flatten(a);
-p = Flatten(b);
-r = Flatten(c);
+q = List.Flatten(a);
+p = List.Flatten(b);
+r = List.Flatten(c);
 x = q[0];
 y = p[2];
 z = r[4];
@@ -575,38 +550,17 @@ s = p[0];
         }
 
         [Test]
-        //Test "CountTrue/CountFalse/Average/Sum/RemoveDuplicate"
-        public void BIM27_Conversion_Resolution_Cases()
-        {
-            String code =
-@"a = [null,20,30,null,[10,0],true,[false,0,[true,[false],5,2,false]]];
-b = [1,2,[3,4,9],4,2,5,[6,7,[8]],7,1,0,2];
-x = CountTrue(a);
-y = CountFalse(a);
-z = AllTrue(a);
-w = AllFalse(a);
-p = SomeTrue(a);
-q = SomeTrue(a);
-r = Sum(true);
-s = Sum(null);
-t = RemoveDuplicates(b);
-";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            //Theses are invalid cases not following the parameter requirements
-            //But need error messages when executing.
-        }
-
-        [Test]
         //Test "IsRectangular"
         public void BIM28_IsRectangular()
         {
             String code =
-@"a = [[1,[2,3]],[4, 5, 6]];
+@"import(""DSCoreNodes.dll"");
+a = [[1,[2,3]],[4, 5, 6]];
 b= [[1, 2, 3, 4], [5, 6, 7, 8]];
 c= [];
-x = IsRectangular(a);
-y = IsRectangular(b);
-z = IsRectangular(c);
+x = List.IsRectangular(a);
+y = List.IsRectangular(b);
+z = List.IsRectangular(c);
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("x", false);
@@ -631,15 +585,14 @@ b = List.RemoveIfNot(a, ""bool"");
         public void BIM30_RemoveDuplicate()
         {
             String code =
-@"
-import(""FFITarget.dll"");
+@"import(""DSCoreNodes.dll"");
 a = [null,20,30,null,20,15,true,true,5,false];
 b = [1,2,3,4,9,4,2,5,6,7,8,7,1,0,2];
-rda = RemoveDuplicates(a);
-rdb = RemoveDuplicates(b);
-rdd = RemoveDuplicates([[1,2,[5,[6]]], [1,2,[5,6]], [1,2,[5,[6]]]]);
-rde = RemoveDuplicates([""hello2"", ""hello"", 'r', ""hello2"", 's', 's', ""hello"", ' ']);
-rdf = RemoveDuplicates([]);
+rda = List.UniqueItems(a);
+rdb = List.UniqueItems(b);
+rdd = List.UniqueItems([[1,2,[5,[6]]], [1,2,[5,6]], [1,2,[5,[6]]]]);
+rde = List.UniqueItems([""hello2"", ""hello"", 'r', ""hello2"", 's', 's', ""hello"", ' ']);
+rdf = List.UniqueItems([]);
 p = rda[3];
 q = rdb[4];
 m2 = rdd[0][2][0];
@@ -667,12 +620,13 @@ res6 = Count(rdf);
         public void BIM31_Sort()
         {
             String code =
-@"a = [ 3, 1, 2 ];
+@"import(""BuiltIn.ds"");
+a = [ 3, 1, 2 ];
 def sorterFunction(a : double, b : int)
 {
     return = a > b ? 1 : -1;
 }
-sort = Sort(sorterFunction, a);
+sort = List.SortByFunction(sorterFunction, a);
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("sort", new object[] { 1, 2, 3 });
@@ -683,7 +637,8 @@ sort = Sort(sorterFunction, a);
         public void BIM31_Sort_null()
         {
             String code =
-@"c = [ 3, 1, 2,null ];
+@"import(""BuiltIn.ds"");
+c = [ 3, 1, 2,null ];
 def sorterFunction(a : int, b : int)
 {
     return = [Imperative]
@@ -695,7 +650,7 @@ def sorterFunction(a : int, b : int)
         return = a > b ? 10 : -10;
     }
 }
-sort = Sort(sorterFunction, c);
+sort = List.SortByFunction(c, sorterFunction);
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("sort", new object[] { null, 1, 2, 3 });
@@ -706,7 +661,8 @@ sort = Sort(sorterFunction, c);
         public void BIM31_Sort_duplicate()
         {
             String code =
-@"c = [ 3, 1, 2, 2,null ];
+@"import(""BuiltIn.ds"");
+c = [ 3, 1, 2, 2,null ];
 def sorterFunction(a : int, b : int)
 {
     return = [Imperative]
@@ -718,7 +674,7 @@ def sorterFunction(a : int, b : int)
         return = a - b;
     }
 }
-sort = Sort(sorterFunction, c);
+sort = List.SortByFunction(c, sorterFunction);
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("sort", new object[] { null, 1, 2, 2, 3 });

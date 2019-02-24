@@ -6,373 +6,32 @@ namespace ProtoTest.TD.MultiLangTests
 {
     class Builtin_Functions : ProtoTestBase
     {
-        [Test]
-        [Category("SmokeTest")]
-        public void T001_SomeNulls_IfElse_01()
-        {
-            string code = @"
-result =
-[Imperative]
-{
-	arr1 = [1,null];
-	arr2 = [1,2];
-	if(SomeNulls(arr1))
-	{
-		arr2 = arr1;
-	}
-	return = SomeNulls(arr2);
-}";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("result", true, 0);
-        }
-
+        
         [Test]
         public void test()
         {
-            string code = @"
+            string code = @"import(""DSCoreNodes.dll"");
 a = [];
-b = Average(a);";
+b = Math.Average(a);";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
         }
 
-        [Test]
-        [Category("SmokeTest")]
-        public void T001_SomeNulls_IfElse_02()
-        {
-            string code = @"
-result =
-[Imperative]
-{
-	arr1 = [];
-	arr2 = [1,2];
-	if(SomeNulls(arr1))
-	{
-		arr2 = arr1;
-	}
-	return = SomeNulls(arr2);
-}";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("result", false, 0);
-        }
-
-        [Test]
-        [Category("SmokeTest")]
-        public void T002_SomeNulls_ForLoop()
-        {
-            string code = @"
-result = 
-[Imperative]
-{
-	a = [1,3,5,7,[]];
-	b = [null,null,true];
-	c = [SomeNulls([1,null])];
-	d = [a,b,c];
-	j = 0;
-	e = [];
-	
-	for(i in d)
-	{
-		
-		e[j]= SomeNulls(i);
-		j = j+1;
-	}
-	return  = e;
-}";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Object[] v1 = new Object[] { false, true, false };
-            thisTest.Verify("result", v1, 0);
-        }
-
-        [Test]
-        [Category("SmokeTest")]
-        public void T003_SomeNulls_WhileLoop()
-        {
-            string code = @"
-result = 
-[Imperative]
-{
-	a = [1,3,5,7,[]];
-	b = [null,null,true];
-	c = [[]];
-	
-	d = [a,b,c];
-	
-	i = 0;
-	j = 0;
-	e = [];
-	
-	while(i<Count(d))
-	{
-	
-		e[j]= SomeNulls(d[i]);
-		i = i+1;
-		j = j+1;
-	}
-	return = e ;
-}";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Object[] v1 = new Object[] { false, true, false };
-            thisTest.Verify("result", v1, 0);
-        }
-
-        [Test]
-        [Category("SmokeTest")]
-        public void T004_SomeNulls_Function()
-        {
-            string code = @"
-def foo(x:var[]..[])
-{
-	a = [];
-	i = 0;
-	arr = [Imperative]
-	{
-		for(j in x)
-		{
-			if(SomeNulls(j))
-			{
-				a[i] = j;
-				i = i+1;
-			}
-		}
-		return a;
-	}
-	return Count(arr);
-}
-b = [
-[null],
-[1,2,3,[]],
-[0]
-];
-result = foo(b);
-";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("result", 1, 0);
-        }
-
-        [Test]
-        [Category("DSDefinedClass_Ported")]
-        [Category("SmokeTest")]
-        public void T005_SomeNulls_Function()
-        {
-            string code = @"
-def foo(y:var[]..[])
-{
-	return = SomeNulls(y);
-}
-l = [1, null, true,[]];
-n = foo(l);
-";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("n", true, 0);
-        }
-
-        [Test]
-        [Category("SmokeTest")]
-        public void T006_SomeNulls_Inline()
-        {
-            string code = @"
-result = [Imperative]
-{
-    a = [null,1];
-b = [];
-c = [1,2,3];
-    return SomeNulls(c)?SomeNulls(b):SomeNulls(a);
-}";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("result", true, 0);
-        }
-
-        [Test]
-        [Category("SmokeTest")]
-        public void T007_SomeNulls_RangeExpression()
-        {
-            string code = @"
-result =
-[Imperative]
-{
-i = 0;
-arr = [[1,1.2] , [null,0], [true, false] ];
-a1 = 0;
-a2 = 2;
-d = 1;
-a = a1..a2..d;
-for(i in a)
-{
-	if(SomeNulls(arr[i])) 
-	return = i;
-	
-}
-return = -1;
-}
-";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("result", 1, 0);
-        }
-
-        [Test]
-        [Category("Replication")]
-        public void T008_SomeNulls_Replication()
-        {
-            string code = @"
-a = [
-[[null, 1],1],
-[null],
-[1,2,false]
-];
-i = 0..2;
-j = 0;
-r = [Imperative]
-{
-	if(SomeNulls(a[i]))
-	{
-		j = j+1;
-	}
-	return j;
-} 
-";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("r", 1, 0);
-        }
-
-        [Test]
-        [Category("SmokeTest")]
-        public void T009_SomeNulls_DynamicArray()
-        {
-            string code = @"
-result = 
-[Imperative]
-{
-	a1 = [
-	[[null],[]],
-	[1,2,4],
-	[a,b,null],//{null,null,null}
-	[null]
-	];
-	a2 = [];
-	i = 0;
-	j = 0; 
-	while(i < Count(a1))
-	{
-		if(SomeNulls(a1[i]))
-		{
-			a2[j] = a1[i];
-			j = j+1;
-			
-		}
-		i = i+1;
-	}
-	return = Count(a2);
-} ";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("result", 3, 0);
-        }
-
-        [Test]
-        [Category("SmokeTest")]
-        public void T010_SomeNulls_AssociativeImperative_01()
-        {
-            string code = @"
-m;
-n;
-[Imperative]
-{
-	a = [1,2,null];
-	b = [null, null];
-	
-	[Associative]
-	{
-		a = [1];
-		b = a;
-		m = SomeNulls(b);
-		a = [1,null,[]];
-		n = m;
-	}
-}";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("m", true, 0);
-            thisTest.Verify("n", true, 0);
-        }
-
-        [Test]
-        [Category("SmokeTest")]
-        public void T010_SomeNulls_AssociativeImperative_02()
-        {
-            string code = @"
-
-i = [Imperative]
-{
-	a = [false];
-	if(!SomeNulls(a))
-	{
-	    x = [Associative]
-	    {
-
-		    b = a;
-		   a = [null];
-
-		    m = SomeNulls(b); //true,false;
-		    n = [Imperative]
-		    {
-			    c = a;
-			    a = [2];
-			    return SomeNulls(c); //true;
-
-		    }
-			return [m,n];
-	    }
-        return [x[0], x[1]];
-	}
-    else
-	{
-	    m = false;
-	    n = false;
-	    return [m, n];
-	}
-    
-};";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("i", new[] {true, true});
-        }
-
-        [Test]
-        [Category("SmokeTest")]
-        public void T010_SomeNulls_AssociativeImperative_03()
-        {
-            string code = @"
-	
-	a = [[]];
-	b = a;
-	
-	m = SomeNulls(b);//false
-	[Imperative]
-	{
-		c = a;
-		a = [null,[]];
-		m = SomeNulls(c);//false
-	}
-	a = [null];
-	n = SomeNulls(b);//true;
-";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("m", true, 0);
-            thisTest.Verify("n", true, 0);
-        }
-
+       
         [Test]
         [Category("SmokeTest")]
         public void T012_CountTrue_IfElse()
         {
-            string code = @"
+            string code = @"import(""DSCoreNodes.dll"");
 result =
 [Imperative]
 {
 	arr1 = [true,[[[[true]]]],null];
 	arr2 = [[true],[false],null];
-	if(CountTrue(arr1) > 1)
+	if(List.CountTrue(arr1) > 1)
 	{
 		arr2 = arr1;
 	}
-	return = CountTrue(arr2);
+	return = List.CountTrue(arr2);
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("result", 2, 0);
@@ -382,13 +41,13 @@ result =
         [Category("SmokeTest")]
         public void T013_CountTrue_ForLoop()
         {
-            string code = @"
+            string code = @"import(""DSCoreNodes.dll"");
 result = 
 [Imperative]
 {
 	a = [1,3,5,7,[]];
 	b = [null,null,[1,true]];
-	c = [CountTrue([1,null])];
+	c = [List.CountTrue([1,null])];
 	
 	d = [a,b,c];
 	j = 0;
@@ -396,7 +55,7 @@ result =
 	
 	for(i in d)
 	{
-		e[j]= CountTrue(i);
+		e[j]= List.CountTrue(i);
 		j = j+1;
 	}
 	return  = e;
@@ -410,7 +69,7 @@ result =
         [Category("SmokeTest")]
         public void T014_CountTrue_WhileLoop()
         {
-            string code = @"
+            string code = @"import(""DSCoreNodes.dll"");
 result = 
 [Imperative]
 {
@@ -426,7 +85,7 @@ result =
 	
 	while(i<Count(d))
 	{
-		e[j]= CountTrue(d[i]);
+		e[j]= List.CountTrue(d[i]);
 		i = i+1;
 		j = j+1;
 	}
@@ -441,7 +100,7 @@ result =
         [Category("SmokeTest")]
         public void T015_CountTrue_Function()
         {
-            string code = @"
+            string code = @"import(""DSCoreNodes.dll"");
 def foo(x:var[]..[])
 {
 	a = [];
@@ -450,7 +109,7 @@ def foo(x:var[]..[])
 	{
 		for(j in x)
 		{
-			a[i] = CountTrue(j);
+			a[i] = List.CountTrue(j);
 			i = i+1;
 		}
         return a;
@@ -475,15 +134,15 @@ result = foo(b);
         [Category("SmokeTest")]
         public void T016_CountTrue_Class()
         {
-            string code = @"
+            string code = @"import(""DSCoreNodes.dll"");
 def create (x:var[]..[])
 {
-	return = CountTrue(x);
+	return = List.CountTrue(x);
 }
 	
 def foo(y:var[]..[], a : int)
 {
-	return = CountTrue(y)+ a;
+	return = List.CountTrue(y)+ a;
 }
 b = [1, null, true,[[true],false]];
 m = create(b);
@@ -498,13 +157,13 @@ n = foo(b, m);
         [Category("SmokeTest")]
         public void T017_CountTrue_Inline()
         {
-            string code = @"
+            string code = @"import(""DSCoreNodes.dll"");
 
 def foo(x:var[]..[])
 {
     return [Imperative]
     {
-	    if(CountTrue(x) > 0)
+	    if(List.CountTrue(x) > 0)
 		    return = true;
 	    return = false;
     }
@@ -514,7 +173,7 @@ result = [Imperative]
     a = [null,1];//0
 b = [null,20,30,null,[10,0],true,[false,0,[true,[false],5,2,false]]];//2
 c = [1,2,foo(b)];
-    return CountTrue(c) > 0 ? CountTrue(a):CountTrue(b);
+    return List.CountTrue(c) > 0 ? List.CountTrue(a):List.CountTrue(b);
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("result", 0, 0);
@@ -524,16 +183,16 @@ c = [1,2,foo(b)];
         [Category("SmokeTest")]
         public void T018_CountTrue_RangeExpression_01()
         {
-            string code = @"
+            string code = @"import(""DSCoreNodes.dll"");
 
 i = [Imperative]
 {
 	a1 = [1,true, null];//1
 	a2 = 8;
 	a3 = [2,[true,[true,1]],[false,x, true]];//3
-	a = CountTrue(a1)..a2..CountTrue(a3);//{1,4,7}
+	a = List.CountTrue(a1)..a2..List.CountTrue(a3);//{1,4,7}
 	
-	result = CountTrue(a);
+	result = List.CountTrue(a);
     return [result, a];
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -557,7 +216,7 @@ i = [Imperative]
         public void T018_CountTrue_RangeExpression_03()
         {
             //Assert.Fail("");
-            string code = @"
+            string code = @"import(""DSCoreNodes.dll"");
 a = [Imperative]
 {
 	a1 = [1,true, null];//1
@@ -566,7 +225,7 @@ a = [Imperative]
 	a3 = [2,[true,[true,1]],[false,x, true]];//3
 //3;
 
-	return CountTrue(a1)..a2..#CountTrue(a3);
+	return List.CountTrue(a1)..a2..#List.CountTrue(a3);
 
 };";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -578,7 +237,7 @@ a = [Imperative]
         [Category("SmokeTest")]
         public void T019_CountTrue_Replication()
         {
-            string code = @"
+            string code = @"import(""DSCoreNodes.dll"");
 def foo(x:int)
 {
 	return = x +1;
@@ -587,7 +246,7 @@ a = [true,[true],1];//2
 b = [null];
 c = [[[true]]];//1
 d = [[true],[false,[true,true]]];//3
-arr = [CountTrue(a),CountTrue(b),CountTrue(c),CountTrue(d)];
+arr = [List.CountTrue(a),List.CountTrue(b),List.CountTrue(c),List.CountTrue(d)];
 result = foo(arr);";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             Object[] v1 = new Object[] { 3, 1, 2, 4 };
@@ -598,7 +257,7 @@ result = foo(arr);";
         [Category("SmokeTest")]
         public void T020_CountTrue_DynamicArray()
         {
-            string code = @"
+            string code = @"import(""DSCoreNodes.dll"");
 
 i = [Imperative]
 {
@@ -611,9 +270,9 @@ i = [Imperative]
 	a2 = [];
 	i = 0;
 	j = 0; 
-	while(i < CountTrue(a1))
+	while(i < List.CountTrue(a1))
 	{
-		if(CountTrue(a1[i])>0)
+		if(List.CountTrue(a1[i])>0)
 		{
 			a2[j] = a1[i];
 			j = j+1;
@@ -621,7 +280,7 @@ i = [Imperative]
 		}
 		i = i+1;
 	}
-	return [a2, CountTrue(a2)];
+	return [a2, List.CountTrue(a2)];
 } ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             Object[] v1 = new Object[] { true };
@@ -634,22 +293,22 @@ i = [Imperative]
         [Category("SmokeTest")]
         public void T022_CountTrue_ImperativeAssociative()
         {
-            string code = @"
+            string code = @"import(""DSCoreNodes.dll"");
 
 i = [Imperative]
 {
 	a1 = [true,0,1,1.0,null];           // {true, 0, 1, 1, null}
-	a2 = [false, CountTrue(a1),0.0];    // {false, 1, 0}
+	a2 = [false, List.CountTrue(a1),0.0];    // {false, 1, 0}
 	a3 = a1;                            // {true, 0, 1, 1, null}
 	b = [Associative]
 	{
 		a1 = [true,[true]];             // {true,{true}}
 		a4 = a2;                        // {true}
 		a2 = [true];                    // {true}
-		return CountTrue(a4);              // 1
+		return List.CountTrue(a4);              // 1
 	}
 	
-	c = CountTrue(a3);                  //1
+	c = List.CountTrue(a3);                  //1
 	return [b, c];
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -660,17 +319,17 @@ i = [Imperative]
         [Category("SmokeTest")]
         public void T023_CountFalse_IfElse()
         {
-            string code = @"
+            string code = @"import(""DSCoreNodes.dll"");
 result =
 [Imperative]
 {
 	arr1 = [false,[[[[false]]]],null,0];
 	arr2 = [[true],[false],null,null];
-	if(CountFalse(arr1) > 1)
+	if(List.CountFalse(arr1) > 1)
 	{
 		arr2 = arr1;
 	}
-	return = CountFalse(arr2);//2
+	return = List.CountFalse(arr2);//2
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("result", 2, 0);
@@ -680,13 +339,13 @@ result =
         [Category("SmokeTest")]
         public void T024_CountFalse_ForLoop()
         {
-            string code = @"
+            string code = @"import(""DSCoreNodes.dll"");
 result = 
 [Imperative]
 {
 	a = [1,3,5,7,[]];
 	b = [null,null,[0,false]];
-	c = [CountFalse([[false],null])];
+	c = [List.CountFalse([[false],null])];
 	
 	d = [a,b,c];
 	j = 0;
@@ -694,7 +353,7 @@ result =
 	
 	for(i in d)
 	{
-		e[j]= CountFalse(i);
+		e[j]= List.CountFalse(i);
 		j = j+1;
 	}
 	return  = e;
@@ -708,7 +367,7 @@ result =
         [Category("SmokeTest")]
         public void T025_CountFalse_WhileLoop()
         {
-            string code = @"
+            string code = @"import(""DSCoreNodes.dll"");
 result = 
 [Imperative]
 {
@@ -724,7 +383,7 @@ result =
 	
 	while(i<Count(d))
 	{
-		e[j]= CountFalse(d[i]);
+		e[j]= List.CountFalse(d[i]);
 		i = i+1;
 		j = j+1;
 	}
@@ -739,7 +398,7 @@ result =
         [Category("SmokeTest")]
         public void T026_CountFalse_Function()
         {
-            string code = @"
+            string code = @"import(""DSCoreNodes.dll"");
 def foo(x:var[]..[])
 {
 	a = [];
@@ -748,7 +407,7 @@ def foo(x:var[]..[])
 	{
 		for(j in x)
 		{
-			a[i] = CountFalse(j);
+			a[i] = List.CountFalse(j);
 			i = i+1;
 		}
         return a;
@@ -772,12 +431,12 @@ result = foo(b);
         [Category("SmokeTest")]
         public void T028_CountFalse_Inline()
         {
-            string code = @"
+            string code = @"import(""DSCoreNodes.dll"");
 def foo(x:var[]..[])
 {
     return = [Imperative]
     {
-	    if(CountFalse(x) > 0)
+	    if(List.CountFalse(x) > 0)
 		    return true;
 	    return false;
     }
@@ -787,7 +446,7 @@ result = [Imperative]
     a = [null,0];//0
 b = [null,20,30,null,[10,0],false,[true,0,[true,[false],5,2,true]]];//2
 c = [1,2,foo(b)];
-    return CountFalse(c) > 0 ? CountFalse(a):CountFalse(b);
+    return List.CountFalse(c) > 0 ? List.CountFalse(a):List.CountFalse(b);
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("result", 2, 0);
@@ -797,15 +456,15 @@ c = [1,2,foo(b)];
         [Category("SmokeTest")]
         public void T029_CountFalse_RangeExpression_01()
         {
-            string code = @"
+            string code = @"import(""DSCoreNodes.dll"");
 result = [Imperative]
 {
 	a1 = [0,false, null];//1
 	a2 = 8;
 	a3 = [2,[false,[false,1]],[false,x, true]];//3
-	a = CountFalse(a1)..a2..CountFalse(a3);//{1,4,7}
+	a = List.CountFalse(a1)..a2..List.CountFalse(a3);//{1,4,7}
 	
-	return [CountFalse(a), a];
+	return [List.CountFalse(a), a];
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             Object[] v1 = new Object[] { 1, 4, 7 };
@@ -818,13 +477,13 @@ result = [Imperative]
         public void T029_CountFalse_RangeExpression_02()
         {
             //Assert.Fail("");
-            string code = @"
+            string code = @"import(""DSCoreNodes.dll"");
 a = [Imperative]
 {
 	a1 = [1,false, null];//1
 	a2 = 8;
 	a3 = [2,[false,[false,1]],[false,x, true]];//3
-	return CountFalse(a1)..a2..#CountFalse(a3);//{}
+	return List.CountFalse(a1)..a2..#List.CountFalse(a3);//{}
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             Object[] v1 = new Object[] { 1, 4.5, 8 };
@@ -835,16 +494,16 @@ a = [Imperative]
         [Category("SmokeTest")]
         public void T030_CountFalse_Replication()
         {
-            string code = @"
+            string code = @"import(""DSCoreNodes.dll"");
 def foo(x:int)
 {
 	return = x +1;
 }
 a = [false,[false],0];//2
-b = [CountFalse([a[2]])];
+b = [List.CountFalse([a[2]])];
 c = [[[false]]];//1
 d = [[false],[false,[true,false,0]]];//3
-arr = [CountFalse(a),CountFalse(b),CountFalse(c),CountFalse(d)];
+arr = [List.CountFalse(a),List.CountFalse(b),List.CountFalse(c),List.CountFalse(d)];
 result = foo(arr);";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             Object[] v1 = new Object[] { 3, 1, 2, 4 };
@@ -855,7 +514,7 @@ result = foo(arr);";
         [Category("SmokeTest")]
         public void T031_CountFalse_DynamicArray()
         {
-            string code = @"
+            string code = @"import(""DSCoreNodes.dll"");
 result = 
 [Imperative]
 {
@@ -868,9 +527,9 @@ result =
 	a2 = [];
 	i = 0;
 	j = 0; 
-	while(i < CountFalse(a1))
+	while(i < List.CountFalse(a1))
 	{
-		if(CountFalse(a1[i])>0)
+		if(List.CountFalse(a1[i])>0)
 		{
 			a2[j] = a1[i];
 			j = j+1;
@@ -878,7 +537,7 @@ result =
 		}
 		i = i+1;
 	}
-	return = [a2, CountFalse(a2)];
+	return = [a2, List.CountFalse(a2)];
 } ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             Object[] v1 = new Object[] { false };
@@ -892,22 +551,22 @@ result =
         [Category("SmokeTest")]
         public void T033_CountFalse_ImperativeAssociative()
         {
-            string code = @"
+            string code = @"import(""DSCoreNodes.dll"");
 i = 
 [Imperative]
 {
 	a1 = [false,0,1,1.0,null];
-	a2 = [true, CountFalse(a1),0.0];
+	a2 = [true, List.CountFalse(a1),0.0];
 	a3 = a1;
 	b = [Associative]
 	{
 		a1 = [false,[false]];
 		a4 = a2;
 		a2 = [false];
-		return CountFalse(a4);//1
+		return List.CountFalse(a4);//1
 	}
 	
-	c = CountFalse(a3);//1
+	c = List.CountFalse(a3);//1
 	return [b, c];
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -918,24 +577,24 @@ i =
         [Category("SmokeTest")]
         public void T034_AllFalse_IfElse()
         {
-            string code = @"
+            string code = @"import(""DSCoreNodes.dll"");
 a = [false, false];//true
 b = [[false]];//true
 c = [false, 0];//false
 result = [Imperative]
 {
     result = {};
-	if(AllFalse(a)){
+	if(List.AllFalse(a)){
 		a[2] = 0;
-		result[0] = AllFalse(a);//false
+		result[0] = List.AllFalse(a);//false
 	} 
-	if(!AllFalse(b)){
+	if(!List.AllFalse(b)){
 		
-		result[1] = AllFalse(b);//false
+		result[1] = List.AllFalse(b);//false
 	}else
 	{result[1]= null;}
-	if(!AllFalse(c)){
-		result[2] = AllFalse(c);
+	if(!List.AllFalse(c)){
+		result[2] = List.AllFalse(c);
 	}
     return result;
 }";
@@ -948,7 +607,7 @@ result = [Imperative]
         [Category("SmokeTest")]
         public void T035_AllFalse_ForLoop()
         {
-            string code = @"
+            string code = @"import(""DSCoreNodes.dll"");
 result = 
 [Imperative]
 {
@@ -966,8 +625,8 @@ result =
 	j = 0;
 	for(i in e)
 	{	
-		if(AllFalse(i)!=true){
-			f[j] = AllFalse(i);
+		if(List.AllFalse(i)!=true){
+			f[j] = List.AllFalse(i);
 			j = j+1;
 		}
 		
@@ -977,14 +636,14 @@ return = f;
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             Object[] v1 = new Object[] { false, false, false };
             thisTest.Verify("result", v1, 0);
-            //Assert.Fail("1467074 - Sprint23 : rev :2650 : Built-in function AllFalse() doesn't behave as expected ");
+            //Assert.Fail("1467074 - Sprint23 : rev :2650 : Built-in function List.AllFalse() doesn't behave as expected ");
         }
 
         [Test]
         [Category("SmokeTest")]
         public void T036_AllFalse_WhileLoop()
         {
-            string code = @"
+            string code = @"import(""DSCoreNodes.dll"");
 result = 
 [Imperative]
 {
@@ -996,10 +655,10 @@ result =
 	i = 0;
 	f = [];
 	j = 0;
-	while(!AllFalse(e[i])&& i < Count(e))
+	while(!List.AllFalse(e[i])&& i < Count(e))
 	{	
-		if(AllFalse(e[i])!=true){
-			f[j] = AllFalse(e[i]);
+		if(List.AllFalse(e[i])!=true){
+			f[j] = List.AllFalse(e[i]);
 			j = j+1;
 		}
 		i = i+1;
@@ -1010,7 +669,7 @@ return = f;
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             Object[] v1 = new Object[] { false, false};
             thisTest.Verify("result", v1, 0);
-            //Assert.Fail("1467071 - Sprint23 : rev 2635 : Build-in function AllFalse issue : When the array is empty,it returns true");
+            //Assert.Fail("1467071 - Sprint23 : rev 2635 : Build-in function List.AllFalse issue : When the array is empty,it returns true");
         }
 
         [Test]
@@ -1029,7 +688,7 @@ result = null;";
         [Category("SmokeTest")]
         public void T037_AllFalse_Function()
         {
-            string code = @"
+            string code = @"import(""DSCoreNodes.dll"");
 def foo( x : bool)
 {	
 	return = !x;
@@ -1038,7 +697,7 @@ a1 = [0];
 a2 = [null];
 a3 = [!true];
 b = [a1,a2,a3];
-result = [foo(AllFalse(a1)),foo(AllFalse(a2)),foo(AllFalse(a3))];//true,true,false
+result = [foo(List.AllFalse(a1)),foo(List.AllFalse(a2)),foo(List.AllFalse(a3))];//true,true,false
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             Object[] v1 = new Object[] { true, true, false };
@@ -1049,12 +708,12 @@ result = [foo(AllFalse(a1)),foo(AllFalse(a2)),foo(AllFalse(a3))];//true,true,fal
         [Category("SmokeTest")]
         public void T039_AllFalse_Inline()
         {
-            string code = @"
+            string code = @"import(""DSCoreNodes.dll"");
 a1 = [false,[false]];
-a = AllFalse(a1);//true
+a = List.AllFalse(a1);//true
 b1 = [null,null];
-b = AllFalse(b1);//false
-c = AllFalse([b]);//t
+b = List.AllFalse(b1);//false
+c = List.AllFalse([b]);//t
 result = a? c:b;//t";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("a", true, 0);
@@ -1075,7 +734,7 @@ result = a? c:b;//t";
         [Category("SmokeTest")]
         public void T042_AllFalse_DynamicArray()
         {
-            string code = @"
+            string code = @"import(""DSCoreNodes.dll"");
 b = [];
 a = [[true],[false],[false],
 	[false,[true,false]]];
@@ -1086,12 +745,12 @@ a = [[true],[false],[false],
 	{
 		while(i<Count(a))
 		{
-			b[i] = AllFalse(a[i]);
+			b[i] = List.AllFalse(a[i]);
 			i = i+1;
 		}
 		return = b;
 	}
-	result = AllFalse(a);
+	result = List.AllFalse(a);
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             Object[] v1 = new Object[] { false, true, true, false };
@@ -1103,7 +762,7 @@ a = [[true],[false],[false],
         [Category("SmokeTest")]
         public void T044_AllFalse_ImperativeAssociative()
         {
-            string code = @"
+            string code = @"import(""DSCoreNodes.dll"");
 m;
 n;
 [Imperative]
@@ -1119,8 +778,8 @@ n;
 		
 		b = [false];
 		
-		m = AllFalse(c);//f
-		n = AllFalse(d);//t
+		m = List.AllFalse(c);//f
+		n = List.AllFalse(d);//t
 	}
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -1190,7 +849,7 @@ result = Count(a);";
         public void T046_Sum_IfElse()
         {
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4103
-            string code = @"
+            string code = @"import(""DSCoreNodes.dll"");
 result = 
 [Imperative]
 {
@@ -1204,13 +863,13 @@ result =
 	
 	m= [-1,-1,-1,-1,-1,-1,-1];
 	
-	if(Sum(a)>=0) m[0] = Sum(a);	
-	if(Sum(b)>=0) m[1] = Sum(b);
-	if(Sum(c)>=0) m[2] = Sum(c);
-	if(Sum(d)>=0) m[3] = Sum(d); 
-	if(Sum(e)>=0) m[4] = Sum(e);
-	if(Sum(f)>=0) m[5] = Sum(f);
-	if(Sum(g)>=0) m[6] = Sum(g);
+	if(Math.Sum(a)>=0) m[0] = Math.Sum(a);	
+	if(Math.Sum(b)>=0) m[1] = Math.Sum(b);
+	if(Math.Sum(c)>=0) m[2] = Math.Sum(c);
+	if(Math.Sum(d)>=0) m[3] = Math.Sum(d); 
+	if(Math.Sum(e)>=0) m[4] = Math.Sum(e);
+	if(Math.Sum(f)>=0) m[5] = Math.Sum(f);
+	if(Math.Sum(g)>=0) m[6] = Math.Sum(g);
 	
 	return = m;
 }
@@ -1226,20 +885,20 @@ result =
         public void T047_Sum_ForLoop()
         {
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4103
-            string code = @"
+            string code = @"import(""DSCoreNodes.dll"");
 result = 
 [Imperative]
 {
 	a = [0,0.0];
 	b = [[]];
-	c = [m,Sum(a),b,10.0];
+	c = [m,Math.Sum(a),b,10.0];
 	
 	d = [a,b,c];
 	j = 0;
 	
 	for(i in d)
 	{
-		d[j] = Sum(i);
+		d[j] = Math.Sum(i);
 		j = j+1;
 	}
 	
@@ -1255,13 +914,13 @@ result =
         [Category("SmokeTest"), Category("Failure")]
         public void T048_Sum_WhileLoop()
         {
-            string code = @"
+            string code = @"import(""DSCoreNodes.dll"");
 result = 
 [Imperative]
 {
 	a = [-2,0.0];
 	b = [[]];
-	c = [m,Sum(a),b,10.0];
+	c = [m,Math.Sum(a),b,10.0];
 	
 	d = [a,b,c];
 	j = 0;
@@ -1270,9 +929,9 @@ result =
 	
 	while(j<Count(d))
 	{
-		if(Sum(d[j])!=0)
+		if(Math.Sum(d[j])!=0)
 		{
-			e[k] = Sum(d[j]);
+			e[k] = Math.Sum(d[j]);
 			k = k+1;
 		}
 		j = j+1;
@@ -1291,18 +950,18 @@ result =
         [Category("SmokeTest")]
         public void T049_Sum_Function()
         {
-            string code = @"
+            string code = @"import(""DSCoreNodes.dll"");
 def foo(x:var[])
 {
 	return =
 	[Imperative]
 	{
-		return = Sum(x);
+		return = Math.Sum(x);
 	}
 }
 a = [-0.1,true,[],null,1];
 b = [m+n,[[[1]]]];
-c = [Sum(a),Sum(b)];
+c = [Math.Sum(a),Math.Sum(b)];
 result = foo(c);
 ";
             // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4171
@@ -1315,12 +974,12 @@ result = foo(c);
         [Category("SmokeTest")]
         public void T051_Sum_Inline()
         {
-            string code = @"
+            string code = @"import(""DSCoreNodes.dll"");
 a = [1,[2,-3.00]];//0.0
-sum = Sum(a);
-b = Sum(a) -1;//-1.0
-c = Sum([a,b,-1]);//-2.0;
-result = Sum(a)==0&& b==-1.00? b :c;
+sum = Math.Sum(a);
+b = Math.Sum(a) -1;//-1.0
+c = Math.Sum([a,b,-1]);//-2.0;
+result = Math.Sum(a)==0&& b==-1.00? b :c;
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("result", -1, 0);
@@ -1330,16 +989,16 @@ result = Sum(a)==0&& b==-1.00? b :c;
         [Category("SmokeTest"), Category("Failure")]
         public void T052_Sum_RangeExpression()
         {
-            string code = @"
+            string code = @"import(""DSCoreNodes.dll"");
 result = 
 [Imperative]
 {
 	a1 = [1,true, null];//1
 	a2 = 8;
 	a3 = [2,[true,[true,1.0]],[false,x, true]];//3.0
-	a = Sum(a1)..a2..Sum(a3);//{1,4,7}
+	a = Math.Sum(a1)..a2..Math.Sum(a3);//{1,4,7}
 	
-	return = Sum(a);//12.0
+	return = Math.Sum(a);//12.0
 }";
             string err = "MAGN-4103 Type coercion issue from conversion of bool, null, empty arrays to numbers";
             ExecutionMirror mirror = thisTest.RunScriptSource(code, err);
@@ -1358,14 +1017,14 @@ result =
         [Category("SmokeTest")]
         public void T054_Sum_DynamicArr()
         {
-            string code = @"
+            string code = @"import(""DSCoreNodes.dll"");
 a = [];
 b = [1.0,2,3.0];
 c = [null,m,""1""];
-a[0]=Sum(b);//6.0
-a[1] = Sum(c);//0
-a[2] = Sum([a[0],a[1]]);//6.0
-result = Sum(a);//12.0";
+a[0]=Math.Sum(b);//6.0
+a[1] = Math.Sum(c);//0
+a[2] = Math.Sum([a[0],a[1]]);//6.0
+result = Math.Sum(a);//12.0";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("result", 12.0, 0);
         }
@@ -1374,7 +1033,7 @@ result = Sum(a);//12.0";
         [Category("SmokeTest"), Category("Failure")]
         public void T056_Sum_AssociativeImperative()
         {
-            string code = @"
+            string code = @"import(""DSCoreNodes.dll"");
 a = [1,0,0.0];
 b = [2.0,0,true];
 b1 = [b,1];
@@ -1383,11 +1042,11 @@ b1 = [b,1];
 	c = a[2];
 	a[1] = 1;
 	m = a;
-	sum1 = Sum([c]);//0.0
+	sum1 = Math.Sum([c]);//0.0
 	[Associative]
 	{
 		 b[1] = 1;
-		 sum2 = Sum( b1);////4.0
+		 sum2 = Math.Sum( b1);////4.0
 	}
 	
 	a[2]  =1;
@@ -1405,15 +1064,15 @@ b1 = [b,1];
         [Category("Design Issue"), Category("Failure")]
         public void T057_Average_DataType_01()
         {
-            string code = @"
+            string code = @"import(""DSCoreNodes.dll"");
 a = [];
 b = [1,2,3];
 c = [0.1,0.2,0.3,1];
 d = [true, false, 1];
-a1 = Average(a);
-b1 = Average(b);
-c1 = Average(c);
-d1 = Average(d);";
+a1 = Math.Average(a);
+b1 = Math.Average(b);
+c1 = Math.Average(c);
+d1 = Math.Average(d);";
 
             string err = "MAGN-4103 Type coercion issue from conversion of bool, null, empty arrays to numbers";
             ExecutionMirror mirror = thisTest.RunScriptSource(code, err);
@@ -1433,7 +1092,7 @@ d1 = Average(d);";
 a = 0..10..5;
 b = 20..30..2;
 c = [a, b];
-d = Flatten([a,b]);
+d = List.Flatten([a,b]);
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             Object[] v1 = new Object[] { 0, 5, 10, 20, 22, 24, 26, 28, 30 };
@@ -1448,7 +1107,7 @@ d = Flatten([a,b]);
 a = [[null]];
 b = [1,2,[3]];
 c = [a,b];
-d = Flatten(c);";
+d = List.Flatten(c);";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             Object[] v1 = new Object[] { null, 1, 2, 3 };
             thisTest.Verify("d", v1, 0);
@@ -1458,7 +1117,7 @@ d = Flatten(c);";
         [Category("Design Issue"), Category("Failure")]
         public void T060_Average_ForLoop()
         {
-            string code = @"
+            string code = @"import(""DSCoreNodes.dll"");
 result = 
 [Imperative]
 {
@@ -1472,7 +1131,7 @@ result =
 	
 	for(i in d)
 	{
-		e[j] = Average(i);
+		e[j] = Math.Average(i);
 		 j = j+1;
 		
 	}
@@ -1489,15 +1148,15 @@ result =
         [Category("SmokeTest")]
         public void T061_Average_Function()
         {
-            string code = @"
+            string code = @"import(""DSCoreNodes.dll"");
 def foo : double (x :var[]..[])
 {
 	
-	return = Average(x);
+	return = Math.Average(x);
 }
 a = [1,2,2,1];
 b = [1,[]];
-c = Average(a);
+c = Math.Average(a);
 result = [foo(a),foo(b)];";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             Object[] v1 = new Object[] { 1.5, 1.0 };
@@ -1509,15 +1168,15 @@ result = [foo(a),foo(b)];";
         [Category("SmokeTest")]
         public void T062_Average_Function()
         {
-            string code = @"
+            string code = @"import(""DSCoreNodes.dll"");
 def foo(m:var[]..[], n:var[]..[])
 {
-	return = Average([m,n]);
+	return = Math.Average([m,n]);
 }
 a = [1,[2],[[[3]]]];
 b = [0.1,2,0];
-x = Average(a);
-y = Average(b);
+x = Math.Average(a);
+y = Math.Average(b);
 n = foo(x,y);
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -1530,10 +1189,10 @@ n = foo(x,y);
         [Category("SmokeTest")]
         public void T063_Average_Inline()
         {
-            string code = @"
+            string code = @"import(""DSCoreNodes.dll"");
 a = [1.0,2];
 b = [[0],1.0,[2]];
-result = Average(a)>Average(b)?true:false;";
+result = Math.Average(a)>Math.Average(b)?true:false;";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("result", true, 0);
         }
@@ -1542,57 +1201,31 @@ result = Average(a)>Average(b)?true:false;";
         [Category("SmokeTest")]
         public void T064_Average_RangeExpression()
         {
-            string code = @"
+            string code = @"import(""DSCoreNodes.dll"");
 a = 0..6..3;//0,3,6
 b = 0..10..~3;//0,3.3,6.6,10
-m = Average(a);//3
-n = Average(b);//5.0
-c = Average([m])..Average([n]);//3.0,4.0,5.0";
+m = Math.Average(a);//3
+n = Math.Average(b);//5.0
+c = Math.Average([m])..Math.Average([n]);//3.0,4.0,5.0";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             Object[] v1 = new Object[] { 3.0, 4.0, 5.0 };
             thisTest.Verify("m", 3.0, 0);
             thisTest.Verify("n", 5.0, 0);
             thisTest.Verify("c", v1, 0);
         }
-
-        [Test]
-        [Category("Built in Functions")]
-        public void T066_Print_String()
-        {
-            string code = @"
-r1 = Print(""Hello World"");
-str = ""Hello World!!"";
-r2 = Print(str);
-str = ""Hello + World"";";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            //I believe the result for this case is correct (LC, 2012-08-20)
-            //Assert.Fail("1467193 - Sprint25 : rev 3205 : built-in function:Print() function doesn't print out correct result");
-        }
-
-        [Test]
-        [Category("Built in Functions")]
-        public void T067_Print_Arr()
-        {
-            string code = @"
-arr = [ 0, 1 ,2];
-r1 = Print(arr);
-arr2 = [0,[1],[[]]];
-r2 = Print(arr2);";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-        }
-
+        
         [Test]
         [Category("Built in Functions")]
         public void T068_Average_Negative_Cases()
         {
             String code =
  @"
-//x1 = Average(a) ;// returns null, also throws runtime error ? 
-x2 = Average(a) ;// returns -1
-//x3 = Average(()); // returns null, also throws runtime error ?
-x4 = Average(null) ;// returns -1
-x5 = Average([]) ;// returns 0.0
-x6 = Average([null]) ;// returns 0.0
+//x1 = Math.Average(a) ;// returns null, also throws runtime error ? 
+x2 = Math.Average(a) ;// returns -1
+//x3 = Math.Average(()); // returns null, also throws runtime error ?
+x4 = Math.Average(null) ;// returns -1
+x5 = Math.Average([]) ;// returns 0.0
+x6 = Math.Average([null]) ;// returns 0.0
 ";
             Object n1 = null;
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
@@ -1698,17 +1331,17 @@ h = null; //null
 i = [ [ ] ]; //0
 j = [ null ]; //0
 k = ""string"";//0
-ra = CountTrue(a);
-rb = CountTrue(b);
-rc = CountTrue(c);
-rd = CountTrue(d);
-re = CountTrue(e);
-rf = CountTrue(f);
-rg = CountTrue(g);
-rh = CountTrue(h);
-ri = CountTrue(i);
-rj = CountTrue(j);
-rk = CountTrue(k);
+ra = List.CountTrue(a);
+rb = List.CountTrue(b);
+rc = List.CountTrue(c);
+rd = List.CountTrue(d);
+re = List.CountTrue(e);
+rf = List.CountTrue(f);
+rg = List.CountTrue(g);
+rh = List.CountTrue(h);
+ri = List.CountTrue(i);
+rj = List.CountTrue(j);
+rk = List.CountTrue(k);
                ";
             thisTest.RunScriptSource(code);
             thisTest.Verify("ra", 1);
@@ -1741,7 +1374,7 @@ i = [ [ ] ]; //0
 j = [ null ]; //0
 k = ""string"";//0
 arr = [a,b,c,d,e,f,g,h,i,j,k];
-r = CountTrue(arr);
+r = List.CountTrue(arr);
                ";
             thisTest.RunScriptSource(code);
             thisTest.Verify("r", 4);
@@ -1784,16 +1417,16 @@ g = [[null]];
 h = [null,[1]];
 i = [""1234"", true];
 j = [true,[],null];
-fa = Flatten(a);
-fb = Flatten(b);
-fc = Flatten(c);
-fd = Flatten(d);
-fe = Flatten(e);
-ff = Flatten(f);
-fg = Flatten(g);
-fh = Flatten(h);
-fi = Flatten(i);
-fj = Flatten(j);
+fa = List.Flatten(a);
+fb = List.Flatten(b);
+fc = List.Flatten(c);
+fd = List.Flatten(d);
+fe = List.Flatten(e);
+ff = List.Flatten(f);
+fg = List.Flatten(g);
+fh = List.Flatten(h);
+fi = List.Flatten(i);
+fj = List.Flatten(j);
 ";
             thisTest.RunScriptSource(code);
             thisTest.SetErrorMessage("MAGN-1684 REV:4495 When passing in a single value in a built-in function which takes in an array, the single value should be upgraded to one dimension array");
@@ -1900,9 +1533,9 @@ y[0] = 100;";
         public void T074_CountTrue()
         {
             string code = @"
-C1 = CountTrue(1);
+C1 = List.CountTrue(1);
 // expect C = 0, get C = null
-C2 = CountTrue(true);
+C2 = List.CountTrue(true);
 // expect C = 1, get C = null";
             string error = "";
             thisTest.VerifyRunScriptSource(code, error);
@@ -1915,9 +1548,9 @@ C2 = CountTrue(true);
         public void T075_CountFalse()
         {
             string code = @"
-C1 = CountFalse(1);
+C1 = List.CountFalse(1);
 // expect C = 0, get C = null
-C2 = CountFalse(false);
+C2 = List.CountFalse(false);
 // expect C = 1, get C = null";
             string error = "";
             thisTest.VerifyRunScriptSource(code, error);
@@ -2284,7 +1917,7 @@ sort = [Imperative]
                 [Associative]
                 {
                 a1 = [ 3, 1, 2 ];
-                // c = Flatten(a1);
+                // c = List.Flatten(a1);
                
                 sort = Sort(sorterFunction, a1);
                 }
@@ -2304,7 +1937,7 @@ sort = [Imperative]
                 sort;
                 a1;
                 a1 = [ [ 4, 2, 3 ], [ 2, 5, 1 ], [ 8, 4, 6 ] ];
-                // c = Flatten(a1);
+                // c = List.Flatten(a1);
                 def sorterFunction(a : int, b : int)
                 {
                     return = a > b ? 1 : -1;
@@ -2522,7 +2155,7 @@ i = [Imperative]
         {
             String code =
 @"a = ""../../../test/Engine/ProtoTest/ImportFiles/CSV/Set2/test.csv"";
-b = ImportFromCSV(a);
+b = Data.ImportCSV(a);
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("b", new object[] { new object[] { 1.0, 2.0, 3.0, 4.0, 5.0 }, new object[] { 2.0, 3.0, 4.0, 5.0, 6.0 }, new object[] { 3.0, 4.0, 5.0, 6.0, 7.0 } }
@@ -2535,7 +2168,7 @@ b = ImportFromCSV(a);
         {
             String code =
 @"a = ""../../../test/Engine/ProtoTest/ImportFiles/CSV/Set2/test.csv"";
-b = ImportFromCSV(a);
+b = Data.ImportCSV(a);
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("b", new object[] { new object[] { 1.0, 2.0, 3.0, 4.0, 5.0 }, new object[] { 2.0, 3.0, 4.0, 5.0, 6.0 }, new object[] { 3.0, 4.0, 5.0, 6.0, 7.0 } }
@@ -2550,7 +2183,7 @@ b = ImportFromCSV(a);
 @"a = ""../../../test/Engine/ProtoTest/ImportFiles/CSV/Set2/test.csv"";
 b = ""../../../test/Engine/ProtoTest/ImportFiles/CSV/Set2/test2.csv"";
 c = [ a, b ];
-d = ImportFromCSV(c);
+d = Data.ImportCSV(c);
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("d", new object[] { new object[] { new object[] { 1.0, 2.0, 3.0, 4.0, 5.0 }, new object[] { 2.0, 3.0, 4.0, 5.0, 6.0 }, new object[] { 3.0, 4.0, 5.0, 6.0, 7.0 } }, new object[] { new object[] { 11.0, 12.0, 13.0, 14.0, 15.0 }, new object[] { 12.0, 13.0, 14.0, 15.0, 16.0 }, new object[] { 13.0, 14.0, 15.0, 16.0, 17.0 } } }
@@ -2565,7 +2198,7 @@ d = ImportFromCSV(c);
 @"a = ""../../../test/Engine/ProtoTest/ImportFiles/CSV/Set2/test.csv"";
 b = ""../../../test/Engine/ProtoTest/ImportFiles/CSV/Set2/test2.csv"";
 c = [ a, b ];
-d = ImportFromCSV(c);
+d = Data.ImportCSV(c);
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("d", new object[] { new object[] { new object[] { 1.0, 2.0, 3.0, 4.0, 5.0 }, new object[] { 2.0, 3.0, 4.0, 5.0, 6.0 }, new object[] { 3.0, 4.0, 5.0, 6.0, 7.0 } }, new object[] { new object[] { 11.0, 12.0, 13.0, 14.0, 15.0 }, new object[] { 12.0, 13.0, 14.0, 15.0, 16.0 }, new object[] { 13.0, 14.0, 15.0, 16.0, 17.0 } } }
@@ -2580,7 +2213,7 @@ d = ImportFromCSV(c);
 @"a = ""../../../test/Engine/ProtoTest/ImportFiles/CSV/Set2/test.csv"";
 b = ""../../../test/Engine/ProtoTest/ImportFiles/CSV/Set2/test2.csv"";
 c = [ a, b ];
-d = ImportFromCSV(c);
+d = Data.ImportCSV(c);
 ";
             string err = "";
             string path = @"C:\designscript\autodeskresearch\trunk\DesignScript\Prototype\Scripts\TD\";
@@ -2600,7 +2233,7 @@ d = [Imperative]
     a = ""../../../test/Engine/ProtoTest/ImportFiles/CSV/Set2/test.csv"";
     b = ""../../../test/Engine/ProtoTest/ImportFiles/CSV/Set2/test2.csv"";
     c = [ a, b ];
-    d = ImportFromCSV(c);
+    d = Data.ImportCSV(c);
     return d;
 }
 ";
@@ -2626,7 +2259,7 @@ d;
 a = ""../../../test/Engine/ProtoTest/ImportFiles/CSV/Set2/test.csv"";
 b = ""../../../test/Engine/ProtoTest/ImportFiles/CSV/Set2/test2.csv"";
 c = [ a, b ];
-d = ImportFromCSV(c);
+d = Data.ImportCSV(c);
 }
 }
 }
@@ -3061,7 +2694,7 @@ def sorterFunction(a:double, b:double)
 {
     return = 1.5;
 }
-b = Sort(sorterFunction, a);  
+b = List.SortByFunction(sorterFunction, a);  
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             // The test doesn't make sense. 
@@ -3104,8 +2737,9 @@ z1 = IndexOf(1..5, [ 1, 2 ]);
         public void T073_Defect_ImportFromCSV_1467579()
         {
             String code =
-@"a = ""../../../test/Engine/ProtoTest/ImportFiles/CSV/Set2/trailing_comma.csv"";
-b = ImportFromCSV(a);
+@"import(""DSCoreNodes.dll"");
+a = ""../../../test/Engine/ProtoTest/ImportFiles/CSV/Set2/trailing_comma.csv"";
+b = Data.ImportCSV(a);
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("b", new object[] { new object[] { 10, 40 }, new object[] { 20.0, 50 }, new object[] { 30.0, 60.00 } }
@@ -3117,15 +2751,15 @@ b = ImportFromCSV(a);
         public void T074_Defect_1467750()
         {
             String code =
-@"
+@"import(""DSCoreNodes.dll"");
 x = A.A();
-x1 = Flatten(a) ; 
-x2 = Flatten(3) ;
-x3 = Flatten(3.5) ;
-x4 = Flatten(true) ;
-x6 = Flatten(null) ;
-x7 = Flatten([]) ;
-x8 = Flatten([null]) ;
+x1 = List.Flatten(a) ; 
+x2 = List.Flatten(3) ;
+x3 = List.Flatten(3.5) ;
+x4 = List.Flatten(true) ;
+x6 = List.Flatten(null) ;
+x7 = List.Flatten([]) ;
+x8 = List.Flatten([null]) ;
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("x1", null);
@@ -3141,18 +2775,18 @@ x8 = Flatten([null]) ;
         public void T074_Defect_1467750_2()
         {
             String code =
-@"
+@"import(""DSCoreNodes.dll"");
 test = 
 [Imperative]
 {
     x = A.A();
-    x1 = Flatten(a) ; 
-    x2 = Flatten(3) ;
-    x3 = Flatten(3.5) ;
-    x4 = Flatten(true) ;
-    x6 = Flatten(null) ;
-    x7 = Flatten([]) ;
-    x8 = Flatten([null]) ;
+    x1 = List.Flatten(a) ; 
+    x2 = List.Flatten(3) ;
+    x3 = List.Flatten(3.5) ;
+    x4 = List.Flatten(true) ;
+    x6 = List.Flatten(null) ;
+    x7 = List.Flatten([]) ;
+    x8 = List.Flatten([null]) ;
     return = [ x1, x2, x3, x4, x6, x8 ];
 }
 ";
@@ -3165,19 +2799,19 @@ test =
         public void T074_Defect_1467750_3()
         {
             String code =
-@"
+@"import(""DSCoreNodes.dll"");
 test = foo();
 def foo ()
 {
     return = [Imperative]
     {
-        x1 = Flatten(a) ; 
-        x2 = Flatten(3) ;
-        x3 = Flatten(3.5) ;
-        x4 = Flatten(true) ;
-        x6 = Flatten(null) ;
-        x7 = Flatten([]) ;
-        x8 = Flatten([null]) ;
+        x1 = List.Flatten(a) ; 
+        x2 = List.Flatten(3) ;
+        x3 = List.Flatten(3.5) ;
+        x4 = List.Flatten(true) ;
+        x6 = List.Flatten(null) ;
+        x7 = List.Flatten([]) ;
+        x8 = List.Flatten([null]) ;
         return = [ x1, x2, x3, x4, x6, x8 ];
     }
 }
@@ -3190,12 +2824,12 @@ def foo ()
         public void T074_Defect_1467301()
         {
             String code =
-@"
-x1 = Average(a) ;
-x2 = Average(a) ;
-x4 = Average(null) ;
-x5 = Average([]) ;
-x6 = Average([null]) ;
+@"import(""DSCoreNodes.dll"");
+x1 = Math.Average(a) ;
+x2 = Math.Average(a) ;
+x4 = Math.Average(null) ;
+x5 = Math.Average([]) ;
+x6 = Math.Average([null]) ;
 ";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code);
             thisTest.Verify("x1", null);
@@ -3340,8 +2974,9 @@ def foo ()
         public void Defect_ImportFromCSV_1467622()
         {
             String code =
-            @"a = ""../../../test/Engine/ProtoTest/ImportFiles/CSV/Set2/test.csv"";
-            b = ImportFromCSV(a);
+            @"import(""DSOffice.dll"");
+            a = ""../../../test/Engine/ProtoTest/ImportFiles/CSV/Set2/test.csv"";
+            b = Data.ImportCSV(a);
             ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("b", new object[] { new object[] { 1, 2, 3, 4, 5 }, new object[] { 2, 3, 4, 5, 6 },
@@ -3354,8 +2989,9 @@ def foo ()
         public void Defect_ImportFromCSV_1467622_2()
         {
             String code =
-            @"a = ""../../../test/Engine/ProtoTest/ImportFiles/CSV/Set2/trailing_comma.csv"";
-            b = ImportFromCSV(a);
+            @"import(""DSOffice.dll"");
+            a = ""../../../test/Engine/ProtoTest/ImportFiles/CSV/Set2/trailing_comma.csv"";
+            b = Data.ImportCSV(a);
             ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("b", new object[] { new object[] { 10, 40 }, new object[] { 20, 50 },
@@ -3366,8 +3002,8 @@ def foo ()
         [Test]
         public void TestMapToWithReverserRange()
         {
-            string code = @"
-r = MapTo(5, 10, 5..10, 2, 0);
+            string code = @"import(""DSCoreNodes.dll"");
+r = Math.MapTo(5, 10, 5..10, 2, 0);
 ";
             thisTest.RunScriptSource(code);
             thisTest.Verify("r", new object[] { 2.0, 1.6, 1.2, 0.8, 0.4, 0 });

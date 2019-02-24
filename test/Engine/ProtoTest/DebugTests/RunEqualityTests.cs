@@ -103,15 +103,16 @@ g = CountFalse(c);
         {
             String code =
                 @"
+import(""DSCoreNodes.dll"");
 a = [true];
 b = [false,false,[false,[false,[false,false,[false],false]]],false];
 c = [true,true,true,true,[true,true],true,[true,true,[true, true,[true],true,true,true]]];
-d = AllTrue(a);
-e = AllTrue(b);
-f = AllTrue(c);
-g = AllFalse(a);
-h = AllFalse(b);
-i = AllFalse(c);
+d = List.AllTrue(a);
+e = List.AllTrue(b);
+f = List.AllTrue(c);
+g = List.AllFalse(a);
+h = List.AllFalse(b);
+i = List.AllFalse(c);
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
         }
@@ -121,16 +122,18 @@ i = AllFalse(c);
         public void DebugEQBIM05_IsHomogeneous()
         {
             String code =
-                @"a = [1,2,3,4,5];
+                @"
+import(""DSCoreNodes.dll"");
+a = [1,2,3,4,5];
 b = [false, true, false];
 c = [[1],[1.0,2.0]];
 d = [null,1,2,3];
 e = [];
-ca = IsHomogeneous(a);
-cb = IsHomogeneous(b);
-cc = IsHomogeneous(c);
-cd = IsHomogeneous(d);
-ce = IsHomogeneous(e);
+ca = List.IsHomogeneous(a);
+cb = List.IsHomogeneous(b);
+cc = List.IsHomogeneous(c);
+cd = List.IsHomogeneous(d);
+ce = List.IsHomogeneous(e);
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
         }
@@ -141,30 +144,13 @@ ce = IsHomogeneous(e);
         {
             String code =
                 @"
+import(""DSCoreNodes.dll"");
 b = [1,2,[3,4,[5,[6,[7],8,[9,10],11]],12,13,14,[15]],16];
 c = [1.2,2.2,[3.2,4.2,[5.2,[6.2,[7.2],8.2,[9.2,10.2],11.2]],12.2,13.2,14.2,[15.2]],16.2];
-x = Average(b);
-y = Sum(b);
-z = Average(c);
-s = Sum(c);
-";
-            DebugTestFx.CompareDebugAndRunResults(code);
-        }
-
-        [Test]
-        //Test "SomeTrue() & SomeFalse()"
-        public void DebugEQBIM07_SomeTrue_SomeFalse()
-        {
-            String code =
-                @"a = [true,true,true,[false,false,[true, true,[false],true,true,false]]];
-b = [true,true,[true,true,true,[true,[true],true],true],true];
-c = [true, false, false];
-p = SomeTrue(a);
-q = SomeTrue(b);
-r = SomeTrue(c);
-s = SomeFalse(a);
-t = SomeFalse(b);
-u = SomeFalse(c);
+x = Math.Average(b);
+y = Math.Sum(b);
+z = Math.Average(c);
+s = Math.Sum(c);
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
         }
@@ -174,12 +160,14 @@ u = SomeFalse(c);
         public void DebugEQBIM08_Remove_RemoveDuplicate()
         {
             String code =
-                @"a = [null,20,30,null,20,15,true,true,5,false];
+                @"
+import(""DSCoreNodes.dll"");
+a = [null,20,30,null,20,15,true,true,5,false];
 b = [1,2,3,4,9,4,2,5,6,7,8,7,1,0,2];
-rda = RemoveDuplicates(a);
-rdb = RemoveDuplicates(b);
-ra = Remove(a,3);
-rb = Remove(b,2);
+rda = List.UniqueItems(a);
+rdb = List.UniqueItems(b);
+ra = List.RemoveItemAtIndex(a,3);
+rb = List.RemoveItemAtIndex(b,2);
 p = rda[3];
 q = rdb[4];
 x = ra[3];
@@ -193,10 +181,12 @@ y = rb[2];
         public void DebugEQBIM09_RemoveNulls()
         {
             String code =
-                @"a = [1,[6,null,7,[null,null]],7,null,2];
+                @"
+import(""DSCoreNodes.dll"");
+a = [1,[6,null,7,[null,null]],7,null,2];
 b = [null,[null,[null,[null],null],null],null];
-p = RemoveNulls(a);
-q = RemoveNulls(b);
+p = List.Clean(a, false);
+q = List.Clean(b, false);
 x = p[3];
 y = p[1][1];
 ";
@@ -208,11 +198,12 @@ y = p[1][1];
         public void DebugEQBIM10_RemoveIfNot()
         {
             String code =
-                @"a = [""This is "",""a very complex "",""array"",1,2.0,3,false,4.0,5,6.0,true,[2,3.1415926],null,false,'c'];
-b = RemoveIfNot(a, ""int"");
-c = RemoveIfNot(a, ""double"");
-d = RemoveIfNot(a, ""bool"");
-e = RemoveIfNot(a, ""array"");
+                @"import(""BuiltIn.ds"");
+a = [""This is "",""a very complex "",""array"",1,2.0,3,false,4.0,5,6.0,true,[2,3.1415926],null,false,'c'];
+b = List.RemoveIfNot(a, ""int"");
+c = List.RemoveIfNot(a, ""double"");
+d = List.RemoveIfNot(a, ""bool"");
+e = List.RemoveIfNot(a, ""array"");
 q = b[0];
 r = c[0];
 s = d[0];
@@ -226,10 +217,11 @@ t = e[0][0];
         public void DebugEQBIM11_Reverse()
         {
             String code =
-                @"a = [1,[[1],[3.1415]],null,1.0,12.3];
+                @"import(""DSCoreNodes.dll"");
+a = [1,[[1],[3.1415]],null,1.0,12.3];
 b = [1,2,[3]];
-p = Reverse(a);
-q = Reverse(b);
+p = List.Reverse(a);
+q = List.Reverse(b);
 x = p[0];
 y = q[0][0];
 ";
@@ -241,15 +233,16 @@ y = q[0][0];
         public void DebugEQBIM12_Contains()
         {
             String code =
-                @"a = [1,[[1],[3.1415]],null,1.0,12.3];
+                @"import(""DSCoreNodes.dll"");
+a = [1,[[1],[3.1415]],null,1.0,12.3];
 b = [1,2,[3]];
 x = [[1],[3.1415]];
-r = Contains(a, 3.0);
-s = Contains(a, x);
-t = Contains(a, null);
-u = Contains(b, b);
-v = Contains(b, [3]);
-w = Contains(b, 3);
+r = List.Contains(a, 3.0);
+s = List.Contains(a, x);
+t = List.Contains(a, null);
+u = List.Contains(b, b);
+v = List.Contains(b, [3]);
+w = List.Contains(b, 3);
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
         }
@@ -259,15 +252,16 @@ w = Contains(b, 3);
         public void DebugEQBIM13_IndexOf()
         {
             String code =
-                @"a = [1,[[1],[3.1415]],null,1.0,12,3];
+                @"import(""DSCoreNodes.dll"");
+a = [1,[[1],[3.1415]],null,1.0,12,3];
 b = [1,2,[3]];
 c = [1,2,[3]];
 d = [[1],[3.1415]];
-r = IndexOf(a, d);
-s = IndexOf(a, 1);
-t = IndexOf(a, null);
-u = IndexOf(b, [3]);
-v = IndexOf(b, 3);
+r = List.IndexOf(a, d);
+s = List.IndexOf(a, 1);
+t = List.IndexOf(a, null);
+u = List.IndexOf(b, [3]);
+v = List.IndexOf(b, 3);
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
         }
@@ -277,12 +271,13 @@ v = IndexOf(b, 3);
         public void DebugEQBIM14_Sort()
         {
             String code =
-                @"a = [1,3,5,7,9,8,6,4,2,0];
+                @"import(""DSCoreNodes.dll"");
+a = [1,3,5,7,9,8,6,4,2,0];
 b = [1.3,2,0.8,2,null,2,2.0,2,null];
-x = Sort(a);
-x1 = Sort(a,true);
-x2 = Sort(a,false);
-y = Sort(b);
+x = List.Sort(a);
+x1 = List.SortByKey(a,true);
+x2 = List.SortByKey(a,false);
+y = List.Sort(b);
 p = x[0];
 p1 = x1[0];
 p2 = x2[0];
@@ -298,12 +293,13 @@ t = y[7];
         public void DebugEQBIM15_SortIndexByValue()
         {
             String code =
-                @"a = [1,3,5,7,9,8,6,4,2,0];
+                @"import(""DSCoreNodes.dll"");
+a = [1,3,5,7,9,8,6,4,2,0];
 b = [1.3,2,0.8,2,null,2,2.0,2,null];
-x = SortIndexByValue(a);
-x1 = SortIndexByValue(a,true);
-x2 = SortIndexByValue(a,false);
-y = SortIndexByValue(b);
+x = List.SortIndexByValue(a);
+x1 =List.SortIndexByValue(a,true);
+x2 =List.SortIndexByValue(a,false);
+y = List.SortIndexByValue(b);
 p = x[0];
 p1 = x1[0];
 p2 = x2[0];
@@ -319,15 +315,16 @@ t = y[7];
         public void DebugEQBIM16_Insert()
         {
             String code =
-                @"a = [false,2,3.1415926,null,[false]];
+                @"import(""DSCoreNodes.dll"");
+a = [false,2,3.1415926,null,[false]];
 b = 1;
 c = [1];
 d = [];
 e = [[1],2,3.0];
-p = Insert(a,b,1);
-q = Insert(a,c,1);
-r = Insert(a,d,0);
-s = Insert(a,e,5);
+p = List.Insert(a,b,1);
+q = List.Insert(a,c,1);
+r = List.Insert(a,d,0);
+s = List.Insert(a,e,5);
 u = p[1];
 v = q[1][0];
 w = r[1][0];
@@ -341,12 +338,13 @@ x = s[5][0][0];
         public void DebugEQBIM17_SetDifference_SetUnion_SetIntersection()
         {
             String code =
-                @"a = [false,15,6.0,15,false,null,15.0];
+                @"import(""DSCoreNodes.dll"");
+a = [false,15,6.0,15,false,null,15.0];
 b = [10,20,false,12,21,6.0,15,null,8.2];
-c = SetDifference(a,b);
-d = SetDifference(b,a);
-e = SetIntersection(a,b);
-f = SetUnion(a,b);
+c = List.SetDifference(a,b);
+d = List.SetDifference(b,a);
+e = List.SetIntersection(a,b);
+f = List.SetUnion(a,b);
 p = c[0];
 q = d[1];
 r = e[1];
@@ -360,9 +358,10 @@ s = f[1];
         public void DebugEQBIM18_Reorder()
         {
             String code =
-                @"a = [1,4,3,8.0,2.0,0];
+                @"import(""DSCoreNodes.dll"");
+a = [1,4,3,8.0,2.0,0];
 b = [2,1,0,3,4];
-c = Reorder(a,b);
+c = List.Reorder(a,b);
 p = c[0];
 q = c[1];
 r = c[2];
@@ -375,14 +374,15 @@ r = c[2];
         public void DebugEQBIM19_IsUniformDepth()
         {
             String code =
-                @"a = [];
+                @"import(""DSCoreNodes.dll"");
+a = [];
 b = [1,2,3];
 c = [[1],[2,3]];
 d = [1,[2],[[3]]];
-p = IsUniformDepth(a);
-q = IsUniformDepth(b);
-r = IsUniformDepth(c);
-s = IsUniformDepth(d);
+p = List.IsUniformDepth(a);
+q = List.IsUniformDepth(b);
+r = List.IsUniformDepth(c);
+s = List.IsUniformDepth(d);
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
         }
@@ -392,11 +392,12 @@ s = IsUniformDepth(d);
         public void DebugEQBIM20_NormalizeDepth()
         {
             String code =
-                @"a = [[1,[2,3,4,[5]]]];
-p = NormalizeDepth(a,1);
-q = NormalizeDepth(a,2);
-r = NormalizeDepth(a,4);
-s = NormalizeDepth(a);
+                @"import(""DSCoreNodes.dll"");
+a = [[1,[2,3,4,[5]]]];
+p = List.NormalizeDepth(a,1);
+q = List.NormalizeDepth(a,2);
+r = List.NormalizeDepth(a,4);
+s = List.NormalizeDepth(a);
 w = p[0];
 x = q[0][0];
 y = r[0][0][0][0];
@@ -410,8 +411,9 @@ z = s[0][0][0][0];
         public void DebugEQBIM21_Map_MapTo()
         {
             String code =
-                @"a = Map(80.0, 120.0, 100.0);
-b = MapTo(0.0, 100.0 ,25.0, 80.0, 90.0);
+                @"import(""DSCoreNodes.dll"");
+a = Math.Map(80.0, 120.0, 100.0);
+b = Math.MapTo(0.0, 100.0 ,25.0, 80.0, 90.0);
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
         }
@@ -435,10 +437,11 @@ y = q[0][6];
         public void DebugEQBIM23_LoadCSV()
         {
             String code =
-                @"a = ""CSVTestCase/test1.csv"";
-b = LoadCSV(a);
-c = LoadCSV(a, false);
-d = LoadCSV(a, true);
+                @"import(""DSOffice.dll"");
+a = ""../../../test/Engine/ProtoTest/ImportFiles/CSV/Set1/test1.csv"";
+b = Data.ImportCSV(a);
+c = Data.ImportCSV(a, false);
+d = Data.ImportCSV(a, true);
 x = b[0][2];
 y = c[0][2];
 z = d[0][2];
@@ -466,12 +469,13 @@ z = Count(c);
         public void DebugEQBIM25_Rank()
         {
             String code =
-                @"a = [ [ 1 ], 2, 3, 4 ];
+                @"import(""BuiltIn.ds"");
+a = [ [ 1 ], 2, 3, 4 ];
 b = [ ""good"", [ [ null ] ], [ 1, [ 2, 3, 4, [ 5, [ ""good"" ], [ null ] ] ] ] ];
 c = [ [ null ], [ 2, ""good"" ], 1, null, [ 2, [ 3, 4 ] ] ];
-x = Rank(a);
-y = Rank(b);
-z = Rank(c);
+x = List.Rank(a);
+y = List.Rank(b);
+z = List.Rank(c);
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
         }
@@ -481,12 +485,13 @@ z = Rank(c);
         public void DebugEQBIM26_Flatten()
         {
             String code =
-                @"a = [1, 2, 3, 4];
+                @"import(""DSCoreNodes.dll"");
+a = [1, 2, 3, 4];
 b = [ ""good"", [ 1, [ 2, 3, 4, [ 5 ] ] ] ];
 c = [ null, [ 2, ""good""], 1, null, [ 2, [ 3, 4 ] ] ];
-q = Flatten(a);
-p = Flatten(b);
-r = Flatten(c);
+q = List.Flatten(a);
+p = List.Flatten(b);
+r = List.Flatten(c);
 x = q[0];
 y = p[2];
 z = r[4];
@@ -494,27 +499,7 @@ s = p[0];
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
         }
-
-        [Test]
-        //Test "CountTrue/CountFalse/Average/Sum/RemoveDuplicate"
-        public void DebugEQBIM27_Conversion_Resolution_Cases()
-        {
-            String code =
-                @"a = [null,20,30,null,[10,0],true,[false,0,[true,[false],5,2,false]]];
-b = [1,2,[3,4,9],4,2,5,[6,7,[8]],7,1,0,2];
-x = CountTrue(a);
-y = CountFalse(a);
-z = AllTrue(a);
-w = AllFalse(a);
-p = SomeTrue(a);
-q = SomeTrue(a);
-r = Sum(true);
-s = Sum(null);
-t = RemoveDuplicates(b);
-";
-            DebugTestFx.CompareDebugAndRunResults(code);
-        }
-
+        
         [Test]
         public void DebugEQTestMethodWithArrayInput2()
         {
@@ -4447,24 +4432,24 @@ a = 10;
         [Test]
         public void DebugEQT034_AllFalse_IfElse()
         {
-            string code = @"
+            string code = @"import(""DSCoreNodes.dll"");
 a = [false, false];//true
 b = [[false]];//true
 c = [false, 0];//false
 result = [];
 [Imperative]
 {
-	if(AllFalse(a)){
+	if(List.AllFalse(a)){
 		a[2] = 0;
-		result[0] = AllFalse(a);//false
+		result[0] = List.AllFalse(a);//false
 	} 
-	if(!AllFalse(b)){
+	if(!List.AllFalse(b)){
 		
-		result[1] = AllFalse(b);//false
+		result[1] = List.AllFalse(b);//false
 	}else
 	{result[1]= null;}
-	if(!AllFalse(c)){
-		result[2] = AllFalse(c);
+	if(!List.AllFalse(c)){
+		result[2] = List.AllFalse(c);
 	}
 }
 ";
@@ -4474,7 +4459,7 @@ result = [];
         [Test]
         public void DebugEQT035_AllFalse_ForLoop()
         {
-            string code = @"
+            string code = @"import(""DSCoreNodes.dll"");
 result = 
 [Imperative]
 {
@@ -4492,8 +4477,8 @@ result =
 	j = 0;
 	for(i in e)
 	{	
-		if(AllFalse(i)!=true){
-			f[j] = AllFalse(i);
+		if(List.AllFalse(i)!=true){
+			f[j] = List.AllFalse(i);
 			j = j+1;
 		}
 		
@@ -4516,7 +4501,7 @@ result = null;
         [Test]
         public void DebugEQT036_AllFalse_WhileLoop()
         {
-            string code = @"
+            string code = @"import(""DSCoreNodes.dll"");
 result = 
 [Imperative]
 {
@@ -4528,10 +4513,10 @@ result =
 	i = 0;
 	f = [];
 	j = 0;
-	while(!AllFalse(e[i])&& i < Count(e))
+	while(!List.AllFalse(e[i])&& i < Count(e))
 	{	
-		if(AllFalse(e[i])!=true){
-			f[j] = AllFalse(e[i]);
+		if(List.AllFalse(e[i])!=true){
+			f[j] = List.AllFalse(e[i]);
 			j = j+1;
 		}
 		i = i+1;
@@ -4546,7 +4531,7 @@ return = f;
         [Test]
         public void DebugEQT037_AllFalse_Function()
         {
-            string code = @"
+            string code = @"import(""DSCoreNodes.dll"");
 def foo( x : bool)
 {	
 	return = !x;
@@ -4555,7 +4540,7 @@ a1 = [0];
 a2 = [null];
 a3 = [!true];
 b = [a1,a2,a3];
-result = [foo(AllFalse(a1)),foo(AllFalse(a2)),foo(AllFalse(a3))];//true,true,false
+result = [foo(List.AllFalse(a1)),foo(List.AllFalse(a2)),foo(List.AllFalse(a3))];//true,true,false
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
         }
@@ -4563,12 +4548,12 @@ result = [foo(AllFalse(a1)),foo(AllFalse(a2)),foo(AllFalse(a3))];//true,true,fal
         [Test]
         public void DebugEQT039_AllFalse_Inline()
         {
-            string code = @"
+            string code = @"import(""DSCoreNodes.dll"");
 a1 = [false,[false]];
-a = AllFalse(a1);//true
+a = List.AllFalse(a1);//true
 b1 = [null,null];
-b = AllFalse(b1);//false
-c = AllFalse([b]);//t
+b = List.AllFalse(b1);//false
+c = List.AllFalse([b]);//t
 result = a? c:b;//t
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
@@ -4783,12 +4768,12 @@ c = a + 1;
         [Test]
         public void DebugEQT040_AllFalse_Replication()
         {
-            string code = @"
+            string code = @"import(""DSCoreNodes.dll"");
 a = [
 	[[0]],
 	[false]
 ];
-c = AllFalse(a);
+c = List.AllFalse(a);
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
         }
@@ -4796,7 +4781,7 @@ c = AllFalse(a);
         [Test]
         public void DebugEQT042_AllFalse_DynamicArray()
         {
-            string code = @"
+            string code = @"import(""DSCoreNodes.dll"");
 b = [];
 a = [[true],[false],[false],
 	[false,[true,false]]];
@@ -4807,12 +4792,12 @@ a = [[true],[false],[false],
 	{
 		while(i<Count(a))
 		{
-			b[i] = AllFalse(a[i]);
+			b[i] = List.AllFalse(a[i]);
 			i = i+1;
 		}
 		return = b;
 	}
-	result = AllFalse(a);
+	result = List.AllFalse(a);
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
         }
@@ -4820,7 +4805,7 @@ a = [[true],[false],[false],
         [Test]
         public void DebugEQT044_AllFalse_ImperativeAssociative()
         {
-            string code = @"
+            string code = @"import(""DSCoreNodes.dll"");
 [Imperative]
 {
 	a = [false||true];
@@ -4834,8 +4819,8 @@ a = [[true],[false],[false],
 		
 		b = [false];
 		
-		m = AllFalse(c);//f
-		n = AllFalse(d);//t
+		m = List.AllFalse(c);//f
+		n = List.AllFalse(d);//t
 	}
 }
 ";
@@ -4896,7 +4881,7 @@ result = Count(a);
         [Test]
         public void DebugEQT046_Sum_IfElse()
         {
-            string code = @"
+            string code = @"import(""DSCoreNodes.dll"");
 result = 
 [Imperative]
 {
@@ -4910,13 +4895,13 @@ result =
 	
 	m= [-1,-1,-1,-1,-1,-1,-1];
 	
-	if(Sum(a)>=0) m[0] = Sum(a);	
-	if(Sum(b)>=0) m[1] = Sum(b);
-	if(Sum(c)>=0) m[2] = Sum(c);
-	if(Sum(d)>=0) m[3] = Sum(d); 
-	if(Sum(e)>=0) m[4] = Sum(e);
-	if(Sum(f)>=0) m[5] = Sum(f);
-	if(Sum(g)>=0) m[6] = Sum(g);
+	if(Math.Sum(a)>=0) m[0] = Math.Sum(a);	
+	if(Math.Sum(b)>=0) m[1] = Math.Sum(b);
+	if(Math.Sum(c)>=0) m[2] = Math.Sum(c);
+	if(Math.Sum(d)>=0) m[3] = Math.Sum(d); 
+	if(Math.Sum(e)>=0) m[4] = Math.Sum(e);
+	if(Math.Sum(f)>=0) m[5] = Math.Sum(f);
+	if(Math.Sum(g)>=0) m[6] = Math.Sum(g);
 	
 	return = m;
 }
@@ -4927,20 +4912,20 @@ result =
         [Test]
         public void DebugEQT047_Sum_ForLoop()
         {
-            string code = @"
+            string code = @"import(""DSCoreNodes.dll"");
 result = 
 [Imperative]
 {
 	a = [0,0.0];
 	b = [[]];
-	c = [m,Sum(a),b,10.0];
+	c = [m,Math.Sum(a),b,10.0];
 	
 	d = [a,b,c];
 	j = 0;
 	
 	for(i in d)
 	{
-		d[j] = Sum(i);
+		d[j] = Math.Sum(i);
 		j = j+1;
 	}
 	
@@ -4953,13 +4938,13 @@ result =
         [Test]
         public void DebugEQT048_Sum_WhileLoop()
         {
-            string code = @"
+            string code = @"import(""DSCoreNodes.dll"");
 result = 
 [Imperative]
 {
 	a = [-2,0.0];
 	b = [[]];
-	c = [m,Sum(a),b,10.0];
+	c = [m,Math.Sum(a),b,10.0];
 	
 	d = [a,b,c];
 	j = 0;
@@ -4968,9 +4953,9 @@ result =
 	
 	while(j<Count(d))
 	{
-		if(Sum(d[j])!=0)
+		if(Math.Sum(d[j])!=0)
 		{
-			e[k] = Sum(d[j]);
+			e[k] = Math.Sum(d[j]);
 			k = k+1;
 		}
 		j = j+1;
@@ -4985,18 +4970,18 @@ result =
         [Test]
         public void DebugEQT049_Sum_Function()
         {
-            string code = @"
+            string code = @"import(""DSCoreNodes.dll"");
 def foo(x:var[])
 {
 	return =
 	[Imperative]
 	{
-		return = Sum(x);
+		return = Math.Sum(x);
 	}
 }
 a = [-0.1,true,[],null,1];
 b = [m+n,[[[1]]]];
-c = [Sum(a),Sum(b)];
+c = [Math.Sum(a),Math.Sum(b)];
 result = foo(c);
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
@@ -5138,12 +5123,12 @@ x = f(""hello"");
         [Test]
         public void DebugEQT051_Sum_Inline()
         {
-            string code = @"
+            string code = @"import(""DSCoreNodes.dll"");
 a = [1,[2,-3.00]];//0.0
-sum = Sum(a);
-b = Sum(a) -1;//-1.0
-c = Sum([a,b,-1]);//-2.0;
-result = Sum(a)==0&& b==-1.00? b :c;
+sum = Math.Sum(a);
+b = Math.Sum(a) -1;//-1.0
+c = Math.Sum([a,b,-1]);//-2.0;
+result = Math.Sum(a)==0&& b==-1.00? b :c;
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
         }
@@ -5151,16 +5136,16 @@ result = Sum(a)==0&& b==-1.00? b :c;
         [Test]
         public void DebugEQT052_Sum_RangeExpression()
         {
-            string code = @"
+            string code = @"import(""DSCoreNodes.dll"");
 result = 
 [Imperative]
 {
 	a1 = [1,true, null];//1
 	a2 = 8;
 	a3 = [2,[true,[true,1.0]],[false,x, true]];//3.0
-	a = Sum(a1)..a2..Sum(a3);//{1,4,7}
+	a = Math.Sum(a1)..a2..Math.Sum(a3);//{1,4,7}
 	
-	return = Sum(a);//12.0
+	return = Math.Sum(a);//12.0
 }
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
@@ -5178,21 +5163,21 @@ a = [1,2,3];
         [Test]
         public void DebugEQT054_Sum_DynamicArr()
         {
-            string code = @"
+            string code = @"import(""DSCoreNodes.dll"");
 a = [];
 b = [1.0,2,3.0];
 c = [null,m,""1""];
-a[0]=Sum(b);//6.0
-a[1] = Sum(c);//0
-a[2] = Sum([a[0],a[1]]);//6.0
-result = Sum(a);//12.0
+a[0]=Math.Sum(b);//6.0
+a[1] = Math.Sum(c);//0
+a[2] = Math.Sum([a[0],a[1]]);//6.0
+result = Math.Sum(a);//12.0
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
         }
 
         public void DebugEQT056_Sum_AssociativeImperative()
         {
-            string code = @"
+            string code = @"import(""DSCoreNodes.dll"");
 a = {1,0,0.0};
 b = {2.0,0,true};
 b1 = {b,1}
@@ -5201,15 +5186,15 @@ b1 = {b,1}
 	c = a[2];
 	a[1] = 1;
 	m = a;
-	sum1 = Sum({c});//0.0
+	sum1 = Math.Sum({c});//0.0
 	[Associative]
 	{
 		 b[1] = 1;
-		 sum2 = Sum( b1);////4.0
+		 sum2 = Math.Sum( b1);////4.0
 	}
 	
 	a[2]  =1;
-	sum3 = Sum({c});//0.0
+	sum3 = Math.Sum({c});//0.0
 }
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
@@ -5218,15 +5203,15 @@ b1 = {b,1}
         [Test]
         public void DebugEQT057_Average_DataType_01()
         {
-            string code = @"
+            string code = @"import(""DSCoreNodes.dll"");
 a = [];
 b = [1,2,3];
 c = [0.1,0.2,0.3,1];
 d = [true, false, 1];
-a1 = Average(a);
-b1 = Average(b);
-c1 = Average(c);
-d1 = Average(d);
+a1 = Math.Average(a);
+b1 = Math.Average(b);
+c1 = Math.Average(c);
+d1 = Math.Average(d);
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
         }
@@ -5234,11 +5219,11 @@ d1 = Average(d);
         [Test]
         public void DebugEQT059_Defect_Flatten_RangeExpression()
         {
-            string code = @"
+            string code = @"import(""DSCoreNodes.dll"");
 a = 0..10..5;
 b = 20..30..2;
 c = [a, b];
-d = Flatten([a,b]);
+d = List.Flatten([a,b]);
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
         }
@@ -5246,11 +5231,11 @@ d = Flatten([a,b]);
         [Test]
         public void DebugEQT059_Defect_Flatten_RangeExpression_1()
         {
-            string code = @"
+            string code = @"import(""DSCoreNodes.dll"");
 a = [[null]];
 b = [1,2,[3]];
 c = [a,b];
-d = Flatten(c);
+d = List.Flatten(c);
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
         }
@@ -5386,7 +5371,7 @@ list8 = list9 || list6; // { true, false, true }
         [Test]
         public void DebugEQT060_Average_ForLoop()
         {
-            string code = @"
+            string code = @"import(""DSCoreNodes.dll"");
 result = 
 [Imperative]
 {
@@ -5400,7 +5385,7 @@ result =
 	
 	for(i in d)
 	{
-		e[j] = Average(i);
+		e[j] = Math.Average(i);
 		 j = j+1;
 		
 	}
@@ -5414,15 +5399,15 @@ result =
         [Test]
         public void DebugEQT061_Average_Function()
         {
-            string code = @"
+            string code = @"import(""DSCoreNodes.dll"");
 def foo : double (x :var[]..[])
 {
 	
-	return = Average(x);
+	return = Math.Average(x);
 }
 a = [1,2,2,1];
 b = [1,[]];
-c = Average(a);
+c = Math.Average(a);
 result = [foo(a),foo(b)];
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
@@ -5431,10 +5416,10 @@ result = [foo(a),foo(b)];
         [Test]
         public void DebugEQT063_Average_Inline()
         {
-            string code = @"
+            string code = @"import(""DSCoreNodes.dll"");
 a = [1.0,2];
 b = [[0],1.0,[2]];
-result = Average(a)>Average(b)?true:false;
+result = Math.Average(a)>Math.Average(b)?true:false;
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
         }
@@ -5442,38 +5427,16 @@ result = Average(a)>Average(b)?true:false;
         [Test]
         public void DebugEQT064_Average_RangeExpression()
         {
-            string code = @"
+            string code = @"import(""DSCoreNodes.dll"");
 a = 0..6..3;//0,3,6
 b = 0..10..~3;//0,3.3,6.6,10
-m = Average(a);//3
-n = Average(b);//5.0
-c = Average([m])..Average([n]);//3.0,4.0,5.0
+m = Math.Average(a);//3
+n = Math.Average(b);//5.0
+c = Math.Average([m])..Math.Average([n]);//3.0,4.0,5.0
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
         }
-
-        [Test]
-        public void DebugEQT066_Print_String()
-        {
-            string code = @"
-r1 = Print(""Hello World"");
-str = ""Hello World!!"";
-r2 = Print(str);
-a = 1;
-";
-            DebugTestFx.CompareDebugAndRunResults(code);
-        }
-
-        [Test]
-        public void DebugEQT067_Print_Arr()
-        {
-            string code = @"
-arr = [ 0, 1 ,2];
-r1 = Print(arr);
-";
-            DebugTestFx.CompareDebugAndRunResults(code);
-        }
-
+        
         [Test]
         public void DebugEQT06_Function_Imp_Inside_Assoc()
         {
@@ -14236,7 +14199,7 @@ t = val[0]; //expected 100, received 1
 a = [ 1, 2, [ 3, 4, 5, [ 6, 7, [ 8, 9, [ [ 11 ] ] ] ] ], [ 12, 13 ] ];
 c = Count(a);
 r = Rank(a);
-a2 = Flatten(a);
+a2 = List.Flatten(a);
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
         }
@@ -15464,7 +15427,7 @@ z=length([1,2]);
         {
             string code = @"
 a = [];
-b = Average(a);
+b = Math.Average(a);
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
         }
@@ -15666,12 +15629,12 @@ s = Print(results);
             String src =
                 @" 
 set = [ true, [ false, true ] ];
-allFalseSet = AllFalse(set);
+allFalseSet = List.AllFalse(set);
 someFalseSet = SomeFalse(set);
 someTrueSet = SomeTrue(set);
 someNullsSet = SomeNulls(set);
 setInsert = Insert(set, null, -1);
-allFalseSetInsert = AllFalse(setInsert);
+allFalseSetInsert = List.AllFalse(setInsert);
 someFalseSetInsert = SomeFalse(setInsert);
 someTrueSetInsert = SomeTrue(setInsert);
 someNullsSetInsert = SomeNulls(setInsert);
@@ -15681,7 +15644,7 @@ containsNull = Contains(setInsert, null);
 removeSetInsert = Remove(setInsert, 2);
 removeNullsSetInsert = RemoveNulls(setInsert);
 removeDuplicatesSetInsert = RemoveDuplicates(setInsert);
-flattenSetInsert = Flatten(setInsert);
+flattenSetInsert = List.Flatten(setInsert);
 removeDuplicatesSetInsertFalttened = RemoveDuplicates(flattenSetInsert);
 removeIfNotSetInsert = RemoveIfNot(flattenSetInsert, ""bool""); // (={})... this looks incorrect
 one1Dcollection = [ 3, 1 ];
