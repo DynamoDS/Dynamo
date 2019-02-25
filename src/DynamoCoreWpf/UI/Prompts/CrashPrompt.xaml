@@ -79,13 +79,13 @@
                         Click="PostOnGithub_Click"
                         ToolTipService.InitialShowDelay="0"   
                         >
-                        <Button.ToolTip>
-                            <ToolTip
-                                Content="{x:Static p:Resources.CrashPromptDialogSubmitBugButtonToolTip}"
-                                Placement="Center"
-                                VerticalOffset="-35">
-                            </ToolTip>
-                        </Button.ToolTip>
+                    <Button.ToolTip>
+                        <ToolTip
+                            Content="{x:Static p:Resources.CrashPromptDialogSubmitBugButtonToolTip}"
+                            Placement="Center"
+                            VerticalOffset="-35">
+                        </ToolTip>
+                    </Button.ToolTip>
                 </Button>
 
                 <Button Content="{x:Static p:Resources.ContinueButton}"
