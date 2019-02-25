@@ -77,8 +77,7 @@
                         Style="{DynamicResource ResourceKey=STextButton}"
                         Margin="10,0,0,0"
                         Click="PostOnGithub_Click"
-                        ToolTipService.InitialShowDelay="0"   
-                        >
+                        ToolTipService.InitialShowDelay="0">
                     <Button.ToolTip>
                         <ToolTip
                             Content="{x:Static p:Resources.CrashPromptDialogSubmitBugButtonToolTip}"
