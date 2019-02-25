@@ -907,7 +907,7 @@ i=[Imperative]
 a = 2.3;
 b = a * 3;
 //Expected : b = 6.9;
-//Recieved : b = 6.8999999999999995;
+//Received : b = 6.8999999999999995;
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("b", 6.9, 0);

@@ -23,7 +23,7 @@ namespace Dynamo.Extensions
         {
             dynamoModel = dynamoM;
             dynamoModel.PropertyChanged += OnDynamoModelPropertyChanged;
-            dynamoM.Logger.NotificationLogged += OnNotificationRecieved;
+            dynamoM.Logger.NotificationLogged += OnNotificationReceived;
             startupParams = new StartupParams(dynamoModel.AuthenticationManager.AuthProvider,
                 dynamoModel.PathManager, new ExtensionLibraryLoader(dynamoModel), dynamoModel.CustomNodeManager,
                 new Version(dynamoModel.Version), dynamoModel.PreferenceSettings);
@@ -76,11 +76,11 @@ namespace Dynamo.Extensions
         /// Event that is raised when the Dynamo Logger logs a notification.
         /// This event passes the notificationMessage to any subscribers
         /// </summary>
-        public event Action<Logging.NotificationMessage> NotificationRecieved;
-        private void OnNotificationRecieved(Logging.NotificationMessage notification)
+        public event Action<Logging.NotificationMessage> NotificationReceived;
+        private void OnNotificationReceived(Logging.NotificationMessage notification)
         {
-            if (NotificationRecieved != null)
-                NotificationRecieved(notification);
+            if (NotificationReceived != null)
+                NotificationReceived(notification);
         }
 
         /// <summary>

@@ -356,7 +356,7 @@ def foo ( b1 : ClassFunctionality )
 b1 = ClassFunctionality.ClassFunctionality( 1 );
 x = b1.IntVal;
 b1 = 2;
-y = x; // expected : null; recieved : exception
+y = x; // expected : null; received : exception
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             Object v1 = null;
@@ -467,12 +467,12 @@ a2 = 1.0;
 test2 = a2;
 a2 = 3.0;
 a2 = 3.3;
-t2 = test2; // expected : 3.3; recieved : 3.0
+t2 = test2; // expected : 3.3; received : 3.0
 a1 = [ 1.0, 2.0];
 test1 = a1[1]; 
 a1[1] = 3.0;
 a1[1] = 3.3;
-t1 = test1; // expected : 3.3; recieved : 3.0
+t1 = test1; // expected : 3.3; received : 3.0
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("t1", 3.3, 0);
@@ -1133,7 +1133,7 @@ b1 = a1.IntVal;
 x = 4;
 c1 = b1;
 // expected : c1 = 4;
-// recieved : c1 = 3
+// received : c1 = 3
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
 
