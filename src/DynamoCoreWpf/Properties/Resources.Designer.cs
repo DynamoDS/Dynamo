@@ -737,7 +737,18 @@ namespace Dynamo.Wpf.Properties
                 return ResourceManager.GetString("CrashPromptDialogSubmitBugButton", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to Submit Bug To Github ToolTip.
+        /// </summary>
+        public static string CrashPromptDialogSubmitBugButtonToolTip
+        {
+            get
+            {
+                return ResourceManager.GetString("CrashPromptDialogSubmitBugButtonToolTip", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to {0} has crashed.
         /// </summary>

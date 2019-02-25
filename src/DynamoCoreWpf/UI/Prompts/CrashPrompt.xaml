@@ -76,7 +76,18 @@
                 <Button Content="{x:Static p:Resources.CrashPromptDialogSubmitBugButton}"
                         Style="{DynamicResource ResourceKey=STextButton}"
                         Margin="10,0,0,0"
-                        Click="PostOnGithub_Click" />
+                        Click="PostOnGithub_Click"
+                        Name="SubmitCrashButton"
+                        ToolTipService.InitialShowDelay="0"   
+                        >
+                        <Button.ToolTip>
+                            <ToolTip
+                                Content="{x:Static p:Resources.CrashPromptDialogSubmitBugButtonToolTip}"
+                                Placement="Center"
+                                VerticalOffset="-35">
+                            </ToolTip>
+                        </Button.ToolTip>
+                </Button>
 
                 <Button Content="{x:Static p:Resources.ContinueButton}"
                         Style="{DynamicResource ResourceKey=STextButton}"

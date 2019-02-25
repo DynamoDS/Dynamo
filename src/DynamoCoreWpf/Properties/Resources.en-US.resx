@@ -380,7 +380,7 @@ You will get a chance to save your work.</value>
     <comment>Open folder that contains crash report</comment>
   </data>
   <data name="CrashPromptDialogSubmitBugButton" xml:space="preserve">
-    <value>Submit Bug To Github</value>
+    <value>Submit Bug To GitHub</value>
     <comment>Submit a bug on github</comment>
   </data>
   <data name="CrashPromptDialogTitle" xml:space="preserve">
@@ -2183,5 +2183,9 @@ Do you want to install the latest Dynamo update?</value>
   </data>
   <data name="RerunButtonToolTip" xml:space="preserve">
     <value>Rerun the graph.</value>
+  </data>
+  <data name="CrashPromptDialogSubmitBugButtonToolTip" xml:space="preserve">
+    <value>Must be logged into GitHub</value>
+    <comment>Alert user they must be signed into GitHub in order to submit a crash report</comment>
   </data>
 </root>
