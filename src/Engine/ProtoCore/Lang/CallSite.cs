@@ -75,14 +75,12 @@ namespace ProtoCore
 
                     if (HasData)
                         return true;
-                    else
-                    {
-                        //Not empty, and doesn't have data so test recursive
-                        Validity.Assert(NestedData != null,
-                            "Invalid recursion logic, this is a VM bug, please report to the Dynamo Team");
+                    
+                    //Not empty, and doesn't have data so test recursive
+                    Validity.Assert(NestedData != null,
+                        "Invalid recursion logic, this is a VM bug, please report to the Dynamo Team");
 
-                        return NestedData.Any(srtd => srtd.HasAnyNestedData);
-                    }
+                    return NestedData.Any(srtd => srtd.HasAnyNestedData);
                 }
             }
 
@@ -172,26 +170,21 @@ namespace ProtoCore
             {
                 if (HasData)
                     return Data;
-                else
-                {
-                    if (!HasNestedData)
-                        return null;
-                    else
-                    {
+
+                if (!HasNestedData)
+                    return null;
 #if DEBUG
 
-                        Validity.Assert(NestedData != null, "Nested data has changed null status since last check, suspected race");
-                        Validity.Assert(NestedData.Count > 0, "Empty subnested array, please file repo data with @lukechurch, relates to MAGN-4059");
+                Validity.Assert(NestedData != null, "Nested data has changed null status since last check, suspected race");
+                Validity.Assert(NestedData.Count > 0, "Empty subnested array, please file repo data with @lukechurch, relates to MAGN-4059");
 #endif
 
-                        //Safety trap to protect against an empty array, need repro test to figure out why this is getting set with empty arrays
-                        if (NestedData.Count == 0)
-                            return null;
+                //Safety trap to protect against an empty array, need repro test to figure out why this is getting set with empty arrays
+                if (NestedData.Count == 0)
+                    return null;
 
-                        SingleRunTraceData nestedTraceData = NestedData[0];
-                        return nestedTraceData.GetLeftMostData();
-                    }
-                }
+                SingleRunTraceData nestedTraceData = NestedData[0];
+                return nestedTraceData.GetLeftMostData();
             }
 
             public List<SingleRunTraceData> NestedData;
@@ -238,7 +231,7 @@ namespace ProtoCore
 
         /// <summary>
         /// TraceBinder is used to find assemblies to be used for
-        /// deserialization in cases where the exact assemlby that was
+        /// deserialization in cases where the exact assembly that was
         /// used in the serialization is not available. 
         /// </summary>
         internal class TraceBinder : SerializationBinder
@@ -286,7 +279,7 @@ namespace ProtoCore
         /// Normal usage patten is:
         /// 1. Instantiate
         /// 2. Push Trace data from callsite
-        /// 3. Call GetObjectData to serialise it onto a stream
+        /// 3. Call GetObjectData to serialize it onto a stream
         /// 4. Recreate using the special constructor
         /// </summary>
         [Serializable]
@@ -325,14 +318,13 @@ namespace ProtoCore
 #if DEBUG
                         Debug.WriteLine("Deserialization of trace data failed.");
 #endif
-                        continue;
                     }
                 }
 
             }
 
             /// <summary>
-            /// Save the data into the standard serialisation pattern
+            /// Save the data into the standard serialization pattern
             /// </summary>
             public void GetObjectData(SerializationInfo info, StreamingContext context)
             {
@@ -615,7 +607,7 @@ namespace ProtoCore
 
         /// <summary>
         /// Call this method to obtain the Base64 encoded string that 
-        /// represent this instance of CallSite;s trace data
+        /// represents this callsite instance's trace data
         /// </summary>
         /// <returns>Returns the Base64 encoded string that represents the
         /// trace data of this callsite

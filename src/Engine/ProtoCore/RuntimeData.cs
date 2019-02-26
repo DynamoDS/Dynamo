@@ -289,7 +289,7 @@ namespace ProtoCore
 
         /// <summary>
         /// Call this method to pop the top-most serialized callsite trace data.
-        /// Note that this call only pops off a signle callsite trace data 
+        /// Note that this call only pops off a single callsite trace data 
         /// belonging to a given UI node denoted by the given node guid.
         /// </summary>
         /// <param name="nodeGuid">The Guid of a given UI node whose top-most 
@@ -344,10 +344,8 @@ namespace ProtoCore
             {
                 return GetAndRemoveTraceDataForNode(nodeGuid, string.Empty);
             }
-            else
-            {
-                return callsiteTraceData;
-            }
+
+            return callsiteTraceData;
         }
 
         #endregion // Trace Data Serialization Methods/Members
