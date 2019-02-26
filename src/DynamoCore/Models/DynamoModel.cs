@@ -1941,6 +1941,27 @@ namespace Dynamo.Models
             AddWorkspace(workspace);
         }
 
+        private void CheckForInvalidInputSymbols(WorkspaceModel workspace)
+        {
+            if (workspace.containsInvalidInputSymbols() && !IsTestMode)
+            {
+                DisplayInvalidInputSymbolWarning();
+            }
+        }
+
+        private void DisplayInvalidInputSymbolWarning()
+        {
+            string summary = Resources.InvalidInputSymbolWarningShortMessage;
+            var description = Resources.InvalidInputSymbolWarningMessage;
+            const string imageUri = "/DynamoCoreWpf;component/UI/Images/task_dialog_future_file.png";
+            var args = new TaskDialogEventArgs(
+               new Uri(imageUri, UriKind.Relative),
+               Resources.InvalidInputSymbolWarningTitle, summary, description);
+
+            args.AddRightAlignedButton((int)ButtonId.Proceed, Resources.OKButton);
+            OnRequestTaskDialog(null, args);
+        }
+
         /// <summary>
         ///     Remove a workspace from the dynamo model.
         /// </summary>
@@ -1969,7 +1990,9 @@ namespace Dynamo.Models
             if (CustomNodeManager.TryGetFunctionWorkspace(guid, IsTestMode, out customNodeWorkspace))
             {
                 if (!Workspaces.OfType<CustomNodeWorkspaceModel>().Contains(customNodeWorkspace))
+                {
                     AddWorkspace(customNodeWorkspace);
+                }
 
                 CurrentWorkspace = customNodeWorkspace;
                 return true;
@@ -2371,6 +2394,7 @@ namespace Dynamo.Models
 
             _workspaces.Add(workspace);
             CheckForXMLDummyNodes(workspace);
+            CheckForInvalidInputSymbols(workspace);
             OnWorkspaceAdded(workspace);
         }
 

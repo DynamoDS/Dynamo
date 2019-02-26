@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Security;
 using System.Xml;
 using CoreNodeModels.Properties;
 using Dynamo.Graph;
@@ -83,7 +84,7 @@ namespace CoreNodeModels
             {
                 //do not allow selected index to
                 //go out of range of the items collection
-                if (value > Items.Count - 1 || value == -1)
+                if (value > Items.Count - 1 || value < 0)
                 {
                     selectedIndex = -1;
                     selectedString = String.Empty;
@@ -91,7 +92,7 @@ namespace CoreNodeModels
                 else
                 {
                     selectedIndex = value;
-                    selectedString = Items.ElementAt(value).Item.ToString();
+                    selectedString = GetSelectedStringFromItem(Items.ElementAt(value));
                 }
                 RaisePropertyChanged("SelectedIndex");
             }
@@ -110,7 +111,7 @@ namespace CoreNodeModels
             {
                 if (!string.IsNullOrEmpty(value) && value != selectedString)
                 {
-                    var item = Items.FirstOrDefault(i => i.Item.ToString().Equals(value));
+                    var item = Items.FirstOrDefault(i => GetSelectedStringFromItem(i).Equals(value));
                     // In the case that SelectedString deserialize after SelectedIndex
                     // With a valid item from search, get the index of item and replace the current one. 
                     // If no exact match found, fall back to use the default selectedIndex from deserialization.
@@ -157,11 +158,14 @@ namespace CoreNodeModels
                 return;
 
             selectedIndex = ParseSelectedIndex(attrib.Value, Items);
-            selectedString = Items.ElementAt(selectedIndex).Item.ToString();
-
             if (selectedIndex < 0)
             {
                 Warning(Dynamo.Properties.Resources.NothingIsSelectedWarning);
+                selectedString = String.Empty;
+            }
+            else
+            {
+                selectedString = selectedIndex > Items.Count - 1 ? String.Empty : GetSelectedStringFromItem(Items.ElementAt(selectedIndex));
             }
         }
 
@@ -174,8 +178,14 @@ namespace CoreNodeModels
             {
                 selectedIndex = ParseSelectedIndex(value, Items);
                 if (selectedIndex < 0)
+                {
                     Warning(Dynamo.Properties.Resources.NothingIsSelectedWarning);
-                selectedString = Items.ElementAt(selectedIndex).Item.ToString();
+                    selectedString = String.Empty;
+                }
+                else
+                {
+                    selectedString = selectedIndex > Items.Count - 1 ? String.Empty : GetSelectedStringFromItem(Items.ElementAt(selectedIndex));
+                }
                 return true; // UpdateValueCore handled.
             }
 
@@ -229,20 +239,42 @@ namespace CoreNodeModels
             return string.Format("{0}:{1}", index, XmlEscape(item.Name));
         }
 
+        /// <summary>
+        /// Escape string which could contain XML forbidden chars.
+        /// </summary>
+        /// <param name="unescaped"></param>
+        /// <returns></returns>
         protected static string XmlEscape(string unescaped)
         {
-            var doc = new XmlDocument();
-            XmlNode node = doc.CreateElement("root");
-            node.InnerText = unescaped;
-            return node.InnerXml;
+            // TODO: This function can be simplified in Dynamo 3.0
+            // since it is one line wrapper
+            return SecurityElement.Escape(unescaped);
         }
 
+        /// <summary>
+        /// Unescape string which could already be escaped before,
+        /// if there is no escaped special char, return as it is
+        /// if there is special char escaped, restore them.
+        /// </summary>
+        /// <param name="escaped"></param>
+        /// <returns></returns>
         protected static string XmlUnescape(string escaped)
         {
-            var doc = new XmlDocument();
-            XmlNode node = doc.CreateElement("root");
-            node.InnerXml = escaped;
-            return node.InnerText;
+            // TODO: This function can be simplified in Dynamo 3.0
+            // since it is one line wrapper
+            return System.Web.HttpUtility.HtmlDecode(escaped);
+        }
+
+        /// <summary>
+        /// This function is to define what dropdown node need to serialize
+        /// as SelectedString. Child Class can redefine the pattern.
+        /// e.g. Categories node in Revit will override this function.
+        /// </summary>
+        /// <param name="item">Selected DynamoDropDownItem</param>
+        /// <returns>string to serialize as SelectedString or compare with SelectedString</returns>
+        protected virtual string GetSelectedStringFromItem(DynamoDropDownItem item)
+        {
+            return item == null || item.Name == null ? string.Empty : item.Name;
         }
 
         public void PopulateItems()
@@ -256,10 +288,10 @@ namespace CoreNodeModels
                 SelectedIndex = -1;
                 for (int i = 0; i < items.Count; i++)
                 {
-                    if ((items.ElementAt(i)).Name.Equals(currentSelection))
+                    if (GetSelectedStringFromItem(items.ElementAt(i)).Equals(currentSelection))
                     {
                         SelectedIndex = i;
-                        SelectedString = currentSelection;
+                        break;
                     }
                 }
             }

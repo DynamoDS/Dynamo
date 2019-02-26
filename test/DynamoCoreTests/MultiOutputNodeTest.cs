@@ -12,14 +12,14 @@ namespace Dynamo.Tests
     {
         protected override void GetLibrariesToPreload(List<string> libraries)
         {
+            libraries.Add("DesignScriptBuiltin.dll");
             libraries.Add("FFITarget.dll");
             base.GetLibrariesToPreload(libraries);
         }
 
-        [Test, Category("Failure")]
+        [Test]
         public void TestSingleOutputNode()
         {
-            // TODO pratapa: Test goes into infinite loop after Dictionary changes
             RunModel(@"core\multiout\singleoutput.dyn");
             AssertPreviewValue("060e57e1-b889-4b94-a440-8adb0067ae79", null);
 

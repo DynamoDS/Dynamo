@@ -2,13 +2,13 @@
   <NamespaceResolutionMap />
   <Elements>
     <Dynamo.Graph.Nodes.CustomNodes.Symbol guid="e058111a-0c58-4dbf-9293-6ab711f530bf" type="Dynamo.Graph.Nodes.CustomNodes.Symbol" nickname="Variable" x="0" y="65.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="True" IsFrozen="false" isPinned="false">
-      <Symbol value="x-start" />
+      <Symbol value="x_start" />
     </Dynamo.Graph.Nodes.CustomNodes.Symbol>
     <Dynamo.Graph.Nodes.CustomNodes.Symbol guid="81ecddc3-e0c6-4df5-a1ae-195bea0d9554" type="Dynamo.Graph.Nodes.CustomNodes.Symbol" nickname="Variable" x="0" y="122" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="True" IsFrozen="false" isPinned="false">
-      <Symbol value="x-end" />
+      <Symbol value="x_end" />
     </Dynamo.Graph.Nodes.CustomNodes.Symbol>
     <Dynamo.Graph.Nodes.CustomNodes.Symbol guid="2601b801-c8af-413b-9c58-f8b100d62ed8" type="Dynamo.Graph.Nodes.CustomNodes.Symbol" nickname="Variable" x="0" y="177.25" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="True" IsFrozen="false" isPinned="false">
-      <Symbol value="x-step" />
+      <Symbol value="x_step" />
     </Dynamo.Graph.Nodes.CustomNodes.Symbol>
     <Dynamo.Graph.Nodes.CustomNodes.Symbol guid="9292713b-97e1-483b-954d-40fc06d22356" type="Dynamo.Graph.Nodes.CustomNodes.Symbol" nickname="Variable" x="0" y="237.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="True" IsFrozen="false" isPinned="false">
       <Symbol value="y = f(x)" />

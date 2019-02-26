@@ -241,7 +241,7 @@ namespace ProtoCore
         /// deserialization in cases where the exact assemlby that was
         /// used in the serialization is not available. 
         /// </summary>
-        private class TraceBinder : SerializationBinder
+        internal class TraceBinder : SerializationBinder
         {
             // Use a custom serialization binder to make the serializer more permissive
             // http://www.codeproject.com/Articles/11079/NET-XML-and-SOAP-Serialization-Samples-Tips
@@ -249,6 +249,19 @@ namespace ProtoCore
             public override System.Type BindToType(string assemblyName, string typeName)
             {
                 var assemblies = AppDomain.CurrentDomain.GetAssemblies().Where(a => !a.IsDynamic);
+                var assemblyNameObj = new AssemblyName(assemblyName);
+                //find matching assemblies by name, version is not used.
+                var matchingAssembly = assemblies.FirstOrDefault(x => x.GetName().Name == assemblyNameObj.Name);
+                if(matchingAssembly!= null)
+                {
+                   var matchingType = matchingAssembly.GetType(typeName);
+                    if(matchingType != null)
+                    {
+                        return matchingType;
+                    }
+                }
+                //if there was no matching assembly, or type, try all assemblies and all types.
+                //TODO(DYN-1594 - remove this fallback when we can determine if it is required. It is very slow.)
                 var types = new List<System.Type>();
                 foreach (var a in assemblies)
                 {

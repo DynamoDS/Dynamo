@@ -298,12 +298,17 @@ namespace Dynamo.Graph.Nodes.CustomNodes
             {
                 this.Error(Properties.Resources.CustomNodeNotLoaded);
             } 
+
+            else if (def.ContainsInvalidInput)
+            {
+                this.Warning(Properties.Resources.InvalidInputSymbolCustomNodeWarning, true);
+            }
+
             else
             {
                 this.ClearErrorsAndWarnings();
             }
         }
-
 
         /// <summary>
         ///     Validates passed Custom Node definition and synchronizes node with it.
@@ -460,7 +465,8 @@ namespace Dynamo.Graph.Nodes.CustomNodes
                     }
                     else
                     {
-                        Parameter = new TypedParameter(name, type, defaultValue, null, comment);
+                        Error(Properties.Resources.InvalidInputSymbolErrorMessage); 
+                        Parameter = new TypedParameter("", type, defaultValue, null, comment, false);
                     }
                 }
                 else

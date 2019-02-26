@@ -26,6 +26,17 @@ namespace WpfVisualizationTests
         }
 
         [Test]
+        public void Camera_NaNData_ResetsToDefault()
+        {
+            var openPath = Path.Combine(
+                GetTestDirectory(ExecutingDirectory),
+                @"core\camera\nanCameraData.dyn");
+            OpenDynamoDefinition(openPath);
+
+            Assert.True(CameraHasDefaultOrientation());
+        }
+
+        [Test]
         public void Camera_BadSavedData_ResetsToDefault()
         {
             var openPath = Path.Combine(

@@ -1332,7 +1332,7 @@ namespace ProtoFFI
         {
             CLRObjectMarshaler marshaller = null;
             if (!mObjectMarshlers.TryGetValue(sender, out marshaller))
-                throw new KeyNotFoundException();
+                throw new System.Collections.Generic.KeyNotFoundException();
 
             mObjectMarshlers.Remove(sender);
 
