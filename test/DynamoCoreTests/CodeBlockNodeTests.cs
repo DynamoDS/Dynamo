@@ -266,6 +266,19 @@ b = c[w][x][y][z];";
 
         [Test]
         [Category("UnitTests")]
+        public void TestFunctionMultipleBlocksDefaultParameters()
+        {
+            var codeBlockNode1 = CreateCodeBlockNode();
+            UpdateCodeBlockNodeContent(codeBlockNode1, "def test1(x:int = 1, y:int= 2){return = x + y;}test1();");
+            var codeBlockNode2 = CreateCodeBlockNode();
+            UpdateCodeBlockNodeContent(codeBlockNode2, "def test2(x, y = 2, z = 3){return = x + y + z;}test2(1);");
+
+            AssertPreviewValue(codeBlockNode1.GUID.ToString(), 3);
+            AssertPreviewValue(codeBlockNode2.GUID.ToString(), 6);
+        }
+
+        [Test]
+        [Category("UnitTests")]
         public void TestVarRedefinitionInFunctionDef()
         {
             string openPath = Path.Combine(TestDirectory,
