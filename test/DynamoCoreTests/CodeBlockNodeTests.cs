@@ -277,6 +277,22 @@ b = c[w][x][y][z];";
             AssertPreviewValue(codeBlockNode2.GUID.ToString(), 6);
         }
 
+        // Note: This test is expected to fail due to the functions beng indeterminate
+        //       We will need to figure out a way to test this once error handling is implemented
+        //[Test]
+        //[Category("UnitTests")]
+        //public void TestIndeterminateFunctionDefaultParameters()
+        //{
+        //    // Note that both code blocks contain functions called "test" that are indeterminate
+        //    var codeBlockNode1 = CreateCodeBlockNode();
+        //    UpdateCodeBlockNodeContent(codeBlockNode1, "def test(x:int = 1, y:int= 2){return = x + y;}test();");
+        //    var codeBlockNode2 = CreateCodeBlockNode();
+        //    UpdateCodeBlockNodeContent(codeBlockNode2, "def test(x, y = 2, z = 3){return = x + y + z;}test(1);");
+
+        //    AssertPreviewValue(codeBlockNode1.GUID.ToString(), 3);
+        //    AssertPreviewValue(codeBlockNode2.GUID.ToString(), 6);
+        //}
+
         [Test]
         [Category("UnitTests")]
         public void TestVarRedefinitionInFunctionDef()
