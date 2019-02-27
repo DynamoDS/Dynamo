@@ -395,6 +395,10 @@ namespace ProtoCore.DSASM
         public const string kDoubleUnderscores = "__";
         public const string kSingleUnderscore = "_";
         public const string kTempVarForTypedIdentifier = "%tTypedIdent";
+
+        internal const string kInClassDecl = "InClassDecl";
+        internal const string kInFunctionScope = "InFunctionScope";
+        internal const string kInstance = "Instance";
     }
 
     public enum MemoryRegion

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using ProtoCore.AssociativeGraph;
 using ProtoCore.DSASM;
 using ProtoCore.Utils;
@@ -25,11 +26,23 @@ namespace ProtoCore
 
       
         private Dictionary<Guid, List<CallSite.RawTraceData>> uiNodeToSerializedDataMap = null;
+
+        private static readonly string identifierPattern = @"([a-zA-Z-_@0-9]+)";
+        private static readonly string indexPattern = @"([-+]?\d+)";
+        private static readonly string callsiteIDPattern =
+            identifierPattern +
+            Constants.kInClassDecl + indexPattern +
+            Constants.kSingleUnderscore + Constants.kInFunctionScope + indexPattern +
+            Constants.kSingleUnderscore + Constants.kInstance + indexPattern +
+            identifierPattern;
+        private static readonly string joinPattern = ';' + callsiteIDPattern;
+        private static readonly string fullCallsiteID = callsiteIDPattern + string.Format("({0})*", joinPattern);
+
         public IDictionary<string, CallSite> CallsiteCache { get; set; }
         /// <summary>		
         /// Map from a callsite's guid to a graph UI node. 		
         /// </summary>
-        public Dictionary<Guid, Guid> CallSiteToNodeMap { get; private set; }
+        public Dictionary<Guid, Guid> CallSiteToNodeMap { get; }
  		 
  #endregion
 
@@ -320,7 +333,7 @@ namespace ProtoCore
             {
                 for (int i = 0; i < callsiteDataList.Count; i++)
                 {
-                    if (callsiteDataList[i].ID == callsiteID)
+                    if (DoCallSiteIDsMatch(callsiteID, callsiteDataList[i].ID))
                     {
                         callsiteTraceData = callsiteDataList[i].Data;
                         callsiteDataList.RemoveAt(i);
@@ -346,6 +359,30 @@ namespace ProtoCore
             }
 
             return callsiteTraceData;
+        }
+
+        private static bool DoCallSiteIDsMatch(string compilerGenerated, string deserialized)
+        {
+            if (compilerGenerated == deserialized) return true;
+
+            var matches1 = Regex.Match(compilerGenerated, fullCallsiteID);
+            var matches2 = Regex.Match(deserialized, fullCallsiteID);
+
+            if (matches1.Groups.Count != matches2.Groups.Count) return false;
+
+            // If both group counts match, they should number 12 in all.
+            // We should ignore checking for the 1st, 7th, and 10th group specifically
+            // as per the Regex pattern (for fullCallsiteID) since that group includes the function scope
+            // that can vary for custom nodes or DS functions that make nested calls to
+            // host element creation methods.
+            for (int i = 0; i < matches1.Groups.Count; i++)
+            {
+                if (i == 0 || i == 6 || i == 9) continue;
+
+                if (matches1.Groups[i].Value != matches2.Groups[i].Value) return false;
+            }
+
+            return true;
         }
 
         #endregion // Trace Data Serialization Methods/Members
