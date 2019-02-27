@@ -212,20 +212,21 @@ b = c[w][x][y][z];";
 #endif
         protected double tolerance = 1e-4;
 
-        [Ignore] // This test fails, even though the individual items pass as separate tests
-        [Test]
-        [Category("UnitTests")]
-        public void TestFunctionDefaultParameters()
-        {
-            var codeBlockNode = CreateCodeBlockNode();
-            var guid = codeBlockNode.GUID.ToString();
+        // Note: This test fails, even though the individual items pass as separate tests
+        //       This is preventing putting all of the tests in a single method
+        //[Test]
+        //[Category("UnitTests")]
+        //public void TestFunctionDefaultParameters()
+        //{
+        //    var codeBlockNode = CreateCodeBlockNode();
+        //    var guid = codeBlockNode.GUID.ToString();
 
-            UpdateCodeBlockNodeContent(codeBlockNode, "def test(x:int = 1){return = x;}test();");
-            AssertPreviewValue(guid, 1);
+        //    UpdateCodeBlockNodeContent(codeBlockNode, "def test(x:int = 1){return = x;}test();");
+        //    AssertPreviewValue(guid, 1);
 
-            UpdateCodeBlockNodeContent(codeBlockNode, "def test(x:int = 1, y:int= 2){return = x + y;}test();");
-            AssertPreviewValue(guid, 3);
-        }
+        //    UpdateCodeBlockNodeContent(codeBlockNode, "def test(x:int = 1, y:int= 2){return = x + y;}test();");
+        //    AssertPreviewValue(guid, 3);
+        //}
 
         [Test]
         [Category("UnitTests")]
