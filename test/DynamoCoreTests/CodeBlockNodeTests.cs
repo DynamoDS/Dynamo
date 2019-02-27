@@ -256,6 +256,15 @@ b = c[w][x][y][z];";
 
         [Test]
         [Category("UnitTests")]
+        public void TestFunctionOneArgumentOneDefaultParameter()
+        {
+            var codeBlockNode = CreateCodeBlockNode();
+            UpdateCodeBlockNodeContent(codeBlockNode, "def test(x:int, y:int= 2){return = x + y;}test(1);");
+            AssertPreviewValue(codeBlockNode.GUID.ToString(), 3);
+        }
+
+        [Test]
+        [Category("UnitTests")]
         public void TestVarRedefinitionInFunctionDef()
         {
             string openPath = Path.Combine(TestDirectory,
