@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading;
 using Dynamo.ViewModels;
+using Dynamo.Utilities;
 using NUnit.Framework;
 
 namespace Dynamo.Tests
@@ -78,7 +75,7 @@ namespace Dynamo.Tests
         public void StackTraceIncludedInReport()
         {
             // Mock Dynamo version
-            var dynamoVersion = "2.1.0";
+            var dynamoVersion = AssemblyHelper.GetDynamoVersion().ToString();
 
             // Create a crash report to submit
             var crashReport = Wpf.Utilities.CrashUtilities.BuildMarkdownContent(dynamoVersion, StackTrace);
@@ -97,8 +94,9 @@ namespace Dynamo.Tests
             // Verify request contains the dynamoVersion
             Assert.True(decoded.Contains(dynamoVersion));
 
+            // TODO - Can be re-added when stack traces are uploaded automatically (currently manual)
             // Verify request contains the stack trace
-            Assert.True(decoded.Contains(StackTrace));
+            // Assert.True(decoded.Contains(StackTrace));
         }
     }
 }
