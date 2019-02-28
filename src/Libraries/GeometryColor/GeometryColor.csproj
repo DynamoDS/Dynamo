@@ -24,7 +24,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>..\..\..\bin\AnyCPU\Debug\GeometryColor.xml</DocumentationFile>
+    <DocumentationFile>..\..\..\bin\AnyCPU\Debug\en-US\GeometryColor.xml</DocumentationFile>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
@@ -35,7 +35,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
-    <DocumentationFile>..\..\..\bin\AnyCPU\Release\GeometryColor.xml</DocumentationFile>
+    <DocumentationFile>..\..\..\bin\AnyCPU\Release\en-US\GeometryColor.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="ProtoGeometry">
