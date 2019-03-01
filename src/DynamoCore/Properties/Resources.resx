@@ -656,7 +656,7 @@ value : bool = false</value>
     <value>Python template set to default file</value>
   </data>
   <data name="PythonTemplateUserFile" xml:space="preserve">
-    <value>Python template set to user file</value>
+    <value>Python template loaded from DynamoSettings.xml path</value>
   </data>
   <data name="DefaultHomeWorkspaceName" xml:space="preserve">
     <value>Home</value>
@@ -696,5 +696,8 @@ The input name should be a valid variable name, without spaces. An input type an
   </data>
   <data name="InvalidInputSymbolWarningTitle" xml:space="preserve">
     <value>Custom Node Contains Invalid Inputs and Cannot Be Saved.</value>
+  </data>
+  <data name="PythonTemplateDefinedByHost" xml:space="preserve">
+    <value>Python template set by host integrator</value>
   </data>
 </root>

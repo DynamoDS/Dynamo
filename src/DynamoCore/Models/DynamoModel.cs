@@ -521,6 +521,7 @@ namespace Dynamo.Models
             public IEnumerable<IExtension> Extensions { get; set; }
             public TaskProcessMode ProcessMode { get; set; }
             public bool IsHeadless { get; set; }
+            public string PythonTemplatePath { get; set; }
         }
 
         /// <summary>
@@ -640,17 +641,42 @@ namespace Dynamo.Models
             // If not, check the default filepath for the Python template (userDataFolder\PythonTemplate.py).
             // If that doesn't exist either or is empty, Dynamo falls back to the hard-coded Python script template.
             // We log the behaviour to make it easy for users to troubleshoot this.
-            if (string.IsNullOrEmpty(PreferenceSettings.PythonTemplateFilePath) || !File.Exists(PreferenceSettings.PythonTemplateFilePath))
+
+            // If a custom python template path doesn't already exists in the DynamoSettings.xml
+            if(string.IsNullOrEmpty(PreferenceSettings.PythonTemplateFilePath) || !File.Exists(PreferenceSettings.PythonTemplateFilePath))
             {
-                if (string.IsNullOrEmpty(pathManager.PythonTemplateFilePath) || !File.Exists(pathManager.PythonTemplateFilePath))
-                    Logger.Log(Resources.PythonTemplateInvalid);
-                else
+                try
                 {
-                    PreferenceSettings.PythonTemplateFilePath = pathManager.PythonTemplateFilePath;
-                    Logger.Log(Resources.PythonTemplateDefaultFile + " : " + pathManager.PythonTemplateFilePath);
+                    // To supply a custom python template host integrators should supply a 'DefaultStartConfiguration' config file
+                    // or create a new struct that inherits from 'DefaultStartConfiguration' making sure to set the 'PythonTemplatePath'
+                    // while passing the config to the 'DynamoModel' constructor.
+                    var configCast = (DefaultStartConfiguration)config;
+                    var templatePath = configCast.PythonTemplatePath;
+
+                    // If a custom python template path was set in the config apply that template
+                    if (!string.IsNullOrEmpty(templatePath) && File.Exists(templatePath))
+                    {
+                        PreferenceSettings.PythonTemplateFilePath = templatePath;
+                        Logger.Log(Resources.PythonTemplateDefinedByHost + " : " + pathManager.PythonTemplateFilePath);
+                    }
+
+                    // Otherwise fallback to the default
+                    else
+                    {
+                        SetDefaultPythonTemplate();
+                    }
+                }
+                catch
+                {
+                    // Fallback to the default
+                    SetDefaultPythonTemplate();
                 }
             }
-            else Logger.Log(Resources.PythonTemplateUserFile + " : " + pathManager.PythonTemplateFilePath);
+            else
+            {
+                // A custom python template path already exists in the DynamoSettings.xml
+                Logger.Log(Resources.PythonTemplateUserFile + " : " + pathManager.PythonTemplateFilePath);
+            }
 
             pathManager.Preferences = PreferenceSettings;
 
@@ -777,6 +803,21 @@ namespace Dynamo.Models
             TraceReconciliationProcessor = this;
             // This event should only be raised at the end of this method.
              DynamoReady(new ReadyParams(this));
+        }
+
+        private void SetDefaultPythonTemplate()
+        {
+            // Check if default python template file path is valid, if so apply template
+            if (!string.IsNullOrEmpty(pathManager.PythonTemplateFilePath) && File.Exists(pathManager.PythonTemplateFilePath))
+            {
+                PreferenceSettings.PythonTemplateFilePath = pathManager.PythonTemplateFilePath;
+                Logger.Log(Resources.PythonTemplateDefaultFile + " : " + pathManager.PythonTemplateFilePath);
+            }
+
+            else
+            {
+                Logger.Log(Resources.PythonTemplateInvalid);
+            }
         }
 
         private void DynamoReadyExtensionHandler(ReadyParams readyParams, IEnumerable<IExtension> extensions) {
