@@ -1834,6 +1834,8 @@ namespace DynamoCoreWpfTests
         [Category("RegressionTests")]
         public void Defect_MAGN_520_DS()
         {
+            // This test is updated to use DeleteModelCommand instead of SelectInRegionCommand due to instability
+
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-520
             RunCommandsFromFile("Defect_MAGN_520_DS.xml");
 
