@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Autodesk.DesignScript.Runtime;
 
 namespace FFITarget
 {
@@ -101,12 +100,6 @@ namespace FFITarget
         public static int StaticFunction()
         {
             return StaticProp;
-        }
-
-        [AllowRankReduction]
-        public static int[] RankReductionProperty
-        {
-            get { return new[] {9989}; }
         }
 
         public void Dispose()
