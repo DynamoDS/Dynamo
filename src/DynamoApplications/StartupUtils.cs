@@ -152,9 +152,7 @@ namespace Dynamo.Applications
                     new Version(225,0,0),
                     new Version(224,4,0),
                     new Version(224,0,1),
-                    new Version(223,0,1),
-                    new Version(222,0,0),
-                    new Version(221,0,0)
+                    new Version(223,0,1)
             };
 
             var preloader = new Preloader(rootFolder, versions);
