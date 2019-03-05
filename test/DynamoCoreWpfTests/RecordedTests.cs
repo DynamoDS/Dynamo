@@ -3492,12 +3492,12 @@ namespace DynamoCoreWpfTests
                 {
                     AssertNullValues();
                     Assert.AreEqual(false, ViewModel.Model.EngineController.LiveRunnerRuntimeCore.CancellationPending);
-                    Assert.AreEqual(false, ViewModel.HomeSpace.RunSettings.RunEnabled);
+                    Assert.AreEqual(true, ViewModel.HomeSpace.RunSettings.RunEnabled);
                 }
                 else if (commandTag == "AfterRun")
                 {
                     Assert.AreEqual(false, ViewModel.Model.EngineController.LiveRunnerRuntimeCore.CancellationPending);
-                    Assert.AreEqual(true, ViewModel.HomeSpace.RunSettings.RunEnabled);
+                    Assert.AreEqual(false, ViewModel.HomeSpace.RunSettings.RunEnabled);
                 }
                 else if (commandTag == "AfterCancel")
                 {

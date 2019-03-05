@@ -136,6 +136,11 @@ namespace FFITarget
             return dictionary;
         }
 
+        public static List<Dictionary<string, int>> AcceptListOfDictionaries(List<Dictionary<string, int>> listDict)
+        {
+            return listDict;
+        }
+
         public static IDictionary AcceptNestedDictionary(Dictionary<string, object> dictionary)
         {
             return dictionary;
