@@ -64,14 +64,14 @@ namespace ProtoFFI
             Info = info;
         }
 
-        public void CheckForRankReductionAttribute(Dictionary<MethodInfo, Attribute[]> getterAttributes)
+        internal void CheckForRankReductionAttribute(Dictionary<MethodInfo, Attribute[]> getterAttributes)
         {
-            Attribute[] atts = null;
-            if (null != Info as MethodInfo)
+            var info = Info as MethodInfo;
+            if (info != null)
             {
-                if (getterAttributes.TryGetValue(Info as MethodInfo, out atts))
+                Attribute[] attributes = null;
+                if (getterAttributes.TryGetValue(info, out attributes))
                 {
-                    var attributes = atts;
                     foreach (var attr in attributes)
                     {
                         if (attr is AllowRankReductionAttribute)
