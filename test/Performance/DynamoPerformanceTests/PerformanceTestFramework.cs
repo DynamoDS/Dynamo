@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using BenchmarkDotNet.Attributes;
@@ -10,22 +11,22 @@ using Dynamo;
 
 namespace DynamoPerformanceTests
 {
-    public class AllowNonOptimized : ManualConfig
-    {
-        public AllowNonOptimized()
-        {
-            Add(JitOptimizationsValidator.DontFailOnError);
+    
 
-            Add(DefaultConfig.Instance.GetLoggers().ToArray()); // manual config has no loggers by default
-            Add(DefaultConfig.Instance.GetExporters().ToArray()); // manual config has no exporters by default
-            Add(DefaultConfig.Instance.GetColumnProviders().ToArray());
-        }
-    }
-
-    //[Config(typeof(AllowNonOptimized))]
     public class PerformanceTestFramework : DynamoModelTestBase
     {
-        
+        public class AllowNonOptimized : ManualConfig
+        {
+            public AllowNonOptimized()
+            {
+                Add(JitOptimizationsValidator.DontFailOnError);
+
+                Add(DefaultConfig.Instance.GetLoggers().ToArray()); // manual config has no loggers by default
+                Add(DefaultConfig.Instance.GetExporters().ToArray()); // manual config has no exporters by default
+                Add(DefaultConfig.Instance.GetColumnProviders().ToArray());
+            }
+        }
+
         protected override void GetLibrariesToPreload(List<string> libraries)
         {
             base.GetLibrariesToPreload(libraries);
@@ -42,7 +43,7 @@ namespace DynamoPerformanceTests
         [ParamsSource(nameof(PerformanceTestSource))]
         public string DynamoFilePath { get; set; }
 
-#region Global setup and cleanup methods for Benchmarks
+        #region Global setup and cleanup methods for Benchmarks
 
         [GlobalSetup(Target = nameof(OpenModelBenchmark))]
         public void GlobalSetupOpenModel()
@@ -66,7 +67,7 @@ namespace DynamoPerformanceTests
             Cleanup();
         }
 
-#endregion
+        #endregion
 
         #region Benchmark methods
         /// <summary>
@@ -94,8 +95,6 @@ namespace DynamoPerformanceTests
         /// <returns></returns>
         public static IEnumerable<string> PerformanceTestSource()
         {
-            var testParameters = new List<string>();
-
             var fi = new FileInfo(Assembly.GetExecutingAssembly().Location);
             string dir = fi.DirectoryName;
 
@@ -111,15 +110,14 @@ namespace DynamoPerformanceTests
                 yield return fileInfo.FullName;
             }
         }
-
-
     }
+
 
     public class Program
     {
         public static void Main(string[] args)
         {
-            var summary = BenchmarkRunner.Run<PerformanceTestFramework>();
+            var summary = BenchmarkRunner.Run<PerformanceTestFramework>(new PerformanceTestFramework.AllowNonOptimized());
         }
     }
 }
