@@ -827,6 +827,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(true, InvalidNameError);
         }
 
+        //This test will check for the default name that is set for the workspace snapshot.
         [Test]
         public void GenerateSnapshotNameTest()
         {

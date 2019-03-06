@@ -160,10 +160,15 @@ namespace DynamoUtilities
             return false;
         }
 
-        public static String GetSnapshotName(FileInfo fi)
+        /// <summary>
+        /// This is a utility method for generating a default name to the snapshot image. 
+        /// </summary>
+        /// <param name="fileInfo">File information</param>
+        /// <returns>Returns a default name(along with the timestamp) for the workspace image</returns>
+        public static String GetSnapshotName(FileInfo fileInfo)
         {
             String timeStamp = string.Format("{0:yyyy-MM-dd_hh-mm-ss}", DateTime.Now);
-            String snapshotName = fi.Name.Replace(fi.Extension, "_") + timeStamp;
+            String snapshotName = fileInfo.Name.Replace(fileInfo.Extension, "_") + timeStamp;
             return snapshotName;
         }
     }
