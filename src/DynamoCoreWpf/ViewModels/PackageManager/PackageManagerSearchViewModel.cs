@@ -479,7 +479,7 @@ namespace Dynamo.PackageManager
 
                 if (allPackageVersions.Count == 0)
                 {
-                    MessageBox.Show(String.Format("Failed to donwload package {0}", element.Name),
+                    MessageBox.Show(String.Format("Could not find all dependecies for package {0}", element.Name),
                     Resources.PackageDownloadErrorMessageBoxTitle,
                     MessageBoxButton.OK, MessageBoxImage.Error);
 
