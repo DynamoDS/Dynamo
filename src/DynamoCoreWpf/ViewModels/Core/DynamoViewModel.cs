@@ -1992,7 +1992,7 @@ namespace Dynamo.ViewModels
             if (!string.IsNullOrEmpty(model.CurrentWorkspace.FileName))
             {
                 var fi = new FileInfo(model.CurrentWorkspace.FileName);
-                var snapshotName = PathHelper.GetSnapshotName(fi);
+                var snapshotName = PathHelper.GetSnapshotNameFromPath(fi.FullName);
                 _fileDialog.InitialDirectory = fi.DirectoryName;
                 _fileDialog.FileName = snapshotName;
             }

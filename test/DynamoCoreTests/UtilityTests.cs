@@ -832,8 +832,7 @@ namespace Dynamo.Tests
         public void GenerateSnapshotNameTest()
         {
             var examplePath = Path.Combine(TestDirectory, @"core\math", "Add.dyn");
-            var fi = new FileInfo(examplePath);
-            var snapshotName = PathHelper.GetSnapshotName(fi);
+            var snapshotName = PathHelper.GetSnapshotNameFromPath(examplePath);
             Assert.AreEqual(snapshotName, "Add_" + string.Format("{0:yyyy-MM-dd_hh-mm-ss}", DateTime.Now));
         }
     }
