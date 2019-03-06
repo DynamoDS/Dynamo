@@ -462,24 +462,14 @@ namespace Dynamo.PackageManager
                     return;
                 }
 
-                var allPackageVersions = new List<Tuple<PackageHeader, PackageVersion>>();
+                List<Tuple<PackageHeader, PackageVersion>> allPackageVersions = null;
                 try
                 {
-                    var requiredPackages = PackageManagerSearchElement.ListRequiredPackageVersions(headers, version);
-                    foreach (var p in requiredPackages)
-                    {
-                        allPackageVersions.Add(p);
-                    }
+                    allPackageVersions = PackageManagerSearchElement.ListRequiredPackageVersions(headers, version).ToList();
                 }
                 catch
                 {
-                    allPackageVersions.Clear();
-    
-                }
-
-                if (allPackageVersions.Count == 0)
-                {
-                    MessageBox.Show(String.Format("Could not find all dependecies for package {0}", element.Name),
+                    MessageBox.Show(String.Format("Could not find all dependencies for package {0}", element.Name),
                     Resources.PackageDownloadErrorMessageBoxTitle,
                     MessageBoxButton.OK, MessageBoxImage.Error);
 
