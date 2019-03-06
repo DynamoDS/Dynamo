@@ -5435,5 +5435,17 @@ namespace Dynamo.Wpf.Properties
                 return ResourceManager.GetString("ZeroTouchTypeShortString", resourceCulture);
             }
         }
+
+
+        /// <summary>
+        ///   Could not find all dependencies for package {0}, based on versions specified by author.
+        /// </summary>
+        public static string MessagePackageMissingDependencies
+        {
+            get
+            {
+                return ResourceManager.GetString("MessagePackageMissingDependencies", resourceCulture);
+            }
+        }
     }
 }

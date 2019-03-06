@@ -469,7 +469,7 @@ namespace Dynamo.PackageManager
                 }
                 catch
                 {
-                    MessageBox.Show(String.Format("Could not find all dependencies for package {0}", element.Name),
+                    MessageBox.Show(String.Format(Resources.MessagePackageMissingDependencies, element.Name),
                     Resources.PackageDownloadErrorMessageBoxTitle,
                     MessageBoxButton.OK, MessageBoxImage.Error);
 
