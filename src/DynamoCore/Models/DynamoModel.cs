@@ -645,13 +645,13 @@ namespace Dynamo.Models
             // If a custom python template path doesn't already exists in the DynamoSettings.xml
             if(string.IsNullOrEmpty(PreferenceSettings.PythonTemplateFilePath) || !File.Exists(PreferenceSettings.PythonTemplateFilePath))
             {
-                try
+                // To supply a custom python template host integrators should supply a 'DefaultStartConfiguration' config file
+                // or create a new struct that inherits from 'DefaultStartConfiguration' making sure to set the 'PythonTemplatePath'
+                // while passing the config to the 'DynamoModel' constructor.
+                if (config is DefaultStartConfiguration)
                 {
-                    // To supply a custom python template host integrators should supply a 'DefaultStartConfiguration' config file
-                    // or create a new struct that inherits from 'DefaultStartConfiguration' making sure to set the 'PythonTemplatePath'
-                    // while passing the config to the 'DynamoModel' constructor.
-                    var configCast = (DefaultStartConfiguration)config;
-                    var templatePath = configCast.PythonTemplatePath;
+                    var configurationSettings = (DefaultStartConfiguration)config;
+                    var templatePath = configurationSettings.PythonTemplatePath;
 
                     // If a custom python template path was set in the config apply that template
                     if (!string.IsNullOrEmpty(templatePath) && File.Exists(templatePath))
@@ -666,12 +666,14 @@ namespace Dynamo.Models
                         SetDefaultPythonTemplate();
                     }
                 }
-                catch
+
+                else
                 {
                     // Fallback to the default
                     SetDefaultPythonTemplate();
                 }
             }
+
             else
             {
                 // A custom python template path already exists in the DynamoSettings.xml
