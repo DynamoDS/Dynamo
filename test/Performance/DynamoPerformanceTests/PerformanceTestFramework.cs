@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Configs;
+using BenchmarkDotNet.Engines;
 using BenchmarkDotNet.Running;
 using BenchmarkDotNet.Validators;
 using Dynamo;
@@ -12,7 +13,7 @@ using Dynamo;
 namespace DynamoPerformanceTests
 {
     
-
+    [SimpleJob(RunStrategy.Monitoring)]
     public class PerformanceTestFramework : DynamoModelTestBase
     {
         public class AllowNonOptimized : ManualConfig
@@ -43,16 +44,16 @@ namespace DynamoPerformanceTests
         [ParamsSource(nameof(PerformanceTestSource))]
         public string DynamoFilePath { get; set; }
 
-        #region Global setup and cleanup methods for Benchmarks
+        #region Iteration setup and cleanup methods for Benchmarks
 
-        [GlobalSetup(Target = nameof(OpenModelBenchmark))]
-        public void GlobalSetupOpenModel()
+        [IterationSetup(Target = nameof(OpenModelBenchmark))]
+        public void IterationSetupOpenModel()
         {
             Setup();
         }
 
-        [GlobalSetup(Target = nameof(RunModelBenchmark))]
-        public void GlobalSetupRunModel()
+        [IterationSetup(Target = nameof(RunModelBenchmark))]
+        public void IterationSetupRunModel()
         {
             Setup();
 
@@ -61,8 +62,8 @@ namespace DynamoPerformanceTests
         }
 
 
-        [GlobalCleanup]
-        public void GlobalCleanup()
+        [IterationCleanup]
+        public void IterationCleanup()
         {
             Cleanup();
         }
