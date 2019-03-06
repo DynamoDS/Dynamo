@@ -128,11 +128,13 @@ namespace ProtoCore
 
             var warningMsg = string.Format(Resources.kConsoleWarningMessage,
                                            message, filename, line, col);
+#if DEBUG
 
             if (runtimeCore.Options.Verbose)
             {
                 System.Console.WriteLine(warningMsg);
             }
+#endif
 
             if (WebMessageHandler != null)
             {

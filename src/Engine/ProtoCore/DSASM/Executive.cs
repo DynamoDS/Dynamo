@@ -1239,6 +1239,7 @@ namespace ProtoCore.DSASM
 
             if (enableLogging)
             {
+
                 foreach (AssociativeGraph.GraphNode node in nodeIterations)
                 {
                     Console.WriteLine("nodes " + node.updateNodeRefList[0].nodeList[0].symbol.name);

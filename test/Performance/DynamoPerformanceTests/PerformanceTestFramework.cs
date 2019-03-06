@@ -12,7 +12,6 @@ using Dynamo;
 
 namespace DynamoPerformanceTests
 {
-    
     public class PerformanceTestFramework : DynamoModelTestBase
     {
         public class AllowNonOptimized : ManualConfig
