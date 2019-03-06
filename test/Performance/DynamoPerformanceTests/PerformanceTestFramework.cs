@@ -117,7 +117,8 @@ namespace DynamoPerformanceTests
     {
         public static void Main(string[] args)
         {
-            var summary = BenchmarkRunner.Run<PerformanceTestFramework>(new PerformanceTestFramework.AllowNonOptimized());
+            //var summary = BenchmarkRunner.Run<PerformanceTestFramework>(new PerformanceTestFramework.AllowNonOptimized());
+            var summary = BenchmarkRunner.Run<PerformanceTestFramework>();
         }
     }
 }
