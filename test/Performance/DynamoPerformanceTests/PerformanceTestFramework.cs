@@ -13,7 +13,6 @@ using Dynamo;
 namespace DynamoPerformanceTests
 {
     
-    [SimpleJob(RunStrategy.Monitoring)]
     public class PerformanceTestFramework : DynamoModelTestBase
     {
         public class AllowNonOptimized : ManualConfig
