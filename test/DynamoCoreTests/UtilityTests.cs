@@ -826,5 +826,14 @@ namespace Dynamo.Tests
             }
             Assert.AreEqual(true, InvalidNameError);
         }
+
+        [Test]
+        public void GenerateSnapshotNameTest()
+        {
+            var examplePath = Path.Combine(TestDirectory, @"core\math", "Add.dyn");
+            var fi = new FileInfo(examplePath);
+            var snapshotName = PathHelper.GetSnapshotName(fi);
+            Assert.AreEqual(snapshotName, "Add_" + string.Format("{0:yyyy-MM-dd_hh-mm-ss}", DateTime.Now));
+        }
     }
 }

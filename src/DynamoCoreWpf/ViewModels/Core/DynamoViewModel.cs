@@ -1983,7 +1983,6 @@ namespace Dynamo.ViewModels
                 {
                     AddExtension = true,
                     DefaultExt = ".png",
-                    FileName = Resources.FileDialogDefaultPNGName,
                     Filter = string.Format(Resources.FileDialogPNGFiles, "*.png"),
                     Title = Resources.SaveWorkbenToImageDialogTitle
                 };
@@ -1993,7 +1992,9 @@ namespace Dynamo.ViewModels
             if (!string.IsNullOrEmpty(model.CurrentWorkspace.FileName))
             {
                 var fi = new FileInfo(model.CurrentWorkspace.FileName);
+                var snapshotName = PathHelper.GetSnapshotName(fi);
                 _fileDialog.InitialDirectory = fi.DirectoryName;
+                _fileDialog.FileName = snapshotName;
             }
 
             if (_fileDialog.ShowDialog() != DialogResult.OK) return;

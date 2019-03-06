@@ -159,5 +159,12 @@ namespace DynamoUtilities
 
             return false;
         }
+
+        public static String GetSnapshotName(FileInfo fi)
+        {
+            String timeStamp = string.Format("{0:yyyy-MM-dd_hh-mm-ss}", DateTime.Now);
+            String snapshotName = fi.Name.Replace(fi.Extension, "_") + timeStamp;
+            return snapshotName;
+        }
     }
 }
