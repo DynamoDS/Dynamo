@@ -462,7 +462,29 @@ namespace Dynamo.PackageManager
                     return;
                 }
 
-                var allPackageVersions = PackageManagerSearchElement.ListRequiredPackageVersions(headers, version);
+                var allPackageVersions = new List<Tuple<PackageHeader, PackageVersion>>();
+                try
+                {
+                    var requiredPackages = PackageManagerSearchElement.ListRequiredPackageVersions(headers, version);
+                    foreach (var p in requiredPackages)
+                    {
+                        allPackageVersions.Add(p);
+                    }
+                }
+                catch
+                {
+                    allPackageVersions.Clear();
+    
+                }
+
+                if (allPackageVersions.Count == 0)
+                {
+                    MessageBox.Show(String.Format("Failed to donwload package {0}", element.Name),
+                    Resources.PackageDownloadErrorMessageBoxTitle,
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+
+                    return;
+                }
 
                 // determine if any of the packages contain binaries or python scripts.  
                 var containsBinaries =

@@ -153,6 +153,7 @@ namespace Dynamo.PackageManager
                     (pair) =>
                         new Tuple<PackageHeader, PackageVersion>(
                         pair.Item1,
+                        //.First can throw an InvalidOperationException if the specified condition is not met.
                         pair.Item1.versions.First(x => x.version == pair.Item2)));
         }
     }
