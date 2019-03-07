@@ -649,11 +649,11 @@ value : bool = false</value>
   <data name="NoneString" xml:space="preserve">
     <value>none</value>
   </data>
-  <data name="PythonTemplateInvalid" xml:space="preserve">
-    <value>Python template : no valid template found.</value>
+  <data name="PythonTemplateAppData" xml:space="preserve">
+    <value>Python template loaded from AppData</value>
   </data>
   <data name="PythonTemplateDefaultFile" xml:space="preserve">
-    <value>Python template set to default file</value>
+    <value>Python template set to default.</value>
   </data>
   <data name="PythonTemplateUserFile" xml:space="preserve">
     <value>Python template loaded from DynamoSettings.xml path</value>
