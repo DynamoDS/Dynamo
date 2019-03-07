@@ -69,7 +69,7 @@ namespace ProtoFFI
         /// from a Zero Touch property to the property's getter function.
         /// </summary>
         /// <param name="getterAttributes"></param>
-        internal void CopyRankReductionAttribute(Dictionary<MethodInfo, Attribute[]> getterAttributes)
+        internal void CheckForRankReductionAttribute(Dictionary<MethodInfo, Attribute[]> getterAttributes)
         {
             var info = Info as MethodInfo;
             if (info != null)

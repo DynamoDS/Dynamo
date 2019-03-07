@@ -457,22 +457,17 @@ namespace FFITarget
         }
     }
 
-    public class TestRankReduce : IDisposable
+    public class TestRankReduce
     {
         private string RankReduceTestField;
 
         [AllowRankReduction]
-        public List<string> RankReduceArrowProperty => new List<string> { RankReduceTestField };
-
-        public List<string> ArrowProperty => new List<string> { RankReduceTestField };
-
-        [AllowRankReduction]
-        public List<string> RankReducePropertyGetter
+        public List<string> RankReduceProperty
         {
             get { return new List<string> { RankReduceTestField }; }
         }
 
-        public List<string> PropertyGetter
+        public List<string> Property
         {
             get { return new List<string> { RankReduceTestField }; }
         }
@@ -481,11 +476,16 @@ namespace FFITarget
         {
             RankReduceTestField = s;
         }
-
-        public void Dispose()
+        
+        [AllowRankReduction]
+        public List<string> RankReduceMethod()
         {
-            //Don't do anything
+            return new List<string> { RankReduceTestField };
         }
 
+        public List<string> Method()
+        {
+            return new List<string> { RankReduceTestField };
+        }
     }
 }

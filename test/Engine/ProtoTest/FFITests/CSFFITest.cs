@@ -1389,29 +1389,29 @@ value = [u.X, u.Y, u.Z];
         }
 
         [Test]
-        public void ReduceRankAttributeWorksForArrowProperty()
+        public void AllowReduceRankAttributeWorksForProperty()
         {
             string code =
                 @"import(""FFITarget.dll"");
 rankReduceTestObject = FFITarget.TestRankReduce(""test"");
-property = rankReduceTestObject.ArrowProperty; 
-reducedProperty = rankReduceTestObject.RankReduceArrowProperty; ";
+property = rankReduceTestObject.Property; 
+reducedProperty = rankReduceTestObject.RankReduceProperty; ";
             thisTest.RunScriptSource(code);
             thisTest.Verify("property", new List<string> { "test" });
             thisTest.Verify("reducedProperty", "test");
         }
 
         [Test]
-        public void ReduceRankAttributeWorksForPropertyGetter()
+        public void AllowReduceRankAttributeWorksForMethod()
         {
             string code =
                 @"import(""FFITarget.dll"");
 rankReduceTestObject = FFITarget.TestRankReduce(""test"");
-property = rankReduceTestObject.PropertyGetter; 
-reducedProperty = rankReduceTestObject.RankReducePropertyGetter; ";
+method = rankReduceTestObject.Method(); 
+reducedMethod = rankReduceTestObject.RankReduceMethod(); ";
             thisTest.RunScriptSource(code);
-            thisTest.Verify("property", new List<string> { "test" });
-            thisTest.Verify("reducedProperty", "test");
+            thisTest.Verify("method", new List<string> { "test" });
+            thisTest.Verify("reducedMethod", "test");
         }
     }
 }
