@@ -17,7 +17,7 @@ namespace Dynamo.Configuration
     /// from a XML file from DYNAMO_SETTINGS_FILE.
     /// When GUI is closed, the settings are saved back into the XML file.
     /// </summary>
-    public class PreferenceSettings : NotificationObject, IPreferences
+    public class PreferenceSettings : NotificationObject, IPreferences, IRenderPrecisionPreference
     {
         private string numberFormat;
         private string lastUpdateDownloadPath;

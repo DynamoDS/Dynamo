@@ -9,7 +9,7 @@ namespace Dynamo.Interfaces
     /// <summary>
     /// An interface which defines preference settings.
     /// </summary>
-    public interface IPreferences
+    public interface IPreferences : IRenderPrecisionPreference
     {
         /// <summary>
         /// Collection of pairs [BackgroundPreviewName;isActive]
@@ -113,11 +113,6 @@ namespace Dynamo.Interfaces
         /// </summary>
         List<string> CustomPackageFolders { get; set; }
 
-        ///<summary>
-        ///Indicate which render precision will be used
-        ///</summary>
-        int RenderPrecision { get; set; }
-
         /// <summary>
         /// Indicates whether surface and solid edges will 
         /// be rendered.
@@ -152,6 +147,18 @@ namespace Dynamo.Interfaces
         /// <param name="name">Background preview name</param>
         /// <param name="value">Active state to set</param>
         void SetIsBackgroundPreviewActive(string name, bool value);
+    }
+
+    /// <summary>
+    /// Temporary interface to avoid breaking changes.
+    /// TODO: Merge with IPreferences for 3.0
+    /// </summary>
+    public interface IRenderPrecisionPreference
+    {
+        ///<summary>
+        ///Indicate which render precision will be used
+        ///</summary>
+        int RenderPrecision { get; set; }
     }
 
     /// <summary>
