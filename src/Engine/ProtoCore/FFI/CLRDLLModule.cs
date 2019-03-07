@@ -784,7 +784,7 @@ namespace ProtoFFI
             else if (CoreUtils.IsGetter(functionName))
             {
                 f = new GetterFunctionPointer(Module, functionName, method, retype);
-                (f as GetterFunctionPointer).ReflectionInfo.CheckForRankReductionAttribute(mGetterAttributes);
+                (f as GetterFunctionPointer).ReflectionInfo.CopyRankReductionAttribute(mGetterAttributes);
             }
             else
                 f = new CLRFFIFunctionPointer(Module, functionName, method, argTypes, retype);
