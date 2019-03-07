@@ -8,10 +8,10 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Dynamo.Wpf.Properties
-{
-
-
+namespace Dynamo.Wpf.Properties {
+    using System;
+    
+    
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -3205,6 +3205,15 @@ namespace Dynamo.Wpf.Properties
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Could not find all dependencies for package {0} specified by package author..
+        /// </summary>
+        public static string MessagePackageMissingDependencies {
+            get {
+                return ResourceManager.GetString("MessagePackageMissingDependencies", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The following packages use a newer version of {0} than you are currently using:
         ///
         ///{1}
@@ -3402,15 +3411,6 @@ namespace Dynamo.Wpf.Properties
         public static string NodeContextMenuShowLabels {
             get {
                 return ResourceManager.GetString("NodeContextMenuShowLabels", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to See more on the Dynamo Dictionary....
-        /// </summary>
-        public static string NodeHelpWindowDynamoDictionary {
-            get {
-                return ResourceManager.GetString("NodeHelpWindowDynamoDictionary", resourceCulture);
             }
         }
         
@@ -5433,18 +5433,6 @@ namespace Dynamo.Wpf.Properties
         public static string ZeroTouchTypeShortString {
             get {
                 return ResourceManager.GetString("ZeroTouchTypeShortString", resourceCulture);
-            }
-        }
-
-
-        /// <summary>
-        ///   Could not find all dependencies for package {0}, based on versions specified by author.
-        /// </summary>
-        public static string MessagePackageMissingDependencies
-        {
-            get
-            {
-                return ResourceManager.GetString("MessagePackageMissingDependencies", resourceCulture);
             }
         }
     }

@@ -2185,6 +2185,6 @@ Do you want to install the latest Dynamo update?</value>
     <value>Rerun the graph.</value>
   </data>
   <data name="MessagePackageMissingDependencies" xml:space="preserve">
-    <value>Could not find all dependencies for package {0}, based on versions specified by author.</value>
+    <value>Could not find all dependencies for package {0} specified by package author.</value>
   </data>
 </root>

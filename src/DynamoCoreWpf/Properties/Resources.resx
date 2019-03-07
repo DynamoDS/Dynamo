@@ -2188,6 +2188,6 @@ Want to publish a different package?</value>
     <value>Crash report from Dynamo {0}</value>
   </data>
   <data name="MessagePackageMissingDependencies" xml:space="preserve">
-    <value>Could not find all dependencies for package {0}, based on versions specified by author.</value>
+    <value>Could not find all dependencies for package {0} specified by package author.</value>
   </data>
 </root>
