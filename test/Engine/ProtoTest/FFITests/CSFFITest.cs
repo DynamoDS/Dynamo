@@ -142,7 +142,7 @@ x;
                     new ValidationData { ValueName = "px", ExpectedValue = 3.0, BlockIndex = 0 },
                     new ValidationData { ValueName = "py", ExpectedValue = 4.0, BlockIndex = 0 },
                     new ValidationData { ValueName = "pz", ExpectedValue = 5.0, BlockIndex = 0 }
-                
+
                 };
             ExecuteAndVerify(code, data);
         }
@@ -166,7 +166,7 @@ x;
                     new ValidationData { ValueName = "vx", ExpectedValue = 2.0, BlockIndex = 0 },
                     new ValidationData { ValueName = "vy", ExpectedValue = 2.0, BlockIndex = 0 },
                     new ValidationData { ValueName = "vz", ExpectedValue = 2.0, BlockIndex = 0 }
-                
+
                 };
             ExecuteAndVerify(code, data);
         }
@@ -205,13 +205,13 @@ x;
               v = cf1.IntVal;
               t = cf1.IsEqualTo(cf2);
            ";
-           ValidationData[] data =
-               {
+            ValidationData[] data =
+                {
                    new ValidationData { ValueName = "v", ExpectedValue = 1, BlockIndex = 0 },
                    new ValidationData { ValueName = "t", ExpectedValue = false, BlockIndex = 0 }
 
                };
-           ExecuteAndVerify(code, data);
+            ExecuteAndVerify(code, data);
 
         }
 
@@ -236,7 +236,7 @@ x;
                    new ValidationData { ValueName = "t", ExpectedValue = 42, BlockIndex = 0 }
 
                };
-            
+
             ExecuteAndVerify(code, data);
         }
 
@@ -557,7 +557,7 @@ sum;
                             val = a.Value;
                             ";
             Type dummy = typeof (FFITarget.TestDispose);
-            
+
             code = string.Format("import(\"{0}\");\r\n{1}", dummy.AssemblyQualifiedName, code);
             ValidationData[] data = { new ValidationData { ValueName = "val", ExpectedValue = null, BlockIndex = 0 } };
             ExecuteAndVerify(code, data);
@@ -884,7 +884,7 @@ a12;
                 }
             ";
             var c = new[] { 0.5, 0.0, 0.0 };
-            ValidationData[] data = { new ValidationData { ValueName = "a12", ExpectedValue = c, BlockIndex = 0 } 
+            ValidationData[] data = { new ValidationData { ValueName = "a12", ExpectedValue = c, BlockIndex = 0 }
                                       };
             ExecuteAndVerify(code, data);
         }
@@ -1043,9 +1043,9 @@ a12;
                             b = dv.GetValue();
                             ";
             thisTest.RunScriptSource(code);
-            thisTest.Verify("m", 1); 
-            thisTest.Verify("a", 3); 
-            thisTest.Verify("b", 2); 
+            thisTest.Verify("m", 1);
+            thisTest.Verify("a", 3);
+            thisTest.Verify("b", 2);
         }
 
         [Test]
@@ -1193,7 +1193,7 @@ a12;
             thisTest.Verify("success", true);
         }
 
- 
+
         [Test]
         public void TestNamespaceImport()
         {
@@ -1386,6 +1386,32 @@ value = [u.X, u.Y, u.Z];
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("value", new double[] { 1, 2, 3 });
             thisTest.Verify("newPoint", FFITarget.DummyPoint.ByCoordinates(2, 4, 6));
+        }
+
+        [Test]
+        public void ReduceRankAttributeWorksForArrowProperty()
+        {
+            string code =
+                @"import(""FFITarget.dll"");
+rankReduceTestObject = FFITarget.TestRankReduce(""test"");
+property = rankReduceTestObject.ArrowProperty; 
+reducedProperty = rankReduceTestObject.RankReduceArrowProperty; ";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("property", new List<string> { "test" });
+            thisTest.Verify("reducedProperty", "test");
+        }
+
+        [Test]
+        public void ReduceRankAttributeWorksForPropertyGetter()
+        {
+            string code =
+                @"import(""FFITarget.dll"");
+rankReduceTestObject = FFITarget.TestRankReduce(""test"");
+property = rankReduceTestObject.PropertyGetter; 
+reducedProperty = rankReduceTestObject.RankReducePropertyGetter; ";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("property", new List<string> { "test" });
+            thisTest.Verify("reducedProperty", "test");
         }
     }
 }

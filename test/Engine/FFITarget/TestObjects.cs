@@ -457,4 +457,35 @@ namespace FFITarget
         }
     }
 
+    public class TestRankReduce : IDisposable
+    {
+        private string RankReduceTestField;
+
+        [AllowRankReduction]
+        public List<string> RankReduceArrowProperty => new List<string> { RankReduceTestField };
+
+        public List<string> ArrowProperty => new List<string> { RankReduceTestField };
+
+        [AllowRankReduction]
+        public List<string> RankReducePropertyGetter
+        {
+            get { return new List<string> { RankReduceTestField }; }
+        }
+
+        public List<string> PropertyGetter
+        {
+            get { return new List<string> { RankReduceTestField }; }
+        }
+
+        public TestRankReduce(string s)
+        {
+            RankReduceTestField = s;
+        }
+
+        public void Dispose()
+        {
+            //Don't do anything
+        }
+
+    }
 }
