@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -16,15 +17,31 @@ namespace DynamoPerformanceTests
     {
         public class AllowNonOptimized : ManualConfig
         {
-            public AllowNonOptimized()
+            public AllowNonOptimized(string testDir)
             {
                 Add(JitOptimizationsValidator.DontFailOnError);
 
                 Add(DefaultConfig.Instance.GetLoggers().ToArray()); // manual config has no loggers by default
                 Add(DefaultConfig.Instance.GetExporters().ToArray()); // manual config has no exporters by default
                 Add(DefaultConfig.Instance.GetColumnProviders().ToArray());
+
+                testDirectory = testDir;
             }
         }
+
+        public class BenchmarkConfig : ManualConfig
+        {
+            public BenchmarkConfig(string testDir)
+            {
+                Add(DefaultConfig.Instance.GetLoggers().ToArray()); // manual config has no loggers by default
+                Add(DefaultConfig.Instance.GetExporters().ToArray()); // manual config has no exporters by default
+                Add(DefaultConfig.Instance.GetColumnProviders().ToArray());
+
+                testDirectory = testDir;
+            }
+        }
+
+        private static string testDirectory;
 
         protected override void GetLibrariesToPreload(List<string> libraries)
         {
@@ -99,7 +116,7 @@ namespace DynamoPerformanceTests
 
             // Test location for all DYN files to be measured for performance 
             // TODO: to be parameterized
-            string testsLoc = Path.Combine(dir, @"..\..\..\test\core\WorkflowTestFiles\ListManagementMisc");
+            string testsLoc = Path.Combine(dir, testDirectory);
             var regTestPath = Path.GetFullPath(testsLoc);
 
             var di = new DirectoryInfo(regTestPath);
@@ -116,8 +133,20 @@ namespace DynamoPerformanceTests
     {
         public static void Main(string[] args)
         {
-            //var summary = BenchmarkRunner.Run<PerformanceTestFramework>(new PerformanceTestFramework.AllowNonOptimized());
-            var summary = BenchmarkRunner.Run<PerformanceTestFramework>();
+            // Running with an input dir location:
+            // DynamoPerformanceTests.exe "C:\directory path\"
+            // 
+            if (args.Length <= 0)
+            {
+                Console.WriteLine("Supply a path to a test directory containing DYN files");
+            }
+
+            // Use this call in order to run benchmarks on debug build of DynamoCore
+            //var summary = BenchmarkRunner.Run<PerformanceTestFramework>(
+            //new PerformanceTestFramework.AllowNonOptimized(testDir));
+
+            var summary = BenchmarkRunner.Run<PerformanceTestFramework>(
+                new PerformanceTestFramework.BenchmarkConfig(args[0]));
         }
     }
 }
