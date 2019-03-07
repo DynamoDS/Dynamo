@@ -1389,7 +1389,7 @@ value = [u.X, u.Y, u.Z];
         }
 
         [Test]
-        public void AllowReduceRankAttributeWorksForProperty()
+        public void AllowRankReductionAttributeWorksForProperty()
         {
             string code =
                 @"import(""FFITarget.dll"");
@@ -1402,7 +1402,7 @@ reducedProperty = rankReduceTestObject.RankReduceProperty; ";
         }
 
         [Test]
-        public void AllowReduceRankAttributeWorksForMethod()
+        public void AllowRankReductionAttributeWorksForMethod()
         {
             string code =
                 @"import(""FFITarget.dll"");
