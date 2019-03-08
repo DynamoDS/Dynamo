@@ -45,19 +45,22 @@ namespace Dynamo.Wpf.ViewModels
 
         public RenderPackageFactoryViewModel(IPreferences preferenceSettings)
         {
-            this.factory = new HelixRenderPackageFactory()
+            var ps = preferenceSettings as PreferenceSettings;
+            if (ps != null)
             {
-                TessellationParameters = { ShowEdges = preferenceSettings.ShowEdges }
-            };
-        }
-
-        // TODO: Remove this constructor once the IPreferences and IRenderPrecisionPreferences have been consolidated in 3.0
-        public RenderPackageFactoryViewModel(PreferenceSettings preferenceSettings)
-        {
-            this.factory = new HelixRenderPackageFactory()
+                this.factory = new HelixRenderPackageFactory()
+                {
+                    TessellationParameters = { ShowEdges = ps.ShowEdges, MaxTessellationDivisions = ps.RenderPrecision }
+                };
+            }
+            else
             {
-                TessellationParameters = { ShowEdges = preferenceSettings.ShowEdges, MaxTessellationDivisions = preferenceSettings.RenderPrecision }
-            };
+                this.factory = new HelixRenderPackageFactory()
+                {
+                    TessellationParameters = { ShowEdges = preferenceSettings.ShowEdges}
+                };
+            }
+            
         }
     }
 }
