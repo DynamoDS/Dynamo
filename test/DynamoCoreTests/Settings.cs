@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using Dynamo.Configuration;
+using Dynamo.Models;
 using NUnit.Framework;
 
 namespace Dynamo.Tests
@@ -53,6 +52,36 @@ namespace Dynamo.Tests
             Assert.IsFalse(File.Exists(settings.PythonTemplateFilePath));
             Assert.IsFalse(File.Exists(pyFile));
             Assert.AreEqual(settings.PythonTemplateFilePath, pyFile);
+        }
+
+        [Test]
+        public void SetPythonTemplateFromConfigWithValidPath()
+        {
+            var templatePath = Path.Combine(SettingDirectory, "PythonTemplate-initial.py");
+
+            var config = new DynamoModel.DefaultStartConfiguration()
+            {
+                PythonTemplatePath = templatePath
+            };
+
+            var model = DynamoModel.Start(config);
+
+            Assert.AreEqual(model.PreferenceSettings.PythonTemplateFilePath, templatePath);
+        }
+
+        [Test]
+        public void SetPythonTemplateFromConfigWithInvalidPath()
+        {
+            var templatePath = Path.Combine(@"C:\Users\SomeDynamoUser\Desktop", "PythonTemplate-initial.py");
+
+            var config = new DynamoModel.DefaultStartConfiguration()
+            {
+                PythonTemplatePath = templatePath
+            };
+
+            var model = DynamoModel.Start(config);
+
+            Assert.AreEqual(model.PreferenceSettings.PythonTemplateFilePath, string.Empty);
         }
 
     }
