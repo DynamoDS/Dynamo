@@ -19,8 +19,6 @@ namespace Dynamo.Tests
                     new Version(224,4,0),
                     new Version(224,0,1),
                     new Version(223,0,1),
-                    new Version(222,0,0),
-                    new Version(221,0,0),
                     new Version(225,0,0)
             };
 
@@ -69,8 +67,6 @@ namespace Dynamo.Tests
                     new Version(224,4,0),
                     new Version(224,0,1),
                     new Version(223,0,1),
-                    new Version(222,0,0),
-                    new Version(221,0,0),
                     new Version(225,0,0)
             };
 
@@ -121,8 +117,6 @@ namespace Dynamo.Tests
                     new Version(224,4,0),
                     new Version(224,0,1),
                     new Version(223,0,1),
-                    new Version(222,0,0),
-                    new Version(221,0,0),
                     // Notice the lookup version here is different than the actual found version below
                     // because there is no local mocked product with that specific ASM version installed
                     new Version(225,4,0)
@@ -301,9 +295,7 @@ namespace Dynamo.Tests
             {
                     new Version(224,4,0),
                     new Version(224,0,1),
-                    new Version(223,0,1),
-                    new Version(222,0,0),
-                    new Version(221,0,0)
+                    new Version(223,0,1)
             };
 
             versions.Sort();
@@ -344,9 +336,7 @@ namespace Dynamo.Tests
             {
                     new Version(224,4,0),
                     new Version(224,0,1),
-                    new Version(223,0,1),
-                    new Version(222,0,0),
-                    new Version(221,0,0)
+                    new Version(223,0,1)
             };
 
             versions.Sort();
