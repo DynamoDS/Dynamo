@@ -165,7 +165,7 @@ namespace DynamoUtilities
         /// </summary>
         /// <param name="filePath">File path</param>
         /// <returns>Returns a default name(along with the timestamp) for the workspace image</returns>
-        public static String GetSnapshotNameFromPath(String filePath)
+        public static String GetScreenCaptureNameFromPath(String filePath)
         {
             FileInfo fileInfo = new FileInfo(filePath);
             String timeStamp = string.Format("{0:yyyy-MM-dd_hh-mm-ss}", DateTime.Now);
