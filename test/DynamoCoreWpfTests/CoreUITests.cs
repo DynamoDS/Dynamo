@@ -472,9 +472,26 @@ namespace DynamoCoreWpfTests
         [Category("DynamoUI")]
         public void PreferenceSetting_RenderPrecision()
         {
-            int expectedValue = 256;
+            // Test that RenderPrecision setting works as expected
             ViewModel.RenderPackageFactoryViewModel.MaxTessellationDivisions = 256;
-            Assert.AreEqual(expectedValue, ViewModel.Model.PreferenceSettings.RenderPrecision);
+            Assert.AreEqual(256, ViewModel.Model.PreferenceSettings.RenderPrecision);
+
+            ViewModel.RenderPackageFactoryViewModel.MaxTessellationDivisions = 128;
+            Assert.AreEqual(128, ViewModel.Model.PreferenceSettings.RenderPrecision);
+
+            // Test serialization of RenderPrecision 
+            string tempPath = System.IO.Path.GetTempPath();
+            tempPath = Path.Combine(tempPath, "userPreference.xml");
+            
+            PreferenceSettings initalSetting = new PreferenceSettings();
+            PreferenceSettings resultSetting;
+
+            initalSetting.RenderPrecision = 256;
+
+            initalSetting.Save(tempPath);
+            resultSetting = PreferenceSettings.Load(tempPath);
+
+            Assert.AreEqual(resultSetting.RenderPrecision, initalSetting.RenderPrecision);
         }
 
         #region PreferenceSettings
