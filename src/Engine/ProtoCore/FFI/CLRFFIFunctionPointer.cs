@@ -64,6 +64,31 @@ namespace ProtoFFI
             Info = info;
         }
 
+        /// <summary>
+        /// This method is used to copy the AllowRankReductionAttribute 
+        /// from a Zero Touch property to the property's getter function.
+        /// </summary>
+        /// <param name="getterAttributes"></param>
+        internal void CheckForRankReductionAttribute(Dictionary<MethodInfo, Attribute[]> getterAttributes)
+        {
+            var info = Info as MethodInfo;
+            if (info != null)
+            {
+                Attribute[] attributes = null;
+                if (getterAttributes.TryGetValue(info, out attributes))
+                {
+                    foreach (var attr in attributes)
+                    {
+                        if (attr is AllowRankReductionAttribute)
+                        {
+                            mAllowRankReduction = true;
+                            mRankReducer = attr as AllowRankReductionAttribute;
+                        }
+                    }
+                }
+            }
+        }
+
         public object ReduceReturnedCollectionToSingleton(object collection)
         {
             if (null == mAllowRankReduction)

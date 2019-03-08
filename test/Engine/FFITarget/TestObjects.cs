@@ -457,4 +457,35 @@ namespace FFITarget
         }
     }
 
+    public class TestRankReduce
+    {
+        private string RankReduceTestField;
+
+        [AllowRankReduction]
+        public List<string> RankReduceProperty
+        {
+            get { return new List<string> { RankReduceTestField }; }
+        }
+
+        public List<string> Property
+        {
+            get { return new List<string> { RankReduceTestField }; }
+        }
+
+        public TestRankReduce(string s)
+        {
+            RankReduceTestField = s;
+        }
+        
+        [AllowRankReduction]
+        public List<string> RankReduceMethod()
+        {
+            return new List<string> { RankReduceTestField };
+        }
+
+        public List<string> Method()
+        {
+            return new List<string> { RankReduceTestField };
+        }
+    }
 }
