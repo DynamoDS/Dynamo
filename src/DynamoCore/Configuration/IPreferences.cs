@@ -7,7 +7,7 @@ namespace Dynamo.Interfaces
     /// <summary>
     /// An interface which defines preference settings.
     /// </summary>
-    public interface IPreferences : IRenderPrecisionPreference
+    public interface IPreferences
     {
         /// <summary>
         /// Collection of pairs [BackgroundPreviewName;isActive]
