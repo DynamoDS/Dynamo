@@ -492,6 +492,11 @@ namespace DynamoCoreWpfTests
             resultSetting = PreferenceSettings.Load(tempPath);
 
             Assert.AreEqual(resultSetting.RenderPrecision, initalSetting.RenderPrecision);
+
+            // Test loading old settings file without render precision attribute
+            var filePath = Path.Combine(GetTestDirectory(ExecutingDirectory), @"settings\DynamoSettings-WithoutRenderPrecision.xml");
+            PreferenceSettings WithoutRenderPrecision = PreferenceSettings.Load(filePath);
+            Assert.AreEqual(WithoutRenderPrecision.RenderPrecision, 128);
         }
 
         #region PreferenceSettings
