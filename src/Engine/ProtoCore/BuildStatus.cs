@@ -158,8 +158,6 @@ namespace ProtoCore
             if (null == message)
                 return;
 
-#if DEBUG
-
             if (string.IsNullOrEmpty(message.FilePath))
             {
                 // Type: Message
@@ -175,7 +173,6 @@ namespace ProtoCore
                     message.Type.ToString(), message.Message,
                     message.FilePath, message.Line, message.Column));
             }
-#endif
 
             if (message.Type == ProtoCore.OutputMessage.MessageType.Warning)
                 message.Continue = true;
@@ -285,14 +282,11 @@ namespace ProtoCore
         {
             var localizedMessage = LocalizeErrorMessage(msg);
 
-#if DEBUG
-
             if (logErrors)
             {
                 var message = string.Format("{0}({1},{2}) Error:{3}", fileName, line, col, localizedMessage);
                 System.Console.WriteLine(message);
             }
-#endif
 
             var errorEntry = new BuildData.ErrorEntry
             {
@@ -573,13 +567,10 @@ namespace ProtoCore
 
         public void LogSemanticError(string msg, string fileName = null, int line = -1, int col = -1, AssociativeGraph.GraphNode graphNode = null)
         {
-#if DEBUG
-
             if (logErrors)
             {
                 System.Console.WriteLine("{0}({1},{2}) Error:{3}", fileName, line, col, msg);
             }
-#endif
 
             if (core.Options.IsDeltaExecution)
             {
@@ -672,10 +663,7 @@ namespace ProtoCore
 
             if (LogWarnings)
             {
-#if DEBUG
-
                 System.Console.WriteLine("{0}({1},{2}) Warning:{3}", fileName, line, col, message);
-#endif
 
                 OutputMessage outputmessage = new OutputMessage(OutputMessage.MessageType.Warning, message.Trim(), fileName, line, col);
                 if (MessageHandler != null)
@@ -693,10 +681,7 @@ namespace ProtoCore
 
             if (displayBuildResult)
             {
-#if DEBUG
-
                 System.Console.WriteLine(buildResult);
-#endif
 
                 if (MessageHandler != null)
                 {

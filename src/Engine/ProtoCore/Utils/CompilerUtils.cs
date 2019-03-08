@@ -220,10 +220,7 @@ namespace ProtoCore.Utils
             }
             catch (Exception ex)
             {
-#if DEBUG
-
                 Console.WriteLine(ex.ToString());
-#endif
                 if (!(ex is ProtoCore.BuildHaltException))
                 {
                     throw ex;

@@ -52,8 +52,14 @@ namespace DynamoPerformanceTests
             libraries.Add("DesignScriptBuiltin.dll");
             libraries.Add("DSCoreNodes.dll");
             libraries.Add("DSOffice.dll");
+            libraries.Add("DSIronPython.dll");
             libraries.Add("FunctionObject.ds");
             libraries.Add("BuiltIn.ds");
+            libraries.Add("DynamoConversions.dll");
+            libraries.Add("DynamoUnits.dll");
+            libraries.Add("Tessellation.dll");
+            libraries.Add("Analysis.dll");
+            libraries.Add("GeometryColor.dll");
         }
 
         [ParamsSource(nameof(PerformanceTestSource))]
