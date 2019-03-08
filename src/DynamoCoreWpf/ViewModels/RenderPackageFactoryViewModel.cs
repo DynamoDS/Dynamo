@@ -43,6 +43,7 @@ namespace Dynamo.Wpf.ViewModels
             }
         }
 
+        // TODO: Simplify this method once IPreferences and IRenderPrecisionPreference have been consolidated in 3.0
         public RenderPackageFactoryViewModel(IPreferences preferenceSettings)
         {
             var ps = preferenceSettings as PreferenceSettings;
