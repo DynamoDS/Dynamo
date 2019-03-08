@@ -237,7 +237,11 @@ namespace ProtoCore.Lang.Replication
                     }
 
                     var clonedList = new List<List<StackValue>>(reducedParams);
-                    reducedParams.Clear();
+
+                    if (arrayStats.Count > 0)
+                    {
+                        reducedParams.Clear();
+                    }
 
                     foreach (var sv in arrayStats)
                     {
