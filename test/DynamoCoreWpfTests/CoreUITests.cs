@@ -468,6 +468,47 @@ namespace DynamoCoreWpfTests
             #endregion
         }
 
+        [Test, RequiresSTA]
+        [Category("DynamoUI")]
+        public void PreferenceSetting_RenderPrecision()
+        {
+            bool expectedValue = !ViewModel.Model.PreferenceSettings.IsBackgroundPreviewActive;
+            ViewModel.ToggleFullscreenWatchShowing(null);
+            Assert.AreEqual(expectedValue, ViewModel.Model.PreferenceSettings.IsBackgroundPreviewActive);
+
+
+            expectedValue = !ViewModel.Model.PreferenceSettings.IsBackgroundPreviewActive;
+            ViewModel.ToggleFullscreenWatchShowing(null);
+            Assert.AreEqual(expectedValue, ViewModel.Model.PreferenceSettings.IsBackgroundPreviewActive);
+
+            #region Save And Load of PreferenceSettings
+
+            // Test if variable can be serialize and deserialize without any issue
+            string tempPath = System.IO.Path.GetTempPath();
+            tempPath = Path.Combine(tempPath, "userPreference.xml");
+
+            // Force inital state
+            PreferenceSettings initalSetting = new PreferenceSettings();
+            PreferenceSettings resultSetting;
+
+            initalSetting.IsBackgroundPreviewActive = true;
+
+            initalSetting.Save(tempPath);
+            resultSetting = PreferenceSettings.Load(tempPath);
+
+            Assert.AreEqual(resultSetting.IsBackgroundPreviewActive, initalSetting.IsBackgroundPreviewActive);
+            #endregion
+
+            #region Second Test
+            initalSetting.IsBackgroundPreviewActive = false;
+
+            initalSetting.Save(tempPath);
+            resultSetting = PreferenceSettings.Load(tempPath);
+
+            Assert.AreEqual(resultSetting.IsBackgroundPreviewActive, initalSetting.IsBackgroundPreviewActive);
+            #endregion
+        }
+
         #region PreferenceSettings
         [Test, RequiresSTA]
         [Category("DynamoUI")]
