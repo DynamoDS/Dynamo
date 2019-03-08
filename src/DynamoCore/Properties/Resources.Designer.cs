@@ -1151,7 +1151,16 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Python template set to default file.
+        ///   Looks up a localized string similar to Python template loaded from AppData.
+        /// </summary>
+        public static string PythonTemplateAppData {
+            get {
+                return ResourceManager.GetString("PythonTemplateAppData", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Python template set to default..
         /// </summary>
         public static string PythonTemplateDefaultFile {
             get {
@@ -1160,16 +1169,16 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Python template : no valid template found..
+        ///   Looks up a localized string similar to Python template set by host integrator.
         /// </summary>
-        public static string PythonTemplateInvalid {
+        public static string PythonTemplateDefinedByHost {
             get {
-                return ResourceManager.GetString("PythonTemplateInvalid", resourceCulture);
+                return ResourceManager.GetString("PythonTemplateDefinedByHost", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Python template set to user file.
+        ///   Looks up a localized string similar to Python template loaded from DynamoSettings.xml path.
         /// </summary>
         public static string PythonTemplateUserFile {
             get {
