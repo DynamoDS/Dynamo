@@ -533,7 +533,14 @@ namespace ProtoFFI
             {
                 try
                 {
-                    targetDict[key] = Convert.ChangeType(d.ValueAtKey(key), valueType);
+                    if (valueType != typeof(object))
+                    {
+                        targetDict[key] = Convert.ChangeType(d.ValueAtKey(key), valueType);
+                    }
+                    else
+                    {
+                        targetDict[key] = d.ValueAtKey(key);
+                    }
                 }
                 catch (Exception e)
                 {
@@ -1325,7 +1332,7 @@ namespace ProtoFFI
         {
             CLRObjectMarshaler marshaller = null;
             if (!mObjectMarshlers.TryGetValue(sender, out marshaller))
-                throw new KeyNotFoundException();
+                throw new System.Collections.Generic.KeyNotFoundException();
 
             mObjectMarshlers.Remove(sender);
 

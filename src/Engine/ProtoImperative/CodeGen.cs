@@ -310,10 +310,19 @@ namespace ProtoImperative
             int refClassIndex = Constants.kInvalidIndex;
             if (parentNode != null && parentNode is IdentifierListNode)
             {
-                ProtoCore.AST.Node leftnode = (parentNode as IdentifierListNode).LeftNode;
+                var leftnode = (parentNode as IdentifierListNode).LeftNode;
                 if (leftnode != null && leftnode is IdentifierNode)
                 {
                     refClassIndex = core.ClassTable.IndexOf(leftnode.Name);
+                }
+                else if (leftnode is IdentifierListNode)
+                {
+                    var isFunctionCall = ((IdentifierListNode)leftnode).RightNode is FunctionCallNode;
+                    if (!isFunctionCall)
+                    {
+                        var className = CoreUtils.GetIdentifierExceptMethodName((IdentifierListNode)leftnode);
+                        refClassIndex = core.ClassTable.IndexOf(className);
+                    }
                 }
             }
 
@@ -2046,7 +2055,7 @@ namespace ProtoImperative
                     LeftNode = loopvar,
 
                     //RightNode = arrayExpr;
-                    RightNode = AstFactory.BuildIndexExpression(arrayExpr, counter) as ArrayNameNode
+                    RightNode = AstFactory.BuildForLoopIndexExpression(arrayExpr, counter) as ArrayNameNode
                 };
                 NodeUtils.CopyNodeLocation(arrayIndexing, loopvar);
 
@@ -2316,22 +2325,41 @@ namespace ProtoImperative
 
             if (identList.LeftNode is IdentifierListNode)
             {
-                ProtoCore.AST.Node leftIdentList = identList.LeftNode;
-                IdentifierNode retNode = EmitGettersForRHSIdentList(leftIdentList, ref inferedType, graphNode);
-                if (retNode != null)
+                var leftNode = (IdentifierListNode)identList.LeftNode;
+                // Check if leftNode is not a valid class before emitting getters
+                // A valid class exists for the following cases of leftNode:
+                // A.B.ClassName
+                // A valid class is not found for the following, in which case, continue recursing into LeftNode:
+                // A.B.ClassName.foo() where leftNode.RightNode is the function foo()
+                // A.B.ClassName.Property
+                int ci = Constants.kInvalidIndex;
+                var isFuncCall = leftNode.RightNode is FunctionCallNode;
+                if(!isFuncCall)
                 {
-                    identList.LeftNode = retNode;
+                    var className = CoreUtils.GetIdentifierStringUntilFirstParenthesis(leftNode);
+                    ci = core.ClassTable.IndexOf(className);
+                }
+
+                if (ci == Constants.kInvalidIndex || isFuncCall)
+                {
+                    var leftIdentList = identList.LeftNode;
+                    var retNode = EmitGettersForRHSIdentList(leftIdentList, ref inferedType, graphNode);
+                    if (retNode != null)
+                    {
+                        identList.LeftNode = retNode;
+                    }
                 }
             }
 
             IdentifierNode result = null;
 
+            // If RightNode is property
             if (identList.RightNode is IdentifierNode)
             {
                 IdentifierNode thisNode = identList.RightNode as IdentifierNode;
 
                 // a.x; => a.get_x(); 
-                string getterName = ProtoCore.DSASM.Constants.kGetterPrefix + thisNode.Name;
+                string getterName = Constants.kGetterPrefix + thisNode.Name;
                 identList.RightNode = nodeBuilder.BuildFunctionCall(getterName, new List<ImperativeNode>()); ;
 
                 // %t = a.get_x();
@@ -2355,7 +2383,6 @@ namespace ProtoImperative
                     result.ArrayDimensions = arrayDimension;
                 }
             }
-
             return result;
         }
 
@@ -2374,7 +2401,6 @@ namespace ProtoImperative
             {
                 return;
             }
-
 
             // If the left-most property is not "this", insert a "this" node 
             // so a.b.c will be converted to this.a.b.c. Otherwise we have to 
@@ -2397,7 +2423,7 @@ namespace ProtoImperative
                     leftMostIdentList.LeftNode = thisIdentList;
                 }
             }
-
+            
             // If this identifier list appears on the left hand side of an 
             // assignment statement, we need to emit setter for the last propery
             // on this identifier list. Two cases: the last (right-most) property
@@ -2479,14 +2505,13 @@ namespace ProtoImperative
             }
             else
             {
-                IdentifierNode retnode = EmitGettersForRHSIdentList(node, ref inferedType, graphNode);
+                var retnode = EmitGettersForRHSIdentList(node, ref inferedType, graphNode);
                 if (retnode != null)
                 {
                     EmitIdentifierNode(retnode, ref inferedType, false);
                     isCollapsed = true;
                 }
             }
-
         }     
 
         private void EmitPushDepData(List<ProtoCore.DSASM.SymbolNode> symbolList)
@@ -2563,7 +2588,7 @@ namespace ProtoImperative
             return !InsideFunction();
         }
 
-        protected void EmitIdentifierListNode(ProtoCore.AST.ImperativeAST.ImperativeNode node, ref ProtoCore.Type inferedType, ProtoCore.AssociativeGraph.GraphNode graphNode = null, ProtoCore.AST.Node parentNode = null)
+        protected void EmitIdentifierListNode(ImperativeNode node, ref ProtoCore.Type inferedType, ProtoCore.AssociativeGraph.GraphNode graphNode = null, ProtoCore.AST.Node parentNode = null)
         {
             if (parentNode == null && !IsParsingGlobal())
                 return;

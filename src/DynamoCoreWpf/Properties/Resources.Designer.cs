@@ -8,10 +8,10 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Dynamo.Wpf.Properties {
-    using System;
-    
-    
+namespace Dynamo.Wpf.Properties
+{
+
+
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -19,7 +19,7 @@ namespace Dynamo.Wpf.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class Resources {
@@ -512,15 +512,6 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Hide upstream geometry preview.
-        /// </summary>
-        public static string ContextMenuHideUpstreamPreview {
-            get {
-                return ResourceManager.GetString("ContextMenuHideUpstreamPreview", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Insert code block.
         /// </summary>
         public static string ContextMenuInsertCodeBlock {
@@ -656,15 +647,6 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Show upstream geometry preview.
-        /// </summary>
-        public static string ContextMenuShowUpstreamPreview {
-            get {
-                return ResourceManager.GetString("ContextMenuShowUpstreamPreview", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Remove from Group.
         /// </summary>
         public static string ContextUnGroupFromSelection {
@@ -762,6 +744,15 @@ namespace Dynamo.Wpf.Properties {
         public static string CrashPromptDialogTitle {
             get {
                 return ResourceManager.GetString("CrashPromptDialogTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Crash report from Dynamo {0}.
+        /// </summary>
+        public static string CrashPromptGithubNewIssueTitle {
+            get {
+                return ResourceManager.GetString("CrashPromptGithubNewIssueTitle", resourceCulture);
             }
         }
         
@@ -3013,7 +3004,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to We can&apos;t save &quot;{0}&quot; because the file is read-only or contains unresolved XML nodes. To keep changes, would you like to &quot;Save As...&quot; with a different name or path?.
+        ///   Looks up a localized string similar to We can&apos;t save &quot;{0}&quot; because the file is read-only or contains unresolved or invalid nodes. To keep changes, would you like to &quot;Save As...&quot; with a different name or path?.
         /// </summary>
         public static string MessageConfirmToSaveReadOnlyCustomNode {
             get {
@@ -3038,6 +3029,16 @@ namespace Dynamo.Wpf.Properties {
         public static string MessageCustomNodeNameExist {
             get {
                 return ResourceManager.GetString("MessageCustomNodeNameExist", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Custom Node name cannot contain any of the following special characters:
+        ///    # % * ? \ : or any of the non-printable characters..
+        /// </summary>
+        public static string MessageCustomNodeNameInvalid {
+            get {
+                return ResourceManager.GetString("MessageCustomNodeNameInvalid", resourceCulture);
             }
         }
         
@@ -3383,15 +3384,6 @@ namespace Dynamo.Wpf.Properties {
         public static string NodeContextMenuPreview {
             get {
                 return ResourceManager.GetString("NodeContextMenuPreview", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Preview Upstream.
-        /// </summary>
-        public static string NodeContextMenuPreviewUpstream {
-            get {
-                return ResourceManager.GetString("NodeContextMenuPreviewUpstream", resourceCulture);
             }
         }
         

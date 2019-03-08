@@ -15,7 +15,6 @@
   <SelectModelCommand ModelGuid="03107ea4-75db-4826-a12d-9ebf4f23f65c" Modifiers="0" />
   <DragSelectionCommand X="298" Y="219" DragOperation="0" />
   <DragSelectionCommand X="241" Y="208" DragOperation="1" />
-  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
-  <SelectInRegionCommand X="151" Y="355" Width="640" Height="250" IsCrossSelection="false" />
-  <DeleteModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" />
+  <DeleteModelCommand ModelGuid="03107ea4-75db-4826-a12d-9ebf4f23f65c" />
+  <DeleteModelCommand ModelGuid="70c28589-855c-45cf-9ec3-bbf25d478a0d" />
 </Commands>

@@ -1,0 +1,126 @@
+{
+  "Uuid": "23d0aaa0-9b42-406d-aad0-5b3962c51e5c",
+  "IsCustomNode": false,
+  "Description": null,
+  "Name": "python_dict2",
+  "ElementResolver": {
+    "ResolutionMap": {
+      "DesignScript.Builtin.Dictionary": {
+        "Key": "DesignScript.Builtin.Dictionary",
+        "Value": "DesignScriptBuiltin.dll"
+      }
+    }
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "PythonNodeModels.PythonNode, PythonNodeModels",
+      "NodeType": "PythonScriptNode",
+      "Code": "# Load the Python Standard and DesignScript Libraries\r\nimport sys\r\nimport clr\r\n\r\n# The inputs to this node will be stored as a list in the IN variables.\r\ndict = IN[0]\r\n\r\n\r\n# Place your code below this line\r\n\r\n# Assign your output to the OUT variable.\r\nOUT = [dict[\"dict\"], dict[\"list\"]]",
+      "VariableInputPorts": true,
+      "Id": "490a8d54d0fa4782ae18c81f6eef8306",
+      "Inputs": [
+        {
+          "Id": "c0a6dd1427e2431cbaa66386e7581f78",
+          "Name": "IN[0]",
+          "Description": "Input #0",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "c22911e84b564cecb09c6a8f55661791",
+          "Name": "OUT",
+          "Description": "Result of the python script",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Runs an embedded IronPython script."
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "{\"dict\":{\"abcd\":123}, \"list\":1..9};",
+      "Id": "e1f1c82d24b0484d93990fca95926011",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "5801426be2fc4ed8a226c0cd37bd0137",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "5801426be2fc4ed8a226c0cd37bd0137",
+      "End": "c0a6dd1427e2431cbaa66386e7581f78",
+      "Id": "5b3ce39fabd2444da055f5e830178c3d"
+    }
+  ],
+  "Dependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.1.0.7071",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "Python Script",
+        "Id": "490a8d54d0fa4782ae18c81f6eef8306",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 519.33333333333326,
+        "Y": 132.00000000000006
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "e1f1c82d24b0484d93990fca95926011",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 73.333333333333371,
+        "Y": 144.33333333333337
+      }
+    ],
+    "Annotations": [],
+    "X": 0.0,
+    "Y": 0.0,
+    "Zoom": 1.0
+  }
+}

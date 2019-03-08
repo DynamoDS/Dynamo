@@ -740,10 +740,6 @@ It does not contain your graph or any personal data</value>
     <value>Preview</value>
     <comment>Context menu item - preview geometry</comment>
   </data>
-  <data name="NodeContextMenuPreviewUpstream" xml:space="preserve">
-    <value>Preview Upstream</value>
-    <comment>Context menu item - preview geometry of upstream nodes</comment>
-  </data>
   <data name="NodeContextMenuRenameNode" xml:space="preserve">
     <value>Rename Node...</value>
     <comment>Context menu item - rename this node</comment>
@@ -771,10 +767,6 @@ It does not contain your graph or any personal data</value>
   <data name="NodeHelpWindowNodeType" xml:space="preserve">
     <value>NODE TYPE</value>
     <comment>Title label</comment>
-  </data>
-  <data name="NodeHelpWindowDynamoDictionary" xml:space="preserve">
-    <value>See more on the Dynamo Dictionary...</value>
-    <comment>Link to http://dictionary.dynamobim.com/ </comment>
   </data>
   <data name="StartPageAsk" xml:space="preserve">
     <value>ASK</value>
@@ -942,6 +934,10 @@ You can always redownload the package.</value>
   </data>
   <data name="MessageCustomNodeNoName" xml:space="preserve">
     <value>You must supply a name.</value>
+  </data>
+  <data name="MessageCustomNodeNameInvalid" xml:space="preserve">
+    <value>Custom Node name cannot contain any of the following special characters:
+    # % * ? \ : or any of the non-printable characters.</value>
   </data>
   <data name="MessageFailedToDownloadPackage" xml:space="preserve">
     <value>Failed to download package with id: {0}.  Please try again and report the package if you continue to have problems.</value>
@@ -1702,10 +1698,6 @@ Do you want to install the latest Dynamo update?</value>
     <value>Hide all text bubble</value>
     <comment>Context menu item - Specific to canvas</comment>
   </data>
-  <data name="ContextMenuHideUpstreamPreview" xml:space="preserve">
-    <value>Hide upstream geometry preview</value>
-    <comment>Context menu item - Specific to canvas</comment>
-  </data>
   <data name="ContextMenuInsertCodeBlock" xml:space="preserve">
     <value>Insert code block</value>
     <comment>Context menu item - Specific to canvas</comment>
@@ -1720,10 +1712,6 @@ Do you want to install the latest Dynamo update?</value>
   </data>
   <data name="ContextMenuShowAllTextBubble" xml:space="preserve">
     <value>Show all text buble</value>
-    <comment>Context menu item - Specific to canvas</comment>
-  </data>
-  <data name="ContextMenuShowUpstreamPreview" xml:space="preserve">
-    <value>Show upstream geometry preview</value>
     <comment>Context menu item - Specific to canvas</comment>
   </data>
   <data name="MoreButton" xml:space="preserve">
@@ -2075,7 +2063,7 @@ Next assemblies were loaded several times:
     <comment>Message box content</comment>
   </data>
   <data name="MessageConfirmToSaveReadOnlyCustomNode" xml:space="preserve">
-    <value>We can't save "{0}" because the file is read-only or contains unresolved XML nodes. To keep changes, would you like to "Save As..." with a different name or path?</value>
+    <value>We can't save "{0}" because the file is read-only or contains unresolved or invalid nodes. To keep changes, would you like to "Save As..." with a different name or path?</value>
     <comment>Message box content</comment>
   </data>
   <data name="TabFileNameReadOnlyPrefix" xml:space="preserve">
@@ -2195,5 +2183,8 @@ Want to publish a different package?</value>
   <data name="CustomNodePropertyWindowLocationNote" xml:space="preserve">
     <value>Custom Nodes will be placed in the Add-Ons section of the library.</value>
     <comment>Note regarding Custom Node library location</comment>
+  </data>
+  <data name="CrashPromptGithubNewIssueTitle" xml:space="preserve">
+    <value>Crash report from Dynamo {0}</value>
   </data>
 </root>

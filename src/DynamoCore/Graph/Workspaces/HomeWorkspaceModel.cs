@@ -1,4 +1,11 @@
-﻿using Dynamo.Core;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Globalization;
+using System.Linq;
+using System.Runtime.Serialization;
+using System.Xml;
+using Dynamo.Core;
 using Dynamo.Engine;
 using Dynamo.Graph.Annotations;
 using Dynamo.Graph.Nodes;
@@ -10,13 +17,6 @@ using Dynamo.Scheduler;
 using Newtonsoft.Json;
 using ProtoCore;
 using ProtoCore.Namespace;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Globalization;
-using System.Linq;
-using System.Runtime.Serialization;
-using System.Xml;
 
 namespace Dynamo.Graph.Workspaces
 {

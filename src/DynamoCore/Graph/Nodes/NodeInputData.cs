@@ -1,12 +1,10 @@
-﻿using Dynamo.Graph.Workspaces;
+﻿using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Runtime.Serialization;
+using Dynamo.Graph.Workspaces;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Dynamo.Graph.Nodes
 {
@@ -115,7 +113,7 @@ namespace Dynamo.Graph.Nodes
             var valNumberComparison = false;
             try
             {
-                valNumberComparison = Math.Abs(Convert.ToDouble(this.Value) - Convert.ToDouble(converted.Value)) < .000001;
+                valNumberComparison = Math.Abs(Convert.ToDouble(this.Value, CultureInfo.InvariantCulture) - Convert.ToDouble(converted.Value, CultureInfo.InvariantCulture)) < .000001;
             }
             catch (Exception e)
             {

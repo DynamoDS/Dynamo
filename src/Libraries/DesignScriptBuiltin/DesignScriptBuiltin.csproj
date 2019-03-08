@@ -1,6 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(SolutionDir)Config\CS.props" />
+  </ImportGroup>
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -9,8 +12,9 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Builtin</RootNamespace>
     <AssemblyName>DesignScriptBuiltin</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -50,7 +54,13 @@
     </Compile>
     <Compile Include="Builtin.cs" />
     <Compile Include="Dictionary.cs" />
+    <Compile Include="IndexingExceptions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\DesignScriptBuiltin.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>DesignScriptBuiltin.resx</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -63,11 +73,19 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="DesignScriptBuiltinImages.resx" />
+    <EmbeddedResource Include="Properties\DesignScriptBuiltin.en-US.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\DesignScriptBuiltin.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>DesignScriptBuiltin.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="AfterBuild" Condition=" '$(OS)' != 'Unix' ">
     <!-- Get System.Drawing.dll -->
-    <GetReferenceAssemblyPaths TargetFrameworkMoniker=".NETFramework, Version=v2.0">
+    <GetReferenceAssemblyPaths TargetFrameworkMoniker=".NETFramework, Version=$(ResourceGeneration_FrameworkVersion)">
       <Output TaskParameter="FullFrameworkReferenceAssemblyPaths" PropertyName="FrameworkAssembliesPath" />
     </GetReferenceAssemblyPaths>
     <!-- Get assembly -->
@@ -75,7 +93,7 @@
       <Output TaskParameter="Assemblies" ItemName="AssemblyInfo" />
     </GetAssemblyIdentity>
     <!-- Generate customization dll -->
-    <GenerateResource UseSourcePath="true" Sources="$(ProjectDir)DesignScriptBuiltinImages.resx" OutputResources="$(ProjectDir)DesignScriptBuiltinImages.resources" References="$(FrameworkAssembliesPath)System.Drawing.dll" />
-    <AL TargetType="library" EmbedResources="$(ProjectDir)DesignScriptBuiltinImages.resources" OutputAssembly="$(OutDir)DesignScriptBuiltin.customization.dll" Version="%(AssemblyInfo.Version)" />
+    <GenerateResource SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" UseSourcePath="true" Sources="$(ProjectDir)DesignScriptBuiltinImages.resx" OutputResources="$(ProjectDir)DesignScriptBuiltinImages.resources" References="$(FrameworkAssembliesPath)System.Drawing.dll" />
+    <AL SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" TargetType="library" EmbedResources="$(ProjectDir)DesignScriptBuiltinImages.resources" OutputAssembly="$(OutDir)DesignScriptBuiltin.customization.dll" Version="%(AssemblyInfo.Version)" />
   </Target>
 </Project>

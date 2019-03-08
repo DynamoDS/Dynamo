@@ -20,7 +20,6 @@ using Microsoft.Practices.Prism.Commands;
 using Double = System.Double;
 using NotificationObject = Microsoft.Practices.Prism.ViewModel.NotificationObject;
 using String = System.String;
-using System.Diagnostics;
 
 namespace Dynamo.PackageManager
 {

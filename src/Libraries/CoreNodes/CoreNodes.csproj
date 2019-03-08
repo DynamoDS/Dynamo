@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ImportGroup Label="PropertySheets">
     <Import Project="$(SolutionDir)Config/CS.props" />
   </ImportGroup>
@@ -13,7 +13,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>DSCore</RootNamespace>
     <AssemblyName>DSCoreNodes</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
   </PropertyGroup>
@@ -74,6 +74,7 @@
     <Compile Include="Compare.cs" />
     <Compile Include="DateTime.cs" />
     <Compile Include="FileSystem.cs" />
+    <Compile Include="Data.cs" />
     <Compile Include="List.cs" />
     <Compile Include="Math.cs" />
     <Compile Include="Object.cs" />
@@ -139,7 +140,7 @@
   </Target>
   <Target Name="AfterBuild" Condition=" '$(OS)' != 'Unix' ">
     <!-- Get System.Drawing.dll -->
-    <GetReferenceAssemblyPaths TargetFrameworkMoniker=".NETFramework, Version=v2.0">
+    <GetReferenceAssemblyPaths TargetFrameworkMoniker=".NETFramework, Version=$(ResourceGeneration_FrameworkVersion)">
       <Output TaskParameter="FullFrameworkReferenceAssemblyPaths" PropertyName="FrameworkAssembliesPath" />
     </GetReferenceAssemblyPaths>
     <!-- Get assembly -->
@@ -147,7 +148,7 @@
       <Output TaskParameter="Assemblies" ItemName="AssemblyInfo" />
     </GetAssemblyIdentity>
     <!-- Generate customization dll -->
-    <GenerateResource UseSourcePath="true" Sources="$(ProjectDir)DSCoreNodesImages.resx" OutputResources="$(ProjectDir)DSCoreNodesImages.resources" References="$(FrameworkAssembliesPath)System.Drawing.dll" />
-    <AL TargetType="library" EmbedResources="$(ProjectDir)DSCoreNodesImages.resources" OutputAssembly="$(OutDir)DSCoreNodes.customization.dll" Version="%(AssemblyInfo.Version)" />
+    <GenerateResource SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" UseSourcePath="true" Sources="$(ProjectDir)DSCoreNodesImages.resx" OutputResources="$(ProjectDir)DSCoreNodesImages.resources" References="$(FrameworkAssembliesPath)System.Drawing.dll" />
+    <AL SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" TargetType="library" EmbedResources="$(ProjectDir)DSCoreNodesImages.resources" OutputAssembly="$(OutDir)DSCoreNodes.customization.dll" Version="%(AssemblyInfo.Version)" />
   </Target>
 </Project>

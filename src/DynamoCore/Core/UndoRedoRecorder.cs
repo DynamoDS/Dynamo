@@ -5,7 +5,6 @@ using System.Xml;
 using Dynamo.Graph;
 using Dynamo.Graph.Connectors;
 using Dynamo.Graph.Nodes;
-using Dynamo.Models;
 
 namespace Dynamo.Core
 {

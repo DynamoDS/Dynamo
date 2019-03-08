@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using CoreNodeModels;
+using DesignScript.Builtin;
 using Dynamo.Engine.CodeCompletion;
 using Dynamo.Graph;
 using Dynamo.Graph.Connectors;
@@ -1103,8 +1104,7 @@ var06 = g;
             int outportBrokenNodeCount = helloBrokenNode.OutPorts.Count;
             Assert.IsFalse(outportCount > 0);
         }
-
-
+        
         #region CodeBlockUtils Specific Tests
         [Test]
         [Category("UnitTests")]
@@ -1308,13 +1308,13 @@ var06 = g;
             // Create a list of another empty list.
             var svs = new List<List<string>> { new List<string>() };
 
-            Assert.Throws<IndexOutOfRangeException>(() =>
+            Assert.Throws<System.IndexOutOfRangeException>(() =>
             {
                 // -1 as index argument will cause exception.
                 CodeBlockUtils.DoesStatementRequireOutputPort(svs, -1);
             });
 
-            Assert.Throws<IndexOutOfRangeException>(() =>
+            Assert.Throws<System.IndexOutOfRangeException>(() =>
             {
                 // Out-of-bound index argument will cause exception.
                 CodeBlockUtils.DoesStatementRequireOutputPort(svs, 1);
@@ -1558,7 +1558,7 @@ var06 = g;
             AssertPreviewValue("39c65660-8575-43bc-8af7-f24225a6bd5b", 21);
         }
 
-        [Test, Category("Failure")]
+        [Test]
         [Ignore("Test Loops Forever. Danger.")]
         public void TestImperativeLanguageBlock()
         {
@@ -1666,7 +1666,7 @@ var06 = g;
             AssertError("0cb2f07a-95ab-49ed-bd7e-3e21281b87a3"); // uses identifier as dictionary key
             AssertError("a2b3ac31-98f0-46b0-906e-8617821d0a51"); // uses old syntax {1,2}
         }
-
+        
         [Test]
         public void TestDeprecatedListSyntaxMigration()
         {

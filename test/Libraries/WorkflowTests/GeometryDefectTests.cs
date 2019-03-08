@@ -638,12 +638,12 @@ namespace Dynamo.Tests
         public void TestNodeChange_Surface_ByJoin()
         {
             string openPath = Path.Combine(TestDirectory,
-            @"core\WorkflowTestFiles\TestGeometryNodeChanges\TestSurface.Join.dyn");
+            @"core\WorkflowTestFiles\TestGeometryNodeChanges\TestPolySurface.ByJoinedSurfaces.dyn");
             RunModel(openPath);
 
             AssertNoDummyNodes();
-            var val = GetPreviewValue("6fd810e6-45a3-43df-9303-8a0a6ce59e45") as Surface;
-            var val2 = GetPreviewValue("39df02d4-8b76-4a00-ac05-c0b7beef4db9") as Surface;
+            var val = GetPreviewValue("ac351e9f-01a4-42b3-9b49-6d764d0224b8") as Surface;
+            var val2 = GetPreviewValue("3f3efcee-e954-4a71-818c-c06301ed4e57") as Surface;
             ShouldBeApproximate(val.Area, 2);
             ShouldBeApproximate(val2.Area, 3);
         }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Linq;
@@ -75,6 +76,13 @@ namespace DynamoPythonTests
         }
 
         private ILogger logger;
+
+        // List of expected default imported types
+        private List<string> defaultImports = new List<string>()
+        {
+            "None",
+            "System"
+        };
 
         [SetUp]
         public void SetupPythonTests()
@@ -236,7 +244,7 @@ namespace DynamoPythonTests
             var completionProvider = new IronPythonCompletionProvider();
             completionProvider.UpdateImportedTypes(str);
 
-            Assert.AreEqual(1, completionProvider.ImportedTypes.Count);
+            Assert.AreEqual(2, completionProvider.ImportedTypes.Count);
             Assert.IsTrue(completionProvider.ImportedTypes.ContainsKey("System"));
         }
 
@@ -248,8 +256,8 @@ namespace DynamoPythonTests
             var completionProvider = new IronPythonCompletionProvider();
             completionProvider.UpdateImportedTypes(str);
 
-            Assert.AreEqual(1, completionProvider.ImportedTypes.Count);
-            Assert.IsTrue(completionProvider.ImportedTypes.ContainsKey("System"));
+            Assert.AreEqual(2, completionProvider.ImportedTypes.Count);
+            Assert.IsTrue(defaultImports.SequenceEqual(completionProvider.ImportedTypes.Keys.ToList()));
         }
 
         [Test]
@@ -265,9 +273,8 @@ namespace DynamoPythonTests
             var completionList = completionData.Select(d => d.Text);
             Assert.IsTrue(completionList.Any());
             Assert.IsTrue(completionList.Intersect(new[] { "IO", "Console", "Reflection" }).Count() == 3);
-            Assert.AreEqual(1, completionProvider.ImportedTypes.Count);
-            Assert.IsTrue(completionProvider.ImportedTypes.ContainsKey("System"));
-
+            Assert.AreEqual(2, completionProvider.ImportedTypes.Count);
+            Assert.IsTrue(defaultImports.SequenceEqual(completionProvider.ImportedTypes.Keys.ToList()));
         }
 
         [Test]
@@ -292,6 +299,7 @@ namespace DynamoPythonTests
             var matches = IronPythonCompletionProvider.FindBasicImportStatements(str);
 
             Assert.AreEqual(1, matches.Count);
+            Assert.IsTrue(matches.ContainsKey("System"));
         }
 
         [Test]
@@ -302,8 +310,8 @@ namespace DynamoPythonTests
             var completionProvider = new IronPythonCompletionProvider();
             completionProvider.UpdateImportedTypes(str);
 
-            Assert.AreEqual(1, completionProvider.ImportedTypes.Count);
-            Assert.IsTrue(completionProvider.ImportedTypes.ContainsKey("System"));
+            Assert.AreEqual(2, completionProvider.ImportedTypes.Count);
+            Assert.IsTrue(defaultImports.SequenceEqual(completionProvider.ImportedTypes.Keys.ToList()));
         }
 
         [Test]
@@ -316,7 +324,6 @@ namespace DynamoPythonTests
             var completionData = completionProvider.GetCompletionData(str);
 
             Assert.AreNotEqual(0, completionData.Length);
-
         }
 
         [Test]
@@ -330,7 +337,6 @@ namespace DynamoPythonTests
             Assert.AreEqual("from math import sin", imports["sin"]);
             Assert.IsTrue( imports.ContainsKey("cos") );
             Assert.AreEqual("from math import cos", imports["cos"]);
-
         }
 
         [Test]
@@ -342,7 +348,6 @@ namespace DynamoPythonTests
             var imports = IronPythonCompletionProvider.FindTypeSpecificImportStatements(str);
             Assert.IsTrue(imports.ContainsKey("sin"));
             Assert.AreEqual("from math import sin", imports["sin"]);
-
         }
 
         [Test]
@@ -354,7 +359,6 @@ namespace DynamoPythonTests
             var imports = IronPythonCompletionProvider.FindTypeSpecificImportStatements(str);
             Assert.IsTrue(imports.ContainsKey("Events"));
             Assert.AreEqual("from Autodesk.Revit.DB import Events", imports["Events"]);
-
         }
 
         [Test]
@@ -366,7 +370,6 @@ namespace DynamoPythonTests
             var imports = IronPythonCompletionProvider.FindAllTypeImportStatements(str);
             Assert.IsTrue(imports.ContainsKey("Autodesk.Revit.DB"));
             Assert.AreEqual("from Autodesk.Revit.DB import *", imports["Autodesk.Revit.DB"]);
-
         }
 
         [Test]
@@ -408,6 +411,30 @@ namespace DynamoPythonTests
 
             Assert.AreNotEqual(0, matches.Length);
             //Assert.AreEqual(typeof(IronPython.Runtime.PythonDictionary), matches["a"].Item3);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void VerifyIronPythonLoadedAssemblies()
+        {
+            // Verify IronPython assebmlies are loaded a single time
+            List<string> matches = new List<string>();
+
+            Assembly[] assemblies = AppDomain.CurrentDomain.GetAssemblies();
+            foreach (Assembly assembly in assemblies)
+            {
+                if(assembly.FullName.StartsWith("IronPython"))
+                {
+                    if(matches.Contains(assembly.FullName))
+                    {
+                        Assert.Fail("Attempted to load an IronPython assembly multiple times: " + assembly.FullName);
+                    }
+                    else
+                    {
+                        matches.Add(assembly.FullName);
+                    }
+                }
+            }
         }
     }
 }

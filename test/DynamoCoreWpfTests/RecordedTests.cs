@@ -710,6 +710,20 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
+        public void TestCustomNodeSyntaxError_DoesNotCrash()
+        {
+            //Create custom node
+            //Scenario:
+            //1. Create custom node 
+            //2. Create code block node
+            //3. Type in a range expression (1..10) and commit the node
+            //4. Update the code block by introducing syntax error like "1...10"
+            //5. Test for crash
+            Assert.DoesNotThrow(() => RunCommandsFromFile("CreateCustomNodeSyntaxError.xml"));
+        }
+
+
+        [Test]
         public void TestCustomNodeUI()
         {
             RunCommandsFromFile("CustomNodeUI.xml", (commandTag) =>
@@ -1227,6 +1241,28 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(6, customWorkspace.Nodes.Count());
 
             AssertPreviewValue("345cd2d4-5f3b-4eb0-9d5f-5dd90c5a7493", 36.0);
+        }
+
+        [Test, RequiresSTA]
+        public void TestPreviewToggleConnectionMultiOutputNode()
+        {
+            RunCommandsFromFile("multioutput_node_preview.xml", (commandTag) =>
+            {
+                var dict = DesignScript.Builtin.Dictionary.ByKeysValues(new string[] { "year", "month", "day", "hour", "minute", "second", "millisecond" }, 
+                    new object[] { 1901, 1, 1, 0, 0, 0, 0 });
+                if (commandTag == "FirstRun")
+                {
+                    AssertPreviewValue("060ff703-5cfc-4e8a-ae1a-7066f59e3e26", dict);
+                }
+                else if (commandTag == "SecondRun")
+                {
+                    AssertPreviewValue("060ff703-5cfc-4e8a-ae1a-7066f59e3e26", null);
+                }
+                else if (commandTag == "ThirdRun")
+                {
+                    AssertPreviewValue("060ff703-5cfc-4e8a-ae1a-7066f59e3e26", dict);
+                }
+            });
         }
 
         #endregion
@@ -1798,6 +1834,8 @@ namespace DynamoCoreWpfTests
         [Category("RegressionTests")]
         public void Defect_MAGN_520_DS()
         {
+            // This test is updated to use DeleteModelCommand instead of SelectInRegionCommand due to instability
+
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-520
             RunCommandsFromFile("Defect_MAGN_520_DS.xml");
 

@@ -64,7 +64,12 @@ namespace WpfVisualizationTests
 
         protected override void StartDynamo(TestSessionConfiguration testConfig)
         {
-            var preloader = new Preloader(testConfig.DynamoCorePath, testConfig.RequestedLibraryVersion);
+            // Add Dynamo Core location to the PATH system environment variable.
+            // This is to make sure dependencies(e.g.Helix assemblies) can be located.
+            var path = Environment.GetEnvironmentVariable("Path", EnvironmentVariableTarget.Process) + ";" + testConfig.DynamoCorePath;
+            Environment.SetEnvironmentVariable("Path", path, EnvironmentVariableTarget.Process);
+
+            var preloader = new Preloader(testConfig.DynamoCorePath, new[] { testConfig.RequestedLibraryVersion2 });
             preloader.Preload();
 
             var preloadedLibraries = new List<string>();
@@ -92,6 +97,8 @@ namespace WpfVisualizationTests
                     ProcessMode = TaskProcessMode.Synchronous
                 });
 
+            Model.EvaluationCompleted += Model_EvaluationCompleted;
+
             ViewModel = DynamoViewModel.Start(
                 new DynamoViewModel.StartConfiguration()
                 {
@@ -110,6 +117,11 @@ namespace WpfVisualizationTests
             SynchronizationContext.SetSynchronizationContext(new SynchronizationContext());
         }
 
+        private async void Model_EvaluationCompleted(object sender, EvaluationCompletedEventArgs e)
+        {
+            DispatcherUtil.DoEvents();
+        }
+
         protected void OpenVisualizationTest(string fileName)
         {
             string relativePath = Path.Combine(
@@ -122,6 +134,13 @@ namespace WpfVisualizationTests
             }
 
             ViewModel.OpenCommand.Execute(relativePath);
+        }
+
+        // With version 2.5 NUnit will call base class TearDown methods after those in the derived classes
+        [TearDown]
+        private void CleanUp()
+        {
+            Model.EvaluationCompleted -= Model_EvaluationCompleted;
         }
     }
 
@@ -172,18 +191,13 @@ namespace WpfVisualizationTests
         }
 
         [Test]
-        public void Node_PreviewUpstreamToggled_RenderingUpToDate()
+        public void Node_PreviewToggled_RenderingUpToDate()
         {
             var model = ViewModel.Model;
 
             OpenVisualizationTest("ASM_points_line.dyn");
 
-            DispatcherUtil.DoEvents();
-
-            //we start with all previews disabled
-            //the graph is two points feeding into a line
-
-            //ensure that visulations match our expectations
+            // Verify that visualizations match our expectations
             Assert.True(BackgroundPreviewGeometry.HasNumberOfPointsCurvesAndMeshes(7, 6, 0));
 
             var watch3D = Model.CurrentWorkspace.FirstNodeFromWorkspace<Watch3D>();
@@ -192,8 +206,7 @@ namespace WpfVisualizationTests
             var view = FindFirstWatch3DNodeView();
             var vm = view.ViewModel as HelixWatch3DNodeViewModel;
             Assert.NotNull(vm);
-
-           
+   
             Assert.True(vm.SceneItems.HasNumberOfPointsCurvesAndMeshes(0,6,0));
         }
 
@@ -571,12 +584,9 @@ namespace WpfVisualizationTests
         {
             OpenVisualizationTest("FirstRunWatch3D.dyn");
 
-            // Clear the dispatcher to ensure that the 
-            // view is created.
-            DispatcherUtil.DoEvents();
-
             var view = FindFirstWatch3DNodeView();
             var vm = view.ViewModel as HelixWatch3DNodeViewModel;
+
             Assert.AreEqual(vm.SceneItems.Count(), 3);
         }
 
@@ -584,10 +594,6 @@ namespace WpfVisualizationTests
         public void Watch3D_Disconnect_Reconnect_CorrectRenderings()
         {
             OpenVisualizationTest("ASM_points_line.dyn");
-
-            // Clear the dispatcher to ensure that the 
-            // view is created.
-            DispatcherUtil.DoEvents();
 
             var ws = ViewModel.Model.CurrentWorkspace as HomeWorkspaceModel;
 
@@ -613,7 +619,8 @@ namespace WpfVisualizationTests
             ViewModel.Model.ExecuteCommand(cmd1);
             ViewModel.Model.ExecuteCommand(cmd2);
 
-            Assert.AreEqual(6, view.View.Items.Count);
+            // View contains 3 default items and a collection of lines from the node connected to the Watch3D node
+            Assert.AreEqual(4, view.View.Items.Count);
         }
 
         [Test]
@@ -921,13 +928,12 @@ namespace WpfVisualizationTests
             tagGeometryWhenClickingItem(new[] { 0 }, 11, "Watch", 
                 n => n.ViewModel.NodeModel.InPorts[0].Connectors[0].Start.Owner);
         }
-
-        private void tagGeometryWhenClickingItem(int[] indexes, int expectedNumberOfLabels, 
+        
+        private async void tagGeometryWhenClickingItem(int[] indexes, int expectedNumberOfLabels, 
             string nodeName, Func<NodeView,NodeModel> getGeometryOwnerNode, bool expandPreviewBubble = false)
         {
             OpenVisualizationTest("MAGN_3815.dyn");
             RunCurrentModel();
-            DispatcherUtil.DoEvents();
             Assert.AreEqual(3, Model.CurrentWorkspace.Nodes.Count());
             var nodeView = View.ChildrenOfType<NodeView>().First(nv => nv.ViewModel.Name == nodeName);
             Assert.IsNotNull(nodeView, "NodeView has not been found by given name: " + nodeName);

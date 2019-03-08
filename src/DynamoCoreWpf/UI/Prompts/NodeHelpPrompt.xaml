@@ -73,9 +73,7 @@
 
             </StackPanel>
         </ScrollViewer>
-
-        <TextBlock Name="DynamoDictionary" Grid.Row="1" FontSize="12" Foreground="#2380C0" Margin="10,5,10,5" Text="{x:Static p:Resources.NodeHelpWindowDynamoDictionary}"
-                           Cursor="Hand" MouseLeftButtonUp="OpenDynamoDictionary" />
+        
     </Grid>
 
 

@@ -87,6 +87,8 @@ namespace Dynamo.Applications
 
                 // Generate geometry json file
                 var geometryFilePath = string.Empty;
+                // dll paths we'll import before running a graph 
+                var importPaths = new List<string>() ;
 
                 bool showHelp = false;
                 var optionsSet = new OptionSet().Add("o=|O=", "OpenFilePath, Instruct Dynamo to open headless and run a dyn file at this path", o => openfilepath = o)
@@ -97,7 +99,9 @@ namespace Dynamo.Applications
                 .Add("x|X", "When used in combination with the 'O' flag, opens a .dyn file from the specified path and converts it to .json." + 
                 "File will have the .json extension and be located in the same directory as the original file.", x => convertFile = x != null)
                 .Add("h|H|help", "Get some help", h => showHelp = h != null)
-                .Add("g=|G=|geometry", "Geometry, Instruct Dynamo to output geometry from all evaluations to a json file at this path", g => geometryFilePath = g);
+                .Add("g=|G=|geometry", "Geometry, Instruct Dynamo to output geometry from all evaluations to a json file at this path", g => geometryFilePath = g)
+                .Add("i=|I=|import", "Import, Instruct Dynamo to import an assembly as a node library. This argument should be a filepath to a single .dll" +
+                " - if you wish to import multiple dlls - use this flag multiple times: -i 'assembly1.dll' -i 'assembly2.dll' ", i=>importPaths.Add(i));
 
                 optionsSet.Parse(args);
 
@@ -118,7 +122,8 @@ namespace Dynamo.Applications
                     OpenFilePath = openfilepath,
                     Verbose = verbose,
                     ConvertFile = convertFile,
-                    GeometryFilePath = geometryFilePath
+                    GeometryFilePath = geometryFilePath,
+                    ImportedPaths = importPaths
                 };
             }
 
@@ -134,6 +139,7 @@ namespace Dynamo.Applications
             public string Verbose { get; set; }
             public bool ConvertFile { get; set; }
             public string GeometryFilePath { get; set; }
+            public IEnumerable<String> ImportedPaths { get; set; }
         }
 
         public static void PreloadShapeManager(ref string geometryFactoryPath, ref string preloaderLocation)
@@ -143,10 +149,10 @@ namespace Dynamo.Applications
 
             var versions = new[]
             {
-                LibraryVersion.Version224,
-                LibraryVersion.Version223, 
-                LibraryVersion.Version222,
-                LibraryVersion.Version221
+                    new Version(225,0,0),
+                    new Version(224,4,0),
+                    new Version(224,0,1),
+                    new Version(223,0,1)
             };
 
             var preloader = new Preloader(rootFolder, versions);
@@ -286,7 +292,7 @@ namespace Dynamo.Applications
                         output.Add(new FileLoadException(
                             string.Format(Resources.MismatchedAssemblyVersion, assembly.FullName, currentReferencedAssembly.FullName)
                             + Environment.NewLine + Resources.MismatchedAssemblyList + Environment.NewLine +
-                            String.Join(", ", referencingNewerVersions.Select(x => x.Name).ToArray())));
+                            String.Join(", ", referencingNewerVersions.Select(x => x.Name).Distinct().ToArray())));
                     }
                 }
             }

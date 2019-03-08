@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using CefSharp;
@@ -20,7 +18,6 @@ using Dynamo.Search.SearchElements;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Interfaces;
 using Dynamo.Wpf.ViewModels;
-using Dynamo.Core;
 
 namespace Dynamo.LibraryUI
 {
@@ -76,7 +73,6 @@ namespace Dynamo.LibraryUI
         }
     }
 
-
     /// <summary>
     /// This class holds methods and data to be called from javascript
     /// </summary>
@@ -113,22 +109,13 @@ namespace Dynamo.LibraryUI
         //if the window is resized toggle visibility of browser to force redraw
         private void DynamoWindow_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            toggleBrowserVisibility(this.browser);
-        }
-
-        private void toggleBrowserVisibility(ChromiumWebBrowser browser)
-        {
-            if (browser != null)
-            {
-                browser.Visibility = Visibility.Hidden;
-                browser.Visibility = Visibility.Visible;
-            }
+            browser.InvalidateVisual();
         }
 
         //if the dynamo window is minimized and then restored, force a layout update.
         private void DynamoWindowStateChanged(object sender, EventArgs e)
         {
-            toggleBrowserVisibility(this.browser);
+            browser.InvalidateVisual();
         }
 
         /// <summary>
@@ -181,45 +168,71 @@ namespace Dynamo.LibraryUI
         /// Creates and add the library view to the WPF visual tree
         /// </summary>
         /// <returns>LibraryView control</returns>
-        internal LibraryView AddLibraryView()
+        internal void AddLibraryView()
         {
-            var sidebarGrid = dynamoWindow.FindName("sidebarGrid") as Grid;
-            var model = new LibraryViewModel("http://localhost/library.html");
-            var view = new LibraryView(model);
-
-            var browser = view.Browser;
-            this.browser = browser;
-            sidebarGrid.Children.Add(view);
-            browser.RegisterAsyncJsObject("controller", this);
-            //RegisterResources(browser);
-
+            LibraryViewModel model = new LibraryViewModel("http://localhost/library.html");
+            LibraryView view = new LibraryView(model);
             view.Loaded += OnLibraryViewLoaded;
+
+            var sidebarGrid = dynamoWindow.FindName("sidebarGrid") as Grid;
+            sidebarGrid.Children.Add(view);
+
+            browser = view.Browser;
+            browser.RegisterAsyncJsObject("controller", this);
+
+            browser.Loaded += Browser_Loaded;
             browser.SizeChanged += Browser_SizeChanged;
             browser.LoadError += Browser_LoadError;
-            //wait for the browser to load before setting the resources
-            browser.LoadingStateChanged += (sender, args) =>
-            {
-                //Wait for the Page to finish loading
-                if (args.IsLoading == false)
-                {
-                    RegisterResources(browser);
-                }
-            };
-
-            return view;
         }
 
+        private void Browser_Loaded(object sender, RoutedEventArgs e)
+        {
+            // Attempt to load resources
+            try
+            {
+                RegisterResources(this.browser);
+                string msg = "Preparing to load the library resources.";
+                this.dynamoViewModel.Model.Logger.Log(msg);
+            }
+            catch (Exception ex)
+            {
+                string error = "Failed to load the library resources." +
+                    Environment.NewLine +
+                    "Exception: " + ex.Message;
+                this.dynamoViewModel.Model.Logger.LogError(error);
+            }
+        }
+
+        // Browser LoadError events occur when the resource load for a navigation fails or is canceled
         private void Browser_LoadError(object sender, LoadErrorEventArgs e)
         {
             System.Diagnostics.Trace.WriteLine("*****Chromium Browser Messages******");
             System.Diagnostics.Trace.Write(e.ErrorText);
-            this.dynamoViewModel.Model.Logger.LogError(e.ErrorText);
+
+#if DEBUG
+            // TODO - The browser should not be loaded before the loadedTypesJson or layoutSpecsJson are fully loaded.
+            // Since these assets get loaded via a Javascript function in the html there is no way to guarantee this without moving the logic.
+            // A better strategy is required for preloading these assests before the browser attempts to initialize in order to prevent a reload.
+            // Having long running javascript in the Library.html file is problematic as it doesn't complete before the C# layer continues to execute.
+
+            // This error is expected to occur if the loadedTypesJson or layoutSpecsJson was not fully loaded
+            // on the first loading attempt.  When the resources are ready the browser is refreshed/reloaded.
+            // See this thread for more details: https://magpcss.org/ceforum/viewtopic.php?f=10&t=11507 
+            if (e.ErrorText == "ERR_ABORTED")
+            {
+                this.dynamoViewModel.Model.Logger.LogError("The library browser has been reloaded.");
+            }
+            else
+            {
+                this.dynamoViewModel.Model.Logger.LogError(e.ErrorText);
+            }
+#endif
         }
 
         //if the browser window itself is resized, toggle visibility to force redraw.
         private void Browser_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            toggleBrowserVisibility(this.browser);
+            browser.InvalidateVisual();
         }
 
         #region Tooltip

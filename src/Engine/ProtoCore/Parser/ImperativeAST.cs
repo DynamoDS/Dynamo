@@ -1931,6 +1931,14 @@ namespace ProtoCore.AST.ImperativeAST
             return node;
         }
 
+        public static ImperativeNode BuildForLoopIndexExpression(ImperativeNode value, ImperativeNode index)
+        {
+            var node = BuildFunctionCall(Node.BuiltinGetValueAtIndexTypeName, Node.BuiltinValueAtIndexInForLoopMethodName,
+                new List<ImperativeNode>() { value, index });
+            NodeUtils.SetNodeLocation(node, value, index);
+            return node;
+        }
+
         public static ImperativeNode BuildFunctionCall(string className, string functionName, List<ImperativeNode> args)
         {
             return new IdentifierListNode

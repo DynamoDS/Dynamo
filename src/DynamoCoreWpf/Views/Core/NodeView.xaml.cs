@@ -6,20 +6,17 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Threading;
 using Dynamo.Configuration;
 using Dynamo.Graph.Nodes;
 using Dynamo.Prompts;
 using Dynamo.Selection;
 using Dynamo.UI;
+using Dynamo.UI.Controls;
 using Dynamo.UI.Prompts;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
-using System.Windows.Threading;
-
 using DynCmd = Dynamo.Models.DynamoModel;
-
-using Dynamo.UI.Controls;
-using Dynamo.Nodes;
 
 namespace Dynamo.Controls
 {
@@ -236,6 +233,14 @@ namespace Dynamo.Controls
 
                 case "CachedValue":
                     CachedValueChanged();
+                    break;
+
+                case "IsSetAsInput":
+                    (this.DataContext as NodeViewModel).DynamoViewModel.CurrentSpace.HasUnsavedChanges = true;
+                    break;
+
+                case "IsSetAsOutput":
+                    (this.DataContext as NodeViewModel).DynamoViewModel.CurrentSpace.HasUnsavedChanges = true;
                     break;
             }
         }

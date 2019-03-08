@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Xml;
 using Dynamo.Core;
+using Dynamo.Engine;
 using Dynamo.Engine.CodeGeneration;
 using Dynamo.Events;
 using Dynamo.Graph.Annotations;
@@ -18,15 +19,12 @@ using Dynamo.Graph.Presets;
 using Dynamo.Logging;
 using Dynamo.Models;
 using Dynamo.Properties;
+using Dynamo.Scheduler;
 using Dynamo.Selection;
 using Dynamo.Utilities;
 using Newtonsoft.Json;
-using ProtoCore.Namespace;
-using Utils = Dynamo.Graph.Nodes.Utilities;
-using Dynamo.Engine;
-using Dynamo.Scheduler;
 using Newtonsoft.Json.Linq;
-using Dynamo.Library;
+using ProtoCore.Namespace;
 
 namespace Dynamo.Graph.Workspaces
 {
@@ -572,7 +570,7 @@ namespace Dynamo.Graph.Workspaces
         public bool IsReadOnly
         {   
             //if the workspace contains xmlDummyNodes it's effectively a readonly graph.
-            get { return isReadOnly || this.containsXmlDummyNodes(); }
+            get { return isReadOnly || this.containsXmlDummyNodes() || this.containsInvalidInputSymbols(); }
             set
             {
                 isReadOnly = value;
@@ -1374,6 +1372,15 @@ namespace Dynamo.Graph.Workspaces
             return this.Nodes.OfType<DummyNode>().Where(node => node.OriginalNodeContent is XmlElement).Count()> 0;
         }
 
+        /// <summary>
+        /// Returns true if the workspace contains input symbols with invalid names.
+        /// </summary>
+        /// <returns></returns>
+        internal bool containsInvalidInputSymbols()
+        {
+            return this.Nodes.OfType<Nodes.CustomNodes.Symbol>().Any(node => !node.Parameter.NameIsValid);
+        }
+
         private void SerializeElementResolver(XmlDocument xmlDoc)
         {
             Debug.Assert(xmlDoc != null);
@@ -1653,7 +1660,7 @@ namespace Dynamo.Graph.Workspaces
                 Converters = new List<JsonConverter>{
                         new ConnectorConverter(logger),
                         new WorkspaceReadConverter(engineController, scheduler, factory, isTestMode, verboseLogging),
-                        new NodeReadConverter(manager, libraryServices,isTestMode),
+                        new NodeReadConverter(manager, libraryServices, factory, isTestMode),
                         new TypedParameterConverter()
                     },
                 ReferenceResolverProvider = () => { return new IdReferenceResolver(); }
@@ -1752,7 +1759,13 @@ namespace Dynamo.Graph.Workspaces
 
                 // TODO, QNTM-1099: Figure out if ZIndex needs to be set here as well
                 var noteModel = new NoteModel(noteViewInfo.X, noteViewInfo.Y, noteViewInfo.Text, guidValue);
-                this.AddNote(noteModel);
+
+                //if this note does not exist, add it to the workspace.
+                var matchingNote = this.Notes.FirstOrDefault(x => x.GUID == noteModel.GUID);
+                if (matchingNote == null)
+                {
+                    this.AddNote(noteModel);
+                }
             }
         }
 
@@ -1778,7 +1791,14 @@ namespace Dynamo.Graph.Workspaces
                     annotationViewInfo.Top, 
                     text, 
                     annotationGuidValue);
-                this.AddNote(noteModel);
+
+                //if this note does not exist, add it to the workspace.
+                var matchingNote = this.Notes.FirstOrDefault(x => x.GUID == noteModel.GUID);
+                if (matchingNote == null)
+                {
+                    this.AddNote(noteModel);
+                }
+           
             }
         }
 
@@ -1836,7 +1856,13 @@ namespace Dynamo.Graph.Workspaces
                 annotationModel.FontSize = annotationViewInfo.FontSize;
                 annotationModel.Background = annotationViewInfo.Background;
                 annotationModel.GUID = annotationGuidValue;
-                this.AddNewAnnotation(annotationModel);
+
+                //if this group/annotation does not exist, add it to the workspace.
+                var matchingAnnotation = this.Annotations.FirstOrDefault(x => x.GUID == annotationModel.GUID);
+                if (matchingAnnotation == null)
+                {
+                    this.AddNewAnnotation(annotationModel);
+                }
             }
         }
 

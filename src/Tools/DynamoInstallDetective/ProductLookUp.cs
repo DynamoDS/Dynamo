@@ -93,7 +93,7 @@ namespace DynamoInstallDetective
     }
 
     /// <summary>
-    /// Represents collection of installed productss
+    /// Represents collection of installed products
     /// </summary>
     public interface IProductCollection
     {
@@ -109,8 +109,8 @@ namespace DynamoInstallDetective
         IInstalledProduct GetLatestProduct();
 
         /// <summary>
-        /// Returns all installed product on the system using the given lookUp 
-        /// and initializes itself.
+        /// Get all installed products on the system using the given lookUp 
+        /// and append to Products property.
         /// </summary>
         /// <param name="lookUp">LookUp interface</param>
         void LookUpAndInitProducts(IProductLookUp lookUp);
@@ -301,10 +301,10 @@ namespace DynamoInstallDetective
 
         public virtual void LookUpAndInitProducts(IProductLookUp lookUp)
         {
-            Products =
-                lookUp.GetProductNameList()
+            var newProducts = lookUp.GetProductNameList()
                     .Select(lookUp.GetProductFromProductName).Distinct()
                     .Where(p => p != null).OrderBy(p => p);
+            Products = Products == null ? newProducts : Products.Concat(newProducts);
         }
     }
 

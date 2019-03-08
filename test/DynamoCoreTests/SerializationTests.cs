@@ -11,12 +11,11 @@ using Dynamo.Models;
 using Newtonsoft.Json;
 using Dynamo.Engine;
 using Dynamo.Events;
-using System.Text.RegularExpressions;
-using Dynamo.Graph.Notes;
 using Dynamo.Utilities;
 using Newtonsoft.Json.Linq;
 using System.Globalization;
 using Dynamo.Graph.Nodes.ZeroTouch;
+using System.Threading;
 
 namespace Dynamo.Tests
 {
@@ -518,6 +517,7 @@ namespace Dynamo.Tests
     {
         public static string jsonNonGuidFolderName = "json_nonGuidIds";
         public static string jsonFolderName = "json";
+        public static string jsonFolderNameDifferentCulture = "json_differentCulture";
 
         private TimeSpan lastExecutionDuration = new TimeSpan();
         private Dictionary<Guid, string> modelsGuidToIdMap = new Dictionary<Guid, string>();
@@ -664,6 +664,36 @@ namespace Dynamo.Tests
             DoWorkspaceOpenAndCompare(filePath, jsonFolderName, ConvertCurrentWorkspaceToJsonAndSave,
                 serializationTestUtils.CompareWorkspaceModels,
                 serializationTestUtils.SaveWorkspaceComparisonData);
+        }
+
+        /// <summary>
+        /// This parameterized test finds all .dyn files in directories within
+        /// the test directory, opens them and executes, then converts them to
+        /// json and executes again, comparing the values from the two runs
+        /// while being in a different culture.
+        /// </summary>
+        /// <param name="filePath">The path to a .dyn file. This parameter is supplied
+        /// by the test framework.</param>
+        [Test, TestCaseSource("FindWorkspaces"), Category("JsonTestExclude")]
+        public void SerializationInDifferentCultureTest(string filePath)
+        {
+            var frCulture = CultureInfo.CreateSpecificCulture("fr-FR");
+
+            // Save current culture - usually "en-US"
+            var currentCulture = Thread.CurrentThread.CurrentCulture;
+            var currentUICulture = Thread.CurrentThread.CurrentUICulture;
+
+            // Set "fr-FR"
+            Thread.CurrentThread.CurrentCulture = frCulture;
+            Thread.CurrentThread.CurrentUICulture = frCulture;
+
+            DoWorkspaceOpenAndCompare(filePath, jsonFolderNameDifferentCulture, ConvertCurrentWorkspaceToJsonAndSave,
+                serializationTestUtils.CompareWorkspaceModels,
+                serializationTestUtils.SaveWorkspaceComparisonData);
+
+            // Restore "en-US"
+            Thread.CurrentThread.CurrentCulture = currentCulture;
+            Thread.CurrentThread.CurrentUICulture = currentUICulture;
         }
 
         /// <summary>

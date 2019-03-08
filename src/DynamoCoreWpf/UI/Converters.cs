@@ -6,32 +6,30 @@ using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Media;
+using Dynamo.Configuration;
+using Dynamo.Graph.Nodes;
+using Dynamo.Graph.Workspaces;
+using Dynamo.Logging;
 using Dynamo.PackageManager;
 using Dynamo.Search.SearchElements;
 using Dynamo.UI;
 using Dynamo.UI.Controls;
 using Dynamo.Updates;
+using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Properties;
 using Dynamo.Wpf.ViewModels;
 using DynamoUnits;
-using System.Windows.Controls.Primitives;
-using Dynamo.Configuration;
-using Dynamo.Graph.Nodes;
-using Dynamo.Graph.Workspaces;
-using Dynamo.Logging;
-using Dynamo.Utilities;
 using HelixToolkit.Wpf.SharpDX;
-using RestSharp.Extensions.MonoHttp;
 using Color = System.Windows.Media.Color;
 using FlowDirection = System.Windows.FlowDirection;
 using HorizontalAlignment = System.Windows.HorizontalAlignment;
 using Point = System.Windows.Point;
 using TabControl = System.Windows.Controls.TabControl;
 using Thickness = System.Windows.Thickness;
-using System.Net;
 
 namespace Dynamo.Controls
 {

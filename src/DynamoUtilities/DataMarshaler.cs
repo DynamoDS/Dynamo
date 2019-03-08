@@ -18,11 +18,13 @@ namespace Dynamo.Utilities
 
         public DataMarshaler()
         {
-            //RegisterMarshaler((IEnumerable e) => e.Cast<object>().Select(Marshal));
             RegisterMarshaler((IList e) => e.Cast<object>().Select(Marshal).ToList());
             RegisterMarshaler(
                 (IDictionary dict) =>
-                    dict.Cast<dynamic>().ToDictionary(x => Marshal(x.Key), x => Marshal(x.Value)));
+                {
+                    // Dictionary<TKey, TValue> and IronPython.Runtime.PythonDictionary both implement IDictionary
+                    return dict.Keys.Cast<object>().ToDictionary(key => Marshal(key), key => Marshal(dict[key]));
+                });
         }
 
         /// <summary>
@@ -75,14 +77,6 @@ namespace Dynamo.Utilities
                 return null;
 
             var targetType = obj.GetType();
-
-            // TODO: Remove this conversion after updating IronPython version in 2.1
-            // in which IronPython will support Int64
-            if (typeof (long) == targetType)
-            {
-                obj = Convert.ToInt32(obj);
-                targetType = obj.GetType();
-            }
 
             Converter<object, object> marshaler;
             if (marshalers.TryGetValue(targetType, out marshaler) || cache.TryGetValue(targetType, out marshaler))

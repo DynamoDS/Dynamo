@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using CefSharp;
 using Dynamo.Logging;
 
@@ -21,7 +19,7 @@ namespace Dynamo.LibraryUI.Handlers
         //For testing purpose.
         public ResourceHandlerFactory()
         {
-            
+
         }
 
         //TODO: Remove this after testing.
@@ -39,22 +37,20 @@ namespace Dynamo.LibraryUI.Handlers
         {
             try
             {
-                IResourceHandler handler;
-#if DEBUG
-                
-                if (logger != null)
+                DefaultResourceHandlerFactoryItem handlerItem;
+
+                // Create a handlerItem for the new resource,
+                // if the resource has already been loaded don't load it again
+                if(!Handlers.TryGetValue(request.Url, out handlerItem))
                 {
-                    logger.Log("Requested URL", request.Url);
+                    IResourceHandler handler = this.GetResourceHandler(request);
+
+                    // Make sure the handler is unregistered after use
+                    // See: https://cefsharp.github.io/api/63.0.0/html/T_CefSharp_DefaultResourceHandlerFactoryItem.htm
+                    handlerItem = new DefaultResourceHandlerFactoryItem(handler, true);
                 }
 
-#endif
-                
-                if(!Handlers.TryGetValue(request.Url, out handler))
-                {
-                    handler = this.GetResourceHandler(request);
-                }
-
-                return handler;
+                return handlerItem.Handler;
             }
             finally
             {

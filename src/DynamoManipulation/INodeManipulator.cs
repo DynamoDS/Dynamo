@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using Dynamo.Visualization;
 using Dynamo.Graph.Nodes;
+using Dynamo.Visualization;
 
 namespace Dynamo.Manipulation
 {

@@ -1,3 +1,17 @@
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.ComponentModel;
+using System.Configuration;
+using System.Diagnostics;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Windows;
+using System.Windows.Forms;
+using System.Windows.Threading;
 using Dynamo.Configuration;
 using Dynamo.Engine;
 using Dynamo.Exceptions;
@@ -22,19 +36,6 @@ using Dynamo.Wpf.ViewModels;
 using Dynamo.Wpf.ViewModels.Core;
 using Dynamo.Wpf.ViewModels.Watch3D;
 using DynamoUtilities;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Collections.Specialized;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Windows;
-using System.Windows.Forms;
-using System.Windows.Threading;
 using ISelectable = Dynamo.Selection.ISelectable;
 
 namespace Dynamo.ViewModels
@@ -507,6 +508,22 @@ namespace Dynamo.ViewModels
 
         protected DynamoViewModel(StartConfiguration startConfiguration)
         {
+
+            // This can be removed after this bug is fixed in .net 4.7
+            // https://developercommunity.visualstudio.com/content/problem/244615/setfinalsizemaxdiscrepancy-getting-stuck-in-an-inf.html
+            // if the key "Switch.System.Windows.Controls.Grid.StarDefinitionsCanExceedAvailableSpace" has a value true in the 
+            // dynamoCoreWpf.config file we will set the switch here before the view is created.
+            var path = this.GetType().Assembly.Location;
+            var config = ConfigurationManager.OpenExeConfiguration(path);
+            var gridSwitchKey = "Switch.System.Windows.Controls.Grid.StarDefinitionsCanExceedAvailableSpace";
+            var gridSwitchKeyValue = config.AppSettings.Settings[gridSwitchKey];
+            bool gridSwitch = false;
+            if(gridSwitchKeyValue != null)
+            {
+                bool.TryParse(gridSwitchKeyValue.Value, out gridSwitch);
+                AppContext.SetSwitch(gridSwitchKey, gridSwitch);
+            }
+
             this.ShowLogin = startConfiguration.ShowLogin;
 
             // initialize core data structures
@@ -801,9 +818,19 @@ namespace Dynamo.ViewModels
             return Model.CustomNodeManager.Contains((Guid)parameters);
         }
 
-        public static void ReportABug(object parameter)
+        /// <summary>
+        /// Opens a new browser window pointing to the Dynamo repo new issue page, pre-filling issue 
+        /// title and content based on crash details. Uses system default browser.
+        /// </summary>
+        /// <param name="bodyContent">Crash details body. If null, nothing will be filled-in.</param>
+        public static void ReportABug(object bodyContent)
         {
-            Process.Start(new ProcessStartInfo("explorer.exe", Configurations.GitHubBugReportingLink));
+            var urlWithParameters = Wpf.Utilities.CrashUtilities.GithubNewIssueUrlFromCrashContent(bodyContent);
+
+            // launching the process using explorer.exe will format the URL incorrectly
+            // and Github will not recognise the query parameters in the URL
+            // so launch with default operating system web browser
+            Process.Start(new ProcessStartInfo(urlWithParameters));
         }
 
         public static void ReportABug()
@@ -1207,6 +1234,7 @@ namespace Dynamo.ViewModels
             {
                 if (AskUserToSaveWorkspaceOrCancel(HomeSpace))
                 {
+                    this.filePath = command.FilePath;
                     this.ExecuteCommand(command);
                     this.ShowStartPage = false;
                 }

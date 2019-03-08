@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <ImportGroup Label="PropertySheets">
     <Import Project="$(SolutionDir)Config\CS.props" />
@@ -12,7 +12,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>DSIronPython</RootNamespace>
     <AssemblyName>DSIronPython</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
   </PropertyGroup>
@@ -36,15 +36,36 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="IronPython">
-      <HintPath>..\..\..\extern\IronPython\IronPython.dll</HintPath>
+    <Reference Include="IronPython, Version=2.7.8.0, Culture=neutral, PublicKeyToken=7f709c5b713576e1, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\IronPython.2.7.8.1\lib\net45\IronPython.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="IronPython.Modules, Version=2.7.0.40, Culture=neutral, PublicKeyToken=7f709c5b713576e1, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\extern\IronPython\IronPython.Modules.dll</HintPath>
+    <Reference Include="IronPython.Modules, Version=2.7.8.0, Culture=neutral, PublicKeyToken=7f709c5b713576e1, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\IronPython.2.7.8.1\lib\net45\IronPython.Modules.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="Microsoft.Scripting">
-      <HintPath>..\..\..\extern\IronPython\Microsoft.Scripting.dll</HintPath>
+    <Reference Include="IronPython.SQLite, Version=2.7.8.0, Culture=neutral, PublicKeyToken=7f709c5b713576e1, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\IronPython.2.7.8.1\lib\net45\IronPython.SQLite.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="IronPython.Wpf, Version=2.7.8.0, Culture=neutral, PublicKeyToken=7f709c5b713576e1, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\IronPython.2.7.8.1\lib\net45\IronPython.Wpf.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Dynamic, Version=1.2.0.0, Culture=neutral, PublicKeyToken=7f709c5b713576e1, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\DynamicLanguageRuntime.1.2.1\lib\net45\Microsoft.Dynamic.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Scripting, Version=1.2.0.0, Culture=neutral, PublicKeyToken=7f709c5b713576e1, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\DynamicLanguageRuntime.1.2.1\lib\net45\Microsoft.Scripting.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Scripting.Metadata, Version=1.2.0.0, Culture=neutral, PublicKeyToken=7f709c5b713576e1, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\DynamicLanguageRuntime.1.2.1\lib\net45\Microsoft.Scripting.Metadata.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.CodeCoverage.Shim, Version=15.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\DynamicLanguageRuntime.1.2.1\lib\net45\Microsoft.VisualStudio.CodeCoverage.Shim.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
@@ -76,9 +97,20 @@
       <Name>DynamoServices</Name>
       <Private>False</Private>
     </ProjectReference>
+    <ProjectReference Include="..\DesignScriptBuiltin\DesignScriptBuiltin.csproj">
+      <Project>{c0d6dee5-5532-4345-9c66-4c00d7fdb8be}</Project>
+      <Name>DesignScriptBuiltin</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="AfterBuild">
     <Copy SourceFiles="$(ProjectDir)DSIronPython_DynamoCustomization.xml" DestinationFolder="$(OutputPath)" />
+    <ItemGroup>
+      <PythonStdLib Include="$(ProjectDir)..\..\packages\IronPython.StdLib.2.7.8.1\contentFiles\any\any\Lib\**\*.*" />
+    </ItemGroup>
+    <Copy SourceFiles="@(PythonStdLib)" DestinationFiles="@(PythonStdLib->'$(TargetDir)IronPython.StdLib.2.7.8\%(RecursiveDir)%(Filename)%(Extension)')" SkipUnchangedFiles="true" />
   </Target>
 </Project>
