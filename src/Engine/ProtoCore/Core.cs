@@ -347,7 +347,8 @@ namespace ProtoCore
                 // Remove codeblock defined in procNode from CodeBlockList and CompleteCodeBlockList
                 foreach (int cbID in procNode.ChildCodeBlocks)
                 {
-                    CompleteCodeBlockList.RemoveAll(x => x.codeBlockId == cbID);
+                    // DO NOT MERGE: This code is being commented out here for testing purposes only (for now)
+                    // CompleteCodeBlockList.RemoveAll(x => x.codeBlockId == cbID);
 
                     foreach (CodeBlock cb in CodeBlockList)
                     {
