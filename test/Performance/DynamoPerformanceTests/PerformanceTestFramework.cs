@@ -13,8 +13,15 @@ using Dynamo;
 
 namespace DynamoPerformanceTests
 {
+    /// <summary>
+    /// Class utilizing BenchmarkDotNet to implement a performance
+    /// benchmarking framework. This class currently measures Open and Run times
+    /// for DYN graphs in Dynamo.
+    /// </summary>
     public class PerformanceTestFramework : DynamoModelTestBase
     {
+        // Config class that when initialized and used to run the benchmarks
+        // allows for testing of debug versions of DynamoCore targets.
         public class AllowNonOptimized : ManualConfig
         {
             public AllowNonOptimized(string testDir)
@@ -29,6 +36,8 @@ namespace DynamoPerformanceTests
             }
         }
 
+        // Config class used to pass command line arguments from the 
+        // benchmark runner to all benchmarks defined in the test framework class.
         public class BenchmarkConfig : ManualConfig
         {
             public BenchmarkConfig(string testDir)
@@ -62,17 +71,27 @@ namespace DynamoPerformanceTests
             libraries.Add("GeometryColor.dll");
         }
 
+        /// <summary>
+        /// Automated creation of performance test cases, one for each
+        /// parameter source.
+        /// </summary>
         [ParamsSource(nameof(PerformanceTestSource))]
         public string DynamoFilePath { get; set; }
 
         #region Iteration setup and cleanup methods for Benchmarks
 
+        /// <summary>
+        /// Setup method to be called before each OpenModel benchmark.
+        /// </summary>
         [IterationSetup(Target = nameof(OpenModelBenchmark))]
         public void IterationSetupOpenModel()
         {
             Setup();
         }
 
+        /// <summary>
+        /// Setup method to be called before each RunModel benchmark.
+        /// </summary>
         [IterationSetup(Target = nameof(RunModelBenchmark))]
         public void IterationSetupRunModel()
         {
@@ -82,7 +101,9 @@ namespace DynamoPerformanceTests
             OpenModel(DynamoFilePath);
         }
 
-
+        /// <summary>
+        /// Cleanup method to be called after each benchmark.
+        /// </summary>
         [IterationCleanup]
         public void IterationCleanup()
         {
@@ -92,10 +113,7 @@ namespace DynamoPerformanceTests
         #endregion
 
         #region Benchmark methods
-        /// <summary>
-        /// Automated creation of performance test cases.
-        /// </summary>
-        /// <param name="dynamoFilePath">The path of the dynamo workspace.</param>
+
         [Benchmark]
         public void OpenModelBenchmark()
         {
@@ -109,7 +127,7 @@ namespace DynamoPerformanceTests
             BeginRun();
         }
 
-#endregion
+        #endregion
 
         /// <summary>
         /// Populates the test cases based on DYN files in the performance tests folder.
@@ -121,7 +139,6 @@ namespace DynamoPerformanceTests
             string dir = fi.DirectoryName;
 
             // Test location for all DYN files to be measured for performance 
-            // TODO: to be parameterized
             string testsLoc = Path.Combine(dir, testDirectory);
             var regTestPath = Path.GetFullPath(testsLoc);
 

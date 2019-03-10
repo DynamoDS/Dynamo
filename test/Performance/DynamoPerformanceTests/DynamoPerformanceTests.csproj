@@ -190,6 +190,9 @@
   <ItemGroup>
     <Compile Include="PerformanceTestFramework.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+	<Compile Include="..\..\..\src\AssemblySharedInfoGenerator\AssemblySharedInfo.cs">
+      <Link>Properties\AssemblySharedInfo.cs</Link>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\DynamoCoreTests\DynamoCoreTests.csproj">
