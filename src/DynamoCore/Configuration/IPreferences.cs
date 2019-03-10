@@ -149,7 +149,7 @@ namespace Dynamo.Interfaces
 
     /// <summary>
     /// Temporary interface to avoid breaking changes.
-    /// TODO: Merge with IPreferences for 3.0
+    /// TODO: Merge with IPreferences for 3.0 (DYN-1699)
     /// </summary>
     public interface IRenderPrecisionPreference
     {
