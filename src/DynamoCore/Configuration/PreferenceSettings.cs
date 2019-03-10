@@ -28,6 +28,11 @@ namespace Dynamo.Configuration
         internal const int DefaultMaxNumRecentFiles = 10;
 
         /// <summary>
+        /// Indicates the default render precision, i.e. the maximum number of tessellation divisions
+        /// </summary>
+        internal const int DefaultRenderPrecision = 128;
+
+        /// <summary>
         /// Temp PreferenceSetting Location for testing
         /// </summary>
         public static string DynamoTestPath = null;
@@ -328,7 +333,7 @@ namespace Dynamo.Configuration
             UseHardwareAcceleration = true;
             PackageDownloadTouAccepted = false;
             maxNumRecentFiles = DefaultMaxNumRecentFiles;
-            RenderPrecision = 128;
+            RenderPrecision = DefaultRenderPrecision;
             ShowEdges = false;
             OpenFileInManualExecutionMode = false;
             ShowDetailedLayout = true;
