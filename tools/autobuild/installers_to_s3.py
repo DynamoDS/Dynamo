@@ -47,6 +47,8 @@ def publish_to_s3(installer_dir, installer_bin_dir, prefix, include_date, is_dev
 		  	dynamo_s3.upload_installer( form_path( ['temp', file] ), prefix, include_date, is_dev_build ,'.exe', date_string)
 		  elif fnmatch.fnmatch( file, '*.sig'):
 		  	dynamo_s3.upload_installer( form_path( ['temp', file] ), prefix, include_date, is_dev_build ,'.sig', date_string)
+		  elif fnmatch.fnmatch( file, '*.zip'):
+		  	dynamo_s3.upload_installer( form_path( ['temp', file] ), prefix, include_date, is_dev_build ,'.zip', date_string)
 
 	except Exception:
 		print 'There was an exception uploading to s3:'

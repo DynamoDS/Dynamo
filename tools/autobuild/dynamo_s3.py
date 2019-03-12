@@ -19,7 +19,7 @@ def upload_installer(fn, prefix, include_date, is_dev_build, extension, date_str
 
 	s3 = boto.connect_s3()
 
-	if extension == '.exe':
+	if extension == '.exe' or extension == '.zip':
 		if is_dev_build:
 			b = s3.get_bucket('dyn-builds-dev')
 		else:
