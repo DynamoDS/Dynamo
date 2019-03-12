@@ -601,16 +601,19 @@ namespace Dynamo.ViewModels
 
         private void RenderPackageFactoryViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
+            var factoryVm = (RenderPackageFactoryViewModel)sender;
             switch (e.PropertyName)
             {
                 case "ShowEdges":
-                    var factoryVm = (RenderPackageFactoryViewModel)sender;
                     model.PreferenceSettings.ShowEdges = factoryVm.Factory.TessellationParameters.ShowEdges;
                     // A full regeneration is required to get the edge geometry.
                     foreach (var vm in Watch3DViewModels)
                     {
                         vm.RegenerateAllPackages();
                     }
+                    break;
+                case "MaxTessellationDivisions":
+                    model.PreferenceSettings.RenderPrecision = factoryVm.Factory.TessellationParameters.MaxTessellationDivisions;
                     break;
                 default:
                     return;

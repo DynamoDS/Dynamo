@@ -148,6 +148,18 @@ namespace Dynamo.Interfaces
     }
 
     /// <summary>
+    /// Temporary interface to avoid breaking changes.
+    /// TODO: Merge with IPreferences for 3.0 (DYN-1699)
+    /// </summary>
+    public interface IRenderPrecisionPreference
+    {
+        ///<summary>
+        ///Indicate which render precision will be used
+        ///</summary>
+        int RenderPrecision { get; set; }
+    }
+
+    /// <summary>
     /// Represents data about active state of preview background
     /// </summary>
     public class BackgroundPreviewActiveState
