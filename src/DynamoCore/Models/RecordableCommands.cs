@@ -1358,9 +1358,13 @@ namespace Dynamo.Models
                 /// </summary>
                 EndShiftReconnections,
                 /// <summary>
-                /// End and start control connections.
+                /// Begin duplicate connection.
                 /// </summary>
-                EndAndStartCtrlConnection,
+                BeginDuplicateConnection,
+                /// <summary>
+                /// End current connection and create new connections.
+                /// </summary>
+                BeginCreateConnections,
                 /// <summary>
                 /// Cancel connection.
                 /// </summary>
