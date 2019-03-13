@@ -1398,7 +1398,12 @@ namespace ProtoCore
                 log.AppendLine("Resolution failed in: " + sw.ElapsedMilliseconds);
 
                 if (runtimeCore.Options.DumpFunctionResolverLogic)
-                    runtimeCore.DSExecutable.EventSink.PrintMessage(log.ToString());
+                {
+                    if (runtimeCore.DSExecutable.EventSink.PrintMessage != null)
+                    {
+                        runtimeCore.DSExecutable.EventSink.PrintMessage(log.ToString());
+                    }
+                }
 
                 return ReportFunctionGroupNotFound(runtimeCore, arguments);
             }
@@ -1449,7 +1454,12 @@ namespace ProtoCore
                 log.AppendLine("Resolution Failed");
 
                 if (runtimeCore.Options.DumpFunctionResolverLogic)
-                    runtimeCore.DSExecutable.EventSink.PrintMessage(log.ToString());
+                {
+                    if (runtimeCore.DSExecutable.EventSink.PrintMessage != null)
+                    {
+                        runtimeCore.DSExecutable.EventSink.PrintMessage(log.ToString());
+                    }
+                }
 
                 return ReportMethodNotFoundForArguments(runtimeCore, funcGroup, arguments);
             }
