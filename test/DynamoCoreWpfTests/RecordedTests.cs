@@ -1160,7 +1160,7 @@ namespace DynamoCoreWpfTests
         /// followed by ctrl + clicking to copy this connection to 2 additional nodes.
         /// The final assertion will only be true if all connections were successfully established.
         /// </summary>
-        [Test, RequiresSTA]
+        [Test]
         public void TestCtrlClickInputConnections()
         {
             RunCommandsFromFile("CtrlClickRecordedTest_Recording.xml");
@@ -1177,7 +1177,7 @@ namespace DynamoCoreWpfTests
         /// followed by ctrl + clicking to copy this connection to 2 additional nodes.
         /// We then call 2 undo commands and verify only our original connection exists.
         /// </summary>
-        [Test, RequiresSTA]
+        [Test]
         public void TestCtrlClickInputConnectionsUndo()
         {
             RunCommandsFromFile("CtrlClickRecordedTestUndo_Recording.xml");
@@ -1197,7 +1197,7 @@ namespace DynamoCoreWpfTests
         /// We then call 2 undo commands followed by 2 redo commands and verify all 3 
         /// connections exist.
         /// </summary>
-        [Test, RequiresSTA]
+        [Test]
         public void TestCtrlClickInputConnectionsUndoRedo()
         {
             RunCommandsFromFile("CtrlClickRecordedTestUndoRedo_Recording.xml");
