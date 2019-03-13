@@ -52,19 +52,19 @@ namespace Dynamo.Models
             //ClipBoard.Clear();
         }
 
-        void RunCancelImpl(RunCancelCommand command)
+        internal void RunCancelImpl(RunCancelCommand command)
         {
             var model = CurrentWorkspace as HomeWorkspaceModel;
             if (model != null)
                 model.Run();
         }
 
-        void ForceRunCancelImpl(ForceRunCancelCommand command)
+        internal void ForceRunCancelImpl(ForceRunCancelCommand command)
         {
             ForceRun();
         }
 
-        void CreateNodeImpl(CreateNodeCommand command)
+        internal void CreateNodeImpl(CreateNodeCommand command)
         {
             var node = GetNodeFromCommand(command);
             if (node == null)
@@ -79,7 +79,7 @@ namespace Dynamo.Models
             CurrentWorkspace.RecordCreatedModel(node);
         }
 
-        void CreateAndConnectNodeImpl(CreateAndConnectNodeCommand command)
+        internal void CreateAndConnectNodeImpl(CreateAndConnectNodeCommand command)
         {
             using (CurrentWorkspace.UndoRecorder.BeginActionGroup())
             {
@@ -124,7 +124,7 @@ namespace Dynamo.Models
             }
         }
 
-        NodeModel GetNodeFromCommand(CreateNodeCommand command)
+        internal NodeModel GetNodeFromCommand(CreateNodeCommand command)
         {
             if (command.Node != null)
             {
@@ -202,7 +202,7 @@ namespace Dynamo.Models
             return node;
         }
 
-        void CreateNoteImpl(CreateNoteCommand command)
+        internal void CreateNoteImpl(CreateNoteCommand command)
         {
             NoteModel noteModel = CurrentWorkspace.AddNote(
                 command.DefaultPosition,
@@ -214,14 +214,14 @@ namespace Dynamo.Models
             CurrentWorkspace.RecordCreatedModel(noteModel);
         }
 
-        void CreateAnnotationImpl(CreateAnnotationCommand command)
+        internal void CreateAnnotationImpl(CreateAnnotationCommand command)
         {
             AnnotationModel annotationModel = currentWorkspace.AddAnnotation(command.AnnotationText, command.ModelGuid);
             
             CurrentWorkspace.RecordCreatedModel(annotationModel);
         }
 
-        void SelectModelImpl(SelectModelCommand command)
+        internal void SelectModelImpl(SelectModelCommand command)
         {
             // Empty ModelGuid means clear selection.
             if (command.ModelGuid == Guid.Empty)
@@ -249,7 +249,7 @@ namespace Dynamo.Models
             }
         }
 
-        void MakeConnectionImpl(MakeConnectionCommand command)
+        internal void MakeConnectionImpl(MakeConnectionCommand command)
         {
             Guid nodeId = command.ModelGuid;
 
@@ -285,7 +285,7 @@ namespace Dynamo.Models
             }
         }
 
-        void BeginConnection(Guid nodeId, int portIndex, PortType portType)
+        internal void BeginConnection(Guid nodeId, int portIndex, PortType portType)
         {
             bool isInPort = portType == PortType.Input;
             activeStartPorts = null;
@@ -319,7 +319,7 @@ namespace Dynamo.Models
             }
         }
 
-        void BeginDuplicateConnection(Guid nodeId, int portIndex, PortType portType)
+        internal void BeginDuplicateConnection(Guid nodeId, int portIndex, PortType portType)
         {
             // If the port clicked is an output port, begin connection as per normal
             if (portType == PortType.Output)
@@ -348,7 +348,7 @@ namespace Dynamo.Models
             firstStartPort = portModel.Connectors[0].Start;
         }
 
-        void BeginShiftReconnections(Guid nodeId, int portIndex, PortType portType)
+        internal void BeginShiftReconnections(Guid nodeId, int portIndex, PortType portType)
         {
             if (portType == PortType.Input) return; //only handle multiple connections when the port selected is an output port
             var node = CurrentWorkspace.GetModelInternal(nodeId) as NodeModel;
@@ -376,7 +376,7 @@ namespace Dynamo.Models
             return;
         }
 
-        void EndConnection(Guid nodeId, int portIndex, PortType portType)
+        internal void EndConnection(Guid nodeId, int portIndex, PortType portType)
         {
             // Check if the node from which the connector starts is valid and has not been deleted
             if (activeStartPorts == null || activeStartPorts.Count() <= 0 || activeStartPorts[0].Owner == null) return;
@@ -398,7 +398,7 @@ namespace Dynamo.Models
             firstStartPort = null;
         }
 
-        void EndShiftReconnections(Guid nodeId, int portIndex, PortType portType)
+        internal void EndShiftReconnections(Guid nodeId, int portIndex, PortType portType)
         {
             if (portType == PortType.Input) return; //only handle multiple connections when the port selected is an output port
             if (activeStartPorts == null || activeStartPorts.Count() <= 0) return;
@@ -421,7 +421,7 @@ namespace Dynamo.Models
             return;
         }
 
-        void BeginCreateConnections(Guid nodeId, int portIndex, PortType portType)
+        internal void BeginCreateConnections(Guid nodeId, int portIndex, PortType portType)
         {
             if (portType == PortType.Output) return; // Only handle ctrl connections if selected port is an input port
             if (firstStartPort == null || activeStartPorts == null || activeStartPorts.Count() <= 0) return;
@@ -436,7 +436,7 @@ namespace Dynamo.Models
             activeStartPorts = new PortModel[] { firstStartPort };
         }
 
-        void CancelConnections()
+        internal void CancelConnections()
         {
             CurrentWorkspace.DeleteSavedModels();
             activeStartPorts = null;
@@ -444,7 +444,7 @@ namespace Dynamo.Models
             return;
         }
 
-        static Dictionary<ModelBase, UndoRedoRecorder.UserAction> GetConnectorsToAddAndDelete(
+        internal static Dictionary<ModelBase, UndoRedoRecorder.UserAction> GetConnectorsToAddAndDelete(
             PortModel endPort, PortModel startPort)
         {
             ConnectorModel connectorToRemove = null;
@@ -490,7 +490,7 @@ namespace Dynamo.Models
             return models;
         }
 
-        void DeleteModelImpl(DeleteModelCommand command)
+        internal void DeleteModelImpl(DeleteModelCommand command)
         {
             var modelsToDelete = new List<ModelBase>();
             if (command.ModelGuid == Guid.Empty)
@@ -506,7 +506,7 @@ namespace Dynamo.Models
             DeleteModelInternal(modelsToDelete);
         }
 
-        void UngroupModelImpl(UngroupModelCommand command)
+        internal void UngroupModelImpl(UngroupModelCommand command)
         {
             if (command.ModelGuid == Guid.Empty)
                 return;
@@ -516,7 +516,7 @@ namespace Dynamo.Models
             UngroupModel(modelsToUngroup);
         }
 
-        void AddToGroupImpl(AddModelToGroupCommand command)
+        internal void AddToGroupImpl(AddModelToGroupCommand command)
         {
             if (command.ModelGuid == Guid.Empty)
                 return;
@@ -526,7 +526,7 @@ namespace Dynamo.Models
             AddToGroup(modelsToGroup);
         }
 
-        void UndoRedoImpl(UndoRedoCommand command)
+        internal void UndoRedoImpl(UndoRedoCommand command)
         {
             switch (command.CmdOperation)
             {
@@ -539,7 +539,7 @@ namespace Dynamo.Models
             }
         }
 
-        void SendModelEventImpl(ModelEventCommand command)
+        internal void SendModelEventImpl(ModelEventCommand command)
         {
             foreach (var guid in command.ModelGuids)
             {
@@ -547,7 +547,7 @@ namespace Dynamo.Models
             }
         }
 
-        void UpdateModelValueImpl(UpdateModelValueCommand command)
+        internal void UpdateModelValueImpl(UpdateModelValueCommand command)
         {
             WorkspaceModel targetWorkspace = CurrentWorkspace;
             if (!command.WorkspaceGuid.Equals(Guid.Empty))
@@ -566,7 +566,7 @@ namespace Dynamo.Models
             CurrentWorkspace.HasUnsavedChanges = true;
         }
 
-        void CreateCustomNodeImpl(CreateCustomNodeCommand command)
+        internal void CreateCustomNodeImpl(CreateCustomNodeCommand command)
         {
             var workspace = CustomNodeManager.CreateCustomNode(
                 command.Name,
@@ -578,19 +578,19 @@ namespace Dynamo.Models
             CurrentWorkspace = workspace;
         }
 
-        void SwitchWorkspaceImpl(SwitchTabCommand command)
+        internal void SwitchWorkspaceImpl(SwitchTabCommand command)
         {
             // We don't attempt to null-check here, we need it to fail fast.
             CurrentWorkspace = Workspaces.ElementAt(command.WorkspaceModelIndex);
         }
 
-        void CreatePresetStateImpl(AddPresetCommand command)
+        internal void CreatePresetStateImpl(AddPresetCommand command)
         {
             var preset = this.CurrentWorkspace.AddPreset(command.PresetStateName,command.PresetStateDescription,command.ModelGuids);
 
             CurrentWorkspace.RecordCreatedModel(preset);
         }
-        void SetWorkSpaceToStateImpl(ApplyPresetCommand command)
+        internal void SetWorkSpaceToStateImpl(ApplyPresetCommand command)
         {
             var workspaceToSet = this.Workspaces.Where(x => x.Guid == command.WorkSpaceID).First();
             if (workspaceToSet == null)
