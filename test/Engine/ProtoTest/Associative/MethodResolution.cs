@@ -396,5 +396,24 @@ z2 = qux2();
             thisTest.Verify("z1", 22);
             thisTest.Verify("z2", 22);
         }
+
+        [Test]
+        public void TestEmptyNestedListsForMethodResolution()
+        {
+            string code = @"import(""FFITarget.dll""); 
+pt = DummyPoint2D.ByCoordinates(0,0);
+l = [[],[pt]];
+px = DummyPoint2D.X(l);
+";
+            var mirror = thisTest.RunScriptSource(code);
+            thisTest.Verify("px", new object[] { new object[] { }, new object[] { 0 } });
+            code = @"import(""FFITarget.dll""); 
+pt = DummyPoint2D.ByCoordinates(0,0);
+l = [[pt],[]];
+px = DummyPoint2D.X(l);
+";
+            mirror = thisTest.RunScriptSource(code);
+            thisTest.Verify("px", new object[] { new object[] { 0 }, new object[] { } });
+        }
     }
 }
