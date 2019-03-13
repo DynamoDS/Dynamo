@@ -336,7 +336,7 @@ namespace Dynamo.Models
                 return;
             }
 
-            PortModel portModel = node.InPorts[portIndex];
+            var portModel = node.InPorts[portIndex];
             if (portModel.Connectors.Count == 0)
             {
                 // If the port doesn't have any existing connections, begin connection as per normal
