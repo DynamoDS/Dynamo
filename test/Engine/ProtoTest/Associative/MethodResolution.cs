@@ -403,17 +403,14 @@ z2 = qux2();
             string code = @"import(""FFITarget.dll""); 
 pt = DummyPoint2D.ByCoordinates(0,0);
 l = [[],[pt]];
-px = DummyPoint2D.X(l);
+px1 = DummyPoint2D.X(l);
+pt = DummyPoint2D.ByCoordinates(0,0);
+l2 = [[pt],[]];
+px2 = DummyPoint2D.X(l2);
 ";
             var mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("px", new object[] { new object[] { }, new object[] { 0 } });
-            code = @"import(""FFITarget.dll""); 
-pt = DummyPoint2D.ByCoordinates(0,0);
-l = [[pt],[]];
-px = DummyPoint2D.X(l);
-";
-            mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("px", new object[] { new object[] { 0 }, new object[] { } });
+            thisTest.Verify("px1", new object[] { new object[] { }, new object[] { 0 } });
+            thisTest.Verify("px2", new object[] { new object[] { 0 }, new object[] { } });
         }
     }
 }
