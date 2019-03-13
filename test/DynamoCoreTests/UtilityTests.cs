@@ -826,5 +826,14 @@ namespace Dynamo.Tests
             }
             Assert.AreEqual(true, InvalidNameError);
         }
+
+        //This test will check for the default name that is set for the workspace snapshot.
+        [Test]
+        public void GenerateSnapshotNameTest()
+        {
+            var examplePath = Path.Combine(TestDirectory, @"core\math", "Add.dyn");
+            var snapshotName = PathHelper.GetScreenCaptureNameFromPath(examplePath);
+            Assert.AreEqual(snapshotName, "Add_" + string.Format("{0:yyyy-MM-dd_hh-mm-ss}", DateTime.Now));
+        }
     }
 }
