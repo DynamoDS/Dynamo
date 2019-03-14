@@ -1173,6 +1173,20 @@ namespace Dynamo.Tests
             OpenModel(dynFilePath);
             AssertPreviewValue("3bf992eb-ecc9-4fcc-a90b-9b1ee7e925e9", 3);
         }
+
+        [Test, Category("UnitTests")]
+        public void ReplicationWithEmptySubLists()
+        {
+            RunModel(@"core\dsevaluation\Replication_EmptySublist.dyn");
+            var guidCurveLength = "1b247af2b1c046fb9f8e3e27761ab5a9";
+            var guidCodeBlock = Guid.Parse("b9dec880d99347eb8a203783f54763e6");
+            AssertPreviewValue(guidCurveLength, new object[] { new object[] { }, new object[] { 6.283185 } });
+
+            var command = new Models.DynamoModel.UpdateModelValueCommand(Guid.Empty, guidCodeBlock, "Code", @"[[c],[]]");
+            CurrentDynamoModel.ExecuteCommand(command);
+            RunCurrentModel();
+            AssertPreviewValue(guidCurveLength, new object[] { new object[] { 6.283185 }, new object[] { } });
+        }
     }
 
     [Category("DSCustomNode")]
