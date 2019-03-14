@@ -1169,7 +1169,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(7, workspace.Connectors.Count()); // 2 of which should be executed in the recording using ctrl + click
 
             // Sum of values which is only true if connections are valid downstream
-            AssertPreviewValue("68d76b724b75499b8e96cfc106118107", 12);
+            AssertPreviewValue("995b61e54a7d4c0fae4973f74132bd1b", 12);
         }
 
         /// <summary>
@@ -1186,9 +1186,9 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(1, workspace.Connectors.Count()); // Only 1 connection should remain after undos
 
             // A value of 25 is passed to all 3 downstream nodes however 2 undos will disconnect the trailing 2 nodes
-            AssertPreviewValue("7778eec752ab48d58c8781143f4bbe8d", 25);
-            AssertPreviewValue("2ae3bd09a363467d91770b095e06580b", null);
-            AssertPreviewValue("51d2916a423049fc869ee093f42c2626", null);
+            AssertPreviewValue("4975adccfc57433aa915e67c03ff6503", 25);
+            AssertPreviewValue("0ddbbdf502344bb2ab5c75e6d6ac7b13", null);
+            AssertPreviewValue("eb839c03d115492d98a6e0d562d44d73", null);
         }
 
         /// <summary>
@@ -1206,9 +1206,9 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(3, workspace.Connectors.Count()); // All 3 connections should remain after 3 undos and 3 redos
 
             // A value of 10 is passed to all 3 downstream nodes
-            AssertPreviewValue("b0b24df604574e4ebaecb88bb467914a", 10);
-            AssertPreviewValue("d0a71324eaae4d25a48de3f8637a16c9", 10);
-            AssertPreviewValue("5fd865db1cd84d2693a64683e7e08486", 10);
+            AssertPreviewValue("3a998ea7ef284e47901db6cd13e77022", 10);
+            AssertPreviewValue("40c505cae1a14a3a9d7043c36c62b013", 10);
+            AssertPreviewValue("5a42348373b94a11920feeaa680834fd", 10);
         }
 
         #endregion
