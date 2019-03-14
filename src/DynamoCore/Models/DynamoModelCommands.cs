@@ -270,6 +270,11 @@ namespace Dynamo.Models
                 case MakeConnectionCommand.Mode.EndShiftReconnections:
                     EndShiftReconnections(nodeId, command.PortIndex, command.Type);
                     break;
+                
+                // TODO - can be removed in Dynamo 3.0
+                case MakeConnectionCommand.Mode.EndAndStartCtrlConnection:
+                    BeginDuplicateConnection(nodeId, command.PortIndex, command.Type);
+                    break;
 
                 case MakeConnectionCommand.Mode.BeginDuplicateConnection:
                     BeginDuplicateConnection(nodeId, command.PortIndex, command.Type);

@@ -1358,17 +1358,22 @@ namespace Dynamo.Models
                 /// </summary>
                 EndShiftReconnections,
                 /// <summary>
+                /// End and start control connections.
+                /// </summary>
+                [Obsolete("Replaced with BeginDuplicateConnection")]
+                EndAndStartCtrlConnection,
+                /// <summary>
+                /// Cancel connection.
+                /// </summary>
+                Cancel,
+                /// <summary>
                 /// Begin duplicate connection.
                 /// </summary>
                 BeginDuplicateConnection,
                 /// <summary>
                 /// End current connection and create new connections.
                 /// </summary>
-                BeginCreateConnections,
-                /// <summary>
-                /// Cancel connection.
-                /// </summary>
-                Cancel
+                BeginCreateConnections
             }
 
             void setProperties(int portIndex, PortType portType, Mode mode)
