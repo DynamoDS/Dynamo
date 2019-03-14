@@ -222,6 +222,12 @@ namespace Dynamo.ViewModels
                         nodeId, command.PortIndex, command.Type);
                     break;
 
+                // TODO - can be removed in Dynamo 3.0
+                case DynamoModel.MakeConnectionCommand.Mode.EndAndStartCtrlConnection:
+                    CurrentSpaceViewModel.BeginConnection(
+                        nodeId, command.PortIndex, command.Type);
+                    break;
+
                 case DynamoModel.MakeConnectionCommand.Mode.BeginDuplicateConnection:
                     CurrentSpaceViewModel.BeginConnection(
                         nodeId, command.PortIndex, command.Type);
