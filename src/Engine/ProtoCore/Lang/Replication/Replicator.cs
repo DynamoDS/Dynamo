@@ -218,8 +218,10 @@ namespace ProtoCore.Lang.Replication
                     
                     if (!target.IsArray)
                     {
+#if DEBUG
                         System.Console.WriteLine(
                             "WARNING: Replication unbox requested on Singleton. Trap: 437AD20D-9422-40A3-BFFD-DA4BAD7F3E5F");
+#endif
                         continue;
                     }
 
@@ -289,7 +291,9 @@ namespace ProtoCore.Lang.Replication
                     }
                     else
                     {
+#if DEBUG
                         System.Console.WriteLine("WARNING: Replication unbox requested on Singleton. Trap: 437AD20D-9422-40A3-BFFD-DA4BAD7F3E5F");
+#endif
                         reducedSV = target;
                     }
 

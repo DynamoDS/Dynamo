@@ -132,8 +132,12 @@ namespace ProtoCore.Utils
             var dsArray = runtimeCore.Heap.ToHeapObject<DSArray>(array);
             foreach (var sv in dsArray.Values)
             {
+                if(IsEmpty(sv, runtimeCore)) continue;
+
                 if (!usageFreq.ContainsKey(sv.metaData.type))
+                {
                     usageFreq.Add(sv.metaData.type, sv);
+                }
             }
 
             return usageFreq;
