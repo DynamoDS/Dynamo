@@ -1140,7 +1140,6 @@ r = c[3];
         [Test]
         public void TestDictionary19()
         {
-            // Test builtin functions GetKeys() for array
             String code = @"
 import(""BuiltIn.ds"");
 a = {""x"" : ""foo""};
@@ -1153,7 +1152,6 @@ r = List.Count(a.Keys);
         [Test]
         public void TestDictionary20()
         {
-            // Test builtin functions GetValues() for array
             String code = @"
 a = {""x"" : ""foo""};
 r = a.Values;
@@ -1177,7 +1175,6 @@ r = Dictionary.ValueAtKey(a, ""x"");
         [Test]
         public void TestDictionary22()
         {
-            // Test builtin functions RemoveKey() for array
             String code = @"
 a = {""x"" : ""foo""};
 r1 = Dictionary.RemoveKeys(a, ""x"");

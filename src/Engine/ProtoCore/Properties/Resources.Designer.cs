@@ -179,15 +179,6 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Checks if each of rows in multidimensional list has the same number of elements .
-        /// </summary>
-        public static string ChecksIfLengthsAreSameInMultiDimentionalList {
-            get {
-                return ResourceManager.GetString("ChecksIfLengthsAreSameInMultiDimentionalList", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Checks if the specified element is present in the specified list.
         /// </summary>
         public static string ChecksIfListContainsTheElement {
@@ -485,29 +476,11 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Gets all keys from the specified key-value pair list.
-        /// </summary>
-        public static string GetKeys {
-            get {
-                return ResourceManager.GetString("GetKeys", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Gets the Type of the current instance.
         /// </summary>
         public static string Gettypes {
             get {
                 return ResourceManager.GetString("Gettypes", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Gets all values stored in the specified key-value pair list and for a simple list it returns all elements in the list.
-        /// </summary>
-        public static string GetValues {
-            get {
-                return ResourceManager.GetString("GetValues", resourceCulture);
             }
         }
         
