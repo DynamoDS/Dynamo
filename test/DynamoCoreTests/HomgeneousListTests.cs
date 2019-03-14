@@ -85,9 +85,9 @@ namespace Dynamo.Tests
             var heterogeneousFirstStdDev = CalculateListStdDev(timeHeterogeneousFirst);
             var heterogeneousLastStdDev = CalculateListStdDev(timeHeterogeneousLast);
 
-            var aveHomogeneous = TrimListOutliers(timeHomogeneous, homogeneousStdDev, 2).Average();
-            var aveHeterogeneousFirstItem = TrimListOutliers(timeHeterogeneousFirst, heterogeneousFirstStdDev, 2).Average();
-            var aveHeterogeneousLastItem = TrimListOutliers(timeHeterogeneousLast, heterogeneousLastStdDev, 2).Average();
+            var aveHomogeneous = TrimListOutliers(timeHomogeneous, homogeneousStdDev).Average();
+            var aveHeterogeneousFirstItem = TrimListOutliers(timeHeterogeneousFirst, heterogeneousFirstStdDev).Average();
+            var aveHeterogeneousLastItem = TrimListOutliers(timeHeterogeneousLast, heterogeneousLastStdDev).Average();
 
             Assert.LessOrEqual(aveHomogeneous, aveHeterogeneousFirstItem);
             Assert.LessOrEqual(aveHomogeneous, aveHeterogeneousLastItem);
