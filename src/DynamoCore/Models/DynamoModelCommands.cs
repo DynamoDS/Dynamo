@@ -273,7 +273,7 @@ namespace Dynamo.Models
 
                 // TODO - can be removed in Dynamo 3.0 - DYN-1729
                 case MakeConnectionCommand.Mode.EndAndStartCtrlConnection:
-                    BeginDuplicateConnection(nodeId, command.PortIndex, command.Type);
+                    BeginCreateConnections(nodeId, command.PortIndex, command.Type);
                     break;
 
                 case MakeConnectionCommand.Mode.BeginDuplicateConnection:
