@@ -1360,11 +1360,20 @@ namespace Dynamo.Models
                 /// <summary>
                 /// End and start control connections.
                 /// </summary>
+                [Obsolete("Replaced with BeginDuplicateConnection")]
                 EndAndStartCtrlConnection,
                 /// <summary>
                 /// Cancel connection.
                 /// </summary>
-                Cancel
+                Cancel,
+                /// <summary>
+                /// Begin duplicate connection.
+                /// </summary>
+                BeginDuplicateConnection,
+                /// <summary>
+                /// End current connection and create new connections.
+                /// </summary>
+                BeginCreateConnections
             }
 
             void setProperties(int portIndex, PortType portType, Mode mode)
