@@ -844,7 +844,7 @@ namespace ProtoCore
         {
             replicationInstructions = null;
             resolvesFeps = null;
-            Boolean flag = false;
+            Boolean matchFound = false;
 
             #region Case 1: Replication guide with exact match 
             {
@@ -874,11 +874,11 @@ namespace ProtoCore
                             //Otherwise we have a cluster of FEPs that can be used to dispatch the array
                             resolvesFeps = new List<FunctionEndPoint>(lookups);
                             replicationInstructions = replicationOption;
-                            flag = true;
+                            matchFound = true;
                         }
                     }
                 }
-                if (flag == true)
+                if (matchFound == true)
                     return;
             }
             #endregion
@@ -906,10 +906,10 @@ namespace ProtoCore
                         {
                             resolvesFeps = new List<FunctionEndPoint>() { compliantTarget };
                             replicationInstructions = replicationOption;
-                            flag = true;
+                            matchFound = true;
                         }
                     }
-                    if (flag == true)
+                    if (matchFound == true)
                         return;
                 }
             }
@@ -943,10 +943,10 @@ namespace ProtoCore
                     {
                         resolvesFeps = new List<FunctionEndPoint>() { compliantTarget };
                         replicationInstructions = replicationOption;
-                        flag = true;
+                        matchFound = true;
                     }
                 }
-                if (flag == true)
+                if (matchFound == true)
                     return;
             }
             #endregion
