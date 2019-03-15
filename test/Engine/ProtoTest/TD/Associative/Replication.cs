@@ -4926,7 +4926,66 @@ r = cond<1L> ? vs1<1L> : vs2<1L>;";
             thisTest.RunScriptSource(code);
             thisTest.Verify("r", new object[] { 2, 5, 7 });
         }
-    }
 
+        [Test]
+        public void TestReplicationWithEmptyListInNestedLists()
+        {
+            string code = @"import(""FFITarget.dll""); 
+pt = DummyPoint2D.ByCoordinates(0,0);
+l = [[],[pt]];
+px1 = DummyPoint2D.X(l);
+pt = DummyPoint2D.ByCoordinates(0,0);
+l2 = [[pt],[]];
+px2 = DummyPoint2D.X(l2);
+";
+            var mirror = thisTest.RunScriptSource(code);
+            thisTest.Verify("px1", new object[] { new object[] { }, new object[] { 0 } });
+            thisTest.Verify("px2", new object[] { new object[] { 0 }, new object[] { } });
+        }
+
+        [Test]
+        public void TestReplicationWithNullElementInNestedLists()
+        {
+            string code = @"import(""FFITarget.dll""); 
+pt = DummyPoint2D.ByCoordinates(0,0);
+l = [null,[pt]];
+px1 = DummyPoint2D.X(l);
+pt = DummyPoint2D.ByCoordinates(0,0);
+l2 = [[pt],null];
+px2 = DummyPoint2D.X(l2);
+";
+
+            var mirror = thisTest.RunScriptSource(code);
+            thisTest.Verify("px1", new object[] { null, new object[] { 0 } });
+            thisTest.Verify("px2", new object[] { new object[] { 0 }, null });
+        }
+
+        [Test]
+        public void TestReplicationWithArraysOfDifferentRanks()
+        {
+            string code = @"import(""FFITarget.dll"");
+t1 = [1, [2]];
+t2 = t1 + 5;
+pt = DummyPoint2D.ByCoordinates(0,0);
+l1 = [[[pt]],[pt]];
+px1 = DummyPoint2D.X(l1);
+l2 = [[pt],[[pt]]];
+px2 = DummyPoint2D.X(l2);
+l3 = [[null],[[pt]]];
+px3 = DummyPoint2D.X(l3);
+l4 = [3.3,[pt],[[pt]]];
+px4 = DummyPoint2D.X(l4);
+l5 = [""test"",[[pt]],[pt]];
+px5 = DummyPoint2D.X(l5);
+";
+            var mirror = thisTest.RunScriptSource(code);
+            thisTest.Verify("t2", new object[] { 6, new object[] { 7 } });
+            thisTest.Verify("px1", new object[] { new object[] { new object[] { 0 } }, new object[] { 0 } });
+            thisTest.Verify("px2", new object[] { new object[] { 0 }, new object[] { new object[] { 0 } } });
+            thisTest.Verify("px3", new object[] { new object[] { null }, new object[] { new object[] { 0 } } });
+            thisTest.Verify("px4", new object[] { null, new object[] { 0 }, new object[] { new object[] { 0 } } });
+            thisTest.Verify("px5", new object[] { null, new object[] { new object[] { 0 } }, new object[] { 0 } });
+        }
+    }
 }
 
