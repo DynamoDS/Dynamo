@@ -12,6 +12,27 @@
 
     <Window.Resources>
         <ResourceDictionary>
+
+            <Style x:Key="PackageSearchTextBox" TargetType="TextBox">
+                <Style.Triggers>
+                    <DataTrigger Binding="{Binding SearchState}" Value="Syncing">
+                        <Setter Property="Visibility" Value="Collapsed"/>
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
+
+            <Style x:Key="PackageSearchTextBlock" TargetType="TextBlock">
+                <Setter Property="Text" Value="{x:Static p:Resources.PackageSearchViewSearchTextBox}"/>
+                <Style.Triggers>
+                    <DataTrigger Binding="{Binding SearchState}" Value="Syncing">
+                        <Setter Property="Text" Value="{x:Static p:Resources.PackageSearchViewPleaseWait}"/>
+                    </DataTrigger>
+                    <DataTrigger  Binding="{Binding Path=SearchText, Converter={StaticResource NonEmptyStringToCollapsedConverter}}" Value="Collapsed">
+                        <Setter Property="Visibility" Value="Collapsed"/>
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
+
             <!-- An unstyled button -->
             <Style x:Key="FlatButton" TargetType="Button">
                 <Setter Property="Background" Value="{x:Null}" />
