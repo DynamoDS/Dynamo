@@ -142,18 +142,18 @@
 
             <TextBlock Grid.Row ="1" Grid.ZIndex ="1" FontSize="13" HorizontalAlignment="Center" Foreground="Gray" VerticalAlignment="Center" Name="NoResultsIndicator" TextAlignment="Center" Margin="20" Text="{Binding Path=SearchState, Converter={StaticResource PackageSearchStateToStringConverter}}"/>
 
-            <Grid Name="RSearchBoxStackPanel" Grid.Row="0">
+            <Grid Name="RSearchBoxStackPanel" Grid.Row="0" Background="#222">
 
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"></ColumnDefinition>
                     <ColumnDefinition Width="Auto"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
 
-                <TextBox Style="{DynamicResource PackageSearchTextBox}" Grid.Column="0" Name="SearchTextBox" KeyboardNavigation.TabIndex="0" Foreground="WhiteSmoke" Background="#222" BorderThickness="0" FontSize ="13" Padding="10,10,5,10" Margin ="0"
+                <TextBox Style="{DynamicResource PackageSearchTextBox}" Grid.Column="0" Name="SearchTextBox" KeyboardNavigation.TabIndex="0" Foreground="WhiteSmoke" Background="Transparent" CaretBrush="White" BorderThickness="0" FontSize ="13" Padding="10,10,5,10" Margin ="0"
                        IsEnabled="True" TextChanged="SearchTextBox_TextChanged" VerticalAlignment="Stretch" Text="{Binding Path=SearchText, Mode=TwoWay}">
                 </TextBox>
 
-                <TextBlock Style="{DynamicResource PackageSearchTextBlock}" Grid.Column="0" FontSize ="13" Padding="20,10,5,10" Margin ="0" Background="Transparent" 
+                <TextBlock Style="{DynamicResource PackageSearchTextBlock}" Grid.Column="0" FontSize ="13" Padding="20,10,5,10" Margin ="0" Background="Transparent"
                            Foreground="#666" 
                            IsHitTestVisible="False"/>
 
