@@ -1155,6 +1155,62 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(2, workspace.Connectors.Count()); 
         }
 
+        /// <summary>
+        /// The following recorded test manually adds a connection between 2 nodes,
+        /// followed by ctrl + clicking to copy this connection to 2 additional nodes.
+        /// The final assertion will only be true if all connections were successfully established.
+        /// </summary>
+        [Test]
+        public void TestCtrlClickInputConnections()
+        {
+            RunCommandsFromFile("CtrlClickRecordedTest_Recording.xml");
+
+            Assert.AreEqual(6, workspace.Nodes.Count());
+            Assert.AreEqual(7, workspace.Connectors.Count()); // 2 of which should be executed in the recording using ctrl + click
+
+            // Sum of values which is only true if connections are valid downstream
+            AssertPreviewValue("995b61e54a7d4c0fae4973f74132bd1b", 12);
+        }
+
+        /// <summary>
+        /// The following recorded test manually adds a connecting between 2 nodes,
+        /// followed by ctrl + clicking to copy this connection to 2 additional nodes.
+        /// We then call 2 undo commands and verify only our original connection exists.
+        /// </summary>
+        [Test]
+        public void TestCtrlClickInputConnectionsUndo()
+        {
+            RunCommandsFromFile("CtrlClickRecordedTestUndo_Recording.xml");
+
+            Assert.AreEqual(4, workspace.Nodes.Count());
+            Assert.AreEqual(1, workspace.Connectors.Count()); // Only 1 connection should remain after undos
+
+            // A value of 25 is passed to all 3 downstream nodes however 2 undos will disconnect the trailing 2 nodes
+            AssertPreviewValue("4975adccfc57433aa915e67c03ff6503", 25);
+            AssertPreviewValue("0ddbbdf502344bb2ab5c75e6d6ac7b13", null);
+            AssertPreviewValue("eb839c03d115492d98a6e0d562d44d73", null);
+        }
+
+        /// <summary>
+        /// The following recorded test manually adds a connecting between 2 nodes,
+        /// followed by ctrl + clicking to copy this connection to 2 additional nodes.
+        /// We then call 2 undo commands followed by 2 redo commands and verify all 3 
+        /// connections exist.
+        /// </summary>
+        [Test]
+        public void TestCtrlClickInputConnectionsUndoRedo()
+        {
+            RunCommandsFromFile("CtrlClickRecordedTestUndoRedo_Recording.xml");
+
+            Assert.AreEqual(4, workspace.Nodes.Count());
+            Assert.AreEqual(3, workspace.Connectors.Count()); // All 3 connections should remain after 3 undos and 3 redos
+
+            // A value of 10 is passed to all 3 downstream nodes
+            AssertPreviewValue("3a998ea7ef284e47901db6cd13e77022", 10);
+            AssertPreviewValue("40c505cae1a14a3a9d7043c36c62b013", 10);
+            AssertPreviewValue("5a42348373b94a11920feeaa680834fd", 10);
+        }
+
         #endregion
 
         #region General Node Operations Test Cases
