@@ -149,15 +149,13 @@
                     <ColumnDefinition Width="Auto"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
 
-                <TextBox Grid.Column="0" Name="SearchTextBox" KeyboardNavigation.TabIndex="0" Foreground="WhiteSmoke" Background="#222" BorderThickness="0" FontSize ="13" Padding="10,10,5,10" Margin ="0"
+                <TextBox Style="{DynamicResource PackageSearchTextBox}" Grid.Column="0" Name="SearchTextBox" KeyboardNavigation.TabIndex="0" Foreground="WhiteSmoke" Background="#222" BorderThickness="0" FontSize ="13" Padding="10,10,5,10" Margin ="0"
                        IsEnabled="True" TextChanged="SearchTextBox_TextChanged" VerticalAlignment="Stretch" Text="{Binding Path=SearchText, Mode=TwoWay}">
                 </TextBox>
 
-                <TextBlock Grid.Column="0" FontSize ="13" Padding="20,10,5,10" Margin ="0" Background="Transparent" 
+                <TextBlock Style="{DynamicResource PackageSearchTextBlock}" Grid.Column="0" FontSize ="13" Padding="20,10,5,10" Margin ="0" Background="Transparent" 
                            Foreground="#666" 
-                           IsHitTestVisible="False"
-                           Visibility="{Binding Path=SearchText, Converter={StaticResource NonEmptyStringToCollapsedConverter}}"
-                           Text="{x:Static p:Resources.PackageSearchViewSearchTextBox}"/>
+                           IsHitTestVisible="False"/>
 
                 <Button Width="auto" MinWidth="80" Grid.Column="1" Click="OnSortButtonClicked"
                         Style="{DynamicResource ResourceKey=STextButton}" Content="{x:Static p:Resources.PackageSearchViewSortByButton}">
