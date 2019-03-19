@@ -1,0 +1,35 @@
+<Workspace Version="0.9.1.3335" X="578.339765646928" Y="148.192695269843" zoom="0.313095199573471" Name="Home" Description="" RunType="Manual" RunPeriod="1000" HasRunWithoutCrash="True">
+  <NamespaceResolutionMap />
+  <Elements>
+    <DSCoreNodesUI.Input.DoubleSlider guid="7921c2fc-a237-4050-b45c-71ae79241503" type="DSCoreNodesUI.Input.DoubleSlider" nickname="Height 5-40" x="-1051.71175030169" y="607.824921519321" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="True" IsFrozen="false">
+      <System.Double>13</System.Double>
+      <Range min="1" max="30" step="1" />
+    </DSCoreNodesUI.Input.DoubleSlider>
+    <Dynamo.Graph.Nodes.CodeBlockNodeModel guid="d6ee3f58-72ac-4aa2-a7cf-e0713c7db7fb" type="Dynamo.Graph.Nodes.CodeBlockNodeModel" nickname="Number of Sides 3-*" x="-1000.49011440767" y="494.239259251958" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="True" IsFrozen="false" CodeText="3;" ShouldFocus="false" />
+    <Dynamo.Graph.Nodes.CodeBlockNodeModel guid="ea1ddc72-1928-41b1-a4d4-eccbf60dc62e" type="Dynamo.Graph.Nodes.CodeBlockNodeModel" nickname="FilletRadius .1-1" x="-965.116273570806" y="722.643445958301" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="True" IsFrozen="false" CodeText="0.5;" ShouldFocus="false" />
+    <Dynamo.Graph.Nodes.CustomNodes.Function guid="072fc9ba-3efe-402b-b23e-fd83c35dc5f5" type="Dynamo.Graph.Nodes.CustomNodes.Function" nickname="PotteryCustom" x="571.574197340339" y="378.740659684309" isVisible="true" isUpstreamVisible="true" lacing="Shortest" isSelectedInput="False" IsFrozen="false">
+      <ID value="8a8f4c77-291c-4f06-81d7-02e8321714bd" />
+      <Name value="PotteryCustom" />
+      <Description value="" />
+      <Inputs>
+        <Input value="numberSides" />
+        <Input value="H" />
+        <Input value="radius" />
+      </Inputs>
+      <Outputs>
+        <Output value="Solid" />
+      </Outputs>
+    </Dynamo.Graph.Nodes.CustomNodes.Function>
+  </Elements>
+  <Connectors>
+    <Dynamo.Graph.Connectors.ConnectorModel start="7921c2fc-a237-4050-b45c-71ae79241503" start_index="0" end="072fc9ba-3efe-402b-b23e-fd83c35dc5f5" end_index="1" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="d6ee3f58-72ac-4aa2-a7cf-e0713c7db7fb" start_index="0" end="072fc9ba-3efe-402b-b23e-fd83c35dc5f5" end_index="0" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="ea1ddc72-1928-41b1-a4d4-eccbf60dc62e" start_index="0" end="072fc9ba-3efe-402b-b23e-fd83c35dc5f5" end_index="2" portType="0" />
+  </Connectors>
+  <Notes />
+  <Annotations />
+  <Presets />
+  <Cameras>
+    <Camera Name="Background Preview" eyeX="-17" eyeY="24" eyeZ="50" lookX="12" lookY="-13" lookZ="-58" upX="0" upY="1" upZ="0" />
+  </Cameras>
+</Workspace>
