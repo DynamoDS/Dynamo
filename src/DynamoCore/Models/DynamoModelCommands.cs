@@ -361,8 +361,6 @@ namespace Dynamo.Models
 
             PortModel selectedPort = node.OutPorts[portIndex];
 
-            var connectorsForDeletion = new List<ModelBase>();
-
             var selectedConnectors = new List<ConnectorModel>();
             selectedConnectors = selectedPort.Connectors.Where(x => x.End.Owner.IsSelected).ToList();
 
@@ -380,10 +378,9 @@ namespace Dynamo.Models
             for (int i = 0; i < numOfConnectors; i++)
             {
                 ConnectorModel connector = selectedConnectors[i];
-                connectorsForDeletion.Add(connector);
                 activeStartPorts[i] = connector.End;
             }
-            CurrentWorkspace.SaveAndDeleteModels(connectorsForDeletion);
+            CurrentWorkspace.SaveAndDeleteModels(selectedConnectors.ToList<ModelBase>());
             for (int i = 0; i < numOfConnectors; i++) //delete the connectors
             {
                 selectedConnectors[i].Delete();
