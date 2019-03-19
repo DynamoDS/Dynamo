@@ -78,7 +78,7 @@ http://miconvexhull.codeplex.com/license
 http://msdn.microsoft.com/en-us/vstudio/dn501987
 https://docs.microsoft.com/en-us/visualstudio/productinfo/2013-redistribution-vs
 
-### Microsoft 2015 C Runtime DLLs, msvcp120.dll, msvcr120.dll
+### Microsoft 2015 C Runtime DLLs, msvcp140.dll, msvcr140.dll
 https://docs.microsoft.com/en-us/visualstudio/productinfo/2015-redistribution-vs
 
 ### Moq
@@ -94,7 +94,7 @@ http://ncalc.codeplex.com/license
 http://ndesk.org/Options#License
   (MIT license)
 
-###Newtonsoft JSON
+### Newtonsoft JSON
 https://github.com/JamesNK/Newtonsoft.Json
 https://github.com/JamesNK/Newtonsoft.Json/blob/master/LICENSE.md
   (MIT license)
