@@ -8,7 +8,7 @@
         xmlns:controls="clr-namespace:Dynamo.Controls"
         xmlns:viewModels="clr-namespace:Dynamo.PackageManager.ViewModels"
         mc:Ignorable="d" 
-        Title="{x:Static p:Resources.PackageSearchViewTitle}" Name="PackageSearch"  Height="600" Width="490" MinWidth="490" MaxWidth="490">
+        Title="{x:Static p:Resources.PackageSearchViewTitle}" Name="PackageSearch"  Height="600" Width="520" MinWidth="520" MaxWidth="520">
 
     <Window.Resources>
         <ResourceDictionary>
@@ -205,7 +205,7 @@
                     <DataTemplate DataType="viewModels:PackageManagerSearchElementViewModel">
                         <Border Name="ItemBG" BorderBrush="#444" BorderThickness="0,1,0,0" Background="#333">
 
-                            <StackPanel Width ="455" Name="SearchEle">
+                            <StackPanel Width ="485" Name="SearchEle">
 
                                 <TextBlock Text="{x:Static p:Resources.PackageSearchViewDeprecated}" 
                                            Padding="5" 
@@ -227,7 +227,7 @@
                                     </TextBlock.Style>
                                 </TextBlock>
 
-                                <StackPanel Orientation="Horizontal" Margin="1" Width="450">
+                                <StackPanel Orientation="Horizontal" Margin="1" Width="480">
 
                                     <StackPanel Orientation="Horizontal">
                                         <Button Name="DownloadButton" Style="{StaticResource FlatButton}" Command="{Binding DownloadLatestCommand }" Foreground="#888"
@@ -298,8 +298,8 @@
                                                     <Button Name="UpvoteButton" 
                                                         FontSize="15" 
                                                         ToolTip="{x:Static p:Resources.PackageSearchViewUpvoteButtonTooltip}"  
-                                                        Content="⬆"
-                                                        Margin="0,0,8,0"
+                                                        Content="👍"
+                                                        Margin="0,0,5,0"
                                                         Foreground="Gray" 
                                                         Command="{Binding Path=UpvoteCommand}" 
                                                         Style="{StaticResource FlatButton}" />
@@ -307,11 +307,11 @@
                                                         FontSize="15" 
                                                         ToolTip="{x:Static p:Resources.PackageSearchViewDownvoteButtonTooltip}" 
                                                         Foreground="Gray" 
-                                                        Content="⬇"  
+                                                        Content="👎"  
                                                         Command="{Binding Path=DownvoteCommand}" 
                                                         Style="{StaticResource FlatButton}" />
                                                 </StackPanel>
-                                                <TextBlock FontSize="10" TextAlignment="Center" Margin="0,0,5,0" Text="{Binding Path=Model.Votes}" Foreground="Gray"  />
+                                                <TextBlock FontSize="10" Width ="15" TextAlignment="Left" Margin="0,0,0,0" Text="{Binding Path=Model.Votes}" Foreground="Gray"  />
                                             </StackPanel>
                                         </StackPanel>
 
