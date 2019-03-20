@@ -13,7 +13,7 @@ def mb(num_bytes):
 
 def report_progress( bytes_so_far, total_bytes ):
 	
-	print "Upload progress: %.2f mb / %.2f mb ( %.2f percent )" % (mb(bytes_so_far), mb(total_bytes), 100 * float(bytes_so_far)/total_bytes)
+	print("Upload progress: %.2f mb / %.2f mb ( %.2f percent )" % (mb(bytes_so_far), mb(total_bytes), 100 * float(bytes_so_far)/total_bytes))
 
 def upload_installer(fn, prefix, include_date, is_dev_build, extension, date_string):
 

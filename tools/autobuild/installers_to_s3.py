@@ -22,9 +22,9 @@ def main():
 	(options, args) = parser.parse_args()
 
 	installer_dir = options.root
-	
-	print "Publishing to s3"
-	print installer_dir
+
+	print('Publishing to s3')
+	print(installer_dir)
 	
 	publish_to_s3( installer_dir, options.prefix, options.include_date, options.dev_build )
 
@@ -48,8 +48,8 @@ def publish_to_s3(installer_dir, prefix, include_date, is_dev_build):
 		  	dynamo_s3.upload_installer( form_path( ['temp', file] ), prefix, include_date, is_dev_build ,'.zip', date_string)
 
 	except Exception:
-		print 'There was an exception uploading to s3:'
-		print traceback.format_exc()
+		print('There was an exception uploading to s3:')
+		print(traceback.format_exc())
 	finally:
 		rm_dir('temp')
 	
@@ -86,7 +86,7 @@ def run_cmd( args, printOutput = True, cwd = None ):
 	    if not line:
 	        break
 	    out = out + line
-	    print ">>> " + line.rstrip()
+	    print(">>> " + line.rstrip())
 		
 	return out
 
