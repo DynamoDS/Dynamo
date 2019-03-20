@@ -71,3 +71,8 @@ Curves, Surfaces, Solids, List Operations, Map/Combine
 Points, Meshes
 
 ![](images/TSplinesToMesh.PNG)
+
+### Element Binding
+Element Binding
+
+![](images/ElementBinding.PNG)

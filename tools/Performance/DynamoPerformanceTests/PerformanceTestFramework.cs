@@ -69,6 +69,7 @@ namespace DynamoPerformanceTests
             libraries.Add("Tessellation.dll");
             libraries.Add("Analysis.dll");
             libraries.Add("GeometryColor.dll");
+            libraries.Add("FFITarget.dll");
         }
 
         /// <summary>
