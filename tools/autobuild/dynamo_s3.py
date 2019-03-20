@@ -32,7 +32,7 @@ def upload_installer(fn, prefix, include_date, is_dev_build, extension, date_str
 
 	k = Key(b)
 	
-	key = 'daily/' + prefix + '.' + date_string + extension if include_date else 'daily/' + prefix + extension
+	key = 'daily/' + prefix + '_' + date_string + extension if include_date else 'daily/' + prefix + extension
 	
 	k.key = os.path.basename( key )
 

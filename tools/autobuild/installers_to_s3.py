@@ -21,24 +21,21 @@ def main():
 
 	(options, args) = parser.parse_args()
 
-	repo_root = options.root
-	installer_dir =  form_path( [repo_root, 'tools/install'] )
-	installer_bin_dir = 'Installers'
-
+	installer_dir = options.root
+	
 	print "Publishing to s3"
 	print installer_dir
-	print installer_bin_dir
 	
-	publish_to_s3( installer_dir, installer_bin_dir, options.prefix, options.include_date, options.dev_build )
+	publish_to_s3( installer_dir, options.prefix, options.include_date, options.dev_build )
 
 # S3 ##############################
 
-def publish_to_s3(installer_dir, installer_bin_dir, prefix, include_date, is_dev_build):
+def publish_to_s3(installer_dir, prefix, include_date, is_dev_build):
 
 	try:
 
 		mkdir('temp')
-		copy_folder_contents( form_path([installer_dir, installer_bin_dir]), 'temp')
+		copy_folder_contents( installer_dir, 'temp')
 
 		date_string = dynamo_s3.date_string()
 
