@@ -8,7 +8,7 @@
         xmlns:controls="clr-namespace:Dynamo.Controls"
         xmlns:viewModels="clr-namespace:Dynamo.PackageManager.ViewModels"
         mc:Ignorable="d" 
-        Title="{x:Static p:Resources.PackageSearchViewTitle}" Name="PackageSearch"  Height="600" Width="520" MinWidth="520" MaxWidth="520">
+        Title="{x:Static p:Resources.PackageSearchViewTitle}" Name="PackageSearch"  Height="600" Width="510" MinWidth="510" MaxWidth="510">
 
     <Window.Resources>
         <ResourceDictionary>
@@ -138,7 +138,7 @@
                            Visibility="{Binding Path=SearchText, Converter={StaticResource NonEmptyStringToCollapsedConverter}}"
                            Text="{x:Static p:Resources.PackageSearchViewSearchTextBox}"/>
 
-                <Button Width="auto" MinWidth="80" Grid.Column="1" Click="OnSortButtonClicked"
+                <Button Width="auto" MinWidth="100" Grid.Column="1" Click="OnSortButtonClicked"
                         Style="{DynamicResource ResourceKey=STextButton}" Content="{x:Static p:Resources.PackageSearchViewSortByButton}">
 
                     <Button.ContextMenu>
@@ -205,7 +205,7 @@
                     <DataTemplate DataType="viewModels:PackageManagerSearchElementViewModel">
                         <Border Name="ItemBG" BorderBrush="#444" BorderThickness="0,1,0,0" Background="#333">
 
-                            <StackPanel Width ="485" Name="SearchEle">
+                            <StackPanel Width ="475" Name="SearchEle">
 
                                 <TextBlock Text="{x:Static p:Resources.PackageSearchViewDeprecated}" 
                                            Padding="5" 
@@ -227,7 +227,7 @@
                                     </TextBlock.Style>
                                 </TextBlock>
 
-                                <StackPanel Orientation="Horizontal" Margin="1" Width="480">
+                                <StackPanel Orientation="Horizontal" Margin="1" Width="470">
 
                                     <StackPanel Orientation="Horizontal">
                                         <Button Name="DownloadButton" Style="{StaticResource FlatButton}" Command="{Binding DownloadLatestCommand }" Foreground="#888"
@@ -293,13 +293,13 @@
                                                 </StackPanel>
                                             </Button>
 
-                                            <StackPanel Width="40"  Orientation="Vertical" Margin="3,0,0,0">
+                                            <StackPanel Width="55"  Orientation="Vertical" Margin="3,0,0,0">
                                                 <StackPanel Orientation="Horizontal">
                                                     <Button Name="UpvoteButton" 
                                                         FontSize="15" 
                                                         ToolTip="{x:Static p:Resources.PackageSearchViewUpvoteButtonTooltip}"  
                                                         Content="👍"
-                                                        Margin="0,0,5,0"
+                                                        Margin="0,0,8,0"
                                                         Foreground="Gray" 
                                                         Command="{Binding Path=UpvoteCommand}" 
                                                         Style="{StaticResource FlatButton}" />
@@ -311,12 +311,12 @@
                                                         Command="{Binding Path=DownvoteCommand}" 
                                                         Style="{StaticResource FlatButton}" />
                                                 </StackPanel>
-                                                <TextBlock FontSize="10" Width ="15" TextAlignment="Left" Margin="0,0,0,0" Text="{Binding Path=Model.Votes}" Foreground="Gray"  />
+                                                <TextBlock FontSize="10" TextAlignment="Center" Margin="0,0,0,0" Text="{Binding Path=Model.Votes}" Foreground="Gray"  />
                                             </StackPanel>
                                         </StackPanel>
 
                                         <Button Style="{StaticResource FlatButton}" Command="{Binding ToggleIsExpandedCommand }" Background="#333">
-                                            <TextBlock FontSize="11" Margin="3" Width="390" Foreground="#AAA" Text="{Binding Path=Model.Description}" TextWrapping="Wrap" TextTrimming="WordEllipsis" MaxHeight="20"/>
+                                            <TextBlock FontSize="11" Margin="3" Width="400" Foreground="#AAA" Text="{Binding Path=Model.Description}" TextWrapping="Wrap" TextTrimming="WordEllipsis" MaxHeight="20"/>
                                         </Button>
                                     </StackPanel>
                                 </StackPanel>
