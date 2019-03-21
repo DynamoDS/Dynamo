@@ -182,5 +182,15 @@ namespace DynamoCoreWpfTests
             string[] expected = new string[] { "-2468.2342E+04", "34534.345345", "23423", "-98.7", "0", "10", "2", "-555" };
             Assert.IsTrue(expected.SequenceEqual(actual));
         }
+
+        [Test, RequiresSTA]
+        public void TestFunctionMultipleBlocksDefaultParametersDeleteFirst()
+        {
+            RunCommandsFromFile("DeleteCrashCommands.xml", (commandTag) =>
+            {
+                // NOTE: Nothing needs to be tested here other than that this test does not crash
+            });
+        }
+
     }
 }
