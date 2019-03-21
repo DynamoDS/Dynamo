@@ -161,7 +161,7 @@
       "ScaleFactor": 1.0,
       "HasRunWithoutCrash": false,
       "IsVisibleInDynamoLibrary": true,
-      "Version": "2.3.0.4415",
+      "Version": "2.0.2.8095",
       "RunType": "Manual",
       "RunPeriod": "1000"
     },
@@ -179,49 +179,49 @@
     },
     "NodeViews": [
       {
+        "ShowGeometry": true,
+        "Name": "Height 5-40",
         "Id": "7921c2fca2374050b45c71ae79241503",
         "IsSetAsInput": true,
         "IsSetAsOutput": false,
-        "Name": "Height 5-40",
-        "ShowGeometry": true,
         "Excluded": false,
         "X": -1051.71175030169,
         "Y": 607.824921519321
       },
       {
+        "ShowGeometry": true,
+        "Name": "Number of Sides 3-*",
         "Id": "d6ee3f5872ac4aa2a7cfe0713c7db7fb",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
-        "Name": "Number of Sides 3-*",
-        "ShowGeometry": true,
         "Excluded": false,
         "X": -1000.49011440767,
         "Y": 494.239259251958
       },
       {
+        "ShowGeometry": true,
+        "Name": "FilletRadius .1-1",
         "Id": "ea1ddc72192841b1a4d4eccbf60dc62e",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
-        "Name": "FilletRadius .1-1",
-        "ShowGeometry": true,
         "Excluded": false,
         "X": -965.116273570806,
         "Y": 722.643445958301
       },
       {
+        "ShowGeometry": true,
+        "Name": "PotteryCustom",
         "Id": "072fc9ba3efe402bb23efd83c35dc5f5",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
-        "Name": "PotteryCustom",
-        "ShowGeometry": true,
         "Excluded": false,
         "X": -489.31089610381423,
         "Y": 537.861605590421
       }
     ],
     "Annotations": [],
-    "X": 523.23643800314221,
-    "Y": 18.661692610942339,
+    "X": 672.23643800314221,
+    "Y": 22.661692610942339,
     "Zoom": 0.53698801016128
   }
 }

@@ -2,7 +2,7 @@
   "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
   "IsCustomNode": false,
   "Description": "",
-  "Name": "Core_Math",
+  "Name": "Math",
   "ElementResolver": {
     "ResolutionMap": {
       "Math": {
@@ -7705,7 +7705,7 @@
       "ScaleFactor": 1.0,
       "HasRunWithoutCrash": true,
       "IsVisibleInDynamoLibrary": true,
-      "Version": "2.0.0.2821",
+      "Version": "2.0.2.8095",
       "RunType": "Automatic",
       "RunPeriod": "100"
     },

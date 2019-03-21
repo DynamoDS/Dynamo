@@ -2,7 +2,7 @@
   "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
   "IsCustomNode": false,
   "Description": "",
-  "Name": "_JewelCage",
+  "Name": "JewelCage",
   "ElementResolver": {
     "ResolutionMap": {
       "Math": {
@@ -1782,9 +1782,9 @@
   "View": {
     "Dynamo": {
       "ScaleFactor": 1.0,
-      "HasRunWithoutCrash": false,
+      "HasRunWithoutCrash": true,
       "IsVisibleInDynamoLibrary": true,
-      "Version": "2.3.0.4415",
+      "Version": "2.0.2.8095",
       "RunType": "Manual",
       "RunPeriod": "1000"
     },
@@ -2259,7 +2259,7 @@
         "Height": 296.383889127244,
         "FontSize": 30.0,
         "InitialTop": 372.835744652873,
-        "InitialHeight": 280.383889127243,
+        "InitialHeight": 276.383889127244,
         "TextblockHeight": 36.0,
         "Background": "#FFC1D676"
       },
@@ -2282,7 +2282,7 @@
         "Height": 321.51747971318696,
         "FontSize": 30.0,
         "InitialTop": -493.734068103616,
-        "InitialHeight": 267.506805086,
+        "InitialHeight": 327.51747971318696,
         "TextblockHeight": 36.0,
         "Background": "#FFC1D676"
       },
@@ -2303,7 +2303,7 @@
         "Height": 247.21333333333394,
         "FontSize": 30.0,
         "InitialTop": -959.318532584215,
-        "InitialHeight": 404.692993196752,
+        "InitialHeight": 253.21333333333394,
         "TextblockHeight": 36.0,
         "Background": "#FFC1D676"
       }

@@ -286,21 +286,21 @@
       "ScaleFactor": 1.0,
       "HasRunWithoutCrash": true,
       "IsVisibleInDynamoLibrary": true,
-      "Version": "2.1.0.4395",
+      "Version": "2.0.2.8095",
       "RunType": "Automatic",
       "RunPeriod": "1000"
     },
     "Camera": {
       "Name": "Background Preview",
-      "EyeX": -17.0,
-      "EyeY": 24.0,
-      "EyeZ": 50.0,
-      "LookX": 12.0,
-      "LookY": -13.0,
-      "LookZ": -58.0,
-      "UpX": 0.0,
-      "UpY": 1.0,
-      "UpZ": 0.0
+      "EyeX": -0.41899224032541538,
+      "EyeY": 24.440116015788409,
+      "EyeZ": 9.8250944202560415,
+      "LookX": -1.1430079943451346,
+      "LookY": -13.867437727444266,
+      "LookZ": -17.160661353120318,
+      "UpX": -0.029653875733485959,
+      "UpY": 0.89493436160202633,
+      "UpZ": -0.44521133866733426
     },
     "NodeViews": [
       {

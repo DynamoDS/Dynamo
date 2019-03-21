@@ -2,7 +2,7 @@
   "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
   "IsCustomNode": false,
   "Description": "",
-  "Name": "ImportExport_CSV to Stuff",
+  "Name": "ImportCSV",
   "ElementResolver": {
     "ResolutionMap": {}
   },
@@ -110,7 +110,7 @@
         },
         {
           "Id": "f52cf3e545054c11bc28782b54271a36",
-          "Name": "separator0",
+          "Name": "separater0",
           "Description": "Strings that, if present, determine the end and start of a split.\n\nstring[]",
           "UsingDefaultValue": false,
           "Level": 2,
@@ -130,7 +130,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Divides a single string into a list of strings, with divisions determined by the given separator strings.\n\nString.Split (str: string, separators: string[]): string[]"
+      "Description": "Divides a single string into a list of strings, with divisions determined by the given separater strings.\n\nString.Split (str: string, separaters: string[]): string[]"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSVarArgFunction, DynamoCore",
@@ -150,7 +150,7 @@
         },
         {
           "Id": "752dc7bb81fc402380adb9107880d656",
-          "Name": "separator0",
+          "Name": "separater0",
           "Description": "Strings that, if present, determine the end and start of a split.\n\nstring[]",
           "UsingDefaultValue": false,
           "Level": 2,
@@ -170,7 +170,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Divides a single string into a list of strings, with divisions determined by the given separator strings.\n\nString.Split (str: string, separators: string[]): string[]"
+      "Description": "Divides a single string into a list of strings, with divisions determined by the given separater strings.\n\nString.Split (str: string, separaters: string[]): string[]"
     },
     {
       "ConcreteType": "CoreNodeModels.Input.StringInput, CoreNodeModels",
@@ -480,7 +480,7 @@
     },
     {
       "ConcreteType": "CoreNodeModels.Input.Filename, CoreNodeModels",
-      "HintPath": "C:\\Users\\t_mitcs\\Repos\\Dynamo\\tools\\Performance\\DynamoPerformanceTests\\graphs\\data\\helix.csv",
+      "HintPath": "\\\\Mac\\Home\\Desktop\\graphs\\data\\helix.csv",
       "InputValue": "data\\helix.csv",
       "NodeType": "ExtensionNode",
       "Id": "6dd62619dc4c470fbe977f666b69cd3c",
@@ -594,7 +594,7 @@
       "ScaleFactor": 1.0,
       "HasRunWithoutCrash": true,
       "IsVisibleInDynamoLibrary": true,
-      "Version": "2.3.0.4415",
+      "Version": "2.0.2.8095",
       "RunType": "Manual",
       "RunPeriod": "100"
     },
@@ -858,8 +858,8 @@
         "Background": "#FFC1D676"
       }
     ],
-    "X": 225.67265807144597,
-    "Y": 360.0917748082145,
-    "Zoom": 0.74383470816059749
+    "X": 151.65975213783474,
+    "Y": 413.84427146183464,
+    "Zoom": 0.59433961437145821
   }
 }

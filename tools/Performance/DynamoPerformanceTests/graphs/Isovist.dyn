@@ -2,7 +2,7 @@
   "Uuid": "1ed66a8e-afc2-48bc-a275-df49ecda4501",
   "IsCustomNode": false,
   "Description": null,
-  "Name": "12-IsovistTest_OOTB",
+  "Name": "Isovist",
   "ElementResolver": {
     "ResolutionMap": {}
   },
@@ -1054,12 +1054,12 @@
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
       "NodeType": "CodeBlockNode",
-      "Code": "100;\n255;\n75;\n100;",
+      "Code": "100;\n255;\n75;\n50;",
       "Id": "e1ffedf4ce784f9a8dfb137b3f48f0d8",
       "Inputs": [],
       "Outputs": [
         {
-          "Id": "4d86012090e24e948a15e0d258c2b8f8",
+          "Id": "ba33da790eb646dd8be37312231d7a11",
           "Name": "",
           "Description": "Value of expression at line 1",
           "UsingDefaultValue": false,
@@ -1068,7 +1068,7 @@
           "KeepListStructure": false
         },
         {
-          "Id": "7ce67424ad10457a932f1109df43470e",
+          "Id": "681b0a7526f54840b66971246846b74c",
           "Name": "",
           "Description": "Value of expression at line 2",
           "UsingDefaultValue": false,
@@ -1077,7 +1077,7 @@
           "KeepListStructure": false
         },
         {
-          "Id": "e8a52e5a8ce745b587a4b109c1f0796c",
+          "Id": "65e32df647d34eb88173addc956f9869",
           "Name": "",
           "Description": "Value of expression at line 3",
           "UsingDefaultValue": false,
@@ -1086,7 +1086,7 @@
           "KeepListStructure": false
         },
         {
-          "Id": "cf951955e0424b8faf704e6ce8df4772",
+          "Id": "203e8b8d9e15414b95766cc4154c484f",
           "Name": "",
           "Description": "Value of expression at line 4",
           "UsingDefaultValue": false,
@@ -6615,44 +6615,44 @@
       "Id": "786d366c055c43cfa26e0d03ac1f4696"
     },
     {
-      "Start": "4d86012090e24e948a15e0d258c2b8f8",
+      "Start": "ba33da790eb646dd8be37312231d7a11",
       "End": "28256ecd0e4044c1a9d42671eb29f882",
-      "Id": "7ea17af497994ca1b3edb545842f3b36"
+      "Id": "5a0d7aebfd1e4a04900c155dec268779"
     },
     {
-      "Start": "4d86012090e24e948a15e0d258c2b8f8",
+      "Start": "ba33da790eb646dd8be37312231d7a11",
       "End": "16a2d282f40d42cca7f8ea2ef325adac",
-      "Id": "de6c2fec457746839a818d366d743d70"
+      "Id": "7e79754d926646a5bcaab3e77f96ceb1"
     },
     {
-      "Start": "7ce67424ad10457a932f1109df43470e",
+      "Start": "681b0a7526f54840b66971246846b74c",
       "End": "f4bf5a74bfe04595a99a420a20e14c4d",
-      "Id": "44e1e4a84bb44b6e85fad2ced40e2406"
+      "Id": "7a3cceae322f4b94909f7e7ac9628a45"
     },
     {
-      "Start": "7ce67424ad10457a932f1109df43470e",
+      "Start": "681b0a7526f54840b66971246846b74c",
       "End": "f008302ef8744cfaafacf95033235e1c",
-      "Id": "04c2efdf0ab240fbafedf428c7628aa4"
+      "Id": "cdb039e69c984718b98b831ee4218ea0"
     },
     {
-      "Start": "e8a52e5a8ce745b587a4b109c1f0796c",
+      "Start": "65e32df647d34eb88173addc956f9869",
       "End": "1c1b1f5259d94625a39327d0024fa9ed",
-      "Id": "b70f32c5560e4f10ba6de10ce06b36a3"
+      "Id": "ac7249c1baf043ba9f575152ad83a598"
     },
     {
-      "Start": "e8a52e5a8ce745b587a4b109c1f0796c",
+      "Start": "65e32df647d34eb88173addc956f9869",
       "End": "34ba48f64bfd428db9ae5be9737d6f4e",
-      "Id": "3315ebcfe01242ada88f20176117668b"
+      "Id": "b08a59d99ff443f29efe2bae73ee4aa5"
     },
     {
-      "Start": "cf951955e0424b8faf704e6ce8df4772",
+      "Start": "203e8b8d9e15414b95766cc4154c484f",
       "End": "35a0bc771f174abab4f68c74129dd2f3",
-      "Id": "b1f6af74ab0045e5b5a942ea2d292b41"
+      "Id": "0a59895acf25430b858085cdc80eb1d4"
     },
     {
-      "Start": "cf951955e0424b8faf704e6ce8df4772",
+      "Start": "203e8b8d9e15414b95766cc4154c484f",
       "End": "7d3719da7272471db89a9eba4667990c",
-      "Id": "46b69c93ddfb46229382d431f9b8f640"
+      "Id": "bf24046f1d094533891f389d11e9480f"
     },
     {
       "Start": "731be40fe586412989c43654e7033c62",
@@ -7677,7 +7677,7 @@
       "ScaleFactor": 1.0,
       "HasRunWithoutCrash": true,
       "IsVisibleInDynamoLibrary": true,
-      "Version": "2.3.0.4415",
+      "Version": "2.0.2.8095",
       "RunType": "Manual",
       "RunPeriod": "1000"
     },
@@ -9676,7 +9676,7 @@
         "Height": 580.04268271215619,
         "FontSize": 36.0,
         "InitialTop": -1046.2225786783322,
-        "InitialHeight": 553.51902343880647,
+        "InitialHeight": 553.04268271215619,
         "TextblockHeight": 43.0,
         "Background": "#FFB9F9E1"
       },
@@ -9964,8 +9964,8 @@
         "Background": "#FFC1D676"
       }
     ],
-    "X": -5837.3181591577277,
-    "Y": 1165.9394337651777,
-    "Zoom": 0.77955164804920263
+    "X": -119.21459392172926,
+    "Y": 649.14173000032974,
+    "Zoom": 0.15724552741566267
   }
 }
