@@ -76,7 +76,7 @@ def form_path(elements):
 	return "/".join( elements )
 
 def run_cmd( args, printOutput = True, cwd = None ):	
-	p = subprocess.Popen(args, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, cwd = cwd)
+	p = subprocess.Popen(args, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, cwd = cwd, universal_newlines=True)
 	
 	out = ''
 
