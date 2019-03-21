@@ -4003,20 +4003,20 @@ namespace Dynamo.Wpf.Properties
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Please wait....
-        /// </summary>
-        public static string PackageSearchViewPleaseWait {
-            get {
-                return ResourceManager.GetString("PackageSearchViewPleaseWait", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Search....
         /// </summary>
         public static string PackageSearchViewSearchTextBox {
             get {
                 return ResourceManager.GetString("PackageSearchViewSearchTextBox", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please wait....
+        /// </summary>
+        public static string PackageSearchViewSearchTextBoxSyncing {
+            get {
+                return ResourceManager.GetString("PackageSearchViewSearchTextBoxSyncing", resourceCulture);
             }
         }
         

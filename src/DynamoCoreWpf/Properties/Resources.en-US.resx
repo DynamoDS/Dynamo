@@ -2184,7 +2184,7 @@ Do you want to install the latest Dynamo update?</value>
   <data name="RerunButtonToolTip" xml:space="preserve">
     <value>Rerun the graph.</value>
   </data>
-  <data name="PackageSearchViewPleaseWait" xml:space="preserve">
+  <data name="PackageSearchViewSearchTextBoxSyncing" xml:space="preserve">
     <value>Please wait...</value>
   </data>
 </root>

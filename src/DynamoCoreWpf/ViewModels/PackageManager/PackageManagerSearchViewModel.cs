@@ -88,7 +88,7 @@ namespace Dynamo.PackageManager
             {
                 if(SearchState == PackageSearchState.Syncing)
                 {
-                    return Resources.PackageSearchViewPleaseWait;
+                    return Resources.PackageSearchViewSearchTextBoxSyncing;
                 }
                 return Resources.PackageSearchViewSearchTextBox;
             }
