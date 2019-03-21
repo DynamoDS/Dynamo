@@ -12,11 +12,6 @@ Coordinate Systems, Solids
 
 ![](images/Aniform.PNG)
 
-### Lots of Stuff
-Points, Curves, Solids, Lacing
-
-![](images/LotsOfStuff.PNG)
-
 ### Lots of Colored Stuff
 Points, Curves, Solids, Lacing, Colors
 
@@ -26,11 +21,6 @@ Points, Curves, Solids, Lacing, Colors
 Surfaces, Solids, Custom Node
 
 ![](images/Pottery.PNG)
-
-### Sinuous Tower
-Math, Vectors, Points, Curves, Surfaces, Solids, List Operations, List.Combine, Code Blocks
-
-![](images/SinuousTower.PNG)
 
 ### CodeBlocks
 Code Blocks, Points, Curves
