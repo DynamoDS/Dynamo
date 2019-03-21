@@ -82,6 +82,33 @@ namespace Dynamo.PackageManager
             }
         }
 
+        public string SearchBoxPrompt
+        {
+            get
+            {
+                if(SearchState == PackageSearchState.Syncing)
+                {
+                    return Resources.PackageSearchViewPleaseWait;
+                }
+                return Resources.PackageSearchViewSearchTextBox;
+            }
+        }
+
+        public bool ShowSearchText
+        {
+            get
+            {
+                if(SearchState == PackageSearchState.Syncing)
+                {
+                    return false;
+                }
+                else
+                {
+                    return true;
+                }
+            }
+        }
+
         /// <summary>
         ///     SearchText property
         /// </summary>
@@ -156,6 +183,8 @@ namespace Dynamo.PackageManager
             {
                 _searchState = value;
                 RaisePropertyChanged("SearchState");
+                RaisePropertyChanged("SearchBoxPrompt");
+                RaisePropertyChanged("ShowSearchText");
             }
         }
 
