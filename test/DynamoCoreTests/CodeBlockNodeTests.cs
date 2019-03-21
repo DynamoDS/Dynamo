@@ -277,7 +277,7 @@ b = c[w][x][y][z];";
             AssertPreviewValue(codeBlockNode2.GUID.ToString(), 6);
         }
 
-        // Note: QNTM-1684 - This test is expected to fail due to the functions beng indeterminate
+        // Note: DYN-1684 - This test is expected to fail due to the functions beng indeterminate
         //       We will need to figure out a way to test this once error handling is implemented
         //[Test]
         //[Category("UnitTests")]
