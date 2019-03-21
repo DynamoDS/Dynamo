@@ -844,7 +844,7 @@ namespace ProtoCore
         {
             replicationInstructions = null;
             resolvesFeps = null;
-            Boolean matchFound = false;
+            var matchFound = false;
 
             #region Case 1: Replication guide with exact match 
             {
@@ -878,7 +878,7 @@ namespace ProtoCore
                         }
                     }
                 }
-                if (matchFound == true)
+                if (matchFound)
                     return;
             }
             #endregion
@@ -909,7 +909,7 @@ namespace ProtoCore
                             matchFound = true;
                         }
                     }
-                    if (matchFound == true)
+                    if (matchFound)
                         return;
                 }
             }
@@ -946,7 +946,7 @@ namespace ProtoCore
                         matchFound = true;
                     }
                 }
-                if (matchFound == true)
+                if (matchFound)
                     return;
             }
             #endregion
