@@ -277,7 +277,7 @@ b = c[w][x][y][z];";
             AssertPreviewValue(codeBlockNode2.GUID.ToString(), 6);
         }
 
-        // Note: This test is expected to fail due to the functions beng indeterminate
+        // Note: QNTM-1684 - This test is expected to fail due to the functions beng indeterminate
         //       We will need to figure out a way to test this once error handling is implemented
         //[Test]
         //[Category("UnitTests")]
@@ -291,46 +291,6 @@ b = c[w][x][y][z];";
 
         //    AssertPreviewValue(codeBlockNode1.GUID.ToString(), 3);
         //    AssertPreviewValue(codeBlockNode2.GUID.ToString(), 6);
-        //}
-
-        // Note: The following two tests are an attempt at testing a VM crash that occurs when manually testing
-        //       The first test is expected to fail, but does not.
-        //[Test]
-        //[Category("UnitTests")]
-        //public void TestFunctionMultipleBlocksDefaultParametersDeleteFirst()
-        //{
-        //    var codeBlockNode1 = CreateCodeBlockNode();
-        //    UpdateCodeBlockNodeContent(codeBlockNode1, "def test1(x:int = 1, y:int= 2){return = x + y;}test1();");
-        //    var codeBlockNode2 = CreateCodeBlockNode();
-        //    UpdateCodeBlockNodeContent(codeBlockNode2, "def test2(x, y = 2, z = 3){return = x + y + z;}test2(1);");
-
-        //    this.CurrentDynamoModel.ExecuteCommand(
-        //        new DynamoModel.DeleteModelCommand(codeBlockNode1.GUID));
-
-        //    var workspace = CurrentDynamoModel.CurrentWorkspace;
-        //    var deletedNode = workspace.NodeFromWorkspace(codeBlockNode1.GUID);
-        //    Assert.IsNull(deletedNode);
-
-        //    AssertPreviewValue(codeBlockNode2.GUID.ToString(), 6);
-        //}
-
-        //[Test]
-        //[Category("UnitTests")]
-        //public void TestFunctionMultipleBlocksDefaultParametersDeleteSecond()
-        //{
-        //    var codeBlockNode1 = CreateCodeBlockNode();
-        //    UpdateCodeBlockNodeContent(codeBlockNode1, "def test1(x:int = 1, y:int= 2){return = x + y;}test1();");
-        //    var codeBlockNode2 = CreateCodeBlockNode();
-        //    UpdateCodeBlockNodeContent(codeBlockNode2, "def test2(x, y = 2, z = 3){return = x + y + z;}test2(1);");
-
-        //    this.CurrentDynamoModel.ExecuteCommand(
-        //        new DynamoModel.DeleteModelCommand(codeBlockNode2.GUID));
-
-        //    var workspace = CurrentDynamoModel.CurrentWorkspace;
-        //    var deletedNode = workspace.NodeFromWorkspace(codeBlockNode2.GUID);
-        //    Assert.IsNull(deletedNode);
-
-        //    AssertPreviewValue(codeBlockNode1.GUID.ToString(), 3);
         //}
 
         [Test]
