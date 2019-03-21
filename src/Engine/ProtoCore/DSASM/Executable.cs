@@ -141,7 +141,7 @@ namespace ProtoCore.DSASM
         /// <param name="procTable"></param>
         /// <param name="isBreakableBlock"></param>
         /// <param name="core"></param>
-        public CodeBlock(Guid guid, CodeBlockType type, ProtoCore.Language langId, int cbID, SymbolTable symbols, ProcedureTable procTable, bool isBreakableBlock, ProtoCore.Core core)
+        public CodeBlock(Guid guid, CodeBlockType type, ProtoCore.Language langId, int cbID, SymbolTable symbols, ProcedureTable procTable, bool isBreakableBlock = false, ProtoCore.Core core = null)
         {
             this.guid = guid;
             blockType = type;
