@@ -822,7 +822,15 @@ namespace ProtoCore
             return compliantTarget;
         }
 
-        private Boolean IsCompatibleReplicationOption(List<ReplicationInstruction> oldOption, List<ReplicationInstruction> newOption)
+
+        /// <summary>
+        /// This helper function checks if the current replication option is
+        /// similar to the previous option but of a higher rank. 
+        /// Checks if the first entry is same in both the options and the current options count is more. 
+        /// </summary>
+        /// <returns>Returns true or false based on the condition described above. 
+        /// </returns>
+        private Boolean IsSimilarOptionButOfHigherRank(List<ReplicationInstruction> oldOption, List<ReplicationInstruction> newOption)
         {
             if (oldOption.Count > 0 && newOption.Count > 0 && oldOption.Count < newOption.Count)
             {
@@ -869,7 +877,7 @@ namespace ProtoCore
                     HashSet<FunctionEndPoint> lookups;
                     if (funcGroup.CanGetExactMatchStatics(context, reducedParams, stackFrame, runtimeCore, out lookups))
                     {
-                        if (replicationInstructions == null || IsCompatibleReplicationOption(replicationInstructions, replicationOption))
+                        if (replicationInstructions == null || IsSimilarOptionButOfHigherRank(replicationInstructions, replicationOption))
                         {
                             //Otherwise we have a cluster of FEPs that can be used to dispatch the array
                             resolvesFeps = new List<FunctionEndPoint>(lookups);
