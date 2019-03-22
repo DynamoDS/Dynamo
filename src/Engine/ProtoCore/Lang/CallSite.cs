@@ -826,7 +826,7 @@ namespace ProtoCore
         {
             if (oldOption.Count > 0 && newOption.Count > 0 && oldOption.Count < newOption.Count)
             {
-                if (oldOption[0].ToString().Equals(newOption[0].ToString()))
+                if (oldOption[0].Equals(newOption[0]))
                     return true;
             }
             return false;
