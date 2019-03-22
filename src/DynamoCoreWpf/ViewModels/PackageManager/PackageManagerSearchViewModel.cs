@@ -82,6 +82,9 @@ namespace Dynamo.PackageManager
             }
         }
 
+        /// <summary>
+        /// The string that is displayed in the search box prompt depending on the search state.
+        /// </summary>
         public string SearchBoxPrompt
         {
             get
@@ -94,6 +97,12 @@ namespace Dynamo.PackageManager
             }
         }
 
+        /// <summary>
+        /// Determines whether the the search text box should be displayed.
+        /// <para>
+        /// Returns false if the search state is syncing, 
+        /// </para>
+        /// </summary>
         public bool ShowSearchText
         {
             get
@@ -172,19 +181,21 @@ namespace Dynamo.PackageManager
             get { return this.SearchResults.Count == 0; }
         }
 
+
+        public PackageSearchState _searchState;
+
         /// <summary>
         /// Gives the current state of search.
         /// </summary>
-        public PackageSearchState _searchState;
         public PackageSearchState SearchState
         {
             get { return _searchState; }
             set
             {
                 _searchState = value;
-                RaisePropertyChanged("SearchState");
-                RaisePropertyChanged("SearchBoxPrompt");
-                RaisePropertyChanged("ShowSearchText");
+                RaisePropertyChanged(nameof(this.SearchState));
+                RaisePropertyChanged(nameof(this.SearchBoxPrompt));
+                RaisePropertyChanged(nameof(this.ShowSearchText));
             }
         }
 
