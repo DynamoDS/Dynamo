@@ -4927,6 +4927,7 @@ r = cond<1L> ? vs1<1L> : vs2<1L>;";
             thisTest.Verify("r", new object[] { 2, 5, 7 });
         }
 
+        // This tests the case 2 block in the computeFeps method(CallSite.cs line:943)
         [Test]
         public void TestReplicationWithEmptyListInNestedLists()
         {
@@ -4943,6 +4944,7 @@ px2 = DummyPoint2D.X(l2);
             thisTest.Verify("px2", new object[] { new object[] { 0 }, new object[] { } });
         }
 
+        // This tests the case 4 block in the computeFeps method(CallSite.cs line:943)
         [Test]
         public void TestReplicationWithNullElementInNestedLists()
         {
@@ -4960,6 +4962,8 @@ px2 = DummyPoint2D.X(l2);
             thisTest.Verify("px2", new object[] { new object[] { 0 }, null });
         }
 
+        // This tests the case:6 block in the computeFeps method(CallSite.cs line:943)
+        // input example for case 6: l4 and l5 lists. 
         [Test]
         public void TestReplicationWithArraysOfDifferentRanks()
         {
