@@ -56,7 +56,8 @@ namespace ProtoCore.Lang.Replication
                 if (this.ZipIndecies != null && oldOption.ZipIndecies != null)
                 {
                     // Fastest way to compare all elements of 2 lists. 
-                    // Excluding one list from another list and checking if the leftover list is empty. 
+                    // Excluding one list from another list and checking if the leftover lists is empty or not. 
+                    // https://stackoverflow.com/questions/12795882/quickest-way-to-compare-two-list
                     var currentExcludesOldList = this.ZipIndecies.Except(oldOption.ZipIndecies).ToList();
                     var oldExcludescurrentList = oldOption.ZipIndecies.Except(this.ZipIndecies).ToList();
 
