@@ -809,6 +809,24 @@ namespace ProtoCore
             return compliantTarget;
         }
 
+
+        /// <summary>
+        /// This helper function checks if the current replication option is
+        /// similar to the previous option but of a higher rank. 
+        /// Checks if the first entry is same in both the options and the current options count is more. 
+        /// </summary>
+        /// <returns>Returns true or false based on the condition described above. 
+        /// </returns>
+        private Boolean IsSimilarOptionButOfHigherRank(List<ReplicationInstruction> oldOption, List<ReplicationInstruction> newOption)
+        {
+            if (oldOption.Count > 0 && newOption.Count > 0 && oldOption.Count < newOption.Count)
+            {
+                if (oldOption[0].Equals(newOption[0]))
+                    return true;
+            }
+            return false;
+        }
+
         private void ComputeFeps(
             Context context,
             List<StackValue> arguments,
@@ -816,15 +834,19 @@ namespace ProtoCore
             List<ReplicationInstruction> instructions,
             StackFrame stackFrame,
             RuntimeCore runtimeCore,
-            out List<FunctionEndPoint> resolvesFeps,
+            out List<FunctionEndPoint> resolvedFeps,
             out List<ReplicationInstruction> replicationInstructions)
         {
+            replicationInstructions = null;
+            resolvedFeps = null;
+            var matchFound = false;
+
             #region Case 1: Replication guide with exact match 
             {
                 FunctionEndPoint fep = GetCompleteMatchFunctionEndPoint(context, arguments, funcGroup, instructions, stackFrame, runtimeCore);
                 if (fep != null)
                 {
-                    resolvesFeps = new List<FunctionEndPoint>() { fep };
+                    resolvedFeps = new List<FunctionEndPoint>() { fep };
                     replicationInstructions = instructions;
                     return;
                 }
@@ -842,13 +864,17 @@ namespace ProtoCore
                     HashSet<FunctionEndPoint> lookups;
                     if (funcGroup.CanGetExactMatchStatics(context, reducedParams, stackFrame, runtimeCore, out lookups))
                     {
-                        //Otherwise we have a cluster of FEPs that can be used to dispatch the array
-                        resolvesFeps = new List<FunctionEndPoint>(lookups);
-                        replicationInstructions = replicationOption;
-                        return;
+                        if (replicationInstructions == null || IsSimilarOptionButOfHigherRank(replicationInstructions, replicationOption))
+                        {
+                            //Otherwise we have a cluster of FEPs that can be used to dispatch the array
+                            resolvedFeps = new List<FunctionEndPoint>(lookups);
+                            replicationInstructions = replicationOption;
+                            matchFound = true;
+                        }
                     }
                 }
-
+                if (matchFound)
+                    return;
             }
             #endregion
 
@@ -857,7 +883,7 @@ namespace ProtoCore
                 FunctionEndPoint compliantTarget = GetCompliantFEP(context, arguments, funcGroup, instructions, stackFrame, runtimeCore);
                 if (compliantTarget != null)
                 {
-                    resolvesFeps = new List<FunctionEndPoint>() { compliantTarget };
+                    resolvedFeps = new List<FunctionEndPoint>() { compliantTarget };
                     replicationInstructions = instructions;
                     return;
                 }
@@ -873,11 +899,13 @@ namespace ProtoCore
                         FunctionEndPoint compliantTarget = GetCompliantFEP(context, arguments, funcGroup, replicationOption, stackFrame, runtimeCore);
                         if (compliantTarget != null)
                         {
-                            resolvesFeps = new List<FunctionEndPoint>() { compliantTarget };
+                            resolvedFeps = new List<FunctionEndPoint>() { compliantTarget };
                             replicationInstructions = replicationOption;
-                            return;
+                            matchFound = true;
                         }
                     }
+                    if (matchFound)
+                        return;
                 }
             }
 
@@ -893,7 +921,7 @@ namespace ProtoCore
                     FunctionEndPoint compliantTarget = GetCompliantFEP(context, arguments, funcGroup, replicationOption, stackFrame, runtimeCore, true);
                     if (compliantTarget != null)
                     {
-                        resolvesFeps = new List<FunctionEndPoint>() { compliantTarget };
+                        resolvedFeps = new List<FunctionEndPoint>() { compliantTarget };
                         replicationInstructions = replicationOption;
                         return;
                     }
@@ -908,15 +936,17 @@ namespace ProtoCore
                     FunctionEndPoint compliantTarget = GetLooseCompliantFEP(context, arguments, funcGroup, replicationOption, stackFrame, runtimeCore);
                     if (compliantTarget != null)
                     {
-                        resolvesFeps = new List<FunctionEndPoint>() { compliantTarget };
+                        resolvedFeps = new List<FunctionEndPoint>() { compliantTarget };
                         replicationInstructions = replicationOption;
-                        return;
+                        matchFound = true;
                     }
                 }
+                if (matchFound)
+                    return;
             }
             #endregion
 
-            resolvesFeps = new List<FunctionEndPoint>();
+            resolvedFeps = new List<FunctionEndPoint>();
             replicationInstructions = instructions;
         }
 
