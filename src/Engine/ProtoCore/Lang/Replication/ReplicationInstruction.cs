@@ -48,15 +48,18 @@ namespace ProtoCore.Lang.Replication
 
         public Boolean Equals(ReplicationInstruction oldOption) {
 
-            if (this.Zipped == oldOption.Zipped)
+            if (this.Zipped == oldOption.Zipped && this.ZipAlgorithm == oldOption.ZipAlgorithm)
             {
                 if (this.ZipIndecies == null && oldOption.ZipIndecies == null)
                     return true;
 
                 if (this.ZipIndecies != null && oldOption.ZipIndecies != null)
                 {
+                    // Fastest way to compare all elements of 2 lists. 
+                    // Excluding one list from another list and checking if the leftover list is empty. 
                     var currentExcludesOldList = this.ZipIndecies.Except(oldOption.ZipIndecies).ToList();
                     var oldExcludescurrentList = oldOption.ZipIndecies.Except(this.ZipIndecies).ToList();
+
                     return !currentExcludesOldList.Any() && !oldExcludescurrentList.Any();
                 }
             }
