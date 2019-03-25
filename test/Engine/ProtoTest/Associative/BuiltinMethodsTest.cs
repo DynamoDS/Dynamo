@@ -1069,7 +1069,7 @@ r = Dictionary.ValueAtKey(a, ""nonexist"");
            thisTest.Verify("r", null);
        }
 
-        [Test, Category("Failure")]
+        [Test]
         public void TestTryGetValuesFromDictionary09()
         {
             string code = @"
