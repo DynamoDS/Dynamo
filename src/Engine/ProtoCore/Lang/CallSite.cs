@@ -847,11 +847,11 @@ namespace ProtoCore
             List<ReplicationInstruction> instructions,
             StackFrame stackFrame,
             RuntimeCore runtimeCore,
-            out List<FunctionEndPoint> resolvesFeps,
+            out List<FunctionEndPoint> resolvedFeps,
             out List<ReplicationInstruction> replicationInstructions)
         {
             replicationInstructions = null;
-            resolvesFeps = null;
+            resolvedFeps = null;
             var matchFound = false;
 
             #region Case 1: Replication guide with exact match 
@@ -859,7 +859,7 @@ namespace ProtoCore
                 FunctionEndPoint fep = GetCompleteMatchFunctionEndPoint(context, arguments, funcGroup, instructions, stackFrame, runtimeCore);
                 if (fep != null)
                 {
-                    resolvesFeps = new List<FunctionEndPoint>() { fep };
+                    resolvedFeps = new List<FunctionEndPoint>() { fep };
                     replicationInstructions = instructions;
                     return;
                 }
@@ -880,7 +880,7 @@ namespace ProtoCore
                         if (replicationInstructions == null || IsSimilarOptionButOfHigherRank(replicationInstructions, replicationOption))
                         {
                             //Otherwise we have a cluster of FEPs that can be used to dispatch the array
-                            resolvesFeps = new List<FunctionEndPoint>(lookups);
+                            resolvedFeps = new List<FunctionEndPoint>(lookups);
                             replicationInstructions = replicationOption;
                             matchFound = true;
                         }
@@ -896,7 +896,7 @@ namespace ProtoCore
                 FunctionEndPoint compliantTarget = GetCompliantFEP(context, arguments, funcGroup, instructions, stackFrame, runtimeCore);
                 if (compliantTarget != null)
                 {
-                    resolvesFeps = new List<FunctionEndPoint>() { compliantTarget };
+                    resolvedFeps = new List<FunctionEndPoint>() { compliantTarget };
                     replicationInstructions = instructions;
                     return;
                 }
@@ -912,7 +912,7 @@ namespace ProtoCore
                         FunctionEndPoint compliantTarget = GetCompliantFEP(context, arguments, funcGroup, replicationOption, stackFrame, runtimeCore);
                         if (compliantTarget != null)
                         {
-                            resolvesFeps = new List<FunctionEndPoint>() { compliantTarget };
+                            resolvedFeps = new List<FunctionEndPoint>() { compliantTarget };
                             replicationInstructions = replicationOption;
                             matchFound = true;
                         }
@@ -934,7 +934,7 @@ namespace ProtoCore
                     FunctionEndPoint compliantTarget = GetCompliantFEP(context, arguments, funcGroup, replicationOption, stackFrame, runtimeCore, true);
                     if (compliantTarget != null)
                     {
-                        resolvesFeps = new List<FunctionEndPoint>() { compliantTarget };
+                        resolvedFeps = new List<FunctionEndPoint>() { compliantTarget };
                         replicationInstructions = replicationOption;
                         return;
                     }
@@ -949,7 +949,7 @@ namespace ProtoCore
                     FunctionEndPoint compliantTarget = GetLooseCompliantFEP(context, arguments, funcGroup, replicationOption, stackFrame, runtimeCore);
                     if (compliantTarget != null)
                     {
-                        resolvesFeps = new List<FunctionEndPoint>() { compliantTarget };
+                        resolvedFeps = new List<FunctionEndPoint>() { compliantTarget };
                         replicationInstructions = replicationOption;
                         matchFound = true;
                     }
@@ -959,7 +959,7 @@ namespace ProtoCore
             }
             #endregion
 
-            resolvesFeps = new List<FunctionEndPoint>();
+            resolvedFeps = new List<FunctionEndPoint>();
             replicationInstructions = instructions;
         }
 
