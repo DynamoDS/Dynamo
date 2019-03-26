@@ -396,21 +396,5 @@ z2 = qux2();
             thisTest.Verify("z1", 22);
             thisTest.Verify("z2", 22);
         }
-
-        [Test]
-        public void TestEmptyNestedListsForMethodResolution()
-        {
-            string code = @"import(""FFITarget.dll""); 
-pt = DummyPoint2D.ByCoordinates(0,0);
-l = [[],[pt]];
-px1 = DummyPoint2D.X(l);
-pt = DummyPoint2D.ByCoordinates(0,0);
-l2 = [[pt],[]];
-px2 = DummyPoint2D.X(l2);
-";
-            var mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("px1", new object[] { new object[] { }, new object[] { 0 } });
-            thisTest.Verify("px2", new object[] { new object[] { 0 }, new object[] { } });
-        }
     }
 }
