@@ -212,6 +212,87 @@ b = c[w][x][y][z];";
 #endif
         protected double tolerance = 1e-4;
 
+        // Note: This test fails, even though the individual items pass as separate tests
+        //       This is preventing putting all of the tests in a single method
+        //[Test]
+        //[Category("UnitTests")]
+        //public void TestFunctionDefaultParameters()
+        //{
+        //    var codeBlockNode = CreateCodeBlockNode();
+        //    var guid = codeBlockNode.GUID.ToString();
+
+        //    UpdateCodeBlockNodeContent(codeBlockNode, "def test(x:int = 1){return = x;}test();");
+        //    AssertPreviewValue(guid, 1);
+
+        //    UpdateCodeBlockNodeContent(codeBlockNode, "def test(x:int = 1, y:int= 2){return = x + y;}test();");
+        //    AssertPreviewValue(guid, 3);
+        //}
+
+        [Test]
+        [Category("UnitTests")]
+        public void TestFunctionSingleDefaultParameter()
+        {
+            var codeBlockNode = CreateCodeBlockNode();
+            UpdateCodeBlockNodeContent(codeBlockNode, "def test(x:int = 1){return = x;}test();");
+            AssertPreviewValue(codeBlockNode.GUID.ToString(), 1);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TestFunctionTwoDefaultParameters()
+        {
+            var codeBlockNode = CreateCodeBlockNode();
+            UpdateCodeBlockNodeContent(codeBlockNode, "def test(x:int = 1, y:int= 2){return = x + y;}test();");
+            AssertPreviewValue(codeBlockNode.GUID.ToString(), 3);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TestFunctionThreeDefaultParameters()
+        {
+            var codeBlockNode = CreateCodeBlockNode();
+            UpdateCodeBlockNodeContent(codeBlockNode, "def test(x:int = 1, y:int= 2, z:int= 3){return = x + y + z;}test();");
+            AssertPreviewValue(codeBlockNode.GUID.ToString(), 6);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TestFunctionOneArgumentOneDefaultParameter()
+        {
+            var codeBlockNode = CreateCodeBlockNode();
+            UpdateCodeBlockNodeContent(codeBlockNode, "def test(x:int, y:int= 2){return = x + y;}test(1);");
+            AssertPreviewValue(codeBlockNode.GUID.ToString(), 3);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TestFunctionMultipleBlocksDefaultParameters()
+        {
+            var codeBlockNode1 = CreateCodeBlockNode();
+            UpdateCodeBlockNodeContent(codeBlockNode1, "def test1(x:int = 1, y:int= 2){return = x + y;}test1();");
+            var codeBlockNode2 = CreateCodeBlockNode();
+            UpdateCodeBlockNodeContent(codeBlockNode2, "def test2(x, y = 2, z = 3){return = x + y + z;}test2(1);");
+
+            AssertPreviewValue(codeBlockNode1.GUID.ToString(), 3);
+            AssertPreviewValue(codeBlockNode2.GUID.ToString(), 6);
+        }
+
+        // Note: DYN-1684 - This test is expected to fail due to the functions being indeterminate
+        //       We will need to figure out a way to test this once error handling is implemented
+        //[Test]
+        //[Category("UnitTests")]
+        //public void TestIndeterminateFunctionDefaultParameters()
+        //{
+        //    // Note that both code blocks contain functions called "test" that are indeterminate
+        //    var codeBlockNode1 = CreateCodeBlockNode();
+        //    UpdateCodeBlockNodeContent(codeBlockNode1, "def test(x:int = 1, y:int= 2){return = x + y;}test();");
+        //    var codeBlockNode2 = CreateCodeBlockNode();
+        //    UpdateCodeBlockNodeContent(codeBlockNode2, "def test(x, y = 2, z = 3){return = x + y + z;}test(1);");
+
+        //    AssertPreviewValue(codeBlockNode1.GUID.ToString(), 3);
+        //    AssertPreviewValue(codeBlockNode2.GUID.ToString(), 6);
+        //}
+
         [Test]
         [Category("UnitTests")]
         public void TestVarRedefinitionInFunctionDef()
@@ -224,7 +305,7 @@ b = c[w][x][y][z];";
             var guid = "bbf7919d-d578-4b54-90b1-7df8f01483c6";
             var cbn = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace<CodeBlockNodeModel>(
                 Guid.Parse(guid));
-            
+
 
             Assert.IsNotNull(cbn);
             Assert.AreEqual(ElementState.PersistentWarning, cbn.State);
