@@ -59,14 +59,13 @@ namespace DynamoShapeManager
                     new Version(225,0,0),
                     new Version(224,4,0),
                     new Version(224,0,1),
-                    new Version(223,0,1),
-                    new Version(222,0,0),
-                    new Version(221,0,0)
+                    new Version(223,0,1)
             })
         {
         }
 
-        //used to convert libraryVersions to the real asm versions they represented
+        // TODO: Remove in Dynamo 3.0 -> The following old libG Folder mapping usage 
+        // used to convert libraryVersions to the real asm versions they represented
         private static Dictionary<LibraryVersion, Version> ASMLibVersionToVersion = new Dictionary<LibraryVersion, Version>()
         {
             { LibraryVersion.Version221, new Version(221,0,0) },

@@ -30,9 +30,12 @@ namespace ProtoCore
             public int delme;
             public ConsoleEventSink()
             {
+#if DEBUG
+                
                 BeginDocument += Console.WriteLine;
                 EndDocument += Console.WriteLine;
                 PrintMessage += Console.WriteLine;
+#endif
             }
         }
     }

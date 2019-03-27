@@ -971,9 +971,12 @@ namespace ProtoCore.Lang
             //TODO: Change Execution mirror class to have static methods, so that an instance does not have to be created
             ProtoCore.DSASM.Mirror.ExecutionMirror mirror = new DSASM.Mirror.ExecutionMirror(runtime.runtime, runtime.runtime.RuntimeCore);
             string result = mirror.GetStringValue(msg, runtime.runtime.rmem.Heap, 0, true);
+#if DEBUG
+            
             //For Console output
             Console.WriteLine(result);
-            
+#endif
+
             ////For IDE output
             //ProtoCore.Core core = runtime.runtime.Core;
             //OutputMessage t_output = new OutputMessage(result);
@@ -1467,7 +1470,11 @@ namespace ProtoCore.Lang
         internal static StackValue Difference(StackValue sv1, StackValue sv2, ProtoCore.DSASM.Interpreter runtime, ProtoCore.Runtime.Context context)
         {
             if((Rank(sv1, runtime)!=1)||(Rank(sv2, runtime)!=1)){
+#if DEBUG
+                
                 Console.WriteLine("Warning: Both arguments were expected to be one-dimensional array type!");
+#endif
+
                 return DSASM.StackValue.Null;
             }
             if ((!sv1.IsArray) || (!sv1.IsArray))
@@ -1521,7 +1528,11 @@ namespace ProtoCore.Lang
         {
             if ((Rank(sv1, runtime) != 1) || (Rank(sv2, runtime) != 1))
             {
+#if DEBUG
+                
                 Console.WriteLine("Warning: Both arguments were expected to be one-dimensional array type!");
+#endif
+
                 return DSASM.StackValue.Null;
             }
             if ((!sv1.IsArray) || (!sv1.IsArray))
