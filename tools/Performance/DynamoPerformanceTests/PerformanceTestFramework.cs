@@ -77,7 +77,7 @@ namespace DynamoPerformanceTests
         /// parameter source.
         /// </summary>
         [ParamsSource(nameof(PerformanceTestSource))]
-        public string DynamoFilePath { get; set; }
+        public string DynamoFileName { get; set; }
 
         #region Iteration setup and cleanup methods for Benchmarks
 
@@ -98,8 +98,16 @@ namespace DynamoPerformanceTests
         {
             Setup();
 
+            var fi = new FileInfo(Assembly.GetExecutingAssembly().Location);
+            string dir = fi.DirectoryName;
+
+            // Test location for all DYN files to be measured for performance 
+            string testsLoc = Path.Combine(dir, testDirectory);
+            var regTestPath = Path.GetFullPath(testsLoc);
+
+            var path = Path.Combine(regTestPath, DynamoFileName);
             //open the dyn file
-            OpenModel(DynamoFilePath);
+            OpenModel(path);
         }
 
         /// <summary>
@@ -118,8 +126,16 @@ namespace DynamoPerformanceTests
         [Benchmark]
         public void OpenModelBenchmark()
         {
+            var fi = new FileInfo(Assembly.GetExecutingAssembly().Location);
+            string dir = fi.DirectoryName;
+
+            // Test location for all DYN files to be measured for performance 
+            string testsLoc = Path.Combine(dir, testDirectory);
+            var regTestPath = Path.GetFullPath(testsLoc);
+
+            var path = Path.Combine(regTestPath, DynamoFileName);
             //open the dyn file
-            OpenModel(DynamoFilePath);
+            OpenModel(path);
         }
 
         [Benchmark]
@@ -147,7 +163,7 @@ namespace DynamoPerformanceTests
             var dyns = di.GetFiles("*.dyn");
             foreach (var fileInfo in dyns)
             {
-                yield return fileInfo.FullName;
+                yield return fileInfo.Name;
             }
         }
     }
