@@ -99,7 +99,7 @@ namespace DynamoPerformanceTests
             Setup();
 
             //open the dyn file
-            OpenModel(DynamoFilePath);
+            OpenModel(DynamoFilePath, true);
         }
 
         /// <summary>
@@ -119,7 +119,7 @@ namespace DynamoPerformanceTests
         public void OpenModelBenchmark()
         {
             //open the dyn file
-            OpenModel(DynamoFilePath);
+            OpenModel(DynamoFilePath, true);
         }
 
         [Benchmark]
