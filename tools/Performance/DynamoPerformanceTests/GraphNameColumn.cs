@@ -4,9 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Columns;
-using BenchmarkDotNet.Configs;
 using BenchmarkDotNet.Reports;
 using BenchmarkDotNet.Running;
 
@@ -15,14 +13,10 @@ namespace DynamoPerformanceTests
 {
     public class GraphNameColumn : IColumn
     {
-        public string Id => nameof(GraphNameColumn);
+        public GraphNameColumn() { }
+        
         public string ColumnName => "Graph";
 
-        public GraphNameColumn()
-        {
-
-        }
-        
         public string GetValue(Summary summary, BenchmarkCase benchmarkCase)
         {
             var path = benchmarkCase.Parameters["DynamoFilePath"].ToString();
@@ -31,7 +25,8 @@ namespace DynamoPerformanceTests
         }
 
         public string GetValue(Summary summary, BenchmarkCase benchmarkCase, SummaryStyle style) => GetValue(summary, benchmarkCase);
-
+        
+        public string Id => nameof(GraphNameColumn);
         public bool IsDefault(Summary summary, BenchmarkCase benchmarkCase) => true;
         public bool IsAvailable(Summary summary) => true;
         public bool AlwaysShow => true;
