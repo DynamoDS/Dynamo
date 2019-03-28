@@ -5,6 +5,9 @@
 if not "%2"=="" goto :harvestpathdefined
 
 echo The path to the Dynamo dlls was not specified. Using the dlls in the install directory...
+:: Get the bin release folder path for building symbol nupkg
+set releasePath=..\..\bin\AnyCPU\Release
+:: Get the harvest folder path for building rumtime nupkg
 set harvestPath=..\..\src\DynamoInstall\harvest
 if not exist %harvestPath% (
   echo Dynamo\src\DynamoInstall\harvest folder not found.
@@ -50,7 +53,10 @@ for %%f in (%1\*.nuspec) do (
 
 :: Pack .nupkg files based on each .nuspec in the "nuspec" folder
 for %%f in (nuspec\*.nuspec) do (
-  nuget pack %%f -basepath %harvestPath%
+  :: Check if nuspec file name containing "Symbols"
+  echo %%f|find "Symbols" >nul
+  :: When nuget pack symbols, set to release path where the symbol files live
+  if errorlevel 1 ( nuget pack %%f -basepath %harvestPath% ) else (nuget pack %%f -basepath %releasePath%)
   if not exist %%~nf.%version%.nupkg (
     exit /b 1
   )

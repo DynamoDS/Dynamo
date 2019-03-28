@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
   <metadata>
-    <id>DynamoVisualProgramming.DynamoCoreRuntime</id>
+    <id>DynamoVisualProgramming.DynamoCoreSymbols</id>
     <version>@VERSION@</version>
     <authors>Autodesk</authors>
     <owners>Autodesk</owners>
@@ -9,10 +9,11 @@
     <projectUrl>https://github.com/DynamoDS/Dynamo</projectUrl>
     <iconUrl>https://raw.githubusercontent.com/DynamoDS/Dynamo/master/doc/distrib/Images/logo_square_32x32.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>This package bundles all files from the Dynamo bin folder except for test libraries and symbol files.</description>
-    <copyright>Copyright Autodesk 2016</copyright>
+    <description>This package bundles all symbol files from the Dynamo bin folder.</description>
+    <copyright>Copyright Autodesk 2019</copyright>
   </metadata>
   <files>
-    <file src="**" target="lib\net47" />
+    <file src="*.pdb" target="lib\net47" />
+    <file src="nodes\*.pdb" target="lib\net47\nodes" />
   </files>
 </package>
