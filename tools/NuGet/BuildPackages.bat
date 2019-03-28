@@ -2,13 +2,15 @@
 :: Argument %2: path to dynamo build directory
 ::
 
+@echo off
 if not "%2"=="" goto :harvestpathdefined
 
-echo The path to the Dynamo dlls was not specified. Using the dlls in the install directory...
+echo The path to the Dynamo dlls was not specified. Using the dlls in the harvest directory...
 :: Get the bin release folder path for building symbol nupkg
 set releasePath=..\..\bin\AnyCPU\Release
 :: Get the harvest folder path for building rumtime nupkg
 set harvestPath=..\..\src\DynamoInstall\harvest
+
 if not exist %harvestPath% (
   echo Dynamo\src\DynamoInstall\harvest folder not found.
   echo Please build Dynamo\src\Install.sln before running this script!
@@ -16,11 +18,12 @@ if not exist %harvestPath% (
 )
 goto :build
 
+:: When the second argument for running the batch file exists, update both paths to use argument
 :harvestpathdefined
 set harvestPath=%2
+set releasePath=%2
 
 :build
-@echo off
 :: Get version string from "DynamoCore.dll"
 set count=1
 for /f %%f in ('cscript //Nologo ..\install\GetFileVersion.vbs %harvestPath%\DynamoCore.dll') do (
