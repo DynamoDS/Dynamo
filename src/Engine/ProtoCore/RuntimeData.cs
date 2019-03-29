@@ -38,6 +38,9 @@ namespace ProtoCore
         private static readonly string joinPattern = ';' + callsiteIDPattern;
         private static readonly string fullCallsiteID = callsiteIDPattern + string.Format("({0})*", joinPattern);
 
+        /// <summary>
+        /// Map from callsite id to callsite.
+        /// </summary>
         public IDictionary<string, CallSite> CallsiteCache { get; set; }
         /// <summary>		
         /// Map from a callsite's guid to a graph UI node. 		
@@ -375,6 +378,19 @@ namespace ProtoCore
             // as per the Regex pattern (for fullCallsiteID) since that group includes the function scope
             // that can vary for custom nodes or DS functions that make nested calls to
             // host element creation methods.
+            //Groups
+            //0: full string
+            //1: function id
+            //2: global class index
+            //3: global function
+            //4: function call id
+            //5: outer node instance guid
+            //6: name,global class index, funcscope,instance,guid,
+            //7: name,
+            //8: global class index,
+            //9: function scope,
+            //10: instance,
+            //11: node instance guid? //TODO
             for (int i = 0; i < matches1.Groups.Count; i++)
             {
                 if (i == 0 || i == 6 || i == 9) continue;
