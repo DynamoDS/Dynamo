@@ -69,18 +69,14 @@ namespace DynamoServices
         /// <returns></returns>
         public static ISerializable GetTraceData(string key)
         {
-            Object data = Thread.GetData(Thread.GetNamedDataSlot(key));
-
-            //Null is ok
-            if (data == null)
+            if (!LocalStorageSlot.TryGetValue(key, out var data))
+            {
                 return null;
-
-            var ret = data as ISerializable;
-            if (ret != null)
-                return ret;
-       
-            //Data, that was not serializable is not
-            throw new InvalidOperationException("Data in Named slot was not serializable");
+            }
+            else
+            {
+                return data;
+            }
         }
 
         /// <summary>
@@ -90,7 +86,14 @@ namespace DynamoServices
         /// <param name="value"></param>
         public static void SetTraceData(string key, ISerializable value)
         {
-            Thread.SetData(Thread.GetNamedDataSlot(key), value);
+            if (LocalStorageSlot.ContainsKey(key))
+            {
+                LocalStorageSlot[key] = value;
+            }
+            else
+            {
+                LocalStorageSlot.Add(key, value);
+            }
         }
     }
 }
