@@ -9,6 +9,7 @@ using ProtoCore.AST.AssociativeAST;
 using ProtoCore.DSASM.Mirror;
 using ProtoScript.Runners;
 using ProtoTestFx.TD;
+using DynamoServices;
 
 namespace IntegrationTests
 {
@@ -35,7 +36,7 @@ namespace IntegrationTests
             [TearDown]
             public static void TLSCleanup()
             {
-                Thread.FreeNamedDataSlot(__TEMP_REVIT_TRACE_ID);
+                TraceUtils.ClearAllKnownTLSKeys();
             }
 
 
