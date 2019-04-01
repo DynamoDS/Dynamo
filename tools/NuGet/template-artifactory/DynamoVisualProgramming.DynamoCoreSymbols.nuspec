@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
   <metadata>
-    <id>DynamoVisualProgramming.DynamoServices</id>
+    <id>DynamoVisualProgramming.DynamoCoreSymbols</id>
     <version>@VERSION@</version>
     <authors>Autodesk</authors>
     <owners>Autodesk</owners>
@@ -9,15 +9,11 @@
     <projectUrl>https://github.com/DynamoDS/Dynamo</projectUrl>
     <iconUrl>https://raw.githubusercontent.com/DynamoDS/Dynamo/master/doc/distrib/Images/logo_square_32x32.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>DynamoServices library for Dynamo. It contains the following files: 
-1) DynamoServices.dll</description>
-    <summary>This package contains DynamoServices assembly that defines interfaces and attribute for Dynamo Zero Touch libraries.</summary>
+    <description>This package bundles all symbol files from the Dynamo bin folder.</description>
     <copyright>Copyright Autodesk 2019</copyright>
-    <dependencies>
-    </dependencies>
   </metadata>
   <files>
-    <file src="DynamoServices.dll" target="lib\net47" />
-    <file src="DynamoServices.xml" target="build\net47" />
+    <file src="*.pdb" target="lib\net47" exclude="CefSharp*.pdb;Helix*.pdb;MIConvexHull.NET Standard.pdb"/>
+    <file src="nodes\*.pdb" target="lib\net47\nodes" />
   </files>
 </package>
