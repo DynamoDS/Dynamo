@@ -133,7 +133,7 @@ namespace ProtoCore.Lang
 
                     formalParameters.Add(svThisPtr);
 
-                    Object ret = mFunctionPointer.Execute(c, interpreter);
+                    Object ret = mFunctionPointer.Execute(c, mInterpreter, formalParameters);
                     StackValue op;
                     if (ret == null)
                     {

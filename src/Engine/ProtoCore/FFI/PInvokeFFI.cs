@@ -300,7 +300,7 @@ namespace ProtoFFI
         }
 
 
-        public override object Execute(ProtoCore.Runtime.Context context, ProtoCore.DSASM.Interpreter dsi)
+        public override object Execute(ProtoCore.Runtime.Context context, ProtoCore.DSASM.Interpreter dsi, List<StackValue> newStack = null)
         {
             List<Object> parameters = new List<object>();
             if (IsDNI)

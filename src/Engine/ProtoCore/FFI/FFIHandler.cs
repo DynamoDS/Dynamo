@@ -8,7 +8,7 @@ namespace ProtoFFI
     public abstract class FFIFunctionPointer
     {
         public bool IsDNI { get; set; }
-        public abstract Object Execute(ProtoCore.Runtime.Context c, ProtoCore.DSASM.Interpreter dsi);
+        public abstract Object Execute(ProtoCore.Runtime.Context c, ProtoCore.DSASM.Interpreter dsi, List<StackValue> stack = null);
         public static T[] GetUnderlyingArray<T>(List<T> list)
         {
             return list.ToArray();
