@@ -13,7 +13,7 @@
     <copyright>Copyright Autodesk 2019</copyright>
   </metadata>
   <files>
-    <file src="*.pdb" target="lib\net47" exclude="CefSharp*.pdb;Helix*.pdb;MIConvexHull.NET Standard.pdb;*Tests.pdb;*Test*.pdb;"/>
+    <file src="*.pdb" target="lib\net47" exclude="CefSharp*.pdb;Helix*.pdb;MIConvexHull.NET Standard.pdb;*Test*.pdb;"/>
     <file src="nodes\*.pdb" target="lib\net47\nodes" />
   </files>
 </package>
