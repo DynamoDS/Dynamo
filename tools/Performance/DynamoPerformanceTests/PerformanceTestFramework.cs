@@ -1,12 +1,10 @@
 ﻿using System;
-using System.IO;
 using System.Collections.Generic;
-using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Configs;
-using BenchmarkDotNet.Engines;
 using BenchmarkDotNet.Running;
 using BenchmarkDotNet.Validators;
 using Dynamo;
@@ -20,8 +18,10 @@ namespace DynamoPerformanceTests
     /// </summary>
     public class PerformanceTestFramework : DynamoModelTestBase
     {
-        // Config class that when initialized and used to run the benchmarks
-        // allows for testing of debug versions of DynamoCore targets.
+        /// <summary>
+        /// Config class that when initialized and used to run the benchmarks
+        /// allows for testing of debug versions of DynamoCore targets.
+        /// </summary>
         public class AllowNonOptimized : ManualConfig
         {
             public AllowNonOptimized(string testDir)
@@ -95,6 +95,18 @@ namespace DynamoPerformanceTests
         /// </summary>
         [IterationSetup(Target = nameof(RunModelBenchmark))]
         public void IterationSetupRunModel()
+        {
+            Setup();
+
+            //open the dyn file
+            OpenModel(DynamoFilePath);
+        }
+
+        /// <summary>
+        /// Setup method to be called before each RunModel benchmark.
+        /// </summary>
+        [IterationSetup(Target = nameof(RunModelBenchmark))]
+        public void IterationSetupRunModelWithUI()
         {
             Setup();
 
