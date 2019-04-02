@@ -390,7 +390,7 @@ namespace ProtoCore
             //8: global class index,
             //9: function scope,
             //10: instance,
-            //11: node instance guid? //TODO
+            //11: node instance guid
             for (int i = 0; i < matches1.Groups.Count; i++)
             {
                 if (i == 0 || i == 6 || i == 9) continue;
