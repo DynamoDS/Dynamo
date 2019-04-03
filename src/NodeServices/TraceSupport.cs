@@ -29,8 +29,14 @@ namespace DynamoServices
 
         internal static Dictionary<String, ISerializable> LocalStorageSlot
         {
-            get =>  _localStorageSlot ?? (_localStorageSlot = new Dictionary<string, ISerializable>()); 
-            set => _localStorageSlot = value;
+            get
+            {
+                return _localStorageSlot ?? (_localStorageSlot = new Dictionary<string, ISerializable>());
+            }
+            set
+            {
+                _localStorageSlot = value;
+            }
         }
 
         /// <summary>
