@@ -44,6 +44,9 @@
     <Reference Include="DynamoCoreTests">
       <HintPath>..\..\..\bin\AnyCPU\$(Configuration)\DynamoCoreTests.dll</HintPath>
     </Reference>
+        <Reference Include="DynamoCoreWpfTests">
+      <HintPath>..\..\..\bin\AnyCPU\$(Configuration)\DynamoCoreWpfTests.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CodeAnalysis, Version=2.10.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>packages\Microsoft.CodeAnalysis.Common.2.10.0\lib\netstandard1.3\Microsoft.CodeAnalysis.dll</HintPath>
     </Reference>
