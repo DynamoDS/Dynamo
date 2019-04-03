@@ -75,7 +75,8 @@ namespace DynamoServices
         /// <returns></returns>
         public static ISerializable GetTraceData(string key)
         {
-            if (!LocalStorageSlot.TryGetValue(key, out var data))
+            ISerializable data;  
+            if (!LocalStorageSlot.TryGetValue(key, out data))
             {
                 return null;
             }
