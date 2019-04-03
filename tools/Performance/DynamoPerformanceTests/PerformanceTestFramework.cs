@@ -10,6 +10,7 @@ using BenchmarkDotNet.Engines;
 using BenchmarkDotNet.Running;
 using BenchmarkDotNet.Validators;
 using Dynamo;
+using NDesk.Options;
 
 namespace DynamoPerformanceTests
 {
@@ -160,22 +161,52 @@ namespace DynamoPerformanceTests
 
     public class Program
     {
+        private enum Commands
+        {
+            Benchmark,
+            Compare,
+        }
+
         public static void Main(string[] args)
         {
-            // Running with an input dir location:
-            // DynamoPerformanceTests.exe "C:\directory path\"
-            // 
-            if (args.Length <= 0)
+            // Default arguments
+            var command = Commands.Benchmark;
+            var graphsDirectoryPath = "../../../graphs";
+            var baseResultsPath = string.Empty;
+            var diffResultsPath = string.Empty;
+            var saveComparisonPath = string.Empty;
+
+            // Command line options
+            var opts = new OptionSet() {
+                { "benchmark|Benchmark", "Run performance test benchmarks", v => { command = Commands.Benchmark; } },
+                { "compare|Compare", "Compare two benchmark csv results files", v => { command = Commands.Compare; } },
+                { "g=|G=", "Path to Directory containing test graphs. Defaults to 'Dynamo/tools/Performance/DynamoPerformanceTests/graphs'.", v => { graphsDirectoryPath = v; } },
+                { "b=|B=|base=", "Path to performance results file to use as comparison base.", v => { baseResultsPath = v; }},
+                { "d=|D=|diff=", "Path to performance results file to use as comparison diff.", v => { diffResultsPath = v; }},
+                { "s=|S=|save=", "Location to save comparison csv.", v => { saveComparisonPath = v; }},
+            };
+            opts.Parse(args);
+
+            // Execute command
+            switch (command)
             {
-                Console.WriteLine("Supply a path to a test directory containing DYN files");
+                case Commands.Benchmark:
+                    // Use this call in order to run benchmarks on debug build of DynamoCore
+                    //var summary = BenchmarkRunner.Run<PerformanceTestFramework>(
+                    //new PerformanceTestFramework.AllowNonOptimized(testDir));
+
+                    var summary = BenchmarkRunner.Run<PerformanceTestFramework>(
+                        new PerformanceTestFramework.BenchmarkConfig(graphsDirectoryPath));
+                    break;
+
+                case Commands.Compare:
+                    break;
+
+                default:
+                    break;
             }
-
-            // Use this call in order to run benchmarks on debug build of DynamoCore
-            //var summary = BenchmarkRunner.Run<PerformanceTestFramework>(
-            //new PerformanceTestFramework.AllowNonOptimized(testDir));
-
-            var summary = BenchmarkRunner.Run<PerformanceTestFramework>(
-                new PerformanceTestFramework.BenchmarkConfig(args[0]));
+                
+            
         }
     }
 }
