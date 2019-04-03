@@ -44,7 +44,12 @@ namespace DynamoPerformanceTests
             {
                 Add(DefaultConfig.Instance.GetLoggers().ToArray()); // manual config has no loggers by default
                 Add(DefaultConfig.Instance.GetExporters().ToArray()); // manual config has no exporters by default
-                Add(DefaultConfig.Instance.GetColumnProviders().ToArray());
+
+                var defaultColumns = DefaultConfig.Instance.GetColumnProviders().ToList();
+                defaultColumns.RemoveAt(3); // Remove DynamoFilePath column
+                Add(defaultColumns.ToArray());
+
+                Add(new GraphNameColumn()); // Add Graph Name column
 
                 testDirectory = testDir;
             }
@@ -84,7 +89,7 @@ namespace DynamoPerformanceTests
         /// <summary>
         /// Setup method to be called before each OpenModel benchmark.
         /// </summary>
-        [IterationSetup(Target = nameof(OpenModelBenchmark))]
+        [IterationSetup(Target = nameof(Open))]
         public void IterationSetupOpenModel()
         {
             Setup();
@@ -93,11 +98,11 @@ namespace DynamoPerformanceTests
         /// <summary>
         /// Setup method to be called before each RunModel benchmark.
         /// </summary>
-        [IterationSetup(Target = nameof(RunModelBenchmark))]
+        [IterationSetup(Target = nameof(Run))]
         public void IterationSetupRunModel()
         {
             Setup();
-
+            
             //open the dyn file
             OpenModel(DynamoFilePath);
         }
@@ -116,14 +121,14 @@ namespace DynamoPerformanceTests
         #region Benchmark methods
 
         [Benchmark]
-        public void OpenModelBenchmark()
+        public void Open()
         {
             //open the dyn file
             OpenModel(DynamoFilePath);
         }
 
         [Benchmark]
-        public void RunModelBenchmark()
+        public void Run()
         {
             BeginRun();
         }
