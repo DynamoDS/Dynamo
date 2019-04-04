@@ -821,19 +821,25 @@ namespace WpfVisualizationTests
             // 5 points for point0 node, 2 points for point1 and point2 node
             Assert.AreEqual(9, BackgroundPreviewGeometry.TotalPoints());
 
-            // Modify lacing strategy
+            // Modify lacing strategy to Longest
             ViewModel.CurrentSpaceViewModel.SelectAllCommand.Execute(null);
             ViewModel.CurrentSpaceViewModel.SetArgumentLacingCommand.Execute(LacingStrategy.Longest.ToString());
 
             Assert.AreEqual(12, BackgroundPreviewGeometry.TotalPoints());
 
-            // Modify lacing strategy again
+            // Modify lacing strategy to Auto
+            ViewModel.CurrentSpaceViewModel.SelectAllCommand.Execute(null);
+            ViewModel.CurrentSpaceViewModel.SetArgumentLacingCommand.Execute(LacingStrategy.Auto.ToString());
+
+            Assert.AreEqual(9, BackgroundPreviewGeometry.TotalPoints());
+
+            // Modify lacing strategy to CrossProduct
             ViewModel.CurrentSpaceViewModel.SelectAllCommand.Execute(null);
             ViewModel.CurrentSpaceViewModel.SetArgumentLacingCommand.Execute(LacingStrategy.CrossProduct.ToString());
 
             Assert.AreEqual(17, BackgroundPreviewGeometry.TotalPoints());
 
-            // Change lacing back to original state
+            // Change lacing back to Shortest
             ViewModel.CurrentSpaceViewModel.SelectAllCommand.Execute(null);
             ViewModel.CurrentSpaceViewModel.SetArgumentLacingCommand.Execute(LacingStrategy.Shortest.ToString());
             Assert.AreEqual(9, BackgroundPreviewGeometry.TotalPoints());
