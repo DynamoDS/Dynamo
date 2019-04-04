@@ -161,7 +161,7 @@ namespace DynamoPerformanceTests
 
     public class Program
     {
-        private enum Commands
+        private enum Command
         {
             Benchmark,
             Compare,
@@ -169,44 +169,71 @@ namespace DynamoPerformanceTests
 
         public static void Main(string[] args)
         {
+            var showHelp = false;
+
+            if (args.Length <= 0)
+            {
+                Console.WriteLine("Please specify a command.");
+                showHelp = true;
+            }
+
+            // Get command
+            Command command;
+            var commandRecognized = Enum.TryParse(args[0], out command);
+            if (!commandRecognized)
+            {
+                Console.WriteLine("Command \"{0}\" not recognized.", args[0]);
+                showHelp = true;
+            }
+
             // Default arguments
-            var command = Commands.Benchmark;
-            var graphsDirectoryPath = "../../../graphs";
-            var baseResultsPath = string.Empty;
+            var testDirectory = "../../../graphs";
+            var baseResultsPath = "BenchmarkDotNet.Artifacts/results/DynamoPerformanceTests.PerformanceTestFramework-report.csv";
             var diffResultsPath = string.Empty;
             var saveComparisonPath = string.Empty;
-
+            
             // Command line options
             var opts = new OptionSet() {
-                { "benchmark|Benchmark", "Run performance test benchmarks", v => { command = Commands.Benchmark; } },
-                { "compare|Compare", "Compare two benchmark csv results files", v => { command = Commands.Compare; } },
-                { "g=|G=", "Path to Directory containing test graphs. Defaults to 'Dynamo/tools/Performance/DynamoPerformanceTests/graphs'.", v => { graphsDirectoryPath = v; } },
-                { "b=|B=|base=", "Path to performance results file to use as comparison base.", v => { baseResultsPath = v; }},
-                { "d=|D=|diff=", "Path to performance results file to use as comparison diff.", v => { diffResultsPath = v; }},
-                { "s=|S=|save=", "Location to save comparison csv.", v => { saveComparisonPath = v; }},
+                { "g=", "Path to Directory containing test graphs. Defaults to 'Dynamo/tools/Performance/DynamoPerformanceTests/graphs'.", v => { testDirectory = v; } },
+                { "b=|base=", "Path to performance results file to use as comparison base. Defaults to 'BenchmarkDotNet.Artifacts/results/DynamoPerformanceTests.PerformanceTestFramework-report.csv'", v => { baseResultsPath = v; }},
+                { "d=|diff=", "Path to performance results file to use as comparison diff", v => { diffResultsPath = v; }},
+                { "s=|save=", "Location to save comparison csv", v => { saveComparisonPath = v; }},
+                { "h|help",  "show this message", v => showHelp = v != null },
             };
             opts.Parse(args);
+
+            // Show help
+            if (showHelp) ShowHelp(opts);
 
             // Execute command
             switch (command)
             {
-                case Commands.Benchmark:
+                case Command.Benchmark:
                     // Use this call in order to run benchmarks on debug build of DynamoCore
                     //var summary = BenchmarkRunner.Run<PerformanceTestFramework>(
                     //new PerformanceTestFramework.AllowNonOptimized(testDir));
 
                     var summary = BenchmarkRunner.Run<PerformanceTestFramework>(
-                        new PerformanceTestFramework.BenchmarkConfig(graphsDirectoryPath));
+                        new PerformanceTestFramework.BenchmarkConfig(testDirectory));
                     break;
 
-                case Commands.Compare:
+                case Command.Compare:
+                    var comparer = new ResultsComparer(baseResultsPath, diffResultsPath);
+                    comparer.WriteResultsCSV(saveComparisonPath);
                     break;
 
                 default:
                     break;
             }
-                
-            
+        }
+
+        private static void ShowHelp(OptionSet opSet)
+        {
+            Console.WriteLine("commands:");
+            Console.WriteLine("\tBenchmark: Run performance tests");
+            Console.WriteLine("\tCompare: Compare results from two performance test runs");
+            Console.WriteLine("options:");
+            opSet.WriteOptionDescriptions(Console.Out);
         }
     }
 }
