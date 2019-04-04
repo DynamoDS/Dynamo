@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using BenchmarkDotNet.Attributes;
-using Dynamo.Tests;
+using DynamoCoreWpfTests;
 
 namespace DynamoPerformanceTests
 {
 
-    public class DynamoViewModelPerformanceTestBase : DynamoViewModelUnitTest
+    public class DynamoViewModelPerformanceTestBase : DynamoTestUIBase
     {
         /// <summary>
         /// Override this function to preload dlls into Dynamo library
@@ -79,7 +79,7 @@ namespace DynamoPerformanceTests
         [IterationSetup(Target = nameof(Open))]
         public void IterationSetupOpenModelWithUI()
         {
-            Setup();
+            Start();
         }
 
         /// <summary>
@@ -88,10 +88,10 @@ namespace DynamoPerformanceTests
         [IterationSetup(Target = nameof(Run))]
         public void IterationSetupRunModelWithUI()
         {
-            Setup();
+            Start();
 
             //open the dyn file
-            OpenModel(DynamoFilePath);
+            Open(DynamoFilePath);
         }
 
         /// <summary>
@@ -100,7 +100,8 @@ namespace DynamoPerformanceTests
         [IterationCleanup]
         public void IterationCleanup()
         {
-            Cleanup();
+            Exit();
+            FinalTearDown();
         }
 
         #endregion
@@ -111,13 +112,13 @@ namespace DynamoPerformanceTests
         public void Open()
         {
             //open the dyn file
-            OpenModel(DynamoFilePath);
+            Open(DynamoFilePath);
         }
 
         [Benchmark]
         public void Run()
         {
-            RunCurrentModel();
+            Run();
         }
 
         #endregion
