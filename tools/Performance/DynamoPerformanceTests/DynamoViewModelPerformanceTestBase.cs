@@ -101,21 +101,22 @@ namespace DynamoPerformanceTests
         public void IterationCleanup()
         {
             Exit();
-            FinalTearDown();
         }
 
         #endregion
 
         #region Benchmark methods
 
-        [Benchmark]
+        // The calling thread must be STA as a requirement
+        // Otherwise, System.InvalidOperationException will be thrown during RunIteration
+        [Benchmark, System.STAThread]
         public void Open()
         {
             //open the dyn file
             Open(DynamoFilePath);
         }
 
-        [Benchmark]
+        [Benchmark, System.STAThread]
         public void Run()
         {
             Run();
