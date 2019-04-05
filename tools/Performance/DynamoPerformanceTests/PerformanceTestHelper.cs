@@ -11,7 +11,7 @@ namespace DynamoPerformanceTests
     public static class PerformanceTestHelper
     {
         /// <summary>
-        /// Get the benchmark release config for performance test run
+        /// Get the benchmark Dynamo release build config for performance test run
         /// </summary>
         /// <returns></returns>
         public static BenchmarkReleaseConfig getReleaseConfig()
@@ -20,7 +20,7 @@ namespace DynamoPerformanceTests
         }
 
         /// <summary>
-        /// Get the fast version of benchmark release config for performance test run
+        /// Get the fast version of benchmark Dynamo release build config for performance test run
         /// </summary>
         /// <returns></returns>
         public static FastBenchmarkReleaseConfig getFastReleaseConfig()
@@ -29,7 +29,7 @@ namespace DynamoPerformanceTests
         }
 
         /// <summary>
-        /// Get the benchmark debug config for performance test run
+        /// Get the benchmark Dynamo debug build config for performance test run
         /// </summary>
         /// <returns></returns>
         public static BenchmarkDebugConfig getDebugConfig()
@@ -37,7 +37,18 @@ namespace DynamoPerformanceTests
             return new BenchmarkDebugConfig();
         }
 
+        /// <summary>
+        /// Get the benchmark debug in process Dynamo debug build config for performance test run
+        /// </summary>
+        /// <returns></returns>
+        public static DebugInProcessConfig getDebugInProcessConfig()
+        {
+            return new DebugInProcessConfig();
+        }
 
+        /// <summary>
+        /// Base config class for regular benchmark job
+        /// </summary>
         public class DynamoBenchmarkConfig : ManualConfig
         {
             /// <summary>
@@ -106,10 +117,8 @@ namespace DynamoPerformanceTests
         /// </summary>
         public class FastBenchmarkReleaseConfig : DynamoBenchmarkConfig
         {
-            public FastBenchmarkReleaseConfig()
+            public FastBenchmarkReleaseConfig() : base()
             {
-                Add(DefaultConfig.Instance); // *** add default loggers, reporters etc? ***
-
                 Add(Job.Default
                     .WithMinWarmupCount(DynamoMinWarmupCount)
                     .WithMaxWarmupCount(DynamoMaxWarmuoCount)

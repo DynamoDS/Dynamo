@@ -76,7 +76,7 @@ namespace DynamoPerformanceTests
         /// <summary>
         /// Setup method to be called before each OpenModel benchmark.
         /// </summary>
-        [IterationSetup(Target = nameof(Open))]
+        [IterationSetup(Target = nameof(OpenGraph))]
         public void IterationSetupOpenModelWithUI()
         {
             Start();
@@ -85,7 +85,7 @@ namespace DynamoPerformanceTests
         /// <summary>
         /// Setup method to be called before each RunModel benchmark.
         /// </summary>
-        [IterationSetup(Target = nameof(Run))]
+        [IterationSetup(Target = nameof(RunGraph))]
         public void IterationSetupRunModelWithUI()
         {
             Start();
@@ -110,14 +110,14 @@ namespace DynamoPerformanceTests
         // The calling thread must be STA as a requirement
         // Otherwise, System.InvalidOperationException will be thrown during RunIteration
         [Benchmark, System.STAThread]
-        public void Open()
+        public void OpenGraph()
         {
             //open the dyn file
             Open(DynamoFilePath);
         }
 
         [Benchmark, System.STAThread]
-        public void Run()
+        public void RunGraph()
         {
             Run();
         }
