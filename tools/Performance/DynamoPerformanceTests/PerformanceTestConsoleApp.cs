@@ -29,10 +29,10 @@ namespace DynamoPerformanceTests
                     // Use helper to get debug config in order to run benchmarks on debug build of DynamoCore
                     // PerformanceTestHelper.getDebugConfig();
                     DynamoViewModelPerformanceTestBase.testDirectory = dir.FullName;
-                    var runSummaryWithUI = BenchmarkRunner.Run<DynamoViewModelPerformanceTestBase>(PerformanceTestHelper.getReleaseConfig());
+                    var runSummaryWithUI = BenchmarkRunner.Run<DynamoViewModelPerformanceTestBase>(PerformanceTestHelper.getFastReleaseConfig());
 
                     DynamoModelPerformanceTestBase.testDirectory = dir.FullName;
-                    var runSummaryWithoutUI = BenchmarkRunner.Run<DynamoModelPerformanceTestBase>(PerformanceTestHelper.getReleaseConfig());
+                    var runSummaryWithoutUI = BenchmarkRunner.Run<DynamoModelPerformanceTestBase>(PerformanceTestHelper.getFastReleaseConfig());
                 }
                 catch
                 {

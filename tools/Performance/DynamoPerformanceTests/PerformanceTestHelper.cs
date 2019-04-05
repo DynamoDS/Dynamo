@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using BenchmarkDotNet.Configs;
+using BenchmarkDotNet.Jobs;
 using BenchmarkDotNet.Validators;
 
 namespace DynamoPerformanceTests
@@ -19,6 +20,15 @@ namespace DynamoPerformanceTests
         }
 
         /// <summary>
+        /// Get the fast version of benchmark release config for performance test run
+        /// </summary>
+        /// <returns></returns>
+        public static FastBenchmarkReleaseConfig getFastReleaseConfig()
+        {
+            return new FastBenchmarkReleaseConfig();
+        }
+
+        /// <summary>
         /// Get the benchmark debug config for performance test run
         /// </summary>
         /// <returns></returns>
@@ -27,23 +37,55 @@ namespace DynamoPerformanceTests
             return new BenchmarkDebugConfig();
         }
 
+
+        public class DynamoBenchmarkConfig : ManualConfig
+        {
+            /// <summary>
+            /// Minimum count of warmup iterations that should be performed
+            /// </summary>
+            protected int DynamoMinWarmupCount = 6;
+
+            /// <summary>
+            /// Maximum count of warmup iterations that should be performed
+            /// </summary>
+            protected int DynamoMaxWarmuoCount = 9;
+
+            /// <summary>
+            /// Benchmark process will be launched only once
+            /// </summary>
+            protected int DynamoLaunchCount = 1;
+
+            /// <summary>
+            /// Minimum count of target iterations that should be performed.
+            /// </summary>
+            protected int DynamoMinIterationCount = 6;
+
+            /// <summary>
+            /// Maximum count of target iterations that should be performed.
+            /// </summary>
+            protected int DynamoMaxIterationCount = 9;
+
+            public DynamoBenchmarkConfig()
+            {
+                Add(DefaultConfig.Instance.GetLoggers().ToArray()); // manual config has no loggers by default
+                Add(DefaultConfig.Instance.GetExporters().ToArray()); // manual config has no exporters by default
+
+                var defaultColumns = DefaultConfig.Instance.GetColumnProviders().ToList();
+                defaultColumns.RemoveAt(3); // Remove DynamoFilePath column
+                Add(defaultColumns.ToArray());
+                Add(new GraphNameColumn()); // Add Graph Name column
+            }
+        }
+
         /// <summary>
         /// Config class that when initialized and used to run the benchmarks
         /// allows for testing of debug versions of DynamoCore targets.
         /// </summary>
-        public class BenchmarkDebugConfig : ManualConfig
+        public class BenchmarkDebugConfig : DynamoBenchmarkConfig
         {
-            public BenchmarkDebugConfig()
+            public BenchmarkDebugConfig() : base()
             {
                 Add(JitOptimizationsValidator.DontFailOnError);
-
-                Add(DefaultConfig.Instance.GetLoggers().ToArray()); // manual config has no loggers by default
-                Add(DefaultConfig.Instance.GetExporters().ToArray()); // manual config has no exporters by default
-                var defaultColumns = DefaultConfig.Instance.GetColumnProviders().ToList();
-                defaultColumns.RemoveAt(3); // Remove DynamoFilePath column
-                Add(defaultColumns.ToArray());
-
-                Add(new GraphNameColumn()); // Add Graph Name column
             }
         }
 
@@ -51,18 +93,30 @@ namespace DynamoPerformanceTests
         /// Config class used to pass command line arguments from the 
         /// benchmark runner to all benchmarks defined in the test framework class.
         /// </summary>
-        public class BenchmarkReleaseConfig : ManualConfig
+        public class BenchmarkReleaseConfig : DynamoBenchmarkConfig
         {
-            public BenchmarkReleaseConfig()
+            public BenchmarkReleaseConfig() : base()
             {
-                Add(DefaultConfig.Instance.GetLoggers().ToArray()); // manual config has no loggers by default
-                Add(DefaultConfig.Instance.GetExporters().ToArray()); // manual config has no exporters by default
+            }
+        }
 
-                var defaultColumns = DefaultConfig.Instance.GetColumnProviders().ToList();
-                defaultColumns.RemoveAt(3); // Remove DynamoFilePath column
-                Add(defaultColumns.ToArray());
+        /// <summary>
+        /// A faster version of Config class than default used to pass command line arguments from the 
+        /// benchmark runner to all benchmarks defined in the test framework class.
+        /// </summary>
+        public class FastBenchmarkReleaseConfig : DynamoBenchmarkConfig
+        {
+            public FastBenchmarkReleaseConfig()
+            {
+                Add(DefaultConfig.Instance); // *** add default loggers, reporters etc? ***
 
-                Add(new GraphNameColumn()); // Add Graph Name column
+                Add(Job.Default
+                    .WithMinWarmupCount(DynamoMinWarmupCount)
+                    .WithMaxWarmupCount(DynamoMaxWarmuoCount)
+                    .WithLaunchCount(DynamoLaunchCount)
+                    .WithMinIterationCount(DynamoMinIterationCount)
+                    .WithMaxIterationCount(DynamoMaxIterationCount)
+                );
             }
         }
     }
