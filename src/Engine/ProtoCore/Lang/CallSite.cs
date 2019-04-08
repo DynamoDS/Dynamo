@@ -953,9 +953,13 @@ namespace ProtoCore
                     FunctionEndPoint compliantTarget = GetLooseCompliantFEP(context, arguments, funcGroup, replicationOption, stackFrame, runtimeCore);
                     if (compliantTarget != null)
                     {
-                        resolvedFeps = new List<FunctionEndPoint>() { compliantTarget };
-                        replicationInstructions = replicationOption;
-                        matchFound = true;
+                        if (replicationInstructions == null ||
+                            IsSimilarOptionButOfHigherRank(replicationInstructions, replicationOption))
+                        {
+                            resolvedFeps = new List<FunctionEndPoint>() {compliantTarget};
+                            replicationInstructions = replicationOption;
+                            matchFound = true;
+                        }
                     }
                 }
                 if (matchFound)
