@@ -218,8 +218,25 @@ namespace DynamoPerformanceTests
                     break;
 
                 case Command.Compare:
+                    if (baseResultsPath == string.Empty)
+                    {
+                        Console.WriteLine("Please generate a baseline benchmark results file," +
+                            "or provide a path for a baseline benchmark results file.");
+                        break;
+                    }
+                    if (diffResultsPath == string.Empty)
+                    {
+                        Console.WriteLine("Please provide a path for a benchmark results file " +
+                            "to compare against the baseline at " + baseResultsPath);
+                        break;
+                    }
+
+                    // Create comparer
                     var comparer = new ResultsComparer(baseResultsPath, diffResultsPath);
-                    comparer.WriteResultsCSV(saveComparisonPath);
+                    if (saveComparisonPath != string.Empty)
+                    {
+                        comparer.WriteResultsToCSV(saveComparisonPath);
+                    }
                     break;
 
                 default:
