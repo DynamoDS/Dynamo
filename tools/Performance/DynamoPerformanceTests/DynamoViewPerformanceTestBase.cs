@@ -16,22 +16,8 @@ namespace DynamoPerformanceTests
         /// <param name="libraries">extra dlls to load</param>
         protected override void GetLibrariesToPreload(List<string> libraries)
         {
+            libraries.AddRange(PerformanceTestHelper.getDynamoDefaultLibs());
             base.GetLibrariesToPreload(libraries);
-
-            libraries.Add("VMDataBridge.dll");
-            libraries.Add("ProtoGeometry.dll");
-            libraries.Add("DesignScriptBuiltin.dll");
-            libraries.Add("DSCoreNodes.dll");
-            libraries.Add("DSOffice.dll");
-            libraries.Add("DSIronPython.dll");
-            libraries.Add("FunctionObject.ds");
-            libraries.Add("BuiltIn.ds");
-            libraries.Add("DynamoConversions.dll");
-            libraries.Add("DynamoUnits.dll");
-            libraries.Add("Tessellation.dll");
-            libraries.Add("Analysis.dll");
-            libraries.Add("GeometryColor.dll");
-            libraries.Add("FFITarget.dll");
         }
 
         /// <summary>

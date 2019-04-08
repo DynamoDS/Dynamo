@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using BenchmarkDotNet.Configs;
 using BenchmarkDotNet.Jobs;
 using BenchmarkDotNet.Validators;
@@ -10,6 +11,30 @@ namespace DynamoPerformanceTests
     /// </summary>
     public static class PerformanceTestHelper
     {
+        /// <summary>
+        /// Return the common library list to preload
+        /// </summary>
+        /// <returns>List of libs to preload</returns>
+        public static List<string>  getDynamoDefaultLibs()
+        {
+            return new List<string>{
+                "VMDataBridge.dll",
+                "ProtoGeometry.dll",
+                "DesignScriptBuiltin.dll",
+                "DSCoreNodes.dll",
+                "DSOffice.dll",
+                "DSIronPython.dll",
+                "FunctionObject.ds",
+                "BuiltIn.ds",
+                "DynamoConversions.dll",
+                "DynamoUnits.dll",
+                "Tessellation.dll",
+                "Analysis.dll",
+                "GeometryColor.dll",
+                "FFITarget.dll"
+                };
+        }
+
         /// <summary>
         /// Get the benchmark Dynamo release build config for performance test run
         /// </summary>
