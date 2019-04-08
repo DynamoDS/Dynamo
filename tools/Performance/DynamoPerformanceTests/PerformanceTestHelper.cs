@@ -6,7 +6,7 @@ using BenchmarkDotNet.Validators;
 namespace DynamoPerformanceTests
 {
     /// <summary>
-    /// Use this static class as Global helper to get all the prep data
+    /// Use this static class as Global helper to get various benchmark config
     /// </summary>
     public static class PerformanceTestHelper
     {

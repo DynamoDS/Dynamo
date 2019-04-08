@@ -8,7 +8,7 @@ using DynamoCoreWpfTests;
 namespace DynamoPerformanceTests
 {
 
-    public class DynamoViewModelPerformanceTestBase : NodeViewTests
+    public class DynamoViewPerformanceTestBase : NodeViewTests
     {
         /// <summary>
         /// Override this function to preload dlls into Dynamo library

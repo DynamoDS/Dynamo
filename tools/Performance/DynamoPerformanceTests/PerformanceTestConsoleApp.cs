@@ -25,11 +25,15 @@ namespace DynamoPerformanceTests
                 try
                 {
                     dir = new DirectoryInfo(args[0]);
-                    Console.WriteLine("Running performance benchmarks using graphs at " + dir.FullName);
+
                     // Use helper to get debug config in order to run benchmarks on debug build of DynamoCore
                     // PerformanceTestHelper.getDebugConfig();
-                    DynamoViewModelPerformanceTestBase.testDirectory = dir.FullName;
-                    var runSummaryWithUI = BenchmarkRunner.Run<DynamoViewModelPerformanceTestBase>(PerformanceTestHelper.getFastReleaseConfig());
+
+                    // Use helper to get debug in process config in order to debug benchmarks
+                    // PerformanceTestHelper.getDebugInProcessConfig();
+
+                    DynamoViewPerformanceTestBase.testDirectory = dir.FullName;
+                    var runSummaryWithUI = BenchmarkRunner.Run<DynamoViewPerformanceTestBase>(PerformanceTestHelper.getFastReleaseConfig());
 
                     DynamoModelPerformanceTestBase.testDirectory = dir.FullName;
                     var runSummaryWithoutUI = BenchmarkRunner.Run<DynamoModelPerformanceTestBase>(PerformanceTestHelper.getFastReleaseConfig());
