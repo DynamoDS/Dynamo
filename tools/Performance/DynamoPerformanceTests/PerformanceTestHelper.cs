@@ -14,9 +14,9 @@ namespace DynamoPerformanceTests
         /// Get the benchmark Dynamo release build config for performance test run
         /// </summary>
         /// <returns>Regular default Dynamo benchmark config</returns>
-        public static BenchmarkReleaseConfig getReleaseConfig()
+        public static DynamoBenchmarkConfig getReleaseConfig()
         {
-            return new BenchmarkReleaseConfig();
+            return new DynamoBenchmarkConfig();
         }
 
         /// <summary>
@@ -97,17 +97,6 @@ namespace DynamoPerformanceTests
             public BenchmarkDebugConfig() : base()
             {
                 Add(JitOptimizationsValidator.DontFailOnError);
-            }
-        }
-
-        /// <summary>
-        /// Config class used to pass command line arguments from the 
-        /// benchmark runner to all benchmarks defined in the test framework class.
-        /// </summary>
-        public class BenchmarkReleaseConfig : DynamoBenchmarkConfig
-        {
-            public BenchmarkReleaseConfig() : base()
-            {
             }
         }
 
