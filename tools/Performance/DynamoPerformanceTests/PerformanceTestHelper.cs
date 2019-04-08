@@ -13,7 +13,7 @@ namespace DynamoPerformanceTests
         /// <summary>
         /// Get the benchmark Dynamo release build config for performance test run
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Regular default Dynamo benchmark config</returns>
         public static BenchmarkReleaseConfig getReleaseConfig()
         {
             return new BenchmarkReleaseConfig();
@@ -22,7 +22,7 @@ namespace DynamoPerformanceTests
         /// <summary>
         /// Get the fast version of benchmark Dynamo release build config for performance test run
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Fast benchmark config</returns>
         public static FastBenchmarkReleaseConfig getFastReleaseConfig()
         {
             return new FastBenchmarkReleaseConfig();
@@ -31,7 +31,7 @@ namespace DynamoPerformanceTests
         /// <summary>
         /// Get the benchmark Dynamo debug build config for performance test run
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Benchmark config for debug build</returns>
         public static BenchmarkDebugConfig getDebugConfig()
         {
             return new BenchmarkDebugConfig();
@@ -40,7 +40,7 @@ namespace DynamoPerformanceTests
         /// <summary>
         /// Get the benchmark debug in process Dynamo debug build config for performance test run
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Benchmark config for inproces debugging</returns>
         public static DebugInProcessConfig getDebugInProcessConfig()
         {
             return new DebugInProcessConfig();

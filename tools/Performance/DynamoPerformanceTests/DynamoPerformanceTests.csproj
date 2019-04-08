@@ -222,7 +222,7 @@
   <ItemGroup>
     <Compile Include="DynamoModelPerformanceTestBase.cs" />
     <Compile Include="GraphNameColumn.cs" />
-    <Compile Include="DynamoViewModelPerformanceTestBase.cs" />
+    <Compile Include="DynamoViewPerformanceTestBase.cs" />
     <Compile Include="PerformanceTestConsoleApp.cs" />
     <Compile Include="PerformanceTestHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

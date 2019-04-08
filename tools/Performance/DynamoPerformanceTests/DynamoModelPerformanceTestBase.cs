@@ -46,7 +46,7 @@ namespace DynamoPerformanceTests
         /// <summary>
         /// Automated creation of performance test cases, one for each
         /// parameter source. Notice this attribute must be public with
-        /// [ParamsSource] tag which will only thrown runtime error otherwise.
+        /// [ParamsSource] tag which will throw runtime error otherwise.
         /// </summary>
         [ParamsSource(nameof(PerformanceTestSource))]
         public static string DynamoFilePath { get; set; }
@@ -57,7 +57,7 @@ namespace DynamoPerformanceTests
         /// defined as the ParamsSource of DynamoFilePath property.
         /// Console app will throw runtime error otherwise.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>A list of graph paths for running performance benchmarks</returns>
         public static IEnumerable<string> PerformanceTestSource()
         {
             var fi = new FileInfo(Assembly.GetExecutingAssembly().Location);
