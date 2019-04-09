@@ -32,9 +32,9 @@ namespace DynamoPerformanceTests
             internal string StdDevUnits { get; set; }
 
             // Values + Units
-            internal string MeanString { get { return Mean.ToString() + " " + MeanUnits; } }
-            internal string ErrorString { get { return Error.ToString() + " " + ErrorUnits; } }
-            internal string StdDevString { get { return StdDev.ToString() + " " + StdDevUnits; } }
+            internal string MeanString { get { return Mean.ToString("N", CultureInfo.InvariantCulture) + " " + MeanUnits; } }
+            internal string ErrorString { get { return Error.ToString("N", CultureInfo.InvariantCulture) + " " + ErrorUnits; } }
+            internal string StdDevString { get { return StdDev.ToString("N", CultureInfo.InvariantCulture) + " " + StdDevUnits; } }
         }
 
         private class BenchmarkComparison
