@@ -288,8 +288,8 @@ namespace DynamoPerformanceTests
                 var error = Convert.ToDouble(Regex.Replace(brLine[iError], "[^0-9|.|,]", ""), CultureInfo.InvariantCulture);
                 var stdDev = Convert.ToDouble(Regex.Replace(brLine[iStdDev], "[^0-9|.|,]", ""), CultureInfo.InvariantCulture);
                 var meanUnits = new string(brLine[iMean].ToCharArray().Where(c => Char.IsLetter(c)).ToArray());
-                var errorUnits = new string(brLine[iMean].ToCharArray().Where(c => Char.IsLetter(c)).ToArray());
-                var stdDevUnits = new string(brLine[iMean].ToCharArray().Where(c => Char.IsLetter(c)).ToArray());
+                var errorUnits = new string(brLine[iError].ToCharArray().Where(c => Char.IsLetter(c)).ToArray());
+                var stdDevUnits = new string(brLine[iStdDev].ToCharArray().Where(c => Char.IsLetter(c)).ToArray());
 
                 // Store the benchmark based on its 'Method' and 'Graph' values
                 benchmarkResults[method+graph] = (
