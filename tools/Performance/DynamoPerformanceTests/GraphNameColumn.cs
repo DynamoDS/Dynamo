@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.IO;
 using BenchmarkDotNet.Columns;
 using BenchmarkDotNet.Reports;
 using BenchmarkDotNet.Running;
@@ -12,7 +7,7 @@ using BenchmarkDotNet.Running;
 namespace DynamoPerformanceTests
 {
     /// <summary>
-    /// This column displays the file name (without extension) of performacnce test Dynamo graphs.
+    /// This column displays the file name (without extension) of performance test Dynamo graphs.
     /// </summary>
     public class GraphNameColumn : IColumn
     {

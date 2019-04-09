@@ -12,6 +12,7 @@ using NUnit.Framework;
 using Dynamo.Graph.Nodes;
 using static ProtoCore.CallSite;
 using System.Diagnostics;
+using Dynamo.Graph.Nodes.CustomNodes;
 
 namespace Dynamo.Tests
 {
@@ -163,6 +164,46 @@ namespace Dynamo.Tests
 
             AssertPreviewValue("c760af7e-042c-4722-a834-3445bf41f549", 2);
             AssertPreviewValue("5f277520-13aa-4833-aa82-b17a822e6d8c", 3);
+        }
+
+        // This test dyn contains a manually edited callsite data with modified function scopes that do not exist
+        // this ensures function scope is not used during trace reconciliation for custom nodes.
+
+        [Test]
+        public void Callsite_ElementBinding_CustomNodes()
+        {
+            var ws = Open<HomeWorkspaceModel>(TestDirectory, callsiteDir, "element_binding_customNodes_modified.dyn");
+            CurrentDynamoModel.TraceReconciliationProcessor = new TestTraceReconciliationProcessor(0);
+            Assert.AreEqual(6, ws.Nodes.Count());
+            var dummyNodes = ws.Nodes.OfType<DummyNode>();
+            Assert.AreEqual(0, dummyNodes.Count());
+            Assert.IsFalse(ws.Nodes.OfType<Function>().First().IsInErrorState);
+
+            BeginRun();
+            AssertPreviewValue("da39dbe5f59649b18c2fb6ca54acba7b", 1234567899);
+            AssertPreviewValue("2366239164a9441a8c4dcd981d9cf542", 2);
+            AssertPreviewValue("342f96575f8942c890867d88495fb0db", 3);
+
+        }
+
+        // This test dyn contains a manually edited callsite data with modified function scopes that do not exist
+        // this ensures function scope is not used during trace reconciliation for custom nodes.
+
+        [Test]
+        public void Callsite_ElementBinding_CustomNodes_multiple()
+        {
+            var ws = Open<HomeWorkspaceModel>(TestDirectory, callsiteDir, "element_binding_customNodes_modified_multiple.dyn");
+            CurrentDynamoModel.TraceReconciliationProcessor = new TestTraceReconciliationProcessor(0);
+            Assert.AreEqual(9, ws.Nodes.Count());
+            var dummyNodes = ws.Nodes.OfType<DummyNode>();
+            Assert.AreEqual(0, dummyNodes.Count());
+            Assert.IsFalse(ws.Nodes.OfType<Function>().First().IsInErrorState);
+
+            BeginRun();
+            AssertPreviewValue("da39dbe5f59649b18c2fb6ca54acba7b", 111111);
+            AssertPreviewValue("2366239164a9441a8c4dcd981d9cf542", 222222);
+            AssertPreviewValue("8cfce012280342f3bd688520d68a7f66", 333333);
+            AssertPreviewValue("08448232ee094aad8280e9a99ed44f46", 444444);
         }
 
         [Test]
