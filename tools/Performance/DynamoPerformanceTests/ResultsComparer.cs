@@ -252,7 +252,7 @@ namespace DynamoPerformanceTests
             var csv = new StringBuilder();
             foreach (var row in rows) csv.AppendLine(row);
 
-            filePath = GetFullPath(filePath);
+            filePath = PerformanceTestHelper.GetFullPath(filePath);
             filePath += "/comparison.csv";
             File.WriteAllText(filePath, csv.ToString());
         }
@@ -260,7 +260,7 @@ namespace DynamoPerformanceTests
         private Dictionary<string, BenchmarkResult> ImportResultsCSV(string csvPath)
         {
             // Get csv
-            csvPath = GetFullPath(csvPath);
+            csvPath = PerformanceTestHelper.GetFullPath(csvPath);
             TextFieldParser parser = new TextFieldParser(csvPath);
             parser.HasFieldsEnclosedInQuotes = true;
             parser.SetDelimiters(",");
@@ -376,14 +376,6 @@ namespace DynamoPerformanceTests
                 var message = string.Format("The csv file at {0} does not contain the following required columns: {1}.", csvPath, string.Join(", ", missingColumns));
                 throw new Exception(message);
             }
-        }
-
-        private string GetFullPath(string path)
-        {
-            var fi = new FileInfo(Assembly.GetExecutingAssembly().Location);
-            string dir = fi.DirectoryName;
-            string f = Path.Combine(dir, path);
-            return Path.GetFullPath(f);
         }
     }
 }
