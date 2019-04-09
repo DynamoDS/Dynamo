@@ -58,27 +58,27 @@ namespace DynamoPerformanceTests
             internal BenchmarkResult NewResult;
 
             /// <summary>
-            /// New mean time as a percentage of base mean time
+            /// Change in mean time from base to new
             /// </summary>
             internal double MeanDelta
             {
-                get { return Math.Round(100 * NewResult.Mean / BaseResult.Mean, 2); }
+                get { return Math.Round(100 * (NewResult.Mean - BaseResult.Mean) / BaseResult.Mean, 2); }
             }
 
             /// <summary>
-            /// New error as a percentage of base error
+            /// Change in error from base to new
             /// </summary>
             internal double ErrorDelta
             {
-                get { return Math.Round(100 * NewResult.Error / BaseResult.Error, 2); }
+                get { return Math.Round(100 * (NewResult.Error - BaseResult.Error) / BaseResult.Error, 2); }
             }
 
             /// <summary>
-            /// New standard deviation as a percentage of base standard deviation
+            /// Change in standard deviation from base to new
             /// </summary>
             internal double StdDevDelta
             {
-                get { return Math.Round(100 * NewResult.StdDev / BaseResult.StdDev, 2); }
+                get { return Math.Round(100 * (NewResult.StdDev - BaseResult.StdDev) / BaseResult.StdDev, 2); }
             }
 
             /// <summary>
@@ -139,14 +139,15 @@ namespace DynamoPerformanceTests
                 Console.WriteLine("|" + string.Join("|", newData) + "|");
 
                 // Lof Delta data
-                var deltaData = new string[] { "", "", MeanDelta <= 100 ? "+" : "-", MeanDelta.ToString() + "%", ErrorDelta.ToString() + "%", StdDevDelta.ToString() + "%" };
+                var meanDeltaString = MeanDelta >= 0 ? "+" + MeanDelta.ToString() : MeanDelta.ToString();
+                var deltaData = new string[] { "", "", "", meanDeltaString + "%", ErrorDelta.ToString() + "%", StdDevDelta.ToString() + "%" };
                 Console.Write("|");
                 for (int i = 0; i < deltaData.Length; i++)
                 {
                     var deltaItem = (deltaData[i] + " ").PadLeft(columnWidths[i], ' ');
                     if (i == 3)
                     {
-                        Console.ForegroundColor = MeanDelta <= 100 ? ConsoleColor.Green : ConsoleColor.Red;
+                        Console.ForegroundColor = MeanDelta < 0 ? ConsoleColor.Green : ConsoleColor.Red;
                         Console.Write(deltaItem);
                         Console.ForegroundColor = ConsoleColor.Gray;
                         Console.Write("|");
@@ -169,7 +170,7 @@ namespace DynamoPerformanceTests
 
                 var baseData = new string[] { BaseResult.Method, BaseResult.Graph, "Base", BaseResult.Mean.ToString(), BaseResult.Error.ToString(), BaseResult.StdDev.ToString() };
                 var newData = new string[] { "", "", "New", NewResult.Mean.ToString(), NewResult.Error.ToString(), NewResult.StdDev.ToString() };
-                var deltaData= new string[] { "", "", MeanDelta <= 100 ? "+" : "-", MeanDelta.ToString() + "%", ErrorDelta.ToString() + "%", StdDevDelta.ToString() + "%" };
+                var deltaData = new string[] { "", "", "", MeanDelta.ToString() + "%", ErrorDelta.ToString() + "%", StdDevDelta.ToString() + "%" };
                 return new List<string[]> { baseData, newData, deltaData };
             }
 
