@@ -19,35 +19,19 @@ namespace DynamoPerformanceTests
     {
         private class BenchmarkResult
         {
-            /// <summary>
-            /// Name of the benchmark method
-            /// </summary>
+            // Values
             internal string Method { get; set; }
-
-            /// <summary>
-            /// Name of test graph
-            /// </summary>
             internal string Graph { get; set; }
-
-            /// <summary>
-            /// Mean benchmark time
-            /// </summary>
             internal double Mean { get; set; }
-
-            /// <summary>
-            /// Error in results
-            /// </summary>
             internal double Error { get; set; }
-
-            /// <summary>
-            /// Standard deviation of results
-            /// </summary>
             internal double StdDev { get; set; }
 
+            // Units
             internal string MeanUnits { get; set; }
             internal string ErrorUnits { get; set; }
             internal string StdDevUnits { get; set; }
 
+            // Values + Units
             internal string MeanString { get { return Mean.ToString() + " " + MeanUnits; } }
             internal string ErrorString { get { return Error.ToString() + " " + ErrorUnits; } }
             internal string StdDevString { get { return StdDev.ToString() + " " + StdDevUnits; } }
