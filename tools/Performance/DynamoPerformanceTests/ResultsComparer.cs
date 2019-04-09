@@ -175,7 +175,6 @@ namespace DynamoPerformanceTests
                 var deltaData = new string[] { "", "", "", MeanDelta.ToString() + "%", ErrorDelta.ToString() + "%", StdDevDelta.ToString() + "%" };
                 return new List<string[]> { baseData, newData, deltaData };
             }
-
         }
         
         private List<BenchmarkComparison> Comparisons;
@@ -237,9 +236,7 @@ namespace DynamoPerformanceTests
             {
                 Console.ForegroundColor = Console.ForegroundColor == ConsoleColor.Gray ? ConsoleColor.White : ConsoleColor.Gray;
                 comparison.LogComparison(columnWidths);
-
             }
-                
         }
 
         /// <summary>
@@ -251,9 +248,7 @@ namespace DynamoPerformanceTests
             var rows = GetComparisonDataRows().Select(r => string.Join(",", r));
             var csv = new StringBuilder();
             foreach (var row in rows) csv.AppendLine(row);
-
-            filePath = PerformanceTestHelper.GetFullPath(filePath);
-            filePath += "/comparison.csv";
+            
             File.WriteAllText(filePath, csv.ToString());
         }
         

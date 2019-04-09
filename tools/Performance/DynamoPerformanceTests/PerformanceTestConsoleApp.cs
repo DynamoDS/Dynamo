@@ -28,16 +28,16 @@ namespace DynamoPerformanceTests
 
             // Default arguments
             IConfig config = PerformanceTestHelper.getFastReleaseConfig();
-            var testDirectory = "../../../graphs";
-            var baseResultsPath = "BenchmarkDotNet.Artifacts/results/DynamoPerformanceTests.PerformanceTestFramework-report.csv";
-            var newResultsPath = string.Empty;
+            var testDirectory = "../../../graphs/";
+            var baseResultsPath = string.Empty;
+            var newResultsPath = "BenchmarkDotNet.Artifacts/results/";
             var saveComparisonPath = string.Empty;
 
             // Command line options
             var opts = new OptionSet() {
-                { "g=|graphs=", "Path to Directory containing test graphs. Defaults to 'Dynamo/tools/Performance/DynamoPerformanceTests/graphs'", v => { testDirectory = v; } },
-                { "b=|base=", "Path to performance results file to use as comparison base. Defaults to 'BenchmarkDotNet.Artifacts/results/DynamoPerformanceTests.PerformanceTestFramework-report.csv'", v => { baseResultsPath = v; }},
-                { "n=|new=", "Path to new performance results file to compare against the baseline", v => { newResultsPath = v; }},
+                { "g=|graphs=", "Path to Directory containing test graphs. Defaults to 'Dynamo/tools/Performance/DynamoPerformanceTests/graphs/'", v => { testDirectory = v; } },
+                { "b=|base=", "Path to Directory containing performance results files to use as comparison base. Defaults to 'BenchmarkDotNet.Artifacts/results/'", v => { baseResultsPath = v; }},
+                { "n=|new=", "Path to Directory containing new performance results files to compare against the baseline", v => { newResultsPath = v; }},
                 { "s=|save=", "Location to save comparison csv", v => { saveComparisonPath = v; }},
                 { "h|help",  "show this message and return", v => showHelp = v != null },
             };
@@ -58,9 +58,7 @@ namespace DynamoPerformanceTests
                 Console.WriteLine("Command \"{0}\" not recognized.", args[0]);
                 return;
             }
-
             
-
             // Execute command
             switch (command)
             {
@@ -81,24 +79,7 @@ namespace DynamoPerformanceTests
                     break;
 
                 case Command.Compare:
-                    if (baseResultsPath == string.Empty)
-                    {
-                        Console.WriteLine("Please generate a baseline benchmark results file," +
-                            "or provide a path for a baseline benchmark results file.");
-                        break;
-                    }
-                    if (newResultsPath == string.Empty)
-                    {
-                        Console.WriteLine("Please provide a path to a benchmark results file to compare against the baseline.");
-                        break;
-                    }
-
-                    // Create comparer
-                    var comparer = new ResultsComparer(baseResultsPath, newResultsPath);
-                    if (saveComparisonPath != string.Empty)
-                    {
-                        comparer.WriteResultsToCSV(saveComparisonPath);
-                    }
+                    Compare(baseResultsPath, newResultsPath, saveComparisonPath);
                     break;
 
                 default:
@@ -115,6 +96,43 @@ namespace DynamoPerformanceTests
             Console.WriteLine("  Compare: Compare results from two performance test runs");
             Console.WriteLine("\noptions:");
             opSet.WriteOptionDescriptions(Console.Out);
+        }
+
+        private static void Compare(string baseResultsPath, string newResultsPath, string savePath)
+        {
+            if (baseResultsPath == string.Empty)
+            {
+                Console.WriteLine("Please generate a baseline benchmark results file," +
+                    "or provide a path for a baseline benchmark results file.");
+                return;
+            }
+            if (newResultsPath == string.Empty)
+            {
+                Console.WriteLine("Please provide a path to a benchmark results file to compare against the baseline.");
+                return;
+            }
+
+            // Create Model comparer
+            Console.WriteLine("\nComparison of Model tests: \n");
+            var baseModelPath = Path.Combine(PerformanceTestHelper.GetFullPath(baseResultsPath), "DynamoPerformanceTests.DynamoModelPerformanceTestBase-report.csv");
+            var newModelPath = Path.Combine(PerformanceTestHelper.GetFullPath(newResultsPath), "DynamoPerformanceTests.DynamoModelPerformanceTestBase-report.csv");
+            var modelComparer = new ResultsComparer(baseModelPath, newModelPath);
+
+            // Create View comparer
+            Console.WriteLine("\nComparison of View tests: \n");
+            var baseViewPath = Path.Combine(PerformanceTestHelper.GetFullPath(baseResultsPath), "DynamoPerformanceTests.DynamoViewPerformanceTestBase-report.csv");
+            var newViewPath = Path.Combine(PerformanceTestHelper.GetFullPath(newResultsPath), "DynamoPerformanceTests.DynamoViewPerformanceTestBase-report.csv");
+            var viewComparer = new ResultsComparer(baseViewPath, newViewPath);
+
+            // Save csv if path provided
+            if (savePath != string.Empty)
+            {
+                var modelSavePath = Path.Combine(PerformanceTestHelper.GetFullPath(savePath), "DynamoPerformanceTests.Comparison-Model.csv");
+                modelComparer.WriteResultsToCSV(modelSavePath);
+
+                var viewSavePath = Path.Combine(PerformanceTestHelper.GetFullPath(savePath), "DynamoPerformanceTests.Comparison-View.csv");
+                viewComparer.WriteResultsToCSV(viewSavePath);
+            }
         }
     }
 }
