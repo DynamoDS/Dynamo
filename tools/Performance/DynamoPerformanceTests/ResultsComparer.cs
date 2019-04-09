@@ -43,6 +43,14 @@ namespace DynamoPerformanceTests
             /// Standard deviation of results
             /// </summary>
             internal double StdDev { get; set; }
+
+            internal string MeanUnits { get; set; }
+            internal string ErrorUnits { get; set; }
+            internal string StdDevUnits { get; set; }
+
+            internal string MeanString { get { return Mean.ToString() + " " + MeanUnits; } }
+            internal string ErrorString { get { return Error.ToString() + " " + ErrorUnits; } }
+            internal string StdDevString { get { return StdDev.ToString() + " " + StdDevUnits; } }
         }
 
         private class BenchmarkComparison
@@ -105,6 +113,13 @@ namespace DynamoPerformanceTests
                 {
                     throw new Exception("Non-matching benchmarks provided for comparison");
                 }
+                
+                if (BaseResult.MeanUnits != NewResult.MeanUnits || BaseResult.ErrorUnits != NewResult.ErrorUnits || BaseResult.StdDevUnits != NewResult.StdDevUnits)
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine("Units do not match beween base and new results.");
+                    Console.ForegroundColor = ConsoleColor.Gray;
+                }
             }
 
             /// <summary>
@@ -123,7 +138,7 @@ namespace DynamoPerformanceTests
                 }
 
                 // Log Base data
-                var baseData = new string[] { BaseResult.Method, BaseResult.Graph, "Base", BaseResult.Mean.ToString(), BaseResult.Error.ToString(), BaseResult.StdDev.ToString() };
+                var baseData = new string[] { BaseResult.Method, BaseResult.Graph, "Base", BaseResult.MeanString, BaseResult.ErrorString, BaseResult.StdDevString };
                 for (int i = 0; i < baseData.Length; i++)
                 {
                     baseData[i] = (baseData[i] + " ").PadLeft(columnWidths[i], ' ');
@@ -131,7 +146,7 @@ namespace DynamoPerformanceTests
                 Console.WriteLine("|" + string.Join("|", baseData) + "|");
 
                 // Log New data
-                var newData = new string[] { "", "", "New", NewResult.Mean.ToString(), NewResult.Error.ToString(), NewResult.StdDev.ToString() };
+                var newData = new string[] { "", "", "New", NewResult.MeanString, NewResult.ErrorString, NewResult.StdDevString };
                 for (int i = 0; i < newData.Length; i++)
                 {
                     newData[i] = (newData[i] + " ").PadLeft(columnWidths[i], ' ');
@@ -168,8 +183,8 @@ namespace DynamoPerformanceTests
             {
                 if (!BaseBenchmarkFound) return null;
 
-                var baseData = new string[] { BaseResult.Method, BaseResult.Graph, "Base", BaseResult.Mean.ToString(), BaseResult.Error.ToString(), BaseResult.StdDev.ToString() };
-                var newData = new string[] { "", "", "New", NewResult.Mean.ToString(), NewResult.Error.ToString(), NewResult.StdDev.ToString() };
+                var baseData = new string[] { BaseResult.Method, BaseResult.Graph, "Base", BaseResult.MeanString, BaseResult.ErrorString, BaseResult.StdDevString };
+                var newData = new string[] { "", "", "New", NewResult.MeanString, NewResult.ErrorString, NewResult.StdDevString };
                 var deltaData = new string[] { "", "", "", MeanDelta.ToString() + "%", ErrorDelta.ToString() + "%", StdDevDelta.ToString() + "%" };
                 return new List<string[]> { baseData, newData, deltaData };
             }
@@ -285,6 +300,9 @@ namespace DynamoPerformanceTests
                 var mean = Convert.ToDouble(Regex.Replace(brLine[iMean], "[^0-9|.|,]", ""), CultureInfo.InvariantCulture);
                 var error = Convert.ToDouble(Regex.Replace(brLine[iError], "[^0-9|.|,]", ""), CultureInfo.InvariantCulture);
                 var stdDev = Convert.ToDouble(Regex.Replace(brLine[iStdDev], "[^0-9|.|,]", ""), CultureInfo.InvariantCulture);
+                var meanUnits = new string(brLine[iMean].ToCharArray().Where(c => Char.IsLetter(c)).ToArray());
+                var errorUnits = new string(brLine[iMean].ToCharArray().Where(c => Char.IsLetter(c)).ToArray());
+                var stdDevUnits = new string(brLine[iMean].ToCharArray().Where(c => Char.IsLetter(c)).ToArray());
 
                 // Store the benchmark based on its 'Method' and 'Graph' values
                 benchmarkResults[method+graph] = (
@@ -295,6 +313,9 @@ namespace DynamoPerformanceTests
                         Mean = mean,
                         Error = error,
                         StdDev = stdDev,
+                        MeanUnits = meanUnits,
+                        ErrorUnits = errorUnits,
+                        StdDevUnits = stdDevUnits,
                     }
                 );
             }
