@@ -181,14 +181,14 @@ namespace DynamoPerformanceTests
             // Default arguments
             var testDirectory = "../../../graphs";
             var baseResultsPath = "BenchmarkDotNet.Artifacts/results/DynamoPerformanceTests.PerformanceTestFramework-report.csv";
-            var diffResultsPath = string.Empty;
+            var newResultsPath = string.Empty;
             var saveComparisonPath = string.Empty;
             
             // Command line options
             var opts = new OptionSet() {
                 { "g=|graphs=", "Path to Directory containing test graphs. Defaults to 'Dynamo/tools/Performance/DynamoPerformanceTests/graphs'", v => { testDirectory = v; } },
                 { "b=|base=", "Path to performance results file to use as comparison base. Defaults to 'BenchmarkDotNet.Artifacts/results/DynamoPerformanceTests.PerformanceTestFramework-report.csv'", v => { baseResultsPath = v; }},
-                { "d=|diff=", "Path to performance results file to use as comparison diff", v => { diffResultsPath = v; }},
+                { "n=|new=", "Path to new performance results file to compare against the baseline", v => { newResultsPath = v; }},
                 { "s=|save=", "Location to save comparison csv", v => { saveComparisonPath = v; }},
                 { "h|help",  "show this message and return", v => showHelp = v != null },
             };
@@ -230,14 +230,14 @@ namespace DynamoPerformanceTests
                             "or provide a path for a baseline benchmark results file.");
                         break;
                     }
-                    if (diffResultsPath == string.Empty)
+                    if (newResultsPath == string.Empty)
                     {
                         Console.WriteLine("Please provide a path to a benchmark results file to compare against the baseline.");
                         break;
                     }
 
                     // Create comparer
-                    var comparer = new ResultsComparer(baseResultsPath, diffResultsPath);
+                    var comparer = new ResultsComparer(baseResultsPath, newResultsPath);
                     if (saveComparisonPath != string.Empty)
                     {
                         comparer.WriteResultsToCSV(saveComparisonPath);

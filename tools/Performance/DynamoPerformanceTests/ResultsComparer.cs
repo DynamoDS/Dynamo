@@ -13,7 +13,7 @@ namespace DynamoPerformanceTests
 {
     /// <summary>
     /// Class that compares two sets of performance results: 
-    /// the "base" results, and the "diff" results.
+    /// the baseline results, and a set of new results.
     /// </summary>
     public class ResultsComparer
     {
@@ -48,60 +48,60 @@ namespace DynamoPerformanceTests
         private class BenchmarkComparison
         {
             /// <summary>
-            /// Results of base benchmark
+            /// Results of baseline benchmark
             /// </summary>
-            internal BenchmarkResult Base;
+            internal BenchmarkResult BaseResult;
 
             /// <summary>
-            /// Results of diff benchmark
+            /// Results of new benchmark
             /// </summary>
-            internal BenchmarkResult Diff;
+            internal BenchmarkResult NewResult;
 
             /// <summary>
-            /// Diff mean time as a percentage of base mean time
+            /// New mean time as a percentage of base mean time
             /// </summary>
             internal double MeanDelta
             {
-                get { return Math.Round(100 * Diff.Mean / Base.Mean, 2); }
+                get { return Math.Round(100 * NewResult.Mean / BaseResult.Mean, 2); }
             }
 
             /// <summary>
-            /// Diff error as a percentage of base error
+            /// New error as a percentage of base error
             /// </summary>
             internal double ErrorDelta
             {
-                get { return Math.Round(100 * Diff.Error / Base.Error, 2); }
+                get { return Math.Round(100 * NewResult.Error / BaseResult.Error, 2); }
             }
 
             /// <summary>
-            /// Diff standard deviation as a percentage of base standard deviation
+            /// New standard deviation as a percentage of base standard deviation
             /// </summary>
             internal double StdDevDelta
             {
-                get { return Math.Round(100 * Diff.StdDev / Base.StdDev, 2); }
+                get { return Math.Round(100 * NewResult.StdDev / BaseResult.StdDev, 2); }
             }
 
             /// <summary>
             /// Indicates whether a baseline benchmark result was found
-            /// that matches this diff benchmark
+            /// that matches this new benchmark result
             /// </summary>
             internal bool BaseBenchmarkFound
             {
-                get { return Base != null; }
+                get { return BaseResult != null; }
             }
 
             /// <summary>
             /// Create a Comparison between two benchamrk results
             /// </summary>
             /// <param name="baseData"></param>
-            /// <param name="diffData"></param>
-            internal BenchmarkComparison(BenchmarkResult baseData, BenchmarkResult diffData)
+            /// <param name="newData"></param>
+            internal BenchmarkComparison(BenchmarkResult baseData, BenchmarkResult newData)
             {
-                Base = baseData;
-                Diff = diffData;
+                BaseResult = baseData;
+                NewResult = newData;
 
                 // Check that these results refer to the same graph and benchmark
-                if (Base.Method != Diff.Method || Base.Graph != Diff.Graph)
+                if (BaseResult.Method != NewResult.Method || BaseResult.Graph != NewResult.Graph)
                 {
                     throw new Exception("Non-matching benchmarks provided for comparison");
                 }
@@ -117,26 +117,26 @@ namespace DynamoPerformanceTests
                 if (!BaseBenchmarkFound)
                 {
                     Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine("Baseline bechmark results do not contain data for " + Diff.Method + "-" + Diff.Graph);
+                    Console.WriteLine("Baseline bechmark results do not contain data for " + NewResult.Method + "-" + NewResult.Graph);
                     Console.ForegroundColor = ConsoleColor.Gray;
                     return;
                 }
 
                 // Log Base data
-                var baseData = new string[] { Base.Method, Base.Graph, "Base", Base.Mean.ToString(), Base.Error.ToString(), Base.StdDev.ToString() };
+                var baseData = new string[] { BaseResult.Method, BaseResult.Graph, "Base", BaseResult.Mean.ToString(), BaseResult.Error.ToString(), BaseResult.StdDev.ToString() };
                 for (int i = 0; i < baseData.Length; i++)
                 {
                     baseData[i] = (baseData[i] + " ").PadLeft(columnWidths[i], ' ');
                 }
                 Console.WriteLine("|" + string.Join("|", baseData) + "|");
 
-                // Log Diff data
-                var diffData = new string[] { "", "", "Diff", Diff.Mean.ToString(), Diff.Error.ToString(), Diff.StdDev.ToString() };
-                for (int i = 0; i < diffData.Length; i++)
+                // Log New data
+                var newData = new string[] { "", "", "New", NewResult.Mean.ToString(), NewResult.Error.ToString(), NewResult.StdDev.ToString() };
+                for (int i = 0; i < newData.Length; i++)
                 {
-                    diffData[i] = (diffData[i] + " ").PadLeft(columnWidths[i], ' ');
+                    newData[i] = (newData[i] + " ").PadLeft(columnWidths[i], ' ');
                 }
-                Console.WriteLine("|" + string.Join("|", diffData) + "|");
+                Console.WriteLine("|" + string.Join("|", newData) + "|");
 
                 // Lof Delta data
                 var deltaData = new string[] { "", "", MeanDelta <= 100 ? "+" : "-", MeanDelta.ToString() + "%", ErrorDelta.ToString() + "%", StdDevDelta.ToString() + "%" };
@@ -165,10 +165,12 @@ namespace DynamoPerformanceTests
             /// <returns></returns>
             internal List<string[]> GetComparisonData()
             {
-                var baseData = new string[] { Base.Method, Base.Graph, "Base", Base.Mean.ToString(), Base.Error.ToString(), Base.StdDev.ToString() };
-                var diffData = new string[] { "", "", "Diff", Diff.Mean.ToString(), Diff.Error.ToString(), Diff.StdDev.ToString() };
+                if (!BaseBenchmarkFound) return null;
+
+                var baseData = new string[] { BaseResult.Method, BaseResult.Graph, "Base", BaseResult.Mean.ToString(), BaseResult.Error.ToString(), BaseResult.StdDev.ToString() };
+                var newData = new string[] { "", "", "New", NewResult.Mean.ToString(), NewResult.Error.ToString(), NewResult.StdDev.ToString() };
                 var deltaData= new string[] { "", "", MeanDelta <= 100 ? "+" : "-", MeanDelta.ToString() + "%", ErrorDelta.ToString() + "%", StdDevDelta.ToString() + "%" };
-                return new List<string[]> { baseData, diffData, deltaData };
+                return new List<string[]> { baseData, newData, deltaData };
             }
 
         }
@@ -176,17 +178,17 @@ namespace DynamoPerformanceTests
         private List<BenchmarkComparison> Comparisons;
 
         private string BasePath;
-        private string DiffPath;
+        private string NewPath;
 
         /// <summary>
-        /// Creates a results comparer to compare results at basePath and diffPath
+        /// Creates a results comparer to compare results at basePath and newPath
         /// </summary>
         /// <param name="basePath"></param>
-        /// <param name="diffPath"></param>
-        public ResultsComparer(string basePath, string diffPath)
+        /// <param name="newPath"></param>
+        public ResultsComparer(string basePath, string newPath)
         {
             BasePath = basePath;
-            DiffPath = diffPath;
+            NewPath = newPath;
 
             CreateComparisons();
             LogResults();
@@ -198,11 +200,11 @@ namespace DynamoPerformanceTests
         private void CreateComparisons()
         {
             var baseResults = ImportResultsCSV(BasePath);
-            var diffResults = ImportResultsCSV(DiffPath);
+            var newResults = ImportResultsCSV(NewPath);
 
             Comparisons = new List<BenchmarkComparison>();
 
-            foreach(var result in diffResults.Values)
+            foreach(var result in newResults.Values)
             {
                 var baseResult = GetBaseResult(result, baseResults);
                 Comparisons.Add(new BenchmarkComparison(baseResult, result));
@@ -334,9 +336,9 @@ namespace DynamoPerformanceTests
             return columnWidths;
         }
 
-        private BenchmarkResult GetBaseResult(BenchmarkResult result, Dictionary<string, BenchmarkResult> baseResults)
+        private BenchmarkResult GetBaseResult(BenchmarkResult newResult, Dictionary<string, BenchmarkResult> baseResults)
         {
-            var key = result.Method + result.Graph;
+            var key = newResult.Method + newResult.Graph;
             if (baseResults.ContainsKey(key))
             {
                 return baseResults[key];
