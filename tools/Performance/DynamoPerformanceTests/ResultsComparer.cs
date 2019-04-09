@@ -116,9 +116,10 @@ namespace DynamoPerformanceTests
                 
                 if (BaseResult.MeanUnits != NewResult.MeanUnits || BaseResult.ErrorUnits != NewResult.ErrorUnits || BaseResult.StdDevUnits != NewResult.StdDevUnits)
                 {
+                    var fc = Console.ForegroundColor;
                     Console.ForegroundColor = ConsoleColor.Red;
                     Console.WriteLine("Units do not match beween base and new results.");
-                    Console.ForegroundColor = ConsoleColor.Gray;
+                    Console.ForegroundColor = fc;
                 }
             }
 
@@ -131,9 +132,10 @@ namespace DynamoPerformanceTests
                 // Make sure baseline data has been found. If not, log an error message for this comparison.
                 if (!BaseBenchmarkFound)
                 {
+                    var fc = Console.ForegroundColor;
                     Console.ForegroundColor = ConsoleColor.Red;
                     Console.WriteLine("Baseline bechmark results do not contain data for " + NewResult.Method + "-" + NewResult.Graph);
-                    Console.ForegroundColor = ConsoleColor.Gray;
+                    Console.ForegroundColor = fc;
                     return;
                 }
 
@@ -162,9 +164,10 @@ namespace DynamoPerformanceTests
                     var deltaItem = (deltaData[i] + " ").PadLeft(columnWidths[i], ' ');
                     if (i == 3)
                     {
+                        var fc = Console.ForegroundColor;
                         Console.ForegroundColor = MeanDelta < 0 ? ConsoleColor.Green : ConsoleColor.Red;
                         Console.Write(deltaItem);
-                        Console.ForegroundColor = ConsoleColor.Gray;
+                        Console.ForegroundColor = fc;
                         Console.Write("|");
                     }
                     else
@@ -247,7 +250,12 @@ namespace DynamoPerformanceTests
             
             // Log comparisons
             foreach (var comparison in Comparisons)
+            {
+                Console.ForegroundColor = Console.ForegroundColor == ConsoleColor.Gray ? ConsoleColor.White : ConsoleColor.Gray;
                 comparison.LogComparison(columnWidths);
+
+            }
+                
         }
 
         /// <summary>
