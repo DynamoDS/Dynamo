@@ -8,6 +8,7 @@ using Dynamo.Engine.NodeToCode;
 using Dynamo.Graph.Nodes;
 using Dynamo.Logging;
 using Dynamo.Scheduler;
+using DynamoServices;
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.DSASM.Mirror;
 using ProtoCore.Mirror;
@@ -68,6 +69,8 @@ namespace Dynamo.Engine
         /// </summary>
         public static CompilationServices CompilationServices;
 
+        private ProfilingData profilingData;
+
         /// <summary>
         /// Returns DesignScript core.
         /// </summary>
@@ -122,6 +125,7 @@ namespace Dynamo.Engine
             this.libraryServices = libraryServices;
             libraryServices.LibraryLoaded += LibraryLoaded;
             CompilationServices = new CompilationServices(libraryServices);
+            profilingData = new ProfilingData();
 
             liveRunnerServices = new LiveRunnerServices(this, geometryFactoryFileName);
 

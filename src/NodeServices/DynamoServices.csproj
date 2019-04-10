@@ -54,7 +54,9 @@
     <Compile Include="GraphicsDataInterfaces.cs" />
     <Compile Include="IAnalyticsClient.cs" />
     <Compile Include="Interfaces.cs" />
+    <Compile Include="IProfilingData.cs" />
     <Compile Include="MessageEvents.cs" />
+    <Compile Include="ProfilingData.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TraceSupport.cs" />
     <Compile Include="Validity.cs" />
