@@ -11,7 +11,7 @@ namespace Dynamo.Tests
     class PreferenceSettingTests : DynamoModelTestBase
     {
         public string SettingDirectory { get { return Path.Combine(TestDirectory, "settings"); } }
-
+        
         [Test]
         public void LoadInvalidLocationsFromSetting()
         {
