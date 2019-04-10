@@ -11,8 +11,8 @@ namespace DynamoPerformanceTests
         private enum Command
         {
             Benchmark,
-            Debug,
-            InProcess,
+            NonOptimizedBenchmark,
+            DebugInProcess,
             Compare,
         }
 
@@ -62,11 +62,11 @@ namespace DynamoPerformanceTests
             // Execute command
             switch (command)
             {
-                case Command.Debug:
+                case Command.NonOptimizedBenchmark:
                     config = PerformanceTestHelper.getDebugConfig();
                     goto case Command.Benchmark;
 
-                case Command.InProcess:
+                case Command.DebugInProcess:
                     config = PerformanceTestHelper.getDebugInProcessConfig();
                     goto case Command.Benchmark;
 
@@ -91,8 +91,8 @@ namespace DynamoPerformanceTests
         {
             Console.WriteLine("\ncommands:");
             Console.WriteLine("  Benchmark: Run performance tests");
-            Console.WriteLine("  Debug: Use this call in order to run benchmarks on debug build of DynamoCore");
-            Console.WriteLine("  InProcess: Use this call to get debug in process config in order to debug benchmarks");
+            Console.WriteLine("  NonOptimizedBenchmark: Use this call in order to run benchmarks on debug build of DynamoCore");
+            Console.WriteLine("  DebugInProcess: Use this call to get debug in process config in order to debug benchmarks");
             Console.WriteLine("  Compare: Compare results from two performance test runs");
             Console.WriteLine("\noptions:");
             opSet.WriteOptionDescriptions(Console.Out);
