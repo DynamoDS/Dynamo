@@ -116,23 +116,15 @@ namespace DynamoPerformanceTests
             Console.WriteLine("\nComparison of Model tests: \n");
             var baseModelPath = Path.Combine(PerformanceTestHelper.GetFullPath(baseResultsPath), "DynamoPerformanceTests.DynamoModelPerformanceTestBase-report.csv");
             var newModelPath = Path.Combine(PerformanceTestHelper.GetFullPath(newResultsPath), "DynamoPerformanceTests.DynamoModelPerformanceTestBase-report.csv");
-            var modelComparer = new ResultsComparer(baseModelPath, newModelPath);
+            var modelSavePath = Path.Combine(PerformanceTestHelper.GetFullPath(savePath), "DynamoPerformanceTests.Comparison-Model.csv");
+            var modelComparer = new ResultsComparer(baseModelPath, newModelPath, modelSavePath);
 
             // Create View comparer
             Console.WriteLine("\nComparison of View tests: \n");
             var baseViewPath = Path.Combine(PerformanceTestHelper.GetFullPath(baseResultsPath), "DynamoPerformanceTests.DynamoViewPerformanceTestBase-report.csv");
             var newViewPath = Path.Combine(PerformanceTestHelper.GetFullPath(newResultsPath), "DynamoPerformanceTests.DynamoViewPerformanceTestBase-report.csv");
-            var viewComparer = new ResultsComparer(baseViewPath, newViewPath);
-
-            // Save csv if path provided
-            if (savePath != string.Empty)
-            {
-                var modelSavePath = Path.Combine(PerformanceTestHelper.GetFullPath(savePath), "DynamoPerformanceTests.Comparison-Model.csv");
-                modelComparer.WriteResultsToCSV(modelSavePath);
-
-                var viewSavePath = Path.Combine(PerformanceTestHelper.GetFullPath(savePath), "DynamoPerformanceTests.Comparison-View.csv");
-                viewComparer.WriteResultsToCSV(viewSavePath);
-            }
+            var viewSavePath = Path.Combine(PerformanceTestHelper.GetFullPath(savePath), "DynamoPerformanceTests.Comparison-View.csv");
+            var viewComparer = new ResultsComparer(baseViewPath, newViewPath, viewSavePath);
         }
     }
 }

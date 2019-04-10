@@ -146,7 +146,7 @@ namespace DynamoPerformanceTests
         }
 
         /// <summary>
-        /// Gets the absolute path for a relative path
+        /// Gets the absolute path for a path relative to the executing assembly location
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>

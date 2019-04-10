@@ -35,6 +35,29 @@ namespace DynamoPerformanceTests
             internal string MeanString { get { return Mean.ToString("N", CultureInfo.InvariantCulture) + " " + MeanUnits; } }
             internal string ErrorString { get { return Error.ToString("N", CultureInfo.InvariantCulture) + " " + ErrorUnits; } }
             internal string StdDevString { get { return StdDev.ToString("N", CultureInfo.InvariantCulture) + " " + StdDevUnits; } }
+
+            /// <summary>
+            /// Create a Benchmark result from values parsed from results csv
+            /// </summary>
+            /// <param name="method"></param>
+            /// <param name="graph"></param>
+            /// <param name="mean"></param>
+            /// <param name="meanUnits"></param>
+            /// <param name="error"></param>
+            /// <param name="errorUnits"></param>
+            /// <param name="stdDev"></param>
+            /// <param name="stdDevUnits"></param>
+            internal BenchmarkResult(string method, string graph, double mean, string meanUnits, double error, string errorUnits, double stdDev, string stdDevUnits)
+            {
+                Method = method;
+                Graph = graph;
+                Mean = mean;
+                MeanUnits = meanUnits;
+                Error = error;
+                ErrorUnits = errorUnits;
+                StdDev = stdDev;
+                StdDevUnits = stdDevUnits;
+            }
         }
 
         private class BenchmarkComparison
@@ -166,7 +189,7 @@ namespace DynamoPerformanceTests
             /// Get the results of this comparison as a list of arrays of strings
             /// </summary>
             /// <returns></returns>
-            internal List<string[]> GetComparisonData()
+            internal IEnumerable<string[]> GetComparisonData()
             {
                 if (!BaseBenchmarkFound) return null;
 
@@ -177,48 +200,50 @@ namespace DynamoPerformanceTests
             }
         }
         
-        private List<BenchmarkComparison> Comparisons;
-
-        private string BasePath;
-        private string NewPath;
-
         /// <summary>
         /// Creates a results comparer to compare results at basePath and newPath
         /// </summary>
         /// <param name="basePath"></param>
         /// <param name="newPath"></param>
-        public ResultsComparer(string basePath, string newPath)
+        public ResultsComparer(string basePath, string newPath, string saveCSVPath = null)
         {
-            BasePath = basePath;
-            NewPath = newPath;
+            // Create BenchmarkComparison objects
+            var comparisons = CreateComparisons(basePath, newPath);
+            
+            // Log comparisons to console
+            LogResults(comparisons);
 
-            CreateComparisons();
-            LogResults();
+            // Save comparisons to csv if path provided
+            if (saveCSVPath != null && saveCSVPath != string.Empty)
+            {
+                WriteResultsToCSV(comparisons, saveCSVPath);
+            }
         }
 
         /// <summary>
         /// Compare the two results files and build comparison data
         /// </summary>
-        private void CreateComparisons()
+        private IEnumerable<BenchmarkComparison> CreateComparisons(string basePath, string newPath)
         {
-            var baseResults = ImportResultsCSV(BasePath);
-            var newResults = ImportResultsCSV(NewPath);
+            var baseResults = ImportResultsCSV(basePath);
+            var newResults = ImportResultsCSV(newPath);
 
-            Comparisons = new List<BenchmarkComparison>();
+            var comparisons = new List<BenchmarkComparison>();
 
             foreach(var result in newResults.Values)
             {
                 var baseResult = GetBaseResult(result, baseResults);
-                Comparisons.Add(new BenchmarkComparison(baseResult, result));
+                comparisons.Add(new BenchmarkComparison(baseResult, result));
             }
+            return comparisons;
         }
 
         /// <summary>
         /// Print comparison results to the console
         /// </summary>
-        private void LogResults()
+        private void LogResults(IEnumerable<BenchmarkComparison> comparisons)
         {
-            var columnWidths = GetColumnWidths();
+            var columnWidths = GetColumnWidths(comparisons);
 
             // Log header
             var header = new string[] { "Method", "Graph", "Version", "Mean", "Error", "StdDev" };
@@ -232,7 +257,7 @@ namespace DynamoPerformanceTests
             Console.WriteLine("|" + string.Join("|", separator) + "|");
             
             // Log comparisons
-            foreach (var comparison in Comparisons)
+            foreach (var comparison in comparisons)
             {
                 Console.ForegroundColor = Console.ForegroundColor == ConsoleColor.Gray ? ConsoleColor.White : ConsoleColor.Gray;
                 comparison.LogComparison(columnWidths);
@@ -243,9 +268,9 @@ namespace DynamoPerformanceTests
         /// Write the results of this comparison to a csv file
         /// </summary>
         /// <param name="filePath"></param>
-        public void WriteResultsToCSV(string filePath)
+        private void WriteResultsToCSV(IEnumerable<BenchmarkComparison> comparisons, string filePath)
         {
-            var rows = GetComparisonDataRows().Select(r => string.Join(",", r));
+            var rows = GetComparisonDataRows(comparisons).Select(r => string.Join(",", r));
             var csv = new StringBuilder();
             foreach (var row in rows) csv.AppendLine(row);
             
@@ -292,39 +317,27 @@ namespace DynamoPerformanceTests
                 var stdDevUnits = new string(brLine[iStdDev].ToCharArray().Where(c => Char.IsLetter(c)).ToArray());
 
                 // Store the benchmark based on its 'Method' and 'Graph' values
-                benchmarkResults[method+graph] = (
-                    new BenchmarkResult()
-                    {
-                        Method = method,
-                        Graph = graph,
-                        Mean = mean,
-                        Error = error,
-                        StdDev = stdDev,
-                        MeanUnits = meanUnits,
-                        ErrorUnits = errorUnits,
-                        StdDevUnits = stdDevUnits,
-                    }
-                );
+                benchmarkResults[method+graph] = (new BenchmarkResult(method, graph, mean, meanUnits, error, errorUnits, stdDev, stdDevUnits));
             }
             return benchmarkResults;
         }
 
-        private List<string[]> GetComparisonDataRows()
+        private List<string[]> GetComparisonDataRows(IEnumerable<BenchmarkComparison> comparisons)
         {
             var rows = new List<string[]>();
             var header = new string[] { "Method", "Graph", "Version", "Mean", "Error", "StdDev" };
             rows.Add(header);
 
-            foreach (var comparison in Comparisons)
+            foreach (var comparison in comparisons)
             {
                 rows.AddRange(comparison.GetComparisonData());
             }
             return rows;
         }
 
-        private List<string>[] GetComparisonDataColumns()
+        private List<string>[] GetComparisonDataColumns(IEnumerable<BenchmarkComparison> comparisons)
         {
-            var rows = GetComparisonDataRows();
+            var rows = GetComparisonDataRows(comparisons);
             var numColumns = rows[0].Length;
 
             var columns = new List<string>[numColumns];
@@ -338,9 +351,9 @@ namespace DynamoPerformanceTests
             return columns;
         }
 
-        private List<int> GetColumnWidths()
+        private List<int> GetColumnWidths(IEnumerable<BenchmarkComparison> comparisons)
         {
-            var columns = GetComparisonDataColumns();
+            var columns = GetComparisonDataColumns(comparisons);
             var columnWidths = columns.Select(c => c.OrderByDescending(s => s.Length).First().Length + 2).ToList();
             return columnWidths;
         }
