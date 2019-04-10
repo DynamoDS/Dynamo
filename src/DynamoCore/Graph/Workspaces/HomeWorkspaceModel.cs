@@ -30,7 +30,7 @@ namespace Dynamo.Graph.Workspaces
         private readonly DynamoScheduler scheduler;
         private PulseMaker pulseMaker;
         private readonly bool verboseLogging;
-        public bool graphExecuted;
+        private bool graphExecuted;
         private IEnumerable<KeyValuePair<Guid, List<CallSite.RawTraceData>>> historicalTraceData;
 
         /// <summary>
