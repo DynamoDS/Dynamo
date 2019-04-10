@@ -153,26 +153,17 @@ namespace DynamoCoreWpfTests
         //   https://github.com/DynamoDS/Dynamo/pull/4674
         // 
         [Test]
-        public void RunSettingsDisableRun()
+        public void RunSettingsDisableAndEnableRun()
         {
-            string openPath = Path.Combine(workingDirectory, @"..\..\..\test\core\RunSettingsDisableRun.dyn");
+            string openPath = Path.Combine(workingDirectory, @"..\..\..\test\core\RunSettings.dyn");
             Model.OpenFileFromPath(openPath);
 
             var homeSpace = GetHomeSpace();
             homeSpace.RunSettings.RunEnabled = false;
             homeSpace.RequestRun() ;
             Assert.IsFalse(homeSpace.graphExecuted);
-        }
 
-        [Test]
-        public void RunSettingEnableRun()
-        {
-            string openPath = Path.Combine(workingDirectory, @"..\..\..\test\core\RunSettingsEnableRun.dyn");
-            Model.OpenFileFromPath(openPath);
-
-            var homeSpace = GetHomeSpace();
             homeSpace.RunSettings.RunEnabled = true;
-            Assert.IsFalse(homeSpace.graphExecuted);
             homeSpace.RequestRun();
             Assert.IsTrue(homeSpace.graphExecuted);
         }
