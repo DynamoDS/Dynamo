@@ -152,21 +152,29 @@ namespace DynamoCoreWpfTests
         // This test is now irrelevant due to the follow fix:
         //   https://github.com/DynamoDS/Dynamo/pull/4674
         // 
-        [Test, Ignore]
-        [Category("Failure")]
+        [Test]
         public void RunSettingsDisableRun()
         {
-            string openPath = Path.Combine(workingDirectory, @"..\..\..\test\core\math\Add.dyn");
-
+            string openPath = Path.Combine(workingDirectory, @"..\..\..\test\core\RunSettingsDisableRun.dyn");
             Model.OpenFileFromPath(openPath);
+
             var homeSpace = GetHomeSpace();
             homeSpace.RunSettings.RunEnabled = false;
-            homeSpace.Run();
+            homeSpace.RequestRun() ;
+            Assert.IsFalse(homeSpace.graphExecuted);
+        }
 
-            string varname = GetVarName("4c5889ac-7b91-4fb5-aaad-a2128b533279");
-            var mirror = GetRuntimeMirror(varname);
+        [Test]
+        public void RunSettingEnableRun()
+        {
+            string openPath = Path.Combine(workingDirectory, @"..\..\..\test\core\RunSettingsEnableRun.dyn");
+            Model.OpenFileFromPath(openPath);
 
-            Assert.IsNull(mirror);
+            var homeSpace = GetHomeSpace();
+            homeSpace.RunSettings.RunEnabled = true;
+            Assert.IsFalse(homeSpace.graphExecuted);
+            homeSpace.RequestRun();
+            Assert.IsTrue(homeSpace.graphExecuted);
         }
 
         private RoutedEventArgs GetKeyboardEnterEventArgs(Visual visual)

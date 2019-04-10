@@ -30,7 +30,7 @@ namespace Dynamo.Graph.Workspaces
         private readonly DynamoScheduler scheduler;
         private PulseMaker pulseMaker;
         private readonly bool verboseLogging;
-        private bool graphExecuted;
+        public bool graphExecuted;
         private IEnumerable<KeyValuePair<Guid, List<CallSite.RawTraceData>>> historicalTraceData;
 
         /// <summary>
@@ -331,7 +331,7 @@ namespace Dynamo.Graph.Workspaces
         {
             base.RequestRun();
 
-            if (RunSettings.RunType != RunType.Manual)
+            if (RunSettings.RunType != RunType.Manual && RunSettings.RunEnabled)
             {
                 Run();
             }
@@ -496,7 +496,7 @@ namespace Dynamo.Graph.Workspaces
                 MarkNodesAsModifiedAndRequestRun(Nodes); 
             }
 
-            if (RunSettings.RunType == RunType.Automatic)
+            if (RunSettings.RunType == RunType.Automatic && RunSettings.RunEnabled)
                 Run();
         }
 
