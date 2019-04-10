@@ -4927,7 +4927,7 @@ r = cond<1L> ? vs1<1L> : vs2<1L>;";
             thisTest.Verify("r", new object[] { 2, 5, 7 });
         }
 
-        // This tests the case 2 block in the computeFeps method(CallSite.cs line:943)
+        // This tests the case 2 block in the computeFeps method (CallSite.cs)
         [Test]
         public void TestReplicationWithEmptyListInNestedLists()
         {
@@ -4944,7 +4944,7 @@ px2 = DummyPoint2D.X(l2);
             thisTest.Verify("px2", new object[] { new object[] { 0 }, new object[] { } });
         }
 
-        // This tests the case 4 block in the computeFeps method(CallSite.cs line:943)
+        // This tests the case 4 block in the computeFeps method (CallSite.cs)
         [Test]
         public void TestReplicationWithNullElementInNestedLists()
         {
@@ -4962,7 +4962,7 @@ px2 = DummyPoint2D.X(l2);
             thisTest.Verify("px2", new object[] { new object[] { 0 }, null });
         }
 
-        // This tests the case:6 block in the computeFeps method(CallSite.cs line:943)
+        // This tests the case:6 block in the computeFeps method (CallSite.cs)
         // input example for case 6: l4 and l5 lists. 
         [Test]
         public void TestReplicationWithArraysOfDifferentRanks()
@@ -4989,6 +4989,63 @@ px5 = DummyPoint2D.X(l5);
             thisTest.Verify("px3", new object[] { new object[] { null }, new object[] { new object[] { 0 } } });
             thisTest.Verify("px4", new object[] { null, new object[] { 0 }, new object[] { new object[] { 0 } } });
             thisTest.Verify("px5", new object[] { null, new object[] { new object[] { 0 } }, new object[] { 0 } });
+        }
+
+        // This tests the case 4 block (with type conversion) in the computeFeps method (CallSite.cs)
+        [Test]
+        public void TestReplicationWithMixedOptionTypeConversion()
+        {
+            string code = @"
+def foo ( a : double[], b :double[] )
+{
+    return = Count(a) + Count(b);
+}
+a = [ 1, 2 ];
+b = [[3, 4], [5,9]];
+c = b[[0.1,1.1]][0..1];
+test = foo (c, a[0..1]);";
+
+            var mirror = thisTest.RunScriptSource(code);
+            thisTest.Verify("c", new object[] {new[] {3, 4}, new[] {5, 9}});
+            thisTest.Verify("test", new[] {4, 4});
+        }
+
+        // This tests the case 2 block in the computeFeps method (CallSite.cs)
+        [Test]
+        public void TestReplicationWithMixedOptionExactMatch()
+        {
+            string code = @"
+def foo ( a : double[], b :double[] )
+{
+    return = Count(a) + Count(b);
+}
+a = [ 1, 2 ];
+b = [[3, 4], [5,9]];
+c = b[[0,1]][0..1];
+test = foo (c,a[0..1]);";
+
+            var mirror = thisTest.RunScriptSource(code);
+            thisTest.Verify("c", new object[] { new[] { 3, 4 }, new[] { 5, 9 } });
+            thisTest.Verify("test", new[] { 4, 4 });
+        }
+
+        // This tests the case 6 block in the computeFeps method (CallSite.cs)
+        [Test]
+        public void TestReplicationWithNonConvertibles()
+        {
+            string code = @"
+def foo ( a : double[], b :double[] )
+{
+    return = Count(a) + Count(b);
+}
+a = [ 1, 2 ];
+b = [[3, 4], [5,9]];
+c = b[[true,0]][0..1]; // [[b[true][0], b[true, 1]], [b[0,0], b[0,1]]] => [null, [3, 4]]
+test = foo (c, a[0..1]);	";
+            var mirror = thisTest.RunScriptSource(code);
+            thisTest.Verify("c", new object[] { null, new[] { 3, 4 } });
+            thisTest.Verify("test", new[] { 3, 4 });
+
         }
     }
 }
