@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using Dynamo.Configuration;
+using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
 using NUnit.Framework;
 
@@ -10,7 +11,7 @@ namespace Dynamo.Tests
     class PreferenceSettingTests : DynamoModelTestBase
     {
         public string SettingDirectory { get { return Path.Combine(TestDirectory, "settings"); } }
-        
+
         [Test]
         public void LoadInvalidLocationsFromSetting()
         {
@@ -84,6 +85,31 @@ namespace Dynamo.Tests
             Assert.AreEqual(model.PreferenceSettings.PythonTemplateFilePath, string.Empty);
         }
 
-    }
+        [Test]
+        public void RunSettingsDisableAndEnableRun()
+        {
+            string openPath = Path.Combine(TestDirectory, @"core\RunSettings.dyn");
+            CurrentDynamoModel.OpenFileFromPath(openPath);
 
+            var ws = CurrentDynamoModel.CurrentWorkspace as HomeWorkspaceModel;
+            Assert.AreEqual(0, ws.EvaluationCount);
+
+            // Still in Manual mode so will not run
+            ws.RequestRun();
+            Assert.AreEqual(0, ws.EvaluationCount);
+
+            // Setting the run type to automatic
+            ws.RunSettings.RunType = RunType.Automatic;
+
+            ws.RunSettings.RunEnabled = false;
+            // This should not run
+            ws.RequestRun();
+            Assert.AreEqual(0, ws.EvaluationCount);
+
+            ws.RunSettings.RunEnabled = true;
+            // This should run
+            ws.RequestRun();
+            Assert.AreEqual(1, ws.EvaluationCount);
+        }
+    }
 }

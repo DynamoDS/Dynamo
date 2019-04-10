@@ -2,7 +2,7 @@
   "Uuid": "8d043802-9b9d-4c31-8482-e831189d2889",
   "IsCustomNode": false,
   "Description": null,
-  "Name": "RunSettingsDisableRun",
+  "Name": "RunSettings",
   "ElementResolver": {
     "ResolutionMap": {}
   },
@@ -119,7 +119,7 @@
       "HasRunWithoutCrash": true,
       "IsVisibleInDynamoLibrary": true,
       "Version": "2.3.0.4640",
-      "RunType": "Automatic",
+      "RunType": "Manual",
       "RunPeriod": "1000"
     },
     "Camera": {
@@ -136,31 +136,31 @@
     },
     "NodeViews": [
       {
-        "ShowGeometry": true,
-        "Name": "Circle.ByCenterPointRadius",
         "Id": "6a10fd5ce8144a8ab3a42fc6eadc5514",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
+        "Name": "Circle.ByCenterPointRadius",
+        "ShowGeometry": true,
         "Excluded": false,
         "X": 154.40000000000003,
         "Y": 128.8
       },
       {
-        "ShowGeometry": true,
-        "Name": "Code Block",
         "Id": "deb0ae37d6974ef4a88e5d35a5c5ce42",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
+        "Name": "Code Block",
+        "ShowGeometry": true,
         "Excluded": false,
         "X": 32.399999999999977,
         "Y": 213.8
       },
       {
-        "ShowGeometry": true,
-        "Name": "Circle.Radius",
         "Id": "ae487282b5674bb885e2299b2c5529a6",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
+        "Name": "Circle.Radius",
+        "ShowGeometry": true,
         "Excluded": false,
         "X": 423.2000000000001,
         "Y": 219.20000000000002
