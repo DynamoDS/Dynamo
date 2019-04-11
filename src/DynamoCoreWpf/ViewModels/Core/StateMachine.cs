@@ -209,13 +209,23 @@ namespace Dynamo.ViewModels
 
             PortModel portModel = node.OutPorts[portIndex];
             if (portModel.Connectors.Count <= 0) return;
-            
-            var connectorsAr = new ConnectorViewModel[portModel.Connectors.Count];
-            for (int i = 0; i < portModel.Connectors.Count; i++)
+
+            // Try to obtain connectors for selected nodes
+            var selected = portModel.Connectors.Where(x => x.End.Owner.IsSelected).Select(y => y.End);
+
+            // If there are no selected nodes, obtain all the associated connectors
+            if (selected.Count() <= 0)
             {
-                var c = new ConnectorViewModel(this, portModel.Connectors[i].End);
+                selected = portModel.Connectors.Select(y => y.End);
+            }
+
+            var connectorsAr = new ConnectorViewModel[selected.Count()];
+            for (int i = 0; i < selected.Count(); i++)
+            {
+                var c = new ConnectorViewModel(this, selected.ElementAt(i));
                 connectorsAr[i] = c;
-             }
+            }
+
             this.SetActiveConnectors(connectorsAr);
             return;
         }
@@ -225,7 +235,7 @@ namespace Dynamo.ViewModels
             this.SetActiveConnectors(null);
         }
 
-        internal void EndAndStartCtrlConnection(Guid nodeId, int portIndex, PortType portType)
+        internal void BeginCreateConnections(Guid nodeId, int portIndex, PortType portType)
         {
             // Only handle ctrl connections if selected port is an input port
             if (firstStartPort == null || portType == PortType.Output) return; 
@@ -790,6 +800,11 @@ namespace Dynamo.ViewModels
                         multipleConnections = true;
                         mode = DynamoModel.MakeConnectionCommand.Mode.BeginShiftReconnections;
                     }
+                    else if (Keyboard.Modifiers == ModifierKeys.Control)
+                    {
+                        // If the control key is held down, check if there is a need to duplicate connections
+                        mode = DynamoModel.MakeConnectionCommand.Mode.BeginDuplicateConnection;
+                    }
 
                     var command = new DynamoModel.MakeConnectionCommand(nodeId, portIndex, portModel.PortType, mode);
                     owningWorkspace.DynamoViewModel.ExecuteCommand(command);
@@ -819,7 +834,7 @@ namespace Dynamo.ViewModels
                         }
                         else if (Keyboard.Modifiers == ModifierKeys.Control) // If the control key is held down
                         {
-                            mode = DynamoModel.MakeConnectionCommand.Mode.EndAndStartCtrlConnection;
+                            mode = DynamoModel.MakeConnectionCommand.Mode.BeginCreateConnections;
                             this.currentState = State.Connection; // Start a new connection
                             owningWorkspace.CurrentCursor = CursorLibrary.GetCursor(CursorSet.ArcSelect); // Reassign the cursor
                         }

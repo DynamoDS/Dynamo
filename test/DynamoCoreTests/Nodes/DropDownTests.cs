@@ -267,6 +267,16 @@ namespace Dynamo.Tests.Nodes
         }
 
         [Test]
+        public void Save_SelectedIndexWithSpecialChar()
+        {
+            // This test makes sure that when SaveSelectedIndexImpl() is called with a index
+            // of item with Xml special char in the item.Name, the special char is escaped
+            Assert.AreEqual(
+                "2:&lt;foo&gt;",
+                DSDropDownBase.SaveSelectedIndexImpl(2, TestListWithItemWithSpecialChar()));
+        }
+
+        [Test]
         public void Load_NothingSelected()
         {
             Assert.AreEqual(-1, DSDropDownBase.ParseSelectedIndexImpl("-1", TestList()));
@@ -296,6 +306,24 @@ namespace Dynamo.Tests.Nodes
             Assert.AreEqual(-1, DSDropDownBase.ParseSelectedIndexImpl("2:foo", TestList()));
         }
 
+        [Test]
+        public void Load_SelectionIndexSpecialCharNoMatch()
+        {
+            Assert.AreEqual(-1, DSDropDownBase.ParseSelectedIndexImpl("2:<foo>", TestList()));
+        }
+
+        [Test]
+        public void Load_SelectionIndexSpecialCharMatch()
+        {
+            Assert.AreEqual(2, DSDropDownBase.ParseSelectedIndexImpl("2:<foo>", TestListWithItemWithSpecialChar()));
+        }
+
+        [Test]
+        public void Load_SelectionIndexSpecialCharMatch2()
+        {
+            Assert.AreEqual(2, DSDropDownBase.ParseSelectedIndexImpl("2:&lt;foo&gt;", TestListWithItemWithSpecialChar()));
+        }
+
         private static List<DynamoDropDownItem> TestList()
         {
             var items = new List<DynamoDropDownItem>
@@ -309,5 +337,17 @@ namespace Dynamo.Tests.Nodes
             return items;
         }
 
+        private static List<DynamoDropDownItem> TestListWithItemWithSpecialChar()
+        {
+            var items = new List<DynamoDropDownItem>
+            {
+                new DynamoDropDownItem("cat", "cat"),
+                new DynamoDropDownItem("dog", "dog"),
+                new DynamoDropDownItem("<foo>", "<foo>"),
+                new DynamoDropDownItem("!@#$%%%^&*()", "craziness")
+            };
+
+            return items;
+        }
     }
 }

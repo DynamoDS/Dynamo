@@ -1,0 +1,165 @@
+{
+  "Uuid": "ce4b7a61-2ef7-46ba-965c-e5a69dc6d6a1",
+  "IsCustomNode": false,
+  "Description": null,
+  "Name": "ElementBindingLarge",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "FFITarget.WrapperObject.WrapperObject@int",
+      "Id": "5ad33880a88e47f0a5a156d1edbfae2b",
+      "Inputs": [
+        {
+          "Id": "ea47ad627e9b4c6386e1902aedcf4dd7",
+          "Name": "x",
+          "Description": "int",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "e542c2e87996414e9df1d1dfccea188c",
+          "Name": "WrapperObject",
+          "Description": "WrapperObject",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "WrapperObject.WrapperObject (x: int): WrapperObject"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "FFITarget.WrapperObject.ID",
+      "Id": "056d9c584f3b42acabec727e64188fae",
+      "Inputs": [
+        {
+          "Id": "9188e52217974b68aa52d0dabda48c27",
+          "Name": "wrapperObject",
+          "Description": "FFITarget.WrapperObject",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "39b9175be4104a6dabf66507bb59e6ff",
+          "Name": "int",
+          "Description": "int",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "WrapperObject.ID: int"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "0..1500;",
+      "Id": "56c98070e24545b883c0ee1d3e82b958",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "9ac62d2f6d4842768fa0d2417e391977",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "e542c2e87996414e9df1d1dfccea188c",
+      "End": "9188e52217974b68aa52d0dabda48c27",
+      "Id": "aaac57a7df6b4a70b927165e6db36355"
+    },
+    {
+      "Start": "9ac62d2f6d4842768fa0d2417e391977",
+      "End": "ea47ad627e9b4c6386e1902aedcf4dd7",
+      "Id": "c304413e330b4fc5af285d935693773e"
+    }
+  ],
+  "Dependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.0.2.8095",
+      "RunType": "Manual",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "WrapperObject.WrapperObject",
+        "Id": "5ad33880a88e47f0a5a156d1edbfae2b",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 427.5,
+        "Y": 213.75
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "WrapperObject.ID",
+        "Id": "056d9c584f3b42acabec727e64188fae",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 671.5,
+        "Y": 213.75
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "56c98070e24545b883c0ee1d3e82b958",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 296.0,
+        "Y": 217.0
+      }
+    ],
+    "Annotations": [],
+    "X": 0.0,
+    "Y": 0.0,
+    "Zoom": 1.0
+  }
+}

@@ -912,7 +912,7 @@ namespace ProtoCore.DSASM
             {
                 if (exe.EventSink != null && exe.EventSink.PrintMessage != null)
                 {
-                    exe.EventSink.PrintMessage.Invoke("VMLog: " + msg + "\n");
+                    exe.EventSink.PrintMessage("VMLog: " + msg + "\n");
                 }
             }
         }
@@ -986,7 +986,7 @@ namespace ProtoCore.DSASM
                 if (exe.EventSink != null
                     && exe.EventSink.PrintMessage != null)
                 {
-                    exe.EventSink.PrintMessage.Invoke(lhs + " = " + rhs + "\n");
+                    exe.EventSink.PrintMessage(lhs + " = " + rhs + "\n");
                 }
             }
         }

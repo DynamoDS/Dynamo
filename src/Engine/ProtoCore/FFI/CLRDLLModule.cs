@@ -393,7 +393,7 @@ namespace ProtoFFI
             bool isDisposable = typeof(IDisposable).IsAssignableFrom(type);
             MethodInfo[] methods = type.GetMethods(flags);
             bool hasDisposeMethod = false;
-
+            
             foreach (var m in methods)
             {
                 if (SupressesImport(m, mGetterAttributes))
@@ -782,7 +782,10 @@ namespace ProtoFFI
             if (CoreUtils.IsDisposeMethod(functionName))
                 f = new DisposeFunctionPointer(Module, method, retype);
             else if (CoreUtils.IsGetter(functionName))
+            {
                 f = new GetterFunctionPointer(Module, functionName, method, retype);
+                (f as GetterFunctionPointer).ReflectionInfo.CheckForRankReductionAttribute(mGetterAttributes);
+            }
             else
                 f = new CLRFFIFunctionPointer(Module, functionName, method, argTypes, retype);
 

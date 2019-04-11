@@ -1,0 +1,227 @@
+{
+  "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "Pottery",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [
+    {
+      "Id": "7921c2fca2374050b45c71ae79241503",
+      "Name": "Height 5-40",
+      "Type": "number",
+      "Value": "13",
+      "MaximumValue": 30.0,
+      "MinimumValue": 1.0,
+      "StepValue": 1.0,
+      "NumberType": "Double",
+      "Description": "A slider that produces numeric values."
+    }
+  ],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "CoreNodeModels.Input.DoubleSlider, CoreNodeModels",
+      "NodeType": "NumberInputNode",
+      "NumberType": "Double",
+      "MaximumValue": 30.0,
+      "MinimumValue": 1.0,
+      "StepValue": 1.0,
+      "InputValue": 13.0,
+      "Id": "7921c2fca2374050b45c71ae79241503",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "b9eab38aba8843ebad96bf61ba654605",
+          "Name": "",
+          "Description": "Double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "A slider that produces numeric values."
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "3;",
+      "Id": "d6ee3f5872ac4aa2a7cfe0713c7db7fb",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "00d0f093bf484601b0523ca7a9901a4a",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "0.5;",
+      "Id": "ea1ddc72192841b1a4d4eccbf60dc62e",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "184e967927994f769a602b545ea461a9",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CustomNodes.Function, DynamoCore",
+      "FunctionSignature": "8a8f4c77-291c-4f06-81d7-02e8321714bd",
+      "FunctionType": "Graph",
+      "NodeType": "FunctionNode",
+      "Id": "072fc9ba3efe402bb23efd83c35dc5f5",
+      "Inputs": [
+        {
+          "Id": "ad585646577b4eb98c049d6c309a5b00",
+          "Name": "numberSides",
+          "Description": "int",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "d2d89626b0914beabd6cb24d1eb68c49",
+          "Name": "H",
+          "Description": "var[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "871e30df4a24464fb5fbd00290c487ec",
+          "Name": "radius",
+          "Description": "double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "c44c710dd9034696a8c49d12c351a626",
+          "Name": "Solid",
+          "Description": "return value",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": ""
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "b9eab38aba8843ebad96bf61ba654605",
+      "End": "d2d89626b0914beabd6cb24d1eb68c49",
+      "Id": "a56657c4dec948919a9978b9334a3ec0"
+    },
+    {
+      "Start": "00d0f093bf484601b0523ca7a9901a4a",
+      "End": "ad585646577b4eb98c049d6c309a5b00",
+      "Id": "990130eb34784c17967c5197a7ad2e20"
+    },
+    {
+      "Start": "184e967927994f769a602b545ea461a9",
+      "End": "871e30df4a24464fb5fbd00290c487ec",
+      "Id": "f318dc3adf334e2080b7924c7882427c"
+    }
+  ],
+  "Dependencies": [
+    "8a8f4c77-291c-4f06-81d7-02e8321714bd"
+  ],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": false,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.0.2.8095",
+      "RunType": "Manual",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "Height 5-40",
+        "Id": "7921c2fca2374050b45c71ae79241503",
+        "IsSetAsInput": true,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -1051.71175030169,
+        "Y": 607.824921519321
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Number of Sides 3-*",
+        "Id": "d6ee3f5872ac4aa2a7cfe0713c7db7fb",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -1000.49011440767,
+        "Y": 494.239259251958
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "FilletRadius .1-1",
+        "Id": "ea1ddc72192841b1a4d4eccbf60dc62e",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -965.116273570806,
+        "Y": 722.643445958301
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "PotteryCustom",
+        "Id": "072fc9ba3efe402bb23efd83c35dc5f5",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -489.31089610381423,
+        "Y": 537.861605590421
+      }
+    ],
+    "Annotations": [],
+    "X": 672.23643800314221,
+    "Y": 22.661692610942339,
+    "Zoom": 0.53698801016128
+  }
+}
