@@ -1,7 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Dynamo.Configuration;
+using Dynamo.Graph;
+using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
 using NUnit.Framework;
@@ -99,6 +102,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(0, ws.EvaluationCount);
 
             // Setting the run type to automatic
+            // This will not trigger the Run() function because there is a no handle for that proptery in the dynamo model test. 
             ws.RunSettings.RunType = RunType.Automatic;
 
             ws.RunSettings.RunEnabled = false;
@@ -106,10 +110,20 @@ namespace Dynamo.Tests
             ws.RequestRun();
             Assert.AreEqual(0, ws.EvaluationCount);
 
+            // Modifying the graph shouldn't trigger the run as runenabled is still false. 
+            Guid codeBlockNodeGuid = Guid.Parse("deb0ae37d6974ef4a88e5d35a5c5ce42");
+            NodeModel codeBlockNode = ws.NodeFromWorkspace(codeBlockNodeGuid);
+            codeBlockNode.UpdateValue(new UpdateValueParams("Code", "10;"));
+            Assert.AreEqual(0, ws.EvaluationCount);
+
             ws.RunSettings.RunEnabled = true;
             // This should run
             ws.RequestRun();
             Assert.AreEqual(1, ws.EvaluationCount);
+
+            // Modifying the graph will run it again. 
+            codeBlockNode.UpdateValue(new UpdateValueParams("Code", "15;"));
+            Assert.AreEqual(2, ws.EvaluationCount);
         }
     }
 }
