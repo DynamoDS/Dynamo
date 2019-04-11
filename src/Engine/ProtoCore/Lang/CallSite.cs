@@ -920,7 +920,7 @@ namespace ProtoCore
 
             #endregion
 
-            #region Case 5: Replication and replciation guide with type conversion and array promotion
+            #region Case 5: Replication and replication guide with type conversion and array promotion
             {
                 //Add as a first attempt a no-replication, but allowing up-promoting
                 replicationTrials.Add(new List<ReplicationInstruction>());

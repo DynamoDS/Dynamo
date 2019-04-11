@@ -2665,7 +2665,6 @@ test = a1.X;
         }
 
         [Test]
-        [Category("Failure")]
         public void T68_Defect_1460965_Replication_On_Dot_Operator_8()
         {
             String code =
