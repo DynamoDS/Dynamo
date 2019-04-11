@@ -1,12 +1,12 @@
-using ProtoCore.AST.AssociativeAST;
-using ProtoCore.DSASM;
-using ProtoCore.SyntaxAnalysis.Imperative;
-using ProtoCore.Utils;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text;
+using ProtoCore.AST.AssociativeAST;
+using ProtoCore.DSASM;
+using ProtoCore.SyntaxAnalysis.Imperative;
+using ProtoCore.Utils;
 
 namespace ProtoCore.AST
 {

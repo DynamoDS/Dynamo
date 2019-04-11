@@ -1,15 +1,15 @@
-﻿using ProtoCore.AST;
-using ProtoCore.AST.AssociativeAST;
-using ProtoCore.DSASM;
-using ProtoCore.Namespace;
-using ProtoCore.Properties;
-using System;
+﻿using System;
 using System.CodeDom;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using ProtoCore.AST;
+using ProtoCore.AST.AssociativeAST;
 using ProtoCore.BuildData;
+using ProtoCore.DSASM;
+using ProtoCore.Namespace;
+using ProtoCore.Properties;
 using ProtoCore.SyntaxAnalysis;
 
 namespace ProtoCore.Utils

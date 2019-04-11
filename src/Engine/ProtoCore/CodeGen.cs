@@ -4,8 +4,8 @@ using System.Globalization;
 using System.IO;
 using ProtoCore.AST;
 using ProtoCore.DSASM;
-using ProtoCore.Utils;
 using ProtoCore.Properties;
+using ProtoCore.Utils;
 
 namespace ProtoCore
 {
