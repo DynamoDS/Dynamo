@@ -49,7 +49,7 @@ namespace CoreNodeModelsWpf.Nodes
             nodeView.PresentationGrid.Children.Add(watchTree);
             nodeView.PresentationGrid.Visibility = Visibility.Visible;
             // disable preview control
-            nodeView.TogglePreviewControlAllowance();
+            //nodeView.TogglePreviewControlAllowance();
 
             Bind(watchTree, nodeView);
 
