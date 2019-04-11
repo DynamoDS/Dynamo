@@ -142,6 +142,7 @@ limitations under the License.
     <Compile Include="Library\ILibraryLoader.cs" />
     <Compile Include="Graph\Workspaces\ICustomNodeWorkspaceModel.cs" />
     <Compile Include="Visualization\DefaultGraphicPrimitives.cs" />
+    <Compile Include="Visualization\GeometryHolder.cs" />
     <Compile Include="Visualization\IRenderPackageSource.cs" />
     <Compile Include="Graph\Workspaces\IWorkspaceModel.cs" />
     <Compile Include="Logging\LogMessage.cs" />

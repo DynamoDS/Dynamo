@@ -8,7 +8,7 @@ using DynamoCoreWpfTests;
 namespace DynamoPerformanceTests
 {
 
-    public class DynamoViewPerformanceTestBase : NodeViewTests
+    public class DynamoViewPerformanceTestBase : GrapViewTests
     {
         /// <summary>
         /// Override this function to preload dlls into Dynamo library
@@ -60,24 +60,37 @@ namespace DynamoPerformanceTests
 
         #region Iteration setup and cleanup methods for Benchmarks
         /// <summary>
-        /// Setup method to be called before each OpenModel benchmark.
+        /// Setup method to be called before each OpenGraph benchmark.
         /// </summary>
-        [IterationSetup(Target = nameof(OpenGraph))]
-        public void IterationSetupOpenModelWithUI()
-        {
-            Start();
-        }
+        //[IterationSetup(Target = nameof(OpenGraph))]
+        //public void IterationSetupOpenModelWithUI()
+        //{
+        //    Start();
+        //}
 
         /// <summary>
-        /// Setup method to be called before each RunModel benchmark.
+        /// Setup method to be called before each RunGraph benchmark.
         /// </summary>
-        [IterationSetup(Target = nameof(RunGraph))]
-        public void IterationSetupRunModelWithUI()
+        //[IterationSetup(Target = nameof(RunGraph))]
+        //public void IterationSetupRunModelWithUI()
+        //{
+        //    Start();
+
+        //    //open the dyn file
+        //    Open(DynamoFilePath);
+        //}
+
+        /// <summary>
+        /// Setup method to be called before each RenderGraph benchmark.
+        /// </summary>
+        [IterationSetup(Target = nameof(GraphTessellation))]
+        public void IterationSetupRenderGraph()
         {
             Start();
 
             //open the dyn file
             Open(DynamoFilePath);
+            Run();
         }
 
         /// <summary>
@@ -95,17 +108,23 @@ namespace DynamoPerformanceTests
 
         // The calling thread must be STA as a requirement
         // Otherwise, System.InvalidOperationException will be thrown during RunIteration
-        [Benchmark, System.STAThread]
-        public void OpenGraph()
-        {
-            //open the dyn file
-            Open(DynamoFilePath);
-        }
+        //[Benchmark, System.STAThread]
+        //public void OpenGraph()
+        //{
+        //    //open the dyn file
+        //    Open(DynamoFilePath);
+        //}
+
+        //[Benchmark, System.STAThread]
+        //public void RunGraph()
+        //{
+        //    Run();
+        //}
 
         [Benchmark, System.STAThread]
-        public void RunGraph()
+        public void GraphTessellation()
         {
-            Run();
+            Tessellation();
         }
 
         #endregion

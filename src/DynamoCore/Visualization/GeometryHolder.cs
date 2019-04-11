@@ -5,9 +5,8 @@ using System.Threading;
 using Autodesk.DesignScript.Interfaces;
 using Dynamo.Graph.Nodes;
 using Dynamo.Models;
-using Dynamo.Visualization;
 
-namespace DynamoWPFCLI
+namespace Dynamo.Visualization
 {
     internal class GeometryData
     {
