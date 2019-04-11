@@ -1,6 +1,4 @@
-﻿using NUnit.Framework;
-
-namespace ProtoTestFx
+﻿namespace ProtoTestFx
 {
     public class Program
     {

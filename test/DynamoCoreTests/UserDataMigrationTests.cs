@@ -2,12 +2,9 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
 using Dynamo.Configuration;
 using Dynamo.Core;
 using Dynamo.Interfaces;
-using Dynamo.Tests;
 using Dynamo.Updates;
 using Moq;
 using NUnit.Framework;

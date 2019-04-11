@@ -1,11 +1,10 @@
 ﻿using System.Linq;
 using Dynamo.Graph.Nodes.ZeroTouch;
 using Dynamo.Models;
-using Dynamo.Nodes;
 using Dynamo.Selection;
 using Dynamo.Tests;
-using NUnit.Framework;
 using Dynamo.Utilities;
+using NUnit.Framework;
 
 namespace DynamoCoreWpfTests
 {

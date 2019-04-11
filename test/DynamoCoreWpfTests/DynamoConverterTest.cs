@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
-using System.Threading;
 using CoreNodeModels.Input;
 using Dynamo.Tests;
 using DynamoConversions;

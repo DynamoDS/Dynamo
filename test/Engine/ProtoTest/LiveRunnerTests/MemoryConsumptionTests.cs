@@ -1,21 +1,11 @@
-﻿﻿using System;
+﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using NUnit.Framework;
-using ProtoCore.DSASM.Mirror;
-using ProtoCore.Lang;
-using ProtoTest.TD;
 using ProtoScript.Runners;
-using ProtoTestFx.TD;
-using System.Linq;
-using ProtoCore.AST.AssociativeAST;
-using ProtoCore.DSASM;
-using ProtoCore.Mirror;
-using System.Collections;
 
 namespace ProtoTest.LiveRunner
 {
-    
+
     class MemoryConsumptionTests : ProtoTestBase
     {
         private int instrStreamStart = 0;

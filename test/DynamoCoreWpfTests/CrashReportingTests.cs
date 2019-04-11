@@ -1,6 +1,6 @@
 ﻿using System;
-using Dynamo.ViewModels;
 using Dynamo.Utilities;
+using Dynamo.ViewModels;
 using NUnit.Framework;
 
 namespace Dynamo.Tests

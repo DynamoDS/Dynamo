@@ -2,33 +2,28 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Xml;
-
-using SystemTestServices;
-
-using Dynamo;
-using Dynamo.Controls;
-using Dynamo.Models;
-using Dynamo.Nodes;
-using Dynamo.Scheduler;
-using Dynamo.Tests;
-using Dynamo.Utilities;
-using Dynamo.ViewModels;
-using DynamoShapeManager;
-using NUnit.Framework;
 using System.Reflection;
+using System.Xml;
 using CoreNodeModels.Input;
+using Dynamo;
 using Dynamo.Configuration;
+using Dynamo.Controls;
 using Dynamo.Graph;
 using Dynamo.Graph.Connectors;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.CustomNodes;
 using Dynamo.Graph.Notes;
 using Dynamo.Graph.Workspaces;
-using TestServices;
-
+using Dynamo.Models;
+using Dynamo.Scheduler;
+using Dynamo.Tests;
+using Dynamo.Utilities;
+using Dynamo.ViewModels;
+using DynamoShapeManager;
+using NUnit.Framework;
 using PythonNodeModels;
-
+using SystemTestServices;
+using TestServices;
 using IntegerSlider = CoreNodeModels.Input.IntegerSlider;
 
 namespace DynamoCoreWpfTests

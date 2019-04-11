@@ -1,4 +1,10 @@
-﻿using CoreNodeModels;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Threading;
+using CoreNodeModels;
 using DesignScript.Builtin;
 using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
@@ -10,12 +16,6 @@ using Dynamo.Models;
 using Dynamo.Selection;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading;
 
 namespace Dynamo.Tests
 {

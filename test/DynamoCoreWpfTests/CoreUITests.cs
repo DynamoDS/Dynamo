@@ -1,4 +1,10 @@
-﻿using CoreNodeModels.Input;
+﻿using System;
+using System.IO;
+using System.Linq;
+using System.Threading;
+using System.Windows;
+using System.Windows.Input;
+using CoreNodeModels.Input;
 using Dynamo.Configuration;
 using Dynamo.Controls;
 using Dynamo.Graph.Connectors;
@@ -14,12 +20,6 @@ using Dynamo.ViewModels;
 using Dynamo.Views;
 using DynamoCoreWpfTests.Utility;
 using NUnit.Framework;
-using System;
-using System.IO;
-using System.Linq;
-using System.Threading;
-using System.Windows;
-using System.Windows.Input;
 using SystemTestServices;
 
 namespace DynamoCoreWpfTests

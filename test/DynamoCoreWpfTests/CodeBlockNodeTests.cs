@@ -1,24 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Xml;
-
-using SystemTestServices;
-
-using Dynamo;
-using Dynamo.Controls;
-using Dynamo.Models;
-using Dynamo.Tests;
-using Dynamo.ViewModels;
+using System.Text.RegularExpressions;
+using Dynamo.Graph.Nodes;
+using Dynamo.Utilities;
 using Dynamo.Wpf.Views;
 using NUnit.Framework;
-using System.Text.RegularExpressions;
-using Dynamo.Graph;
-using Dynamo.Graph.Nodes;
-using Dynamo.UI.Controls;
-using Dynamo.Utilities;
 
 namespace DynamoCoreWpfTests
 {

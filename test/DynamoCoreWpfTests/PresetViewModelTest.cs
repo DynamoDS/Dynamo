@@ -2,11 +2,11 @@ using System.Linq;
 using CoreNodeModels.Input;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.ZeroTouch;
+using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
 using Dynamo.Selection;
 using Dynamo.Tests;
 using NUnit.Framework;
-using Dynamo.Graph.Workspaces;
 
 namespace DynamoCoreWpfTests
 {

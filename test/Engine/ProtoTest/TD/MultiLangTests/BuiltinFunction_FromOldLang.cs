@@ -1,12 +1,6 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using NUnit.Framework;
 using ProtoCore.DSASM.Mirror;
-using ProtoTest.TD;
-using ProtoCore.Lang.Replication;
-using ProtoTestFx.TD;
 namespace ProtoTest.TD.MultiLangTests
 {
     class BuiltinFunction_FromOldLang : ProtoTestBase
