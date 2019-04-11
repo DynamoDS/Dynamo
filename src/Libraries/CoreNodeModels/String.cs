@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using CoreNodeModels.Properties;
 using Dynamo.Graph.Nodes;
-using ProtoCore.AST.AssociativeAST;
 using Newtonsoft.Json;
+using ProtoCore.AST.AssociativeAST;
 
 namespace CoreNodeModels
 {

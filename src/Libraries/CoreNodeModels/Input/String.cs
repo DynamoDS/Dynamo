@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Dynamo.Graph;
-using ProtoCore.AST.AssociativeAST;
 using Dynamo.Graph.Nodes;
+using ProtoCore.AST.AssociativeAST;
 
 namespace CoreNodeModels.Input
 {

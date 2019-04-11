@@ -1,8 +1,7 @@
-﻿using CoreNodeModelsWpf.Controls;
-using CoreNodeModels.Input;
+﻿using CoreNodeModels.Input;
+using CoreNodeModelsWpf.Controls;
 using Dynamo.Controls;
 using Dynamo.Wpf;
-using Dynamo.Wpf.Controls;
 
 namespace CoreNodeModelsWpf.NodeViewCustomizations
 {
