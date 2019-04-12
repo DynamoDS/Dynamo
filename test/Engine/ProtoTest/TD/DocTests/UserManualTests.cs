@@ -1,8 +1,4 @@
-using System;
 using NUnit.Framework;
-using ProtoCore.DSASM.Mirror;
-using System.Collections.Generic;
-using ProtoTestFx.TD;
 namespace ProtoTest.TD.DocTests
 {
     class UserManualTests : ProtoTestBase

@@ -7,7 +7,6 @@ using System.Threading;
 
 using Dynamo.Configuration;
 using Dynamo.Controls;
-using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Interfaces;

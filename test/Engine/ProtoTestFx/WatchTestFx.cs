@@ -1,15 +1,13 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.IO;
 using System.Text.RegularExpressions;
 using NUnit.Framework;
-using ProtoScript.Runners;
-using ProtoFFI;
 using ProtoCore;
 using ProtoCore.DSASM;
 using ProtoCore.Lang;
+using ProtoFFI;
+using ProtoScript.Runners;
 
 namespace ProtoTestFx
 {

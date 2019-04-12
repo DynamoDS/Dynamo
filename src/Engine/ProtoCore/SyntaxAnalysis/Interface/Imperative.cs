@@ -1,5 +1,4 @@
-﻿using ProtoCore.AST;
-using ProtoCore.AST.ImperativeAST;
+﻿using ProtoCore.AST.ImperativeAST;
 
 namespace ProtoCore.SyntaxAnalysis.Imperative
 {

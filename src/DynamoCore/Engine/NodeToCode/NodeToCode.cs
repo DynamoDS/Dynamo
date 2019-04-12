@@ -1,4 +1,7 @@
-﻿using Dynamo.Core;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using Dynamo.Core;
 using Dynamo.Engine.CodeGeneration;
 using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
@@ -7,9 +10,6 @@ using ProtoCore.AST.AssociativeAST;
 using ProtoCore.DSASM;
 using ProtoCore.Namespace;
 using ProtoCore.SyntaxAnalysis;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace Dynamo.Engine.NodeToCode
 {

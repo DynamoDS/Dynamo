@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Linq;
 using System.Collections.Generic;
+using System.Linq;
 using ProtoCore.DSASM;
 using ProtoCore.Exceptions;
-using ProtoCore.Properties;
 using ProtoCore.Utils;
 
 namespace ProtoCore.Lang.Replication

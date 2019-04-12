@@ -1,22 +1,19 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
+using Autodesk.DesignScript.Interfaces;
 using NUnit.Framework;
+using ProtoCore.DSASM;
 using ProtoCore.DSASM.Mirror;
-using ProtoCore.AST.AssociativeAST;
 using ProtoCore.Lang;
 using ProtoCore.Mirror;
 using ProtoCore.Utils;
 using ProtoFFI;
 using ProtoScript.Runners;
-using System.IO;
-using System.Diagnostics;
-using Autodesk.DesignScript.Interfaces;
-using Autodesk.DesignScript.Runtime;
-using ProtoCore.DSASM;
-using System.Collections;
-using System.Text.RegularExpressions;
 
 namespace ProtoTestFx.TD
 {

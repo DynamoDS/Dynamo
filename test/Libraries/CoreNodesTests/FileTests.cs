@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using CoreNodeModels.Input;
-using DSCore.IO;
 using Dynamo.Events;
 using Dynamo.Session;
 using Moq;

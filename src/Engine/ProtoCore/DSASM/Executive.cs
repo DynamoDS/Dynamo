@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using ProtoCore.Exceptions;
-using ProtoCore.Utils;
-using ProtoCore.Runtime;
-using ProtoCore.Properties;
 using ProtoCore.Lang.Replication;
+using ProtoCore.Properties;
+using ProtoCore.Runtime;
+using ProtoCore.Utils;
 
 namespace ProtoCore.DSASM
-{ 
+{
     public class Executive : IExecutive
     {
         private readonly bool enableLogging = true;

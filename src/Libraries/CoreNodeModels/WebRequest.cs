@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using DSCore;
-using ProtoCore.AST.AssociativeAST;
 using CoreNodeModels.Properties;
+using DSCore;
 using Dynamo.Graph.Nodes;
 using Newtonsoft.Json;
+using ProtoCore.AST.AssociativeAST;
 
 namespace CoreNodeModels
 {

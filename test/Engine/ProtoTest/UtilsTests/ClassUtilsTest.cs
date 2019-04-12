@@ -1,11 +1,9 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using NUnit.Framework;
 using ProtoCore.DSASM;
 using ProtoCore.DSASM.Mirror;
 using ProtoCore.Utils;
-using ProtoFFI;
 namespace ProtoTest.UtilsTests
 {
     [TestFixture]

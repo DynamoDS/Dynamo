@@ -3,7 +3,6 @@ using System.Configuration;
 using System.IO;
 using System.Reflection;
 using Dynamo.Configuration;
-using Dynamo.Utilities;
 
 using NUnit.Framework;
 

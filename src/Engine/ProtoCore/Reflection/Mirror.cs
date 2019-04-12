@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using ProtoCore.Utils;
-using ProtoCore.DSASM;
-using ProtoCore.Lang;
-using ProtoCore.AST.AssociativeAST;
 using System.Text;
+using ProtoCore.AST.AssociativeAST;
 using ProtoCore.CompilerDefinitions;
+using ProtoCore.DSASM;
+using ProtoCore.Utils;
 
 namespace ProtoCore
 {

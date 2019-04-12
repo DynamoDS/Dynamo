@@ -1,11 +1,10 @@
-﻿using System.Linq;
-using Dynamo.Properties;
-using ProtoCore.AST.AssociativeAST;
-
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Linq;
 using Dynamo.Graph.Nodes;
-using ProtoCore.DSASM;
+using Dynamo.Properties;
 using Newtonsoft.Json;
+using ProtoCore.AST.AssociativeAST;
+using ProtoCore.DSASM;
 
 namespace CoreNodeModels
 {

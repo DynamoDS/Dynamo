@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using CoreNodeModels.Input;
 using CoreNodeModelsWpf.Controls;
+using CoreNodeModelsWpf.Nodes;
 using Dynamo.Controls;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.CustomNodes;
@@ -14,9 +17,6 @@ using Dynamo.Nodes;
 using Dynamo.Utilities;
 using DynamoCoreWpfTests.Utility;
 using NUnit.Framework;
-using CoreNodeModels.Input;
-using CoreNodeModelsWpf.Nodes;
-using System.Globalization;
 
 namespace DynamoCoreWpfTests
 {

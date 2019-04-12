@@ -1,14 +1,10 @@
-﻿using Dynamo;
-using Dynamo.Search.SearchElements;
-using Dynamo.ViewModels;
-using Dynamo.Wpf.ViewModels;
-using NUnit.Framework;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Windows.Controls;
-using System.Windows.Data;
+using Dynamo;
+using Dynamo.Search.SearchElements;
+using Dynamo.Wpf.ViewModels;
+using NUnit.Framework;
 
 namespace DynamoCoreWpfTests
 {

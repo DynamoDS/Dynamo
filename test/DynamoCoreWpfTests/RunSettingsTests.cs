@@ -1,18 +1,15 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
-
-using System.Linq;
-
-using SystemTestServices;
 using CoreNodeModels.Input;
+using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
 using Dynamo.Wpf.ViewModels;
-
 using NUnit.Framework;
-using Dynamo.Graph.Workspaces;
+using SystemTestServices;
 
 namespace DynamoCoreWpfTests
 {
