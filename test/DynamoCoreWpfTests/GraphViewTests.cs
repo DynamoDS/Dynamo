@@ -1,8 +1,7 @@
-﻿using System.Collections.Generic;
-using System.Threading;
+﻿using System.Threading;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
-using Dynamo.Visualization;
+using Dynamo.Wpf.Rendering;
 using DynamoCoreWpfTests.Utility;
 
 namespace DynamoCoreWpfTests
@@ -59,7 +58,9 @@ namespace DynamoCoreWpfTests
         /// </summary>
         public void Tessellation()
         {
-            var renderPackageFactory = new DefaultRenderPackageFactory();
+            var renderPackageFactory = new HelixRenderPackageFactory();
+
+            // A list of GeometryHolder for all the nodes belong to the graph
             var nodeGeometries = new List<GeometryHolder>();
 
             foreach (var node in Model.CurrentWorkspace.Nodes)
@@ -67,13 +68,9 @@ namespace DynamoCoreWpfTests
                 nodeGeometries.Add(new GeometryHolder(Model, renderPackageFactory, node));
             }
 
-            var geometry = new List<object>();
             foreach (var holder in nodeGeometries)
             {
-                if (holder.HasGeometry)
-                {
-                    geometry.Add(holder.Geometry);
-                }
+                holder.HasGeometry;
             }
         }
     }
