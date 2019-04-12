@@ -71,14 +71,17 @@ namespace DynamoPerformanceTests
         /// <summary>
         /// Setup method to be called before each RunGraph benchmark.
         /// </summary>
-        //[IterationSetup(Target = nameof(RunGraph))]
-        //public void IterationSetupRunModelWithUI()
-        //{
-        //    Start();
+        [IterationSetup(Target = nameof(RunGraph))]
+        public void IterationSetupRunModelWithUI()
+        {
+            Start();
 
-        //    //open the dyn file
-        //    Open(DynamoFilePath);
-        //}
+            // open the dyn file
+            Open(DynamoFilePath);
+
+            // Disable tessellation or rendering
+            DisableRendering();
+        }
 
         /// <summary>
         /// Setup method to be called before each RenderGraph benchmark.
@@ -115,11 +118,11 @@ namespace DynamoPerformanceTests
         //    Open(DynamoFilePath);
         //}
 
-        //[Benchmark, System.STAThread]
-        //public void RunGraph()
-        //{
-        //    Run();
-        //}
+        [Benchmark, System.STAThread]
+        public void RunGraph()
+        {
+            Run();
+        }
 
         [Benchmark, System.STAThread]
         public void GraphTessellation()

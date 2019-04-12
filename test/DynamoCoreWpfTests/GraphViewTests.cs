@@ -1,11 +1,17 @@
-﻿using System.Threading;
+﻿using System.Collections.Generic;
+using System.Threading;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
+using Dynamo.Visualization;
 using Dynamo.Wpf.Rendering;
 using DynamoCoreWpfTests.Utility;
 
 namespace DynamoCoreWpfTests
 {
+
+    /// <summary>
+    /// This class should not be used for DynamoView unit tests
+    /// </summary>
     public class GrapViewTests : DynamoTestUIBase
     {
         /// <summary>
@@ -22,6 +28,18 @@ namespace DynamoCoreWpfTests
             base.Open(path);
 
             DispatcherUtil.DoEvents();
+        }
+
+        /// <summary>
+        /// Call this to disable the event handler to get render package
+        /// </summary>
+        public void DisableRendering()
+        {
+            // Dispose the background watch 3D ViewModel so no tessellation or rendering happen
+            foreach (var node in Model.CurrentWorkspace.Nodes)
+            {
+                ViewModel.BackgroundPreviewViewModel.UnregisterNodeEventHandlers(node);
+            }
         }
 
         /// <summary>
@@ -46,6 +64,7 @@ namespace DynamoCoreWpfTests
             // A more precise way to measure the time spent is from when
             // run() called to when even EvaluationCompleted is trigger on workspace
             (Model.CurrentWorkspace as HomeWorkspaceModel).EvaluationCompleted += OnGraphEvaluationCompleted;
+
             base.Run();
             signalEvent.WaitOne();
             signalEvent.Reset();
@@ -70,7 +89,8 @@ namespace DynamoCoreWpfTests
 
             foreach (var holder in nodeGeometries)
             {
-                holder.HasGeometry;
+                if (holder.HasGeometry)
+                    continue;
             }
         }
     }
