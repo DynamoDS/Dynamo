@@ -1,18 +1,15 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
-
-using System.Linq;
-
-using SystemTestServices;
 using CoreNodeModels.Input;
+using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
 using Dynamo.Wpf.ViewModels;
-
 using NUnit.Framework;
-using Dynamo.Graph.Workspaces;
+using SystemTestServices;
 
 namespace DynamoCoreWpfTests
 {
@@ -147,26 +144,6 @@ namespace DynamoCoreWpfTests
             homeSpace = GetHomeSpace();
             Assert.AreEqual(homeSpace.RunSettings.RunType, RunType.Periodic);
             Assert.AreEqual(homeSpace.RunSettings.RunPeriod, 10);
-        }
-
-        // This test is now irrelevant due to the follow fix:
-        //   https://github.com/DynamoDS/Dynamo/pull/4674
-        // 
-        [Test, Ignore]
-        [Category("Failure")]
-        public void RunSettingsDisableRun()
-        {
-            string openPath = Path.Combine(workingDirectory, @"..\..\..\test\core\math\Add.dyn");
-
-            Model.OpenFileFromPath(openPath);
-            var homeSpace = GetHomeSpace();
-            homeSpace.RunSettings.RunEnabled = false;
-            homeSpace.Run();
-
-            string varname = GetVarName("4c5889ac-7b91-4fb5-aaad-a2128b533279");
-            var mirror = GetRuntimeMirror(varname);
-
-            Assert.IsNull(mirror);
         }
 
         private RoutedEventArgs GetKeyboardEnterEventArgs(Visual visual)

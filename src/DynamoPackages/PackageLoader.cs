@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using Dynamo.Core;
+using Dynamo.Extensions;
 using Dynamo.Interfaces;
 using Dynamo.Logging;
 using Dynamo.Utilities;
 using DynamoPackages.Properties;
 using DynamoUtilities;
-using Dynamo.Core;
-using Dynamo.Extensions;
 
 namespace Dynamo.PackageManager
 {

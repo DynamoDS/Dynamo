@@ -1,14 +1,6 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using NUnit.Framework;
-using ProtoCore.DSASM;
 using ProtoCore.DSASM.Mirror;
-using ProtoFFI;
-using ProtoScript.Runners;
-using ProtoTest.TD;
-using ProtoTestFx.TD;
 namespace ProtoTest.DebugTests
 {
     [TestFixture]

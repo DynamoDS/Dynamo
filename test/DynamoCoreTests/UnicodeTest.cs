@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using DynCmd = Dynamo.Models.DynamoModel;
 using NUnit.Framework;
 
 namespace Dynamo.Tests

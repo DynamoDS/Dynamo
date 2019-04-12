@@ -10,9 +10,9 @@ using CoreNodeModels.Properties;
 using Dynamo.Engine.CodeGeneration;
 using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
+using Newtonsoft.Json;
 using ProtoCore.AST.AssociativeAST;
 using VMDataBridge;
-using Newtonsoft.Json;
 
 namespace CoreNodeModels.Input
 {

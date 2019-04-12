@@ -1,17 +1,10 @@
-﻿using CoreNodeModels.Input;
+﻿using CoreNodeModels;
+using CoreNodeModelsWpf.Controls;
 using Dynamo.Controls;
-using Dynamo.Search;
-using Dynamo.ViewModels;
-using Dynamo.Wpf.Controls;
-using CoreNodeModels;
-using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Workspaces;
-using Dynamo.Models;
-using DynamoConversions;
-using ProtoCore.AST;
+using Dynamo.ViewModels;
 using Dynamo.Wpf;
-using CoreNodeModelsWpf.Controls;
 
 namespace CoreNodeModelsWpf.NodeViewCustomizations
 {

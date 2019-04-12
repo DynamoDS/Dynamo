@@ -1,7 +1,7 @@
-﻿using DesignScript.Builtin;
-using NUnit.Framework;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
+using DesignScript.Builtin;
+using NUnit.Framework;
 
 namespace Dynamo.Tests.Nodes
 {

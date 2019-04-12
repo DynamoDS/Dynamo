@@ -2,18 +2,18 @@
 //#define ENABLE_INC_DEC_FIX
 using System;
 using System.Collections.Generic;
-using System.IO;
 using ProtoCore.AST;
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.DSASM;
-using ProtoCore.Utils;
 using ProtoCore.Properties;
+using ProtoCore.Utils;
 
-namespace ProtoCore.DesignScriptParser {
+namespace ProtoCore.DesignScriptParser
+{
 
 
 
-public class Parser {
+    public class Parser {
 	public const int _EOF = 0;
 	public const int _ident = 1;
 	public const int _number = 2;

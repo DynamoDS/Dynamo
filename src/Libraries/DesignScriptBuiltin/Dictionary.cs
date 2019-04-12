@@ -1,8 +1,7 @@
-﻿using System.Collections;
-using Autodesk.DesignScript.Runtime;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
+using Autodesk.DesignScript.Runtime;
 
 namespace DesignScript
 {

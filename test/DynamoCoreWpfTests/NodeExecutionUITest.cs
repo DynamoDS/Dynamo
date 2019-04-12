@@ -1,15 +1,10 @@
 ﻿using System.Linq;
-using System.Security.RightsManagement;
-using System.Windows.Controls;
 using CoreNodeModels.Input;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.ZeroTouch;
 using Dynamo.Models;
-using Dynamo.Nodes;
-using Dynamo.Selection;
 using Dynamo.Tests;
 using NUnit.Framework;
-using Dynamo.Utilities;
 
 namespace DynamoCoreWpfTests
 {

@@ -2,17 +2,14 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using NUnit.Framework;
-using DynamoSandbox;
 using System.Text.RegularExpressions;
 using System.Xml;
-using Dynamo;
 using Dynamo.Applications;
 using Dynamo.ViewModels;
+using Dynamo.Wpf.ViewModels.Watch3D;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using Dynamo.Wpf.ViewModels.Watch3D;
-using System.Reflection;
+using NUnit.Framework;
 
 namespace Dynamo.Tests
 {

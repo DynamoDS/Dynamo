@@ -2,13 +2,10 @@
 using System.Linq;
 using System.Threading;
 using System.Windows;
-
-using SystemTestServices;
-
 using Dynamo.PackageManager;
 using Dynamo.PackageManager.UI;
-
 using NUnit.Framework;
+using SystemTestServices;
 
 
 namespace DynamoCoreWpfTests

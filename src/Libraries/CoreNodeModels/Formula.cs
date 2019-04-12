@@ -5,10 +5,10 @@ using System.Xml;
 using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
 using NCalc;
+using Newtonsoft.Json;
 using ProtoCore;
 using ProtoCore.AST.AssociativeAST;
 using Expression = NCalc.Expression;
-using Newtonsoft.Json;
 
 namespace CoreNodeModels
 {

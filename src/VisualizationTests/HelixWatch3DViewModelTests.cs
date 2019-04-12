@@ -31,7 +31,6 @@ using SystemTestServices;
 using TestServices;
 using Watch3DNodeModels;
 using Watch3DNodeModelsWpf;
-using Buffer = SharpDX.Toolkit.Graphics.Buffer;
 using Color = System.Windows.Media.Color;
 using GeometryModel3D = HelixToolkit.Wpf.SharpDX.GeometryModel3D;
 using Model3D = HelixToolkit.Wpf.SharpDX.Model3D;

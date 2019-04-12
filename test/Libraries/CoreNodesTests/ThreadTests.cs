@@ -1,7 +1,7 @@
-﻿using Autodesk.DesignScript.Geometry;
-using NUnit.Framework;
-using System;
+﻿using System;
 using System.Diagnostics;
+using Autodesk.DesignScript.Geometry;
+using NUnit.Framework;
 using TestServices;
 
 namespace DSCoreNodesTests

@@ -2,9 +2,7 @@ using System;
 using System.Collections.Generic;
 using NUnit.Framework;
 using ProtoCore.DSASM.Mirror;
-using ProtoCore.Lang;
 using ProtoTestFx.TD;
-using ProtoTestFx;
 namespace ProtoTest.TD.Associative
 {
     class Replication : ProtoTestBase

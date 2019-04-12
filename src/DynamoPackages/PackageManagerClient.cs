@@ -1,9 +1,9 @@
-﻿using Greg;
-using Greg.Requests;
-using Greg.Responses;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Greg;
+using Greg.Requests;
+using Greg.Responses;
 
 namespace Dynamo.PackageManager
 {

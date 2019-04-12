@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using NUnit.Framework;
 using System.IO;
+using System.Linq;
 using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Selection;
+using NUnit.Framework;
 
 namespace Dynamo.Tests
 {

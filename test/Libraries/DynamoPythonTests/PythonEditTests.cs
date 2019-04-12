@@ -2,12 +2,10 @@
 using System.IO;
 using System.Linq;
 using Dynamo.Graph;
-using Dynamo.Models;
 using Dynamo.Graph.Nodes;
 using NUnit.Framework;
-using DynCmd = Dynamo.Models.DynamoModel;
-
 using PythonNodeModels;
+using DynCmd = Dynamo.Models.DynamoModel;
 
 namespace Dynamo.Tests
 {

@@ -3,13 +3,12 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using NUnit.Framework;
+using ProtoCore.DSASM;
+using ProtoCore.DSASM.Mirror;
 using ProtoCore.Lang;
 using ProtoFFI;
 using ProtoScript.Runners;
-using ProtoCore.DSASM.Mirror;
-using ProtoTest.TD;
 using ProtoTestFx.TD;
-using ProtoCore.DSASM;
 
 namespace ProtoTest.DebugTests
 {

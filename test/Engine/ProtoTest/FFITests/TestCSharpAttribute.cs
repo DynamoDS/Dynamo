@@ -1,15 +1,9 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using NUnit.Framework;
-using ProtoCore.DSASM.Mirror;
-using ProtoCore.Mirror;
-using ProtoFFITests;
-using ProtoTestFx.TD;
-using System.Linq;
-using ProtoFFI;
 using System.Reflection;
+using NUnit.Framework;
+using ProtoCore.Mirror;
+using ProtoFFI;
 
 namespace ProtoTest.FFITests
 {

@@ -1,18 +1,13 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Windows;
-
-using SystemTestServices;
-using Dynamo;
-using Dynamo.Configuration;
-using Dynamo.ViewModels;
-using NUnit.Framework;
-using Dynamo.PackageManager;
-using Dynamo.Core;
+﻿
 using System.IO;
 using System.Reflection;
+using Dynamo.Configuration;
+using Dynamo.Core;
 using Dynamo.Models;
+using Dynamo.PackageManager;
+using Dynamo.ViewModels;
+using NUnit.Framework;
+using SystemTestServices;
 
 namespace DynamoCoreWpfTests
 {

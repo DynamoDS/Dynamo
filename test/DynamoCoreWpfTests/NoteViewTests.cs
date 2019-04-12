@@ -1,11 +1,7 @@
-﻿using System;
-using System.Linq;
-using Dynamo.Selection;
+﻿using System.Linq;
+using System.Windows.Input;
 using DynamoCoreWpfTests.Utility;
 using NUnit.Framework;
-using System.Windows.Input;
-using Dynamo.Nodes;
-using System.Windows.Controls;
 
 namespace DynamoCoreWpfTests
 {

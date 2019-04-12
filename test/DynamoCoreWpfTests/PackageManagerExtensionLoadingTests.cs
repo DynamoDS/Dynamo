@@ -1,18 +1,14 @@
-﻿using CoreNodeModels.Input;
+﻿using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Windows.Controls;
+using CoreNodeModels.Input;
 using Dynamo.Configuration;
 using Dynamo.Graph.Nodes;
 using Dynamo.Interfaces;
 using Dynamo.Models;
-using Dynamo.PackageManager;
 using Dynamo.Scheduler;
 using NUnit.Framework;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Controls;
 
 namespace DynamoCoreWpfTests
 {

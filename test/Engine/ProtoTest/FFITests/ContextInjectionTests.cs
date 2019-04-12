@@ -1,9 +1,7 @@
-using FFITarget;
-using ProtoTest.TD;
-using NUnit.Framework;
 using System;
 using System.Collections.Generic;
-using ProtoTestFx.TD;
+using FFITarget;
+using NUnit.Framework;
 namespace ProtoFFITests
 {
     class InternalContext

@@ -6,9 +6,9 @@ using Dynamo.Controls;
 using Dynamo.Nodes;
 using Dynamo.UI.Prompts;
 using Dynamo.ViewModels;
+using Dynamo.Wpf;
 using Binding = System.Windows.Data.Binding;
 using VerticalAlignment = System.Windows.VerticalAlignment;
-using Dynamo.Wpf;
 
 namespace CoreNodeModelsWpf.Nodes
 {

@@ -1,11 +1,8 @@
 using System.IO;
 using System.Linq;
-
-using NUnit.Framework;
 using Dynamo.Extensions;
 using Moq;
-using System;
-using System.Dynamic;
+using NUnit.Framework;
 
 namespace Dynamo.PackageManager.Tests
 {

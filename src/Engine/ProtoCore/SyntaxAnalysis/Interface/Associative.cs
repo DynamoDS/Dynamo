@@ -1,5 +1,4 @@
-﻿using System;
-using ProtoCore.AST;
+using System;
 using ProtoCore.AST.AssociativeAST;
 
 namespace ProtoCore.SyntaxAnalysis.Associative

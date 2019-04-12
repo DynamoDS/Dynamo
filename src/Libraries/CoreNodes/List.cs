@@ -2,10 +2,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Globalization;
 using System.Linq;
-using System.Threading;
 using Autodesk.DesignScript.Runtime;
 using DSCore.Properties;
 

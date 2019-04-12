@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -11,12 +12,11 @@ using ProtoCore.DSASM;
 using ProtoCore.Exceptions;
 using ProtoCore.Lang;
 using ProtoCore.Lang.Replication;
-using ProtoCore.Utils;
-using StackFrame = ProtoCore.DSASM.StackFrame;
 using ProtoCore.Properties;
 using ProtoCore.Runtime;
+using ProtoCore.Utils;
+using StackFrame = ProtoCore.DSASM.StackFrame;
 using WarningID = ProtoCore.Runtime.WarningID;
-using System.Collections.ObjectModel;
 
 namespace ProtoCore
 {
