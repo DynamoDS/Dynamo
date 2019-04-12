@@ -189,7 +189,7 @@ namespace DynamoPerformanceTests
             /// Get the results of this comparison as a list of arrays of strings
             /// </summary>
             /// <returns></returns>
-            internal IEnumerable<string[]> GetComparisonData()
+            internal List<string[]> GetComparisonData()
             {
                 if (!BaseBenchmarkFound) return null;
 
@@ -214,7 +214,7 @@ namespace DynamoPerformanceTests
             LogResults(comparisons);
 
             // Save comparisons to csv if path provided
-            if (saveCSVPath != null && saveCSVPath != string.Empty)
+            if (!string.IsNullOrEmpty(saveCSVPath))
             {
                 WriteResultsToCSV(comparisons, saveCSVPath);
             }
@@ -223,7 +223,7 @@ namespace DynamoPerformanceTests
         /// <summary>
         /// Compare the two results files and build comparison data
         /// </summary>
-        private IEnumerable<BenchmarkComparison> CreateComparisons(string basePath, string newPath)
+        private List<BenchmarkComparison> CreateComparisons(string basePath, string newPath)
         {
             var baseResults = ImportResultsCSV(basePath);
             var newResults = ImportResultsCSV(newPath);
@@ -241,7 +241,7 @@ namespace DynamoPerformanceTests
         /// <summary>
         /// Print comparison results to the console
         /// </summary>
-        private void LogResults(IEnumerable<BenchmarkComparison> comparisons)
+        private void LogResults(List<BenchmarkComparison> comparisons)
         {
             var columnWidths = GetColumnWidths(comparisons);
 
@@ -268,7 +268,7 @@ namespace DynamoPerformanceTests
         /// Write the results of this comparison to a csv file
         /// </summary>
         /// <param name="filePath"></param>
-        private void WriteResultsToCSV(IEnumerable<BenchmarkComparison> comparisons, string filePath)
+        private void WriteResultsToCSV(List<BenchmarkComparison> comparisons, string filePath)
         {
             var rows = GetComparisonDataRows(comparisons).Select(r => string.Join(",", r));
             var csv = new StringBuilder();
@@ -290,7 +290,11 @@ namespace DynamoPerformanceTests
 
             // Check that columns we care about exist
             var columnNames = new string[] { "Method", "Graph", "Mean", "Error", "StdDev" };
-            CheckCSVHeader(header, columnNames, csvPath);
+            var missingColumns = columnNames.Where(c => !header.Contains(c));
+            if (missingColumns.Count() > 0)
+            {
+                throw new Exception(string.Format("The csv file at {0} does not contain the following required columns: {1}.", csvPath, string.Join(", ", missingColumns)));
+            }
 
             // Get indices for columns we care about
             var iMethod = Array.IndexOf(header, columnNames[0]);
@@ -322,7 +326,7 @@ namespace DynamoPerformanceTests
             return benchmarkResults;
         }
 
-        private List<string[]> GetComparisonDataRows(IEnumerable<BenchmarkComparison> comparisons)
+        private List<string[]> GetComparisonDataRows(List<BenchmarkComparison> comparisons)
         {
             var rows = new List<string[]>();
             var header = new string[] { "Method", "Graph", "Version", "Mean", "Error", "StdDev" };
@@ -335,27 +339,19 @@ namespace DynamoPerformanceTests
             return rows;
         }
 
-        private List<string>[] GetComparisonDataColumns(IEnumerable<BenchmarkComparison> comparisons)
+        private List<int> GetColumnWidths(List<BenchmarkComparison> comparisons)
         {
             var rows = GetComparisonDataRows(comparisons);
-            var numColumns = rows[0].Length;
-
-            var columns = new List<string>[numColumns];
-            for (int i = 0; i < numColumns; i++)
-                columns[i] = new List<string>();
-
-            foreach (var row in rows)
-                for (int i = 0; i < numColumns; i++)
-                    columns[i].Add(row[i]);
-
-            return columns;
-        }
-
-        private List<int> GetColumnWidths(IEnumerable<BenchmarkComparison> comparisons)
-        {
-            var columns = GetComparisonDataColumns(comparisons);
-            var columnWidths = columns.Select(c => c.OrderByDescending(s => s.Length).First().Length + 2).ToList();
-            return columnWidths;
+            var columnWidths = new int[rows[0].Length];
+            for(int i = 0; i < rows.Count; i++)
+            {
+                for(int j = 0; j < rows[i].Length; j++)
+                {
+                    if (rows[i][j].Length > columnWidths[j]) columnWidths[j] = rows[i][j].Length;
+                }
+            }
+            columnWidths = columnWidths.Select(c => c + 2).ToArray();
+            return columnWidths.ToList();
         }
 
         private BenchmarkResult GetBaseResult(BenchmarkResult newResult, Dictionary<string, BenchmarkResult> baseResults)
@@ -366,24 +362,6 @@ namespace DynamoPerformanceTests
                 return baseResults[key];
             }
             return null;
-        }
-
-        private void CheckCSVHeader(string[] header, string[] columnNames, string csvPath)
-        {
-            var columnIndices = columnNames.Select(c => Array.IndexOf(header, c)).ToList();
-            if (columnIndices.Where(i => i == -1).Count() > 0)
-            {
-                var missingColumns = new List<string>();
-                for (int i = 0; i < columnNames.Count(); i++)
-                {
-                    if (columnIndices[i] == -1)
-                    {
-                        missingColumns.Add(columnNames[i]);
-                    }
-                }
-                var message = string.Format("The csv file at {0} does not contain the following required columns: {1}.", csvPath, string.Join(", ", missingColumns));
-                throw new Exception(message);
-            }
         }
     }
 }
