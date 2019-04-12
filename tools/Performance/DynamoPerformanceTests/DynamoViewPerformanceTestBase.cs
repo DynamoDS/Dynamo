@@ -62,11 +62,11 @@ namespace DynamoPerformanceTests
         /// <summary>
         /// Setup method to be called before each OpenGraph benchmark.
         /// </summary>
-        //[IterationSetup(Target = nameof(OpenGraph))]
-        //public void IterationSetupOpenModelWithUI()
-        //{
-        //    Start();
-        //}
+        [IterationSetup(Target = nameof(OpenGraph))]
+        public void IterationSetupOpenModelWithUI()
+        {
+            Start();
+        }
 
         /// <summary>
         /// Setup method to be called before each RunGraph benchmark.
@@ -93,6 +93,9 @@ namespace DynamoPerformanceTests
 
             //open the dyn file
             Open(DynamoFilePath);
+            // Disable tessellation or rendering
+            DisableRendering();
+
             Run();
         }
 
@@ -111,12 +114,12 @@ namespace DynamoPerformanceTests
 
         // The calling thread must be STA as a requirement
         // Otherwise, System.InvalidOperationException will be thrown during RunIteration
-        //[Benchmark, System.STAThread]
-        //public void OpenGraph()
-        //{
-        //    //open the dyn file
-        //    Open(DynamoFilePath);
-        //}
+        [Benchmark, System.STAThread]
+        public void OpenGraph()
+        {
+            //open the dyn file
+            Open(DynamoFilePath);
+        }
 
         [Benchmark, System.STAThread]
         public void RunGraph()

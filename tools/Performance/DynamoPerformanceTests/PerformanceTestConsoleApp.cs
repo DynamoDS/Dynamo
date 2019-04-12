@@ -33,7 +33,7 @@ namespace DynamoPerformanceTests
                     // PerformanceTestHelper.getDebugInProcessConfig();
 
                     DynamoViewPerformanceTestBase.testDirectory = dir.FullName;
-                    var runSummaryWithUI = BenchmarkRunner.Run<DynamoViewPerformanceTestBase>(PerformanceTestHelper.getDebugInProcessConfig());
+                    var runSummaryWithUI = BenchmarkRunner.Run<DynamoViewPerformanceTestBase>(PerformanceTestHelper.getFastReleaseConfig());
 
                     DynamoModelPerformanceTestBase.testDirectory = dir.FullName;
                     var runSummaryWithoutUI = BenchmarkRunner.Run<DynamoModelPerformanceTestBase>(PerformanceTestHelper.getFastReleaseConfig());
