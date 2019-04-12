@@ -1931,6 +1931,7 @@ namespace ProtoCore.AST.AssociativeAST
         }
     }
 
+    [Obsolete("IfStatementNode type is deprecated and not used. To be remove in 3.0")]
     public class IfStatementNode : AssociativeNode
     {
         public AssociativeNode ifExprNode { get; set; }

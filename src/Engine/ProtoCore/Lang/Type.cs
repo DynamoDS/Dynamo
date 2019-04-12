@@ -149,7 +149,7 @@ namespace ProtoCore
                 primitiveTypeNames[PrimitiveType.Array] = DSDefinitions.Keyword.Array;
                 primitiveTypeNames[PrimitiveType.Pointer] = DSDefinitions.Keyword.PointerReserved;
                 primitiveTypeNames[PrimitiveType.FunctionPointer] = DSDefinitions.Keyword.FunctionPointer;
-                primitiveTypeNames[PrimitiveType.Return] = "return_reserved";
+                primitiveTypeNames[PrimitiveType.Return] = DSDefinitions.Keyword.Return;
             }
             return primitiveTypeNames[type];
         }
@@ -265,7 +265,7 @@ namespace ProtoCore
             cnode.ClassAttributes = new AST.AssociativeAST.ClassAttributes("", "func");
             classTable.SetClassNodeAt(cnode, (int)PrimitiveType.FunctionPointer);
 
-            cnode = new ClassNode { Name = "return_reserved", Rank = 0, TypeSystem = this };
+            cnode = new ClassNode { Name = DSDefinitions.Keyword.Return, Rank = 0, TypeSystem = this };
             cnode.ID = (int)PrimitiveType.Return;
             classTable.SetClassNodeAt(cnode, (int)PrimitiveType.Return);
         }

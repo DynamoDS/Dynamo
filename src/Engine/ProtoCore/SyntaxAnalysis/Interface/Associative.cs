@@ -1,4 +1,4 @@
-﻿using ProtoCore.AST.AssociativeAST;
+using ProtoCore.AST.AssociativeAST;
 
 namespace ProtoCore.SyntaxAnalysis.Associative
 {
@@ -50,6 +50,7 @@ namespace ProtoCore.SyntaxAnalysis.Associative
 
         TResult VisitFunctionDefinitionNode(FunctionDefinitionNode node);
 
+        [Obsolete("VisitIfStatementNode method is deprecated and not used. To be remove in 3.0")]
         TResult VisitIfStatementNode(IfStatementNode node);
 
         TResult VisitInlineConditionalNode(InlineConditionalNode node);

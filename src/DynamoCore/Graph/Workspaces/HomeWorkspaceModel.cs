@@ -331,7 +331,7 @@ namespace Dynamo.Graph.Workspaces
         {
             base.RequestRun();
 
-            if (RunSettings.RunType != RunType.Manual)
+            if (RunSettings.RunEnabled && RunSettings.RunType != RunType.Manual)
             {
                 Run();
             }
@@ -496,7 +496,7 @@ namespace Dynamo.Graph.Workspaces
                 MarkNodesAsModifiedAndRequestRun(Nodes); 
             }
 
-            if (RunSettings.RunType == RunType.Automatic)
+            if (RunSettings.RunEnabled && RunSettings.RunType == RunType.Automatic)
                 Run();
         }
 
