@@ -291,7 +291,7 @@ namespace DynamoPerformanceTests
             // Check that columns we care about exist
             var columnNames = new string[] { "Method", "Graph", "Mean", "Error", "StdDev" };
             var missingColumns = columnNames.Where(c => !header.Contains(c));
-            if (missingColumns.Count() > 0)
+            if (missingColumns.Any())
             {
                 throw new Exception(string.Format("The csv file at {0} does not contain the following required columns: {1}.", csvPath, string.Join(", ", missingColumns)));
             }
