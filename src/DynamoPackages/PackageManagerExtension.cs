@@ -2,14 +2,12 @@
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
-
+using System.Reflection;
 using Dynamo.Extensions;
 using Dynamo.Interfaces;
-using Dynamo.Models;
 using Dynamo.Logging;
-
+using Dynamo.Models;
 using Greg;
-using System.Reflection;
 
 namespace Dynamo.PackageManager
 {
