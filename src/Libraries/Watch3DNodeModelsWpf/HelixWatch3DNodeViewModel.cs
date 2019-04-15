@@ -32,7 +32,7 @@ namespace Watch3DNodeModelsWpf
             Name = string.Format("{0} Preview", node.GUID);
         }
 
-        protected override void OnWatchExecution()
+        protected internal override void OnWatchExecution()
         {
             var watch3D = watchModel as Watch3D;
             if (watch3D != null)
@@ -53,7 +53,7 @@ namespace Watch3DNodeModelsWpf
             UpdateUpstream();
         }
 
-        protected override void UpdateUpstream()
+        protected internal override void UpdateUpstream()
         {
             OnClear();
 
