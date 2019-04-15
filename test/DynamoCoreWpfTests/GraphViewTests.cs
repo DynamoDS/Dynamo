@@ -10,7 +10,10 @@ namespace DynamoCoreWpfTests
 {
 
     /// <summary>
-    /// This class should not be used for DynamoView unit tests
+    /// This class should not be used for Dynamo View unit tests
+    /// because other than evaluation correctness, this test class focuses
+    /// more on the way to get time consumption of graph evaluation,
+    /// tessellation and rendering
     /// </summary>
     public class GrapViewTests : DynamoTestUIBase
     {
