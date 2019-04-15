@@ -276,19 +276,15 @@ namespace ProtoFFI
             Name = name;
             ReflectionInfo = FFIMemberInfo.CreateFrom(info);
 
-            if (argTypes == null)
-                mArgTypes = GetArgumentTypes(ReflectionInfo);
-            else
-                mArgTypes = argTypes.ToArray();
+            mArgTypes = argTypes == null ? GetArgumentTypes() : argTypes.ToArray();
 
             mReturnType = returnType;
         }
 
-        private ProtoCore.Type[] GetArgumentTypes(FFIMemberInfo member)
+        private ProtoCore.Type[] GetArgumentTypes()
         {
-            return member.GetParameters().Select(
-                pi => CLRModuleType.GetProtoCoreType(pi.Info.ParameterType, Module)
-                ).ToArray();
+            return ReflectionInfo.GetParameters().Select(
+                pi => CLRModuleType.GetProtoCoreType(pi.Info.ParameterType, Module)).ToArray();
         }
 
         public bool Contains(string name, List<ProtoCore.Type> argTypes, ProtoCore.Type returnType)
@@ -335,26 +331,22 @@ namespace ProtoFFI
             return Contains(fp.Name, fp.mArgTypes, fp.mReturnType);
         }
 
+        // TODO: Remove redundant method in 3.0
         public override int GetHashCode()
         {
             return base.GetHashCode();
         }
 
-        protected virtual object InvokeFunctionPointer(object thisObject, object[] parameters)
-        {
-            return ReflectionInfo.Invoke(thisObject, parameters);
-        }
-
         protected object InvokeFunctionPointerNoThrow(ProtoCore.Runtime.Context c, Interpreter dsi, object thisObject, object[] parameters)
         {
-            object ret = null;
             StackValue dsRetValue = StackValue.Null;
             try
             {
-                FFIObjectMarshaler marshaller = Module.GetMarshaler(dsi.runtime.RuntimeCore);
-                ret = InvokeFunctionPointer(thisObject, parameters);
+                var ret = ReflectionInfo.Invoke(thisObject, parameters);
                 //Reduce to singleton if the attribute is specified.
                 ret = ReflectionInfo.ReduceReturnedCollectionToSingleton(ret);
+
+                FFIObjectMarshaler marshaller = Module.GetMarshaler(dsi.runtime.RuntimeCore);
                 dsRetValue = marshaller.Marshal(ret, c, dsi, mReturnType);
             }
             catch (DllNotFoundException ex)
@@ -500,11 +492,11 @@ namespace ProtoFFI
 
         public override object Execute(ProtoCore.Runtime.Context c, Interpreter dsi, List<StackValue> s = null)
         {
-            List<Object> parameters = new List<object>();
+            var parameters = new List<object>();
             if (s == null)
                 s = dsi.runtime.rmem.Stack;
 
-            Object thisObject = null;
+            object thisObject = null;
             FFIObjectMarshaler marshaller = Module.GetMarshaler(dsi.runtime.RuntimeCore);
             if (!ReflectionInfo.IsStatic)
             {
