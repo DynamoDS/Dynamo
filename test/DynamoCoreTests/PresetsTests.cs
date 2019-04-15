@@ -7,11 +7,11 @@ using CoreNodeModels.Input;
 using Dynamo.Graph.Connectors;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.ZeroTouch;
+using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
 using Dynamo.Selection;
 using NUnit.Framework;
 using DynCmd = Dynamo.Models.DynamoModel;
-using Dynamo.Graph.Workspaces;
 
 namespace Dynamo.Tests
 {

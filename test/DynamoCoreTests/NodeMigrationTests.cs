@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using SystemTestServices;
 using System.Xml;
 using CoreNodeModels;
 using CoreNodeModels.Input;
@@ -11,6 +10,7 @@ using Dynamo.Graph.Nodes.ZeroTouch;
 using Dynamo.PackageManager;
 using NUnit.Framework;
 using PythonNodeModels;
+using SystemTestServices;
 
 namespace Dynamo.Tests
 {

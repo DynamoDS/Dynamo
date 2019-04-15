@@ -1,6 +1,10 @@
-﻿using CefSharp;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Threading;
+using CefSharp;
 using Dynamo.Configuration;
-using Dynamo.Extensions;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Interfaces;
 using Dynamo.LibraryUI;
@@ -12,13 +16,6 @@ using DynamoCoreWpfTests;
 using DynamoCoreWpfTests.Utility;
 using Moq;
 using NUnit.Framework;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace ViewExtensionLibraryTests
 {

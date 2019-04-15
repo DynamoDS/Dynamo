@@ -4,9 +4,7 @@ using System.IO;
 using System.Linq;
 
 using Dynamo.Engine.CodeGeneration;
-using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
-using Dynamo.Models;
 using NUnit.Framework;
 
 namespace Dynamo.Tests

@@ -1,21 +1,11 @@
-﻿using System.IO;
-using SystemTestServices;
+﻿using System.Collections.Generic;
+using System.IO;
 using CoreNodeModels.Input;
-using Dynamo.Graph;
 using Dynamo.Graph.Workspaces;
-using Dynamo.Models;
 using DynamoCoreWpfTests.Utility;
 using NUnit.Framework;
-
-
-using Dynamo.Graph;
-using Dynamo.Graph.Nodes;
-
-using ProtoCore.AST.AssociativeAST;
-using CoreNodeModels.Properties;
-
+using SystemTestServices;
 using DSColor = DSCore.Color;
-using System.Collections.Generic;
 
 namespace DynamoCoreWpfTests
 {

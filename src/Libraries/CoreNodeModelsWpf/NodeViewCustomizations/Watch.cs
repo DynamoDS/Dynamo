@@ -14,8 +14,8 @@ using Dynamo.Graph.Nodes;
 using Dynamo.Interfaces;
 using Dynamo.Scheduler;
 using Dynamo.ViewModels;
-using ProtoCore.AST.AssociativeAST;
 using Dynamo.Wpf;
+using ProtoCore.AST.AssociativeAST;
 
 namespace CoreNodeModelsWpf.Nodes
 {

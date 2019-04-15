@@ -1,9 +1,6 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
 using NUnit.Framework;
-using ProtoCore.DSASM.Mirror;
-using ProtoTest.TD;
 using ProtoTestFx.TD;
 namespace ProtoTest.Imperative
 {

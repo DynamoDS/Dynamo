@@ -1,16 +1,14 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-
-using Dynamo.Engine.CodeGeneration;
 using CoreNodeModels.Properties;
+using Dynamo.Engine.CodeGeneration;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.CustomNodes;
+using Newtonsoft.Json;
 using ProtoCore;
 using ProtoCore.AST.AssociativeAST;
-
 using CodeBlockNode = ProtoCore.AST.AssociativeAST.CodeBlockNode;
 using LanguageBlockNode = ProtoCore.AST.AssociativeAST.LanguageBlockNode;
-using Newtonsoft.Json;
 
 namespace CoreNodeModels.Logic
 {

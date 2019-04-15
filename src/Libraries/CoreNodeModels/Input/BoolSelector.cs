@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
+using CoreNodeModels.Properties;
 using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
-using ProtoCore.AST.AssociativeAST;
-using CoreNodeModels.Properties;
 using Newtonsoft.Json;
+using ProtoCore.AST.AssociativeAST;
 
 namespace CoreNodeModels.Input
 {

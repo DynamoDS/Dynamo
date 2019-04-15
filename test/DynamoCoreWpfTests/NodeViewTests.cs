@@ -1,15 +1,15 @@
 ﻿using System;
+using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Threading;
+using System.Windows.Input;
 using Dynamo.Controls;
 using Dynamo.Graph.Workspaces;
-using Dynamo.ViewModels;
 using Dynamo.Selection;
+using Dynamo.ViewModels;
 using DynamoCoreWpfTests.Utility;
 using NUnit.Framework;
-using System.Windows.Input;
-using System.Globalization;
-using System.Threading;
 
 namespace DynamoCoreWpfTests
 {

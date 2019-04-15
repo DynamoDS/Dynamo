@@ -1,13 +1,6 @@
 using System;
-using System.IO;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using NUnit.Framework;
 using ProtoCore.DSASM.Mirror;
-using ProtoCore.Lang;
-using ProtoScript.Runners;
-using ProtoTest.TD;
 using ProtoTestFx.TD;
 namespace ProtoTest.TD.MultiLangTests
 {

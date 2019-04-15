@@ -1,0 +1,174 @@
+{
+  "Uuid": "8d043802-9b9d-4c31-8482-e831189d2889",
+  "IsCustomNode": false,
+  "Description": null,
+  "Name": "RunSettings",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Circle.ByCenterPointRadius@Autodesk.DesignScript.Geometry.Point,double",
+      "Id": "6a10fd5ce8144a8ab3a42fc6eadc5514",
+      "Inputs": [
+        {
+          "Id": "c23d63b84a6c4378a91e7649a3050a15",
+          "Name": "centerPoint",
+          "Description": "Point\nDefault value : Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 0)",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "30ad05b8bf3948558c0e13a18770a158",
+          "Name": "radius",
+          "Description": "double\nDefault value : 1",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "8b6c3fc08c5c49d3ac46f97920531a99",
+          "Name": "Circle",
+          "Description": "Circle",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Creates a Circle with input center Point and radius in the world XY plane, with world Z as normal.\n\nCircle.ByCenterPointRadius (centerPoint: Point = Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 0), radius: double = 1): Circle"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "5;",
+      "Id": "deb0ae37d6974ef4a88e5d35a5c5ce42",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "55303ee604754e8eb54c5dce5ce76426",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Circle.Radius",
+      "Id": "ae487282b5674bb885e2299b2c5529a6",
+      "Inputs": [
+        {
+          "Id": "7a462d1bb7f9418285b3f963bdfaa13f",
+          "Name": "circle",
+          "Description": "Autodesk.DesignScript.Geometry.Circle",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "e2161ba2726b4fedbfef85c963b1e6c4",
+          "Name": "double",
+          "Description": "double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "The radius of the circle\n\nCircle.Radius: double"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "8b6c3fc08c5c49d3ac46f97920531a99",
+      "End": "7a462d1bb7f9418285b3f963bdfaa13f",
+      "Id": "d1684c0d144547c496ea0db0befdb0a6"
+    },
+    {
+      "Start": "55303ee604754e8eb54c5dce5ce76426",
+      "End": "30ad05b8bf3948558c0e13a18770a158",
+      "Id": "f9a6ed3288274317adc440c557bfd905"
+    }
+  ],
+  "Dependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.3.0.4640",
+      "RunType": "Manual",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "NodeViews": [
+      {
+        "Id": "6a10fd5ce8144a8ab3a42fc6eadc5514",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Name": "Circle.ByCenterPointRadius",
+        "ShowGeometry": true,
+        "Excluded": false,
+        "X": 154.40000000000003,
+        "Y": 128.8
+      },
+      {
+        "Id": "deb0ae37d6974ef4a88e5d35a5c5ce42",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Name": "Code Block",
+        "ShowGeometry": true,
+        "Excluded": false,
+        "X": 32.399999999999977,
+        "Y": 213.8
+      },
+      {
+        "Id": "ae487282b5674bb885e2299b2c5529a6",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Name": "Circle.Radius",
+        "ShowGeometry": true,
+        "Excluded": false,
+        "X": 423.2000000000001,
+        "Y": 219.20000000000002
+      }
+    ],
+    "Annotations": [],
+    "X": 0.0,
+    "Y": 0.0,
+    "Zoom": 1.0
+  }
+}

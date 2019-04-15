@@ -47,7 +47,7 @@ namespace Dynamo.Graph.Nodes
         public NodeInputTypes Type { get; set; }
         /// <summary>
         /// The value of the input when the graph was saved.
-        /// This shoud always be a string for all types.
+        /// This should always be a string for all types.
         /// </summary>
         public string Value { get; set; }
 

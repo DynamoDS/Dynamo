@@ -1,11 +1,9 @@
 
 using System;
 using System.Collections.Generic;
-using FFITarget;
 using NUnit.Framework;
 using ProtoCore.DSASM.Mirror;
 using ProtoFFI;
-using ProtoTest.TD;
 using ProtoTestFx.TD;
 namespace ProtoFFITests
 {

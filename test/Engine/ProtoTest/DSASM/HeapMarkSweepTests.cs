@@ -1,11 +1,9 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 
 using NUnit.Framework;
 using ProtoCore;
 using ProtoCore.DSASM;
 using ProtoTestFx.TD;
-using ProtoScript.Runners;
 namespace ProtoTest.DSASM
 {
     [TestFixture]

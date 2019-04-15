@@ -6,7 +6,6 @@ using System.Windows.Data;
 using CoreNodeModels;
 using Dynamo.Configuration;
 using Dynamo.Controls;
-using Dynamo.UI;
 using Dynamo.Wpf;
 
 namespace CoreNodeModelsWpf.Nodes

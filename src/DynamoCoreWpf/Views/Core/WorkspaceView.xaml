@@ -350,6 +350,18 @@
 
                         <MenuItem IsCheckable="True"
                               Command="{Binding Path=SetArgumentLacingCommand}"
+                              CommandParameter="Auto"
+                              Header="{x:Static p:Resources.ContextMenuLacingAuto}">
+                            <MenuItem.IsChecked>
+                                <Binding Path="SelectionArgumentLacing"
+                                     Mode="OneWay"
+                                     Converter="{StaticResource EnumToBoolConverter}"
+                                     ConverterParameter="Auto" />
+                            </MenuItem.IsChecked>
+                        </MenuItem>
+
+                        <MenuItem IsCheckable="True"
+                              Command="{Binding Path=SetArgumentLacingCommand}"
                               CommandParameter="Shortest"
                               Header="{x:Static p:Resources.ContextMenuLacingShortest}">
                             <MenuItem.IsChecked>

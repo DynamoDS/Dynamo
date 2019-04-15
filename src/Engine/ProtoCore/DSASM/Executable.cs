@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using ProtoCore.Lang;
-using ProtoCore.AST.AssociativeAST;
-using ProtoFFI;
 using ProtoCore.AssociativeGraph;
+using ProtoCore.Lang;
+using ProtoFFI;
 namespace ProtoCore.DSASM
 {
     /// <summary>

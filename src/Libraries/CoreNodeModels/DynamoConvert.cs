@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using Dynamo.Utilities;
-using DynamoConversions;
-using ProtoCore.AST.AssociativeAST;
 using System.Xml;
 using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
+using Dynamo.Utilities;
+using DynamoConversions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
+using ProtoCore.AST.AssociativeAST;
 
 namespace CoreNodeModels
 {

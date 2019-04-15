@@ -1,11 +1,11 @@
 ﻿using System.Linq;
 using CoreNodeModels.Input;
 using Dynamo.Graph.Nodes;
-using NUnit.Framework;
-using Dynamo.Tests;
-using Dynamo.Selection;
-using Dynamo.Models;
 using Dynamo.Graph.Notes;
+using Dynamo.Models;
+using Dynamo.Selection;
+using Dynamo.Tests;
+using NUnit.Framework;
 
 namespace DynamoCoreWpfTests
 {

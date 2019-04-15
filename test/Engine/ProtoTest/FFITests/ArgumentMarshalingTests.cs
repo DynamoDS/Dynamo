@@ -1,10 +1,6 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using NUnit.Framework;
 using ProtoCore.DSASM;
-using ProtoTestFx.TD;
 using ProtoTest;
 
 namespace ProtoFFITests

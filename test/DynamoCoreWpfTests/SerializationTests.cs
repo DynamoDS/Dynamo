@@ -3,30 +3,25 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml;
-
 using CoreNodeModels;
 using CoreNodeModels.Input;
+using Dynamo.Engine;
+using Dynamo.Events;
 using Dynamo.Graph;
+using Dynamo.Graph.Connectors;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.CustomNodes;
 using Dynamo.Graph.Nodes.ZeroTouch;
-using Dynamo.Nodes;
-using Dynamo.Tests;
-
-using NUnit.Framework;
-
-using DoubleSlider = CoreNodeModels.Input.DoubleSlider;
-using Dynamo.Events;
-using Dynamo.Models;
 using Dynamo.Graph.Workspaces;
+using Dynamo.Models;
+using Dynamo.Tests;
+using Dynamo.Utilities;
 using Dynamo.ViewModels;
-using Dynamo.Engine;
 using Dynamo.Wpf.ViewModels.Core;
 using Dynamo.Wpf.ViewModels.Watch3D;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using Dynamo.Utilities;
-using Dynamo.Graph.Connectors;
+using NUnit.Framework;
+using DoubleSlider = CoreNodeModels.Input.DoubleSlider;
 
 namespace DynamoCoreWpfTests
 {

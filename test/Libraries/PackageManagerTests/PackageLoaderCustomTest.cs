@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Dynamo.Configuration;
-using Dynamo.PackageManager;
 using NUnit.Framework;
 
 namespace Dynamo.PackageManager.Tests

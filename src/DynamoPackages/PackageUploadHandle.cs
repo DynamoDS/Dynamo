@@ -1,7 +1,7 @@
 
-﻿using Dynamo.Core;
+using Dynamo.Core;
 
-﻿using Greg.Requests;
+using Greg.Requests;
 using Greg.Responses;
 
 namespace Dynamo.PackageManager
