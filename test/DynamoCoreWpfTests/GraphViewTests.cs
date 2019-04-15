@@ -10,9 +10,9 @@ namespace DynamoCoreWpfTests
 {
 
     /// <summary>
-    /// This class should not be used for Dynamo View unit tests
-    /// because other than evaluation correctness, this test class focuses
-    /// more on the way to get time consumption of graph evaluation,
+    /// This class should not be used for Dynamo View unit tests but performance
+    /// benchmarks because other than evaluation correctness, this test class 
+    /// focuses more on the way to get time consumption of graph evaluation,
     /// tessellation and rendering
     /// </summary>
     public class GrapViewTests : DynamoTestUIBase
@@ -80,7 +80,7 @@ namespace DynamoCoreWpfTests
         /// <summary>
         /// Function used to measure graph geometry tessellation
         /// </summary>
-        public void Tessellation()
+        public void Tessellate()
         {
             var renderPackageFactory = new HelixRenderPackageFactory();
 
