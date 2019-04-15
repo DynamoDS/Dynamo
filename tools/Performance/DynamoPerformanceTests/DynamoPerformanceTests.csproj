@@ -42,6 +42,12 @@
     <Reference Include="CommandLine, Version=2.4.3.0, Culture=neutral, PublicKeyToken=de6f01bd326f8c32, processorArchitecture=MSIL">
       <HintPath>packages\CommandLineParser.2.4.3\lib\netstandard2.0\CommandLine.dll</HintPath>
     </Reference>
+    <Reference Include="DynamoCore">
+      <HintPath>..\..\..\bin\AnyCPU\$(Configuration)\DynamoCore.dll</HintPath>
+    </Reference>
+    <Reference Include="DynamoCoreWpf">
+      <HintPath>..\..\..\bin\AnyCPU\$(Configuration)\DynamoCoreWpf.dll</HintPath>
+    </Reference>
     <Reference Include="DynamoCoreTests">
       <HintPath>..\..\..\bin\AnyCPU\$(Configuration)\DynamoCoreTests.dll</HintPath>
     </Reference>
@@ -223,6 +229,7 @@
     <Compile Include="DynamoModelPerformanceTestBase.cs" />
     <Compile Include="GraphNameColumn.cs" />
     <Compile Include="DynamoViewPerformanceTestBase.cs" />
+    <Compile Include="GraphViewTests.cs" />
     <Compile Include="PerformanceTestConsoleApp.cs" />
     <Compile Include="PerformanceTestHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

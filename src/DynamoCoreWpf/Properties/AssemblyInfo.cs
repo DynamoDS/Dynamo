@@ -36,3 +36,4 @@ using System.Windows;
 [assembly: InternalsVisibleTo("DynamoWPFCLI")]
 [assembly: InternalsVisibleTo("CommandLineTests")]
 [assembly: InternalsVisibleTo("Watch3DNodeModelsWpf")]
+[assembly: InternalsVisibleTo("DynamoPerformanceTests")]

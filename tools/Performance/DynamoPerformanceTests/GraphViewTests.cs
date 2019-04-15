@@ -4,9 +4,10 @@ using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
 using Dynamo.Visualization;
 using Dynamo.Wpf.Rendering;
+using DynamoCoreWpfTests;
 using DynamoCoreWpfTests.Utility;
 
-namespace DynamoCoreWpfTests
+namespace DynamoPerformanceTests
 {
 
     /// <summary>
