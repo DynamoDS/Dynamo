@@ -86,7 +86,7 @@ namespace DynamoPerformanceTests
         /// <summary>
         /// Setup method to be called before each RenderGraph benchmark.
         /// </summary>
-        [IterationSetup(Target = nameof(GraphTessellation))]
+        [IterationSetup(Target = nameof(GraphTessellationAndRendering))]
         public void IterationSetupRenderGraph()
         {
             Start();
@@ -128,7 +128,7 @@ namespace DynamoPerformanceTests
         }
 
         [Benchmark, System.STAThread]
-        public void GraphTessellation()
+        public void GraphTessellationAndRendering()
         {
             Tessellation();
         }

@@ -31,7 +31,9 @@ namespace DynamoCoreWpfTests
         }
 
         /// <summary>
-        /// Call this to disable the event handler to get render package
+        /// Call this to disable the event handler to get render package (Tessellation)
+        /// Rendering in helix view will also be disabled as a result of this
+        /// Currently only used in performance benchmarking
         /// </summary>
         public void DisableRendering()
         {
@@ -84,6 +86,7 @@ namespace DynamoCoreWpfTests
 
             foreach (var node in Model.CurrentWorkspace.Nodes)
             {
+                // Each Geometry Holder will request render packages and trigger Tessellation and Rendering
                 nodeGeometries.Add(new GeometryHolder(Model, renderPackageFactory, node));
             }
 
