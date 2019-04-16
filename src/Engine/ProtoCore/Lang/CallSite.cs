@@ -1911,6 +1911,7 @@ namespace ProtoCore
             {
                 //wipe the trace cache
                 TraceUtils.ClearAllKnownTLSKeys();
+                newTraceData.Data = null;
             }
             else
             {
