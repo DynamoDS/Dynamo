@@ -17,6 +17,8 @@ using ProtoCore.Runtime;
 using ProtoCore.Utils;
 using StackFrame = ProtoCore.DSASM.StackFrame;
 using WarningID = ProtoCore.Runtime.WarningID;
+using DynamoServices;
+using Validity = ProtoCore.Utils.Validity;
 
 namespace ProtoCore
 {
@@ -1894,11 +1896,7 @@ namespace ProtoCore
             if (traceD != null)
             {
                 //There was data associated with the previous execution, push this into the TLS
-
-                Dictionary<string, ISerializable> dataDict = new Dictionary<string, ISerializable>();
-                dataDict.Add(TRACE_KEY, traceD);
-
-                TraceUtils.SetObjectToTLS(dataDict);
+                TraceUtils.SetTraceData(TRACE_KEY, traceD);
             }
             else
             {
@@ -1912,16 +1910,17 @@ namespace ProtoCore
             if (ret.IsNull)
             {
                 //wipe the trace cache
-                TraceUtils.ClearTLSKey(TRACE_KEY);
+                TraceUtils.ClearAllKnownTLSKeys();
             }
-
-            //TLS -> TraceCache
-            Dictionary<string, ISerializable> traceRet = TraceUtils.GetObjectFromTLS();
-
-            if (traceRet.ContainsKey(TRACE_KEY))
+            else
             {
-                var val = traceRet[TRACE_KEY];
-                newTraceData.Data = val;
+                //TLS -> TraceCache
+                var traceRet = TraceUtils.GetTraceData(TRACE_KEY);
+
+                if (traceRet != null)
+                {
+                    newTraceData.Data = traceRet;
+                }
             }
 
             // An explicit call requires return coercion at the return instruction

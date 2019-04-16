@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using DynamoServices;
 using NUnit.Framework;
 using ProtoScript.Runners;
 using ProtoTestFx.TD;
@@ -35,8 +36,8 @@ namespace IntegrationTests
         public static void TLSCleanup()
         {
 
-            Thread.FreeNamedDataSlot(__TEMP_REVIT_TRACE_ID);
-           
+            TraceUtils.ClearAllKnownTLSKeys();
+
         }
 
         [Test]

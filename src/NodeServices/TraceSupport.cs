@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Runtime.Serialization;
 using System.Threading;
 
@@ -17,6 +18,56 @@ namespace DynamoServices
     /// </summary>
     public static class TraceUtils
     {
+        // ReSharper disable InconsistentNaming
+        //Luke: This is deliberately inconsistent, it is not supposed to be in widespread use, to work around a defiency
+        //in the TLS implementation.
+        //TODO(Luke): Replace this with an attribute lookup
+        internal const string __TEMP_REVIT_TRACE_ID = "{0459D869-0C72-447F-96D8-08A7FB92214B}-REVIT";
+        // ReSharper restore InconsistentNaming
+
+        [ThreadStatic] private static Dictionary<String, ISerializable> _localStorageSlot; //= new Dictionary<string, ISerializable>();
+
+        internal static Dictionary<String, ISerializable> LocalStorageSlot
+        {
+            get
+            {
+                return _localStorageSlot ?? (_localStorageSlot = new Dictionary<string, ISerializable>());
+            }
+            set
+            {
+                _localStorageSlot = value;
+            }
+        }
+
+        /// <summary>
+        /// Returns a list of the keys bound to trace elements
+        /// This should be extracted from the attribute on the methods
+        /// </summary>
+        /// <returns></returns>
+        internal static List<String> TEMP_GetTraceKeys()
+        {
+            //TODO:Luke Extract this from RequiresTraceAttribute
+
+            return new List<string>() { __TEMP_REVIT_TRACE_ID };
+        }
+
+        /// <summary>
+        /// Clear a specific key
+        /// </summary>
+        /// <param name="key"></param>
+        internal static void ClearTLSKey(string key)
+        {
+            LocalStorageSlot.Remove(key);
+        }
+
+        /// <summary>
+        /// Clear the named slots for all the know keys
+        /// </summary>
+        internal static void ClearAllKnownTLSKeys()
+        {
+            LocalStorageSlot.Clear();
+        }
+
         /// <summary>
         /// Returns the data that is bound to a particular key
         /// </summary>
@@ -24,18 +75,15 @@ namespace DynamoServices
         /// <returns></returns>
         public static ISerializable GetTraceData(string key)
         {
-            Object data = Thread.GetData(Thread.GetNamedDataSlot(key));
-
-            //Null is ok
-            if (data == null)
+            ISerializable data;  
+            if (!LocalStorageSlot.TryGetValue(key, out data))
+            {
                 return null;
-
-            var ret = data as ISerializable;
-            if (ret != null)
-                return ret;
-       
-            //Data, that was not serializable is not
-            throw new InvalidOperationException("Data in Named slot was not serializable");
+            }
+            else
+            {
+                return data;
+            }
         }
 
         /// <summary>
@@ -45,7 +93,14 @@ namespace DynamoServices
         /// <param name="value"></param>
         public static void SetTraceData(string key, ISerializable value)
         {
-            Thread.SetData(Thread.GetNamedDataSlot(key), value);
+            if (LocalStorageSlot.ContainsKey(key))
+            {
+                LocalStorageSlot[key] = value;
+            }
+            else
+            {
+                LocalStorageSlot.Add(key, value);
+            }
         }
     }
 }
