@@ -490,7 +490,126 @@ namespace ProtoFFI
             return string.Format(Resources.OperationFailType2, ReflectionInfo.DeclaringType.Name, ReflectionInfo.Name, msg);
         }
 
-        public override object Execute(ProtoCore.Runtime.Context c, Interpreter dsi, List<StackValue> s = null)
+        [IsObsolete("Remove in 3.0. Use Execute(ProtoCore.Runtime.Context c, ProtoCore.DSASM.Interpreter dsi, List<StackValue> s) instead")]
+        public override object Execute(ProtoCore.Runtime.Context c, Interpreter dsi)
+        {
+            List<Object> parameters = new List<object>();
+            List<StackValue> s = dsi.runtime.rmem.Stack;
+            Object thisObject = null;
+            FFIObjectMarshaler marshaller = Module.GetMarshaler(dsi.runtime.RuntimeCore);
+            if (!ReflectionInfo.IsStatic)
+            {
+                try
+                {
+                    thisObject = marshaller.UnMarshal(s.Last(), c, dsi, ReflectionInfo.DeclaringType);
+                }
+                catch (InvalidOperationException)
+                {
+                    string message = String.Format(Resources.kFFIFailedToObtainThisObject, ReflectionInfo.DeclaringType.Name, ReflectionInfo.Name);
+                    dsi.LogWarning(ProtoCore.Runtime.WarningID.AccessViolation, message);
+                    return null;
+                }
+
+                if (thisObject == null)
+                    return null; //Can't call a method on null object.
+            }
+
+            FFIParameterInfo[] paraminfos = ReflectionInfo.GetParameters();
+            List<StackValue> referencedParameters = new List<StackValue>();
+
+            for (int i = 0; i < mArgTypes.Length; ++i)
+            {
+                // Comment Jun: FFI function stack frames do not contain locals
+                int locals = 0;
+                int relative = 0 - ProtoCore.DSASM.StackFrame.StackFrameSize - locals - i - 1;
+                StackValue opArg = dsi.runtime.rmem.GetAtRelative(relative);
+                try
+                {
+                    Type paramType = paraminfos[i].Info.ParameterType;
+                    object param = null;
+                    if (opArg.IsDefaultArgument)
+                        param = Type.Missing;
+                    else
+                        param = marshaller.UnMarshal(opArg, c, dsi, paramType);
+
+                    if (paraminfos[i].KeepReference && opArg.IsReferenceType)
+                    {
+                        referencedParameters.Add(opArg);
+                    }
+
+                    //null is passed for a value type, so we must return null 
+                    //rather than interpreting any value from null. fix defect 1462014 
+                    if (!paramType.IsGenericType && paramType.IsValueType && param == null)
+                    {
+                        //This is going to cause a cast exception. This is a very frequently called problem, so we want to short-cut the execution
+
+                        dsi.LogWarning(ProtoCore.Runtime.WarningID.AccessViolation,
+                            string.Format(Resources.FailedToCastFromNull, paraminfos[i].Info.ParameterType.Name));
+
+                        return null;
+                        //throw new System.InvalidCastException(string.Format("Null value cannot be cast to {0}", paraminfos[i].ParameterType.Name));
+
+                    }
+
+                    parameters.Add(param);
+                }
+                catch (System.InvalidCastException ex)
+                {
+                    dsi.LogWarning(ProtoCore.Runtime.WarningID.AccessViolation, ex.Message);
+                    return null;
+                }
+                catch (InvalidOperationException)
+                {
+                    string message = String.Format(Resources.kFFIFailedToObtainObject, paraminfos[i].Info.ParameterType.Name, ReflectionInfo.DeclaringType.Name, ReflectionInfo.Name);
+                    dsi.LogWarning(ProtoCore.Runtime.WarningID.AccessViolation, message);
+                    return null;
+                }
+            }
+
+            var ret = InvokeFunctionPointerNoThrow(c, dsi, thisObject, parameters.Count > 0 ? parameters.ToArray() : null);
+            if (ReflectionInfo.KeepReferenceThis && thisObject != null)
+            {
+                referencedParameters.Add(s.Last());
+            }
+
+            int count = referencedParameters.Count;
+            if (count > 0 && (ret is StackValue))
+            {
+                // If there is a parameter who has attribute [KeepReference],
+                // it means this parameter will cross the DesignScript boundary
+                // and be referenced by C# object. Therefore, when its DS
+                // wrapper object is out of scope, we shouldn't dispose it;
+                // otherwise that C# object will reference to an invalid object.
+                //
+                // Similarly, if the method has attribute [KeepReferenceThis],
+                // it means the return object will reference to this object
+                // internally, so we shouldn't dispose this object.
+                //
+                // The hack here is to treat them like properties in the return
+                // object. Note all DS wrapper objects are dummy objects who
+                // haven't any members. By allocating extra space on the heap,
+                // we store the reference in the return object so that the
+                // parameter will have the same lifecycle as the return object.
+                //
+                // One case need to consider about is the type of return value.
+                // If the return value is an array, we have to recursively go 
+                // into the array and expand the element, instead of setting
+                // these hidden information directly on the array.
+                try
+                {
+                    SetReferenceObjects((StackValue)ret, referencedParameters, dsi.runtime);
+                }
+                catch (RunOutOfMemoryException)
+                {
+                    dsi.runtime.RuntimeCore.RuntimeStatus.LogWarning(ProtoCore.Runtime.WarningID.RunOutOfMemory, Resources.RunOutOfMemory);
+                    return StackValue.Null;
+                }
+            }
+
+            return ret;
+        }
+
+        public override object Execute(ProtoCore.Runtime.Context c, Interpreter dsi, List<StackValue> s)
         {
             var parameters = new List<object>();
             if (s == null)
@@ -659,7 +778,13 @@ namespace ProtoFFI
         {
         }
 
-        public override object Execute(ProtoCore.Runtime.Context c, Interpreter dsi, List<StackValue> s = null)
+        [IsObsolete("Remove in 3.0. Use Execute(ProtoCore.Runtime.Context c, ProtoCore.DSASM.Interpreter dsi, List <StackValue> s) instead")]
+        public override object Execute(ProtoCore.Runtime.Context c, Interpreter dsi)
+        {
+            return Execute(c, dsi, null);
+        }
+
+        public override object Execute(ProtoCore.Runtime.Context c, Interpreter dsi, List<StackValue> s)
         {
             if (s == null)
                 s = dsi.runtime.rmem.Stack;
@@ -711,7 +836,13 @@ namespace ProtoFFI
             }
         }
 
-        public override object Execute(ProtoCore.Runtime.Context c, Interpreter dsi, List<StackValue> s = null)
+        [IsObsolete("Remove in 3.0. Use Execute(ProtoCore.Runtime.Context c, ProtoCore.DSASM.Interpreter dsi, List<StackValue> s) instead")]
+        public override object Execute(ProtoCore.Runtime.Context c, Interpreter dsi)
+        {
+            return Execute(c, dsi, null);
+        }
+
+        public override object Execute(ProtoCore.Runtime.Context c, Interpreter dsi, List<StackValue> s)
         {
             Object retVal = base.Execute(c, dsi, s);
             if (retVal == null)
