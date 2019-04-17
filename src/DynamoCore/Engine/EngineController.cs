@@ -5,10 +5,10 @@ using System.Runtime.Serialization;
 using Dynamo.Engine.CodeCompletion;
 using Dynamo.Engine.CodeGeneration;
 using Dynamo.Engine.NodeToCode;
+using Dynamo.Engine.Profiling;
 using Dynamo.Graph.Nodes;
 using Dynamo.Logging;
 using Dynamo.Scheduler;
-using DynamoServices;
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.DSASM.Mirror;
 using ProtoCore.Mirror;
@@ -69,7 +69,7 @@ namespace Dynamo.Engine
         /// </summary>
         public static CompilationServices CompilationServices;
 
-        private ProfilingData profilingData;
+        private ProfilingSession profilingSession;
 
         /// <summary>
         /// Returns DesignScript core.
@@ -125,13 +125,13 @@ namespace Dynamo.Engine
             this.libraryServices = libraryServices;
             libraryServices.LibraryLoaded += LibraryLoaded;
             CompilationServices = new CompilationServices(libraryServices);
-            profilingData = new ProfilingData();
+            profilingSession = new ProfilingSession();
 
             liveRunnerServices = new LiveRunnerServices(this, geometryFactoryFileName);
 
             OnLibraryLoaded();
 
-            astBuilder = new AstBuilder(this);
+            astBuilder = new AstBuilder(this, profilingSession);
             syncDataManager = new SyncDataManager();
 
             VerboseLogging = verboseLogging;
@@ -196,6 +196,11 @@ namespace Dynamo.Engine
 
         #endregion
 
+        internal void UpdateProfilingData(IEnumerable<NodeModel> nodes)
+        {
+            profilingSession.UnregisterDeletedNodes(nodes);
+        }
+        
         /// <summary>
         /// This method is called on the main thread from UpdateGraphAsyncTask
         /// to generate GraphSyncData for a list of updated nodes.
@@ -224,7 +229,6 @@ namespace Dynamo.Engine
 
             return graphSyncDataQueue.Dequeue();
         }
-
 
         /// <summary>
         ///  This is called on the main thread from PreviewGraphSyncData

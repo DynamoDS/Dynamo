@@ -4,6 +4,7 @@ using System.Linq;
 using Dynamo.Graph.Nodes;
 using Dynamo.Library;
 using Dynamo.Logging;
+using Dynamo.Engine.Profiling;
 
 using ProtoCore;
 using ProtoCore.AST.AssociativeAST;
@@ -19,13 +20,17 @@ namespace Dynamo.Engine.CodeGeneration
     {
         private readonly IAstNodeContainer nodeContainer;
 
+        internal ProfilingSession profilingSession = null;
+
         /// <summary>
         /// Construct a AstBuilder with AST node contiainer.
         /// </summary>
         /// <param name="nodeContainer"></param>
-        internal AstBuilder(IAstNodeContainer nodeContainer)
+        /// <param name="profilingSession"></param>
+        internal AstBuilder(IAstNodeContainer nodeContainer, ProfilingSession profilingSession)
         {
             this.nodeContainer = nodeContainer;
+            this.profilingSession = profilingSession;
         }
 
         // Reverse post-order to sort nodes
@@ -168,7 +173,11 @@ namespace Dynamo.Engine.CodeGeneration
             }
         }
 
-        private void CompileToAstNodes(NodeModel node, List<AssociativeNode> resultList, CompilationContext context, bool verboseLogging)
+        private void CompileToAstNodes(
+            NodeModel node, 
+            List<AssociativeNode> resultList, 
+            CompilationContext context, 
+            bool verboseLogging)
         {
 
             var inputAstNodes = new List<AssociativeNode>();
@@ -215,12 +224,19 @@ namespace Dynamo.Engine.CodeGeneration
             if (node.State == ElementState.Error)
                 Log("Error in Node. Not sent for building and compiling");
 
-            if (context == CompilationContext.DeltaExecution || context == CompilationContext.PreviewGraph)
+            if (context == CompilationContext.DeltaExecution)
+            {
                 OnAstNodeBuilding(node.GUID);
-
-            var preCompilationArgs = new CompilationEventArgs(node.GUID, inputAstNodes, context);
-            AstCompilationEvents.NotifyPreCompilation(this, preCompilationArgs);
-            resultList.AddRange(preCompilationArgs.AdditionalAstNodes);
+                if (profilingSession != null)
+                {
+                    profilingSession.RegisterNode(node);
+                    resultList.Add(profilingSession.CreatePreCompilationAstNode(node, inputAstNodes));
+                }
+            }
+            else if (context == CompilationContext.PreviewGraph)
+            {
+                OnAstNodeBuilding(node.GUID);
+            }
 
 #if DEBUG
             Validity.Assert(inputAstNodes.All(n => n != null), 
@@ -241,24 +257,29 @@ namespace Dynamo.Engine.CodeGeneration
                 }
             }
 
-            var postCompilationArgs = new CompilationEventArgs(node.GUID, inputAstNodes, context);
-            AstCompilationEvents.NotifyPostCompilation(this, postCompilationArgs);
-
             if (null == astNodes)
             {
                 resultList.AddRange(new AssociativeNode[0]);
-                resultList.AddRange(postCompilationArgs.AdditionalAstNodes);
             }
-            else if (context == CompilationContext.DeltaExecution || context == CompilationContext.PreviewGraph)
+            else if (context == CompilationContext.DeltaExecution)
             {
                 resultList.AddRange(astNodes);
-                resultList.AddRange(postCompilationArgs.AdditionalAstNodes);
+                if (profilingSession != null)
+                {
+                    resultList.Add(profilingSession.CreatePostCompilationAstNode(node, inputAstNodes));
+                }
+
+                OnAstNodeBuilt(node.GUID, resultList);
+            }
+            else if (context == CompilationContext.PreviewGraph)
+            {
+                resultList.AddRange(astNodes);
+
                 OnAstNodeBuilt(node.GUID, resultList);
             }
             else if (context == CompilationContext.NodeToCode)
             {
                 resultList.AddRange(astNodes);
-                resultList.AddRange(postCompilationArgs.AdditionalAstNodes);
             }
             else
             {
@@ -284,8 +305,6 @@ namespace Dynamo.Engine.CodeGeneration
                     {
                         resultList.Add(item);
                     }
-
-                    resultList.AddRange(postCompilationArgs.AdditionalAstNodes);
                 }
 
                 if (verboseLogging)
