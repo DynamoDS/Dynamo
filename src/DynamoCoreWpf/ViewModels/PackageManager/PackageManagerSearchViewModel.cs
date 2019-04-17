@@ -53,7 +53,7 @@ namespace Dynamo.PackageManager
         /// <value>
         ///     Set which kind of sorting should be used for displaying search results
         /// </value>
-        public PackageSortingKey _sortingKey;
+        public PackageSortingKey _sortingKey; // TODO: Set private for 3.0.
         public PackageSortingKey SortingKey
         {
             get { return _sortingKey; }
@@ -71,7 +71,7 @@ namespace Dynamo.PackageManager
         /// <value>
         ///     Set which kind of sorting should be used for displaying search results
         /// </value>
-        public PackageSortingDirection _sortingDirection;
+        public PackageSortingDirection _sortingDirection; // TODO: Set private for 3.0.
         public PackageSortingDirection SortingDirection
         {
             get { return _sortingDirection; }
@@ -124,7 +124,7 @@ namespace Dynamo.PackageManager
         /// <value>
         ///     This is the core UI for Dynamo, primarily used for logging.
         /// </value>
-        public string _SearchText;
+        public string _SearchText; // TODO: Set private for 3.0.
         public string SearchText
         {
             get { return _SearchText; }
@@ -182,7 +182,7 @@ namespace Dynamo.PackageManager
         }
 
 
-        public PackageSearchState _searchState;
+        public PackageSearchState _searchState; // TODO: Set private for 3.0.
 
         /// <summary>
         /// Gives the current state of search.
