@@ -4012,6 +4012,15 @@ namespace Dynamo.Wpf.Properties
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Please wait....
+        /// </summary>
+        public static string PackageSearchViewSearchTextBoxSyncing {
+            get {
+                return ResourceManager.GetString("PackageSearchViewSearchTextBoxSyncing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Sort by.
         /// </summary>
         public static string PackageSearchViewSortByButton {

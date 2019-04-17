@@ -2187,4 +2187,7 @@ Want to publish a different package?</value>
   <data name="CrashPromptGithubNewIssueTitle" xml:space="preserve">
     <value>Crash report from Dynamo {0}</value>
   </data>
+  <data name="PackageSearchViewSearchTextBoxSyncing" xml:space="preserve">
+    <value>Please wait...</value>
+  </data>
 </root>
