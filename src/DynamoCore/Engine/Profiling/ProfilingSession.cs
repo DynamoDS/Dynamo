@@ -16,23 +16,29 @@ namespace Dynamo.Engine.Profiling
     {
         private ProfilingData profilingData;
 
+        /// <summary>
+        /// Creeate a diagnostic session for collecting profiling data.
+        /// </summary>
         public ProfilingSession()
         {
             RegisterEventHandlers();
             profilingData = new ProfilingData();
         }
 
+        /// <summary>
+        /// Ensure that the event handlers are disconnected when the profiling session is terminated.
+        /// </summary>
         public void Dispose()
         {
             UnregisterEventHandlers();
         }
 
-        void OnGraphPreExecution(Session.IExecutionSession session)
+        private void OnGraphPreExecution(Session.IExecutionSession session)
         {
             profilingData.StartTime = DateTime.Now;
         }
 
-        void OnGraphPostExecution(Session.IExecutionSession session)
+        private void OnGraphPostExecution(Session.IExecutionSession session)
         {
             profilingData.EndTime = DateTime.Now;
         }
