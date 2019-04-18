@@ -5,7 +5,7 @@ using System.Threading;
 
 namespace ProtoCore.Lang
 {
-	[Obsolete("This class is not used anymore, use the same class from Dynamo.Services namespace",false)]
+    [Obsolete("This class is not used anymore, use the same class from Dynamo.Services namespace", false)]
     public static class TraceUtils
     {
 

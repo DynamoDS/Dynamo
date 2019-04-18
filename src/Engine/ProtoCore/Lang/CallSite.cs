@@ -1,3 +1,11 @@
+using DynamoServices;
+using ProtoCore.DSASM;
+using ProtoCore.Exceptions;
+using ProtoCore.Lang;
+using ProtoCore.Lang.Replication;
+using ProtoCore.Properties;
+using ProtoCore.Runtime;
+using ProtoCore.Utils;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -8,17 +16,9 @@ using System.Reflection;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Soap;
 using System.Text;
-using ProtoCore.DSASM;
-using ProtoCore.Exceptions;
-using ProtoCore.Lang;
-using ProtoCore.Lang.Replication;
-using ProtoCore.Properties;
-using ProtoCore.Runtime;
-using ProtoCore.Utils;
 using StackFrame = ProtoCore.DSASM.StackFrame;
-using WarningID = ProtoCore.Runtime.WarningID;
-using DynamoServices;
 using Validity = ProtoCore.Utils.Validity;
+using WarningID = ProtoCore.Runtime.WarningID;
 
 namespace ProtoCore
 {
