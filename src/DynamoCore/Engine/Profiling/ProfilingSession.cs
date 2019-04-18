@@ -33,6 +33,14 @@ namespace Dynamo.Engine.Profiling
             UnregisterEventHandlers();
         }
 
+        /// <summary>
+        /// Return an interface to the profiling data for this profiling session.
+        /// </summary>
+        public IProfilingData GetProfilingData()
+        {
+            return profilingData;
+        }
+
         private void OnGraphPreExecution(Session.IExecutionSession session)
         {
             profilingData.StartTime = DateTime.Now;
