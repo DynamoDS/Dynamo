@@ -20,7 +20,7 @@ namespace Dynamo.Engine.CodeGeneration
     {
         private readonly IAstNodeContainer nodeContainer;
 
-        internal ProfilingSession profilingSession = null;
+        private ProfilingSession profilingSession = null;
 
         /// <summary>
         /// Construct a AstBuilder with AST node contiainer.
