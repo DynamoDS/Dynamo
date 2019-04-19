@@ -36,9 +36,12 @@ namespace Dynamo.Engine.Profiling
         /// <summary>
         /// Return an interface to the profiling data for this profiling session.
         /// </summary>
-        public IProfilingData GetProfilingData()
+        public IProfilingData ProfilingData
         {
-            return profilingData;
+            get
+            {
+                return profilingData;
+            }
         }
 
         private void OnGraphPreExecution(Session.IExecutionSession session)

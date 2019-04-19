@@ -200,6 +200,14 @@ namespace Dynamo.Engine
         {
             profilingSession.UnregisterDeletedNodes(nodes);
         }
+
+        internal IProfilingData ProfilingData
+        {
+            get
+            {
+                return profilingSession.ProfilingData;
+            }
+        }
         
         /// <summary>
         /// This method is called on the main thread from UpdateGraphAsyncTask

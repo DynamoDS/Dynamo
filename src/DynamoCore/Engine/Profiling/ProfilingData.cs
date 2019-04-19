@@ -6,10 +6,45 @@ namespace Dynamo.Engine.Profiling
 {
     internal class ProfilingData : IProfilingData
     {
-        internal DateTime StartTime { get; set; }
-        internal DateTime EndTime { get; set; }
-
+        private DateTime? startTime = null;
+        private DateTime? endTime = null;
         private Dictionary<Guid, NodeProfilingData> nodes = new Dictionary<Guid, NodeProfilingData>();
+
+        internal DateTime? StartTime
+        {
+            get
+            {
+                return startTime;
+            }
+
+            set
+            {
+                if (startTime == null)
+                {
+                    startTime = new DateTime();
+                }
+
+                startTime = value;
+            }
+        }
+
+        internal DateTime? EndTime
+        {
+            get
+            {
+                return endTime;
+            }
+
+            set
+            {
+                if (endTime == null)
+                {
+                    endTime = new DateTime();
+                }
+
+                endTime = value;
+            }
+        }
 
         public TimeSpan? TotalExecutionTime
         {
