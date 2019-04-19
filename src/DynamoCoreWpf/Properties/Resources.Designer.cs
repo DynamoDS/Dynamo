@@ -10,6 +10,8 @@
 
 namespace Dynamo.Wpf.Properties
 {
+
+
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -3411,7 +3413,7 @@ namespace Dynamo.Wpf.Properties
                 return ResourceManager.GetString("NodeContextMenuShowLabels", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to See more on the Dynamo Dictionary....
         /// </summary>
@@ -3420,7 +3422,7 @@ namespace Dynamo.Wpf.Properties
                 return ResourceManager.GetString("NodeHelpWindowDynamoDictionary", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to CATEGORY.
         /// </summary>
