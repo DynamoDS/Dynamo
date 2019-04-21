@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Globalization;
-using System.Linq;
-using System.Runtime.Serialization;
-using System.Xml;
-using Dynamo.Core;
+﻿using Dynamo.Core;
 using Dynamo.Engine;
 using Dynamo.Graph.Annotations;
 using Dynamo.Graph.Nodes;
@@ -17,6 +10,13 @@ using Dynamo.Scheduler;
 using Newtonsoft.Json;
 using ProtoCore;
 using ProtoCore.Namespace;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Globalization;
+using System.Linq;
+using System.Runtime.Serialization;
+using System.Xml;
 
 namespace Dynamo.Graph.Workspaces
 {
@@ -31,6 +31,7 @@ namespace Dynamo.Graph.Workspaces
         private PulseMaker pulseMaker;
         private readonly bool verboseLogging;
         private bool graphExecuted;
+        private bool executingTask;
         private IEnumerable<KeyValuePair<Guid, List<CallSite.RawTraceData>>> historicalTraceData;
 
         /// <summary>
@@ -331,6 +332,9 @@ namespace Dynamo.Graph.Workspaces
         {
             base.RequestRun();
 
+            if (executingTask)
+                Run();
+
             if (RunSettings.RunEnabled && RunSettings.RunType != RunType.Manual)
             {
                 Run();
@@ -579,6 +583,7 @@ namespace Dynamo.Graph.Workspaces
 
             // Notify listeners (optional) of completion.
             RunSettings.RunEnabled = true; // Re-enable 'Run' button.
+            executingTask = false;
 
             //set the node execution preview to false;
             OnSetNodeDeltaState(new DeltaComputeStateEventArgs(new List<Guid>(), graphExecuted));
@@ -663,6 +668,7 @@ namespace Dynamo.Graph.Workspaces
 
                 OnEvaluationStarted(EventArgs.Empty);
                 scheduler.ScheduleForExecution(task);
+                executingTask = true;
             }
             else
             {
