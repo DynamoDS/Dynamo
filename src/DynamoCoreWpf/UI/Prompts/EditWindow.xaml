@@ -6,7 +6,8 @@
         Title="{x:Static p:Resources.EditWindowTitle}" 
         MaxHeight="{x:Static SystemParameters.PrimaryScreenHeight}"
         MaxWidth="{x:Static SystemParameters.PrimaryScreenWidth}"
-        MinHeight="130" Height="200" Width="400">
+        MinHeight="170" MinWidth="300"
+        Height="200" Width="400">
 
     <Grid>
 
