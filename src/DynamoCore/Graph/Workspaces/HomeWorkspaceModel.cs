@@ -332,7 +332,7 @@ namespace Dynamo.Graph.Workspaces
         {
             base.RequestRun();
 
-            if (executingTask)
+            if (RunSettings.RunType != RunType.Manual && executingTask)
                 Run();
 
             if (RunSettings.RunEnabled && RunSettings.RunType != RunType.Manual)
