@@ -113,7 +113,6 @@ limitations under the License.
     <Compile Include="Configuration\Context.cs" />
     <Compile Include="Core\DynamoMigrator.cs" />
     <Compile Include="Engine\CodeGeneration\CompilationContext.cs" />
-    <Compile Include="Engine\CodeGeneration\CompilationEventArgs .cs" />
     <Compile Include="Engine\CodeGeneration\CompiledEventArgs.cs" />
     <Compile Include="Engine\CodeGeneration\CompilingEventArgs.cs" />
     <Compile Include="Engine\CodeGeneration\IAstNodeContainer.cs" />
