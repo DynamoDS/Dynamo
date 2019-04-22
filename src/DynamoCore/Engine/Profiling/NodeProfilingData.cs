@@ -5,7 +5,7 @@ using VMDataBridge;
 
 namespace Dynamo.Engine.Profiling
 {
-    class NodeProfilingData : NotificationObject, IDisposable
+    class NodeProfilingData : IDisposable
     {
         NodeModel node = null;
 
