@@ -6,7 +6,7 @@ namespace Dynamo.Engine.Profiling
     /// <summary>
     /// Returns information about time spent compiling and exectuing nodes.                                                 
     /// </summary>
-    public interface IProfilingData
+    public interface IProfilingExecutionTimeData
     {
         /// <summary>
         /// Returns the total amount of time spent compiling and executing nodes.

@@ -201,7 +201,7 @@ namespace Dynamo.Engine
             profilingSession.UnregisterDeletedNodes(nodes);
         }
 
-        internal IProfilingData ProfilingData
+        internal IProfilingExecutionTimeData ProfilingData
         {
             get
             {

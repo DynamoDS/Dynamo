@@ -36,7 +36,7 @@ namespace Dynamo.Engine.Profiling
         /// <summary>
         /// Return an interface to the profiling data for this profiling session.
         /// </summary>
-        public IProfilingData ProfilingData
+        public IProfilingExecutionTimeData ProfilingData
         {
             get
             {

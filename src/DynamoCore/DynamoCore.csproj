@@ -116,7 +116,7 @@ limitations under the License.
     <Compile Include="Engine\CodeGeneration\CompiledEventArgs.cs" />
     <Compile Include="Engine\CodeGeneration\CompilingEventArgs.cs" />
     <Compile Include="Engine\CodeGeneration\IAstNodeContainer.cs" />
-    <Compile Include="Engine\Profiling\IProfilingData.cs" />
+    <Compile Include="Engine\Profiling\IProfilingExecutionTimeData.cs" />
     <Compile Include="Engine\Profiling\NodeProfilingData.cs" />
     <Compile Include="Engine\Profiling\ProfilingData.cs" />
     <Compile Include="Engine\Profiling\ProfilingSession.cs" />

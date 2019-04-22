@@ -4,7 +4,7 @@ using Dynamo.Graph.Nodes;
 
 namespace Dynamo.Engine.Profiling
 {
-    internal class ProfilingData : IProfilingData
+    internal class ProfilingData : IProfilingExecutionTimeData
     {
         private DateTime? startTime = null;
         private DateTime? endTime = null;
