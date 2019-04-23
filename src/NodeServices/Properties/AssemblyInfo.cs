@@ -18,3 +18,5 @@ using System.Runtime.InteropServices;
 [assembly: InternalsVisibleTo("ProtoTestFx")]
 [assembly: InternalsVisibleTo("DynamoCoreTests")]
 [assembly: InternalsVisibleTo("DynamoWPFCLI")]
+[assembly: InternalsVisibleTo("ProtoTest")]
+[assembly: InternalsVisibleTo("IntegrationTests")]
