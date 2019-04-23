@@ -64,9 +64,12 @@ namespace Dynamo.Engine.Profiling
             profilingData.UnregisterDeletedNodes(nodes);
         }
 
+        private const string beginTag = "_beginCallback";
+        private const string endTag = "_endCallback";
+
         internal BinaryExpressionNode CreatePreCompilationAstNode(NodeModel node, List<AssociativeNode> inputAstNodes)
         {
-            IdentifierNode identifier = AstFactory.BuildIdentifier(node.AstIdentifierBase + "_beginCallback");
+            IdentifierNode identifier = AstFactory.BuildIdentifier(node.AstIdentifierBase + beginTag);
 
             string id = node.GUID.ToString();
             ExprListNode exprListNode = AstFactory.BuildExprList(inputAstNodes);
@@ -77,7 +80,7 @@ namespace Dynamo.Engine.Profiling
 
         internal BinaryExpressionNode CreatePostCompilationAstNode(NodeModel node, List<AssociativeNode> inputAstNodes)
         {
-            IdentifierNode identifier = AstFactory.BuildIdentifier(node.AstIdentifierBase + "_endCallback");
+            IdentifierNode identifier = AstFactory.BuildIdentifier(node.AstIdentifierBase + endTag);
 
             string id = node.GUID.ToString();
             List<AssociativeNode> outPortNodeList = 
