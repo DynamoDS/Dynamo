@@ -1,5 +1,4 @@
 ﻿using System;
-using Dynamo.Core;
 using Dynamo.Graph.Nodes;
 using VMDataBridge;
 
@@ -12,13 +11,13 @@ namespace Dynamo.Engine.Profiling
         private DateTime? startTime = null;
         private DateTime? endTime = null;
 
-        public NodeProfilingData(NodeModel node)
+        internal NodeProfilingData(NodeModel node)
         {
             this.node = node;
             DataBridge.Instance.RegisterCallback(node.GUID.ToString(), RecordEvaluationState);
         }
 
-        public void Reset()
+        internal void Reset()
         {
             startTime = null;
             endTime = null;
@@ -40,7 +39,7 @@ namespace Dynamo.Engine.Profiling
             endTime = DateTime.Now;
         }
 
-        public TimeSpan? ExecutionTime
+        internal TimeSpan? ExecutionTime
         {
             get
             {
@@ -51,7 +50,7 @@ namespace Dynamo.Engine.Profiling
             }
         }
 
-        public bool HasPerformanceData()
+        private bool HasPerformanceData()
         {
             return startTime.HasValue && endTime.HasValue;
         }
