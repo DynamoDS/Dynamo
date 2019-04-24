@@ -334,6 +334,10 @@ namespace Dynamo.Graph.Workspaces
 
             if (RunSettings.RunType != RunType.Manual)
             {
+                // TODO for Dynamo 3.0: The boolean "executingTask" that is used here is a make-do fix.
+                // We will be needing a separate variable(boolean) to check for RunEnabled flag from external applications and
+                // not confuse it with the internal flag RunEnabled which is associated with the Run button in Dynamo. 
+                // Make this RunSettings.RunEnabled private, introduce the new flag and remove the "executingTask" variable. 
                 if (RunSettings.RunEnabled || executingTask)
                 {
                     Run();
