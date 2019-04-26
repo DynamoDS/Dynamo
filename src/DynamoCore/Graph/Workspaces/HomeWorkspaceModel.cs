@@ -1,4 +1,11 @@
-﻿using Dynamo.Core;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Globalization;
+using System.Linq;
+using System.Runtime.Serialization;
+using System.Xml;
+using Dynamo.Core;
 using Dynamo.Engine;
 using Dynamo.Graph.Annotations;
 using Dynamo.Graph.Nodes;
@@ -10,13 +17,6 @@ using Dynamo.Scheduler;
 using Newtonsoft.Json;
 using ProtoCore;
 using ProtoCore.Namespace;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Globalization;
-using System.Linq;
-using System.Runtime.Serialization;
-using System.Xml;
 
 namespace Dynamo.Graph.Workspaces
 {
@@ -31,7 +31,10 @@ namespace Dynamo.Graph.Workspaces
         private PulseMaker pulseMaker;
         private readonly bool verboseLogging;
         private bool graphExecuted;
+
+        // To check whether task is completed or not. 
         private bool executingTask;
+
         private IEnumerable<KeyValuePair<Guid, List<CallSite.RawTraceData>>> historicalTraceData;
 
         /// <summary>
@@ -335,8 +338,8 @@ namespace Dynamo.Graph.Workspaces
             if (RunSettings.RunType != RunType.Manual)
             {
                 // TODO for Dynamo 3.0: The boolean "executingTask" that is used here is a make-do fix.
-                // We will be needing a separate variable(boolean) to check for RunEnabled flag from external applications and
-                // not confuse it with the internal flag RunEnabled which is associated with the Run button in Dynamo. 
+                // We will be needing a separate variable(boolean flag) to check whether run can be enabled from external applications
+                // and not confuse it with the internal flag RunEnabled which is associated with the Run button in Dynamo. 
                 // Make this RunSettings.RunEnabled private, introduce the new flag and remove the "executingTask" variable. 
                 if (RunSettings.RunEnabled || executingTask)
                 {
@@ -587,7 +590,8 @@ namespace Dynamo.Graph.Workspaces
 
             // Notify listeners (optional) of completion.
             RunSettings.RunEnabled = true; // Re-enable 'Run' button.
-            executingTask = false;
+
+            executingTask = false; // setting back to false
 
             //set the node execution preview to false;
             OnSetNodeDeltaState(new DeltaComputeStateEventArgs(new List<Guid>(), graphExecuted));
@@ -672,6 +676,9 @@ namespace Dynamo.Graph.Workspaces
 
                 OnEvaluationStarted(EventArgs.Empty);
                 scheduler.ScheduleForExecution(task);
+
+                // Setting this to true as the task is scheduled now and will be 
+                // set back to false once the OnUpdateGraphCompleted event is executed. 
                 executingTask = true;
             }
             else
