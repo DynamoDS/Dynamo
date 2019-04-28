@@ -2201,6 +2201,15 @@ namespace Dynamo.Wpf.Properties
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Write note here.
+        /// </summary>
+        public static string EditNoteWindowTitle {
+            get {
+                return ResourceManager.GetString("EditNoteWindowTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Accept.
         /// </summary>
         public static string EditWindowAcceptButton {

@@ -1,3 +1,11 @@
+using DynamoServices;
+using ProtoCore.DSASM;
+using ProtoCore.Exceptions;
+using ProtoCore.Lang;
+using ProtoCore.Lang.Replication;
+using ProtoCore.Properties;
+using ProtoCore.Runtime;
+using ProtoCore.Utils;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -8,14 +16,8 @@ using System.Reflection;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Soap;
 using System.Text;
-using ProtoCore.DSASM;
-using ProtoCore.Exceptions;
-using ProtoCore.Lang;
-using ProtoCore.Lang.Replication;
-using ProtoCore.Properties;
-using ProtoCore.Runtime;
-using ProtoCore.Utils;
 using StackFrame = ProtoCore.DSASM.StackFrame;
+using Validity = ProtoCore.Utils.Validity;
 using WarningID = ProtoCore.Runtime.WarningID;
 
 namespace ProtoCore
@@ -1676,8 +1678,7 @@ namespace ProtoCore
                     }
 
                     //Build the call
-                    List<StackValue> newFormalParams = new List<StackValue>();
-                    newFormalParams.AddRange(formalParameters);
+                    List<StackValue> newFormalParams = formalParameters.ToList();
 
                     for (int repIi = 0; repIi < repIndecies.Count; repIi++)
                     {
@@ -1703,10 +1704,7 @@ namespace ProtoCore
                         }
                     }
 
-                    List<ReplicationInstruction> newRIs = new List<ReplicationInstruction>();
-                    newRIs.AddRange(replicationInstructions);
-                    newRIs.RemoveAt(0);
-
+                    List<ReplicationInstruction> newRIs = replicationInstructions.GetRange(1, replicationInstructions.Count-1);
 
                     SingleRunTraceData cleanRetTrace = new SingleRunTraceData();
 
@@ -1779,12 +1777,9 @@ namespace ProtoCore
 
                 if (supressArray)
                 {
-                    List<ReplicationInstruction> newRIs = new List<ReplicationInstruction>();
-                    newRIs.AddRange(replicationInstructions);
-                    newRIs.RemoveAt(0);
+                    List<ReplicationInstruction> newRIs = replicationInstructions.GetRange(1, replicationInstructions.Count-1);
 
-                    List<StackValue> newFormalParams = new List<StackValue>();
-                    newFormalParams.AddRange(formalParameters);
+                    List<StackValue> newFormalParams = formalParameters.ToList();
 
                     return ExecWithRISlowPath(functionEndPoint, c, newFormalParams, newRIs, stackFrame, runtimeCore, previousTraceData, newTraceData, finalFunctionEndPoint);
                 }
@@ -1793,8 +1788,7 @@ namespace ProtoCore
                 for (int i = 0; i < retSize; i++)
                 {
                     //Build the call
-                    List<StackValue> newFormalParams = new List<StackValue>();
-                    newFormalParams.AddRange(formalParameters);
+                    List<StackValue> newFormalParams = formalParameters.ToList();
 
                     if (parameters != null)
                     {
@@ -1802,10 +1796,7 @@ namespace ProtoCore
                         newFormalParams[cartIndex] = parameters[i];
                     }
 
-                    List<ReplicationInstruction> newRIs = new List<ReplicationInstruction>();
-                    newRIs.AddRange(replicationInstructions);
-                    newRIs.RemoveAt(0);
-
+                    List<ReplicationInstruction> newRIs = replicationInstructions.GetRange(1, replicationInstructions.Count-1);
 
                     SingleRunTraceData lastExecTrace;
 
@@ -1894,11 +1885,7 @@ namespace ProtoCore
             if (traceD != null)
             {
                 //There was data associated with the previous execution, push this into the TLS
-
-                Dictionary<string, ISerializable> dataDict = new Dictionary<string, ISerializable>();
-                dataDict.Add(TRACE_KEY, traceD);
-
-                TraceUtils.SetObjectToTLS(dataDict);
+                TraceUtils.SetTraceData(TRACE_KEY, traceD);
             }
             else
             {
@@ -1912,16 +1899,18 @@ namespace ProtoCore
             if (ret.IsNull)
             {
                 //wipe the trace cache
-                TraceUtils.ClearTLSKey(TRACE_KEY);
+                TraceUtils.ClearAllKnownTLSKeys();
+                newTraceData.Data = null;
             }
-
-            //TLS -> TraceCache
-            Dictionary<string, ISerializable> traceRet = TraceUtils.GetObjectFromTLS();
-
-            if (traceRet.ContainsKey(TRACE_KEY))
+            else
             {
-                var val = traceRet[TRACE_KEY];
-                newTraceData.Data = val;
+                //TLS -> TraceCache
+                var traceRet = TraceUtils.GetTraceData(TRACE_KEY);
+
+                if (traceRet != null)
+                {
+                    newTraceData.Data = traceRet;
+                }
             }
 
             // An explicit call requires return coercion at the return instruction

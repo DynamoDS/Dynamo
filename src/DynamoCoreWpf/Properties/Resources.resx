@@ -2190,4 +2190,7 @@ Want to publish a different package?</value>
   <data name="PackageSearchViewSearchTextBoxSyncing" xml:space="preserve">
     <value>Please wait...</value>
   </data>
+  <data name="EditNoteWindowTitle" xml:space="preserve">
+    <value>Write note here</value>
+  </data>
 </root>
