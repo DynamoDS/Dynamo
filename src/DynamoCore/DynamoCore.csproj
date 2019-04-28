@@ -87,7 +87,8 @@ limitations under the License.
       <Private>True</Private>
     </Reference>
     <Reference Include="ProtoGeometry, Version=2.1.0.24938, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\DynamoVisualProgramming.LibG_225.2.1.0\lib\ProtoGeometry\ProtoGeometry.dll</HintPath>
+      <HintPath>..\packages\DynamoVisualProgramming.LibG_225_0_0.2.1.0\lib\ProtoGeometry\ProtoGeometry.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="RestSharp, Version=105.2.3.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\RestSharp.105.2.3\lib\net46\RestSharp.dll</HintPath>
@@ -99,6 +100,7 @@ limitations under the License.
     </Reference>
     <Reference Include="System.Drawing" />
     <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
@@ -363,14 +365,14 @@ limitations under the License.
   <Target Name="BeforeBuild">
     <ItemGroup>
       <ExternProtoGeometry Include="$(SolutionDir)..\extern\ProtoGeometry\*" />
-      <ExternProtoGeometryXml Include="$(SolutionDir)..\extern\ProtoGeometry\ProtoGeometry.XML" />
+      <LibGInterfaceDll Include="$(SolutionDir)\packages\DynamoVisualProgramming.LibG_225_0_0.2.1.0\ProtoGeometry\LibG.Interface.dll" />
+      <ProtoGeometryXml Include="$(SolutionDir)\packages\DynamoVisualProgramming.LibG_225_0_0.2.1.0\lib\ProtoGeometry\ProtoGeometry.XML" />
       <ExternProtoGeometryUICulture Include="$(SolutionDir)..\extern\ProtoGeometry\$(UICulture)\*" />
       <ExternProtoGeometryLibGLocale Include="$(SolutionDir)..\extern\ProtoGeometry\libg_locale\**\*.*" />
-      <ExternLibG223 Include="$(SolutionDir)..\extern\LibG_223_0_1\*" />
-      <ExternLibG224 Include="$(SolutionDir)..\extern\LibG_224_0_1\*" />
-      <ExternLibG2244 Include="$(SolutionDir)..\extern\LibG_224_4_0\*" />
-      <ExternLibG225 Include="$(SolutionDir)..\extern\LibG_225_0_0\*" />
-      <ExternLibG Include="$(SolutionDir)..\extern\LibG_*\*" />
+      <LibG223 Include="$(SolutionDir)\packages\DynamoVisualProgramming.LibG_223_0_1.2.1.0\LibG_223_0_1\*" />
+      <LibG224 Include="$(SolutionDir)\packages\DynamoVisualProgramming.LibG_224_0_1.2.1.0\LibG_224_0_1\*" />
+      <LibG2244 Include="$(SolutionDir)\packages\DynamoVisualProgramming.LibG_224_4_1.2.1.0\LibG_224_4_0\*" />
+      <LibG225 Include="$(SolutionDir)\packages\DynamoVisualProgramming.LibG_225_0_0.2.1.0\LibG_225_0_0\*" />
       <ExternSimplexNoise Include="$(SolutionDir)..\extern\SimplexNoise\*" />
       <SampleFiles Include="$(SolutionDir)..\doc\distrib\Samples\**\*.*" />
       <GalleryFiles Include="$(SolutionDir)..\extern\gallery\**\*.*" />
@@ -383,14 +385,14 @@ limitations under the License.
     <Copy SourceFiles="$(SolutionDir)..\doc\distrib\GoogleAnalyticsConsent.rtf" DestinationFolder="$(OutputPath)" />
     <Copy SourceFiles="$(SolutionDir)..\doc\distrib\InstrumentationConsent.rtf" DestinationFolder="$(OutputPath)" />
     <Copy SourceFiles="@(ExternProtoGeometry)" DestinationFolder="$(OutputPath)" />
-    <Copy SourceFiles="@(ExternProtoGeometryXml)" DestinationFolder="$(OutputPath)\$(UICulture)" />
+    <Copy SourceFiles="@(LibGInterfaceDll)" DestinationFolder="$(OutputPath)" />
+    <Copy SourceFiles="@(ProtoGeometryXml)" DestinationFolder="$(OutputPath)\$(UICulture)" />
     <Copy SourceFiles="@(ExternProtoGeometryUICulture)" DestinationFolder="$(OutputPath)\$(UICulture)" />
     <Copy SourceFiles="@(ExternProtoGeometryLibGLocale)" DestinationFolder="$(OutputPath)\libg_locale\%(RecursiveDir)" />
-    <Copy SourceFiles="@(ExternLibG223)" DestinationFolder="$(OutputPath)libg_223_0_1\" />
-    <Copy SourceFiles="@(ExternLibG224)" DestinationFolder="$(OutputPath)libg_224_0_1\" />
-    <Copy SourceFiles="@(ExternLibG2244)" DestinationFolder="$(OutputPath)libg_224_4_0\" />
-    <Copy SourceFiles="@(ExternLibG225)" DestinationFolder="$(OutputPath)libg_225_0_0\" />
-    <Copy SourceFiles="@(ExternLibG)" DestinationFolder="$(OutputPath)\%(RecursiveDir)" />
+    <Copy SourceFiles="@(LibG223)" DestinationFolder="$(OutputPath)libg_223_0_1\" />
+    <Copy SourceFiles="@(LibG224)" DestinationFolder="$(OutputPath)libg_224_0_1\" />
+    <Copy SourceFiles="@(LibG2244)" DestinationFolder="$(OutputPath)libg_224_4_0\" />
+    <Copy SourceFiles="@(LibG225)" DestinationFolder="$(OutputPath)libg_225_0_0\" />
     <Copy SourceFiles="@(ExternSimplexNoise)" DestinationFolder="$(OutputPath)" />
     <Copy SourceFiles="@(ExternAnalytics)" DestinationFolder="$(OutputPath)" />
     <Copy SourceFiles="@(SampleFiles)" DestinationFolder="$(OutputPath)samples\%(RecursiveDir)" />
