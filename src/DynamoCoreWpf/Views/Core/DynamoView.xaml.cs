@@ -1630,7 +1630,7 @@ namespace Dynamo.Controls
             Image collapseIcon = (Image)sp.Children[1];
 
             // When hovered swap appropriate expand/collapse button state
-            if (LibraryCollapsed)
+            if (LibraryCollapsed || ExtensionsCollapsed)
             {
                 Uri imageUri;
                 imageUri = new Uri(@"pack://application:,,,/DynamoCoreWpf;component/UI/Images/expand_hover.png");
@@ -1640,17 +1640,20 @@ namespace Dynamo.Controls
         }
 
         private bool libraryCollapsed;
+        private bool extensionsCollapsed;
 
-        // Default library width
-        private const int defaultLibraryWidth = 200;
+        // Default side bar width
+        private const int defaultSideBarWidth = 200;
 
-        // Check if library is collapsed or expanded
+        /// <summary>
+        /// Check if library is collapsed or expanded
+        /// </summary>
         public bool LibraryCollapsed
         {
             get
             {
                 // Threshold that determines if button should be displayed
-                if (LibraryViewColumn.Width.Value < 20)
+                if (ExtensionsViewColumn.Width.Value < 20)
                 { libraryCollapsed = true; }
 
                 else
@@ -1660,31 +1663,56 @@ namespace Dynamo.Controls
             }
         }
 
+        /// <summary>
+        /// Check if extensions right side bar is collapsed or expanded
+        /// </summary>
+        public bool ExtensionsCollapsed
+        {
+            get
+            {
+                // Threshold that determines if button should be displayed
+                if (ExtensionsViewColumn.Width.Value < 20)
+                { extensionsCollapsed = true; }
+
+                else
+                { extensionsCollapsed = false; }
+
+                return extensionsCollapsed;
+            }
+        }
+
         // Check if library is collapsed or expanded and apply appropriate button state
         private void updateCollapseIcon()
         {
             if (LibraryCollapsed)
             {
-                collapsedSidebar.Visibility = Visibility.Visible;
+                collapsedLibrarySidebar.Visibility = Visibility.Visible;
             }
-
             else
             {
-                collapsedSidebar.Visibility = Visibility.Collapsed;
+                collapsedLibrarySidebar.Visibility = Visibility.Collapsed;
+            }
+
+            if(extensionsCollapsed)
+            {
+                collapsedExtensionSidebar.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                collapsedExtensionSidebar.Visibility = Visibility.Collapsed;
             }
         }
 
         private void OnCollapsedSidebarClick(object sender, EventArgs e)
         {
-            if (LibraryCollapsed)
+            if (LibraryCollapsed || ExtensionsCollapsed)
             {
-                // Restore library to default width (200)
-                LibraryViewColumn.Width = new GridLength(defaultLibraryWidth, GridUnitType.Star);
+                // Restore extension view to default width (200)
+                ExtensionsViewColumn.Width = new GridLength(defaultSideBarWidth, GridUnitType.Star);
             }
-
             else
             {
-                LibraryViewColumn.Width = new GridLength(0, GridUnitType.Star);
+                ExtensionsViewColumn.Width = new GridLength(0, GridUnitType.Star);
             }
 
             updateCollapseIcon();
@@ -1712,7 +1740,7 @@ namespace Dynamo.Controls
         private void LibraryClicked(object sender, EventArgs e)
         {
             restoreWidth = sidebarGrid.ActualWidth;
-            LibraryViewColumn.MinWidth = 0;
+            ExtensionsViewColumn.MinWidth = 0;
 
             mainGrid.ColumnDefinitions[0].Width = new GridLength(0.0);
             verticalSplitter.Visibility = Visibility.Collapsed;
@@ -1723,7 +1751,24 @@ namespace Dynamo.Controls
             view.Visibility = Visibility.Collapsed;
 
             sidebarGrid.Visibility = Visibility.Collapsed;
-            collapsedSidebar.Visibility = Visibility.Visible;
+            collapsedLibrarySidebar.Visibility = Visibility.Visible;
+        }
+
+        private void ExtensionsButtonClicked(object sender, EventArgs e)
+        {
+            restoreWidth = sidebarExtensionsGrid.ActualWidth;
+            ExtensionsViewColumn.MinWidth = 0;
+
+            mainGrid.ColumnDefinitions[0].Width = new GridLength(0.0);
+            extensionSplitter.Visibility = Visibility.Collapsed;
+            sidebarExtensionsGrid.Visibility = Visibility.Collapsed;
+
+            horizontalSplitter.Width = double.NaN;
+            UserControl view = (UserControl)sidebarExtensionsGrid.Children[0];
+            view.Visibility = Visibility.Collapsed;
+
+            sidebarExtensionsGrid.Visibility = Visibility.Collapsed;
+            collapsedExtensionSidebar.Visibility = Visibility.Visible;
         }
 
         private void OnSettingsSubMenuOpened(object sender, RoutedEventArgs e)

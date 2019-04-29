@@ -196,7 +196,7 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition MaxWidth="500"
                               MinWidth="1"
-                              Name="LibraryViewColumn">
+                              Name="ExtensionsViewColumn">
                 <ColumnDefinition.Width>
                     <Binding Path="LibraryWidth"
                              Mode="TwoWay"
@@ -825,8 +825,9 @@
 
         <!--Shortcuts Toolbar-->
         <Grid Grid.Row="1"
-                Grid.Column="0"
-                Grid.ColumnSpan="3">
+              Grid.Column="0"
+              Grid.ColumnSpan="3"
+              Name="shortcutsBarGrid">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"></ColumnDefinition>
                 <ColumnDefinition Width="Auto"></ColumnDefinition>
@@ -1478,11 +1479,11 @@
 
         </Border>
 
-        <!--Collapsed Sidebar-->
+        <!--Collapsed Left Sidebar-->
         <StackPanel Grid.Row="2"
                     Grid.Column="2"
                     Orientation="Vertical"
-                    Name="collapsedSidebar"
+                    Name="collapsedLibrarySidebar"
                     Width="Auto"
                     Height="Auto"
                     Background="#222222"
@@ -1544,7 +1545,75 @@
                 <RotateTransform Angle="-90" />
             </StackPanel.RenderTransform>
         </StackPanel>
+        
+        <!--Collapsed Extension Sidebar-->
+        <StackPanel Grid.Row="2"
+                    Grid.Column="2"
+                    Orientation="Vertical"
+                    Name="collapsedExtensionSidebar"
+                    Width="Auto"
+                    Height="Auto"
+                    Background="#222222"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Top"
+                    Margin="0,280,0,0">
+            <Grid Background="#353535"
+                  Width="100"
+                  Cursor="Hand">
+                <Button Click="OnCollapsedSidebarClick"
+                        Template="{DynamicResource BackgroundButton}">
+                    <Button.Resources>
+                        <ControlTemplate x:Key="BackgroundButton"
+                                         TargetType="Button">
+                            <Border Name="border"
+                                    BorderThickness="0"
+                                    BorderBrush="Black"
+                                    VerticalAlignment="Stretch"
+                                    Padding="5,0,5,0">
+                                <ContentPresenter HorizontalAlignment="Stretch"
+                                                  VerticalAlignment="Stretch" />
+                            </Border>
+                        </ControlTemplate>
+                    </Button.Resources>
+                    <Grid Mouse.MouseEnter="Button_MouseEnter"
+                          Mouse.MouseLeave="Button_MouseLeave">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Orientation="Horizontal" 
+                                    HorizontalAlignment="Center">
+                            <TextBlock Grid.Column="0"
+                                   Name="ExtensionSidebarText"
+                                   VerticalAlignment="Center"
+                                   Foreground="#aaaaaa"
+                                   FontWeight="Normal"
+                                   Margin="20,0,0,5"
+                                   Text="{x:Static p:Resources.ExtensionsViewTitle}">
+                            </TextBlock>
+                            <Image Grid.Column="0"
+                               Name="ExtensionSidebarIcon"
+                               Source="/DynamoCoreWpf;component/UI/Images/expand_normal.png"
+                               Visibility="Visible"
+                               Width="10"
+                               Height="10"
+                               Margin="5,5,5,5"
+                               RenderTransformOrigin="0.5, 0.5">
+                                <Image.RenderTransform>
+                                    <RotateTransform Angle="90" />
+                                </Image.RenderTransform>
+                            </Image>
+                        </StackPanel>
+                    </Grid>
+                </Button>
+            </Grid>
 
+            <StackPanel.RenderTransform>
+                <RotateTransform Angle="-90" />
+            </StackPanel.RenderTransform>
+        </StackPanel>
+
+        <!--Console Log Area-->
         <ScrollViewer Name="LogScroller"
                       VerticalAlignment="Stretch"
                       VerticalScrollBarVisibility="Auto"
@@ -1579,7 +1648,7 @@
                      TextChanged="TextBoxBase_OnTextChanged" />
         </ScrollViewer>
 
-        <!--Sidebar-->
+        <!--Sidebar Library-->
         <Grid Height="Auto"
               Width="Auto"
               HorizontalAlignment="Stretch"
@@ -1591,6 +1660,19 @@
               Grid.RowSpan="2">
         </Grid>
 
+        <!--Sidebar Extensions-->
+        <Grid Height="Auto"
+              Width="Auto"
+              HorizontalAlignment="Stretch"
+              Name="sidebarExtensionsGrid"
+              VerticalAlignment="Stretch"
+              Visibility="Visible"
+              Grid.Row="2"
+              Grid.Column="4"
+              Grid.RowSpan="2">
+        </Grid>
+
+        <!--Bottom Panel including RunMode etc-->
         <WrapPanel Orientation="Horizontal"
                    Grid.Row="5"
                    Grid.Column="0"
@@ -1641,6 +1723,8 @@
 
         </WrapPanel>
 
+
+        <!--Split Between Console and Canvas-->
         <GridSplitter ResizeDirection="Rows"
                       Grid.Column="2"
                       Grid.ColumnSpan="1"
@@ -1655,6 +1739,7 @@
                       Background="#999"
                       Cursor="/DynamoCoreWpf;component/UI/Images/resize_vertical.cur" />
 
+        <!--Split Between Library and Canvas-->
         <GridSplitter ResizeDirection="Auto"
                       Grid.Column="1"
                       Grid.Row="2"
@@ -1667,7 +1752,22 @@
                       Margin="0"
                       Background="Transparent"
                       Cursor="/DynamoCoreWpf;component/UI/Images/resize_horizontal.cur" />
+        
+        <!--Split Between Extension and Canvas-->
+        <GridSplitter ResizeDirection="Auto"
+                      Grid.Column="3"
+                      Grid.Row="2"
+                      Grid.RowSpan="2"
+                      Height="Auto"
+                      Width="3"
+                      Name="extensionSplitter"
+                      HorizontalAlignment="Stretch"
+                      VerticalAlignment="Stretch"
+                      Margin="0"
+                      Background="White"
+                      Cursor="/DynamoCoreWpf;component/UI/Images/resize_horizontal.cur" />
 
+        <!--Start Page-->
         <ItemsControl Name="startPageItemsControl"
                       Grid.Row="2"
                       Grid.RowSpan="4"
@@ -1694,6 +1794,7 @@
             </ItemsControl.Visibility>
         </ItemsControl>
 
+        <!--Gallery or What's new-->
         <Grid Name="galleryBackground"
               Visibility="Hidden"
               MouseLeftButtonDown="OnGalleryBackgroundMouseClick">

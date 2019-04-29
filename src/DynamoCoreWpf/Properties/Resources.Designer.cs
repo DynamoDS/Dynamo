@@ -8,10 +8,10 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Dynamo.Wpf.Properties
-{
-
-
+namespace Dynamo.Wpf.Properties {
+    using System;
+    
+    
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -2228,6 +2228,15 @@ namespace Dynamo.Wpf.Properties
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Extensions.
+        /// </summary>
+        public static string ExtensionsViewTitle {
+            get {
+                return ResourceManager.GetString("ExtensionsViewTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to All Files ({0})|{0}.
         /// </summary>
         public static string FileDialogAllFiles {
@@ -3411,15 +3420,6 @@ namespace Dynamo.Wpf.Properties
         public static string NodeContextMenuShowLabels {
             get {
                 return ResourceManager.GetString("NodeContextMenuShowLabels", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to See more on the Dynamo Dictionary....
-        /// </summary>
-        public static string NodeHelpWindowDynamoDictionary {
-            get {
-                return ResourceManager.GetString("NodeHelpWindowDynamoDictionary", resourceCulture);
             }
         }
         
