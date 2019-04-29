@@ -8,7 +8,7 @@ namespace Dynamo.Engine.Profiling
     {
         private DateTime? startTime = null;
         private DateTime? endTime = null;
-        private Dictionary<Guid, NodeProfilingData> nodes = new Dictionary<Guid, NodeProfilingData>();
+        private Dictionary<Guid, NodeProfilingData> nodeProfilingData = new Dictionary<Guid, NodeProfilingData>();
 
         internal DateTime? StartTime
         {
@@ -57,10 +57,15 @@ namespace Dynamo.Engine.Profiling
             }
         }
 
+        internal Dictionary<Guid, NodeProfilingData> NodeProfilingData
+        {
+            get { return nodeProfilingData; }
+        }
+
         public TimeSpan? NodeExecutionTime(NodeModel node)
         {
             NodeProfilingData nodeData = null;
-            if (nodes.TryGetValue(node.GUID, out nodeData))
+            if (nodeProfilingData.TryGetValue(node.GUID, out nodeData))
             {
                 return nodeData.ExecutionTime;
             }
@@ -71,18 +76,18 @@ namespace Dynamo.Engine.Profiling
         internal void RegisterNode(NodeModel node)
         {
             NodeProfilingData nodeData = null;
-            if (nodes.TryGetValue(node.GUID, out nodeData))
+            if (nodeProfilingData.TryGetValue(node.GUID, out nodeData))
             {
                 nodeData.Reset();
                 return;
             }
 
-            nodes.Add(node.GUID, new NodeProfilingData(node));
+            nodeProfilingData.Add(node.GUID, new NodeProfilingData(node));
         }
 
         internal void UnregisterNode(Guid guid)
         {
-            nodes.Remove(guid);
+            nodeProfilingData.Remove(guid);
         }
 
         internal void UnregisterDeletedNodes(IEnumerable<NodeModel> modelNodes)
@@ -91,7 +96,7 @@ namespace Dynamo.Engine.Profiling
             foreach (NodeModel node in modelNodes)
             {
                 NodeProfilingData data = null;
-                if (nodes.TryGetValue(node.GUID, out data))
+                if (nodeProfilingData.TryGetValue(node.GUID, out data))
                 {
                     remainingNodes.Add(node.GUID, data);
                     continue;
@@ -100,7 +105,7 @@ namespace Dynamo.Engine.Profiling
                 UnregisterNode(node.GUID);
             }
 
-            nodes = remainingNodes;
+            nodeProfilingData = remainingNodes;
         }
     }
 }
