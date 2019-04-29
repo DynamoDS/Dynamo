@@ -1425,6 +1425,25 @@ namespace DynamoCoreWpfTests
             });
         }
 
+        [Test, RequiresSTA]
+        public void TestAddingAndRemovingConnectors()
+        {
+            RunCommandsFromFile("TestAddingAndRemovingConnectors.xml", (commandTag) =>
+            {
+                if (commandTag == "FirstRun")
+                {
+                    AssertPreviewValue("42001c91-7faa-43a5-9978-eea5e0a2bd0c", "abc");   
+                }
+                else if (commandTag == "SecondRun")
+                {
+                    AssertPreviewValue("42001c91-7faa-43a5-9978-eea5e0a2bd0c", "12345");
+                }
+                else if (commandTag == "ThirdRun")
+                {
+                    AssertPreviewValue("42001c91-7faa-43a5-9978-eea5e0a2bd0c", "abc");
+                }
+            });
+        }
         #endregion
     }
 
