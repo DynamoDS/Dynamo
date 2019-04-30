@@ -39,27 +39,13 @@ set version=%Major%.%Minor%.%Build%-beta%Revision%
 
 :: Clean files generated from the previous run
 if exist *.nupkg ( del *.nupkg )
-if exist nuspec ( rmdir /s /q nuspec )
-mkdir nuspec
-
-:: Copy .nuspec files from template folder to "nuspec" folder
-:: and replace the string "@VERSION@" with the correct value
-for %%f in (%1\*.nuspec) do (
-  for /f "tokens=* delims=¶" %%i in ( '"type %%f"') do (
-    set line=%%i
-    setlocal EnableDelayedExpansion
-    set line=!line:@VERSION@=%version%!
-    echo !line!>>nuspec\%%~nxf
-    endlocal
-  )
-)
 
 :: Pack .nupkg files based on each .nuspec in the "nuspec" folder
-for %%f in (nuspec\*.nuspec) do (
+for %%f in (%1\*.nuspec) do (
   :: Check if nuspec file name containing "Symbols"
   echo %%f|find "Symbols" >nul
   :: When nuget pack symbols, set to release path where the symbol files live
-  if errorlevel 1 ( nuget pack %%f -basepath %harvestPath% ) else (nuget pack %%f -basepath %releasePath%)
+  if errorlevel 1 ( nuget pack %%f -basepath %harvestPath% -properties Version=%version%) else (nuget pack %%f -basepath %releasePath% -properties Version=%version%)
   if not exist %%~nf.%version%.nupkg (
     exit /b 1
   )
