@@ -196,7 +196,7 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition MaxWidth="500"
                               MinWidth="1"
-                              Name="ExtensionsViewColumn">
+                              Name="LeftExtensionsViewColumn">
                 <ColumnDefinition.Width>
                     <Binding Path="LibraryWidth"
                              Mode="TwoWay"
@@ -206,6 +206,16 @@
             <!--MinWidth fix for GridSplitter dragging in frameless window-->
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="5*" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition MaxWidth="500"
+                              MinWidth="1"
+                              Name="RightExtensionsViewColumn">
+                <ColumnDefinition.Width>
+                    <Binding Path="LibraryWidth"
+                             Mode="TwoWay"
+                             Converter="{StaticResource ConsoleHeightConverter}" />
+                </ColumnDefinition.Width>
+            </ColumnDefinition>
         </Grid.ColumnDefinitions>
 
         <!--Titlebar-->
@@ -213,7 +223,7 @@
                 BorderThickness="0,0,0,1"
                 Grid.Row="0"
                 Grid.Column="0"
-                Grid.ColumnSpan="3"
+                Grid.ColumnSpan="5"
                 Height="26"
                 Name="titleBar">
 
@@ -826,7 +836,7 @@
         <!--Shortcuts Toolbar-->
         <Grid Grid.Row="1"
               Grid.Column="0"
-              Grid.ColumnSpan="3"
+              Grid.ColumnSpan="5"
               Name="shortcutsBarGrid">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"></ColumnDefinition>
@@ -1556,7 +1566,7 @@
                     Background="#222222"
                     HorizontalAlignment="Right"
                     VerticalAlignment="Top"
-                    Margin="0,280,0,0">
+                    Margin="0,280,-79,0">
             <Grid Background="#353535"
                   Width="100"
                   Cursor="Hand">
@@ -1624,7 +1634,7 @@
                       Visibility="Visible"
                       Grid.Row="4"
                       Grid.Column="0"
-                      Grid.ColumnSpan="3">
+                      Grid.ColumnSpan="5">
 
             <ScrollViewer.ContextMenu>
                 <ContextMenu>
@@ -1679,7 +1689,7 @@
                    Grid.RowSpan="1"
                    HorizontalAlignment="Stretch"
                    VerticalAlignment="Stretch"
-                   Grid.ColumnSpan="3">
+                   Grid.ColumnSpan="5">
 
             <WrapPanel.Background>
                 <LinearGradientBrush  StartPoint="0.5,0"
@@ -1695,7 +1705,7 @@
                   Grid.Row="4"
                   Grid.Column="0"
                   Grid.RowSpan="1"
-                  Grid.ColumnSpan="3"
+                  Grid.ColumnSpan="5"
                   HorizontalAlignment="Stretch"
                   VerticalAlignment="Stretch">
                 <Grid.ColumnDefinitions>
@@ -1764,7 +1774,7 @@
                       HorizontalAlignment="Stretch"
                       VerticalAlignment="Stretch"
                       Margin="0"
-                      Background="White"
+                      Background="Transparent"
                       Cursor="/DynamoCoreWpf;component/UI/Images/resize_horizontal.cur" />
 
         <!--Start Page-->
@@ -1772,7 +1782,7 @@
                       Grid.Row="2"
                       Grid.RowSpan="4"
                       Grid.Column="0"
-                      Grid.ColumnSpan="3">
+                      Grid.ColumnSpan="5">
             <ItemsControl.ItemTemplate>
                 <DataTemplate DataType="{x:Type uictrls:StartPageViewModel}">
                     <Grid>

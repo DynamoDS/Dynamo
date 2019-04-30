@@ -1653,7 +1653,7 @@ namespace Dynamo.Controls
             get
             {
                 // Threshold that determines if button should be displayed
-                if (ExtensionsViewColumn.Width.Value < 20)
+                if (LeftExtensionsViewColumn.Width.Value < 20)
                 { libraryCollapsed = true; }
 
                 else
@@ -1671,7 +1671,7 @@ namespace Dynamo.Controls
             get
             {
                 // Threshold that determines if button should be displayed
-                if (ExtensionsViewColumn.Width.Value < 20)
+                if (RightExtensionsViewColumn.Width.Value < 20)
                 { extensionsCollapsed = true; }
 
                 else
@@ -1699,20 +1699,31 @@ namespace Dynamo.Controls
             }
             else
             {
-                collapsedExtensionSidebar.Visibility = Visibility.Collapsed;
+                // TODO, for debug use only
+                collapsedExtensionSidebar.Visibility = Visibility.Visible;
             }
         }
 
         private void OnCollapsedSidebarClick(object sender, EventArgs e)
         {
-            if (LibraryCollapsed || ExtensionsCollapsed)
+            if (LibraryCollapsed)
             {
                 // Restore extension view to default width (200)
-                ExtensionsViewColumn.Width = new GridLength(defaultSideBarWidth, GridUnitType.Star);
+                LeftExtensionsViewColumn.Width = new GridLength(defaultSideBarWidth, GridUnitType.Star);
             }
             else
             {
-                ExtensionsViewColumn.Width = new GridLength(0, GridUnitType.Star);
+                LeftExtensionsViewColumn.Width = new GridLength(0, GridUnitType.Star);
+            }
+
+            if (ExtensionsCollapsed)
+            {
+                // Restore extension view to default width (200)
+                RightExtensionsViewColumn.Width = new GridLength(defaultSideBarWidth, GridUnitType.Star);
+            }
+            else
+            {
+                RightExtensionsViewColumn.Width = new GridLength(0, GridUnitType.Star);
             }
 
             updateCollapseIcon();
@@ -1740,7 +1751,7 @@ namespace Dynamo.Controls
         private void LibraryClicked(object sender, EventArgs e)
         {
             restoreWidth = sidebarGrid.ActualWidth;
-            ExtensionsViewColumn.MinWidth = 0;
+            LeftExtensionsViewColumn.MinWidth = 0;
 
             mainGrid.ColumnDefinitions[0].Width = new GridLength(0.0);
             verticalSplitter.Visibility = Visibility.Collapsed;
@@ -1757,7 +1768,7 @@ namespace Dynamo.Controls
         private void ExtensionsButtonClicked(object sender, EventArgs e)
         {
             restoreWidth = sidebarExtensionsGrid.ActualWidth;
-            ExtensionsViewColumn.MinWidth = 0;
+            RightExtensionsViewColumn.MinWidth = 0;
 
             mainGrid.ColumnDefinitions[0].Width = new GridLength(0.0);
             extensionSplitter.Visibility = Visibility.Collapsed;
