@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
   <metadata>
     <id>DynamoVisualProgramming.DynamoCoreNodes</id>
-    <version>@VERSION@</version>
+    <version>$Version$</version>
     <authors>Autodesk</authors>
     <owners>Autodesk</owners>
     <licenseUrl>https://www.apache.org/licenses/LICENSE-2.0</licenseUrl>
@@ -16,8 +16,8 @@
     <copyright>Copyright Autodesk 2019</copyright>
     <dependencies>
       <group targetFramework=".NETFramework4.5">
-        <dependency id="DynamoVisualProgramming.DynamoServices" version="@VERSION@" />
-        <dependency id="DynamoVisualProgramming.ZeroTouchLibrary" version="@VERSION@" />
+        <dependency id="DynamoVisualProgramming.DynamoServices" version="$Version$" />
+        <dependency id="DynamoVisualProgramming.ZeroTouchLibrary" version="$Version$" />
       </group>
     </dependencies>
   </metadata>
