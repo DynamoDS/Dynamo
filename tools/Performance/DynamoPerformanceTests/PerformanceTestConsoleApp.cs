@@ -14,6 +14,8 @@ namespace DynamoPerformanceTests
             NonOptimizedBenchmark,
             DebugInProcess,
             Compare,
+            ModelOnlyBenchmark,
+            StandardConfigModelOnlyBenchmark
         }
 
         public static void Main(string[] args)
@@ -74,15 +76,19 @@ namespace DynamoPerformanceTests
                     DynamoViewPerformanceTestBase.testDirectory = testDirectory;
                     var runSummaryWithUI = BenchmarkRunner.Run<DynamoViewPerformanceTestBase>(config);
 
+                    goto case Command.ModelOnlyBenchmark;
+
+                case Command.ModelOnlyBenchmark:
                     DynamoModelPerformanceTestBase.testDirectory = testDirectory;
                     var runSummaryWithoutUI = BenchmarkRunner.Run<DynamoModelPerformanceTestBase>(config);
                     break;
 
+                case Command.StandardConfigModelOnlyBenchmark:
+                    config = PerformanceTestHelper.getReleaseConfig();
+                    goto case Command.ModelOnlyBenchmark;
+
                 case Command.Compare:
                     Compare(baseResultsPath, newResultsPath, saveComparisonPath);
-                    break;
-
-                default:
                     break;
             }
         }
