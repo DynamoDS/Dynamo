@@ -205,7 +205,7 @@
             </ColumnDefinition>
             <!--MinWidth fix for GridSplitter dragging in frameless window-->
             <ColumnDefinition Width="Auto" />
-            <ColumnDefinition Width="5*" />
+            <ColumnDefinition Width="5*" MinWidth="200" />
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition MaxWidth="500"
                               MinWidth="1"
@@ -860,6 +860,7 @@
 
         </Grid>
 
+        <!--Canvas-->
         <Grid HorizontalAlignment="Stretch"
               VerticalAlignment="Stretch"
               Grid.Row="2"
@@ -1531,7 +1532,7 @@
                                    VerticalAlignment="Center"
                                    Foreground="#aaaaaa"
                                    FontWeight="Normal"
-                                   Margin="10,0,0,5"
+                                   Margin="5,0,0,5"
                                    Text="{x:Static p:Resources.LibraryViewTitle}">
                             </TextBlock>
                             <Image Grid.Column="0"
@@ -1566,7 +1567,7 @@
                     Background="#222222"
                     HorizontalAlignment="Right"
                     VerticalAlignment="Top"
-                    Margin="0,280,-79,0">
+                    Margin="0,310,-79,0">
             <Grid Background="#353535"
                   Width="100"
                   Cursor="Hand">
@@ -1598,7 +1599,7 @@
                                    VerticalAlignment="Center"
                                    Foreground="#aaaaaa"
                                    FontWeight="Normal"
-                                   Margin="20,0,0,5"
+                                   Margin="5,0,0,5"
                                    Text="{x:Static p:Resources.ExtensionsViewTitle}">
                             </TextBlock>
                             <Image Grid.Column="0"
