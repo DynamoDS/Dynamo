@@ -1693,18 +1693,11 @@ namespace Dynamo.Controls
                 collapsedLibrarySidebar.Visibility = Visibility.Collapsed;
             }
 
-            if(extensionsCollapsed)
-            {
-                collapsedExtensionSidebar.Visibility = Visibility.Visible;
-            }
-            else
-            {
-                // TODO, for debug use only
-                collapsedExtensionSidebar.Visibility = Visibility.Visible;
-            }
+            collapsedExtensionSidebar.Visibility = Visibility.Visible;
+
         }
 
-        private void OnCollapsedSidebarClick(object sender, EventArgs e)
+        private void OnCollapsedLeftSidebarClick(object sender, EventArgs e)
         {
             if (LibraryCollapsed)
             {
@@ -1716,9 +1709,14 @@ namespace Dynamo.Controls
                 LeftExtensionsViewColumn.Width = new GridLength(0, GridUnitType.Star);
             }
 
+            updateCollapseIcon();
+        }
+
+        private void OnCollapsedRightSidebarClick(object sender, EventArgs e)
+        {
             if (ExtensionsCollapsed)
             {
-                // Restore extension view to default width (200)
+                // Restore right extension grid to default width (200)
                 RightExtensionsViewColumn.Width = new GridLength(defaultSideBarWidth, GridUnitType.Star);
             }
             else
@@ -1726,6 +1724,7 @@ namespace Dynamo.Controls
                 RightExtensionsViewColumn.Width = new GridLength(0, GridUnitType.Star);
             }
 
+            // TODO: Maynot need this depending on tab design
             updateCollapseIcon();
         }
 

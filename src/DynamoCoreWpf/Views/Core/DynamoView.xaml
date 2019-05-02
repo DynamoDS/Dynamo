@@ -197,11 +197,11 @@
             <ColumnDefinition MaxWidth="500"
                               MinWidth="1"
                               Name="LeftExtensionsViewColumn">
-                <ColumnDefinition.Width>
+                <!--<ColumnDefinition.Width>
                     <Binding Path="LibraryWidth"
                              Mode="TwoWay"
                              Converter="{StaticResource ConsoleHeightConverter}" />
-                </ColumnDefinition.Width>
+                </ColumnDefinition.Width>-->
             </ColumnDefinition>
             <!--MinWidth fix for GridSplitter dragging in frameless window-->
             <ColumnDefinition Width="Auto" />
@@ -210,11 +210,11 @@
             <ColumnDefinition MaxWidth="500"
                               MinWidth="1"
                               Name="RightExtensionsViewColumn">
-                <ColumnDefinition.Width>
+                <!--<ColumnDefinition.Width>
                     <Binding Path="LibraryWidth"
                              Mode="TwoWay"
                              Converter="{StaticResource ConsoleHeightConverter}" />
-                </ColumnDefinition.Width>
+                </ColumnDefinition.Width>-->
             </ColumnDefinition>
         </Grid.ColumnDefinitions>
 
@@ -1500,11 +1500,11 @@
                     Background="#222222"
                     HorizontalAlignment="Left"
                     VerticalAlignment="Top"
-                    Margin="0,120,0,0">
+                    Margin="0,310,0,0">
             <Grid Background="#353535"
-                  Width="80"
+                  Width="100"
                   Cursor="Hand">
-                <Button Click="OnCollapsedSidebarClick"
+                <Button Click="OnCollapsedLeftSidebarClick"
                         Template="{DynamicResource BackgroundButton}">
                     <Button.Resources>
                         <ControlTemplate x:Key="BackgroundButton"
@@ -1571,7 +1571,7 @@
             <Grid Background="#353535"
                   Width="100"
                   Cursor="Hand">
-                <Button Click="OnCollapsedSidebarClick"
+                <Button Click="OnCollapsedRightSidebarClick"
                         Template="{DynamicResource BackgroundButton}">
                     <Button.Resources>
                         <ControlTemplate x:Key="BackgroundButton"
@@ -1659,7 +1659,7 @@
                      TextChanged="TextBoxBase_OnTextChanged" />
         </ScrollViewer>
 
-        <!--Sidebar Library-->
+        <!--Left Sidebar Library-->
         <Grid Height="Auto"
               Width="Auto"
               HorizontalAlignment="Stretch"
@@ -1671,7 +1671,7 @@
               Grid.RowSpan="2">
         </Grid>
 
-        <!--Sidebar Extensions-->
+        <!--Right Sidebar Extensions-->
         <Grid Height="Auto"
               Width="Auto"
               HorizontalAlignment="Stretch"
@@ -1681,6 +1681,7 @@
               Grid.Row="2"
               Grid.Column="4"
               Grid.RowSpan="2">
+            <!--<DataGrid ItemsSource="{Binding Workspaces[0].Nodes}" />-->
         </Grid>
 
         <!--Bottom Panel including RunMode etc-->
