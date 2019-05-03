@@ -135,6 +135,28 @@ namespace Dynamo.Graph.Nodes
         /// </summary>
         public event Action<PortModel> PortDisconnected;
 
+        public event EventHandler<NodeExecutedEventArgs> NodeExecuted;
+
+        internal void OnNodeExecuted(NodeExecutedType type, object data)
+        {
+            if (HasNodeExecutedEvent)
+                NodeExecuted(this, new NodeExecutedEventArgs(this, type, data));
+        }
+
+        private bool executionStarted = false;
+
+        internal void RecordExecution(object data)
+        {
+            var type = executionStarted ? NodeExecutedType.End : NodeExecutedType.Start;
+            this.OnNodeExecuted(type, data);
+
+            executionStarted = !executionStarted;
+        }
+
+        internal bool HasNodeExecutedEvent
+        {
+            get => NodeExecuted != null;
+        }
         #endregion
 
         #region public properties
@@ -2571,6 +2593,12 @@ namespace Dynamo.Graph.Nodes
         Bottom = 0x2
     }
 
+    public enum NodeExecutedType
+    {
+        Start,
+        End
+    }
+
     internal delegate void DispatchedToUIThreadHandler(object sender, UIDispatcherEventArgs e);
 
     /// <summary>
@@ -2591,5 +2619,19 @@ namespace Dynamo.Graph.Nodes
         /// Action to call on UI thread.
         /// </summary>
         public Action ActionToDispatch { get; set; }
+    }
+
+    public class NodeExecutedEventArgs : EventArgs
+    {
+        public Guid GUID { get; private set; }
+        public NodeExecutedType Type { get; private set; }
+        public object Data { get; private set; }
+
+        public NodeExecutedEventArgs(NodeModel model, NodeExecutedType type, object data)
+        {
+            this.GUID = model.GUID;
+            this.Type = type;
+            this.Data = data;
+        }
     }
 }
