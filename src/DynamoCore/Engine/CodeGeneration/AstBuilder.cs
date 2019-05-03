@@ -182,9 +182,7 @@ namespace Dynamo.Engine.CodeGeneration
 
             var inputAstNodes = new List<AssociativeNode>();
             var inPortsCount = node.InPorts.Count;
-
-            node.NodeExecuted += Node_NodeExecuted;
-            
+                        
             for (int index = 0; index < inPortsCount; index++)
             {
                 Tuple<int, NodeModel> inputTuple;
@@ -317,11 +315,6 @@ namespace Dynamo.Engine.CodeGeneration
                     }
                 }
             }
-        }
-
-        private void Node_NodeExecuted(object sender, NodeExecutedEventArgs e)
-        {
-            var type = e.Type;
         }
 
         /// <summary>
