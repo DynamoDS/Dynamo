@@ -29,7 +29,8 @@ namespace Dynamo.Tests
             string openPath = Path.Combine(TestDirectory, @"core\profiling\SingleNode.dyn");
             OpenModel(openPath);
 
-            var profilingData = CurrentDynamoModel.EngineController.ProfilingData;
+            Assert.IsNotNull(CurrentDynamoModel.EngineController.profilingSession);
+            var profilingData = CurrentDynamoModel.EngineController.profilingSession.ProfilingData;
             var node = CurrentDynamoModel.CurrentWorkspace.Nodes.FirstOrDefault();
 
             Assert.IsNull(profilingData.TotalExecutionTime);

@@ -69,7 +69,7 @@ namespace Dynamo.Engine
         /// </summary>
         public static CompilationServices CompilationServices;
 
-        private ProfilingSession profilingSession;
+        internal ProfilingSession profilingSession;
 
         /// <summary>
         /// Returns DesignScript core.
@@ -196,19 +196,6 @@ namespace Dynamo.Engine
 
         #endregion
 
-        internal void UpdateProfilingData(IEnumerable<NodeModel> nodes)
-        {
-            profilingSession.UnregisterDeletedNodes(nodes);
-        }
-
-        internal IProfilingExecutionTimeData ProfilingData
-        {
-            get
-            {
-                return profilingSession.ProfilingData;
-            }
-        }
-        
         /// <summary>
         /// This method is called on the main thread from UpdateGraphAsyncTask
         /// to generate GraphSyncData for a list of updated nodes.

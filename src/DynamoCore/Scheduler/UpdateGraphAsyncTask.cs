@@ -63,7 +63,10 @@ namespace Dynamo.Scheduler
                 if (graphSyncData == null)
                     return false;
 
-                engineController.UpdateProfilingData(workspace.Nodes);
+                if (engineController.profilingSession != null)
+                {
+                    engineController.profilingSession.UnregisterDeletedNodes(workspace.Nodes);
+                }
 
                 // We clear dirty flags before executing the task. If we clear
                 // flags after the execution of task, for example in
