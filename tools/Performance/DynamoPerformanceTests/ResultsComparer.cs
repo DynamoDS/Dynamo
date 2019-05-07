@@ -270,7 +270,8 @@ namespace DynamoPerformanceTests
         /// <param name="filePath"></param>
         private void WriteResultsToCSV(List<BenchmarkComparison> comparisons, string filePath)
         {
-            var rows = GetComparisonDataRows(comparisons).Select(r => string.Join(",", r));
+            var rowData = GetComparisonDataRows(comparisons).Select(r => r.Select(x => "\"" + x + "\""));
+            var rows = rowData.Select(r => string.Join(",", r));
             var csv = new StringBuilder();
             foreach (var row in rows) csv.AppendLine(row);
             
