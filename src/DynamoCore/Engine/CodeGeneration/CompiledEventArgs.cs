@@ -10,6 +10,8 @@ namespace Dynamo.Engine.CodeGeneration
     /// </summary>
     public class CompiledEventArgs : EventArgs
     {
+        private Guid nodeId;
+        
         /// <summary>
         /// Construct ASTBuiltEventArgs with NodeModel and AST nodes.
         /// </summary>
@@ -17,14 +19,32 @@ namespace Dynamo.Engine.CodeGeneration
         /// <param name="astNodes"></param>
         internal CompiledEventArgs(Guid node, IEnumerable<AssociativeNode> astNodes)
         {
-            Node = node;
+            nodeId = node;
             AstNodes = astNodes;
         }
 
         /// <summary>
         /// Guid of node that has been built to AST nodes.
         /// </summary>
-        public Guid Node { get; private set; }
+        [Obsolete("This item is being obsoleted due to the confusing namimg, the new property to use is NodeId")]
+        public Guid Node
+        {
+            get
+            {
+                return nodeId;
+            }
+        }
+
+        /// <summary>
+        /// Guid of node that has been built to AST nodes.
+        /// </summary>
+        public Guid NodeId
+        {
+            get
+            {
+                return nodeId;
+            }
+        }
 
         /// <summary>
         /// Built AST nodes.

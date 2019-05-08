@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Dynamo.Core;
 using Dynamo.Events;
 using Dynamo.Graph.Nodes;
 using ProtoCore.AST.AssociativeAST;
@@ -12,7 +11,7 @@ namespace Dynamo.Engine.Profiling
     /// <summary>
     /// This class manages a diagnostic session and the data collected in a session.
     /// </summary>
-    class ProfilingSession : NotificationObject, IDisposable
+    class ProfilingSession : IDisposable
     {
         private ProfilingData profilingData;
 

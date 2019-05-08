@@ -7,6 +7,7 @@ using Dynamo.Engine.CodeGeneration;
 using Dynamo.Engine.NodeToCode;
 using Dynamo.Engine.Profiling;
 using Dynamo.Graph.Nodes;
+using Dynamo.Graph.Workspaces;
 using Dynamo.Logging;
 using Dynamo.Scheduler;
 using ProtoCore.AST.AssociativeAST;
@@ -69,7 +70,7 @@ namespace Dynamo.Engine
         /// </summary>
         public static CompilationServices CompilationServices;
 
-        private ProfilingSession profilingSession;
+        internal ProfilingSession profilingSession = null;
 
         /// <summary>
         /// Returns DesignScript core.
@@ -125,7 +126,6 @@ namespace Dynamo.Engine
             this.libraryServices = libraryServices;
             libraryServices.LibraryLoaded += LibraryLoaded;
             CompilationServices = new CompilationServices(libraryServices);
-            profilingSession = new ProfilingSession();
 
             liveRunnerServices = new LiveRunnerServices(this, geometryFactoryFileName);
 
@@ -149,6 +149,33 @@ namespace Dynamo.Engine
 
             liveRunnerServices.Dispose();
             codeCompletionServices = null;
+        }
+
+        /// <summary>
+        /// Enables or disables profiling depending on the given argument
+        /// </summary>
+        /// <param name="enable">Indicates enabling or disabling of profiling.</param>
+        /// <param name="workspace">The workspace to enable or disable profiling for.</param>
+        /// <param name="nodes">The list of nodes to enable or disable profiling for.</param>
+        public void EnableProfiling(bool enable, HomeWorkspaceModel workspace, IEnumerable<NodeModel> nodes)
+        {
+            Validity.Assert(workspace != null, "Workspace csannot be null");
+            Validity.Assert(nodes != null, "Node list csannot be null");
+
+            if (enable)
+            {
+                if (profilingSession == null)
+                {
+                    profilingSession = new ProfilingSession();
+                }
+            }
+            else
+            {
+                profilingSession = null;
+            }
+
+            astBuilder.SetProfilingSession(profilingSession);
+            workspace.MarkNodesAsModifiedAndRequestRun(nodes);
         }
 
         #region Function Groups
@@ -196,19 +223,6 @@ namespace Dynamo.Engine
 
         #endregion
 
-        internal void UpdateProfilingData(IEnumerable<NodeModel> nodes)
-        {
-            profilingSession.UnregisterDeletedNodes(nodes);
-        }
-
-        internal IProfilingExecutionTimeData ProfilingData
-        {
-            get
-            {
-                return profilingSession.ProfilingData;
-            }
-        }
-        
         /// <summary>
         /// This method is called on the main thread from UpdateGraphAsyncTask
         /// to generate GraphSyncData for a list of updated nodes.
