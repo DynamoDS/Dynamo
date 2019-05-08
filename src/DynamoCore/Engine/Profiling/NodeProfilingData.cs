@@ -33,17 +33,11 @@ namespace Dynamo.Engine.Profiling
             if (!startTime.HasValue)
             {
                 startTime = DateTime.Now;
-                if (node.HasNodeExecutedEvent)
-                {
-                    node.OnNodeExecuted(NodeExecutedType.Start, data);
-                }
+                node.OnNodeExecuted(NodeExecutedType.Start, data);
                 return;
             }
 
-            if (node.HasNodeExecutedEvent)
-            {
-                node.OnNodeExecuted(NodeExecutedType.End, data);
-            }
+            node.OnNodeExecuted(NodeExecutedType.End, data);
             endTime = DateTime.Now;
         }
 
