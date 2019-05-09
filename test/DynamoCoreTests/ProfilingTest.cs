@@ -28,21 +28,21 @@ namespace Dynamo.Tests
 
             // Assert that profiling is disabled by default
             var engineController = CurrentDynamoModel.EngineController;
-            Assert.IsNull(engineController.profilingSession);
+            Assert.IsNull(engineController.ProfilingSession);
 
             // Assert that no profiling data is created after a run when profiling is disabled
             BeginRun();
-            Assert.IsNull(engineController.profilingSession);
+            Assert.IsNull(engineController.ProfilingSession);
 
             var homeWorkspace = CurrentDynamoModel.Workspaces.OfType<HomeWorkspaceModel>().FirstOrDefault();
             var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
 
             // Assert that profiling can be enabled
             engineController.EnableProfiling(true, homeWorkspace, nodes);
-            Assert.IsNotNull(engineController.profilingSession);
+            Assert.IsNotNull(engineController.ProfilingSession);
 
             // Assert that there is no profiling data before the graph is run
-            var profilingData = engineController.profilingSession.ProfilingData;
+            var profilingData = engineController.ProfilingSession.ProfilingData;
             var node = nodes.FirstOrDefault();
             Assert.IsNull(profilingData.TotalExecutionTime);
             Assert.IsNull(profilingData.NodeExecutionTime(node));
@@ -55,8 +55,7 @@ namespace Dynamo.Tests
             Assert.IsNotNull(profilingData.NodeExecutionTime(node));
             Assert.Greater(profilingData.NodeExecutionTime(node)?.Ticks, 0);
 
-            this.CurrentDynamoModel.ExecuteCommand(
-                new DynamoModel.DeleteModelCommand(node.GUID));
+            CurrentDynamoModel.ExecuteCommand(new DynamoModel.DeleteModelCommand(node.GUID));
             BeginRun();
 
             // Assert that per-node profiling data is deleted after a node is deleted
@@ -66,7 +65,7 @@ namespace Dynamo.Tests
 
             // Assert that profiling can be disabled
             engineController.EnableProfiling(false, homeWorkspace, nodes);
-            Assert.IsNull(engineController.profilingSession);
+            Assert.IsNull(engineController.ProfilingSession);
         }
     }
 }

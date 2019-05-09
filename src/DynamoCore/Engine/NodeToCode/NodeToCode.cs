@@ -1110,7 +1110,7 @@ namespace Dynamo.Engine.NodeToCode
             //   5. Do constant progation to optimize the generated code.
             #region Step 1 AST compilation
 
-            AstBuilder builder = new AstBuilder(null, null);
+            AstBuilder builder = new AstBuilder(null);
             var sortedGraph = AstBuilder.TopologicalSortForGraph(workspaceNodes);
             var sortedNodes = sortedGraph.Where(nodes.Contains);
             var allAstNodes = builder.CompileToAstNodes(sortedNodes, CompilationContext.NodeToCode, false);

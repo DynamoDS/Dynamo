@@ -70,8 +70,6 @@ namespace Dynamo.Engine
         /// </summary>
         public static CompilationServices CompilationServices;
 
-        internal ProfilingSession profilingSession = null;
-
         /// <summary>
         /// Returns DesignScript core.
         /// </summary>
@@ -108,6 +106,11 @@ namespace Dynamo.Engine
             get { return codeCompletionServices; }
         }
 
+        internal ProfilingSession ProfilingSession
+        {
+            get { return astBuilder.ProfilingSession; }
+        }
+
         /// <summary>
         /// A property defining whether the EngineController has been disposed or not.
         /// This is a conservative field, as there should only be one owner of a valid
@@ -131,7 +134,7 @@ namespace Dynamo.Engine
 
             OnLibraryLoaded();
 
-            astBuilder = new AstBuilder(this, profilingSession);
+            astBuilder = new AstBuilder(this);
             syncDataManager = new SyncDataManager();
 
             VerboseLogging = verboseLogging;
@@ -164,17 +167,16 @@ namespace Dynamo.Engine
 
             if (enable)
             {
-                if (profilingSession == null)
+                if (astBuilder.ProfilingSession == null)
                 {
-                    profilingSession = new ProfilingSession();
+                    astBuilder.ProfilingSession = new ProfilingSession();
                 }
             }
             else
             {
-                profilingSession = null;
+                astBuilder.ProfilingSession = null;
             }
 
-            astBuilder.SetProfilingSession(profilingSession);
             workspace.MarkNodesAsModifiedAndRequestRun(nodes);
         }
 

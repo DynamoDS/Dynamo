@@ -20,21 +20,15 @@ namespace Dynamo.Engine.CodeGeneration
     {
         private readonly IAstNodeContainer nodeContainer;
 
-        internal ProfilingSession profilingSession = null;
-        internal void SetProfilingSession(ProfilingSession profilingSession)
-        {
-            this.profilingSession = profilingSession;
-        }
+        internal ProfilingSession ProfilingSession { get; set; }
 
         /// <summary>
         /// Construct a AstBuilder with AST node contiainer.
         /// </summary>
         /// <param name="nodeContainer"></param>
-        /// <param name="profilingSession"></param>
-        internal AstBuilder(IAstNodeContainer nodeContainer, ProfilingSession profilingSession)
+        internal AstBuilder(IAstNodeContainer nodeContainer)
         {
             this.nodeContainer = nodeContainer;
-            this.profilingSession = profilingSession;
         }
 
         // Reverse post-order to sort nodes
@@ -231,10 +225,10 @@ namespace Dynamo.Engine.CodeGeneration
             if (context == CompilationContext.DeltaExecution)
             {
                 OnAstNodeBuilding(node.GUID);
-                if (profilingSession != null)
+                if (ProfilingSession != null)
                 {
-                    profilingSession.RegisterNode(node);
-                    resultList.Add(profilingSession.CreatePreCompilationAstNode(node, inputAstNodes));
+                    ProfilingSession.RegisterNode(node);
+                    resultList.Add(ProfilingSession.CreatePreCompilationAstNode(node, inputAstNodes));
                 }
             }
             else if (context == CompilationContext.PreviewGraph)
@@ -268,9 +262,9 @@ namespace Dynamo.Engine.CodeGeneration
             else if (context == CompilationContext.DeltaExecution)
             {
                 resultList.AddRange(astNodes);
-                if (profilingSession != null)
+                if (ProfilingSession != null)
                 {
-                    resultList.Add(profilingSession.CreatePostCompilationAstNode(node, inputAstNodes));
+                    resultList.Add(ProfilingSession.CreatePostCompilationAstNode(node, inputAstNodes));
                 }
 
                 OnAstNodeBuilt(node.GUID, resultList);
