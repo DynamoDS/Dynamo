@@ -170,8 +170,8 @@ namespace Dynamo.Engine
         /// <param name="nodes">The list of nodes to enable or disable profiling for.</param>
         public void EnableProfiling(bool enable, HomeWorkspaceModel workspace, IEnumerable<NodeModel> nodes)
         {
-            Validity.Assert(workspace != null, "Workspace csannot be null");
-            Validity.Assert(nodes != null, "Node list csannot be null");
+            Validity.Assert(workspace != null, "Workspace cannot be null");
+            Validity.Assert(nodes != null, "Node list cannot be null");
 
             if (enable)
             {
@@ -185,7 +185,7 @@ namespace Dynamo.Engine
                 astBuilder.ProfilingSession = null;
             }
 
-            workspace.MarkNodesAsModifiedAndRequestRun(nodes);
+            workspace.MarkNodesAsModifiedAndRequestRun(nodes, true);
         }
 
         #region Function Groups
