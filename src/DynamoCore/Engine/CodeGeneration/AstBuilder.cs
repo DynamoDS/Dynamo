@@ -255,11 +255,7 @@ namespace Dynamo.Engine.CodeGeneration
                 }
             }
 
-            if (null == astNodes)
-            {
-                resultList.AddRange(new AssociativeNode[0]);
-            }
-            else if (context == CompilationContext.DeltaExecution)
+            if (context == CompilationContext.DeltaExecution)
             {
                 resultList.AddRange(astNodes);
                 if (ProfilingSession != null)
