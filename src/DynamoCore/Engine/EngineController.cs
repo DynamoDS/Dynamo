@@ -112,6 +112,14 @@ namespace Dynamo.Engine
         }
 
         /// <summary>
+        /// Returns information about time spent compiling and executing nodes.                                                 
+        /// </summary>
+        public IProfilingExecutionTimeData ExecutionTimeData
+        {
+            get { return ProfilingSession.ProfilingData; }
+        }
+
+        /// <summary>
         /// A property defining whether the EngineController has been disposed or not.
         /// This is a conservative field, as there should only be one owner of a valid
         /// EngineController or not.
