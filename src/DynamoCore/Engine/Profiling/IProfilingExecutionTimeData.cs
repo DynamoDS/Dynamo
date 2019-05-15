@@ -4,7 +4,7 @@ using Dynamo.Graph.Nodes;
 namespace Dynamo.Engine.Profiling
 {
     /// <summary>
-    /// Returns information about time spent compiling and exectuing nodes.                                                 
+    /// Returns information about time spent compiling and executing nodes.                                                 
     /// </summary>
     public interface IProfilingExecutionTimeData
     {
