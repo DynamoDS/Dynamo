@@ -35,8 +35,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Greg, Version=1.0.6874.25994, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Greg.1.0.6874.25994\lib\net45\Greg.dll</HintPath>
+    <Reference Include="Greg, Version=1.1.7074.39318, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Greg.1.1.7074.39323\lib\net45\Greg.dll</HintPath>
     </Reference>
     <Reference Include="Ionic.Zip, Version=1.9.1.8, Culture=neutral, PublicKeyToken=edbe51ad942a3f5c, processorArchitecture=MSIL">
       <HintPath>..\packages\Unofficial.Ionic.Zip.1.9.1.8\lib\Ionic.Zip.dll</HintPath>
