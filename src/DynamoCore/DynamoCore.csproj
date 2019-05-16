@@ -112,6 +112,14 @@ limitations under the License.
     <Compile Include="Configuration\DebugSettings.cs" />
     <Compile Include="Configuration\Context.cs" />
     <Compile Include="Core\DynamoMigrator.cs" />
+    <Compile Include="Engine\CodeGeneration\CompilationContext.cs" />
+    <Compile Include="Engine\CodeGeneration\CompiledEventArgs.cs" />
+    <Compile Include="Engine\CodeGeneration\CompilingEventArgs.cs" />
+    <Compile Include="Engine\CodeGeneration\IAstNodeContainer.cs" />
+    <Compile Include="Engine\Profiling\IProfilingExecutionTimeData.cs" />
+    <Compile Include="Engine\Profiling\NodeProfilingData.cs" />
+    <Compile Include="Engine\Profiling\ProfilingData.cs" />
+    <Compile Include="Engine\Profiling\ProfilingSession.cs" />
     <Compile Include="Engine\ShortestQualifiedNameReplacer.cs" />
     <Compile Include="Exceptions\LibraryLoadFailedException.cs" />
     <Compile Include="Graph\Nodes\NodeOutputData.cs" />
@@ -343,6 +351,10 @@ limitations under the License.
       <Project>{6e0a079e-85f1-45a1-ad5b-9855e4344809}</Project>
       <Name>Units</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Libraries\VMDataBridge\VMDataBridge.csproj">
+      <Project>{ccb6e56b-2da1-4eba-a1f9-e8510e129d12}</Project>
+      <Name>VMDataBridge</Name>
+    </ProjectReference>
     <ProjectReference Include="..\NodeServices\DynamoServices.csproj">
       <Project>{ef879a10-041d-4c68-83e7-3192685f1bae}</Project>
       <Name>DynamoServices</Name>
@@ -361,6 +373,7 @@ limitations under the License.
   <ItemGroup>
     <Resource Include="BuiltInAndOperators\BuiltIn.Migrations.xml" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="BeforeBuild">
     <ItemGroup>

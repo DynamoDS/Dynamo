@@ -120,6 +120,17 @@ namespace Dynamo.Tests
             }
         }
 
+        protected void AssertNonNull(string guid)
+        {
+            var previewVariable = GetVarName(guid);
+            var mirror = GetRuntimeMirror(previewVariable);
+            Assert.IsNotNull(mirror);
+
+            var mirrorData = mirror.GetData();
+            Assert.IsNotNull(mirrorData);
+            Assert.IsNotNull(mirrorData.Data);
+        }
+
         protected void AssertError(string guid)
         {
             var node = GetModel().CurrentWorkspace.Nodes.First(n => n.GUID.ToString() == guid);

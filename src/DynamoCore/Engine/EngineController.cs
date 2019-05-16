@@ -5,7 +5,9 @@ using System.Runtime.Serialization;
 using Dynamo.Engine.CodeCompletion;
 using Dynamo.Engine.CodeGeneration;
 using Dynamo.Engine.NodeToCode;
+using Dynamo.Engine.Profiling;
 using Dynamo.Graph.Nodes;
+using Dynamo.Graph.Workspaces;
 using Dynamo.Logging;
 using Dynamo.Scheduler;
 using ProtoCore.AST.AssociativeAST;
@@ -104,6 +106,19 @@ namespace Dynamo.Engine
             get { return codeCompletionServices; }
         }
 
+        internal ProfilingSession ProfilingSession
+        {
+            get { return astBuilder.ProfilingSession; }
+        }
+
+        /// <summary>
+        /// Returns information about time spent compiling and executing nodes.                                                 
+        /// </summary>
+        public IProfilingExecutionTimeData ExecutionTimeData
+        {
+            get { return ProfilingSession.ProfilingData; }
+        }
+
         /// <summary>
         /// A property defining whether the EngineController has been disposed or not.
         /// This is a conservative field, as there should only be one owner of a valid
@@ -145,6 +160,32 @@ namespace Dynamo.Engine
 
             liveRunnerServices.Dispose();
             codeCompletionServices = null;
+        }
+
+        /// <summary>
+        /// Enables or disables profiling depending on the given argument
+        /// </summary>
+        /// <param name="enable">Indicates enabling or disabling of profiling.</param>
+        /// <param name="workspace">The workspace to enable or disable profiling for.</param>
+        /// <param name="nodes">The list of nodes to enable or disable profiling for.</param>
+        public void EnableProfiling(bool enable, HomeWorkspaceModel workspace, IEnumerable<NodeModel> nodes)
+        {
+            Validity.Assert(workspace != null, "Workspace cannot be null");
+            Validity.Assert(nodes != null, "Node list cannot be null");
+
+            if (enable)
+            {
+                if (astBuilder.ProfilingSession == null)
+                {
+                    astBuilder.ProfilingSession = new ProfilingSession();
+                }
+            }
+            else
+            {
+                astBuilder.ProfilingSession = null;
+            }
+
+            workspace.MarkNodesAsModifiedAndRequestRun(nodes, true);
         }
 
         #region Function Groups
@@ -220,7 +261,6 @@ namespace Dynamo.Engine
 
             return graphSyncDataQueue.Dequeue();
         }
-
 
         /// <summary>
         ///  This is called on the main thread from PreviewGraphSyncData
