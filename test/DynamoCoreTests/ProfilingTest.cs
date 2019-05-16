@@ -71,5 +71,28 @@ namespace Dynamo.Tests
             engineController.EnableProfiling(false, homeWorkspace, nodes);
             Assert.IsNull(engineController.ProfilingSession);
         }
+ 
+        [Test]
+        public void TestProfilingSingleNodePublicMethodsOnly()
+        {
+            // Note: This test file is saved in manual run mode
+            string openPath = Path.Combine(TestDirectory, @"core\profiling\SingleNode.dyn");
+            OpenModel(openPath);
+
+            // Assert that profiling is disabled by default
+            var engineController = CurrentDynamoModel.EngineController;
+            var homeWorkspace = CurrentDynamoModel.Workspaces.OfType<HomeWorkspaceModel>().FirstOrDefault();
+            var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
+            engineController.EnableProfiling(true, homeWorkspace, nodes);
+            BeginRun();
+
+            // Assert that execution time data exists after a run occurs
+            var profilingData = engineController.ExecutionTimeData;
+            Assert.IsNotNull(profilingData.TotalExecutionTime);
+            Assert.Greater(profilingData.TotalExecutionTime?.Ticks, 0);
+            var node = nodes.FirstOrDefault();
+            Assert.IsNotNull(profilingData.NodeExecutionTime(node));
+            Assert.Greater(profilingData.NodeExecutionTime(node)?.Ticks, 0);
+        }
     }
 }
