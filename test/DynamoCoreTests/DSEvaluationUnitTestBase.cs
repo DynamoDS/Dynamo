@@ -127,11 +127,10 @@ namespace Dynamo.Tests
             Assert.IsNotNull(mirror);
 
             var mirrorData = mirror.GetData();
-            //TODO add other cases - Dictionary etc.
             if (mirrorData.IsCollection)
             {
                 var elements = mirrorData.GetElements();
-                Assert.IsTrue(elements.Any());
+                Assert.IsNotNull(elements);
                 return;
             }
 
