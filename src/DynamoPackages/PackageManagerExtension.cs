@@ -4,10 +4,13 @@ using System.Configuration;
 using System.Linq;
 using System.Reflection;
 using Dynamo.Extensions;
+using Dynamo.Graph.Workspaces;
 using Dynamo.Interfaces;
 using Dynamo.Logging;
 using Dynamo.Models;
 using Greg;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace Dynamo.PackageManager
 {
@@ -120,7 +123,33 @@ namespace Dynamo.PackageManager
             LoadPackages(startupParams.Preferences, startupParams.PathManager);
         }
 
-        public void Ready(ReadyParams sp) { }
+        public void Ready(ReadyParams sp)
+        {
+            sp.CurrentWorkspaceChanged += OnCurrentWorkspaceChanged;
+        }
+
+        private void OnCurrentWorkspaceChanged(IWorkspaceModel ws)
+        {
+            if (ws is WorkspaceModel)
+            {
+                (ws as WorkspaceModel).SavingJson += ToJson;
+            }
+        }
+
+        private JObject ToJson(WorkspaceModel ws)
+        {
+            var jo = new JObject();
+            var installedPackages = new List<JObject>();
+            foreach(Package package in PackageLoader.LocalPackages)
+            {
+                var packageObject = new JObject();
+                packageObject.Add(new JProperty("name", package.Name));
+                packageObject.Add(new JProperty("version", package.VersionName));
+                installedPackages.Add(packageObject);
+            }
+            jo.Add(new JProperty("InstalledPackages", installedPackages));
+            return jo;
+        }
 
         public void Shutdown()
         {
