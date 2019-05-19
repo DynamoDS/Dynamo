@@ -23,7 +23,7 @@ namespace Dynamo.Tests
         public void TestProfilingSingleNode()
         {
             // Note: This test file is saved in manual run mode
-            string openPath = Path.Combine(TestDirectory, @"core\profiling\SingleNode.dyn");
+            string openPath = Path.Combine(TestDirectory, @"core\profiling\createSomePoints.dyn");
             OpenModel(openPath);
 
             // Assert that profiling is disabled by default
@@ -76,7 +76,7 @@ namespace Dynamo.Tests
         public void TestProfilingSingleNodePublicMethodsOnly()
         {
             // Note: This test file is saved in manual run mode
-            string openPath = Path.Combine(TestDirectory, @"core\profiling\SingleNode.dyn");
+            string openPath = Path.Combine(TestDirectory, @"core\profiling\createSomePoints.dyn");
             OpenModel(openPath);
 
             // Assert that profiling is disabled by default
