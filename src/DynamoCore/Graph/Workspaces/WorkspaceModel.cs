@@ -9,6 +9,7 @@ using Dynamo.Core;
 using Dynamo.Engine;
 using Dynamo.Engine.CodeGeneration;
 using Dynamo.Events;
+using Dynamo.Extensions;
 using Dynamo.Graph.Annotations;
 using Dynamo.Graph.Connectors;
 using Dynamo.Graph.Nodes;
@@ -435,6 +436,11 @@ namespace Dynamo.Graph.Workspaces
             var handler = Saving;
             if (handler != null) handler(obj);
         }
+
+        /// <summary>
+        /// Event that is fired during the saving of the workspace to JSON.
+        /// </summary>
+        public event Func<WorkspaceModel, JObject> SavingJson;
 
         /// <summary>
         /// This handler handles the workspaceModel's request to populate a JSON with view data.
@@ -1021,9 +1027,13 @@ namespace Dynamo.Graph.Workspaces
 
                 // Stage 1: Serialize the workspace.
                 var json = this.ToJson(engine);
+                var json_parsed = JObject.Parse(json);
 
-                // Stage 2: Save
-                File.WriteAllText(filePath, json);
+                // Stage 2: Add extensions
+                var jo = AddExtensionBlockToJSON(json_parsed);
+
+                // Stage 3: Save
+                File.WriteAllText(filePath, jo.ToString());
 
                 // Handle Workspace or CustomNodeWorkspace related non-serialization internal logic
                 // Only for actual save, update file path and recent file list
@@ -1038,6 +1048,26 @@ namespace Dynamo.Graph.Workspaces
                 Debug.WriteLine(ex.Message + " : " + ex.StackTrace);
                 throw (ex);
             }
+        }
+
+        internal JObject AddExtensionBlockToJSON(JObject data)
+        {
+            var extensionsBlock = new JObject();
+            if (SavingJson != null)
+            {
+                foreach (Func<WorkspaceModel, JObject> f in SavingJson.GetInvocationList())
+                {
+                    if (f.Target is IExtension)
+                    {
+                        var extensionData = f.Invoke(this);
+                        var extensionName = (f.Target as IExtension).Name;
+                        extensionsBlock.Add(new JProperty(extensionName, extensionData));
+                    }
+                }
+            }
+
+            data.Add(new JProperty("Extensions", extensionsBlock));
+            return data;
         }
 
         /// <summary>

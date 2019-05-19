@@ -162,7 +162,7 @@ namespace Dynamo.ViewModels
             if (RequestShowInCanvasSearch != null)
                 RequestShowInCanvasSearch(flag);
         }
-
+        
         #endregion
 
         #region Properties and Fields
@@ -555,7 +555,10 @@ namespace Dynamo.ViewModels
                 // Stage 2: Add the View.
                 var jo = AddViewBlockToJSON(json_parsed);
 
-                // Stage 3: Save
+                // Stage 3: Add Extensions.
+                jo = AddExtensionBlockToJSON(jo);
+
+                // Stage 4: Save
                 File.WriteAllText(filePath, jo.ToString());
 
                 // Handle Workspace or CustomNodeWorkspace related non-serialization internal logic
@@ -582,6 +585,11 @@ namespace Dynamo.ViewModels
             modelData.Add("View", token);
 
             return modelData;
+        }
+
+        private JObject AddExtensionBlockToJSON(JObject data)
+        {
+            return Model.AddExtensionBlockToJSON(data);
         }
 
         /// <summary>
