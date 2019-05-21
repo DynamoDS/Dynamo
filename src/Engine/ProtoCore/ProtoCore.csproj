@@ -149,7 +149,7 @@
     <Compile Include="Lang\FunctionPointerEvaluator.cs" />
     <Compile Include="Lang\Replication\ReplicationInstruction.cs" />
     <Compile Include="Lang\Replication\Replicator.cs" />
-	<Compile Include="Lang\TraceUtils.cs" />
+<Compile Include="Lang\TraceUtils.cs" />
     <Compile Include="Namespace\ElementRewriter.cs" />
     <Compile Include="Namespace\ElementResolver.cs" />
     <Compile Include="Namespace\SymbolTable.cs" />
