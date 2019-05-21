@@ -817,7 +817,7 @@ namespace ProtoCore
         /// </summary>
         /// <returns>Returns true or false based on the condition described above. 
         /// </returns>
-        private Boolean IsSimilarOptionButOfHigherRank(List<ReplicationInstruction> oldOption, List<ReplicationInstruction> newOption)
+        private static bool IsSimilarOptionButOfHigherRank(List<ReplicationInstruction> oldOption, List<ReplicationInstruction> newOption)
         {
             if (oldOption.Count > 0 && newOption.Count > 0 && oldOption.Count < newOption.Count)
             {
@@ -866,7 +866,7 @@ namespace ProtoCore
                     {
                         if (replicationInstructions == null || IsSimilarOptionButOfHigherRank(replicationInstructions, replicationOption))
                         {
-                            //Otherwise we have a cluster of FEPs that can be used to dispatch the array
+                            // We have a cluster of FEPs that can be used to dispatch the array
                             resolvedFeps = new List<FunctionEndPoint>(lookups);
                             replicationInstructions = replicationOption;
                             matchFound = true;
@@ -894,14 +894,18 @@ namespace ProtoCore
             {
                 if (arguments.Any(arg => arg.IsArray))
                 {
-                    foreach (List<ReplicationInstruction> replicationOption in replicationTrials)
+                    foreach (var replicationOption in replicationTrials)
                     {
                         FunctionEndPoint compliantTarget = GetCompliantFEP(context, arguments, funcGroup, replicationOption, stackFrame, runtimeCore);
                         if (compliantTarget != null)
                         {
-                            resolvedFeps = new List<FunctionEndPoint>() { compliantTarget };
-                            replicationInstructions = replicationOption;
-                            matchFound = true;
+                            if (replicationInstructions == null ||
+                                IsSimilarOptionButOfHigherRank(replicationInstructions, replicationOption))
+                            {
+                                resolvedFeps = new List<FunctionEndPoint>() {compliantTarget};
+                                replicationInstructions = replicationOption;
+                                matchFound = true;
+                            }
                         }
                     }
                     if (matchFound)
@@ -936,9 +940,13 @@ namespace ProtoCore
                     FunctionEndPoint compliantTarget = GetLooseCompliantFEP(context, arguments, funcGroup, replicationOption, stackFrame, runtimeCore);
                     if (compliantTarget != null)
                     {
-                        resolvedFeps = new List<FunctionEndPoint>() { compliantTarget };
-                        replicationInstructions = replicationOption;
-                        matchFound = true;
+                        if (replicationInstructions == null ||
+                            IsSimilarOptionButOfHigherRank(replicationInstructions, replicationOption))
+                        {
+                            resolvedFeps = new List<FunctionEndPoint>() {compliantTarget};
+                            replicationInstructions = replicationOption;
+                            matchFound = true;
+                        }
                     }
                 }
                 if (matchFound)
