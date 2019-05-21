@@ -197,11 +197,11 @@
             <ColumnDefinition MaxWidth="500"
                               MinWidth="1"
                               Name="LeftExtensionsViewColumn">
-                <!--<ColumnDefinition.Width>
+                <ColumnDefinition.Width>
                     <Binding Path="LibraryWidth"
                              Mode="TwoWay"
                              Converter="{StaticResource ConsoleHeightConverter}" />
-                </ColumnDefinition.Width>-->
+                </ColumnDefinition.Width>
             </ColumnDefinition>
             <!--MinWidth fix for GridSplitter dragging in frameless window-->
             <ColumnDefinition Width="Auto" />
@@ -210,11 +210,6 @@
             <ColumnDefinition MaxWidth="500"
                               MinWidth="1"
                               Name="RightExtensionsViewColumn">
-                <!--<ColumnDefinition.Width>
-                    <Binding Path="LibraryWidth"
-                             Mode="TwoWay"
-                             Converter="{StaticResource ConsoleHeightConverter}" />
-                </ColumnDefinition.Width>-->
             </ColumnDefinition>
         </Grid.ColumnDefinitions>
 
@@ -1497,7 +1492,7 @@
                     Name="collapsedLibrarySidebar"
                     Width="Auto"
                     Height="Auto"
-                    Background="#222222"
+                    Background="{StaticResource HighlightedBrush}"
                     HorizontalAlignment="Left"
                     VerticalAlignment="Top"
                     Margin="0,310,0,0">
@@ -1564,7 +1559,7 @@
                     Name="collapsedExtensionSidebar"
                     Width="Auto"
                     Height="Auto"
-                    Background="#222222"
+                    Background="{StaticResource HighlightedBrush}"
                     HorizontalAlignment="Right"
                     VerticalAlignment="Top"
                     Margin="0,310,-79,0">
@@ -1681,7 +1676,6 @@
               Grid.Row="2"
               Grid.Column="4"
               Grid.RowSpan="2">
-            <!--<DataGrid ItemsSource="{Binding Workspaces[0].Nodes}" />-->
         </Grid>
 
         <!--Bottom Panel including RunMode etc-->
