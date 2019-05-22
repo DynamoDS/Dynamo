@@ -1,11 +1,3 @@
-using DynamoServices;
-using ProtoCore.DSASM;
-using ProtoCore.Exceptions;
-using ProtoCore.Lang;
-using ProtoCore.Lang.Replication;
-using ProtoCore.Properties;
-using ProtoCore.Runtime;
-using ProtoCore.Utils;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -16,6 +8,13 @@ using System.Reflection;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Soap;
 using System.Text;
+using ProtoCore.DSASM;
+using ProtoCore.Exceptions;
+using ProtoCore.Lang;
+using ProtoCore.Lang.Replication;
+using ProtoCore.Properties;
+using ProtoCore.Runtime;
+using ProtoCore.Utils;
 using StackFrame = ProtoCore.DSASM.StackFrame;
 using Validity = ProtoCore.Utils.Validity;
 using WarningID = ProtoCore.Runtime.WarningID;
@@ -379,7 +378,7 @@ namespace ProtoCore
         private List<ISerializable> beforeFirstRunSerializables = new List<ISerializable>();
 
         //TODO(Luke): This should be loaded from the attribute
-        private string TRACE_KEY = TraceUtils.__TEMP_REVIT_TRACE_ID;
+        private string TRACE_KEY = DynamoServices.TraceUtils.__TEMP_REVIT_TRACE_ID;
 
         #endregion
 
@@ -1885,12 +1884,12 @@ namespace ProtoCore
             if (traceD != null)
             {
                 //There was data associated with the previous execution, push this into the TLS
-                TraceUtils.SetTraceData(TRACE_KEY, traceD);
+                DynamoServices.TraceUtils.SetTraceData(TRACE_KEY, traceD);
             }
             else
             {
                 //There was no trace data for this run
-                TraceUtils.ClearAllKnownTLSKeys();
+                DynamoServices.TraceUtils.ClearAllKnownTLSKeys();
             }
 
             //EXECUTE
@@ -1899,13 +1898,13 @@ namespace ProtoCore
             if (ret.IsNull)
             {
                 //wipe the trace cache
-                TraceUtils.ClearAllKnownTLSKeys();
+                DynamoServices.TraceUtils.ClearAllKnownTLSKeys();
                 newTraceData.Data = null;
             }
             else
             {
                 //TLS -> TraceCache
-                var traceRet = TraceUtils.GetTraceData(TRACE_KEY);
+                var traceRet = DynamoServices.TraceUtils.GetTraceData(TRACE_KEY);
 
                 if (traceRet != null)
                 {
