@@ -1917,6 +1917,7 @@ namespace ProtoCore
             {
                 ret = PerformReturnTypeCoerce(finalFep, runtimeCore, ret);
             }
+
             return ret;
         }
 
