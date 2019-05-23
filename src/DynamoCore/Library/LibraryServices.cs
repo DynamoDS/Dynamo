@@ -1093,7 +1093,7 @@ namespace Dynamo.Engine
             //handler?.Invoke(this, e);
         }
 
-        internal void OnLibrariesCompiled(LibraryLoadedEventArgs e)
+        internal void OnLibrariesLoaded(LibraryLoadedEventArgs e)
         {
             var handler = LibraryLoaded;
             if (handler != null)

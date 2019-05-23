@@ -35,7 +35,7 @@ namespace Dynamo.Extensions
         public void LoadPackages(IEnumerable<Assembly> assemblies)
         {
             var libraryPaths = assemblies.Select(x => x.Location);
-            model.LibraryServices.OnLibrariesCompiled(new LibraryServices.LibraryLoadedEventArgs(libraryPaths));
+            model.LibraryServices.OnLibrariesLoaded(new LibraryServices.LibraryLoadedEventArgs(libraryPaths));
         }
     }
 }
