@@ -4,8 +4,6 @@ namespace ProtoCore.Utils
 {
     public static class MathUtils
     {
-        public static double Tolerance = 1e-5; 
-
         public static bool IsLessThan(double lhs, double rhs)
         {
             return (lhs < rhs) && !Equals(lhs, rhs);
@@ -28,7 +26,7 @@ namespace ProtoCore.Utils
 
         public static bool Equals(double lhs, double rhs)
         {
-            return Math.Abs(lhs - rhs) < Tolerance;
+            return lhs.Equals(rhs);
         }
     }
 }

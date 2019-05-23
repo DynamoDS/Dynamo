@@ -262,7 +262,7 @@ namespace ProtoCore.DSASM
 
                     if(Double.IsInfinity(value1) && Double.IsInfinity(value2))
                         return true;
-                    return MathUtils.Equals(value1, value2);
+                    return sv1.Equals(sv2);
                 case AddressType.Boolean:
                     return sv1.BooleanValue == sv2.BooleanValue;
                 case AddressType.ArrayPointer:
