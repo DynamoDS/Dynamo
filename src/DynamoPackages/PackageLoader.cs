@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using Dynamo.Core;
+using Dynamo.Engine;
 using Dynamo.Extensions;
 using Dynamo.Interfaces;
 using Dynamo.Logging;
@@ -29,6 +30,7 @@ namespace Dynamo.PackageManager
     public class PackageLoader : LogSourceBase
     {
         internal event Action<Assembly> RequestLoadNodeLibrary;
+        internal event Action<IEnumerable<Assembly>> PackagesLoaded;
         internal event Func<string, IEnumerable<CustomNodeInfo>> RequestLoadCustomNodeDirectory;
         internal event Func<string, IExtension> RequestLoadExtension;
         internal event Action<IExtension> RequestAddExtension;
@@ -137,6 +139,11 @@ namespace Dynamo.PackageManager
             }
         }
 
+        private void OnPackagesLoaded(IEnumerable<Assembly> assemblies)
+        {
+            PackagesLoaded?.Invoke(assemblies);
+        }
+
         private IEnumerable<CustomNodeInfo> OnRequestLoadCustomNodeDirectory(string directory)
         {
             if (RequestLoadCustomNodeDirectory != null)
@@ -216,18 +223,22 @@ namespace Dynamo.PackageManager
             {
                 foreach (var pkg in LocalPackages)
                 {
-                    if (File.Exists(pkg.BinaryDirectory))
+                    if (Directory.Exists(pkg.BinaryDirectory))
                     {
                         pathManager.AddResolutionPath(pkg.BinaryDirectory);
                     }
 
                 }
             }
-
+            
             foreach (var pkg in LocalPackages)
             {
                 Load(pkg);
             }
+
+            var assemblies =
+                LocalPackages.SelectMany(x => x.EnumerateAssembliesInBinDirectory().Where(y => y.IsNodeLibrary));
+            OnPackagesLoaded(assemblies.Select(x => x.Assembly));
         }
         public void LoadCustomNodesAndPackages(LoadPackageParams loadPackageParams, CustomNodeManager customNodeManager)
         {

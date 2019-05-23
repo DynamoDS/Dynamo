@@ -606,10 +606,11 @@ namespace Dynamo.Engine
                 return false;
             }
 
-            OnLibraryLoaded(new LibraryLoadedEventArgs(library));
+            var libraries = new List<string> {library};
+            OnLibraryLoaded(new LibraryLoadedEventArgs(libraries));
 
             // After a library is loaded, update the library core data with the liveRunner core data
-            UpdateLibraryCoreData();
+            // UpdateLibraryCoreData();
             return true;
         }
 
@@ -874,7 +875,7 @@ namespace Dynamo.Engine
         }
 
         /// <summary>
-        ///     Polulate preloaded libraries.
+        ///     Populate preloaded libraries.
         /// </summary>
         private void PopulatePreloadLibraries()
         {
@@ -1087,11 +1088,19 @@ namespace Dynamo.Engine
 
         private void OnLibraryLoaded(LibraryLoadedEventArgs e)
         {
-            importedLibraries.Add(e.LibraryPath);
+            importedLibraries.AddRange(e.LibraryPaths);
+            //var handler = LibraryLoaded;
+            //handler?.Invoke(this, e);
+        }
 
-            EventHandler<LibraryLoadedEventArgs> handler = LibraryLoaded;
+        internal void OnLibrariesCompiled(LibraryLoadedEventArgs e)
+        {
+            var handler = LibraryLoaded;
             if (handler != null)
+            {
                 handler(this, e);
+                UpdateLibraryCoreData();
+            }
         }
 
         public static class Categories
@@ -1133,12 +1142,19 @@ namespace Dynamo.Engine
 
         public class LibraryLoadedEventArgs : EventArgs
         {
-            public LibraryLoadedEventArgs(string libraryPath)
+            //public LibraryLoadedEventArgs(string libraryPath)
+            //{
+            //    LibraryPath = libraryPath;
+            //}
+
+            public LibraryLoadedEventArgs(IEnumerable<string> libraryPaths)
             {
-                LibraryPath = libraryPath;
+                LibraryPaths = libraryPaths;
             }
 
-            public string LibraryPath { get; private set; }
+            //public string LibraryPath { get; }
+
+            public IEnumerable<string> LibraryPaths { get; }
         }
 
         public class LibraryLoadingEventArgs : EventArgs

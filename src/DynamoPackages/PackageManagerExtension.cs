@@ -17,6 +17,7 @@ namespace Dynamo.PackageManager
 
         private Action<Assembly> RequestLoadNodeLibraryHandler;
         private event Func<string, IEnumerable<CustomNodeInfo>> RequestLoadCustomNodeDirectoryHandler;
+        private Action<IEnumerable<Assembly>> LoadPackagesHandler;
        
         public event Func<string, IExtension> RequestLoadExtension;
         public event Action<IExtension> RequestAddExtension;
@@ -49,6 +50,11 @@ namespace Dynamo.PackageManager
         public void Dispose()
         {
             PackageLoader.MessageLogged -= OnMessageLogged;
+
+            if (LoadPackagesHandler != null)
+            {
+                PackageLoader.PackagesLoaded -= LoadPackagesHandler;
+            }
 
             if (RequestLoadNodeLibraryHandler != null)
             {
@@ -96,6 +102,7 @@ namespace Dynamo.PackageManager
             PackageLoader = new PackageLoader(startupParams.PathManager.PackagesDirectories);
             PackageLoader.MessageLogged += OnMessageLogged;
             RequestLoadNodeLibraryHandler = startupParams.LibraryLoader.LoadNodeLibrary;
+            LoadPackagesHandler = startupParams.LibraryLoader.LoadPackages;
             RequestLoadCustomNodeDirectoryHandler = (dir) => startupParams.CustomNodeManager
                     .AddUninitializedCustomNodesInPath(dir, DynamoModel.IsTestMode, true);
 
@@ -103,6 +110,7 @@ namespace Dynamo.PackageManager
             PackageLoader.RequestLoadExtension += RequestLoadExtension;
             PackageLoader.RequestAddExtension += RequestAddExtension;
 
+            PackageLoader.PackagesLoaded += LoadPackagesHandler;
             PackageLoader.RequestLoadNodeLibrary += RequestLoadNodeLibraryHandler;
             PackageLoader.RequestLoadCustomNodeDirectory += RequestLoadCustomNodeDirectoryHandler;
                 
