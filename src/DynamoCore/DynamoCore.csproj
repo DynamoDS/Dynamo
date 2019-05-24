@@ -123,6 +123,7 @@ limitations under the License.
     <Compile Include="Graph\Workspaces\SerializationExtensions.cs" />
     <Compile Include="Graph\Workspaces\UndoRedo.cs" />
     <Compile Include="Extensions\IServiceManager.cs" />
+    <Compile Include="Interfaces\IPackage.cs" />
     <Compile Include="Logging\AnalyticsService.cs" />
     <Compile Include="Logging\DynamoAnalyticsClient.cs" />
     <Compile Include="Logging\IAnalyticsSession.cs" />
