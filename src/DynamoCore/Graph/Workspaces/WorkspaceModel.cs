@@ -552,7 +552,7 @@ namespace Dynamo.Graph.Workspaces
                 }
 
                 // Create a list of packages that are used in this workspace
-                var packageDependencies = new List<IPackage>();
+                var packageDependencies = new HashSet<IPackage>();
                 foreach(var assemblyName in assembliesUsed)
                 {
                     if (assemblyPackageDict.ContainsKey(assemblyName.FullName))
