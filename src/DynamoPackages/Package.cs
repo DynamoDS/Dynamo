@@ -130,7 +130,7 @@ namespace Dynamo.PackageManager
         /// <summary>
         /// AssemblyNames of assemblies loaded as part of this package
         /// </summary>
-        public IEnumerable<AssemblyName> AssemblyNames => LoadedAssemblies.Select(a => AssemblyName.GetAssemblyName(a.Assembly.CodeBase));
+        public IEnumerable<AssemblyName> AssemblyNames => LoadedAssemblies.Select(a => AssemblyName.GetAssemblyName(a.Assembly.Location));
 
         /// <summary>
         ///     A header used to create the package, this data does not reflect runtime

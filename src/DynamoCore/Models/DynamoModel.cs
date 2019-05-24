@@ -1789,28 +1789,37 @@ namespace Dynamo.Models
             };
         }
 
-        private HashSet<string> OnCollectingAssembliesUsed()
+        private HashSet<AssemblyName> OnCollectingAssembliesUsed()
         {
-            var assemblies = new HashSet<string>();
+            var assemblyNames = new HashSet<AssemblyName>();
             foreach(var node in CurrentWorkspace.Nodes)
             {
-                IEnumerable<FunctionDescriptor> descriptors = LibraryServices.GetAllFunctionDescriptors(node.CreationName.Split('@')[0]);
-                if (descriptors != null)
+                if (node.GetType() == typeof(DSFunction))
                 {
-                    foreach (FunctionDescriptor fd in descriptors)
+                    IEnumerable<FunctionDescriptor> descriptors = LibraryServices.GetAllFunctionDescriptors(node.CreationName.Split('@')[0]);
+                    if (descriptors != null)
                     {
-                        if (fd.MangledName == node.CreationName)
+                        foreach (FunctionDescriptor fd in descriptors)
                         {
-                            if (fd.IsPackageMember)
+                            if (fd.MangledName == node.CreationName)
                             {
-                                var assemblyPath = fd.Assembly;
-                                assemblies.Add(assemblyPath);
+                                if (fd.IsPackageMember)
+                                {
+                                    var assemblyName = AssemblyName.GetAssemblyName(fd.Assembly);
+                                    assemblyNames.Add(assemblyName);
+                                }
                             }
                         }
                     }
                 }
+                else
+                {
+                    var assembly = node.GetType().Assembly;
+                    var assemblyName = AssemblyName.GetAssemblyName(assembly.Location);
+                    assemblyNames.Add(assemblyName);
+                }
             }
-            return assemblies;
+            return assemblyNames;
         }
 
         #endregion

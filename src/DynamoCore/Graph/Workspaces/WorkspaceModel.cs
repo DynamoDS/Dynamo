@@ -443,7 +443,7 @@ namespace Dynamo.Graph.Workspaces
         /// <summary>
         /// Event that is fired when the workspace is collecting used assemblies
         /// </summary>
-        internal delegate HashSet<string> CollectingAssembliesUsedHandler();
+        internal delegate HashSet<AssemblyName> CollectingAssembliesUsedHandler();
         internal event CollectingAssembliesUsedHandler CollectingAssembliesUsed;
 
         /// <summary>
@@ -542,23 +542,22 @@ namespace Dynamo.Graph.Workspaces
                 var assembliesUsed = GetAssembliesUsed();
 
                 // Create a dictionary that maps assembly names to the package they are contained in
-                var assemblyPackageDict = new Dictionary<AssemblyName, IPackage>();
+                var assemblyPackageDict = new Dictionary<string, IPackage>();
                 foreach(var package in localPackages)
                 {
-                    foreach(var assembly in package.AssemblyNames)
+                    foreach(var assemblyName in package.AssemblyNames)
                     {
-                        assemblyPackageDict[assembly] = package;
+                        assemblyPackageDict[assemblyName.FullName] = package;
                     }
                 }
 
                 // Create a list of packages that are used in this workspace
                 var packageDependencies = new List<IPackage>();
-                foreach(var assemblyPath in assembliesUsed)
+                foreach(var assemblyName in assembliesUsed)
                 {
-                    var assembly = AssemblyName.GetAssemblyName(assemblyPath);
-                    if (assemblyPackageDict.ContainsKey(assembly))
+                    if (assemblyPackageDict.ContainsKey(assemblyName.FullName))
                     {
-                        packageDependencies.Add(assemblyPackageDict[assembly]);
+                        packageDependencies.Add(assemblyPackageDict[assemblyName.FullName]);
                     }
                 }
 
@@ -570,9 +569,9 @@ namespace Dynamo.Graph.Workspaces
         /// Gathers the assemblies that are used by nodes in this workspace
         /// </summary>
         /// <returns></returns>
-        internal HashSet<string> GetAssembliesUsed()
+        internal HashSet<AssemblyName> GetAssembliesUsed()
         {
-            var assemblies = new HashSet<string>();
+            var assemblies = new HashSet<AssemblyName>();
             if (CollectingAssembliesUsed != null)
             {
                 assemblies = CollectingAssembliesUsed();
