@@ -1789,14 +1789,20 @@ namespace Dynamo.Models
             };
         }
 
+        /// <summary>
+        /// Collects assemblies used by a workspace
+        /// </summary>
+        /// <returns></returns>
         private HashSet<AssemblyName> OnCollectingAssembliesUsed()
         {
             var assemblyNames = new HashSet<AssemblyName>();
             foreach(var node in CurrentWorkspace.Nodes)
             {
+                // Get zerotouch assemblies
                 if (node.GetType() == typeof(DSFunction))
                 {
-                    IEnumerable<FunctionDescriptor> descriptors = LibraryServices.GetAllFunctionDescriptors(node.CreationName.Split('@')[0]);
+                    // Get FunctionDescriptors for this zerotouch node
+                    var descriptors = LibraryServices.GetAllFunctionDescriptors(node.CreationName.Split('@')[0]);
                     if (descriptors != null)
                     {
                         foreach (FunctionDescriptor fd in descriptors)
@@ -1812,6 +1818,7 @@ namespace Dynamo.Models
                         }
                     }
                 }
+                // Get NodeModel assemblies
                 else
                 {
                     var assembly = node.GetType().Assembly;
