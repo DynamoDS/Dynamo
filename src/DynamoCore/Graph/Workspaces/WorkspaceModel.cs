@@ -528,13 +528,19 @@ namespace Dynamo.Graph.Workspaces
             }
         }
 
+        /// <summary>
+        /// Gathers the packages that this graph depends on
+        /// </summary>
         public IEnumerable<IPackage> PackageDependencies
         {
             get
             {
+                // Get all packages installed locally
                 var localPackages = GetLocalPackages();
+                // Get set of assemblies used by nodes in this workspace
                 var assembliesUsed = GetAssembliesUsed();
 
+                // Create a dictionary that maps assembly names to the package they are contained in
                 var assemblyPackageDict = new Dictionary<string, IPackage>();
                 foreach(var package in localPackages)
                 {
@@ -544,6 +550,7 @@ namespace Dynamo.Graph.Workspaces
                     }
                 }
 
+                // Create a list of packages that are used in this workspace
                 var packageDependencies = new List<IPackage>();
                 foreach(var assemblyPath in assembliesUsed)
                 {
@@ -558,6 +565,10 @@ namespace Dynamo.Graph.Workspaces
             }
         }
 
+        /// <summary>
+        /// Gathers the assemblies that are used by nodes in this workspace
+        /// </summary>
+        /// <returns></returns>
         internal HashSet<string> GetAssembliesUsed()
         {
             var assemblies = new HashSet<string>();
@@ -574,7 +585,10 @@ namespace Dynamo.Graph.Workspaces
             return assemblies;
         }
 
-
+        /// <summary>
+        /// Gathers the packages installed locally by the package manager
+        /// </summary>
+        /// <returns></returns>
         internal IEnumerable<IPackage> GetLocalPackages()
         {
             IEnumerable<IPackage> localPackages = new List<IPackage>();

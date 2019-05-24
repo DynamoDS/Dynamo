@@ -7,14 +7,24 @@ using System.Threading.Tasks;
 
 namespace Dynamo.Interfaces
 {
+    /// <summary>
+    /// Interface that contains basic properties of a Dynamo package
+    /// </summary>
     public interface IPackage
     {
+        /// <summary>
+        /// Name of the package
+        /// </summary>
         string Name { get; set; }
 
+        /// <summary>
+        /// Version of the package
+        /// </summary>
         string VersionName { get; set; }
 
+        /// <summary>
+        /// Assemblies contained in this package that are node libraries
+        /// </summary>
         IEnumerable<Assembly> NodeLibraries { get; }
-
-        //bool ContainsNodeLibraries { get; }
     }
 }
