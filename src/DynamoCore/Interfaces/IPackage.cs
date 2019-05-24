@@ -25,6 +25,6 @@ namespace Dynamo.Interfaces
         /// <summary>
         /// Assemblies contained in this package that are node libraries
         /// </summary>
-        IEnumerable<Assembly> NodeLibraries { get; }
+        IEnumerable<AssemblyName> AssemblyNames { get; }
     }
 }

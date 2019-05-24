@@ -113,7 +113,7 @@ namespace Dynamo.PackageManager
         /// <summary>
         ///     List the LoadedAssemblies whose IsNodeLibrary attribute is true
         /// </summary>
-        public IEnumerable<Assembly> NodeLibraries
+        private IEnumerable<Assembly> NodeLibraries
         {
             get { return LoadedAssemblies.Where(x => x.IsNodeLibrary).Select(x => x.Assembly); }
         } 
@@ -126,6 +126,11 @@ namespace Dynamo.PackageManager
         public ObservableCollection<CustomNodeInfo> LoadedCustomNodes { get; private set; }
         public ObservableCollection<PackageDependency> Dependencies { get; private set; }
         public ObservableCollection<PackageFileInfo> AdditionalFiles { get; private set; }
+
+        /// <summary>
+        /// AssemblyNames of assemblies loaded as part of this package
+        /// </summary>
+        public IEnumerable<AssemblyName> AssemblyNames => LoadedAssemblies.Select(a => AssemblyName.GetAssemblyName(a.Assembly.CodeBase));
 
         /// <summary>
         ///     A header used to create the package, this data does not reflect runtime

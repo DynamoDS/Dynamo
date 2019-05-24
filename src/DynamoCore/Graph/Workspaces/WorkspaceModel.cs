@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Xml;
 using Dynamo.Core;
 using Dynamo.Engine;
@@ -448,8 +449,8 @@ namespace Dynamo.Graph.Workspaces
         /// <summary>
         /// Event that is fired when the workspace is collecting package dependencies
         /// </summary>
-        public delegate IEnumerable<IPackage> CollectingPackageDependenciesHandler();
-        public event CollectingPackageDependenciesHandler CollectingPackageDependencies;
+        public delegate IEnumerable<IPackage> CollectingLocalPackagesHandler();
+        public event CollectingLocalPackagesHandler CollectingLocalPackages;
         
         /// <summary>
         /// This handler handles the workspaceModel's request to populate a JSON with view data.
@@ -541,12 +542,12 @@ namespace Dynamo.Graph.Workspaces
                 var assembliesUsed = GetAssembliesUsed();
 
                 // Create a dictionary that maps assembly names to the package they are contained in
-                var assemblyPackageDict = new Dictionary<string, IPackage>();
+                var assemblyPackageDict = new Dictionary<AssemblyName, IPackage>();
                 foreach(var package in localPackages)
                 {
-                    foreach(var assembly in package.NodeLibraries)
+                    foreach(var assembly in package.AssemblyNames)
                     {
-                        assemblyPackageDict[Path.GetFileName(assembly.CodeBase)] = package;
+                        assemblyPackageDict[assembly] = package;
                     }
                 }
 
@@ -554,7 +555,7 @@ namespace Dynamo.Graph.Workspaces
                 var packageDependencies = new List<IPackage>();
                 foreach(var assemblyPath in assembliesUsed)
                 {
-                    var assembly = Path.GetFileName(assemblyPath);
+                    var assembly = AssemblyName.GetAssemblyName(assemblyPath);
                     if (assemblyPackageDict.ContainsKey(assembly))
                     {
                         packageDependencies.Add(assemblyPackageDict[assembly]);
@@ -586,9 +587,9 @@ namespace Dynamo.Graph.Workspaces
         internal IEnumerable<IPackage> GetLocalPackages()
         {
             IEnumerable<IPackage> localPackages = new List<IPackage>();
-            if (CollectingPackageDependencies != null)
+            if (CollectingLocalPackages != null)
             {
-                foreach (CollectingPackageDependenciesHandler f in CollectingPackageDependencies.GetInvocationList())
+                foreach (CollectingLocalPackagesHandler f in CollectingLocalPackages.GetInvocationList())
                 {
                     if (f.Target is IExtension && (f.Target as IExtension).UniqueId == "FCABC211-D56B-4109-AF18-F434DFE48139")
                     {

@@ -75,7 +75,7 @@ namespace Dynamo.PackageManager
             }
             if (currentWorkspace != null)
             {
-                (currentWorkspace as WorkspaceModel).CollectingPackageDependencies -= GetLocalPackages;
+                (currentWorkspace as WorkspaceModel).CollectingLocalPackages -= GetLocalPackages;
             }
         }
 
@@ -166,10 +166,10 @@ namespace Dynamo.PackageManager
             {
                 if (currentWorkspace != null)
                 {
-                    (currentWorkspace as WorkspaceModel).CollectingPackageDependencies -= GetLocalPackages;
+                    (currentWorkspace as WorkspaceModel).CollectingLocalPackages -= GetLocalPackages;
                 }
 
-                (ws as WorkspaceModel).CollectingPackageDependencies += GetLocalPackages;
+                (ws as WorkspaceModel).CollectingLocalPackages += GetLocalPackages;
                 currentWorkspace = ws;
             }
         }
