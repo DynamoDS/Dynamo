@@ -14,7 +14,7 @@ namespace Dynamo.Engine.Profiling
         internal NodeProfilingData(NodeModel node)
         {
             this.node = node;
-            DataBridge.Instance.RegisterCallback(node.GUID.ToString(), RecordEvaluationState);
+            DataBridge.Instance.RegisterCallback(node.GUID.ToString()+ ProfilingSession.profilingID, RecordEvaluationState);
         }
 
         internal void Reset()

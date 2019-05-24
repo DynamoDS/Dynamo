@@ -65,6 +65,7 @@ namespace Dynamo.Engine.Profiling
 
         private const string beginTag = "_beginCallback";
         private const string endTag = "_endCallback";
+        public const string profilingID = "_dynamo_profiling";
 
         internal BinaryExpressionNode CreatePreCompilationAstNode(NodeModel node, List<AssociativeNode> inputAstNodes)
         {
@@ -72,7 +73,7 @@ namespace Dynamo.Engine.Profiling
 
             string id = node.GUID.ToString();
             ExprListNode exprListNode = AstFactory.BuildExprList(inputAstNodes);
-            AssociativeNode bridgeData = DataBridge.GenerateBridgeDataAst(id, exprListNode);
+            AssociativeNode bridgeData = DataBridge.GenerateBridgeDataAst(id+ profilingID, exprListNode);
 
             return AstFactory.BuildAssignment(identifier, bridgeData);
         }
@@ -86,7 +87,7 @@ namespace Dynamo.Engine.Profiling
                 Enumerable.Range(0, node.OutPorts.Count).Select(
                     index => (AssociativeNode)node.GetAstIdentifierForOutputIndex(index)).ToList();
             ExprListNode exprListNode = AstFactory.BuildExprList(outPortNodeList);
-            AssociativeNode bridgeData = DataBridge.GenerateBridgeDataAst(id, exprListNode);
+            AssociativeNode bridgeData = DataBridge.GenerateBridgeDataAst(id+ profilingID, exprListNode);
 
             return AstFactory.BuildAssignment(identifier, bridgeData);
         }
