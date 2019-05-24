@@ -366,10 +366,28 @@ namespace Dynamo.Models
                 var old = currentWorkspace;
                 currentWorkspace = value;
                 OnWorkspaceHidden(old);
+                UnsubscribeFromWorkspace(old);
+                SubscribeToWorkspace(currentWorkspace);
                 OnPropertyChanged("CurrentWorkspace");
             }
         }
 
+        private void UnsubscribeFromWorkspace(WorkspaceModel ws)
+        {
+            if (ws != null)
+            {
+                ws.CollectingAssembliesUsed -= OnCollectingAssembliesUsed;
+            }
+        }
+
+        private void SubscribeToWorkspace(WorkspaceModel ws)
+        {
+            if (ws != null)
+            {
+                ws.CollectingAssembliesUsed += OnCollectingAssembliesUsed;
+            }
+        }
+        
         /// <summary>
         ///     The copy/paste clipboard.
         /// </summary>
@@ -1769,6 +1787,30 @@ namespace Dynamo.Models
                 newWorkspace.EvaluationCompleted -= OnEvaluationCompleted;
                 newWorkspace.RefreshCompleted -= OnRefreshCompleted;
             };
+        }
+
+        private HashSet<string> OnCollectingAssembliesUsed()
+        {
+            var assemblies = new HashSet<string>();
+            foreach(var node in CurrentWorkspace.Nodes)
+            {
+                IEnumerable<FunctionDescriptor> descriptors = LibraryServices.GetAllFunctionDescriptors(node.CreationName.Split('@')[0]);
+                if (descriptors != null)
+                {
+                    foreach (FunctionDescriptor fd in descriptors)
+                    {
+                        if (fd.MangledName == node.CreationName)
+                        {
+                            if (fd.IsPackageMember)
+                            {
+                                var assemblyPath = fd.Assembly;
+                                assemblies.Add(assemblyPath);
+                            }
+                        }
+                    }
+                }
+            }
+            return assemblies;
         }
 
         #endregion

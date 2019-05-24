@@ -9,8 +9,6 @@ using Dynamo.Interfaces;
 using Dynamo.Logging;
 using Dynamo.Models;
 using Greg;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
 namespace Dynamo.PackageManager
 {
@@ -25,6 +23,8 @@ namespace Dynamo.PackageManager
         public event Action<IExtension> RequestAddExtension;
 
         public event Action<ILogMessage> MessageLogged;
+
+        private IWorkspaceModel currentWorkspace;
 
         public string Name { get { return "DynamoPackageManager"; } }
 
@@ -128,29 +128,6 @@ namespace Dynamo.PackageManager
             sp.CurrentWorkspaceChanged += OnCurrentWorkspaceChanged;
         }
 
-        private void OnCurrentWorkspaceChanged(IWorkspaceModel ws)
-        {
-            if (ws is WorkspaceModel)
-            {
-                (ws as WorkspaceModel).SavingJson += ToJson;
-            }
-        }
-
-        private JObject ToJson(WorkspaceModel ws)
-        {
-            var jo = new JObject();
-            var installedPackages = new List<JObject>();
-            foreach(Package package in PackageLoader.LocalPackages)
-            {
-                var packageObject = new JObject();
-                packageObject.Add(new JProperty("name", package.Name));
-                packageObject.Add(new JProperty("version", package.VersionName));
-                installedPackages.Add(packageObject);
-            }
-            jo.Add(new JProperty("InstalledPackages", installedPackages));
-            return jo;
-        }
-
         public void Shutdown()
         {
             this.Dispose();
@@ -177,6 +154,25 @@ namespace Dynamo.PackageManager
             {
                 this.MessageLogged(msg);
             }
+        }
+        
+        private void OnCurrentWorkspaceChanged(IWorkspaceModel ws)
+        {
+            if (ws is WorkspaceModel)
+            {
+                if (currentWorkspace != null)
+                {
+                    (currentWorkspace as WorkspaceModel).CollectingPackageDependencies -= GetLocalPackages;
+                }
+
+                (ws as WorkspaceModel).CollectingPackageDependencies += GetLocalPackages;
+                currentWorkspace = ws;
+            }
+        }
+
+        private IEnumerable<IPackage> GetLocalPackages()
+        {
+            return PackageLoader.LocalPackages;
         }
 
         #endregion

@@ -17,6 +17,7 @@ using Dynamo.Graph.Nodes.CustomNodes;
 using Dynamo.Graph.Nodes.NodeLoaders;
 using Dynamo.Graph.Notes;
 using Dynamo.Graph.Presets;
+using Dynamo.Interfaces;
 using Dynamo.Logging;
 using Dynamo.Models;
 using Dynamo.Properties;
@@ -437,11 +438,19 @@ namespace Dynamo.Graph.Workspaces
             if (handler != null) handler(obj);
         }
 
-        /// <summary>
-        /// Event that is fired during the saving of the workspace to JSON.
-        /// </summary>
-        public event Func<WorkspaceModel, JObject> SavingJson;
 
+        /// <summary>
+        /// Event that is fired when the workspace is collecting used assemblies
+        /// </summary>
+        internal delegate IEnumerable<string> CollectingAssembliesUsedHandler();
+        internal event CollectingAssembliesUsedHandler CollectingAssembliesUsed;
+
+        /// <summary>
+        /// Event that is fired when the workspace is collecting package dependencies
+        /// </summary>
+        public delegate IEnumerable<IPackage> CollectingPackageDependenciesHandler();
+        public event CollectingPackageDependenciesHandler CollectingPackageDependencies;
+        
         /// <summary>
         /// This handler handles the workspaceModel's request to populate a JSON with view data.
         /// This is used to construct a full workspace for instrumentation.
@@ -518,6 +527,70 @@ namespace Dynamo.Graph.Workspaces
                 return dependencies;
             }
         }
+
+        public IEnumerable<IPackage> PackageDependencies
+        {
+            get
+            {
+                var localPackages = GetLocalPackages();
+                var assembliesUsed = GetAssembliesUsed();
+
+                var assemblyPackageDict = new Dictionary<string, IPackage>();
+                foreach(var package in localPackages)
+                {
+                    foreach(var assembly in package.NodeLibraries)
+                    {
+                        assemblyPackageDict[Path.GetFileName(assembly.CodeBase)] = package;
+                    }
+                }
+
+                var packageDependencies = new List<IPackage>();
+                foreach(var assemblyPath in assembliesUsed)
+                {
+                    var assembly = Path.GetFileName(assemblyPath);
+                    if (assemblyPackageDict.ContainsKey(assembly))
+                    {
+                        packageDependencies.Add(assemblyPackageDict[assembly]);
+                    }
+                }
+
+                return packageDependencies;
+            }
+        }
+
+        internal HashSet<string> GetAssembliesUsed()
+        {
+            var assemblies = new HashSet<string>();
+            if (CollectingAssembliesUsed != null)
+            {
+                foreach (CollectingAssembliesUsedHandler f in CollectingAssembliesUsed.GetInvocationList())
+                {
+                    foreach (var a in f.Invoke())
+                    {
+                        assemblies.Add(a);
+                    }
+                }
+            }
+            return assemblies;
+        }
+
+
+        internal IEnumerable<IPackage> GetLocalPackages()
+        {
+            IEnumerable<IPackage> localPackages = new List<IPackage>();
+            if (CollectingPackageDependencies != null)
+            {
+                foreach (CollectingPackageDependenciesHandler f in CollectingPackageDependencies.GetInvocationList())
+                {
+                    if (f.Target is IExtension && (f.Target as IExtension).UniqueId == "FCABC211-D56B-4109-AF18-F434DFE48139")
+                    {
+                        localPackages = f.Invoke();
+                    }
+                }
+            }
+            return localPackages;
+        }
+
 
         /// <summary>
         ///     An author of the workspace
@@ -1027,13 +1100,9 @@ namespace Dynamo.Graph.Workspaces
 
                 // Stage 1: Serialize the workspace.
                 var json = this.ToJson(engine);
-                var json_parsed = JObject.Parse(json);
 
-                // Stage 2: Add extensions
-                var jo = AddExtensionBlockToJSON(json_parsed);
-
-                // Stage 3: Save
-                File.WriteAllText(filePath, jo.ToString());
+                // Stage 2: Save
+                File.WriteAllText(filePath, json);
 
                 // Handle Workspace or CustomNodeWorkspace related non-serialization internal logic
                 // Only for actual save, update file path and recent file list
@@ -1048,26 +1117,6 @@ namespace Dynamo.Graph.Workspaces
                 Debug.WriteLine(ex.Message + " : " + ex.StackTrace);
                 throw (ex);
             }
-        }
-
-        internal JObject AddExtensionBlockToJSON(JObject data)
-        {
-            var extensionsBlock = new JObject();
-            if (SavingJson != null)
-            {
-                foreach (Func<WorkspaceModel, JObject> f in SavingJson.GetInvocationList())
-                {
-                    if (f.Target is IExtension)
-                    {
-                        var extensionData = f.Invoke(this);
-                        var extensionName = (f.Target as IExtension).Name;
-                        extensionsBlock.Add(new JProperty(extensionName, extensionData));
-                    }
-                }
-            }
-
-            data.Add(new JProperty("Extensions", extensionsBlock));
-            return data;
         }
 
         /// <summary>

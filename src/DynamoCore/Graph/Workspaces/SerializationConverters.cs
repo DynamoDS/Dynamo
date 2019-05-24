@@ -5,6 +5,7 @@ using System.Reflection;
 using Dynamo.Configuration;
 using Dynamo.Core;
 using Dynamo.Engine;
+using Dynamo.Interfaces;
 using Dynamo.Graph.Annotations;
 using Dynamo.Graph.Connectors;
 using Dynamo.Graph.Nodes;
@@ -689,6 +690,10 @@ namespace Dynamo.Graph.Workspaces
             }
             writer.WriteEndArray();
 
+            // PackageDependencies
+            writer.WritePropertyName("PackageDependencies");
+            serializer.Serialize(writer, ws.PackageDependencies);
+
             if (engine != null)
             {
                 // Bindings
@@ -731,6 +736,38 @@ namespace Dynamo.Graph.Workspaces
                 writer.WriteEndArray();
                 writer.WriteEndObject();
             }
+        }
+
+        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    /// <summary>
+    /// IPackageWriteConverter is used to Serialize packages to JSON.
+    /// </summary>
+    public class IPackageWriteConverter : JsonConverter
+    {
+        public override bool CanConvert(Type objectType)
+        {
+            return typeof(IPackage).IsAssignableFrom(objectType);
+        }
+
+        public override bool CanRead
+        {
+            get { return false; }
+        }
+
+        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+        {
+            IPackage p = value as IPackage;
+            writer.WriteStartObject();
+            writer.WritePropertyName("Name");
+            writer.WriteValue(p.Name);
+            writer.WritePropertyName("Version");
+            writer.WriteValue(p.VersionName);
+            writer.WriteEndObject();
         }
 
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
