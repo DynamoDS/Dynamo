@@ -29,7 +29,7 @@ namespace Dynamo.PackageManager
         }
     }
 
-    public class Package : NotificationObject, ILogSource
+    public class Package : NotificationObject, ILogSource, IPackage
     {
         #region Properties/Fields
 
@@ -113,7 +113,7 @@ namespace Dynamo.PackageManager
         /// <summary>
         ///     List the LoadedAssemblies whose IsNodeLibrary attribute is true
         /// </summary>
-        internal IEnumerable<Assembly> NodeLibraries
+        public IEnumerable<Assembly> NodeLibraries
         {
             get { return LoadedAssemblies.Where(x => x.IsNodeLibrary).Select(x => x.Assembly); }
         } 
