@@ -442,7 +442,7 @@ namespace Dynamo.Graph.Workspaces
         /// <summary>
         /// Event that is fired when the workspace is collecting used assemblies
         /// </summary>
-        internal delegate IEnumerable<string> CollectingAssembliesUsedHandler();
+        internal delegate HashSet<string> CollectingAssembliesUsedHandler();
         internal event CollectingAssembliesUsedHandler CollectingAssembliesUsed;
 
         /// <summary>
@@ -574,13 +574,7 @@ namespace Dynamo.Graph.Workspaces
             var assemblies = new HashSet<string>();
             if (CollectingAssembliesUsed != null)
             {
-                foreach (CollectingAssembliesUsedHandler f in CollectingAssembliesUsed.GetInvocationList())
-                {
-                    foreach (var a in f.Invoke())
-                    {
-                        assemblies.Add(a);
-                    }
-                }
+                assemblies = CollectingAssembliesUsed();
             }
             return assemblies;
         }
