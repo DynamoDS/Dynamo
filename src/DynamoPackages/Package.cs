@@ -113,7 +113,7 @@ namespace Dynamo.PackageManager
         /// <summary>
         ///     List the LoadedAssemblies whose IsNodeLibrary attribute is true
         /// </summary>
-        private IEnumerable<Assembly> NodeLibraries
+        internal IEnumerable<Assembly> NodeLibraries
         {
             get { return LoadedAssemblies.Where(x => x.IsNodeLibrary).Select(x => x.Assembly); }
         } 
