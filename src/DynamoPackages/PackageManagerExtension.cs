@@ -73,6 +73,10 @@ namespace Dynamo.PackageManager
                 PackageLoader.RequestAddExtension -=
                 RequestAddExtension;
             }
+            if (currentWorkspace != null)
+            {
+                (currentWorkspace as WorkspaceModel).CollectingPackageDependencies -= GetLocalPackages;
+            }
         }
 
         /// <summary>

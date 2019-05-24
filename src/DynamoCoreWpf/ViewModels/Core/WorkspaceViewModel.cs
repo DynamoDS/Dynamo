@@ -162,7 +162,7 @@ namespace Dynamo.ViewModels
             if (RequestShowInCanvasSearch != null)
                 RequestShowInCanvasSearch(flag);
         }
-        
+
         #endregion
 
         #region Properties and Fields
@@ -583,7 +583,7 @@ namespace Dynamo.ViewModels
 
             return modelData;
         }
-        
+
         /// <summary>
         /// Load the extra view information required to fully construct a WorkspaceModel object 
         /// </summary>
