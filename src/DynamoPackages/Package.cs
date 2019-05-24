@@ -128,7 +128,7 @@ namespace Dynamo.PackageManager
         public ObservableCollection<PackageFileInfo> AdditionalFiles { get; private set; }
 
         /// <summary>
-        /// AssemblyNames of assemblies loaded as part of this package
+        /// AssemblyNames of all assemblies loaded as part of this package
         /// </summary>
         public IEnumerable<AssemblyName> AssemblyNames => LoadedAssemblies.Select(a => AssemblyName.GetAssemblyName(a.Assembly.Location));
 

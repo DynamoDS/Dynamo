@@ -23,7 +23,7 @@ namespace Dynamo.Interfaces
         string VersionName { get; set; }
 
         /// <summary>
-        /// Assemblies contained in this package that are node libraries
+        /// AssemblyNames of all assemblies loaded as part of this package
         /// </summary>
         IEnumerable<AssemblyName> AssemblyNames { get; }
     }
