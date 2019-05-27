@@ -4,7 +4,7 @@ namespace ProtoCore.Utils
 {
     public static class MathUtils
     {
-        private static double Tolerance = 1e-9;
+        public static double Tolerance = 1e-9;
 
         public static bool IsLessThan(double lhs, double rhs)
         {
