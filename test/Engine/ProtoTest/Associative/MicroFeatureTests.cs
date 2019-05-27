@@ -3670,5 +3670,23 @@ r = foo(3);
             thisTest.RunScriptSource(code);
             thisTest.VerifyBuildWarningCount(0);
         }
+
+        [Test]
+        public void TestDoubleEquality()
+        {
+            string code = @"
+a = 1/3 == 0.333333333;
+b = 1/3 == 0.33333333;
+c = 3.14159265358979;
+d = c == c + 0.0000000001;
+e = c == c + 0.000000001;
+";
+            thisTest.RunScriptSource(code);
+            thisTest.VerifyBuildWarningCount(0);
+            thisTest.Verify("a", true);
+            thisTest.Verify("b", false);
+            thisTest.Verify("d", true);
+            thisTest.Verify("e", false);
+        }
     }
 }

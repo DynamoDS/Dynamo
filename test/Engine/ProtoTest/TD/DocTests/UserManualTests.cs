@@ -201,7 +201,7 @@ s = Print(a == b ? ""Are equal"" : ""Are not equal"");
 x = a == b ? 1 : 0;
 ";
             thisTest.RunScriptSource(code);
-            thisTest.Verify("x", 1);
+            thisTest.Verify("x", 0);
         }
 
         [Test]
