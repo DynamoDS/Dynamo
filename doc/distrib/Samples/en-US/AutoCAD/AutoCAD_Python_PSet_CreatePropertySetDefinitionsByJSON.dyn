@@ -1,0 +1,162 @@
+{
+  "Uuid": "fd6288b2-7912-4687-8a3d-1883204d3dbe",
+  "IsCustomNode": false,
+  "Description": null,
+  "Name": "02_Create Property Set Definitions by JSON",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [
+    {
+      "Id": "069a40c7f98c4d2aa0f8dc9035b27ba8",
+      "Name": "File Path",
+      "Type": "string",
+      "Value": ".\\Asset Information.json",
+      "Description": "Allows you to select a file on the system to get its filename"
+    }
+  ],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "PythonNodeModels.PythonNode, PythonNodeModels",
+      "NodeType": "PythonScriptNode",
+      "Code": "\"\"\"\r\nCopyright 2019 Autodesk, Inc. All rights reserved.\r\n\r\nThis file is part of the Civil 3D Python Module.\r\n\r\n\"\"\"\r\n\r\n# Add standard Python references\r\nimport sys\r\nimport os\r\n\r\n# specify the folder that contains pset_utils.py\r\nWORK_FOLDER = r'C:\\ProgramData\\Autodesk\\C3D 2020\\Dynamo\\samples\\Data\\AutoCAD'\r\n\r\nif len(WORK_FOLDER) > 0 and os.path.exists(WORK_FOLDER):\r\n    sys.path.append(WORK_FOLDER)\r\n\r\nfrom pset.pset_utils import create_ps_definitions_json as fn\r\n\r\njsonpath = IN[0]\r\n\r\nif jsonpath is None:\r\n    OUT = fn.__doc__\r\nelse:\r\n    if not os.path.exists(jsonpath):\r\n        raise Exception('The provided path is not valid')\r\n\r\n    fn(jsonpath)\r\n    OUT = True",
+      "VariableInputPorts": true,
+      "Id": "fc1934cdf3f74988ba879e6a81399478",
+      "Inputs": [
+        {
+          "Id": "47cc31103f004f12abcece223ab052e2",
+          "Name": "IN[0]",
+          "Description": "Input #0",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "0cf2669b57954a57a75515b7d4f3f270",
+          "Name": "OUT",
+          "Description": "Result of the python script",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Runs an embedded IronPython script."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.Filename, CoreNodeModels",
+      "HintPath": "",
+      "InputValue": "..\\..\\Data\\AutoCAD\\Asset Information.json",
+      "NodeType": "ExtensionNode",
+      "Id": "069a40c7f98c4d2aa0f8dc9035b27ba8",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "32e8f86d29354f5bb1af24e86c7753b7",
+          "Name": "",
+          "Description": "Filename",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows you to select a file on the system to get its filename"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "32e8f86d29354f5bb1af24e86c7753b7",
+      "End": "47cc31103f004f12abcece223ab052e2",
+      "Id": "8fbb11eddf584fc69a88affa8db58def"
+    }
+  ],
+  "Dependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.1.1.7865",
+      "RunType": "Manual",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "Python Script",
+        "Id": "fc1934cdf3f74988ba879e6a81399478",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -65.629544441512962,
+        "Y": 268.80727110642061
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "File Path",
+        "Id": "069a40c7f98c4d2aa0f8dc9035b27ba8",
+        "IsSetAsInput": true,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -422.75517242812924,
+        "Y": 265.11040006614439
+      }
+    ],
+    "Annotations": [
+      {
+        "Id": "083fb703b9504b8aaacb4ee86e41ae22",
+        "Title": "Create Property Set Definitions by JSON",
+        "Nodes": [
+          "fc1934cdf3f74988ba879e6a81399478",
+          "c3ac3725da9e48a68f6baa8a2d90cd1f"
+        ],
+        "Left": -91.6095644329838,
+        "Top": -33.078385828314964,
+        "Width": 339.83331334186249,
+        "Height": 394.88565693473561,
+        "FontSize": 36.0,
+        "InitialTop": 62.921614171685036,
+        "InitialHeight": 350.88565693473561,
+        "TextblockHeight": 86.0,
+        "Background": "#FFFFAA45"
+      },
+      {
+        "Id": "c3ac3725da9e48a68f6baa8a2d90cd1f",
+        "Title": "INPUT\r\n________________________________________________________\r\n[0] jsonpath: string\r\n\r\nOUTPUT\r\n________________________________________________________\r\n[0] Result\r\n\r\nREMARKS\r\n________________________________________________________\r\nPropertySets with formulas my require further manual adjustment.",
+        "Nodes": [],
+        "Left": -81.6095644329838,
+        "Top": 62.921614171685036,
+        "Width": 0.0,
+        "Height": 0.0,
+        "FontSize": 36.0,
+        "InitialTop": 0.0,
+        "InitialHeight": 0.0,
+        "TextblockHeight": 0.0,
+        "Background": "#FFC1D676"
+      }
+    ],
+    "X": 824.04760002150329,
+    "Y": 34.551484794670728,
+    "Zoom": 1.3775833525586678
+  }
+}

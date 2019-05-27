@@ -1,0 +1,18 @@
+Name,Type,Value
+Inside Point Code,System.Int32,0
+Outside Point Code,System.Int32,1
+SE AOR Crown Point For Layout,System.Int32,0
+Superelevation Axis of Rotation,System.Int32,1
+Side,System.Int32,0
+Slope Direction,System.Int32,0
+Potential Pivot,System.Int32,1
+Use Superelevation,System.Int32,6
+Base Depth,System.Double,0.333
+Default Slope,System.Double,-0.02
+Lane Slope,System.Double,-0.02
+Lane Width,System.Double,12
+Pave1 Depth,System.Double,0.083
+Pave2 Depth,System.Double,0.083
+Sub-base Depth,System.Double,1
+Width,System.Double,12
+Version,System.String,R2019
