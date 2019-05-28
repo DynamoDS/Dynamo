@@ -75,8 +75,8 @@ namespace Dynamo.PackageManager
             }
             if (currentWorkspace != null)
             {
-                (currentWorkspace as WorkspaceModel).CollectingLocalPackages -= GetLocalPackages;
                 (currentWorkspace as WorkspaceModel).CollectingCustomNodePackageDependencies -= GetCustomNodesPackagesFromGuids;
+                (currentWorkspace as WorkspaceModel).CollectingNodePackageDependencies -= GetNodesPackagesFromAssemblyNames;
             }
         }
 
@@ -167,19 +167,38 @@ namespace Dynamo.PackageManager
             {
                 if (currentWorkspace != null)
                 {
-                    (currentWorkspace as WorkspaceModel).CollectingLocalPackages -= GetLocalPackages;
                     (currentWorkspace as WorkspaceModel).CollectingCustomNodePackageDependencies -= GetCustomNodesPackagesFromGuids;
+                    (currentWorkspace as WorkspaceModel).CollectingNodePackageDependencies -= GetNodesPackagesFromAssemblyNames;
                 }
-
-                (ws as WorkspaceModel).CollectingLocalPackages += GetLocalPackages;
+                
                 (ws as WorkspaceModel).CollectingCustomNodePackageDependencies += GetCustomNodesPackagesFromGuids;
+                (ws as WorkspaceModel).CollectingNodePackageDependencies += GetNodesPackagesFromAssemblyNames;
                 currentWorkspace = ws;
             }
         }
 
-        private IEnumerable<PackageInfo> GetLocalPackages()
+        private IEnumerable<PackageInfo> GetNodesPackagesFromAssemblyNames(IEnumerable<AssemblyName> assemblyNames)
         {
-            return PackageLoader.LocalPackages.Select(p => new PackageInfo(p.Name, p.VersionName, p.AssemblyNames));
+            // Create a dictionary that maps assembly names to the package they are contained in
+            var assemblyPackageDict = new Dictionary<string, PackageInfo>();
+            foreach (var package in PackageLoader.LocalPackages)
+            {
+                foreach (var assemblyName in package.AssemblyNames)
+                {
+                    assemblyPackageDict[assemblyName.FullName] = new PackageInfo(package.Name, package.VersionName);
+                }
+            }
+
+            // Create a list of packages
+            var packageDependencies = new HashSet<PackageInfo>();
+            foreach (var assemblyName in assemblyNames)
+            {
+                if (assemblyPackageDict.ContainsKey(assemblyName.FullName))
+                {
+                    packageDependencies.Add(assemblyPackageDict[assemblyName.FullName]);
+                }
+            }
+            return packageDependencies;
         }
 
         private IEnumerable<PackageInfo> GetCustomNodesPackagesFromGuids(IEnumerable<Guid> functionIDs)
@@ -191,7 +210,7 @@ namespace Dynamo.PackageManager
                 {
                     foreach(var cn in p.LoadedCustomNodes)
                     {
-                        var pInfo = new PackageInfo(p.Name, p.VersionName, p.AssemblyNames);
+                        var pInfo = new PackageInfo(p.Name, p.VersionName);
                         guidPackageDictionary[cn.FunctionId] = pInfo;
                     }
                 }

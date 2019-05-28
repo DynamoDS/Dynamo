@@ -445,17 +445,16 @@ namespace Dynamo.Graph.Workspaces
         /// </summary>
         internal delegate HashSet<AssemblyName> CollectingAssembliesUsedHandler();
         internal event CollectingAssembliesUsedHandler CollectingAssembliesUsed;
-
-        /// <summary>
-        /// Event that is fired when the workspace is collecting package dependencies
-        /// </summary>
-        public delegate IEnumerable<PackageInfo> CollectingLocalPackagesHandler();
-        public event CollectingLocalPackagesHandler CollectingLocalPackages;
-
+        
         /// <summary>
         /// Event that is fired when the workspace is collecting custom node package dependencies
         /// </summary>
         public event Func<IEnumerable<Guid>, IEnumerable<PackageInfo>> CollectingCustomNodePackageDependencies;
+
+        /// <summary>
+        /// Event that is fired when the workspace is collecting node package dependencies
+        /// </summary>
+        public event Func<IEnumerable<AssemblyName>, IEnumerable<PackageInfo>> CollectingNodePackageDependencies;
 
         /// <summary>
         /// This handler handles the workspaceModel's request to populate a JSON with view data.
@@ -541,28 +540,23 @@ namespace Dynamo.Graph.Workspaces
         {
             get
             {
-                // Get all packages installed locally
-                var localPackages = GetLocalPackages();
                 // Get set of assemblies used by nodes in this workspace
                 var assembliesUsed = GetAssembliesUsed();
-
-                // Create a dictionary that maps assembly names to the package they are contained in
-                var assemblyPackageDict = new Dictionary<string, PackageInfo>();
-                foreach(var package in localPackages)
-                {
-                    foreach(var assemblyName in package.AssemblyNames)
-                    {
-                        assemblyPackageDict[assemblyName.FullName] = package;
-                    }
-                }
-
-                // Create a list of packages that are used in this workspace
+                
+                // Collect pacakge dependencies of nodes in workspace
                 var packageDependencies = new HashSet<PackageInfo>();
-                foreach(var assemblyName in assembliesUsed)
+                if (CollectingNodePackageDependencies != null)
                 {
-                    if (assemblyPackageDict.ContainsKey(assemblyName.FullName))
+                    foreach (var f in CollectingNodePackageDependencies.GetInvocationList())
                     {
-                        packageDependencies.Add(assemblyPackageDict[assemblyName.FullName]);
+                        if (f.Target is IExtension && (f.Target as IExtension).UniqueId == "FCABC211-D56B-4109-AF18-F434DFE48139")
+                        {
+                            var npd = CollectingNodePackageDependencies(assembliesUsed);
+                            foreach (var p in npd)
+                            {
+                                packageDependencies.Add(p);
+                            }
+                        }
                     }
                 }
 
@@ -571,10 +565,16 @@ namespace Dynamo.Graph.Workspaces
                 var customNodeIDs = customNodes.Select(node => (node as Function).Definition.FunctionId);
                 if (CollectingCustomNodePackageDependencies != null)
                 {
-                    var cnpd = CollectingCustomNodePackageDependencies(customNodeIDs);
-                    foreach(var p in cnpd)
+                    foreach (var f in CollectingCustomNodePackageDependencies.GetInvocationList())
                     {
-                        packageDependencies.Add(p);
+                        if (f.Target is IExtension && (f.Target as IExtension).UniqueId == "FCABC211-D56B-4109-AF18-F434DFE48139")
+                        {
+                            var cnpd = CollectingCustomNodePackageDependencies(customNodeIDs);
+                            foreach (var p in cnpd)
+                            {
+                                packageDependencies.Add(p);
+                            }
+                        }
                     }
                 }
 
@@ -595,27 +595,6 @@ namespace Dynamo.Graph.Workspaces
             }
             return assemblies;
         }
-
-        /// <summary>
-        /// Gathers the packages installed locally by the package manager
-        /// </summary>
-        /// <returns></returns>
-        internal IEnumerable<PackageInfo> GetLocalPackages()
-        {
-            IEnumerable<PackageInfo> localPackages = new List<PackageInfo>();
-            if (CollectingLocalPackages != null)
-            {
-                foreach (CollectingLocalPackagesHandler f in CollectingLocalPackages.GetInvocationList())
-                {
-                    if (f.Target is IExtension && (f.Target as IExtension).UniqueId == "FCABC211-D56B-4109-AF18-F434DFE48139")
-                    {
-                        localPackages = f.Invoke();
-                    }
-                }
-            }
-            return localPackages;
-        }
-
 
         /// <summary>
         ///     An author of the workspace
