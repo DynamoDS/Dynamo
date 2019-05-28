@@ -139,7 +139,7 @@ namespace Dynamo.PackageManager
             }
         }
 
-        private void OnPackagesLoaded(IEnumerable<Assembly> assemblies)
+        internal void OnPackagesLoaded(IEnumerable<Assembly> assemblies)
         {
             PackagesLoaded?.Invoke(assemblies);
         }

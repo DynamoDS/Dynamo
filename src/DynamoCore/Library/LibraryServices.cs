@@ -1099,7 +1099,7 @@ namespace Dynamo.Engine
             if (handler != null)
             {
                 handler(this, e);
-                UpdateLibraryCoreData();
+                //UpdateLibraryCoreData();
             }
         }
 
