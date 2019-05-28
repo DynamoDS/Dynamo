@@ -451,7 +451,12 @@ namespace Dynamo.Graph.Workspaces
         /// </summary>
         public delegate IEnumerable<IPackage> CollectingLocalPackagesHandler();
         public event CollectingLocalPackagesHandler CollectingLocalPackages;
-        
+
+        /// <summary>
+        /// Event that is fired when the workspace is collecting custom node package dependencies
+        /// </summary>
+        public event Func<IEnumerable<Guid>, IEnumerable<IPackage>> CollectingCustomNodePackageDependencies;
+
         /// <summary>
         /// This handler handles the workspaceModel's request to populate a JSON with view data.
         /// This is used to construct a full workspace for instrumentation.
@@ -558,6 +563,18 @@ namespace Dynamo.Graph.Workspaces
                     if (assemblyPackageDict.ContainsKey(assemblyName.FullName))
                     {
                         packageDependencies.Add(assemblyPackageDict[assemblyName.FullName]);
+                    }
+                }
+
+                // Add custom node package dependencies
+                var customNodes = Nodes.Where(node => node.GetType() == typeof(Function));
+                var customNodeIDs = customNodes.Select(node => (node as Function).Definition.FunctionId);
+                if (CollectingCustomNodePackageDependencies != null)
+                {
+                    var cnpd = CollectingCustomNodePackageDependencies(customNodeIDs);
+                    foreach(var p in cnpd)
+                    {
+                        packageDependencies.Add(p);
                     }
                 }
 

@@ -1790,7 +1790,7 @@ namespace Dynamo.Models
         }
 
         /// <summary>
-        /// Collects assemblies used by a workspace
+        /// Collects assemblies used by the current workspace
         /// </summary>
         /// <returns></returns>
         private HashSet<AssemblyName> OnCollectingAssembliesUsed()

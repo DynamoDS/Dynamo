@@ -76,6 +76,7 @@ namespace Dynamo.PackageManager
             if (currentWorkspace != null)
             {
                 (currentWorkspace as WorkspaceModel).CollectingLocalPackages -= GetLocalPackages;
+                (currentWorkspace as WorkspaceModel).CollectingCustomNodePackageDependencies -= GetCustomNodesPackagesFromGuid;
             }
         }
 
@@ -167,9 +168,11 @@ namespace Dynamo.PackageManager
                 if (currentWorkspace != null)
                 {
                     (currentWorkspace as WorkspaceModel).CollectingLocalPackages -= GetLocalPackages;
+                    (currentWorkspace as WorkspaceModel).CollectingCustomNodePackageDependencies -= GetCustomNodesPackagesFromGuid;
                 }
 
                 (ws as WorkspaceModel).CollectingLocalPackages += GetLocalPackages;
+                (ws as WorkspaceModel).CollectingCustomNodePackageDependencies += GetCustomNodesPackagesFromGuid;
                 currentWorkspace = ws;
             }
         }
@@ -177,6 +180,32 @@ namespace Dynamo.PackageManager
         private IEnumerable<IPackage> GetLocalPackages()
         {
             return PackageLoader.LocalPackages;
+        }
+
+        private IEnumerable<IPackage> GetCustomNodesPackagesFromGuid(IEnumerable<Guid> functionIDs)
+        {
+            // Create dictionary mapping Guids to packages
+            var guidPackageDictionary = new Dictionary<Guid, IPackage>();
+            {
+                foreach(var p in PackageLoader.LocalPackages)
+                {
+                    foreach(var cn in p.LoadedCustomNodes)
+                    {
+                        guidPackageDictionary[cn.FunctionId] = p;
+                    }
+                }
+            }
+
+            // Create set of packages containing the custom nodes with the given function IDs
+            var customNodePackageDependencies = new HashSet<IPackage>();
+            foreach(var fID in functionIDs)
+            {
+                if (guidPackageDictionary.ContainsKey(fID))
+                {
+                    customNodePackageDependencies.Add(guidPackageDictionary[fID]);
+                }
+            }
+            return customNodePackageDependencies;
         }
 
         #endregion
