@@ -1,0 +1,318 @@
+{
+  "Uuid": "b3d4c45f-0b03-4440-8b89-6c8c50df4710",
+  "IsCustomNode": false,
+  "Description": null,
+  "Name": "RunScriptCommandToChangeLayers",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "\"0\";",
+      "Id": "b8b2b6802f814382a5f2c0b34de6ae2b",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "5a79da39e0ce4c0ebf21113a9a8ecb5a",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "\"C-ROAD\";",
+      "Id": "51875eb717924fe69b2d1f89a60adb6c",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "ca66a896445549f182efae02530b659e",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.AutoCAD.DynamoNodes.Object.SetLayer@string",
+      "Id": "897c832767dc45289658ebeaee394c69",
+      "Inputs": [
+        {
+          "Id": "9d749d1b593746368ac98899f73f8bc1",
+          "Name": "object",
+          "Description": "Autodesk.AutoCAD.DynamoNodes.Object",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "98060883f08340c3a42f322f2a27ed2b",
+          "Name": "layer",
+          "Description": "Name of the layer\n\nstring",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "d692fd590743409ab23f02076f2f63d5",
+          "Name": "Object",
+          "Description": "Object",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Set the layer of this object.\n\nObject.SetLayer (layer: string): Object"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.AutoCAD.DynamoNodes.Document.Current",
+      "Id": "665686b059664e999a4d24043bb893fe",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "9341b0675d18459e9f537858418c899d",
+          "Name": "Document",
+          "Description": "Document",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Get the current AutoCAD document.\n\nDocument.Current: Document"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.AutoCAD.DynamoNodes.Document.ModelSpace",
+      "Id": "33e32a49baed488888cf8cfb3e68a9ef",
+      "Inputs": [
+        {
+          "Id": "6dc3ca0cc345423f823433d5a2482fcb",
+          "Name": "document",
+          "Description": "Autodesk.AutoCAD.DynamoNodes.Document",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "4d990e593ee94db39b088a25b407cbf4",
+          "Name": "Block",
+          "Description": "Block",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Get the model space block table record.\n\nDocument.ModelSpace: Block"
+    },
+    {
+      "ConcreteType": "Autodesk.AutoCAD.DynamoNodes.AcObjectsOnLayer, AutoCADNodesUI",
+      "NodeType": "ExtensionNode",
+      "Id": "fea421f4ba9b42e38a27379ed28e0cf8",
+      "Inputs": [
+        {
+          "Id": "291c9ef19f48417d894a44ab76cd1b98",
+          "Name": "layer",
+          "Description": "string",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "cc4b7bd1a61a4acc863f8363aca57aa6",
+          "Name": "block",
+          "Description": "Block",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "b3dfb01de2df49f3ae694a865bdb08e0",
+          "Name": "Objects",
+          "Description": "Object[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Select all objects on layer."
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "5a79da39e0ce4c0ebf21113a9a8ecb5a",
+      "End": "291c9ef19f48417d894a44ab76cd1b98",
+      "Id": "dcbf1aa90f5f445ead6d98fd64c940d6"
+    },
+    {
+      "Start": "ca66a896445549f182efae02530b659e",
+      "End": "98060883f08340c3a42f322f2a27ed2b",
+      "Id": "197591e7d13b467c800e6746ce11062f"
+    },
+    {
+      "Start": "9341b0675d18459e9f537858418c899d",
+      "End": "6dc3ca0cc345423f823433d5a2482fcb",
+      "Id": "b95bcc39ea2842aba3b58d4099c08609"
+    },
+    {
+      "Start": "4d990e593ee94db39b088a25b407cbf4",
+      "End": "cc4b7bd1a61a4acc863f8363aca57aa6",
+      "Id": "7d8201a53ba746a7a4fa2983e0d92a8d"
+    },
+    {
+      "Start": "b3dfb01de2df49f3ae694a865bdb08e0",
+      "End": "9d749d1b593746368ac98899f73f8bc1",
+      "Id": "bbd60db2c1d946e58caacf48f8a6f648"
+    }
+  ],
+  "Dependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.1.1.7865",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "Original Layers",
+        "Id": "b8b2b6802f814382a5f2c0b34de6ae2b",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 166.3883434729994,
+        "Y": 190.3906134770331
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Layers needed",
+        "Id": "51875eb717924fe69b2d1f89a60adb6c",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 414.26643430219758,
+        "Y": 377.74427931840552
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Object.SetLayer",
+        "Id": "897c832767dc45289658ebeaee394c69",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 643.79698222499121,
+        "Y": 247.70783109272932
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Document.Current",
+        "Id": "665686b059664e999a4d24043bb893fe",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -69.129090935060219,
+        "Y": 299.68476232646924
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Document.ModelSpace",
+        "Id": "33e32a49baed488888cf8cfb3e68a9ef",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 124.09624629968221,
+        "Y": 302.59770710890257
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "All Objects on Layer",
+        "Id": "fea421f4ba9b42e38a27379ed28e0cf8",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 417.49251326422495,
+        "Y": 248.82597686807486
+      }
+    ],
+    "Annotations": [
+      {
+        "Id": "0d9a6140a92049cc85abf8c305639e50",
+        "Title": "change layers of objects via run script command",
+        "Nodes": [
+          "b8b2b6802f814382a5f2c0b34de6ae2b",
+          "51875eb717924fe69b2d1f89a60adb6c",
+          "897c832767dc45289658ebeaee394c69",
+          "665686b059664e999a4d24043bb893fe",
+          "33e32a49baed488888cf8cfb3e68a9ef"
+        ],
+        "Left": -79.129090935060219,
+        "Top": 137.3906134770331,
+        "Width": 927.92607316005137,
+        "Height": 333.35366584137239,
+        "FontSize": 36.0,
+        "InitialTop": 190.3906134770331,
+        "InitialHeight": 332.35366584137239,
+        "TextblockHeight": 43.0,
+        "Background": "#FFC1D676"
+      }
+    ],
+    "X": 170.3946072870441,
+    "Y": 15.296142600344524,
+    "Zoom": 1.0064686878467257
+  }
+}
