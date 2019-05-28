@@ -183,7 +183,7 @@ namespace Dynamo.PackageManager
             var assemblyPackageDict = new Dictionary<string, PackageInfo>();
             foreach (var package in PackageLoader.LocalPackages)
             {
-                foreach (var assemblyName in package.AssemblyNames)
+                foreach (var assemblyName in package.LoadedAssemblies.Select(a => AssemblyName.GetAssemblyName(a.Assembly.Location)))
                 {
                     assemblyPackageDict[assemblyName.FullName] = new PackageInfo(package.Name, package.VersionName);
                 }
