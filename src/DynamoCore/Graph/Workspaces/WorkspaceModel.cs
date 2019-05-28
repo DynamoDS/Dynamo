@@ -444,15 +444,17 @@ namespace Dynamo.Graph.Workspaces
         /// </summary>
         internal delegate HashSet<AssemblyName> CollectingAssembliesUsedHandler();
         internal event CollectingAssembliesUsedHandler CollectingAssembliesUsed;
-        
+
         /// <summary>
         /// Event that is fired when the workspace is collecting custom node package dependencies
         /// </summary>
+        [Obsolete("This event will ignore subscribers other than PackageManagerExtension.")]
         public event Func<IEnumerable<Guid>, IEnumerable<PackageInfo>> CollectingCustomNodePackageDependencies;
 
         /// <summary>
         /// Event that is fired when the workspace is collecting node package dependencies
         /// </summary>
+        [Obsolete("This event will ignore subscribers other than PackageManagerExtension.")]
         public event Func<IEnumerable<AssemblyName>, IEnumerable<PackageInfo>> CollectingNodePackageDependencies;
 
         /// <summary>
