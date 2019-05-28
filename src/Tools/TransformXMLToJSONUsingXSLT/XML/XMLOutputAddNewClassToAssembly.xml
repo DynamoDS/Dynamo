@@ -1,0 +1,5 @@
+<Assembly Name="TestLibrary_1, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" DiffType="Modified">
+  <Module Name="TestLibrary_1.dll" DiffType="Modified">
+    <Type Name="TestLibrary_1.Employee" DiffType="New" />
+  </Module>
+</Assembly>

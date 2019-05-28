@@ -1,0 +1,199 @@
+﻿{
+  "Assembly": {
+    "Name": "TestLibrary_1, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null",
+    "DiffType": "Modified",
+    "PhisycalName": "TestLibrary_1.dll",
+    "DeclarationDiffs": [
+      {
+        "DiffItem-Text": "Member type changed from String to Void Test1Assembly1",
+        "DiffType": "Modified"
+      },
+      {
+        "DiffItem-Text": "Member type changed from String to Void Test1Assembly2",
+        "DiffType": "Modified"
+      }
+    ],
+    "CustomAttributes": [
+      {
+        "CustomAttribute-Text": "System.Runtime.CompilerServices.ExtensionAttribute::.ctor()Assembly1",
+        "DiffType": "New"
+      },
+      {
+        "CustomAttribute-Text": "System.Runtime.CompilerServices.ExtensionAttribute::.ctor()Assembly2",
+        "DiffType": "New"
+      }
+    ],
+    "Modules": [
+      {
+        "Types": [
+          {
+            "Name": "TestLibrary_1.Test1",
+            "DiffType": "Modified",
+            "DeclarationDiffs": [
+              {
+                "DiffItem-Text": "Member type changed from String to Void Test1.",
+                "DiffType": "Modified"
+              },
+              {
+                "DiffItem-Text": "Member type changed from String to Void Test2.",
+                "DiffType": "Modified"
+              }
+            ],
+            "CustomAttributes": [
+              {
+                "CustomAttribute-Text": "System.Runtime.CompilerServices.ExtensionAttribute::.ctor()1",
+                "DiffType": "New"
+              },
+              {
+                "CustomAttribute-Text": "System.Runtime.CompilerServices.ExtensionAttribute::.ctor()2",
+                "DiffType": "New"
+              }
+            ],
+            "Properties": [
+              {
+                "Name": "people2",
+                "DiffType": "New",
+                "DeclarationDiffs": [
+                  {
+                    "DiffItem-Text": "Member type changed from String to Void people2.",
+                    "DiffType": "Modified"
+                  },
+                  {
+                    "DiffItem-Text": "Member type changed from String to Void people3.",
+                    "DiffType": "Modified"
+                  }
+                ],
+                "CustomAttributes": []
+              },
+              {
+                "Name": "prm1",
+                "DiffType": "New",
+                "DeclarationDiffs": [
+                  {
+                    "DiffItem-Text": "Member type changed from String to Void prm1.",
+                    "DiffType": "Modified"
+                  }
+                ],
+                "CustomAttributes": []
+              },
+              {
+                "Name": "prm2",
+                "DiffType": "New",
+                "DeclarationDiffs": [
+                  {
+                    "DiffItem-Text": "Member type changed from String to Void prm2.",
+                    "DiffType": "Modified"
+                  }
+                ],
+                "CustomAttributes": []
+              },
+              {
+                "Name": "prm3",
+                "DiffType": "New",
+                "DeclarationDiffs": [
+                  {
+                    "DiffItem-Text": "Member type changed from String to Void prm3.",
+                    "DiffType": "Modified"
+                  }
+                ],
+                "CustomAttributes": []
+              }
+            ],
+            "Fields": [
+              {
+                "Name": "MyString1",
+                "DiffType": "Modified",
+                "DeclarationDiffs": [
+                  {
+                    "DiffItem-Text": "Member type changed from String to Boolean1.",
+                    "DiffType": "Modified"
+                  }
+                ],
+                "CustomAttributes": []
+              },
+              {
+                "Name": "MyString2",
+                "DiffType": "Modified",
+                "DeclarationDiffs": [
+                  {
+                    "DiffItem-Text": "Member type changed from String to Boolean2.",
+                    "DiffType": "Modified"
+                  }
+                ],
+                "CustomAttributes": []
+              }
+            ],
+            "Methods": [
+              {
+                "Name": "ReadAndReturContentFile(String)",
+                "DiffType": "Modified",
+                "DeclarationDiffs": [
+                  {
+                    "DiffItem-Text": "Member type changed from String to Void.",
+                    "DiffType": "Modified"
+                  }
+                ],
+                "CustomAttributes": [
+                  {
+                    "CustomAttribute-Text": "System.ObsoleteAttribute::.ctor(System.String,System.Boolean)",
+                    "DiffType": "New"
+                  }
+                ]
+              },
+              {
+                "Name": "Test2()",
+                "DiffType": "Modified",
+                "DeclarationDiffs": [
+                  {
+                    "DiffItem-Text": "Member type changed from People to Void.",
+                    "DiffType": "Modified"
+                  }
+                ],
+                "CustomAttributes": []
+              },
+              {
+                "Name": "Test2(String&)",
+                "DiffType": "New",
+                "DeclarationDiffs": [],
+                "CustomAttributes": []
+              },
+              {
+                "Name": "Test2(String)",
+                "DiffType": "New",
+                "DeclarationDiffs": [],
+                "CustomAttributes": []
+              }
+            ]
+          },
+          {
+            "Name": "TestLibrary_2.Test2",
+            "DiffType": "New",
+            "DeclarationDiffs": [],
+            "CustomAttributes": [],
+            "Properties": [],
+            "Fields": [],
+            "Methods": []
+          },
+          {
+            "Name": "TestLibrary_3.Test3",
+            "DiffType": "Delete",
+            "DeclarationDiffs": [
+              {
+                "DiffItem-Text": "Member type changed from String to Void Test31.",
+                "DiffType": "Modified"
+              },
+              {
+                "DiffItem-Text": "Member type changed from String to Void Test32.",
+                "DiffType": "Modified"
+              }
+            ],
+            "CustomAttributes": [],
+            "Properties": [],
+            "Fields": [],
+            "Methods": []
+          }
+        ]
+      }
+    ]
+  }
+}
