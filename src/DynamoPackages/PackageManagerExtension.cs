@@ -76,7 +76,7 @@ namespace Dynamo.PackageManager
             if (currentWorkspace != null)
             {
                 (currentWorkspace as WorkspaceModel).CollectingLocalPackages -= GetLocalPackages;
-                (currentWorkspace as WorkspaceModel).CollectingCustomNodePackageDependencies -= GetCustomNodesPackagesFromGuid;
+                (currentWorkspace as WorkspaceModel).CollectingCustomNodePackageDependencies -= GetCustomNodesPackagesFromGuids;
             }
         }
 
