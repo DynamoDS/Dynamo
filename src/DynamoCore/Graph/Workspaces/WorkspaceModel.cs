@@ -5,6 +5,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Xml;
 using Dynamo.Core;
 using Dynamo.Engine;
@@ -27,6 +28,8 @@ using Dynamo.Utilities;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using ProtoCore.Namespace;
+
+[assembly: InternalsVisibleTo("DynamoPackages")]
 
 namespace Dynamo.Graph.Workspaces
 {
@@ -448,14 +451,12 @@ namespace Dynamo.Graph.Workspaces
         /// <summary>
         /// Event that is fired when the workspace is collecting custom node package dependencies
         /// </summary>
-        [Obsolete("This event will ignore subscribers other than PackageManagerExtension.")]
-        public event Func<IEnumerable<Guid>, IEnumerable<PackageInfo>> CollectingCustomNodePackageDependencies;
+        internal event Func<IEnumerable<Guid>, IEnumerable<PackageInfo>> CollectingCustomNodePackageDependencies;
 
         /// <summary>
         /// Event that is fired when the workspace is collecting node package dependencies
         /// </summary>
-        [Obsolete("This event will ignore subscribers other than PackageManagerExtension.")]
-        public event Func<IEnumerable<AssemblyName>, IEnumerable<PackageInfo>> CollectingNodePackageDependencies;
+        internal event Func<IEnumerable<AssemblyName>, IEnumerable<PackageInfo>> CollectingNodePackageDependencies;
 
         /// <summary>
         /// This handler handles the workspaceModel's request to populate a JSON with view data.
@@ -548,16 +549,10 @@ namespace Dynamo.Graph.Workspaces
                 var packageDependencies = new HashSet<PackageInfo>();
                 if (CollectingNodePackageDependencies != null)
                 {
-                    foreach (var f in CollectingNodePackageDependencies.GetInvocationList())
+                    var npd = CollectingNodePackageDependencies(assembliesUsed);
+                    foreach (var p in npd)
                     {
-                        if (f.Target is IExtension && (f.Target as IExtension).UniqueId == "FCABC211-D56B-4109-AF18-F434DFE48139")
-                        {
-                            var npd = CollectingNodePackageDependencies(assembliesUsed);
-                            foreach (var p in npd)
-                            {
-                                packageDependencies.Add(p);
-                            }
-                        }
+                        packageDependencies.Add(p);
                     }
                 }
 
@@ -566,16 +561,10 @@ namespace Dynamo.Graph.Workspaces
                 var customNodeIDs = customNodes.Select(node => (node as Function).Definition.FunctionId);
                 if (CollectingCustomNodePackageDependencies != null)
                 {
-                    foreach (var f in CollectingCustomNodePackageDependencies.GetInvocationList())
+                    var cnpd = CollectingCustomNodePackageDependencies(customNodeIDs);
+                    foreach (var p in cnpd)
                     {
-                        if (f.Target is IExtension && (f.Target as IExtension).UniqueId == "FCABC211-D56B-4109-AF18-F434DFE48139")
-                        {
-                            var cnpd = CollectingCustomNodePackageDependencies(customNodeIDs);
-                            foreach (var p in cnpd)
-                            {
-                                packageDependencies.Add(p);
-                            }
-                        }
+                        packageDependencies.Add(p);
                     }
                 }
 
