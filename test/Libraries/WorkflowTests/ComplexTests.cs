@@ -1174,5 +1174,37 @@ namespace Dynamo.Tests
             var nurbsCurve = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace(curveID);
             Assert.AreEqual(ElementState.Warning, nurbsCurve.State);   
         }
+
+        [Test]
+        public void Test_PerforationsByImage()
+        {
+            string openPath = Path.Combine(TestDirectory, @"core\WorkflowTestFiles\PerforatedScreenByImage\Perforations by image.dyn");
+
+            RunModel(openPath);
+            AssertNoDummyNodes();
+
+            Assert.AreEqual(30, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+            Assert.AreEqual(40, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
+
+            //check Curve.ExtrudeAsSolid
+            var solidID = "15cdd045-e5dc-4217-85eb-0c7aac2c7901";
+            AssertPreviewCount(solidID, 20);
+            var solid = GetFlattenedPreviewValues(solidID);
+            foreach (var element in solid)
+            {
+                Assert.IsNotNull(solid);
+            }
+
+            //check Solid.ByUnion
+            var unionID = "0892604a-39a6-40f4-a12b-4043959de522";
+            var union = GetPreviewValue(unionID) as Solid;
+            Assert.IsNotNull(union);
+
+            //check Surface.SubtractFrom
+            var geometryID = "d15326de-522b-441f-b85b-90ae2dbb8207";
+            AssertPreviewCount(geometryID, 1);
+            var geometry = GetPreviewValueAtIndex(geometryID, 0) as Surface;
+            Assert.IsNotNull(geometry);
+        }
     }
 }

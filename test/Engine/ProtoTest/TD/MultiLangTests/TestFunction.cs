@@ -6081,10 +6081,9 @@ t = foo()[0];";
             thisTest.Verify("t", t);
         }
 
-        [Test, Category("Failure")]
+        [Test]
         public void TV101_Indexing_Intovariablenotarray_InFunctionCall_1463234_4()
         {
-            // TODO pratapa: Regression due to Get.ValueAtIndex (array promotion while indexing into single value)
             string code = @"
 def foo()
 {
@@ -6092,8 +6091,7 @@ return = 1;
 }
 t = foo()[0];";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Object t = null;
-            thisTest.Verify("t", t);
+            thisTest.Verify("t", null);
         }
 
         [Test]

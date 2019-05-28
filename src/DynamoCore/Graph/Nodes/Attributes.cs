@@ -200,7 +200,7 @@ namespace Dynamo.Graph.Nodes
     public class IsDesignScriptCompatibleAttribute : Attribute { }
 
     /// <summary>
-    ///    The NodeDescriptionAttribute indicates this node is obsolete
+    ///    The NodeObsoleteAttribute indicates this node is obsolete
     /// </summary>
     [AttributeUsage(AttributeTargets.Method | AttributeTargets.Property)]
     public sealed class NodeObsoleteAttribute : IsObsoleteAttribute

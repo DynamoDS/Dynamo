@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Remoting.Messaging;
 using ProtoCore.DSASM;
 using ProtoCore.Exceptions;
 using ProtoCore.Runtime;
@@ -131,13 +132,16 @@ namespace ProtoCore.Utils
             var dsArray = runtimeCore.Heap.ToHeapObject<DSArray>(array);
             foreach (var sv in dsArray.Values)
             {
+                if(IsEmpty(sv, runtimeCore)) continue;
+
                 if (!usageFreq.ContainsKey(sv.metaData.type))
+                {
                     usageFreq.Add(sv.metaData.type, sv);
+                }
             }
 
             return usageFreq;
         }
-
 
 
         /// <summary>

@@ -1,5 +1,6 @@
-﻿using System.Collections.Generic;
-using System.Text;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace ProtoCore.Lang.Replication
 {
@@ -27,22 +28,46 @@ namespace ProtoCore.Lang.Replication
 
         public override string ToString()
         {
-            if (!Zipped)
-                return "Cartesian, Index: " + CartesianIndex;
-            else
+            if (!Zipped) return "Cartesian, Index: " + CartesianIndex;
+
+            string indices = "";
+
+            for (int i = 0; i < ZipIndecies.Count - 1; i++)
             {
-                string indecies = "";
-
-                for (int i = 0; i < ZipIndecies.Count - 1; i++)
-                    indecies += ZipIndecies[i] + ", ";
-
-                indecies += ZipIndecies[ZipIndecies.Count - 1];
-
-                indecies += " - " + ZipAlgorithm;
-
-                return "Zipped, indecies: " + indecies;
+                indices += ZipIndecies[i] + ", ";
             }
 
+            indices += ZipIndecies[ZipIndecies.Count - 1];
+
+            indices += " - " + ZipAlgorithm;
+
+            return "Zipped, indecies: " + indices;
+
+        }
+
+        public Boolean Equals(ReplicationInstruction other) {
+
+            if (this.Zipped == other.Zipped && this.ZipAlgorithm == other.ZipAlgorithm)
+            {
+                if (this.ZipIndecies == null && other.ZipIndecies == null)
+                {
+                    if (this.CartesianIndex == other.CartesianIndex) return true;
+
+                    return false;
+                }
+
+                if (this.ZipIndecies != null && other.ZipIndecies != null)
+                {
+                    // Fastest way to compare all elements of 2 lists. 
+                    // Excluding one list from another list and checking if the leftover lists is empty or not. 
+                    // https://stackoverflow.com/questions/12795882/quickest-way-to-compare-two-list
+                    var currentExcludesOldList = this.ZipIndecies.Except(other.ZipIndecies).ToList();
+                    var oldExcludescurrentList = other.ZipIndecies.Except(this.ZipIndecies).ToList();
+
+                    return !currentExcludesOldList.Any() && !oldExcludescurrentList.Any();
+                }
+            }
+            return false;
         }
     }
 }
