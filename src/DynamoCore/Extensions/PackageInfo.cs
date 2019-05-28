@@ -24,7 +24,7 @@ namespace Dynamo.Extensions
         public string Version { get; set; }
         
         /// <summary>
-        /// Create a package info object from the package name, version, and assembly names of assemblies contained in the package
+        /// Create a package info object from the package name and version
         /// </summary>
         /// <param name="name"></param>
         /// <param name="version"></param>

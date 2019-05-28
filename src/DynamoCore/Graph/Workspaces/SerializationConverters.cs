@@ -762,12 +762,15 @@ namespace Dynamo.Graph.Workspaces
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
             PackageInfo p = value as PackageInfo;
-            writer.WriteStartObject();
-            writer.WritePropertyName("Name");
-            writer.WriteValue(p.Name);
-            writer.WritePropertyName("Version");
-            writer.WriteValue(p.Version);
-            writer.WriteEndObject();
+            if (p != null)
+            {
+                writer.WriteStartObject();
+                writer.WritePropertyName("Name");
+                writer.WriteValue(p.Name);
+                writer.WritePropertyName("Version");
+                writer.WriteValue(p.Version);
+                writer.WriteEndObject();
+            }
         }
 
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
