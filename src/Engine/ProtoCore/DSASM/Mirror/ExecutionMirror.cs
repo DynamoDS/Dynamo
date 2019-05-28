@@ -216,21 +216,17 @@ namespace ProtoCore.DSASM.Mirror
         {
             if (pointers.Contains(ptr.ArrayPointer))
             {
-                return "{ ... }";
+                return "[ ... ]";
             }
-            else
-            {
-                pointers.Add(ptr.ArrayPointer);
 
-                if (forPrint)
-                {
-                    return "{" + GetArrayTrace(ptr, heap, langblock, pointers, forPrint) + "}";
-                }
-                else
-                {
-                    return "{ " + GetArrayTrace(ptr, heap, langblock, pointers, forPrint) + " }";
-                }
+            pointers.Add(ptr.ArrayPointer);
+
+            if (forPrint)
+            {
+                return "[" + GetArrayTrace(ptr, heap, langblock, pointers, forPrint) + "]";
             }
+
+            return "[ " + GetArrayTrace(ptr, heap, langblock, pointers, forPrint) + " ]";
         }
 
         private string GetArrayTrace(StackValue svArray, Heap heap, int langblock, HashSet<int> pointers, bool forPrint)
