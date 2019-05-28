@@ -168,11 +168,11 @@ namespace Dynamo.PackageManager
                 if (currentWorkspace != null)
                 {
                     (currentWorkspace as WorkspaceModel).CollectingLocalPackages -= GetLocalPackages;
-                    (currentWorkspace as WorkspaceModel).CollectingCustomNodePackageDependencies -= GetCustomNodesPackagesFromGuid;
+                    (currentWorkspace as WorkspaceModel).CollectingCustomNodePackageDependencies -= GetCustomNodesPackagesFromGuids;
                 }
 
                 (ws as WorkspaceModel).CollectingLocalPackages += GetLocalPackages;
-                (ws as WorkspaceModel).CollectingCustomNodePackageDependencies += GetCustomNodesPackagesFromGuid;
+                (ws as WorkspaceModel).CollectingCustomNodePackageDependencies += GetCustomNodesPackagesFromGuids;
                 currentWorkspace = ws;
             }
         }
@@ -182,7 +182,7 @@ namespace Dynamo.PackageManager
             return PackageLoader.LocalPackages;
         }
 
-        private IEnumerable<IPackage> GetCustomNodesPackagesFromGuid(IEnumerable<Guid> functionIDs)
+        private IEnumerable<IPackage> GetCustomNodesPackagesFromGuids(IEnumerable<Guid> functionIDs)
         {
             // Create dictionary mapping Guids to packages
             var guidPackageDictionary = new Dictionary<Guid, IPackage>();
