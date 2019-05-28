@@ -177,27 +177,28 @@ namespace Dynamo.PackageManager
             }
         }
 
-        private IEnumerable<IPackage> GetLocalPackages()
+        private IEnumerable<PackageInfo> GetLocalPackages()
         {
-            return PackageLoader.LocalPackages;
+            return PackageLoader.LocalPackages.Select(p => new PackageInfo(p.Name, p.VersionName, p.AssemblyNames));
         }
 
-        private IEnumerable<IPackage> GetCustomNodesPackagesFromGuids(IEnumerable<Guid> functionIDs)
+        private IEnumerable<PackageInfo> GetCustomNodesPackagesFromGuids(IEnumerable<Guid> functionIDs)
         {
             // Create dictionary mapping Guids to packages
-            var guidPackageDictionary = new Dictionary<Guid, IPackage>();
+            var guidPackageDictionary = new Dictionary<Guid, PackageInfo>();
             {
                 foreach(var p in PackageLoader.LocalPackages)
                 {
                     foreach(var cn in p.LoadedCustomNodes)
                     {
-                        guidPackageDictionary[cn.FunctionId] = p;
+                        var pInfo = new PackageInfo(p.Name, p.VersionName, p.AssemblyNames);
+                        guidPackageDictionary[cn.FunctionId] = pInfo;
                     }
                 }
             }
 
             // Create set of packages containing the custom nodes with the given function IDs
-            var customNodePackageDependencies = new HashSet<IPackage>();
+            var customNodePackageDependencies = new HashSet<PackageInfo>();
             foreach(var fID in functionIDs)
             {
                 if (guidPackageDictionary.ContainsKey(fID))

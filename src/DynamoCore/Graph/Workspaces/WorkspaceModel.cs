@@ -449,13 +449,13 @@ namespace Dynamo.Graph.Workspaces
         /// <summary>
         /// Event that is fired when the workspace is collecting package dependencies
         /// </summary>
-        public delegate IEnumerable<IPackage> CollectingLocalPackagesHandler();
+        public delegate IEnumerable<PackageInfo> CollectingLocalPackagesHandler();
         public event CollectingLocalPackagesHandler CollectingLocalPackages;
 
         /// <summary>
         /// Event that is fired when the workspace is collecting custom node package dependencies
         /// </summary>
-        public event Func<IEnumerable<Guid>, IEnumerable<IPackage>> CollectingCustomNodePackageDependencies;
+        public event Func<IEnumerable<Guid>, IEnumerable<PackageInfo>> CollectingCustomNodePackageDependencies;
 
         /// <summary>
         /// This handler handles the workspaceModel's request to populate a JSON with view data.
@@ -537,7 +537,7 @@ namespace Dynamo.Graph.Workspaces
         /// <summary>
         /// Gathers the packages that this graph depends on
         /// </summary>
-        public IEnumerable<IPackage> PackageDependencies
+        public IEnumerable<PackageInfo> PackageDependencies
         {
             get
             {
@@ -547,7 +547,7 @@ namespace Dynamo.Graph.Workspaces
                 var assembliesUsed = GetAssembliesUsed();
 
                 // Create a dictionary that maps assembly names to the package they are contained in
-                var assemblyPackageDict = new Dictionary<string, IPackage>();
+                var assemblyPackageDict = new Dictionary<string, PackageInfo>();
                 foreach(var package in localPackages)
                 {
                     foreach(var assemblyName in package.AssemblyNames)
@@ -557,7 +557,7 @@ namespace Dynamo.Graph.Workspaces
                 }
 
                 // Create a list of packages that are used in this workspace
-                var packageDependencies = new HashSet<IPackage>();
+                var packageDependencies = new HashSet<PackageInfo>();
                 foreach(var assemblyName in assembliesUsed)
                 {
                     if (assemblyPackageDict.ContainsKey(assemblyName.FullName))
@@ -600,9 +600,9 @@ namespace Dynamo.Graph.Workspaces
         /// Gathers the packages installed locally by the package manager
         /// </summary>
         /// <returns></returns>
-        internal IEnumerable<IPackage> GetLocalPackages()
+        internal IEnumerable<PackageInfo> GetLocalPackages()
         {
-            IEnumerable<IPackage> localPackages = new List<IPackage>();
+            IEnumerable<PackageInfo> localPackages = new List<PackageInfo>();
             if (CollectingLocalPackages != null)
             {
                 foreach (CollectingLocalPackagesHandler f in CollectingLocalPackages.GetInvocationList())

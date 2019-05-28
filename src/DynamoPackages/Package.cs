@@ -29,7 +29,7 @@ namespace Dynamo.PackageManager
         }
     }
 
-    public class Package : NotificationObject, ILogSource, IPackage
+    public class Package : NotificationObject, ILogSource
     {
         #region Properties/Fields
 

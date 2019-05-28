@@ -5,6 +5,7 @@ using System.Reflection;
 using Dynamo.Configuration;
 using Dynamo.Core;
 using Dynamo.Engine;
+using Dynamo.Extensions;
 using Dynamo.Interfaces;
 using Dynamo.Graph.Annotations;
 using Dynamo.Graph.Connectors;
@@ -747,11 +748,11 @@ namespace Dynamo.Graph.Workspaces
     /// <summary>
     /// IPackageWriteConverter is used to Serialize packages to JSON.
     /// </summary>
-    public class IPackageWriteConverter : JsonConverter
+    public class PackageInfoWriteConverter : JsonConverter
     {
         public override bool CanConvert(Type objectType)
         {
-            return typeof(IPackage).IsAssignableFrom(objectType);
+            return typeof(PackageInfo).IsAssignableFrom(objectType);
         }
 
         public override bool CanRead
@@ -761,12 +762,12 @@ namespace Dynamo.Graph.Workspaces
 
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
-            IPackage p = value as IPackage;
+            PackageInfo p = value as PackageInfo;
             writer.WriteStartObject();
             writer.WritePropertyName("Name");
             writer.WriteValue(p.Name);
             writer.WritePropertyName("Version");
-            writer.WriteValue(p.VersionName);
+            writer.WriteValue(p.Version);
             writer.WriteEndObject();
         }
 

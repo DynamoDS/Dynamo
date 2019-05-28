@@ -114,6 +114,7 @@ limitations under the License.
     <Compile Include="Core\DynamoMigrator.cs" />
     <Compile Include="Engine\ShortestQualifiedNameReplacer.cs" />
     <Compile Include="Exceptions\LibraryLoadFailedException.cs" />
+    <Compile Include="Extensions\PackageInfo.cs" />
     <Compile Include="Graph\Nodes\NodeOutputData.cs" />
     <Compile Include="Graph\Nodes\NodeInputData.cs" />
     <Compile Include="Graph\Workspaces\LayoutExtensions.cs" />
