@@ -28,7 +28,6 @@ namespace Dynamo.Extensions
         /// </summary>
         /// <param name="name"></param>
         /// <param name="version"></param>
-        /// <param name="assemblyNames"></param>
         public PackageInfo(string name, string version)
         {
             Name = name;

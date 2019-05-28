@@ -128,11 +128,6 @@ namespace Dynamo.PackageManager
         public ObservableCollection<PackageFileInfo> AdditionalFiles { get; private set; }
 
         /// <summary>
-        /// AssemblyNames of all assemblies loaded as part of this package
-        /// </summary>
-        public IEnumerable<AssemblyName> AssemblyNames => LoadedAssemblies.Select(a => AssemblyName.GetAssemblyName(a.Assembly.Location));
-
-        /// <summary>
         ///     A header used to create the package, this data does not reflect runtime
         ///     changes to the package, but instead reflects how the package was formed.
         /// </summary>
