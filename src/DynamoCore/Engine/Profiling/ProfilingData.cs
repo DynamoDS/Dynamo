@@ -87,7 +87,13 @@ namespace Dynamo.Engine.Profiling
 
         internal void UnregisterNode(Guid guid)
         {
-            nodeProfilingData.Remove(guid);
+            NodeProfilingData data = null;
+            if(nodeProfilingData.TryGetValue(guid, out data))
+            {
+                nodeProfilingData.Remove(guid);
+                data.Dispose();
+            }
+          
         }
 
         internal void UnregisterDeletedNodes(IEnumerable<NodeModel> modelNodes)
