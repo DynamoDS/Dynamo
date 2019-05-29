@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Xml;
 using Dynamo.Configuration;
 using Dynamo.Exceptions;
@@ -17,6 +18,7 @@ using ProtoCore.DSASM;
 using ProtoCore.Namespace;
 using ProtoCore.Utils;
 using ProtoFFI;
+using MethodAttributes = ProtoCore.AST.AssociativeAST.MethodAttributes;
 using Operator = ProtoCore.DSASM.Operator;
 
 namespace Dynamo.Engine
@@ -111,6 +113,35 @@ namespace Dynamo.Engine
             PopulateOperators();
             PopulatePreloadLibraries();
             LibraryLoadFailed += new EventHandler<LibraryLoadFailedEventArgs>(LibraryLoadFailureHandler);
+
+            //AppDomain.CurrentDomain.AssemblyResolve += ResolveAssembly;
+        }
+
+        private Assembly ResolveAssembly(object sender, ResolveEventArgs args)
+        {
+            var assemblyName = new AssemblyName(args.Name).Name + ".dll";
+            var assemblyPath = string.Empty;
+            try
+            {
+                if (pathManager.ResolveLibraryPath(ref assemblyPath))
+                {
+                    return Assembly.LoadFrom(assemblyPath);
+                }
+
+                foreach (var packagesDirectory in pathManager.PackagesDirectories)
+                {
+                    assemblyPath = Path.Combine(packagesDirectory, assemblyName);
+                    if (File.Exists(assemblyPath))
+                        return Assembly.LoadFrom(assemblyPath);
+                }
+
+                return null;
+                //return (File.Exists(assemblyPath) ? Assembly.LoadFrom(assemblyPath) : null);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(string.Format("The location of the assembly, {0} could not be resolved for loading.", assemblyPath), ex);
+            }
         }
 
         /// <summary>
@@ -121,6 +152,8 @@ namespace Dynamo.Engine
             builtinFunctionGroups.Clear();
             importedFunctionGroups.Clear();
             importedLibraries.Clear();
+
+            //AppDomain.CurrentDomain.AssemblyResolve -= ResolveAssembly;
         }
         
         /// <summary>
