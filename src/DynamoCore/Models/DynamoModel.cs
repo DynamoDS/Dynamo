@@ -1793,9 +1793,9 @@ namespace Dynamo.Models
         /// Collects assemblies used by the current workspace
         /// </summary>
         /// <returns></returns>
-        private HashSet<AssemblyName> OnCollectingAssembliesUsed()
+        private Dictionary<Guid, AssemblyName> OnCollectingAssembliesUsed()
         {
-            var assemblyNames = new HashSet<AssemblyName>();
+            var assemblyNames = new Dictionary<Guid, AssemblyName>();
             foreach(var node in CurrentWorkspace.Nodes)
             {
                 // Get zerotouch assemblies
@@ -1811,8 +1811,7 @@ namespace Dynamo.Models
                             {
                                 if (fd.IsPackageMember)
                                 {
-                                    var assemblyName = AssemblyName.GetAssemblyName(fd.Assembly);
-                                    assemblyNames.Add(assemblyName);
+                                    assemblyNames[node.GUID] = AssemblyName.GetAssemblyName(fd.Assembly);
                                 }
                             }
                         }
@@ -1822,8 +1821,7 @@ namespace Dynamo.Models
                 else
                 {
                     var assembly = node.GetType().Assembly;
-                    var assemblyName = AssemblyName.GetAssemblyName(assembly.Location);
-                    assemblyNames.Add(assemblyName);
+                    assemblyNames[node.GUID] = AssemblyName.GetAssemblyName(assembly.Location);
                 }
             }
             return assemblyNames;

@@ -26,7 +26,11 @@ namespace Dynamo.PackageManager
 
         private IWorkspaceModel currentWorkspace;
 
-        public string Name { get { return "DynamoPackageManager"; } }
+        private Dictionary<Guid, PackageInfo> CustomNodePackageDictionary;
+
+        private Dictionary<string, PackageInfo> NodePackageDictionary;
+
+         public string Name { get { return "DynamoPackageManager"; } }
 
         public string UniqueId
         {
@@ -52,6 +56,7 @@ namespace Dynamo.PackageManager
         public void Dispose()
         {
             PackageLoader.MessageLogged -= OnMessageLogged;
+            PackageLoader.PackageAdded -= OnPackageAdded;
 
             if (RequestLoadNodeLibraryHandler != null)
             {
@@ -75,8 +80,8 @@ namespace Dynamo.PackageManager
             }
             if (currentWorkspace != null)
             {
-                (currentWorkspace as WorkspaceModel).CollectingCustomNodePackageDependencies -= GetCustomNodesPackagesFromGuids;
-                (currentWorkspace as WorkspaceModel).CollectingNodePackageDependencies -= GetNodesPackagesFromAssemblyNames;
+                (currentWorkspace as WorkspaceModel).CollectingCustomNodePackageDependencies -= GetCustomNodePackageFromID;
+                (currentWorkspace as WorkspaceModel).CollectingNodePackageDependencies -= GetNodePackageFromAssemblyName;
             }
         }
 
@@ -103,6 +108,7 @@ namespace Dynamo.PackageManager
 
             PackageLoader = new PackageLoader(startupParams.PathManager.PackagesDirectories);
             PackageLoader.MessageLogged += OnMessageLogged;
+            PackageLoader.PackageAdded += OnPackageAdded;
             RequestLoadNodeLibraryHandler = startupParams.LibraryLoader.LoadNodeLibrary;
             RequestLoadCustomNodeDirectoryHandler = (dir) => startupParams.CustomNodeManager
                     .AddUninitializedCustomNodesInPath(dir, DynamoModel.IsTestMode, true);
@@ -110,7 +116,7 @@ namespace Dynamo.PackageManager
             //raise the public events on this extension when the package loader requests.
             PackageLoader.RequestLoadExtension += RequestLoadExtension;
             PackageLoader.RequestAddExtension += RequestAddExtension;
-
+            
             PackageLoader.RequestLoadNodeLibrary += RequestLoadNodeLibraryHandler;
             PackageLoader.RequestLoadCustomNodeDirectory += RequestLoadCustomNodeDirectoryHandler;
                 
@@ -167,65 +173,74 @@ namespace Dynamo.PackageManager
             {
                 if (currentWorkspace != null)
                 {
-                    (currentWorkspace as WorkspaceModel).CollectingCustomNodePackageDependencies -= GetCustomNodesPackagesFromGuids;
-                    (currentWorkspace as WorkspaceModel).CollectingNodePackageDependencies -= GetNodesPackagesFromAssemblyNames;
+                    (currentWorkspace as WorkspaceModel).CollectingCustomNodePackageDependencies -= GetCustomNodePackageFromID;
+                    (currentWorkspace as WorkspaceModel).CollectingNodePackageDependencies -= GetNodePackageFromAssemblyName;
                 }
                 
-                (ws as WorkspaceModel).CollectingCustomNodePackageDependencies += GetCustomNodesPackagesFromGuids;
-                (ws as WorkspaceModel).CollectingNodePackageDependencies += GetNodesPackagesFromAssemblyNames;
+                (ws as WorkspaceModel).CollectingCustomNodePackageDependencies += GetCustomNodePackageFromID;
+                (ws as WorkspaceModel).CollectingNodePackageDependencies += GetNodePackageFromAssemblyName;
                 currentWorkspace = ws;
             }
         }
 
-        private IEnumerable<PackageInfo> GetNodesPackagesFromAssemblyNames(IEnumerable<AssemblyName> assemblyNames)
+        private PackageInfo GetNodePackageFromAssemblyName(AssemblyName assemblyName)
         {
-            // Create a dictionary that maps assembly names to the package they are contained in
-            var assemblyPackageDict = new Dictionary<string, PackageInfo>();
-            foreach (var package in PackageLoader.LocalPackages)
+            if (NodePackageDictionary == null)
             {
-                foreach (var assemblyName in package.LoadedAssemblies.Select(a => AssemblyName.GetAssemblyName(a.Assembly.Location)))
+                NodePackageDictionary = new Dictionary<string, PackageInfo>();
+                foreach (var package in PackageLoader.LocalPackages)
                 {
-                    assemblyPackageDict[assemblyName.FullName] = new PackageInfo(package.Name, package.VersionName);
-                }
-            }
-
-            // Create a list of packages
-            var packageDependencies = new HashSet<PackageInfo>();
-            foreach (var assemblyName in assemblyNames)
-            {
-                if (assemblyPackageDict.ContainsKey(assemblyName.FullName))
-                {
-                    packageDependencies.Add(assemblyPackageDict[assemblyName.FullName]);
-                }
-            }
-            return packageDependencies;
-        }
-
-        private IEnumerable<PackageInfo> GetCustomNodesPackagesFromGuids(IEnumerable<Guid> functionIDs)
-        {
-            // Create dictionary mapping Guids to packages
-            var guidPackageDictionary = new Dictionary<Guid, PackageInfo>();
-            {
-                foreach(var p in PackageLoader.LocalPackages)
-                {
-                    foreach(var cn in p.LoadedCustomNodes)
+                    foreach (var assembly in package.LoadedAssemblies.Select(a => AssemblyName.GetAssemblyName(a.Assembly.Location)))
                     {
-                        var pInfo = new PackageInfo(p.Name, p.VersionName);
-                        guidPackageDictionary[cn.FunctionId] = pInfo;
+                        NodePackageDictionary[assembly.FullName] = new PackageInfo(package.Name, package.VersionName);
                     }
                 }
             }
 
-            // Create set of packages containing the custom nodes with the given function IDs
-            var customNodePackageDependencies = new HashSet<PackageInfo>();
-            foreach(var fID in functionIDs)
+            if (NodePackageDictionary.ContainsKey(assemblyName.FullName))
             {
-                if (guidPackageDictionary.ContainsKey(fID))
+                return NodePackageDictionary[assemblyName.FullName];
+            }
+            return null;
+        }
+
+        private PackageInfo GetCustomNodePackageFromID(Guid functionID)
+        {
+            // Create dictionary mapping Guids to packages
+            if (CustomNodePackageDictionary == null)
+            {
+                CustomNodePackageDictionary = new Dictionary<Guid, PackageInfo>();
+                foreach(var package in PackageLoader.LocalPackages)
                 {
-                    customNodePackageDependencies.Add(guidPackageDictionary[fID]);
+                    foreach(var cn in package.LoadedCustomNodes)
+                    {
+                        var pInfo = new PackageInfo(package.Name, package.VersionName);
+                        CustomNodePackageDictionary[cn.FunctionId] = pInfo;
+                    }
                 }
             }
-            return customNodePackageDependencies;
+            
+            if (CustomNodePackageDictionary.ContainsKey(functionID))
+            {
+                return CustomNodePackageDictionary[functionID];
+            }
+            return null;
+        }
+
+        private void OnPackageAdded(Package package)
+        {
+            // Add new assemblies to NodePackageDictionary
+            foreach (var assembly in package.LoadedAssemblies.Select(a => AssemblyName.GetAssemblyName(a.Assembly.Location)))
+            {
+                NodePackageDictionary[assembly.FullName] = new PackageInfo(package.Name, package.VersionName);
+            }
+
+            // Add new custom nodes to CustomNodePackageDictionary
+            foreach (var cn in package.LoadedCustomNodes)
+            {
+                var pInfo = new PackageInfo(package.Name, package.VersionName);
+                CustomNodePackageDictionary[cn.FunctionId] = pInfo;
+            }
         }
 
         #endregion

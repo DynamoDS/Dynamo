@@ -5,33 +5,48 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Dynamo.Extensions
+namespace Dynamo.Graph.Workspaces
 {
     /// <summary>
     /// Class containing info about a Dynamo package. 
     /// Used for serialization.
     /// </summary>
-    public class PackageInfo
+    internal class PackageInfo
     {
         /// <summary>
         /// Name of the package
         /// </summary>
-        public string Name { get; set; }
+        internal string Name { get; set; }
 
         /// <summary>
         /// Version of the package
         /// </summary>
-        public string Version { get; set; }
+        internal string Version { get; set; }
+
+        /// <summary>
+        /// Guids of nodes in the workspace that are dependent on this package
+        /// </summary>
+        internal List<Guid> Dependents
+        {
+            get { return dependents; }
+        }
+        private List<Guid> dependents;
         
         /// <summary>
         /// Create a package info object from the package name and version
         /// </summary>
         /// <param name="name"></param>
         /// <param name="version"></param>
-        public PackageInfo(string name, string version)
+        internal PackageInfo(string name, string version)
         {
             Name = name;
             Version = version;
+            dependents = new List<Guid>();
+        }
+
+        internal void AddDependent(Guid guid)
+        {
+            Dependents.Add(guid);
         }
     }
 }

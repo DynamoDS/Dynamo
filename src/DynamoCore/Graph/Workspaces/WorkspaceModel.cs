@@ -445,18 +445,18 @@ namespace Dynamo.Graph.Workspaces
         /// <summary>
         /// Event that is fired when the workspace is collecting used assemblies
         /// </summary>
-        internal delegate HashSet<AssemblyName> CollectingAssembliesUsedHandler();
+        internal delegate Dictionary<Guid, AssemblyName> CollectingAssembliesUsedHandler();
         internal event CollectingAssembliesUsedHandler CollectingAssembliesUsed;
 
         /// <summary>
         /// Event that is fired when the workspace is collecting custom node package dependencies
         /// </summary>
-        internal event Func<IEnumerable<Guid>, IEnumerable<PackageInfo>> CollectingCustomNodePackageDependencies;
+        internal event Func<Guid, PackageInfo> CollectingCustomNodePackageDependencies;
 
         /// <summary>
         /// Event that is fired when the workspace is collecting node package dependencies
         /// </summary>
-        internal event Func<IEnumerable<AssemblyName>, IEnumerable<PackageInfo>> CollectingNodePackageDependencies;
+        internal event Func<AssemblyName, PackageInfo> CollectingNodePackageDependencies;
 
         /// <summary>
         /// This handler handles the workspaceModel's request to populate a JSON with view data.
@@ -538,33 +538,55 @@ namespace Dynamo.Graph.Workspaces
         /// <summary>
         /// Gathers the packages that this graph depends on
         /// </summary>
-        public IEnumerable<PackageInfo> PackageDependencies
+        internal IEnumerable<PackageInfo> PackageDependencies
         {
             get
             {
-                // Get set of assemblies used by nodes in this workspace
-                var assembliesUsed = GetAssembliesUsed();
-                
-                // Collect pacakge dependencies of nodes in workspace
-                var packageDependencies = new HashSet<PackageInfo>();
+                var guidPackageDictionary = new Dictionary<Guid, PackageInfo>();
+
+                // Collect pacakge dependencies for zerotouch and nodemodel nodes
                 if (CollectingNodePackageDependencies != null)
                 {
-                    var npd = CollectingNodePackageDependencies(assembliesUsed);
-                    foreach (var p in npd)
+                    var assembliesUsed = GetAssembliesUsed();
+                    foreach (var nodeID in assembliesUsed.Keys)
                     {
-                        packageDependencies.Add(p);
+                        var assemblyName = assembliesUsed[nodeID];
+                        var package = CollectingNodePackageDependencies(assemblyName);
+                        if (package != null)
+                        {
+                            guidPackageDictionary[nodeID] = package;
+                        }
                     }
                 }
 
-                // Add custom node package dependencies
-                var customNodes = Nodes.Where(node => node.GetType() == typeof(Function));
-                var customNodeIDs = customNodes.Select(node => (node as Function).Definition.FunctionId);
+                // Collect pacakge dependencies for custom nodes
                 if (CollectingCustomNodePackageDependencies != null)
                 {
-                    var cnpd = CollectingCustomNodePackageDependencies(customNodeIDs);
-                    foreach (var p in cnpd)
+                    foreach(Function node in Nodes.Where(node => node.GetType() == typeof(Function)))
                     {
-                        packageDependencies.Add(p);
+                        var nodeID = node.GUID;
+                        var customNodeID = node.Definition.FunctionId;
+                        var package = CollectingCustomNodePackageDependencies(customNodeID);
+                        if (package != null)
+                        {
+                            guidPackageDictionary[nodeID] = package;
+                        }
+                    }
+                }
+
+                // Flip package dependencies dictionary
+                var packageDependencies = new List<PackageInfo>();
+                foreach(var id in guidPackageDictionary.Keys)
+                {
+                    if (packageDependencies.Contains(guidPackageDictionary[id]))
+                    {
+                        var index = packageDependencies.IndexOf(guidPackageDictionary[id]);
+                        packageDependencies[index].AddDependent(id);
+                    }
+                    else
+                    {
+                        guidPackageDictionary[id].AddDependent(id);
+                        packageDependencies.Add(guidPackageDictionary[id]);
                     }
                 }
 
@@ -576,9 +598,9 @@ namespace Dynamo.Graph.Workspaces
         /// Gathers the assemblies that are used by nodes in this workspace
         /// </summary>
         /// <returns></returns>
-        internal HashSet<AssemblyName> GetAssembliesUsed()
+        internal Dictionary<Guid, AssemblyName> GetAssembliesUsed()
         {
-            var assemblies = new HashSet<AssemblyName>();
+            var assemblies = new Dictionary<Guid, AssemblyName>();
             if (CollectingAssembliesUsed != null)
             {
                 assemblies = CollectingAssembliesUsed();

@@ -769,6 +769,13 @@ namespace Dynamo.Graph.Workspaces
                 writer.WriteValue(p.Name);
                 writer.WritePropertyName("Version");
                 writer.WriteValue(p.Version);
+                writer.WritePropertyName("Dependents");
+                writer.WriteStartArray();
+                foreach(var dependent in p.Dependents)
+                {
+                    writer.WriteValue(dependent.ToString());
+                }
+                writer.WriteEndArray();
                 writer.WriteEndObject();
             }
         }
