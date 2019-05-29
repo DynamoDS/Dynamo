@@ -3860,7 +3860,7 @@ namespace ProtoCore.DSASM
             {
                 var value1 = opdata2.IsDouble ? opdata2.DoubleValue: opdata2.IntegerValue;
                 var value2 = opdata1.IsDouble ? opdata1.DoubleValue: opdata1.IntegerValue;
-                opdata2 = StackValue.BuildBoolean(value1 > value2);
+                opdata2 = StackValue.BuildBoolean(MathUtils.IsGreaterThan(value1, value2));
             }
             else
             {
