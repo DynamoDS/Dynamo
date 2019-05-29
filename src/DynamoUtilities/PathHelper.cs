@@ -67,29 +67,36 @@ namespace DynamoUtilities
         /// <returns></returns>
         public static bool HasWritePermissionOnDir(string folderPath)
         {
-            var writeAllow = false;
-            var writeDeny = false;
-            var accessControlList = Directory.GetAccessControl(folderPath);
-            if (accessControlList == null)
-                return false;
-            var accessRules = accessControlList.GetAccessRules(true, true,
-                                        typeof(System.Security.Principal.SecurityIdentifier));
-            if (accessRules == null)
-                return false;
-
-            foreach (FileSystemAccessRule rule in accessRules)
+            try
             {
-                // When current rule does not contain setting related to WRITE, skip.
-                if ((FileSystemRights.Write & rule.FileSystemRights) != FileSystemRights.Write)
-                    continue;
+                var writeAllow = false;
+                var writeDeny = false;
+                var accessControlList = Directory.GetAccessControl(folderPath);
+                if (accessControlList == null)
+                    return false;
+                var accessRules = accessControlList.GetAccessRules(true, true,
+                                            typeof(System.Security.Principal.SecurityIdentifier));
+                if (accessRules == null)
+                    return false;
 
-                if (rule.AccessControlType == AccessControlType.Allow)
-                    writeAllow = true;
-                else if (rule.AccessControlType == AccessControlType.Deny)
-                    writeDeny = true;
+                foreach (FileSystemAccessRule rule in accessRules)
+                {
+                    // When current rule does not contain setting related to WRITE, skip.
+                    if ((FileSystemRights.Write & rule.FileSystemRights) != FileSystemRights.Write)
+                        continue;
+
+                    if (rule.AccessControlType == AccessControlType.Allow)
+                        writeAllow = true;
+                    else if (rule.AccessControlType == AccessControlType.Deny)
+                        writeDeny = true;
+                }
+
+                return writeAllow && !writeDeny;
             }
-
-            return writeAllow && !writeDeny;
+            catch(Exception)
+            {
+                return false;
+            }
         }
 
         /// <summary>
