@@ -452,12 +452,12 @@ namespace Dynamo.Graph.Workspaces
         /// <summary>
         /// Event that is fired when the workspace is collecting custom node package dependencies
         /// </summary>
-        internal event Func<Guid, PackageInfo> CollectingCustomNodePackageDependencies;
+        internal event Func<Guid, PackageDependencyInfo> CollectingCustomNodePackageDependencies;
 
         /// <summary>
         /// Event that is fired when the workspace is collecting node package dependencies
         /// </summary>
-        internal event Func<AssemblyName, PackageInfo> CollectingNodePackageDependencies;
+        internal event Func<AssemblyName, PackageDependencyInfo> CollectingNodePackageDependencies;
 
         /// <summary>
         /// This handler handles the workspaceModel's request to populate a JSON with view data.
@@ -539,11 +539,11 @@ namespace Dynamo.Graph.Workspaces
         /// <summary>
         /// Gathers the packages that this graph depends on
         /// </summary>
-        internal IEnumerable<PackageInfo> PackageDependencies
+        internal IEnumerable<PackageDependencyInfo> PackageDependencies
         {
             get
             {
-                var guidPackageDictionary = new Dictionary<Guid, PackageInfo>();
+                var guidPackageDictionary = new Dictionary<Guid, PackageDependencyInfo>();
 
                 // Collect pacakge dependencies for zerotouch and nodemodel nodes
                 if (CollectingNodePackageDependencies != null)
@@ -576,7 +576,7 @@ namespace Dynamo.Graph.Workspaces
                 }
 
                 // Flip package dependencies dictionary
-                var packageDependencies = new List<PackageInfo>();
+                var packageDependencies = new List<PackageDependencyInfo>();
                 foreach(var id in guidPackageDictionary.Keys)
                 {
                     if (packageDependencies.Contains(guidPackageDictionary[id]))

@@ -750,7 +750,7 @@ namespace Dynamo.Graph.Workspaces
     {
         public override bool CanConvert(Type objectType)
         {
-            return typeof(PackageInfo).IsAssignableFrom(objectType);
+            return typeof(PackageDependencyInfo).IsAssignableFrom(objectType);
         }
 
         public override bool CanRead
@@ -760,7 +760,7 @@ namespace Dynamo.Graph.Workspaces
 
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
-            PackageInfo p = value as PackageInfo;
+            PackageDependencyInfo p = value as PackageDependencyInfo;
             if (p != null)
             {
                 writer.WriteStartObject();

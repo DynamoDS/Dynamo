@@ -30,13 +30,13 @@ namespace Dynamo.PackageManager
         /// Dictionary mapping a custom node functionID to the package that contains it.
         /// Used for package dependency serialization.
         /// </summary>
-        private Dictionary<Guid, PackageInfo> CustomNodePackageDictionary;
+        private Dictionary<Guid, PackageDependencyInfo> CustomNodePackageDictionary;
 
         /// <summary>
         /// Dictionary mapping the AssemblyName.FullName of an assembly to the package that contains it.
         /// Used for package dependency serialization.
         /// </summary>
-        private Dictionary<string, PackageInfo> NodePackageDictionary;
+        private Dictionary<string, PackageDependencyInfo> NodePackageDictionary;
 
         public string Name { get { return "DynamoPackageManager"; } }
 
@@ -193,7 +193,7 @@ namespace Dynamo.PackageManager
             }
         }
 
-        private PackageInfo GetNodePackageFromAssemblyName(AssemblyName assemblyName)
+        private PackageDependencyInfo GetNodePackageFromAssemblyName(AssemblyName assemblyName)
         {
             if (NodePackageDictionary.ContainsKey(assemblyName.FullName))
             {
@@ -202,7 +202,7 @@ namespace Dynamo.PackageManager
             return null;
         }
 
-        private PackageInfo GetCustomNodePackageFromID(Guid functionID)
+        private PackageDependencyInfo GetCustomNodePackageFromID(Guid functionID)
         {
             if (CustomNodePackageDictionary.ContainsKey(functionID))
             {
@@ -216,30 +216,30 @@ namespace Dynamo.PackageManager
             // Create NodePackageDictionary if it doesn't exist
             if (NodePackageDictionary == null)
             {
-                NodePackageDictionary = new Dictionary<string, PackageInfo>();
+                NodePackageDictionary = new Dictionary<string, PackageDependencyInfo>();
             }
             // Add new assemblies to NodePackageDictionary
             foreach (var assembly in package.LoadedAssemblies.Select(a => AssemblyName.GetAssemblyName(a.Assembly.Location)))
             {
-                NodePackageDictionary[assembly.FullName] = new PackageInfo(package.Name, package.VersionName);
+                NodePackageDictionary[assembly.FullName] = new PackageDependencyInfo(package.Name, package.VersionName);
             }
 
             // Create CustomNodePackageDictionary if it doesn't exist
             if (CustomNodePackageDictionary == null)
             {
-                CustomNodePackageDictionary = new Dictionary<Guid, PackageInfo>();
+                CustomNodePackageDictionary = new Dictionary<Guid, PackageDependencyInfo>();
             }
             // Add new custom nodes to CustomNodePackageDictionary
             foreach (var cn in package.LoadedCustomNodes)
             {
-                var pInfo = new PackageInfo(package.Name, package.VersionName);
+                var pInfo = new PackageDependencyInfo(package.Name, package.VersionName);
                 CustomNodePackageDictionary[cn.FunctionId] = pInfo;
             }
         }
 
         private void OnPackageRemoved(Package package)
         {
-            var pInfo = new PackageInfo(package.Name, package.VersionName);
+            var pInfo = new PackageDependencyInfo(package.Name, package.VersionName);
             // Remove package references from NodePackageDictionary
             foreach (var key in NodePackageDictionary.Keys)
             {

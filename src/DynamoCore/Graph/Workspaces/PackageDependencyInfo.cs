@@ -11,7 +11,7 @@ namespace Dynamo.Graph.Workspaces
     /// Class containing info about a Dynamo package. 
     /// Used for serialization.
     /// </summary>
-    internal class PackageInfo
+    internal class PackageDependencyInfo
     {
         /// <summary>
         /// Name of the package
@@ -43,7 +43,7 @@ namespace Dynamo.Graph.Workspaces
         /// </summary>
         /// <param name="name"></param>
         /// <param name="version"></param>
-        internal PackageInfo(string name, string version)
+        internal PackageDependencyInfo(string name, string version)
         {
             Name = name;
             Version = version;
