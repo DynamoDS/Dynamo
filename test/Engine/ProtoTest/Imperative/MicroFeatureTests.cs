@@ -904,7 +904,7 @@ def fac : int( n : int )
                         }
                         ";
             thisTest.RunScriptSource(code);
-            thisTest.Verify("a",0.3);
+            thisTest.Verify("a",0.0);
         }
 
         [Test]

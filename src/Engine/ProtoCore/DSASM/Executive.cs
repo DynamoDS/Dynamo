@@ -3860,7 +3860,7 @@ namespace ProtoCore.DSASM
             {
                 var value1 = opdata2.IsDouble ? opdata2.DoubleValue: opdata2.IntegerValue;
                 var value2 = opdata1.IsDouble ? opdata1.DoubleValue: opdata1.IntegerValue;
-                opdata2 = StackValue.BuildBoolean(MathUtils.IsGreaterThan(value1, value2));
+                opdata2 = StackValue.BuildBoolean(value1 > value2);
             }
             else
             {
@@ -3880,7 +3880,7 @@ namespace ProtoCore.DSASM
             {
                 double value1 = opdata2.IsDouble ? opdata2.DoubleValue: opdata2.IntegerValue;
                 double value2 = opdata1.IsDouble ? opdata1.DoubleValue: opdata1.IntegerValue;
-                opdata2 = StackValue.BuildBoolean(MathUtils.IsLessThan(value1, value2));
+                opdata2 = StackValue.BuildBoolean(value1 < value2);
             }
             else
             {
@@ -3902,7 +3902,7 @@ namespace ProtoCore.DSASM
                 {
                     double lhs = opdata2.IsDouble ? opdata2.DoubleValue : opdata2.IntegerValue;
                     double rhs = opdata1.IsDouble ? opdata1.DoubleValue : opdata1.IntegerValue;
-                    opdata2 = StackValue.BuildBoolean(MathUtils.IsGreaterThanOrEquals(lhs, rhs));
+                    opdata2 = StackValue.BuildBoolean(lhs >= rhs);
                 }
                 else
                 {
@@ -3929,7 +3929,7 @@ namespace ProtoCore.DSASM
                 {
                     double lhs = opdata2.IsDouble ? opdata2.DoubleValue: opdata2.IntegerValue;
                     double rhs = opdata1.IsDouble ? opdata1.DoubleValue: opdata1.IntegerValue;
-                    opdata2 = StackValue.BuildBoolean(MathUtils.IsLessThanOrEquals(lhs, rhs));
+                    opdata2 = StackValue.BuildBoolean(lhs <= rhs);
                 }
                 else
                 {
