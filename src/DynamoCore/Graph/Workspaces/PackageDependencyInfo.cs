@@ -21,13 +21,13 @@ namespace Dynamo.Graph.Workspaces
         /// <summary>
         /// Version of the package
         /// </summary>
-        internal string Version { get; set; }
+        internal Version Version { get; set; }
 
         /// <summary>
         /// The full name of this package, including its name and version
         /// Format: name_version
         /// </summary>
-        internal string FullName { get { return Name + "_" + Version; } }
+        internal string FullName { get { return Name + "_" + Version.ToString(); } }
 
         /// <summary>
         /// Guids of nodes in the workspace that are dependent on this package
@@ -43,7 +43,7 @@ namespace Dynamo.Graph.Workspaces
         /// </summary>
         /// <param name="name"></param>
         /// <param name="version"></param>
-        internal PackageDependencyInfo(string name, string version)
+        internal PackageDependencyInfo(string name, Version version)
         {
             Name = name;
             Version = version;

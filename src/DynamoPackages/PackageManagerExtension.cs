@@ -221,7 +221,7 @@ namespace Dynamo.PackageManager
             // Add new assemblies to NodePackageDictionary
             foreach (var assembly in package.LoadedAssemblies.Select(a => AssemblyName.GetAssemblyName(a.Assembly.Location)))
             {
-                NodePackageDictionary[assembly.FullName] = new PackageDependencyInfo(package.Name, package.VersionName);
+                NodePackageDictionary[assembly.FullName] = new PackageDependencyInfo(package.Name, new Version(package.VersionName));
             }
 
             // Create CustomNodePackageDictionary if it doesn't exist
@@ -232,14 +232,14 @@ namespace Dynamo.PackageManager
             // Add new custom nodes to CustomNodePackageDictionary
             foreach (var cn in package.LoadedCustomNodes)
             {
-                var pInfo = new PackageDependencyInfo(package.Name, package.VersionName);
+                var pInfo = new PackageDependencyInfo(package.Name, new Version(package.VersionName));
                 CustomNodePackageDictionary[cn.FunctionId] = pInfo;
             }
         }
 
         private void OnPackageRemoved(Package package)
         {
-            var pInfo = new PackageDependencyInfo(package.Name, package.VersionName);
+            var pInfo = new PackageDependencyInfo(package.Name, new Version(package.VersionName));
             // Remove package references from NodePackageDictionary
             foreach (var key in NodePackageDictionary.Keys)
             {
