@@ -745,7 +745,7 @@ namespace Dynamo.Graph.Workspaces
     }
 
     /// <summary>
-    /// IPackageWriteConverter is used to Serialize packages to JSON.
+    /// PackageInfoWriteConverter is used to Serialize graph package dependency to JSON.
     /// </summary>
     public class PackageInfoWriteConverter : JsonConverter
     {
@@ -773,7 +773,7 @@ namespace Dynamo.Graph.Workspaces
                 writer.WriteStartArray();
                 foreach(var dependent in p.Dependents)
                 {
-                    writer.WriteValue(dependent.ToString());
+                    writer.WriteValue(dependent.ToString("N"));
                 }
                 writer.WriteEndArray();
                 writer.WriteEndObject();
