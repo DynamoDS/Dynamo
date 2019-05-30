@@ -770,9 +770,9 @@ namespace Dynamo.Graph.Workspaces
                 writer.WriteValue(p.Version);
                 writer.WritePropertyName("Dependents");
                 writer.WriteStartArray();
-                foreach(var dependent in p.Dependents)
+                foreach(var node in p.Nodes)
                 {
-                    writer.WriteValue(dependent.ToString("N"));
+                    writer.WriteValue(node.ToString("N"));
                 }
                 writer.WriteEndArray();
                 writer.WriteEndObject();

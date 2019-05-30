@@ -32,11 +32,11 @@ namespace Dynamo.Graph.Workspaces
         /// <summary>
         /// Guids of nodes in the workspace that are dependent on this package
         /// </summary>
-        internal List<Guid> Dependents
+        internal List<Guid> Nodes
         {
-            get { return dependents; }
+            get { return nodes; }
         }
-        private List<Guid> dependents;
+        private List<Guid> nodes;
         
         /// <summary>
         /// Create a package info object from the package name and version
@@ -47,7 +47,7 @@ namespace Dynamo.Graph.Workspaces
         {
             Name = name;
             Version = version;
-            dependents = new List<Guid>();
+            nodes = new List<Guid>();
         }
 
         /// <summary>
@@ -56,7 +56,7 @@ namespace Dynamo.Graph.Workspaces
         /// <param name="guid"></param>
         internal void AddDependent(Guid guid)
         {
-            Dependents.Add(guid);
+            Nodes.Add(guid);
         }
     }
 }
