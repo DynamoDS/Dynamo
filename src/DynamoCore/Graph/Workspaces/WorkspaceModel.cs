@@ -447,8 +447,8 @@ namespace Dynamo.Graph.Workspaces
         /// <summary>
         /// Event that is fired when the workspace is collecting used assemblies
         /// </summary>
-        internal delegate Dictionary<Guid, AssemblyName> CollectingAssembliesUsedHandler();
-        internal event CollectingAssembliesUsedHandler CollectingAssembliesUsed;
+        internal delegate Dictionary<Guid, AssemblyName> CollectingAssembliesReferencedByNodesHandler();
+        internal event CollectingAssembliesReferencedByNodesHandler CollectingAssembliesReferencedByNodes;
 
         /// <summary>
         /// Event that is fired when the workspace is collecting custom node package dependencies
@@ -549,7 +549,7 @@ namespace Dynamo.Graph.Workspaces
                 // Collect pacakge dependencies for zerotouch and nodemodel nodes
                 if (CollectingNodePackageDependencies != null)
                 {
-                    var assembliesUsed = GetAssembliesUsed();
+                    var assembliesUsed = GetAssembliesReferencedByNodes();
                     foreach (var nodeID in assembliesUsed.Keys)
                     {
                         var assemblyName = assembliesUsed[nodeID];
@@ -597,15 +597,15 @@ namespace Dynamo.Graph.Workspaces
         }
 
         /// <summary>
-        /// Gathers the assemblies that are used by nodes in this workspace
+        /// Gathers the top level assemblies that are referenced by nodes in this workspace
         /// </summary>
         /// <returns></returns>
-        internal Dictionary<Guid, AssemblyName> GetAssembliesUsed()
+        internal Dictionary<Guid, AssemblyName> GetAssembliesReferencedByNodes()
         {
             var assemblies = new Dictionary<Guid, AssemblyName>();
-            if (CollectingAssembliesUsed != null)
+            if (CollectingAssembliesReferencedByNodes != null)
             {
-                assemblies = CollectingAssembliesUsed();
+                assemblies = CollectingAssembliesReferencedByNodes();
             }
             return assemblies;
         }

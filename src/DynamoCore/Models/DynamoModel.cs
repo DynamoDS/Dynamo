@@ -376,7 +376,7 @@ namespace Dynamo.Models
         {
             if (ws != null)
             {
-                ws.CollectingAssembliesUsed -= OnCollectingAssembliesUsed;
+                ws.CollectingAssembliesReferencedByNodes -= OnCollectingAssembliesReferencedByNodes;
             }
         }
 
@@ -384,7 +384,7 @@ namespace Dynamo.Models
         {
             if (ws != null)
             {
-                ws.CollectingAssembliesUsed += OnCollectingAssembliesUsed;
+                ws.CollectingAssembliesReferencedByNodes += OnCollectingAssembliesReferencedByNodes;
             }
         }
         
@@ -1790,10 +1790,10 @@ namespace Dynamo.Models
         }
 
         /// <summary>
-        /// Collects assemblies used by the current workspace
+        /// Collects top levle assemblies referenced by nodes in the current workspace
         /// </summary>
         /// <returns></returns>
-        private Dictionary<Guid, AssemblyName> OnCollectingAssembliesUsed()
+        private Dictionary<Guid, AssemblyName> OnCollectingAssembliesReferencedByNodes()
         {
             var assemblyNames = new Dictionary<Guid, AssemblyName>();
             foreach(var node in CurrentWorkspace.Nodes)
