@@ -444,7 +444,7 @@ namespace Dynamo.Graph.Workspaces
 
 
         /// <summary>
-        /// Event that is fired when the workspace is collecting used assemblies
+        /// Event that is fired when the workspace is collecting top level assemblies referenced by nodes
         /// </summary>
         internal delegate Dictionary<Guid, AssemblyName> CollectingAssembliesReferencedByNodesHandler();
         internal event CollectingAssembliesReferencedByNodesHandler CollectingAssembliesReferencedByNodes;

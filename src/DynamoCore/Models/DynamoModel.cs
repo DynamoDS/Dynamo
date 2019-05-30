@@ -1790,7 +1790,7 @@ namespace Dynamo.Models
         }
 
         /// <summary>
-        /// Collects top levle assemblies referenced by nodes in the current workspace
+        /// Collects top level assemblies referenced by nodes in the current workspace
         /// </summary>
         /// <returns></returns>
         private Dictionary<Guid, AssemblyName> OnCollectingAssembliesReferencedByNodes()
