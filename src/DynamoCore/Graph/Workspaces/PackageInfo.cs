@@ -50,6 +50,10 @@ namespace Dynamo.Graph.Workspaces
             dependents = new List<Guid>();
         }
 
+        /// <summary>
+        /// Add the Guid of a dependent node
+        /// </summary>
+        /// <param name="guid"></param>
         internal void AddDependent(Guid guid)
         {
             Dependents.Add(guid);
