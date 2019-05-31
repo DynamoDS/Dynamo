@@ -537,15 +537,15 @@ namespace Dynamo.Graph.Workspaces
         }
 
         /// <summary>
-        /// Gathers the loaded packages that nodes in this graph depend on
+        /// Gathers the packages that this graph depends on
         /// </summary>
-        internal IEnumerable<PackageDependencyInfo> LoadedPackageDependencies
+        internal IEnumerable<PackageDependencyInfo> PackageDependencies
         {
             get
             {
                 var guidPackageDictionary = new Dictionary<Guid, PackageDependencyInfo>();
 
-                // Collect package dependencies for zerotouch and nodemodel nodes
+                // Collect pacakge dependencies for zerotouch and nodemodel nodes
                 if (CollectingNodePackageDependencies != null)
                 {
                     var assembliesUsed = GetAssembliesReferencedByNodes();
@@ -560,7 +560,7 @@ namespace Dynamo.Graph.Workspaces
                     }
                 }
 
-                // Collect package dependencies for custom nodes
+                // Collect pacakge dependencies for custom nodes
                 if (CollectingCustomNodePackageDependencies != null)
                 {
                     foreach(Function node in Nodes.Where(node => node.GetType() == typeof(Function)))
@@ -576,78 +576,24 @@ namespace Dynamo.Graph.Workspaces
                 }
 
                 // Flip package dependencies dictionary
-                var loadedPackageDependencies = new List<PackageDependencyInfo>();
+                var packageDependencies = new List<PackageDependencyInfo>();
                 foreach(var id in guidPackageDictionary.Keys)
                 {
-                    if (loadedPackageDependencies.Contains(guidPackageDictionary[id]))
+                    if (packageDependencies.Contains(guidPackageDictionary[id]))
                     {
-                        var index = loadedPackageDependencies.IndexOf(guidPackageDictionary[id]);
-                        loadedPackageDependencies[index].AddDependent(id);
+                        var index = packageDependencies.IndexOf(guidPackageDictionary[id]);
+                        packageDependencies[index].AddDependent(id);
                     }
                     else
                     {
                         guidPackageDictionary[id].AddDependent(id);
-                        loadedPackageDependencies.Add(guidPackageDictionary[id]);
+                        packageDependencies.Add(guidPackageDictionary[id]);
                     }
                 }
 
-                return loadedPackageDependencies;
+                return packageDependencies;
             }
         }
-
-        /// <summary>
-        /// Packages that the nodes in this graph depend on.
-        /// May include packages that are not currently loaded, 
-        /// but that were loaded and depended upon during a previous
-        /// opening of this graph.
-        /// </summary>
-        internal IEnumerable<PackageDependencyInfo> PackageDependencies
-        {
-            get
-            {
-                var currentPackageDependencies = packageDependencies.ToList();
-
-                // Remove unnecessary package dependencies
-                var allGuids = Nodes.Select(n => n.GUID);
-                foreach(var package in currentPackageDependencies)
-                {
-                    foreach(var guid in package.Nodes)
-                    {
-                        if (!allGuids.Contains(guid))
-                        {
-                            package.RemoveDependent(guid);
-                        }
-                    }
-                }
-                currentPackageDependencies = currentPackageDependencies.Where(pd => pd.Nodes.Count > 0).ToList();
-
-                // Merge LoadedPackageDependencies into PackageDependencies
-                var loadedPDs = LoadedPackageDependencies;
-                foreach (var loadedPD in loadedPDs)
-                {
-                    if (currentPackageDependencies.Contains(loadedPD))
-                    {
-                        var index = currentPackageDependencies.IndexOf(loadedPD);
-                        currentPackageDependencies[index].AddDependents(loadedPD.Nodes);
-                    }
-                    else
-                    {
-                        currentPackageDependencies.Add(loadedPD);
-                    }
-                }
-
-                // Save updated packageDependencies
-                packageDependencies = currentPackageDependencies;
-
-                return currentPackageDependencies;
-            }
-            set
-            {
-                packageDependencies = value;
-            }
-        }
-
-        private IEnumerable<PackageDependencyInfo> packageDependencies;
 
         /// <summary>
         ///     An author of the workspace
@@ -986,8 +932,6 @@ namespace Dynamo.Graph.Workspaces
             this.notes = new List<NoteModel>(notes);
 
             this.annotations = new List<AnnotationModel>(annotations);
-
-            this.packageDependencies = new List<PackageDependencyInfo>();
 
             // Set workspace info from WorkspaceInfo object
             Name = info.Name;
@@ -1813,8 +1757,7 @@ namespace Dynamo.Graph.Workspaces
                         new ConnectorConverter(logger),
                         new WorkspaceReadConverter(engineController, scheduler, factory, isTestMode, verboseLogging),
                         new NodeReadConverter(manager, libraryServices, factory, isTestMode),
-                        new TypedParameterConverter(),
-                        new PackageDependencyInfoConverter(logger)
+                        new TypedParameterConverter()
                     },
                 ReferenceResolverProvider = () => { return new IdReferenceResolver(); }
             };

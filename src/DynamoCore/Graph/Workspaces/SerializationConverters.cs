@@ -525,8 +525,6 @@ namespace Dynamo.Graph.Workspaces
             // relevant ports.
             var connectors = obj["Connectors"].ToObject<IEnumerable<ConnectorModel>>(serializer);
 
-            var packageDependencies = obj["PackageDependencies"].ToObject<IEnumerable<PackageDependencyInfo>>(serializer);
-
             var info = new WorkspaceInfo(guid.ToString(), name, description, Dynamo.Models.RunType.Automatic);
 
             // IsVisibleInDynamoLibrary and Category should be set explicitly for custom node workspace
@@ -588,8 +586,6 @@ namespace Dynamo.Graph.Workspaces
                     Enumerable.Empty<PresetModel>(), elementResolver, 
                     info, verboseLogging, isTestMode);
             }
-
-            ws.PackageDependencies = packageDependencies;
 
             return ws;
         }
@@ -750,19 +746,8 @@ namespace Dynamo.Graph.Workspaces
     /// <summary>
     /// PackageInfoWriteConverter is used to Serialize graph package dependency to JSON.
     /// </summary>
-    public class PackageDependencyInfoConverter : JsonConverter
+    public class PackageInfoWriteConverter : JsonConverter
     {
-        private Logging.ILogger logger;
-
-        /// <summary>
-        /// Constructs a ConnectorConverter.
-        /// </summary>
-        /// <param name="logger"></param>
-        public PackageDependencyInfoConverter(Logging.ILogger logger)
-        {
-            this.logger = logger;
-        }
-
         public override bool CanConvert(Type objectType)
         {
             return typeof(PackageDependencyInfo).IsAssignableFrom(objectType);
@@ -770,7 +755,7 @@ namespace Dynamo.Graph.Workspaces
 
         public override bool CanRead
         {
-            get { return true; }
+            get { return false; }
         }
 
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
@@ -782,8 +767,8 @@ namespace Dynamo.Graph.Workspaces
                 writer.WritePropertyName("Name");
                 writer.WriteValue(p.Name);
                 writer.WritePropertyName("Version");
-                writer.WriteValue(p.Version.ToString());
-                writer.WritePropertyName("Nodes");
+                writer.WriteValue(p.Version);
+                writer.WritePropertyName("Dependents");
                 writer.WriteStartArray();
                 foreach(var node in p.Nodes)
                 {
@@ -796,41 +781,7 @@ namespace Dynamo.Graph.Workspaces
 
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
-            var obj = JObject.Load(reader);
-
-            // Get package name
-            var name = obj["Name"].Value<string>();
-
-            // Try get package version
-            var versionString = obj["Version"].Value<string>();
-            Version version;
-            if (!Version.TryParse(versionString, out version))
-            {
-                logger.LogWarning(
-                    string.Format("The version of Package Dependency {0} could not be deserialized.", name), 
-                    Logging.WarningLevel.Moderate);
-            }
-
-            // Create new PackageDependencyInfo
-            var packageInfo = new PackageDependencyInfo(name, version);
-
-            // Try get dependent node IDs
-            var nodes = obj["Nodes"].Values<string>();
-            foreach(var nodeID in nodes)
-            {
-                Guid guid;
-                if (!Guid.TryParse(nodeID, out guid))
-                {
-                    logger.LogWarning(
-                    string.Format("The id ({0}) of a node dependent on {1} could not be parsed as a GUID.", nodeID, name),
-                    Logging.WarningLevel.Moderate);
-                }
-                else
-                {
-                    packageInfo.AddDependent(guid);
-                }
-            }
-            return packageInfo;
+            throw new NotImplementedException();
         }
     }
 
