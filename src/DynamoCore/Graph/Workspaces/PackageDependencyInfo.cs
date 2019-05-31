@@ -32,11 +32,11 @@ namespace Dynamo.Graph.Workspaces
         /// <summary>
         /// Guids of nodes in the workspace that are dependent on this package
         /// </summary>
-        internal List<Guid> Nodes
+        internal HashSet<Guid> Nodes
         {
             get { return nodes; }
         }
-        private List<Guid> nodes;
+        private HashSet<Guid> nodes;
         
         /// <summary>
         /// Create a package info object from the package name and version
@@ -47,7 +47,7 @@ namespace Dynamo.Graph.Workspaces
         {
             Name = name;
             Version = version;
-            nodes = new List<Guid>();
+            nodes = new HashSet<Guid>();
         }
 
         /// <summary>
@@ -56,7 +56,53 @@ namespace Dynamo.Graph.Workspaces
         /// <param name="guid"></param>
         internal void AddDependent(Guid guid)
         {
-            Nodes.Add(guid);
+             Nodes.Add(guid);
+        }
+
+        /// <summary>
+        /// Add the Guids of a dependent nodes
+        /// </summary>
+        /// <param name="guids"></param>
+        internal void AddDependents(IEnumerable<Guid> guids)
+        {
+            foreach(var guid in guids)
+            {
+                Nodes.Add(guid);
+            }
+        }
+
+        /// <summary>
+        /// Remove a dependent node
+        /// </summary>
+        /// <param name="guid"></param>
+        internal void RemoveDependent(Guid guid)
+        {
+            Nodes.Remove(guid);
+        }
+
+        /// <summary>
+        /// Checks whether two PackageDependencyInfos are equal
+        /// They are equal if their Name and Versions are equal
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        public override bool Equals(object obj)
+        {
+            if (obj == null)
+            {
+                return false;
+            }
+            if (obj.GetType() != this.GetType())
+            {
+                return false;
+            }
+
+            var other = obj as PackageDependencyInfo;
+            if (other.Name == this.Name && other.Version == this.Version)
+            {
+                return true;
+            }
+            return false;
         }
     }
 }
