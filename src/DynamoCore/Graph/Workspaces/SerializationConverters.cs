@@ -589,7 +589,7 @@ namespace Dynamo.Graph.Workspaces
                     info, verboseLogging, isTestMode);
             }
 
-            ws.PackageDependencies = packageDependencies;
+            //ws.PackageDependencies = packageDependencies;
 
             return ws;
         }

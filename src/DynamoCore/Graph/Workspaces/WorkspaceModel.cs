@@ -539,7 +539,7 @@ namespace Dynamo.Graph.Workspaces
         /// <summary>
         /// Gathers the loaded packages that nodes in this graph depend on
         /// </summary>
-        internal IEnumerable<PackageDependencyInfo> LoadedPackageDependencies
+        internal IEnumerable<PackageDependencyInfo> PackageDependencies
         {
             get
             {
@@ -601,7 +601,7 @@ namespace Dynamo.Graph.Workspaces
         /// but that were loaded and depended upon during a previous
         /// opening of this graph.
         /// </summary>
-        internal IEnumerable<PackageDependencyInfo> PackageDependencies
+        /*internal IEnumerable<PackageDependencyInfo> PackageDependencies
         {
             get
             {
@@ -647,7 +647,7 @@ namespace Dynamo.Graph.Workspaces
             }
         }
 
-        private IEnumerable<PackageDependencyInfo> packageDependencies;
+        private IEnumerable<PackageDependencyInfo> packageDependencies;*/
 
         /// <summary>
         ///     An author of the workspace
@@ -987,7 +987,7 @@ namespace Dynamo.Graph.Workspaces
 
             this.annotations = new List<AnnotationModel>(annotations);
 
-            this.packageDependencies = new List<PackageDependencyInfo>();
+            //this.packageDependencies = new List<PackageDependencyInfo>();
 
             // Set workspace info from WorkspaceInfo object
             Name = info.Name;
