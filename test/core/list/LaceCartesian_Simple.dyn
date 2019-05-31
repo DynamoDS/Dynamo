@@ -1,0 +1,256 @@
+{
+  "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "LaceCartesian_Simple",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "CoreNodeModels.HigherOrder.CartesianProduct, CoreNodeModels",
+      "VariableInputPorts": true,
+      "NodeType": "ExtensionNode",
+      "Id": "c06165891bc145b79e814d48c0c8f4ad",
+      "Inputs": [
+        {
+          "Id": "ffe6d3f0948a4d74916c4162d4da14ec",
+          "Name": "comb",
+          "Description": "Combinator",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "3d113393df934ac08838fe298a54b49e",
+          "Name": "list1",
+          "Description": "List #1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "da55ad108752440695a3ace77155e32c",
+          "Name": "list2",
+          "Description": "List #2",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "b94b9df3a5f24d55b56676915602c605",
+          "Name": "combined",
+          "Description": "Combined lists",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Applies a combinator to each pair in the cartesian product of two sequences"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "1..3;",
+      "Id": "1067f171fbfa4809b88eeb79d5cd4aa0",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "410d464626a34bc2869353d6d0709a42",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "+@var[]..[],var[]..[]",
+      "Id": "0258e785c2764e6c84fd76bf2c5978f4",
+      "Inputs": [
+        {
+          "Id": "92d9ac138e2249e786e9fdce3af60ced",
+          "Name": "x",
+          "Description": "x value.\n\nvar[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "153a1189cc4f4b3aad85a1577656e9a3",
+          "Name": "y",
+          "Description": "y value.\n\nvar[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "793b06da0ad54251ad5135d6f36e6902",
+          "Name": "var[]..[]",
+          "Description": "var[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Adds x to y.\n\n+ (x: var[]..[], y: var[]..[]): var[]..[]"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "+@var[]..[],var[]..[]",
+      "Id": "17e7aa2c215942a89c82ea8594e410b9",
+      "Inputs": [
+        {
+          "Id": "7245d02d96a54139bf27fc1074aff650",
+          "Name": "x",
+          "Description": "x value.\n\nvar[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "8622fb287a80451eb43d73dbed56ccd6",
+          "Name": "y",
+          "Description": "y value.\n\nvar[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "20ab1b3ff2964facb1081a69b49574ea",
+          "Name": "var[]..[]",
+          "Description": "var[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "CrossProduct",
+      "Description": "Adds x to y.\n\n+ (x: var[]..[], y: var[]..[]): var[]..[]"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "410d464626a34bc2869353d6d0709a42",
+      "End": "3d113393df934ac08838fe298a54b49e",
+      "Id": "881a324b14fb4a889e1480c9f6927970"
+    },
+    {
+      "Start": "410d464626a34bc2869353d6d0709a42",
+      "End": "da55ad108752440695a3ace77155e32c",
+      "Id": "f0e5295fcb7147189541851b99725c4c"
+    },
+    {
+      "Start": "410d464626a34bc2869353d6d0709a42",
+      "End": "7245d02d96a54139bf27fc1074aff650",
+      "Id": "168365316bbc4942863e6ae59c6c42b1"
+    },
+    {
+      "Start": "410d464626a34bc2869353d6d0709a42",
+      "End": "8622fb287a80451eb43d73dbed56ccd6",
+      "Id": "679d60bc29fe49889978c57542a8a22e"
+    },
+    {
+      "Start": "793b06da0ad54251ad5135d6f36e6902",
+      "End": "ffe6d3f0948a4d74916c4162d4da14ec",
+      "Id": "eb14dd69d48d47cc8e56fa76c50ff0d1"
+    }
+  ],
+  "Dependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.1.0.7451",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "List.CartesianProduct",
+        "Id": "c06165891bc145b79e814d48c0c8f4ad",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 719.0,
+        "Y": 364.0
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "1067f171fbfa4809b88eeb79d5cd4aa0",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 308.0,
+        "Y": 348.0
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "+",
+        "Id": "0258e785c2764e6c84fd76bf2c5978f4",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 540.0,
+        "Y": 244.0
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "+",
+        "Id": "17e7aa2c215942a89c82ea8594e410b9",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1166.0,
+        "Y": 162.0
+      }
+    ],
+    "Annotations": [],
+    "X": 0.0,
+    "Y": 0.0,
+    "Zoom": 1.0
+  }
+}
