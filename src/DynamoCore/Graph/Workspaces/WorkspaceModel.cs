@@ -1813,7 +1813,8 @@ namespace Dynamo.Graph.Workspaces
                         new ConnectorConverter(logger),
                         new WorkspaceReadConverter(engineController, scheduler, factory, isTestMode, verboseLogging),
                         new NodeReadConverter(manager, libraryServices, factory, isTestMode),
-                        new TypedParameterConverter()
+                        new TypedParameterConverter(),
+                        new PackageDependencyInfoConverter(logger)
                     },
                 ReferenceResolverProvider = () => { return new IdReferenceResolver(); }
             };
