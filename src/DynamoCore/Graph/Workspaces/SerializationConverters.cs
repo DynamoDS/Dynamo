@@ -525,7 +525,7 @@ namespace Dynamo.Graph.Workspaces
             // relevant ports.
             var connectors = obj["Connectors"].ToObject<IEnumerable<ConnectorModel>>(serializer);
 
-            var packageDependencies = obj["PackageDependencies"].ToObject<IEnumerable<PackageDependencyInfo>>(serializer);
+            //var packageDependencies = obj["PackageDependencies"].ToObject<IEnumerable<PackageDependencyInfo>>(serializer);
 
             var info = new WorkspaceInfo(guid.ToString(), name, description, Dynamo.Models.RunType.Automatic);
 
