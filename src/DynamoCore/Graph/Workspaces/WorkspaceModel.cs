@@ -596,6 +596,20 @@ namespace Dynamo.Graph.Workspaces
         }
 
         /// <summary>
+        /// Gathers the top level assemblies that are referenced by nodes in this workspace
+        /// </summary>
+        /// <returns></returns>
+        internal Dictionary<Guid, AssemblyName> GetAssembliesReferencedByNodes()
+        {
+            var assemblies = new Dictionary<Guid, AssemblyName>();
+            if (CollectingAssembliesReferencedByNodes != null)
+            {
+                assemblies = CollectingAssembliesReferencedByNodes();
+            }
+            return assemblies;
+        }
+
+        /// <summary>
         ///     An author of the workspace
         /// </summary>
         public string Author
@@ -1630,20 +1644,6 @@ namespace Dynamo.Graph.Workspaces
             }
 
             HasUnsavedChanges = true;
-        }
-
-        /// <summary>
-        /// Gathers the top level assemblies that are referenced by nodes in this workspace
-        /// </summary>
-        /// <returns></returns>
-        internal Dictionary<Guid, AssemblyName> GetAssembliesReferencedByNodes()
-        {
-            var assemblies = new Dictionary<Guid, AssemblyName>();
-            if (CollectingAssembliesReferencedByNodes != null)
-            {
-                assemblies = CollectingAssembliesReferencedByNodes();
-            }
-            return assemblies;
         }
 
         #endregion
