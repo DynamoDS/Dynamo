@@ -1799,12 +1799,12 @@ namespace Dynamo.Models
             foreach(var node in CurrentWorkspace.Nodes)
             {
                 // Get zerotouch assemblies
-                if (node is DSFunction)
+                if (node.GetType() == typeof(DSFunction))
                 {
                     // Split CreationName to get qualified name
                     var qualifiedName = node.CreationName.Split('@')[0];
                     // Get FunctionDescriptors for this zerotouch node
-                    var descriptors = LibraryServices.GetAllFunctionDescriptors(qualifiedName);
+                    var descriptors = LibraryServices.GetAllFunctionDescriptors(qualifiedName); 
                     var pmDescriptors = descriptors.Where(d => d.IsPackageMember);
                     if (pmDescriptors.Any())
                     {
