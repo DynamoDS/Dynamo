@@ -77,6 +77,14 @@ namespace Dynamo.Wpf.Extensions
             AddItemToMenu(type, menuItem, index);
         }
 
+        private void AddToExtensionsSideBar(IViewExtension e)
+        {
+             var sidebarGrid = this.DynamoWindow.FindName("sidebarExtensionsGrid") as Grid;
+             
+           //  UIElement viewExtension  = new UI
+           //  sidebarGrid.Children.Add(e);
+        }
+
         public void AddSeparator(MenuBarType type, Separator separatorObj, int index = -1)
         {
             AddItemToMenu(type, separatorObj, index);
