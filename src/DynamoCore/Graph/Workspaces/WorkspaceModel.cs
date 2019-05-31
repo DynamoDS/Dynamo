@@ -299,8 +299,6 @@ namespace Dynamo.Graph.Workspaces
         public event Action<NodeModel> NodeRemoved;
         protected virtual void OnNodeRemoved(NodeModel node)
         {
-            NodesRemovedSinceLastPackageDependenciesUpdate.Add(node.GUID);
-
             var handler = NodeRemoved;
             if (handler != null) handler(node);
         }
@@ -607,19 +605,23 @@ namespace Dynamo.Graph.Workspaces
         {
             get
             {
+                var currentPackageDependencies = packageDependencies.ToList();
+
                 // Remove unnecessary package dependencies
-                foreach(var package in packageDependencies)
+                var allGuids = Nodes.Select(n => n.GUID);
+                foreach(var package in currentPackageDependencies)
                 {
-                    foreach(var guid in NodesRemovedSinceLastPackageDependenciesUpdate)
+                    foreach(var guid in package.Nodes)
                     {
-                        package.RemoveDependent(guid);
+                        if (!allGuids.Contains(guid))
+                        {
+                            package.RemoveDependent(guid);
+                        }
                     }
                 }
-                packageDependencies = packageDependencies.Where(pd => pd.Nodes.Count > 0).ToList();
-                NodesRemovedSinceLastPackageDependenciesUpdate = new List<Guid>();
+                currentPackageDependencies = currentPackageDependencies.Where(pd => pd.Nodes.Count > 0).ToList();
 
                 // Merge LoadedPackageDependencies into PackageDependencies
-                var currentPackageDependencies = packageDependencies.ToList();
                 var loadedPDs = LoadedPackageDependencies;
                 foreach (var loadedPD in loadedPDs)
                 {
@@ -646,8 +648,6 @@ namespace Dynamo.Graph.Workspaces
         }
 
         private IEnumerable<PackageDependencyInfo> packageDependencies;
-
-        private List<Guid> NodesRemovedSinceLastPackageDependenciesUpdate = new List<Guid>();
 
         /// <summary>
         ///     An author of the workspace
