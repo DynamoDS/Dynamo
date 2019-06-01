@@ -299,8 +299,6 @@ namespace Dynamo.Graph.Workspaces
         public event Action<NodeModel> NodeRemoved;
         protected virtual void OnNodeRemoved(NodeModel node)
         {
-            NodesRemovedSinceLastPackageDependenciesUpdate.Add(node.GUID);
-
             var handler = NodeRemoved;
             if (handler != null) handler(node);
         }
@@ -744,7 +742,9 @@ namespace Dynamo.Graph.Workspaces
             {
                 nodes.Add(node);
             }
-
+            
+            NodesRemovedSinceLastPackageDependenciesUpdate.Remove(node.GUID);
+            
             OnNodeAdded(node);
         }
 
@@ -1246,6 +1246,8 @@ namespace Dynamo.Graph.Workspaces
             {
                 if (!nodes.Remove(model)) return;
             }
+
+            NodesRemovedSinceLastPackageDependenciesUpdate.Add(model.GUID);
 
             OnNodeRemoved(model);
 
