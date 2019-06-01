@@ -92,7 +92,7 @@ namespace Dynamo.Graph.Workspaces
             {
                 return false;
             }
-            if (obj.GetType() != this.GetType())
+            if (!(obj is PackageDependencyInfo))
             {
                 return false;
             }

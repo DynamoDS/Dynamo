@@ -603,7 +603,7 @@ namespace Dynamo.Graph.Workspaces
         /// but that were loaded and depended upon during a previous
         /// opening of this graph.
         /// </summary>
-        internal IEnumerable<PackageDependencyInfo> PackageDependencies
+        internal List<PackageDependencyInfo> PackageDependencies
         {
             get
             {
@@ -645,7 +645,7 @@ namespace Dynamo.Graph.Workspaces
             }
         }
 
-        private IEnumerable<PackageDependencyInfo> packageDependencies;
+        private List<PackageDependencyInfo> packageDependencies;
 
         private List<Guid> NodesRemovedSinceLastPackageDependenciesUpdate = new List<Guid>();
 
