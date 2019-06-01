@@ -222,6 +222,14 @@ namespace Dynamo.PackageManager
             var nodeLibraries = package.LoadedAssemblies.Where(a => a.IsNodeLibrary);
             foreach (var assembly in nodeLibraries.Select(a => AssemblyName.GetAssemblyName(a.Assembly.Location)))
             {
+                if (NodePackageDictionary.ContainsKey(assembly.FullName))
+                {
+                    OnMessageLogged(LogMessage.Info(
+                        string.Format("{0} contains the node library {1}, which has already been loaded " +
+                        "by another package. This may cause inconsistent results when determining which " +
+                        "package nodes from this node library are dependent on.", package.Name, assembly.Name)
+                        ));
+                }
                 NodePackageDictionary[assembly.FullName] = new PackageDependencyInfo(package.Name, new Version(package.VersionName));
             }
 
@@ -233,6 +241,14 @@ namespace Dynamo.PackageManager
             // Add new custom nodes to CustomNodePackageDictionary
             foreach (var cn in package.LoadedCustomNodes)
             {
+                if (CustomNodePackageDictionary.ContainsKey(cn.FunctionId))
+                {
+                    OnMessageLogged(LogMessage.Info(
+                        string.Format("{0} contains the custom node {1}, which has already been loaded " +
+                        "by another package. This may cause inconsistent results when determining which " +
+                        "package instances of this custom node are dependent on.", package.Name, cn.Name)
+                        ));
+                }
                 var pInfo = new PackageDependencyInfo(package.Name, new Version(package.VersionName));
                 CustomNodePackageDictionary[cn.FunctionId] = pInfo;
             }
