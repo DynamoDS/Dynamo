@@ -1801,16 +1801,10 @@ namespace Dynamo.Models
                 // Get zerotouch assemblies
                 if (node is DSFunction)
                 {
-                    // Split CreationName to get qualified name
-                    var qualifiedName = node.CreationName.Split('@')[0];
-                    // Get FunctionDescriptors for this zerotouch node
-                    var descriptors = LibraryServices.GetAllFunctionDescriptors(qualifiedName);
-                    foreach (FunctionDescriptor fd in descriptors.Where(d => d.IsPackageMember))
+                    var descriptor = (node as DSFunction).Controller.Definition;
+                    if (descriptor.IsPackageMember)
                     {
-                        if (fd.MangledName == node.CreationName)
-                        {
-                            assemblyNames[node.GUID] = AssemblyName.GetAssemblyName(fd.Assembly);
-                        }
+                        assemblyNames[node.GUID] = AssemblyName.GetAssemblyName(descriptor.Assembly);
                     }
                 }
                 // Get NodeModel assemblies
