@@ -756,14 +756,14 @@ namespace Dynamo.Graph.Workspaces
     }
 
     /// <summary>
-    /// PackageInfoWriteConverter is used to Serialize graph package dependency to JSON.
+    /// PackageDependencyInfoConverter is used to serialize and deserialize graph package dependencies
     /// </summary>
     public class PackageDependencyInfoConverter : JsonConverter
     {
         private Logging.ILogger logger;
 
         /// <summary>
-        /// Constructs a ConnectorConverter.
+        /// Constructs a PackageDependencyInfoConverter.
         /// </summary>
         /// <param name="logger"></param>
         public PackageDependencyInfoConverter(Logging.ILogger logger)
