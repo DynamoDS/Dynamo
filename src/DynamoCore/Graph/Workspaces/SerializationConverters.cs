@@ -800,6 +800,10 @@ namespace Dynamo.Graph.Workspaces
                 writer.WriteEndArray();
                 writer.WriteEndObject();
             }
+            else
+            {
+                logger.LogWarning("Unnsuccessful attempt to serialize a PackageDependencyInfo object.", Logging.WarningLevel.Moderate);
+            }
         }
 
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
