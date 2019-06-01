@@ -1805,15 +1805,11 @@ namespace Dynamo.Models
                     var qualifiedName = node.CreationName.Split('@')[0];
                     // Get FunctionDescriptors for this zerotouch node
                     var descriptors = LibraryServices.GetAllFunctionDescriptors(qualifiedName);
-                    var pmDescriptors = descriptors.Where(d => d.IsPackageMember);
-                    if (pmDescriptors.Any())
+                    foreach (FunctionDescriptor fd in descriptors.Where(d => d.IsPackageMember))
                     {
-                        foreach (FunctionDescriptor fd in pmDescriptors)
+                        if (fd.MangledName == node.CreationName)
                         {
-                            if (fd.MangledName == node.CreationName)
-                            {
-                                assemblyNames[node.GUID] = AssemblyName.GetAssemblyName(fd.Assembly);
-                            }
+                            assemblyNames[node.GUID] = AssemblyName.GetAssemblyName(fd.Assembly);
                         }
                     }
                 }
