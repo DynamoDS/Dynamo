@@ -1452,6 +1452,25 @@ r = [Imperative]
         }
 
         [Test]
+        public void TestArrayPromotionInForloop()
+        {
+            string code =
+                @"
+                r = [Imperative]
+                {
+                    s = 5;
+                    for (x in s)
+                    {
+                         s  = s + x;
+                    }
+                    return = s;
+                }
+                ";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("r", 10);
+        }
+
+        [Test]
         public void TestLocalKeyword01()
         {
             string code =
