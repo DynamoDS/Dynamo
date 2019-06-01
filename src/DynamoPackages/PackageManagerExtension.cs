@@ -219,7 +219,8 @@ namespace Dynamo.PackageManager
                 NodePackageDictionary = new Dictionary<string, PackageDependencyInfo>();
             }
             // Add new assemblies to NodePackageDictionary
-            foreach (var assembly in package.LoadedAssemblies.Select(a => AssemblyName.GetAssemblyName(a.Assembly.Location)))
+            var nodeLibraries = package.LoadedAssemblies.Where(a => a.IsNodeLibrary);
+            foreach (var assembly in nodeLibraries.Select(a => AssemblyName.GetAssemblyName(a.Assembly.Location)))
             {
                 NodePackageDictionary[assembly.FullName] = new PackageDependencyInfo(package.Name, new Version(package.VersionName));
             }
