@@ -26,6 +26,8 @@ namespace Dynamo.PackageManager
 
         private IWorkspaceModel currentWorkspace;
 
+        private ReadyParams ReadyParams;
+
         /// <summary>
         /// Dictionary mapping a custom node functionID to the package that contains it.
         /// Used for package dependency serialization.
@@ -92,6 +94,7 @@ namespace Dynamo.PackageManager
                 (currentWorkspace as WorkspaceModel).CollectingCustomNodePackageDependencies -= GetCustomNodePackageFromID;
                 (currentWorkspace as WorkspaceModel).CollectingNodePackageDependencies -= GetNodePackageFromAssemblyName;
             }
+            ReadyParams.CurrentWorkspaceChanged -= OnCurrentWorkspaceChanged;
         }
 
         /// <summary>
@@ -146,6 +149,7 @@ namespace Dynamo.PackageManager
 
         public void Ready(ReadyParams sp)
         {
+            ReadyParams = sp;
             sp.CurrentWorkspaceChanged += OnCurrentWorkspaceChanged;
         }
 
