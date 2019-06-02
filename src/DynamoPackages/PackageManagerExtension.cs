@@ -36,7 +36,7 @@ namespace Dynamo.PackageManager
         /// Dictionary mapping the AssemblyName.FullName of an assembly to the package that contains it.
         /// Used for package dependency serialization.
         /// </summary>
-        private Dictionary<string, PackageDependencyInfo> NodePackageDictionary;
+        private Dictionary<string, List<PackageDependencyInfo>> NodePackageDictionary;
 
         public string Name { get { return "DynamoPackageManager"; } }
 
@@ -197,7 +197,7 @@ namespace Dynamo.PackageManager
         {
             if (NodePackageDictionary.ContainsKey(assemblyName.FullName))
             {
-                return NodePackageDictionary[assemblyName.FullName];
+                return NodePackageDictionary[assemblyName.FullName].FirstOrDefault();
             }
             return null;
         }
@@ -216,7 +216,7 @@ namespace Dynamo.PackageManager
             // Create NodePackageDictionary if it doesn't exist
             if (NodePackageDictionary == null)
             {
-                NodePackageDictionary = new Dictionary<string, PackageDependencyInfo>();
+                NodePackageDictionary = new Dictionary<string, List<PackageDependencyInfo>>();
             }
             // Add new assemblies to NodePackageDictionary
             var nodeLibraries = package.LoadedAssemblies.Where(a => a.IsNodeLibrary);
@@ -230,7 +230,11 @@ namespace Dynamo.PackageManager
                         "package nodes from this node library are dependent on.", package.Name, assembly.Name)
                         ));
                 }
-                NodePackageDictionary[assembly.FullName] = new PackageDependencyInfo(package.Name, new Version(package.VersionName));
+                else
+                {
+                    NodePackageDictionary[assembly.FullName] = new List<PackageDependencyInfo>();
+                }
+                NodePackageDictionary[assembly.FullName].Add(new PackageDependencyInfo(package.Name, new Version(package.VersionName)));
             }
 
             // Create CustomNodePackageDictionary if it doesn't exist
@@ -258,12 +262,10 @@ namespace Dynamo.PackageManager
         {
             var pInfo = new PackageDependencyInfo(package.Name, new Version(package.VersionName));
             // Remove package references from NodePackageDictionary
-            foreach (var key in NodePackageDictionary.Keys)
+            var nodeLibraries = package.LoadedAssemblies.Where(a => a.IsNodeLibrary);
+            foreach (var assembly in nodeLibraries.Select(a => AssemblyName.GetAssemblyName(a.Assembly.Location)))
             {
-                if (NodePackageDictionary[key].FullName == pInfo.FullName)
-                {
-                    NodePackageDictionary.Remove(key);
-                }
+                NodePackageDictionary.Remove(assembly.FullName);
             }
             // Remove package references from CustomNodePackageDictionary
             foreach (var key in CustomNodePackageDictionary.Keys)
