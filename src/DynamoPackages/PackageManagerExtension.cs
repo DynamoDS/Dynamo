@@ -30,7 +30,7 @@ namespace Dynamo.PackageManager
         /// Dictionary mapping a custom node functionID to the package that contains it.
         /// Used for package dependency serialization.
         /// </summary>
-        private Dictionary<Guid, PackageDependencyInfo> CustomNodePackageDictionary;
+        private Dictionary<Guid, List<PackageDependencyInfo>> CustomNodePackageDictionary;
 
         /// <summary>
         /// Dictionary mapping the AssemblyName.FullName of an assembly to the package that contains it.
@@ -206,7 +206,7 @@ namespace Dynamo.PackageManager
         {
             if (CustomNodePackageDictionary.ContainsKey(functionID))
             {
-                return CustomNodePackageDictionary[functionID];
+                return CustomNodePackageDictionary[functionID].FirstOrDefault();
             }
             return null;
         }
@@ -240,7 +240,7 @@ namespace Dynamo.PackageManager
             // Create CustomNodePackageDictionary if it doesn't exist
             if (CustomNodePackageDictionary == null)
             {
-                CustomNodePackageDictionary = new Dictionary<Guid, PackageDependencyInfo>();
+                CustomNodePackageDictionary = new Dictionary<Guid, List<PackageDependencyInfo>>();
             }
             // Add new custom nodes to CustomNodePackageDictionary
             foreach (var cn in package.LoadedCustomNodes)
@@ -253,26 +253,45 @@ namespace Dynamo.PackageManager
                         "package instances of this custom node are dependent on.", package.Name, cn.Name)
                         ));
                 }
-                var pInfo = new PackageDependencyInfo(package.Name, new Version(package.VersionName));
-                CustomNodePackageDictionary[cn.FunctionId] = pInfo;
+                else
+                {
+                    CustomNodePackageDictionary[cn.FunctionId] = new List<PackageDependencyInfo>();
+                }
+                CustomNodePackageDictionary[cn.FunctionId].Add(new PackageDependencyInfo(package.Name, new Version(package.VersionName)));
             }
         }
 
         private void OnPackageRemoved(Package package)
         {
             var pInfo = new PackageDependencyInfo(package.Name, new Version(package.VersionName));
+
             // Remove package references from NodePackageDictionary
             var nodeLibraries = package.LoadedAssemblies.Where(a => a.IsNodeLibrary);
             foreach (var assembly in nodeLibraries.Select(a => AssemblyName.GetAssemblyName(a.Assembly.Location)))
             {
-                NodePackageDictionary.Remove(assembly.FullName);
+                // If multiple packages contain this assembly, only remove the reference to this package
+                if (NodePackageDictionary[assembly.FullName].Count > 1)
+                {
+                    NodePackageDictionary[assembly.FullName].Remove(pInfo);
+                }
+                // Otherwise just remove the whole dictionary entry
+                else
+                {
+                    NodePackageDictionary.Remove(assembly.FullName);
+                }
             }
             // Remove package references from CustomNodePackageDictionary
-            foreach (var key in CustomNodePackageDictionary.Keys)
+            foreach (var cn in package.LoadedCustomNodes)
             {
-                if (CustomNodePackageDictionary[key].FullName == pInfo.FullName)
+                // If multiple packages contain this custom node, only remove the reference to this package
+                if (CustomNodePackageDictionary[cn.FunctionId].Count > 1)
                 {
-                    CustomNodePackageDictionary.Remove(key);
+                    CustomNodePackageDictionary[cn.FunctionId].Remove(pInfo);
+                }
+                // Otherwise just remove the whole dictionary entry
+                else
+                {
+                    CustomNodePackageDictionary.Remove(cn.FunctionId);
                 }
             }
         }
