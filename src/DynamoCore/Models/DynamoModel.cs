@@ -366,25 +366,7 @@ namespace Dynamo.Models
                 var old = currentWorkspace;
                 currentWorkspace = value;
                 OnWorkspaceHidden(old);
-                UnsubscribeFromWorkspace(old);
-                SubscribeToWorkspace(currentWorkspace);
                 OnPropertyChanged("CurrentWorkspace");
-            }
-        }
-
-        private void UnsubscribeFromWorkspace(WorkspaceModel ws)
-        {
-            if (ws != null)
-            {
-                ws.CollectingAssembliesReferencedByNodes -= OnCollectingAssembliesReferencedByNodes;
-            }
-        }
-
-        private void SubscribeToWorkspace(WorkspaceModel ws)
-        {
-            if (ws != null)
-            {
-                ws.CollectingAssembliesReferencedByNodes += OnCollectingAssembliesReferencedByNodes;
             }
         }
         
@@ -1787,34 +1769,6 @@ namespace Dynamo.Models
                 newWorkspace.EvaluationCompleted -= OnEvaluationCompleted;
                 newWorkspace.RefreshCompleted -= OnRefreshCompleted;
             };
-        }
-
-        /// <summary>
-        /// Collects top level assemblies referenced by nodes in the current workspace
-        /// </summary>
-        /// <returns></returns>
-        private Dictionary<Guid, AssemblyName> OnCollectingAssembliesReferencedByNodes()
-        {
-            var assemblyNames = new Dictionary<Guid, AssemblyName>();
-            foreach(var node in CurrentWorkspace.Nodes)
-            {
-                // Get zerotouch assemblies
-                if (node is DSFunction)
-                {
-                    var descriptor = (node as DSFunction).Controller.Definition;
-                    if (descriptor.IsPackageMember)
-                    {
-                        assemblyNames[node.GUID] = AssemblyName.GetAssemblyName(descriptor.Assembly);
-                    }
-                }
-                // Get NodeModel assemblies
-                else
-                {
-                    var assembly = node.GetType().Assembly;
-                    assemblyNames[node.GUID] = AssemblyName.GetAssemblyName(assembly.Location);
-                }
-            }
-            return assemblyNames;
         }
 
         #endregion

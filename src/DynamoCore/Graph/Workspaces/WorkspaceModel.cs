@@ -16,6 +16,7 @@ using Dynamo.Graph.Connectors;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.CustomNodes;
 using Dynamo.Graph.Nodes.NodeLoaders;
+using Dynamo.Graph.Nodes.ZeroTouch;
 using Dynamo.Graph.Notes;
 using Dynamo.Graph.Presets;
 using Dynamo.Logging;
@@ -442,13 +443,6 @@ namespace Dynamo.Graph.Workspaces
             if (handler != null) handler(obj);
         }
 
-
-        /// <summary>
-        /// Event that is fired when the workspace is collecting top level assemblies referenced by nodes
-        /// </summary>
-        internal delegate Dictionary<Guid, AssemblyName> CollectingAssembliesReferencedByNodesHandler();
-        internal event CollectingAssembliesReferencedByNodesHandler CollectingAssembliesReferencedByNodes;
-
         /// <summary>
         /// Event that is fired when the workspace is collecting custom node package dependencies
         /// </summary>
@@ -548,14 +542,16 @@ namespace Dynamo.Graph.Workspaces
                 // Collect package dependencies for zerotouch and nodemodel nodes
                 if (CollectingNodePackageDependencies != null)
                 {
-                    var assembliesUsed = GetAssembliesReferencedByNodes();
-                    foreach (var nodeID in assembliesUsed.Keys)
+                    foreach (var node in Nodes.Where(n => !(n is Function)))
                     {
-                        var assemblyName = assembliesUsed[nodeID];
-                        var package = CollectingNodePackageDependencies(assemblyName);
-                        if (package != null)
+                        var assemblyName = GetNameOfAssemblyReferencedByNode(node);
+                        if (assemblyName != null)
                         {
-                            guidPackageDictionary[nodeID] = package;
+                            var package = CollectingNodePackageDependencies(assemblyName);
+                            if (package != null)
+                            {
+                                guidPackageDictionary[node.GUID] = package;
+                            }
                         }
                     }
                 }
@@ -563,7 +559,7 @@ namespace Dynamo.Graph.Workspaces
                 // Collect package dependencies for custom nodes
                 if (CollectingCustomNodePackageDependencies != null)
                 {
-                    foreach(Function node in Nodes.Where(node => node.GetType() == typeof(Function)))
+                    foreach(Function node in Nodes.Where(node => node is Function))
                     {
                         var nodeID = node.GUID;
                         var customNodeID = node.Definition.FunctionId;
@@ -1692,17 +1688,28 @@ namespace Dynamo.Graph.Workspaces
         }
 
         /// <summary>
-        /// Gathers the top level assemblies that are referenced by nodes in this workspace
+        /// Gets the top level assembly referenced by a node in this workspace
         /// </summary>
         /// <returns></returns>
-        internal Dictionary<Guid, AssemblyName> GetAssembliesReferencedByNodes()
+        internal AssemblyName GetNameOfAssemblyReferencedByNode(NodeModel node)
         {
-            var assemblies = new Dictionary<Guid, AssemblyName>();
-            if (CollectingAssembliesReferencedByNodes != null)
+            AssemblyName assemblyName = null;
+            // Get zerotouch assembly
+            if (node is DSFunction)
             {
-                assemblies = CollectingAssembliesReferencedByNodes();
+                var descriptor = (node as DSFunction).Controller.Definition;
+                if (descriptor.IsPackageMember)
+                {
+                    assemblyName = AssemblyName.GetAssemblyName(descriptor.Assembly);
+                }
             }
-            return assemblies;
+            // Get NodeModel assembly
+            else
+            {
+                var assembly = node.GetType().Assembly;
+                assemblyName = AssemblyName.GetAssemblyName(assembly.Location);
+            }
+            return assemblyName;
         }
 
         #endregion
