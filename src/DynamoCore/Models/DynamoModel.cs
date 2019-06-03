@@ -369,7 +369,7 @@ namespace Dynamo.Models
                 OnPropertyChanged("CurrentWorkspace");
             }
         }
-        
+
         /// <summary>
         ///     The copy/paste clipboard.
         /// </summary>
