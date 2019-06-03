@@ -444,12 +444,14 @@ namespace Dynamo.Graph.Workspaces
         }
 
         /// <summary>
-        /// Event that is fired when the workspace is collecting custom node package dependencies
+        /// Event that is fired when the workspace is collecting custom node package dependencies.
+        /// This event should only be subscribed to by the package manager.
         /// </summary>
         internal event Func<Guid, PackageDependencyInfo> CollectingCustomNodePackageDependencies;
 
         /// <summary>
-        /// Event that is fired when the workspace is collecting node package dependencies
+        /// Event that is fired when the workspace is collecting node package dependencies.
+        /// This event should only be subscribed to by the package manager.
         /// </summary>
         internal event Func<AssemblyName, PackageDependencyInfo> CollectingNodePackageDependencies;
 
@@ -542,6 +544,11 @@ namespace Dynamo.Graph.Workspaces
                 // Collect package dependencies for zerotouch and nodemodel nodes
                 if (CollectingNodePackageDependencies != null)
                 {
+                    if (CollectingNodePackageDependencies.GetInvocationList().Count() > 1)
+                    {
+                        throw new Exception("There are multiple subscribers to Workspace.CollectingNodePackageDependencies. " +
+                            "Only PackageManagerExtension should subscribe to this event.");
+                    }
                     foreach (var node in Nodes.Where(n => !(n is Function)))
                     {
                         var assemblyName = GetNameOfAssemblyReferencedByNode(node);
@@ -559,7 +566,12 @@ namespace Dynamo.Graph.Workspaces
                 // Collect package dependencies for custom nodes
                 if (CollectingCustomNodePackageDependencies != null)
                 {
-                    foreach(Function node in Nodes.Where(node => node is Function))
+                    if (CollectingCustomNodePackageDependencies.GetInvocationList().Count() > 1)
+                    {
+                        throw new Exception("There are multiple subscribers to Workspace.CollectingCustomNodePackageDependencies. " +
+                            "Only PackageManagerExtension should subscribe to this event.");
+                    }
+                    foreach (Function node in Nodes.Where(node => node is Function))
                     {
                         var nodeID = node.GUID;
                         var customNodeID = node.Definition.FunctionId;
