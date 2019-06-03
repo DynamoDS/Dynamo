@@ -605,36 +605,37 @@ namespace Dynamo.Graph.Workspaces
         {
             get
             {
-                // Remove unnecessary package dependencies
-                foreach(var package in packageDependencies)
+                List<PackageDependencyInfo> currentPackageDependencies;
+                lock (packageDependencies)
                 {
-                    foreach(var guid in NodesRemovedSinceLastPackageDependenciesUpdate)
+                    currentPackageDependencies = packageDependencies.ToList();
+                    // Remove unnecessary package dependencies
+                    foreach (var package in currentPackageDependencies)
                     {
-                        package.RemoveDependent(guid);
+                        foreach (var guid in NodesRemovedSinceLastPackageDependenciesUpdate)
+                        {
+                            package.RemoveDependent(guid);
+                        }
+                    }
+                    currentPackageDependencies = currentPackageDependencies.Where(pd => pd.Nodes.Count > 0).ToList();
+                    NodesRemovedSinceLastPackageDependenciesUpdate = new List<Guid>();
+
+                    // Merge LoadedPackageDependencies into PackageDependencies
+                    var loadedPDs = LoadedPackageDependencies;
+                    foreach (var loadedPD in loadedPDs)
+                    {
+                        if (currentPackageDependencies.Contains(loadedPD))
+                        {
+                            var index = currentPackageDependencies.IndexOf(loadedPD);
+                            currentPackageDependencies[index].AddDependents(loadedPD.Nodes);
+                        }
+                        else
+                        {
+                            currentPackageDependencies.Add(loadedPD);
+                        }
                     }
                 }
-                packageDependencies = packageDependencies.Where(pd => pd.Nodes.Count > 0).ToList();
-                NodesRemovedSinceLastPackageDependenciesUpdate = new List<Guid>();
-
-                // Merge LoadedPackageDependencies into PackageDependencies
-                var currentPackageDependencies = packageDependencies.ToList();
-                var loadedPDs = LoadedPackageDependencies;
-                foreach (var loadedPD in loadedPDs)
-                {
-                    if (currentPackageDependencies.Contains(loadedPD))
-                    {
-                        var index = currentPackageDependencies.IndexOf(loadedPD);
-                        currentPackageDependencies[index].AddDependents(loadedPD.Nodes);
-                    }
-                    else
-                    {
-                        currentPackageDependencies.Add(loadedPD);
-                    }
-                }
-
-                // Save updated packageDependencies
-                packageDependencies = currentPackageDependencies;
-
+                
                 return currentPackageDependencies;
             }
             set
