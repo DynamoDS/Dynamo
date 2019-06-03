@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using Dynamo.Configuration;
 using Dynamo.Core;
+using Dynamo.Exceptions;
 using Dynamo.Interfaces;
 
 namespace Dynamo.Logging
@@ -239,7 +241,7 @@ namespace Dynamo.Logging
         {
             var notificationMessage = string.Format("{0}:{3} {1}: {3} {2}", title, shortMessage, detailedMessage,Environment.NewLine);
             Log("notification",notificationMessage );
-            NotificationLogged(new NotificationMessage(sender, shortMessage, detailedMessage,title));
+            NotificationLogged?.Invoke(new NotificationMessage(sender, shortMessage, detailedMessage, title));
         }
 
 
@@ -316,6 +318,11 @@ namespace Dynamo.Logging
         /// <param name="e">Exception to log</param>
         public void Log(Exception e)
         {
+            //var le = e as LibraryLoadFailedException;
+            //if (le != null)
+            //{
+            //    LogNotification("DynamoModel", le.ToString(), le.Message, le.Reason);
+            //}
             Log(e.GetType() + ":", LogLevel.Console);
             Log(e.Message, LogLevel.Console);
             Log(e.StackTrace, LogLevel.Console);

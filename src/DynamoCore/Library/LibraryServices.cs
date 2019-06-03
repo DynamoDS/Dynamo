@@ -199,6 +199,7 @@ namespace Dynamo.Engine
         {
             LibraryLoadFailedException ex = new LibraryLoadFailedException(args.LibraryPath, args.Reason);
             Log(ex.Message, WarningLevel.Moderate);
+            Log(ex);
 
             // NOTE: We do not want to throw an exception here if the failure was due
             // to a missing library that was explicitly (attempted to be) loaded
