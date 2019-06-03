@@ -199,7 +199,7 @@ namespace Dynamo.PackageManager
 
         private PackageDependencyInfo GetNodePackageFromAssemblyName(AssemblyName assemblyName)
         {
-            if (NodePackageDictionary.ContainsKey(assemblyName.FullName))
+            if (NodePackageDictionary!= null && NodePackageDictionary.ContainsKey(assemblyName.FullName))
             {
                 return NodePackageDictionary[assemblyName.FullName].FirstOrDefault();
             }
@@ -208,7 +208,7 @@ namespace Dynamo.PackageManager
 
         private PackageDependencyInfo GetCustomNodePackageFromID(Guid functionID)
         {
-            if (CustomNodePackageDictionary.ContainsKey(functionID))
+            if (CustomNodePackageDictionary != null && CustomNodePackageDictionary.ContainsKey(functionID))
             {
                 return CustomNodePackageDictionary[functionID].FirstOrDefault();
             }
