@@ -3233,6 +3233,16 @@
             Get a string representation of the Surface
             </summary>
         </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.ByUnion(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Surface})">
+            <summary>
+            Union a collection of surfaces into one surface. This method might return a polySurface if the resulting union is non-manifold or single faced.
+            </summary>
+            <param name="surfaces"> A collection of surfaces. </param>
+            <returns>  </returns>
+            <search>
+            merge,join,boolean,addition
+            </search>
+        </member>
         <member name="M:Autodesk.DesignScript.Geometry.Surface.ByLoft(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve})">
             <summary>
             Create a Surface by lofting between input cross section Curves.
@@ -3371,6 +3381,16 @@
             <returns>  </returns>
             <search>
             difference,trim,removefrom,cut
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.Difference(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Surface})">
+            <summary>
+            The boolean difference of this Surface and the union of input Surfaces. This method might return a polySurface if the resulting boolean is non-manifold or single faced.
+            </summary>
+            <param name="others">  </param>
+            <returns>  </returns>
+            <search>
+            subtract,differencemany,diffall,diff multi
             </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Surface.UVParameterAtPoint(Autodesk.DesignScript.Geometry.Point)">
