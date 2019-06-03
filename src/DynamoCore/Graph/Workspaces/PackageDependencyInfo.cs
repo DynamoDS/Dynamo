@@ -24,12 +24,6 @@ namespace Dynamo.Graph.Workspaces
         internal Version Version { get; set; }
 
         /// <summary>
-        /// The full name of this package, including its name and version
-        /// Format: name_version
-        /// </summary>
-        internal string FullName { get { return Name + "_" + Version.ToString(); } }
-
-        /// <summary>
         /// Guids of nodes in the workspace that are dependent on this package
         /// </summary>
         internal HashSet<Guid> Nodes
