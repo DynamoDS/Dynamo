@@ -43,6 +43,7 @@ namespace Dynamo.PackageManager
         /// This event is raised when a package is fully loaded. It will be true that when this event is raised
         /// Packge.Loaded will be true for the package.
         /// </summary>
+        // TODO 3.0 Fix spelling
         public event Action<Package> PackgeLoaded;
 
         /// <summary>

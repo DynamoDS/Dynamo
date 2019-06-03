@@ -525,6 +525,16 @@ namespace Dynamo.Graph.Workspaces
             // relevant ports.
             var connectors = obj["Connectors"].ToObject<IEnumerable<ConnectorModel>>(serializer);
 
+            IEnumerable<PackageDependencyInfo> packageDependencies;
+            if (obj["PackageDependencies"] != null)
+            {
+                packageDependencies = obj["PackageDependencies"].ToObject<IEnumerable<PackageDependencyInfo>>(serializer);
+            }
+            else
+            {
+                packageDependencies = new List<PackageDependencyInfo>();
+            }
+
             var info = new WorkspaceInfo(guid.ToString(), name, description, Dynamo.Models.RunType.Automatic);
 
             // IsVisibleInDynamoLibrary and Category should be set explicitly for custom node workspace
@@ -586,6 +596,8 @@ namespace Dynamo.Graph.Workspaces
                     Enumerable.Empty<PresetModel>(), elementResolver, 
                     info, verboseLogging, isTestMode);
             }
+
+            ws.PackageDependencies = packageDependencies.ToList();
 
             return ws;
         }
@@ -689,6 +701,10 @@ namespace Dynamo.Graph.Workspaces
             }
             writer.WriteEndArray();
 
+            // PackageDependencies
+            writer.WritePropertyName("PackageDependencies");
+            serializer.Serialize(writer, ws.PackageDependencies);
+
             if (engine != null)
             {
                 // Bindings
@@ -736,6 +752,97 @@ namespace Dynamo.Graph.Workspaces
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
             throw new NotImplementedException();
+        }
+    }
+
+    /// <summary>
+    /// PackageDependencyInfoConverter is used to serialize and deserialize graph package dependencies
+    /// </summary>
+    public class PackageDependencyInfoConverter : JsonConverter
+    {
+        private Logging.ILogger logger;
+
+        /// <summary>
+        /// Constructs a PackageDependencyInfoConverter.
+        /// </summary>
+        /// <param name="logger"></param>
+        public PackageDependencyInfoConverter(Logging.ILogger logger)
+        {
+            this.logger = logger;
+        }
+
+        public override bool CanConvert(Type objectType)
+        {
+            return typeof(PackageDependencyInfo).IsAssignableFrom(objectType);
+        }
+
+        public override bool CanRead
+        {
+            get { return true; }
+        }
+
+        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+        {
+            PackageDependencyInfo p = value as PackageDependencyInfo;
+            if (p != null)
+            {
+                writer.WriteStartObject();
+                writer.WritePropertyName("Name");
+                writer.WriteValue(p.Name);
+                writer.WritePropertyName("Version");
+                writer.WriteValue(p.Version.ToString());
+                writer.WritePropertyName("Nodes");
+                writer.WriteStartArray();
+                foreach(var node in p.Nodes)
+                {
+                    writer.WriteValue(node.ToString("N"));
+                }
+                writer.WriteEndArray();
+                writer.WriteEndObject();
+            }
+            else
+            {
+                logger.LogWarning("Unnsuccessful attempt to serialize a PackageDependencyInfo object.", Logging.WarningLevel.Moderate);
+            }
+        }
+
+        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+        {
+            var obj = JObject.Load(reader);
+
+            // Get package name
+            var name = obj["Name"].Value<string>();
+
+            // Try get package version
+            var versionString = obj["Version"].Value<string>();
+            Version version;
+            if (!Version.TryParse(versionString, out version))
+            {
+                logger.LogWarning(
+                    string.Format("The version of Package Dependency {0} could not be deserialized.", name), 
+                    Logging.WarningLevel.Moderate);
+            }
+
+            // Create new PackageDependencyInfo
+            var packageInfo = new PackageDependencyInfo(name, version);
+
+            // Try get dependent node IDs
+            var nodes = obj["Nodes"].Values<string>();
+            foreach(var nodeID in nodes)
+            {
+                Guid guid;
+                if (!Guid.TryParse(nodeID, out guid))
+                {
+                    logger.LogWarning(
+                    string.Format("The id ({0}) of a node dependent on {1} could not be parsed as a GUID.", nodeID, name),
+                    Logging.WarningLevel.Moderate);
+                }
+                else
+                {
+                    packageInfo.AddDependent(guid);
+                }
+            }
+            return packageInfo;
         }
     }
 

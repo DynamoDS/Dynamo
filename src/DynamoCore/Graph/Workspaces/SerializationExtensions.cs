@@ -35,7 +35,8 @@ namespace Dynamo.Graph.Workspaces
                         new ConnectorConverter(logger),                        
                         new WorkspaceWriteConverter(engine),
                         new DummyNodeWriteConverter(),
-                        new TypedParameterConverter()
+                        new TypedParameterConverter(),
+                        new PackageDependencyInfoConverter(logger),
                     },
                 ReferenceResolverProvider = () => { return new IdReferenceResolver(); }
             };
