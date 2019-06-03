@@ -1,9 +1,9 @@
-﻿using NUnit.Framework;
-using DSCore;
+﻿using System;
 using System.Collections.Generic;
 using Autodesk.DesignScript.Geometry;
+using DSCore;
+using NUnit.Framework;
 using TestServices;
-using System;
 
 namespace DSCoreNodesTests
 {

@@ -86,7 +86,10 @@ namespace Dynamo.Nodes
         {
             // Setup a binding with the edit window's text field
             var dynamoViewModel = ViewModel.WorkspaceViewModel.DynamoViewModel;
-            var editWindow = new EditWindow(dynamoViewModel, true);
+            var editWindow = new EditWindow(dynamoViewModel, true)
+            {
+                Title = Dynamo.Wpf.Properties.Resources.EditNoteWindowTitle
+            };
             editWindow.BindToProperty(DataContext, new Binding("Text")
             {
                 Mode = BindingMode.TwoWay,

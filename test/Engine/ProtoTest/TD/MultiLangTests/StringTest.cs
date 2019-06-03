@@ -1,13 +1,6 @@
 using System;
-using System.IO;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using NUnit.Framework;
 using ProtoCore.DSASM.Mirror;
-using ProtoCore.Lang;
-using ProtoScript.Runners;
-using ProtoTest.TD;
 using ProtoTestFx.TD;
 namespace ProtoTest.TD.MultiLangTests
 {
@@ -502,8 +495,8 @@ import(""FFITarget.dll"");
                 ";
             thisTest.RunScriptSource(code);
             thisTest.SetErrorMessage("1467263 - Concatenating a string with an integer throws method resolution error");
-            thisTest.Verify("b1", "a{1,2}");
-            thisTest.Verify("b2", "a{1,FFITarget.ClassFunctionality}");
+            thisTest.Verify("b1", "a[1,2]");
+            thisTest.Verify("b2", "a[1,FFITarget.ClassFunctionality]");
         }
 
         [Test]

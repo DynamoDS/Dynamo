@@ -8,10 +8,10 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Dynamo.Wpf.Properties
-{
-
-
+namespace Dynamo.Wpf.Properties {
+    using System;
+    
+    
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -2201,6 +2201,15 @@ namespace Dynamo.Wpf.Properties
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Write note here.
+        /// </summary>
+        public static string EditNoteWindowTitle {
+            get {
+                return ResourceManager.GetString("EditNoteWindowTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Accept.
         /// </summary>
         public static string EditWindowAcceptButton {
@@ -2215,6 +2224,15 @@ namespace Dynamo.Wpf.Properties
         public static string EditWindowTitle {
             get {
                 return ResourceManager.GetString("EditWindowTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Extensions.
+        /// </summary>
+        public static string ExtensionsViewTitle {
+            get {
+                return ResourceManager.GetString("ExtensionsViewTitle", resourceCulture);
             }
         }
         
@@ -3406,15 +3424,6 @@ namespace Dynamo.Wpf.Properties
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to See more on the Dynamo Dictionary....
-        /// </summary>
-        public static string NodeHelpWindowDynamoDictionary {
-            get {
-                return ResourceManager.GetString("NodeHelpWindowDynamoDictionary", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to CATEGORY.
         /// </summary>
         public static string NodeHelpWindowNodeCategory {
@@ -4008,6 +4017,15 @@ namespace Dynamo.Wpf.Properties
         public static string PackageSearchViewSearchTextBox {
             get {
                 return ResourceManager.GetString("PackageSearchViewSearchTextBox", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please wait....
+        /// </summary>
+        public static string PackageSearchViewSearchTextBoxSyncing {
+            get {
+                return ResourceManager.GetString("PackageSearchViewSearchTextBoxSyncing", resourceCulture);
             }
         }
         

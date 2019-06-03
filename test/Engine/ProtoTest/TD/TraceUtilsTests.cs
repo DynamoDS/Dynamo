@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.Serialization;
-using System.Text;
+﻿using DynamoServices;
 using NUnit.Framework;
-using ProtoCore.Lang;
+using System;
+using System.Runtime.Serialization;
 
 namespace ProtoTest.TD
 {
@@ -38,7 +35,7 @@ namespace ProtoTest.TD
         {
 
 
-            List<String> keys = TraceUtils.TEMP_GetTraceKeys();
+            var key = TraceUtils.TEMP_GetTraceKeys()[0];
 
             SerializableString testStr1 = new 
                 SerializableString("{0955D962-2936-4FB2-AAB3-635C6FF6E0AD}");
@@ -46,16 +43,12 @@ namespace ProtoTest.TD
             SerializableString testStr2 = new 
                 SerializableString("{2D7FE0ED-56F3-47A4-9BAA-8DF570170D97}");
 
-
-            Dictionary<String, ISerializable> data = new Dictionary<string, ISerializable>();
-            data.Add(keys[0], testStr1);
-
-            TraceUtils.SetObjectToTLS(data);
+            TraceUtils.SetTraceData(key, testStr1);
 
             //Set complete, readback test
 
-            Dictionary<String, ISerializable> readback = TraceUtils.GetObjectFromTLS();
-            Assert.IsTrue(((SerializableString)readback[keys[0]]).Payload == testStr1.Payload);
+            ISerializable readback = TraceUtils.GetTraceData(key);
+            Assert.IsTrue(readback == testStr1);
         }
 
 
@@ -64,7 +57,7 @@ namespace ProtoTest.TD
         public static void OverwriteTest()
         {
 
-            List<String> keys = TraceUtils.TEMP_GetTraceKeys();
+            var key = TraceUtils.TEMP_GetTraceKeys()[0];
 
             SerializableString testStr1 = new
                 SerializableString("{0955D962-2936-4FB2-AAB3-635C6FF6E0AD}");
@@ -72,29 +65,21 @@ namespace ProtoTest.TD
             SerializableString testStr2 = new
                 SerializableString("{2D7FE0ED-56F3-47A4-9BAA-8DF570170D97}");
 
-
-            var data = new Dictionary<string, ISerializable>();
-            data.Add(keys[0], testStr1);
-
-            var data2 = new Dictionary<string, ISerializable>();
-            data2.Add(keys[0], testStr2);
-
-
-            TraceUtils.SetObjectToTLS(data);
+            TraceUtils.SetTraceData(key, testStr1);
 
             //Set complete, readback test
 
-            var readback = TraceUtils.GetObjectFromTLS();
-            Assert.IsTrue(((SerializableString)readback[keys[0]]).Payload == testStr1.Payload);
+            ISerializable readback = TraceUtils.GetTraceData(key);
+            Assert.IsTrue(readback == testStr1);
 
 
 
-            TraceUtils.SetObjectToTLS(data2);
+            TraceUtils.SetTraceData(key, testStr2);
 
             //Set complete, readback test
 
-            readback = TraceUtils.GetObjectFromTLS();
-            Assert.IsTrue(((SerializableString)readback[keys[0]]).Payload == testStr2.Payload);
+            readback = TraceUtils.GetTraceData(key);
+            Assert.IsTrue(readback == testStr2);
         }
 
 
@@ -103,32 +88,24 @@ namespace ProtoTest.TD
         public static void OverwriteNullTest()
         {
 
-            List<String> keys = TraceUtils.TEMP_GetTraceKeys();
+            var key = TraceUtils.TEMP_GetTraceKeys()[0];
 
             SerializableString testStr1 = new
                 SerializableString("{0955D962-2936-4FB2-AAB3-635C6FF6E0AD}");
 
-
-            Dictionary<String, ISerializable> data = new Dictionary<string, ISerializable>();
-            data.Add(keys[0], testStr1);
-
-
-            TraceUtils.SetObjectToTLS(data);
+            TraceUtils.SetTraceData(key, testStr1);
 
             //Set complete, readback test
 
-            var readback = TraceUtils.GetObjectFromTLS();
-            Assert.IsTrue(((SerializableString)readback[keys[0]]).Payload == testStr1.Payload);
+            ISerializable readback = TraceUtils.GetTraceData(key);
+            Assert.IsTrue(readback == testStr1);
 
-
-            data[keys[0]] = null;
-
-            TraceUtils.SetObjectToTLS(data);
+            TraceUtils.SetTraceData(key, null);
 
             //Set complete, readback test
 
-            readback = TraceUtils.GetObjectFromTLS();
-            Assert.IsTrue((ISerializable)readback[keys[0]] == null);
+            readback = TraceUtils.GetTraceData(key);
+            Assert.IsTrue(readback == null);
         }
 
 

@@ -1,13 +1,13 @@
-﻿using Dynamo.PackageManager.Interfaces;
-using Dynamo.Tests;
-using Moq;
-using NUnit.Framework;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Security.Cryptography;
+using Dynamo.PackageManager.Interfaces;
+using Dynamo.Tests;
+using Moq;
+using NUnit.Framework;
 
 namespace Dynamo.PackageManager.Tests
 {

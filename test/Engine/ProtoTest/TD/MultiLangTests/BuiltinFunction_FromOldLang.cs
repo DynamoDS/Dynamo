@@ -1,12 +1,6 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using NUnit.Framework;
 using ProtoCore.DSASM.Mirror;
-using ProtoTest.TD;
-using ProtoCore.Lang.Replication;
-using ProtoTestFx.TD;
 namespace ProtoTest.TD.MultiLangTests
 {
     class BuiltinFunction_FromOldLang : ProtoTestBase
@@ -104,7 +98,7 @@ t15 = testNormalizeDepth();
             thisTest.Verify("t5", 2);
             thisTest.Verify("t6", true);
             thisTest.Verify("t7", true);
-            thisTest.Verify("t8", "{true,{false,false},true}");
+            thisTest.Verify("t8", "[true,[false,false],true]");
             thisTest.Verify("t9", v4);
             thisTest.Verify("t15", v9);
         }
@@ -171,7 +165,7 @@ t14 = b14;
             thisTest.Verify("t4", 2);
             thisTest.Verify("t5", true);
             thisTest.Verify("t6", true);
-            thisTest.Verify("t7", "{true,{false,false},true}");
+            thisTest.Verify("t7", "[true,[false,false],true]");
             thisTest.Verify("t8", v4);
             thisTest.Verify("t14", v9);
         }

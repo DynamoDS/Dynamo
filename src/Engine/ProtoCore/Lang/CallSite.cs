@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -11,12 +12,12 @@ using ProtoCore.DSASM;
 using ProtoCore.Exceptions;
 using ProtoCore.Lang;
 using ProtoCore.Lang.Replication;
-using ProtoCore.Utils;
-using StackFrame = ProtoCore.DSASM.StackFrame;
 using ProtoCore.Properties;
 using ProtoCore.Runtime;
+using ProtoCore.Utils;
+using StackFrame = ProtoCore.DSASM.StackFrame;
+using Validity = ProtoCore.Utils.Validity;
 using WarningID = ProtoCore.Runtime.WarningID;
-using System.Collections.ObjectModel;
 
 namespace ProtoCore
 {
@@ -75,14 +76,12 @@ namespace ProtoCore
 
                     if (HasData)
                         return true;
-                    else
-                    {
-                        //Not empty, and doesn't have data so test recursive
-                        Validity.Assert(NestedData != null,
-                            "Invalid recursion logic, this is a VM bug, please report to the Dynamo Team");
+                    
+                    //Not empty, and doesn't have data so test recursive
+                    Validity.Assert(NestedData != null,
+                        "Invalid recursion logic, this is a VM bug, please report to the Dynamo Team");
 
-                        return NestedData.Any(srtd => srtd.HasAnyNestedData);
-                    }
+                    return NestedData.Any(srtd => srtd.HasAnyNestedData);
                 }
             }
 
@@ -172,26 +171,21 @@ namespace ProtoCore
             {
                 if (HasData)
                     return Data;
-                else
-                {
-                    if (!HasNestedData)
-                        return null;
-                    else
-                    {
+
+                if (!HasNestedData)
+                    return null;
 #if DEBUG
 
-                        Validity.Assert(NestedData != null, "Nested data has changed null status since last check, suspected race");
-                        Validity.Assert(NestedData.Count > 0, "Empty subnested array, please file repo data with @lukechurch, relates to MAGN-4059");
+                Validity.Assert(NestedData != null, "Nested data has changed null status since last check, suspected race");
+                Validity.Assert(NestedData.Count > 0, "Empty subnested array, please file repo data with @lukechurch, relates to MAGN-4059");
 #endif
 
-                        //Safety trap to protect against an empty array, need repro test to figure out why this is getting set with empty arrays
-                        if (NestedData.Count == 0)
-                            return null;
+                //Safety trap to protect against an empty array, need repro test to figure out why this is getting set with empty arrays
+                if (NestedData.Count == 0)
+                    return null;
 
-                        SingleRunTraceData nestedTraceData = NestedData[0];
-                        return nestedTraceData.GetLeftMostData();
-                    }
-                }
+                SingleRunTraceData nestedTraceData = NestedData[0];
+                return nestedTraceData.GetLeftMostData();
             }
 
             public List<SingleRunTraceData> NestedData;
@@ -238,7 +232,7 @@ namespace ProtoCore
 
         /// <summary>
         /// TraceBinder is used to find assemblies to be used for
-        /// deserialization in cases where the exact assemlby that was
+        /// deserialization in cases where the exact assembly that was
         /// used in the serialization is not available. 
         /// </summary>
         internal class TraceBinder : SerializationBinder
@@ -286,7 +280,7 @@ namespace ProtoCore
         /// Normal usage patten is:
         /// 1. Instantiate
         /// 2. Push Trace data from callsite
-        /// 3. Call GetObjectData to serialise it onto a stream
+        /// 3. Call GetObjectData to serialize it onto a stream
         /// 4. Recreate using the special constructor
         /// </summary>
         [Serializable]
@@ -325,14 +319,13 @@ namespace ProtoCore
 #if DEBUG
                         Debug.WriteLine("Deserialization of trace data failed.");
 #endif
-                        continue;
                     }
                 }
 
             }
 
             /// <summary>
-            /// Save the data into the standard serialisation pattern
+            /// Save the data into the standard serialization pattern
             /// </summary>
             public void GetObjectData(SerializationInfo info, StreamingContext context)
             {
@@ -385,7 +378,7 @@ namespace ProtoCore
         private List<ISerializable> beforeFirstRunSerializables = new List<ISerializable>();
 
         //TODO(Luke): This should be loaded from the attribute
-        private string TRACE_KEY = TraceUtils.__TEMP_REVIT_TRACE_ID;
+        private string TRACE_KEY = DynamoServices.TraceUtils.__TEMP_REVIT_TRACE_ID;
 
         #endregion
 
@@ -615,7 +608,7 @@ namespace ProtoCore
 
         /// <summary>
         /// Call this method to obtain the Base64 encoded string that 
-        /// represent this instance of CallSite;s trace data
+        /// represents this callsite instance's trace data
         /// </summary>
         /// <returns>Returns the Base64 encoded string that represents the
         /// trace data of this callsite
@@ -830,7 +823,7 @@ namespace ProtoCore
         /// </summary>
         /// <returns>Returns true or false based on the condition described above. 
         /// </returns>
-        private Boolean IsSimilarOptionButOfHigherRank(List<ReplicationInstruction> oldOption, List<ReplicationInstruction> newOption)
+        private static bool IsSimilarOptionButOfHigherRank(List<ReplicationInstruction> oldOption, List<ReplicationInstruction> newOption)
         {
             if (oldOption.Count > 0 && newOption.Count > 0 && oldOption.Count < newOption.Count)
             {
@@ -879,7 +872,7 @@ namespace ProtoCore
                     {
                         if (replicationInstructions == null || IsSimilarOptionButOfHigherRank(replicationInstructions, replicationOption))
                         {
-                            //Otherwise we have a cluster of FEPs that can be used to dispatch the array
+                            // We have a cluster of FEPs that can be used to dispatch the array
                             resolvedFeps = new List<FunctionEndPoint>(lookups);
                             replicationInstructions = replicationOption;
                             matchFound = true;
@@ -907,14 +900,18 @@ namespace ProtoCore
             {
                 if (arguments.Any(arg => arg.IsArray))
                 {
-                    foreach (List<ReplicationInstruction> replicationOption in replicationTrials)
+                    foreach (var replicationOption in replicationTrials)
                     {
                         FunctionEndPoint compliantTarget = GetCompliantFEP(context, arguments, funcGroup, replicationOption, stackFrame, runtimeCore);
                         if (compliantTarget != null)
                         {
-                            resolvedFeps = new List<FunctionEndPoint>() { compliantTarget };
-                            replicationInstructions = replicationOption;
-                            matchFound = true;
+                            if (replicationInstructions == null ||
+                                IsSimilarOptionButOfHigherRank(replicationInstructions, replicationOption))
+                            {
+                                resolvedFeps = new List<FunctionEndPoint>() {compliantTarget};
+                                replicationInstructions = replicationOption;
+                                matchFound = true;
+                            }
                         }
                     }
                     if (matchFound)
@@ -924,7 +921,7 @@ namespace ProtoCore
 
             #endregion
 
-            #region Case 5: Replication and replciation guide with type conversion and array promotion
+            #region Case 5: Replication and replication guide with type conversion and array promotion
             {
                 //Add as a first attempt a no-replication, but allowing up-promoting
                 replicationTrials.Add(new List<ReplicationInstruction>());
@@ -949,9 +946,13 @@ namespace ProtoCore
                     FunctionEndPoint compliantTarget = GetLooseCompliantFEP(context, arguments, funcGroup, replicationOption, stackFrame, runtimeCore);
                     if (compliantTarget != null)
                     {
-                        resolvedFeps = new List<FunctionEndPoint>() { compliantTarget };
-                        replicationInstructions = replicationOption;
-                        matchFound = true;
+                        if (replicationInstructions == null ||
+                            IsSimilarOptionButOfHigherRank(replicationInstructions, replicationOption))
+                        {
+                            resolvedFeps = new List<FunctionEndPoint>() {compliantTarget};
+                            replicationInstructions = replicationOption;
+                            matchFound = true;
+                        }
                     }
                 }
                 if (matchFound)
@@ -1676,8 +1677,7 @@ namespace ProtoCore
                     }
 
                     //Build the call
-                    List<StackValue> newFormalParams = new List<StackValue>();
-                    newFormalParams.AddRange(formalParameters);
+                    List<StackValue> newFormalParams = formalParameters.ToList();
 
                     for (int repIi = 0; repIi < repIndecies.Count; repIi++)
                     {
@@ -1703,10 +1703,7 @@ namespace ProtoCore
                         }
                     }
 
-                    List<ReplicationInstruction> newRIs = new List<ReplicationInstruction>();
-                    newRIs.AddRange(replicationInstructions);
-                    newRIs.RemoveAt(0);
-
+                    List<ReplicationInstruction> newRIs = replicationInstructions.GetRange(1, replicationInstructions.Count-1);
 
                     SingleRunTraceData cleanRetTrace = new SingleRunTraceData();
 
@@ -1779,12 +1776,9 @@ namespace ProtoCore
 
                 if (supressArray)
                 {
-                    List<ReplicationInstruction> newRIs = new List<ReplicationInstruction>();
-                    newRIs.AddRange(replicationInstructions);
-                    newRIs.RemoveAt(0);
+                    List<ReplicationInstruction> newRIs = replicationInstructions.GetRange(1, replicationInstructions.Count-1);
 
-                    List<StackValue> newFormalParams = new List<StackValue>();
-                    newFormalParams.AddRange(formalParameters);
+                    List<StackValue> newFormalParams = formalParameters.ToList();
 
                     return ExecWithRISlowPath(functionEndPoint, c, newFormalParams, newRIs, stackFrame, runtimeCore, previousTraceData, newTraceData, finalFunctionEndPoint);
                 }
@@ -1793,8 +1787,7 @@ namespace ProtoCore
                 for (int i = 0; i < retSize; i++)
                 {
                     //Build the call
-                    List<StackValue> newFormalParams = new List<StackValue>();
-                    newFormalParams.AddRange(formalParameters);
+                    List<StackValue> newFormalParams = formalParameters.ToList();
 
                     if (parameters != null)
                     {
@@ -1802,10 +1795,7 @@ namespace ProtoCore
                         newFormalParams[cartIndex] = parameters[i];
                     }
 
-                    List<ReplicationInstruction> newRIs = new List<ReplicationInstruction>();
-                    newRIs.AddRange(replicationInstructions);
-                    newRIs.RemoveAt(0);
-
+                    List<ReplicationInstruction> newRIs = replicationInstructions.GetRange(1, replicationInstructions.Count-1);
 
                     SingleRunTraceData lastExecTrace;
 
@@ -1894,16 +1884,12 @@ namespace ProtoCore
             if (traceD != null)
             {
                 //There was data associated with the previous execution, push this into the TLS
-
-                Dictionary<string, ISerializable> dataDict = new Dictionary<string, ISerializable>();
-                dataDict.Add(TRACE_KEY, traceD);
-
-                TraceUtils.SetObjectToTLS(dataDict);
+                DynamoServices.TraceUtils.SetTraceData(TRACE_KEY, traceD);
             }
             else
             {
                 //There was no trace data for this run
-                TraceUtils.ClearAllKnownTLSKeys();
+                DynamoServices.TraceUtils.ClearAllKnownTLSKeys();
             }
 
             //EXECUTE
@@ -1912,16 +1898,18 @@ namespace ProtoCore
             if (ret.IsNull)
             {
                 //wipe the trace cache
-                TraceUtils.ClearTLSKey(TRACE_KEY);
+                DynamoServices.TraceUtils.ClearAllKnownTLSKeys();
+                newTraceData.Data = null;
             }
-
-            //TLS -> TraceCache
-            Dictionary<string, ISerializable> traceRet = TraceUtils.GetObjectFromTLS();
-
-            if (traceRet.ContainsKey(TRACE_KEY))
+            else
             {
-                var val = traceRet[TRACE_KEY];
-                newTraceData.Data = val;
+                //TLS -> TraceCache
+                var traceRet = DynamoServices.TraceUtils.GetTraceData(TRACE_KEY);
+
+                if (traceRet != null)
+                {
+                    newTraceData.Data = traceRet;
+                }
             }
 
             // An explicit call requires return coercion at the return instruction
@@ -1929,6 +1917,7 @@ namespace ProtoCore
             {
                 ret = PerformReturnTypeCoerce(finalFep, runtimeCore, ret);
             }
+
             return ret;
         }
 

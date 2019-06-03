@@ -1,14 +1,14 @@
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
+using System.Text;
 using ProtoCore.AST.ImperativeAST;
 using ProtoCore.DSASM;
 using ProtoCore.DSDefinitions;
 using ProtoCore.Lang;
 using ProtoCore.SyntaxAnalysis.Associative;
 using ProtoCore.Utils;
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Text;
 
 namespace ProtoCore.AST.AssociativeAST
 {
@@ -1931,6 +1931,7 @@ namespace ProtoCore.AST.AssociativeAST
         }
     }
 
+    [Obsolete("IfStatementNode type is deprecated and not used. To be remove in 3.0")]
     public class IfStatementNode : AssociativeNode
     {
         public AssociativeNode ifExprNode { get; set; }

@@ -1,14 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using NUnit.Framework;
-using Dynamo.Models;
 using Autodesk.DesignScript.Geometry;
-using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
+using NUnit.Framework;
 
 namespace Dynamo.Tests
-{   
+{
     [TestFixture]
     class GeometryDefectTests : DynamoModelTestBase 
     {

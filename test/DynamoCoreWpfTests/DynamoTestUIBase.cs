@@ -7,15 +7,15 @@ using System.Threading;
 using Dynamo.Configuration;
 using Dynamo.Controls;
 using Dynamo.Graph.Nodes;
+using Dynamo.Interfaces;
 using Dynamo.Models;
+using Dynamo.Nodes;
 using Dynamo.Scheduler;
 using Dynamo.ViewModels;
-using Dynamo.Nodes;
 using DynamoCoreWpfTests.Utility;
 using DynamoShapeManager;
 using NUnit.Framework;
 using TestServices;
-using Dynamo.Interfaces;
 
 namespace DynamoCoreWpfTests
 {

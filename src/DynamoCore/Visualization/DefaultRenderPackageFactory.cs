@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Autodesk.DesignScript.Interfaces;
-using Dynamo.Interfaces;
 
 namespace Dynamo.Visualization
 {

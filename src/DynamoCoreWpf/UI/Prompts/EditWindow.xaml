@@ -4,18 +4,27 @@
         xmlns:ui="clr-namespace:Dynamo.UI"
         xmlns:p="clr-namespace:Dynamo.Wpf.Properties"
         Title="{x:Static p:Resources.EditWindowTitle}" 
-        MinHeight="130" MaxHeight="200" Width="400">
+        MaxHeight="{x:Static SystemParameters.PrimaryScreenHeight}"
+        MaxWidth="{x:Static SystemParameters.PrimaryScreenWidth}"
+        MinHeight="170" MinWidth="300"
+        Height="200" Width="400">
 
-    <StackPanel>
+    <Grid>
 
-        <StackPanel.Background>
+        <Grid.Background>
             <LinearGradientBrush  StartPoint="0.5,0" EndPoint="0.5,1">
                 <GradientStop Color="#444" Offset="0.0" />
                 <GradientStop Color="#222" Offset="1.0" />
             </LinearGradientBrush>
-        </StackPanel.Background>
+        </Grid.Background>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="auto" />
+        </Grid.RowDefinitions>
 
         <TextBox 
+                Grid.Row="0"
                 PreviewKeyDown="OnEditWindowPreviewKeyDown"
                 Margin="10"
                 x:FieldModifier="private" 
@@ -31,16 +40,15 @@
                 AcceptsReturn="True"
                 HorizontalScrollBarVisibility="Disabled"
                 VerticalScrollBarVisibility="Auto"
-                Height="80"
                 TextWrapping="Wrap"
                 AcceptsTab="True"/>
 
-        <StackPanel Orientation="Horizontal" FlowDirection="RightToLeft">
+        <StackPanel Grid.Row="1" Orientation="Horizontal" FlowDirection="RightToLeft">
             <!--<Button Content="Cancel" Style="{DynamicResource ResourceKey=STextButton}"  Margin="10" Name="button1" VerticalAlignment="Bottom" Click="CancelClick" />-->
             <Button Content="{x:Static p:Resources.EditWindowAcceptButton}" Style="{DynamicResource ResourceKey=STextButton}" Margin="10" Name="button2" VerticalAlignment="Bottom" Width="auto" MinWidth="75" Click="OkClick" />
         </StackPanel>
 
-    </StackPanel>
+    </Grid>
 
     <Window.Resources>        
         <ResourceDictionary>

@@ -1,6 +1,5 @@
-﻿using System.IO;
-
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Autodesk.DesignScript.Geometry;
 using CoreNodeModels.Input;

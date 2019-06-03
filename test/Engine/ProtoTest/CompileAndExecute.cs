@@ -1,14 +1,5 @@
 using System;
-using System.Collections.Generic;
-using System.IO;
 using NUnit.Framework;
-using ProtoCore.DSASM.Mirror;
-using ProtoCore.Lang;
-using ProtoTest.TD;
-using ProtoTestFx.TD;
-
-using ProtoCore;
-using ProtoScript.Runners;
 
 namespace ProtoTest.ComponentTest
 {

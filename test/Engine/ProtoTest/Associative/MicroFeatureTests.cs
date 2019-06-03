@@ -4,9 +4,6 @@ using System.IO;
 using System.Linq;
 using NUnit.Framework;
 using ProtoCore.AST.AssociativeAST;
-using ProtoCore.DSASM.Mirror;
-using ProtoCore.Lang;
-using ProtoTest.TD;
 using ProtoTestFx.TD;
 namespace ProtoTest.Associative
 {

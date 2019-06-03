@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
   <metadata>
     <id>DynamoVisualProgramming.DynamoCoreSymbols</id>
-    <version>@VERSION@</version>
+    <version>$Version$</version>
     <authors>Autodesk</authors>
     <owners>Autodesk</owners>
     <licenseUrl>https://www.apache.org/licenses/LICENSE-2.0</licenseUrl>
@@ -13,7 +13,7 @@
     <copyright>Copyright Autodesk 2019</copyright>
   </metadata>
   <files>
-    <file src="*.pdb" target="lib\net47" exclude="CefSharp*.pdb;Helix*.pdb;MIConvexHull.NET Standard.pdb"/>
+    <file src="*.pdb" target="lib\net47" exclude="CefSharp*.pdb;Helix*.pdb;MIConvexHull.NET Standard.pdb;*Test*.pdb;"/>
     <file src="nodes\*.pdb" target="lib\net47\nodes" />
   </files>
 </package>

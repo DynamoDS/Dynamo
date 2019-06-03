@@ -12,6 +12,7 @@
 
     <Window.Resources>
         <ResourceDictionary>
+
             <!-- An unstyled button -->
             <Style x:Key="FlatButton" TargetType="Button">
                 <Setter Property="Background" Value="{x:Null}" />
@@ -121,22 +122,21 @@
 
             <TextBlock Grid.Row ="1" Grid.ZIndex ="1" FontSize="13" HorizontalAlignment="Center" Foreground="Gray" VerticalAlignment="Center" Name="NoResultsIndicator" TextAlignment="Center" Margin="20" Text="{Binding Path=SearchState, Converter={StaticResource PackageSearchStateToStringConverter}}"/>
 
-            <Grid Name="RSearchBoxStackPanel" Grid.Row="0">
+            <Grid Name="RSearchBoxStackPanel" Grid.Row="0" Background="#222">
 
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"></ColumnDefinition>
                     <ColumnDefinition Width="Auto"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
 
-                <TextBox Grid.Column="0" Name="SearchTextBox" KeyboardNavigation.TabIndex="0" Foreground="WhiteSmoke" Background="#222" BorderThickness="0" FontSize ="13" Padding="10,10,5,10" Margin ="0"
-                       IsEnabled="True" TextChanged="SearchTextBox_TextChanged" VerticalAlignment="Stretch" Text="{Binding Path=SearchText, Mode=TwoWay}">
+                <TextBox Visibility="{Binding ShowSearchText, Converter={StaticResource BooleanToVisibilityConverter}}" Text="{Binding Path=SearchText, Mode=TwoWay}"
+                         Grid.Column="0" Name="SearchTextBox" KeyboardNavigation.TabIndex="0" Foreground="WhiteSmoke" Background="Transparent" CaretBrush="White" 
+                         BorderThickness="0" FontSize ="13" Padding="10,10,5,10" Margin ="0" TextChanged="SearchTextBox_TextChanged" VerticalAlignment="Stretch">
                 </TextBox>
 
-                <TextBlock Grid.Column="0" FontSize ="13" Padding="20,10,5,10" Margin ="0" Background="Transparent" 
-                           Foreground="#666" 
-                           IsHitTestVisible="False"
-                           Visibility="{Binding Path=SearchText, Converter={StaticResource NonEmptyStringToCollapsedConverter}}"
-                           Text="{x:Static p:Resources.PackageSearchViewSearchTextBox}"/>
+                <TextBlock Text="{Binding SearchBoxPrompt}" Visibility="{Binding Path=SearchText, Converter={StaticResource NonEmptyStringToCollapsedConverter}}" 
+                           Grid.Column="0" FontSize ="13" Padding="20,10,5,10" Margin ="0" Background="Transparent" Foreground="#666" IsHitTestVisible="False">
+                </TextBlock>
 
                 <Button Width="auto" MinWidth="100" Grid.Column="1" Click="OnSortButtonClicked"
                         Style="{DynamicResource ResourceKey=STextButton}" Content="{x:Static p:Resources.PackageSearchViewSortByButton}">

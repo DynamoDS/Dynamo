@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
   <metadata>
     <id>DynamoVisualProgramming.WpfUILibrary</id>
-    <version>@VERSION@</version>
+    <version>$Version$</version>
     <authors>Autodesk</authors>
     <owners>Autodesk</owners>
     <licenseUrl>https://www.apache.org/licenses/LICENSE-2.0</licenseUrl>
@@ -22,7 +22,7 @@
       <frameworkAssembly assemblyName="PresentationFramework"/>
     </frameworkAssemblies>
     <dependencies>
-      <dependency id="DynamoVisualProgramming.Core" version="@VERSION@"/>
+      <dependency id="DynamoVisualProgramming.Core" version="$Version$"/>
     </dependencies>
   </metadata>
   <files>

@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
   <metadata>
     <id>DynamoVisualProgramming.Tests</id>
-    <version>@VERSION@</version>
+    <version>$Version$</version>
     <authors>Autodesk</authors>
     <owners>Autodesk</owners>
     <licenseUrl>https://www.apache.org/licenses/LICENSE-2.0</licenseUrl>
@@ -16,7 +16,7 @@
     <summary>This package contains all that is required to get up and running creating tests for Dynamo libraries.</summary>
     <copyright>Copyright Autodesk 2019</copyright>
     <dependencies>
-      <dependency id="DynamoVisualProgramming.Core" version="@VERSION@"/>
+      <dependency id="DynamoVisualProgramming.Core" version="$Version$"/>
     </dependencies>
   </metadata>
   <files>

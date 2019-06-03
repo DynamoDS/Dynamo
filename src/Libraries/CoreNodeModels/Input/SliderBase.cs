@@ -1,8 +1,8 @@
-﻿using Dynamo.Graph.Nodes;
-using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using Dynamo.Graph.Nodes;
+using Newtonsoft.Json;
 
 namespace CoreNodeModels.Input
 {

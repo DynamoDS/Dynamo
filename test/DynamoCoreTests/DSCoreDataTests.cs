@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Dynamo.Graph.Nodes;
-using Dynamo.Graph.Workspaces;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
 

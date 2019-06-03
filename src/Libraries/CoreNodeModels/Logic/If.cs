@@ -2,9 +2,9 @@
 using System.Linq;
 using CoreNodeModels.Properties;
 using Dynamo.Graph.Nodes;
+using Newtonsoft.Json;
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.DSASM;
-using Newtonsoft.Json;
 
 namespace CoreNodeModels.Logic
 {

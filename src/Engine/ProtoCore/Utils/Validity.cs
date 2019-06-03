@@ -1,5 +1,4 @@
-﻿using System;
-namespace ProtoCore.Utils
+﻿namespace ProtoCore.Utils
 {
     public class Validity
     {

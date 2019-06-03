@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
-using NUnit.Framework;
 using System.IO;
+using System.Linq;
 using CoreNodeModels;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.ZeroTouch;
+using NUnit.Framework;
 
 namespace Dynamo.Tests
 {
@@ -847,6 +847,17 @@ namespace Dynamo.Tests
             AssertPreviewValue("29eff272-d6db-4bdf-a47f-0641b78709b8", "中文");
             AssertPreviewValue("70f3cb75-aac9-4bd9-8609-00958cddcd97", true);
             AssertPreviewValue("9c1ee001-352d-480f-a8f5-757804d0f107", "中文");
+        }
+        #endregion
+
+        #region Test string from array
+        [Test]
+        public void TestStringFromArray()
+        {
+            string testFilePath = Path.Combine(localDynamoStringTestFolder, "TestStringFromArrayPreview.dyn");
+            RunModel(testFilePath);
+
+            AssertPreviewValue("c27d9e05-45f7-4aac-8f53-a9e485e0f9c0", "[1,2,3]");
         }
         #endregion
     }

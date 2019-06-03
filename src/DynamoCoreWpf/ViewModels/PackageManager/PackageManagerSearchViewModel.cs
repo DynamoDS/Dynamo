@@ -53,7 +53,7 @@ namespace Dynamo.PackageManager
         /// <value>
         ///     Set which kind of sorting should be used for displaying search results
         /// </value>
-        public PackageSortingKey _sortingKey;
+        public PackageSortingKey _sortingKey; // TODO: Set private for 3.0.
         public PackageSortingKey SortingKey
         {
             get { return _sortingKey; }
@@ -71,7 +71,7 @@ namespace Dynamo.PackageManager
         /// <value>
         ///     Set which kind of sorting should be used for displaying search results
         /// </value>
-        public PackageSortingDirection _sortingDirection;
+        public PackageSortingDirection _sortingDirection; // TODO: Set private for 3.0.
         public PackageSortingDirection SortingDirection
         {
             get { return _sortingDirection; }
@@ -83,12 +83,48 @@ namespace Dynamo.PackageManager
         }
 
         /// <summary>
+        /// The string that is displayed in the search box prompt depending on the search state.
+        /// </summary>
+        public string SearchBoxPrompt
+        {
+            get
+            {
+                if(SearchState == PackageSearchState.Syncing)
+                {
+                    return Resources.PackageSearchViewSearchTextBoxSyncing;
+                }
+                return Resources.PackageSearchViewSearchTextBox;
+            }
+        }
+
+        /// <summary>
+        /// Determines whether the the search text box should be displayed.
+        /// <para>
+        /// Returns false if the search state is syncing, 
+        /// </para>
+        /// </summary>
+        public bool ShowSearchText
+        {
+            get
+            {
+                if(SearchState == PackageSearchState.Syncing)
+                {
+                    return false;
+                }
+                else
+                {
+                    return true;
+                }
+            }
+        }
+
+        /// <summary>
         ///     SearchText property
         /// </summary>
         /// <value>
         ///     This is the core UI for Dynamo, primarily used for logging.
         /// </value>
-        public string _SearchText;
+        public string _SearchText; // TODO: Set private for 3.0.
         public string SearchText
         {
             get { return _SearchText; }
@@ -145,17 +181,21 @@ namespace Dynamo.PackageManager
             get { return this.SearchResults.Count == 0; }
         }
 
+
+        public PackageSearchState _searchState; // TODO: Set private for 3.0.
+
         /// <summary>
         /// Gives the current state of search.
         /// </summary>
-        public PackageSearchState _searchState;
         public PackageSearchState SearchState
         {
             get { return _searchState; }
             set
             {
                 _searchState = value;
-                RaisePropertyChanged("SearchState");
+                RaisePropertyChanged(nameof(this.SearchState));
+                RaisePropertyChanged(nameof(this.SearchBoxPrompt));
+                RaisePropertyChanged(nameof(this.ShowSearchText));
             }
         }
 

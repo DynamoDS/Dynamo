@@ -1,4 +1,8 @@
-﻿using Dynamo.Engine;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Xml;
+using Dynamo.Engine;
 using Dynamo.Engine.CodeGeneration;
 using Dynamo.Library;
 using Newtonsoft.Json;
@@ -8,10 +12,6 @@ using ProtoCore.BuildData;
 using ProtoCore.DSASM;
 using ProtoCore.Namespace;
 using ProtoCore.Utils;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Xml;
 
 namespace Dynamo.Graph.Nodes.CustomNodes
 {
