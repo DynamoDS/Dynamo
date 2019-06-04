@@ -67,6 +67,10 @@ namespace Dynamo.Controls
         internal ViewExtensionManager viewExtensionManager = new ViewExtensionManager();
         private ShortcutToolbar shortcutBar;
         private bool loaded = false;
+        private List<TabItem> _tabItems;
+        private TabItem _tabAdd;
+
+        
 
         // This is to identify whether the PerformShutdownSequenceOnViewModel() method has been
         // called on the view model and the process is not cancelled
@@ -189,6 +193,69 @@ namespace Dynamo.Controls
             this.dynamoViewModel.RequestPaste += OnRequestPaste;
             this.dynamoViewModel.RequestReturnFocusToView += OnRequestReturnFocusToView;
             FocusableGrid.InputBindings.Clear();
+
+            _tabItems = new List<TabItem>();
+
+            // add a tabItem with + in header 
+            TabItem tabAdd = new TabItem();
+            tabAdd.Header = "+";
+
+            _tabItems.Add(tabAdd);
+
+            // add first tab
+            this.AddTabItem();
+
+            // bind tab control
+            tabDynamic.DataContext = _tabItems;
+
+            tabDynamic.SelectedIndex = 0;
+        }
+
+        private TabItem AddTabItem()
+        {
+            int count = _tabItems.Count;
+
+            // create new tab item
+            TabItem tab = new TabItem();
+            tab.Header = string.Format("Tab {0}", count);
+            tab.Name = string.Format("tab{0}", count);
+            tab.HeaderTemplate = tabDynamic.FindResource("TabHeader") as DataTemplate;
+
+            // add controls to tab item, this case I added just a textbox
+            TextBox txt = new TextBox();
+            txt.Name = "txt";
+            tab.Content = txt;
+
+            // insert tab item right before the last (+) tab item
+            _tabItems.Insert(count - 1, tab);
+            return tab;
+        }
+
+        private void tabDynamic_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            TabItem tab = tabDynamic.SelectedItem as TabItem;
+
+            if (tab != null && tab.Header != null)
+            {
+              /*  if (tab.Header.Equals(_addTabHeader))
+                {
+                    // clear tab control binding
+                    tabDynamic.DataContext = null;
+
+                    // add new tab
+                    TabItem newTab = this.AddTabItem();
+
+                    // bind tab control
+                    tabDynamic.DataContext = _tabItems;
+
+                    // select newly added tab item
+                    tabDynamic.SelectedItem = newTab;
+                }
+                else
+                {
+                    // your code here...
+                }*/
+            }
         }
 
         private void OnRequestReturnFocusToView()
