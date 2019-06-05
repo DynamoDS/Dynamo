@@ -141,6 +141,8 @@ namespace Dynamo.Logging
             }
         }
 
+        internal HashSet<NotificationMessage> Notifications { get; }
+
         /// <summary>
         /// Initializes a new instance of <see cref="DynamoLogger"/> class
         /// with specified debug settings and directory where to write logs
@@ -156,6 +158,8 @@ namespace Dynamo.Logging
 
                 WarningLevel = WarningLevel.Mild;
                 Warning = "";
+
+                Notifications = new HashSet<NotificationMessage>();
 
                 StartLogging(logDirectory);
             }
@@ -241,7 +245,14 @@ namespace Dynamo.Logging
         {
             var notificationMessage = string.Format("{0}:{3} {1}: {3} {2}", title, shortMessage, detailedMessage,Environment.NewLine);
             Log("notification",notificationMessage );
-            NotificationLogged?.Invoke(new NotificationMessage(sender, shortMessage, detailedMessage, title));
+            if (NotificationLogged != null)
+            {
+                NotificationLogged(new NotificationMessage(sender, shortMessage, detailedMessage, title));
+            }
+            else
+            {
+                Notifications.Add(new NotificationMessage(sender, shortMessage, detailedMessage, title));
+            }
         }
 
 
@@ -303,6 +314,11 @@ namespace Dynamo.Logging
             }
         }
 
+        internal void SyncNotifications(NotificationMessage msg)
+        {
+            Notifications.Remove(msg);
+        }
+
         /// <summary>
         /// Log a message
         /// </summary>
@@ -318,11 +334,11 @@ namespace Dynamo.Logging
         /// <param name="e">Exception to log</param>
         public void Log(Exception e)
         {
-            //var le = e as LibraryLoadFailedException;
-            //if (le != null)
-            //{
-            //    LogNotification("DynamoModel", le.ToString(), le.Message, le.Reason);
-            //}
+            var le = e as LibraryLoadFailedException;
+            if (le != null)
+            {
+                LogNotification("DynamoModel", le.ToString(), le.Message, le.Reason);
+            }
             Log(e.GetType() + ":", LogLevel.Console);
             Log(e.Message, LogLevel.Console);
             Log(e.StackTrace, LogLevel.Console);

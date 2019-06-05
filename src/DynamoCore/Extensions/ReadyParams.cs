@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using Dynamo.Graph.Workspaces;
+using Dynamo.Logging;
 using Dynamo.Models;
 
 namespace Dynamo.Extensions
@@ -23,7 +24,7 @@ namespace Dynamo.Extensions
         {
             dynamoModel = dynamoM;
             dynamoModel.PropertyChanged += OnDynamoModelPropertyChanged;
-            dynamoM.Logger.NotificationLogged += OnNotificationRecieved;
+            dynamoModel.Logger.NotificationLogged += OnNotificationRecieved;
             startupParams = new StartupParams(dynamoModel.AuthenticationManager.AuthProvider,
                 dynamoModel.PathManager, new ExtensionLibraryLoader(dynamoModel), dynamoModel.CustomNodeManager,
                 new Version(dynamoModel.Version), dynamoModel.PreferenceSettings);
@@ -63,6 +64,11 @@ namespace Dynamo.Extensions
             }
         }
 
+        public IEnumerable<NotificationMessage> Notifications
+        {
+            get { return dynamoModel.Logger.Notifications; }
+        }
+
         private ICommandExecutive commandExecutive;
         /// <summary>
         /// Extension specific implementation to execute Recordable commands on DynamoModel
@@ -77,6 +83,12 @@ namespace Dynamo.Extensions
         /// This event passes the notificationMessage to any subscribers
         /// </summary>
         public event Action<Logging.NotificationMessage> NotificationRecieved;
+
+        public void SyncNotifications(NotificationMessage msg)
+        {
+            dynamoModel.Logger.SyncNotifications(msg);
+        }
+
         private void OnNotificationRecieved(Logging.NotificationMessage notification)
         {
             if (NotificationRecieved != null)

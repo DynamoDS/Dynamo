@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using Dynamo.Logging;
 using Dynamo.Wpf.Extensions;
+using Microsoft.Practices.Prism;
 
 namespace Dynamo.Notifications
 {
@@ -45,6 +48,7 @@ namespace Dynamo.Notifications
         {
             viewLoadedParams.NotificationRecieved -= notificationHandler;
             Notifications.CollectionChanged -= notificationsMenuItem.NotificationsChangeHandler;
+            Notifications.CollectionChanged -= SyncNotificationsHandler;
         }
 
         public void Loaded(ViewLoadedParams p)
@@ -52,14 +56,16 @@ namespace Dynamo.Notifications
             viewLoadedParams = p;
             dynamoWindow = p.DynamoWindow;
             Notifications = new ObservableCollection<Logging.NotificationMessage>();
+            Notifications.CollectionChanged += SyncNotificationsHandler;
             
-            notificationHandler = new Action<Logging.NotificationMessage>((notificationMessage) =>
+            notificationHandler = (notificationMessage) =>
             {
                 Notifications.Add(notificationMessage);
-            });
+                AddNotifications();
+            };
 
             p.NotificationRecieved += notificationHandler;
-             
+
             //add a new menuItem to the Dynamo mainMenu.
             notificationsMenuItem = new NotificationsMenuItem(this);
             //null out the content of the notificationsMenu to get rid of 
@@ -67,6 +73,24 @@ namespace Dynamo.Notifications
             (notificationsMenuItem.MenuItem.Parent as ContentControl).Content = null;
             //place the menu into the DynamoMenu
             p.dynamoMenu.Items.Add(notificationsMenuItem.MenuItem);
+        }
+
+        private void SyncNotificationsHandler(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            if(e.OldItems == null) return;
+
+            foreach (var item in e.OldItems)
+            {
+                if (item is NotificationMessage)
+                {
+                    viewLoadedParams.SyncNotifications(item as NotificationMessage);
+                }
+            }
+        }
+
+        internal void AddNotifications()
+        {
+            Notifications.AddRange(viewLoadedParams.Notifications);
         }
 
         public void Shutdown()
