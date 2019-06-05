@@ -88,7 +88,6 @@
     <Compile Include="MultiOutputNodeTest.cs" />
     <Compile Include="NodeExecutionTest.cs" />
     <Compile Include="AnnotationModelTest.cs" />
-    <Compile Include="AstBuilderTest.cs" />
     <Compile Include="AsyncTaskExtensionsTests.cs" />
     <Compile Include="AuthenticationManagerTests.cs" />
     <Compile Include="CallsiteTests.cs" />
@@ -106,6 +105,7 @@
     <Compile Include="NodeToCodeTest.cs" />
     <Compile Include="PresetsTests.cs" />
     <Compile Include="PeriodicEvaluationTests.cs" />
+    <Compile Include="ProfilingTest.cs" />
     <Compile Include="SerializationTests.cs" />
     <Compile Include="TestZeroTouchClass.cs" />
     <Compile Include="TypedParametersToStringTests.cs" />

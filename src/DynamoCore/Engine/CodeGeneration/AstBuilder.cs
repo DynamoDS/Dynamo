@@ -1,117 +1,26 @@
-﻿#region
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using Dynamo.Graph.Nodes;
 using Dynamo.Library;
 using Dynamo.Logging;
+using Dynamo.Engine.Profiling;
 
 using ProtoCore;
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.Utils;
 using Type = ProtoCore.Type;
 
-#endregion
-
 namespace Dynamo.Engine.CodeGeneration
 {
-    /// <summary>
-    /// Returns notification for AST compilation events.                                                 
-    /// </summary>
-    public interface IAstNodeContainer
-    {
-        /// <summary>
-        /// Indicates to start compiling a NodeModel to AST nodes.
-        /// </summary>
-        /// <param name="nodeGuid"></param>
-        void OnCompiling(Guid nodeGuid);
-
-        /// <summary>
-        /// Indicates a NodeModel has been compiled to AST nodes. 
-        /// </summary>
-        /// <param name="nodeGuid"></param>
-        /// <param name="astNodes"></param>
-        void OnCompiled(Guid nodeGuid, IEnumerable<AssociativeNode> astNodes);
-    }
-
-    /// <summary>
-    /// This event is triggerred when compiling a NodeModel to AST nodes.
-    /// </summary>
-    public class CompilingEventArgs : EventArgs
-    {
-        /// Construct ASTBuildingEventArgs with NodeModel.
-        public CompilingEventArgs(Guid node)
-        {
-            Node = node;
-        }
-
-        /// <summary>
-        /// Guid of NodeModel that is being compiled to AST.
-        /// </summary>
-        public Guid Node { get; private set; }
-    }
-
-    /// <summary>
-    /// This event is triggered when a NodeModel has been compiled to a list of
-    /// AST nodes.
-    /// </summary>
-    public class CompiledEventArgs : EventArgs
-    {
-        /// <summary>
-        /// Construct ASTBuiltEventArgs with NodeModel and AST nodes.
-        /// </summary>
-        /// <param name="node"></param>
-        /// <param name="astNodes"></param>
-        internal CompiledEventArgs(Guid node, IEnumerable<AssociativeNode> astNodes)
-        {
-            Node = node;
-            AstNodes = astNodes;
-        }
-
-        /// <summary>
-        /// Guid of node that has been built to AST nodes.
-        /// </summary>
-        public Guid Node { get; private set; }
-
-        /// <summary>
-        /// Built AST nodes.
-        /// </summary>
-        public IEnumerable<AssociativeNode> AstNodes { get; private set; }
-    }
-
-    /// <summary>
-    /// The context of AST compilation
-    /// </summary>
-    public enum CompilationContext
-    {
-        /// <summary>
-        /// No specific context.
-        /// </summary>
-        None,
-
-        /// <summary>
-        /// Compiled AST nodes finally will be executed.
-        /// </summary>
-        DeltaExecution,
-
-        /// <summary>
-        /// Compiled AST nodes used in node to code.
-        /// </summary>
-        NodeToCode,
-
-        /// <summary>
-        /// Compiled AST nodes used in previwing graph.
-        /// </summary>
-        PreviewGraph,
-    }
-
     /// <summary>
     /// AstBuilder is a factory class to create different kinds of AST nodes.
     /// </summary>
     public class AstBuilder : LogSourceBase
     {
         private readonly IAstNodeContainer nodeContainer;
+
+        internal ProfilingSession ProfilingSession { get; set; }
 
         /// <summary>
         /// Construct a AstBuilder with AST node contiainer.
@@ -262,7 +171,11 @@ namespace Dynamo.Engine.CodeGeneration
             }
         }
 
-        private void CompileToAstNodes(NodeModel node, List<AssociativeNode> resultList, CompilationContext context, bool verboseLogging)
+        private void CompileToAstNodes(
+            NodeModel node, 
+            List<AssociativeNode> resultList, 
+            CompilationContext context, 
+            bool verboseLogging)
         {
 
             var inputAstNodes = new List<AssociativeNode>();
@@ -309,8 +222,19 @@ namespace Dynamo.Engine.CodeGeneration
             if (node.State == ElementState.Error)
                 Log("Error in Node. Not sent for building and compiling");
 
-            if (context == CompilationContext.DeltaExecution || context == CompilationContext.PreviewGraph)
+            if (context == CompilationContext.DeltaExecution)
+            {
                 OnAstNodeBuilding(node.GUID);
+                if (ProfilingSession != null)
+                {
+                    ProfilingSession.RegisterNode(node);
+                    resultList.Add(ProfilingSession.CreatePreCompilationAstNode(node, inputAstNodes));
+                }
+            }
+            else if (context == CompilationContext.PreviewGraph)
+            {
+                OnAstNodeBuilding(node.GUID);
+            }
 
 #if DEBUG
             Validity.Assert(inputAstNodes.All(n => n != null), 
@@ -331,42 +255,58 @@ namespace Dynamo.Engine.CodeGeneration
                 }
             }
 
-            if (verboseLogging)
+            if (context == CompilationContext.DeltaExecution)
             {
-                foreach (var n in astNodes)
-                {
-                    Log(n.ToString());
-                }
-            }
-
-            if(null == astNodes)
-                resultList.AddRange(new AssociativeNode[0]);
-            else if (context == CompilationContext.DeltaExecution || context == CompilationContext.PreviewGraph)
-            {
-                OnAstNodeBuilt(node.GUID, astNodes);
                 resultList.AddRange(astNodes);
+                if (ProfilingSession != null)
+                {
+                    resultList.Add(ProfilingSession.CreatePostCompilationAstNode(node, inputAstNodes));
+                }
+
+                OnAstNodeBuilt(node.GUID, resultList);
+            }
+            else if (context == CompilationContext.PreviewGraph)
+            {
+                resultList.AddRange(astNodes);
+
+                OnAstNodeBuilt(node.GUID, resultList);
             }
             else if (context == CompilationContext.NodeToCode)
             {
                 resultList.AddRange(astNodes);
             }
-            else //Inside custom node compilation.
+            else
             {
+                // Inside custom node compilation
                 bool notified = false;
                 foreach (var item in astNodes)
                 {
                     if (item is FunctionDefinitionNode)
                     {
                         if (!notified)
+                        {
                             OnAstNodeBuilding(node.GUID);
+                        }
+
                         notified = true;
-                        //Register the function node in global scope with Graph Sync data,
-                        //so that we don't have a function definition inside the function def
-                        //of custom node.
+
+                        // Register the function node in global scope with Graph Sync data,
+                        // so that we don't have a function definition inside the function def
+                        // of custom node.
                         OnAstNodeBuilt(node.GUID, new[] { item });
                     }
                     else
+                    {
                         resultList.Add(item);
+                    }
+                }
+
+                if (verboseLogging)
+                {
+                    foreach (var n in resultList)
+                    {
+                        Log(n.ToString());
+                    }
                 }
             }
         }
@@ -498,8 +438,7 @@ namespace Dynamo.Engine.CodeGeneration
         /// <param name="nodeGuid"></param>
         private void OnAstNodeBuilding(Guid nodeGuid)
         {
-            if (nodeContainer != null)
-                nodeContainer.OnCompiling(nodeGuid);
+            nodeContainer?.OnCompiling(nodeGuid);
         }
 
         /// <summary>
@@ -509,8 +448,7 @@ namespace Dynamo.Engine.CodeGeneration
         /// <param name="astNodes"></param>
         private void OnAstNodeBuilt(Guid nodeGuid, IEnumerable<AssociativeNode> astNodes)
         {
-            if (nodeContainer != null)
-                nodeContainer.OnCompiled(nodeGuid, astNodes);
+            nodeContainer?.OnCompiled(nodeGuid, astNodes);
         }
 
         private enum MarkFlag

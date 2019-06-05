@@ -495,8 +495,8 @@ import(""FFITarget.dll"");
                 ";
             thisTest.RunScriptSource(code);
             thisTest.SetErrorMessage("1467263 - Concatenating a string with an integer throws method resolution error");
-            thisTest.Verify("b1", "a{1,2}");
-            thisTest.Verify("b2", "a{1,FFITarget.ClassFunctionality}");
+            thisTest.Verify("b1", "a[1,2]");
+            thisTest.Verify("b2", "a[1,FFITarget.ClassFunctionality]");
         }
 
         [Test]

@@ -849,5 +849,16 @@ namespace Dynamo.Tests
             AssertPreviewValue("9c1ee001-352d-480f-a8f5-757804d0f107", "中文");
         }
         #endregion
+
+        #region Test string from array
+        [Test]
+        public void TestStringFromArray()
+        {
+            string testFilePath = Path.Combine(localDynamoStringTestFolder, "TestStringFromArrayPreview.dyn");
+            RunModel(testFilePath);
+
+            AssertPreviewValue("c27d9e05-45f7-4aac-8f53-a9e485e0f9c0", "[1,2,3]");
+        }
+        #endregion
     }
 }
