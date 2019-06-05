@@ -43,7 +43,7 @@ namespace Dynamo.Notifications
 
         private void UnregisterEventHandlers()
         {
-            viewLoadedParams.NotificationRecieved -= notificationHandler;
+            viewLoadedParams.NotificationReceived -= notificationHandler;
             Notifications.CollectionChanged -= notificationsMenuItem.NotificationsChangeHandler;
         }
 
@@ -58,7 +58,7 @@ namespace Dynamo.Notifications
                 Notifications.Add(notificationMessage);
             });
 
-            p.NotificationRecieved += notificationHandler;
+            p.NotificationReceived += notificationHandler;
              
             //add a new menuItem to the Dynamo mainMenu.
             notificationsMenuItem = new NotificationsMenuItem(this);

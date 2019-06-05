@@ -1663,7 +1663,7 @@ d;
             string src = @"a = 2.3;
 b = a * 3;
 //Expected : b = 6.9;
-//Recieved : b = 6.8999999999999995;
+//Received : b = 6.8999999999999995;
 ";
             WatchTestFx.GeneratePrintStatements(src, ref map);
             WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
@@ -15575,12 +15575,12 @@ x = false;
 test2 = a2;
 a2 = 3.0;
 a2 = 3.3;
-t2 = test2; // expected : 3.3; recieved : 3.0
+t2 = test2; // expected : 3.3; received : 3.0
 a1 = [ 1.0, 2.0];
 test1 = a1[1]; 
 a1[1] = 3.0;
 a1[1] = 3.3;
-t1 = test1; // expected : 3.3; recieved : 3.0
+t1 = test1; // expected : 3.3; received : 3.0
 ";
             WatchTestFx.GeneratePrintStatements(src, ref map);
             WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);

@@ -86,7 +86,7 @@ namespace Dynamo.Tests
             executive = ready.CommandExecutive;
             Assert.IsTrue(ready.WorkspaceModels.Any());
             Assert.IsNotNull(ready.CurrentWorkspaceModel);
-            ready.NotificationRecieved += (Logging.NotificationMessage obj) => message = obj;
+            ready.NotificationReceived += (Logging.NotificationMessage obj) => message = obj;
         }
 
         [Test]
