@@ -196,12 +196,14 @@ namespace Dynamo.PackageManager
                 currentWorkspace = ws;
             }
         }
-
+        
         private PackageDependencyInfo GetNodePackageFromAssemblyName(AssemblyName assemblyName)
         {
             if (NodePackageDictionary != null && NodePackageDictionary.ContainsKey(assemblyName.FullName))
             {
                 var p = NodePackageDictionary[assemblyName.FullName].FirstOrDefault();
+                // Return a copy of the PackageDependencyInfo so that a workspace doesn't modify it
+                // TODO Split PackageDependencyInfo into two types
                 return new PackageDependencyInfo(p.Name, p.Version);
             }
             return null;
@@ -212,6 +214,7 @@ namespace Dynamo.PackageManager
             if (CustomNodePackageDictionary != null && CustomNodePackageDictionary.ContainsKey(functionID))
             {
                 var p = CustomNodePackageDictionary[functionID].FirstOrDefault();
+                // Return a copy of the PackageDependencyInfo so that a workspace doesn't modify it
                 return new PackageDependencyInfo(p.Name, p.Version);
             }
             return null;

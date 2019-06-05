@@ -98,5 +98,6 @@ namespace Dynamo.Graph.Workspaces
             }
             return false;
         }
+        //TODO override GetHashCode
     }
 }
