@@ -314,9 +314,9 @@ namespace Dynamo.Logging
             }
         }
 
-        internal void SyncNotifications(NotificationMessage msg)
+        internal void ClearNotifications()
         {
-            Notifications.Remove(msg);
+            Notifications.Clear();
         }
 
         /// <summary>

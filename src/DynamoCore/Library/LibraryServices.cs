@@ -612,7 +612,7 @@ namespace Dynamo.Engine
                     foreach (ErrorEntry error in LibraryManagementCore.BuildStatus.Errors)
                     {
                         Log(error.Message, WarningLevel.Moderate);
-                        errorMessage += error.Message + "\n";
+                        errorMessage += "\n" + error.Message;
                     }
 
                     throw new Exception(errorMessage);

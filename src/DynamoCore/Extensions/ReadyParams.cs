@@ -84,9 +84,9 @@ namespace Dynamo.Extensions
         /// </summary>
         public event Action<Logging.NotificationMessage> NotificationRecieved;
 
-        public void SyncNotifications(NotificationMessage msg)
+        public void ClearNotifications()
         {
-            dynamoModel.Logger.SyncNotifications(msg);
+            dynamoModel.Logger.ClearNotifications();
         }
 
         private void OnNotificationRecieved(Logging.NotificationMessage notification)

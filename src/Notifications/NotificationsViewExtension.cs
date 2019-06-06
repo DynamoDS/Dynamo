@@ -48,7 +48,6 @@ namespace Dynamo.Notifications
         {
             viewLoadedParams.NotificationRecieved -= notificationHandler;
             Notifications.CollectionChanged -= notificationsMenuItem.NotificationsChangeHandler;
-            Notifications.CollectionChanged -= SyncNotificationsHandler;
         }
 
         public void Loaded(ViewLoadedParams p)
@@ -56,7 +55,6 @@ namespace Dynamo.Notifications
             viewLoadedParams = p;
             dynamoWindow = p.DynamoWindow;
             Notifications = new ObservableCollection<Logging.NotificationMessage>();
-            Notifications.CollectionChanged += SyncNotificationsHandler;
             
             notificationHandler = (notificationMessage) =>
             {
@@ -75,22 +73,10 @@ namespace Dynamo.Notifications
             p.dynamoMenu.Items.Add(notificationsMenuItem.MenuItem);
         }
 
-        private void SyncNotificationsHandler(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
-        {
-            if(e.OldItems == null) return;
-
-            foreach (var item in e.OldItems)
-            {
-                if (item is NotificationMessage)
-                {
-                    viewLoadedParams.SyncNotifications(item as NotificationMessage);
-                }
-            }
-        }
-
         internal void AddNotifications()
         {
             Notifications.AddRange(viewLoadedParams.Notifications);
+            viewLoadedParams.ClearNotifications();
         }
 
         public void Shutdown()
