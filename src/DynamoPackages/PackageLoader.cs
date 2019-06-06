@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using Dynamo.Core;
 using Dynamo.Engine;
+using Dynamo.Exceptions;
 using Dynamo.Extensions;
 using Dynamo.Interfaces;
 using Dynamo.Logging;
@@ -311,11 +312,11 @@ namespace Dynamo.PackageManager
                 {
                     discoveredPkg = Package.FromJson(headerPath, AsLogger());
                     if (discoveredPkg == null)
-                        throw new Exception(String.Format(Properties.Resources.MalformedHeaderPackage, headerPath));
+                        throw new LibraryLoadFailedException(directory, String.Format(Properties.Resources.MalformedHeaderPackage, headerPath));
                 }
                 else
                 {
-                    throw new Exception(String.Format(Properties.Resources.NoHeaderPackage, headerPath));
+                    throw new LibraryLoadFailedException(directory, String.Format(Properties.Resources.NoHeaderPackage, headerPath));
                 }
 
                 // prevent duplicates
@@ -324,7 +325,7 @@ namespace Dynamo.PackageManager
                     this.Add(discoveredPkg);
                     return discoveredPkg; // success
                 }
-                throw new Exception(String.Format(Properties.Resources.DulicatedPackage, discoveredPkg.Name, discoveredPkg.RootDirectory));
+                throw new LibraryLoadFailedException(directory, String.Format(Properties.Resources.DulicatedPackage, discoveredPkg.Name, discoveredPkg.RootDirectory));
             }
             catch (Exception e)
             {

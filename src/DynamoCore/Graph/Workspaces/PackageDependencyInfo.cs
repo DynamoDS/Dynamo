@@ -28,6 +28,7 @@ namespace Dynamo.Graph.Workspaces
         /// </summary>
         internal HashSet<Guid> Nodes
         {
+
             get { return nodes; }
         }
         private HashSet<Guid> nodes;

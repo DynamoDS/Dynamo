@@ -337,7 +337,7 @@ namespace Dynamo.Logging
             var le = e as LibraryLoadFailedException;
             if (le != null)
             {
-                LogNotification("DynamoModel", le.ToString(), le.Message, le.Reason);
+                LogNotification(le.Source, le.ToString(), le.Message, le.Reason);
             }
             Log(e.GetType() + ":", LogLevel.Console);
             Log(e.Message, LogLevel.Console);
