@@ -61,6 +61,7 @@
     <None Include="Result\Result.json" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Process.JPG" />
     <Content Include="XML\CustomTestResult.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
