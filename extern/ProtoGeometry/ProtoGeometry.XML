@@ -3235,7 +3235,7 @@
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Surface.ByUnion(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Surface})">
             <summary>
-            Union a collection of surfaces into one surface. This method might return a polySurface if the resulting union is non-manifold or single faced.
+            Union a collection of surfaces into one surface. This method might return a polySurface if the resulting union is non-manifold or multi-faced.
             </summary>
             <param name="surfaces"> A collection of surfaces. </param>
             <returns>  </returns>
@@ -3385,7 +3385,7 @@
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Surface.Difference(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Surface})">
             <summary>
-            The boolean difference of this Surface and the union of input Surfaces. This method might return a polySurface if the resulting boolean is non-manifold or single faced.
+            The boolean difference of this Surface and the union of input Surfaces. This method might return a polySurface if the resulting boolean is non-manifold or multi-faced.
             </summary>
             <param name="others">  </param>
             <returns>  </returns>
