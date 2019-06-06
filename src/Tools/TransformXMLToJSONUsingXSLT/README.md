@@ -1,4 +1,4 @@
-# Transformation Tool from XML to Text
+# Transformation Tool from XML in format NUnit2 to Text
 
 Transformation Tool is an application to:.
 
@@ -41,8 +41,8 @@ Where C:\\DSCoreNodesTests.dll is the Dll that contains the set of test, DSCoreN
 | File | Type | Description
 | ------ | ------ | ------ |
 | TransformXMLToText | xslt | File used to transform from XML to Text
-| CustomTextResult | txt | File where results of the convertion will be
-| textFileWithFilters | txt | File where results of the convertion will be but with filters 
+| CustomTextResult | txt | File where results of the conversion will be
+| textFileWithFilters | txt | File where results of the conversion will be but with filters 
 | TestResult-Color_Tests | xml | File´s name can be different because is the file to transform and it is the result of the tests 
 
 Note : The names of the files  can be changed if it is needed.
@@ -68,5 +68,9 @@ This section is the filters that will be applied in case the entry applyFilters 
     <add key="DSEvaluationModelTest" value="DSEvaluationModelTest" />
   </Filters>
 ```
+### Diagram of process
+As a reference of the process you can see the image below.
+![diagram](Process.JPG)
+Note : Files that are the output of the process could be used as a data source to execute fast and slow tests in CI pipeline.
 
 **AutoDesk Dynamo Team**

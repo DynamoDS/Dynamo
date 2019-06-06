@@ -3,7 +3,7 @@
   <xsl:output method="text"/>
   <xsl:template match="/">
     {
-    <xsl:text>"Result":</xsl:text> [
+    <xsl:text>"Result":</xsl:text>[
     <xsl:apply-templates select="/" mode="DLL-Content" />
     
     <xsl:call-template name="CounterNext">
@@ -22,120 +22,7 @@
      <xsl:call-template name="GeneralTemplate">
       <xsl:with-param  name="prmDiffObject" select="'Class'"/>
       <xsl:with-param  name="prmLongPath" select="/Assembly/Module/Type/DeclarationDiffs/DiffItem"/>
-    </xsl:call-template>
-    
-    
-
-    <!--<xsl:call-template name="CounterNext">
-      <xsl:with-param  name="prmLongPath" select="/Assembly/Module/Type[count(DeclarationDiffs)=0]"/>
-    </xsl:call-template>
-
-    <xsl:call-template name="GeneralTemplateNoDeclarationDiffs">
-      <xsl:with-param  name="prmDiffObject" select="'Class'"/>
-      <xsl:with-param  name="prmLongPath" select="/Assembly/Module/Type[count(DeclarationDiffs)=0]"/>
-    </xsl:call-template>
-
-    <xsl:call-template name="CounterNext">
-      <xsl:with-param  name="prmLongPath" select="/Assembly/Module/Type/Field[count(DeclarationDiffs)=0]"/>
-    </xsl:call-template>
-
-    <xsl:call-template name="GeneralTemplateNoDeclarationDiffs">
-      <xsl:with-param  name="prmDiffObject" select="'Field'"/>
-      <xsl:with-param  name="prmLongPath" select="/Assembly/Module/Type/Field[count(DeclarationDiffs)=0]"/>
-    </xsl:call-template>
-
-    <xsl:call-template name="CounterNext">
-      <xsl:with-param  name="prmLongPath" select="/Assembly/Module/Type/Property[count(DeclarationDiffs)=0]"/>
-    </xsl:call-template>
-
-    <xsl:call-template name="GeneralTemplateNoDeclarationDiffs">
-      <xsl:with-param  name="prmDiffObject" select="'Property'"/>
-      <xsl:with-param  name="prmLongPath" select="/Assembly/Module/Type/Property[count(DeclarationDiffs)=0]"/>
-    </xsl:call-template>
-
-    <xsl:call-template name="CounterNext">
-      <xsl:with-param  name="prmLongPath" select="/Assembly/Module/Type/Method[count(DeclarationDiffs)=0]"/>
-    </xsl:call-template>
-
-    <xsl:call-template name="GeneralTemplateNoDeclarationDiffs">
-      <xsl:with-param  name="prmDiffObject" select="'Method'"/>
-      <xsl:with-param  name="prmLongPath" select="/Assembly/Module/Type/Method[count(DeclarationDiffs)=0]"/>
-    </xsl:call-template>
-
-    <xsl:call-template name="CounterNext">
-      <xsl:with-param  name="prmLongPath" select="/Assembly/Module/Type/DeclarationDiffs[count(CustomAttribute)>0]"/>
-    </xsl:call-template>
-
-    <xsl:call-template name="GeneralTemplateWithDeclarationDiffsCustomAttribute">
-      <xsl:with-param  name="prmDiffObject" select="'Class'"/>
-      <xsl:with-param  name="prmLongPath" select="/Assembly/Module/Type/DeclarationDiffs/CustomAttribute"/>
-    </xsl:call-template>
-
-    <xsl:call-template name="CounterNext">
-      <xsl:with-param  name="prmLongPath" select="/Assembly/Module/Type/DeclarationDiffs[count(DiffItem)>0]"/>
-    </xsl:call-template>
-
-    <xsl:call-template name="GeneralTemplateWithDeclarationDiffsDiffItem">
-      <xsl:with-param  name="prmDiffObject" select="'Class'"/>
-      <xsl:with-param  name="prmLongPath" select="/Assembly/Module/Type/DeclarationDiffs/DiffItem"/>
-    </xsl:call-template>
-
-    <xsl:call-template name="CounterNext">
-      <xsl:with-param  name="prmLongPath" select="/Assembly/Module/Type/Field/DeclarationDiffs[count(CustomAttribute)>0]"/>
-    </xsl:call-template>
-
-    <xsl:call-template name="GeneralTemplateWithDeclarationDiffsCustomAttribute">
-      <xsl:with-param  name="prmDiffObject" select="'Field'"/>
-      <xsl:with-param  name="prmLongPath" select="/Assembly/Module/Type/Field/DeclarationDiffs/CustomAttribute"/>
-    </xsl:call-template>
-
-    <xsl:call-template name="CounterNext">
-      <xsl:with-param  name="prmLongPath" select="/Assembly/Module/Type/Field/DeclarationDiffs[count(DiffItem)>0]"/>
-    </xsl:call-template>
-
-    <xsl:call-template name="GeneralTemplateWithDeclarationDiffsDiffItem">
-      <xsl:with-param  name="prmDiffObject" select="'Field'"/>
-      <xsl:with-param  name="prmLongPath" select="/Assembly/Module/Type/Field/DeclarationDiffs/DiffItem"/>
-    </xsl:call-template>
-
-    <xsl:call-template name="CounterNext">
-      <xsl:with-param  name="prmLongPath" select="/Assembly/Module/Type/Property/DeclarationDiffs[count(CustomAttribute)>0]"/>
-    </xsl:call-template>
-
-    <xsl:call-template name="GeneralTemplateWithDeclarationDiffsCustomAttribute">
-      <xsl:with-param  name="prmDiffObject" select="'Property'"/>
-      <xsl:with-param  name="prmLongPath" select="/Assembly/Module/Type/Property/DeclarationDiffs/CustomAttribute"/>
-    </xsl:call-template>
-
-    <xsl:call-template name="CounterNext">
-      <xsl:with-param  name="prmLongPath" select="/Assembly/Module/Type/Property/DeclarationDiffs[count(DiffItem)>0]"/>
-    </xsl:call-template>
-
-    <xsl:call-template name="GeneralTemplateWithDeclarationDiffsDiffItem">
-      <xsl:with-param  name="prmDiffObject" select="'Property'"/>
-      <xsl:with-param  name="prmLongPath" select="/Assembly/Module/Type/Property/DeclarationDiffs/DiffItem"/>
-    </xsl:call-template>
-
-    <xsl:call-template name="CounterNext">
-      <xsl:with-param  name="prmLongPath" select="/Assembly/Module/Type/Method/DeclarationDiffs[count(CustomAttribute)>0]"/>
-    </xsl:call-template>
-
-    <xsl:call-template name="GeneralTemplateWithDeclarationDiffsCustomAttribute">
-      <xsl:with-param  name="prmDiffObject" select="'Method'"/>
-      <xsl:with-param  name="prmLongPath" select="/Assembly/Module/Type/Method/DeclarationDiffs/CustomAttribute"/>
-    </xsl:call-template>
-
-    <xsl:call-template name="CounterNext">
-      <xsl:with-param  name="prmLongPath" select="/Assembly/Module/Type/Method/DeclarationDiffs[count(DiffItem)>0]"/>
-    </xsl:call-template>
-
-    <xsl:call-template name="GeneralTemplateWithDeclarationDiffsDiffItem">
-      <xsl:with-param  name="prmDiffObject" select="'Method'"/>
-      <xsl:with-param  name="prmLongPath" select="/Assembly/Module/Type/Method/DeclarationDiffs/DiffItem"/>
-    </xsl:call-template>
-
-    -->]
-
+    </xsl:call-template>]
     }
   </xsl:template>
 

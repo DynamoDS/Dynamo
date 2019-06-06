@@ -1,0 +1,1095 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<!--This file represents the results of running a test suite-->
+<test-results name="C:\msaldivar\Globant\Projects\Dynamo-master\Dynamo-master\bin\AnyCPU\Debug\DSCoreNodesTests.dll" total="228" errors="0" failures="0" not-run="228" inconclusive="0" ignored="0" skipped="228" invalid="0" date="2019-05-14" time="17:38:44">
+  <environment nunit-version="3.6.0.0" clr-version="4.0.30319.42000" os-version="Microsoft Windows NT 10.0.17763.0" platform="Win32NT" cwd="C:\Program Files (x86)\NUnit.org\nunit-console" machine-name="MX-IT01359" user="manuel.saldivar" user-domain="GLOBANT" />
+  <culture-info current-culture="es-MX" current-uiculture="en-US" />
+  <test-suite type="Assembly" name="C:\msaldivar\Globant\Projects\Dynamo-master\Dynamo-master\bin\AnyCPU\Debug\DSCoreNodesTests.dll" executed="True" result="Success" success="False" time="0.000" asserts="">
+    <properties>
+      <property name="_PID" value="12852" />
+      <property name="_APPDOMAIN" value="domain-" />
+    </properties>
+    <results>
+      <test-suite type="SetUpFixture" name="DSCoreNodesTests" executed="True" result="Success" success="False" time="0.000" asserts="">
+        <results>
+          <test-suite type="TestFixture" name="ColorTests" executed="True" result="Success" success="False" time="0.000" asserts="">
+            <results>
+              <test-case name="DSCoreNodesTests.ColorTests.TestAddColor" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.ColorTests.TestBlerp1" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.ColorTests.TestBlerp2" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                  <property name="_CATEGORIES" value="Failure" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.ColorTests.TestBlerp3" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.ColorTests.TestBrightness" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.ColorTests.TestBuildColorFrom1DRange" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.ColorTests.TestBuildColorFrom2DRange" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.ColorTests.TestComponents" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.ColorTests.TestConstructorByARGB" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.ColorTests.TestDivideColor" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.ColorTests.TestDivideColorByZero" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.ColorTests.TestHue" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.ColorTests.TestMultiplyColor" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.ColorTests.TestSaturation" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+            </results>
+          </test-suite>
+          <test-suite type="TestFixture" name="ComparisonTests" executed="True" result="Success" success="False" time="0.000" asserts="">
+            <results>
+              <test-case name="DSCoreNodesTests.ComparisonTests.GreaterThan_Doubles" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.ComparisonTests.GreaterThan_DoublesAndInts" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.ComparisonTests.GreaterThan_Ints" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.ComparisonTests.GreaterThan_Strings" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.ComparisonTests.GreaterThanOrEqual_Doubles" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.ComparisonTests.GreaterThanOrEqual_DoublesAndInts" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.ComparisonTests.GreaterThanOrEqual_Ints" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.ComparisonTests.GreaterThanOrEqual_Strings" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.ComparisonTests.LessThan_Doubles" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.ComparisonTests.LessThan_DoublesAndInts" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.ComparisonTests.LessThan_Ints" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.ComparisonTests.LessThan_Strings" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.ComparisonTests.LessThanOrEqual_Doubles" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.ComparisonTests.LessThanOrEqual_DoublesAndInts" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.ComparisonTests.LessThanOrEqual_Ints" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.ComparisonTests.LessThanOrEqual_Strings" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+            </results>
+          </test-suite>
+          <test-suite type="TestFixture" name="DateTimeTests" executed="True" result="Success" success="False" time="0.000" asserts="">
+            <results>
+              <test-case name="DSCoreNodesTests.DateTimeTests.DateTimeComponents" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.DateTimeTests.DateTimeWrappers" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.DateTimeTests.MaxValueTimeSpan" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.DateTimeTests.MinValueTimeSpan" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.DateTimeTests.NegateTimeSpan" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.DateTimeTests.TestDateTime_DayOfWeek" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.DateTimeTests.TestDateTime_Format" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.DateTimeTests.TestDateTime_Today" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.DateTimeTests.TimeSpanComponents" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.DateTimeTests.TimeSpanCreation" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.DateTimeTests.TimeSpanScaling" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.DateTimeTests.TimeSpanWrappers" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.DateTimeTests.ZeroTimeSpan" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+            </results>
+          </test-suite>
+          <test-suite type="TestFixture" name="ListTests" executed="True" result="Success" success="False" time="0.000" asserts="">
+            <results>
+              <test-case name="DSCoreNodesTests.ListTests.AddToList" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.ListTests.AllIndicesOf" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.ListTests.Chop1" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.ListTests.Chop2" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.ListTests.Chop3" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.ListTests.Chop4" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.ListTests.Chop5" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.ListTests.Chop6" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.ListTests.CleanNullsChangeIndices" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.ListTests.CleanNullsChangeIndicesEdgeCases" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.ListTests.CleanNullsPreserveIndices" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.ListTests.CleanNullsPreserveIndicesEdgeCases" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.ListTests.DropEveryNthValueFromList" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.ListTests.DropValuesFromList" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.ListTests.EmptyList" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.ListTests.FilterListByMask" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.ListTests.FirstIndexOf" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.ListTests.FirstInList" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.ListTests.FlattenListByAmount" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.ListTests.FlattenListCompletely" executed="True" result="Success" success="False" time="0.000" asserts="" />
+              <test-case name="DSCoreNodesTests.ListTests.GetFromList" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.ListTests.GroupByKey1" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.ListTests.GroupByKey2" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.ListTests.GroupByKey3" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.ListTests.GroupByKey4" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.ListTests.InsertToList" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.ListTests.IsEmptyList" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.ListTests.JoinLists" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.ListTests.LastInList" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.ListTests.ListCombinations" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.ListTests.ListContainsInSublists" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.ListTests.ListCount" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.ListTests.ListCountFalse" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.ListTests.ListCountTrue" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.ListTests.ListDiagonalLeft" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.ListTests.ListDiagonalRight" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.ListTests.ListIndexOf" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.ListTests.ListIsHomogeneous" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.ListTests.ListIsRectangular" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.ListTests.ListIsUniformDepth" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.ListTests.ListMaximumValue" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.ListTests.ListMaximumValueMixed" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.ListTests.ListMinimumValue" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.ListTests.ListMinimumValueMixed" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.ListTests.ListPermutations" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.ListTests.ListSetDifference" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.ListTests.ListSetIntersection" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.ListTests.ListSetUnion" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.ListTests.NormalizeDepthWithRank" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.ListTests.PartitionList" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.ListTests.RemoveMultipleValuesFromList" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.ListTests.RemoveMultipleValuesFromNestedList" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.ListTests.RemoveValueFromList" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.ListTests.ReorderList" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.ListTests.RepeatObject" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.ListTests.ReplaceItemAtIndex" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.ListTests.RestOfList" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.ListTests.ReverseList" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.ListTests.ShiftListIndices" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.ListTests.ShuffleList" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.ListTests.SortByKey1" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.ListTests.SortByKey2" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.ListTests.SortByKey3" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.ListTests.SortByKey4" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.ListTests.SortByKey5" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.ListTests.SortByKey6" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.ListTests.SortByKey7" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.ListTests.SortIndexByValue" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.ListTests.SortList" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.ListTests.SortMixedList1" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.ListTests.SortMixedList2" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.ListTests.SplitList" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.ListTests.Sublists" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.ListTests.TakeEveryNthValueFromList" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.ListTests.TakeListSlice" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.ListTests.TakeValuesFromList" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.ListTests.TransposeJaggedListOfLists" executed="True" result="Success" success="False" time="0.000" asserts="" />
+              <test-case name="DSCoreNodesTests.ListTests.TransposeListOfLists" executed="True" result="Success" success="False" time="0.000" asserts="" />
+              <test-case name="DSCoreNodesTests.ListTests.UniqueInBooleanList" executed="True" result="Success" success="False" time="0.000" asserts="" />
+              <test-case name="DSCoreNodesTests.ListTests.UniqueInCharList" executed="True" result="Success" success="False" time="0.000" asserts="" />
+              <test-case name="DSCoreNodesTests.ListTests.UniqueInCombineList" executed="True" result="Success" success="False" time="0.000" asserts="" />
+              <test-case name="DSCoreNodesTests.ListTests.UniqueInList" executed="True" result="Success" success="False" time="0.000" asserts="" />
+              <test-case name="DSCoreNodesTests.ListTests.UniqueInListWithPoints" executed="True" result="Success" success="False" time="0.000" asserts="" />
+              <test-case name="DSCoreNodesTests.ListTests.UniqueInNullList" executed="True" result="Success" success="False" time="0.000" asserts="" />
+              <test-case name="DSCoreNodesTests.ListTests.UniqueInStringList" executed="True" result="Success" success="False" time="0.000" asserts="" />
+            </results>
+          </test-suite>
+          <test-suite type="TestFixture" name="LogicTests" executed="True" result="Success" success="False" time="0.000" asserts="">
+            <results>
+              <test-case name="DSCoreNodesTests.LogicTests.Xor" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+            </results>
+          </test-suite>
+          <test-suite type="TestFixture" name="MathTests" executed="True" result="Success" success="False" time="0.000" asserts="">
+            <results>
+              <test-case name="DSCoreNodesTests.MathTests.Factorial" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.MathTests.GoldenRatio" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.MathTests.Log" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.MathTests.Log_Infinity" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.MathTests.Log_NegativeInput" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.MathTests.Map" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.MathTests.MapTo" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.MathTests.Sum" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.MathTests.Tan_NaN" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.MathTests.Test_RemapRange" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+            </results>
+          </test-suite>
+          <test-suite type="TestFixture" name="NodeWithUITests" executed="True" result="Success" success="False" time="0.000" asserts="">
+            <results>
+              <test-case name="DSCoreNodesTests.NodeWithUITests.IntegerSliderMaxValue" executed="True" result="Success" success="False" time="0.000" asserts="" />
+              <test-case name="DSCoreNodesTests.NodeWithUITests.SliderASTGeneration" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.NodeWithUITests.SliderMaxValue" executed="True" result="Success" success="False" time="0.000" asserts="" />
+              <test-case name="DSCoreNodesTests.NodeWithUITests.SliderMaxValueWithBigNum" executed="True" result="Success" success="False" time="0.000" asserts="" />
+            </results>
+          </test-suite>
+          <test-suite type="TestFixture" name="NumberTests" executed="True" result="Success" success="False" time="0.000" asserts="">
+            <results>
+              <test-case name="DSCoreNodesTests.NumberTests.SettingValueToLetterSucceeds" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.NumberTests.SettingValueToNumberSucceeds" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.NumberTests.SettingValueToRangeExpressionSucceeds" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+            </results>
+          </test-suite>
+          <test-suite type="TestFixture" name="ObjectTests" executed="True" result="Success" success="False" time="0.000" asserts="">
+            <results>
+              <test-case name="DSCoreNodesTests.ObjectTests.Test_Identity" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.ObjectTests.Type" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+            </results>
+          </test-suite>
+          <test-suite type="TestFixture" name="ProtoNodesTests" executed="True" result="Success" success="False" time="0.000" asserts="">
+            <results>
+              <test-case name="DSCoreNodesTests.ProtoNodesTests.CanDoSimpleLoft" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+            </results>
+          </test-suite>
+          <test-suite type="TestFixture" name="QuadtreeTests" executed="True" result="Success" success="False" time="0.000" asserts="">
+            <results>
+              <test-case name="DSCoreNodesTests.QuadtreeTests.Node_FindAllNodesUpLevel_FromLeafNode" executed="True" result="Success" success="False" time="0.000" asserts="" />
+              <test-case name="DSCoreNodesTests.QuadtreeTests.Node_FindAllNodesUpLevel_FromRootNode" executed="True" result="Success" success="False" time="0.000" asserts="" />
+              <test-case name="DSCoreNodesTests.QuadtreeTests.Node_FindNodeWhichContains_BadArgs" executed="True" result="Success" success="False" time="0.000" asserts="" />
+              <test-case name="DSCoreNodesTests.QuadtreeTests.Node_FindNodeWhichContains_GoodArgs" executed="True" result="Success" success="False" time="0.000" asserts="" />
+              <test-case name="DSCoreNodesTests.QuadtreeTests.Node_TryFind_BadArgs" executed="True" result="Success" success="False" time="0.000" asserts="" />
+              <test-case name="DSCoreNodesTests.QuadtreeTests.Node_TryFind_GoodArgs" executed="True" result="Success" success="False" time="0.000" asserts="" />
+              <test-case name="DSCoreNodesTests.QuadtreeTests.QuadTree_FindPointsInRectangle" executed="True" result="Success" success="False" time="0.000" asserts="" />
+              <test-case name="DSCoreNodesTests.QuadtreeTests.Quadtree_FindPointsWithinRadius_BadArgs" executed="True" result="Success" success="False" time="0.000" asserts="" />
+              <test-case name="DSCoreNodesTests.QuadtreeTests.Quadtree_FindPointsWithinRadius_GoodArgs" executed="True" result="Success" success="False" time="0.000" asserts="" />
+              <test-case name="DSCoreNodesTests.QuadtreeTests.QuadtreeByUVs_BadArgs" executed="True" result="Success" success="False" time="0.000" asserts="" />
+              <test-case name="DSCoreNodesTests.QuadtreeTests.QuadtreeByUVs_GoodArgs" executed="True" result="Success" success="False" time="0.000" asserts="" />
+              <test-case name="DSCoreNodesTests.QuadtreeTests.UVExtensions_Area" executed="True" result="Success" success="False" time="0.000" asserts="" />
+            </results>
+          </test-suite>
+          <test-suite type="TestFixture" name="StringTests" executed="True" result="Success" success="False" time="0.000" asserts="">
+            <results>
+              <test-case name="DSCoreNodesTests.StringTests.AllIndicesOf" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.StringTests.Center" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.StringTests.ChangeCase" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.StringTests.Concat" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.StringTests.Contains" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.StringTests.CountOccurences" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.StringTests.EndsWith" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.StringTests.IndexOf" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.StringTests.Insert" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.StringTests.Join" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.StringTests.LastIndexOf" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.StringTests.Length" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.StringTests.PadLeft" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.StringTests.PadRight" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.StringTests.Remove" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.StringTests.Replace" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.StringTests.Split" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.StringTests.StartsWith" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.StringTests.Substring" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.StringTests.ToLower" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.StringTests.ToNumber" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.StringTests.ToUpper" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.StringTests.TrimLeadingWhitespace" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.StringTests.TrimTrailingWhitespace" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.StringTests.TrimWhitespace" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+            </results>
+          </test-suite>
+          <test-suite type="TestFixture" name="ThreadTests" executed="True" result="Success" success="False" time="0.000" asserts="">
+            <results>
+              <test-case name="DSCoreNodesTests.ThreadTests.Thread_Pause" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="Failure" />
+                </properties>
+              </test-case>
+            </results>
+          </test-suite>
+          <test-suite type="TestFixture" name="WebTests" executed="True" result="Success" success="False" time="0.000" asserts="">
+            <results>
+              <test-case name="DSCoreNodesTests.WebTests.WebRequest_BadArgs" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.WebTests.WebRequest_EmptyUrl" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+              <test-case name="DSCoreNodesTests.WebTests.WebRequest_ValidArgs" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <properties>
+                  <property name="_CATEGORIES" value="UnitTests" />
+                </properties>
+              </test-case>
+            </results>
+          </test-suite>
+        </results>
+      </test-suite>
+      <test-suite type="Namespace" name="Dynamo" executed="True" result="Success" success="False" time="0.000" asserts="">
+        <results>
+          <test-suite type="Namespace" name="Tests" executed="True" result="Success" success="False" time="0.000" asserts="">
+            <results>
+              <test-suite type="TestFixture" name="ColorRangeTests" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <results>
+                  <test-case name="Dynamo.Tests.ColorRangeTests.ColorRange1D_ByColorsAndParameters_HandlesNullColors" executed="True" result="Success" success="False" time="0.000" asserts="" />
+                  <test-case name="Dynamo.Tests.ColorRangeTests.ColorRange1D_ByColorsAndParameters_HandlesNullParameters" executed="True" result="Success" success="False" time="0.000" asserts="" />
+                  <test-case name="Dynamo.Tests.ColorRangeTests.ColorRange1D_ByColorsAndParameters_HasSomeColorsIfNoneProvided" executed="True" result="Success" success="False" time="0.000" asserts="" />
+                  <test-case name="Dynamo.Tests.ColorRangeTests.ColorRange1D_ByColorsAndParameters_HasSomeColorsIfNothingProvided" executed="True" result="Success" success="False" time="0.000" asserts="" />
+                  <test-case name="Dynamo.Tests.ColorRangeTests.ColorRange1D_ByColorsAndParameters_HasSomeParametersIfNoneProvided" executed="True" result="Success" success="False" time="0.000" asserts="" />
+                  <test-case name="Dynamo.Tests.ColorRangeTests.ColorRange1D_ByColorsAndParameters_MakesSolidColorRangeWithOneColor" executed="True" result="Success" success="False" time="0.000" asserts="" />
+                  <test-case name="Dynamo.Tests.ColorRangeTests.ColorRange1D_ByColorsAndParameters_RemapsParametersThatAreOutOfRange" executed="True" result="Success" success="False" time="0.000" asserts="" />
+                  <test-case name="Dynamo.Tests.ColorRangeTests.ColorRange1D_ByColorsAndParameters_ValidArgs" executed="True" result="Success" success="False" time="0.000" asserts="" />
+                </results>
+              </test-suite>
+              <test-suite type="TestFixture" name="FileLibraryTests" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <results>
+                  <test-case name="Dynamo.Tests.FileLibraryTests.Directory_Contents" executed="True" result="Success" success="False" time="0.000" asserts="">
+                    <properties>
+                      <property name="_CATEGORIES" value="UnitTests" />
+                    </properties>
+                  </test-case>
+                  <test-case name="Dynamo.Tests.FileLibraryTests.Directory_ContentsRecursive" executed="True" result="Success" success="False" time="0.000" asserts="">
+                    <properties>
+                      <property name="_CATEGORIES" value="UnitTests" />
+                    </properties>
+                  </test-case>
+                  <test-case name="Dynamo.Tests.FileLibraryTests.Directory_Copy" executed="True" result="Success" success="False" time="0.000" asserts="">
+                    <properties>
+                      <property name="_CATEGORIES" value="UnitTests" />
+                    </properties>
+                  </test-case>
+                  <test-case name="Dynamo.Tests.FileLibraryTests.Directory_Delete" executed="True" result="Success" success="False" time="0.000" asserts="">
+                    <properties>
+                      <property name="_CATEGORIES" value="UnitTests" />
+                    </properties>
+                  </test-case>
+                  <test-case name="Dynamo.Tests.FileLibraryTests.Directory_Exists" executed="True" result="Success" success="False" time="0.000" asserts="">
+                    <properties>
+                      <property name="_CATEGORIES" value="UnitTests" />
+                    </properties>
+                  </test-case>
+                  <test-case name="Dynamo.Tests.FileLibraryTests.Directory_FromPath" executed="True" result="Success" success="False" time="0.000" asserts="">
+                    <properties>
+                      <property name="_CATEGORIES" value="UnitTests" />
+                    </properties>
+                  </test-case>
+                  <test-case name="Dynamo.Tests.FileLibraryTests.Directory_Move" executed="True" result="Success" success="False" time="0.000" asserts="">
+                    <properties>
+                      <property name="_CATEGORIES" value="UnitTests" />
+                    </properties>
+                  </test-case>
+                  <test-case name="Dynamo.Tests.FileLibraryTests.File_AbsolutePath_Exists" executed="True" result="Success" success="False" time="0.000" asserts="">
+                    <properties>
+                      <property name="_CATEGORIES" value="UnitTests" />
+                    </properties>
+                  </test-case>
+                  <test-case name="Dynamo.Tests.FileLibraryTests.File_AbsolutePath_RelativePathDontExist" executed="True" result="Success" success="False" time="0.000" asserts="">
+                    <properties>
+                      <property name="_CATEGORIES" value="UnitTests" />
+                    </properties>
+                  </test-case>
+                  <test-case name="Dynamo.Tests.FileLibraryTests.File_AbsolutePath_WithFullPathInput_ReturnsInput" executed="True" result="Success" success="False" time="0.000" asserts="">
+                    <properties>
+                      <property name="_CATEGORIES" value="UnitTests" />
+                    </properties>
+                  </test-case>
+                  <test-case name="Dynamo.Tests.FileLibraryTests.File_AbsolutePath_WithoutSession_ReturnsHintPath" executed="True" result="Success" success="False" time="0.000" asserts="">
+                    <properties>
+                      <property name="_CATEGORIES" value="UnitTests" />
+                    </properties>
+                  </test-case>
+                  <test-case name="Dynamo.Tests.FileLibraryTests.File_AbsolutePath_WithValidHintPath_ReturnsHintPath" executed="True" result="Success" success="False" time="0.000" asserts="">
+                    <properties>
+                      <property name="_CATEGORIES" value="UnitTests" />
+                    </properties>
+                  </test-case>
+                  <test-case name="Dynamo.Tests.FileLibraryTests.File_AppendText" executed="True" result="Success" success="False" time="0.000" asserts="">
+                    <properties>
+                      <property name="_CATEGORIES" value="UnitTests" />
+                    </properties>
+                  </test-case>
+                  <test-case name="Dynamo.Tests.FileLibraryTests.File_Copy" executed="True" result="Success" success="False" time="0.000" asserts="">
+                    <properties>
+                      <property name="_CATEGORIES" value="UnitTests" />
+                    </properties>
+                  </test-case>
+                  <test-case name="Dynamo.Tests.FileLibraryTests.File_Delete" executed="True" result="Success" success="False" time="0.000" asserts="">
+                    <properties>
+                      <property name="_CATEGORIES" value="UnitTests" />
+                    </properties>
+                  </test-case>
+                  <test-case name="Dynamo.Tests.FileLibraryTests.File_Exists" executed="True" result="Success" success="False" time="0.000" asserts="">
+                    <properties>
+                      <property name="_CATEGORIES" value="UnitTests" />
+                    </properties>
+                  </test-case>
+                  <test-case name="Dynamo.Tests.FileLibraryTests.File_FromPath" executed="True" result="Success" success="False" time="0.000" asserts="">
+                    <properties>
+                      <property name="_CATEGORIES" value="UnitTests" />
+                    </properties>
+                  </test-case>
+                  <test-case name="Dynamo.Tests.FileLibraryTests.File_Move" executed="True" result="Success" success="False" time="0.000" asserts="">
+                    <properties>
+                      <property name="_CATEGORIES" value="UnitTests" />
+                    </properties>
+                  </test-case>
+                  <test-case name="Dynamo.Tests.FileLibraryTests.File_ReadText" executed="True" result="Success" success="False" time="0.000" asserts="">
+                    <properties>
+                      <property name="_CATEGORIES" value="UnitTests" />
+                    </properties>
+                  </test-case>
+                  <test-case name="Dynamo.Tests.FileLibraryTests.File_WriteText" executed="True" result="Success" success="False" time="0.000" asserts="">
+                    <properties>
+                      <property name="_CATEGORIES" value="UnitTests" />
+                    </properties>
+                  </test-case>
+                  <test-case name="Dynamo.Tests.FileLibraryTests.FilePath_FileName" executed="True" result="Success" success="False" time="0.000" asserts="">
+                    <properties>
+                      <property name="_CATEGORIES" value="UnitTests" />
+                    </properties>
+                  </test-case>
+                  <test-case name="Dynamo.Tests.FileLibraryTests.Image_Dimensions" executed="True" result="Success" success="False" time="0.000" asserts="">
+                    <properties>
+                      <property name="_CATEGORIES" value="UnitTests" />
+                    </properties>
+                  </test-case>
+                  <test-case name="Dynamo.Tests.FileLibraryTests.Image_FromPixels" executed="True" result="Success" success="False" time="0.000" asserts="">
+                    <properties>
+                      <property name="_CATEGORIES" value="UnitTests" />
+                    </properties>
+                  </test-case>
+                  <test-case name="Dynamo.Tests.FileLibraryTests.Image_Pixels" executed="True" result="Success" success="False" time="0.000" asserts="">
+                    <properties>
+                      <property name="_CATEGORIES" value="UnitTests" />
+                    </properties>
+                  </test-case>
+                  <test-case name="Dynamo.Tests.FileLibraryTests.Image_ReadFromFile" executed="True" result="Success" success="False" time="0.000" asserts="">
+                    <properties>
+                      <property name="_CATEGORIES" value="UnitTests" />
+                    </properties>
+                  </test-case>
+                  <test-case name="Dynamo.Tests.FileLibraryTests.Image_Write" executed="True" result="Success" success="False" time="0.000" asserts="">
+                    <properties>
+                      <property name="_CATEGORIES" value="UnitTests" />
+                    </properties>
+                  </test-case>
+                  <test-case name="Dynamo.Tests.FileLibraryTests.SimpleWrappers" executed="True" result="Success" success="False" time="0.000" asserts="">
+                    <properties>
+                      <property name="_CATEGORIES" value="UnitTests" />
+                    </properties>
+                  </test-case>
+                </results>
+              </test-suite>
+              <test-suite type="TestFixture" name="FileWritingTests" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <results>
+                  <test-case name="Dynamo.Tests.FileWritingTests.FileWriter" executed="True" result="Success" success="False" time="0.000" asserts="" />
+                  <test-case name="Dynamo.Tests.FileWritingTests.ImageFileWriter" executed="True" result="Success" success="False" time="0.000" asserts="" />
+                </results>
+              </test-suite>
+              <test-suite type="TestFixture" name="ZeroTouchMigrationFileTests" executed="True" result="Success" success="False" time="0.000" asserts="">
+                <results>
+                  <test-case name="Dynamo.Tests.ZeroTouchMigrationFileTests.TestZeroTouchMigrationFile" executed="True" result="Success" success="False" time="0.000" asserts="" />
+                </results>
+              </test-suite>
+            </results>
+          </test-suite>
+        </results>
+      </test-suite>
+    </results>
+  </test-suite>
+</test-results>
