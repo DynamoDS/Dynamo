@@ -71,6 +71,6 @@ This section is the filters that will be applied in case the entry applyFilters 
 ### Diagram of process
 As a reference of the process you can see the image below.
 ![diagram](Process.JPG)
-Note : Files that are the output of the process could be used as a data source to execute fast and slow tests in parallel.
+Note : Files that are the output of the process could be used as a data source to execute fast and slow tests in CI pipeline.
 
 **AutoDesk Dynamo Team**
