@@ -1175,17 +1175,21 @@ namespace Dynamo.Engine
 
         public class LibraryLoadedEventArgs : EventArgs
         {
-            //public LibraryLoadedEventArgs(string libraryPath)
-            //{
-            //    LibraryPath = libraryPath;
-            //}
+            // TODO: Remove in 3.0
+            [Obsolete]
+            public LibraryLoadedEventArgs(string libraryPath)
+            {
+                LibraryPath = libraryPath;
+            }
 
             public LibraryLoadedEventArgs(IEnumerable<string> libraryPaths)
             {
                 LibraryPaths = libraryPaths;
             }
 
-            //public string LibraryPath { get; }
+            // TODO: Remove in 3.0
+            [Obsolete]
+            public string LibraryPath { get; }
 
             public IEnumerable<string> LibraryPaths { get; }
         }
