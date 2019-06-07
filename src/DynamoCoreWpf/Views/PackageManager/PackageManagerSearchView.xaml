@@ -444,7 +444,7 @@
 
                                 <StackPanel Orientation="Horizontal" Name="SearchEle" >
 
-                                    <StackPanel Width ="270" >
+                                    <StackPanel Width ="300" >
 
                                         <TextBlock FontSize="14" Name="name" Text="{Binding Path=Name}" Foreground="White" Padding="5"/>
                                         <TextBlock FontSize="10" Name="error" Text="{Binding Path=ErrorString}" Foreground="White"  Padding="5"/>
