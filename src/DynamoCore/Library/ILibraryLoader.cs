@@ -13,6 +13,7 @@ namespace Dynamo.Library
         /// </summary>
         void LoadNodeLibrary(Assembly library);
 
-        void LoadPackages(IEnumerable<Assembly> assemblies);
+        //TODO: Add LoadPackages to interface in 3.0
+        //void LoadPackages(IEnumerable<Assembly> assemblies);
     }
 }

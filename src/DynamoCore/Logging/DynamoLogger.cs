@@ -141,7 +141,7 @@ namespace Dynamo.Logging
             }
         }
 
-        internal HashSet<NotificationMessage> Notifications { get; }
+        internal List<NotificationMessage> Notifications { get; }
 
         /// <summary>
         /// Initializes a new instance of <see cref="DynamoLogger"/> class
@@ -159,7 +159,7 @@ namespace Dynamo.Logging
                 WarningLevel = WarningLevel.Mild;
                 Warning = "";
 
-                Notifications = new HashSet<NotificationMessage>();
+                Notifications = new List<NotificationMessage>();
 
                 StartLogging(logDirectory);
             }
