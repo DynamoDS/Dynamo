@@ -98,6 +98,10 @@ namespace Dynamo.Graph.Workspaces
             }
             return false;
         }
-        //TODO override GetHashCode
+
+        public override int GetHashCode()
+        {
+            return Name.GetHashCode() ^ Version.GetHashCode();
+        }
     }
 }
