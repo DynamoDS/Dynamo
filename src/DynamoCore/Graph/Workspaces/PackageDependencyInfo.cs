@@ -99,6 +99,10 @@ namespace Dynamo.Graph.Workspaces
             return false;
         }
 
+        /// <summary>
+        /// Gets the hashcode for this PackageDependencyInfo
+        /// </summary>
+        /// <returns></returns>
         public override int GetHashCode()
         {
             return Name.GetHashCode() ^ Version.GetHashCode();
