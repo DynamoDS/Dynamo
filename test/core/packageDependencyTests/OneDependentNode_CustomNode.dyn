@@ -1,0 +1,96 @@
+{
+  "Uuid": "fa1ac086-1fc2-4197-90a3-96aac6bfce4c",
+  "IsCustomNode": false,
+  "Description": null,
+  "Name": "OneDependentNode_CustomNode",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CustomNodes.Function, DynamoCore",
+      "FunctionSignature": "6d1e3caa-780d-40fd-a045-766b3170235d",
+      "FunctionType": "Graph",
+      "NodeType": "FunctionNode",
+      "Id": "d768013efdea4d2386206bca79ccdcce",
+      "Inputs": [
+        {
+          "Id": "8735aea6f2444ac0bc3cecac9cf1288d",
+          "Name": "Number",
+          "Description": "var[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "de4ba7c3e07d478a89733e208df17d17",
+          "Name": "Precision",
+          "Description": "var[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "a52312f374fc43a9b208b53ddaffdad4",
+          "Name": "Floor",
+          "Description": "return value",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Rounds a number *down* to a specified precision"
+    }
+  ],
+  "Connectors": [],
+  "Dependencies": [
+    "6d1e3caa-780d-40fd-a045-766b3170235d"
+  ],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.3.0.5204",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "Round Down To Precision",
+        "Id": "d768013efdea4d2386206bca79ccdcce",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 290.25,
+        "Y": 328.5
+      }
+    ],
+    "Annotations": [],
+    "X": 0.0,
+    "Y": 0.0,
+    "Zoom": 1.0
+  }
+}
