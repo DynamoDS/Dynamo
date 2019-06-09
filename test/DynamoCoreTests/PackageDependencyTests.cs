@@ -38,23 +38,26 @@ namespace Dynamo.Tests
             {
                 return extensions.First().PackageLoader;
             }
-
             return null;
         }
 
-        internal void LoadPackage(string package)
+        private void LoadPackage(string packageDirectory)
         {
-            var pkgDir = Path.Combine(PackagesDirectory, package);
+            CurrentDynamoModel.PreferenceSettings.CustomPackageFolders.Add(packageDirectory);
             var loader = GetPackageLoader();
-            var pkg = loader.ScanPackageDirectory(pkgDir);
+            var pkg = loader.ScanPackageDirectory(packageDirectory);
             loader.Load(pkg);
         }
 
-        internal PackageDependencyInfo GetPackageInfo(string packageName)
+        private PackageDependencyInfo GetPackageInfo(string packageName)
         {
             var loader = GetPackageLoader();
             var package = loader.LocalPackages.Where(p => p.Name == packageName).FirstOrDefault();
-            return new PackageDependencyInfo(package.Name, new Version(package.VersionName));
+            if (package != null)
+            {
+                return new PackageDependencyInfo(package.Name, new Version(package.VersionName));
+            }
+            return null;
         }
 
         private NodeModel GetNodeInstance(string creationName)
@@ -269,6 +272,22 @@ namespace Dynamo.Tests
         [Test]
         public void PackageDependenciesUpdatedAfterPackageAndNodeAdded()
         {
+            // Assert ZTTestPackage is not already loaded
+            var pi = GetPackageInfo("ZTTestPackage");
+            Assert.IsNull(pi);
+
+            // Load package
+            string packageDirectory = Path.Combine(TestDirectory, @"core\packageDependencyTests\ZTTestPackage");
+            LoadPackage(packageDirectory);
+            pi = GetPackageInfo("ZTTestPackage");
+
+            // Add node from package
+            var node = GetNodeInstance("ZTTestPackage.RRTestClass.RRTestClass");
+            CurrentDynamoModel.AddNodeToCurrentWorkspace(node, true);
+
+            // Assert new package dependency is collected
+            var packageDependencies = CurrentDynamoModel.CurrentWorkspace.PackageDependencies;
+            Assert.Contains(pi, packageDependencies);
         }
 
         [Test]
