@@ -178,7 +178,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(new PackageDependencyInfo("Custom Rounding", new Version("0.1.4")), package);
             Assert.AreEqual(1, package.Nodes.Count);
         }
-
+        
         [Test]
         public void PackageDependenciesUpdatedAfterNodesAdded()
         {
@@ -212,7 +212,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(2, packageDependencies.Count);
             foreach(var package in packageDependencies)
             {
-                   if (package.Equals(package1))
+                if (package.Equals(package1))
                 {
                     // Package 1 should have two nodes
                     Assert.AreEqual(2, package.Nodes.Count);
@@ -228,6 +228,42 @@ namespace Dynamo.Tests
         [Test]
         public void PackageDependenciesUpdatedAfterNodeRemoved()
         {
+            // Load JSON file graph
+            string path = Path.Combine(TestDirectory, @"core\packageDependencyTests\TwoDependentNodes_OnePacakge.dyn");
+            OpenModel(path);
+
+            // Get the two dependent nodes
+            Assert.AreEqual(2, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+            var node1 = CurrentDynamoModel.CurrentWorkspace.Nodes.ToList()[0];
+            var node2 = CurrentDynamoModel.CurrentWorkspace.Nodes.ToList()[1];
+
+            // Verify package dependencies
+            var packageDependencies = CurrentDynamoModel.CurrentWorkspace.PackageDependencies;
+            Assert.AreEqual(1, packageDependencies.Count);
+            Assert.AreEqual(2, packageDependencies.First().Nodes.Count);
+            
+            // Remove one node and assert is is no longer listed as a dependent node
+            CurrentDynamoModel.CurrentWorkspace.RemoveAndDisposeNode(node1);
+            packageDependencies = CurrentDynamoModel.CurrentWorkspace.PackageDependencies;
+            Assert.AreEqual(1, packageDependencies.Count);
+            Assert.AreEqual(1, packageDependencies.First().Nodes.Count);
+            Assert.True(!packageDependencies.First().Nodes.Contains(node1.GUID));
+
+            // Remove te second node and assert package dependencies is now empty
+            CurrentDynamoModel.CurrentWorkspace.RemoveAndDisposeNode(node2);
+            packageDependencies = CurrentDynamoModel.CurrentWorkspace.PackageDependencies;
+            Assert.AreEqual(0, packageDependencies.Count);
+
+            // Add another node from the "Dynamo Samples" package
+            // and assert that the two removed nodes do not return
+            var node3 = GetNodeInstance("Examples.PeriodicIncrement.Increment");
+            CurrentDynamoModel.AddNodeToCurrentWorkspace(node3, true);
+            packageDependencies = CurrentDynamoModel.CurrentWorkspace.PackageDependencies;
+            Assert.AreEqual(1, packageDependencies.Count);
+            Assert.AreEqual(1, packageDependencies.First().Nodes.Count);
+            Assert.True(!packageDependencies.First().Nodes.Contains(node1.GUID));
+            Assert.True(!packageDependencies.First().Nodes.Contains(node2.GUID));
+            Assert.True(packageDependencies.First().Nodes.Contains(node3.GUID));
         }
 
         [Test]
