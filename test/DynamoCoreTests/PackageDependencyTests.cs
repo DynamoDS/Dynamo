@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.IO;
 using Dynamo.Configuration;
-using Dynamo.Extensions;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Interfaces;
@@ -232,7 +229,7 @@ namespace Dynamo.Tests
         public void PackageDependenciesUpdatedAfterNodeRemoved()
         {
             // Load JSON file graph
-            string path = Path.Combine(TestDirectory, @"core\packageDependencyTests\TwoDependentNodes_OnePacakge.dyn");
+            string path = Path.Combine(TestDirectory, @"core\packageDependencyTests\TwoDependentNodes_OnePackage.dyn");
             OpenModel(path);
 
             // Get the two dependent nodes
@@ -293,6 +290,17 @@ namespace Dynamo.Tests
         [Test]
         public void PackageDependenciesPreservedWhenPackagesNotLoaded()
         {
+            // Load JSON file graph
+            string path = Path.Combine(TestDirectory, @"core\packageDependencyTests\UnloadedPackage.dyn");
+            OpenModel(path);
+
+            // Assert ZTTestPackage is not loaded
+            var pi = GetPackageInfo("ZTTestPackage");
+            Assert.IsNull(pi);
+
+            // Assert ZTTestPackage is still a package dependency
+            var packageDependencies = CurrentDynamoModel.CurrentWorkspace.PackageDependencies;
+            Assert.Contains(new PackageDependencyInfo("ZTTestPackage", new Version("0.0.1")), packageDependencies);
         }
 
         [Test]
