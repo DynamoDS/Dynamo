@@ -32,10 +32,14 @@ namespace Dynamo.Extensions
             model.LoadNodeLibrary(library);
         }
 
+        /// <summary>
+        /// Loads packages for import into VM and node search.
+        /// </summary>
+        /// <param name="assemblies"></param>
         public void LoadPackages(IEnumerable<Assembly> assemblies)
         {
             var libraryPaths = assemblies.Select(x => x.Location);
-            model.LibraryServices.OnLibrariesLoaded(new LibraryServices.LibraryLoadedEventArgs(libraryPaths));
+            model.LibraryServices.OnLibrariesImported(new LibraryServices.LibraryLoadedEventArgs(libraryPaths));
         }
     }
 }

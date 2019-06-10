@@ -141,7 +141,7 @@ namespace Dynamo.PackageManager
             }
         }
 
-        internal void OnPackagesLoaded(IEnumerable<Assembly> assemblies)
+        private void OnPackagesLoaded(IEnumerable<Assembly> assemblies)
         {
             PackagesLoaded?.Invoke(assemblies);
         }
@@ -232,8 +232,12 @@ namespace Dynamo.PackageManager
 
                 }
             }
-            
-            foreach (var pkg in LocalPackages)
+            LoadPackages(LocalPackages);
+        }
+
+        public void LoadPackages(IEnumerable<Package> packages)
+        {
+            foreach (var pkg in packages)
             {
                 Load(pkg);
             }
@@ -242,6 +246,7 @@ namespace Dynamo.PackageManager
                 LocalPackages.SelectMany(x => x.EnumerateAssembliesInBinDirectory().Where(y => y.IsNodeLibrary));
             OnPackagesLoaded(assemblies.Select(x => x.Assembly));
         }
+
         public void LoadCustomNodesAndPackages(LoadPackageParams loadPackageParams, CustomNodeManager customNodeManager)
         {
             foreach (var path in loadPackageParams.Preferences.CustomPackageFolders)

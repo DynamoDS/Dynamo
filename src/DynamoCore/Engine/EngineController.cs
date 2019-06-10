@@ -198,7 +198,7 @@ namespace Dynamo.Engine
         internal void ImportLibrary(string library)
         {
             LibraryServices.ImportLibrary(library);
-            LibraryServices.OnLibrariesLoaded(new LibraryServices.LibraryLoadedEventArgs(new List<string> {library}));
+            LibraryServices.OnLibrariesImported(new LibraryServices.LibraryLoadedEventArgs(new List<string> {library}));
         }
 
         #endregion

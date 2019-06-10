@@ -624,9 +624,7 @@ namespace Dynamo.Engine
                     throwOnFailure: !isExplicitlyImportedLib));
                 return false;
             }
-
-            var libraries = new List<string> {library};
-            importedLibraries.AddRange(libraries);
+            importedLibraries.Add(library);
 
             return true;
         }
@@ -1103,7 +1101,7 @@ namespace Dynamo.Engine
                 handler(this, e);
         }
 
-        internal void OnLibrariesLoaded(LibraryLoadedEventArgs e)
+        internal void OnLibrariesImported(LibraryLoadedEventArgs e)
         {
             var handler = LibraryLoaded;
             if (handler != null)
