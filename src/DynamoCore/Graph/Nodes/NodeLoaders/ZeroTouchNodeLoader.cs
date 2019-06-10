@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -90,6 +91,7 @@ namespace Dynamo.Graph.Nodes.NodeLoaders
                         try
                         {
                             libraryServices.ImportLibrary(assembly);
+                            libraryServices.OnLibrariesLoaded(new LibraryServices.LibraryLoadedEventArgs(new List<string> { assembly }));
                             descriptor = libraryServices.GetFunctionDescriptor(assembly, function);
                         }
                         catch (LibraryLoadFailedException)
