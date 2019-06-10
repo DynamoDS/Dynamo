@@ -5,6 +5,8 @@ VisualStudioVersion = 15.0.28307.572
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TransformXMLToJSONUsingXSLT", "TransformXMLToJSONUsingXSLT.csproj", "{676671D5-76B6-4E3B-9244-5323BF6B8EFE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TransformXMLToCSVTool", "TransformXMLToCSVTool.csproj", "{BED808FC-E6E4-4A2F-A609-2919E19E1A66}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{676671D5-76B6-4E3B-9244-5323BF6B8EFE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{676671D5-76B6-4E3B-9244-5323BF6B8EFE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{676671D5-76B6-4E3B-9244-5323BF6B8EFE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BED808FC-E6E4-4A2F-A609-2919E19E1A66}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BED808FC-E6E4-4A2F-A609-2919E19E1A66}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BED808FC-E6E4-4A2F-A609-2919E19E1A66}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BED808FC-E6E4-4A2F-A609-2919E19E1A66}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
