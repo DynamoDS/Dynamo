@@ -5,6 +5,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using Dynamo.Logging;
+using Dynamo.ViewModels;
 using Dynamo.Wpf.Extensions;
 using Microsoft.Practices.Prism;
 
@@ -16,6 +17,7 @@ namespace Dynamo.Notifications
         private Action<Logging.NotificationMessage> notificationHandler;
         public ObservableCollection<Logging.NotificationMessage> Notifications { get; private set; }
         private NotificationsMenuItem notificationsMenuItem;
+        private DynamoLogger logger;
 
         public string Name
         {
@@ -54,6 +56,9 @@ namespace Dynamo.Notifications
         {
             viewLoadedParams = p;
             dynamoWindow = p.DynamoWindow;
+            var viewModel = dynamoWindow.DataContext as DynamoViewModel;
+            logger = viewModel.Model.Logger;
+
             Notifications = new ObservableCollection<Logging.NotificationMessage>();
             
             notificationHandler = (notificationMessage) =>
@@ -75,8 +80,8 @@ namespace Dynamo.Notifications
 
         internal void AddNotifications()
         {
-            Notifications.AddRange(viewLoadedParams.Notifications);
-            viewLoadedParams.ClearNotifications();
+            Notifications.AddRange(logger.Notifications);
+            logger.ClearNotifications();
         }
 
         public void Shutdown()

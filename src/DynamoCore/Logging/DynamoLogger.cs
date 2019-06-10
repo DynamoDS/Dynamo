@@ -141,7 +141,11 @@ namespace Dynamo.Logging
             }
         }
 
-        internal List<NotificationMessage> Notifications { get; }
+        private List<NotificationMessage> notifications;
+        public IEnumerable<NotificationMessage> Notifications
+        {
+            get { return notifications; }
+        }
 
         /// <summary>
         /// Initializes a new instance of <see cref="DynamoLogger"/> class
@@ -159,7 +163,7 @@ namespace Dynamo.Logging
                 WarningLevel = WarningLevel.Mild;
                 Warning = "";
 
-                Notifications = new List<NotificationMessage>();
+                notifications = new List<NotificationMessage>();
 
                 StartLogging(logDirectory);
             }
@@ -251,7 +255,7 @@ namespace Dynamo.Logging
             }
             else
             {
-                Notifications.Add(new NotificationMessage(sender, shortMessage, detailedMessage, title));
+                notifications.Add(new NotificationMessage(sender, shortMessage, detailedMessage, title));
             }
         }
 
@@ -314,9 +318,9 @@ namespace Dynamo.Logging
             }
         }
 
-        internal void ClearNotifications()
+        public void ClearNotifications()
         {
-            Notifications.Clear();
+            notifications.Clear();
         }
 
         /// <summary>

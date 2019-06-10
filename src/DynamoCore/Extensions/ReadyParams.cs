@@ -64,11 +64,6 @@ namespace Dynamo.Extensions
             }
         }
 
-        public IEnumerable<NotificationMessage> Notifications
-        {
-            get { return dynamoModel.Logger.Notifications; }
-        }
-
         private ICommandExecutive commandExecutive;
         /// <summary>
         /// Extension specific implementation to execute Recordable commands on DynamoModel
@@ -83,11 +78,6 @@ namespace Dynamo.Extensions
         /// This event passes the notificationMessage to any subscribers
         /// </summary>
         public event Action<Logging.NotificationMessage> NotificationRecieved;
-
-        public void ClearNotifications()
-        {
-            dynamoModel.Logger.ClearNotifications();
-        }
 
         private void OnNotificationRecieved(Logging.NotificationMessage notification)
         {
