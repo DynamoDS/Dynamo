@@ -540,7 +540,7 @@ namespace Dynamo.Engine
         /// </summary>
         /// <param name="library">The library to be loaded</param>
         /// <param name="isExplicitlyImportedLib">Indicates if the library has been imported using the "File | ImportLibrary" command</param>
-        internal bool ImportLibrary(string library, bool isExplicitlyImportedLib = false)
+        internal bool LoadNodeLibrary(string library, bool isExplicitlyImportedLib)
         {
             if (null == library)
                 throw new ArgumentNullException();
@@ -627,6 +627,12 @@ namespace Dynamo.Engine
             importedLibraries.Add(library);
 
             return true;
+        }
+
+        internal void ImportLibrary(string library, bool isExplicitlyImportedLib = false)
+        {
+            LoadNodeLibrary(library, isExplicitlyImportedLib);
+            OnLibrariesImported(new LibraryLoadedEventArgs(new List<string> {library}));
         }
 
 

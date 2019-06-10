@@ -1239,8 +1239,8 @@ namespace Dynamo.Models
                     // If a library was explicitly loaded by using the "File | ImportLibrary..." command
                     // and for some reason the import fails we do not want to throw an exception
                     LibraryServices.ImportLibrary(path, true);
-                    LibraryServices.OnLibrariesImported(
-                        new LibraryServices.LibraryLoadedEventArgs(new List<string> {path}));
+                    //LibraryServices.OnLibrariesImported(
+                    //    new LibraryServices.LibraryLoadedEventArgs(new List<string> {path}));
                     continue;
                 }
 
@@ -1255,7 +1255,7 @@ namespace Dynamo.Models
         {
             if (!NodeModelAssemblyLoader.ContainsNodeModelSubType(assem))
             {
-                LibraryServices.ImportLibrary(assem.Location);
+                LibraryServices.LoadNodeLibrary(assem.Location, false);
                 return;
             }
 
