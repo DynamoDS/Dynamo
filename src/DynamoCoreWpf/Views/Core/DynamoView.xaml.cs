@@ -232,7 +232,7 @@ namespace Dynamo.Controls
 
             if (tab != null)
             {
-                // get selected tab
+                // get the selected tab
                 TabItem selectedTab = tabDynamic.SelectedItem as TabItem;
 
                 // clear tab control binding and bind to the new tab-list. 

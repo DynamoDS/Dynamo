@@ -76,9 +76,9 @@ namespace Dynamo.Wpf.Extensions
             AddItemToMenu(type, menuItem, index);
         }
 
+        // Adds the extension window to a new tab in the right side bar.
         public void AddToExtensionsSideBar(Window w)
         {
-            // Sets the extension window to a new tab item to the right side bar.
             dynamoView.AddTabItem(w);
         }
 

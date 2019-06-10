@@ -1506,7 +1506,7 @@
                                          TargetType="Button">
                             <Border Name="border"
                                     BorderThickness="0"
-                                    BorderBrush="Red"
+                                    BorderBrush="Black"
                                     VerticalAlignment="Stretch"
                                     Padding="5,0,5,0">
                                 <ContentPresenter HorizontalAlignment="Stretch"
@@ -1555,7 +1555,7 @@
         <!--Collapsed Extension Sidebar-->
         <StackPanel Grid.Row="2"
                     Grid.Column="2"
-                    Orientation="Horizontal"
+                    Orientation="Vertical"
                     Name="collapsedExtensionSidebar"
                     Width="Auto"
                     Height="Auto"
