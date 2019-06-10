@@ -33,7 +33,7 @@ namespace Dynamo.Extensions
         }
 
         /// <summary>
-        /// Loads packages for import into VM and node search.
+        /// Loads packages for import into VM and for node search.
         /// </summary>
         /// <param name="assemblies"></param>
         public void LoadPackages(IEnumerable<Assembly> assemblies)

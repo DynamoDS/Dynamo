@@ -142,7 +142,11 @@ namespace Dynamo.Logging
         }
 
         private List<NotificationMessage> notifications;
-        public IEnumerable<NotificationMessage> Notifications
+        /// <summary>
+        /// Notifications logged during startup such as library load failures
+        /// that need to be displayed to user.
+        /// </summary>
+        public IEnumerable<NotificationMessage> StartupNotifications
         {
             get { return notifications; }
         }
@@ -318,7 +322,10 @@ namespace Dynamo.Logging
             }
         }
 
-        public void ClearNotifications()
+        /// <summary>
+        /// Clear any notifications after displaying them.
+        /// </summary>
+        public void ClearStartupNotifications()
         {
             notifications.Clear();
         }

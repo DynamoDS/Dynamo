@@ -235,6 +235,10 @@ namespace Dynamo.PackageManager
             LoadPackages(LocalPackages);
         }
 
+        /// <summary>
+        /// Loads and imports all packages. 
+        /// </summary>
+        /// <param name="packages"></param>
         public void LoadPackages(IEnumerable<Package> packages)
         {
             foreach (var pkg in packages)

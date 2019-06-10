@@ -91,7 +91,6 @@ namespace Dynamo.Graph.Nodes.NodeLoaders
                         try
                         {
                             libraryServices.ImportLibrary(assembly);
-                            //libraryServices.OnLibrariesImported(new LibraryServices.LibraryLoadedEventArgs(new List<string> { assembly }));
                             descriptor = libraryServices.GetFunctionDescriptor(assembly, function);
                         }
                         catch (LibraryLoadFailedException)

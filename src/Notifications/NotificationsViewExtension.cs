@@ -80,8 +80,8 @@ namespace Dynamo.Notifications
 
         internal void AddNotifications()
         {
-            Notifications.AddRange(logger.Notifications);
-            logger.ClearNotifications();
+            Notifications.AddRange(logger.StartupNotifications);
+            logger.ClearStartupNotifications();
         }
 
         public void Shutdown()
