@@ -75,20 +75,6 @@ namespace Dynamo.Engine
             new Dictionary<string, UpgradeHint>();
         
         /// <summary>
-        /// Copy properties from the liveCore
-        /// The properties to copy are only those used by the library core
-        /// </summary>
-        internal void UpdateLibraryCoreData()
-        {
-            // If a liverunner core is provided, sync the library core data
-            if (liveRunnerCore != null)
-            {
-                LibraryManagementCore.ProcTable = new ProtoCore.DSASM.ProcedureTable(liveRunnerCore.ProcTable);
-                LibraryManagementCore.ClassTable = new ProtoCore.DSASM.ClassTable(liveRunnerCore.ClassTable);
-            }
-        }
-
-        /// <summary>
         /// Initializes a new instance of the <see cref="LibraryServices"/> class.
         /// </summary>
         /// <param name="libraryManagementCore">Core which is used for parsing code and loading libraries</param>
@@ -640,10 +626,8 @@ namespace Dynamo.Engine
             }
 
             var libraries = new List<string> {library};
-            OnLibraryLoaded(new LibraryLoadedEventArgs(libraries));
+            importedLibraries.AddRange(libraries);
 
-            // After a library is loaded, update the library core data with the liveRunner core data
-            // UpdateLibraryCoreData();
             return true;
         }
 
@@ -1119,20 +1103,12 @@ namespace Dynamo.Engine
                 handler(this, e);
         }
 
-        private void OnLibraryLoaded(LibraryLoadedEventArgs e)
-        {
-            importedLibraries.AddRange(e.LibraryPaths);
-            //var handler = LibraryLoaded;
-            //handler?.Invoke(this, e);
-        }
-
         internal void OnLibrariesLoaded(LibraryLoadedEventArgs e)
         {
             var handler = LibraryLoaded;
             if (handler != null)
             {
                 handler(this, e);
-                //UpdateLibraryCoreData();
             }
         }
 

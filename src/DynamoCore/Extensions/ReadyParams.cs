@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using Dynamo.Graph.Workspaces;
-using Dynamo.Logging;
 using Dynamo.Models;
 
 namespace Dynamo.Extensions
@@ -24,7 +23,7 @@ namespace Dynamo.Extensions
         {
             dynamoModel = dynamoM;
             dynamoModel.PropertyChanged += OnDynamoModelPropertyChanged;
-            dynamoModel.Logger.NotificationLogged += OnNotificationRecieved;
+            dynamoM.Logger.NotificationLogged += OnNotificationRecieved;
             startupParams = new StartupParams(dynamoModel.AuthenticationManager.AuthProvider,
                 dynamoModel.PathManager, new ExtensionLibraryLoader(dynamoModel), dynamoModel.CustomNodeManager,
                 new Version(dynamoModel.Version), dynamoModel.PreferenceSettings);
@@ -78,7 +77,6 @@ namespace Dynamo.Extensions
         /// This event passes the notificationMessage to any subscribers
         /// </summary>
         public event Action<Logging.NotificationMessage> NotificationRecieved;
-
         private void OnNotificationRecieved(Logging.NotificationMessage notification)
         {
             if (NotificationRecieved != null)
