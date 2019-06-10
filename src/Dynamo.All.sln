@@ -223,8 +223,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoPackagesWPF", "Dynamo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoWPFCLI", "DynamoWPFCLI\DynamoWPFCLI.csproj", "{F7FD9395-35D5-474D-8AD1-9904817E70D3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TransformXMLToJSONUsingXSLT", "Tools\TransformXMLToJSONUsingXSLT\TransformXMLToJSONUsingXSLT.csproj", "{676671D5-76B6-4E3B-9244-5323BF6B8EFE}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
