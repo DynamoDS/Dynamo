@@ -67,11 +67,10 @@ namespace Dynamo.Controls
         internal ViewExtensionManager viewExtensionManager = new ViewExtensionManager();
         private ShortcutToolbar shortcutBar;
         private bool loaded = false;
-        private List<TabItem> _tabItems;
-        private TabItem _tabAdd;
 
+        // list of items in the right side bar. 
+        private List<TabItem> _tabItems = new List<TabItem>();  
         
-
         // This is to identify whether the PerformShutdownSequenceOnViewModel() method has been
         // called on the view model and the process is not cancelled
         private bool isPSSCalledOnViewModelNoCancel = false;
@@ -190,72 +189,68 @@ namespace Dynamo.Controls
                  }
              };
 
+            this.HideOrShowRightSideBar();
+
             this.dynamoViewModel.RequestPaste += OnRequestPaste;
             this.dynamoViewModel.RequestReturnFocusToView += OnRequestReturnFocusToView;
             FocusableGrid.InputBindings.Clear();
-
-            _tabItems = new List<TabItem>();
-
-            // add a tabItem with + in header 
-            TabItem tabAdd = new TabItem();
-            tabAdd.Header = "+";
-
-            _tabItems.Add(tabAdd);
-
-            // add first tab
-            this.AddTabItem();
-
-            // bind tab control
-            tabDynamic.DataContext = _tabItems;
-
-            tabDynamic.SelectedIndex = 0;
         }
 
-        private TabItem AddTabItem()
+        // This method adds a tab item to the right side bar and 
+        // sets the extension window as the tab content.
+        internal TabItem AddTabItem(Window window)
         {
             int count = _tabItems.Count;
 
-            // create new tab item
+            tabDynamic.DataContext = null;
+
+            // creates a new tab item
             TabItem tab = new TabItem();
-            tab.Header = string.Format("Tab {0}", count);
-            tab.Name = string.Format("tab{0}", count);
+            tab.Header = window.Title;
             tab.HeaderTemplate = tabDynamic.FindResource("TabHeader") as DataTemplate;
 
-            // add controls to tab item, this case I added just a textbox
-            TextBox txt = new TextBox();
-            txt.Name = "txt";
-            tab.Content = txt;
+            // setting the extension window to the current tab content
+            tab.Content = window.Content;
 
-            // insert tab item right before the last (+) tab item
-            _tabItems.Insert(count - 1, tab);
+            //Insert the tab at the end
+            _tabItems.Insert(count, tab);
+
+            tabDynamic.DataContext = _tabItems;
+            tabDynamic.SelectedItem = tab;
+
+            this.HideOrShowRightSideBar();
+
             return tab;
         }
 
-        private void tabDynamic_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        // This method triggers the close operation on the selected tab. 
+        private void CloseTab(object sender, RoutedEventArgs e)
         {
+            string tabName = (sender as Button).CommandParameter.ToString();
+            
             TabItem tab = tabDynamic.SelectedItem as TabItem;
 
-            if (tab != null && tab.Header != null)
+            if (tab != null)
             {
-              /*  if (tab.Header.Equals(_addTabHeader))
+                // get selected tab
+                TabItem selectedTab = tabDynamic.SelectedItem as TabItem;
+
+                // clear tab control binding and bind to the new tab-list. 
+                tabDynamic.DataContext = null;
+                _tabItems.Remove(tab);
+                tabDynamic.DataContext = _tabItems;
+
+                // Highlight previously selected tab. if that is removed then Highlight the first tab
+                if (selectedTab == null || selectedTab.Equals(tab))
                 {
-                    // clear tab control binding
-                    tabDynamic.DataContext = null;
-
-                    // add new tab
-                    TabItem newTab = this.AddTabItem();
-
-                    // bind tab control
-                    tabDynamic.DataContext = _tabItems;
-
-                    // select newly added tab item
-                    tabDynamic.SelectedItem = newTab;
+                    if (_tabItems.Count > 0) {
+                        selectedTab = _tabItems[0];
+                    }
                 }
-                else
-                {
-                    // your code here...
-                }*/
+                tabDynamic.SelectedItem = selectedTab;
             }
+
+            this.HideOrShowRightSideBar();
         }
 
         private void OnRequestReturnFocusToView()
@@ -1760,8 +1755,21 @@ namespace Dynamo.Controls
                 collapsedLibrarySidebar.Visibility = Visibility.Collapsed;
             }
 
-            collapsedExtensionSidebar.Visibility = Visibility.Visible;
+        }
 
+        // Show the extensions right side bar when there is atleast one extension
+        private void HideOrShowRightSideBar()
+        {
+            if (_tabItems.Count < 1)
+            {
+                RightExtensionsViewColumn.Width = new GridLength(0, GridUnitType.Star);
+                collapsedExtensionSidebar.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                RightExtensionsViewColumn.Width = new GridLength(defaultSideBarWidth, GridUnitType.Star);
+                collapsedExtensionSidebar.Visibility = Visibility.Visible;
+            }
         }
 
         private void OnCollapsedLeftSidebarClick(object sender, EventArgs e)

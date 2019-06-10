@@ -1679,22 +1679,100 @@
               Grid.RowSpan="2">
             <TabControl Name="tabDynamic" ItemsSource="{Binding}">
                 <TabControl.Resources>
+                    <Style TargetType="{x:Type Button}"
+                               x:Key="CloseButtonStyle">
+                        <Setter Property="OverridesDefaultStyle"
+                                    Value="True" />
+                        <Setter Property="SnapsToDevicePixels"
+                                    Value="true" />
+                        <Setter Property="VerticalAlignment"
+                                    Value="Center" />
+                        <Setter Property="HorizontalAlignment"
+                                    Value="Right" />
+                        <Setter Property="Margin"
+                                    Value="8,2,0,0" />
+                        <Setter Property="Background"
+                                    Value="Transparent" />
+                        <Setter Property="BorderThickness"
+                                    Value="0" />
+                        <Setter Property="Padding"
+                                    Value="0" />
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="Button">
+                                    <Border x:Name="Border"
+                                                Background="Transparent"
+                                                BorderThickness="0 0 0 0">
+                                        <ContentPresenter Margin="0 0 0 0" />
+                                    </Border>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
                     <DataTemplate x:Key="TabHeader" DataType="TabItem">
                         <DockPanel>
-                            <Button Name="btnDelete" DockPanel.Dock="Right" Margin="5,0,0,0" Padding="0" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type TabItem}}, Path=Name}">
-                                <Image Height="11" Width="11"></Image>
+                            <TextBlock Text="{Binding RelativeSource={RelativeSource AncestorType={x:Type TabItem}}, Path=Header}" HorizontalAlignment="Left"/>
+                            <Button Name="CloseButton" Style="{StaticResource CloseButtonStyle}" DockPanel.Dock="Right" Click="CloseTab"
+                                              CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type TabItem}}, Path=Name}">
+                                <Image Width="14" Height="14" HorizontalAlignment="Right" VerticalAlignment="Center">
+                                    <Image.Style>
+                                        <Style TargetType="{x:Type Image}">
+                                            <Style.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="False">
+                                                    <Setter Property="Source"
+                                                            Value="/DynamoCoreWpf;component/UI/Images/closetab_normal.png" />
+                                                </Trigger>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter Property="Source"
+                                                            Value="/DynamoCoreWpf;component/UI/Images/closetab_hover.png" />
+                                                </Trigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Image.Style>
+                                </Image>
                             </Button>
-                            <TextBlock Text="{Binding RelativeSource={RelativeSource AncestorType={x:Type TabItem}}, Path=Header}" />
                         </DockPanel>
                     </DataTemplate>
-                    <Style TargetType="TextBox">
-                        <Setter Property="VerticalAlignment" Value="Stretch"></Setter>
-                        <Setter Property="HorizontalAlignment" Value="Stretch"></Setter>
-                        <Setter Property="AcceptsReturn" Value="True"></Setter>
-                        <Setter Property="TextWrapping" Value="WrapWithOverflow"></Setter>
-                        <Setter Property="MaxLines" Value="5000"></Setter>
-                        <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto"></Setter>
-                        <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Auto"></Setter>
+                    <Style TargetType="{x:Type TabItem}">
+                       <!-- <Setter Property="MaxWidth" Value="{Binding Source={x:Static configuration:Configurations.TabDefaultWidth}}" /> 
+                        <Setter Property="Width">
+                            <Setter.Value>
+                                <MultiBinding Converter="{StaticResource TabSizeConverter}">
+                                    <Binding RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType={x:Type TabControl}}" />
+                                    <Binding RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType={x:Type TabControl}}"
+                                                 Path="ActualWidth" />
+                                    <Binding RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType={x:Type TabControl}}"
+                                                 Path="Items.Count" />
+                                </MultiBinding>
+                            </Setter.Value>
+                        </Setter> -->
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="{x:Type TabItem}">
+                                    <Grid>
+                                        <Border Name="Border" Margin="0,0,0,0"  BorderThickness="0 0 0 0" BorderBrush="Black">
+                                            <ContentPresenter x:Name="ContentSite" VerticalAlignment="Center"
+                                                     HorizontalAlignment="Center"
+                                                     ContentSource="Header" Margin="6,0,0,2"
+                                                     RecognizesAccessKey="True">
+                                            </ContentPresenter>
+                                        </Border>
+                                    </Grid>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsSelected" Value="true">
+                                            <Setter Property="TextBlock.Foreground"
+                                                         Value="{StaticResource WorkspaceTabHeaderActiveTextBrush}" />
+                                        </Trigger>
+                                        <Trigger Property="IsSelected" Value="false">
+                                            <Setter Property="Foreground"
+                                                         Value="{StaticResource WorkspaceTabHeaderInactiveTextBrush}" />
+                                            <Setter TargetName="Border" Property="Background"
+                                                         Value="{StaticResource HighlightedBrush}" />
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
                     </Style>
                 </TabControl.Resources>
             </TabControl>

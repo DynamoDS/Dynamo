@@ -69,7 +69,6 @@ namespace Dynamo.Wpf.Extensions
             dynamoMenu = dynamoView.titleBar.ChildOfType<Menu>();
             viewStartupParams = new ViewStartupParams(dynamoVM);
             DynamoSelection.Instance.Selection.CollectionChanged += OnSelectionCollectionChanged;
-
         }
 
         public void AddMenuItem(MenuBarType type, MenuItem menuItem, int index = -1)
@@ -77,12 +76,10 @@ namespace Dynamo.Wpf.Extensions
             AddItemToMenu(type, menuItem, index);
         }
 
-        private void AddToExtensionsSideBar(IViewExtension e)
+        public void AddToExtensionsSideBar(Window w)
         {
-             var sidebarGrid = this.DynamoWindow.FindName("sidebarExtensionsGrid") as Grid;
-             
-           //  UIElement viewExtension  = new UI
-           //  sidebarGrid.Children.Add(e);
+            // Sets the extension window to a new tab item to the right side bar.
+            dynamoView.AddTabItem(w);
         }
 
         public void AddSeparator(MenuBarType type, Separator separatorObj, int index = -1)
