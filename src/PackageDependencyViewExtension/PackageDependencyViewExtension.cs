@@ -70,8 +70,8 @@ namespace Dynamo.PackageDependency
 
         public void Loaded(ViewLoadedParams p)
         {
-            var dynamoViewModel = p.DynamoWindow.DataContext as DynamoViewModel;
-            var packageDependencyView = new PackageDependencyView(dynamoViewModel);
+            var dynamoModel = (p.DynamoWindow.DataContext as DynamoViewModel).Model;
+            var packageDependencyView = new PackageDependencyView(dynamoModel);
 
             var sidebarGrid = p.DynamoWindow.FindName("sidebarExtensionsGrid") as Grid;
             sidebarGrid.Children.Add(packageDependencyView);

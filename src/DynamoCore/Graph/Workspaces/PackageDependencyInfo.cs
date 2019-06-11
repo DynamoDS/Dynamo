@@ -1,11 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
-
-// Internals are visible to the Package Manager extension
-// For workspace package dependency collection
-[assembly: InternalsVisibleTo("PackageDependencyViewExtension")]
-
 
 namespace Dynamo.Graph.Workspaces
 {
