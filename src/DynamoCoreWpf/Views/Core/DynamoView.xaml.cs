@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -69,8 +70,20 @@ namespace Dynamo.Controls
         private bool loaded = false;
 
         // list of items in the right side bar. 
-        private List<TabItem> _tabItems = new List<TabItem>();  
+        private ObservableCollection<TabItem> tabItems = new ObservableCollection<TabItem>();
         
+        public ObservableCollection<TabItem> TabItems
+        {
+            set
+            {
+                tabItems = value;    
+            }
+            get
+            {
+                return tabItems; 
+            }
+        }
+
         // This is to identify whether the PerformShutdownSequenceOnViewModel() method has been
         // called on the view model and the process is not cancelled
         private bool isPSSCalledOnViewModelNoCancel = false;
@@ -189,6 +202,9 @@ namespace Dynamo.Controls
                  }
              };
 
+            // Add an event when the collection is modified.   
+            tabItems.CollectionChanged += this.OnCollectionChanged;
+
             this.HideOrShowRightSideBar();
 
             this.dynamoViewModel.RequestPaste += OnRequestPaste;
@@ -198,27 +214,25 @@ namespace Dynamo.Controls
 
         // This method adds a tab item to the right side bar and 
         // sets the extension window as the tab content.
-        internal TabItem AddTabItem(Window window)
+        internal TabItem AddTabItem(ContentControl contentControl)
         {
-            int count = _tabItems.Count;
+            int count = TabItems.Count;
 
             tabDynamic.DataContext = null;
 
             // creates a new tab item
             TabItem tab = new TabItem();
-            tab.Header = window.Title;
+            tab.Header = ((Window)contentControl).Title;
             tab.HeaderTemplate = tabDynamic.FindResource("TabHeader") as DataTemplate;
 
             // setting the extension window to the current tab content
-            tab.Content = window.Content;
-
+            tab.Content = contentControl.Content;
             //Insert the tab at the end
-            _tabItems.Insert(count, tab);
+            tabItems.Insert(count, tab);
+            TabItems = tabItems;
 
-            tabDynamic.DataContext = _tabItems;
+            tabDynamic.DataContext = TabItems;
             tabDynamic.SelectedItem = tab;
-
-            this.HideOrShowRightSideBar();
 
             return tab;
         }
@@ -237,19 +251,24 @@ namespace Dynamo.Controls
 
                 // clear tab control binding and bind to the new tab-list. 
                 tabDynamic.DataContext = null;
-                _tabItems.Remove(tab);
-                tabDynamic.DataContext = _tabItems;
+                tabItems.Remove(tab);
+                TabItems = tabItems;
+                tabDynamic.DataContext = TabItems;
 
                 // Highlight previously selected tab. if that is removed then Highlight the first tab
                 if (selectedTab == null || selectedTab.Equals(tab))
                 {
-                    if (_tabItems.Count > 0) {
-                        selectedTab = _tabItems[0];
+                    if (TabItems.Count > 0) {
+                        selectedTab = TabItems[0];
                     }
                 }
                 tabDynamic.SelectedItem = selectedTab;
             }
+        }
 
+        // This event is triggered when the tabitems list is changed and will show/hide the right side bar accordingly.
+        private void OnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
             this.HideOrShowRightSideBar();
         }
 
@@ -1760,7 +1779,7 @@ namespace Dynamo.Controls
         // Show the extensions right side bar when there is atleast one extension
         private void HideOrShowRightSideBar()
         {
-            if (_tabItems.Count < 1)
+            if (TabItems.Count < 1)
             {
                 RightExtensionsViewColumn.Width = new GridLength(0, GridUnitType.Star);
                 collapsedExtensionSidebar.Visibility = Visibility.Collapsed;
