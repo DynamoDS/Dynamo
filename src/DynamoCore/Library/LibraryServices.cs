@@ -1156,7 +1156,7 @@ namespace Dynamo.Engine
         public class LibraryLoadedEventArgs : EventArgs
         {
             // TODO: Remove in 3.0
-            [Obsolete]
+            [Obsolete("This constructor is obsolete. Use constructor that accepts collection of library paths instead.")]
             public LibraryLoadedEventArgs(string libraryPath)
             {
                 LibraryPath = libraryPath;
@@ -1168,7 +1168,7 @@ namespace Dynamo.Engine
             }
 
             // TODO: Remove in 3.0
-            [Obsolete]
+            [Obsolete("This property is obsolete. Use property LibraryPaths that returns collection of paths instead.")]
             public string LibraryPath { get; }
 
             public IEnumerable<string> LibraryPaths { get; }
