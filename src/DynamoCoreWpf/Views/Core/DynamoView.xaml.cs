@@ -72,7 +72,7 @@ namespace Dynamo.Controls
         // list of items in the right side bar. 
         private ObservableCollection<TabItem> tabItems = new ObservableCollection<TabItem>();
         
-        public ObservableCollection<TabItem> TabItems
+        private ObservableCollection<TabItem> TabItems
         {
             set
             {
