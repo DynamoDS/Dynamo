@@ -159,7 +159,7 @@ namespace Dynamo.Tests
             var packageDependencies = CurrentDynamoModel.CurrentWorkspace.PackageDependencies;
             Assert.AreEqual(1, packageDependencies.Count);
             var package = packageDependencies.First();
-            Assert.AreEqual(new PackageDependencyInfo("Custom Rounding", new Version("0.1.4")), package);
+            Assert.AreEqual(new PackageDependencyInfo("GetHighest", new Version("0.1.2")), package);
             Assert.AreEqual(1, package.Nodes.Count);
         }
 
@@ -301,11 +301,6 @@ namespace Dynamo.Tests
             // Assert ZTTestPackage is still a package dependency
             var packageDependencies = CurrentDynamoModel.CurrentWorkspace.PackageDependencies;
             Assert.Contains(new PackageDependencyInfo("ZTTestPackage", new Version("0.0.1")), packageDependencies);
-        }
-
-        [Test]
-        public void PackageDependenciesPreservedAfterPackageRemoved()
-        {
         }
     }
 }
