@@ -1,4 +1,5 @@
 ﻿using Dynamo.Extensions;
+using Dynamo.ViewModels;
 using Dynamo.Wpf.Extensions;
 using System.Windows.Controls;
 
@@ -69,7 +70,8 @@ namespace Dynamo.PackageDependency
 
         public void Loaded(ViewLoadedParams p)
         {
-            var packageDependencyView = new PackageDependencyView();
+            var dynamoViewModel = p.DynamoWindow.DataContext as DynamoViewModel;
+            var packageDependencyView = new PackageDependencyView(dynamoViewModel);
 
             var sidebarGrid = p.DynamoWindow.FindName("sidebarExtensionsGrid") as Grid;
             sidebarGrid.Children.Add(packageDependencyView);
