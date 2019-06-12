@@ -96,4 +96,3 @@ src/TestResults
 test/core/customast/test.txt
 test/core/files/test.png
 test/core/migration/writetext.txt
-src/AssemblySharedInfoGenerator/AssemblySharedInfo.cs
