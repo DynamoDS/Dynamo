@@ -143,39 +143,32 @@ namespace Dynamo.Tests
         [Test]
         public void CustomNodePackageDependencyIsCollected()
         {
-            // Load JSON file graph
-            string path = Path.Combine(TestDirectory, @"core\packageDependencyTests\OneDependentNode_CustomNode.dyn");
-
-            // Assert package dependency is not already serialized to .dyn
-            using (StreamReader file = new StreamReader(path))
-            {
-                var data = file.ReadToEnd();
-                var json = (JObject)JsonConvert.DeserializeObject(data);
-                Assert.IsNull(json["PackageDependencies"]);
-            }
+            // Add "Round Down To Precision" custom node from the "Custom Rounding" package to a new workspace
+            var guid = new Guid("6d1e3caa-780d-40fd-a045-766b3170235d");
+            var customNode = CurrentDynamoModel.CustomNodeManager.CreateCustomNodeInstance(guid);
+            CurrentDynamoModel.AddNodeToCurrentWorkspace(customNode, true);
 
             // Assert package dependency is collected
-            OpenModel(path);
             var packageDependencies = CurrentDynamoModel.CurrentWorkspace.PackageDependencies;
             Assert.AreEqual(1, packageDependencies.Count);
             var package = packageDependencies.First();
-            Assert.AreEqual(new PackageDependencyInfo("GetHighest", new Version("0.1.2")), package);
+            Assert.AreEqual(new PackageDependencyInfo("Custom Rounding", new Version("0.1.4")), package);
             Assert.AreEqual(1, package.Nodes.Count);
         }
 
         [Test]
         public void PackageDependencyIsCollectedForNewWorkspace()
         {
-            // Add "Round Down To Precision" custom node from the "Custom Rounding" package to a new workspace
-            var guid = new Guid("6d1e3caa-780d-40fd-a045-766b3170235d");
-            var customNode = CurrentDynamoModel.CustomNodeManager.CreateCustomNodeInstance(guid);
-            CurrentDynamoModel.AddNodeToCurrentWorkspace(customNode, true);
+            // Add one node from "Dynamo Samples" package
+            var pi = GetPackageInfo("Dynamo Samples");
+            var node = GetNodeInstance("Examples.NEWBasicExample.Create@double,double,double");
+            CurrentDynamoModel.AddNodeToCurrentWorkspace(node, true);
 
-            // Assert that "Custom Rounding" has been added to the workspace's package dependencies
+            // Assert that "Dynamo Samples" has been added to the workspace's package dependencies
             var packageDependencies = CurrentDynamoModel.CurrentWorkspace.PackageDependencies;
             Assert.AreEqual(1, packageDependencies.Count);
             var package = packageDependencies.First();
-            Assert.AreEqual(new PackageDependencyInfo("Custom Rounding", new Version("0.1.4")), package);
+            Assert.AreEqual(pi, package);
             Assert.AreEqual(1, package.Nodes.Count);
         }
         
