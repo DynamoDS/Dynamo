@@ -512,6 +512,7 @@ Global
 		{F7FD9395-35D5-474D-8AD1-9904817E70D3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{F7FD9395-35D5-474D-8AD1-9904817E70D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F7FD9395-35D5-474D-8AD1-9904817E70D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F7FD9395-35D5-474D-8AD1-9904817E70D3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
