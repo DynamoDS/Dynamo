@@ -1,8 +1,7 @@
 ﻿using Dynamo.Graph.Workspaces;
-using Dynamo.Models;
 using Dynamo.Wpf.Extensions;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Windows.Controls;
 using System.Windows.Media;
 
@@ -13,7 +12,9 @@ namespace Dynamo.PackageDependency
     /// </summary>
     public partial class PackageDependencyView : UserControl
     {
-        protected DependencyTable table = new DependencyTable();
+        private DependencyTable table = new DependencyTable();
+
+        private WorkspaceModel currentWorkspace;
 
         /// <summary>
         /// Event handler for workspaceAdded event
@@ -21,21 +22,9 @@ namespace Dynamo.PackageDependency
         /// <param name="obj"></param>
         internal void OnWorkspaceChanged(IWorkspaceModel obj)
         {
-            // Clear the dependency table.
-            table.Columns.Clear();
             if (obj is WorkspaceModel)
             {
-                foreach (var package in (obj as WorkspaceModel).PackageDependencies)
-                {
-                    table.Columns.Add(new Column()
-                    {
-                        ColumnsData = new ObservableCollection<ColumnData>()
-                    {
-                        new ColumnData(package.Name),
-                        new ColumnData(package.Version.ToString(), 100)
-                    }
-                    });
-                }
+                DepdencyRegen(obj as WorkspaceModel);
             }
         }
 
@@ -47,8 +36,36 @@ namespace Dynamo.PackageDependency
         {
             if (obj is WorkspaceModel)
             {
+                currentWorkspace.PropertyChanged -= OnWorkspacePropertyChanged;
                 // Clear the dependency table.
                 table.Columns.Clear();
+            }
+        }
+
+        private void OnWorkspacePropertyChanged(object sender, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "PackageDependencies")
+                DepdencyRegen(currentWorkspace);
+        }
+
+        /// <summary>
+        /// Regenerate dependency table
+        /// </summary>
+        /// <param name="ws"></param>
+        private void DepdencyRegen(WorkspaceModel ws)
+        {
+            // Clear the dependency table.
+            table.Columns.Clear();
+            foreach (var package in ws.PackageDependencies)
+            {
+                table.Columns.Add(new Column()
+                {
+                    ColumnsData = new ObservableCollection<ColumnData>()
+                    {
+                        new ColumnData(package.Name),
+                        new ColumnData(package.Version.ToString(), 100)
+                    }
+                });
             }
         }
 
@@ -60,8 +77,10 @@ namespace Dynamo.PackageDependency
         {
             InitializeComponent();
             DataContext = table;
+            currentWorkspace = p.CurrentWorkspaceModel as WorkspaceModel;
             p.CurrentWorkspaceChanged += OnWorkspaceChanged;
             p.CurrentWorkspaceCleared += OnWorkspaceCleared;
+            currentWorkspace.PropertyChanged += OnWorkspacePropertyChanged;
         }
     }
 
