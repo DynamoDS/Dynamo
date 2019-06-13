@@ -72,7 +72,7 @@ namespace Dynamo.PackageDependency
     /// </summary>
     public class ColumnData
     {
-        static int DefaultWidth = 200;
+        static int DefaultWidth = 150;
         static Brush DefaultColor = Brushes.Red;
 
         /// <summary>
