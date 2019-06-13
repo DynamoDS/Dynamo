@@ -1180,6 +1180,9 @@ namespace Dynamo.Engine
             [Obsolete("This property is obsolete. Use property LibraryPaths that returns collection of paths instead.")]
             public string LibraryPath { get; }
 
+            /// <summary>
+            /// Paths to libraries that are loaded. 
+            /// </summary>
             public IEnumerable<string> LibraryPaths { get; }
         }
 
