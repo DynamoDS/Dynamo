@@ -1,5 +1,6 @@
 ﻿using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
+using Dynamo.Wpf.Extensions;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows.Controls;
@@ -18,18 +19,23 @@ namespace Dynamo.PackageDependency
         /// Event handler for workspaceAdded event
         /// </summary>
         /// <param name="obj"></param>
-        internal void WorkspaceOpened(WorkspaceModel obj)
+        internal void OnWorkspaceChanged(IWorkspaceModel obj)
         {
-            foreach (var package in obj.PackageDependencies)
+            // Clear the dependency table.
+            table.Columns.Clear();
+            if (obj is WorkspaceModel)
             {
-                table.Columns.Add(new Column()
+                foreach (var package in (obj as WorkspaceModel).PackageDependencies)
                 {
-                    ColumnsData = new ObservableCollection<ColumnData>()
+                    table.Columns.Add(new Column()
+                    {
+                        ColumnsData = new ObservableCollection<ColumnData>()
                     {
                         new ColumnData(package.Name),
                         new ColumnData(package.Version.ToString(), 100)
                     }
-                });
+                    });
+                }
             }
         }
 
@@ -37,22 +43,25 @@ namespace Dynamo.PackageDependency
         /// Event handler for workspaceRemoved event
         /// </summary>
         /// <param name="obj"></param>
-        internal void WorkspaceRemoved(WorkspaceModel obj)
+        internal void OnWorkspaceCleared(IWorkspaceModel obj)
         {
-            // Clear the dependency table.
-            table.Columns.Clear();
+            if (obj is WorkspaceModel)
+            {
+                // Clear the dependency table.
+                table.Columns.Clear();
+            }
         }
 
         /// <summary>
         /// Constructor
         /// </summary>
         /// <param name="dynamoModel"></param>
-        public PackageDependencyView(DynamoModel dynamoModel)
+        public PackageDependencyView(ViewLoadedParams p)
         {
             InitializeComponent();
             DataContext = table;
-            dynamoModel.WorkspaceAdded += WorkspaceOpened;
-            dynamoModel.WorkspaceRemoved += WorkspaceRemoved;
+            p.CurrentWorkspaceChanged += OnWorkspaceChanged;
+            p.CurrentWorkspaceCleared += OnWorkspaceCleared;
         }
     }
 

@@ -1,5 +1,4 @@
 ﻿using Dynamo.Extensions;
-using Dynamo.ViewModels;
 using Dynamo.Wpf.Extensions;
 using System.Windows.Controls;
 
@@ -24,7 +23,7 @@ namespace Dynamo.PackageDependency
         {
             get
             {
-                return "PackageDependencyViewExtension";
+                return "Package Dependency ViewExtension";
             }
         }
 
@@ -38,6 +37,14 @@ namespace Dynamo.PackageDependency
                 return "A6706BF5-11C2-458F-B7C8-B745A77EF7FD";
             }
         }
+
+        private PackageDependencyView DependencyView
+        {
+            get;
+            set;
+        }
+
+        private ReadyParams ReadyParams;
 
         /// <summary>
         /// Dispose function after extension is closed
@@ -53,28 +60,29 @@ namespace Dynamo.PackageDependency
         /// CurrentWorkspace.
         /// </summary>
         /// <param name="sp"></param>
-        public void Ready(ReadyParams sp)
+        public void Ready(ReadyParams readyParams)
         {
-
+            ReadyParams = readyParams;
         }
 
         public void Shutdown()
         {
+            ReadyParams.CurrentWorkspaceChanged -= DependencyView.OnWorkspaceChanged;
             this.Dispose();
         }
 
-        public void Startup(ViewStartupParams sp)
+        public void Startup(ViewStartupParams viewLoadedParams)
         {
 
         }
 
-        public void Loaded(ViewLoadedParams p)
+        public void Loaded(ViewLoadedParams viewLoadedParams)
         {
-            var dynamoModel = (p.DynamoWindow.DataContext as DynamoViewModel).Model;
-            var packageDependencyView = new PackageDependencyView(dynamoModel);
+            DependencyView = new PackageDependencyView(viewLoadedParams);
 
-            var sidebarGrid = p.DynamoWindow.FindName("sidebarExtensionsGrid") as Grid;
-            sidebarGrid.Children.Add(packageDependencyView);
+            // Replace with extension view inject API
+            var sidebarGrid = viewLoadedParams.DynamoWindow.FindName("sidebarExtensionsGrid") as Grid;
+            sidebarGrid.Children.Add(DependencyView);
         }
     }
 }
