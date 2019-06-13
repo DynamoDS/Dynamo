@@ -328,7 +328,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             // Override in inherited classes.
         }
 
-        protected internal void UnregisterEventHandlers()
+        protected void UnregisterEventHandlers()
         {
             DynamoSelection.Instance.Selection.CollectionChanged -= SelectionChangedHandler;
 
@@ -557,7 +557,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             RegisterPortEventHandlers(node);
         }
 
-        internal void UnregisterNodeEventHandlers(NodeModel node)
+        protected internal void UnregisterNodeEventHandlers(NodeModel node)
         {
             node.PropertyChanged -= OnNodePropertyChanged;
             node.RenderPackagesUpdated -= OnRenderPackagesUpdated;
