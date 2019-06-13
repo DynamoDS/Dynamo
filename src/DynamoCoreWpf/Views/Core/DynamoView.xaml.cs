@@ -69,20 +69,7 @@ namespace Dynamo.Controls
         private ShortcutToolbar shortcutBar;
         private bool loaded = false;
 
-        // list of items in the right side bar. 
-        private ObservableCollection<TabItem> tabItems = new ObservableCollection<TabItem>();
-        
-        private ObservableCollection<TabItem> TabItems
-        {
-            set
-            {
-                tabItems = value;    
-            }
-            get
-            {
-                return tabItems; 
-            }
-        }
+        private ObservableCollection<TabItem> TabItems { set; get; } = new ObservableCollection<TabItem>();
 
         // This is to identify whether the PerformShutdownSequenceOnViewModel() method has been
         // called on the view model and the process is not cancelled
@@ -202,8 +189,8 @@ namespace Dynamo.Controls
                  }
              };
 
-            // Add an event when the collection is modified.   
-            tabItems.CollectionChanged += this.OnCollectionChanged;
+            // Add an event handler to check if the collection is modified.   
+            TabItems.CollectionChanged += this.OnCollectionChanged;
 
             this.HideOrShowRightSideBar();
 
@@ -214,27 +201,33 @@ namespace Dynamo.Controls
 
         // This method adds a tab item to the right side bar and 
         // sets the extension window as the tab content.
-        internal TabItem AddTabItem(ContentControl contentControl)
+        internal TabItem AddTabItem(IViewExtension viewExtension, ContentControl contentControl)
         {
             int count = TabItems.Count;
 
-            tabDynamic.DataContext = null;
+            if (!IsExtensionAddedToRightSideBar(viewExtension))
+            {
+                tabDynamic.DataContext = null;
 
-            // creates a new tab item
-            TabItem tab = new TabItem();
-            tab.Header = ((Window)contentControl).Title;
-            tab.HeaderTemplate = tabDynamic.FindResource("TabHeader") as DataTemplate;
+                // creates a new tab item
+                TabItem tab = new TabItem();
+                tab.Header = viewExtension.GetType().Name;
+                tab.Tag = viewExtension.ToString();
+                tab.HeaderTemplate = tabDynamic.FindResource("TabHeader") as DataTemplate;
 
-            // setting the extension window to the current tab content
-            tab.Content = contentControl.Content;
-            //Insert the tab at the end
-            tabItems.Insert(count, tab);
-            TabItems = tabItems;
+                // setting the extension window to the current tab content
+                tab.Content = contentControl.Content;
 
-            tabDynamic.DataContext = TabItems;
-            tabDynamic.SelectedItem = tab;
+                //Insert the tab at the end
+                TabItems.Insert(count, tab);
+                TabItems = TabItems;
 
-            return tab;
+                tabDynamic.DataContext = TabItems;
+                tabDynamic.SelectedItem = tab;
+
+                return tab;
+            }
+            return null;
         }
 
         // This method triggers the close operation on the selected tab. 
@@ -251,8 +244,8 @@ namespace Dynamo.Controls
 
                 // clear tab control binding and bind to the new tab-list. 
                 tabDynamic.DataContext = null;
-                tabItems.Remove(tab);
-                TabItems = tabItems;
+                TabItems.Remove(tab);
+                TabItems = TabItems;
                 tabDynamic.DataContext = TabItems;
 
                 // Highlight previously selected tab. if that is removed then Highlight the first tab
@@ -270,6 +263,18 @@ namespace Dynamo.Controls
         private void OnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             this.HideOrShowRightSideBar();
+        }
+
+        private Boolean IsExtensionAddedToRightSideBar(IViewExtension viewExtension)
+        {
+            foreach (TabItem tabItem in TabItems)
+            {
+                if (tabItem.Tag.Equals(viewExtension.ToString()))
+                {
+                    return true;
+                }
+            }
+            return false;
         }
 
         private void OnRequestReturnFocusToView()
@@ -1988,6 +1993,9 @@ namespace Dynamo.Controls
             {
                 dynamoViewModel.Model.AuthenticationManager.AuthProvider.RequestLogin -= loginService.ShowLogin;
             }
+
+            // Removing the tab items list handler
+            TabItems.CollectionChanged -= this.OnCollectionChanged;
         }
     }
 }

@@ -1710,8 +1710,8 @@
                         </Setter>
                     </Style>
                     <DataTemplate x:Key="TabHeader" DataType="TabItem">
-                        <DockPanel>
-                            <TextBlock Text="{Binding RelativeSource={RelativeSource AncestorType={x:Type TabItem}}, Path=Header}" HorizontalAlignment="Left"/>
+                        <DockPanel HorizontalAlignment="Stretch" MinWidth="{Binding Source={x:Static configuration:Configurations.RightSideBarTabMinWidth}}">
+                            <TextBlock Text="{Binding RelativeSource={RelativeSource AncestorType={x:Type TabItem}}, Path=Header}" HorizontalAlignment="Stretch"/>
                             <Button Name="CloseButton" Style="{StaticResource CloseButtonStyle}" DockPanel.Dock="Right" Click="CloseTab"
                                               CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type TabItem}}, Path=Name}">
                                 <Image Width="14" Height="14" HorizontalAlignment="Right" VerticalAlignment="Center">
@@ -1734,25 +1734,14 @@
                         </DockPanel>
                     </DataTemplate>
                     <Style TargetType="{x:Type TabItem}">
-                       <!-- <Setter Property="MaxWidth" Value="{Binding Source={x:Static configuration:Configurations.TabDefaultWidth}}" /> 
-                        <Setter Property="Width">
-                            <Setter.Value>
-                                <MultiBinding Converter="{StaticResource TabSizeConverter}">
-                                    <Binding RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType={x:Type TabControl}}" />
-                                    <Binding RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType={x:Type TabControl}}"
-                                                 Path="ActualWidth" />
-                                    <Binding RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType={x:Type TabControl}}"
-                                                 Path="Items.Count" />
-                                </MultiBinding>
-                            </Setter.Value>
-                        </Setter> -->
+                        <Setter Property="MinWidth" Value="{Binding Source={x:Static configuration:Configurations.RightSideBarTabMinWidth}}" />
                         <Setter Property="Template">
                             <Setter.Value>
                                 <ControlTemplate TargetType="{x:Type TabItem}">
                                     <Grid>
-                                        <Border Name="Border" Margin="0,0,0,0"  BorderThickness="0 0 0 0" BorderBrush="Black">
+                                        <Border Name="Border" Margin="0,0,0,0"  BorderThickness="0 0 1 0" BorderBrush="#FF3F4040">
                                             <ContentPresenter x:Name="ContentSite" VerticalAlignment="Center"
-                                                     HorizontalAlignment="Center"
+                                                     HorizontalAlignment="Stretch"
                                                      ContentSource="Header" Margin="6,0,0,2"
                                                      RecognizesAccessKey="True">
                                             </ContentPresenter>
@@ -1760,7 +1749,7 @@
                                     </Grid>
                                     <ControlTemplate.Triggers>
                                         <Trigger Property="IsSelected" Value="true">
-                                            <Setter Property="TextBlock.Foreground"
+                                            <Setter Property="Foreground"
                                                          Value="{StaticResource WorkspaceTabHeaderActiveTextBrush}" />
                                         </Trigger>
                                         <Trigger Property="IsSelected" Value="false">

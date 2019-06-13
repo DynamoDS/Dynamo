@@ -79,11 +79,12 @@ namespace Dynamo.Wpf.Extensions
         /// <summary>
         /// Adds the extension UI control to a new tab in the right side bar.
         /// </summary>
+        /// <param name="viewExtension"></param>
         /// <param name="contentControl"></param>
         /// <returns></returns>
-        internal void AddToExtensionsSideBar(ContentControl contentControl)
+        internal void AddToExtensionsSideBar(IViewExtension viewExtension, ContentControl contentControl)
         {
-            dynamoView.AddTabItem(contentControl);
+            dynamoView.AddTabItem(viewExtension, contentControl);
         }
 
         public void AddSeparator(MenuBarType type, Separator separatorObj, int index = -1)

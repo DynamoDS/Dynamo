@@ -130,6 +130,11 @@ namespace Dynamo.Configuration
         /// Default width of tab
         /// </summary>
         public static readonly int TabDefaultWidth = 250;
+
+        /// <summary>
+        /// Minimum width of tab in the right side bar
+        /// </summary>
+        public static readonly int RightSideBarTabMinWidth = 150;
         #endregion
 
         #region Information Bubble
