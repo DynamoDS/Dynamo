@@ -178,7 +178,7 @@ namespace Dynamo.PackageManager
                         {
                             OnRequestLoadNodeLibrary(assem.Assembly);
                         }
-                        catch (Dynamo.Exceptions.LibraryLoadFailedException ex)
+                        catch (LibraryLoadFailedException ex)
                         {
                             Log(ex.GetType() + ": " + ex.Message);
                         }

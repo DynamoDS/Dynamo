@@ -582,14 +582,23 @@ namespace Dynamo.Engine
             {
                 DLLFFIHandler.Register(FFILanguage.CSharp, new CSModuleHelper());
 
-                var functionTable = LibraryManagementCore.CodeBlockList[0].procedureTable;
+                ProcedureTable functionTable = null;
+                int functionNumber = 0;
+                if (LibraryManagementCore.CodeBlockList.Any())
+                {
+                    functionTable = LibraryManagementCore.CodeBlockList[0].procedureTable;
+                    functionNumber = functionTable.Procedures.Count;
+                }
                 var classTable = LibraryManagementCore.ClassTable;
-
-                int functionNumber = functionTable.Procedures.Count;
                 int classNumber = classTable.ClassNodes.Count;
 
                 CompilerUtils.TryLoadAssemblyIntoCore(LibraryManagementCore, library);
 
+                if(functionTable == null)
+                {
+                    functionTable = LibraryManagementCore.CodeBlockList[0].procedureTable;
+                    functionNumber = functionTable.Procedures.Count;
+                }
 
                 if (LibraryManagementCore.BuildStatus.ErrorCount > 0)
                 {
