@@ -12,30 +12,35 @@ namespace Dynamo.PackageDependency
     /// </summary>
     public partial class PackageDependencyView : UserControl
     {
-
-        internal IEnumerable<Graph.Workspaces.PackageDependencyInfo> packages;
-        internal DependencyTable table = new DependencyTable();
-
-        private DynamoModel dynamoModel;
+        protected DependencyTable table = new DependencyTable();
 
         /// <summary>
         /// Event handler for workspaceAdded event
         /// </summary>
         /// <param name="obj"></param>
-        public void WorkspaceOpened(WorkspaceModel obj)
+        internal void WorkspaceOpened(WorkspaceModel obj)
         {
-            packages = obj.PackageDependencies;
-            foreach(var package in packages)
+            foreach (var package in obj.PackageDependencies)
             {
                 table.Columns.Add(new Column()
                 {
                     ColumnsData = new ObservableCollection<ColumnData>()
                     {
                         new ColumnData(package.Name),
-                        new ColumnData(package.Version.ToString())
+                        new ColumnData(package.Version.ToString(), 100)
                     }
                 });
             }
+        }
+
+        /// <summary>
+        /// Event handler for workspaceRemoved event
+        /// </summary>
+        /// <param name="obj"></param>
+        internal void WorkspaceRemoved(WorkspaceModel obj)
+        {
+            // Clear the dependency table.
+            table.Columns.Clear();
         }
 
         /// <summary>
@@ -46,11 +51,14 @@ namespace Dynamo.PackageDependency
         {
             InitializeComponent();
             DataContext = table;
-            // Initialize but usually empty at this point
-            packages = dynamoModel.CurrentWorkspace.PackageDependencies;
             dynamoModel.WorkspaceAdded += WorkspaceOpened;
+            dynamoModel.WorkspaceRemoved += WorkspaceRemoved;
         }
     }
+
+    /// <summary>
+    /// 
+    /// </summary>
     public class Column
     {
         public ObservableCollection<ColumnData> ColumnsData
@@ -59,11 +67,18 @@ namespace Dynamo.PackageDependency
         }
     }
 
+    /// <summary>
+    /// Class defining data for each column
+    /// </summary>
     public class ColumnData
     {
-        public int DefaultWidth = 100;
-        public Brush DefaultColor = Brushes.Red;
+        static int DefaultWidth = 200;
+        static Brush DefaultColor = Brushes.Red;
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="data"></param>
         public ColumnData(string data)
         {
             Data = data;
@@ -71,22 +86,59 @@ namespace Dynamo.PackageDependency
             Color = DefaultColor;
         }
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="width"></param>
+        public ColumnData(string data, int width)
+        {
+            Data = data;
+            Width = width;
+            Color = DefaultColor;
+        }
+
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="width"></param>
+        /// <param name="brush"></param>
+        public ColumnData(string data, int width, Brush brush)
+        {
+            Data = data;
+            Width = width;
+            Color = brush;
+        }
+
+        /// <summary>
+        /// Data in each cell
+        /// </summary>
         public string Data
         {
             get; set;
         }
 
+        /// <summary>
+        /// Width of each cell
+        /// </summary>
         public int Width
         {
             get; set;
         }
 
+        /// <summary>
+        /// Foreground color of each cell
+        /// </summary>
         public Brush Color
         {
             get; set;
         }
     }
 
+    /// <summary>
+    /// The data binding table holding all the dependency info
+    /// </summary>
     public class DependencyTable
     {
         public ObservableCollection<Column> Columns
@@ -104,12 +156,12 @@ namespace Dynamo.PackageDependency
             {
                 ColumnsData = new ObservableCollection<ColumnData>()
                     {
-                        new ColumnData("SamplePackage 1"),
-                        new ColumnData("1.0")
+                        new ColumnData("DummyPackage"),
+                        new ColumnData("1.0.0")
                     }
             });
 
-            Headers.Add(new ColumnData("Package"));
+            Headers.Add(new ColumnData("Package Name"));
             Headers.Add(new ColumnData("Version"));
         }
     }
