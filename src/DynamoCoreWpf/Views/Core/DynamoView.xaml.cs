@@ -69,7 +69,7 @@ namespace Dynamo.Controls
         private ShortcutToolbar shortcutBar;
         private bool loaded = false;
 
-        private ObservableCollection<TabItem> TabItems { set; get; } = new ObservableCollection<TabItem>();
+        internal ObservableCollection<TabItem> TabItems { set; get; } = new ObservableCollection<TabItem>();
 
         // This is to identify whether the PerformShutdownSequenceOnViewModel() method has been
         // called on the view model and the process is not cancelled
@@ -212,7 +212,7 @@ namespace Dynamo.Controls
                 // creates a new tab item
                 TabItem tab = new TabItem();
                 tab.Header = viewExtension.GetType().Name;
-                tab.Tag = viewExtension.ToString();
+                tab.Tag = viewExtension.GetType();
                 tab.HeaderTemplate = tabDynamic.FindResource("TabHeader") as DataTemplate;
 
                 // setting the extension window to the current tab content
@@ -269,7 +269,7 @@ namespace Dynamo.Controls
         {
             foreach (TabItem tabItem in TabItems)
             {
-                if (tabItem.Tag.Equals(viewExtension.ToString()))
+                if (tabItem.Tag.Equals(viewExtension.GetType()))
                 {
                     return true;
                 }

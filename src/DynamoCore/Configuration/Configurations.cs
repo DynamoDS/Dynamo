@@ -132,9 +132,14 @@ namespace Dynamo.Configuration
         public static readonly int TabDefaultWidth = 250;
 
         /// <summary>
-        /// Minimum width of tab in the right side bar
+        /// Minimum width of tab in the extensions side bar
         /// </summary>
-        public static readonly int RightSideBarTabMinWidth = 150;
+        public static readonly int ExtensionsSideBarTabMinWidth = 150;
+
+        /// <summary>
+        /// Border brush for tab items
+        /// </summary>
+        public static readonly string BorderBrushTabItems = "#FF3F4040";
         #endregion
 
         #region Information Bubble

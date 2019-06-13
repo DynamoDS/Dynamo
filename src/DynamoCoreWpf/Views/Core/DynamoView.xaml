@@ -214,7 +214,7 @@
         </Grid.ColumnDefinitions>
 
         <!--Titlebar-->
-        <Border BorderBrush="#FF3F4040"
+        <Border BorderBrush="{Binding Source={x:Static configuration:Configurations.BorderBrushTabItems}}"
                 BorderThickness="0,0,0,1"
                 Grid.Row="0"
                 Grid.Column="0"
@@ -847,7 +847,7 @@
                 Grid.Row="0"
                 Grid.Column="0"
                 Height="32"
-                BorderBrush="#FF3F4040"
+                BorderBrush="{Binding Source={x:Static configuration:Configurations.BorderBrushTabItems}}"
                 BorderThickness="0,0,0,1">
                 <Grid Name="shortcutBarGrid">
                 </Grid>
@@ -917,7 +917,7 @@
                                                 <RowDefinition Height="Auto" />
                                                 <RowDefinition Height="*" />
                                             </Grid.RowDefinitions>
-                                            <Border BorderBrush="#FF3F4040"
+                                            <Border BorderBrush="{Binding Source={x:Static configuration:Configurations.BorderBrushTabItems}}"
                                                     BorderThickness="1,0,0,1"
                                                     Grid.Row="0">
                                                 <Grid>
@@ -1255,7 +1255,7 @@
                                 <Setter.Value>
                                     <ControlTemplate TargetType="{x:Type TabItem}">
                                         <Border Name="Border"
-                                                BorderBrush="#FF3F4040"
+                                                BorderBrush="{Binding Source={x:Static configuration:Configurations.BorderBrushTabItems}}"
                                                 CornerRadius="0,0,0,0">
                                             <Border.Style>
                                                 <Style TargetType="Border">
@@ -1667,7 +1667,7 @@
               Grid.RowSpan="2">
         </Grid>
 
-        <!--Right Sidebar Extensions-->
+        <!--Right Extensions Sidebar-->
         <Grid Height="Auto"
               Width="Auto"
               HorizontalAlignment="Stretch"
@@ -1679,6 +1679,7 @@
               Grid.RowSpan="2">
             <TabControl Name="tabDynamic" ItemsSource="{Binding}">
                 <TabControl.Resources>
+                    <!--Styling for the close button in the tab-->
                     <Style TargetType="{x:Type Button}"
                                x:Key="CloseButtonStyle">
                         <Setter Property="OverridesDefaultStyle"
@@ -1709,9 +1710,12 @@
                             </Setter.Value>
                         </Setter>
                     </Style>
+                    
+                    <!--Template for each tab item in the extensions side bar-->
                     <DataTemplate x:Key="TabHeader" DataType="TabItem">
-                        <DockPanel HorizontalAlignment="Stretch" MinWidth="{Binding Source={x:Static configuration:Configurations.RightSideBarTabMinWidth}}">
+                        <DockPanel HorizontalAlignment="Stretch" MinWidth="{Binding Source={x:Static configuration:Configurations.ExtensionsSideBarTabMinWidth}}">
                             <TextBlock Text="{Binding RelativeSource={RelativeSource AncestorType={x:Type TabItem}}, Path=Header}" HorizontalAlignment="Stretch"/>
+                            <!--Button to close a particular tab-->
                             <Button Name="CloseButton" Style="{StaticResource CloseButtonStyle}" DockPanel.Dock="Right" Click="CloseTab"
                                               CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type TabItem}}, Path=Name}">
                                 <Image Width="14" Height="14" HorizontalAlignment="Right" VerticalAlignment="Center">
@@ -1733,13 +1737,16 @@
                             </Button>
                         </DockPanel>
                     </DataTemplate>
+                    
+                    <!--Styling for the tab in the extensions side bar-->
                     <Style TargetType="{x:Type TabItem}">
-                        <Setter Property="MinWidth" Value="{Binding Source={x:Static configuration:Configurations.RightSideBarTabMinWidth}}" />
+                        <Setter Property="MinWidth" Value="{Binding Source={x:Static configuration:Configurations.ExtensionsSideBarTabMinWidth}}" />
                         <Setter Property="Template">
                             <Setter.Value>
                                 <ControlTemplate TargetType="{x:Type TabItem}">
                                     <Grid>
-                                        <Border Name="Border" Margin="0,0,0,0"  BorderThickness="0 0 1 0" BorderBrush="#FF3F4040">
+                                        <Border Name="Border" Margin="0,0,0,0"  BorderThickness="0 0 1 0" 
+                                                        BorderBrush="{Binding Source={x:Static configuration:Configurations.BorderBrushTabItems}}">
                                             <ContentPresenter x:Name="ContentSite" VerticalAlignment="Center"
                                                      HorizontalAlignment="Stretch"
                                                      ContentSource="Header" Margin="6,0,0,2"
@@ -1747,6 +1754,7 @@
                                             </ContentPresenter>
                                         </Border>
                                     </Grid>
+                                    <!--Properties for selected and unselected tabs-->
                                     <ControlTemplate.Triggers>
                                         <Trigger Property="IsSelected" Value="true">
                                             <Setter Property="Foreground"

@@ -77,10 +77,10 @@ namespace Dynamo.Wpf.Extensions
         }
 
         /// <summary>
-        /// Adds the extension UI control to a new tab in the right side bar.
+        /// Adds the extension UI control element to a new tab in the extensions side bar.
         /// </summary>
-        /// <param name="viewExtension"></param>
-        /// <param name="contentControl"></param>
+        /// <param name="viewExtension">Instance of the view extension object that is being added to the extensions side bar.</param>
+        /// <param name="contentControl">Control UI element with a single piece of content of any type.</param>
         /// <returns></returns>
         internal void AddToExtensionsSideBar(IViewExtension viewExtension, ContentControl contentControl)
         {
