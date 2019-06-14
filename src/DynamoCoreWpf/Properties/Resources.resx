@@ -2196,4 +2196,10 @@ Want to publish a different package?</value>
   <data name="ExtensionsViewTitle" xml:space="preserve">
     <value>Extensions</value>
   </data>
+  <data name="ExtensionAdded" xml:space="preserve">
+    <value>Extension tab added to the extensions side bar.</value>
+  </data>
+  <data name="ExtensionAlreadyPresent" xml:space="preserve">
+    <value>No new tab is added, as the extension is already present in the extensions side bar.</value>
+  </data>
 </root>

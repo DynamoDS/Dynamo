@@ -69,6 +69,7 @@
     <Color x:Key="MaterialColor">#efede4</Color>
 
     <!--Sidebar-->
+    <SolidColorBrush x:Key="BorderBrushWhite" Color="#FF3F4040" />
     
     <!-- Library background-->
     <SolidColorBrush x:Key="SearchTextBoxBackground" Color="#F1F2F2" />
