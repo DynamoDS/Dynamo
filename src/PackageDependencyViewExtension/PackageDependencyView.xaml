@@ -22,6 +22,7 @@
             CanUserAddRows="False"
             IsReadOnly="True"
             ColumnWidth="*"
+            GridLinesVisibility ="None"
             Background= "#353535">
             <DataGrid.Columns>
                 <DataGridTemplateColumn>
@@ -36,7 +37,7 @@
                                 </ItemsControl.ItemsPanel>
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
-                                        <TextBlock Margin="2" Width="{Binding Width}" Foreground="{Binding Color}" Text="{Binding Data}"/>
+                                        <TextBlock Width="{Binding Width}" Foreground="{Binding Color}" Text="{Binding Data}"/>
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>
                             </ItemsControl>

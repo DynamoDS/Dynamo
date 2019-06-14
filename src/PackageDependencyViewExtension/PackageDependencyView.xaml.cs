@@ -24,7 +24,7 @@ namespace Dynamo.PackageDependency
         {
             if (obj is WorkspaceModel)
             {
-                DepdencyRegen(obj as WorkspaceModel);
+                DependencyRegen(obj as WorkspaceModel);
             }
         }
 
@@ -44,15 +44,15 @@ namespace Dynamo.PackageDependency
 
         private void OnWorkspacePropertyChanged(object sender, PropertyChangedEventArgs args)
         {
-            if (args.PropertyName == "PackageDependencies")
-                DepdencyRegen(currentWorkspace);
+            if (args.PropertyName == nameof(currentWorkspace.PackageDependencies))
+                DependencyRegen(currentWorkspace);
         }
 
         /// <summary>
         /// Regenerate dependency table
         /// </summary>
         /// <param name="ws"></param>
-        private void DepdencyRegen(WorkspaceModel ws)
+        private void DependencyRegen(WorkspaceModel ws)
         {
             // Clear the dependency table.
             table.Columns.Clear();

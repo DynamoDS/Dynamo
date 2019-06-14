@@ -653,7 +653,7 @@ namespace Dynamo.Graph.Workspaces
             set
             {
                 packageDependencies = value;
-                RaisePropertyChanged("PackageDependencies");
+                RaisePropertyChanged(nameof(PackageDependencies));
             }
         }
 
