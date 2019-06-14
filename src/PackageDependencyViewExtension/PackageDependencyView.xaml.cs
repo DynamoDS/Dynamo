@@ -60,14 +60,36 @@ namespace Dynamo.PackageDependency
             table.Columns.Clear();
             foreach (var package in ws.PackageDependencies)
             {
-                table.Columns.Add(new Column()
+                bool matchFound = false;
+                // Check if the target package is installed and loaded.
+                foreach (var loadedPackage in ws.LoadedPackageDependencies)
                 {
-                    ColumnsData = new ObservableCollection<ColumnData>()
+                    if (package.Equals(loadedPackage))
                     {
-                        new ColumnData(package.Name),
-                        new ColumnData(package.Version.ToString(), 100)
+                        table.Columns.Add(new Column()
+                        {
+                            ColumnsData = new ObservableCollection<ColumnData>()
+                            {
+                                new ColumnData(package.Name),
+                                new ColumnData(package.Version.ToString(), 100)
+                            }
+                        });
+                        matchFound = true;
+                        continue;
                     }
-                });
+                }
+                // TODO: Not ideal! O(N * M) complexicty, would like LoadedPackageDependencies to be a dictionary
+                if (!matchFound)
+                {
+                    table.Columns.Add(new Column()
+                    {
+                        ColumnsData = new ObservableCollection<ColumnData>()
+                        {
+                            new ColumnData(package.Name, ColumnData.WarningColor),
+                            new ColumnData(package.Version.ToString(), 100)
+                        }
+                    });
+                }
             }
         }
 
@@ -102,8 +124,9 @@ namespace Dynamo.PackageDependency
     /// </summary>
     public class ColumnData
     {
-        static int DefaultWidth = 150;
+        static int DefaultWidth = 200;
         static SolidColorBrush DefaultColor = (SolidColorBrush)(new BrushConverter().ConvertFrom("#aaaaaa"));
+        public static Brush WarningColor = Brushes.Red;
 
         /// <summary>
         /// Constructor
@@ -126,6 +149,18 @@ namespace Dynamo.PackageDependency
             Data = data;
             Width = width;
             Color = DefaultColor;
+        }
+
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="color"></param>
+        public ColumnData(string data, Brush color)
+        {
+            Data = data;
+            Width = DefaultWidth;
+            Color = color;
         }
 
         /// <summary>

@@ -62,7 +62,6 @@
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
             </DataGrid.Columns>
-
         </DataGrid>
         <!--<Button
             VerticalAlignment="Bottom"
