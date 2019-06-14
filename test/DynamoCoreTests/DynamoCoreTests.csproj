@@ -103,6 +103,7 @@
     <Compile Include="Nodes\DictionaryTests.cs" />
     <Compile Include="Nodes\DropDownTests.cs" />
     <Compile Include="NodeToCodeTest.cs" />
+    <Compile Include="PackageDependencyTests.cs" />
     <Compile Include="PresetsTests.cs" />
     <Compile Include="PeriodicEvaluationTests.cs" />
     <Compile Include="ProfilingTest.cs" />

@@ -151,6 +151,10 @@ namespace Dynamo.PackageManager
         {
             ReadyParams = sp;
             sp.CurrentWorkspaceChanged += OnCurrentWorkspaceChanged;
+
+            (sp.CurrentWorkspaceModel as WorkspaceModel).CollectingCustomNodePackageDependencies += GetCustomNodePackageFromID;
+            (sp.CurrentWorkspaceModel as WorkspaceModel).CollectingNodePackageDependencies += GetNodePackageFromAssemblyName;
+            currentWorkspace = (sp.CurrentWorkspaceModel as WorkspaceModel);
         }
 
         public void Shutdown()
