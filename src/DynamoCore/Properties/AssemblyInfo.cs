@@ -29,3 +29,4 @@ using System.Runtime.CompilerServices;
 [assembly: InternalsVisibleTo("LibraryViewExtension")]
 [assembly: InternalsVisibleTo("ViewExtensionLibraryTests")]
 [assembly: InternalsVisibleTo("DynamoPerformanceTests")]
+[assembly:InternalsVisibleTo("PackageManagerTests")]

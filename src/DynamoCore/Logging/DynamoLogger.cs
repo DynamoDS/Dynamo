@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using Dynamo.Configuration;
 using Dynamo.Core;
+using Dynamo.Exceptions;
 using Dynamo.Interfaces;
 
 namespace Dynamo.Logging
@@ -139,6 +141,16 @@ namespace Dynamo.Logging
             }
         }
 
+        private List<NotificationMessage> notifications;
+        /// <summary>
+        /// Notifications logged during startup such as library load failures
+        /// that need to be displayed to user.
+        /// </summary>
+        public IEnumerable<NotificationMessage> StartupNotifications
+        {
+            get { return notifications; }
+        }
+
         /// <summary>
         /// Initializes a new instance of <see cref="DynamoLogger"/> class
         /// with specified debug settings and directory where to write logs
@@ -154,6 +166,8 @@ namespace Dynamo.Logging
 
                 WarningLevel = WarningLevel.Mild;
                 Warning = "";
+
+                notifications = new List<NotificationMessage>();
 
                 StartLogging(logDirectory);
             }
@@ -239,7 +253,14 @@ namespace Dynamo.Logging
         {
             var notificationMessage = string.Format("{0}:{3} {1}: {3} {2}", title, shortMessage, detailedMessage,Environment.NewLine);
             Log("notification",notificationMessage );
-            NotificationLogged(new NotificationMessage(sender, shortMessage, detailedMessage,title));
+            if (NotificationLogged != null)
+            {
+                NotificationLogged(new NotificationMessage(sender, shortMessage, detailedMessage, title));
+            }
+            else
+            {
+                notifications.Add(new NotificationMessage(sender, shortMessage, detailedMessage, title));
+            }
         }
 
 
@@ -302,6 +323,14 @@ namespace Dynamo.Logging
         }
 
         /// <summary>
+        /// Clear any notifications after displaying them.
+        /// </summary>
+        public void ClearStartupNotifications()
+        {
+            notifications.Clear();
+        }
+
+        /// <summary>
         /// Log a message
         /// </summary>
         /// <param name="message">Message to log</param>
@@ -316,6 +345,11 @@ namespace Dynamo.Logging
         /// <param name="e">Exception to log</param>
         public void Log(Exception e)
         {
+            var le = e as LibraryLoadFailedException;
+            if (le != null)
+            {
+                LogNotification(le.Source, le.ToString(), le.Message, le.Reason);
+            }
             Log(e.GetType() + ":", LogLevel.Console);
             Log(e.Message, LogLevel.Console);
             Log(e.StackTrace, LogLevel.Console);

@@ -4,6 +4,8 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using Dynamo.Core;
+using Dynamo.Engine;
+using Dynamo.Exceptions;
 using Dynamo.Extensions;
 using Dynamo.Interfaces;
 using Dynamo.Logging;
@@ -29,6 +31,7 @@ namespace Dynamo.PackageManager
     public class PackageLoader : LogSourceBase
     {
         internal event Action<Assembly> RequestLoadNodeLibrary;
+        internal event Action<IEnumerable<Assembly>> PackagesLoaded;
         internal event Func<string, IEnumerable<CustomNodeInfo>> RequestLoadCustomNodeDirectory;
         internal event Func<string, IExtension> RequestLoadExtension;
         internal event Action<IExtension> RequestAddExtension;
@@ -138,6 +141,11 @@ namespace Dynamo.PackageManager
             }
         }
 
+        private void OnPackagesLoaded(IEnumerable<Assembly> assemblies)
+        {
+            PackagesLoaded?.Invoke(assemblies);
+        }
+
         private IEnumerable<CustomNodeInfo> OnRequestLoadCustomNodeDirectory(string directory)
         {
             if (RequestLoadCustomNodeDirectory != null)
@@ -170,7 +178,7 @@ namespace Dynamo.PackageManager
                         {
                             OnRequestLoadNodeLibrary(assem.Assembly);
                         }
-                        catch (Dynamo.Exceptions.LibraryLoadFailedException ex)
+                        catch (LibraryLoadFailedException ex)
                         {
                             Log(ex.GetType() + ": " + ex.Message);
                         }
@@ -217,19 +225,32 @@ namespace Dynamo.PackageManager
             {
                 foreach (var pkg in LocalPackages)
                 {
-                    if (File.Exists(pkg.BinaryDirectory))
+                    if (Directory.Exists(pkg.BinaryDirectory))
                     {
                         pathManager.AddResolutionPath(pkg.BinaryDirectory);
                     }
 
                 }
             }
+            LoadPackages(LocalPackages);
+        }
 
-            foreach (var pkg in LocalPackages)
+        /// <summary>
+        /// Loads and imports all packages. 
+        /// </summary>
+        /// <param name="packages"></param>
+        public void LoadPackages(IEnumerable<Package> packages)
+        {
+            foreach (var pkg in packages)
             {
                 Load(pkg);
             }
+
+            var assemblies =
+                LocalPackages.SelectMany(x => x.EnumerateAssembliesInBinDirectory().Where(y => y.IsNodeLibrary));
+            OnPackagesLoaded(assemblies.Select(x => x.Assembly));
         }
+
         public void LoadCustomNodesAndPackages(LoadPackageParams loadPackageParams, CustomNodeManager customNodeManager)
         {
             foreach (var path in loadPackageParams.Preferences.CustomPackageFolders)
@@ -300,11 +321,11 @@ namespace Dynamo.PackageManager
                 {
                     discoveredPkg = Package.FromJson(headerPath, AsLogger());
                     if (discoveredPkg == null)
-                        throw new Exception(String.Format(Properties.Resources.MalformedHeaderPackage, headerPath));
+                        throw new LibraryLoadFailedException(directory, String.Format(Properties.Resources.MalformedHeaderPackage, headerPath));
                 }
                 else
                 {
-                    throw new Exception(String.Format(Properties.Resources.NoHeaderPackage, headerPath));
+                    throw new LibraryLoadFailedException(directory, String.Format(Properties.Resources.NoHeaderPackage, headerPath));
                 }
 
                 // prevent duplicates
@@ -313,7 +334,7 @@ namespace Dynamo.PackageManager
                     this.Add(discoveredPkg);
                     return discoveredPkg; // success
                 }
-                throw new Exception(String.Format(Properties.Resources.DulicatedPackage, discoveredPkg.Name, discoveredPkg.RootDirectory));
+                throw new LibraryLoadFailedException(directory, String.Format(Properties.Resources.DulicatedPackage, discoveredPkg.Name, discoveredPkg.RootDirectory));
             }
             catch (Exception e)
             {

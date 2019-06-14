@@ -18,6 +18,7 @@ namespace Dynamo.PackageManager
 
         private Action<Assembly> RequestLoadNodeLibraryHandler;
         private event Func<string, IEnumerable<CustomNodeInfo>> RequestLoadCustomNodeDirectoryHandler;
+        private Action<IEnumerable<Assembly>> LoadPackagesHandler;
        
         public event Func<string, IExtension> RequestLoadExtension;
         public event Action<IExtension> RequestAddExtension;
@@ -68,6 +69,11 @@ namespace Dynamo.PackageManager
             PackageLoader.MessageLogged -= OnMessageLogged;
             PackageLoader.PackgeLoaded -= OnPackageLoaded;
             PackageLoader.PackageRemoved -= OnPackageRemoved;
+
+            if (LoadPackagesHandler != null)
+            {
+                PackageLoader.PackagesLoaded -= LoadPackagesHandler;
+            }
 
             if (RequestLoadNodeLibraryHandler != null)
             {
@@ -123,13 +129,15 @@ namespace Dynamo.PackageManager
             PackageLoader.PackgeLoaded += OnPackageLoaded;
             PackageLoader.PackageRemoved += OnPackageRemoved;
             RequestLoadNodeLibraryHandler = startupParams.LibraryLoader.LoadNodeLibrary;
+            //TODO: Add LoadPackages to ILibraryLoader interface in 3.0
+            LoadPackagesHandler = (startupParams.LibraryLoader as ExtensionLibraryLoader).LoadPackages;
             RequestLoadCustomNodeDirectoryHandler = (dir) => startupParams.CustomNodeManager
                     .AddUninitializedCustomNodesInPath(dir, DynamoModel.IsTestMode, true);
 
             //raise the public events on this extension when the package loader requests.
             PackageLoader.RequestLoadExtension += RequestLoadExtension;
             PackageLoader.RequestAddExtension += RequestAddExtension;
-            
+            PackageLoader.PackagesLoaded += LoadPackagesHandler;
             PackageLoader.RequestLoadNodeLibrary += RequestLoadNodeLibraryHandler;
             PackageLoader.RequestLoadCustomNodeDirectory += RequestLoadCustomNodeDirectoryHandler;
                 
