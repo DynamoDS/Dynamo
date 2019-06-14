@@ -25,6 +25,8 @@ namespace Dynamo.PackageDependency
             if (obj is WorkspaceModel)
             {
                 DependencyRegen(obj as WorkspaceModel);
+                currentWorkspace = obj as WorkspaceModel;
+                currentWorkspace.PropertyChanged += OnWorkspacePropertyChanged;
             }
         }
 
@@ -101,7 +103,7 @@ namespace Dynamo.PackageDependency
     public class ColumnData
     {
         static int DefaultWidth = 150;
-        static Brush DefaultColor = Brushes.Red;
+        static SolidColorBrush DefaultColor = (SolidColorBrush)(new BrushConverter().ConvertFrom("#aaaaaa"));
 
         /// <summary>
         /// Constructor

@@ -4,27 +4,25 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="300"
-             VerticalAlignment="Top">
-    <Grid Width="300" Height="800" Background= "#353535">
+             VerticalAlignment="Top"
+             HorizontalAlignment="Left">
+    <Grid Background= "#353535" Height="800">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <DataGrid 
             Name="PackageDependencyTable" 
-            HorizontalAlignment="Left" 
-            Height="400"
-            Width="300"
-            Margin="5,5,0,0" 
+            HorizontalAlignment="Left"
             VerticalAlignment="Top" 
-            AutoGenerateColumns="False"
+            Width="500"
+            Margin="5,5,0,0" 
             ItemsSource="{Binding Columns}"
             CanUserAddRows="False"
+            AutoGenerateColumns="False"
             IsReadOnly="True"
             ColumnWidth="*"
             GridLinesVisibility ="None"
-            Background= "#353535">
-
+            Background="#353535">
             <DataGrid.Columns>
                 <DataGridTemplateColumn>
                     <DataGridTemplateColumn.HeaderTemplate>
@@ -32,7 +30,7 @@
                             <ItemsControl ItemsSource="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Path=DataContext.Headers}">
                                 <ItemsControl.ItemsPanel>
                                     <ItemsPanelTemplate>
-                                        <StackPanel Orientation="Horizontal"/>
+                                        <StackPanel Orientation="Horizontal" Background="Transparent"/>
                                     </ItemsPanelTemplate>
                                 </ItemsControl.ItemsPanel>
                                 <ItemsControl.ItemTemplate>
@@ -49,12 +47,12 @@
                                 <ItemsControl ItemsSource="{Binding ColumnsData}">
                                     <ItemsControl.ItemsPanel>
                                         <ItemsPanelTemplate>
-                                            <StackPanel Orientation="Horizontal"/>
+                                            <StackPanel Orientation="Horizontal" Background="Transparent"/>
                                         </ItemsPanelTemplate>
                                     </ItemsControl.ItemsPanel>
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate>
-                                            <TextBox Margin="2" Width="{Binding Width}" Foreground="{Binding Color}" Text="{Binding Data}" BorderThickness="0"/>
+                                            <TextBox Margin="2" Width="{Binding Width}" Foreground="{Binding Color}" Text="{Binding Data}" BorderThickness="0" TextWrapping="Wrap"/>
                                         </DataTemplate>
                                     </ItemsControl.ItemTemplate>
                                 </ItemsControl>
@@ -63,13 +61,16 @@
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
             </DataGrid.Columns>
-        </DataGrid>
-    </Grid>
-    <UserControl.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
 
-            </ResourceDictionary.MergedDictionaries>
-        </ResourceDictionary>
-    </UserControl.Resources>
+        </DataGrid>
+        <!--<Button
+            VerticalAlignment="Bottom"
+            HorizontalAlignment="left"
+            Width="75"
+            Foreground="#AAAAAA"
+            Background="#353535"
+            Margin="500">
+            Download
+        </Button>-->
+    </Grid>
 </UserControl>
