@@ -47,7 +47,7 @@ namespace DynamoCoreWpfTests
             //open a dyf file and modify it
             string packagedirectory = Path.Combine(TestDirectory, "pkgs");
             var packages = Directory.EnumerateDirectories(packagedirectory);
-            var first = Path.GetFullPath(packages.First());
+            var first = Path.GetFullPath(packages.FirstOrDefault(x => Path.GetFileName(x).Equals("Custom Rounding")));
             string dyfpath = Path.Combine(first, "dyf");
             var customnodes = Directory.GetFiles(dyfpath);
             var firstnode = customnodes.First();
@@ -107,9 +107,10 @@ namespace DynamoCoreWpfTests
             });
 
             PublishPackageViewModel vm = null;
+            var package = loader.LocalPackages.FirstOrDefault(x => x.Name == "Custom Rounding");
             Assert.DoesNotThrow(() =>
             {
-                vm = PublishPackageViewModel.FromLocalPackage(ViewModel, loader.LocalPackages.First());
+                vm = PublishPackageViewModel.FromLocalPackage(ViewModel, package);
             });
 
             Assert.AreEqual(PackageUploadHandle.State.Error, vm.UploadState);
