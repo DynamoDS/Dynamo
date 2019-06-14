@@ -37,7 +37,6 @@ namespace Dynamo
             StartDynamo(dynamoSettings);
         }
 
-        [TearDown]
         public override void Cleanup()
         {
             try
