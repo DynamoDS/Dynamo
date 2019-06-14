@@ -84,6 +84,7 @@ namespace Dynamo.PackageDependency
             // Replace with extension view inject API
             var sidebarGrid = viewLoadedParams.DynamoWindow.FindName("sidebarExtensionsGrid") as Grid;
             sidebarGrid.Children.Add(DependencyView);
+            // viewLoadedParams.AddToExtensionsSideBar(this, DependencyView);
         }
     }
 }
