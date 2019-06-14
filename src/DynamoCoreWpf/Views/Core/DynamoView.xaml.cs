@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -67,6 +68,8 @@ namespace Dynamo.Controls
         internal ViewExtensionManager viewExtensionManager = new ViewExtensionManager();
         private ShortcutToolbar shortcutBar;
         private bool loaded = false;
+
+        internal ObservableCollection<TabItem> TabItems { set; get; } = new ObservableCollection<TabItem>();
 
         // This is to identify whether the PerformShutdownSequenceOnViewModel() method has been
         // called on the view model and the process is not cancelled
@@ -186,9 +189,92 @@ namespace Dynamo.Controls
                  }
              };
 
+            // Add an event handler to check if the collection is modified.   
+            TabItems.CollectionChanged += this.OnCollectionChanged;
+
+            this.HideOrShowRightSideBar();
+
             this.dynamoViewModel.RequestPaste += OnRequestPaste;
             this.dynamoViewModel.RequestReturnFocusToView += OnRequestReturnFocusToView;
             FocusableGrid.InputBindings.Clear();
+        }
+
+        // This method adds a tab item to the right side bar and 
+        // sets the extension window as the tab content.
+        internal TabItem AddTabItem(IViewExtension viewExtension, ContentControl contentControl)
+        {
+            int count = TabItems.Count;
+
+            if (!IsExtensionAddedToRightSideBar(viewExtension))
+            {
+                tabDynamic.DataContext = null;
+
+                // creates a new tab item
+                TabItem tab = new TabItem();
+                tab.Header = viewExtension.GetType().Name;
+                tab.Tag = viewExtension.GetType();
+                tab.HeaderTemplate = tabDynamic.FindResource("TabHeader") as DataTemplate;
+
+                // setting the extension window to the current tab content
+                tab.Content = contentControl.Content;
+
+                //Insert the tab at the end
+                TabItems.Insert(count, tab);
+                TabItems = TabItems;
+
+                tabDynamic.DataContext = TabItems;
+                tabDynamic.SelectedItem = tab;
+
+                return tab;
+            }
+            return null;
+        }
+
+        // This method triggers the close operation on the selected tab. 
+        private void CloseTab(object sender, RoutedEventArgs e)
+        {
+            string tabName = (sender as Button).CommandParameter.ToString();
+            
+            TabItem tab = tabDynamic.SelectedItem as TabItem;
+
+            if (tab != null)
+            {
+                // get the selected tab
+                TabItem selectedTab = tabDynamic.SelectedItem as TabItem;
+
+                // clear tab control binding and bind to the new tab-list. 
+                tabDynamic.DataContext = null;
+                TabItems.Remove(tab);
+                TabItems = TabItems;
+                tabDynamic.DataContext = TabItems;
+
+                // Highlight previously selected tab. if that is removed then Highlight the first tab
+                if (selectedTab == null || selectedTab.Equals(tab))
+                {
+                    if (TabItems.Count > 0) {
+                        selectedTab = TabItems[0];
+                    }
+                }
+                tabDynamic.SelectedItem = selectedTab;
+            }
+        }
+
+        // This event is triggered when the tabitems list is changed and will show/hide the right side bar accordingly.
+        private void OnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            this.HideOrShowRightSideBar();
+        }
+
+        private Boolean IsExtensionAddedToRightSideBar(IViewExtension viewExtension)
+        {
+            foreach (TabItem tabItem in TabItems)
+            {
+                if (tabItem.Tag.Equals(viewExtension.GetType()))
+                {
+                    return true;
+                }
+            }
+            return false;
         }
 
         private void OnRequestReturnFocusToView()
@@ -1693,8 +1779,21 @@ namespace Dynamo.Controls
                 collapsedLibrarySidebar.Visibility = Visibility.Collapsed;
             }
 
-            collapsedExtensionSidebar.Visibility = Visibility.Visible;
+        }
 
+        // Show the extensions right side bar when there is atleast one extension
+        private void HideOrShowRightSideBar()
+        {
+            if (TabItems.Count < 1)
+            {
+                RightExtensionsViewColumn.Width = new GridLength(0, GridUnitType.Star);
+                collapsedExtensionSidebar.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                RightExtensionsViewColumn.Width = new GridLength(defaultSideBarWidth, GridUnitType.Star);
+                collapsedExtensionSidebar.Visibility = Visibility.Visible;
+            }
         }
 
         private void OnCollapsedLeftSidebarClick(object sender, EventArgs e)
@@ -1894,6 +1993,9 @@ namespace Dynamo.Controls
             {
                 dynamoViewModel.Model.AuthenticationManager.AuthProvider.RequestLogin -= loginService.ShowLogin;
             }
+
+            // Removing the tab items list handler
+            TabItems.CollectionChanged -= this.OnCollectionChanged;
         }
     }
 }

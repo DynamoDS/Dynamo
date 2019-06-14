@@ -93,7 +93,7 @@ namespace Dynamo.PackageManager.Tests
             var pkg = loader.ScanPackageDirectory(pkgDir);
             loader.Load(pkg);
 
-            Assert.IsTrue(loader.RequestedExtensions.Count() == 0);
+            Assert.IsTrue(!loader.RequestedExtensions.Any());
             Assert.IsFalse(viewExtensionLoad);
             Assert.IsFalse(viewExtensionAdd);
         }
@@ -110,13 +110,31 @@ namespace Dynamo.PackageManager.Tests
         public void LoadPackagesReturnsAllValidPackagesInValidDirectory()
         {
             var loader = new PackageLoader(PackagesDirectory);
+            var libraryLoader = new ExtensionLibraryLoader(CurrentDynamoModel);
+
+            loader.PackagesLoaded += libraryLoader.LoadPackages;
+            loader.RequestLoadNodeLibrary += libraryLoader.LoadNodeLibrary;
+
             loader.LoadAll(new LoadPackageParams
             {
-                Preferences = this.CurrentDynamoModel.PreferenceSettings
+                Preferences = CurrentDynamoModel.PreferenceSettings,
+                PathManager = CurrentDynamoModel.PathManager
             });
 
-            // There are 8 packages in "GitHub\Dynamo\test\pkgs"
-            Assert.AreEqual(8, loader.LocalPackages.Count());
+            // There are 11 packages in "GitHub\Dynamo\test\pkgs"
+            Assert.AreEqual(11, loader.LocalPackages.Count());
+
+            // Verify that interdependent packages are resolved successfully
+            var libs = CurrentDynamoModel.LibraryServices.ImportedLibraries.ToList();
+            Assert.IsTrue(libs.Any(x => File.Exists(Path.Combine(PackagesDirectory, "AnotherPackage", "bin", "AnotherPackage.dll"))));
+            Assert.IsTrue(libs.Any(x => File.Exists(Path.Combine(PackagesDirectory, "Dependent Package", "bin", "DependentPackage.dll"))));
+            Assert.IsTrue(libs.Any(x => File.Exists(Path.Combine(PackagesDirectory, "Package", "bin", "Package.dll"))));
+
+            // Verify that interdependent packages are imported successfully
+            var entries = CurrentDynamoModel.SearchModel.SearchEntries.ToList();
+            Assert.IsTrue(entries.Any(x => x.FullName == "AnotherPackage.AnotherPackage.AnotherPackage.HelloAnotherWorld"));
+            Assert.IsTrue(entries.Any(x => x.FullName == "DependentPackage.DependentPackage.DependentPackage.HelloWorld"));
+            Assert.IsTrue(entries.Any(x => x.FullName == "Package.Package.Package.Hello"));
         }
 
         [Test]
@@ -217,7 +235,7 @@ namespace Dynamo.PackageManager.Tests
         private PackageLoader GetPackageLoader()
         {
             var extensions = CurrentDynamoModel.ExtensionManager.Extensions.OfType<PackageManagerExtension>();
-            if (extensions.Count() > 0)
+            if (extensions.Any())
             {
                 return extensions.First().PackageLoader;
             }

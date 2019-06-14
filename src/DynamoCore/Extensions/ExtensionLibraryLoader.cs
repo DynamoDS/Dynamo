@@ -1,4 +1,7 @@
-﻿using System.Reflection;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using Dynamo.Engine;
 using Dynamo.Library;
 using Dynamo.Models;
 
@@ -7,7 +10,7 @@ namespace Dynamo.Extensions
     /// <summary>
     /// Provides functionality for loading node's DLLs
     /// </summary>
-    public class ExtensionLibraryLoader : ILibraryLoader
+    public class ExtensionLibraryLoader : ILibraryLoader 
     {
         private readonly DynamoModel model;
 
@@ -27,6 +30,16 @@ namespace Dynamo.Extensions
         public void LoadNodeLibrary(Assembly library)
         {
             model.LoadNodeLibrary(library);
+        }
+
+        /// <summary>
+        /// Loads packages for import into VM and for node search.
+        /// </summary>
+        /// <param name="assemblies"></param>
+        public void LoadPackages(IEnumerable<Assembly> assemblies)
+        {
+            var libraryPaths = assemblies.Select(x => x.Location);
+            model.LibraryServices.OnLibrariesImported(new LibraryServices.LibraryLoadedEventArgs(libraryPaths));
         }
     }
 }
