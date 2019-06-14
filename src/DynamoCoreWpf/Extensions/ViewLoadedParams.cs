@@ -84,7 +84,16 @@ namespace Dynamo.Wpf.Extensions
         /// <returns></returns>
         internal void AddToExtensionsSideBar(IViewExtension viewExtension, ContentControl contentControl)
         {
-            dynamoView.AddTabItem(viewExtension, contentControl);
+            TabItem tabItem  = dynamoView.AddTabItem(viewExtension, contentControl);
+
+            if (tabItem != null)
+            {
+                dynamoViewModel.Model.Logger.Log(Wpf.Properties.Resources.ExtensionAdded);
+            }
+            else
+            {
+                dynamoViewModel.Model.Logger.Log(Wpf.Properties.Resources.ExtensionAlreadyPresent);
+            }
         }
 
         public void AddSeparator(MenuBarType type, Separator separatorObj, int index = -1)
