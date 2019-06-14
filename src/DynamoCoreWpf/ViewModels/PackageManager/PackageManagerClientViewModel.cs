@@ -490,7 +490,7 @@ namespace Dynamo.ViewModels
                         if (packageDownloadHandle.Extract(DynamoViewModel.Model, downloadPath, out dynPkg))
                         {
                             var p = Package.FromDirectory(dynPkg.RootDirectory, DynamoViewModel.Model.Logger);
-                            pmExtension.PackageLoader.Load(p);
+                            pmExtension.PackageLoader.LoadPackages(new List<Package> {p});
 
                             packageDownloadHandle.DownloadState = PackageDownloadHandle.State.Installed;
                         }
