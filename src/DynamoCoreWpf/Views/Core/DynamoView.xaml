@@ -214,7 +214,7 @@
         </Grid.ColumnDefinitions>
 
         <!--Titlebar-->
-        <Border BorderBrush="{Binding Source={x:Static configuration:Configurations.BorderBrushTabItems}}"
+        <Border BorderBrush="{StaticResource BorderBrushWhite}"
                 BorderThickness="0,0,0,1"
                 Grid.Row="0"
                 Grid.Column="0"
@@ -847,7 +847,7 @@
                 Grid.Row="0"
                 Grid.Column="0"
                 Height="32"
-                BorderBrush="{Binding Source={x:Static configuration:Configurations.BorderBrushTabItems}}"
+                BorderBrush="{StaticResource BorderBrushWhite}"
                 BorderThickness="0,0,0,1">
                 <Grid Name="shortcutBarGrid">
                 </Grid>
@@ -917,7 +917,7 @@
                                                 <RowDefinition Height="Auto" />
                                                 <RowDefinition Height="*" />
                                             </Grid.RowDefinitions>
-                                            <Border BorderBrush="{Binding Source={x:Static configuration:Configurations.BorderBrushTabItems}}"
+                                            <Border BorderBrush="{StaticResource BorderBrushWhite}"
                                                     BorderThickness="1,0,0,1"
                                                     Grid.Row="0">
                                                 <Grid>
@@ -1255,7 +1255,7 @@
                                 <Setter.Value>
                                     <ControlTemplate TargetType="{x:Type TabItem}">
                                         <Border Name="Border"
-                                                BorderBrush="{Binding Source={x:Static configuration:Configurations.BorderBrushTabItems}}"
+                                                BorderBrush="{StaticResource BorderBrushWhite}"
                                                 CornerRadius="0,0,0,0">
                                             <Border.Style>
                                                 <Style TargetType="Border">
@@ -1746,7 +1746,7 @@
                                 <ControlTemplate TargetType="{x:Type TabItem}">
                                     <Grid>
                                         <Border Name="Border" Margin="0,0,0,0"  BorderThickness="1 0 1 0" 
-                                                        BorderBrush="{Binding Source={x:Static configuration:Configurations.BorderBrushTabItems}}">
+                                                        BorderBrush="{StaticResource BorderBrushWhite}">
                                             <ContentPresenter x:Name="ContentSite" VerticalAlignment="Center"
                                                      HorizontalAlignment="Stretch"
                                                      ContentSource="Header" Margin="3,0,0,3"

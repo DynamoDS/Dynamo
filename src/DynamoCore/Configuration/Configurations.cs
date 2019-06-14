@@ -136,10 +136,6 @@ namespace Dynamo.Configuration
         /// </summary>
         public static readonly int ExtensionsSideBarTabMinWidth = 150;
 
-        /// <summary>
-        /// Border brush for tab items
-        /// </summary>
-        public static readonly string BorderBrushTabItems = "#FF3F4040";
         #endregion
 
         #region Information Bubble
