@@ -22,7 +22,8 @@
             IsReadOnly="True"
             ColumnWidth="*"
             GridLinesVisibility ="None"
-            Background="#353535">
+            Background="#353535"
+            RowBackground="Transparent">
             <DataGrid.Columns>
                 <DataGridTemplateColumn>
                     <DataGridTemplateColumn.HeaderTemplate>
@@ -30,7 +31,7 @@
                             <ItemsControl ItemsSource="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Path=DataContext.Headers}">
                                 <ItemsControl.ItemsPanel>
                                     <ItemsPanelTemplate>
-                                        <StackPanel Orientation="Horizontal" Background="Transparent"/>
+                                        <StackPanel Orientation="Horizontal"/>
                                     </ItemsPanelTemplate>
                                 </ItemsControl.ItemsPanel>
                                 <ItemsControl.ItemTemplate>
@@ -47,12 +48,12 @@
                                 <ItemsControl ItemsSource="{Binding ColumnsData}">
                                     <ItemsControl.ItemsPanel>
                                         <ItemsPanelTemplate>
-                                            <StackPanel Orientation="Horizontal" Background="Transparent"/>
+                                            <StackPanel Orientation="Horizontal"/>
                                         </ItemsPanelTemplate>
                                     </ItemsControl.ItemsPanel>
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate>
-                                            <TextBox Margin="2" Width="{Binding Width}" Foreground="{Binding Color}" Text="{Binding Data}" BorderThickness="0" TextWrapping="Wrap"/>
+                                            <TextBox Margin="2" Width="{Binding Width}" Foreground="{Binding Color}" Text="{Binding Data}" Background="#353535" BorderThickness="0" TextWrapping="Wrap"/>
                                         </DataTemplate>
                                     </ItemsControl.ItemTemplate>
                                 </ItemsControl>
