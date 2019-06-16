@@ -221,17 +221,31 @@ namespace ProtoFFI
         {
             ProtoCore.Type protoCoreType;
             if (mTypeMaps.TryGetValue(type, out protoCoreType))
+            {
                 return protoCoreType;
+            }
 
             if (type == typeof(object) || !CLRObjectMarshaler.IsMarshaledAsNativeType(type))
             {
                 if (type.IsEnum)
-                    protoCoreType = CLRModuleType.GetInstance(type, module, string.Empty).ProtoCoreType;
+                {
+                    protoCoreType = GetInstance(type, module, string.Empty).ProtoCoreType;
+                }
                 else
-                    protoCoreType = CLRModuleType.GetInstance(type, null, string.Empty).ProtoCoreType;
+                {
+                    CLRDLLModule dllModule = null;
+                    if (!SupressesImport(type))
+                    {
+                        dllModule = DLLFFIHandler.GetModule(type.Assembly.Location) as CLRDLLModule;
+                        if (dllModule != null && dllModule.Module == null) dllModule = null;
+                    }
+                    protoCoreType = GetInstance(type, dllModule, string.Empty).ProtoCoreType;
+                }
             }
             else
+            {
                 protoCoreType = CLRObjectMarshaler.GetProtoCoreType(type);
+            }
 
             lock (mTypeMaps)
             {
