@@ -77,14 +77,25 @@ namespace Dynamo.PackageDependency
 
         }
 
+        private MenuItem packageDependencyMenuItem;
+
         public void Loaded(ViewLoadedParams viewLoadedParams)
         {
+            // TODO: Since the current behavior would be when all necessary dependencies are already loaded,
+            // the view extension will not be loaded on the right, adding a button in view menu to load
+            // manually when user needs it. May introduce inconsistent dependencies info, need testing.
+            packageDependencyMenuItem = new MenuItem { Header = "Show View Extension Sample Window" };
+            packageDependencyMenuItem.Click += (sender, args) =>
+            {
+                viewLoadedParams.AddToExtensionsSideBar(this, DependencyView);
+            };
+            viewLoadedParams.AddMenuItem(MenuBarType.View, packageDependencyMenuItem);
+
             DependencyView = new PackageDependencyView(viewLoadedParams);
 
             // Replace with extension view inject API
             var sidebarGrid = viewLoadedParams.DynamoWindow.FindName("sidebarExtensionsGrid") as Grid;
             sidebarGrid.Children.Add(DependencyView);
-            // viewLoadedParams.AddToExtensionsSideBar(this, DependencyView);
         }
     }
 }

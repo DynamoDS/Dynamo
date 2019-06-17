@@ -9,6 +9,7 @@
     <Grid Background= "#353535" Height="800">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <DataGrid 
             Name="PackageDependencyTable" 
@@ -23,7 +24,9 @@
             ColumnWidth="*"
             GridLinesVisibility ="None"
             Background="#353535"
-            RowBackground="Transparent">
+            RowBackground="Transparent"
+            FontSize="12"
+            Grid.Row="0">
             <DataGrid.Columns>
                 <DataGridTemplateColumn>
                     <DataGridTemplateColumn.HeaderTemplate>
@@ -63,14 +66,25 @@
                 </DataGridTemplateColumn>
             </DataGrid.Columns>
         </DataGrid>
-        <!--<Button
-            VerticalAlignment="Bottom"
-            HorizontalAlignment="left"
-            Width="75"
-            Foreground="#AAAAAA"
-            Background="#353535"
-            Margin="500">
-            Download
-        </Button>-->
+
+        <!--Download Button-->
+        <Grid x:Name="container"
+            Background="Transparent"
+            Grid.Row="1">
+            <Button
+                VerticalAlignment="Bottom"
+                HorizontalAlignment="Center"
+                Margin="10"
+                Background="#373737">
+                <TextBlock 
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Margin="10, 10, 10, 10"
+                    Foreground="#bbbbbb"
+                    FontSize="14px">
+                    Download
+                </TextBlock>
+            </Button>
+        </Grid>
     </Grid>
 </UserControl>

@@ -78,7 +78,7 @@ namespace Dynamo.PackageDependency
                         continue;
                     }
                 }
-                // TODO: Not ideal! O(N * M) complexicty, would like LoadedPackageDependencies to be a dictionary
+                // TODO: Not ideal! O(N * M) complexicty, would like LoadedPackageDependencies to be a dictionary or something with constant package name search time
                 if (!matchFound)
                 {
                     table.Columns.Add(new Column()
