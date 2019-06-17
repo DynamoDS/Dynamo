@@ -232,15 +232,5 @@ namespace Dynamo.PackageManager.Tests
 
         }
 
-        private PackageLoader GetPackageLoader()
-        {
-            var extensions = CurrentDynamoModel.ExtensionManager.Extensions.OfType<PackageManagerExtension>();
-            if (extensions.Any())
-            {
-                return extensions.First().PackageLoader;
-            }
-
-            return null;
-        }
     }
 }

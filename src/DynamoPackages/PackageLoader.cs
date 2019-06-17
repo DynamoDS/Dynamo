@@ -158,8 +158,10 @@ namespace Dynamo.PackageManager
 
         /// <summary>
         ///     Load the package into Dynamo (including all node libraries and custom nodes)
-        ///     and add to LocalPackages
+        ///     and add to LocalPackages.
+        ///     NOTE: This method DOES NOT import ZT packages into Dynamo VM. Use LoadPackages() instead.
         /// </summary>
+        /// TODO: For internal use only. Consider renaming method and make internal in 3.0 (Refer to PR #9736).
         public void Load(Package package)
         {
             this.Add(package);

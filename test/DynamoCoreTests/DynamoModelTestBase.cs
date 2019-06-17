@@ -6,6 +6,7 @@ using System.Reflection;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Interfaces;
 using Dynamo.Models;
+using Dynamo.PackageManager;
 using Dynamo.Scheduler;
 using Dynamo.Selection;
 using Dynamo.Tests;
@@ -167,6 +168,17 @@ namespace Dynamo
                 var index = CurrentDynamoModel.Workspaces.IndexOf(workspaceToSwitch);
                 CurrentDynamoModel.ExecuteCommand(new DynamoModel.SwitchTabCommand(index));
             }
+        }
+
+        protected PackageLoader GetPackageLoader()
+        {
+            var extensions = CurrentDynamoModel.ExtensionManager.Extensions.OfType<PackageManagerExtension>();
+            if (extensions.Any())
+            {
+                return extensions.First().PackageLoader;
+            }
+
+            return null;
         }
     }
 }
