@@ -233,13 +233,7 @@ namespace ProtoFFI
                 }
                 else
                 {
-                    CLRDLLModule dllModule = null;
-                    if (!SupressesImport(type))
-                    {
-                        dllModule = DLLFFIHandler.GetModule(type.Assembly.Location) as CLRDLLModule;
-                        if (dllModule != null && dllModule.Module == null) dllModule = null;
-                    }
-                    protoCoreType = GetInstance(type, dllModule, string.Empty).ProtoCoreType;
+                    protoCoreType = GetInstance(type, null, string.Empty).ProtoCoreType;
                 }
             }
             else

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Dynamo.Extensions;
@@ -9,6 +10,13 @@ namespace Dynamo.PackageManager.Tests
     class PackageLoaderTests : DynamoModelTestBase
     {
         public string PackagesDirectory { get { return Path.Combine(TestDirectory, "pkgs"); } }
+
+        protected override void GetLibrariesToPreload(List<string> libraries)
+        {
+            libraries.Add("DesignScriptBuiltin.dll");
+            libraries.Add("DSCoreNodes.dll");
+            base.GetLibrariesToPreload(libraries);
+        }
 
         [Test]
         public void ScanPackageDirectoryReturnsPackageForValidDirectory()
