@@ -56,7 +56,7 @@
                                     </ItemsControl.ItemsPanel>
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate>
-                                            <TextBox Margin="2" Width="{Binding Width}" Foreground="{Binding Color}" Text="{Binding Data}" Background="#353535" BorderThickness="0" TextWrapping="Wrap"/>
+                                            <TextBox Margin="2" IsReadOnly="True" Width="{Binding Width}" Foreground="{Binding Color}" Text="{Binding Data}" Background="#353535" BorderThickness="0" TextWrapping="Wrap"/>
                                         </DataTemplate>
                                     </ItemsControl.ItemTemplate>
                                 </ItemsControl>

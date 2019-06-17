@@ -38,7 +38,6 @@ namespace Dynamo.PackageDependency
         {
             if (obj is WorkspaceModel)
             {
-                currentWorkspace.PropertyChanged -= OnWorkspacePropertyChanged;
                 // Clear the dependency table.
                 table.Columns.Clear();
             }
@@ -54,7 +53,7 @@ namespace Dynamo.PackageDependency
         /// Regenerate dependency table
         /// </summary>
         /// <param name="ws">workspace model</param>
-        private void DependencyRegen(WorkspaceModel ws)
+        internal void DependencyRegen(WorkspaceModel ws)
         {
             // Clear the dependency table.
             table.Columns.Clear();
