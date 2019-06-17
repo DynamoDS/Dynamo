@@ -2228,6 +2228,24 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Extension tab added to the extensions side bar..
+        /// </summary>
+        public static string ExtensionAdded {
+            get {
+                return ResourceManager.GetString("ExtensionAdded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No new tab is added, as the extension is already present in the extensions side bar..
+        /// </summary>
+        public static string ExtensionAlreadyPresent {
+            get {
+                return ResourceManager.GetString("ExtensionAlreadyPresent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Extensions.
         /// </summary>
         public static string ExtensionsViewTitle {
