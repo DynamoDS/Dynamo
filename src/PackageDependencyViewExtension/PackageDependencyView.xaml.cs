@@ -19,7 +19,7 @@ namespace Dynamo.PackageDependency
         /// <summary>
         /// Event handler for workspaceAdded event
         /// </summary>
-        /// <param name="obj"></param>
+        /// <param name="obj">workspace model</param>
         internal void OnWorkspaceChanged(IWorkspaceModel obj)
         {
             if (obj is WorkspaceModel)
@@ -33,7 +33,7 @@ namespace Dynamo.PackageDependency
         /// <summary>
         /// Event handler for workspaceRemoved event
         /// </summary>
-        /// <param name="obj"></param>
+        /// <param name="obj">workspace model</param>
         internal void OnWorkspaceCleared(IWorkspaceModel obj)
         {
             if (obj is WorkspaceModel)
@@ -53,7 +53,7 @@ namespace Dynamo.PackageDependency
         /// <summary>
         /// Regenerate dependency table
         /// </summary>
-        /// <param name="ws"></param>
+        /// <param name="ws">workspace model</param>
         private void DependencyRegen(WorkspaceModel ws)
         {
             // Clear the dependency table.
@@ -96,7 +96,7 @@ namespace Dynamo.PackageDependency
         /// <summary>
         /// Constructor
         /// </summary>
-        /// <param name="dynamoModel"></param>
+        /// <param name="p">ViewLoadedParams</param>
         public PackageDependencyView(ViewLoadedParams p)
         {
             InitializeComponent();
@@ -109,7 +109,7 @@ namespace Dynamo.PackageDependency
     }
 
     /// <summary>
-    /// 
+    /// Every table line
     /// </summary>
     public class Column
     {
