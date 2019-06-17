@@ -28,22 +28,12 @@ namespace Dynamo.Tests
             base.GetLibrariesToPreload(libraries);
         }
 
-        private PackageLoader GetPackageLoader()
-        {
-            var extensions = CurrentDynamoModel.ExtensionManager.Extensions.OfType<PackageManagerExtension>();
-            if (extensions.Count() > 0)
-            {
-                return extensions.First().PackageLoader;
-            }
-            return null;
-        }
-
         private void LoadPackage(string packageDirectory)
         {
             CurrentDynamoModel.PreferenceSettings.CustomPackageFolders.Add(packageDirectory);
             var loader = GetPackageLoader();
             var pkg = loader.ScanPackageDirectory(packageDirectory);
-            loader.Load(pkg);
+            loader.LoadPackages(new List<Package> {pkg});
         }
 
         private PackageDependencyInfo GetPackageInfo(string packageName)

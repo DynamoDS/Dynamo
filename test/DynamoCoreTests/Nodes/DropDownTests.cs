@@ -30,7 +30,7 @@ namespace Dynamo.Tests.Nodes
             var pkg = loader.ScanPackageDirectory(pkgDir);
 
             // Load the sample package
-            loader.Load(pkg);
+            loader.LoadPackages(new List<Package> {pkg});
             // Assert expected package was loaded
             Assert.AreEqual(pkg.Name, "Dynamo Samples");
 
@@ -56,7 +56,7 @@ namespace Dynamo.Tests.Nodes
             var pkg = loader.ScanPackageDirectory(pkgDir);
 
             // Load the sample package
-            loader.Load(pkg);
+            loader.LoadPackages(new List<Package> {pkg});
             // Assert expected package was loaded
             Assert.AreEqual(pkg.Name, "Dynamo Samples");
 
@@ -83,7 +83,7 @@ namespace Dynamo.Tests.Nodes
             var pkg = loader.ScanPackageDirectory(pkgDir);
 
             // Load the sample package
-            loader.Load(pkg);
+            loader.LoadPackages(new List<Package> {pkg});
             // Assert expected package was loaded
             Assert.AreEqual(pkg.Name, "Dynamo Samples");
 
@@ -112,7 +112,7 @@ namespace Dynamo.Tests.Nodes
             var pkg = loader.ScanPackageDirectory(pkgDir);
 
             // Load the sample package
-            loader.Load(pkg);
+            loader.LoadPackages(new List<Package> {pkg});
             // Assert expected package was loaded
             Assert.AreEqual(pkg.Name, "Dynamo Samples");
 
@@ -141,7 +141,7 @@ namespace Dynamo.Tests.Nodes
             var pkg = loader.ScanPackageDirectory(pkgDir);
 
             // Load the sample package
-            loader.Load(pkg);
+            loader.LoadPackages(new List<Package> {pkg});
             // Assert expected package was loaded
             Assert.AreEqual(pkg.Name, "Dynamo Samples");
 
@@ -170,7 +170,7 @@ namespace Dynamo.Tests.Nodes
             var pkg = loader.ScanPackageDirectory(pkgDir);
 
             // Load the sample package
-            loader.Load(pkg);
+            loader.LoadPackages(new List<Package> {pkg});
             // Assert expected package was loaded
             Assert.AreEqual(pkg.Name, "Dynamo Samples");
 
@@ -195,7 +195,7 @@ namespace Dynamo.Tests.Nodes
             var pkg = loader.ScanPackageDirectory(pkgDir);
 
             // Load the sample package
-            loader.Load(pkg);
+            loader.LoadPackages(new List<Package> {pkg});
             // Assert expected package was loaded
             Assert.AreEqual(pkg.Name, "Dynamo Samples");
 
@@ -227,7 +227,7 @@ namespace Dynamo.Tests.Nodes
             var pkg = loader.ScanPackageDirectory(pkgDir);
 
             // Load the sample package
-            loader.Load(pkg);
+            loader.LoadPackages(new List<Package> {pkg});
             // Assert expected package was loaded
             Assert.AreEqual(pkg.Name, "Dynamo Samples");
 
