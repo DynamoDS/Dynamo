@@ -215,8 +215,16 @@ namespace Dynamo.Controls
                 tab.Tag = viewExtension.GetType();
                 tab.HeaderTemplate = tabDynamic.FindResource("TabHeader") as DataTemplate;
 
-                // setting the extension window to the current tab content
-                tab.Content = contentControl.Content;
+                // setting the extension UI to the current tab content 
+                // based on whether it is a UserControl element or window element. 
+                if (contentControl.Template.TargetType.Name.Equals(new UserControl().GetType().Name))
+                {
+                    tab.Content = contentControl;
+                }
+                else
+                {
+                    tab.Content = contentControl.Content;
+                }
 
                 //Insert the tab at the end
                 TabItems.Insert(count, tab);
