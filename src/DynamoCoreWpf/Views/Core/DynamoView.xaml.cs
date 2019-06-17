@@ -217,7 +217,7 @@ namespace Dynamo.Controls
 
                 // setting the extension UI to the current tab content 
                 // based on whether it is a UserControl element or window element. 
-                if (contentControl.Template.TargetType.Name.Equals(new UserControl().GetType().Name))
+                if (contentControl is UserControl)
                 {
                     tab.Content = contentControl;
                 }
