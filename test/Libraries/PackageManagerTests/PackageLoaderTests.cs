@@ -34,7 +34,7 @@ namespace Dynamo.PackageManager.Tests
                 + "Rounds a number *down* to a specified precision, Round To Precision - Rounds a number to a specified precision", pkg.Contents);
             Assert.AreEqual("0.5.2.10107", pkg.EngineVersion);
 
-            loader.Load(pkg);
+            loader.LoadPackages(new List<Package> {pkg});
 
             Assert.AreEqual(3, pkg.LoadedCustomNodes.Count);
         }
@@ -70,7 +70,7 @@ namespace Dynamo.PackageManager.Tests
             };
 
             var pkg = loader.ScanPackageDirectory(pkgDir);
-            loader.Load(pkg);
+            loader.LoadPackages(new List<Package> {pkg});
 
             Assert.IsTrue(loader.RequestedExtensions.Count() == 1);
             Assert.IsTrue(extensionLoad);
@@ -99,7 +99,7 @@ namespace Dynamo.PackageManager.Tests
             };
 
             var pkg = loader.ScanPackageDirectory(pkgDir);
-            loader.Load(pkg);
+            loader.LoadPackages(new List<Package> {pkg});
 
             Assert.IsTrue(!loader.RequestedExtensions.Any());
             Assert.IsFalse(viewExtensionLoad);
