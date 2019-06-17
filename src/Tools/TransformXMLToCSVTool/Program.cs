@@ -25,6 +25,9 @@ namespace TransformXMLToJSONUsingXSLT
         {
             XSLTToAnyType();
         }
+        /// <summary>
+        /// Method that process a XML in format Nunit2 into text, checking whether the needed paths exist and create them if not, the main goal of this method is to filter the slow tests and fast tests.
+        /// </summary>
         public static void XSLTToAnyType()
         {
             try
