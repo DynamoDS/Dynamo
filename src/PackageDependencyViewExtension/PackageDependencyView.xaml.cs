@@ -24,7 +24,10 @@ namespace Dynamo.PackageDependency
         {
             if (obj is WorkspaceModel)
             {
+                // Unsubscribe
+                currentWorkspace.PropertyChanged -= OnWorkspacePropertyChanged;
                 DependencyRegen(obj as WorkspaceModel);
+                // Update current workspace
                 currentWorkspace = obj as WorkspaceModel;
                 currentWorkspace.PropertyChanged += OnWorkspacePropertyChanged;
             }
@@ -38,7 +41,6 @@ namespace Dynamo.PackageDependency
         {
             if (obj is WorkspaceModel)
             {
-                currentWorkspace.PropertyChanged -= OnWorkspacePropertyChanged;
                 // Clear the dependency table.
                 table.Columns.Clear();
             }
