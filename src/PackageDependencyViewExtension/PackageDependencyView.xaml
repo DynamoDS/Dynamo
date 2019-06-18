@@ -68,7 +68,7 @@
         </DataGrid>
 
         <!--Download Button-->
-        <Grid x:Name="container"
+        <!--<Grid x:Name="container"
             Background="Transparent"
             Grid.Row="1">
             <Button
@@ -85,6 +85,6 @@
                     Download
                 </TextBlock>
             </Button>
-        </Grid>
+        </Grid>-->
     </Grid>
 </UserControl>

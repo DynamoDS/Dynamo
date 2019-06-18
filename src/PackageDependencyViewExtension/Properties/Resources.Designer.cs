@@ -59,5 +59,14 @@ namespace Dynamo.PackageDependency.Properties {
                 resourceCulture = value;
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show Graph Package Dependency.
+        /// </summary>
+        internal static string MenuItemString {
+            get {
+                return ResourceManager.GetString("MenuItemString", resourceCulture);
+            }
+        }
     }
 }

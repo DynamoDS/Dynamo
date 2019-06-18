@@ -1,19 +1,15 @@
 ﻿using Dynamo.Extensions;
 using Dynamo.Graph.Workspaces;
+using Dynamo.PackageDependency.Properties;
 using Dynamo.Wpf.Extensions;
 using System.Windows.Controls;
 
 namespace Dynamo.PackageDependency
 {
     /// <summary>
-    /// The Extension framework for Dynamo allows you to extend
-    /// Dynamo by loading your own classes that can interact with Dynamo's API.
-    /// An Extension has two components, an assembly containing your class and
-    /// an xml manifest file telling Dynamo where to find your assembly. Extension
-    /// manifests are loaded from the Dynamo/Extensions folder or from package/extra
-    /// folders.
-    /// 
-    /// This sample demonstrates a simple IExtension which tracks nodes added to the workspace.
+    /// This sample view extension demonstrates a sample IViewExtension 
+    /// which tracks graph package dependencies on the Dynamo right panel.
+    /// It reacts to workspace modified/ cleared events to refresh.
     /// </summary>
     public class PackageDependencyViewExtension : IViewExtension
     {
@@ -85,10 +81,8 @@ namespace Dynamo.PackageDependency
             DependencyView = new PackageDependencyView(viewLoadedParams);
             viewLoadedParams.AddToExtensionsSideBar(this, DependencyView);
 
-            // TODO: When all necessary dependencies are already loaded, hide
-            // the view extension on the right. Adding a button in view menu to load
-            // manually when user needs it. May introduce inconsistent dependencies info, need testing.
-            packageDependencyMenuItem = new MenuItem { Header = "Show View Extension Sample Window" };
+            // Adding a button in view menu to refresh and show manually
+            packageDependencyMenuItem = new MenuItem { Header = Resources.MenuItemString };
             packageDependencyMenuItem.Click += (sender, args) =>
             {
                 // Refresh dependency data
