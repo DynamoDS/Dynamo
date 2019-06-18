@@ -271,6 +271,33 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        public void PackageDependenciesClearedAfterWorkspaceCleared()
+        {
+            // Assert ZTTestPackage is not already loaded
+            var pi = GetPackageInfo("ZTTestPackage");
+            Assert.IsNull(pi);
+
+            // Load package
+            string packageDirectory = Path.Combine(TestDirectory, @"core\packageDependencyTests\ZTTestPackage");
+            LoadPackage(packageDirectory);
+            pi = GetPackageInfo("ZTTestPackage");
+
+            // Add node from package
+            var node = GetNodeInstance("ZTTestPackage.RRTestClass.RRTestClass");
+            CurrentDynamoModel.AddNodeToCurrentWorkspace(node, true);
+
+            // Assert new package dependency is collected
+            var packageDependencies = CurrentDynamoModel.CurrentWorkspace.PackageDependencies;
+            Assert.Contains(pi, packageDependencies);
+
+            // Clear current workspace
+            CurrentDynamoModel.ClearCurrentWorkspace();
+
+            // Assert package dependency list is cleared
+            Assert.IsTrue(CurrentDynamoModel.CurrentWorkspace.PackageDependencies.Count == 0);
+        }
+
+        [Test]
         public void PackageDependenciesPreservedWhenPackagesNotLoaded()
         {
             // Load JSON file graph
