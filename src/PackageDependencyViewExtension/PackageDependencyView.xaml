@@ -16,7 +16,6 @@
             HorizontalAlignment="Left"
             VerticalAlignment="Top" 
             Width="500"
-            Margin="5,5,0,0" 
             ItemsSource="{Binding Columns}"
             CanUserAddRows="False"
             AutoGenerateColumns="False"

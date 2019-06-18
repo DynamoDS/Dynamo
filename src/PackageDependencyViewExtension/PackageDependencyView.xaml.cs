@@ -25,7 +25,10 @@ namespace Dynamo.PackageDependency
             if (obj is WorkspaceModel)
             {
                 // Unsubscribe
-                currentWorkspace.PropertyChanged -= OnWorkspacePropertyChanged;
+                if (currentWorkspace != null)
+                {
+                    currentWorkspace.PropertyChanged -= OnWorkspacePropertyChanged;
+                }
                 DependencyRegen(obj as WorkspaceModel);
                 // Update current workspace
                 currentWorkspace = obj as WorkspaceModel;
