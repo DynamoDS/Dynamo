@@ -25,7 +25,8 @@
             GridLinesVisibility ="None"
             Background="#353535"
             RowBackground="Transparent"
-            FontSize="12"
+            FontSize="14"
+            IsHitTestVisible="False"
             Grid.Row="0">
             <DataGrid.Columns>
                 <DataGridTemplateColumn>
@@ -56,7 +57,7 @@
                                     </ItemsControl.ItemsPanel>
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate>
-                                            <TextBox Margin="2" IsReadOnly="True" Width="{Binding Width}" Foreground="{Binding Color}" Text="{Binding Data}" Background="#353535" BorderThickness="0" TextWrapping="Wrap"/>
+                                            <TextBlock Margin="2" Width="{Binding Width}" Foreground="{Binding Color}" Text="{Binding Data}" Background="#353535" TextWrapping="Wrap"/>
                                         </DataTemplate>
                                     </ItemsControl.ItemTemplate>
                                 </ItemsControl>
