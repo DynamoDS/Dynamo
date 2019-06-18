@@ -1142,6 +1142,7 @@ namespace Dynamo.Graph.Workspaces
             ClearUndoRecorder();
             ResetWorkspace();
 
+            packageDependencies.Clear();
             X = 0.0;
             Y = 0.0;
             Zoom = 1.0;
