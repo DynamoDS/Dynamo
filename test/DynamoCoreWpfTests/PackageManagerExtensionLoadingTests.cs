@@ -57,7 +57,7 @@ namespace DynamoCoreWpfTests
         public void PackageManagerLoadsAndAddsViewExtension()
         {
             Assert.That(this.View.viewExtensionManager.ViewExtensions.Select(x => x.Name),
-                Is.EquivalentTo((new List<string> { "DynamoManipulationExtension","LibraryUI","NotificationsExtension", "Sample View Extension","PackageManagerViewExtension" })));
+                Is.EquivalentTo((new List<string> { "DynamoManipulationExtension","LibraryUI","NotificationsExtension", "Package Dependency ViewExtension", "Sample View Extension","PackageManagerViewExtension" })));
         }
 
         [Test]

@@ -33,19 +33,21 @@ namespace DynamoCoreWpfTests
 
             var extensionManager = View.viewExtensionManager;
 
+            var initialNum = View.TabItems.Count;
+
             // Adding the first extension will add a tab in the extensions side bar
             extensionManager.Add(viewExtension);
-            Assert.AreEqual(1, View.TabItems.Count);
+            Assert.AreEqual(initialNum + 1, View.TabItems.Count);
 
             // Adding the second extension will add another tab in the extensions side bar
             extensionManager.Add(extensionsSideBarViewExtension);
-            Assert.AreEqual(2, View.TabItems.Count);
+            Assert.AreEqual(initialNum + 2, View.TabItems.Count);
 
             // Setting a different unique ID so as to add the extension to the extension manager. 
             // But since that extension is already added to the side bar, it won't be added again. 
             extensionsSideBarViewExtensionNew.UniqueId = "ExtensionsSideBarDummyIDNew";
             extensionManager.Add(extensionsSideBarViewExtensionNew);
-            Assert.AreEqual(2, View.TabItems.Count); 
+            Assert.AreEqual(initialNum + 2, View.TabItems.Count); 
         }
 
         public static void RaiseLoadedEvent(FrameworkElement element)
