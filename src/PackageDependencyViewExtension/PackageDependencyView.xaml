@@ -1,0 +1,90 @@
+﻿<UserControl x:Class="Dynamo.PackageDependency.PackageDependencyView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             mc:Ignorable="d" 
+             VerticalAlignment="Top"
+             HorizontalAlignment="Left">
+    <Grid Background= "#353535" Height="800">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <DataGrid 
+            Name="PackageDependencyTable" 
+            HorizontalAlignment="Left"
+            VerticalAlignment="Top" 
+            Width="500"
+            ItemsSource="{Binding Columns}"
+            CanUserAddRows="False"
+            AutoGenerateColumns="False"
+            IsReadOnly="True"
+            ColumnWidth="*"
+            GridLinesVisibility ="None"
+            Background="#353535"
+            RowBackground="Transparent"
+            FontSize="14"
+            IsHitTestVisible="False"
+            Grid.Row="0">
+            <DataGrid.Columns>
+                <DataGridTemplateColumn>
+                    <DataGridTemplateColumn.HeaderTemplate>
+                        <DataTemplate>
+                            <ItemsControl ItemsSource="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Path=DataContext.Headers}">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <StackPanel Orientation="Horizontal"/>
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Width="{Binding Width}" Foreground="{Binding Color}" Text="{Binding Data}"/>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.HeaderTemplate>
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+                                <ItemsControl ItemsSource="{Binding ColumnsData}">
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <StackPanel Orientation="Horizontal"/>
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Margin="2" Width="{Binding Width}" Foreground="{Binding Color}" Text="{Binding Data}" Background="#353535" TextWrapping="Wrap"/>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </ScrollViewer>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <!--Download Button-->
+        <!--<Grid x:Name="container"
+            Background="Transparent"
+            Grid.Row="1">
+            <Button
+                VerticalAlignment="Bottom"
+                HorizontalAlignment="Center"
+                Margin="10"
+                Background="#373737">
+                <TextBlock 
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Margin="10, 10, 10, 10"
+                    Foreground="#bbbbbb"
+                    FontSize="14px">
+                    Download
+                </TextBlock>
+            </Button>
+        </Grid>-->
+    </Grid>
+</UserControl>
