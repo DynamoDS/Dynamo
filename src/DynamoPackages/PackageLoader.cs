@@ -248,7 +248,11 @@ namespace Dynamo.PackageManager
 
                 }
             }
-            LoadPackages(LocalPackages);
+
+            if (LocalPackages.Any())
+            {
+                LoadPackages(LocalPackages);
+            }
         }
 
         /// <summary>
