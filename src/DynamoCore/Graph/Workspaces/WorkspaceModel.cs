@@ -451,13 +451,13 @@ namespace Dynamo.Graph.Workspaces
         /// Event that is fired when the workspace is collecting custom node package dependencies.
         /// This event should only be subscribed to by the package manager.
         /// </summary>
-        internal event Func<Guid, PackageDependencyInfo> CollectingCustomNodePackageDependencies;
+        internal event Func<Guid, PackageInfo> CollectingCustomNodePackageDependencies;
 
         /// <summary>
         /// Event that is fired when the workspace is collecting node package dependencies.
         /// This event should only be subscribed to by the package manager.
         /// </summary>
-        internal event Func<AssemblyName, PackageDependencyInfo> CollectingNodePackageDependencies;
+        internal event Func<AssemblyName, PackageInfo> CollectingNodePackageDependencies;
 
         /// <summary>
         /// This handler handles the workspaceModel's request to populate a JSON with view data.
@@ -537,37 +537,59 @@ namespace Dynamo.Graph.Workspaces
         }
 
         /// <summary>
-        /// Gathers the loaded packages that nodes in this graph depend on
+        /// Packages that the nodes in this graph depend on
         /// </summary>
-        internal IEnumerable<PackageDependencyInfo> LoadedPackageDependencies
+        internal List<PackageDependencyInfo> PackageDependencies
         {
             get
             {
-                var guidPackageDictionary = new Dictionary<Guid, PackageDependencyInfo>();
-
-                // Collect package dependencies for zerotouch and nodemodel nodes
-                if (CollectingNodePackageDependencies != null)
+                var packageDependencies = new Dictionary<PackageInfo, PackageDependencyInfo>();
+                foreach (var node in Nodes)
                 {
-                    if (CollectingNodePackageDependencies.GetInvocationList().Count() > 1)
+                    var collected = GetNodePackage(node);
+                    if (collected != null)
                     {
-                        throw new Exception("There are multiple subscribers to Workspace.CollectingNodePackageDependencies. " +
-                            "Only PackageManagerExtension should subscribe to this event.");
-                    }
-                    foreach (var node in Nodes.Where(n => !(n is Function)))
-                    {
-                        var assemblyName = GetNameOfAssemblyReferencedByNode(node);
-                        if (assemblyName != null)
+                        if (!packageDependencies.ContainsKey(collected))
                         {
-                            var package = CollectingNodePackageDependencies(assemblyName);
-                            if (package != null)
-                            {
-                                guidPackageDictionary[node.GUID] = package;
-                            }
+                            packageDependencies[collected] = new PackageDependencyInfo(collected);
                         }
+                        packageDependencies[collected].AddDependent(node.GUID);
+                        packageDependencies[collected].IsLoaded = true;
+                    }
+                    else if (nodePackageDictionary.ContainsKey(node.GUID))
+                    {
+                        var saved = nodePackageDictionary[node.GUID];
+                        if (!packageDependencies.ContainsKey(saved))
+                        {
+                            packageDependencies[saved] = new PackageDependencyInfo(saved);
+                        }
+                        packageDependencies[saved].AddDependent(node.GUID);
+                        packageDependencies[saved].IsLoaded = false;
+                    }
+                }
+                return packageDependencies.Values.ToList();
+            }
+            set
+            {
+                foreach (var package in value)
+                {
+                    foreach (var node in package.Nodes)
+                    {
+                        nodePackageDictionary[node] = package.PackageInfo;
                     }
                 }
 
-                // Collect package dependencies for custom nodes
+                RaisePropertyChanged(nameof(PackageDependencies));
+            }
+        }
+
+        private Dictionary<Guid, PackageInfo> nodePackageDictionary = new Dictionary<Guid, PackageInfo>();
+
+        private PackageInfo GetNodePackage(NodeModel node)
+        {
+            // Collect package dependencies for custom node
+            if (node is Function)
+            {
                 if (CollectingCustomNodePackageDependencies != null)
                 {
                     if (CollectingCustomNodePackageDependencies.GetInvocationList().Count() > 1)
@@ -575,91 +597,31 @@ namespace Dynamo.Graph.Workspaces
                         throw new Exception("There are multiple subscribers to Workspace.CollectingCustomNodePackageDependencies. " +
                             "Only PackageManagerExtension should subscribe to this event.");
                     }
-                    foreach (Function node in Nodes.Where(node => node is Function))
-                    {
-                        var nodeID = node.GUID;
-                        var customNodeID = node.Definition.FunctionId;
-                        var package = CollectingCustomNodePackageDependencies(customNodeID);
-                        if (package != null)
-                        {
-                            guidPackageDictionary[nodeID] = package;
-                        }
-                    }
+                    var customNodeID = (node as Function).Definition.FunctionId;
+                    return CollectingCustomNodePackageDependencies(customNodeID);
                 }
-
-                // Flip package dependencies dictionary
-                var loadedPackageDependencies = new List<PackageDependencyInfo>();
-                foreach(var id in guidPackageDictionary.Keys)
-                {
-                    if (loadedPackageDependencies.Contains(guidPackageDictionary[id]))
-                    {
-                        var index = loadedPackageDependencies.IndexOf(guidPackageDictionary[id]);
-                        loadedPackageDependencies[index].AddDependent(id);
-                    }
-                    else
-                    {
-                        guidPackageDictionary[id].AddDependent(id);
-                        loadedPackageDependencies.Add(guidPackageDictionary[id]);
-                    }
-                }
-
-                return loadedPackageDependencies;
             }
-        }
 
-        /// <summary>
-        /// Packages that the nodes in this graph depend on.
-        /// May include packages that are not currently loaded, 
-        /// but that were loaded and depended upon during a previous
-        /// opening of this graph.
-        /// </summary>
-        internal List<PackageDependencyInfo> PackageDependencies
-        {
-            get
+            // Collect package dependencies for zerotouch or nodemodel node
+            else
             {
-                List<PackageDependencyInfo> currentPackageDependencies;
-                lock (packageDependencies)
+                if (CollectingNodePackageDependencies != null)
                 {
-                    currentPackageDependencies = packageDependencies.ToList();
-                    // Remove unnecessary package dependencies
-                    foreach (var package in currentPackageDependencies)
+                    if (CollectingNodePackageDependencies.GetInvocationList().Count() > 1)
                     {
-                        foreach (var guid in NodesRemovedSinceLastPackageDependenciesUpdate)
-                        {
-                            package.RemoveDependent(guid);
-                        }
+                        throw new Exception("There are multiple subscribers to Workspace.CollectingNodePackageDependencies. " +
+                            "Only PackageManagerExtension should subscribe to this event.");
                     }
-                    currentPackageDependencies = currentPackageDependencies.Where(pd => pd.Nodes.Count > 0).ToList();
-                    NodesRemovedSinceLastPackageDependenciesUpdate = new List<Guid>();
-
-                    // Merge LoadedPackageDependencies into PackageDependencies
-                    var loadedPDs = LoadedPackageDependencies;
-                    foreach (var loadedPD in loadedPDs)
+                    var assemblyName = GetNameOfAssemblyReferencedByNode(node);
+                    if (assemblyName != null)
                     {
-                        if (currentPackageDependencies.Contains(loadedPD))
-                        {
-                            var index = currentPackageDependencies.IndexOf(loadedPD);
-                            currentPackageDependencies[index].AddDependents(loadedPD.Nodes);
-                        }
-                        else
-                        {
-                            currentPackageDependencies.Add(loadedPD);
-                        }
+                        return CollectingNodePackageDependencies(assemblyName);
                     }
                 }
-                
-                return currentPackageDependencies;
             }
-            set
-            {
-                packageDependencies = value;
-                RaisePropertyChanged(nameof(PackageDependencies));
-            }
+
+            return null;
         }
-
-        private List<PackageDependencyInfo> packageDependencies;
-
-        private List<Guid> NodesRemovedSinceLastPackageDependenciesUpdate = new List<Guid>();
 
         /// <summary>
         ///     An author of the workspace
@@ -756,8 +718,6 @@ namespace Dynamo.Graph.Workspaces
             {
                 nodes.Add(node);
             }
-            
-            NodesRemovedSinceLastPackageDependenciesUpdate.Remove(node.GUID);
             
             OnNodeAdded(node);
         }
@@ -1001,7 +961,7 @@ namespace Dynamo.Graph.Workspaces
 
             this.annotations = new List<AnnotationModel>(annotations);
 
-            this.packageDependencies = new List<PackageDependencyInfo>();
+            this.PackageDependencies = new List<PackageDependencyInfo>();
 
             // Set workspace info from WorkspaceInfo object
             Name = info.Name;
@@ -1141,8 +1101,7 @@ namespace Dynamo.Graph.Workspaces
 
             ClearUndoRecorder();
             ResetWorkspace();
-
-            packageDependencies.Clear();
+            
             X = 0.0;
             Y = 0.0;
             Zoom = 1.0;
@@ -1261,8 +1220,6 @@ namespace Dynamo.Graph.Workspaces
             {
                 if (!nodes.Remove(model)) return;
             }
-
-            NodesRemovedSinceLastPackageDependenciesUpdate.Add(model.GUID);
 
             OnNodeRemoved(model);
 
@@ -1842,7 +1799,7 @@ namespace Dynamo.Graph.Workspaces
                         new WorkspaceReadConverter(engineController, scheduler, factory, isTestMode, verboseLogging),
                         new NodeReadConverter(manager, libraryServices, factory, isTestMode),
                         new TypedParameterConverter(),
-                        new PackageDependencyInfoConverter(logger)
+                        new PackageDependencyConverter(logger)
                     },
                 ReferenceResolverProvider = () => { return new IdReferenceResolver(); }
             };
