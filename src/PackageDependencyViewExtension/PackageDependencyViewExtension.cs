@@ -1,8 +1,8 @@
-﻿using Dynamo.Extensions;
+﻿using System.Windows.Controls;
+using Dynamo.Extensions;
 using Dynamo.Graph.Workspaces;
 using Dynamo.PackageDependency.Properties;
 using Dynamo.Wpf.Extensions;
-using System.Windows.Controls;
 
 namespace Dynamo.PackageDependency
 {
@@ -78,8 +78,11 @@ namespace Dynamo.PackageDependency
 
         public void Loaded(ViewLoadedParams viewLoadedParams)
         {
-            DependencyView = new PackageDependencyView(viewLoadedParams);
-            viewLoadedParams.AddToExtensionsSideBar(this, DependencyView);
+            DependencyView = new PackageDependencyView(this, viewLoadedParams);
+
+            if (DependencyView.MissingPackage) {
+                viewLoadedParams.AddToExtensionsSideBar(this, DependencyView);
+            }
 
             // Adding a button in view menu to refresh and show manually
             packageDependencyMenuItem = new MenuItem { Header = Resources.MenuItemString };
