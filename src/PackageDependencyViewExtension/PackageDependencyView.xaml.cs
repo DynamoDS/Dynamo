@@ -1,10 +1,10 @@
-﻿using System;
+﻿using Dynamo.Graph.Workspaces;
+using Dynamo.Wpf.Extensions;
+using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows.Controls;
 using System.Windows.Media;
-using Dynamo.Graph.Workspaces;
-using Dynamo.Wpf.Extensions;
 
 namespace Dynamo.PackageDependency
 {
@@ -20,15 +20,18 @@ namespace Dynamo.PackageDependency
         private ViewLoadedParams loadedParams;
         private PackageDependencyViewExtension dependencyViewExtension;
 
-        private Boolean missingPackage = false;
+        private Boolean hasMissingPackage = false;
 
-        public Boolean MissingPackage
+        /// <summary>
+        /// Property to check if the current workspace has any missing package dependencies. 
+        /// </summary>
+        private Boolean HasMissingPackage
         {
-            get { return missingPackage; }
+            get { return hasMissingPackage; }
             set
             {
-                missingPackage = value;
-                if (missingPackage)
+                hasMissingPackage = value;
+                if (hasMissingPackage)
                 {
                     loadedParams.AddToExtensionsSideBar(dependencyViewExtension, this);
                 }
@@ -106,7 +109,7 @@ namespace Dynamo.PackageDependency
                 // TODO: Not ideal! O(N * M) complexicty, would like LoadedPackageDependencies to be a dictionary or something with constant package name search time
                 if (!matchFound)
                 {
-                    MissingPackage = true;
+                    HasMissingPackage = true;
                     table.Columns.Add(new Column()
                     {
                         ColumnsData = new ObservableCollection<ColumnData>()
