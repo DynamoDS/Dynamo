@@ -1,4 +1,6 @@
 ﻿using Dynamo.Session;
+using System;
+
 namespace Dynamo.Events
 {
     public delegate void ExecutionStateHandler(IExecutionSession session);
@@ -24,6 +26,21 @@ namespace Dynamo.Events
         /// This property is set to null if graph is not executing.
         /// </summary>
         public static IExecutionSession ActiveSession { get; private set; }
+
+        /// <summary>
+        /// An event that is triggered when a client has requested that an action be run
+        /// on the Dynamo Scheduler.
+        /// </summary>
+        public static event Action<Action> RequestRunOnDynamoScheduler;
+
+        /// <summary>
+        /// Use this method to request that an action be run on the Dynamo scheduler.
+        /// </summary>
+        /// <param name="action"></param>
+        public static void OnRequestRunOnDynamoScheduler(Action action)
+        {
+            RequestRunOnDynamoScheduler?.Invoke(action);
+        }
 
         /// <summary>
         /// Notify observers that the graph is about to evaluate

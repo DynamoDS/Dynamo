@@ -13,7 +13,7 @@
     <copyright>Copyright Autodesk 2019</copyright>
   </metadata>
   <files>
-    <file src="..\..\..\bin\AnyCPU\Release\samples\**" target="Samples" />
-    <file src="..\..\..\bin\AnyCPU\Release\gallery\**" target="gallery" />
+    <file src="samples\**" target="Samples" />
+    <file src="gallery\**" target="gallery" />
   </files>
 </package>

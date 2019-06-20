@@ -585,6 +585,12 @@ namespace Dynamo.Models
             var thread = config.SchedulerThread ?? new DynamoSchedulerThread();
             Scheduler = new DynamoScheduler(thread, config.ProcessMode);
             Scheduler.TaskStateChanged += OnAsyncTaskStateChanged;
+            //TODO dispose this.
+            ExecutionEvents.RequestRunOnDynamoScheduler += (actionToSchedule) =>
+            {
+                var task = new DelegateBasedAsyncTask(this.Scheduler, actionToSchedule);
+                Scheduler.ScheduleForExecution(task);
+            };
 
             geometryFactoryPath = config.GeometryFactoryPath;
 
