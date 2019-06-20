@@ -546,17 +546,7 @@ namespace Dynamo.Graph.Workspaces
                 var packageDependencies = new Dictionary<PackageInfo, PackageDependencyInfo>();
                 foreach (var node in Nodes)
                 {
-                    var collected = GetNodePackage(node);
-                    if (collected != null)
-                    {
-                        if (!packageDependencies.ContainsKey(collected))
-                        {
-                            packageDependencies[collected] = new PackageDependencyInfo(collected);
-                        }
-                        packageDependencies[collected].AddDependent(node.GUID);
-                        packageDependencies[collected].IsLoaded = true;
-                    }
-                    else if (nodePackageDictionary.ContainsKey(node.GUID))
+                    if (nodePackageDictionary.ContainsKey(node.GUID))
                     {
                         var saved = nodePackageDictionary[node.GUID];
                         if (!packageDependencies.ContainsKey(saved))
@@ -565,6 +555,19 @@ namespace Dynamo.Graph.Workspaces
                         }
                         packageDependencies[saved].AddDependent(node.GUID);
                         packageDependencies[saved].IsLoaded = false;
+                    }
+                    else
+                    {
+                        var collected = GetNodePackage(node);
+                        if (collected != null)
+                        {
+                            if (!packageDependencies.ContainsKey(collected))
+                            {
+                                packageDependencies[collected] = new PackageDependencyInfo(collected);
+                            }
+                            packageDependencies[collected].AddDependent(node.GUID);
+                            packageDependencies[collected].IsLoaded = true;
+                        }
                     }
                 }
                 return packageDependencies.Values.ToList();
@@ -584,6 +587,16 @@ namespace Dynamo.Graph.Workspaces
         }
 
         private Dictionary<Guid, PackageInfo> nodePackageDictionary = new Dictionary<Guid, PackageInfo>();
+
+        /// <summary>
+        /// Removes a nodes deserialized package dependency, 
+        /// causing it to be updated during the next Package Dependencies update
+        /// </summary>
+        /// <param name="nodeID"></param>
+        internal void VoidNodeDependency(Guid nodeID)
+        {
+            nodePackageDictionary.Remove(nodeID);
+        }
 
         private PackageInfo GetNodePackage(NodeModel node)
         {
