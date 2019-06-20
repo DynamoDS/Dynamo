@@ -59,6 +59,15 @@ namespace Dynamo.Graph.Workspaces
         {
             return Name.GetHashCode() ^ Version.GetHashCode();
         }
+
+        /// <summary>
+        /// Get the string representing this PackageInfo
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString()
+        {
+            return Name + ", Version=" + Version.ToString();
+        }
     }
 
     /// <summary>
@@ -178,6 +187,15 @@ namespace Dynamo.Graph.Workspaces
         public override int GetHashCode()
         {
             return Name.GetHashCode() ^ Version.GetHashCode();
+        }
+
+        /// <summary>
+        /// Get the string representing this PackageDependencyInfo
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString()
+        {
+            return Name + ", Version=" + Version.ToString();
         }
     }
 }

@@ -1,0 +1,105 @@
+{
+  "Uuid": "d790c1df-1de2-4169-8ba6-f94aba302d00",
+  "IsCustomNode": false,
+  "Description": null,
+  "Name": "CustomNodeContainedInMultiplePackages",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CustomNodes.Function, DynamoCore",
+      "FunctionSignature": "6d1e3caa-780d-40fd-a045-766b3170235d",
+      "FunctionType": "Graph",
+      "NodeType": "FunctionNode",
+      "Id": "d87512f7f69e433d86c729bac18bcfef",
+      "Inputs": [
+        {
+          "Id": "3c91c143924b4674a8ec69cd2a5abbe0",
+          "Name": "dbl",
+          "Description": "double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "f57c76bb48284d04b23691a2ab331ff2",
+          "Name": "precision",
+          "Description": "double\nDefault value : 1 (disabled)",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "8e4f0e26cb42499cbef595a15fe3d93d",
+          "Name": "dbl",
+          "Description": "return value",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Rounds a number *down* to a specified precision"
+    }
+  ],
+  "Connectors": [],
+  "Dependencies": [
+    "6d1e3caa-780d-40fd-a045-766b3170235d"
+  ],
+  "PackageDependencies": [
+    {
+      "Name": "Clockwork for Dynamo 2.x",
+      "Version": "2.1.2",
+      "Nodes": [
+        "d87512f7f69e433d86c729bac18bcfef"
+      ]
+    }
+  ],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.3.0.5345",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "Rounding.Floor+",
+        "Id": "d87512f7f69e433d86c729bac18bcfef",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 226.0,
+        "Y": 160.0
+      }
+    ],
+    "Annotations": [],
+    "X": 0.0,
+    "Y": 0.0,
+    "Zoom": 1.0
+  }
+}

@@ -320,5 +320,35 @@ namespace Dynamo.Tests
             Assert.Contains(new PackageDependencyInfo("ZTTestPackage", new Version("0.0.1")), packageDependencies);
             Assert.IsTrue(packageDependencies.First().IsLoaded == false);
         }
+
+        [Test]
+        public void PackageDependenciesUpdatedWhenCustomNodeResolvedByNewPackage()
+        {
+            // Load JSON file graph
+            string path = Path.Combine(TestDirectory, @"core\packageDependencyTests\CustomNodeContainedInMultiplePackages.dyn");
+
+            // Assert serialized package dependency is Clockwork
+            using (StreamReader file = new StreamReader(path))
+            {
+                var data = file.ReadToEnd();
+                var json = (JObject)JsonConvert.DeserializeObject(data);
+                var pd = json["PackageDependencies"];
+                var deserializedPDs = JsonConvert.DeserializeObject<List<PackageDependencyInfo>>(pd.ToString(), new PackageDependencyConverter(CurrentDynamoModel.Logger));
+                Assert.AreEqual(1, deserializedPDs.Count);
+                var package = deserializedPDs.First();
+                Assert.AreEqual(new PackageDependencyInfo("Clockwork for Dynamo 2.x", new Version("2.1.2")), package);
+            }
+
+            OpenModel(path);
+
+            // Assert only one package dependency is returned for one node
+            Assert.AreEqual(1, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+            var packageDependencies = CurrentDynamoModel.CurrentWorkspace.PackageDependencies;
+            Assert.AreEqual(1, packageDependencies.Count);
+
+            // Assert local package dependency overrides deserialized package dependency
+            var pi = GetPackageInfo("Custom Rounding");
+            Assert.AreEqual(pi, packageDependencies.First());
+        }
     }
 }
