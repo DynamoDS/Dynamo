@@ -78,8 +78,7 @@ namespace Dynamo.PackageDependency
 
         public void Loaded(ViewLoadedParams viewLoadedParams)
         {
-            DependencyView = new PackageDependencyView(viewLoadedParams);
-            viewLoadedParams.AddToExtensionsSideBar(this, DependencyView);
+            DependencyView = new PackageDependencyView(this, viewLoadedParams);
 
             // Adding a button in view menu to refresh and show manually
             packageDependencyMenuItem = new MenuItem { Header = Resources.MenuItemString };
