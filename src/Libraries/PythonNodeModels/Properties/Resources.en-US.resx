@@ -166,4 +166,7 @@
   <data name="PythonStringPortDataScriptToolTip" xml:space="preserve">
     <value>Python script to run.</value>
   </data>
+  <data name="PythonScriptEditorDockButton" xml:space="preserve">
+    <value>Dock</value>
+  </data>
 </root>

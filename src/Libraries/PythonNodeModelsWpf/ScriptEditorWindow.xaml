@@ -39,6 +39,7 @@
                 </Button>
             </StackPanel>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Grid.Column="1">
+                <Button Content="{x:Static p:Resources.PythonScriptEditorDockButton}" Style="{DynamicResource ResourceKey=STextButton}" Name="button4" Click="OnDockClicked" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="2" Grid.Column="1"/>
                 <Button Content="{x:Static p:Resources.PythonScriptEditorSaveChangesButton}" Style="{DynamicResource ResourceKey=STextButton}" Name="button2" Click="OnSaveClicked" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="2" Grid.Column="1"/>
                 <Button Content="{x:Static p:Resources.PythonScriptEditorRevertButton}" Style="{DynamicResource ResourceKey=STextButton}" Name="button1" Click="OnRevertClicked" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="2" Grid.Column="1"/>
             </StackPanel>

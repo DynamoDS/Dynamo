@@ -160,8 +160,16 @@ namespace PythonNodeModelsWpf
             }
         }
 
+
         #endregion
 
+        private void OnDockClicked(object sender, RoutedEventArgs e)
+        {
+            // Given this is a pop up window, get the content which
+            // should be a user control to inject
+            var PythonEditorControl = this.Content;
 
+            // TODO: call view inject API here
+        }
     }
 }
