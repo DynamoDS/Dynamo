@@ -1,5 +1,6 @@
 ﻿using Dynamo.Graph.Workspaces;
 using Dynamo.Wpf.Extensions;
+using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows.Controls;
@@ -15,6 +16,28 @@ namespace Dynamo.PackageDependency
         private DependencyTable table = new DependencyTable();
 
         private WorkspaceModel currentWorkspace;
+
+        private ViewLoadedParams loadedParams;
+        private PackageDependencyViewExtension dependencyViewExtension;
+
+        private Boolean hasMissingPackage = false;
+
+        /// <summary>
+        /// Property to check if the current workspace has any missing package dependencies. 
+        /// </summary>
+        private Boolean HasMissingPackage
+        {
+            get { return hasMissingPackage; }
+            set
+            {
+                hasMissingPackage = value;
+                if (hasMissingPackage)
+                {
+                    loadedParams.AddToExtensionsSideBar(dependencyViewExtension, this);
+                }
+            }
+        }
+
 
         /// <summary>
         /// Event handler for workspaceAdded event
@@ -86,6 +109,7 @@ namespace Dynamo.PackageDependency
                 // TODO: Not ideal! O(N * M) complexicty, would like LoadedPackageDependencies to be a dictionary or something with constant package name search time
                 if (!matchFound)
                 {
+                    HasMissingPackage = true;
                     table.Columns.Add(new Column()
                     {
                         ColumnsData = new ObservableCollection<ColumnData>()
@@ -102,7 +126,7 @@ namespace Dynamo.PackageDependency
         /// Constructor
         /// </summary>
         /// <param name="p">ViewLoadedParams</param>
-        public PackageDependencyView(ViewLoadedParams p)
+        public PackageDependencyView(PackageDependencyViewExtension viewExtension,ViewLoadedParams p)
         {
             InitializeComponent();
             DataContext = table;
@@ -110,6 +134,8 @@ namespace Dynamo.PackageDependency
             p.CurrentWorkspaceChanged += OnWorkspaceChanged;
             p.CurrentWorkspaceCleared += OnWorkspaceCleared;
             currentWorkspace.PropertyChanged += OnWorkspacePropertyChanged;
+            loadedParams = p;
+            dependencyViewExtension = viewExtension;
         }
     }
 
