@@ -267,7 +267,7 @@ namespace Dynamo.PackageManager
             }
 
             var assemblies =
-                LocalPackages.SelectMany(x => x.EnumerateAssembliesInBinDirectory().Where(y => y.IsNodeLibrary));
+                packages.SelectMany(x => x.EnumerateAssembliesInBinDirectory().Where(y => y.IsNodeLibrary));
             OnPackagesLoaded(assemblies.Select(x => x.Assembly));
         }
 
