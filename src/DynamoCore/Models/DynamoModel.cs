@@ -596,7 +596,10 @@ namespace Dynamo.Models
             this.EvaluationCompleted += (s,e) => {
 
                 var combined = Delegate.Combine(requestedDisposalCalls.ToArray());
-                this.Scheduler.ScheduleForExecution(new DelegateBasedAsyncTask(this.Scheduler, combined as Action));
+                if(combined != null)
+                {
+                    this.Scheduler.ScheduleForExecution(new DelegateBasedAsyncTask(this.Scheduler, combined as Action));
+                }
             };
 
             geometryFactoryPath = config.GeometryFactoryPath;
