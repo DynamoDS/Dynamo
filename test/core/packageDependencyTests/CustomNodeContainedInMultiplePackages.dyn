@@ -48,9 +48,40 @@
       ],
       "Replication": "Auto",
       "Description": "Rounds a number *down* to a specified precision"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "0;",
+      "Id": "afea8607558642f2814af462fac7f302",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "76a96f87412c4cfeb0ab28913843ad18",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
     }
   ],
-  "Connectors": [],
+  "Connectors": [
+    {
+      "Start": "76a96f87412c4cfeb0ab28913843ad18",
+      "End": "3c91c143924b4674a8ec69cd2a5abbe0",
+      "Id": "ccec16c48557422ab7b5e4c7616ca38d"
+    },
+    {
+      "Start": "76a96f87412c4cfeb0ab28913843ad18",
+      "End": "f57c76bb48284d04b23691a2ab331ff2",
+      "Id": "61598895a0e84a6283cdca0c64faaad4"
+    }
+  ],
   "Dependencies": [
     "6d1e3caa-780d-40fd-a045-766b3170235d"
   ],
@@ -69,7 +100,7 @@
       "ScaleFactor": 1.0,
       "HasRunWithoutCrash": true,
       "IsVisibleInDynamoLibrary": true,
-      "Version": "2.3.0.5345",
+      "Version": "2.3.0.5367",
       "RunType": "Automatic",
       "RunPeriod": "1000"
     },
@@ -93,8 +124,18 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 226.0,
-        "Y": 160.0
+        "X": 262.0,
+        "Y": 203.0
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "afea8607558642f2814af462fac7f302",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 147.0,
+        "Y": 217.0
       }
     ],
     "Annotations": [],

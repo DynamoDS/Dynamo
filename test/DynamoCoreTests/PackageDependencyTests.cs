@@ -343,13 +343,12 @@ namespace Dynamo.Tests
             OpenModel(path);
 
             // Assert clockwork is still the only dependency returned
-            Assert.AreEqual(1, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
             var packageDependencies = CurrentDynamoModel.CurrentWorkspace.PackageDependencies;
             Assert.AreEqual(1, packageDependencies.Count);
             Assert.AreEqual(clockworkInfo, packageDependencies.First());
 
             // Void package dependency for node
-            CurrentDynamoModel.CurrentWorkspace.VoidNodeDependency(CurrentDynamoModel.CurrentWorkspace.Nodes.First().GUID);
+            CurrentDynamoModel.CurrentWorkspace.VoidNodeDependency(Guid.Parse("d87512f7f69e433d86c729bac18bcfef"));
 
             // Assert local package dependency overrides deserialized package dependency
             var pi = GetPackageInfo("Custom Rounding");
