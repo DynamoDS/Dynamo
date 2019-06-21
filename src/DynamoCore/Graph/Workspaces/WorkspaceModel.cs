@@ -587,54 +587,7 @@ namespace Dynamo.Graph.Workspaces
         }
 
         private Dictionary<Guid, PackageInfo> nodePackageDictionary = new Dictionary<Guid, PackageInfo>();
-
-        /// <summary>
-        /// Removes a nodes deserialized package dependency, 
-        /// causing it to be updated during the next Package Dependencies update
-        /// </summary>
-        /// <param name="nodeID"></param>
-        internal void VoidNodeDependency(Guid nodeID)
-        {
-            nodePackageDictionary.Remove(nodeID);
-        }
-
-        private PackageInfo GetNodePackage(NodeModel node)
-        {
-            // Collect package dependencies for custom node
-            if (node is Function)
-            {
-                if (CollectingCustomNodePackageDependencies != null)
-                {
-                    if (CollectingCustomNodePackageDependencies.GetInvocationList().Count() > 1)
-                    {
-                        throw new Exception("There are multiple subscribers to Workspace.CollectingCustomNodePackageDependencies. " +
-                            "Only PackageManagerExtension should subscribe to this event.");
-                    }
-                    var customNodeID = (node as Function).Definition.FunctionId;
-                    return CollectingCustomNodePackageDependencies(customNodeID);
-                }
-            }
-
-            // Collect package dependencies for zerotouch or nodemodel node
-            else
-            {
-                if (CollectingNodePackageDependencies != null)
-                {
-                    if (CollectingNodePackageDependencies.GetInvocationList().Count() > 1)
-                    {
-                        throw new Exception("There are multiple subscribers to Workspace.CollectingNodePackageDependencies. " +
-                            "Only PackageManagerExtension should subscribe to this event.");
-                    }
-                    var assemblyName = GetNameOfAssemblyReferencedByNode(node);
-                    if (assemblyName != null)
-                    {
-                        return CollectingNodePackageDependencies(assemblyName);
-                    }
-                }
-            }
-
-            return null;
-        }
+        
 
         /// <summary>
         ///     An author of the workspace
@@ -1698,6 +1651,54 @@ namespace Dynamo.Graph.Workspaces
                 assemblyName = AssemblyName.GetAssemblyName(assembly.Location);
             }
             return assemblyName;
+        }
+
+        /// <summary>
+        /// Removes a nodes deserialized package dependency, 
+        /// causing it to be updated during the next Package Dependencies update
+        /// </summary>
+        /// <param name="nodeID"></param>
+        internal void VoidNodeDependency(Guid nodeID)
+        {
+            nodePackageDictionary.Remove(nodeID);
+        }
+
+        private PackageInfo GetNodePackage(NodeModel node)
+        {
+            // Collect package dependencies for custom node
+            if (node is Function)
+            {
+                if (CollectingCustomNodePackageDependencies != null)
+                {
+                    if (CollectingCustomNodePackageDependencies.GetInvocationList().Count() > 1)
+                    {
+                        throw new Exception("There are multiple subscribers to Workspace.CollectingCustomNodePackageDependencies. " +
+                            "Only PackageManagerExtension should subscribe to this event.");
+                    }
+                    var customNodeID = (node as Function).Definition.FunctionId;
+                    return CollectingCustomNodePackageDependencies(customNodeID);
+                }
+            }
+
+            // Collect package dependencies for zerotouch or nodemodel node
+            else
+            {
+                if (CollectingNodePackageDependencies != null)
+                {
+                    if (CollectingNodePackageDependencies.GetInvocationList().Count() > 1)
+                    {
+                        throw new Exception("There are multiple subscribers to Workspace.CollectingNodePackageDependencies. " +
+                            "Only PackageManagerExtension should subscribe to this event.");
+                    }
+                    var assemblyName = GetNameOfAssemblyReferencedByNode(node);
+                    if (assemblyName != null)
+                    {
+                        return CollectingNodePackageDependencies(assemblyName);
+                    }
+                }
+            }
+
+            return null;
         }
 
         #endregion
