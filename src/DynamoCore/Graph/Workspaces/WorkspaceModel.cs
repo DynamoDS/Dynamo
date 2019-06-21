@@ -546,6 +546,7 @@ namespace Dynamo.Graph.Workspaces
                 var packageDependencies = new Dictionary<PackageInfo, PackageDependencyInfo>();
                 foreach (var node in Nodes)
                 {
+                    var collected = GetNodePackage(node);
                     if (nodePackageDictionary.ContainsKey(node.GUID))
                     {
                         var saved = nodePackageDictionary[node.GUID];
@@ -554,11 +555,10 @@ namespace Dynamo.Graph.Workspaces
                             packageDependencies[saved] = new PackageDependencyInfo(saved);
                         }
                         packageDependencies[saved].AddDependent(node.GUID);
-                        packageDependencies[saved].IsLoaded = false;
+                        packageDependencies[saved].IsLoaded = saved.Equals(collected);
                     }
                     else
                     {
-                        var collected = GetNodePackage(node);
                         if (collected != null)
                         {
                             if (!packageDependencies.ContainsKey(collected))
