@@ -585,11 +585,18 @@ namespace Dynamo.Models
             var thread = config.SchedulerThread ?? new DynamoSchedulerThread();
             Scheduler = new DynamoScheduler(thread, config.ProcessMode);
             Scheduler.TaskStateChanged += OnAsyncTaskStateChanged;
+
             //TODO dispose this.
+            List < Action > requestedDisposalCalls = new List<Action>();
             ExecutionEvents.RequestRunOnDynamoScheduler += (actionToSchedule) =>
             {
-                var task = new DelegateBasedAsyncTask(this.Scheduler, actionToSchedule);
-                Scheduler.ScheduleForExecution(task);
+                requestedDisposalCalls.Add(actionToSchedule);
+            };
+
+            this.EvaluationCompleted += (s,e) => {
+
+                var combined = Delegate.Combine(requestedDisposalCalls.ToArray());
+                this.Scheduler.ScheduleForExecution(new DelegateBasedAsyncTask(this.Scheduler, combined as Action));
             };
 
             geometryFactoryPath = config.GeometryFactoryPath;
