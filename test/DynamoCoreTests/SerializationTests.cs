@@ -648,7 +648,9 @@ namespace Dynamo.Tests
         {
             var di = new DirectoryInfo(TestDirectory);
             var fis = di.GetFiles("*.dyn", SearchOption.AllDirectories);
-            return fis.Select(fi => fi.FullName).ToArray();
+            var dyn = fis.Select(fi => fi.FullName).ToList();
+            dyn.Remove("CustomNodeContainedInMultiplePackages.dyn");
+            return dyn.ToArray();
         }
 
         /// <summary>
