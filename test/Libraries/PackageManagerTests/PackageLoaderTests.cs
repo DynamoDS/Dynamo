@@ -163,12 +163,16 @@ namespace Dynamo.PackageManager.Tests
             // There are 11 packages in "GitHub\Dynamo\test\pkgs"
             Assert.AreEqual(11, loader.LocalPackages.Count());
 
+            // Simulate loading new package from PM
             string packageDirectory = Path.Combine(TestDirectory, @"core\packageDependencyTests\ZTTestPackage");
             var pkg = loader.ScanPackageDirectory(packageDirectory);
             loader.LoadPackages(new List<Package> {pkg});
+
+            // Assert that node belonging to new package is imported
             var node = GetNodeInstance("ZTTestPackage.RRTestClass.RRTestClass");
             Assert.IsNotNull(node);
 
+            // Check that node belonging to one of the preloaded packages exists and is unique
             var entries = CurrentDynamoModel.SearchModel.SearchEntries.ToList();
             Assert.IsTrue(entries.Count(x => x.FullName == "AnotherPackage.AnotherPackage.AnotherPackage.HelloAnotherWorld") == 1);
         }
