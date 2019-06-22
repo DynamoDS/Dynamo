@@ -47,19 +47,6 @@ namespace Dynamo.Tests
             return null;
         }
 
-        private NodeModel GetNodeInstance(string creationName)
-        {
-            var searchElementList = CurrentDynamoModel.SearchModel.SearchEntries.OfType<NodeSearchElement>();
-            foreach (var element in searchElementList)
-            {
-                if (element.CreationName == creationName)
-                {
-                    return (element as NodeSearchElement).CreateNode();
-                }
-            }
-            return null;
-        }
-
         protected override DynamoModel.IStartConfiguration CreateStartConfiguration(IPreferences settings)
         {
             return new DynamoModel.DefaultStartConfiguration()

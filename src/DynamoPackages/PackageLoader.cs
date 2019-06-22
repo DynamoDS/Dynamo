@@ -257,13 +257,14 @@ namespace Dynamo.PackageManager
         /// <param name="packages"></param>
         public void LoadPackages(IEnumerable<Package> packages)
         {
-            foreach (var pkg in packages)
+            var enumerable = packages.ToList();
+            foreach (var pkg in enumerable)
             {
                 TryLoadPackageIntoLibrary(pkg);
             }
 
             var assemblies =
-                packages.SelectMany(x => x.EnumerateAssembliesInBinDirectory().Where(y => y.IsNodeLibrary));
+                enumerable.SelectMany(x => x.EnumerateAssembliesInBinDirectory().Where(y => y.IsNodeLibrary));
             OnPackagesLoaded(assemblies.Select(x => x.Assembly));
         }
 
