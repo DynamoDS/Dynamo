@@ -146,6 +146,34 @@ namespace Dynamo.PackageManager.Tests
         }
 
         [Test]
+        public void LoadingPackageDoesNotAffectLoadedSearchEntries()
+        {
+            var loader = new PackageLoader(PackagesDirectory);
+            var libraryLoader = new ExtensionLibraryLoader(CurrentDynamoModel);
+
+            loader.PackagesLoaded += libraryLoader.LoadPackages;
+            loader.RequestLoadNodeLibrary += libraryLoader.LoadNodeLibrary;
+
+            loader.LoadAll(new LoadPackageParams
+            {
+                Preferences = CurrentDynamoModel.PreferenceSettings,
+                PathManager = CurrentDynamoModel.PathManager
+            });
+
+            // There are 11 packages in "GitHub\Dynamo\test\pkgs"
+            Assert.AreEqual(11, loader.LocalPackages.Count());
+
+            string packageDirectory = Path.Combine(TestDirectory, @"core\packageDependencyTests\ZTTestPackage");
+            var pkg = loader.ScanPackageDirectory(packageDirectory);
+            loader.LoadPackages(new List<Package> {pkg});
+            var node = GetNodeInstance("ZTTestPackage.RRTestClass.RRTestClass");
+            Assert.IsNotNull(node);
+
+            var entries = CurrentDynamoModel.SearchModel.SearchEntries.ToList();
+            Assert.IsTrue(entries.Count(x => x.FullName == "AnotherPackage.AnotherPackage.AnotherPackage.HelloAnotherWorld") == 1);
+        }
+
+        [Test]
         public void LoadPackagesReturnsNoPackagesForInvalidDirectory()
         {
             var pkgDir = Path.Combine(PackagesDirectory, "No directory");
