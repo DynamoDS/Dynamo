@@ -33,6 +33,10 @@ using ProtoCore.Namespace;
 // For workspace package dependency collection
 [assembly: InternalsVisibleTo("DynamoPackages")]
 
+// Internals are visible to the Package Manager extension
+// For workspace package dependency collection
+[assembly: InternalsVisibleTo("PackageDependencyViewExtension")]
+
 namespace Dynamo.Graph.Workspaces
 {
     /// <summary>
@@ -649,6 +653,7 @@ namespace Dynamo.Graph.Workspaces
             set
             {
                 packageDependencies = value;
+                RaisePropertyChanged(nameof(PackageDependencies));
             }
         }
 
@@ -1137,6 +1142,7 @@ namespace Dynamo.Graph.Workspaces
             ClearUndoRecorder();
             ResetWorkspace();
 
+            packageDependencies.Clear();
             X = 0.0;
             Y = 0.0;
             Zoom = 1.0;

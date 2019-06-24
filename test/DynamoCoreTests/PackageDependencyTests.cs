@@ -28,22 +28,12 @@ namespace Dynamo.Tests
             base.GetLibrariesToPreload(libraries);
         }
 
-        private PackageLoader GetPackageLoader()
-        {
-            var extensions = CurrentDynamoModel.ExtensionManager.Extensions.OfType<PackageManagerExtension>();
-            if (extensions.Count() > 0)
-            {
-                return extensions.First().PackageLoader;
-            }
-            return null;
-        }
-
         private void LoadPackage(string packageDirectory)
         {
             CurrentDynamoModel.PreferenceSettings.CustomPackageFolders.Add(packageDirectory);
             var loader = GetPackageLoader();
             var pkg = loader.ScanPackageDirectory(packageDirectory);
-            loader.Load(pkg);
+            loader.LoadPackages(new List<Package> {pkg});
         }
 
         private PackageDependencyInfo GetPackageInfo(string packageName)
@@ -53,19 +43,6 @@ namespace Dynamo.Tests
             if (package != null)
             {
                 return new PackageDependencyInfo(package.Name, new Version(package.VersionName));
-            }
-            return null;
-        }
-
-        private NodeModel GetNodeInstance(string creationName)
-        {
-            var searchElementList = CurrentDynamoModel.SearchModel.SearchEntries.OfType<NodeSearchElement>();
-            foreach (var element in searchElementList)
-            {
-                if (element.CreationName == creationName)
-                {
-                    return (element as NodeSearchElement).CreateNode();
-                }
             }
             return null;
         }
@@ -278,6 +255,33 @@ namespace Dynamo.Tests
             // Assert new package dependency is collected
             var packageDependencies = CurrentDynamoModel.CurrentWorkspace.PackageDependencies;
             Assert.Contains(pi, packageDependencies);
+        }
+
+        [Test]
+        public void PackageDependenciesClearedAfterWorkspaceCleared()
+        {
+            // Assert ZTTestPackage is not already loaded
+            var pi = GetPackageInfo("ZTTestPackage");
+            Assert.IsNull(pi);
+
+            // Load package
+            string packageDirectory = Path.Combine(TestDirectory, @"core\packageDependencyTests\ZTTestPackage");
+            LoadPackage(packageDirectory);
+            pi = GetPackageInfo("ZTTestPackage");
+
+            // Add node from package
+            var node = GetNodeInstance("ZTTestPackage.RRTestClass.RRTestClass");
+            CurrentDynamoModel.AddNodeToCurrentWorkspace(node, true);
+
+            // Assert new package dependency is collected
+            var packageDependencies = CurrentDynamoModel.CurrentWorkspace.PackageDependencies;
+            Assert.Contains(pi, packageDependencies);
+
+            // Clear current workspace
+            CurrentDynamoModel.ClearCurrentWorkspace();
+
+            // Assert package dependency list is cleared
+            Assert.IsTrue(CurrentDynamoModel.CurrentWorkspace.PackageDependencies.Count == 0);
         }
 
         [Test]

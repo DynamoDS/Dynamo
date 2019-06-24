@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Dynamo.Extensions;
@@ -9,6 +10,13 @@ namespace Dynamo.PackageManager.Tests
     class PackageLoaderTests : DynamoModelTestBase
     {
         public string PackagesDirectory { get { return Path.Combine(TestDirectory, "pkgs"); } }
+
+        protected override void GetLibrariesToPreload(List<string> libraries)
+        {
+            libraries.Add("DesignScriptBuiltin.dll");
+            libraries.Add("DSCoreNodes.dll");
+            base.GetLibrariesToPreload(libraries);
+        }
 
         [Test]
         public void ScanPackageDirectoryReturnsPackageForValidDirectory()
@@ -26,7 +34,7 @@ namespace Dynamo.PackageManager.Tests
                 + "Rounds a number *down* to a specified precision, Round To Precision - Rounds a number to a specified precision", pkg.Contents);
             Assert.AreEqual("0.5.2.10107", pkg.EngineVersion);
 
-            loader.Load(pkg);
+            loader.LoadPackages(new List<Package> {pkg});
 
             Assert.AreEqual(3, pkg.LoadedCustomNodes.Count);
         }
@@ -62,7 +70,7 @@ namespace Dynamo.PackageManager.Tests
             };
 
             var pkg = loader.ScanPackageDirectory(pkgDir);
-            loader.Load(pkg);
+            loader.LoadPackages(new List<Package> {pkg});
 
             Assert.IsTrue(loader.RequestedExtensions.Count() == 1);
             Assert.IsTrue(extensionLoad);
@@ -91,7 +99,7 @@ namespace Dynamo.PackageManager.Tests
             };
 
             var pkg = loader.ScanPackageDirectory(pkgDir);
-            loader.Load(pkg);
+            loader.LoadPackages(new List<Package> {pkg});
 
             Assert.IsTrue(!loader.RequestedExtensions.Any());
             Assert.IsFalse(viewExtensionLoad);
@@ -135,6 +143,38 @@ namespace Dynamo.PackageManager.Tests
             Assert.IsTrue(entries.Any(x => x.FullName == "AnotherPackage.AnotherPackage.AnotherPackage.HelloAnotherWorld"));
             Assert.IsTrue(entries.Any(x => x.FullName == "DependentPackage.DependentPackage.DependentPackage.HelloWorld"));
             Assert.IsTrue(entries.Any(x => x.FullName == "Package.Package.Package.Hello"));
+        }
+
+        [Test]
+        public void LoadingPackageDoesNotAffectLoadedSearchEntries()
+        {
+            var loader = new PackageLoader(PackagesDirectory);
+            var libraryLoader = new ExtensionLibraryLoader(CurrentDynamoModel);
+
+            loader.PackagesLoaded += libraryLoader.LoadPackages;
+            loader.RequestLoadNodeLibrary += libraryLoader.LoadNodeLibrary;
+
+            loader.LoadAll(new LoadPackageParams
+            {
+                Preferences = CurrentDynamoModel.PreferenceSettings,
+                PathManager = CurrentDynamoModel.PathManager
+            });
+
+            // There are 11 packages in "GitHub\Dynamo\test\pkgs"
+            Assert.AreEqual(11, loader.LocalPackages.Count());
+
+            // Simulate loading new package from PM
+            string packageDirectory = Path.Combine(TestDirectory, @"core\packageDependencyTests\ZTTestPackage");
+            var pkg = loader.ScanPackageDirectory(packageDirectory);
+            loader.LoadPackages(new List<Package> {pkg});
+
+            // Assert that node belonging to new package is imported
+            var node = GetNodeInstance("ZTTestPackage.RRTestClass.RRTestClass");
+            Assert.IsNotNull(node);
+
+            // Check that node belonging to one of the preloaded packages exists and is unique
+            var entries = CurrentDynamoModel.SearchModel.SearchEntries.ToList();
+            Assert.IsTrue(entries.Count(x => x.FullName == "AnotherPackage.AnotherPackage.AnotherPackage.HelloAnotherWorld") == 1);
         }
 
         [Test]
@@ -232,15 +272,5 @@ namespace Dynamo.PackageManager.Tests
 
         }
 
-        private PackageLoader GetPackageLoader()
-        {
-            var extensions = CurrentDynamoModel.ExtensionManager.Extensions.OfType<PackageManagerExtension>();
-            if (extensions.Any())
-            {
-                return extensions.First().PackageLoader;
-            }
-
-            return null;
-        }
     }
 }

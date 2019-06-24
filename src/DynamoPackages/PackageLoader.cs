@@ -157,10 +157,11 @@ namespace Dynamo.PackageManager
         }
 
         /// <summary>
-        ///     Load the package into Dynamo (including all node libraries and custom nodes)
-        ///     and add to LocalPackages
+        /// Try loading package into Library (including all node libraries and custom nodes)
+        /// and add to LocalPackages.
         /// </summary>
-        public void Load(Package package)
+        /// <param name="package"></param>
+        internal void TryLoadPackageIntoLibrary(Package package)
         {
             this.Add(package);
 
@@ -214,6 +215,21 @@ namespace Dynamo.PackageManager
         }
 
         /// <summary>
+        ///     Load the package into Dynamo (including all node libraries and custom nodes)
+        ///     and add to LocalPackages.
+        /// </summary>
+        // TODO: Remove in 3.0 (Refer to PR #9736).
+        [Obsolete("This API will be deprecated in 3.0. Use LoadPackages(IEnumerable<Package> packages) instead.")]
+        public void Load(Package package)
+        {
+            TryLoadPackageIntoLibrary(package);
+
+            var assemblies =
+                LocalPackages.SelectMany(x => x.EnumerateAssembliesInBinDirectory().Where(y => y.IsNodeLibrary));
+            OnPackagesLoaded(assemblies.Select(x => x.Assembly));
+        }
+
+        /// <summary>
         ///     Scan the PackagesDirectory for packages and attempt to load all of them.  Beware! Fails silently for duplicates.
         /// </summary>
         public void LoadAll(LoadPackageParams loadPackageParams)
@@ -232,7 +248,11 @@ namespace Dynamo.PackageManager
 
                 }
             }
-            LoadPackages(LocalPackages);
+
+            if (LocalPackages.Any())
+            {
+                LoadPackages(LocalPackages);
+            }
         }
 
         /// <summary>
@@ -241,13 +261,14 @@ namespace Dynamo.PackageManager
         /// <param name="packages"></param>
         public void LoadPackages(IEnumerable<Package> packages)
         {
-            foreach (var pkg in packages)
+            var enumerable = packages.ToList();
+            foreach (var pkg in enumerable)
             {
-                Load(pkg);
+                TryLoadPackageIntoLibrary(pkg);
             }
 
             var assemblies =
-                LocalPackages.SelectMany(x => x.EnumerateAssembliesInBinDirectory().Where(y => y.IsNodeLibrary));
+                enumerable.SelectMany(x => x.EnumerateAssembliesInBinDirectory().Where(y => y.IsNodeLibrary));
             OnPackagesLoaded(assemblies.Select(x => x.Assembly));
         }
 
