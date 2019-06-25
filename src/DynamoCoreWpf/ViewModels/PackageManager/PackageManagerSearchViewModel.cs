@@ -263,8 +263,9 @@ namespace Dynamo.PackageManager
         {
             this.PackageManagerClientViewModel = client;
             PackageManagerClientViewModel.Downloads.CollectionChanged += DownloadsOnCollectionChanged;
+            PackageManagerClientViewModel.PackageManagerExtension.PackageLoader.DuplicatePackageLoaded += DuplicateCustomNodePackageLoaded;
         }
-
+        
         /// <summary>
         /// Sort the search results
         /// </summary>
@@ -637,6 +638,25 @@ namespace Dynamo.PackageManager
         public static string FormatPackageVersionList(IEnumerable<Tuple<PackageHeader, PackageVersion>> packages)
         {
             return String.Join("\r\n", packages.Select(x => x.Item1.name + " " + x.Item2.version));
+        }
+
+        private void DuplicateCustomNodePackageLoaded(Package installed, Package duplicate)
+        {
+            var productName = PackageManagerClientViewModel.DynamoViewModel.BrandingResourceProvider.ProductName;
+            var message = string.Format(Resources.MessageUninstallToContinue2,
+                productName, JoinPackageNames(new List<Package> {installed}),
+                duplicate.Name + " " + duplicate.VersionName);
+
+            var dialogResult = MessageBox.Show(message,
+                Resources.CannotDownloadPackageMessageBoxTitle,
+                MessageBoxButton.YesNo, MessageBoxImage.Error);
+
+            if (dialogResult == MessageBoxResult.Yes)
+            {
+                // mark for uninstallation
+                var settings = PackageManagerClientViewModel.DynamoViewModel.Model.PreferenceSettings;
+                installed.MarkForUninstall(settings);
+            }
         }
 
         private void DownloadsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs args)

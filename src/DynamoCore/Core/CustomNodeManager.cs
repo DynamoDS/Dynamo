@@ -6,6 +6,7 @@ using System.Linq;
 using System.Xml;
 using Dynamo.Engine;
 using Dynamo.Engine.NodeToCode;
+using Dynamo.Exceptions;
 using Dynamo.Graph;
 using Dynamo.Graph.Annotations;
 using Dynamo.Graph.Connectors;
@@ -119,7 +120,7 @@ namespace Dynamo.Core
             var handler = InfoUpdated;
             if (handler != null) handler(obj);
         }
-
+        
         /// <summary>
         ///     An event that is fired when a custom node is removed from Dynamo.
         /// </summary>
@@ -453,6 +454,12 @@ namespace Dynamo.Core
             foreach (var guid in guids)
             {
                 NodeInfos.Remove(guid);
+            }
+
+            CustomNodeInfo value;
+            if (NodeInfos.TryGetValue(newInfo.FunctionId, out value))
+            {
+                throw new DuplicateCustomNodePackageLoadException(Path.GetDirectoryName(value.Path), "duplicate package");
             }
 
             NodeInfos[newInfo.FunctionId] = newInfo;

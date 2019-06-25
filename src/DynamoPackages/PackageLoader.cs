@@ -207,11 +207,30 @@ namespace Dynamo.PackageManager
                 package.Loaded = true;
                 this.PackgeLoaded?.Invoke(package);
             }
+            //catch (DuplicateCustomNodePackageLoadException e)
+            //{
+            //    Package originalPackage =
+            //        localPackages.FirstOrDefault(x => x.CustomNodeDirectory == e.Path);
+            //    OnDuplicatePackageLoaded(originalPackage, package);
+            //    throw e;
+            //}
+            //catch (LibraryLoadFailedException e)
+            //{
+            //    Log(e.GetType() + ": " + e.Message);
+            //    throw e;
+            //}
             catch (Exception e)
             {
                 Log("Exception when attempting to load package " + package.Name + " from " + package.RootDirectory);
                 Log(e.GetType() + ": " + e.Message);
             }
+        }
+
+        public event Action<Package, Package> DuplicatePackageLoaded;
+        protected virtual void OnDuplicatePackageLoaded(Package installed, Package duplicate)
+        {
+            var handler = DuplicatePackageLoaded;
+            handler?.Invoke(installed, duplicate);
         }
 
         /// <summary>
