@@ -600,6 +600,7 @@ namespace Dynamo.Models
                 {
                     this.Scheduler.ScheduleForExecution(new DelegateBasedAsyncTask(this.Scheduler, combined as Action));
                 }
+                requestedDisposalCalls.Clear();
             };
 
             geometryFactoryPath = config.GeometryFactoryPath;
