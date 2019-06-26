@@ -1005,9 +1005,7 @@ namespace DynamoCoreWpfTests
             var di = new DirectoryInfo(TestDirectory);
             var fis = new string[] { "*.dyn", "*.dyf" }
             .SelectMany(i => di.GetFiles(i, SearchOption.AllDirectories));
-            var dyn = fis.Select(fi => fi.FullName).ToList();
-            dyn.Remove("CustomNodeContainedInMultiplePackages.dyn");
-            return dyn.ToArray();
+            return fis.Select(fi => fi.FullName).ToArray();
         }
 
 

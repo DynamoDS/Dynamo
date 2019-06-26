@@ -648,9 +648,7 @@ namespace Dynamo.Tests
         {
             var di = new DirectoryInfo(TestDirectory);
             var fis = di.GetFiles("*.dyn", SearchOption.AllDirectories);
-            var dyn = fis.Select(fi => fi.FullName).ToList();
-            dyn.Remove("CustomNodeContainedInMultiplePackages.dyn");
-            return dyn.ToArray();
+            return fis.Select(fi => fi.FullName).ToArray();
         }
 
         /// <summary>
@@ -736,7 +734,8 @@ namespace Dynamo.Tests
                 "packageTest",
                 "reduce-example",
                 "TestFrozen",
-                "TestImperativeInCBN"
+                "TestImperativeInCBN",
+                "CustomNodeContainedInMultiplePackages"
             };
 
         private void DoWorkspaceOpenAndCompare(string filePath, string dirName,
