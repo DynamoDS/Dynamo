@@ -459,7 +459,7 @@ namespace Dynamo.Core
             CustomNodeInfo value;
             if (NodeInfos.TryGetValue(newInfo.FunctionId, out value))
             {
-                throw new DuplicateCustomNodePackageLoadException(Path.GetDirectoryName(value.Path), "duplicate package");
+                throw new CustomNodePackageLoadException(Path.GetDirectoryName(value.Path), "duplicate package");
             }
 
             NodeInfos[newInfo.FunctionId] = newInfo;
