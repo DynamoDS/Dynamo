@@ -1122,8 +1122,6 @@ namespace Dynamo.Models
             CustomNodeManager.DefinitionUpdated += UpdateCustomNodeDefinition;
         }
 
-        
-
         private void InitializeIncludedNodes()
         {
             var customNodeData = new TypeLoadData(typeof(Function));

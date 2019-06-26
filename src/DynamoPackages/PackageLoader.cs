@@ -207,7 +207,7 @@ namespace Dynamo.PackageManager
                 package.Loaded = true;
                 this.PackgeLoaded?.Invoke(package);
             }
-            //catch (DuplicateCustomNodePackageLoadException e)
+            //catch (CustomNodePackageLoadException e)
             //{
             //    Package originalPackage =
             //        localPackages.FirstOrDefault(x => x.CustomNodeDirectory == e.Path);
@@ -226,10 +226,10 @@ namespace Dynamo.PackageManager
             }
         }
 
-        public event Action<Package, Package> DuplicatePackageLoaded;
+        public event Action<Package, Package> CustomNodePackageWithDuplicateNodeIDLoaded;
         protected virtual void OnDuplicatePackageLoaded(Package installed, Package duplicate)
         {
-            var handler = DuplicatePackageLoaded;
+            var handler = CustomNodePackageWithDuplicateNodeIDLoaded;
             handler?.Invoke(installed, duplicate);
         }
 

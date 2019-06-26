@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Dynamo.Exceptions
 {
-    public class DuplicateCustomNodePackageLoadException : Exception
+    public class CustomNodePackageLoadException : Exception
     {
         /// <summary>
         /// File path of failing custom node package.
@@ -23,7 +23,7 @@ namespace Dynamo.Exceptions
         /// </summary>
         /// <param name="path"></param>
         /// <param name="reason"></param>
-        public DuplicateCustomNodePackageLoadException(string path, string reason)
+        public CustomNodePackageLoadException(string path, string reason)
             : base(String.Format(Properties.Resources.FailedToLoad, path, reason))
         {
             Path = path;

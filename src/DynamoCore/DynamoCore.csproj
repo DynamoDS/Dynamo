@@ -121,7 +121,7 @@ limitations under the License.
     <Compile Include="Engine\Profiling\ProfilingData.cs" />
     <Compile Include="Engine\Profiling\ProfilingSession.cs" />
     <Compile Include="Engine\ShortestQualifiedNameReplacer.cs" />
-    <Compile Include="Exceptions\DuplicateCustomNodePackageLoadException.cs" />
+    <Compile Include="Exceptions\CustomNodePackageLoadException.cs" />
     <Compile Include="Exceptions\LibraryLoadFailedException.cs" />
     <Compile Include="Graph\Workspaces\PackageDependencyInfo.cs" />
     <Compile Include="Graph\Nodes\NodeOutputData.cs" />

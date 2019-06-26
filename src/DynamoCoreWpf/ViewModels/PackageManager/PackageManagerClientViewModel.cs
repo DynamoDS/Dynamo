@@ -498,7 +498,7 @@ namespace Dynamo.ViewModels
                         {
                             var p = Package.FromDirectory(dynPkg.RootDirectory, DynamoViewModel.Model.Logger);
 
-                            pmExtension.PackageLoader.LoadPackages(new List<Package> { p });
+                            pmExtension.PackageLoader.LoadPackages(new List<Package> {p});
 
                             packageDownloadHandle.DownloadState = PackageDownloadHandle.State.Installed;
                         }

@@ -263,7 +263,7 @@ namespace Dynamo.PackageManager
         {
             this.PackageManagerClientViewModel = client;
             PackageManagerClientViewModel.Downloads.CollectionChanged += DownloadsOnCollectionChanged;
-            PackageManagerClientViewModel.PackageManagerExtension.PackageLoader.DuplicatePackageLoaded += DuplicateCustomNodePackageLoaded;
+            PackageManagerClientViewModel.PackageManagerExtension.PackageLoader.CustomNodePackageWithDuplicateNodeIDLoaded += CustomNodeNodeIdWithCustomNodePackageWithDuplicateNodeIdLoaded;
         }
         
         /// <summary>
@@ -640,7 +640,7 @@ namespace Dynamo.PackageManager
             return String.Join("\r\n", packages.Select(x => x.Item1.name + " " + x.Item2.version));
         }
 
-        private void DuplicateCustomNodePackageLoaded(Package installed, Package duplicate)
+        private void CustomNodeNodeIdWithCustomNodePackageWithDuplicateNodeIdLoaded(Package installed, Package duplicate)
         {
             var productName = PackageManagerClientViewModel.DynamoViewModel.BrandingResourceProvider.ProductName;
             var message = string.Format(Resources.MessageUninstallToContinue2,
