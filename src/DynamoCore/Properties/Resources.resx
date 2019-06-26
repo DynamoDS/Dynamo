@@ -700,4 +700,9 @@ The input name should be a valid variable name, without spaces. An input type an
   <data name="PythonTemplateDefinedByHost" xml:space="preserve">
     <value>Python template set by host integrator</value>
   </data>
+  <data name="MessageUninstallCustomNodeToContinue" xml:space="preserve">
+    <value>{2} cannot be loaded. It has one or more node definitions that already exist in {1} that is currently loaded. To install {2}, {0} needs to first uninstall {1}. Restart {0} to complete the uninstall, then try and download {2} again.
+
+Uninstall the following packages: {1}?</value>
+  </data>
 </root>
