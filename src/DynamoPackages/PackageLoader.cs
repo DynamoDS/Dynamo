@@ -207,13 +207,12 @@ namespace Dynamo.PackageManager
                 package.Loaded = true;
                 this.PackgeLoaded?.Invoke(package);
             }
-            //catch (CustomNodePackageLoadException e)
-            //{
-            //    Package originalPackage =
-            //        localPackages.FirstOrDefault(x => x.CustomNodeDirectory == e.Path);
-            //    OnDuplicatePackageLoaded(originalPackage, package);
-            //    throw e;
-            //}
+            catch (CustomNodePackageLoadException e)
+            {
+                Package originalPackage =
+                    localPackages.FirstOrDefault(x => x.CustomNodeDirectory == e.Path);
+                OnDuplicatePackageLoaded(originalPackage, e.Reason);
+            }
             //catch (LibraryLoadFailedException e)
             //{
             //    Log(e.GetType() + ": " + e.Message);
@@ -226,11 +225,11 @@ namespace Dynamo.PackageManager
             }
         }
 
-        public event Action<Package, Package> CustomNodePackageWithDuplicateNodeIDLoaded;
-        protected virtual void OnDuplicatePackageLoaded(Package installed, Package duplicate)
+        public event Action<Package, string> CustomNodePackageWithDuplicateNodeIDLoaded;
+        protected virtual void OnDuplicatePackageLoaded(Package installed, string reason)
         {
             var handler = CustomNodePackageWithDuplicateNodeIDLoaded;
-            handler?.Invoke(installed, duplicate);
+            handler?.Invoke(installed, reason);
         }
 
         /// <summary>
