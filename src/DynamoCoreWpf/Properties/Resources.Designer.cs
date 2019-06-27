@@ -3305,7 +3305,10 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {1} cannot be loaded. It has one or more node definitions that already exist in {0} that is currently loaded. To install {1}, Dynamo needs to first uninstall {0}. Restart Dynamo to complete the uninstall, then try and download {1} again.
+        ///   Looks up a localized string similar to {1} cannot be loaded.
+        ///Installing it will conflict with one or more node definitions that already exist in {0}, which is currently loaded. 
+        ///To install {1}, Dynamo needs to first uninstall {0}. 
+        ///Restart Dynamo to complete the uninstall, then try and download {1} again.
         ///
         ///Uninstall the following packages: {1}?.
         /// </summary>
