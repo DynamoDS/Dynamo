@@ -80,6 +80,7 @@ namespace Dynamo.Tests
             var package = packageDependencies.First();
             Assert.AreEqual(new PackageDependencyInfo("Dynamo Samples", new Version("2.0.0")), package);
             Assert.AreEqual(1, package.Nodes.Count);
+            Assert.IsTrue(package.IsLoaded);
 
             // Assert package dependency is serialized
             var ToJson = CurrentDynamoModel.CurrentWorkspace.ToJson(CurrentDynamoModel.EngineController);
@@ -115,6 +116,7 @@ namespace Dynamo.Tests
             var package = packageDependencies.First();
             Assert.AreEqual(new PackageDependencyInfo("Dynamo Samples", new Version("2.0.0")), package);
             Assert.AreEqual(1, package.Nodes.Count);
+            Assert.IsTrue(package.IsLoaded);
         }
 
         [Test]
@@ -131,6 +133,7 @@ namespace Dynamo.Tests
             var package = packageDependencies.First();
             Assert.AreEqual(new PackageDependencyInfo("Custom Rounding", new Version("0.1.4")), package);
             Assert.AreEqual(1, package.Nodes.Count);
+            Assert.IsTrue(package.IsLoaded);
         }
 
         [Test]
@@ -147,6 +150,7 @@ namespace Dynamo.Tests
             var package = packageDependencies.First();
             Assert.AreEqual(pi, package);
             Assert.AreEqual(1, package.Nodes.Count);
+            Assert.IsTrue(package.IsLoaded);
         }
         
         [Test]
@@ -182,6 +186,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(2, packageDependencies.Count);
             foreach(var package in packageDependencies)
             {
+                Assert.IsTrue(package.IsLoaded);
                 if (package.Equals(package1))
                 {
                     // Package 1 should have two nodes
@@ -218,6 +223,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(1, packageDependencies.Count);
             Assert.AreEqual(1, packageDependencies.First().Nodes.Count);
             Assert.True(!packageDependencies.First().Nodes.Contains(node1.GUID));
+            Assert.IsTrue(packageDependencies.First().IsLoaded);
 
             // Remove te second node and assert package dependencies is now empty
             CurrentDynamoModel.CurrentWorkspace.RemoveAndDisposeNode(node2);
@@ -255,6 +261,7 @@ namespace Dynamo.Tests
             // Assert new package dependency is collected
             var packageDependencies = CurrentDynamoModel.CurrentWorkspace.PackageDependencies;
             Assert.Contains(pi, packageDependencies);
+            Assert.IsTrue(packageDependencies.First().IsLoaded);
         }
 
         [Test]
@@ -298,6 +305,43 @@ namespace Dynamo.Tests
             // Assert ZTTestPackage is still a package dependency
             var packageDependencies = CurrentDynamoModel.CurrentWorkspace.PackageDependencies;
             Assert.Contains(new PackageDependencyInfo("ZTTestPackage", new Version("0.0.1")), packageDependencies);
+            Assert.IsTrue(packageDependencies.First().IsLoaded == false);
+        }
+
+        [Test]
+        public void PackageDependenciesUpdatedWhenCustomNodeResolvedByNewPackage()
+        {
+            // Load JSON file graph
+            string path = Path.Combine(TestDirectory, @"core\packageDependencyTests\CustomNodeContainedInMultiplePackages.dyn");
+
+            // Assert serialized package dependency is Clockwork
+            var clockworkInfo = new PackageDependencyInfo("Clockwork for Dynamo 2.x", new Version("2.1.2"));
+            using (StreamReader file = new StreamReader(path))
+            {
+                var data = file.ReadToEnd();
+                var json = (JObject)JsonConvert.DeserializeObject(data);
+                var pd = json["PackageDependencies"];
+                var deserializedPDs = JsonConvert.DeserializeObject<List<PackageDependencyInfo>>(pd.ToString(), new PackageDependencyConverter(CurrentDynamoModel.Logger));
+                Assert.AreEqual(1, deserializedPDs.Count);
+                var package = deserializedPDs.First();
+                Assert.AreEqual(clockworkInfo, package);
+            }
+
+            OpenModel(path);
+
+            // Assert clockwork is still the only dependency returned
+            var packageDependencies = CurrentDynamoModel.CurrentWorkspace.PackageDependencies;
+            Assert.AreEqual(1, packageDependencies.Count);
+            Assert.AreEqual(clockworkInfo, packageDependencies.First());
+
+            // Void package dependency for node
+            CurrentDynamoModel.CurrentWorkspace.VoidNodeDependency(Guid.Parse("d87512f7f69e433d86c729bac18bcfef"));
+
+            // Assert local package dependency overrides deserialized package dependency
+            var pi = GetPackageInfo("Custom Rounding");
+            packageDependencies = CurrentDynamoModel.CurrentWorkspace.PackageDependencies;
+            Assert.AreEqual(1, packageDependencies.Count);
+            Assert.AreEqual(pi, packageDependencies.First());
         }
     }
 }

@@ -88,26 +88,18 @@ namespace Dynamo.PackageDependency
             table.Columns.Clear();
             foreach (var package in ws.PackageDependencies)
             {
-                bool matchFound = false;
-                // Check if the target package is installed and loaded.
-                foreach (var loadedPackage in ws.LoadedPackageDependencies)
+                if (package.IsLoaded)
                 {
-                    if (package.Equals(loadedPackage))
+                    table.Columns.Add(new Column()
                     {
-                        table.Columns.Add(new Column()
-                        {
-                            ColumnsData = new ObservableCollection<ColumnData>()
+                        ColumnsData = new ObservableCollection<ColumnData>()
                             {
                                 new ColumnData(package.Name),
                                 new ColumnData(package.Version.ToString(), 100)
                             }
-                        });
-                        matchFound = true;
-                        continue;
-                    }
+                    });
                 }
-                // TODO: Not ideal! O(N * M) complexicty, would like LoadedPackageDependencies to be a dictionary or something with constant package name search time
-                if (!matchFound)
+                else
                 {
                     HasMissingPackage = true;
                     table.Columns.Add(new Column()
