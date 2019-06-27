@@ -20,9 +20,13 @@ namespace TransformXMLToJSONUsingXSLT
         static string textFileWithFiltersFastTests = ConfigurationManager.AppSettings["textFileWithFiltersFastTests"];
         static List<String> allLines = new List<string>();
         static List<String> restLines = new List<string>();
+        private static String XMLProcessPath { get; set; }
+        private static String CSVResultPath { get; set; }
 
         static void Main(string[] args)
-        {
+        {           
+            XMLProcessPath = args.Length == 0 ? "" : args[0];
+            CSVResultPath = args.Length > 1 ? args[1] : "";
             XSLTToAnyType();
         }
         /// <summary>
@@ -34,9 +38,11 @@ namespace TransformXMLToJSONUsingXSLT
             {               
                 if (CreateFullFileAndCheckResultPath())
                 {
-                    allLines = File.ReadAllLines(String.Format(@"{0}\Result\{1}", DirectoryPath, textFileComplete)).ToList();                 
-                    CreateFilesResult(DirectoryPath, textFileWithFiltersSlowTests, TypeOfFile.SlowTest);
-                    CreateFilesResult(DirectoryPath, textFileWithFiltersFastTests, TypeOfFile.FastTest);
+                    allLines = File.ReadAllLines(String.Format(@"{0}\{1}", getPathToCSVResults(), textFileComplete)).ToList();
+                    processAllLines();
+
+                    CreateFilesResult(getPathToCSVResults(), textFileWithFiltersSlowTests, TypeOfFile.SlowTest);
+                    CreateFilesResult(getPathToCSVResults(), textFileWithFiltersFastTests, TypeOfFile.FastTest);
                 }                
             }
             catch(IOException ex)
@@ -54,18 +60,30 @@ namespace TransformXMLToJSONUsingXSLT
                 xslCompiledTransform.Load(String.Format(@"{0}\XSLT\{1}", DirectoryPath, xsltFile));
                 StringBuilder stringBuilder = new StringBuilder();
                 StringWriter stringWriter = new StringWriter(stringBuilder);
-                xslCompiledTransform.Transform(String.Format(@"{0}\XML\{1}", DirectoryPath, xmlFilePathResult), null, stringWriter);
+
+                try
+                {
+                    xslCompiledTransform.Transform(getPathXmlToProcess(), null, stringWriter);
+                }
+                catch(Exception ex)
+                {
+                    Console.WriteLine((ex.Message.Contains("root") || ex.Message.Contains("raíz")) ? "XML file is empty.":"Check XML File.");
+                    Console.ReadLine();
+                }
+
                 stringWriter.Close();
-                
-                if (!Directory.Exists(String.Format(@"{0}\Result", DirectoryPath)))
-                    Directory.CreateDirectory(String.Format(@"{0}\Result", DirectoryPath));
 
-                if (File.Exists(String.Format(@"{0}\Result\{1}", DirectoryPath, textFileComplete)))
-                    File.Delete(String.Format(@"{0}\Result\{1}", DirectoryPath, textFileComplete));
+                String _CSVResultPath = getPathToCSVResults();
 
-                File.AppendAllText(String.Format(@"{0}\Result\{1}", DirectoryPath, textFileComplete), stringBuilder.ToString());
+                if (!Directory.Exists(_CSVResultPath))
+                    Directory.CreateDirectory(_CSVResultPath);
 
-                return File.Exists(String.Format(@"{0}\Result\{1}", DirectoryPath, textFileComplete));
+                if (File.Exists(String.Format(@"{0}\{1}", _CSVResultPath, textFileComplete)))
+                    File.Delete(String.Format(@"{0}\{1}", _CSVResultPath, textFileComplete));
+
+                File.AppendAllText(String.Format(@"{0}\{1}", _CSVResultPath, textFileComplete), stringBuilder.ToString());
+
+                return File.Exists(String.Format(@"{0}\{1}", _CSVResultPath, textFileComplete));
             }
             catch(IOException ex)
             {
@@ -81,8 +99,8 @@ namespace TransformXMLToJSONUsingXSLT
             {
                 List<String> lstTestFixtureName = new List<String>();                
                 NameValueCollection section = (NameValueCollection)ConfigurationManager.GetSection("Filters");
-               
-                switch(typeOfFile)
+                
+                switch (typeOfFile)
                 {
                     case TypeOfFile.FastTest:
                         lstTestFixtureName.Clear();                                                
@@ -114,10 +132,10 @@ namespace TransformXMLToJSONUsingXSLT
                         break;
                 }
 
-                if (File.Exists(String.Format(@"{0}\Result\{1}", directoryPath, textFileName)))
-                    File.Delete(String.Format(@"{0}\Result\{1}", directoryPath, textFileName));
+                if (File.Exists(String.Format(@"{0}\{1}", directoryPath, textFileName)))
+                    File.Delete(String.Format(@"{0}\{1}", directoryPath, textFileName));
 
-                File.AppendAllLines(String.Format(@"{0}\Result\{1}", directoryPath, textFileName), lstTestFixtureName);
+                File.AppendAllLines(String.Format(@"{0}\{1}", directoryPath, textFileName), lstTestFixtureName);
                 lstTestFixtureName.Clear();
                 
                 return true;
@@ -133,6 +151,93 @@ namespace TransformXMLToJSONUsingXSLT
         {
             FastTest=0,
             SlowTest=1
+        }
+        private static string getPathXmlToProcess()
+        {
+            try
+            {
+                if(XMLProcessPath== string.Empty)
+                {
+                    if(!Directory.Exists(String.Format(@"{0}\XML", DirectoryPath)))
+                    {
+                        Directory.CreateDirectory(String.Format(@"{0}\XML", DirectoryPath));
+                    }
+                }
+
+                XMLProcessPath = XMLProcessPath == string.Empty ? String.Format(@"{0}\XML\{1}", DirectoryPath, xmlFilePathResult) : XMLProcessPath;
+                return XMLProcessPath == string.Empty ? String.Format(@"{0}\XML\{1}", DirectoryPath, xmlFilePathResult) : XMLProcessPath;
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.ReadLine();
+                return string.Empty;
+            }
+        }
+        private static string getPathToCSVResults()
+        {
+            try
+            {
+                if (CSVResultPath == string.Empty)
+                {
+                    if (!Directory.Exists(String.Format(@"{0}\Result", DirectoryPath)))
+                    {
+                        Directory.CreateDirectory(String.Format(@"{0}\Result", DirectoryPath));
+                    }
+                }
+
+                CSVResultPath = CSVResultPath == string.Empty ? String.Format(@"{0}\Result", DirectoryPath) : CSVResultPath;
+                return CSVResultPath == string.Empty ? String.Format(@"{0}\Result", DirectoryPath) : CSVResultPath;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.ReadLine();
+                return string.Empty;
+            }
+        }
+        private static void processAllLines()
+        {
+            List<String> newAllLines = new List<string>();
+            foreach (var line in allLines)
+            {
+                string Class = line.Split(new char[] { ',' })[0];
+                string NameSpace = string.Empty;
+                string Dll = string.Empty;
+              
+                if (line.Split(new char[] { ',' })[1] == string.Empty)
+                    continue;
+
+                
+
+                foreach (var type in line.Split(new char[] { ',' })[1].Split(new char[] { '.' }))
+                {
+                    if (type != Class && !type.Contains(Class))
+                    {
+                        NameSpace = NameSpace + type + "." ;
+                    }
+                    else
+                    {
+                        NameSpace = NameSpace + Class;
+                        break;
+                    }
+
+                }
+                foreach (var type in line.Split(new char[] { ',' })[2].Split(new char[] { '\\' }))
+                {
+                    if (type.Contains(".dll"))
+                    {
+                        Dll = type;
+                        break;
+                    }
+
+                }
+
+                newAllLines.Add(String.Format("{0},{1},{2}", Class, NameSpace,Dll));
+            
+            }
+            allLines.Clear();
+            allLines = newAllLines;
         }
     }
 

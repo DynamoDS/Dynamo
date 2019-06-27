@@ -6,8 +6,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{BED808FC-E6E4-4A2F-A609-2919E19E1A66}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>TransformXMLToJSONUsingXSLT</RootNamespace>
-    <AssemblyName>TransformXMLToJSONUsingXSLT</AssemblyName>
+    <RootNamespace>TransformXMLToCSVTool</RootNamespace>
+    <AssemblyName>TransformXMLToCSVTool</AssemblyName>
     <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -49,20 +49,18 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="packages.config" />
     <None Include="README.md" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Process.JPG" />
-    <Content Include="XML\CustomTestResult.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Include="XML\TestResult-Color_Tests.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </Content>
-    <Content Include="XML\XMLOutputAddNewClassToAssembly.xml" />
-    <Content Include="XML\XMLOutputAddNewPropertiesAndChangeParameterTypes.xml" />
     <Content Include="XSLT\TransformXMLToText.xslt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <SubType>Designer</SubType>
