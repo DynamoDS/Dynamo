@@ -74,6 +74,18 @@ This section is the filters that will be applied in case the entry applyFilters 
     <add key="DSEvaluationModelTest" value="DSEvaluationModelTest" />
   </Filters>
 ```
+**Running Transformation Tool**
+On this section you can find a sample of how to run the Transfomation Tool, you can use in a command line the next command.
+
+```sh
+\TransformXMLToCSVTool\Compiled>TransformXMLToCSVTool.exe \XML\Test.xml \Result
+```
+Where the part \TransformXMLToCSVTool\Compiled>TransformXMLToCSVTool.exe is the transformation tool, \XML\Test.xml is the path where the .xml file is and \Result is the path where the results of transformation will be put them.
+
+In case the paths are not provided is needed to create in the directory \TransformXMLToCSVTool\Compiled> or wherever the transformation tool was copied, the directories XML with in the xml file to process and Result directory.
+
+
+
 ### Diagram of process
 As a reference of the process you can see the image below.
 ![diagram](Process.JPG)
