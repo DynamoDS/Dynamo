@@ -2387,7 +2387,7 @@ myRangeExpressionResult = [Imperative]
         }
 
         [Test]
-        [Category("Type System"), Category("Failure")]
+        [Category("Type System")]
         public void TS0194_TypeConversion_nested_block_1467568()
         {
             string code =
