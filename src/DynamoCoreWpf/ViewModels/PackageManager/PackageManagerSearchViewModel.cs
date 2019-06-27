@@ -263,8 +263,8 @@ namespace Dynamo.PackageManager
         {
             this.PackageManagerClientViewModel = client;
             PackageManagerClientViewModel.Downloads.CollectionChanged += DownloadsOnCollectionChanged;
-            PackageManagerClientViewModel.PackageManagerExtension.PackageLoader.CustomNodePackageWithDuplicateNodeIDLoaded += 
-                CustomNodePackageWithDuplicateNodeIdLoaded;
+            PackageManagerClientViewModel.PackageManagerExtension.PackageLoader.ConflictingCustomNodePackageLoaded += 
+                ConflictingCustomNodePackageLoaded;
         }
         
         /// <summary>
@@ -641,12 +641,10 @@ namespace Dynamo.PackageManager
             return String.Join("\r\n", packages.Select(x => x.Item1.name + " " + x.Item2.version));
         }
 
-        private void CustomNodePackageWithDuplicateNodeIdLoaded(Package installed, string message)
+        private void ConflictingCustomNodePackageLoaded(Package installed, Package conflicting)
         {
-            //var productName = PackageManagerClientViewModel.DynamoViewModel.BrandingResourceProvider.ProductName;
-            //var message = string.Format(Resources.MessageUninstallCustomNodeToContinue,
-            //    productName, JoinPackageNames(new List<Package> {installed}),
-            //    duplicate.Name + " " + duplicate.VersionName);
+            var message = string.Format(Resources.MessageUninstallCustomNodeToContinue,
+                installed.Name + " " + installed.VersionName, conflicting.Name + " " + conflicting.VersionName);
 
             var dialogResult = MessageBox.Show(message,
                 Resources.CannotDownloadPackageMessageBoxTitle,
