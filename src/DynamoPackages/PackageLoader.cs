@@ -210,14 +210,9 @@ namespace Dynamo.PackageManager
             catch (CustomNodePackageLoadException e)
             {
                 Package originalPackage =
-                    localPackages.FirstOrDefault(x => x.CustomNodeDirectory == e.Path);
-                OnDuplicatePackageLoaded(originalPackage, e.Reason);
+                    localPackages.FirstOrDefault(x => x.CustomNodeDirectory == e.InstalledPath);
+                OnConflictingPackageLoaded(originalPackage, package);
             }
-            //catch (LibraryLoadFailedException e)
-            //{
-            //    Log(e.GetType() + ": " + e.Message);
-            //    throw e;
-            //}
             catch (Exception e)
             {
                 Log("Exception when attempting to load package " + package.Name + " from " + package.RootDirectory);
@@ -225,11 +220,11 @@ namespace Dynamo.PackageManager
             }
         }
 
-        public event Action<Package, string> CustomNodePackageWithDuplicateNodeIDLoaded;
-        protected virtual void OnDuplicatePackageLoaded(Package installed, string reason)
+        public event Action<Package, Package> ConflictingCustomNodePackageLoaded;
+        private void OnConflictingPackageLoaded(Package installed, Package conflicting)
         {
-            var handler = CustomNodePackageWithDuplicateNodeIDLoaded;
-            handler?.Invoke(installed, reason);
+            var handler = ConflictingCustomNodePackageLoaded;
+            handler?.Invoke(installed, conflicting);
         }
 
         /// <summary>

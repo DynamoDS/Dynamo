@@ -6,28 +6,23 @@ using System.Threading.Tasks;
 
 namespace Dynamo.Exceptions
 {
-    public class CustomNodePackageLoadException : Exception
+    public class CustomNodePackageLoadException : LibraryLoadFailedException
     {
         /// <summary>
-        /// File path of failing custom node package.
+        /// File path of existing custom node package.
         /// </summary>
-        public string Path;
-
-        /// <summary>
-        /// Failure reason.
-        /// </summary>
-        public string Reason;
+        public string InstalledPath { get; }
 
         /// <summary>
         /// Constructor.
         /// </summary>
-        /// <param name="path"></param>
-        /// <param name="reason"></param>
-        public CustomNodePackageLoadException(string path, string reason)
-            : base(String.Format(Properties.Resources.FailedToLoad, path, reason))
+        /// <param name="path">File path of failing custom node package.</param>
+        /// <param name="installedPath">File path of existing package.</param>
+        /// <param name="reason">Failure reason.</param>
+        public CustomNodePackageLoadException(string path, string installedPath, string reason)
+            : base(path, reason)
         {
-            Path = path;
-            Reason = reason;
+            InstalledPath = installedPath;
         }
     }
 }

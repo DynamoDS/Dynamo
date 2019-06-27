@@ -456,15 +456,21 @@ namespace Dynamo.Core
                 NodeInfos.Remove(guid);
             }
 
-            CustomNodeInfo value;
-            if (NodeInfos.TryGetValue(newInfo.FunctionId, out value))
+            CustomNodeInfo info;
+            if (NodeInfos.TryGetValue(newInfo.FunctionId, out info))
             {
-                var message = string.Format(Resources.MessageUninstallCustomNodeToContinue,
-                    "Dynamo", Path.GetDirectoryName(value.Path), Path.GetDirectoryName(newInfo.Path));
-                LibraryLoadFailedException ex = new LibraryLoadFailedException(Path.GetDirectoryName(newInfo.Path), message);
+                var newInfoPath = Path.GetDirectoryName(newInfo.Path);
+                var infoPath = Path.GetDirectoryName(info.Path);
+                var message = string.Format(Resources.MessageCustomNodePackageFailedToLoad,
+                    infoPath, newInfoPath);
+
+                var ex = new CustomNodePackageLoadException(newInfoPath, infoPath, message);
                 Log(ex.Message, WarningLevel.Moderate);
+
+                // Log to notification view extension
                 Log(ex);
-                throw new CustomNodePackageLoadException(Path.GetDirectoryName(value.Path), message);
+
+                throw ex;
             }
 
             NodeInfos[newInfo.FunctionId] = newInfo;

@@ -872,13 +872,11 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {2} cannot be loaded. It has one or more node definitions that already exist in {1} that is currently loaded. To install {2}, {0} needs to first uninstall {1}. Restart {0} to complete the uninstall, then try and download {2} again.
-        ///
-        ///Uninstall the following packages: {1}?.
+        ///   Looks up a localized string similar to {1} cannot be loaded. It has one or more node definitions that already exist in {0} that is currently loaded. To install {1}, Dynamo needs to first uninstall {0}. Restart Dynamo to complete the uninstall, then try and download {1} again..
         /// </summary>
-        public static string MessageUninstallCustomNodeToContinue {
+        public static string MessageCustomNodePackageFailedToLoad {
             get {
-                return ResourceManager.GetString("MessageUninstallCustomNodeToContinue", resourceCulture);
+                return ResourceManager.GetString("MessageCustomNodePackageFailedToLoad", resourceCulture);
             }
         }
         

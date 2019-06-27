@@ -2199,4 +2199,9 @@ Do you want to install the latest Dynamo update?</value>
   <data name="ExtensionAlreadyPresent" xml:space="preserve">
     <value>No new tab is added, as the extension is already present in the extensions side bar.</value>
   </data>
+  <data name="MessageUninstallCustomNodeToContinue" xml:space="preserve">
+    <value>{1} cannot be loaded. It has one or more node definitions that already exist in {0} that is currently loaded. To install {1}, Dynamo needs to first uninstall {0}. Restart Dynamo to complete the uninstall, then try and download {1} again.
+
+Uninstall the following packages: {1}?</value>
+  </data>
 </root>
