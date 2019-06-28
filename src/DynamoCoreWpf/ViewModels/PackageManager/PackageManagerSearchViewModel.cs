@@ -743,8 +743,17 @@ namespace Dynamo.PackageManager
             SelectedIndex = SelectedIndex - 1;
         }
 
+        internal void UnregisterHandlers()
+        {
+            RequestShowFileDialog -= OnRequestShowFileDialog;
+            SearchResults.CollectionChanged -= SearchResultsOnCollectionChanged;
+            PackageManagerClientViewModel.Downloads.CollectionChanged -= DownloadsOnCollectionChanged;
+            PackageManagerClientViewModel.PackageManagerExtension.PackageLoader.ConflictingCustomNodePackageLoaded -=
+                ConflictingCustomNodePackageLoaded;
+        }
+
         /// <summary>
-        ///     Performs a search using the internal SearcText as the query and
+        ///     Performs a search using the internal SearchText as the query and
         ///     updates the observable SearchResults property.
         /// </summary>
         internal void SearchAndUpdateResults()

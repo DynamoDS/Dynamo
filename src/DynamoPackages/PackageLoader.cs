@@ -220,6 +220,10 @@ namespace Dynamo.PackageManager
             }
         }
 
+        /// <summary>
+        /// Event raised when a custom node package containing conflicting node definition
+        /// with an existing package is tried to load.
+        /// </summary>
         public event Action<Package, Package> ConflictingCustomNodePackageLoaded;
         private void OnConflictingPackageLoaded(Package installed, Package conflicting)
         {
