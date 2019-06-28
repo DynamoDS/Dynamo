@@ -555,7 +555,29 @@ namespace Dynamo.Graph.Workspaces
                             packageDependencies[saved] = new PackageDependencyInfo(saved);
                         }
                         packageDependencies[saved].AddDependent(node.GUID);
-                        packageDependencies[saved].IsLoaded = saved.Equals(collected);
+                        if (collected != null)
+                        {
+                            if (saved.Name == collected.Name)
+                            {
+                                if (saved.Version == collected.Version)
+                                {
+                                    packageDependencies[saved].State = PackageDependencyState.Loaded;
+                                }
+                                else
+                                {
+                                    packageDependencies[saved].State = PackageDependencyState.IncorrectVersion;
+                                }
+                            }
+                            else
+                            {
+                                packageDependencies[saved].State = PackageDependencyState.Warning;
+                            }
+                        }
+                        else
+                        {
+                            packageDependencies[saved].State = PackageDependencyState.Missing;
+                        }
+                        
                     }
                     else
                     {
@@ -566,7 +588,7 @@ namespace Dynamo.Graph.Workspaces
                                 packageDependencies[collected] = new PackageDependencyInfo(collected);
                             }
                             packageDependencies[collected].AddDependent(node.GUID);
-                            packageDependencies[collected].IsLoaded = true;
+                            packageDependencies[collected].State = PackageDependencyState.Loaded;
                         }
                     }
                 }

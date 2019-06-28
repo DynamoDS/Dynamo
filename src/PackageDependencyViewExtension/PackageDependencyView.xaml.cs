@@ -88,28 +88,54 @@ namespace Dynamo.PackageDependency
             table.Columns.Clear();
             foreach (var package in ws.PackageDependencies)
             {
-                if (package.IsLoaded)
+                switch (package.State)
                 {
-                    table.Columns.Add(new Column()
-                    {
-                        ColumnsData = new ObservableCollection<ColumnData>()
+                    case PackageDependencyState.Loaded:
+                        table.Columns.Add(new Column()
+                        {
+                            ColumnsData = new ObservableCollection<ColumnData>()
                             {
                                 new ColumnData(package.Name),
                                 new ColumnData(package.Version.ToString(), 100)
                             }
-                    });
-                }
-                else
-                {
-                    HasMissingPackage = true;
-                    table.Columns.Add(new Column()
-                    {
-                        ColumnsData = new ObservableCollection<ColumnData>()
+                        });
+                        break;
+
+                    case PackageDependencyState.Missing:
+                        HasMissingPackage = true;
+                        table.Columns.Add(new Column()
+                        {
+                            ColumnsData = new ObservableCollection<ColumnData>()
+                            {
+                                new ColumnData(package.Name, ColumnData.MissingColor),
+                                new ColumnData(package.Version.ToString(), 100)
+                            }
+                        });
+                        break;
+
+                    case PackageDependencyState.IncorrectVersion:
+                        HasMissingPackage = true;
+                        table.Columns.Add(new Column()
+                        {
+                            ColumnsData = new ObservableCollection<ColumnData>()
+                        {
+                            new ColumnData(package.Name, ColumnData.IncorrectVersionColor),
+                            new ColumnData(package.Version.ToString(), 100)
+                        }
+                        });
+                        break;
+
+                    case PackageDependencyState.Warning:
+                        HasMissingPackage = true;
+                        table.Columns.Add(new Column()
+                        {
+                            ColumnsData = new ObservableCollection<ColumnData>()
                         {
                             new ColumnData(package.Name, ColumnData.WarningColor),
                             new ColumnData(package.Version.ToString(), 100)
                         }
-                    });
+                        });
+                        break;
                 }
             }
         }
@@ -149,7 +175,9 @@ namespace Dynamo.PackageDependency
     {
         static int DefaultWidth = 200;
         static SolidColorBrush DefaultColor = (SolidColorBrush)(new BrushConverter().ConvertFrom("#aaaaaa"));
-        public static Brush WarningColor = Brushes.Red;
+        public static Brush MissingColor = Brushes.Red;
+        public static Brush IncorrectVersionColor = Brushes.Yellow;
+        public static Brush WarningColor = Brushes.Yellow;
 
         /// <summary>
         /// Constructor

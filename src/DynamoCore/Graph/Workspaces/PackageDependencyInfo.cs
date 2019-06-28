@@ -3,6 +3,15 @@ using System.Collections.Generic;
 
 namespace Dynamo.Graph.Workspaces
 {
+    public enum PackageDependencyState
+    {
+        Loaded,
+        Missing,
+        IncorrectVersion,
+        Warning,
+    }
+
+
     /// <summary>
     /// Class containing info about a package
     /// </summary>
@@ -97,6 +106,11 @@ namespace Dynamo.Graph.Workspaces
         /// Indicates whether this package is loaded in the current session
         /// </summary>
         internal bool IsLoaded { get; set; }
+
+        /// <summary>
+        /// The current state of the package dependency
+        /// </summary>
+        internal PackageDependencyState State { get; set; }
 
         /// <summary>
         /// Guids of nodes in the workspace that are dependent on this package
