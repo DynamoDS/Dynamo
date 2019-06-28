@@ -2208,6 +2208,6 @@ Installing it will conflict with one or more node definitions that already exist
 To install {1}, Dynamo needs to first uninstall {0}. 
 Restart Dynamo to complete the uninstall, then try and download {1} again.
 
-Uninstall the following packages: {1}?</value>
+Uninstall the following packages: {0}?</value>
   </data>
 </root>

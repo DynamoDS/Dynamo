@@ -3310,7 +3310,7 @@ namespace Dynamo.Wpf.Properties {
         ///To install {1}, Dynamo needs to first uninstall {0}. 
         ///Restart Dynamo to complete the uninstall, then try and download {1} again.
         ///
-        ///Uninstall the following packages: {1}?.
+        ///Uninstall the following packages: {0}?.
         /// </summary>
         public static string MessageUninstallCustomNodeToContinue {
             get {
