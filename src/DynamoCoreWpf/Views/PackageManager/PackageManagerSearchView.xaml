@@ -4,6 +4,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:ui="clr-namespace:Dynamo.UI"
+        xmlns:fa="http://schemas.fontawesome.io/icons/"
         xmlns:p="clr-namespace:Dynamo.Wpf.Properties"
         xmlns:controls="clr-namespace:Dynamo.Controls"
         xmlns:viewModels="clr-namespace:Dynamo.PackageManager.ViewModels"
@@ -127,6 +128,7 @@
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"></ColumnDefinition>
                     <ColumnDefinition Width="Auto"></ColumnDefinition>
+                    <ColumnDefinition Width="Auto"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
 
                 <TextBox Visibility="{Binding ShowSearchText, Converter={StaticResource BooleanToVisibilityConverter}}" Text="{Binding Path=SearchText, Mode=TwoWay}"
@@ -171,6 +173,24 @@
 
                     </Button.ContextMenu>
 
+                </Button>
+
+                <Button Width="Auto" 
+                        Grid.Column="2" 
+                        Click="OnFilterButtonClicked" 
+                        fa:Awesome.Content="Filter"
+                        TextElement.FontFamily="pack://application:,,,/FontAwesome.WPF;component/#FontAwesome"
+                        Style="{DynamicResource ResourceKey=STextButton}">
+                    <Button.ContextMenu>
+                        <ContextMenu ItemsSource="{Binding Path = PackageHosts}">
+                            <CheckBox  Content="Revit"></CheckBox>
+                            <CheckBox  Content="Civil3D"></CheckBox>
+                            <CheckBox  Content="FormIt"></CheckBox>
+                            <CheckBox  Content="Alias"></CheckBox>
+                            <CheckBox  Content="Advance Steel"></CheckBox>
+                            <CheckBox  Content="All"></CheckBox>
+                        </ContextMenu>
+                    </Button.ContextMenu>
                 </Button>
 
             </Grid>

@@ -36,6 +36,12 @@ namespace Dynamo.PackageManager
             LastUpdate
         };
 
+        /// <summary>
+        /// Package hosts, currently contains all Dynamo known ADSK hosts
+        /// with two options
+        /// </summary>
+        public List<string> PackageHosts = new List<string>() { "Advance Steel", "Alias", "Civil3D", "FormIt", "Revit"};
+
         public enum PackageSortingDirection
         {
             Ascending,
@@ -64,6 +70,21 @@ namespace Dynamo.PackageManager
             }
         }
 
+        private List<string> hostFilter;
+
+        /// <summary>
+        /// The Filter to switch between host specific packages
+        /// or all packages
+        /// </summary>
+        protected List<string> HostFilter
+        {
+            get => hostFilter;
+            set
+            {
+                hostFilter = value;
+                RaisePropertyChanged("HostFilter");
+            }
+        }
 
         /// <summary>
         ///     SortingDirection property
@@ -253,6 +274,7 @@ namespace Dynamo.PackageManager
             SearchResults.CollectionChanged += SearchResultsOnCollectionChanged;
             SearchText = "";
             SortingKey = PackageSortingKey.LastUpdate;
+            HostFilter = new List<string>();
             SortingDirection = PackageSortingDirection.Ascending;
         }
 
@@ -750,13 +772,17 @@ namespace Dynamo.PackageManager
             {
                 list = SearchDictionary.Search(query)
                     .Select(x => new PackageManagerSearchElementViewModel(x, canLogin))
+                    // Filter packages based on current filter setting
+                    .Where(x => x.Model.Header.host_dependencies.Contains(HostFilter.ToString()))
                     .Take(MaxNumSearchResults).ToList();
             }
             else
             {
                 // with null query, don't show deprecated packages
                 list = LastSync.Where(x => !x.IsDeprecated)
-                    .Select(x => new PackageManagerSearchElementViewModel(x, canLogin)).ToList();
+                    .Select(x => new PackageManagerSearchElementViewModel(x, canLogin))
+                    .Where(x => x.Model.Header.host_dependencies.Contains(HostFilter.ToString()))
+                    .ToList();
                 Sort(list, this.SortingKey);
             }
 
