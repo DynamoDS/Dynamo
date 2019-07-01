@@ -89,7 +89,7 @@
 
         <!-- Template for the feedback banner -->
         <DockPanel Name="Feedback" Margin="0,800,0,40" Grid.Row="1">
-            <StatusBar Background="CornflowerBlue" DockPanel.Dock="Bottom"  Height="55">
+            <StatusBar Background="CornflowerBlue" DockPanel.Dock="Bottom" Height="55">
                 <!-- Preview text -->
                 <StatusBarItem>
                     <Border Height="50">
