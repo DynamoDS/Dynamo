@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Dynamo.Extensions;
+using Dynamo.Search.SearchElements;
 using Moq;
 using NUnit.Framework;
 
@@ -129,8 +130,8 @@ namespace Dynamo.PackageManager.Tests
                 PathManager = CurrentDynamoModel.PathManager
             });
 
-            // There are 11 packages in "GitHub\Dynamo\test\pkgs"
-            Assert.AreEqual(11, loader.LocalPackages.Count());
+            // There are 13 packages in "GitHub\Dynamo\test\pkgs"
+            Assert.AreEqual(13, loader.LocalPackages.Count());
 
             // Verify that interdependent packages are resolved successfully
             var libs = CurrentDynamoModel.LibraryServices.ImportedLibraries.ToList();
@@ -160,8 +161,8 @@ namespace Dynamo.PackageManager.Tests
                 PathManager = CurrentDynamoModel.PathManager
             });
 
-            // There are 11 packages in "GitHub\Dynamo\test\pkgs"
-            Assert.AreEqual(11, loader.LocalPackages.Count());
+            // There are 13 packages in "GitHub\Dynamo\test\pkgs"
+            Assert.AreEqual(13, loader.LocalPackages.Count());
 
             // Simulate loading new package from PM
             string packageDirectory = Path.Combine(TestDirectory, @"core\packageDependencyTests\ZTTestPackage");
@@ -175,6 +176,34 @@ namespace Dynamo.PackageManager.Tests
             // Check that node belonging to one of the preloaded packages exists and is unique
             var entries = CurrentDynamoModel.SearchModel.SearchEntries.ToList();
             Assert.IsTrue(entries.Count(x => x.FullName == "AnotherPackage.AnotherPackage.AnotherPackage.HelloAnotherWorld") == 1);
+        }
+
+        [Test]
+        public void LoadingConflictingCustomNodePackageDoesNotGetLoaded()
+        {
+            var loader = new PackageLoader(PackagesDirectory);
+            var libraryLoader = new ExtensionLibraryLoader(CurrentDynamoModel);
+
+            loader.PackagesLoaded += libraryLoader.LoadPackages;
+            loader.RequestLoadNodeLibrary += libraryLoader.LoadNodeLibrary;
+            loader.RequestLoadCustomNodeDirectory += 
+                (dir) => CurrentDynamoModel.CustomNodeManager.AddUninitializedCustomNodesInPath(dir, true);
+
+            loader.LoadAll(new LoadPackageParams
+            {
+                Preferences = CurrentDynamoModel.PreferenceSettings,
+                PathManager = CurrentDynamoModel.PathManager
+            });
+
+            // There are 13 packages in "GitHub\Dynamo\test\pkgs"
+            Assert.AreEqual(13, loader.LocalPackages.Count());
+
+            var entries = CurrentDynamoModel.SearchModel.SearchEntries.OfType<CustomNodeSearchElement>();
+
+            // Check that conflicting custom node package "EvenOdd2" is not installed
+            Assert.IsTrue(entries.Count(x => Path.GetDirectoryName(x.Path).EndsWith(@"EvenOdd2\dyf")) == 0);
+            Assert.IsTrue(entries.Count(x => Path.GetDirectoryName(x.Path).EndsWith(@"EvenOdd\dyf") && 
+                                             x.FullName == "Test.EvenOdd") == 1);
         }
 
         [Test]
