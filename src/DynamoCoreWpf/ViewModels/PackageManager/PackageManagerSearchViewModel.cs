@@ -37,10 +37,30 @@ namespace Dynamo.PackageManager
         };
 
         /// <summary>
-        /// Package hosts, currently contains all Dynamo known ADSK hosts
-        /// with two options
+        /// Package Manager filter entry
         /// </summary>
-        public List<string> PackageHosts = new List<string>() { "Advance Steel", "Alias", "Civil3D", "FormIt", "Revit"};
+        public class FilterEntry
+        {
+            public string FilterName { get; set; }
+
+            public DelegateCommand<object> FilterCommand { get; set; }
+
+            public FilterEntry(string filterName)
+            {
+                FilterName = filterName;
+                FilterCommand = new DelegateCommand<object>(SetFilterHosts, CanSetFilterHosts);
+            }
+
+            private bool CanSetFilterHosts(object arg)
+            {
+                return true;
+            }
+
+            private void SetFilterHosts(object obj)
+            {
+                throw new NotImplementedException();
+            }
+        }
 
         public enum PackageSortingDirection
         {
@@ -70,13 +90,14 @@ namespace Dynamo.PackageManager
             }
         }
 
-        private List<string> hostFilter;
+        private List<FilterEntry> hostFilter;
+
 
         /// <summary>
-        /// The Filter to switch between host specific packages
-        /// or all packages
+        /// Filters for package hosts, currently contains all Dynamo known ADSK hosts
+        ///  "Advance Steel", "Alias", "Civil3D", "FormIt", "Revit"
         /// </summary>
-        protected List<string> HostFilter
+        public List<FilterEntry> HostFilter
         {
             get => hostFilter;
             set
@@ -274,7 +295,16 @@ namespace Dynamo.PackageManager
             SearchResults.CollectionChanged += SearchResultsOnCollectionChanged;
             SearchText = "";
             SortingKey = PackageSortingKey.LastUpdate;
-            HostFilter = new List<string>();
+
+            // TODO: Replace this with Greg call to get the host list
+            HostFilter = new List<FilterEntry>
+            {
+                new FilterEntry ("Civil3D"),
+                new FilterEntry ("Advance Steel"),
+                new FilterEntry ("Alias"),
+                new FilterEntry ("Revit"),
+                new FilterEntry ("All")
+            };
             SortingDirection = PackageSortingDirection.Ascending;
         }
 
@@ -773,7 +803,7 @@ namespace Dynamo.PackageManager
                 list = SearchDictionary.Search(query)
                     .Select(x => new PackageManagerSearchElementViewModel(x, canLogin))
                     // Filter packages based on current filter setting
-                    .Where(x => x.Model.Header.host_dependencies.Contains(HostFilter.ToString()))
+                    //.Where(x => x.Model.Header.host_dependencies.Contains(HostFilter.ToString()))
                     .Take(MaxNumSearchResults).ToList();
             }
             else
@@ -781,7 +811,7 @@ namespace Dynamo.PackageManager
                 // with null query, don't show deprecated packages
                 list = LastSync.Where(x => !x.IsDeprecated)
                     .Select(x => new PackageManagerSearchElementViewModel(x, canLogin))
-                    .Where(x => x.Model.Header.host_dependencies.Contains(HostFilter.ToString()))
+                    //.Where(x => x.Model.Header.host_dependencies.Contains(HostFilter.ToString()))
                     .ToList();
                 Sort(list, this.SortingKey);
             }

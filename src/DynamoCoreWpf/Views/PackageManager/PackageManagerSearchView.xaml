@@ -182,13 +182,17 @@
                         TextElement.FontFamily="pack://application:,,,/FontAwesome.WPF;component/#FontAwesome"
                         Style="{DynamicResource ResourceKey=STextButton}">
                     <Button.ContextMenu>
-                        <ContextMenu ItemsSource="{Binding Path = PackageHosts}">
-                            <CheckBox  Content="Revit"></CheckBox>
-                            <CheckBox  Content="Civil3D"></CheckBox>
-                            <CheckBox  Content="FormIt"></CheckBox>
-                            <CheckBox  Content="Alias"></CheckBox>
-                            <CheckBox  Content="Advance Steel"></CheckBox>
-                            <CheckBox  Content="All"></CheckBox>
+                        <ContextMenu Name="HostFilter"
+                                     DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Mode=Self}}"
+                                     ItemsSource="{Binding HostFilter}"
+                                     DisplayMemberPath="FilterName">
+                            <ContextMenu.ItemContainerStyle>
+                                <Style TargetType="{x:Type MenuItem}">
+                                    <!--<Setter Property="Header" Value="{Binding FilterName}"/>-->
+                                    <Setter Property="IsCheckable" Value="True"/>
+                                    <Setter Property="Command" Value="{Binding FilterCommand}"/>
+                                </Style>
+                            </ContextMenu.ItemContainerStyle>
                         </ContextMenu>
                     </Button.ContextMenu>
                 </Button>
