@@ -118,10 +118,10 @@ namespace Dynamo.PackageDependency
                         table.Columns.Add(new Column()
                         {
                             ColumnsData = new ObservableCollection<ColumnData>()
-                        {
-                            new ColumnData(package.Name, ColumnData.IncorrectVersionColor),
-                            new ColumnData(package.Version.ToString(), 100)
-                        }
+                            {
+                                new ColumnData(package.Name, ColumnData.IncorrectVersionColor),
+                                new ColumnData(package.Version.ToString(), 100)
+                            }
                         });
                         break;
 
@@ -130,10 +130,10 @@ namespace Dynamo.PackageDependency
                         table.Columns.Add(new Column()
                         {
                             ColumnsData = new ObservableCollection<ColumnData>()
-                        {
-                            new ColumnData(package.Name, ColumnData.WarningColor),
-                            new ColumnData(package.Version.ToString(), 100)
-                        }
+                            {
+                                new ColumnData(package.Name, ColumnData.WarningColor),
+                                new ColumnData(package.Version.ToString(), 100)
+                            }
                         });
                         break;
                 }

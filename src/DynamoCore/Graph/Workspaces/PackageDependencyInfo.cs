@@ -215,4 +215,16 @@ namespace Dynamo.Graph.Workspaces
             return Name + ", Version=" + Version.ToString();
         }
     }
+
+    /// <summary>
+    /// Manages Package Dependencies for a workspace
+    /// </summary>
+    public class PackageDependencyManager
+    {
+        WorkspaceModel Workspace;
+
+        IEnumerable<PackageDependencyInfo> PackageDependencies;
+
+        Dictionary<Guid, PackageInfo> NodePackageDictionary;
+    }
 }
