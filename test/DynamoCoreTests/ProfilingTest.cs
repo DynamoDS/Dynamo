@@ -101,19 +101,19 @@ namespace Dynamo.Tests
         private static int nodeExecutionBeginCount = 0;
         private static int nodeExecutionEndCount = 0;
 
-        private static void onNodeExectuionBegin(NodeModel sender, NodeModel.NodeExecutionEventArgs args)
+        private static void onNodeExectuionBegin(NodeModel model)
         {
             // Assert that the node has ot been executed more than once
-            CollectionAssert.DoesNotContain(executingNodes, args.GUID);
+            CollectionAssert.DoesNotContain(executingNodes, model.GUID);
 
-            executingNodes.Add(args.GUID);
+            executingNodes.Add(model.GUID);
             nodeExecutionBeginCount++;
         }
 
-        private static void onNodeExectuionEnd(NodeModel sender, NodeModel.NodeExecutionEventArgs args)
+        private static void onNodeExectuionEnd(NodeModel model)
         {
             // Assert that the node ending execution had the begin exectuion event fired previously
-            CollectionAssert.Contains(executingNodes, args.GUID);
+            CollectionAssert.Contains(executingNodes, model.GUID);
 
             nodeExecutionEndCount++;
         }

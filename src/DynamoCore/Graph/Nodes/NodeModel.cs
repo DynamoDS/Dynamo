@@ -135,36 +135,26 @@ namespace Dynamo.Graph.Nodes
         /// </summary>
         public event Action<PortModel> PortDisconnected;
 
-        public class NodeExecutionEventArgs : EventArgs
-        {
-            public Guid GUID { get; private set; }
-            public object Data { get; private set; }
-
-            public NodeExecutionEventArgs(NodeModel model, object data)
-            {
-                this.GUID = model.GUID;
-                this.Data = data;
-            }
-        }
-
         /// <summary>
         /// Event triggered before a node is executed.
+        /// Note: This event will only be triggered when profiling is active.
         /// </summary>
-        public event Action<NodeModel, NodeExecutionEventArgs> NodeExecutionBegin;
+        public event Action<NodeModel> NodeExecutionBegin;
 
         internal void OnNodeExecutionBegin(object data)
         {
-            NodeExecutionBegin?.Invoke(this, new NodeExecutionEventArgs(this, data));
+            NodeExecutionBegin?.Invoke(this);
         }
 
         /// <summary>
         /// Event triggered after a node is executed.
+        /// Note: This event will only be triggered when profiling is active.
         /// </summary>
-        public event Action<NodeModel, NodeExecutionEventArgs> NodeExecutionEnd;
+        public event Action<NodeModel> NodeExecutionEnd;
 
         internal void OnNodeExecutionEnd(object data)
         {
-            NodeExecutionEnd?.Invoke(this, new NodeExecutionEventArgs(this, data));
+            NodeExecutionEnd?.Invoke(this);
         }
 
         #endregion
