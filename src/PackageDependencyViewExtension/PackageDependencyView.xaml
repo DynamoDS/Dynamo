@@ -96,7 +96,7 @@
                         <TextBlock TextWrapping="Wrap" Padding="10,0,10,0" FontSize="15" Foreground="White" Text="This Feature is in Preview!" VerticalAlignment="Center"/>
                     </Border>
                 </StatusBarItem>
-                <StatusBarItem Width="193" Padding="0,0,0,0" Margin="100,0,0,0" Height="40">
+                <StatusBarItem Width="193" Margin="100,0,0,0" Height="40">
                     <Border Name="FeedbackBorder" BorderThickness="1">
                         <Border.Style>
                             <Style>
@@ -113,7 +113,7 @@
                         <!-- Feedback button -->
                         <Button HorizontalAlignment="Right"
                             Width="150" Click="ProvideFeedback" Background="#373737" Height="30">
-                            <TextBlock TextWrapping="Wrap" FontSize="15" Padding="0,0,0,0" Foreground="White" Height="20" Text="Provide Feedback" VerticalAlignment="Center"/>
+                            <TextBlock TextWrapping="Wrap" FontSize="15" Foreground="White" Height="20" Text="Provide Feedback" VerticalAlignment="Center"/>
                             <Button.Style>
                                 <Style TargetType="{x:Type Button}">
                                     <Setter Property="Template">
