@@ -1,9 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
 using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
+using Dynamo.Graph.Nodes;
 using NUnit.Framework;
 
 namespace Dynamo.Tests
@@ -93,6 +95,59 @@ namespace Dynamo.Tests
             var node = nodes.FirstOrDefault();
             Assert.IsNotNull(profilingData.NodeExecutionTime(node));
             Assert.Greater(profilingData.NodeExecutionTime(node)?.Ticks, 0);
+        }
+
+        private static List<Guid> executingNodes = new List<Guid>();
+        private static int nodeExecutionBeginCount = 0;
+        private static int nodeExecutionEndCount = 0;
+
+        private static void onNodeExectuionBegin(NodeModel sender, NodeModel.NodeExecutionEventArgs args)
+        {
+            // Assert that the node has ot been executed more than once
+            CollectionAssert.DoesNotContain(executingNodes, args.GUID);
+
+            executingNodes.Add(args.GUID);
+            nodeExecutionBeginCount++;
+        }
+
+        private static void onNodeExectuionEnd(NodeModel sender, NodeModel.NodeExecutionEventArgs args)
+        {
+            // Assert that the node ending execution had the begin exectuion event fired previously
+            CollectionAssert.Contains(executingNodes, args.GUID);
+
+            nodeExecutionEndCount++;
+        }
+
+       [Test]
+        public void TestNodeExecutionEvents()
+        {
+            // Note: This test file is saved in manual run mode
+            string openPath = Path.Combine(TestDirectory, @"core\profiling\createSomePoints.dyn");
+            OpenModel(openPath);
+
+            var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
+            foreach(var node in nodes)
+            {
+                node.NodeExecutionBegin += onNodeExectuionBegin;
+                node.NodeExecutionEnd += onNodeExectuionEnd;
+            }
+
+            // Currently the node execution begin/end events are only enabled when profiling is enabled
+            var engineController = CurrentDynamoModel.EngineController;
+            var homeWorkspace = CurrentDynamoModel.Workspaces.OfType<HomeWorkspaceModel>().FirstOrDefault();
+            engineController.EnableProfiling(true, homeWorkspace, nodes);
+
+            BeginRun();
+
+            // Assert that all nodes were executed and the begin and end events were fired as expectd
+            Assert.AreEqual(4, nodeExecutionBeginCount);
+            Assert.AreEqual(4, nodeExecutionEndCount);
+
+            foreach (var node in nodes)
+            {
+                node.NodeExecutionBegin -= onNodeExectuionBegin;
+                node.NodeExecutionEnd -= onNodeExectuionEnd;
+            }
         }
     }
 }
