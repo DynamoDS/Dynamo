@@ -1,9 +1,9 @@
 ﻿using Dynamo.Graph.Workspaces;
-using Dynamo.Logging;
 using Dynamo.Wpf.Extensions;
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 
@@ -50,7 +50,8 @@ namespace Dynamo.PackageDependency
                 System.Diagnostics.Process.Start(FeedbackLink);
             }
             catch (Exception ex) {
-                LogMessage.Info("Could not re-direct to the Dynamo forum page for feedback: "+ ex.Message);
+                String message = Dynamo.Wpf.Properties.Resources.ProvideFeedbackError + "\n\n" + ex.Message;
+                MessageBox.Show(message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
