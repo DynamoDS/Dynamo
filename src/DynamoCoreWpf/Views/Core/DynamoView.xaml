@@ -1677,7 +1677,7 @@
               Grid.Row="2"
               Grid.Column="4"
               Grid.RowSpan="2">
-            <TabControl Name="tabDynamic" ItemsSource="{Binding}">
+            <TabControl Name="tabDynamic" Background="#353535" BorderThickness="0" ItemsSource="{Binding}">
                 <TabControl.Resources>
                     <!--Styling for the close button in the tab-->
                     <Style TargetType="{x:Type Button}"
@@ -1862,7 +1862,7 @@
                       Grid.Row="2"
                       Grid.RowSpan="2"
                       Height="Auto"
-                      Width="3"
+                      Width="0"
                       Name="extensionSplitter"
                       HorizontalAlignment="Stretch"
                       VerticalAlignment="Stretch"

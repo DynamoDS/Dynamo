@@ -1,4 +1,5 @@
 ﻿using Dynamo.Graph.Workspaces;
+using Dynamo.Logging;
 using Dynamo.Wpf.Extensions;
 using System;
 using System.Collections.ObjectModel;
@@ -45,7 +46,12 @@ namespace Dynamo.PackageDependency
         /// </summary>
         private void ProvideFeedback(object sender, EventArgs e)
         {
-            System.Diagnostics.Process.Start(FeedbackLink);
+            try {
+                System.Diagnostics.Process.Start(FeedbackLink);
+            }
+            catch (Exception ex) {
+                LogMessage.Info("Could not re-direct to the Dynamo forum page for feedback: "+ ex.Message);
+            }
         }
 
         /// <summary>
