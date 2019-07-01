@@ -1711,7 +1711,7 @@
                         </Setter>
                     </Style>
                     
-                    <!--Template for each tab item in the extensions side bar-->
+                    <!--Template for tab header in the extensions side bar-->
                     <DataTemplate x:Key="TabHeader" DataType="TabItem">
                         <DockPanel HorizontalAlignment="Stretch" MinWidth="{Binding Source={x:Static configuration:Configurations.ExtensionsSideBarTabMinWidth}}">
                             <TextBlock Text="{Binding RelativeSource={RelativeSource AncestorType={x:Type TabItem}}, Path=Header}" HorizontalAlignment="Stretch"/>

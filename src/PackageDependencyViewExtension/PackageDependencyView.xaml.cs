@@ -17,6 +17,8 @@ namespace Dynamo.PackageDependency
 
         private WorkspaceModel currentWorkspace;
 
+        private String FeedbackLink = "https://forum.dynamobim.com/t/call-for-feedback-on-dynamo-graph-package-dependency-display/37229";
+
         private ViewLoadedParams loadedParams;
         private PackageDependencyViewExtension dependencyViewExtension;
 
@@ -38,6 +40,13 @@ namespace Dynamo.PackageDependency
             }
         }
 
+        /// <summary>
+        /// Re-directs to a web link to get the feedback from the user. 
+        /// </summary>
+        private void ProvideFeedback(object sender, EventArgs e)
+        {
+            System.Diagnostics.Process.Start(FeedbackLink);
+        }
 
         /// <summary>
         /// Event handler for workspaceAdded event
