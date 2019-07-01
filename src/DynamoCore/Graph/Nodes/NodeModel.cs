@@ -141,7 +141,7 @@ namespace Dynamo.Graph.Nodes
         /// </summary>
         public event Action<NodeModel> NodeExecutionBegin;
 
-        internal void OnNodeExecutionBegin(object data)
+        internal void OnNodeExecutionBegin()
         {
             NodeExecutionBegin?.Invoke(this);
         }
@@ -152,7 +152,7 @@ namespace Dynamo.Graph.Nodes
         /// </summary>
         public event Action<NodeModel> NodeExecutionEnd;
 
-        internal void OnNodeExecutionEnd(object data)
+        internal void OnNodeExecutionEnd()
         {
             NodeExecutionEnd?.Invoke(this);
         }
