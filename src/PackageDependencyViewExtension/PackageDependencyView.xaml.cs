@@ -3,6 +3,7 @@ using Dynamo.Wpf.Extensions;
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 
@@ -16,6 +17,8 @@ namespace Dynamo.PackageDependency
         private DependencyTable table = new DependencyTable();
 
         private WorkspaceModel currentWorkspace;
+
+        private String FeedbackLink = "https://forum.dynamobim.com/t/call-for-feedback-on-dynamo-graph-package-dependency-display/37229";
 
         private ViewLoadedParams loadedParams;
         private PackageDependencyViewExtension dependencyViewExtension;
@@ -38,6 +41,19 @@ namespace Dynamo.PackageDependency
             }
         }
 
+        /// <summary>
+        /// Re-directs to a web link to get the feedback from the user. 
+        /// </summary>
+        private void ProvideFeedback(object sender, EventArgs e)
+        {
+            try {
+                System.Diagnostics.Process.Start(FeedbackLink);
+            }
+            catch (Exception ex) {
+                String message = Dynamo.Wpf.Properties.Resources.ProvideFeedbackError + "\n\n" + ex.Message;
+                MessageBox.Show(message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
 
         /// <summary>
         /// Event handler for workspaceAdded event
