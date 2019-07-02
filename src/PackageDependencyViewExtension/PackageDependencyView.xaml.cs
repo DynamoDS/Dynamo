@@ -74,7 +74,7 @@ namespace Dynamo.PackageDependency
 
         private void OnWorkspacePropertyChanged(object sender, PropertyChangedEventArgs args)
         {
-            if (args.PropertyName == nameof(currentWorkspace.PackageDependencies))
+            if (args.PropertyName == nameof(currentWorkspace.NodeLibraryDependencies))
                 DependencyRegen(currentWorkspace);
         }
 
@@ -86,7 +86,7 @@ namespace Dynamo.PackageDependency
         {
             // Clear the dependency table.
             table.Columns.Clear();
-            foreach (var package in ws.PackageDependencies)
+            foreach (var package in ws.NodeLibraryDependencies)
             {
                 if (package.IsLoaded)
                 {

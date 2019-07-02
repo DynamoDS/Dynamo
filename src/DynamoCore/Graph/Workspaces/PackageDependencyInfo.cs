@@ -73,10 +73,54 @@ namespace Dynamo.Graph.Workspaces
         }
     }
 
+    internal enum ReferenceType{
+        NodeModel,
+        Package,
+        ZeroTouch,
+        DSFile,
+        //TODO - This is already covered by the older Dependencies property
+        DYFFILE
+    }
+
+
+
+    /// <summary>
+    /// An interface that describes a dependency a workspace can have on other code.
+    /// </summary>
+    interface INodeLibraryDependencyInfo
+    {
+        /// <summary>
+        /// Type of Reference
+        /// </summary>
+        ReferenceType ReferenceType { get; }
+        /// <summary>
+        /// Guids of nodes in the workspace that are dependent on this reference.
+        /// </summary>
+        HashSet<Guid> Nodes { get; }
+        /// <summary>
+        /// Name of the Reference.
+        /// </summary>
+        string Name { get; }
+        /// <summary>
+        /// Version of this reference. This may be null.
+        /// </summary>
+        Version Version { get; }
+
+        /// <summary>
+        /// Add the Guid of a dependent node
+        /// </summary>
+        /// <param name="guid"></param>
+        void AddDependent(Guid guid);
+        /// <summary>
+        /// Indicates whether this dependency is loaded in the current session
+        /// </summary>
+        bool IsLoaded { get; set; }
+    }
+
     /// <summary>
     /// Class containing info about a workspace package dependency
     /// </summary>
-    internal class PackageDependencyInfo
+    internal class PackageDependencyInfo : INodeLibraryDependencyInfo
     {
         /// <summary>
         /// PackageInfo for this package
@@ -86,25 +130,28 @@ namespace Dynamo.Graph.Workspaces
         /// <summary>
         /// Name of the package
         /// </summary>
-        internal string Name => PackageInfo.Name;
+        public string Name => PackageInfo.Name;
 
         /// <summary>
         /// Version of the package
         /// </summary>
-        internal Version Version => PackageInfo.Version;
+        public Version Version => PackageInfo.Version;
 
         /// <summary>
         /// Indicates whether this package is loaded in the current session
         /// </summary>
-        internal bool IsLoaded { get; set; }
+        public bool IsLoaded { get; set; }
 
         /// <summary>
         /// Guids of nodes in the workspace that are dependent on this package
         /// </summary>
-        internal HashSet<Guid> Nodes
+        public HashSet<Guid> Nodes
         {
             get { return nodes; }
         }
+
+        public ReferenceType ReferenceType { get => ReferenceType.Package; }
+
         private HashSet<Guid> nodes;
         
         /// <summary>
@@ -132,7 +179,7 @@ namespace Dynamo.Graph.Workspaces
         /// Add the Guid of a dependent node
         /// </summary>
         /// <param name="guid"></param>
-        internal void AddDependent(Guid guid)
+        public void AddDependent(Guid guid)
         {
              Nodes.Add(guid);
         }
