@@ -35,7 +35,7 @@
             RowBackground="Transparent"
             FontSize="14"
             IsHitTestVisible="False"
-            Grid.Row="1">
+            Grid.Row="0">
             <DataGrid.Columns>
                 <DataGridTemplateColumn>
                     <DataGridTemplateColumn.HeaderTemplate>
@@ -97,7 +97,7 @@
         </Grid>-->
 
         <!-- Template for the feedback banner -->
-        <DockPanel Name="Feedback" Margin="0,800,0,40" Grid.Row="1">
+        <DockPanel Name="Feedback" Margin="0,800,0,40" Grid.Row="0">
             <StatusBar Background="{StaticResource FeedbackSectionBackground}" DockPanel.Dock="Bottom" Height="55">
                 <!-- Preview text -->
                 <StatusBarItem>
