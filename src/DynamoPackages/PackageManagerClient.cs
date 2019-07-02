@@ -89,6 +89,20 @@ namespace Dynamo.PackageManager
             }, new List<PackageHeader>());
         }
 
+        /// <summary>
+        /// Make a call to Package Manager to get the 
+        /// supported hosts for package publishing and filtering
+        /// </summary>
+        internal IEnumerable<string> GetSupportedHosts()
+        {
+            return FailFunc.TryExecute(() =>
+            {
+                var hosts = new Hosts();
+                var hostsResponse = this.client.ExecuteAndDeserializeWithContent<List<String>>(hosts);
+                return hostsResponse.content;
+            }, new List<string>());
+        }
+
         internal bool GetTermsOfUseAcceptanceStatus()
         {
             return ExecuteTermsOfUseCall(true);

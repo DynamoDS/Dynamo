@@ -58,7 +58,7 @@ namespace Dynamo.PackageManager
 
             private void SetFilterHosts(object obj)
             {
-                throw new NotImplementedException();
+                return;
             }
         }
 

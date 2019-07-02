@@ -416,7 +416,7 @@ namespace Dynamo.ViewModels
 
             DynamoViewModel.OnRequestPackagePublishDialog(newPkgVm);
         }
-
+        
         public List<PackageManagerSearchElement> ListAll()
         {
             CachedPackageList = new List<PackageManagerSearchElement>();
