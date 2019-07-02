@@ -2199,4 +2199,13 @@ Do you want to install the latest Dynamo update?</value>
   <data name="ExtensionAlreadyPresent" xml:space="preserve">
     <value>No new tab is added, as the extension is already present in the extensions side bar.</value>
   </data>
+  <data name="ProvideFeedbackButton" xml:space="preserve">
+    <value> Provide Feedback</value>
+  </data>
+  <data name="PreviewText" xml:space="preserve">
+    <value> This Feature is in Preview! </value>
+  </data>
+  <data name="ProvideFeedbackError" xml:space="preserve">
+    <value>Could not re-direct to the Dynamo forum page for feedback:</value>
+  </data>
 </root>
