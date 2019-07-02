@@ -186,8 +186,11 @@ namespace Dynamo.PackageManager.Tests
 
             loader.PackagesLoaded += libraryLoader.LoadPackages;
             loader.RequestLoadNodeLibrary += libraryLoader.LoadNodeLibrary;
-            loader.RequestLoadCustomNodeDirectory += 
-                (dir) => CurrentDynamoModel.CustomNodeManager.AddUninitializedCustomNodesInPath(dir, true);
+
+            // This test needs the "isTestMode" flag to be turned off as an exception to be able 
+            // to test duplicate custom node def loading.
+            loader.RequestLoadCustomNodeDirectory +=
+                (dir) => CurrentDynamoModel.CustomNodeManager.AddUninitializedCustomNodesInPath(dir, isTestMode: false);
 
             loader.LoadAll(new LoadPackageParams
             {
