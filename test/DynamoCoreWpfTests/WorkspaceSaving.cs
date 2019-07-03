@@ -228,7 +228,7 @@ namespace Dynamo.Tests
             var nodeName = "Cool node";
             var catName = "Custom Nodes";
 
-            var def = dynamoModel.CustomNodeManager.CreateCustomNode(nodeName, catName, "");
+            var def = dynamoModel.CustomNodeManager.CreateCustomNode(nodeName, catName, "", null, true);
 
             var newPath = GetNewFileNameOnTempPath("dyf");
             def.Save(newPath);
@@ -274,7 +274,7 @@ namespace Dynamo.Tests
             var nodeName = "Cool node";
             var catName = "Custom Nodes";
 
-            var def = dynamoModel.CustomNodeManager.CreateCustomNode(nodeName, catName, "");
+            var def = dynamoModel.CustomNodeManager.CreateCustomNode(nodeName, catName, "", null, true);
 
             foreach (var i in Enumerable.Range(0, 10))
             {
@@ -333,7 +333,7 @@ namespace Dynamo.Tests
             var nodeName = "Cool node";
             var catName = "Custom Nodes";
 
-            var def = dynamoModel.CustomNodeManager.CreateCustomNode(nodeName, catName, "");
+            var def = dynamoModel.CustomNodeManager.CreateCustomNode(nodeName, catName, "", null, true);
 
             var newPath = GetNewFileNameOnTempPath("dyf");
             def.Save(newPath);
@@ -402,7 +402,7 @@ namespace Dynamo.Tests
             var nodeName = "Cool node";
             var catName = "Custom Nodes";
 
-            var def = dynamoModel.CustomNodeManager.CreateCustomNode(nodeName, catName, "");
+            var def = dynamoModel.CustomNodeManager.CreateCustomNode(nodeName, catName, "", null, true);
 
             var newPath = GetNewFileNameOnTempPath("dyf");
             def.Save(newPath);
@@ -666,7 +666,7 @@ namespace Dynamo.Tests
             var nodeName = "Cool node";
             var catName = "Custom Nodes";
 
-            var def = dynamoModel.CustomNodeManager.CreateCustomNode(nodeName, catName, "");
+            var def = dynamoModel.CustomNodeManager.CreateCustomNode(nodeName, catName, "", null, true);
             Assert.IsFalse(def.HasUnsavedChanges);
 
             var node = new DSFunction(dynamoModel.LibraryServices.GetFunctionDescriptor("+"));
@@ -720,7 +720,7 @@ namespace Dynamo.Tests
             var catName = "Custom Nodes";
             var initialId = Guid.NewGuid();
 
-            var def = dynamoModel.CustomNodeManager.CreateCustomNode(nodeName, catName, "", initialId);
+            var def = dynamoModel.CustomNodeManager.CreateCustomNode(nodeName, catName, "", initialId, true);
             var workspace = (CustomNodeWorkspaceModel)def;
 
             var newPath = GetNewFileNameOnTempPath("dyf");
@@ -807,7 +807,7 @@ namespace Dynamo.Tests
             var catName = "Custom Nodes";
             var initialId = Guid.NewGuid();
 
-            var def = dynamoModel.CustomNodeManager.CreateCustomNode(nodeName, catName, "", initialId);
+            var def = dynamoModel.CustomNodeManager.CreateCustomNode(nodeName, catName, "", initialId, true);
             var workspace = (CustomNodeWorkspaceModel)def;
 
             // Set file path
@@ -852,7 +852,7 @@ namespace Dynamo.Tests
             var customNodeWorkspace = dynamoModel.CurrentWorkspace;
 
             var initialId = new Guid("6aecda57-7679-4afb-aa02-05a75cc3433e");
-            var newCustNodeInstance = dynamoModel.CustomNodeManager.CreateCustomNodeInstance(initialId);
+            var newCustNodeInstance = dynamoModel.CustomNodeManager.CreateCustomNodeInstance(initialId, null, true);
             // Switch HomeWorkspace and place custom node on it
             dynamoModel.CurrentWorkspace = dynamoModel.Workspaces.First();
             dynamoModel.CurrentWorkspace.AddAndRegisterNode(newCustNodeInstance, false);
@@ -1152,7 +1152,7 @@ namespace Dynamo.Tests
             var nodeName = "Cool node";
             var catName = "Custom Nodes";
 
-            var def = dynamoModel.CustomNodeManager.CreateCustomNode(nodeName, catName, "");
+            var def = dynamoModel.CustomNodeManager.CreateCustomNode(nodeName, catName, "", null, true);
             var workspace = (CustomNodeWorkspaceModel)def;
 
             var listGuids = new List<Guid>();
@@ -1203,7 +1203,7 @@ namespace Dynamo.Tests
             var nodeName = "Foo";
             var catName = "Custom Nodes";
 
-            var def = dynamoModel.CustomNodeManager.CreateCustomNode(nodeName, catName, "");
+            var def = dynamoModel.CustomNodeManager.CreateCustomNode(nodeName, catName, "", null, true);
             var workspace = (CustomNodeWorkspaceModel)def;
             ViewModel.SearchViewModel.Visible = true;
 
@@ -1246,7 +1246,7 @@ namespace Dynamo.Tests
             var nodeName = Guid.NewGuid().ToString();
             var catName = "Custom Nodes";
 
-            var def = dynamoModel.CustomNodeManager.CreateCustomNode(nodeName, catName, "");
+            var def = dynamoModel.CustomNodeManager.CreateCustomNode(nodeName, catName, "", null, true);
 
             var tempPath1 = Path.Combine(TempFolder, nodeName + ".dyf");
 

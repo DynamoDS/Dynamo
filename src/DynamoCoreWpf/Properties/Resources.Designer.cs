@@ -3305,6 +3305,20 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {1} cannot be loaded.
+        ///Installing it will conflict with one or more node definitions that already exist in {0}, which is currently loaded. 
+        ///To install {1}, Dynamo needs to first uninstall {0}. 
+        ///Restart Dynamo to complete the uninstall, then try and download {1} again.
+        ///
+        ///Uninstall the following packages: {0}?.
+        /// </summary>
+        public static string MessageUninstallCustomNodeToContinue {
+            get {
+                return ResourceManager.GetString("MessageUninstallCustomNodeToContinue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {0} needs to uninstall {1} to continue, but cannot as one of its types appears to be in use.  Try restarting {0}..
         /// </summary>
         public static string MessageUninstallToContinue {
