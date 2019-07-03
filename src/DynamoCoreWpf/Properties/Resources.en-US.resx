@@ -2199,6 +2199,14 @@ Do you want to install the latest Dynamo update?</value>
   <data name="ExtensionAlreadyPresent" xml:space="preserve">
     <value>No new tab is added, as the extension is already present in the extensions side bar.</value>
   </data>
+  <data name="MessageUninstallCustomNodeToContinue" xml:space="preserve">
+    <value>{1} cannot be loaded.
+Installing it will conflict with one or more node definitions that already exist in {0}, which is currently loaded. 
+To install {1}, Dynamo needs to first uninstall {0}. 
+Restart Dynamo to complete the uninstall, then try and download {1} again.
+
+Uninstall the following packages: {0}?</value>
+  </data>
   <data name="ProvideFeedbackButton" xml:space="preserve">
     <value> Provide Feedback</value>
   </data>

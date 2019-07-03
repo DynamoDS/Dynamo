@@ -263,8 +263,10 @@ namespace Dynamo.PackageManager
         {
             this.PackageManagerClientViewModel = client;
             PackageManagerClientViewModel.Downloads.CollectionChanged += DownloadsOnCollectionChanged;
+            PackageManagerClientViewModel.PackageManagerExtension.PackageLoader.ConflictingCustomNodePackageLoaded += 
+                ConflictingCustomNodePackageLoaded;
         }
-
+        
         /// <summary>
         /// Sort the search results
         /// </summary>
@@ -639,6 +641,23 @@ namespace Dynamo.PackageManager
             return String.Join("\r\n", packages.Select(x => x.Item1.name + " " + x.Item2.version));
         }
 
+        private void ConflictingCustomNodePackageLoaded(Package installed, Package conflicting)
+        {
+            var message = string.Format(Resources.MessageUninstallCustomNodeToContinue,
+                installed.Name + " " + installed.VersionName, conflicting.Name + " " + conflicting.VersionName);
+
+            var dialogResult = MessageBox.Show(message,
+                Resources.CannotDownloadPackageMessageBoxTitle,
+                MessageBoxButton.YesNo, MessageBoxImage.Error);
+
+            if (dialogResult == MessageBoxResult.Yes)
+            {
+                // mark for uninstallation
+                var settings = PackageManagerClientViewModel.DynamoViewModel.Model.PreferenceSettings;
+                installed.MarkForUninstall(settings);
+            }
+        }
+
         private void DownloadsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs args)
         {
             if (args.NewItems != null)
@@ -724,8 +743,17 @@ namespace Dynamo.PackageManager
             SelectedIndex = SelectedIndex - 1;
         }
 
+        internal void UnregisterHandlers()
+        {
+            RequestShowFileDialog -= OnRequestShowFileDialog;
+            SearchResults.CollectionChanged -= SearchResultsOnCollectionChanged;
+            PackageManagerClientViewModel.Downloads.CollectionChanged -= DownloadsOnCollectionChanged;
+            PackageManagerClientViewModel.PackageManagerExtension.PackageLoader.ConflictingCustomNodePackageLoaded -=
+                ConflictingCustomNodePackageLoaded;
+        }
+
         /// <summary>
-        ///     Performs a search using the internal SearcText as the query and
+        ///     Performs a search using the internal SearchText as the query and
         ///     updates the observable SearchResults property.
         /// </summary>
         internal void SearchAndUpdateResults()
