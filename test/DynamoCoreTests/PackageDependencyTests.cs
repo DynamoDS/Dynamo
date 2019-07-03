@@ -70,7 +70,7 @@ namespace Dynamo.Tests
             {
                 var data = file.ReadToEnd();
                 var json = (JObject)JsonConvert.DeserializeObject(data);
-                Assert.IsNull(json["PackageDependencies"]);
+                Assert.IsNull(json[WorkspaceReadConverter.NodeLibraryDependenciesPropString]);
             }
 
             // Assert package dependency is collected
@@ -85,13 +85,13 @@ namespace Dynamo.Tests
             // Assert package dependency is serialized
             var ToJson = CurrentDynamoModel.CurrentWorkspace.ToJson(CurrentDynamoModel.EngineController);
             var JObject = (JObject)JsonConvert.DeserializeObject(ToJson);
-            var deserializedPackageDependencies = JObject["PackageDependencies"];
+            var deserializedPackageDependencies = JObject[WorkspaceReadConverter.NodeLibraryDependenciesPropString];
             Assert.AreEqual(1, deserializedPackageDependencies.Count());
-            var name = deserializedPackageDependencies.First()["Name"].Value<string>();
+            var name = deserializedPackageDependencies.First()[NodeLibraryDependencyConverter.NamePropString].Value<string>();
             Assert.AreEqual(package.Name, name);
-            var version = deserializedPackageDependencies.First()["Version"].Value<string>();
+            var version = deserializedPackageDependencies.First()[NodeLibraryDependencyConverter.VersionPropString].Value<string>();
             Assert.AreEqual(package.Version.ToString(), version);
-            var nodes = deserializedPackageDependencies.First()["Nodes"].Values<string>();
+            var nodes = deserializedPackageDependencies.First()[NodeLibraryDependencyConverter.NodesPropString].Values<string>();
             Assert.AreEqual(package.Nodes.Select(n => n.ToString("N")), nodes);
         }
 
@@ -106,7 +106,7 @@ namespace Dynamo.Tests
             {
                 var data = file.ReadToEnd();
                 var json = (JObject)JsonConvert.DeserializeObject(data);
-                Assert.IsNull(json["PackageDependencies"]);
+                Assert.IsNull(json[WorkspaceReadConverter.NodeLibraryDependenciesPropString]);
             }
 
             // Assert package dependency is collected
@@ -320,7 +320,7 @@ namespace Dynamo.Tests
             {
                 var data = file.ReadToEnd();
                 var json = (JObject)JsonConvert.DeserializeObject(data);
-                var pd = json["NodeLibraryDependencies"];
+                var pd = json[WorkspaceReadConverter.NodeLibraryDependenciesPropString];
                 var deserializedPDs = JsonConvert.DeserializeObject<List<INodeLibraryDependencyInfo>>(pd.ToString(),
                     new NodeLibraryDependencyConverter(CurrentDynamoModel.Logger));
                 Assert.AreEqual(1, deserializedPDs.Count);

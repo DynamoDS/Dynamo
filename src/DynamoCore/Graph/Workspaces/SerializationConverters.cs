@@ -390,7 +390,7 @@ namespace Dynamo.Graph.Workspaces
         bool isTestMode;
         bool verboseLogging;
 
-        private const string NodeLibraryDependenciesName = "NodeLibraryDependencies";
+        internal readonly static string NodeLibraryDependenciesPropString = "NodeLibraryDependencies";
 
         public WorkspaceReadConverter(EngineController engine, 
             DynamoScheduler scheduler, NodeFactory factory, bool isTestMode, bool verboseLogging)
@@ -528,9 +528,9 @@ namespace Dynamo.Graph.Workspaces
             var connectors = obj["Connectors"].ToObject<IEnumerable<ConnectorModel>>(serializer);
 
             IEnumerable<INodeLibraryDependencyInfo> nodeLibraryDependencies;
-            if (obj[NodeLibraryDependenciesName] != null)
+            if (obj[NodeLibraryDependenciesPropString] != null)
             {
-                nodeLibraryDependencies = obj[NodeLibraryDependenciesName].ToObject<IEnumerable<INodeLibraryDependencyInfo>>(serializer);
+                nodeLibraryDependencies = obj[NodeLibraryDependenciesPropString].ToObject<IEnumerable<INodeLibraryDependencyInfo>>(serializer);
             }
             else
             {
@@ -703,8 +703,8 @@ namespace Dynamo.Graph.Workspaces
             }
             writer.WriteEndArray();
 
-            // PackageDependencies
-            writer.WritePropertyName("PackageDependencies");
+            // NodeLibraryDependencies
+            writer.WritePropertyName(WorkspaceReadConverter.NodeLibraryDependenciesPropString);
             serializer.Serialize(writer, ws.NodeLibraryDependencies);
 
             if (engine != null)
@@ -763,7 +763,11 @@ namespace Dynamo.Graph.Workspaces
     public class NodeLibraryDependencyConverter : JsonConverter
     {
         private Logging.ILogger logger;
-        private const string ReferenceTypeName = "ReferenceType";
+        internal static readonly string ReferenceTypePropString = "ReferenceType";
+        internal static readonly string NamePropString = "Name";
+        internal static readonly string VersionPropString = "Version";
+        internal static readonly string NodesPropString = "Nodes";
+
         /// <summary>
         /// Constructs a WorkspaceNodeReferenceConverter.
         /// </summary>
@@ -789,13 +793,13 @@ namespace Dynamo.Graph.Workspaces
             if (p != null)
             {
                 writer.WriteStartObject();
-                writer.WritePropertyName("Name");
+                writer.WritePropertyName(NamePropString);
                 writer.WriteValue(p.Name);
-                writer.WritePropertyName("Version");
+                writer.WritePropertyName(VersionPropString);
                 writer.WriteValue(p.Version.ToString());
-                writer.WritePropertyName("ReferenceType");
+                writer.WritePropertyName(ReferenceTypePropString);
                 writer.WriteValue(p.ReferenceType.ToString("G"));
-                writer.WritePropertyName("Nodes");
+                writer.WritePropertyName(NodesPropString);
                 writer.WriteStartArray();
                 foreach(var node in p.Nodes)
                 {
@@ -806,7 +810,7 @@ namespace Dynamo.Graph.Workspaces
             }
             else
             {
-                logger.LogWarning("Unnsuccessful attempt to serialize a WorkspaceDependencyInfo object.", Logging.WarningLevel.Moderate);
+                logger.LogWarning("Unnsuccessful attempt to serialize a INodeLibraryDependencyInfo object.", Logging.WarningLevel.Moderate);
             }
         }
 
@@ -830,7 +834,7 @@ namespace Dynamo.Graph.Workspaces
             //default to package.
             ReferenceType parsedType = ReferenceType.Package;
             JToken referenceTypeToken;
-            if (obj.TryGetValue(ReferenceTypeName, out referenceTypeToken))
+            if (obj.TryGetValue(ReferenceTypePropString, out referenceTypeToken))
             {
                 var referenceTypeString = referenceTypeToken.Value<string>();
                 if (!Enum.TryParse<ReferenceType>(referenceTypeString, out parsedType))
