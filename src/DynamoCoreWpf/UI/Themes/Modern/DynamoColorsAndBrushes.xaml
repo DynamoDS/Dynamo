@@ -68,8 +68,9 @@
     <Color x:Key="SelectionColor">#009EFF</Color>
     <Color x:Key="MaterialColor">#efede4</Color>
 
-    <!--Sidebar-->
+    <!--Extensions Sidebar-->
     <SolidColorBrush x:Key="BorderBrushWhite" Color="#FF3F4040" />
+    <SolidColorBrush x:Key="FeedbackSectionBackground" Color="#4192D9" />
     
     <!-- Library background-->
     <SolidColorBrush x:Key="SearchTextBoxBackground" Color="#F1F2F2" />

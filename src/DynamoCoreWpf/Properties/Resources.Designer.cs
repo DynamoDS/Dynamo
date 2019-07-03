@@ -4323,6 +4323,33 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to  This Feature is in Preview! .
+        /// </summary>
+        public static string PreviewText {
+            get {
+                return ResourceManager.GetString("PreviewText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to  Provide Feedback.
+        /// </summary>
+        public static string ProvideFeedbackButton {
+            get {
+                return ResourceManager.GetString("ProvideFeedbackButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Could not re-direct to the Dynamo forum page for feedback:.
+        /// </summary>
+        public static string ProvideFeedbackError {
+            get {
+                return ResourceManager.GetString("ProvideFeedbackError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Publish Online.
         /// </summary>
         public static string PublishPackage {
