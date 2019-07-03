@@ -2210,4 +2210,13 @@ Restart Dynamo to complete the uninstall, then try and download {1} again.
 
 Uninstall the following packages: {0}?</value>
   </data>
+  <data name="ProvideFeedbackButton" xml:space="preserve">
+    <value> Provide Feedback</value>
+  </data>
+  <data name="PreviewText" xml:space="preserve">
+    <value> This Feature is in Preview! </value>
+  </data>
+  <data name="ProvideFeedbackError" xml:space="preserve">
+    <value>Could not re-direct to the Dynamo forum page for feedback:</value>
+  </data>
 </root>
