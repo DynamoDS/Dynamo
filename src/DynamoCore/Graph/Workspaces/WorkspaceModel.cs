@@ -574,14 +574,15 @@ namespace Dynamo.Graph.Workspaces
             }
             set
             {
-                foreach (var dependceny in value)
+                foreach (var dependency in value)
                 {
                     //handle package dependencies
-                    if(dependceny.ReferenceType == ReferenceType.Package && dependceny is PackageDependencyInfo)
+                    if(dependency.ReferenceType == ReferenceType.Package 
+                        && dependency is PackageDependencyInfo)
                     {
-                        foreach (var node in dependceny.Nodes)
+                        foreach (var node in dependency.Nodes)
                         {
-                            nodePackageDictionary[node] = (dependceny as PackageDependencyInfo).PackageInfo;
+                            nodePackageDictionary[node] = (dependency as PackageDependencyInfo).PackageInfo;
                         }
                     }
                    

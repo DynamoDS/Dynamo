@@ -90,7 +90,7 @@ namespace Dynamo.Graph.Workspaces
     interface INodeLibraryDependencyInfo
     {
         /// <summary>
-        /// Type of Reference
+        /// The type of reference this dependency is.
         /// </summary>
         ReferenceType ReferenceType { get; }
         /// <summary>
@@ -150,7 +150,7 @@ namespace Dynamo.Graph.Workspaces
             get { return nodes; }
         }
 
-        public ReferenceType ReferenceType { get => ReferenceType.Package; }
+        public ReferenceType ReferenceType => ReferenceType.Package;
 
         private HashSet<Guid> nodes;
         
