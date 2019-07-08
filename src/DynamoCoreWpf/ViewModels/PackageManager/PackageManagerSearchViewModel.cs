@@ -468,7 +468,7 @@ namespace Dynamo.PackageManager
         
         private string JoinPackageNames(IEnumerable<Package> pkgs)
         {
-            return String.Join(", ", pkgs.Select(x => x.Name));
+            return String.Join(", ", pkgs.Select(x => x.Name + " " + x.VersionName));
         } 
 
         private void PackageOnExecuted(PackageManagerSearchElement element, PackageVersion version, string downloadPath)
