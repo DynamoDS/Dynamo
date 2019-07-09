@@ -3,10 +3,19 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:p="clr-namespace:Dynamo.Wpf.Properties;assembly=DynamoCoreWpf"
+             xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf"
              mc:Ignorable="d" 
              VerticalAlignment="Top"
              HorizontalAlignment="Left">
-    <Grid Background= "#353535" Height="800">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoColorsAndBrushesDictionaryUri}" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Grid Background= "#353535" Height="860">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
@@ -86,5 +95,51 @@
                 </TextBlock>
             </Button>
         </Grid>-->
+
+        <!-- Template for the feedback banner -->
+        <DockPanel Name="Feedback" Margin="0,800,0,40" Grid.Row="0">
+            <StatusBar Background="{StaticResource FeedbackSectionBackground}" DockPanel.Dock="Bottom" Height="55">
+                <!-- Preview text -->
+                <StatusBarItem>
+                    <Border Height="50">
+                        <TextBlock TextWrapping="Wrap" Padding="10,0,10,0" FontSize="15" Foreground="White" Text="{x:Static p:Resources.PreviewText}" VerticalAlignment="Center"/>
+                    </Border>
+                </StatusBarItem>
+                <StatusBarItem Width="193" Margin="100,0,0,0" Height="40">
+                    <Border Name="FeedbackBorder" BorderThickness="1">
+                        <Border.Style>
+                            <Style>
+                                <Style.Triggers>
+                                    <Trigger Property="Border.IsMouseOver" Value="True">
+                                        <Setter Property="Border.BorderBrush" Value="White" />
+                                    </Trigger>
+                                    <Trigger Property="Border.IsMouseOver" Value="False">
+                                        <Setter Property="Border.BorderBrush" Value="#373737" />
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Border.Style>
+                        <!-- Feedback button -->
+                        <Button HorizontalAlignment="Right"
+                            Width="150" Click="ProvideFeedback" Background="#373737" Height="30">
+                            <TextBlock TextWrapping="Wrap" FontSize="15" Foreground="White" Height="20" Text="{x:Static p:Resources.ProvideFeedbackButton}" VerticalAlignment="Center"/>
+                            <Button.Style>
+                                <Style TargetType="{x:Type Button}">
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="{x:Type Button}">
+                                                <Border Background="{TemplateBinding Background}">
+                                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                </Border>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </Button.Style>
+                        </Button>
+                    </Border>
+                </StatusBarItem>
+            </StatusBar>
+        </DockPanel>
     </Grid>
 </UserControl>
