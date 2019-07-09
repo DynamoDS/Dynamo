@@ -29,13 +29,6 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using ProtoCore.Namespace;
 
-// Internals are visible to the Package Manager extension
-// For workspace package dependency collection
-[assembly: InternalsVisibleTo("DynamoPackages")]
-
-// Internals are visible to the Package Manager extension
-// For workspace package dependency collection
-[assembly: InternalsVisibleTo("PackageDependencyViewExtension")]
 
 namespace Dynamo.Graph.Workspaces
 {

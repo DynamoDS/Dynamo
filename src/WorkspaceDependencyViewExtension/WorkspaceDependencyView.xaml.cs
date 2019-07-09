@@ -6,19 +6,19 @@ using System.ComponentModel;
 using System.Windows.Controls;
 using System.Windows.Media;
 
-namespace Dynamo.PackageDependency
+namespace Dynamo.WorkspaceDependency
 {
     /// <summary>
-    /// Interaction logic for PackageDependencyView.xaml
+    /// Interaction logic for WorkspaceDependencyView.xaml
     /// </summary>
-    public partial class PackageDependencyView : UserControl
+    public partial class WorkspaceDependencyView : UserControl
     {
         private DependencyTable table = new DependencyTable();
 
         private WorkspaceModel currentWorkspace;
 
         private ViewLoadedParams loadedParams;
-        private PackageDependencyViewExtension dependencyViewExtension;
+        private WorkspaceDependencyViewExtension dependencyViewExtension;
 
         private Boolean hasMissingPackage = false;
 
@@ -118,7 +118,7 @@ namespace Dynamo.PackageDependency
         /// Constructor
         /// </summary>
         /// <param name="p">ViewLoadedParams</param>
-        public PackageDependencyView(PackageDependencyViewExtension viewExtension,ViewLoadedParams p)
+        public WorkspaceDependencyView(WorkspaceDependencyViewExtension viewExtension,ViewLoadedParams p)
         {
             InitializeComponent();
             DataContext = table;

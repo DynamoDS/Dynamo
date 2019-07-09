@@ -8,8 +8,8 @@
     <ProjectGuid>{5E76AAB3-6302-473E-9655-081B53FB1419}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Dynamo.PackageDependency</RootNamespace>
-    <AssemblyName>PackageDependencyViewExtension</AssemblyName>
+    <RootNamespace>Dynamo.WorkspaceDependency</RootNamespace>
+    <AssemblyName>WorkspaceDependencyViewExtension</AssemblyName>
     <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
@@ -47,7 +47,7 @@
     <Compile Include="..\AssemblySharedInfoGenerator\AssemblySharedInfo.cs">
       <Link>Properties\AssemblySharedInfo.cs</Link>
     </Compile>
-    <Compile Include="PackageDependencyViewExtension.cs" />
+    <Compile Include="WorkspaceDependencyViewExtension.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -59,8 +59,8 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.en-US.resx</DependentUpon>
     </Compile>
-    <Compile Include="PackageDependencyView.xaml.cs">
-      <DependentUpon>PackageDependencyView.xaml</DependentUpon>
+    <Compile Include="WorkspaceDependencyView.xaml.cs">
+      <DependentUpon>WorkspaceDependencyView.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -76,7 +76,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Page Include="PackageDependencyView.xaml">
+    <Page Include="WorkspaceDependencyView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -95,7 +95,7 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="AfterBuild">
     <ItemGroup>
-      <ExtensionDefinition Include="PackageDependency_ViewExtensionDefinition.xml" />
+      <ExtensionDefinition Include="WorkspaceDependency_ViewExtensionDefinition.xml" />
     </ItemGroup>
     <Copy SourceFiles="@(ExtensionDefinition)" DestinationFolder="$(OutputPath)\viewExtensions\" />
   </Target>
