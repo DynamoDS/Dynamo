@@ -93,14 +93,17 @@ namespace Dynamo.Graph.Workspaces
         /// The type of reference this dependency is.
         /// </summary>
         ReferenceType ReferenceType { get; }
+
         /// <summary>
         /// Guids of nodes in the workspace that are dependent on this reference.
         /// </summary>
         HashSet<Guid> Nodes { get; }
+
         /// <summary>
         /// Name of the Reference.
         /// </summary>
         string Name { get; }
+
         /// <summary>
         /// Version of this reference. This may be null.
         /// </summary>
@@ -111,6 +114,7 @@ namespace Dynamo.Graph.Workspaces
         /// </summary>
         /// <param name="guid"></param>
         void AddDependent(Guid guid);
+
         /// <summary>
         /// Indicates whether this dependency is loaded in the current session
         /// </summary>

@@ -306,7 +306,32 @@ namespace Dynamo.Tests
             var packageDependencies = CurrentDynamoModel.CurrentWorkspace.NodeLibraryDependencies;
             Assert.Contains(new PackageDependencyInfo("ZTTestPackage", new Version("0.0.1")), packageDependencies);
             Assert.IsTrue(packageDependencies.First().IsLoaded == false);
+
+            // Add node from package
+            var node = GetNodeInstance("ZTTestPackage.RRTestClass.RRTestClass");
+            CurrentDynamoModel.AddNodeToCurrentWorkspace(node, true);
+
+            // Assert new package dependency is collected
+            Assert.Contains(pi, packageDependencies);
         }
+
+        [Test]
+        public void DependencyWithTypeLoads()
+        {
+            // Load JSON file graph
+            string path = Path.Combine(TestDirectory, @"core\packageDependencyTests\DependenciesWithType.dyn");
+            OpenModel(path);
+
+            // Assert ZTTestPackage is not loaded
+            var pi = GetPackageInfo("ZTTestPackage");
+            Assert.IsNull(pi);
+
+            // Assert ZTTestPackage is still a package dependency
+            var packageDependencies = CurrentDynamoModel.CurrentWorkspace.NodeLibraryDependencies;
+            Assert.Contains(new PackageDependencyInfo("ZTTestPackage", new Version("0.0.1")), packageDependencies);
+            Assert.IsTrue(packageDependencies.First().IsLoaded == false);
+        }
+
 
         [Test]
         public void PackageDependenciesUpdatedWhenCustomNodeResolvedByNewPackage()
