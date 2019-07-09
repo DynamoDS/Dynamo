@@ -297,14 +297,15 @@ namespace Dynamo.PackageManager
             SortingKey = PackageSortingKey.LastUpdate;
 
             // TODO: Replace this with Greg call to get the host list
-            HostFilter = new List<FilterEntry>
-            {
-                new FilterEntry ("Civil3D"),
-                new FilterEntry ("Advance Steel"),
-                new FilterEntry ("Alias"),
-                new FilterEntry ("Revit"),
-                new FilterEntry ("All")
-            };
+            HostFilter = new List<FilterEntry>();
+            //HostFilter = new List<FilterEntry>
+            //{
+            //    new FilterEntry ("Civil3D"),
+            //    new FilterEntry ("Advance Steel"),
+            //    new FilterEntry ("Alias"),
+            //    new FilterEntry ("Revit"),
+            //    new FilterEntry ("All")
+            //};
             SortingDirection = PackageSortingDirection.Ascending;
         }
 
@@ -314,6 +315,7 @@ namespace Dynamo.PackageManager
         public PackageManagerSearchViewModel(PackageManagerClientViewModel client) : this()
         {
             this.PackageManagerClientViewModel = client;
+            HostFilter = GetHostsList();
             PackageManagerClientViewModel.Downloads.CollectionChanged += DownloadsOnCollectionChanged;
         }
 
@@ -342,6 +344,20 @@ namespace Dynamo.PackageManager
             }
 
             this.SearchResults = temp;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public List<FilterEntry> GetHostsList()
+        {
+            var hostFilter = new List<FilterEntry>();
+            foreach(var host in PackageManagerClientViewModel.ListAllHosts())
+            {
+                hostFilter.Add(new FilterEntry(host));
+            }
+
+            return hostFilter;
         }
 
         /// <summary>
@@ -453,6 +469,7 @@ namespace Dynamo.PackageManager
         /// </summary>
         public void Refresh()
         {
+            HostFilter = GetHostsList();
             var pkgs = PackageManagerClientViewModel.ListAll();
 
             pkgs.Sort((e1, e2) => e1.Name.ToLower().CompareTo(e2.Name.ToLower()));
