@@ -307,12 +307,6 @@ namespace Dynamo.Tests
             Assert.Contains(new PackageDependencyInfo("ZTTestPackage", new Version("0.0.1")), packageDependencies);
             Assert.IsTrue(packageDependencies.First().IsLoaded == false);
 
-            // Add node from package
-            var node = GetNodeInstance("ZTTestPackage.RRTestClass.RRTestClass");
-            CurrentDynamoModel.AddNodeToCurrentWorkspace(node, true);
-
-            // Assert new package dependency is collected
-            Assert.Contains(pi, packageDependencies);
         }
 
         [Test]
@@ -330,6 +324,17 @@ namespace Dynamo.Tests
             var packageDependencies = CurrentDynamoModel.CurrentWorkspace.NodeLibraryDependencies;
             Assert.Contains(new PackageDependencyInfo("ZTTestPackage", new Version("0.0.1")), packageDependencies);
             Assert.IsTrue(packageDependencies.First().IsLoaded == false);
+
+            string packageDirectory = Path.Combine(TestDirectory, @"core\packageDependencyTests\ZTTestPackage");
+            LoadPackage(packageDirectory);
+
+            // Add node from package
+            var node = GetNodeInstance("ZTTestPackage.RRTestClass.RRTestClass");
+            CurrentDynamoModel.AddNodeToCurrentWorkspace(node, true);
+
+            pi = GetPackageInfo("ZTTestPackage");
+            // Assert new package dependency is collected
+            Assert.Contains(pi, packageDependencies);
         }
 
 
