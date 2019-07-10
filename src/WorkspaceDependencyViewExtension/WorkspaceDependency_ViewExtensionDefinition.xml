@@ -1,4 +1,4 @@
 <ViewExtensionDefinition>
-  <AssemblyPath>..\PackageDependencyViewExtension.dll</AssemblyPath>
-  <TypeName>Dynamo.PackageDependency.PackageDependencyViewExtension</TypeName>
+  <AssemblyPath>..\WorkspaceDependencyViewExtension.dll</AssemblyPath>
+  <TypeName>Dynamo.WorkspaceDependency.WorkspaceDependencyViewExtension</TypeName>
 </ViewExtensionDefinition>
