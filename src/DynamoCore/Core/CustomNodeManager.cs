@@ -460,7 +460,7 @@ namespace Dynamo.Core
             if (!isTestMode && NodeInfos.TryGetValue(newInfo.FunctionId, out info))
             {
                 var newInfoPath = Path.GetDirectoryName(newInfo.Path);
-                var infoPath = Path.GetDirectoryName(info.Path);
+                var infoPath = String.IsNullOrEmpty(info.Path) ? string.Empty : Path.GetDirectoryName(info.Path);
                 var message = string.Format(Resources.MessageCustomNodePackageFailedToLoad,
                     infoPath, newInfoPath);
 
