@@ -29,13 +29,6 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using ProtoCore.Namespace;
 
-// Internals are visible to the Package Manager extension
-// For workspace package dependency collection
-[assembly: InternalsVisibleTo("DynamoPackages")]
-
-// Internals are visible to the Package Manager extension
-// For workspace package dependency collection
-[assembly: InternalsVisibleTo("PackageDependencyViewExtension")]
 
 namespace Dynamo.Graph.Workspaces
 {
@@ -510,7 +503,7 @@ namespace Dynamo.Graph.Workspaces
         }
 
         /// <summary>
-        /// gathers the direct workspace dependencies of this workspace.
+        /// gathers the direct customNode workspace dependencies of this workspace.
         /// </summary>
         /// <returns> a list of workspace IDs in GUID form</returns>
         public HashSet<Guid> Dependencies
@@ -537,9 +530,9 @@ namespace Dynamo.Graph.Workspaces
         }
 
         /// <summary>
-        /// Packages that the nodes in this graph depend on
+        /// NodeLibraries that the nodes in this graph depend on
         /// </summary>
-        internal List<PackageDependencyInfo> PackageDependencies
+        internal List<INodeLibraryDependencyInfo> NodeLibraryDependencies
         {
             get
             {
@@ -570,19 +563,25 @@ namespace Dynamo.Graph.Workspaces
                         }
                     }
                 }
-                return packageDependencies.Values.ToList();
+                return packageDependencies.Values.ToList<INodeLibraryDependencyInfo>();
             }
             set
             {
-                foreach (var package in value)
+                foreach (var dependency in value)
                 {
-                    foreach (var node in package.Nodes)
+                    //handle package dependencies
+                    if(dependency.ReferenceType == ReferenceType.Package 
+                        && dependency is PackageDependencyInfo)
                     {
-                        nodePackageDictionary[node] = package.PackageInfo;
+                        foreach (var node in dependency.Nodes)
+                        {
+                            nodePackageDictionary[node] = (dependency as PackageDependencyInfo).PackageInfo;
+                        }
                     }
+                   
                 }
 
-                RaisePropertyChanged(nameof(PackageDependencies));
+                RaisePropertyChanged(nameof(NodeLibraryDependencies));
             }
         }
 
@@ -927,7 +926,7 @@ namespace Dynamo.Graph.Workspaces
 
             this.annotations = new List<AnnotationModel>(annotations);
 
-            this.PackageDependencies = new List<PackageDependencyInfo>();
+            this.NodeLibraryDependencies = new List<INodeLibraryDependencyInfo>();
 
             // Set workspace info from WorkspaceInfo object
             Name = info.Name;
@@ -1813,7 +1812,7 @@ namespace Dynamo.Graph.Workspaces
                         new WorkspaceReadConverter(engineController, scheduler, factory, isTestMode, verboseLogging),
                         new NodeReadConverter(manager, libraryServices, factory, isTestMode),
                         new TypedParameterConverter(),
-                        new PackageDependencyConverter(logger)
+                        new NodeLibraryDependencyConverter(logger)
                     },
                 ReferenceResolverProvider = () => { return new IdReferenceResolver(); }
             };

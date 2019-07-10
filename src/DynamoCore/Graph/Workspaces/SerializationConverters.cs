@@ -390,6 +390,8 @@ namespace Dynamo.Graph.Workspaces
         bool isTestMode;
         bool verboseLogging;
 
+        internal readonly static string NodeLibraryDependenciesPropString = "NodeLibraryDependencies";
+
         public WorkspaceReadConverter(EngineController engine, 
             DynamoScheduler scheduler, NodeFactory factory, bool isTestMode, bool verboseLogging)
         {
@@ -525,14 +527,14 @@ namespace Dynamo.Graph.Workspaces
             // relevant ports.
             var connectors = obj["Connectors"].ToObject<IEnumerable<ConnectorModel>>(serializer);
 
-            IEnumerable<PackageDependencyInfo> packageDependencies;
-            if (obj["PackageDependencies"] != null)
+            IEnumerable<INodeLibraryDependencyInfo> nodeLibraryDependencies;
+            if (obj[NodeLibraryDependenciesPropString] != null)
             {
-                packageDependencies = obj["PackageDependencies"].ToObject<IEnumerable<PackageDependencyInfo>>(serializer);
+                nodeLibraryDependencies = obj[NodeLibraryDependenciesPropString].ToObject<IEnumerable<INodeLibraryDependencyInfo>>(serializer);
             }
             else
             {
-                packageDependencies = new List<PackageDependencyInfo>();
+                nodeLibraryDependencies = new List<PackageDependencyInfo>();
             }
 
             var info = new WorkspaceInfo(guid.ToString(), name, description, Dynamo.Models.RunType.Automatic);
@@ -597,7 +599,7 @@ namespace Dynamo.Graph.Workspaces
                     info, verboseLogging, isTestMode);
             }
 
-            ws.PackageDependencies = packageDependencies.ToList();
+            ws.NodeLibraryDependencies = nodeLibraryDependencies.ToList();
 
             return ws;
         }
@@ -701,9 +703,9 @@ namespace Dynamo.Graph.Workspaces
             }
             writer.WriteEndArray();
 
-            // PackageDependencies
-            writer.WritePropertyName("PackageDependencies");
-            serializer.Serialize(writer, ws.PackageDependencies);
+            // NodeLibraryDependencies
+            writer.WritePropertyName(WorkspaceReadConverter.NodeLibraryDependenciesPropString);
+            serializer.Serialize(writer, ws.NodeLibraryDependencies);
 
             if (engine != null)
             {
@@ -756,24 +758,28 @@ namespace Dynamo.Graph.Workspaces
     }
 
     /// <summary>
-    /// PackageDependencyConverter is used to serialize and deserialize graph package dependencies
+    /// Is used to serialize and deserialize graph workspace node library references
     /// </summary>
-    public class PackageDependencyConverter : JsonConverter
+    public class NodeLibraryDependencyConverter : JsonConverter
     {
         private Logging.ILogger logger;
+        internal static readonly string ReferenceTypePropString = "ReferenceType";
+        internal static readonly string NamePropString = "Name";
+        internal static readonly string VersionPropString = "Version";
+        internal static readonly string NodesPropString = "Nodes";
 
         /// <summary>
-        /// Constructs a PackageDependencyConverter.
+        /// Constructs a WorkspaceNodeReferenceConverter.
         /// </summary>
         /// <param name="logger"></param>
-        public PackageDependencyConverter(Logging.ILogger logger)
+        public NodeLibraryDependencyConverter(Logging.ILogger logger)
         {
             this.logger = logger;
         }
 
         public override bool CanConvert(Type objectType)
         {
-            return typeof(PackageDependencyInfo).IsAssignableFrom(objectType);
+            return typeof(INodeLibraryDependencyInfo).IsAssignableFrom(objectType);
         }
 
         public override bool CanRead
@@ -783,15 +789,17 @@ namespace Dynamo.Graph.Workspaces
 
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
-            PackageDependencyInfo p = value as PackageDependencyInfo;
+            INodeLibraryDependencyInfo p = value as INodeLibraryDependencyInfo;
             if (p != null)
             {
                 writer.WriteStartObject();
-                writer.WritePropertyName("Name");
+                writer.WritePropertyName(NamePropString);
                 writer.WriteValue(p.Name);
-                writer.WritePropertyName("Version");
+                writer.WritePropertyName(VersionPropString);
                 writer.WriteValue(p.Version.ToString());
-                writer.WritePropertyName("Nodes");
+                writer.WritePropertyName(ReferenceTypePropString);
+                writer.WriteValue(p.ReferenceType.ToString("G"));
+                writer.WritePropertyName(NodesPropString);
                 writer.WriteStartArray();
                 foreach(var node in p.Nodes)
                 {
@@ -802,7 +810,7 @@ namespace Dynamo.Graph.Workspaces
             }
             else
             {
-                logger.LogWarning("Unnsuccessful attempt to serialize a PackageDependencyInfo object.", Logging.WarningLevel.Moderate);
+                logger.LogWarning("Unnsuccessful attempt to serialize a INodeLibraryDependencyInfo object.", Logging.WarningLevel.Moderate);
             }
         }
 
@@ -810,10 +818,10 @@ namespace Dynamo.Graph.Workspaces
         {
             var obj = JObject.Load(reader);
 
-            // Get package name
+            // Get dependency name
             var name = obj["Name"].Value<string>();
 
-            // Try get package version
+            // Try get dependency version
             var versionString = obj["Version"].Value<string>();
             Version version;
             if (!Version.TryParse(versionString, out version))
@@ -823,8 +831,38 @@ namespace Dynamo.Graph.Workspaces
                     Logging.WarningLevel.Moderate);
             }
 
-            // Create new PackageDependencyInfo
-            var packageInfo = new PackageDependencyInfo(name, version);
+            //default to package.
+            ReferenceType parsedType = ReferenceType.Package;
+            JToken referenceTypeToken;
+            if (obj.TryGetValue(ReferenceTypePropString, out referenceTypeToken))
+            {
+                var referenceTypeString = referenceTypeToken.Value<string>();
+                if (!Enum.TryParse<ReferenceType>(referenceTypeString, out parsedType))
+                {
+                    logger.LogWarning(
+                        string.Format("The ReferenceType of Dependency {0} could not be deserialized.", name),
+                        Logging.WarningLevel.Moderate);
+                }
+
+            }
+        
+            INodeLibraryDependencyInfo depInfo;
+            //select correct constructor based on referenceType
+            switch (parsedType)
+            {
+                case ReferenceType.Package:
+                    depInfo = new PackageDependencyInfo(name, version);
+                    break;
+                /*TODO add other cases: for example
+                 * case ReferenceType.ZeroTouch
+                 * depInfp = new ZeroTouchDependencyInfo(name,version)
+                */
+                default:
+                    depInfo = new PackageDependencyInfo(name, version);
+                    break;
+            }
+
+           
 
             // Try get dependent node IDs
             var nodes = obj["Nodes"].Values<string>();
@@ -839,10 +877,10 @@ namespace Dynamo.Graph.Workspaces
                 }
                 else
                 {
-                    packageInfo.AddDependent(guid);
+                    depInfo.AddDependent(guid);
                 }
             }
-            return packageInfo;
+            return depInfo;
         }
     }
 
