@@ -457,20 +457,23 @@ namespace Dynamo.Core
             }
 
             CustomNodeInfo info;
-            if (NodeInfos.TryGetValue(newInfo.FunctionId, out info))
+            if (newInfo.IsPackageMember && NodeInfos.TryGetValue(newInfo.FunctionId, out info))
             {
-                var newInfoPath = Path.GetDirectoryName(newInfo.Path);
-                var infoPath = Path.GetDirectoryName(info.Path);
-                var message = string.Format(Resources.MessageCustomNodePackageFailedToLoad,
-                    infoPath, newInfoPath);
+                if (newInfo.Path != info.Path)
+                {
+                    var newInfoPath = Path.GetDirectoryName(newInfo.Path);
+                    var infoPath = Path.GetDirectoryName(info.Path);
+                    var message = string.Format(Resources.MessageCustomNodePackageFailedToLoad,
+                        infoPath, newInfoPath);
 
-                var ex = new CustomNodePackageLoadException(newInfoPath, infoPath, message);
-                Log(ex.Message, WarningLevel.Moderate);
+                    var ex = new CustomNodePackageLoadException(newInfoPath, infoPath, message);
+                    Log(ex.Message, WarningLevel.Moderate);
 
-                // Log to notification view extension
-                Log(ex);
+                    // Log to notification view extension
+                    Log(ex);
 
-                throw ex;
+                    throw ex;
+                }
             }
 
             NodeInfos[newInfo.FunctionId] = newInfo;
