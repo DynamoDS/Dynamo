@@ -38,7 +38,8 @@
       "Version": "0.0.1",
       "Nodes": [
         "9a105451800e406585f117fdb6b51788"
-      ]
+      ],
+      "ReferenceType":"Package"
     }
   ],
   "Bindings": [],

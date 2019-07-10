@@ -85,7 +85,7 @@
   "Dependencies": [
     "6d1e3caa-780d-40fd-a045-766b3170235d"
   ],
-  "PackageDependencies": [
+  "NodeLibraryDependencies": [
     {
       "Name": "Clockwork for Dynamo 2.x",
       "Version": "2.1.2",
