@@ -352,7 +352,7 @@ namespace Dynamo.PackageManager
         public List<FilterEntry> GetHostsList()
         {
             var hostFilter = new List<FilterEntry>();
-            foreach(var host in PackageManagerClientViewModel.ListAllHosts())
+            foreach(var host in PackageManagerClientViewModel.Model.GetKnownHosts())
             {
                 hostFilter.Add(new FilterEntry(host));
             }
@@ -469,7 +469,6 @@ namespace Dynamo.PackageManager
         /// </summary>
         public void Refresh()
         {
-            HostFilter = GetHostsList();
             var pkgs = PackageManagerClientViewModel.ListAll();
 
             pkgs.Sort((e1, e2) => e1.Name.ToLower().CompareTo(e2.Name.ToLower()));

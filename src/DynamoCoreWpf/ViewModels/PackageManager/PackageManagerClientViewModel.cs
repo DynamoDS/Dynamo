@@ -417,11 +417,6 @@ namespace Dynamo.ViewModels
             DynamoViewModel.OnRequestPackagePublishDialog(newPkgVm);
         }
 
-        public List<string> ListAllHosts()
-        {
-            return Model.GetSupportedHosts() as List<string>;
-        }
-
         public List<PackageManagerSearchElement> ListAll()
         {
             CachedPackageList = new List<PackageManagerSearchElement>();
