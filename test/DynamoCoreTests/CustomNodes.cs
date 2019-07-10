@@ -1208,7 +1208,7 @@ namespace Dynamo.Tests
             const string nodeName = "someCustomNode";
             const string catName1 = "CatName1";
 
-            var cnworkspace = CurrentDynamoModel.CustomNodeManager.CreateCustomNode(nodeName, catName1, "a node with an input with comments", null, true);
+            var cnworkspace = CurrentDynamoModel.CustomNodeManager.CreateCustomNode(nodeName, catName1, "a node with an input with comments");
             var inputNode = new Symbol();
             inputNode.InputSymbol = "/* a new and better comment*/" + Environment.NewLine + "inputName: string = \"a def string\"";
             cnworkspace.AddAndRegisterNode(inputNode);

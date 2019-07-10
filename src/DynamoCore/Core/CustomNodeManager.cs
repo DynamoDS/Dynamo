@@ -342,7 +342,7 @@ namespace Dynamo.Core
         {
             if (TryGetInfoFromPath(file, isTestMode, out info))
             {
-                SetNodeInfo(info, isTestMode);
+                SetNodeInfo(info);
                 return true;
             }
             return false;
@@ -398,7 +398,7 @@ namespace Dynamo.Core
             {
                 info.IsPackageMember = isPackageMember;
 
-                SetNodeInfo(info, isTestMode);
+                SetNodeInfo(info);
                 result.Add(info);
             }
             return result;
@@ -443,7 +443,7 @@ namespace Dynamo.Core
         /// Stores the path and function definition without initializing a node.  Overwrites
         /// the existing NodeInfo if necessary
         /// </summary>
-        private void SetNodeInfo(CustomNodeInfo newInfo, bool isTestMode)
+        private void SetNodeInfo(CustomNodeInfo newInfo)
         {
             var guids = NodeInfos.Where(x =>
                         {
@@ -457,7 +457,7 @@ namespace Dynamo.Core
             }
 
             CustomNodeInfo info;
-            if (!isTestMode && NodeInfos.TryGetValue(newInfo.FunctionId, out info))
+            if (NodeInfos.TryGetValue(newInfo.FunctionId, out info))
             {
                 var newInfoPath = Path.GetDirectoryName(newInfo.Path);
                 var infoPath = Path.GetDirectoryName(info.Path);
@@ -663,7 +663,7 @@ namespace Dynamo.Core
             if (InitializeCustomNode(
                 workspaceInfo,
                 xmlDoc,
-                out customNodeWorkspace, isTestMode))
+                out customNodeWorkspace))
             {
                 workspace = customNodeWorkspace;
                 return true;
@@ -675,7 +675,7 @@ namespace Dynamo.Core
         private bool InitializeCustomNode(
             WorkspaceInfo workspaceInfo,
             XmlDocument xmlDoc,
-            out CustomNodeWorkspaceModel workspace, bool isTestMode)
+            out CustomNodeWorkspaceModel workspace)
         {
             // Add custom node definition firstly so that a recursive
             // custom node won't recursively load itself.
@@ -709,21 +709,21 @@ namespace Dynamo.Core
                 }
             }
 
-            RegisterCustomNodeWorkspace(newWorkspace, isTestMode);
+            RegisterCustomNodeWorkspace(newWorkspace);
             workspace = newWorkspace;
             return true;
         }
 
-        private void RegisterCustomNodeWorkspace(CustomNodeWorkspaceModel newWorkspace, bool isTestMode = false)
+        private void RegisterCustomNodeWorkspace(CustomNodeWorkspaceModel newWorkspace)
         {
             RegisterCustomNodeWorkspace(
                 newWorkspace,
                 newWorkspace.CustomNodeInfo,
-                newWorkspace.CustomNodeDefinition, isTestMode);
+                newWorkspace.CustomNodeDefinition);
         }
 
         private void RegisterCustomNodeWorkspace(
-            CustomNodeWorkspaceModel newWorkspace, CustomNodeInfo info, CustomNodeDefinition definition, bool isTestMode)
+            CustomNodeWorkspaceModel newWorkspace, CustomNodeInfo info, CustomNodeDefinition definition)
         {
             loadedWorkspaceModels[newWorkspace.CustomNodeId] = newWorkspace;
             SetFunctionDefinition(definition);
@@ -735,12 +735,12 @@ namespace Dynamo.Core
                 OnDefinitionUpdated(newDef);
             };
 
-            SetNodeInfo(info, isTestMode);
+            SetNodeInfo(info);
 
             newWorkspace.InfoChanged += () =>
             {
                 var newInfo = newWorkspace.CustomNodeInfo;
-                SetNodeInfo(newInfo, isTestMode);
+                SetNodeInfo(newInfo);
                 OnInfoUpdated(newInfo);
             };
 
@@ -782,7 +782,7 @@ namespace Dynamo.Core
                         info.ID = functionId.ToString();
                         if (migrationManager.ProcessWorkspace(info, xmlDoc, isTestMode, nodeFactory))
                         {
-                            return InitializeCustomNode(info, xmlDoc, out workspace, isTestMode);
+                            return InitializeCustomNode(info, xmlDoc, out workspace);
                         }
                     }
                 }
@@ -791,7 +791,7 @@ namespace Dynamo.Core
                     // TODO: Skip Json migration for now
                     WorkspaceInfo.FromJsonDocument(strInput, path, isTestMode, false, AsLogger(), out info);
                     info.ID = functionId.ToString();
-                    return InitializeCustomNode(info, null, out workspace, isTestMode);
+                    return InitializeCustomNode(info, null, out workspace);
                 }
                 else throw ex;
                 Log(string.Format(Properties.Resources.CustomNodeCouldNotBeInitialized, customNodeInfo.Name));
@@ -821,7 +821,7 @@ namespace Dynamo.Core
         ///     Optional identifier to be used for the custom node. By default, will make a new unique one.
         /// </param>
         /// <returns>Newly created Custom Node Workspace.</returns>
-        internal WorkspaceModel CreateCustomNode(string name, string category, string description, Guid? functionId = null, bool isTestMode = false)
+        internal WorkspaceModel CreateCustomNode(string name, string category, string description, Guid? functionId = null)
         {
             var newId = functionId ?? Guid.NewGuid();
 
@@ -838,7 +838,7 @@ namespace Dynamo.Core
             };
             var workspace = new CustomNodeWorkspaceModel(info, nodeFactory);
 
-            RegisterCustomNodeWorkspace(workspace, isTestMode);
+            RegisterCustomNodeWorkspace(workspace);
             return workspace;
         }
 
@@ -1264,7 +1264,7 @@ namespace Dynamo.Core
 
                 newWorkspace.HasUnsavedChanges = true;
 
-                RegisterCustomNodeWorkspace(newWorkspace, isTestMode);
+                RegisterCustomNodeWorkspace(newWorkspace);
 
                 Debug.WriteLine("Collapsed workspace has {0} nodes and {1} connectors",
                     newWorkspace.Nodes.Count(), newWorkspace.Connectors.Count());

@@ -922,19 +922,19 @@ namespace DynamoCoreWpfTests
 
             var funcguid = GuidUtility.Create(GuidUtility.UrlNamespace, "NewCustomNodeSaveAndLoad");
             //first create a new custom node.
-            var ws = this.ViewModel.Model.CustomNodeManager.CreateCustomNode("testnode", "testcategory", "atest", funcguid, true);
+            this.ViewModel.ExecuteCommand(new DynamoModel.CreateCustomNodeCommand(funcguid, "testnode", "testcategory", "atest", true));
             var outnode1 = new Output();
             outnode1.Symbol = "out1";
             var outnode2 = new Output();
-            outnode2.Symbol = "out2";
+            outnode1.Symbol = "out2";
 
             var numberNode = new DoubleInput();
             numberNode.Value = "5";
           
 
-            ws.AddAndRegisterNode(numberNode);
-            ws.AddAndRegisterNode(outnode1);
-            ws.AddAndRegisterNode(outnode2);
+            this.ViewModel.CurrentSpace.AddAndRegisterNode(numberNode);
+            this.ViewModel.CurrentSpace.AddAndRegisterNode(outnode1);
+            this.ViewModel.CurrentSpace.AddAndRegisterNode(outnode2);
 
             new ConnectorModel(numberNode.OutPorts.FirstOrDefault(), outnode1.InPorts.FirstOrDefault(), Guid.NewGuid());
             new ConnectorModel(numberNode.OutPorts.FirstOrDefault(), outnode2.InPorts.FirstOrDefault(), Guid.NewGuid());
@@ -942,7 +942,7 @@ namespace DynamoCoreWpfTests
 
             var savePath = Path.Combine(this.ViewModel.Model.PathManager.DefinitionDirectories.FirstOrDefault(), "NewCustomNodeSaveAndLoad.dyf");
             //save it to the definitions folder so it gets loaded at startup.
-            ws.Save(savePath);
+            this.ViewModel.CurrentSpace.Save(savePath);
 
             //assert the filesaved
             Assert.IsTrue(File.Exists(savePath));
@@ -955,8 +955,7 @@ namespace DynamoCoreWpfTests
             // This unit test is a follow-up of NewCustomNodeSaveAndLoadPt1 test to make sure the newly created
             // custom node will be loaded once DynamoCore restarted
             var funcguid = GuidUtility.Create(GuidUtility.UrlNamespace, "NewCustomNodeSaveAndLoad");
-            var functionnode =
-                this.ViewModel.Model.CustomNodeManager.CreateCustomNodeInstance(funcguid, "testnode", true);
+            var functionnode = this.ViewModel.Model.CustomNodeManager.CreateCustomNodeInstance(funcguid,"testnode",true);
             Assert.IsTrue(functionnode.IsCustomFunction);
             Assert.IsFalse(functionnode.IsInErrorState);
             Assert.AreEqual(functionnode.OutPorts.Count, 2);
