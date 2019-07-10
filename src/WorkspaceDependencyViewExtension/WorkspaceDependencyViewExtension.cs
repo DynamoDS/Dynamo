@@ -1,17 +1,17 @@
 ﻿using Dynamo.Extensions;
 using Dynamo.Graph.Workspaces;
-using Dynamo.PackageDependency.Properties;
+using Dynamo.WorkspaceDependency.Properties;
 using Dynamo.Wpf.Extensions;
 using System.Windows.Controls;
 
-namespace Dynamo.PackageDependency
+namespace Dynamo.WorkspaceDependency
 {
     /// <summary>
     /// This sample view extension demonstrates a sample IViewExtension 
-    /// which tracks graph package dependencies on the Dynamo right panel.
+    /// which tracks graph dependencies (currently only packages) on the Dynamo right panel.
     /// It reacts to workspace modified/ cleared events to refresh.
     /// </summary>
-    public class PackageDependencyViewExtension : IViewExtension
+    public class WorkspaceDependencyViewExtension : IViewExtension
     {
         /// <summary>
         /// Extension Name
@@ -20,7 +20,7 @@ namespace Dynamo.PackageDependency
         {
             get
             {
-                return "Package Dependency ViewExtension";
+                return "Workspace Dependency ViewExtension";
             }
         }
 
@@ -35,7 +35,7 @@ namespace Dynamo.PackageDependency
             }
         }
 
-        private PackageDependencyView DependencyView
+        private WorkspaceDependencyView DependencyView
         {
             get;
             set;
@@ -51,12 +51,7 @@ namespace Dynamo.PackageDependency
 
         }
 
-        /// <summary>
-        /// Ready is called when the DynamoModel is finished being built, or when the extension is installed
-        /// sometime after the DynamoModel is already built. ReadyParams provide access to references like the
-        /// CurrentWorkspace.
-        /// </summary>
-        /// <param name="sp"></param>
+       
         public void Ready(ReadyParams readyParams)
         {
             ReadyParams = readyParams;
@@ -78,7 +73,7 @@ namespace Dynamo.PackageDependency
 
         public void Loaded(ViewLoadedParams viewLoadedParams)
         {
-            DependencyView = new PackageDependencyView(this, viewLoadedParams);
+            DependencyView = new WorkspaceDependencyView(this, viewLoadedParams);
 
             // Adding a button in view menu to refresh and show manually
             packageDependencyMenuItem = new MenuItem { Header = Resources.MenuItemString };
