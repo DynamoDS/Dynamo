@@ -45,6 +45,10 @@ namespace Dynamo.PackageManager
 
             public DelegateCommand<object> FilterCommand { get; set; }
 
+            /// <summary>
+            /// Constructor
+            /// </summary>
+            /// <param name="filterName"></param>
             public FilterEntry(string filterName)
             {
                 FilterName = filterName;
@@ -295,17 +299,7 @@ namespace Dynamo.PackageManager
             SearchResults.CollectionChanged += SearchResultsOnCollectionChanged;
             SearchText = "";
             SortingKey = PackageSortingKey.LastUpdate;
-
-            // TODO: Replace this with Greg call to get the host list
             HostFilter = new List<FilterEntry>();
-            //HostFilter = new List<FilterEntry>
-            //{
-            //    new FilterEntry ("Civil3D"),
-            //    new FilterEntry ("Advance Steel"),
-            //    new FilterEntry ("Alias"),
-            //    new FilterEntry ("Revit"),
-            //    new FilterEntry ("All")
-            //};
             SortingDirection = PackageSortingDirection.Ascending;
         }
 
@@ -315,7 +309,7 @@ namespace Dynamo.PackageManager
         public PackageManagerSearchViewModel(PackageManagerClientViewModel client) : this()
         {
             this.PackageManagerClientViewModel = client;
-            HostFilter = GetHostsList();
+            HostFilter = InitializeHostFilter();
             PackageManagerClientViewModel.Downloads.CollectionChanged += DownloadsOnCollectionChanged;
         }
 
@@ -347,9 +341,10 @@ namespace Dynamo.PackageManager
         }
 
         /// <summary>
-        /// 
+        /// Based on the known hosts received from back end,
+        /// initialize the host filter in Dynamo
         /// </summary>
-        public List<FilterEntry> GetHostsList()
+        public List<FilterEntry> InitializeHostFilter()
         {
             var hostFilter = new List<FilterEntry>();
             foreach(var host in PackageManagerClientViewModel.Model.GetKnownHosts())
@@ -819,7 +814,7 @@ namespace Dynamo.PackageManager
                 list = SearchDictionary.Search(query)
                     .Select(x => new PackageManagerSearchElementViewModel(x, canLogin))
                     // Filter packages based on current filter setting
-                    //.Where(x => x.Model.Header.host_dependencies.Contains(HostFilter.ToString()))
+                    //.Where(x => x.Model.Hosts.Contains(HostFilter.ToString()))
                     .Take(MaxNumSearchResults).ToList();
             }
             else

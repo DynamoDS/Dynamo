@@ -43,6 +43,11 @@ namespace Dynamo.PackageManager
         public string LatestVersionCreated { get { return Header.versions[Header.versions.Count - 1].created; } }
 
         /// <summary>
+        /// Hosts particular package is for
+        /// </summary>
+        public List<string> Hosts { get { return Header.host_dependencies; } }
+
+        /// <summary>
         /// Header property </summary>
         /// <value>
         /// The PackageHeader used to instantiate this object </value>

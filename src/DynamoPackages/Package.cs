@@ -164,6 +164,7 @@ namespace Dynamo.PackageManager
                 if (body.name == null || body.version == null)
                     throw new Exception("The header is missing a name or version field.");
 
+                // TODO: Add serialization part of hosts specified in package.json
                 var pkg = new Package(
                     Path.GetDirectoryName(headerPath),
                     body.name,
