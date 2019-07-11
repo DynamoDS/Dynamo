@@ -7,12 +7,12 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 
-namespace Dynamo.PackageDependency
+namespace Dynamo.WorkspaceDependency
 {
     /// <summary>
-    /// Interaction logic for PackageDependencyView.xaml
+    /// Interaction logic for WorkspaceDependencyView.xaml
     /// </summary>
-    public partial class PackageDependencyView : UserControl
+    public partial class WorkspaceDependencyView : UserControl
     {
         private DependencyTable table = new DependencyTable();
 
@@ -21,7 +21,7 @@ namespace Dynamo.PackageDependency
         private String FeedbackLink = "https://forum.dynamobim.com/t/call-for-feedback-on-dynamo-graph-package-dependency-display/37229";
 
         private ViewLoadedParams loadedParams;
-        private PackageDependencyViewExtension dependencyViewExtension;
+        private WorkspaceDependencyViewExtension dependencyViewExtension;
 
         private Boolean hasMissingPackage = false;
 
@@ -90,7 +90,7 @@ namespace Dynamo.PackageDependency
 
         private void OnWorkspacePropertyChanged(object sender, PropertyChangedEventArgs args)
         {
-            if (args.PropertyName == nameof(currentWorkspace.PackageDependencies))
+            if (args.PropertyName == nameof(currentWorkspace.NodeLibraryDependencies))
                 DependencyRegen(currentWorkspace);
         }
 
@@ -102,7 +102,7 @@ namespace Dynamo.PackageDependency
         {
             // Clear the dependency table.
             table.Columns.Clear();
-            foreach (var package in ws.PackageDependencies)
+            foreach (var package in ws.NodeLibraryDependencies)
             {
                 if (package.IsLoaded)
                 {
@@ -134,7 +134,7 @@ namespace Dynamo.PackageDependency
         /// Constructor
         /// </summary>
         /// <param name="p">ViewLoadedParams</param>
-        public PackageDependencyView(PackageDependencyViewExtension viewExtension,ViewLoadedParams p)
+        public WorkspaceDependencyView(WorkspaceDependencyViewExtension viewExtension,ViewLoadedParams p)
         {
             InitializeComponent();
             DataContext = table;
