@@ -1,10 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\..\packages\Microsoft.CodeCoverage.16.2.0\build\netstandard1.0\Microsoft.CodeCoverage.props" Condition="Exists('..\..\packages\Microsoft.CodeCoverage.16.2.0\build\netstandard1.0\Microsoft.CodeCoverage.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <ImportGroup Label="PropertySheets">
     <Import Project="$(SolutionDir)Config\CS.props" />
-    <Import Project="..\..\packages\Microsoft.CodeCoverage.16.2.0\build\netstandard1.0\Microsoft.CodeCoverage.targets" Condition="Exists('..\..\packages\Microsoft.CodeCoverage.16.2.0\build\netstandard1.0\Microsoft.CodeCoverage.targets')" />
   </ImportGroup>
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -17,8 +15,6 @@
     <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
-    <NuGetPackageImportStamp>
-    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -116,12 +112,5 @@
       <PythonStdLib Include="$(ProjectDir)..\..\packages\IronPython.StdLib.2.7.9\contentFiles\any\any\Lib\**\*.*" />
     </ItemGroup>
     <Copy SourceFiles="@(PythonStdLib)" DestinationFiles="@(PythonStdLib->'$(TargetDir)IronPython.StdLib.2.7.9\%(RecursiveDir)%(Filename)%(Extension)')" SkipUnchangedFiles="true" />
-  </Target>
-  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
-    <PropertyGroup>
-      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
-    </PropertyGroup>
-    <Error Condition="!Exists('..\..\packages\Microsoft.CodeCoverage.16.2.0\build\netstandard1.0\Microsoft.CodeCoverage.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\Microsoft.CodeCoverage.16.2.0\build\netstandard1.0\Microsoft.CodeCoverage.props'))" />
-    <Error Condition="!Exists('..\..\packages\Microsoft.CodeCoverage.16.2.0\build\netstandard1.0\Microsoft.CodeCoverage.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\Microsoft.CodeCoverage.16.2.0\build\netstandard1.0\Microsoft.CodeCoverage.targets'))" />
   </Target>
 </Project>
