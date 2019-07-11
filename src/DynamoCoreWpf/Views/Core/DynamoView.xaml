@@ -1862,11 +1862,11 @@
                       Grid.Row="2"
                       Grid.RowSpan="2"
                       Height="Auto"
-                      Width="0"
+                      Width="3"
                       Name="extensionSplitter"
                       HorizontalAlignment="Stretch"
                       VerticalAlignment="Stretch"
-                      Margin="0"
+                      Margin="-2"
                       Background="Transparent"
                       Cursor="/DynamoCoreWpf;component/UI/Images/resize_horizontal.cur" />
 
