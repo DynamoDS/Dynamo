@@ -872,6 +872,18 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {1} cannot be loaded. 
+        ///Installing it will conflict with one or more node definitions that already exist in {0}, which is currently loaded. 
+        ///To install {1}, Dynamo needs to first uninstall {0}. 
+        ///Restart Dynamo to complete the uninstall..
+        /// </summary>
+        public static string MessageCustomNodePackageFailedToLoad {
+            get {
+                return ResourceManager.GetString("MessageCustomNodePackageFailedToLoad", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to SHOW MORE ({0}).
         /// </summary>
         public static string MoreButtonTextFormat {
