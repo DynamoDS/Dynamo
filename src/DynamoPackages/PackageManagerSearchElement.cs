@@ -43,9 +43,9 @@ namespace Dynamo.PackageManager
         public string LatestVersionCreated { get { return Header.versions[Header.versions.Count - 1].created; } }
 
         /// <summary>
-        /// Hosts particular package is for
+        /// Hosts dependencies specified for latest version of particular package
         /// </summary>
-        public List<string> Hosts { get { return Header.host_dependencies; } }
+        public List<string> Hosts { get { return Header.versions.Last().host_dependencies == null ? null : Header.versions.Last().host_dependencies.ToList(); }}
 
         /// <summary>
         /// Header property </summary>
