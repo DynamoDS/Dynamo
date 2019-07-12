@@ -289,9 +289,10 @@
 
                                                 <StackPanel Orientation="Vertical" Width="340" IsHitTestVisible="True" >
                                                    <StackPanel Orientation="Horizontal">
-                                                    <TextBlock Width ="Auto" MinWidth="235" FontSize="14"  Name="name" Text="{Binding Path=Model.Name}" Margin="5,0,0,0" HorizontalAlignment="Left" Foreground="WhiteSmoke" />
-                                                    <TextBlock Width ="90" FontSize="10"  Name="HostDependency" Text="{Binding Path=Model.HostsString}" Margin="5,0,0,0" HorizontalAlignment="Right" Foreground="LightBlue" VerticalAlignment="Center" />
-                                                </StackPanel>
+                                                      <TextBlock Width ="Auto" MinWidth="235" FontSize="14"  Name="name" Text="{Binding Path=Model.Name}" Margin="5,0,0,0" HorizontalAlignment="Left" Foreground="WhiteSmoke" />
+                                                      <TextBlock Width ="90" FontSize="10"  Name="HostDependency" Text="{Binding Path=Model.HostsString}" Margin="5,0,0,0" HorizontalAlignment="Right" Foreground="LightBlue" 
+                                                                 VerticalAlignment="Center" ToolTip="{x:Static p:Resources.PackageHostDependencyTooltip}"/>
+                                                   </StackPanel>
                                                    <StackPanel Orientation="Horizontal" Margin="0,6,0,2">
 
                                                         <StackPanel Orientation="Horizontal" Margin="5" Width="100">

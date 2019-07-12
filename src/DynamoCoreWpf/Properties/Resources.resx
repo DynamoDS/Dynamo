@@ -2219,4 +2219,7 @@ Uninstall the following packages: {0}?</value>
   <data name="ProvideFeedbackError" xml:space="preserve">
     <value>Could not re-direct to the Dynamo forum page for feedback:</value>
   </data>
+  <data name="PackageHostDependencyTooltip" xml:space="preserve">
+    <value>This package requires the specified host(s) to run.</value>
+  </data>
 </root>
