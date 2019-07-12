@@ -19,6 +19,10 @@ namespace Dynamo.PackageManager
 {
     public class PackageManagerSearchViewModel : NotificationObject
     {
+        #region enums
+        /// <summary>
+        /// Enum for the Package search state
+        /// </summary>
         public enum PackageSearchState
         {
             Syncing,
@@ -27,6 +31,9 @@ namespace Dynamo.PackageManager
             Results
         };
 
+        /// <summary>
+        /// Enum for the Package sort key, utilized by sorting context menu
+        /// </summary>
         public enum PackageSortingKey
         {
             Name,
@@ -37,7 +44,17 @@ namespace Dynamo.PackageManager
         };
 
         /// <summary>
-        /// Package Manager filter entry
+        /// Enum for the Package sort direction, utilized by sorting context menu
+        /// </summary>
+        public enum PackageSortingDirection
+        {
+            Ascending,
+            Descending
+        };
+        #endregion enums
+
+        /// <summary>
+        /// Package Manager filter entry, binded to the host filter context menu
         /// </summary>
         public class FilterEntry
         {
@@ -47,12 +64,15 @@ namespace Dynamo.PackageManager
             public string FilterName { get; set; }
 
             /// <summary>
-            /// Filter entry click command
+            /// Filter entry click command, notice this is a dynamic command
+            /// with command param set to FilterName so that the code is robust
+            /// in a way UI could handle as many hosts as possible
             /// </summary>
             public DelegateCommand<object> FilterCommand { get; set; }
 
             /// <summary>
-            /// If the Filter entry is checked
+            /// Boolean indicates if the Filter entry is checked, data binded to
+            /// is checked property of each filter
             /// </summary>
             public bool OnChecked { get; set; }
 
@@ -60,47 +80,50 @@ namespace Dynamo.PackageManager
             /// Private reference of PackageManagerSearchViewModel,
             /// used in the FilterCommand to filter search results
             /// </summary>
-            private PackageManagerSearchViewModel packageManagerSearchViewModel;
+            private PackageManagerSearchViewModel pmSearchViewModel;
 
             /// <summary>
             /// Constructor
             /// </summary>
             /// <param name="filterName">Filter name, same as host name</param>
             /// <param name="pmSearchViewModel">a reference of the PackageManagerSearchViewModel</param>
-            public FilterEntry(string filterName, PackageManagerSearchViewModel pmSearchViewModel)
+            public FilterEntry(string filterName, PackageManagerSearchViewModel packageManagerSearchViewModel)
             {
                 FilterName = filterName;
                 FilterCommand = new DelegateCommand<object>(SetFilterHosts, CanSetFilterHosts);
-                packageManagerSearchViewModel = pmSearchViewModel;
+                pmSearchViewModel = packageManagerSearchViewModel;
                 OnChecked = false;
             }
 
+            /// <summary>
+            /// Each filter is enabled for now, we may enable more smartly in the future
+            /// </summary>
+            /// <param name="arg"></param>
+            /// <returns></returns>
             private bool CanSetFilterHosts(object arg)
             {
                 return true;
             }
 
+            /// <summary>
+            /// This function will adjust the SelectedHosts in the SearchViewModel
+            /// Affecting search results globally
+            /// </summary>
+            /// <param name="obj"></param>
             private void SetFilterHosts(object obj)
             {
                 if (OnChecked)
                 {
-                    packageManagerSearchViewModel.FilterHosts.Add(obj as string);
-                    packageManagerSearchViewModel.SearchAndUpdateResults();
+                    pmSearchViewModel.SelectedHosts.Add(obj as string);
                 }
                 else
                 {
-                    packageManagerSearchViewModel.FilterHosts.Remove(obj as string);
-                    packageManagerSearchViewModel.SearchAndUpdateResults();
+                    pmSearchViewModel.SelectedHosts.Remove(obj as string);
                 }
+                pmSearchViewModel.SearchAndUpdateResults();
                 return;
             }
         }
-
-        public enum PackageSortingDirection
-        {
-            Ascending,
-            Descending
-        };
 
         #region Properties & Fields
 
@@ -128,8 +151,8 @@ namespace Dynamo.PackageManager
 
 
         /// <summary>
-        /// Filters for package hosts, currently contains all Dynamo known ADSK hosts
-        ///  "Advance Steel", "Alias", "Civil3D", "FormIt", "Revit"
+        /// Dynamic Filter for package hosts, should include all Dynamo known hosts from PM backend
+        ///  e.g. "Advance Steel", "Alias", "Civil 3D", "FormIt", "Revit"
         /// </summary>
         public List<FilterEntry> HostFilter
         {
@@ -286,7 +309,7 @@ namespace Dynamo.PackageManager
         /// <summary>
         /// Current selected filter hosts
         /// </summary>
-        public List<string> FilterHosts { get; set; }
+        public List<string> SelectedHosts { get; set; }
 
         private SearchDictionary<PackageManagerSearchElement> SearchDictionary;
 
@@ -330,11 +353,11 @@ namespace Dynamo.PackageManager
             SetSortingKeyCommand = new DelegateCommand<object>(SetSortingKey, CanSetSortingKey);
             SetSortingDirectionCommand = new DelegateCommand<object>(SetSortingDirection, CanSetSortingDirection);
             SearchResults.CollectionChanged += SearchResultsOnCollectionChanged;
-            SearchText = "";
+            SearchText = string.Empty;
             SortingKey = PackageSortingKey.LastUpdate;
-            HostFilter = new List<FilterEntry>();
-            FilterHosts = new List<string>();
             SortingDirection = PackageSortingDirection.Ascending;
+            HostFilter = new List<FilterEntry>();
+            SelectedHosts = new List<string>();
         }
 
         /// <summary>
@@ -831,6 +854,24 @@ namespace Dynamo.PackageManager
         }
 
         /// <summary>
+        /// Performs a filter to the assuming pre-searched results
+        /// </summary>
+        /// <param name="list"></param>
+        /// <returns></returns>
+        internal IEnumerable<PackageManagerSearchElementViewModel> Filter(IEnumerable<PackageManagerSearchElementViewModel> list)
+        {
+            // No need to filter by host if nothing selected
+            if (SelectedHosts.Count == 0) return list;
+            IEnumerable<PackageManagerSearchElementViewModel> filteredList = null;
+            foreach (var host in SelectedHosts)
+            {
+                filteredList = (filteredList ?? Enumerable.Empty<PackageManagerSearchElementViewModel>()).Union(
+                    list.Where(x => x.Model.Hosts != null && x.Model.Hosts.Contains(host)) ?? Enumerable.Empty<PackageManagerSearchElementViewModel>());
+            }
+            return filteredList;
+        }
+
+        /// <summary>
         ///     Performs a search using the given string as query, but does not update
         ///     the SearchResults object.
         /// </summary>
@@ -845,39 +886,17 @@ namespace Dynamo.PackageManager
 
             if (!String.IsNullOrEmpty(query))
             {
-                if (FilterHosts.Count == 0)
-                {
-                    list = SearchDictionary.Search(query)
-                        .Select(x => new PackageManagerSearchElementViewModel(x, canLogin))
-                        .Take(MaxNumSearchResults).ToList();
-                }
-                else
-                {
-                    list = SearchDictionary.Search(query)
-                        .Select(x => new PackageManagerSearchElementViewModel(x, canLogin))
-                        // Filter packages based on current filter setting
-                        .Where(x => x.Model.Hosts != null && x.Model.Hosts.Contains(FilterHosts.First()))
-                        .Take(MaxNumSearchResults).ToList();
-                }
+                list = Filter(SearchDictionary.Search(query)
+                    .Select(x => new PackageManagerSearchElementViewModel(x, canLogin))
+                    .Take(MaxNumSearchResults))
+                    .ToList();
             }
             else
             {
-                if (FilterHosts.Count == 0)
-                {
-                    // with null query, don't show deprecated packages
-                    list = LastSync.Where(x => !x.IsDeprecated)
-                    .Select(x => new PackageManagerSearchElementViewModel(x, canLogin))
+                // with null query, don't show deprecated packages
+                list = Filter(LastSync.Where(x => !x.IsDeprecated)
+                    .Select(x => new PackageManagerSearchElementViewModel(x, canLogin)))
                     .ToList();
-
-                }
-                else
-                {
-                    // with null query, don't show deprecated packages
-                    list = LastSync.Where(x => !x.IsDeprecated)
-                    .Select(x => new PackageManagerSearchElementViewModel(x, canLogin))
-                    .Where(x => x.Model.Hosts != null && x.Model.Hosts.Contains(FilterHosts.First()))
-                    .ToList();
-                }
                 Sort(list, this.SortingKey);
             }
 
