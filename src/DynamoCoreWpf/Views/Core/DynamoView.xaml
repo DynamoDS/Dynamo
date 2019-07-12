@@ -1866,7 +1866,7 @@
                       Name="extensionSplitter"
                       HorizontalAlignment="Stretch"
                       VerticalAlignment="Stretch"
-                      Margin="-2"
+                      Margin="0"
                       Background="Transparent"
                       Cursor="/DynamoCoreWpf;component/UI/Images/resize_horizontal.cur" />
 
