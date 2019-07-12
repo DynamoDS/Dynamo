@@ -80,7 +80,7 @@
   ],
   "Connectors": [],
   "Dependencies": [],
-  "PackageDependencies": [
+  "NodeLibraryDependencies": [
     {
       "Name": "Dynamo Samples",
       "Version": "2.0.0",

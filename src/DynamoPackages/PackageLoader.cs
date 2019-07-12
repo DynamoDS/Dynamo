@@ -207,11 +207,28 @@ namespace Dynamo.PackageManager
                 package.Loaded = true;
                 this.PackgeLoaded?.Invoke(package);
             }
+            catch (CustomNodePackageLoadException e)
+            {
+                Package originalPackage =
+                    localPackages.FirstOrDefault(x => x.CustomNodeDirectory == e.InstalledPath);
+                OnConflictingPackageLoaded(originalPackage, package);
+            }
             catch (Exception e)
             {
                 Log("Exception when attempting to load package " + package.Name + " from " + package.RootDirectory);
                 Log(e.GetType() + ": " + e.Message);
             }
+        }
+
+        /// <summary>
+        /// Event raised when a custom node package containing conflicting node definition
+        /// with an existing package is tried to load.
+        /// </summary>
+        public event Action<Package, Package> ConflictingCustomNodePackageLoaded;
+        private void OnConflictingPackageLoaded(Package installed, Package conflicting)
+        {
+            var handler = ConflictingCustomNodePackageLoaded;
+            handler?.Invoke(installed, conflicting);
         }
 
         /// <summary>

@@ -25,8 +25,10 @@ namespace Dynamo.PackageManager.UI
 
         protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
         {
-            (this.DataContext as PackageManagerSearchViewModel).RequestShowFileDialog -= OnRequestShowFileDialog;
-            this.Owner.Focus();
+            var viewModel = DataContext as PackageManagerSearchViewModel;
+            viewModel.UnregisterHandlers();
+
+            Owner.Focus();
             base.OnClosing(e);
         }
 
