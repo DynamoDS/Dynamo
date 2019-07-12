@@ -842,7 +842,7 @@ namespace Dynamo.Core
         ///     Optional identifier to be used for the custom node. By default, will make a new unique one.
         /// </param>
         /// <returns>Newly created Custom Node Workspace.</returns>
-        internal WorkspaceModel CreateCustomNode(string name, string category, string description, Guid? functionId = null, bool isTestMode = false)
+        internal WorkspaceModel CreateCustomNode(string name, string category, string description, Guid? functionId = null)
         {
             var newId = functionId ?? Guid.NewGuid();
 

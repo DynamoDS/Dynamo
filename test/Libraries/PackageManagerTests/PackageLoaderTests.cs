@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Dynamo.Extensions;
+using Dynamo.Graph.Workspaces;
 using Dynamo.Search.SearchElements;
 using Moq;
 using NUnit.Framework;
@@ -179,6 +180,33 @@ namespace Dynamo.PackageManager.Tests
         }
 
         [Test]
+        public void LoadingCustomNodeFromPackageSetsNodeInfoPackageInfoCorrectly()
+        {
+            var loader = new PackageLoader(PackagesDirectory);
+            var libraryLoader = new ExtensionLibraryLoader(CurrentDynamoModel);
+
+            loader.PackagesLoaded += libraryLoader.LoadPackages;
+            loader.RequestLoadNodeLibrary += libraryLoader.LoadNodeLibrary;
+
+            // This test needs the "isTestMode" flag to be turned off as an exception to be able 
+            // to test duplicate custom node def loading.
+            loader.RequestLoadCustomNodeDirectory +=
+                (dir, pkgInfo) => CurrentDynamoModel.CustomNodeManager.AddUninitializedCustomNodesInPath(dir, isTestMode: false, packageInfo: pkgInfo);
+
+            loader.LoadAll(new LoadPackageParams
+            {
+                Preferences = CurrentDynamoModel.PreferenceSettings,
+                PathManager = CurrentDynamoModel.PathManager
+            });
+
+            var packageInfo = new PackageInfo("EvenOdd", new System.Version(1,0,0));
+            var matchingNodes = CurrentDynamoModel.CustomNodeManager.NodeInfos.Where(x => x.Value.PackageInfo == packageInfo).ToList();
+            //the node should have the correct package info and should be marked a packageMember.
+            Assert.AreEqual(1, matchingNodes);
+            Assert.IsTrue(matchingNodes.All(x=>x.Value.IsPackageMember == true));
+        }
+
+        [Test]
         public void LoadingConflictingCustomNodePackageDoesNotGetLoaded()
         {
             var loader = new PackageLoader(PackagesDirectory);
@@ -199,7 +227,7 @@ namespace Dynamo.PackageManager.Tests
             });
 
             // There are 13 packages in "GitHub\Dynamo\test\pkgs"
-            Assert.AreEqual(13, loader.LocalPackages.Count());
+            Assert.AreEqual(14, loader.LocalPackages.Count());
 
             var entries = CurrentDynamoModel.SearchModel.SearchEntries.OfType<CustomNodeSearchElement>();
 
