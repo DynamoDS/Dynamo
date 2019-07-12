@@ -52,6 +52,11 @@ namespace Dynamo.PackageManager
             public DelegateCommand<object> FilterCommand { get; set; }
 
             /// <summary>
+            /// If the Filter entry is checked
+            /// </summary>
+            public bool OnChecked { get; set; }
+
+            /// <summary>
             /// Private reference of PackageManagerSearchViewModel,
             /// used in the FilterCommand to filter search results
             /// </summary>
@@ -67,6 +72,7 @@ namespace Dynamo.PackageManager
                 FilterName = filterName;
                 FilterCommand = new DelegateCommand<object>(SetFilterHosts, CanSetFilterHosts);
                 packageManagerSearchViewModel = pmSearchViewModel;
+                OnChecked = false;
             }
 
             private bool CanSetFilterHosts(object arg)
@@ -76,8 +82,16 @@ namespace Dynamo.PackageManager
 
             private void SetFilterHosts(object obj)
             {
-                packageManagerSearchViewModel.FilterHosts.Add(obj as string);
-                packageManagerSearchViewModel.SearchAndUpdateResults();
+                if (OnChecked)
+                {
+                    packageManagerSearchViewModel.FilterHosts.Add(obj as string);
+                    packageManagerSearchViewModel.SearchAndUpdateResults();
+                }
+                else
+                {
+                    packageManagerSearchViewModel.FilterHosts.Remove(obj as string);
+                    packageManagerSearchViewModel.SearchAndUpdateResults();
+                }
                 return;
             }
         }

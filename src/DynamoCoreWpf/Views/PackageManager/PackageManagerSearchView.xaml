@@ -191,6 +191,7 @@
                                     <Setter Property="IsCheckable" Value="True"/>
                                     <Setter Property="Command" Value="{Binding FilterCommand}"/>
                                     <Setter Property="CommandParameter" Value="{Binding FilterName}"/>
+                                    <Setter Property="IsChecked" Value="{Binding OnChecked}"/>
                                 </Style>
                             </ContextMenu.ItemContainerStyle>
                         </ContextMenu>
