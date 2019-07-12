@@ -1296,6 +1296,7 @@ namespace Dynamo.Tests
 
             //place an instance.
             var customNodeInstance = this.ViewModel.Model.CustomNodeManager.CreateCustomNodeInstance(customNodeInfo.Key);
+            var oldNumPorts = customNodeInstance.OutPorts.Count();
             this.ViewModel.CurrentSpace.AddAndRegisterNode(customNodeInstance);
             Assert.AreEqual(1, this.ViewModel.Model.CurrentWorkspace.Nodes.OfType<Function>().Count());
 
@@ -1316,8 +1317,8 @@ namespace Dynamo.Tests
             Assert.IsAssignableFrom(typeof(HomeWorkspaceModel), this.ViewModel.Model.CurrentWorkspace);
 
             var nodeInstance = this.ViewModel.Model.CurrentWorkspace.Nodes.OfType<Function>().FirstOrDefault();
-            Assert.AreEqual(2, nodeInstance.OutPorts.Count());
-            Assert.AreEqual("anewoutput", nodeInstance.OutPorts[1].Name);
+            Assert.AreEqual(oldNumPorts+1, nodeInstance.OutPorts.Count());
+            Assert.AreEqual("anewoutput", nodeInstance.OutPorts.LastOrDefault().Name);
 
         }
         #endregion
