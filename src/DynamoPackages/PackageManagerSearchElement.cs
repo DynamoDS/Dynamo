@@ -48,6 +48,26 @@ namespace Dynamo.PackageManager
         public List<string> Hosts { get { return Header.versions.Last().host_dependencies == null ? null : Header.versions.Last().host_dependencies.ToList(); }}
 
         /// <summary>
+        /// Hosts dependencies string specified for latest version of particular package
+        /// Used for package search element UI
+        /// </summary>
+        public string HostsString
+        {
+            get
+            {
+                var hostsString = String.Empty;
+                if (Header.versions.Last().host_dependencies != null)
+                {
+                    foreach (var host in Header.versions.Last().host_dependencies)
+                    {
+                        hostsString += host + "  ";
+                    }
+                }
+                return hostsString;
+            }
+        }
+
+        /// <summary>
         /// Header property </summary>
         /// <value>
         /// The PackageHeader used to instantiate this object </value>
