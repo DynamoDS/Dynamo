@@ -132,7 +132,7 @@ namespace Dynamo.PackageManager.Tests
             });
 
             // There are 13 packages in "GitHub\Dynamo\test\pkgs"
-            Assert.AreEqual(13, loader.LocalPackages.Count());
+            Assert.AreEqual(14, loader.LocalPackages.Count());
 
             // Verify that interdependent packages are resolved successfully
             var libs = CurrentDynamoModel.LibraryServices.ImportedLibraries.ToList();
@@ -163,7 +163,7 @@ namespace Dynamo.PackageManager.Tests
             });
 
             // There are 13 packages in "GitHub\Dynamo\test\pkgs"
-            Assert.AreEqual(13, loader.LocalPackages.Count());
+            Assert.AreEqual(14, loader.LocalPackages.Count());
 
             // Simulate loading new package from PM
             string packageDirectory = Path.Combine(TestDirectory, @"core\packageDependencyTests\ZTTestPackage");
@@ -200,9 +200,9 @@ namespace Dynamo.PackageManager.Tests
             });
 
             var packageInfo = new PackageInfo("EvenOdd", new System.Version(1,0,0));
-            var matchingNodes = CurrentDynamoModel.CustomNodeManager.NodeInfos.Where(x => x.Value.PackageInfo == packageInfo).ToList();
+            var matchingNodes = CurrentDynamoModel.CustomNodeManager.NodeInfos.Where(x => x.Value.PackageInfo.Equals(packageInfo)).ToList();
             //the node should have the correct package info and should be marked a packageMember.
-            Assert.AreEqual(1, matchingNodes);
+            Assert.AreEqual(1, matchingNodes.Count);
             Assert.IsTrue(matchingNodes.All(x=>x.Value.IsPackageMember == true));
         }
 
