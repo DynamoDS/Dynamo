@@ -156,7 +156,7 @@ namespace Dynamo.PackageManager
         /// </summary>
         public List<FilterEntry> HostFilter
         {
-            get => hostFilter;
+            get { return hostFilter; }
             set
             {
                 hostFilter = value;
