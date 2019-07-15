@@ -180,7 +180,8 @@
                         Click="OnFilterButtonClicked" 
                         fa:Awesome.Content="Filter"
                         TextElement.FontFamily="pack://application:,,,/FontAwesome.WPF;component/#FontAwesome"
-                        Style="{DynamicResource ResourceKey=STextButton}">
+                        Style="{DynamicResource ResourceKey=STextButton}"
+                        ToolTip="{x:Static p:Resources.PackageHostDependencyFilter}">
                     <Button.ContextMenu>
                         <ContextMenu Name="HostFilter"
                                      DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Mode=Self}}"
@@ -192,7 +193,8 @@
                                     <Setter Property="Command" Value="{Binding FilterCommand}"/>
                                     <Setter Property="CommandParameter" Value="{Binding FilterName}"/>
                                     <Setter Property="IsChecked" Value="{Binding OnChecked}"/>
-                                </Style>
+                                    <Setter Property="ToolTip" Value="{x:Static p:Resources.PackageHostDependencyFilterContextItem}"/>
+                                 </Style>
                             </ContextMenu.ItemContainerStyle>
                         </ContextMenu>
                     </Button.ContextMenu>
