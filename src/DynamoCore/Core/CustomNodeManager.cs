@@ -518,17 +518,40 @@ namespace Dynamo.Core
                 var message = string.Format(Resources.MessageCustomNodePackageFailedToLoad,
                     infoPath, newInfoPath);
 
-                // if these are different packages raise an error.
-                // TODO (for now we don't raise an error for different versions of the same package)
-                if (newInfo.PackageInfo.Name != info.PackageInfo.Name)
+               
+                //only try to compare package info if both customNodeInfos have package info.
+                if(info.IsPackageMember && info.PackageInfo != null)
                 {
-                    var ex = new CustomNodePackageLoadException(newInfoPath, infoPath, message);
-                    Log(ex.Message, WarningLevel.Moderate);
+                    // if these are different packages raise an error.
+                    // TODO (for now we don't raise an error for different
+                    //versions of the same package, don't want to effect publish new version workflows.
 
-                    // Log to notification view extension
-                    Log(ex);
-                    throw ex;
+                    if (newInfo.PackageInfo.Name != info.PackageInfo.Name)
+                    {
+                        var ex = new CustomNodePackageLoadException(newInfoPath, infoPath, message);
+                        Log(ex.Message, WarningLevel.Moderate);
+
+                        // Log to notification view extension
+                        Log(ex);
+                        throw ex;
+                    }
                 }
+                   else //(newInfo has owning Package, oldInfo does not)
+                {
+                    // it's unclear to me if we will ever hit this case, but if we do
+                    // it will be useful to know when. It might happen during a complex versioning publish workflow.
+                    // This represents the case where a previous info was not from a package, but the current info
+                    // has an owning package.
+                    var looseCustomNodeToPackageMessage = String.Format("Attempting to load a new definition for customNode {0}," +
+                        " loaded by package {1}, but A previous definition exists with no associated package, ", info.Name, newInfo.PackageInfo);
+
+                    var ex = new CustomNodePackageLoadException(newInfoPath, infoPath, looseCustomNodeToPackageMessage);
+                    Log(ex.Message, WarningLevel.Mild);
+                    //TODO worth logging notifications? (if we will localize)
+                    Log(ex);
+                }
+
+
             }
 
             NodeInfos[newInfo.FunctionId] = newInfo;
