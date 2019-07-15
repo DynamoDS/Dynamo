@@ -1318,7 +1318,7 @@ namespace Dynamo.Tests
 
             var nodeInstance = this.ViewModel.Model.CurrentWorkspace.Nodes.OfType<Function>().FirstOrDefault();
             Assert.AreEqual(oldNumPorts+1, nodeInstance.OutPorts.Count());
-            Assert.AreEqual("anewoutput", nodeInstance.OutPorts.LastOrDefault().Name);
+            Assert.IsTrue(nodeInstance.OutPorts.LastOrDefault().Name.StartsWith("anewoutput"));
 
         }
         #endregion

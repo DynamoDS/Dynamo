@@ -120,7 +120,7 @@ namespace Dynamo.Core
             var handler = InfoUpdated;
             if (handler != null) handler(obj);
         }
-        
+
         /// <summary>
         ///     An event that is fired when a custom node is removed from Dynamo.
         /// </summary>
@@ -129,7 +129,16 @@ namespace Dynamo.Core
         {
             var handler = CustomNodeRemoved;
             if (handler != null) handler(functionId);
+
         }
+
+        internal event Func<Guid, PackageInfo> RequestCustomNodeOwner;
+
+        private PackageInfo OnRequestCustomNodeOwner(Guid FunctionId)
+        {
+            return RequestCustomNodeOwner?.Invoke(FunctionId);
+        }
+
         #endregion
 
         /// <summary>
@@ -404,6 +413,19 @@ namespace Dynamo.Core
             return result;
         }
 
+        /// <summary>
+        ///     Scans the given path for custom node files, retaining their information in the manager for later
+        ///     potential initialization. Should be used when packages load or reload customNodes.
+        /// </summary>
+        /// <param name="path">Path on disk to scan for custom nodes.</param>
+        /// <param name="isTestMode">
+        ///     Flag specifying whether or not this should operate in "test mode".
+        /// </param>
+        /// <param name="PackageInfo">
+        ///     Info about the package that requested this customNode to be loaded or to which the customNode belongs.
+        ///     Is PackageMember property will be true if this property is not null.
+        /// </param>
+        /// <returns></returns>
         public IEnumerable<CustomNodeInfo> AddUninitializedCustomNodesInPath(string path, bool isTestMode, PackageInfo packageInfo)
         {
             var result = new List<CustomNodeInfo>();
@@ -458,19 +480,35 @@ namespace Dynamo.Core
         /// </summary>
         private void SetNodeInfo(CustomNodeInfo newInfo)
         {
-            //TODO what is this doing?
             var guids = NodeInfos.Where(x =>
                         {
                             return !string.IsNullOrEmpty(x.Value.Path) &&
                                 string.Compare(x.Value.Path, newInfo.Path, StringComparison.OrdinalIgnoreCase) == 0;
                         }).Select(x => x.Key).ToList();
 
+           
             foreach (var guid in guids)
             {
                 NodeInfos.Remove(guid);
             }
 
-            
+            // we need to check with the packageManager that this node if this node is in a package or not - 
+            // currently the package data is lost when the customNode workspace is loaded.
+            // we'll only do this check for customNode infos which don't have a package currently to verify if this
+            // is correct.
+            if(newInfo.IsPackageMember == false)
+            {
+                var owningPakckage = this.OnRequestCustomNodeOwner(newInfo.FunctionId);
+                
+                //we found a real package.
+                if(owningPakckage != null)
+                {
+                    newInfo.IsPackageMember = true;
+                    newInfo.PackageInfo = owningPakckage;
+                }
+            }
+
+
             CustomNodeInfo info;
             // if the custom node is part of a package make sure it does not overwrite another node
             if (newInfo.IsPackageMember && NodeInfos.TryGetValue(newInfo.FunctionId, out info))
@@ -479,17 +517,16 @@ namespace Dynamo.Core
                 var infoPath = String.IsNullOrEmpty(info.Path) ? string.Empty : Path.GetDirectoryName(info.Path);
                 var message = string.Format(Resources.MessageCustomNodePackageFailedToLoad,
                     infoPath, newInfoPath);
-                
-                // if these are different packages (or different versions) raise an error.
-                if (newInfo.PackageInfo != info.PackageInfo)
+
+                // if these are different packages raise an error.
+                // TODO (for now we don't raise an error for different versions of the same package)
+                if (newInfo.PackageInfo.Name != info.PackageInfo.Name)
                 {
-                 
                     var ex = new CustomNodePackageLoadException(newInfoPath, infoPath, message);
                     Log(ex.Message, WarningLevel.Moderate);
 
                     // Log to notification view extension
                     Log(ex);
-
                     throw ex;
                 }
             }
@@ -755,12 +792,13 @@ namespace Dynamo.Core
                 SetFunctionDefinition(newDef);
                 OnDefinitionUpdated(newDef);
             };
-
+            
             SetNodeInfo(info);
 
             newWorkspace.InfoChanged += () =>
             {
                 var newInfo = newWorkspace.CustomNodeInfo;
+
                 SetNodeInfo(newInfo);
                 OnInfoUpdated(newInfo);
             };
