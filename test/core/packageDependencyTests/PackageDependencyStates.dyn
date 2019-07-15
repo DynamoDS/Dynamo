@@ -1,0 +1,251 @@
+{
+  "Uuid": "78df28fc-b886-46e8-ab28-b257e4a49b93",
+  "IsCustomNode": false,
+  "Description": null,
+  "Name": "PackageDependencyStates",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.Dynamo.MeshToolkit.Display.MeshDisplay.ByMeshColor@Autodesk.Dynamo.MeshToolkit.Mesh,DSCore.Color[]",
+      "Id": "308aa46591fc4c6ab66e32e32ca7a903",
+      "Inputs": [
+        {
+          "Id": "a9898340ee4544d59313471d257300be",
+          "Name": "mesh",
+          "Description": "Mesh",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "856101dabda846eaa189ea0e13d782ff",
+          "Name": "meshColoring",
+          "Description": "single color, triangle colors, or vertex colors\n\nColor[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "c87765df9a9f49a48dac19cd75bf37aa",
+          "Name": "MeshDisplay",
+          "Description": "MeshDisplay",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Display mesh by single color, triangle colors, or vertex colors\n\nMeshDisplay.ByMeshColor (mesh: Mesh, meshColoring: Color[]): MeshDisplay"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CustomNodes.Function, DynamoCore",
+      "FunctionSignature": "82ef267e-5ca1-4150-80ad-7eb2d995c85b",
+      "FunctionType": "Graph",
+      "NodeType": "FunctionNode",
+      "Id": "350fcd0232ef4d5aa4b5c13dee735657",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "9b61cc7da5f8408a8d211c2195072026",
+          "Name": "0,255,255",
+          "Description": "return value",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Returns the colour aqua."
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CustomNodes.Function, DynamoCore",
+      "FunctionSignature": "8a61e923-c305-45ef-9d2d-04c220b0c82c",
+      "FunctionType": "Graph",
+      "NodeType": "FunctionNode",
+      "Id": "bd08f012a20a4d55be094ed97f3e740b",
+      "Inputs": [
+        {
+          "Id": "c71c2d94f5494c1096a607b20ec32322",
+          "Name": "",
+          "Description": "var[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "773d6dff09c74284ade261d9d192b9d1",
+          "Name": "Curve",
+          "Description": "return value",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": ""
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.Dynamo.MeshToolkit.Display.MeshDisplay.ByMeshColor@Autodesk.Dynamo.MeshToolkit.Mesh,DSCore.Color[]",
+      "Id": "c351e070a8614a31b72cef86f6cbcac8",
+      "Inputs": [
+        {
+          "Id": "4aba418046e446cab67c89584fa3a265",
+          "Name": "mesh",
+          "Description": "Mesh",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "dc354d81c1664e4498b4d5c90d026216",
+          "Name": "meshColoring",
+          "Description": "single color, triangle colors, or vertex colors\n\nColor[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "da76a206e3274736ab3c8796e36a384a",
+          "Name": "MeshDisplay",
+          "Description": "MeshDisplay",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Display mesh by single color, triangle colors, or vertex colors\n\nMeshDisplay.ByMeshColor (mesh: Mesh, meshColoring: Color[]): MeshDisplay"
+    }
+  ],
+  "Connectors": [],
+  "Dependencies": [
+    "82ef267e-5ca1-4150-80ad-7eb2d995c85b",
+    "8a61e923-c305-45ef-9d2d-04c220b0c82c"
+  ],
+  "NodeLibraryDependencies": [
+    {
+      "Name": "MeshToolkit",
+      "Version": "2.0.1",
+      "ReferenceType": "Package",
+      "Nodes": [
+        "308aa46591fc4c6ab66e32e32ca7a903"
+      ]
+    },
+    {
+      "Name": "Clockwork for Dynamo 2.x",
+      "Version": "2.1.2",
+      "ReferenceType": "Package",
+      "Nodes": [
+        "350fcd0232ef4d5aa4b5c13dee735657"
+      ]
+    },
+    {
+      "Name": "JOLY Lucas",
+      "Version": "0.0.1",
+      "ReferenceType": "Package",
+      "Nodes": [
+        "bd08f012a20a4d55be094ed97f3e740b"
+      ]
+    },
+    {
+      "Name": "MeshToolkit",
+      "Version": "1.3.1",
+      "ReferenceType": "Package",
+      "Nodes": [
+        "c351e070a8614a31b72cef86f6cbcac8"
+      ]
+    }
+  ],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.4.0.5605",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "MeshDisplay.ByMeshColor",
+        "Id": "308aa46591fc4c6ab66e32e32ca7a903",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 58.0,
+        "Y": 203.0
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Color.Aqua",
+        "Id": "350fcd0232ef4d5aa4b5c13dee735657",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 361.0,
+        "Y": 379.0
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "BSR.Curve.From.Profile",
+        "Id": "bd08f012a20a4d55be094ed97f3e740b",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 480.0,
+        "Y": 205.0
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "MeshDisplay.ByMeshColor",
+        "Id": "c351e070a8614a31b72cef86f6cbcac8",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 313.0,
+        "Y": 500.0
+      }
+    ],
+    "Annotations": [],
+    "X": 0.0,
+    "Y": 0.0,
+    "Zoom": 1.0
+  }
+}

@@ -1,18 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.IO;
-using Dynamo.Configuration;
-using Dynamo.Graph.Nodes;
+﻿using Dynamo.Configuration;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.PackageManager;
 using Dynamo.Scheduler;
-using Dynamo.Search.SearchElements;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 
 namespace Dynamo.Tests
 {
@@ -33,7 +31,7 @@ namespace Dynamo.Tests
             CurrentDynamoModel.PreferenceSettings.CustomPackageFolders.Add(packageDirectory);
             var loader = GetPackageLoader();
             var pkg = loader.ScanPackageDirectory(packageDirectory);
-            loader.LoadPackages(new List<Package> {pkg});
+            loader.LoadPackages(new List<Package> { pkg });
         }
 
         private PackageDependencyInfo GetPackageInfo(string packageName)
@@ -152,7 +150,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(1, package.Nodes.Count);
             Assert.IsTrue(package.IsLoaded);
         }
-        
+
         [Test]
         public void PackageDependenciesUpdatedAfterNodesAdded()
         {
@@ -184,7 +182,7 @@ namespace Dynamo.Tests
             // There should now be 2 package dependencies and 3 total dependent nodes
             packageDependencies = CurrentDynamoModel.CurrentWorkspace.NodeLibraryDependencies;
             Assert.AreEqual(2, packageDependencies.Count);
-            foreach(var package in packageDependencies)
+            foreach (var package in packageDependencies)
             {
                 Assert.IsTrue(package.IsLoaded);
                 if (package.Equals(package1))
@@ -216,7 +214,7 @@ namespace Dynamo.Tests
             var packageDependencies = CurrentDynamoModel.CurrentWorkspace.NodeLibraryDependencies;
             Assert.AreEqual(1, packageDependencies.Count);
             Assert.AreEqual(2, packageDependencies.First().Nodes.Count);
-            
+
             // Remove one node and assert is is no longer listed as a dependent node
             CurrentDynamoModel.CurrentWorkspace.RemoveAndDisposeNode(node1);
             packageDependencies = CurrentDynamoModel.CurrentWorkspace.NodeLibraryDependencies;
@@ -373,6 +371,39 @@ namespace Dynamo.Tests
             packageDependencies = CurrentDynamoModel.CurrentWorkspace.NodeLibraryDependencies;
             Assert.AreEqual(1, packageDependencies.Count);
             Assert.AreEqual(pi, packageDependencies.First());
+        }
+
+        [Test]
+        public void PackageDependencyStateTest()
+        {
+            // Load JSON file graph
+            string path = Path.Combine(TestDirectory, @"core\packageDependencyTests\PackageDependencyStates.dyn");
+            OpenModel(path);
+
+            // Assert the total number of package dependencies.
+            var packageDependenciesList = CurrentDynamoModel.CurrentWorkspace.NodeLibraryDependencies;
+            Assert.AreEqual(4, packageDependenciesList.Count);
+
+            // Check for Incorrect package state
+            PackageDependencyInfo firstPackage = (PackageDependencyInfo) packageDependenciesList[0];
+            Assert.AreEqual(new PackageDependencyInfo("MeshToolkit", new Version("2.0.1")), firstPackage);
+            Assert.AreEqual(PackageDependencyState.IncorrectVersion, firstPackage.State);
+
+            // Check for Warning package state, where the actually package is missing
+            // but the nodes are resolved by a different package.
+            PackageDependencyInfo secondPackage = (PackageDependencyInfo) packageDependenciesList[1];
+            Assert.AreEqual(new PackageDependencyInfo("Clockwork for Dynamo 2.x", new Version("2.1.2")), secondPackage);
+            Assert.AreEqual(PackageDependencyState.Warning, secondPackage.State);
+
+            // Check for Missing package state
+            PackageDependencyInfo thirdPackage = (PackageDependencyInfo) packageDependenciesList[2];
+            Assert.AreEqual(new PackageDependencyInfo("JOLY Lucas", new Version("0.0.1")), thirdPackage);
+            Assert.AreEqual(PackageDependencyState.Missing, thirdPackage.State);
+
+            // Check for Loaded package state
+            PackageDependencyInfo lastPackage = (PackageDependencyInfo) packageDependenciesList.Last();
+            Assert.AreEqual(new PackageDependencyInfo("MeshToolkit", new Version("1.3.1")), lastPackage);
+            Assert.AreEqual(PackageDependencyState.Loaded, lastPackage.State);
         }
     }
 }
