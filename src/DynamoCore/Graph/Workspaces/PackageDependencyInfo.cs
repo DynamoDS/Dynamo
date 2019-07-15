@@ -4,6 +4,18 @@ using System.Collections.Generic;
 namespace Dynamo.Graph.Workspaces
 {
     /// <summary>
+    /// Enum containing the different types of package dependency states.
+    /// </summary>
+    internal enum PackageDependencyState
+    {
+        Loaded,
+        IncorrectVersion,
+        Missing,
+        Warning,
+        RequiresRestart
+    }
+
+    /// <summary>
     /// Class containing info about a package
     /// </summary>
     internal class PackageInfo
@@ -73,7 +85,8 @@ namespace Dynamo.Graph.Workspaces
         }
     }
 
-    internal enum ReferenceType{
+    internal enum ReferenceType
+    {
         NodeModel,
         Package,
         ZeroTouch,
@@ -147,17 +160,22 @@ namespace Dynamo.Graph.Workspaces
         public bool IsLoaded { get; set; }
 
         /// <summary>
+        /// State of Package Dependency
+        /// </summary>
+        public PackageDependencyState State { get; set; }
+
+        /// <summary>
         /// Guids of nodes in the workspace that are dependent on this package
         /// </summary>
         public HashSet<Guid> Nodes
         {
             get { return nodes; }
         }
-
+ 
         public ReferenceType ReferenceType => ReferenceType.Package;
 
         private HashSet<Guid> nodes;
-        
+
         /// <summary>
         /// Create a package dependency from the package name and version
         /// </summary>
@@ -185,7 +203,7 @@ namespace Dynamo.Graph.Workspaces
         /// <param name="guid"></param>
         public void AddDependent(Guid guid)
         {
-             Nodes.Add(guid);
+            Nodes.Add(guid);
         }
 
         /// <summary>
@@ -194,7 +212,7 @@ namespace Dynamo.Graph.Workspaces
         /// <param name="guids"></param>
         internal void AddDependents(IEnumerable<Guid> guids)
         {
-            foreach(var guid in guids)
+            foreach (var guid in guids)
             {
                 Nodes.Add(guid);
             }
