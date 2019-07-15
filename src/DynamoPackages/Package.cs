@@ -406,10 +406,10 @@ namespace Dynamo.PackageManager
         {
             LoadedCustomNodes.Clear();
 
-            var reloadedCustomNodes = (customNodeManager.AddUninitializedCustomNodesInPath(
+            var reloadedCustomNodes = customNodeManager.AddUninitializedCustomNodesInPath(
                 CustomNodeDirectory,
                 isTestMode,
-                new PackageInfo(Name, new Version(versionName))));
+                new PackageInfo(Name, new Version(versionName)));
 
             foreach (var x in reloadedCustomNodes)
             {

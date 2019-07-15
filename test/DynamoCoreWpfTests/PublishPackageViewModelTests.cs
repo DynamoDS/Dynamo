@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Dynamo;
+using Dynamo.Graph.Nodes.CustomNodes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.PackageManager;
 using Dynamo.Tests;
@@ -116,5 +118,47 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(PackageUploadHandle.State.Error, vm.UploadState);
         }
 
+        [Test]
+        [Category("Failure")]
+        [Category("TechDebt")] //when a package is published - it does not load its customNodes. This may be intentional.
+        public void PublishingACustomNodeSetsPackageInfoCorrectly_()
+        {
+            var cnworkspace = this.GetModel().CustomNodeManager.CreateCustomNode("nodeToBePublished", "somecategory", "publish this node") as CustomNodeWorkspaceModel;
+            var inputNode = new Symbol();
+            inputNode.InputSymbol = "input;";
+            cnworkspace.AddAndRegisterNode(inputNode);
+
+            var tempPath = Path.Combine(TempFolder, "nodeToBePublished.dyf");
+            cnworkspace.Save(tempPath, false, this.GetModel().EngineController);
+
+            Assert.IsNull(GetModel().CustomNodeManager.NodeInfos[cnworkspace.CustomNodeId].PackageInfo);
+            Assert.IsFalse(GetModel().CustomNodeManager.NodeInfos[cnworkspace.CustomNodeId].IsPackageMember);
+
+            //now lets publish this node as a local package.
+            var newPkgVm = new PublishPackageViewModel(ViewModel) { CustomNodeDefinitions = new List<CustomNodeDefinition>(){ cnworkspace.CustomNodeDefinition } };
+            newPkgVm.Name = "PublishingACustomNodeSetsPackageInfoCorrectly";
+            newPkgVm.MajorVersion = "0";
+            newPkgVm.MinorVersion = "0";
+            newPkgVm.BuildVersion = "1";
+            newPkgVm.PublishLocallyCommand.Execute();
+
+            Assert.IsTrue(GetModel().GetPackageManagerExtension().PackageLoader.LocalPackages.Any
+                (x => x.Name == "PublishingACustomNodeSetsPackageInfoCorrectly" && x.Loaded == true && x.LoadedCustomNodes.Count ==1));
+
+
+            Assert.AreEqual(new PackageInfo("PublishingACustomNodeSetsPackageInfoCorrectly", new Version(0,0,1))
+                ,GetModel().CustomNodeManager.NodeInfos[cnworkspace.CustomNodeId].PackageInfo);
+            Assert.IsFalse(GetModel().CustomNodeManager.NodeInfos[cnworkspace.CustomNodeId].IsPackageMember);
+
+        }
+
+        [Test]
+        [Category("Failure")]
+        [Category("TechDebt")]
+        public void PublishingCustomNodeAsNewVersionWorks_SetsPackageInfoCorrectly()
+        {
+            throw new NotImplementedException();
+
+        }
     }
 }

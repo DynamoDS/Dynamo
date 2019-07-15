@@ -498,13 +498,13 @@ namespace Dynamo.Core
             // is correct.
             if(newInfo.IsPackageMember == false)
             {
-                var owningPakckage = this.OnRequestCustomNodeOwner(newInfo.FunctionId);
+                var owningPackage = this.OnRequestCustomNodeOwner(newInfo.FunctionId);
                 
                 //we found a real package.
-                if(owningPakckage != null)
+                if(owningPackage != null)
                 {
                     newInfo.IsPackageMember = true;
-                    newInfo.PackageInfo = owningPakckage;
+                    newInfo.PackageInfo = owningPackage;
                 }
             }
 
@@ -542,8 +542,10 @@ namespace Dynamo.Core
                     // it will be useful to know when. It might happen during a complex versioning publish workflow.
                     // This represents the case where a previous info was not from a package, but the current info
                     // has an owning package.
-                    var looseCustomNodeToPackageMessage = String.Format("Attempting to load a new definition for customNode {0}," +
-                        " loaded by package {1}, but A previous definition exists with no associated package, ", info.Name, newInfo.PackageInfo);
+                    var looseCustomNodeToPackageMessage = String.Format("Attempting to load customNode {0}," +
+                        " loaded by package {1}, but A previous definition named {2} exists with no associated package." +
+                        " The new customNode definition has been loaded, but Dynamo may in an unstable state, please avoid loading" +
+                        " multiple custom nodes with the id {3}. ", newInfo.Name, newInfo.PackageInfo, info.Name, info.FunctionId);
 
                     var ex = new CustomNodePackageLoadException(newInfoPath, infoPath, looseCustomNodeToPackageMessage);
                     Log(ex.Message, WarningLevel.Mild);
