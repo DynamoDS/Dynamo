@@ -400,7 +400,7 @@ namespace Dynamo.PackageManager
         }
 
         /// <summary>
-        /// Based on the known hosts received from back end,
+        /// Based on the known hosts received from Package Manager server,
         /// initialize the host filter in Dynamo
         /// </summary>
         public List<FilterEntry> InitializeHostFilter()
