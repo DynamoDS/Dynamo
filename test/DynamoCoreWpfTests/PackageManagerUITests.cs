@@ -233,16 +233,6 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(Dynamo.Wpf.Properties.Resources.PackageSearchViewSearchTextBox, searchViewModel.SearchBoxPrompt);
         }
 
-        [Test]
-        public void InitializeHostFilterTest()
-        {
-            // Initialize the view with the search client so we could test dataflow
-            PackageManagerSearchViewModel searchViewModel = new PackageManagerSearchViewModel(ViewModel.PackageManagerClientViewModel);
-
-            // Test if search view model is able to initialize the filter list from PM
-            Assert.IsTrue(searchViewModel.InitializeHostFilter().Count() != 0);
-        }
-
         #endregion
 
     }
