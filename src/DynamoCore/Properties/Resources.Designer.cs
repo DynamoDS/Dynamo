@@ -567,6 +567,15 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Attempting to load customNode {0} loaded by package {1}, but a previous definition named {2} exists with no associated package. The new customNode definition has been loaded, but Dynamo may be in an unstable state, please avoid loading multiple custom nodes with the id..
+        /// </summary>
+        public static string FunctionDefinitionOverwrittenMessage {
+            get {
+                return ResourceManager.GetString("FunctionDefinitionOverwrittenMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Instance of a Custom Node.
         /// </summary>
         public static string FunctionDescription {

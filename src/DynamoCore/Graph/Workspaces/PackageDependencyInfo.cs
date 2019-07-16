@@ -6,7 +6,7 @@ namespace Dynamo.Graph.Workspaces
     /// <summary>
     /// Class containing info about a package
     /// </summary>
-    internal class PackageInfo
+    public class PackageInfo
     {
         /// <summary>
         /// Name of the package
