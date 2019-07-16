@@ -552,20 +552,24 @@ namespace Dynamo.Graph.Workspaces
                         {
                             if (saved.Name == collected.Name)
                             {
+                                // if the correct version of package is installed.
                                 if (saved.Version == collected.Version)
                                 {
                                     packageDependencies[saved].State = PackageDependencyState.Loaded;
                                 }
+                                // if incorrect version of package is installed.
                                 else
                                 {
                                     packageDependencies[saved].State = PackageDependencyState.IncorrectVersion;
                                 }
                             }
+                            // if the package is not installed, but the nodes are resolved by a different package.
                             else
                             {
                                 packageDependencies[saved].State = PackageDependencyState.Warning;
                             }
                         }
+                        // if the package is not installed.
                         else
                         {
                             packageDependencies[saved].State = PackageDependencyState.Missing;
