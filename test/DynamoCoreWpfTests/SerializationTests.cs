@@ -922,7 +922,7 @@ namespace DynamoCoreWpfTests
 
             var funcguid = GuidUtility.Create(GuidUtility.UrlNamespace, "NewCustomNodeSaveAndLoad");
             //first create a new custom node.
-            var ws = this.ViewModel.Model.CustomNodeManager.CreateCustomNode("testnode", "testcategory", "atest", funcguid, true);
+            var ws = this.ViewModel.Model.CustomNodeManager.CreateCustomNode("testnode", "testcategory", "atest", funcguid);
             var outnode1 = new Output();
             outnode1.Symbol = "out1";
             var outnode2 = new Output();

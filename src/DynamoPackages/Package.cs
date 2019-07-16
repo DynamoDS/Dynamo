@@ -407,8 +407,15 @@ namespace Dynamo.PackageManager
         {
             LoadedCustomNodes.Clear();
 
-            foreach (var x in customNodeManager.AddUninitializedCustomNodesInPath(CustomNodeDirectory, isTestMode))
+            var reloadedCustomNodes = customNodeManager.AddUninitializedCustomNodesInPath(
+                CustomNodeDirectory,
+                isTestMode,
+                new PackageInfo(Name, new Version(versionName)));
+
+            foreach (var x in reloadedCustomNodes)
+            {
                 LoadedCustomNodes.Add(x);
+            }
         }
 
         public event Action<ILogMessage> MessageLogged;

@@ -17,7 +17,8 @@ namespace Dynamo.PackageManager
         #region Fields & Properties
 
         private Action<Assembly> RequestLoadNodeLibraryHandler;
-        private event Func<string, IEnumerable<CustomNodeInfo>> RequestLoadCustomNodeDirectoryHandler;
+        //TODO should we add a new handler specifically for packages? this is the package manager afterall so maybe not.
+        private event Func<string, PackageInfo, IEnumerable<CustomNodeInfo>> RequestLoadCustomNodeDirectoryHandler;
         private Action<IEnumerable<Assembly>> LoadPackagesHandler;
        
         public event Func<string, IExtension> RequestLoadExtension;
@@ -28,6 +29,7 @@ namespace Dynamo.PackageManager
         private IWorkspaceModel currentWorkspace;
 
         private ReadyParams ReadyParams;
+        private Core.CustomNodeManager customNodeManager;
 
         /// <summary>
         /// Dictionary mapping a custom node functionID to the package that contains it.
@@ -100,6 +102,10 @@ namespace Dynamo.PackageManager
                 (currentWorkspace as WorkspaceModel).CollectingCustomNodePackageDependencies -= GetCustomNodePackageFromID;
                 (currentWorkspace as WorkspaceModel).CollectingNodePackageDependencies -= GetNodePackageFromAssemblyName;
             }
+            if (customNodeManager != null)
+            {
+                customNodeManager.RequestCustomNodeOwner -= handleCustomNodeOwnerQuery;
+            }
             ReadyParams.CurrentWorkspaceChanged -= OnCurrentWorkspaceChanged;
         }
 
@@ -131,8 +137,14 @@ namespace Dynamo.PackageManager
             RequestLoadNodeLibraryHandler = startupParams.LibraryLoader.LoadNodeLibrary;
             //TODO: Add LoadPackages to ILibraryLoader interface in 3.0
             LoadPackagesHandler = (startupParams.LibraryLoader as ExtensionLibraryLoader).LoadPackages;
-            RequestLoadCustomNodeDirectoryHandler = (dir) => startupParams.CustomNodeManager
-                    .AddUninitializedCustomNodesInPath(dir, DynamoModel.IsTestMode, true);
+            customNodeManager = (startupParams.CustomNodeManager as Core.CustomNodeManager);
+
+            //TODO - in 3.0 we can add the other overload of AddUninitializedCustomNodesInPath to the ICustomNodeManager interface.
+            RequestLoadCustomNodeDirectoryHandler = (dir,pkgInfo) => customNodeManager
+                    .AddUninitializedCustomNodesInPath(dir, DynamoModel.IsTestMode, pkgInfo);
+
+            //when the customNodeManager requests to know the owner of a customNode handle this query.
+            customNodeManager.RequestCustomNodeOwner += handleCustomNodeOwnerQuery;
 
             //raise the public events on this extension when the package loader requests.
             PackageLoader.RequestLoadExtension += RequestLoadExtension;
@@ -153,6 +165,11 @@ namespace Dynamo.PackageManager
                 uploadBuilder, PackageLoader.DefaultPackagesDirectory);
 
             LoadPackages(startupParams.Preferences, startupParams.PathManager);
+        }
+
+        private PackageInfo handleCustomNodeOwnerQuery(Guid customNodeFunctionID)
+        {
+            return GetCustomNodePackageFromID(customNodeFunctionID);
         }
 
         public void Ready(ReadyParams sp)

@@ -710,11 +710,20 @@ namespace Dynamo.PackageManager
 
                 if (uninstallsRequiringRestart.Any())
                 {
+
                     var message = string.Format(Resources.MessageUninstallToContinue2,
                         PackageManagerClientViewModel.DynamoViewModel.BrandingResourceProvider.ProductName,
                         JoinPackageNames(uninstallsRequiringRestart),
                         element.Name + " " + version.version);
-                    var dialogResult = MessageBox.Show(message,
+                    // different message for the case that the user is
+                    // trying to install the same package/version they already have installed.
+                    if(uninstallsRequiringRestart.Count == 1 && 
+                        uninstallsRequiringRestart.First().Name ==  element.Name &&
+                        uninstallsRequiringRestart.First().VersionName == version.version)
+                    {
+                        message = String.Format(Resources.MessageUninstallSamePackage, element.Name + " " + version.version);
+                    }
+                    var dialogResult = MessageBox.Show(message, 
                         Resources.CannotDownloadPackageMessageBoxTitle,
                         MessageBoxButton.YesNo, MessageBoxImage.Error);
 

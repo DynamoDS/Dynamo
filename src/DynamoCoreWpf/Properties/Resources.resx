@@ -2228,4 +2228,7 @@ Uninstall the following packages: {0}?</value>
   <data name="PackageHostDependencyFilterContextItem" xml:space="preserve">
     <value>Packages requires the specified host to run.</value>
   </data>
+  <data name="MessageUninstallSamePackage" xml:space="preserve">
+    <value>"The package {0} is already installed. To reinstall it, you must first uninstall it and restart to complete the uninstall. Would you like to mark {0} for uninstall?"</value>
+  </data>
 </root>
