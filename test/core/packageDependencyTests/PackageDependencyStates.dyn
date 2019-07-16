@@ -71,25 +71,15 @@
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CustomNodes.Function, DynamoCore",
-      "FunctionSignature": "8a61e923-c305-45ef-9d2d-04c220b0c82c",
+      "FunctionSignature": "0e7c0890-d604-4180-ab3f-804a1df8a7d6",
       "FunctionType": "Graph",
       "NodeType": "FunctionNode",
-      "Id": "bd08f012a20a4d55be094ed97f3e740b",
-      "Inputs": [
-        {
-          "Id": "c71c2d94f5494c1096a607b20ec32322",
-          "Name": "",
-          "Description": "var[]..[]",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
+      "Id": "adfa5ed1381e42929f53c086928cd07e",
+      "Inputs": [],
       "Outputs": [
         {
-          "Id": "773d6dff09c74284ade261d9d192b9d1",
-          "Name": "Curve",
+          "Id": "719bb2cc9c1c4982b58d1c5358b770a2",
+          "Name": "0,0,0",
           "Description": "return value",
           "UsingDefaultValue": false,
           "Level": 2,
@@ -98,27 +88,19 @@
         }
       ],
       "Replication": "Auto",
-      "Description": ""
+      "Description": "Returns the colour black."
     },
     {
-      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
-      "NodeType": "FunctionNode",
-      "FunctionSignature": "Autodesk.Dynamo.MeshToolkit.Display.MeshDisplay.ByMeshColor@Autodesk.Dynamo.MeshToolkit.Mesh,DSCore.Color[]",
-      "Id": "c351e070a8614a31b72cef86f6cbcac8",
+      "ConcreteType": "SampleLibraryUI.Examples.ButtonCustomNodeModel, SampleLibraryUI",
+      "ButtonText": "Default Button Text",
+      "WindowText": "Default Window Text",
+      "NodeType": "ExtensionNode",
+      "Id": "73f814ac558b430fa1050fca82f00f2b",
       "Inputs": [
         {
-          "Id": "4aba418046e446cab67c89584fa3a265",
-          "Name": "mesh",
-          "Description": "Mesh",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        },
-        {
-          "Id": "dc354d81c1664e4498b4d5c90d026216",
-          "Name": "meshColoring",
-          "Description": "single color, triangle colors, or vertex colors\n\nColor[]",
+          "Id": "5bdb9084a83f4a68876e48a3c55f441d",
+          "Name": "inputString",
+          "Description": "a string value displayed on our button",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -127,23 +109,32 @@
       ],
       "Outputs": [
         {
-          "Id": "da76a206e3274736ab3c8796e36a384a",
-          "Name": "MeshDisplay",
-          "Description": "MeshDisplay",
+          "Id": "8291c0770fcc4b3997c903327242eafc",
+          "Name": "button value",
+          "Description": "returns the string value displayed on our button",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "1b68990b945341539000cff4159e896c",
+          "Name": "window value",
+          "Description": "returns the string value displayed in our window when button is pressed",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
           "KeepListStructure": false
         }
       ],
-      "Replication": "Auto",
-      "Description": "Display mesh by single color, triangle colors, or vertex colors\n\nMeshDisplay.ByMeshColor (mesh: Mesh, meshColoring: Color[]): MeshDisplay"
+      "Replication": "Disabled",
+      "Description": "A sample UI node which displays custom UI."
     }
   ],
   "Connectors": [],
   "Dependencies": [
     "82ef267e-5ca1-4150-80ad-7eb2d995c85b",
-    "8a61e923-c305-45ef-9d2d-04c220b0c82c"
+    "0e7c0890-d604-4180-ab3f-804a1df8a7d6"
   ],
   "NodeLibraryDependencies": [
     {
@@ -163,19 +154,19 @@
       ]
     },
     {
-      "Name": "JOLY Lucas",
-      "Version": "0.0.1",
+      "Name": "Clockwork for Dynamo 1.x",
+      "Version": "1.33.0",
       "ReferenceType": "Package",
       "Nodes": [
-        "bd08f012a20a4d55be094ed97f3e740b"
+        "adfa5ed1381e42929f53c086928cd07e"
       ]
     },
     {
-      "Name": "MeshToolkit",
-      "Version": "1.3.1",
+      "Name": "Dynamo Samples",
+      "Version": "2.0.0",
       "ReferenceType": "Package",
       "Nodes": [
-        "c351e070a8614a31b72cef86f6cbcac8"
+        "73f814ac558b430fa1050fca82f00f2b"
       ]
     }
   ],
@@ -185,7 +176,7 @@
       "ScaleFactor": 1.0,
       "HasRunWithoutCrash": true,
       "IsVisibleInDynamoLibrary": true,
-      "Version": "2.4.0.5605",
+      "Version": "2.4.0.5606",
       "RunType": "Automatic",
       "RunPeriod": "1000"
     },
@@ -209,8 +200,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 58.0,
-        "Y": 203.0
+        "X": 119.0,
+        "Y": 192.0
       },
       {
         "ShowGeometry": true,
@@ -219,28 +210,28 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 361.0,
-        "Y": 379.0
+        "X": 272.0,
+        "Y": 381.0
       },
       {
         "ShowGeometry": true,
-        "Name": "BSR.Curve.From.Profile",
-        "Id": "bd08f012a20a4d55be094ed97f3e740b",
+        "Name": "Color.Black",
+        "Id": "adfa5ed1381e42929f53c086928cd07e",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 480.0,
-        "Y": 205.0
+        "X": 451.0,
+        "Y": 402.0
       },
       {
         "ShowGeometry": true,
-        "Name": "MeshDisplay.ByMeshColor",
-        "Id": "c351e070a8614a31b72cef86f6cbcac8",
+        "Name": "Button Custom Node Model",
+        "Id": "73f814ac558b430fa1050fca82f00f2b",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 313.0,
-        "Y": 500.0
+        "X": 384.0,
+        "Y": 210.0
       }
     ],
     "Annotations": [],

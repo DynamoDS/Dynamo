@@ -78,8 +78,13 @@ namespace Dynamo.Tests
             var package = packageDependencies.First();
             Assert.AreEqual(new PackageDependencyInfo("Dynamo Samples", new Version("2.0.0")), package);
             Assert.AreEqual(1, package.Nodes.Count);
-            Assert.IsTrue(package.IsLoaded);
 
+            if (package is PackageDependencyInfo)
+            {
+                var packageDependencyState = ((PackageDependencyInfo)package).State;
+                Assert.AreEqual(PackageDependencyState.Loaded, packageDependencyState);
+            }
+ 
             // Assert package dependency is serialized
             var ToJson = CurrentDynamoModel.CurrentWorkspace.ToJson(CurrentDynamoModel.EngineController);
             var JObject = (JObject)JsonConvert.DeserializeObject(ToJson);
@@ -114,7 +119,12 @@ namespace Dynamo.Tests
             var package = packageDependencies.First();
             Assert.AreEqual(new PackageDependencyInfo("Dynamo Samples", new Version("2.0.0")), package);
             Assert.AreEqual(1, package.Nodes.Count);
-            Assert.IsTrue(package.IsLoaded);
+
+            if (package is PackageDependencyInfo)
+            {
+                var packageDependencyState = ((PackageDependencyInfo)package).State;
+                Assert.AreEqual(PackageDependencyState.Loaded, packageDependencyState);
+            }
         }
 
         [Test]
@@ -131,7 +141,12 @@ namespace Dynamo.Tests
             var package = packageDependencies.First();
             Assert.AreEqual(new PackageDependencyInfo("Custom Rounding", new Version("0.1.4")), package);
             Assert.AreEqual(1, package.Nodes.Count);
-            Assert.IsTrue(package.IsLoaded);
+
+            if (package is PackageDependencyInfo)
+            {
+                var packageDependencyState = ((PackageDependencyInfo)package).State;
+                Assert.AreEqual(PackageDependencyState.Loaded, packageDependencyState);
+            }
         }
 
         [Test]
@@ -148,7 +163,12 @@ namespace Dynamo.Tests
             var package = packageDependencies.First();
             Assert.AreEqual(pi, package);
             Assert.AreEqual(1, package.Nodes.Count);
-            Assert.IsTrue(package.IsLoaded);
+
+            if (package is PackageDependencyInfo)
+            {
+                var packageDependencyState = ((PackageDependencyInfo)package).State;
+                Assert.AreEqual(PackageDependencyState.Loaded, packageDependencyState);
+            }
         }
 
         [Test]
@@ -184,7 +204,12 @@ namespace Dynamo.Tests
             Assert.AreEqual(2, packageDependencies.Count);
             foreach (var package in packageDependencies)
             {
-                Assert.IsTrue(package.IsLoaded);
+                if (package is PackageDependencyInfo)
+                {
+                    var packageDependencyState = ((PackageDependencyInfo)package).State;
+                    Assert.AreEqual(PackageDependencyState.Loaded, packageDependencyState);
+                }
+
                 if (package.Equals(package1))
                 {
                     // Package 1 should have two nodes
@@ -221,7 +246,13 @@ namespace Dynamo.Tests
             Assert.AreEqual(1, packageDependencies.Count);
             Assert.AreEqual(1, packageDependencies.First().Nodes.Count);
             Assert.True(!packageDependencies.First().Nodes.Contains(node1.GUID));
-            Assert.IsTrue(packageDependencies.First().IsLoaded);
+
+            var package = packageDependencies.First();
+            if (package is PackageDependencyInfo)
+            {
+                var packageDependencyState = ((PackageDependencyInfo)package).State;
+                Assert.AreEqual(PackageDependencyState.Loaded, packageDependencyState);
+            }
 
             // Remove te second node and assert package dependencies is now empty
             CurrentDynamoModel.CurrentWorkspace.RemoveAndDisposeNode(node2);
@@ -259,7 +290,13 @@ namespace Dynamo.Tests
             // Assert new package dependency is collected
             var packageDependencies = CurrentDynamoModel.CurrentWorkspace.NodeLibraryDependencies;
             Assert.Contains(pi, packageDependencies);
-            Assert.IsTrue(packageDependencies.First().IsLoaded);
+
+            var package = packageDependencies.First();
+            if (package is PackageDependencyInfo)
+            {
+                var packageDependencyState = ((PackageDependencyInfo)package).State;
+                Assert.AreEqual(PackageDependencyState.Loaded, packageDependencyState);
+            }
         }
 
         [Test]
@@ -387,7 +424,7 @@ namespace Dynamo.Tests
             // Check for Incorrect package state
             PackageDependencyInfo firstPackage = (PackageDependencyInfo) packageDependenciesList[0];
             Assert.AreEqual(new PackageDependencyInfo("MeshToolkit", new Version("2.0.1")), firstPackage);
-            Assert.AreEqual(PackageDependencyState.IncorrectVersion, firstPackage.State);
+            Assert.AreEqual(PackageDependencyState.Missing, firstPackage.State);
 
             // Check for Warning package state, where the actually package is missing
             // but the nodes are resolved by a different package.
@@ -397,12 +434,12 @@ namespace Dynamo.Tests
 
             // Check for Missing package state
             PackageDependencyInfo thirdPackage = (PackageDependencyInfo) packageDependenciesList[2];
-            Assert.AreEqual(new PackageDependencyInfo("JOLY Lucas", new Version("0.0.1")), thirdPackage);
-            Assert.AreEqual(PackageDependencyState.Missing, thirdPackage.State);
+            Assert.AreEqual(new PackageDependencyInfo("Clockwork for Dynamo 1.x", new Version("1.33.0")), thirdPackage);
+            Assert.AreEqual(PackageDependencyState.IncorrectVersion, thirdPackage.State);
 
             // Check for Loaded package state
             PackageDependencyInfo lastPackage = (PackageDependencyInfo) packageDependenciesList.Last();
-            Assert.AreEqual(new PackageDependencyInfo("MeshToolkit", new Version("1.3.1")), lastPackage);
+            Assert.AreEqual(new PackageDependencyInfo("Dynamo Samples", new Version("2.0.0")), lastPackage);
             Assert.AreEqual(PackageDependencyState.Loaded, lastPackage.State);
         }
     }

@@ -102,57 +102,63 @@ namespace Dynamo.WorkspaceDependency
         {
             // Clear the dependency table.
             table.Columns.Clear();
-            foreach (PackageDependencyInfo package in ws.NodeLibraryDependencies)
+
+            foreach (var package in ws.NodeLibraryDependencies)
             {
-                // Different states for dependency packages.
-                switch (package.State)
+                if (package is PackageDependencyInfo)
                 {
-                    case PackageDependencyState.Loaded:
-                        table.Columns.Add(new Column()
-                        {
-                            ColumnsData = new ObservableCollection<ColumnData>()
-                            {
-                                new ColumnData(package.Name),
-                                new ColumnData(package.Version.ToString(), 100)
-                            }
-                        });
-                        break;
+                    PackageDependencyInfo packageDependency = (PackageDependencyInfo) package;
 
-                    case PackageDependencyState.IncorrectVersion:
-                        HasMissingPackage = true;
-                        table.Columns.Add(new Column()
-                        {
-                            ColumnsData = new ObservableCollection<ColumnData>()
+                    // Different states for dependency packages.
+                    switch (packageDependency.State)
+                    {
+                        case PackageDependencyState.Loaded:
+                            table.Columns.Add(new Column()
                             {
-                                new ColumnData(package.Name),
-                                new ColumnData(package.Version.ToString(), 100, ColumnData.WarningColor)
-                            }
-                        });
-                        break;
-                    
-                    case PackageDependencyState.Missing:
-                        HasMissingPackage = true;
-                        table.Columns.Add(new Column()
-                        {
-                            ColumnsData = new ObservableCollection<ColumnData>()
-                            {
-                                new ColumnData(package.Name, ColumnData.MissingColor),
-                                new ColumnData(package.Version.ToString(), 100, ColumnData.MissingColor)
-                            }
-                        });
-                        break;
+                                ColumnsData = new ObservableCollection<ColumnData>()
+                                {
+                                    new ColumnData(packageDependency.Name),
+                                    new ColumnData(packageDependency.Version.ToString(), 100)
+                                }
+                            });
+                            break;
 
-                    case PackageDependencyState.Warning:
-                        HasMissingPackage = true;
-                        table.Columns.Add(new Column()
-                        {
-                            ColumnsData = new ObservableCollection<ColumnData>()
+                        case PackageDependencyState.IncorrectVersion:
+                            HasMissingPackage = true;
+                            table.Columns.Add(new Column()
                             {
-                                new ColumnData(package.Name, ColumnData.WarningColor),
-                                new ColumnData(package.Version.ToString(), 100, ColumnData.WarningColor)
-                            }
-                        });
-                        break;
+                                ColumnsData = new ObservableCollection<ColumnData>()
+                                {
+                                    new ColumnData(packageDependency.Name),
+                                    new ColumnData(packageDependency.Version.ToString(), 100, ColumnData.WarningColor)
+                                }
+                            });
+                            break;
+
+                        case PackageDependencyState.Missing:
+                            HasMissingPackage = true;
+                            table.Columns.Add(new Column()
+                            {
+                                ColumnsData = new ObservableCollection<ColumnData>()
+                                {
+                                    new ColumnData(packageDependency.Name, ColumnData.MissingColor),
+                                    new ColumnData(packageDependency.Version.ToString(), 100, ColumnData.MissingColor)
+                                }
+                            });
+                            break;
+
+                        case PackageDependencyState.Warning:
+                            HasMissingPackage = true;
+                            table.Columns.Add(new Column()
+                            {
+                                ColumnsData = new ObservableCollection<ColumnData>()
+                                {
+                                    new ColumnData(packageDependency.Name, ColumnData.WarningColor),
+                                    new ColumnData(packageDependency.Version.ToString(), 100, ColumnData.WarningColor)
+                                }
+                            });
+                            break;
+                    }
                 }
             }
         }
