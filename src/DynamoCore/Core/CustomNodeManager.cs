@@ -538,18 +538,13 @@ namespace Dynamo.Core
                 }
                    else //(newInfo has owning Package, oldInfo does not)
                 {
-                    // it's unclear to me if we will ever hit this case, but if we do
-                    // it will be useful to know when. It might happen during a complex versioning publish workflow.
+                   
                     // This represents the case where a previous info was not from a package, but the current info
                     // has an owning package.
-                    var looseCustomNodeToPackageMessage = String.Format("Attempting to load customNode {0}," +
-                        " loaded by package {1}, but A previous definition named {2} exists with no associated package." +
-                        " The new customNode definition has been loaded, but Dynamo may in an unstable state, please avoid loading" +
-                        " multiple custom nodes with the id {3}. ", newInfo.Name, newInfo.PackageInfo, info.Name, info.FunctionId);
+                    var looseCustomNodeToPackageMessage = String.Format(Properties.Resources.FunctionDefinitionOverwrittenMessage, newInfo.Name, newInfo.PackageInfo, info.Name);
 
                     var ex = new CustomNodePackageLoadException(newInfoPath, infoPath, looseCustomNodeToPackageMessage);
                     Log(ex.Message, WarningLevel.Mild);
-                    //TODO worth logging notifications? (if we will localize)
                     Log(ex);
                 }
 
