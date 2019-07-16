@@ -3702,7 +3702,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Click to choose one or multiple host filter to browse host specific packages..
+        ///   Looks up a localized string similar to Filter packages by Dynamo host application..
         /// </summary>
         public static string PackageHostDependencyFilter {
             get {
@@ -3711,7 +3711,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Packages requires this specified host to run..
+        ///   Looks up a localized string similar to Packages requires the specified host to run..
         /// </summary>
         public static string PackageHostDependencyFilterContextItem {
             get {
