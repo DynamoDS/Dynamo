@@ -548,7 +548,16 @@ namespace Dynamo.Graph.Workspaces
                         }
                         packageDependencies[saved].AddDependent(node.GUID);
 
-                        if (collected != null)
+                        // if the package is not installed.
+                        if (collected == null)
+                        {
+                            packageDependencies[saved].State = PackageDependencyState.Missing;
+                        }
+                        // If the state is Missing for atleast one of the nodes,
+                        // we set the state of the whole package dependency to Missing.
+                        // Set other states accordingly, only if the PackageDependencyState(for that package)
+                        // is not set to Missing by any of the other nodes. 
+                        else if (packageDependencies[saved].State != PackageDependencyState.Missing)
                         {
                             if (saved.Name == collected.Name)
                             {
@@ -568,11 +577,6 @@ namespace Dynamo.Graph.Workspaces
                             {
                                 packageDependencies[saved].State = PackageDependencyState.Warning;
                             }
-                        }
-                        // if the package is not installed.
-                        else
-                        {
-                            packageDependencies[saved].State = PackageDependencyState.Missing;
                         }
                     }
                     else
