@@ -199,7 +199,6 @@ namespace Dynamo.WorkspaceDependency
         static int DefaultWidth = 200;
         static SolidColorBrush DefaultColor = (SolidColorBrush)(new BrushConverter().ConvertFrom("#aaaaaa"));
         public static Brush MissingColor = Brushes.Red;
-        public static Brush IncorrectVersionColor = Brushes.Orange;
         public static Brush WarningColor = Brushes.Yellow;
 
         /// <summary>
