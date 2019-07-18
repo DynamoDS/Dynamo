@@ -8,11 +8,11 @@ namespace Dynamo.Graph.Workspaces
     /// </summary>
     internal enum PackageDependencyState
     {
-        Loaded,           // Correct package and version loaded.
-        IncorrectVersion, // Correct package but incorrect version. 
-        Missing,          // package is completely missing.
-        Warning,          // Actual package is missing but the nodes are resolved by some other package. 
-        RequiresRestart   // Restart needed inorder to complete the uninstall of some package. 
+        Loaded,            // Correct package and version loaded.
+        IncorrectVersion,  // Correct package but incorrect version. 
+        Missing,           // package is completely missing.
+        Warning,           // Actual package is missing but the nodes are resolved by some other package. 
+        RequiresRestart    // Restart needed inorder to complete the uninstall of some package. 
     }
 
     /// <summary>
