@@ -8,11 +8,11 @@ namespace Dynamo.Graph.Workspaces
     /// </summary>
     internal enum PackageDependencyState
     {
-        Loaded,
-        IncorrectVersion,
-        Missing,
-        Warning,
-        RequiresRestart
+        Loaded,           // Correct package and version loaded.
+        IncorrectVersion, // Correct package but incorrect version. 
+        Missing,          // package is completely missing.
+        Warning,          // Actual package is missing but the nodes are resolved by some other package. 
+        RequiresRestart   // Restart needed inorder to complete the uninstall of some package. 
     }
 
     /// <summary>
@@ -131,7 +131,8 @@ namespace Dynamo.Graph.Workspaces
         /// <summary>
         /// Indicates whether this dependency is loaded in the current session
         /// </summary>
-        bool IsLoaded { get; set; }
+        [Obsolete("This property is obsolete", false)]
+        bool IsLoaded { get; }
     }
 
     /// <summary>
@@ -157,7 +158,13 @@ namespace Dynamo.Graph.Workspaces
         /// <summary>
         /// Indicates whether this package is loaded in the current session
         /// </summary>
-        public bool IsLoaded { get; set; }
+        [Obsolete("This property is obsolete, use PackageDependencyState property instead", false)]
+        public bool IsLoaded
+        {
+            get {
+                return this.State.Equals(PackageDependencyState.Loaded);
+            }
+        }
 
         /// <summary>
         /// State of Package Dependency

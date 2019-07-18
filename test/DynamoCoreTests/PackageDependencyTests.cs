@@ -340,8 +340,14 @@ namespace Dynamo.Tests
             // Assert ZTTestPackage is still a package dependency
             var packageDependencies = CurrentDynamoModel.CurrentWorkspace.NodeLibraryDependencies;
             Assert.Contains(new PackageDependencyInfo("ZTTestPackage", new Version("0.0.1")), packageDependencies);
-            Assert.IsTrue(packageDependencies.First().IsLoaded == false);
 
+            var package = packageDependencies.First();
+            if (package is PackageDependencyInfo)
+            {
+                var packageDependencyState = ((PackageDependencyInfo)package).State;
+                // Assert that the package is not loaded. 
+                Assert.AreNotEqual(PackageDependencyState.Loaded, packageDependencyState);
+            }
         }
 
         [Test]
@@ -358,7 +364,14 @@ namespace Dynamo.Tests
             // Assert ZTTestPackage is still a package dependency
             var packageDependencies = CurrentDynamoModel.CurrentWorkspace.NodeLibraryDependencies;
             Assert.Contains(new PackageDependencyInfo("ZTTestPackage", new Version("0.0.1")), packageDependencies);
-            Assert.IsTrue(packageDependencies.First().IsLoaded == false);
+
+            // Assert that the package is not loaded. 
+            var package = packageDependencies.First();
+            if (package is PackageDependencyInfo)
+            {
+                var packageDependencyState = ((PackageDependencyInfo)package).State;
+                Assert.AreNotEqual(PackageDependencyState.Loaded, packageDependencyState);
+            }
 
             string packageDirectory = Path.Combine(TestDirectory, @"core\packageDependencyTests\ZTTestPackage");
             LoadPackage(packageDirectory);
