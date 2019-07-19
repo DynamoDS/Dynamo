@@ -79,6 +79,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(new PackageDependencyInfo("Dynamo Samples", new Version("2.0.0")), package);
             Assert.AreEqual(1, package.Nodes.Count);
 
+            Assert.IsTrue(package.IsLoaded);
             if (package is PackageDependencyInfo)
             {
                 var packageDependencyState = ((PackageDependencyInfo)package).State;
@@ -120,6 +121,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(new PackageDependencyInfo("Dynamo Samples", new Version("2.0.0")), package);
             Assert.AreEqual(1, package.Nodes.Count);
 
+            Assert.IsTrue(package.IsLoaded);
             if (package is PackageDependencyInfo)
             {
                 var packageDependencyState = ((PackageDependencyInfo)package).State;
@@ -142,6 +144,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(new PackageDependencyInfo("Custom Rounding", new Version("0.1.4")), package);
             Assert.AreEqual(1, package.Nodes.Count);
 
+            Assert.IsTrue(package.IsLoaded);
             if (package is PackageDependencyInfo)
             {
                 var packageDependencyState = ((PackageDependencyInfo)package).State;
@@ -163,6 +166,7 @@ namespace Dynamo.Tests
             var package = packageDependencies.First();
             Assert.AreEqual(pi, package);
             Assert.AreEqual(1, package.Nodes.Count);
+            Assert.IsTrue(package.IsLoaded);
 
             if (package is PackageDependencyInfo)
             {
@@ -204,6 +208,8 @@ namespace Dynamo.Tests
             Assert.AreEqual(2, packageDependencies.Count);
             foreach (var package in packageDependencies)
             {
+                Assert.IsTrue(package.IsLoaded);
+
                 if (package is PackageDependencyInfo)
                 {
                     var packageDependencyState = ((PackageDependencyInfo)package).State;
@@ -248,6 +254,8 @@ namespace Dynamo.Tests
             Assert.True(!packageDependencies.First().Nodes.Contains(node1.GUID));
 
             var package = packageDependencies.First();
+            Assert.IsTrue(package.IsLoaded);
+
             if (package is PackageDependencyInfo)
             {
                 var packageDependencyState = ((PackageDependencyInfo)package).State;
@@ -292,6 +300,8 @@ namespace Dynamo.Tests
             Assert.Contains(pi, packageDependencies);
 
             var package = packageDependencies.First();
+            Assert.IsTrue(package.IsLoaded);
+
             if (package is PackageDependencyInfo)
             {
                 var packageDependencyState = ((PackageDependencyInfo)package).State;
@@ -342,6 +352,8 @@ namespace Dynamo.Tests
             Assert.Contains(new PackageDependencyInfo("ZTTestPackage", new Version("0.0.1")), packageDependencies);
 
             var package = packageDependencies.First();
+            Assert.IsTrue(package.IsLoaded == false);
+
             if (package is PackageDependencyInfo)
             {
                 var packageDependencyState = ((PackageDependencyInfo)package).State;
@@ -367,6 +379,8 @@ namespace Dynamo.Tests
 
             // Assert that the package is not loaded. 
             var package = packageDependencies.First();
+            Assert.IsTrue(package.IsLoaded == false);
+
             if (package is PackageDependencyInfo)
             {
                 var packageDependencyState = ((PackageDependencyInfo)package).State;

@@ -132,7 +132,7 @@ namespace Dynamo.Graph.Workspaces
         /// Indicates whether this dependency is loaded in the current session
         /// </summary>
         [Obsolete("This property is obsolete", false)]
-        bool IsLoaded { get; }
+        bool IsLoaded { get; set; }
     }
 
     /// <summary>
@@ -140,6 +140,7 @@ namespace Dynamo.Graph.Workspaces
     /// </summary>
     internal class PackageDependencyInfo : INodeLibraryDependencyInfo
     {
+        private PackageDependencyState _state;
         /// <summary>
         /// PackageInfo for this package
         /// </summary>
@@ -159,17 +160,23 @@ namespace Dynamo.Graph.Workspaces
         /// Indicates whether this package is loaded in the current session
         /// </summary>
         [Obsolete("This property is obsolete, use PackageDependencyState property instead", false)]
-        public bool IsLoaded
-        {
-            get {
-                return this.State.Equals(PackageDependencyState.Loaded);
-            }
-        }
+        public bool IsLoaded{ get; set;}
 
         /// <summary>
         /// State of Package Dependency
         /// </summary>
-        public PackageDependencyState State { get; set; }
+        public PackageDependencyState State {
+            
+            get {
+                return _state;
+            } 
+            set {
+                _state = value;
+                if (_state == PackageDependencyState.Loaded) {
+                    this.IsLoaded = true;
+                }
+            }
+        }
 
         /// <summary>
         /// Guids of nodes in the workspace that are dependent on this package
