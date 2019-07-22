@@ -2258,7 +2258,7 @@ namespace Dynamo.Tests
             var pkg = loader.ScanPackageDirectory(pkgDir);
 
             // Load the sample package which includes migrations
-            loader.Load(pkg);
+            loader.LoadPackages(new List<Package> {pkg});
 
             // Assert expected package was loaded
             Assert.AreEqual(pkg.Name, "Dynamo Samples");

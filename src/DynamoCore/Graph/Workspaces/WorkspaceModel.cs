@@ -4,6 +4,8 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Xml;
 using Dynamo.Core;
 using Dynamo.Engine;
@@ -14,6 +16,7 @@ using Dynamo.Graph.Connectors;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.CustomNodes;
 using Dynamo.Graph.Nodes.NodeLoaders;
+using Dynamo.Graph.Nodes.ZeroTouch;
 using Dynamo.Graph.Notes;
 using Dynamo.Graph.Presets;
 using Dynamo.Logging;
@@ -25,6 +28,7 @@ using Dynamo.Utilities;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using ProtoCore.Namespace;
+
 
 namespace Dynamo.Graph.Workspaces
 {
@@ -437,6 +441,18 @@ namespace Dynamo.Graph.Workspaces
         }
 
         /// <summary>
+        /// Event that is fired when the workspace is collecting custom node package dependencies.
+        /// This event should only be subscribed to by the package manager.
+        /// </summary>
+        internal event Func<Guid, PackageInfo> CollectingCustomNodePackageDependencies;
+
+        /// <summary>
+        /// Event that is fired when the workspace is collecting node package dependencies.
+        /// This event should only be subscribed to by the package manager.
+        /// </summary>
+        internal event Func<AssemblyName, PackageInfo> CollectingNodePackageDependencies;
+
+        /// <summary>
         /// This handler handles the workspaceModel's request to populate a JSON with view data.
         /// This is used to construct a full workspace for instrumentation.
         /// </summary>
@@ -487,7 +503,7 @@ namespace Dynamo.Graph.Workspaces
         }
 
         /// <summary>
-        /// gathers the direct workspace dependencies of this workspace.
+        /// gathers the direct customNode workspace dependencies of this workspace.
         /// </summary>
         /// <returns> a list of workspace IDs in GUID form</returns>
         public HashSet<Guid> Dependencies
@@ -512,6 +528,65 @@ namespace Dynamo.Graph.Workspaces
                 return dependencies;
             }
         }
+
+        /// <summary>
+        /// NodeLibraries that the nodes in this graph depend on
+        /// </summary>
+        internal List<INodeLibraryDependencyInfo> NodeLibraryDependencies
+        {
+            get
+            {
+                var packageDependencies = new Dictionary<PackageInfo, PackageDependencyInfo>();
+                foreach (var node in Nodes)
+                {
+                    var collected = GetNodePackage(node);
+                    if (nodePackageDictionary.ContainsKey(node.GUID))
+                    {
+                        var saved = nodePackageDictionary[node.GUID];
+                        if (!packageDependencies.ContainsKey(saved))
+                        {
+                            packageDependencies[saved] = new PackageDependencyInfo(saved);
+                        }
+                        packageDependencies[saved].AddDependent(node.GUID);
+                        packageDependencies[saved].IsLoaded = saved.Equals(collected);
+                    }
+                    else
+                    {
+                        if (collected != null)
+                        {
+                            if (!packageDependencies.ContainsKey(collected))
+                            {
+                                packageDependencies[collected] = new PackageDependencyInfo(collected);
+                            }
+                            packageDependencies[collected].AddDependent(node.GUID);
+                            packageDependencies[collected].IsLoaded = true;
+                        }
+                    }
+                }
+                return packageDependencies.Values.ToList<INodeLibraryDependencyInfo>();
+            }
+            set
+            {
+                foreach (var dependency in value)
+                {
+                    //handle package dependencies
+                    if(dependency.ReferenceType == ReferenceType.Package 
+                        && dependency is PackageDependencyInfo)
+                    {
+                        foreach (var node in dependency.Nodes)
+                        {
+                            nodePackageDictionary[node] = (dependency as PackageDependencyInfo).PackageInfo;
+                        }
+                    }
+                   
+                }
+
+                RaisePropertyChanged(nameof(NodeLibraryDependencies));
+            }
+        }
+
+        private Dictionary<Guid, PackageInfo> nodePackageDictionary = new Dictionary<Guid, PackageInfo>();
+        
 
         /// <summary>
         ///     An author of the workspace
@@ -608,7 +683,7 @@ namespace Dynamo.Graph.Workspaces
             {
                 nodes.Add(node);
             }
-
+            
             OnNodeAdded(node);
         }
 
@@ -851,6 +926,8 @@ namespace Dynamo.Graph.Workspaces
 
             this.annotations = new List<AnnotationModel>(annotations);
 
+            this.NodeLibraryDependencies = new List<INodeLibraryDependencyInfo>();
+
             // Set workspace info from WorkspaceInfo object
             Name = info.Name;
             Description = info.Description;
@@ -989,7 +1066,7 @@ namespace Dynamo.Graph.Workspaces
 
             ClearUndoRecorder();
             ResetWorkspace();
-
+            
             X = 0.0;
             Y = 0.0;
             Zoom = 1.0;
@@ -1550,6 +1627,79 @@ namespace Dynamo.Graph.Workspaces
             HasUnsavedChanges = true;
         }
 
+        /// <summary>
+        /// Gets the top level assembly referenced by a node in this workspace
+        /// </summary>
+        /// <returns></returns>
+        internal AssemblyName GetNameOfAssemblyReferencedByNode(NodeModel node)
+        {
+            AssemblyName assemblyName = null;
+            // Get zerotouch assembly
+            if (node is DSFunction)
+            {
+                var descriptor = (node as DSFunction).Controller.Definition;
+                if (descriptor.IsPackageMember)
+                {
+                    assemblyName = AssemblyName.GetAssemblyName(descriptor.Assembly);
+                }
+            }
+            // Get NodeModel assembly
+            else
+            {
+                var assembly = node.GetType().Assembly;
+                assemblyName = AssemblyName.GetAssemblyName(assembly.Location);
+            }
+            return assemblyName;
+        }
+
+        /// <summary>
+        /// Removes a nodes deserialized package dependency, 
+        /// causing it to be updated during the next Package Dependencies update
+        /// </summary>
+        /// <param name="nodeID"></param>
+        internal void VoidNodeDependency(Guid nodeID)
+        {
+            nodePackageDictionary.Remove(nodeID);
+        }
+
+        private PackageInfo GetNodePackage(NodeModel node)
+        {
+            // Collect package dependencies for custom node
+            if (node is Function)
+            {
+                if (CollectingCustomNodePackageDependencies != null)
+                {
+                    if (CollectingCustomNodePackageDependencies.GetInvocationList().Count() > 1)
+                    {
+                        throw new Exception("There are multiple subscribers to Workspace.CollectingCustomNodePackageDependencies. " +
+                            "Only PackageManagerExtension should subscribe to this event.");
+                    }
+                    var customNodeID = (node as Function).Definition.FunctionId;
+                    return CollectingCustomNodePackageDependencies(customNodeID);
+                }
+            }
+
+            // Collect package dependencies for zerotouch or nodemodel node
+            else
+            {
+                if (CollectingNodePackageDependencies != null)
+                {
+                    if (CollectingNodePackageDependencies.GetInvocationList().Count() > 1)
+                    {
+                        throw new Exception("There are multiple subscribers to Workspace.CollectingNodePackageDependencies. " +
+                            "Only PackageManagerExtension should subscribe to this event.");
+                    }
+                    var assemblyName = GetNameOfAssemblyReferencedByNode(node);
+                    if (assemblyName != null)
+                    {
+                        return CollectingNodePackageDependencies(assemblyName);
+                    }
+                }
+            }
+
+            return null;
+        }
+
         #endregion
 
         internal string GetStringRepOfWorkspace()
@@ -1661,7 +1811,8 @@ namespace Dynamo.Graph.Workspaces
                         new ConnectorConverter(logger),
                         new WorkspaceReadConverter(engineController, scheduler, factory, isTestMode, verboseLogging),
                         new NodeReadConverter(manager, libraryServices, factory, isTestMode),
-                        new TypedParameterConverter()
+                        new TypedParameterConverter(),
+                        new NodeLibraryDependencyConverter(logger)
                     },
                 ReferenceResolverProvider = () => { return new IdReferenceResolver(); }
             };

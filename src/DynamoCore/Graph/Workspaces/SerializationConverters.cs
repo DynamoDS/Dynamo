@@ -390,6 +390,8 @@ namespace Dynamo.Graph.Workspaces
         bool isTestMode;
         bool verboseLogging;
 
+        internal readonly static string NodeLibraryDependenciesPropString = "NodeLibraryDependencies";
+
         public WorkspaceReadConverter(EngineController engine, 
             DynamoScheduler scheduler, NodeFactory factory, bool isTestMode, bool verboseLogging)
         {
@@ -525,6 +527,16 @@ namespace Dynamo.Graph.Workspaces
             // relevant ports.
             var connectors = obj["Connectors"].ToObject<IEnumerable<ConnectorModel>>(serializer);
 
+            IEnumerable<INodeLibraryDependencyInfo> nodeLibraryDependencies;
+            if (obj[NodeLibraryDependenciesPropString] != null)
+            {
+                nodeLibraryDependencies = obj[NodeLibraryDependenciesPropString].ToObject<IEnumerable<INodeLibraryDependencyInfo>>(serializer);
+            }
+            else
+            {
+                nodeLibraryDependencies = new List<PackageDependencyInfo>();
+            }
+
             var info = new WorkspaceInfo(guid.ToString(), name, description, Dynamo.Models.RunType.Automatic);
 
             // IsVisibleInDynamoLibrary and Category should be set explicitly for custom node workspace
@@ -586,6 +598,8 @@ namespace Dynamo.Graph.Workspaces
                     Enumerable.Empty<PresetModel>(), elementResolver, 
                     info, verboseLogging, isTestMode);
             }
+
+            ws.NodeLibraryDependencies = nodeLibraryDependencies.ToList();
 
             return ws;
         }
@@ -689,6 +703,10 @@ namespace Dynamo.Graph.Workspaces
             }
             writer.WriteEndArray();
 
+            // NodeLibraryDependencies
+            writer.WritePropertyName(WorkspaceReadConverter.NodeLibraryDependenciesPropString);
+            serializer.Serialize(writer, ws.NodeLibraryDependencies);
+
             if (engine != null)
             {
                 // Bindings
@@ -736,6 +754,133 @@ namespace Dynamo.Graph.Workspaces
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
             throw new NotImplementedException();
+        }
+    }
+
+    /// <summary>
+    /// Is used to serialize and deserialize graph workspace node library references
+    /// </summary>
+    public class NodeLibraryDependencyConverter : JsonConverter
+    {
+        private Logging.ILogger logger;
+        internal static readonly string ReferenceTypePropString = "ReferenceType";
+        internal static readonly string NamePropString = "Name";
+        internal static readonly string VersionPropString = "Version";
+        internal static readonly string NodesPropString = "Nodes";
+
+        /// <summary>
+        /// Constructs a WorkspaceNodeReferenceConverter.
+        /// </summary>
+        /// <param name="logger"></param>
+        public NodeLibraryDependencyConverter(Logging.ILogger logger)
+        {
+            this.logger = logger;
+        }
+
+        public override bool CanConvert(Type objectType)
+        {
+            return typeof(INodeLibraryDependencyInfo).IsAssignableFrom(objectType);
+        }
+
+        public override bool CanRead
+        {
+            get { return true; }
+        }
+
+        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+        {
+            INodeLibraryDependencyInfo p = value as INodeLibraryDependencyInfo;
+            if (p != null)
+            {
+                writer.WriteStartObject();
+                writer.WritePropertyName(NamePropString);
+                writer.WriteValue(p.Name);
+                writer.WritePropertyName(VersionPropString);
+                writer.WriteValue(p.Version.ToString());
+                writer.WritePropertyName(ReferenceTypePropString);
+                writer.WriteValue(p.ReferenceType.ToString("G"));
+                writer.WritePropertyName(NodesPropString);
+                writer.WriteStartArray();
+                foreach(var node in p.Nodes)
+                {
+                    writer.WriteValue(node.ToString("N"));
+                }
+                writer.WriteEndArray();
+                writer.WriteEndObject();
+            }
+            else
+            {
+                logger.LogWarning("Unnsuccessful attempt to serialize a INodeLibraryDependencyInfo object.", Logging.WarningLevel.Moderate);
+            }
+        }
+
+        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+        {
+            var obj = JObject.Load(reader);
+
+            // Get dependency name
+            var name = obj["Name"].Value<string>();
+
+            // Try get dependency version
+            var versionString = obj["Version"].Value<string>();
+            Version version;
+            if (!Version.TryParse(versionString, out version))
+            {
+                logger.LogWarning(
+                    string.Format("The version of Package Dependency {0} could not be deserialized.", name), 
+                    Logging.WarningLevel.Moderate);
+            }
+
+            //default to package.
+            ReferenceType parsedType = ReferenceType.Package;
+            JToken referenceTypeToken;
+            if (obj.TryGetValue(ReferenceTypePropString, out referenceTypeToken))
+            {
+                var referenceTypeString = referenceTypeToken.Value<string>();
+                if (!Enum.TryParse<ReferenceType>(referenceTypeString, out parsedType))
+                {
+                    logger.LogWarning(
+                        string.Format("The ReferenceType of Dependency {0} could not be deserialized.", name),
+                        Logging.WarningLevel.Moderate);
+                }
+
+            }
+        
+            INodeLibraryDependencyInfo depInfo;
+            //select correct constructor based on referenceType
+            switch (parsedType)
+            {
+                case ReferenceType.Package:
+                    depInfo = new PackageDependencyInfo(name, version);
+                    break;
+                /*TODO add other cases: for example
+                 * case ReferenceType.ZeroTouch
+                 * depInfp = new ZeroTouchDependencyInfo(name,version)
+                */
+                default:
+                    depInfo = new PackageDependencyInfo(name, version);
+                    break;
+            }
+
+           
+
+            // Try get dependent node IDs
+            var nodes = obj["Nodes"].Values<string>();
+            foreach(var nodeID in nodes)
+            {
+                Guid guid;
+                if (!Guid.TryParse(nodeID, out guid))
+                {
+                    logger.LogWarning(
+                    string.Format("The id ({0}) of a node dependent on {1} could not be parsed as a GUID.", nodeID, name),
+                    Logging.WarningLevel.Moderate);
+                }
+                else
+                {
+                    depInfo.AddDependent(guid);
+                }
+            }
+            return depInfo;
         }
     }
 

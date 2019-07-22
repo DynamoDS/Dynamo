@@ -78,8 +78,8 @@ limitations under the License.
     <Reference Include="Analytics.NET.Google">
       <HintPath>..\..\extern\Analytics.NET\Analytics.NET.Google.dll</HintPath>
     </Reference>
-    <Reference Include="Greg, Version=1.1.7040.19960, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Greg.1.1.7040.19960\lib\net47\Greg.dll</HintPath>
+    <Reference Include="Greg, Version=1.2.7121.21318, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Greg.1.2.7121.21318\lib\net47\Greg.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
@@ -121,7 +121,9 @@ limitations under the License.
     <Compile Include="Engine\Profiling\ProfilingData.cs" />
     <Compile Include="Engine\Profiling\ProfilingSession.cs" />
     <Compile Include="Engine\ShortestQualifiedNameReplacer.cs" />
+    <Compile Include="Exceptions\CustomNodePackageLoadException.cs" />
     <Compile Include="Exceptions\LibraryLoadFailedException.cs" />
+    <Compile Include="Graph\Workspaces\PackageDependencyInfo.cs" />
     <Compile Include="Graph\Nodes\NodeOutputData.cs" />
     <Compile Include="Graph\Nodes\NodeInputData.cs" />
     <Compile Include="Graph\Workspaces\LayoutExtensions.cs" />

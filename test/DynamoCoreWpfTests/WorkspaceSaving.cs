@@ -17,6 +17,7 @@ using CoreNodeModels.Input;
 using Dynamo.Graph.Connectors;
 using Dynamo.Graph.Nodes;
 using Dynamo.Wpf;
+using Dynamo.PackageManager;
 
 namespace Dynamo.Tests
 {
@@ -228,7 +229,7 @@ namespace Dynamo.Tests
             var nodeName = "Cool node";
             var catName = "Custom Nodes";
 
-            var def = dynamoModel.CustomNodeManager.CreateCustomNode(nodeName, catName, "");
+            var def = dynamoModel.CustomNodeManager.CreateCustomNode(nodeName, catName, "", null);
 
             var newPath = GetNewFileNameOnTempPath("dyf");
             def.Save(newPath);
@@ -274,7 +275,7 @@ namespace Dynamo.Tests
             var nodeName = "Cool node";
             var catName = "Custom Nodes";
 
-            var def = dynamoModel.CustomNodeManager.CreateCustomNode(nodeName, catName, "");
+            var def = dynamoModel.CustomNodeManager.CreateCustomNode(nodeName, catName, "", null);
 
             foreach (var i in Enumerable.Range(0, 10))
             {
@@ -333,7 +334,7 @@ namespace Dynamo.Tests
             var nodeName = "Cool node";
             var catName = "Custom Nodes";
 
-            var def = dynamoModel.CustomNodeManager.CreateCustomNode(nodeName, catName, "");
+            var def = dynamoModel.CustomNodeManager.CreateCustomNode(nodeName, catName, "", null);
 
             var newPath = GetNewFileNameOnTempPath("dyf");
             def.Save(newPath);
@@ -402,7 +403,7 @@ namespace Dynamo.Tests
             var nodeName = "Cool node";
             var catName = "Custom Nodes";
 
-            var def = dynamoModel.CustomNodeManager.CreateCustomNode(nodeName, catName, "");
+            var def = dynamoModel.CustomNodeManager.CreateCustomNode(nodeName, catName, "", null);
 
             var newPath = GetNewFileNameOnTempPath("dyf");
             def.Save(newPath);
@@ -666,7 +667,7 @@ namespace Dynamo.Tests
             var nodeName = "Cool node";
             var catName = "Custom Nodes";
 
-            var def = dynamoModel.CustomNodeManager.CreateCustomNode(nodeName, catName, "");
+            var def = dynamoModel.CustomNodeManager.CreateCustomNode(nodeName, catName, "", null);
             Assert.IsFalse(def.HasUnsavedChanges);
 
             var node = new DSFunction(dynamoModel.LibraryServices.GetFunctionDescriptor("+"));
@@ -852,7 +853,7 @@ namespace Dynamo.Tests
             var customNodeWorkspace = dynamoModel.CurrentWorkspace;
 
             var initialId = new Guid("6aecda57-7679-4afb-aa02-05a75cc3433e");
-            var newCustNodeInstance = dynamoModel.CustomNodeManager.CreateCustomNodeInstance(initialId);
+            var newCustNodeInstance = dynamoModel.CustomNodeManager.CreateCustomNodeInstance(initialId, null, true);
             // Switch HomeWorkspace and place custom node on it
             dynamoModel.CurrentWorkspace = dynamoModel.Workspaces.First();
             dynamoModel.CurrentWorkspace.AddAndRegisterNode(newCustNodeInstance, false);
@@ -902,6 +903,7 @@ namespace Dynamo.Tests
             nodeWorkspace.Save(newPath);
 
             var newDef = nodeWorkspace.CustomNodeDefinition;
+            Assert.AreNotEqual(oldId, newDef.FunctionId);
         }
 
         [Test]
@@ -1152,7 +1154,7 @@ namespace Dynamo.Tests
             var nodeName = "Cool node";
             var catName = "Custom Nodes";
 
-            var def = dynamoModel.CustomNodeManager.CreateCustomNode(nodeName, catName, "");
+            var def = dynamoModel.CustomNodeManager.CreateCustomNode(nodeName, catName, "", null);
             var workspace = (CustomNodeWorkspaceModel)def;
 
             var listGuids = new List<Guid>();
@@ -1203,7 +1205,7 @@ namespace Dynamo.Tests
             var nodeName = "Foo";
             var catName = "Custom Nodes";
 
-            var def = dynamoModel.CustomNodeManager.CreateCustomNode(nodeName, catName, "");
+            var def = dynamoModel.CustomNodeManager.CreateCustomNode(nodeName, catName, "", null);
             var workspace = (CustomNodeWorkspaceModel)def;
             ViewModel.SearchViewModel.Visible = true;
 
@@ -1246,7 +1248,7 @@ namespace Dynamo.Tests
             var nodeName = Guid.NewGuid().ToString();
             var catName = "Custom Nodes";
 
-            var def = dynamoModel.CustomNodeManager.CreateCustomNode(nodeName, catName, "");
+            var def = dynamoModel.CustomNodeManager.CreateCustomNode(nodeName, catName, "", null);
 
             var tempPath1 = Path.Combine(TempFolder, nodeName + ".dyf");
 
@@ -1265,6 +1267,59 @@ namespace Dynamo.Tests
             var count = dynamoModel.SearchModel.SearchEntries.OfType<CustomNodeSearchElement>().Where(
                             x => string.CompareOrdinal(x.Name, nodeName) == 0).Count();
             Assert.AreEqual(count, 2);
+        }
+
+        [Test]
+        public void CustomNodeBelongingToPackageCanBeModifiedAndReopenedWithoutError()
+        {
+
+            // load package A
+            // place custom node instance belonging to package A in homeworkspace
+            // modify custom node
+            // save custom node to same path
+            // close custom node
+            // open custom node
+            // assert instances changed their number of output ports.
+            var packageDirectory = Path.Combine(TestDirectory, "pkgs", "PackageThatWillBeModified");
+            var loader = this.ViewModel.Model.GetPackageManagerExtension().PackageLoader;
+
+           var package= Package.FromDirectory(packageDirectory, this.ViewModel.Model.Logger);
+            loader.LoadPackages(new Package[] { package });
+
+            //assert that package has been loaded.
+            var foundPackage = loader.LocalPackages.Where(x => x.Name == "PackageThatWillBeModified").FirstOrDefault();
+            Assert.IsNotNull(package);
+            Assert.IsTrue(package.Loaded);
+            //find our custom node
+            var customNodeInfo = this.ViewModel.Model.CustomNodeManager.NodeInfos.Where(x => x.Value.Name == "ANodeToModify").FirstOrDefault();
+            Assert.IsNotNull(customNodeInfo);
+
+            //place an instance.
+            var customNodeInstance = this.ViewModel.Model.CustomNodeManager.CreateCustomNodeInstance(customNodeInfo.Key);
+            var oldNumPorts = customNodeInstance.OutPorts.Count();
+            this.ViewModel.CurrentSpace.AddAndRegisterNode(customNodeInstance);
+            Assert.AreEqual(1, this.ViewModel.Model.CurrentWorkspace.Nodes.OfType<Function>().Count());
+
+            // open the custom node
+            ViewModel.GoToWorkspaceCommand.Execute(customNodeInfo.Key);
+
+            //add a new output node
+            Assert.IsAssignableFrom(typeof(CustomNodeWorkspaceModel), this.ViewModel.Model.CurrentWorkspace);
+            var newoutput = new Output();
+            newoutput.Symbol = "anewoutput";
+            this.ViewModel.Model.CurrentWorkspace.AddAndRegisterNode(newoutput);
+
+            //save the node, update the nodeInfo
+            this.ViewModel.Model.CurrentWorkspace.Save(customNodeInfo.Value.Path);
+
+            //swtich back to the home workspace
+            ViewModel.Model.ExecuteCommand(new DynamoModel.SwitchTabCommand(0));
+            Assert.IsAssignableFrom(typeof(HomeWorkspaceModel), this.ViewModel.Model.CurrentWorkspace);
+
+            var nodeInstance = this.ViewModel.Model.CurrentWorkspace.Nodes.OfType<Function>().FirstOrDefault();
+            Assert.AreEqual(oldNumPorts+1, nodeInstance.OutPorts.Count());
+            Assert.IsTrue(nodeInstance.OutPorts.LastOrDefault().Name.StartsWith("anewoutput"));
+
         }
         #endregion
     }

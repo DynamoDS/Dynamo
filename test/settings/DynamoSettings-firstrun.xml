@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<PreferenceSettings xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <IsFirstRun>true</IsFirstRun>
+  <IsUsageReportingApproved>false</IsUsageReportingApproved>
+  <IsAnalyticsReportingApproved>false</IsAnalyticsReportingApproved>
+  <LibraryWidth>304</LibraryWidth>
+  <ConsoleHeight>0</ConsoleHeight>
+  <ShowConnector>true</ShowConnector>
+  <ConnectorType>BEZIER</ConnectorType>
+  <FullscreenWatchShowing>true</FullscreenWatchShowing>
+  <NumberFormat>f3</NumberFormat>
+  <MaxNumRecentFiles>10</MaxNumRecentFiles>
+  <RecentFiles />
+  <BackupFiles />
+  <CustomPackageFolders>
+  </CustomPackageFolders>
+  <PackageDirectoriesToUninstall />
+  <WindowX>0</WindowX>
+  <WindowY>0</WindowY>
+  <WindowW>1024</WindowW>
+  <WindowH>768</WindowH>
+  <UseHardwareAcceleration>true</UseHardwareAcceleration>
+  <PythonTemplateFilePath></PythonTemplateFilePath>
+  <BackupInterval>60000</BackupInterval>
+  <BackupFilesCount>1</BackupFilesCount>
+  <PackageDownloadTouAccepted>false</PackageDownloadTouAccepted>
+  <ShowEdges>false</ShowEdges>
+  <OpenFileInManualExecutionMode>false</OpenFileInManualExecutionMode>
+</PreferenceSettings>

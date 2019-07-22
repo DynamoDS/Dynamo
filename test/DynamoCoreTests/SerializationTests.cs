@@ -734,7 +734,8 @@ namespace Dynamo.Tests
                 "packageTest",
                 "reduce-example",
                 "TestFrozen",
-                "TestImperativeInCBN"
+                "TestImperativeInCBN",
+                "CustomNodeContainedInMultiplePackages"
             };
 
         private void DoWorkspaceOpenAndCompare(string filePath, string dirName,

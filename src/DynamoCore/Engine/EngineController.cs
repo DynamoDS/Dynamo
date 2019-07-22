@@ -182,6 +182,7 @@ namespace Dynamo.Engine
             }
             else
             {
+                astBuilder.ProfilingSession.Dispose();
                 astBuilder.ProfilingSession = null;
             }
 

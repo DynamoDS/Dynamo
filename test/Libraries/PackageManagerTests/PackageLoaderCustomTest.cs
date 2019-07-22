@@ -66,17 +66,5 @@ namespace Dynamo.PackageManager.Tests
 
             Assert.AreEqual(1, nextPkg.LoadedCustomNodes.Count);
         }
-
-        private PackageLoader GetPackageLoader()
-        {
-            var extensions = CurrentDynamoModel.ExtensionManager.Extensions.OfType<PackageManagerExtension>();
-            Assert.IsNotNull(extensions);
-            Assert.AreNotEqual(0, extensions.Count());
-
-            var packageLoader = extensions.First().PackageLoader;
-            Assert.IsNotNull(packageLoader);
-
-            return packageLoader;
-        }
     }
 }

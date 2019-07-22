@@ -164,6 +164,7 @@ namespace Dynamo.PackageManager
                 if (body.name == null || body.version == null)
                     throw new Exception("The header is missing a name or version field.");
 
+                // TODO: Add serialization part of hosts specified in package.json
                 var pkg = new Package(
                     Path.GetDirectoryName(headerPath),
                     body.name,
@@ -406,8 +407,15 @@ namespace Dynamo.PackageManager
         {
             LoadedCustomNodes.Clear();
 
-            foreach (var x in customNodeManager.AddUninitializedCustomNodesInPath(CustomNodeDirectory, isTestMode))
+            var reloadedCustomNodes = customNodeManager.AddUninitializedCustomNodesInPath(
+                CustomNodeDirectory,
+                isTestMode,
+                new PackageInfo(Name, new Version(versionName)));
+
+            foreach (var x in reloadedCustomNodes)
+            {
                 LoadedCustomNodes.Add(x);
+            }
         }
 
         public event Action<ILogMessage> MessageLogged;

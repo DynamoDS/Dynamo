@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using Dynamo.Core;
+using Dynamo.Exceptions;
 using Dynamo.Graph.Nodes.CustomNodes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
@@ -181,6 +182,13 @@ namespace Dynamo.ViewModels
         {
             get { return _downloads; }
             set { _downloads = value; }
+        }
+
+        private PackageManagerExtension pmExtension;
+
+        internal PackageManagerExtension PackageManagerExtension
+        {
+            get { return pmExtension ?? (pmExtension = DynamoViewModel.Model.GetPackageManagerExtension()); }
         }
 
         public List<PackageManagerSearchElement> CachedPackageList { get; private set; }
@@ -393,7 +401,6 @@ namespace Dynamo.ViewModels
         {
             foreach (var f in funcDefs)
             {
-                var pmExtension = DynamoViewModel.Model.GetPackageManagerExtension();
                 var pkg = pmExtension.PackageLoader.GetOwnerPackage(f.Item1);
 
                 if (pkg != null)
@@ -490,7 +497,8 @@ namespace Dynamo.ViewModels
                         if (packageDownloadHandle.Extract(DynamoViewModel.Model, downloadPath, out dynPkg))
                         {
                             var p = Package.FromDirectory(dynPkg.RootDirectory, DynamoViewModel.Model.Logger);
-                            pmExtension.PackageLoader.Load(p);
+
+                            pmExtension.PackageLoader.LoadPackages(new List<Package> {p});
 
                             packageDownloadHandle.DownloadState = PackageDownloadHandle.State.Installed;
                         }
