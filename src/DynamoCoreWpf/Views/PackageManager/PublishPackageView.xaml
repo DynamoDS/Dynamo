@@ -105,9 +105,7 @@
                                         <TextBlock Text="{x:Static p:Resources.PublishPackageViewPackageGroupTooltip}"/>
                                     </Label.ToolTip>
                                 </Label>
-                                <ComboBox Height="28">
-                                    
-                                </ComboBox>
+                                <ComboBox Style="{DynamicResource ResourceKey=SComboBox}" ItemsSource="{Binding KnownHosts}" FontSize="20" Background="Black" Foreground="White" HorizontalAlignment="Stretch" Name="HostDependencyBox" Margin="0" IsEditable="False" TabIndex="1"/>
                             </StackPanel>
                         </StackPanel>
 

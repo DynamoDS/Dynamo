@@ -387,6 +387,20 @@ namespace Dynamo.PackageManager
             }
         }
 
+        /// <summary>
+        /// Hosts dependencies specified for latest version of particular package
+        /// </summary>
+        public List<string> KnownHosts
+        {
+            get
+            {
+                return dynamoViewModel.PackageManagerClientViewModel.Model.GetKnownHosts() as List<string>;
+            }
+        }
+
+        /// <summary>
+        /// Boolean indicating if the current publishing package is depending on other package
+        /// </summary>
         public bool HasDependencies
         {
             get { return Dependencies.Count > 0; }
