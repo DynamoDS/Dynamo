@@ -188,7 +188,7 @@ namespace Dynamo.WorkspaceDependency
         // It will be replaced by per-package functionality.
         private void DownloadFirstMissingPackage(object sender, RoutedEventArgs e)
         {
-            var dep = currentWorkspace.NodeLibraryDependencies.Where(x => x.ReferenceType == ReferenceType.Package && x.IsLoaded == false).FirstOrDefault();
+            var dep = currentWorkspace.NodeLibraryDependencies.Where(x => x.ReferenceType == ReferenceType.Package && (x as PackageDependencyInfo).State == PackageDependencyState.Missing).FirstOrDefault();
             if (dep != null)
             {
                 var package = new PackageInfo(dep.Name, dep.Version);
