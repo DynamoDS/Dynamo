@@ -1,8 +1,10 @@
 ﻿using Dynamo.Graph.Workspaces;
+using Dynamo.ViewModels;
 using Dynamo.Wpf.Extensions;
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -17,6 +19,8 @@ namespace Dynamo.WorkspaceDependency
         private DependencyTable table = new DependencyTable();
 
         private WorkspaceModel currentWorkspace;
+
+        private DynamoViewModel dynamoViewModel;
 
         private String FeedbackLink = "https://forum.dynamobim.com/t/call-for-feedback-on-dynamo-graph-package-dependency-display/37229";
 
@@ -144,6 +148,20 @@ namespace Dynamo.WorkspaceDependency
             currentWorkspace.PropertyChanged += OnWorkspacePropertyChanged;
             loadedParams = p;
             dependencyViewExtension = viewExtension;
+            dynamoViewModel = loadedParams.DynamoWindow.DataContext as DynamoViewModel;
+        }
+
+        // TODO: This method is only here for testing purposes. 
+        // It will be replaced by per-package functionality.
+        private void DownloadFirstMissingPackage(object sender, RoutedEventArgs e)
+        {
+            var dep = currentWorkspace.NodeLibraryDependencies.Where(x => x.ReferenceType == ReferenceType.Package && x.IsLoaded == false).FirstOrDefault();
+            if (dep != null)
+            {
+                var package = new PackageInfo(dep.Name, dep.Version);
+                dynamoViewModel.PackageManagerClientViewModel.InitiatePackageDownloadAndInstall(package);
+                DependencyRegen(currentWorkspace);
+            }
         }
     }
 

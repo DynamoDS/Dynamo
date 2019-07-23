@@ -77,14 +77,16 @@
         </DataGrid>
 
         <!--Download Button-->
-        <!--<Grid x:Name="container"
+        <Grid x:Name="container"
             Background="Transparent"
             Grid.Row="1">
             <Button
-                VerticalAlignment="Bottom"
+                Click="DownloadFirstMissingPackage"
                 HorizontalAlignment="Center"
-                Margin="10"
+                Margin="0,0"
+                Height="50"
                 Background="#373737">
+                
                 <TextBlock 
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
@@ -94,13 +96,13 @@
                     Download
                 </TextBlock>
             </Button>
-        </Grid>-->
+        </Grid>
 
         <!-- Template for the feedback banner -->
-        <DockPanel Name="Feedback" Margin="0,800,0,40" Grid.Row="0">
-            <StatusBar Background="{StaticResource FeedbackSectionBackground}" DockPanel.Dock="Bottom" Height="55">
+        <!--<DockPanel Name="Feedback" Margin="0,800,0,40" Grid.Row="0">
+            <StatusBar Background="{StaticResource FeedbackSectionBackground}" DockPanel.Dock="Bottom" Height="55">-->
                 <!-- Preview text -->
-                <StatusBarItem>
+        <!--<StatusBarItem>
                     <Border Height="50">
                         <TextBlock TextWrapping="Wrap" Padding="10,0,10,0" FontSize="15" Foreground="White" Text="{x:Static p:Resources.PreviewText}" VerticalAlignment="Center"/>
                     </Border>
@@ -118,9 +120,9 @@
                                     </Trigger>
                                 </Style.Triggers>
                             </Style>
-                        </Border.Style>
+                        </Border.Style> -->
                         <!-- Feedback button -->
-                        <Button HorizontalAlignment="Right"
+        <!--<Button HorizontalAlignment="Right"
                             Width="150" Click="ProvideFeedback" Background="#373737" Height="30">
                             <TextBlock TextWrapping="Wrap" FontSize="15" Foreground="White" Height="20" Text="{x:Static p:Resources.ProvideFeedbackButton}" VerticalAlignment="Center"/>
                             <Button.Style>
@@ -140,6 +142,6 @@
                     </Border>
                 </StatusBarItem>
             </StatusBar>
-        </DockPanel>
+        </DockPanel>-->
     </Grid>
 </UserControl>
