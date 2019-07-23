@@ -16,19 +16,35 @@ namespace Dynamo.Graph.Workspaces
     }
 
     /// <summary>
-    /// Class containing info about a package
+    /// Interface for types containing info about a package
     /// </summary>
-    public class PackageInfo
+    public interface IPackageInfo
     {
         /// <summary>
         /// Name of the package
         /// </summary>
-        internal string Name { get; set; }
+        string Name { get; }
 
         /// <summary>
         /// Version of the package
         /// </summary>
-        internal Version Version { get; set; }
+        Version Version { get; }
+    }
+
+    /// <summary>
+    /// Class containing info about a package
+    /// </summary>
+    public class PackageInfo : IPackageInfo
+    {
+        /// <summary>
+        /// Name of the package
+        /// </summary>
+        public string Name { get; private set; }
+
+        /// <summary>
+        /// Version of the package
+        /// </summary>
+        public Version Version { get; private set; }
 
         /// <summary>
         /// Create a package info object from the package name and version
@@ -138,7 +154,7 @@ namespace Dynamo.Graph.Workspaces
     /// <summary>
     /// Class containing info about a workspace package dependency
     /// </summary>
-    internal class PackageDependencyInfo : INodeLibraryDependencyInfo
+    internal class PackageDependencyInfo : INodeLibraryDependencyInfo, IPackageInfo
     {
         private PackageDependencyState _state;
         /// <summary>
