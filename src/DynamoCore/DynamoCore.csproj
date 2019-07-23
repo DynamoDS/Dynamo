@@ -123,7 +123,6 @@ limitations under the License.
     <Compile Include="Engine\ShortestQualifiedNameReplacer.cs" />
     <Compile Include="Exceptions\CustomNodePackageLoadException.cs" />
     <Compile Include="Exceptions\LibraryLoadFailedException.cs" />
-    <Compile Include="Graph\Workspaces\IPackageInfo.cs" />
     <Compile Include="Graph\Workspaces\PackageDependencyInfo.cs" />
     <Compile Include="Graph\Nodes\NodeOutputData.cs" />
     <Compile Include="Graph\Nodes\NodeInputData.cs" />
