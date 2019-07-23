@@ -184,7 +184,7 @@ namespace Dynamo.WorkspaceDependency
             dynamoViewModel = loadedParams.DynamoWindow.DataContext as DynamoViewModel;
         }
 
-        // TODO: This method is only here for testing purposes. 
+        // TODO: This method is only here for dev purposes. 
         // It will be replaced by per-package functionality.
         private void DownloadFirstMissingPackage(object sender, RoutedEventArgs e)
         {
