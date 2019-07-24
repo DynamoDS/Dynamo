@@ -105,7 +105,17 @@
                                         <TextBlock Text="{x:Static p:Resources.PublishPackageViewPackageGroupTooltip}"/>
                                     </Label.ToolTip>
                                 </Label>
-                                <ComboBox Style="{DynamicResource ResourceKey=SComboBox}" ItemsSource="{Binding KnownHosts}" FontSize="20" Background="Black" Foreground="White" HorizontalAlignment="Stretch" Name="HostDependencyBox" Margin="0" IsEditable="False" TabIndex="1"/>
+                                <ComboBox Style="{DynamicResource ResourceKey=SComboBox}" ItemsSource="{Binding KnownHosts}" Background="Black" Foreground="White" Name="HostDependencyBox" 
+                                          Margin="0, 13" Width="170" IsEditable="False" TabIndex="1" SelectionChanged="OnHostsSelectionChanged" OverridesDefaultStyle="True">
+                                    <ComboBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <StackPanel Orientation="Horizontal">
+                                                <CheckBox Name="HostEntry" IsChecked="{Binding IsSelected}"></CheckBox>
+                                                <TextBlock Text="{Binding HostName}"></TextBlock>
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </ComboBox.ItemTemplate>
+                                </ComboBox>
                             </StackPanel>
                         </StackPanel>
 

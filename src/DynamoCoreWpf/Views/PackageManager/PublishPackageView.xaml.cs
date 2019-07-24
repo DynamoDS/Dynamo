@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows;
+using System.Windows.Controls;
 using Dynamo.UI;
 using Dynamo.ViewModels;
 using DynamoUtilities;
@@ -11,9 +12,11 @@ namespace Dynamo.PackageManager
     /// </summary>
     public partial class PublishPackageView : Window
     {
+        private PublishPackageViewModel pkgViewModel;
         public PublishPackageView(PublishPackageViewModel packageViewModel)
         {
             this.DataContext = packageViewModel;
+            pkgViewModel = packageViewModel;
             packageViewModel.PublishSuccess += PackageViewModelOnPublishSuccess;
 
             InitializeComponent();
@@ -53,6 +56,21 @@ namespace Dynamo.PackageManager
                 e.Cancel = false;
             }
 
+        }
+
+        /// <summary>
+        /// Event handler for host selection changed
+        /// </summary>
+        private void OnHostsSelectionChanged(object sender, SelectionChangedEventArgs args)
+        {
+            pkgViewModel.SelectedHosts.Clear();
+            foreach ( var host in pkgViewModel.KnownHosts)
+            {
+                if(host.IsSelected)
+                {
+                    pkgViewModel.SelectedHosts.Add(host.HostName);
+                }
+            }
         }
     }
 

@@ -36,10 +36,37 @@ namespace Dynamo.PackageManager
         {
             get { return dynamoViewModel; }
         }
+
         /// <summary>
-        /// A event called when publishing was a success
+        /// Package Publish entry, binded to the host filter context menu
         /// </summary>
-        public event PublishSuccessHandler PublishSuccess;
+        public class HostComboboxEntry
+        {
+            /// <summary>
+            /// Name of the host
+            /// </summary>
+            public string HostName { get; set; }
+
+            /// <summary>
+            /// Boolean indicates if the host entry is selected
+            /// </summary>
+            public bool IsSelected { get; set; }
+
+            /// <summary>
+            /// Constructor
+            /// </summary>
+            /// <param name="hostName"></param>
+            public HostComboboxEntry(string hostName)
+            {
+                HostName = hostName;
+                IsSelected = false;
+            }
+        }
+
+            /// <summary>
+            /// A event called when publishing was a success
+            /// </summary>
+            public event PublishSuccessHandler PublishSuccess;
 
         public event EventHandler<PackagePathEventArgs> RequestShowFolderBrowserDialog;
         public virtual void OnRequestShowFileDialog(object sender, PackagePathEventArgs e)
@@ -387,16 +414,28 @@ namespace Dynamo.PackageManager
             }
         }
 
+        private List<HostComboboxEntry> _knownHosts;
+
         /// <summary>
-        /// Hosts dependencies specified for latest version of particular package
+        /// Know hosts received from package manager
         /// </summary>
-        public List<string> KnownHosts
+        public List<HostComboboxEntry> KnownHosts
         {
-            get
+            get { return _knownHosts; }
+            set
             {
-                return dynamoViewModel.PackageManagerClientViewModel.Model.GetKnownHosts() as List<string>;
+                if (_knownHosts != value)
+                {
+                    _knownHosts = value;
+                    RaisePropertyChanged("KnownHosts");
+                }
             }
         }
+
+        /// <summary>
+        /// Current selected hosts as depedencies
+        /// </summary>
+        public List<string> SelectedHosts { get; set; }
 
         /// <summary>
         /// Boolean indicating if the current publishing package is depending on other package
@@ -537,7 +576,18 @@ namespace Dynamo.PackageManager
             ToggleMoreCommand = new DelegateCommand(() => MoreExpanded = !MoreExpanded, () => true);
             Dependencies = new ObservableCollection<PackageDependency>();
             Assemblies = new List<PackageAssembly>();
+            SelectedHosts = new List<string>();
             PropertyChanged += ThisPropertyChanged;
+        }
+
+        private List<HostComboboxEntry> initializeHostSelections()
+        {
+            var hostSelections = new List<HostComboboxEntry>();
+            foreach (var host in dynamoViewModel.PackageManagerClientViewModel.Model.GetKnownHosts())
+            {
+                hostSelections.Add(new HostComboboxEntry(host));
+            }
+            return hostSelections;
         }
 
         private void BeginInvoke(Action action)
@@ -552,6 +602,7 @@ namespace Dynamo.PackageManager
         public PublishPackageViewModel( DynamoViewModel dynamoViewModel ) : this()
         {
             this.dynamoViewModel = dynamoViewModel;
+            KnownHosts = initializeHostSelections();
         }
 
         private void ClearAllEntries()
