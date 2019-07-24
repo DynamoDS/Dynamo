@@ -1,3 +1,10 @@
+using ProtoCore.DSASM;
+using ProtoCore.Exceptions;
+using ProtoCore.Lang;
+using ProtoCore.Lang.Replication;
+using ProtoCore.Properties;
+using ProtoCore.Runtime;
+using ProtoCore.Utils;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -8,13 +15,6 @@ using System.Reflection;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Soap;
 using System.Text;
-using ProtoCore.DSASM;
-using ProtoCore.Exceptions;
-using ProtoCore.Lang;
-using ProtoCore.Lang.Replication;
-using ProtoCore.Properties;
-using ProtoCore.Runtime;
-using ProtoCore.Utils;
 using StackFrame = ProtoCore.DSASM.StackFrame;
 using Validity = ProtoCore.Utils.Validity;
 using WarningID = ProtoCore.Runtime.WarningID;
@@ -174,11 +174,6 @@ namespace ProtoCore
 
                 if (!HasNestedData)
                     return null;
-#if DEBUG
-
-                Validity.Assert(NestedData != null, "Nested data has changed null status since last check, suspected race");
-                Validity.Assert(NestedData.Count > 0, "Empty subnested array, please file repo data with @lukechurch, relates to MAGN-4059");
-#endif
 
                 //Safety trap to protect against an empty array, need repro test to figure out why this is getting set with empty arrays
                 if (NestedData.Count == 0)
