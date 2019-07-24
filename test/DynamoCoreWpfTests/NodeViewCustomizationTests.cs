@@ -48,6 +48,9 @@ namespace DynamoCoreWpfTests
         [Test, Category("DisplayHardwareDependent")]
         public void Watch3DHasViewer()
         {
+            var path = Environment.GetEnvironmentVariable("Path", EnvironmentVariableTarget.Process) + ";" + Model.PathManager.DynamoCoreDirectory;
+            Environment.SetEnvironmentVariable("Path", path, EnvironmentVariableTarget.Process);
+
             var renderingTier = (System.Windows.Media.RenderCapability.Tier >> 16);
             if (renderingTier < 2)
             {
