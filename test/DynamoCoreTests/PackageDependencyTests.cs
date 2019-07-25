@@ -473,7 +473,7 @@ namespace Dynamo.Tests
         [Test]
         public void PackageDependencyStatechangeTestAfterLoadingPackage()
         {
-            string packageDirectory = Path.Combine(TestDirectory, @"core\packageDependencyTests\Clockwork for Dynamo 1.x");
+            string packageDirectory = Path.Combine(TestDirectory, @"core\packageDependencyTests\ClockworkPackage");
             LoadPackage(packageDirectory);
 
             // Load JSON file graph
