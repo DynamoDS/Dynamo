@@ -174,7 +174,6 @@ namespace ProtoCore
 
                 if (!HasNestedData)
                     return null;
-
 #if DEBUG
 
                 Validity.Assert(NestedData != null, "Nested data has changed null status since last check, suspected race");
