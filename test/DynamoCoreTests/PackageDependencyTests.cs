@@ -1,4 +1,8 @@
-﻿using Dynamo.Configuration;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using Dynamo.Configuration;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Interfaces;
 using Dynamo.Models;
@@ -7,10 +11,6 @@ using Dynamo.Scheduler;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 
 namespace Dynamo.Tests
 {
@@ -457,15 +457,51 @@ namespace Dynamo.Tests
             // but the nodes are resolved by a different package.
             PackageDependencyInfo secondPackage = (PackageDependencyInfo) packageDependenciesList[1];
             Assert.AreEqual(new PackageDependencyInfo("Clockwork for Dynamo 2.x", new Version("2.1.2")), secondPackage);
-            Assert.AreEqual(PackageDependencyState.Warning, secondPackage.State);
+            Assert.AreEqual(PackageDependencyState.Missing, secondPackage.State);
 
             // Check for Missing package state
             PackageDependencyInfo thirdPackage = (PackageDependencyInfo) packageDependenciesList[2];
             Assert.AreEqual(new PackageDependencyInfo("Clockwork for Dynamo 1.x", new Version("1.33.0")), thirdPackage);
-            Assert.AreEqual(PackageDependencyState.IncorrectVersion, thirdPackage.State);
+            Assert.AreEqual(PackageDependencyState.Missing, thirdPackage.State);
 
             // Check for Loaded package state
             PackageDependencyInfo lastPackage = (PackageDependencyInfo) packageDependenciesList.Last();
+            Assert.AreEqual(new PackageDependencyInfo("Dynamo Samples", new Version("2.0.0")), lastPackage);
+            Assert.AreEqual(PackageDependencyState.Loaded, lastPackage.State);
+        }
+
+        [Test]
+        public void PackageDependencyStatechangeTestAfterLoadingPackage()
+        {
+            string packageDirectory = Path.Combine(TestDirectory, @"core\packageDependencyTests\Clockwork for Dynamo 1.x");
+            LoadPackage(packageDirectory);
+
+            // Load JSON file graph
+            string path = Path.Combine(TestDirectory, @"core\packageDependencyTests\PackageDependencyStates.dyn");
+            OpenModel(path);
+
+            // Assert the total number of package dependencies.
+            var packageDependenciesList = CurrentDynamoModel.CurrentWorkspace.NodeLibraryDependencies;
+            Assert.AreEqual(4, packageDependenciesList.Count);
+
+            // Check for Incorrect package state
+            PackageDependencyInfo firstPackage = (PackageDependencyInfo)packageDependenciesList[0];
+            Assert.AreEqual(new PackageDependencyInfo("MeshToolkit", new Version("2.0.1")), firstPackage);
+            Assert.AreEqual(PackageDependencyState.Missing, firstPackage.State);
+
+            // Check for Warning package state, where the actually package is missing
+            // but the nodes are resolved by a different package.
+            PackageDependencyInfo secondPackage = (PackageDependencyInfo)packageDependenciesList[1];
+            Assert.AreEqual(new PackageDependencyInfo("Clockwork for Dynamo 2.x", new Version("2.1.2")), secondPackage);
+            Assert.AreEqual(PackageDependencyState.Warning, secondPackage.State);
+
+            // Check for Missing package state
+            PackageDependencyInfo thirdPackage = (PackageDependencyInfo)packageDependenciesList[2];
+            Assert.AreEqual(new PackageDependencyInfo("Clockwork for Dynamo 1.x", new Version("1.33.0")), thirdPackage);
+            Assert.AreEqual(PackageDependencyState.IncorrectVersion, thirdPackage.State);
+
+            // Check for Loaded package state
+            PackageDependencyInfo lastPackage = (PackageDependencyInfo)packageDependenciesList.Last();
             Assert.AreEqual(new PackageDependencyInfo("Dynamo Samples", new Version("2.0.0")), lastPackage);
             Assert.AreEqual(PackageDependencyState.Loaded, lastPackage.State);
         }
