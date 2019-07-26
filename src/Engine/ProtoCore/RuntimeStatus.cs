@@ -356,29 +356,38 @@ namespace ProtoCore
                                                List<StackValue> arguments = null)
         {
             string message;
-            string propertyName;
-            Operator op;
 
             var qualifiedMethodName = methodName;
 
             var className = string.Empty;
-            var classNameSimple = string.Empty;
-
+            
             if (classScope != Constants.kGlobalScope)
             {
-                var classNode = runtimeCore.DSExecutable.classTable.ClassNodes[classScope];
-                className = classNode.Name;
-                classNameSimple = className.Split('.').Last();
-                qualifiedMethodName = classNameSimple + "." + methodName;
+                if (methodName == nameof(DesignScript.Builtin.Get.ValueAtIndex))
+                {
+                    if (arguments.Count == 2 && arguments[0].IsInteger && arguments[1].IsInteger)
+                    {
+                        LogWarning(WarningID.IndexOutOfRange, Resources.IndexIntoNonArrayObject);
+                        return;
+                    }
+                }
+                else
+                {
+                    var classNode = runtimeCore.DSExecutable.classTable.ClassNodes[classScope];
+                    className = classNode.Name;
+                    qualifiedMethodName = className + "." + methodName;
+                }
             }
 
+            Operator op;
+            string propertyName;
             if (CoreUtils.TryGetPropertyName(methodName, out propertyName))
             {
                 if (classScope != Constants.kGlobalScope)
                 {
                     if (arguments != null && arguments.Any())
                     {
-                        qualifiedMethodName = classNameSimple + "." + propertyName;
+                        qualifiedMethodName = className + "." + propertyName;
 
                         // if the property is found on the class, it must be a static getter being called on 
                         // an instance argument type not matching the property
