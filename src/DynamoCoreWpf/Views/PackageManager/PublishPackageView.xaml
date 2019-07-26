@@ -102,19 +102,95 @@
                             <StackPanel Orientation="Vertical" Margin="10,0,0,0" Name="HostDependency">
                                 <Label Content="{x:Static p:Resources.PublishPackageViewPackageHostDependency}" Foreground="DarkGray" Height="28" Name="HostLabel" HorizontalAlignment="Left" VerticalAlignment="Top">
                                     <Label.ToolTip>
-                                        <TextBlock Text="{x:Static p:Resources.PublishPackageViewPackageGroupTooltip}"/>
+                                        <TextBlock Text="{x:Static p:Resources.PublishPackageViewPackageHostDependencyTooltip}"/>
                                     </Label.ToolTip>
                                 </Label>
                                 <ComboBox Style="{DynamicResource ResourceKey=SComboBox}" ItemsSource="{Binding KnownHosts}" Background="Black" Foreground="White" Name="HostDependencyBox" 
-                                          Margin="0, 13" Width="170" IsEditable="False" TabIndex="1" SelectionChanged="OnHostsSelectionChanged" OverridesDefaultStyle="True">
+                                          Margin="0, 13" Width="170" IsEditable="False" TabIndex="1" OverridesDefaultStyle="True">
                                     <ComboBox.ItemTemplate>
                                         <DataTemplate>
                                             <StackPanel Orientation="Horizontal">
-                                                <CheckBox Name="HostEntry" IsChecked="{Binding IsSelected}"></CheckBox>
-                                                <TextBlock Text="{Binding HostName}"></TextBlock>
+                                                <CheckBox Name="HostEntry" 
+                                                          Content="{Binding HostName}"
+                                                          IsChecked="{Binding IsSelected, Mode=TwoWay}"
+                                                          Checked="HostEntry_CheckStateChanged"
+                                                          Unchecked="HostEntry_CheckStateChanged"
+                                                          Tag="{RelativeSource FindAncestor, AncestorType={x:Type ComboBox}}"/>
                                             </StackPanel>
                                         </DataTemplate>
                                     </ComboBox.ItemTemplate>
+                                    <ComboBox.Template>
+                                        <ControlTemplate TargetType="ComboBox">
+                                            <Grid>
+                                                <ToggleButton Name="ToggleButton"
+                                                              Template="{StaticResource ComboBoxToggleButton}"
+                                                              Grid.Column="2"
+                                                              Focusable="false"
+                                                              IsChecked="{Binding Path=IsDropDownOpen,Mode=TwoWay,RelativeSource={RelativeSource TemplatedParent}}"
+                                                              ClickMode="Press">        
+                                                </ToggleButton>
+                                                <ContentPresenter Name="ContentSite"
+                                                                  IsHitTestVisible="False"
+                                                                  Content="{Binding Path=SelectedHostsString, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                                                                  ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}"
+                                                                  Margin="3,3,23,3"
+                                                                  VerticalAlignment="Center"
+                                                                  HorizontalAlignment="Left" />
+                                                <TextBox x:Name="PART_EditableTextBox"
+                                                         Style="{x:Null}"
+                                                         Template="{StaticResource ComboBoxTextBox}"
+                                                         HorizontalAlignment="Left"
+                                                         VerticalAlignment="Center"
+                                                         Margin="3,3,23,3"
+                                                         Padding="10"
+                                                         Focusable="True"
+                                                         Foreground="#bbbbbb"
+                                                         CaretBrush="#bbbbbb"
+                                                         Visibility="Hidden"
+                                                         IsReadOnly="{TemplateBinding IsReadOnly}" />
+                                                <Popup Name="Popup"
+                                                       Placement="Bottom"
+                                                       Focusable="False"
+                                                       IsOpen="{TemplateBinding IsDropDownOpen}"
+                                                       PopupAnimation="Slide"
+                                                       MinWidth="{TemplateBinding ActualWidth}"
+                                                       MaxHeight="{TemplateBinding MaxDropDownHeight}">
+                                                    <Grid Name="DropDown"
+                                                          SnapsToDevicePixels="True">
+                                                        <Border Name="DropDownBorder"
+                                                                  BorderThickness="1"
+                                                                  BorderBrush="Black"/>
+                                                        <ScrollViewer Margin="4,6,4,6" SnapsToDevicePixels="True" DataContext="{Binding}">
+                                                            <StackPanel IsItemsHost="True" KeyboardNavigation.DirectionalNavigation="Contained" />
+                                                        </ScrollViewer>
+                                                    </Grid>
+                                                </Popup>
+                                            </Grid>
+                                            <ControlTemplate.Triggers>
+                                                <Trigger Property="HasItems"
+                                                         Value="false">
+                                                    <Setter TargetName="DropDownBorder"
+                                                            Property="MinHeight"
+                                                            Value="95" />
+                                                </Trigger>
+                                                <Trigger Property="IsGrouping"
+                                                         Value="true">
+                                                    <Setter Property="ScrollViewer.CanContentScroll"
+                                                            Value="false" />
+                                                </Trigger>
+                                                <Trigger SourceName="Popup"
+                                                         Property="Popup.AllowsTransparency"
+                                                         Value="true">
+                                                    <Setter TargetName="DropDownBorder"
+                                                            Property="CornerRadius"
+                                                            Value="4" />
+                                                    <Setter TargetName="DropDownBorder"
+                                                            Property="Margin"
+                                                            Value="0,2,0,0" />
+                                                </Trigger>
+                                            </ControlTemplate.Triggers>
+                                        </ControlTemplate>
+                                    </ComboBox.Template>
                                 </ComboBox>
                             </StackPanel>
                         </StackPanel>

@@ -63,10 +63,10 @@ namespace Dynamo.PackageManager
             }
         }
 
-            /// <summary>
-            /// A event called when publishing was a success
-            /// </summary>
-            public event PublishSuccessHandler PublishSuccess;
+        /// <summary>
+        /// A event called when publishing was a success
+        /// </summary>
+        public event PublishSuccessHandler PublishSuccess;
 
         public event EventHandler<PackagePathEventArgs> RequestShowFolderBrowserDialog;
         public virtual void OnRequestShowFileDialog(object sender, PackagePathEventArgs e)
@@ -432,10 +432,49 @@ namespace Dynamo.PackageManager
             }
         }
 
+        private List<string> _selectedHosts = new List<String>();
         /// <summary>
-        /// Current selected hosts as depedencies
+        /// Current selected hosts as dependencies
         /// </summary>
-        public List<string> SelectedHosts { get; set; }
+        public List<string> SelectedHosts
+        {
+            get
+            {
+                return _selectedHosts;
+            }
+            set
+            {
+                if (_selectedHosts != value)
+                {
+                    _selectedHosts = value;
+                    foreach (var host in KnownHosts)
+                    {
+                        if (_selectedHosts.Contains(host.HostName)) host.IsSelected = true;
+                    }
+                    RaisePropertyChanged("SelectedHosts");
+                }
+            }
+        }
+
+        public string _selectedHostsString = string.Empty;
+        /// <summary>
+        /// Current selected hosts as dependencies
+        /// </summary>
+        public string SelectedHostsString
+        {
+            get
+            {
+                return _selectedHostsString;
+            }
+            set
+            {
+                if (_selectedHostsString != value)
+                {
+                    _selectedHostsString = value;
+                    RaisePropertyChanged("SelectedHostsString");
+                }
+            }
+        }
 
         /// <summary>
         /// Boolean indicating if the current publishing package is depending on other package
@@ -445,6 +484,10 @@ namespace Dynamo.PackageManager
             get { return Dependencies.Count > 0; }
         }
 
+        /// <summary>
+        /// This property seems dup with HasDependencies
+        /// TODO: Remove in Dynamo 3.0
+        /// </summary>
         public bool HasNoDependencies
         {
             get { return !HasDependencies; }
@@ -561,6 +604,7 @@ namespace Dynamo.PackageManager
                 BuildVersion = versionSplit[2];
                 Name = value.name;
                 Keywords = String.Join(" ", value.keywords);
+                SelectedHosts = value.host_dependencies as List<string>;
                 _dynamoBaseHeader = value;
             }
         }
@@ -576,7 +620,6 @@ namespace Dynamo.PackageManager
             ToggleMoreCommand = new DelegateCommand(() => MoreExpanded = !MoreExpanded, () => true);
             Dependencies = new ObservableCollection<PackageDependency>();
             Assemblies = new List<PackageAssembly>();
-            SelectedHosts = new List<string>();
             PropertyChanged += ThisPropertyChanged;
         }
 
@@ -628,6 +671,8 @@ namespace Dynamo.PackageManager
             this.AdditionalFiles = new ObservableCollection<string>();
             this.Dependencies = new ObservableCollection<PackageDependency>();
             this.Assemblies = new List<PackageAssembly>();
+            this.SelectedHosts = new List<String>();
+            this.SelectedHostsString = string.Empty;
         }
 
         private void ClearPackageContents()

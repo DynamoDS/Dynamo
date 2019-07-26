@@ -58,19 +58,20 @@ namespace Dynamo.PackageManager
 
         }
 
-        /// <summary>
-        /// Event handler for host selection changed
-        /// </summary>
-        private void OnHostsSelectionChanged(object sender, SelectionChangedEventArgs args)
+        private void HostEntry_CheckStateChanged(object sender, RoutedEventArgs e)
         {
             pkgViewModel.SelectedHosts.Clear();
-            foreach ( var host in pkgViewModel.KnownHosts)
+            pkgViewModel.SelectedHostsString = string.Empty;
+            foreach (var host in pkgViewModel.KnownHosts)
             {
-                if(host.IsSelected)
+                if (host.IsSelected)
                 {
                     pkgViewModel.SelectedHosts.Add(host.HostName);
+                    pkgViewModel.SelectedHostsString += host.HostName + ", ";
                 }
             }
+            // Format string since it will be displayed
+            pkgViewModel.SelectedHostsString = pkgViewModel.SelectedHostsString.Trim().TrimEnd(',');
         }
     }
 
