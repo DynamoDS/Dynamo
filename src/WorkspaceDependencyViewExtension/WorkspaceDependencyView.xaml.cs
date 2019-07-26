@@ -2,12 +2,12 @@
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Extensions;
 using System;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 
 namespace Dynamo.WorkspaceDependency
 {
@@ -16,7 +16,6 @@ namespace Dynamo.WorkspaceDependency
     /// </summary>
     public partial class WorkspaceDependencyView : UserControl
     {
-        private DependencyTable table = new DependencyTable();
 
         private WorkspaceModel currentWorkspace;
 
@@ -85,10 +84,10 @@ namespace Dynamo.WorkspaceDependency
         /// <param name="obj">workspace model</param>
         internal void OnWorkspaceCleared(IWorkspaceModel obj)
         {
+            PackageDependencyTable.ItemsSource = null;
             if (obj is WorkspaceModel)
             {
-                // Clear the dependency table.
-                table.Columns.Clear();
+                DependencyRegen(obj as WorkspaceModel);
             }
         }
 
@@ -104,67 +103,12 @@ namespace Dynamo.WorkspaceDependency
         /// <param name="ws">workspace model</param>
         internal void DependencyRegen(WorkspaceModel ws)
         {
-            // Clear the dependency table.
-            table.Columns.Clear();
-
-            foreach (var package in ws.NodeLibraryDependencies)
+            if (ws.NodeLibraryDependencies.Any(d => d.State == PackageDependencyState.Missing))
             {
-                if (package is PackageDependencyInfo)
-                {
-                    PackageDependencyInfo packageDependency = (PackageDependencyInfo) package;
-
-                    // Different states for dependency packages.
-                    switch (packageDependency.State)
-                    {
-                        case PackageDependencyState.Loaded:
-                            table.Columns.Add(new Column()
-                            {
-                                ColumnsData = new ObservableCollection<ColumnData>()
-                                {
-                                    new ColumnData(packageDependency.Name),
-                                    new ColumnData(packageDependency.Version.ToString(), 100)
-                                }
-                            });
-                            break;
-
-                        case PackageDependencyState.IncorrectVersion:
-                            HasMissingPackage = true;
-                            table.Columns.Add(new Column()
-                            {
-                                ColumnsData = new ObservableCollection<ColumnData>()
-                                {
-                                    new ColumnData(packageDependency.Name),
-                                    new ColumnData(packageDependency.Version.ToString(), 100, ColumnData.WarningColor)
-                                }
-                            });
-                            break;
-
-                        case PackageDependencyState.Missing:
-                            HasMissingPackage = true;
-                            table.Columns.Add(new Column()
-                            {
-                                ColumnsData = new ObservableCollection<ColumnData>()
-                                {
-                                    new ColumnData(packageDependency.Name, ColumnData.MissingColor),
-                                    new ColumnData(packageDependency.Version.ToString(), 100, ColumnData.MissingColor)
-                                }
-                            });
-                            break;
-
-                        case PackageDependencyState.Warning:
-                            HasMissingPackage = true;
-                            table.Columns.Add(new Column()
-                            {
-                                ColumnsData = new ObservableCollection<ColumnData>()
-                                {
-                                    new ColumnData(packageDependency.Name, ColumnData.WarningColor),
-                                    new ColumnData(packageDependency.Version.ToString(), 100, ColumnData.WarningColor)
-                                }
-                            });
-                            break;
-                    }
-                }
+                HasMissingPackage = true;
             }
+
+            PackageDependencyTable.ItemsSource = ws.NodeLibraryDependencies.Select(d => new NodeLibraryDependencyRow(d));
         }
 
         /// <summary>
@@ -174,151 +118,81 @@ namespace Dynamo.WorkspaceDependency
         public WorkspaceDependencyView(WorkspaceDependencyViewExtension viewExtension,ViewLoadedParams p)
         {
             InitializeComponent();
-            DataContext = table;
             currentWorkspace = p.CurrentWorkspaceModel as WorkspaceModel;
             p.CurrentWorkspaceChanged += OnWorkspaceChanged;
             p.CurrentWorkspaceCleared += OnWorkspaceCleared;
             currentWorkspace.PropertyChanged += OnWorkspacePropertyChanged;
             loadedParams = p;
             dependencyViewExtension = viewExtension;
+            DependencyRegen(currentWorkspace);
             dynamoViewModel = loadedParams.DynamoWindow.DataContext as DynamoViewModel;
         }
-
-        // TODO: This method is only here for dev purposes. 
-        // It will be replaced by per-package functionality.
-        private void DownloadFirstMissingPackage(object sender, RoutedEventArgs e)
+        
+        /// <summary>
+        /// Send a request to the package manager client to download this package and its dependencies
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void DownloadPackage(object sender, RoutedEventArgs e)
         {
-            var dep = currentWorkspace.NodeLibraryDependencies.Where(x => x.ReferenceType == ReferenceType.Package && (x as PackageDependencyInfo).State == PackageDependencyState.Missing).FirstOrDefault();
-            if (dep != null)
+            var info = ((NodeLibraryDependencyRow)((Button)sender).DataContext).DependencyInfo;
+            var package = new PackageInfo(info.Name, info.Version);
+
+            dynamoViewModel.PackageManagerClientViewModel.InitiatePackageDownloadAndInstall(package);
+            DependencyRegen(currentWorkspace);
+        }
+    }
+
+    public class NodeLibraryDependencyRow
+    {
+        public INodeLibraryDependencyInfo DependencyInfo { get; private set; }
+
+        public NodeLibraryDependencyRow(INodeLibraryDependencyInfo nodeLibraryDependencyInfo)
+        {
+            DependencyInfo = nodeLibraryDependencyInfo;
+        }
+
+        public string Name => DependencyInfo.Name;
+
+        public Version Version => DependencyInfo.Version;
+
+        public ImageSource Icon
+        {
+            get
             {
-                var package = new PackageInfo(dep.Name, dep.Version);
-                dynamoViewModel.PackageManagerClientViewModel.InitiatePackageDownloadAndInstall(package);
-                DependencyRegen(currentWorkspace);
+                string iconPath;
+
+                switch (DependencyInfo.State)
+                {
+                    case PackageDependencyState.Loaded:
+                        iconPath = "NodeLibraryDependency_Loaded.png";
+                        break;
+
+                    case PackageDependencyState.Missing:
+                        iconPath = "NodeLibraryDependency_Missing.png";
+                        break;
+
+                    default:
+                        iconPath = "NodeLibraryDependency_Warning.png";
+                        break;
+                }
+
+                return LoadBitmapImage(iconPath); 
             }
         }
-    }
 
-    /// <summary>
-    /// Every table line
-    /// </summary>
-    public class Column
-    {
-        public ObservableCollection<ColumnData> ColumnsData
+        public bool ShowDownloadButton => this.DependencyInfo.State == PackageDependencyState.Missing;
+
+        private BitmapImage LoadBitmapImage(string iconPath)
         {
-            get; set;
-        }
-    }
-
-    /// <summary>
-    /// Class defining data for each column
-    /// </summary>
-    public class ColumnData
-    {
-        static int DefaultWidth = 200;
-        static SolidColorBrush DefaultColor = (SolidColorBrush)(new BrushConverter().ConvertFrom("#aaaaaa"));
-        public static Brush MissingColor = Brushes.Red;
-        public static Brush WarningColor = Brushes.Yellow;
-
-        /// <summary>
-        /// Constructor
-        /// </summary>
-        /// <param name="data"></param>
-        public ColumnData(string data)
-        {
-            Data = data;
-            Width = DefaultWidth;
-            Color = DefaultColor;
+            var format = @"pack://application:,,,/WorkspaceDependencyViewExtension;component/Images/{0}";
+            iconPath = string.Format(format, iconPath);
+            return new BitmapImage(new Uri(iconPath, UriKind.Absolute));
         }
 
-        /// <summary>
-        /// Constructor
-        /// </summary>
-        /// <param name="data"></param>
-        /// <param name="width"></param>
-        public ColumnData(string data, int width)
+        public void InitiateDownloadAndInstall()
         {
-            Data = data;
-            Width = width;
-            Color = DefaultColor;
-        }
 
-        /// <summary>
-        /// Constructor
-        /// </summary>
-        /// <param name="data"></param>
-        /// <param name="color"></param>
-        public ColumnData(string data, Brush color)
-        {
-            Data = data;
-            Width = DefaultWidth;
-            Color = color;
-        }
-
-        /// <summary>
-        /// Constructor
-        /// </summary>
-        /// <param name="data"></param>
-        /// <param name="width"></param>
-        /// <param name="brush"></param>
-        public ColumnData(string data, int width, Brush brush)
-        {
-            Data = data;
-            Width = width;
-            Color = brush;
-        }
-
-        /// <summary>
-        /// Data in each cell
-        /// </summary>
-        public string Data
-        {
-            get; set;
-        }
-
-        /// <summary>
-        /// Width of each cell
-        /// </summary>
-        public int Width
-        {
-            get; set;
-        }
-
-        /// <summary>
-        /// Foreground color of each cell
-        /// </summary>
-        public Brush Color
-        {
-            get; set;
-        }
-    }
-
-    /// <summary>
-    /// The data binding table holding all the dependency info
-    /// </summary>
-    public class DependencyTable
-    {
-        public ObservableCollection<Column> Columns
-        { get; set; }
-
-        public ObservableCollection<ColumnData> Headers
-        { get; set; }
-
-        public DependencyTable()
-        {
-            Columns = new ObservableCollection<Column>();
-            Headers = new ObservableCollection<ColumnData>();
-
-            Columns.Add(new Column()
-            {
-                ColumnsData = new ObservableCollection<ColumnData>()
-                    {
-                        new ColumnData("DummyPackage"),
-                        new ColumnData("1.0.0")
-                    }
-            });
-
-            Headers.Add(new ColumnData("Package Name"));
-            Headers.Add(new ColumnData("Version"));
         }
     }
 }

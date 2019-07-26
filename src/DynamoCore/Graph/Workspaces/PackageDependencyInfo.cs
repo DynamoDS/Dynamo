@@ -6,7 +6,7 @@ namespace Dynamo.Graph.Workspaces
     /// <summary>
     /// Enum containing the different types of package dependency states.
     /// </summary>
-    internal enum PackageDependencyState
+    public enum PackageDependencyState
     {
         Loaded,            // Correct package and version loaded.
         IncorrectVersion,  // Correct package but incorrect version. 
@@ -101,7 +101,7 @@ namespace Dynamo.Graph.Workspaces
         }
     }
 
-    internal enum ReferenceType
+    public enum ReferenceType
     {
         NodeModel,
         Package,
@@ -116,7 +116,7 @@ namespace Dynamo.Graph.Workspaces
     /// <summary>
     /// An interface that describes a dependency a workspace can have on other code.
     /// </summary>
-    interface INodeLibraryDependencyInfo
+    public interface INodeLibraryDependencyInfo
     {
         /// <summary>
         /// The type of reference this dependency is.
@@ -149,6 +149,11 @@ namespace Dynamo.Graph.Workspaces
         /// </summary>
         [Obsolete("This property is obsolete", false)]
         bool IsLoaded { get; set; }
+
+        /// <summary>
+        /// The state of this dependency
+        /// </summary>
+        PackageDependencyState State { get; }
     }
 
     /// <summary>
