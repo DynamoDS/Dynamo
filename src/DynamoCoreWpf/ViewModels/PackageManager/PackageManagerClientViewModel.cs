@@ -463,7 +463,7 @@ namespace Dynamo.ViewModels
                 return;
             }
 
-            ExecutePackage(packageInfo.Name, version, downloadPath);
+            ExecutePackageDownload(packageInfo.Name, version, downloadPath);
         }
 
         private string JoinPackageNames(IEnumerable<Package> pkgs)
@@ -471,7 +471,7 @@ namespace Dynamo.ViewModels
             return String.Join(", ", pkgs.Select(x => x.Name + " " + x.VersionName));
         }
 
-        internal void ExecutePackage(string name, PackageVersion version, string downloadPath)
+        internal void ExecutePackageDownload(string name, PackageVersion version, string downloadPath)
         {
             string msg = String.IsNullOrEmpty(downloadPath) ?
                 String.Format(Resources.MessageConfirmToInstallPackage, name, version.version) :

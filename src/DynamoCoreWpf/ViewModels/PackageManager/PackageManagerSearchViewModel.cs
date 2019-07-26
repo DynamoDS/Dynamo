@@ -588,7 +588,7 @@ namespace Dynamo.PackageManager
 
         private void PackageOnExecuted(PackageManagerSearchElement element, PackageVersion version, string downloadPath)
         {
-            this.PackageManagerClientViewModel.ExecutePackage(element.Name, version, downloadPath);
+            this.PackageManagerClientViewModel.ExecutePackageDownload(element.Name, version, downloadPath);
         }
 
         /// <summary>
