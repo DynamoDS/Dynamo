@@ -25,4 +25,12 @@ namespace DesignScript.Builtin
         {
         }
     }
+
+    public class BuiltinNullReferenceException : Exception
+    {
+        public BuiltinNullReferenceException(string message)
+            : base(message)
+        {
+        }
+    }
 }
