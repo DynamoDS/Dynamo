@@ -360,7 +360,8 @@ namespace ProtoCore
             var qualifiedMethodName = methodName;
 
             var className = string.Empty;
-            
+            var classNameSimple = string.Empty;
+
             if (classScope != Constants.kGlobalScope)
             {
                 if (methodName == nameof(DesignScript.Builtin.Get.ValueAtIndex))
@@ -371,12 +372,10 @@ namespace ProtoCore
                         return;
                     }
                 }
-                else
-                {
-                    var classNode = runtimeCore.DSExecutable.classTable.ClassNodes[classScope];
-                    className = classNode.Name;
-                    qualifiedMethodName = className + "." + methodName;
-                }
+                var classNode = runtimeCore.DSExecutable.classTable.ClassNodes[classScope];
+                className = classNode.Name;
+                classNameSimple = className.Split('.').Last();
+                qualifiedMethodName = classNameSimple + "." + methodName;
             }
 
             Operator op;
@@ -387,7 +386,7 @@ namespace ProtoCore
                 {
                     if (arguments != null && arguments.Any())
                     {
-                        qualifiedMethodName = className + "." + propertyName;
+                        qualifiedMethodName = classNameSimple + "." + propertyName;
 
                         // if the property is found on the class, it must be a static getter being called on 
                         // an instance argument type not matching the property
@@ -417,7 +416,7 @@ namespace ProtoCore
                 var argsJoined = string.Join(", ", arguments.Select(GetTypeName));
                 
                 var fep = funcGroup.FunctionEndPoints[0];
-                var formalParamsJoined = string.Join(", ", fep.FormalParams.Select(x => x.ToShortString()));
+                var formalParamsJoined = string.Join(", ", fep.FormalParams);
 
                 message = string.Format(Resources.NonOverloadMethodResolutionError, qualifiedMethodName, formalParamsJoined, argsJoined);
             }
