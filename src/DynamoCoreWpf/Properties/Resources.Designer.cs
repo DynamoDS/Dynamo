@@ -4513,7 +4513,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Host Dependency.
+        ///   Looks up a localized string similar to Host Dependency (optional).
         /// </summary>
         public static string PublishPackageViewPackageHostDependency {
             get {

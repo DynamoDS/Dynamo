@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Windows;
-using System.Windows.Controls;
 using Dynamo.UI;
 using Dynamo.ViewModels;
 using DynamoUtilities;
@@ -12,7 +11,11 @@ namespace Dynamo.PackageManager
     /// </summary>
     public partial class PublishPackageView : Window
     {
+        /// <summary>
+        /// Internal reference of PublishPackageViewModel
+        /// </summary>
         private PublishPackageViewModel pkgViewModel;
+
         public PublishPackageView(PublishPackageViewModel packageViewModel)
         {
             this.DataContext = packageViewModel;

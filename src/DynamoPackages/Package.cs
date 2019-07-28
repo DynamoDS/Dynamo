@@ -92,6 +92,9 @@ namespace Dynamo.PackageManager
         public IEnumerable<string> Keywords { get { return _keywords; } set { _keywords = value; RaisePropertyChanged("Keywords"); } }
 
         private IEnumerable<string> hostDependencies = new List<string>();
+        /// <summary>
+        /// Package Host Dependencies
+        /// </summary>
         public IEnumerable<string> HostDependencies { get { return hostDependencies; } set { hostDependencies = value; RaisePropertyChanged("HostDependencies"); } }
 
         private bool markedForUninstall;

@@ -32,13 +32,17 @@ namespace Dynamo.PackageManager
         #region Properties/Fields
 
         private readonly DynamoViewModel dynamoViewModel;
+
+        /// <summary>
+        /// reference of DynamoViewModel
+        /// </summary>
         public DynamoViewModel DynamoViewModel
         {
             get { return dynamoViewModel; }
         }
 
         /// <summary>
-        /// Package Publish entry, binded to the host filter context menu
+        /// Package Publish entry, binded to the host multi-selection option
         /// </summary>
         public class HostComboboxEntry
         {
@@ -55,7 +59,7 @@ namespace Dynamo.PackageManager
             /// <summary>
             /// Constructor
             /// </summary>
-            /// <param name="hostName"></param>
+            /// <param name="hostName">Name of the host</param>
             public HostComboboxEntry(string hostName)
             {
                 HostName = hostName;
@@ -417,7 +421,8 @@ namespace Dynamo.PackageManager
         private List<HostComboboxEntry> _knownHosts;
 
         /// <summary>
-        /// Know hosts received from package manager
+        /// Know hosts received from package manager.
+        /// Data binded to the multi-selection host dependency option.
         /// </summary>
         public List<HostComboboxEntry> KnownHosts
         {
@@ -434,14 +439,12 @@ namespace Dynamo.PackageManager
 
         private List<string> _selectedHosts = new List<String>();
         /// <summary>
-        /// Current selected hosts as dependencies
+        /// Current selected hosts as dependencies.
+        /// Will be passed for serialization when publishing package.
         /// </summary>
         public List<string> SelectedHosts
         {
-            get
-            {
-                return _selectedHosts;
-            }
+            get { return _selectedHosts; }
             set
             {
                 if (_selectedHosts != value)
@@ -456,16 +459,13 @@ namespace Dynamo.PackageManager
             }
         }
 
-        public string _selectedHostsString = string.Empty;
+        private string _selectedHostsString = string.Empty;
         /// <summary>
-        /// Current selected hosts as dependencies
+        /// Current selected hosts as dependencies string for display
         /// </summary>
         public string SelectedHostsString
         {
-            get
-            {
-                return _selectedHostsString;
-            }
+            get { return _selectedHostsString; }
             set
             {
                 if (_selectedHostsString != value)
@@ -623,6 +623,11 @@ namespace Dynamo.PackageManager
             PropertyChanged += ThisPropertyChanged;
         }
 
+        /// <summary>
+        /// Return a list of HostComboboxEntry describing known hosts from PM.
+        /// Return an empty list if PM is down.
+        /// </summary>
+        /// <returns>A list of HostComboboxEntry describing known hosts from PM.</returns>
         private List<HostComboboxEntry> initializeHostSelections()
         {
             var hostSelections = new List<HostComboboxEntry>();
