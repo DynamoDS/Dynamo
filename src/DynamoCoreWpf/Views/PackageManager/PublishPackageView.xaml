@@ -105,8 +105,9 @@
                                         <TextBlock Text="{x:Static p:Resources.PublishPackageViewPackageHostDependencyTooltip}"/>
                                     </Label.ToolTip>
                                 </Label>
-                                <ComboBox Style="{DynamicResource ResourceKey=SComboBox}" ItemsSource="{Binding KnownHosts}" Background="Black" Foreground="White" Name="HostDependencyBox" 
-                                          Margin="0, 13" Width="170" IsEditable="False" TabIndex="1" OverridesDefaultStyle="True">
+                                <!--Notice here we are reusing part of the defined Dynamo ComboBox style-->
+                                <ComboBox Style="{DynamicResource ResourceKey=SComboBox}" ItemsSource="{Binding KnownHosts}" Foreground="{StaticResource DynamoStandardLableTextBrush}" Name="HostDependencyBox" 
+                                          Margin="0" Width="170" IsEditable="False" TabIndex="1" OverridesDefaultStyle="True" MinHeight="36">
                                     <ComboBox.ItemTemplate>
                                         <DataTemplate>
                                             <StackPanel Orientation="Horizontal">
@@ -135,18 +136,6 @@
                                                                   Margin="3,3,23,3"
                                                                   VerticalAlignment="Center"
                                                                   HorizontalAlignment="Left" />
-                                                <TextBox x:Name="PART_EditableTextBox"
-                                                         Style="{x:Null}"
-                                                         Template="{StaticResource ComboBoxTextBox}"
-                                                         HorizontalAlignment="Left"
-                                                         VerticalAlignment="Center"
-                                                         Margin="3,3,23,3"
-                                                         Padding="10"
-                                                         Focusable="True"
-                                                         Foreground="#bbbbbb"
-                                                         CaretBrush="#bbbbbb"
-                                                         Visibility="Hidden"
-                                                         IsReadOnly="{TemplateBinding IsReadOnly}" />
                                                 <Popup Name="Popup"
                                                        Placement="Bottom"
                                                        Focusable="False"
@@ -157,8 +146,9 @@
                                                     <Grid Name="DropDown"
                                                           SnapsToDevicePixels="True">
                                                         <Border Name="DropDownBorder"
-                                                                  BorderThickness="1"
-                                                                  BorderBrush="Black"/>
+                                                                Background="#2c2c2c"
+                                                                BorderThickness="1,0,1,1"
+                                                                BorderBrush="#444444" />
                                                         <ScrollViewer Margin="4,6,4,6" SnapsToDevicePixels="True" DataContext="{Binding}">
                                                             <StackPanel IsItemsHost="True" KeyboardNavigation.DirectionalNavigation="Contained" />
                                                         </ScrollViewer>
@@ -171,21 +161,6 @@
                                                     <Setter TargetName="DropDownBorder"
                                                             Property="MinHeight"
                                                             Value="95" />
-                                                </Trigger>
-                                                <Trigger Property="IsGrouping"
-                                                         Value="true">
-                                                    <Setter Property="ScrollViewer.CanContentScroll"
-                                                            Value="false" />
-                                                </Trigger>
-                                                <Trigger SourceName="Popup"
-                                                         Property="Popup.AllowsTransparency"
-                                                         Value="true">
-                                                    <Setter TargetName="DropDownBorder"
-                                                            Property="CornerRadius"
-                                                            Value="4" />
-                                                    <Setter TargetName="DropDownBorder"
-                                                            Property="Margin"
-                                                            Value="0,2,0,0" />
                                                 </Trigger>
                                             </ControlTemplate.Triggers>
                                         </ControlTemplate>

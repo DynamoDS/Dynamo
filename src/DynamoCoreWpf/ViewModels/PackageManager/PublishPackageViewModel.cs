@@ -418,7 +418,7 @@ namespace Dynamo.PackageManager
             }
         }
 
-        private List<HostComboboxEntry> _knownHosts;
+        private List<HostComboboxEntry> knownHosts;
 
         /// <summary>
         /// Know hosts received from package manager.
@@ -426,51 +426,51 @@ namespace Dynamo.PackageManager
         /// </summary>
         public List<HostComboboxEntry> KnownHosts
         {
-            get { return _knownHosts; }
+            get { return knownHosts; }
             set
             {
-                if (_knownHosts != value)
+                if (knownHosts != value)
                 {
-                    _knownHosts = value;
+                    knownHosts = value;
                     RaisePropertyChanged("KnownHosts");
                 }
             }
         }
 
-        private List<string> _selectedHosts = new List<String>();
+        private List<string> selectedHosts = new List<String>();
         /// <summary>
         /// Current selected hosts as dependencies.
         /// Will be passed for serialization when publishing package.
         /// </summary>
         public List<string> SelectedHosts
         {
-            get { return _selectedHosts; }
+            get { return selectedHosts; }
             set
             {
-                if (_selectedHosts != value)
+                if (selectedHosts != value)
                 {
-                    _selectedHosts = value;
+                    selectedHosts = value;
                     foreach (var host in KnownHosts)
                     {
-                        if (_selectedHosts.Contains(host.HostName)) host.IsSelected = true;
+                        if (selectedHosts.Contains(host.HostName)) host.IsSelected = true;
                     }
                     RaisePropertyChanged("SelectedHosts");
                 }
             }
         }
 
-        private string _selectedHostsString = string.Empty;
+        private string selectedHostsString = string.Empty;
         /// <summary>
         /// Current selected hosts as dependencies string for display
         /// </summary>
         public string SelectedHostsString
         {
-            get { return _selectedHostsString; }
+            get { return selectedHostsString; }
             set
             {
-                if (_selectedHostsString != value)
+                if (selectedHostsString != value)
                 {
-                    _selectedHostsString = value;
+                    selectedHostsString = value;
                     RaisePropertyChanged("SelectedHostsString");
                 }
             }

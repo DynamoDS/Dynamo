@@ -93,7 +93,7 @@ namespace Dynamo.PackageManager
 
         private IEnumerable<string> hostDependencies = new List<string>();
         /// <summary>
-        /// Package Host Dependencies
+        /// Package Host Dependencies, e.g. specifying "Revit" in the list means this package can be guaranteed to work in this host environment only
         /// </summary>
         public IEnumerable<string> HostDependencies { get { return hostDependencies; } set { hostDependencies = value; RaisePropertyChanged("HostDependencies"); } }
 
