@@ -1307,6 +1307,7 @@ namespace Dynamo.PackageManager
                 Package.License = License;
                 Package.SiteUrl = SiteUrl;
                 Package.RepositoryUrl = RepositoryUrl;
+                Package.HostDependencies = SelectedHosts;
 
                 AppendPackageContents();
 
