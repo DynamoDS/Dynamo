@@ -450,11 +450,21 @@ namespace Dynamo.PackageManager
                 if (selectedHosts != value)
                 {
                     selectedHosts = value;
+                    // The following logic is mainly for publishing from an existing package with
+                    // pre-serialized host dependencies. We set the selection state so user do not have 
+                    // to replicate the selection again
                     foreach (var host in KnownHosts)
                     {
-                        if (selectedHosts.Contains(host.HostName)) host.IsSelected = true;
+                        if (selectedHosts.Contains(host.HostName))
+                        {
+                            host.IsSelected = true;
+                            SelectedHostsString += host.HostName + ", ";
+                        }
                     }
+                    // Format string since it will be displayed
+                    SelectedHostsString = SelectedHostsString.Trim().TrimEnd(',');
                     RaisePropertyChanged("SelectedHosts");
+                    RaisePropertyChanged("SelectedHostsString");
                 }
             }
         }
@@ -725,7 +735,8 @@ namespace Dynamo.PackageManager
                 RepositoryUrl = l.RepositoryUrl ?? "",
                 SiteUrl = l.SiteUrl ?? "",
                 Package = l,
-                License = l.License
+                License = l.License,
+                SelectedHosts = l.HostDependencies as List<string>
             };
 
             // add additional files
