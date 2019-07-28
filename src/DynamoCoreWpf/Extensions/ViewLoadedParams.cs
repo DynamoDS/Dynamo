@@ -49,6 +49,11 @@ namespace Dynamo.Wpf.Extensions
             get { return dynamoViewModel.RenderPackageFactoryViewModel.Factory; }
         }
 
+        public PackageManagerClientViewModel PackageManagerClientViewModel
+        {
+            get { return dynamoViewModel.PackageManagerClientViewModel; }
+        }
+
         /// <summary>
         /// A reference to the Dynamo Window object. Useful for correctly setting the parent of a 
         /// newly created window.

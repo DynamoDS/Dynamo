@@ -19,7 +19,7 @@ namespace Dynamo.WorkspaceDependency
 
         private WorkspaceModel currentWorkspace;
 
-        private DynamoViewModel dynamoViewModel;
+        private PackageManagerClientViewModel packageManagerClientViewModel;
 
         private String FeedbackLink = "https://forum.dynamobim.com/t/call-for-feedback-on-dynamo-graph-package-dependency-display/37229";
 
@@ -125,7 +125,7 @@ namespace Dynamo.WorkspaceDependency
             loadedParams = p;
             dependencyViewExtension = viewExtension;
             DependencyRegen(currentWorkspace);
-            dynamoViewModel = loadedParams.DynamoWindow.DataContext as DynamoViewModel;
+            packageManagerClientViewModel = loadedParams.PackageManagerClientViewModel;
         }
         
         /// <summary>
@@ -138,7 +138,7 @@ namespace Dynamo.WorkspaceDependency
             var info = ((NodeLibraryDependencyRow)((Button)sender).DataContext).DependencyInfo;
             var package = new PackageInfo(info.Name, info.Version);
 
-            dynamoViewModel.PackageManagerClientViewModel.InitiatePackageDownloadAndInstall(package);
+            packageManagerClientViewModel.InitiatePackageDownloadAndInstall(package);
             DependencyRegen(currentWorkspace);
         }
     }
