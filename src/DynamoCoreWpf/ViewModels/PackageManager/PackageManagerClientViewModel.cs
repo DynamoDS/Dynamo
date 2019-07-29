@@ -167,7 +167,7 @@ namespace Dynamo.ViewModels
     ///     A thin wrapper on the Greg rest client for performing IO with
     ///     the Package Manager
     /// </summary>
-    public class PackageManagerClientViewModel : NotificationObject
+    public class PackageManagerClientViewModel : NotificationObject, IPackageInstaller
     {
 
         #region Properties/Fields
@@ -443,7 +443,12 @@ namespace Dynamo.ViewModels
             return CachedPackageList;
         }
 
-        internal void InitiatePackageDownloadAndInstall(IPackageInfo packageInfo, string downloadPath = null)
+        /// <summary>
+        /// Download and install a specific package from the package manager
+        /// </summary>
+        /// <param name="packageInfo"></param>
+        /// <param name="downloadPath"></param>
+        public void DownloadAndInstallPackage(IPackageInfo packageInfo, string downloadPath = null)
         {
             var header = Model.GetPackageHeader(packageInfo);
             if (header == null)

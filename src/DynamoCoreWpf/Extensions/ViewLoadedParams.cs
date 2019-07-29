@@ -49,7 +49,10 @@ namespace Dynamo.Wpf.Extensions
             get { return dynamoViewModel.RenderPackageFactoryViewModel.Factory; }
         }
 
-        public PackageManagerClientViewModel PackageManagerClientViewModel
+        /// <summary>
+        /// A reference to package install operations on the package manager
+        /// </summary>
+        public IPackageInstaller PackageInstaller
         {
             get { return dynamoViewModel.PackageManagerClientViewModel; }
         }

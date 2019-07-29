@@ -56,9 +56,6 @@
                     <Trigger Property="IsSelected" Value="True">
                         <Setter Property="Background" Value="{DynamicResource LibraryItemHostBackground}" />
                     </Trigger>
-                    <Trigger Property="IsMouseOver" Value="True">
-                        <Setter Property="Background" Value="{DynamicResource RootElementOnHover}" />
-                    </Trigger>
                 </Style.Triggers>
             </Style>
         </ResourceDictionary>
@@ -77,7 +74,7 @@
             CanUserAddRows="False"
             GridLinesVisibility ="None"
             Background="#353535"
-            FontSize="12"
+            FontSize="14"
             VerticalAlignment="Center"
             SelectionUnit="FullRow"
             SelectionMode="Extended"
@@ -92,10 +89,10 @@
                 <!-- State Icon -->
                 <DataGridTemplateColumn 
                     IsReadOnly="True" 
-                    Width="30">
+                    Width="26">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <Image Source="{Binding Icon}" Width="13" Height="13" Margin="7" />
+                            <Image Source="{Binding Icon}" Width="18" Height="18" Margin="8,8,0,8" />
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
@@ -158,7 +155,7 @@
         <Grid x:Name="container"
             Background="Transparent"
             Grid.Row="1"
-            Height="1000"
+            Height="10000"
             VerticalAlignment="Stretch">
         </Grid>
 
