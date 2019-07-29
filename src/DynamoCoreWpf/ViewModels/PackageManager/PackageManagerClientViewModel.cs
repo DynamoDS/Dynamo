@@ -453,9 +453,9 @@ namespace Dynamo.ViewModels
             var header = Model.GetPackageHeader(packageInfo);
             if (header == null)
             {
-                // TODO: move message to resources
-                var result = MessageBox.Show(string.Format("{0} could not be downloaded.", packageInfo.Name),
-                "Download Error", MessageBoxButton.OKCancel, MessageBoxImage.Question);
+                var result = MessageBox.Show(string.Format(Resources.MessagePackageNotFound, packageInfo.Name),
+                Resources.PackageDownloadErrorMessageBoxTitle, 
+                MessageBoxButton.OKCancel, MessageBoxImage.Question);
                 return;
             }
 
@@ -463,8 +463,9 @@ namespace Dynamo.ViewModels
             if (version == null)
             {
                 // TODO: move message to resources
-                var result = MessageBox.Show(string.Format("Version {0} of {1} could not be found.", packageInfo.Version.ToString(), packageInfo.Name),
-                "Download Error", MessageBoxButton.OKCancel, MessageBoxImage.Question);
+                var result = MessageBox.Show(string.Format(Resources.MessagePackageVersionNotFound, packageInfo.Version.ToString(), packageInfo.Name),
+                Resources.PackageDownloadErrorMessageBoxTitle, 
+                MessageBoxButton.OKCancel, MessageBoxImage.Question);
                 return;
             }
 
@@ -493,7 +494,7 @@ namespace Dynamo.ViewModels
                 var headers = version.full_dependency_ids.Select(dep => dep._id).Select((id) =>
                 {
                     PackageHeader pkgHeader;
-                    var res = pmExt.PackageManagerClient.DownloadPackageHeader(id, out pkgHeader);
+                    var res = Model.DownloadPackageHeader(id, out pkgHeader);
 
                     if (!res.Success)
                         MessageBox.Show(String.Format(Resources.MessageFailedToDownloadPackage, id),
