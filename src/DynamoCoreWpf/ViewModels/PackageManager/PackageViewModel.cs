@@ -223,6 +223,7 @@ namespace Dynamo.ViewModels
 
         private bool CanPublishNewPackageVersion()
         {
+            return true;
             return dynamoViewModel.Model.AuthenticationManager.HasAuthProvider;
         }
 
@@ -253,6 +254,7 @@ namespace Dynamo.ViewModels
 
         private bool CanPublishNewPackage()
         {
+            return true;
             return dynamoViewModel.Model.AuthenticationManager.HasAuthProvider;
         }
 

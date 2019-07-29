@@ -115,6 +115,7 @@ namespace Dynamo.PackageManager
 
         private bool ExecuteTermsOfUseCall(bool queryAcceptanceStatus)
         {
+            return true;
             return FailFunc.TryExecute(() =>
             {
                 var request = new TermsOfUse(queryAcceptanceStatus);

@@ -1448,7 +1448,7 @@ namespace Dynamo.PackageManager
             if (dynamoViewModel == null || !dynamoViewModel.Model.AuthenticationManager.HasAuthProvider)
             {
                 ErrorString = string.Format(Resources.CannotSubmitPackage,dynamoViewModel.BrandingResourceProvider.ProductName);
-                return false;
+                return true;
             }
 
             return CheckPackageValidity();

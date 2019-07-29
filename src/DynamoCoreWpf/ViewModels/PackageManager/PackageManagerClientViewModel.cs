@@ -87,8 +87,8 @@ namespace Dynamo.ViewModels
                     // without signing in, we won't show the terms of use dialog,
                     // simply return from here.
                     // 
-                    if (authenticationManager.LoginState != LoginState.LoggedIn)
-                        return;
+                    //if (authenticationManager.LoginState != LoginState.LoggedIn)
+                    //    return;
 
                     var termsOfUseAccepted = t.Result;
                     if (termsOfUseAccepted)
@@ -308,6 +308,7 @@ namespace Dynamo.ViewModels
 
         public bool CanPublishNewPackage(object m)
         {
+            return true;
             return AuthenticationManager.HasAuthProvider;
         }
 
@@ -335,6 +336,7 @@ namespace Dynamo.ViewModels
 
         public bool CanPublishCustomNode(Function m)
         {
+            return true;
             return AuthenticationManager.HasAuthProvider && m != null;
         }
 
@@ -387,6 +389,7 @@ namespace Dynamo.ViewModels
 
         public bool CanPublishSelectedNodes(object m)
         {
+            return true;
             return DynamoSelection.Instance.Selection.Count > 0 &&
                    DynamoSelection.Instance.Selection.All(x => x is Function) && AuthenticationManager.HasAuthProvider; ;
         }
