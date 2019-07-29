@@ -156,6 +156,37 @@ namespace Dynamo.WorkspaceDependency
 
         public Version Version => DependencyInfo.Version;
 
+        public string DetailsMessage
+        {
+            get
+            {
+                string message;
+
+                switch (DependencyInfo.State)
+                {
+                    case PackageDependencyState.Loaded:
+                        message = string.Format("{0} {1} is installed locally.", 
+                            DependencyInfo.Name, DependencyInfo.Version.ToString());
+                        break;
+
+                    case PackageDependencyState.Missing:
+                        message = string.Format("This graph depends on {0} {1}. " +
+                            "Would you like to download and install this package?", 
+                            DependencyInfo.Name, DependencyInfo.Version.ToString());
+                        break;
+
+                    default:
+                        message = string.Format("Some nodes in this graph were originally created with {0} {1} " +
+                            "which you do not have installed locally. You may have a different version of {0} " +
+                            "installed, or you may have a different package installed which resolves these nodes.", 
+                            DependencyInfo.Name, DependencyInfo.Version.ToString());
+                        break;
+                }
+
+                return message;
+            }
+        }
+
         public ImageSource Icon
         {
             get

@@ -22,7 +22,7 @@
                 <Setter Property="CellStyle" Value="{DynamicResource CellStyle1}"/>
                 <Setter Property="RowHeaderWidth" Value="0"/>
                 <Setter Property="BorderThickness" Value="0.5" />
-                <Setter Property="BorderBrush" Value="#777777"/>
+                <Setter Property="BorderBrush" Value="#555555"/>
                 <Setter Property="ColumnWidth" Value="Auto"/>
             </Style>
             <!-- DataGridColumnHeader style -->
@@ -32,20 +32,20 @@
                 <Setter Property="Foreground" Value="{DynamicResource MemberButtonText}"/>
                 <Setter Property="FontSize" Value="10" />
                 <Setter Property="BorderThickness" Value="0" />
-                <Setter Property="BorderBrush" Value="#777777"/>
+                <Setter Property="BorderBrush" Value="#555555"/>
                 <Setter Property="Margin" Value="10,0,10,0"/>
             </Style>
             <!-- DataGridRow style -->
             <Style x:Key="RowStyle1" TargetType="DataGridRow">
                 <Setter Property="Background" Value="{DynamicResource LibraryItemHostBackground}"/>
                 <Setter Property="BorderThickness" Value="0.5" />
-                <Setter Property="BorderBrush" Value="#777777"/>
+                <Setter Property="BorderBrush" Value="#555555"/>
                 <Style.Triggers>
                     <Trigger Property="IsSelected" Value="True">
                         <Setter Property="Background" Value="{DynamicResource LibraryItemHostBackground}" />
                     </Trigger>
                     <Trigger Property="IsMouseOver" Value="True">
-                        <Setter Property="Background" Value="{DynamicResource RootElementOnHover}" />
+                        <Setter Property="Background" Value="#555555" />
                     </Trigger>
                 </Style.Triggers>
             </Style>
@@ -55,6 +55,13 @@
                 <Style.Triggers>
                     <Trigger Property="IsSelected" Value="True">
                         <Setter Property="Background" Value="{DynamicResource LibraryItemHostBackground}" />
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+            <Style x:Key="ButtonStyle1" TargetType="{x:Type Button}">
+                <Style.Triggers>
+                    <Trigger Property="IsMouseOver" Value="True">
+                        <Setter Property="Background" Value="{DynamicResource LibraryItemHostBackground}"/>
                     </Trigger>
                 </Style.Triggers>
             </Style>
@@ -121,7 +128,7 @@
                     <Style TargetType="TextBlock">
                         <Setter Property="VerticalAlignment" Value="Center" />
                         <Setter Property="Margin" Value="10,0,10,0"/>
-                        </Style>
+                    </Style>
                 </DataGridTextColumn.ElementStyle>
                 </DataGridTextColumn>
             </DataGrid.Columns>
@@ -129,6 +136,13 @@
             <DataGrid.RowDetailsTemplate>
                 <DataTemplate>
                     <StackPanel Background="#252525">
+                        <TextBlock
+                            Text="{Binding DetailsMessage}"
+                            TextWrapping="Wrap"
+                            Foreground="{DynamicResource MemberButtonText}"
+                            Margin="10"
+                            FontSize="12">
+                        </TextBlock>
                         <Button
                             Visibility="{Binding Path=ShowDownloadButton, Converter={StaticResource BoolToVis}}"
                             Click="DownloadPackage"
