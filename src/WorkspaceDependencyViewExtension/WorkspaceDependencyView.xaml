@@ -81,7 +81,7 @@
             CanUserAddRows="False"
             GridLinesVisibility ="None"
             Background="#353535"
-            FontSize="14"
+            FontSize="13"
             VerticalAlignment="Center"
             SelectionUnit="FullRow"
             SelectionMode="Extended"
@@ -141,7 +141,7 @@
                             TextWrapping="Wrap"
                             Foreground="{DynamicResource MemberButtonText}"
                             Margin="10"
-                            FontSize="12">
+                            FontSize="11">
                         </TextBlock>
                         <Button
                             Visibility="{Binding Path=ShowDownloadButton, Converter={StaticResource BoolToVis}}"
