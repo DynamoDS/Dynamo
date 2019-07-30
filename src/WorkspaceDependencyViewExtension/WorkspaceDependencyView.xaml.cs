@@ -102,30 +102,63 @@ namespace Dynamo.WorkspaceDependency
         {
             // Clear the dependency table.
             table.Columns.Clear();
+
             foreach (var package in ws.NodeLibraryDependencies)
             {
-                if (package.IsLoaded)
+                if (package is PackageDependencyInfo)
                 {
-                    table.Columns.Add(new Column()
+                    PackageDependencyInfo packageDependency = (PackageDependencyInfo) package;
+
+                    // Different states for dependency packages.
+                    switch (packageDependency.State)
                     {
-                        ColumnsData = new ObservableCollection<ColumnData>()
+                        case PackageDependencyState.Loaded:
+                            table.Columns.Add(new Column()
                             {
-                                new ColumnData(package.Name),
-                                new ColumnData(package.Version.ToString(), 100)
-                            }
-                    });
-                }
-                else
-                {
-                    HasMissingPackage = true;
-                    table.Columns.Add(new Column()
-                    {
-                        ColumnsData = new ObservableCollection<ColumnData>()
-                        {
-                            new ColumnData(package.Name, ColumnData.WarningColor),
-                            new ColumnData(package.Version.ToString(), 100)
-                        }
-                    });
+                                ColumnsData = new ObservableCollection<ColumnData>()
+                                {
+                                    new ColumnData(packageDependency.Name),
+                                    new ColumnData(packageDependency.Version.ToString(), 100)
+                                }
+                            });
+                            break;
+
+                        case PackageDependencyState.IncorrectVersion:
+                            HasMissingPackage = true;
+                            table.Columns.Add(new Column()
+                            {
+                                ColumnsData = new ObservableCollection<ColumnData>()
+                                {
+                                    new ColumnData(packageDependency.Name),
+                                    new ColumnData(packageDependency.Version.ToString(), 100, ColumnData.WarningColor)
+                                }
+                            });
+                            break;
+
+                        case PackageDependencyState.Missing:
+                            HasMissingPackage = true;
+                            table.Columns.Add(new Column()
+                            {
+                                ColumnsData = new ObservableCollection<ColumnData>()
+                                {
+                                    new ColumnData(packageDependency.Name, ColumnData.MissingColor),
+                                    new ColumnData(packageDependency.Version.ToString(), 100, ColumnData.MissingColor)
+                                }
+                            });
+                            break;
+
+                        case PackageDependencyState.Warning:
+                            HasMissingPackage = true;
+                            table.Columns.Add(new Column()
+                            {
+                                ColumnsData = new ObservableCollection<ColumnData>()
+                                {
+                                    new ColumnData(packageDependency.Name, ColumnData.WarningColor),
+                                    new ColumnData(packageDependency.Version.ToString(), 100, ColumnData.WarningColor)
+                                }
+                            });
+                            break;
+                    }
                 }
             }
         }
@@ -165,7 +198,8 @@ namespace Dynamo.WorkspaceDependency
     {
         static int DefaultWidth = 200;
         static SolidColorBrush DefaultColor = (SolidColorBrush)(new BrushConverter().ConvertFrom("#aaaaaa"));
-        public static Brush WarningColor = Brushes.Red;
+        public static Brush MissingColor = Brushes.Red;
+        public static Brush WarningColor = Brushes.Yellow;
 
         /// <summary>
         /// Constructor

@@ -177,7 +177,6 @@ namespace ProtoCore
 #if DEBUG
 
                 Validity.Assert(NestedData != null, "Nested data has changed null status since last check, suspected race");
-                Validity.Assert(NestedData.Count > 0, "Empty subnested array, please file repo data with @lukechurch, relates to MAGN-4059");
 #endif
 
                 //Safety trap to protect against an empty array, need repro test to figure out why this is getting set with empty arrays

@@ -133,7 +133,7 @@ namespace Dynamo.PackageManager.Tests
                 PathManager = CurrentDynamoModel.PathManager
             });
 
-            // There are 13 packages in "GitHub\Dynamo\test\pkgs"
+            // There are 14 packages in "GitHub\Dynamo\test\pkgs"
             Assert.AreEqual(14, loader.LocalPackages.Count());
 
             // Verify that interdependent packages are resolved successfully
@@ -164,7 +164,7 @@ namespace Dynamo.PackageManager.Tests
                 PathManager = CurrentDynamoModel.PathManager
             });
 
-            // There are 13 packages in "GitHub\Dynamo\test\pkgs"
+            // There are 14 packages in "GitHub\Dynamo\test\pkgs"
             Assert.AreEqual(14, loader.LocalPackages.Count());
 
             // Simulate loading new package from PM

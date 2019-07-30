@@ -1,13 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Runtime.CompilerServices;
-using System.Xml;
-using Dynamo.Core;
+﻿using Dynamo.Core;
 using Dynamo.Engine;
 using Dynamo.Engine.CodeGeneration;
 using Dynamo.Events;
@@ -28,6 +19,14 @@ using Dynamo.Utilities;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using ProtoCore.Namespace;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Xml;
 
 
 namespace Dynamo.Graph.Workspaces
@@ -548,7 +547,37 @@ namespace Dynamo.Graph.Workspaces
                             packageDependencies[saved] = new PackageDependencyInfo(saved);
                         }
                         packageDependencies[saved].AddDependent(node.GUID);
-                        packageDependencies[saved].IsLoaded = saved.Equals(collected);
+
+                        // if the package is not installed.
+                        if (collected == null)
+                        {
+                            packageDependencies[saved].State = PackageDependencyState.Missing;
+                        }
+                        // If the state is Missing for atleast one of the nodes,
+                        // we set the state of the whole package dependency to Missing.
+                        // Set other states accordingly, only if the PackageDependencyState(for that package)
+                        // is not set to Missing by any of the other nodes. 
+                        else if (packageDependencies[saved].State != PackageDependencyState.Missing)
+                        {
+                            if (saved.Name == collected.Name)
+                            {
+                                // if the correct version of package is installed.
+                                if (saved.Version == collected.Version)
+                                {
+                                    packageDependencies[saved].State = PackageDependencyState.Loaded;
+                                }
+                                // if incorrect version of package is installed.
+                                else
+                                {
+                                    packageDependencies[saved].State = PackageDependencyState.IncorrectVersion;
+                                }
+                            }
+                            // if the package is not installed, but the nodes are resolved by a different package.
+                            else
+                            {
+                                packageDependencies[saved].State = PackageDependencyState.Warning;
+                            }
+                        }
                     }
                     else
                     {
@@ -559,7 +588,7 @@ namespace Dynamo.Graph.Workspaces
                                 packageDependencies[collected] = new PackageDependencyInfo(collected);
                             }
                             packageDependencies[collected].AddDependent(node.GUID);
-                            packageDependencies[collected].IsLoaded = true;
+                            packageDependencies[collected].State = PackageDependencyState.Loaded;
                         }
                     }
                 }

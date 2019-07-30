@@ -4,6 +4,18 @@ using System.Collections.Generic;
 namespace Dynamo.Graph.Workspaces
 {
     /// <summary>
+    /// Enum containing the different types of package dependency states.
+    /// </summary>
+    internal enum PackageDependencyState
+    {
+        Loaded,            // Correct package and version loaded.
+        IncorrectVersion,  // Correct package but incorrect version. 
+        Missing,           // package is completely missing.
+        Warning,           // Actual package is missing but the nodes are resolved by some other package. 
+        RequiresRestart    // Restart needed inorder to complete the uninstall of some package. 
+    }
+
+    /// <summary>
     /// Class containing info about a package
     /// </summary>
     public class PackageInfo
@@ -73,7 +85,8 @@ namespace Dynamo.Graph.Workspaces
         }
     }
 
-    internal enum ReferenceType{
+    internal enum ReferenceType
+    {
         NodeModel,
         Package,
         ZeroTouch,
@@ -118,6 +131,7 @@ namespace Dynamo.Graph.Workspaces
         /// <summary>
         /// Indicates whether this dependency is loaded in the current session
         /// </summary>
+        [Obsolete("This property is obsolete", false)]
         bool IsLoaded { get; set; }
     }
 
@@ -126,6 +140,7 @@ namespace Dynamo.Graph.Workspaces
     /// </summary>
     internal class PackageDependencyInfo : INodeLibraryDependencyInfo
     {
+        private PackageDependencyState _state;
         /// <summary>
         /// PackageInfo for this package
         /// </summary>
@@ -144,7 +159,24 @@ namespace Dynamo.Graph.Workspaces
         /// <summary>
         /// Indicates whether this package is loaded in the current session
         /// </summary>
-        public bool IsLoaded { get; set; }
+        [Obsolete("This property is obsolete, use PackageDependencyState property instead", false)]
+        public bool IsLoaded{ get; set;}
+
+        /// <summary>
+        /// State of Package Dependency
+        /// </summary>
+        public PackageDependencyState State {
+            
+            get {
+                return _state;
+            } 
+            set {
+                _state = value;
+                if (_state == PackageDependencyState.Loaded) {
+                    this.IsLoaded = true;
+                }
+            }
+        }
 
         /// <summary>
         /// Guids of nodes in the workspace that are dependent on this package
@@ -153,11 +185,11 @@ namespace Dynamo.Graph.Workspaces
         {
             get { return nodes; }
         }
-
+ 
         public ReferenceType ReferenceType => ReferenceType.Package;
 
         private HashSet<Guid> nodes;
-        
+
         /// <summary>
         /// Create a package dependency from the package name and version
         /// </summary>
@@ -185,7 +217,7 @@ namespace Dynamo.Graph.Workspaces
         /// <param name="guid"></param>
         public void AddDependent(Guid guid)
         {
-             Nodes.Add(guid);
+            Nodes.Add(guid);
         }
 
         /// <summary>
@@ -194,7 +226,7 @@ namespace Dynamo.Graph.Workspaces
         /// <param name="guids"></param>
         internal void AddDependents(IEnumerable<Guid> guids)
         {
-            foreach(var guid in guids)
+            foreach (var guid in guids)
             {
                 Nodes.Add(guid);
             }
