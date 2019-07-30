@@ -167,20 +167,17 @@ namespace Dynamo.WorkspaceDependency
                 switch (DependencyInfo.State)
                 {
                     case PackageDependencyState.Loaded:
-                        message = string.Format("{0} {1} is installed locally.", 
+                        message = string.Format(Properties.Resources.DetailsMessageLoaded, 
                             DependencyInfo.Name, DependencyInfo.Version.ToString());
                         break;
 
                     case PackageDependencyState.Missing:
-                        message = string.Format("This graph depends on {0} {1}. " +
-                            "Would you like to download and install this package?", 
+                        message = string.Format(Properties.Resources.DetailsMessageMissing, 
                             DependencyInfo.Name, DependencyInfo.Version.ToString());
                         break;
 
                     default:
-                        message = string.Format("Some nodes in this graph were originally created with {0} {1} " +
-                            "which you do not have installed locally. You may have a different version of {0} " +
-                            "installed, or you may have a different package which resolves these nodes.", 
+                        message = string.Format(Properties.Resources.DetailsMessageWarning, 
                             DependencyInfo.Name, DependencyInfo.Version.ToString());
                         break;
                 }
