@@ -15,8 +15,8 @@ namespace Dynamo.ViewModels
         /// <summary>
         /// Initiates download and install of a package
         /// </summary>
-        /// <param name="package"></param>
-        /// <param name="downloadPath"></param>
+        /// <param name="package">Package Info of the package to be downloaded--includes package name and version</param>
+        /// <param name="downloadPath">Path to download location of the package</param>
         void DownloadAndInstallPackage(IPackageInfo package, string downloadPath = null);
     }
 }
