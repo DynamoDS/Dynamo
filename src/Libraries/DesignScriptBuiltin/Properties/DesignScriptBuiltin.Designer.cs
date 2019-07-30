@@ -8,10 +8,10 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Builtin.Properties
-{
-
-
+namespace Builtin.Properties {
+    using System;
+    
+    
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -66,6 +66,15 @@ namespace Builtin.Properties
         internal static string IndexOutOfRangeExceptionMessage {
             get {
                 return ResourceManager.GetString("IndexOutOfRangeExceptionMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot index into a null list, dictionary or string..
+        /// </summary>
+        internal static string NullReferenceExceptionMessage {
+            get {
+                return ResourceManager.GetString("NullReferenceExceptionMessage", resourceCulture);
             }
         }
         
