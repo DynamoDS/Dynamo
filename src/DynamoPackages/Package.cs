@@ -91,6 +91,12 @@ namespace Dynamo.PackageManager
         private IEnumerable<string> _keywords = new List<string>();
         public IEnumerable<string> Keywords { get { return _keywords; } set { _keywords = value; RaisePropertyChanged("Keywords"); } }
 
+        private IEnumerable<string> hostDependencies = new List<string>();
+        /// <summary>
+        /// Package Host Dependencies, e.g. specifying "Revit" in the list means this package can be guaranteed to work in this host environment only
+        /// </summary>
+        public IEnumerable<string> HostDependencies { get { return hostDependencies; } set { hostDependencies = value; RaisePropertyChanged("HostDependencies"); } }
+
         private bool markedForUninstall;
         public bool MarkedForUninstall
         {
@@ -164,7 +170,6 @@ namespace Dynamo.PackageManager
                 if (body.name == null || body.version == null)
                     throw new Exception("The header is missing a name or version field.");
 
-                // TODO: Add serialization part of hosts specified in package.json
                 var pkg = new Package(
                     Path.GetDirectoryName(headerPath),
                     body.name,
@@ -179,6 +184,7 @@ namespace Dynamo.PackageManager
                     Contents = body.contents,
                     SiteUrl = body.site_url,
                     RepositoryUrl = body.repository_url,
+                    HostDependencies = body.host_dependencies,
                     Header = body
                 };
                 

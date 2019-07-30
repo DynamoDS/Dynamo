@@ -4,6 +4,9 @@
     <!--a good color picker-->
     <!--http://www.colorspire.com/rgb-color-wheel/-->
     
+    <!--Universal-->
+    <SolidColorBrush Color="#BBBBBB" x:Key="DynamoStandardLableTextBrush"></SolidColorBrush>
+    
     <!--Workspaces-->
     <SolidColorBrush Color="#353535" x:Key="DynamoWindowBrush"/>
     <SolidColorBrush Color="#232323" x:Key="WorkspaceBackgroundBrush"/>
