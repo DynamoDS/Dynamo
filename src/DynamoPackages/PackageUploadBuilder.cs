@@ -50,11 +50,10 @@ namespace Dynamo.PackageManager
             var version = engineVersion ?? Assembly.GetExecutingAssembly().GetName().Version.ToString();
             var engineMetadata = "";
 
-            // TODO: Add host info from the publish dialog
             return new PackageUploadRequestBody(package.Name, package.VersionName, package.Description, package.Keywords, package.License, package.Contents, PackageManagerClient.PackageEngineName,
                                                          version, engineMetadata, package.Group, package.Dependencies,
                                                          package.SiteUrl, package.RepositoryUrl, package.ContainsBinaries, 
-                                                         package.NodeLibraries.Select(x => x.FullName), new List<string>());
+                                                         package.NodeLibraries.Select(x => x.FullName), package.HostDependencies);
         }
 
 
