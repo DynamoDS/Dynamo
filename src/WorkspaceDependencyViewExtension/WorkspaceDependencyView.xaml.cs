@@ -103,12 +103,14 @@ namespace Dynamo.WorkspaceDependency
         /// <param name="ws">workspace model</param>
         internal void DependencyRegen(WorkspaceModel ws)
         {
-            if (ws.NodeLibraryDependencies.Any(d => d.State == PackageDependencyState.Missing))
+            var packageDependencies = ws.NodeLibraryDependencies.Where(d => d is PackageDependencyInfo);
+
+            if (packageDependencies.Any(d => d.State == PackageDependencyState.Missing))
             {
                 HasMissingPackage = true;
             }
 
-            PackageDependencyTable.ItemsSource = ws.NodeLibraryDependencies.Select(d => new NodeLibraryDependencyRow(d));
+            PackageDependencyTable.ItemsSource = packageDependencies.Select(d => new PackageDependencyRow(d as PackageDependencyInfo));
         }
 
         /// <summary>
@@ -135,7 +137,7 @@ namespace Dynamo.WorkspaceDependency
         /// <param name="e"></param>
         private void DownloadPackage(object sender, RoutedEventArgs e)
         {
-            var info = ((NodeLibraryDependencyRow)((Button)sender).DataContext).DependencyInfo;
+            var info = ((PackageDependencyRow)((Button)sender).DataContext).DependencyInfo;
             var package = new PackageInfo(info.Name, info.Version);
 
             packageInstaller.DownloadAndInstallPackage(package);
@@ -143,11 +145,11 @@ namespace Dynamo.WorkspaceDependency
         }
     }
 
-    public class NodeLibraryDependencyRow
+    public class PackageDependencyRow
     {
-        public INodeLibraryDependencyInfo DependencyInfo { get; private set; }
+        internal PackageDependencyInfo DependencyInfo { get; private set; }
 
-        public NodeLibraryDependencyRow(INodeLibraryDependencyInfo nodeLibraryDependencyInfo)
+        internal PackageDependencyRow(PackageDependencyInfo nodeLibraryDependencyInfo)
         {
             DependencyInfo = nodeLibraryDependencyInfo;
         }
@@ -178,7 +180,7 @@ namespace Dynamo.WorkspaceDependency
                     default:
                         message = string.Format("Some nodes in this graph were originally created with {0} {1} " +
                             "which you do not have installed locally. You may have a different version of {0} " +
-                            "installed, or you may have a different package installed which resolves these nodes.", 
+                            "installed, or you may have a different package which resolves these nodes.", 
                             DependencyInfo.Name, DependencyInfo.Version.ToString());
                         break;
                 }

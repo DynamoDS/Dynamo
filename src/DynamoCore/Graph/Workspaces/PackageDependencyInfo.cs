@@ -101,7 +101,7 @@ namespace Dynamo.Graph.Workspaces
         }
     }
 
-    public enum ReferenceType
+    internal enum ReferenceType
     {
         NodeModel,
         Package,
@@ -116,7 +116,7 @@ namespace Dynamo.Graph.Workspaces
     /// <summary>
     /// An interface that describes a dependency a workspace can have on other code.
     /// </summary>
-    public interface INodeLibraryDependencyInfo
+    interface INodeLibraryDependencyInfo
     {
         /// <summary>
         /// The type of reference this dependency is.
