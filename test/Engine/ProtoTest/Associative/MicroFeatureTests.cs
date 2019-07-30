@@ -656,14 +656,12 @@ y = foo()[1];
             string code = @"
 [Imperative]
 {
-    arr1 = [true, false];
-    arr2 = [1, 2, 3];
-    arr3 = [false, true];
-    t = arr2[1][0];
+    arr = [1, 2, 3];
+    t = arr[1][0];
 }
 ";
             thisTest.RunScriptSource(code);
-            TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.MethodResolutionFailure);
+            TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.IndexOutOfRange);
         }
 
         [Test]
