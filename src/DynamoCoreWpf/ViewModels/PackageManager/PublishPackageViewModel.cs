@@ -432,7 +432,7 @@ namespace Dynamo.PackageManager
                 if (knownHosts != value)
                 {
                     knownHosts = value;
-                    RaisePropertyChanged("KnownHosts");
+                    RaisePropertyChanged(nameof(KnownHosts));
                 }
             }
         }
@@ -447,7 +447,7 @@ namespace Dynamo.PackageManager
             get { return selectedHosts; }
             set
             {
-                if (selectedHosts != value)
+                if (selectedHosts != value && value != null)
                 {
                     selectedHosts = value;
                     // The following logic is mainly for publishing from an existing package with
@@ -463,8 +463,8 @@ namespace Dynamo.PackageManager
                     }
                     // Format string since it will be displayed
                     SelectedHostsString = SelectedHostsString.Trim().TrimEnd(',');
-                    RaisePropertyChanged("SelectedHosts");
-                    RaisePropertyChanged("SelectedHostsString");
+                    RaisePropertyChanged( nameof(SelectedHosts));
+                    RaisePropertyChanged( nameof(SelectedHostsString));
                 }
             }
         }
@@ -481,7 +481,7 @@ namespace Dynamo.PackageManager
                 if (selectedHostsString != value)
                 {
                     selectedHostsString = value;
-                    RaisePropertyChanged("SelectedHostsString");
+                    RaisePropertyChanged(nameof(SelectedHostsString));
                 }
             }
         }
