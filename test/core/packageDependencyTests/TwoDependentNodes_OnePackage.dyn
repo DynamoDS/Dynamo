@@ -1,0 +1,142 @@
+{
+  "Uuid": "9cf92bef-15dc-4ee2-9189-6d98ecb63666",
+  "IsCustomNode": false,
+  "Description": null,
+  "Name": "TwoDependentNodes",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Examples.NEWBasicExample.Create@double,double,double",
+      "Id": "a1aaeddb8aca4d55a17d185a36f3823c",
+      "Inputs": [
+        {
+          "Id": "3da7726524d7486cac6d223415947443",
+          "Name": "x",
+          "Description": "double\nDefault value : 42",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "8b64a771a32a451380bea7884fe80b78",
+          "Name": "y",
+          "Description": "double\nDefault value : 42",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "1db9a43499984ec08a45903fcb318945",
+          "Name": "z",
+          "Description": "double\nDefault value : 42",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "26609ae624b44111a56e6e743013dbd9",
+          "Name": "NEWBasicExample",
+          "Description": "NEWBasicExample",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "NEWBasicExample.Create (x: double = 42, y: double = 42, z: double = 42): NEWBasicExample"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Examples.CustomRenderExample.Create",
+      "Id": "edd9ce36c0b84eddadb337fbdda91e2b",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "5a652aea66ff4a5da152f23ec4e9a2f1",
+          "Name": "CustomRenderExample",
+          "Description": "CustomRenderExample",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "CustomRenderExample.Create ( ): CustomRenderExample"
+    }
+  ],
+  "Connectors": [],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [
+    {
+      "Name": "Dynamo Samples",
+      "Version": "2.0.0",
+      "Nodes": [
+        "a1aaeddb8aca4d55a17d185a36f3823c",
+        "edd9ce36c0b84eddadb337fbdda91e2b"
+      ]
+    }
+  ],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.3.0.5243",
+      "RunType": "Automatic",
+      "RunPeriod": "10"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": 23.370698733074381,
+      "EyeY": 37.875835349684678,
+      "EyeZ": 42.534018319822721,
+      "LookX": -28.370698733074381,
+      "LookY": -26.875835349684678,
+      "LookZ": -50.534018319822721,
+      "UpX": -0.10595676838426198,
+      "UpY": 0.97629600711993547,
+      "UpZ": -0.18873068037613588
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "NEWBasicExample.Create",
+        "Id": "a1aaeddb8aca4d55a17d185a36f3823c",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 298.15303789735469,
+        "Y": 343.5
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "CustomRenderExample.Create",
+        "Id": "edd9ce36c0b84eddadb337fbdda91e2b",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 330.15908128116968,
+        "Y": 500.4103238486922
+      }
+    ],
+    "Annotations": [],
+    "X": -159.93332356387242,
+    "Y": -279.00484355212529,
+    "Zoom": 1.476180239263613
+  }
+}

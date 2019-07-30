@@ -966,10 +966,11 @@ namespace Dynamo.Models
         /// <param name="e"></param>
         private void LibraryLoaded(object sender, LibraryServices.LibraryLoadedEventArgs e)
         {
-            string newLibrary = e.LibraryPath;
-
-            // Load all functions defined in that library.
-            AddZeroTouchNodesToSearch(LibraryServices.GetFunctionGroups(newLibrary));
+            foreach (var newLibrary in e.LibraryPaths)
+            {
+                // Load all functions defined in that library.
+                AddZeroTouchNodesToSearch(LibraryServices.GetFunctionGroups(newLibrary));
+            }
         }
 
         /// <summary>
@@ -1252,7 +1253,7 @@ namespace Dynamo.Models
         {
             if (!NodeModelAssemblyLoader.ContainsNodeModelSubType(assem))
             {
-                LibraryServices.ImportLibrary(assem.Location);
+                LibraryServices.LoadNodeLibrary(assem.Location, false);
                 return;
             }
 

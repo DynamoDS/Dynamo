@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading;
-using System.Windows.Input;
-using System.Windows.Media.Media3D;
-using Autodesk.DesignScript.Geometry;
+﻿using Autodesk.DesignScript.Geometry;
 using CoreNodeModels.Input;
 using Dynamo.Extensions;
 using Dynamo.Graph.Nodes;
@@ -15,6 +8,13 @@ using Dynamo.Visualization;
 using Dynamo.Wpf.ViewModels.Watch3D;
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.Mirror;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using System.Threading;
+using System.Windows.Input;
+using System.Windows.Media.Media3D;
 using Point = Autodesk.DesignScript.Geometry.Point;
 using Vector = Autodesk.DesignScript.Geometry.Vector;
 

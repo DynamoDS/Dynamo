@@ -214,7 +214,7 @@
         </Grid.ColumnDefinitions>
 
         <!--Titlebar-->
-        <Border BorderBrush="#FF3F4040"
+        <Border BorderBrush="{StaticResource BorderBrushWhite}"
                 BorderThickness="0,0,0,1"
                 Grid.Row="0"
                 Grid.Column="0"
@@ -847,7 +847,7 @@
                 Grid.Row="0"
                 Grid.Column="0"
                 Height="32"
-                BorderBrush="#FF3F4040"
+                BorderBrush="{StaticResource BorderBrushWhite}"
                 BorderThickness="0,0,0,1">
                 <Grid Name="shortcutBarGrid">
                 </Grid>
@@ -917,7 +917,7 @@
                                                 <RowDefinition Height="Auto" />
                                                 <RowDefinition Height="*" />
                                             </Grid.RowDefinitions>
-                                            <Border BorderBrush="#FF3F4040"
+                                            <Border BorderBrush="{StaticResource BorderBrushWhite}"
                                                     BorderThickness="1,0,0,1"
                                                     Grid.Row="0">
                                                 <Grid>
@@ -1255,7 +1255,7 @@
                                 <Setter.Value>
                                     <ControlTemplate TargetType="{x:Type TabItem}">
                                         <Border Name="Border"
-                                                BorderBrush="#FF3F4040"
+                                                BorderBrush="{StaticResource BorderBrushWhite}"
                                                 CornerRadius="0,0,0,0">
                                             <Border.Style>
                                                 <Style TargetType="Border">
@@ -1612,6 +1612,7 @@
                         </StackPanel>
                     </Grid>
                 </Button>
+
             </Grid>
 
             <StackPanel.RenderTransform>
@@ -1666,7 +1667,7 @@
               Grid.RowSpan="2">
         </Grid>
 
-        <!--Right Sidebar Extensions-->
+        <!--Right Extensions Sidebar-->
         <Grid Height="Auto"
               Width="Auto"
               HorizontalAlignment="Stretch"
@@ -1676,6 +1677,102 @@
               Grid.Row="2"
               Grid.Column="4"
               Grid.RowSpan="2">
+            <TabControl Name="tabDynamic" Background="#353535" BorderThickness="0" ItemsSource="{Binding}">
+                <TabControl.Resources>
+                    <!--Styling for the close button in the tab-->
+                    <Style TargetType="{x:Type Button}"
+                               x:Key="CloseButtonStyle">
+                        <Setter Property="OverridesDefaultStyle"
+                                    Value="True" />
+                        <Setter Property="SnapsToDevicePixels"
+                                    Value="true" />
+                        <Setter Property="VerticalAlignment"
+                                    Value="Center" />
+                        <Setter Property="HorizontalAlignment"
+                                    Value="Right" />
+                        <Setter Property="Margin"
+                                    Value="8,2,0,0" />
+                        <Setter Property="Background"
+                                    Value="Transparent" />
+                        <Setter Property="BorderThickness"
+                                    Value="0" />
+                        <Setter Property="Padding"
+                                    Value="0" />
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="Button">
+                                    <Border x:Name="Border"
+                                                Background="Transparent"
+                                                BorderThickness="0 0 0 0">
+                                        <ContentPresenter Margin="0 0 0 0" />
+                                    </Border>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                    
+                    <!--Template for tab header in the extensions side bar-->
+                    <DataTemplate x:Key="TabHeader" DataType="TabItem">
+                        <DockPanel HorizontalAlignment="Stretch" MinWidth="{Binding Source={x:Static configuration:Configurations.ExtensionsSideBarTabMinWidth}}">
+                            <TextBlock Text="{Binding RelativeSource={RelativeSource AncestorType={x:Type TabItem}}, Path=Header}" HorizontalAlignment="Stretch"/>
+                            <!--Button to close a particular tab-->
+                            <Button Name="CloseButton" Style="{StaticResource CloseButtonStyle}" DockPanel.Dock="Right" Click="CloseTab"
+                                              CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type TabItem}}, Path=Name}">
+                                <Image Width="14" Height="14" HorizontalAlignment="Right" VerticalAlignment="Center">
+                                    <Image.Style>
+                                        <Style TargetType="{x:Type Image}">
+                                            <Style.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="False">
+                                                    <Setter Property="Source"
+                                                            Value="/DynamoCoreWpf;component/UI/Images/closetab_normal.png" />
+                                                </Trigger>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter Property="Source"
+                                                            Value="/DynamoCoreWpf;component/UI/Images/closetab_hover.png" />
+                                                </Trigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Image.Style>
+                                </Image>
+                            </Button>
+                        </DockPanel>
+                    </DataTemplate>
+                    
+                    <!--Styling for the tab in the extensions side bar-->
+                    <Style TargetType="{x:Type TabItem}">
+                        <Setter Property="MinWidth" Value="{Binding Source={x:Static configuration:Configurations.ExtensionsSideBarTabMinWidth}}" />
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="{x:Type TabItem}">
+                                    <Grid>
+                                        <Border Name="Border" Margin="0,0,0,0"  BorderThickness="1 0 1 0" 
+                                                        BorderBrush="{StaticResource BorderBrushWhite}">
+                                            <ContentPresenter x:Name="ContentSite" VerticalAlignment="Center"
+                                                     HorizontalAlignment="Stretch"
+                                                     ContentSource="Header" Margin="3,0,0,3"
+                                                     RecognizesAccessKey="True">
+                                            </ContentPresenter>
+                                        </Border>
+                                    </Grid>
+                                    <!--Properties for selected and unselected tabs-->
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsSelected" Value="true">
+                                            <Setter Property="Foreground"
+                                                         Value="{StaticResource WorkspaceTabHeaderActiveTextBrush}" />
+                                        </Trigger>
+                                        <Trigger Property="IsSelected" Value="false">
+                                            <Setter Property="Foreground"
+                                                         Value="{StaticResource WorkspaceTabHeaderInactiveTextBrush}" />
+                                            <Setter TargetName="Border" Property="Background"
+                                                         Value="{StaticResource HighlightedBrush}" />
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </TabControl.Resources>
+            </TabControl>
         </Grid>
 
         <!--Bottom Panel including RunMode etc-->
