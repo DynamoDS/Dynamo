@@ -56,7 +56,7 @@
                            Foreground="#898989"
                            FontSize="14">
                            <Run Text="Dynamo Core"/>
-                           <Run Foreground="#bbbbbb" Text="{Binding Version, Mode=OneWay}"/>
+                           <Run Foreground="{StaticResource DynamoStandardLableTextBrush}" Text="{Binding Version, Mode=OneWay}"/>
                 </TextBlock>
 
                 <TextBlock Name="GenericHostVersion"
@@ -68,7 +68,7 @@
                            Margin="0,-10,0,0"
                            Visibility="{Binding HostVersion, Converter={StaticResource NullValueToCollapsedConverter}}">
                            <Run Text="{Binding HostName, Mode=OneWay}"/>
-                           <Run Foreground="#bbbbbb" Text= "{Binding HostVersion, Mode=OneWay}"/>
+                           <Run Foreground="{StaticResource DynamoStandardLableTextBrush}" Text= "{Binding HostVersion, Mode=OneWay}"/>
                 </TextBlock>
                 <TextBlock x:Name ="UpdateInfo"
                            HorizontalAlignment="Center"
