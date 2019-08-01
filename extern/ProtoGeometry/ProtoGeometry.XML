@@ -5815,6 +5815,17 @@
             </summary>
             <search>resize,size,from,to,scale2d,2d</search>
         </member>
+        <member name="F:Autodesk.DesignScript.Geometry.DesignScriptEntity.constructorThreadId">
+            <summary>
+            stores the managed thread id of thread which called this constructor.
+            Used to alert users to potential multi threaded issues.
+            </summary>
+        </member>
+        <member name="F:Autodesk.DesignScript.Geometry.DesignScriptEntity.disposedWrongThread">
+            <summary>
+            This is used for testing only.
+            </summary>
+        </member>
         <member name="F:Autodesk.DesignScript.Geometry.DesignScriptEntity.Tags">
             <notranslation>true</notranslation>
         </member>
@@ -5824,11 +5835,6 @@
         <member name="M:Autodesk.DesignScript.Geometry.DesignScriptEntity.DisposeDisplayable">
             <summary>
             This method is called when the displayable is no more needed.
-            </summary>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.DesignScriptEntity.RetainEntity">
-            <summary>
-            This method should be called whenever this object is referenced by other object
             </summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.DesignScriptEntity.GetHashCode">
