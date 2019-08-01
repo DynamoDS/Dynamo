@@ -12,6 +12,7 @@ environment:
   xmlDocs_solution: tools/XmlDocToMarkdown/XmlDocToMarkdown.sln
   oauth_access_token:
     secure: 14B2LfzdzmTNRCadtOW73/mofQniTe49NA71lH65TSq8uLPeTKlIu/o2FVUOisAc
+  image: Visual Studio 2017
 
 build_script:
   - msbuild %dynamo_solution%
