@@ -119,10 +119,7 @@ namespace Dynamo.PackageManager.ViewModels
         /// Overridden Getter for HashCode 
         /// </summary>
         /// <returns>HashCode of package</returns>
-        public override int GetHashCode()
-        {
-            return (this.Model.Id, this.Model.Name).GetHashCode();
-        }
+        public override int GetHashCode() => (Model.Id, Model.Name).GetHashCode();
 
         private string GetDownloadPath()
         {
