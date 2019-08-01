@@ -111,7 +111,7 @@ namespace Dynamo.PackageManager.ViewModels
         /// <returns></returns>
         public bool Equals(PackageManagerSearchElementViewModel other)
         {
-            if (other is null) return false;
+            if (other == null) return false;
             return this.Model.Id == other.Model.Id && this.Model.Name == other.Model.Name;
         }
 
