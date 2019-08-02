@@ -19,7 +19,7 @@ namespace Dynamo.Wpf.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class Resources {
@@ -3711,7 +3711,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Filter packages by Dynamo host application..
+        ///   Looks up a localized string similar to Filter packages by Dynamo external application dependency..
         /// </summary>
         public static string PackageHostDependencyFilter {
             get {
@@ -3720,7 +3720,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Packages requires the specified host to run..
+        ///   Looks up a localized string similar to Packages contain node(s) requires the specified  external application dependency to run..
         /// </summary>
         public static string PackageHostDependencyFilterContextItem {
             get {
@@ -3729,7 +3729,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to This package requires the specified host(s) to run..
+        ///   Looks up a localized string similar to This package contains node(s) requires the specified  external application(s) dependency to run..
         /// </summary>
         public static string PackageHostDependencyTooltip {
             get {
@@ -4513,7 +4513,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Host Dependency (optional).
+        ///   Looks up a localized string similar to External Dependency (optional).
         /// </summary>
         public static string PublishPackageViewPackageHostDependency {
             get {
@@ -4522,7 +4522,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to One or multiple host dependencies help to specify this package contains nodes for these integrations, and as a result will only run in these hosts..
+        ///   Looks up a localized string similar to One or multiple external dependencies help to specify this package contains nodes that work with external applications other than Dynamo. As a result, package consumer will need to intall the application to fully utilize the package..
         /// </summary>
         public static string PublishPackageViewPackageHostDependencyTooltip {
             get {

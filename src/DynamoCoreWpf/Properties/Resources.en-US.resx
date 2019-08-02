@@ -2217,21 +2217,21 @@ Uninstall the following packages: {0}?</value>
     <value>Could not re-direct to the Dynamo forum page for feedback:</value>
   </data>
   <data name="PackageHostDependencyTooltip" xml:space="preserve">
-    <value>This package requires the specified host(s) to run.</value>
+    <value>This package contains node(s) requires the specified  external application(s) dependency to run.</value>
   </data>
   <data name="PackageHostDependencyFilter" xml:space="preserve">
-    <value>Filter packages by Dynamo host application.</value>
+    <value>Filter packages by Dynamo external application dependency.</value>
   </data>
   <data name="PackageHostDependencyFilterContextItem" xml:space="preserve">
-    <value>Packages requires the specified host to run.</value>
+    <value>Packages contain node(s) requires the specified  external application dependency to run.</value>
   </data>
   <data name="MessageUninstallSamePackage" xml:space="preserve">
     <value>"The package {0} is already installed. To reinstall it, you must first uninstall it and restart to complete the uninstall. Would you like to mark {0} for uninstall?"</value>
   </data>
   <data name="PublishPackageViewPackageHostDependency" xml:space="preserve">
-    <value>Host Dependency (optional)</value>
+    <value>External Dependency (optional)</value>
   </data>
   <data name="PublishPackageViewPackageHostDependencyTooltip" xml:space="preserve">
-    <value>One or multiple host dependencies help to specify this package contains nodes for these integrations, and as a result will only run in these hosts.</value>
+    <value>One or multiple external dependencies help to specify this package contains nodes that work with external applications other than Dynamo. As a result, package consumer will need to intall the application to fully utilize the package.</value>
   </data>
 </root>
