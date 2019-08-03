@@ -94,9 +94,13 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Images\NodeLibraryDependency_Loaded.png" />
-    <Resource Include="Images\NodeLibraryDependency_Missing.png" />
-    <Resource Include="Images\NodeLibraryDependency_Warning.png" />
+    <None Include="Resources\NodeLibraryDependency_Loaded.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\NodeLibraryDependency_Missing.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\NodeLibraryDependency_Warning.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="AfterBuild">

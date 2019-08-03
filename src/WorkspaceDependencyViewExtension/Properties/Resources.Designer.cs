@@ -95,5 +95,35 @@ namespace Dynamo.WorkspaceDependency.Properties {
                 return ResourceManager.GetString("MenuItemString", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap NodeLibraryDependency_Loaded {
+            get {
+                object obj = ResourceManager.GetObject("NodeLibraryDependency_Loaded", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap NodeLibraryDependency_Missing {
+            get {
+                object obj = ResourceManager.GetObject("NodeLibraryDependency_Missing", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap NodeLibraryDependency_Warning {
+            get {
+                object obj = ResourceManager.GetObject("NodeLibraryDependency_Warning", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
     }
 }

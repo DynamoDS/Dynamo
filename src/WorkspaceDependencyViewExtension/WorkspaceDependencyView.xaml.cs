@@ -1,5 +1,6 @@
 ﻿using Dynamo.Graph.Workspaces;
 using Dynamo.ViewModels;
+using Dynamo.Utilities;
 using Dynamo.Wpf.Extensions;
 using System;
 using System.ComponentModel;
@@ -8,6 +9,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Drawing;
 
 namespace Dynamo.WorkspaceDependency
 {
@@ -190,39 +192,27 @@ namespace Dynamo.WorkspaceDependency
         {
             get
             {
-                string iconPath;
+                Bitmap bitmap;
 
                 switch (DependencyInfo.State)
                 {
                     case PackageDependencyState.Loaded:
-                        iconPath = "NodeLibraryDependency_Loaded.png";
+                        bitmap = Properties.Resources.NodeLibraryDependency_Loaded;
                         break;
 
                     case PackageDependencyState.Missing:
-                        iconPath = "NodeLibraryDependency_Missing.png";
+                        bitmap = Properties.Resources.NodeLibraryDependency_Missing;
                         break;
 
                     default:
-                        iconPath = "NodeLibraryDependency_Warning.png";
+                        bitmap = Properties.Resources.NodeLibraryDependency_Warning;
                         break;
                 }
 
-                return LoadBitmapImage(iconPath); 
+                return ResourceUtilities.ConvertToImageSource(bitmap); 
             }
         }
 
         public bool ShowDownloadButton => this.DependencyInfo.State == PackageDependencyState.Missing;
-
-        private BitmapImage LoadBitmapImage(string iconPath)
-        {
-            var format = @"pack://application:,,,/WorkspaceDependencyViewExtension;component/Images/{0}";
-            iconPath = string.Format(format, iconPath);
-            return new BitmapImage(new Uri(iconPath, UriKind.Absolute));
-        }
-
-        public void InitiateDownloadAndInstall()
-        {
-
-        }
     }
 }
