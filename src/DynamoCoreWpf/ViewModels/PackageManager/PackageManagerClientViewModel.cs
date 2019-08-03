@@ -450,6 +450,20 @@ namespace Dynamo.ViewModels
         /// <param name="downloadPath"></param>
         public void DownloadAndInstallPackage(IPackageInfo packageInfo, string downloadPath = null)
         {
+            // User needs to accept terms of use before any packages can be downloaded from package manager
+            var prefSettings = DynamoViewModel.Model.PreferenceSettings;
+            var touAccepted = prefSettings.PackageDownloadTouAccepted;
+            if (!touAccepted)
+            {
+                touAccepted = TermsOfUseHelper.ShowTermsOfUseDialog(false, null);
+                prefSettings.PackageDownloadTouAccepted = touAccepted;
+                if (!touAccepted)
+                {
+                    return;
+                }
+            }
+            
+            // Try to get the package header for this package
             var header = Model.GetPackageHeader(packageInfo);
             if (header == null)
             {
@@ -459,16 +473,16 @@ namespace Dynamo.ViewModels
                 return;
             }
 
+            // Try to get the package version for this package
             var version = Model.GetGregPackageVersion(header, packageInfo.Version);
             if (version == null)
             {
-                // TODO: move message to resources
                 var result = MessageBox.Show(string.Format(Resources.MessagePackageVersionNotFound, packageInfo.Version.ToString(), packageInfo.Name),
                 Resources.PackageDownloadErrorMessageBoxTitle, 
                 MessageBoxButton.OKCancel, MessageBoxImage.Question);
                 return;
             }
-
+            
             ExecutePackageDownload(packageInfo.Name, version, downloadPath);
         }
 
