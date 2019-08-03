@@ -147,6 +147,9 @@ namespace Dynamo.WorkspaceDependency
         }
     }
 
+    /// <summary>
+    /// Represents information about a package dependency as a row in the package dependency viewer table
+    /// </summary>
     public class PackageDependencyRow
     {
         internal PackageDependencyInfo DependencyInfo { get; private set; }
