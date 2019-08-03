@@ -93,15 +93,7 @@
       <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\NodeLibraryDependency_Loaded.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\NodeLibraryDependency_Missing.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\NodeLibraryDependency_Warning.png" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="AfterBuild">
     <ItemGroup>
