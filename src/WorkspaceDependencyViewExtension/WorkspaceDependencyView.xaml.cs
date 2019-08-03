@@ -148,7 +148,7 @@ namespace Dynamo.WorkspaceDependency
     }
 
     /// <summary>
-    /// Represents information about a package dependency as a row in the package dependency viewer table
+    /// Represents information about a package dependency as a row in the dependency table
     /// </summary>
     public class PackageDependencyRow
     {
@@ -159,10 +159,20 @@ namespace Dynamo.WorkspaceDependency
             DependencyInfo = nodeLibraryDependencyInfo;
         }
 
+        /// <summary>
+        /// Name of this package dependency
+        /// </summary>
         public string Name => DependencyInfo.Name;
 
+        /// <summary>
+        /// Version of this package dependency
+        /// </summary>
         public Version Version => DependencyInfo.Version;
 
+        /// <summary>
+        /// The message to be displayed in the expanded details section for this package dependency.
+        /// This message desceribes the state of the package and possible user actions of the dependency.
+        /// </summary>
         public string DetailsMessage
         {
             get
@@ -191,6 +201,9 @@ namespace Dynamo.WorkspaceDependency
             }
         }
 
+        /// <summary>
+        /// The icon representing the state of this package dependency
+        /// </summary>
         public ImageSource Icon
         {
             get
@@ -216,6 +229,9 @@ namespace Dynamo.WorkspaceDependency
             }
         }
 
+        /// <summary>
+        /// Indicates whether to show/enable the package download and install button
+        /// </summary>
         public bool ShowDownloadButton => this.DependencyInfo.State == PackageDependencyState.Missing;
     }
 }
