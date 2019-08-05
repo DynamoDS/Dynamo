@@ -3711,7 +3711,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Filter packages by Dynamo host application..
+        ///   Looks up a localized string similar to Filter packages that depend on applications outside Dynamo..
         /// </summary>
         public static string PackageHostDependencyFilter {
             get {
@@ -3720,7 +3720,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Packages requires the specified host to run..
+        ///   Looks up a localized string similar to Packages contain node(s)  that depend on specified application outside Dynamo..
         /// </summary>
         public static string PackageHostDependencyFilterContextItem {
             get {
@@ -3729,7 +3729,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to This package requires the specified host(s) to run..
+        ///   Looks up a localized string similar to This package contains node(s) that depend on applications outside Dynamo. To fully utilize node(s) in this package, you will need to have these external applications installed..
         /// </summary>
         public static string PackageHostDependencyTooltip {
             get {
@@ -4513,7 +4513,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Host Dependency (optional).
+        ///   Looks up a localized string similar to External Dependency (optional).
         /// </summary>
         public static string PublishPackageViewPackageHostDependency {
             get {
@@ -4522,7 +4522,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to One or multiple host dependencies help to specify this package contains nodes for these integrations, and as a result will only run in these hosts..
+        ///   Looks up a localized string similar to An indication of what applications outside of Dynamo your package depends on, such as Revit, Civil 3D or Photoshop. Users of your package will need to install these applications to fully utilize your package..
         /// </summary>
         public static string PublishPackageViewPackageHostDependencyTooltip {
             get {

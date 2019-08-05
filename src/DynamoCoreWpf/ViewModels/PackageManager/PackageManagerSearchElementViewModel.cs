@@ -10,7 +10,7 @@ using Microsoft.Practices.Prism.Commands;
 
 namespace Dynamo.PackageManager.ViewModels
 {
-    public class PackageManagerSearchElementViewModel : BrowserItemViewModel
+    public class PackageManagerSearchElementViewModel : BrowserItemViewModel, IEquatable<PackageManagerSearchElementViewModel>
     {
         public ICommand DownloadLatestCommand { get; set; }
         public ICommand UpvoteCommand { get; set; }
@@ -102,6 +102,27 @@ namespace Dynamo.PackageManager.ViewModels
 
             if (RequestDownload != null)
                 RequestDownload(this.Model, version, downloadPath);
+        }
+
+        /// <summary>
+        /// Comparator of two PackageManagerSearchElementViewModel based on package Id.
+        /// Override for package results union.
+        /// </summary>
+        /// <param name="other">The PackageManagerSearchElementViewModel to compare</param>
+        /// <returns></returns>
+        public bool Equals(PackageManagerSearchElementViewModel other)
+        {
+            if (other == null) return false;
+            return this.Model.Id == other.Model.Id;
+        }
+
+        /// <summary>
+        /// Overridden Getter for HashCode 
+        /// </summary>
+        /// <returns>HashCode of package</returns>
+        public override int GetHashCode()
+        {
+            return Model.Id.GetHashCode();
         }
 
         private string GetDownloadPath()

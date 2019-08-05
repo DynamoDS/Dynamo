@@ -2220,21 +2220,21 @@ Uninstall the following packages: {0}?</value>
     <value>Could not re-direct to the Dynamo forum page for feedback:</value>
   </data>
   <data name="PackageHostDependencyTooltip" xml:space="preserve">
-    <value>This package requires the specified host(s) to run.</value>
+    <value>This package contains node(s) that depend on applications outside Dynamo. To fully utilize node(s) in this package, you will need to have these external applications installed.</value>
   </data>
   <data name="PackageHostDependencyFilter" xml:space="preserve">
-    <value>Filter packages by Dynamo host application.</value>
+    <value>Filter packages that depend on applications outside Dynamo.</value>
   </data>
   <data name="PackageHostDependencyFilterContextItem" xml:space="preserve">
-    <value>Packages requires the specified host to run.</value>
+    <value>Packages contain node(s)  that depend on specified application outside Dynamo.</value>
   </data>
   <data name="MessageUninstallSamePackage" xml:space="preserve">
     <value>"The package {0} is already installed. To reinstall it, you must first uninstall it and restart to complete the uninstall. Would you like to mark {0} for uninstall?"</value>
   </data>
   <data name="PublishPackageViewPackageHostDependency" xml:space="preserve">
-    <value>Host Dependency (optional)</value>
+    <value>External Dependency (optional)</value>
   </data>
   <data name="PublishPackageViewPackageHostDependencyTooltip" xml:space="preserve">
-    <value>One or multiple host dependencies help to specify this package contains nodes for these integrations, and as a result will only run in these hosts.</value>
+    <value>An indication of what applications outside of Dynamo your package depends on, such as Revit, Civil 3D or Photoshop. Users of your package will need to install these applications to fully utilize your package.</value>
   </data>
 </root>
