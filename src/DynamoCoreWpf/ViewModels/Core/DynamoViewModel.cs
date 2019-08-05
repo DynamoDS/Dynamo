@@ -1373,7 +1373,7 @@ namespace Dynamo.ViewModels
             {
                 Assembly dynamoAssembly = Assembly.GetExecutingAssembly();
                 string location = Path.GetDirectoryName(dynamoAssembly.Location);
-                string UICulture = CultureInfo.CurrentUICulture.ToString();
+                string UICulture = CultureInfo.CurrentUICulture.Name;
                 string path = Path.Combine(location, "samples", UICulture);
 
                 if (Directory.Exists(path))
