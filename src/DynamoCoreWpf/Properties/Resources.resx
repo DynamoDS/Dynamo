@@ -2220,13 +2220,13 @@ Uninstall the following packages: {0}?</value>
     <value>Could not re-direct to the Dynamo forum page for feedback:</value>
   </data>
   <data name="PackageHostDependencyTooltip" xml:space="preserve">
-    <value>This package contains node(s) requires the specified  external application(s) dependency to run.</value>
+    <value>This package contains nodes that require the specified external application(s) dependency to run.</value>
   </data>
   <data name="PackageHostDependencyFilter" xml:space="preserve">
     <value>Filter packages by Dynamo external application dependency.</value>
   </data>
   <data name="PackageHostDependencyFilterContextItem" xml:space="preserve">
-    <value>Packages contain node(s) requires the specified  external application dependency to run.</value>
+    <value>Packages contain nodes that require the specified external application dependency to run.</value>
   </data>
   <data name="MessageUninstallSamePackage" xml:space="preserve">
     <value>"The package {0} is already installed. To reinstall it, you must first uninstall it and restart to complete the uninstall. Would you like to mark {0} for uninstall?"</value>

@@ -105,14 +105,15 @@ namespace Dynamo.PackageManager.ViewModels
         }
 
         /// <summary>
-        /// Comparator 
+        /// Comparator of two PackageManagerSearchElementViewModel based on package Id.
+        /// Override for package results union.
         /// </summary>
         /// <param name="other">The PackageManagerSearchElementViewModel to compare</param>
         /// <returns></returns>
         public bool Equals(PackageManagerSearchElementViewModel other)
         {
             if (other == null) return false;
-            return this.Model.Id == other.Model.Id && this.Model.Name == other.Model.Name;
+            return this.Model.Id == other.Model.Id;
         }
 
         /// <summary>
@@ -121,7 +122,7 @@ namespace Dynamo.PackageManager.ViewModels
         /// <returns>HashCode of package</returns>
         public override int GetHashCode()
         {
-            return Model.Id.GetHashCode() + Model.Name.GetHashCode();
+            return Model.Id.GetHashCode();
         }
 
         private string GetDownloadPath()

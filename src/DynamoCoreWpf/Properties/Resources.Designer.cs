@@ -3720,7 +3720,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Packages contain node(s) requires the specified  external application dependency to run..
+        ///   Looks up a localized string similar to Packages contain nodes that require the specified external application dependency to run..
         /// </summary>
         public static string PackageHostDependencyFilterContextItem {
             get {
@@ -3729,7 +3729,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to This package contains node(s) requires the specified  external application(s) dependency to run..
+        ///   Looks up a localized string similar to This package contains nodes that require the specified external application(s) dependency to run..
         /// </summary>
         public static string PackageHostDependencyTooltip {
             get {
