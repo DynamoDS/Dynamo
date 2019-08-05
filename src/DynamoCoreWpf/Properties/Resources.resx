@@ -2220,10 +2220,10 @@ Uninstall the following packages: {0}?</value>
     <value>Could not re-direct to the Dynamo forum page for feedback:</value>
   </data>
   <data name="PackageHostDependencyTooltip" xml:space="preserve">
-    <value>This package contains node(s) that depend on other applications beyond Dynamo and its host. To fully utilize these node(s) in this package, you will need to have these installed.</value>
+    <value>This package contains node(s) that depend on applications outside Dynamo. To fully utilize node(s) in this package, you will need to have these external applications installed.</value>
   </data>
   <data name="PackageHostDependencyFilter" xml:space="preserve">
-    <value>Filter packages that have specific dependencies on other applications beyond Dynamo and its host.</value>
+    <value>Filter packages that depend on applications outside Dynamo.</value>
   </data>
   <data name="PackageHostDependencyFilterContextItem" xml:space="preserve">
     <value>Packages contain node(s)  that depend on specified external application.</value>

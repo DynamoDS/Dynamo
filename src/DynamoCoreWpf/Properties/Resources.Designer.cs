@@ -3711,7 +3711,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Filter packages that have specific dependencies on other applications beyond Dynamo and its host..
+        ///   Looks up a localized string similar to Filter packages that depend on applications outside Dynamo..
         /// </summary>
         public static string PackageHostDependencyFilter {
             get {
@@ -3729,7 +3729,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to This package contains node(s) that depend on other applications beyond Dynamo and its host. To fully utilize these node(s) in this package, you will need to have these installed..
+        ///   Looks up a localized string similar to This package contains node(s) that depend on applications outside Dynamo. To fully utilize node(s) in this package, you will need to have these external applications installed..
         /// </summary>
         public static string PackageHostDependencyTooltip {
             get {
