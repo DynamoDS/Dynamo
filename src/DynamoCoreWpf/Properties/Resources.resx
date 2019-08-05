@@ -2231,6 +2231,12 @@ Uninstall the following packages: {0}?</value>
   <data name="MessageUninstallSamePackage" xml:space="preserve">
     <value>"The package {0} is already installed. To reinstall it, you must first uninstall it and restart to complete the uninstall. Would you like to mark {0} for uninstall?"</value>
   </data>
+  <data name="MessagePackageNotFound" xml:space="preserve">
+    <value>{0} was not found and could not be downloaded.</value>
+  </data>
+  <data name="MessagePackageVersionNotFound" xml:space="preserve">
+    <value>Version {0} of {1} could not be found.</value>
+  </data>
   <data name="PublishPackageViewPackageHostDependency" xml:space="preserve">
     <value>External Dependency (optional)</value>
   </data>
