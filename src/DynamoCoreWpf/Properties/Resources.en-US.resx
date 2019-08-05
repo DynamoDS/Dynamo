@@ -2223,7 +2223,7 @@ Uninstall the following packages: {0}?</value>
     <value>Filter packages that depend on applications outside Dynamo.</value>
   </data>
   <data name="PackageHostDependencyFilterContextItem" xml:space="preserve">
-    <value>Packages contain node(s)  that depend on specified external application.</value>
+    <value>Packages contain node(s)  that depend on specified application outside Dynamo.</value>
   </data>
   <data name="MessageUninstallSamePackage" xml:space="preserve">
     <value>"The package {0} is already installed. To reinstall it, you must first uninstall it and restart to complete the uninstall. Would you like to mark {0} for uninstall?"</value>
@@ -2232,6 +2232,6 @@ Uninstall the following packages: {0}?</value>
     <value>External Dependency (optional)</value>
   </data>
   <data name="PublishPackageViewPackageHostDependencyTooltip" xml:space="preserve">
-    <value>One or multiple external dependencies help to specify this package contains nodes that work with external applications other than Dynamo. As a result, package consumer will need to intall the application to fully utilize the package.</value>
+    <value>Please tell us what applications outside of Dynamo your package depends on, such as Revit, Civil 3D or Photoshop. As a result, package consumer will need to intall the application to fully utilize the package.</value>
   </data>
 </root>

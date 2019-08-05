@@ -3720,7 +3720,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Packages contain node(s)  that depend on specified external application..
+        ///   Looks up a localized string similar to Packages contain node(s)  that depend on specified application outside Dynamo..
         /// </summary>
         public static string PackageHostDependencyFilterContextItem {
             get {
@@ -4522,7 +4522,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to One or multiple external dependencies help to specify this package contains nodes that work with external applications other than Dynamo. As a result, package consumer will need to intall the application to fully utilize the package..
+        ///   Looks up a localized string similar to Please tell us what applications outside of Dynamo your package depends on, such as Revit, Civil 3D or Photoshop. As a result, package consumer will need to intall the application to fully utilize the package..
         /// </summary>
         public static string PublishPackageViewPackageHostDependencyTooltip {
             get {
