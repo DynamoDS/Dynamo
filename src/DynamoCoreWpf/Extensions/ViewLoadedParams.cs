@@ -50,6 +50,14 @@ namespace Dynamo.Wpf.Extensions
         }
 
         /// <summary>
+        /// A reference to package install operations on the package manager
+        /// </summary>
+        public IPackageInstaller PackageInstaller
+        {
+            get { return dynamoViewModel.PackageManagerClientViewModel; }
+        }
+
+        /// <summary>
         /// A reference to the Dynamo Window object. Useful for correctly setting the parent of a 
         /// newly created window.
         /// </summary>

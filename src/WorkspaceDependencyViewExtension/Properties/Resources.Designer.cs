@@ -61,11 +61,68 @@ namespace Dynamo.WorkspaceDependency.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {0} {1} is installed locally..
+        /// </summary>
+        internal static string DetailsMessageLoaded {
+            get {
+                return ResourceManager.GetString("DetailsMessageLoaded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This graph depends on {0} {1}. Would you like to download and install this package?.
+        /// </summary>
+        internal static string DetailsMessageMissing {
+            get {
+                return ResourceManager.GetString("DetailsMessageMissing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Some nodes in this graph were originally created with {0} {1} which you do not have installed locally. You may have a different version of {0} installed, or you may have a different package which resolves these nodes..
+        /// </summary>
+        internal static string DetailsMessageWarning {
+            get {
+                return ResourceManager.GetString("DetailsMessageWarning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Show Graph Package Dependency.
         /// </summary>
         internal static string MenuItemString {
             get {
                 return ResourceManager.GetString("MenuItemString", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap NodeLibraryDependency_Loaded {
+            get {
+                object obj = ResourceManager.GetObject("NodeLibraryDependency_Loaded", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap NodeLibraryDependency_Missing {
+            get {
+                object obj = ResourceManager.GetObject("NodeLibraryDependency_Missing", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap NodeLibraryDependency_Warning {
+            get {
+                object obj = ResourceManager.GetObject("NodeLibraryDependency_Warning", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
     }
