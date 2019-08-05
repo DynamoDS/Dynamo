@@ -102,7 +102,7 @@
                             <StackPanel Orientation="Vertical" Margin="10,0,0,0" Name="HostDependency">
                                 <Label Content="{x:Static p:Resources.PublishPackageViewPackageHostDependency}" Foreground="DarkGray" Height="28" Name="HostLabel" HorizontalAlignment="Left" VerticalAlignment="Top">
                                     <Label.ToolTip>
-                                        <TextBlock Text="{x:Static p:Resources.PublishPackageViewPackageHostDependencyTooltip}"/>
+                                        <TextBlock Text="{x:Static p:Resources.PublishPackageViewPackageHostDependencyTooltip}" TextWrapping="Wrap" MaxWidth="600"/>
                                     </Label.ToolTip>
                                 </Label>
                                 <!--Notice here we are reusing part of the defined Dynamo ComboBox style-->
