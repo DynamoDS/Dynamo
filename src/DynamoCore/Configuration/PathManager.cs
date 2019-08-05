@@ -543,7 +543,7 @@ namespace Dynamo.Core
                 dataRootDirectory = Directory.GetParent(versionedDirectory).FullName;
             }
 
-            var uiCulture = CultureInfo.CurrentUICulture.ToString();
+            var uiCulture = CultureInfo.CurrentUICulture.Name;
             var sampleDirectory = Path.Combine(dataRootDirectory, SamplesDirectoryName, uiCulture);
 
             // If the localized samples directory does not exist then fall back 
@@ -582,7 +582,7 @@ namespace Dynamo.Core
                 commonDataDir = Directory.GetParent(versionedDirectory).FullName;
             }
 
-            var uiCulture = CultureInfo.CurrentUICulture.ToString();
+            var uiCulture = CultureInfo.CurrentUICulture.Name;
             var galleryDirectory = Path.Combine(commonDataDir, GalleryDirectoryName, uiCulture);
 
             // If the localized gallery directory does not exist then fall back 
