@@ -4522,7 +4522,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Please tell us what applications outside of Dynamo your package depends on, such as Revit, Civil 3D or Photoshop. As a result, package consumer will need to intall the application to fully utilize the package..
+        ///   Looks up a localized string similar to An indication of what applications outside of Dynamo your package depends on, such as Revit, Civil 3D or Photoshop. Users of your package will need to install these applications to fully utilize your package..
         /// </summary>
         public static string PublishPackageViewPackageHostDependencyTooltip {
             get {
