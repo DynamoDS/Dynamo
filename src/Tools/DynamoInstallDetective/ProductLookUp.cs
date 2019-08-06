@@ -201,8 +201,7 @@ namespace DynamoInstallDetective
         public virtual IEnumerable<string> GetProductNameList()
         {
             var key = OpenKey(REG_KEY64);
-            var list = key.GetSubKeyNames().Where(s => s.Contains(ProductLookUpName));
-            return list;
+            return key.GetSubKeyNames().Where(s => s.Contains(ProductLookUpName));
         }
 
         public virtual bool ExistsAtPath(string basePath)
