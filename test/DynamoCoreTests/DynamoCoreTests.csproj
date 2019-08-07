@@ -184,6 +184,10 @@
       <Name>CoreNodeModels</Name>
       <Private>False</Private>
     </ProjectReference>
+    <ProjectReference Include="..\..\src\Libraries\DSOffice\DSOffice.csproj">
+      <Project>{9b4fdc96-e2f9-4b8f-894a-4294405d50e7}</Project>
+      <Name>DSOffice</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\src\Libraries\DynamoUnits\Units.csproj">
       <Project>{6e0a079e-85f1-45a1-ad5b-9855e4344809}</Project>
       <Name>Units</Name>
