@@ -159,7 +159,7 @@ namespace DynamoInstallDetective
         public InstalledProductLookUp(string lookUpName, string fileLookup)
         {
             this.ProductLookUpName = lookUpName;
-            this.fileLocator = (path) => Directory.GetFiles(path, fileLookup).FirstOrDefault();
+            this.fileLocator = (path) => Directory.GetFiles(path, fileLookup, SearchOption.AllDirectories).FirstOrDefault();
         }
 
         public InstalledProductLookUp(string lookUpName, Func<string, string> fileLocator)
@@ -254,8 +254,8 @@ namespace DynamoInstallDetective
 
         public InstalledProduct(string installLocation, InstalledProductLookUp lookUp)
         {
-            InstallLocation = installLocation;
-            var corePath = lookUp.GetCoreFilePathFromInstallation(InstallLocation);
+            var corePath = lookUp.GetCoreFilePathFromInstallation(installLocation);
+            InstallLocation = Path.GetDirectoryName(corePath);
             VersionInfo = lookUp.GetVersionInfoFromFile(corePath);
             ProductName = string.Format("{0} {1}.{2}", lookUp.ProductLookUpName, VersionInfo.Item1, VersionInfo.Item2);
             VersionString = string.Format("{0}.{1}.{2}.{3}", VersionInfo.Item1, VersionInfo.Item2, VersionInfo.Item3, VersionInfo.Item4);
