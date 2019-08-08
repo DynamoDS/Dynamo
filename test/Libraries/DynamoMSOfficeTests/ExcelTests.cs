@@ -38,8 +38,6 @@ namespace Dynamo.Tests
             // not get persisted across to the subsequent test case.
             // 
             PreferenceSettings.DynamoTestPath = Path.Combine(TempFolder, "UserPreferenceTest.xml");
-
-            ExcelInterop.ShowOnStartup = false;
         }
 
         public override void Cleanup()

@@ -64,6 +64,7 @@ namespace Dynamo
         public virtual void Setup()
         {
             SetupDirectories();
+            DSOffice.ExcelInterop.ShowOnStartup = false;
         }
 
         [TearDown]
