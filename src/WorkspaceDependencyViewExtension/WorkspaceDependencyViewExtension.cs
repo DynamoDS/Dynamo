@@ -1,8 +1,8 @@
-﻿using Dynamo.Extensions;
+﻿using System.Windows.Controls;
+using Dynamo.Extensions;
 using Dynamo.Graph.Workspaces;
 using Dynamo.WorkspaceDependency.Properties;
 using Dynamo.Wpf.Extensions;
-using System.Windows.Controls;
 
 namespace Dynamo.WorkspaceDependency
 {

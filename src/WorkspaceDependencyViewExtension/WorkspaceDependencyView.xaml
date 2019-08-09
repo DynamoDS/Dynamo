@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:p="clr-namespace:Dynamo.Wpf.Properties;assembly=DynamoCoreWpf"
+             xmlns:w="clr-namespace:Dynamo.WorkspaceDependency.Properties;assembly=WorkspaceDependencyViewExtension"
              xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf"
              mc:Ignorable="d" 
              VerticalAlignment="Top"
@@ -143,23 +144,44 @@
                             Margin="10"
                             FontSize="11">
                         </TextBlock>
-                        <Button
-                            Visibility="{Binding Path=ShowDownloadButton, Converter={StaticResource BoolToVis}}"
-                            Click="DownloadPackage"
-                            HorizontalAlignment="Center"
-                            Margin="10"
-                            Height="20"
-                            Background="#000000"
-                            BorderThickness="0">
-                            <TextBlock 
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                            <Button
+                                Visibility="{Binding Path=ShowDownloadButton, Converter={StaticResource BoolToVis}}"
+                                Name="DownloadPackageButton"
+                                Click="DownloadPackage"
                                 HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                Margin="5,0,5,0"
-                                Foreground="#cccccc"
-                                FontSize="10px"
-                                Text="Install">
-                            </TextBlock>
-                        </Button>
+                                Margin="10"
+                                Height="20"
+                                Background="#000000"
+                                BorderThickness="0">
+                                <TextBlock 
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    Margin="5,0,5,0"
+                                    Foreground="#cccccc"
+                                    FontSize="10px"
+                                    Text="{x:Static w:Resources.InstallButtonText}">
+                                </TextBlock>
+                            </Button>
+                            <Button
+                                Visibility="{Binding Path=ShowKeepLocalButton, Converter={StaticResource BoolToVis}}"
+                                Name="KeepLocalPackageButton"
+                                Click="KeepLocalPackage"
+                                HorizontalAlignment="Center"
+                                Margin="10"
+                                Height="20"
+                                Background="#000000"
+                                BorderThickness="0">
+                                <TextBlock 
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    Margin="5,0,5,0"
+                                    Foreground="#cccccc"
+                                    FontSize="10px"
+                                    Text="{x:Static w:Resources.KeepLocalButtonText}">
+                                </TextBlock>
+                            </Button>
+                        </StackPanel>
                     </StackPanel>
                 </DataTemplate>
             </DataGrid.RowDetailsTemplate>

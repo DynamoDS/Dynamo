@@ -1,15 +1,14 @@
-﻿using Dynamo.Graph.Workspaces;
-using Dynamo.ViewModels;
-using Dynamo.Utilities;
-using Dynamo.Wpf.Extensions;
-using System;
+﻿using System;
 using System.ComponentModel;
+using System.Drawing;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Drawing;
+using Dynamo.Graph.Workspaces;
+using Dynamo.Utilities;
+using Dynamo.ViewModels;
+using Dynamo.Wpf.Extensions;
 
 namespace Dynamo.WorkspaceDependency
 {
@@ -28,18 +27,19 @@ namespace Dynamo.WorkspaceDependency
 
         private IPackageInstaller packageInstaller;
 
-        private Boolean hasMissingPackage = false;
+        private Boolean hasDependencyIssue = false;
 
         /// <summary>
-        /// Property to check if the current workspace has any missing package dependencies. 
+        /// Property to check if the current workspace has any package dependencies
+        /// issue worth workspace author's attention
         /// </summary>
-        private Boolean HasMissingPackage
+        private Boolean HasDependencyIssue
         {
-            get { return hasMissingPackage; }
+            get { return hasDependencyIssue; }
             set
             {
-                hasMissingPackage = value;
-                if (hasMissingPackage)
+                hasDependencyIssue = value;
+                if (hasDependencyIssue)
                 {
                     loadedParams.AddToExtensionsSideBar(dependencyViewExtension, this);
                 }
@@ -107,9 +107,9 @@ namespace Dynamo.WorkspaceDependency
         {
             var packageDependencies = ws.NodeLibraryDependencies.Where(d => d is PackageDependencyInfo);
 
-            if (packageDependencies.Any(d => d.State == PackageDependencyState.Missing))
+            if (packageDependencies.Any(d => d.State != PackageDependencyState.Loaded))
             {
-                HasMissingPackage = true;
+                HasDependencyIssue = true;
             }
 
             PackageDependencyTable.ItemsSource = packageDependencies.Select(d => new PackageDependencyRow(d as PackageDependencyInfo));
@@ -145,6 +145,24 @@ namespace Dynamo.WorkspaceDependency
             packageInstaller.DownloadAndInstallPackage(package);
             DependencyRegen(currentWorkspace);
         }
+
+        /// <summary>
+        /// Update current workspace in memory to keep the local package
+        /// instead of keep referencing the dependency info saved in DYN
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void KeepLocalPackage(object sender, RoutedEventArgs e)
+        {
+            var info = ((PackageDependencyRow)((Button)sender).DataContext).DependencyInfo;
+            info.State = PackageDependencyState.Loaded;
+
+            // TODO: lookup the current version and replace the version
+            //info.Version = 
+            
+            // Mark the current workspace dirty for save
+            currentWorkspace.HasUnsavedChanges = true;
+        }
     }
 
     /// <summary>
@@ -171,7 +189,7 @@ namespace Dynamo.WorkspaceDependency
 
         /// <summary>
         /// The message to be displayed in the expanded details section for this package dependency.
-        /// This message desceribes the state of the package and possible user actions of the dependency.
+        /// This message describes the state of the package and possible user actions of the dependency.
         /// </summary>
         public string DetailsMessage
         {
@@ -188,6 +206,11 @@ namespace Dynamo.WorkspaceDependency
 
                     case PackageDependencyState.Missing:
                         message = string.Format(Properties.Resources.DetailsMessageMissing, 
+                            DependencyInfo.Name, DependencyInfo.Version.ToString());
+                        break;
+
+                    case PackageDependencyState.IncorrectVersion:
+                        message = string.Format(Properties.Resources.DetailsMessageIncorrectVersion,
                             DependencyInfo.Name, DependencyInfo.Version.ToString());
                         break;
 
@@ -232,6 +255,11 @@ namespace Dynamo.WorkspaceDependency
         /// <summary>
         /// Indicates whether to show/enable the package download and install button
         /// </summary>
-        public bool ShowDownloadButton => this.DependencyInfo.State == PackageDependencyState.Missing;
+        public bool ShowDownloadButton => this.DependencyInfo.State == PackageDependencyState.Missing || this.DependencyInfo.State == PackageDependencyState.IncorrectVersion;
+
+        /// <summary>
+        /// Indicates whether to show/enable the package keep local button
+        /// </summary>
+        public bool ShowKeepLocalButton => this.DependencyInfo.State == PackageDependencyState.IncorrectVersion;
     }
 }

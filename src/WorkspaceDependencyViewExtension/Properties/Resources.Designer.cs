@@ -61,6 +61,15 @@ namespace Dynamo.WorkspaceDependency.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Some nodes in this graph were originally created with {0} {1} which you do not have installed locally. Instead you have a different version of {0} installed, would you keep the local version?.
+        /// </summary>
+        internal static string DetailsMessageIncorrectVersion {
+            get {
+                return ResourceManager.GetString("DetailsMessageIncorrectVersion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {0} {1} is installed locally..
         /// </summary>
         internal static string DetailsMessageLoaded {
@@ -84,6 +93,24 @@ namespace Dynamo.WorkspaceDependency.Properties {
         internal static string DetailsMessageWarning {
             get {
                 return ResourceManager.GetString("DetailsMessageWarning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Install Specified Version.
+        /// </summary>
+        internal static string InstallButtonText {
+            get {
+                return ResourceManager.GetString("InstallButtonText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Keep Local Version.
+        /// </summary>
+        internal static string KeepLocalButtonText {
+            get {
+                return ResourceManager.GetString("KeepLocalButtonText", resourceCulture);
             }
         }
         
