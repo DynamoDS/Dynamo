@@ -22,7 +22,7 @@ namespace Dynamo.WorkspaceDependency.Properties {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class Resources {
+    public class Resources {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
@@ -36,7 +36,7 @@ namespace Dynamo.WorkspaceDependency.Properties {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Resources.ResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Dynamo.WorkspaceDependency.Properties.Resources", typeof(Resources).Assembly);
@@ -51,7 +51,7 @@ namespace Dynamo.WorkspaceDependency.Properties {
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Globalization.CultureInfo Culture {
+        public static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -63,7 +63,7 @@ namespace Dynamo.WorkspaceDependency.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Some nodes in this graph were originally created with {0} {1} which you do not have installed locally. Instead you have a different version of {0} installed, would you keep the local version?.
         /// </summary>
-        internal static string DetailsMessageIncorrectVersion {
+        public static string DetailsMessageIncorrectVersion {
             get {
                 return ResourceManager.GetString("DetailsMessageIncorrectVersion", resourceCulture);
             }
@@ -72,7 +72,7 @@ namespace Dynamo.WorkspaceDependency.Properties {
         /// <summary>
         ///   Looks up a localized string similar to {0} {1} is installed locally..
         /// </summary>
-        internal static string DetailsMessageLoaded {
+        public static string DetailsMessageLoaded {
             get {
                 return ResourceManager.GetString("DetailsMessageLoaded", resourceCulture);
             }
@@ -81,7 +81,7 @@ namespace Dynamo.WorkspaceDependency.Properties {
         /// <summary>
         ///   Looks up a localized string similar to This graph depends on {0} {1}. Would you like to download and install this package?.
         /// </summary>
-        internal static string DetailsMessageMissing {
+        public static string DetailsMessageMissing {
             get {
                 return ResourceManager.GetString("DetailsMessageMissing", resourceCulture);
             }
@@ -90,7 +90,7 @@ namespace Dynamo.WorkspaceDependency.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Some nodes in this graph were originally created with {0} {1} which you do not have installed locally. You may have a different version of {0} installed, or you may have a different package which resolves these nodes..
         /// </summary>
-        internal static string DetailsMessageWarning {
+        public static string DetailsMessageWarning {
             get {
                 return ResourceManager.GetString("DetailsMessageWarning", resourceCulture);
             }
@@ -99,7 +99,7 @@ namespace Dynamo.WorkspaceDependency.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Install Specified Version.
         /// </summary>
-        internal static string InstallButtonText {
+        public static string InstallButtonText {
             get {
                 return ResourceManager.GetString("InstallButtonText", resourceCulture);
             }
@@ -108,7 +108,7 @@ namespace Dynamo.WorkspaceDependency.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Keep Local Version.
         /// </summary>
-        internal static string KeepLocalButtonText {
+        public static string KeepLocalButtonText {
             get {
                 return ResourceManager.GetString("KeepLocalButtonText", resourceCulture);
             }
@@ -117,7 +117,7 @@ namespace Dynamo.WorkspaceDependency.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Show Graph Package Dependency.
         /// </summary>
-        internal static string MenuItemString {
+        public static string MenuItemString {
             get {
                 return ResourceManager.GetString("MenuItemString", resourceCulture);
             }
@@ -126,7 +126,7 @@ namespace Dynamo.WorkspaceDependency.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap NodeLibraryDependency_Loaded {
+        public static System.Drawing.Bitmap NodeLibraryDependency_Loaded {
             get {
                 object obj = ResourceManager.GetObject("NodeLibraryDependency_Loaded", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -136,7 +136,7 @@ namespace Dynamo.WorkspaceDependency.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap NodeLibraryDependency_Missing {
+        public static System.Drawing.Bitmap NodeLibraryDependency_Missing {
             get {
                 object obj = ResourceManager.GetObject("NodeLibraryDependency_Missing", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -146,7 +146,7 @@ namespace Dynamo.WorkspaceDependency.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap NodeLibraryDependency_Warning {
+        public static System.Drawing.Bitmap NodeLibraryDependency_Warning {
             get {
                 object obj = ResourceManager.GetObject("NodeLibraryDependency_Warning", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
