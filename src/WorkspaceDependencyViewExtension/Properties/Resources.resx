@@ -353,4 +353,10 @@
         jDoyqebiAAAAAElFTkSuQmCC
 </value>
   </data>
+  <data name="ProvideFeedbackButton" xml:space="preserve">
+    <value>Provide Feedback</value>
+  </data>
+  <data name="ProvideFeedbackError" xml:space="preserve">
+    <value>Could not re-direct to the Dynamo forum page for feedback:</value>
+  </data>
 </root>

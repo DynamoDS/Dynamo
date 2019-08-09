@@ -152,5 +152,23 @@ namespace Dynamo.WorkspaceDependency.Properties {
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Provide Feedback.
+        /// </summary>
+        public static string ProvideFeedbackButton {
+            get {
+                return ResourceManager.GetString("ProvideFeedbackButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Could not re-direct to the Dynamo forum page for feedback:.
+        /// </summary>
+        public static string ProvideFeedbackError {
+            get {
+                return ResourceManager.GetString("ProvideFeedbackError", resourceCulture);
+            }
+        }
     }
 }

@@ -221,7 +221,7 @@
                         <!-- Feedback button -->
                         <Button HorizontalAlignment="Right"
                             Width="150" Click="ProvideFeedback" Background="#373737" Height="30">
-                            <TextBlock TextWrapping="Wrap" FontSize="15" Foreground="White" Height="20" Text="{x:Static p:Resources.ProvideFeedbackButton}" VerticalAlignment="Center"/>
+                            <TextBlock TextWrapping="Wrap" FontSize="15" Foreground="White" Height="20" Text="{x:Static w:Resources.ProvideFeedbackButton}" VerticalAlignment="Center"/>
                             <Button.Style>
                                 <Style TargetType="{x:Type Button}">
                                     <Setter Property="Template">

@@ -55,7 +55,7 @@ namespace Dynamo.WorkspaceDependency
                 System.Diagnostics.Process.Start(FeedbackLink);
             }
             catch (Exception ex) {
-                String message = Dynamo.Wpf.Properties.Resources.ProvideFeedbackError + "\n\n" + ex.Message;
+                String message = Dynamo.WorkspaceDependency.Properties.Resources.ProvideFeedbackError + "\n\n" + ex.Message;
                 MessageBox.Show(message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
