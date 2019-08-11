@@ -174,7 +174,7 @@
         </Grid>
 
         <!-- Template for the feedback banner -->
-        <DockPanel Name="Feedback" VerticalAlignment="Bottom" Grid.Row="2" Width="Auto">
+        <DockPanel Name="Feedback" VerticalAlignment="Bottom" Grid.Row="2" Width="600">
             <StatusBar Background="{StaticResource FeedbackSectionBackground}" DockPanel.Dock="Bottom" Height="55">
                 <!-- Preview text -->
                 <StatusBarItem>
