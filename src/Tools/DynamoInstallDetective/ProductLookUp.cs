@@ -166,8 +166,8 @@ namespace DynamoInstallDetective
             {
                 if (string.IsNullOrEmpty(corePath))
                 {
-                    corePath = Directory.GetFiles(path, fileLookup, SearchOption.AllDirectories)
-                        .AsParallel().FirstOrDefault();
+                    corePath = Directory.EnumerateFiles(path, fileLookup, SearchOption.AllDirectories)
+                        .FirstOrDefault();
                 }
                 return corePath;
             };
