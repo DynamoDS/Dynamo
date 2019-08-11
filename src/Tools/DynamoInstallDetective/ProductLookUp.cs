@@ -127,6 +127,9 @@ namespace DynamoInstallDetective
         /// Product name for lookup
         /// </summary>
         public string ProductLookUpName { get; private set; }
+
+        private string corePath;
+
         private readonly Func<string, string> fileLocator;
 
         static RegistryKey OpenKey(string key)
@@ -158,8 +161,16 @@ namespace DynamoInstallDetective
         /// <param name="fileLookup">file name pattern to lookup</param>
         public InstalledProductLookUp(string lookUpName, string fileLookup)
         {
-            this.ProductLookUpName = lookUpName;
-            this.fileLocator = (path) => Directory.GetFiles(path, fileLookup, SearchOption.AllDirectories).FirstOrDefault();
+            ProductLookUpName = lookUpName;
+            fileLocator = (path) =>
+            {
+                if (string.IsNullOrEmpty(corePath))
+                {
+                    corePath = Directory.GetFiles(path, fileLookup, SearchOption.AllDirectories)
+                        .AsParallel().FirstOrDefault();
+                }
+                return corePath;
+            };
         }
 
         public InstalledProductLookUp(string lookUpName, Func<string, string> fileLocator)
@@ -255,7 +266,8 @@ namespace DynamoInstallDetective
         public InstalledProduct(string installLocation, InstalledProductLookUp lookUp)
         {
             var corePath = lookUp.GetCoreFilePathFromInstallation(installLocation);
-            InstallLocation = Path.GetDirectoryName(corePath);
+            InstallLocation = File.Exists(corePath) ? Path.GetDirectoryName(corePath) : installLocation;
+            
             VersionInfo = lookUp.GetVersionInfoFromFile(corePath);
             ProductName = string.Format("{0} {1}.{2}", lookUp.ProductLookUpName, VersionInfo.Item1, VersionInfo.Item2);
             VersionString = string.Format("{0}.{1}.{2}.{3}", VersionInfo.Item1, VersionInfo.Item2, VersionInfo.Item3, VersionInfo.Item4);
