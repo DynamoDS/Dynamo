@@ -128,8 +128,6 @@ namespace DynamoInstallDetective
         /// </summary>
         public string ProductLookUpName { get; private set; }
 
-        private string corePath;
-
         private readonly Func<string, string> fileLocator;
 
         static RegistryKey OpenKey(string key)
@@ -162,15 +160,8 @@ namespace DynamoInstallDetective
         public InstalledProductLookUp(string lookUpName, string fileLookup)
         {
             ProductLookUpName = lookUpName;
-            fileLocator = (path) =>
-            {
-                if (string.IsNullOrEmpty(corePath))
-                {
-                    corePath = Directory.EnumerateFiles(path, fileLookup, SearchOption.AllDirectories)
-                        .FirstOrDefault();
-                }
-                return corePath;
-            };
+            fileLocator = (path) => Directory.EnumerateFiles(path, fileLookup, SearchOption.AllDirectories)
+                .FirstOrDefault();
         }
 
         public InstalledProductLookUp(string lookUpName, Func<string, string> fileLocator)
