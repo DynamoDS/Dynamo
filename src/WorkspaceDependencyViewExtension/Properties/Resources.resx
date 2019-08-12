@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="DetailsMessageIncorrectVersion" xml:space="preserve">
-    <value>Some nodes in this graph were originally created with {0} v{1} which you do not have installed. Instead you have a different version of {0} installed, would you keep the installed version?</value>
+    <value>Some nodes in this graph were originally created with {0} v{1}, which you do not have installed. Instead you have a different version of {0} installed, would you keep the installed version?</value>
   </data>
   <data name="DetailsMessageLoaded" xml:space="preserve">
     <value>{0} {1} is installed and loaded.</value>
@@ -127,7 +127,7 @@
     <value>This graph depends on {0} {1}. Would you like to download and install this package?</value>
   </data>
   <data name="DetailsMessageWarning" xml:space="preserve">
-    <value>Some nodes in this graph were originally created with {0} v{1} which you do not have installed. You may have a different version of {0} installed, or you may have a different package which resolves these nodes.</value>
+    <value>Some nodes in this graph were originally created with {0} v{1}, which you do not have installed. You may have a different version of {0} installed, or you may have a different package which resolves these nodes.</value>
   </data>
   <data name="InstallButtonText" xml:space="preserve">
     <value>Install Specified Version</value>
@@ -357,6 +357,6 @@
     <value>Provide Feedback</value>
   </data>
   <data name="ProvideFeedbackError" xml:space="preserve">
-    <value>Could not re-direct to the Dynamo forum page for feedback:</value>
+    <value>Could not redirect to the Dynamo forum page for feedback:</value>
   </data>
 </root>

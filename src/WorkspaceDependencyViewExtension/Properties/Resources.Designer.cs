@@ -61,7 +61,7 @@ namespace Dynamo.WorkspaceDependency.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Some nodes in this graph were originally created with {0} v{1} which you do not have installed. Instead you have a different version of {0} installed, would you keep the installed version?.
+        ///   Looks up a localized string similar to Some nodes in this graph were originally created with {0} v{1}, which you do not have installed. Instead you have a different version of {0} installed, would you keep the installed version?.
         /// </summary>
         public static string DetailsMessageIncorrectVersion {
             get {
@@ -88,7 +88,7 @@ namespace Dynamo.WorkspaceDependency.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Some nodes in this graph were originally created with {0} v{1} which you do not have installed. You may have a different version of {0} installed, or you may have a different package which resolves these nodes..
+        ///   Looks up a localized string similar to Some nodes in this graph were originally created with {0} v{1}, which you do not have installed. You may have a different version of {0} installed, or you may have a different package which resolves these nodes..
         /// </summary>
         public static string DetailsMessageWarning {
             get {
@@ -163,7 +163,7 @@ namespace Dynamo.WorkspaceDependency.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Could not re-direct to the Dynamo forum page for feedback:.
+        ///   Looks up a localized string similar to Could not redirect to the Dynamo forum page for feedback:.
         /// </summary>
         public static string ProvideFeedbackError {
             get {

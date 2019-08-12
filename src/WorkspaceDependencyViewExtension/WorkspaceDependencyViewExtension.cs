@@ -35,7 +35,7 @@ namespace Dynamo.WorkspaceDependency
             }
         }
 
-        private WorkspaceDependencyView DependencyView
+        internal WorkspaceDependencyView DependencyView
         {
             get;
             set;

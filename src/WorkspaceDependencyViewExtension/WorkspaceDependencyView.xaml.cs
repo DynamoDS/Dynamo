@@ -147,14 +147,24 @@ namespace Dynamo.WorkspaceDependency
         }
 
         /// <summary>
-        /// Update current workspace in memory to keep the local package
-        /// instead of keep referencing the dependency info saved in DYN
+        /// Handler of button which user click when choosing to keep the
+        /// installed version of package instead of the specified one.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void KeepLocalPackage(object sender, RoutedEventArgs e)
         {
             var info = ((PackageDependencyRow)((Button)sender).DataContext).DependencyInfo;
+            UpdateWorkspaceToUseInstalledPackage(info);
+        }
+
+        /// <summary>
+        /// Update current workspace in memory to keep the installed package
+        /// instead of keep referencing the dependency info saved in DYN
+        /// </summary>
+        /// <param name="info">Target PackageDependencyInfo to update version</param>
+        internal void UpdateWorkspaceToUseInstalledPackage(PackageDependencyInfo info)
+        {
             info.State = PackageDependencyState.Loaded;
             info.Version = new Version(loadedParams.PackageLoader.LocalPackages.Where(x => x.Name == info.Name).First().VersionName);
             // Mark the current workspace dirty for save
