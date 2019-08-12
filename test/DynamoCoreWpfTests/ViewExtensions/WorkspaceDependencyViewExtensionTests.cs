@@ -50,7 +50,7 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
-        public void WorkspaceDependencyViewExtensionLoadTest()
+        public void WillNotAddDupWorkspaceDependencyViewExtensionLoadTest()
         {
             RaiseLoadedEvent(this.View);
 
@@ -58,9 +58,10 @@ namespace DynamoCoreWpfTests
 
             var initialNum = View.TabItems.Count;
 
-            // Adding the workspace dependency view extension will add a tab in the extensions side bar
+            // Adding the workspace dependency view extension will 
+            // not add a dup tab in the extensions side bar
             extensionManager.Add(viewExtension);
-            Assert.AreEqual(initialNum + 1, View.TabItems.Count);
+            Assert.AreEqual(initialNum, View.TabItems.Count);
         }
 
         public static void RaiseLoadedEvent(FrameworkElement element)
