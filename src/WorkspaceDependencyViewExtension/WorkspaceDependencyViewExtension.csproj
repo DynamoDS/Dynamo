@@ -75,6 +75,10 @@
       <Name>DynamoCore</Name>
       <Private>False</Private>
     </ProjectReference>
+    <ProjectReference Include="..\DynamoPackages\DynamoPackages.csproj">
+      <Project>{47533B7C-0E1A-44A4-8511-B438645F052A}</Project>
+      <Name>DynamoPackages</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Page Include="WorkspaceDependencyView.xaml">

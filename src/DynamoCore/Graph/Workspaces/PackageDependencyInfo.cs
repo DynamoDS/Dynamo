@@ -44,7 +44,7 @@ namespace Dynamo.Graph.Workspaces
         /// <summary>
         /// Version of the package
         /// </summary>
-        public Version Version { get; private set; }
+        public Version Version { get; set; }
 
         /// <summary>
         /// Create a package info object from the package name and version
@@ -175,7 +175,18 @@ namespace Dynamo.Graph.Workspaces
         /// <summary>
         /// Version of the package
         /// </summary>
-        public Version Version => PackageInfo.Version;
+        public Version Version
+        {
+            get
+            {
+                return PackageInfo.Version;
+            }
+            set
+            {
+                if(PackageInfo.Version != value)
+                    PackageInfo.Version = value;
+            }
+        }
 
         /// <summary>
         /// Indicates whether this package is loaded in the current session

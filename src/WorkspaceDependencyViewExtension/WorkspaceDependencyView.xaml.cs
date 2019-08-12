@@ -20,7 +20,7 @@ namespace Dynamo.WorkspaceDependency
 
         private WorkspaceModel currentWorkspace;
 
-        private String FeedbackLink = "https://forum.dynamobim.com/t/call-for-feedback-on-dynamo-graph-package-dependency-display/37229";
+        private string FeedbackLink = "https://forum.dynamobim.com/t/call-for-feedback-on-dynamo-graph-package-dependency-display/37229";
 
         private ViewLoadedParams loadedParams;
         private WorkspaceDependencyViewExtension dependencyViewExtension;
@@ -156,12 +156,10 @@ namespace Dynamo.WorkspaceDependency
         {
             var info = ((PackageDependencyRow)((Button)sender).DataContext).DependencyInfo;
             info.State = PackageDependencyState.Loaded;
-
-            // TODO: lookup the current version and replace the version
-            //info.Version = 
-            
+            info.Version = new Version(loadedParams.PackageLoader.LocalPackages.Where(x => x.Name == info.Name).First().VersionName);
             // Mark the current workspace dirty for save
             currentWorkspace.HasUnsavedChanges = true;
+            DependencyRegen(currentWorkspace);
         }
     }
 

@@ -5,11 +5,13 @@ using System.Windows;
 using System.Windows.Controls;
 using Dynamo.Controls;
 using Dynamo.Extensions;
+using Dynamo.PackageManager;
 using Dynamo.Selection;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Visualization;
 using Dynamo.Wpf.ViewModels.Watch3D;
+using DynamoPackages.Interfaces;
 
 namespace Dynamo.Wpf.Extensions
 {
@@ -55,6 +57,14 @@ namespace Dynamo.Wpf.Extensions
         public IPackageInstaller PackageInstaller
         {
             get { return dynamoViewModel.PackageManagerClientViewModel; }
+        }
+
+        /// <summary>
+        /// A reference to package loader to query for certain packages info
+        /// </summary>
+        public IPackageLoader PackageLoader
+        {
+            get { return dynamoViewModel.Model.GetPackageManagerExtension().PackageLoader; }
         }
 
         /// <summary>

@@ -68,6 +68,7 @@
     <Compile Include="Interfaces\IFileCompressor.cs" />
     <Compile Include="Interfaces\IFileInfo.cs" />
     <Compile Include="Interfaces\IFileSystem.cs" />
+    <Compile Include="Interfaces\IPackageLoader.cs" />
     <Compile Include="Interfaces\MutatingFileCompressor.cs" />
     <Compile Include="Interfaces\MutatingFileSystem.cs" />
     <Compile Include="Package.cs" />

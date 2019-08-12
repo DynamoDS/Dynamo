@@ -10,6 +10,7 @@ using Dynamo.Extensions;
 using Dynamo.Interfaces;
 using Dynamo.Logging;
 using Dynamo.Utilities;
+using DynamoPackages.Interfaces;
 using DynamoPackages.Properties;
 using DynamoUtilities;
 
@@ -28,7 +29,7 @@ namespace Dynamo.PackageManager
         AlreadyLoaded
     }
 
-    public class PackageLoader : LogSourceBase
+    public class PackageLoader : LogSourceBase, IPackageLoader
     {
         internal event Action<Assembly> RequestLoadNodeLibrary;
         internal event Action<IEnumerable<Assembly>> PackagesLoaded;
