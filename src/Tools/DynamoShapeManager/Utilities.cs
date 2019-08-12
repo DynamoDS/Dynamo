@@ -14,7 +14,7 @@ namespace DynamoShapeManager
         /// <summary>
         /// Key words for Products containing ASM binaries
         /// </summary>
-        private static readonly List<string> ProductsWithASM = new List<string>() { "Revit", "Civil", "FormIt" };
+        private static readonly List<string> ProductsWithASM = new List<string>() { "Revit", "Civil", "Robot Structural Analysis", "FormIt" };
 
         #region public properties
         public static readonly string GeometryFactoryAssembly = "LibG.ProtoInterface.dll";
