@@ -59,7 +59,7 @@ namespace Dynamo.Wpf.Extensions
         }
 
         /// <summary>
-        /// A reference to package loader to query for certain packages info
+        /// A reference to list of Local loaded packages
         /// </summary>
         public System.Collections.Generic.IEnumerable<Package> LocalPackages
         {

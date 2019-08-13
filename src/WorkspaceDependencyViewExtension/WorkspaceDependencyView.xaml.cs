@@ -154,8 +154,12 @@ namespace Dynamo.WorkspaceDependency
         /// <param name="e"></param>
         private void KeepLocalPackage(object sender, RoutedEventArgs e)
         {
-            var info = ((PackageDependencyRow)((Button)sender).DataContext).DependencyInfo;
-            UpdateWorkspaceToUseInstalledPackage(info);
+            try
+            {
+                var info = ((PackageDependencyRow)((Button)sender).DataContext).DependencyInfo;
+                UpdateWorkspaceToUseInstalledPackage(info);
+            }
+            catch(Exception) {}
         }
 
         /// <summary>
