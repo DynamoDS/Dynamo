@@ -795,6 +795,7 @@ namespace Dynamo.Controls
 
                 if (galleryView.ViewModel.HasContents)
                 {
+                    galleryBackground.Children.Clear();
                     galleryBackground.Children.Add(galleryView);
                     galleryBackground.Visibility = Visibility.Visible;
                     galleryView.Focus(); //get keyboard focus
