@@ -11,7 +11,6 @@ using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Visualization;
 using Dynamo.Wpf.ViewModels.Watch3D;
-using DynamoPackages.Interfaces;
 
 namespace Dynamo.Wpf.Extensions
 {
@@ -62,9 +61,9 @@ namespace Dynamo.Wpf.Extensions
         /// <summary>
         /// A reference to package loader to query for certain packages info
         /// </summary>
-        public IPackageLoader PackageLoader
+        public System.Collections.Generic.IEnumerable<Package> LocalPackages
         {
-            get { return dynamoViewModel.Model.GetPackageManagerExtension().PackageLoader; }
+            get { return dynamoViewModel.Model.GetPackageManagerExtension().PackageLoader.LocalPackages; }
         }
 
         /// <summary>

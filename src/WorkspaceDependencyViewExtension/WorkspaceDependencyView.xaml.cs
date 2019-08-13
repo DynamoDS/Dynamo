@@ -166,7 +166,7 @@ namespace Dynamo.WorkspaceDependency
         internal void UpdateWorkspaceToUseInstalledPackage(PackageDependencyInfo info)
         {
             info.State = PackageDependencyState.Loaded;
-            info.Version = new Version(loadedParams.PackageLoader.LocalPackages.Where(x => x.Name == info.Name).First().VersionName);
+            info.Version = new Version(loadedParams.LocalPackages.Where(x => x.Name == info.Name).First().VersionName);
             // Mark the current workspace dirty for save
             currentWorkspace.HasUnsavedChanges = true;
             DependencyRegen(currentWorkspace);
