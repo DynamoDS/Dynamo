@@ -90,7 +90,7 @@ namespace Dynamo.Wpf.Extensions
         /// <param name="viewExtension">Instance of the view extension object that is being added to the extensions side bar.</param>
         /// <param name="contentControl">Control UI element with a single piece of content of any type.</param>
         /// <returns></returns>
-        internal void AddToExtensionsSideBar(IViewExtension viewExtension, ContentControl contentControl)
+        public void AddToExtensionsSideBar(IViewExtension viewExtension, ContentControl contentControl)
         {
             TabItem tabItem  = dynamoView.AddTabItem(viewExtension, contentControl);
 
