@@ -1,4 +1,5 @@
-﻿using System.Windows.Controls;
+﻿using System.Collections.Generic;
+using System.Windows.Controls;
 using Dynamo.Extensions;
 using Dynamo.Graph.Workspaces;
 using Dynamo.WorkspaceDependency.Properties;
@@ -41,6 +42,8 @@ namespace Dynamo.WorkspaceDependency
             set;
         }
 
+        internal ViewStartupParams ViewLoadedParams;
+
         private ReadyParams ReadyParams;
 
         /// <summary>
@@ -66,7 +69,7 @@ namespace Dynamo.WorkspaceDependency
 
         public void Startup(ViewStartupParams viewLoadedParams)
         {
-
+            ViewLoadedParams = viewLoadedParams;
         }
 
         private MenuItem packageDependencyMenuItem;

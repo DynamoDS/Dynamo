@@ -6,6 +6,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using Dynamo.Graph.Workspaces;
+using Dynamo.PackageManager;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Extensions;
@@ -169,11 +170,14 @@ namespace Dynamo.WorkspaceDependency
         /// <param name="info">Target PackageDependencyInfo to update version</param>
         internal void UpdateWorkspaceToUseInstalledPackage(PackageDependencyInfo info)
         {
-            info.State = PackageDependencyState.Loaded;
-            info.Version = new Version(loadedParams.LocalPackages.Where(x => x.Name == info.Name).First().VersionName);
-            // Mark the current workspace dirty for save
-            currentWorkspace.HasUnsavedChanges = true;
-            DependencyRegen(currentWorkspace);
+            if (dependencyViewExtension.ViewLoadedParams.ExtensionManager.Extensions.Where(x => x.Name == "DynamoPackageManager").FirstOrDefault() is PackageManagerExtension pmExtension)
+            {
+                info.Version = new Version(pmExtension.PackageLoader.LocalPackages.Where(x => x.Name == info.Name).First().VersionName);
+                info.State = PackageDependencyState.Loaded;
+                // Mark the current workspace dirty for save
+                currentWorkspace.HasUnsavedChanges = true;
+                DependencyRegen(currentWorkspace);
+            }
         }
     }
 

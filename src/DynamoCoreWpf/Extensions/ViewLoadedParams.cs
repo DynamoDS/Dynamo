@@ -5,7 +5,6 @@ using System.Windows;
 using System.Windows.Controls;
 using Dynamo.Controls;
 using Dynamo.Extensions;
-using Dynamo.PackageManager;
 using Dynamo.Selection;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
@@ -56,14 +55,6 @@ namespace Dynamo.Wpf.Extensions
         public IPackageInstaller PackageInstaller
         {
             get { return dynamoViewModel.PackageManagerClientViewModel; }
-        }
-
-        /// <summary>
-        /// A reference to list of Local loaded packages
-        /// </summary>
-        public System.Collections.Generic.IEnumerable<Package> LocalPackages
-        {
-            get { return dynamoViewModel.Model.GetPackageManagerExtension().PackageLoader.LocalPackages; }
         }
 
         /// <summary>
