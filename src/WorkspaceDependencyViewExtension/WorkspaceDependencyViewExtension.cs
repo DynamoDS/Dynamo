@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Windows.Controls;
 using Dynamo.Extensions;
 using Dynamo.Graph.Workspaces;
@@ -14,8 +15,19 @@ namespace Dynamo.WorkspaceDependency
     /// which tracks graph dependencies (currently only packages) on the Dynamo right panel.
     /// It reacts to workspace modified/ cleared events to refresh.
     /// </summary>
-    public class WorkspaceDependencyViewExtension : IViewExtension
+    public class WorkspaceDependencyViewExtension : IViewExtension, ILogSource
     {
+        private MenuItem packageDependencyMenuItem;
+        private ReadyParams ReadyParams;
+
+        internal WorkspaceDependencyView DependencyView
+        {
+            get;
+            set;
+        }
+
+        internal PackageManagerExtension pmExtension;
+
         /// <summary>
         /// Extension Name
         /// </summary>
@@ -37,17 +49,6 @@ namespace Dynamo.WorkspaceDependency
                 return "A6706BF5-11C2-458F-B7C8-B745A77EF7FD";
             }
         }
-
-        internal WorkspaceDependencyView DependencyView
-        {
-            get;
-            set;
-        }
-
-        private ReadyParams ReadyParams;
-
-        internal DynamoLogger logger;
-        internal PackageManagerExtension pmExtension;
 
         /// <summary>
         /// Dispose function after extension is closed
@@ -71,15 +72,18 @@ namespace Dynamo.WorkspaceDependency
 
         public void Startup(ViewStartupParams viewLoadedParams)
         {
-            var pmExtension = viewLoadedParams.ExtensionManager.Extensions.OfType<PackageManagerExtension>().FirstOrDefault();
+            pmExtension = viewLoadedParams.ExtensionManager.Extensions.OfType<PackageManagerExtension>().FirstOrDefault();
         }
 
-        private MenuItem packageDependencyMenuItem;
+        public event Action<ILogMessage> MessageLogged;
+        internal void OnMessageLogged(ILogMessage msg)
+        {
+            this.MessageLogged?.Invoke(msg);
+        }
 
         public void Loaded(ViewLoadedParams viewLoadedParams)
         {
             DependencyView = new WorkspaceDependencyView(this, viewLoadedParams);
-            logger = viewLoadedParams.Logger;
 
             // Adding a button in view menu to refresh and show manually
             packageDependencyMenuItem = new MenuItem { Header = Resources.MenuItemString };

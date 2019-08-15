@@ -6,6 +6,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using Dynamo.Graph.Workspaces;
+using Dynamo.Logging;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Extensions;
@@ -161,7 +162,7 @@ namespace Dynamo.WorkspaceDependency
             }
             catch(Exception ex)
             {
-                dependencyViewExtension.logger.LogError(String.Format(Properties.Resources.DependencyViewExtensionErrorTemplate, ex.ToString()));
+                dependencyViewExtension.OnMessageLogged(LogMessage.Info(String.Format(Properties.Resources.DependencyViewExtensionErrorTemplate, ex.ToString())));
             }
         }
 
