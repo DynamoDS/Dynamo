@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Windows.Controls;
 using Dynamo.Extensions;
 using Dynamo.Graph.Workspaces;
@@ -55,7 +54,6 @@ namespace Dynamo.WorkspaceDependency
         /// </summary>
         public void Dispose()
         {
-
         }
 
        
