@@ -2,6 +2,7 @@
 using System.Windows.Controls;
 using Dynamo.Extensions;
 using Dynamo.Graph.Workspaces;
+using Dynamo.Logging;
 using Dynamo.WorkspaceDependency.Properties;
 using Dynamo.Wpf.Extensions;
 
@@ -46,6 +47,8 @@ namespace Dynamo.WorkspaceDependency
 
         private ReadyParams ReadyParams;
 
+        internal DynamoLogger logger;
+
         /// <summary>
         /// Dispose function after extension is closed
         /// </summary>
@@ -77,6 +80,7 @@ namespace Dynamo.WorkspaceDependency
         public void Loaded(ViewLoadedParams viewLoadedParams)
         {
             DependencyView = new WorkspaceDependencyView(this, viewLoadedParams);
+            logger = viewModel.Model.Logger;
 
             // Adding a button in view menu to refresh and show manually
             packageDependencyMenuItem = new MenuItem { Header = Resources.MenuItemString };

@@ -160,7 +160,10 @@ namespace Dynamo.WorkspaceDependency
                 var info = ((PackageDependencyRow)((Button)sender).DataContext).DependencyInfo;
                 UpdateWorkspaceToUseInstalledPackage(info);
             }
-            catch(Exception) {}
+            catch(Exception ex)
+            {
+                dependencyViewExtension.logger.LogError(String.Format(Properties.Resources.DependencyViewExtensionErrorTemplate, ex.ToString()));
+            }
         }
 
         /// <summary>
@@ -170,14 +173,18 @@ namespace Dynamo.WorkspaceDependency
         /// <param name="info">Target PackageDependencyInfo to update version</param>
         internal void UpdateWorkspaceToUseInstalledPackage(PackageDependencyInfo info)
         {
-            var pmExtension = dependencyViewExtension.ViewLoadedParams.ExtensionManager.Extensions.Where(x => x.Name == "DynamoPackageManager").FirstOrDefault() as PackageManagerExtension;
+            var pmExtension = dependencyViewExtension.ViewLoadedParams.ExtensionManager.Extensions.OfType<PackageManagerExtension>().FirstOrDefault();
             if (pmExtension != null)
             {
-                info.Version = new Version(pmExtension.PackageLoader.LocalPackages.Where(x => x.Name == info.Name).First().VersionName);
-                info.State = PackageDependencyState.Loaded;
-                // Mark the current workspace dirty for save
-                currentWorkspace.HasUnsavedChanges = true;
-                DependencyRegen(currentWorkspace);
+                var targetInfo = pmExtension.PackageLoader.LocalPackages.Where(x => x.Name == info.Name).FirstOrDefault();
+                if (targetInfo != null)
+                {
+                    info.Version = new Version(targetInfo.VersionName);
+                    info.State = PackageDependencyState.Loaded;
+                    // Mark the current workspace dirty for save
+                    currentWorkspace.HasUnsavedChanges = true;
+                    DependencyRegen(currentWorkspace);
+                }
             }
         }
     }
