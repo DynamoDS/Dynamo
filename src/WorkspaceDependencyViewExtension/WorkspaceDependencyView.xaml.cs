@@ -173,7 +173,7 @@ namespace Dynamo.WorkspaceDependency
         /// <param name="info">Target PackageDependencyInfo to update version</param>
         internal void UpdateWorkspaceToUseInstalledPackage(PackageDependencyInfo info)
         {
-            var pmExtension = dependencyViewExtension.ViewLoadedParams.ExtensionManager.Extensions.OfType<PackageManagerExtension>().FirstOrDefault();
+            var pmExtension = dependencyViewExtension.pmExtension;
             if (pmExtension != null)
             {
                 var targetInfo = pmExtension.PackageLoader.LocalPackages.Where(x => x.Name == info.Name).FirstOrDefault();

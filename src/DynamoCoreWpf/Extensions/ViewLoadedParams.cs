@@ -5,6 +5,7 @@ using System.Windows;
 using System.Windows.Controls;
 using Dynamo.Controls;
 using Dynamo.Extensions;
+using Dynamo.Logging;
 using Dynamo.Selection;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
@@ -55,6 +56,14 @@ namespace Dynamo.Wpf.Extensions
         public IPackageInstaller PackageInstaller
         {
             get { return dynamoViewModel.PackageManagerClientViewModel; }
+        }
+
+        /// <summary>
+        /// A reference to Dynamo Logger for extension to use
+        /// </summary>
+        public DynamoLogger Logger
+        {
+            get { return dynamoViewModel.Model.Logger; }
         }
 
         /// <summary>
@@ -149,8 +158,8 @@ namespace Dynamo.Wpf.Extensions
         }
 
         /// <summary>
-        /// Searchs for dynamo parent menu item. Parent item can be:
-        /// file menu, edit menu, view menu and help mebu bars.
+        /// Searches for dynamo parent menu item. Parent item can be:
+        /// file menu, edit menu, view menu and help menu bars.
         /// </summary>
         /// <param name="menuBarType">File, Edit, View or Help.</param>
         private MenuItem SearchForMenuItem(MenuBarType type)

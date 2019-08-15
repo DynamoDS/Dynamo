@@ -1,8 +1,10 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Controls;
 using Dynamo.Extensions;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Logging;
+using Dynamo.PackageManager;
 using Dynamo.WorkspaceDependency.Properties;
 using Dynamo.Wpf.Extensions;
 
@@ -43,11 +45,10 @@ namespace Dynamo.WorkspaceDependency
             set;
         }
 
-        internal ViewStartupParams ViewLoadedParams;
-
         private ReadyParams ReadyParams;
 
         internal DynamoLogger logger;
+        internal PackageManagerExtension pmExtension;
 
         /// <summary>
         /// Dispose function after extension is closed
@@ -72,7 +73,7 @@ namespace Dynamo.WorkspaceDependency
 
         public void Startup(ViewStartupParams viewLoadedParams)
         {
-            ViewLoadedParams = viewLoadedParams;
+            var pmExtension = viewLoadedParams.ExtensionManager.Extensions.OfType<PackageManagerExtension>().FirstOrDefault();
         }
 
         private MenuItem packageDependencyMenuItem;
@@ -80,7 +81,7 @@ namespace Dynamo.WorkspaceDependency
         public void Loaded(ViewLoadedParams viewLoadedParams)
         {
             DependencyView = new WorkspaceDependencyView(this, viewLoadedParams);
-            logger = viewModel.Model.Logger;
+            logger = viewLoadedParams.Logger;
 
             // Adding a button in view menu to refresh and show manually
             packageDependencyMenuItem = new MenuItem { Header = Resources.MenuItemString };
