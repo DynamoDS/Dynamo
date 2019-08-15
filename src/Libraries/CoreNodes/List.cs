@@ -929,7 +929,7 @@ namespace DSCore
         }
 
         /// <summary>
-        ///     List elements along each diagonal in the matrix from the top left to the lower right.
+        ///     List elements along each diagonal in the matrix from the lower left to the top right.
         /// </summary>
         /// <param name="list">A flat list</param>
         /// <param name="subLength">Length of each new sub-list.</param>
@@ -989,7 +989,7 @@ namespace DSCore
         }
 
         /// <summary>
-        ///     List elements along each diagonal in the matrix from the top right to the lower left.
+        ///     List elements along each diagonal in the matrix from the top left to the lower right.
         /// </summary>
         /// <param name="list">A flat list.</param>
         /// <param name="rowLength">Length of each new sib-list.</param>
