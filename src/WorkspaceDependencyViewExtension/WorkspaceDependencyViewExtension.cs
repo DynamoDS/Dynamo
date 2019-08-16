@@ -1,12 +1,12 @@
-﻿using System;
-using System.Linq;
-using System.Windows.Controls;
-using Dynamo.Extensions;
+﻿using Dynamo.Extensions;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Logging;
 using Dynamo.PackageManager;
 using Dynamo.WorkspaceDependency.Properties;
 using Dynamo.Wpf.Extensions;
+using System;
+using System.Linq;
+using System.Windows.Controls;
 
 namespace Dynamo.WorkspaceDependency
 {
@@ -18,7 +18,7 @@ namespace Dynamo.WorkspaceDependency
     public class WorkspaceDependencyViewExtension : IViewExtension, ILogSource
     {
         private MenuItem packageDependencyMenuItem;
-        private ReadyParams ReadyParams;
+        private ViewLoadedParams LoadedParams;
 
         internal WorkspaceDependencyView DependencyView
         {
@@ -57,16 +57,16 @@ namespace Dynamo.WorkspaceDependency
         {
         }
 
-       
+
+        [Obsolete("This method is not implemented and will be removed.")]
         public void Ready(ReadyParams readyParams)
         {
-            ReadyParams = readyParams;
         }
 
         public void Shutdown()
         {
-            ReadyParams.CurrentWorkspaceChanged -= DependencyView.OnWorkspaceChanged;
-            ReadyParams.CurrentWorkspaceCleared -= DependencyView.OnWorkspaceCleared;
+            LoadedParams.CurrentWorkspaceChanged -= DependencyView.OnWorkspaceChanged;
+            LoadedParams.CurrentWorkspaceCleared -= DependencyView.OnWorkspaceCleared;
             this.Dispose();
         }
 
@@ -84,6 +84,12 @@ namespace Dynamo.WorkspaceDependency
         public void Loaded(ViewLoadedParams viewLoadedParams)
         {
             DependencyView = new WorkspaceDependencyView(this, viewLoadedParams);
+            // when a package is loaded update the DependencyView 
+            // as we may have installed a missing package.
+            pmExtension.PackageLoader.PackgeLoaded += (package) =>
+            {
+                DependencyView.DependencyRegen(viewLoadedParams.CurrentWorkspaceModel as WorkspaceModel);
+            };
 
             // Adding a button in view menu to refresh and show manually
             packageDependencyMenuItem = new MenuItem { Header = Resources.MenuItemString };
@@ -95,5 +101,6 @@ namespace Dynamo.WorkspaceDependency
             };
             viewLoadedParams.AddMenuItem(MenuBarType.View, packageDependencyMenuItem);
         }
+
     }
 }
