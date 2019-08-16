@@ -377,7 +377,7 @@ namespace Dynamo.Graph.Workspaces
     }
 
     ///<Summary>
-    ///  Converter for Description property in the NodeModel class.
+    /// Converter for Description property in the NodeModel class.
     ///</Summary>
     public class DescriptionConverter : JsonConverter
     {
