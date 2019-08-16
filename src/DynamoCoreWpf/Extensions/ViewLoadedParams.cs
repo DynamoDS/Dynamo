@@ -5,6 +5,7 @@ using System.Windows;
 using System.Windows.Controls;
 using Dynamo.Controls;
 using Dynamo.Extensions;
+using Dynamo.Logging;
 using Dynamo.Selection;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
@@ -58,6 +59,14 @@ namespace Dynamo.Wpf.Extensions
         }
 
         /// <summary>
+        /// A reference to Dynamo Logger for extension to use
+        /// </summary>
+        public DynamoLogger Logger
+        {
+            get { return dynamoViewModel.Model.Logger; }
+        }
+
+        /// <summary>
         /// A reference to the Dynamo Window object. Useful for correctly setting the parent of a 
         /// newly created window.
         /// </summary>
@@ -90,7 +99,7 @@ namespace Dynamo.Wpf.Extensions
         /// <param name="viewExtension">Instance of the view extension object that is being added to the extensions side bar.</param>
         /// <param name="contentControl">Control UI element with a single piece of content of any type.</param>
         /// <returns></returns>
-        internal void AddToExtensionsSideBar(IViewExtension viewExtension, ContentControl contentControl)
+        public void AddToExtensionsSideBar(IViewExtension viewExtension, ContentControl contentControl)
         {
             TabItem tabItem  = dynamoView.AddTabItem(viewExtension, contentControl);
 
@@ -149,8 +158,8 @@ namespace Dynamo.Wpf.Extensions
         }
 
         /// <summary>
-        /// Searchs for dynamo parent menu item. Parent item can be:
-        /// file menu, edit menu, view menu and help mebu bars.
+        /// Searches for dynamo parent menu item. Parent item can be:
+        /// file menu, edit menu, view menu and help menu bars.
         /// </summary>
         /// <param name="menuBarType">File, Edit, View or Help.</param>
         private MenuItem SearchForMenuItem(MenuBarType type)
