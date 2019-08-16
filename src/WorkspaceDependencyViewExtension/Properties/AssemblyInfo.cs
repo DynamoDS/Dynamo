@@ -9,3 +9,6 @@ using System.Runtime.InteropServices;
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
 [assembly: Guid("5e76aab3-6302-473e-9655-081b53fb1419")]
+
+// Visible to DynamoCoreWpfTests dll for unit testing
+[assembly: InternalsVisibleTo("DynamoCoreWpfTests")]

@@ -12,7 +12,7 @@ namespace Dynamo.Graph.Workspaces
         IncorrectVersion,  // Correct package but incorrect version. 
         Missing,           // package is completely missing.
         Warning,           // Actual package is missing but the nodes are resolved by some other package. 
-        RequiresRestart    // Restart needed inorder to complete the uninstall of some package. 
+        RequiresRestart    // Restart needed in order to complete the uninstall of some package. 
     }
 
     /// <summary>
@@ -44,7 +44,7 @@ namespace Dynamo.Graph.Workspaces
         /// <summary>
         /// Version of the package
         /// </summary>
-        public Version Version { get; private set; }
+        public Version Version { get; internal set; }
 
         /// <summary>
         /// Create a package info object from the package name and version
@@ -175,7 +175,18 @@ namespace Dynamo.Graph.Workspaces
         /// <summary>
         /// Version of the package
         /// </summary>
-        public Version Version => PackageInfo.Version;
+        public Version Version
+        {
+            get
+            {
+                return PackageInfo.Version;
+            }
+            internal set
+            {
+                if(PackageInfo.Version != value)
+                    PackageInfo.Version = value;
+            }
+        }
 
         /// <summary>
         /// Indicates whether this package is loaded in the current session
