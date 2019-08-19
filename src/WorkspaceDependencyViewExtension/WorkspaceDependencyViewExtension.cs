@@ -1,12 +1,12 @@
-﻿using Dynamo.Extensions;
+﻿using System;
+using System.Linq;
+using System.Windows.Controls;
+using Dynamo.Extensions;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Logging;
 using Dynamo.PackageManager;
 using Dynamo.WorkspaceDependency.Properties;
 using Dynamo.Wpf.Extensions;
-using System;
-using System.Linq;
-using System.Windows.Controls;
 
 namespace Dynamo.WorkspaceDependency
 {
@@ -86,6 +86,7 @@ namespace Dynamo.WorkspaceDependency
             DependencyView = new WorkspaceDependencyView(this, viewLoadedParams);
             // when a package is loaded update the DependencyView 
             // as we may have installed a missing package.
+
             pmExtension.PackageLoader.PackgeLoaded += (package) =>
             {
                 DependencyView.DependencyRegen(viewLoadedParams.CurrentWorkspaceModel as WorkspaceModel);
