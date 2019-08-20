@@ -6,29 +6,45 @@ namespace Dynamo.Graph.Workspaces
     /// <summary>
     /// Enum containing the different types of package dependency states.
     /// </summary>
-    internal enum PackageDependencyState
+    public enum PackageDependencyState
     {
         Loaded,            // Correct package and version loaded.
         IncorrectVersion,  // Correct package but incorrect version. 
         Missing,           // package is completely missing.
         Warning,           // Actual package is missing but the nodes are resolved by some other package. 
-        RequiresRestart    // Restart needed inorder to complete the uninstall of some package. 
+        RequiresRestart    // Restart needed in order to complete the uninstall of some package. 
+    }
+
+    /// <summary>
+    /// Interface for types containing info about a package
+    /// </summary>
+    public interface IPackageInfo
+    {
+        /// <summary>
+        /// Name of the package
+        /// </summary>
+        string Name { get; }
+
+        /// <summary>
+        /// Version of the package
+        /// </summary>
+        Version Version { get; }
     }
 
     /// <summary>
     /// Class containing info about a package
     /// </summary>
-    public class PackageInfo
+    public class PackageInfo : IPackageInfo
     {
         /// <summary>
         /// Name of the package
         /// </summary>
-        internal string Name { get; set; }
+        public string Name { get; private set; }
 
         /// <summary>
         /// Version of the package
         /// </summary>
-        internal Version Version { get; set; }
+        public Version Version { get; internal set; }
 
         /// <summary>
         /// Create a package info object from the package name and version
@@ -133,12 +149,17 @@ namespace Dynamo.Graph.Workspaces
         /// </summary>
         [Obsolete("This property is obsolete", false)]
         bool IsLoaded { get; set; }
+
+        /// <summary>
+        /// The state of this dependency
+        /// </summary>
+        PackageDependencyState State { get; }
     }
 
     /// <summary>
     /// Class containing info about a workspace package dependency
     /// </summary>
-    internal class PackageDependencyInfo : INodeLibraryDependencyInfo
+    internal class PackageDependencyInfo : INodeLibraryDependencyInfo, IPackageInfo
     {
         private PackageDependencyState _state;
         /// <summary>
@@ -154,7 +175,18 @@ namespace Dynamo.Graph.Workspaces
         /// <summary>
         /// Version of the package
         /// </summary>
-        public Version Version => PackageInfo.Version;
+        public Version Version
+        {
+            get
+            {
+                return PackageInfo.Version;
+            }
+            internal set
+            {
+                if(PackageInfo.Version != value)
+                    PackageInfo.Version = value;
+            }
+        }
 
         /// <summary>
         /// Indicates whether this package is loaded in the current session

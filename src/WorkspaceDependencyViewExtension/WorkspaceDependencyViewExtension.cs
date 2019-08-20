@@ -1,8 +1,12 @@
-﻿using Dynamo.Extensions;
+﻿using System;
+using System.Linq;
+using System.Windows.Controls;
+using Dynamo.Extensions;
 using Dynamo.Graph.Workspaces;
+using Dynamo.Logging;
+using Dynamo.PackageManager;
 using Dynamo.WorkspaceDependency.Properties;
 using Dynamo.Wpf.Extensions;
-using System.Windows.Controls;
 
 namespace Dynamo.WorkspaceDependency
 {
@@ -11,8 +15,19 @@ namespace Dynamo.WorkspaceDependency
     /// which tracks graph dependencies (currently only packages) on the Dynamo right panel.
     /// It reacts to workspace modified/ cleared events to refresh.
     /// </summary>
-    public class WorkspaceDependencyViewExtension : IViewExtension
+    public class WorkspaceDependencyViewExtension : IViewExtension, ILogSource
     {
+        private MenuItem packageDependencyMenuItem;
+        private ViewLoadedParams LoadedParams;
+
+        internal WorkspaceDependencyView DependencyView
+        {
+            get;
+            set;
+        }
+
+        internal PackageManagerExtension pmExtension;
+
         /// <summary>
         /// Extension Name
         /// </summary>
@@ -35,45 +50,47 @@ namespace Dynamo.WorkspaceDependency
             }
         }
 
-        private WorkspaceDependencyView DependencyView
-        {
-            get;
-            set;
-        }
-
-        private ReadyParams ReadyParams;
-
         /// <summary>
         /// Dispose function after extension is closed
         /// </summary>
         public void Dispose()
         {
-
         }
 
-       
+
+        [Obsolete("This method is not implemented and will be removed.")]
         public void Ready(ReadyParams readyParams)
         {
-            ReadyParams = readyParams;
         }
 
         public void Shutdown()
         {
-            ReadyParams.CurrentWorkspaceChanged -= DependencyView.OnWorkspaceChanged;
-            ReadyParams.CurrentWorkspaceCleared -= DependencyView.OnWorkspaceCleared;
+            LoadedParams.CurrentWorkspaceChanged -= DependencyView.OnWorkspaceChanged;
+            LoadedParams.CurrentWorkspaceCleared -= DependencyView.OnWorkspaceCleared;
             this.Dispose();
         }
 
         public void Startup(ViewStartupParams viewLoadedParams)
         {
-
+            pmExtension = viewLoadedParams.ExtensionManager.Extensions.OfType<PackageManagerExtension>().FirstOrDefault();
         }
 
-        private MenuItem packageDependencyMenuItem;
+        public event Action<ILogMessage> MessageLogged;
+        internal void OnMessageLogged(ILogMessage msg)
+        {
+            this.MessageLogged?.Invoke(msg);
+        }
 
         public void Loaded(ViewLoadedParams viewLoadedParams)
         {
             DependencyView = new WorkspaceDependencyView(this, viewLoadedParams);
+            // when a package is loaded update the DependencyView 
+            // as we may have installed a missing package.
+
+            pmExtension.PackageLoader.PackgeLoaded += (package) =>
+            {
+                DependencyView.DependencyRegen(viewLoadedParams.CurrentWorkspaceModel as WorkspaceModel);
+            };
 
             // Adding a button in view menu to refresh and show manually
             packageDependencyMenuItem = new MenuItem { Header = Resources.MenuItemString };
@@ -85,5 +102,6 @@ namespace Dynamo.WorkspaceDependency
             };
             viewLoadedParams.AddMenuItem(MenuBarType.View, packageDependencyMenuItem);
         }
+
     }
 }

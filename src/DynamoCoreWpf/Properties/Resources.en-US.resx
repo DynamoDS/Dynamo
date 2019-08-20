@@ -2207,14 +2207,8 @@ Restart Dynamo to complete the uninstall.
 
 Uninstall the following packages: {0}?</value>
   </data>
-  <data name="ProvideFeedbackButton" xml:space="preserve">
-    <value> Provide Feedback</value>
-  </data>
   <data name="PreviewText" xml:space="preserve">
     <value> This Feature is in Preview! </value>
-  </data>
-  <data name="ProvideFeedbackError" xml:space="preserve">
-    <value>Could not re-direct to the Dynamo forum page for feedback:</value>
   </data>
   <data name="PackageHostDependencyTooltip" xml:space="preserve">
     <value>This package contains node(s) that depend on applications outside Dynamo. To fully utilize node(s) in this package, you will need to have these external applications installed.</value>
@@ -2227,6 +2221,12 @@ Uninstall the following packages: {0}?</value>
   </data>
   <data name="MessageUninstallSamePackage" xml:space="preserve">
     <value>"The package {0} is already installed. To reinstall it, you must first uninstall it and restart to complete the uninstall. Would you like to mark {0} for uninstall?"</value>
+  </data>
+  <data name="MessagePackageNotFound" xml:space="preserve">
+    <value>{0} was not found and could not be downloaded.</value>
+  </data>
+  <data name="MessagePackageVersionNotFound" xml:space="preserve">
+    <value>Version {0} of {1} could not be found.</value>
   </data>
   <data name="PublishPackageViewPackageHostDependency" xml:space="preserve">
     <value>External Dependency (optional)</value>
