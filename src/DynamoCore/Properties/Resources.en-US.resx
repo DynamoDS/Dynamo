@@ -700,4 +700,13 @@ The input name should be a valid variable name, without spaces. An input type an
   <data name="PythonTemplateUserFile" xml:space="preserve">
     <value>Python template loaded from DynamoSettings.xml path</value>
   </data>
+  <data name="MessageCustomNodePackageFailedToLoad" xml:space="preserve">
+    <value>{1} cannot be loaded. 
+Installing it will conflict with one or more node definitions that already exist in {0}, which is currently loaded. 
+To install {1}, Dynamo needs to first uninstall {0}. 
+Restart Dynamo to complete the uninstall.</value>
+  </data>
+  <data name="FunctionDefinitionOverwrittenMessage" xml:space="preserve">
+    <value>Attempting to load customNode {0} loaded by package {1}, but a previous definition named {2} exists with no associated package. The new customNode definition has been loaded, but Dynamo may be in an unstable state, please avoid loading multiple custom nodes with the id.</value>
+  </data>
 </root>

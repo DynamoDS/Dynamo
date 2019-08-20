@@ -17,7 +17,8 @@ namespace Dynamo.PackageManager
         #region Fields & Properties
 
         private Action<Assembly> RequestLoadNodeLibraryHandler;
-        private event Func<string, IEnumerable<CustomNodeInfo>> RequestLoadCustomNodeDirectoryHandler;
+        //TODO should we add a new handler specifically for packages? this is the package manager afterall so maybe not.
+        private event Func<string, PackageInfo, IEnumerable<CustomNodeInfo>> RequestLoadCustomNodeDirectoryHandler;
         private Action<IEnumerable<Assembly>> LoadPackagesHandler;
        
         public event Func<string, IExtension> RequestLoadExtension;
@@ -28,18 +29,19 @@ namespace Dynamo.PackageManager
         private IWorkspaceModel currentWorkspace;
 
         private ReadyParams ReadyParams;
+        private Core.CustomNodeManager customNodeManager;
 
         /// <summary>
         /// Dictionary mapping a custom node functionID to the package that contains it.
         /// Used for package dependency serialization.
         /// </summary>
-        private Dictionary<Guid, List<PackageDependencyInfo>> CustomNodePackageDictionary;
+        private Dictionary<Guid, List<PackageInfo>> CustomNodePackageDictionary;
 
         /// <summary>
         /// Dictionary mapping the AssemblyName.FullName of an assembly to the package that contains it.
         /// Used for package dependency serialization.
         /// </summary>
-        private Dictionary<string, List<PackageDependencyInfo>> NodePackageDictionary;
+        private Dictionary<string, List<PackageInfo>> NodePackageDictionary;
 
         public string Name { get { return "DynamoPackageManager"; } }
 
@@ -100,6 +102,10 @@ namespace Dynamo.PackageManager
                 (currentWorkspace as WorkspaceModel).CollectingCustomNodePackageDependencies -= GetCustomNodePackageFromID;
                 (currentWorkspace as WorkspaceModel).CollectingNodePackageDependencies -= GetNodePackageFromAssemblyName;
             }
+            if (customNodeManager != null)
+            {
+                customNodeManager.RequestCustomNodeOwner -= handleCustomNodeOwnerQuery;
+            }
             ReadyParams.CurrentWorkspaceChanged -= OnCurrentWorkspaceChanged;
         }
 
@@ -131,8 +137,14 @@ namespace Dynamo.PackageManager
             RequestLoadNodeLibraryHandler = startupParams.LibraryLoader.LoadNodeLibrary;
             //TODO: Add LoadPackages to ILibraryLoader interface in 3.0
             LoadPackagesHandler = (startupParams.LibraryLoader as ExtensionLibraryLoader).LoadPackages;
-            RequestLoadCustomNodeDirectoryHandler = (dir) => startupParams.CustomNodeManager
-                    .AddUninitializedCustomNodesInPath(dir, DynamoModel.IsTestMode, true);
+            customNodeManager = (startupParams.CustomNodeManager as Core.CustomNodeManager);
+
+            //TODO - in 3.0 we can add the other overload of AddUninitializedCustomNodesInPath to the ICustomNodeManager interface.
+            RequestLoadCustomNodeDirectoryHandler = (dir,pkgInfo) => customNodeManager
+                    .AddUninitializedCustomNodesInPath(dir, DynamoModel.IsTestMode, pkgInfo);
+
+            //when the customNodeManager requests to know the owner of a customNode handle this query.
+            customNodeManager.RequestCustomNodeOwner += handleCustomNodeOwnerQuery;
 
             //raise the public events on this extension when the package loader requests.
             PackageLoader.RequestLoadExtension += RequestLoadExtension;
@@ -153,6 +165,11 @@ namespace Dynamo.PackageManager
                 uploadBuilder, PackageLoader.DefaultPackagesDirectory);
 
             LoadPackages(startupParams.Preferences, startupParams.PathManager);
+        }
+
+        private PackageInfo handleCustomNodeOwnerQuery(Guid customNodeFunctionID)
+        {
+            return GetCustomNodePackageFromID(customNodeFunctionID);
         }
 
         public void Ready(ReadyParams sp)
@@ -209,25 +226,20 @@ namespace Dynamo.PackageManager
             }
         }
         
-        private PackageDependencyInfo GetNodePackageFromAssemblyName(AssemblyName assemblyName)
+        private PackageInfo GetNodePackageFromAssemblyName(AssemblyName assemblyName)
         {
             if (NodePackageDictionary != null && NodePackageDictionary.ContainsKey(assemblyName.FullName))
             {
-                var p = NodePackageDictionary[assemblyName.FullName].FirstOrDefault();
-                // Return a copy of the PackageDependencyInfo so that a workspace doesn't modify it
-                // TODO Split PackageDependencyInfo into two types
-                return new PackageDependencyInfo(p.Name, p.Version);
+                return NodePackageDictionary[assemblyName.FullName].Last();
             }
             return null;
         }
 
-        private PackageDependencyInfo GetCustomNodePackageFromID(Guid functionID)
+        private PackageInfo GetCustomNodePackageFromID(Guid functionID)
         {
             if (CustomNodePackageDictionary != null && CustomNodePackageDictionary.ContainsKey(functionID))
             {
-                var p = CustomNodePackageDictionary[functionID].FirstOrDefault();
-                // Return a copy of the PackageDependencyInfo so that a workspace doesn't modify it
-                return new PackageDependencyInfo(p.Name, p.Version);
+                return CustomNodePackageDictionary[functionID].Last();
             }
             return null;
         }
@@ -237,7 +249,7 @@ namespace Dynamo.PackageManager
             // Create NodePackageDictionary if it doesn't exist
             if (NodePackageDictionary == null)
             {
-                NodePackageDictionary = new Dictionary<string, List<PackageDependencyInfo>>();
+                NodePackageDictionary = new Dictionary<string, List<PackageInfo>>();
             }
             // Add new assemblies to NodePackageDictionary
             var nodeLibraries = package.LoadedAssemblies.Where(a => a.IsNodeLibrary);
@@ -253,15 +265,15 @@ namespace Dynamo.PackageManager
                 }
                 else
                 {
-                    NodePackageDictionary[assembly.FullName] = new List<PackageDependencyInfo>();
+                    NodePackageDictionary[assembly.FullName] = new List<PackageInfo>();
                 }
-                NodePackageDictionary[assembly.FullName].Add(new PackageDependencyInfo(package.Name, new Version(package.VersionName)));
+                NodePackageDictionary[assembly.FullName].Add(new PackageInfo(package.Name, new Version(package.VersionName)));
             }
 
             // Create CustomNodePackageDictionary if it doesn't exist
             if (CustomNodePackageDictionary == null)
             {
-                CustomNodePackageDictionary = new Dictionary<Guid, List<PackageDependencyInfo>>();
+                CustomNodePackageDictionary = new Dictionary<Guid, List<PackageInfo>>();
             }
             // Add new custom nodes to CustomNodePackageDictionary
             foreach (var cn in package.LoadedCustomNodes)
@@ -276,15 +288,15 @@ namespace Dynamo.PackageManager
                 }
                 else
                 {
-                    CustomNodePackageDictionary[cn.FunctionId] = new List<PackageDependencyInfo>();
+                    CustomNodePackageDictionary[cn.FunctionId] = new List<PackageInfo>();
                 }
-                CustomNodePackageDictionary[cn.FunctionId].Add(new PackageDependencyInfo(package.Name, new Version(package.VersionName)));
+                CustomNodePackageDictionary[cn.FunctionId].Add(new PackageInfo(package.Name, new Version(package.VersionName)));
             }
         }
 
         private void OnPackageRemoved(Package package)
         {
-            var pInfo = new PackageDependencyInfo(package.Name, new Version(package.VersionName));
+            var pInfo = new PackageInfo(package.Name, new Version(package.VersionName));
 
             // Remove package references from NodePackageDictionary
             var nodeLibraries = package.LoadedAssemblies.Where(a => a.IsNodeLibrary);

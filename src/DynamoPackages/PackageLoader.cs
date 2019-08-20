@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using Dynamo.Core;
-using Dynamo.Engine;
 using Dynamo.Exceptions;
 using Dynamo.Extensions;
 using Dynamo.Interfaces;
@@ -32,7 +31,7 @@ namespace Dynamo.PackageManager
     {
         internal event Action<Assembly> RequestLoadNodeLibrary;
         internal event Action<IEnumerable<Assembly>> PackagesLoaded;
-        internal event Func<string, IEnumerable<CustomNodeInfo>> RequestLoadCustomNodeDirectory;
+        internal event Func<string, Graph.Workspaces.PackageInfo, IEnumerable<CustomNodeInfo>> RequestLoadCustomNodeDirectory;
         internal event Func<string, IExtension> RequestLoadExtension;
         internal event Action<IExtension> RequestAddExtension;
 
@@ -146,11 +145,11 @@ namespace Dynamo.PackageManager
             PackagesLoaded?.Invoke(assemblies);
         }
 
-        private IEnumerable<CustomNodeInfo> OnRequestLoadCustomNodeDirectory(string directory)
+        private IEnumerable<CustomNodeInfo> OnRequestLoadCustomNodeDirectory(string directory, Graph.Workspaces.PackageInfo packageInfo)
         {
             if (RequestLoadCustomNodeDirectory != null)
             {
-                return RequestLoadCustomNodeDirectory(directory);
+                return RequestLoadCustomNodeDirectory(directory,packageInfo);
             }
 
             return new List<CustomNodeInfo>();
@@ -185,9 +184,9 @@ namespace Dynamo.PackageManager
                         }
                     }
                 }
-
                 // load custom nodes
-                var customNodes = OnRequestLoadCustomNodeDirectory(package.CustomNodeDirectory);
+                var packageInfo = new Graph.Workspaces.PackageInfo(package.Name, new Version(package.VersionName));
+                var customNodes = OnRequestLoadCustomNodeDirectory(package.CustomNodeDirectory,packageInfo);
                 package.LoadedCustomNodes.AddRange(customNodes);
 
                 package.EnumerateAdditionalFiles();
@@ -207,11 +206,28 @@ namespace Dynamo.PackageManager
                 package.Loaded = true;
                 this.PackgeLoaded?.Invoke(package);
             }
+            catch (CustomNodePackageLoadException e)
+            {
+                Package originalPackage =
+                    localPackages.FirstOrDefault(x => x.CustomNodeDirectory == e.InstalledPath);
+                OnConflictingPackageLoaded(originalPackage, package);
+            }
             catch (Exception e)
             {
                 Log("Exception when attempting to load package " + package.Name + " from " + package.RootDirectory);
                 Log(e.GetType() + ": " + e.Message);
             }
+        }
+
+        /// <summary>
+        /// Event raised when a custom node package containing conflicting node definition
+        /// with an existing package is tried to load.
+        /// </summary>
+        public event Action<Package, Package> ConflictingCustomNodePackageLoaded;
+        private void OnConflictingPackageLoaded(Package installed, Package conflicting)
+        {
+            var handler = ConflictingCustomNodePackageLoaded;
+            handler?.Invoke(installed, conflicting);
         }
 
         /// <summary>

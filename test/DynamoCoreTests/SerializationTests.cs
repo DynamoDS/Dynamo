@@ -617,6 +617,20 @@ namespace Dynamo.Tests
                 serializationTestUtils.SaveWorkspaceComparisonData);
         }
 
+        [Test]
+        public void NodeDescriptionDeserilizationTest()
+        {
+            // This test is in reference to this task: https://jira.autodesk.com/browse/DYN-2002
+            // The description of the node in the below graph has been updated to a different value. 
+            // We continue to serilize the description property to the json file but we do not want to
+            // read this value back while deserializing. This test will make sure that the description is
+            // not read from the json file and it gets the value from the node's config.
+            var testFile = Path.Combine(TestDirectory, @"core\serialization\NodeDescriptionDeserilizationTest.dyn");
+            OpenModel(testFile);
+            var node = this.CurrentDynamoModel.CurrentWorkspace.Nodes.First();
+            Assert.AreEqual(node.Description, "Makes a new list out of the given inputs");
+        }
+
         [Test, Category("JsonTestExclude")]
         public void FunctionNodeLoadsWhenSignatureChanges()
         {
@@ -734,7 +748,8 @@ namespace Dynamo.Tests
                 "packageTest",
                 "reduce-example",
                 "TestFrozen",
-                "TestImperativeInCBN"
+                "TestImperativeInCBN",
+                "CustomNodeContainedInMultiplePackages"
             };
 
         private void DoWorkspaceOpenAndCompare(string filePath, string dirName,

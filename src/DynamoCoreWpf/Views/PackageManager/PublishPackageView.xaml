@@ -14,27 +14,27 @@
         ResizeMode="CanResizeWithGrip" 
         Name="PublishInfoControl" 
         Visibility="Visible">
-    
+
     <Window.Resources>
         <ResourceDictionary>
             <controls:BoolToVisibilityCollapsedConverter x:Key="BooleanToVisibilityCollapsedConverter" />
             <ResourceDictionary.MergedDictionaries>
-                
+
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}"/>
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoColorsAndBrushesDictionaryUri}" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Window.Resources>
-    
+
     <Grid Background="Black">
 
-      <Grid.ColumnDefinitions>
-          <ColumnDefinition Width="*"></ColumnDefinition>
-          <ColumnDefinition Width="275"></ColumnDefinition>
-      </Grid.ColumnDefinitions>
-      
-      <Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+            <ColumnDefinition Width="275"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+
+        <Grid.RowDefinitions>
             <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
             <RowDefinition Height="50"></RowDefinition>
@@ -43,7 +43,7 @@
 
         <Border Grid.Column="0" Grid.Row="1">
 
-        <ScrollViewer Name="PackagePropertiesContainer" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Hidden" Background="#3c3c3c">
+            <ScrollViewer Name="PackagePropertiesContainer" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Hidden" Background="#3c3c3c">
 
                 <Border Width="{Binding Path=ActualWidth,RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Border}}}" >
                     <StackPanel Name="FieldArrangement" Orientation="Vertical" Margin="10">
@@ -70,7 +70,7 @@
                             </Label.ToolTip>
                         </Label>
                         <Grid>
-                            
+
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="*"></RowDefinition>
                             </Grid.RowDefinitions>
@@ -81,7 +81,7 @@
                                 <ColumnDefinition Width="60"></ColumnDefinition>
                                 <ColumnDefinition Width="*"></ColumnDefinition>
                             </Grid.ColumnDefinitions>
-                            
+
                             <TextBox Grid.Column="0" Style="{DynamicResource ResourceKey=SDarkTextBox}" Name="VersionMajor" Width ="60" Margin="0,5,5,5" Padding="5" HorizontalAlignment="Left" Text="{Binding Path=MajorVersion, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                             <TextBox Grid.Column="1" Style="{DynamicResource ResourceKey=SDarkTextBox}" Name="VersionMinor" Width ="60" Margin="5" Padding="5" HorizontalAlignment="Left" Text="{Binding Path=MinorVersion, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                             <TextBox Grid.Column="2" Style="{DynamicResource ResourceKey=SDarkTextBox}" Name="VersionBuild" Width ="60" Margin="5" Padding="5" HorizontalAlignment="Left" Text="{Binding Path=BuildVersion, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
@@ -89,13 +89,84 @@
 
                         </Grid>
 
-                        <Label Content="{x:Static p:Resources.PublishPackageViewPackageGroup}" Foreground="DarkGray" Height="28"  HorizontalAlignment="Left" Name="GroupLabel" VerticalAlignment="Top">
-                            <Label.ToolTip>
-                                <TextBlock Text="{x:Static p:Resources.PublishPackageViewPackageGroupTooltip}"/>
-                            </Label.ToolTip>
-                        </Label>
                         <StackPanel Orientation="Horizontal">
-                            <TextBox Style="{DynamicResource ResourceKey=SDarkTextBox}" Name="GroupInput" Width ="200" Padding="5" TextWrapping="Wrap" Text="{Binding Path=Group, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                            <StackPanel Orientation="Vertical">
+                                <Label Content="{x:Static p:Resources.PublishPackageViewPackageGroup}" Foreground="DarkGray" Height="28"  HorizontalAlignment="Left" Name="GroupLabel" VerticalAlignment="Top">
+                                    <Label.ToolTip>
+                                        <TextBlock Text="{x:Static p:Resources.PublishPackageViewPackageGroupTooltip}"/>
+                                    </Label.ToolTip>
+                                </Label>
+                                <TextBox Style="{DynamicResource ResourceKey=SDarkTextBox}" Name="GroupInput" Width ="200" Padding="5" TextWrapping="Wrap" Text="{Binding Path=Group, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                            </StackPanel>
+
+                            <StackPanel Orientation="Vertical" Margin="10,0,0,0" Name="HostDependency">
+                                <Label Content="{x:Static p:Resources.PublishPackageViewPackageHostDependency}" Foreground="DarkGray" Height="28" Name="HostLabel" HorizontalAlignment="Left" VerticalAlignment="Top">
+                                    <Label.ToolTip>
+                                        <TextBlock Text="{x:Static p:Resources.PublishPackageViewPackageHostDependencyTooltip}" TextWrapping="Wrap" MaxWidth="600"/>
+                                    </Label.ToolTip>
+                                </Label>
+                                <!--Notice here we are reusing part of the defined Dynamo ComboBox style-->
+                                <ComboBox Style="{DynamicResource ResourceKey=SComboBox}" ItemsSource="{Binding KnownHosts}" Foreground="{StaticResource DynamoStandardLableTextBrush}" Name="HostDependencyBox" 
+                                          Margin="0" Width="170" IsEditable="False" TabIndex="1" OverridesDefaultStyle="True" MinHeight="36">
+                                    <ComboBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <StackPanel Orientation="Horizontal">
+                                                <CheckBox Name="HostEntry" 
+                                                          Content="{Binding HostName}"
+                                                          IsChecked="{Binding IsSelected, Mode=TwoWay}"
+                                                          Checked="HostEntry_CheckStateChanged"
+                                                          Unchecked="HostEntry_CheckStateChanged"
+                                                          Tag="{RelativeSource FindAncestor, AncestorType={x:Type ComboBox}}"/>
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </ComboBox.ItemTemplate>
+                                    <ComboBox.Template>
+                                        <ControlTemplate TargetType="ComboBox">
+                                            <Grid>
+                                                <ToggleButton Name="ToggleButton"
+                                                              Template="{StaticResource ComboBoxToggleButton}"
+                                                              Grid.Column="2"
+                                                              Focusable="false"
+                                                              IsChecked="{Binding Path=IsDropDownOpen,Mode=TwoWay,RelativeSource={RelativeSource TemplatedParent}}"
+                                                              ClickMode="Press">        
+                                                </ToggleButton>
+                                                <ContentPresenter Name="ContentSite"
+                                                                  IsHitTestVisible="False"
+                                                                  Content="{Binding Path=SelectedHostsString, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                                                                  Margin="3,3,23,3"
+                                                                  VerticalAlignment="Center"
+                                                                  HorizontalAlignment="Left" />
+                                                <Popup Name="Popup"
+                                                       Placement="Bottom"
+                                                       Focusable="False"
+                                                       IsOpen="{TemplateBinding IsDropDownOpen}"
+                                                       PopupAnimation="Slide"
+                                                       MinWidth="{TemplateBinding ActualWidth}"
+                                                       MaxHeight="{TemplateBinding MaxDropDownHeight}">
+                                                    <Grid Name="DropDown"
+                                                          SnapsToDevicePixels="True">
+                                                        <Border Name="DropDownBorder"
+                                                                Background="#2c2c2c"
+                                                                BorderThickness="1,0,1,1"
+                                                                BorderBrush="#444444" />
+                                                        <ScrollViewer Margin="4,6,4,6" SnapsToDevicePixels="True" DataContext="{Binding}">
+                                                            <StackPanel IsItemsHost="True" KeyboardNavigation.DirectionalNavigation="Contained" />
+                                                        </ScrollViewer>
+                                                    </Grid>
+                                                </Popup>
+                                            </Grid>
+                                            <ControlTemplate.Triggers>
+                                                <Trigger Property="HasItems"
+                                                         Value="false">
+                                                    <Setter TargetName="DropDownBorder"
+                                                            Property="MinHeight"
+                                                            Value="95" />
+                                                </Trigger>
+                                            </ControlTemplate.Triggers>
+                                        </ControlTemplate>
+                                    </ComboBox.Template>
+                                </ComboBox>
+                            </StackPanel>
                         </StackPanel>
 
                         <Label Content="{x:Static p:Resources.PublishPackageViewPackageKeywords}" Height="28" Foreground="DarkGray" HorizontalAlignment="Left"  VerticalAlignment="Top" >
@@ -108,9 +179,9 @@
                         <StackPanel Orientation="Horizontal" FlowDirection="RightToLeft">
                             <Button Style="{DynamicResource ResourceKey=SBadgeButton}" Margin="0, 10" Command="{Binding Path=ToggleMoreCommand}" Width="80" Content="{x:Static p:Resources.MoreButton}" />
                         </StackPanel>
-                          
+
                         <StackPanel Name="OptionalFields" Visibility="{Binding Path=MoreExpanded, Converter={StaticResource ResourceKey=BooleanToVisibilityCollapsedConverter}}">
-      
+
                             <Label Content="{x:Static p:Resources.PublishPackageViewPublisherWebiSite}" Height="28" Foreground="DarkGray" HorizontalAlignment="Left"  VerticalAlignment="Top" >
                             </Label>
                             <TextBox Style="{DynamicResource ResourceKey=SDarkTextBox}" Name="SiteUrlInput" Padding="5" Text="{Binding Path=SiteUrl, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
@@ -127,7 +198,7 @@
 
 
                     </StackPanel>
-                    
+
                 </Border>
             </ScrollViewer>
 
@@ -179,7 +250,7 @@
                             Margin="5"
                             Content="{x:Static p:Resources.PublishPackageViewAddFileButton}"/>
                 </DockPanel>
-                
+
                 <ScrollViewer Grid.Row="1" Margin="0" VerticalScrollBarVisibility="Visible" Name="BrowserScrollView" Background="#222" BorderThickness="0">
 
                     <ScrollViewer.Resources>
@@ -316,7 +387,7 @@
                                 <StackPanel Orientation="Horizontal">
                                     <Image Name="Icon" Width="32" Height="32" />
                                     <TextBlock Name="DepName" Padding="7" FontSize="13" Foreground="WhiteSmoke" Text="{Binding Path=Name}"/>
-                                    
+
                                     <StackPanel.ContextMenu>
 
                                         <ContextMenu Name="DepContextMenu">
@@ -324,7 +395,7 @@
                                         </ContextMenu>
 
                                     </StackPanel.ContextMenu>
-                                    
+
                                 </StackPanel>
 
                                 <DataTemplate.Triggers>
@@ -365,9 +436,9 @@
                                         <Setter Property="FontWeight" TargetName="DepName" Value="Bold"/>
                                     </DataTrigger>
                                 </DataTemplate.Triggers>
-                                
+
                             </DataTemplate>
-                            
+
                             <HierarchicalDataTemplate DataType = "{x:Type packagemanager:PackageItemRootViewModel}" ItemsSource="{Binding Path=Items}">
                                 <ContentControl Content="{Binding}" ContentTemplate="{StaticResource sharedTemplate}" />
                             </HierarchicalDataTemplate>
@@ -377,7 +448,7 @@
                             </HierarchicalDataTemplate>
 
                             <HierarchicalDataTemplate DataType="{x:Type packagemanager:PackageItemLeafViewModel}">
-                                <ContentControl Content="{Binding}" ContentTemplate="{StaticResource sharedTemplate}" />                         
+                                <ContentControl Content="{Binding}" ContentTemplate="{StaticResource sharedTemplate}" />
                             </HierarchicalDataTemplate>
 
                         </TreeView.Resources>
@@ -435,7 +506,7 @@
                            Visibility="{Binding Path=HasNoDependencies, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"
                            Text="{x:Static p:Resources.PackageUploadNoDependency}">
                 </TextBlock>
-                
+
             </Grid>
 
         </Grid>
@@ -455,5 +526,5 @@
 
     </Grid>
 
-    
+
 </Window>

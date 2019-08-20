@@ -33,10 +33,12 @@ namespace Dynamo.Engine.Profiling
             if (!startTime.HasValue)
             {
                 startTime = DateTime.Now;
+                node.OnNodeExecutionBegin();
                 return;
             }
 
             endTime = DateTime.Now;
+            node.OnNodeExecutionEnd();
         }
 
         internal TimeSpan? ExecutionTime

@@ -225,7 +225,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoWPFCLI", "DynamoWPFCL
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Extensions", "Extensions", "{88D45B00-E564-41DB-B57C-9509646CAA49}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PackageDependencyViewExtension", "PackageDependencyViewExtension\PackageDependencyViewExtension.csproj", "{5E76AAB3-6302-473E-9655-081B53FB1419}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WorkspaceDependencyViewExtension", "WorkspaceDependencyViewExtension\WorkspaceDependencyViewExtension.csproj", "{5E76AAB3-6302-473E-9655-081B53FB1419}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

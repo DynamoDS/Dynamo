@@ -3254,6 +3254,24 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {0} was not found and could not be downloaded..
+        /// </summary>
+        public static string MessagePackageNotFound {
+            get {
+                return ResourceManager.GetString("MessagePackageNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Version {0} of {1} could not be found..
+        /// </summary>
+        public static string MessagePackageVersionNotFound {
+            get {
+                return ResourceManager.GetString("MessagePackageVersionNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to You must select at least one custom node..
         /// </summary>
         public static string MessageSelectAtLeastOneNode {
@@ -3301,6 +3319,29 @@ namespace Dynamo.Wpf.Properties {
         public static string MessageToUndeprecatePackage {
             get {
                 return ResourceManager.GetString("MessageToUndeprecatePackage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {1} cannot be loaded.
+        ///Installing it will conflict with one or more node definitions that already exist in {0}, which is currently loaded. 
+        ///To install {1}, Dynamo needs to first uninstall {0}. 
+        ///Restart Dynamo to complete the uninstall.
+        ///
+        ///Uninstall the following packages: {0}?.
+        /// </summary>
+        public static string MessageUninstallCustomNodeToContinue {
+            get {
+                return ResourceManager.GetString("MessageUninstallCustomNodeToContinue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &quot;The package {0} is already installed. To reinstall it, you must first uninstall it and restart to complete the uninstall. Would you like to mark {0} for uninstall?&quot;.
+        /// </summary>
+        public static string MessageUninstallSamePackage {
+            get {
+                return ResourceManager.GetString("MessageUninstallSamePackage", resourceCulture);
             }
         }
         
@@ -3684,6 +3725,33 @@ namespace Dynamo.Wpf.Properties {
         public static string PackageFolderNotAccessible {
             get {
                 return ResourceManager.GetString("PackageFolderNotAccessible", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Filter packages that depend on applications outside Dynamo..
+        /// </summary>
+        public static string PackageHostDependencyFilter {
+            get {
+                return ResourceManager.GetString("PackageHostDependencyFilter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Packages contain node(s)  that depend on specified application outside Dynamo..
+        /// </summary>
+        public static string PackageHostDependencyFilterContextItem {
+            get {
+                return ResourceManager.GetString("PackageHostDependencyFilterContextItem", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This package contains node(s) that depend on applications outside Dynamo. To fully utilize node(s) in this package, you will need to have these external applications installed..
+        /// </summary>
+        public static string PackageHostDependencyTooltip {
+            get {
+                return ResourceManager.GetString("PackageHostDependencyTooltip", resourceCulture);
             }
         }
         
@@ -4309,6 +4377,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to  This Feature is in Preview! .
+        /// </summary>
+        public static string PreviewText {
+            get {
+                return ResourceManager.GetString("PreviewText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Publish Online.
         /// </summary>
         public static string PublishPackage {
@@ -4432,6 +4509,24 @@ namespace Dynamo.Wpf.Properties {
         public static string PublishPackageViewPackageGroupTooltip {
             get {
                 return ResourceManager.GetString("PublishPackageViewPackageGroupTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to External Dependency (optional).
+        /// </summary>
+        public static string PublishPackageViewPackageHostDependency {
+            get {
+                return ResourceManager.GetString("PublishPackageViewPackageHostDependency", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to An indication of what applications outside of Dynamo your package depends on, such as Revit, Civil 3D or Photoshop. Users of your package will need to install these applications to fully utilize your package..
+        /// </summary>
+        public static string PublishPackageViewPackageHostDependencyTooltip {
+            get {
+                return ResourceManager.GetString("PublishPackageViewPackageHostDependencyTooltip", resourceCulture);
             }
         }
         

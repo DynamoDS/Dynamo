@@ -1,7 +1,11 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Dynamo.Extensions;
+using Dynamo.Graph.Nodes.CustomNodes;
+using Dynamo.Graph.Workspaces;
+using Dynamo.Search.SearchElements;
 using Moq;
 using NUnit.Framework;
 
@@ -129,8 +133,8 @@ namespace Dynamo.PackageManager.Tests
                 PathManager = CurrentDynamoModel.PathManager
             });
 
-            // There are 11 packages in "GitHub\Dynamo\test\pkgs"
-            Assert.AreEqual(11, loader.LocalPackages.Count());
+            // There are 14 packages in "GitHub\Dynamo\test\pkgs"
+            Assert.AreEqual(14, loader.LocalPackages.Count());
 
             // Verify that interdependent packages are resolved successfully
             var libs = CurrentDynamoModel.LibraryServices.ImportedLibraries.ToList();
@@ -160,8 +164,8 @@ namespace Dynamo.PackageManager.Tests
                 PathManager = CurrentDynamoModel.PathManager
             });
 
-            // There are 11 packages in "GitHub\Dynamo\test\pkgs"
-            Assert.AreEqual(11, loader.LocalPackages.Count());
+            // There are 14 packages in "GitHub\Dynamo\test\pkgs"
+            Assert.AreEqual(14, loader.LocalPackages.Count());
 
             // Simulate loading new package from PM
             string packageDirectory = Path.Combine(TestDirectory, @"core\packageDependencyTests\ZTTestPackage");
@@ -175,6 +179,237 @@ namespace Dynamo.PackageManager.Tests
             // Check that node belonging to one of the preloaded packages exists and is unique
             var entries = CurrentDynamoModel.SearchModel.SearchEntries.ToList();
             Assert.IsTrue(entries.Count(x => x.FullName == "AnotherPackage.AnotherPackage.AnotherPackage.HelloAnotherWorld") == 1);
+        }
+
+        [Test]
+        public void LoadingCustomNodeFromPackageSetsNodeInfoPackageInfoCorrectly()
+        {
+            var loader = new PackageLoader(PackagesDirectory);
+            var libraryLoader = new ExtensionLibraryLoader(CurrentDynamoModel);
+
+            loader.PackagesLoaded += libraryLoader.LoadPackages;
+            loader.RequestLoadNodeLibrary += libraryLoader.LoadNodeLibrary;
+
+            // This test needs the "isTestMode" flag to be turned off as an exception to be able 
+            // to test duplicate custom node def loading.
+            loader.RequestLoadCustomNodeDirectory +=
+                (dir, pkgInfo) => CurrentDynamoModel.CustomNodeManager.AddUninitializedCustomNodesInPath(dir, isTestMode: false, packageInfo: pkgInfo);
+
+            loader.LoadAll(new LoadPackageParams
+            {
+                Preferences = CurrentDynamoModel.PreferenceSettings,
+                PathManager = CurrentDynamoModel.PathManager
+            });
+
+            var packageInfo = new PackageInfo("EvenOdd", new System.Version(1,0,0));
+            var matchingNodes = CurrentDynamoModel.CustomNodeManager.NodeInfos.Where(x => x.Value.PackageInfo.Equals(packageInfo)).ToList();
+            //the node should have the correct package info and should be marked a packageMember.
+            Assert.AreEqual(1, matchingNodes.Count);
+            Assert.IsTrue(matchingNodes.All(x=>x.Value.IsPackageMember == true));
+        }
+
+        [Test]
+        public void PlacingCustomNodeInstanceFromPackageRetainsCorrectPackageInfoState()
+        {
+            var loader = GetPackageLoader();
+            var libraryLoader = new ExtensionLibraryLoader(CurrentDynamoModel);
+
+            loader.PackagesLoaded += libraryLoader.LoadPackages;
+            loader.RequestLoadNodeLibrary += libraryLoader.LoadNodeLibrary;
+
+            var packageDirectory = Path.Combine(TestDirectory, "pkgs", "EvenOdd");
+            var package1 = Package.FromDirectory(packageDirectory, CurrentDynamoModel.Logger);
+            loader.LoadPackages(new Package[] { package1});
+
+
+            var packageInfo = new PackageInfo("EvenOdd", new System.Version(1, 0, 0));
+            var matchingNodes = CurrentDynamoModel.CustomNodeManager.NodeInfos.Where(x => x.Value.PackageInfo.Equals(packageInfo)).ToList();
+            //the node should have the correct package info and should be marked a packageMember.
+            Assert.AreEqual(1, matchingNodes.Count);
+            Assert.IsTrue(matchingNodes.All(x => x.Value.IsPackageMember == true));
+
+            var cninst = CurrentDynamoModel.CustomNodeManager.CreateCustomNodeInstance(matchingNodes.FirstOrDefault().Key, null, true);
+            this.CurrentDynamoModel.CurrentWorkspace.AddAndRegisterNode(cninst);
+
+            matchingNodes = CurrentDynamoModel.CustomNodeManager.NodeInfos.Where(x => x.Value.PackageInfo.Equals(packageInfo)).ToList();
+            Assert.AreEqual(1, matchingNodes.Count);
+            Assert.IsTrue(matchingNodes.All(x => x.Value.IsPackageMember == true));
+        }
+
+ 
+        [Test]
+        public void LoadingConflictingCustomNodePackageDoesNotGetLoaded()
+        {
+            var loader = new PackageLoader(PackagesDirectory);
+            var libraryLoader = new ExtensionLibraryLoader(CurrentDynamoModel);
+
+            loader.PackagesLoaded += libraryLoader.LoadPackages;
+            loader.RequestLoadNodeLibrary += libraryLoader.LoadNodeLibrary;
+
+            // This test needs the "isTestMode" flag to be turned off as an exception to be able 
+            // to test duplicate custom node def loading.
+            loader.RequestLoadCustomNodeDirectory +=
+                (dir,pkgInfo) => CurrentDynamoModel.CustomNodeManager.AddUninitializedCustomNodesInPath(dir ,isTestMode: false, packageInfo: pkgInfo);
+
+            loader.LoadAll(new LoadPackageParams
+            {
+                Preferences = CurrentDynamoModel.PreferenceSettings,
+                PathManager = CurrentDynamoModel.PathManager
+            });
+
+            // There are 14 packages in "GitHub\Dynamo\test\pkgs"
+            Assert.AreEqual(14, loader.LocalPackages.Count());
+
+            var entries = CurrentDynamoModel.SearchModel.SearchEntries.OfType<CustomNodeSearchElement>();
+
+            // Check that conflicting custom node package "EvenOdd2" is not installed
+            Assert.IsTrue(entries.Count(x => Path.GetDirectoryName(x.Path).EndsWith(@"EvenOdd2\dyf")) == 0);
+            Assert.IsTrue(entries.Count(x => Path.GetDirectoryName(x.Path).EndsWith(@"EvenOdd\dyf") && 
+                                             x.FullName == "Test.EvenOdd") == 1);
+        }
+
+        [Test]
+        public void LoadingConflictingCustomNodePackage_AfterPlacingNode_DoesNotGetLoaded()
+        {
+            var loader = GetPackageLoader();
+            var libraryLoader = new ExtensionLibraryLoader(CurrentDynamoModel);
+
+            loader.PackagesLoaded += libraryLoader.LoadPackages;
+            loader.RequestLoadNodeLibrary += libraryLoader.LoadNodeLibrary;
+
+          
+            var packageDirectory = Path.Combine(TestDirectory, "pkgs", "EvenOdd");
+            var packageDirectory2 = Path.Combine(TestDirectory, "pkgs", "EvenOdd2");
+            var package1 = Package.FromDirectory(packageDirectory,CurrentDynamoModel.Logger);
+            var package2 = Package.FromDirectory(packageDirectory2, CurrentDynamoModel.Logger);
+            loader.LoadPackages(new Package[] { package1,package2 });
+
+            // There are 2 packages loaded directly
+            Assert.AreEqual(2, loader.LocalPackages.Count());
+
+            var entries = CurrentDynamoModel.SearchModel.SearchEntries.OfType<CustomNodeSearchElement>();
+
+            // Check that conflicting custom node package "EvenOdd2" is not installed
+            Assert.IsTrue(entries.Count(x => Path.GetDirectoryName(x.Path).EndsWith(@"EvenOdd2\dyf")) == 0);
+            Assert.IsTrue(entries.Count(x => Path.GetDirectoryName(x.Path).EndsWith(@"EvenOdd\dyf") &&
+                                             x.FullName == "Test.EvenOdd") == 1);
+
+            var customNodeInstance = CurrentDynamoModel.CustomNodeManager.CreateCustomNodeInstance(Guid.Parse("3f19c484-d3f3-49ba-88c2-6c386a41f6ac"));
+            //this will reset the info.
+            this.CurrentDynamoModel.CurrentWorkspace.AddAndRegisterNode(customNodeInstance);
+
+            //load again.
+            loader.LoadPackages(new Package[] { package1, package2 });
+
+            //reassert conflicting package not loaded.
+            Assert.IsTrue(entries.Count(x => Path.GetDirectoryName(x.Path).EndsWith(@"EvenOdd2\dyf")) == 0);
+            Assert.IsTrue(entries.Count(x => Path.GetDirectoryName(x.Path).EndsWith(@"EvenOdd\dyf") &&
+                                             x.FullName == "Test.EvenOdd") == 1);
+        }
+
+        // This can occur when a user copies a custom node from a package into definitions folder.
+        // TODO not exactly clear what behavior should be.
+        [Test]
+        [Category("TechDebt")]
+        [Category("Failure")]
+        public void CreatingConflictingCustomNodeWithPackage_WillOverwriteCustomNodeInPackage_GUIDStillOwnedByPackage()
+        {
+            var loader = GetPackageLoader();
+            var libraryLoader = new ExtensionLibraryLoader(CurrentDynamoModel);
+
+            loader.PackagesLoaded += libraryLoader.LoadPackages;
+            loader.RequestLoadNodeLibrary += libraryLoader.LoadNodeLibrary;
+
+            var packageDirectory = Path.Combine(TestDirectory, "pkgs", "EvenOdd");
+            var package1 = Package.FromDirectory(packageDirectory, CurrentDynamoModel.Logger);
+            loader.LoadPackages(new Package[] { package1 });
+
+            // There is 1 package loaded directly
+            Assert.AreEqual(1, loader.LocalPackages.Count());
+
+            var entries = CurrentDynamoModel.SearchModel.SearchEntries.OfType<CustomNodeSearchElement>();
+
+            Assert.IsTrue(entries.Count(x => Path.GetDirectoryName(x.Path).EndsWith(@"EvenOdd\dyf") &&
+                                             x.FullName == "Test.EvenOdd") == 1);
+
+            var customNodeWS = CurrentDynamoModel.CustomNodeManager.CreateCustomNode("aConlictingNode",
+                "aCategory",
+                "a node that will conflict via id with loaded package",
+                Guid.Parse("3f19c484-d3f3-49ba-88c2-6c386a41f6ac"));
+            customNodeWS.AddAndRegisterNode(new Output());
+            Assert.AreEqual(1, customNodeWS.Nodes.Count());
+            var tempPath = GetNewFileNameOnTempPath(".dyf");
+            customNodeWS.Save(tempPath);
+
+            var customNodeInstance = CurrentDynamoModel.CustomNodeManager.CreateCustomNodeInstance(Guid.Parse("3f19c484-d3f3-49ba-88c2-6c386a41f6ac"));
+            //this will reset the info.
+            this.CurrentDynamoModel.CurrentWorkspace.AddAndRegisterNode(customNodeInstance);
+            //the definition now points to the updated function
+            Assert.AreEqual(1, this.CurrentDynamoModel.CurrentWorkspace.Nodes.OfType<Function>().FirstOrDefault().Definition.FunctionBody.Count());
+            Assert.AreEqual(1, this.CurrentDynamoModel.CustomNodeManager.LoadedDefinitions.Where(x => x.FunctionId == customNodeInstance.Definition.FunctionId).FirstOrDefault().FunctionBody.Count());
+
+            var matchingNode = CurrentDynamoModel.CustomNodeManager.NodeInfos[customNodeInstance.Definition.FunctionId];
+            Assert.IsNotNull(matchingNode);
+            //This still points to the package the guid came from - should it?
+            Assert.False(matchingNode.IsPackageMember);
+
+        }
+
+        //TODO I cannot get this to replicate the behavior I see in Dynamo which that loading a package on top of a 
+        //loose conflicting custom node will overwrite it and log an error message. (package overwrite message)
+        [Test]
+        [Category("TechDebt")]
+        [Category("Failure")]
+        public void LoadingAPackageThatConflictsWithLooseLoadedCustomNodeWillOverwriteLocalCustomNode()
+        {
+            var customNodeWS = CurrentDynamoModel.CustomNodeManager.CreateCustomNode("aConlictingNode",
+             "aCategory",
+             "a node that will conflict via id with loaded package",
+             Guid.Parse("3f19c484-d3f3-49ba-88c2-6c386a41f6ac"));
+            customNodeWS.AddAndRegisterNode(new Output());
+            Assert.AreEqual(1, customNodeWS.Nodes.Count());
+            //var tempPath = GetNewFileNameOnTempPath(".dyf");
+            //customNodeWS.Save(tempPath);
+
+            //var customNodeInstance = CurrentDynamoModel.CustomNodeManager.CreateCustomNodeInstance(Guid.Parse("3f19c484-d3f3-49ba-88c2-6c386a41f6ac"));
+            //this will reset the info.
+            //this.CurrentDynamoModel.CurrentWorkspace.AddAndRegisterNode(customNodeInstance);
+          
+
+            var loader = GetPackageLoader();
+            var libraryLoader = new ExtensionLibraryLoader(CurrentDynamoModel);
+
+            loader.PackagesLoaded += libraryLoader.LoadPackages;
+            loader.RequestLoadNodeLibrary += libraryLoader.LoadNodeLibrary;
+
+            var packageDirectory = Path.Combine(TestDirectory, "pkgs", "EvenOdd");
+            var package1 = Package.FromDirectory(packageDirectory, CurrentDynamoModel.Logger);
+            loader.LoadPackages(new Package[] { package1 });
+
+            // There is 1 package loaded directly
+            Assert.AreEqual(1, loader.LocalPackages.Count());
+
+            var entries = CurrentDynamoModel.SearchModel.SearchEntries.OfType<CustomNodeSearchElement>();
+
+            Assert.IsTrue(entries.Count(x => Path.GetDirectoryName(x.Path).EndsWith(@"EvenOdd\dyf") &&
+                                             x.FullName == "Test.EvenOdd") == 1);
+
+            Assert.IsTrue(entries.Count(x =>x.FullName == "aCategory.aConlictingNode") == 0);
+
+            var customNodeInstance2 = CurrentDynamoModel.CustomNodeManager.CreateCustomNodeInstance(Guid.Parse("3f19c484-d3f3-49ba-88c2-6c386a41f6ac"), "Test.EvenOdd",true);
+            //this will reset the info.
+            this.CurrentDynamoModel.CurrentWorkspace.AddAndRegisterNode(customNodeInstance2);
+            Assert.AreEqual(3, customNodeInstance2.InPorts.Count());
+            //the definition now points to the updated function
+            //Assert.AreEqual(4, this.CurrentDynamoModel.CurrentWorkspace.Nodes.OfType<Function>().LastOrDefault().Definition.FunctionBody.Count());
+            //Assert.AreEqual(4, this.CurrentDynamoModel.CustomNodeManager.LoadedDefinitions.Where(x => x.FunctionId == customNodeInstance2.Definition.FunctionId).Count());
+            
+
+            var matchingNode = CurrentDynamoModel.CustomNodeManager.NodeInfos[customNodeInstance2.Definition.FunctionId];
+            Assert.IsNotNull(matchingNode);
+            //This still points to the package the guid came from - should it?
+            Assert.True(matchingNode.IsPackageMember);
+
         }
 
         [Test]
@@ -195,7 +430,7 @@ namespace Dynamo.PackageManager.Tests
         {
             var loader = new PackageLoader(PackagesDirectory);
             loader.RequestLoadCustomNodeDirectory +=
-                (dir) => this.CurrentDynamoModel.CustomNodeManager.AddUninitializedCustomNodesInPath(dir, true);
+                (dir,pkgInfo) => this.CurrentDynamoModel.CustomNodeManager.AddUninitializedCustomNodesInPath(dir, true, pkgInfo);
 
             loader.LoadAll(new LoadPackageParams
             {
