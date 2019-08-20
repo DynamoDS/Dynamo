@@ -58,14 +58,7 @@ namespace Dynamo.Wpf.Extensions
             get { return dynamoViewModel.PackageManagerClientViewModel; }
         }
 
-        /// <summary>
-        /// A reference to Dynamo Logger for extension to use
-        /// </summary>
-        public DynamoLogger Logger
-        {
-            get { return dynamoViewModel.Model.Logger; }
-        }
-
+       
         /// <summary>
         /// A reference to the Dynamo Window object. Useful for correctly setting the parent of a 
         /// newly created window.
