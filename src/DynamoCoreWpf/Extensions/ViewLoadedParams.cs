@@ -5,7 +5,7 @@ using System.Windows;
 using System.Windows.Controls;
 using Dynamo.Controls;
 using Dynamo.Extensions;
-=using Dynamo.Selection;
+using Dynamo.Selection;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Visualization;
