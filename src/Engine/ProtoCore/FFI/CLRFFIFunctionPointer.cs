@@ -860,26 +860,26 @@ namespace ProtoFFI
                 return null;
             }
 
-            StackValue propValue = (StackValue)retVal;
-            var thisObject = s?.Last() ?? dsi.runtime.rmem.Stack.Last();
+            //StackValue propValue = (StackValue)retVal;
+            //var thisObject = s?.Last() ?? dsi.runtime.rmem.Stack.Last();
 
-            bool isValidPointer = thisObject.IsPointer && thisObject.Pointer != Constants.kInvalidIndex;
-            if (isValidPointer && propValue.IsReferenceType)
-            {
-                int classIndex = thisObject.metaData.type;
-                if (classIndex != ProtoCore.DSASM.Constants.kInvalidIndex)
-                {
-                    var runtimeCore = dsi.runtime.RuntimeCore;
-                    int idx = runtimeCore.DSExecutable.classTable.ClassNodes[classIndex].Symbols.IndexOf(PropertyName);
+            //bool isValidPointer = thisObject.IsPointer && thisObject.Pointer != Constants.kInvalidIndex;
+            //if (isValidPointer && propValue.IsReferenceType)
+            //{
+            //    int classIndex = thisObject.metaData.type;
+            //    if (classIndex != ProtoCore.DSASM.Constants.kInvalidIndex)
+            //    {
+            //        var runtimeCore = dsi.runtime.RuntimeCore;
+            //        int idx = runtimeCore.DSExecutable.classTable.ClassNodes[classIndex].Symbols.IndexOf(PropertyName);
 
-                    var obj = runtimeCore.Heap.ToHeapObject<DSObject>(thisObject);
-                    StackValue oldValue = obj.GetValueFromIndex(idx, runtimeCore);
-                    if (!StackUtils.Equals(oldValue, propValue))
-                    {
-                        obj.SetValueAtIndex(idx, propValue, runtimeCore);
-                    }
-                }
-            }
+            //        var obj = runtimeCore.Heap.ToHeapObject<DSObject>(thisObject);
+            //        StackValue oldValue = obj.GetValueFromIndex(idx, runtimeCore);
+            //        if (!StackUtils.Equals(oldValue, propValue))
+            //        {
+            //            obj.SetValueAtIndex(idx, propValue, runtimeCore);
+            //        }
+            //    }
+            //}
 
             return retVal;
         }
