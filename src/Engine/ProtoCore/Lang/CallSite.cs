@@ -1575,6 +1575,12 @@ namespace ProtoCore
                 return ExecWithZeroRI(functionEndPoints, c, formalParameters, stackFrame, runtimeCore, previousTraceData, newTraceData, finalFunctionEndPoint);
             }
 
+            if (finalFunctionEndPoint == null && functionEndPoints.Count == 1)
+            {
+                //Gather
+                finalFunctionEndPoint = SelectFinalFep(c, functionEndPoints, formalParameters, stackFrame, runtimeCore);
+            }
+
             //Get the replication instruction that this call will deal with
             ReplicationInstruction ri = replicationInstructions[0];
 
@@ -1603,15 +1609,6 @@ namespace ProtoCore
 
                     default:
                         throw new ReplicationCaseNotCurrentlySupported(Resources.AlgorithmNotSupported);
-                }
-
-                //We determine if the input parameters are of homogeneous types to set the final function endpoint once
-                var homogeneousReturn = AreParametersHomogeneousTypes(formalParameters, runtimeCore);
-                var isHomogeneous = homogeneousReturn.Item1;
-                if (isHomogeneous)
-                {
-                    var finalFormalParameters = homogeneousReturn.Item2;
-                    finalFunctionEndPoint = SelectFinalFep(c, functionEndPoint, finalFormalParameters, stackFrame, runtimeCore);
                 }
 
                 bool hasEmptyArg = false;
@@ -1731,18 +1728,6 @@ namespace ProtoCore
 
                 //We will call the subsequent reductions n times
                 int cartIndex = ri.CartesianIndex;
-
-                //We determine if the input parameters are of homogeneous types to set the final function endpoint once
-                if (cartIndex == 0)
-                {
-                    var homogeneousReturn = AreParametersHomogeneousTypes(formalParameters, runtimeCore);
-                    var isHomogeneous = homogeneousReturn.Item1;
-                    if (isHomogeneous)
-                    {
-                        var finalFormalParameters = homogeneousReturn.Item2;
-                        finalFunctionEndPoint = SelectFinalFep(c, functionEndPoint, finalFormalParameters, stackFrame, runtimeCore);
-                    }
-                }
 
                 //this will hold the heap elements for all the arrays that are going to be replicated over
                 bool supressArray = false;
