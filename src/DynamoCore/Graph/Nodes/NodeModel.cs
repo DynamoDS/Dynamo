@@ -692,6 +692,7 @@ namespace Dynamo.Graph.Nodes
             }
         }
 
+        [JsonConverter(typeof(DescriptionConverter))]
         /// <summary>
         ///     Description of this Node.
         /// </summary>

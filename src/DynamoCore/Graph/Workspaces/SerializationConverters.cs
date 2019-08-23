@@ -376,6 +376,31 @@ namespace Dynamo.Graph.Workspaces
         }
     }
 
+    ///<Summary>
+    /// Converter for Description property in the NodeModel class.
+    ///</Summary>
+    public class DescriptionConverter : JsonConverter
+    {
+        public override bool CanConvert(Type objectType)
+        {
+            return (objectType == typeof(String));
+        }
+
+        /// When deserializing, we do not want to read this property from the file
+        /// so null is being returned. This is to convert the Description property
+        /// to the localized language. 
+        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+        {
+            return null;
+        }
+
+        /// Serializing the description property. 
+        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+        {
+            serializer.Serialize(writer, value);
+        }
+    }
+
     /// <summary>
     /// The WorkspaceConverter is used to serialize and deserialize WorkspaceModels.
     /// Construction of a WorkspaceModel requires things like an EngineController,
