@@ -1127,8 +1127,8 @@ namespace ProtoFFI
             }
 
             MetaData metadata;
-            StackValue retval = runtimeCore.RuntimeMemory.Heap.AllocatePointer(classTable.ClassNodes[type].Size, metadata);
             metadata.type = mCachedType;
+            StackValue retval = runtimeCore.RuntimeMemory.Heap.AllocatePointer(0, metadata);
             BindObjects(obj, retval);
             return retval;
         }
