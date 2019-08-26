@@ -159,8 +159,9 @@ namespace DynamoInstallDetective
         /// <param name="fileLookup">file name pattern to lookup</param>
         public InstalledProductLookUp(string lookUpName, string fileLookup)
         {
-            this.ProductLookUpName = lookUpName;
-            this.fileLocator = (path) => Directory.GetFiles(path, fileLookup).FirstOrDefault();
+            ProductLookUpName = lookUpName;
+            fileLocator = (path) => Directory.EnumerateFiles(path, fileLookup, SearchOption.AllDirectories)
+                .FirstOrDefault();
         }
 
         public InstalledProductLookUp(string lookUpName, Func<string, string> fileLocator)
