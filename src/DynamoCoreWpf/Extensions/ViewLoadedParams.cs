@@ -58,7 +58,7 @@ namespace Dynamo.Wpf.Extensions
         /// <summary>
         /// A reference to the DynamoViewModel's delegate commands
         /// </summary>
-        public IDynamoViewModelDelegateCommands DynamoViewModelDelegateCommands
+        public IDynamoViewModelDelegateCommands ViewModelCommandExecutive
         {
             get { return dynamoViewModel; }
         }
