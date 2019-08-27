@@ -55,6 +55,15 @@ namespace Dynamo.Wpf.Extensions
             get { return dynamoViewModel.PackageManagerClientViewModel; }
         }
 
+        private DynamoViewModelCommandExecutive viewModelCommandExecutive;
+        /// <summary>
+        /// Class used for executing commands on the DynamoViewModel
+        /// </summary>
+        public DynamoViewModelCommandExecutive ViewModelCommandExecutive
+        {
+            get { return viewModelCommandExecutive ?? (viewModelCommandExecutive = new DynamoViewModelCommandExecutive(dynamoViewModel)); }
+        }
+
         /// <summary>
         /// A reference to the Dynamo Window object. Useful for correctly setting the parent of a 
         /// newly created window.
@@ -109,7 +118,7 @@ namespace Dynamo.Wpf.Extensions
 
         private ICommandExecutive commandExecutive;
         /// <summary>
-        /// View Extension specific implementation to execute commands on DynamoViewModel
+        /// View Extension specific implementation to execute Recordable commands on DynamoViewModel
         /// </summary>
         public override ICommandExecutive CommandExecutive
         {
