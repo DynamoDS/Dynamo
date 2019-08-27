@@ -9,6 +9,7 @@ using Dynamo.Selection;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Visualization;
+using Dynamo.Wpf.ViewModels;
 using Dynamo.Wpf.ViewModels.Watch3D;
 
 namespace Dynamo.Wpf.Extensions
@@ -52,6 +53,14 @@ namespace Dynamo.Wpf.Extensions
         public IPackageInstaller PackageInstaller
         {
             get { return dynamoViewModel.PackageManagerClientViewModel; }
+        }
+
+        /// <summary>
+        /// A reference to the DynamoViewModel's delegate commands
+        /// </summary>
+        public IDynamoViewModelDelegateCommands DynamoViewModelDelegateCommands
+        {
+            get { return dynamoViewModel; }
         }
 
         /// <summary>
