@@ -294,6 +294,7 @@
     <Compile Include="ViewModels\Core\DynamoViewModelBranding.cs" />
     <Compile Include="ViewModels\Core\GalleryViewModel.cs" />
     <Compile Include="ViewModels\Core\HomeWorkspaceViewModel.cs" />
+    <Compile Include="ViewModels\Core\IDynamoViewModelDelegateCommands.cs" />
     <Compile Include="ViewModels\Core\SerializationExtensions.cs" />
     <Compile Include="ViewModels\PackageManager\IPackageInstaller.cs" />
     <Compile Include="ViewModels\PackageManager\PackagePathViewModel.cs" />
