@@ -56,14 +56,6 @@ namespace Dynamo.Wpf.Extensions
         }
 
         /// <summary>
-        /// A reference to the DynamoViewModel's delegate commands
-        /// </summary>
-        public IDynamoViewModelDelegateCommands ViewModelCommandExecutive
-        {
-            get { return dynamoViewModel; }
-        }
-
-        /// <summary>
         /// A reference to the Dynamo Window object. Useful for correctly setting the parent of a 
         /// newly created window.
         /// </summary>
@@ -117,7 +109,7 @@ namespace Dynamo.Wpf.Extensions
 
         private ICommandExecutive commandExecutive;
         /// <summary>
-        /// View Extension specific implementation to execute Recordable commands on DynamoViewModel
+        /// View Extension specific implementation to execute commands on DynamoViewModel
         /// </summary>
         public override ICommandExecutive CommandExecutive
         {

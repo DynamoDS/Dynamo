@@ -42,5 +42,13 @@ namespace Dynamo.Wpf.Extensions
             var handler = MessageLogged;
             if (handler != null) handler(obj);
         }
+
+        /// <summary>
+        /// Fit the current workspace view to the current selection
+        /// </summary>
+        public void FitViewCommand()
+        {
+            dynamoViewModel.FitViewCommand.Execute(null);
+        }
     }
 }
