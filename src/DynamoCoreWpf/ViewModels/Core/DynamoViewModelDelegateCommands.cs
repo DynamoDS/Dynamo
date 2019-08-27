@@ -6,7 +6,7 @@ using DelegateCommand = Dynamo.UI.Commands.DelegateCommand;
 
 namespace Dynamo.ViewModels
 {
-    partial class DynamoViewModel : IDynamoViewModelDelegateCommands
+    partial class DynamoViewModel
     {
         private void InitializeDelegateCommands()
         {
