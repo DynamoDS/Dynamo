@@ -343,7 +343,11 @@ namespace Dynamo.Graph.Workspaces
                 // Make this RunSettings.RunEnabled private, introduce the new flag and remove the "executingTask" variable. 
                 if (RunSettings.RunEnabled || executingTask)
                 {
-                    Run();
+                    // Skip's the execution, if packing loading is not completed. 
+                    if (!EngineController.DisableRun)
+                    {
+                        Run();
+                    }
                 }   
             }
         }
