@@ -160,7 +160,7 @@ namespace DynamoInstallDetective
         public InstalledProductLookUp(string lookUpName, string fileLookup)
         {
             ProductLookUpName = lookUpName;
-            fileLocator = (path) => Directory.GetFiles(path, fileLookup, SearchOption.TopDirectoryOnly)
+            fileLocator = (path) => Directory.EnumerateFiles(path, fileLookup, SearchOption.AllDirectories)
                 .FirstOrDefault();
         }
 
