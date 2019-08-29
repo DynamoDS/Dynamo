@@ -104,7 +104,7 @@ namespace Dynamo.Applications
                 .Add("g=|G=|geometry", "Geometry, Instruct Dynamo to output geometry from all evaluations to a json file at this path", g => geometryFilePath = g)
                 .Add("i=|I=|import", "Import, Instruct Dynamo to import an assembly as a node library. This argument should be a filepath to a single .dll" +
                 " - if you wish to import multiple dlls - use this flag multiple times: -i 'assembly1.dll' -i 'assembly2.dll' ", i => importPaths.Add(i)).
-                Add("gp|geometrypath|GeometryPath", "relative path to a directory containing ASM. If supplied ASM will not be searched for.", gp => asmPath = gp);
+                Add("gp|geometrypath|GeometryPath", "relative path to a directory containing ASM. If supplied ASM will be loaded directly from this path and not be searched for.", gp => asmPath = gp);
 
                 optionsSet.Parse(args);
 
@@ -179,9 +179,9 @@ namespace Dynamo.Applications
             return um;
         }
 
-        private static Version GetVersionFromASMPath(string geometryLibraryPath)
+        private static Version GetVersionFromASMPath(string asmPath)
         {
-            var ASMFilePath = Directory.GetFiles(geometryLibraryPath, "ASMAHL*.dll", SearchOption.TopDirectoryOnly).FirstOrDefault();
+            var ASMFilePath = Directory.GetFiles(asmPath, "ASMAHL*.dll", SearchOption.TopDirectoryOnly).FirstOrDefault();
             if(ASMFilePath != null && File.Exists(ASMFilePath))
             {
                 var asmVersion = FileVersionInfo.GetVersionInfo(ASMFilePath);
@@ -195,24 +195,24 @@ namespace Dynamo.Applications
         /// Use this overload to construct a DynamoModel when the location of ASM to use is known.
         /// </summary>
         /// <param name="CLImode">CLI mode starts the model in test mode and uses a seperate path resolver.</param>
-        /// <param name="geometryLibraryPath">Path to directory containing geometry library binaries</param>
+        /// <param name="asmPath">Path to directory containing geometry library binaries</param>
         /// <returns></returns>
-        public static DynamoModel MakeModel(bool CLImode, string geometryLibraryPath)
+        public static DynamoModel MakeModel(bool CLImode, string asmPath)
         {
-            if (!Directory.Exists(geometryLibraryPath)){
-                throw new ArgumentException(nameof(geometryLibraryPath));
+            if (!Directory.Exists(asmPath)){
+                throw new ArgumentException(nameof(asmPath));
             }
             //get sandbox executing location - this is where libG will be located.
             var exePath = Assembly.GetExecutingAssembly().Location;
             var rootFolder = Path.GetDirectoryName(exePath);
 
-            Version libGVersion = GetVersionFromASMPath(geometryLibraryPath);
+            Version libGVersion = GetVersionFromASMPath(asmPath);
             //get version of libG that matches the asm version that was supplied from geometryLibraryPath.
             var preloaderLocation = DynamoShapeManager.Utilities.GetLibGPreloaderLocation(libGVersion, rootFolder);
             var geometryFactoryPath = Path.Combine(preloaderLocation,DynamoShapeManager.Utilities.GeometryFactoryAssembly);
 
             //load asm and libG.
-            DynamoShapeManager.Utilities.PreloadAsmFromPath(preloaderLocation, geometryLibraryPath);
+            DynamoShapeManager.Utilities.PreloadAsmFromPath(preloaderLocation, asmPath);
 
             var config = new DynamoModel.DefaultStartConfiguration()
             {
