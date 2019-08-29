@@ -39,6 +39,11 @@ namespace Dynamo.Engine
         public event AstBuiltEventHandler AstBuilt;
 
         /// <summary>
+        /// This flag to to check if any new packages are being loaded and disable any execution run's that are triggered before the package loading is compelted. 
+        /// </summary>
+        internal static Boolean DisableRun = false;
+
+        /// <summary>
         /// This event is fired when <see cref="UpdateGraphAsyncTask"/> is completed.
         /// </summary>
         internal event Action<TraceReconciliationEventArgs> TraceReconcliationComplete;
