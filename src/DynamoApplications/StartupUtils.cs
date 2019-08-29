@@ -90,18 +90,21 @@ namespace Dynamo.Applications
                 // dll paths we'll import before running a graph 
                 var importPaths = new List<string>() ;
 
+                var asmPath = string.Empty;
+
                 bool showHelp = false;
                 var optionsSet = new OptionSet().Add("o=|O=", "OpenFilePath, Instruct Dynamo to open headless and run a dyn file at this path", o => openfilepath = o)
                 .Add("c=|C=", "CommandFilePath, Instruct Dynamo to open a commandfile and run the commands it contains at this path," +
                 "this option is only supported when run from DynamoSandbox", c => commandFilePath = c)
                 .Add("l=|L=", "Running Dynamo under a different locale setting", l => locale = l)
                 .Add("v=|V=", "Verbose, Instruct Dynamo to output all evalautions it performs to an xml file at this path", v => verbose = v)
-                .Add("x|X", "When used in combination with the 'O' flag, opens a .dyn file from the specified path and converts it to .json." + 
+                .Add("x|X", "When used in combination with the 'O' flag, opens a .dyn file from the specified path and converts it to .json." +
                 "File will have the .json extension and be located in the same directory as the original file.", x => convertFile = x != null)
                 .Add("h|H|help", "Get some help", h => showHelp = h != null)
                 .Add("g=|G=|geometry", "Geometry, Instruct Dynamo to output geometry from all evaluations to a json file at this path", g => geometryFilePath = g)
                 .Add("i=|I=|import", "Import, Instruct Dynamo to import an assembly as a node library. This argument should be a filepath to a single .dll" +
-                " - if you wish to import multiple dlls - use this flag multiple times: -i 'assembly1.dll' -i 'assembly2.dll' ", i=>importPaths.Add(i));
+                " - if you wish to import multiple dlls - use this flag multiple times: -i 'assembly1.dll' -i 'assembly2.dll' ", i => importPaths.Add(i)).
+                Add("gp|geometrypath|GeometryPath", "relative path to a directory containing ASM. If supplied ASM will not be searched for.", gp => asmPath = gp);
 
                 optionsSet.Parse(args);
 
@@ -123,7 +126,8 @@ namespace Dynamo.Applications
                     Verbose = verbose,
                     ConvertFile = convertFile,
                     GeometryFilePath = geometryFilePath,
-                    ImportedPaths = importPaths
+                    ImportedPaths = importPaths,
+                    ASMPath = asmPath,
                 };
             }
 
@@ -140,6 +144,7 @@ namespace Dynamo.Applications
             public bool ConvertFile { get; set; }
             public string GeometryFilePath { get; set; }
             public IEnumerable<String> ImportedPaths { get; set; }
+            public string ASMPath { get; set; }
         }
 
         public static void PreloadShapeManager(ref string geometryFactoryPath, ref string preloaderLocation)
@@ -174,6 +179,55 @@ namespace Dynamo.Applications
             return um;
         }
 
+        private static Version GetVersionFromASMPath(string geometryLibraryPath)
+        {
+            var ASMFilePath = Directory.GetFiles(geometryLibraryPath, "ASMAHL*.dll", SearchOption.TopDirectoryOnly).FirstOrDefault();
+            if(ASMFilePath != null && File.Exists(ASMFilePath))
+            {
+                var asmVersion = FileVersionInfo.GetVersionInfo(ASMFilePath);
+                var libGversion = new Version(asmVersion.FileMajorPart, asmVersion.FileMinorPart, asmVersion.FileBuildPart);
+                return libGversion;
+            }
+            throw new FileNotFoundException("$Could not find geometry library binaries at : {geometryLibraryPath}");
+        }
+
+        /// <summary>
+        /// Use this overload to construct a DynamoModel when the location of ASM to use is known.
+        /// </summary>
+        /// <param name="CLImode">CLI mode starts the model in test mode and uses a seperate path resolver.</param>
+        /// <param name="geometryLibraryPath">Path to directory containing geometry library binaries</param>
+        /// <returns></returns>
+        public static DynamoModel MakeModel(bool CLImode, string geometryLibraryPath)
+        {
+            if (!Directory.Exists(geometryLibraryPath)){
+                throw new ArgumentException(nameof(geometryLibraryPath));
+            }
+            //get sandbox executing location - this is where libG will be located.
+            var exePath = Assembly.GetExecutingAssembly().Location;
+            var rootFolder = Path.GetDirectoryName(exePath);
+
+            Version libGVersion = GetVersionFromASMPath(geometryLibraryPath);
+            //get version of libG that matches the asm version that was supplied from geometryLibraryPath.
+            var preloaderLocation = DynamoShapeManager.Utilities.GetLibGPreloaderLocation(libGVersion, rootFolder);
+            var geometryFactoryPath = Path.Combine(preloaderLocation,DynamoShapeManager.Utilities.GeometryFactoryAssembly);
+
+            //load asm and libG.
+            DynamoShapeManager.Utilities.PreloadAsmFromPath(preloaderLocation, geometryLibraryPath);
+
+            var config = new DynamoModel.DefaultStartConfiguration()
+            {
+                GeometryFactoryPath = geometryFactoryPath,
+                ProcessMode = TaskProcessMode.Asynchronous
+            };
+
+            config.UpdateManager = CLImode ? null : InitializeUpdateManager();
+            config.StartInTestMode = CLImode ? true : false;
+            config.PathResolver = CLImode ? new CLIPathResolver(preloaderLocation) as IPathResolver : new SandboxPathResolver(preloaderLocation) as IPathResolver;
+
+            var model = DynamoModel.Start(config);
+            return model;
+
+        }
         public static DynamoModel MakeModel(bool CLImode)
         {
             var geometryFactoryPath = string.Empty;
@@ -189,10 +243,12 @@ namespace Dynamo.Applications
             config.UpdateManager = CLImode ? null : InitializeUpdateManager();
             config.StartInTestMode = CLImode ? true : false;
             config.PathResolver = CLImode ? new CLIPathResolver(preloaderLocation) as IPathResolver : new SandboxPathResolver(preloaderLocation) as IPathResolver ;
-
+            
             var model = DynamoModel.Start(config);
             return model;
         }
+
+
 
         public static string SetLocale(CommandLineArguments cmdLineArgs)
         {
