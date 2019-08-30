@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Dynamo.Engine;
 using Dynamo.Extensions;
 using Dynamo.Graph.Nodes.CustomNodes;
 using Dynamo.Graph.Workspaces;
@@ -470,6 +471,35 @@ namespace Dynamo.PackageManager.Tests
             Assert.IsTrue(this.CurrentDynamoModel.CustomNodeManager.TryGetFunctionDefinition(info.FunctionId, true, out funcDef));
             var foundPkg = loader.GetOwnerPackage(info);
             Assert.IsNull(foundPkg);
+        }
+
+        /// This test is added for this task: https://jira.autodesk.com/browse/DYN-2101. 
+        /// A followup task is added https://jira.autodesk.com/browse/DYN-2120 to refactor the approach to this solution.
+        /// This test needs to be modified in that case. 
+        [Test]
+        public void PackageLoadExceptionTest()
+        {
+            Boolean RunDisabledWhilePackageLoading = false;
+
+            string openPath = Path.Combine(TestDirectory, @"core\PackageLoadExceptionTest.dyn");
+            OpenModel(openPath);
+
+            var loader = GetPackageLoader();
+            loader.PackgeLoaded += (package) =>
+            {
+                RunDisabledWhilePackageLoading = EngineController.DisableRun;
+            };
+
+            // Load the package when the graph is open in the workspace. 
+            string packageDirectory = Path.Combine(PackagesDirectory, "Ampersand");
+            var pkg = loader.ScanPackageDirectory(packageDirectory);
+            loader.LoadPackages(new List<Package> { pkg });
+
+            // Assert that the Run is disabled temporatily when the package is still loading. 
+            Assert.IsTrue(RunDisabledWhilePackageLoading);
+
+            // Assert that the DisableRun flag is set back to false, once the package loading is completed. 
+            Assert.IsFalse(EngineController.DisableRun);
         }
 
         [Test]
