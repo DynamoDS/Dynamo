@@ -1429,6 +1429,7 @@ namespace Dynamo.Models
             {
                 EngineController.TraceReconcliationComplete -= EngineController_TraceReconcliationComplete;
                 EngineController.MessageLogged -= LogMessage;
+                EngineController.dumpedLibrary -= EngineController_dumpedLibrary;
                 EngineController.Dispose();
                 EngineController = null;
             }
@@ -1436,15 +1437,24 @@ namespace Dynamo.Models
             EngineController = new EngineController(
                 LibraryServices,
                 geometryFactoryPath,
-                DebugSettings.VerboseLogging,
-                this.Scheduler);
+                DebugSettings.VerboseLogging
+                );
 
+            EngineController.dumpedLibrary += EngineController_dumpedLibrary;
             EngineController.MessageLogged += LogMessage;
             EngineController.TraceReconcliationComplete += EngineController_TraceReconcliationComplete;
 
             foreach (var def in CustomNodeManager.LoadedDefinitions)
                 RegisterCustomNodeDefinitionWithEngine(def);
         }
+
+        private void EngineController_dumpedLibrary()
+        {
+
+            foreach (var def in CustomNodeManager.LoadedDefinitions)
+                RegisterCustomNodeDefinitionWithEngine(def);
+        }              
+    
 
         /// <summary>
         ///     Forces an evaluation of the current workspace by resetting the DesignScript VM.

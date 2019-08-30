@@ -38,6 +38,8 @@ namespace Dynamo.Engine
         /// </summary>
         public event AstBuiltEventHandler AstBuilt;
 
+        public event Action dumpedLibrary;
+
         /// <summary>
         /// This event is fired when <see cref="UpdateGraphAsyncTask"/> is completed.
         /// </summary>
@@ -132,10 +134,10 @@ namespace Dynamo.Engine
         /// <param name="libraryServices"> LibraryServices manages builtin libraries and imported libraries.</param>
         /// <param name="geometryFactoryFileName">Path to LibG</param>
         /// <param name="verboseLogging">Bool value, if set to true, enables verbose logging</param>
-        public EngineController(LibraryServices libraryServices, string geometryFactoryFileName, bool verboseLogging, DynamoScheduler scheduler)
+        public EngineController(LibraryServices libraryServices, string geometryFactoryFileName, bool verboseLogging)
         {
             this.libraryServices = libraryServices;
-            libraryServices.LibraryLoaded += (s,e)=> { scheduler.ScheduleForExecution(new DelegateBasedAsyncTask(scheduler, () => { LibraryLoaded(s, e); })); };
+            libraryServices.LibraryLoaded += LibraryLoaded;
             CompilationServices = new CompilationServices(libraryServices);
 
             liveRunnerServices = new LiveRunnerServices(this, geometryFactoryFileName);
@@ -497,12 +499,19 @@ namespace Dynamo.Engine
 
         private void OnLibraryLoaded()
         {
-            liveRunnerServices.ReloadAllLibraries(libraryServices.ImportedLibraries);
+            lock (macroMutex)
+            {
 
-            // The LiveRunner core is newly instantiated whenever a new library is imported
-            // due to which a new instance of CodeCompletionServices needs to be created with the new Core
-            codeCompletionServices = new CodeCompletionServices(LiveRunnerCore);
-            libraryServices.SetLiveCore(LiveRunnerCore);
+
+                liveRunnerServices.ReloadAllLibraries(libraryServices.ImportedLibraries);
+
+                // The LiveRunner core is newly instantiated whenever a new library is imported
+                // due to which a new instance of CodeCompletionServices needs to be created with the new Core
+                codeCompletionServices = new CodeCompletionServices(LiveRunnerCore);
+                libraryServices.SetLiveCore(LiveRunnerCore);
+                dumpedLibrary?.Invoke();
+            }
+            
         }
 
         /// <summary>
