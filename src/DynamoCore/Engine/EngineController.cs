@@ -39,7 +39,7 @@ namespace Dynamo.Engine
         public event AstBuiltEventHandler AstBuilt;
 
         /// <summary>
-        /// This flag to to check if any new packages are being loaded and disable any execution run's that are triggered before the package loading is completed. 
+        /// This flag is used to check if any packages are currently being loaded, and to disable any executions that are triggered before the package loading is completed. See DYN-2101 for more info.
         /// </summary>
         internal static Boolean DisableRun = false;
 
