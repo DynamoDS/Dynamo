@@ -1436,7 +1436,8 @@ namespace Dynamo.Models
             EngineController = new EngineController(
                 LibraryServices,
                 geometryFactoryPath,
-                DebugSettings.VerboseLogging);
+                DebugSettings.VerboseLogging,
+                this.Scheduler);
 
             EngineController.MessageLogged += LogMessage;
             EngineController.TraceReconcliationComplete += EngineController_TraceReconcliationComplete;

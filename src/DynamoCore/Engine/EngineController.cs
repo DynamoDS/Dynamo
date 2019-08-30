@@ -132,10 +132,10 @@ namespace Dynamo.Engine
         /// <param name="libraryServices"> LibraryServices manages builtin libraries and imported libraries.</param>
         /// <param name="geometryFactoryFileName">Path to LibG</param>
         /// <param name="verboseLogging">Bool value, if set to true, enables verbose logging</param>
-        public EngineController(LibraryServices libraryServices, string geometryFactoryFileName, bool verboseLogging)
+        public EngineController(LibraryServices libraryServices, string geometryFactoryFileName, bool verboseLogging, DynamoScheduler scheduler)
         {
             this.libraryServices = libraryServices;
-            libraryServices.LibraryLoaded += LibraryLoaded;
+            libraryServices.LibraryLoaded += (s,e)=> { scheduler.ScheduleForExecution(new DelegateBasedAsyncTask(scheduler, () => { LibraryLoaded(s, e); })); };
             CompilationServices = new CompilationServices(libraryServices);
 
             liveRunnerServices = new LiveRunnerServices(this, geometryFactoryFileName);
