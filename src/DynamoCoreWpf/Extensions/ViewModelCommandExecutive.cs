@@ -17,10 +17,10 @@ namespace Dynamo.Wpf.Extensions
         /// <summary>
         /// Create a Command Executive for a DynamoViewModel
         /// </summary>
-        /// <param name="model"></param>
-        internal ViewModelCommandExecutive(DynamoViewModel model)
+        /// <param name="viewModel"></param>
+        internal ViewModelCommandExecutive(DynamoViewModel viewModel)
         {
-            dynamoViewModel = model;
+            dynamoViewModel = viewModel;
         }
 
         /// <summary>
