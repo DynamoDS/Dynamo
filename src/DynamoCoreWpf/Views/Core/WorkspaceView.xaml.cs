@@ -837,12 +837,11 @@ namespace Dynamo.Views
 
                         double deltaX = nodeCenterInOverlay.X - outerCenter.X;
                         double deltaY = nodeCenterInOverlay.Y - outerCenter.Y;
+                        
+                        vm.Model.X -= deltaX;
+                        vm.Model.Y -= deltaY;
 
-                        //var offset = new Point(vm.CurrentOffset.X - deltaX, vm.CurrentOffset.Y - deltaY);
-
-                        //vm.CurrentOffset = offset;
-
-                        zoomBorder.SetTranslateTransformOrigin(new Point2D(vm.Model.X - deltaX, vm.Model.Y - deltaY));
+                        zoomBorder.SetTranslateTransformOrigin(new Point2D(vm.Model.X, vm.Model.Y));
                     }
                 });
         }
