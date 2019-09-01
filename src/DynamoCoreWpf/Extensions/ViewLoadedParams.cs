@@ -55,13 +55,13 @@ namespace Dynamo.Wpf.Extensions
             get { return dynamoViewModel.PackageManagerClientViewModel; }
         }
 
-        private DynamoViewModelCommandExecutive viewModelCommandExecutive;
+        private ViewModelCommandExecutive viewModelCommandExecutive;
         /// <summary>
-        /// Class used for executing commands on the DynamoViewModel
+        /// Class used for executing commands on the DynamoViewModel and current WorkspaceViewModel
         /// </summary>
-        public DynamoViewModelCommandExecutive ViewModelCommandExecutive
+        public ViewModelCommandExecutive ViewModelCommandExecutive
         {
-            get { return viewModelCommandExecutive ?? (viewModelCommandExecutive = new DynamoViewModelCommandExecutive(dynamoViewModel)); }
+            get { return viewModelCommandExecutive ?? (viewModelCommandExecutive = new ViewModelCommandExecutive(dynamoViewModel)); }
         }
 
         /// <summary>

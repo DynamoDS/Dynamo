@@ -8,9 +8,9 @@ using Dynamo.ViewModels;
 namespace Dynamo.Wpf.Extensions
 {
     /// <summary>
-    /// The DynamoViewModelCommandExecutive provides access to DynamoViewModel commands
+    /// The ViewModelCommandExecutive provides access to DynamoViewModel and WorkspaceViewModel commands
     /// </summary>
-    public class DynamoViewModelCommandExecutive
+    public class ViewModelCommandExecutive
     {
         private DynamoViewModel dynamoViewModel;
 
@@ -18,7 +18,7 @@ namespace Dynamo.Wpf.Extensions
         /// Create a Command Executive for a DynamoViewModel
         /// </summary>
         /// <param name="model"></param>
-        internal DynamoViewModelCommandExecutive(DynamoViewModel model)
+        internal ViewModelCommandExecutive(DynamoViewModel model)
         {
             dynamoViewModel = model;
         }
