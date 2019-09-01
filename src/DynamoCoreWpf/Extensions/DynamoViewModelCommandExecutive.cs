@@ -30,5 +30,23 @@ namespace Dynamo.Wpf.Extensions
         {
             dynamoViewModel.FitViewCommand.Execute(null);
         }
+
+        /// <summary>
+        /// Search for an element by its ID and focus the view on it
+        /// </summary>
+        /// <param name="objectID"></param>
+        public void FindByIdCommand(string objectID)
+        {
+            dynamoViewModel.CurrentSpaceViewModel.FindByIdCommand.Execute(objectID);
+        }
+
+        /// <summary>
+        /// Force re-execute all nodes in the current workspace
+        /// </summary>
+        /// <param name="showErrors">Should errors be shown?</param>
+        public void ForceRunExpressionCommand(bool showErrors = true)
+        {
+            dynamoViewModel.ForceRunExpressionCommand.Execute(showErrors);
+        }
     }
 }
