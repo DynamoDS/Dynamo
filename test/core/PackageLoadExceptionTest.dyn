@@ -2,7 +2,7 @@
   "Uuid": "5de47da2-537c-435c-9b86-4feb972e6120",
   "IsCustomNode": false,
   "Description": null,
-  "Name": "FileUsingAmpersandPackage",
+  "Name": "PackageLoadExceptionTest",
   "ElementResolver": {
     "ResolutionMap": {}
   },
