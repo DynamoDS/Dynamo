@@ -134,8 +134,8 @@ namespace Dynamo.PackageManager.Tests
                 PathManager = CurrentDynamoModel.PathManager
             });
 
-            // There are 14 packages in "GitHub\Dynamo\test\pkgs"
-            Assert.AreEqual(14, loader.LocalPackages.Count());
+            // There are 15 packages in "GitHub\Dynamo\test\pkgs"
+            Assert.AreEqual(15, loader.LocalPackages.Count());
 
             // Verify that interdependent packages are resolved successfully
             var libs = CurrentDynamoModel.LibraryServices.ImportedLibraries.ToList();
@@ -165,8 +165,8 @@ namespace Dynamo.PackageManager.Tests
                 PathManager = CurrentDynamoModel.PathManager
             });
 
-            // There are 14 packages in "GitHub\Dynamo\test\pkgs"
-            Assert.AreEqual(14, loader.LocalPackages.Count());
+            // There are 15 packages in "GitHub\Dynamo\test\pkgs"
+            Assert.AreEqual(15, loader.LocalPackages.Count());
 
             // Simulate loading new package from PM
             string packageDirectory = Path.Combine(TestDirectory, @"core\packageDependencyTests\ZTTestPackage");
@@ -258,8 +258,8 @@ namespace Dynamo.PackageManager.Tests
                 PathManager = CurrentDynamoModel.PathManager
             });
 
-            // There are 14 packages in "GitHub\Dynamo\test\pkgs"
-            Assert.AreEqual(14, loader.LocalPackages.Count());
+            // There are 15 packages in "GitHub\Dynamo\test\pkgs"
+            Assert.AreEqual(15, loader.LocalPackages.Count());
 
             var entries = CurrentDynamoModel.SearchModel.SearchEntries.OfType<CustomNodeSearchElement>();
 
