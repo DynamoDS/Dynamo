@@ -9,6 +9,7 @@ using Dynamo.Selection;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Visualization;
+using Dynamo.Wpf.ViewModels;
 using Dynamo.Wpf.ViewModels.Watch3D;
 
 namespace Dynamo.Wpf.Extensions
@@ -52,6 +53,15 @@ namespace Dynamo.Wpf.Extensions
         public IPackageInstaller PackageInstaller
         {
             get { return dynamoViewModel.PackageManagerClientViewModel; }
+        }
+
+        private ViewModelCommandExecutive viewModelCommandExecutive;
+        /// <summary>
+        /// Class used for executing commands on the DynamoViewModel and current WorkspaceViewModel
+        /// </summary>
+        public ViewModelCommandExecutive ViewModelCommandExecutive
+        {
+            get { return viewModelCommandExecutive ?? (viewModelCommandExecutive = new ViewModelCommandExecutive(dynamoViewModel)); }
         }
 
         /// <summary>
