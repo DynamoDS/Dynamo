@@ -1,0 +1,155 @@
+{
+  "Uuid": "5de47da2-537c-435c-9b86-4feb972e6120",
+  "IsCustomNode": false,
+  "Description": null,
+  "Name": "PackageLoadExceptionTest",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CustomNodes.Function, DynamoCore",
+      "FunctionSignature": "a5429857-6217-41d8-b77f-1c90f4cdf8dd",
+      "FunctionType": "Graph",
+      "NodeType": "FunctionNode",
+      "Id": "8baa1fad3a9e4ecba0f8e8804b714c98",
+      "Inputs": [
+        {
+          "Id": "5626fe8bacc240649836d6be0de2ca10",
+          "Name": "centerPoint",
+          "Description": "Point\nDefault value : Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 0)",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "d4725b486bc4442385728a53a8b819ec",
+          "Name": "radius",
+          "Description": "double\nDefault value : 10",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "043ef809de3a443aadf68056fb6a4225",
+          "Name": "polyCurve",
+          "Description": "return value",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": ""
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CustomNodes.Function, DynamoCore",
+      "FunctionSignature": "5288d2f3-2393-4b77-9178-c1bda79e1b24",
+      "FunctionType": "Graph",
+      "NodeType": "FunctionNode",
+      "Id": "ba3b674100294c3991ea672ec5383b6b",
+      "Inputs": [
+        {
+          "Id": "6a9719283f6249a9ae8b1b9d1cd96565",
+          "Name": "polyCurve",
+          "Description": "PolyCurve",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "67c690f59f6d49728fbbaa9da0eeef0f",
+          "Name": "polyCurve",
+          "Description": "return value",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": ""
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "043ef809de3a443aadf68056fb6a4225",
+      "End": "6a9719283f6249a9ae8b1b9d1cd96565",
+      "Id": "9ef3a25490f74f258b7b95718cbffabb"
+    }
+  ],
+  "Dependencies": [
+    "a5429857-6217-41d8-b77f-1c90f4cdf8dd",
+    "5288d2f3-2393-4b77-9178-c1bda79e1b24"
+  ],
+  "NodeLibraryDependencies": [
+    {
+      "Name": "Ampersand",
+      "Version": "2019.5.20",
+      "ReferenceType": "Package",
+      "Nodes": [
+        "8baa1fad3a9e4ecba0f8e8804b714c98",
+        "ba3b674100294c3991ea672ec5383b6b"
+      ]
+    }
+  ],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.4.0.6056",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "NodeViews": [
+      {
+        "Id": "8baa1fad3a9e4ecba0f8e8804b714c98",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Name": "[&] Misc.Pentagram",
+        "ShowGeometry": true,
+        "Excluded": false,
+        "X": 154.0,
+        "Y": 184.0
+      },
+      {
+        "Id": "ba3b674100294c3991ea672ec5383b6b",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Name": "[&] PolyCurve.ConvexHull",
+        "ShowGeometry": true,
+        "Excluded": false,
+        "X": 596.0,
+        "Y": 332.0
+      }
+    ],
+    "Annotations": [],
+    "X": 0.0,
+    "Y": 0.0,
+    "Zoom": 1.0
+  }
+}
