@@ -477,6 +477,7 @@ namespace Dynamo.PackageManager.Tests
         /// A followup task is added https://jira.autodesk.com/browse/DYN-2120 to refactor the approach to this solution.
         /// This test needs to be modified in that case. 
         [Test]
+        [Category("TechDebt")]
         public void PackageLoadExceptionTest()
         {
             Boolean RunDisabledWhilePackageLoading = false;
