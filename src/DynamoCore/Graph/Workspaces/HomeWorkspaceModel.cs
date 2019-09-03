@@ -348,6 +348,10 @@ namespace Dynamo.Graph.Workspaces
                     {
                         Run();
                     }
+                    else
+                    {
+                        this.Log("Run has been disabled in the Engine Controller");
+                    }
                 }   
             }
         }
