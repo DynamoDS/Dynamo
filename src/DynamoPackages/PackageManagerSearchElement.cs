@@ -26,6 +26,7 @@ namespace Dynamo.PackageManager
         ///     An event that's invoked when the user has attempted to downvote this
         ///     package.
         /// </summary>
+        [Obsolete("This event will be removed in Dynamo 3.0")]
         public event Func<string, bool> DownvoteRequested;
 
         public string Maintainers { get { return String.Join(", ", this.Header.maintainers.Select(x => x.username)); } }
@@ -155,6 +156,7 @@ namespace Dynamo.PackageManager
                 , TaskScheduler.FromCurrentSynchronizationContext());
         }
 
+        [Obsolete("This API will no longer decrease package votes and will be removed in Dynamo 3.0")]
         public void Downvote()
         {
             Task<bool>.Factory.StartNew(() => DownvoteRequested(this.Id))

@@ -435,8 +435,6 @@ namespace Dynamo.ViewModels
                 var ele = new PackageManagerSearchElement(header);
 
                 ele.UpvoteRequested += this.Model.Upvote;
-                ele.DownvoteRequested += this.Model.Downvote;
-
                 CachedPackageList.Add( ele );
             }
 

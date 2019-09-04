@@ -323,25 +323,18 @@
                                                 </StackPanel>
                                             </Button>
 
-                                            <StackPanel Width="55"  Orientation="Vertical" Margin="3,0,0,0">
-                                                <StackPanel Orientation="Horizontal">
+                                            <StackPanel Width="80"  Orientation="Vertical" Margin="3,0,0,0">
+                                                <StackPanel Orientation="Vertical">
                                                     <Button Name="UpvoteButton" 
                                                         FontSize="15" 
                                                         ToolTip="{x:Static p:Resources.PackageSearchViewUpvoteButtonTooltip}"  
                                                         Content="👍"
-                                                        Margin="0,0,8,0"
+                                                        Margin="0,0,0,0"
                                                         Foreground="Gray" 
                                                         Command="{Binding Path=UpvoteCommand}" 
                                                         Style="{StaticResource FlatButton}" />
-                                                    <Button Name="DownvoteButton" 
-                                                        FontSize="15" 
-                                                        ToolTip="{x:Static p:Resources.PackageSearchViewDownvoteButtonTooltip}" 
-                                                        Foreground="Gray" 
-                                                        Content="👎"  
-                                                        Command="{Binding Path=DownvoteCommand}" 
-                                                        Style="{StaticResource FlatButton}" />
+                                                    <TextBlock FontSize="10" TextAlignment="Center" Margin="0,0,0,0" Text="{Binding Path=Model.Votes}" Foreground="Gray"  />
                                                 </StackPanel>
-                                                <TextBlock FontSize="10" TextAlignment="Center" Margin="0,0,0,0" Text="{Binding Path=Model.Votes}" Foreground="Gray"  />
                                             </StackPanel>
                                         </StackPanel>
 
