@@ -10,7 +10,7 @@ namespace IntegrationTests
     public class DynamoApplicationTests
     {
         [Test]
-        public void MakeModelLoadsASMFromValidPath()
+        public void DynamoSandboxLoadsASMFromValidPath()
         {
             var versions = new List<Version>(){
                     new Version(224, 4, 0),
@@ -22,35 +22,47 @@ namespace IntegrationTests
             //go get a valid asm path.
             var locatedPath = string.Empty;
             var coreDirectory = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
+            Process dynamoSandbox = null;
 
             DynamoShapeManager.Utilities.GetInstalledAsmVersion2(versions, ref locatedPath, coreDirectory);
-            Assert.DoesNotThrow(() =>
+            try
             {
-                var model = Dynamo.Applications.StartupUtils.MakeModel(true, locatedPath);
-
-            });
-
-            var firstASMmodulePath = string.Empty;
-            foreach (ProcessModule module in Process.GetCurrentProcess().Modules)
-            {
-                if (module.FileName.Contains("ASMAHL"))
+                Assert.DoesNotThrow(() =>
                 {
-                    firstASMmodulePath = module.FileName;
-                    break;
-                }
+                    // we use a new process to avoid checking against previously loaded
+                    // asm modules in the nunit-agent process.
+                    dynamoSandbox = System.Diagnostics.Process.Start(Path.Combine(coreDirectory, "DynamoSandbox.exe"), $"-gp \"{locatedPath}\"");
+                    dynamoSandbox.WaitForInputIdle();
+              
+                var firstASMmodulePath = string.Empty;
+                    foreach (ProcessModule module in dynamoSandbox.Modules)
+                    {
+                        if (module.FileName.Contains("ASMAHL"))
+                        {
+                            firstASMmodulePath = module.FileName;
+                            break;
+                        }
+                    }
+                //assert that ASM is really loaded from exactly where we specified.
+                Assert.AreEqual(Path.GetDirectoryName(firstASMmodulePath), locatedPath);
+                });
             }
-            //assert that ASM is really loaded from exactly where we specified.
-            Assert.AreEqual(Path.GetDirectoryName(firstASMmodulePath), locatedPath);
+            finally
+            {
 
+                dynamoSandbox?.Kill();
+
+            }
         }
 
         [Test]
-        public void IfASMPathInvalidExceptionThrown()
+        public void IfASMPathInvalidExceptionNotThrown()
         {
             var asmMockPath = @"./doesNotExist/";
-            Assert.Throws<FileNotFoundException>(() =>
+            Assert.DoesNotThrow(() =>
             {
                 var model = Dynamo.Applications.StartupUtils.MakeModel(true, asmMockPath);
+                Assert.IsNotNull(model);
             });
 
         }

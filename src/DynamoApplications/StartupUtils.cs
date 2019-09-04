@@ -207,21 +207,48 @@ namespace Dynamo.Applications
         /// <returns></returns>
         public static DynamoModel MakeModel(bool CLImode, string asmPath)
         {
-            if (!Directory.Exists(asmPath)){
-                throw new FileNotFoundException($"{nameof(asmPath)}:{asmPath}");
-            }
             //get sandbox executing location - this is where libG will be located.
             var exePath = Assembly.GetExecutingAssembly().Location;
             var rootFolder = Path.GetDirectoryName(exePath);
-
-            Version libGVersion = GetVersionFromASMPath(asmPath);
-            //get version of libG that matches the asm version that was supplied from geometryLibraryPath.
-            var preloaderLocation = DynamoShapeManager.Utilities.GetLibGPreloaderLocation(libGVersion, rootFolder);
+            //defaults - these will fail.
+            var preloaderLocation = "libg_0_0_0";
             var geometryFactoryPath = Path.Combine(preloaderLocation, DynamoShapeManager.Utilities.GeometryFactoryAssembly);
 
-            //load asm and libG.
-            DynamoShapeManager.Utilities.PreloadAsmFromPath(preloaderLocation, asmPath);
+            try
+            {
+                if (!Directory.Exists(asmPath))
+                {
+                    throw new FileNotFoundException($"{nameof(asmPath)}:{asmPath}");
+                }
+                Version libGVersion = GetVersionFromASMPath(asmPath);
 
+                //get version of libG that matches the asm version that was supplied from geometryLibraryPath.
+                preloaderLocation = DynamoShapeManager.Utilities.GetLibGPreloaderLocation(libGVersion, rootFolder);
+                geometryFactoryPath = Path.Combine(preloaderLocation, DynamoShapeManager.Utilities.GeometryFactoryAssembly);
+
+                //load asm and libG.
+                DynamoShapeManager.Utilities.PreloadAsmFromPath(preloaderLocation, asmPath);
+            }
+            catch(Exception e)
+            {
+                Console.WriteLine("A problem occured while trying to load ASM or LibG");
+                Console.WriteLine($"{e?.Message} : {e?.StackTrace}");
+            }
+            return StartDynamoWithDefaultConfig(CLImode, geometryFactoryPath, preloaderLocation);
+
+        }
+        //TODO (DYN-2118) remove this method in 3.0 and unify this method with the overload above.
+        public static DynamoModel MakeModel(bool CLImode)
+        {
+            var geometryFactoryPath = string.Empty;
+            var preloaderLocation = string.Empty;
+            PreloadShapeManager(ref geometryFactoryPath, ref preloaderLocation);
+
+            return StartDynamoWithDefaultConfig(CLImode, geometryFactoryPath, preloaderLocation);
+        }
+
+        private static DynamoModel StartDynamoWithDefaultConfig(bool CLImode, string geometryFactoryPath, string preloaderLocation)
+        {
             var config = new DynamoModel.DefaultStartConfiguration()
             {
                 GeometryFactoryPath = geometryFactoryPath,
@@ -234,30 +261,7 @@ namespace Dynamo.Applications
 
             var model = DynamoModel.Start(config);
             return model;
-
         }
-        //TODO (DYN-2118) remove this method in 3.0 and unify this method with the overload above.
-        public static DynamoModel MakeModel(bool CLImode)
-        {
-            var geometryFactoryPath = string.Empty;
-            var preloaderLocation = string.Empty;
-            PreloadShapeManager(ref geometryFactoryPath, ref preloaderLocation);
-
-            var config = new DynamoModel.DefaultStartConfiguration()
-                  {
-                      GeometryFactoryPath = geometryFactoryPath,
-                      ProcessMode = TaskProcessMode.Asynchronous
-                  };
-
-            config.UpdateManager = CLImode ? null : InitializeUpdateManager();
-            config.StartInTestMode = CLImode ? true : false;
-            config.PathResolver = CLImode ? new CLIPathResolver(preloaderLocation) as IPathResolver : new SandboxPathResolver(preloaderLocation) as IPathResolver ;
-            
-            var model = DynamoModel.Start(config);
-            return model;
-        }
-
-
 
         public static string SetLocale(CommandLineArguments cmdLineArgs)
         {
