@@ -69,7 +69,7 @@ namespace IntegrationTests
         [Test]
         public void GetVersionFromASMPath_returnsFileVersionForMockdll()
         {
-            var version = StartupUtils.GetVersionFromASMPath(@"./", "DynamoCore*.dll");
+            var version = DynamoShapeManager.Utilities.GetVersionFromPath(@"./", "DynamoCore*.dll");
             var thisVersion = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
             Assert.AreEqual(version.Major, thisVersion.Major);
             Assert.AreEqual(version.Minor, thisVersion.Minor);

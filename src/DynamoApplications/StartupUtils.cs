@@ -179,25 +179,7 @@ namespace Dynamo.Applications
             return um;
         }
 
-        /// <summary>
-        /// Extracts version of ASM dlls from a path by scanning for ASM dlls in the path.
-        /// Throws if ASM binaries cannot be found in the path.
-        /// </summary>
-        /// <param name="asmPath">path to directory containing asm dlls</param>
-        /// <returns></returns>
-        /// <param name="searchPattern">optional - to be used for testing</param>
-        /// <returns></returns>
-        internal static Version GetVersionFromASMPath(string asmPath, string searchPattern = "ASMAHL*.dll")
-        {
-            var ASMFilePath = Directory.GetFiles(asmPath, searchPattern, SearchOption.TopDirectoryOnly).FirstOrDefault();
-            if(ASMFilePath != null && File.Exists(ASMFilePath))
-            {
-                var asmVersion = FileVersionInfo.GetVersionInfo(ASMFilePath);
-                var libGversion = new Version(asmVersion.FileMajorPart, asmVersion.FileMinorPart, asmVersion.FileBuildPart);
-                return libGversion;
-            }
-            throw new FileNotFoundException("$Could not find geometry library binaries at : {geometryLibraryPath}");
-        }
+        
 
         /// <summary>
         /// Use this overload to construct a DynamoModel when the location of ASM to use is known.
@@ -220,10 +202,10 @@ namespace Dynamo.Applications
                 {
                     throw new FileNotFoundException($"{nameof(asmPath)}:{asmPath}");
                 }
-                Version libGVersion = GetVersionFromASMPath(asmPath);
+                Version asmBinariesVersion = DynamoShapeManager.Utilities.GetVersionFromPath(asmPath);
 
                 //get version of libG that matches the asm version that was supplied from geometryLibraryPath.
-                preloaderLocation = DynamoShapeManager.Utilities.GetLibGPreloaderLocation(libGVersion, rootFolder);
+                preloaderLocation = DynamoShapeManager.Utilities.GetLibGPreloaderLocation(asmBinariesVersion, rootFolder);
                 geometryFactoryPath = Path.Combine(preloaderLocation, DynamoShapeManager.Utilities.GeometryFactoryAssembly);
 
                 //load asm and libG.
