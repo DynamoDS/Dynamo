@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using Dynamo.Core;
+using Dynamo.Engine;
 using Dynamo.Exceptions;
 using Dynamo.Extensions;
 using Dynamo.Interfaces;
@@ -149,7 +150,7 @@ namespace Dynamo.PackageManager
         {
             if (RequestLoadCustomNodeDirectory != null)
             {
-                return RequestLoadCustomNodeDirectory(directory,packageInfo);
+                return RequestLoadCustomNodeDirectory(directory, packageInfo);
             }
 
             return new List<CustomNodeInfo>();
@@ -186,7 +187,7 @@ namespace Dynamo.PackageManager
                 }
                 // load custom nodes
                 var packageInfo = new Graph.Workspaces.PackageInfo(package.Name, new Version(package.VersionName));
-                var customNodes = OnRequestLoadCustomNodeDirectory(package.CustomNodeDirectory,packageInfo);
+                var customNodes = OnRequestLoadCustomNodeDirectory(package.CustomNodeDirectory, packageInfo);
                 package.LoadedCustomNodes.AddRange(customNodes);
 
                 package.EnumerateAdditionalFiles();
@@ -278,10 +279,26 @@ namespace Dynamo.PackageManager
         public void LoadPackages(IEnumerable<Package> packages)
         {
             var enumerable = packages.ToList();
+
+            // This fix is in reference to the crash reported in task: https://jira.autodesk.com/browse/DYN-2101
+            // TODO: https://jira.autodesk.com/browse/DYN-2120. we will be re-evaluating this workflow, to find the best clean solution.
+
+            // The reason for this crash is, when a new package is being loaded into the dynamo, it will reload 
+            // all the libraries into the VM. Since the graph execution runs are triggered asynchronously, it causes 
+            // an exception as the VM is reinitialized during the execution run. To avoid this, we disable the execution run's that
+            // are triggered while the package is still being loaded. Once the package is completely loaded and the VM is reinitialized,
+            // a final run is triggered that would execute the nodes in the workspace after resolving them.  
+
+            // Disabling the run here since new packages are being loaded. 
+            EngineController.DisableRun = true;
+
             foreach (var pkg in enumerable)
             {
                 TryLoadPackageIntoLibrary(pkg);
             }
+
+            // Setting back the DisableRun property back to false, as the package loading is completed.
+            EngineController.DisableRun = false;
 
             var assemblies =
                 enumerable.SelectMany(x => x.EnumerateAssembliesInBinDirectory().Where(y => y.IsNodeLibrary));
