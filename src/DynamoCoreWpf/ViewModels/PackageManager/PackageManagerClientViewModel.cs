@@ -403,7 +403,7 @@ namespace Dynamo.ViewModels
         {
             foreach (var f in funcDefs)
             {
-                var pkg = pmExtension.PackageLoader.GetOwnerPackage(f.Item1);
+                var pkg = PackageManagerExtension.PackageLoader.GetOwnerPackage(f.Item1);
 
                 if (pkg != null)
                 {
