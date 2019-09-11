@@ -98,6 +98,10 @@ namespace Dynamo.Graph.Workspaces
 
             var obj = JObject.Load(reader);
             var type = Type.GetType(obj["$type"].Value<string>());
+            var typeName = obj["$type"].Value<string>().Split(',').FirstOrDefault();
+            // This assemblyName does not usually contain version information...
+            var assemblyName = obj["$type"].Value<string>().Split(',').Skip(1).FirstOrDefault().Trim();
+            
             // If we can't find this type - try to look in our load from assemblies,
             // but only during testing - this is required during testing because some dlls are loaded
             // using Assembly.LoadFrom using the assemblyHelper - which loads dlls into loadFrom context - 
@@ -106,10 +110,7 @@ namespace Dynamo.Graph.Workspaces
             if(type == null && this.isTestMode == true)
             {
                 List<Assembly> resultList;
-
-                var typeName = obj["$type"].Value<string>().Split(',').FirstOrDefault();
-                // This assemblyName does not usually contain version information...
-                var assemblyName = obj["$type"].Value<string>().Split(',').Skip(1).FirstOrDefault().Trim();
+                
                 if (assemblyName != null)
                 {
                     if(this.loadedAssemblies.TryGetValue(assemblyName, out resultList))
@@ -144,8 +145,7 @@ namespace Dynamo.Graph.Workspaces
             var outPorts = obj["Outputs"].ToArray().Select(t => t.ToObject<PortModel>()).ToArray();
 
             var resolver = (IdReferenceResolver)serializer.ReferenceResolver;
-            var assemblyName = obj["$type"].Value<string>().Split(',').Skip(1).FirstOrDefault().Trim();
-
+           
             bool remapPorts = true;
 
             // If type is still null at this point return a dummy node
