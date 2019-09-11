@@ -144,14 +144,14 @@ namespace Dynamo.Graph.Workspaces
             var outPorts = obj["Outputs"].ToArray().Select(t => t.ToObject<PortModel>()).ToArray();
 
             var resolver = (IdReferenceResolver)serializer.ReferenceResolver;
-            string assemblyLocation = objectType.Assembly.Location;
+            var assemblyName = obj["$type"].Value<string>().Split(',').Skip(1).FirstOrDefault().Trim();
 
             bool remapPorts = true;
 
             // If type is still null at this point return a dummy node
             if (type == null)
             {
-                node = CreateDummyNode(obj, assemblyLocation, inPorts, outPorts);
+                node = CreateDummyNode(obj, assemblyName, inPorts, outPorts);
             }
             // Attempt to create a valid node using the type
             else if (type == typeof(Function))
@@ -215,7 +215,7 @@ namespace Dynamo.Graph.Workspaces
                 // Use the functionDescriptor to try and restore the proper node if possible
                 if (functionDescriptor == null)
                 {
-                    node = CreateDummyNode(obj, assemblyLocation, inPorts, outPorts);
+                    node = CreateDummyNode(obj, assemblyName, inPorts, outPorts);
                 }
                 else
                 {
@@ -278,7 +278,7 @@ namespace Dynamo.Graph.Workspaces
             return node;
         }
 
-        private DummyNode CreateDummyNode(JObject obj, string assemblyLocation, PortModel[] inPorts, PortModel[] outPorts)
+        private DummyNode CreateDummyNode(JObject obj, string assemblyName, PortModel[] inPorts, PortModel[] outPorts)
         {
             var inputcount = inPorts.Count();
             var outputcount = outPorts.Count();
@@ -287,7 +287,7 @@ namespace Dynamo.Graph.Workspaces
                 obj["Id"].ToString(),
                 inputcount,
                 outputcount,
-                assemblyLocation,
+                assemblyName,
                 obj);
         }
 
