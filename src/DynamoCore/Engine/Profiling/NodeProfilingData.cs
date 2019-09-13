@@ -11,7 +11,7 @@ namespace Dynamo.Engine.Profiling
         private DateTime? startTime = null;
         private DateTime? endTime = null;
 
-        private bool profilingInProcess;
+        internal bool profilingStarted;
 
         internal NodeProfilingData(NodeModel node)
         {
@@ -32,16 +32,15 @@ namespace Dynamo.Engine.Profiling
 
         private void RecordEvaluationState(object data)
         {
-            if (!profilingInProcess)
+            if (!profilingStarted)
             {
                 startTime = DateTime.Now;
-                profilingInProcess = true;
+                profilingStarted = true;
                 node.OnNodeExecutionBegin();
                 return;
             }
 
             endTime = DateTime.Now;
-            profilingInProcess = false;
             node.OnNodeExecutionEnd();
         }
 
