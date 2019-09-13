@@ -185,8 +185,8 @@ namespace Dynamo.Tests
             }
 
             // Wait a few seconds so we can later confirm that the start time gets reset after this pause
-            var pauseTime = new TimeSpan(0, 0, 0, 5);
-            Thread.Sleep(5000);
+            var pauseTime = new TimeSpan(0, 0, 0, 5); // 5 seconds
+            Thread.Sleep(pauseTime);
 
             // Mark ONLY the most upstream node as modified
             var codeBlockGuid = "87794137f78d4d809814e73d977e46fb";
@@ -198,7 +198,7 @@ namespace Dynamo.Tests
                 }
             }
 
-            // Second run
+            // Second run / Re-execute
             BeginRun();
 
             // Gather second run data
