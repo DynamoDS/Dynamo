@@ -129,6 +129,9 @@
   <data name="DetailsMessageMissing" xml:space="preserve">
     <value>This graph depends on {0} {1}. Would you like to download and install this package?</value>
   </data>
+  <data name="DetailsMessageRequireRestart" xml:space="preserve">
+    <value>The package needs to be uninstalled before you can install a different version of it. Please restart Dynamo and then install the specified version.</value>
+  </data>
   <data name="DetailsMessageWarning" xml:space="preserve">
     <value>Some nodes in this graph were originally created with {0} v{1}, which you do not have installed. You may have a different version of {0} installed, or you may have a different package which resolves these nodes.</value>
   </data>

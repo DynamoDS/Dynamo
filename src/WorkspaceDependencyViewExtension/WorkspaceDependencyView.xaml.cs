@@ -52,10 +52,12 @@ namespace Dynamo.WorkspaceDependency
         /// </summary>
         private void ProvideFeedback(object sender, EventArgs e)
         {
-            try {
+            try
+            {
                 System.Diagnostics.Process.Start(FeedbackLink);
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 String message = Dynamo.WorkspaceDependency.Properties.Resources.ProvideFeedbackError + "\n\n" + ex.Message;
                 MessageBox.Show(message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
@@ -120,7 +122,7 @@ namespace Dynamo.WorkspaceDependency
         /// Constructor
         /// </summary>
         /// <param name="p">ViewLoadedParams</param>
-        public WorkspaceDependencyView(WorkspaceDependencyViewExtension viewExtension,ViewLoadedParams p)
+        public WorkspaceDependencyView(WorkspaceDependencyViewExtension viewExtension, ViewLoadedParams p)
         {
             InitializeComponent();
             currentWorkspace = p.CurrentWorkspaceModel as WorkspaceModel;
@@ -132,7 +134,7 @@ namespace Dynamo.WorkspaceDependency
             dependencyViewExtension = viewExtension;
             DependencyRegen(currentWorkspace);
         }
-        
+
         /// <summary>
         /// Send a request to the package manager client to download this package and its dependencies
         /// </summary>
@@ -140,10 +142,32 @@ namespace Dynamo.WorkspaceDependency
         /// <param name="e"></param>
         private void DownloadPackage(object sender, RoutedEventArgs e)
         {
-            var info = ((PackageDependencyRow)((Button)sender).DataContext).DependencyInfo;
-            var package = new PackageInfo(info.Name, info.Version);
+            try
+            {
+                var info = ((PackageDependencyRow)((Button)sender).DataContext).DependencyInfo;
+                DownloadSpecifiedPackageAndRefresh(info);
+            }
+            catch (Exception ex)
+            {
+                dependencyViewExtension.OnMessageLogged(LogMessage.Info(String.Format(Properties.Resources.DependencyViewExtensionErrorTemplate, ex.ToString())));
+            }
+        }
 
-            packageInstaller.DownloadAndInstallPackage(package);
+        /// <summary>
+        /// Downloaded the specified package according to serialized dyn
+        /// and refresh the view of dependency viewer
+        /// </summary>
+        /// <param name="info">Target PackageDependencyInfo to download</param>
+        internal void DownloadSpecifiedPackageAndRefresh(PackageDependencyInfo info)
+        {
+            packageInstaller.DownloadAndInstallPackage(info);
+
+            // If the newly installed package requires Dynamo to restart
+            if (dependencyViewExtension.pmExtension.PackageLoader.LocalPackages.Where(x => x.Name == info.Name && x.MarkedForUninstall).Count() != 0)
+            {
+                info.State = PackageDependencyState.RequiresRestart;
+            }
+
             DependencyRegen(currentWorkspace);
         }
 
@@ -160,7 +184,7 @@ namespace Dynamo.WorkspaceDependency
                 var info = ((PackageDependencyRow)((Button)sender).DataContext).DependencyInfo;
                 UpdateWorkspaceToUseInstalledPackage(info);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 dependencyViewExtension.OnMessageLogged(LogMessage.Info(String.Format(Properties.Resources.DependencyViewExtensionErrorTemplate, ex.ToString())));
             }
@@ -224,12 +248,12 @@ namespace Dynamo.WorkspaceDependency
                 switch (DependencyInfo.State)
                 {
                     case PackageDependencyState.Loaded:
-                        message = string.Format(Properties.Resources.DetailsMessageLoaded, 
+                        message = string.Format(Properties.Resources.DetailsMessageLoaded,
                             DependencyInfo.Name, DependencyInfo.Version.ToString());
                         break;
 
                     case PackageDependencyState.Missing:
-                        message = string.Format(Properties.Resources.DetailsMessageMissing, 
+                        message = string.Format(Properties.Resources.DetailsMessageMissing,
                             DependencyInfo.Name, DependencyInfo.Version.ToString());
                         break;
 
@@ -238,8 +262,12 @@ namespace Dynamo.WorkspaceDependency
                             DependencyInfo.Name, DependencyInfo.Version.ToString());
                         break;
 
+                    case PackageDependencyState.RequiresRestart:
+                        message = string.Format(Properties.Resources.DetailsMessageRequireRestart);
+                        break;
+
                     default:
-                        message = string.Format(Properties.Resources.DetailsMessageWarning, 
+                        message = string.Format(Properties.Resources.DetailsMessageWarning,
                             DependencyInfo.Name, DependencyInfo.Version.ToString());
                         break;
                 }
@@ -267,12 +295,16 @@ namespace Dynamo.WorkspaceDependency
                         bitmap = Properties.Resources.NodeLibraryDependency_Missing;
                         break;
 
+                    case PackageDependencyState.RequiresRestart:
+                        bitmap = Properties.Resources.NodeLibraryDependency_Missing;
+                        break;
+
                     default:
                         bitmap = Properties.Resources.NodeLibraryDependency_Warning;
                         break;
                 }
 
-                return ResourceUtilities.ConvertToImageSource(bitmap); 
+                return ResourceUtilities.ConvertToImageSource(bitmap);
             }
         }
 
