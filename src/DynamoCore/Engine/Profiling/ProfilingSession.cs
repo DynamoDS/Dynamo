@@ -46,12 +46,12 @@ namespace Dynamo.Engine.Profiling
         private void OnGraphPreExecution(Session.IExecutionSession session)
         {
             profilingData.StartTime = DateTime.Now;
+            profilingData.Reset();
         }
 
         private void OnGraphPostExecution(Session.IExecutionSession session)
         {
             profilingData.EndTime = DateTime.Now;
-            profilingData.ResetProfilingDataState();
         }
 
         internal void RegisterNode(NodeModel node)
