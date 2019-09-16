@@ -115,6 +115,12 @@ namespace Dynamo.WorkspaceDependency
                 HasDependencyIssue = true;
             }
 
+            // If the newly installed package requires Dynamo to restart, set the state
+            foreach(var package in dependencyViewExtension.pmExtension.PackageLoader.LocalPackages.Where(x => x.MarkedForUninstall))
+            {
+                (packageDependencies.Where(x => x.Name == package.Name).FirstOrDefault() as PackageDependencyInfo).State = PackageDependencyState.RequiresRestart;
+            }
+
             PackageDependencyTable.ItemsSource = packageDependencies.Select(d => new PackageDependencyRow(d as PackageDependencyInfo));
         }
 
@@ -161,13 +167,6 @@ namespace Dynamo.WorkspaceDependency
         internal void DownloadSpecifiedPackageAndRefresh(PackageDependencyInfo info)
         {
             packageInstaller.DownloadAndInstallPackage(info);
-
-            // If the newly installed package requires Dynamo to restart
-            if (dependencyViewExtension.pmExtension.PackageLoader.LocalPackages.Where(x => x.Name == info.Name && x.MarkedForUninstall).Count() != 0)
-            {
-                info.State = PackageDependencyState.RequiresRestart;
-            }
-
             DependencyRegen(currentWorkspace);
         }
 
@@ -296,7 +295,7 @@ namespace Dynamo.WorkspaceDependency
                         break;
 
                     case PackageDependencyState.RequiresRestart:
-                        bitmap = Properties.Resources.NodeLibraryDependency_Missing;
+                        bitmap = Properties.Resources.NodeLibraryDependency_Warning;
                         break;
 
                     default:
