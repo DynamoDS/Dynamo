@@ -19,7 +19,7 @@ namespace Dynamo.Wpf.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class Resources {
@@ -4031,15 +4031,6 @@ namespace Dynamo.Wpf.Properties {
         public static string PackageSearchViewDescription {
             get {
                 return ResourceManager.GetString("PackageSearchViewDescription", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Downvote to voice lack of support for this package.
-        /// </summary>
-        public static string PackageSearchViewDownvoteButtonTooltip {
-            get {
-                return ResourceManager.GetString("PackageSearchViewDownvoteButtonTooltip", resourceCulture);
             }
         }
         

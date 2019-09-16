@@ -403,7 +403,7 @@ namespace Dynamo.ViewModels
         {
             foreach (var f in funcDefs)
             {
-                var pkg = pmExtension.PackageLoader.GetOwnerPackage(f.Item1);
+                var pkg = PackageManagerExtension.PackageLoader.GetOwnerPackage(f.Item1);
 
                 if (pkg != null)
                 {
@@ -435,8 +435,6 @@ namespace Dynamo.ViewModels
                 var ele = new PackageManagerSearchElement(header);
 
                 ele.UpvoteRequested += this.Model.Upvote;
-                ele.DownvoteRequested += this.Model.Downvote;
-
                 CachedPackageList.Add( ele );
             }
 

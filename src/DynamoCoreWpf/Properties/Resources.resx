@@ -1308,9 +1308,6 @@ You will get a chance to save your work.</value>
     <value>Description</value>
     <comment>Package description</comment>
   </data>
-  <data name="PackageSearchViewDownvoteButtonTooltip" xml:space="preserve">
-    <value>Downvote to voice lack of support for this package</value>
-  </data>
   <data name="PackageSearchViewInstallButton" xml:space="preserve">
     <value>⇓ Install</value>
     <comment>To install package</comment>

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.IO;
 using System.Runtime.InteropServices;
 using System.Windows;
 using Dynamo.Applications;
@@ -19,6 +20,7 @@ namespace DynamoSandbox
         private DynamoViewModel viewModel = null;
         private string commandFilePath;
         private Stopwatch startupTimer = Stopwatch.StartNew();
+        private string ASMPath;
 
         [DllImport("msvcrt.dll")]
         public static extern int _putenv(string env);
@@ -29,6 +31,7 @@ namespace DynamoSandbox
             var locale = StartupUtils.SetLocale(cmdLineArgs);
             _putenv(locale);
             commandFilePath = cmdLineArgs.CommandFilePath;
+            ASMPath = cmdLineArgs.ASMPath;
         }
 
         public void RunApplication(Application app)
@@ -36,9 +39,16 @@ namespace DynamoSandbox
             try
             {
                 DynamoModel.RequestMigrationStatusDialog += MigrationStatusDialogRequested;
-
-                var model = Dynamo.Applications.StartupUtils.MakeModel(false);
-
+                DynamoModel model;
+                if (!String.IsNullOrEmpty(ASMPath))
+                {
+                    model = Dynamo.Applications.StartupUtils.MakeModel(false,ASMPath);
+                }
+                else
+                {
+                    model = Dynamo.Applications.StartupUtils.MakeModel(false);
+                }
+                
                 viewModel = DynamoViewModel.Start(
                     new DynamoViewModel.StartConfiguration()
                     {

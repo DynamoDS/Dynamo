@@ -443,5 +443,25 @@ namespace DynamoShapeManager
             var methodParams = new object[] { ProductsWithASM, ASMFileMask };
             return installationsMethod.Invoke(null, methodParams) as IEnumerable;
         }
+
+        /// <summary>
+        /// Extracts version of ASM dlls from a path by scanning for ASM dlls in the path.
+        /// Throws if ASM binaries cannot be found in the path.
+        /// </summary>
+        /// <param name="asmPath">path to directory containing asm dlls</param>
+        /// <returns></returns>
+        /// <param name="searchPattern">optional - to be used for testing - default is the ASM search pattern</param>
+        /// <returns></returns>
+        public static Version GetVersionFromPath(string asmPath, string searchPattern = "ASMAHL*.dll")
+        {
+            var ASMFilePath = Directory.GetFiles(asmPath, searchPattern, SearchOption.TopDirectoryOnly).FirstOrDefault();
+            if (ASMFilePath != null && File.Exists(ASMFilePath))
+            {
+                var asmVersion = FileVersionInfo.GetVersionInfo(ASMFilePath);
+                var libGversion = new Version(asmVersion.FileMajorPart, asmVersion.FileMinorPart, asmVersion.FileBuildPart);
+                return libGversion;
+            }
+            throw new FileNotFoundException("$Could not find geometry library binaries at : {geometryLibraryPath}");
+        }
     }
 }

@@ -739,6 +739,7 @@ namespace Dynamo.Tests
                 "visualization",
                 "migration",
                 "missing_custom_node",
+                "PackageLoadExceptionTest",
                 "Dummy.dyn",
                 // Tests which require late initialization
                 // of custom nodes...

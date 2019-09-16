@@ -14,6 +14,8 @@ namespace Dynamo.PackageManager.ViewModels
     {
         public ICommand DownloadLatestCommand { get; set; }
         public ICommand UpvoteCommand { get; set; }
+
+        [Obsolete("This UI command will no longer decrease package votes and will be removed in Dynamo 3.0")]
         public ICommand DownvoteCommand { get; set; }
         public ICommand VisitSiteCommand { get; set; }
         public ICommand VisitRepositoryCommand { get; set; }
@@ -31,6 +33,8 @@ namespace Dynamo.PackageManager.ViewModels
             this.DownloadLatestToCustomPathCommand = new DelegateCommand(() => OnRequestDownload(Model.Header.versions.Last(), true));
 
             this.UpvoteCommand = new DelegateCommand(Model.Upvote, () => canLogin);
+
+            // TODO: Remove the initialization of the UI command in Dynamo 3.0
             this.DownvoteCommand = new DelegateCommand(Model.Downvote, () => canLogin);
 
             this.VisitSiteCommand =
