@@ -365,4 +365,7 @@
   <data name="ProvideFeedbackError" xml:space="preserve">
     <value>Could not redirect to the Dynamo forum page for feedback:</value>
   </data>
+  <data name="RestartBannerMessage" xml:space="preserve">
+    <value>A currrently installed package is marked for uninstall. To complete the uninstall, please restart Dynamo.</value>
+  </data>
 </root>

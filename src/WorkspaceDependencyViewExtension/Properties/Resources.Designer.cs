@@ -188,5 +188,14 @@ namespace Dynamo.WorkspaceDependency.Properties {
                 return ResourceManager.GetString("ProvideFeedbackError", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A currrently installed package is marked for uninstall. To complete the uninstall, please restart Dynamo..
+        /// </summary>
+        public static string RestartBannerMessage {
+            get {
+                return ResourceManager.GetString("RestartBannerMessage", resourceCulture);
+            }
+        }
     }
 }

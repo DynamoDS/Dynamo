@@ -21,18 +21,27 @@ namespace Dynamo.WorkspaceDependency
 
         private WorkspaceModel currentWorkspace;
 
-        private string FeedbackLink = "https://forum.dynamobim.com/t/call-for-feedback-on-dynamo-graph-package-dependency-display/37229";
+        /// <summary>
+        /// The hyper link where Dynamo user will be forwarded to for submitting comments.
+        /// </summary>
+        private readonly string FeedbackLink = "https://forum.dynamobim.com/t/call-for-feedback-on-dynamo-graph-package-dependency-display/37229";
 
         private ViewLoadedParams loadedParams;
         private WorkspaceDependencyViewExtension dependencyViewExtension;
 
         private IPackageInstaller packageInstaller;
 
-        private Boolean hasDependencyIssue = false;
 
         /// <summary>
-        /// Property to check if the current workspace has any package dependencies
-        /// issue worth workspace author's attention
+        /// Property to check if the Dynamo session has package pending for uninstall
+        /// </summary>
+        public Boolean IsPendingRestart { get; set; }
+
+        private Boolean hasDependencyIssue = false;
+        /// <summary>
+        /// Property to check if the Dynamo active workspace has any package dependencies
+        /// issue worth workspace author's attention. This determines if the package dep 
+        /// viewer will be injected into right panel.
         /// </summary>
         private Boolean HasDependencyIssue
         {
@@ -115,10 +124,12 @@ namespace Dynamo.WorkspaceDependency
                 HasDependencyIssue = true;
             }
 
+            IsPendingRestart = false;
             // If the newly installed package requires Dynamo to restart, set the state
-            foreach(var package in dependencyViewExtension.pmExtension.PackageLoader.LocalPackages.Where(x => x.MarkedForUninstall))
+            foreach (var package in dependencyViewExtension.pmExtension.PackageLoader.LocalPackages.Where(x => x.MarkedForUninstall))
             {
                 (packageDependencies.Where(x => x.Name == package.Name).FirstOrDefault() as PackageDependencyInfo).State = PackageDependencyState.RequiresRestart;
+                IsPendingRestart = true;
             }
 
             PackageDependencyTable.ItemsSource = packageDependencies.Select(d => new PackageDependencyRow(d as PackageDependencyInfo));
@@ -131,6 +142,7 @@ namespace Dynamo.WorkspaceDependency
         public WorkspaceDependencyView(WorkspaceDependencyViewExtension viewExtension, ViewLoadedParams p)
         {
             InitializeComponent();
+            this.DataContext = this;
             currentWorkspace = p.CurrentWorkspaceModel as WorkspaceModel;
             p.CurrentWorkspaceChanged += OnWorkspaceChanged;
             p.CurrentWorkspaceCleared += OnWorkspaceCleared;
