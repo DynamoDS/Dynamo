@@ -31,12 +31,6 @@ namespace Dynamo.WorkspaceDependency
 
         private IPackageInstaller packageInstaller;
 
-
-        /// <summary>
-        /// Property to check if the Dynamo session has package pending for uninstall
-        /// </summary>
-        public Boolean IsPendingRestart { get; set; }
-
         private Boolean hasDependencyIssue = false;
         /// <summary>
         /// Property to check if the Dynamo active workspace has any package dependencies
@@ -124,12 +118,12 @@ namespace Dynamo.WorkspaceDependency
                 HasDependencyIssue = true;
             }
 
-            IsPendingRestart = false;
+            this.RestartBanner.Visibility = Visibility.Hidden;
             // If the newly installed package requires Dynamo to restart, set the state
             foreach (var package in dependencyViewExtension.pmExtension.PackageLoader.LocalPackages.Where(x => x.MarkedForUninstall))
             {
                 (packageDependencies.Where(x => x.Name == package.Name).FirstOrDefault() as PackageDependencyInfo).State = PackageDependencyState.RequiresRestart;
-                IsPendingRestart = true;
+                this.RestartBanner.Visibility = Visibility.Visible;
             }
 
             PackageDependencyTable.ItemsSource = packageDependencies.Select(d => new PackageDependencyRow(d as PackageDependencyInfo));
