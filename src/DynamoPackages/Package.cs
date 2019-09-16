@@ -101,7 +101,7 @@ namespace Dynamo.PackageManager
         public bool MarkedForUninstall
         {
             get { return markedForUninstall; }
-            private set { markedForUninstall = value; RaisePropertyChanged("MarkedForUninstall"); }
+            internal set { markedForUninstall = value; RaisePropertyChanged("MarkedForUninstall"); }
         }
 
         private string _group = "";

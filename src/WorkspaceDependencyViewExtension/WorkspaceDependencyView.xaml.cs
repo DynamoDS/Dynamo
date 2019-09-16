@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
@@ -30,6 +31,12 @@ namespace Dynamo.WorkspaceDependency
         private WorkspaceDependencyViewExtension dependencyViewExtension;
 
         private IPackageInstaller packageInstaller;
+
+        /// <summary>
+        /// Internal cache of the data displayed in data grid, useful in unit testing.
+        /// You are not expected to modify this but rather inspection.
+        /// </summary>
+        internal IEnumerable<PackageDependencyRow> dataRows;
 
         private Boolean hasDependencyIssue = false;
         /// <summary>
@@ -126,7 +133,8 @@ namespace Dynamo.WorkspaceDependency
                 this.RestartBanner.Visibility = Visibility.Visible;
             }
 
-            PackageDependencyTable.ItemsSource = packageDependencies.Select(d => new PackageDependencyRow(d as PackageDependencyInfo));
+            dataRows = packageDependencies.Select(d => new PackageDependencyRow(d as PackageDependencyInfo));
+            PackageDependencyTable.ItemsSource = dataRows;
         }
 
         /// <summary>
