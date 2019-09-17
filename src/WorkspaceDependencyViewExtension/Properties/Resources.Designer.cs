@@ -190,7 +190,7 @@ namespace Dynamo.WorkspaceDependency.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to A currrently installed package is marked for uninstall. To complete the uninstall, please restart Dynamo..
+        ///   Looks up a localized string similar to An installed package is marked for uninstall. To complete the uninstall, please restart Dynamo..
         /// </summary>
         public static string RestartBannerMessage {
             get {
