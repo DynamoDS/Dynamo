@@ -45,8 +45,8 @@ namespace Dynamo.Engine.Profiling
 
         private void OnGraphPreExecution(Session.IExecutionSession session)
         {
-            profilingData.StartTime = DateTime.Now;
             profilingData.Reset();
+            profilingData.StartTime = DateTime.Now;
         }
 
         private void OnGraphPostExecution(Session.IExecutionSession session)
