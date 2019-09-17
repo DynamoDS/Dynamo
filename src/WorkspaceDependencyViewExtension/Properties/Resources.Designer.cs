@@ -97,6 +97,15 @@ namespace Dynamo.WorkspaceDependency.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The package needs to be uninstalled before you can install a different version of it. Please restart Dynamo and then install the specified version..
+        /// </summary>
+        public static string DetailsMessageRequireRestart {
+            get {
+                return ResourceManager.GetString("DetailsMessageRequireRestart", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Some nodes in this graph were originally created with {0} v{1}, which you do not have installed. You may have a different version of {0} installed, or you may have a different package which resolves these nodes..
         /// </summary>
         public static string DetailsMessageWarning {
@@ -177,6 +186,15 @@ namespace Dynamo.WorkspaceDependency.Properties {
         public static string ProvideFeedbackError {
             get {
                 return ResourceManager.GetString("ProvideFeedbackError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to An installed package is marked for uninstall. To complete the uninstall, please restart Dynamo..
+        /// </summary>
+        public static string RestartBannerMessage {
+            get {
+                return ResourceManager.GetString("RestartBannerMessage", resourceCulture);
             }
         }
     }

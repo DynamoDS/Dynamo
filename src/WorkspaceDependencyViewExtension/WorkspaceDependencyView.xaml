@@ -197,7 +197,23 @@
 
         <!-- Template for the feedback banner -->
         <DockPanel Name="Feedback" VerticalAlignment="Bottom" Grid.Row="2" Width="600">
-            <StatusBar Background="{StaticResource FeedbackSectionBackground}" DockPanel.Dock="Bottom" Height="55">
+            <!-- Restart Banner -->
+            <StatusBar
+                Name="RestartBanner"
+                Background="LightCoral"
+                DockPanel.Dock="Top"
+                Height="55"
+                Margin="1"
+                Visibility="Hidden">
+                <!-- Preview text -->
+                <StatusBarItem>
+                    <Border Height="50">
+                        <TextBlock TextWrapping="Wrap" Width="500" Padding="10,0,10,0" FontSize="15" Foreground="White" Text="{x:Static w:Resources.RestartBannerMessage}" VerticalAlignment="Center"/>
+                    </Border>
+                </StatusBarItem>
+            </StatusBar>
+            <!-- Feedback Banner -->
+            <StatusBar Background="{StaticResource FeedbackSectionBackground}" DockPanel.Dock="Bottom" Height="55" Margin="1">
                 <!-- Preview text -->
                 <StatusBarItem>
                     <Border Height="50">

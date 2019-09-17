@@ -553,7 +553,7 @@ namespace Dynamo.Graph.Workspaces
                         {
                             packageDependencies[saved].State = PackageDependencyState.Missing;
                         }
-                        // If the state is Missing for atleast one of the nodes,
+                        // If the state is Missing for at least one of the nodes,
                         // we set the state of the whole package dependency to Missing.
                         // Set other states accordingly, only if the PackageDependencyState(for that package)
                         // is not set to Missing by any of the other nodes. 
@@ -566,8 +566,9 @@ namespace Dynamo.Graph.Workspaces
                                 {
                                     packageDependencies[saved].State = PackageDependencyState.Loaded;
                                 }
-                                // if incorrect version of package is installed.
-                                else
+                                // If incorrect version of package is installed and not marked for uninstall,
+                                // set the state. Otherwise, keep the RequiresRestart state away from overwritten.
+                                else if(packageDependencies[saved].State != PackageDependencyState.RequiresRestart)
                                 {
                                     packageDependencies[saved].State = PackageDependencyState.IncorrectVersion;
                                 }
