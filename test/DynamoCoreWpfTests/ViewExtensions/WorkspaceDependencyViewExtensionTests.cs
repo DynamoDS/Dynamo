@@ -36,6 +36,25 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
+        public void RestartBannerDefaultStateTest()
+        {
+            RaiseLoadedEvent(this.View);
+            var extensionManager = View.viewExtensionManager;
+            extensionManager.Add(viewExtension);
+
+            Open(@"pkgs\Dynamo Samples\extra\CustomRenderExample.dyn");
+
+            var loadedParams = new ViewLoadedParams(View, ViewModel);
+            viewExtension.pmExtension = this.Model.ExtensionManager.Extensions.OfType<PackageManagerExtension>().FirstOrDefault();
+            viewExtension.DependencyView = new WorkspaceDependencyView(viewExtension, loadedParams);
+            var CurrentWorkspace = ViewModel.Model.CurrentWorkspace;
+            viewExtension.DependencyView.DependencyRegen(CurrentWorkspace);
+            // Restart banner should not display by default
+            Assert.AreEqual(Visibility.Hidden, viewExtension.DependencyView.RestartBanner.Visibility);
+        }
+
+
+        [Test]
         public void DownloadSpecifiedVersionOfPackageTest()
         {
             RaiseLoadedEvent(this.View);
