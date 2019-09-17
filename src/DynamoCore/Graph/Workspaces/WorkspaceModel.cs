@@ -566,7 +566,8 @@ namespace Dynamo.Graph.Workspaces
                                 {
                                     packageDependencies[saved].State = PackageDependencyState.Loaded;
                                 }
-                                // if incorrect version of package is installed.
+                                // If incorrect version of package is installed and not marked for uninstall,
+                                // set the state. Otherwise, keep the RequiresRestart state away from overwritten.
                                 else if(packageDependencies[saved].State != PackageDependencyState.RequiresRestart)
                                 {
                                     packageDependencies[saved].State = PackageDependencyState.IncorrectVersion;

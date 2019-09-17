@@ -126,8 +126,10 @@ namespace Dynamo.WorkspaceDependency
                 HasDependencyIssue = true;
             }
 
-            if (packageDependencies.Any(d => d.State != PackageDependencyState.RequiresRestart))
+            // If package is set to uninstall state, update the package info
+            foreach (var package in dependencyViewExtension.pmExtension.PackageLoader.LocalPackages.Where(x => x.MarkedForUninstall))
             {
+                (packageDependencies.Where(x => x.Name == package.Name).FirstOrDefault() as PackageDependencyInfo).State = PackageDependencyState.RequiresRestart;
                 this.RestartBanner.Visibility = Visibility.Visible;
             }
 
@@ -179,11 +181,6 @@ namespace Dynamo.WorkspaceDependency
         internal void DownloadSpecifiedPackageAndRefresh(PackageDependencyInfo info)
         {
             packageInstaller.DownloadAndInstallPackage(info);
-            // If package is set to uninstall state, update the package info
-            if (dependencyViewExtension.pmExtension.PackageLoader.LocalPackages.Where(x => x.Name == info.Name && x.MarkedForUninstall).Count() != 0)
-            {
-                info.State = PackageDependencyState.RequiresRestart;
-            }
             DependencyRegen(currentWorkspace);
         }
 
