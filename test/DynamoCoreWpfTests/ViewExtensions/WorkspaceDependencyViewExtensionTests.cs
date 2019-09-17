@@ -63,7 +63,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(1, viewExtension.DependencyView.PackageDependencyTable.Items.Count);
             var newInfo = viewExtension.DependencyView.dataRows.FirstOrDefault().DependencyInfo;
 
-            // Local loaded version was 2.0.0, but now will be update-to-date with dyn
+            // Local loaded version was 2.0.0, but now will be update to date with dyn
             Assert.AreEqual("2.0.1", newInfo.Version.ToString());
             Assert.AreEqual(1, newInfo.Nodes.Count);
             Assert.AreEqual(newInfo.State, PackageDependencyState.RequiresRestart);
