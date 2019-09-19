@@ -698,18 +698,13 @@ namespace ProtoFFI
             if (marshaler != null)
                 return marshaler.Marshal(obj, context, dsi, expectedDSType);
 
-            //4. Didn't get the marshaler, could be a pointer or var type, check from map
-            StackValue retVal;
-            if (CLRObjectMap.TryGetValue(obj, out retVal))
-                return retVal;
-
-            //5. If it is a StackValue, simply return it.
+            //4. If it is a StackValue, simply return it.
             if (obj is StackValue)
             {
                 return (StackValue)obj;
             }
 
-            //6. Seems like a new object create a new DS object and bind it.
+            //5. Seems like a new object create a new DS object and bind it.
             return CreateDSObject(obj, context, dsi);
         }
 
@@ -741,7 +736,7 @@ namespace ProtoFFI
 
             //Search in the DSObjectMap, for corresponding clrObject.
             object clrObject = null;
-            if (DSObjectMap.TryGetValue(dsObject, out clrObject))
+            if (DSObjectMap.TryGetValue(dsObject.Pointer, out clrObject))
                 return clrObject;
 
             
@@ -857,12 +852,12 @@ namespace ProtoFFI
         internal bool IsDictionary(StackValue value)
         {
             object obj;
-            return value.IsPointer && DSObjectMap.TryGetValue(value, out obj) && obj is DesignScript.Builtin.Dictionary;
+            return value.IsPointer && DSObjectMap.TryGetValue(value.Pointer, out obj) && obj is DesignScript.Builtin.Dictionary;
         }
 
         internal DesignScript.Builtin.Dictionary GetDictionary(StackValue value)
         {
-            return DSObjectMap[value] as DesignScript.Builtin.Dictionary;
+            return DSObjectMap[value.Pointer] as DesignScript.Builtin.Dictionary;
         }
 
         /// <summary>
@@ -1043,15 +1038,11 @@ namespace ProtoFFI
         /// <param name="dsi"></param>
         public override void OnDispose(StackValue dsObject, ProtoCore.Runtime.Context context, Interpreter dsi)
         {
-            lock (DSObjectMap)
-            {
                 Object clrobject;
-                if (DSObjectMap.TryGetValue(dsObject, out clrobject))
+                if (DSObjectMap.TryGetValue(dsObject.Pointer, out clrobject))
                 {
-                    DSObjectMap.Remove(dsObject);
-                    CLRObjectMap.Remove(clrobject);
+                    DSObjectMap.Remove(dsObject.Pointer);
                 }
-            }
         }
 
         /// <summary>
@@ -1249,7 +1240,7 @@ namespace ProtoFFI
         public override string GetStringValue(StackValue dsObject)
         {
             object clrObject = null;
-            if (!DSObjectMap.TryGetValue(dsObject, out clrObject))
+            if (!DSObjectMap.TryGetValue(dsObject.Pointer, out clrObject))
             {
                 return string.Empty;
             }
@@ -1289,17 +1280,10 @@ namespace ProtoFFI
         private void BindObjects(object obj, StackValue dsobj)
         {
 #if DEBUG
-            if (DSObjectMap.ContainsKey(dsobj))
-                throw new InvalidOperationException("Object reference already mapped");
-
-            if (CLRObjectMap.ContainsKey(obj))
+            if (DSObjectMap.ContainsKey(dsobj.Pointer))
                 throw new InvalidOperationException("Object reference already mapped");
 #endif
-            lock (DSObjectMap)
-            {
-                DSObjectMap[dsobj] = obj;
-                CLRObjectMap[obj] = dsobj;
-            }
+            DSObjectMap[dsobj.Pointer] = obj;
         }
 
         /// <summary>
@@ -1357,32 +1341,13 @@ namespace ProtoFFI
 
             //Clear the maps.
             DSObjectMap.Clear();
-            CLRObjectMap.Clear();
         }
 
-        private readonly Dictionary<StackValue, Object> DSObjectMap = new Dictionary<StackValue, object>(new PointerValueComparer());
-        private readonly Dictionary<Object, StackValue> CLRObjectMap = new Dictionary<object, StackValue>(new ReferenceEqualityComparer());
+        private readonly Dictionary<int, Object> DSObjectMap = new Dictionary<int, object>();
         private static readonly Dictionary<ProtoCore.RuntimeCore, CLRObjectMarshaler> mObjectMarshlers = new Dictionary<ProtoCore.RuntimeCore, CLRObjectMarshaler>();
         private static List<IDisposable> mPendingDisposables = new List<IDisposable>();
         private static readonly Object syncroot = new Object();
         #endregion
-    }
-
-    /// <summary>
-    /// This class compares two CLR objects. It is used in CLRObjectMap to 
-    /// avoid hash collision. 
-    /// </summary>
-    public class ReferenceEqualityComparer: IEqualityComparer<object>
-    {
-        public bool Equals(object x, object y)
-        {
-            return object.ReferenceEquals(x, y);
-        }
-
-        public int GetHashCode(object obj)
-        {
-            return obj.GetHashCode();
-        }
     }
 
     /// <summary>
