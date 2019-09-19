@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:p="clr-namespace:Dynamo.Wpf.Properties;assembly=DynamoCoreWpf"
+             xmlns:w="clr-namespace:Dynamo.WorkspaceDependency.Properties"
              xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf"
              mc:Ignorable="d" 
              VerticalAlignment="Top"
@@ -143,23 +144,44 @@
                             Margin="10"
                             FontSize="11">
                         </TextBlock>
-                        <Button
-                            Visibility="{Binding Path=ShowDownloadButton, Converter={StaticResource BoolToVis}}"
-                            Click="DownloadPackage"
-                            HorizontalAlignment="Center"
-                            Margin="10"
-                            Height="20"
-                            Background="#000000"
-                            BorderThickness="0">
-                            <TextBlock 
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                            <Button
+                                Visibility="{Binding Path=ShowDownloadButton, Converter={StaticResource BoolToVis}}"
+                                Name="DownloadPackageButton"
+                                Click="DownloadPackage"
                                 HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                Margin="5,0,5,0"
-                                Foreground="#cccccc"
-                                FontSize="10px"
-                                Text="Install">
-                            </TextBlock>
-                        </Button>
+                                Margin="10"
+                                Height="20"
+                                Background="#000000"
+                                BorderThickness="0">
+                                <TextBlock 
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    Margin="5,0,5,0"
+                                    Foreground="#cccccc"
+                                    FontSize="10px"
+                                    Text="{x:Static w:Resources.InstallButtonText}">
+                                </TextBlock>
+                            </Button>
+                            <Button
+                                Visibility="{Binding Path=ShowKeepLocalButton, Converter={StaticResource BoolToVis}}"
+                                Name="KeepLocalPackageButton"
+                                Click="KeepLocalPackage"
+                                HorizontalAlignment="Center"
+                                Margin="10"
+                                Height="20"
+                                Background="#000000"
+                                BorderThickness="0">
+                                <TextBlock 
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    Margin="5,0,5,0"
+                                    Foreground="#cccccc"
+                                    FontSize="10px"
+                                    Text="{x:Static w:Resources.KeepLocalButtonText}">
+                                </TextBlock>
+                            </Button>
+                        </StackPanel>
                     </StackPanel>
                 </DataTemplate>
             </DataGrid.RowDetailsTemplate>
@@ -175,7 +197,23 @@
 
         <!-- Template for the feedback banner -->
         <DockPanel Name="Feedback" VerticalAlignment="Bottom" Grid.Row="2" Width="600">
-            <StatusBar Background="{StaticResource FeedbackSectionBackground}" DockPanel.Dock="Bottom" Height="55">
+            <!-- Restart Banner -->
+            <StatusBar
+                Name="RestartBanner"
+                Background="LightCoral"
+                DockPanel.Dock="Top"
+                Height="55"
+                Margin="1"
+                Visibility="Hidden">
+                <!-- Preview text -->
+                <StatusBarItem>
+                    <Border Height="50">
+                        <TextBlock TextWrapping="Wrap" Width="500" Padding="10,0,10,0" FontSize="15" Foreground="White" Text="{x:Static w:Resources.RestartBannerMessage}" VerticalAlignment="Center"/>
+                    </Border>
+                </StatusBarItem>
+            </StatusBar>
+            <!-- Feedback Banner -->
+            <StatusBar Background="{StaticResource FeedbackSectionBackground}" DockPanel.Dock="Bottom" Height="55" Margin="1">
                 <!-- Preview text -->
                 <StatusBarItem>
                     <Border Height="50">
@@ -199,7 +237,7 @@
                         <!-- Feedback button -->
                         <Button HorizontalAlignment="Right"
                             Width="150" Click="ProvideFeedback" Background="#373737" Height="30">
-                            <TextBlock TextWrapping="Wrap" FontSize="15" Foreground="White" Height="20" Text="{x:Static p:Resources.ProvideFeedbackButton}" VerticalAlignment="Center"/>
+                            <TextBlock TextWrapping="Wrap" FontSize="15" Foreground="White" Height="20" Text="{x:Static w:Resources.ProvideFeedbackButton}" VerticalAlignment="Center"/>
                             <Button.Style>
                                 <Style TargetType="{x:Type Button}">
                                     <Setter Property="Template">

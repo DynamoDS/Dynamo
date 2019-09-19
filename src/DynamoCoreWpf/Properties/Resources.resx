@@ -1308,9 +1308,6 @@ You will get a chance to save your work.</value>
     <value>Description</value>
     <comment>Package description</comment>
   </data>
-  <data name="PackageSearchViewDownvoteButtonTooltip" xml:space="preserve">
-    <value>Downvote to voice lack of support for this package</value>
-  </data>
   <data name="PackageSearchViewInstallButton" xml:space="preserve">
     <value>⇓ Install</value>
     <comment>To install package</comment>
@@ -2210,14 +2207,8 @@ Restart Dynamo to complete the uninstall.
 
 Uninstall the following packages: {0}?</value>
   </data>
-  <data name="ProvideFeedbackButton" xml:space="preserve">
-    <value> Provide Feedback</value>
-  </data>
   <data name="PreviewText" xml:space="preserve">
     <value> This Feature is in Preview! </value>
-  </data>
-  <data name="ProvideFeedbackError" xml:space="preserve">
-    <value>Could not re-direct to the Dynamo forum page for feedback:</value>
   </data>
   <data name="PackageHostDependencyTooltip" xml:space="preserve">
     <value>This package contains node(s) that depend on applications outside Dynamo. To fully utilize node(s) in this package, you will need to have these external applications installed.</value>
