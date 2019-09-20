@@ -256,7 +256,7 @@
                                 <Condition Value="True">
                                     <Condition.Binding>
                                         <MultiBinding Converter="{StaticResource GroupFontSizeToEditorEnabledConverter }">
-                                            <Binding Path ="DataContext.Zoom" FallbackValue="1.0" RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type views:WorkspaceView}}"></Binding>
+                                            <Binding Path ="DataContext.Zoom" FallbackValue="1" RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type views:WorkspaceView}}"></Binding>
                                             <Binding ElementName="GroupTextBlock" Path="FontSize"/>
                                             <Binding ElementName="GroupTextBlock" Path="Visibility"/>
                                         </MultiBinding>
