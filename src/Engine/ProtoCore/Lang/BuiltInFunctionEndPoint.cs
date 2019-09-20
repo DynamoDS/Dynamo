@@ -610,10 +610,21 @@ namespace ProtoCore.Lang
                 replicationGuides = runtime.GetCachedReplicationGuides(functionArgs);
                 atLevels = runtime.GetCachedAtLevels(functionArgs);
 
+                // TODO: Determine if removeFirstArgument should ever be true if there are
+                // no replication guides or at levels list items
                 if (removeFirstArgument)
                 {
-                    replicationGuides.RemoveAt(0);
-                    atLevels.RemoveAt(0);
+                    // TODO: Determine if the replicationGuides.Count and atLevels.Count
+                    // should be removed seperately based on count or if they should be connected
+                    if (replicationGuides.Count > 0)
+                    {
+                        replicationGuides.RemoveAt(0);
+                    }
+
+                    if (atLevels.Count > 0)
+                    {
+                        atLevels.RemoveAt(0);
+                    }
                 }
             }
 

@@ -150,6 +150,7 @@
     <Compile Include="MinimalClassTests.cs" />
     <Compile Include="MultiLangTests\AssociativeToImperative.cs" />
     <Compile Include="MultiLangTests\FunctionPointerTest.cs" />
+    <Compile Include="MultiLangTests\NullInputTest.cs" />
     <Compile Include="MultiLangTests\GCTest.cs">
       <SubType>Code</SubType>
     </Compile>
