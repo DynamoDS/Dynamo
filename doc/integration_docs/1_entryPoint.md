@@ -122,89 +122,89 @@ The StartupConfiguration is used to pass in as a param for initializing DynamoMo
 
 It consists of the following: 
 
-* DynamoCorePath // Where the loading DynamoCore binaries are 
+* DynamoCorePath // Where the loading DynamoCore binaries are located
 
-* DynamoHostPath // Where the Dynamo integration binaries are 
+* DynamoHostPath // Where the Dynamo integration binaries are located
 
-* GeometryFactoryPath // Where loaded libG binaries are 
+* GeometryFactoryPath // Where loaded libG binaries are located
 
-* PathResolver 
+* PathResolver //object that helps to resolve various files
 
-* PreloadLibraryPaths // Which preloaded nodes binaries are, e.g. DSOffice.dll 
+* PreloadLibraryPaths // where are preloaded nodes binaries located, e.g. DSOffice.dll 
 
-AdditioanlNodeDirectories // Where additional node binaries are 
+* AdditioanlNodeDirectories // Where additional node binaries are located
+ 
+* AdditionalResolutionPaths // Additional assembly resolution paths for other dependencies that might be required while loading libraries 
 
-AdditionalResolutionPaths // Additional assembly resolution folder 
+* UserDataRootFolder // User data folder, e.g. `"AppData\Roaming\Dynamo\Dynamo Revit"` 
 
-UserDataRootFolder // User data folder, e.g. "AppData\Roaming\Dynamo\Dynamo Revit" 
+* CommonDataRootFolder // Default folder for saving custom definitions, samples, gallery etc.
 
-CommonDataRootFolder // Default folder for saving custom definitions, samples, gallery 
+* Context // Integrator host name + version `(Revit<BuildNum>)`
 
-Context // Integrator host name + version 
+* SchedulerThread // Integrator scheduler thread implementing `ISchedulerThread` - for most integrators this is the Main UI thread or from whatever thread they can access their API.
 
-SchedulerThread // Integrator scheduler thread implementing ISchedulerThread 
+* StartInTestMode // Whether the current session is a test automation session - modifies a bunch of Dynamo behavior - don't use unless you are writing tests.
 
-StartInTestMode // Whether the current session is a test automation session 
-
-AuthProvider // Integrator’s implementation of IAuthProvider, e.g. RevitOxygenProvider implementation is in Greg.dll - Used for packageManager upload integration. 
+* AuthProvider // Integrator’s implementation of IAuthProvider, e.g. RevitOxygenProvider implementation is in Greg.dll - Used for packageManager upload integration. 
 
 ### Preferences 
 
-Default preference setting path is managed by PathManager.PreferenceFilePath, e.g. "AppData\\Roaming\\Dynamo\\Dynamo Revit\\2.5\\DynamoSettings.xml". Integrators can pick if you would like to also ship your customized preference setting file to a location you have aligned with path manager. The following are preference setting properties serialized: 
+Default preference setting path is managed by `PathManager.PreferenceFilePath`, e.g. `"AppData\\Roaming\\Dynamo\\Dynamo Revit\\2.5\\DynamoSettings.xml"`. Integrators can decide if they would like to also ship a customized preference setting file to a location which needs to be aligned with path manager. The following are preference setting properties which are serialized: 
 
-IsFirstRun // Indicates if it is the first time running this version of dynamo, e.g. used to determine if need to display GA opt-in/out message. Also used to determine if it’s needed to migrate the legacy Dynamo preference setting when launching a new Dynamo version, so users have consistent experience 
+* IsFirstRun // Indicates if it is the first time running this version of dynamo, e.g. used to determine if need to display GA opt-in/out message. Also used to determine if it’s needed to migrate the legacy Dynamo preference setting when launching a new Dynamo version, so users have consistent experience 
 
-IsUsageReportingApproaved // Indicates whether usage reporting is approved or not 
+* IsUsageReportingApproved // Indicates whether usage reporting is approved or not 
 
-IsAnalyticsReportingApproaved // Indicates whether analytics reporting is approved or not 
+* IsAnalyticsReportingApproved // Indicates whether analytics reporting is approved or not 
 
-LibraryWidth // The width of the Dynamo left library panel. 
+* LibraryWidth // The width of the Dynamo left library panel. 
 
-ConsoleHeight // The height of the console display 
+* ConsoleHeight // The height of the console display 
 
-ShowPreviewBubbles // Indicates if preview bubbles should be displayed 
+* ShowPreviewBubbles // Indicates if preview bubbles should be displayed 
 
-ShowConnector // Indicates if connectors are displayed 
+* ShowConnector // Indicates if connectors are displayed 
 
-ConnectorType //Indicates the type of connector: Bezier or Polyline 
+* ConnectorType //Indicates the type of connector: Bezier or Polyline 
 
-BackgroundPreviews // Indicates active state of the specified background preview 
+* BackgroundPreviews // Indicates active state of the specified background preview 
 
-RenderPrecision // Indicates which render precision will be used 
+* RenderPrecision // The level of render precision - lower generates meshes with less triangles. Higher will generate smoother geometry in the background preview. 128 is a good fast number for preview geometry.
 
-ShowEdges // Indicates whether surface and solid edges will be rendered 
+* ShowEdges // Indicates whether surface and solid edges will be rendered 
 
-ShowDetailedLayout // Indicates whether show detailed or compact layout during search 
+* ShowDetailedLayout // UNUSED
 
-WindowX, WindowY // Last X, Y coordinate of the Dynamo window 
+* WindowX, WindowY // Last X, Y coordinate of the Dynamo window 
 
-WindowW, WindowH // Last width, height of the Dynamo window 
+* WindowW, WindowH // Last width, height of the Dynamo window 
 
-UseHardwareAcceleration // Should Dynamo use hardware acceleration if it is supported 
+* UseHardwareAcceleration // Should Dynamo use hardware acceleration if it is supported 
 
-NumberFormat // The decimal precision used to display numbers. 
+* NumberFormat // The decimal precision used to display numbers in preview bubble toString(). 
 
-MaxNumRecentFiles // The maximum number of recent file paths to be saved 
+* MaxNumRecentFiles // The maximum number of recent file paths to be saved 
 
-RecentFiles // A list of recently opened file paths, touching this will directly affect the recent files list in Dynamo start up page 
+* RecentFiles // A list of recently opened file paths, touching this will directly affect the recent files list in Dynamo start up page 
 
-BackupFiles // A list of backup file paths 
+* BackupFiles // A list of backup file paths 
 
-CustomPackageFolders // A list of folders containing zero-touch nodes and custom nodes 
+* CustomPackageFolders // A list of folders containing zero-touch binaries and direcory paths that will be scanned for packages and custom nodes.
 
-PackageDirectoriesToUninstall // A list of packages used by the Package Manager to determine which packages are marked for deletion. 
+* PackageDirectoriesToUninstall // A list of packages used by the Package Manager to determine which packages are marked for deletion. These paths will be deleted if possible during Dynamo startup.
 
-PythonTemplateFilePath // Path to the Python (.py) file to use as a starting template when creating a new PythonScript Node 
+* PythonTemplateFilePath // Path to the Python (.py) file to use as a starting template when creating a new PythonScript Node - this can be used to setup a custom python template for your integration.
 
-BackupInterval // Indicates how long (in milliseconds) will the graph be automatically saved 
+* BackupInterval // Indicates how long (in milliseconds) will the graph be automatically saved 
 
-BackupFilesCount // Indicates how many files will be backed up 
+* BackupFilesCount // Indicates how many backups will be made 
 
-PackageDownloadTouAccepted // Indicates if the user has accepted the terms of use for downloading packages from package manager 
+* PackageDownloadTouAccepted // Indicates if the user has accepted the terms of use for downloading packages from package manager 
 
-OpenFileInManualExecutionMode // Indicates the default state of the "Open in Manual Mode" checkbox in OpenFileDialog 
+* OpenFileInManualExecutionMode // Indicates the default state of the "Open in Manual Mode" checkbox in OpenFileDialog 
 
-NamespacesToExcludeFromLibrary // Indicates (if any) which namespaces should not be displayed in the Dynamo node library. String format: "[library name]:[fully qualified namespace]" 
+* NamespacesToExcludeFromLibrary // Indicates which (if any) namespaces should not be displayed in the Dynamo node library. String format: "[library name]:[fully qualified namespace]" 
 
 An example of serialized preference settings: 
 
@@ -309,32 +309,52 @@ An example of serialized preference settings:
 ``` 
  
 
-Extensions // A list of extensions implementing IExtension, if it’s null, Dynamo will load extensions from the default path (extensions folder under Dynamo folder) 
+* Extensions // A list of extensions implementing IExtension, if it’s null, Dynamo will load extensions from the default path (`extensions` folder under Dynamo folder) 
 
-IsHeadless // Indicates if Dynamo is launched without UI 
+* IsHeadless // Indicates if Dynamo is launched without UI, effects Analytics. 
 
-UpdateManager // Integrator’s implementation of UpdateManager, see description above 
+* UpdateManager // Integrator’s implementation of UpdateManager, see description above 
 
-ProcessMode // Equivalent to TaskProcessMode, Synchronous if in test mode, otherwise Asynchronous - This controls the behavior of the scheduler. 
+* ProcessMode // Equivalent to TaskProcessMode, Synchronous if in test mode, otherwise Asynchronous - This controls the behavior of the scheduler. Single threaded enviornments may also set this to synchronous.
 
-Use the target StartConfiguration to launch DynamoModel 
+Use the target StartConfiguration to launch `DynamoModel`
 
-Once the StartConfig is passed to launch DynamoModel, DynamoCore will oversee the actual specifics to make sure Dynamo session is initialized correctly with the details specified. There should be some after set-up steps individual integrators will need to do after DynamoModel is initialized, e.g. in D4R, events are subscribed to watch out for Revit host transactions or document updates, Python Node customization, etc. 
+Once the StartConfig is passed to launch `DynamoModel`, DynamoCore will oversee the actual specifics to make sure Dynamo session is initialized correctly with the details specified. There should be some after set-up steps individual integrators will need to do after `DynamoModel` is initialized, e.g. in D4R, events are subscribed to watch for Revit host transactions or document updates, Python Node customization, etc. 
 
- 
+ ### Let's get to the 'visual programming' part already
 
- 
+To Initialize `DynamoViewModel` and `DynamoView`, you'll need to first construct a `DynamoViewModel` - which can be done
+using the `DynamoViewModel.Start` static method. See below:
 
-To Initialize Dynamo ViewModel, integrators will need to do these 
+``` c#
 
-Create DynamoViewModel.StartConfiguration by passing DynamoModel 
+    viewModel = DynamoViewModel.Start(
+                    new DynamoViewModel.StartConfiguration()
+                    {
+                        CommandFilePath = commandFilePath,
+                        DynamoModel = model,
+                        Watch3DViewModel = 
+                            HelixWatch3DViewModel.TryCreateHelixWatch3DViewModel(
+                                null,
+                                new Watch3DViewModelStartupParams(model), 
+                                model.Logger),
+                        ShowLogin = true
+                    });
+     
+     var view = new DynamoView(viewModel);
 
-Use the target StartConfiguration to launch DynamoModel 
+```
 
-After this, integrators will only need to create HelixWatch3DViewModel and finish some integrator specific view customization. For example, watch for host document changed event,  watch for host view changed event, etc. 
+The `DynamoViewModel.StartConfiguration` has much fewer options than the Model's config. They are mostly self explanatory - the `CommandFilePath` can be ignored unless you are writing a test case.
 
- 
 
- 
+The `Watch3DViewModel` parameter controls how the background preview and watch3d nodes display 3d geometry. You can use your own implementation if you implement the required interfaces.
 
- 
+To construct the `DynamoView`, all that is required is the `DynamoViewModel`. The View is a window control and can be shown using WPF.
+
+ ### DynamoSandbox.exe example:
+
+ DynamoSandbox.exe is a development environment for testing, using, and experimenting with DynamoCore. It's a great example to checkout to see how `DynamoCore` and `DynamoCoreWPF` components are loaded and setup.
+`
+ You can see some of the entry point [here](https://github.com/DynamoDS/Dynamo/blob/master/src/DynamoSandbox/DynamoCoreSetup.cs#L37)
+
