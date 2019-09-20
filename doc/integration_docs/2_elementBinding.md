@@ -12,7 +12,7 @@ When a Dynamo graph is opened from disk, the trace data saved therein is re-asso
 
 Trace data is serialized into the .dyn file inside a property called Bindings. This is an array of callsites-ids -> data. A callsite is the particular location/instance where a node is called in the designscript virtual machine. It's worth mentioning that nodes in a dynamo graph may be called multiple times and thus multiple callsites might be created for a single node instance.
 
-```
+```json
 "Bindings": [
     {
       "NodeId": "1e83cc25-7de6-4a7c-a702-600b79aa194d",
@@ -80,8 +80,39 @@ If element binding had been enabled we can retain the existing work that was don
 #### element binding compared to trace
 ----
 
+Trace is a mechanism in dynamo core - it utilizes a static variable of callsites to data to map your data to the callsite of a function in the graph, as described above.
+
+It also allows you to serialize arbitrary data into the .dyn file when writing zero touch dynamo nodes. This is not generally advisable as it means the potentially transferable zero touch code now has a dependency on dynamo core.
+
+Do not rely on the serialized format of the data in the .dyn file - instead use the [Serializable] attribute and interface
+
+ElementBinding on the other hand is a built on top of the trace apis and is implemented in the dynamo integration *(DynamoRevit Dynamo4Civil etc.)*
+
+
 #### Trace APIs
-----
+some of the low level Trace APIs worth knowing about are:
+
+``` c#
+public static ISerializable GetTraceData(string key)
+///Returns the data that is bound to a particular key
+
+public static void SetTraceData(string key, ISerializable value)
+///Set the data bound to a particular key
+```
+
+you can see these used in the example below
+
+to interact with the trace data that Dynamo has loaded from an existing file or is generating 
+you can look at:
+
+```c#
+ public IDictionary<Guid, List<CallSite.RawTraceData>> 
+ GetTraceDataForNodes(IEnumerable<Guid> nodeGuids, Executable executable)
+```
+[GetTraceDataForNodes](https://github.com/DynamoDS/Dynamo/blob/master/src/Engine/ProtoCore/RuntimeData.cs#L218)
+
+[RuntimeTrace.cs](https://github.com/DynamoDS/Dynamo/blob/master/src/Engine/ProtoCore/RuntimeData.cs)
+
 
 #### simple Trace example from a node
 ----
@@ -116,9 +147,24 @@ it contains a single method `ByString` which creates `TraceExampleItem` - These 
 Each `TraceExampleItem` is serialized into trace represented as a `TraceableId` - this is just a class containing an `IntId` which is marked `[Serializeable]` so it can be serialized with `SOAP` Formatter.
 see [here for more info on the serializable attribute](https://docs.microsoft.com/en-us/dotnet/api/system.serializableattribute?view=netframework-4.8)
 
+You must also implement the `ISerializable` interface defined [here](https://docs.microsoft.com/en-us/dotnet/api/system.runtime.serialization.iserializable?view=netframework-4.8)
 
 
-The `TraceableObjectManager` is similar to the `ElementBinder` in `DynamoRevit` - this manages the relationship between the host's document model and the data we have stored in dynamo trace.
+``` c#
+    [IsVisibleInDynamoLibrary(false)]
+    [Serializable]
+    public class TraceableId : ISerializable
+    {
+    }
+```
+
+This class is created for each `TraceExampleItem` we wish to save into trace, serialized, base64encoded and saved to disk when the graph is saved so that bindings can be re-associated, even later when the graph is opened back up on top of an existing dictionary of elements. That won't work well in the case of this example since the dictionary is not really persistent like a Revit document is.
+
+Finally the last part of the equation is the `TraceableObjectManager`, which is similar to the `ElementBinder` in `DynamoRevit` - this manages the relationship between the objects present in the host's document model and the data we have stored in dynamo trace.
+
+When a user runs a graph containing the `TraceExampleWrapper.ByString` node for the first time a new `TraceableId` is created with a new id, the `TraceExampleItem` is stored in the dictionary mapped to that new ID, and we store the `TraceableID` in trace.
+
+On the next run of the graph - we look in trace, find the ID we stored there, find the object mapped to that ID, and return that object! Instead of creating a brand new object, we modify the existing one.
 
 The flow of two consecutive executions of graph that creates a single `TraceExampleItem` looks like this:
 
@@ -126,13 +172,13 @@ The flow of two consecutive executions of graph that creates a single `TraceExam
 
 ![second call](../images/Trace-second-call.png)
 
-
+The same idea is illustrated in the next example with a more realistic DynamoRevit node use case.
 
 
 #### Element binding implementation example
 
 -----
-Let's quickly take a look at what a node that is using element binding looks like when implemented for DynamoRevit, this is analogous to the type of node used above in the given examples.
+Let's quickly take a look at what a node that is using element binding looks like when implemented for DynamoRevit, this is analogous to the type of node used above in the given wall creation examples.
 
 
 ---
@@ -183,20 +229,28 @@ The important phases of the constructor's execution as they relate to element bi
 `ElementBinder.GetElementFromTrace<Autodesk.Revit.DB.Wall>`
 2. if so ,then try to modify that wall instead of creating a new one.
 
-```
+```c#
  if(!CurveUtils.CurvesAreSimilar(wallLocation.Curve, curve))
                         wallLocation.Curve = curve;
 ```
 
 3. else create a new a wall.
-```
+```c#
   var wall = successfullyUsedExistingWall ? wallElem :
                      Autodesk.Revit.DB.Wall.Create(Document, curve, wallType.Id, baseLevel.Id, height, offset, flip, isStructural);
                      
 ```
 
 4. delete the old element we just retrieved from trace, and add our new one so we can look up this element in the future:
-```
+```c#
  ElementBinder.CleanupAndSetElementForTrace(Document, InternalWall);
- ```
+```
 
+### Discussion
+
+#### Efficiency
+* Currently each serialize trace object is serialized using SOAP xml formatting - this is quite verbose and duplicates a lot of information. Then the data is base64 encoded twice - This is not efficent in terms of serialization or deserialization. This can be improved in the future if the internal format is not built on top of. Again, we repeat, do not rely on the format of the serialized data at rest.
+
+#### Should ElementBinding be on by default?
+* There are use cases where element binding is not desired. What if one is an advanced dynamo user developing a program which should be run multiple times to generate random groupings elements. The programs intent is to create additional elements each time the program is run. This use case is not easily achievable without workarounds to stop element binding from working.
+It's possible to disable elementBinding at the integration level - but likely this should be a core Dynamo functionality. It is not clear how granular this functionality should be: node level? callsite level?, Entire Dynamo session? Workspace? etc.
