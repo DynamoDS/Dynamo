@@ -1152,9 +1152,6 @@
                   "path": "Core.String.String from Object"
                 },
                 {
-                  "path": "Core.String.MyEquals"
-                },
-                {
                   "path": "Core.String.String from Array"
                 },
                 {
