@@ -6,6 +6,25 @@
 
 When a Dynamo graph is opened from disk, the trace data saved therein is re-associated with the nodes of the graph.
 
+#### glossary:
+* Trace mechanism:
+    
+  * Implements Element Binding in Dynamo
+  * The trace mechanism can be used to ensure that objects are rebound to geometry that they created
+  * The Callsite and trace mechanism handle providing a persistent GUID that the node implementor can use for relinking
+
+* Callsite
+
+  * The executable contains multiple callsites. These callsites are used to dispatch execution to the various places where they need to be dispatched from:
+    * C# library
+    * Built-in method
+    * DesignScript function
+    * Custom node (DS function)
+
+* TraceSerializer
+  * Serializes `ISerializable` and `[Serializable]` marked classes into trace.
+  * Handles serialization and deserialization of data into trace.
+  * TraceBinder controls binding deserialized data to a runtime type. (creates instance of real class)
 
 #### what does it look like?
 ----
@@ -74,7 +93,7 @@ If element binding had been enabled we can retain the existing work that was don
 
 -----
 
-!!!Image!!!
+![create some walls](../images/creates_walls.png)
 
 
 #### element binding compared to trace
@@ -174,6 +193,13 @@ The flow of two consecutive executions of graph that creates a single `TraceExam
 
 The same idea is illustrated in the next example with a more realistic DynamoRevit node use case.
 
+#### Trace Diagram
+
+![trace steps](../images/trace_diagram.png)
+![trace flow](../images/trace_alt_diagram.png)
+
+#### NOTE :
+in recent versions of Dynamo TLS(thread local storage) use has been replaced with static member use.
 
 #### Element binding implementation example
 
