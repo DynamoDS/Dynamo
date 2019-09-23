@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows.Media;
 using Autodesk.DesignScript.Runtime;
 using DSCore.Properties;
 using NCalc;
@@ -14,6 +15,10 @@ namespace DSCore
     /// </summary>
     public static class Math
     {
+        // This is chosen to be the same as the default tolerance used for VM equality operator.
+        // See ProtoCore\Utils\MathUtils.cs
+        private const double tolerance = 1e-5;
+
         /// <summary>
         ///     Generates a random double in the range of [0, 1).
         /// </summary>
@@ -198,6 +203,12 @@ namespace DSCore
         public static double Abs(double number)
         {
             return CSMath.Abs(number);
+        }
+
+        [IsVisibleInDynamoLibrary(false)]
+        public static bool Equals(double lhs, double rhs, double tol = tolerance)
+        {
+            return Abs(lhs - rhs) <= tol;
         }
 
         /// <summary>

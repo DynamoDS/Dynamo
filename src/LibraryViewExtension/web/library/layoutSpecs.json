@@ -688,6 +688,9 @@
                   "path": "Operators.=="
                 },
                 {
+                  "path": "Core.Math.=="
+                },
+                {
                   "path": "Operators.>="
                 },
                 {
@@ -1147,6 +1150,9 @@
               "include": [
                 {
                   "path": "Core.String.String from Object"
+                },
+                {
+                  "path": "Core.String.MyEquals"
                 },
                 {
                   "path": "Core.String.String from Array"
