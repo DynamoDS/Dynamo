@@ -4,7 +4,7 @@ namespace ProtoCore.Utils
 {
     public static class MathUtils
     {
-        public static double Tolerance = 1e-5;
+        public const double Tolerance = 1e-5;
 
         [Obsolete("This method is no longer used. Remove in Dynamo 3.0")]
         public static bool IsLessThan(double lhs, double rhs)
@@ -30,7 +30,7 @@ namespace ProtoCore.Utils
             return (lhs < rhs) || Equals(lhs, rhs);
         }
 
-        public static bool Equals(double lhs, double rhs)
+        public static bool Equals(double lhs, double rhs, double tolerance = Tolerance)
         {
             if (double.IsPositiveInfinity(lhs) && double.IsPositiveInfinity(rhs))
                 return true;
@@ -38,7 +38,7 @@ namespace ProtoCore.Utils
             if (double.IsNegativeInfinity(lhs) && double.IsNegativeInfinity(rhs))
                 return true;
 
-            return Math.Abs(lhs - rhs) < Tolerance;
+            return Math.Abs(lhs - rhs) < tolerance;
         }
     }
 }
