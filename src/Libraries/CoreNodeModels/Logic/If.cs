@@ -17,10 +17,15 @@ namespace CoreNodeModels.Logic
     public class If : NodeModel
     {
         [JsonConstructor]
-        private If(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts) { }
+        private If(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
+        {
+            ArgumentLacing = LacingStrategy.Auto;
+        }
 
         public If()
         {
+            ArgumentLacing = LacingStrategy.Auto;
+
             InPorts.Add(new PortModel(PortType.Input, this, new PortData("test", Resources.PortDataTestBlockToolTip)));
             InPorts.Add(new PortModel(PortType.Input, this, new PortData("true", Resources.PortDataTrueBlockToolTip)));
             InPorts.Add(new PortModel(PortType.Input, this, new PortData("false", Resources.PortDataFalseBlockToolTip)));
@@ -58,6 +63,8 @@ namespace CoreNodeModels.Logic
             }
             else
             {
+                UseLevelAndReplicationGuide(inputAstNodes);
+
                 rhs = new InlineConditionalNode
                 {
                     ConditionExpression = inputAstNodes[0],
