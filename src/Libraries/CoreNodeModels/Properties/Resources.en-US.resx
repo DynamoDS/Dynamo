@@ -595,17 +595,17 @@
     <comment>Description for Equals with tolerance node</comment>
   </data>
   <data name="EqualsWithToleranceLhsRhsTooltip" xml:space="preserve">
-    <value>integer or double value</value>
+    <value>Integer or double value</value>
     <comment>Equals with tolerance node input port tooltip</comment>
   </data>
   <data name="EqualsWithToleranceOutportTooltip" xml:space="preserve">
-    <value>result of equality check</value>
+    <value>Result of equality check</value>
   </data>
   <data name="EqualsWithToleranceSearchTags" xml:space="preserve">
     <value>equals;tolerance</value>
   </data>
   <data name="EqualsWithToleranceTooltip" xml:space="preserve">
-    <value>tolerance
+    <value>Tolerance
 Default value: {0}</value>
   </data>
 </root>

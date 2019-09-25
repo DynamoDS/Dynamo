@@ -385,7 +385,7 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to integer or double value.
+        ///   Looks up a localized string similar to Integer or double value.
         /// </summary>
         public static string EqualsWithToleranceLhsRhsTooltip {
             get {
@@ -394,7 +394,7 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to result of equality check.
+        ///   Looks up a localized string similar to Result of equality check.
         /// </summary>
         public static string EqualsWithToleranceOutportTooltip {
             get {
@@ -412,7 +412,7 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to tolerance
+        ///   Looks up a localized string similar to Tolerance
         ///Default value: {0}.
         /// </summary>
         public static string EqualsWithToleranceTooltip {

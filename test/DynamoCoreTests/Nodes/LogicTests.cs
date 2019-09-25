@@ -285,8 +285,6 @@ namespace Dynamo.Tests
             string testFilePath = Path.Combine(logicTestFolder, "testToleranceEquals_map.dyn");
 
             RunModel(testFilePath);
-            //var resultNode =
-            //    CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace("d3172222-b980-478a-b018-3f9c90837699");
             AssertPreviewValue("94354c1d-853d-4932-9228-38b241bac6f3", new[] {true, true});
             AssertPreviewValue("462b6cae-ceea-475a-ac4a-76dd79d17d68", new[] {true, true});
         }

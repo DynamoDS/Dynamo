@@ -35,7 +35,7 @@ namespace CoreNodeModels
             InPorts.Add(new PortModel(PortType.Input, this, new PortData("x", Resources.EqualsWithToleranceLhsRhsTooltip)));
             InPorts.Add(new PortModel(PortType.Input, this, new PortData("y", Resources.EqualsWithToleranceLhsRhsTooltip)));
             InPorts.Add(new PortModel(PortType.Input, this,
-                new PortData("tolerance", Resources.EqualsWithToleranceTooltip, tolerancePortDefaultValue)));
+                new PortData("tolerance", string.Format(Resources.EqualsWithToleranceTooltip, MathUtils.Tolerance), tolerancePortDefaultValue)));
             OutPorts.Add(new PortModel(PortType.Output, this, new PortData("bool", Resources.EqualsWithToleranceOutportTooltip)));
             RegisterAllPorts();
         }
