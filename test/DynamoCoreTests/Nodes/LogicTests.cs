@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Runtime.CompilerServices;
 using NUnit.Framework;
 
 namespace Dynamo.Tests
@@ -253,6 +254,50 @@ namespace Dynamo.Tests
             AssertPreviewValue("20a2f416-2a13-4afe-af00-c041d5997f40", null);
             AssertPreviewValue("a4c69409-8430-42a4-9769-2817a507b1b7", null);
             AssertPreviewValue("5801abfd-e00f-408a-8bb1-8289b795686f", null);
+        }
+
+        [Test]
+        public void testToleranceEquals_defaultTolerance()
+        {
+            string testFilePath = Path.Combine(logicTestFolder, "testToleranceEquals_defaultTolerance.dyn");
+
+            RunModel(testFilePath);
+            AssertPreviewValue("d3ca0126-f365-4d79-8168-476022009dc2", false);
+            AssertPreviewValue("005f8c5c-ff50-42d7-902e-a06f63bb7563", false);
+        }
+
+        [Test]
+        public void testToleranceEquals_lacing()
+        {
+            string testFilePath = Path.Combine(logicTestFolder, "testToleranceEquals_lacing.dyn");
+
+            RunModel(testFilePath);
+            AssertPreviewValue("a5eecd18-daef-42af-9b99-aa5b009d222e", new[] {true, true, false, false});
+            AssertPreviewValue("a0f2abbf-85f7-4ce2-843a-5c2a1692a8ac",
+                new object[] {new[] {true, false, false, false}, new[] {false, true, false, false}});
+            AssertPreviewValue("3167795a-bd16-403f-a3e2-74e3fd8d2510", new[] {true, true});
+        }
+
+        [Test]
+        public void testToleranceEquals_map()
+        {
+            string testFilePath = Path.Combine(logicTestFolder, "testToleranceEquals_map.dyn");
+
+            RunModel(testFilePath);
+            var resultNode =
+                CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace("d3172222-b980-478a-b018-3f9c90837699");
+            AssertPreviewValue("d3172222-b980-478a-b018-3f9c90837699", new object[] {new[] {true, true}});
+            AssertPreviewValue("3f0477b1-1bfe-4a15-bf29-61c962c28f77",  new[] {true, true});
+        }
+
+        [Test]
+        public void testToleranceEquals_map2()
+        {
+            string testFilePath = Path.Combine(logicTestFolder, "testToleranceEquals_map2.dyn");
+
+            RunModel(testFilePath);
+            AssertPreviewValue("a38ca04b-6cde-4e5c-9c15-72bbd3f8a619",
+                new object[] {new[] {true, false}, new[] {false, true}, new[] {false, false}, new[] {false, false}});
         }
     }
 

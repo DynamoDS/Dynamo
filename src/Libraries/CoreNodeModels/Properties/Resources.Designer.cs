@@ -8,10 +8,10 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace CoreNodeModels.Properties
-{
-
-
+namespace CoreNodeModels.Properties {
+    using System;
+    
+    
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -372,6 +372,51 @@ namespace CoreNodeModels.Properties
         public static string DynamoConvertSearchTags {
             get {
                 return ResourceManager.GetString("DynamoConvertSearchTags", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Equals with tolerance input..
+        /// </summary>
+        public static string EqualsWithToleranceDescription {
+            get {
+                return ResourceManager.GetString("EqualsWithToleranceDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to integer or double value.
+        /// </summary>
+        public static string EqualsWithToleranceLhsRhsTooltip {
+            get {
+                return ResourceManager.GetString("EqualsWithToleranceLhsRhsTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to result of equality check.
+        /// </summary>
+        public static string EqualsWithToleranceOutportTooltip {
+            get {
+                return ResourceManager.GetString("EqualsWithToleranceOutportTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to equals;tolerance.
+        /// </summary>
+        public static string EqualsWithToleranceSearchTags {
+            get {
+                return ResourceManager.GetString("EqualsWithToleranceSearchTags", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to tolerance.
+        /// </summary>
+        public static string EqualsWithToleranceTooltip {
+            get {
+                return ResourceManager.GetString("EqualsWithToleranceTooltip", resourceCulture);
             }
         }
         

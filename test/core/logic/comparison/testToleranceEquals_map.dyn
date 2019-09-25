@@ -1,0 +1,352 @@
+{
+  "Uuid": "ce4dea94-aab4-40ff-906c-d04dab768dd8",
+  "IsCustomNode": false,
+  "Description": null,
+  "Name": "testToleranceEquals_map",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "CoreNodeModels.Equals, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "3f0477b11bfe4a15bf2961c962c28f77",
+      "Inputs": [
+        {
+          "Id": "58d4a62bb71f4c149eab3b48ab3b58f3",
+          "Name": "lhs",
+          "Description": "integer or double value",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "072890eb59d04b9da5e245aab9ae3f5b",
+          "Name": "rhs",
+          "Description": "integer or double value",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "79b38c95a85a498e8bbe80c52503acda",
+          "Name": "tolerance",
+          "Description": "tolerance (disabled)",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "42bfd86f3de84dfabefeff2c59c176fe",
+          "Name": "bool",
+          "Description": "result of equality check",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Equals with tolerance input"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "1..2;\n1..4;",
+      "Id": "0e2592bec36548f89b0cd14919c71b6c",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "9eb4d3d2dfdf469aa94a318e6cad5e2e",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "bdbb106e4ac6441db7065c2657330f9a",
+          "Name": "",
+          "Description": "Value of expression at line 2",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.HigherOrder.Map, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "8f17012e9331455d97603537233e7262",
+      "Inputs": [
+        {
+          "Id": "886a14a716b44210b86d04a9963fbb2a",
+          "Name": "list",
+          "Description": "The list to map over.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "388ede573414431d960eabac923db778",
+          "Name": "f(x)",
+          "Description": "The procedure used to map element",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "f440cae199014e57b21bf213f5887430",
+          "Name": "mapped",
+          "Description": "Mapped list",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Applies a function over all elements of a list, generating a new list from the results."
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "0.00001;",
+      "Id": "54fe19d0c2c643e5a3c7ad383944ddcb",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "f1ce35e348b04726b70993b82aae9a12",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Equals, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "a5eecd18daef42af9b99aa5b009d222e",
+      "Inputs": [
+        {
+          "Id": "e2a00fda65df4b8488c901a437898cd6",
+          "Name": "lhs",
+          "Description": "integer or double value",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "c67c1942c19241ebae714d10c2d5fb79",
+          "Name": "rhs",
+          "Description": "integer or double value",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "f548d3468f2441009a2bbf443b39e93e",
+          "Name": "tolerance",
+          "Description": "tolerance (disabled)",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "d50ddd51e6cf4483a767fa66ac60d87b",
+          "Name": "bool",
+          "Description": "result of equality check",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Equals with tolerance input"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "a;",
+      "Id": "d3172222b980478ab0183f9c90837699",
+      "Inputs": [
+        {
+          "Id": "dd53788e30bf4a81ba19890f8373685f",
+          "Name": "a",
+          "Description": "a",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "70ddae3822f54015bceea01c1ba36dd1",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "9eb4d3d2dfdf469aa94a318e6cad5e2e",
+      "End": "58d4a62bb71f4c149eab3b48ab3b58f3",
+      "Id": "7c38c9008f5d4b2f938313d0f8718343"
+    },
+    {
+      "Start": "9eb4d3d2dfdf469aa94a318e6cad5e2e",
+      "End": "e2a00fda65df4b8488c901a437898cd6",
+      "Id": "cf95089c06d24375b79dd8b137c950cb"
+    },
+    {
+      "Start": "bdbb106e4ac6441db7065c2657330f9a",
+      "End": "072890eb59d04b9da5e245aab9ae3f5b",
+      "Id": "3161352de7b24576b330368a399a8b09"
+    },
+    {
+      "Start": "bdbb106e4ac6441db7065c2657330f9a",
+      "End": "c67c1942c19241ebae714d10c2d5fb79",
+      "Id": "6451f11b2e2a4305a198172cde823138"
+    },
+    {
+      "Start": "f440cae199014e57b21bf213f5887430",
+      "End": "dd53788e30bf4a81ba19890f8373685f",
+      "Id": "51eec47e289644f8bce9e6c5dc8c0393"
+    },
+    {
+      "Start": "f1ce35e348b04726b70993b82aae9a12",
+      "End": "886a14a716b44210b86d04a9963fbb2a",
+      "Id": "6002fb22366641efb8e94b2e5854b598"
+    },
+    {
+      "Start": "d50ddd51e6cf4483a767fa66ac60d87b",
+      "End": "388ede573414431d960eabac923db778",
+      "Id": "deff3b0f3fa7440e9dee413e7e6181e7"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.5.0.6317",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "==",
+        "Id": "3f0477b11bfe4a15bf2961c962c28f77",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 498.0,
+        "Y": 379.0
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "0e2592bec36548f89b0cd14919c71b6c",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 109.0,
+        "Y": 311.0
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "List.Map",
+        "Id": "8f17012e9331455d97603537233e7262",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 787.0,
+        "Y": 54.0
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "54fe19d0c2c643e5a3c7ad383944ddcb",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 423.0,
+        "Y": 21.0
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "==",
+        "Id": "a5eecd18daef42af9b99aa5b009d222e",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 454.0,
+        "Y": 168.0
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "d3172222b980478ab0183f9c90837699",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1003.0,
+        "Y": 163.0
+      }
+    ],
+    "Annotations": [],
+    "X": 0.0,
+    "Y": 0.0,
+    "Zoom": 1.0
+  }
+}

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using CoreNodeModels.Properties;
 using Dynamo.Graph.Nodes;
 using Newtonsoft.Json;
 using ProtoCore.AST.AssociativeAST;
@@ -10,10 +11,10 @@ using ProtoCore.Utils;
 namespace CoreNodeModels
 {
     [NodeName("==")]
-    [NodeDescription("Equals with tolerance input")]
+    [NodeDescription("EqualsWithToleranceDescription", typeof(Resources))]
     [NodeCategory("Core.Math")]
-    [NodeSearchTags("Equals")]
-    [InPortTypes("double ", "double", "double")]
+    [NodeSearchTags("EqualsWithToleranceSearchTags", typeof(Resources))]
+    [InPortTypes("double", "double", "double")]
     [OutPortTypes("bool")]
     [IsDesignScriptCompatible]
     public class Equals : NodeModel
@@ -31,11 +32,11 @@ namespace CoreNodeModels
         {
             ArgumentLacing = LacingStrategy.Auto;
 
-            InPorts.Add(new PortModel(PortType.Input, this, new PortData("lhs", "integer or double value")));
-            InPorts.Add(new PortModel(PortType.Input, this, new PortData("rhs", "integer or double value")));
+            InPorts.Add(new PortModel(PortType.Input, this, new PortData("x", Resources.EqualsWithToleranceLhsRhsTooltip)));
+            InPorts.Add(new PortModel(PortType.Input, this, new PortData("y", Resources.EqualsWithToleranceLhsRhsTooltip)));
             InPorts.Add(new PortModel(PortType.Input, this,
-                new PortData("tolerance", "tolerance", tolerancePortDefaultValue)));
-            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("bool", "result of equality check")));
+                new PortData("tolerance", Resources.EqualsWithToleranceTooltip, tolerancePortDefaultValue)));
+            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("bool", Resources.EqualsWithToleranceOutportTooltip)));
             RegisterAllPorts();
         }
 
