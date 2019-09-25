@@ -1414,15 +1414,29 @@ namespace Dynamo.Controls
         }
     }
 
+    //TODO remove(this is not used anywhere) in Dynamo 3.0
     public class ZoomToVisibilityConverter : IValueConverter
     {
+        /// <summary>
+        /// Returns hidden for small zoom sizes - appears unused.
+        /// </summary>
+        /// <param name="value">zoom size</param>
+        /// <param name="targetType">unused</param>
+        /// <param name="parameter">unused</param>
+        /// <param name="culture">unused</param>
+        /// <returns></returns>
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
-            double zoom = System.Convert.ToDouble(value, culture);
-
-            if (zoom < .5)
-                return Visibility.Hidden;
-
+            try
+            {
+                double zoom = System.Convert.ToDouble(value, CultureInfo.InvariantCulture);
+                if (zoom < .5)
+                    return Visibility.Hidden;
+            }
+            catch(Exception e)
+            {
+                Console.WriteLine($"problem attempting to parse zoomsize or param {value}{ e.Message}");
+            }
             return Visibility.Visible;
         }
 
@@ -2208,12 +2222,31 @@ namespace Dynamo.Controls
 
     public class MenuItemCheckConverter : IValueConverter
     {
+        /// <summary>
+        /// Converts from a fontsize and param to determine if the two numbers are equal.(ie what is the font set to)
+        /// </summary>
+        /// <param name="value">fontSize</param>
+        /// <param name="targetType">unusued</param>
+        /// <param name="parameter">target font size</param>
+        /// <param name="culture">unusued</param>
+        /// <returns></returns>
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            var fontsize = System.Convert.ToDouble(value, culture);
-            var param = System.Convert.ToDouble(parameter, culture);
-
-            return fontsize == param;            
+         
+            //use invariant culture, these strings should always be set via our code.
+            try
+            {
+                var fontsize = System.Convert.ToDouble(value, CultureInfo.InvariantCulture);
+                var param = System.Convert.ToDouble(parameter, CultureInfo.InvariantCulture);
+                return fontsize == param;
+            }
+            
+            catch(Exception e)
+            {
+                Console.WriteLine($"problem attempting to parse fontsize or param {value} {parameter} { e.Message}");
+                return false;
+            }
+          
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
@@ -2265,10 +2298,32 @@ namespace Dynamo.Controls
     {
         private const double MinFontFactor = 7.0;
 
+        /// <summary>
+        /// converts a zoom and fontsize to a bool used to determine if group title editor should be enabled.
+        /// </summary>
+        /// <param name="values">[0] zoom [1] fontSize - could be strings or doubles</param>
+        /// <param name="targetType">unused</param>
+        /// <param name="parameter">unused</param>
+        /// <param name="culture">unused</param>
+        /// <returns></returns>
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
-            var zoom = System.Convert.ToDouble(values[0], culture);
-            var fontsize = System.Convert.ToDouble(values[1], culture);
+            //defaults
+            var zoom = 1.0;
+            var fontsize = 36.0;
+            try
+            {
+                //use invariantCulture - 
+                //fontSize should only be serialized in invariant culture
+                // and zoom should either come from fallback value or runtime value.
+                zoom = System.Convert.ToDouble(values[0], CultureInfo.InvariantCulture);
+                fontsize = System.Convert.ToDouble(values[1], CultureInfo.InvariantCulture);
+            }
+            //just use defaults, this will enable the text editor.
+            catch(Exception e)
+            {
+                Console.WriteLine($"problem attempting to parse fontsize or zoom {values[1]} {values[0]}. { e.Message}");
+            }
 
             var factor = zoom*fontsize;
             if (factor < MinFontFactor)
