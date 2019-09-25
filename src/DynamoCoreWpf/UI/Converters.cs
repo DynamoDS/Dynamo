@@ -2322,7 +2322,7 @@ namespace Dynamo.Controls
             //just use defaults, this will enable the text editor.
             catch(Exception e)
             {
-                Console.WriteLine($"problem attempting to parse fontsize or zoom {values[0]} {values[1]} { e.Message}");
+                Console.WriteLine($"problem attempting to parse fontsize or zoom {values[1]} {values[0]}. { e.Message}");
             }
 
             var factor = zoom*fontsize;
