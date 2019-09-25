@@ -738,7 +738,7 @@ namespace ProtoFFI
 
             //Search in the DSObjectMap, for corresponding clrObject.
             object clrObject = null;
-            if (DSObjectMap.TryGetValue(dsObject, out clrObject))
+            if (DSObjectMap.TryGetValue(dsObject.Pointer, out clrObject))
                 return clrObject;
 
             
@@ -854,12 +854,12 @@ namespace ProtoFFI
         internal bool IsDictionary(StackValue value)
         {
             object obj;
-            return value.IsPointer && DSObjectMap.TryGetValue(value, out obj) && obj is DesignScript.Builtin.Dictionary;
+            return value.IsPointer && DSObjectMap.TryGetValue(value.Pointer, out obj) && obj is DesignScript.Builtin.Dictionary;
         }
 
         internal DesignScript.Builtin.Dictionary GetDictionary(StackValue value)
         {
-            return DSObjectMap[value] as DesignScript.Builtin.Dictionary;
+            return DSObjectMap[value.Pointer] as DesignScript.Builtin.Dictionary;
         }
 
         /// <summary>
@@ -1043,9 +1043,9 @@ namespace ProtoFFI
             lock (DSObjectMap)
             {
                 Object clrobject;
-                if (DSObjectMap.TryGetValue(dsObject, out clrobject))
+                if (DSObjectMap.TryGetValue(dsObject.Pointer, out clrobject))
                 {
-                    DSObjectMap.Remove(dsObject);
+                    DSObjectMap.Remove(dsObject.Pointer);
                     CLRObjectMap.Remove(clrobject);
                 }
             }
@@ -1239,7 +1239,7 @@ namespace ProtoFFI
         public override string GetStringValue(StackValue dsObject)
         {
             object clrObject = null;
-            if (!DSObjectMap.TryGetValue(dsObject, out clrObject))
+            if (!DSObjectMap.TryGetValue(dsObject.Pointer, out clrObject))
             {
                 return string.Empty;
             }
@@ -1287,7 +1287,7 @@ namespace ProtoFFI
 #endif
             lock (DSObjectMap)
             {
-                DSObjectMap[dsobj] = obj;
+                DSObjectMap[dsobj.Pointer] = obj;
                 CLRObjectMap[obj] = dsobj;
             }
         }
@@ -1350,7 +1350,7 @@ namespace ProtoFFI
             CLRObjectMap.Clear();
         }
 
-        private readonly Dictionary<StackValue, Object> DSObjectMap = new Dictionary<StackValue, object>(new PointerValueComparer());
+        private readonly Dictionary<int, Object> DSObjectMap = new Dictionary<int, object>();
         private readonly Dictionary<Object, StackValue> CLRObjectMap = new Dictionary<object, StackValue>(new ReferenceEqualityComparer());
         private static readonly Dictionary<ProtoCore.RuntimeCore, CLRObjectMarshaler> mObjectMarshlers = new Dictionary<ProtoCore.RuntimeCore, CLRObjectMarshaler>();
         private static List<IDisposable> mPendingDisposables = new List<IDisposable>();
@@ -1375,25 +1375,4 @@ namespace ProtoFFI
         }
     }
 
-    /// <summary>
-    /// This class compares two Pointer type StackValue objects.
-    /// </summary>
-    public class PointerValueComparer : IEqualityComparer<StackValue>
-    {
-        public bool Equals(StackValue x, StackValue y)
-        {
-            return x.Pointer == y.Pointer && x.metaData.type == y.metaData.type;
-        }
-
-        public int GetHashCode(StackValue obj)
-        {
-            unchecked
-            {
-                var hash = 0;
-                hash = (hash * 397) ^ obj.Pointer.GetHashCode();
-                hash = (hash * 397) ^ obj.metaData.type.GetHashCode();
-                return hash;
-            }
-        }
-    }
 }
