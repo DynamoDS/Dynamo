@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -36,6 +37,8 @@ using Dynamo.Utilities;
 using DynamoServices;
 using DynamoUnits;
 using Greg;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using ProtoCore;
 using ProtoCore.Runtime;
 using Compiler = ProtoAssociative.Compiler;
@@ -43,10 +46,6 @@ using Compiler = ProtoAssociative.Compiler;
 using DefaultUpdateManager = Dynamo.Updates.UpdateManager;
 using FunctionGroup = Dynamo.Engine.FunctionGroup;
 using Utils = Dynamo.Graph.Nodes.Utilities;
-
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using System.Globalization;
 
 namespace Dynamo.Models
 {
@@ -422,6 +421,7 @@ namespace Dynamo.Models
         /// Returns authentication manager object for oxygen authentication.
         /// </summary>
         public AuthenticationManager AuthenticationManager { get; set; }
+        public object DependencyView { get; private set; }
 
         #endregion
 
@@ -726,6 +726,13 @@ namespace Dynamo.Models
             LibraryServices = new LibraryServices(libraryCore, pathManager, PreferenceSettings);
             LibraryServices.MessageLogged += LogMessage;
             LibraryServices.LibraryLoaded += LibraryLoaded;
+
+            EngineController = new EngineController(
+              LibraryServices,
+              geometryFactoryPath,
+              DebugSettings.VerboseLogging); 
+
+            EngineController.ReloadDummyNodes += ReloadDummyNodes;
 
             CustomNodeManager = new CustomNodeManager(NodeFactory, MigrationManager, LibraryServices);
             InitializeCustomNodeManager();
@@ -1036,6 +1043,8 @@ namespace Dynamo.Models
 
             LibraryServices.Dispose();
             LibraryServices.LibraryManagementCore.Cleanup();
+
+            EngineController.ReloadDummyNodes -= ReloadDummyNodes;
 
             UpdateManager.Log -= UpdateManager_Log;
             Logger.Dispose();
@@ -1713,6 +1722,70 @@ namespace Dynamo.Models
                 customNodeWorkspace.IsVisibleInDynamoLibrary = dynamoPreferences.IsVisibleInDynamoLibrary;
 
             return true;
+        }
+
+        private void ReloadDummyNodes()
+        {
+            JObject dummyNodeJSON = null;
+
+            WorkspaceModel currentWorkspace = this.CurrentWorkspace;
+
+            if (currentWorkspace == null)
+                return;
+
+            String filePath = Path.GetFullPath(currentWorkspace.FileName);
+
+            CustomNodeManager.AddUninitializedCustomNodesInPath(
+                        Path.GetDirectoryName(filePath),
+                        IsTestMode);
+
+            var dummyNodes = currentWorkspace.Nodes.OfType<DummyNode>();
+
+            foreach (DummyNode dn in dummyNodes)
+            {
+                dummyNodeJSON = dn.OriginalNodeContent as JObject;
+
+                if (dummyNodeJSON != null)
+                {
+                    NodeModel resolvedNode = WorkspaceModel.ReloadDummyNodes(
+                                                               dummyNodeJSON.ToString(),
+                                                               LibraryServices,
+                                                               EngineController,
+                                                               Scheduler,
+                                                               NodeFactory,
+                                                               IsTestMode,
+                                                               false,
+                                                               CustomNodeManager);
+
+                    if (!(resolvedNode is DummyNode))
+                    {
+                        resolvedNode.X = dn.X;
+                        resolvedNode.Y = dn.Y;
+
+                        currentWorkspace.RemoveAndDisposeNode(dn);
+                        currentWorkspace.AddAndRegisterNode(resolvedNode, false);
+
+                        List<ConnectorModel> connectors = dn.AllConnectors.ToList();
+                        foreach (var connectorModel in connectors)
+                        {
+                            var startNode = connectorModel.Start.Owner;
+                            var endNode = connectorModel.End.Owner;
+
+                            if (startNode is DummyNode)
+                            {
+                                startNode = resolvedNode;
+                            }
+                            if (endNode is DummyNode)
+                            {
+                                endNode = resolvedNode;
+                            }
+
+                            connectorModel.Delete();
+                            ConnectorModel.Make(startNode, endNode, connectorModel.Start.Index, connectorModel.End.Index, connectorModel.GUID);
+                        }
+                    }
+                }
+            }
         }
 
         private bool OpenXmlFile(WorkspaceInfo workspaceInfo, XmlDocument xmlDoc, out WorkspaceModel workspace)

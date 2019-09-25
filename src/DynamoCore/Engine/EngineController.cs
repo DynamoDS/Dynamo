@@ -39,6 +39,11 @@ namespace Dynamo.Engine
         public event AstBuiltEventHandler AstBuilt;
 
         /// <summary>
+        /// This event is fired to reload the dummy nodes.
+        /// </summary>
+        public static event Action ReloadDummyNodes;
+
+        /// <summary>
         /// This flag is used to check if any packages are currently being loaded, and to disable any executions that are triggered before the package loading is completed. See DYN-2101 for more info.
         /// </summary>
         internal static Boolean DisableRun = false;
@@ -503,6 +508,8 @@ namespace Dynamo.Engine
         private void OnLibraryLoaded()
         {
             liveRunnerServices.ReloadAllLibraries(libraryServices.ImportedLibraries);
+
+            ReloadDummyNodes?.Invoke();
 
             // The LiveRunner core is newly instantiated whenever a new library is imported
             // due to which a new instance of CodeCompletionServices needs to be created with the new Core

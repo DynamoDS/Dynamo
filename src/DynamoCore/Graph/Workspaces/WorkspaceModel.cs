@@ -1,4 +1,12 @@
-﻿using Dynamo.Core;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Xml;
+using Dynamo.Core;
 using Dynamo.Engine;
 using Dynamo.Engine.CodeGeneration;
 using Dynamo.Events;
@@ -19,14 +27,6 @@ using Dynamo.Utilities;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using ProtoCore.Namespace;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Xml;
 
 
 namespace Dynamo.Graph.Workspaces
@@ -1850,6 +1850,40 @@ namespace Dynamo.Graph.Workspaces
             var ws = JsonConvert.DeserializeObject<WorkspaceModel>(result, settings);
 
             return ws;
+        }
+
+        public static NodeModel ReloadDummyNodes(string json, LibraryServices libraryServices,
+         EngineController engineController, DynamoScheduler scheduler, NodeFactory factory,
+         bool isTestMode, bool verboseLogging, CustomNodeManager manager)
+        {
+            var logger = engineController != null ? engineController.AsLogger() : null;
+
+            var settings = new JsonSerializerSettings
+            {
+                Error = (sender, args) =>
+                {
+                    args.ErrorContext.Handled = true;
+                    Console.WriteLine(args.ErrorContext.Error);
+                },
+                ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+                TypeNameHandling = TypeNameHandling.Auto,
+                Formatting = Newtonsoft.Json.Formatting.Indented,
+                Culture = CultureInfo.InvariantCulture,
+                Converters = new List<JsonConverter>{
+                        new ConnectorConverter(logger),
+                        new WorkspaceReadConverter(engineController, scheduler, factory, isTestMode, verboseLogging),
+                        new NodeReadConverter(manager, libraryServices, factory, isTestMode),
+                        new TypedParameterConverter(),
+                        new NodeLibraryDependencyConverter(logger)
+                    },
+                ReferenceResolverProvider = () => { return new IdReferenceResolver(); }
+            };
+
+            var result = SerializationExtensions.ReplaceTypeDeclarations(json, true);
+            var nodeModel = JsonConvert.DeserializeObject<NodeModel>(result, settings);
+
+            
+            return nodeModel;
         }
 
         /// <summary>
