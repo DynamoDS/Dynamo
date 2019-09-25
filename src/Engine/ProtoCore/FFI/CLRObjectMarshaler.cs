@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Xml;
 using Autodesk.DesignScript.Interfaces;
 using DesignScript.Builtin;
@@ -1371,7 +1372,7 @@ namespace ProtoFFI
 
         public int GetHashCode(object obj)
         {
-            return obj.GetHashCode();
+            return RuntimeHelpers.GetHashCode(obj);
         }
     }
 
