@@ -605,6 +605,7 @@
     <value>equals;tolerance</value>
   </data>
   <data name="EqualsWithToleranceTooltip" xml:space="preserve">
-    <value>tolerance</value>
+    <value>tolerance
+Default value: {0}</value>
   </data>
 </root>

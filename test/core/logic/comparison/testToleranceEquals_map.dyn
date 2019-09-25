@@ -10,53 +10,6 @@
   "Outputs": [],
   "Nodes": [
     {
-      "ConcreteType": "CoreNodeModels.Equals, CoreNodeModels",
-      "NodeType": "ExtensionNode",
-      "Id": "3f0477b11bfe4a15bf2961c962c28f77",
-      "Inputs": [
-        {
-          "Id": "58d4a62bb71f4c149eab3b48ab3b58f3",
-          "Name": "lhs",
-          "Description": "integer or double value",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        },
-        {
-          "Id": "072890eb59d04b9da5e245aab9ae3f5b",
-          "Name": "rhs",
-          "Description": "integer or double value",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        },
-        {
-          "Id": "79b38c95a85a498e8bbe80c52503acda",
-          "Name": "tolerance",
-          "Description": "tolerance (disabled)",
-          "UsingDefaultValue": true,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "Outputs": [
-        {
-          "Id": "42bfd86f3de84dfabefeff2c59c176fe",
-          "Name": "bool",
-          "Description": "result of equality check",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "Replication": "Auto",
-      "Description": "Equals with tolerance input"
-    },
-    {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
       "NodeType": "CodeBlockNode",
       "Code": "1..2;\n1..4;",
@@ -146,11 +99,11 @@
     {
       "ConcreteType": "CoreNodeModels.Equals, CoreNodeModels",
       "NodeType": "ExtensionNode",
-      "Id": "a5eecd18daef42af9b99aa5b009d222e",
+      "Id": "462b6caeceea475aac4a76dd79d17d68",
       "Inputs": [
         {
-          "Id": "e2a00fda65df4b8488c901a437898cd6",
-          "Name": "lhs",
+          "Id": "74b4d0953e6144e2b8552074608c1529",
+          "Name": "x",
           "Description": "integer or double value",
           "UsingDefaultValue": false,
           "Level": 2,
@@ -158,8 +111,8 @@
           "KeepListStructure": false
         },
         {
-          "Id": "c67c1942c19241ebae714d10c2d5fb79",
-          "Name": "rhs",
+          "Id": "f5ac5cc4831543d8a4935803a58ba806",
+          "Name": "y",
           "Description": "integer or double value",
           "UsingDefaultValue": false,
           "Level": 2,
@@ -167,7 +120,54 @@
           "KeepListStructure": false
         },
         {
-          "Id": "f548d3468f2441009a2bbf443b39e93e",
+          "Id": "49abf2e0659045f496d18f8129e04efb",
+          "Name": "tolerance",
+          "Description": "tolerance",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "6dde5d4586b44c08b36b40f14a89c464",
+          "Name": "bool",
+          "Description": "result of equality check",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Equals with tolerance input."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Equals, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "558cd23c74b147eeb7c3c8ff2de3b693",
+      "Inputs": [
+        {
+          "Id": "8af67ef9a283471e85b4808081be784f",
+          "Name": "x",
+          "Description": "integer or double value",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "2d43943ed5b948ee82fa496907ee4dce",
+          "Name": "y",
+          "Description": "integer or double value",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "b24a152b3fa0468cbb7126e573df5ff3",
           "Name": "tolerance",
           "Description": "tolerance (disabled)",
           "UsingDefaultValue": false,
@@ -178,7 +178,7 @@
       ],
       "Outputs": [
         {
-          "Id": "d50ddd51e6cf4483a767fa66ac60d87b",
+          "Id": "f85a22db28dc40499866c1c33a3a79fe",
           "Name": "bool",
           "Description": "result of equality check",
           "UsingDefaultValue": false,
@@ -188,19 +188,28 @@
         }
       ],
       "Replication": "Auto",
-      "Description": "Equals with tolerance input"
+      "Description": "Equals with tolerance input."
     },
     {
-      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
-      "NodeType": "CodeBlockNode",
-      "Code": "a;",
-      "Id": "d3172222b980478ab0183f9c90837699",
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DSCore.List.Flatten@var[]..[],int",
+      "Id": "94354c1d853d4932922838b241bac6f3",
       "Inputs": [
         {
-          "Id": "dd53788e30bf4a81ba19890f8373685f",
-          "Name": "a",
-          "Description": "a",
+          "Id": "a061e3cd5c324e978613f1ca7c00b917",
+          "Name": "list",
+          "Description": "List to flatten.\n\nvar[]..[]",
           "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "3d1a186a991f423f8abd825dbbccb579",
+          "Name": "amt",
+          "Description": "Layers of nesting to remove.\n\nint\nDefault value : -1",
+          "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
           "KeepListStructure": false
@@ -208,44 +217,44 @@
       ],
       "Outputs": [
         {
-          "Id": "70ddae3822f54015bceea01c1ba36dd1",
-          "Name": "",
-          "Description": "Value of expression at line 1",
+          "Id": "0f972a0a19c04834895fe9107f918abc",
+          "Name": "var[]..[]",
+          "Description": "var[]..[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
           "KeepListStructure": false
         }
       ],
-      "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly"
+      "Replication": "Auto",
+      "Description": "Flattens a nested list of lists by a certain amount.\n\nList.Flatten (list: var[]..[], amt: int = -1): var[]..[]"
     }
   ],
   "Connectors": [
     {
       "Start": "9eb4d3d2dfdf469aa94a318e6cad5e2e",
-      "End": "58d4a62bb71f4c149eab3b48ab3b58f3",
-      "Id": "7c38c9008f5d4b2f938313d0f8718343"
+      "End": "74b4d0953e6144e2b8552074608c1529",
+      "Id": "5bc86e2cb2fc43d691bd6a9b78ee6d7f"
     },
     {
       "Start": "9eb4d3d2dfdf469aa94a318e6cad5e2e",
-      "End": "e2a00fda65df4b8488c901a437898cd6",
-      "Id": "cf95089c06d24375b79dd8b137c950cb"
+      "End": "8af67ef9a283471e85b4808081be784f",
+      "Id": "624c1ed0d0c3445791e102ff5af7ac2b"
     },
     {
       "Start": "bdbb106e4ac6441db7065c2657330f9a",
-      "End": "072890eb59d04b9da5e245aab9ae3f5b",
-      "Id": "3161352de7b24576b330368a399a8b09"
+      "End": "f5ac5cc4831543d8a4935803a58ba806",
+      "Id": "c2c1f8968a0f4417b4d2af7c647ac0b3"
     },
     {
       "Start": "bdbb106e4ac6441db7065c2657330f9a",
-      "End": "c67c1942c19241ebae714d10c2d5fb79",
-      "Id": "6451f11b2e2a4305a198172cde823138"
+      "End": "2d43943ed5b948ee82fa496907ee4dce",
+      "Id": "b7ec334cbe7e4163a62e87e1125930c9"
     },
     {
       "Start": "f440cae199014e57b21bf213f5887430",
-      "End": "dd53788e30bf4a81ba19890f8373685f",
-      "Id": "51eec47e289644f8bce9e6c5dc8c0393"
+      "End": "a061e3cd5c324e978613f1ca7c00b917",
+      "Id": "c6bef275ba3e444ab7b293c0ef3613ab"
     },
     {
       "Start": "f1ce35e348b04726b70993b82aae9a12",
@@ -253,9 +262,9 @@
       "Id": "6002fb22366641efb8e94b2e5854b598"
     },
     {
-      "Start": "d50ddd51e6cf4483a767fa66ac60d87b",
+      "Start": "f85a22db28dc40499866c1c33a3a79fe",
       "End": "388ede573414431d960eabac923db778",
-      "Id": "deff3b0f3fa7440e9dee413e7e6181e7"
+      "Id": "29367f9085184044822b3327a1a0aa9f"
     }
   ],
   "Dependencies": [],
@@ -266,7 +275,7 @@
       "ScaleFactor": 1.0,
       "HasRunWithoutCrash": true,
       "IsVisibleInDynamoLibrary": true,
-      "Version": "2.5.0.6317",
+      "Version": "2.5.0.6324",
       "RunType": "Automatic",
       "RunPeriod": "1000"
     },
@@ -283,16 +292,6 @@
       "UpZ": 0.0
     },
     "NodeViews": [
-      {
-        "ShowGeometry": true,
-        "Name": "==",
-        "Id": "3f0477b11bfe4a15bf2961c962c28f77",
-        "IsSetAsInput": false,
-        "IsSetAsOutput": false,
-        "Excluded": false,
-        "X": 498.0,
-        "Y": 379.0
-      },
       {
         "ShowGeometry": true,
         "Name": "Code Block",
@@ -326,27 +325,37 @@
       {
         "ShowGeometry": true,
         "Name": "==",
-        "Id": "a5eecd18daef42af9b99aa5b009d222e",
+        "Id": "462b6caeceea475aac4a76dd79d17d68",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 454.0,
-        "Y": 168.0
+        "X": 515.99433427762,
+        "Y": 433.09065155807349
       },
       {
         "ShowGeometry": true,
-        "Name": "Code Block",
-        "Id": "d3172222b980478ab0183f9c90837699",
+        "Name": "==",
+        "Id": "558cd23c74b147eeb7c3c8ff2de3b693",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 1003.0,
-        "Y": 163.0
+        "X": 431.99291784702541,
+        "Y": 196.86118980169971
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "List.Flatten",
+        "Id": "94354c1d853d4932922838b241bac6f3",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1025.0,
+        "Y": 60.045325779036773
       }
     ],
     "Annotations": [],
-    "X": 0.0,
-    "Y": 0.0,
+    "X": -40.0,
+    "Y": 70.954674220963227,
     "Zoom": 1.0
   }
 }

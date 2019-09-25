@@ -41,11 +41,11 @@
     {
       "ConcreteType": "CoreNodeModels.Equals, CoreNodeModels",
       "NodeType": "ExtensionNode",
-      "Id": "a5eecd18daef42af9b99aa5b009d222e",
+      "Id": "399a6b0a699f44948160d6e4301b7921",
       "Inputs": [
         {
-          "Id": "e2a00fda65df4b8488c901a437898cd6",
-          "Name": "lhs",
+          "Id": "c972dd56187f4dbfb68155b78ca3bc5b",
+          "Name": "x",
           "Description": "integer or double value",
           "UsingDefaultValue": false,
           "Level": 2,
@@ -53,8 +53,8 @@
           "KeepListStructure": false
         },
         {
-          "Id": "c67c1942c19241ebae714d10c2d5fb79",
-          "Name": "rhs",
+          "Id": "f58e257e7ae94e0595ef4df2bea36b8d",
+          "Name": "y",
           "Description": "integer or double value",
           "UsingDefaultValue": false,
           "Level": 2,
@@ -62,7 +62,7 @@
           "KeepListStructure": false
         },
         {
-          "Id": "f548d3468f2441009a2bbf443b39e93e",
+          "Id": "58eaa706dd0149e3bd428c7a94ae2fbd",
           "Name": "tolerance",
           "Description": "tolerance",
           "UsingDefaultValue": true,
@@ -73,101 +73,7 @@
       ],
       "Outputs": [
         {
-          "Id": "d50ddd51e6cf4483a767fa66ac60d87b",
-          "Name": "bool",
-          "Description": "result of equality check",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "Replication": "Longest",
-      "Description": "Equals with tolerance input"
-    },
-    {
-      "ConcreteType": "CoreNodeModels.Equals, CoreNodeModels",
-      "NodeType": "ExtensionNode",
-      "Id": "a0f2abbf85f74ce2843a5c2a1692a8ac",
-      "Inputs": [
-        {
-          "Id": "db35f2a4def440a09f5797a9541f6172",
-          "Name": "lhs",
-          "Description": "integer or double value",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        },
-        {
-          "Id": "6291bdf758b24d898799c9978a398087",
-          "Name": "rhs",
-          "Description": "integer or double value",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        },
-        {
-          "Id": "bdb19b650ba443ae837e3f671657e626",
-          "Name": "tolerance",
-          "Description": "tolerance",
-          "UsingDefaultValue": true,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "Outputs": [
-        {
-          "Id": "d1437787b8cc410ca58563fbb8da3d49",
-          "Name": "bool",
-          "Description": "result of equality check",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "Replication": "CrossProduct",
-      "Description": "Equals with tolerance input"
-    },
-    {
-      "ConcreteType": "CoreNodeModels.Equals, CoreNodeModels",
-      "NodeType": "ExtensionNode",
-      "Id": "3167795abd16403fa3e274e3fd8d2510",
-      "Inputs": [
-        {
-          "Id": "09f348f362a8489c8d942ce54a528502",
-          "Name": "lhs",
-          "Description": "integer or double value",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        },
-        {
-          "Id": "bc238f9d40de4908b317eb8d0e56897f",
-          "Name": "rhs",
-          "Description": "integer or double value",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        },
-        {
-          "Id": "99b5f9b315f54486a86621318bcba444",
-          "Name": "tolerance",
-          "Description": "tolerance",
-          "UsingDefaultValue": true,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "Outputs": [
-        {
-          "Id": "931b41d860444e1782771b7bdfdab663",
+          "Id": "cf74c6b54f40402ab56f315614825e2b",
           "Name": "bool",
           "Description": "result of equality check",
           "UsingDefaultValue": false,
@@ -177,39 +83,133 @@
         }
       ],
       "Replication": "Shortest",
-      "Description": "Equals with tolerance input"
+      "Description": "Equals with tolerance input."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Equals, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "9db0f6f306804c0fbd6082fd38ac536b",
+      "Inputs": [
+        {
+          "Id": "bd8dff34a3a240a98644f1375b9e085b",
+          "Name": "x",
+          "Description": "integer or double value",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "fb8e7da709f040929f25ef708cd3b72a",
+          "Name": "y",
+          "Description": "integer or double value",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "410ac52b76d24d22bd574681381261d7",
+          "Name": "tolerance",
+          "Description": "tolerance",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "da6c373f91d444ccaad04cc0d7a59ce0",
+          "Name": "bool",
+          "Description": "result of equality check",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "CrossProduct",
+      "Description": "Equals with tolerance input."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Equals, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "89af328df688489fa0b8e01566ee74d5",
+      "Inputs": [
+        {
+          "Id": "a6db08c6246e4a45921eb40174b0cff2",
+          "Name": "x",
+          "Description": "integer or double value",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "d73bf85b7fe84d92b45b98be9aeede96",
+          "Name": "y",
+          "Description": "integer or double value",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "d15cc3450e604b529bd703cfd544623f",
+          "Name": "tolerance",
+          "Description": "tolerance",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "9268493a64204246bba50ea2581a043f",
+          "Name": "bool",
+          "Description": "result of equality check",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Longest",
+      "Description": "Equals with tolerance input."
     }
   ],
   "Connectors": [
     {
       "Start": "9eb4d3d2dfdf469aa94a318e6cad5e2e",
-      "End": "e2a00fda65df4b8488c901a437898cd6",
-      "Id": "1b522415268b4ab7b6dd84ed1564fe4b"
+      "End": "c972dd56187f4dbfb68155b78ca3bc5b",
+      "Id": "b934ac2db7e843aeaebeab8250385724"
     },
     {
       "Start": "9eb4d3d2dfdf469aa94a318e6cad5e2e",
-      "End": "db35f2a4def440a09f5797a9541f6172",
-      "Id": "286c39a85a6e4a34b1f66b204c1c20b2"
+      "End": "bd8dff34a3a240a98644f1375b9e085b",
+      "Id": "cf43c4850f1242caab560f499b154056"
     },
     {
       "Start": "9eb4d3d2dfdf469aa94a318e6cad5e2e",
-      "End": "09f348f362a8489c8d942ce54a528502",
-      "Id": "c598f005acbb42dbbc225a39ab131df9"
+      "End": "a6db08c6246e4a45921eb40174b0cff2",
+      "Id": "4d3ffe8c41af4b9eb7e74d0e5c83637f"
     },
     {
       "Start": "bdbb106e4ac6441db7065c2657330f9a",
-      "End": "c67c1942c19241ebae714d10c2d5fb79",
-      "Id": "bc3c2d19c4d5492e8aa1004f06b277db"
+      "End": "f58e257e7ae94e0595ef4df2bea36b8d",
+      "Id": "d65d68cf8d7847018e74246b0be1501d"
     },
     {
       "Start": "bdbb106e4ac6441db7065c2657330f9a",
-      "End": "6291bdf758b24d898799c9978a398087",
-      "Id": "930a0695e4b7453c926c65a42b7abc30"
+      "End": "fb8e7da709f040929f25ef708cd3b72a",
+      "Id": "6143b89fb7434cbd8516ac990dd5aab9"
     },
     {
       "Start": "bdbb106e4ac6441db7065c2657330f9a",
-      "End": "bc238f9d40de4908b317eb8d0e56897f",
-      "Id": "67b387021497416d8911ea59fb0860cd"
+      "End": "d73bf85b7fe84d92b45b98be9aeede96",
+      "Id": "05e507ef853648948d444fe80afa15b3"
     }
   ],
   "Dependencies": [],
@@ -220,7 +220,7 @@
       "ScaleFactor": 1.0,
       "HasRunWithoutCrash": true,
       "IsVisibleInDynamoLibrary": true,
-      "Version": "2.5.0.6316",
+      "Version": "2.5.0.6324",
       "RunType": "Automatic",
       "RunPeriod": "1000"
     },
@@ -250,32 +250,32 @@
       {
         "ShowGeometry": true,
         "Name": "==",
-        "Id": "a5eecd18daef42af9b99aa5b009d222e",
+        "Id": "399a6b0a699f44948160d6e4301b7921",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 598.0,
-        "Y": 34.0
+        "X": 184.0,
+        "Y": 455.0
       },
       {
         "ShowGeometry": true,
         "Name": "==",
-        "Id": "a0f2abbf85f74ce2843a5c2a1692a8ac",
+        "Id": "9db0f6f306804c0fbd6082fd38ac536b",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 869.0,
-        "Y": 265.0
+        "X": 518.0,
+        "Y": 362.0
       },
       {
         "ShowGeometry": true,
         "Name": "==",
-        "Id": "3167795abd16403fa3e274e3fd8d2510",
+        "Id": "89af328df688489fa0b8e01566ee74d5",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 451.0,
-        "Y": 416.0
+        "X": 822.0,
+        "Y": 127.0
       }
     ],
     "Annotations": [],

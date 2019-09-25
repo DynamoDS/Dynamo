@@ -13,6 +13,7 @@ namespace Dynamo.Tests
             libraries.Add("VMDataBridge.dll");
             libraries.Add("DesignScriptBuiltin.dll");
             libraries.Add("DSCoreNodes.dll");
+            libraries.Add("FunctionObject.ds");
             base.GetLibrariesToPreload(libraries);
         }
 
@@ -263,7 +264,7 @@ namespace Dynamo.Tests
 
             RunModel(testFilePath);
             AssertPreviewValue("d3ca0126-f365-4d79-8168-476022009dc2", false);
-            AssertPreviewValue("005f8c5c-ff50-42d7-902e-a06f63bb7563", false);
+            AssertPreviewValue("c2f69bf4-34be-47fa-8f0a-4a0ceca5910b", false);
         }
 
         [Test]
@@ -272,10 +273,10 @@ namespace Dynamo.Tests
             string testFilePath = Path.Combine(logicTestFolder, "testToleranceEquals_lacing.dyn");
 
             RunModel(testFilePath);
-            AssertPreviewValue("a5eecd18-daef-42af-9b99-aa5b009d222e", new[] {true, true, false, false});
-            AssertPreviewValue("a0f2abbf-85f7-4ce2-843a-5c2a1692a8ac",
+            AssertPreviewValue("89af328d-f688-489f-a0b8-e01566ee74d5", new[] {true, true, false, false});
+            AssertPreviewValue("9db0f6f3-0680-4c0f-bd60-82fd38ac536b",
                 new object[] {new[] {true, false, false, false}, new[] {false, true, false, false}});
-            AssertPreviewValue("3167795a-bd16-403f-a3e2-74e3fd8d2510", new[] {true, true});
+            AssertPreviewValue("399a6b0a-699f-4494-8160-d6e4301b7921", new[] {true, true});
         }
 
         [Test]
@@ -284,10 +285,10 @@ namespace Dynamo.Tests
             string testFilePath = Path.Combine(logicTestFolder, "testToleranceEquals_map.dyn");
 
             RunModel(testFilePath);
-            var resultNode =
-                CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace("d3172222-b980-478a-b018-3f9c90837699");
-            AssertPreviewValue("d3172222-b980-478a-b018-3f9c90837699", new object[] {new[] {true, true}});
-            AssertPreviewValue("3f0477b1-1bfe-4a15-bf29-61c962c28f77",  new[] {true, true});
+            //var resultNode =
+            //    CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace("d3172222-b980-478a-b018-3f9c90837699");
+            AssertPreviewValue("94354c1d-853d-4932-9228-38b241bac6f3", new[] {true, true});
+            AssertPreviewValue("462b6cae-ceea-475a-ac4a-76dd79d17d68", new[] {true, true});
         }
 
         [Test]
@@ -296,7 +297,7 @@ namespace Dynamo.Tests
             string testFilePath = Path.Combine(logicTestFolder, "testToleranceEquals_map2.dyn");
 
             RunModel(testFilePath);
-            AssertPreviewValue("a38ca04b-6cde-4e5c-9c15-72bbd3f8a619",
+            AssertPreviewValue("8f17012e-9331-455d-9760-3537233e7262",
                 new object[] {new[] {true, false}, new[] {false, true}, new[] {false, false}, new[] {false, false}});
         }
     }

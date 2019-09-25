@@ -15,10 +15,6 @@ namespace DSCore
     /// </summary>
     public static class Math
     {
-        // This is chosen to be the same as the default tolerance used for VM equality operator.
-        // See ProtoCore\Utils\MathUtils.cs
-        //private const double tolerance = MathUtils.Tolerance;
-
         /// <summary>
         ///     Generates a random double in the range of [0, 1).
         /// </summary>

@@ -79,11 +79,11 @@
     {
       "ConcreteType": "CoreNodeModels.Equals, CoreNodeModels",
       "NodeType": "ExtensionNode",
-      "Id": "a5eecd18daef42af9b99aa5b009d222e",
+      "Id": "50a636be76e147c48a08460844181e31",
       "Inputs": [
         {
-          "Id": "e2a00fda65df4b8488c901a437898cd6",
-          "Name": "lhs",
+          "Id": "66e3271253e04a12a458fa19b189342d",
+          "Name": "x",
           "Description": "integer or double value",
           "UsingDefaultValue": false,
           "Level": 2,
@@ -91,8 +91,8 @@
           "KeepListStructure": false
         },
         {
-          "Id": "c67c1942c19241ebae714d10c2d5fb79",
-          "Name": "rhs",
+          "Id": "05a7f7281c94449398038b12b40624b7",
+          "Name": "y",
           "Description": "integer or double value",
           "UsingDefaultValue": false,
           "Level": 2,
@@ -100,7 +100,7 @@
           "KeepListStructure": false
         },
         {
-          "Id": "f548d3468f2441009a2bbf443b39e93e",
+          "Id": "5ae0405868454997ad23b9eb5077bbbc",
           "Name": "tolerance",
           "Description": "tolerance",
           "UsingDefaultValue": true,
@@ -111,7 +111,7 @@
       ],
       "Outputs": [
         {
-          "Id": "d50ddd51e6cf4483a767fa66ac60d87b",
+          "Id": "4b3bc5cbd8b046b2a4cf2c07fc14e844",
           "Name": "bool",
           "Description": "result of equality check",
           "UsingDefaultValue": false,
@@ -120,45 +120,15 @@
           "KeepListStructure": false
         }
       ],
-      "Replication": "Longest",
-      "Description": "Equals with tolerance input"
-    },
-    {
-      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
-      "NodeType": "CodeBlockNode",
-      "Code": "a;",
-      "Id": "a38ca04b6cde4e5c9c1572bbd3f8a619",
-      "Inputs": [
-        {
-          "Id": "7074bb8747654e4d98298968bd157031",
-          "Name": "a",
-          "Description": "a",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "Outputs": [
-        {
-          "Id": "241290bbb3e24a719cb03cb4ecaf7072",
-          "Name": "",
-          "Description": "Value of expression at line 1",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly"
+      "Replication": "Auto",
+      "Description": "Equals with tolerance input."
     }
   ],
   "Connectors": [
     {
       "Start": "9eb4d3d2dfdf469aa94a318e6cad5e2e",
-      "End": "e2a00fda65df4b8488c901a437898cd6",
-      "Id": "1b522415268b4ab7b6dd84ed1564fe4b"
+      "End": "66e3271253e04a12a458fa19b189342d",
+      "Id": "35cc1216217f4e4aab4a5171fa1cff7a"
     },
     {
       "Start": "bdbb106e4ac6441db7065c2657330f9a",
@@ -166,14 +136,9 @@
       "Id": "a66129d985c947faac5cd003a6d8bf38"
     },
     {
-      "Start": "f440cae199014e57b21bf213f5887430",
-      "End": "7074bb8747654e4d98298968bd157031",
-      "Id": "bcb1e0400dea4991a482d2df10ea1182"
-    },
-    {
-      "Start": "d50ddd51e6cf4483a767fa66ac60d87b",
+      "Start": "4b3bc5cbd8b046b2a4cf2c07fc14e844",
       "End": "388ede573414431d960eabac923db778",
-      "Id": "deff3b0f3fa7440e9dee413e7e6181e7"
+      "Id": "199bad95a005436ca101f628c82b507a"
     }
   ],
   "Dependencies": [],
@@ -184,8 +149,8 @@
       "ScaleFactor": 1.0,
       "HasRunWithoutCrash": true,
       "IsVisibleInDynamoLibrary": true,
-      "Version": "2.5.0.6317",
-      "RunType": "Automatic",
+      "Version": "2.5.0.6324",
+      "RunType": "Manual",
       "RunPeriod": "1000"
     },
     "Camera": {
@@ -202,44 +167,34 @@
     },
     "NodeViews": [
       {
-        "ShowGeometry": true,
-        "Name": "Code Block",
         "Id": "0e2592bec36548f89b0cd14919c71b6c",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
+        "Name": "Code Block",
+        "ShowGeometry": true,
         "Excluded": false,
         "X": 263.0,
         "Y": 62.0
       },
       {
-        "ShowGeometry": true,
-        "Name": "List.Map",
         "Id": "8f17012e9331455d97603537233e7262",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
+        "Name": "List.Map",
+        "ShowGeometry": true,
         "Excluded": false,
         "X": 754.0,
         "Y": 76.0
       },
       {
-        "ShowGeometry": true,
+        "Id": "50a636be76e147c48a08460844181e31",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
         "Name": "==",
-        "Id": "a5eecd18daef42af9b99aa5b009d222e",
-        "IsSetAsInput": false,
-        "IsSetAsOutput": false,
-        "Excluded": false,
-        "X": 469.0,
-        "Y": 155.0
-      },
-      {
         "ShowGeometry": true,
-        "Name": "Code Block",
-        "Id": "a38ca04b6cde4e5c9c1572bbd3f8a619",
-        "IsSetAsInput": false,
-        "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 960.0,
-        "Y": 109.0
+        "X": 457.0,
+        "Y": 173.0
       }
     ],
     "Annotations": [],
