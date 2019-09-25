@@ -17,7 +17,7 @@ namespace Dynamo.WorkspaceDependency
     /// <summary>
     /// Interaction logic for WorkspaceDependencyView.xaml
     /// </summary>
-    public partial class WorkspaceDependencyView : UserControl
+    public partial class WorkspaceDependencyView : UserControl, IDisposable
     {
 
         private WorkspaceModel currentWorkspace;
@@ -223,6 +223,15 @@ namespace Dynamo.WorkspaceDependency
                     DependencyRegen(currentWorkspace);
                 }
             }
+        }
+
+        /// <summary>
+        /// Dispose function for WorkspaceDependencyView
+        /// </summary>
+        public void Dispose()
+        {
+            loadedParams.CurrentWorkspaceChanged -= OnWorkspaceChanged;
+            loadedParams.CurrentWorkspaceCleared -= OnWorkspaceCleared;
         }
     }
 

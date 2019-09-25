@@ -65,8 +65,7 @@ namespace Dynamo.WorkspaceDependency
 
         public void Shutdown()
         {
-            LoadedParams.CurrentWorkspaceChanged -= DependencyView.OnWorkspaceChanged;
-            LoadedParams.CurrentWorkspaceCleared -= DependencyView.OnWorkspaceCleared;
+            DependencyView.Dispose();
             this.Dispose();
         }
 
