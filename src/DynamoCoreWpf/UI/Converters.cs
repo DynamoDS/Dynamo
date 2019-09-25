@@ -1414,7 +1414,7 @@ namespace Dynamo.Controls
         }
     }
 
-    //TODO remove(this is not used anywhere)
+    //TODO remove(this is not used anywhere) in Dynamo 3.0
     public class ZoomToVisibilityConverter : IValueConverter
     {
         /// <summary>
