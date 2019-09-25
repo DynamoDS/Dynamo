@@ -81,7 +81,7 @@ namespace Dynamo.Wpf.ViewModels
     /// notifications as those notifications are raised when the value is set on the
     /// model.
     /// </summary>
-    public class RunSettingsViewModel : NotificationObject
+    public class RunSettingsViewModel : ViewModelBase
     {
         #region private members
 
@@ -239,8 +239,9 @@ namespace Dynamo.Wpf.ViewModels
         /// <summary>
         /// When switching workspace, this need to be called in HomeworkspaceViewModel dispose function
         /// </summary>
-        internal void Dispose()
+        public override void Dispose()
         {
+            base.Dispose();
             this.workspaceViewModel = null;
         }
 

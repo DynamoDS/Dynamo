@@ -601,6 +601,16 @@ namespace Dynamo.ViewModels
                 DynamoViewModel.EngineController.AstBuilt -= EngineController_AstBuilt;
             }
 
+            foreach (var p in InPorts)
+            {
+                p.Dispose();
+            }
+
+            foreach (var p in OutPorts)
+            {
+                p.Dispose();
+            }
+
             DynamoSelection.Instance.Selection.CollectionChanged -= SelectionOnCollectionChanged;
         }
 
