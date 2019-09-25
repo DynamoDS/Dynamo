@@ -83,6 +83,7 @@ namespace Dynamo.WorkspaceDependency
 
         public void Loaded(ViewLoadedParams viewLoadedParams)
         {
+            LoadedParams = viewLoadedParams;
             DependencyView = new WorkspaceDependencyView(this, viewLoadedParams);
             // when a package is loaded update the DependencyView 
             // as we may have installed a missing package.
