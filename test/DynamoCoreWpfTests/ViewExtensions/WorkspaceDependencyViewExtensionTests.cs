@@ -88,6 +88,35 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(newInfo.State, PackageDependencyState.RequiresRestart);
         }
 
+        /// <summary>
+        /// This test is created to guard a crash happened that while dep viewer is loaded,
+        /// opening a dyf directly and closing it to switch to an empty homeworkspace causing a crash
+        /// </summary>
+        [Test]
+        public void DependencyRegenCrashingDynamoTest()
+        {
+            RaiseLoadedEvent(this.View);
+            var extensionManager = View.viewExtensionManager;
+            extensionManager.Add(viewExtension);
+            // Open a random dyf, as a result two Workspace Model will exist under DynamoModel
+            Open(@"pkgs\EvenOdd2\dyf\EvenOdd.dyf");
+
+            var loadedParams = new ViewLoadedParams(View, ViewModel);
+            viewExtension.pmExtension = this.Model.ExtensionManager.Extensions.OfType<PackageManagerExtension>().FirstOrDefault();
+            viewExtension.DependencyView = new WorkspaceDependencyView(viewExtension, loadedParams);
+
+            var homeWorkspaceModel = ViewModel.Model.Workspaces.OfType<HomeWorkspaceModel>().FirstOrDefault();
+
+            // This is equivalent to uninstall the package
+            var package = viewExtension.pmExtension.PackageLoader.LocalPackages.Where(x => x.Name == "Dynamo Samples").FirstOrDefault();
+            package.MarkedForUninstall = true;
+
+            // Closing the dyf will trigger DependencyRegen of HomeWorkspaceModel.
+            // The HomeWorkspaceModel does not contain any dependency info since it's empty
+            // but DependencyRegen() call on it should not crash
+            Assert.DoesNotThrow(()=> viewExtension.DependencyView.DependencyRegen(homeWorkspaceModel));
+        }
+
         [Test]
         public void KeepInstalledVersionOfPackageTest()
         {

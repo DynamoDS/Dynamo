@@ -129,8 +129,11 @@ namespace Dynamo.WorkspaceDependency
             // If package is set to uninstall state, update the package info
             foreach (var package in dependencyViewExtension.pmExtension.PackageLoader.LocalPackages.Where(x => x.MarkedForUninstall))
             {
-                (packageDependencies.Where(x => x.Name == package.Name).FirstOrDefault() as PackageDependencyInfo).State = PackageDependencyState.RequiresRestart;
-                this.RestartBanner.Visibility = Visibility.Visible;
+                if (packageDependencies.Count() != 0)
+                {
+                    (packageDependencies.Where(x => x.Name == package.Name).FirstOrDefault() as PackageDependencyInfo).State = PackageDependencyState.RequiresRestart;
+                    this.RestartBanner.Visibility = Visibility.Visible;
+                }
             }
 
             dataRows = packageDependencies.Select(d => new PackageDependencyRow(d as PackageDependencyInfo));
