@@ -1731,8 +1731,10 @@ namespace Dynamo.Models
 
             WorkspaceModel currentWorkspace = this.CurrentWorkspace;
 
-            if (currentWorkspace == null)
+            if (currentWorkspace == null || string.IsNullOrEmpty(currentWorkspace.FileName))
+            {
                 return;
+            }
 
             String filePath = Path.GetFullPath(currentWorkspace.FileName);
 
