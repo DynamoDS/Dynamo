@@ -19,9 +19,9 @@ namespace FFITarget
             return radius * radius * Math.PI;
         }
 
-        public static IEnumerable<Point> ComputeFlattenedPoints([DefaultArgument("FFITarget.DesignScript.Point.ByCoordinates((1..10)<1>, (2..20)<2>, 0)")]IEnumerable<IEnumerable<Point>> points)
+        public static IEnumerable<IEnumerable<Point>> ComputeFlattenedPoints([DefaultArgument("FFITarget.DesignScript.Point.ByCoordinates((1..2)<1>, (2..3)<2>, 0)")]IEnumerable<IEnumerable<Point>> points)
         {
-            return points.SelectMany(x => x);
+            return points;
         }
     }
 }

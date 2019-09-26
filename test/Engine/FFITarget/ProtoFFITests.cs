@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Xml.Schema;
 using Autodesk.DesignScript.Runtime;
 
 namespace FFITarget
@@ -978,6 +979,25 @@ namespace FFITarget
             public double dX { get; set; }
             public double dY { get; set; }
             public double dZ { get; set; }
+
+            [IsVisibleInDynamoLibrary(false)]
+            public override bool Equals(object obj)
+            {
+                if (obj == null) return false;
+
+                if (GetType() != obj.GetType()) return false;
+
+                var other = obj as Point;
+                if (dX == other.dX && dY == other.dY && dZ == other.dZ) return true;
+
+                return false;
+            }
+
+            [IsVisibleInDynamoLibrary(false)]
+            public override int GetHashCode()
+            {
+                return dX.GetHashCode() ^ dY.GetHashCode() ^ dZ.GetHashCode();
+            }
         }
     }
 
