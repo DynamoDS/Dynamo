@@ -1728,7 +1728,6 @@ namespace Dynamo.Models
         private void ReloadDummyNodes()
         {
             JObject dummyNodeJSON = null;
-
             WorkspaceModel currentWorkspace = this.CurrentWorkspace;
 
             if (currentWorkspace == null || string.IsNullOrEmpty(currentWorkspace.FileName))
