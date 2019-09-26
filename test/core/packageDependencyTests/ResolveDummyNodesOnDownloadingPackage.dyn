@@ -1,0 +1,483 @@
+{
+  "Uuid": "8ac993b7-6516-45c6-8bac-9ff985fbb0ad",
+  "IsCustomNode": false,
+  "Description": null,
+  "Name": "HowickPackage",
+  "ElementResolver": {
+    "ResolutionMap": {
+      "Point": {
+        "Key": "Autodesk.DesignScript.Geometry.Point",
+        "Value": "ProtoGeometry.dll"
+      }
+    }
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "ee53b46f2a0649f6bce7fc323e614eae",
+      "Inputs": [
+        {
+          "Id": "0e2d7acbe4ce47d08dae4d7d1dea678c",
+          "Name": "",
+          "Description": "Node to evaluate.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "14598a238ad24856a9729fc4c08ec1b5",
+          "Name": "",
+          "Description": "Watch contents.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualize the output of node."
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "\"3\";",
+      "Id": "51d2fb7549d64c448c2f8b21b8b69176",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "7b8bc4f2226345188e2657ca480e08e9",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "2;",
+      "Id": "240bc914bada4ab7953e4d4a39e43941",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "101dd84a749b44779439140bc0b3e2c7",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "Point.ByCoordinates(0,0);",
+      "Id": "97e65bfa5bfa44ddb8821066c302ce1c",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "a4cede3040314153b17b91736b088cef",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Line.ByStartPointEndPoint@Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point",
+      "Id": "5cea2536b39d4b4fa1bf36371f3ea809",
+      "Inputs": [
+        {
+          "Id": "65b2e2c00bd14c15a08764735a287d99",
+          "Name": "startPoint",
+          "Description": "Point",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "fec7ccbb7a5e4ea584025963307bdb5b",
+          "Name": "endPoint",
+          "Description": "Point",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "fb8861aa9c1f4fe98e0aca3ef8137cbf",
+          "Name": "Line",
+          "Description": "Line",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Creates a straight Line between two input Points.\n\nLine.ByStartPointEndPoint (startPoint: Point, endPoint: Point): Line"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "Point.ByCoordinates(2,2);",
+      "Id": "4664c50ab8d34e3bb29d4a463f19f8d0",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "ed8b1090898d410f93b17754bdb9ab24",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Vector.ByCoordinates@double,double,double",
+      "Id": "f24ebb4ef10e43f29ab1eecefc5e57a4",
+      "Inputs": [
+        {
+          "Id": "568b57a6b84f4776baa9c77a81990d97",
+          "Name": "x",
+          "Description": "X coordinate\n\ndouble\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "5b36304776d949a28e3d93d2dec540c4",
+          "Name": "y",
+          "Description": "Y coordinate\n\ndouble\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "7b84f853eef242e8873dd7cc4bfaefe6",
+          "Name": "z",
+          "Description": "Z coordinate\n\ndouble\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "748f4d5cb2824108884f94be877de660",
+          "Name": "Vector",
+          "Description": "Vector",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Form a Vector by 3 Euclidean coordinates\n\nVector.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Vector"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "HowickMaker.hMember.AddOperationByLocationType@double[],string[]",
+      "Id": "e908b4b633c04e2aab07adef5c7b0b33",
+      "Inputs": [
+        {
+          "Id": "6c41a112878e442ba32dc25677961d87",
+          "Name": "hMember",
+          "Description": "HowickMaker.hMember",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "89f24128d51c4cd5a2bdbf22b269b892",
+          "Name": "locations",
+          "Description": "double[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "a26937aef5af49c9ab4c3d35ceec9274",
+          "Name": "types",
+          "Description": "string[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "8f4a24ee118e41e1b8e7ebad89513265",
+          "Name": "hMember",
+          "Description": "hMember",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Adds operations to the member by specifying the locations and the types of operations\n\nhMember.AddOperationByLocationType (locations: double[], types: string[]): hMember"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "HowickMaker.hMember.ByLineVector@Autodesk.DesignScript.Geometry.Line,Autodesk.DesignScript.Geometry.Vector,string",
+      "Id": "aeb3e5df26cc4f16af55bf0baef46ae1",
+      "Inputs": [
+        {
+          "Id": "2cda30bf385741c3ad5d4b290d8452c1",
+          "Name": "webAxis",
+          "Description": "Line",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "76a24bab17214e1697ab78692268bc77",
+          "Name": "webNormal",
+          "Description": "Vector",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "5cdd38339cef4f09a61f60abd6095076",
+          "Name": "name",
+          "Description": "string\nDefault value : \"0\"",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "e45e1d20e89b422698798660461602e6",
+          "Name": "hMember",
+          "Description": "hMember",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Creates an hMember with its web lying along the webAxis, facing webNormal\n\nhMember.ByLineVector (webAxis: Line, webNormal: Vector, name: string = \"0\"): hMember"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "7b8bc4f2226345188e2657ca480e08e9",
+      "End": "a26937aef5af49c9ab4c3d35ceec9274",
+      "Id": "b6ec02848fcd4c2cb338a44e61eb15b7"
+    },
+    {
+      "Start": "101dd84a749b44779439140bc0b3e2c7",
+      "End": "89f24128d51c4cd5a2bdbf22b269b892",
+      "Id": "0cb4b846e5ca47ef88ca6f500d02e19d"
+    },
+    {
+      "Start": "a4cede3040314153b17b91736b088cef",
+      "End": "65b2e2c00bd14c15a08764735a287d99",
+      "Id": "9717568b63454e11b2fe8e1389306563"
+    },
+    {
+      "Start": "fb8861aa9c1f4fe98e0aca3ef8137cbf",
+      "End": "2cda30bf385741c3ad5d4b290d8452c1",
+      "Id": "3a0b2c38d54947d2980be945df8e6c18"
+    },
+    {
+      "Start": "ed8b1090898d410f93b17754bdb9ab24",
+      "End": "fec7ccbb7a5e4ea584025963307bdb5b",
+      "Id": "dab0b102b29841d38d3e346702b91269"
+    },
+    {
+      "Start": "748f4d5cb2824108884f94be877de660",
+      "End": "76a24bab17214e1697ab78692268bc77",
+      "Id": "bc431514c0b246d5b769c29289716149"
+    },
+    {
+      "Start": "8f4a24ee118e41e1b8e7ebad89513265",
+      "End": "0e2d7acbe4ce47d08dae4d7d1dea678c",
+      "Id": "bb07e984f314449ba13c8d50236383da"
+    },
+    {
+      "Start": "e45e1d20e89b422698798660461602e6",
+      "End": "6c41a112878e442ba32dc25677961d87",
+      "Id": "8582e27cd67644c2acefe5be8a100e23"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [
+    {
+      "Name": "HowickMaker",
+      "Version": "0.4.1",
+      "ReferenceType": "Package",
+      "Nodes": [
+        "e908b4b633c04e2aab07adef5c7b0b33",
+        "aeb3e5df26cc4f16af55bf0baef46ae1"
+      ]
+    }
+  ],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.5.0.6335",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "Watch",
+        "Id": "ee53b46f2a0649f6bce7fc323e614eae",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 679.24498528549134,
+        "Y": 383.36837999370306
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "51d2fb7549d64c448c2f8b21b8b69176",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 120.7473002159827,
+        "Y": 514.03377179893482
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "240bc914bada4ab7953e4d4a39e43941",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 108.13718459770575,
+        "Y": 380.83303877413039
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "97e65bfa5bfa44ddb8821066c302ce1c",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -64.934610420005015,
+        "Y": -35.583127698200371
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Line.ByStartPointEndPoint",
+        "Id": "5cea2536b39d4b4fa1bf36371f3ea809",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 254.64666475286793,
+        "Y": -15.324659825102373
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "4664c50ab8d34e3bb29d4a463f19f8d0",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -62.740163299266214,
+        "Y": 64.56599426367157
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Vector.ByCoordinates",
+        "Id": "f24ebb4ef10e43f29ab1eecefc5e57a4",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -83.571665440840889,
+        "Y": 284.00548921827192
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "hMember.AddOperationByLocationType",
+        "Id": "e908b4b633c04e2aab07adef5c7b0b33",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 320.3659840038589,
+        "Y": 315.32405659376059
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "hMember.ByLineVector",
+        "Id": "aeb3e5df26cc4f16af55bf0baef46ae1",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 89.045666578046337,
+        "Y": 172.75875097778749
+      }
+    ],
+    "Annotations": [],
+    "X": 82.818344906128914,
+    "Y": 51.13140818532122,
+    "Zoom": 0.82346504096947037
+  }
+}

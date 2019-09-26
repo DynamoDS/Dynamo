@@ -1778,11 +1778,11 @@ namespace Dynamo.Models
                             var startNode = connectorModel.Start.Owner;
                             var endNode = connectorModel.End.Owner;
 
-                            if (startNode is DummyNode)
+                            if (startNode is DummyNode && startNode.Name == resolvedNode.Name)
                             {
                                 startNode = resolvedNode;
                             }
-                            if (endNode is DummyNode)
+                            if (endNode is DummyNode && endNode.Name == resolvedNode.Name)
                             {
                                 endNode = resolvedNode;
                             }
