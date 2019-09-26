@@ -1724,6 +1724,7 @@ namespace Dynamo.Models
             return true;
         }
 
+        // Reload's the dummy nodes and serializes the new node information once the package resolves it. 
         private void ReloadDummyNodes()
         {
             JObject dummyNodeJSON = null;
@@ -1739,6 +1740,7 @@ namespace Dynamo.Models
                         Path.GetDirectoryName(filePath),
                         IsTestMode);
 
+            // Get the dummy node's in the current workspace. 
             var dummyNodes = currentWorkspace.Nodes.OfType<DummyNode>();
 
             foreach (DummyNode dn in dummyNodes)
@@ -1747,7 +1749,8 @@ namespace Dynamo.Models
 
                 if (dummyNodeJSON != null)
                 {
-                    NodeModel resolvedNode = WorkspaceModel.ReloadDummyNodes(
+                    // Deserializing the dummy node and verifying if it is resolved by the downloaded package
+                    NodeModel resolvedNode = WorkspaceModel.GetNodeModelForDummyNode(
                                                                dummyNodeJSON.ToString(),
                                                                LibraryServices,
                                                                EngineController,
@@ -1759,12 +1762,14 @@ namespace Dynamo.Models
 
                     if (!(resolvedNode is DummyNode))
                     {
-                        resolvedNode.X = dn.X;
-                        resolvedNode.Y = dn.Y;
+                        currentWorkspace.SetNodeViewDataOnResolvedNode(dn, resolvedNode);
 
+                        // Disable Run's temporarlity while the dummy node is removed and the resolved node is added. 
+                        EngineController.DisableRun = true;
                         currentWorkspace.RemoveAndDisposeNode(dn);
                         currentWorkspace.AddAndRegisterNode(resolvedNode, false);
 
+                        // Adding back the connectors for the resolved node. 
                         List<ConnectorModel> connectors = dn.AllConnectors.ToList();
                         foreach (var connectorModel in connectors)
                         {
@@ -1783,6 +1788,7 @@ namespace Dynamo.Models
                             connectorModel.Delete();
                             ConnectorModel.Make(startNode, endNode, connectorModel.Start.Index, connectorModel.End.Index, connectorModel.GUID);
                         }
+                        EngineController.DisableRun = false ;
                     }
                 }
             }
