@@ -18,7 +18,6 @@ namespace Dynamo.WorkspaceDependency
     public class WorkspaceDependencyViewExtension : IViewExtension, ILogSource
     {
         private MenuItem packageDependencyMenuItem;
-        private ViewLoadedParams LoadedParams;
 
         internal WorkspaceDependencyView DependencyView
         {
