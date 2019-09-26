@@ -189,6 +189,19 @@ namespace Dynamo.Graph.Workspaces
         private bool workspaceLoaded;
 
         /// <summary>
+        /// This event is to trigger the DependencyRegen on the WorkspaceDependencyview extension.
+        /// </summary>
+        public static event Action TriggerDependencyRegen;
+
+        /// <summary>
+        /// This method invokes the TriggerDependencyRegen event on the workspace model.
+        /// </summary>
+        public void TriggerDependencyRegenEvent()
+        {
+            TriggerDependencyRegen?.Invoke();
+        }
+
+        /// <summary>
         /// sets the name property of the model based on filename,backup state and model type.
         /// </summary>
         /// <param name="filePath">Full filepath to file to save.</param>

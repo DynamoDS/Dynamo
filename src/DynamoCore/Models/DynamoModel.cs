@@ -1794,6 +1794,10 @@ namespace Dynamo.Models
                     }
                 }
             }
+
+            // Once all the dummy nodes are reloaded, the TriggerDependencyRegen event is invoked and
+            // the Dependency table is regenerated in the WorkspaceDependencyView extension. 
+            currentWorkspace.TriggerDependencyRegenEvent();
         }
 
         private bool OpenXmlFile(WorkspaceInfo workspaceInfo, XmlDocument xmlDoc, out WorkspaceModel workspace)
