@@ -29,7 +29,7 @@ namespace DynamoShapeManager
         /// <summary>
         /// The mask to filter ASM binary
         /// </summary>
-        public static readonly string ASMFileMask = "ASMAHL*.dll";
+        public static readonly string ASMFileMask = "ASMAHL*A.dll";
         #endregion
 
 
@@ -147,10 +147,7 @@ namespace DynamoShapeManager
                 getASMInstallsFunc = getASMInstallsFunc ?? GetAsmInstallations;
                 var installations = getASMInstallsFunc(rootFolder);
 
-                //filter install locations missing tsplinesA
-                installations = installations.Cast<KeyValuePair<string, Tuple<int,int,int,int>>>().
-                    Where(x => Directory.EnumerateFiles(x.Key, "tsplines*A.dll").Any());
-
+          
                 // first find the exact match or the lowest matching within same major version
                 foreach (var version in versions)
                 {
@@ -450,7 +447,11 @@ namespace DynamoShapeManager
 
 
             var methodParams = new object[] { ProductsWithASM, ASMFileMask };
-            return installationsMethod.Invoke(null, methodParams) as IEnumerable;
+            var installs  = installationsMethod.Invoke(null, methodParams) as IEnumerable;
+
+            //filter install locations missing tbb and tbbmalloc.dll
+            return installs.Cast<KeyValuePair<string, Tuple<int, int, int, int>>>().
+                Where(x => Directory.EnumerateFiles(x.Key, "tbb*.dll").Count() >1);
         }
 
         /// <summary>
