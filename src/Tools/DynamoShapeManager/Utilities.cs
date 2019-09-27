@@ -147,6 +147,10 @@ namespace DynamoShapeManager
                 getASMInstallsFunc = getASMInstallsFunc ?? GetAsmInstallations;
                 var installations = getASMInstallsFunc(rootFolder);
 
+                //filter install locations missing tsplinesA
+                installations = installations.Cast<KeyValuePair<string, Tuple<int,int,int,int>>>().
+                    Where(x => Directory.EnumerateFiles(x.Key, "tsplines*A.dll").Any());
+
                 // first find the exact match or the lowest matching within same major version
                 foreach (var version in versions)
                 {
@@ -308,10 +312,15 @@ namespace DynamoShapeManager
                 throw new MissingMethodException(
                     string.Format("Method '{0}' not found", PreloaderMethodName));
             }
-
-            var methodParams = new object[] { asmLocation };
-            preloadMethod.Invoke(null, methodParams);
-
+            try
+            {
+                var methodParams = new object[] { asmLocation };
+                preloadMethod.Invoke(null, methodParams);
+            }
+            catch
+            {
+                Console.WriteLine("Failed to load ASM binaries");
+            }
             Debug.WriteLine("Successfully loaded ASM binaries");
         }
 
