@@ -319,7 +319,7 @@ namespace DynamoShapeManager
             }
             catch
             {
-                Console.WriteLine("Failed to load ASM binaries");
+                throw new FileNotFoundException($"Could not load geometry library binaries from : {asmLocation}");
             }
             Debug.WriteLine("Successfully loaded ASM binaries");
         }
@@ -470,7 +470,7 @@ namespace DynamoShapeManager
                 var libGversion = new Version(asmVersion.FileMajorPart, asmVersion.FileMinorPart, asmVersion.FileBuildPart);
                 return libGversion;
             }
-            throw new FileNotFoundException("$Could not find geometry library binaries at : {geometryLibraryPath}");
+            throw new FileNotFoundException($"Could not find geometry library binaries at : {asmPath}");
         }
     }
 }

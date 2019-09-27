@@ -12,6 +12,7 @@ using Dynamo.Models;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.ViewModels.Watch3D;
 using System.Linq;
+using Dynamo.DynamoSandbox.Properties;
 
 namespace DynamoSandbox
 {
@@ -102,8 +103,9 @@ namespace DynamoSandbox
                         //show a message dialog box with the exception so the user
                         //can effectively report the issue.
                         var shortStackTrace = String.Join(Environment.NewLine,e.StackTrace.Split(Environment.NewLine.ToCharArray()).Take(10));
-                        var result = MessageBox.Show($"could not start DynamoSandbox, unhandled exception {Environment.NewLine} {e.Message}  {Environment.NewLine} {e.InnerException?.Message} {Environment.NewLine} {shortStackTrace} {Environment.NewLine} " +
-                            $" Do you want to open the Dynamo builds wiki page ({sandboxWikiPage}) for more information?",
+                        var result = MessageBox.Show($"could not start DynamoSandbox, unhandled exception {Environment.NewLine} {e.Message}" +
+                            $"  {Environment.NewLine} {e.InnerException?.Message} {Environment.NewLine} {shortStackTrace} {Environment.NewLine} " +
+                             Environment.NewLine + string.Format(Resources.SandboxBuildsPageDialogMessage, sandboxWikiPage),
                             "DynamoSandbox",
                             MessageBoxButton.YesNo,MessageBoxImage.Error);
                         if(result == MessageBoxResult.Yes)
