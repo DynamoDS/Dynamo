@@ -119,7 +119,7 @@ namespace Dynamo.WorkspaceDependency
         /// <summary>
         /// Calls the DependencyRegen function when the event is triggered from the dynamo model.
         /// </summary>
-        internal void TriggerDepenRegen()
+        internal void TriggerDependencyRegen()
         {
             DependencyRegen(currentWorkspace);
         }
@@ -132,7 +132,7 @@ namespace Dynamo.WorkspaceDependency
         {
             InitializeComponent();
             currentWorkspace = p.CurrentWorkspaceModel as WorkspaceModel;
-            WorkspaceModel.TriggerDependencyRegen += TriggerDepenRegen;
+            WorkspaceModel.TriggerDependencyRegen += TriggerDependencyRegen;
             p.CurrentWorkspaceChanged += OnWorkspaceChanged;
             p.CurrentWorkspaceCleared += OnWorkspaceCleared;
             currentWorkspace.PropertyChanged += OnWorkspacePropertyChanged;

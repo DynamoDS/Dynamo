@@ -1724,7 +1724,7 @@ namespace Dynamo.Models
             return true;
         }
 
-        // Reload's the dummy nodes and serializes the new node information once the package resolves it. 
+        // Reloads the dummy nodes and serializes the new node information once the package resolves it. 
         private void ReloadDummyNodes()
         {
             JObject dummyNodeJSON = null;
@@ -1741,7 +1741,7 @@ namespace Dynamo.Models
                         Path.GetDirectoryName(filePath),
                         IsTestMode);
 
-            // Get the dummy node's in the current workspace. 
+            // Get the dummy nodes in the current workspace. 
             var dummyNodes = currentWorkspace.Nodes.OfType<DummyNode>();
 
             foreach (DummyNode dn in dummyNodes)
@@ -1761,11 +1761,12 @@ namespace Dynamo.Models
                                                                false,
                                                                CustomNodeManager);
 
+                    // If the resolved node is also a dummy node, then skip it else replace the dummy node with the resolved version of the node. 
                     if (!(resolvedNode is DummyNode))
                     {
                         currentWorkspace.SetNodeViewDataOnResolvedNode(dn, resolvedNode);
 
-                        // Disable Run's temporarlity while the dummy node is removed and the resolved node is added. 
+                        // Disable graph runs temporarily while the dummy node is replaced with the resolved version of that node.
                         EngineController.DisableRun = true;
                         currentWorkspace.RemoveAndDisposeNode(dn);
                         currentWorkspace.AddAndRegisterNode(resolvedNode, false);
@@ -1777,11 +1778,11 @@ namespace Dynamo.Models
                             var startNode = connectorModel.Start.Owner;
                             var endNode = connectorModel.End.Owner;
 
-                            if (startNode is DummyNode && startNode.Name == resolvedNode.Name)
+                            if (startNode is DummyNode && startNode.GUID == resolvedNode.GUID)
                             {
                                 startNode = resolvedNode;
                             }
-                            if (endNode is DummyNode && endNode.Name == resolvedNode.Name)
+                            if (endNode is DummyNode && endNode.GUID == resolvedNode.GUID)
                             {
                                 endNode = resolvedNode;
                             }
@@ -1796,7 +1797,7 @@ namespace Dynamo.Models
 
             // Once all the dummy nodes are reloaded, the TriggerDependencyRegen event is invoked and
             // the Dependency table is regenerated in the WorkspaceDependencyView extension. 
-            currentWorkspace.TriggerDependencyRegenEvent();
+            currentWorkspace.OnTriggerDependencyRegen();
         }
 
         private bool OpenXmlFile(WorkspaceInfo workspaceInfo, XmlDocument xmlDoc, out WorkspaceModel workspace)

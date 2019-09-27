@@ -196,7 +196,7 @@ namespace Dynamo.Graph.Workspaces
         /// <summary>
         /// This method invokes the TriggerDependencyRegen event on the workspace model.
         /// </summary>
-        public void TriggerDependencyRegenEvent()
+        public void OnTriggerDependencyRegen()
         {
             TriggerDependencyRegen?.Invoke();
         }
