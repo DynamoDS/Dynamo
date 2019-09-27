@@ -89,7 +89,7 @@ namespace Dynamo.Wpf.ViewModels
         ElementTypes ElementType { get; }
     }
 
-    public class NodeCategoryViewModel : NotificationObject, ISearchEntryViewModel
+    public class NodeCategoryViewModel : ViewModelBase, ISearchEntryViewModel 
     {
         public ICommand ClickedCommand { get; private set; }
 
