@@ -727,11 +727,6 @@ namespace Dynamo.Models
             LibraryServices.MessageLogged += LogMessage;
             LibraryServices.LibraryLoaded += LibraryLoaded;
 
-            EngineController = new EngineController(
-              LibraryServices,
-              geometryFactoryPath,
-              DebugSettings.VerboseLogging); 
-
             EngineController.ReloadDummyNodes += ReloadDummyNodes;
 
             CustomNodeManager = new CustomNodeManager(NodeFactory, MigrationManager, LibraryServices);
@@ -1724,7 +1719,7 @@ namespace Dynamo.Models
             return true;
         }
 
-        // Reloads the dummy nodes and serializes the new node information once the package resolves it. 
+        // Attempts to reload all the dummy nodes in the current workspace and replaces them with resolved version. 
         private void ReloadDummyNodes()
         {
             JObject dummyNodeJSON = null;
@@ -1736,10 +1731,6 @@ namespace Dynamo.Models
             }
 
             String filePath = Path.GetFullPath(currentWorkspace.FileName);
-
-            CustomNodeManager.AddUninitializedCustomNodesInPath(
-                        Path.GetDirectoryName(filePath),
-                        IsTestMode);
 
             // Get the dummy nodes in the current workspace. 
             var dummyNodes = currentWorkspace.Nodes.OfType<DummyNode>();
