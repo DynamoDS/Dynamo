@@ -43,6 +43,7 @@ namespace DynamoSandbox
             {
                 DynamoModel.RequestMigrationStatusDialog += MigrationStatusDialogRequested;
                 DynamoModel model;
+                Dynamo.Applications.StartupUtils.ASMPreloadFailure += ASMPreloadFailureHandler;
                 if (!String.IsNullOrEmpty(ASMPath))
                 {
                     model = Dynamo.Applications.StartupUtils.MakeModel(false,ASMPath);
@@ -71,6 +72,7 @@ namespace DynamoSandbox
                 app.Run(view);
 
                 DynamoModel.RequestMigrationStatusDialog -= MigrationStatusDialogRequested;
+                Dynamo.Applications.StartupUtils.ASMPreloadFailure -= ASMPreloadFailureHandler;
 
             }
 
@@ -123,6 +125,11 @@ namespace DynamoSandbox
                 Debug.WriteLine(e.Message);
                 Debug.WriteLine(e.StackTrace);
             }
+        }
+
+        private void ASMPreloadFailureHandler(string failureMessage)
+        {
+            MessageBox.Show(failureMessage, "DynamoSandbox", MessageBoxButton.OK, MessageBoxImage.Warning);
         }
 
         void OnDynamoViewLoaded(object sender, RoutedEventArgs e)

@@ -287,11 +287,11 @@ namespace DynamoShapeManager
 
             if (string.IsNullOrEmpty(preloaderLocationToLoad))
             {
-                throw new ArgumentException("Invalid LibG preloader location for ASM at " + asmLocation);
+                throw new ArgumentException($"Invalid LibG preloader location {preloaderLocation} for ASM at {asmLocation}");
             }
             if (string.IsNullOrEmpty(asmLocation) || !Directory.Exists(asmLocation))
             {
-                throw new ArgumentException("Invalid ASM location " + asmLocation);
+                throw new ArgumentException($"Invalid ASM location { asmLocation }");
             }
             var preloaderPath = Path.Combine(preloaderLocationToLoad, PreloaderAssembly);
 
@@ -316,7 +316,10 @@ namespace DynamoShapeManager
             }
             catch
             {
-                throw new FileNotFoundException($"Could not load geometry library binaries from : {asmLocation}");
+                //log for clients like CLI.
+              var message = $"Could not load geometry library binaries from : {asmLocation}";
+                Console.WriteLine(message);
+              throw new Exception(message);
             }
             Debug.WriteLine("Successfully loaded ASM binaries");
         }
