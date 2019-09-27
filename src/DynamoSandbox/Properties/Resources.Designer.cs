@@ -70,6 +70,15 @@ namespace Dynamo.DynamoSandbox.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Could not start DynamoSandbox, unhandled exception..
+        /// </summary>
+        internal static string SandboxCrashMessage {
+            get {
+                return ResourceManager.GetString("SandboxCrashMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Migrating Settings ....
         /// </summary>
         internal static string SettingsMigrationDialogMessage {

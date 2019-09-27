@@ -103,11 +103,14 @@ namespace DynamoSandbox
                         //show a message dialog box with the exception so the user
                         //can effectively report the issue.
                         var shortStackTrace = String.Join(Environment.NewLine,e.StackTrace.Split(Environment.NewLine.ToCharArray()).Take(10));
-                        var result = MessageBox.Show($"could not start DynamoSandbox, unhandled exception {Environment.NewLine} {e.Message}" +
+
+                        var result = MessageBox.Show($"{Resources.SandboxCrashMessage} {Environment.NewLine} {e.Message}" +
                             $"  {Environment.NewLine} {e.InnerException?.Message} {Environment.NewLine} {shortStackTrace} {Environment.NewLine} " +
                              Environment.NewLine + string.Format(Resources.SandboxBuildsPageDialogMessage, sandboxWikiPage),
+
                             "DynamoSandbox",
                             MessageBoxButton.YesNo,MessageBoxImage.Error);
+
                         if(result == MessageBoxResult.Yes)
                         {
                             System.Diagnostics.Process.Start(sandboxWikiPage);
