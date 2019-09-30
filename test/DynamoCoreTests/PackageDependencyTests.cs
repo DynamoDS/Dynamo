@@ -513,12 +513,18 @@ namespace Dynamo.Tests
             var dummyNodes = CurrentDynamoModel.CurrentWorkspace.Nodes.OfType<DummyNode>();
             Assert.AreEqual(2, dummyNodes.Count());
 
+            var output = GetPreviewValue("ee53b46f2a0649f6bce7fc323e614eae");
+            Assert.IsNull(output);
+
             // Load the HowickMaker dll and check that the dummy nodes have been resolved.
             string packageDirectory = Path.Combine(TestDirectory, @"core\packageDependencyTests\HowickMaker");
             LoadPackage(packageDirectory);
 
             dummyNodes = CurrentDynamoModel.CurrentWorkspace.Nodes.OfType<DummyNode>();
             Assert.AreEqual(0, dummyNodes.Count());
+
+            output = GetPreviewValue("ee53b46f2a0649f6bce7fc323e614eae");
+            Assert.AreEqual("HowickMaker.hMember", output.ToString());
         }
     }
 }
