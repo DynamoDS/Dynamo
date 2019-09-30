@@ -39,9 +39,9 @@ namespace Dynamo.Engine
         public event AstBuiltEventHandler AstBuilt;
 
         /// <summary>
-        /// This event is fired to reload the dummy nodes.
+        /// This event is notify that the VMLibraries have been reset.
         /// </summary>
-        public static event Action ReloadDummyNodes;
+        public static event Action VMLibrariesReset;
 
         /// <summary>
         /// This flag is used to check if any packages are currently being loaded, and to disable any executions that are triggered before the package loading is completed. See DYN-2101 for more info.
@@ -509,7 +509,7 @@ namespace Dynamo.Engine
         {
             liveRunnerServices.ReloadAllLibraries(libraryServices.ImportedLibraries);
 
-            ReloadDummyNodes?.Invoke();
+            VMLibrariesReset?.Invoke();
 
             // The LiveRunner core is newly instantiated whenever a new library is imported
             // due to which a new instance of CodeCompletionServices needs to be created with the new Core

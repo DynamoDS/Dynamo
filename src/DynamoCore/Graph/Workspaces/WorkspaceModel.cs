@@ -189,16 +189,16 @@ namespace Dynamo.Graph.Workspaces
         private bool workspaceLoaded;
 
         /// <summary>
-        /// This event is to trigger the DependencyRegen on the WorkspaceDependencyview extension.
+        /// This event is to notify that the dummy nodes have been resolved. 
         /// </summary>
-        public static event Action TriggerDependencyRegen;
+        public static event Action DummyNodesReloaded;
 
         /// <summary>
-        /// This method invokes the TriggerDependencyRegen event on the workspace model.
+        /// This method invokes the DummyNodesReloaded event on the workspace model.
         /// </summary>
-        public void OnTriggerDependencyRegen()
+        public void OnDummyNodesReloaded()
         {
-            TriggerDependencyRegen?.Invoke();
+            DummyNodesReloaded?.Invoke();
         }
 
         /// <summary>
@@ -1870,18 +1870,12 @@ namespace Dynamo.Graph.Workspaces
         /// </summary>
         /// <param name="json"></param>
         /// <param name="libraryServices"></param>
-        /// <param name="engineController"></param>
-        /// <param name="scheduler"></param>
         /// <param name="factory"></param>
         /// <param name="isTestMode"></param>
-        /// <param name="verboseLogging"></param>
         /// <param name="manager"></param>
         public static NodeModel GetNodeModelForDummyNode(string json, LibraryServices libraryServices,
-                 EngineController engineController, DynamoScheduler scheduler, NodeFactory factory,
-                 bool isTestMode, bool verboseLogging, CustomNodeManager manager)
+                 NodeFactory factory, bool isTestMode, CustomNodeManager manager)
         {
-            var logger = engineController != null ? engineController.AsLogger() : null;
-
             var settings = new JsonSerializerSettings
             {
                 Error = (sender, args) =>
@@ -1894,11 +1888,8 @@ namespace Dynamo.Graph.Workspaces
                 Formatting = Newtonsoft.Json.Formatting.Indented,
                 Culture = CultureInfo.InvariantCulture,
                 Converters = new List<JsonConverter>{
-                        new ConnectorConverter(logger),
-                        new WorkspaceReadConverter(engineController, scheduler, factory, isTestMode, verboseLogging),
                         new NodeReadConverter(manager, libraryServices, factory, isTestMode),
-                        new TypedParameterConverter(),
-                        new NodeLibraryDependencyConverter(logger)
+                        new TypedParameterConverter()
                     },
                 ReferenceResolverProvider = () => { return new IdReferenceResolver(); }
             };

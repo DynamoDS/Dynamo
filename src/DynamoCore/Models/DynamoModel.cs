@@ -727,7 +727,7 @@ namespace Dynamo.Models
             LibraryServices.MessageLogged += LogMessage;
             LibraryServices.LibraryLoaded += LibraryLoaded;
 
-            EngineController.ReloadDummyNodes += ReloadDummyNodes;
+            EngineController.VMLibrariesReset += ReloadDummyNodes;
 
             CustomNodeManager = new CustomNodeManager(NodeFactory, MigrationManager, LibraryServices);
             InitializeCustomNodeManager();
@@ -1039,7 +1039,7 @@ namespace Dynamo.Models
             LibraryServices.Dispose();
             LibraryServices.LibraryManagementCore.Cleanup();
 
-            EngineController.ReloadDummyNodes -= ReloadDummyNodes;
+            EngineController.VMLibrariesReset -= ReloadDummyNodes;
 
             UpdateManager.Log -= UpdateManager_Log;
             Logger.Dispose();
@@ -1745,11 +1745,8 @@ namespace Dynamo.Models
                     NodeModel resolvedNode = WorkspaceModel.GetNodeModelForDummyNode(
                                                                dummyNodeJSON.ToString(),
                                                                LibraryServices,
-                                                               EngineController,
-                                                               Scheduler,
                                                                NodeFactory,
                                                                IsTestMode,
-                                                               false,
                                                                CustomNodeManager);
 
                     // If the resolved node is also a dummy node, then skip it else replace the dummy node with the resolved version of the node. 
@@ -1786,9 +1783,9 @@ namespace Dynamo.Models
                 }
             }
 
-            // Once all the dummy nodes are reloaded, the TriggerDependencyRegen event is invoked and
+            // Once all the dummy nodes are reloaded, the DummyNodesReloaded event is invoked and
             // the Dependency table is regenerated in the WorkspaceDependencyView extension. 
-            currentWorkspace.OnTriggerDependencyRegen();
+            currentWorkspace.OnDummyNodesReloaded();
         }
 
         private bool OpenXmlFile(WorkspaceInfo workspaceInfo, XmlDocument xmlDoc, out WorkspaceModel workspace)
