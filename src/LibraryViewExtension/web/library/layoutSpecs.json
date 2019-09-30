@@ -688,6 +688,9 @@
                   "path": "Operators.=="
                 },
                 {
+                  "path": "Core.Math.=="
+                },
+                {
                   "path": "Operators.>="
                 },
                 {
