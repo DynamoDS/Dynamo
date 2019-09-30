@@ -413,7 +413,7 @@ namespace Dynamo.Graph.Nodes
         /// <param name="factory"></param>
         /// <param name="isTestMode"></param>
         /// <param name="manager"></param>
-        public NodeModel GetNodeModelForDummyNode(string json, LibraryServices libraryServices,
+        internal NodeModel GetNodeModelForDummyNode(string json, LibraryServices libraryServices,
                                                   NodeFactory factory, bool isTestMode, CustomNodeManager manager)
         {
             var settings = new JsonSerializerSettings
@@ -438,9 +438,15 @@ namespace Dynamo.Graph.Nodes
             var resolvedNodeModel = JsonConvert.DeserializeObject<NodeModel>(result, settings);
 
             // If the resolved node model is not a dummy node, then copy the node view properties from the dummy node to the resolved version of that node. 
-            if(!(resolvedNodeModel is DummyNode))
+            if (!(resolvedNodeModel is DummyNode))
             {
                 SetNodeViewDataOnResolvedNode(this, resolvedNodeModel);
+            }
+            else
+            {
+                this.Log(string.Format("This graph has a node with id:{0} and name:{1}, but it could not be resolved",
+                                       resolvedNodeModel.GUID, resolvedNodeModel.Name)
+                                       , WarningLevel.Moderate);
             }
 
             return resolvedNodeModel;
@@ -451,29 +457,22 @@ namespace Dynamo.Graph.Nodes
         /// </summary>
         /// <param name="dummyNode"></param>
         /// <param name="resolvedNode"></param>
-        public void SetNodeViewDataOnResolvedNode(NodeModel dummyNode, NodeModel resolvedNode)
+        private void SetNodeViewDataOnResolvedNode(NodeModel dummyNode, NodeModel resolvedNode)
         {
             if (dummyNode == null || resolvedNode == null)
+            {
                 return;
-
-            if (resolvedNode != null)
-            {
-                resolvedNode.X = dummyNode.X;
-                resolvedNode.Y = dummyNode.Y;
-                resolvedNode.IsFrozen = dummyNode.IsFrozen;
-                resolvedNode.IsSetAsInput = dummyNode.IsSetAsInput;
-                resolvedNode.IsSetAsOutput = dummyNode.IsSetAsOutput;
-
-                // NOTE: The name needs to be set using UpdateValue to cause the view to update
-                resolvedNode.UpdateValue(new UpdateValueParams("Name", dummyNode.Name));
-                resolvedNode.UpdateValue(new UpdateValueParams("IsVisible", dummyNode.IsVisible.ToString()));
             }
-            else
-            {
-                this.Log(string.Format("This graph has a node with id:{0} and name:{1}, but it could not be resolved",
-                                resolvedNode.GUID, resolvedNode.Name)
-                                , WarningLevel.Moderate);
-            }
+
+            resolvedNode.X = dummyNode.X;
+            resolvedNode.Y = dummyNode.Y;
+            resolvedNode.IsFrozen = dummyNode.IsFrozen;
+            resolvedNode.IsSetAsInput = dummyNode.IsSetAsInput;
+            resolvedNode.IsSetAsOutput = dummyNode.IsSetAsOutput;
+
+            // NOTE: The name needs to be set using UpdateValue to cause the view to update
+            resolvedNode.UpdateValue(new UpdateValueParams("Name", dummyNode.Name));
+            resolvedNode.UpdateValue(new UpdateValueParams("IsVisible", dummyNode.IsVisible.ToString()));
         }
     }
 }

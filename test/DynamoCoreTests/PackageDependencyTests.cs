@@ -522,6 +522,7 @@ namespace Dynamo.Tests
 
             dummyNodes = CurrentDynamoModel.CurrentWorkspace.Nodes.OfType<DummyNode>();
             Assert.AreEqual(0, dummyNodes.Count());
+            Assert.AreEqual(CurrentDynamoModel.CurrentWorkspace.HasUnsavedChanges, false);
 
             output = GetPreviewValue("ee53b46f2a0649f6bce7fc323e614eae");
             Assert.AreEqual("HowickMaker.hMember", output.ToString());

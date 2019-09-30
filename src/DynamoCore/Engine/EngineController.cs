@@ -39,7 +39,7 @@ namespace Dynamo.Engine
         public event AstBuiltEventHandler AstBuilt;
 
         /// <summary>
-        /// This event is notify that the VMLibraries have been reset.
+        /// The event notifies client that the VMLibraries have been reset and the VM is now ready to run the new code. 
         /// </summary>
         public static event Action VMLibrariesReset;
 

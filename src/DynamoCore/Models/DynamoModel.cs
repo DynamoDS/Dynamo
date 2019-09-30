@@ -421,7 +421,6 @@ namespace Dynamo.Models
         /// Returns authentication manager object for oxygen authentication.
         /// </summary>
         public AuthenticationManager AuthenticationManager { get; set; }
-        public object DependencyView { get; private set; }
 
         #endregion
 
@@ -727,12 +726,12 @@ namespace Dynamo.Models
             LibraryServices.MessageLogged += LogMessage;
             LibraryServices.LibraryLoaded += LibraryLoaded;
 
-            EngineController.VMLibrariesReset += ReloadDummyNodes;
-
             CustomNodeManager = new CustomNodeManager(NodeFactory, MigrationManager, LibraryServices);
             InitializeCustomNodeManager();
 
             ResetEngineInternal();
+
+            EngineController.VMLibrariesReset += ReloadDummyNodes;
 
             AddHomeWorkspace();
 
@@ -1730,8 +1729,6 @@ namespace Dynamo.Models
                 return;
             }
 
-            String filePath = Path.GetFullPath(currentWorkspace.FileName);
-
             // Get the dummy nodes in the current workspace. 
             var dummyNodes = currentWorkspace.Nodes.OfType<DummyNode>();
 
@@ -1741,7 +1738,7 @@ namespace Dynamo.Models
 
                 if (dummyNodeJSON != null)
                 {
-                    // Deserializing the dummy node and verifying if it is resolved by the downloaded package
+                    // Deserializing the dummy node and verifying if it is resolved by the downloaded or imported package
                     NodeModel resolvedNode = dn.GetNodeModelForDummyNode(
                                                                dummyNodeJSON.ToString(),
                                                                LibraryServices,
@@ -1781,6 +1778,7 @@ namespace Dynamo.Models
                 }
             }
 
+            currentWorkspace.HasUnsavedChanges = false;
             // Once all the dummy nodes are reloaded, the DummyNodesReloaded event is invoked and
             // the Dependency table is regenerated in the WorkspaceDependencyView extension. 
             currentWorkspace.OnDummyNodesReloaded();
