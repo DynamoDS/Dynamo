@@ -1742,7 +1742,7 @@ namespace Dynamo.Models
                 if (dummyNodeJSON != null)
                 {
                     // Deserializing the dummy node and verifying if it is resolved by the downloaded package
-                    NodeModel resolvedNode = WorkspaceModel.GetNodeModelForDummyNode(
+                    NodeModel resolvedNode = dn.GetNodeModelForDummyNode(
                                                                dummyNodeJSON.ToString(),
                                                                LibraryServices,
                                                                NodeFactory,
@@ -1752,8 +1752,6 @@ namespace Dynamo.Models
                     // If the resolved node is also a dummy node, then skip it else replace the dummy node with the resolved version of the node. 
                     if (!(resolvedNode is DummyNode))
                     {
-                        currentWorkspace.SetNodeViewDataOnResolvedNode(dn, resolvedNode);
-
                         // Disable graph runs temporarily while the dummy node is replaced with the resolved version of that node.
                         EngineController.DisableRun = true;
                         currentWorkspace.RemoveAndDisposeNode(dn);
