@@ -1,0 +1,63 @@
+version: 0.1.1
+env:
+  - BUILD_MACHINE: "Dynamo_Win_Perf"
+  - SLACK_QUANTUM_BUILD_CHANNEL : "#dynamo-jenkinsbuild"
+  - SLACK_QUANTUM_BUILD_CREDENTIAL_ID : "slack-notify-token"
+  - MAIL_QUANTUM_BUILD_RECIPIENT : "dynamo.plaid.dev@autodesk.com"
+  - TEST_REPORT_FORMAT : "nunit"
+  - JOB_NAME: "DYN-1822"
+  
+check_changelog_updated_on_pr: false
+pipeline_os: "Windows"
+force_slack_notification : true
+language: csharp
+
+nuget_config:
+  config_file: dynamo-nuget.config
+  custom_feeds:
+    - "team-dynamo-nuget"
+    - "autodesk3p"
+
+job_parameters:
+  -
+    type: "string"
+    name: "ENVIRONMENT_BRANCH"
+    defaultValue: ""
+    description: "Branch"
+  -
+    type: "string"
+    name: "ENVIRONMENT_REPO"
+    defaultValue: ""
+    description: "Path or Name of th repository"
+  -
+    type: "choice"
+    name: "ENVIRONMENT_URL_REPO"
+    choices: 
+      - ""
+      - "git.autodesk.com"
+    description: ""
+
+build:
+  before_scripts:
+    - "powershell.exe -ExecutionPolicy ByPass -File .\\DockerUtilities\\PreBuildScript.ps1"
+  scripts:
+    - "powershell.exe -ExecutionPolicy ByPass -File .\\DockerUtilities\\BuildScript.ps1"
+  after_scripts:
+    - "powershell.exe -ExecutionPolicy ByPass -File .\\DockerUtilities\\PostBuildScript.ps1"
+
+code_analysis:
+  sonarqube:
+   useCommonSonar: true
+   msbuildCommands:
+      - "powershell.exe -ExecutionPolicy ByPass -File .\\DockerUtilities\\BuildScript.ps1"
+    
+ci_test:
+  before_scripts:
+    - "powershell.exe -ExecutionPolicy ByPass -File .\\DockerUtilities\\TestSetup.ps1"
+  scripts:
+    - "powershell.exe -ExecutionPolicy ByPass -File .\\DockerUtilities\\ExecuteParallelTest.ps1"
+  after_scripts:
+    - "powershell.exe -ExecutionPolicy ByPass -File .\\DockerUtilities\\CleanEmptyFiles.ps1"
+  
+  test_report_dir: TestResults
+
