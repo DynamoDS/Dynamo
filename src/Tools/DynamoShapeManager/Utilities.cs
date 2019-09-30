@@ -147,7 +147,7 @@ namespace DynamoShapeManager
                 getASMInstallsFunc = getASMInstallsFunc ?? GetAsmInstallations;
                 var installations = getASMInstallsFunc(rootFolder);
 
-          
+
                 // first find the exact match or the lowest matching within same major version
                 foreach (var version in versions)
                 {
@@ -317,9 +317,9 @@ namespace DynamoShapeManager
             catch
             {
                 //log for clients like CLI.
-              var message = $"Could not load geometry library binaries from : {asmLocation}";
+                var message = $"Could not load geometry library binaries from : {asmLocation}";
                 Console.WriteLine(message);
-              throw new Exception(message);
+                throw new Exception(message);
             }
             Debug.WriteLine("Successfully loaded ASM binaries");
         }
@@ -410,7 +410,7 @@ namespace DynamoShapeManager
 
             //lookup libG with a fallback to older versions which share the major version number.
             var libGFolder = Utilities.GetLibGPreloaderLocation(version, rootFolder);
-            
+
             if (!Directory.Exists(libGFolder))
             {
                 // LibG_version folder must be valid.
@@ -427,8 +427,8 @@ namespace DynamoShapeManager
 
             return assemblyPath;
         }
-       
-    
+
+
         private static IEnumerable GetAsmInstallations(string rootFolder)
         {
             var assemblyPath = Path.Combine(Path.Combine(rootFolder, "DynamoInstallDetective.dll"));
@@ -450,12 +450,22 @@ namespace DynamoShapeManager
 
 
             var methodParams = new object[] { ProductsWithASM, ASMFileMask };
-            var installs  = installationsMethod.Invoke(null, methodParams) as IEnumerable;
+            var installs = installationsMethod.Invoke(null, methodParams) as IEnumerable;
 
             //filter install locations missing tbb and tbbmalloc.dll
-            return installs.Cast<KeyValuePair<string, Tuple<int, int, int, int>>>().
-                Where(x => Directory.EnumerateFiles(x.Key, "tbb*.dll").Count() >1);
+            return installs.Cast<KeyValuePair<string, Tuple<int, int, int, int>>>().Where(install =>
+            {
+                var files = Directory.EnumerateFiles(install.Key, "tbb*.dll").Select(x=>System.IO.Path.GetFileName(x));
+                if (files.Contains("tbb.dll") && files.Contains("tbbmalloc.dll"))
+                {
+                    return true;
+                }
+                return false;
+
+            });
         }
+
+
 
         /// <summary>
         /// Extracts version of ASM dlls from a path by scanning for ASM dlls in the path.
