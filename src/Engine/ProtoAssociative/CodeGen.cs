@@ -1179,23 +1179,26 @@ namespace ProtoAssociative
                                 procName = Constants.kGetterPrefix + procName;
                                 procCallNode = classNode.GetFirstStaticFunctionBy(procName);
                                 isStaticCall = procCallNode != null;
-                            }
-                            else if (subPass == ProtoCore.CompilerDefinitions.SubCompilePass.None)
-                            {
-                                string message = String.Format(ProtoCore.Properties.Resources.kStaticMethodNotFound,
-                                                               className,
-                                                               procName);
+                                if (procCallNode == null)
+                                {
+                                    if (subPass == SubCompilePass.None)
+                                    {
+                                        string message = String.Format(ProtoCore.Properties.Resources.kStaticMethodNotFound,
+                                            className,
+                                            procName);
 
-                                buildStatus.LogWarning(WarningID.FunctionNotFound,
-                                                       message,
-                                                       core.CurrentDSFileName,
-                                                       dotCall.line,
-                                                       dotCall.col, 
-                                                       graphNode);
+                                        buildStatus.LogWarning(WarningID.FunctionNotFound,
+                                            message,
+                                            core.CurrentDSFileName,
+                                            dotCall.line,
+                                            dotCall.col,
+                                            graphNode);
 
-                                EmitNullNode(new NullNode(), ref inferedType);
+                                        EmitNullNode(new NullNode(), ref inferedType);
 
-                                return null;
+                                        return null;
+                                    }
+                                }
                             }
                             
                         }
