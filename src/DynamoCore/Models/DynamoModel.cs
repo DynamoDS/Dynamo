@@ -1786,7 +1786,7 @@ namespace Dynamo.Models
                 currentWorkspace.HasUnsavedChanges = false;
                 // Once all the dummy nodes are reloaded, the DummyNodesReloaded event is invoked and
                 // the Dependency table is regenerated in the WorkspaceDependencyView extension. 
-                currentWorkspace.OnDummyNodesReloaded();
+             //   currentWorkspace.OnDummyNodesReloaded();
             }
         }
 
