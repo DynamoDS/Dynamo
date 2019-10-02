@@ -1,0 +1,470 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>HowickMaker</name>
+    </assembly>
+    <members>
+        <member name="T:HowickMaker.Graph">
+            <summary>
+            Super simple graph for keeping track of member adjacencies
+            </summary>
+        </member>
+        <member name="T:HowickMaker.Connection">
+            <summary>
+            List of supported connection types
+            </summary>
+        </member>
+        <member name="T:HowickMaker.hConnection">
+            <summary>
+            Represents a connection within an hStructure
+            </summary>
+        </member>
+        <member name="M:HowickMaker.hConnection.GetOtherIndex(System.Int32)">
+            <summary>
+            Returns the index of the other member involved in this connection
+            </summary>
+            <param name="index"></param>
+            <returns></returns>
+        </member>
+        <member name="M:HowickMaker.hConnection.Equals(System.Object)">
+            <summary>
+            Equality for hConnections.
+            Order of members does not matter.
+            </summary>
+            <param name="value"></param>
+            <returns></returns>
+        </member>
+        <member name="T:HowickMaker.hFace">
+            <summary>
+            Simple mesh face for use with HowickMaker
+            </summary>
+        </member>
+        <member name="T:HowickMaker.hLines">
+            <summary>
+            Tools for creating networks of lines that make valid steel stud structures.
+            </summary>
+        </member>
+        <member name="M:HowickMaker.hLines.QuadStrategy_01(HowickMaker.hMesh,System.Double)">
+            <summary>
+            Create "Howick-able" lines on a planar quad mesh
+            </summary>
+            <param name="hMesh"></param>
+            <param name="offset"></param>
+            <returns name = "lines"></returns>
+        </member>
+        <member name="T:HowickMaker.hMember">
+            <summary>
+            Represents a steel stud
+            </summary>
+        </member>
+        <member name="P:HowickMaker.hMember.WebAxis">
+            <summary>
+            The web axis of a member
+            </summary>
+            <returns name="webAxis">The web axis of the member</returns>
+        </member>
+        <member name="P:HowickMaker.hMember.WebNormal">
+            <summary>
+            The web normal of a member
+            </summary>
+        </member>
+        <member name="P:HowickMaker.hMember.FlangeAxes">
+            <summary>
+            The flange axes of a member
+            </summary>
+        </member>
+        <member name="P:HowickMaker.hMember.Name">
+            <summary>
+            The name of a member
+            </summary>
+        </member>
+        <member name="P:HowickMaker.hMember.Length">
+            <summary>
+            The length of a member
+            </summary>
+        </member>
+        <member name="M:HowickMaker.hMember.ByLineVector(Autodesk.DesignScript.Geometry.Line,Autodesk.DesignScript.Geometry.Vector,System.String)">
+            <summary>
+            Creates an hMember with its web lying along the webAxis, facing webNormal
+            </summary>
+            <param name="webAxis"></param>
+            <param name="webNormal"></param>
+            <param name="name"></param>
+            <returns name="hMember"></returns>
+        </member>
+        <member name="M:HowickMaker.hMember.AddName(HowickMaker.hMember,System.String)">
+            <summary>
+            Add or change the name of an hMember. This will be used as the label on the steel stud.
+            </summary>
+            <param name="member"></param>
+            <param name="name"></param>
+            <returns></returns>
+        </member>
+        <member name="M:HowickMaker.hMember.AddOperationByLocationType(System.Collections.Generic.List{System.Double},System.Collections.Generic.List{System.String})">
+            <summary>
+            Adds operations to the member by specifying the locations and the types of operations
+            </summary>
+            <param name="member"></param>
+            <param name="locations"></param>
+            <param name="types"></param>
+            <returns name="hMember"></returns>
+        </member>
+        <member name="M:HowickMaker.hMember.AddOperationByPointType(System.Collections.Generic.List{Autodesk.DesignScript.Geometry.Point},System.Collections.Generic.List{System.String})">
+            <summary>
+            Adds operations to a member by specifiying the operation types and the points along the axis of the member at which they occur
+            </summary>
+            <param name="member"></param>
+            <param name="points"></param>
+            <param name="types"></param>
+            <returns name="hMember">></returns>
+        </member>
+        <member name="M:HowickMaker.hMember.GetFlangeAxes">
+            <summary>
+            Gets the lines that run along the center of each flange of the member, parallel to the web axis
+            </summary>
+            <param name="member"></param>
+            <returns></returns>
+        </member>
+        <member name="M:HowickMaker.hMember.AddOperationByPointType(Autodesk.DesignScript.Geometry.Point,System.String)">
+            <summary>
+            Add an operation to the member by specifiying the type of operation and the point at which the operation should occur
+            </summary>
+            <param name="pt"></param>
+            <param name="type"></param>
+        </member>
+        <member name="M:HowickMaker.hMember.AddOperationByLocationType(System.Double,System.String)">
+            <summary>
+            AAdd an operation to the member by specifiying the type of operation and the location along the member at which the operation should occur
+            </summary>
+            <param name="location"></param>
+            <param name="type"></param>
+        </member>
+        <member name="M:HowickMaker.hMember.AddOperation(HowickMaker.hOperation)">
+            <summary>
+            Add an hOperation to the member's list of operations
+            </summary>
+            <param name="operation"></param>
+        </member>
+        <member name="M:HowickMaker.hMember.AddConnection(HowickMaker.hConnection)">
+            <summary>
+            Add an hConnection to the member's list of connections
+            </summary>
+            <param name="connection"></param>
+        </member>
+        <member name="M:HowickMaker.hMember.SetWebAxisStartPoint(Autodesk.DesignScript.Geometry.Point)">
+            <summary>
+            Extend member by changing web axis start point. Adjust operations accordingly.
+            </summary>
+            <param name="newStartPoint"></param>
+        </member>
+        <member name="M:HowickMaker.hMember.SetWebAxisEndPoint(Autodesk.DesignScript.Geometry.Point)">
+            <summary>
+            Extend member by changing web axis end point. Adjust operations accordingly.
+            </summary>
+            <param name="newEndPoint"></param>
+        </member>
+        <member name="M:HowickMaker.hMember.SortOperations">
+            <summary>
+            Sort the member's operations by operation location
+            </summary>
+        </member>
+        <member name="M:HowickMaker.hMember.ExportToFile(System.String,System.Collections.Generic.List{HowickMaker.hMember},System.Boolean)">
+            <summary>
+            Export a list of hMembers to csv file for Howick production
+            </summary>
+            <param name="filePath"></param>
+            <param name="hMembers"></param>
+            <param name="normalLabel"></param>
+        </member>
+        <member name="M:HowickMaker.hMember.ExportToHMK(System.String,System.Collections.Generic.List{HowickMaker.hMember},System.Boolean)">
+            <summary>
+            Export a list of hMembers to .hmk
+            </summary>
+            <param name="filePath"></param>
+            <param name="hMembers"></param>
+            <param name="normalLabel"></param>
+        </member>
+        <member name="M:HowickMaker.hMember.AsCSVLine(HowickMaker.hMember,System.Boolean)">
+            <summary>
+            Returns a string representing the hMember as a csv line to be produced on the Howick
+            </summary>
+            <param name="member"></param>
+            <param name="normalLabel"></param>
+            <returns></returns>
+        </member>
+        <member name="M:HowickMaker.hMember.AsHMKLine(System.Boolean)">
+            <summary>
+            Returns a string representing the hMember as a hmk line to be produced on the Howick
+            </summary>
+            <param name="member"></param>
+            <param name="normalLabel"></param>
+            <returns></returns>
+        </member>
+        <member name="M:HowickMaker.hMember.AsCSVLine(System.Boolean)">
+            <summary>
+            Returns a string representing the hMember as a csv line that can be sent to the Howick
+            </summary>
+            <param name="normalLabel"></param>
+            <returns></returns>
+        </member>
+        <member name="M:HowickMaker.hMember.DrawAsPolysurface(HowickMaker.hMember)">
+            <summary>
+            
+            </summary>
+            <param name="member"></param>
+            <returns></returns>
+        </member>
+        <member name="T:HowickMaker.hMesh">
+            <summary>
+            A simple mesh class for use with HowickMaker 
+            </summary>
+        </member>
+        <member name="T:HowickMaker.Operation">
+            <summary>
+            List of valid operations on a Howick FRAMA 3200
+            </summary>
+        </member>
+        <member name="T:HowickMaker.hOperation">
+            <summary>
+            Represents a Howick operation, 
+            including the type of operation and the location along a member where it occurs
+            </summary>
+        </member>
+        <member name="T:HowickMaker.hStructure">
+            <summary>
+            A collection of connected hMembers, 
+            with associated connections, braces, etc.
+            </summary>
+        </member>
+        <member name="M:HowickMaker.hStructure.FromLines(System.Collections.Generic.List{Autodesk.DesignScript.Geometry.Line},System.String)">
+            <summary>
+            Solve a network of intersecting lines as steel studs meeting at planar connections
+            </summary>
+            <param name="lines"></param>
+            <param name="options"></param>
+            <returns></returns>
+        </member>
+        <member name="M:HowickMaker.hStructure.StructureOptions(System.Double,System.Double,System.Boolean,System.Boolean,System.Double,System.Double,System.Boolean)">
+            <summary>
+            Optional parameters, for use with hStructure.FromLines
+            </summary>
+            <param name="intersectionTolerance"></param>
+            <param name="planarityTolerance"></param>
+            <param name="generateBraces"></param>
+            <param name="threePieceBrace"></param>
+            <param name="braceLength1"></param>
+            <param name="braceLength2"></param>
+            <param name="firstConnectionIsFTF"></param>
+            <returns name="options"></returns>
+        </member>
+        <member name="M:HowickMaker.hStructure.Test_ViewConnectivityGraph(System.Collections.Generic.List{Autodesk.DesignScript.Geometry.Line},System.Double)">
+            <summary>
+            View line intersection graph with the given tolerance
+            </summary>
+            <param name="lines"></param>
+            <returns></returns>
+        </member>
+        <member name="M:HowickMaker.hStructure.Test_ViewConnections(System.Collections.Generic.List{Autodesk.DesignScript.Geometry.Line},System.Collections.Generic.Dictionary{System.String,System.Object})">
+            <summary>
+            View all connections associated with each member in the structure
+            </summary>
+            <param name="lines"></param>
+            <param name="options"></param>
+            <returns></returns>
+        </member>
+        <member name="M:HowickMaker.hStructure.StructureFromLines(System.Collections.Generic.List{Autodesk.DesignScript.Geometry.Line},System.Double,System.Double,System.Boolean,System.Boolean,System.Double,System.Double,System.Boolean)">
+            <summary>
+            Generate an hStructure from a set of input lines and other parameters
+            </summary>
+            <param name="lines"></param>
+            <returns></returns>
+        </member>
+        <member name="M:HowickMaker.hStructure.graphFromLines(System.Collections.Generic.List{Autodesk.DesignScript.Geometry.Line},System.Double)">
+            <summary>
+            Creates a simple connectivity graph of a line network
+            </summary>
+            <param name="lines"> The list of lines we want to create a graph from </param>
+            <returns> A connectivity graph </returns>
+        </member>
+        <member name="M:HowickMaker.hStructure.BuildMembersAndConnectionsFromGraph">
+            <summary>
+            Initiate recursive propogation across line network
+            </summary>
+            <param name="lines"></param>
+        </member>
+        <member name="M:HowickMaker.hStructure.Propogate(System.Int32)">
+            <summary>
+            Recursive propogation across line network
+            </summary>
+            <param name="current"></param>
+            <param name="lines"></param>
+        </member>
+        <member name="M:HowickMaker.hStructure.ConnectionAlreadyMade(System.Int32,System.Int32)">
+            <summary>
+            Determine if this connection already exists in the hStructure
+            </summary>
+            <param name="current"></param>
+            <param name="prospective"></param>
+            <returns></returns>
+        </member>
+        <member name="M:HowickMaker.hStructure.GetConnectionType(System.Int32,System.Int32)">
+            <summary>
+            Determine valid connection type between these two members
+            </summary>
+            <param name="i"></param>
+            <param name="j"></param>
+            <returns></returns>
+        </member>
+        <member name="M:HowickMaker.hStructure.GetValidNormalsForMemberForConnection(HowickMaker.hConnection,System.Int32)">
+            <summary>
+            Determine valid normals for this member, in regards to a particular connection
+            </summary>
+            <param name="connection"></param>
+            <param name="memberIndex"></param>
+            <returns></returns>
+        </member>
+        <member name="M:HowickMaker.hStructure.GetValidNormalsForMember(System.Int32)">
+            <summary>
+            Determine valid normals for this member, in regards to all associated connections
+            </summary>
+            <param name="memberIndex"></param>
+            <returns></returns>
+        </member>
+        <member name="M:HowickMaker.hStructure.ResolveBRConnections">
+            <summary>
+            Update members involved in braced connections so that the connections actually happen
+            </summary>
+        </member>
+        <member name="M:HowickMaker.hStructure.GetCommonAndEndPointsOfTwoLines(Autodesk.DesignScript.Geometry.Line,Autodesk.DesignScript.Geometry.Line,Autodesk.DesignScript.Geometry.Point@,Autodesk.DesignScript.Geometry.Point@,Autodesk.DesignScript.Geometry.Point@)">
+            <summary>
+            Determine the point that is common between two line segments that share an end point
+            </summary>
+            <param name="line1"></param>
+            <param name="line2"></param>
+            <param name="common"></param>
+            <param name="line1End"></param>
+            <param name="line2End"></param>
+        </member>
+        <member name="M:HowickMaker.hStructure.GenerateBraces">
+            <summary>
+            Generates brace hMembers for every braced connection (BR) in the structure
+            </summary>
+            <param name="braceLength"></param>
+        </member>
+        <member name="M:HowickMaker.hStructure.ResolveFTFConnections">
+            <summary>
+            Update members involved in face-to-face connections so that the connections actually happen
+            </summary>
+        </member>
+        <member name="M:HowickMaker.hStructure.ResolveTConnections">
+            <summary>
+            Update members involved in T connections so that the connections actually happen
+            </summary>
+        </member>
+        <member name="M:HowickMaker.hStructure.GetTerminalAndCrossMember(HowickMaker.hConnection,Autodesk.DesignScript.Geometry.Line@,Autodesk.DesignScript.Geometry.Line@,System.Int32@,System.Int32@)">
+            <summary>
+            Determine which member terminates at the T and which does not
+            </summary>
+            <param name="con"></param>
+            <param name="terminal"></param>
+            <param name="cross"></param>
+            <param name="iTerminal"></param>
+            <param name="iCross"></param>
+        </member>
+        <member name="M:HowickMaker.hStructure.ResolvePTConnections">
+            <summary>
+            Update members involved in T connections so that the connections actually happen
+            </summary>
+        </member>
+        <member name="M:HowickMaker.hStructure.GetBRNormal(HowickMaker.hConnection,System.Int32)">
+            <summary>
+            Get the normal for a member involeved in a BR connection
+            </summary>
+            <param name="connection"></param>
+            <param name="memberIndex"></param>
+            <returns></returns>
+        </member>
+        <member name="M:HowickMaker.hStructure.ByTwoLines(Autodesk.DesignScript.Geometry.Line,Autodesk.DesignScript.Geometry.Line)">
+            <summary>
+            Find the plane that best fits 2 lines
+            </summary>
+            <param name="line1"></param>
+            <param name="line2"></param>
+            <returns>plane of best fit</returns>
+        </member>
+        <member name="M:HowickMaker.hStructure.FlipVector(Autodesk.DesignScript.Geometry.Vector)">
+            <summary>
+            Returns a new vector which is the input vector reversed
+            </summary>
+            <param name="vec"></param>
+            <returns>reversed vector</returns>
+        </member>
+        <member name="M:HowickMaker.hStructure.ParallelPlanes(Autodesk.DesignScript.Geometry.Plane,Autodesk.DesignScript.Geometry.Plane)">
+            <summary>
+            Determines whether two planes are parallel
+            </summary>
+            <param name="plane1"></param>
+            <param name="plane2"></param>
+            <returns>true if planes are parallel; false if planes are not parallel</returns>
+        </member>
+        <member name="M:HowickMaker.hStructure.ParallelPlaneNormals(Autodesk.DesignScript.Geometry.Vector,Autodesk.DesignScript.Geometry.Vector)">
+            <summary>
+            Determines whether two planes are parallel by comparing normals
+            </summary>
+            <param name="vec1"></param>
+            <param name="vec2"></param>
+            <returns></returns>
+        </member>
+        <member name="M:HowickMaker.hStructure.SamePoints(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point)">
+            <summary>
+            Determine if two points are the same, with tolerance
+            </summary>
+            <param name="p1"></param>
+            <param name="p2"></param>
+            <returns></returns>
+        </member>
+        <member name="M:HowickMaker.hStructure.LineToLineDistance(Autodesk.DesignScript.Geometry.Line,Autodesk.DesignScript.Geometry.Line)">
+            <summary>
+            
+            </summary>
+            <param name="line1"></param>
+            <param name="line2"></param>
+            <returns></returns>
+        </member>
+        <member name="M:HowickMaker.hStructure.PointToLineDistance(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Line)">
+            <summary>
+            
+            </summary>
+            <param name="point"></param>
+            <param name="line"></param>
+            <returns></returns>
+        </member>
+        <member name="M:HowickMaker.hStructure.MinDistanceBetweenLines(Autodesk.DesignScript.Geometry.Line,Autodesk.DesignScript.Geometry.Line)">
+            <summary>
+            
+            </summary>
+            <param name="line1"></param>
+            <param name="line2"></param>
+            <returns></returns>
+        </member>
+        <member name="M:HowickMaker.hStructure.LinesIntersectWithTolerance(Autodesk.DesignScript.Geometry.Line,Autodesk.DesignScript.Geometry.Line,System.Double)">
+            <summary>
+            
+            </summary>
+            <param name="line1"></param>
+            <param name="line2"></param>
+            <param name="tolerance"></param>
+            <returns></returns>
+        </member>
+        <member name="T:HowickMaker.hVertex">
+            <summary>
+            Simple mesh vertex for use with HowickMaker
+            </summary>
+        </member>
+        <member name="T:HowickMaker.Vertex">
+            <summary>
+            Super simple vertex for use with super simple graph for keeping track of member adjacencies
+            </summary>
+        </member>
+    </members>
+</doc>

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Dynamo.Configuration;
+using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Interfaces;
 using Dynamo.Models;
@@ -501,6 +502,30 @@ namespace Dynamo.Tests
             lastPackage = (PackageDependencyInfo)packageDependenciesList.Last();
             Assert.AreEqual(new PackageDependencyInfo("Dynamo Samples", new Version("2.0.0")), lastPackage);
             Assert.AreEqual(PackageDependencyState.Loaded, lastPackage.State);
+        }
+
+        [Test]
+        public void ResolveDummyNodesOnDownloadingPackage()
+        {
+            string path = Path.Combine(TestDirectory, @"core\packageDependencyTests\ResolveDummyNodesOnDownloadingPackage.dyn");
+            OpenModel(path);
+
+            var dummyNodes = CurrentDynamoModel.CurrentWorkspace.Nodes.OfType<DummyNode>();
+            Assert.AreEqual(2, dummyNodes.Count());
+
+            var output = GetPreviewValue("ee53b46f2a0649f6bce7fc323e614eae");
+            Assert.IsNull(output);
+
+            // Load the HowickMaker dll and check that the dummy nodes have been resolved.
+            string packageDirectory = Path.Combine(TestDirectory, @"core\packageDependencyTests\HowickMaker");
+            LoadPackage(packageDirectory);
+
+            dummyNodes = CurrentDynamoModel.CurrentWorkspace.Nodes.OfType<DummyNode>();
+            Assert.AreEqual(0, dummyNodes.Count());
+            Assert.AreEqual(CurrentDynamoModel.CurrentWorkspace.HasUnsavedChanges, false);
+
+            output = GetPreviewValue("ee53b46f2a0649f6bce7fc323e614eae");
+            Assert.AreEqual("HowickMaker.hMember", output.ToString());
         }
     }
 }
