@@ -1722,6 +1722,8 @@ namespace Dynamo.Models
         private void ReloadDummyNodes()
         {
             JObject dummyNodeJSON = null;
+            Boolean resolvedDummyNode = false;
+
             WorkspaceModel currentWorkspace = this.CurrentWorkspace;
 
             if (currentWorkspace == null || string.IsNullOrEmpty(currentWorkspace.FileName))
@@ -1774,14 +1776,18 @@ namespace Dynamo.Models
                             ConnectorModel.Make(startNode, endNode, connectorModel.Start.Index, connectorModel.End.Index, connectorModel.GUID);
                         }
                         EngineController.DisableRun = false ;
+                        resolvedDummyNode = true;
                     }
                 }
             }
 
-            currentWorkspace.HasUnsavedChanges = false;
-            // Once all the dummy nodes are reloaded, the DummyNodesReloaded event is invoked and
-            // the Dependency table is regenerated in the WorkspaceDependencyView extension. 
-            currentWorkspace.OnDummyNodesReloaded();
+            if (resolvedDummyNode)
+            {
+                currentWorkspace.HasUnsavedChanges = false;
+                // Once all the dummy nodes are reloaded, the DummyNodesReloaded event is invoked and
+                // the Dependency table is regenerated in the WorkspaceDependencyView extension. 
+                currentWorkspace.OnDummyNodesReloaded();
+            }
         }
 
         private bool OpenXmlFile(WorkspaceInfo workspaceInfo, XmlDocument xmlDoc, out WorkspaceModel workspace)
