@@ -67,6 +67,7 @@ namespace Dynamo.WorkspaceDependency
         {
             LoadedParams.CurrentWorkspaceChanged -= DependencyView.OnWorkspaceChanged;
             LoadedParams.CurrentWorkspaceCleared -= DependencyView.OnWorkspaceCleared;
+            WorkspaceModel.DummyNodesReloaded -= DependencyView.TriggerDependencyRegen;
             this.Dispose();
         }
 
