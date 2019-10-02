@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using Dynamo.Graph.Nodes;
 using Dynamo.Models;
+using Dynamo.PackageManager;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
 
@@ -22,6 +23,14 @@ namespace Dynamo.Tests
             libraries.Add("VMDataBridge.dll");
             libraries.Add("DSCoreNodes.dll");
             base.GetLibrariesToPreload(libraries);
+        }
+
+        private void LoadPackage(string packageDirectory)
+        {
+            CurrentDynamoModel.PreferenceSettings.CustomPackageFolders.Add(packageDirectory);
+            var loader = GetPackageLoader();
+            var pkg = loader.ScanPackageDirectory(packageDirectory);
+            loader.LoadPackages(new List<Package> { pkg });
         }
 
         [Test]
@@ -87,6 +96,30 @@ namespace Dynamo.Tests
             //delete the dummy node
             this.CurrentDynamoModel.CurrentWorkspace.RemoveAndDisposeNode(dummyNode);
             Assert.IsFalse(this.CurrentDynamoModel.CurrentWorkspace.IsReadOnly);
+        }
+
+        [Test]
+        public void ResolveDummyNodesOnDownloadingPackage()
+        {
+            string path = Path.Combine(TestDirectory, @"core\packageDependencyTests\ResolveDummyNodesOnDownloadingPackage.dyn");
+            OpenModel(path);
+
+            var dummyNodes = CurrentDynamoModel.CurrentWorkspace.Nodes.OfType<DummyNode>();
+            Assert.AreEqual(2, dummyNodes.Count());
+
+            var output = GetPreviewValue("a1aba50a873443f2bfb88480a89e3f36");
+            Assert.IsNull(output);
+
+            // Load the HowickMaker dll and check that the dummy nodes have been resolved.
+            string packageDirectory = Path.Combine(TestDirectory, @"pkgs\Dynamo Samples");
+            LoadPackage(packageDirectory);
+
+            dummyNodes = CurrentDynamoModel.CurrentWorkspace.Nodes.OfType<DummyNode>();
+            Assert.AreEqual(0, dummyNodes.Count());
+            Assert.AreEqual(CurrentDynamoModel.CurrentWorkspace.HasUnsavedChanges, false);
+
+            output = GetPreviewValue("a1aba50a873443f2bfb88480a89e3f36");
+            Assert.AreEqual(42, output);
         }
     }
 }
