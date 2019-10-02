@@ -18,7 +18,6 @@ namespace Dynamo.WorkspaceDependency
     public class WorkspaceDependencyViewExtension : IViewExtension, ILogSource
     {
         private MenuItem packageDependencyMenuItem;
-        private ViewLoadedParams LoadedParams;
 
         internal WorkspaceDependencyView DependencyView
         {
@@ -65,9 +64,7 @@ namespace Dynamo.WorkspaceDependency
 
         public void Shutdown()
         {
-            LoadedParams.CurrentWorkspaceChanged -= DependencyView.OnWorkspaceChanged;
-            LoadedParams.CurrentWorkspaceCleared -= DependencyView.OnWorkspaceCleared;
-            WorkspaceModel.DummyNodesReloaded -= DependencyView.TriggerDependencyRegen;
+            DependencyView.Dispose();
             this.Dispose();
         }
 
