@@ -189,7 +189,7 @@ namespace Dynamo.Graph.Workspaces
         private bool workspaceLoaded;
 
         /// <summary>
-        /// This event is to notify that the dummy nodes have been resolved. 
+        /// This event is raised after the workspace tries to resolve existing dummyNodes - for example after a new package or library is loaded.
         /// </summary>
         public static event Action DummyNodesReloaded;
 

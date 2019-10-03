@@ -406,7 +406,8 @@ namespace Dynamo.Graph.Nodes
         }
 
         /// <summary>
-        /// This will return the NodeModel for a dummy node. 
+        /// Deserializes and returns the nodeModel that is represented by the original content of this DummyNode.
+        /// If this node cannot be resolved, returns a new DummyNode
         /// </summary>
         /// <param name="json"></param>
         /// <param name="libraryServices"></param>

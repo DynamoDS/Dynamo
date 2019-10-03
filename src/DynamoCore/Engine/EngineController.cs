@@ -41,7 +41,7 @@ namespace Dynamo.Engine
         /// <summary>
         /// The event notifies client that the VMLibraries have been reset and the VM is now ready to run the new code. 
         /// </summary>
-        public static event Action VMLibrariesReset;
+        internal static event Action VMLibrariesReset;
 
         /// <summary>
         /// This flag is used to check if any packages are currently being loaded, and to disable any executions that are triggered before the package loading is completed. See DYN-2101 for more info.
