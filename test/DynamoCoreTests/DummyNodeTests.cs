@@ -110,7 +110,7 @@ namespace Dynamo.Tests
             var output = GetPreviewValue("a1aba50a873443f2bfb88480a89e3f36");
             Assert.IsNull(output);
 
-            // Load the HowickMaker dll and check that the dummy nodes have been resolved.
+            // Load the Dynamo Samples package and verify that the dummy nodes have been resolved.
             string packageDirectory = Path.Combine(TestDirectory, @"pkgs\Dynamo Samples");
             LoadPackage(packageDirectory);
 
