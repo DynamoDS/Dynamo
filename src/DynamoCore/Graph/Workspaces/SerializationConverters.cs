@@ -83,12 +83,20 @@ namespace Dynamo.Graph.Workspaces
             NodeModel node = null;
 
             var obj = JObject.Load(reader);
-            var type = Type.GetType(obj["$type"].Value<string>());
-            //if we can't find this type - try to look in our load from assemblies,
-            //but only during testing - this is required during testing because some dlls are loaded
-            //using Assembly.LoadFrom using the assemblyHelper - which loads dlls into loadFrom context - 
-            //dlls loaded with LoadFrom context cannot be found using Type.GetType() - this should
-            //not be an issue during normal dynamo use but if it is we can enable this code.
+            Type type = null;
+            try
+            {
+               type = Type.GetType(obj["$type"].Value<string>());
+            }
+            catch(Exception e)
+            {
+                nodeFactory?.AsLogger().Log(e);
+            }
+            // If we can't find this type - try to look in our load from assemblies,
+            // but only during testing - this is required during testing because some dlls are loaded
+            // using Assembly.LoadFrom using the assemblyHelper - which loads dlls into loadFrom context - 
+            // dlls loaded with LoadFrom context cannot be found using Type.GetType() - this should
+            // not be an issue during normal dynamo use but if it is we can enable this code.
             if(type == null && this.isTestMode == true)
             {
                 List<Assembly> resultList;
