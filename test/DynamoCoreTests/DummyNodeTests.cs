@@ -88,5 +88,37 @@ namespace Dynamo.Tests
             this.CurrentDynamoModel.CurrentWorkspace.RemoveAndDisposeNode(dummyNode);
             Assert.IsFalse(this.CurrentDynamoModel.CurrentWorkspace.IsReadOnly);
         }
+
+        [Test]
+        public void IfDeserializationThrowsDummyNodeStillCreated()
+        {
+            string testFileWithUknownAssembly = @"core\dummy_node\unknownAssemblyName.dyn";
+
+            var exceptionCount = 0;
+            var handler = new ResolveEventHandler((o, e) =>
+            {
+                var i = e.Name.IndexOf(",");
+                if(i == -1)
+                {
+                    exceptionCount = exceptionCount + 1;
+                    throw new Exception("TestingTesting");
+                }
+                return null;
+            });
+            //attach our handler that will throw
+            AppDomain.CurrentDomain.AssemblyResolve += handler;
+            System.Threading.Thread.Sleep(5000);
+
+            string openPath = Path.Combine(TestDirectory, testFileWithUknownAssembly);
+            OpenModel(openPath);
+
+            Assert.AreEqual(1, CurrentDynamoModel.CurrentWorkspace.Nodes.OfType<DummyNode>().Count());
+            var dummyNode = CurrentDynamoModel.CurrentWorkspace.Nodes.OfType<DummyNode>().First();
+            Assert.AreEqual(1, exceptionCount);
+            AppDomain.CurrentDomain.AssemblyResolve -= handler;
+        }
+
+       
+
     }
 }
