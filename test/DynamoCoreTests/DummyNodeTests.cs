@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Dynamo.Graph.Nodes;
+using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
@@ -98,7 +99,7 @@ namespace Dynamo.Tests
             var handler = new ResolveEventHandler((o, e) =>
             {
                 var i = e.Name.IndexOf(",");
-                if(i == -1)
+                if (i == -1)
                 {
                     exceptionCount = exceptionCount + 1;
                     throw new Exception("TestingTesting");
@@ -117,8 +118,48 @@ namespace Dynamo.Tests
             Assert.AreEqual(1, exceptionCount);
             AppDomain.CurrentDomain.AssemblyResolve -= handler;
         }
+        public void ResolveDummyNodesOnDownloadingPackage()
+        {
+            string path = Path.Combine(TestDirectory, @"core\packageDependencyTests\ResolveDummyNodesOnDownloadingPackage.dyn");
+            OpenModel(path);
 
-       
+            var dummyNodes = CurrentDynamoModel.CurrentWorkspace.Nodes.OfType<DummyNode>();
+            Assert.AreEqual(2, dummyNodes.Count());
 
+            var output = GetPreviewValue("a1aba50a873443f2bfb88480a89e3f36");
+            Assert.IsNull(output);
+
+            // Load the Dynamo Samples package and verify that the dummy nodes have been resolved.
+            string packageDirectory = Path.Combine(TestDirectory, @"pkgs\Dynamo Samples");
+            LoadPackage(packageDirectory);
+
+            dummyNodes = CurrentDynamoModel.CurrentWorkspace.Nodes.OfType<DummyNode>();
+            Assert.AreEqual(0, dummyNodes.Count());
+            Assert.AreEqual(CurrentDynamoModel.CurrentWorkspace.HasUnsavedChanges, false);
+
+            output = GetPreviewValue("a1aba50a873443f2bfb88480a89e3f36");
+            Assert.AreEqual(42, output);
+        }
+
+        [Test]
+        public void ResolveDummyNodesInsideCustomNodeWorkspace()
+        {
+            // Validating the case when dummy nodes are resolved inside a custom node workspace.
+            String path = Path.Combine(TestDirectory, @"core\packageDependencyTests\ResolveDummyNodesInsideCustomNodeWorkspace.dyf");
+            OpenModel(path);
+
+            Assert.IsInstanceOf<CustomNodeWorkspaceModel>(CurrentDynamoModel.CurrentWorkspace);
+
+            var dummyNodes = CurrentDynamoModel.CurrentWorkspace.Nodes.OfType<DummyNode>();
+            Assert.AreEqual(2, dummyNodes.Count());
+
+            // Load the Dynamo Samples package and verify that the dummy nodes have been resolved.
+            var packageDirectory = Path.Combine(TestDirectory, @"pkgs\Dynamo Samples");
+            LoadPackage(packageDirectory);
+
+            dummyNodes = CurrentDynamoModel.CurrentWorkspace.Nodes.OfType<DummyNode>();
+            Assert.AreEqual(0, dummyNodes.Count());
+            Assert.AreEqual(CurrentDynamoModel.CurrentWorkspace.HasUnsavedChanges, false);
+        }
     }
 }

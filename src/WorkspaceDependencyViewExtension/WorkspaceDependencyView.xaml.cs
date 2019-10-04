@@ -17,7 +17,7 @@ namespace Dynamo.WorkspaceDependency
     /// <summary>
     /// Interaction logic for WorkspaceDependencyView.xaml
     /// </summary>
-    public partial class WorkspaceDependencyView : UserControl
+    public partial class WorkspaceDependencyView : UserControl, IDisposable
     {
 
         private WorkspaceModel currentWorkspace;
@@ -141,6 +141,14 @@ namespace Dynamo.WorkspaceDependency
         }
 
         /// <summary>
+        /// Calls the DependencyRegen function when the DummyNodesReloaded event is triggered from the dynamo model.
+        /// </summary>
+        internal void TriggerDependencyRegen()
+        {
+            DependencyRegen(currentWorkspace);
+        } 
+
+        /// <summary>
         /// Constructor
         /// </summary>
         /// <param name="p">ViewLoadedParams</param>
@@ -149,6 +157,7 @@ namespace Dynamo.WorkspaceDependency
             InitializeComponent();
             this.DataContext = this;
             currentWorkspace = p.CurrentWorkspaceModel as WorkspaceModel;
+            WorkspaceModel.DummyNodesReloaded += TriggerDependencyRegen;
             p.CurrentWorkspaceChanged += OnWorkspaceChanged;
             p.CurrentWorkspaceCleared += OnWorkspaceCleared;
             currentWorkspace.PropertyChanged += OnWorkspacePropertyChanged;
@@ -226,6 +235,16 @@ namespace Dynamo.WorkspaceDependency
                     DependencyRegen(currentWorkspace);
                 }
             }
+        }
+
+        /// <summary>
+        /// Dispose function for WorkspaceDependencyView
+        /// </summary>
+        public void Dispose()
+        {
+            loadedParams.CurrentWorkspaceChanged -= OnWorkspaceChanged;
+            loadedParams.CurrentWorkspaceCleared -= OnWorkspaceCleared;
+            WorkspaceModel.DummyNodesReloaded -= TriggerDependencyRegen;
         }
     }
 

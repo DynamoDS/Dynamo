@@ -1,4 +1,12 @@
-﻿using Dynamo.Core;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Xml;
+using Dynamo.Core;
 using Dynamo.Engine;
 using Dynamo.Engine.CodeGeneration;
 using Dynamo.Events;
@@ -19,14 +27,6 @@ using Dynamo.Utilities;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using ProtoCore.Namespace;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Xml;
 
 
 namespace Dynamo.Graph.Workspaces
@@ -187,6 +187,19 @@ namespace Dynamo.Graph.Workspaces
         /// This is set to false, if the workspace is cleared or disposed.
         /// </summary>
         private bool workspaceLoaded;
+
+        /// <summary>
+        /// This event is raised after the workspace tries to resolve existing dummyNodes - for example after a new package or library is loaded.
+        /// </summary>
+        public static event Action DummyNodesReloaded;
+
+        /// <summary>
+        /// This method invokes the DummyNodesReloaded event on the workspace model.
+        /// </summary>
+        public void OnDummyNodesReloaded()
+        {
+            DummyNodesReloaded?.Invoke();
+        }
 
         /// <summary>
         /// sets the name property of the model based on filename,backup state and model type.
