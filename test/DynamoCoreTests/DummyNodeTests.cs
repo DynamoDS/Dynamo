@@ -108,7 +108,6 @@ namespace Dynamo.Tests
             });
             //attach our handler that will throw
             AppDomain.CurrentDomain.AssemblyResolve += handler;
-            System.Threading.Thread.Sleep(5000);
 
             string openPath = Path.Combine(TestDirectory, testFileWithUknownAssembly);
             OpenModel(openPath);
