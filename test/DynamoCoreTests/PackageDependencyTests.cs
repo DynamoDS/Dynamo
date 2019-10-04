@@ -6,7 +6,6 @@ using Dynamo.Configuration;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Interfaces;
 using Dynamo.Models;
-using Dynamo.PackageManager;
 using Dynamo.Scheduler;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -24,14 +23,6 @@ namespace Dynamo.Tests
             libraries.Add("DesignScriptBuiltin.dll");
             libraries.Add("DSCoreNodes.dll");
             base.GetLibrariesToPreload(libraries);
-        }
-
-        private void LoadPackage(string packageDirectory)
-        {
-            CurrentDynamoModel.PreferenceSettings.CustomPackageFolders.Add(packageDirectory);
-            var loader = GetPackageLoader();
-            var pkg = loader.ScanPackageDirectory(packageDirectory);
-            loader.LoadPackages(new List<Package> { pkg });
         }
 
         private PackageDependencyInfo GetPackageInfo(string packageName)
