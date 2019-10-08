@@ -135,7 +135,7 @@ namespace Dynamo.WorkspaceDependency
                     (packageDependencies.Where(x => x.Name == package.Name).FirstOrDefault() as PackageDependencyInfo).State = PackageDependencyState.RequiresRestart;
                     hasPackageMarkedForUninstall = true;
                 }
-                this.RestartBanner.Visibility = hasPackageMarkedForUninstall ? Visibility.Visible: Visibility.Collapsed;
+                this.RestartBanner.Visibility = hasPackageMarkedForUninstall ? Visibility.Visible: Visibility.Hidden;
             }
 
             dataRows = packageDependencies.Select(d => new PackageDependencyRow(d as PackageDependencyInfo));
