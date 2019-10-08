@@ -1,20 +1,18 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using ProtoCore.DSASM;
-using ProtoCore.Utils;
-using System.Reflection;
 using System.ComponentModel;
-using Autodesk.DesignScript.Interfaces;
-using System.Xml.Serialization;
-using System.Text;
 using System.IO;
-using System.Xml;
 using System.Linq;
+using System.Reflection;
+using System.Xml;
+using Autodesk.DesignScript.Interfaces;
 using DesignScript.Builtin;
-using ProtoCore.Properties;
+using ProtoCore.DSASM;
 using ProtoCore.Exceptions;
+using ProtoCore.Properties;
 using ProtoCore.Runtime;
+using ProtoCore.Utils;
 
 namespace ProtoFFI
 {
@@ -731,8 +729,7 @@ namespace ProtoFFI
                 return marshaler.UnMarshal(dsObject, context, dsi, expectedCLRType);
 
             //The dsObject must be of pointer type
-            Validity.Assert(dsObject.IsPointer || dsObject.IsFunctionPointer, 
-                string.Format("Operand type {0} not supported for marshalling", dsObject.optype));
+            Validity.Assert(dsObject.IsPointer || dsObject.IsFunctionPointer, "Operand type not supported for marshaling");
 
             if (dsObject.IsFunctionPointer)
             {

@@ -376,6 +376,52 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Equals with tolerance input..
+        /// </summary>
+        public static string EqualsWithToleranceDescription {
+            get {
+                return ResourceManager.GetString("EqualsWithToleranceDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Integer or double value.
+        /// </summary>
+        public static string EqualsWithToleranceLhsRhsTooltip {
+            get {
+                return ResourceManager.GetString("EqualsWithToleranceLhsRhsTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Result of equality check.
+        /// </summary>
+        public static string EqualsWithToleranceOutportTooltip {
+            get {
+                return ResourceManager.GetString("EqualsWithToleranceOutportTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to equals;tolerance.
+        /// </summary>
+        public static string EqualsWithToleranceSearchTags {
+            get {
+                return ResourceManager.GetString("EqualsWithToleranceSearchTags", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tolerance
+        ///Default value: {0}.
+        /// </summary>
+        public static string EqualsWithToleranceTooltip {
+            get {
+                return ResourceManager.GetString("EqualsWithToleranceTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Creates a file object from a path..
         /// </summary>
         public static string FileFromPathDescription {

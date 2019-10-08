@@ -1,5 +1,12 @@
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Xml;
 using Dynamo.Engine;
 using Dynamo.Engine.NodeToCode;
+using Dynamo.Exceptions;
 using Dynamo.Graph;
 using Dynamo.Graph.Annotations;
 using Dynamo.Graph.Connectors;
@@ -18,12 +25,6 @@ using Dynamo.Properties;
 using Dynamo.Selection;
 using Dynamo.Utilities;
 using ProtoCore.AST.AssociativeAST;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Xml;
 using Symbol = Dynamo.Graph.Nodes.CustomNodes.Symbol;
 
 namespace Dynamo.Core
@@ -128,7 +129,16 @@ namespace Dynamo.Core
         {
             var handler = CustomNodeRemoved;
             if (handler != null) handler(functionId);
+
         }
+
+        internal event Func<Guid, PackageInfo> RequestCustomNodeOwner;
+
+        private PackageInfo OnRequestCustomNodeOwner(Guid FunctionId)
+        {
+            return RequestCustomNodeOwner?.Invoke(FunctionId);
+        }
+
         #endregion
 
         /// <summary>
@@ -404,6 +414,32 @@ namespace Dynamo.Core
         }
 
         /// <summary>
+        ///     Scans the given path for custom node files, retaining their information in the manager for later
+        ///     potential initialization. Should be used when packages load or reload customNodes.
+        /// </summary>
+        /// <param name="path">Path on disk to scan for custom nodes.</param>
+        /// <param name="isTestMode">
+        ///     Flag specifying whether or not this should operate in "test mode".
+        /// </param>
+        /// <param name="PackageInfo">
+        ///     Info about the package that requested this customNode to be loaded or to which the customNode belongs.
+        ///     Is PackageMember property will be true if this property is not null.
+        /// </param>
+        /// <returns></returns>
+        public IEnumerable<CustomNodeInfo> AddUninitializedCustomNodesInPath(string path, bool isTestMode, PackageInfo packageInfo)
+        {
+            var result = new List<CustomNodeInfo>();
+            foreach (var info in ScanNodeHeadersInDirectory(path, isTestMode))
+            {
+                info.IsPackageMember = true;
+                info.PackageInfo = packageInfo;
+                SetNodeInfo(info);
+                result.Add(info);
+            }
+            return result;
+        }
+
+        /// <summary>
         ///     Enumerates all of the files in the search path and get's their guids.
         ///     Does not instantiate the nodes.
         /// </summary>
@@ -439,8 +475,8 @@ namespace Dynamo.Core
         }
 
         /// <summary>
-        /// Stores the path and function definition without initializing a node.  Overwrites
-        /// the existing NodeInfo if necessary
+        /// Stores the path and function definition without initializing a node.  
+        /// Overwrites the existing NodeInfo if necessary!
         /// </summary>
         private void SetNodeInfo(CustomNodeInfo newInfo)
         {
@@ -450,9 +486,69 @@ namespace Dynamo.Core
                                 string.Compare(x.Value.Path, newInfo.Path, StringComparison.OrdinalIgnoreCase) == 0;
                         }).Select(x => x.Key).ToList();
 
+           
             foreach (var guid in guids)
             {
                 NodeInfos.Remove(guid);
+            }
+
+            // we need to check with the packageManager that this node if this node is in a package or not - 
+            // currently the package data is lost when the customNode workspace is loaded.
+            // we'll only do this check for customNode infos which don't have a package currently to verify if this
+            // is correct.
+            if(newInfo.IsPackageMember == false)
+            {
+                var owningPackage = this.OnRequestCustomNodeOwner(newInfo.FunctionId);
+                
+                //we found a real package.
+                if(owningPackage != null)
+                {
+                    newInfo.IsPackageMember = true;
+                    newInfo.PackageInfo = owningPackage;
+                }
+            }
+
+
+            CustomNodeInfo info;
+            // if the custom node is part of a package make sure it does not overwrite another node
+            if (newInfo.IsPackageMember && NodeInfos.TryGetValue(newInfo.FunctionId, out info))
+            {
+                var newInfoPath = String.IsNullOrEmpty(newInfo.Path) ? string.Empty : Path.GetDirectoryName(newInfo.Path);
+                var infoPath = String.IsNullOrEmpty(info.Path) ? string.Empty : Path.GetDirectoryName(info.Path);
+                var message = string.Format(Resources.MessageCustomNodePackageFailedToLoad,
+                    infoPath, newInfoPath);
+
+               
+                //only try to compare package info if both customNodeInfos have package info.
+                if(info.IsPackageMember && info.PackageInfo != null)
+                {
+                    // if these are different packages raise an error.
+                    // TODO (for now we don't raise an error for different
+                    //versions of the same package, don't want to effect publish new version workflows.
+
+                    if (newInfo.PackageInfo.Name != info.PackageInfo.Name)
+                    {
+                        var ex = new CustomNodePackageLoadException(newInfoPath, infoPath, message);
+                        Log(ex.Message, WarningLevel.Moderate);
+
+                        // Log to notification view extension
+                        Log(ex);
+                        throw ex;
+                    }
+                }
+                   else //(newInfo has owning Package, oldInfo does not)
+                {
+                   
+                    // This represents the case where a previous info was not from a package, but the current info
+                    // has an owning package.
+                    var looseCustomNodeToPackageMessage = String.Format(Properties.Resources.FunctionDefinitionOverwrittenMessage, newInfo.Name, newInfo.PackageInfo, info.Name);
+
+                    var ex = new CustomNodePackageLoadException(newInfoPath, infoPath, looseCustomNodeToPackageMessage);
+                    Log(ex.Message, WarningLevel.Mild);
+                    Log(ex);
+                }
+
+
             }
 
             NodeInfos[newInfo.FunctionId] = newInfo;
@@ -716,12 +812,13 @@ namespace Dynamo.Core
                 SetFunctionDefinition(newDef);
                 OnDefinitionUpdated(newDef);
             };
-
+            
             SetNodeInfo(info);
 
             newWorkspace.InfoChanged += () =>
             {
                 var newInfo = newWorkspace.CustomNodeInfo;
+
                 SetNodeInfo(newInfo);
                 OnInfoUpdated(newInfo);
             };

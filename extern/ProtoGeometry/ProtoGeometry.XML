@@ -3233,6 +3233,16 @@
             Get a string representation of the Surface
             </summary>
         </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.ByUnion(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Surface})">
+            <summary>
+            Union a collection of surfaces into one surface. This method might return a polySurface if the resulting union is non-manifold or multi-faced.
+            </summary>
+            <param name="surfaces"> A collection of surfaces. </param>
+            <returns>  </returns>
+            <search>
+            merge,join,boolean,addition
+            </search>
+        </member>
         <member name="M:Autodesk.DesignScript.Geometry.Surface.ByLoft(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve})">
             <summary>
             Create a Surface by lofting between input cross section Curves.
@@ -3371,6 +3381,16 @@
             <returns>  </returns>
             <search>
             difference,trim,removefrom,cut
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.Difference(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Surface})">
+            <summary>
+            The boolean difference of this Surface and the union of input Surfaces. This method might return a polySurface if the resulting boolean is non-manifold or multi-faced.
+            </summary>
+            <param name="others">  </param>
+            <returns>  </returns>
+            <search>
+            subtract,differencemany,diffall,diff multi
             </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Surface.UVParameterAtPoint(Autodesk.DesignScript.Geometry.Point)">
@@ -4495,8 +4515,8 @@
             <param name="endRotations">Custom rotation angle in degrees for each pipe handle at the end of each curve. This parameter is ignored when autoHandleEnd is true. The size of the list can be the curve count or 1 for replication.</param>
             <param name="startRadii">Custom radius for each pipe handle at the start of each curve. This parameter is ignored when autoHandleStart is true. The size of the list can be the curve count or 1 for replication.</param>
             <param name="endRadii">Custom radius for each pipe handle at the end of each curve. This parameter is ignored when autoHandleEnd is true. The size of the list can be the curve count or 1 for replication.</param>
-            <param name="startPositions">Custom position of each pipe handle at the start of each curve in percentage between 0 and 1 along the curve's arc-length. This parameter is ignored when autoHandleStart is true. The size of the list can be the curve count or 1 for replication.</param>
-            <param name="endPositions">Custom position of each pipe handle at the end of each curve in percentage between 0 and 1 along the curve's arc-length. This parameter is ignored when autoHandleEnd is true. The size of the list can be the curve count or 1 for replication.</param>
+            <param name="startPositions">Custom position of each pipe handle at the start of each curve in percentage between 0 and 1 along the curve's arc-length. This parameter is ignored when autoHandleStart is true. The size of the list can be the curve count or 1 for replication. The start and end position should not overlap each other on each curve. Ideally, the start position should be close to 0, while the end position close to 1.</param>
+            <param name="endPositions">Custom position of each pipe handle at the end of each curve in percentage between 0 and 1 along the curve's arc-length. This parameter is ignored when autoHandleEnd is true. The size of the list can be the curve count or 1 for replication. The start and end position should not overlap each other on each curve. Ideally, the start position should be close to 0, while the end position close to 1.</param>
             <param name="inSmoothMode">Show T-Spline Surface in box or smooth visualization</param>
             <search>tspline,create,pipe,curve</search>
         </member>
@@ -5795,6 +5815,17 @@
             </summary>
             <search>resize,size,from,to,scale2d,2d</search>
         </member>
+        <member name="F:Autodesk.DesignScript.Geometry.DesignScriptEntity.constructorThreadId">
+            <summary>
+            stores the managed thread id of thread which called this constructor.
+            Used to alert users to potential multi threaded issues.
+            </summary>
+        </member>
+        <member name="F:Autodesk.DesignScript.Geometry.DesignScriptEntity.disposedWrongThread">
+            <summary>
+            This is used for testing only.
+            </summary>
+        </member>
         <member name="F:Autodesk.DesignScript.Geometry.DesignScriptEntity.Tags">
             <notranslation>true</notranslation>
         </member>
@@ -5804,11 +5835,6 @@
         <member name="M:Autodesk.DesignScript.Geometry.DesignScriptEntity.DisposeDisplayable">
             <summary>
             This method is called when the displayable is no more needed.
-            </summary>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.DesignScriptEntity.RetainEntity">
-            <summary>
-            This method should be called whenever this object is referenced by other object
             </summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.DesignScriptEntity.GetHashCode">

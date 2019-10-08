@@ -1,15 +1,12 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.ComponentModel;
-using System.Reflection;
 using System.Linq;
+using System.Reflection;
 using Autodesk.DesignScript.Interfaces;
 using Autodesk.DesignScript.Runtime;
 using ProtoCore.AST.AssociativeAST;
-using ProtoCore.Utils;
 using ProtoCore.DSASM;
+using ProtoCore.Utils;
 
 namespace ProtoFFI
 {

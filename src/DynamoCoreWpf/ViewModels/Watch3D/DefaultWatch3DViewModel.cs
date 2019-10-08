@@ -557,7 +557,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             RegisterPortEventHandlers(node);
         }
 
-        protected void UnregisterNodeEventHandlers(NodeModel node)
+        protected internal void UnregisterNodeEventHandlers(NodeModel node)
         {
             node.PropertyChanged -= OnNodePropertyChanged;
             node.RenderPackagesUpdated -= OnRenderPackagesUpdated;

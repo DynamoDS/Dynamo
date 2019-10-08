@@ -1,7 +1,5 @@
 using NUnit.Framework;
 using ProtoCore.DSASM.Mirror;
-using ProtoTestFx;
-using ProtoTestFx.TD;
 namespace ProtoTest.TD.Imperative
 {
     class TypedAssignment : ProtoTestBase

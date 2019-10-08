@@ -1,9 +1,9 @@
-﻿using DynamoShapeManager;
-using NUnit.Framework;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using DynamoShapeManager;
+using NUnit.Framework;
 
 namespace Dynamo.Tests
 {
@@ -312,9 +312,13 @@ namespace Dynamo.Tests
 
             //create some
             var libG22440path = System.IO.Directory.CreateDirectory(Path.Combine(rootFolder, "LibG_224_4_0"));
-            File.WriteAllText(Path.Combine(libG22440path.FullName, "ASMAHL.dll"), "someText");
+            File.WriteAllText(Path.Combine(libG22440path.FullName, "ASMAHL224A.dll"), "someText");
+            File.WriteAllText(Path.Combine(libG22440path.FullName, "tbb.dll"), "someText");
+            File.WriteAllText(Path.Combine(libG22440path.FullName, "tbbmalloc.dll"), "someText");
             var libG22401path = System.IO.Directory.CreateDirectory(Path.Combine(rootFolder, "LibG_224_0_1"));
-            File.WriteAllText(Path.Combine(libG22401path.FullName, "ASMAHL.dll"), "someText");
+            File.WriteAllText(Path.Combine(libG22401path.FullName, "ASMAHL224A.dll"), "someText");
+            File.WriteAllText(Path.Combine(libG22401path.FullName, "tbb.dll"), "someText");
+            File.WriteAllText(Path.Combine(libG22401path.FullName, "tbbmalloc.dll"), "someText");
 
 
             var foundVersion = DynamoShapeManager.Utilities.GetInstalledAsmVersion2(

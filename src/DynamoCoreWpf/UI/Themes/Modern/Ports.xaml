@@ -67,7 +67,7 @@
                 <Grid.ToolTip>
                     <dynui:DynamoToolTip AttachmentSide="{Binding Path=PortType, Converter={StaticResource PortToAttachmentConverter}}" Style="{DynamicResource ResourceKey=SLightToolTip}">
                         <Grid>
-                            <TextBlock Text="{Binding Path=ToolTipContent}"></TextBlock>
+                            <TextBlock MaxWidth="320" TextWrapping="Wrap" Text="{Binding Path=ToolTipContent}"></TextBlock>
                         </Grid>
                     </dynui:DynamoToolTip>
                 </Grid.ToolTip>

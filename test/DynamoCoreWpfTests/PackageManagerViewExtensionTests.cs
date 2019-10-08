@@ -1,26 +1,18 @@
-﻿
-using CoreNodeModels.Input;
+﻿using System;
+using System.CodeDom.Compiler;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using Dynamo.Configuration;
-using Dynamo.Extensions;
-using Dynamo.Graph.Nodes;
 using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.PackageManager;
 using Dynamo.PackageManager.UI;
 using Dynamo.Scheduler;
 using Dynamo.Wpf.Extensions;
-using DynamoCoreWpfTests.Utility;
 using Microsoft.CSharp;
 using Moq;
 using NUnit.Framework;
-using System;
-using System.CodeDom.Compiler;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Controls;
 
 namespace DynamoCoreWpfTests
 {
@@ -195,7 +187,7 @@ namespace DynamoCoreWpfTests
                 viewLoaded = true;
                 var loader = Model.GetPackageManagerExtension().PackageLoader;
                 var pkg = loader.ScanPackageDirectory(pkgDir);
-                loader.Load(pkg);
+                loader.LoadPackages(new List<Package> {pkg});
                 Assert.AreEqual(0, loader.RequestedExtensions.Count());
                 Assert.AreEqual(2, this.View.viewExtensionManager.ViewExtensions.OfType<PackageManagerViewExtension>().FirstOrDefault().RequestedExtensions.Count());
                 Assert.IsTrue(viewExtensionLoadStart);

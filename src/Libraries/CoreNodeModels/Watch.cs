@@ -5,10 +5,9 @@ using Dynamo.Engine;
 using Dynamo.Graph.Nodes;
 using Dynamo.Scheduler;
 using Dynamo.Visualization;
+using Newtonsoft.Json;
 using ProtoCore.AST.AssociativeAST;
 using VMDataBridge;
-using Dynamo.Utilities;
-using Newtonsoft.Json;
 
 namespace CoreNodeModels
 {

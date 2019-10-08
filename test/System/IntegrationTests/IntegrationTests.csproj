@@ -119,6 +119,7 @@
       <Link>AssemblySharedInfo.cs</Link>
     </Compile>
     <Compile Include="CallsiteRegen.cs" />
+    <Compile Include="DynamoApplicationTests.cs" />
     <Compile Include="ExecutionEventsObserver.cs" />
     <Compile Include="IncrementingTraceTests.cs" />
     <Compile Include="MinimalTraceTests.cs" />
@@ -126,6 +127,10 @@
     <Compile Include="TestWrapperCleanup.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\src\DynamoApplications\DynamoApplications.csproj">
+      <Project>{aa782772-fe61-4226-baa4-eb529fa1646b}</Project>
+      <Name>DynamoApplications</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\src\DynamoCoreWpf\DynamoCoreWpf.csproj">
       <Project>{51bb6014-43f7-4f31-b8d3-e3c37ebedaf4}</Project>
       <Name>DynamoCoreWpf</Name>
@@ -146,6 +151,10 @@
       <Project>{ef879a10-041d-4c68-83e7-3192685f1bae}</Project>
       <Name>DynamoServices</Name>
       <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\src\Tools\DynamoShapeManager\DynamoShapeManager.csproj">
+      <Project>{263fa9c1-f81e-4a8e-95e0-8cdae20f177b}</Project>
+      <Name>DynamoShapeManager</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\DynamoCoreTests\DynamoCoreTests.csproj">
       <Project>{472084ED-1067-4B2C-8737-3839A6143EB2}</Project>

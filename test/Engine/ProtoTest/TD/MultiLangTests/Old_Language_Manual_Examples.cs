@@ -1,10 +1,6 @@
 using System;
 using NUnit.Framework;
 using ProtoCore.DSASM.Mirror;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using ProtoTestFx.TD;
 namespace ProtoTest.TD.MultiLangTests
 {
     class Old_Language_Manual_Examples : ProtoTestBase

@@ -4,9 +4,6 @@ using System.IO;
 using System.Linq;
 using NUnit.Framework;
 using ProtoCore.AST.AssociativeAST;
-using ProtoCore.DSASM.Mirror;
-using ProtoCore.Lang;
-using ProtoTest.TD;
 using ProtoTestFx.TD;
 namespace ProtoTest.Associative
 {
@@ -659,14 +656,12 @@ y = foo()[1];
             string code = @"
 [Imperative]
 {
-    arr1 = [true, false];
-    arr2 = [1, 2, 3];
-    arr3 = [false, true];
-    t = arr2[1][0];
+    arr = [1, 2, 3];
+    t = arr[1][0];
 }
 ";
             thisTest.RunScriptSource(code);
-            TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.MethodResolutionFailure);
+            TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.IndexOutOfRange);
         }
 
         [Test]
@@ -3672,6 +3667,24 @@ r = foo(3);
 }";
             thisTest.RunScriptSource(code);
             thisTest.VerifyBuildWarningCount(0);
+        }
+
+        [Test]
+        public void TestDoubleEquality()
+        {
+            string code = @"
+a = 1/3 == 0.33333;
+b = 1/3 == 0.3333;
+c = 3.14159265358979;
+d = c == c + 0.000001;
+e = c == c + 0.00001;
+";
+            thisTest.RunScriptSource(code);
+            thisTest.VerifyBuildWarningCount(0);
+            thisTest.Verify("a", true);
+            thisTest.Verify("b", false);
+            thisTest.Verify("d", true);
+            thisTest.Verify("e", false);
         }
     }
 }

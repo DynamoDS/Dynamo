@@ -4,7 +4,6 @@ using System.Linq;
 using Dynamo.Configuration;
 using Dynamo.Search;
 using Dynamo.Search.SearchElements;
-using Dynamo.UI;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.ViewModels;
 using NUnit.Framework;

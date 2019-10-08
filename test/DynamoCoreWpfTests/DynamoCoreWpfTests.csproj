@@ -45,8 +45,8 @@
     <ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Greg, Version=1.1.6913.31484, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\src\packages\Greg.1.1.6913.31484\lib\net47\Greg.dll</HintPath>
+    <Reference Include="Greg, Version=1.2.7177.24952, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\src\packages\Greg.1.2.7177.24952\lib\net47\Greg.dll</HintPath>
     </Reference>
     <Reference Include="HelixToolkit, Version=2015.1.629.0, Culture=neutral, PublicKeyToken=52aa3500039caf0d, processorArchitecture=MSIL">
       <HintPath>..\..\src\packages\HelixToolkit.2015.1.629\lib\portable-net4+sl4+wp71+win8\HelixToolkit.dll</HintPath>
@@ -180,7 +180,8 @@
     <Compile Include="Utility\DispatcherUtil.cs" />
     <Compile Include="Utility\ViewExtensions.cs" />
     <Compile Include="UpdateManagerUITests.cs" />
-    <Compile Include="ViewExtensionTests.cs" />
+    <Compile Include="ViewExtensions\ViewExtensionTests.cs" />
+    <Compile Include="ViewExtensions\WorkspaceDependencyViewExtensionTests.cs" />
     <Compile Include="WatchNodeTests.cs" />
     <Compile Include="WebRequestTests.cs" />
     <Compile Include="WorkspaceGeneralOperations.cs" />
@@ -264,6 +265,10 @@
       <Project>{263fa9c1-f81e-4a8e-95e0-8cdae20f177b}</Project>
       <Name>DynamoShapeManager</Name>
       <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\src\WorkspaceDependencyViewExtension\WorkspaceDependencyViewExtension.csproj">
+      <Project>{5E76AAB3-6302-473E-9655-081B53FB1419}</Project>
+      <Name>WorkspaceDependencyViewExtension</Name>
     </ProjectReference>
     <ProjectReference Include="..\DynamoCoreTests\DynamoCoreTests.csproj">
       <Project>{472084ed-1067-4b2c-8737-3839a6143eb2}</Project>

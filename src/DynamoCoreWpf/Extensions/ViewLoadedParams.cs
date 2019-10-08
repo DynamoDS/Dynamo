@@ -9,6 +9,7 @@ using Dynamo.Selection;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Visualization;
+using Dynamo.Wpf.ViewModels;
 using Dynamo.Wpf.ViewModels.Watch3D;
 
 namespace Dynamo.Wpf.Extensions
@@ -20,20 +21,17 @@ namespace Dynamo.Wpf.Extensions
     {
         private readonly DynamoView dynamoView;
         private readonly DynamoViewModel dynamoViewModel;
+
+        /// <summary>
+        /// A reference to the Dynamo main menu control
+        /// </summary>
         public readonly Menu dynamoMenu;
-        private readonly ViewStartupParams viewStartupParams;
 
         /// <summary>
         /// A reference to the <see cref="ViewStartupParams"/> class.
         /// Useful if this extension will be loaded from a package, as its startup method will not be called.
         /// </summary>
-        public ViewStartupParams ViewStartupParams
-        {
-            get
-            {
-                return viewStartupParams;
-            }
-        }
+        public ViewStartupParams ViewStartupParams { get; }
 
         /// <summary>
         /// A reference to the background preview viewmodel for geometry selection,
@@ -47,6 +45,23 @@ namespace Dynamo.Wpf.Extensions
         public IRenderPackageFactory RenderPackageFactory
         {
             get { return dynamoViewModel.RenderPackageFactoryViewModel.Factory; }
+        }
+
+        /// <summary>
+        /// A reference to package install operations on the package manager
+        /// </summary>
+        public IPackageInstaller PackageInstaller
+        {
+            get { return dynamoViewModel.PackageManagerClientViewModel; }
+        }
+
+        private ViewModelCommandExecutive viewModelCommandExecutive;
+        /// <summary>
+        /// Class used for executing commands on the DynamoViewModel and current WorkspaceViewModel
+        /// </summary>
+        public ViewModelCommandExecutive ViewModelCommandExecutive
+        {
+            get { return viewModelCommandExecutive ?? (viewModelCommandExecutive = new ViewModelCommandExecutive(dynamoViewModel)); }
         }
 
         /// <summary>
@@ -67,14 +82,33 @@ namespace Dynamo.Wpf.Extensions
             dynamoView = dynamoV;
             dynamoViewModel = dynamoVM;
             dynamoMenu = dynamoView.titleBar.ChildOfType<Menu>();
-            viewStartupParams = new ViewStartupParams(dynamoVM);
+            ViewStartupParams = new ViewStartupParams(dynamoVM);
             DynamoSelection.Instance.Selection.CollectionChanged += OnSelectionCollectionChanged;
-
         }
 
         public void AddMenuItem(MenuBarType type, MenuItem menuItem, int index = -1)
         {
             AddItemToMenu(type, menuItem, index);
+        }
+
+        /// <summary>
+        /// Adds the extension UI control element to a new tab in the extensions side bar.
+        /// </summary>
+        /// <param name="viewExtension">Instance of the view extension object that is being added to the extensions side bar.</param>
+        /// <param name="contentControl">Control UI element with a single piece of content of any type.</param>
+        /// <returns></returns>
+        public void AddToExtensionsSideBar(IViewExtension viewExtension, ContentControl contentControl)
+        {
+            TabItem tabItem  = dynamoView.AddTabItem(viewExtension, contentControl);
+
+            if (tabItem != null)
+            {
+                dynamoViewModel.Model.Logger.Log(Wpf.Properties.Resources.ExtensionAdded);
+            }
+            else
+            {
+                dynamoViewModel.Model.Logger.Log(Wpf.Properties.Resources.ExtensionAlreadyPresent);
+            }
         }
 
         public void AddSeparator(MenuBarType type, Separator separatorObj, int index = -1)
@@ -122,10 +156,10 @@ namespace Dynamo.Wpf.Extensions
         }
 
         /// <summary>
-        /// Searchs for dynamo parent menu item. Parent item can be:
-        /// file menu, edit menu, view menu and help mebu bars.
+        /// Searches for dynamo parent menu item. Parent item can be:
+        /// file menu, edit menu, view menu and help menu bars.
         /// </summary>
-        /// <param name="menuBarType">File, Edit, View or Help.</param>
+        /// <param name="type">File, Edit, View or Help.</param>
         private MenuItem SearchForMenuItem(MenuBarType type)
         {
             var dynamoMenuItems = dynamoMenu.Items.OfType<MenuItem>();

@@ -1,0 +1,83 @@
+{
+  "Uuid": "58ced57c-d52b-4116-b4d4-e01a33996138",
+  "IsCustomNode": false,
+  "Description": null,
+  "Name": "UnloadedPackage",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "ZTTestPackage.RRTestClass.RRTestClass",
+      "Id": "9a105451800e406585f117fdb6b51788",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "3be4340c061940238fb1e2f31d5443b3",
+          "Name": "RRTestClass",
+          "Description": "RRTestClass",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "RRTestClass.RRTestClass ( ): RRTestClass"
+    }
+  ],
+  "Connectors": [],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [
+    {
+      "Name": "ZTTestPackage",
+      "Version": "0.0.1",
+      "Nodes": [
+        "9a105451800e406585f117fdb6b51788"
+      ]
+    }
+  ],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.3.0.5246",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "RRTestClass.RRTestClass",
+        "Id": "9a105451800e406585f117fdb6b51788",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 333.25,
+        "Y": 352.5
+      }
+    ],
+    "Annotations": [],
+    "X": 0.0,
+    "Y": 0.0,
+    "Zoom": 1.0
+  }
+}

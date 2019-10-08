@@ -1,10 +1,10 @@
-﻿using Autodesk.DesignScript.Geometry;
-using DSCore;
-using NUnit.Framework;
-using System;
+﻿using System;
 using System.Linq;
+using Autodesk.DesignScript.Geometry;
 using Autodesk.DesignScript.Interfaces;
+using DSCore;
 using Dynamo.Visualization;
+using NUnit.Framework;
 using TestServices;
 
 namespace GeometryColorTests

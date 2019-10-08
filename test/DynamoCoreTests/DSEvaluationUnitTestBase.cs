@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using Dynamo.Graph.Nodes;
 using Dynamo.Models;
@@ -119,6 +118,24 @@ namespace Dynamo.Tests
                 var mirror = GetRuntimeMirror(varname);
                 Assert.IsNull(mirror);
             }
+        }
+
+        protected void AssertNonNull(string guid)
+        {
+            var previewVariable = GetVarName(guid);
+            var mirror = GetRuntimeMirror(previewVariable);
+            Assert.IsNotNull(mirror);
+
+            var mirrorData = mirror.GetData();
+            if (mirrorData.IsCollection)
+            {
+                var elements = mirrorData.GetElements();
+                Assert.IsNotNull(elements);
+                return;
+            }
+
+            Assert.IsNotNull(mirrorData);
+            Assert.IsNotNull(mirrorData.Data);
         }
 
         protected void AssertError(string guid)

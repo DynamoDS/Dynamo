@@ -1,7 +1,5 @@
-using System;
 using NUnit.Framework;
 using ProtoCore.DSASM.Mirror;
-using ProtoTestFx.TD;
 namespace ProtoTest.TD.Imperative
 {
     class ForLoop : ProtoTestBase

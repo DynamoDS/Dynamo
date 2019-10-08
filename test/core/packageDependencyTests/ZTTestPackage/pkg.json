@@ -1,0 +1,20 @@
+{
+    "license": "",
+    "file_hash": null,
+    "name": "ZTTestPackage",
+    "version": "0.0.1",
+    "description": "Zero touch test package",
+    "group": "",
+    "keywords": [],
+    "dependencies": [],
+    "contents": "",
+    "engine_version": "2.0.1.5065",
+    "engine": "dynamo",
+    "engine_metadata": "",
+    "site_url": "",
+    "repository_url": "",
+    "contains_binaries": true,
+    "node_libraries": [
+        "ZTTestPackage, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"
+    ]
+}

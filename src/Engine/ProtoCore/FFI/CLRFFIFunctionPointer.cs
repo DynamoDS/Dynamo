@@ -1,13 +1,13 @@
 ﻿using System;
-using System.Linq;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
-using ProtoCore.DSASM;
-using ProtoCore.Utils;
 using Autodesk.DesignScript.Runtime;
 using DesignScript.Builtin;
-using ProtoCore.Properties;
+using ProtoCore.DSASM;
 using ProtoCore.Exceptions;
+using ProtoCore.Properties;
+using ProtoCore.Utils;
 using IndexOutOfRangeException = DesignScript.Builtin.IndexOutOfRangeException;
 using KeyNotFoundException = DesignScript.Builtin.KeyNotFoundException;
 
@@ -276,19 +276,15 @@ namespace ProtoFFI
             Name = name;
             ReflectionInfo = FFIMemberInfo.CreateFrom(info);
 
-            if (argTypes == null)
-                mArgTypes = GetArgumentTypes(ReflectionInfo);
-            else
-                mArgTypes = argTypes.ToArray();
+            mArgTypes = argTypes == null ? GetArgumentTypes() : argTypes.ToArray();
 
             mReturnType = returnType;
         }
 
-        private ProtoCore.Type[] GetArgumentTypes(FFIMemberInfo member)
+        private ProtoCore.Type[] GetArgumentTypes()
         {
-            return member.GetParameters().Select(
-                pi => CLRModuleType.GetProtoCoreType(pi.Info.ParameterType, Module)
-                ).ToArray();
+            return ReflectionInfo.GetParameters().Select(
+                pi => CLRModuleType.GetProtoCoreType(pi.Info.ParameterType, Module)).ToArray();
         }
 
         public bool Contains(string name, List<ProtoCore.Type> argTypes, ProtoCore.Type returnType)
@@ -335,26 +331,22 @@ namespace ProtoFFI
             return Contains(fp.Name, fp.mArgTypes, fp.mReturnType);
         }
 
+        // TODO: Remove redundant method in 3.0
         public override int GetHashCode()
         {
             return base.GetHashCode();
         }
 
-        protected virtual object InvokeFunctionPointer(object thisObject, object[] parameters)
-        {
-            return ReflectionInfo.Invoke(thisObject, parameters);
-        }
-
         protected object InvokeFunctionPointerNoThrow(ProtoCore.Runtime.Context c, Interpreter dsi, object thisObject, object[] parameters)
         {
-            object ret = null;
             StackValue dsRetValue = StackValue.Null;
             try
             {
-                FFIObjectMarshaler marshaller = Module.GetMarshaler(dsi.runtime.RuntimeCore);
-                ret = InvokeFunctionPointer(thisObject, parameters);
+                var ret = ReflectionInfo.Invoke(thisObject, parameters);
                 //Reduce to singleton if the attribute is specified.
                 ret = ReflectionInfo.ReduceReturnedCollectionToSingleton(ret);
+
+                FFIObjectMarshaler marshaller = Module.GetMarshaler(dsi.runtime.RuntimeCore);
                 dsRetValue = marshaller.Marshal(ret, c, dsi, mReturnType);
             }
             catch (DllNotFoundException ex)
@@ -363,6 +355,7 @@ namespace ProtoFFI
                 {
                     dsi.LogSemanticError(ex.InnerException.Message);
                 }
+
                 dsi.LogSemanticError(ex.Message);
             }
             catch (System.Reflection.TargetException ex)
@@ -371,6 +364,7 @@ namespace ProtoFFI
                 {
                     dsi.LogWarning(ProtoCore.Runtime.WarningID.AccessViolation, ex.InnerException.Message);
                 }
+
                 dsi.LogWarning(ProtoCore.Runtime.WarningID.AccessViolation, ex.Message);
             }
             catch (System.Reflection.TargetInvocationException ex)
@@ -382,9 +376,9 @@ namespace ProtoFFI
                     if (exception != null)
                     {
                         var innerMessage = string.Format(Resources.ArgumentNullException, exception.ParamName);
-                        var msg = string.Format(Resources.OperationFailType2, 
-                            ReflectionInfo.DeclaringType.Name, 
-                            ReflectionInfo.Name, 
+                        var msg = string.Format(Resources.OperationFailType2,
+                            ReflectionInfo.DeclaringType.Name,
+                            ReflectionInfo.Name,
                             innerMessage);
 
                         dsi.LogWarning(ProtoCore.Runtime.WarningID.InvalidArguments, msg);
@@ -399,7 +393,11 @@ namespace ProtoFFI
                     }
                     else if (exc is System.NullReferenceException)
                     {
-                        dsi.LogWarning(ProtoCore.Runtime.WarningID.AccessViolation, ErrorString(null));
+                        dsi.LogWarning(ProtoCore.Runtime.WarningID.AccessViolation, ErrorString(exc));
+                    }
+                    else if (exc is BuiltinNullReferenceException)
+                    {
+                        dsi.LogWarning(ProtoCore.Runtime.WarningID.AccessViolation, ErrorString(exc));
                     }
                     else if (exc is StringOverIndexingException)
                     {
@@ -425,6 +423,7 @@ namespace ProtoFFI
                 {
                     dsi.LogWarning(ProtoCore.Runtime.WarningID.AccessViolation, ex.InnerException.Message);
                 }
+
                 dsi.LogWarning(ProtoCore.Runtime.WarningID.AccessViolation, ex.Message);
             }
             catch (System.MethodAccessException ex)
@@ -433,6 +432,7 @@ namespace ProtoFFI
                 {
                     dsi.LogWarning(ProtoCore.Runtime.WarningID.AccessViolation, ex.InnerException.Message);
                 }
+
                 dsi.LogWarning(ProtoCore.Runtime.WarningID.AccessViolation, ex.Message);
             }
             catch (System.InvalidOperationException ex)
@@ -441,6 +441,7 @@ namespace ProtoFFI
                 {
                     dsi.LogWarning(ProtoCore.Runtime.WarningID.AccessViolation, ex.InnerException.Message);
                 }
+
                 dsi.LogWarning(ProtoCore.Runtime.WarningID.AccessViolation, ex.Message);
             }
             catch (System.NotSupportedException ex)
@@ -449,6 +450,7 @@ namespace ProtoFFI
                 {
                     dsi.LogWarning(ProtoCore.Runtime.WarningID.AccessViolation, ex.InnerException.Message);
                 }
+
                 dsi.LogWarning(ProtoCore.Runtime.WarningID.AccessViolation, ex.Message);
             }
             catch (ArgumentNullException ex)
@@ -486,7 +488,7 @@ namespace ProtoFFI
 
         private string ErrorString(System.Exception ex)
         {
-            if (ex is System.InvalidOperationException)
+            if (ex is System.InvalidOperationException || ex is BuiltinNullReferenceException)
                 return ex.Message;
 
             string msg = (ex == null) ? "" : ex.Message;
@@ -498,6 +500,7 @@ namespace ProtoFFI
             return string.Format(Resources.OperationFailType2, ReflectionInfo.DeclaringType.Name, ReflectionInfo.Name, msg);
         }
 
+        [IsObsolete("Remove in 3.0. Use Execute(ProtoCore.Runtime.Context c, ProtoCore.DSASM.Interpreter dsi, List<StackValue> s) instead")]
         public override object Execute(ProtoCore.Runtime.Context c, Interpreter dsi)
         {
             List<Object> parameters = new List<object>();
@@ -530,6 +533,123 @@ namespace ProtoFFI
                 int locals = 0;
                 int relative = 0 - ProtoCore.DSASM.StackFrame.StackFrameSize - locals - i - 1;
                 StackValue opArg = dsi.runtime.rmem.GetAtRelative(relative);
+                try
+                {
+                    Type paramType = paraminfos[i].Info.ParameterType;
+                    object param = null;
+                    if (opArg.IsDefaultArgument)
+                        param = Type.Missing;
+                    else
+                        param = marshaller.UnMarshal(opArg, c, dsi, paramType);
+
+                    if (paraminfos[i].KeepReference && opArg.IsReferenceType)
+                    {
+                        referencedParameters.Add(opArg);
+                    }
+
+                    //null is passed for a value type, so we must return null 
+                    //rather than interpreting any value from null. fix defect 1462014 
+                    if (!paramType.IsGenericType && paramType.IsValueType && param == null)
+                    {
+                        //This is going to cause a cast exception. This is a very frequently called problem, so we want to short-cut the execution
+
+                        dsi.LogWarning(ProtoCore.Runtime.WarningID.AccessViolation,
+                            string.Format(Resources.FailedToCastFromNull, paraminfos[i].Info.ParameterType.Name));
+
+                        return null;
+                        //throw new System.InvalidCastException(string.Format("Null value cannot be cast to {0}", paraminfos[i].ParameterType.Name));
+
+                    }
+
+                    parameters.Add(param);
+                }
+                catch (System.InvalidCastException ex)
+                {
+                    dsi.LogWarning(ProtoCore.Runtime.WarningID.AccessViolation, ex.Message);
+                    return null;
+                }
+                catch (InvalidOperationException)
+                {
+                    string message = String.Format(Resources.kFFIFailedToObtainObject, paraminfos[i].Info.ParameterType.Name, ReflectionInfo.DeclaringType.Name, ReflectionInfo.Name);
+                    dsi.LogWarning(ProtoCore.Runtime.WarningID.AccessViolation, message);
+                    return null;
+                }
+            }
+
+            var ret = InvokeFunctionPointerNoThrow(c, dsi, thisObject, parameters.Count > 0 ? parameters.ToArray() : null);
+            if (ReflectionInfo.KeepReferenceThis && thisObject != null)
+            {
+                referencedParameters.Add(s.Last());
+            }
+
+            int count = referencedParameters.Count;
+            if (count > 0 && (ret is StackValue))
+            {
+                // If there is a parameter who has attribute [KeepReference],
+                // it means this parameter will cross the DesignScript boundary
+                // and be referenced by C# object. Therefore, when its DS
+                // wrapper object is out of scope, we shouldn't dispose it;
+                // otherwise that C# object will reference to an invalid object.
+                //
+                // Similarly, if the method has attribute [KeepReferenceThis],
+                // it means the return object will reference to this object
+                // internally, so we shouldn't dispose this object.
+                //
+                // The hack here is to treat them like properties in the return
+                // object. Note all DS wrapper objects are dummy objects who
+                // haven't any members. By allocating extra space on the heap,
+                // we store the reference in the return object so that the
+                // parameter will have the same lifecycle as the return object.
+                //
+                // One case need to consider about is the type of return value.
+                // If the return value is an array, we have to recursively go 
+                // into the array and expand the element, instead of setting
+                // these hidden information directly on the array.
+                try
+                {
+                    SetReferenceObjects((StackValue)ret, referencedParameters, dsi.runtime);
+                }
+                catch (RunOutOfMemoryException)
+                {
+                    dsi.runtime.RuntimeCore.RuntimeStatus.LogWarning(ProtoCore.Runtime.WarningID.RunOutOfMemory, Resources.RunOutOfMemory);
+                    return StackValue.Null;
+                }
+            }
+
+            return ret;
+        }
+
+        public override object Execute(ProtoCore.Runtime.Context c, Interpreter dsi, List<StackValue> s)
+        {
+            var parameters = new List<object>();
+            if (s == null)
+                s = dsi.runtime.rmem.Stack;
+
+            object thisObject = null;
+            FFIObjectMarshaler marshaller = Module.GetMarshaler(dsi.runtime.RuntimeCore);
+            if (!ReflectionInfo.IsStatic)
+            {
+                try
+                {
+                    thisObject = marshaller.UnMarshal(s.Last(), c, dsi, ReflectionInfo.DeclaringType);
+                }
+                catch (InvalidOperationException)
+                {
+                    string message = String.Format(Resources.kFFIFailedToObtainThisObject, ReflectionInfo.DeclaringType.Name, ReflectionInfo.Name);
+                    dsi.LogWarning(ProtoCore.Runtime.WarningID.AccessViolation, message);
+                    return null;
+                }
+
+                if (thisObject == null)
+                    return null; //Can't call a method on null object.
+            }
+
+            FFIParameterInfo[] paraminfos = ReflectionInfo.GetParameters();
+            List<StackValue> referencedParameters = new List<StackValue>();
+
+            for (int i = 0; i < mArgTypes.Length; ++i)
+            {
+                var opArg = s[i];
                 try
                 {
                     Type paramType = paraminfos[i].Info.ParameterType;
@@ -668,9 +788,17 @@ namespace ProtoFFI
         {
         }
 
+        [IsObsolete("Remove in 3.0. Use Execute(ProtoCore.Runtime.Context c, ProtoCore.DSASM.Interpreter dsi, List <StackValue> s) instead")]
         public override object Execute(ProtoCore.Runtime.Context c, Interpreter dsi)
         {
-            List<StackValue> s = dsi.runtime.rmem.Stack;
+            return Execute(c, dsi, null);
+        }
+
+        public override object Execute(ProtoCore.Runtime.Context c, Interpreter dsi, List<StackValue> s)
+        {
+            if (s == null)
+                s = dsi.runtime.rmem.Stack;
+
             FFIObjectMarshaler marshaller = Module.GetMarshaler(dsi.runtime.RuntimeCore);
 
             var thisObject = marshaller.UnMarshal(s.Last(), c, dsi, ReflectionInfo.DeclaringType);
@@ -718,16 +846,22 @@ namespace ProtoFFI
             }
         }
 
+        [IsObsolete("Remove in 3.0. Use Execute(ProtoCore.Runtime.Context c, ProtoCore.DSASM.Interpreter dsi, List<StackValue> s) instead")]
         public override object Execute(ProtoCore.Runtime.Context c, Interpreter dsi)
         {
-            Object retVal = base.Execute(c, dsi);
+            return Execute(c, dsi, null);
+        }
+
+        public override object Execute(ProtoCore.Runtime.Context c, Interpreter dsi, List<StackValue> s)
+        {
+            Object retVal = base.Execute(c, dsi, s);
             if (retVal == null)
             {
                 return null;
             }
 
             StackValue propValue = (StackValue)retVal;
-            StackValue thisObject = dsi.runtime.rmem.Stack.Last();
+            var thisObject = s?.Last() ?? dsi.runtime.rmem.Stack.Last();
 
             bool isValidPointer = thisObject.IsPointer && thisObject.Pointer != Constants.kInvalidIndex;
             if (isValidPointer && propValue.IsReferenceType)

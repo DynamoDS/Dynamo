@@ -2,14 +2,13 @@
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
-
-using Dynamo.Extensions;
-using Dynamo.Interfaces;
-using Dynamo.Models;
-using Dynamo.Logging;
-
-using Greg;
 using System.Reflection;
+using Dynamo.Extensions;
+using Dynamo.Graph.Workspaces;
+using Dynamo.Interfaces;
+using Dynamo.Logging;
+using Dynamo.Models;
+using Greg;
 
 namespace Dynamo.PackageManager
 {
@@ -18,12 +17,31 @@ namespace Dynamo.PackageManager
         #region Fields & Properties
 
         private Action<Assembly> RequestLoadNodeLibraryHandler;
-        private event Func<string, IEnumerable<CustomNodeInfo>> RequestLoadCustomNodeDirectoryHandler;
+        //TODO should we add a new handler specifically for packages? this is the package manager afterall so maybe not.
+        private event Func<string, PackageInfo, IEnumerable<CustomNodeInfo>> RequestLoadCustomNodeDirectoryHandler;
+        private Action<IEnumerable<Assembly>> LoadPackagesHandler;
        
         public event Func<string, IExtension> RequestLoadExtension;
         public event Action<IExtension> RequestAddExtension;
 
         public event Action<ILogMessage> MessageLogged;
+
+        private IWorkspaceModel currentWorkspace;
+
+        private ReadyParams ReadyParams;
+        private Core.CustomNodeManager customNodeManager;
+
+        /// <summary>
+        /// Dictionary mapping a custom node functionID to the package that contains it.
+        /// Used for package dependency serialization.
+        /// </summary>
+        private Dictionary<Guid, List<PackageInfo>> CustomNodePackageDictionary;
+
+        /// <summary>
+        /// Dictionary mapping the AssemblyName.FullName of an assembly to the package that contains it.
+        /// Used for package dependency serialization.
+        /// </summary>
+        private Dictionary<string, List<PackageInfo>> NodePackageDictionary;
 
         public string Name { get { return "DynamoPackageManager"; } }
 
@@ -51,6 +69,13 @@ namespace Dynamo.PackageManager
         public void Dispose()
         {
             PackageLoader.MessageLogged -= OnMessageLogged;
+            PackageLoader.PackgeLoaded -= OnPackageLoaded;
+            PackageLoader.PackageRemoved -= OnPackageRemoved;
+
+            if (LoadPackagesHandler != null)
+            {
+                PackageLoader.PackagesLoaded -= LoadPackagesHandler;
+            }
 
             if (RequestLoadNodeLibraryHandler != null)
             {
@@ -72,6 +97,16 @@ namespace Dynamo.PackageManager
                 PackageLoader.RequestAddExtension -=
                 RequestAddExtension;
             }
+            if (currentWorkspace != null)
+            {
+                (currentWorkspace as WorkspaceModel).CollectingCustomNodePackageDependencies -= GetCustomNodePackageFromID;
+                (currentWorkspace as WorkspaceModel).CollectingNodePackageDependencies -= GetNodePackageFromAssemblyName;
+            }
+            if (customNodeManager != null)
+            {
+                customNodeManager.RequestCustomNodeOwner -= handleCustomNodeOwnerQuery;
+            }
+            ReadyParams.CurrentWorkspaceChanged -= OnCurrentWorkspaceChanged;
         }
 
         /// <summary>
@@ -97,14 +132,24 @@ namespace Dynamo.PackageManager
 
             PackageLoader = new PackageLoader(startupParams.PathManager.PackagesDirectories);
             PackageLoader.MessageLogged += OnMessageLogged;
+            PackageLoader.PackgeLoaded += OnPackageLoaded;
+            PackageLoader.PackageRemoved += OnPackageRemoved;
             RequestLoadNodeLibraryHandler = startupParams.LibraryLoader.LoadNodeLibrary;
-            RequestLoadCustomNodeDirectoryHandler = (dir) => startupParams.CustomNodeManager
-                    .AddUninitializedCustomNodesInPath(dir, DynamoModel.IsTestMode, true);
+            //TODO: Add LoadPackages to ILibraryLoader interface in 3.0
+            LoadPackagesHandler = (startupParams.LibraryLoader as ExtensionLibraryLoader).LoadPackages;
+            customNodeManager = (startupParams.CustomNodeManager as Core.CustomNodeManager);
+
+            //TODO - in 3.0 we can add the other overload of AddUninitializedCustomNodesInPath to the ICustomNodeManager interface.
+            RequestLoadCustomNodeDirectoryHandler = (dir,pkgInfo) => customNodeManager
+                    .AddUninitializedCustomNodesInPath(dir, DynamoModel.IsTestMode, pkgInfo);
+
+            //when the customNodeManager requests to know the owner of a customNode handle this query.
+            customNodeManager.RequestCustomNodeOwner += handleCustomNodeOwnerQuery;
 
             //raise the public events on this extension when the package loader requests.
             PackageLoader.RequestLoadExtension += RequestLoadExtension;
             PackageLoader.RequestAddExtension += RequestAddExtension;
-
+            PackageLoader.PackagesLoaded += LoadPackagesHandler;
             PackageLoader.RequestLoadNodeLibrary += RequestLoadNodeLibraryHandler;
             PackageLoader.RequestLoadCustomNodeDirectory += RequestLoadCustomNodeDirectoryHandler;
                 
@@ -122,7 +167,20 @@ namespace Dynamo.PackageManager
             LoadPackages(startupParams.Preferences, startupParams.PathManager);
         }
 
-        public void Ready(ReadyParams sp) { }
+        private PackageInfo handleCustomNodeOwnerQuery(Guid customNodeFunctionID)
+        {
+            return GetCustomNodePackageFromID(customNodeFunctionID);
+        }
+
+        public void Ready(ReadyParams sp)
+        {
+            ReadyParams = sp;
+            sp.CurrentWorkspaceChanged += OnCurrentWorkspaceChanged;
+
+            (sp.CurrentWorkspaceModel as WorkspaceModel).CollectingCustomNodePackageDependencies += GetCustomNodePackageFromID;
+            (sp.CurrentWorkspaceModel as WorkspaceModel).CollectingNodePackageDependencies += GetNodePackageFromAssemblyName;
+            currentWorkspace = (sp.CurrentWorkspaceModel as WorkspaceModel);
+        }
 
         public void Shutdown()
         {
@@ -149,6 +207,125 @@ namespace Dynamo.PackageManager
             if (this.MessageLogged != null)
             {
                 this.MessageLogged(msg);
+            }
+        }
+        
+        private void OnCurrentWorkspaceChanged(IWorkspaceModel ws)
+        {
+            if (ws is WorkspaceModel)
+            {
+                if (currentWorkspace != null)
+                {
+                    (currentWorkspace as WorkspaceModel).CollectingCustomNodePackageDependencies -= GetCustomNodePackageFromID;
+                    (currentWorkspace as WorkspaceModel).CollectingNodePackageDependencies -= GetNodePackageFromAssemblyName;
+                }
+                
+                (ws as WorkspaceModel).CollectingCustomNodePackageDependencies += GetCustomNodePackageFromID;
+                (ws as WorkspaceModel).CollectingNodePackageDependencies += GetNodePackageFromAssemblyName;
+                currentWorkspace = ws;
+            }
+        }
+        
+        private PackageInfo GetNodePackageFromAssemblyName(AssemblyName assemblyName)
+        {
+            if (NodePackageDictionary != null && NodePackageDictionary.ContainsKey(assemblyName.FullName))
+            {
+                return NodePackageDictionary[assemblyName.FullName].Last();
+            }
+            return null;
+        }
+
+        private PackageInfo GetCustomNodePackageFromID(Guid functionID)
+        {
+            if (CustomNodePackageDictionary != null && CustomNodePackageDictionary.ContainsKey(functionID))
+            {
+                return CustomNodePackageDictionary[functionID].Last();
+            }
+            return null;
+        }
+
+        private void OnPackageLoaded(Package package)
+        {
+            // Create NodePackageDictionary if it doesn't exist
+            if (NodePackageDictionary == null)
+            {
+                NodePackageDictionary = new Dictionary<string, List<PackageInfo>>();
+            }
+            // Add new assemblies to NodePackageDictionary
+            var nodeLibraries = package.LoadedAssemblies.Where(a => a.IsNodeLibrary);
+            foreach (var assembly in nodeLibraries.Select(a => AssemblyName.GetAssemblyName(a.Assembly.Location)))
+            {
+                if (NodePackageDictionary.ContainsKey(assembly.FullName))
+                {
+                    OnMessageLogged(LogMessage.Info(
+                        string.Format("{0} contains the node library {1}, which has already been loaded " +
+                        "by another package. This may cause inconsistent results when determining which " +
+                        "package nodes from this node library are dependent on.", package.Name, assembly.Name)
+                        ));
+                }
+                else
+                {
+                    NodePackageDictionary[assembly.FullName] = new List<PackageInfo>();
+                }
+                NodePackageDictionary[assembly.FullName].Add(new PackageInfo(package.Name, new Version(package.VersionName)));
+            }
+
+            // Create CustomNodePackageDictionary if it doesn't exist
+            if (CustomNodePackageDictionary == null)
+            {
+                CustomNodePackageDictionary = new Dictionary<Guid, List<PackageInfo>>();
+            }
+            // Add new custom nodes to CustomNodePackageDictionary
+            foreach (var cn in package.LoadedCustomNodes)
+            {
+                if (CustomNodePackageDictionary.ContainsKey(cn.FunctionId))
+                {
+                    OnMessageLogged(LogMessage.Info(
+                        string.Format("{0} contains the custom node {1}, which has already been loaded " +
+                        "by another package. This may cause inconsistent results when determining which " +
+                        "package instances of this custom node are dependent on.", package.Name, cn.Name)
+                        ));
+                }
+                else
+                {
+                    CustomNodePackageDictionary[cn.FunctionId] = new List<PackageInfo>();
+                }
+                CustomNodePackageDictionary[cn.FunctionId].Add(new PackageInfo(package.Name, new Version(package.VersionName)));
+            }
+        }
+
+        private void OnPackageRemoved(Package package)
+        {
+            var pInfo = new PackageInfo(package.Name, new Version(package.VersionName));
+
+            // Remove package references from NodePackageDictionary
+            var nodeLibraries = package.LoadedAssemblies.Where(a => a.IsNodeLibrary);
+            foreach (var assembly in nodeLibraries.Select(a => AssemblyName.GetAssemblyName(a.Assembly.Location)))
+            {
+                // If multiple packages contain this assembly, only remove the reference to this package
+                if (NodePackageDictionary[assembly.FullName].Count > 1)
+                {
+                    NodePackageDictionary[assembly.FullName].Remove(pInfo);
+                }
+                // Otherwise just remove the whole dictionary entry
+                else
+                {
+                    NodePackageDictionary.Remove(assembly.FullName);
+                }
+            }
+            // Remove package references from CustomNodePackageDictionary
+            foreach (var cn in package.LoadedCustomNodes)
+            {
+                // If multiple packages contain this custom node, only remove the reference to this package
+                if (CustomNodePackageDictionary[cn.FunctionId].Count > 1)
+                {
+                    CustomNodePackageDictionary[cn.FunctionId].Remove(pInfo);
+                }
+                // Otherwise just remove the whole dictionary entry
+                else
+                {
+                    CustomNodePackageDictionary.Remove(cn.FunctionId);
+                }
             }
         }
 

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -11,12 +12,12 @@ using ProtoCore.DSASM;
 using ProtoCore.Exceptions;
 using ProtoCore.Lang;
 using ProtoCore.Lang.Replication;
-using ProtoCore.Utils;
-using StackFrame = ProtoCore.DSASM.StackFrame;
 using ProtoCore.Properties;
 using ProtoCore.Runtime;
+using ProtoCore.Utils;
+using StackFrame = ProtoCore.DSASM.StackFrame;
+using Validity = ProtoCore.Utils.Validity;
 using WarningID = ProtoCore.Runtime.WarningID;
-using System.Collections.ObjectModel;
 
 namespace ProtoCore
 {
@@ -176,7 +177,6 @@ namespace ProtoCore
 #if DEBUG
 
                 Validity.Assert(NestedData != null, "Nested data has changed null status since last check, suspected race");
-                Validity.Assert(NestedData.Count > 0, "Empty subnested array, please file repo data with @lukechurch, relates to MAGN-4059");
 #endif
 
                 //Safety trap to protect against an empty array, need repro test to figure out why this is getting set with empty arrays
@@ -377,7 +377,7 @@ namespace ProtoCore
         private List<ISerializable> beforeFirstRunSerializables = new List<ISerializable>();
 
         //TODO(Luke): This should be loaded from the attribute
-        private string TRACE_KEY = TraceUtils.__TEMP_REVIT_TRACE_ID;
+        private string TRACE_KEY = DynamoServices.TraceUtils.__TEMP_REVIT_TRACE_ID;
 
         #endregion
 
@@ -1676,8 +1676,7 @@ namespace ProtoCore
                     }
 
                     //Build the call
-                    List<StackValue> newFormalParams = new List<StackValue>();
-                    newFormalParams.AddRange(formalParameters);
+                    List<StackValue> newFormalParams = formalParameters.ToList();
 
                     for (int repIi = 0; repIi < repIndecies.Count; repIi++)
                     {
@@ -1703,10 +1702,7 @@ namespace ProtoCore
                         }
                     }
 
-                    List<ReplicationInstruction> newRIs = new List<ReplicationInstruction>();
-                    newRIs.AddRange(replicationInstructions);
-                    newRIs.RemoveAt(0);
-
+                    List<ReplicationInstruction> newRIs = replicationInstructions.GetRange(1, replicationInstructions.Count-1);
 
                     SingleRunTraceData cleanRetTrace = new SingleRunTraceData();
 
@@ -1779,12 +1775,9 @@ namespace ProtoCore
 
                 if (supressArray)
                 {
-                    List<ReplicationInstruction> newRIs = new List<ReplicationInstruction>();
-                    newRIs.AddRange(replicationInstructions);
-                    newRIs.RemoveAt(0);
+                    List<ReplicationInstruction> newRIs = replicationInstructions.GetRange(1, replicationInstructions.Count-1);
 
-                    List<StackValue> newFormalParams = new List<StackValue>();
-                    newFormalParams.AddRange(formalParameters);
+                    List<StackValue> newFormalParams = formalParameters.ToList();
 
                     return ExecWithRISlowPath(functionEndPoint, c, newFormalParams, newRIs, stackFrame, runtimeCore, previousTraceData, newTraceData, finalFunctionEndPoint);
                 }
@@ -1793,8 +1786,7 @@ namespace ProtoCore
                 for (int i = 0; i < retSize; i++)
                 {
                     //Build the call
-                    List<StackValue> newFormalParams = new List<StackValue>();
-                    newFormalParams.AddRange(formalParameters);
+                    List<StackValue> newFormalParams = formalParameters.ToList();
 
                     if (parameters != null)
                     {
@@ -1802,10 +1794,7 @@ namespace ProtoCore
                         newFormalParams[cartIndex] = parameters[i];
                     }
 
-                    List<ReplicationInstruction> newRIs = new List<ReplicationInstruction>();
-                    newRIs.AddRange(replicationInstructions);
-                    newRIs.RemoveAt(0);
-
+                    List<ReplicationInstruction> newRIs = replicationInstructions.GetRange(1, replicationInstructions.Count-1);
 
                     SingleRunTraceData lastExecTrace;
 
@@ -1894,16 +1883,12 @@ namespace ProtoCore
             if (traceD != null)
             {
                 //There was data associated with the previous execution, push this into the TLS
-
-                Dictionary<string, ISerializable> dataDict = new Dictionary<string, ISerializable>();
-                dataDict.Add(TRACE_KEY, traceD);
-
-                TraceUtils.SetObjectToTLS(dataDict);
+                DynamoServices.TraceUtils.SetTraceData(TRACE_KEY, traceD);
             }
             else
             {
                 //There was no trace data for this run
-                TraceUtils.ClearAllKnownTLSKeys();
+                DynamoServices.TraceUtils.ClearAllKnownTLSKeys();
             }
 
             //EXECUTE
@@ -1912,16 +1897,18 @@ namespace ProtoCore
             if (ret.IsNull)
             {
                 //wipe the trace cache
-                TraceUtils.ClearTLSKey(TRACE_KEY);
+                DynamoServices.TraceUtils.ClearAllKnownTLSKeys();
+                newTraceData.Data = null;
             }
-
-            //TLS -> TraceCache
-            Dictionary<string, ISerializable> traceRet = TraceUtils.GetObjectFromTLS();
-
-            if (traceRet.ContainsKey(TRACE_KEY))
+            else
             {
-                var val = traceRet[TRACE_KEY];
-                newTraceData.Data = val;
+                //TLS -> TraceCache
+                var traceRet = DynamoServices.TraceUtils.GetTraceData(TRACE_KEY);
+
+                if (traceRet != null)
+                {
+                    newTraceData.Data = traceRet;
+                }
             }
 
             // An explicit call requires return coercion at the return instruction
@@ -1929,6 +1916,7 @@ namespace ProtoCore
             {
                 ret = PerformReturnTypeCoerce(finalFep, runtimeCore, ret);
             }
+
             return ret;
         }
 

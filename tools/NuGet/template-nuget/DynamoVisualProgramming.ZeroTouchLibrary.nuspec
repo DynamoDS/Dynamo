@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
   <metadata>
     <id>DynamoVisualProgramming.ZeroTouchLibrary</id>
-    <version>@VERSION@</version>
+    <version>$Version$</version>
     <authors>Autodesk</authors>
     <owners>Autodesk</owners>
     <licenseUrl>https://www.apache.org/licenses/LICENSE-2.0</licenseUrl>
@@ -15,7 +15,7 @@
     <summary>This package contains all that is required to get up and running building zero touch libraries for the Dynamo Visual Programming language.</summary>
     <copyright>Copyright Autodesk 2019</copyright>
   <dependencies>
-    <dependency id="DynamoVisualProgramming.DynamoServices" version="@VERSION@"/>
+    <dependency id="DynamoVisualProgramming.DynamoServices" version="$Version$"/>
   </dependencies>
  </metadata>
   <files>

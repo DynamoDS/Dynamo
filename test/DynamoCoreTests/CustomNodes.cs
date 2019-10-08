@@ -1,4 +1,10 @@
-﻿using CoreNodeModels;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Threading;
+using CoreNodeModels;
 using DesignScript.Builtin;
 using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
@@ -10,12 +16,6 @@ using Dynamo.Models;
 using Dynamo.Selection;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading;
 
 namespace Dynamo.Tests
 {
@@ -1208,7 +1208,7 @@ namespace Dynamo.Tests
             const string nodeName = "someCustomNode";
             const string catName1 = "CatName1";
 
-            var cnworkspace = CurrentDynamoModel.CustomNodeManager.CreateCustomNode(nodeName, catName1, "a node with an input with comments");
+            var cnworkspace = CurrentDynamoModel.CustomNodeManager.CreateCustomNode(nodeName, catName1, "a node with an input with comments", null);
             var inputNode = new Symbol();
             inputNode.InputSymbol = "/* a new and better comment*/" + Environment.NewLine + "inputName: string = \"a def string\"";
             cnworkspace.AddAndRegisterNode(inputNode);
@@ -1374,6 +1374,21 @@ namespace Dynamo.Tests
             Assert.IsTrue(functionNode.State == ElementState.PersistentWarning);
             // Despite the invalid input symbol, the custom node should still execute and return the correct value
             AssertPreviewValue("f91658aeafe84cbaa39d370dec283b53", 8.0);
+        }
+
+        [Test]
+        public void LooseCustomNodeShouldNotHavePackageInfoOrPackageMember()
+        {
+            //load any loose custom node
+            var dynFilePath = Path.Combine(TestDirectory, @"core\CustomNodes\invalidInputName.dyn");
+
+            OpenModel(dynFilePath);
+        var functionNode = CurrentDynamoModel.CurrentWorkspace.Nodes.OfType<Function>().First();
+
+            var nodeInfo =CurrentDynamoModel.CustomNodeManager.NodeInfos.Where(x => x.Value.Name == "invalidInputName").FirstOrDefault();
+            Assert.IsNotNull(nodeInfo.Value);
+            Assert.IsFalse(nodeInfo.Value.IsPackageMember);
+            Assert.IsNull(nodeInfo.Value.PackageInfo);
         }
     }
 }

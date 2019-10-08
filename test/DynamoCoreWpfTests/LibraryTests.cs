@@ -1,4 +1,7 @@
-﻿using Dynamo;
+﻿using System;
+using System.Linq;
+using System.Xml;
+using Dynamo;
 using Dynamo.Configuration;
 using Dynamo.Core;
 using Dynamo.Engine;
@@ -7,9 +10,6 @@ using Dynamo.Search.SearchElements;
 using Dynamo.ViewModels;
 using NUnit.Framework;
 using ProtoCore;
-using System;
-using System.Linq;
-using System.Xml;
 using TestServices;
 
 namespace DynamoCoreWpfTests

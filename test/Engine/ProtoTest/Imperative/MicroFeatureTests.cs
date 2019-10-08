@@ -1,9 +1,6 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
 using NUnit.Framework;
-using ProtoCore.DSASM.Mirror;
-using ProtoTest.TD;
 using ProtoTestFx.TD;
 namespace ProtoTest.Imperative
 {
@@ -896,7 +893,7 @@ def fac : int( n : int )
         }
 
         [Test]
-        public void ToleranceTest()
+        public void ToleranceTestLessThan()
         {
             String code =
                         @"a=[Imperative]
@@ -907,7 +904,52 @@ def fac : int( n : int )
                         }
                         ";
             thisTest.RunScriptSource(code);
-            thisTest.Verify("a",0.3);
+            thisTest.Verify("a",0.0);
+        }
+
+        [Test]
+        public void ToleranceTestGreaterThan()
+        {
+            String code =
+                @"a=[Imperative]
+                        {	
+	                        a = 0.3; b = 0.1;  
+	                        if (0.2 > a-b) { a = 0; }	
+                            return a;		
+                        }
+                        ";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("a", 0.0);
+        }
+
+        [Test]
+        public void ToleranceTestLessThanEquals()
+        {
+            String code =
+                @"a=[Imperative]
+                        {	
+	                        a = 0.123456; b = 0.123455;  
+	                        if (a <= b) { a = 0; }	
+                            return a;		
+                        }
+                        ";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("a", 0.12345);
+        }
+
+        [Test]
+        public void ToleranceTestGreaterThanEquals()
+        {
+            String code =
+                @"a=[Imperative]
+                        {	
+	                        a = 0.123456; b = 0.123455;  
+	                        if (b >= a) { a = 0; }	
+                            return a;			
+                        }
+                        ";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("a", 0.123456);
         }
 
         [Test]
@@ -1279,7 +1321,7 @@ a = [Imperative]
 }
 ";
             thisTest.RunScriptSource(code);
-            TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.MethodResolutionFailure);
+            TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.IndexOutOfRange);
         }
 
         [Test]

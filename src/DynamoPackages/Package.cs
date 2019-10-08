@@ -4,19 +4,15 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-
 using Dynamo.Core;
-using Dynamo.Engine;
-using Dynamo.Graph;
 using Dynamo.Graph.Nodes.CustomNodes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Interfaces;
+using Dynamo.Logging;
 using Dynamo.Models;
 using Dynamo.Properties;
 using Dynamo.Utilities;
 using Greg.Requests;
-using Dynamo.Logging;
-
 using Newtonsoft.Json;
 using String = System.String;
 
@@ -95,11 +91,17 @@ namespace Dynamo.PackageManager
         private IEnumerable<string> _keywords = new List<string>();
         public IEnumerable<string> Keywords { get { return _keywords; } set { _keywords = value; RaisePropertyChanged("Keywords"); } }
 
+        private IEnumerable<string> hostDependencies = new List<string>();
+        /// <summary>
+        /// Package Host Dependencies, e.g. specifying "Revit" in the list means this package can be guaranteed to work in this host environment only
+        /// </summary>
+        public IEnumerable<string> HostDependencies { get { return hostDependencies; } set { hostDependencies = value; RaisePropertyChanged("HostDependencies"); } }
+
         private bool markedForUninstall;
         public bool MarkedForUninstall
         {
             get { return markedForUninstall; }
-            private set { markedForUninstall = value; RaisePropertyChanged("MarkedForUninstall"); }
+            internal set { markedForUninstall = value; RaisePropertyChanged("MarkedForUninstall"); }
         }
 
         private string _group = "";
@@ -182,6 +184,7 @@ namespace Dynamo.PackageManager
                     Contents = body.contents,
                     SiteUrl = body.site_url,
                     RepositoryUrl = body.repository_url,
+                    HostDependencies = body.host_dependencies,
                     Header = body
                 };
                 
@@ -410,8 +413,15 @@ namespace Dynamo.PackageManager
         {
             LoadedCustomNodes.Clear();
 
-            foreach (var x in customNodeManager.AddUninitializedCustomNodesInPath(CustomNodeDirectory, isTestMode))
+            var reloadedCustomNodes = customNodeManager.AddUninitializedCustomNodesInPath(
+                CustomNodeDirectory,
+                isTestMode,
+                new PackageInfo(Name, new Version(versionName)));
+
+            foreach (var x in reloadedCustomNodes)
+            {
                 LoadedCustomNodes.Add(x);
+            }
         }
 
         public event Action<ILogMessage> MessageLogged;

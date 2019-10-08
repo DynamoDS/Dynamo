@@ -293,7 +293,7 @@
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
       "NodeType": "CodeBlockNode",
-      "Code": "0;\n5;\n\"2.7.8\";",
+      "Code": "0;\n5;\n\"2.7.9\";",
       "Id": "6bf7fa7f4fc045a29a0fdfe9d9950b9d",
       "Inputs": [],
       "Outputs": [
@@ -616,7 +616,7 @@
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
       "NodeType": "CodeBlockNode",
-      "Code": "\"IronPython.StdLib.2.7.8\";",
+      "Code": "\"IronPython.StdLib.2.7.9\";",
       "Id": "7a6e1091a437489a88a1a6ac6b272a2b",
       "Inputs": [],
       "Outputs": [

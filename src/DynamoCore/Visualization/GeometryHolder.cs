@@ -5,9 +5,8 @@ using System.Threading;
 using Autodesk.DesignScript.Interfaces;
 using Dynamo.Graph.Nodes;
 using Dynamo.Models;
-using Dynamo.Visualization;
 
-namespace DynamoWPFCLI
+namespace Dynamo.Visualization
 {
     internal class GeometryData
     {
@@ -100,7 +99,7 @@ namespace DynamoWPFCLI
 
             // Schedule the generation of render packages for this node. NodeRenderPackagesUpdated will be
             // called with the render packages when they are ready. The node will be set do 'Done' if the 
-            // sheduling for some reason is not successful (usually becuase the node have no geometry or is inivisible)
+            // scheduling for some reason is not successful (usually because the node have no geometry or is invisible)
             nodeModel.RenderPackagesUpdated += NodeRenderPackagesUpdated;
             if (!nodeModel.RequestVisualUpdateAsync(model.Scheduler, model.EngineController, factory, true))
             {

@@ -1,9 +1,5 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Runtime.InteropServices;
 using Autodesk.DesignScript.Runtime;
 using Builtin.Properties;
 
@@ -18,6 +14,11 @@ namespace DesignScript
 
             public static object ValueAtIndex(Dictionary dictionary, string key)
             {
+                if (dictionary == null)
+                {
+                    throw new BuiltinNullReferenceException(DesignScriptBuiltin.NullReferenceExceptionMessage);
+                }
+
                 try
                 {
                     return dictionary.ValueAtKey(key);
@@ -60,6 +61,10 @@ namespace DesignScript
 
             public static object ValueAtIndex(string stringList, int index)
             {
+                if (stringList == null)
+                {
+                    throw new BuiltinNullReferenceException(DesignScriptBuiltin.NullReferenceExceptionMessage);
+                }
                 while (index < 0)
                 {
                     var count = stringList.Length;

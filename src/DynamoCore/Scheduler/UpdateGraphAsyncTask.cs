@@ -63,6 +63,11 @@ namespace Dynamo.Scheduler
                 if (graphSyncData == null)
                     return false;
 
+                if (engineController.ProfilingSession != null)
+                {
+                    engineController.ProfilingSession.UnregisterDeletedNodes(workspace.Nodes);
+                }
+
                 // We clear dirty flags before executing the task. If we clear
                 // flags after the execution of task, for example in
                 // AsyncTask.Completed or in HandleTaskCompletionCore(), as both

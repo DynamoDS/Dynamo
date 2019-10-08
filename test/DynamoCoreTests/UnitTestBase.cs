@@ -3,7 +3,6 @@ using System.Configuration;
 using System.IO;
 using System.Reflection;
 using Dynamo.Configuration;
-using Dynamo.Utilities;
 
 using NUnit.Framework;
 
@@ -65,6 +64,7 @@ namespace Dynamo
         public virtual void Setup()
         {
             SetupDirectories();
+            DSOffice.ExcelInterop.ShowOnStartup = false;
         }
 
         [TearDown]

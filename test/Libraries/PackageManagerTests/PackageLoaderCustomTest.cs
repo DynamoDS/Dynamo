@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Dynamo.Configuration;
-using Dynamo.PackageManager;
 using NUnit.Framework;
 
 namespace Dynamo.PackageManager.Tests
@@ -67,18 +65,6 @@ namespace Dynamo.PackageManager.Tests
             Assert.AreEqual("0.5.2.10107", nextPkg.EngineVersion);
 
             Assert.AreEqual(1, nextPkg.LoadedCustomNodes.Count);
-        }
-
-        private PackageLoader GetPackageLoader()
-        {
-            var extensions = CurrentDynamoModel.ExtensionManager.Extensions.OfType<PackageManagerExtension>();
-            Assert.IsNotNull(extensions);
-            Assert.AreNotEqual(0, extensions.Count());
-
-            var packageLoader = extensions.First().PackageLoader;
-            Assert.IsNotNull(packageLoader);
-
-            return packageLoader;
         }
     }
 }

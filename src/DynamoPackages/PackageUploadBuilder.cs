@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 using Dynamo.PackageManager.Interfaces;
 using Greg.Requests;
 
@@ -53,7 +52,8 @@ namespace Dynamo.PackageManager
 
             return new PackageUploadRequestBody(package.Name, package.VersionName, package.Description, package.Keywords, package.License, package.Contents, PackageManagerClient.PackageEngineName,
                                                          version, engineMetadata, package.Group, package.Dependencies,
-                                                         package.SiteUrl, package.RepositoryUrl, package.ContainsBinaries, package.NodeLibraries.Select(x => x.FullName));
+                                                         package.SiteUrl, package.RepositoryUrl, package.ContainsBinaries, 
+                                                         package.NodeLibraries.Select(x => x.FullName), package.HostDependencies);
         }
 
 

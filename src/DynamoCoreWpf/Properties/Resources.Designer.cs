@@ -8,10 +8,10 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Dynamo.Wpf.Properties
-{
-
-
+namespace Dynamo.Wpf.Properties {
+    using System;
+    
+    
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -19,7 +19,7 @@ namespace Dynamo.Wpf.Properties
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class Resources {
@@ -2201,6 +2201,15 @@ namespace Dynamo.Wpf.Properties
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Write note here.
+        /// </summary>
+        public static string EditNoteWindowTitle {
+            get {
+                return ResourceManager.GetString("EditNoteWindowTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Accept.
         /// </summary>
         public static string EditWindowAcceptButton {
@@ -2215,6 +2224,33 @@ namespace Dynamo.Wpf.Properties
         public static string EditWindowTitle {
             get {
                 return ResourceManager.GetString("EditWindowTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Extension tab added to the extensions side bar..
+        /// </summary>
+        public static string ExtensionAdded {
+            get {
+                return ResourceManager.GetString("ExtensionAdded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No new tab is added, as the extension is already present in the extensions side bar..
+        /// </summary>
+        public static string ExtensionAlreadyPresent {
+            get {
+                return ResourceManager.GetString("ExtensionAlreadyPresent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Extensions.
+        /// </summary>
+        public static string ExtensionsViewTitle {
+            get {
+                return ResourceManager.GetString("ExtensionsViewTitle", resourceCulture);
             }
         }
         
@@ -3218,6 +3254,24 @@ namespace Dynamo.Wpf.Properties
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {0} was not found and could not be downloaded..
+        /// </summary>
+        public static string MessagePackageNotFound {
+            get {
+                return ResourceManager.GetString("MessagePackageNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Version {0} of {1} could not be found..
+        /// </summary>
+        public static string MessagePackageVersionNotFound {
+            get {
+                return ResourceManager.GetString("MessagePackageVersionNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to You must select at least one custom node..
         /// </summary>
         public static string MessageSelectAtLeastOneNode {
@@ -3265,6 +3319,29 @@ namespace Dynamo.Wpf.Properties
         public static string MessageToUndeprecatePackage {
             get {
                 return ResourceManager.GetString("MessageToUndeprecatePackage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {1} cannot be loaded.
+        ///Installing it will conflict with one or more node definitions that already exist in {0}, which is currently loaded. 
+        ///To install {1}, Dynamo needs to first uninstall {0}. 
+        ///Restart Dynamo to complete the uninstall.
+        ///
+        ///Uninstall the following packages: {0}?.
+        /// </summary>
+        public static string MessageUninstallCustomNodeToContinue {
+            get {
+                return ResourceManager.GetString("MessageUninstallCustomNodeToContinue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &quot;The package {0} is already installed. To reinstall it, you must first uninstall it and restart to complete the uninstall. Would you like to mark {0} for uninstall?&quot;.
+        /// </summary>
+        public static string MessageUninstallSamePackage {
+            get {
+                return ResourceManager.GetString("MessageUninstallSamePackage", resourceCulture);
             }
         }
         
@@ -3402,15 +3479,6 @@ namespace Dynamo.Wpf.Properties
         public static string NodeContextMenuShowLabels {
             get {
                 return ResourceManager.GetString("NodeContextMenuShowLabels", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to See more on the Dynamo Dictionary....
-        /// </summary>
-        public static string NodeHelpWindowDynamoDictionary {
-            get {
-                return ResourceManager.GetString("NodeHelpWindowDynamoDictionary", resourceCulture);
             }
         }
         
@@ -3657,6 +3725,33 @@ namespace Dynamo.Wpf.Properties
         public static string PackageFolderNotAccessible {
             get {
                 return ResourceManager.GetString("PackageFolderNotAccessible", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Filter packages that depend on applications outside Dynamo..
+        /// </summary>
+        public static string PackageHostDependencyFilter {
+            get {
+                return ResourceManager.GetString("PackageHostDependencyFilter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Packages contain node(s)  that depend on specified application outside Dynamo..
+        /// </summary>
+        public static string PackageHostDependencyFilterContextItem {
+            get {
+                return ResourceManager.GetString("PackageHostDependencyFilterContextItem", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This package contains node(s) that depend on applications outside Dynamo. To fully utilize node(s) in this package, you will need to have these external applications installed..
+        /// </summary>
+        public static string PackageHostDependencyTooltip {
+            get {
+                return ResourceManager.GetString("PackageHostDependencyTooltip", resourceCulture);
             }
         }
         
@@ -3940,15 +4035,6 @@ namespace Dynamo.Wpf.Properties
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Downvote to voice lack of support for this package.
-        /// </summary>
-        public static string PackageSearchViewDownvoteButtonTooltip {
-            get {
-                return ResourceManager.GetString("PackageSearchViewDownvoteButtonTooltip", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to ⇓ Install.
         /// </summary>
         public static string PackageSearchViewInstallButton {
@@ -4008,6 +4094,15 @@ namespace Dynamo.Wpf.Properties
         public static string PackageSearchViewSearchTextBox {
             get {
                 return ResourceManager.GetString("PackageSearchViewSearchTextBox", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please wait....
+        /// </summary>
+        public static string PackageSearchViewSearchTextBoxSyncing {
+            get {
+                return ResourceManager.GetString("PackageSearchViewSearchTextBoxSyncing", resourceCulture);
             }
         }
         
@@ -4273,6 +4368,15 @@ namespace Dynamo.Wpf.Properties
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to  This Feature is in Preview! .
+        /// </summary>
+        public static string PreviewText {
+            get {
+                return ResourceManager.GetString("PreviewText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Publish Online.
         /// </summary>
         public static string PublishPackage {
@@ -4396,6 +4500,24 @@ namespace Dynamo.Wpf.Properties
         public static string PublishPackageViewPackageGroupTooltip {
             get {
                 return ResourceManager.GetString("PublishPackageViewPackageGroupTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to External Dependency (optional).
+        /// </summary>
+        public static string PublishPackageViewPackageHostDependency {
+            get {
+                return ResourceManager.GetString("PublishPackageViewPackageHostDependency", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to An indication of what applications outside of Dynamo your package depends on, such as Revit, Civil 3D or Photoshop. Users of your package will need to install these applications to fully utilize your package..
+        /// </summary>
+        public static string PublishPackageViewPackageHostDependencyTooltip {
+            get {
+                return ResourceManager.GetString("PublishPackageViewPackageHostDependencyTooltip", resourceCulture);
             }
         }
         

@@ -45,8 +45,8 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\extern\Analytics.NET\Analytics.NET.Core.dll</HintPath>
     </Reference>
-    <Reference Include="Greg, Version=1.1.6913.31484, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\src\packages\Greg.1.1.6913.31484\lib\net47\Greg.dll</HintPath>
+    <Reference Include="Greg, Version=1.2.7177.24952, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\src\packages\Greg.1.2.7177.24952\lib\net47\Greg.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Moq, Version=4.2.1507.118, Culture=neutral, PublicKeyToken=69f491c39445e920, processorArchitecture=MSIL">
@@ -88,7 +88,6 @@
     <Compile Include="MultiOutputNodeTest.cs" />
     <Compile Include="NodeExecutionTest.cs" />
     <Compile Include="AnnotationModelTest.cs" />
-    <Compile Include="AstBuilderTest.cs" />
     <Compile Include="AsyncTaskExtensionsTests.cs" />
     <Compile Include="AuthenticationManagerTests.cs" />
     <Compile Include="CallsiteTests.cs" />
@@ -104,8 +103,10 @@
     <Compile Include="Nodes\DictionaryTests.cs" />
     <Compile Include="Nodes\DropDownTests.cs" />
     <Compile Include="NodeToCodeTest.cs" />
+    <Compile Include="PackageDependencyTests.cs" />
     <Compile Include="PresetsTests.cs" />
     <Compile Include="PeriodicEvaluationTests.cs" />
+    <Compile Include="ProfilingTest.cs" />
     <Compile Include="SerializationTests.cs" />
     <Compile Include="TestZeroTouchClass.cs" />
     <Compile Include="TypedParametersToStringTests.cs" />
@@ -182,6 +183,10 @@
       <Project>{d8262d40-4880-41e4-91e4-af8f480c8637}</Project>
       <Name>CoreNodeModels</Name>
       <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\src\Libraries\DSOffice\DSOffice.csproj">
+      <Project>{9b4fdc96-e2f9-4b8f-894a-4294405d50e7}</Project>
+      <Name>DSOffice</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\src\Libraries\DynamoUnits\Units.csproj">
       <Project>{6e0a079e-85f1-45a1-ad5b-9855e4344809}</Project>

@@ -56,7 +56,6 @@
       <Link>AssemblySharedInfo.cs</Link>
     </Compile>
     <Compile Include="CommandLineRunnerWPF.cs" />
-    <Compile Include="GeometryHolder.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

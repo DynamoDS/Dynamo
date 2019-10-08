@@ -3,30 +3,25 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml;
-
 using CoreNodeModels;
 using CoreNodeModels.Input;
+using Dynamo.Engine;
+using Dynamo.Events;
 using Dynamo.Graph;
+using Dynamo.Graph.Connectors;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.CustomNodes;
 using Dynamo.Graph.Nodes.ZeroTouch;
-using Dynamo.Nodes;
-using Dynamo.Tests;
-
-using NUnit.Framework;
-
-using DoubleSlider = CoreNodeModels.Input.DoubleSlider;
-using Dynamo.Events;
-using Dynamo.Models;
 using Dynamo.Graph.Workspaces;
+using Dynamo.Models;
+using Dynamo.Tests;
+using Dynamo.Utilities;
 using Dynamo.ViewModels;
-using Dynamo.Engine;
 using Dynamo.Wpf.ViewModels.Core;
 using Dynamo.Wpf.ViewModels.Watch3D;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using Dynamo.Utilities;
-using Dynamo.Graph.Connectors;
+using NUnit.Framework;
+using DoubleSlider = CoreNodeModels.Input.DoubleSlider;
 
 namespace DynamoCoreWpfTests
 {
@@ -927,19 +922,19 @@ namespace DynamoCoreWpfTests
 
             var funcguid = GuidUtility.Create(GuidUtility.UrlNamespace, "NewCustomNodeSaveAndLoad");
             //first create a new custom node.
-            this.ViewModel.ExecuteCommand(new DynamoModel.CreateCustomNodeCommand(funcguid, "testnode", "testcategory", "atest", true));
+            var ws = this.ViewModel.Model.CustomNodeManager.CreateCustomNode("testnode", "testcategory", "atest", funcguid);
             var outnode1 = new Output();
             outnode1.Symbol = "out1";
             var outnode2 = new Output();
-            outnode1.Symbol = "out2";
+            outnode2.Symbol = "out2";
 
             var numberNode = new DoubleInput();
             numberNode.Value = "5";
           
 
-            this.ViewModel.CurrentSpace.AddAndRegisterNode(numberNode);
-            this.ViewModel.CurrentSpace.AddAndRegisterNode(outnode1);
-            this.ViewModel.CurrentSpace.AddAndRegisterNode(outnode2);
+            ws.AddAndRegisterNode(numberNode);
+            ws.AddAndRegisterNode(outnode1);
+            ws.AddAndRegisterNode(outnode2);
 
             new ConnectorModel(numberNode.OutPorts.FirstOrDefault(), outnode1.InPorts.FirstOrDefault(), Guid.NewGuid());
             new ConnectorModel(numberNode.OutPorts.FirstOrDefault(), outnode2.InPorts.FirstOrDefault(), Guid.NewGuid());
@@ -947,7 +942,7 @@ namespace DynamoCoreWpfTests
 
             var savePath = Path.Combine(this.ViewModel.Model.PathManager.DefinitionDirectories.FirstOrDefault(), "NewCustomNodeSaveAndLoad.dyf");
             //save it to the definitions folder so it gets loaded at startup.
-            this.ViewModel.CurrentSpace.Save(savePath);
+            ws.Save(savePath);
 
             //assert the filesaved
             Assert.IsTrue(File.Exists(savePath));
@@ -960,7 +955,8 @@ namespace DynamoCoreWpfTests
             // This unit test is a follow-up of NewCustomNodeSaveAndLoadPt1 test to make sure the newly created
             // custom node will be loaded once DynamoCore restarted
             var funcguid = GuidUtility.Create(GuidUtility.UrlNamespace, "NewCustomNodeSaveAndLoad");
-            var functionnode = this.ViewModel.Model.CustomNodeManager.CreateCustomNodeInstance(funcguid,"testnode",true);
+            var functionnode =
+                this.ViewModel.Model.CustomNodeManager.CreateCustomNodeInstance(funcguid, "testnode", true);
             Assert.IsTrue(functionnode.IsCustomFunction);
             Assert.IsFalse(functionnode.IsInErrorState);
             Assert.AreEqual(functionnode.OutPorts.Count, 2);

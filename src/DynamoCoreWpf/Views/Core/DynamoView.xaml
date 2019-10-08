@@ -196,7 +196,7 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition MaxWidth="500"
                               MinWidth="1"
-                              Name="LibraryViewColumn">
+                              Name="LeftExtensionsViewColumn">
                 <ColumnDefinition.Width>
                     <Binding Path="LibraryWidth"
                              Mode="TwoWay"
@@ -205,15 +205,20 @@
             </ColumnDefinition>
             <!--MinWidth fix for GridSplitter dragging in frameless window-->
             <ColumnDefinition Width="Auto" />
-            <ColumnDefinition Width="5*" />
+            <ColumnDefinition Width="5*" MinWidth="200" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition MaxWidth="500"
+                              MinWidth="1"
+                              Name="RightExtensionsViewColumn">
+            </ColumnDefinition>
         </Grid.ColumnDefinitions>
 
         <!--Titlebar-->
-        <Border BorderBrush="#FF3F4040"
+        <Border BorderBrush="{StaticResource BorderBrushWhite}"
                 BorderThickness="0,0,0,1"
                 Grid.Row="0"
                 Grid.Column="0"
-                Grid.ColumnSpan="3"
+                Grid.ColumnSpan="5"
                 Height="26"
                 Name="titleBar">
 
@@ -825,8 +830,9 @@
 
         <!--Shortcuts Toolbar-->
         <Grid Grid.Row="1"
-                Grid.Column="0"
-                Grid.ColumnSpan="3">
+              Grid.Column="0"
+              Grid.ColumnSpan="5"
+              Name="shortcutsBarGrid">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"></ColumnDefinition>
                 <ColumnDefinition Width="Auto"></ColumnDefinition>
@@ -841,7 +847,7 @@
                 Grid.Row="0"
                 Grid.Column="0"
                 Height="32"
-                BorderBrush="#FF3F4040"
+                BorderBrush="{StaticResource BorderBrushWhite}"
                 BorderThickness="0,0,0,1">
                 <Grid Name="shortcutBarGrid">
                 </Grid>
@@ -849,6 +855,7 @@
 
         </Grid>
 
+        <!--Canvas-->
         <Grid HorizontalAlignment="Stretch"
               VerticalAlignment="Stretch"
               Grid.Row="2"
@@ -910,7 +917,7 @@
                                                 <RowDefinition Height="Auto" />
                                                 <RowDefinition Height="*" />
                                             </Grid.RowDefinitions>
-                                            <Border BorderBrush="#FF3F4040"
+                                            <Border BorderBrush="{StaticResource BorderBrushWhite}"
                                                     BorderThickness="1,0,0,1"
                                                     Grid.Row="0">
                                                 <Grid>
@@ -1248,7 +1255,7 @@
                                 <Setter.Value>
                                     <ControlTemplate TargetType="{x:Type TabItem}">
                                         <Border Name="Border"
-                                                BorderBrush="#FF3F4040"
+                                                BorderBrush="{StaticResource BorderBrushWhite}"
                                                 CornerRadius="0,0,0,0">
                                             <Border.Style>
                                                 <Style TargetType="Border">
@@ -1478,21 +1485,21 @@
 
         </Border>
 
-        <!--Collapsed Sidebar-->
+        <!--Collapsed Left Sidebar-->
         <StackPanel Grid.Row="2"
                     Grid.Column="2"
                     Orientation="Vertical"
-                    Name="collapsedSidebar"
+                    Name="collapsedLibrarySidebar"
                     Width="Auto"
                     Height="Auto"
-                    Background="#222222"
+                    Background="{StaticResource HighlightedBrush}"
                     HorizontalAlignment="Left"
                     VerticalAlignment="Top"
-                    Margin="0,120,0,0">
+                    Margin="0,310,0,0">
             <Grid Background="#353535"
-                  Width="80"
+                  Width="100"
                   Cursor="Hand">
-                <Button Click="OnCollapsedSidebarClick"
+                <Button Click="OnCollapsedLeftSidebarClick"
                         Template="{DynamicResource BackgroundButton}">
                     <Button.Resources>
                         <ControlTemplate x:Key="BackgroundButton"
@@ -1520,7 +1527,7 @@
                                    VerticalAlignment="Center"
                                    Foreground="#aaaaaa"
                                    FontWeight="Normal"
-                                   Margin="10,0,0,5"
+                                   Margin="5,0,0,5"
                                    Text="{x:Static p:Resources.LibraryViewTitle}">
                             </TextBlock>
                             <Image Grid.Column="0"
@@ -1544,7 +1551,76 @@
                 <RotateTransform Angle="-90" />
             </StackPanel.RenderTransform>
         </StackPanel>
+        
+        <!--Collapsed Extension Sidebar-->
+        <StackPanel Grid.Row="2"
+                    Grid.Column="2"
+                    Orientation="Vertical"
+                    Name="collapsedExtensionSidebar"
+                    Width="Auto"
+                    Height="Auto"
+                    Background="{StaticResource HighlightedBrush}"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Top"
+                    Margin="0,310,-79,0">
+            <Grid Background="#353535"
+                  Width="100"
+                  Cursor="Hand">
+                <Button Click="OnCollapsedRightSidebarClick"
+                        Template="{DynamicResource BackgroundButton}">
+                    <Button.Resources>
+                        <ControlTemplate x:Key="BackgroundButton"
+                                         TargetType="Button">
+                            <Border Name="border"
+                                    BorderThickness="0"
+                                    BorderBrush="Black"
+                                    VerticalAlignment="Stretch"
+                                    Padding="5,0,5,0">
+                                <ContentPresenter HorizontalAlignment="Stretch"
+                                                  VerticalAlignment="Stretch" />
+                            </Border>
+                        </ControlTemplate>
+                    </Button.Resources>
+                    <Grid Mouse.MouseEnter="Button_MouseEnter"
+                          Mouse.MouseLeave="Button_MouseLeave">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Orientation="Horizontal" 
+                                    HorizontalAlignment="Center">
+                            <TextBlock Grid.Column="0"
+                                   Name="ExtensionSidebarText"
+                                   VerticalAlignment="Center"
+                                   Foreground="#aaaaaa"
+                                   FontWeight="Normal"
+                                   Margin="5,0,0,5"
+                                   Text="{x:Static p:Resources.ExtensionsViewTitle}">
+                            </TextBlock>
+                            <Image Grid.Column="0"
+                               Name="ExtensionSidebarIcon"
+                               Source="/DynamoCoreWpf;component/UI/Images/expand_normal.png"
+                               Visibility="Visible"
+                               Width="10"
+                               Height="10"
+                               Margin="5,5,5,5"
+                               RenderTransformOrigin="0.5, 0.5">
+                                <Image.RenderTransform>
+                                    <RotateTransform Angle="90" />
+                                </Image.RenderTransform>
+                            </Image>
+                        </StackPanel>
+                    </Grid>
+                </Button>
 
+            </Grid>
+
+            <StackPanel.RenderTransform>
+                <RotateTransform Angle="-90" />
+            </StackPanel.RenderTransform>
+        </StackPanel>
+
+        <!--Console Log Area-->
         <ScrollViewer Name="LogScroller"
                       VerticalAlignment="Stretch"
                       VerticalScrollBarVisibility="Auto"
@@ -1555,7 +1631,7 @@
                       Visibility="Visible"
                       Grid.Row="4"
                       Grid.Column="0"
-                      Grid.ColumnSpan="3">
+                      Grid.ColumnSpan="5">
 
             <ScrollViewer.ContextMenu>
                 <ContextMenu>
@@ -1579,7 +1655,7 @@
                      TextChanged="TextBoxBase_OnTextChanged" />
         </ScrollViewer>
 
-        <!--Sidebar-->
+        <!--Left Sidebar Library-->
         <Grid Height="Auto"
               Width="Auto"
               HorizontalAlignment="Stretch"
@@ -1591,13 +1667,122 @@
               Grid.RowSpan="2">
         </Grid>
 
+        <!--Right Extensions Sidebar-->
+        <Grid Height="Auto"
+              Width="Auto"
+              HorizontalAlignment="Stretch"
+              Name="sidebarExtensionsGrid"
+              VerticalAlignment="Stretch"
+              Visibility="Visible"
+              Grid.Row="2"
+              Grid.Column="4"
+              Grid.RowSpan="2">
+            <TabControl Name="tabDynamic" Background="#353535" BorderThickness="0" ItemsSource="{Binding}">
+                <TabControl.Resources>
+                    <!--Styling for the close button in the tab-->
+                    <Style TargetType="{x:Type Button}"
+                               x:Key="CloseButtonStyle">
+                        <Setter Property="OverridesDefaultStyle"
+                                    Value="True" />
+                        <Setter Property="SnapsToDevicePixels"
+                                    Value="true" />
+                        <Setter Property="VerticalAlignment"
+                                    Value="Center" />
+                        <Setter Property="HorizontalAlignment"
+                                    Value="Right" />
+                        <Setter Property="Margin"
+                                    Value="8,2,0,0" />
+                        <Setter Property="Background"
+                                    Value="Transparent" />
+                        <Setter Property="BorderThickness"
+                                    Value="0" />
+                        <Setter Property="Padding"
+                                    Value="0" />
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="Button">
+                                    <Border x:Name="Border"
+                                                Background="Transparent"
+                                                BorderThickness="0 0 0 0">
+                                        <ContentPresenter Margin="0 0 0 0" />
+                                    </Border>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                    
+                    <!--Template for tab header in the extensions side bar-->
+                    <DataTemplate x:Key="TabHeader" DataType="TabItem">
+                        <DockPanel HorizontalAlignment="Stretch" MinWidth="{Binding Source={x:Static configuration:Configurations.ExtensionsSideBarTabMinWidth}}">
+                            <TextBlock Text="{Binding RelativeSource={RelativeSource AncestorType={x:Type TabItem}}, Path=Header}" HorizontalAlignment="Stretch"/>
+                            <!--Button to close a particular tab-->
+                            <Button Name="CloseButton" Style="{StaticResource CloseButtonStyle}" DockPanel.Dock="Right" Click="CloseTab"
+                                              CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type TabItem}}, Path=Name}">
+                                <Image Width="14" Height="14" HorizontalAlignment="Right" VerticalAlignment="Center">
+                                    <Image.Style>
+                                        <Style TargetType="{x:Type Image}">
+                                            <Style.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="False">
+                                                    <Setter Property="Source"
+                                                            Value="/DynamoCoreWpf;component/UI/Images/closetab_normal.png" />
+                                                </Trigger>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter Property="Source"
+                                                            Value="/DynamoCoreWpf;component/UI/Images/closetab_hover.png" />
+                                                </Trigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Image.Style>
+                                </Image>
+                            </Button>
+                        </DockPanel>
+                    </DataTemplate>
+                    
+                    <!--Styling for the tab in the extensions side bar-->
+                    <Style TargetType="{x:Type TabItem}">
+                        <Setter Property="MinWidth" Value="{Binding Source={x:Static configuration:Configurations.ExtensionsSideBarTabMinWidth}}" />
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="{x:Type TabItem}">
+                                    <Grid>
+                                        <Border Name="Border" Margin="0,0,0,0"  BorderThickness="1 0 1 0" 
+                                                        BorderBrush="{StaticResource BorderBrushWhite}">
+                                            <ContentPresenter x:Name="ContentSite" VerticalAlignment="Center"
+                                                     HorizontalAlignment="Stretch"
+                                                     ContentSource="Header" Margin="3,0,0,3"
+                                                     RecognizesAccessKey="True">
+                                            </ContentPresenter>
+                                        </Border>
+                                    </Grid>
+                                    <!--Properties for selected and unselected tabs-->
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsSelected" Value="true">
+                                            <Setter Property="Foreground"
+                                                         Value="{StaticResource WorkspaceTabHeaderActiveTextBrush}" />
+                                        </Trigger>
+                                        <Trigger Property="IsSelected" Value="false">
+                                            <Setter Property="Foreground"
+                                                         Value="{StaticResource WorkspaceTabHeaderInactiveTextBrush}" />
+                                            <Setter TargetName="Border" Property="Background"
+                                                         Value="{StaticResource HighlightedBrush}" />
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </TabControl.Resources>
+            </TabControl>
+        </Grid>
+
+        <!--Bottom Panel including RunMode etc-->
         <WrapPanel Orientation="Horizontal"
                    Grid.Row="5"
                    Grid.Column="0"
                    Grid.RowSpan="1"
                    HorizontalAlignment="Stretch"
                    VerticalAlignment="Stretch"
-                   Grid.ColumnSpan="3">
+                   Grid.ColumnSpan="5">
 
             <WrapPanel.Background>
                 <LinearGradientBrush  StartPoint="0.5,0"
@@ -1613,7 +1798,7 @@
                   Grid.Row="4"
                   Grid.Column="0"
                   Grid.RowSpan="1"
-                  Grid.ColumnSpan="3"
+                  Grid.ColumnSpan="5"
                   HorizontalAlignment="Stretch"
                   VerticalAlignment="Stretch">
                 <Grid.ColumnDefinitions>
@@ -1641,6 +1826,8 @@
 
         </WrapPanel>
 
+
+        <!--Split Between Console and Canvas-->
         <GridSplitter ResizeDirection="Rows"
                       Grid.Column="2"
                       Grid.ColumnSpan="1"
@@ -1655,6 +1842,7 @@
                       Background="#999"
                       Cursor="/DynamoCoreWpf;component/UI/Images/resize_vertical.cur" />
 
+        <!--Split Between Library and Canvas-->
         <GridSplitter ResizeDirection="Auto"
                       Grid.Column="1"
                       Grid.Row="2"
@@ -1667,12 +1855,27 @@
                       Margin="0"
                       Background="Transparent"
                       Cursor="/DynamoCoreWpf;component/UI/Images/resize_horizontal.cur" />
+        
+        <!--Split Between Extension and Canvas-->
+        <GridSplitter ResizeDirection="Auto"
+                      Grid.Column="3"
+                      Grid.Row="2"
+                      Grid.RowSpan="2"
+                      Height="Auto"
+                      Width="3"
+                      Name="extensionSplitter"
+                      HorizontalAlignment="Stretch"
+                      VerticalAlignment="Stretch"
+                      Margin="0"
+                      Background="Transparent"
+                      Cursor="/DynamoCoreWpf;component/UI/Images/resize_horizontal.cur" />
 
+        <!--Start Page-->
         <ItemsControl Name="startPageItemsControl"
                       Grid.Row="2"
                       Grid.RowSpan="4"
                       Grid.Column="0"
-                      Grid.ColumnSpan="3">
+                      Grid.ColumnSpan="5">
             <ItemsControl.ItemTemplate>
                 <DataTemplate DataType="{x:Type uictrls:StartPageViewModel}">
                     <Grid>
@@ -1694,6 +1897,7 @@
             </ItemsControl.Visibility>
         </ItemsControl>
 
+        <!--Gallery or What's new-->
         <Grid Name="galleryBackground"
               Visibility="Hidden"
               MouseLeftButtonDown="OnGalleryBackgroundMouseClick">

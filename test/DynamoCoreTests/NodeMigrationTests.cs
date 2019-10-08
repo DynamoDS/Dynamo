@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using SystemTestServices;
 using System.Xml;
 using CoreNodeModels;
 using CoreNodeModels.Input;
@@ -11,6 +10,7 @@ using Dynamo.Graph.Nodes.ZeroTouch;
 using Dynamo.PackageManager;
 using NUnit.Framework;
 using PythonNodeModels;
+using SystemTestServices;
 
 namespace Dynamo.Tests
 {
@@ -2258,7 +2258,7 @@ namespace Dynamo.Tests
             var pkg = loader.ScanPackageDirectory(pkgDir);
 
             // Load the sample package which includes migrations
-            loader.Load(pkg);
+            loader.LoadPackages(new List<Package> {pkg});
 
             // Assert expected package was loaded
             Assert.AreEqual(pkg.Name, "Dynamo Samples");

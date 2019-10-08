@@ -7,8 +7,8 @@ using Autodesk.DesignScript.Runtime;
 using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
 using Dynamo.Migration;
-using ProtoCore.AST.AssociativeAST;
 using Newtonsoft.Json;
+using ProtoCore.AST.AssociativeAST;
 
 namespace CoreNodeModels.Input
 {

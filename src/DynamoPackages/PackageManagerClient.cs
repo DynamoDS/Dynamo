@@ -1,9 +1,10 @@
-﻿using Greg;
-using Greg.Requests;
-using Greg.Responses;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Dynamo.Graph.Workspaces;
+using Greg;
+using Greg.Requests;
+using Greg.Responses;
 
 namespace Dynamo.PackageManager
 {
@@ -56,15 +57,6 @@ namespace Dynamo.PackageManager
             }, false);
         }
 
-        internal bool Downvote(string packageId)
-        {
-            return FailFunc.TryExecute(() =>
-            {
-                var pkgResponse = this.client.ExecuteAndDeserialize(new Downvote(packageId));
-                return pkgResponse.success;
-            }, false);
-        }
-
         internal PackageManagerResult DownloadPackage(string packageId, string version, out string pathToPackage)
         {
             try
@@ -87,6 +79,55 @@ namespace Dynamo.PackageManager
                 var pkgResponse = this.client.ExecuteAndDeserializeWithContent<List<PackageHeader>>(nv);
                 return pkgResponse.content;
             }, new List<PackageHeader>());
+        }
+
+        /// <summary>
+        /// Gets the PackageHeader for a specific package
+        /// </summary>
+        /// <param name="packageInfo"></param>
+        /// <returns></returns>
+        internal PackageHeader GetPackageHeader(IPackageInfo packageInfo)
+        {
+            var header = FailFunc.TryExecute(() =>
+            {
+                var nv = new HeaderDownload("dynamo", packageInfo.Name);
+                var pkgResponse = this.client.ExecuteAndDeserializeWithContent<PackageHeader>(nv);
+                return pkgResponse.content;
+            }, null);
+
+            return header;
+        }
+
+        /// <summary>
+        /// Gets the Greg PackageVersion object for a specific version of a package
+        /// </summary>
+        /// <param name="header"></param>
+        /// <param name="version"></param>
+        /// <returns></returns>
+        internal PackageVersion GetGregPackageVersion(PackageHeader header, Version version)
+        {
+            foreach (var v in header.versions)
+            {
+                if (new Version(v.version) == version)
+                {
+                    return v;
+                }
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// Make a call to Package Manager to get the known
+        /// supported hosts for package publishing and filtering
+        /// </summary>
+        internal IEnumerable<string> GetKnownHosts()
+        {
+            return FailFunc.TryExecute(() =>
+            {
+                var hosts = new Hosts();
+                var hostsResponse = this.client.ExecuteAndDeserializeWithContent<List<String>>(hosts);
+                return hostsResponse.content;
+            }, new List<string>());
         }
 
         internal bool GetTermsOfUseAcceptanceStatus()

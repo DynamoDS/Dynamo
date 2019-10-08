@@ -1,8 +1,4 @@
-using System;
 using NUnit.Framework;
-using ProtoCore.DSASM.Mirror;
-using System.Collections.Generic;
-using ProtoTestFx.TD;
 namespace ProtoTest.TD.DocTests
 {
     class UserManualTests : ProtoTestBase
@@ -199,13 +195,18 @@ s = Print(f2);
 @"
 // create two seemingly different numbers
 a = 1.0;
-b = 0.9999999;
+b = 0.99999;
 // test if the two numbers are equal
-s = Print(a == b ? ""Are equal"" : ""Are not equal"");
 x = a == b ? 1 : 0;
+
+c = 1.0;
+d = 0.9999;
+// test if the two numbers are equal
+y = c == d ? 1 : 0;
 ";
             thisTest.RunScriptSource(code);
             thisTest.Verify("x", 1);
+            thisTest.Verify("y", 0);
         }
 
         [Test]

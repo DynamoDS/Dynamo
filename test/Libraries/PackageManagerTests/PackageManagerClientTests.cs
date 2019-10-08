@@ -173,39 +173,6 @@ namespace Dynamo.PackageManager.Tests
 
         #endregion
 
-        #region Downvote
-
-        [Test]
-        public void Downvote_ReturnsTrueWhenRequestSucceeds()
-        {
-            var gc = new Mock<IGregClient>();
-            gc.Setup(x => x.ExecuteAndDeserialize(It.IsAny<Downvote>())).Returns(new ResponseBody()
-            {
-                success = true
-            });
-
-            var pc = new PackageManagerClient(gc.Object, MockMaker.Empty<IPackageUploadBuilder>(), "");
-
-            var res = pc.Downvote("id");
-
-            Assert.IsTrue(res);
-        }
-
-        [Test]
-        public void Downvote_ReturnsFalseWhenRequestThrowsException()
-        {
-            var gc = new Mock<IGregClient>();
-            gc.Setup(x => x.ExecuteAndDeserialize(It.IsAny<Downvote>())).Throws<Exception>();
-
-            var pc = new PackageManagerClient(gc.Object, MockMaker.Empty<IPackageUploadBuilder>(), "");
-
-            var res = pc.Downvote("id");
-
-            Assert.IsFalse(res);
-        }
-
-        #endregion
-
         #region GetTermsOfUseAcceptanceStatus
 
         [Test]

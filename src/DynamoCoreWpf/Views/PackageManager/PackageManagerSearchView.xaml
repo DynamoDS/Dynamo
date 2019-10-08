@@ -4,6 +4,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:ui="clr-namespace:Dynamo.UI"
+        xmlns:fa="http://schemas.fontawesome.io/icons/"
         xmlns:p="clr-namespace:Dynamo.Wpf.Properties"
         xmlns:controls="clr-namespace:Dynamo.Controls"
         xmlns:viewModels="clr-namespace:Dynamo.PackageManager.ViewModels"
@@ -12,6 +13,7 @@
 
     <Window.Resources>
         <ResourceDictionary>
+
             <!-- An unstyled button -->
             <Style x:Key="FlatButton" TargetType="Button">
                 <Setter Property="Background" Value="{x:Null}" />
@@ -121,22 +123,22 @@
 
             <TextBlock Grid.Row ="1" Grid.ZIndex ="1" FontSize="13" HorizontalAlignment="Center" Foreground="Gray" VerticalAlignment="Center" Name="NoResultsIndicator" TextAlignment="Center" Margin="20" Text="{Binding Path=SearchState, Converter={StaticResource PackageSearchStateToStringConverter}}"/>
 
-            <Grid Name="RSearchBoxStackPanel" Grid.Row="0">
+            <Grid Name="RSearchBoxStackPanel" Grid.Row="0" Background="#222">
 
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"></ColumnDefinition>
                     <ColumnDefinition Width="Auto"></ColumnDefinition>
+                    <ColumnDefinition Width="Auto"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
 
-                <TextBox Grid.Column="0" Name="SearchTextBox" KeyboardNavigation.TabIndex="0" Foreground="WhiteSmoke" Background="#222" BorderThickness="0" FontSize ="13" Padding="10,10,5,10" Margin ="0"
-                       IsEnabled="True" TextChanged="SearchTextBox_TextChanged" VerticalAlignment="Stretch" Text="{Binding Path=SearchText, Mode=TwoWay}">
+                <TextBox Visibility="{Binding ShowSearchText, Converter={StaticResource BooleanToVisibilityConverter}}" Text="{Binding Path=SearchText, Mode=TwoWay}"
+                         Grid.Column="0" Name="SearchTextBox" KeyboardNavigation.TabIndex="0" Foreground="WhiteSmoke" Background="Transparent" CaretBrush="White" 
+                         BorderThickness="0" FontSize ="13" Padding="10,10,5,10" Margin ="0" TextChanged="SearchTextBox_TextChanged" VerticalAlignment="Stretch">
                 </TextBox>
 
-                <TextBlock Grid.Column="0" FontSize ="13" Padding="20,10,5,10" Margin ="0" Background="Transparent" 
-                           Foreground="#666" 
-                           IsHitTestVisible="False"
-                           Visibility="{Binding Path=SearchText, Converter={StaticResource NonEmptyStringToCollapsedConverter}}"
-                           Text="{x:Static p:Resources.PackageSearchViewSearchTextBox}"/>
+                <TextBlock Text="{Binding SearchBoxPrompt}" Visibility="{Binding Path=SearchText, Converter={StaticResource NonEmptyStringToCollapsedConverter}}" 
+                           Grid.Column="0" FontSize ="13" Padding="20,10,5,10" Margin ="0" Background="Transparent" Foreground="#666" IsHitTestVisible="False">
+                </TextBlock>
 
                 <Button Width="auto" MinWidth="100" Grid.Column="1" Click="OnSortButtonClicked"
                         Style="{DynamicResource ResourceKey=STextButton}" Content="{x:Static p:Resources.PackageSearchViewSortByButton}">
@@ -171,6 +173,31 @@
 
                     </Button.ContextMenu>
 
+                </Button>
+
+                <Button Width="Auto" 
+                        Grid.Column="2" 
+                        Click="OnFilterButtonClicked" 
+                        fa:Awesome.Content="Filter"
+                        TextElement.FontFamily="pack://application:,,,/FontAwesome.WPF;component/#FontAwesome"
+                        Style="{DynamicResource ResourceKey=STextButton}"
+                        ToolTip="{x:Static p:Resources.PackageHostDependencyFilter}">
+                    <Button.ContextMenu>
+                        <ContextMenu Name="HostFilter"
+                                     DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Mode=Self}}"
+                                     ItemsSource="{Binding HostFilter}"
+                                     DisplayMemberPath="FilterName">
+                            <ContextMenu.ItemContainerStyle>
+                                <Style TargetType="{x:Type MenuItem}">
+                                    <Setter Property="IsCheckable" Value="True"/>
+                                    <Setter Property="Command" Value="{Binding FilterCommand}"/>
+                                    <Setter Property="CommandParameter" Value="{Binding FilterName}"/>
+                                    <Setter Property="IsChecked" Value="{Binding OnChecked}"/>
+                                    <Setter Property="ToolTip" Value="{x:Static p:Resources.PackageHostDependencyFilterContextItem}"/>
+                                 </Style>
+                            </ContextMenu.ItemContainerStyle>
+                        </ContextMenu>
+                    </Button.ContextMenu>
                 </Button>
 
             </Grid>
@@ -262,10 +289,13 @@
                                         <StackPanel Orientation="Horizontal">
                                             <Button Style="{StaticResource FlatButton}" Command="{Binding ToggleIsExpandedCommand }" Background="#333">
 
-                                                <StackPanel Width="340" IsHitTestVisible="True" >
-                                                    <TextBlock FontSize="14"  Name="name" Text="{Binding Path=Model.Name}" Margin="5,0,0,0" HorizontalAlignment="Left" Foreground="WhiteSmoke" />
-
-                                                    <StackPanel Orientation="Horizontal" Margin="0,6,0,2">
+                                                <StackPanel Orientation="Vertical" Width="340" IsHitTestVisible="True" >
+                                                   <StackPanel Orientation="Horizontal">
+                                                      <TextBlock Width ="Auto" MinWidth="235" FontSize="14"  Name="name" Text="{Binding Path=Model.Name}" Margin="5,0,0,0" HorizontalAlignment="Left" Foreground="WhiteSmoke" />
+                                                      <TextBlock Width ="90" FontSize="10"  Name="HostDependency" Text="{Binding Path=Model.HostsString}" Margin="5,0,0,0" HorizontalAlignment="Right" Foreground="LightBlue" 
+                                                                 VerticalAlignment="Center" ToolTip="{x:Static p:Resources.PackageHostDependencyTooltip}"/>
+                                                   </StackPanel>
+                                                   <StackPanel Orientation="Horizontal" Margin="0,6,0,2">
 
                                                         <StackPanel Orientation="Horizontal" Margin="5" Width="100">
                                                             <TextBlock FontSize="10" FontWeight="Bold" Text="✎   " Foreground="Gray" />
@@ -293,25 +323,18 @@
                                                 </StackPanel>
                                             </Button>
 
-                                            <StackPanel Width="55"  Orientation="Vertical" Margin="3,0,0,0">
-                                                <StackPanel Orientation="Horizontal">
+                                            <StackPanel Width="80"  Orientation="Vertical" Margin="3,0,0,0">
+                                                <StackPanel Orientation="Vertical">
                                                     <Button Name="UpvoteButton" 
                                                         FontSize="15" 
                                                         ToolTip="{x:Static p:Resources.PackageSearchViewUpvoteButtonTooltip}"  
                                                         Content="👍"
-                                                        Margin="0,0,8,0"
+                                                        Margin="0,0,0,0"
                                                         Foreground="Gray" 
                                                         Command="{Binding Path=UpvoteCommand}" 
                                                         Style="{StaticResource FlatButton}" />
-                                                    <Button Name="DownvoteButton" 
-                                                        FontSize="15" 
-                                                        ToolTip="{x:Static p:Resources.PackageSearchViewDownvoteButtonTooltip}" 
-                                                        Foreground="Gray" 
-                                                        Content="👎"  
-                                                        Command="{Binding Path=DownvoteCommand}" 
-                                                        Style="{StaticResource FlatButton}" />
+                                                    <TextBlock FontSize="10" TextAlignment="Center" Margin="0,0,0,0" Text="{Binding Path=Model.Votes}" Foreground="Gray"  />
                                                 </StackPanel>
-                                                <TextBlock FontSize="10" TextAlignment="Center" Margin="0,0,0,0" Text="{Binding Path=Model.Votes}" Foreground="Gray"  />
                                             </StackPanel>
                                         </StackPanel>
 
@@ -444,7 +467,7 @@
 
                                 <StackPanel Orientation="Horizontal" Name="SearchEle" >
 
-                                    <StackPanel Width ="270" >
+                                    <StackPanel Width ="300" >
 
                                         <TextBlock FontSize="14" Name="name" Text="{Binding Path=Name}" Foreground="White" Padding="5"/>
                                         <TextBlock FontSize="10" Name="error" Text="{Binding Path=ErrorString}" Foreground="White"  Padding="5"/>

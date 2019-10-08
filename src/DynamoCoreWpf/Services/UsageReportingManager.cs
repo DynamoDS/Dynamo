@@ -152,9 +152,6 @@ namespace Dynamo.Services
             {
                 FirstRun = false;
 
-                //Analytics enable by defaultwa
-                IsAnalyticsReportingApproved = true;
-
                 //Prompt user for detailed reporting
                 if (!DynamoModel.IsTestMode)
                     ShowUsageReportingPrompt(ownerWindow);

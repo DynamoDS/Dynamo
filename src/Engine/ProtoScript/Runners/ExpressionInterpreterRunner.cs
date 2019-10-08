@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using ProtoCore.DSASM;
 using ProtoCore.DSASM.Mirror;
-using ProtoCore.Lang;
 
 namespace ProtoScript.Runners
 {

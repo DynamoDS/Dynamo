@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
   <metadata>
     <id>DynamoVisualProgramming.Core</id>
-    <version>@VERSION@</version>
+    <version>$Version$</version>
     <authors>Autodesk</authors>
     <owners>Autodesk</owners>
     <licenseUrl>https://www.apache.org/licenses/LICENSE-2.0</licenseUrl>
@@ -24,7 +24,7 @@
     <dependencies>
       <dependency id="Prism" version="4.1"/>
       <dependency id="NUnit" version="2.6.3"/>
-      <dependency id="DynamoVisualProgramming.ZeroTouchLibrary" version="@VERSION@"/>
+      <dependency id="DynamoVisualProgramming.ZeroTouchLibrary" version="$Version$"/>
       <dependency id="Newtonsoft.Json" version="8.0.3"/>
     </dependencies>
   </metadata>

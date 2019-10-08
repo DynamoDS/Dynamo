@@ -8,7 +8,7 @@ using DynamoCoreWpfTests;
 namespace DynamoPerformanceTests
 {
 
-    public class DynamoViewPerformanceTestBase : NodeViewTests
+    public class DynamoViewPerformanceTestBase : GrapViewTests
     {
         /// <summary>
         /// Override this function to preload dlls into Dynamo library
@@ -60,7 +60,7 @@ namespace DynamoPerformanceTests
 
         #region Iteration setup and cleanup methods for Benchmarks
         /// <summary>
-        /// Setup method to be called before each OpenModel benchmark.
+        /// Setup method to be called before each OpenGraph benchmark.
         /// </summary>
         [IterationSetup(Target = nameof(OpenGraph))]
         public void IterationSetupOpenModelWithUI()
@@ -69,15 +69,34 @@ namespace DynamoPerformanceTests
         }
 
         /// <summary>
-        /// Setup method to be called before each RunModel benchmark.
+        /// Setup method to be called before each RunGraph benchmark.
         /// </summary>
         [IterationSetup(Target = nameof(RunGraph))]
         public void IterationSetupRunModelWithUI()
         {
             Start();
 
+            // open the dyn file
+            Open(DynamoFilePath);
+
+            // Disable tessellation or rendering
+            DisableRendering();
+        }
+
+        /// <summary>
+        /// Setup method to be called before each GraphTessellationAndRendering  benchmark.
+        /// </summary>
+        [IterationSetup(Target = nameof(GraphTessellationAndRendering))]
+        public void IterationSetupRenderGraph()
+        {
+            Start();
+
             //open the dyn file
             Open(DynamoFilePath);
+            // Disable tessellation or rendering
+            DisableRendering();
+
+            Run();
         }
 
         /// <summary>
@@ -106,6 +125,12 @@ namespace DynamoPerformanceTests
         public void RunGraph()
         {
             Run();
+        }
+
+        [Benchmark, System.STAThread]
+        public void GraphTessellationAndRendering()
+        {
+            Tessellate();
         }
 
         #endregion

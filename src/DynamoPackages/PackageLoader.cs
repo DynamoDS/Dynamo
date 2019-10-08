@@ -3,13 +3,15 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using Dynamo.Core;
+using Dynamo.Engine;
+using Dynamo.Exceptions;
+using Dynamo.Extensions;
 using Dynamo.Interfaces;
 using Dynamo.Logging;
 using Dynamo.Utilities;
 using DynamoPackages.Properties;
 using DynamoUtilities;
-using Dynamo.Core;
-using Dynamo.Extensions;
 
 namespace Dynamo.PackageManager
 {
@@ -29,7 +31,8 @@ namespace Dynamo.PackageManager
     public class PackageLoader : LogSourceBase
     {
         internal event Action<Assembly> RequestLoadNodeLibrary;
-        internal event Func<string, IEnumerable<CustomNodeInfo>> RequestLoadCustomNodeDirectory;
+        internal event Action<IEnumerable<Assembly>> PackagesLoaded;
+        internal event Func<string, Graph.Workspaces.PackageInfo, IEnumerable<CustomNodeInfo>> RequestLoadCustomNodeDirectory;
         internal event Func<string, IExtension> RequestLoadExtension;
         internal event Action<IExtension> RequestAddExtension;
 
@@ -43,6 +46,7 @@ namespace Dynamo.PackageManager
         /// This event is raised when a package is fully loaded. It will be true that when this event is raised
         /// Packge.Loaded will be true for the package.
         /// </summary>
+        // TODO 3.0 Fix spelling
         public event Action<Package> PackgeLoaded;
 
         /// <summary>
@@ -137,21 +141,27 @@ namespace Dynamo.PackageManager
             }
         }
 
-        private IEnumerable<CustomNodeInfo> OnRequestLoadCustomNodeDirectory(string directory)
+        private void OnPackagesLoaded(IEnumerable<Assembly> assemblies)
+        {
+            PackagesLoaded?.Invoke(assemblies);
+        }
+
+        private IEnumerable<CustomNodeInfo> OnRequestLoadCustomNodeDirectory(string directory, Graph.Workspaces.PackageInfo packageInfo)
         {
             if (RequestLoadCustomNodeDirectory != null)
             {
-                return RequestLoadCustomNodeDirectory(directory);
+                return RequestLoadCustomNodeDirectory(directory, packageInfo);
             }
 
             return new List<CustomNodeInfo>();
         }
 
         /// <summary>
-        ///     Load the package into Dynamo (including all node libraries and custom nodes)
-        ///     and add to LocalPackages
+        /// Try loading package into Library (including all node libraries and custom nodes)
+        /// and add to LocalPackages.
         /// </summary>
-        public void Load(Package package)
+        /// <param name="package"></param>
+        internal void TryLoadPackageIntoLibrary(Package package)
         {
             this.Add(package);
 
@@ -169,15 +179,15 @@ namespace Dynamo.PackageManager
                         {
                             OnRequestLoadNodeLibrary(assem.Assembly);
                         }
-                        catch (Dynamo.Exceptions.LibraryLoadFailedException ex)
+                        catch (LibraryLoadFailedException ex)
                         {
                             Log(ex.GetType() + ": " + ex.Message);
                         }
                     }
                 }
-
                 // load custom nodes
-                var customNodes = OnRequestLoadCustomNodeDirectory(package.CustomNodeDirectory);
+                var packageInfo = new Graph.Workspaces.PackageInfo(package.Name, new Version(package.VersionName));
+                var customNodes = OnRequestLoadCustomNodeDirectory(package.CustomNodeDirectory, packageInfo);
                 package.LoadedCustomNodes.AddRange(customNodes);
 
                 package.EnumerateAdditionalFiles();
@@ -197,11 +207,43 @@ namespace Dynamo.PackageManager
                 package.Loaded = true;
                 this.PackgeLoaded?.Invoke(package);
             }
+            catch (CustomNodePackageLoadException e)
+            {
+                Package originalPackage =
+                    localPackages.FirstOrDefault(x => x.CustomNodeDirectory == e.InstalledPath);
+                OnConflictingPackageLoaded(originalPackage, package);
+            }
             catch (Exception e)
             {
                 Log("Exception when attempting to load package " + package.Name + " from " + package.RootDirectory);
                 Log(e.GetType() + ": " + e.Message);
             }
+        }
+
+        /// <summary>
+        /// Event raised when a custom node package containing conflicting node definition
+        /// with an existing package is tried to load.
+        /// </summary>
+        public event Action<Package, Package> ConflictingCustomNodePackageLoaded;
+        private void OnConflictingPackageLoaded(Package installed, Package conflicting)
+        {
+            var handler = ConflictingCustomNodePackageLoaded;
+            handler?.Invoke(installed, conflicting);
+        }
+
+        /// <summary>
+        ///     Load the package into Dynamo (including all node libraries and custom nodes)
+        ///     and add to LocalPackages.
+        /// </summary>
+        // TODO: Remove in 3.0 (Refer to PR #9736).
+        [Obsolete("This API will be deprecated in 3.0. Use LoadPackages(IEnumerable<Package> packages) instead.")]
+        public void Load(Package package)
+        {
+            TryLoadPackageIntoLibrary(package);
+
+            var assemblies =
+                LocalPackages.SelectMany(x => x.EnumerateAssembliesInBinDirectory().Where(y => y.IsNodeLibrary));
+            OnPackagesLoaded(assemblies.Select(x => x.Assembly));
         }
 
         /// <summary>
@@ -216,7 +258,7 @@ namespace Dynamo.PackageManager
             {
                 foreach (var pkg in LocalPackages)
                 {
-                    if (File.Exists(pkg.BinaryDirectory))
+                    if (Directory.Exists(pkg.BinaryDirectory))
                     {
                         pathManager.AddResolutionPath(pkg.BinaryDirectory);
                     }
@@ -224,11 +266,45 @@ namespace Dynamo.PackageManager
                 }
             }
 
-            foreach (var pkg in LocalPackages)
+            if (LocalPackages.Any())
             {
-                Load(pkg);
+                LoadPackages(LocalPackages);
             }
         }
+
+        /// <summary>
+        /// Loads and imports all packages. 
+        /// </summary>
+        /// <param name="packages"></param>
+        public void LoadPackages(IEnumerable<Package> packages)
+        {
+            var enumerable = packages.ToList();
+
+            // This fix is in reference to the crash reported in task: https://jira.autodesk.com/browse/DYN-2101
+            // TODO: https://jira.autodesk.com/browse/DYN-2120. we will be re-evaluating this workflow, to find the best clean solution.
+
+            // The reason for this crash is, when a new package is being loaded into the dynamo, it will reload 
+            // all the libraries into the VM. Since the graph execution runs are triggered asynchronously, it causes 
+            // an exception as the VM is reinitialized during the execution run. To avoid this, we disable the execution run's that
+            // are triggered while the package is still being loaded. Once the package is completely loaded and the VM is reinitialized,
+            // a final run is triggered that would execute the nodes in the workspace after resolving them.  
+
+            // Disabling the run here since new packages are being loaded. 
+            EngineController.DisableRun = true;
+
+            foreach (var pkg in enumerable)
+            {
+                TryLoadPackageIntoLibrary(pkg);
+            }
+
+            // Setting back the DisableRun property back to false, as the package loading is completed.
+            EngineController.DisableRun = false;
+
+            var assemblies =
+                enumerable.SelectMany(x => x.EnumerateAssembliesInBinDirectory().Where(y => y.IsNodeLibrary));
+            OnPackagesLoaded(assemblies.Select(x => x.Assembly));
+        }
+
         public void LoadCustomNodesAndPackages(LoadPackageParams loadPackageParams, CustomNodeManager customNodeManager)
         {
             foreach (var path in loadPackageParams.Preferences.CustomPackageFolders)
@@ -299,11 +375,11 @@ namespace Dynamo.PackageManager
                 {
                     discoveredPkg = Package.FromJson(headerPath, AsLogger());
                     if (discoveredPkg == null)
-                        throw new Exception(String.Format(Properties.Resources.MalformedHeaderPackage, headerPath));
+                        throw new LibraryLoadFailedException(directory, String.Format(Properties.Resources.MalformedHeaderPackage, headerPath));
                 }
                 else
                 {
-                    throw new Exception(String.Format(Properties.Resources.NoHeaderPackage, headerPath));
+                    throw new LibraryLoadFailedException(directory, String.Format(Properties.Resources.NoHeaderPackage, headerPath));
                 }
 
                 // prevent duplicates
@@ -312,7 +388,7 @@ namespace Dynamo.PackageManager
                     this.Add(discoveredPkg);
                     return discoveredPkg; // success
                 }
-                throw new Exception(String.Format(Properties.Resources.DulicatedPackage, discoveredPkg.Name, discoveredPkg.RootDirectory));
+                throw new LibraryLoadFailedException(directory, String.Format(Properties.Resources.DulicatedPackage, discoveredPkg.Name, discoveredPkg.RootDirectory));
             }
             catch (Exception e)
             {

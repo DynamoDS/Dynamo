@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using BenchmarkDotNet.Configs;
 using BenchmarkDotNet.Jobs;
 using BenchmarkDotNet.Validators;
@@ -141,6 +143,19 @@ namespace DynamoPerformanceTests
                     .WithMaxIterationCount(DynamoMaxIterationCount)
                 );
             }
+        }
+
+        /// <summary>
+        /// Gets the absolute path for a path relative to the executing assembly location
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        public static string GetFullPath(string path)
+        {
+            var fi = new FileInfo(Assembly.GetExecutingAssembly().Location);
+            string dir = fi.DirectoryName;
+            string f = Path.Combine(dir, path);
+            return Path.GetFullPath(f);
         }
     }
 }

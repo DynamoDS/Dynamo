@@ -2,9 +2,8 @@
 using System.Linq;
 using CoreNodeModels.Properties;
 using Dynamo.Graph.Nodes;
-using ProtoCore.AST.AssociativeAST;
-using Dynamo.Utilities;
 using Newtonsoft.Json;
+using ProtoCore.AST.AssociativeAST;
 
 namespace CoreNodeModels.HigherOrder
 {

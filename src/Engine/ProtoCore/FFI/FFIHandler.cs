@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Autodesk.DesignScript.Runtime;
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.DSASM;
 
@@ -8,7 +9,10 @@ namespace ProtoFFI
     public abstract class FFIFunctionPointer
     {
         public bool IsDNI { get; set; }
-        public abstract Object Execute(ProtoCore.Runtime.Context c, ProtoCore.DSASM.Interpreter dsi);
+
+        [IsObsolete("Remove in 3.0. Use Execute(ProtoCore.Runtime.Context c, ProtoCore.DSASM.Interpreter dsi, List<StackValue> stack) instead")]
+        public abstract object Execute(ProtoCore.Runtime.Context c, Interpreter dsi);
+        public abstract Object Execute(ProtoCore.Runtime.Context c, ProtoCore.DSASM.Interpreter dsi, List<StackValue> stack);
         public static T[] GetUnderlyingArray<T>(List<T> list)
         {
             return list.ToArray();

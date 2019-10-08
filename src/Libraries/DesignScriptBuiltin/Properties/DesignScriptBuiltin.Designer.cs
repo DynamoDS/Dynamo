@@ -70,6 +70,15 @@ namespace Builtin.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cannot index into a null list, dictionary or string..
+        /// </summary>
+        internal static string NullReferenceExceptionMessage {
+            get {
+                return ResourceManager.GetString("NullReferenceExceptionMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Index was out of range. If non-negative must be less than the size of the string..
         /// </summary>
         internal static string StringOverIndexingExceptionMessage {
