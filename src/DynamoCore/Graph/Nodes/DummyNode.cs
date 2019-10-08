@@ -1,7 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Xml;
 using Autodesk.DesignScript.Runtime;
+using Dynamo.Core;
+using Dynamo.Engine;
+using Dynamo.Graph.Nodes.NodeLoaders;
+using Dynamo.Graph.Workspaces;
+using Dynamo.Logging;
 using Dynamo.Utilities;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -397,6 +403,77 @@ namespace Dynamo.Graph.Nodes
 
                 return originalXmlElement;
             }
+        }
+
+        /// <summary>
+        /// Deserializes and returns the nodeModel that is represented by the original content of this DummyNode.
+        /// If this node cannot be resolved, returns a new DummyNode
+        /// </summary>
+        /// <param name="json"></param>
+        /// <param name="libraryServices"></param>
+        /// <param name="factory"></param>
+        /// <param name="isTestMode"></param>
+        /// <param name="manager"></param>
+        internal NodeModel GetNodeModelForDummyNode(string json, LibraryServices libraryServices,
+                                                  NodeFactory factory, bool isTestMode, CustomNodeManager manager)
+        {
+            var settings = new JsonSerializerSettings
+            {
+                Error = (sender, args) =>
+                {
+                    args.ErrorContext.Handled = true;
+                    Console.WriteLine(args.ErrorContext.Error);
+                },
+                ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+                TypeNameHandling = TypeNameHandling.Auto,
+                Formatting = Newtonsoft.Json.Formatting.Indented,
+                Culture = CultureInfo.InvariantCulture,
+                Converters = new List<JsonConverter>{
+                        new NodeReadConverter(manager, libraryServices, factory, isTestMode),
+                        new TypedParameterConverter()
+                    },
+                ReferenceResolverProvider = () => { return new IdReferenceResolver(); }
+            };
+
+            var result = SerializationExtensions.ReplaceTypeDeclarations(json, true);
+            var resolvedNodeModel = JsonConvert.DeserializeObject<NodeModel>(result, settings);
+
+            // If the resolved node model is not a dummy node, then copy the node view properties from the dummy node to the resolved version of that node. 
+            if (!(resolvedNodeModel is DummyNode))
+            {
+                SetNodeViewDataOnResolvedNode(this, resolvedNodeModel);
+            }
+            else
+            {
+                this.Log(string.Format("This graph has a node with id:{0} and name:{1}, but it could not be resolved",
+                                       resolvedNodeModel.GUID, resolvedNodeModel.Name)
+                                       , WarningLevel.Moderate);
+            }
+
+            return resolvedNodeModel;
+        }
+
+        /// <summary>
+        /// This will set the dummy node's node view properties to the resolved node
+        /// </summary>
+        /// <param name="dummyNode"></param>
+        /// <param name="resolvedNode"></param>
+        private void SetNodeViewDataOnResolvedNode(NodeModel dummyNode, NodeModel resolvedNode)
+        {
+            if (dummyNode == null || resolvedNode == null)
+            {
+                return;
+            }
+
+            resolvedNode.X = dummyNode.X;
+            resolvedNode.Y = dummyNode.Y;
+            resolvedNode.IsFrozen = dummyNode.IsFrozen;
+            resolvedNode.IsSetAsInput = dummyNode.IsSetAsInput;
+            resolvedNode.IsSetAsOutput = dummyNode.IsSetAsOutput;
+
+            // NOTE: The name needs to be set using UpdateValue to cause the view to update
+            resolvedNode.UpdateValue(new UpdateValueParams("Name", dummyNode.Name));
+            resolvedNode.UpdateValue(new UpdateValueParams("IsVisible", dummyNode.IsVisible.ToString()));
         }
     }
 }

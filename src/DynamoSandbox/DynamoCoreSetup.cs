@@ -11,6 +11,8 @@ using Dynamo.Logging;
 using Dynamo.Models;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.ViewModels.Watch3D;
+using System.Linq;
+using Dynamo.DynamoSandbox.Properties;
 
 namespace DynamoSandbox
 {
@@ -21,6 +23,7 @@ namespace DynamoSandbox
         private string commandFilePath;
         private Stopwatch startupTimer = Stopwatch.StartNew();
         private string ASMPath;
+        private const string sandboxWikiPage = @"https://github.com/DynamoDS/Dynamo/wiki/How-to-Utilize-Dynamo-Builds";
 
         [DllImport("msvcrt.dll")]
         public static extern int _putenv(string env);
@@ -40,6 +43,7 @@ namespace DynamoSandbox
             {
                 DynamoModel.RequestMigrationStatusDialog += MigrationStatusDialogRequested;
                 DynamoModel model;
+                Dynamo.Applications.StartupUtils.ASMPreloadFailure += ASMPreloadFailureHandler;
                 if (!String.IsNullOrEmpty(ASMPath))
                 {
                     model = Dynamo.Applications.StartupUtils.MakeModel(false,ASMPath);
@@ -68,6 +72,7 @@ namespace DynamoSandbox
                 app.Run(view);
 
                 DynamoModel.RequestMigrationStatusDialog -= MigrationStatusDialogRequested;
+                Dynamo.Applications.StartupUtils.ASMPreloadFailure -= ASMPreloadFailureHandler;
 
             }
 
@@ -95,14 +100,36 @@ namespace DynamoSandbox
                         // Give user a chance to save (but does not allow cancellation)
                         viewModel.Exit(allowCancel: false);
                     }
+                    else
+                    {
+                        //show a message dialog box with the exception so the user
+                        //can effectively report the issue.
+                        var shortStackTrace = String.Join(Environment.NewLine,e.StackTrace.Split(Environment.NewLine.ToCharArray()).Take(10));
+
+                        var result = MessageBox.Show($"{Resources.SandboxCrashMessage} {Environment.NewLine} {e.Message}" +
+                            $"  {Environment.NewLine} {e.InnerException?.Message} {Environment.NewLine} {shortStackTrace} {Environment.NewLine} " +
+                             Environment.NewLine + string.Format(Resources.SandboxBuildsPageDialogMessage, sandboxWikiPage),
+
+                            "DynamoSandbox",
+                            MessageBoxButton.YesNo,MessageBoxImage.Error);
+
+                        if(result == MessageBoxResult.Yes)
+                        {
+                            System.Diagnostics.Process.Start(sandboxWikiPage);
+                        }
+                    }
                 }
-                catch
-                {
+                catch {
                 }
 
                 Debug.WriteLine(e.Message);
                 Debug.WriteLine(e.StackTrace);
             }
+        }
+
+        private void ASMPreloadFailureHandler(string failureMessage)
+        {
+            MessageBox.Show(failureMessage, "DynamoSandbox", MessageBoxButton.OK, MessageBoxImage.Warning);
         }
 
         void OnDynamoViewLoaded(object sender, RoutedEventArgs e)
