@@ -7,6 +7,7 @@ using System.Threading;
 
 using Dynamo.Configuration;
 using Dynamo.Controls;
+using Dynamo.Extensions;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Interfaces;
@@ -270,6 +271,16 @@ namespace SystemTestServices
         {
             Assert.AreEqual(homeWorkspace.EvaluationCount, expected);
         }
+
+        /// <summary>
+        /// Gets the extension manager of the current Dynamo model
+        /// </summary>
+        /// <returns></returns>
+        protected IExtensionManager GetExtensionManager()
+        {
+            return Model.ExtensionManager;
+        }
+
 
         #endregion
 
