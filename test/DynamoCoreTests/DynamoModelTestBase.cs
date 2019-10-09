@@ -183,6 +183,14 @@ namespace Dynamo
             return null;
         }
 
+        protected void LoadPackage(string packageDirectory)
+        {
+            CurrentDynamoModel.PreferenceSettings.CustomPackageFolders.Add(packageDirectory);
+            var loader = GetPackageLoader();
+            var pkg = loader.ScanPackageDirectory(packageDirectory);
+            loader.LoadPackages(new List<Package> { pkg });
+        }
+
         protected NodeModel GetNodeInstance(string creationName)
         {
             var searchElementList = CurrentDynamoModel.SearchModel.SearchEntries.OfType<NodeSearchElement>();

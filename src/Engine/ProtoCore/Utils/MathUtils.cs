@@ -30,7 +30,7 @@ namespace ProtoCore.Utils
             return (lhs < rhs) || Equals(lhs, rhs);
         }
 
-        public static bool Equals(double lhs, double rhs)
+        public static bool Equals(double lhs, double rhs, double tolerance)
         {
             if (double.IsPositiveInfinity(lhs) && double.IsPositiveInfinity(rhs))
                 return true;
@@ -38,7 +38,12 @@ namespace ProtoCore.Utils
             if (double.IsNegativeInfinity(lhs) && double.IsNegativeInfinity(rhs))
                 return true;
 
-            return Math.Abs(lhs - rhs) < Tolerance;
+            return Math.Abs(lhs - rhs) < tolerance;
+        }
+
+        public static bool Equals(double lhs, double rhs)
+        {
+            return Equals(lhs, rhs, Tolerance);
         }
     }
 }

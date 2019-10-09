@@ -36,6 +36,88 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
+        public void RestartBannerDefaultStateTest()
+        {
+            RaiseLoadedEvent(this.View);
+            var extensionManager = View.viewExtensionManager;
+            extensionManager.Add(viewExtension);
+
+            Open(@"pkgs\Dynamo Samples\extra\CustomRenderExample.dyn");
+
+            var loadedParams = new ViewLoadedParams(View, ViewModel);
+            viewExtension.pmExtension = this.Model.ExtensionManager.Extensions.OfType<PackageManagerExtension>().FirstOrDefault();
+            viewExtension.DependencyView = new WorkspaceDependencyView(viewExtension, loadedParams);
+            var CurrentWorkspace = ViewModel.Model.CurrentWorkspace;
+            viewExtension.DependencyView.DependencyRegen(CurrentWorkspace);
+            // Restart banner should not display by default
+            Assert.AreEqual(Visibility.Hidden, viewExtension.DependencyView.RestartBanner.Visibility);
+        }
+
+
+        [Test]
+        public void DownloadSpecifiedVersionOfPackageTest()
+        {
+            RaiseLoadedEvent(this.View);
+            var extensionManager = View.viewExtensionManager;
+            extensionManager.Add(viewExtension);
+
+            Open(@"pkgs\Dynamo Samples\extra\CustomRenderExample.dyn");
+
+            var loadedParams = new ViewLoadedParams(View, ViewModel);
+            viewExtension.pmExtension = this.Model.ExtensionManager.Extensions.OfType<PackageManagerExtension>().FirstOrDefault();
+            viewExtension.DependencyView = new WorkspaceDependencyView(viewExtension, loadedParams);
+
+            var CurrentWorkspace = ViewModel.Model.CurrentWorkspace;
+            var info = CurrentWorkspace.NodeLibraryDependencies.Find(x => x.Name == "Dynamo Samples");
+
+            // This is equivalent to uninstall the package
+            var package = viewExtension.pmExtension.PackageLoader.LocalPackages.Where(x => x.Name == "Dynamo Samples").FirstOrDefault();
+            package.MarkedForUninstall = true;
+
+            // Once choosing to install the specified version, info.State should reflect RequireRestart
+            viewExtension.DependencyView.DependencyRegen(CurrentWorkspace);
+
+            // Restart banner should display immediately
+            Assert.AreEqual(Visibility.Visible, viewExtension.DependencyView.RestartBanner.Visibility);
+            Assert.AreEqual(1, viewExtension.DependencyView.PackageDependencyTable.Items.Count);
+            var newInfo = viewExtension.DependencyView.dataRows.FirstOrDefault().DependencyInfo;
+
+            // Local loaded version was 2.0.0, but now will be update to date with dyn
+            Assert.AreEqual("2.0.1", newInfo.Version.ToString());
+            Assert.AreEqual(1, newInfo.Nodes.Count);
+            Assert.AreEqual(newInfo.State, PackageDependencyState.RequiresRestart);
+        }
+
+        /// <summary>
+        /// This test is created to guard a crash happened that while dep viewer is loaded,
+        /// opening a dyf directly and closing it to switch to an empty homeworkspace causing a crash
+        /// </summary>
+        [Test]
+        public void DependencyRegenCrashingDynamoTest()
+        {
+            RaiseLoadedEvent(this.View);
+            var extensionManager = View.viewExtensionManager;
+            extensionManager.Add(viewExtension);
+            // Open a random dyf, as a result two Workspace Model will exist under DynamoModel
+            Open(@"pkgs\EvenOdd2\dyf\EvenOdd.dyf");
+
+            var loadedParams = new ViewLoadedParams(View, ViewModel);
+            viewExtension.pmExtension = this.Model.ExtensionManager.Extensions.OfType<PackageManagerExtension>().FirstOrDefault();
+            viewExtension.DependencyView = new WorkspaceDependencyView(viewExtension, loadedParams);
+
+            var homeWorkspaceModel = ViewModel.Model.Workspaces.OfType<HomeWorkspaceModel>().FirstOrDefault();
+
+            // This is equivalent to uninstall the package
+            var package = viewExtension.pmExtension.PackageLoader.LocalPackages.Where(x => x.Name == "Dynamo Samples").FirstOrDefault();
+            package.MarkedForUninstall = true;
+
+            // Closing the dyf will trigger DependencyRegen of HomeWorkspaceModel.
+            // The HomeWorkspaceModel does not contain any dependency info since it's empty
+            // but DependencyRegen() call on it should not crash
+            Assert.DoesNotThrow(()=> viewExtension.DependencyView.DependencyRegen(homeWorkspaceModel));
+        }
+
+        [Test]
         public void KeepInstalledVersionOfPackageTest()
         {
             RaiseLoadedEvent(this.View);
@@ -45,11 +127,12 @@ namespace DynamoCoreWpfTests
             Open(@"pkgs\Dynamo Samples\extra\CustomRenderExample.dyn");
 
             var loadedParams = new ViewLoadedParams(View, ViewModel);
+            viewExtension.pmExtension = this.Model.ExtensionManager.Extensions.OfType<PackageManagerExtension>().FirstOrDefault();
             viewExtension.DependencyView = new WorkspaceDependencyView(viewExtension, loadedParams);
 
             var CurrentWorkspace = ViewModel.Model.CurrentWorkspace;
             var info = CurrentWorkspace.NodeLibraryDependencies.Find(x => x.Name == "Dynamo Samples");
-            viewExtension.pmExtension = this.Model.ExtensionManager.Extensions.OfType<PackageManagerExtension>().FirstOrDefault();
+
             // Once choosing to keep the installed loaded version, info.Version should reflect the lower version
             viewExtension.DependencyView.UpdateWorkspaceToUseInstalledPackage(info as PackageDependencyInfo);
 

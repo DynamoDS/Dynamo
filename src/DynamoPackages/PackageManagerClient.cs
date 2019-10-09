@@ -57,15 +57,6 @@ namespace Dynamo.PackageManager
             }, false);
         }
 
-        internal bool Downvote(string packageId)
-        {
-            return FailFunc.TryExecute(() =>
-            {
-                var pkgResponse = this.client.ExecuteAndDeserialize(new Downvote(packageId));
-                return pkgResponse.success;
-            }, false);
-        }
-
         internal PackageManagerResult DownloadPackage(string packageId, string version, out string pathToPackage)
         {
             try

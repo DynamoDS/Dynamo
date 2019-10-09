@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -36,6 +37,8 @@ using Dynamo.Utilities;
 using DynamoServices;
 using DynamoUnits;
 using Greg;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using ProtoCore;
 using ProtoCore.Runtime;
 using Compiler = ProtoAssociative.Compiler;
@@ -43,10 +46,6 @@ using Compiler = ProtoAssociative.Compiler;
 using DefaultUpdateManager = Dynamo.Updates.UpdateManager;
 using FunctionGroup = Dynamo.Engine.FunctionGroup;
 using Utils = Dynamo.Graph.Nodes.Utilities;
-
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using System.Globalization;
 
 namespace Dynamo.Models
 {
@@ -732,6 +731,8 @@ namespace Dynamo.Models
 
             ResetEngineInternal();
 
+            EngineController.VMLibrariesReset += ReloadDummyNodes;
+
             AddHomeWorkspace();
 
             AuthenticationManager = new AuthenticationManager(config.AuthProvider);
@@ -1036,6 +1037,8 @@ namespace Dynamo.Models
 
             LibraryServices.Dispose();
             LibraryServices.LibraryManagementCore.Cleanup();
+
+            EngineController.VMLibrariesReset -= ReloadDummyNodes;
 
             UpdateManager.Log -= UpdateManager_Log;
             Logger.Dispose();
@@ -1713,6 +1716,78 @@ namespace Dynamo.Models
                 customNodeWorkspace.IsVisibleInDynamoLibrary = dynamoPreferences.IsVisibleInDynamoLibrary;
 
             return true;
+        }
+
+        // Attempts to reload all the dummy nodes in the current workspace and replaces them with resolved version. 
+        private void ReloadDummyNodes()
+        {
+            JObject dummyNodeJSON = null;
+            Boolean resolvedDummyNode = false;
+
+            WorkspaceModel currentWorkspace = this.CurrentWorkspace;
+
+            if (currentWorkspace == null || string.IsNullOrEmpty(currentWorkspace.FileName))
+            {
+                return;
+            }
+
+            // Get the dummy nodes in the current workspace. 
+            var dummyNodes = currentWorkspace.Nodes.OfType<DummyNode>();
+
+            foreach (DummyNode dn in dummyNodes)
+            {
+                dummyNodeJSON = dn.OriginalNodeContent as JObject;
+
+                if (dummyNodeJSON != null)
+                {
+                    // Deserializing the dummy node and verifying if it is resolved by the downloaded or imported package
+                    NodeModel resolvedNode = dn.GetNodeModelForDummyNode(
+                                                               dummyNodeJSON.ToString(),
+                                                               LibraryServices,
+                                                               NodeFactory,
+                                                               IsTestMode,
+                                                               CustomNodeManager);
+
+                    // If the resolved node is also a dummy node, then skip it else replace the dummy node with the resolved version of the node. 
+                    if (!(resolvedNode is DummyNode))
+                    {
+                        // Disable graph runs temporarily while the dummy node is replaced with the resolved version of that node.
+                        EngineController.DisableRun = true;
+                        currentWorkspace.RemoveAndDisposeNode(dn);
+                        currentWorkspace.AddAndRegisterNode(resolvedNode, false);
+
+                        // Adding back the connectors for the resolved node. 
+                        List<ConnectorModel> connectors = dn.AllConnectors.ToList();
+                        foreach (var connectorModel in connectors)
+                        {
+                            var startNode = connectorModel.Start.Owner;
+                            var endNode = connectorModel.End.Owner;
+
+                            if (startNode is DummyNode && startNode.GUID == resolvedNode.GUID)
+                            {
+                                startNode = resolvedNode;
+                            }
+                            if (endNode is DummyNode && endNode.GUID == resolvedNode.GUID)
+                            {
+                                endNode = resolvedNode;
+                            }
+
+                            connectorModel.Delete();
+                            ConnectorModel.Make(startNode, endNode, connectorModel.Start.Index, connectorModel.End.Index, connectorModel.GUID);
+                        }
+                        EngineController.DisableRun = false ;
+                        resolvedDummyNode = true;
+                    }
+                }
+            }
+
+            if (resolvedDummyNode)
+            {
+                currentWorkspace.HasUnsavedChanges = false;
+                // Once all the dummy nodes are reloaded, the DummyNodesReloaded event is invoked and
+                // the Dependency table is regenerated in the WorkspaceDependencyView extension. 
+                currentWorkspace.OnDummyNodesReloaded();
+            }
         }
 
         private bool OpenXmlFile(WorkspaceInfo workspaceInfo, XmlDocument xmlDoc, out WorkspaceModel workspace)
