@@ -65,7 +65,7 @@ namespace Dynamo.Controls
         private int tabSlidingWindowStart, tabSlidingWindowEnd;
         private GalleryView galleryView;
         private readonly LoginService loginService;
-        internal ViewExtensionManager viewExtensionManager = new ViewExtensionManager();
+        public ViewExtensionManager viewExtensionManager = new ViewExtensionManager();
         private ShortcutToolbar shortcutBar;
         private bool loaded = false;
 

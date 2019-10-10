@@ -16,6 +16,7 @@ using Dynamo.Scheduler;
 using Dynamo.Tests;
 using Dynamo.Updates;
 using Dynamo.ViewModels;
+using Dynamo.Wpf.Extensions;
 using DynamoShapeManager;
 
 using NUnit.Framework;
@@ -273,12 +274,12 @@ namespace SystemTestServices
         }
 
         /// <summary>
-        /// Gets the extension manager of the current Dynamo model
+        /// Gets the view extension manager of the current Dynamo model
         /// </summary>
         /// <returns></returns>
-        protected IExtensionManager GetExtensionManager()
+        protected IViewExtensionManager GetViewExtensionManager()
         {
-            return Model.ExtensionManager;
+            return View.viewExtensionManager;
         }
 
 
