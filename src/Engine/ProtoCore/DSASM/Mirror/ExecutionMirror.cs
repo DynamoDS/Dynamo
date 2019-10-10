@@ -1,13 +1,11 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Text;
-using ProtoCore.Exceptions;
 using ProtoCore.Lang;
-using ProtoFFI;
-using ProtoCore.Utils;
 using ProtoCore.Runtime;
+using ProtoCore.Utils;
+using ProtoFFI;
 
 namespace ProtoCore.DSASM.Mirror
 {
@@ -60,28 +58,33 @@ namespace ProtoCore.DSASM.Mirror
             {
                 return val.IntegerValue.ToString();
             }
-            else if (val.IsDouble)
+
+            if (val.IsDouble)
             {
                 return val.DoubleValue.ToString("F6");
             }
-            else if (val.IsNull)
+
+            if (val.IsNull)
             {
                 return "null";
             }
-            else if (val.IsPointer)
+
+            if (val.IsPointer)
             {
                 return GetClassTrace(val, heap, langblock, forPrint);
             }
-            else if (val.IsArray)
+
+            if (val.IsArray)
             {
                 HashSet<int> pointers = new HashSet<int> { val.ArrayPointer };
                 string arrTrace = GetArrayTrace(val, heap, langblock, pointers, forPrint);
                 if (forPrint)
-                    return "{" + arrTrace + "}";
-                else
-                    return "{ " + arrTrace + " }";
+                    return "[" + arrTrace + "]";
+
+                return "[ " + arrTrace + " ]";
             }
-            else if (val.IsFunctionPointer)
+
+            if (val.IsFunctionPointer)
             {
                 ProcedureNode procNode;
                 if (runtimeCore.DSExecutable.FuncPointerTable.TryGetFunction(val, runtimeCore, out procNode))
@@ -96,29 +99,30 @@ namespace ProtoCore.DSASM.Mirror
                 }
                 return "function: " + val.FunctionPointer.ToString();
             }
-            else if (val.IsBoolean)
+
+            if (val.IsBoolean)
             {
                 return val.BooleanValue ? "true" : "false";
             }
-            else if (val.IsString)
+
+            if (val.IsString)
             {
                 if (forPrint)
                     return heap.ToHeapObject<DSString>(val).Value;
-                else
-                    return "\"" + heap.ToHeapObject<DSString>(val).Value + "\"";
+
+                return "\"" + heap.ToHeapObject<DSString>(val).Value + "\"";
             }
-            else if (val.IsChar)
+
+            if (val.IsChar)
             {
                 Char character = Convert.ToChar(val.CharValue);
                 if (forPrint)
                     return character.ToString();
-                else
-                    return "'" + character + "'";
+
+                return "'" + character + "'";
             }
-            else
-            {
-                return "null"; // "Value not yet supported for tracing";
-            }
+
+            return "null"; // "Value not yet supported for tracing";
         }
 
         public string GetClassTrace(StackValue val, Heap heap, int langblock, bool forPrint)
@@ -212,21 +216,17 @@ namespace ProtoCore.DSASM.Mirror
         {
             if (pointers.Contains(ptr.ArrayPointer))
             {
-                return "{ ... }";
+                return "[ ... ]";
             }
-            else
-            {
-                pointers.Add(ptr.ArrayPointer);
 
-                if (forPrint)
-                {
-                    return "{" + GetArrayTrace(ptr, heap, langblock, pointers, forPrint) + "}";
-                }
-                else
-                {
-                    return "{ " + GetArrayTrace(ptr, heap, langblock, pointers, forPrint) + " }";
-                }
+            pointers.Add(ptr.ArrayPointer);
+
+            if (forPrint)
+            {
+                return "[" + GetArrayTrace(ptr, heap, langblock, pointers, forPrint) + "]";
             }
+
+            return "[ " + GetArrayTrace(ptr, heap, langblock, pointers, forPrint) + " ]";
         }
 
         private string GetArrayTrace(StackValue svArray, Heap heap, int langblock, HashSet<int> pointers, bool forPrint)

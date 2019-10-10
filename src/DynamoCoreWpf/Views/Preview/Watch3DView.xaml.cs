@@ -5,12 +5,12 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Media3D;
 using System.Windows.Threading;
+using Dynamo.Graph.Nodes;
 using Dynamo.Visualization;
 using Dynamo.Wpf.ViewModels.Watch3D;
 using HelixToolkit.Wpf.SharpDX;
 using SharpDX;
 using Point = System.Windows.Point;
-using Dynamo.Graph.Nodes;
 
 namespace Dynamo.Controls
 {

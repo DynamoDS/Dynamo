@@ -1,19 +1,4 @@
-﻿using Dynamo.Controls;
-using Dynamo.Graph;
-using Dynamo.Graph.Annotations;
-using Dynamo.Graph.Nodes;
-using Dynamo.Graph.Notes;
-using Dynamo.Graph.Workspaces;
-using Dynamo.Models;
-using Dynamo.Nodes;
-using Dynamo.Search.SearchElements;
-using Dynamo.Selection;
-using Dynamo.UI;
-using Dynamo.Utilities;
-using Dynamo.ViewModels;
-using Dynamo.Wpf.UI;
-using Dynamo.Wpf.Utilities;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
@@ -25,6 +10,20 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using Dynamo.Controls;
+using Dynamo.Graph;
+using Dynamo.Graph.Annotations;
+using Dynamo.Graph.Nodes;
+using Dynamo.Graph.Notes;
+using Dynamo.Graph.Workspaces;
+using Dynamo.Models;
+using Dynamo.Search.SearchElements;
+using Dynamo.Selection;
+using Dynamo.UI;
+using Dynamo.Utilities;
+using Dynamo.ViewModels;
+using Dynamo.Wpf.UI;
+using Dynamo.Wpf.Utilities;
 using ModifierKeys = System.Windows.Input.ModifierKeys;
 
 namespace Dynamo.Views
@@ -838,12 +837,11 @@ namespace Dynamo.Views
 
                         double deltaX = nodeCenterInOverlay.X - outerCenter.X;
                         double deltaY = nodeCenterInOverlay.Y - outerCenter.Y;
+                        
+                        vm.Model.X -= deltaX;
+                        vm.Model.Y -= deltaY;
 
-                        //var offset = new Point(vm.CurrentOffset.X - deltaX, vm.CurrentOffset.Y - deltaY);
-
-                        //vm.CurrentOffset = offset;
-
-                        zoomBorder.SetTranslateTransformOrigin(new Point2D(vm.Model.X - deltaX, vm.Model.Y - deltaY));
+                        zoomBorder.SetTranslateTransformOrigin(new Point2D(vm.Model.X, vm.Model.Y));
                     }
                 });
         }

@@ -8,17 +8,15 @@ using Dynamo.Graph;
 using Dynamo.Graph.Connectors;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.ZeroTouch;
+using Dynamo.Graph.Workspaces;
+using Dynamo.Models;
+using Dynamo.Properties;
 using NUnit.Framework;
-
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.DSASM;
 using ProtoCore.Mirror;
 using ProtoCore.Utils;
-
 using DynCmd = Dynamo.Models.DynamoModel;
-using Dynamo.Models;
-using Dynamo.Graph.Workspaces;
-using Dynamo.Properties;
 
 namespace Dynamo.Tests
 {
@@ -211,6 +209,87 @@ b = c[w][x][y][z];";
 #endif
         protected double tolerance = 1e-4;
 
+        // Note: This test fails, even though the individual items pass as separate tests
+        //       This is preventing putting all of the tests in a single method
+        //[Test]
+        //[Category("UnitTests")]
+        //public void TestFunctionDefaultParameters()
+        //{
+        //    var codeBlockNode = CreateCodeBlockNode();
+        //    var guid = codeBlockNode.GUID.ToString();
+
+        //    UpdateCodeBlockNodeContent(codeBlockNode, "def test(x:int = 1){return = x;}test();");
+        //    AssertPreviewValue(guid, 1);
+
+        //    UpdateCodeBlockNodeContent(codeBlockNode, "def test(x:int = 1, y:int= 2){return = x + y;}test();");
+        //    AssertPreviewValue(guid, 3);
+        //}
+
+        [Test]
+        [Category("UnitTests")]
+        public void TestFunctionSingleDefaultParameter()
+        {
+            var codeBlockNode = CreateCodeBlockNode();
+            UpdateCodeBlockNodeContent(codeBlockNode, "def test(x:int = 1){return = x;}test();");
+            AssertPreviewValue(codeBlockNode.GUID.ToString(), 1);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TestFunctionTwoDefaultParameters()
+        {
+            var codeBlockNode = CreateCodeBlockNode();
+            UpdateCodeBlockNodeContent(codeBlockNode, "def test(x:int = 1, y:int= 2){return = x + y;}test();");
+            AssertPreviewValue(codeBlockNode.GUID.ToString(), 3);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TestFunctionThreeDefaultParameters()
+        {
+            var codeBlockNode = CreateCodeBlockNode();
+            UpdateCodeBlockNodeContent(codeBlockNode, "def test(x:int = 1, y:int= 2, z:int= 3){return = x + y + z;}test();");
+            AssertPreviewValue(codeBlockNode.GUID.ToString(), 6);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TestFunctionOneArgumentOneDefaultParameter()
+        {
+            var codeBlockNode = CreateCodeBlockNode();
+            UpdateCodeBlockNodeContent(codeBlockNode, "def test(x:int, y:int= 2){return = x + y;}test(1);");
+            AssertPreviewValue(codeBlockNode.GUID.ToString(), 3);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TestFunctionMultipleBlocksDefaultParameters()
+        {
+            var codeBlockNode1 = CreateCodeBlockNode();
+            UpdateCodeBlockNodeContent(codeBlockNode1, "def test1(x:int = 1, y:int= 2){return = x + y;}test1();");
+            var codeBlockNode2 = CreateCodeBlockNode();
+            UpdateCodeBlockNodeContent(codeBlockNode2, "def test2(x, y = 2, z = 3){return = x + y + z;}test2(1);");
+
+            AssertPreviewValue(codeBlockNode1.GUID.ToString(), 3);
+            AssertPreviewValue(codeBlockNode2.GUID.ToString(), 6);
+        }
+
+        // Note: DYN-1684 - This test is expected to fail due to the functions being indeterminate
+        //       We will need to figure out a way to test this once error handling is implemented
+        //[Test]
+        //[Category("UnitTests")]
+        //public void TestIndeterminateFunctionDefaultParameters()
+        //{
+        //    // Note that both code blocks contain functions called "test" that are indeterminate
+        //    var codeBlockNode1 = CreateCodeBlockNode();
+        //    UpdateCodeBlockNodeContent(codeBlockNode1, "def test(x:int = 1, y:int= 2){return = x + y;}test();");
+        //    var codeBlockNode2 = CreateCodeBlockNode();
+        //    UpdateCodeBlockNodeContent(codeBlockNode2, "def test(x, y = 2, z = 3){return = x + y + z;}test(1);");
+
+        //    AssertPreviewValue(codeBlockNode1.GUID.ToString(), 3);
+        //    AssertPreviewValue(codeBlockNode2.GUID.ToString(), 6);
+        //}
+
         [Test]
         [Category("UnitTests")]
         public void TestVarRedefinitionInFunctionDef()
@@ -223,7 +302,7 @@ b = c[w][x][y][z];";
             var guid = "bbf7919d-d578-4b54-90b1-7df8f01483c6";
             var cbn = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace<CodeBlockNodeModel>(
                 Guid.Parse(guid));
-            
+
 
             Assert.IsNotNull(cbn);
             Assert.AreEqual(ElementState.PersistentWarning, cbn.State);
@@ -1103,8 +1182,7 @@ var06 = g;
             int outportBrokenNodeCount = helloBrokenNode.OutPorts.Count;
             Assert.IsFalse(outportCount > 0);
         }
-
-
+        
         #region CodeBlockUtils Specific Tests
         [Test]
         [Category("UnitTests")]
@@ -1308,13 +1386,13 @@ var06 = g;
             // Create a list of another empty list.
             var svs = new List<List<string>> { new List<string>() };
 
-            Assert.Throws<IndexOutOfRangeException>(() =>
+            Assert.Throws<System.IndexOutOfRangeException>(() =>
             {
                 // -1 as index argument will cause exception.
                 CodeBlockUtils.DoesStatementRequireOutputPort(svs, -1);
             });
 
-            Assert.Throws<IndexOutOfRangeException>(() =>
+            Assert.Throws<System.IndexOutOfRangeException>(() =>
             {
                 // Out-of-bound index argument will cause exception.
                 CodeBlockUtils.DoesStatementRequireOutputPort(svs, 1);
@@ -1558,7 +1636,7 @@ var06 = g;
             AssertPreviewValue("39c65660-8575-43bc-8af7-f24225a6bd5b", 21);
         }
 
-        [Test, Category("Failure")]
+        [Test]
         [Ignore("Test Loops Forever. Danger.")]
         public void TestImperativeLanguageBlock()
         {
@@ -1666,7 +1744,7 @@ var06 = g;
             AssertError("0cb2f07a-95ab-49ed-bd7e-3e21281b87a3"); // uses identifier as dictionary key
             AssertError("a2b3ac31-98f0-46b0-906e-8617821d0a51"); // uses old syntax {1,2}
         }
-
+        
         [Test]
         public void TestDeprecatedListSyntaxMigration()
         {

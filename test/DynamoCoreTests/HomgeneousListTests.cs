@@ -1,12 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using CoreNodeModels;
 using Dynamo.Events;
-using Dynamo.Graph.Nodes;
-using Dynamo.Graph.Nodes.ZeroTouch;
 using NUnit.Framework;
 
 namespace Dynamo.Tests
@@ -37,65 +31,6 @@ namespace Dynamo.Tests
         public void FixtureSetup()
         {
             ExecutionEvents.GraphPostExecution += ExecutionEvents_GraphPostExecution;
-        }
-
-        [Test]
-        public void TestMethodResolutionPerformance()
-        {
-
-            //Run once to complete initialization
-
-            RunModel(@"core\HomogeneousList\HomogeneousInputs.dyn");
-
-            //Run timed tests of a list of Heterogeneous input types (first item is double vs int).  
-            //Store graph execution time.
-            var timeHeterogeneousFirst = new List<double>();
-            for (int i = 0; i < 50; i++)
-            {
-
-                RunModel(@"core\HomogeneousList\HeterogeneousInputsFirst.dyn");
-
-                timeHeterogeneousFirst.Add(lastExecutionDuration.TotalMilliseconds);
-            }
-
-            //Run timed tests of a list of Heterogeneous input types (last item is double vs int). 
-            //Store graph execution time.
-            var timeHeterogeneousLast = new List<double>();
-            for (int i = 0; i < 50; i++)
-            {
-
-                RunModel(@"core\HomogeneousList\HeterogeneousInputsLast.dyn");
-
-                timeHeterogeneousLast.Add(lastExecutionDuration.TotalMilliseconds);
-            }
-
-            //Run timed tests of a list of Homogeneous input types (all items are int).  
-            //Store graph execution time.
-            var timeHomogeneous = new List<double>();
-            for (int i = 0; i < 50; i++)
-            {  
-                RunModel(@"core\HomogeneousList\HomogeneousInputs.dyn");
-
-                timeHomogeneous.Add(lastExecutionDuration.TotalMilliseconds);
-
-            }
-
-            //Filter time data to remove outliers 
-            var homogeneousStdDev = CalculateListStdDev(timeHomogeneous);
-            var heterogeneousFirstStdDev = CalculateListStdDev(timeHeterogeneousFirst);
-            var heterogeneousLastStdDev = CalculateListStdDev(timeHeterogeneousLast);
-
-            var aveHomogeneous = TrimListOutliers(timeHomogeneous, homogeneousStdDev, 2).Average();
-            var aveHeterogeneousFirstItem = TrimListOutliers(timeHeterogeneousFirst, heterogeneousFirstStdDev, 2).Average();
-            var aveHeterogeneousLastItem = TrimListOutliers(timeHeterogeneousLast, heterogeneousLastStdDev, 2).Average();
-
-            Assert.LessOrEqual(aveHomogeneous, aveHeterogeneousFirstItem);
-            Assert.LessOrEqual(aveHomogeneous, aveHeterogeneousLastItem);
-
-            Console.WriteLine("Homogeneous average execution: " + aveHomogeneous + "ms");
-            Console.WriteLine("Heterogeneous first item average execution: " + aveHeterogeneousFirstItem + "ms");
-            Console.WriteLine("Heterogeneous last item average execution: " + aveHeterogeneousLastItem + "ms");
-
         }
 
         [Test]
@@ -132,37 +67,6 @@ namespace Dynamo.Tests
         public void TearDown()
         {
             ExecutionEvents.GraphPostExecution -= ExecutionEvents_GraphPostExecution;
-        }
-
-        /// <summary>
-        /// Determine standard deviation of values in a list.
-        /// </summary>
-        /// <param name="values"></param>
-        /// <returns>Standard deviation.</returns>
-        private double CalculateListStdDev(IEnumerable<double> values)
-        {
-
-            double avg = values.Average();    
-            double sum = values.Sum(d => Math.Pow(d - avg, 2));  
-            var ret = Math.Sqrt((sum) / (values.Count() - 1));
-   
-            return ret;
-        }
-
-        /// <summary>
-        /// Remove outliers from a list based on their difference from the average.
-        /// Use multiple of standard deviation to determine range of exclusion.
-        /// </summary>
-        /// <param name="values"></param>
-        /// <param name="stdDev"></param>
-        /// <param name="multiplier"></param>
-        /// <returns>List of values within the acceptable range of standard deviation.</returns>
-        private List<double> TrimListOutliers(IEnumerable<double> values, double stdDev, int multiplier = 1)
-        {
-            double avg = values.Average();
-            var newList =
-                values.Where(value => value <= avg + stdDev * multiplier && value >= avg - stdDev * multiplier);
-            return newList.ToList();
         }
 
         private void ExecutionEvents_GraphPostExecution(Session.IExecutionSession session)

@@ -2,13 +2,10 @@
 using System.Linq;
 using System.Threading;
 using System.Windows;
-
-using SystemTestServices;
-
 using Dynamo.PackageManager;
 using Dynamo.PackageManager.UI;
-
 using NUnit.Framework;
+using SystemTestServices;
 
 
 namespace DynamoCoreWpfTests
@@ -156,6 +153,84 @@ namespace DynamoCoreWpfTests
             AssertWindowOwnedByDynamoView<PackageManagerSearchView>();
             AssertWindowClosedWithDynamoView<PackageManagerSearchView>();
 
+        }
+
+        [Test]
+        public void PackageSearchDialogSearchTextCollapsedWhileSyncing()
+        {
+            // Arrange
+            PackageManagerSearchViewModel searchViewModel = new PackageManagerSearchViewModel();
+
+            // Act
+            searchViewModel.SearchState = PackageManagerSearchViewModel.PackageSearchState.Syncing;
+
+            // Assert
+            Assert.AreEqual(false, searchViewModel.ShowSearchText);
+        }
+
+        [Test]
+        public void PackageSearchDialogSearchTextVisibleWithResults()
+        {
+            // Arrange
+            PackageManagerSearchViewModel searchViewModel = new PackageManagerSearchViewModel();
+
+            // Act
+            searchViewModel.SearchState = PackageManagerSearchViewModel.PackageSearchState.Results;
+
+            // Assert
+            Assert.AreEqual(true, searchViewModel.ShowSearchText);
+        }
+
+        [Test]
+        public void PackageSearchDialogSearchTextVisibleWhenSearching()
+        {
+            // Arrange
+            PackageManagerSearchViewModel searchViewModel = new PackageManagerSearchViewModel();
+
+            // Act
+            searchViewModel.SearchState = PackageManagerSearchViewModel.PackageSearchState.Searching;
+
+            // Assert
+            Assert.AreEqual(true, searchViewModel.ShowSearchText);
+        }
+
+        [Test]
+        public void PackageSearchDialogSearchTextVisibleWhenNoResults()
+        {
+            // Arrange
+            PackageManagerSearchViewModel searchViewModel = new PackageManagerSearchViewModel();
+
+            // Act
+            searchViewModel.SearchState = PackageManagerSearchViewModel.PackageSearchState.NoResults;
+
+            // Assert
+            Assert.AreEqual(true, searchViewModel.ShowSearchText);
+        }
+
+        [Test]
+        public void PackageSearchDialogSearchBoxPromptTextWhileSyncing()
+        {
+            // Arrange
+            PackageManagerSearchViewModel searchViewModel = new PackageManagerSearchViewModel();
+
+            // Act
+            searchViewModel.SearchState = PackageManagerSearchViewModel.PackageSearchState.Syncing;
+
+            // Assert
+            Assert.AreEqual(Dynamo.Wpf.Properties.Resources.PackageSearchViewSearchTextBoxSyncing, searchViewModel.SearchBoxPrompt);
+        }
+
+        [Test]
+        public void PackageSearchDialogSearchBoxPromptTextWhenNotSyncing()
+        {
+            // Arrange
+            PackageManagerSearchViewModel searchViewModel = new PackageManagerSearchViewModel();
+
+            // Act
+            searchViewModel.SearchState = PackageManagerSearchViewModel.PackageSearchState.Results;
+
+            // Assert
+            Assert.AreEqual(Dynamo.Wpf.Properties.Resources.PackageSearchViewSearchTextBox, searchViewModel.SearchBoxPrompt);
         }
 
         #endregion

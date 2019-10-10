@@ -567,6 +567,15 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Attempting to load customNode {0} loaded by package {1}, but a previous definition named {2} exists with no associated package. The new customNode definition has been loaded, but Dynamo may be in an unstable state, please avoid loading multiple custom nodes with the id..
+        /// </summary>
+        public static string FunctionDefinitionOverwrittenMessage {
+            get {
+                return ResourceManager.GetString("FunctionDefinitionOverwrittenMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Instance of a Custom Node.
         /// </summary>
         public static string FunctionDescription {
@@ -738,6 +747,59 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to This custom node contains an invalid input. Please fix the input before saving the custom node..
+        /// </summary>
+        public static string InvalidInputSymbolCustomNodeWarning {
+            get {
+                return ResourceManager.GetString("InvalidInputSymbolCustomNodeWarning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This input symbol is not currently valid, and cannot be saved until it is fixed. Valid inputs take the form:
+        ///
+        ///name : type = defaultValue
+        ///
+        ///The input name should be a valid variable name, without spaces. An input type and default value are optional..
+        /// </summary>
+        public static string InvalidInputSymbolErrorMessage {
+            get {
+                return ResourceManager.GetString("InvalidInputSymbolErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This custom node currently contains some invalid inputs, and cannot be saved until the inputs are fixed. If the custom node is saved using SaveAs, the invalid inputs will revert to generic inputs. Valid inputs take the form:
+        ///
+        ///name : type = defaultValue
+        ///
+        ///The input name should be a valid variable name, without spaces. An input type and default value are optional..
+        /// </summary>
+        public static string InvalidInputSymbolWarningMessage {
+            get {
+                return ResourceManager.GetString("InvalidInputSymbolWarningMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This custom node cannot be saved until invalid inputs are removed or fixed..
+        /// </summary>
+        public static string InvalidInputSymbolWarningShortMessage {
+            get {
+                return ResourceManager.GetString("InvalidInputSymbolWarningShortMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Custom Node Contains Invalid Inputs and Cannot Be Saved..
+        /// </summary>
+        public static string InvalidInputSymbolWarningTitle {
+            get {
+                return ResourceManager.GetString("InvalidInputSymbolWarningTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Invalid library format..
         /// </summary>
         public static string InvalidLibraryFormat {
@@ -815,6 +877,18 @@ namespace Dynamo.Properties {
         public static string MalformedHeaderPackage {
             get {
                 return ResourceManager.GetString("MalformedHeaderPackage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {1} cannot be loaded. 
+        ///Installing it will conflict with one or more node definitions that already exist in {0}, which is currently loaded. 
+        ///To install {1}, Dynamo needs to first uninstall {0}. 
+        ///Restart Dynamo to complete the uninstall..
+        /// </summary>
+        public static string MessageCustomNodePackageFailedToLoad {
+            get {
+                return ResourceManager.GetString("MessageCustomNodePackageFailedToLoad", resourceCulture);
             }
         }
         
@@ -1098,7 +1172,16 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Python template set to default file.
+        ///   Looks up a localized string similar to Python template loaded from AppData.
+        /// </summary>
+        public static string PythonTemplateAppData {
+            get {
+                return ResourceManager.GetString("PythonTemplateAppData", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Python template set to default..
         /// </summary>
         public static string PythonTemplateDefaultFile {
             get {
@@ -1107,16 +1190,16 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Python template : no valid template found..
+        ///   Looks up a localized string similar to Python template set by host integrator.
         /// </summary>
-        public static string PythonTemplateInvalid {
+        public static string PythonTemplateDefinedByHost {
             get {
-                return ResourceManager.GetString("PythonTemplateInvalid", resourceCulture);
+                return ResourceManager.GetString("PythonTemplateDefinedByHost", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Python template set to user file.
+        ///   Looks up a localized string similar to Python template loaded from DynamoSettings.xml path.
         /// </summary>
         public static string PythonTemplateUserFile {
             get {

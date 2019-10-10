@@ -1,5 +1,5 @@
-﻿using System.IO;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.IO;
 using System.Reflection;
 using NUnit.Framework;
 
@@ -67,10 +67,6 @@ namespace Dynamo.Tests
 
             return testParameters;
         }
-
-        #region Private Helper Methods
-
-
-        #endregion
+        
     }
 }

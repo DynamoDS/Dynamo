@@ -1,15 +1,14 @@
 ﻿using System;
-using System.IO;
 using System.Collections.Generic;
-using ProtoCore.DSASM;
-using ProtoCore.Lang.Replication;
-using ProtoCore.Utils;
+using System.IO;
 using System.Linq;
-using Autodesk.DesignScript.Interfaces;
-using ProtoFFI;
-using ProtoCore.Runtime;
-using ProtoCore.Properties;
+using ProtoCore.DSASM;
 using ProtoCore.Exceptions;
+using ProtoCore.Lang.Replication;
+using ProtoCore.Properties;
+using ProtoCore.Runtime;
+using ProtoCore.Utils;
+using ProtoFFI;
 
 namespace ProtoCore.Lang
 {
@@ -971,9 +970,12 @@ namespace ProtoCore.Lang
             //TODO: Change Execution mirror class to have static methods, so that an instance does not have to be created
             ProtoCore.DSASM.Mirror.ExecutionMirror mirror = new DSASM.Mirror.ExecutionMirror(runtime.runtime, runtime.runtime.RuntimeCore);
             string result = mirror.GetStringValue(msg, runtime.runtime.rmem.Heap, 0, true);
+#if DEBUG
+            
             //For Console output
             Console.WriteLine(result);
-            
+#endif
+
             ////For IDE output
             //ProtoCore.Core core = runtime.runtime.Core;
             //OutputMessage t_output = new OutputMessage(result);
@@ -1467,7 +1469,11 @@ namespace ProtoCore.Lang
         internal static StackValue Difference(StackValue sv1, StackValue sv2, ProtoCore.DSASM.Interpreter runtime, ProtoCore.Runtime.Context context)
         {
             if((Rank(sv1, runtime)!=1)||(Rank(sv2, runtime)!=1)){
+#if DEBUG
+                
                 Console.WriteLine("Warning: Both arguments were expected to be one-dimensional array type!");
+#endif
+
                 return DSASM.StackValue.Null;
             }
             if ((!sv1.IsArray) || (!sv1.IsArray))
@@ -1521,7 +1527,11 @@ namespace ProtoCore.Lang
         {
             if ((Rank(sv1, runtime) != 1) || (Rank(sv2, runtime) != 1))
             {
+#if DEBUG
+                
                 Console.WriteLine("Warning: Both arguments were expected to be one-dimensional array type!");
+#endif
+
                 return DSASM.StackValue.Null;
             }
             if ((!sv1.IsArray) || (!sv1.IsArray))
@@ -2565,30 +2575,15 @@ namespace ProtoCore.Lang
 
     class StackValueComparerForDouble : IComparer<StackValue>
     {
-        private bool mbAscending = true;
+        private readonly bool mbAscending = true;
         public StackValueComparerForDouble(bool ascending)
         {
             mbAscending = ascending;
         }
 
-        bool Equals(StackValue sv1, StackValue sv2)
-        {
-            bool sv1null = !sv1.IsNumeric;
-            bool sv2null = !sv2.IsNumeric; 
-            if ( sv1null && sv2null)
-                return true;
-            if (sv1null || sv2null)
-                return false;
-
-            var v1 = sv1.IsDouble ? sv1.DoubleValue: sv1.IntegerValue;
-            var v2 = sv2.IsDouble ? sv2.DoubleValue: sv2.IntegerValue;
-
-            return MathUtils.Equals(v1, v2);
-        }
-
         public int Compare(StackValue sv1, StackValue sv2)
         {
-            if (Equals(sv1, sv2))
+            if (!sv1.IsNumeric && !sv2.IsNumeric)
                 return 0;
 
             if (!sv1.IsNumeric)
@@ -2603,10 +2598,7 @@ namespace ProtoCore.Lang
             double x = mbAscending ? value1 : value2;
             double y = mbAscending ? value2 : value1; 
 
-            if (x > y)
-                return 1;
-            else
-                return -1;
+            return x.CompareTo(y);
         }
     }
 }

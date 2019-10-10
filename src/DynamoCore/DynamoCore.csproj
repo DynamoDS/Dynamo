@@ -78,8 +78,8 @@ limitations under the License.
     <Reference Include="Analytics.NET.Google">
       <HintPath>..\..\extern\Analytics.NET\Analytics.NET.Google.dll</HintPath>
     </Reference>
-    <Reference Include="Greg, Version=1.1.6913.31484, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Greg.1.1.6913.31484\lib\net47\Greg.dll</HintPath>
+    <Reference Include="Greg, Version=1.2.7177.24952, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Greg.1.2.7177.24952\lib\net47\Greg.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
@@ -112,7 +112,18 @@ limitations under the License.
     <Compile Include="Configuration\DebugSettings.cs" />
     <Compile Include="Configuration\Context.cs" />
     <Compile Include="Core\DynamoMigrator.cs" />
+    <Compile Include="Engine\CodeGeneration\CompilationContext.cs" />
+    <Compile Include="Engine\CodeGeneration\CompiledEventArgs.cs" />
+    <Compile Include="Engine\CodeGeneration\CompilingEventArgs.cs" />
+    <Compile Include="Engine\CodeGeneration\IAstNodeContainer.cs" />
+    <Compile Include="Engine\Profiling\IProfilingExecutionTimeData.cs" />
+    <Compile Include="Engine\Profiling\NodeProfilingData.cs" />
+    <Compile Include="Engine\Profiling\ProfilingData.cs" />
+    <Compile Include="Engine\Profiling\ProfilingSession.cs" />
+    <Compile Include="Engine\ShortestQualifiedNameReplacer.cs" />
+    <Compile Include="Exceptions\CustomNodePackageLoadException.cs" />
     <Compile Include="Exceptions\LibraryLoadFailedException.cs" />
+    <Compile Include="Graph\Workspaces\PackageDependencyInfo.cs" />
     <Compile Include="Graph\Nodes\NodeOutputData.cs" />
     <Compile Include="Graph\Nodes\NodeInputData.cs" />
     <Compile Include="Graph\Workspaces\LayoutExtensions.cs" />
@@ -141,6 +152,7 @@ limitations under the License.
     <Compile Include="Library\ILibraryLoader.cs" />
     <Compile Include="Graph\Workspaces\ICustomNodeWorkspaceModel.cs" />
     <Compile Include="Visualization\DefaultGraphicPrimitives.cs" />
+    <Compile Include="Visualization\GeometryHolder.cs" />
     <Compile Include="Visualization\IRenderPackageSource.cs" />
     <Compile Include="Graph\Workspaces\IWorkspaceModel.cs" />
     <Compile Include="Logging\LogMessage.cs" />
@@ -341,6 +353,10 @@ limitations under the License.
       <Project>{6e0a079e-85f1-45a1-ad5b-9855e4344809}</Project>
       <Name>Units</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Libraries\VMDataBridge\VMDataBridge.csproj">
+      <Project>{ccb6e56b-2da1-4eba-a1f9-e8510e129d12}</Project>
+      <Name>VMDataBridge</Name>
+    </ProjectReference>
     <ProjectReference Include="..\NodeServices\DynamoServices.csproj">
       <Project>{ef879a10-041d-4c68-83e7-3192685f1bae}</Project>
       <Name>DynamoServices</Name>
@@ -359,6 +375,7 @@ limitations under the License.
   <ItemGroup>
     <Resource Include="BuiltInAndOperators\BuiltIn.Migrations.xml" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="BeforeBuild">
     <ItemGroup>
@@ -366,12 +383,11 @@ limitations under the License.
       <ExternProtoGeometryXml Include="$(SolutionDir)..\extern\ProtoGeometry\ProtoGeometry.XML" />
       <ExternProtoGeometryUICulture Include="$(SolutionDir)..\extern\ProtoGeometry\$(UICulture)\*" />
       <ExternProtoGeometryLibGLocale Include="$(SolutionDir)..\extern\ProtoGeometry\libg_locale\**\*.*" />
-      <ExternLibG220 Include="$(SolutionDir)..\extern\LibG_220_0_0\*" />
-      <ExternLibG221 Include="$(SolutionDir)..\extern\LibG_221_0_0\*" />
-      <ExternLibG222 Include="$(SolutionDir)..\extern\LibG_222_0_0\*" />
       <ExternLibG223 Include="$(SolutionDir)..\extern\LibG_223_0_1\*" />
       <ExternLibG224 Include="$(SolutionDir)..\extern\LibG_224_0_1\*" />
       <ExternLibG2244 Include="$(SolutionDir)..\extern\LibG_224_4_0\*" />
+      <ExternLibG225 Include="$(SolutionDir)..\extern\LibG_225_0_0\*" />
+      <ExternLibG Include="$(SolutionDir)..\extern\LibG_*\*" />
       <ExternSimplexNoise Include="$(SolutionDir)..\extern\SimplexNoise\*" />
       <SampleFiles Include="$(SolutionDir)..\doc\distrib\Samples\**\*.*" />
       <GalleryFiles Include="$(SolutionDir)..\extern\gallery\**\*.*" />
@@ -387,12 +403,11 @@ limitations under the License.
     <Copy SourceFiles="@(ExternProtoGeometryXml)" DestinationFolder="$(OutputPath)\$(UICulture)" />
     <Copy SourceFiles="@(ExternProtoGeometryUICulture)" DestinationFolder="$(OutputPath)\$(UICulture)" />
     <Copy SourceFiles="@(ExternProtoGeometryLibGLocale)" DestinationFolder="$(OutputPath)\libg_locale\%(RecursiveDir)" />
-    <Copy SourceFiles="@(ExternLibG220)" DestinationFolder="$(OutputPath)libg_220_0_0\" />
-    <Copy SourceFiles="@(ExternLibG221)" DestinationFolder="$(OutputPath)libg_221_0_0\" />
-    <Copy SourceFiles="@(ExternLibG222)" DestinationFolder="$(OutputPath)libg_222_0_0\" />
     <Copy SourceFiles="@(ExternLibG223)" DestinationFolder="$(OutputPath)libg_223_0_1\" />
     <Copy SourceFiles="@(ExternLibG224)" DestinationFolder="$(OutputPath)libg_224_0_1\" />
     <Copy SourceFiles="@(ExternLibG2244)" DestinationFolder="$(OutputPath)libg_224_4_0\" />
+    <Copy SourceFiles="@(ExternLibG225)" DestinationFolder="$(OutputPath)libg_225_0_0\" />
+    <Copy SourceFiles="@(ExternLibG)" DestinationFolder="$(OutputPath)\%(RecursiveDir)" />
     <Copy SourceFiles="@(ExternSimplexNoise)" DestinationFolder="$(OutputPath)" />
     <Copy SourceFiles="@(ExternAnalytics)" DestinationFolder="$(OutputPath)" />
     <Copy SourceFiles="@(SampleFiles)" DestinationFolder="$(OutputPath)samples\%(RecursiveDir)" />

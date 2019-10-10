@@ -1,9 +1,5 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using NUnit.Framework;
 
 namespace DSIronPythonTests
@@ -69,6 +65,8 @@ namespace DSIronPythonTests
                 new ArrayList());
 
             Assert.AreEqual(new[] { 0, 1, 2 }, output);
+
+            marshaler.UnregisterMarshalerOfType<string>();
         }
 
         [Test]
@@ -86,6 +84,8 @@ namespace DSIronPythonTests
                 new ArrayList { new ArrayList { " ", "  " } });
 
             Assert.AreEqual(3, output);
+
+            marshaler.UnregisterMarshalerOfType<string>();
         }
 
         [Test]

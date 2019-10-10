@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Xml;
 using Dynamo.Configuration;
 using Dynamo.Interfaces;
-using DynamoUtilities;
-using System.Linq;
 
 namespace Dynamo.Engine
 {
@@ -68,7 +67,7 @@ namespace Dynamo.Engine
                 baseDir = Path.GetDirectoryName(Path.GetFullPath(assemblyLocation));
             }
 
-            var language = System.Threading.Thread.CurrentThread.CurrentUICulture.ToString();
+            var language = System.Threading.Thread.CurrentThread.CurrentUICulture.Name;
             //try with the system culture
             var localizedDocPath = Path.Combine(baseDir, language);
 

@@ -2,33 +2,28 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Xml;
-
-using SystemTestServices;
-
-using Dynamo;
-using Dynamo.Controls;
-using Dynamo.Models;
-using Dynamo.Nodes;
-using Dynamo.Scheduler;
-using Dynamo.Tests;
-using Dynamo.Utilities;
-using Dynamo.ViewModels;
-using DynamoShapeManager;
-using NUnit.Framework;
 using System.Reflection;
+using System.Xml;
 using CoreNodeModels.Input;
+using Dynamo;
 using Dynamo.Configuration;
+using Dynamo.Controls;
 using Dynamo.Graph;
 using Dynamo.Graph.Connectors;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.CustomNodes;
 using Dynamo.Graph.Notes;
 using Dynamo.Graph.Workspaces;
-using TestServices;
-
+using Dynamo.Models;
+using Dynamo.Scheduler;
+using Dynamo.Tests;
+using Dynamo.Utilities;
+using Dynamo.ViewModels;
+using DynamoShapeManager;
+using NUnit.Framework;
 using PythonNodeModels;
-
+using SystemTestServices;
+using TestServices;
 using IntegerSlider = CoreNodeModels.Input.IntegerSlider;
 
 namespace DynamoCoreWpfTests
@@ -1155,6 +1150,171 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(2, workspace.Connectors.Count()); 
         }
 
+        /// <summary>
+        /// The following recorded test manually adds a connection between 2 nodes,
+        /// followed by ctrl + clicking to copy this connection to 2 additional nodes.
+        /// The final assertion will only be true if all connections were successfully established.
+        /// </summary>
+        [Test]
+        public void TestCtrlClickInputConnections()
+        {
+            RunCommandsFromFile("CtrlClickRecordedTest_Recording.xml");
+
+            Assert.AreEqual(6, workspace.Nodes.Count());
+            Assert.AreEqual(7, workspace.Connectors.Count()); // 2 of which should be executed in the recording using ctrl + click
+
+            // Sum of values which is only true if connections are valid downstream
+            AssertPreviewValue("995b61e54a7d4c0fae4973f74132bd1b", 12);
+        }
+
+        /// <summary>
+        /// The following recorded test manually adds a connecting between 2 nodes,
+        /// followed by ctrl + clicking to copy this connection to 2 additional nodes.
+        /// We then call 2 undo commands and verify only our original connection exists.
+        /// </summary>
+        [Test]
+        public void TestCtrlClickInputConnectionsUndo()
+        {
+            RunCommandsFromFile("CtrlClickRecordedTestUndo_Recording.xml");
+
+            Assert.AreEqual(4, workspace.Nodes.Count());
+            Assert.AreEqual(1, workspace.Connectors.Count()); // Only 1 connection should remain after undos
+
+            // A value of 25 is passed to all 3 downstream nodes however 2 undos will disconnect the trailing 2 nodes
+            AssertPreviewValue("4975adccfc57433aa915e67c03ff6503", 25);
+            AssertPreviewValue("0ddbbdf502344bb2ab5c75e6d6ac7b13", null);
+            AssertPreviewValue("eb839c03d115492d98a6e0d562d44d73", null);
+        }
+
+        /// <summary>
+        /// The following recorded test manually adds a connecting between 2 nodes,
+        /// followed by ctrl + clicking to copy this connection to 2 additional nodes.
+        /// We then call 2 undo commands followed by 2 redo commands and verify all 3 
+        /// connections exist.
+        /// </summary>
+        [Test]
+        public void TestCtrlClickInputConnectionsUndoRedo()
+        {
+            RunCommandsFromFile("CtrlClickRecordedTestUndoRedo_Recording.xml");
+
+            Assert.AreEqual(4, workspace.Nodes.Count());
+            Assert.AreEqual(3, workspace.Connectors.Count()); // All 3 connections should remain after 3 undos and 3 redos
+
+            // A value of 10 is passed to all 3 downstream nodes
+            AssertPreviewValue("3a998ea7ef284e47901db6cd13e77022", 10);
+            AssertPreviewValue("40c505cae1a14a3a9d7043c36c62b013", 10);
+            AssertPreviewValue("5a42348373b94a11920feeaa680834fd", 10);
+        }
+
+        /// <summary>
+        /// The following recorded test verifies that selecting a subset of nodes
+        /// and shift-clicking the parent output of these nodes only grabs the
+        /// connectors from the node that are selected. 
+        /// This is accomplished in the following steps: 
+        /// 1) Start with 2 code blocks with output values of 5 and 10.
+        /// 2) Create 3 code blocks with variables a, b, c
+        /// 3) Connnect the initial code block with a value of 5 to a, b, c
+        /// 3) Select code blocks containing variables a and c
+        /// 4) Shift click the output of the code block which contains the value of 5
+        /// 5) This should grab the connectors from only a and c (skipping b as it was not selected)
+        /// 6) Place these connectors on the code block containing a value of 10
+        /// 7) Verify a, b, c sums to 25 (a=10, b=5, c=10)
+        /// </summary>
+        [Test]
+        public void TestSelectiveShiftClickOutput()
+        {
+            RunCommandsFromFile("SelectiveShiftClickTest_Recording.xml");
+
+            // Verify final node and connector state
+            Assert.AreEqual(7, workspace.Nodes.Count());
+            Assert.AreEqual(7, workspace.Connectors.Count());
+
+            // Value of a
+            AssertPreviewValue("36a4604aeb684e1ca310a53e4d2c96c3", 10);
+            // Value of b
+            AssertPreviewValue("39842043c1894371899c5e1666e596ee", 5);
+            // Value of c
+            AssertPreviewValue("96007af3534d4581bca84d053f7ec043", 10);
+            // Value of a + b + c
+            AssertPreviewValue("e15ad50a3cd54c3485b482a21c786d46", 25);
+        }
+
+        /// <summary>
+        /// This test follows very similar logic compared withTestSelectiveShiftClickOutput()
+        /// but it makes calls an undo command after moving connectors with selective shift click
+        /// putting the graph back into its original state.
+        /// </summary>
+        [Test]
+        public void TestSelectiveShiftClickdOutputUndo()
+        {
+            RunCommandsFromFile("SelectiveShiftClickTestUndo_Recording.xml");
+
+            // Verify final node and connector state
+            Assert.AreEqual(7, workspace.Nodes.Count());
+            Assert.AreEqual(7, workspace.Connectors.Count());
+
+            // Value of a
+            AssertPreviewValue("9c757fd3c692490d85a13962c52114c8", 5);
+            // Value of b
+            AssertPreviewValue("1d45a1ba9d604687a509bd942852c276", 5);
+            // Value of c
+            AssertPreviewValue("26125cb52f5b4f289fefdcc0a9356f97", 5);
+            // Value of a + b + c
+            AssertPreviewValue("e7b387ded1ca422581eb09c2e2ad0c71", 15);
+        }
+
+        /// <summary>
+        /// This test follows very similar logic compared withTestSelectiveShiftClickOutput()
+        /// and TestSelectiveShiftClickdOutputUndo() but conducts undo's back to an empty workspace
+        /// and redo's back to the final state.
+        /// </summary>
+        [Test]
+        public void TestSelectiveShiftClickdOutputUndoRedo()
+        {
+            RunCommandsFromFile("SelectiveShiftClickTestUndoRedo_Recording.xml");
+
+            // Verify final node and connector state
+            Assert.AreEqual(7, workspace.Nodes.Count());
+            Assert.AreEqual(7, workspace.Connectors.Count());
+
+            // Value of a
+            AssertPreviewValue("6373cf7669a14d43a2f068f86bac30cb", 10);
+            // Value of b
+            AssertPreviewValue("ac768f631a2842e19a58c49974077d49", 5);
+            // Value of c
+            AssertPreviewValue("a693b9a7fb4648bd905df66394cba26a", 10);
+            // Value of a + b + c
+            AssertPreviewValue("4cfa20a57edf42588288f7ef2ed0a1c6", 25);
+        }
+
+        /// <summary>
+        /// Perform a large series of shift-clicks and ctrl-clicks with and without
+        /// selected nodes to test these commands in successive combinations
+        /// while verifying the graph still arrives at specific numeric state.
+        /// </summary>
+        [Test]
+        public void CombinationOfConnectorHotKeys()
+        {
+            RunCommandsFromFile("CombinationOfConnectorHotKeys_Recording.xml");
+
+            // Verify final node and connector state
+            Assert.AreEqual(6, workspace.Nodes.Count());
+            Assert.AreEqual(6, workspace.Connectors.Count());
+
+            // Code Block: value of 3
+            AssertPreviewValue("6f74b47d46e54a69b9de466c347531f0", 3);
+            // Code Block: value of 6
+            AssertPreviewValue("46ce4a8fcf354d1aa8f9ff0e7e587105", 6);
+            // Code Block: value of 9
+            AssertPreviewValue("6173dd048d5943898ed52e53aed57a00", 9);
+            
+            // Operation Result #1: 6 + 9
+            AssertPreviewValue("58c21031df374168a093f9b5eeacade7", 15);
+            // Operation Result #2: 3 + 6
+            AssertPreviewValue("f6929752825c4f49b5e9e70947eb8a03", 9);
+            // Operation Result #3: Result #1 * Result #2
+            AssertPreviewValue("50964fcc782d418a8ca6bec40e7ad440", 135);
+        }
         #endregion
 
         #region General Node Operations Test Cases
@@ -1243,6 +1403,47 @@ namespace DynamoCoreWpfTests
             AssertPreviewValue("345cd2d4-5f3b-4eb0-9d5f-5dd90c5a7493", 36.0);
         }
 
+        [Test, RequiresSTA]
+        public void TestPreviewToggleConnectionMultiOutputNode()
+        {
+            RunCommandsFromFile("multioutput_node_preview.xml", (commandTag) =>
+            {
+                var dict = DesignScript.Builtin.Dictionary.ByKeysValues(new string[] { "year", "month", "day", "hour", "minute", "second", "millisecond" }, 
+                    new object[] { 1901, 1, 1, 0, 0, 0, 0 });
+                if (commandTag == "FirstRun")
+                {
+                    AssertPreviewValue("060ff703-5cfc-4e8a-ae1a-7066f59e3e26", dict);
+                }
+                else if (commandTag == "SecondRun")
+                {
+                    AssertPreviewValue("060ff703-5cfc-4e8a-ae1a-7066f59e3e26", null);
+                }
+                else if (commandTag == "ThirdRun")
+                {
+                    AssertPreviewValue("060ff703-5cfc-4e8a-ae1a-7066f59e3e26", dict);
+                }
+            });
+        }
+
+        [Test, RequiresSTA]
+        public void TestAddingAndRemovingConnectors()
+        {
+            RunCommandsFromFile("TestAddingAndRemovingConnectors.xml", (commandTag) =>
+            {
+                if (commandTag == "FirstRun")
+                {
+                    AssertPreviewValue("42001c91-7faa-43a5-9978-eea5e0a2bd0c", "abc");   
+                }
+                else if (commandTag == "SecondRun")
+                {
+                    AssertPreviewValue("42001c91-7faa-43a5-9978-eea5e0a2bd0c", "12345");
+                }
+                else if (commandTag == "ThirdRun")
+                {
+                    AssertPreviewValue("42001c91-7faa-43a5-9978-eea5e0a2bd0c", "abc");
+                }
+            });
+        }
         #endregion
     }
 
@@ -1812,6 +2013,8 @@ namespace DynamoCoreWpfTests
         [Category("RegressionTests")]
         public void Defect_MAGN_520_DS()
         {
+            // This test is updated to use DeleteModelCommand instead of SelectInRegionCommand due to instability
+
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-520
             RunCommandsFromFile("Defect_MAGN_520_DS.xml");
 

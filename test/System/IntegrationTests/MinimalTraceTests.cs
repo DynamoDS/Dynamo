@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
+using DynamoServices;
 using FFITarget;
 using NUnit.Framework;
-using ProtoCore.DSASM.Mirror;
 using ProtoTestFx.TD;
 
 namespace IntegrationTests
@@ -25,7 +20,7 @@ namespace IntegrationTests
         [TearDown]
         public static void TLSCleanup()
         {
-            Thread.FreeNamedDataSlot(__TEMP_REVIT_TRACE_ID);    
+            TraceUtils.ClearAllKnownTLSKeys();
         }
 
         [Test]

@@ -36,9 +36,9 @@ namespace WpfVisualizationTests
         }
 
         [Test]
-        public void InHomeWorkspace_CustomNodeInstance_HasGeometry()
+        public async void InHomeWorkspace_CustomNodeInstance_HasGeometry()
         {
-            Assert.AreEqual(3, BackgroundPreviewGeometry.Meshes().Count());
+            Assert.AreEqual(11, BackgroundPreviewGeometry.Meshes().Count());
             Assert.AreEqual(3, BackgroundPreviewGeometry.Curves().Count());
             Assert.AreEqual(3, BackgroundPreviewGeometry.Points().Count());
         }
@@ -109,7 +109,7 @@ namespace WpfVisualizationTests
 
             // Disable edge rendering to ensure that curve counts are correct.
             ViewModel.RenderPackageFactoryViewModel.ShowEdges = false;
-        }    
+        }
     }
 
     [TestFixture]
@@ -141,15 +141,15 @@ namespace WpfVisualizationTests
         }
 
         [Test]
-        public void InsideInstance_AllGeometryFromInstancesOfThisCustomNode_Alive()
+        public async void InsideInstance_AllGeometryFromInstancesOfThisCustomNode_Alive()
         {
             Assert.AreEqual(2, BackgroundPreviewGeometry.Points().Count(p => p.IsAlive()));
             Assert.AreEqual(2, BackgroundPreviewGeometry.Curves().Count(p => p.IsAlive()));
-            Assert.AreEqual(2, BackgroundPreviewGeometry.Meshes().Count(p => p.IsAlive()));
+            Assert.AreEqual(10, BackgroundPreviewGeometry.Meshes().Count(p => p.IsAlive()));
         }
 
         [Test]
-        public void InsideInstance_OtherGeometryFromOtherNodes_Dead()
+        public async void InsideInstance_OtherGeometryFromOtherNodes_Dead()
         {
             Assert.AreEqual(1, BackgroundPreviewGeometry.Points().Count(p => p.IsDead()));
             Assert.AreEqual(1, BackgroundPreviewGeometry.Curves().Count(p => p.IsDead()));
@@ -165,8 +165,8 @@ namespace WpfVisualizationTests
             Assert.NotNull(customNode);
             customNode.UpdateValue(new UpdateValueParams("IsVisible", "false"));
 
-            Assert.AreEqual(2, BackgroundPreviewGeometry.Meshes().Count(m=> m.Visibility == Visibility.Visible));
-            Assert.AreEqual(1, BackgroundPreviewGeometry.Meshes().Count(m => m.Visibility == Visibility.Hidden));
+            Assert.AreEqual(6, BackgroundPreviewGeometry.Meshes().Count(m => m.Visibility == Visibility.Visible));
+            Assert.AreEqual(5, BackgroundPreviewGeometry.Meshes().Count(m => m.Visibility == Visibility.Hidden));
         }
 
         [Test]

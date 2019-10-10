@@ -2,17 +2,17 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
   <metadata>
     <id>DynamoVisualProgramming.DynamoServices</id>
-    <version>@VERSION@</version>
+    <version>$Version$</version>
     <authors>Autodesk</authors>
     <owners>Autodesk</owners>
-    <licenseUrl>http://opensource.org/licenses/MIT</licenseUrl>
+    <licenseUrl>https://www.apache.org/licenses/LICENSE-2.0</licenseUrl>
     <projectUrl>https://github.com/DynamoDS/Dynamo</projectUrl>
     <iconUrl>https://raw.githubusercontent.com/DynamoDS/Dynamo/master/doc/distrib/Images/logo_square_32x32.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>DynamoServices library for Dynamo. It contains the following files: 
 1) DynamoServices.dll</description>
     <summary>This package contains DynamoServices assembly that defines interfaces and attribute for Dynamo Zero Touch libraries.</summary>
-    <copyright>Copyright Autodesk 2017</copyright>
+    <copyright>Copyright Autodesk 2019</copyright>
     <dependencies>
     </dependencies>
   </metadata>

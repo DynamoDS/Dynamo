@@ -61,6 +61,24 @@ namespace Dynamo.DynamoSandbox.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Goto the Dynamo builds wiki site({0}) for more information..
+        /// </summary>
+        internal static string SandboxBuildsPageDialogMessage {
+            get {
+                return ResourceManager.GetString("SandboxBuildsPageDialogMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Could not start DynamoSandbox, unhandled exception..
+        /// </summary>
+        internal static string SandboxCrashMessage {
+            get {
+                return ResourceManager.GetString("SandboxCrashMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Migrating Settings ....
         /// </summary>
         internal static string SettingsMigrationDialogMessage {

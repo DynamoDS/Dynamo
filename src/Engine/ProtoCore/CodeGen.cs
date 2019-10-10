@@ -4,8 +4,8 @@ using System.Globalization;
 using System.IO;
 using ProtoCore.AST;
 using ProtoCore.DSASM;
-using ProtoCore.Utils;
 using ProtoCore.Properties;
+using ProtoCore.Utils;
 
 namespace ProtoCore
 {
@@ -163,10 +163,10 @@ namespace ProtoCore
             // Build the unique ID for a callsite 
             string callsiteIdentifier =
                 procName + 
-                "_InClassDecl" + globalClassIndex + 
-                "_InFunctionScope" + globalProcIndex + 
-                "_Instance" + functionCallInstance.ToString() + 
-                "_" + graphNode.guid.ToString();
+                Constants.kSingleUnderscore + Constants.kInClassDecl + globalClassIndex + 
+                Constants.kSingleUnderscore + Constants.kInFunctionScope + globalProcIndex +
+                Constants.kSingleUnderscore + Constants.kInstance + functionCallInstance +
+                Constants.kSingleUnderscore + graphNode.guid;
 
             // TODO Jun: Address this in MAGN-3774
             // The current limitation is retrieving the cached trace data for multiple callsites in a single CBN

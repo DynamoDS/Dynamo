@@ -1,0 +1,260 @@
+﻿<UserControl x:Class="Dynamo.WorkspaceDependency.WorkspaceDependencyView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:p="clr-namespace:Dynamo.Wpf.Properties;assembly=DynamoCoreWpf"
+             xmlns:w="clr-namespace:Dynamo.WorkspaceDependency.Properties"
+             xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf"
+             mc:Ignorable="d" 
+             VerticalAlignment="Top"
+             HorizontalAlignment="Left">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoColorsAndBrushesDictionaryUri}" />
+            </ResourceDictionary.MergedDictionaries>
+            <BooleanToVisibilityConverter x:Key="BoolToVis" />
+            <!-- DataGrid style -->
+            <Style x:Key="DataGridStyle1" TargetType="{x:Type DataGrid}">
+                <Setter Property="ColumnHeaderStyle" Value="{DynamicResource ColumnHeaderStyle1}"/>
+                <Setter Property="RowStyle" Value="{DynamicResource RowStyle1}"/>
+                <Setter Property="CellStyle" Value="{DynamicResource CellStyle1}"/>
+                <Setter Property="RowHeaderWidth" Value="0"/>
+                <Setter Property="BorderThickness" Value="0.5" />
+                <Setter Property="BorderBrush" Value="#555555"/>
+                <Setter Property="ColumnWidth" Value="Auto"/>
+            </Style>
+            <!-- DataGridColumnHeader style -->
+            <Style x:Key="ColumnHeaderStyle1" TargetType="DataGridColumnHeader">
+                <Setter Property="Height" Value="20"/>
+                <Setter Property="Background" Value="{DynamicResource LibraryItemHostBackground}"/>
+                <Setter Property="Foreground" Value="{DynamicResource MemberButtonText}"/>
+                <Setter Property="FontSize" Value="10" />
+                <Setter Property="BorderThickness" Value="0" />
+                <Setter Property="BorderBrush" Value="#555555"/>
+                <Setter Property="Margin" Value="10,0,10,0"/>
+            </Style>
+            <!-- DataGridRow style -->
+            <Style x:Key="RowStyle1" TargetType="DataGridRow">
+                <Setter Property="Background" Value="{DynamicResource LibraryItemHostBackground}"/>
+                <Setter Property="BorderThickness" Value="0.5" />
+                <Setter Property="BorderBrush" Value="#555555"/>
+                <Style.Triggers>
+                    <Trigger Property="IsSelected" Value="True">
+                        <Setter Property="Background" Value="{DynamicResource LibraryItemHostBackground}" />
+                    </Trigger>
+                    <Trigger Property="IsMouseOver" Value="True">
+                        <Setter Property="Background" Value="#555555" />
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+            <!-- Cell style -->
+            <Style x:Key="CellStyle1" TargetType="DataGridCell">
+                <Setter Property="BorderThickness" Value="0" />
+                <Style.Triggers>
+                    <Trigger Property="IsSelected" Value="True">
+                        <Setter Property="Background" Value="{DynamicResource LibraryItemHostBackground}" />
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+            <Style x:Key="ButtonStyle1" TargetType="{x:Type Button}">
+                <Style.Triggers>
+                    <Trigger Property="IsMouseOver" Value="True">
+                        <Setter Property="Background" Value="{DynamicResource LibraryItemHostBackground}"/>
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Grid Background= "#353535">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <DataGrid 
+            Name="PackageDependencyTable" 
+            AutoGenerateColumns="False"
+            Style="{StaticResource DataGridStyle1}"
+            CanUserAddRows="False"
+            GridLinesVisibility ="None"
+            Background="#353535"
+            FontSize="13"
+            VerticalAlignment="Center"
+            SelectionUnit="FullRow"
+            SelectionMode="Extended"
+            ScrollViewer.CanContentScroll="False" 
+            ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+            CanUserResizeColumns="False" 
+            CanUserResizeRows="False"
+            CanUserSortColumns="False"
+            HeadersVisibility="Column"
+            Grid.Row="0">
+            <DataGrid.Columns>
+                <!-- State Icon -->
+                <DataGridTemplateColumn 
+                    IsReadOnly="True" 
+                    Width="26">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Image Source="{Binding Icon}" Width="18" Height="18" Margin="8,8,0,8" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <!-- Package Name -->
+                <DataGridTextColumn 
+                    Header="Package" 
+                    Binding="{Binding Name}" 
+                    Foreground="#aaaaaa" 
+                    IsReadOnly="True" 
+                    Width="*">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="VerticalAlignment" Value="Center" />
+                            <Setter Property="Margin" Value="10,0,10,0"/>
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
+                <!-- Package Version -->
+                <DataGridTextColumn 
+                    Header="Version" 
+                    Binding="{Binding Version}" 
+                    Foreground="#aaaaaa" 
+                    IsReadOnly="True"
+                    >
+                <DataGridTextColumn.ElementStyle>
+                    <Style TargetType="TextBlock">
+                        <Setter Property="VerticalAlignment" Value="Center" />
+                        <Setter Property="Margin" Value="10,0,10,0"/>
+                    </Style>
+                </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
+            </DataGrid.Columns>
+            <!-- Expanded Details -->
+            <DataGrid.RowDetailsTemplate>
+                <DataTemplate>
+                    <StackPanel Background="#252525">
+                        <TextBlock
+                            Text="{Binding DetailsMessage}"
+                            TextWrapping="Wrap"
+                            Foreground="{DynamicResource MemberButtonText}"
+                            Margin="10"
+                            FontSize="11">
+                        </TextBlock>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                            <Button
+                                Visibility="{Binding Path=ShowDownloadButton, Converter={StaticResource BoolToVis}}"
+                                Name="DownloadPackageButton"
+                                Click="DownloadPackage"
+                                HorizontalAlignment="Center"
+                                Margin="10"
+                                Height="20"
+                                Background="#000000"
+                                BorderThickness="0">
+                                <TextBlock 
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    Margin="5,0,5,0"
+                                    Foreground="#cccccc"
+                                    FontSize="10px"
+                                    Text="{x:Static w:Resources.InstallButtonText}">
+                                </TextBlock>
+                            </Button>
+                            <Button
+                                Visibility="{Binding Path=ShowKeepLocalButton, Converter={StaticResource BoolToVis}}"
+                                Name="KeepLocalPackageButton"
+                                Click="KeepLocalPackage"
+                                HorizontalAlignment="Center"
+                                Margin="10"
+                                Height="20"
+                                Background="#000000"
+                                BorderThickness="0">
+                                <TextBlock 
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    Margin="5,0,5,0"
+                                    Foreground="#cccccc"
+                                    FontSize="10px"
+                                    Text="{x:Static w:Resources.KeepLocalButtonText}">
+                                </TextBlock>
+                            </Button>
+                        </StackPanel>
+                    </StackPanel>
+                </DataTemplate>
+            </DataGrid.RowDetailsTemplate>
+        </DataGrid>
+
+        <!-- Fill Space -->
+        <Grid x:Name="container"
+            Background="Transparent"
+            Grid.Row="1"
+            Height="10000"
+            VerticalAlignment="Stretch">
+        </Grid>
+
+        <!-- Template for the feedback banner -->
+        <DockPanel Name="Feedback" VerticalAlignment="Bottom" Grid.Row="2" Width="600">
+            <!-- Restart Banner -->
+            <StatusBar
+                Name="RestartBanner"
+                Background="LightCoral"
+                DockPanel.Dock="Top"
+                Height="55"
+                Margin="1"
+                Visibility="Hidden">
+                <!-- Preview text -->
+                <StatusBarItem>
+                    <Border Height="50">
+                        <TextBlock TextWrapping="Wrap" Width="500" Padding="10,0,10,0" FontSize="15" Foreground="White" Text="{x:Static w:Resources.RestartBannerMessage}" VerticalAlignment="Center"/>
+                    </Border>
+                </StatusBarItem>
+            </StatusBar>
+            <!-- Feedback Banner -->
+            <StatusBar Background="{StaticResource FeedbackSectionBackground}" DockPanel.Dock="Bottom" Height="55" Margin="1">
+                <!-- Preview text -->
+                <StatusBarItem>
+                    <Border Height="50">
+                        <TextBlock TextWrapping="Wrap" Padding="10,0,10,0" FontSize="15" Foreground="White" Text="{x:Static p:Resources.PreviewText}" VerticalAlignment="Center"/>
+                    </Border>
+                </StatusBarItem>
+                <StatusBarItem Width="153" Margin="10,0,0,0" Height="40">
+                    <Border Name="FeedbackBorder" BorderThickness="1">
+                        <Border.Style>
+                            <Style>
+                                <Style.Triggers>
+                                    <Trigger Property="Border.IsMouseOver" Value="True">
+                                        <Setter Property="Border.BorderBrush" Value="White" />
+                                    </Trigger>
+                                    <Trigger Property="Border.IsMouseOver" Value="False">
+                                        <Setter Property="Border.BorderBrush" Value="#373737" />
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Border.Style>
+                        <!-- Feedback button -->
+                        <Button HorizontalAlignment="Right"
+                            Width="150" Click="ProvideFeedback" Background="#373737" Height="30">
+                            <TextBlock TextWrapping="Wrap" FontSize="15" Foreground="White" Height="20" Text="{x:Static w:Resources.ProvideFeedbackButton}" VerticalAlignment="Center"/>
+                            <Button.Style>
+                                <Style TargetType="{x:Type Button}">
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="{x:Type Button}">
+                                                <Border Background="{TemplateBinding Background}">
+                                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                </Border>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </Button.Style>
+                        </Button>
+                    </Border>
+                </StatusBarItem>
+            </StatusBar>
+        </DockPanel>
+    </Grid>
+</UserControl>

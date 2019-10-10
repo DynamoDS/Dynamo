@@ -18,11 +18,11 @@ using System.Windows;
 
 [assembly: ThemeInfo(
     ResourceDictionaryLocation.ExternalAssembly, //where theme specific resource dictionaries are located
-    //(used if a resource is not found in the page, 
-    // or application resource dictionaries)
+                                                 //(used if a resource is not found in the page, 
+                                                 // or application resource dictionaries)
     ResourceDictionaryLocation.SourceAssembly //where the generic resource dictionary is located
-    //(used if a resource is not found in the page, 
-    // app, or any theme specific resource dictionaries)
+                                              //(used if a resource is not found in the page, 
+                                              // app, or any theme specific resource dictionaries)
 )]
 
 [assembly: InternalsVisibleTo("DynamoCoreTests")]
@@ -35,3 +35,6 @@ using System.Windows;
 [assembly: InternalsVisibleTo("ViewExtensionLibraryTests")]
 [assembly: InternalsVisibleTo("DynamoWPFCLI")]
 [assembly: InternalsVisibleTo("CommandLineTests")]
+[assembly: InternalsVisibleTo("Watch3DNodeModelsWpf")]
+[assembly: InternalsVisibleTo("DynamoPerformanceTests")]
+[assembly: InternalsVisibleTo("WorkspaceDependencyViewExtension")]

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Security.AccessControl;
 using System.Xml;
 using Newtonsoft.Json;
@@ -66,29 +67,36 @@ namespace DynamoUtilities
         /// <returns></returns>
         public static bool HasWritePermissionOnDir(string folderPath)
         {
-            var writeAllow = false;
-            var writeDeny = false;
-            var accessControlList = Directory.GetAccessControl(folderPath);
-            if (accessControlList == null)
-                return false;
-            var accessRules = accessControlList.GetAccessRules(true, true,
-                                        typeof(System.Security.Principal.SecurityIdentifier));
-            if (accessRules == null)
-                return false;
-
-            foreach (FileSystemAccessRule rule in accessRules)
+            try
             {
-                // When current rule does not contain setting related to WRITE, skip.
-                if ((FileSystemRights.Write & rule.FileSystemRights) != FileSystemRights.Write)
-                    continue;
+                var writeAllow = false;
+                var writeDeny = false;
+                var accessControlList = Directory.GetAccessControl(folderPath);
+                if (accessControlList == null)
+                    return false;
+                var accessRules = accessControlList.GetAccessRules(true, true,
+                                            typeof(System.Security.Principal.SecurityIdentifier));
+                if (accessRules == null)
+                    return false;
 
-                if (rule.AccessControlType == AccessControlType.Allow)
-                    writeAllow = true;
-                else if (rule.AccessControlType == AccessControlType.Deny)
-                    writeDeny = true;
+                foreach (FileSystemAccessRule rule in accessRules)
+                {
+                    // When current rule does not contain setting related to WRITE, skip.
+                    if ((FileSystemRights.Write & rule.FileSystemRights) != FileSystemRights.Write)
+                        continue;
+
+                    if (rule.AccessControlType == AccessControlType.Allow)
+                        writeAllow = true;
+                    else if (rule.AccessControlType == AccessControlType.Deny)
+                        writeDeny = true;
+                }
+
+                return writeAllow && !writeDeny;
             }
-
-            return writeAllow && !writeDeny;
+            catch(Exception)
+            {
+                return false;
+            }
         }
 
         /// <summary>
@@ -145,6 +153,31 @@ namespace DynamoUtilities
                 ex = e;
                 return false;
             }
+        }
+
+        // Check if the file name contains any special non-printable chatacters.
+        public static bool IsFileNameInValid(string fileName)
+        {
+            // Some other extra characters that are to be checked. 
+            char[] invalidCharactersFileName = { '#', '%', '&', '.', ' ' };
+
+            if (fileName.Any(f => Path.GetInvalidFileNameChars().Contains(f)) || fileName.IndexOfAny(invalidCharactersFileName) > -1)
+                return true;
+
+            return false;
+        }
+
+        /// <summary>
+        /// This is a utility method for generating a default name to the snapshot image. 
+        /// </summary>
+        /// <param name="filePath">File path</param>
+        /// <returns>Returns a default name(along with the timestamp) for the workspace image</returns>
+        public static String GetScreenCaptureNameFromPath(String filePath)
+        {
+            FileInfo fileInfo = new FileInfo(filePath);
+            String timeStamp = string.Format("{0:yyyy-MM-dd_hh-mm-ss}", DateTime.Now);
+            String snapshotName = fileInfo.Name.Replace(fileInfo.Extension, "_") + timeStamp;
+            return snapshotName;
         }
     }
 }

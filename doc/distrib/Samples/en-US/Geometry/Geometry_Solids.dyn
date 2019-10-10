@@ -738,7 +738,7 @@
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
       "NodeType": "FunctionNode",
-      "FunctionSignature": "Autodesk.DesignScript.Geometry.PolyCurve.ByJoinedCurves@Autodesk.DesignScript.Geometry.Curve[]",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.PolyCurve.ByJoinedCurves@Autodesk.DesignScript.Geometry.Curve[],double",
       "Id": "a5fb0fc864d3447b949f3a4b4f50e743",
       "Inputs": [
         {
@@ -746,6 +746,15 @@
           "Name": "curves",
           "Description": "Curves to join into polycurve\n\nCurve[]",
           "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "cb6336e791ae449a9b0a9d89e7e254fb",
+          "Name": "joinTolerance",
+          "Description": "Tolerance to determine size of gap allowed between curves to be joined\n\ndouble\nDefault value : 0.001",
+          "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
           "KeepListStructure": false
@@ -763,7 +772,7 @@
         }
       ],
       "Replication": "Auto",
-      "Description": "Make PolyCurve by joining curves. Flips curve as needed for connectivity\n\nPolyCurve.ByJoinedCurves (curves: Curve[]): PolyCurve"
+      "Description": "Make PolyCurve by joining curves. Flips curve as needed for connectivity. Choose a preferred join tolerance between 1e-6 and 1e-3 units.\n\nPolyCurve.ByJoinedCurves (curves: Curve[], joinTolerance: double = 0.001): PolyCurve"
     },
     {
       "ConcreteType": "CoreNodeModels.CreateList, CoreNodeModels",
@@ -885,7 +894,7 @@
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
       "NodeType": "FunctionNode",
-      "FunctionSignature": "Autodesk.DesignScript.Geometry.PolyCurve.ByJoinedCurves@Autodesk.DesignScript.Geometry.Curve[]",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.PolyCurve.ByJoinedCurves@Autodesk.DesignScript.Geometry.Curve[],double",
       "Id": "848b49fb450d4b598db459bea094c532",
       "Inputs": [
         {
@@ -893,6 +902,15 @@
           "Name": "curves",
           "Description": "Curves to join into polycurve\n\nCurve[]",
           "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "3fa3eb4e9ab641c8ba603a325ff4b3a8",
+          "Name": "joinTolerance",
+          "Description": "Tolerance to determine size of gap allowed between curves to be joined\n\ndouble\nDefault value : 0.001",
+          "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
           "KeepListStructure": false
@@ -910,7 +928,7 @@
         }
       ],
       "Replication": "Auto",
-      "Description": "Make PolyCurve by joining curves. Flips curve as needed for connectivity\n\nPolyCurve.ByJoinedCurves (curves: Curve[]): PolyCurve"
+      "Description": "Make PolyCurve by joining curves. Flips curve as needed for connectivity. Choose a preferred join tolerance between 1e-6 and 1e-3 units.\n\nPolyCurve.ByJoinedCurves (curves: Curve[], joinTolerance: double = 0.001): PolyCurve"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -1365,105 +1383,6 @@
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
       "NodeType": "FunctionNode",
-      "FunctionSignature": "Revit.Elements.ImportInstance.ByGeometries@Autodesk.DesignScript.Geometry.Geometry[]",
-      "Id": "e0e441ca08a448b78f6496e65e320376",
-      "Inputs": [
-        {
-          "Id": "1ba7a475d260415ca5983e80a282057e",
-          "Name": "geometries",
-          "Description": "A collection of Geometry\n\nGeometry[]",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "Outputs": [
-        {
-          "Id": "8010d887e4944a3b963f3555fb6008b8",
-          "Name": "ImportInstance",
-          "Description": "ImportInstance",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "Replication": "Auto",
-      "Description": "Import a collection of Geometry (Solid, Curve, Surface, etc) into Revit as an ImportInstance. This variant is much faster than ImportInstance.ByGeometry as it uses a batch method.\n\nImportInstance.ByGeometries (geometries: Geometry[]): ImportInstance"
-    },
-    {
-      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
-      "NodeType": "FunctionNode",
-      "FunctionSignature": "Revit.Elements.ModelCurve.ReferenceCurveByCurve@Autodesk.DesignScript.Geometry.Curve",
-      "Id": "df80f24188534ca699edcd2e5beba478",
-      "Inputs": [
-        {
-          "Id": "0d45c18f15ef466ca48e124751ba33ca",
-          "Name": "curve",
-          "Description": "Curve",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "Outputs": [
-        {
-          "Id": "d3346976b965491fa95e9bdd2be23f3c",
-          "Name": "ModelCurve",
-          "Description": "ModelCurve",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "Replication": "Auto",
-      "Description": "Construct a Revit ModelCurve element from a Curve\n\nModelCurve.ReferenceCurveByCurve (curve: Curve): ModelCurve"
-    },
-    {
-      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
-      "NodeType": "FunctionNode",
-      "FunctionSignature": "Revit.Elements.Form.ByLoftCrossSections@Revit.GeometryReferences.ElementCurveReference[],bool",
-      "Id": "d8b7c8f42f704e3ba91391316e009759",
-      "Inputs": [
-        {
-          "Id": "bfd9939082f949aabb33f3e16eb8ae3d",
-          "Name": "curves",
-          "Description": "ElementCurveReference[]",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        },
-        {
-          "Id": "a4bb9bad1d8d471bb02a4ece4eb9ee00",
-          "Name": "isSolid",
-          "Description": "bool\nDefault value : true",
-          "UsingDefaultValue": true,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "Outputs": [
-        {
-          "Id": "765aa475821c4384902e163da8dd8bb4",
-          "Name": "Form",
-          "Description": "Form",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "Replication": "Auto",
-      "Description": "Creates a Form by lofting a list of curves\n\nForm.ByLoftCrossSections (curves: ElementCurveReference[], isSolid: bool = true): Form"
-    },
-    {
-      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
-      "NodeType": "FunctionNode",
       "FunctionSignature": "Autodesk.DesignScript.Geometry.PolyCurve.Curves",
       "Id": "97c03b2f9e8649538de80cbbb306f458",
       "Inputs": [
@@ -1689,11 +1608,6 @@
       "Id": "ee7a4f9ef60f4342a8dfb21e6ad0a5e1"
     },
     {
-      "Start": "e1d8e9828d804940af0b0f81bb7a3e58",
-      "End": "1ba7a475d260415ca5983e80a282057e",
-      "Id": "e1de3ef26704468bbebbcde6ab3f0c34"
-    },
-    {
       "Start": "3a86ade6975d4aa3afd65783d61f5031",
       "End": "16b72c48c5da44aead02ba3ecd6f61ad",
       "Id": "b21c6e2a1a7a415f93e4eeb51db86f8e"
@@ -1737,27 +1651,10 @@
       "Start": "240d9a7d40db4caea68a84186ee09ced",
       "End": "236b495f3fc3410483361b78d32b2f1d",
       "Id": "4f3c95836ff84c2aa0efbc33afd1d54b"
-    },
-    {
-      "Start": "d3346976b965491fa95e9bdd2be23f3c",
-      "End": "bfd9939082f949aabb33f3e16eb8ae3d",
-      "Id": "95cfcc0c6c1940edb4347190e5a3c362"
-    },
-    {
-      "Start": "c928d6bd9b404b03987bc3a395620c2d",
-      "End": "0d45c18f15ef466ca48e124751ba33ca",
-      "Id": "6a9f8cc0a4c846bc88e63d5f115db912"
     }
   ],
   "Dependencies": [],
-  "Bindings": [
-    {
-      "NodeId": "e0e441ca-08a4-48b7-8f64-96e65e320376",
-      "Binding": {
-        "ByGeometries_InClassDecl-1_InFunctionScope-1_Instance0_e0e441ca-08a4-48b7-8f64-96e65e320376": "PFNPQVAtRU5WOkVudmVsb3BlIHhtbG5zOnhzaT0iaHR0cDovL3d3dy53My5vcmcvMjAwMS9YTUxTY2hlbWEtaW5zdGFuY2UiIHhtbG5zOnhzZD0iaHR0cDovL3d3dy53My5vcmcvMjAwMS9YTUxTY2hlbWEiIHhtbG5zOlNPQVAtRU5DPSJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy9zb2FwL2VuY29kaW5nLyIgeG1sbnM6U09BUC1FTlY9Imh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3NvYXAvZW52ZWxvcGUvIiB4bWxuczpjbHI9Imh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vc29hcC9lbmNvZGluZy9jbHIvMS4wIiBTT0FQLUVOVjplbmNvZGluZ1N0eWxlPSJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy9zb2FwL2VuY29kaW5nLyI+DQo8U09BUC1FTlY6Qm9keT4NCjxhMTpDYWxsU2l0ZV94MDAyQl9UcmFjZVNlcmlhbGlzZXJIZWxwZXIgaWQ9InJlZi0xIiB4bWxuczphMT0iaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS9jbHIvbnNhc3NlbS9Qcm90b0NvcmUvUHJvdG9Db3JlJTJDJTIwVmVyc2lvbiUzRDIuMC4xLjQzNTclMkMlMjBDdWx0dXJlJTNEbmV1dHJhbCUyQyUyMFB1YmxpY0tleVRva2VuJTNEbnVsbCI+DQo8TnVtYmVyT2ZFbGVtZW50cz4xPC9OdW1iZXJPZkVsZW1lbnRzPg0KPEJhc2UtMF9IYXNEYXRhPnRydWU8L0Jhc2UtMF9IYXNEYXRhPg0KPEJhc2UtMF9EYXRhIGlkPSJyZWYtMyI+UEZOUFFWQXRSVTVXT2tWdWRtVnNiM0JsSUhodGJHNXpPbmh6YVQwaWFIUjBjRG92TDNkM2R5NTNNeTV2Y21jdk1qQXdNUzlZVFV4VFkyaGxiV0V0YVc1emRHRnVZMlVpSUhodGJHNXpPbmh6WkQwaWFIUjBjRG92TDNkM2R5NTNNeTV2Y21jdk1qQXdNUzlZVFV4VFkyaGxiV0VpSUhodGJHNXpPbE5QUVZBdFJVNURQU0pvZEhSd09pOHZjMk5vWlcxaGN5NTRiV3h6YjJGd0xtOXlaeTl6YjJGd0wyVnVZMjlrYVc1bkx5SWdlRzFzYm5NNlUwOUJVQzFGVGxZOUltaDBkSEE2THk5elkyaGxiV0Z6TG5odGJITnZZWEF1YjNKbkwzTnZZWEF2Wlc1MlpXeHZjR1V2SWlCNGJXeHVjenBqYkhJOUltaDBkSEE2THk5elkyaGxiV0Z6TG0xcFkzSnZjMjltZEM1amIyMHZjMjloY0M5bGJtTnZaR2x1Wnk5amJISXZNUzR3SWlCVFQwRlFMVVZPVmpwbGJtTnZaR2x1WjFOMGVXeGxQU0pvZEhSd09pOHZjMk5vWlcxaGN5NTRiV3h6YjJGd0xtOXlaeTl6YjJGd0wyVnVZMjlrYVc1bkx5SStEUW84VTA5QlVDMUZUbFk2UW05a2VUNE5DanhoTVRwVFpYSnBZV3hwZW1GaWJHVkpaQ0JwWkQwaWNtVm1MVEVpSUhodGJHNXpPbUV4UFNKb2RIUndPaTh2YzJOb1pXMWhjeTV0YVdOeWIzTnZablF1WTI5dEwyTnNjaTl1YzJGemMyVnRMMUpsZG1sMFUyVnlkbWxqWlhNdVVHVnljMmx6ZEdWdVkyVXZVbVYyYVhSVFpYSjJhV05sY3lVeVF5VXlNRlpsY25OcGIyNGxNMFF5TGpBdU1DNDBNell3SlRKREpUSXdRM1ZzZEhWeVpTVXpSRzVsZFhSeVlXd2xNa01sTWpCUWRXSnNhV05MWlhsVWIydGxiaVV6Ukc1MWJHd2lQZzBLUEhOMGNtbHVaMGxFSUdsa1BTSnlaV1l0TXlJK09ETTVZV0kyT0dNdE5EWTNNQzAwTUdWaUxUbGpZMll0WkRReVpXTmxaVFZsT1RVMkxUQXdNREF3T1RrNFBDOXpkSEpwYm1kSlJENE5DanhwYm5SSlJENHlORFUyUEM5cGJuUkpSRDROQ2p3dllURTZVMlZ5YVdGc2FYcGhZbXhsU1dRK0RRbzhMMU5QUVZBdFJVNVdPa0p2WkhrK0RRbzhMMU5QUVZBdFJVNVdPa1Z1ZG1Wc2IzQmxQZzBLPC9CYXNlLTBfRGF0YT4NCjxCYXNlLTBfSGFzTmVzdGVkRGF0YT5mYWxzZTwvQmFzZS0wX0hhc05lc3RlZERhdGE+DQo8L2ExOkNhbGxTaXRlX3gwMDJCX1RyYWNlU2VyaWFsaXNlckhlbHBlcj4NCjwvU09BUC1FTlY6Qm9keT4NCjwvU09BUC1FTlY6RW52ZWxvcGU+DQo="
-      }
-    }
-  ],
+  "Bindings": [],
   "View": {
     "Dynamo": {
       "ScaleFactor": 1.0,
@@ -2172,36 +2069,6 @@
       },
       {
         "ShowGeometry": true,
-        "Name": "ImportInstance.ByGeometries",
-        "Id": "e0e441ca08a448b78f6496e65e320376",
-        "IsSetAsInput": false,
-        "IsSetAsOutput": false,
-        "Excluded": false,
-        "X": -22636.4311005321,
-        "Y": -19914.9829560184
-      },
-      {
-        "ShowGeometry": true,
-        "Name": "ModelCurve.ReferenceCurveByCurve",
-        "Id": "df80f24188534ca699edcd2e5beba478",
-        "IsSetAsInput": false,
-        "IsSetAsOutput": false,
-        "Excluded": false,
-        "X": -22378.7944818038,
-        "Y": -20153.4945304782
-      },
-      {
-        "ShowGeometry": true,
-        "Name": "Form.ByLoftCrossSections",
-        "Id": "d8b7c8f42f704e3ba91391316e009759",
-        "IsSetAsInput": false,
-        "IsSetAsOutput": false,
-        "Excluded": false,
-        "X": -22119.0042180273,
-        "Y": -20153.6825315154
-      },
-      {
-        "ShowGeometry": true,
         "Name": "PolyCurve.Curves",
         "Id": "97c03b2f9e8649538de80cbbb306f458",
         "IsSetAsInput": false,
@@ -2267,24 +2134,10 @@
         "InitialHeight": 0.0,
         "TextblockHeight": 0.0,
         "Background": "#FFC1D676"
-      },
-      {
-        "Id": "e67061b83dec44d1a7e39de6a08ac71e",
-        "Title": "Geometry is not the same as a Revit Element:\r\nUse ImportInstance To create Revit Imports from Surfaces and Solids in any Revit Environment, use Points and Curves to place Family Instances, or create Form in Mass and Generic Model By Point (Adaptive Component) Families",
-        "Nodes": [],
-        "Left": -22637.5984814944,
-        "Top": -20031.9682183164,
-        "Width": 0.0,
-        "Height": 0.0,
-        "FontSize": 36.0,
-        "InitialTop": 0.0,
-        "InitialHeight": 0.0,
-        "TextblockHeight": 0.0,
-        "Background": "#FFC1D676"
       }
     ],
-    "X": 12148.985040691421,
-    "Y": 9795.3577057582952,
-    "Zoom": 0.47799973494453973
+    "X": 4422.4614136011878,
+    "Y": 3728.8026540876617,
+    "Zoom": 0.17557326637216744
   }
 }

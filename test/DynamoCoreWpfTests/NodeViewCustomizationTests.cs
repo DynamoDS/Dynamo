@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using CoreNodeModels.Input;
 using CoreNodeModelsWpf.Controls;
+using CoreNodeModelsWpf.Nodes;
 using Dynamo.Controls;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.CustomNodes;
@@ -14,9 +17,6 @@ using Dynamo.Nodes;
 using Dynamo.Utilities;
 using DynamoCoreWpfTests.Utility;
 using NUnit.Framework;
-using CoreNodeModels.Input;
-using CoreNodeModelsWpf.Nodes;
-using System.Globalization;
 
 namespace DynamoCoreWpfTests
 {
@@ -48,6 +48,9 @@ namespace DynamoCoreWpfTests
         [Test, Category("DisplayHardwareDependent")]
         public void Watch3DHasViewer()
         {
+            var path = Environment.GetEnvironmentVariable("Path", EnvironmentVariableTarget.Process) + ";" + Model.PathManager.DynamoCoreDirectory;
+            Environment.SetEnvironmentVariable("Path", path, EnvironmentVariableTarget.Process);
+
             var renderingTier = (System.Windows.Media.RenderCapability.Tier >> 16);
             if (renderingTier < 2)
             {

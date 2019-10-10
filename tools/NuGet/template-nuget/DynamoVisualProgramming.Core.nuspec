@@ -2,10 +2,10 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
   <metadata>
     <id>DynamoVisualProgramming.Core</id>
-    <version>@VERSION@</version>
+    <version>$Version$</version>
     <authors>Autodesk</authors>
     <owners>Autodesk</owners>
-    <licenseUrl>http://opensource.org/licenses/MIT</licenseUrl>
+    <licenseUrl>https://www.apache.org/licenses/LICENSE-2.0</licenseUrl>
     <projectUrl>https://github.com/DynamoDS/Dynamo</projectUrl>
     <iconUrl>https://raw.githubusercontent.com/DynamoDS/Dynamo/master/doc/distrib/Images/logo_square_32x32.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
@@ -20,11 +20,11 @@
 8) DesignScriptBuiltin.dll
 9) VMDataBridge.dll</description>
     <summary>This package contains the core assemblies for Dynamo.</summary>
-    <copyright>Copyright Autodesk 2017</copyright>
+    <copyright>Copyright Autodesk 2019</copyright>
     <dependencies>
       <dependency id="Prism" version="4.1"/>
       <dependency id="NUnit" version="2.6.3"/>
-      <dependency id="DynamoVisualProgramming.ZeroTouchLibrary" version="@VERSION@"/>
+      <dependency id="DynamoVisualProgramming.ZeroTouchLibrary" version="$Version$"/>
       <dependency id="Newtonsoft.Json" version="8.0.3"/>
     </dependencies>
   </metadata>

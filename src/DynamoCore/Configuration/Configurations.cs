@@ -77,7 +77,7 @@ namespace Dynamo.Configuration
         /// <summary>
         /// Link to Dynamo dictionary
         /// </summary>
-        public static string DynamoDictionary = "http://dictionary.dynamobim.com/";
+        public static string DynamoDictionary = "http://dictionary.dynamobim.com/2/";
 
         /// <summary>
         /// Link to Dynamo primer
@@ -97,7 +97,7 @@ namespace Dynamo.Configuration
         /// <summary>
         /// Link to Dynamo's issues on github
         /// </summary>
-        public static string GitHubBugReportingLink = "https://github.com/DynamoDS/Dynamo/issues";
+        public static string GitHubBugReportingLink = "https://github.com/DynamoDS/Dynamo/issues/new";
         #endregion
 
         #region Canvas Configurations
@@ -130,6 +130,12 @@ namespace Dynamo.Configuration
         /// Default width of tab
         /// </summary>
         public static readonly int TabDefaultWidth = 250;
+
+        /// <summary>
+        /// Minimum width of tab in the extensions side bar
+        /// </summary>
+        public static readonly int ExtensionsSideBarTabMinWidth = 150;
+
         #endregion
 
         #region Information Bubble

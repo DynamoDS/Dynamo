@@ -1,9 +1,9 @@
-﻿using Dynamo.Engine;
-using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Text.RegularExpressions;
 using System.Globalization;
+using System.Text.RegularExpressions;
+using Dynamo.Engine;
+using Newtonsoft.Json;
 
 namespace Dynamo.Graph.Workspaces
 {
@@ -35,7 +35,8 @@ namespace Dynamo.Graph.Workspaces
                         new ConnectorConverter(logger),                        
                         new WorkspaceWriteConverter(engine),
                         new DummyNodeWriteConverter(),
-                        new TypedParameterConverter()
+                        new TypedParameterConverter(),
+                        new NodeLibraryDependencyConverter(logger),
                     },
                 ReferenceResolverProvider = () => { return new IdReferenceResolver(); }
             };

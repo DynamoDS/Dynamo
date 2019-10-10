@@ -20,6 +20,12 @@ namespace Dynamo.Applications
 {
     public class StartupUtils
     {
+        //TODO internal?
+        /// <summary>
+        /// Raised when loading of the ASM binaries fails. A failure message is passed as a parameter.
+        /// </summary>
+        public static event Action<string> ASMPreloadFailure;
+        
         internal class SandboxLookUp : DynamoLookUp
         {
             public override IEnumerable<string> GetDynamoInstallLocations()
@@ -87,6 +93,10 @@ namespace Dynamo.Applications
 
                 // Generate geometry json file
                 var geometryFilePath = string.Empty;
+                // dll paths we'll import before running a graph 
+                var importPaths = new List<string>() ;
+
+                var asmPath = string.Empty;
 
                 bool showHelp = false;
                 var optionsSet = new OptionSet().Add("o=|O=", "OpenFilePath, Instruct Dynamo to open headless and run a dyn file at this path", o => openfilepath = o)
@@ -94,10 +104,13 @@ namespace Dynamo.Applications
                 "this option is only supported when run from DynamoSandbox", c => commandFilePath = c)
                 .Add("l=|L=", "Running Dynamo under a different locale setting", l => locale = l)
                 .Add("v=|V=", "Verbose, Instruct Dynamo to output all evalautions it performs to an xml file at this path", v => verbose = v)
-                .Add("x|X", "When used in combination with the 'O' flag, opens a .dyn file from the specified path and converts it to .json." + 
+                .Add("x|X", "When used in combination with the 'O' flag, opens a .dyn file from the specified path and converts it to .json." +
                 "File will have the .json extension and be located in the same directory as the original file.", x => convertFile = x != null)
                 .Add("h|H|help", "Get some help", h => showHelp = h != null)
-                .Add("g=|G=|geometry", "Geometry, Instruct Dynamo to output geometry from all evaluations to a json file at this path", g => geometryFilePath = g);
+                .Add("g=|G=|geometry", "Geometry, Instruct Dynamo to output geometry from all evaluations to a json file at this path", g => geometryFilePath = g)
+                .Add("i=|I=|import", "Import, Instruct Dynamo to import an assembly as a node library. This argument should be a filepath to a single .dll" +
+                " - if you wish to import multiple dlls - use this flag multiple times: -i 'assembly1.dll' -i 'assembly2.dll' ", i => importPaths.Add(i)).
+                Add("gp=|GP=|geometrypath=|GeometryPath=", "relative or absolute path to a directory containing ASM. When supplied, instead of searching the hard disk for ASM, it will be loaded directly from this path.", gp => asmPath = gp);
 
                 optionsSet.Parse(args);
 
@@ -118,7 +131,9 @@ namespace Dynamo.Applications
                     OpenFilePath = openfilepath,
                     Verbose = verbose,
                     ConvertFile = convertFile,
-                    GeometryFilePath = geometryFilePath
+                    GeometryFilePath = geometryFilePath,
+                    ImportedPaths = importPaths,
+                    ASMPath = asmPath,
                 };
             }
 
@@ -134,6 +149,8 @@ namespace Dynamo.Applications
             public string Verbose { get; set; }
             public bool ConvertFile { get; set; }
             public string GeometryFilePath { get; set; }
+            public IEnumerable<String> ImportedPaths { get; set; }
+            public string ASMPath { get; set; }
         }
 
         public static void PreloadShapeManager(ref string geometryFactoryPath, ref string preloaderLocation)
@@ -143,11 +160,10 @@ namespace Dynamo.Applications
 
             var versions = new[]
             {
+                    new Version(225,0,0),
                     new Version(224,4,0),
                     new Version(224,0,1),
-                    new Version(223,0,1),
-                    new Version(222,0,0),
-                    new Version(221,0,0)
+                    new Version(223,0,1)
             };
 
             var preloader = new Preloader(rootFolder, versions);
@@ -169,21 +185,74 @@ namespace Dynamo.Applications
             return um;
         }
 
+        
+
+        /// <summary>
+        /// Use this overload to construct a DynamoModel when the location of ASM to use is known.
+        /// </summary>
+        /// <param name="CLImode">CLI mode starts the model in test mode and uses a seperate path resolver.</param>
+        /// <param name="asmPath">Path to directory containing geometry library binaries</param>
+        /// <returns></returns>
+        public static DynamoModel MakeModel(bool CLImode, string asmPath)
+        {
+            //get sandbox executing location - this is where libG will be located.
+            var exePath = Assembly.GetExecutingAssembly().Location;
+            var rootFolder = Path.GetDirectoryName(exePath);
+            //defaults - these will fail.
+            var preloaderLocation = "libg_0_0_0";
+            var geometryFactoryPath = Path.Combine(preloaderLocation, DynamoShapeManager.Utilities.GeometryFactoryAssembly);
+
+            try
+            {
+                if (!Directory.Exists(asmPath))
+                {
+                    throw new FileNotFoundException($"{nameof(asmPath)}:{asmPath}");
+                }
+                Version asmBinariesVersion = DynamoShapeManager.Utilities.GetVersionFromPath(asmPath);
+
+                //get version of libG that matches the asm version that was supplied from geometryLibraryPath.
+                preloaderLocation = DynamoShapeManager.Utilities.GetLibGPreloaderLocation(asmBinariesVersion, rootFolder);
+                geometryFactoryPath = Path.Combine(preloaderLocation, DynamoShapeManager.Utilities.GeometryFactoryAssembly);
+
+                //load asm and libG.
+                DynamoShapeManager.Utilities.PreloadAsmFromPath(preloaderLocation, asmPath);
+            }
+            catch(Exception e)
+            {
+                Console.WriteLine("A problem occured while trying to load ASM or LibG");
+                Console.WriteLine($"{e?.Message} : {e?.StackTrace}");
+            }
+            return StartDynamoWithDefaultConfig(CLImode, geometryFactoryPath, preloaderLocation);
+
+        }
+        //TODO (DYN-2118) remove this method in 3.0 and unify this method with the overload above.
         public static DynamoModel MakeModel(bool CLImode)
         {
             var geometryFactoryPath = string.Empty;
             var preloaderLocation = string.Empty;
-            PreloadShapeManager(ref geometryFactoryPath, ref preloaderLocation);
+            try
+            {
+                PreloadShapeManager(ref geometryFactoryPath, ref preloaderLocation);
+            }
+            catch(Exception e)
+            {
+                ASMPreloadFailure?.Invoke(e.Message);
+            }
 
+            return StartDynamoWithDefaultConfig(CLImode, geometryFactoryPath, preloaderLocation);
+        }
+
+        private static DynamoModel StartDynamoWithDefaultConfig(bool CLImode, string geometryFactoryPath, string preloaderLocation)
+        {
             var config = new DynamoModel.DefaultStartConfiguration()
-                  {
-                      GeometryFactoryPath = geometryFactoryPath,
-                      ProcessMode = TaskProcessMode.Asynchronous
-                  };
+            {
+                GeometryFactoryPath = geometryFactoryPath,
+                ProcessMode = TaskProcessMode.Asynchronous
+            };
 
             config.UpdateManager = CLImode ? null : InitializeUpdateManager();
             config.StartInTestMode = CLImode ? true : false;
-            config.PathResolver = CLImode ? new CLIPathResolver(preloaderLocation) as IPathResolver : new SandboxPathResolver(preloaderLocation) as IPathResolver ;
+            config.PathResolver = CLImode ? new CLIPathResolver(preloaderLocation) as IPathResolver : new SandboxPathResolver(preloaderLocation) as IPathResolver;
 
             var model = DynamoModel.Start(config);
             return model;

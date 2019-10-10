@@ -1,8 +1,7 @@
-﻿using System.Collections;
-using Autodesk.DesignScript.Runtime;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
+using Autodesk.DesignScript.Runtime;
 
 namespace DesignScript
 {
@@ -58,7 +57,8 @@ namespace DesignScript
             ///     Produces the values in a Dictionary.
             /// </summary>
             /// <returns name="values">The values of the Dictionary</returns>
-            [AllowRankReduction]
+            // [AllowRankReduction]
+            // TODO: Consider adding this attribute in 3.0 (DYN-1697)
             public IEnumerable<object> Values => D.Values;
 
             /// <summary>

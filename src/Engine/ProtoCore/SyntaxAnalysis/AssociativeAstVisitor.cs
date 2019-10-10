@@ -1,7 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
-using ProtoCore.AST.AssociativeAST;
 using ProtoCore.AST;
+using ProtoCore.AST.AssociativeAST;
 
 namespace ProtoCore.SyntaxAnalysis
 {
@@ -146,6 +147,7 @@ namespace ProtoCore.SyntaxAnalysis
             return DefaultVisit(node);
         }
 
+        [Obsolete("VisitIfStatementNode method is deprecated and not used. To be remove in 3.0")]
         public virtual bool VisitIfStatementNode(IfStatementNode node)
         {
             return DefaultVisit(node);
@@ -368,6 +370,7 @@ namespace ProtoCore.SyntaxAnalysis
             return DefaultVisit(node);
         }
 
+        [Obsolete("VisitIfStatementNode method is deprecated and not used. To be remove in 3.0")]
         public virtual TResult VisitIfStatementNode(IfStatementNode node)
         {
             return DefaultVisit(node);

@@ -24,13 +24,8 @@ namespace DynamoShapeManager
     /// 
     public class Preloader
     {
+
         #region Class Data Members and Properties
-
-        private readonly Version version;
-        private readonly string shapeManagerPath;
-        private readonly string preloaderLocation;
-        private readonly string geometryFactoryPath;
-
         /// <summary>
         /// This static data member represents the location of the shape manager
         /// that has been successfully preloaded. It is made static to ensure no 
@@ -38,11 +33,12 @@ namespace DynamoShapeManager
         /// </summary>
         private static string preloadedShapeManagerPath = string.Empty;
         [Obsolete("Please use the Version2 Property instead.")]
-        public LibraryVersion Version { get { return (LibraryVersion)version.Major; } }
-        public Version Version2 { get { return version; } }
+        public LibraryVersion Version { get { return (LibraryVersion)Version2.Major; } }
+        public Version Version2 { get; }
 
-        public string PreloaderLocation { get { return preloaderLocation; } }
-        public string GeometryFactoryPath { get { return geometryFactoryPath; } }
+        public string ShapeManagerPath { get; set; }
+        public string PreloaderLocation { get; }
+        public string GeometryFactoryPath { get; }
 
         #endregion
 
@@ -60,16 +56,16 @@ namespace DynamoShapeManager
         public Preloader(string rootFolder)
             : this(rootFolder, new[]
             {
+                    new Version(225,0,0),
                     new Version(224,4,0),
                     new Version(224,0,1),
-                    new Version(223,0,1),
-                    new Version(222,0,0),
-                    new Version(221,0,0)
+                    new Version(223,0,1)
             })
         {
         }
 
-        //used to convert libraryVersions to the real asm versions they represented
+        // TODO: Remove in Dynamo 3.0 -> The following old libG Folder mapping usage 
+        // used to convert libraryVersions to the real asm versions they represented
         private static Dictionary<LibraryVersion, Version> ASMLibVersionToVersion = new Dictionary<LibraryVersion, Version>()
         {
             { LibraryVersion.Version221, new Version(221,0,0) },
@@ -136,19 +132,11 @@ namespace DynamoShapeManager
 
             var versionList = versions.ToList();
 
-            shapeManagerPath = string.Empty; // Folder that contains ASM binaries.
-            version = Utilities.GetInstalledAsmVersion2(versionList, ref shapeManagerPath, rootFolder);
-
-            int major = 0, minor = 0, build = 0;
-            if (version != null)
-            {
-                major = version.Major;
-                minor = version.Minor;
-                build = version.Build;
-            }
-            var libGFolderName = string.Format("libg_{0}_{1}_{2}", major, minor, build);
-            preloaderLocation = Path.Combine(rootFolder, libGFolderName);
-            geometryFactoryPath = Path.Combine(preloaderLocation,
+            var shapeManagerPath = string.Empty; // Folder that contains ASM binaries.
+            Version2 = Utilities.GetInstalledAsmVersion2(versionList, ref shapeManagerPath, rootFolder);
+            ShapeManagerPath = shapeManagerPath;
+            PreloaderLocation = Utilities.GetLibGPreloaderLocation(Version2, rootFolder);
+            GeometryFactoryPath = Path.Combine(PreloaderLocation,
                 Utilities.GeometryFactoryAssembly);
         }
 
@@ -181,12 +169,12 @@ namespace DynamoShapeManager
             if (version == LibraryVersion.None)
                 throw new ArgumentOutOfRangeException("version");
 
-            this.version = MapLibGVersionEnumToFullVersion(version);
-            this.shapeManagerPath = shapeManagerPath;
+            this.Version2 = MapLibGVersionEnumToFullVersion(version);
+            this.ShapeManagerPath = shapeManagerPath;
 
-            var libGFolderName = string.Format("libg_{0}_{1}_{2}", this.version.Major, this.version.Minor, this.version.Build);
-            preloaderLocation = Path.Combine(rootFolder, libGFolderName);
-            geometryFactoryPath = Path.Combine(preloaderLocation,
+            var libGFolderName = string.Format("libg_{0}_{1}_{2}", this.Version2.Major, this.Version2.Minor, this.Version2.Build);
+            PreloaderLocation = Path.Combine(rootFolder, libGFolderName);
+            GeometryFactoryPath = Path.Combine(PreloaderLocation,
                 Utilities.GeometryFactoryAssembly);
         }
 
@@ -210,7 +198,7 @@ namespace DynamoShapeManager
         /// </summary>
         public void Preload()
         {
-            if (version == null)
+            if (Version2 == null)
                 return;
 
             if (!string.IsNullOrEmpty(preloadedShapeManagerPath))
@@ -221,11 +209,11 @@ namespace DynamoShapeManager
                 // loaded in the same process.
                 // 
                 const StringComparison opt = StringComparison.InvariantCultureIgnoreCase;
-                if (string.Compare(preloadedShapeManagerPath, shapeManagerPath, opt) != 0)
+                if (string.Compare(preloadedShapeManagerPath, ShapeManagerPath, opt) != 0)
                 {
                     var message = string.Format("Different versions of ASM cannot be loaded " +
                         "in the same process:\n\nFirst attempt: {0}\nSecond attempt: {1}",
-                        preloadedShapeManagerPath, shapeManagerPath);
+                        preloadedShapeManagerPath, ShapeManagerPath);
 
                     throw new InvalidOperationException(message);
                 }
@@ -235,8 +223,8 @@ namespace DynamoShapeManager
                 return;
             }
 
-            preloadedShapeManagerPath = shapeManagerPath;
-            Utilities.PreloadAsmFromPath(preloaderLocation, shapeManagerPath);
+            preloadedShapeManagerPath = ShapeManagerPath;
+            Utilities.PreloadAsmFromPath(PreloaderLocation, ShapeManagerPath);
         }
 
         #endregion

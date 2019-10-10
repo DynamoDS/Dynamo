@@ -1,13 +1,6 @@
 using System;
-using System.IO;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using NUnit.Framework;
 using ProtoCore.DSASM.Mirror;
-using ProtoCore.Lang;
-using ProtoScript.Runners;
-using ProtoTest.TD;
 using ProtoTestFx.TD;
 namespace ProtoTest.TD.MultiLangTests
 {
@@ -502,27 +495,25 @@ import(""FFITarget.dll"");
                 ";
             thisTest.RunScriptSource(code);
             thisTest.SetErrorMessage("1467263 - Concatenating a string with an integer throws method resolution error");
-            thisTest.Verify("b1", "a{1,2}");
-            thisTest.Verify("b2", "a{1,FFITarget.ClassFunctionality}");
+            thisTest.Verify("b1", "a[1,2]");
+            thisTest.Verify("b2", "a[1,FFITarget.ClassFunctionality]");
         }
 
-        [Test, Category("Failure")]
+        [Test]
         public void TestStringIndexing01()
         {
-            // TODO pratapa: String indexing is broken post Dictionary changes
             String code =
                 @"
                 s = ""abc"";
                 r = s[0];
                 ";
             thisTest.RunScriptSource(code);
-            thisTest.Verify("r", "a");
+            thisTest.Verify("r", 'a');
         }
 
-        [Test, Category("Failure")]
+        [Test]
         public void TestStringIndexing02()
         {
-            // TODO pratapa: String indexing is broken post Dictionary changes
             String code =
                 @"
                 s = ""abcdef"";
@@ -532,23 +523,21 @@ import(""FFITarget.dll"");
             thisTest.Verify("r", "bcd");
         }
 
-        [Test, Category("Failure")]
+        [Test]
         public void TestStringIndexing03()
         {
-            // TODO pratapa: String indexing is broken post Dictionary changes
             String code =
                 @"
                 s = ""abcdef"";
                 r = s[-1];
                 ";
             thisTest.RunScriptSource(code);
-            thisTest.Verify("r", "f");
+            thisTest.Verify("r", 'f');
         }
 
-        [Test, Category("Failure")]
+        [Test]
         public void TestStringIndexing04()
         {
-            // TODO pratapa: String indexing is broken post Dictionary changes
             String code =
                 @"
                 s = ""abcdef"";
@@ -558,10 +547,9 @@ import(""FFITarget.dll"");
             thisTest.Verify("r", "fed");
         }
 
-        [Test, Category("Failure")]
+        [Test]
         public void TestStringIndexing05()
         {
-            // TODO pratapa: String indexing is broken post Dictionary changes
             String code =
                 @"
                 s = """";

@@ -3,13 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using Dynamo.Engine;
 using Dynamo.Engine.CodeGeneration;
-using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.CustomNodes;
+using Dynamo.Graph.Workspaces;
 using Dynamo.Library;
-using Dynamo.Models;
-using ProtoCore.AST.AssociativeAST;
 using ProtoCore;
+using ProtoCore.AST.AssociativeAST;
 
 namespace Dynamo
 {
@@ -125,10 +124,11 @@ namespace Dynamo
             var inputNodes = nodeModels.OfType<Symbol>().ToList();
             var parameters = inputNodes.Select(x => new TypedParameter(
                                                    x.GetAstIdentifierForOutputIndex(0).Value,
-                                                   x.Parameter.Type, 
+                                                   x.Parameter.Type,
                                                    x.Parameter.DefaultValue,
                                                    null,
-                                                   x.Parameter.Summary));
+                                                   x.Parameter.Summary, 
+                                                   x.Parameter.NameIsValid));
             var displayParameters = inputNodes.Select(x => x.Parameter.Name);
 
             #endregion
@@ -159,6 +159,16 @@ namespace Dynamo
         ///     Is this CustomNodeDefinition properly loaded?
         /// </summary>
         public bool IsProxy { get; private set; }
+
+        /// <summary>
+        /// Indicates whether any of this definition's input parameters are invalid.
+        /// An input is invalid when its input expression fails to parse. For example, 
+        /// this would happen if the input name contained spaces or illegal characters.
+        /// </summary>
+        public bool ContainsInvalidInput
+        {
+            get { return Parameters.Any(p => !p.NameIsValid); }
+        }
 
         /// <summary>
         ///     Function name.
@@ -289,12 +299,10 @@ namespace Dynamo
             Description = description;
             Path = path;
             IsVisibleInDynamoLibrary = isVisibleInDynamoLibrary;
-
             Category = category;
             if (String.IsNullOrWhiteSpace(Category))
                 Category = Dynamo.Properties.Resources.DefaultCustomNodeCategory;
         }
-
         /// <summary>
         /// Returns custom node unique ID
         /// </summary>
@@ -331,5 +339,12 @@ namespace Dynamo
         /// If true, then custom node is part of library search.
         /// </summary>
         public bool IsVisibleInDynamoLibrary { get; private set; }
+
+        /// <summary>
+        /// Only valid if IsPackageMember is true.
+        /// Can be used to identify which package 
+        /// requested this CustomNode to load.
+        /// </summary>
+        public PackageInfo PackageInfo { get;  internal set; }
     }
 }

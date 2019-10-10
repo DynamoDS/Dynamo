@@ -2,12 +2,10 @@
 using System.IO;
 using System.Linq;
 using Dynamo.Graph;
-using Dynamo.Models;
 using Dynamo.Graph.Nodes;
 using NUnit.Framework;
-using DynCmd = Dynamo.Models.DynamoModel;
-
 using PythonNodeModels;
+using DynCmd = Dynamo.Models.DynamoModel;
 
 namespace Dynamo.Tests
 {
@@ -135,10 +133,10 @@ namespace Dynamo.Tests
         public void VerifyPythonLoadsFromCore()
         {
             // This test graphs verifies the following:
-            // 1 - IronPython version 2.7.8 is loaded
-            // 2 - IronPython StdLib 2.7.8 is loaded from Core location
+            // 1 - IronPython version 2.7.9 is loaded
+            // 2 - IronPython StdLib 2.7.9 is loaded from Core location
             // 3 - StdLib modules are loaded
-            // 4 - Legacy import statements are not influenced by 2.7.8 upgrade
+            // 4 - Legacy import statements are not influenced by 2.7.9 upgrade
             
             // open test graph
             var model = ViewModel.Model;

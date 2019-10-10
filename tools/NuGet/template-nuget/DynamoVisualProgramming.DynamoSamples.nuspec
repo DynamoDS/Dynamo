@@ -2,15 +2,15 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
   <metadata>
     <id>DynamoVisualProgramming.DynamoSamples</id>
-    <version>@VERSION@</version>
+    <version>$Version$</version>
     <authors>Autodesk</authors>
     <owners>Autodesk</owners>
-    <licenseUrl>http://opensource.org/licenses/MIT</licenseUrl>
+    <licenseUrl>https://www.apache.org/licenses/LICENSE-2.0</licenseUrl>
     <projectUrl>https://github.com/DynamoDS/Dynamo</projectUrl>
     <iconUrl>https://raw.githubusercontent.com/DynamoDS/Dynamo/master/doc/distrib/Images/logo_square_32x32.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>This package bundles all localized Sample files from the Dynamo bin Release folder.</description>
-    <copyright>Copyright Autodesk 2018</copyright>
+    <copyright>Copyright Autodesk 2019</copyright>
   </metadata>
   <files>
     <file src="..\..\..\bin\AnyCPU\Release\samples\**" target="Samples" />

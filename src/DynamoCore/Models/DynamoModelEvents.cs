@@ -320,7 +320,7 @@ namespace Dynamo.Models
             {
                 Action showFailureMessage = () => DisplayEngineFailureMessage(e.Error);
                 OnRequestDispatcherBeginInvoke(showFailureMessage);
-           }
+            }
 
             if (EvaluationCompleted != null)
                 EvaluationCompleted(sender, e);

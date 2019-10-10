@@ -1,11 +1,8 @@
-﻿using Dynamo.Interfaces;
-using Dynamo.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
 using Dynamo.Graph.Workspaces;
+using Dynamo.Models;
 
 namespace Dynamo.Extensions
 {
@@ -26,6 +23,7 @@ namespace Dynamo.Extensions
         {
             dynamoModel = dynamoM;
             dynamoModel.PropertyChanged += OnDynamoModelPropertyChanged;
+            dynamoModel.WorkspaceCleared += OnCurrentWorkspaceModelCleared;
             dynamoM.Logger.NotificationLogged += OnNotificationRecieved;
             startupParams = new StartupParams(dynamoModel.AuthenticationManager.AuthProvider,
                 dynamoModel.PathManager, new ExtensionLibraryLoader(dynamoModel), dynamoModel.CustomNodeManager,
@@ -94,6 +92,16 @@ namespace Dynamo.Extensions
         {
             if (CurrentWorkspaceChanged != null)
                 CurrentWorkspaceChanged(ws);
+        }
+
+        /// <summary>
+        /// Occurs when current workspace is cleared
+        /// </summary>
+        public event Action<IWorkspaceModel> CurrentWorkspaceCleared;
+        private void OnCurrentWorkspaceModelCleared(IWorkspaceModel ws)
+        {
+            if (CurrentWorkspaceCleared != null)
+                CurrentWorkspaceCleared(ws);
         }
 
         private void OnDynamoModelPropertyChanged(object sender, PropertyChangedEventArgs e)

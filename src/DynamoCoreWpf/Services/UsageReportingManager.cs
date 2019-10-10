@@ -1,12 +1,10 @@
-﻿using Dynamo.Core;
-using Dynamo.ViewModels;
+﻿using System;
+using System.Windows;
+using Dynamo.Core;
 using Dynamo.Models;
 using Dynamo.UI.Commands;
 using Dynamo.UI.Prompts;
-
-using System;
-using System.Windows;
-
+using Dynamo.ViewModels;
 using Dynamo.Wpf.Interfaces;
 using NotificationObject = Dynamo.Core.NotificationObject;
 
@@ -153,9 +151,6 @@ namespace Dynamo.Services
             if (dynamoViewModel.Model.PreferenceSettings.IsFirstRun)
             {
                 FirstRun = false;
-
-                //Analytics enable by defaultwa
-                IsAnalyticsReportingApproved = true;
 
                 //Prompt user for detailed reporting
                 if (!DynamoModel.IsTestMode)

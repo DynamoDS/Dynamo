@@ -1,17 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Linq;
-using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using Dynamo.Controls;
-using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Selection;
 using Dynamo.Utilities;
 using Dynamo.Views;
-using Dynamo.Wpf.Controls;
 using DynamoCoreWpfTests.Utility;
 using NUnit.Framework;
 

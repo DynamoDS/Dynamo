@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using NUnit.Framework;
 using Dynamo.Graph.Connectors;
+using NUnit.Framework;
 
 namespace Dynamo.Tests
 {
@@ -12,14 +9,14 @@ namespace Dynamo.Tests
     {
         protected override void GetLibrariesToPreload(List<string> libraries)
         {
+            libraries.Add("DesignScriptBuiltin.dll");
             libraries.Add("FFITarget.dll");
             base.GetLibrariesToPreload(libraries);
         }
 
-        [Test, Category("Failure")]
+        [Test]
         public void TestSingleOutputNode()
         {
-            // TODO pratapa: Test goes into infinite loop after Dictionary changes
             RunModel(@"core\multiout\singleoutput.dyn");
             AssertPreviewValue("060e57e1-b889-4b94-a440-8adb0067ae79", null);
 

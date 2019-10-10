@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Windows;
-using System.Reflection;
-using System.IO;
-using System.Linq;
 using System.Diagnostics;
+using System.IO;
+using System.Reflection;
+using System.Windows;
 
 namespace DynamoSandbox
 {
@@ -56,7 +55,7 @@ namespace DynamoSandbox
             }
             catch (Exception ex)
             {
-                throw new Exception(string.Format("The location of the assembly, {0} could not be resolved for loading.", assemblyPath), ex);
+                throw new Exception(string.Format("The location of the assembly, {0} could not be resolved for loading.", assemblyName), ex);
             }
         }
 

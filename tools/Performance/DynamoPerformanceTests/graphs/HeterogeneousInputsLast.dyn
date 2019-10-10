@@ -1,0 +1,372 @@
+{
+  "Uuid": "ce26b161-5506-4388-a339-bbdb0f05c27a",
+  "IsCustomNode": false,
+  "Description": null,
+  "Name": "HeterogeneousInputsLast",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "0..15;",
+      "Id": "f57c39890b734c71bac64bc9dc545309",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "b75df48f77a3448aa24db6dc6eb88a06",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DSCore.List.ReplaceItemAtIndex@var[]..[],int,var[]..[]",
+      "Id": "5a049d4fbeae48d6b1e8e200467e4ee9",
+      "Inputs": [
+        {
+          "Id": "392982d4016e4b37a1ba4e7e8dd202cc",
+          "Name": "list",
+          "Description": "List to replace an item in.\n\nvar[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "82e2b7c29f184741b02e5731f4615e7d",
+          "Name": "index",
+          "Description": "Index of the item to be replaced.\n\nint",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "dd5c8a48bbe0443f808fe0a394431697",
+          "Name": "item",
+          "Description": "The item to insert.\n\nvar[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "aeed3e11fe9a479189100f22b1b17446",
+          "Name": "list",
+          "Description": "A new list with the item replaced.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Replace an item from the given list that's located at the specified index.\n\nList.ReplaceItemAtIndex (list: var[]..[], index: int, item: var[]..[]): var[]..[]"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double,double",
+      "Id": "b705cd19e3154d8399dd7d2fd9d05dcd",
+      "Inputs": [
+        {
+          "Id": "14cc48ecb41f4a7b8b34f8c8ee0fad96",
+          "Name": "x",
+          "Description": "double\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "28365996868d483794eae44d2bab53f9",
+          "Name": "y",
+          "Description": "double\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "5ae29ee0e60c49f0b7b4b33c7ef049d5",
+          "Name": "z",
+          "Description": "double\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "9dfc2affb4dc4be4a182547bcd4df831",
+          "Name": "Point",
+          "Description": "Point",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "CrossProduct",
+      "Description": "Form a Point given 3 cartesian coordinates\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "0;\n0;",
+      "Id": "3405e2c1e8c3496caf38cf2e7b2212e1",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "b09805e0a006465c9c3d6c9329523622",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "e51541d5034146b586300dc8a8f7577e",
+          "Name": "",
+          "Description": "Value of expression at line 2",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DSCore.List.ReplaceItemAtIndex@var[]..[],int,var[]..[]",
+      "Id": "04e4bd6a9a55494491920a1455cd611f",
+      "Inputs": [
+        {
+          "Id": "321f004b272a48adaa908a264dabae79",
+          "Name": "list",
+          "Description": "List to replace an item in.\n\nvar[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "9c141b2c2b2e47cb9f70df35655ccd4d",
+          "Name": "index",
+          "Description": "Index of the item to be replaced.\n\nint",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "d47a13ce43ab492c966cc7d029255930",
+          "Name": "item",
+          "Description": "The item to insert.\n\nvar[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "ba0a7f64bf2e418db90d2d7c5ba075db",
+          "Name": "list",
+          "Description": "A new list with the item replaced.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Replace an item from the given list that's located at the specified index.\n\nList.ReplaceItemAtIndex (list: var[]..[], index: int, item: var[]..[]): var[]..[]"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "15;\n17.5;",
+      "Id": "442c01de8c4048779c8bb16ae2ffd810",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "03d16b19c444412e97ea9b62ef44b19a",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "91c43dc03bd84236927b907572dd5e53",
+          "Name": "",
+          "Description": "Value of expression at line 2",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "b75df48f77a3448aa24db6dc6eb88a06",
+      "End": "392982d4016e4b37a1ba4e7e8dd202cc",
+      "Id": "af4a0cc2307a473a9df11dd6f17c5aa4"
+    },
+    {
+      "Start": "aeed3e11fe9a479189100f22b1b17446",
+      "End": "321f004b272a48adaa908a264dabae79",
+      "Id": "3dc87b061ec14520ada09c3532384438"
+    },
+    {
+      "Start": "b09805e0a006465c9c3d6c9329523622",
+      "End": "82e2b7c29f184741b02e5731f4615e7d",
+      "Id": "97bdb255123446b699fc43cafc864028"
+    },
+    {
+      "Start": "e51541d5034146b586300dc8a8f7577e",
+      "End": "dd5c8a48bbe0443f808fe0a394431697",
+      "Id": "0a6ec3ff297e442f9163e4c1912e33a8"
+    },
+    {
+      "Start": "ba0a7f64bf2e418db90d2d7c5ba075db",
+      "End": "5ae29ee0e60c49f0b7b4b33c7ef049d5",
+      "Id": "e378b5990c0346cdb6508735183f13b4"
+    },
+    {
+      "Start": "ba0a7f64bf2e418db90d2d7c5ba075db",
+      "End": "28365996868d483794eae44d2bab53f9",
+      "Id": "20c54ea0499648c394d25f8b2256bf00"
+    },
+    {
+      "Start": "ba0a7f64bf2e418db90d2d7c5ba075db",
+      "End": "14cc48ecb41f4a7b8b34f8c8ee0fad96",
+      "Id": "47381973eb77483cbdfe6f510a649b7a"
+    },
+    {
+      "Start": "03d16b19c444412e97ea9b62ef44b19a",
+      "End": "9c141b2c2b2e47cb9f70df35655ccd4d",
+      "Id": "c63bc71aafaf43ec8a36be74357f87ca"
+    },
+    {
+      "Start": "91c43dc03bd84236927b907572dd5e53",
+      "End": "d47a13ce43ab492c966cc7d029255930",
+      "Id": "a9f70dc518ac47c0a7385665c6ae01fb"
+    }
+  ],
+  "Dependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.0.2.8095",
+      "RunType": "Manual",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "f57c39890b734c71bac64bc9dc545309",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -94.498919144200613,
+        "Y": 224.58816065429713
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "List.ReplaceItemAtIndex",
+        "Id": "5a049d4fbeae48d6b1e8e200467e4ee9",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 66.10086819411265,
+        "Y": 245.72417016794384
+      },
+      {
+        "ShowGeometry": false,
+        "Name": "Point.ByCoordinates",
+        "Id": "b705cd19e3154d8399dd7d2fd9d05dcd",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 533.21810069966477,
+        "Y": 361.01876878658277
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "3405e2c1e8c3496caf38cf2e7b2212e1",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -98.7128904403472,
+        "Y": 324.417967813707
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "List.ReplaceItemAtIndex",
+        "Id": "04e4bd6a9a55494491920a1455cd611f",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 284.07465227125954,
+        "Y": 376.6931532842292
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "442c01de8c4048779c8bb16ae2ffd810",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 143.51004303541851,
+        "Y": 432.58628059172418
+      }
+    ],
+    "Annotations": [],
+    "X": 298.99719176475685,
+    "Y": 0.73227064744412473,
+    "Zoom": 1.1375820522947404
+  }
+}

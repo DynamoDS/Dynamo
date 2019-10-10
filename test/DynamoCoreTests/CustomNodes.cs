@@ -1,4 +1,10 @@
-﻿using CoreNodeModels;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Threading;
+using CoreNodeModels;
 using DesignScript.Builtin;
 using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
@@ -10,12 +16,6 @@ using Dynamo.Models;
 using Dynamo.Selection;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading;
 
 namespace Dynamo.Tests
 {
@@ -894,6 +894,82 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        public void TestCustomNodeFromCollapsedNodeHasSpecificTypes()
+        {
+            var examplePath = Path.Combine(TestDirectory, @"core\CustomNodes\");
+            OpenModel(Path.Combine(examplePath, "simpleGeometry.dyn"));
+
+            // Convert a DSFunction node Line.ByStartPointEndPoint to custom node.
+            var node = CurrentDynamoModel.CurrentWorkspace.Nodes.OfType<DSFunction>().First();
+
+            var selectionSet = new List<NodeModel> { node };
+            var ws = CurrentDynamoModel.CustomNodeManager.Collapse(
+                selectionSet,
+                Enumerable.Empty<NoteModel>(),
+                CurrentDynamoModel.CurrentWorkspace,
+                true,
+                new FunctionNamePromptEventArgs
+                {
+                    Category = "Testing",
+                    Description = "",
+                    Name = "__CollapseTest__",
+                    Success = true
+                });
+
+            CurrentDynamoModel.AddCustomNodeWorkspace(ws);
+            CurrentDynamoModel.OpenCustomNodeWorkspace(ws.CustomNodeId);
+            var inputs = CurrentDynamoModel.CurrentWorkspace.Nodes.OfType<Symbol>().ToList();
+            Assert.IsNotNull(inputs);
+
+            inputs.ForEach(x => Assert.NotNull(x));
+
+            Assert.IsTrue(inputs.All(t => t.InputSymbol.EndsWith(":Point")));
+        }
+
+        [Test]
+        public void TestCustomNodeFromCollapsedNodeHasSpecificTypes_WithConflict()
+        {
+            //load the FFI target lib so we have some namespace conflicts
+            string libraryPath = "FFITarget.dll";
+            if (!CurrentDynamoModel.EngineController.LibraryServices.IsLibraryLoaded(libraryPath))
+            {
+                CurrentDynamoModel.EngineController.LibraryServices.ImportLibrary(libraryPath);
+            }
+
+            var examplePath = Path.Combine(TestDirectory, @"core\CustomNodes\");
+            OpenModel(Path.Combine(examplePath, "simpleGeometry.dyn"));
+
+            // Convert a DSFunction node Line.ByStartPointEndPoint to custom node.
+            var node = CurrentDynamoModel.CurrentWorkspace.Nodes.OfType<DSFunction>().First();
+
+            var selectionSet = new List<NodeModel> { node };
+            var ws = CurrentDynamoModel.CustomNodeManager.Collapse(
+                selectionSet,
+                Enumerable.Empty<NoteModel>(),
+                CurrentDynamoModel.CurrentWorkspace,
+                true,
+                new FunctionNamePromptEventArgs
+                {
+                    Category = "Testing",
+                    Description = "",
+                    Name = "__CollapseTest__",
+                    Success = true
+                });
+
+            CurrentDynamoModel.AddCustomNodeWorkspace(ws);
+            CurrentDynamoModel.OpenCustomNodeWorkspace(ws.CustomNodeId);
+            var inputs = CurrentDynamoModel.CurrentWorkspace.Nodes.OfType<Symbol>().ToList();
+            Assert.IsNotNull(inputs);
+
+            inputs.ForEach(x => Assert.NotNull(x));
+
+            Assert.IsTrue(inputs.All(t =>
+            {
+                return t.InputSymbol.EndsWith(":Autodesk.Point");
+            }));
+        }
+
+        [Test]
         public void TestCustomNodeInSyncWithDefinition()
         {
             var basePath = Path.Combine(TestDirectory, @"core\CustomNodes\");
@@ -1132,7 +1208,7 @@ namespace Dynamo.Tests
             const string nodeName = "someCustomNode";
             const string catName1 = "CatName1";
 
-            var cnworkspace = CurrentDynamoModel.CustomNodeManager.CreateCustomNode(nodeName, catName1, "a node with an input with comments");
+            var cnworkspace = CurrentDynamoModel.CustomNodeManager.CreateCustomNode(nodeName, catName1, "a node with an input with comments", null);
             var inputNode = new Symbol();
             inputNode.InputSymbol = "/* a new and better comment*/" + Environment.NewLine + "inputName: string = \"a def string\"";
             cnworkspace.AddAndRegisterNode(inputNode);
@@ -1187,10 +1263,10 @@ namespace Dynamo.Tests
             Assert.IsNotNull(customNodeWs);
             var node1 = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace("e058111a-0c58-4dbf-9293-6ab711f530bf") as Symbol;
             Assert.IsNotNull(node1);
-            Assert.AreEqual("x-start: var[]..[]", node1.Parameter.ToCommentNameString());
+            Assert.AreEqual("x_start: var[]..[]", node1.Parameter.ToCommentNameString());
             var node2 = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace("2601b801-c8af-413b-9c58-f8b100d62ed8") as Symbol;
             Assert.IsNotNull(node2);
-            Assert.AreEqual("x-step: var[]..[]", node2.Parameter.ToCommentNameString());
+            Assert.AreEqual("x_step: var[]..[]", node2.Parameter.ToCommentNameString());
         }
 
         [Test]
@@ -1265,6 +1341,54 @@ namespace Dynamo.Tests
             Assert.AreEqual(1, this.CurrentDynamoModel.CurrentWorkspace.Notes.Count());
             Assert.AreEqual(1, this.CurrentDynamoModel.CurrentWorkspace.Annotations.Count());
 
+        }
+
+        [Test]
+        public void InputNameWithSpacesShouldCauseErrorStateAndReadOnly()
+        {
+            // Custom node has input symbol with a name that contains spaces
+            var dyfFilePath = Path.Combine(TestDirectory, @"core\CustomNodes\invalidInputName.dyf");
+
+            OpenModel(dyfFilePath);
+
+            var inputSymbolNode = CurrentDynamoModel.CurrentWorkspace.Nodes.OfType<Symbol>().First();
+
+            // The input symbol is invalid, so the input symbol node should show an error
+            Assert.IsTrue(inputSymbolNode.State == ElementState.Error);
+            // The workspace should know that it contains invalid input symbols
+            Assert.IsTrue(CurrentDynamoModel.CurrentWorkspace.containsInvalidInputSymbols());
+            // The workspace should be readonly because it contains invalid input symbols
+            Assert.IsTrue(CurrentDynamoModel.CurrentWorkspace.IsReadOnly);
+        }
+
+        [Test]
+        public void InputNameWithSpacesShouldCauseWarningInGraph()
+        {
+            // Dyn file contains a custom node with an invalid input symbol
+            var dynFilePath = Path.Combine(TestDirectory, @"core\CustomNodes\invalidInputName.dyn");
+
+            OpenModel(dynFilePath);
+            var functionNode = CurrentDynamoModel.CurrentWorkspace.Nodes.OfType<Function>().First();
+
+            // The custom node should display a warning that it contains invalid input symbols
+            Assert.IsTrue(functionNode.State == ElementState.PersistentWarning);
+            // Despite the invalid input symbol, the custom node should still execute and return the correct value
+            AssertPreviewValue("f91658aeafe84cbaa39d370dec283b53", 8.0);
+        }
+
+        [Test]
+        public void LooseCustomNodeShouldNotHavePackageInfoOrPackageMember()
+        {
+            //load any loose custom node
+            var dynFilePath = Path.Combine(TestDirectory, @"core\CustomNodes\invalidInputName.dyn");
+
+            OpenModel(dynFilePath);
+        var functionNode = CurrentDynamoModel.CurrentWorkspace.Nodes.OfType<Function>().First();
+
+            var nodeInfo =CurrentDynamoModel.CustomNodeManager.NodeInfos.Where(x => x.Value.Name == "invalidInputName").FirstOrDefault();
+            Assert.IsNotNull(nodeInfo.Value);
+            Assert.IsFalse(nodeInfo.Value.IsPackageMember);
+            Assert.IsNull(nodeInfo.Value.PackageInfo);
         }
     }
 }

@@ -1,18 +1,15 @@
-﻿using System.IO;
-using NUnit.Framework;
-using Dynamo.Nodes;
-using Dynamo.Models;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using DesignScript.Builtin;
-using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.ZeroTouch;
+using NUnit.Framework;
 
 
 namespace Dynamo.Tests
 {
-	class ListTests : DynamoModelTestBase
+    class ListTests : DynamoModelTestBase
     {
         protected override void GetLibrariesToPreload(List<string> libraries)
         {
@@ -945,7 +942,34 @@ namespace Dynamo.Tests
 
 		}
 
-		[Test]
+        [Test]
+        public void LaceCartesian_Simple()
+        {
+            string openPath = Path.Combine(TestDirectory, @"core\list\LaceCartesian_Simple.dyn");
+            RunModel(openPath);
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(4, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+            Assert.AreEqual(5, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
+
+            // Element from the Reverse list
+            Dictionary<int, object> validationData = new Dictionary<int, object>()
+            {
+                {0, new[] {2, 3, 4}},
+                {1, new[] {3, 4, 5}},
+                {2, new[] {4, 5, 6}}
+            };
+            
+
+            // Elements from List.CartesianProduct list
+            SelectivelyAssertPreviewValues("c0616589-1bc1-45b7-9e81-4d48c0c8f4ad", validationData);
+
+            // Elements from Add node list
+            SelectivelyAssertPreviewValues("17e7aa2c-2159-42a8-9c82-ea8594e410b9", validationData);
+
+        }
+
+        [Test]
 		public void LaceShortest_NegativeInput()
 		{
 			string openPath = Path.Combine(TestDirectory, @"core\list\LaceShortest_NegativeInput.dyn");

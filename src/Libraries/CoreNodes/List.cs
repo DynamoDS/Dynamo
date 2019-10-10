@@ -2,10 +2,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Globalization;
 using System.Linq;
-using System.Threading;
 using Autodesk.DesignScript.Runtime;
 using DSCore.Properties;
 
@@ -932,7 +929,7 @@ namespace DSCore
         }
 
         /// <summary>
-        ///     List elements along each diagonal in the matrix from the top left to the lower right.
+        ///     List elements along each diagonal in the matrix from the lower left to the top right.
         /// </summary>
         /// <param name="list">A flat list</param>
         /// <param name="subLength">Length of each new sub-list.</param>
@@ -992,7 +989,7 @@ namespace DSCore
         }
 
         /// <summary>
-        ///     List elements along each diagonal in the matrix from the top right to the lower left.
+        ///     List elements along each diagonal in the matrix from the top left to the lower right.
         /// </summary>
         /// <param name="list">A flat list.</param>
         /// <param name="rowLength">Length of each new sib-list.</param>

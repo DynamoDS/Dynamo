@@ -1,20 +1,14 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 
 using Dynamo.Controls;
-using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.CustomNodes;
-using Dynamo.Models;
 using Dynamo.Search;
 using Dynamo.Search.SearchElements;
-using Dynamo.UI.Controls;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.ViewModels;
 using NUnit.Framework;
@@ -642,45 +636,72 @@ namespace Dynamo.Tests
         [Category("UnitTests")]
         public void MenuItemCheckConverterTest()
         {
-            object equal;
+            object result;
             MenuItemCheckConverter converter = new MenuItemCheckConverter();
 
-            equal = converter.Convert("1.0", typeof(string), "1.0", new CultureInfo("en-US"));
-            Assert.AreEqual(equal, true);
+            result = converter.Convert("1.0", typeof(string), "1.0", new CultureInfo("en-US"));
+            Assert.AreEqual(result, true);
 
-            equal = converter.Convert("1,0", typeof(string), "1,0", new CultureInfo("de-DE"));
-            Assert.AreEqual(equal, true);
+            result = converter.Convert("1,0", typeof(string), "1,0", new CultureInfo("de-DE"));
+            Assert.AreEqual(result, true);
 
-            equal = converter.Convert(1.0, typeof(double), 1.0, new CultureInfo("en-US"));
-            Assert.AreEqual(equal, true);
+            result = converter.Convert(1.0, typeof(double), 1.0, new CultureInfo("en-US"));
+            Assert.AreEqual(result, true);
 
-            equal = converter.Convert(1.0, typeof(double), 1.0, new CultureInfo("de-DE"));
-            Assert.AreEqual(equal, true);
+            result = converter.Convert(1.0, typeof(double), 1.0, new CultureInfo("de-DE"));
+            Assert.AreEqual(result, true);
+
+            result = converter.Convert(1.0, null, 1.0, null);
+            Assert.AreEqual(result, true);
+
+            result = converter.Convert(1.0, null, 100, null);
+            Assert.AreEqual(result, false);
         }
 
         [Test]
         [Category("UnitTests")]
         public void GroupFontSizeToEditorEnabledConverterTest()
         {
-            object equal;
+            object result;
             GroupFontSizeToEditorEnabledConverter converter = new GroupFontSizeToEditorEnabledConverter();
+            //obj [1] = zoom, obj [2]= fontsize
+            string[] stringsUsDefault = { "1.0", "36.0" };
+            string[] stringsUsDefaultResultInFalse = { "1.0", "2.0" };
             string[] stringsUs = { "2.0", "4.0" };
             string[] stringsDe = { "2,0", "4,0" };
             double[] doubles = { 2.0, 4.0 };
             object[] objects = new object[2];
             doubles.CopyTo(objects, 0);
 
-            equal = converter.Convert(stringsUs , typeof(string), null, new CultureInfo("en-US"));
-            Assert.AreEqual(equal, true);
+            result = converter.Convert(stringsUs , typeof(string), null, new CultureInfo("en-US"));
+            Assert.AreEqual(result, true);
 
-            equal = converter.Convert(stringsDe, typeof(string), null, new CultureInfo("de-DE"));
-            Assert.AreEqual(equal, true);
+            result = converter.Convert(stringsDe, typeof(string), null, new CultureInfo("de-DE"));
+            Assert.AreEqual(result, true);
 
-            equal = converter.Convert(objects, typeof(float), null, new CultureInfo("en-US"));
-            Assert.AreEqual(equal, true);
+            result = converter.Convert(objects, typeof(float), null, new CultureInfo("en-US"));
+            Assert.AreEqual(result, true);
 
-            equal = converter.Convert(objects, typeof(float), null, new CultureInfo("de-DE"));
-            Assert.AreEqual(equal, true);
+            result = converter.Convert(objects, typeof(float), null, new CultureInfo("de-DE"));
+            Assert.AreEqual(result, true);
+
+            result = converter.Convert(stringsDe, typeof(float), null, new CultureInfo("de-DE"));
+            Assert.AreEqual(result, true);
+
+            result = converter.Convert(stringsUsDefault, typeof(float), null, new CultureInfo("de-DE"));
+            Assert.AreEqual(result, true);
+
+            result = converter.Convert(stringsUsDefault, typeof(float), null, new CultureInfo("fr-FR"));
+            Assert.AreEqual(result, true);
+
+            result = converter.Convert(stringsDe, typeof(float), null, new CultureInfo("fr-FR"));
+            Assert.AreEqual(result, true);
+
+            result = converter.Convert(stringsUsDefault, null, null, null);
+            Assert.AreEqual(result, true);
+
+            result = converter.Convert(stringsUsDefaultResultInFalse, null, null, null);
+            Assert.AreEqual(result, false);
         }
     }
 }

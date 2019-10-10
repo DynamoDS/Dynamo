@@ -52,13 +52,14 @@
   ],
   "Connectors": [],
   "Dependencies": [],
+  "NodeLibraryDependencies": [],
   "Bindings": [],
   "View": {
     "Dynamo": {
       "ScaleFactor": 1.0,
       "HasRunWithoutCrash": true,
       "IsVisibleInDynamoLibrary": true,
-      "Version": "2.0.0.2841",
+      "Version": "2.3.0.5184",
       "RunType": "Automatic",
       "RunPeriod": "1000"
     },

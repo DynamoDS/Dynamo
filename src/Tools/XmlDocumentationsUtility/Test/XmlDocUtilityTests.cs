@@ -24,8 +24,8 @@ namespace XmlDocumentationsUtility.Test
         [Test]
         public void GetMemberElement()
         {
-            Assert.IsTrue(XmlDocumentationsUtility.GetMemberElement("M:Autodesk.DesignScript.Geometry.Surface.Join(Autodesk.DesignScript.Geometry.Surface)")
-                == "Autodesk.DesignScript.Geometry.Surface.Join");
+            Assert.IsTrue(XmlDocumentationsUtility.GetMemberElement("M:Autodesk.DesignScript.Geometry.Surface.Area(Autodesk.DesignScript.Geometry.Surface)")
+                == "Autodesk.DesignScript.Geometry.Surface.Area");
 
             Assert.IsTrue(XmlDocumentationsUtility.GetMemberElement("P:Autodesk.DesignScript.Geometry.Surface.Area") == "Autodesk.DesignScript.Geometry.Surface.Area");
         }

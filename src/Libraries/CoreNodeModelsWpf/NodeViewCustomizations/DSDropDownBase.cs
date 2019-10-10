@@ -6,7 +6,6 @@ using System.Windows.Data;
 using CoreNodeModels;
 using Dynamo.Configuration;
 using Dynamo.Controls;
-using Dynamo.UI;
 using Dynamo.Wpf;
 
 namespace CoreNodeModelsWpf.Nodes
@@ -40,12 +39,16 @@ namespace CoreNodeModelsWpf.Nodes
             };
 
             combo.DataContext = model;
-            //bind this combo box to the selected item hash
 
-            var bindingVal = new System.Windows.Data.Binding("Items") { Mode = BindingMode.TwoWay, Source = model };
+            // bind this combo box to the selected item hash
+            var bindingVal = new System.Windows.Data.Binding("Items")
+            {
+                Mode = BindingMode.TwoWay,
+                Source = model
+            };
             combo.SetBinding(ItemsControl.ItemsSourceProperty, bindingVal);
 
-            //bind the selected index to the 
+            // bind the selected index to the model property SelectedIndex
             var indexBinding = new Binding("SelectedIndex")
             {
                 Mode = BindingMode.TwoWay,

@@ -1,0 +1,102 @@
+{
+  "Uuid": "9cf92bef-15dc-4ee2-9189-6d98ecb63666",
+  "IsCustomNode": false,
+  "Description": null,
+  "Name": "OneDependentNode",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Examples.NEWBasicExample.Create@double,double,double",
+      "Id": "a1aaeddb8aca4d55a17d185a36f3823c",
+      "Inputs": [
+        {
+          "Id": "3da7726524d7486cac6d223415947443",
+          "Name": "x",
+          "Description": "double\nDefault value : 42",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "8b64a771a32a451380bea7884fe80b78",
+          "Name": "y",
+          "Description": "double\nDefault value : 42",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "1db9a43499984ec08a45903fcb318945",
+          "Name": "z",
+          "Description": "double\nDefault value : 42",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "26609ae624b44111a56e6e743013dbd9",
+          "Name": "NEWBasicExample",
+          "Description": "NEWBasicExample",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "NEWBasicExample.Create (x: double = 42, y: double = 42, z: double = 42): NEWBasicExample"
+    }
+  ],
+  "Connectors": [],
+  "Dependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.3.0.5204",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "NEWBasicExample.Create",
+        "Id": "a1aaeddb8aca4d55a17d185a36f3823c",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 325.25,
+        "Y": 343.5
+      }
+    ],
+    "Annotations": [],
+    "X": -159.93332356387242,
+    "Y": -279.00484355212529,
+    "Zoom": 1.476180239263613
+  }
+}

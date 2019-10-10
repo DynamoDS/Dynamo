@@ -22,9 +22,15 @@ using System.Runtime.CompilerServices;
 [assembly: InternalsVisibleTo("DynamoCLI")]
 [assembly: InternalsVisibleTo("DynamoWPFCLI")]
 [assembly: InternalsVisibleTo("DynamicProxyGenAssembly2")] // Dynamic assembly created by Moq
-[assembly: InternalsVisibleTo("DynamoStudio")]
 [assembly: InternalsVisibleTo("WpfVisualizationTests")]
-[assembly: InternalsVisibleTo("Reach")]
-[assembly: InternalsVisibleTo("Dynamo.Storage")]
 [assembly: InternalsVisibleTo("LibraryViewExtension")]
 [assembly: InternalsVisibleTo("ViewExtensionLibraryTests")]
+[assembly: InternalsVisibleTo("DynamoPerformanceTests")]
+[assembly:InternalsVisibleTo("PackageManagerTests")]
+// Internals are visible to the Package Manager extension
+// For workspace package dependency collection
+[assembly: InternalsVisibleTo("DynamoPackages")]
+
+// Internals are visible to the Package Manager extension
+// For workspace package dependency collection
+[assembly: InternalsVisibleTo("WorkspaceDependencyViewExtension")]

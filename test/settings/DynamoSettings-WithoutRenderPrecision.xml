@@ -1,0 +1,76 @@
+<?xml version="1.0"?>
+-
+<PreferenceSettings xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+	<IsFirstRun>
+		true
+	</IsFirstRun>
+	<IsUsageReportingApproved>
+		false
+	</IsUsageReportingApproved>
+	<IsAnalyticsReportingApproved>
+		false
+	</IsAnalyticsReportingApproved>
+	<LibraryWidth>
+		304
+	</LibraryWidth>
+	<ConsoleHeight>
+		0
+	</ConsoleHeight>
+	<ShowPreviewBubbles>
+		true
+	</ShowPreviewBubbles>
+	<ShowConnector>
+		true
+	</ShowConnector>
+	<ConnectorType>
+		BEZIER
+	</ConnectorType>
+	<BackgroundPreviews />
+	<IsBackgroundGridVisible>
+		true
+	</IsBackgroundGridVisible>
+	<ShowEdges>
+		false
+	</ShowEdges>
+	<ShowDetailedLayout>
+		true
+	</ShowDetailedLayout>
+	<WindowX>
+		0
+	</WindowX>
+	<WindowY>
+		0
+	</WindowY>
+	<WindowW>
+		1024
+	</WindowW>
+	<WindowH>
+		768
+	</WindowH>
+	<UseHardwareAcceleration>
+		true
+	</UseHardwareAcceleration>
+	<NumberFormat>
+		f3
+	</NumberFormat>
+	<MaxNumRecentFiles>
+		10
+	</MaxNumRecentFiles>
+	<RecentFiles />
+	<BackupFiles />
+	<CustomPackageFolders />
+	<PackageDirectoriesToUninstall />
+	<PythonTemplateFilePath />
+	<BackupInterval>
+		60000
+	</BackupInterval>
+	<BackupFilesCount>
+		1
+	</BackupFilesCount>
+	<PackageDownloadTouAccepted>
+		false
+	</PackageDownloadTouAccepted>
+	<OpenFileInManualExecutionMode>
+		false
+	</OpenFileInManualExecutionMode>
+</PreferenceSettings>

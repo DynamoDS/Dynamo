@@ -1,6 +1,6 @@
 ## Dynamo License
 
-Copyright 2013-2016 Autodesk
+Copyright 2013-2019 Autodesk
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
 
@@ -11,46 +11,49 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 ## Third Party Licenses ##
 
-###Avalon Edit###
+### Avalon Edit
 http://www.codeproject.com/Articles/42490/Using-AvalonEdit-WPF-Text-Editor
 http://opensource.org/licenses/lgpl-3.0.html
 
-###CSharpAnalytics###
+### CEFSharp
+https://github.com/cefsharp/CefSharp/blob/master/LICENSE
+
+### CSharpAnalytics
 https://github.com/AttackPattern/CSharpAnalytics
 http://www.apache.org/licenses/LICENSE-2.0
 
-###Cyotek.Drawing.BitmapFont###
+### Cyotek.Drawing.BitmapFont
 https://github.com/cyotek/Cyotek.Drawing.BitmapFont
 https://github.com/cyotek/Cyotek.Drawing.BitmapFont/blob/master/LICENSE.txt 
   (MIT license)
 
-###Fontawesome###
+### Fontawesome
 https://www.nuget.org/packages/FontAwesome.WPF/
 https://github.com/charri/Font-Awesome-WPF/blob/master/LICENSE 
   (MIT license)
 
-###GNU gettext (libintl)###
+### GNU gettext (libintl)
 https://www.gnu.org/software/gettext/
 https://www.gnu.org/software/gettext/manual/html_node/GNU-LGPL.html#GNU-LGPL
 
-###Helix Toolkit###
+### Helix Toolkit
 https://helixtoolkit.codeplex.com/
 https://helixtoolkit.codeplex.com/license 
   (MIT license)
 
-###Iron Python###
+### Immutable (System.Immutable)
+https://github.com/dotnet/corefx/blob/master/LICENSE.TXT
+(MIT License)
+
+### Iron Python, Dynamic Language Runtime
 http://ironpython.net/
 http://opensource.org/licenses/apache2.0.php
 
-###Python Standard Library###
-https://www.python.org/
-https://www.python.org/download/releases/2.7/license/
-
-###libiconv###
+### libiconv
 https://www.gnu.org/software/libiconv/
 https://www.gnu.org/software/gettext/manual/html_node/GNU-LGPL.html#GNU-LGPL
 
-###libgcc, libstdc++, libgomp###
+### libgcc, libstdc++, libgomp
 https://gcc.gnu.org/onlinedocs/libgomp/
 https://gcc.gnu.org/onlinedocs/gcc-4.3.3/libgomp/Copying.html#Copying
   (GPL-3.0 license)
@@ -65,47 +68,47 @@ The GCC Runtime Library Exception, version 3.1:
   (http://www.gnu.org/licenses/gcc-exception.html
   see also http://www.gnu.org/licenses/gcc-exception-3.1-faq.en.html)
 
-###Lucene.Net###
-http://lucenenet.apache.org/
-http://www.apache.org/licenses/LICENSE-2.0
 
-###Microsoft 2012 C Runtime DLLS, msvcp110.dll and msvcr110.dll###
-http://msdn.microsoft.com/en-us/vstudio/dn501987
-  (Not open source, but redistribution is permitted; see above)
-
-###Moq###
-http://www.nuget.org/packages/Moq/
-http://opensource.org/licenses/bsd-license.php
-
-###MiConvexHull###
+### MiConvexHull
 http://miconvexhull.codeplex.com/
 http://miconvexhull.codeplex.com/license
   (MIT license)
 
-###NCalc###
+### Microsoft 2013 C Runtime DLLs, msvcp120.dll, msvcr120.dll
+http://msdn.microsoft.com/en-us/vstudio/dn501987
+https://docs.microsoft.com/en-us/visualstudio/productinfo/2013-redistribution-vs
+
+### Microsoft 2015 C Runtime DLLs, msvcp140.dll, msvcr140.dll
+https://docs.microsoft.com/en-us/visualstudio/productinfo/2015-redistribution-vs
+
+### Moq
+http://www.nuget.org/packages/Moq/
+http://opensource.org/licenses/bsd-license.php
+
+### NCalc
 http://ncalc.codeplex.com/
 http://ncalc.codeplex.com/license
   (MIT license)
 
-###NDesk Options###
+### NDesk Options
 http://ndesk.org/Options#License
   (MIT license)
 
-###Newtonsoft JSON###
+### Newtonsoft JSON
 https://github.com/JamesNK/Newtonsoft.Json
 https://github.com/JamesNK/Newtonsoft.Json/blob/master/LICENSE.md
   (MIT license)
 
-###NUnit####
+### NUnit
 http://www.nunit.org/
 http://www.nunit.org/index.php?p=license&r=2.6.2
   (Zlib license, https://opensource.org/licenses/Zlib)
 
-###OpenSans font from Google###
+### OpenSans font from Google
 http://www.google.com/fonts/specimen/Open+Sans
 http://www.apache.org/licenses/LICENSE-2.0.html
 
-###Prism###
+### Prism
 http://msdn.microsoft.com/en-us/library/gg406140.aspx
 http://msdn.microsoft.com/en-us/library/gg405489(PandP.40).aspx
   (Microsoft patterns & practices License.  Note that this is not
@@ -114,12 +117,27 @@ http://msdn.microsoft.com/en-us/library/gg405489(PandP.40).aspx
    license looks a lot like an open source license, it does not appear
    to be OSI-approved as of 2016-02-24.)
 
-###Revit Test Framework###
-https://github.com/DynamoDS/RevitTestFramework
-http://opensource.org/licenses/MIT
+### Python Standard Library
+https://www.python.org/
+https://www.python.org/download/releases/2.7/license/
 
-###Winpthreads###
-http://mingw-w64.sourceforge.net/
-http://www.mingw.org/license
-  (Hybrid licensing -- different license terms for different parts.
-  It ends up being a combination of MIT-style, GPL-2.0, and GPL-3.0)
+### RestSharp
+http://www.apache.org/licenses/LICENSE-2.0
+
+### SharpDX
+https://github.com/sharpdx/SharpDX/blob/master/LICENSE
+(MIT License)
+
+### SimplexNoise
+https://unlicense.org/
+
+### StarMath
+https://github.com/DesignEngrLab/StarMath/blob/master/LICENSE
+(MIT license)
+
+###  Xceed Extended WPF Toolkit
+https://github.com/xceedsoftware/wpftoolkit/blob/master/license.md
+(Microsoft Public License)
+
+
+

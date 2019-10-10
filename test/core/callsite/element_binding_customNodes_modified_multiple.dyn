@@ -1,0 +1,478 @@
+{
+  "Uuid": "ce4b7a61-2ef7-46ba-965c-e5a69dc6d6a1",
+  "IsCustomNode": false,
+  "Description": null,
+  "Name": "element_binding_customNodes_modified_multiple",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CustomNodes.Function, DynamoCore",
+      "FunctionSignature": "9c65f412-0637-4601-ba90-9de2f539224f",
+      "FunctionType": "Graph",
+      "NodeType": "FunctionNode",
+      "Id": "a3cceaa601de4485beb72eea39a46f65",
+      "Inputs": [
+        {
+          "Id": "a83f8affbd294adab130d8f0af11f68d",
+          "Name": "someInput",
+          "Description": "var[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "d959a76782cb472bbe5dae220136d396",
+          "Name": "out2",
+          "Description": "return value",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "28031b992d1f4923959eb2b0562a545d",
+          "Name": "out1",
+          "Description": "return value",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "testing nested element binding"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "FFITarget.WrapperObject.ID",
+      "Id": "da39dbe5f59649b18c2fb6ca54acba7b",
+      "Inputs": [
+        {
+          "Id": "57657d3625f54b7c8fc3b6e5612618a7",
+          "Name": "wrapperObject",
+          "Description": "FFITarget.WrapperObject",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "537d03bde70b47d0b02b879668df989d",
+          "Name": "int",
+          "Description": "int",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "WrapperObject.ID: int"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "FFITarget.WrapperObject.ID",
+      "Id": "2366239164a9441a8c4dcd981d9cf542",
+      "Inputs": [
+        {
+          "Id": "7957f66d0e56481e9c7673de24179110",
+          "Name": "wrapperObject",
+          "Description": "FFITarget.WrapperObject",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "f45a46c44e7a48a793862160ab38365c",
+          "Name": "int",
+          "Description": "int",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "WrapperObject.ID: int"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "100;",
+      "Id": "247d1b8751c64f8b8ac88e37cad98dff",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "12a69844634441d08df8ff2d1b3b0c42",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "FFITarget.WrapperObject.ID",
+      "Id": "342f96575f8942c890867d88495fb0db",
+      "Inputs": [
+        {
+          "Id": "7178d1186aee4a20b03be1e20ad0da64",
+          "Name": "wrapperObject",
+          "Description": "FFITarget.WrapperObject",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "b06f4f43fa7749b5856af632006d7806",
+          "Name": "int",
+          "Description": "int",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "WrapperObject.ID: int"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "FFITarget.WrapperObject.WrapperObject@int",
+      "Id": "e464dfe1dfcf43698eb5e8efc11d1aae",
+      "Inputs": [
+        {
+          "Id": "165c688d1cdf43eb863f95e12721700c",
+          "Name": "x",
+          "Description": "int",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "94b68073cf42449abbd5ecb25fb6fcbc",
+          "Name": "WrapperObject",
+          "Description": "WrapperObject",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "WrapperObject.WrapperObject (x: int): WrapperObject"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CustomNodes.Function, DynamoCore",
+      "FunctionSignature": "9c65f412-0637-4601-ba90-9de2f539224f",
+      "FunctionType": "Graph",
+      "NodeType": "FunctionNode",
+      "Id": "7d799d548e0344aab8debfb468b50166",
+      "Inputs": [
+        {
+          "Id": "0a321e2157fe45268bcf46eed08e8cd3",
+          "Name": "someInput",
+          "Description": "var[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "2aa9090e1843495295c4ce3cddd9459c",
+          "Name": "out2",
+          "Description": "return value",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "af8d68ecd22b45a1afe7c12190cf3300",
+          "Name": "out1",
+          "Description": "return value",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "testing nested element binding"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "FFITarget.WrapperObject.ID",
+      "Id": "08448232ee094aad8280e9a99ed44f46",
+      "Inputs": [
+        {
+          "Id": "8adfa0547e0d4784b59d352c45a9b4b9",
+          "Name": "wrapperObject",
+          "Description": "FFITarget.WrapperObject",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "c7ee12320e614211bf681715342f894a",
+          "Name": "int",
+          "Description": "int",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "WrapperObject.ID: int"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "FFITarget.WrapperObject.ID",
+      "Id": "8cfce012280342f3bd688520d68a7f66",
+      "Inputs": [
+        {
+          "Id": "d5cfa698e209433a8c4efd66b711d98c",
+          "Name": "wrapperObject",
+          "Description": "FFITarget.WrapperObject",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "bad1c4ea3f9242f2b2a7c9da5c5d6a66",
+          "Name": "int",
+          "Description": "int",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "WrapperObject.ID: int"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "d959a76782cb472bbe5dae220136d396",
+      "End": "57657d3625f54b7c8fc3b6e5612618a7",
+      "Id": "3490d7fe3a8143f8b0da79608cec2db7"
+    },
+    {
+      "Start": "28031b992d1f4923959eb2b0562a545d",
+      "End": "7957f66d0e56481e9c7673de24179110",
+      "Id": "fead1997c72544b79c6085f0047faf4c"
+    },
+    {
+      "Start": "12a69844634441d08df8ff2d1b3b0c42",
+      "End": "165c688d1cdf43eb863f95e12721700c",
+      "Id": "5ca50e2c395e4304b14c86c45480de32"
+    },
+    {
+      "Start": "b06f4f43fa7749b5856af632006d7806",
+      "End": "a83f8affbd294adab130d8f0af11f68d",
+      "Id": "79b1c4ec60014662896beb5cd6f9e219"
+    },
+    {
+      "Start": "b06f4f43fa7749b5856af632006d7806",
+      "End": "0a321e2157fe45268bcf46eed08e8cd3",
+      "Id": "eeeff16f2f3f4eb583e82b66ef370777"
+    },
+    {
+      "Start": "94b68073cf42449abbd5ecb25fb6fcbc",
+      "End": "7178d1186aee4a20b03be1e20ad0da64",
+      "Id": "fe46ec09fbe24401934b70dec0521e7a"
+    },
+    {
+      "Start": "2aa9090e1843495295c4ce3cddd9459c",
+      "End": "d5cfa698e209433a8c4efd66b711d98c",
+      "Id": "bf0d54c88f41487e984f4ec706685b2c"
+    },
+    {
+      "Start": "af8d68ecd22b45a1afe7c12190cf3300",
+      "End": "8adfa0547e0d4784b59d352c45a9b4b9",
+      "Id": "b2e0d33b549f4ad2a8f432ae785116c0"
+    }
+  ],
+  "Dependencies": [
+    "9c65f412-0637-4601-ba90-9de2f539224f"
+  ],
+  "Bindings": [
+    {
+      "NodeId": "a3cceaa6-01de-4485-beb7-2eea39a46f65",
+      "Binding": {
+        "__func_9c65f41206374601ba909de2f539224f_InClassDecl-1_InFunctionScope-1_Instance0_a3cceaa6-01de-4485-beb7-2eea39a46f65;WrapperObject_InClassDecl-1_InFunctionScope1000_Instance0_54062f33-ce19-49a3-a373-5d4a253e26a5": "PFNPQVAtRU5WOkVudmVsb3BlIHhtbG5zOnhzaT0iaHR0cDovL3d3dy53My5vcmcvMjAwMS9YTUxTY2hlbWEtaW5zdGFuY2UiIHhtbG5zOnhzZD0iaHR0cDovL3d3dy53My5vcmcvMjAwMS9YTUxTY2hlbWEiIHhtbG5zOlNPQVAtRU5DPSJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy9zb2FwL2VuY29kaW5nLyIgeG1sbnM6U09BUC1FTlY9Imh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3NvYXAvZW52ZWxvcGUvIiB4bWxuczpjbHI9Imh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vc29hcC9lbmNvZGluZy9jbHIvMS4wIiBTT0FQLUVOVjplbmNvZGluZ1N0eWxlPSJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy9zb2FwL2VuY29kaW5nLyI+CjxTT0FQLUVOVjpCb2R5Pgo8YTE6Q2FsbFNpdGVfeDAwMkJfVHJhY2VTZXJpYWxpc2VySGVscGVyIGlkPSJyZWYtMSIgeG1sbnM6YTE9Imh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vY2xyL25zYXNzZW0vUHJvdG9Db3JlL1Byb3RvQ29yZSUyQyUyMFZlcnNpb24lM0QyLjIuMC40NTY1JTJDJTIwQ3VsdHVyZSUzRG5ldXRyYWwlMkMlMjBQdWJsaWNLZXlUb2tlbiUzRG51bGwiPgo8TnVtYmVyT2ZFbGVtZW50cz4xPC9OdW1iZXJPZkVsZW1lbnRzPgo8QmFzZS0wX0hhc0RhdGE+dHJ1ZTwvQmFzZS0wX0hhc0RhdGE+CjxCYXNlLTBfRGF0YSBpZD0icmVmLTMiPlBGTlBRVkF0UlU1V09rVnVkbVZzYjNCbElIaHRiRzV6T25oemFUMGlhSFIwY0RvdkwzZDNkeTUzTXk1dmNtY3ZNakF3TVM5WVRVeFRZMmhsYldFdGFXNXpkR0Z1WTJVaUlIaHRiRzV6T25oelpEMGlhSFIwY0RvdkwzZDNkeTUzTXk1dmNtY3ZNakF3TVM5WVRVeFRZMmhsYldFaUlIaHRiRzV6T2xOUFFWQXRSVTVEUFNKb2RIUndPaTh2YzJOb1pXMWhjeTU0Yld4emIyRndMbTl5Wnk5emIyRndMMlZ1WTI5a2FXNW5MeUlnZUcxc2JuTTZVMDlCVUMxRlRsWTlJbWgwZEhBNkx5OXpZMmhsYldGekxuaHRiSE52WVhBdWIzSm5MM052WVhBdlpXNTJaV3h2Y0dVdklpQjRiV3h1Y3pwamJISTlJbWgwZEhBNkx5OXpZMmhsYldGekxtMXBZM0p2YzI5bWRDNWpiMjB2YzI5aGNDOWxibU52WkdsdVp5OWpiSEl2TVM0d0lpQlRUMEZRTFVWT1ZqcGxibU52WkdsdVoxTjBlV3hsUFNKb2RIUndPaTh2YzJOb1pXMWhjeTU0Yld4emIyRndMbTl5Wnk5emIyRndMMlZ1WTI5a2FXNW5MeUkrQ2p4VFQwRlFMVVZPVmpwQ2IyUjVQZ284WVRFNlNVUkliMnhrWlhJZ2FXUTlJbkpsWmkweElpQjRiV3h1Y3pwaE1UMGlhSFIwY0RvdkwzTmphR1Z0WVhNdWJXbGpjbTl6YjJaMExtTnZiUzlqYkhJdmJuTmhjM05sYlM5R1JrbFVZWEpuWlhRdlJrWkpWR0Z5WjJWMEpUSkRKVEl3Vm1WeWMybHZiaVV6UkRJdU1pNHdMalExTVRZbE1rTWxNakJEZFd4MGRYSmxKVE5FYm1WMWRISmhiQ1V5UXlVeU1GQjFZbXhwWTB0bGVWUnZhMlZ1SlRORWJuVnNiQ0krQ2p4cGJuUkpSRDR4TVRFeE1URThMMmx1ZEVsRVBnbzhMMkV4T2tsRVNHOXNaR1Z5UGdvOEwxTlBRVkF0UlU1V09rSnZaSGsrQ2p3dlUwOUJVQzFGVGxZNlJXNTJaV3h2Y0dVKzwvQmFzZS0wX0RhdGE+CjxCYXNlLTBfSGFzTmVzdGVkRGF0YT5mYWxzZTwvQmFzZS0wX0hhc05lc3RlZERhdGE+CjwvYTE6Q2FsbFNpdGVfeDAwMkJfVHJhY2VTZXJpYWxpc2VySGVscGVyPgo8L1NPQVAtRU5WOkJvZHk+CjwvU09BUC1FTlY6RW52ZWxvcGU+Cg==",
+        "__func_9c65f41206374601ba909de2f539224f_InClassDecl-1_InFunctionScope-1_Instance0_a3cceaa6-01de-4485-beb7-2eea39a46f65;WrapperObject_InClassDecl-1_InFunctionScope1000_Instance0_3f04f5f4-f54d-4071-af6f-7d5db4e7706e": "PFNPQVAtRU5WOkVudmVsb3BlIHhtbG5zOnhzaT0iaHR0cDovL3d3dy53My5vcmcvMjAwMS9YTUxTY2hlbWEtaW5zdGFuY2UiIHhtbG5zOnhzZD0iaHR0cDovL3d3dy53My5vcmcvMjAwMS9YTUxTY2hlbWEiIHhtbG5zOlNPQVAtRU5DPSJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy9zb2FwL2VuY29kaW5nLyIgeG1sbnM6U09BUC1FTlY9Imh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3NvYXAvZW52ZWxvcGUvIiB4bWxuczpjbHI9Imh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vc29hcC9lbmNvZGluZy9jbHIvMS4wIiBTT0FQLUVOVjplbmNvZGluZ1N0eWxlPSJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy9zb2FwL2VuY29kaW5nLyI+CjxTT0FQLUVOVjpCb2R5Pgo8YTE6Q2FsbFNpdGVfeDAwMkJfVHJhY2VTZXJpYWxpc2VySGVscGVyIGlkPSJyZWYtMSIgeG1sbnM6YTE9Imh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vY2xyL25zYXNzZW0vUHJvdG9Db3JlL1Byb3RvQ29yZSUyQyUyMFZlcnNpb24lM0QyLjIuMC40NTY1JTJDJTIwQ3VsdHVyZSUzRG5ldXRyYWwlMkMlMjBQdWJsaWNLZXlUb2tlbiUzRG51bGwiPgo8TnVtYmVyT2ZFbGVtZW50cz4xPC9OdW1iZXJPZkVsZW1lbnRzPgo8QmFzZS0wX0hhc0RhdGE+dHJ1ZTwvQmFzZS0wX0hhc0RhdGE+CjxCYXNlLTBfRGF0YSBpZD0icmVmLTMiPlBGTlBRVkF0UlU1V09rVnVkbVZzYjNCbElIaHRiRzV6T25oemFUMGlhSFIwY0RvdkwzZDNkeTUzTXk1dmNtY3ZNakF3TVM5WVRVeFRZMmhsYldFdGFXNXpkR0Z1WTJVaUlIaHRiRzV6T25oelpEMGlhSFIwY0RvdkwzZDNkeTUzTXk1dmNtY3ZNakF3TVM5WVRVeFRZMmhsYldFaUlIaHRiRzV6T2xOUFFWQXRSVTVEUFNKb2RIUndPaTh2YzJOb1pXMWhjeTU0Yld4emIyRndMbTl5Wnk5emIyRndMMlZ1WTI5a2FXNW5MeUlnZUcxc2JuTTZVMDlCVUMxRlRsWTlJbWgwZEhBNkx5OXpZMmhsYldGekxuaHRiSE52WVhBdWIzSm5MM052WVhBdlpXNTJaV3h2Y0dVdklpQjRiV3h1Y3pwamJISTlJbWgwZEhBNkx5OXpZMmhsYldGekxtMXBZM0p2YzI5bWRDNWpiMjB2YzI5aGNDOWxibU52WkdsdVp5OWpiSEl2TVM0d0lpQlRUMEZRTFVWT1ZqcGxibU52WkdsdVoxTjBlV3hsUFNKb2RIUndPaTh2YzJOb1pXMWhjeTU0Yld4emIyRndMbTl5Wnk5emIyRndMMlZ1WTI5a2FXNW5MeUkrQ2p4VFQwRlFMVVZPVmpwQ2IyUjVQZ284WVRFNlNVUkliMnhrWlhJZ2FXUTlJbkpsWmkweElpQjRiV3h1Y3pwaE1UMGlhSFIwY0RvdkwzTmphR1Z0WVhNdWJXbGpjbTl6YjJaMExtTnZiUzlqYkhJdmJuTmhjM05sYlM5R1JrbFVZWEpuWlhRdlJrWkpWR0Z5WjJWMEpUSkRKVEl3Vm1WeWMybHZiaVV6UkRJdU1pNHdMalExTVRZbE1rTWxNakJEZFd4MGRYSmxKVE5FYm1WMWRISmhiQ1V5UXlVeU1GQjFZbXhwWTB0bGVWUnZhMlZ1SlRORWJuVnNiQ0krQ2p4cGJuUkpSRDR5TWpJeU1qSThMMmx1ZEVsRVBnbzhMMkV4T2tsRVNHOXNaR1Z5UGdvOEwxTlBRVkF0UlU1V09rSnZaSGsrQ2p3dlUwOUJVQzFGVGxZNlJXNTJaV3h2Y0dVKzwvQmFzZS0wX0RhdGE+CjxCYXNlLTBfSGFzTmVzdGVkRGF0YT5mYWxzZTwvQmFzZS0wX0hhc05lc3RlZERhdGE+CjwvYTE6Q2FsbFNpdGVfeDAwMkJfVHJhY2VTZXJpYWxpc2VySGVscGVyPgo8L1NPQVAtRU5WOkJvZHk+CjwvU09BUC1FTlY6RW52ZWxvcGU+Cg=="
+      }
+    },
+    {
+      "NodeId": "e464dfe1-dfcf-4369-8eb5-e8efc11d1aae",
+      "Binding": {
+        "WrapperObject_InClassDecl-1_InFunctionScope-1_Instance0_e464dfe1-dfcf-4369-8eb5-e8efc11d1aae": "PFNPQVAtRU5WOkVudmVsb3BlIHhtbG5zOnhzaT0iaHR0cDovL3d3dy53My5vcmcvMjAwMS9YTUxTY2hlbWEtaW5zdGFuY2UiIHhtbG5zOnhzZD0iaHR0cDovL3d3dy53My5vcmcvMjAwMS9YTUxTY2hlbWEiIHhtbG5zOlNPQVAtRU5DPSJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy9zb2FwL2VuY29kaW5nLyIgeG1sbnM6U09BUC1FTlY9Imh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3NvYXAvZW52ZWxvcGUvIiB4bWxuczpjbHI9Imh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vc29hcC9lbmNvZGluZy9jbHIvMS4wIiBTT0FQLUVOVjplbmNvZGluZ1N0eWxlPSJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy9zb2FwL2VuY29kaW5nLyI+DQo8U09BUC1FTlY6Qm9keT4NCjxhMTpDYWxsU2l0ZV94MDAyQl9UcmFjZVNlcmlhbGlzZXJIZWxwZXIgaWQ9InJlZi0xIiB4bWxuczphMT0iaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS9jbHIvbnNhc3NlbS9Qcm90b0NvcmUvUHJvdG9Db3JlJTJDJTIwVmVyc2lvbiUzRDIuMi4wLjQ1NjUlMkMlMjBDdWx0dXJlJTNEbmV1dHJhbCUyQyUyMFB1YmxpY0tleVRva2VuJTNEbnVsbCI+DQo8TnVtYmVyT2ZFbGVtZW50cz4xPC9OdW1iZXJPZkVsZW1lbnRzPg0KPEJhc2UtMF9IYXNEYXRhPnRydWU8L0Jhc2UtMF9IYXNEYXRhPg0KPEJhc2UtMF9EYXRhIGlkPSJyZWYtMyI+UEZOUFFWQXRSVTVXT2tWdWRtVnNiM0JsSUhodGJHNXpPbmh6YVQwaWFIUjBjRG92TDNkM2R5NTNNeTV2Y21jdk1qQXdNUzlZVFV4VFkyaGxiV0V0YVc1emRHRnVZMlVpSUhodGJHNXpPbmh6WkQwaWFIUjBjRG92TDNkM2R5NTNNeTV2Y21jdk1qQXdNUzlZVFV4VFkyaGxiV0VpSUhodGJHNXpPbE5QUVZBdFJVNURQU0pvZEhSd09pOHZjMk5vWlcxaGN5NTRiV3h6YjJGd0xtOXlaeTl6YjJGd0wyVnVZMjlrYVc1bkx5SWdlRzFzYm5NNlUwOUJVQzFGVGxZOUltaDBkSEE2THk5elkyaGxiV0Z6TG5odGJITnZZWEF1YjNKbkwzTnZZWEF2Wlc1MlpXeHZjR1V2SWlCNGJXeHVjenBqYkhJOUltaDBkSEE2THk5elkyaGxiV0Z6TG0xcFkzSnZjMjltZEM1amIyMHZjMjloY0M5bGJtTnZaR2x1Wnk5amJISXZNUzR3SWlCVFQwRlFMVVZPVmpwbGJtTnZaR2x1WjFOMGVXeGxQU0pvZEhSd09pOHZjMk5vWlcxaGN5NTRiV3h6YjJGd0xtOXlaeTl6YjJGd0wyVnVZMjlrYVc1bkx5SStEUW84VTA5QlVDMUZUbFk2UW05a2VUNE5DanhoTVRwSlJFaHZiR1JsY2lCcFpEMGljbVZtTFRFaUlIaHRiRzV6T21FeFBTSm9kSFJ3T2k4dmMyTm9aVzFoY3k1dGFXTnliM052Wm5RdVkyOXRMMk5zY2k5dWMyRnpjMlZ0TDBaR1NWUmhjbWRsZEM5R1JrbFVZWEpuWlhRbE1rTWxNakJXWlhKemFXOXVKVE5FTWk0eUxqQXVORFV4TmlVeVF5VXlNRU4xYkhSMWNtVWxNMFJ1WlhWMGNtRnNKVEpESlRJd1VIVmliR2xqUzJWNVZHOXJaVzRsTTBSdWRXeHNJajROQ2p4cGJuUkpSRDR6UEM5cGJuUkpSRDROQ2p3dllURTZTVVJJYjJ4a1pYSStEUW84TDFOUFFWQXRSVTVXT2tKdlpIaytEUW84TDFOUFFWQXRSVTVXT2tWdWRtVnNiM0JsUGcwSzwvQmFzZS0wX0RhdGE+DQo8QmFzZS0wX0hhc05lc3RlZERhdGE+ZmFsc2U8L0Jhc2UtMF9IYXNOZXN0ZWREYXRhPg0KPC9hMTpDYWxsU2l0ZV94MDAyQl9UcmFjZVNlcmlhbGlzZXJIZWxwZXI+DQo8L1NPQVAtRU5WOkJvZHk+DQo8L1NPQVAtRU5WOkVudmVsb3BlPg0K"
+      }
+    },
+    {
+      "NodeId": "7d799d54-8e03-44aa-b8de-bfb468b50166",
+      "Binding": {
+        "__func_9c65f41206374601ba909de2f539224f_InClassDecl-1_InFunctionScope-1_Instance0_7d799d54-8e03-44aa-b8de-bfb468b50166;WrapperObject_InClassDecl-1_InFunctionScope1000_Instance0_54062f33-ce19-49a3-a373-5d4a253e26a5": "PFNPQVAtRU5WOkVudmVsb3BlIHhtbG5zOnhzaT0iaHR0cDovL3d3dy53My5vcmcvMjAwMS9YTUxTY2hlbWEtaW5zdGFuY2UiIHhtbG5zOnhzZD0iaHR0cDovL3d3dy53My5vcmcvMjAwMS9YTUxTY2hlbWEiIHhtbG5zOlNPQVAtRU5DPSJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy9zb2FwL2VuY29kaW5nLyIgeG1sbnM6U09BUC1FTlY9Imh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3NvYXAvZW52ZWxvcGUvIiB4bWxuczpjbHI9Imh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vc29hcC9lbmNvZGluZy9jbHIvMS4wIiBTT0FQLUVOVjplbmNvZGluZ1N0eWxlPSJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy9zb2FwL2VuY29kaW5nLyI+CjxTT0FQLUVOVjpCb2R5Pgo8YTE6Q2FsbFNpdGVfeDAwMkJfVHJhY2VTZXJpYWxpc2VySGVscGVyIGlkPSJyZWYtMSIgeG1sbnM6YTE9Imh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vY2xyL25zYXNzZW0vUHJvdG9Db3JlL1Byb3RvQ29yZSUyQyUyMFZlcnNpb24lM0QyLjIuMC40NTY1JTJDJTIwQ3VsdHVyZSUzRG5ldXRyYWwlMkMlMjBQdWJsaWNLZXlUb2tlbiUzRG51bGwiPgo8TnVtYmVyT2ZFbGVtZW50cz4xPC9OdW1iZXJPZkVsZW1lbnRzPgo8QmFzZS0wX0hhc0RhdGE+dHJ1ZTwvQmFzZS0wX0hhc0RhdGE+CjxCYXNlLTBfRGF0YSBpZD0icmVmLTMiPlBGTlBRVkF0UlU1V09rVnVkbVZzYjNCbElIaHRiRzV6T25oemFUMGlhSFIwY0RvdkwzZDNkeTUzTXk1dmNtY3ZNakF3TVM5WVRVeFRZMmhsYldFdGFXNXpkR0Z1WTJVaUlIaHRiRzV6T25oelpEMGlhSFIwY0RvdkwzZDNkeTUzTXk1dmNtY3ZNakF3TVM5WVRVeFRZMmhsYldFaUlIaHRiRzV6T2xOUFFWQXRSVTVEUFNKb2RIUndPaTh2YzJOb1pXMWhjeTU0Yld4emIyRndMbTl5Wnk5emIyRndMMlZ1WTI5a2FXNW5MeUlnZUcxc2JuTTZVMDlCVUMxRlRsWTlJbWgwZEhBNkx5OXpZMmhsYldGekxuaHRiSE52WVhBdWIzSm5MM052WVhBdlpXNTJaV3h2Y0dVdklpQjRiV3h1Y3pwamJISTlJbWgwZEhBNkx5OXpZMmhsYldGekxtMXBZM0p2YzI5bWRDNWpiMjB2YzI5aGNDOWxibU52WkdsdVp5OWpiSEl2TVM0d0lpQlRUMEZRTFVWT1ZqcGxibU52WkdsdVoxTjBlV3hsUFNKb2RIUndPaTh2YzJOb1pXMWhjeTU0Yld4emIyRndMbTl5Wnk5emIyRndMMlZ1WTI5a2FXNW5MeUkrQ2p4VFQwRlFMVVZPVmpwQ2IyUjVQZ284WVRFNlNVUkliMnhrWlhJZ2FXUTlJbkpsWmkweElpQjRiV3h1Y3pwaE1UMGlhSFIwY0RvdkwzTmphR1Z0WVhNdWJXbGpjbTl6YjJaMExtTnZiUzlqYkhJdmJuTmhjM05sYlM5R1JrbFVZWEpuWlhRdlJrWkpWR0Z5WjJWMEpUSkRKVEl3Vm1WeWMybHZiaVV6UkRJdU1pNHdMalExTVRZbE1rTWxNakJEZFd4MGRYSmxKVE5FYm1WMWRISmhiQ1V5UXlVeU1GQjFZbXhwWTB0bGVWUnZhMlZ1SlRORWJuVnNiQ0krQ2p4cGJuUkpSRDR6TXpNek16TThMMmx1ZEVsRVBnbzhMMkV4T2tsRVNHOXNaR1Z5UGdvOEwxTlBRVkF0UlU1V09rSnZaSGsrQ2p3dlUwOUJVQzFGVGxZNlJXNTJaV3h2Y0dVKzwvQmFzZS0wX0RhdGE+CjxCYXNlLTBfSGFzTmVzdGVkRGF0YT5mYWxzZTwvQmFzZS0wX0hhc05lc3RlZERhdGE+CjwvYTE6Q2FsbFNpdGVfeDAwMkJfVHJhY2VTZXJpYWxpc2VySGVscGVyPgo8L1NPQVAtRU5WOkJvZHk+CjwvU09BUC1FTlY6RW52ZWxvcGU+Cg==",
+        "__func_9c65f41206374601ba909de2f539224f_InClassDecl-1_InFunctionScope-1_Instance0_7d799d54-8e03-44aa-b8de-bfb468b50166;WrapperObject_InClassDecl-1_InFunctionScope1000_Instance0_3f04f5f4-f54d-4071-af6f-7d5db4e7706e": "PFNPQVAtRU5WOkVudmVsb3BlIHhtbG5zOnhzaT0iaHR0cDovL3d3dy53My5vcmcvMjAwMS9YTUxTY2hlbWEtaW5zdGFuY2UiIHhtbG5zOnhzZD0iaHR0cDovL3d3dy53My5vcmcvMjAwMS9YTUxTY2hlbWEiIHhtbG5zOlNPQVAtRU5DPSJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy9zb2FwL2VuY29kaW5nLyIgeG1sbnM6U09BUC1FTlY9Imh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3NvYXAvZW52ZWxvcGUvIiB4bWxuczpjbHI9Imh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vc29hcC9lbmNvZGluZy9jbHIvMS4wIiBTT0FQLUVOVjplbmNvZGluZ1N0eWxlPSJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy9zb2FwL2VuY29kaW5nLyI+CjxTT0FQLUVOVjpCb2R5Pgo8YTE6Q2FsbFNpdGVfeDAwMkJfVHJhY2VTZXJpYWxpc2VySGVscGVyIGlkPSJyZWYtMSIgeG1sbnM6YTE9Imh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vY2xyL25zYXNzZW0vUHJvdG9Db3JlL1Byb3RvQ29yZSUyQyUyMFZlcnNpb24lM0QyLjIuMC40NTY1JTJDJTIwQ3VsdHVyZSUzRG5ldXRyYWwlMkMlMjBQdWJsaWNLZXlUb2tlbiUzRG51bGwiPgo8TnVtYmVyT2ZFbGVtZW50cz4xPC9OdW1iZXJPZkVsZW1lbnRzPgo8QmFzZS0wX0hhc0RhdGE+dHJ1ZTwvQmFzZS0wX0hhc0RhdGE+CjxCYXNlLTBfRGF0YSBpZD0icmVmLTMiPlBGTlBRVkF0UlU1V09rVnVkbVZzYjNCbElIaHRiRzV6T25oemFUMGlhSFIwY0RvdkwzZDNkeTUzTXk1dmNtY3ZNakF3TVM5WVRVeFRZMmhsYldFdGFXNXpkR0Z1WTJVaUlIaHRiRzV6T25oelpEMGlhSFIwY0RvdkwzZDNkeTUzTXk1dmNtY3ZNakF3TVM5WVRVeFRZMmhsYldFaUlIaHRiRzV6T2xOUFFWQXRSVTVEUFNKb2RIUndPaTh2YzJOb1pXMWhjeTU0Yld4emIyRndMbTl5Wnk5emIyRndMMlZ1WTI5a2FXNW5MeUlnZUcxc2JuTTZVMDlCVUMxRlRsWTlJbWgwZEhBNkx5OXpZMmhsYldGekxuaHRiSE52WVhBdWIzSm5MM052WVhBdlpXNTJaV3h2Y0dVdklpQjRiV3h1Y3pwamJISTlJbWgwZEhBNkx5OXpZMmhsYldGekxtMXBZM0p2YzI5bWRDNWpiMjB2YzI5aGNDOWxibU52WkdsdVp5OWpiSEl2TVM0d0lpQlRUMEZRTFVWT1ZqcGxibU52WkdsdVoxTjBlV3hsUFNKb2RIUndPaTh2YzJOb1pXMWhjeTU0Yld4emIyRndMbTl5Wnk5emIyRndMMlZ1WTI5a2FXNW5MeUkrQ2p4VFQwRlFMVVZPVmpwQ2IyUjVQZ284WVRFNlNVUkliMnhrWlhJZ2FXUTlJbkpsWmkweElpQjRiV3h1Y3pwaE1UMGlhSFIwY0RvdkwzTmphR1Z0WVhNdWJXbGpjbTl6YjJaMExtTnZiUzlqYkhJdmJuTmhjM05sYlM5R1JrbFVZWEpuWlhRdlJrWkpWR0Z5WjJWMEpUSkRKVEl3Vm1WeWMybHZiaVV6UkRJdU1pNHdMalExTVRZbE1rTWxNakJEZFd4MGRYSmxKVE5FYm1WMWRISmhiQ1V5UXlVeU1GQjFZbXhwWTB0bGVWUnZhMlZ1SlRORWJuVnNiQ0krQ2p4cGJuUkpSRDQwTkRRME5EUThMMmx1ZEVsRVBnbzhMMkV4T2tsRVNHOXNaR1Z5UGdvOEwxTlBRVkF0UlU1V09rSnZaSGsrQ2p3dlUwOUJVQzFGVGxZNlJXNTJaV3h2Y0dVKzwvQmFzZS0wX0RhdGE+CjxCYXNlLTBfSGFzTmVzdGVkRGF0YT5mYWxzZTwvQmFzZS0wX0hhc05lc3RlZERhdGE+CjwvYTE6Q2FsbFNpdGVfeDAwMkJfVHJhY2VTZXJpYWxpc2VySGVscGVyPgo8L1NPQVAtRU5WOkJvZHk+CjwvU09BUC1FTlY6RW52ZWxvcGU+Cg=="
+      }
+    }
+  ],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.2.0.4565",
+      "RunType": "Manual",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "element_binding_nested",
+        "Id": "a3cceaa601de4485beb72eea39a46f65",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 400.5,
+        "Y": 419.25
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "WrapperObject.ID_111111",
+        "Id": "da39dbe5f59649b18c2fb6ca54acba7b",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 825.5,
+        "Y": 286.25
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "WrapperObject.ID_222222",
+        "Id": "2366239164a9441a8c4dcd981d9cf542",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 817.5,
+        "Y": 437.25
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "247d1b8751c64f8b8ac88e37cad98dff",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -189.0,
+        "Y": 287.0
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "WrapperObject.ID",
+        "Id": "342f96575f8942c890867d88495fb0db",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -59.5,
+        "Y": 490.25
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "WrapperObject.WrapperObject",
+        "Id": "e464dfe1dfcf43698eb5e8efc11d1aae",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -56.5,
+        "Y": 393.25
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "element_binding_nested",
+        "Id": "7d799d548e0344aab8debfb468b50166",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 400.5,
+        "Y": 558.25
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "WrapperObject.ID_444444",
+        "Id": "08448232ee094aad8280e9a99ed44f46",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 837.5,
+        "Y": 744.25
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "WrapperObject.ID_333333",
+        "Id": "8cfce012280342f3bd688520d68a7f66",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 835.5,
+        "Y": 624.25
+      }
+    ],
+    "Annotations": [],
+    "X": -435.0,
+    "Y": -220.0,
+    "Zoom": 1.0
+  }
+}

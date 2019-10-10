@@ -1,14 +1,11 @@
-﻿using System.Windows;
-using Dynamo.Core;
-using Dynamo.Services;
-
-using System.Windows.Controls;
+﻿using System.Diagnostics;
 using System.IO;
-using System.Xml;
+using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Markup;
-using System.Diagnostics;
-using Dynamo.Logging;
+using System.Xml;
+using Dynamo.Core;
 using Dynamo.ViewModels;
 
 namespace Dynamo.Nodes.Prompts
@@ -95,7 +92,7 @@ namespace Dynamo.Nodes.Prompts
 
         private void PostOnGithub_Click(object sender, RoutedEventArgs e)
         {
-            DynamoViewModel.ReportABug(null);
+            DynamoViewModel.ReportABug(this.CrashDetailsContent.Text);
         }
 
         private void Details_Click(object sender, RoutedEventArgs e)

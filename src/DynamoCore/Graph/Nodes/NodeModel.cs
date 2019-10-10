@@ -5,12 +5,14 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.Serialization;
 using System.Xml;
 using Dynamo.Configuration;
 using Dynamo.Engine;
 using Dynamo.Engine.CodeGeneration;
 using Dynamo.Graph.Connectors;
 using Dynamo.Graph.Nodes.CustomNodes;
+using Dynamo.Graph.Workspaces;
 using Dynamo.Migration;
 using Dynamo.Scheduler;
 using Dynamo.Selection;
@@ -23,8 +25,6 @@ using ProtoCore.DSASM;
 using ProtoCore.Mirror;
 using String = System.String;
 using StringNode = ProtoCore.AST.AssociativeAST.StringNode;
-using System.Runtime.Serialization;
-using Dynamo.Graph.Workspaces;
 
 namespace Dynamo.Graph.Nodes
 {
@@ -134,6 +134,28 @@ namespace Dynamo.Graph.Nodes
         /// Event triggered when a port is disconnected.
         /// </summary>
         public event Action<PortModel> PortDisconnected;
+
+        /// <summary>
+        /// Event triggered before a node is executed.
+        /// Note: This event will only be triggered when profiling is active.
+        /// </summary>
+        public event Action<NodeModel> NodeExecutionBegin;
+
+        internal void OnNodeExecutionBegin()
+        {
+            NodeExecutionBegin?.Invoke(this);
+        }
+
+        /// <summary>
+        /// Event triggered after a node is executed.
+        /// Note: This event will only be triggered when profiling is active.
+        /// </summary>
+        public event Action<NodeModel> NodeExecutionEnd;
+
+        internal void OnNodeExecutionEnd()
+        {
+            NodeExecutionEnd?.Invoke(this);
+        }
 
         #endregion
 
@@ -670,6 +692,7 @@ namespace Dynamo.Graph.Nodes
             }
         }
 
+        [JsonConverter(typeof(DescriptionConverter))]
         /// <summary>
         ///     Description of this Node.
         /// </summary>

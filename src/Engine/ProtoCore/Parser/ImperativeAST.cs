@@ -1,12 +1,12 @@
-using ProtoCore.AST.AssociativeAST;
-using ProtoCore.DSASM;
-using ProtoCore.SyntaxAnalysis.Imperative;
-using ProtoCore.Utils;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text;
+using ProtoCore.AST.AssociativeAST;
+using ProtoCore.DSASM;
+using ProtoCore.SyntaxAnalysis.Imperative;
+using ProtoCore.Utils;
 
 namespace ProtoCore.AST
 {
@@ -1926,6 +1926,14 @@ namespace ProtoCore.AST.ImperativeAST
         public static ImperativeNode BuildIndexExpression(ImperativeNode value, ImperativeNode index)
         {
             var node = BuildFunctionCall(Node.BuiltinGetValueAtIndexTypeName, Node.BuiltinValueAtIndexMethodName, 
+                new List<ImperativeNode>() { value, index });
+            NodeUtils.SetNodeLocation(node, value, index);
+            return node;
+        }
+
+        public static ImperativeNode BuildForLoopIndexExpression(ImperativeNode value, ImperativeNode index)
+        {
+            var node = BuildFunctionCall(Node.BuiltinGetValueAtIndexTypeName, Node.BuiltinValueAtIndexInForLoopMethodName,
                 new List<ImperativeNode>() { value, index });
             NodeUtils.SetNodeLocation(node, value, index);
             return node;

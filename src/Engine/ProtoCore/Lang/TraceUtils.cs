@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
 using System.Runtime.Serialization;
-using System.Text;
 using System.Threading;
 
 namespace ProtoCore.Lang
 {
+    [Obsolete("This class is not used anymore, use the same class from Dynamo.Services namespace", false)]
     public static class TraceUtils
     {
 
@@ -96,3 +94,4 @@ namespace ProtoCore.Lang
 
     }
 }
+﻿

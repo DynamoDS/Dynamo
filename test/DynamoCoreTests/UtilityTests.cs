@@ -1,15 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using NUnit.Framework;
-using DynNodes = Dynamo.Nodes;
-using System.Xml;
 using System.IO;
+using System.Linq;
+using System.Xml;
 using Dynamo.Configuration;
-using ProtoCore.AST.AssociativeAST;
-using DynamoUtilities;
 using Dynamo.Engine;
+using DynamoUtilities;
+using NUnit.Framework;
+using ProtoCore.AST.AssociativeAST;
 
 namespace Dynamo.Tests
 {
@@ -801,6 +799,39 @@ namespace Dynamo.Tests
                 TypeSwitch.Case<BooleanNode>(n => v = n.Value),
                 TypeSwitch.Default(() => v = 24));
             Assert.AreEqual(v, 24);
+        }
+
+        // This test will check if the custom node name is valid or not. 
+        [Test]
+        public void CustomNodeNameError()
+        {
+            var InvalidNameError = false;
+            var specialCharacters = "?./<>";
+            var CustomNodeName = "Test";
+
+            int index = new Random().Next(0, CustomNodeName.Length);
+            var CustomNodeInvalidName = System.String.Concat(CustomNodeName, specialCharacters.ElementAt(index));
+
+            if (PathHelper.IsFileNameInValid(CustomNodeName))
+            {
+                InvalidNameError = true;
+            }
+            Assert.AreEqual(false, InvalidNameError);
+
+            if (PathHelper.IsFileNameInValid(CustomNodeInvalidName))
+            {
+                InvalidNameError = true;
+            }
+            Assert.AreEqual(true, InvalidNameError);
+        }
+
+        //This test will check for the default name that is set for the workspace snapshot.
+        [Test]
+        public void GenerateSnapshotNameTest()
+        {
+            var examplePath = Path.Combine(TestDirectory, @"core\math", "Add.dyn");
+            var snapshotName = PathHelper.GetScreenCaptureNameFromPath(examplePath);
+            Assert.AreEqual(snapshotName, "Add_" + string.Format("{0:yyyy-MM-dd_hh-mm-ss}", DateTime.Now));
         }
     }
 }

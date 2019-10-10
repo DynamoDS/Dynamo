@@ -1,18 +1,14 @@
-﻿using CoreNodeModels.Input;
+﻿using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Windows.Controls;
+using CoreNodeModels.Input;
 using Dynamo.Configuration;
 using Dynamo.Graph.Nodes;
 using Dynamo.Interfaces;
 using Dynamo.Models;
-using Dynamo.PackageManager;
 using Dynamo.Scheduler;
 using NUnit.Framework;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Controls;
 
 namespace DynamoCoreWpfTests
 {
@@ -61,7 +57,7 @@ namespace DynamoCoreWpfTests
         public void PackageManagerLoadsAndAddsViewExtension()
         {
             Assert.That(this.View.viewExtensionManager.ViewExtensions.Select(x => x.Name),
-                Is.EquivalentTo((new List<string> { "DynamoManipulationExtension","LibraryUI","NotificationsExtension", "Sample View Extension","PackageManagerViewExtension" })));
+                Is.EquivalentTo((new List<string> { "DynamoManipulationExtension","LibraryUI","NotificationsExtension", "Workspace Dependency ViewExtension", "Sample View Extension","PackageManagerViewExtension" })));
         }
 
         [Test]

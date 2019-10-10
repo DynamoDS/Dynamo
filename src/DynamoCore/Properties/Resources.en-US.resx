@@ -665,4 +665,48 @@ value : bool = false</value>
   <data name="CodeBlockTempIdentifierOutputLabel" xml:space="preserve">
     <value>Value of expression at line {0}</value>
   </data>
+  <data name="InvalidInputSymbolCustomNodeWarning" xml:space="preserve">
+    <value>This custom node contains an invalid input. Please fix the input before saving the custom node.</value>
+  </data>
+  <data name="InvalidInputSymbolErrorMessage" xml:space="preserve">
+    <value>This input symbol is not currently valid, and cannot be saved until it is fixed. Valid inputs take the form:
+
+name : type = defaultValue
+
+The input name should be a valid variable name, without spaces. An input type and default value are optional.</value>
+  </data>
+  <data name="InvalidInputSymbolWarningMessage" xml:space="preserve">
+    <value>This custom node currently contains some invalid inputs, and cannot be saved until the inputs are fixed. If the custom node is saved using SaveAs, the invalid inputs will revert to generic inputs. Valid inputs take the form:
+
+name : type = defaultValue
+
+The input name should be a valid variable name, without spaces. An input type and default value are optional.</value>
+  </data>
+  <data name="InvalidInputSymbolWarningShortMessage" xml:space="preserve">
+    <value>This custom node cannot be saved until invalid inputs are removed or fixed.</value>
+  </data>
+  <data name="InvalidInputSymbolWarningTitle" xml:space="preserve">
+    <value>Custom Node Contains Invalid Inputs and Cannot Be Saved.</value>
+  </data>
+  <data name="PythonTemplateAppData" xml:space="preserve">
+    <value>Python template loaded from AppData</value>
+  </data>
+  <data name="PythonTemplateDefaultFile" xml:space="preserve">
+    <value>Python template set to default.</value>
+  </data>
+  <data name="PythonTemplateDefinedByHost" xml:space="preserve">
+    <value>Python template set by host integrator</value>
+  </data>
+  <data name="PythonTemplateUserFile" xml:space="preserve">
+    <value>Python template loaded from DynamoSettings.xml path</value>
+  </data>
+  <data name="MessageCustomNodePackageFailedToLoad" xml:space="preserve">
+    <value>{1} cannot be loaded. 
+Installing it will conflict with one or more node definitions that already exist in {0}, which is currently loaded. 
+To install {1}, Dynamo needs to first uninstall {0}. 
+Restart Dynamo to complete the uninstall.</value>
+  </data>
+  <data name="FunctionDefinitionOverwrittenMessage" xml:space="preserve">
+    <value>Attempting to load customNode {0} loaded by package {1}, but a previous definition named {2} exists with no associated package. The new customNode definition has been loaded, but Dynamo may be in an unstable state, please avoid loading multiple custom nodes with the id.</value>
+  </data>
 </root>

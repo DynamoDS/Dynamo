@@ -1,0 +1,167 @@
+{
+  "Uuid": "841ce3c9-2514-4005-bca1-ef41ca654b57",
+  "IsCustomNode": false,
+  "Description": null,
+  "Name": "invalidInputName",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "3;",
+      "Id": "4d699b9d646b4d0bbf5e30e955d144b0",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "daf56df04c51437cb437a7a71c74099c",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "f91658aeafe84cbaa39d370dec283b53",
+      "Inputs": [
+        {
+          "Id": "4a97f00bd9f34d2ebd2e7732d9973a1a",
+          "Name": "",
+          "Description": "Node to evaluate.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "4d924ff7246d4acf9093e31983e22d14",
+          "Name": "",
+          "Description": "Watch contents.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualize the output of node."
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CustomNodes.Function, DynamoCore",
+      "FunctionSignature": "2b82d487-9f00-42ad-96b2-11b41752f230",
+      "FunctionType": "Graph",
+      "NodeType": "FunctionNode",
+      "Id": "762d0a5d3b5a4ff6aebd2f85a4f3e443",
+      "Inputs": [
+        {
+          "Id": "8f3ceaac09d546f7a37dc3c4155cacf4",
+          "Name": "",
+          "Description": "var[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "8991303321174a08bc93fc07be45b781",
+          "Name": "",
+          "Description": "return value",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": ""
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "daf56df04c51437cb437a7a71c74099c",
+      "End": "8f3ceaac09d546f7a37dc3c4155cacf4",
+      "Id": "2aae4e5781364997ad83eefb2e05d36a"
+    },
+    {
+      "Start": "8991303321174a08bc93fc07be45b781",
+      "End": "4a97f00bd9f34d2ebd2e7732d9973a1a",
+      "Id": "aef71c875aba4776bdac9095423a1dea"
+    }
+  ],
+  "Dependencies": [
+    "2b82d487-9f00-42ad-96b2-11b41752f230"
+  ],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.2.0.3785",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "4d699b9d646b4d0bbf5e30e955d144b0",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 14.375682921476823,
+        "Y": 246.35270680434172
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Watch",
+        "Id": "f91658aeafe84cbaa39d370dec283b53",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 394.50806270348545,
+        "Y": 244.38585054126645
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "invalidInputName",
+        "Id": "762d0a5d3b5a4ff6aebd2f85a4f3e443",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 186.13212267759067,
+        "Y": 243.65045464518573
+      }
+    ],
+    "Annotations": [],
+    "X": 40.300221294646661,
+    "Y": 182.33125420499687,
+    "Zoom": 0.89461611633549576
+  }
+}

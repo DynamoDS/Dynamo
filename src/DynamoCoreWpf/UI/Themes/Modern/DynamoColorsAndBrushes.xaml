@@ -4,6 +4,9 @@
     <!--a good color picker-->
     <!--http://www.colorspire.com/rgb-color-wheel/-->
     
+    <!--Universal-->
+    <SolidColorBrush Color="#BBBBBB" x:Key="DynamoStandardLableTextBrush"></SolidColorBrush>
+    
     <!--Workspaces-->
     <SolidColorBrush Color="#353535" x:Key="DynamoWindowBrush"/>
     <SolidColorBrush Color="#232323" x:Key="WorkspaceBackgroundBrush"/>
@@ -68,7 +71,9 @@
     <Color x:Key="SelectionColor">#009EFF</Color>
     <Color x:Key="MaterialColor">#efede4</Color>
 
-    <!--Sidebar-->
+    <!--Extensions Sidebar-->
+    <SolidColorBrush x:Key="BorderBrushWhite" Color="#FF3F4040" />
+    <SolidColorBrush x:Key="FeedbackSectionBackground" Color="#4192D9" />
     
     <!-- Library background-->
     <SolidColorBrush x:Key="SearchTextBoxBackground" Color="#F1F2F2" />

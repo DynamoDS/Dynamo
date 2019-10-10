@@ -1,6 +1,6 @@
 ﻿//using System;
-using NUnit.Framework;
 using DSCore;
+using NUnit.Framework;
 
 namespace DSCoreNodesTests
 {

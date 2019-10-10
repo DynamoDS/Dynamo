@@ -21,24 +21,21 @@ def main():
 
 	(options, args) = parser.parse_args()
 
-	repo_root = options.root
-	installer_dir =  form_path( [repo_root, 'tools/install'] )
-	installer_bin_dir = 'Installers'
+	installer_dir = options.root
 
-	print "Publishing to s3"
-	print installer_dir
-	print installer_bin_dir
+	print('Publishing to s3')
+	print(installer_dir)
 	
-	publish_to_s3( installer_dir, installer_bin_dir, options.prefix, options.include_date, options.dev_build )
+	publish_to_s3( installer_dir, options.prefix, options.include_date, options.dev_build )
 
 # S3 ##############################
 
-def publish_to_s3(installer_dir, installer_bin_dir, prefix, include_date, is_dev_build):
+def publish_to_s3(installer_dir, prefix, include_date, is_dev_build):
 
 	try:
 
 		mkdir('temp')
-		copy_folder_contents( form_path([installer_dir, installer_bin_dir]), 'temp')
+		copy_folder_contents( installer_dir, 'temp')
 
 		date_string = dynamo_s3.date_string()
 
@@ -47,10 +44,12 @@ def publish_to_s3(installer_dir, installer_bin_dir, prefix, include_date, is_dev
 		  	dynamo_s3.upload_installer( form_path( ['temp', file] ), prefix, include_date, is_dev_build ,'.exe', date_string)
 		  elif fnmatch.fnmatch( file, '*.sig'):
 		  	dynamo_s3.upload_installer( form_path( ['temp', file] ), prefix, include_date, is_dev_build ,'.sig', date_string)
+		  elif fnmatch.fnmatch( file, '*.zip'):
+		  	dynamo_s3.upload_installer( form_path( ['temp', file] ), prefix, include_date, is_dev_build ,'.zip', date_string)
 
 	except Exception:
-		print 'There was an exception uploading to s3:'
-		print traceback.format_exc()
+		print('There was an exception uploading to s3:')
+		print(traceback.format_exc())
 	finally:
 		rm_dir('temp')
 	
@@ -77,7 +76,7 @@ def form_path(elements):
 	return "/".join( elements )
 
 def run_cmd( args, printOutput = True, cwd = None ):	
-	p = subprocess.Popen(args, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, cwd = cwd)
+	p = subprocess.Popen(args, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, cwd = cwd, universal_newlines=True)
 	
 	out = ''
 
@@ -87,7 +86,7 @@ def run_cmd( args, printOutput = True, cwd = None ):
 	    if not line:
 	        break
 	    out = out + line
-	    print ">>> " + line.rstrip()
+	    print(">>> " + line.rstrip())
 		
 	return out
 

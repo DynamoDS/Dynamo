@@ -1,0 +1,75 @@
+{
+  "Uuid": "a329d803-e3ef-4b86-8553-93432592861d",
+  "IsCustomNode": false,
+  "Description": null,
+  "Name": "DropDownSample",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "SampleLibraryUI.Examples.NEWDropDownExample, SampleLibraryUI",
+      "SelectedIndex": 0,
+      "SelectedString": "Cersei",
+      "NodeType": "ExtensionNode",
+      "Id": "60bd00c762074be1a799febdcd98bbbf",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "c23f11013193442ea6300ff948aa5e54",
+          "Name": "item",
+          "Description": "The selected item",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "An example drop down node."
+    }
+  ],
+  "Connectors": [],
+  "Dependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.2.0.3685",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "Drop Down Example",
+        "Id": "60bd00c762074be1a799febdcd98bbbf",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 195.5,
+        "Y": 242.0
+      }
+    ],
+    "Annotations": [],
+    "X": 0.0,
+    "Y": 0.0,
+    "Zoom": 1.0
+  }
+}

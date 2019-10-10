@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -36,6 +37,8 @@ using Dynamo.Utilities;
 using DynamoServices;
 using DynamoUnits;
 using Greg;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using ProtoCore;
 using ProtoCore.Runtime;
 using Compiler = ProtoAssociative.Compiler;
@@ -43,10 +46,6 @@ using Compiler = ProtoAssociative.Compiler;
 using DefaultUpdateManager = Dynamo.Updates.UpdateManager;
 using FunctionGroup = Dynamo.Engine.FunctionGroup;
 using Utils = Dynamo.Graph.Nodes.Utilities;
-
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using System.Globalization;
 
 namespace Dynamo.Models
 {
@@ -521,6 +520,7 @@ namespace Dynamo.Models
             public IEnumerable<IExtension> Extensions { get; set; }
             public TaskProcessMode ProcessMode { get; set; }
             public bool IsHeadless { get; set; }
+            public string PythonTemplatePath { get; set; }
         }
 
         /// <summary>
@@ -636,25 +636,54 @@ namespace Dynamo.Models
             var userDataFolder = pathManager.GetUserDataFolder(); // Get the default user data path
             AddPackagePath(userDataFolder);
 
-            // Check if the Python template file specified in the settings file exists & it's not empty
-            // If not, check the default filepath for the Python template (userDataFolder\PythonTemplate.py).
-            // If that doesn't exist either or is empty, Dynamo falls back to the hard-coded Python script template.
-            // We log the behaviour to make it easy for users to troubleshoot this.
+            // Load Python Template
+            // The loading pattern is conducted in the following order
+            // 1) Set from DynamoSettings.XML
+            // 2) Set from API via the configuration file
+            // 3) Set from PythonTemplate.py located in 'C:\Users\USERNAME\AppData\Roaming\Dynamo\Dynamo Core\2.X'
+            // 4) Set from OOTB hard-coded default template
+
+            // If a custom python template path doesn't already exists in the DynamoSettings.xml
             if (string.IsNullOrEmpty(PreferenceSettings.PythonTemplateFilePath) || !File.Exists(PreferenceSettings.PythonTemplateFilePath))
             {
-                if (string.IsNullOrEmpty(pathManager.PythonTemplateFilePath) || !File.Exists(pathManager.PythonTemplateFilePath))
-                    Logger.Log(Resources.PythonTemplateInvalid);
+                // To supply a custom python template host integrators should supply a 'DefaultStartConfiguration' config file
+                // or create a new struct that inherits from 'DefaultStartConfiguration' making sure to set the 'PythonTemplatePath'
+                // while passing the config to the 'DynamoModel' constructor.
+                if (config is DefaultStartConfiguration)
+                {
+                    var configurationSettings = (DefaultStartConfiguration)config;
+                    var templatePath = configurationSettings.PythonTemplatePath;
+
+                    // If a custom python template path was set in the config apply that template
+                    if (!string.IsNullOrEmpty(templatePath) && File.Exists(templatePath))
+                    {
+                        PreferenceSettings.PythonTemplateFilePath = templatePath;
+                        Logger.Log(Resources.PythonTemplateDefinedByHost + " : " + PreferenceSettings.PythonTemplateFilePath);
+                    }
+
+                    // Otherwise fallback to the default
+                    else
+                    {
+                        SetDefaultPythonTemplate();
+                    }
+                }
+
                 else
                 {
-                    PreferenceSettings.PythonTemplateFilePath = pathManager.PythonTemplateFilePath;
-                    Logger.Log(Resources.PythonTemplateDefaultFile + " : " + pathManager.PythonTemplateFilePath);
+                    // Fallback to the default
+                    SetDefaultPythonTemplate();
                 }
             }
-            else Logger.Log(Resources.PythonTemplateUserFile + " : " + pathManager.PythonTemplateFilePath);
+
+            else
+            {
+                // A custom python template path already exists in the DynamoSettings.xml
+                Logger.Log(Resources.PythonTemplateUserFile + " : " + PreferenceSettings.PythonTemplateFilePath);
+            }
 
             pathManager.Preferences = PreferenceSettings;
 
-            SearchModel = new NodeSearchModel();
+            SearchModel = new NodeSearchModel(Logger);
             SearchModel.ItemProduced +=
                 node => ExecuteCommand(new CreateNodeCommand(node, 0, 0, true, true));
 
@@ -701,6 +730,8 @@ namespace Dynamo.Models
             InitializeCustomNodeManager();
 
             ResetEngineInternal();
+
+            EngineController.VMLibrariesReset += ReloadDummyNodes;
 
             AddHomeWorkspace();
 
@@ -777,6 +808,23 @@ namespace Dynamo.Models
             TraceReconciliationProcessor = this;
             // This event should only be raised at the end of this method.
              DynamoReady(new ReadyParams(this));
+        }
+
+        private void SetDefaultPythonTemplate()
+        {
+            // First check if the default python template is overridden by a PythonTemplate.py file in AppData
+            // This file is always named accordingly and located in 'C:\Users\USERNAME\AppData\Roaming\Dynamo\Dynamo Core\2.X'
+            if (!string.IsNullOrEmpty(pathManager.PythonTemplateFilePath) && File.Exists(pathManager.PythonTemplateFilePath))
+            {
+                PreferenceSettings.PythonTemplateFilePath = pathManager.PythonTemplateFilePath;
+                Logger.Log(Resources.PythonTemplateAppData + " : " + PreferenceSettings.PythonTemplateFilePath);
+            }
+
+            // Otherwise the OOTB hard-coded template is applied
+            else
+            {
+                Logger.Log(Resources.PythonTemplateDefaultFile);
+            }
         }
 
         private void DynamoReadyExtensionHandler(ReadyParams readyParams, IEnumerable<IExtension> extensions) {
@@ -919,10 +967,11 @@ namespace Dynamo.Models
         /// <param name="e"></param>
         private void LibraryLoaded(object sender, LibraryServices.LibraryLoadedEventArgs e)
         {
-            string newLibrary = e.LibraryPath;
-
-            // Load all functions defined in that library.
-            AddZeroTouchNodesToSearch(LibraryServices.GetFunctionGroups(newLibrary));
+            foreach (var newLibrary in e.LibraryPaths)
+            {
+                // Load all functions defined in that library.
+                AddZeroTouchNodesToSearch(LibraryServices.GetFunctionGroups(newLibrary));
+            }
         }
 
         /// <summary>
@@ -988,6 +1037,8 @@ namespace Dynamo.Models
 
             LibraryServices.Dispose();
             LibraryServices.LibraryManagementCore.Cleanup();
+
+            EngineController.VMLibrariesReset -= ReloadDummyNodes;
 
             UpdateManager.Log -= UpdateManager_Log;
             Logger.Dispose();
@@ -1205,7 +1256,7 @@ namespace Dynamo.Models
         {
             if (!NodeModelAssemblyLoader.ContainsNodeModelSubType(assem))
             {
-                LibraryServices.ImportLibrary(assem.Location);
+                LibraryServices.LoadNodeLibrary(assem.Location, false);
                 return;
             }
 
@@ -1667,6 +1718,78 @@ namespace Dynamo.Models
             return true;
         }
 
+        // Attempts to reload all the dummy nodes in the current workspace and replaces them with resolved version. 
+        private void ReloadDummyNodes()
+        {
+            JObject dummyNodeJSON = null;
+            Boolean resolvedDummyNode = false;
+
+            WorkspaceModel currentWorkspace = this.CurrentWorkspace;
+
+            if (currentWorkspace == null || string.IsNullOrEmpty(currentWorkspace.FileName))
+            {
+                return;
+            }
+
+            // Get the dummy nodes in the current workspace. 
+            var dummyNodes = currentWorkspace.Nodes.OfType<DummyNode>();
+
+            foreach (DummyNode dn in dummyNodes)
+            {
+                dummyNodeJSON = dn.OriginalNodeContent as JObject;
+
+                if (dummyNodeJSON != null)
+                {
+                    // Deserializing the dummy node and verifying if it is resolved by the downloaded or imported package
+                    NodeModel resolvedNode = dn.GetNodeModelForDummyNode(
+                                                               dummyNodeJSON.ToString(),
+                                                               LibraryServices,
+                                                               NodeFactory,
+                                                               IsTestMode,
+                                                               CustomNodeManager);
+
+                    // If the resolved node is also a dummy node, then skip it else replace the dummy node with the resolved version of the node. 
+                    if (!(resolvedNode is DummyNode))
+                    {
+                        // Disable graph runs temporarily while the dummy node is replaced with the resolved version of that node.
+                        EngineController.DisableRun = true;
+                        currentWorkspace.RemoveAndDisposeNode(dn);
+                        currentWorkspace.AddAndRegisterNode(resolvedNode, false);
+
+                        // Adding back the connectors for the resolved node. 
+                        List<ConnectorModel> connectors = dn.AllConnectors.ToList();
+                        foreach (var connectorModel in connectors)
+                        {
+                            var startNode = connectorModel.Start.Owner;
+                            var endNode = connectorModel.End.Owner;
+
+                            if (startNode is DummyNode && startNode.GUID == resolvedNode.GUID)
+                            {
+                                startNode = resolvedNode;
+                            }
+                            if (endNode is DummyNode && endNode.GUID == resolvedNode.GUID)
+                            {
+                                endNode = resolvedNode;
+                            }
+
+                            connectorModel.Delete();
+                            ConnectorModel.Make(startNode, endNode, connectorModel.Start.Index, connectorModel.End.Index, connectorModel.GUID);
+                        }
+                        EngineController.DisableRun = false ;
+                        resolvedDummyNode = true;
+                    }
+                }
+            }
+
+            if (resolvedDummyNode)
+            {
+                currentWorkspace.HasUnsavedChanges = false;
+                // Once all the dummy nodes are reloaded, the DummyNodesReloaded event is invoked and
+                // the Dependency table is regenerated in the WorkspaceDependencyView extension. 
+                currentWorkspace.OnDummyNodesReloaded();
+            }
+        }
+
         private bool OpenXmlFile(WorkspaceInfo workspaceInfo, XmlDocument xmlDoc, out WorkspaceModel workspace)
         {
             CustomNodeManager.AddUninitializedCustomNodesInPath(
@@ -1941,6 +2064,27 @@ namespace Dynamo.Models
             AddWorkspace(workspace);
         }
 
+        private void CheckForInvalidInputSymbols(WorkspaceModel workspace)
+        {
+            if (workspace.containsInvalidInputSymbols() && !IsTestMode)
+            {
+                DisplayInvalidInputSymbolWarning();
+            }
+        }
+
+        private void DisplayInvalidInputSymbolWarning()
+        {
+            string summary = Resources.InvalidInputSymbolWarningShortMessage;
+            var description = Resources.InvalidInputSymbolWarningMessage;
+            const string imageUri = "/DynamoCoreWpf;component/UI/Images/task_dialog_future_file.png";
+            var args = new TaskDialogEventArgs(
+               new Uri(imageUri, UriKind.Relative),
+               Resources.InvalidInputSymbolWarningTitle, summary, description);
+
+            args.AddRightAlignedButton((int)ButtonId.Proceed, Resources.OKButton);
+            OnRequestTaskDialog(null, args);
+        }
+
         /// <summary>
         ///     Remove a workspace from the dynamo model.
         /// </summary>
@@ -1969,7 +2113,9 @@ namespace Dynamo.Models
             if (CustomNodeManager.TryGetFunctionWorkspace(guid, IsTestMode, out customNodeWorkspace))
             {
                 if (!Workspaces.OfType<CustomNodeWorkspaceModel>().Contains(customNodeWorkspace))
+                {
                     AddWorkspace(customNodeWorkspace);
+                }
 
                 CurrentWorkspace = customNodeWorkspace;
                 return true;
@@ -2371,6 +2517,7 @@ namespace Dynamo.Models
 
             _workspaces.Add(workspace);
             CheckForXMLDummyNodes(workspace);
+            CheckForInvalidInputSymbols(workspace);
             OnWorkspaceAdded(workspace);
         }
 

@@ -1,13 +1,7 @@
 ﻿using System;
 using System.Windows;
-
-using Dynamo.Controls;
-using Dynamo.PackageManager.UI;
-using Dynamo.Search.SearchElements;
 using Dynamo.UI;
-using Dynamo.Utilities;
 using Dynamo.ViewModels;
-using Dynamo.Wpf;
 using DynamoUtilities;
 
 namespace Dynamo.PackageManager
@@ -17,9 +11,15 @@ namespace Dynamo.PackageManager
     /// </summary>
     public partial class PublishPackageView : Window
     {
+        /// <summary>
+        /// Internal reference of PublishPackageViewModel
+        /// </summary>
+        private PublishPackageViewModel pkgViewModel;
+
         public PublishPackageView(PublishPackageViewModel packageViewModel)
         {
             this.DataContext = packageViewModel;
+            pkgViewModel = packageViewModel;
             packageViewModel.PublishSuccess += PackageViewModelOnPublishSuccess;
 
             InitializeComponent();
@@ -59,6 +59,22 @@ namespace Dynamo.PackageManager
                 e.Cancel = false;
             }
 
+        }
+
+        private void HostEntry_CheckStateChanged(object sender, RoutedEventArgs e)
+        {
+            pkgViewModel.SelectedHosts.Clear();
+            pkgViewModel.SelectedHostsString = string.Empty;
+            foreach (var host in pkgViewModel.KnownHosts)
+            {
+                if (host.IsSelected)
+                {
+                    pkgViewModel.SelectedHosts.Add(host.HostName);
+                    pkgViewModel.SelectedHostsString += host.HostName + ", ";
+                }
+            }
+            // Format string since it will be displayed
+            pkgViewModel.SelectedHostsString = pkgViewModel.SelectedHostsString.Trim().TrimEnd(',');
         }
     }
 

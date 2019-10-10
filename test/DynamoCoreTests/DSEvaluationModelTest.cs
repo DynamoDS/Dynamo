@@ -1173,6 +1173,34 @@ namespace Dynamo.Tests
             OpenModel(dynFilePath);
             AssertPreviewValue("3bf992eb-ecc9-4fcc-a90b-9b1ee7e925e9", 3);
         }
+
+        [Test, Category("UnitTests")]
+        public void TestHeterogenousList()
+        {
+            // open test graph
+            RunModel(@"core\dsevaluation\test_hetereogenous_list.dyn");
+
+            var guidX = "0cb9b9ea3c004c099c31ddfac1ebbb09";
+            var guidY = "e7711f22858f4ea6bb23112f274b8914";
+            var guidZ = "a8519f77028643d4af2c0bc415a163fc";
+            AssertPreviewValue(guidX, new object[] { null, null, null, 5 });
+            AssertPreviewValue(guidY, new object[] { null, null, null, 10.2 });
+            AssertPreviewValue(guidZ, new object[] { null, null, null, 15.2 });
+        }
+
+        [Test, Category("UnitTests")]
+        public void ReplicationWithEmptySubLists()
+        {
+            RunModel(@"core\dsevaluation\Replication_EmptySublist.dyn");
+            var guidCurveLength = "1b247af2b1c046fb9f8e3e27761ab5a9";
+            var guidCodeBlock = Guid.Parse("b9dec880d99347eb8a203783f54763e6");
+            AssertPreviewValue(guidCurveLength, new object[] { new object[] { }, new object[] { 6.283185 } });
+
+            var command = new Models.DynamoModel.UpdateModelValueCommand(Guid.Empty, guidCodeBlock, "Code", @"[[c],[]]");
+            CurrentDynamoModel.ExecuteCommand(command);
+            RunCurrentModel();
+            AssertPreviewValue(guidCurveLength, new object[] { new object[] { 6.283185 }, new object[] { } });
+        }
     }
 
     [Category("DSCustomNode")]

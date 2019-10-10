@@ -1,10 +1,9 @@
-﻿using HelixToolkit.Wpf.SharpDX;
-
+﻿using System.Linq;
+using System.Runtime.InteropServices;
+using HelixToolkit.Wpf.SharpDX;
+using HelixToolkit.Wpf.SharpDX.Extensions;
 using SharpDX;
 using SharpDX.Direct3D11;
-using System.Linq;
-using System.Runtime.InteropServices;
-using HelixToolkit.Wpf.SharpDX.Extensions;
 using Buffer = SharpDX.Direct3D11.Buffer;
 
 namespace Dynamo.Wpf.ViewModels.Watch3D

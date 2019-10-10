@@ -2,10 +2,10 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
   <metadata>
     <id>DynamoVisualProgramming.WpfUILibrary</id>
-    <version>@VERSION@</version>
+    <version>$Version$</version>
     <authors>Autodesk</authors>
     <owners>Autodesk</owners>
-    <licenseUrl>http://opensource.org/licenses/MIT</licenseUrl>
+    <licenseUrl>https://www.apache.org/licenses/LICENSE-2.0</licenseUrl>
     <projectUrl>https://github.com/DynamoDS/Dynamo</projectUrl>
     <iconUrl>https://raw.githubusercontent.com/DynamoDS/Dynamo/master/doc/distrib/Images/logo_square_32x32.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
@@ -14,7 +14,7 @@
 2) CoreNodeModels.dll
 3) CoreNodeModelsWpf.dll</description>
     <summary>This package contains all that is required to get up and running building nodes for the Dynamo Visual Programming language with custom UI in WPF.</summary>
-    <copyright>Copyright Autodesk 2017</copyright>
+    <copyright>Copyright Autodesk 2019</copyright>
     <frameworkAssemblies>
       <frameworkAssembly assemblyName="System.Xaml"/>
       <frameworkAssembly assemblyName="WindowsBase"/>
@@ -22,7 +22,7 @@
       <frameworkAssembly assemblyName="PresentationFramework"/>
     </frameworkAssemblies>
     <dependencies>
-      <dependency id="DynamoVisualProgramming.Core" version="@VERSION@"/>
+      <dependency id="DynamoVisualProgramming.Core" version="$Version$"/>
     </dependencies>
   </metadata>
   <files>

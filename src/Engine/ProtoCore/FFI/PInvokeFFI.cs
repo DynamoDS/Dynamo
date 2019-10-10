@@ -1,17 +1,18 @@
 ﻿using System;
 using System.Collections;
-using System.Linq;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Runtime.InteropServices;
+using Autodesk.DesignScript.Runtime;
 using ProtoCore.DSASM;
-using FFICppFunction = ProtoCore.Lang.FFICppFunction2;
 using ProtoCore.Exceptions;
+using FFICppFunction = ProtoCore.Lang.FFICppFunction2;
 
 namespace ProtoFFI
 {
-    
+
     public class PInvokeDLLModule : DLLModule
     {
         public readonly string Name;
@@ -299,8 +300,7 @@ namespace ProtoFFI
             mFunction = new FFICppFunction(module.ModuleBuilder, module.AssemblyName, module.AssemblyBuilder, name, GetMarshalledReturnType(returnType));
         }
 
-
-        public override object Execute(ProtoCore.Runtime.Context context, ProtoCore.DSASM.Interpreter dsi)
+        public override object Execute(ProtoCore.Runtime.Context context, Interpreter dsi, List<StackValue> newStack)
         {
             List<Object> parameters = new List<object>();
             if (IsDNI)
@@ -313,7 +313,7 @@ namespace ProtoFFI
 
                 // Comment Jun: FFI function stack frames do not contain locals
                 int locals = 0;
-                int relative = 0 - ProtoCore.DSASM.StackFrame.StackFrameSize - locals - i - 1;
+                int relative = 0 - StackFrame.StackFrameSize - locals - i - 1;
                 StackValue o = dsi.runtime.rmem.GetAtRelative(relative);
 
                 if (o.IsInteger)
@@ -349,6 +349,12 @@ namespace ProtoFFI
             //object ret = mFunction.Invoke(parameters);
             object ret = mFunction.Execute(parameters.ToArray());
             return ConvertReturnValue(ret, context, dsi);
+        }
+
+        [IsObsolete("Remove in 3.0. Use Execute(ProtoCore.Runtime.Context c, ProtoCore.DSASM.Interpreter dsi, List<StackValue> stack) instead")]
+        public override object Execute(ProtoCore.Runtime.Context context, Interpreter dsi)
+        {
+            return Execute(context, dsi, null);
         }
     }
 

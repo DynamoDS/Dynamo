@@ -1,16 +1,15 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
+using Dynamo.Configuration;
 using Dynamo.Selection;
 using Dynamo.UI;
 using Dynamo.UI.Prompts;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using DynCmd = Dynamo.Models.DynamoModel;
-using Dynamo.Configuration;
-using System.Windows.Controls;
 
 namespace Dynamo.Nodes
 {
@@ -87,7 +86,10 @@ namespace Dynamo.Nodes
         {
             // Setup a binding with the edit window's text field
             var dynamoViewModel = ViewModel.WorkspaceViewModel.DynamoViewModel;
-            var editWindow = new EditWindow(dynamoViewModel, true);
+            var editWindow = new EditWindow(dynamoViewModel, true)
+            {
+                Title = Dynamo.Wpf.Properties.Resources.EditNoteWindowTitle
+            };
             editWindow.BindToProperty(DataContext, new Binding("Text")
             {
                 Mode = BindingMode.TwoWay,

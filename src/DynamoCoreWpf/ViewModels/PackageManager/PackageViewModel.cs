@@ -2,17 +2,15 @@
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Windows;
-using Dynamo.Graph;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
 using Dynamo.PackageManager;
-using System.IO;
-
+using Dynamo.Wpf.Properties;
 using Microsoft.Practices.Prism.Commands;
 using Microsoft.Practices.Prism.ViewModel;
-using Dynamo.Wpf.Properties;
 
 namespace Dynamo.ViewModels
 {

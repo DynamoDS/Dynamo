@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using Dynamo.Graph;
 using Dynamo.Graph.Connectors;
-using Dynamo.Models;
 
 namespace Dynamo.Interfaces
 {
@@ -147,6 +145,18 @@ namespace Dynamo.Interfaces
         /// <param name="name">Background preview name</param>
         /// <param name="value">Active state to set</param>
         void SetIsBackgroundPreviewActive(string name, bool value);
+    }
+
+    /// <summary>
+    /// Temporary interface to avoid breaking changes.
+    /// TODO: Merge with IPreferences for 3.0 (DYN-1699)
+    /// </summary>
+    public interface IRenderPrecisionPreference
+    {
+        ///<summary>
+        ///Indicate which render precision will be used
+        ///</summary>
+        int RenderPrecision { get; set; }
     }
 
     /// <summary>

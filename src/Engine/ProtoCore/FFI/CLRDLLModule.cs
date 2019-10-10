@@ -1,15 +1,12 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.ComponentModel;
-using System.Reflection;
 using System.Linq;
+using System.Reflection;
 using Autodesk.DesignScript.Interfaces;
 using Autodesk.DesignScript.Runtime;
 using ProtoCore.AST.AssociativeAST;
-using ProtoCore.Utils;
 using ProtoCore.DSASM;
+using ProtoCore.Utils;
 
 namespace ProtoFFI
 {
@@ -393,7 +390,7 @@ namespace ProtoFFI
             bool isDisposable = typeof(IDisposable).IsAssignableFrom(type);
             MethodInfo[] methods = type.GetMethods(flags);
             bool hasDisposeMethod = false;
-
+            
             foreach (var m in methods)
             {
                 if (SupressesImport(m, mGetterAttributes))
@@ -782,7 +779,10 @@ namespace ProtoFFI
             if (CoreUtils.IsDisposeMethod(functionName))
                 f = new DisposeFunctionPointer(Module, method, retype);
             else if (CoreUtils.IsGetter(functionName))
+            {
                 f = new GetterFunctionPointer(Module, functionName, method, retype);
+                (f as GetterFunctionPointer).ReflectionInfo.CheckForRankReductionAttribute(mGetterAttributes);
+            }
             else
                 f = new CLRFFIFunctionPointer(Module, functionName, method, argTypes, retype);
 
@@ -1386,6 +1386,10 @@ namespace ProtoFFI
                 else if (attr is IsLacingDisabledAttribute)
                 {
                     IsLacingDisabled = true; 
+                }
+                else if (attr is AllowArrayPromotionAttribute)
+                {
+                    AllowArrayPromotion = (attr as AllowArrayPromotionAttribute).IsAllowed;
                 }
             }
         }

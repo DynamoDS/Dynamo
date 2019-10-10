@@ -1,8 +1,6 @@
 using System;
-using System.IO;
 using NUnit.Framework;
 using ProtoCore.DSASM.Mirror;
-using ProtoTestFx.TD;
 namespace ProtoTest.TD.MultiLangTests
 {
     class TestUpdate : ProtoTestBase
@@ -1350,11 +1348,10 @@ x = [Imperative]
             thisTest.Verify("x", 1.0);
         }
 
-        [Test, Category("Failure")]
+        [Test]
         [Category("SmokeTest")]
         public void T34_Defect_DNL_1463327_2()
         {
-            // TODO pratapa: Update after imperative scoping changes
             string code = @"
 class A
 {        
@@ -1375,10 +1372,9 @@ x = [Imperative]
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             Object[] v1 = new Object[] { 0.0, 0.0 };
-            Object v2 = null;
 
             thisTest.Verify("x", v1);
-            thisTest.Verify("y", v2);
+            thisTest.Verify("y", 0);
         }
 
         [Test]

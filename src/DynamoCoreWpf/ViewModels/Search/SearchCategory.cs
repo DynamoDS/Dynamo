@@ -1,7 +1,6 @@
 ﻿using System.Windows.Input;
 
 using Dynamo.UI.Commands;
-using Dynamo.ViewModels;
 
 using Microsoft.Practices.Prism.ViewModel;
 
