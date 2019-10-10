@@ -199,7 +199,7 @@ namespace Dynamo.WorkspaceDependency.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Click to refresh package dependencies..
+        ///   Looks up a localized string similar to Click to recalculate workspace dependencies..
         /// </summary>
         public static string RefreshButtonTooltipText {
             get {

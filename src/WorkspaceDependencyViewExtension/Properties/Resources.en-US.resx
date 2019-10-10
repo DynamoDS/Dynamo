@@ -369,7 +369,7 @@
     <value>Could not redirect to the Dynamo forum page for feedback:</value>
   </data>
   <data name="RefreshButtonTooltipText" xml:space="preserve">
-    <value>Click to refresh package dependencies.</value>
+    <value>Click to recalculate workspace dependencies.</value>
   </data>
   <data name="RestartBannerMessage" xml:space="preserve">
     <value>An installed package is marked for uninstall. To complete the uninstall, please restart Dynamo.</value>
