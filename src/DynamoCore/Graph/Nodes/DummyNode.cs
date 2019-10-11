@@ -45,6 +45,7 @@ namespace Dynamo.Graph.Nodes
             LegacyNodeName = "Dynamo.Graph.Nodes.DummyNode";
             LegacyFullName = LegacyNodeName;
             LegacyAssembly = string.Empty;
+            FunctionName = string.Empty;
             NodeNature = Nature.Unresolved;
             Description = GetDescription();
             ShouldDisplayPreviewCore = false;
@@ -123,6 +124,52 @@ namespace Dynamo.Graph.Nodes
             LegacyNodeName = legacyName;
             LegacyFullName = legacyName;
             Name = legacyName;
+
+            OriginalNodeContent = originalElement;
+
+            LegacyAssembly = legacyAssembly;
+            NodeNature = DummyNode.Nature.Unresolved;
+
+            Description = GetDescription();
+            ShouldDisplayPreviewCore = false;
+
+            if (originalElement != null)
+            {
+                var legacyFullName = originalElement["FunctionSignature"];
+                if (legacyFullName != null)
+                    LegacyFullName = legacyFullName.ToString();
+            }
+
+            UpdatePorts();
+        }
+
+        /// <summary>
+        /// This function creates DummyNode with specified number of ports.
+        /// </summary>
+        /// <param name="id">Id of the original node</param>
+        /// <param name="inputCount">Number of input ports</param>
+        /// <param name="outputCount">Number of output ports</param>
+        /// <param name="legacyAssembly">Assembly of the node</param>
+        /// <param name="functionName">Function name of the node</param>
+        /// <param name="originalElement">Original JSON description of the node</param>
+        public DummyNode(
+           string id,
+           int inputCount,
+           int outputCount,
+           string legacyAssembly,
+           string functionName,
+           JObject originalElement)
+        {
+            GUID = new Guid(id);
+
+            InputCount = inputCount;
+            OutputCount = outputCount;
+
+            string legacyName = "Unresolved";
+            LegacyNodeName = legacyName;
+            LegacyFullName = legacyName;
+            Name = legacyName;
+            FunctionName = functionName;
 
             OriginalNodeContent = originalElement;
 
@@ -320,29 +367,29 @@ namespace Dynamo.Graph.Nodes
         {
             if (NodeNature == Nature.Deprecated)
             {
-                if (string.IsNullOrEmpty(LegacyAssembly))
+                if (string.IsNullOrEmpty(FunctionName))
                 {
-                    const string format = "Node of type '{0}' is now deprecated";
-                    return string.Format(format, LegacyNodeName);
+                    const string description = "Node is now deprecated";
+                    return description;
                 }
                 else
                 {
-                    const string format = "Node of type '{0}' ({1}) is now deprecated";
-                    return string.Format(format, LegacyNodeName, LegacyAssembly);
+                    const string format = "Node '{0}' is now deprecated";
+                    return string.Format(format, FunctionName);
                 }
             }
 
             if (NodeNature == Nature.Unresolved)
             {
-                if (string.IsNullOrEmpty(LegacyAssembly))
+                if (string.IsNullOrEmpty(FunctionName))
                 {
-                    const string format = "Node of type '{0}' cannot be resolved";
-                    return string.Format(format, LegacyNodeName);
+                    const string description = "Node cannot be resolved";
+                    return description;
                 }
                 else
                 {
-                    const string format = "Node of type '{0}' ({1}) cannot be resolved";
-                    return string.Format(format, LegacyNodeName, LegacyAssembly);
+                    const string format = "Node '{0}' cannot be resolved.";
+                    return string.Format(format, FunctionName);
                 }
             }
 
@@ -369,6 +416,11 @@ namespace Dynamo.Graph.Nodes
         /// Returns the node assembly
         /// </summary>
         public string LegacyAssembly { get; private set; }
+
+        /// <summary>
+        /// Returns the node's function name
+        /// </summary>
+        public string FunctionName { get; private set; }
 
         /// <summary>
         /// Returns the original node DSFunction description or UI node type
