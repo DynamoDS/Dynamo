@@ -98,13 +98,18 @@
                 <!-- State Icon -->
                 <DataGridTemplateColumn 
                     IsReadOnly="True"
-                    Width="34">
+                    Width="38">
                     <DataGridTemplateColumn.Header>
-                        <fa:ImageAwesome Name="Refresh" 
+                        <Button Width="Auto"
+                                Background="Transparent"
+                                Foreground="Transparent"
+                                BorderThickness="0">
+                            <fa:ImageAwesome Name="Refresh" 
                                          Icon="Refresh" 
                                          Foreground="{DynamicResource MemberButtonText}" 
                                          ToolTip="{x:Static w:Resources.RefreshButtonTooltipText}" 
                                          MouseLeftButtonDown="Refresh_MouseLeftButtonDown"/>
+                        </Button>
                     </DataGridTemplateColumn.Header>
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
