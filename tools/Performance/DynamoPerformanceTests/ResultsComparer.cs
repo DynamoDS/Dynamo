@@ -236,7 +236,8 @@ namespace DynamoPerformanceTests
                 var baseData = new string[] { BaseResult.Method, BaseResult.Graph, "Base", BaseResult.MeanString, BaseResult.ErrorString, BaseResult.StdDevString };
                 var newData = new string[] { "", "", "New", NewResult.MeanString, NewResult.ErrorString, NewResult.StdDevString };
                 var deltaData = new string[] { "", "", "", MeanDelta.ToString() + "%", ErrorDelta.ToString() + "%", StdDevDelta.ToString() + "%" };
-                return new List<string[]> { baseData, newData, deltaData };
+                var resultData = new string[] { Enum.GetName(typeof(ComparisonResultState), ResultState) };
+                return new List<string[]> { baseData, newData, deltaData, resultData };
             }
         }
         
