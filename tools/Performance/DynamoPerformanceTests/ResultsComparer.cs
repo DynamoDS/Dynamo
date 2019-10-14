@@ -219,7 +219,6 @@ namespace DynamoPerformanceTests
                 }
                 // log final result of comparison
                 var resultString = Enum.GetName(typeof(ComparisonResultState), this.ResultState);
-                Console.Write("|");
                 Console.Write(resultString);
 
                 Console.Write("\n");
