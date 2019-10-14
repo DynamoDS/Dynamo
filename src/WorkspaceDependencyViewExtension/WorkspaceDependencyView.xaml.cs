@@ -246,6 +246,11 @@ namespace Dynamo.WorkspaceDependency
             loadedParams.CurrentWorkspaceCleared -= OnWorkspaceCleared;
             WorkspaceModel.DummyNodesReloaded -= TriggerDependencyRegen;
         }
+
+        private void Refresh_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            DependencyRegen(currentWorkspace);
+        }
     }
 
     /// <summary>
