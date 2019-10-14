@@ -369,8 +369,8 @@ namespace Dynamo.Graph.Nodes
             {
                 if (string.IsNullOrEmpty(FunctionName))
                 {
-                    const string description = "Node is now deprecated";
-                    return description;
+                    const string format = "Node from assembly '{0}' is now deprecated.";
+                    return string.Format(format, LegacyAssembly);
                 }
                 else
                 {
@@ -383,8 +383,8 @@ namespace Dynamo.Graph.Nodes
             {
                 if (string.IsNullOrEmpty(FunctionName))
                 {
-                    const string description = "Node cannot be resolved";
-                    return description;
+                    const string format = "Node from assembly '{0}' cannot be resolved.";
+                    return string.Format(format, LegacyAssembly);
                 }
                 else
                 {
