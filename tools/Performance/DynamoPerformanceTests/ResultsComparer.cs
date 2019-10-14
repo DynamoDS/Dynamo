@@ -17,7 +17,21 @@ namespace DynamoPerformanceTests
     /// </summary>
     public class ResultsComparer
     {
-        private class BenchmarkResult
+        /// <summary>
+        /// Should this comparison between old and new benchmark result in a failure. 
+        /// </summary>
+        internal enum ComparisonResultState
+        {
+            NA,
+            PASS,
+            FAIL,
+           
+        }
+
+        internal List<BenchmarkComparison> ComparisonData {  get; set; }
+
+
+        internal class BenchmarkResult
         {
             // Values
             internal string Method { get; set; }
@@ -60,7 +74,7 @@ namespace DynamoPerformanceTests
             }
         }
 
-        private class BenchmarkComparison
+        internal class BenchmarkComparison
         {
             /// <summary>
             /// Results of baseline benchmark
@@ -106,11 +120,17 @@ namespace DynamoPerformanceTests
             }
 
             /// <summary>
+            /// Marks the result of this comparison - should the comparison between base and new result in a test failure?
+            /// </summary>
+            internal ComparisonResultState ResultState { get; set; }
+
+            /// <summary>
             /// Create a Comparison between two benchamrk results
             /// </summary>
             /// <param name="baseData"></param>
             /// <param name="newData"></param>
-            internal BenchmarkComparison(BenchmarkResult baseData, BenchmarkResult newData)
+            internal BenchmarkComparison(BenchmarkResult baseData, BenchmarkResult newData, 
+                Func<BenchmarkResult,BenchmarkResult, ComparisonResultState> comparisonFunction = null)
             {
                 BaseResult = baseData;
                 NewResult = newData;
@@ -128,6 +148,21 @@ namespace DynamoPerformanceTests
                     Console.WriteLine("Units do not match beween base and new results.");
                     Console.ForegroundColor = fc;
                 }
+
+                comparisonFunction = comparisonFunction ?? DefaultBenchmarkComparison;
+                this.ResultState = comparisonFunction(baseData, newData);
+
+            }
+
+            private ComparisonResultState DefaultBenchmarkComparison(BenchmarkResult baseData, BenchmarkResult newData)
+            {
+                //if the change in mean time
+                if (this.MeanDelta > 10)
+                {
+                    return ComparisonResultState.FAIL;
+                }
+                else
+                    return ComparisonResultState.PASS;
             }
 
             /// <summary>
@@ -162,7 +197,7 @@ namespace DynamoPerformanceTests
                 }
                 Console.WriteLine("|" + string.Join("|", newData) + "|");
 
-                // Lof Delta data
+                // Log Delta data
                 var meanDeltaString = MeanDelta >= 0 ? "+" + MeanDelta.ToString() : MeanDelta.ToString();
                 var deltaData = new string[] { "", "", "", meanDeltaString + "%", ErrorDelta.ToString() + "%", StdDevDelta.ToString() + "%" };
                 Console.Write("|");
@@ -182,6 +217,11 @@ namespace DynamoPerformanceTests
                         Console.Write(deltaItem + "|");
                     }
                 }
+                // log final result of comparison
+                var resultString = Enum.GetName(typeof(ComparisonResultState), this.ResultState);
+                Console.Write("|");
+                Console.Write(resultString);
+
                 Console.Write("\n");
             }
 
@@ -209,7 +249,8 @@ namespace DynamoPerformanceTests
         {
             // Create BenchmarkComparison objects
             var comparisons = CreateComparisons(basePath, newPath);
-            
+            this.ComparisonData = comparisons;
+
             // Log comparisons to console
             LogResults(comparisons);
 
@@ -233,7 +274,8 @@ namespace DynamoPerformanceTests
             foreach(var result in newResults.Values)
             {
                 var baseResult = GetBaseResult(result, baseResults);
-                comparisons.Add(new BenchmarkComparison(baseResult, result));
+                //NOTE(MJK) - to control determination of pass/fail conditions for each test, pass them here.
+                comparisons.Add(new BenchmarkComparison(baseResult, result, null));
             }
             return comparisons;
         }
@@ -246,7 +288,7 @@ namespace DynamoPerformanceTests
             var columnWidths = GetColumnWidths(comparisons);
 
             // Log header
-            var header = new string[] { "Method", "Graph", "Version", "Mean", "Error", "StdDev" };
+            var header = new string[] { "Method", "Graph", "Version", "Mean", "Error", "StdDev", "Result" };
             var separator = new string[header.Length];
             for (int i = 0; i < header.Length; i++)
             {
@@ -330,7 +372,7 @@ namespace DynamoPerformanceTests
         private List<string[]> GetComparisonDataRows(List<BenchmarkComparison> comparisons)
         {
             var rows = new List<string[]>();
-            var header = new string[] { "Method", "Graph", "Version", "Mean", "Error", "StdDev" };
+            var header = new string[] { "Method", "Graph", "Version", "Mean", "Error", "StdDev","Result" };
             rows.Add(header);
 
             foreach (var comparison in comparisons)
