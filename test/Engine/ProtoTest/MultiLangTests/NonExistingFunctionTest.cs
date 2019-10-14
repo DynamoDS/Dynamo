@@ -4,7 +4,7 @@ namespace ProtoTest.MultiLangTests
 {
     class NonExistingFunctionTest : ProtoTestBase
     {
-        // This test exersizes the code change made in https://github.com/DynamoDS/Dynamo/pull/10024
+        // This test exercises the code change made in https://github.com/DynamoDS/Dynamo/pull/10024
         // Note that this test only verifies that the code being run does not crash the VM
         [Test]
         public void DYN_2093_NullInput_NonExisting_flatten_withoutAssignment()
@@ -17,9 +17,6 @@ DSCore.List.flatten(null);
             thisTest.RunScriptSource(code);
         }
 
-        // For some reason this test does not follow the same code path as above.
-        // The intent was to verify that the return was correct, but the assignment of the
-        // return of the call to the variable caused the test conditions to change
         [Test]
         public void DYN_2093_NullInput_NonExisting_flatten_withAssignment()
         {
@@ -34,7 +31,6 @@ a = DSCore.List.flatten(null);
 
         // This test is to verify that calling a non-existent static (flatten) function 
         // with a non-null list would still not crash.
-        // It is not clear at this point if this test is actually exersizing the code changes.
         [Test]
         public void DYN_2093_NonNullInput_NonExisting_flatten()
         {
