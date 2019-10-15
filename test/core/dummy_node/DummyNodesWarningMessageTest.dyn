@@ -1,0 +1,156 @@
+{
+  "Uuid": "8ac993b7-6516-45c6-8bac-9ff985fbb0ad",
+  "IsCustomNode": false,
+  "Description": null,
+  "Name": "Dummy node message",
+  "ElementResolver": {
+    "ResolutionMap": {
+      "Point": {
+        "Key": "Autodesk.DesignScript.Geometry.Point",
+        "Value": "ProtoGeometry.dll"
+      }
+    }
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "HowickMaker.hMember.ByLineVector@Autodesk.DesignScript.Geometry.Line,Autodesk.DesignScript.Geometry.Vector,string",
+      "Id": "aeb3e5df26cc4f16af55bf0baef46ae1",
+      "Inputs": [
+        {
+          "Id": "2cda30bf385741c3ad5d4b290d8452c1",
+          "Name": "webAxis",
+          "Description": "Line",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "76a24bab17214e1697ab78692268bc77",
+          "Name": "webNormal",
+          "Description": "Vector",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "5cdd38339cef4f09a61f60abd6095076",
+          "Name": "name",
+          "Description": "string\nDefault value : \"0\"",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "e45e1d20e89b422698798660461602e6",
+          "Name": "hMember",
+          "Description": "hMember",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Creates an hMember with its web lying along the webAxis, facing webNormal\n\nhMember.ByLineVector (webAxis: Line, webNormal: Vector, name: string = \"0\"): hMember"
+    },
+    {
+      "ConcreteType": "SampleLibraryUI.Examples.DropDownExample, SampleLibraryUI",
+      "SelectedIndex": 0,
+      "SelectedString": "Tywin",
+      "NodeType": "ExtensionNode",
+      "Id": "5de408d41309424ea9ab0a9a57011168",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "6c8499495f5d4beeb7e3ca58b861a297",
+          "Name": "item",
+          "Description": "The selected item",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "An example drop down node."
+    }
+  ],
+  "Connectors": [],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [
+    {
+      "Name": "HowickMaker",
+      "Version": "0.4.1",
+      "ReferenceType": "Package",
+      "Nodes": [
+        "aeb3e5df26cc4f16af55bf0baef46ae1"
+      ]
+    },
+    {
+      "Name": "Dynamo Samples",
+      "Version": "2.0.0",
+      "ReferenceType": "Package",
+      "Nodes": [
+        "5de408d41309424ea9ab0a9a57011168"
+      ]
+    }
+  ],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.5.0.6521",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "hMember.ByLineVector",
+        "Id": "aeb3e5df26cc4f16af55bf0baef46ae1",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 39.256060510822806,
+        "Y": 268.69482120487669
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Drop Down Example",
+        "Id": "5de408d41309424ea9ab0a9a57011168",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 493.04874262470372,
+        "Y": 283.18790496760249
+      }
+    ],
+    "Annotations": [],
+    "X": 82.818344906128914,
+    "Y": 51.13140818532122,
+    "Zoom": 0.82346504096947037
+  }
+}
