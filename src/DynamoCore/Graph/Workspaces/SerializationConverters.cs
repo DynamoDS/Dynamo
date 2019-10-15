@@ -175,7 +175,7 @@ namespace Dynamo.Graph.Workspaces
             // If type is still null at this point return a dummy node
             if (type == null)
             {
-                node = CreateDummyNode(obj, assemblyName, functionName, inPorts, outPorts);
+                node = CreateDummyNode(obj, typeName, assemblyName, functionName, inPorts, outPorts);
             }
             // Attempt to create a valid node using the type
             else if (type == typeof(Function))
@@ -313,6 +313,21 @@ namespace Dynamo.Graph.Workspaces
                 outputcount,
                 legacyAssembly,
                 functionName,
+                obj);
+        }
+
+        private DummyNode CreateDummyNode(JObject obj, string typeName, string legacyAssembly, string functionName, PortModel[] inPorts, PortModel[] outPorts)
+        {
+            var inputcount = inPorts.Count();
+            var outputcount = outPorts.Count();
+
+            return new DummyNode(
+                obj["Id"].ToString(),
+                inputcount,
+                outputcount,
+                legacyAssembly,
+                functionName,
+                typeName,
                 obj);
         }
 

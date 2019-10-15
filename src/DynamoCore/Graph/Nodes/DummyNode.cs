@@ -189,6 +189,55 @@ namespace Dynamo.Graph.Nodes
             UpdatePorts();
         }
 
+        /// <summary>
+        /// This function creates DummyNode with specified number of ports.
+        /// </summary>
+        /// <param name="id">Id of the original node</param>
+        /// <param name="inputCount">Number of input ports</param>
+        /// <param name="outputCount">Number of output ports</param>
+        /// <param name="legacyAssembly">Assembly of the node</param>
+        /// <param name="functionName">Function name of the node</param>
+        /// <param name="typeName">Type of the node</param>
+        /// <param name="originalElement">Original JSON description of the node</param>
+        public DummyNode(
+           string id,
+           int inputCount,
+           int outputCount,
+           string legacyAssembly,
+           string functionName,
+           string typeName,
+           JObject originalElement)
+        {
+            GUID = new Guid(id);
+
+            InputCount = inputCount;
+            OutputCount = outputCount;
+
+            string legacyName = "Unresolved";
+            LegacyNodeName = legacyName;
+            LegacyFullName = legacyName;
+            Name = legacyName;
+            FunctionName = functionName;
+
+            OriginalNodeContent = originalElement;
+
+            LegacyAssembly = legacyAssembly;
+            TypeName = typeName;
+            NodeNature = DummyNode.Nature.Unresolved;
+
+            Description = GetDescription();
+            ShouldDisplayPreviewCore = false;
+
+            if (originalElement != null)
+            {
+                var legacyFullName = originalElement["FunctionSignature"];
+                if (legacyFullName != null)
+                    LegacyFullName = legacyFullName.ToString();
+            }
+
+            UpdatePorts();
+        }
+
         private void LoadNode(XmlNode nodeElement)
         {
             XmlElement originalElement = OriginalXmlNodeContent;
@@ -369,8 +418,8 @@ namespace Dynamo.Graph.Nodes
             {
                 if (string.IsNullOrEmpty(FunctionName))
                 {
-                    const string format = "Node from assembly '{0}' is now deprecated.";
-                    return string.Format(format, LegacyAssembly);
+                    const string format = "Node of type '{0}',from assembly '{1}', is now deprecated.";
+                    return string.Format(format, TypeName, LegacyAssembly);
                 }
                 else
                 {
@@ -383,8 +432,8 @@ namespace Dynamo.Graph.Nodes
             {
                 if (string.IsNullOrEmpty(FunctionName))
                 {
-                    const string format = "Node from assembly '{0}' cannot be resolved.";
-                    return string.Format(format, LegacyAssembly);
+                    const string format = "Node of type '{0}', from assembly '{1}', cannot be resolved.";
+                    return string.Format(format, TypeName, LegacyAssembly);
                 }
                 else
                 {
@@ -416,6 +465,11 @@ namespace Dynamo.Graph.Nodes
         /// Returns the node assembly
         /// </summary>
         public string LegacyAssembly { get; private set; }
+
+        /// <summary>
+        /// Type name of the node.
+        /// </summary>
+        public string TypeName { get; private set; }
 
         /// <summary>
         /// Returns the node's function name
