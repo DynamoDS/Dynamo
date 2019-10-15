@@ -283,19 +283,29 @@ namespace Dynamo.Wpf.ViewModels
             }
         }
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="name">Category name</param>
         public NodeCategoryViewModel(string name)
             : this(
                 name,
                 Enumerable.Empty<NodeSearchElementViewModel>(),
                 Enumerable.Empty<NodeCategoryViewModel>()) { }
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="name">Category name</param>
+        /// <param name="entries">Sub elements</param>
+        /// <param name="subs">Sub Categories</param>
         public NodeCategoryViewModel(string name, IEnumerable<NodeSearchElementViewModel> entries, IEnumerable<NodeCategoryViewModel> subs)
         {
             ClickedCommand = new DelegateCommand(Expand);
 
             Name = name;
-            this.entries = new ObservableCollection<NodeSearchElementViewModel>(entries.OrderBy(x => x.Name));
-            subCategories = new ObservableCollection<NodeCategoryViewModel>(subs.OrderBy(x => x.Name));
+            entries = entries != null? new ObservableCollection<NodeSearchElementViewModel>(entries.OrderBy(x => x.Name)) : new ObservableCollection<NodeSearchElementViewModel>();
+            subCategories = subs != null ? new ObservableCollection<NodeCategoryViewModel>(subs.OrderBy(x => x.Name)) : new ObservableCollection<NodeCategoryViewModel>();
 
             foreach (var category in SubCategories)
                 category.PropertyChanged += CategoryOnPropertyChanged;
@@ -361,6 +371,9 @@ namespace Dynamo.Wpf.ViewModels
             }
         }
 
+        /// <summary>
+        /// Dispose function
+        /// </summary>
         public override void Dispose()
         {
             foreach (var category in SubCategories)
@@ -378,6 +391,10 @@ namespace Dynamo.Wpf.ViewModels
             base.Dispose();
         }
 
+        /// <summary>
+        /// Dispose the category and all the sub categories.
+        /// note: does not seem to be called in Dynamo
+        /// </summary>
         public void DisposeTree()
         {
             Dispose();
@@ -507,7 +524,7 @@ namespace Dynamo.Wpf.ViewModels
                 var list = Items.Where(cat => !(cat is ClassesNodeCategoryViewModel));
                 var nextLargerItemIndex = FindInsertionPointByName(list, entry.Name);
 
-                // Nodecategories(i.e. namespaces) should be before members.
+                // Node categories(i.e. namespaces) should be before members.
                 if (entry is NodeSearchElementViewModel)
                 {
                     if (nextLargerItemIndex >= 0)
