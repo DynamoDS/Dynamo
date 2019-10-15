@@ -22,7 +22,7 @@ using Microsoft.Practices.Prism.ViewModel;
 
 namespace Dynamo.ViewModels
 {
-    public partial class SearchViewModel : NotificationObject
+    public partial class SearchViewModel : ViewModelBase
     {
         #region events
 
@@ -324,11 +324,20 @@ namespace Dynamo.ViewModels
             InitializeCore();
         }
 
-        // Just for tests.
+        // Just for tests. Please refer to LibraryTests.cs
         internal SearchViewModel(NodeSearchModel model)
         {
             Model = model;
             InitializeCore();
+        }
+
+        /// <summary>
+        /// Dispose function
+        /// </summary>
+        public override void Dispose()
+        {
+            libraryRoot.DisposeTree();
+            base.Dispose();
         }
 
         private void InitializeCore()

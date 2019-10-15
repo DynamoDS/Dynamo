@@ -367,15 +367,13 @@ namespace Dynamo.Wpf.ViewModels
             foreach (var category in SubCategories)
                 category.PropertyChanged -= CategoryOnPropertyChanged;
 
+            foreach (var item in Items)
+                item.PropertyChanged -= ItemOnPropertyChanged;
+
             Entries.CollectionChanged -= OnCollectionChanged;
             SubCategories.CollectionChanged -= OnCollectionChanged;
             SubCategories.CollectionChanged -= SubCategoriesOnCollectionChanged;
             Items.CollectionChanged -= ItemsOnCollectionChanged;
-
-            foreach (var item in Items)
-                item.PropertyChanged -= ItemOnPropertyChanged;
-            this.Entries = null;
-            this.SubCategories = null;
             base.Dispose();
         }
 

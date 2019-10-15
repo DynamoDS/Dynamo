@@ -513,7 +513,7 @@ namespace Dynamo.ViewModels
             Nodes.Clear();
             Notes.Clear();
             Connectors.Clear();
-            
+            InCanvasSearchViewModel.Dispose();
         }
 
         internal void ZoomInInternal()
