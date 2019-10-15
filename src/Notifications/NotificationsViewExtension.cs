@@ -18,6 +18,9 @@ namespace Dynamo.Notifications
         private Action<Logging.NotificationMessage> notificationHandler;
 
         private ObservableCollection<Logging.NotificationMessage> notifications;
+        /// <summary>
+        /// Notifications data collection. PropertyChanged event is raised to help dealing WPF bind dispose.
+        /// </summary>
         public ObservableCollection<Logging.NotificationMessage> Notifications
         {
             get { return notifications; }

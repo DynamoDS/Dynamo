@@ -97,8 +97,8 @@ namespace Dynamo.Wpf.ViewModels
         private string fullCategoryName;
         private string assembly;
         private ObservableCollection<ISearchEntryViewModel> items;
-        private readonly ObservableCollection<NodeSearchElementViewModel> entries;
-        private readonly ObservableCollection<NodeCategoryViewModel> subCategories;
+        private ObservableCollection<NodeSearchElementViewModel> entries;
+        private ObservableCollection<NodeCategoryViewModel> subCategories;
         private bool visibility;
         private bool isExpanded;
         private bool isSelected;
@@ -365,9 +365,15 @@ namespace Dynamo.Wpf.ViewModels
         {
             foreach (var category in SubCategories)
                 category.PropertyChanged -= CategoryOnPropertyChanged;
+            Entries.CollectionChanged -= OnCollectionChanged;
+            SubCategories.CollectionChanged -= OnCollectionChanged;
+            SubCategories.CollectionChanged -= SubCategoriesOnCollectionChanged;
+            Items.CollectionChanged -= ItemsOnCollectionChanged;
 
             foreach (var item in Items)
                 item.PropertyChanged -= ItemOnPropertyChanged;
+            this.entries = null;
+            this.subCategories = null;
         }
 
         public void DisposeTree()

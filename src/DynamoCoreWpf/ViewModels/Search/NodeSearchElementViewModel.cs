@@ -15,7 +15,7 @@ using Microsoft.Practices.Prism.ViewModel;
 
 namespace Dynamo.Wpf.ViewModels
 {
-    public class NodeSearchElementViewModel : NotificationObject, ISearchEntryViewModel
+    public class NodeSearchElementViewModel : ViewModelBase, ISearchEntryViewModel
     {
         private Dictionary<SearchElementGroup, FontAwesomeIcon> FontAwesomeDict;
 
@@ -54,10 +54,13 @@ namespace Dynamo.Wpf.ViewModels
             RaisePropertyChanged("Visibility");
         }
 
-        public void Dispose()
+        public override void Dispose()
         {
+            searchViewModel = null;
+            Model.VisibilityChanged -= ModelOnVisibilityChanged;
             if (searchViewModel != null)
                 Clicked -= searchViewModel.OnSearchElementClicked;
+            base.Dispose();
         }
 
         public NodeSearchElement Model { get; set; }
