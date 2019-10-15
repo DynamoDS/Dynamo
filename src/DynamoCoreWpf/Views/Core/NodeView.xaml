@@ -5,7 +5,6 @@
              xmlns:dynui="clr-namespace:Dynamo.UI.Controls"
              xmlns:p="clr-namespace:Dynamo.Wpf.Properties"
              xmlns:configuration="clr-namespace:Dynamo.Configuration;assembly=DynamoCore"
-             xmlns:fa="http://schemas.fontawesome.io/icons/"
              Height="Auto"
              Width="Auto"
              Name="topControl"
