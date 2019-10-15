@@ -11,7 +11,6 @@ using Dynamo.Search.SearchElements;
 using Dynamo.ViewModels;
 using FontAwesome.WPF;
 using Microsoft.Practices.Prism.Commands;
-using Microsoft.Practices.Prism.ViewModel;
 
 namespace Dynamo.Wpf.ViewModels
 {
@@ -56,10 +55,12 @@ namespace Dynamo.Wpf.ViewModels
 
         public override void Dispose()
         {
-            searchViewModel = null;
             Model.VisibilityChanged -= ModelOnVisibilityChanged;
             if (searchViewModel != null)
+            {
                 Clicked -= searchViewModel.OnSearchElementClicked;
+                searchViewModel = null;
+            }
             base.Dispose();
         }
 

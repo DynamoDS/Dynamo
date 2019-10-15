@@ -361,10 +361,11 @@ namespace Dynamo.Wpf.ViewModels
             }
         }
 
-        public void Dispose()
+        public override void Dispose()
         {
             foreach (var category in SubCategories)
                 category.PropertyChanged -= CategoryOnPropertyChanged;
+
             Entries.CollectionChanged -= OnCollectionChanged;
             SubCategories.CollectionChanged -= OnCollectionChanged;
             SubCategories.CollectionChanged -= SubCategoriesOnCollectionChanged;
@@ -374,6 +375,7 @@ namespace Dynamo.Wpf.ViewModels
                 item.PropertyChanged -= ItemOnPropertyChanged;
             this.entries = null;
             this.subCategories = null;
+            base.Dispose();
         }
 
         public void DisposeTree()

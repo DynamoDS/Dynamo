@@ -86,7 +86,7 @@ namespace Dynamo.ViewModels
         ///     SearchIconAlignment property
         /// </summary>
         /// <value>
-        ///     This is used for aligment search icon and text.
+        ///     This is used for alignment search icon and text.
         /// </value>
         private HorizontalAlignment searchIconAlignment;
         public HorizontalAlignment SearchIconAlignment
@@ -210,7 +210,7 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// Unselects all items and selectes the first one.
+        /// Unselects all items and selects the first one.
         /// </summary>
         internal IEnumerable<NodeSearchElementViewModel> ToggleSelect(IEnumerable<NodeSearchElementViewModel> items)
         {
