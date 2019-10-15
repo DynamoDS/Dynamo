@@ -108,7 +108,7 @@ namespace Dynamo.Graph.Workspaces
                type = Type.GetType(obj["$type"].Value<string>());
                typeName = obj["$type"].Value<string>().Split(',').FirstOrDefault();
 
-                if (typeName.Contains("ZeroTouch"))
+                if (typeName.Equals("Dynamo.Graph.Nodes.ZeroTouch.DSFunction"))
                 {
                     // If it is a zero touch node, then get the whole function name including the namespace.
                     functionName = obj["FunctionSignature"].Value<string>().Split('@').FirstOrDefault().Trim();
