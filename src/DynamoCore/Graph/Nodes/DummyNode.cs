@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Xml;
-using Autodesk.DesignScript.Runtime;
+﻿using Autodesk.DesignScript.Runtime;
 using Dynamo.Core;
 using Dynamo.Engine;
 using Dynamo.Graph.Nodes.NodeLoaders;
@@ -11,6 +7,10 @@ using Dynamo.Logging;
 using Dynamo.Utilities;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Xml;
 
 namespace Dynamo.Graph.Nodes
 {
@@ -467,12 +467,12 @@ namespace Dynamo.Graph.Nodes
         public string LegacyAssembly { get; private set; }
 
         /// <summary>
-        /// Type name of the node.
+        /// Type name of the node. This is property is only valid for NodeModel dummy nodes
         /// </summary>
         public string TypeName { get; private set; }
 
         /// <summary>
-        /// Returns the node's function name
+        /// Returns the node's function name. This property is only valid for ZeroTouch dummy nodes
         /// </summary>
         public string FunctionName { get; private set; }
 
