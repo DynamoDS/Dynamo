@@ -28,6 +28,18 @@ namespace DynamoPerformanceTests
            
         }
 
+        internal static ComparisonResultState DefaultBenchmarkComparison(BenchmarkComparison comparisonData)
+        {
+            //if the change in mean time
+            if (comparisonData.MeanDelta > 10)
+            {
+                return ComparisonResultState.FAIL;
+            }
+            else
+                return ComparisonResultState.PASS;
+        }
+
+
         internal List<BenchmarkComparison> ComparisonData {  get; set; }
 
 
@@ -130,7 +142,7 @@ namespace DynamoPerformanceTests
             /// <param name="baseData"></param>
             /// <param name="newData"></param>
             internal BenchmarkComparison(BenchmarkResult baseData, BenchmarkResult newData, 
-                Func<BenchmarkResult,BenchmarkResult, ComparisonResultState> comparisonFunction = null)
+                Func<BenchmarkComparison, ComparisonResultState> comparisonFunction)
             {
                 BaseResult = baseData;
                 NewResult = newData;
@@ -148,21 +160,8 @@ namespace DynamoPerformanceTests
                     Console.WriteLine("Units do not match beween base and new results.");
                     Console.ForegroundColor = fc;
                 }
+                this.ResultState = comparisonFunction(this);
 
-                comparisonFunction = comparisonFunction ?? DefaultBenchmarkComparison;
-                this.ResultState = comparisonFunction(baseData, newData);
-
-            }
-
-            private ComparisonResultState DefaultBenchmarkComparison(BenchmarkResult baseData, BenchmarkResult newData)
-            {
-                //if the change in mean time
-                if (this.MeanDelta > 10)
-                {
-                    return ComparisonResultState.FAIL;
-                }
-                else
-                    return ComparisonResultState.PASS;
             }
 
             /// <summary>
@@ -275,8 +274,17 @@ namespace DynamoPerformanceTests
             foreach(var result in newResults.Values)
             {
                 var baseResult = GetBaseResult(result, baseResults);
-                //NOTE(MJK) - to control determination of pass/fail conditions for each test, pass them here.
-                comparisons.Add(new BenchmarkComparison(baseResult, result, null));
+                //NOTE(MJK) - to control determination of pass/fail conditions for each test, pass them here.Example:
+                /*
+                * comparisons.Add( (BenchmarkComparison comparison)=>{
+                if(MeanDelta > 15)
+                {
+                return FAIL;
+                }
+                return PASS;
+                 });
+                 */
+                comparisons.Add(new BenchmarkComparison(baseResult, result, ResultsComparer.DefaultBenchmarkComparison));
             }
             return comparisons;
         }
