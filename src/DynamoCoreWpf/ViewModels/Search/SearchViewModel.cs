@@ -336,7 +336,14 @@ namespace Dynamo.ViewModels
         /// </summary>
         public override void Dispose()
         {
-            libraryRoot.DisposeTree();
+            foreach (var cate in LibraryRootCategories)
+            {
+                cate.DisposeTree();
+            }
+            foreach (var cate in BrowserRootCategories)
+            {
+                cate.DisposeTree();
+            }
             base.Dispose();
         }
 
