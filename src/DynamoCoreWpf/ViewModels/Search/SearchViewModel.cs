@@ -402,6 +402,10 @@ namespace Dynamo.ViewModels
                 };
 
                 rootCat.RequestReturnFocusToSearch += OnRequestFocusSearch;
+                // Since all the root categories will be new RootNodeCategoryViewModel objects,
+                // we should dispose the old ones. Since they are still watching for subcategories'
+                // property changes, they will never be garbage collected.
+                cat.Dispose();
                 return rootCat;
             });
 
