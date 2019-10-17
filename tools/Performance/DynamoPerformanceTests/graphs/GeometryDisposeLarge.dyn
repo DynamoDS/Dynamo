@@ -1,0 +1,122 @@
+{
+  "Uuid": "07da93cd-43ea-48d2-8227-103c316374e3",
+  "IsCustomNode": false,
+  "Description": null,
+  "Name": "GeometryDisposeLarge",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "PythonNodeModels.PythonNode, PythonNodeModels",
+      "NodeType": "PythonScriptNode",
+      "Code": "# Load the Python Standard and DesignScript Libraries\r\nimport sys\r\nimport clr\r\nclr.AddReference('ProtoGeometry')\r\nfrom Autodesk.DesignScript.Geometry import *\r\n\r\n# The inputs to this node will be stored as a list in the IN variables.\r\nsize = IN[0]\r\nout = []\r\n# Place your code below this line\r\n\r\nfor i in range(size):\r\n\tCuboid.ByLengths(1,1,1);\r\n\t\r\nfor i in range(size/10):\r\n\tout.append(Cuboid.ByLengths(1,1,1));\r\n\t\r\n# Assign your output to the OUT variable.\r\nOUT = out",
+      "VariableInputPorts": true,
+      "Id": "345d0f3cf5f94b0cbf4504b3f5f83590",
+      "Inputs": [
+        {
+          "Id": "85f8a64ed5244c0aa19638c4b38df363",
+          "Name": "IN[0]",
+          "Description": "Input #0",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "85ed5fa02dba4567b1d6d4459d577d40",
+          "Name": "OUT",
+          "Description": "Result of the python script",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Runs an embedded IronPython script."
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "100000;",
+      "Id": "7cb2ac88d1f84ad5afd1f12b6ad8f6f7",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "0f65a41d22264b1383758692b73597f9",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "0f65a41d22264b1383758692b73597f9",
+      "End": "85f8a64ed5244c0aa19638c4b38df363",
+      "Id": "7c64803b40d84090a3e1d7bc5d620f13"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.5.0.6165",
+      "RunType": "Manual",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "Python Script",
+        "Id": "345d0f3cf5f94b0cbf4504b3f5f83590",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 491.62314540059333,
+        "Y": 125.95548961424322
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "7cb2ac88d1f84ad5afd1f12b6ad8f6f7",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 251.27299703264089,
+        "Y": 295.43916913946589
+      }
+    ],
+    "Annotations": [],
+    "X": 42.682500000000005,
+    "Y": 44.257499999999993,
+    "Zoom": 0.8425
+  }
+}
