@@ -1,10 +1,6 @@
 version: 0.1.1
 env:
   - BUILD_MACHINE: "Dynamo_Win_Perf"
-  - SLACK_QUANTUM_BUILD_CHANNEL : "#dynamo-jenkinsbuild"
-  - SLACK_QUANTUM_BUILD_CREDENTIAL_ID : "slack-notify-token"
-  - MAIL_QUANTUM_BUILD_RECIPIENT : "dynamo.plaid.dev@autodesk.com"
-  - TEST_REPORT_FORMAT : "nunit"
   
 check_changelog_updated_on_pr: false
 pipeline_os: "Windows"
