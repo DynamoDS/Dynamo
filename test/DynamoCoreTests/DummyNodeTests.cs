@@ -117,6 +117,8 @@ namespace Dynamo.Tests
             Assert.AreEqual(1, exceptionCount);
             AppDomain.CurrentDomain.AssemblyResolve -= handler;
         }
+
+        [Test]
         public void ResolveDummyNodesOnDownloadingPackage()
         {
             string path = Path.Combine(TestDirectory, @"core\packageDependencyTests\ResolveDummyNodesOnDownloadingPackage.dyn");
