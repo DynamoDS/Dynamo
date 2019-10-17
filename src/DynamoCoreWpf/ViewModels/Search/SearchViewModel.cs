@@ -344,6 +344,8 @@ namespace Dynamo.ViewModels
             {
                 cate.DisposeTree();
             }
+            Model.EntryUpdated -= UpdateEntry;
+            Model.EntryRemoved -= RemoveEntry;
             base.Dispose();
         }
 
@@ -376,9 +378,6 @@ namespace Dynamo.ViewModels
 
             DefineFullCategoryNames(LibraryRootCategories, "");
             InsertClassesIntoTree(LibraryRootCategories);
-
-            //TASK : MAGN 8159 - Do not Expand Geometry by Default.
-            //ChangeRootCategoryExpandState(BuiltinNodeCategories.GEOMETRY_CATEGORY, true);
         }
 
         private IEnumerable<RootNodeCategoryViewModel> CategorizeEntries(IEnumerable<NodeSearchElement> entries, bool expanded)
@@ -785,13 +784,6 @@ namespace Dynamo.ViewModels
         {
             return string.IsNullOrEmpty(path) ? addition :
                 path + Configurations.CategoryDelimiterString + addition;
-        }
-
-        internal void ChangeRootCategoryExpandState(string categoryName, bool isExpanded)
-        {
-            var category = LibraryRootCategories.FirstOrDefault(cat => cat.Name == categoryName);
-            if (category != null && category.IsExpanded != isExpanded)
-                category.IsExpanded = isExpanded;
         }
 
         #endregion
