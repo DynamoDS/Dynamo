@@ -371,7 +371,6 @@ namespace Dynamo.Wpf.ViewModels
                 item.PropertyChanged -= ItemOnPropertyChanged;
 
             Entries.CollectionChanged -= OnCollectionChanged;
-            SubCategories.CollectionChanged -= OnCollectionChanged;
             SubCategories.CollectionChanged -= SubCategoriesOnCollectionChanged;
             Items.CollectionChanged -= ItemsOnCollectionChanged;
             base.Dispose();
