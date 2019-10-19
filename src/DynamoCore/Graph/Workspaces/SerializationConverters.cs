@@ -494,7 +494,7 @@ namespace Dynamo.Graph.Workspaces
             var nodes = obj["Nodes"].ToObject<IEnumerable<NodeModel>>(serializer);
 
             // Setting Inputs
-            // Required in headless mode by Dynamo Player that NodeModel.Name and NodeModel.IsSetAsInput are set
+            // Required in headless mode by Dynamo Player that certain view properties are set back to NodeModel
             var inputsToken = obj["Inputs"];
             if (inputsToken != null)
             {
@@ -534,42 +534,25 @@ namespace Dynamo.Graph.Workspaces
             var view = obj["View"];
             if (view != null)
             {
-                var nodesView = view["NodeViews"];
-                if (nodesView != null)
+                var nodeViews = view["NodeViews"].ToList();
+                foreach (var node in nodeViews)
                 {
-                    var inputsView = nodesView.ToArray().Select(x => x.ToObject<Dictionary<string, string>>()).ToList();
-                    foreach (var inputViewData in inputsView)
+                    Guid nodeGuid;
+                    try
                     {
-                        string isSetAsInput = "";
-                        if (!inputViewData.TryGetValue("IsSetAsInput", out isSetAsInput) || isSetAsInput == bool.FalseString)
+                        nodeGuid = Guid.Parse(node["Id"].Value<string>());
+                        var matchingNode = nodes.Where(x => x.GUID == nodeGuid).FirstOrDefault();
+                        if (matchingNode != null)
                         {
-                            continue;
+                            matchingNode.IsSetAsInput = node["IsSetAsInput"].Value<bool>();
+                            matchingNode.IsSetAsOutput = node["IsSetAsOutput"].Value<bool>();
+                            matchingNode.IsFrozen = node["Excluded"].Value<bool>();
+                            matchingNode.Name = node["Name"].Value<string>();
                         }
-
-                        string inputId = "";
-                        if (inputViewData.TryGetValue("Id", out inputId))
-                        {
-                            Guid inputGuid;
-                            try
-                            {
-                                inputGuid = Guid.Parse(inputId);
-                            }
-                            catch
-                            {
-                                continue;
-                            }
-
-                            var matchingNode = nodes.Where(x => x.GUID == inputGuid).FirstOrDefault();
-                            if (matchingNode != null)
-                            {
-                                matchingNode.IsSetAsInput = true;
-                                string inputName = "";
-                                if (inputViewData.TryGetValue("Name", out inputName))
-                                {
-                                    matchingNode.Name = inputName;
-                                }
-                            }
-                        }
+                    }
+                    catch
+                    {
+                        continue;
                     }
                 }
             }
