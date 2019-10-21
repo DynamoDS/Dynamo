@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Text;
 using Dynamo.Configuration;
@@ -34,7 +35,7 @@ namespace Dynamo.Logging
         /// The message to be logged.
         /// </summary>
         public string Message { get; set; }
-    
+
         /// <summary>
         /// The log level at which to log the message.
         /// </summary>
@@ -68,6 +69,10 @@ namespace Dynamo.Logging
     /// </summary>
     public class DynamoLogger: NotificationObject, ILogger, IDisposable
     {
+        // LN
+        public static DynamoLogger Instance;
+        internal Stopwatch Stopwatch = new Stopwatch();
+
         private readonly Object guardMutex = new Object();
 
         private readonly DebugSettings debugSettings;
@@ -120,7 +125,7 @@ namespace Dynamo.Logging
         /// <summary>
         /// Returns full path to log file
         /// </summary>
-        public string LogPath 
+        public string LogPath
         {
             get { return _logPath; }
         }

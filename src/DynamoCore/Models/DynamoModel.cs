@@ -571,6 +571,7 @@ namespace Dynamo.Models
 
             DebugSettings = new DebugSettings();
             Logger = new DynamoLogger(DebugSettings, pathManager.LogDirectory);
+            DynamoLogger.Instance = Logger;
 
             foreach (var exception in exceptions)
             {
@@ -1483,7 +1484,7 @@ namespace Dynamo.Models
             }
             else
             {
-                // These kind of exceptions indicate that file is not accessible 
+                // These kind of exceptions indicate that file is not accessible
                 if (ex is IOException || ex is UnauthorizedAccessException)
                 {
                     throw ex;
@@ -1718,7 +1719,7 @@ namespace Dynamo.Models
             return true;
         }
 
-        // Attempts to reload all the dummy nodes in the current workspace and replaces them with resolved version. 
+        // Attempts to reload all the dummy nodes in the current workspace and replaces them with resolved version.
         private void ReloadDummyNodes()
         {
             JObject dummyNodeJSON = null;
@@ -1731,7 +1732,7 @@ namespace Dynamo.Models
                 return;
             }
 
-            // Get the dummy nodes in the current workspace. 
+            // Get the dummy nodes in the current workspace.
             var dummyNodes = currentWorkspace.Nodes.OfType<DummyNode>();
 
             foreach (DummyNode dn in dummyNodes)
@@ -1748,7 +1749,7 @@ namespace Dynamo.Models
                                                                IsTestMode,
                                                                CustomNodeManager);
 
-                    // If the resolved node is also a dummy node, then skip it else replace the dummy node with the resolved version of the node. 
+                    // If the resolved node is also a dummy node, then skip it else replace the dummy node with the resolved version of the node.
                     if (!(resolvedNode is DummyNode))
                     {
                         // Disable graph runs temporarily while the dummy node is replaced with the resolved version of that node.
@@ -1756,7 +1757,7 @@ namespace Dynamo.Models
                         currentWorkspace.RemoveAndDisposeNode(dn);
                         currentWorkspace.AddAndRegisterNode(resolvedNode, false);
 
-                        // Adding back the connectors for the resolved node. 
+                        // Adding back the connectors for the resolved node.
                         List<ConnectorModel> connectors = dn.AllConnectors.ToList();
                         foreach (var connectorModel in connectors)
                         {
@@ -1785,7 +1786,7 @@ namespace Dynamo.Models
             {
                 currentWorkspace.HasUnsavedChanges = false;
                 // Once all the dummy nodes are reloaded, the DummyNodesReloaded event is invoked and
-                // the Dependency table is regenerated in the WorkspaceDependencyView extension. 
+                // the Dependency table is regenerated in the WorkspaceDependencyView extension.
                 currentWorkspace.OnDummyNodesReloaded();
             }
         }
@@ -2523,7 +2524,7 @@ namespace Dynamo.Models
 
         private void CheckForXMLDummyNodes(WorkspaceModel workspace)
         {
-            //if the graph that is opened contains xml dummynodes log a notification 
+            //if the graph that is opened contains xml dummynodes log a notification
             if (workspace.containsXmlDummyNodes())
             {
                 this.Logger.LogNotification("DynamoViewModel",

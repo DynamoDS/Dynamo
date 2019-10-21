@@ -6,6 +6,7 @@ using System.Windows.Media;
 using System.Windows.Media.Media3D;
 using System.Windows.Threading;
 using Dynamo.Graph.Nodes;
+using Dynamo.Logging;
 using Dynamo.Visualization;
 using Dynamo.Wpf.ViewModels.Watch3D;
 using HelixToolkit.Wpf.SharpDX;
@@ -115,7 +116,7 @@ namespace Dynamo.Controls
             watch_view.MouseUp -= ViewModel.OnViewMouseUp;
             watch_view.MouseMove -= ViewModel.OnViewMouseMove;
             watch_view.CameraChanged -= ViewModel.OnViewCameraChanged;
-         }		         
+         }
 
         private void UnregisterButtonHandlers()
         {
@@ -200,6 +201,10 @@ namespace Dynamo.Controls
             {
                 model3D.Attach(View.RenderHost);
             }
+
+            // LN
+            if (model3D is DynamoPointGeometryModel3D)
+                DynamoLogger.Instance.Log("   Attaching points: " + DynamoLogger.Instance.Stopwatch.Elapsed.TotalMilliseconds);
         }
 
         private void ThumbResizeThumbOnDragDeltaHandler(object sender, DragDeltaEventArgs e)
@@ -225,7 +230,7 @@ namespace Dynamo.Controls
             try
             {
                 //Do not call the clip plane update on the render loop if the camera is unchanged or
-                //the user is manipulating the view with mouse.  Do run when queued by runUpdateClipPlane bool 
+                //the user is manipulating the view with mouse.  Do run when queued by runUpdateClipPlane bool
                 if (runUpdateClipPlane || (!View.Camera.Position.Equals(prevCamera) && !View.IsMouseCaptured))
                 {
                     ViewModel.UpdateNearClipPlane();
@@ -237,7 +242,7 @@ namespace Dynamo.Controls
             catch(Exception ex)
             {
                 ViewModel.CurrentSpaceViewModel.DynamoViewModel.Model.Logger.Log(ex.ToString());
-            }         
+            }
         }
 
         private void MouseButtonIgnoreHandler(object sender, MouseButtonEventArgs e)
@@ -252,7 +257,7 @@ namespace Dynamo.Controls
 
         private void view_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
         {
-            //if the mouse has moved, and this is a right click, we assume 
+            //if the mouse has moved, and this is a right click, we assume
             // rotation. handle the event so we don't show the context menu
             // if the user wants the contextual menu they can click on the
             // node sidebar or top bar
@@ -287,5 +292,5 @@ namespace Dynamo.Controls
         }
     }
 
-    
+
 }

@@ -180,6 +180,40 @@ namespace Dynamo.Visualization
         }
 
         /// <summary>
+        /// Add as many vertex color element as necessary to make the vertex color count equal to the vertex count (of point, line, and mesh)
+        /// </summary>
+        /// <param name="red"></param>
+        /// <param name="green"></param>
+        /// <param name="blue"></param>
+        /// <param name="alpha"></param>
+        public void FillVertexColors(byte red, byte green, byte blue, byte alpha)
+        {
+            for (int i = pointColors.Count / 4; i < pointVertices.Count / 3; i++)
+            {
+                pointColors.Add(red);
+                pointColors.Add(green);
+                pointColors.Add(blue);
+                pointColors.Add(alpha);
+            }
+
+            for (int i = lineColors.Count / 4; i < lineVertices.Count / 3; i++)
+            {
+                lineColors.Add(red);
+                lineColors.Add(green);
+                lineColors.Add(blue);
+                lineColors.Add(alpha);
+            }
+
+            for (int i = meshColors.Count / 4; i < meshVertices.Count / 3; i++)
+            {
+                meshColors.Add(red);
+                meshColors.Add(green);
+                meshColors.Add(blue);
+                meshColors.Add(alpha);
+            }
+        }
+
+        /// <summary>
         /// Sets an array of bytes that is used as a color map.
         /// </summary>
         /// <param name="colors"></param>
@@ -188,7 +222,7 @@ namespace Dynamo.Visualization
             this.colors = colors;
             Colors = this.colors;
         }
-        
+
         /// <summary>
         /// Clear all render data from the render package.
         /// </summary>

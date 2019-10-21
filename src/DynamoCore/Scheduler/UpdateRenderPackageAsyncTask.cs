@@ -6,6 +6,7 @@ using Autodesk.DesignScript.Geometry;
 using Autodesk.DesignScript.Interfaces;
 using Dynamo.Engine;
 using Dynamo.Graph.Nodes;
+using Dynamo.Logging;
 using Dynamo.Visualization;
 using ProtoCore.Mirror;
 
@@ -23,14 +24,14 @@ namespace Dynamo.Scheduler
     }
 
     /// <summary>
-    /// An asynchronous task to regenerate render packages for a given node. 
-    /// During execution the task retrieves the corresponding IGraphicItem from 
-    /// EngineController through a set of drawable identifiers supplied by the 
-    /// node. These IGraphicItem objects then fill the IRenderPackage objects 
-    /// with tessellated geometric data. Each of the resulting IRenderPackage 
+    /// An asynchronous task to regenerate render packages for a given node.
+    /// During execution the task retrieves the corresponding IGraphicItem from
+    /// EngineController through a set of drawable identifiers supplied by the
+    /// node. These IGraphicItem objects then fill the IRenderPackage objects
+    /// with tessellated geometric data. Each of the resulting IRenderPackage
     /// objects is then tagged with a label.
     /// </summary>
-    /// 
+    ///
     class UpdateRenderPackageAsyncTask : AsyncTask
     {
         private const byte DefR = 0;
@@ -87,7 +88,7 @@ namespace Dynamo.Scheduler
             if (nodeModel.WasRenderPackageUpdatedAfterExecution && !initParams.ForceUpdate)
                 return false; // Not has not been updated at all.
 
-            // If a node is in either of the following states, then it will not 
+            // If a node is in either of the following states, then it will not
             // produce any geometric output. Bail after clearing the render packages.
             if (nodeModel.IsInErrorState || !nodeModel.IsVisible)
                 return false;
@@ -117,6 +118,9 @@ namespace Dynamo.Scheduler
 
         protected override void HandleTaskExecutionCore()
         {
+            // LN
+            DynamoLogger.Instance.Stopwatch.Restart();
+
             if (nodeGuid == Guid.Empty)
             {
                 throw new InvalidOperationException(
@@ -132,16 +136,16 @@ namespace Dynamo.Scheduler
 
                 GetRenderPackagesFromMirrorData(
                     idEnum.Current.Key,
-                    mirrorData.GetData(), 
-                    previewIdentifierName, 
+                    mirrorData.GetData(),
+                    previewIdentifierName,
                     displayLabels);
             }
         }
 
         private void GetRenderPackagesFromMirrorData(
             Guid outputPortId,
-            MirrorData mirrorData, 
-            string tag, 
+            MirrorData mirrorData,
+            string tag,
             bool displayLabels)
         {
             if (mirrorData.IsNull)
@@ -216,7 +220,7 @@ namespace Dynamo.Scheduler
                             }
                         }
                     }
-                    
+
                     var plane = graphicItem as Plane;
                     if (plane != null)
                     {
@@ -338,14 +342,14 @@ namespace Dynamo.Scheduler
 
             // If the two UpdateRenderPackageAsyncTask are for different nodes,
             // then there is no comparison to be made, keep both the tasks.
-            // 
+            //
             if (nodeGuid != theOtherTask.nodeGuid)
                 return TaskMergeInstruction.KeepBoth;
 
-            // Comparing to another NotifyRenderPackagesReadyAsyncTask, the one 
-            // that gets scheduled more recently stay, while the earlier one 
+            // Comparing to another NotifyRenderPackagesReadyAsyncTask, the one
+            // that gets scheduled more recently stay, while the earlier one
             // gets dropped. If this task has a higher tick count, keep this.
-            // 
+            //
             if (ScheduledTime.TickCount > theOtherTask.ScheduledTime.TickCount)
                 return TaskMergeInstruction.KeepThis;
 
