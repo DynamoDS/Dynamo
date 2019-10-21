@@ -204,7 +204,7 @@ namespace Dynamo.Controls
 
             // LN
             if (model3D is DynamoPointGeometryModel3D)
-                DynamoLogger.Instance.Log("   Attaching points: " + DynamoLogger.Instance.Stopwatch.Elapsed.TotalMilliseconds);
+                DynamoLogger.Instance.Log("   Displaying Points: " + DynamoLogger.Instance.Stopwatch.Elapsed.TotalMilliseconds);
         }
 
         private void ThumbResizeThumbOnDragDeltaHandler(object sender, DragDeltaEventArgs e)
