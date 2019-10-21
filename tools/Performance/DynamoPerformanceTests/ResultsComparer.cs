@@ -30,8 +30,15 @@ namespace DynamoPerformanceTests
 
         internal static ComparisonResultState DefaultBenchmarkComparison(BenchmarkComparison comparisonData)
         {
-            //if the change in mean time
-            if (comparisonData.MeanDelta > 10)
+            //assumes times are in ms
+            //if the mean delta is greater than 10 + (scaled and inverted baseMean)
+            //then fail.
+            //This adds a larger fuzz factor for those tests with small run times.
+            //EX. test with runtime of 100ms will yeild fuzz factor of 10 + 1000/100 = 20%
+            //EX. test with runtime of 1000ms will yeild fuzz factor of 10 + 1000/1000 = 11%
+            //This attempts to deal with test failures that have very small runtimes which are 
+            //more susceptible to uncontrollable operating system or machine workloads.
+            if (comparisonData.MeanDelta > (10 + (1000/comparisonData.BaseResult.Mean)))
             {
                 return ComparisonResultState.FAIL;
             }
