@@ -26,7 +26,7 @@ namespace Dynamo.Wpf.Extensions
         IEnumerable<IViewExtension> RequestedExtensions { get; }
     }
 
-    public class ViewExtensionManager : IViewExtensionManager, ILogSource
+    internal class ViewExtensionManager : IViewExtensionManager, ILogSource
     {
         private readonly List<IViewExtension> viewExtensions = new List<IViewExtension>();
         private readonly ViewExtensionLoader viewExtensionLoader = new ViewExtensionLoader();
