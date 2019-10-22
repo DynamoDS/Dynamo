@@ -121,7 +121,7 @@ namespace Dynamo.Controls
         {
             InitializeComponent();
 
-            // Make sure to resubscribe to the event handlers
+            // Make sure to unsubscribe to the event handlers
             Unloaded += (s, e) =>
             {
                 Dispose();
