@@ -273,16 +273,6 @@ namespace SystemTestServices
             Assert.AreEqual(homeWorkspace.EvaluationCount, expected);
         }
 
-        /// <summary>
-        /// Gets the view extension manager of the current Dynamo model
-        /// </summary>
-        /// <returns></returns>
-        protected IViewExtensionManager GetViewExtensionManager()
-        {
-            return View.viewExtensionManager;
-        }
-
-
         #endregion
 
         #region public methods
@@ -393,6 +383,17 @@ namespace SystemTestServices
             Assert.IsNotNull(mirror);
             var classInfo = mirror.GetData().Class;
             Assert.AreEqual(classInfo.ClassName, className);
+        }
+
+        /// <summary>
+        /// Get loaded instance(s) of a view extension type.
+        /// Returns null if no view extensions of the provided type are loaded
+        /// </summary>
+        /// <param name="type">A type which implements IViewExtension</param>
+        /// <returns></returns>
+        public IEnumerable<IViewExtension> GetViewExtensionsByType(Type type)
+        {
+            return View.viewExtensionManager.ViewExtensions.Where(v => v.GetType() == type);
         }
 
         #endregion
