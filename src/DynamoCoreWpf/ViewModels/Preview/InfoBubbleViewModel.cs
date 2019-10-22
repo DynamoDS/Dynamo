@@ -133,6 +133,10 @@ namespace Dynamo.ViewModels
 
         #region Public Methods
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="dynamoViewModel"></param>
         public InfoBubbleViewModel(DynamoViewModel dynamoViewModel)
         {
             this.DynamoViewModel = dynamoViewModel;
