@@ -117,6 +117,8 @@ namespace Dynamo.Tests
             Assert.AreEqual(1, exceptionCount);
             AppDomain.CurrentDomain.AssemblyResolve -= handler;
         }
+
+        [Test]
         public void ResolveDummyNodesOnDownloadingPackage()
         {
             string path = Path.Combine(TestDirectory, @"core\packageDependencyTests\ResolveDummyNodesOnDownloadingPackage.dyn");
@@ -159,6 +161,27 @@ namespace Dynamo.Tests
             dummyNodes = CurrentDynamoModel.CurrentWorkspace.Nodes.OfType<DummyNode>();
             Assert.AreEqual(0, dummyNodes.Count());
             Assert.AreEqual(CurrentDynamoModel.CurrentWorkspace.HasUnsavedChanges, false);
+        }
+
+        [Test]
+        public void DummyNodesWarningMessageTest()
+        {
+            String path = Path.Combine(TestDirectory, @"core\dummy_node\DummyNodesWarningMessageTest.dyn");
+            OpenModel(path);
+
+            var dummyNodes = CurrentDynamoModel.CurrentWorkspace.Nodes.OfType<DummyNode>();
+            Assert.AreEqual(2, dummyNodes.Count());
+
+            // Asserting the warning message that is displayed for zerotouch and nodemodel dummy nodes.
+            var zeroTouchDummyNode = dummyNodes.First();
+            Assert.AreEqual(zeroTouchDummyNode.NodeNature, DummyNode.Nature.Unresolved);
+            Assert.AreEqual(zeroTouchDummyNode.FunctionName, "HowickMaker.hMember.ByLineVector");
+            Assert.AreEqual(zeroTouchDummyNode.GetDescription(), "Node 'HowickMaker.hMember.ByLineVector' cannot be resolved.");
+
+            var nodeModelDummyNode = dummyNodes.Last();
+            Assert.AreEqual(nodeModelDummyNode.NodeNature, DummyNode.Nature.Unresolved);
+            Assert.AreEqual(nodeModelDummyNode.LegacyAssembly, "SampleLibraryUI");
+            Assert.AreEqual(nodeModelDummyNode.GetDescription(), "Node of type 'SampleLibraryUI.Examples.DropDownExample', from assembly 'SampleLibraryUI', cannot be resolved.");
         }
     }
 }

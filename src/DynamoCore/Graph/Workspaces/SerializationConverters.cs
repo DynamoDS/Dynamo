@@ -96,11 +96,28 @@ namespace Dynamo.Graph.Workspaces
         {
             NodeModel node = null;
 
+            String typeName = String.Empty;
+            String functionName = String.Empty;
+            String assemblyName = String.Empty;
+
             var obj = JObject.Load(reader);
             Type type = null;
+
             try
             {
                type = Type.GetType(obj["$type"].Value<string>());
+               typeName = obj["$type"].Value<string>().Split(',').FirstOrDefault();
+
+                if (typeName.Equals("Dynamo.Graph.Nodes.ZeroTouch.DSFunction"))
+                {
+                    // If it is a zero touch node, then get the whole function name including the namespace.
+                    functionName = obj["FunctionSignature"].Value<string>().Split('@').FirstOrDefault().Trim();
+                }
+                // we get the assembly name from the type string for the node model nodes. 
+                else
+                {
+                    assemblyName = obj["$type"].Value<string>().Split(',').Skip(1).FirstOrDefault().Trim();
+                }
             }
             catch(Exception e)
             {
@@ -115,9 +132,8 @@ namespace Dynamo.Graph.Workspaces
             {
                 List<Assembly> resultList;
 
-                var typeName = obj["$type"].Value<string>().Split(',').FirstOrDefault();
                 // This assemblyName does not usually contain version information...
-                var assemblyName = obj["$type"].Value<string>().Split(',').Skip(1).FirstOrDefault().Trim();
+                assemblyName = obj["$type"].Value<string>().Split(',').Skip(1).FirstOrDefault().Trim();
                 if (assemblyName != null)
                 {
                     if(this.loadedAssemblies.TryGetValue(assemblyName, out resultList))
@@ -159,7 +175,7 @@ namespace Dynamo.Graph.Workspaces
             // If type is still null at this point return a dummy node
             if (type == null)
             {
-                node = CreateDummyNode(obj, assemblyLocation, inPorts, outPorts);
+                node = CreateDummyNode(obj, typeName, assemblyName, functionName, inPorts, outPorts);
             }
             // Attempt to create a valid node using the type
             else if (type == typeof(Function))
@@ -223,7 +239,7 @@ namespace Dynamo.Graph.Workspaces
                 // Use the functionDescriptor to try and restore the proper node if possible
                 if (functionDescriptor == null)
                 {
-                    node = CreateDummyNode(obj, assemblyLocation, inPorts, outPorts);
+                    node = CreateDummyNode(obj, assemblyName, functionName, inPorts, outPorts);
                 }
                 else
                 {
@@ -286,7 +302,7 @@ namespace Dynamo.Graph.Workspaces
             return node;
         }
 
-        private DummyNode CreateDummyNode(JObject obj, string assemblyLocation, PortModel[] inPorts, PortModel[] outPorts)
+        private DummyNode CreateDummyNode(JObject obj, string legacyAssembly, string functionName, PortModel[] inPorts, PortModel[] outPorts)
         {
             var inputcount = inPorts.Count();
             var outputcount = outPorts.Count();
@@ -295,7 +311,23 @@ namespace Dynamo.Graph.Workspaces
                 obj["Id"].ToString(),
                 inputcount,
                 outputcount,
-                assemblyLocation,
+                legacyAssembly,
+                functionName,
+                obj);
+        }
+
+        private DummyNode CreateDummyNode(JObject obj, string typeName, string legacyAssembly, string functionName, PortModel[] inPorts, PortModel[] outPorts)
+        {
+            var inputcount = inPorts.Count();
+            var outputcount = outPorts.Count();
+
+            return new DummyNode(
+                obj["Id"].ToString(),
+                inputcount,
+                outputcount,
+                legacyAssembly,
+                functionName,
+                typeName,
                 obj);
         }
 
