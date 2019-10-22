@@ -590,7 +590,10 @@ namespace Dynamo.ViewModels
             ++NoteViewModel.StaticZIndex;
         }
 
-        public virtual void Dispose()
+        /// <summary>
+        /// Dispose function
+        /// </summary>
+        public override void Dispose()
         {
             this.NodeModel.PropertyChanged -= logic_PropertyChanged;
 
@@ -601,7 +604,18 @@ namespace Dynamo.ViewModels
                 DynamoViewModel.EngineController.AstBuilt -= EngineController_AstBuilt;
             }
 
+            foreach (var p in InPorts)
+            {
+                p.Dispose();
+            }
+
+            foreach (var p in OutPorts)
+            {
+                p.Dispose();
+            }
+            ErrorBubble.Dispose();
             DynamoSelection.Instance.Selection.CollectionChanged -= SelectionOnCollectionChanged;
+            base.Dispose();
         }
 
         public NodeViewModel(WorkspaceViewModel workspaceViewModel, NodeModel logic, Size preferredSize)

@@ -222,6 +222,9 @@ namespace Dynamo.Wpf.ViewModels.Core
             return true;
         }
 
+        /// <summary>
+        /// Object dispose function
+        /// </summary>
         public override void Dispose()
         {
             base.Dispose();
@@ -230,6 +233,7 @@ namespace Dynamo.Wpf.ViewModels.Core
             hwm.EvaluationCompleted -= hwm_EvaluationCompleted;
             hwm.SetNodeDeltaState -= hwm_SetNodeDeltaState;
             RunSettingsViewModel.PropertyChanged -= RunSettingsViewModel_PropertyChanged;
+            RunSettingsViewModel.Dispose();
             RunSettingsViewModel = null;
             DynamoViewModel.Model.ShutdownStarted -= Model_ShutdownStarted;
         }
