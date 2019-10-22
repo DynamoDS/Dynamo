@@ -39,6 +39,7 @@ using PerspectiveCamera = HelixToolkit.Wpf.SharpDX.PerspectiveCamera;
 using TextInfo = HelixToolkit.Wpf.SharpDX.TextInfo;
 using Newtonsoft.Json;
 using HelixToolkit.Wpf.SharpDX.Shaders;
+using System.Windows.Data;
 
 namespace Dynamo.Wpf.ViewModels.Watch3D
 {
@@ -148,6 +149,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         private PerspectiveCamera camera;
         private readonly Vector3D directionalLightDirection = new Vector3D(-0.5f, -1.0f, 0.0f);
         private DirectionalLight3D directionalLight;
+        private DirectionalLight3D headLight;
 
         private readonly Color4 directionalLightColor = new Color4(0.9f, 0.9f, 0.9f, 1.0f);
         private readonly Color4 defaultSelectionColor = new Color4(new Color3(0, 158.0f / 255.0f, 1.0f));
@@ -165,6 +167,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         internal const string DefaultGridName = "Grid";
         internal const string DefaultAxesName = "Axes";
         internal const string DefaultLightName = "DirectionalLight";
+        internal const string HeadLightName = "HeadLight";
 
         private const string PointsKey = ":points";
         private const string LinesKey = ":lines";
@@ -216,15 +219,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             }
 
             RaisePropertyChanged("IsGridVisible");
-        }
-
-        public event Action<Element3D> RequestAttachToScene;
-        protected void OnRequestAttachToScene(Element3D elem)
-        {
-            if (RequestAttachToScene != null)
-            {
-                RequestAttachToScene(elem);
-            }
         }
 
         /// <summary>
@@ -608,15 +602,12 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         {
             lock (Element3DDictionaryMutex)
             {
-                var keysList = new List<string> { DefaultLightName, DefaultGridName, DefaultAxesName };
+                var keysList = new List<string> { DefaultLightName, HeadLightName, DefaultGridName, DefaultAxesName };
 
 
                 foreach (var key in Element3DDictionary.Keys.Except(keysList).ToList())
                 {
                     var model = Element3DDictionary[key] as GeometryModel3D;
-                    /* TODO DYN-973
-                    model.Detach();
-                    */
                     model.Dispose();
                     
                     Element3DDictionary.Remove(key);
@@ -860,9 +851,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
                     if (model3D != null)
                     {
-                        /* TODO DYN-973
-                        model3D.Detach();
-                        */
                         model3D.Dispose();
                     }
                     
@@ -1176,10 +1164,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         private void SetupScene()
         {
-            /* TODO DYN-973
-            RenderTechnique = new RenderTechnique("RenderCustom");
-            */
-
             WhiteMaterial = new PhongMaterial
             {
                 Name = "White",
@@ -1220,6 +1204,8 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 throw new Exception("Helix could not be initialized.");
             }
 
+            // Create the directional light singleton and add it to the dictionary
+
             directionalLight = new DirectionalLight3D
             {
                 Color = directionalLightColor.ToColor(),
@@ -1232,6 +1218,31 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 AttachedProperties.SetIsSpecialRenderPackage(directionalLight, true);
                 Element3DDictionary.Add(DefaultLightName, directionalLight);
             }
+
+            // Create the headlight singleton and add it to the dictionary
+
+            headLight = new DirectionalLight3D
+            {
+                Color = System.Windows.Media.Color.FromRgb(128, 128, 128),
+                Direction = new Vector3D(0, 0, 1),
+                Name = HeadLightName
+            };
+
+            headLight.SetBinding(
+                DirectionalLight3D.DirectionProperty, 
+                new Binding("LookDirection") {
+                    Source = this,
+                    Path = new PropertyPath("Camera.LookDirection")
+                }
+            );
+
+            if (!Element3DDictionary.ContainsKey(HeadLightName))
+            {
+                AttachedProperties.SetIsSpecialRenderPackage(headLight, true);
+                Element3DDictionary.Add(HeadLightName, headLight);
+            }
+
+            // Create the grid singleton and add it to the dictionary
 
             gridModel3D = new DynamoLineGeometryModel3D
             {
@@ -1250,6 +1261,8 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 AttachedProperties.SetIsSpecialRenderPackage(gridModel3D, true);
                 Element3DDictionary.Add(DefaultGridName, gridModel3D);
             }
+
+            // Create the axes singleton and add it to the dictionary
 
             var axesModel3D = new DynamoLineGeometryModel3D
             {
@@ -1473,7 +1486,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                         
                         Element3DDictionary.Add(labelName, bbText);
                         sceneItemsChanged = true;
-                        AttachAllGeometryModel3DToRenderHost();
                         nodesSelected[nodePath] = path;
 
                         ToggleTreeViewItemHighlighting(path, true); // switch on selection for current path
@@ -1733,7 +1745,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     meshGeometry3D.Name = baseId;
                 }
 
-                AttachAllGeometryModel3DToRenderHost();
             }
         }
 
@@ -1897,11 +1908,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                         : Enumerable.Repeat(defaultPointColor, points.Positions.Count));
 
                     pointGeom.Size = highlightOn ? highlightSize : defaultPointSize;
-
-                    /* TODO DYN-973
-                    pointGeom.Detach();
-                    OnRequestAttachToScene(pointGeom);
-                    */
                 }
             }
         }
@@ -1931,15 +1937,14 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         private DynamoGeometryModel3D CreateDynamoGeometryModel3D(HelixRenderPackage rp)
         {
           
-                var meshGeometry3D = new DynamoGeometryModel3D()
-                {
-                    Transform = new MatrixTransform3D(rp.Transform.ToMatrix3D()),
-                    Material = WhiteMaterial,
-                    IsHitTestVisible = false,
-                    RequiresPerVertexColoration = rp.RequiresPerVertexColoration,
-                    IsSelected = rp.IsSelected
-                };
-            
+            var meshGeometry3D = new DynamoGeometryModel3D()
+            {
+                Transform = new MatrixTransform3D(rp.Transform.ToMatrix3D()),
+                Material = WhiteMaterial,
+                IsHitTestVisible = false,
+                RequiresPerVertexColoration = rp.RequiresPerVertexColoration,
+            };
+
             if (rp.Colors != null)
             {
                 var pf = PixelFormats.Bgra32;
@@ -1997,14 +2002,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 IsSelected = rp.IsSelected
             };
             return pointGeometry3D;
-        }
-
-        private void AttachAllGeometryModel3DToRenderHost()
-        {
-            foreach (var model3D in Element3DDictionary.Select(kvp => kvp.Value))
-            {
-                OnRequestAttachToScene(model3D);
-            }
         }
 
         private static MeshGeometry3D DrawTestMesh()
