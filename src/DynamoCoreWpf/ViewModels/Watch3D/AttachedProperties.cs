@@ -36,15 +36,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             if(obj is GeometryModel3D && obj.GetType() != typeof(BillboardTextModel3D))
             {
                 var geom = (GeometryModel3D)obj;
-                
-                /* TODO DYN-973
-                if (geom.IsAttached)
-                {
-                    var host = geom.RenderHost;
-                    geom.Detach();
-                    geom.Attach(host);
-                }
-                */
+                // TODO DYN-973: Need new mechanism to trigger render update after selected/frozen/isolated properties change
             }
         }
 
@@ -120,14 +112,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     geom = dynamoGeom3D;
                 }
 
-                /* TODO DYN-973
-                if (geom.IsAttached)
-                {
-                    var host = geom.RenderHost;
-                    geom.Detach();
-                    geom.Attach(host);
-                }
-                */
+                // TODO DYN-973: Need new mechanism to trigger render update after selected/frozen/isolated properties change
             }
         }
 
@@ -155,14 +140,8 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             if (obj is GeometryModel3D && obj.GetType() != typeof(BillboardTextModel3D))
             {
                 var geom = (GeometryModel3D)obj;
-                /* TODO DYN-973
-                if (geom.IsAttached)
-                {
-                    var host = geom.RenderHost;
-                    geom.Detach();
-                    geom.Attach(host);
-                }
-                */
+                
+                // TODO DYN-973: Need new mechanism to trigger render update after selected/frozen/isolated properties change
             }
         }
 

@@ -1,4 +1,5 @@
 ﻿using HelixToolkit.Wpf.SharpDX;
+using HelixToolkit.Wpf.SharpDX.Shaders;
 using SharpDX.Direct3D11;
 using SharpDX.DXGI;
 
@@ -28,64 +29,35 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         /// </summary>
         protected void AddDynamoTechniques()
         {
-            var custom = GetTechnique("RenderCustom");
-            var lines = GetTechnique(DefaultRenderTechniqueNames.Lines);
-            var points = GetTechnique(DefaultRenderTechniqueNames.Points);
-            var text = GetTechnique(DefaultRenderTechniqueNames.BillboardText);
-            /*
-            var blinn = GetTechnique(DefaultRenderTechniqueNames.Blinn);
-
-            RegisterEffect(Properties.Resources._dynamo, new[] { custom, lines, points, text, blinn });
-
-            var customInputLayout = new InputLayout(device, GetEffect(custom).GetTechniqueByName("RenderCustom").GetPassByIndex(0).Description.Signature, new[]
+            var custom = new TechniqueDescription("RenderCustom")
             {
-                new InputElement("POSITION", 0, Format.R32G32B32A32_Float, InputElement.AppendAligned, 0),
-                new InputElement("COLOR",    0, Format.R32G32B32A32_Float, InputElement.AppendAligned, 0),
-                new InputElement("TEXCOORD", 0, Format.R32G32_Float,       InputElement.AppendAligned, 0),
-                new InputElement("NORMAL",   0, Format.R32G32B32_Float,    InputElement.AppendAligned, 0),
-                new InputElement("TANGENT",  0, Format.R32G32B32_Float,    InputElement.AppendAligned, 0),
-                new InputElement("BINORMAL", 0, Format.R32G32B32_Float,    InputElement.AppendAligned, 0),
-                new InputElement("COLOR",    1, Format.R32G32B32A32_Float, InputElement.AppendAligned, 0),
+                InputLayoutDescription = new InputLayoutDescription(DefaultVSShaderByteCodes.VSMeshDefault, DefaultInputLayout.VSInput),
+                PassDescriptions = new[]
+                {
+                    new ShaderPassDescription(DefaultPassNames.Default)
+                    {
+                        ShaderList = new[]
+                        {
+                            DefaultVSShaderDescriptions.VSMeshDefault,
+                            DefaultPSShaderDescriptions.PSMeshBlinnPhong
+                        },
+                        BlendStateDescription = DefaultBlendStateDescriptions.BSAlphaBlend,
+                        DepthStencilStateDescription = DefaultDepthStencilDescriptions.DSSDepthLess
+                    },
+                    new ShaderPassDescription(DefaultPassNames.Wireframe)
+                    {
+                        ShaderList = new[]
+                        {
+                            DefaultVSShaderDescriptions.VSMeshWireframe,
+                            DefaultPSShaderDescriptions.PSMeshWireframe
+                        },
+                        BlendStateDescription = DefaultBlendStateDescriptions.BSAlphaBlend,
+                        DepthStencilStateDescription = DefaultDepthStencilDescriptions.DSSDepthLess
+                    }
+                }
+            };
 
-                //INSTANCING: die 4 texcoords sind die matrix, die mit jedem buffer reinwandern
-                new InputElement("TEXCOORD", 1, Format.R32G32B32A32_Float, InputElement.AppendAligned, 1, InputClassification.PerInstanceData, 1),
-                new InputElement("TEXCOORD", 2, Format.R32G32B32A32_Float, InputElement.AppendAligned, 1, InputClassification.PerInstanceData, 1),
-                new InputElement("TEXCOORD", 3, Format.R32G32B32A32_Float, InputElement.AppendAligned, 1, InputClassification.PerInstanceData, 1),
-                new InputElement("TEXCOORD", 4, Format.R32G32B32A32_Float, InputElement.AppendAligned, 1, InputClassification.PerInstanceData, 1),
-            });
-
-            RegisterLayout(new[] { custom, lines, points, text, blinn }, customInputLayout);
-
-            var linesInputLayout = new InputLayout(device, GetEffect(lines).GetTechniqueByName(DefaultRenderTechniqueNames.Lines).GetPassByIndex(0).Description.Signature, new[]
-            {
-                new InputElement("POSITION", 0, Format.R32G32B32A32_Float, InputElement.AppendAligned, 0),
-                new InputElement("COLOR",    0, Format.R32G32B32A32_Float, InputElement.AppendAligned, 0),
-                new InputElement("COLOR",    1, Format.R32G32B32A32_Float,    InputElement.AppendAligned, 0),
-
-                //INSTANCING: die 4 texcoords sind die matrix, die mit jedem buffer reinwandern
-                new InputElement("TEXCOORD", 1, Format.R32G32B32A32_Float, InputElement.AppendAligned, 1, InputClassification.PerInstanceData, 1),
-                new InputElement("TEXCOORD", 2, Format.R32G32B32A32_Float, InputElement.AppendAligned, 1, InputClassification.PerInstanceData, 1),
-                new InputElement("TEXCOORD", 3, Format.R32G32B32A32_Float, InputElement.AppendAligned, 1, InputClassification.PerInstanceData, 1),
-                new InputElement("TEXCOORD", 4, Format.R32G32B32A32_Float, InputElement.AppendAligned, 1, InputClassification.PerInstanceData, 1),
-            });
-            RegisterLayout(new[] { lines }, linesInputLayout);
-
-            var pointsInputLayout = new InputLayout(device, GetEffect(points).GetTechniqueByName(DefaultRenderTechniqueNames.Points).GetPassByIndex(0).Description.Signature, new[]
-            {
-                new InputElement("POSITION", 0, Format.R32G32B32A32_Float, InputElement.AppendAligned, 0),
-                new InputElement("COLOR",    0, Format.R32G32B32A32_Float, InputElement.AppendAligned, 0),
-                new InputElement("COLOR",    1, Format.R32G32B32A32_Float,    InputElement.AppendAligned, 0),
-            });
-            RegisterLayout(new[] { points }, pointsInputLayout);
-
-            var textInputLayout = new InputLayout(device, GetEffect(text).GetTechniqueByName(DefaultRenderTechniqueNames.BillboardText).GetPassByIndex(0).Description.Signature, new[]
-            {
-                new InputElement("POSITION", 0, Format.R32G32B32A32_Float,  InputElement.AppendAligned, 0),
-                new InputElement("COLOR",    0, Format.R32G32B32A32_Float,  InputElement.AppendAligned, 0),
-                new InputElement("TEXCOORD", 0, Format.R32G32B32A32_Float,  InputElement.AppendAligned, 0),
-            });
-            RegisterLayout(new[] { text }, textInputLayout);
-            */
+            AddTechnique(custom);
         }
     }
 }

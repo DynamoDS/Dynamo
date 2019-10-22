@@ -61,7 +61,6 @@ namespace Dynamo.Controls
 
             UnRegisterViewEventHandlers();
 
-            ViewModel.RequestAttachToScene -= ViewModelRequestAttachToSceneHandler;
             ViewModel.RequestCreateModels -= RequestCreateModelsHandler;
             ViewModel.RequestRemoveModels -= RequestRemoveModelsHandler;
             ViewModel.RequestViewRefresh -= RequestViewRefreshHandler;
@@ -145,7 +144,6 @@ namespace Dynamo.Controls
 
             RegisterViewEventHandlers();
 
-            ViewModel.RequestAttachToScene += ViewModelRequestAttachToSceneHandler;
             ViewModel.RequestCreateModels += RequestCreateModelsHandler;
             ViewModel.RequestRemoveModels += RequestRemoveModelsHandler;
             ViewModel.RequestViewRefresh += RequestViewRefreshHandler;
@@ -190,15 +188,6 @@ namespace Dynamo.Controls
             else
             {
                 Dispatcher.BeginInvoke(DispatcherPriority.Render, new Action(() => ViewModel.DeleteGeometryForNode(node)));
-            }
-        }
-
-        private void ViewModelRequestAttachToSceneHandler(Element3D elem)
-        {
-            if (!elem.IsAttached && View != null && View.RenderHost != null)
-            {
-                // TODO DYN-973
-                //elem.Attach(View.RenderHost);
             }
         }
 
