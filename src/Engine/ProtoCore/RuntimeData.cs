@@ -179,20 +179,20 @@ namespace ProtoCore
 
             foreach (Guid nodeGuid in nodeGuids)
             {
-                // Get a list of GraphNode objects that correspond to this node.
-                var matchingGraphNodes = graphNodes.Where(gn => gn.guid == nodeGuid);
-
-                if (!matchingGraphNodes.Any())
-                    continue;
-
-                // Get all callsites that match the graph node ids.
-                var matchingCallSites = (from cs in CallsiteCache
-                                         from gn in matchingGraphNodes
-                                         where string.Equals(cs.Key, gn.CallsiteIdentifier)
-                                         select cs.Value);
-
-                // Append each callsite element under node element.
-                nodeMap[nodeGuid] = matchingCallSites.ToList();
+                if (NodeToCallsiteIdentifiersMap.TryGetValue(nodeGuid, out var callsiteIDs))
+                {
+                    var matchingCallSites = new List<CallSite>();
+                    foreach (var id in callsiteIDs)
+                    {
+                        if (CallsiteCache.TryGetValue(id, out var callsite))
+                            matchingCallSites.Add(callsite);
+                    }
+                    nodeMap[nodeGuid] = matchingCallSites;
+                }
+                else
+                {
+                    nodeMap[nodeGuid] = new List<CallSite>();
+                }
             }
 
             return nodeMap;
