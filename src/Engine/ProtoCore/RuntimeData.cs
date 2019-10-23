@@ -125,6 +125,14 @@ namespace ProtoCore
 
                 CallsiteCache[callsiteID] = csInstance;
                 CallSiteToNodeMap[csInstance.CallSiteID] = topGraphNode.guid;
+                if (NodeToCallsiteIdentifiersMap.TryGetValue(topGraphNode.guid, out var callsiteIDs))
+                {
+                    callsiteIDs.Add(callsiteID);
+                }
+                else
+                {
+                    NodeToCallsiteIdentifiersMap[topGraphNode.guid] = new List<string>() { callsiteID };
+                }
             }
 
             if (graphNode != null && !CoreUtils.IsDisposeMethod(methodName))
