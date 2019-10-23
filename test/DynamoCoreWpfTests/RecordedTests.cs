@@ -2771,6 +2771,61 @@ namespace DynamoCoreWpfTests
         }
 
         [Test, RequiresSTA]
+        public void TestNodeToCallsiteIdentifierMapModifyInputConnection()
+        {
+            string callsiteIdentifierFirstCall = "";
+            string callsiteIdentifierSecondCall = "";
+            Guid functionCallNodeGuid = new Guid("16e960e5-8a24-44e7-ac81-3759aaf11d25");
+
+            preloadGeometry = true;
+            RunCommandsFromFile("TestCallsiteMapModifyModifyInputConnection.xml", (commandTag) =>
+            {
+                ProtoCore.RuntimeCore core = ViewModel.Model.EngineController.LiveRunnerRuntimeCore;
+                if (commandTag == "ModifyX_FirstTime")
+                {
+                    // There must only be 1 node at this point
+                    Assert.AreEqual(1, core.RuntimeData.NodeToCallsiteIdentifiersMap.Count);
+
+                    // Verify that the nodemap contains the node guid
+                    bool containsNodeGuid = core.RuntimeData.NodeToCallsiteIdentifiersMap.TryGetValue(functionCallNodeGuid, out List<string> indentifiers);
+                    Assert.AreEqual(true, containsNodeGuid);
+
+                    // There must only be 1 callsite at this point
+                    Assert.AreEqual(1, indentifiers.Count);
+
+                    // Get the callsite identifier string
+                    foreach (var id in indentifiers)
+                    {
+                        callsiteIdentifierFirstCall = id;
+                    }
+                }
+                else if (commandTag == "ModifyX_SecondTime")
+                {
+                    // There must only be 1 callsite at this point
+                    Assert.AreEqual(1, core.RuntimeData.NodeToCallsiteIdentifiersMap.Count);
+
+                    // Verify that the nodemap contains the node guid
+                    bool containsNodeGuid = core.RuntimeData.NodeToCallsiteIdentifiersMap.TryGetValue(functionCallNodeGuid, out List<string> indentifiers);
+                    Assert.AreEqual(true, containsNodeGuid);
+
+                    // There must only be 1 callsite at this point
+                    Assert.AreEqual(1, indentifiers.Count);
+
+                    // Get the callsite identifier string
+                    foreach (var id in indentifiers)
+                    {
+                        callsiteIdentifierSecondCall = id;
+                    }
+
+                    // The callsite guid must match 
+                    // This means that that the callsite was cached and reused
+                    Assert.AreEqual(callsiteIdentifierFirstCall, callsiteIdentifierSecondCall);
+                }
+
+            });
+        }
+
+        [Test, RequiresSTA]
         [Category("RegressionTests")]
 
         //Details for steps can be found in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-2521
