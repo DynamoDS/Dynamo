@@ -46,13 +46,18 @@ namespace ProtoCore
         /// Map from a callsite's guid to a graph UI node. 		
         /// </summary>
         public Dictionary<Guid, Guid> CallSiteToNodeMap { get; }
- 		 
- #endregion
+        /// <summary>		
+        /// Map from a graph UI node to callsite identifiers. 		
+        /// </summary>
+        public Dictionary<Guid, List<string>> NodeToCallsiteIdentifiersMap { get; }
+        
+#endregion
 
         public RuntimeData()
         {
             CallsiteCache = new Dictionary<string, CallSite>();
             CallSiteToNodeMap = new Dictionary<Guid, Guid>();
+            NodeToCallsiteIdentifiersMap = new Dictionary<Guid, List<string>>();
         }
 
       
