@@ -532,22 +532,22 @@ namespace Dynamo.Graph.Workspaces
             // TODO: It is currently duplicating the effort with Input Block parsing which should be cleaned up once
             // Dynamo supports both selection and drop down nodes in Inputs block
             var view = obj["View"];
-            if (view != null)
+            if (view != null && view["NodeViews"] != null)
             {
                 var nodeViews = view["NodeViews"].ToList();
-                foreach (var node in nodeViews)
+                foreach (var nodeview in nodeViews)
                 {
                     Guid nodeGuid;
                     try
                     {
-                        nodeGuid = Guid.Parse(node["Id"].Value<string>());
+                        nodeGuid = Guid.Parse(nodeview["Id"].Value<string>());
                         var matchingNode = nodes.Where(x => x.GUID == nodeGuid).FirstOrDefault();
                         if (matchingNode != null)
                         {
-                            matchingNode.IsSetAsInput = node["IsSetAsInput"].Value<bool>();
-                            matchingNode.IsSetAsOutput = node["IsSetAsOutput"].Value<bool>();
-                            matchingNode.IsFrozen = node["Excluded"].Value<bool>();
-                            matchingNode.Name = node["Name"].Value<string>();
+                            matchingNode.IsSetAsInput = nodeview["IsSetAsInput"].Value<bool>();
+                            matchingNode.IsSetAsOutput = nodeview["IsSetAsOutput"].Value<bool>();
+                            matchingNode.IsFrozen = nodeview["Excluded"].Value<bool>();
+                            matchingNode.Name = nodeview["Name"].Value<string>();
                         }
                     }
                     catch

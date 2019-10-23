@@ -70,9 +70,9 @@
         "ShowGeometry": true,
         "Name": "List Create",
         "Id": "5b193e6856cf440a9d31bd85d16545aa",
-        "IsSetAsInput": false,
-        "IsSetAsOutput": false,
-        "Excluded": false,
+        "IsSetAsInput": true,
+        "IsSetAsOutput": true,
+        "Excluded": true,
         "X": 281.0,
         "Y": 258.0
       }
