@@ -389,11 +389,11 @@ namespace SystemTestServices
         /// Get loaded instance(s) of a view extension type.
         /// Returns null if no view extensions of the provided type are loaded
         /// </summary>
-        /// <param name="type">A type which implements IViewExtension</param>
+        /// <typeparam name="T">A type which implements IViewExtension</typeparam>
         /// <returns></returns>
-        public IEnumerable<IViewExtension> GetViewExtensionsByType(Type type)
+        public IEnumerable<T> GetViewExtensionsByType<T>()
         {
-            return View.viewExtensionManager.ViewExtensions.Where(v => v.GetType() == type);
+            return View.viewExtensionManager.ViewExtensions.OfType<T>();
         }
 
         #endregion
