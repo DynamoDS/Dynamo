@@ -125,7 +125,8 @@ namespace ProtoCore
 
                 CallsiteCache[callsiteID] = csInstance;
                 CallSiteToNodeMap[csInstance.CallSiteID] = topGraphNode.guid;
-                if (NodeToCallsiteIdentifiersMap.TryGetValue(topGraphNode.guid, out var callsiteIDs))
+                List<string> callsiteIDs;
+                if (NodeToCallsiteIdentifiersMap.TryGetValue(topGraphNode.guid, out callsiteIDs))
                 {
                     callsiteIDs.Add(callsiteID);
                 }
@@ -177,14 +178,16 @@ namespace ProtoCore
                     return nodeMap;
             }
 
+            List<string> callsiteIDs;
             foreach (Guid nodeGuid in nodeGuids)
             {
-                if (NodeToCallsiteIdentifiersMap.TryGetValue(nodeGuid, out var callsiteIDs))
+                if (NodeToCallsiteIdentifiersMap.TryGetValue(nodeGuid, out callsiteIDs))
                 {
                     var matchingCallSites = new List<CallSite>();
                     foreach (var id in callsiteIDs)
                     {
-                        if (CallsiteCache.TryGetValue(id, out var callsite))
+                        CallSite callsite;
+                        if (CallsiteCache.TryGetValue(id, out callsite))
                             matchingCallSites.Add(callsite);
                     }
                     nodeMap[nodeGuid] = matchingCallSites;
