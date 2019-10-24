@@ -2786,8 +2786,9 @@ namespace DynamoCoreWpfTests
                     // There must only be 1 node at this point
                     Assert.AreEqual(1, core.RuntimeData.NodeToCallsiteIdentifiersMap.Count);
 
-                    // Verify that the nodemap contains the node guid
-                    bool containsNodeGuid = core.RuntimeData.NodeToCallsiteIdentifiersMap.TryGetValue(functionCallNodeGuid, out List<string> indentifiers);
+                    // Verify that the map contains the node guid
+                    List<string> indentifiers;
+                    bool containsNodeGuid = core.RuntimeData.NodeToCallsiteIdentifiersMap.TryGetValue(functionCallNodeGuid, out indentifiers);
                     Assert.AreEqual(true, containsNodeGuid);
 
                     // There must only be 1 callsite at this point
@@ -2804,8 +2805,9 @@ namespace DynamoCoreWpfTests
                     // There must only be 1 callsite at this point
                     Assert.AreEqual(1, core.RuntimeData.NodeToCallsiteIdentifiersMap.Count);
 
-                    // Verify that the nodemap contains the node guid
-                    bool containsNodeGuid = core.RuntimeData.NodeToCallsiteIdentifiersMap.TryGetValue(functionCallNodeGuid, out List<string> indentifiers);
+                    // Verify that the map contains the node guid
+                    List<string> indentifiers;
+                    bool containsNodeGuid = core.RuntimeData.NodeToCallsiteIdentifiersMap.TryGetValue(functionCallNodeGuid, out indentifiers);
                     Assert.AreEqual(true, containsNodeGuid);
 
                     // There must only be 1 callsite at this point
