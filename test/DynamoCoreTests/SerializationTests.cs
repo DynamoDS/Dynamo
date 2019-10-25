@@ -658,9 +658,9 @@ namespace Dynamo.Tests
         [Test]
         public void NodeIsSetAsOutputStateDeserilizationTest()
         {
-            // The IsSetAsoutput state of the node is saved in node view block. However the property on node model
+            // The IsSetAsOutput state of the node is saved in node view block. However the property on node model
             // will impact headless Dynamo clients graph run, e.g. DynamoPlayer, Refinery.
-            // This test will make sure that the IsSetAsInput is read from the node view block in Json file.
+            // This test will make sure that the IsSetAsOutput is read from the node view block in Json file.
             var testFile = Path.Combine(TestDirectory, @"core\serialization\NodeDescriptionDeserilizationTest.dyn");
             OpenModel(testFile);
             var node = this.CurrentDynamoModel.CurrentWorkspace.Nodes.First();
