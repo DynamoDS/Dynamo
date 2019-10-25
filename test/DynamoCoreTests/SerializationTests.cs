@@ -651,7 +651,7 @@ namespace Dynamo.Tests
             // This test will make sure that the IsSetAsInput is read from the node view block in Json file.
             var testFile = Path.Combine(TestDirectory, @"core\serialization\NodeDescriptionDeserilizationTest.dyn");
             OpenModel(testFile);
-            var node = this.CurrentDynamoModel.CurrentWorkspace.Nodes.First();
+            var node = this.CurrentDynamoModel.CurrentWorkspace.Nodes.ToList()[1];
             Assert.AreEqual(node.IsSetAsInput, true);
         }
 
