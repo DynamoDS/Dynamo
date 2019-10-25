@@ -198,7 +198,10 @@ namespace Dynamo.ViewModels
             bool isAuthor = false;
             var header = packageManagerClient.GetPackageHeader(pkg);
             if (header != null) {
-                if (header.maintainers.First().username.Equals(dynamoViewModel.Model.AuthenticationManager.Username)) isAuthor = true;
+                if (header.maintainers.First().username.Equals(dynamoViewModel.Model.AuthenticationManager.Username))
+                {
+                    isAuthor = true;
+                }
             }
             return dynamoViewModel.Model.AuthenticationManager.HasAuthProvider && isAuthor;
         }
@@ -219,7 +222,10 @@ namespace Dynamo.ViewModels
             var header = packageManagerClient.GetPackageHeader(pkg);
             if (header != null)
             {
-                if (header.maintainers.First().username.Equals(dynamoViewModel.Model.AuthenticationManager.Username)) isAuthor = true;
+                if (header.maintainers.First().username.Equals(dynamoViewModel.Model.AuthenticationManager.Username))
+                {
+                    isAuthor = true;
+                }
             }
             return dynamoViewModel.Model.AuthenticationManager.HasAuthProvider && isAuthor;
         }
