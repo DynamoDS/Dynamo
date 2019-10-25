@@ -194,7 +194,13 @@ namespace Dynamo.ViewModels
 
         private bool CanDeprecate()
         {
-            return dynamoViewModel.Model.AuthenticationManager.HasAuthProvider;
+            PackageInfo pkg = new PackageInfo(Model.Name, new Version(Model.VersionName));
+            bool isAuthor = false;
+            var header = packageManagerClient.GetPackageHeader(pkg);
+            if (header != null) {
+                if (header.maintainers.First().username.Equals(dynamoViewModel.Model.AuthenticationManager.Username)) isAuthor = true;
+            }
+            return dynamoViewModel.Model.AuthenticationManager.HasAuthProvider && isAuthor;
         }
 
         private void Undeprecate()
@@ -203,7 +209,6 @@ namespace Dynamo.ViewModels
                                       Resources.UndeprecatingPackageMessageBoxTitle, 
                                       MessageBoxButton.YesNo, MessageBoxImage.Question);
             if (res == MessageBoxResult.No) return;
-
             packageManagerClient.Undeprecate(Model.Name);
         }
 

@@ -26,9 +26,12 @@ namespace Dynamo.PackageManager.UI
 
         private void MoreButton_OnClick(object sender, RoutedEventArgs e)
         {
+            viewModel.CheckForMaintainers();
+
             var button = (Button)sender;
             button.ContextMenu.DataContext = button.DataContext;
             button.ContextMenu.IsOpen = true;
+            //3Dots click
         }
 
         protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
