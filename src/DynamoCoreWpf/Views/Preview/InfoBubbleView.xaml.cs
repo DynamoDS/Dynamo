@@ -1,9 +1,12 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
+using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Dynamo.Configuration;
 using Dynamo.UI;
@@ -437,9 +440,22 @@ namespace Dynamo.Controls
                 {
                     content = Wpf.Properties.Resources.InfoBubbleError + content;
                 }
+
                 TextBox textBox = GetNewTextBox(content);
                 ContentContainer.Children.Add(textBox);
+
+                if (viewModel.ErrorMessagesLink != null)
+                {
+                    TextBlock linkBlock = GetNewHyperlinkTextBlock(viewModel.ErrorMessagesLink);
+                    ContentContainer.Children.Add(linkBlock);
+                }
             }
+        }
+
+        private void Link_RequestNavigate(object sender, RequestNavigateEventArgs e)
+        {
+            Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri));
+            e.Handled = true;
         }
 
         private TextBox GetNewTextBox(string text)
@@ -471,6 +487,34 @@ namespace Dynamo.Controls
             return textBox;
         }
 
+        private TextBlock GetNewHyperlinkTextBlock(Uri uri)
+        {
+            TextBlock linkBlock = new TextBlock();
+            linkBlock.TextWrapping = TextWrapping.Wrap;
+
+            linkBlock.Margin = ContentMargin;
+            linkBlock.MaxHeight = ContentMaxHeight;
+            linkBlock.MaxWidth = ContentMaxWidth;
+
+            linkBlock.Foreground = ContentForeground;
+            linkBlock.FontWeight = ContentFontWeight;
+            linkBlock.FontSize = ContentFontSize;
+
+            var font = SharedDictionaryManager.DynamoModernDictionary["OpenSansRegular"];
+            linkBlock.FontFamily = font as FontFamily;
+
+            linkBlock.Background = Brushes.Transparent;
+            linkBlock.HorizontalAlignment = HorizontalAlignment.Center;
+            linkBlock.VerticalAlignment = VerticalAlignment.Center;
+
+            Hyperlink link = new Hyperlink();
+            link.NavigateUri = uri;
+            link.RequestNavigate += Link_RequestNavigate;
+            link.Inlines.Add("Read more...");
+            linkBlock.Inlines.Add(link);
+
+            return linkBlock;
+        }
         #endregion
 
         #region Update Shape
