@@ -37,42 +37,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         /// Override PointGeometryModel3D's Attach method to
         /// provide a buffer of DynamoPointVertices
         /// </summary>
-//        public override void Attach(IRenderHost host)
-//        {
-//            var techManager = host.RenderTechniquesManager;
-//
-//            renderTechnique = techManager.RenderTechniques[DefaultRenderTechniqueNames.Points];
-//            base.Attach(host);
-//
-//            if (Geometry == null)
-//                return;
-//
-//            if (renderHost.RenderTechnique == host.RenderTechniquesManager.RenderTechniques.Get(DeferredRenderTechniqueNames.Deferred) ||
-//                renderHost.RenderTechnique == host.RenderTechniquesManager.RenderTechniques.Get(DeferredRenderTechniqueNames.Deferred))
-//                return;
-//
-//            vertexLayout = host.EffectsManager.GetLayout(renderTechnique);
-//            effectTechnique = effect.GetTechniqueByName(renderTechnique.Name);
-//
-//            effectTransforms = new EffectTransformVariables(effect);
-//
-//            var geometry = Geometry as PointGeometry3D;
-//            if (geometry != null)
-//            {
-//                vertexBuffer = Device.CreateBuffer(BindFlags.VertexBuffer, VertexSizeInBytes, CreateVertexArray());
-//            }
-//
-//            vViewport = effect.GetVariableByName("vViewport").AsVector();
-//            vPointParams = effect.GetVariableByName("vPointParams").AsVector();
-//
-//            var pointParams = new Vector4((float)Size.Width, (float)Size.Height, (float)Figure, (float)FigureRatio);
-//            vPointParams.Set(pointParams);
-//
-//            OnRasterStateChanged(DepthBias);
-//
-//            Device.ImmediateContext.Flush();
-//        }
-
         public override void Attach(IRenderHost host)
         {
             renderHost = host;
@@ -105,46 +69,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             Device.ImmediateContext.Flush();
         }
 
-        /// <summary>
-        /// Creates a <see cref="T:PointsVertex[]"/>.
-        /// </summary>
-//        private DynamoPointVertex[] CreateVertexArray()
-//        {
-//            var positions = Geometry.Positions.ToArray();
-//            var vertexCount = Geometry.Positions.Count;
-//            var color = Color;
-//            var result = new DynamoPointVertex[vertexCount];
-//            var colors = Geometry.Colors;
-//
-//            for (var i = 0; i < vertexCount; i++)
-//            {
-//                Color4 finalColor;
-//                if (colors != null && colors.Any())
-//                {
-//
-//                    finalColor = color * colors[i];
-//                }
-//                else
-//                {
-//                    finalColor = color;
-//                }
-//
-//                var isSelected = (bool)GetValue(AttachedProperties.ShowSelectedProperty);
-//                var isIsolationMode = (bool)GetValue(AttachedProperties.IsolationModeProperty);
-//                var isSpecialPackage = (bool)GetValue(AttachedProperties.IsSpecialRenderPackageProperty);
-//
-//                result[i] = new DynamoPointVertex
-//                {
-//                    Position = new Vector4(positions[i], 1f),
-//                    Color = finalColor,
-//                    Parameters = new Vector4(isSelected ? 1 : 0,
-//                                            (isIsolationMode && !isSpecialPackage) ? 1 : 0, 0, 0)
-//                };
-//            }
-//
-//            return result;
-//        }
-
         private DynamoPointVertex[] CreateVertexArray()
         {
             Vector3Collection positions = Geometry.Positions;
@@ -152,23 +76,30 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             Color4Collection colors = Geometry.Colors;
             Color color = this.Color;
 
-            DynamoPointVertex[] vertices = new DynamoPointVertex[vertexCount];
-
             bool isSelected = (bool)GetValue(AttachedProperties.ShowSelectedProperty);
             bool isIsolationMode = (bool)GetValue(AttachedProperties.IsolationModeProperty);
             bool isSpecialPackage = (bool)GetValue(AttachedProperties.IsSpecialRenderPackageProperty);
 
-            Vector4 parameters = new Vector4(isSelected ? 1 : 0,
-                (isIsolationMode && !isSpecialPackage) ? 1 : 0, 0, 0);
-            for (var i = 0; i < vertexCount; i++)
-            {
-                vertices[i] = new DynamoPointVertex
-                {
-                    Position = new Vector4(positions[i], 1f),
-                    Color = color * colors[i],
-                    Parameters = parameters
-                };
-            }
+            Vector4 parameters = new Vector4(isSelected ? 1 : 0, (isIsolationMode && !isSpecialPackage) ? 1 : 0, 0, 0);
+
+            DynamoPointVertex[] vertices = new DynamoPointVertex[vertexCount];
+
+            if (colors.Any())
+                for (var i = 0; i < vertexCount; i++)
+                    vertices[i] = new DynamoPointVertex
+                    {
+                        Position = new Vector4(positions[i], 1f),
+                        Color = color * colors[i],
+                        Parameters = parameters
+                    };
+            else
+                for (var i = 0; i < vertexCount; i++)
+                    vertices[i] = new DynamoPointVertex
+                    {
+                        Position = new Vector4(positions[i], 1f),
+                        Color = color,
+                        Parameters = parameters
+                    };
 
             return vertices;
         }

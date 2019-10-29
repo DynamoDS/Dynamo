@@ -1,8 +1,327 @@
-﻿using System;
+﻿//using System;
+//using System.Linq;
+//using System.Runtime.InteropServices;
+//using System.Windows;
+//using HelixToolkit.Wpf.SharpDX;
+//using SharpDX;
+//using SharpDX.Direct3D;
+//using SharpDX.Direct3D11;
+//using SharpDX.DXGI;
+//using Buffer = SharpDX.Direct3D11.Buffer;
+//using MapFlags = SharpDX.Direct3D11.MapFlags;
+//
+//namespace Dynamo.Wpf.ViewModels.Watch3D
+//{
+//    /// <summary>
+//    /// A struct describing the layout of a mesh vertex for Dynamo.
+//    /// </summary>
+//    [StructLayout(LayoutKind.Sequential, Pack = 4)]
+//    public struct DynamoMeshVertex
+//    {
+//        public Vector4 Position;
+//        public Color4 Color;
+//        public Vector2 TexCoord;
+//        public Vector3 Normal;
+//        public Vector3 Tangent;
+//        public Vector3 BiTangent;
+//
+//        /// <summary>
+//        /// Store a number of parameters for Dynamo in a Vector4.
+//        /// 0 - IsSelected
+//        /// 1 - RequiresPerVertexColoration
+//        /// </summary>
+//        public Vector4 Parameters;
+//
+//        public const int SizeInBytes = 4 * (4 + 4 + 2 + 3 + 3 + 3 + 4);
+//    }
+//
+//    /// <summary>
+//    /// A Dynamo mesh class which supports the RenderCustom technique.
+//    /// </summary>
+//    public class DynamoGeometryModel3D : MaterialGeometryModel3D
+//    {
+//        private readonly RenderTechnique renderTechniqueInternal;
+//
+//        public DynamoGeometryModel3D(RenderTechnique renderTechnique)
+//        {
+//            renderTechniqueInternal = renderTechnique;
+//        }
+//
+//        public static readonly DependencyProperty RequiresPerVertexColorationProperty =
+//            DependencyProperty.Register("RequiresPerVertexColoration", typeof(bool), typeof(GeometryModel3D), new UIPropertyMetadata(false));
+//
+//        public bool RequiresPerVertexColoration
+//        {
+//            get
+//            {
+//                return (bool)GetValue(RequiresPerVertexColorationProperty);
+//            }
+//            set { SetValue(RequiresPerVertexColorationProperty, value); }
+//        }
+//
+//        public override int VertexSizeInBytes
+//        {
+//            get
+//            {
+//                return DynamoMeshVertex.SizeInBytes;
+//            }
+//        }
+//
+//        protected override void OnRasterStateChanged(int depthBias)
+//        {
+//            if (!IsAttached) return;
+//
+//            Disposer.RemoveAndDispose(ref rasterState);
+//            /// --- set up rasterizer states
+//            var rasterStateDesc = new RasterizerStateDescription()
+//            {
+//                FillMode = FillMode.Solid,
+//                CullMode = CullMode.None,
+//                DepthBias = depthBias,
+//                DepthBiasClamp = -1000,
+//                SlopeScaledDepthBias = +0,
+//                IsDepthClipEnabled = true,
+//                IsFrontCounterClockwise = true,
+//
+//                //IsMultisampleEnabled = true,
+//                //IsAntialiasedLineEnabled = true,
+//                //IsScissorEnabled = true,
+//            };
+//
+//            try
+//            {
+//                rasterState = new RasterizerState(Device, rasterStateDesc);
+//            }
+//            catch (Exception)
+//            {
+//            }
+//        }
+//
+//        /// <summary>
+//        /// Override MaterialGeometryModel3D's Attach method to
+//        /// provide a buffer of DynamoMeshVertices
+//        /// </summary>
+//        public override void Attach(IRenderHost host)
+//        {
+//            base.Attach(host);
+//
+//            renderTechnique = renderTechniqueInternal;
+//
+//            if (Geometry == null)
+//                return;
+//
+//            vertexLayout = host.EffectsManager.GetLayout(renderTechnique);
+//            effectTechnique = effect.GetTechniqueByName(renderTechnique.Name);
+//
+//            effectTransforms = new EffectTransformVariables(effect);
+//
+//            AttachMaterial();
+//
+//            var geometry = Geometry as MeshGeometry3D;
+//
+//            if (geometry == null)
+//            {
+//                throw new Exception("Geometry must not be null");
+//            }
+//
+//            vertexBuffer = Device.CreateBuffer(BindFlags.VertexBuffer, VertexSizeInBytes, CreateVertexArray());
+//            indexBuffer = Device.CreateBuffer(BindFlags.IndexBuffer, sizeof(int),Geometry.Indices.ToArray());
+//
+//            hasInstances = (Instances != null) && (Instances.Any());
+//            bHasInstances = effect.GetVariableByName("bHasInstances").AsScalar();
+//            if (hasInstances)
+//            {
+//                instanceBuffer = Buffer.Create(Device, instanceArray, new BufferDescription(Matrix.SizeInBytes * instanceArray.Length, ResourceUsage.Dynamic, BindFlags.VertexBuffer, CpuAccessFlags.Write, ResourceOptionFlags.None, 0));
+//            }
+//
+//            OnRasterStateChanged(DepthBias);
+//
+//            Device.ImmediateContext.Flush();
+//        }
+//
+//        public override void Detach()
+//        {
+//            Disposer.RemoveAndDispose(ref vertexBuffer);
+//            Disposer.RemoveAndDispose(ref indexBuffer);
+//            Disposer.RemoveAndDispose(ref instanceBuffer);
+//            Disposer.RemoveAndDispose(ref effectMaterial);
+//            Disposer.RemoveAndDispose(ref effectTransforms);
+//            Disposer.RemoveAndDispose(ref texDiffuseMapView);
+//            Disposer.RemoveAndDispose(ref texNormalMapView);
+//            Disposer.RemoveAndDispose(ref bHasInstances);
+//            Disposer.RemoveAndDispose(ref rasterState);
+//
+//            renderTechnique = null;
+//            phongMaterial = null;
+//            effectTechnique = null;
+//            vertexLayout = null;
+//
+//            base.Detach();
+//        }
+//
+//        public override void Render(RenderContext renderContext)
+//        {
+//            if (!IsRendering)
+//            {
+//                return;
+//            }
+//
+//            if (Geometry == null)
+//            {
+//                return;
+//            }
+//
+//            if (Visibility != Visibility.Visible)
+//            {
+//                return;
+//            }
+//
+//            if (renderContext.IsShadowPass)
+//            {
+//                if (!IsThrowingShadow)
+//                {
+//                    return;
+//                }
+//            }
+//
+//            /// --- set constant paramerers
+//            var worldMatrix = modelMatrix * renderContext.WorldMatrix;
+//            effectTransforms.mWorld.SetMatrix(ref worldMatrix);
+//
+//            /// --- check shadowmaps
+//            hasShadowMap = renderHost.IsShadowMapEnabled;
+//            effectMaterial.bHasShadowMapVariable.Set(hasShadowMap);
+//
+//            /// --- set material params
+//            if (phongMaterial != null)
+//            {
+//                effectMaterial.vMaterialDiffuseVariable.Set(phongMaterial.DiffuseColor);
+//                effectMaterial.vMaterialAmbientVariable.Set(phongMaterial.AmbientColor);
+//                effectMaterial.vMaterialEmissiveVariable.Set(phongMaterial.EmissiveColor);
+//                effectMaterial.vMaterialSpecularVariable.Set(phongMaterial.SpecularColor);
+//                effectMaterial.vMaterialReflectVariable.Set(phongMaterial.ReflectiveColor);
+//                effectMaterial.sMaterialShininessVariable.Set(phongMaterial.SpecularShininess);
+//
+//                /// --- has samples
+//                effectMaterial.bHasDiffuseMapVariable.Set(phongMaterial.DiffuseMap != null);
+//                effectMaterial.bHasNormalMapVariable.Set(phongMaterial.NormalMap != null);
+//
+//                /// --- set samplers
+//                if (phongMaterial.DiffuseMap != null)
+//                {
+//                    effectMaterial.texDiffuseMapVariable.SetResource(texDiffuseMapView);
+//                }
+//
+//                if (phongMaterial.NormalMap != null)
+//                {
+//                    effectMaterial.texNormalMapVariable.SetResource(texNormalMapView);
+//                }
+//            }
+//
+//            /// --- check instancing
+//            hasInstances = (Instances != null) && (Instances.Any());
+//            if (bHasInstances != null)
+//            {
+//                bHasInstances.Set(hasInstances);
+//            }
+//
+//            /// --- set context
+//            Device.ImmediateContext.InputAssembler.InputLayout = vertexLayout;
+//            Device.ImmediateContext.InputAssembler.PrimitiveTopology = PrimitiveTopology.TriangleList;
+//            Device.ImmediateContext.InputAssembler.SetIndexBuffer(indexBuffer, Format.R32_UInt, 0);
+//
+//            /// --- set rasterstate
+//            Device.ImmediateContext.Rasterizer.State = rasterState;
+//
+//            if (hasInstances)
+//            {
+//                /// --- update instance buffer
+//                if (isChanged)
+//                {
+//                    instanceBuffer = Buffer.Create(Device, instanceArray, new BufferDescription(Matrix.SizeInBytes * instanceArray.Length, ResourceUsage.Dynamic, BindFlags.VertexBuffer, CpuAccessFlags.Write, ResourceOptionFlags.None, 0));
+//                    DataStream stream;
+//                    Device.ImmediateContext.MapSubresource(instanceBuffer, MapMode.WriteDiscard, MapFlags.None, out stream);
+//                    stream.Position = 0;
+//                    stream.WriteRange(instanceArray, 0, instanceArray.Length);
+//                    Device.ImmediateContext.UnmapSubresource(instanceBuffer, 0);
+//                    stream.Dispose();
+//                    isChanged = false;
+//                }
+//
+//                /// --- INSTANCING: need to set 2 buffers
+//                Device.ImmediateContext.InputAssembler.SetVertexBuffers(0, new[]
+//                {
+//                    new VertexBufferBinding(vertexBuffer, DynamoMeshVertex.SizeInBytes, 0),
+//                    new VertexBufferBinding(instanceBuffer, Matrix.SizeInBytes, 0),
+//                });
+//
+//                /// --- render the geometry
+//                effectTechnique.GetPassByIndex(0).Apply(Device.ImmediateContext);
+//                /// --- draw
+//                Device.ImmediateContext.DrawIndexedInstanced(Geometry.Indices.Count, instanceArray.Length, 0, 0, 0);
+//            }
+//            else
+//            {
+//                /// --- bind buffer
+//                Device.ImmediateContext.InputAssembler.SetVertexBuffers(0, new VertexBufferBinding(vertexBuffer, DynamoMeshVertex.SizeInBytes, 0));
+//                /// --- render the geometry
+//                effectTechnique.GetPassByIndex(0).Apply(Device.ImmediateContext);
+//                /// --- draw
+//                Device.ImmediateContext.DrawIndexed(Geometry.Indices.Count, 0, 0);
+//            }
+//        }
+//
+//        public override void Dispose()
+//        {
+//            Detach();
+//        }
+//
+//        private DynamoMeshVertex[] CreateVertexArray()
+//        {
+//            var geometry = (MeshGeometry3D)Geometry;
+//            var colors = geometry.Colors != null ? geometry.Colors.ToArray() : null;
+//            var textureCoordinates = geometry.TextureCoordinates != null ? geometry.TextureCoordinates.ToArray() : null;
+//            var texScale = TextureCoodScale;
+//            var normals = geometry.Normals != null ? geometry.Normals.ToArray() : null;
+//            var tangents = geometry.Tangents != null ? geometry.Tangents.ToArray() : null;
+//            var bitangents = geometry.BiTangents != null ? geometry.BiTangents.ToArray() : null;
+//            var positions = geometry.Positions.ToArray();
+//            var vertexCount = geometry.Positions.Count;
+//            var result = new DynamoMeshVertex[vertexCount];
+//
+//            var isSelected = (bool)GetValue(AttachedProperties.ShowSelectedProperty);
+//            var isIsolationMode = (bool)GetValue(AttachedProperties.IsolationModeProperty);
+//            var isSpecialPackage = (bool)GetValue(AttachedProperties.IsSpecialRenderPackageProperty);
+//
+//            for (var i = 0; i < vertexCount; i++)
+//            {
+//                result[i] = new DynamoMeshVertex
+//                {
+//                    Position = new Vector4(positions[i], 1f),
+//                    Color = colors != null ? colors[i] : Color4.White,
+//                    TexCoord = textureCoordinates != null ? texScale * textureCoordinates[i] : Vector2.Zero,
+//                    Normal = normals != null ? normals[i] : Vector3.Zero,
+//                    Tangent = tangents != null ? tangents[i] : Vector3.Zero,
+//                    BiTangent = bitangents != null ? bitangents[i] : Vector3.Zero,
+//                    Parameters = new Vector4(isSelected ? 1 : 0,
+//                                            (isIsolationMode && !isSpecialPackage) ? 1 : 0,
+//                                             RequiresPerVertexColoration ? 1 : 0, 0)
+//                };
+//            }
+//
+//            return result;
+//        }
+//    }
+//}
+
+
+using System;
+using System.Collections;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows;
 using HelixToolkit.Wpf.SharpDX;
+using HelixToolkit.Wpf.SharpDX.Core;
 using SharpDX;
 using SharpDX.Direct3D;
 using SharpDX.Direct3D11;
@@ -52,10 +371,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         public bool RequiresPerVertexColoration
         {
-            get
-            {
-                return (bool)GetValue(RequiresPerVertexColorationProperty);
-            }
+            get { return (bool)GetValue(RequiresPerVertexColorationProperty); }
             set { SetValue(RequiresPerVertexColorationProperty, value); }
         }
 
@@ -84,7 +400,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 IsFrontCounterClockwise = true,
 
                 //IsMultisampleEnabled = true,
-                //IsAntialiasedLineEnabled = true,                    
+                //IsAntialiasedLineEnabled = true,
                 //IsScissorEnabled = true,
             };
 
@@ -98,14 +414,18 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         }
 
         /// <summary>
-        /// Override MaterialGeometryModel3D's Attach method to 
+        /// Override MaterialGeometryModel3D's Attach method to
         /// provide a buffer of DynamoMeshVertices
         /// </summary>
         public override void Attach(IRenderHost host)
         {
-            base.Attach(host);
+            renderHost = host;
+            effect = renderHost.EffectsManager.GetEffect(host.RenderTechnique);
+            InvalidateRender();
 
             renderTechnique = renderTechniqueInternal;
+
+
 
             if (Geometry == null)
                 return;
@@ -150,49 +470,32 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             Disposer.RemoveAndDispose(ref texNormalMapView);
             Disposer.RemoveAndDispose(ref bHasInstances);
             Disposer.RemoveAndDispose(ref rasterState);
+            Disposer.RemoveAndDispose(ref texDisplacementMapView);
 
             renderTechnique = null;
             phongMaterial = null;
             effectTechnique = null;
             vertexLayout = null;
-
-            base.Detach();
+            effect = null;
+            renderHost = null;
         }
 
         public override void Render(RenderContext renderContext)
         {
-            if (!IsRendering)
-            {
-                return;
-            }
+            if (!IsRendering) return;
+            if (Geometry == null) return;
+            if (Visibility != Visibility.Visible) return;
+            if (renderContext.IsShadowPass && !IsThrowingShadow) return;
 
-            if (Geometry == null)
-            {
-                return;
-            }
-
-            if (Visibility != Visibility.Visible)
-            {
-                return;
-            }
-
-            if (renderContext.IsShadowPass)
-            {
-                if (!IsThrowingShadow)
-                {
-                    return;
-                }
-            }
-
-            /// --- set constant paramerers             
+            // --- set constant parameters
             var worldMatrix = modelMatrix * renderContext.WorldMatrix;
             effectTransforms.mWorld.SetMatrix(ref worldMatrix);
 
-            /// --- check shadowmaps
+            // --- check shadow maps
             hasShadowMap = renderHost.IsShadowMapEnabled;
             effectMaterial.bHasShadowMapVariable.Set(hasShadowMap);
 
-            /// --- set material params      
+            // --- set material params
             if (phongMaterial != null)
             {
                 effectMaterial.vMaterialDiffuseVariable.Set(phongMaterial.DiffuseColor);
@@ -202,40 +505,36 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 effectMaterial.vMaterialReflectVariable.Set(phongMaterial.ReflectiveColor);
                 effectMaterial.sMaterialShininessVariable.Set(phongMaterial.SpecularShininess);
 
-                /// --- has samples              
+                // --- has samples
                 effectMaterial.bHasDiffuseMapVariable.Set(phongMaterial.DiffuseMap != null);
                 effectMaterial.bHasNormalMapVariable.Set(phongMaterial.NormalMap != null);
 
-                /// --- set samplers
+                // --- set samplers
                 if (phongMaterial.DiffuseMap != null)
-                {
                     effectMaterial.texDiffuseMapVariable.SetResource(texDiffuseMapView);
-                }
 
                 if (phongMaterial.NormalMap != null)
-                {
                     effectMaterial.texNormalMapVariable.SetResource(texNormalMapView);
-                }
             }
 
-            /// --- check instancing
+            // --- check instancing
             hasInstances = (Instances != null) && (Instances.Any());
             if (bHasInstances != null)
             {
                 bHasInstances.Set(hasInstances);
             }
 
-            /// --- set context
+            // --- set context
             Device.ImmediateContext.InputAssembler.InputLayout = vertexLayout;
             Device.ImmediateContext.InputAssembler.PrimitiveTopology = PrimitiveTopology.TriangleList;
             Device.ImmediateContext.InputAssembler.SetIndexBuffer(indexBuffer, Format.R32_UInt, 0);
 
-            /// --- set rasterstate            
+            // --- set raster state
             Device.ImmediateContext.Rasterizer.State = rasterState;
 
             if (hasInstances)
             {
-                /// --- update instance buffer
+                // --- update instance buffer
                 if (isChanged)
                 {
                     instanceBuffer = Buffer.Create(Device, instanceArray, new BufferDescription(Matrix.SizeInBytes * instanceArray.Length, ResourceUsage.Dynamic, BindFlags.VertexBuffer, CpuAccessFlags.Write, ResourceOptionFlags.None, 0));
@@ -248,25 +547,25 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     isChanged = false;
                 }
 
-                /// --- INSTANCING: need to set 2 buffers            
-                Device.ImmediateContext.InputAssembler.SetVertexBuffers(0, new[] 
+                // --- INSTANCING: need to set 2 buffers
+                Device.ImmediateContext.InputAssembler.SetVertexBuffers(0, new[]
                 {
                     new VertexBufferBinding(vertexBuffer, DynamoMeshVertex.SizeInBytes, 0),
                     new VertexBufferBinding(instanceBuffer, Matrix.SizeInBytes, 0),
                 });
 
-                /// --- render the geometry
+                // --- render the geometry
                 effectTechnique.GetPassByIndex(0).Apply(Device.ImmediateContext);
-                /// --- draw
+                // --- draw
                 Device.ImmediateContext.DrawIndexedInstanced(Geometry.Indices.Count, instanceArray.Length, 0, 0, 0);
             }
             else
             {
-                /// --- bind buffer                
+                // --- bind buffer
                 Device.ImmediateContext.InputAssembler.SetVertexBuffers(0, new VertexBufferBinding(vertexBuffer, DynamoMeshVertex.SizeInBytes, 0));
-                /// --- render the geometry
+                // --- render the geometry
                 effectTechnique.GetPassByIndex(0).Apply(Device.ImmediateContext);
-                /// --- draw
+                // --- draw
                 Device.ImmediateContext.DrawIndexed(Geometry.Indices.Count, 0, 0);
             }
         }
@@ -278,34 +577,110 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         private DynamoMeshVertex[] CreateVertexArray()
         {
-            var geometry = (MeshGeometry3D)Geometry;
-            var colors = geometry.Colors != null ? geometry.Colors.ToArray() : null;
-            var textureCoordinates = geometry.TextureCoordinates != null ? geometry.TextureCoordinates.ToArray() : null;
-            var texScale = TextureCoodScale;
-            var normals = geometry.Normals != null ? geometry.Normals.ToArray() : null;
-            var tangents = geometry.Tangents != null ? geometry.Tangents.ToArray() : null;
-            var bitangents = geometry.BiTangents != null ? geometry.BiTangents.ToArray() : null;
-            var positions = geometry.Positions.ToArray();
-            var vertexCount = geometry.Positions.Count;
-            var result = new DynamoMeshVertex[vertexCount];
+            MeshGeometry3D geometry = (MeshGeometry3D)Geometry;
+            int vertexCount = geometry.Positions.Count;
+            Vector3Collection positions = geometry.Positions;
 
-            var isSelected = (bool)GetValue(AttachedProperties.ShowSelectedProperty);
-            var isIsolationMode = (bool)GetValue(AttachedProperties.IsolationModeProperty);
-            var isSpecialPackage = (bool)GetValue(AttachedProperties.IsSpecialRenderPackageProperty);
+            Color4Collection colors;
+            if (geometry.Colors == null)
+            {
+                colors = new Color4Collection(vertexCount);
+                for (int i = 0; i < vertexCount; i++)
+                    colors.Add(Color4.White);
+            }
+            else
+            {
+                colors = geometry.Colors;
+            }
+
+            Vector2Collection textureCoordinates;
+
+            if (geometry.TextureCoordinates == null)
+            {
+                textureCoordinates = new Vector2Collection(vertexCount);
+                for (int i = 0; i < vertexCount; i++)
+                    textureCoordinates[i] *= Vector2.Zero;
+            }
+            else
+            {
+                textureCoordinates = geometry.TextureCoordinates;
+                for (int i = 0; i < vertexCount; i++)
+                    textureCoordinates[i] *= TextureCoodScale;
+            }
+
+            Vector3Collection zeroVectors = null;
+
+            Vector3Collection normals;
+            if (geometry.Normals != null)
+            {
+                normals = geometry.Normals;
+            }
+            else
+            {
+                normals = new Vector3Collection(vertexCount);
+                for (int i = 0; i < vertexCount; i++)
+                    normals.Add(Vector3.Zero);
+                zeroVectors = normals;
+            }
+
+            Vector3Collection tangents;
+            if (geometry.Tangents != null)
+            {
+                tangents = geometry.Tangents;
+            }
+            else
+            {
+                if (zeroVectors != null) tangents = zeroVectors;
+                else
+                {
+                    tangents = new Vector3Collection(vertexCount);
+                    for (int i = 0; i < vertexCount; i++)
+                        tangents.Add(Vector3.Zero);
+                    zeroVectors = tangents;
+                }
+            }
+
+            Vector3Collection bitangents;
+            if (geometry.BiTangents != null)
+            {
+                bitangents = geometry.BiTangents;
+            }
+            else
+            {
+                if (zeroVectors != null) bitangents = zeroVectors;
+                else
+                {
+                    bitangents = new Vector3Collection(vertexCount);
+                    for (int i = 0; i < vertexCount; i++)
+                        bitangents.Add(Vector3.Zero);
+                }
+            }
+
+            DynamoMeshVertex[] result = new DynamoMeshVertex[vertexCount];
+
+            bool isSelected = (bool)GetValue(AttachedProperties.ShowSelectedProperty);
+            bool isIsolationMode = (bool)GetValue(AttachedProperties.IsolationModeProperty);
+            bool isSpecialPackage = (bool)GetValue(AttachedProperties.IsSpecialRenderPackageProperty);
+
+            Vector4 vertexParameter = new Vector4(
+                isSelected ? 1 : 0,
+                (isIsolationMode && !isSpecialPackage) ? 1 : 0,
+                RequiresPerVertexColoration ? 1 : 0, 0);
+
+            Color4 color = new Color4(0, 1, 1, 1);
 
             for (var i = 0; i < vertexCount; i++)
             {
                 result[i] = new DynamoMeshVertex
                 {
                     Position = new Vector4(positions[i], 1f),
-                    Color = colors != null ? colors[i] : Color4.White,
-                    TexCoord = textureCoordinates != null ? texScale * textureCoordinates[i] : Vector2.Zero,
-                    Normal = normals != null ? normals[i] : Vector3.Zero,
-                    Tangent = tangents != null ? tangents[i] : Vector3.Zero,
-                    BiTangent = bitangents != null ? bitangents[i] : Vector3.Zero,
-                    Parameters = new Vector4(isSelected ? 1 : 0,
-                                            (isIsolationMode && !isSpecialPackage) ? 1 : 0,
-                                             RequiresPerVertexColoration ? 1 : 0, 0)
+//                    Color = colors[i],
+                    Color = color,
+                    TexCoord = textureCoordinates[i],
+                    Normal = normals[i],
+                    Tangent = tangents[i],
+                    BiTangent = bitangents[i],
+                    Parameters = vertexParameter
                 };
             }
 
