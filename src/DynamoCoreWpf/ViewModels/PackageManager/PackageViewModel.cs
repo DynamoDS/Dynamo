@@ -194,16 +194,8 @@ namespace Dynamo.ViewModels
 
         private bool CanDeprecate()
         {
-            PackageInfo pkg = new PackageInfo(Model.Name, new Version(Model.VersionName));
-            bool isAuthor = false;
-            var header = packageManagerClient.GetPackageHeader(pkg);
-            if (header != null) {
-                if (header.maintainers.First().username.Equals(dynamoViewModel.Model.AuthenticationManager.Username))
-                {
-                    isAuthor = true;
-                }
-            }
-            return dynamoViewModel.Model.AuthenticationManager.HasAuthProvider && isAuthor;
+            if (!dynamoViewModel.Model.AuthenticationManager.HasAuthProvider) return false;
+            return packageManagerClient.DoesCurrentUserOwnPackage(Model, dynamoViewModel.Model.AuthenticationManager.Username);
         }
 
         private void Undeprecate()
@@ -217,17 +209,8 @@ namespace Dynamo.ViewModels
 
         private bool CanUndeprecate()
         {
-            PackageInfo pkg = new PackageInfo(Model.Name, new Version(Model.VersionName));
-            bool isAuthor = false;
-            var header = packageManagerClient.GetPackageHeader(pkg);
-            if (header != null)
-            {
-                if (header.maintainers.First().username.Equals(dynamoViewModel.Model.AuthenticationManager.Username))
-                {
-                    isAuthor = true;
-                }
-            }
-            return dynamoViewModel.Model.AuthenticationManager.HasAuthProvider && isAuthor;
+            if (!dynamoViewModel.Model.AuthenticationManager.HasAuthProvider) return false;
+            return packageManagerClient.DoesCurrentUserOwnPackage(Model, dynamoViewModel.Model.AuthenticationManager.Username);
         }
 
         private void PublishNewPackageVersion()
