@@ -667,15 +667,13 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 (isIsolationMode && !isSpecialPackage) ? 1 : 0,
                 RequiresPerVertexColoration ? 1 : 0, 0);
 
-            Color4 color = new Color4(0, 1, 1, 1);
 
             for (var i = 0; i < vertexCount; i++)
             {
                 result[i] = new DynamoMeshVertex
                 {
                     Position = new Vector4(positions[i], 1f),
-//                    Color = colors[i],
-                    Color = color,
+                    Color = colors[i],
                     TexCoord = textureCoordinates[i],
                     Normal = normals[i],
                     Tangent = tangents[i],
