@@ -1,0 +1,19 @@
+﻿<Window x:Class="Dynamo.DocumentationBrowser.DocumentationBrowserView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:p="clr-namespace:Dynamo.Wpf.Properties;assembly=DynamoCoreWpf"
+             xmlns:fa="http://schemas.fontawesome.io/icons/"
+             xmlns:w="clr-namespace:Dynamo.DocumentationBrowser.Properties"
+             xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf"
+             mc:Ignorable="d" 
+             VerticalAlignment="Top"
+             HorizontalAlignment="Left">
+    <Grid Name="MainGrid" 
+          HorizontalAlignment="Stretch"
+          VerticalAlignment="Stretch">
+        <WebBrowser Source="C:\Users\matterlab_sylvester\Desktop\ErrorsInDynamoDictionary.html"/>
+
+    </Grid>
+</Window>
