@@ -14,7 +14,7 @@
     <Grid Name="MainGrid" 
           HorizontalAlignment="Stretch"
           VerticalAlignment="Stretch">
-        <WPF:WebView Name="documentationBrowser" 
+        <WPF:WebViewCompatible Name="documentationBrowser" 
                      Grid.Row="0"
                      Grid.Column="0" />
 
