@@ -5,15 +5,18 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:p="clr-namespace:Dynamo.Wpf.Properties;assembly=DynamoCoreWpf"
              xmlns:fa="http://schemas.fontawesome.io/icons/"
-             xmlns:w="clr-namespace:Dynamo.DocumentationBrowser.Properties"
+             xmlns:w="clr-namespace:Dynamo.DocumentationBrowser"
              xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf"
+            xmlns:WPF="clr-namespace:Microsoft.Toolkit.Wpf.UI.Controls;assembly=Microsoft.Toolkit.Wpf.UI.Controls.WebView"
              mc:Ignorable="d" 
              VerticalAlignment="Top"
              HorizontalAlignment="Left">
     <Grid Name="MainGrid" 
           HorizontalAlignment="Stretch"
           VerticalAlignment="Stretch">
-        <WebBrowser Source="C:\Users\matterlab_sylvester\Desktop\ErrorsInDynamoDictionary.html"/>
+        <WPF:WebView Name="documentationBrowser" 
+                     Grid.Row="0"
+                     Grid.Column="0" />
 
     </Grid>
 </Window>
