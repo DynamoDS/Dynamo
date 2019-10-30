@@ -25,6 +25,12 @@ namespace Dynamo.DocumentationBrowser
             set;
         }
 
+        internal DocumentationBrowserViewModel ViewModel
+        {
+            get;
+            set;
+        }
+
         /// <summary>
         /// Extension Name
         /// </summary>
@@ -63,6 +69,7 @@ namespace Dynamo.DocumentationBrowser
         public void Shutdown()
         {
             BrowserView.Dispose();
+            ViewModel.Dispose();
             this.Dispose();
         }
 
@@ -78,10 +85,10 @@ namespace Dynamo.DocumentationBrowser
 
         public void Loaded(ViewLoadedParams viewLoadedParams)
         {
+            ViewModel = new DocumentationBrowserViewModel();
             BrowserView = new DocumentationBrowserView(this, viewLoadedParams);
             // when a package is loaded update the DependencyView 
             // as we may have installed a missing package.
-
 
             // Adding a button in view menu to refresh and show manually
             documentationBrowserMenuItem = new MenuItem { Header = Resources.MenuItemString };
@@ -89,6 +96,7 @@ namespace Dynamo.DocumentationBrowser
             {
                 // Refresh dependency data
                 viewLoadedParams.AddToExtensionsSideBar(this, BrowserView);
+                ViewModel.DocumentationLink(string.Empty);
             };
             viewLoadedParams.AddMenuItem(MenuBarType.View, documentationBrowserMenuItem);
         }
