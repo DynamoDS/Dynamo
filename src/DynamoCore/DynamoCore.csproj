@@ -78,7 +78,7 @@ limitations under the License.
     <Reference Include="Analytics.NET.Google">
       <HintPath>..\..\extern\Analytics.NET\Analytics.NET.Google.dll</HintPath>
     </Reference>
-    <Reference Include="Greg, Version=1.2.7177.24952, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="Greg, Version=1.2.7240.28357, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Greg.1.2.7240.28357\lib\net47\Greg.dll</HintPath>
       <Private>True</Private>
     </Reference>
