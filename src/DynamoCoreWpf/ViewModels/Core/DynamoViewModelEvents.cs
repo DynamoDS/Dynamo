@@ -1,5 +1,6 @@
 ﻿using System;
-
+using System.Diagnostics;
+using System.Windows.Navigation;
 using Dynamo.Models;
 using Dynamo.PackageManager;
 
@@ -119,6 +120,9 @@ namespace Dynamo.ViewModels
         {
             if (RequestOpenDocumentationLink != null)
                 RequestOpenDocumentationLink();
+
+            // shall we fall back to default browser launch if not ?
+            Process.Start(new ProcessStartInfo(e.Link.AbsoluteUri));
         }
 
         public event Action RequestShowHideSidebar;
