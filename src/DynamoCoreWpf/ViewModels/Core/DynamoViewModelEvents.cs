@@ -114,6 +114,20 @@ namespace Dynamo.ViewModels
             }
         }
 
+        public event Action RequestOpenDocumentationLink;
+        public virtual void OnRequestOpenDocumentationLink(Object sender, OpenDocumentationLinkEventArgs e)
+        {
+            if (RequestOpenDocumentationLink != null)
+                RequestOpenDocumentationLink();
+        }
+
+        public event Action RequestShowHideSidebar;
+        public virtual void OnShowHideSidebar(bool show)
+        {
+            if (RequestShowHideSidebar != null)
+                RequestShowHideSidebar();
+        }
+
         internal event RequestViewOperationHandler RequestViewOperation;
         private void OnRequestViewOperation(ViewOperationEventArgs e)
         {

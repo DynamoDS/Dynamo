@@ -126,4 +126,15 @@ namespace Dynamo.ViewModels
             Icon = icon;
         }
     }
+
+    public class OpenDocumentationLinkEventArgs : EventArgs
+    {
+        public Uri Link { get; set; }
+        public bool IsRemoteResource { get; private set; }
+        public OpenDocumentationLinkEventArgs(Uri link)
+        {
+            Link = link ?? throw new ArgumentNullException(nameof(link));
+            IsRemoteResource = !link.IsFile;
+        }
+    }
 }
