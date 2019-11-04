@@ -1283,7 +1283,9 @@
     <Resource Include="UI\Images\icon-whats-new-small.png" />
     <Resource Include="UI\Images\icon-dictionary-small.png" />
     <Content Include="sharpdx_direct3d11_1_effects_arm.dll" />
-    <Content Include="sharpdx_direct3d11_1_effects_x64.dll" />
+    <Content Include="sharpdx_direct3d11_1_effects_x64.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="sharpdx_direct3d11_1_effects_x86.dll" />
     <Content Include="ViewModels\Watch3D\Shaders\BillboardText.fx" />
     <Content Include="ViewModels\Watch3D\Shaders\Common.fx" />
