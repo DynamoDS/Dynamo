@@ -1283,6 +1283,9 @@
     <Resource Include="UI\Images\profile_normal.png" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="D3DCompiler_43.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="sharpdx_direct3d11_effects_x64.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
