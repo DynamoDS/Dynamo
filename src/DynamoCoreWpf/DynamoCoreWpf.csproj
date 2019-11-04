@@ -1283,7 +1283,8 @@
     <Resource Include="UI\Images\profile_normal.png" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="D3DCompiler_43.dll">
+    <Content Include="..\..\tools\install\Extra\DirectX\D3DCompiler_43.dll">
+      <Link>D3DCompiler_43.dll</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="sharpdx_direct3d11_effects_x64.dll">
