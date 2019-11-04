@@ -127,9 +127,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="ProtoGeometryImages.resx" />
   </ItemGroup>
-  <ItemGroup>
-    <None Include="app.config" />
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="AfterBuild">
     <!-- Get System.Drawing.dll -->
