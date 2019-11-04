@@ -170,8 +170,12 @@ namespace Dynamo.Tests
                         OutputsMap.Add(n.GUID, n.OutputData);
                     }
 
-                    var portvalues = n.OutPorts.Select(p =>
-                        ProtoCore.Utils.CoreUtils.GetDataOfValue(n.GetValue(p.Index, controller))).ToList();
+                    var portvalues = new List<object>();
+                    if (!n.IsFrozen)
+                    {
+                        portvalues = n.OutPorts.Select(p =>
+                            ProtoCore.Utils.CoreUtils.GetDataOfValue(n.GetValue(p.Index, controller))).ToList();
+                    }
 
                     n.InPorts.ToList().ForEach(p =>
                     {
