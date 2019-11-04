@@ -21,6 +21,7 @@ using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using DynamoShapeManager;
 using NUnit.Framework;
+using ProtoCore;
 using PythonNodeModels;
 using SystemTestServices;
 using TestServices;
@@ -2771,10 +2772,10 @@ namespace DynamoCoreWpfTests
         }
 
         [Test, RequiresSTA]
-        public void TestNodeToCallsiteIdentifierMapModifyInputConnection()
+        public void TestNodeToCallsitesObjMapModifyInputConnection()
         {
-            string callsiteIdentifierFirstCall = "";
-            string callsiteIdentifierSecondCall = "";
+            Guid callsiteIdentifierFirstCall = new Guid();
+            Guid callsiteIdentifierSecondCall = new Guid();
             Guid functionCallNodeGuid = new Guid("16e960e5-8a24-44e7-ac81-3759aaf11d25");
 
             preloadGeometry = true;
@@ -2784,39 +2785,39 @@ namespace DynamoCoreWpfTests
                 if (commandTag == "ModifyX_FirstTime")
                 {
                     // There must only be 1 node at this point
-                    Assert.AreEqual(1, core.RuntimeData.NodeToCallsiteIdentifiersMap.Count);
+                    Assert.AreEqual(1, core.RuntimeData.NodeToCallsiteObjectMap.Count);
 
                     // Verify that the map contains the node guid
-                    List<string> indentifiers;
-                    bool containsNodeGuid = core.RuntimeData.NodeToCallsiteIdentifiersMap.TryGetValue(functionCallNodeGuid, out indentifiers);
+                    List<CallSite> callSites;
+                    bool containsNodeGuid = core.RuntimeData.NodeToCallsiteObjectMap.TryGetValue(functionCallNodeGuid, out callSites);
                     Assert.AreEqual(true, containsNodeGuid);
 
                     // There must only be 1 callsite at this point
-                    Assert.AreEqual(1, indentifiers.Count);
+                    Assert.AreEqual(1, callSites.Count);
 
                     // Get the callsite identifier string
-                    foreach (var id in indentifiers)
+                    foreach (var cs in callSites)
                     {
-                        callsiteIdentifierFirstCall = id;
+                        callsiteIdentifierFirstCall = cs.CallSiteID;
                     }
                 }
                 else if (commandTag == "ModifyX_SecondTime")
                 {
                     // There must only be 1 callsite at this point
-                    Assert.AreEqual(1, core.RuntimeData.NodeToCallsiteIdentifiersMap.Count);
+                    Assert.AreEqual(1, core.RuntimeData.NodeToCallsiteObjectMap.Count);
 
                     // Verify that the map contains the node guid
-                    List<string> indentifiers;
-                    bool containsNodeGuid = core.RuntimeData.NodeToCallsiteIdentifiersMap.TryGetValue(functionCallNodeGuid, out indentifiers);
+                    List<CallSite> callSites;
+                    bool containsNodeGuid = core.RuntimeData.NodeToCallsiteObjectMap.TryGetValue(functionCallNodeGuid, out callSites);
                     Assert.AreEqual(true, containsNodeGuid);
 
                     // There must only be 1 callsite at this point
-                    Assert.AreEqual(1, indentifiers.Count);
+                    Assert.AreEqual(1, callSites.Count);
 
                     // Get the callsite identifier string
-                    foreach (var id in indentifiers)
+                    foreach (var cs in callSites)
                     {
-                        callsiteIdentifierSecondCall = id;
+                        callsiteIdentifierSecondCall = cs.CallSiteID;
                     }
 
                     // The callsite guid must match 

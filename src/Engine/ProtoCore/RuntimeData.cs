@@ -49,7 +49,7 @@ namespace ProtoCore
         /// <summary>		
         /// Map from a graph UI node to callsite identifiers. 		
         /// </summary>
-        public Dictionary<Guid, List<string>> NodeToCallsiteIdentifiersMap { get; }
+        public Dictionary<Guid, List<CallSite>> NodeToCallsiteObjectMap { get; }
         
 #endregion
 
@@ -57,7 +57,7 @@ namespace ProtoCore
         {
             CallsiteCache = new Dictionary<string, CallSite>();
             CallSiteToNodeMap = new Dictionary<Guid, Guid>();
-            NodeToCallsiteIdentifiersMap = new Dictionary<Guid, List<string>>();
+            NodeToCallsiteObjectMap = new Dictionary<Guid, List<CallSite>>();
         }
 
       
@@ -125,14 +125,14 @@ namespace ProtoCore
 
                 CallsiteCache[callsiteID] = csInstance;
                 CallSiteToNodeMap[csInstance.CallSiteID] = topGraphNode.guid;
-                List<string> callsiteIDs;
-                if (NodeToCallsiteIdentifiersMap.TryGetValue(topGraphNode.guid, out callsiteIDs))
+                List<CallSite> callsites;
+                if (NodeToCallsiteObjectMap.TryGetValue(topGraphNode.guid, out callsites))
                 {
-                    callsiteIDs.Add(callsiteID);
+                    callsites.Add(csInstance);
                 }
                 else
                 {
-                    NodeToCallsiteIdentifiersMap[topGraphNode.guid] = new List<string>() { callsiteID };
+                    NodeToCallsiteObjectMap[topGraphNode.guid] = new List<CallSite>() { csInstance };
                 }
             }
 
@@ -159,19 +159,12 @@ namespace ProtoCore
             if (!nodeGuids.Any()) // Nothing to persist now.
                 return nodeMap;
 
-            List<string> callsiteIDs;
+            List<CallSite> callsites;
             foreach (Guid nodeGuid in nodeGuids)
             {
-                if (NodeToCallsiteIdentifiersMap.TryGetValue(nodeGuid, out callsiteIDs))
+                if (NodeToCallsiteObjectMap.TryGetValue(nodeGuid, out callsites))
                 {
-                    var matchingCallSites = new List<CallSite>();
-                    foreach (var id in callsiteIDs)
-                    {
-                        CallSite callsite;
-                        if (CallsiteCache.TryGetValue(id, out callsite))
-                            matchingCallSites.Add(callsite);
-                    }
-                    nodeMap[nodeGuid] = matchingCallSites;
+                    nodeMap[nodeGuid] = callsites;
                 }
                 else
                 {
