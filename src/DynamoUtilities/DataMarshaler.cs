@@ -88,7 +88,12 @@ namespace Dynamo.Utilities
 
             if (!applicable.Any())
             {
-                if (!(obj is BigInteger bigInt)) return obj;
+                BigInteger bigInt;
+                if (obj is BigInteger)
+                {
+                    bigInt = (BigInteger) obj;
+                }
+                else return obj;
 
                 long int64;
                 try
