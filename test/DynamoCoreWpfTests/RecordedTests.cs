@@ -2774,8 +2774,8 @@ namespace DynamoCoreWpfTests
         [Test, RequiresSTA]
         public void TestNodeToCallsitesObjMapModifyInputConnection()
         {
-            Guid callsiteIdentifierFirstCall = new Guid();
-            Guid callsiteIdentifierSecondCall = new Guid();
+            Guid callsiteIdFirstCall = new Guid();
+            Guid callsiteIdSecondCall = new Guid();
             Guid functionCallNodeGuid = new Guid("16e960e5-8a24-44e7-ac81-3759aaf11d25");
 
             preloadGeometry = true;
@@ -2795,10 +2795,10 @@ namespace DynamoCoreWpfTests
                     // There must only be 1 callsite at this point
                     Assert.AreEqual(1, callSites.Count);
 
-                    // Get the callsite identifier string
+                    // Get the callsite id
                     foreach (var cs in callSites)
                     {
-                        callsiteIdentifierFirstCall = cs.CallSiteID;
+                        callsiteIdFirstCall = cs.CallSiteID;
                     }
                 }
                 else if (commandTag == "ModifyX_SecondTime")
@@ -2811,18 +2811,18 @@ namespace DynamoCoreWpfTests
                     bool containsNodeGuid = core.RuntimeData.NodeToCallsiteObjectMap.TryGetValue(functionCallNodeGuid, out callSites);
                     Assert.AreEqual(true, containsNodeGuid);
 
-                    // There must only be 1 callsite at this point
+                    // There must still only be 1 callsite at this point
                     Assert.AreEqual(1, callSites.Count);
 
-                    // Get the callsite identifier string
+                    // Get the callsite id
                     foreach (var cs in callSites)
                     {
-                        callsiteIdentifierSecondCall = cs.CallSiteID;
+                        callsiteIdSecondCall = cs.CallSiteID;
                     }
 
                     // The callsite guid must match 
                     // This means that that the callsite was cached and reused
-                    Assert.AreEqual(callsiteIdentifierFirstCall, callsiteIdentifierSecondCall);
+                    Assert.AreEqual(callsiteIdFirstCall, callsiteIdSecondCall);
                 }
 
             });
