@@ -67,7 +67,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             var pointParams = new Vector4((float)Size.Width, (float)Size.Height, (float)Figure, (float)FigureRatio);
             vPointParams.Set(pointParams);
 
-            OnRasterStateChanged(DepthBias);
+            OnRasterStateChanged();
 
             Device.ImmediateContext.Flush();
         }

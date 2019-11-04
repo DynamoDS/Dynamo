@@ -67,7 +67,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             }
         }
 
-        protected override void OnRasterStateChanged(int depthBias)
+        protected override void OnRasterStateChanged()
         {
             if (!IsAttached) return;
 
@@ -77,7 +77,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             {
                 FillMode = FillMode.Solid,
                 CullMode = CullMode.None,
-                DepthBias = depthBias,
+               //DepthBias = rasterState,
                 DepthBiasClamp = -1000,
                 SlopeScaledDepthBias = +0,
                 IsDepthClipEnabled = true,
@@ -134,7 +134,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 instanceBuffer = Buffer.Create(Device, instanceArray, new BufferDescription(Matrix.SizeInBytes * instanceArray.Length, ResourceUsage.Dynamic, BindFlags.VertexBuffer, CpuAccessFlags.Write, ResourceOptionFlags.None, 0));
             }
 
-            OnRasterStateChanged(DepthBias);
+            OnRasterStateChanged();
 
             Device.ImmediateContext.Flush();
         }

@@ -2008,7 +2008,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 {
                     for (var z = 0; z < 4; z++)
                     {
-                        b1.AddBox(new Vector3(x, y, z), 0.5, 0.5, 0.5, BoxFaces.All);
+                        b1.AddBox(new Vector3(x, y, z), 0.5, 0.5, 0.5, HelixToolkit.Wpf.SharpDX.BoxFaces.All);
                     }
                 }
             }

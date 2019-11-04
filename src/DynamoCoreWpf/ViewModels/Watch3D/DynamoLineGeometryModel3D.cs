@@ -76,7 +76,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             var lineParams = new Vector4((float)Thickness, (float)Smoothness, 0, 0);
             vLineParams.Set(lineParams);
 
-            OnRasterStateChanged(DepthBias);
+            OnRasterStateChanged();
 
             Device.ImmediateContext.Flush();
         }
