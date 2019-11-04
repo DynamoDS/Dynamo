@@ -54,15 +54,15 @@
     </Reference>
     <Reference Include="HelixToolkit, Version=2015.1.629.0, Culture=neutral, PublicKeyToken=52aa3500039caf0d, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\source\repos\helix-toolkit\Source\HelixToolkit\bin\Debug\HelixToolkit.dll</HintPath>
+      <HintPath>..\..\extern\Helix_Custom_Build_2016\Debug\HelixToolkit.dll</HintPath>
     </Reference>
     <Reference Include="HelixToolkit.Wpf, Version=2015.1.629.0, Culture=neutral, PublicKeyToken=52aa3500039caf0d, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\source\repos\helix-toolkit\Source\HelixToolkit.Wpf\bin\Debug\HelixToolkit.Wpf.dll</HintPath>
+      <HintPath>..\..\extern\Helix_Custom_Build_2016\Debug\HelixToolkit.Wpf.dll</HintPath>
     </Reference>
     <Reference Include="HelixToolkit.Wpf.SharpDX, Version=2015.1.629.0, Culture=neutral, PublicKeyToken=52aa3500039caf0d, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\source\repos\helix-toolkit\Source\HelixToolkit.Wpf.SharpDX\bin\Debug\HelixToolkit.Wpf.SharpDX.dll</HintPath>
+      <HintPath>..\..\extern\Helix_Custom_Build_2016\Debug\HelixToolkit.Wpf.SharpDX.dll</HintPath>
     </Reference>
     <Reference Include="ICSharpCode.AvalonEdit, Version=4.3.1.9429, Culture=neutral, PublicKeyToken=9cc39be672370310, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
