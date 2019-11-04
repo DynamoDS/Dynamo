@@ -159,25 +159,6 @@ namespace ProtoCore
             if (!nodeGuids.Any()) // Nothing to persist now.
                 return nodeMap;
 
-            // Attempt to get the list of graph node if one exists.
-            IEnumerable<GraphNode> graphNodes = null;
-            {
-                if (executable != null)
-                {
-                    var stream = executable.instrStreamList;
-                    if (stream != null && (stream.Length > 0))
-                    {
-                        var graph = stream[0].dependencyGraph;
-                        if (graph != null)
-                            graphNodes = graph.GraphList;
-                    }
-                }
-
-
-                if (graphNodes == null) // No execution has taken place.
-                    return nodeMap;
-            }
-
             List<string> callsiteIDs;
             foreach (Guid nodeGuid in nodeGuids)
             {
