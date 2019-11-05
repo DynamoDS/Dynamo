@@ -1,46 +1,60 @@
 ﻿using Dynamo.Core;
+using Dynamo.ViewModels;
 using System;
 using System.IO;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 
 namespace Dynamo.DocumentationBrowser
 {
     public class DocumentationBrowserViewModel : NotificationObject, IDisposable
     {
-        private string link;
-        public string Link
+        private Uri link;
+        public Uri Link
         {
-            get { return link; }
-            private set { link = value; OnLinkedChanged(value); }
+            get { return this.link; }
+            private set
+            {
+                this.link = value;
+                OnLinkChanged(value);
+            }
         }
+
+        public string Content { get; private set; }
 
         public bool isRemoteResource;
         public bool IsRemoteResource
         {
-            get { return this.IsRemoteResource; }
+            get { return this.isRemoteResource; }
             set { this.isRemoteResource = value; this.RaisePropertyChanged(nameof(IsRemoteResource)); }
         }
 
-        internal static Action<string> LinkChanged;
-        private static void OnLinkedChanged(string link) => LinkChanged?.Invoke(link);
+        internal Action<Uri> LinkChanged;
+        private void OnLinkChanged(Uri link) => LinkChanged?.Invoke(link);
 
 
         public DocumentationBrowserViewModel()
         {
+            this.isRemoteResource = false;
         }
 
-        public void OpenDocumentationLink(string link)
+        public void HandleOpenDocumentationLinkEvent(OpenDocumentationLinkEventArgs e)
         {
-            link = @"C:\Users\radug\metaspace\metaspace-Server - Documents\03 Client Projects\Autodesk\0020 - Dynamo Error Messages\06 Solution\warning_htmls\kPropertyOfClassNotFound.html";
+            this.IsRemoteResource = e.Link.IsFile;
+            if (IsRemoteResource) LoadFileContent(e.Link);
+
+            this.Link = e.Link;
+        }
+
+        public void LoadFileContent(Uri link)
+        {
             try
             {
-                string strContent = File.ReadAllText(link);
-                Link = strContent;
+                if (!File.Exists(link.LocalPath)) throw new FileNotFoundException("Could not find specified documentation file" + link.AbsoluteUri);
+                this.Content = File.ReadAllText(link.LocalPath);
+            }
+            catch(FileNotFoundException e)
+            {
+                this.Content = e.Message;
             }
             catch (Exception ex)
             {
