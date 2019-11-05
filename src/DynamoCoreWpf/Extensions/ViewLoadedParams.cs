@@ -84,6 +84,7 @@ namespace Dynamo.Wpf.Extensions
             dynamoMenu = dynamoView.titleBar.ChildOfType<Menu>();
             ViewStartupParams = new ViewStartupParams(dynamoVM);
             DynamoSelection.Instance.Selection.CollectionChanged += OnSelectionCollectionChanged;
+            dynamoViewModel.RequestOpenDocumentationLink += OnRequestOpenDocumentationLink;
         }
 
         public void AddMenuItem(MenuBarType type, MenuItem menuItem, int index = -1)
@@ -164,6 +165,17 @@ namespace Dynamo.Wpf.Extensions
         {
             var dynamoMenuItems = dynamoMenu.Items.OfType<MenuItem>();
             return dynamoMenuItems.First(item => item.Header.ToString() == type.ToDisplayString());
+        }
+
+        /// <summary>
+        /// Event raised when a component inside Dynamo raises an error with a documentation link or directly requests a documentation link to be opened.
+        /// Extensions should subscribe to this event to be able to handle RequestOpenDocumentationLink events from Dynamo.
+        /// </summary>
+        public event Action<OpenDocumentationLinkEventArgs> RequestOpenDocumentationLink;
+        public virtual void OnRequestOpenDocumentationLink(OpenDocumentationLinkEventArgs e)
+        {
+            if (RequestOpenDocumentationLink != null)
+                RequestOpenDocumentationLink(e);
         }
 
     }

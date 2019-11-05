@@ -115,11 +115,11 @@ namespace Dynamo.ViewModels
             }
         }
 
-        public event Action RequestOpenDocumentationLink;
+        public event Action<OpenDocumentationLinkEventArgs> RequestOpenDocumentationLink;
         public virtual void OnRequestOpenDocumentationLink(Object sender, OpenDocumentationLinkEventArgs e)
         {
             if (RequestOpenDocumentationLink != null)
-                RequestOpenDocumentationLink();
+                RequestOpenDocumentationLink(e);
 
             // shall we fall back to default browser launch if not ?
             Process.Start(new ProcessStartInfo(e.Link.AbsoluteUri));
