@@ -930,13 +930,13 @@ Parameter name: {0}</value>
     <value>Variable {0} is used in the same statement that you defined it. Recursive dependency is not allowed.</value>
   </data>
   <data name="InvalidArrayIndexType" xml:space="preserve">
-    <value>List indices must be numeric.</value>
+    <value>List indices must be numeric. href=https://dictionary.dynamobim.com/#/Revit/Schedules/ScheduleFilter/Create/ByFieldTypeAndValue</value>
   </data>
   <data name="FailedToConvertArrayToDictionary" xml:space="preserve">
     <value>Cannot convert List to Dictionary type.</value>
   </data>
   <data name="NonOverloadMethodResolutionError" xml:space="preserve">
-    <value>{0} expects argument type(s) ({1}), but was called with ({2}).</value>
+    <value>{0} expects argument type(s) ({1}), but was called with ({2}). href=https://dictionary.dynamobim.com/#/BuiltIn/Action/AllFalse</value>
   </data>
   <data name="DeprecatedListInitializationSyntax" xml:space="preserve">
     <value>Curly braces are no longer used for list creation. Use square brackets instead, like [] or [1,2,3].</value>

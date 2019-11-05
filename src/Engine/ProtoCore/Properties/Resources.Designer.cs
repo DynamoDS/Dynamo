@@ -8,10 +8,10 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace ProtoCore.Properties
-{
-
-
+namespace ProtoCore.Properties {
+    using System;
+    
+    
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -19,7 +19,7 @@ namespace ProtoCore.Properties
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class Resources {
@@ -971,7 +971,7 @@ namespace ProtoCore.Properties
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to List indices must be numeric..
+        ///   Looks up a localized string similar to List indices must be numeric. href=https://dictionary.dynamobim.com/#/Revit/Schedules/ScheduleFilter/Create/ByFieldTypeAndValue.
         /// </summary>
         public static string InvalidArrayIndexType {
             get {
@@ -1970,7 +1970,7 @@ namespace ProtoCore.Properties
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} expects argument type(s) ({1}), but was called with ({2})..
+        ///   Looks up a localized string similar to {0} expects argument type(s) ({1}), but was called with ({2}). href=https://dictionary.dynamobim.com/#/BuiltIn/Action/AllFalse.
         /// </summary>
         public static string NonOverloadMethodResolutionError {
             get {

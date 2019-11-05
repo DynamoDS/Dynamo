@@ -80,6 +80,13 @@ namespace Dynamo.ViewModels
             set { content = value; RaisePropertyChanged("Content"); }
         }
 
+        private Uri errorMessagesLink;
+        public Uri ErrorMessagesLink
+        {
+            get { return errorMessagesLink; }
+            set { errorMessagesLink = value; RaisePropertyChanged(nameof(ErrorMessagesLink)); }
+        }
+
         public Point targetTopLeft;
         public Point TargetTopLeft
         {
@@ -145,6 +152,7 @@ namespace Dynamo.ViewModels
             limitedDirection = Direction.None;
             ConnectingDirection = Direction.None;
             Content = string.Empty;
+            ErrorMessagesLink = null;
             ZIndex = 3;
             InfoBubbleStyle = Style.None;
             InfoBubbleState = State.Minimized;
@@ -163,6 +171,7 @@ namespace Dynamo.ViewModels
             UpdateContent(data.Text);
             TargetTopLeft = data.TopLeft;
             TargetBotRight = data.BotRight;
+            ErrorMessagesLink = data.Link;
         }
 
         private bool CanUpdateInfoBubbleCommand(object parameter)
@@ -279,27 +288,49 @@ namespace Dynamo.ViewModels
                     Content = FullContent;
                     break;
             }
-        }        
-
+        }    
         #endregion
     }
 
     public struct InfoBubbleDataPacket
     {
+        private const string externalLinkIdentifier = "href=";
         public InfoBubbleViewModel.Style Style;
         public Point TopLeft;
         public Point BotRight;
         public string Text;
+        public Uri Link;
         public InfoBubbleViewModel.Direction ConnectingDirection;
 
-        public InfoBubbleDataPacket(InfoBubbleViewModel.Style style, Point topLeft, Point botRight,
-            string text, InfoBubbleViewModel.Direction connectingDirection)
+        public InfoBubbleDataPacket(
+            InfoBubbleViewModel.Style style,
+            Point topLeft,
+            Point botRight,
+            string text,
+            InfoBubbleViewModel.Direction connectingDirection)
         {
             Style = style;
             TopLeft = topLeft;
             BotRight = botRight;
+            Link = CheckIfMessageHasHrefLinkAndExtract(ref text);
             Text = text;
             ConnectingDirection = connectingDirection;
+        }
+
+
+        //Check if has link
+        private static Uri CheckIfMessageHasHrefLinkAndExtract(ref string text)
+        {
+            // if there is no link, we do nothing
+            if (!text.Contains(externalLinkIdentifier)) return null;
+
+            string[] split = text.Split(new string[] { externalLinkIdentifier }, StringSplitOptions.None);
+            if (split.Length <= 1) return null;
+
+            var link = string.IsNullOrWhiteSpace(split[1]) ? null : new Uri(split[1]);
+            text = split[0]; // works ?
+
+            return link;
         }
     }
 }
