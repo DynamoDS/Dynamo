@@ -18,40 +18,18 @@ namespace Dynamo.DocumentationBrowser
     public class DocumentationBrowserViewExtension : IViewExtension, ILogSource
     {
         private MenuItem documentationBrowserMenuItem;
-
-        internal DocumentationBrowserView BrowserView
-        {
-            get;
-            set;
-        }
-
-        internal DocumentationBrowserViewModel ViewModel
-        {
-            get;
-            set;
-        }
+        internal DocumentationBrowserView BrowserView { get; private set; }
+        internal DocumentationBrowserViewModel ViewModel { get; private set; }
 
         /// <summary>
         /// Extension Name
         /// </summary>
-        public string Name
-        {
-            get
-            {
-                return "Documentation Browser ViewExtension";
-            }
-        }
+        public string Name => "Documentation Browser ViewExtension";
 
         /// <summary>
         /// GUID of the extension
         /// </summary>
-        public string UniqueId
-        {
-            get
-            {
-                return "011ec935-fcd6-43f0-ab32-1c5c0f913b33";
-            }
-        }
+        public string UniqueId =>  "011ec935-fcd6-43f0-ab32-1c5c0f913b33";
 
         /// <summary>
         /// Dispose function after extension is closed
@@ -100,6 +78,5 @@ namespace Dynamo.DocumentationBrowser
             };
             viewLoadedParams.AddMenuItem(MenuBarType.View, documentationBrowserMenuItem);
         }
-
     }
 }
