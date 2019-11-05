@@ -261,6 +261,10 @@ namespace Dynamo.ViewModels
 
             // Generate initial condensed content (if needed) whenever bubble content is updated
             GenerateContent();
+
+            // temporary : raise documentation event
+            var content = new OpenDocumentationLinkEventArgs(new Uri("http://dictionary.dynamobim.org"));
+            this.DynamoViewModel.OnRequestOpenDocumentationLink(this, content);
         }
 
         private void GenerateContent()
