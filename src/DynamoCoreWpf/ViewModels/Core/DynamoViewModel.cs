@@ -1885,6 +1885,8 @@ namespace Dynamo.ViewModels
             // otherwise overwrite the home workspace with new workspace
             if (!HomeSpace.HasUnsavedChanges || AskUserToSaveWorkspaceOrCancel(HomeSpace))
             {
+                model.ResetEngine();
+
                 Model.CurrentWorkspace = HomeSpace;
 
                 model.ClearCurrentWorkspace();
