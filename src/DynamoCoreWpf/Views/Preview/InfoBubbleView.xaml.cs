@@ -450,18 +450,17 @@ namespace Dynamo.Controls
                 TextBox textBox = GetNewTextBox(content);
                 ContentContainer.Children.Add(textBox);
 
-                if (viewModel.ErrorMessagesLink != null)
+                if (viewModel.DocumentationLink != null)
                 {
-                    TextBlock linkBlock = GetNewHyperlinkTextBlock(viewModel.ErrorMessagesLink);
+                    TextBlock linkBlock = GetNewHyperlinkTextBlock(viewModel.DocumentationLink);
                     ContentContainer.Children.Add(linkBlock);
                 }
             }
         }
 
-        private void Link_RequestNavigate(object sender, RequestNavigateEventArgs e)
+        private void RequestNavigateToDocumentationLinkHandler(object sender, RequestNavigateEventArgs e)
         {
-            Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri));
-            e.Handled = true;
+            this.viewModel.OpenDocumentationLinkCommand.Execute(e.Uri);
         }
 
         private TextBox GetNewTextBox(string text)
@@ -495,28 +494,30 @@ namespace Dynamo.Controls
 
         private TextBlock GetNewHyperlinkTextBlock(Uri uri)
         {
-            TextBlock linkBlock = new TextBlock();
-            linkBlock.TextWrapping = TextWrapping.Wrap;
-
-            linkBlock.Margin = ContentMargin;
-            linkBlock.MaxHeight = ContentMaxHeight;
-            linkBlock.MaxWidth = ContentMaxWidth;
-
-            linkBlock.Foreground = ContentForeground;
-            linkBlock.FontWeight = ContentFontWeight;
-            linkBlock.FontSize = ContentFontSize;
-
             var font = SharedDictionaryManager.DynamoModernDictionary["OpenSansRegular"];
-            linkBlock.FontFamily = font as FontFamily;
+            TextBlock linkBlock = new TextBlock
+            {
+                TextWrapping = TextWrapping.Wrap,
 
-            linkBlock.Background = Brushes.Transparent;
-            linkBlock.HorizontalAlignment = HorizontalAlignment.Center;
-            linkBlock.VerticalAlignment = VerticalAlignment.Center;
+                Margin = ContentMargin,
+                MaxHeight = ContentMaxHeight,
+                MaxWidth = ContentMaxWidth,
+
+                Foreground = ContentForeground,
+                FontWeight = ContentFontWeight,
+                FontSize = ContentFontSize,
+
+                Background = Brushes.Transparent,
+                HorizontalAlignment = HorizontalAlignment.Center,
+                VerticalAlignment = VerticalAlignment.Center,
+
+                FontFamily = font as FontFamily
+            };
 
             Hyperlink link = new Hyperlink();
             link.NavigateUri = uri;
-            link.RequestNavigate += Link_RequestNavigate;
-            link.Inlines.Add("Read more...");
+            link.RequestNavigate += RequestNavigateToDocumentationLinkHandler;
+            link.Inlines.Add(Wpf.Properties.Resources.InfoBubbleDocumentationLinkText);
             linkBlock.Inlines.Add(link);
 
             return linkBlock;

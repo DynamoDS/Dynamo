@@ -80,11 +80,11 @@ namespace Dynamo.ViewModels
             set { content = value; RaisePropertyChanged("Content"); }
         }
 
-        private Uri errorMessagesLink;
-        public Uri ErrorMessagesLink
+        private Uri documentationLink;
+        public Uri DocumentationLink
         {
-            get { return errorMessagesLink; }
-            set { errorMessagesLink = value; RaisePropertyChanged(nameof(ErrorMessagesLink)); }
+            get { return documentationLink; }
+            set { documentationLink = value; RaisePropertyChanged(nameof(DocumentationLink)); }
         }
 
         public Point targetTopLeft;
@@ -152,7 +152,7 @@ namespace Dynamo.ViewModels
             limitedDirection = Direction.None;
             ConnectingDirection = Direction.None;
             Content = string.Empty;
-            ErrorMessagesLink = null;
+            DocumentationLink = null;
             ZIndex = 3;
             InfoBubbleStyle = Style.None;
             InfoBubbleState = State.Minimized;
@@ -169,9 +169,10 @@ namespace Dynamo.ViewModels
             InfoBubbleStyle = data.Style;
             ConnectingDirection = data.ConnectingDirection;
             UpdateContent(data.Text);
+            this.DocumentationLink = data.Link;
             TargetTopLeft = data.TopLeft;
             TargetBotRight = data.BotRight;
-            ErrorMessagesLink = data.Link;
+            DocumentationLink = data.Link;
         }
 
         private bool CanUpdateInfoBubbleCommand(object parameter)
@@ -217,7 +218,19 @@ namespace Dynamo.ViewModels
             return true;
         }
 
+        private void OpenDocumentationLink(object parameter)
+        {
+            if (parameter is Uri)
+            {
+                var content = new OpenDocumentationLinkEventArgs((Uri)parameter);
+                this.DynamoViewModel.OnRequestOpenDocumentationLink(this, content);
+            }
+        }
 
+        private bool CanOpenDocumentationLink(object parameter)
+        {
+            return true;
+        }
 
         // TODO:Kahheng Refactor away these
         #region TODO:Kahheng Refactor away these
@@ -270,10 +283,6 @@ namespace Dynamo.ViewModels
 
             // Generate initial condensed content (if needed) whenever bubble content is updated
             GenerateContent();
-
-            // temporary : raise documentation event
-            var content = new OpenDocumentationLinkEventArgs(new Uri("http://dictionary.dynamobim.org"));
-            this.DynamoViewModel.OnRequestOpenDocumentationLink(this, content);
         }
 
         private void GenerateContent()
@@ -288,7 +297,7 @@ namespace Dynamo.ViewModels
                     Content = FullContent;
                     break;
             }
-        }    
+        }
         #endregion
     }
 
@@ -328,7 +337,7 @@ namespace Dynamo.ViewModels
             if (split.Length <= 1) return null;
 
             var link = string.IsNullOrWhiteSpace(split[1]) ? null : new Uri(split[1]);
-            text = split[0]; // works ?
+            text = split[0];
 
             return link;
         }
