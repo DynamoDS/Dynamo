@@ -2231,4 +2231,7 @@ Uninstall the following packages: {0}?</value>
   <data name="PublishPackageViewPackageHostDependencyTooltip" xml:space="preserve">
     <value>An indication of what applications outside of Dynamo your package depends on, such as Revit, Civil 3D or Photoshop. Users of your package will need to install these applications to fully utilize your package.</value>
   </data>
+  <data name="InfoBubbleDocumentationLinkText" xml:space="preserve">
+    <value>Read more in the documentation.</value>
+  </data>
 </root>
