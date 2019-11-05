@@ -7,6 +7,8 @@ using Dynamo.Logging;
 using Dynamo.PackageManager;
 using Dynamo.DocumentationBrowser.Properties;
 using Dynamo.Wpf.Extensions;
+using Dynamo.ViewModels;
+using System.Windows;
 
 namespace Dynamo.DocumentationBrowser
 {
@@ -17,6 +19,7 @@ namespace Dynamo.DocumentationBrowser
     /// </summary>
     public class DocumentationBrowserViewExtension : IViewExtension, ILogSource
     {
+        private ViewLoadedParams viewLoadedParams;
         private MenuItem documentationBrowserMenuItem;
         internal DocumentationBrowserView BrowserView { get; private set; }
         internal DocumentationBrowserViewModel ViewModel { get; private set; }
@@ -36,6 +39,8 @@ namespace Dynamo.DocumentationBrowser
         /// </summary>
         public void Dispose()
         {
+            // un-subscribe from the documentation open request event from Dynamo
+            viewLoadedParams.RequestOpenDocumentationLink -= HandleOpenDocumentationLinkEvent;
         }
 
 
@@ -46,6 +51,7 @@ namespace Dynamo.DocumentationBrowser
 
         public void Shutdown()
         {
+
             BrowserView.Dispose();
             ViewModel.Dispose();
             this.Dispose();
@@ -61,8 +67,19 @@ namespace Dynamo.DocumentationBrowser
             this.MessageLogged?.Invoke(msg);
         }
 
+        public void HandleOpenDocumentationLinkEvent(OpenDocumentationLinkEventArgs args)
+        {
+            if (args is null) return;
+
+            MessageBox.Show("Someone requested to navigate to : " + Environment.NewLine + args.Link.ToString());
+            this.ViewModel.IsRemoteResource = args.IsRemoteResource;
+            this.ViewModel.OpenDocumentationLink(args.Link.ToString());
+        }
+
         public void Loaded(ViewLoadedParams viewLoadedParams)
         {
+            this.viewLoadedParams = viewLoadedParams ?? throw new ArgumentNullException(nameof(viewLoadedParams));
+
             ViewModel = new DocumentationBrowserViewModel();
             BrowserView = new DocumentationBrowserView(this, viewLoadedParams);
             // when a package is loaded update the DependencyView 
@@ -73,10 +90,13 @@ namespace Dynamo.DocumentationBrowser
             documentationBrowserMenuItem.Click += (sender, args) =>
             {
                 // Refresh dependency data
-                viewLoadedParams.AddToExtensionsSideBar(this, BrowserView);
-                ViewModel.DocumentationLink(string.Empty);
+                this.viewLoadedParams.AddToExtensionsSideBar(this, BrowserView);
+                ViewModel.OpenDocumentationLink(string.Empty);
             };
-            viewLoadedParams.AddMenuItem(MenuBarType.View, documentationBrowserMenuItem);
+            this.viewLoadedParams.AddMenuItem(MenuBarType.View, documentationBrowserMenuItem);
+
+            // subscribe to the documentation open request event from Dynamo
+            this.viewLoadedParams.RequestOpenDocumentationLink += HandleOpenDocumentationLinkEvent;
         }
     }
 }
