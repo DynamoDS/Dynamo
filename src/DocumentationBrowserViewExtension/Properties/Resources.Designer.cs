@@ -63,9 +63,9 @@ namespace Dynamo.DocumentationBrowser.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Show Documentation Browser.
         /// </summary>
-        public static string MenuItemString {
+        public static string MenuItemText {
             get {
-                return ResourceManager.GetString("MenuItemString", resourceCulture);
+                return ResourceManager.GetString("MenuItemText", resourceCulture);
             }
         }
         

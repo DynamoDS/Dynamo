@@ -1,14 +1,9 @@
-﻿using System;
-using System.Linq;
-using System.Windows.Controls;
-using Dynamo.Extensions;
-using Dynamo.Graph.Workspaces;
+﻿using Dynamo.DocumentationBrowser.Properties;
 using Dynamo.Logging;
-using Dynamo.PackageManager;
-using Dynamo.DocumentationBrowser.Properties;
-using Dynamo.Wpf.Extensions;
 using Dynamo.ViewModels;
-using System.Windows;
+using Dynamo.Wpf.Extensions;
+using System;
+using System.Windows.Controls;
 
 namespace Dynamo.DocumentationBrowser
 {
@@ -32,21 +27,41 @@ namespace Dynamo.DocumentationBrowser
         /// <summary>
         /// GUID of the extension
         /// </summary>
-        public string UniqueId =>  "011ec935-fcd6-43f0-ab32-1c5c0f913b33";
+        public string UniqueId => "68B45FC0-0BD1-435C-BF28-B97CB03C71C8";
 
-        /// <summary>
-        /// Dispose function after extension is closed
-        /// </summary>
-        public void Dispose()
+        #region ILogSource
+
+        public event Action<ILogMessage> MessageLogged;
+        internal void OnMessageLogged(ILogMessage msg)
         {
-            // un-subscribe from the documentation open request event from Dynamo
-            viewLoadedParams.RequestOpenDocumentationLink -= HandleOpenDocumentationLinkEvent;
+            this.MessageLogged?.Invoke(msg);
+        }
+        #endregion
+
+        #region IViewExtension lifecycle
+
+        public void Startup(ViewStartupParams viewLoadedParams)
+        {
         }
 
-
-        [Obsolete("This method is not implemented and will be removed.")]
-        public void Ready(ReadyParams readyParams)
+        public void Loaded(ViewLoadedParams viewLoadedParams)
         {
+            this.viewLoadedParams = viewLoadedParams ?? throw new ArgumentNullException(nameof(viewLoadedParams));
+
+            // initialise the ViewModel and View for the window
+            ViewModel = new DocumentationBrowserViewModel();
+            BrowserView = new DocumentationBrowserView(ViewModel);
+
+            // Add a button to Dynamo View menu to manually show the window
+            documentationBrowserMenuItem = new MenuItem { Header = Resources.MenuItemText };
+            documentationBrowserMenuItem.Click += (sender, args) =>
+            {
+                AddToSidebar();
+            };
+            this.viewLoadedParams.AddMenuItem(MenuBarType.View, documentationBrowserMenuItem);
+
+            // subscribe to the documentation open request event from Dynamo
+            this.viewLoadedParams.RequestOpenDocumentationLink += HandleRequestOpenDocumentationLink;
         }
 
         public void Shutdown()
@@ -57,46 +72,33 @@ namespace Dynamo.DocumentationBrowser
             this.Dispose();
         }
 
-        public void Startup(ViewStartupParams viewLoadedParams)
+        /// <summary>
+        /// Dispose function after extension is closed
+        /// </summary>
+        public void Dispose()
         {
+            // un-subscribe from the documentation open request event from Dynamo
+            viewLoadedParams.RequestOpenDocumentationLink -= HandleRequestOpenDocumentationLink;
         }
 
-        public event Action<ILogMessage> MessageLogged;
-        internal void OnMessageLogged(ILogMessage msg)
-        {
-            this.MessageLogged?.Invoke(msg);
-        }
+        #endregion
 
-        public void HandleOpenDocumentationLinkEvent(OpenDocumentationLinkEventArgs args)
+        public void HandleRequestOpenDocumentationLink(OpenDocumentationLinkEventArgs args)
         {
             if (args is null) return;
 
-            MessageBox.Show("Someone requested to navigate to : " + Environment.NewLine + args.Link.ToString());
-            this.ViewModel.IsRemoteResource = args.IsRemoteResource;
-            this.ViewModel.OpenDocumentationLink(args.Link.ToString());
+            // make sure the view is added to the Sidebar
+            // this also forces the Sidebar to open
+            AddToSidebar();
+
+            // forward the event to the browser ViewModel to handle
+            this.ViewModel.HandleOpenDocumentationLinkEvent(args);
         }
 
-        public void Loaded(ViewLoadedParams viewLoadedParams)
+        private void AddToSidebar()
         {
-            this.viewLoadedParams = viewLoadedParams ?? throw new ArgumentNullException(nameof(viewLoadedParams));
-
-            ViewModel = new DocumentationBrowserViewModel();
-            BrowserView = new DocumentationBrowserView(this, viewLoadedParams);
-            // when a package is loaded update the DependencyView 
-            // as we may have installed a missing package.
-
-            // Adding a button in view menu to refresh and show manually
-            documentationBrowserMenuItem = new MenuItem { Header = Resources.MenuItemString };
-            documentationBrowserMenuItem.Click += (sender, args) =>
-            {
-                // Refresh dependency data
-                this.viewLoadedParams.AddToExtensionsSideBar(this, BrowserView);
-                ViewModel.OpenDocumentationLink(string.Empty);
-            };
-            this.viewLoadedParams.AddMenuItem(MenuBarType.View, documentationBrowserMenuItem);
-
-            // subscribe to the documentation open request event from Dynamo
-            this.viewLoadedParams.RequestOpenDocumentationLink += HandleOpenDocumentationLinkEvent;
+            if (this.BrowserView is null) this.OnMessageLogged(LogMessage.Error("Browser view was not initialised and cannot be added to the sidebar."));
+            this.viewLoadedParams?.AddToExtensionsSideBar(this, BrowserView);
         }
     }
 }
