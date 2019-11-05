@@ -6,17 +6,24 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using System.Windows;
 
 namespace Dynamo.DocumentationBrowser
 {
     public class DocumentationBrowserViewModel : NotificationObject, IDisposable
     {
-        private string linkString;
-        public string LinkString
+        private string link;
+        public string Link
         {
-            get { return linkString; }
-            private set { linkString = value; OnLinkedChanged(value); }  
+            get { return link; }
+            private set { link = value; OnLinkedChanged(value); }
+        }
+
+        public bool isRemoteResource;
+        public bool IsRemoteResource
+        {
+            get { return this.IsRemoteResource; }
+            set { this.isRemoteResource = value; this.RaisePropertyChanged(nameof(IsRemoteResource)); }
         }
 
         internal static Action<string> LinkChanged;
@@ -27,11 +34,19 @@ namespace Dynamo.DocumentationBrowser
         {
         }
 
-        public void DocumentationLink(string link)
+        public void OpenDocumentationLink(string link)
         {
-            link = "C:/Users/matterlab_sylvester/metaspace/metaspace-Server - Documents/03 Client Projects/Autodesk/0020 - Dynamo Error Messages/06 Solution/warning_htmls/kPropertyOfClassNotFound.html";
-            string strContent = File.ReadAllText(link);
-            LinkString = strContent;
+            link = @"C:\Users\radug\metaspace\metaspace-Server - Documents\03 Client Projects\Autodesk\0020 - Dynamo Error Messages\06 Solution\warning_htmls\kPropertyOfClassNotFound.html";
+            try
+            {
+                string strContent = File.ReadAllText(link);
+                Link = strContent;
+            }
+            catch (Exception ex)
+            {
+                // silently fail
+                MessageBox.Show(ex.Message);
+            }
         }
 
         public void Dispose()
