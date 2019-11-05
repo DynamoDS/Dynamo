@@ -7,6 +7,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using System.Windows.Navigation;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Logging;
 using Dynamo.Utilities;
@@ -20,30 +21,25 @@ namespace Dynamo.DocumentationBrowser
     /// </summary>
     public partial class DocumentationBrowserView : Window, IDisposable
     {
+        readonly DocumentationBrowserViewModel viewModel;
 
         /// <summary>
         /// Constructor
         /// </summary>
         /// <param name="p">ViewLoadedParams</param>
-        public DocumentationBrowserView(DocumentationBrowserViewExtension viewExtension, ViewLoadedParams p)
+        public DocumentationBrowserView(DocumentationBrowserViewModel viewModel)
         {
             InitializeComponent();
-            DocumentationBrowserViewModel.LinkChanged += this.NavigateToPage;
-            documentationBrowser.NavigationStarting += DocumentationBrowser_NavigationStarting;
+            this.DataContext = viewModel;
+            this.viewModel = viewModel;
+            viewModel.LinkChanged += this.NavigateToPage;
+            documentationBrowser.AllowDrop = false;
         }
 
-        private void DocumentationBrowser_NavigationStarting(object sender, Microsoft.Toolkit.Win32.UI.Controls.Interop.WinRT.WebViewControlNavigationStartingEventArgs e)
+        public void NavigateToPage(Uri link)
         {
-            if (e.Uri == null) return;
-            if (e.Uri.Scheme != Uri.UriSchemeHttp && e.Uri.Scheme != Uri.UriSchemeHttps) return;
-
-            e.Cancel = true;
-            Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri));       
-        }
-
-        public void NavigateToPage(string link)
-        {
-            documentationBrowser.NavigateToString(link);
+            if (this.viewModel.IsRemoteResource) documentationBrowser.Navigate(link);
+            else documentationBrowser.NavigateToString(this.viewModel.Content);
         }
 
         /// <summary>
@@ -51,7 +47,7 @@ namespace Dynamo.DocumentationBrowser
         /// </summary>
         public void Dispose()
         {
-            DocumentationBrowserViewModel.LinkChanged -= this.NavigateToPage;
+            this.viewModel.LinkChanged -= this.NavigateToPage;
             documentationBrowser.Dispose();
         }
     }

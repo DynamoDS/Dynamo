@@ -20,16 +20,16 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
+        <!-- The web browser control -->
         <WPF:WebViewCompatible Name="documentationBrowser" Grid.Row="0" HorizontalAlignment="Stretch" />
 
-
-        <DockPanel Name="Feedback" VerticalAlignment="Bottom" Grid.Row="1" Width="600" Visibility="{Binding IsRemoteResource}">
-            <!-- Feedback Banner -->
+        <!-- Remote Link Warning Banner -->
+        <DockPanel Name="RemoteLinkBanner" VerticalAlignment="Bottom" Grid.Row="1" Width="600" Visibility="{Binding Path=IsRemoteResource}">
             <StatusBar Background="{DynamicResource FeedbackSectionBackground}" DockPanel.Dock="Bottom" Height="55" Margin="1">
                 <!-- Preview text -->
                 <StatusBarItem>
                     <Border Height="50">
-                        <TextBlock TextWrapping="Wrap" Padding="10,0,10,0" FontSize="15" Foreground="White" Text="Unverified Links in Document" VerticalAlignment="Center"/>
+                        <TextBlock TextWrapping="Wrap" Padding="10,0,10,0" FontSize="15" Foreground="White" Text="Warning! Document being viewed is fetched from an untrusted remote location." VerticalAlignment="Center"/>
                     </Border>
                 </StatusBarItem>
             </StatusBar>
