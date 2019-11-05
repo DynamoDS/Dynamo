@@ -118,11 +118,10 @@ namespace Dynamo.ViewModels
         public event Action<OpenDocumentationLinkEventArgs> RequestOpenDocumentationLink;
         public virtual void OnRequestOpenDocumentationLink(Object sender, OpenDocumentationLinkEventArgs e)
         {
-            if (RequestOpenDocumentationLink != null)
-                RequestOpenDocumentationLink(e);
-
-            // shall we fall back to default browser launch if not ?
-            Process.Start(new ProcessStartInfo(e.Link.AbsoluteUri));
+            // let any registered documentation link handlers process the request
+            if (RequestOpenDocumentationLink != null) RequestOpenDocumentationLink(e);
+            // if no handlers are registered, we fall back to handling the link with the default operating system handler
+            else Process.Start(new ProcessStartInfo(e.Link.AbsoluteUri));
         }
 
         public event Action RequestShowHideSidebar;
