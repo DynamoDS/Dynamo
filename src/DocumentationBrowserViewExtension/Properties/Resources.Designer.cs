@@ -61,78 +61,6 @@ namespace Dynamo.DocumentationBrowser.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Error from WorkspaceDependencyViewExtension: {0}.
-        /// </summary>
-        public static string DependencyViewExtensionErrorTemplate {
-            get {
-                return ResourceManager.GetString("DependencyViewExtensionErrorTemplate", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Some nodes in this graph were originally created with {0} v{1}, which you do not have installed. Instead you have a different version of {0} installed, would you keep the installed version?.
-        /// </summary>
-        public static string DetailsMessageIncorrectVersion {
-            get {
-                return ResourceManager.GetString("DetailsMessageIncorrectVersion", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to {0} {1} is installed and loaded..
-        /// </summary>
-        public static string DetailsMessageLoaded {
-            get {
-                return ResourceManager.GetString("DetailsMessageLoaded", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to This graph depends on {0} {1}. Would you like to download and install this package?.
-        /// </summary>
-        public static string DetailsMessageMissing {
-            get {
-                return ResourceManager.GetString("DetailsMessageMissing", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The package needs to be uninstalled before you can install a different version of it. Please restart Dynamo and then install the specified version..
-        /// </summary>
-        public static string DetailsMessageRequireRestart {
-            get {
-                return ResourceManager.GetString("DetailsMessageRequireRestart", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Some nodes in this graph were originally created with {0} v{1}, which you do not have installed. You may have a different version of {0} installed, or you may have a different package which resolves these nodes..
-        /// </summary>
-        public static string DetailsMessageWarning {
-            get {
-                return ResourceManager.GetString("DetailsMessageWarning", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Install Specified Version.
-        /// </summary>
-        public static string InstallButtonText {
-            get {
-                return ResourceManager.GetString("InstallButtonText", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Keep Installed Version.
-        /// </summary>
-        public static string KeepLocalButtonText {
-            get {
-                return ResourceManager.GetString("KeepLocalButtonText", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Show Documentation Browser.
         /// </summary>
         public static string MenuItemString {
@@ -168,60 +96,6 @@ namespace Dynamo.DocumentationBrowser.Properties {
             get {
                 object obj = ResourceManager.GetObject("NodeLibraryDependency_Warning", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Package.
-        /// </summary>
-        public static string PackageHeaderText {
-            get {
-                return ResourceManager.GetString("PackageHeaderText", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Provide Feedback.
-        /// </summary>
-        public static string ProvideFeedbackButton {
-            get {
-                return ResourceManager.GetString("ProvideFeedbackButton", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Could not redirect to the Dynamo forum page for feedback:.
-        /// </summary>
-        public static string ProvideFeedbackError {
-            get {
-                return ResourceManager.GetString("ProvideFeedbackError", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Click to recalculate workspace dependencies..
-        /// </summary>
-        public static string RefreshButtonTooltipText {
-            get {
-                return ResourceManager.GetString("RefreshButtonTooltipText", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to An installed package is marked for uninstall. To complete the uninstall, please restart Dynamo..
-        /// </summary>
-        public static string RestartBannerMessage {
-            get {
-                return ResourceManager.GetString("RestartBannerMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Version.
-        /// </summary>
-        public static string VersionHeaderText {
-            get {
-                return ResourceManager.GetString("VersionHeaderText", resourceCulture);
             }
         }
     }

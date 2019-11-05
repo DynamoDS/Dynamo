@@ -5,18 +5,34 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:p="clr-namespace:Dynamo.Wpf.Properties;assembly=DynamoCoreWpf"
              xmlns:fa="http://schemas.fontawesome.io/icons/"
-             xmlns:w="clr-namespace:Dynamo.DocumentationBrowser"
+             xmlns:w="clr-namespace:Dynamo.DocumentationBrowser.Properties"
              xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf"
+        
             xmlns:WPF="clr-namespace:Microsoft.Toolkit.Wpf.UI.Controls;assembly=Microsoft.Toolkit.Wpf.UI.Controls.WebView"
              mc:Ignorable="d" 
              VerticalAlignment="Top"
              HorizontalAlignment="Left">
-    <Grid Name="MainGrid" 
+    <Grid Name="MainGrid" Background= "#353535"
           HorizontalAlignment="Stretch"
           VerticalAlignment="Stretch">
-        <WPF:WebViewCompatible Name="documentationBrowser" 
-                     Grid.Row="0"
-                     Grid.Column="0" />
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
 
+        <WPF:WebViewCompatible Name="documentationBrowser" Grid.Row="0" HorizontalAlignment="Stretch" />
+
+
+        <DockPanel Name="Feedback" VerticalAlignment="Bottom" Grid.Row="1" Width="600" Visibility="{Binding IsRemoteResource}">
+            <!-- Feedback Banner -->
+            <StatusBar Background="{DynamicResource FeedbackSectionBackground}" DockPanel.Dock="Bottom" Height="55" Margin="1">
+                <!-- Preview text -->
+                <StatusBarItem>
+                    <Border Height="50">
+                        <TextBlock TextWrapping="Wrap" Padding="10,0,10,0" FontSize="15" Foreground="White" Text="Unverified Links in Document" VerticalAlignment="Center"/>
+                    </Border>
+                </StatusBarItem>
+            </StatusBar>
+        </DockPanel>
     </Grid>
 </Window>
