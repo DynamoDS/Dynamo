@@ -24,7 +24,7 @@
         <WPF:WebViewCompatible Name="documentationBrowser" Grid.Row="0" HorizontalAlignment="Stretch" />
 
         <!-- Remote Link Warning Banner -->
-        <DockPanel Name="RemoteLinkBanner" VerticalAlignment="Bottom" Grid.Row="1" Width="600" Visibility="{Binding Path=IsRemoteResource}">
+        <DockPanel Name="RemoteLinkBanner" VerticalAlignment="Bottom" Grid.Row="1" HorizontalAlignment="Stretch" Visibility="Collapsed">
             <StatusBar Background="{DynamicResource FeedbackSectionBackground}" DockPanel.Dock="Bottom" Height="55" Margin="1">
                 <!-- Preview text -->
                 <StatusBarItem>
