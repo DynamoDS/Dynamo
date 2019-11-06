@@ -34,12 +34,40 @@ namespace Dynamo.DocumentationBrowser
             this.viewModel = viewModel;
             viewModel.LinkChanged += this.NavigateToPage;
             documentationBrowser.AllowDrop = false;
+            documentationBrowser.NavigationStarting += DocumentationBrowser_NavigationStarting;
+        }
+
+        /// <summary>
+        /// Redirect the user to the browser if they press a link in the documentation browser
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void DocumentationBrowser_NavigationStarting(object sender, Microsoft.Toolkit.Win32.UI.Controls.Interop.WinRT.WebViewControlNavigationStartingEventArgs e)
+        {
+            // we need to do a null check as sometimes this event will fire twice and return null
+            if (e.Uri == null) return;
+            // check if the argument Uri is the same as the warning link
+            if (e.Uri.AbsoluteUri.Equals(viewModel.Link.AbsoluteUri)) return;
+            // for local files the argument Uri will return 'about:blank'
+            if (e.Uri.AbsoluteUri == "about:blank") return;
+
+            // if non of the above is true cancel the navigation 
+            // and redirect it to a new process that starts the browser
+            e.Cancel = true;
+            Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri));
         }
 
         public void NavigateToPage(Uri link)
         {
-            if (this.viewModel.IsRemoteResource) documentationBrowser.Navigate(link);
-            else documentationBrowser.NavigateToString(this.viewModel.Content);
+            if (this.viewModel.IsRemoteResource)
+            {
+                RemoteLinkBanner.Visibility = Visibility.Visible;
+                documentationBrowser.Navigate(link);
+                return;
+            }
+
+            RemoteLinkBanner.Visibility = Visibility.Collapsed;
+            documentationBrowser.NavigateToString(this.viewModel.Content);
         }
 
         /// <summary>

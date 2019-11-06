@@ -61,6 +61,47 @@ namespace Dynamo.DocumentationBrowser.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to &lt;!DOCTYPE html&gt;
+        ///
+        ///&lt;style&gt;
+        ///  *{
+        ///      transition: all 0.6s;
+        ///  }
+        ///
+        ///  html {
+        ///      height: 100%;
+        ///  }
+        ///
+        ///  body{
+        ///      font-family: &quot;Artifakt Element&quot;;
+        ///      src: url(&quot;fonts/ArtifaktElement-Regular.woff&quot;) format(&quot;woff&quot;);
+        ///      color: white;
+        ///      margin: 0;
+        ///      background-color: #414141;
+        ///  }
+        ///
+        ///  #main{
+        ///      display: table;
+        ///      width: 100%;
+        ///      height: 100vh;
+        ///      text-align: center;
+        ///  }
+        ///
+        ///  .fof{
+        ///      display: table-cell;
+        ///      vertical-align: middle;
+        ///  }
+        ///
+        ///  .fof h1{
+        ///      fon [rest of string was truncated]&quot;;.
+        /// </summary>
+        public static string DocumentationBrowser404 {
+            get {
+                return ResourceManager.GetString("DocumentationBrowser404", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Show Documentation Browser.
         /// </summary>
         public static string MenuItemText {

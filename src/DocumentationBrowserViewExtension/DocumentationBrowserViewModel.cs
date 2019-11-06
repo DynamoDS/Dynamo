@@ -2,6 +2,8 @@
 using Dynamo.ViewModels;
 using System;
 using System.IO;
+using System.Linq;
+using System.Reflection;
 using System.Windows;
 
 namespace Dynamo.DocumentationBrowser
@@ -39,8 +41,8 @@ namespace Dynamo.DocumentationBrowser
 
         public void HandleOpenDocumentationLinkEvent(OpenDocumentationLinkEventArgs e)
         {
-            this.IsRemoteResource = e.Link.IsFile;
-            if (IsRemoteResource) LoadFileContent(e.Link);
+            this.IsRemoteResource = !e.Link.IsFile;
+            if (!IsRemoteResource) LoadFileContent(e.Link);
 
             this.Link = e.Link;
         }
@@ -54,7 +56,17 @@ namespace Dynamo.DocumentationBrowser
             }
             catch(FileNotFoundException e)
             {
-                this.Content = e.Message;
+                var assembly = Assembly.GetExecutingAssembly();
+                string resourceName = assembly.GetManifestResourceNames()
+                                              .Single(str => str.EndsWith("DocumentationBrowser404.html")); ;
+
+                using (Stream stream = assembly.GetManifestResourceStream(resourceName))
+                using (StreamReader reader = new StreamReader(stream))
+                {
+                    string result = reader.ReadToEnd();
+                    this.Content = result;
+                }
+                
             }
             catch (Exception ex)
             {
