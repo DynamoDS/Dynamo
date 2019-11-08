@@ -15,6 +15,7 @@ namespace Dynamo.Tests
         protected override void GetLibrariesToPreload(List<string> libraries)
         {
             libraries.Add("DesignScriptBuiltin.dll");
+            libraries.Add("DSCoreNodes.dll");
             libraries.Add("DSIronPython.dll");
             base.GetLibrariesToPreload(libraries);
         }
@@ -211,6 +212,19 @@ namespace Dynamo.Tests
                 System.Guid.Empty, pythonNode.GUID, "ScriptContent", value);
 
             ViewModel.ExecuteCommand(command);
+        }
+
+        [Test]
+        public void BigInteger_CanBeMarshaledAsInt64()
+        {
+            // open test graph
+            var examplePath = Path.Combine(TestDirectory, @"core\python", "BigIntegerToLong.dyn");
+            ViewModel.OpenCommand.Execute(examplePath);
+
+            var guid = "23088248d7b1441abbc5ada07fcdf154";
+
+            AssertPreviewValue(guid,
+                new[] {"System.Int64", "System.Double", "System.Int64", "System.Int64", "System.Numerics.BigInteger"});
         }
     }
 }
