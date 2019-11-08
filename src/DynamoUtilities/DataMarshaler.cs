@@ -26,6 +26,20 @@ namespace Dynamo.Utilities
                     // Dictionary<TKey, TValue> and IronPython.Runtime.PythonDictionary both implement IDictionary
                     return dict.Keys.Cast<object>().ToDictionary(key => Marshal(key), key => Marshal(dict[key]));
                 });
+            RegisterMarshaler(
+                (BigInteger bigInt) =>
+                {
+                    long int64;
+                    try
+                    {
+                        int64 = (long)bigInt;
+                    }
+                    catch (OverflowException)
+                    {
+                        return bigInt;
+                    }
+                    return int64;
+                });
         }
 
         /// <summary>
@@ -88,23 +102,7 @@ namespace Dynamo.Utilities
 
             if (!applicable.Any())
             {
-                BigInteger bigInt;
-                if (obj is BigInteger)
-                {
-                    bigInt = (BigInteger) obj;
-                }
-                else return obj;
-
-                long int64;
-                try
-                {
-                    int64 = (long)bigInt;
-                }
-                catch (OverflowException)
-                {
-                    return bigInt;
-                }
-                return int64;
+                return obj;
             }
 
             // Find the marshaler that operates on the closest base type of the target type.
