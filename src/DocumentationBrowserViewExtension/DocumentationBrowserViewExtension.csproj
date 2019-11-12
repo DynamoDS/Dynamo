@@ -74,9 +74,6 @@
     <Compile Include="DocumentationBrowserView.xaml.cs">
       <DependentUpon>DocumentationBrowserView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UserControl1.xaml.cs">
-      <DependentUpon>UserControl1.xaml</DependentUpon>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DynamoCoreWpf\DynamoCoreWpf.csproj">
@@ -99,10 +96,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UserControl1.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.en-US.resx">
@@ -119,7 +112,13 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Resources\DocumentationBrowser404.html" />
+    <Folder Include="Docs\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\InternalError.html" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\FileNotFound.html" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="AfterBuild">
