@@ -95,9 +95,9 @@ namespace Dynamo.DocumentationBrowser.Properties {
         ///  .fof h1{
         ///      fon [rest of string was truncated]&quot;;.
         /// </summary>
-        public static string DocumentationBrowser404 {
+        public static string FileNotFound {
             get {
-                return ResourceManager.GetString("DocumentationBrowser404", resourceCulture);
+                return ResourceManager.GetString("FileNotFound", resourceCulture);
             }
         }
         
