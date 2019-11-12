@@ -23,7 +23,6 @@ using DynamoShapeManager;
 using NUnit.Framework;
 using PythonNodeModels;
 using SystemTestServices;
-using CoreNodeModels;
 using TestServices;
 using IntegerSlider = CoreNodeModels.Input.IntegerSlider;
 
