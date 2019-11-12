@@ -23,6 +23,7 @@ using DynamoShapeManager;
 using NUnit.Framework;
 using PythonNodeModels;
 using SystemTestServices;
+using CoreNodeModels;
 using TestServices;
 using IntegerSlider = CoreNodeModels.Input.IntegerSlider;
 
@@ -5614,6 +5615,8 @@ namespace DynamoCoreWpfTests
                     Assert.IsNotNull(node);
                     Assert.IsTrue(node.IsInErrorState);
                     Assert.AreEqual(1, node.AllConnectors.Count());
+
+                    AssertPreviewValue("44115db6-bf0b-478a-90f6-2719eb65b70d", null);
                 }
             });
         }
