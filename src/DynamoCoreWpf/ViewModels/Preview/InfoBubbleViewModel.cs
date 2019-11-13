@@ -336,8 +336,20 @@ namespace Dynamo.ViewModels
             string[] split = text.Split(new string[] { externalLinkIdentifier }, StringSplitOptions.None);
             if (split.Length <= 1) return null;
 
-            var link = string.IsNullOrWhiteSpace(split[1]) ? null : new Uri(split[1]);
+            // update the text so the link is removed
             text = split[0];
+
+            // try to parse the link into a URI now
+            Uri link;
+            try
+            {
+                link = string.IsNullOrWhiteSpace(split[1]) ? null : new Uri(split[1], UriKind.RelativeOrAbsolute);
+            }
+            catch (Exception)
+            {
+                // could not make Uri from string so clear the link property
+                link = null;
+            }
 
             return link;
         }
