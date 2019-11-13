@@ -58,7 +58,7 @@ namespace Dynamo.DocumentationBrowser
             {
                 var assembly = Assembly.GetExecutingAssembly();
                 string resourceName = assembly.GetManifestResourceNames()
-                                              .Single(str => str.EndsWith("DocumentationBrowser404.html")); ;
+                                              .Single(str => str.EndsWith("FileNotFound.html")); ;
 
                 using (Stream stream = assembly.GetManifestResourceStream(resourceName))
                 using (StreamReader reader = new StreamReader(stream))
