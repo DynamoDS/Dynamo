@@ -1686,6 +1686,7 @@ namespace Dynamo.Models
                 CustomNodeManager);
 
             workspace.FileName = filePath;
+            workspace.Name = Path.GetFileNameWithoutExtension(filePath);
             workspace.ScaleFactor = dynamoPreferences.ScaleFactor;
 
             // NOTE: This is to handle the case of opening a JSON file that does not have a version string
