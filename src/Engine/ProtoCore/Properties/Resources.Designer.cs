@@ -971,7 +971,7 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to List indices must be numeric. href=https://dictionary.dynamobim.com/#/Revit/Schedules/ScheduleFilter/Create/ByFieldTypeAndValue.
+        ///   Looks up a localized string similar to List indices must be numeric. href=InvalidArrayIndexType.html.
         /// </summary>
         public static string InvalidArrayIndexType {
             get {
@@ -1124,7 +1124,7 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Converting a double to an int may lose information.
+        ///   Looks up a localized string similar to Converting a double to an int may lose information. href=testing.html.
         /// </summary>
         public static string kConvertDoubleToInt {
             get {
