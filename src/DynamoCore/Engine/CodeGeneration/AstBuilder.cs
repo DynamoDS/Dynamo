@@ -281,11 +281,7 @@ namespace Dynamo.Engine.CodeGeneration
                     NodeModel inputModel = inputTuple.Item2;
                     AssociativeNode inputNode = inputModel.GetAstIdentifierForOutputIndex(outputIndexOfInput);
 
-                    // If there are any null AST's (for e.g. if there's an error in the input node),
-                    // graph update for the given node is skipped.
-                    Validity.Assert(inputNode != null, "Shouldn't have null nodes in the AST list");
-
-                    inputAstNodes.Add(inputNode);
+                    inputAstNodes.Add(inputNode ?? new NullNode());
                 }
                 else
                 {
@@ -316,7 +312,7 @@ namespace Dynamo.Engine.CodeGeneration
                 OnAstNodeBuilding(node.GUID);
 
 #if DEBUG
-            Validity.Assert(inputAstNodes.All(n => n != null), 
+            Validity.Assert(inputAstNodes.All(n => n != null),
                 "Shouldn't have null nodes in the AST list");
 #endif
 
