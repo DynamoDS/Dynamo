@@ -1,0 +1,13 @@
+name: Greetings
+
+on: [pull_request, issues]
+
+jobs:
+  greeting:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/first-interaction@v1
+      with:
+        repo-token: ${{ secrets.GITHUB_TOKEN }}
+        issue-message: 'Thank you for submitting the issue to us. We are sorry if you get stuck on your workflow. While waiting for our team member to respond, please feel free to browse our forum at https://forum.dynamobim.com/ for more Dynamo related information.'
+        pr-message: 'Thank you for contributing to Dynamo. We are thrilled to see you take a step forward and please allow up to 30 days for us to review your PR. While waiting for our team member to respond, please feel free to browse our forum at https://forum.dynamobim.com/ for more Dynamo related information.'
