@@ -576,6 +576,44 @@ namespace Dynamo.Tests
 
         [Test]
         [Category("UnitTests")]
+        public void CanSaveDifferentTargetWorkspace()
+        {
+            // get empty workspace
+            var dynamoModel = ViewModel.Model;
+            Assert.IsNotNull(dynamoModel.CurrentWorkspace);
+            Assert.AreEqual("Home", ViewModel.Model.CurrentWorkspace.Name);
+
+            // get file path and name of file
+            var filePath = GetNewFileNameOnTempPath("dyn");
+            var fileName = Path.GetFileName(filePath);
+            string extension = Path.GetExtension(filePath);
+            if (extension == ".dyn" || extension == ".dyf")
+            {
+                fileName = Path.GetFileNameWithoutExtension(filePath);
+            }
+
+            // Open a dyf which making the current workspace become custom node workspace
+            var originalDyf = Path.Combine(TestDirectory, @"core\custom_node_saving", "Constant2.dyf");
+            ViewModel.Model.OpenFileFromPath(originalDyf);
+
+            // save Home workspace
+            ViewModel.SaveAs(ViewModel.Workspaces[0].Model.Guid, filePath);
+
+            // save custom node workspace
+            var dyfFilePath = GetNewFileNameOnTempPath("dyf");
+            ViewModel.SaveAs(ViewModel.Workspaces[1].Model.Guid, dyfFilePath);
+
+            // Open the serialized files to verify
+            ViewModel.Model.OpenFileFromPath(filePath);
+            // Home workspace name should be file name
+            Assert.AreEqual(fileName, ViewModel.Model.CurrentWorkspace.Name);
+
+            ViewModel.Model.OpenFileFromPath(dyfFilePath);
+            Assert.AreEqual("Constant2", ViewModel.Model.CurrentWorkspace.Name);
+        }
+
+        [Test]
+        [Category("UnitTests")]
         public void BackUpSaveDoesNotChangeName()
         {
             // get empty workspace
