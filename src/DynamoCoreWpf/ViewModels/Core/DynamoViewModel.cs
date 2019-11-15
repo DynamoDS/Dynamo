@@ -1488,7 +1488,7 @@ namespace Dynamo.ViewModels
         /// <param name="isBackup">Indicates if an automated backup save has called this function.</param>
         /// <exception cref="IOException"></exception>
         /// <exception cref="UnauthorizedAccessException"></exception>
-        public void SaveAs(Guid id, string path, bool isBackup = false)
+        internal void SaveAs(Guid id, string path, bool isBackup = false)
         {
             try
             {
