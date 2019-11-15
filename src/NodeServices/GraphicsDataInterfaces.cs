@@ -29,7 +29,7 @@ namespace Autodesk.DesignScript.Interfaces
         bool DisplayLabels { get; set; }
 
         /// <summary>
-        /// A flag indicating whether the render package requires 
+        /// A flag indicating whether the render package requires
         /// per vertex coloration.
         /// </summary>
         bool RequiresPerVertexColoration { get; set; }
@@ -48,7 +48,7 @@ namespace Autodesk.DesignScript.Interfaces
         /// The number of mesh vertices in the package.
         /// </summary>
         int MeshVertexCount { get; }
-        
+
         /// <summary>
         /// A collection of int values representing how many vertices
         /// comprise each line segment in the package.
@@ -116,12 +116,12 @@ namespace Autodesk.DesignScript.Interfaces
         /// size of one dimension of the collection.
         /// </summary>
         IEnumerable<byte> Colors { get; }
- 
+
         /// <summary>
         /// The size of one dimension of the Colors collection.
         /// </summary>
         int ColorsStride { get; set; }
- 
+
         /// <summary>
         /// Add a point vertex to the render package.
         /// </summary>
@@ -185,6 +185,15 @@ namespace Autodesk.DesignScript.Interfaces
         void ApplyMeshVertexColors(byte[] colors);
 
         /// <summary>
+        /// Add as many vertex color element as necessary to make the vertex color count equal to the vertex count (of point, line, and mesh)
+        /// </summary>
+        /// <param name="red"></param>
+        /// <param name="green"></param>
+        /// <param name="blue"></param>
+        /// <param name="alpha"></param>
+        void FillVertexColors(byte red, byte green, byte blue, byte alpha);
+
+        /// <summary>
         /// Set a an array of bytes to be used as a color map.
         /// </summary>
         /// <param name="colors"></param>
@@ -225,8 +234,8 @@ namespace Autodesk.DesignScript.Interfaces
         /// <summary>
         /// A 4x4 matrix that is used to transform all geometry in the render packaage.
         /// </summary>
-        double[] Transform  { get; } 
-        
+        double[] Transform  { get; }
+
         /// <summary>
         /// Set the transform using a series of doubles. The resulting transform is applied to all geometry in the renderPackage.
         /// Following conventional matrix notation, m11 is the value of the first row and first column, and m12
@@ -265,7 +274,7 @@ namespace Autodesk.DesignScript.Interfaces
         /// </summary>
         /// <param name="matrix"></param>
         void SetTransform(double[] matrix);
-        
+
     }
 
 
@@ -290,7 +299,7 @@ namespace Autodesk.DesignScript.Interfaces
         public bool ShowEdges { get; set; }
 
         /// <summary>
-        /// The scale factor set in the workspace that must be applied to 
+        /// The scale factor set in the workspace that must be applied to
         /// distance and coordinate values used in rendering only ASM geometry.
         /// This scale factor is consumed only by LibG in its Tessellate method implementation.
         /// </summary>
@@ -306,7 +315,7 @@ namespace Autodesk.DesignScript.Interfaces
     }
 
     /// <summary>
-    /// This interface provides graphics data into the RenderPackage interface 
+    /// This interface provides graphics data into the RenderPackage interface
     /// for given set of objects.
     /// </summary>
     public interface IGraphicDataProvider
@@ -330,7 +339,7 @@ namespace Autodesk.DesignScript.Interfaces
     }
 
     /// <summary>
-    /// The interface that represents json data for drawing a graphic primitive 
+    /// The interface that represents json data for drawing a graphic primitive
     /// </summary>
     internal interface IGraphicPrimitives
     {

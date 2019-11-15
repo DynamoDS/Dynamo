@@ -40,22 +40,21 @@ namespace Dynamo.Wpf.Rendering
     {
         #region private members
 
-        private PointGeometry3D points;
-        private LineGeometry3D lines;
-        private MeshGeometry3D mesh;
-        private bool hasData;
+        private PointGeometry3D pointGeometry;
+        private LineGeometry3D lineGeometry;
+        private MeshGeometry3D meshGeometry;
         private List<int> lineStripVertexCounts;
         private byte[] colors;
-        
+
         #endregion
 
         #region constructors
 
         public HelixRenderPackage()
         {
-            points = InitPointGeometry();
-            lines = InitLineGeometry();
-            mesh = InitMeshGeometry();
+            pointGeometry = InitPointGeometry();
+            lineGeometry = InitLineGeometry();
+            meshGeometry = InitMeshGeometry();
             lineStripVertexCounts = new List<int>();
             Transform = System.Windows.Media.Media3D.Matrix3D.Identity.ToArray();
         }
@@ -176,13 +175,13 @@ namespace Dynamo.Wpf.Rendering
         public void Clear()
         {
 
-            points = null;
-            mesh = null;
-            lines = null;
+            pointGeometry = null;
+            meshGeometry = null;
+            lineGeometry = null;
 
-            points = InitPointGeometry();
-            mesh = InitMeshGeometry();
-            lines = InitLineGeometry();
+            pointGeometry = InitPointGeometry();
+            meshGeometry = InitMeshGeometry();
+            lineGeometry = InitLineGeometry();
 
             lineStripVertexCounts.Clear();
 
@@ -199,8 +198,8 @@ namespace Dynamo.Wpf.Rendering
         /// </summary>
         public void AddPointVertex(double x, double y, double z)
         {
-            points.Indices.Add(points.Positions.Count);
-            points.Positions.Add(Vector3ForYUp(x,y,z));
+            pointGeometry.Indices.Add(pointGeometry.Positions.Count);
+            pointGeometry.Positions.Add(Vector3ForYUp(x,y,z));
         }
 
         /// <summary>
@@ -209,7 +208,7 @@ namespace Dynamo.Wpf.Rendering
         public void AddPointVertexColor(byte red, byte green, byte blue, byte alpha)
         {
             var ptColor = Color4FromBytes(red, green, blue, alpha);
-            points.Colors.Add(ptColor);
+            pointGeometry.Colors.Add(ptColor);
         }
 
         /// <summary>
@@ -217,8 +216,8 @@ namespace Dynamo.Wpf.Rendering
         /// </summary>
         public void AddTriangleVertex(double x, double y, double z)
         {
-            mesh.Indices.Add(mesh.Indices.Count);
-            mesh.Positions.Add(Vector3ForYUp(x, y, z));
+            meshGeometry.Indices.Add(meshGeometry.Indices.Count);
+            meshGeometry.Positions.Add(Vector3ForYUp(x, y, z));
         }
 
         /// <summary>
@@ -227,7 +226,7 @@ namespace Dynamo.Wpf.Rendering
         /// </summary>
         public void AddTriangleVertexNormal(double x, double y, double z)
         {
-            mesh.Normals.Add(Vector3ForYUp(x,y,z));
+            meshGeometry.Normals.Add(Vector3ForYUp(x,y,z));
         }
 
         /// <summary>
@@ -235,7 +234,7 @@ namespace Dynamo.Wpf.Rendering
         /// </summary>
         public void AddTriangleVertexUV(double u, double v)
         {
-            mesh.TextureCoordinates.Add(new Vector2((float)u, (float)v));
+            meshGeometry.TextureCoordinates.Add(new Vector2((float)u, (float)v));
         }
 
         /// <summary>
@@ -243,7 +242,7 @@ namespace Dynamo.Wpf.Rendering
         /// </summary>
         public void AddTriangleVertexColor(byte red, byte green, byte blue, byte alpha)
         {
-            mesh.Colors.Add(Color4FromBytes(red,green,blue,alpha));
+            meshGeometry.Colors.Add(Color4FromBytes(red,green,blue,alpha));
         }
 
         /// <summary>
@@ -251,7 +250,7 @@ namespace Dynamo.Wpf.Rendering
         /// </summary>
         public void AddLineStripVertex(double x, double y, double z)
         {
-            lines.Positions.Add(Vector3ForYUp(x,y,z));
+            lineGeometry.Positions.Add(Vector3ForYUp(x,y,z));
         }
 
         /// <summary>
@@ -264,22 +263,22 @@ namespace Dynamo.Wpf.Rendering
             // the tessellated geometry is added to the package.
             // Here we add the indices to the line strip collection
             // which correspond to line segments for the Helix viewer.
-            // Because lines are represented in Helix as a start and 
+            // Because lines are represented in Helix as a start and
             // an end point, we duplicate every point except the first
             // and the last.
 
             lineStripVertexCounts.Add(n);
 
-            var idxCount = lines.Indices.Any() ? lines.Indices.Last() + 1 : 0;
+            var idxCount = lineGeometry.Indices.Any() ? lineGeometry.Indices.Last() + 1 : 0;
 
             for (var i = 0; i < n; ++i)
             {
                 if (i != 0 && i != n - 1)
                 {
-                    lines.Indices.Add(idxCount);
+                    lineGeometry.Indices.Add(idxCount);
                 }
 
-                lines.Indices.Add(idxCount);
+                lineGeometry.Indices.Add(idxCount);
                 idxCount++;
             }
         }
@@ -289,7 +288,7 @@ namespace Dynamo.Wpf.Rendering
         /// </summary>
         public void AddLineStripVertexColor(byte red, byte green, byte blue, byte alpha)
         {
-            lines.Colors.Add(Color4FromBytes(red,green,blue,alpha));
+            lineGeometry.Colors.Add(Color4FromBytes(red,green,blue,alpha));
         }
 
         /// <summary>
@@ -320,13 +319,13 @@ namespace Dynamo.Wpf.Rendering
         /// <param name="colors">A buffer of R,G,B,A values corresponding to each vertex.</param>
         public void ApplyPointVertexColors(byte[] colors)
         {
-            if (colors.Count()/4 != points.Positions.Count)
+            if (colors.Count()/4 != pointGeometry.Positions.Count)
             {
                 throw new Exception("The number of colors specified must be equal to the number of vertices.");
             }
 
-            points.Colors = null;
-            points.Colors = colors.ToColor4Collection();
+            pointGeometry.Colors = null;
+            pointGeometry.Colors = colors.ToColor4Collection();
         }
 
         /// <summary>
@@ -357,13 +356,13 @@ namespace Dynamo.Wpf.Rendering
         /// <param name="colors">A buffer of R,G,B,A values corresponding to each vertex.</param>
         public void ApplyLineVertexColors(byte[] colors)
         {
-            if (colors.Count() / 4 != lines.Positions.Count)
+            if (colors.Count() / 4 != lineGeometry.Positions.Count)
             {
                 throw new Exception("The number of colors specified must be equal to the number of vertices.");
             }
 
-            lines.Colors = null;
-            lines.Colors = colors.ToColor4Collection();
+            lineGeometry.Colors = null;
+            lineGeometry.Colors = colors.ToColor4Collection();
         }
 
         /// <summary>
@@ -394,13 +393,29 @@ namespace Dynamo.Wpf.Rendering
         /// <param name="colors">A buffer of R,G,B,A values corresponding to each vertex.</param>
         public void ApplyMeshVertexColors(byte[] colors)
         {
-            if (colors.Count() / 4 != mesh.Positions.Count)
+            if (colors.Count() / 4 != meshGeometry.Positions.Count)
             {
                 throw new Exception("The number of colors specified must be equal to the number of vertices.");
             }
 
-            mesh.Colors = null;
-            mesh.Colors = colors.ToColor4Collection();
+            meshGeometry.Colors = null;
+            meshGeometry.Colors = colors.ToColor4Collection();
+        }
+
+        /// <summary>
+        /// Add as many vertex color element as necessary to make the vertex color count equal to the vertex count (of point, line, and mesh)
+        /// </summary>
+        /// <param name="red"></param>
+        /// <param name="green"></param>
+        /// <param name="blue"></param>
+        /// <param name="alpha"></param>
+        /// <exception cref="NotImplementedException"></exception>
+        public void FillVertexColors(byte red, byte green, byte blue, byte alpha)
+        {
+            Color4 color = Color4FromBytes(red, green, blue, alpha);
+            for (int i = pointGeometry.Colors.Count; i < pointGeometry.Positions.Count; i++) pointGeometry.Colors.Add(color);
+            for (int i = lineGeometry.Colors.Count; i < lineGeometry.Positions.Count; i++) lineGeometry.Colors.Add(color);
+            for (int i = meshGeometry.Colors.Count; i < meshGeometry.Positions.Count; i++) meshGeometry.Colors.Add(color);
         }
 
         private bool HasValidStartEnd(int startIndex, int endIndex, Geometry3D geom, out string message)
@@ -440,9 +455,9 @@ namespace Dynamo.Wpf.Rendering
         {
             get
             {
-                var hasData = points.Positions.Count > 0 || 
-                    lines.Positions.Count > 0 ||
-                    mesh.Positions.Count > 0;
+                var hasData = pointGeometry.Positions.Count > 0 ||
+                    lineGeometry.Positions.Count > 0 ||
+                    meshGeometry.Positions.Count > 0;
                 return hasData;
             }
         }
@@ -453,7 +468,7 @@ namespace Dynamo.Wpf.Rendering
         public bool DisplayLabels { get; set; }
 
         /// <summary>
-        /// A flag indicating whether the render package requires 
+        /// A flag indicating whether the render package requires
         /// per vertex coloration.
         /// </summary>
         public bool RequiresPerVertexColoration { get; set; }
@@ -463,7 +478,7 @@ namespace Dynamo.Wpf.Rendering
         /// </summary>
         public int PointVertexCount
         {
-            get { return points.Positions.Count; }
+            get { return pointGeometry.Positions.Count; }
         }
 
         /// <summary>
@@ -471,7 +486,7 @@ namespace Dynamo.Wpf.Rendering
         /// </summary>
         public int LineVertexCount
         {
-            get { return lines.Positions.Count; }
+            get { return lineGeometry.Positions.Count; }
         }
 
         /// <summary>
@@ -479,7 +494,7 @@ namespace Dynamo.Wpf.Rendering
         /// </summary>
         public int MeshVertexCount
         {
-            get { return mesh.Positions.Count; }
+            get { return meshGeometry.Positions.Count; }
         }
 
         public IEnumerable<int> LineStripVertexCounts
@@ -492,57 +507,57 @@ namespace Dynamo.Wpf.Rendering
 
         public IEnumerable<double> LineStripVertices
         {
-            get { return lines.Positions.ToEnumerable(); }
+            get { return lineGeometry.Positions.ToEnumerable(); }
         }
 
         public IEnumerable<byte> LineStripVertexColors
         {
-            get { return lines.Colors.ToEnumerable(); }
+            get { return lineGeometry.Colors.ToEnumerable(); }
         }
 
         public IEnumerable<int> LineStripIndices
         {
-            get { return lines.Indices.ToArray(); }
+            get { return lineGeometry.Indices.ToArray(); }
         }
 
         public IEnumerable<double> MeshVertices
         {
-            get { return mesh.Positions.ToEnumerable(); }
+            get { return meshGeometry.Positions.ToEnumerable(); }
         }
 
         public IEnumerable<byte> MeshVertexColors
         {
-            get { return mesh.Colors.ToEnumerable(); }
+            get { return meshGeometry.Colors.ToEnumerable(); }
         }
 
         public IEnumerable<int> MeshIndices
         {
-            get { return mesh.Indices.ToArray(); }
+            get { return meshGeometry.Indices.ToArray(); }
         }
 
         public IEnumerable<double> MeshNormals
         {
-            get { return mesh.Normals.ToEnumerable(); }
+            get { return meshGeometry.Normals.ToEnumerable(); }
         }
 
         public IEnumerable<double> MeshTextureCoordinates
         {
-            get { return mesh.TextureCoordinates.ToEnumerable(); }
+            get { return meshGeometry.TextureCoordinates.ToEnumerable(); }
         }
 
         public IEnumerable<double> PointVertices
         {
-            get { return points.Positions.ToEnumerable(); }
+            get { return pointGeometry.Positions.ToEnumerable(); }
         }
 
         public IEnumerable<byte> PointVertexColors
         {
-            get { return points.Colors.ToEnumerable(); }
+            get { return pointGeometry.Colors.ToEnumerable(); }
         }
 
         public IEnumerable<int> PointIndices
         {
-            get { return points.Indices.ToArray(); }
+            get { return pointGeometry.Indices.ToArray(); }
         }
 
         public IEnumerable<byte> Colors
@@ -556,19 +571,19 @@ namespace Dynamo.Wpf.Rendering
 
         public MeshGeometry3D Mesh
         {
-            get { return mesh; }
+            get { return meshGeometry; }
         }
 
         public LineGeometry3D Lines
         {
-            get { return lines; }
+            get { return lineGeometry; }
         }
 
         public PointGeometry3D Points
         {
             get
             {
-                return points;
+                return pointGeometry;
             }
         }
 
@@ -580,7 +595,7 @@ namespace Dynamo.Wpf.Rendering
                 Indices = new IntCollection(),
                 Colors = new Color4Collection()
             };
-            
+
             return lines;
         }
 
