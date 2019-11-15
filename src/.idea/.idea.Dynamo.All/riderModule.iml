@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module type="RIDER_MODULE" version="4">
+  <component name="NewModuleRootManager">
+    <content url="file://$MODULE_DIR$/../.." />
+    <content url="file://$MODULE_DIR$/../../../test/DynamoCoreTests" />
+    <content url="file://$MODULE_DIR$/../../../test/DynamoCoreWpfTests" />
+    <content url="file://$MODULE_DIR$/../../../test/Engine/FFITarget" />
+    <content url="file://$MODULE_DIR$/../../../test/Engine/ProtoTest" />
+    <content url="file://$MODULE_DIR$/../../../test/Engine/ProtoTestConsoleRunner" />
+    <content url="file://$MODULE_DIR$/../../../test/Engine/ProtoTestFx" />
+    <content url="file://$MODULE_DIR$/../../../test/Libraries/AnalysisTests" />
+    <content url="file://$MODULE_DIR$/../../../test/Libraries/CommandLineTests" />
+    <content url="file://$MODULE_DIR$/../../../test/Libraries/CoreNodesTests" />
+    <content url="file://$MODULE_DIR$/../../../test/Libraries/DataBridgeTests" />
+    <content url="file://$MODULE_DIR$/../../../test/Libraries/DynamoMSOfficeTests" />
+    <content url="file://$MODULE_DIR$/../../../test/Libraries/DynamoPythonTests" />
+    <content url="file://$MODULE_DIR$/../../../test/Libraries/DynamoUtilitiesTests" />
+    <content url="file://$MODULE_DIR$/../../../test/Libraries/GeometryColorTests" />
+    <content url="file://$MODULE_DIR$/../../../test/Libraries/NodeServicesTest" />
+    <content url="file://$MODULE_DIR$/../../../test/Libraries/PackageManagerTests" />
+    <content url="file://$MODULE_DIR$/../../../test/Libraries/SystemTestServices" />
+    <content url="file://$MODULE_DIR$/../../../test/Libraries/TestServices" />
+    <content url="file://$MODULE_DIR$/../../../test/Libraries/WorkflowTests" />
+    <content url="file://$MODULE_DIR$/../../../test/TestUINodes" />
+    <content url="file://$MODULE_DIR$/../../../test/ViewExtensionLibraryTests" />
+    <content url="file://$MODULE_DIR$/../../../test/System/IntegrationTests" />
+    <orderEntry type="sourceFolder" forTests="false" />
+  </component>
+</module>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ContentModelStore">
+    <e p="C:\Users\longn\.Rider2019.2\config\consoles\ide" t="IncludeRecursive" />
+    <e p="C:\Users\longn\.Rider2019.2\config\scratches" t="IncludeRecursive" />
+    <e p="C:\Users\longn\.Rider2019.2\system\extResources" t="IncludeRecursive" />
+    <e p="C:\Users\longn\.Rider2019.2\system\resharper-host\local\Transient\ReSharperHost\v192\SolutionCaches\_.19.00" t="ExcludeRecursive" />
+    <e p="D:\Desktop\Dynamo" t="IncludeFlat" />
+  </component>
+</project>

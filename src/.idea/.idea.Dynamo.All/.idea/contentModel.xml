@@ -1,0 +1,2357 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ContentModelStore">
+    <e p="C:\Users\longn\.Rider2019.2\config\consoles\ide" t="IncludeRecursive" />
+    <e p="C:\Users\longn\.Rider2019.2\config\scratches" t="IncludeRecursive" />
+    <e p="C:\Users\longn\.Rider2019.2\system\extResources" t="IncludeRecursive" />
+    <e p="C:\Users\longn\.Rider2019.2\system\resharper-host\local\Transient\ReSharperHost\v192\SolutionCaches\_Dynamo.All.-1496547842.00" t="ExcludeRecursive" />
+    <e p="D:\Desktop\DynamoDS\Dynamo\Bin\AnyCPU\Release" t="ExcludeRecursive">
+      <e p="int\Release" t="ExcludeRecursive" />
+      <e p="int\x64\Release" t="ExcludeRecursive" />
+      <e p="Nodes" t="ExcludeRecursive" />
+    </e>
+    <e p="D:\Desktop\DynamoDS\Dynamo\src" t="IncludeFlat">
+      <e p="AssemblySharedInfoGenerator" t="IncludeRecursive">
+        <e p="AssemblyInfoGenerator.csproj" t="IncludeRecursive" />
+        <e p="AssemblySharedInfo.cs" t="Include" />
+        <e p="AssemblySharedInfo.tt" t="Include" />
+        <e p="Bin" t="ExcludeRecursive" />
+        <e p="Properties" t="Include">
+          <e p="AssemblyInfo.cs" t="Include" />
+        </e>
+      </e>
+      <e p="Dynamo.All.sln" t="IncludeFlat" />
+      <e p="DynamoApplications" t="IncludeRecursive">
+        <e p="DynamoApplications.csproj" t="IncludeRecursive" />
+        <e p="PathResolvers.cs" t="Include" />
+        <e p="Properties" t="Include">
+          <e p="AssemblyInfo.cs" t="Include" />
+          <e p="Resources.Designer.cs" t="Include" />
+          <e p="Resources.en-US.Designer.cs" t="Include" />
+          <e p="Resources.en-US.resx" t="Include" />
+          <e p="Resources.resx" t="Include" />
+        </e>
+        <e p="StartupUtils.cs" t="Include" />
+      </e>
+      <e p="DynamoCLI" t="IncludeRecursive">
+        <e p="App.config" t="Include" />
+        <e p="CommandLineRunner.cs" t="Include" />
+        <e p="DynamoCLI.csproj" t="IncludeRecursive" />
+        <e p="Program.cs" t="Include" />
+        <e p="Properties" t="Include">
+          <e p="AssemblyInfo.cs" t="Include" />
+        </e>
+      </e>
+      <e p="DynamoCore" t="IncludeRecursive">
+        <e p="App.config" t="Include" />
+        <e p="BuiltInAndOperators" t="Include">
+          <e p="BuiltIn.Migrations.xml" t="Include" />
+          <e p="BuiltIn.xml" t="Include" />
+          <e p="BuiltInImages.resx" t="Include" />
+          <e p="Operators.xml" t="Include" />
+          <e p="OperatorsImages.resx" t="Include" />
+        </e>
+        <e p="Configuration" t="Include">
+          <e p="Configurations.cs" t="Include" />
+          <e p="Context.cs" t="Include" />
+          <e p="DebugSettings.cs" t="Include" />
+          <e p="ExecutionSession.cs" t="Include" />
+          <e p="IPathResolver.cs" t="Include" />
+          <e p="IPreferences.cs" t="Include" />
+          <e p="PathManager.cs" t="Include" />
+          <e p="PreferenceSettings.cs" t="Include" />
+        </e>
+        <e p="Core" t="Include">
+          <e p="AuthenticationManager.cs" t="Include" />
+          <e p="CrashPromptArgs.cs" t="Include" />
+          <e p="CustomNodeDefinition.cs" t="Include" />
+          <e p="CustomNodeManager.cs" t="Include" />
+          <e p="DynamoMigrator.cs" t="Include" />
+          <e p="DynamoSelection.cs" t="Include" />
+          <e p="NodeModelAssemblyLoader.cs" t="Include" />
+          <e p="NotificationObject.cs" t="Include" />
+          <e p="PulseMaker.cs" t="Include" />
+          <e p="UndoRedoRecorder.cs" t="Include" />
+        </e>
+        <e p="DynamoCore.csproj" t="IncludeRecursive" />
+        <e p="DynamoCoreImages.resx" t="Include" />
+        <e p="Engine" t="Include">
+          <e p="CodeCompletion" t="Include">
+            <e p="CodeCompletionServices.cs" t="Include" />
+          </e>
+          <e p="CodeGeneration" t="Include">
+            <e p="AstBuilder.cs" t="Include" />
+            <e p="CompilationContext.cs" t="Include" />
+            <e p="CompiledEventArgs.cs" t="Include" />
+            <e p="CompilingEventArgs.cs" t="Include" />
+            <e p="IAstNodeContainer.cs" t="Include" />
+          </e>
+          <e p="EngineController.cs" t="Include" />
+          <e p="LinkedListOfList.cs" t="Include" />
+          <e p="LiveRunnerServices.cs" t="Include" />
+          <e p="NodeToCode" t="Include">
+            <e p="NodeToCode.cs" t="Include" />
+          </e>
+          <e p="Profiling" t="Include">
+            <e p="IProfilingExecutionTimeData.cs" t="Include" />
+            <e p="NodeProfilingData.cs" t="Include" />
+            <e p="ProfilingData.cs" t="Include" />
+            <e p="ProfilingSession.cs" t="Include" />
+          </e>
+          <e p="ShortestQualifiedNameReplacer.cs" t="Include" />
+          <e p="SyncDataManager.cs" t="Include" />
+        </e>
+        <e p="Exceptions" t="Include">
+          <e p="CustomNodePackageLoadException.cs" t="Include" />
+          <e p="LibraryLoadFailedException.cs" t="Include" />
+        </e>
+        <e p="Extensions" t="Include">
+          <e p="EnumExtension.cs" t="Include" />
+          <e p="ExtensionCommandExecutive.cs" t="Include" />
+          <e p="ExtensionDefinition.cs" t="Include" />
+          <e p="ExtensionLibraryLoader.cs" t="Include" />
+          <e p="ExtensionLoader.cs" t="Include" />
+          <e p="ExtensionManager.cs" t="Include" />
+          <e p="ICommandExecutive.cs" t="Include" />
+          <e p="IExtension.cs" t="Include" />
+          <e p="IExtensionLoader.cs" t="Include" />
+          <e p="IExtensionManager.cs" t="Include" />
+          <e p="IServiceManager.cs" t="Include" />
+          <e p="ReadyParams.cs" t="Include" />
+          <e p="StartupParams.cs" t="Include" />
+        </e>
+        <e p="Graph" t="Include">
+          <e p="Annotations" t="Include">
+            <e p="AnnotationModel.cs" t="Include" />
+          </e>
+          <e p="Connectors" t="Include">
+            <e p="ConnectorModel.cs" t="Include" />
+          </e>
+          <e p="ModelBase.cs" t="Include" />
+          <e p="NodeGraph.cs" t="Include" />
+          <e p="Nodes" t="Include">
+            <e p="Attributes.cs" t="Include" />
+            <e p="CodeBlockNode.cs" t="Include" />
+            <e p="CodeBlockUtils.cs" t="Include" />
+            <e p="CustomNodes" t="Include">
+              <e p="CustomNodeController.cs" t="Include" />
+              <e p="Function.cs" t="Include" />
+              <e p="ICustomNodeManager.cs" t="Include" />
+              <e p="ICustomNodeSource.cs" t="Include" />
+            </e>
+            <e p="DummyNode.cs" t="Include" />
+            <e p="FunctionCallBase.cs" t="Include" />
+            <e p="FunctionCallNodeController.cs" t="Include" />
+            <e p="NodeCategories.cs" t="Include" />
+            <e p="NodeInputData.cs" t="Include" />
+            <e p="NodeLoaders" t="Include">
+              <e p="CodeBlockNodeLoader.cs" t="Include" />
+              <e p="CustomNodeLoader.cs" t="Include" />
+              <e p="InputNodeLoader.cs" t="Include" />
+              <e p="NodeFactory.cs" t="Include" />
+              <e p="ZeroTouchNodeLoader.cs" t="Include" />
+            </e>
+            <e p="NodeModel.cs" t="Include" />
+            <e p="NodeModelExtensions.cs" t="Include" />
+            <e p="NodeOutputData.cs" t="Include" />
+            <e p="PortModel.cs" t="Include" />
+            <e p="ScopedNodeModel.cs" t="Include" />
+            <e p="TypeLoadData.cs" t="Include" />
+            <e p="VariableInputNode.cs" t="Include" />
+            <e p="ZeroTouch" t="Include">
+              <e p="DSFunction.cs" t="Include" />
+              <e p="DSFunctionBase.cs" t="Include" />
+              <e p="DSVarArgFunction.cs" t="Include" />
+              <e p="UnresolvedFunctionException.cs" t="Include" />
+            </e>
+          </e>
+          <e p="Notes" t="Include">
+            <e p="NoteModel.cs" t="Include" />
+          </e>
+          <e p="Presets" t="Include">
+            <e p="PresetModel.cs" t="Include" />
+          </e>
+          <e p="Workspaces" t="Include">
+            <e p="CustomNodeWorkspaceModel.cs" t="Include" />
+            <e p="HomeWorkspaceModel.cs" t="Include" />
+            <e p="ICustomNodeWorkspaceModel.cs" t="Include" />
+            <e p="IWorkspaceModel.cs" t="Include" />
+            <e p="LayoutExtensions.cs" t="Include" />
+            <e p="NodesToCodeExtensions.cs" t="Include" />
+            <e p="PackageDependencyInfo.cs" t="Include" />
+            <e p="PresetExtensions.cs" t="Include" />
+            <e p="SerializationConverters.cs" t="Include" />
+            <e p="SerializationExtensions.cs" t="Include" />
+            <e p="UndoRedo.cs" t="Include" />
+            <e p="WorkspaceInfo.cs" t="Include" />
+            <e p="WorkspaceModel.cs" t="Include" />
+          </e>
+        </e>
+        <e p="Interfaces" t="Include">
+          <e p="IDynamoModel.cs" t="Include" />
+        </e>
+        <e p="Library" t="Include">
+          <e p="DocumentationServices.cs" t="Include" />
+          <e p="FunctionDescriptor.cs" t="Include" />
+          <e p="FunctionGroup.cs" t="Include" />
+          <e p="FunctionType.cs" t="Include" />
+          <e p="ILibraryLoader.cs" t="Include" />
+          <e p="LibraryCustomization.cs" t="Include" />
+          <e p="LibraryServices.cs" t="Include" />
+          <e p="MemberDocumentNode.cs" t="Include" />
+          <e p="TypedParameter.cs" t="Include" />
+          <e p="XmlDocumentationExtensions.cs" t="Include" />
+        </e>
+        <e p="Logging" t="Include">
+          <e p="AnalyticsService.cs" t="Include" />
+          <e p="DynamoAnalyticsClient.cs" t="Include" />
+          <e p="DynamoLogger.cs" t="Include" />
+          <e p="Heartbeat.cs" t="Include" />
+          <e p="IAnalyticsSession.cs" t="Include" />
+          <e p="ILogger.cs" t="Include" />
+          <e p="Log.cs" t="Include" />
+          <e p="LogMessage.cs" t="Include" />
+          <e p="LogSource.cs" t="Include" />
+          <e p="NotificationMessage.cs" t="Include" />
+          <e p="StabilityTracking.cs" t="Include" />
+        </e>
+        <e p="Migration" t="Include">
+          <e p="Migration.cs" t="Include" />
+          <e p="MigrationReport.cs" t="Include" />
+          <e p="WorkspaceMigrations.cs" t="Include" />
+        </e>
+        <e p="Models" t="Include">
+          <e p="DynamoModel.cs" t="Include" />
+          <e p="DynamoModelCommands.cs" t="Include" />
+          <e p="DynamoModelDelegates.cs" t="Include" />
+          <e p="DynamoModelEventArgs.cs" t="Include" />
+          <e p="DynamoModelEvents.cs" t="Include" />
+          <e p="RecordableCommands.cs" t="Include" />
+          <e p="RunSettings.cs" t="Include" />
+        </e>
+        <e p="packages.config" t="Include" />
+        <e p="Properties" t="Include">
+          <e p="Annotations.cs" t="Include" />
+          <e p="AssemblyInfo.cs" t="Include" />
+          <e p="Resources.Designer.cs" t="Include" />
+          <e p="Resources.en-US.Designer.cs" t="Include" />
+          <e p="Resources.en-US.resx" t="Include" />
+          <e p="Resources.resx" t="Include" />
+          <e p="Settings.Designer.cs" t="Include" />
+          <e p="Settings.settings" t="Include" />
+        </e>
+        <e p="Scheduler" t="Include">
+          <e p="AsyncTask.cs" t="Include" />
+          <e p="AsyncTaskExtensions.cs" t="Include" />
+          <e p="CompileCustomNodeAsyncTask.cs" t="Include" />
+          <e p="DelegateBasedAsyncTask.cs" t="Include" />
+          <e p="Disposable.cs" t="Include" />
+          <e p="DynamoScheduler.cs" t="Include" />
+          <e p="DynamoSchedulerInternals.cs" t="Include" />
+          <e p="ISchedulerThread.cs" t="Include" />
+          <e p="PreviewGraphAsyncTask.cs" t="Include" />
+          <e p="QueryMirrorDataAsyncTask.cs" t="Include" />
+          <e p="SchedulerThread.cs" t="Include" />
+          <e p="SetTraceDataAsyncTask.cs" t="Include" />
+          <e p="TimeStampGenerator.cs" t="Include" />
+          <e p="UpdateGraphAsyncTask.cs" t="Include" />
+          <e p="UpdateRenderPackageAsyncTask.cs" t="Include" />
+        </e>
+        <e p="Search" t="Include">
+          <e p="BrowserInternalElement.cs" t="Include" />
+          <e p="BrowserItem.cs" t="Include" />
+          <e p="ISearchCategory.cs" t="Include" />
+          <e p="ISearchEntry.cs" t="Include" />
+          <e p="ISource.cs" t="Include" />
+          <e p="NodeSearchModel.cs" t="Include" />
+          <e p="SearchDictionary.cs" t="Include" />
+          <e p="SearchElements" t="Include">
+            <e p="CodeBlockNodeSearchElement.cs" t="Include" />
+            <e p="CustomNodeSearchElement.cs" t="Include" />
+            <e p="NodeModelSearchElement.cs" t="Include" />
+            <e p="NodeModelSearchElementBase.cs" t="Include" />
+            <e p="NodeSearchElement.cs" t="Include" />
+            <e p="SearchElementBase.cs" t="Include" />
+            <e p="SearchElementGroup.cs" t="Include" />
+            <e p="ZeroTouchSearchElement.cs" t="Include" />
+          </e>
+          <e p="SearchLibrary.cs" t="Include" />
+        </e>
+        <e p="Updates" t="Include">
+          <e p="BinaryVersion.cs" t="Include" />
+          <e p="UpdateManager.cs" t="Include" />
+        </e>
+        <e p="Utilities" t="Include">
+          <e p="ResourceLoader.cs" t="Include" />
+        </e>
+        <e p="Visualization" t="Include">
+          <e p="DefaultGraphicPrimitives.cs" t="Include" />
+          <e p="DefaultRenderPackageFactory.cs" t="Include" />
+          <e p="GeometryHolder.cs" t="Include" />
+          <e p="IRenderPackageFactory.cs" t="Include" />
+          <e p="IRenderPackageSource.cs" t="Include" />
+          <e p="RenderPackageCache.cs" t="Include" />
+        </e>
+      </e>
+      <e p="DynamoCoreWpf" t="IncludeRecursive">
+        <e p="App.config" t="Include" />
+        <e p="Commands" t="Include">
+          <e p="AutomationSettings.cs" t="Include" />
+          <e p="ConnectorCommands.cs" t="Include" />
+          <e p="DynamoCommands.cs" t="Include" />
+          <e p="InfoBubbleCommand.cs" t="Include" />
+          <e p="NodeCommands.cs" t="Include" />
+          <e p="NoteCommands.cs" t="Include" />
+          <e p="PortCommands.cs" t="Include" />
+          <e p="SearchCommands.cs" t="Include" />
+          <e p="WorkspaceCommands.cs" t="Include" />
+        </e>
+        <e p="Controls" t="Include">
+          <e p="ClassInformationView.xaml" t="Include" />
+          <e p="ClassInformationView.xaml.cs" t="Include" />
+          <e p="DragCanvas.cs" t="Include" />
+          <e p="DynamoNodeButton.cs" t="Include" />
+          <e p="DynamoTextBox.cs" t="Include" />
+          <e p="GraphUpdateNotificationControl.xaml" t="Include" />
+          <e p="GraphUpdateNotificationControl.xaml.cs" t="Include" />
+          <e p="HeaderStrip.xaml" t="Include" />
+          <e p="HeaderStrip.xaml.cs" t="Include" />
+          <e p="ImageBasedControls.cs" t="Include" />
+          <e p="InCanvasSearchControl.xaml" t="Include" />
+          <e p="InCanvasSearchControl.xaml.cs" t="Include" />
+          <e p="InfiniteGridView.xaml" t="Include" />
+          <e p="InfiniteGridView.xaml.cs" t="Include" />
+          <e p="Login.xaml" t="Include" />
+          <e p="Login.xaml.cs" t="Include" />
+          <e p="NotificationsControl.xaml" t="Include" />
+          <e p="NotificationsControl.xaml.cs" t="Include" />
+          <e p="ParentMenuItem.cs" t="Include" />
+          <e p="RunSettingsControl.xaml" t="Include" />
+          <e p="RunSettingsControl.xaml.cs" t="Include" />
+          <e p="ShortcutToolbar.xaml" t="Include" />
+          <e p="ShortcutToolbar.xaml.cs" t="Include" />
+          <e p="StartPage.xaml" t="Include" />
+          <e p="StartPage.xaml.cs" t="Include" />
+          <e p="TooltipWindow.xaml" t="Include" />
+          <e p="TooltipWindow.xaml.cs" t="Include" />
+          <e p="UseLevelPopup.cs" t="Include" />
+          <e p="UseLevelSpinner.cs" t="Include" />
+          <e p="ZoomBorder.cs" t="Include" />
+        </e>
+        <e p="DynamoCoreWpf.csproj" t="IncludeRecursive" />
+        <e p="Extensions" t="Include">
+          <e p="IViewExtension.cs" t="Include" />
+          <e p="IViewExtensionLoader.cs" t="Include" />
+          <e p="IViewExtensionManager.cs" t="Include" />
+          <e p="MenuBarTypeExtensions.cs" t="Include" />
+          <e p="ObservableCollectionExtension.cs" t="Include" />
+          <e p="ViewExtensionCommandExecutive.cs" t="Include" />
+          <e p="ViewExtensionDefinition.cs" t="Include" />
+          <e p="ViewExtensionLoader.cs" t="Include" />
+          <e p="ViewExtensionManager.cs" t="Include" />
+          <e p="ViewLoadedParams.cs" t="Include" />
+          <e p="ViewModelCommandExecutive.cs" t="Include" />
+          <e p="ViewStartupParams.cs" t="Include" />
+        </e>
+        <e p="Interfaces" t="Include">
+          <e p="IBrandingResourceProvider.cs" t="Include" />
+          <e p="ILibraryViewCustomization.cs" t="Include" />
+          <e p="IShellCom.cs" t="Include" />
+          <e p="IViewModelView.cs" t="Include" />
+          <e p="IWatchHandler.cs" t="Include" />
+          <e p="LayoutSpecification.cs" t="Include" />
+        </e>
+        <e p="NodeViewCustomization" t="Include">
+          <e p="AssemblyNodeViewCustomizations.cs" t="Include" />
+          <e p="CoreNodeViewCustomizations.cs" t="Include" />
+          <e p="INodeViewCustomization.cs" t="Include" />
+          <e p="INodeViewCustomizations.cs" t="Include" />
+          <e p="InternalNodeViewCustomization.cs" t="Include" />
+          <e p="NodeViewCustomizationLibrary.cs" t="Include" />
+          <e p="NodeViewCustomizationLoader.cs" t="Include" />
+          <e p="NodeViewCustomizations" t="Include">
+            <e p="CodeBlockNodeViewCustomization.cs" t="Include" />
+            <e p="DSVarArgFunctionNodeViewCustomization.cs" t="Include" />
+            <e p="FunctionNodeViewCustomization.cs" t="Include" />
+            <e p="OutputNodeViewCustomization.cs" t="Include" />
+            <e p="SymbolViewCustomization.cs" t="Include" />
+            <e p="VariableInputNodeViewCustomization.cs" t="Include" />
+          </e>
+          <e p="NodeViewCustomizations.cs" t="Include" />
+        </e>
+        <e p="packages.config" t="Include" />
+        <e p="Properties" t="Include">
+          <e p="AssemblyInfo.cs" t="Include" />
+          <e p="Resources.Designer.cs" t="Include" />
+          <e p="Resources.en-US.Designer.cs" t="Include" />
+          <e p="Resources.en-US.resx" t="Include" />
+          <e p="Resources.resx" t="Include" />
+        </e>
+        <e p="Rendering" t="Include">
+          <e p="HelixRenderPackage.cs" t="Include" />
+          <e p="RenderPackageExtensions.cs" t="Include" />
+        </e>
+        <e p="Services" t="Include">
+          <e p="IconServices.cs" t="Include" />
+          <e p="LoginService.cs" t="Include" />
+          <e p="UsageReportingManager.cs" t="Include" />
+        </e>
+        <e p="sharpdx_direct3d11_effects_x64.dll" t="Include" />
+        <e p="sharpdx_direct3d11_effects_x86.dll" t="Include" />
+        <e p="TestInfrastructure" t="Include">
+          <e p="AbstractMutator.cs" t="Include" />
+          <e p="CodeBlockNodeMutator.cs" t="Include" />
+          <e p="ConnectorMutator.cs" t="Include" />
+          <e p="CopyNodeMutator.cs" t="Include" />
+          <e p="CustomNodeCompatibilityMutator.cs" t="Include" />
+          <e p="CustomNodeMutator.cs" t="Include" />
+          <e p="DeleteNodeMutator.cs" t="Include" />
+          <e p="DirectoryPathMutator.cs" t="Include" />
+          <e p="DoubleSliderMutator.cs" t="Include" />
+          <e p="FilePathMutator.cs" t="Include" />
+          <e p="IntegerSliderMutator.cs" t="Include" />
+          <e p="ListMutator.cs" t="Include" />
+          <e p="MutationTestAttribute.cs" t="Include" />
+          <e p="MutatorDriver.cs" t="Include" />
+          <e p="NumberInputMutator.cs" t="Include" />
+          <e p="NumberRangeMutator.cs" t="Include" />
+          <e p="NumberSequenceMutator.cs" t="Include" />
+          <e p="StringInputMutator.cs" t="Include" />
+        </e>
+        <e p="UI" t="Include">
+          <e p="ClassObjectTemplateSelector.cs" t="Include" />
+          <e p="Converters.cs" t="Include" />
+          <e p="DefaultBrandingResourceProvider.cs" t="Include" />
+          <e p="DraggedAdorner.cs" t="Include" />
+          <e p="Fonts" t="Include">
+            <e p="OpenSans-Bold.ttf" t="Include" />
+            <e p="OpenSans-BoldItalic.ttf" t="Include" />
+            <e p="OpenSans-ExtraBold.ttf" t="Include" />
+            <e p="OpenSans-ExtraBoldItalic.ttf" t="Include" />
+            <e p="OpenSans-Italic.ttf" t="Include" />
+            <e p="OpenSans-Light.ttf" t="Include" />
+            <e p="OpenSans-LightItalic.ttf" t="Include" />
+            <e p="OpenSans-Regular.ttf" t="Include" />
+            <e p="OpenSans-Semibold.ttf" t="Include" />
+            <e p="OpenSans-SemiboldItalic.ttf" t="Include" />
+          </e>
+          <e p="FrozenResources.cs" t="Include" />
+          <e p="HandlingEventTrigger.cs" t="Include" />
+          <e p="HeaderTemplateSelector.cs" t="Include" />
+          <e p="Images" t="Include">
+            <e p="AboutWindow" t="Include">
+              <e p="aboutback.png" t="Include" />
+              <e p="autodeskLogo.png" t="Include" />
+              <e p="background_texture.png" t="Include" />
+              <e p="close_hover.png" t="Include" />
+              <e p="close_inactive.png" t="Include" />
+              <e p="collectinfo_titlebar.png" t="Include" />
+              <e p="DesignScriptLogo.png" t="Include" />
+              <e p="dynamo_logo_dark.png" t="Include" />
+              <e p="logo_about.png" t="Include" />
+            </e>
+            <e p="add.png" t="Include" />
+            <e p="add_32.png" t="Include" />
+            <e p="add_32_white.png" t="Include" />
+            <e p="Anonymous_Pencil_icon.png" t="Include" />
+            <e p="Anonymous_Pencil_icon_white.png" t="Include" />
+            <e p="Anonymous_Pencil_icon_white_24.png" t="Include" />
+            <e p="Anonymous_Pencil_icon_white_32.png" t="Include" />
+            <e p="arc_add.cur" t="Include" />
+            <e p="arc_add.png" t="Include" />
+            <e p="arc_remove.cur" t="Include" />
+            <e p="arc_remove.png" t="Include" />
+            <e p="arc_select.cur" t="Include" />
+            <e p="arc_select.png" t="Include" />
+            <e p="arrow-left-black.png" t="Include" />
+            <e p="arrow-left-white.png" t="Include" />
+            <e p="arrow-right-black.png" t="Include" />
+            <e p="arrow-right-white.png" t="Include" />
+            <e p="assemblies.png" t="Include" />
+            <e p="back.png" t="Include" />
+            <e p="back_24.png" t="Include" />
+            <e p="back_32.png" t="Include" />
+            <e p="bubble-arrow.png" t="Include" />
+            <e p="Canvas" t="Include">
+              <e p="canvas-button-fit-view-states.png" t="Include" />
+              <e p="canvas-button-geom-check.png" t="Include" />
+              <e p="canvas-button-geom-states.png" t="Include" />
+              <e p="canvas-button-node-check.png" t="Include" />
+              <e p="canvas-button-node-states.png" t="Include" />
+              <e p="canvas-button-orbit-check.png" t="Include" />
+              <e p="canvas-button-orbit-states.png" t="Include" />
+              <e p="canvas-button-pan-check.png" t="Include" />
+              <e p="canvas-button-pan-states.png" t="Include" />
+              <e p="canvas-button-zoom-in-states.png" t="Include" />
+              <e p="canvas-button-zoom-out-states.png" t="Include" />
+            </e>
+            <e p="click_background.png" t="Include" />
+            <e p="closetab_hover.png" t="Include" />
+            <e p="closetab_normal.png" t="Include" />
+            <e p="closewindow_hover.png" t="Include" />
+            <e p="closewindow_normal.png" t="Include" />
+            <e p="cloud_download_arrow.png" t="Include" />
+            <e p="cloud_download_arrow_gray.png" t="Include" />
+            <e p="cloud_download_arrow_white.png" t="Include" />
+            <e p="CodeBlock" t="Include">
+              <e p="class.png" t="Include" />
+              <e p="constructor.png" t="Include" />
+              <e p="keyword.png" t="Include" />
+              <e p="method.png" t="Include" />
+              <e p="property.png" t="Include" />
+              <e p="variable.png" t="Include" />
+            </e>
+            <e p="collapse_hover.png" t="Include" />
+            <e p="collapse_normal.png" t="Include" />
+            <e p="collapsestate_hover.png" t="Include" />
+            <e p="collapsestate_normal.png" t="Include" />
+            <e p="condense.cur" t="Include" />
+            <e p="condense.png" t="Include" />
+            <e p="consent_form_image.png" t="Include" />
+            <e p="cursors.psd" t="Include" />
+            <e p="cursors1.psd" t="Include" />
+            <e p="customizerWorkflow.png" t="Include" />
+            <e p="CustomNode" t="Include">
+              <e p="customNode.png" t="Include" />
+            </e>
+            <e p="DocumentHS.png" t="Include" />
+            <e p="drag_move.cur" t="Include" />
+            <e p="dynamowithtext.png" t="Include" />
+            <e p="expand.cur" t="Include" />
+            <e p="expand.png" t="Include" />
+            <e p="expand_hover.png" t="Include" />
+            <e p="expand_normal.png" t="Include" />
+            <e p="expandstate_hover.png" t="Include" />
+            <e p="expandstate_normal.png" t="Include" />
+            <e p="files.png" t="Include" />
+            <e p="Gallery" t="Include">
+              <e p="gallery-button-close-states.png" t="Include" />
+              <e p="gallery-button-next-prev-states.png" t="Include" />
+            </e>
+            <e p="hand.cur" t="Include" />
+            <e p="hand.png" t="Include" />
+            <e p="hand_drag.cur" t="Include" />
+            <e p="hand_drag.png" t="Include" />
+            <e p="hand_pan.cur" t="Include" />
+            <e p="hand_pan.png" t="Include" />
+            <e p="hand_pan_active.cur" t="Include" />
+            <e p="hand_pan_active.png" t="Include" />
+            <e p="HomeHS.png" t="Include" />
+            <e p="icon-dictionary-small.png" t="Include" />
+            <e p="icon-whats-new-small.png" t="Include" />
+            <e p="librarycollapse_hover.png" t="Include" />
+            <e p="librarycollapse_normal.png" t="Include" />
+            <e p="maximizewindow_hover.png" t="Include" />
+            <e p="maximizewindow_normal.png" t="Include" />
+            <e p="minimizewindow_hover.png" t="Include" />
+            <e p="minimizewindow_normal.png" t="Include" />
+            <e p="move.png" t="Include" />
+            <e p="new_disabled.png" t="Include" />
+            <e p="new_hover.png" t="Include" />
+            <e p="new_normal.png" t="Include" />
+            <e p="nodes.png" t="Include" />
+            <e p="open_disabled.png" t="Include" />
+            <e p="open_hover.png" t="Include" />
+            <e p="open_normal.png" t="Include" />
+            <e p="openHS.png" t="Include" />
+            <e p="OpenSelectedItemHS.png" t="Include" />
+            <e p="PackageManager" t="Include">
+              <e p="custom-path-dialog-minus.png" t="Include" />
+              <e p="custom-path-dialog-move-down.png" t="Include" />
+              <e p="custom-path-dialog-move-up.png" t="Include" />
+              <e p="custom-path-dialog-plus.png" t="Include" />
+            </e>
+            <e p="padlock-closed-black.png" t="Include" />
+            <e p="padlock-closed-black24x24.png" t="Include" />
+            <e p="pause_disabled.png" t="Include" />
+            <e p="pause_hover.png" t="Include" />
+            <e p="pause_normal.png" t="Include" />
+            <e p="pointer.cur" t="Include" />
+            <e p="pointer.png" t="Include" />
+            <e p="pointer_add.cur" t="Include" />
+            <e p="pointer_add.png" t="Include" />
+            <e p="profile_normal.png" t="Include" />
+            <e p="rectangular_selection.cur" t="Include" />
+            <e p="rectangular_selection.png" t="Include" />
+            <e p="redo_disabled.png" t="Include" />
+            <e p="redo_hover.png" t="Include" />
+            <e p="redo_normal.png" t="Include" />
+            <e p="resize_diagonal.cur" t="Include" />
+            <e p="resize_diagonal.png" t="Include" />
+            <e p="resize_horizontal.cur" t="Include" />
+            <e p="resize_horizontal.png" t="Include" />
+            <e p="resize_vertical.cur" t="Include" />
+            <e p="resize_vertical.png" t="Include" />
+            <e p="restorewindow_hover.png" t="Include" />
+            <e p="restorewindow_normal.png" t="Include" />
+            <e p="run_disabled.png" t="Include" />
+            <e p="run_hover.png" t="Include" />
+            <e p="run_normal.png" t="Include" />
+            <e p="save_disabled.png" t="Include" />
+            <e p="save_hover.png" t="Include" />
+            <e p="save_normal.png" t="Include" />
+            <e p="saveHS.png" t="Include" />
+            <e p="screenshot_disabled.png" t="Include" />
+            <e p="screenshot_hover.png" t="Include" />
+            <e p="screenshot_normal.png" t="Include" />
+            <e p="search.png" t="Include" />
+            <e p="search_24.png" t="Include" />
+            <e p="search_hover.png" t="Include" />
+            <e p="search_normal.png" t="Include" />
+            <e p="searchcancel_hover.png" t="Include" />
+            <e p="searchcancel_normal.png" t="Include" />
+            <e p="sendfeedback_disabled.png" t="Include" />
+            <e p="sendfeedback_hover.png" t="Include" />
+            <e p="sendfeedback_normal.png" t="Include" />
+            <e p="StartPage" t="Include">
+              <e p="dynamo-logo.png" t="Include" />
+              <e p="icon-customnode.png" t="Include" />
+              <e p="icon-dictionary.png" t="Include" />
+              <e p="icon-discussion.png" t="Include" />
+              <e p="icon-dynamobim.png" t="Include" />
+              <e p="icon-email.png" t="Include" />
+              <e p="icon-github.png" t="Include" />
+              <e p="icon-issues.png" t="Include" />
+              <e p="icon-new.png" t="Include" />
+              <e p="icon-open.png" t="Include" />
+              <e p="icon-reference.png" t="Include" />
+              <e p="icon-video.png" t="Include" />
+              <e p="icon-whats-new.png" t="Include" />
+            </e>
+            <e p="tabs_button_hover.png" t="Include" />
+            <e p="tabs_button_normal.png" t="Include" />
+            <e p="task_dialog_crash.png" t="Include" />
+            <e p="task_dialog_future_file.png" t="Include" />
+            <e p="task_dialog_obsolete_file.png" t="Include" />
+            <e p="tick_selected.png" t="Include" />
+            <e p="Tooltip" t="Include">
+              <e p="code.png" t="Include" />
+              <e p="copy.png" t="Include" />
+              <e p="copy_hover.png" t="Include" />
+            </e>
+            <e p="undo_disabled.png" t="Include" />
+            <e p="undo_hover.png" t="Include" />
+            <e p="undo_normal.png" t="Include" />
+            <e p="Update" t="Include">
+              <e p="clickbox.png" t="Include" />
+              <e p="download_ani.png" t="Include" />
+              <e p="DownloadAnimation.png" t="Include" />
+              <e p="DownloadIcon.png" t="Include" />
+              <e p="update.png" t="Include" />
+              <e p="update_static.png" t="Include" />
+            </e>
+          </e>
+          <e p="InOutPortPanel.cs" t="Include" />
+          <e p="LibraryTreeTemplateSelector.cs" t="Include" />
+          <e p="LibraryWrapPanel.cs" t="Include" />
+          <e p="Prompts" t="Include">
+            <e p="ChangeScaleFactorPrompt.xaml" t="Include" />
+            <e p="ChangeScaleFactorPrompt.xaml.cs" t="Include" />
+            <e p="CrashPrompt.xaml" t="Include" />
+            <e p="CrashPrompt.xaml.cs" t="Include" />
+            <e p="EditWindow.xaml" t="Include" />
+            <e p="EditWindow.xaml.cs" t="Include" />
+            <e p="FunctionNamePrompt.xaml" t="Include" />
+            <e p="FunctionNamePrompt.xaml.cs" t="Include" />
+            <e p="GenericTaskDialog.xaml" t="Include" />
+            <e p="GenericTaskDialog.xaml.cs" t="Include" />
+            <e p="NodeHelpPrompt.xaml" t="Include" />
+            <e p="NodeHelpPrompt.xaml.cs" t="Include" />
+            <e p="PresetOverwritePrompt.xaml" t="Include" />
+            <e p="PresetOverwritePrompt.xaml.cs" t="Include" />
+            <e p="PresetPrompt.xaml" t="Include" />
+            <e p="PresetPrompt.xaml.cs" t="Include" />
+            <e p="UsageReportingAgreementPrompt.xaml" t="Include" />
+            <e p="UsageReportingAgreementPrompt.xaml.cs" t="Include" />
+          </e>
+          <e p="Resources" t="Include">
+            <e p="DesignScript.Resources.SyntaxHighlighting.xshd" t="Include" />
+          </e>
+          <e p="SharedResourceDictionary.cs" t="Include" />
+          <e p="Themes" t="Include">
+            <e p="Modern" t="Include">
+              <e p="Connectors.xaml" t="Include" />
+              <e p="DataTemplates.xaml" t="Include" />
+              <e p="DynamoColorsAndBrushes.xaml" t="Include" />
+              <e p="DynamoConverters.xaml" t="Include" />
+              <e p="DynamoModern.xaml" t="Include" />
+              <e p="DynamoText.xaml" t="Include" />
+              <e p="MenuStyleDictionary.xaml" t="Include" />
+              <e p="Ports.xaml" t="Include" />
+              <e p="SidebarGridStyleDictionary.xaml" t="Include" />
+              <e p="ToolbarStyleDictionary.xaml" t="Include" />
+            </e>
+          </e>
+          <e p="VisualConfigurations.cs" t="Include" />
+        </e>
+        <e p="Utilities" t="Include">
+          <e p="CompactBubbleHandler.cs" t="Include" />
+          <e p="CrashUtilities.cs" t="Include" />
+          <e p="CursorLibrary.cs" t="Include" />
+          <e p="DelegateCommand.cs" t="Include" />
+          <e p="Extensions.cs" t="Include" />
+          <e p="LibraryDragAndDrop.cs" t="Include" />
+          <e p="MouseClickManager.cs" t="Include" />
+          <e p="OnceDisposable.cs" t="Include" />
+          <e p="ResourceUtilities.cs" t="Include" />
+          <e p="WpfUtilities.cs" t="Include" />
+        </e>
+        <e p="ViewModels" t="Include">
+          <e p="Core" t="Include">
+            <e p="AnnotationExtension.cs" t="Include" />
+            <e p="AnnotationViewModel.cs" t="Include" />
+            <e p="ConnectorViewModel.cs" t="Include" />
+            <e p="Converters" t="Include">
+              <e p="SerializationConverters.cs" t="Include" />
+            </e>
+            <e p="DynamoViewModel.cs" t="Include" />
+            <e p="DynamoViewModelBranding.cs" t="Include" />
+            <e p="DynamoViewModelDelegateCommands.cs" t="Include" />
+            <e p="DynamoViewModelDelegates.cs" t="Include" />
+            <e p="DynamoViewModelEventArgs.cs" t="Include" />
+            <e p="DynamoViewModelEvents.cs" t="Include" />
+            <e p="GalleryViewModel.cs" t="Include" />
+            <e p="HomeWorkspaceViewModel.cs" t="Include" />
+            <e p="NodeViewModel.cs" t="Include" />
+            <e p="NoteViewModel.cs" t="Include" />
+            <e p="PortViewModel.cs" t="Include" />
+            <e p="SerializationExtensions.cs" t="Include" />
+            <e p="StateMachine.cs" t="Include" />
+            <e p="WorkspaceViewModel.cs" t="Include" />
+          </e>
+          <e p="PackageManager" t="Include">
+            <e p="InstalledPackagesViewModel.cs" t="Include" />
+            <e p="IPackageInstaller.cs" t="Include" />
+            <e p="PackageItemInternalViewModel.cs" t="Include" />
+            <e p="PackageItemLeafViewModel.cs" t="Include" />
+            <e p="PackageItemRootViewModel.cs" t="Include" />
+            <e p="PackageItemViewModel.cs" t="Include" />
+            <e p="PackageManagerClientViewModel.cs" t="Include" />
+            <e p="PackageManagerSearchElementViewModel.cs" t="Include" />
+            <e p="PackageManagerSearchViewModel.cs" t="Include" />
+            <e p="PackagePathViewModel.cs" t="Include" />
+            <e p="PackageViewModel.cs" t="Include" />
+            <e p="PublishPackageViewModel.cs" t="Include" />
+          </e>
+          <e p="Preview" t="Include">
+            <e p="CompactBubbleViewModel.cs" t="Include" />
+            <e p="InfoBubbleViewModel.cs" t="Include" />
+            <e p="Watch3DFullscreenViewModel.cs" t="Include" />
+            <e p="WatchViewModel.cs" t="Include" />
+          </e>
+          <e p="RenderPackageFactoryViewModel.cs" t="Include" />
+          <e p="RunSettingsViewModel.cs" t="Include" />
+          <e p="Search" t="Include">
+            <e p="BrowserInternalElementViewModel.cs" t="Include" />
+            <e p="BrowserItemViewModel.cs" t="Include" />
+            <e p="ClassInformationViewModel.cs" t="Include" />
+            <e p="NodeSearchElementViewModel.cs" t="Include" />
+            <e p="SearchCategory.cs" t="Include" />
+            <e p="SearchViewModel.cs" t="Include" />
+          </e>
+          <e p="ViewModelBase.cs" t="Include" />
+          <e p="Watch3D" t="Include">
+            <e p="AttachedProperties.cs" t="Include" />
+            <e p="DefaultWatch3DViewModel.cs" t="Include" />
+            <e p="DynamoEffectsManager.cs" t="Include" />
+            <e p="DynamoGeometryModel3D.cs" t="Include" />
+            <e p="DynamoLineGeometryModel3D.cs" t="Include" />
+            <e p="DynamoPointGeometryModel3D.cs" t="Include" />
+            <e p="DynamoRenderTechniquesManager.cs" t="Include" />
+            <e p="HelixWatch3DViewModel.cs" t="Include" />
+            <e p="IWatch3DViewModel.cs" t="Include" />
+            <e p="Resources" t="Include">
+              <e p="_dynamo.bfx" t="Include" />
+            </e>
+            <e p="Shaders" t="Include">
+              <e p="BillboardText.fx" t="Include" />
+              <e p="Common.fx" t="Include" />
+              <e p="CompileShaders.bat" t="Include" />
+              <e p="Custom.fx" t="Include" />
+              <e p="Default.fx" t="Include" />
+              <e p="Lines.fx" t="Include" />
+              <e p="Material.fx" t="Include" />
+              <e p="Points.fx" t="Include" />
+            </e>
+          </e>
+        </e>
+        <e p="Views" t="Include">
+          <e p="About" t="Include">
+            <e p="AboutWindow.xaml" t="Include" />
+            <e p="AboutWindow.xaml.cs" t="Include" />
+          </e>
+          <e p="CodeBlocks" t="Include">
+            <e p="CodeBlockCompletionData.cs" t="Include" />
+            <e p="CodeBlockEditor.cs" t="Include" />
+            <e p="CodeBlockEditorUtils.cs" t="Include" />
+            <e p="CodeBlockMethodInsightWindow.cs" t="Include" />
+          </e>
+          <e p="CodeCompletion" t="Include">
+            <e p="CodeCompletionEditor.xaml" t="Include" />
+            <e p="CodeCompletionEditor.xaml.cs" t="Include" />
+          </e>
+          <e p="Core" t="Include">
+            <e p="AnnotationView.xaml" t="Include" />
+            <e p="AnnotationView.xaml.cs" t="Include" />
+            <e p="DynamoOpenFileDialog.cs" t="Include" />
+            <e p="DynamoView.xaml" t="Include" />
+            <e p="DynamoView.xaml.cs" t="Include" />
+            <e p="NodeView.xaml" t="Include" />
+            <e p="NodeView.xaml.cs" t="Include" />
+            <e p="NoteView.xaml" t="Include" />
+            <e p="NoteView.xaml.cs" t="Include" />
+            <e p="WorkspaceView.xaml" t="Include" />
+            <e p="WorkspaceView.xaml.cs" t="Include" />
+          </e>
+          <e p="Gallery" t="Include">
+            <e p="GalleryView.xaml" t="Include" />
+            <e p="GalleryView.xaml.cs" t="Include" />
+          </e>
+          <e p="Input" t="Include">
+            <e p="ParameterEditor.cs" t="Include" />
+          </e>
+          <e p="Output" t="Include">
+            <e p="OutputEditor.cs" t="Include" />
+          </e>
+          <e p="PackageManager" t="Include">
+            <e p="InstalledPackagesView.xaml" t="Include" />
+            <e p="InstalledPackagesView.xaml.cs" t="Include" />
+            <e p="PackageManagerSearchView.xaml" t="Include" />
+            <e p="PackageManagerSearchView.xaml.cs" t="Include" />
+            <e p="PackagePathView.xaml" t="Include" />
+            <e p="PackagePathView.xaml.cs" t="Include" />
+            <e p="PublishPackageView.xaml" t="Include" />
+            <e p="PublishPackageView.xaml.cs" t="Include" />
+            <e p="TermsOfUseView.xaml" t="Include" />
+            <e p="TermsOfUseView.xaml.cs" t="Include" />
+          </e>
+          <e p="Preview" t="Include">
+            <e p="CameraExtensions.cs" t="Include" />
+            <e p="InfoBubbleView.xaml" t="Include" />
+            <e p="InfoBubbleView.xaml.cs" t="Include" />
+            <e p="PreviewCompactView.xaml" t="Include" />
+            <e p="PreviewCompactView.xaml.cs" t="Include" />
+            <e p="PreviewControl.xaml" t="Include" />
+            <e p="PreviewControl.xaml.cs" t="Include" />
+            <e p="Watch3DSettingsControl.xaml" t="Include" />
+            <e p="Watch3DSettingsControl.xaml.cs" t="Include" />
+            <e p="Watch3DView.xaml" t="Include" />
+            <e p="Watch3DView.xaml.cs" t="Include" />
+            <e p="WatchTree.xaml" t="Include" />
+            <e p="WatchTree.xaml.cs" t="Include" />
+          </e>
+          <e p="Search" t="Include">
+            <e p="LibraryView.xaml" t="Include" />
+            <e p="LibraryView.xaml.cs" t="Include" />
+          </e>
+        </e>
+        <e p="Windows" t="Include">
+          <e p="BrowserWindow.xaml" t="Include" />
+          <e p="BrowserWindow.xaml.cs" t="Include" />
+          <e p="ModelessChildWindow.cs" t="Include" />
+        </e>
+      </e>
+      <e p="DynamoCrypto" t="IncludeRecursive">
+        <e p="Dynamo.cer" t="Include" />
+        <e p="DynamoCrypto.cs" t="Include" />
+        <e p="DynamoCrypto.csproj" t="IncludeRecursive" />
+        <e p="Properties" t="Include">
+          <e p="AssemblyInfo.cs" t="Include" />
+        </e>
+      </e>
+      <e p="DynamoManipulation" t="IncludeRecursive">
+        <e p="DynamoManipulation.csproj" t="IncludeRecursive" />
+        <e p="DynamoManipulationExtension.cs" t="Include" />
+        <e p="Gizmo.cs" t="Include" />
+        <e p="INodeManipulator.cs" t="Include" />
+        <e p="ManipulatorDaemon.cs" t="Include" />
+        <e p="MousePointManipulator.cs" t="Include" />
+        <e p="NodeManipulator.cs" t="Include" />
+        <e p="NodeManipulatorFactoryLoader.cs" t="Include" />
+        <e p="PointOnCurveManipulator.cs" t="Include" />
+        <e p="Properties" t="Include">
+          <e p="AssemblyInfo.cs" t="Include" />
+          <e p="Resources.Designer.cs" t="Include" />
+          <e p="Resources.en-US.Designer.cs" t="Include" />
+          <e p="Resources.en-US.resx" t="Include" />
+          <e p="Resources.resx" t="Include" />
+        </e>
+        <e p="TranslationGizmo.cs" t="Include" />
+        <e p="ZeroTouchManipulatorCreator.cs" t="Include" />
+      </e>
+      <e p="DynamoPackages" t="IncludeRecursive">
+        <e p="App.config" t="Include" />
+        <e p="DynamoPackages.csproj" t="IncludeRecursive" />
+        <e p="FailFunc.cs" t="Include" />
+        <e p="Interfaces" t="Include">
+          <e p="CustomNodePathRemapper.cs" t="Include" />
+          <e p="IDirectoryInfo.cs" t="Include" />
+          <e p="IFileCompressor.cs" t="Include" />
+          <e p="IFileInfo.cs" t="Include" />
+          <e p="IFileSystem.cs" t="Include" />
+          <e p="MutatingFileCompressor.cs" t="Include" />
+          <e p="MutatingFileSystem.cs" t="Include" />
+        </e>
+        <e p="Package.cs" t="Include" />
+        <e p="PackageDirectoryBuilder.cs" t="Include" />
+        <e p="PackageDownloadHandle.cs" t="Include" />
+        <e p="PackageFileInfo.cs" t="Include" />
+        <e p="PackageLoader.cs" t="Include" />
+        <e p="PackageManagerClient.cs" t="Include" />
+        <e p="PackageManagerExtension.cs" t="Include" />
+        <e p="PackageManagerResult.cs" t="Include" />
+        <e p="PackageManagerSearchElement.cs" t="Include" />
+        <e p="packages.config" t="Include" />
+        <e p="PackageUploadBuilder.cs" t="Include" />
+        <e p="PackageUploadHandle.cs" t="Include" />
+        <e p="PackageUtilities.cs" t="Include" />
+        <e p="Properties" t="Include">
+          <e p="AssemblyInfo.cs" t="Include" />
+          <e p="Resources.Designer.cs" t="Include" />
+          <e p="Resources.en-US.Designer.cs" t="Include" />
+          <e p="Resources.en-US.resx" t="Include" />
+          <e p="Resources.resx" t="Include" />
+        </e>
+        <e p="RealDirectoryInfo.cs" t="Include" />
+        <e p="RealFileInfo.cs" t="Include" />
+      </e>
+      <e p="DynamoPackagesWPF" t="IncludeRecursive">
+        <e p="DynamoPackagesWPF.csproj" t="IncludeRecursive" />
+        <e p="PackageManagerViewExtension.cs" t="Include" />
+        <e p="PackageManagerViewExtension_ViewExtensionDefinition.xml" t="Include" />
+        <e p="Properties" t="Include">
+          <e p="AssemblyInfo.cs" t="Include" />
+        </e>
+      </e>
+      <e p="DynamoSandbox" t="IncludeRecursive">
+        <e p="App.config" t="Include" />
+        <e p="DynamoCoreSetup.cs" t="Include" />
+        <e p="DynamoSandbox.csproj" t="IncludeRecursive" />
+        <e p="logo_square_32x32.ico" t="Include" />
+        <e p="Program.cs" t="Include" />
+        <e p="Properties" t="Include">
+          <e p="AssemblyInfo.cs" t="Include" />
+          <e p="Resources.Designer.cs" t="Include" />
+          <e p="Resources.en-US.resx" t="Include" />
+          <e p="Resources.resx" t="Include" />
+          <e p="Settings.Designer.cs" t="Include" />
+          <e p="Settings.settings" t="Include" />
+        </e>
+        <e p="Resources" t="Include">
+          <e p="logo_square_32x32.ico" t="Include" />
+        </e>
+        <e p="SettingsMigrationWindow.xaml" t="Include" />
+        <e p="SettingsMigrationWindow.xaml.cs" t="Include" />
+      </e>
+      <e p="DynamoUtilities" t="IncludeRecursive">
+        <e p="AssemblyConfiguration.cs" t="Include" />
+        <e p="AssemblyHelper.cs" t="Include" />
+        <e p="DataMarshaler.cs" t="Include" />
+        <e p="DynamoUtilities.csproj" t="IncludeRecursive" />
+        <e p="EnumerableExtensions.cs" t="Include" />
+        <e p="Guid.cs" t="Include" />
+        <e p="ModifierKeys.cs" t="Include" />
+        <e p="Option.cs" t="Include" />
+        <e p="OrderedSet.cs" t="Include" />
+        <e p="PathHelper.cs" t="Include" />
+        <e p="Point2D.cs" t="Include" />
+        <e p="Properties" t="Include">
+          <e p="AssemblyInfo.cs" t="Include" />
+        </e>
+        <e p="Rect2D.cs" t="Include" />
+        <e p="Thickness.cs" t="Include" />
+        <e p="TypeExtensions.cs" t="Include" />
+        <e p="TypeSwitch.cs" t="Include" />
+        <e p="VersionUtilities.cs" t="Include" />
+        <e p="XmlElementHelper.cs" t="Include" />
+        <e p="XmlHelper.cs" t="Include" />
+      </e>
+      <e p="DynamoWPFCLI" t="IncludeRecursive">
+        <e p="App.config" t="Include" />
+        <e p="CommandLineRunnerWPF.cs" t="Include" />
+        <e p="DynamoWPFCLI.csproj" t="IncludeRecursive" />
+        <e p="packages.config" t="Include" />
+        <e p="Program.cs" t="Include" />
+        <e p="Properties" t="Include">
+          <e p="AssemblyInfo.cs" t="Include" />
+        </e>
+      </e>
+      <e p="Engine" t="Include">
+        <e p="GraphLayout" t="IncludeRecursive">
+          <e p="GraphLayout.cs" t="Include" />
+          <e p="GraphLayout.csproj" t="IncludeRecursive" />
+          <e p="Properties" t="Include">
+            <e p="AssemblyInfo.cs" t="Include" />
+          </e>
+        </e>
+        <e p="ProtoAssociative" t="IncludeRecursive">
+          <e p="CodeGen.cs" t="Include" />
+          <e p="CodeGen_SSA.cs" t="Include" />
+          <e p="Compiler.cs" t="Include" />
+          <e p="Properties" t="Include">
+            <e p="AssemblyInfo.cs" t="Include" />
+            <e p="Resources.Designer.cs" t="Include" />
+            <e p="Resources.en-US.Designer.cs" t="Include" />
+            <e p="Resources.en-US.resx" t="Include" />
+            <e p="Resources.resx" t="Include" />
+          </e>
+          <e p="ProtoAssociative.csproj" t="IncludeRecursive" />
+        </e>
+        <e p="ProtoCore" t="IncludeRecursive">
+          <e p="AssociativeGraph.cs" t="Include" />
+          <e p="AttributeEntry.cs" t="Include" />
+          <e p="BuildStatus.cs" t="Include" />
+          <e p="ClassTable.cs" t="Include" />
+          <e p="CodeBlock.cs" t="Include" />
+          <e p="CodeFile.cs" t="Include" />
+          <e p="CodeGen.cs" t="Include" />
+          <e p="CodeGenDS.cs" t="Include" />
+          <e p="CodePoint.cs" t="Include" />
+          <e p="Compiler.cs" t="Include" />
+          <e p="CompilerOptions.cs" t="Include" />
+          <e p="Context.cs" t="Include" />
+          <e p="Core.cs" t="Include" />
+          <e p="DebuggerProperties.cs" t="Include" />
+          <e p="DSASM" t="Include">
+            <e p="Defs.cs" t="Include" />
+            <e p="DSArray.cs" t="Include" />
+            <e p="DSObject.cs" t="Include" />
+            <e p="DSString.cs" t="Include" />
+            <e p="Executable.cs" t="Include" />
+            <e p="Executive.cs" t="Include" />
+            <e p="Heap.cs" t="Include" />
+            <e p="IExecutive.cs" t="Include" />
+            <e p="InstructionSet.cs" t="Include" />
+            <e p="Interpreter.cs" t="Include" />
+            <e p="Mirror" t="Include">
+              <e p="ExecutionMirror.cs" t="Include" />
+            </e>
+            <e p="Stack.cs" t="Include" />
+          </e>
+          <e p="DSDefinitions.cs" t="Include" />
+          <e p="DynamicFunctionTable.cs" t="Include" />
+          <e p="Exceptions" t="Include">
+            <e p="CompileErrorsOccured.cs" t="Include" />
+            <e p="CompilerInternalException.cs" t="Include" />
+            <e p="DebugHalting.cs" t="Include" />
+            <e p="ReplicationException.cs" t="Include" />
+          </e>
+          <e p="Executive.cs" t="Include" />
+          <e p="ExtendedLibraries" t="Include">
+            <e p="BuiltIn.ds" t="Include" />
+            <e p="FunctionObject.ds" t="Include" />
+          </e>
+          <e p="FFI" t="Include">
+            <e p="CLRDLLModule.cs" t="Include" />
+            <e p="CLRFFIFunctionPointer.cs" t="Include" />
+            <e p="CLRObjectMarshaler.cs" t="Include" />
+            <e p="ContextData.cs" t="Include" />
+            <e p="ContextDataManager.cs" t="Include" />
+            <e p="ExtensionAppLoader.cs" t="Include" />
+            <e p="FFICppFunction.cs" t="Include" />
+            <e p="FFIExecutionManager.cs" t="Include" />
+            <e p="FFIHandler.cs" t="Include" />
+            <e p="ImportModuleHandler.cs" t="Include" />
+            <e p="PInvokeFFI.cs" t="Include" />
+          </e>
+          <e p="FunctionPointerTable.cs" t="Include" />
+          <e p="Lang" t="Include">
+            <e p="BuiltInFunctionEndPoint.cs" t="Include" />
+            <e p="BuiltInMethods.cs" t="Include" />
+            <e p="CallSite.cs" t="Include" />
+            <e p="ContinuationStructure.cs" t="Include" />
+            <e p="FFIFunctionEndPoint.cs" t="Include" />
+            <e p="FunctionEndPoint.cs" t="Include" />
+            <e p="FunctionGroup.cs" t="Include" />
+            <e p="FunctionPointerEvaluator.cs" t="Include" />
+            <e p="FunctionTable.cs" t="Include" />
+            <e p="InternalAttributes.cs" t="Include" />
+            <e p="JILFunctionEndPoint.cs" t="Include" />
+            <e p="Obj.cs" t="Include" />
+            <e p="Replication" t="Include">
+              <e p="ArgumentAtLevel.cs" t="Include" />
+              <e p="ReplicationInstruction.cs" t="Include" />
+              <e p="Replicator.cs" t="Include" />
+            </e>
+            <e p="TraceUtils.cs" t="Include" />
+            <e p="Type.cs" t="Include" />
+          </e>
+          <e p="MigrationRewriter.cs" t="Include" />
+          <e p="Namespace" t="Include">
+            <e p="ElementResolver.cs" t="Include" />
+            <e p="ElementRewriter.cs" t="Include" />
+            <e p="SymbolTable.cs" t="Include" />
+          </e>
+          <e p="Parser" t="Include">
+            <e p="AssociativeAST.cs" t="Include" />
+            <e p="AST.cs" t="Include" />
+            <e p="atg" t="Include">
+              <e p="Associative.atg" t="Include" />
+              <e p="End.atg" t="Include" />
+              <e p="Imperative.atg" t="Include" />
+              <e p="Start.atg" t="Include" />
+            </e>
+            <e p="DictionaryBuilder.cs" t="Include" />
+            <e p="GenerateParser.bat" t="Include" />
+            <e p="ImperativeAST.cs" t="Include" />
+            <e p="Parser.cs" t="Include" />
+            <e p="Parser.frame" t="Include" />
+            <e p="Scanner.cs" t="Include" />
+            <e p="Scanner.frame" t="Include" />
+          </e>
+          <e p="ProcedureTable.cs" t="Include" />
+          <e p="Properties" t="Include">
+            <e p="AssemblyInfo.cs" t="Include" />
+            <e p="Resources.Designer.cs" t="Include" />
+            <e p="Resources.en-US.Designer.cs" t="Include" />
+            <e p="Resources.en-US.resx" t="Include" />
+            <e p="Resources.resx" t="Include" />
+          </e>
+          <e p="ProtoCore.csproj" t="IncludeRecursive" />
+          <e p="Reflection" t="Include">
+            <e p="GraphicDataProvider.cs" t="Include" />
+            <e p="Mirror.cs" t="Include" />
+            <e p="MirrorData.cs" t="Include" />
+            <e p="Reflection.cs" t="Include" />
+          </e>
+          <e p="RuntimeContext.cs" t="Include" />
+          <e p="RuntimeCore.cs" t="Include" />
+          <e p="RuntimeData.cs" t="Include" />
+          <e p="RuntimeMemory.cs" t="Include" />
+          <e p="RuntimeStatus.cs" t="Include" />
+          <e p="StringTable.cs" t="Include" />
+          <e p="SymbolTable.cs" t="Include" />
+          <e p="SyntaxAnalysis" t="Include">
+            <e p="AssociativeAstVisitor.cs" t="Include" />
+            <e p="AstVisitor.cs" t="Include" />
+            <e p="ImperativeAstVisitor.cs" t="Include" />
+            <e p="Interface" t="Include">
+              <e p="Associative.cs" t="Include" />
+              <e p="Imperative.cs" t="Include" />
+            </e>
+          </e>
+          <e p="Utils" t="Include">
+            <e p="ArrayUtils.cs" t="Include" />
+            <e p="ClassUtils.cs" t="Include" />
+            <e p="CompilerUtils.cs" t="Include" />
+            <e p="CoreUtils.cs" t="Include" />
+            <e p="FileUtils.cs" t="Include" />
+            <e p="MathUtils.cs" t="Include" />
+            <e p="NodeUtils.cs" t="Include" />
+            <e p="ParserUtils.cs" t="Include" />
+            <e p="StringUtils.cs" t="Include" />
+            <e p="Validity.cs" t="Include" />
+          </e>
+        </e>
+        <e p="ProtoImperative" t="IncludeRecursive">
+          <e p="CodeGen.cs" t="Include" />
+          <e p="Compiler.cs" t="Include" />
+          <e p="Properties" t="Include">
+            <e p="AssemblyInfo.cs" t="Include" />
+            <e p="Resources.Designer.cs" t="Include" />
+            <e p="Resources.en-US.Designer.cs" t="Include" />
+            <e p="Resources.en-US.resx" t="Include" />
+            <e p="Resources.resx" t="Include" />
+          </e>
+          <e p="ProtoImperative.csproj" t="IncludeRecursive" />
+        </e>
+        <e p="ProtoScript" t="IncludeRecursive">
+          <e p="Properties" t="Include">
+            <e p="AssemblyInfo.cs" t="Include" />
+          </e>
+          <e p="ProtoScript.csproj" t="IncludeRecursive" />
+          <e p="Runners" t="Include">
+            <e p="DebugRunner.cs" t="Include" />
+            <e p="ExpressionInterpreterRunner.cs" t="Include" />
+            <e p="LiveRunner.cs" t="Include" />
+            <e p="LiveRunnerTasks.cs" t="Include" />
+            <e p="ProtoRunner.cs" t="Include" />
+            <e p="ProtoScriptRunner.cs" t="Include" />
+          </e>
+        </e>
+      </e>
+      <e p="Extensions" t="Include" />
+      <e p="Libraries" t="Include">
+        <e p="Analysis" t="IncludeRecursive">
+          <e p="Analysis.csproj" t="IncludeRecursive" />
+          <e p="Analysis_DynamoCustomization.xml" t="Include" />
+          <e p="AnalysisImages.resx" t="Include" />
+          <e p="AnalysisResources.Designer.cs" t="Include" />
+          <e p="AnalysisResources.en-US.resx" t="Include" />
+          <e p="AnalysisResources.resx" t="Include" />
+          <e p="Interfaces.cs" t="Include" />
+          <e p="Label.cs" t="Include" />
+          <e p="PointData.cs" t="Include" />
+          <e p="Properties" t="Include">
+            <e p="AssemblyInfo.cs" t="Include" />
+            <e p="Resources.Designer.cs" t="Include" />
+            <e p="Resources.en-US.resx" t="Include" />
+            <e p="Resources.resx" t="Include" />
+          </e>
+          <e p="SurfaceData.cs" t="Include" />
+          <e p="Utils.cs" t="Include" />
+          <e p="VectorData.cs" t="Include" />
+        </e>
+        <e p="CoreNodeModels" t="IncludeRecursive">
+          <e p="ColorRange.cs" t="Include" />
+          <e p="CoreNodeModels.csproj" t="IncludeRecursive" />
+          <e p="CoreNodeModelsImages.resx" t="Include" />
+          <e p="CreateList.cs" t="Include" />
+          <e p="DropDown.cs" t="Include" />
+          <e p="DynamoConvert.cs" t="Include" />
+          <e p="Enum.cs" t="Include" />
+          <e p="Equals.cs" t="Include" />
+          <e p="Formula.cs" t="Include" />
+          <e p="HigherOrder" t="Include">
+            <e p="Apply.cs" t="Include" />
+            <e p="MapCombineLacing.cs" t="Include" />
+          </e>
+          <e p="IModelSelectionHelper.cs" t="Include" />
+          <e p="Input" t="Include">
+            <e p="BaseTypes.cs" t="Include" />
+            <e p="BasicInteractive.cs" t="Include" />
+            <e p="BoolSelector.cs" t="Include" />
+            <e p="ColorPalette.cs" t="Include" />
+            <e p="DateTime.cs" t="Include" />
+            <e p="Double.cs" t="Include" />
+            <e p="DoubleSlider.cs" t="Include" />
+            <e p="FileSystem.cs" t="Include" />
+            <e p="Integer.cs" t="Include" />
+            <e p="IntegerSlider.cs" t="Include" />
+            <e p="SliderBase.cs" t="Include" />
+            <e p="String.cs" t="Include" />
+          </e>
+          <e p="Logic" t="Include">
+            <e p="AndOr.cs" t="Include" />
+            <e p="If.cs" t="Include" />
+            <e p="ScopedIf.cs" t="Include" />
+          </e>
+          <e p="packages.config" t="Include" />
+          <e p="Properties" t="Include">
+            <e p="AssemblyInfo.cs" t="Include" />
+            <e p="Resources.Designer.cs" t="Include" />
+            <e p="Resources.en-US.Designer.cs" t="Include" />
+            <e p="Resources.en-US.resx" t="Include" />
+            <e p="Resources.resx" t="Include" />
+          </e>
+          <e p="Range.cs" t="Include" />
+          <e p="Selection.cs" t="Include" />
+          <e p="String.cs" t="Include" />
+          <e p="Watch.cs" t="Include" />
+          <e p="WatchImageCore.cs" t="Include" />
+          <e p="WebRequest.cs" t="Include" />
+        </e>
+        <e p="CoreNodeModelsWpf" t="IncludeRecursive">
+          <e p="Controls" t="Include">
+            <e p="ColorPalette.xaml" t="Include" />
+            <e p="ColorPalette.xaml.cs" t="Include" />
+            <e p="DateTimeInputControl.xaml" t="Include" />
+            <e p="DateTimeInputControl.xaml.cs" t="Include" />
+            <e p="DoubleSliderSettingsControl.xaml" t="Include" />
+            <e p="DoubleSliderSettingsControl.xaml.cs" t="Include" />
+            <e p="DynamoConverterControl.xaml" t="Include" />
+            <e p="DynamoConverterControl.xaml.cs" t="Include" />
+            <e p="DynamoSlider.xaml" t="Include" />
+            <e p="DynamoSlider.xaml.cs" t="Include" />
+            <e p="ElementSelectionControl.xaml" t="Include" />
+            <e p="ElementSelectionControl.xaml.cs" t="Include" />
+            <e p="IntegerSliderSettingsControl.xaml" t="Include" />
+            <e p="IntegerSliderSettingsControl.xaml.cs" t="Include" />
+          </e>
+          <e p="Converters" t="Include">
+            <e p="MediatoDSColorConverter.cs" t="Include" />
+            <e p="SelectionButtonContentConverter.cs" t="Include" />
+            <e p="StringToDateTimeOffsetConverter.cs" t="Include" />
+            <e p="UnitToTextConverter.cs" t="Include" />
+          </e>
+          <e p="ConverterViewModel.cs" t="Include" />
+          <e p="CoreNodeModelsWpf.csproj" t="IncludeRecursive" />
+          <e p="NodeViewCustomizations" t="Include">
+            <e p="BoolSelector.cs" t="Include" />
+            <e p="ColorPalette.cs" t="Include" />
+            <e p="ColorRange.cs" t="Include" />
+            <e p="ConverterNodeViewCustomization.cs" t="Include" />
+            <e p="CreateList.cs" t="Include" />
+            <e p="DateTime.cs" t="Include" />
+            <e p="Directory.cs" t="Include" />
+            <e p="DoubleInput.cs" t="Include" />
+            <e p="DoubleSlider.cs" t="Include" />
+            <e p="DSDropDownBase.cs" t="Include" />
+            <e p="DummyNode.cs" t="Include" />
+            <e p="Filename.cs" t="Include" />
+            <e p="FileSystemBrowser.cs" t="Include" />
+            <e p="Formula.cs" t="Include" />
+            <e p="IntegerSlider.cs" t="Include" />
+            <e p="SelectionBase.cs" t="Include" />
+            <e p="StringInput.cs" t="Include" />
+            <e p="Watch.cs" t="Include" />
+            <e p="WatchImage.cs" t="Include" />
+          </e>
+          <e p="packages.config" t="Include" />
+          <e p="Properties" t="Include">
+            <e p="AssemblyInfo.cs" t="Include" />
+            <e p="CoreNodeModelWpfResources.Designer.cs" t="Include" />
+            <e p="CoreNodeModelWpfResources.en-US.Designer.cs" t="Include" />
+            <e p="CoreNodeModelWpfResources.en-US.resx" t="Include" />
+            <e p="CoreNodeModelWpfResources.resx" t="Include" />
+          </e>
+          <e p="Resources" t="Include">
+            <e p="DeprecatedNode.png" t="Include" />
+            <e p="MissingNode.png" t="Include" />
+          </e>
+          <e p="SliderViewModel.cs" t="Include" />
+        </e>
+        <e p="CoreNodes" t="IncludeRecursive">
+          <e p="Color.cs" t="Include" />
+          <e p="Compare.cs" t="Include" />
+          <e p="CoreNodes.csproj" t="IncludeRecursive" />
+          <e p="Data.cs" t="Include" />
+          <e p="DateTime.cs" t="Include" />
+          <e p="DSCoreNodes.Migrations.xml" t="Include" />
+          <e p="DSCoreNodes_DynamoCustomization.xml" t="Include" />
+          <e p="DSCoreNodesImages.resx" t="Include" />
+          <e p="FileSystem.cs" t="Include" />
+          <e p="Flatten.ds" t="Include" />
+          <e p="List.cs" t="Include" />
+          <e p="Math.cs" t="Include" />
+          <e p="Object.cs" t="Include" />
+          <e p="Properties" t="Include">
+            <e p="AssemblyInfo.cs" t="Include" />
+            <e p="Resources.Designer.cs" t="Include" />
+            <e p="Resources.en-US.resx" t="Include" />
+            <e p="Resources.resx" t="Include" />
+          </e>
+          <e p="Quadtree.cs" t="Include" />
+          <e p="Sorting.cs" t="Include" />
+          <e p="String.cs" t="Include" />
+          <e p="Thread.cs" t="Include" />
+          <e p="Types.cs" t="Include" />
+          <e p="Web.cs" t="Include" />
+        </e>
+        <e p="DesignScriptBuiltin" t="IncludeRecursive">
+          <e p="Builtin.cs" t="Include" />
+          <e p="DesignScriptBuiltin.csproj" t="IncludeRecursive" />
+          <e p="DesignScriptBuiltinImages.resx" t="Include" />
+          <e p="Dictionary.cs" t="Include" />
+          <e p="IndexingExceptions.cs" t="Include" />
+          <e p="packages.config" t="Include" />
+          <e p="Properties" t="Include">
+            <e p="AssemblyInfo.cs" t="Include" />
+            <e p="DesignScriptBuiltin.Designer.cs" t="Include" />
+            <e p="DesignScriptBuiltin.en-US.resx" t="Include" />
+            <e p="DesignScriptBuiltin.resx" t="Include" />
+          </e>
+        </e>
+        <e p="DSIronPython" t="IncludeRecursive">
+          <e p="DSIronPython.csproj" t="IncludeRecursive" />
+          <e p="DSIronPython_DynamoCustomization.xml" t="Include" />
+          <e p="IronPythonEvaluator.cs" t="Include" />
+          <e p="packages.config" t="Include" />
+          <e p="Properties" t="Include">
+            <e p="AssemblyInfo.cs" t="Include" />
+          </e>
+        </e>
+        <e p="DSOffice" t="IncludeRecursive">
+          <e p="DSOffice.csproj" t="IncludeRecursive" />
+          <e p="DSOffice.Migrations.xml" t="Include" />
+          <e p="DSOffice_DynamoCustomization.xml" t="Include" />
+          <e p="DSOfficeImages.resx" t="Include" />
+          <e p="Excel.cs" t="Include" />
+          <e p="Properties" t="Include">
+            <e p="AssemblyInfo.cs" t="Include" />
+            <e p="Resources.Designer.cs" t="Include" />
+            <e p="Resources.en-US.Designer.cs" t="Include" />
+            <e p="Resources.en-US.resx" t="Include" />
+            <e p="Resources.resx" t="Include" />
+          </e>
+        </e>
+        <e p="DynamoArduino" t="IncludeRecursive">
+          <e p="Arduino.csproj" t="IncludeRecursive" />
+          <e p="dynArduino.cs" t="Include" />
+          <e p="Properties" t="Include">
+            <e p="AssemblyInfo.cs" t="Include" />
+            <e p="Resources.Designer.cs" t="Include" />
+            <e p="Resources.en-US.Designer.cs" t="Include" />
+            <e p="Resources.en-US.resx" t="Include" />
+            <e p="Resources.resx" t="Include" />
+          </e>
+        </e>
+        <e p="DynamoConversions" t="IncludeRecursive">
+          <e p="Conversions.cs" t="Include" />
+          <e p="DynamoConversions.csproj" t="IncludeRecursive" />
+          <e p="Properties" t="Include">
+            <e p="AssemblyInfo.cs" t="Include" />
+          </e>
+        </e>
+        <e p="DynamoPython" t="IncludeRecursive">
+          <e p="Properties" t="Include">
+            <e p="AssemblyInfo.cs" t="Include" />
+            <e p="Resources.Designer.cs" t="Include" />
+            <e p="Resources.en-US.Designer.cs" t="Include" />
+            <e p="Resources.en-US.resx" t="Include" />
+            <e p="Resources.resx" t="Include" />
+          </e>
+          <e p="Python.csproj" t="IncludeRecursive" />
+          <e p="Resources" t="Include">
+            <e p="class.png" t="Include" />
+            <e p="field.png" t="Include" />
+            <e p="ICSharpCode.PythonBinding.Resources.Python.xshd" t="Include" />
+            <e p="method.png" t="Include" />
+            <e p="namespace.png" t="Include" />
+            <e p="privateMethod.png" t="Include" />
+            <e p="property.png" t="Include" />
+          </e>
+        </e>
+        <e p="DynamoUnits" t="IncludeRecursive">
+          <e p="DynamoUnits_DynamoCustomization.xml" t="Include" />
+          <e p="DynamoUnitsImages.resx" t="Include" />
+          <e p="Location.cs" t="Include" />
+          <e p="Properties" t="Include">
+            <e p="AssemblyInfo.cs" t="Include" />
+          </e>
+          <e p="Units.cs" t="Include" />
+          <e p="Units.csproj" t="IncludeRecursive" />
+        </e>
+        <e p="GeometryColor" t="IncludeRecursive">
+          <e p="GeometryColor.cs" t="Include" />
+          <e p="GeometryColor.csproj" t="IncludeRecursive" />
+          <e p="GeometryColor_DynamoCustomization.xml" t="Include" />
+          <e p="Properties" t="Include">
+            <e p="AssemblyInfo.cs" t="Include" />
+            <e p="Resources.Designer.cs" t="Include" />
+            <e p="Resources.en-US.resx" t="Include" />
+            <e p="Resources.resx" t="Include" />
+          </e>
+          <e p="Resources" t="Include">
+            <e p="GeometryColor.resx" t="Include" />
+          </e>
+        </e>
+        <e p="GeometryUI" t="IncludeRecursive">
+          <e p="ExportWithUnits.cs" t="Include" />
+          <e p="GeometryUI.csproj" t="IncludeRecursive" />
+          <e p="GeometryUIImages.resx" t="Include" />
+          <e p="packages.config" t="Include" />
+          <e p="Properties" t="Include">
+            <e p="AssemblyInfo.cs" t="Include" />
+            <e p="Resources.Designer.cs" t="Include" />
+            <e p="Resources.en-US.Designer.cs" t="Include" />
+            <e p="Resources.en-US.resx" t="Include" />
+            <e p="Resources.resx" t="Include" />
+          </e>
+        </e>
+        <e p="GeometryUIWpf" t="IncludeRecursive">
+          <e p="Controls" t="Include">
+            <e p="ExportWithUnitsControl.xaml" t="Include" />
+            <e p="ExportWithUnitsControl.xaml.cs" t="Include" />
+          </e>
+          <e p="ExportWithUnitsViewModel.cs" t="Include" />
+          <e p="GeometryUIWpf.csproj" t="IncludeRecursive" />
+          <e p="NodeViewCustomizations" t="Include">
+            <e p="ExportWithUnitsNodeViewCustomization.cs" t="Include" />
+          </e>
+          <e p="Properties" t="Include">
+            <e p="AssemblyInfo.cs" t="Include" />
+            <e p="Resources.Designer.cs" t="Include" />
+            <e p="Resources.en-US.Designer.cs" t="Include" />
+            <e p="Resources.en-US.resx" t="Include" />
+            <e p="Resources.resx" t="Include" />
+          </e>
+          <e p="ProtoGeometryImages.resx" t="Include" />
+        </e>
+        <e p="Legacy" t="Include" />
+        <e p="PythonNodeModels" t="IncludeRecursive">
+          <e p="packages.config" t="Include" />
+          <e p="Properties" t="Include">
+            <e p="AssemblyInfo.cs" t="Include" />
+            <e p="Resources.Designer.cs" t="Include" />
+            <e p="Resources.en-US.Designer.cs" t="Include" />
+            <e p="Resources.en-US.resx" t="Include" />
+            <e p="Resources.resx" t="Include" />
+          </e>
+          <e p="PythonNode.cs" t="Include" />
+          <e p="PythonNodeModels.csproj" t="IncludeRecursive" />
+          <e p="PythonNodeModelsImages.resx" t="Include" />
+        </e>
+        <e p="PythonNodeModelsWpf" t="IncludeRecursive">
+          <e p="IronPythonCompletionData.cs" t="Include" />
+          <e p="IronPythonCompletionProvider.cs" t="Include" />
+          <e p="packages.config" t="Include" />
+          <e p="Properties" t="Include">
+            <e p="AssemblyInfo.cs" t="Include" />
+          </e>
+          <e p="PythonNode.cs" t="Include" />
+          <e p="PythonNodeModelsWpf.csproj" t="IncludeRecursive" />
+          <e p="Resources" t="Include">
+            <e p="class.png" t="Include" />
+            <e p="field.png" t="Include" />
+            <e p="ICSharpCode.PythonBinding.Resources.Python.xshd" t="Include" />
+            <e p="method.png" t="Include" />
+            <e p="namespace.png" t="Include" />
+            <e p="privateMethod.png" t="Include" />
+            <e p="property.png" t="Include" />
+          </e>
+          <e p="ScriptEditorWindow.xaml" t="Include" />
+          <e p="ScriptEditorWindow.xaml.cs" t="Include" />
+        </e>
+        <e p="Tesellation" t="IncludeRecursive">
+          <e p="Adapters" t="Include">
+            <e p="Cell2.cs" t="Include" />
+            <e p="Cell3.cs" t="Include" />
+            <e p="Tetrahedron.cs" t="Include" />
+            <e p="TriangleFace.cs" t="Include" />
+            <e p="Vertex2.cs" t="Include" />
+            <e p="Vertex3.cs" t="Include" />
+          </e>
+          <e p="ConvexHull.cs" t="Include" />
+          <e p="Delaunay.cs" t="Include" />
+          <e p="MIConvexHull.xml" t="Include" />
+          <e p="packages.config" t="Include" />
+          <e p="Properties" t="Include">
+            <e p="AssemblyInfo.cs" t="Include" />
+          </e>
+          <e p="Tessellation.csproj" t="IncludeRecursive" />
+          <e p="Tessellation_DynamoCustomization.xml" t="Include" />
+          <e p="TessellationImages.resx" t="Include" />
+          <e p="Voronoi.cs" t="Include" />
+        </e>
+        <e p="UnitsUI" t="IncludeRecursive">
+          <e p="packages.config" t="Include" />
+          <e p="Properties" t="Include">
+            <e p="AssemblyInfo.cs" t="Include" />
+            <e p="Resources.Designer.cs" t="Include" />
+            <e p="Resources.en-US.Designer.cs" t="Include" />
+            <e p="Resources.en-US.resx" t="Include" />
+            <e p="Resources.resx" t="Include" />
+          </e>
+          <e p="UnitsUI.cs" t="Include" />
+          <e p="UnitsUI.csproj" t="IncludeRecursive" />
+          <e p="UnitsUIImages.resx" t="Include" />
+        </e>
+        <e p="VMDataBridge" t="IncludeRecursive">
+          <e p="Properties" t="Include">
+            <e p="AssemblyInfo.cs" t="Include" />
+          </e>
+          <e p="VMDataBridge.cs" t="Include" />
+          <e p="VMDataBridge.csproj" t="IncludeRecursive" />
+        </e>
+        <e p="Watch3DNodeModels" t="IncludeRecursive">
+          <e p="packages.config" t="Include" />
+          <e p="Properties" t="Include">
+            <e p="AssemblyInfo.cs" t="Include" />
+            <e p="Resources.Designer.cs" t="Include" />
+            <e p="Resources.en-US.Designer.cs" t="Include" />
+            <e p="Resources.en-US.resx" t="Include" />
+            <e p="Resources.resx" t="Include" />
+          </e>
+          <e p="Watch3D.cs" t="Include" />
+          <e p="Watch3DNodeModels.csproj" t="IncludeRecursive" />
+          <e p="Watch3DNodeModelsImages.resx" t="Include" />
+        </e>
+        <e p="Watch3DNodeModelsWpf" t="IncludeRecursive">
+          <e p="HelixWatch3DNodeViewModel.cs" t="Include" />
+          <e p="packages.config" t="Include" />
+          <e p="Properties" t="Include">
+            <e p="AssemblyInfo.cs" t="Include" />
+            <e p="Resources.Designer.cs" t="Include" />
+            <e p="Resources.en-US.Designer.cs" t="Include" />
+            <e p="Resources.en-US.resx" t="Include" />
+            <e p="Resources.resx" t="Include" />
+          </e>
+          <e p="sharpdx_direct3d11_effects_x64.dll" t="Include" />
+          <e p="sharpdx_direct3d11_effects_x86.dll" t="Include" />
+          <e p="Watch3DNodeModelsWpf.csproj" t="IncludeRecursive" />
+          <e p="Watch3DNodeViewCustomization.cs" t="Include" />
+        </e>
+      </e>
+      <e p="LibraryViewExtension" t="IncludeRecursive">
+        <e p="EventObserver.cs" t="Include" />
+        <e p="Handlers" t="Include">
+          <e p="DllResourceProvider.cs" t="Include" />
+          <e p="IconResourceProvider.cs" t="Include" />
+          <e p="IconUrl.cs" t="Include" />
+          <e p="LayoutSpecProvider.cs" t="Include" />
+          <e p="NodeItemDataProvider.cs" t="Include" />
+          <e p="ResourceHandlerFactory.cs" t="Include" />
+          <e p="ResourceProvider.cs" t="Include" />
+          <e p="SearchResultDataProvider.cs" t="Include" />
+        </e>
+        <e p="LibraryViewController.cs" t="Include" />
+        <e p="LibraryViewCustomization.cs" t="Include" />
+        <e p="LibraryViewExtension.cs" t="Include" />
+        <e p="LibraryViewExtension.csproj" t="IncludeRecursive" />
+        <e p="LibraryViewToolTip.cs" t="Include" />
+        <e p="packages.config" t="Include" />
+        <e p="Properties" t="Include">
+          <e p="AssemblyInfo.cs" t="Include" />
+          <e p="Resources.Designer.cs" t="Include" />
+          <e p="Resources.en-US.Designer.cs" t="Include" />
+          <e p="Resources.en-US.resx" t="Include" />
+          <e p="Resources.resx" t="Include" />
+        </e>
+        <e p="ViewModels" t="Include">
+          <e p="DetailsViewModel.cs" t="Include" />
+          <e p="LibraryViewModel.cs" t="Include" />
+        </e>
+        <e p="Views" t="Include">
+          <e p="DetailsView.xaml" t="Include" />
+          <e p="DetailsView.xaml.cs" t="Include" />
+          <e p="LibraryView.xaml" t="Include" />
+          <e p="LibraryView.xaml.cs" t="Include" />
+        </e>
+        <e p="web" t="Include">
+          <e p="Library" t="Include">
+            <e p="layoutSpecs.json" t="Include" />
+            <e p="librarie.min.js" t="Include" />
+            <e p="library.html" t="Include" />
+            <e p="Resources" t="Include">
+              <e p="ArtifaktElement-Bold.woff" t="Include" />
+              <e p="ArtifaktElement-Regular.woff" t="Include" />
+              <e p="Autodesk.DesignScript.Geometry.Arc.png" t="Include" />
+              <e p="Autodesk.DesignScript.Geometry.BoundingBox.png" t="Include" />
+              <e p="Autodesk.DesignScript.Geometry.Circle.png" t="Include" />
+              <e p="Autodesk.DesignScript.Geometry.Cone.png" t="Include" />
+              <e p="Autodesk.DesignScript.Geometry.CoordinateSystem.png" t="Include" />
+              <e p="Autodesk.DesignScript.Geometry.Cuboid.png" t="Include" />
+              <e p="Autodesk.DesignScript.Geometry.Curve.png" t="Include" />
+              <e p="Autodesk.DesignScript.Geometry.Cylinder.png" t="Include" />
+              <e p="Autodesk.DesignScript.Geometry.Edge.png" t="Include" />
+              <e p="Autodesk.DesignScript.Geometry.Ellipse.png" t="Include" />
+              <e p="Autodesk.DesignScript.Geometry.EllipseArc.png" t="Include" />
+              <e p="Autodesk.DesignScript.Geometry.Face.png" t="Include" />
+              <e p="Autodesk.DesignScript.Geometry.Helix.png" t="Include" />
+              <e p="Autodesk.DesignScript.Geometry.IndexGroup.png" t="Include" />
+              <e p="Autodesk.DesignScript.Geometry.Line.png" t="Include" />
+              <e p="Autodesk.DesignScript.Geometry.Mesh.png" t="Include" />
+              <e p="Autodesk.DesignScript.Geometry.NurbsCurve.png" t="Include" />
+              <e p="Autodesk.DesignScript.Geometry.NurbsSurface.png" t="Include" />
+              <e p="Autodesk.DesignScript.Geometry.Plane.png" t="Include" />
+              <e p="Autodesk.DesignScript.Geometry.Point.png" t="Include" />
+              <e p="Autodesk.DesignScript.Geometry.PolyCurve.png" t="Include" />
+              <e p="Autodesk.DesignScript.Geometry.Polygon.png" t="Include" />
+              <e p="Autodesk.DesignScript.Geometry.PolySurface.png" t="Include" />
+              <e p="Autodesk.DesignScript.Geometry.Rectangle.png" t="Include" />
+              <e p="Autodesk.DesignScript.Geometry.Solid.png" t="Include" />
+              <e p="Autodesk.DesignScript.Geometry.Sphere.png" t="Include" />
+              <e p="Autodesk.DesignScript.Geometry.Surface.png" t="Include" />
+              <e p="Autodesk.DesignScript.Geometry.Topology.png" t="Include" />
+              <e p="Autodesk.DesignScript.Geometry.UV.png" t="Include" />
+              <e p="Autodesk.DesignScript.Geometry.Vector.png" t="Include" />
+              <e p="Autodesk.DesignScript.Geometry.Vertex.png" t="Include" />
+              <e p="Category.Dictionary.svg" t="Include" />
+              <e p="Category.Display.svg" t="Include" />
+              <e p="Category.Geometry.svg" t="Include" />
+              <e p="Category.ImportExport.svg" t="Include" />
+              <e p="Category.Input.svg" t="Include" />
+              <e p="Category.List.svg" t="Include" />
+              <e p="Category.Math.svg" t="Include" />
+              <e p="Category.Revit.svg" t="Include" />
+              <e p="Category.Script.svg" t="Include" />
+              <e p="Category.String.svg" t="Include" />
+              <e p="default-icon.svg" t="Include" />
+              <e p="DSCore.DayOfWeek.png" t="Include" />
+              <e p="Dynamo.svg" t="Include" />
+              <e p="fontawesome-webfont.eot" t="Include" />
+              <e p="fontawesome-webfont.svg" t="Include" />
+              <e p="fontawesome-webfont.ttf" t="Include" />
+              <e p="fontawesome-webfont.woff" t="Include" />
+              <e p="fontawesome-webfont.woff2" t="Include" />
+              <e p="indent-arrow-down-wo-lines.svg" t="Include" />
+              <e p="indent-arrow-down.svg" t="Include" />
+              <e p="indent-arrow-right-last.svg" t="Include" />
+              <e p="indent-arrow-right-wo-lines.svg" t="Include" />
+              <e p="indent-arrow-right.svg" t="Include" />
+              <e p="library-action.svg" t="Include" />
+              <e p="library-create.svg" t="Include" />
+              <e p="library-query.svg" t="Include" />
+              <e p="plus-symbol.svg" t="Include" />
+              <e p="Tessellation.ConvexHull.png" t="Include" />
+              <e p="Tessellation.Delaunay.png" t="Include" />
+              <e p="Tessellation.Voronoi.png" t="Include" />
+            </e>
+          </e>
+        </e>
+      </e>
+      <e p="Migrations" t="IncludeRecursive">
+        <e p="CoreNodes" t="Include">
+          <e p="dynBaseTypes.cs" t="Include" />
+        </e>
+        <e p="DynamoPython" t="Include">
+          <e p="dynPython.cs" t="Include" />
+        </e>
+        <e p="MigrationHelpers.cs" t="Include" />
+        <e p="Migrations.csproj" t="IncludeRecursive" />
+        <e p="Properties" t="Include">
+          <e p="AssemblyInfo.cs" t="Include" />
+        </e>
+        <e p="RevitNodes" t="Include">
+          <e p="SunPath.cs" t="Include" />
+        </e>
+      </e>
+      <e p="NodeServices" t="IncludeRecursive">
+        <e p="Analytics.cs" t="Include" />
+        <e p="Attributes.cs" t="Include" />
+        <e p="DynamoServices.csproj" t="IncludeRecursive" />
+        <e p="ExecutionEvents.cs" t="Include" />
+        <e p="ExecutionSession.cs" t="Include" />
+        <e p="GraphicsDataInterfaces.cs" t="Include" />
+        <e p="IAnalyticsClient.cs" t="Include" />
+        <e p="Interfaces.cs" t="Include" />
+        <e p="MessageEvents.cs" t="Include" />
+        <e p="Properties" t="Include">
+          <e p="AssemblyInfo.cs" t="Include" />
+        </e>
+        <e p="TraceSupport.cs" t="Include" />
+        <e p="Validity.cs" t="Include" />
+        <e p="WorkspaceEvents.cs" t="Include" />
+      </e>
+      <e p="Notifications" t="IncludeRecursive">
+        <e p="Notifications.csproj" t="IncludeRecursive" />
+        <e p="NotificationsMenuItem.xaml" t="Include" />
+        <e p="NotificationsMenuItem.xaml.cs" t="Include" />
+        <e p="NotificationsView.xaml" t="Include" />
+        <e p="NotificationsView.xaml.cs" t="Include" />
+        <e p="NotificationsViewExtension.cs" t="Include" />
+        <e p="Properties" t="Include">
+          <e p="AssemblyInfo.cs" t="Include" />
+          <e p="Resources.Designer.cs" t="Include" />
+          <e p="Resources.en-US.Designer.cs" t="Include" />
+          <e p="Resources.en-US.resx" t="Include" />
+          <e p="Resources.resx" t="Include" />
+        </e>
+      </e>
+      <e p="packages" t="ExcludeRecursive">
+        <e p="SharpDX.2.6.3\Bin\DirectX11-Signed-net40\Assimp32.dll" t="Include" />
+        <e p="SharpDX.2.6.3\Bin\DirectX11-Signed-net40\Assimp64.dll" t="Include" />
+      </e>
+      <e p="Tests" t="Include">
+        <e p="Core" t="Include" />
+        <e p="Engine" t="Include" />
+        <e p="Libraries" t="Include" />
+        <e p="system" t="Include" />
+      </e>
+      <e p="Tools" t="Include">
+        <e p="DynamoInstallDetective" t="IncludeRecursive">
+          <e p="DynamoInstallDetective.csproj" t="IncludeRecursive" />
+          <e p="ProductLookUp.cs" t="Include" />
+          <e p="Properties" t="Include">
+            <e p="AssemblyInfo.cs" t="Include" />
+          </e>
+          <e p="Utilities.cs" t="Include" />
+        </e>
+        <e p="DynamoShapeManager" t="IncludeRecursive">
+          <e p="DynamoShapeManager.csproj" t="IncludeRecursive" />
+          <e p="Preloader.cs" t="Include" />
+          <e p="Properties" t="Include">
+            <e p="AssemblyInfo.cs" t="Include" />
+          </e>
+          <e p="Utilities.cs" t="Include" />
+        </e>
+        <e p="InstallUpdate" t="IncludeRecursive">
+          <e p="App.config" t="Include" />
+          <e p="InstallUpdate.csproj" t="IncludeRecursive" />
+          <e p="Program.cs" t="Include" />
+          <e p="Properties" t="Include">
+            <e p="AssemblyInfo.cs" t="Include" />
+          </e>
+          <e p="Resources.Designer.cs" t="Include" />
+          <e p="Resources.en-US.Designer.cs" t="Include" />
+          <e p="Resources.en-US.resx" t="Include" />
+          <e p="Resources.resx" t="Include" />
+        </e>
+        <e p="NUnitUtility" t="IncludeRecursive">
+          <e p="App.config" t="Include" />
+          <e p="Bin" t="ExcludeRecursive" />
+          <e p="NUnitUtility.csproj" t="IncludeRecursive" />
+          <e p="obj" t="ExcludeRecursive" />
+          <e p="Program.cs" t="Include" />
+          <e p="Properties" t="Include">
+            <e p="AssemblyInfo.cs" t="Include" />
+          </e>
+        </e>
+        <e p="SignDynamo" t="IncludeRecursive">
+          <e p="App.config" t="Include" />
+          <e p="Bin" t="ExcludeRecursive" />
+          <e p="obj" t="ExcludeRecursive" />
+          <e p="Program.cs" t="Include" />
+          <e p="Properties" t="Include">
+            <e p="AssemblyInfo.cs" t="Include" />
+          </e>
+          <e p="SignDynamo.csproj" t="IncludeRecursive" />
+        </e>
+        <e p="XmlDocumentationsUtility" t="IncludeRecursive">
+          <e p="App.config" t="Include" />
+          <e p="Bin" t="ExcludeRecursive" />
+          <e p="obj" t="ExcludeRecursive" />
+          <e p="Program.cs" t="Include" />
+          <e p="Properties" t="Include">
+            <e p="AssemblyInfo.cs" t="Include" />
+          </e>
+          <e p="test" t="Include">
+            <e p="XmlDocUtilityTests.cs" t="Include" />
+            <e p="ZeroTouchModuleTests.cs" t="Include" />
+          </e>
+          <e p="XmlDocumentationsUtility.csproj" t="IncludeRecursive" />
+          <e p="ZeroTouchModule.cs" t="Include" />
+        </e>
+      </e>
+      <e p="VisualizationTests" t="IncludeRecursive">
+        <e p="CameraTests.cs" t="Include" />
+        <e p="CustomNodeTests.cs" t="Include" />
+        <e p="HelixRenderPackageTests.cs" t="Include" />
+        <e p="HelixWatch3DViewModelTests.cs" t="Include" />
+        <e p="HelixWatch3DViewModelUnitTests.cs" t="Include" />
+        <e p="packages.config" t="Include" />
+        <e p="Properties" t="Include">
+          <e p="AssemblyInfo.cs" t="Include" />
+        </e>
+        <e p="sharpdx_direct3d11_effects_x64.dll" t="Include" />
+        <e p="sharpdx_direct3d11_effects_x86.dll" t="Include" />
+        <e p="Watch3DViewModelTests.cs" t="Include" />
+        <e p="WpfVisualizationTests.csproj" t="IncludeRecursive" />
+      </e>
+      <e p="WorkspaceDependencyViewExtension" t="IncludeRecursive">
+        <e p="Properties" t="Include">
+          <e p="AssemblyInfo.cs" t="Include" />
+          <e p="Resources.Designer.cs" t="Include" />
+          <e p="Resources.en-US.Designer.cs" t="Include" />
+          <e p="Resources.en-US.resx" t="Include" />
+          <e p="Resources.resx" t="Include" />
+        </e>
+        <e p="WorkspaceDependencyView.xaml" t="Include" />
+        <e p="WorkspaceDependencyView.xaml.cs" t="Include" />
+        <e p="WorkspaceDependencyViewExtension.cs" t="Include" />
+        <e p="WorkspaceDependencyViewExtension.csproj" t="IncludeRecursive" />
+      </e>
+    </e>
+    <e p="D:\Desktop\DynamoDS\Dynamo\test\DynamoCoreTests" t="IncludeRecursive">
+      <e p="AnalyticsTests.cs" t="Include" />
+      <e p="AnnotationModelTest.cs" t="Include" />
+      <e p="AstBuildFailTest.cs" t="Include" />
+      <e p="AsyncTaskExtensionsTests.cs" t="Include" />
+      <e p="AtLevelTest.cs" t="Include" />
+      <e p="AttributeTest.cs" t="Include" />
+      <e p="AuthenticationManagerTests.cs" t="Include" />
+      <e p="CallsiteTests.cs" t="Include" />
+      <e p="CodeBlockNodeTests.cs" t="Include" />
+      <e p="CoreDynTests.cs" t="Include" />
+      <e p="CoreTests.cs" t="Include" />
+      <e p="CrashProtectionTests.cs" t="Include" />
+      <e p="CustomNodes.cs" t="Include" />
+      <e p="CustomNodeWorkspaceOpening.cs" t="Include" />
+      <e p="DefaultArgumentMigrationTests.cs" t="Include" />
+      <e p="DefaultArgumentTests.cs" t="Include" />
+      <e p="DSCoreDataTests.cs" t="Include" />
+      <e p="DSEvaluationModelTest.cs" t="Include" />
+      <e p="DSEvaluationUnitTestBase.cs" t="Include" />
+      <e p="DSFunctionNodeTest.cs" t="Include" />
+      <e p="DSLibraryTest.cs" t="Include" />
+      <e p="DummyNodeTests.cs" t="Include" />
+      <e p="DynamoCoreTests.csproj" t="IncludeRecursive" />
+      <e p="DynamoDefects.cs" t="Include" />
+      <e p="DynamoModelTestBase.cs" t="Include" />
+      <e p="ExtensionTests.cs" t="Include" />
+      <e p="FileReading.cs" t="Include" />
+      <e p="HomgeneousListTests.cs" t="Include" />
+      <e p="ImperativeClodeBlockTest.cs" t="Include" />
+      <e p="InheritanceTests.cs" t="Include" />
+      <e p="InputOutputDataTests.cs" t="Include" />
+      <e p="libGPreloaderTests.cs" t="Include" />
+      <e p="LibraryCustomizationTests.cs" t="Include" />
+      <e p="LibraryTests.cs" t="Include" />
+      <e p="ListAtLevelTests.cs" t="Include" />
+      <e p="MessageLogTests.cs" t="Include" />
+      <e p="MigrationManagerTests.cs" t="Include" />
+      <e p="MigrationTestFramework.cs" t="Include" />
+      <e p="MockMaker.cs" t="Include" />
+      <e p="MultiOutputNodeTest.cs" t="Include" />
+      <e p="NodeConstructionTests.cs" t="Include" />
+      <e p="NodeExecutionTest.cs" t="Include" />
+      <e p="NodeMigrationTests.cs" t="Include" />
+      <e p="Nodes" t="Include">
+        <e p="DictionaryTests.cs" t="Include" />
+        <e p="DropDownTests.cs" t="Include" />
+        <e p="FormulaTests.cs" t="Include" />
+        <e p="HigherOrder.cs" t="Include" />
+        <e p="IfTest.cs" t="Include" />
+        <e p="ListTests.cs" t="Include" />
+        <e p="LogicTests.cs" t="Include" />
+        <e p="StringTests.cs" t="Include" />
+      </e>
+      <e p="NodeToCodeTest.cs" t="Include" />
+      <e p="PackageDependencyTests.cs" t="Include" />
+      <e p="packages.config" t="Include" />
+      <e p="PeriodicEvaluationTests.cs" t="Include" />
+      <e p="PresetsTests.cs" t="Include" />
+      <e p="ProfilingTest.cs" t="Include" />
+      <e p="Properties" t="Include">
+        <e p="AssemblyInfo.cs" t="Include" />
+      </e>
+      <e p="SchedulerTests.cs" t="Include" />
+      <e p="ScopedNodeTest.cs" t="Include" />
+      <e p="SearchModelTests.cs" t="Include" />
+      <e p="SerializationTests.cs" t="Include" />
+      <e p="Settings.cs" t="Include" />
+      <e p="Setup.cs" t="Include" />
+      <e p="TestZeroTouchClass.cs" t="Include" />
+      <e p="TypedParametersToStringTests.cs" t="Include" />
+      <e p="UndoRedoRecorderTests.cs" t="Include" />
+      <e p="UnicodeTest.cs" t="Include" />
+      <e p="UnitsOfMeasureTests.cs" t="Include" />
+      <e p="UnitTestBase.cs" t="Include" />
+      <e p="UpdateManagerTests.cs" t="Include" />
+      <e p="UserDataMigrationTests.cs" t="Include" />
+      <e p="UtilityTests.cs" t="Include" />
+      <e p="VersionUtilitiesTests.cs" t="Include" />
+      <e p="WorkspaceHeaderTests.cs" t="Include" />
+      <e p="XmlDocumentationTests.cs" t="Include" />
+      <e p="XmlHelperTests.cs" t="Include" />
+    </e>
+    <e p="D:\Desktop\DynamoDS\Dynamo\test\DynamoCoreWpfTests" t="IncludeRecursive">
+      <e p="AnnotationViewModelTests.cs" t="Include" />
+      <e p="AnnotationViewTests.cs" t="Include" />
+      <e p="App.config" t="Include" />
+      <e p="CodeBlockNodeTests.cs" t="Include" />
+      <e p="ColorPaletteTests.cs" t="Include" />
+      <e p="ColorRangeTests.cs" t="Include" />
+      <e p="ConverterTests.cs" t="Include" />
+      <e p="CoreUITests.cs" t="Include" />
+      <e p="CrashReportingTests.cs" t="Include" />
+      <e p="CustomNodeTests.cs" t="Include" />
+      <e p="DateTimeTests.cs" t="Include" />
+      <e p="DynamoConverterTest.cs" t="Include" />
+      <e p="DynamoCoreWpfTests.csproj" t="IncludeRecursive" />
+      <e p="DynamoTestUIBase.cs" t="Include" />
+      <e p="DynamoViewModelUnitTest.cs" t="Include" />
+      <e p="ElementResolverTests.cs" t="Include" />
+      <e p="ExecutionIntervalTests.cs" t="Include" />
+      <e p="GalleryTests.cs" t="Include" />
+      <e p="GraphLayoutTests.cs" t="Include" />
+      <e p="IconsTests.cs" t="Include" />
+      <e p="InCanvasSearchTests.cs" t="Include" />
+      <e p="LibraryTests.cs" t="Include" />
+      <e p="ListAtLevelTest.cs" t="Include" />
+      <e p="NodeExecutionUITest.cs" t="Include" />
+      <e p="NodeHelpPromptTest.cs" t="Include" />
+      <e p="NodeToCodeTests.cs" t="Include" />
+      <e p="NodeViewCustomizationTests.cs" t="Include" />
+      <e p="NodeViewTests.cs" t="Include" />
+      <e p="NoteViewTests.cs" t="Include" />
+      <e p="PackageManager" t="Include">
+        <e p="PackageDependencyTests.cs" t="Include" />
+        <e p="PackageManagerSearchViewModelTests.cs" t="Include" />
+      </e>
+      <e p="PackageManagerExtensionLoadingTests.cs" t="Include" />
+      <e p="PackageManagerUITests.cs" t="Include" />
+      <e p="PackageManagerViewExtensionTests.cs" t="Include" />
+      <e p="PackagePathTests.cs" t="Include" />
+      <e p="packages.config" t="Include" />
+      <e p="PresetPromptTests.cs" t="Include" />
+      <e p="PresetViewModelTest.cs" t="Include" />
+      <e p="PreviewBubbleTests.cs" t="Include" />
+      <e p="Properties" t="Include">
+        <e p="AssemblyInfo.cs" t="Include" />
+      </e>
+      <e p="PublishPackageViewModelTests.cs" t="Include" />
+      <e p="RecentFileTests.cs" t="Include" />
+      <e p="RecordedTests.cs" t="Include" />
+      <e p="RunSettingsTests.cs" t="Include" />
+      <e p="SearchSideEffects.cs" t="Include" />
+      <e p="SearchViewModelTests.cs" t="Include" />
+      <e p="SerializationTests.cs" t="Include" />
+      <e p="Setup.cs" t="Include" />
+      <e p="SliderTests.cs" t="Include" />
+      <e p="UpdateManagerUITests.cs" t="Include" />
+      <e p="Utility" t="Include">
+        <e p="DispatcherUtil.cs" t="Include" />
+        <e p="ViewExtensions.cs" t="Include" />
+      </e>
+      <e p="ViewExtensions" t="Include">
+        <e p="ViewExtensionTests.cs" t="Include" />
+        <e p="WorkspaceDependencyViewExtensionTests.cs" t="Include" />
+      </e>
+      <e p="WatchNodeTests.cs" t="Include" />
+      <e p="WebRequestTests.cs" t="Include" />
+      <e p="WorkspaceGeneralOperations.cs" t="Include" />
+      <e p="WorkspaceOpeningTests.cs" t="Include" />
+      <e p="WorkspaceSaving.cs" t="Include" />
+    </e>
+    <e p="D:\Desktop\DynamoDS\Dynamo\test\Engine\FFITarget" t="IncludeRecursive">
+      <e p="AbstractDisposeTracert.cs" t="Include" />
+      <e p="AtLevelTestClass.cs" t="Include" />
+      <e p="ClassFunctionality.cs" t="Include" />
+      <e p="ClassWithRefParams.cs" t="Include" />
+      <e p="CodeCompletionClass.cs" t="Include" />
+      <e p="DefaultArguments.cs" t="Include" />
+      <e p="DisposeTest.cs" t="Include" />
+      <e p="DisposeTracer.cs" t="Include" />
+      <e p="DummyCollection.cs" t="Include" />
+      <e p="DummyGeometry.cs" t="Include" />
+      <e p="DummyMath.cs" t="Include" />
+      <e p="DummyZeroTouchClass.cs" t="Include" />
+      <e p="ElementResolverTarget.cs" t="Include" />
+      <e p="FFITarget.csproj" t="IncludeRecursive" />
+      <e p="GlobalClass.cs" t="Include" />
+      <e p="InheritenceTests.cs" t="Include" />
+      <e p="ManagedElementExample.cs" t="Include" />
+      <e p="Minimal.cs" t="Include" />
+      <e p="MinimalTraceTargets.cs" t="Include" />
+      <e p="OverloadTarget.cs" t="Include" />
+      <e p="ProtoFFITests.cs" t="Include" />
+      <e p="ReferenceThisTest.cs" t="Include" />
+      <e p="RegressionTargets.cs" t="Include" />
+      <e p="ReplicationTest.cs" t="Include" />
+      <e p="TestCSharpAttribute.cs" t="Include" />
+      <e p="TestDefaultArgumentAttributes.cs" t="Include" />
+      <e p="TestMessageLog.cs" t="Include" />
+      <e p="TestMethodOverload.cs" t="Include" />
+      <e p="TestNamespaceConflict.cs" t="Include" />
+      <e p="TestNamespaceResolution.cs" t="Include" />
+      <e p="TestObjects.cs" t="Include" />
+      <e p="TestPersistentNodeValues.cs" t="Include" />
+      <e p="TestThisOverload.cs" t="Include" />
+      <e p="TestUpdateCount.cs" t="Include" />
+    </e>
+    <e p="D:\Desktop\DynamoDS\Dynamo\test\Engine\ProtoTest" t="IncludeRecursive">
+      <e p="Assembler" t="Include">
+        <e p="MicroFeatureTests.cs" t="Include" />
+      </e>
+      <e p="Associative" t="Include">
+        <e p="BuiltinMethodsTest.cs" t="Include" />
+        <e p="FunctionObject.cs" t="Include" />
+        <e p="Inheritance.cs" t="Include" />
+        <e p="MethodResolution.cs" t="Include" />
+        <e p="MethodsFocusTeam.cs" t="Include" />
+        <e p="MicroFeatureTests.cs" t="Include" />
+        <e p="RedefinitionExpression.cs" t="Include" />
+        <e p="ReferenceCount.cs" t="Include" />
+        <e p="ReplicatorTest.cs" t="Include" />
+        <e p="SSATransformTest.cs" t="Include" />
+        <e p="TypeSystemTests.cs" t="Include" />
+        <e p="VerificationErrorFormat.cs" t="Include" />
+        <e p="VerificationFormatJSON.cs" t="Include" />
+      </e>
+      <e p="AtLevel" t="Include">
+        <e p="AtLevelTest.cs" t="Include" />
+      </e>
+      <e p="CompileAndExecute.cs" t="Include" />
+      <e p="CoreUnitTests" t="Include">
+        <e p="StaticMirrorTest.cs" t="Include" />
+      </e>
+      <e p="DebugTests" t="Include">
+        <e p="BasicTests.cs" t="Include" />
+        <e p="NamespaceConflictTest.cs" t="Include" />
+        <e p="RunEqualityTests.cs" t="Include" />
+        <e p="RunWatchTestsIncluded.cs" t="Include" />
+        <e p="SetValueTests.cs" t="Include" />
+      </e>
+      <e p="DSASM" t="Include">
+        <e p="ExecutionMirrorTests.cs" t="Include" />
+        <e p="HeapMarkSweepTests.cs" t="Include" />
+        <e p="MemorySafetyTest.cs" t="Include" />
+      </e>
+      <e p="FFITests" t="Include">
+        <e p="ArgumentMarshalingTests.cs" t="Include" />
+        <e p="ContextInjectionTests.cs" t="Include" />
+        <e p="CSFFIDataMarshalingTest.cs" t="Include" />
+        <e p="CSFFIDispose.cs" t="Include" />
+        <e p="CSFFITest.cs" t="Include" />
+        <e p="ElementRewriterTests.cs" t="Include" />
+        <e p="FFITest.cs" t="Include" />
+        <e p="RegressionAnalysisTests.cs" t="Include" />
+        <e p="TestCSharpAttribute.cs" t="Include" />
+      </e>
+      <e p="GraphCompiler" t="Include">
+        <e p="NewFrontEndTests.cs" t="Include" />
+      </e>
+      <e p="Imperative" t="Include">
+        <e p="FromOldTestSuite.cs" t="Include" />
+        <e p="MicroFeatureTests.cs" t="Include" />
+      </e>
+      <e p="LiveRunnerTests" t="Include">
+        <e p="ChangeSetComputerTests.cs" t="Include" />
+        <e p="MemoryConsumptionTests.cs" t="Include" />
+        <e p="MicroFeatureTests.cs" t="Include" />
+        <e p="PreviewChangeSetTests.cs" t="Include" />
+      </e>
+      <e p="MinimalClassTests.cs" t="Include" />
+      <e p="MultiLangTests" t="Include">
+        <e p="AssociativeToImperative.cs" t="Include" />
+        <e p="FunctionPointerTest.cs" t="Include" />
+        <e p="GCTest.cs" t="Include" />
+        <e p="NonExistingFunctionTest.cs" t="Include" />
+        <e p="UnicodeTest.cs" t="Include" />
+      </e>
+      <e p="MultiLanugageBasic.cs" t="Include" />
+      <e p="NameSpaceTests.cs" t="Include" />
+      <e p="ParserTest" t="Include">
+        <e p="ParserTest.cs" t="Include" />
+      </e>
+      <e p="Properties" t="Include">
+        <e p="AssemblyInfo.cs" t="Include" />
+      </e>
+      <e p="ProtoAST" t="Include">
+        <e p="AstFactoryTest.cs" t="Include" />
+        <e p="ProtoASTExecutionTests.cs" t="Include" />
+        <e p="RoundTripTests.cs" t="Include" />
+      </e>
+      <e p="ProtoScriptTest.cs" t="Include" />
+      <e p="ProtoTest.csproj" t="IncludeRecursive" />
+      <e p="ProtoTestBase.cs" t="Include" />
+      <e p="RegressionTests" t="Include">
+        <e p="ProtoCoreLexerTests.cs" t="Include" />
+      </e>
+      <e p="TD" t="Include">
+        <e p="ArrayUtilsTest.cs" t="Include" />
+        <e p="Associative" t="Include">
+          <e p="AssocAssignment.cs" t="Include" />
+          <e p="Class.cs" t="Include" />
+          <e p="Function.cs" t="Include" />
+          <e p="InlineCondition.cs" t="Include" />
+          <e p="Replication.cs" t="Include" />
+          <e p="ReplicationGuide.cs" t="Include" />
+          <e p="Update.cs" t="Include" />
+        </e>
+        <e p="Debugger.cs" t="Include" />
+        <e p="DefectRegress.cs" t="Include" />
+        <e p="DocTests" t="Include">
+          <e p="UserManualTests.cs" t="Include" />
+        </e>
+        <e p="Imperative" t="Include">
+          <e p="Assignment.cs" t="Include" />
+          <e p="BlockSyntax.cs" t="Include" />
+          <e p="BreakContinue.cs" t="Include" />
+          <e p="ForLoop.cs" t="Include" />
+          <e p="IfElseTest.cs" t="Include" />
+          <e p="Imperative.cs" t="Include" />
+          <e p="InlineCondition.cs" t="Include" />
+          <e p="TypedAssignment.cs" t="Include" />
+          <e p="WhileTest.cs" t="Include" />
+        </e>
+        <e p="MultiLangTests" t="Include">
+          <e p="Builtin_Functions.cs" t="Include" />
+          <e p="BuiltinFunction_FromOldLang.cs" t="Include" />
+          <e p="CollectionAssgnmt.cs" t="Include" />
+          <e p="CollectionAssignment.cs" t="Include" />
+          <e p="Old_Language_Manual_Examples.cs" t="Include" />
+          <e p="Old_Language_test_Cases.cs" t="Include" />
+          <e p="RangeExpressions.cs" t="Include" />
+          <e p="RecursionTest.cs" t="Include" />
+          <e p="StringTest.cs" t="Include" />
+          <e p="TestClass.cs" t="Include" />
+          <e p="TestFunction.cs" t="Include" />
+          <e p="TestImport.cs" t="Include" />
+          <e p="TestScope.cs" t="Include" />
+          <e p="TestUpdate.cs" t="Include" />
+          <e p="Tutorial.cs" t="Include" />
+          <e p="TypeSystemTests.cs" t="Include" />
+          <e p="TypeSystemTests_Imperative.cs" t="Include" />
+          <e p="UseCaseTesting.cs" t="Include" />
+        </e>
+        <e p="OtherMiscTests" t="Include">
+          <e p="MiscTest.cs" t="Include" />
+        </e>
+        <e p="TraceUtilsTests.cs" t="Include" />
+      </e>
+      <e p="UtilsTests" t="Include">
+        <e p="AstFactoryTest.cs" t="Include" />
+        <e p="AstVisitorTest.cs" t="Include" />
+        <e p="ClassUtilsTest.cs" t="Include" />
+        <e p="CoreUtilsTest.cs" t="Include" />
+        <e p="ImperativeAstVistorTest.cs" t="Include" />
+        <e p="TextFxTests.cs" t="Include" />
+      </e>
+    </e>
+    <e p="D:\Desktop\DynamoDS\Dynamo\test\Engine\ProtoTestConsoleRunner" t="IncludeRecursive">
+      <e p="App.config" t="Include" />
+      <e p="Program.cs" t="Include" />
+      <e p="Properties" t="Include">
+        <e p="AssemblyInfo.cs" t="Include" />
+      </e>
+      <e p="ProtoTestConsoleRunner.csproj" t="IncludeRecursive" />
+    </e>
+    <e p="D:\Desktop\DynamoDS\Dynamo\test\Engine\ProtoTestFx" t="IncludeRecursive">
+      <e p="DebugTestFx.cs" t="Include" />
+      <e p="JsonDecoder.cs" t="Include" />
+      <e p="packages.config" t="Include" />
+      <e p="Program.cs" t="Include" />
+      <e p="Properties" t="Include">
+        <e p="AssemblyInfo.cs" t="Include" />
+      </e>
+      <e p="ProtoTestFx.csproj" t="IncludeRecursive" />
+      <e p="TestFrameWork.cs" t="Include" />
+      <e p="WatchTestFx.cs" t="Include" />
+    </e>
+    <e p="D:\Desktop\DynamoDS\Dynamo\test\Libraries\AnalysisTests" t="IncludeRecursive">
+      <e p="AnalysisTests.cs" t="Include" />
+      <e p="AnalysisTests.csproj" t="IncludeRecursive" />
+      <e p="Properties" t="Include">
+        <e p="AssemblyInfo.cs" t="Include" />
+      </e>
+    </e>
+    <e p="D:\Desktop\DynamoDS\Dynamo\test\Libraries\CommandLineTests" t="IncludeRecursive">
+      <e p="CommandLineTests.cs" t="Include" />
+      <e p="CommandLineTests.csproj" t="IncludeRecursive" />
+      <e p="packages.config" t="Include" />
+      <e p="Properties" t="Include">
+        <e p="AssemblyInfo.cs" t="Include" />
+      </e>
+    </e>
+    <e p="D:\Desktop\DynamoDS\Dynamo\test\Libraries\CoreNodesTests" t="IncludeRecursive">
+      <e p="ColorRangeTests.cs" t="Include" />
+      <e p="ColorTests.cs" t="Include" />
+      <e p="ComparisonTests.cs" t="Include" />
+      <e p="CoreNodesTests.csproj" t="IncludeRecursive" />
+      <e p="DateTimeTests.cs" t="Include" />
+      <e p="FileTests.cs" t="Include" />
+      <e p="ListTests.cs" t="Include" />
+      <e p="LogicTests.cs" t="Include" />
+      <e p="MathTests.cs" t="Include" />
+      <e p="NodeWithUITests.cs" t="Include" />
+      <e p="NumberTests.cs" t="Include" />
+      <e p="ObjectTests.cs" t="Include" />
+      <e p="Properties" t="Include">
+        <e p="AssemblyInfo.cs" t="Include" />
+      </e>
+      <e p="ProtoNodesTests.cs" t="Include" />
+      <e p="QuadtreeTests.cs" t="Include" />
+      <e p="Setup.cs" t="Include" />
+      <e p="StringTests.cs" t="Include" />
+      <e p="ThreadTests.cs" t="Include" />
+      <e p="WebTests.cs" t="Include" />
+    </e>
+    <e p="D:\Desktop\DynamoDS\Dynamo\test\Libraries\DataBridgeTests" t="IncludeRecursive">
+      <e p="DataBridgeTests.cs" t="Include" />
+      <e p="DataBridgeTests.csproj" t="IncludeRecursive" />
+      <e p="Properties" t="Include">
+        <e p="AssemblyInfo.cs" t="Include" />
+      </e>
+    </e>
+    <e p="D:\Desktop\DynamoDS\Dynamo\test\Libraries\DynamoMSOfficeTests" t="IncludeRecursive">
+      <e p="DynamoMSOfficeTests.csproj" t="IncludeRecursive" />
+      <e p="ExcelTests.cs" t="Include" />
+      <e p="Properties" t="Include">
+        <e p="AssemblyInfo.cs" t="Include" />
+      </e>
+      <e p="Setup.cs" t="Include" />
+    </e>
+    <e p="D:\Desktop\DynamoDS\Dynamo\test\Libraries\DynamoPythonTests" t="IncludeRecursive">
+      <e p="CodeCompletionTests.cs" t="Include" />
+      <e p="IronPythonTests.csproj" t="IncludeRecursive" />
+      <e p="packages.config" t="Include" />
+      <e p="Properties" t="Include">
+        <e p="AssemblyInfo.cs" t="Include" />
+      </e>
+      <e p="PythonEditTests.cs" t="Include" />
+      <e p="PythonEvalTests.cs" t="Include" />
+    </e>
+    <e p="D:\Desktop\DynamoDS\Dynamo\test\Libraries\DynamoUtilitiesTests" t="IncludeRecursive">
+      <e p="DataMarshalerTests.cs" t="Include" />
+      <e p="DynamoUtilitiesTests.csproj" t="IncludeRecursive" />
+      <e p="packages.config" t="Include" />
+      <e p="ProductLookUpTests.cs" t="Include" />
+      <e p="Properties" t="Include">
+        <e p="AssemblyInfo.cs" t="Include" />
+      </e>
+      <e p="XmlHelperTests.cs" t="Include" />
+    </e>
+    <e p="D:\Desktop\DynamoDS\Dynamo\test\Libraries\GeometryColorTests" t="IncludeRecursive">
+      <e p="ByGeometryColorTests.cs" t="Include" />
+      <e p="ByPointsColorsTests.cs" t="Include" />
+      <e p="BySurfaceUvsColorsTests.cs" t="Include" />
+      <e p="DisplayTest.cs" t="Include" />
+      <e p="GeometryColorTests.csproj" t="IncludeRecursive" />
+      <e p="Properties" t="Include">
+        <e p="AssemblyInfo.cs" t="Include" />
+      </e>
+    </e>
+    <e p="D:\Desktop\DynamoDS\Dynamo\test\Libraries\NodeServicesTest" t="IncludeRecursive">
+      <e p="DynamoServicesTests.csproj" t="IncludeRecursive" />
+      <e p="Properties" t="Include">
+        <e p="AssemblyInfo.cs" t="Include" />
+      </e>
+      <e p="TraceUtilsTest.cs" t="Include" />
+      <e p="WorkspaceEventTests.cs" t="Include" />
+    </e>
+    <e p="D:\Desktop\DynamoDS\Dynamo\test\Libraries\PackageManagerTests" t="IncludeRecursive">
+      <e p="App.config" t="Include" />
+      <e p="PackageDirectoryBuilderTests.cs" t="Include" />
+      <e p="PackageLoaderCustomTest.cs" t="Include" />
+      <e p="PackageLoaderTests.cs" t="Include" />
+      <e p="PackageManagerClientTests.cs" t="Include" />
+      <e p="PackageManagerExtensionTests.cs" t="Include" />
+      <e p="PackageManagerTests.csproj" t="IncludeRecursive" />
+      <e p="packages.config" t="Include" />
+      <e p="PackageTests.cs" t="Include" />
+      <e p="PackageUploadBuilderTests.cs" t="Include" />
+      <e p="PackageUtilitiesTests.cs" t="Include" />
+      <e p="Properties" t="Include">
+        <e p="AssemblyInfo.cs" t="Include" />
+      </e>
+      <e p="RecordedFileSystem.cs" t="Include" />
+    </e>
+    <e p="D:\Desktop\DynamoDS\Dynamo\test\Libraries\SystemTestServices" t="IncludeRecursive">
+      <e p="Properties" t="Include">
+        <e p="AssemblyInfo.cs" t="Include" />
+      </e>
+      <e p="SystemTestBase.cs" t="Include" />
+      <e p="SystemTestServices.csproj" t="IncludeRecursive" />
+      <e p="TestExtensions.cs" t="Include" />
+    </e>
+    <e p="D:\Desktop\DynamoDS\Dynamo\test\Libraries\TestServices" t="IncludeRecursive">
+      <e p="AssemblyResolver.cs" t="Include" />
+      <e p="GeometricTestBase.cs" t="Include" />
+      <e p="Properties" t="Include">
+        <e p="AssemblyInfo.cs" t="Include" />
+      </e>
+      <e p="TestPathResolver.cs" t="Include" />
+      <e p="TestServices.csproj" t="IncludeRecursive" />
+      <e p="TestSessionConfiguration.cs" t="Include" />
+    </e>
+    <e p="D:\Desktop\DynamoDS\Dynamo\test\Libraries\WorkflowTests" t="IncludeRecursive">
+      <e p="ComplexTests.cs" t="Include" />
+      <e p="DynamoSamples.cs" t="Include" />
+      <e p="GeometryDefectTests.cs" t="Include" />
+      <e p="PackageValidationTest.cs" t="Include" />
+      <e p="Properties" t="Include">
+        <e p="AssemblyInfo.cs" t="Include" />
+      </e>
+      <e p="Setup.cs" t="Include" />
+      <e p="WorkflowTests.csproj" t="IncludeRecursive" />
+    </e>
+    <e p="D:\Desktop\DynamoDS\Dynamo\test\system\IntegrationTests" t="IncludeRecursive">
+      <e p="CallsiteRegen.cs" t="Include" />
+      <e p="DynamoApplicationTests.cs" t="Include" />
+      <e p="ExecutionEventsObserver.cs" t="Include" />
+      <e p="IncrementingTraceTests.cs" t="Include" />
+      <e p="IntegrationTests.csproj" t="IncludeRecursive" />
+      <e p="MinimalTraceTests.cs" t="Include" />
+      <e p="Properties" t="Include">
+        <e p="AssemblyInfo.cs" t="Include" />
+      </e>
+      <e p="TestWrapperCleanup.cs" t="Include" />
+    </e>
+    <e p="D:\Desktop\DynamoDS\Dynamo\test\TestUINodes" t="IncludeRecursive">
+      <e p="packages.config" t="Include" />
+      <e p="Properties" t="Include">
+        <e p="AssemblyInfo.cs" t="Include" />
+      </e>
+      <e p="TestUINodes.cs" t="Include" />
+      <e p="TestUINodes.csproj" t="IncludeRecursive" />
+    </e>
+    <e p="D:\Desktop\DynamoDS\Dynamo\test\ViewExtensionLibraryTests" t="IncludeRecursive">
+      <e p="DynamoLibraryItemsTests.cs" t="Include" />
+      <e p="LibraryResourceProviderTests.cs" t="Include" />
+      <e p="LibraryViewControllerTests.cs" t="Include" />
+      <e p="LibraryViewCustomizationTests.cs" t="Include" />
+      <e p="packages.config" t="Include" />
+      <e p="Properties" t="Include">
+        <e p="AssemblyInfo.cs" t="Include" />
+      </e>
+      <e p="Resources" t="Include">
+        <e p="Dynamo.svg" t="Include" />
+        <e p="libraryItems.json" t="Include" />
+      </e>
+      <e p="ViewExtensionLibraryTests.csproj" t="IncludeRecursive" />
+    </e>
+  </component>
+</project>
