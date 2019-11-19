@@ -9,28 +9,10 @@ before_build:
 
 environment:
   dynamo_solution: src/Dynamo.All.sln
-  xmlDocs_solution: tools/XmlDocToMarkdown/XmlDocToMarkdown.sln
-  oauth_access_token:
-    secure: 14B2LfzdzmTNRCadtOW73/mofQniTe49NA71lH65TSq8uLPeTKlIu/o2FVUOisAc
   image: Visual Studio 2017
 
 build_script:
   - msbuild %dynamo_solution%
-  - msbuild %xmlDocs_solution%
-
-
-after_build:
-  - ps: tools/XmlDocToMarkdown/XmlDocToMarkdown/BuildScript/BuildScript.ps1
-
-on_success:  
- - ps: >- 
-    if(-not $env:APPVEYOR_PULL_REQUEST_NUMBER) {	
-      git config --global user.name $env:APPVEYOR_REPO_COMMIT_AUTHOR
-      git config --global credential.helper store
-      Add-Content "$env:USERPROFILE\.git-credentials" "https://$($env:oauth_access_token):x-oauth-basic@github.com`n" 
-      git clone -q https://$($env:oauth_access_token):x-oauth-basic@github.com/DynamoDS/DynamoAPI.git  c:\projects\dynamo\DynamoAPI 2>&1 | % { $_.ToString() }      
-      tools/XmlDocToMarkdown/XmlDocToMarkdown/BuildScript/PublishDocs.ps1	
-    }  
 
   
 test: off

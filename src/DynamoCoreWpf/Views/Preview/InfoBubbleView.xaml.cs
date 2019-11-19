@@ -121,6 +121,12 @@ namespace Dynamo.Controls
         {
             InitializeComponent();
 
+            // Make sure to unsubscribe to the event handlers
+            Unloaded += (s, e) =>
+            {
+                Dispose();
+            };
+
             fadeInStoryBoard = (Storyboard)FindResource("fadeInStoryBoard");
             fadeOutStoryBoard = (Storyboard)FindResource("fadeOutStoryBoard");
 
@@ -858,6 +864,15 @@ namespace Dynamo.Controls
         private void InfoBubble_MouseWheel(object sender, MouseWheelEventArgs e)
         {
             e.Handled = true;
+        }
+
+        /// <summary>
+        /// Dispose function adding resubscribe logic
+        /// </summary>
+        public void Dispose()
+        {
+            viewModel.PropertyChanged -= ViewModel_PropertyChanged;
+            viewModel.RequestAction -= InfoBubbleRequestAction;
         }
 
         #endregion

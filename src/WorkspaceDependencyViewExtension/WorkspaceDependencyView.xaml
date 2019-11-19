@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:p="clr-namespace:Dynamo.Wpf.Properties;assembly=DynamoCoreWpf"
+             xmlns:fa="http://schemas.fontawesome.io/icons/"
              xmlns:w="clr-namespace:Dynamo.WorkspaceDependency.Properties"
              xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf"
              mc:Ignorable="d" 
@@ -31,10 +32,10 @@
                 <Setter Property="Height" Value="20"/>
                 <Setter Property="Background" Value="{DynamicResource LibraryItemHostBackground}"/>
                 <Setter Property="Foreground" Value="{DynamicResource MemberButtonText}"/>
-                <Setter Property="FontSize" Value="10" />
+                <Setter Property="FontSize" Value="13" />
                 <Setter Property="BorderThickness" Value="0" />
                 <Setter Property="BorderBrush" Value="#555555"/>
-                <Setter Property="Margin" Value="10,0,10,0"/>
+                <Setter Property="Margin" Value="10,2,10,8"/>
             </Style>
             <!-- DataGridRow style -->
             <Style x:Key="RowStyle1" TargetType="DataGridRow">
@@ -96,17 +97,29 @@
             <DataGrid.Columns>
                 <!-- State Icon -->
                 <DataGridTemplateColumn 
-                    IsReadOnly="True" 
-                    Width="26">
+                    IsReadOnly="True"
+                    Width="38">
+                    <DataGridTemplateColumn.Header>
+                        <Button Width="Auto"
+                                Background="Transparent"
+                                Foreground="Transparent"
+                                BorderThickness="0">
+                            <fa:ImageAwesome Name="Refresh" 
+                                         Icon="Refresh" 
+                                         Foreground="{DynamicResource MemberButtonText}" 
+                                         ToolTip="{x:Static w:Resources.RefreshButtonTooltipText}" 
+                                         MouseLeftButtonDown="Refresh_MouseLeftButtonDown"/>
+                        </Button>
+                    </DataGridTemplateColumn.Header>
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <Image Source="{Binding Icon}" Width="18" Height="18" Margin="8,8,0,8" />
+                            <Image Source="{Binding Icon}" Width="18" Height="18" Margin="0,8,0,8"/>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
                 <!-- Package Name -->
                 <DataGridTextColumn 
-                    Header="Package" 
+                    Header="{x:Static w:Resources.PackageHeaderText}" 
                     Binding="{Binding Name}" 
                     Foreground="#aaaaaa" 
                     IsReadOnly="True" 
@@ -120,7 +133,7 @@
                 </DataGridTextColumn>
                 <!-- Package Version -->
                 <DataGridTextColumn 
-                    Header="Version" 
+                    Header="{x:Static w:Resources.VersionHeaderText}" 
                     Binding="{Binding Version}" 
                     Foreground="#aaaaaa" 
                     IsReadOnly="True"

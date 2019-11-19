@@ -397,6 +397,62 @@ namespace Dynamo.PackageManager.Tests
             Assert.IsFalse(res.Success);
         }
 
+        [Test]
+        public void DoesCurrentUserOwnPackage_ReturnsFalseWhenCurrentUserIsNotTheOwner()
+        {
+            var id = "1";
+            var username = "abcd";
+
+            var mp = new ResponseWithContentBody<PackageHeader>
+            {
+                content = new PackageHeader()
+                {
+                    _id = id,
+                    maintainers= new List<User>()
+                },
+                success = true
+            };
+
+            var c = new Mock<IGregClient>();
+            c.Setup(x =>
+                x.ExecuteAndDeserializeWithContent<PackageHeader>(It.IsAny<HeaderDownload>()))
+                .Returns(mp);
+
+            var pc = new PackageManagerClient(c.Object, MockMaker.Empty<IPackageUploadBuilder>(), "");
+            var res = pc.DoesCurrentUserOwnPackage(new Package("1","1","2.0.4","1"), username);
+
+            Assert.IsFalse(res);
+        }
+        [Test]
+        public void DoesCurrentUserOwnPackage_ReturnsTrueWhenCurrentUserIsTheOwner()
+        {
+            var id = "1";
+            var usrname = "abcd";
+            User usr = new User {
+                _id = id,
+                username = usrname
+            };
+
+            var mp = new ResponseWithContentBody<PackageHeader>
+            {
+                content = new PackageHeader()
+                {
+                    _id = id,
+                    maintainers = new List<User> { usr }
+                },
+                success = true
+            };
+
+            var c = new Mock<IGregClient>();
+            c.Setup(x =>
+                x.ExecuteAndDeserializeWithContent<PackageHeader>(It.IsAny<HeaderDownload>()))
+                .Returns(mp);
+
+            var pc = new PackageManagerClient(c.Object, MockMaker.Empty<IPackageUploadBuilder>(), "");
+            var res = pc.DoesCurrentUserOwnPackage(new Package("1", "1", "2.0.4", "1"), usrname);
+
+            Assert.IsTrue(res);
+        }
         #endregion
 
         #region Undeprecate

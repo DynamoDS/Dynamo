@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -11,11 +12,26 @@ using Microsoft.Practices.Prism;
 
 namespace Dynamo.Notifications
 {
-    public class NotificationsViewExtension : IViewExtension
+    public class NotificationsViewExtension : IViewExtension, INotifyPropertyChanged
     {
         private ViewLoadedParams viewLoadedParams;
         private Action<Logging.NotificationMessage> notificationHandler;
-        public ObservableCollection<Logging.NotificationMessage> Notifications { get; private set; }
+
+        private ObservableCollection<Logging.NotificationMessage> notifications;
+        /// <summary>
+        /// Notifications data collection. PropertyChanged event is raised to help dealing WPF bind dispose.
+        /// </summary>
+        public ObservableCollection<Logging.NotificationMessage> Notifications
+        {
+            get { return notifications; }
+            private set
+            {
+                if(notifications != value)
+                    notifications = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Notifications)));
+            }
+        }
+
         private NotificationsMenuItem notificationsMenuItem;
         private DynamoLogger logger;
 
@@ -36,7 +52,9 @@ namespace Dynamo.Notifications
         }
 
         internal Window dynamoWindow;
-        
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
         public void Dispose()
         {
             UnregisterEventHandlers();

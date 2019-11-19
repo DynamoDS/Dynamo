@@ -96,11 +96,28 @@ namespace Dynamo.Graph.Workspaces
         {
             NodeModel node = null;
 
+            String typeName = String.Empty;
+            String functionName = String.Empty;
+            String assemblyName = String.Empty;
+
             var obj = JObject.Load(reader);
             Type type = null;
+
             try
             {
                type = Type.GetType(obj["$type"].Value<string>());
+               typeName = obj["$type"].Value<string>().Split(',').FirstOrDefault();
+
+                if (typeName.Equals("Dynamo.Graph.Nodes.ZeroTouch.DSFunction"))
+                {
+                    // If it is a zero touch node, then get the whole function name including the namespace.
+                    functionName = obj["FunctionSignature"].Value<string>().Split('@').FirstOrDefault().Trim();
+                }
+                // we get the assembly name from the type string for the node model nodes. 
+                else
+                {
+                    assemblyName = obj["$type"].Value<string>().Split(',').Skip(1).FirstOrDefault().Trim();
+                }
             }
             catch(Exception e)
             {
@@ -115,9 +132,8 @@ namespace Dynamo.Graph.Workspaces
             {
                 List<Assembly> resultList;
 
-                var typeName = obj["$type"].Value<string>().Split(',').FirstOrDefault();
                 // This assemblyName does not usually contain version information...
-                var assemblyName = obj["$type"].Value<string>().Split(',').Skip(1).FirstOrDefault().Trim();
+                assemblyName = obj["$type"].Value<string>().Split(',').Skip(1).FirstOrDefault().Trim();
                 if (assemblyName != null)
                 {
                     if(this.loadedAssemblies.TryGetValue(assemblyName, out resultList))
@@ -159,7 +175,7 @@ namespace Dynamo.Graph.Workspaces
             // If type is still null at this point return a dummy node
             if (type == null)
             {
-                node = CreateDummyNode(obj, assemblyLocation, inPorts, outPorts);
+                node = CreateDummyNode(obj, typeName, assemblyName, functionName, inPorts, outPorts);
             }
             // Attempt to create a valid node using the type
             else if (type == typeof(Function))
@@ -223,7 +239,7 @@ namespace Dynamo.Graph.Workspaces
                 // Use the functionDescriptor to try and restore the proper node if possible
                 if (functionDescriptor == null)
                 {
-                    node = CreateDummyNode(obj, assemblyLocation, inPorts, outPorts);
+                    node = CreateDummyNode(obj, assemblyName, functionName, inPorts, outPorts);
                 }
                 else
                 {
@@ -286,7 +302,7 @@ namespace Dynamo.Graph.Workspaces
             return node;
         }
 
-        private DummyNode CreateDummyNode(JObject obj, string assemblyLocation, PortModel[] inPorts, PortModel[] outPorts)
+        private DummyNode CreateDummyNode(JObject obj, string legacyAssembly, string functionName, PortModel[] inPorts, PortModel[] outPorts)
         {
             var inputcount = inPorts.Count();
             var outputcount = outPorts.Count();
@@ -295,7 +311,23 @@ namespace Dynamo.Graph.Workspaces
                 obj["Id"].ToString(),
                 inputcount,
                 outputcount,
-                assemblyLocation,
+                legacyAssembly,
+                functionName,
+                obj);
+        }
+
+        private DummyNode CreateDummyNode(JObject obj, string typeName, string legacyAssembly, string functionName, PortModel[] inPorts, PortModel[] outPorts)
+        {
+            var inputcount = inPorts.Count();
+            var outputcount = outPorts.Count();
+
+            return new DummyNode(
+                obj["Id"].ToString(),
+                inputcount,
+                outputcount,
+                legacyAssembly,
+                functionName,
+                typeName,
                 obj);
         }
 
@@ -462,7 +494,7 @@ namespace Dynamo.Graph.Workspaces
             var nodes = obj["Nodes"].ToObject<IEnumerable<NodeModel>>(serializer);
 
             // Setting Inputs
-            // Required in headless mode by Dynamo Player that NodeModel.Name and NodeModel.IsSetAsInput are set
+            // Required in headless mode by Dynamo Player that certain view properties are set back to NodeModel
             var inputsToken = obj["Inputs"];
             if (inputsToken != null)
             {
@@ -500,44 +532,27 @@ namespace Dynamo.Graph.Workspaces
             // TODO: It is currently duplicating the effort with Input Block parsing which should be cleaned up once
             // Dynamo supports both selection and drop down nodes in Inputs block
             var view = obj["View"];
-            if (view != null)
+            if (view != null && view["NodeViews"] != null)
             {
-                var nodesView = view["NodeViews"];
-                if (nodesView != null)
+                var nodeViews = view["NodeViews"].ToList();
+                foreach (var nodeview in nodeViews)
                 {
-                    var inputsView = nodesView.ToArray().Select(x => x.ToObject<Dictionary<string, string>>()).ToList();
-                    foreach (var inputViewData in inputsView)
+                    Guid nodeGuid;
+                    try
                     {
-                        string isSetAsInput = "";
-                        if (!inputViewData.TryGetValue("IsSetAsInput", out isSetAsInput) || isSetAsInput == bool.FalseString)
+                        nodeGuid = Guid.Parse(nodeview["Id"].Value<string>());
+                        var matchingNode = nodes.Where(x => x.GUID == nodeGuid).FirstOrDefault();
+                        if (matchingNode != null)
                         {
-                            continue;
+                            matchingNode.IsSetAsInput = nodeview["IsSetAsInput"].Value<bool>();
+                            matchingNode.IsSetAsOutput = nodeview["IsSetAsOutput"].Value<bool>();
+                            matchingNode.IsFrozen = nodeview["Excluded"].Value<bool>();
+                            matchingNode.Name = nodeview["Name"].Value<string>();
                         }
-
-                        string inputId = "";
-                        if (inputViewData.TryGetValue("Id", out inputId))
-                        {
-                            Guid inputGuid;
-                            try
-                            {
-                                inputGuid = Guid.Parse(inputId);
-                            }
-                            catch
-                            {
-                                continue;
-                            }
-
-                            var matchingNode = nodes.Where(x => x.GUID == inputGuid).FirstOrDefault();
-                            if (matchingNode != null)
-                            {
-                                matchingNode.IsSetAsInput = true;
-                                string inputName = "";
-                                if (inputViewData.TryGetValue("Name", out inputName))
-                                {
-                                    matchingNode.Name = inputName;
-                                }
-                            }
-                        }
+                    }
+                    catch
+                    {
+                        continue;
                     }
                 }
             }

@@ -654,7 +654,7 @@ namespace Dynamo.Views
             ContextMenuPopup.IsOpen = false;
             if (returnToSearch)
             {
-                ViewModel.DynamoViewModel.SearchViewModel.OnRequestFocusSearch();
+                ViewModel.DynamoViewModel.CurrentSpaceViewModel.InCanvasSearchViewModel.OnRequestFocusSearch();
             }
             else if (e.ChangedButton == MouseButton.Right && e.OriginalSource == zoomBorder)
             {
