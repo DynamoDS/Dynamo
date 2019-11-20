@@ -570,7 +570,23 @@ namespace Dynamo.Manipulation
 
         public bool IsNodeValueNull()
         {
-            return Node.CachedValue == null || Node.CachedValue.IsNull;
+            return isNodeNull(Node.CachedValue);
+        }
+
+        private static bool isNodeNull(MirrorData data)
+        {
+            if (data == null || data.IsNull) return true;
+
+            if (data.IsCollection)
+            {
+                var elements = data.GetElements();
+                foreach (var element in elements)
+                {
+                    if (isNodeNull(element)) return true;
+                }
+            }
+
+            return false;
         }
         #endregion
     }
