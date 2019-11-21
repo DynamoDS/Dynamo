@@ -576,13 +576,14 @@ namespace Dynamo.Manipulation
         private static bool isNodeNull(MirrorData data)
         {
             if (data == null || data.IsNull) return true;
-
+            
             if (data.IsCollection)
             {
                 var elements = data.GetElements();
                 foreach (var element in elements)
                 {
                     if (isNodeNull(element)) return true;
+                    return false;
                 }
             }
 
