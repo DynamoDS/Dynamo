@@ -49,7 +49,7 @@ namespace ProtoCore
         /// <summary>		
         /// Map from a graph UI node to callsite identifiers. 		
         /// </summary>
-        public Dictionary<Guid, List<CallSite>> NodeToCallsiteObjectMap { get; }
+        internal Dictionary<Guid, List<CallSite>> NodeToCallsiteObjectMap { get; }
         
 #endregion
 
@@ -60,14 +60,11 @@ namespace ProtoCore
             NodeToCallsiteObjectMap = new Dictionary<Guid, List<CallSite>>();
         }
 
-      
 
         /// <summary>
         /// Retrieves an existing instance of a callsite associated with a UID
         /// It creates a new callsite if non was found
         /// </summary>
-        /// <param name="core"></param>
-        /// <param name="uid"></param>
         /// <returns></returns>
         public CallSite GetCallSite(int classScope, string methodName, Executable executable, RuntimeCore runtimeCore)
         {
