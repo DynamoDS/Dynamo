@@ -34,7 +34,7 @@ namespace Dynamo.WorkspaceDependency
         {
             get
             {
-                return "Workspace Dependency ViewExtension";
+                return "Workspace Package Manager";
             }
         }
 
