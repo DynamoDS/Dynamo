@@ -145,8 +145,15 @@ namespace ProtoCore
             return csInstance;
         }
 
-        public Dictionary<Guid, List<CallSite>>
-        GetCallsitesForNodes(IEnumerable<Guid> nodeGuids, Executable executable)
+        /// <summary>
+        /// This API is used by host integrations such as for Revit and C3D.
+        /// It is used to gets the trace data list for all nodes binding to elements in the host.
+        /// </summary>
+        /// <param name="nodeGuids"></param>
+        /// <param name="executable"></param>
+        /// <returns></returns>
+        public Dictionary<Guid, List<CallSite>> GetCallsitesForNodes(
+            IEnumerable<Guid> nodeGuids, Executable executable)
         {
             if (nodeGuids == null)
                 throw new ArgumentNullException("nodeGuids");
