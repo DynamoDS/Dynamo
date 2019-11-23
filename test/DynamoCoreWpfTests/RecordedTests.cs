@@ -21,6 +21,7 @@ using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using DynamoShapeManager;
 using NUnit.Framework;
+using ProtoCore;
 using PythonNodeModels;
 using SystemTestServices;
 using TestServices;
@@ -2765,6 +2766,63 @@ namespace DynamoCoreWpfTests
                     // The callsite guid must match 
                     // This means that that the callsite was cached and reused
                     Assert.AreEqual(callsiteGuidFirstCall, callsiteGuidSecondCall);
+                }
+
+            });
+        }
+
+        [Test, RequiresSTA]
+        public void TestNodeToCallsitesObjMapModifyInputConnection()
+        {
+            Guid callsiteIdFirstCall = new Guid();
+            Guid callsiteIdSecondCall = new Guid();
+            Guid functionCallNodeGuid = new Guid("16e960e5-8a24-44e7-ac81-3759aaf11d25");
+
+            preloadGeometry = true;
+            RunCommandsFromFile("TestCallsiteMapModifyModifyInputConnection.xml", (commandTag) =>
+            {
+                ProtoCore.RuntimeCore core = ViewModel.Model.EngineController.LiveRunnerRuntimeCore;
+                if (commandTag == "ModifyX_FirstTime")
+                {
+                    // There must only be 1 node at this point
+                    Assert.AreEqual(1, core.RuntimeData.NodeToCallsiteObjectMap.Count);
+
+                    // Verify that the map contains the node guid
+                    List<CallSite> callSites;
+                    bool containsNodeGuid = core.RuntimeData.NodeToCallsiteObjectMap.TryGetValue(functionCallNodeGuid, out callSites);
+                    Assert.AreEqual(true, containsNodeGuid);
+
+                    // There must only be 1 callsite at this point
+                    Assert.AreEqual(1, callSites.Count);
+
+                    // Get the callsite id
+                    foreach (var cs in callSites)
+                    {
+                        callsiteIdFirstCall = cs.CallSiteID;
+                    }
+                }
+                else if (commandTag == "ModifyX_SecondTime")
+                {
+                    // There must only be 1 callsite at this point
+                    Assert.AreEqual(1, core.RuntimeData.NodeToCallsiteObjectMap.Count);
+
+                    // Verify that the map contains the node guid
+                    List<CallSite> callSites;
+                    bool containsNodeGuid = core.RuntimeData.NodeToCallsiteObjectMap.TryGetValue(functionCallNodeGuid, out callSites);
+                    Assert.AreEqual(true, containsNodeGuid);
+
+                    // There must still only be 1 callsite at this point
+                    Assert.AreEqual(1, callSites.Count);
+
+                    // Get the callsite id
+                    foreach (var cs in callSites)
+                    {
+                        callsiteIdSecondCall = cs.CallSiteID;
+                    }
+
+                    // The callsite guid must match 
+                    // This means that that the callsite was cached and reused
+                    Assert.AreEqual(callsiteIdFirstCall, callsiteIdSecondCall);
                 }
 
             });
