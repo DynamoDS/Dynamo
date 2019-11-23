@@ -636,6 +636,10 @@ namespace Dynamo.Models
             var userDataFolder = pathManager.GetUserDataFolder(); // Get the default user data path
             AddPackagePath(userDataFolder);
 
+            // Make sure that the global package folder is added in the list
+            var userCommonPackageFolder = pathManager.CommonPackageDirectory;
+            AddPackagePath(userCommonPackageFolder);
+
             // Load Python Template
             // The loading pattern is conducted in the following order
             // 1) Set from DynamoSettings.XML
