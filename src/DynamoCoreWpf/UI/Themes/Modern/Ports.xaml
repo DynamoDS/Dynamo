@@ -3,12 +3,10 @@
                       xmlns:controls="clr-namespace:Dynamo.Views;assembly=DynamoCore"
                       xmlns:viewModels="clr-namespace:Dynamo.ViewModels;assembly=DynamoCoreWpf"
                       xmlns:dynui="clr-namespace:Dynamo.UI.Controls;assembly=DynamoCoreWpf"
-                      xmlns:interactivity="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+                      xmlns:interactivity="clr-namespace:Dynamo.UI.Views.Microsoft.Xaml.Behaviors;assembly=DynamoCoreWpf"
                       xmlns:views="clr-namespace:Dynamo.UI.Views;assembly=DynamoCoreWpf"
                       xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf"
                       xmlns:fa="http://schemas.fontawesome.io/icons/"
-                      xmlns:diag="clr-namespace:System.Diagnostics;assembly=WindowsBase"
-                      xmlns:command="clr-namespace:GalaSoft.MvvmLight.Command;assembly=GalaSoft.MvvmLight.Platform"
                       xmlns:p="clr-namespace:Dynamo.Wpf.Properties;assembly=DynamoCoreWpf">
 
     <!-- Templates
@@ -49,9 +47,9 @@
                 IsEnabled="{Binding Path=IsEnabled}">
 
                 <interactivity:Interaction.Triggers>
-                    <views:HandlingEventTrigger EventName="MouseLeftButtonDown">
+                    <views:EmbeddedHandlingEventTrigger EventName="MouseLeftButtonDown">
                         <interactivity:InvokeCommandAction Command="{Binding Path=ConnectCommand}" />
-                    </views:HandlingEventTrigger>
+                    </views:EmbeddedHandlingEventTrigger>
                 </interactivity:Interaction.Triggers>
 
                 <Grid.ContextMenu>
@@ -91,15 +89,15 @@
                     IsHitTestVisible="{Binding IsHitTestVisible}">
 
                     <interactivity:Interaction.Triggers>
-                        <views:HandlingEventTrigger EventName="MouseEnter">
+                        <views:EmbeddedHandlingEventTrigger EventName="MouseEnter">
                             <interactivity:InvokeCommandAction Command="{Binding Path=MouseEnterCommand}" CommandParameter="{Binding}" />
-                        </views:HandlingEventTrigger>
-                        <views:HandlingEventTrigger EventName="MouseLeave">
+                        </views:EmbeddedHandlingEventTrigger>
+                        <views:EmbeddedHandlingEventTrigger EventName="MouseLeave">
                             <interactivity:InvokeCommandAction Command="{Binding Path=MouseLeaveCommand}" CommandParameter="{Binding}" />
-                        </views:HandlingEventTrigger>
-                        <views:HandlingEventTrigger EventName="MouseLeftButtonDown">
+                        </views:EmbeddedHandlingEventTrigger>
+                        <views:EmbeddedHandlingEventTrigger EventName="MouseLeftButtonDown">
                             <interactivity:InvokeCommandAction Command="{Binding Path=MouseLeftButtonDownCommand}" CommandParameter="{Binding}" />
-                        </views:HandlingEventTrigger>
+                        </views:EmbeddedHandlingEventTrigger>
                     </interactivity:Interaction.Triggers>
                     <Rectangle.Margin>
                         <MultiBinding Converter="{StaticResource SnapRegionMarginConverter}">
@@ -114,12 +112,12 @@
                        Margin="0,0,0,1"
                        IsHitTestVisible="True">
                     <interactivity:Interaction.Triggers>
-                        <views:HandlingEventTrigger EventName="MouseEnter">
+                        <views:EmbeddedHandlingEventTrigger EventName="MouseEnter">
                             <interactivity:InvokeCommandAction Command="{Binding Path=MouseEnterCommand}" CommandParameter="{Binding}" />
-                        </views:HandlingEventTrigger>
-                        <views:HandlingEventTrigger EventName="MouseLeave">
+                        </views:EmbeddedHandlingEventTrigger>
+                        <views:EmbeddedHandlingEventTrigger EventName="MouseLeave">
                             <interactivity:InvokeCommandAction Command="{Binding Path=MouseLeaveCommand}" CommandParameter="{Binding}" />
-                        </views:HandlingEventTrigger>
+                        </views:EmbeddedHandlingEventTrigger>
                     </interactivity:Interaction.Triggers>
                     <Rectangle.Style>
                         <Style TargetType="{x:Type Rectangle}">
@@ -179,9 +177,9 @@
                     Margin="0,0,0,1"
                     IsHitTestVisible="True">
                     <interactivity:Interaction.Triggers>
-                        <views:HandlingEventTrigger EventName="MouseLeftButtonDown">
+                        <views:EmbeddedHandlingEventTrigger EventName="MouseLeftButtonDown">
                             <interactivity:InvokeCommandAction Command="{Binding Path=MouseLeftButtonDownOnLevelCommand}" CommandParameter="{Binding}" />
-                        </views:HandlingEventTrigger>
+                        </views:EmbeddedHandlingEventTrigger>
                     </interactivity:Interaction.Triggers>
                     <Rectangle.Style>
                         <Style TargetType="{x:Type Rectangle}">
