@@ -658,7 +658,7 @@
       },
       {
         "Id": "49b254220bb44dcc91b634c6369be14e",
-        "Title": "Run this graph the DynamoSample.rvt file in the Samples folder located with your Dynamo installation\r\nC:\\ProgramData\\Dynamo\\Dynamo Revit\\(Your Dynamo Version)\\samples\\Revit",
+        "Title": "Run this graph the DynamoSample.rvt file in the Samples folder located with your Revit installation\r\nC:\\ProgramData\\Autodesk\\RVT (Your Revit Version)\\Dynamo\\samples\\Data",
         "Nodes": [],
         "Left": 848.02524188179,
         "Top": 499.007945832127,
