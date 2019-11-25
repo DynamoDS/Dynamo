@@ -603,7 +603,7 @@
 <p>This node accepts a Curve geometry type as an input.</p>
 </blockquote>
 <h3 id="disposeusing-statements">Dispose/using Statements</h3>
-<p>Geometry resources that are not returned out of functions will need to be manually managed. The Dynamo engine will handle any geometry resources that are returned out of functions. Geometry resources that are not returned can be handled in the following ways:</p>
+<p>Geometry resources that are not returned out of functions will need to be manually managed unless you are using Dynamo version 2.5 or later. In Dynamo 2.5 and later versions, geometry resources are handled by the system internally, however, you may still have to dispose geometry manually if you have a complex use case or you have to cut down on memory at a deterministic time. The Dynamo engine will handle any geometry resources that are returned out of functions. Geometry resources that are not returned can be handled manually in the following ways:</p>
 <ul>
 <li><p>With a using statement:</p>
 <pre><code class="lang-csharp"><span class="hljs-keyword">using</span> (Point p1 = Point.ByCoordinates(<span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>))
@@ -615,8 +615,9 @@
 }
 </code></pre>
 <blockquote>
-<p>The using statement is documented <a href="http://msdn.microsoft.com/en-us/library/yh598w02.aspx" target="_blank">here</a></p>
-</blockquote>
+    <p>The using statement is documented <a href="http://msdn.microsoft.com/en-us/library/yh598w02.aspx" target="_blank">here</a></p>
+    <p>See <a href="https://forum.dynamobim.com/t/dynamo-geometry-stability-improvements-request-for-feedback/39297" target="_blank">Dynamo Geometry Stability Improvements</a> to read more about the new stability features introduced in Dynamo 2.5</p>
+    </blockquote>
 </li>
 <li><p>With manual Dispose calls:</p>
 <pre><code class="lang-csharp">Point p1 = Point.ByCoordinates(<span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>);
