@@ -34,7 +34,7 @@ namespace Dynamo.WorkspaceDependency
         {
             get
             {
-                return "Workspace Package Manager";
+                return "Workspace References";
             }
         }
 

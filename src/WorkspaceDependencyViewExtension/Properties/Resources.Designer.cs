@@ -133,7 +133,7 @@ namespace Dynamo.WorkspaceDependency.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Workspace Package Manager.
+        ///   Looks up a localized string similar to Workspace References.
         /// </summary>
         public static string MenuItemString {
             get {
@@ -199,7 +199,7 @@ namespace Dynamo.WorkspaceDependency.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Click to recalculate workspace dependencies..
+        ///   Looks up a localized string similar to Click to recalculate workspace references..
         /// </summary>
         public static string RefreshButtonTooltipText {
             get {
