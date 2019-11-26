@@ -47,9 +47,9 @@ namespace Dynamo.DocumentationBrowser
             // we need to do a null check as sometimes this event will fire twice and return null
             if (e.Uri == null) return;
             // check if the argument Uri is the same as the warning link
-            if (e.Uri.AbsoluteUri.Equals(viewModel.Link?.AbsoluteUri)) return;
+            if (e.Uri.Equals(viewModel.Link)) return;
             // for local files the argument Uri will return 'about:blank'
-            if (e.Uri.AbsoluteUri == "about:blank") return;
+            if (e.Uri.OriginalString.Equals("about:blank")) return;
 
             // if non of the above is true cancel the navigation 
             // and redirect it to a new process that starts the browser
