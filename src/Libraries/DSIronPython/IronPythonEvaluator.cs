@@ -6,10 +6,7 @@ using System.Linq;
 using System.Reflection;
 using Autodesk.DesignScript.Runtime;
 using Dynamo.Utilities;
-using IronPython.Hosting;
-
-using Microsoft.Scripting.Hosting;
-using Microsoft.Scripting.Utils;
+using Python.Runtime;
 
 namespace DSIronPython
 {
@@ -18,8 +15,7 @@ namespace DSIronPython
 
     [SupressImportIntoVM]
     public delegate void EvaluationEventHandler(EvaluationState state,
-                                                ScriptEngine engine,
-                                                ScriptScope scope,
+                                                PyScope scope,
                                                 string code,
                                                 IList bindingValues);
 
@@ -32,7 +28,7 @@ namespace DSIronPython
         /// <summary> stores a copy of the previously executed code</summary>
         private static string prev_code { get; set; }
         /// <summary> stores a copy of the previously compiled engine</summary>
-        private static ScriptSource prev_script { get; set; }
+        //private static ScriptSource prev_script { get; set; }
         /// <summary> stores a reference to the executing Dynamo Core directory</summary>
         private static string dynamoCorePath { get; set; }
 
@@ -77,61 +73,47 @@ namespace DSIronPython
             // setting enabling the ability to load additional paths
 
             // Container for paths that will be imported in the PythonEngine
-            List<string> paths = new List<string>();
+            //List<string> paths = new List<string>();
 
             // Attempt to get the Standard Python Library
-            string stdLib = pythonStandardLibPath();
+            //string stdLib = pythonStandardLibPath();
 
             if (code != prev_code)
             {
-                ScriptEngine PythonEngine = Python.CreateEngine();
-                if (!string.IsNullOrEmpty(stdLib))
+                Python.Included.Installer.SetupPython().Wait();
+                PythonEngine.Initialize();
+                using (Py.GIL())
                 {
-                    code = "import sys" + System.Environment.NewLine + code;
-                    paths = PythonEngine.GetSearchPaths().ToList();
-                    paths.Add(stdLib);
+                    using (PyScope scope = Py.CreateScope())
+                    {
+                        int amt = Math.Min(bindingNames.Count, bindingValues.Count);
+
+                        for (int i = 0; i < amt; i++)
+                        {
+                            scope.Set((string)bindingNames[i], InputMarshaler.Marshal(bindingValues[i]).ToPython());
+                        }
+
+                        try
+                        {
+                            OnEvaluationBegin(scope, code, bindingValues);
+                            scope.Exec(code);
+                            OnEvaluationEnd(false, scope, code, bindingValues);
+
+                            var result = scope.Contains("OUT") ? scope.Get("OUT") : null;
+
+                            return OutputMarshaler.Marshal(result);
+                        }
+                        catch (Exception e)
+                        {
+                            OnEvaluationEnd(false, scope, code, bindingValues);
+                            throw e;
+                        }
+                    }
                 }
-
-                // If any paths were successfully retrieved, append them
-                if (paths.Count > 0)
-                {
-                    PythonEngine.SetSearchPaths(paths);
-                }
-
-                ScriptSource script = PythonEngine.CreateScriptSourceFromString(code);
-                script.Compile();
-                prev_script = script;
-                prev_code = code;
             }
 
-            ScriptEngine engine = prev_script.Engine;
-            ScriptScope scope = engine.CreateScope();
-
-            int amt = Math.Min(bindingNames.Count, bindingValues.Count);
-
-            for (int i = 0; i < amt; i++)
-            {
-                scope.SetVariable((string)bindingNames[i], InputMarshaler.Marshal(bindingValues[i]));
-            }
-
-            try
-            {
-                OnEvaluationBegin(engine, scope, code, bindingValues);
-                prev_script.Execute(scope);
-            }
-            catch (Exception e)
-            {
-                OnEvaluationEnd(false, engine, scope, code, bindingValues);
-                var eo = engine.GetService<ExceptionOperations>();
-                string error = eo.FormatException(e);
-                throw new Exception(error);
-            }
-
-            OnEvaluationEnd(true, engine, scope, code, bindingValues);
-
-            var result = scope.ContainsVariable("OUT") ? scope.GetVariable("OUT") : null;
-
-            return OutputMarshaler.Marshal(result);
+            return null;
+            
         }
 
         #region Marshalling
@@ -150,20 +132,20 @@ namespace DSIronPython
                     inputMarshaler.RegisterMarshaler(
                         delegate(IList lst)
                         {
-                            var pyList = new IronPython.Runtime.List();
+                            var pyList = new PyList();
                             foreach (var item in lst.Cast<object>().Select(inputMarshaler.Marshal))
                             {
-                                pyList.Add(item);
+                                pyList.Append(item.ToPython());
                             }
                             return pyList;
                         });
                     inputMarshaler.RegisterMarshaler(
                         delegate (DesignScript.Builtin.Dictionary dict)
                         {
-                            var pyDict = new IronPython.Runtime.PythonDictionary();
+                            var pyDict = new PyDict();
                             foreach (var key in dict.Keys)
                             {
-                                pyDict.Add(inputMarshaler.Marshal(key), inputMarshaler.Marshal(dict.ValueAtKey(key)));
+                                pyDict.SetItem(inputMarshaler.Marshal(key).ToPython(), inputMarshaler.Marshal(dict.ValueAtKey(key)).ToPython());
                             }
                             return pyDict;
                         });
@@ -178,7 +160,43 @@ namespace DSIronPython
         [SupressImportIntoVM]
         public static DataMarshaler OutputMarshaler
         {
-            get { return outputMarshaler ?? (outputMarshaler = new DataMarshaler()); }
+            get
+            {
+                if (outputMarshaler == null)
+                {
+                    outputMarshaler = new DataMarshaler();
+                    outputMarshaler.RegisterMarshaler(
+                        delegate (PyObject pyObj)
+                        {
+                            return outputMarshaler.Marshal(pyObj.AsManagedObject(typeof(object)));
+                        });
+                    outputMarshaler.RegisterMarshaler(
+                        delegate (PyList pyList)
+                        {
+                            var list = new List<object>();
+                            foreach (PyObject item in pyList)
+                            {
+                                list.Add(outputMarshaler.Marshal(item));
+                            }
+                            return list;
+                        });
+                    outputMarshaler.RegisterMarshaler(
+                        delegate (PyDict pyDict)
+                        {
+                            var dict = new Dictionary<object, object>();
+                            foreach (PyObject item in pyDict.Items())
+                            {
+                                dict.Add(
+                                    outputMarshaler.Marshal(item.GetItem(0)),
+                                    outputMarshaler.Marshal(item.GetItem(1))
+                                    );
+                            }
+                            return dict;
+                        });
+                }
+                return outputMarshaler;
+            }
+            
         }
 
         private static DataMarshaler inputMarshaler;
@@ -207,14 +225,13 @@ namespace DSIronPython
         /// <param name="scope">The scope in which the code is executed</param>
         /// <param name="code">The code to be evaluated</param>
         /// <param name="bindingValues">The binding values - these are already added to the scope when called</param>
-        private static void OnEvaluationBegin(  ScriptEngine engine, 
-                                                ScriptScope scope, 
+        private static void OnEvaluationBegin(  PyScope scope, 
                                                 string code, 
                                                 IList bindingValues )
         {
             if (EvaluationBegin != null)
             {
-                EvaluationBegin(EvaluationState.Begin, engine, scope, code, bindingValues);
+                EvaluationBegin(EvaluationState.Begin, scope, code, bindingValues);
             }
         }
 
@@ -227,15 +244,14 @@ namespace DSIronPython
         /// <param name="code">The code to that was evaluated</param>
         /// <param name="bindingValues">The binding values - these are already added to the scope when called</param>
         private static void OnEvaluationEnd( bool isSuccessful,
-                                            ScriptEngine engine,
-                                            ScriptScope scope,
+                                            PyScope scope,
                                             string code,
                                             IList bindingValues)
         {
             if (EvaluationEnd != null)
             {
                 EvaluationEnd( isSuccessful ? EvaluationState.Success : EvaluationState.Failed, 
-                    engine, scope, code, bindingValues);
+                    scope, code, bindingValues);
             }
         }
 

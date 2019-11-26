@@ -106,7 +106,7 @@ namespace DynamoPythonTests
             AppDomain.CurrentDomain.AssemblyResolve -= assemblyHelper.ResolveAssembly;
             assemblyHelper = null;
         }
-
+        /*
         [Test]
         [Category("UnitTests")]
         public void CanMatchBasicNumVarSingleLine()
@@ -434,5 +434,6 @@ namespace DynamoPythonTests
                 }
             }
         }
+        */
     }
 }
