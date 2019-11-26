@@ -5,7 +5,6 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Windows;
 
 namespace Dynamo.DocumentationBrowser
 {
@@ -13,6 +12,8 @@ namespace Dynamo.DocumentationBrowser
     {
         private const string HTML_TEMPLATE_IDENTIFIER = "%TEMPLATE%";
         private const string DOCUMENTATION_FOLDER_NAME = "Docs";
+        private const string BUILT_IN_CONTENT_INTERNAL_ERROR_FILENAME = nameof(Resources.InternalError) + ".html";
+        private const string BUILT_IN_CONTENT_FILE_NOT_FOUND_FILENAME = nameof(Resources.FileNotFound) + ".html";
 
         private Uri link;
         public Uri Link
@@ -31,11 +32,11 @@ namespace Dynamo.DocumentationBrowser
         public bool IsRemoteResource
         {
             get { return this.isRemoteResource; }
-            set { this.isRemoteResource = value; this.RaisePropertyChanged(nameof(IsRemoteResource)); }
+            set { this.isRemoteResource = value; RaisePropertyChanged(nameof(this.IsRemoteResource)); }
         }
 
-        internal Action<Uri> LinkChanged;
-        private void OnLinkChanged(Uri link) => LinkChanged?.Invoke(link);
+        public Action<Uri> LinkChanged;
+        private void OnLinkChanged(Uri link) => this.LinkChanged?.Invoke(link);
 
 
         public DocumentationBrowserViewModel()
@@ -53,21 +54,22 @@ namespace Dynamo.DocumentationBrowser
             // this is to avoid doing IO in the View layer
             try
             {
-                //throw new Exception("testing");
-                if (!IsRemoteResource) LoadFileContent(e.Link);
+                if (!this.IsRemoteResource) LoadFileContent(e.Link);
             }
             catch (FileNotFoundException)
             {
-                this.Content = LoadFileContentFromResources(nameof(Resources.FileNotFound) + ".html");
+                this.Content = LoadFileContentFromResources(BUILT_IN_CONTENT_FILE_NOT_FOUND_FILENAME);
             }
             catch (Exception ex)
             {
-                this.Content = LoadFileContentFromResources(nameof(Resources.InternalError) + ".html");
+                this.Content = LoadFileContentFromResources(BUILT_IN_CONTENT_INTERNAL_ERROR_FILENAME);
                 this.Content = ReplaceTemplateInContentWithString(ex.Message + "<br>" + ex.StackTrace);
             }
 
             this.Link = e.Link;
         }
+
+        #region Content handling & loading
 
         private void LoadFileContent(Uri link)
         {
@@ -81,7 +83,7 @@ namespace Dynamo.DocumentationBrowser
                 throw new ArgumentNullException(nameof(name));
             string result;
 
-            var assembly = this.GetType().Assembly;
+            var assembly = GetType().Assembly;
             var a = assembly.GetManifestResourceStream(name);
             var names = assembly
                 .GetManifestResourceNames();
@@ -111,7 +113,7 @@ namespace Dynamo.DocumentationBrowser
         /// </summary>
         /// <param name="link">The link to the file to resolve.</param>
         /// <returns>An absolute path to a local file, as a string.</returns>
-        private string ResolveFilePath(Uri link)
+        private static string ResolveFilePath(Uri link)
         {
             // always check if the uri is valid first
             if (!Uri.IsWellFormedUriString(link.ToString(), UriKind.RelativeOrAbsolute))
@@ -121,8 +123,7 @@ namespace Dynamo.DocumentationBrowser
             if (File.Exists(link.ToString())) return link.ToString();
 
             // search for file in the docs folder and return its path if found
-            var assemblyPath = this.GetType().Assembly.Location;
-            var docsFolderPath = Path.Combine(assemblyPath, DOCUMENTATION_FOLDER_NAME);
+            string docsFolderPath = GetBuiltInDocumentationFolderPath();
             if (Directory.Exists(docsFolderPath))
             {
                 var files = Directory.EnumerateFiles(docsFolderPath, link.ToString());
@@ -131,6 +132,16 @@ namespace Dynamo.DocumentationBrowser
 
             // if we reached this point it means the path could not be resolved
             throw new FileNotFoundException(link.ToString());
+        }
+
+        #endregion
+
+        private static string GetBuiltInDocumentationFolderPath()
+        {
+            var assemblyPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            var docsFolderPath = Path.Combine(assemblyPath, DOCUMENTATION_FOLDER_NAME);
+
+            return docsFolderPath;
         }
 
         public void Dispose()
