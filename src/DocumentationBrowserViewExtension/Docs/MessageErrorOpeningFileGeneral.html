@@ -1,0 +1,41 @@
+<!-- 
+    There are two versions of this HTML file. One that is part of the Dynamo Dictionary 
+    codebase and one that is part of the Dynamo codebase, used for displaying additional
+    error information in the Dynamo side panel.  
+    
+    These files need to kept in sync manually: if making edits to one version of the file,
+    make sure to update the other version as well.
+
+    Dynamo: https://github.com/DynamoDS/Dynamo
+    Dynamo Dictionary: https://github.com/DynamoDS/DynamoDictionary_React
+-->
+
+<style>
+body {
+    color: white;
+    font-size: 13px;
+    font-family: "Artifakt Element";
+    src: url("fonts/ArtifaktElement-Regular.woff") format("woff");
+}
+
+a {
+    color: lightgray;
+    cursor: pointer;
+    background-color: transparent;
+}
+</style>
+
+<!-- Use inline styles to keep Dynamo Dictionary styling in the dictionary -->
+<!-- and custom styling in Dynamo sidepanel. -->
+<body style="background-color: #353535; font-family: 'Artifakt Element', 'Open Sans';">
+
+<h2>Error opening file</h2>
+<p>This is a generic error message which indicates that the file you are working with cannot be opened by your version of Dynamo. </p>
+
+<h4>How to fix</h4>
+<p>Make sure the file you are trying to open was created using the same or a previous version of Dynamo than the version you are running on your computer (e.g., if the file was created in Dynamo 1.X, you can open it with Dynamo 1.X or 2.X, but if the file was created in Dynamo 2.X, you can only open it with Dynamo 2.X or greater). </p>
+
+<h4>More information</h4>
+<p>To find out more, please check <a href="https://forum.dynamobim.com/search?q=error%20opening%20file"><span> posts on the Dynamobim forum discussing "<strong>error opening file</strong>"</span></a>.</p>
+
+</body>

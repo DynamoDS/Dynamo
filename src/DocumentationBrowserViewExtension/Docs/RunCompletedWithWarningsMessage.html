@@ -1,0 +1,45 @@
+<!-- 
+    There are two versions of this HTML file. One that is part of the Dynamo Dictionary 
+    codebase and one that is part of the Dynamo codebase, used for displaying additional
+    error information in the Dynamo side panel.  
+    
+    These files need to kept in sync manually: if making edits to one version of the file,
+    make sure to update the other version as well.
+
+    Dynamo: https://github.com/DynamoDS/Dynamo
+    Dynamo Dictionary: https://github.com/DynamoDS/DynamoDictionary_React
+-->
+
+<style>
+body {
+    color: white;
+    font-size: 13px;
+    font-family: "Artifakt Element";
+    src: url("fonts/ArtifaktElement-Regular.woff") format("woff");
+}
+
+a {
+    color: lightgray;
+    cursor: pointer;
+    background-color: transparent;
+}
+</style>
+
+<!-- Use inline styles to keep Dynamo Dictionary styling in the dictionary -->
+<!-- and custom styling in Dynamo sidepanel. -->
+<body style="background-color: #353535; font-family: 'Artifakt Element', 'Open Sans';">
+
+<h2>Run completed with warnings </h2>
+<p>This is a generic warning message indicating that although your graph ran without errors, its output might be incorrect. </p>
+
+<h4>How to fix</h4>
+<p>Make sure you are running the latest version of Dynamo on your computer, and that the Dynamo packages you are using are updated to their latest version as well.</p>
+
+<p>It might also help to isolate the node which is triggering this warning message and checking to see if it does what you expect it to do. </p>
+
+<p>Please note that running your graph with warnings is possible and the result might be as expected. If your graph runs with warnings, make sure to check the output of your graph and see if it makes sense for your application. </p>
+
+<h4>More information</h4>
+<p>To find out more, please check <a href="https://forum.dynamobim.com/search?q=run%20completed%20with%20warnings"><span> posts on the Dynamobim forum discussing "<strong>run completed with warnings</strong>"</span></a>.</p>
+
+</body>

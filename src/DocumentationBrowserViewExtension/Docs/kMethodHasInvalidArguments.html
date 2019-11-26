@@ -1,0 +1,44 @@
+<!-- 
+    There are two versions of this HTML file. One that is part of the Dynamo Dictionary 
+    codebase and one that is part of the Dynamo codebase, used for displaying additional
+    error information in the Dynamo side panel.  
+    
+    These files need to kept in sync manually: if making edits to one version of the file,
+    make sure to update the other version as well.
+
+    Dynamo: https://github.com/DynamoDS/Dynamo
+    Dynamo Dictionary: https://github.com/DynamoDS/DynamoDictionary_React
+-->
+
+<style>
+body {
+    color: white;
+    font-size: 13px;
+    font-family: "Artifakt Element";
+    src: url("fonts/ArtifaktElement-Regular.woff") format("woff");
+}
+
+a {
+    color: lightgray;
+    cursor: pointer;
+    background-color: transparent;
+}
+</style>
+
+<!-- Use inline styles to keep Dynamo Dictionary styling in the dictionary -->
+<!-- and custom styling in Dynamo sidepanel. -->
+<body style="background-color: #353535; font-family: 'Artifakt Element', 'Open Sans';">
+
+<h2>Has some invalid arguments</h2>
+<p>This error message indicates that the node you are using is expecting a certain type of input data but received a type of input it cannot use. It is similar to the “Expects argument type(s) but was called with” error, and usually displays additional information that can help you identify what argument types you need to pass into the node you are using. </p>
+
+<h4>How to fix</h4>
+<p>In general, check what input types the node you are using expects and try to determine whether (a) the right type of input is passed to the node or (b) you can change the type of input to something that the node can use (for example, by changing the input to a different type as shown in <a href="https://forum.dynamobim.com/t/springs-number-tostring/35562/2">this example</a>).</p>
+
+<p>As an example, when you see something like <code>Warning: Element.SetParameterByName operation failed. The best overloaded method match for ‘Revit.Elements.InternalUtilities.ElementUtils.SetParameterValue(Autodesk.Revit.DB.Parameter, double)’ has some invalid arguments</code> the additional information in parentheses can help you understand what the problem is. In this case <code>SetParameterValue(Autodesk.Revit.DB.Parameter, double)</code> shows that the node you are using is expecting an input of type <code>double</code>, so any other type of input will not work.
+</p>
+
+<h4>More information</h4>
+<p>To find out more, please check <a href="https://forum.dynamobim.com/search?q=has%20some%20invalid%20arguments"><span> posts on the Dynamobim forum discussing "<strong>has some invalid arguments</strong>"</span></a>.</p>
+
+</body>
