@@ -146,7 +146,7 @@ namespace Dynamo.DocumentationBrowser
 
         public void Dispose()
         {
-            throw new NotImplementedException();
+            this.Content = null;
         }
     }
 }

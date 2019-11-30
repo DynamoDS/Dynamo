@@ -19,7 +19,7 @@ namespace Dynamo.DocumentationBrowser
     /// <summary>
     /// Interaction logic for DocumentationBrowserView.xaml
     /// </summary>
-    public partial class DocumentationBrowserView : Window, IDisposable
+    public partial class DocumentationBrowserView : UserControl, IDisposable
     {
         readonly DocumentationBrowserViewModel viewModel;
 

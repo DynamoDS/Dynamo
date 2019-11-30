@@ -66,7 +66,6 @@ namespace Dynamo.DocumentationBrowser
 
         public void Shutdown()
         {
-
             BrowserView.Dispose();
             ViewModel.Dispose();
             this.Dispose();
