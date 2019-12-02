@@ -177,7 +177,8 @@
                 <Button Width="Auto" 
                         MinWidth="50"
                         Grid.Column="2" 
-                        Click="OnFilterButtonClicked" 
+                        Click="OnFilterButtonClicked"
+                        Margin="2 0 0 0"
                         Style="{DynamicResource ResourceKey=STextButton}"
                         Content="{x:Static p:Resources.PackageSearchViewFilterByButton}"
                         ToolTip="{x:Static p:Resources.PackageHostDependencyFilter}">
