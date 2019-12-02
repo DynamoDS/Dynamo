@@ -5,6 +5,7 @@ using Dynamo.Graph.Workspaces;
 using Greg;
 using Greg.Requests;
 using Greg.Responses;
+using System.Linq;
 
 namespace Dynamo.PackageManager
 {
@@ -237,6 +238,13 @@ namespace Dynamo.PackageManager
                 var pkgResponse = this.client.ExecuteAndDeserialize(new Undeprecate(name, PackageEngineName));
                 return new PackageManagerResult(pkgResponse.message, pkgResponse.success);
             }, new PackageManagerResult("Failed to send.", false));
+        }
+
+        internal bool DoesCurrentUserOwnPackage(Package package,string username) 
+        {
+            var pkg = new PackageInfo(package.Name, new Version(package.VersionName));
+            var header = GetPackageHeader(pkg);
+            return (header != null) && (header.maintainers.Any(maintainer => maintainer.username.Equals(username)));
         }
     }
 }

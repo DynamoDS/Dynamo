@@ -211,7 +211,7 @@ namespace Dynamo.Controls
 
                 // creates a new tab item
                 TabItem tab = new TabItem();
-                tab.Header = viewExtension.GetType().Name;
+                tab.Header = viewExtension.Name;
                 tab.Tag = viewExtension.GetType();
                 tab.HeaderTemplate = tabDynamic.FindResource("TabHeader") as DataTemplate;
 

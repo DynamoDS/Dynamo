@@ -194,7 +194,8 @@ namespace Dynamo.ViewModels
 
         private bool CanDeprecate()
         {
-            return dynamoViewModel.Model.AuthenticationManager.HasAuthProvider;
+            if (!dynamoViewModel.Model.AuthenticationManager.HasAuthProvider) return false;
+            return packageManagerClient.DoesCurrentUserOwnPackage(Model, dynamoViewModel.Model.AuthenticationManager.Username);
         }
 
         private void Undeprecate()
@@ -203,13 +204,13 @@ namespace Dynamo.ViewModels
                                       Resources.UndeprecatingPackageMessageBoxTitle, 
                                       MessageBoxButton.YesNo, MessageBoxImage.Question);
             if (res == MessageBoxResult.No) return;
-
             packageManagerClient.Undeprecate(Model.Name);
         }
 
         private bool CanUndeprecate()
         {
-            return dynamoViewModel.Model.AuthenticationManager.HasAuthProvider;
+            if (!dynamoViewModel.Model.AuthenticationManager.HasAuthProvider) return false;
+            return packageManagerClient.DoesCurrentUserOwnPackage(Model, dynamoViewModel.Model.AuthenticationManager.Username);
         }
 
         private void PublishNewPackageVersion()

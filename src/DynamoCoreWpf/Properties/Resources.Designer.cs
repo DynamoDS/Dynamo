@@ -4025,6 +4025,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Filter by.
+        /// </summary>
+        public static string PackageSearchViewFilterByButton {
+            get {
+                return ResourceManager.GetString("PackageSearchViewFilterByButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to ⇓ Install.
         /// </summary>
         public static string PackageSearchViewInstallButton {

@@ -32,10 +32,10 @@
                 <Setter Property="Height" Value="20"/>
                 <Setter Property="Background" Value="{DynamicResource LibraryItemHostBackground}"/>
                 <Setter Property="Foreground" Value="{DynamicResource MemberButtonText}"/>
-                <Setter Property="FontSize" Value="10" />
+                <Setter Property="FontSize" Value="13" />
                 <Setter Property="BorderThickness" Value="0" />
                 <Setter Property="BorderBrush" Value="#555555"/>
-                <Setter Property="Margin" Value="10,0,10,0"/>
+                <Setter Property="Margin" Value="10,2,10,8"/>
             </Style>
             <!-- DataGridRow style -->
             <Style x:Key="RowStyle1" TargetType="DataGridRow">
@@ -113,7 +113,7 @@
                     </DataGridTemplateColumn.Header>
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <Image Source="{Binding Icon}" Width="18" Height="18" />
+                            <Image Source="{Binding Icon}" Width="18" Height="18" Margin="0,8,0,8"/>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
