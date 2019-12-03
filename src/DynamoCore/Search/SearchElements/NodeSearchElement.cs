@@ -281,6 +281,20 @@ namespace Dynamo.Search.SearchElements
             inputParameters.Add(Tuple.Create(String.Empty, Properties.Resources.NoneString));
             return inputParameters;
         }
+
+        public override bool Equals(object obj)
+        {
+            if (!(obj is NodeSearchElement)) return false;
+
+            NodeSearchElement nse = (NodeSearchElement)obj;
+            return CreationName == nse.CreationName && Assembly == nse.Assembly;
+        }
+
+        public override int GetHashCode()
+        {
+            return CreationName.GetHashCode() ^ Assembly.GetHashCode();
+        }
+
     }
 
     /// <summary>
