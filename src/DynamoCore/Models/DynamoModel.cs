@@ -1256,9 +1256,7 @@ namespace Dynamo.Models
         {
             if (!NodeModelAssemblyLoader.ContainsNodeModelSubType(assem))
             {
-                LibraryServices.LoadNodeLibrary(assem.Location, false);
-                LibraryServices.OnLibrariesImported(new LibraryServices.LibraryLoadedEventArgs(new List<string> { assem.Location }));
-
+                LibraryServices.ImportLibrary(assem.Location);
                 return;
             }
 
