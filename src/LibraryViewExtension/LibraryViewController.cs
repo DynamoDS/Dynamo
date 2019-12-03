@@ -110,14 +110,18 @@ namespace Dynamo.LibraryUI
         private void DynamoWindow_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             if (browser != null)
+            {
                 browser.InvalidateVisual();
+            }
         }
 
         //if the dynamo window is minimized and then restored, force a layout update.
         private void DynamoWindowStateChanged(object sender, EventArgs e)
         {
             if (browser != null)
+            {
                 browser.InvalidateVisual();
+            }
         }
 
         /// <summary>
@@ -236,7 +240,9 @@ namespace Dynamo.LibraryUI
         private void Browser_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             if (browser != null)
+            {
                 browser.InvalidateVisual();
+            }
         }
 
         #region Tooltip
