@@ -281,30 +281,6 @@ namespace Dynamo.Search.SearchElements
             inputParameters.Add(Tuple.Create(String.Empty, Properties.Resources.NoneString));
             return inputParameters;
         }
-
-        // The following methods are overridden so that duplicate nodeSearchElements cannot be added to the 
-        // node library. Even when creating new searchElements if properties of those elements match they are considered
-        // the same entry.
-
-        public override bool Equals(object obj)
-        {
-            if (!(obj is NodeSearchElement)) return false;
-
-            NodeSearchElement nse = (NodeSearchElement)obj;
-            return FullName == nse.FullName 
-                && CreationName == nse.CreationName
-                && Assembly == nse.Assembly
-                && Parameters == nse.Parameters;
-        }
-
-        public override int GetHashCode()
-        {
-            return (FullName?? String.Empty).GetHashCode() ^ 
-                (CreationName?? String.Empty).GetHashCode() ^
-                (Assembly ?? String.Empty).GetHashCode() ^
-                (Parameters ?? String.Empty).GetHashCode();
-        }
-
     }
 
     /// <summary>

@@ -1252,11 +1252,27 @@ namespace Dynamo.Models
             CustomNodeManager.AddUninitializedCustomNodesInPath(pathManager.CommonDefinitions, IsTestMode);
         }
 
-        internal void LoadNodeLibrary(Assembly assem)
+        /// <summary>
+        /// Imports a node library (zero touch or nodeModel) into the VM.
+        /// Does not necessarily add those imported functions to search.
+        /// </summary>
+        /// <param name="assem">The assembly to load which contains the types to import.</param>
+        /// <param name="suppressZeroTouchLibraryLoad">If True, zero touch types will not be added to search.
+        /// This is used by packageManager extension to defer adding ZT libraries to search until all libraries are loaded.
+        /// </param>
+        internal void LoadNodeLibrary(Assembly assem, bool suppressZeroTouchLibraryLoad)
         {
             if (!NodeModelAssemblyLoader.ContainsNodeModelSubType(assem))
             {
-                LibraryServices.ImportLibrary(assem.Location);
+                if (suppressZeroTouchLibraryLoad)
+                {
+                    LibraryServices.LoadNodeLibrary(assem.Location,false);
+                }
+                else
+                {
+                    LibraryServices.ImportLibrary(assem.Location);
+                }
+               
                 return;
             }
 
