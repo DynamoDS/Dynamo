@@ -370,7 +370,8 @@ namespace Dynamo.PackageManager
                     Directory.EnumerateDirectories(root, "*", SearchOption.TopDirectoryOnly))
                 {
                     
-                    //
+                    // verify if the package directory requires certificate verifications
+                    // This is done by default for the package directory defined in PathManager common directory location.
                     var checkCertificates = false;
                     foreach (var pathToVerifyCert in packagesDirectoriesToVerifyCertificates)
                     {
@@ -416,7 +417,7 @@ namespace Dynamo.PackageManager
                     throw new LibraryLoadFailedException(directory, String.Format(Properties.Resources.NoHeaderPackage, headerPath));
                 }
 
-                // prevent unsigned packages
+                // prevent loading unsigned packages if the certificates are required on package dlls
                 if (checkCertificates)
                 {
                     foreach (var assemFile in (new System.IO.DirectoryInfo(discoveredPkg.BinaryDirectory)).EnumerateFiles("*.dll"))
