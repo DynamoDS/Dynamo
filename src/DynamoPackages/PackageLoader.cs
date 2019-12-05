@@ -91,7 +91,7 @@ namespace Dynamo.PackageManager
         {
             InitializePackageDirectories(packagesDirectories);
 
-            if (packagesDirectories == null)
+            if (packageDirectoriesToVerify == null)
                 throw new ArgumentNullException("packageDirectoriesToVerify");
 
             this.packagesDirectoriesToVerifyCertificates.AddRange(packageDirectoriesToVerify);
