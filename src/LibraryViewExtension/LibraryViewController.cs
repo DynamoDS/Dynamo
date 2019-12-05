@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using CefSharp;
@@ -431,7 +432,9 @@ namespace Dynamo.LibraryUI
                 var url = "http://localhost/library.html";
                 var resource = "Dynamo.LibraryUI.web.library.library.html";
                 var stream = LoadResource(resource);
-                resourceFactory.RegisterHandler(url, ResourceHandler.FromStream(stream));
+                var memoryStream = new MemoryStream();
+                stream.CopyTo(memoryStream);
+                resourceFactory.RegisterHandler(url, memoryStream.ToArray());
             }
 
             //Register provider for node data
@@ -453,14 +456,12 @@ namespace Dynamo.LibraryUI
             if (!url.IsAbsoluteUri)
                 url = new Uri(new Uri("http://localhost"), url);
 
-            var extension = Path.GetExtension(key);
-            var handler = ResourceHandler.FromStream(value, ResourceHandler.GetMimeType(extension));
-            resourceFactory.RegisterHandler(url.AbsoluteUri, handler);
+            resourceFactory.RegisterHandler(url.AbsoluteUri, ResourceHandler.GetByteArray(url.AbsoluteUri, Encoding.UTF8));
         }
 
         private void RegisterResources(ChromiumWebBrowser browser)
         {
-            browser.ResourceHandlerFactory = resourceFactory;
+            browser.ResourceRequestHandlerFactory = resourceFactory;
         }
 
         private void OnDescriptionViewLoaded(object sender, System.Windows.RoutedEventArgs e)

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using CefSharp;
 using Dynamo.Logging;
@@ -9,7 +10,7 @@ namespace Dynamo.LibraryUI.Handlers
     /// <summary>
     /// Implements IResourceHandlerFactory to provide resource handler for a given request
     /// </summary>
-    class ResourceHandlerFactory : DefaultResourceHandlerFactory
+    class ResourceHandlerFactory : ResourceRequestHandlerFactory
     {
         private Dictionary<string, IResourceProvider> resourceProviders = new Dictionary<string, IResourceProvider>();
         private HashSet<string> supportedSchemes = new HashSet<string>();
@@ -29,34 +30,35 @@ namespace Dynamo.LibraryUI.Handlers
             this.logger = log;
         }
 
-        /// <summary>
-        /// This method is called before a resource is loaded, if a valid resource handler
-        /// is returned then this resource handler would serve the response of web request.
-        /// </summary>
-        public override IResourceHandler GetResourceHandler(IWebBrowser browserControl, IBrowser browser, IFrame frame, IRequest request)
-        {
-            try
-            {
-                DefaultResourceHandlerFactoryItem handlerItem;
+        ///// <summary>
+        ///// This method is called before a resource is loaded, if a valid resource handler
+        ///// is returned then this resource handler would serve the response of web request.
+        ///// </summary>
+        //public override IResourceHandler GetResourceRequestHandler(IWebBrowser browserControl, IBrowser browser, IFrame frame, IRequest request)
+        //{
+        //    try
+        //    {
+        //        ResourceRequestHandlerFactoryItem handlerItem;
 
-                // Create a handlerItem for the new resource,
-                // if the resource has already been loaded don't load it again
-                if(!Handlers.TryGetValue(request.Url, out handlerItem))
-                {
-                    IResourceHandler handler = this.GetResourceHandler(request);
+        //        // Create a handlerItem for the new resource,
+        //        // if the resource has already been loaded don't load it again
+        //        if(!Handlers.TryGetValue(request.Url, out handlerItem))
+        //        {
+        //            IResourceHandler handler = this.GetResourceHandler(request);
 
-                    // Make sure the handler is unregistered after use
-                    // See: https://cefsharp.github.io/api/63.0.0/html/T_CefSharp_DefaultResourceHandlerFactoryItem.htm
-                    handlerItem = new DefaultResourceHandlerFactoryItem(handler, true);
-                }
+        //            // Make sure the handler is unregistered after use
+        //            // See: http://cefsharp.github.io/api/75.1.x/html/T_CefSharp_ResourceRequestHandlerFactoryItem.htm
+        //            handlerItem = new ResourceRequestHandlerFactoryItem(handlerItem.Data, handlerItem.MimeType, true);
+        //            return handler;
+        //        }
 
-                return handlerItem.Handler;
-            }
-            finally
-            {
-                request.Dispose();
-            }
-        }
+        //        return null;
+        //    }
+        //    finally
+        //    {
+        //        request.Dispose();
+        //    }
+        //}
 
         /// <summary>
         /// Clients can register a resource provider for a given base url. The 
@@ -96,9 +98,11 @@ namespace Dynamo.LibraryUI.Handlers
                     if (stream == null) return null;
                     
                     var handler = ResourceHandler.FromStream(stream, ResourceHandler.GetMimeType(extension));
+                    var memoryStream = new MemoryStream();
+                    stream.CopyTo(memoryStream);
                     if (provider.IsStaticResource)
                     {
-                        this.RegisterHandler(request.Url, handler);
+                        this.RegisterHandler(request.Url, memoryStream.ToArray());
                     }
                     return handler;
                 }

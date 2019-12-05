@@ -1,6 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 using CefSharp;
+using CefSharp.Wpf;
 using Dynamo.LibraryUI.ViewModels;
 
 namespace Dynamo.LibraryUI.Views
