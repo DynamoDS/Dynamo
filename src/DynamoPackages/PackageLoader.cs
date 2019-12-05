@@ -75,12 +75,29 @@ namespace Dynamo.PackageManager
             get { return packagesDirectories[0]; }
         }
 
+        private readonly List<string> packagesDirectoriesToVerifyCertificates = new List<string>();
+
         public PackageLoader(string overridePackageDirectory)
             : this(new[] { overridePackageDirectory })
         {
         }
 
         public PackageLoader(IEnumerable<string> packagesDirectories)
+        {
+            InitializePackageDirectories(packagesDirectories);
+        }
+
+        public PackageLoader(IEnumerable<string> packagesDirectories, IEnumerable<string> packageDirectoriesToVerify)
+        {
+            InitializePackageDirectories(packagesDirectories);
+
+            if (packagesDirectories == null)
+                throw new ArgumentNullException("packageDirectoriesToVerify");
+
+            this.packagesDirectoriesToVerifyCertificates.AddRange(packageDirectoriesToVerify);
+        }
+
+        private void InitializePackageDirectories(IEnumerable<string> packagesDirectories)
         {
             if (packagesDirectories == null)
                 throw new ArgumentNullException("packagesDirectories");
@@ -352,7 +369,19 @@ namespace Dynamo.PackageManager
                 foreach (var dir in
                     Directory.EnumerateDirectories(root, "*", SearchOption.TopDirectoryOnly))
                 {
-                    var pkg = ScanPackageDirectory(dir);
+                    
+                    //
+                    var checkCertificates = false;
+                    foreach (var pathToVerifyCert in packagesDirectoriesToVerifyCertificates)
+                    {
+                        if (root.Contains(pathToVerifyCert))
+                        {
+                            checkCertificates = true;
+                            break;
+                        }
+                    }
+
+                    var pkg = ScanPackageDirectory(dir, checkCertificates);
                     if (pkg != null && preferences.PackageDirectoriesToUninstall.Contains(dir))
                         pkg.MarkForUninstall(preferences);
                 }
@@ -363,6 +392,11 @@ namespace Dynamo.PackageManager
         }
 
         public Package ScanPackageDirectory(string directory)
+        {
+            return ScanPackageDirectory(directory, false);
+        }
+
+        public Package ScanPackageDirectory(string directory, bool checkCertificates)
         {
             try
             {
@@ -380,6 +414,34 @@ namespace Dynamo.PackageManager
                 else
                 {
                     throw new LibraryLoadFailedException(directory, String.Format(Properties.Resources.NoHeaderPackage, headerPath));
+                }
+
+                // prevent unsigned packages
+                if (checkCertificates)
+                {
+                    foreach (var assemFile in (new System.IO.DirectoryInfo(discoveredPkg.BinaryDirectory)).EnumerateFiles("*.dll"))
+                    {
+                        try
+                        {
+                            var asm = Assembly.ReflectionOnlyLoadFrom(assemFile.FullName);
+                            var cert = asm.Modules.FirstOrDefault()?.GetSignerCertificate();
+                            if (cert != null)
+                            {
+                                var cert2 = new System.Security.Cryptography.X509Certificates.X509Certificate2(cert); 
+                                if(cert2.Verify())
+                                {
+                                    continue;
+                                }
+
+                            }
+                        }
+                        catch (Exception e)
+                        {
+                            //catch all exception types and pass to next throw
+                        }
+
+                        throw new LibraryLoadFailedException(directory, String.Format("A package called {0} found at {1} did not have signed dll files.  Ignoring it.", discoveredPkg.Name, discoveredPkg.RootDirectory));
+                    }
                 }
 
                 // prevent duplicates
