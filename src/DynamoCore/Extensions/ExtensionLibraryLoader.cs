@@ -24,7 +24,7 @@ namespace Dynamo.Extensions
         }
 
         /// <summary>
-        /// Loads a zZeroTouch or NodeModel based node into the VM and search.
+        /// Loads a ZeroTouch or NodeModel based node into the VM and search.
         /// To guarantee the node is correctly added to the LibraryUI this method should not
         /// be called while LibraryExtension is loading.
         /// </summary>

@@ -1260,7 +1260,7 @@ namespace Dynamo.Models
         /// <param name="suppressZeroTouchLibraryLoad">If True, zero touch types will not be added to search.
         /// This is used by packageManager extension to defer adding ZT libraries to search until all libraries are loaded.
         /// </param>
-        internal void LoadNodeLibrary(Assembly assem, bool suppressZeroTouchLibraryLoad)
+        internal void LoadNodeLibrary(Assembly assem, bool suppressZeroTouchLibraryLoad = true)
         {
             if (!NodeModelAssemblyLoader.ContainsNodeModelSubType(assem))
             {
