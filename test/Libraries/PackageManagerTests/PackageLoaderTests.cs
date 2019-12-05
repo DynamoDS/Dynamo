@@ -126,7 +126,7 @@ namespace Dynamo.PackageManager.Tests
             var libraryLoader = new ExtensionLibraryLoader(CurrentDynamoModel);
 
             loader.PackagesLoaded += libraryLoader.LoadPackages;
-            loader.RequestLoadNodeLibrary += libraryLoader.LoadNodeLibrary;
+            loader.RequestLoadNodeLibrary += (libraryLoader as ExtensionLibraryLoader).LoadLibraryAndSuppressZTSearchImport;
 
             loader.LoadAll(new LoadPackageParams
             {
@@ -157,7 +157,7 @@ namespace Dynamo.PackageManager.Tests
             var libraryLoader = new ExtensionLibraryLoader(CurrentDynamoModel);
 
             loader.PackagesLoaded += libraryLoader.LoadPackages;
-            loader.RequestLoadNodeLibrary += libraryLoader.LoadNodeLibrary;
+            loader.RequestLoadNodeLibrary += (libraryLoader as ExtensionLibraryLoader).LoadLibraryAndSuppressZTSearchImport;
 
             loader.LoadAll(new LoadPackageParams
             {
@@ -189,7 +189,7 @@ namespace Dynamo.PackageManager.Tests
             var libraryLoader = new ExtensionLibraryLoader(CurrentDynamoModel);
 
             loader.PackagesLoaded += libraryLoader.LoadPackages;
-            loader.RequestLoadNodeLibrary += libraryLoader.LoadNodeLibrary;
+            loader.RequestLoadNodeLibrary += (libraryLoader as ExtensionLibraryLoader).LoadLibraryAndSuppressZTSearchImport;
 
             // This test needs the "isTestMode" flag to be turned off as an exception to be able 
             // to test duplicate custom node def loading.
@@ -216,7 +216,7 @@ namespace Dynamo.PackageManager.Tests
             var libraryLoader = new ExtensionLibraryLoader(CurrentDynamoModel);
 
             loader.PackagesLoaded += libraryLoader.LoadPackages;
-            loader.RequestLoadNodeLibrary += libraryLoader.LoadNodeLibrary;
+            loader.RequestLoadNodeLibrary += (libraryLoader as ExtensionLibraryLoader).LoadLibraryAndSuppressZTSearchImport;
 
             var packageDirectory = Path.Combine(TestDirectory, "pkgs", "EvenOdd");
             var package1 = Package.FromDirectory(packageDirectory, CurrentDynamoModel.Logger);
@@ -245,7 +245,7 @@ namespace Dynamo.PackageManager.Tests
             var libraryLoader = new ExtensionLibraryLoader(CurrentDynamoModel);
 
             loader.PackagesLoaded += libraryLoader.LoadPackages;
-            loader.RequestLoadNodeLibrary += libraryLoader.LoadNodeLibrary;
+            loader.RequestLoadNodeLibrary += (libraryLoader as ExtensionLibraryLoader).LoadLibraryAndSuppressZTSearchImport;
 
             // This test needs the "isTestMode" flag to be turned off as an exception to be able 
             // to test duplicate custom node def loading.
@@ -276,9 +276,9 @@ namespace Dynamo.PackageManager.Tests
             var libraryLoader = new ExtensionLibraryLoader(CurrentDynamoModel);
 
             loader.PackagesLoaded += libraryLoader.LoadPackages;
-            loader.RequestLoadNodeLibrary += libraryLoader.LoadNodeLibrary;
+            loader.RequestLoadNodeLibrary += (libraryLoader as ExtensionLibraryLoader).LoadLibraryAndSuppressZTSearchImport;
 
-          
+
             var packageDirectory = Path.Combine(TestDirectory, "pkgs", "EvenOdd");
             var packageDirectory2 = Path.Combine(TestDirectory, "pkgs", "EvenOdd2");
             var package1 = Package.FromDirectory(packageDirectory,CurrentDynamoModel.Logger);
@@ -319,7 +319,7 @@ namespace Dynamo.PackageManager.Tests
             var libraryLoader = new ExtensionLibraryLoader(CurrentDynamoModel);
 
             loader.PackagesLoaded += libraryLoader.LoadPackages;
-            loader.RequestLoadNodeLibrary += libraryLoader.LoadNodeLibrary;
+            loader.RequestLoadNodeLibrary += (libraryLoader as ExtensionLibraryLoader).LoadLibraryAndSuppressZTSearchImport;
 
             var packageDirectory = Path.Combine(TestDirectory, "pkgs", "EvenOdd");
             var package1 = Package.FromDirectory(packageDirectory, CurrentDynamoModel.Logger);
@@ -381,7 +381,7 @@ namespace Dynamo.PackageManager.Tests
             var libraryLoader = new ExtensionLibraryLoader(CurrentDynamoModel);
 
             loader.PackagesLoaded += libraryLoader.LoadPackages;
-            loader.RequestLoadNodeLibrary += libraryLoader.LoadNodeLibrary;
+            loader.RequestLoadNodeLibrary += (libraryLoader as ExtensionLibraryLoader).LoadLibraryAndSuppressZTSearchImport;
 
             var packageDirectory = Path.Combine(TestDirectory, "pkgs", "EvenOdd");
             var package1 = Package.FromDirectory(packageDirectory, CurrentDynamoModel.Logger);
