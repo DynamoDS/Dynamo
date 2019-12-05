@@ -103,7 +103,7 @@ namespace DynamoCLI
                 {
                     Console.WriteLine($"attempting to import assembly {path}");
                     var assembly = System.Reflection.Assembly.LoadFile(path);
-                    model.LoadNodeLibrary(assembly);
+                    model.LoadNodeLibrary(assembly,true);
                 }
             }
             catch (Exception e)

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using Dynamo.Extensions;
 using Dynamo.Logging;
 using Dynamo.Models;
@@ -14,6 +15,7 @@ namespace Dynamo.Tests
     class ExtensionTests
     {
         string extensionsPath;
+        string testpkgPath;
         Mock<IExtension> extMock;
         DynamoModel model;
         ICommandExecutive executive;
@@ -24,6 +26,7 @@ namespace Dynamo.Tests
         public void Init()
         {
             extensionsPath = Path.Combine(Directory.GetCurrentDirectory(), "extensions");
+            testpkgPath = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), @"..\..\..\test\pkgs"));
             extMock = new Mock<IExtension>();
             extMock.Setup(ext => ext.Ready(It.IsAny<ReadyParams>())).Callback((ReadyParams r) => ExtensionReadyCallback(r));
             cmdExecutionState = -1;
@@ -234,6 +237,22 @@ namespace Dynamo.Tests
             logsource = sm.Service<ILogSource>();
             Assert.IsNull(logsource); //service is unregistered and not available any more
         }
+
+        [Test]
+        public void ExtensionLoader_LoadNodeLibraryAddsZTNodesToSearch()
+        {
+            var assemPath = Path.Combine(testpkgPath, "Dynamo Samples", "bin", "SampleLibraryZeroTouch.dll");
+            var assembly = Assembly.LoadFrom(assemPath);
+            var libraryLoader = new ExtensionLibraryLoader(model);
+            libraryLoader.LoadNodeLibrary(assembly);
+
+            var entries = model.SearchModel.SearchEntries.ToList();
+            var nodesInLib = entries.Where(x => x.Assembly.Contains("SampleLibraryZeroTouch")).Select(y => y.FullName).ToList();
+            Assert.AreEqual(12, nodesInLib.Count());
+            Assert.IsTrue(entries.Count(x => x.FullName == "SampleLibraryZeroTouch.Examples.TransformableExample.TransformObject") == 1);
+
+        }
+        
     }
 
     class ThrowExceptionCommand : DynamoModel.RecordableCommand
