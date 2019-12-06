@@ -25,7 +25,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         protected override SceneNode OnCreateSceneNode()
         {
             var node = base.OnCreateSceneNode();
-            node.OnSetRenderTechnique = (host) => { return host.EffectsManager["RenderCustom"]; };
+            //node.OnSetRenderTechnique = (host) => { return host.EffectsManager["RenderCustom"]; };
             return node;
         }
 

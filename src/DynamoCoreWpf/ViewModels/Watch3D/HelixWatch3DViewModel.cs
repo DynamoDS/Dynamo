@@ -40,6 +40,7 @@ using TextInfo = HelixToolkit.Wpf.SharpDX.TextInfo;
 using Newtonsoft.Json;
 using HelixToolkit.Wpf.SharpDX.Shaders;
 using System.Windows.Data;
+using Dynamo.Utilities;
 
 namespace Dynamo.Wpf.ViewModels.Watch3D
 {
@@ -154,6 +155,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         private readonly Color4 directionalLightColor = new Color4(0.9f, 0.9f, 0.9f, 1.0f);
         private readonly Color4 defaultSelectionColor = new Color4(new Color3(0, 158.0f / 255.0f, 1.0f));
         private readonly Color4 defaultMaterialColor = new Color4(new Color3(1.0f, 1.0f, 1.0f));
+        private readonly Color4 defaultTransparencyColor = new Color4(1.0f, 1.0f, 1.0f, 0.5f);
         private readonly Size defaultPointSize = new Size(6, 6);
         private readonly Size highlightSize = new Size(8, 8);
         private readonly Color4 highlightColor = new Color4(new Color3(1.0f, 0.0f, 0.0f));
@@ -183,7 +185,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         internal const double DefaultFarClipDistance = 100000;
         internal static BoundingBox DefaultBounds = new BoundingBox(new Vector3(-25f, -25f, -25f), new Vector3(25f,25f,25f));
 
-        private List<Element3D> sceneItems;
+        private ObservableElement3DCollection sceneItems;
 
         private Dictionary<string, string> nodesSelected = new Dictionary<string, string>();
 
@@ -315,9 +317,11 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             }
         }
 
-        public PhongMaterial WhiteMaterial { get; set; }
+        public static PhongMaterial WhiteMaterial { get; set; }
 
-        public PhongMaterial SelectedMaterial { get; set; }
+        public static PhongMaterial SelectedMaterial { get; set; }
+
+        public static PhongMaterial TransparentMaterial { get; set; }
 
         /// <summary>
         /// This is the initial transform applied to 
@@ -416,7 +420,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         {
             if (Element3DDictionary == null)
             {
-                sceneItems = new List<Element3D>();
+                sceneItems = new ObservableElement3DCollection();
                 return;
             }
 
@@ -425,10 +429,14 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             {
                 values.Sort(new Element3DComparer(Camera.Position));
             }
+            if (sceneItems == null)
+                sceneItems = new ObservableElement3DCollection();
 
-            sceneItems = values;
+            sceneItems.Clear();
+            sceneItems.AddRange(values);
         }
 
+        //public ObservableElement3DCollection SceneItems
         public IEnumerable<Element3D> SceneItems
         {
             get
@@ -1063,6 +1071,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         private void SetGeometryFrozen(HashSet<NodeModel> gathered)
         {
+            
             foreach (var node in gathered)
             {
                 var geometryModels = FindAllGeometryModel3DsForNode(node);
@@ -1079,6 +1088,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     g.SetValue(AttachedProperties.IsFrozenProperty, node.IsFrozen);
                 }
             }
+            OnSceneItemsChanged();
         }
 
         private void SetSelection(IEnumerable items, bool isSelected)
@@ -1105,6 +1115,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     g.SetValue(AttachedProperties.ShowSelectedProperty, isSelected);
                 }
             }
+            OnSceneItemsChanged();
         }
 
         private void LogCameraWarning(string msg, Exception ex)
@@ -1176,9 +1187,19 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
             SelectedMaterial = new PhongMaterial
             {
-                Name = "White",
+                Name = "Selected",
                 AmbientColor = PhongMaterials.ToColor(0.1, 0.1, 0.1, 1.0),
                 DiffuseColor = defaultSelectionColor,
+                SpecularColor = PhongMaterials.ToColor(0.0225, 0.0225, 0.0225, 1.0),
+                EmissiveColor = PhongMaterials.ToColor(0.0, 0.0, 0.0, 1.0),
+                SpecularShininess = 12.8f,
+            };
+
+            TransparentMaterial = new PhongMaterial
+            {
+                Name = "Transparent",
+                AmbientColor = PhongMaterials.ToColor(0.1, 0.1, 0.1, 1.0),
+                DiffuseColor = defaultTransparencyColor,
                 SpecularColor = PhongMaterials.ToColor(0.0225, 0.0225, 0.0225, 1.0),
                 EmissiveColor = PhongMaterials.ToColor(0.0, 0.0, 0.0, 1.0),
                 SpecularShininess = 12.8f,
@@ -1699,11 +1720,11 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     //if we require a custom transform or vertex coloration then we need to create a new Geometry3d object.
                     id = ((rp.RequiresPerVertexColoration || rp.Colors != null || rp.RequiresCustomTransform) ? rp.Description : baseId) + MeshKey;
 
+                    Element3D element3D;
                     DynamoGeometryModel3D meshGeometry3D;
-
-                    if (Element3DDictionary.ContainsKey(id))
+                    if (Element3DDictionary.TryGetValue(id, out element3D))
                     {
-                        meshGeometry3D = Element3DDictionary[id] as DynamoGeometryModel3D;
+                        meshGeometry3D = element3D as DynamoGeometryModel3D;
                     }
                     else
                     {
@@ -1970,6 +1991,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     Console.WriteLine(ex.Message);
                     Console.WriteLine(ex.StackTrace);
                 }
+                //meshGeometry3D.Material = new VertColorMaterial();
             }
 
             return meshGeometry3D;

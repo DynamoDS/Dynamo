@@ -37,6 +37,31 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             {
                 var geom = (GeometryModel3D)obj;
                 // TODO DYN-973: Need new mechanism to trigger render update after selected/frozen/isolated properties change
+
+                var meshGeom = geom as DynamoGeometryModel3D;
+                if (meshGeom != null)
+                {
+                    if ((bool)args.NewValue)
+                    {
+                        meshGeom.Material = HelixWatch3DViewModel.SelectedMaterial;
+                    }
+                    else
+                    {
+                        meshGeom.Material = HelixWatch3DViewModel.WhiteMaterial;
+                    }
+                }
+                //var colors = geom.Geometry.Colors.ToArray();
+
+                //for (int i = 0; i < colors.Length; i++)
+                //{
+                //    colors[i].Blue = 255;
+                //    colors[i].Green = 0;
+                //    colors[i].Red = 0;
+                //}
+
+                //var colorCollection = new Color4Collection(colors);
+                //geom.Geometry.Colors = colorCollection;
+                //geom.Geometry.UpdateColors();
             }
         }
 
@@ -90,29 +115,39 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             if (obj is GeometryModel3D && obj.GetType() != typeof(BillboardTextModel3D))
             {
                 var geom = (GeometryModel3D)obj;
-                if (geom.Geometry == null || geom.Geometry.Colors == null)
+                if (geom.Geometry == null)
                 {
                     return;
                 }
-
-                var colors = geom.Geometry.Colors.ToArray();
-
-                for (int i = 0; i < colors.Length; i++)
-                {
-                    colors[i].Alpha = colors[i].Alpha * alphaPropertyFactor;
-                }
-
-                geom.Geometry.Colors.Clear();
-                geom.Geometry.Colors.AddRange(colors);
+                // TODO DYN-973: Need new mechanism to trigger render update after selected/frozen/isolated properties change
 
                 var dynamoGeom3D = geom as DynamoGeometryModel3D;
                 if (dynamoGeom3D != null)
                 {
+                    if ((bool)e.NewValue)
+                    {
+                        dynamoGeom3D.Material = HelixWatch3DViewModel.TransparentMaterial;
+                    }
+                    else
+                    {
+                        dynamoGeom3D.Material = HelixWatch3DViewModel.WhiteMaterial;
+                    }
+
                     dynamoGeom3D.RequiresPerVertexColoration = true;
                     geom = dynamoGeom3D;
                 }
 
-                // TODO DYN-973: Need new mechanism to trigger render update after selected/frozen/isolated properties change
+                //var colors = geom.Geometry.Colors.ToArray();
+
+                //for (int i = 0; i < colors.Length; i++)
+                //{
+                //    colors[i].Alpha = colors[i].Alpha * alphaPropertyFactor;
+                //}
+
+                //var colorCollection = new Color4Collection(colors);
+                //geom.Geometry.Colors = colorCollection;
+                //geom.Geometry.UpdateColors();
+
             }
         }
 
