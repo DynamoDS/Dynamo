@@ -134,7 +134,7 @@ namespace Dynamo.PackageManager
             PackageLoader.MessageLogged += OnMessageLogged;
             PackageLoader.PackgeLoaded += OnPackageLoaded;
             PackageLoader.PackageRemoved += OnPackageRemoved;
-            RequestLoadNodeLibraryHandler = startupParams.LibraryLoader.LoadNodeLibrary;
+            RequestLoadNodeLibraryHandler = (startupParams.LibraryLoader as ExtensionLibraryLoader).LoadLibraryAndSuppressZTSearchImport;
             //TODO: Add LoadPackages to ILibraryLoader interface in 3.0
             LoadPackagesHandler = (startupParams.LibraryLoader as ExtensionLibraryLoader).LoadPackages;
             customNodeManager = (startupParams.CustomNodeManager as Core.CustomNodeManager);
