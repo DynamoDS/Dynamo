@@ -436,7 +436,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             sceneItems.AddRange(values);
         }
 
-        //public ObservableElement3DCollection SceneItems
         public IEnumerable<Element3D> SceneItems
         {
             get
@@ -1088,7 +1087,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     g.SetValue(AttachedProperties.IsFrozenProperty, node.IsFrozen);
                 }
             }
-            OnSceneItemsChanged();
         }
 
         private void SetSelection(IEnumerable items, bool isSelected)
@@ -1115,7 +1113,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     g.SetValue(AttachedProperties.ShowSelectedProperty, isSelected);
                 }
             }
-            OnSceneItemsChanged();
         }
 
         private void LogCameraWarning(string msg, Exception ex)
