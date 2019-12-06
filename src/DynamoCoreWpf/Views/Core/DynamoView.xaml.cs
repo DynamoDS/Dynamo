@@ -27,6 +27,7 @@ using Dynamo.Nodes;
 using Dynamo.Nodes.Prompts;
 using Dynamo.PackageManager;
 using Dynamo.PackageManager.UI;
+using Dynamo.Search;
 using Dynamo.Search.SearchElements;
 using Dynamo.Selection;
 using Dynamo.Services;
@@ -632,6 +633,16 @@ namespace Dynamo.Controls
             InitializeLogin();
             InitializeShortcutBar();
             InitializeStartPage(isFirstRun);
+
+            #region Search initialization
+
+            var search = new SearchView(
+                dynamoViewModel.SearchViewModel,
+                dynamoViewModel);
+            sidebarGrid.Children.Add(search);
+            dynamoViewModel.SearchViewModel.Visible = true;
+
+            #endregion
 
 #if !__NO_SAMPLES_MENU
             LoadSamplesMenu();

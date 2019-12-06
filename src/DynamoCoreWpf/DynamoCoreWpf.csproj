@@ -345,6 +345,12 @@
     <Compile Include="Views\Preview\Watch3DSettingsControl.xaml.cs">
       <DependentUpon>Watch3DSettingsControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\Search\LibraryContainerView.xaml.cs">
+      <DependentUpon>LibraryContainerView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Search\LibrarySearchView.xaml.cs">
+      <DependentUpon>LibrarySearchView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Windows\BrowserWindow.xaml.cs">
       <DependentUpon>BrowserWindow.xaml</DependentUpon>
     </Compile>
@@ -1125,6 +1131,14 @@
     <Page Include="Views\Preview\Watch3DSettingsControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Search\LibraryContainerView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>XamlIntelliSenseFileGenerator</Generator>
+    </Page>
+    <Page Include="Views\Search\LibrarySearchView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>XamlIntelliSenseFileGenerator</Generator>
     </Page>
     <Page Include="Windows\BrowserWindow.xaml">
       <Generator>MSBuild:Compile</Generator>

@@ -536,7 +536,7 @@ namespace Dynamo.ViewModels
             this.WatchHandler = startConfiguration.WatchHandler;
             var pmExtension = model.GetPackageManagerExtension();
             this.PackageManagerClientViewModel = new PackageManagerClientViewModel(this, pmExtension.PackageManagerClient);
-            this.SearchViewModel = null;
+            this.SearchViewModel = new SearchViewModel(this);
 
             // Start page should not show up during test mode.
             this.ShowStartPage = !DynamoModel.IsTestMode;
