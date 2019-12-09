@@ -33,6 +33,17 @@ namespace Dynamo.Wpf.Extensions
 
         public ViewExtensionManager()
         {
+            InitializeViewExtensionManager();
+        }
+
+        public ViewExtensionManager(IEnumerable<string> directoriesToVerify)
+        {
+            InitializeViewExtensionManager();
+            this.viewExtensionLoader.directoriesToVerifyCertificates.AddRange(directoriesToVerify);
+        }
+
+        private void InitializeViewExtensionManager()
+        {
             viewExtensionLoader.MessageLogged += Log;
             this.ExtensionLoader.ExtensionLoading += SubscribeViewExtension;
             this.ExtensionRemoved += UnsubscribeViewExtension;

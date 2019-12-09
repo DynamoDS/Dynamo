@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Xml;
 using Dynamo.Logging;
@@ -13,6 +14,14 @@ namespace Dynamo.Wpf.Extensions
         {
             try
             {
+                foreach (var pathToVerifyCert in directoriesToVerifyCertificates)
+                {
+                    if (viewExtension.AssemblyPath.Contains(pathToVerifyCert))
+                    {
+                        CheckExtensionCertificates(viewExtension);
+                    }
+                }
+
                 var assembly = Assembly.LoadFrom(viewExtension.AssemblyPath);
                 var result = assembly.CreateInstance(viewExtension.TypeName) as IViewExtension;
                 ExtensionLoading?.Invoke(result);
@@ -97,5 +106,46 @@ namespace Dynamo.Wpf.Extensions
         /// An event that is raised when an extension starts loading.
         /// </summary>
         public event Action<IViewExtension> ExtensionLoading;
+
+        internal  List<string> directoriesToVerifyCertificates = new List<string>();
+
+        private static bool CheckExtensionCertificates(ViewExtensionDefinition viewExtension)
+        {
+            //Verify the node library exists in the package bin directory
+            if (!File.Exists(viewExtension.AssemblyPath))
+            {
+                throw new Exception(String.Format(
+                        "A view extension called {0} found at {1} is missing dlls which are defined in the view extension definition.  Ignoring it.",
+                        viewExtension.TypeName, viewExtension.AssemblyPath));
+            }
+
+            //Verify that you can load the node library assembly into a Reflection only context
+            Assembly asm;
+            try
+            {
+                asm = Assembly.ReflectionOnlyLoadFrom(viewExtension.AssemblyPath);
+            }
+            catch
+            {
+                throw new Exception(String.Format(
+                    "A view extension called {0} found at {1} has a dll which could not be loaded.  Ignoring it.",
+                    viewExtension.TypeName, viewExtension.AssemblyPath));
+            }
+
+            //Verify teh node libarary has a verified signed certificate
+            var cert = asm.Modules.FirstOrDefault()?.GetSignerCertificate();
+            if (cert != null)
+            {
+                var cert2 = new System.Security.Cryptography.X509Certificates.X509Certificate2(cert);
+                if (cert2.Verify())
+                {
+                    return true;
+                }
+            }
+
+            throw new Exception(String.Format(
+                "A view extension called {0} found at {1} did not have a signed certificate.  Ignoring it.",
+                viewExtension.TypeName, viewExtension.AssemblyPath));
+        }
     }
 }
