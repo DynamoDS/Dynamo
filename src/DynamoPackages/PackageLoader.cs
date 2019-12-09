@@ -420,29 +420,7 @@ namespace Dynamo.PackageManager
                 // prevent loading unsigned packages if the certificates are required on package dlls
                 if (checkCertificates)
                 {
-                    foreach (var assemFile in (new System.IO.DirectoryInfo(discoveredPkg.BinaryDirectory)).EnumerateFiles("*.dll"))
-                    {
-                        try
-                        {
-                            var asm = Assembly.ReflectionOnlyLoadFrom(assemFile.FullName);
-                            var cert = asm.Modules.FirstOrDefault()?.GetSignerCertificate();
-                            if (cert != null)
-                            {
-                                var cert2 = new System.Security.Cryptography.X509Certificates.X509Certificate2(cert); 
-                                if(cert2.Verify())
-                                {
-                                    continue;
-                                }
-
-                            }
-                        }
-                        catch (Exception e)
-                        {
-                            //catch all exception types and pass to next throw
-                        }
-
-                        throw new LibraryLoadFailedException(directory, String.Format("A package called {0} found at {1} did not have signed dll files.  Ignoring it.", discoveredPkg.Name, discoveredPkg.RootDirectory));
-                    }
+                    CheckPackageNodeLibraryCertificates(directory, discoveredPkg);
                 }
 
                 // prevent duplicates
@@ -460,6 +438,78 @@ namespace Dynamo.PackageManager
             }
 
             return null;
+        }
+
+        private static void CheckPackageNodeLibraryCertificates(string directory, Package discoveredPkg)
+        {
+            var dllfiles = new System.IO.DirectoryInfo(discoveredPkg.BinaryDirectory).EnumerateFiles("*.dll");
+            if (discoveredPkg.Header.node_libraries.Count() == 0 && dllfiles.Count() != 0)
+            {
+                throw new LibraryLoadFailedException(directory,
+                    String.Format(
+                        "A package called {0} found at {1} includes dll files but none are defined in node libraries in the package manifest.  Ignoring it.",
+                        discoveredPkg.Name, discoveredPkg.RootDirectory));
+            }
+
+            foreach (var manifestFile in discoveredPkg.Header.node_libraries)
+            {
+
+                //Try to get the assembly name from the manifest file
+                string filename;
+                try
+                {
+                    filename = new AssemblyName(manifestFile).Name + ".dll";
+                }
+                catch
+                {
+                    throw new LibraryLoadFailedException(directory,
+                        String.Format(
+                            "A package called {0} found at {1} has improperly defined its node libraries in the package manifest.  Ignoring it.",
+                            discoveredPkg.Name, discoveredPkg.RootDirectory));
+                }
+
+
+                //Verify the node library exists in the package bin directory
+                var filepath = Path.Combine(discoveredPkg.BinaryDirectory, filename + ".dll");
+                if (!File.Exists(filepath))
+                {
+                    throw new LibraryLoadFailedException(directory,
+                        String.Format(
+                            "A package called {0} found at {1} is missing dlls which are defined in the package manifest.  Ignoring it.",
+                            discoveredPkg.Name, discoveredPkg.RootDirectory));
+                }
+
+                //Verify that you can load the node library assembly into a Reflection only context
+                Assembly asm;
+                try
+                {
+                    asm = Assembly.ReflectionOnlyLoadFrom(filename);
+                }
+                catch
+                {
+                    throw new LibraryLoadFailedException(directory,
+                        String.Format(
+                            "A package called {0} found at {1} has dlls defined in the package manifest which could not be loaded.  Ignoring it.",
+                            discoveredPkg.Name, discoveredPkg.RootDirectory));
+                }
+
+                //Verify teh node libarary has a verified signed certificate
+                var cert = asm.Modules.FirstOrDefault()?.GetSignerCertificate();
+                if (cert != null)
+                {
+                    var cert2 = new System.Security.Cryptography.X509Certificates.X509Certificate2(cert);
+                    if (cert2.Verify())
+                    {
+                        continue;
+                    }
+                }
+
+                throw new LibraryLoadFailedException(directory,
+                    String.Format("A package called {0} found at {1} did not have signed dll files.  Ignoring it.",
+                        discoveredPkg.Name, discoveredPkg.RootDirectory));
+            }
+
+            discoveredPkg.HasSignedEntryPoints = true;
         }
 
         /// <summary>

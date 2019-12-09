@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using Dynamo.Core;
+using Dynamo.Exceptions;
 using Dynamo.Graph.Nodes.CustomNodes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Interfaces;
@@ -139,6 +140,8 @@ namespace Dynamo.PackageManager
         /// </summary>
         public PackageUploadRequestBody Header { get; internal set; }
 
+        public bool HasSignedEntryPoints { get; internal set; }
+
         #endregion
 
         public Package(string directory, string name, string versionName, string license)
@@ -269,20 +272,29 @@ namespace Dynamo.PackageManager
             {
                 Assembly assem;
 
-                // dll files may be un-managed, skip those
-                var result = PackageLoader.TryLoadFrom(assemFile.FullName, out assem);
-                if (result)
+                bool shouldLoadFile = true;
+                if (this.HasSignedEntryPoints)
                 {
-                    // IsNodeLibrary may fail, we store the warnings here and then show
-                    IList<ILogMessage> warnings = new List<ILogMessage>();
+                    shouldLoadFile = IsFileInManifestNodeLibraries(nodeLibraries, assemFile.Name, BinaryDirectory);
+                }
 
-                    assemblies.Add(new PackageAssembly()
+                if (shouldLoadFile)
+                {
+                    // dll files may be un-managed, skip those
+                    var result = PackageLoader.TryLoadFrom(assemFile.FullName, out assem);
+                    if (result)
                     {
-                        Assembly = assem,
-                        IsNodeLibrary = IsNodeLibrary(nodeLibraries, assem.GetName(), ref warnings)
-                    });
+                        // IsNodeLibrary may fail, we store the warnings here and then show
+                        IList<ILogMessage> warnings = new List<ILogMessage>();
 
-                    warnings.ToList().ForEach(this.Log);
+                        assemblies.Add(new PackageAssembly()
+                        {
+                            Assembly = assem,
+                            IsNodeLibrary = IsNodeLibrary(nodeLibraries, assem.GetName(), ref warnings)
+                        });
+
+                        warnings.ToList().ForEach(this.Log);
+                    }
                 }
             }
 
@@ -292,6 +304,27 @@ namespace Dynamo.PackageManager
             }
 
             return assemblies;
+        }
+
+        private static bool IsFileInManifestNodeLibraries(IEnumerable<string> nodeLibraries, string filename, string path)
+        {
+            foreach (var manifestFile in nodeLibraries)
+            {
+                try
+                {
+                    var name = new AssemblyName(manifestFile).Name + ".dll";
+                    if (name == filename)
+                    {
+                        return true;
+                    }
+                }
+                catch
+                {;
+                    throw new LibraryLoadFailedException(path, Resources.IncorrectlyFormattedNodeLibraryWarning);
+                }
+            }
+
+            return false;
         }
 
         /// <summary>
