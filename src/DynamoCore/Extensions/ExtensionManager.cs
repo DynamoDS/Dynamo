@@ -41,6 +41,20 @@ namespace Dynamo.Extensions
         /// </summary>
         public ExtensionManager()
         {
+            InitializeExtensionManager();
+        }
+
+        /// <summary>
+        /// Creates ExtensionManager with directories which require package certificate verification.
+        /// </summary>
+        public ExtensionManager(IEnumerable<string> directoriesToVerify)
+        {
+            InitializeExtensionManager();
+            this.extensionLoader.directoriesToVerifyCertificates.AddRange(directoriesToVerify);
+        }
+
+        private void InitializeExtensionManager()
+        {
             extensionLoader.MessageLogged += Log;
             this.extensionLoader.ExtensionLoading += SubscribeExtension;
             this.ExtensionRemoved += UnsubscribeExtension;
