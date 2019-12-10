@@ -140,7 +140,7 @@ namespace Dynamo.PackageManager
         /// </summary>
         public PackageUploadRequestBody Header { get; internal set; }
 
-        public bool HasSignedEntryPoints { get; internal set; }
+        public bool RequiresSignedEntryPoints { get; internal set; }
 
         #endregion
 
@@ -273,7 +273,7 @@ namespace Dynamo.PackageManager
                 Assembly assem;
 
                 bool shouldLoadFile = true;
-                if (this.HasSignedEntryPoints)
+                if (this.RequiresSignedEntryPoints)
                 {
                     shouldLoadFile = IsFileInManifestNodeLibraries(nodeLibraries, assemFile.Name, BinaryDirectory);
                 }

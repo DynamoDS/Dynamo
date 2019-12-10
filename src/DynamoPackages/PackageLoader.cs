@@ -509,7 +509,7 @@ namespace Dynamo.PackageManager
                         discoveredPkg.Name, discoveredPkg.RootDirectory));
             }
 
-            discoveredPkg.HasSignedEntryPoints = true;
+            discoveredPkg.RequiresSignedEntryPoints = true;
         }
 
         /// <summary>
