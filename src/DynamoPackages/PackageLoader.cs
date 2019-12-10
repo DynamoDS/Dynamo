@@ -84,21 +84,6 @@ namespace Dynamo.PackageManager
 
         public PackageLoader(IEnumerable<string> packagesDirectories)
         {
-            InitializePackageDirectories(packagesDirectories);
-        }
-
-        public PackageLoader(IEnumerable<string> packagesDirectories, IEnumerable<string> packageDirectoriesToVerify)
-        {
-            InitializePackageDirectories(packagesDirectories);
-
-            if (packageDirectoriesToVerify == null)
-                throw new ArgumentNullException("packageDirectoriesToVerify");
-
-            this.packagesDirectoriesToVerifyCertificates.AddRange(packageDirectoriesToVerify);
-        }
-
-        private void InitializePackageDirectories(IEnumerable<string> packagesDirectories)
-        {
             if (packagesDirectories == null)
                 throw new ArgumentNullException("packagesDirectories");
 
@@ -107,6 +92,20 @@ namespace Dynamo.PackageManager
 
             if (error != null)
                 Log(error);
+        }
+
+        /// <summary>
+        /// Initialize a new instance of PackageLoader class
+        /// </summary>
+        /// <param name="packagesDirectories">Default package directories</param>
+        /// <param name="packageDirectoriesToVerify">Default package directories where node library files require certificate verification before loading</param>
+        public PackageLoader(IEnumerable<string> packagesDirectories, IEnumerable<string> packageDirectoriesToVerify)
+            : this(packagesDirectories)
+        {
+            if (packageDirectoriesToVerify == null)
+                throw new ArgumentNullException("packageDirectoriesToVerify");
+
+            this.packagesDirectoriesToVerifyCertificates.AddRange(packageDirectoriesToVerify);
         }
 
         private void OnPackageAdded(Package pkg)
@@ -440,40 +439,44 @@ namespace Dynamo.PackageManager
             return null;
         }
 
-        private static void CheckPackageNodeLibraryCertificates(string directory, Package discoveredPkg)
+        /// <summary>
+        /// Check the node libraries defined in the package json file are valid and have a valid certificate
+        /// </summary>
+        /// <param name="packageDirectoryPath">path to package location</param>
+        /// <param name="discoveredPkg">package object to check</param>
+        private static void CheckPackageNodeLibraryCertificates(string packageDirectoryPath, Package discoveredPkg)
         {
             var dllfiles = new System.IO.DirectoryInfo(discoveredPkg.BinaryDirectory).EnumerateFiles("*.dll");
             if (discoveredPkg.Header.node_libraries.Count() == 0 && dllfiles.Count() != 0)
             {
-                throw new LibraryLoadFailedException(directory,
+                throw new LibraryLoadFailedException(packageDirectoryPath,
                     String.Format(
                         "A package called {0} found at {1} includes dll files but none are defined in node libraries in the package manifest.  Ignoring it.",
                         discoveredPkg.Name, discoveredPkg.RootDirectory));
             }
 
-            foreach (var manifestFile in discoveredPkg.Header.node_libraries)
+            foreach (var nodeLibraryAssembly in discoveredPkg.Header.node_libraries)
             {
 
                 //Try to get the assembly name from the manifest file
                 string filename;
                 try
                 {
-                    filename = new AssemblyName(manifestFile).Name + ".dll";
+                    filename = new AssemblyName(nodeLibraryAssembly).Name + ".dll";
                 }
                 catch
                 {
-                    throw new LibraryLoadFailedException(directory,
+                    throw new LibraryLoadFailedException(packageDirectoryPath,
                         String.Format(
                             "A package called {0} found at {1} has improperly defined its node libraries in the package manifest.  Ignoring it.",
                             discoveredPkg.Name, discoveredPkg.RootDirectory));
                 }
 
-
                 //Verify the node library exists in the package bin directory
                 var filepath = Path.Combine(discoveredPkg.BinaryDirectory, filename);
                 if (!File.Exists(filepath))
                 {
-                    throw new LibraryLoadFailedException(directory,
+                    throw new LibraryLoadFailedException(packageDirectoryPath,
                         String.Format(
                             "A package called {0} found at {1} is missing dlls which are defined in the package manifest.  Ignoring it.",
                             discoveredPkg.Name, discoveredPkg.RootDirectory));

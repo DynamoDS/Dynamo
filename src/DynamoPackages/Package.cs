@@ -275,7 +275,7 @@ namespace Dynamo.PackageManager
                 bool shouldLoadFile = true;
                 if (this.RequiresSignedEntryPoints)
                 {
-                    shouldLoadFile = IsFileInManifestNodeLibraries(nodeLibraries, assemFile.Name, BinaryDirectory);
+                    shouldLoadFile = IsFileSpecifiedInPackageJsonManifest(nodeLibraries, assemFile.Name, BinaryDirectory);
                 }
 
                 if (shouldLoadFile)
@@ -306,20 +306,27 @@ namespace Dynamo.PackageManager
             return assemblies;
         }
 
-        private static bool IsFileInManifestNodeLibraries(IEnumerable<string> nodeLibraries, string filename, string path)
+        /// <summary>
+        /// Checks if a specific file is specified in the Node Libraries section of the package manifest json.
+        /// </summary>
+        /// <param name="nodeLibraries">node libraries defined in package manifest json.</param>
+        /// <param name="filename">filename of dll file to check</param>
+        /// <param name="path">path of the packages</param>
+        /// <returns></returns>
+        private static bool IsFileSpecifiedInPackageJsonManifest(IEnumerable<string> nodeLibraries, string filename, string path)
         {
-            foreach (var manifestFile in nodeLibraries)
+            foreach (var nodeLibraryAssembly in nodeLibraries)
             {
                 try
                 {
-                    var name = new AssemblyName(manifestFile).Name + ".dll";
+                    var name = new AssemblyName(nodeLibraryAssembly).Name + ".dll";
                     if (name == filename)
                     {
                         return true;
                     }
                 }
                 catch
-                {;
+                {
                     throw new LibraryLoadFailedException(path, Resources.IncorrectlyFormattedNodeLibraryWarning);
                 }
             }
