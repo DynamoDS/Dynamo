@@ -490,7 +490,7 @@ namespace Dynamo.PackageManager
                 }
                 catch
                 {
-                    throw new LibraryLoadFailedException(directory,
+                    throw new LibraryLoadFailedException(packageDirectoryPath,
                         String.Format(
                             "A package called {0} found at {1} has dlls defined in the package manifest which could not be loaded.  Ignoring it.",
                             discoveredPkg.Name, discoveredPkg.RootDirectory));
@@ -507,7 +507,7 @@ namespace Dynamo.PackageManager
                     }
                 }
 
-                throw new LibraryLoadFailedException(directory,
+                throw new LibraryLoadFailedException(packageDirectoryPath,
                     String.Format("A package called {0} found at {1} did not have signed dll files.  Ignoring it.",
                         discoveredPkg.Name, discoveredPkg.RootDirectory));
             }
