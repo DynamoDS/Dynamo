@@ -60,7 +60,7 @@ namespace Dynamo.Wpf.Extensions
                 }
             }
 
-            foreach (var pathToVerifyCert in directoriesToVerifyCertificates)
+            foreach (var pathToVerifyCert in DirectoriesToVerifyCertificates)
             {
                 if (extensionPath.Contains(pathToVerifyCert))
                 {
@@ -112,8 +112,17 @@ namespace Dynamo.Wpf.Extensions
         /// </summary>
         public event Action<IViewExtension> ExtensionLoading;
 
-        internal  List<string> directoriesToVerifyCertificates = new List<string>();
+        /// <summary>
+        /// A list of root directories which require extensions to have a signed entry point
+        /// File path locations from package definition xml's are validated against this collection 
+        /// </summary>
+        internal List<string> DirectoriesToVerifyCertificates = new List<string>();
 
+        /// <summary>
+        /// Checks if the AssemblyPath defined in the view extension definition is a valid dll with valid certificate
+        /// </summary>
+        /// <param name="extension">The view extension to verify</param>
+        /// <returns></returns>
         private static bool CheckExtensionCertificates(ViewExtensionDefinition viewExtension)
         {
             //Verify the node library exists in the package bin directory
@@ -137,7 +146,7 @@ namespace Dynamo.Wpf.Extensions
                     viewExtension.TypeName, viewExtension.AssemblyPath));
             }
 
-            //Verify teh node libarary has a verified signed certificate
+            //Verify the node library has a verified signed certificate
             var cert = asm.Modules.FirstOrDefault()?.GetSignerCertificate();
             if (cert != null)
             {

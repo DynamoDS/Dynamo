@@ -98,6 +98,7 @@ namespace Dynamo.Controls
 
             tabSlidingWindowStart = tabSlidingWindowEnd = 0;
 
+            //Initialize the ViewExtensionManager with the CommonDataDirectory so that view extensions found here are checked first for dll's with signed certificates
             viewExtensionManager = new ViewExtensionManager(new[] {dynamoViewModel.Model.PathManager.CommonDataDirectory });
 
             _timer = new Stopwatch();
