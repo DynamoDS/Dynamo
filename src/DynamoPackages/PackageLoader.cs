@@ -470,7 +470,7 @@ namespace Dynamo.PackageManager
 
 
                 //Verify the node library exists in the package bin directory
-                var filepath = Path.Combine(discoveredPkg.BinaryDirectory, filename + ".dll");
+                var filepath = Path.Combine(discoveredPkg.BinaryDirectory, filename);
                 if (!File.Exists(filepath))
                 {
                     throw new LibraryLoadFailedException(directory,
@@ -483,7 +483,7 @@ namespace Dynamo.PackageManager
                 Assembly asm;
                 try
                 {
-                    asm = Assembly.ReflectionOnlyLoadFrom(filename);
+                    asm = Assembly.ReflectionOnlyLoadFrom(filepath);
                 }
                 catch
                 {
