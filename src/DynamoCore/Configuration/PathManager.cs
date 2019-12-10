@@ -96,6 +96,7 @@ namespace Dynamo.Core
             get { return Preferences != null ? Preferences.CustomPackageFolders : rootDirectories; }
         }
 
+        //Todo in Dynamo 3.0, Add this to the IPathManager interface
         internal string CommonPackageDirectory
         {
             get { return commonPackages; }
