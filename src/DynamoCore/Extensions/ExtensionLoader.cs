@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 using System.Xml;
 using Dynamo.Logging;
@@ -78,6 +77,7 @@ namespace Dynamo.Extensions
                 }
             }
 
+            //Check if the extension definition file was located in a directory which requires certificate validation.
             foreach (var pathToVerifyCert in DirectoriesToVerifyCertificates)
             {
                 if (extensionPath.Contains(pathToVerifyCert))
