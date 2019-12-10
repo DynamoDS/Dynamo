@@ -432,9 +432,11 @@ namespace Dynamo.LibraryUI
                 var url = "http://localhost/library.html";
                 var resource = "Dynamo.LibraryUI.web.library.library.html";
                 var stream = LoadResource(resource);
-                var memoryStream = new MemoryStream();
-                stream.CopyTo(memoryStream);
-                resourceFactory.RegisterHandler(url, memoryStream.ToArray());
+                using (var memoryStream = new MemoryStream())
+                {
+                    stream.CopyTo(memoryStream);
+                    resourceFactory.RegisterHandler(url, memoryStream.ToArray());
+                }
             }
 
             //Register provider for node data
@@ -456,7 +458,11 @@ namespace Dynamo.LibraryUI
             if (!url.IsAbsoluteUri)
                 url = new Uri(new Uri("http://localhost"), url);
 
-            resourceFactory.RegisterHandler(url.AbsoluteUri, ResourceHandler.GetByteArray(url.AbsoluteUri, Encoding.UTF8));
+            using (var memoryStream = new MemoryStream())
+            {
+                value.CopyTo(memoryStream);
+                resourceFactory.RegisterHandler(url.ToString(), memoryStream.ToArray());
+            }
         }
 
         private void RegisterResources(ChromiumWebBrowser browser)

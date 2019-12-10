@@ -34,7 +34,7 @@ namespace Dynamo.LibraryUI.Handlers
         ///// This method is called before a resource is loaded, if a valid resource handler
         ///// is returned then this resource handler would serve the response of web request.
         ///// </summary>
-        //public override IResourceHandler GetResourceRequestHandler(IWebBrowser browserControl, IBrowser browser, IFrame frame, IRequest request)
+        //protected override IResourceHandler GetResourceRequestHandler(IWebBrowser browserControl, IBrowser browser, IFrame frame, IRequest request)
         //{
         //    try
         //    {
@@ -42,7 +42,7 @@ namespace Dynamo.LibraryUI.Handlers
 
         //        // Create a handlerItem for the new resource,
         //        // if the resource has already been loaded don't load it again
-        //        if(!Handlers.TryGetValue(request.Url, out handlerItem))
+        //        if (!Handlers.TryGetValue(request.Url, out handlerItem))
         //        {
         //            IResourceHandler handler = this.GetResourceHandler(request);
 

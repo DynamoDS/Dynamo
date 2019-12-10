@@ -14,7 +14,7 @@ namespace Dynamo.LibraryUI.Views
         {
             this.DataContext = viewModel;
 
-            // CEF should already be initiallized if running within Revit
+            // CEF should already be initialized if running within Revit
             if (!Cef.IsInitialized)
             {
                 var settings = new CefSettings { RemoteDebuggingPort = 8088 };
@@ -23,6 +23,7 @@ namespace Dynamo.LibraryUI.Views
                 CefSharpSettings.LegacyJavascriptBindingEnabled = true;
                 CefSharpSettings.SubprocessExitIfParentProcessClosed = true;
                 CefSharpSettings.ShutdownOnExit = false;
+                //settings.CefCommandLineArgs["disable-gpu-compositing"] = "1";
 
                 Cef.Initialize(settings);
             }
