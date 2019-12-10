@@ -78,7 +78,7 @@ namespace Dynamo.Extensions
                 }
             }
 
-            foreach (var pathToVerifyCert in directoriesToVerifyCertificates)
+            foreach (var pathToVerifyCert in DirectoriesToVerifyCertificates)
             {
                 if (extensionPath.Contains(pathToVerifyCert))
                 {
@@ -138,32 +138,41 @@ namespace Dynamo.Extensions
         /// </summary>
         public event Action<IExtension> ExtensionLoading;
 
-        internal List<string> directoriesToVerifyCertificates = new List<string>();
+        /// <summary>
+        /// A list of root directories which require extensions to have a signed entry point
+        /// File path locations from package definition xml's are validated against this collection 
+        /// </summary>
+        internal List<string> DirectoriesToVerifyCertificates = new List<string>();
 
-        private static bool CheckExtensionCertificates(ExtensionDefinition viewExtension)
+        /// <summary>
+        /// Checks if the AssemblyPath defined in the extension definition is a valid dll with valid certificate
+        /// </summary>
+        /// <param name="extension">The extension to verify</param>
+        /// <returns></returns>
+        private static bool CheckExtensionCertificates(ExtensionDefinition extension)
         {
             //Verify the node library exists in the package bin directory
-            if (!File.Exists(viewExtension.AssemblyPath))
+            if (!File.Exists(extension.AssemblyPath))
             {
                 throw new Exception(String.Format(
                     "An extension called {0} found at {1} is missing dlls which are defined in the view extension definition.  Ignoring it.",
-                    viewExtension.TypeName, viewExtension.AssemblyPath));
+                    extension.TypeName, extension.AssemblyPath));
             }
 
             //Verify that you can load the node library assembly into a Reflection only context
             Assembly asm;
             try
             {
-                asm = Assembly.ReflectionOnlyLoadFrom(viewExtension.AssemblyPath);
+                asm = Assembly.ReflectionOnlyLoadFrom(extension.AssemblyPath);
             }
             catch
             {
                 throw new Exception(String.Format(
                     "An extension called {0} found at {1} has a dll which could not be loaded.  Ignoring it.",
-                    viewExtension.TypeName, viewExtension.AssemblyPath));
+                    extension.TypeName, extension.AssemblyPath));
             }
 
-            //Verify teh node libarary has a verified signed certificate
+            //Verify the node library has a verified signed certificate
             var cert = asm.Modules.FirstOrDefault()?.GetSignerCertificate();
             if (cert != null)
             {
@@ -176,7 +185,7 @@ namespace Dynamo.Extensions
 
             throw new Exception(String.Format(
                 "An extension called {0} found at {1} did not have a signed certificate.  Ignoring it.",
-                viewExtension.TypeName, viewExtension.AssemblyPath));
+                extension.TypeName, extension.AssemblyPath));
         }
     }
 }

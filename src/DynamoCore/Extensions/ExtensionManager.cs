@@ -41,23 +41,17 @@ namespace Dynamo.Extensions
         /// </summary>
         public ExtensionManager()
         {
-            InitializeExtensionManager();
+            extensionLoader.MessageLogged += Log;
+            this.extensionLoader.ExtensionLoading += SubscribeExtension;
+            this.ExtensionRemoved += UnsubscribeExtension;
         }
 
         /// <summary>
         /// Creates ExtensionManager with directories which require package certificate verification.
         /// </summary>
-        public ExtensionManager(IEnumerable<string> directoriesToVerify)
+        public ExtensionManager(IEnumerable<string> directoriesToVerify) :this()
         {
-            InitializeExtensionManager();
-            this.extensionLoader.directoriesToVerifyCertificates.AddRange(directoriesToVerify);
-        }
-
-        private void InitializeExtensionManager()
-        {
-            extensionLoader.MessageLogged += Log;
-            this.extensionLoader.ExtensionLoading += SubscribeExtension;
-            this.ExtensionRemoved += UnsubscribeExtension;
+            this.extensionLoader.DirectoriesToVerifyCertificates.AddRange(directoriesToVerify);
         }
 
         private void RequestAddExtensionHandler(dynamic extension)
