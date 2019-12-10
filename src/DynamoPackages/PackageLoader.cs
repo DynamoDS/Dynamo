@@ -12,6 +12,7 @@ using Dynamo.Logging;
 using Dynamo.Utilities;
 using DynamoPackages.Properties;
 using DynamoUtilities;
+using DynamoCrypto;
 
 namespace Dynamo.PackageManager
 {
@@ -474,42 +475,17 @@ namespace Dynamo.PackageManager
 
                 //Verify the node library exists in the package bin directory
                 var filepath = Path.Combine(discoveredPkg.BinaryDirectory, filename);
-                if (!File.Exists(filepath))
-                {
-                    throw new LibraryLoadFailedException(packageDirectoryPath,
-                        String.Format(
-                            "A package called {0} found at {1} is missing dlls which are defined in the package manifest.  Ignoring it.",
-                            discoveredPkg.Name, discoveredPkg.RootDirectory));
-                }
-
-                //Verify that you can load the node library assembly into a Reflection only context
-                Assembly asm;
                 try
                 {
-                    asm = Assembly.ReflectionOnlyLoadFrom(filepath);
+                    DynamoCrypto.Utils.CheckAssemblyForValidCertificate(filepath);
                 }
-                catch
+                catch (Exception e)
                 {
                     throw new LibraryLoadFailedException(packageDirectoryPath,
-                        String.Format(
-                            "A package called {0} found at {1} has dlls defined in the package manifest which could not be loaded.  Ignoring it.",
+                        String.Format("A package called {0} found at {1} did not have signed dll files.  Ignoring it.",
                             discoveredPkg.Name, discoveredPkg.RootDirectory));
                 }
-
-                //Verify teh node libarary has a verified signed certificate
-                var cert = asm.Modules.FirstOrDefault()?.GetSignerCertificate();
-                if (cert != null)
-                {
-                    var cert2 = new System.Security.Cryptography.X509Certificates.X509Certificate2(cert);
-                    if (cert2.Verify())
-                    {
-                        continue;
-                    }
-                }
-
-                throw new LibraryLoadFailedException(packageDirectoryPath,
-                    String.Format("A package called {0} found at {1} did not have signed dll files.  Ignoring it.",
-                        discoveredPkg.Name, discoveredPkg.RootDirectory));
+                
             }
 
             discoveredPkg.RequiresSignedEntryPoints = true;

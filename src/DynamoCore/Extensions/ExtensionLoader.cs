@@ -23,13 +23,13 @@ namespace Dynamo.Extensions
     {
         private IExtension Load(ExtensionDefinition extension)
         {
-            if (extension.RequiresSignedEntryPoint)
-            {
-                CheckExtensionCertificates(extension);
-            }
-
             try
             {
+                if (extension.RequiresSignedEntryPoint)
+                {
+                    DynamoCrypto.Utils.CheckAssemblyForValidCertificate(extension.AssemblyPath);
+                }
+
                 var assembly = Assembly.LoadFrom(extension.AssemblyPath);
                 var result = assembly.CreateInstance(extension.TypeName) as IExtension;
                 ExtensionLoading?.Invoke(result);
@@ -144,48 +144,5 @@ namespace Dynamo.Extensions
         /// </summary>
         internal List<string> DirectoriesToVerifyCertificates = new List<string>();
 
-        /// <summary>
-        /// Checks if the AssemblyPath defined in the extension definition is a valid dll with valid certificate
-        /// </summary>
-        /// <param name="extension">The extension to verify</param>
-        /// <returns></returns>
-        private static bool CheckExtensionCertificates(ExtensionDefinition extension)
-        {
-            //Verify the node library exists in the package bin directory
-            if (!File.Exists(extension.AssemblyPath))
-            {
-                throw new Exception(String.Format(
-                    "An extension called {0} found at {1} is missing dlls which are defined in the view extension definition.  Ignoring it.",
-                    extension.TypeName, extension.AssemblyPath));
-            }
-
-            //Verify that you can load the node library assembly into a Reflection only context
-            Assembly asm;
-            try
-            {
-                asm = Assembly.ReflectionOnlyLoadFrom(extension.AssemblyPath);
-            }
-            catch
-            {
-                throw new Exception(String.Format(
-                    "An extension called {0} found at {1} has a dll which could not be loaded.  Ignoring it.",
-                    extension.TypeName, extension.AssemblyPath));
-            }
-
-            //Verify the node library has a verified signed certificate
-            var cert = asm.Modules.FirstOrDefault()?.GetSignerCertificate();
-            if (cert != null)
-            {
-                var cert2 = new System.Security.Cryptography.X509Certificates.X509Certificate2(cert);
-                if (cert2.Verify())
-                {
-                    return true;
-                }
-            }
-
-            throw new Exception(String.Format(
-                "An extension called {0} found at {1} did not have a signed certificate.  Ignoring it.",
-                extension.TypeName, extension.AssemblyPath));
-        }
     }
 }
