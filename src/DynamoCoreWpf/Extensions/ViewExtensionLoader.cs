@@ -14,12 +14,9 @@ namespace Dynamo.Wpf.Extensions
         {
             try
             {
-                foreach (var pathToVerifyCert in directoriesToVerifyCertificates)
+                if (viewExtension.RequiresSignedEntryPoint)
                 {
-                    if (viewExtension.AssemblyPath.Contains(pathToVerifyCert))
-                    {
-                        CheckExtensionCertificates(viewExtension);
-                    }
+                    CheckExtensionCertificates(viewExtension);
                 }
 
                 var assembly = Assembly.LoadFrom(viewExtension.AssemblyPath);
@@ -60,6 +57,14 @@ namespace Dynamo.Wpf.Extensions
                 else if (item.Name == "TypeName")
                 {
                     definition.TypeName = item.InnerText;
+                }
+            }
+
+            foreach (var pathToVerifyCert in directoriesToVerifyCertificates)
+            {
+                if (extensionPath.Contains(pathToVerifyCert))
+                {
+                    definition.RequiresSignedEntryPoint = true;
                 }
             }
 

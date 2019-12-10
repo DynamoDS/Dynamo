@@ -10,5 +10,7 @@ namespace Dynamo.Extensions
 
         [DataMember]
         public string TypeName { get; set; }
+
+        public bool RequiresSignedEntryPoint { get; internal set; } = false;
     }
 }

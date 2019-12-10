@@ -23,12 +23,9 @@ namespace Dynamo.Extensions
     {
         private IExtension Load(ExtensionDefinition extension)
         {
-            foreach (var pathToVerifyCert in directoriesToVerifyCertificates)
+            if (extension.RequiresSignedEntryPoint)
             {
-                if (extension.AssemblyPath.Contains(pathToVerifyCert))
-                {
-                    CheckExtensionCertificates(extension);
-                }
+                CheckExtensionCertificates(extension);
             }
 
             try
@@ -78,6 +75,14 @@ namespace Dynamo.Extensions
                 else if (item.Name == "TypeName")
                 {
                     definition.TypeName = item.InnerText;
+                }
+            }
+
+            foreach (var pathToVerifyCert in directoriesToVerifyCertificates)
+            {
+                if (extensionPath.Contains(pathToVerifyCert))
+                {
+                    definition.RequiresSignedEntryPoint = true;
                 }
             }
 
