@@ -102,11 +102,6 @@
       <Name>DynamoCore</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\DynamoCrypto\DynamoCrypto.csproj">
-      <Project>{96643e77-c786-498c-aaa9-80e449854ce9}</Project>
-      <Name>DynamoCrypto</Name>
-      <Private>False</Private>
-    </ProjectReference>
     <ProjectReference Include="..\DynamoUtilities\DynamoUtilities.csproj">
       <Project>{b5f435cb-0d8a-40b1-a4f7-5ecb3ce792a9}</Project>
       <Name>DynamoUtilities</Name>

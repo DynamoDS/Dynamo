@@ -321,11 +321,6 @@ limitations under the License.
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\DynamoCrypto\DynamoCrypto.csproj">
-      <Project>{96643e77-c786-498c-aaa9-80e449854ce9}</Project>
-      <Name>DynamoCrypto</Name>
-      <Private>False</Private>
-    </ProjectReference>
     <ProjectReference Include="..\Engine\GraphLayout\GraphLayout.csproj">
       <Project>{c2595b04-856d-40ae-8b99-4804c7a70708}</Project>
       <Name>GraphLayout</Name>

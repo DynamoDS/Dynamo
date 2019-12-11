@@ -12,7 +12,6 @@ using Dynamo.Logging;
 using Dynamo.Utilities;
 using DynamoPackages.Properties;
 using DynamoUtilities;
-using DynamoCrypto;
 
 namespace Dynamo.PackageManager
 {
@@ -477,7 +476,7 @@ namespace Dynamo.PackageManager
                 var filepath = Path.Combine(discoveredPkg.BinaryDirectory, filename);
                 try
                 {
-                    DynamoCrypto.Utils.CheckAssemblyForValidCertificate(filepath);
+                    CertificateVerification.CheckAssemblyForValidCertificate(filepath);
                 }
                 catch (Exception e)
                 {

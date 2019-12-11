@@ -4,6 +4,7 @@ using System.IO;
 using System.Reflection;
 using System.Xml;
 using Dynamo.Logging;
+using DynamoUtilities;
 
 namespace Dynamo.Wpf.Extensions
 {
@@ -15,7 +16,7 @@ namespace Dynamo.Wpf.Extensions
             {
                 if (viewExtension.RequiresSignedEntryPoint)
                 {
-                    DynamoCrypto.Utils.CheckAssemblyForValidCertificate(viewExtension.AssemblyPath);
+                    CertificateVerification.CheckAssemblyForValidCertificate(viewExtension.AssemblyPath);
                 }
 
                 var assembly = Assembly.LoadFrom(viewExtension.AssemblyPath);

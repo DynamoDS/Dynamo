@@ -1209,11 +1209,6 @@
       <Project>{7858fa8c-475f-4b8e-b468-1f8200778cf8}</Project>
       <Name>DynamoCore</Name>
     </ProjectReference>
-    <ProjectReference Include="..\DynamoCrypto\DynamoCrypto.csproj">
-      <Project>{96643e77-c786-498c-aaa9-80e449854ce9}</Project>
-      <Name>DynamoCrypto</Name>
-      <Private>False</Private>
-    </ProjectReference>
     <ProjectReference Include="..\DynamoPackages\DynamoPackages.csproj">
       <Project>{47533b7c-0e1a-44a4-8511-b438645f052a}</Project>
       <Name>DynamoPackages</Name>
