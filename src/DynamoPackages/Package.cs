@@ -140,7 +140,10 @@ namespace Dynamo.PackageManager
         /// </summary>
         public PackageUploadRequestBody Header { get; internal set; }
 
-        public bool RequiresSignedEntryPoints { get; internal set; }
+        /// <summary>
+        /// Is set to true if the Package is located in a directory that requires certificate verification of its node library dlls.
+        /// </summary>
+        internal bool RequiresSignedEntryPoints { get; set; }
 
         #endregion
 

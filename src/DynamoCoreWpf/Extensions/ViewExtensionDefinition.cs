@@ -11,6 +11,9 @@ namespace Dynamo.Wpf.Extensions
         [DataMember]
         public string TypeName { get; set; }
 
-        public bool RequiresSignedEntryPoint { get; internal set; } = false;
+        /// <summary>
+        /// Is set to true if the ViewExtensionDefinition is located in a directory that requires certificate verification of its entry point dll.
+        /// </summary>
+        internal bool RequiresSignedEntryPoint { get; set; } = false;
     }
 }
