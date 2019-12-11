@@ -451,7 +451,7 @@ namespace Dynamo.PackageManager
             {
                 throw new LibraryLoadFailedException(packageDirectoryPath,
                     String.Format(
-                        "A package called {0} found at {1} includes dll files but none are defined in node libraries in the package manifest.  Ignoring it.",
+                        Resources.InvalidPackageNoNodeLibrariesDefinedInPackageJson,
                         discoveredPkg.Name, discoveredPkg.RootDirectory));
             }
 
@@ -468,7 +468,7 @@ namespace Dynamo.PackageManager
                 {
                     throw new LibraryLoadFailedException(packageDirectoryPath,
                         String.Format(
-                            "A package called {0} found at {1} has improperly defined its node libraries in the package manifest.  Ignoring it.",
+                            Resources.InvalidPackageMalformedNodeLibraryDefinition,
                             discoveredPkg.Name, discoveredPkg.RootDirectory));
                 }
 
@@ -481,8 +481,9 @@ namespace Dynamo.PackageManager
                 catch (Exception e)
                 {
                     throw new LibraryLoadFailedException(packageDirectoryPath,
-                        String.Format("A package called {0} found at {1} did not have signed dll files.  Ignoring it.",
-                            discoveredPkg.Name, discoveredPkg.RootDirectory));
+                        String.Format(
+                            Resources.InvalidPackageNodeLibraryIsNotSigned,
+                            discoveredPkg.Name, discoveredPkg.RootDirectory, e.Message));
                 }
                 
             }
