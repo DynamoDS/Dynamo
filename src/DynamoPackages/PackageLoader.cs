@@ -472,7 +472,7 @@ namespace Dynamo.PackageManager
                             discoveredPkg.Name, discoveredPkg.RootDirectory));
                 }
 
-                //Verify the node library exists in the package bin directory
+                //Verify the node library exists in the package bin directory and has a valid certificate
                 var filepath = Path.Combine(discoveredPkg.BinaryDirectory, filename);
                 try
                 {

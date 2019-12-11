@@ -97,6 +97,9 @@ namespace Dynamo.Core
         }
 
         //Todo in Dynamo 3.0, Add this to the IPathManager interface
+        /// <summary>
+        /// The local directory that contains package directory created by all users.
+        /// </summary>
         internal string CommonPackageDirectory
         {
             get { return commonPackages; }
