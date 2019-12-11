@@ -4,12 +4,14 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:Dynamo.LibraryUI.Views"
-             xmlns:cefSharp="clr-namespace:CefSharp.Wpf;assembly=CefSharp.Wpf"
+             xmlns:microsoftWeb="clr-namespace:Microsoft.Toolkit.Wpf.UI.Controls;assembly=Microsoft.Toolkit.Wpf.UI.Controls.WebView"
              mc:Ignorable="d"
              d:DesignHeight="525"
              d:DesignWidth="350">
-
-    <cefSharp:ChromiumWebBrowser x:Name="Browser" Address="{Binding Address}"/>
-
+    <Grid >
+        <microsoftWeb:WebView x:Name="Browser" Panel.ZIndex="-1" />
+    </Grid>
+   
+    
 
 </UserControl>

@@ -18,6 +18,8 @@ namespace Dynamo.LibraryUI.ViewModels
             this.address = address;
         }
 
+        //TODO this is no longer used...
+        //unless we redirect navigateToString to address.
         /// <summary>
         /// Returns Web URL to bind
         /// </summary>

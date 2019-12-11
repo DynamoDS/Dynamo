@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.Reflection;
-using CefSharp;
 using Dynamo.Wpf.Interfaces;
 
 namespace Dynamo.LibraryUI.Handlers
@@ -42,7 +41,7 @@ namespace Dynamo.LibraryUI.Handlers
         /// <summary>
         /// Gets the resource for the given request
         /// </summary>
-        public override Stream GetResource(IRequest request, out string extension)
+        public override Stream GetResource(out string extension)
         {
             extension = "json";
             if (resourceStream == null)

@@ -1,12 +1,12 @@
 ﻿using System;
 using System.IO;
 using System.Reflection;
-using CefSharp;
 #pragma warning disable CS3001 // Argument type is not CLS-compliant
 #pragma warning disable CS3002 // Return type is not CLS-compliant
 
 namespace Dynamo.LibraryUI.Handlers
 {
+    /*
     /// <summary>
     /// A simple DllResourceProvider, which provides embedded resources from the dll.
     /// </summary>
@@ -79,4 +79,5 @@ namespace Dynamo.LibraryUI.Handlers
             return this.Assembly;
         }
     }
+    */
 }

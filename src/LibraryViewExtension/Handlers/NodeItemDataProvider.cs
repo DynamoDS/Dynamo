@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using CefSharp;
 using Dynamo.Search;
 using Dynamo.Search.SearchElements;
 using Newtonsoft.Json;
@@ -36,6 +35,7 @@ namespace Dynamo.LibraryUI.Handlers
     class NodeItemDataProvider : ResourceProviderBase
     {
         protected NodeSearchModel model;
+        private IconResourceProvider iconProvider;
 
         /// <summary>
         /// Constructor
@@ -46,19 +46,47 @@ namespace Dynamo.LibraryUI.Handlers
             this.model = model;
         }
 
-        public override Stream GetResource(IRequest request, out string extension)
+        public NodeItemDataProvider(NodeSearchModel model, IconResourceProvider iconProvider)
+        {
+            this.model = model;
+            this.iconProvider = iconProvider;
+        }
+        
+        public override Stream GetResource( out string extension)
         {
             extension = "json";
-            return GetNodeItemDataStream(model.SearchEntries);
+            return GetNodeItemDataStream(model.SearchEntries,true);
         }
-
-        protected Stream GetNodeItemDataStream(IEnumerable<NodeSearchElement> searchEntries)
+        
+        
+        //TODO add overload.
+        protected Stream GetNodeItemDataStream(IEnumerable<NodeSearchElement> searchEntries, bool replaceIconURLWithData)
         {
             var ms = new MemoryStream();
             var sw = new StreamWriter(ms);
             var serializer = new JsonSerializer();
 
             var data = CreateObjectForSerialization(searchEntries);
+            if (replaceIconURLWithData)
+            {
+                var ext = string.Empty;
+                IEnumerable<LoadedTypeItem> loadedTypes = new List<LoadedTypeItem>();
+                if (data is LoadedTypeData<LoadedTypeItem>)
+                {
+                    loadedTypes = (data as LoadedTypeData<LoadedTypeItem>).loadedTypes;
+
+                }
+                else if (data is LoadedTypeData<LoadedTypeItemExtended>)
+                {
+                    loadedTypes = (data as LoadedTypeData<LoadedTypeItemExtended>).loadedTypes;
+                }
+                //lookup each loaded type and gets its icon, and embed that string in the type
+                foreach (var item in loadedTypes)
+                {
+                    var iconAsBase64 = iconProvider.GetResource(item.iconUrl, out ext);
+                    item.iconUrl = $"data:image/png;base64, {iconAsBase64}";
+                }
+            }
             serializer.Serialize(sw, data);
 
             sw.Flush();

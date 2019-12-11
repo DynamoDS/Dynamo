@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using CefSharp;
 using Dynamo.Logging;
 
 namespace Dynamo.LibraryUI.Handlers
 {
+    /*
     /// <summary>
     /// Implements IResourceHandlerFactory to provide resource handler for a given request
     /// </summary>
@@ -124,4 +124,5 @@ namespace Dynamo.LibraryUI.Handlers
             return subfolders.ToArray();
         }
     }
+    */
 }

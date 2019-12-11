@@ -19,85 +19,129 @@
     <div class="OuterMostContainer" id="libraryContainerPlaceholder"></div>
     
     <!-- The main library view component -->
-    <script src='./dist/librarie.min.js'></script>
+    <script>
+        LIBPLACEHOLDER>
+    </script>
     
     <script>
-        //Get hold of object registered from C#
-        let csharpController = window["controller"];
-        //Check if the controller is null or one of our methods does not exist.
-        if (csharpController == null || csharpController.closeNodeTooltip == null) {
-            throw new Error("The c# LibraryViewController was not registered into the browser correctly.")
+
+        function refreshLibViewFromData(loadedTypes,layoutSpec){
+            let append = false; // Replace existing contents instead of appending.
+            libController.setLoadedTypesJson(JSON.parse(loadedTypes) , append);
+            libController.setLayoutSpecsJson(JSON.parse(layoutSpec) , append);
+            libController.refreshLibraryView(); // Refresh library view.
         }
+      
 
         function refreshLibraryView(libraryController) {
             //Create library container
-            let jsonUrls = ["loadedTypes", "layoutSpecs"];
-            let downloader = LibraryEntryPoint.CreateJsonDownloader(jsonUrls, function (jsonUrl, jsonObject) {
+        loadedTypesJson = {
+      "loadedTypes": [
+        {
+          "fullyQualifiedName": "Child1",
+          "iconUrl": "",
+          "contextData": "Input",
+          "itemType": "action",
+          "keywords": ""
+        },
+        {
+          "fullyQualifiedName": "Child2",
+          "iconUrl": "",
+          "contextData": "",
+          "itemType": "action",
+          "keywords": ""
+        }
+      ]
+    };
 
-                let downloaded = downloader.getDownloadedJsonObjects();
-                let loadedTypesJson = downloaded["loadedTypes"];
-                let layoutSpecsJson = downloaded["layoutSpecs"];
-
-                if (!loadedTypesJson || (!layoutSpecsJson)) {
-                    return; // Not fully downloaded yet, bail.
-                }
+    layoutSpecsJson = {
+      "sections": [
+        {
+          "text": "default",
+          "iconUrl": "",
+          "elementType": "section",
+          "showHeader": false,
+          "include": [],
+          "childElements": [
+            {
+              "text": "Parent",
+              "iconUrl": "",
+              "elementType": "category",
+              "include": [{ "path": "Child1" }, { "path": "Child2" }],
+              "childElements": []
+            }
+          ]
+        },
+        {
+          "text": "Miscellaneous",
+          "iconUrl": "",
+          "elementType": "section",
+          "showHeader": true,
+          "include": [],
+          "childElements": []
+        }
+      ]
+    };
 
                 // Supply loaded types and layout specs at a much later time.
                 let append = false; // Replace existing contents instead of appending.
-                libraryController.setLoadedTypesJson(loadedTypesJson, append);
-                libraryController.setLayoutSpecsJson(layoutSpecsJson, append);
+                libraryController.setLoadedTypesJson(loadedTypesJson , append);
+                libraryController.setLayoutSpecsJson(layoutSpecsJson , append);
                 libraryController.refreshLibraryView(); // Refresh library view.
-            });
-        }
+            }
+        
 
         //Create library controller
-        let libController = LibraryEntryPoint.CreateLibraryController();
+        var libController = LibraryEntryPoint.CreateLibraryController();
 
         //Create library view
         let libContainer = libController.createLibraryByElementId("libraryContainerPlaceholder");
         //Update the view with contents
         refreshLibraryView(libController);
+        window.external.notify("requestUpdateLibrary"); 
+
+        var searchCallback = null;
+        function completeSearch(searchLoadedTypes){
+            searchCallback(JSON.parse(searchLoadedTypes));
+        }
 
         libController.searchLibraryItemsHandler = function (text, callback) {
 			let encodedText = encodeURIComponent(text);
-            let url = "nodeSearch" + "/" + encodedText;
-            let jsonUrls = [url];
-            let downloader = LibraryEntryPoint.CreateJsonDownloader(jsonUrls, function (jsonUrl, jsonObject) {
-
-                let downloaded = downloader.getDownloadedJsonObjects();
-                let searchLoadedTypesJson = downloaded[url];
-
-                if (!searchLoadedTypesJson) {
-                    console.log("Error: no search result.");
-                    return;
-                }
-                csharpController.logEventsToInstrumentation("Search", encodedText);
-                callback(searchLoadedTypesJson);
-            });
+           
+                window.external.notify(JSON.stringify({"func":"performSearch","data":encodedText})); 
+                window.external.notify(JSON.stringify({"func":"logEventsToInstrumentation","data":["Search",encodedText]})); 
+            //save the callback so we can access from our completion function
+                searchCallback = callback;
+                //csharpController.logEventsToInstrumentation("Search", encodedText);
         }
 
+        
         // Register event handlers for various events on library controller and package controller.
 
         libController.on(libController.ItemClickedEventName, function (nodeCreationName) {
             console.log('Library Node Clicked: ' + nodeCreationName);
             //csharpController.closeDetailsView(); //ensure that the details view is closed.
-            csharpController.createNode(nodeCreationName);
+            //csharpController.createNode(nodeCreationName);
+            window.external.notify(JSON.stringify({"func":"createNode","data":nodeCreationName})); 
         });
 
         libController.on(libController.ItemMouseEnterEventName, function (arg) {
             //console.log('Mouse entered: ' + arg.data);
-            csharpController.showNodeTooltip(arg.data, arg.rect.top);
+            //csharpController.showNodeTooltip(arg.data, arg.rect.top);
+            window.external.notify(JSON.stringify({"func":"showNodeTooltip","data":[arg.data,arg.rect.top]})); 
         });
 
         libController.on(libController.ItemMouseLeaveEventName, function (arg) {
             //console.log('Mouse left: ' + arg.data);
-            csharpController.closeNodeTooltip(true);
+           // csharpController.closeNodeTooltip(true);
+            window.external.notify(JSON.stringify({"func":"closeNodeTooltip","data":true})); 
         });
 
         libController.on(libController.SectionIconClickedEventName, function (section) {
             console.log("Section clicked: " + section);
             if (section == "Add-ons") {
-                csharpController.importLibrary();
+            //    csharpController.importLibrary();
+                window.external.notify(JSON.stringify({"func":"importLibrary","data":""})); 
             }
         });
 
@@ -108,9 +152,11 @@
                 categories.push(catString); 
             });
 
-            csharpController.logEventsToInstrumentation("Filter-Categories", categories.join(","));
+            //csharpController.logEventsToInstrumentation("Filter-Categories", categories.join(","));
+            window.external.notify(JSON.stringify({"func":"logEventsToInstrumentation","data":["Filter-Categories",categories.join(",")]})); 
         });
 
+        /*//TODO HANDLE THESE
         csharpController.on("error", function (msg) {
             console.log("Error: " + msg);
             pkgController.raiseEvent("error", msg);
@@ -121,6 +167,8 @@
             refreshLibraryView(libController);
             csharpController.closeNodeTooltip(true);
         });
+        */
+       
 
     </script>
 

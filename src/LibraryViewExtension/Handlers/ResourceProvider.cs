@@ -1,5 +1,4 @@
 ﻿using System.IO;
-using CefSharp;
 
 namespace Dynamo.LibraryUI.Handlers
 {
@@ -26,7 +25,7 @@ namespace Dynamo.LibraryUI.Handlers
         /// of the requested resource. This extension does not contain "." character.</param>
         /// <returns>Returns the stream if the requested resource can be found, or null 
         /// otherwise.</returns>
-        Stream GetResource(IRequest request, out string extension);
+        Stream GetResource( out string extension);
     }
 
     /// <summary>
@@ -44,6 +43,6 @@ namespace Dynamo.LibraryUI.Handlers
 
         public string Scheme { get; private set; }
 
-        public abstract Stream GetResource(IRequest request, out string extension);
+        public abstract Stream GetResource(out string extension);
     }
 }

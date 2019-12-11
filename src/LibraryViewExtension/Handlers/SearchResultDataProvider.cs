@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using CefSharp;
 using Dynamo.Search;
 using Dynamo.Search.SearchElements;
 
@@ -33,20 +32,28 @@ namespace Dynamo.LibraryUI.Handlers
         {
         }
 
-        public override Stream GetResource(IRequest request, out string extension)
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="items"></param>
+        public SearchResultDataProvider(NodeSearchModel model, IconResourceProvider iconProvider) : base(model, iconProvider)
         {
-            var url = request.Url;
-            var uri = new Uri(url);
-            var pathAndQuery = uri.PathAndQuery;
-            var index = url.IndexOf(serviceIdentifier);
-            var text = url.Substring(index + serviceIdentifier.Length + 1);
-            // unescape query before searching
-            text = Uri.UnescapeDataString(text);
+        }
 
+        /// <summary>
+        /// Get the results of a search.
+        /// </summary>
+        /// <param name="searchText"></param>
+        /// <param name="extension"></param>
+        /// <returns></returns>
+        public Stream GetResource(string searchText, out string extension)
+        {
+           
+            var text = Uri.UnescapeDataString(searchText);
             var elements = model.Search(text);
 
             extension = "json";
-            return GetNodeItemDataStream(elements);
+            return GetNodeItemDataStream(elements,true);
         }
 
         /// <summary>

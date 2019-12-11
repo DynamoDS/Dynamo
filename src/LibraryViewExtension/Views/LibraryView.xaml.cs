@@ -1,5 +1,4 @@
 using System.Windows.Controls;
-using CefSharp;
 using Dynamo.LibraryUI.ViewModels;
 
 namespace Dynamo.LibraryUI.Views
@@ -12,25 +11,17 @@ namespace Dynamo.LibraryUI.Views
         public LibraryView(LibraryViewModel viewModel)
         {
             this.DataContext = viewModel;
+            //Browser.Settings.IsIndexedDBEnabled = false;
+            //Browser.Settings.IsJavaScriptEnabled = true;
+            //Browser.Settings.IsScriptNotifyAllowed = true;
 
-            // CEF should already be initiallized if running within Revit
-            if (!Cef.IsInitialized)
-            {
-                var settings = new CefSettings { RemoteDebuggingPort = 8088 };
-
-                // Matching Revit 2020 CefSharp Initialization Settings: 
-                CefSharpSettings.LegacyJavascriptBindingEnabled = true;
-                CefSharpSettings.SubprocessExitIfParentProcessClosed = true;
-                CefSharpSettings.ShutdownOnExit = false;
-
-                Cef.Initialize(settings);
-            }
-            
             InitializeComponent();
 
-            this.Browser.MenuHandler = new LibraryViewContextMenuHandler();
+           // this.Browser.MenuHandler = new LibraryViewContextMenuHandler();
         }
+        //TODO what does this do
 
+        /*
         private class LibraryViewContextMenuHandler : IContextMenuHandler
         {
             public void OnBeforeContextMenu(IWebBrowser browserControl, IBrowser browser, IFrame frame, IContextMenuParams parameters, IMenuModel model)
@@ -52,5 +43,6 @@ namespace Dynamo.LibraryUI.Views
                 return false;
             }
         }
+        */
     }
 }

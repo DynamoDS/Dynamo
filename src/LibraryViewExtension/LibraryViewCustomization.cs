@@ -169,10 +169,7 @@ namespace Dynamo.LibraryUI
         /// </summary>
         public void OnAppShutdown()
         {
-            if (CefSharp.Cef.IsInitialized)
-            {
-                CefSharp.Cef.Shutdown();
-            }
+          
         }
 
         /// <summary>

@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using CefSharp;
-using CefSharp.Wpf;
 using Dynamo.Extensions;
 using Dynamo.LibraryUI.Handlers;
 using Dynamo.LibraryUI.ViewModels;
@@ -18,6 +18,9 @@ using Dynamo.Search.SearchElements;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Interfaces;
 using Dynamo.Wpf.ViewModels;
+using Microsoft.Toolkit.Wpf.UI.Controls;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace Dynamo.LibraryUI
 {
@@ -27,23 +30,23 @@ namespace Dynamo.LibraryUI
         void RaiseEvent(string eventName, params object[] parameters);
     }
 
+    /*
     public class EventController : IEventController
     {
         private object contextData = null;
-        private Dictionary<string, List<IJavascriptCallback>> callbacks = new Dictionary<string, List<IJavascriptCallback>>();
+        private Dictionary<string, List<IAsyncResult>> callbacks = new Dictionary<string, List<IAsyncResult>>();
 
         public void On(string eventName, object callback)
         {
-            List<IJavascriptCallback> cblist;
+            List<IAsyncResult> cblist;
             if (!callbacks.TryGetValue(eventName, out cblist))
             {
-                cblist = new List<IJavascriptCallback>();
+                cblist = new List<IAsyncResult>();
             }
-            cblist.Add(callback as IJavascriptCallback);
+            cblist.Add(callback as IAsyncResult);
             callbacks[eventName] = cblist;
         }
 
-        [JavascriptIgnore]
         public void RaiseEvent(string eventName, params object[] parameters)
         {
             List<IJavascriptCallback> cblist;
@@ -72,22 +75,27 @@ namespace Dynamo.LibraryUI
             }
         }
     }
-
+    */
     /// <summary>
     /// This class holds methods and data to be called from javascript
     /// </summary>
-    public class LibraryViewController : EventController, IDisposable
+    public class LibraryViewController : /*EventController,*/ IDisposable
     {
         private Window dynamoWindow;
         private ICommandExecutive commandExecutive;
         private DynamoViewModel dynamoViewModel;
         private FloatingLibraryTooltipPopup libraryViewTooltip;
-        private ResourceHandlerFactory resourceFactory;
+       // private ResourceHandlerFactory resourceFactory;
         private IDisposable observer;
-        private ChromiumWebBrowser browser;
+        private WebView browser;
         private const string CreateNodeInstrumentationString = "Search-NodeAdded";
         // TODO remove this when we can control the library state from Dynamo more precisely.
         private bool disableObserver = false;
+
+        private LayoutSpecProvider layoutProvider;
+        private NodeItemDataProvider nodeProvider;
+        private SearchResultDataProvider searchResultDataProvider;
+        private IconResourceProvider iconProvider;
 
         /// <summary>
         /// Creates LibraryViewController
@@ -101,7 +109,7 @@ namespace Dynamo.LibraryUI
             libraryViewTooltip = CreateTooltipControl();
 
             this.commandExecutive = commandExecutive;
-            InitializeResourceStreams(dynamoViewModel.Model, customization);
+            InitializeResourceProviders(dynamoViewModel.Model, customization);
             dynamoWindow.StateChanged += DynamoWindowStateChanged;
             dynamoWindow.SizeChanged += DynamoWindow_SizeChanged;
         }
@@ -176,20 +184,119 @@ namespace Dynamo.LibraryUI
         /// <returns>LibraryView control</returns>
         internal void AddLibraryView()
         {
+            //TODO this address does nothing now.
             LibraryViewModel model = new LibraryViewModel("http://localhost/library.html");
             LibraryView view = new LibraryView(model);
-            view.Loaded += OnLibraryViewLoaded;
+
+            //TODO move somewhere reusable.
+            var lib_min_template = "LIBPLACEHOLDER";
+            var libHTMLURI = "Dynamo.LibraryUI.web.library.library.html";
+            var stream = LoadResource(libHTMLURI);
+
+            var libMinURI = "Dynamo.LibraryUI.web.library.librarie.min.js";
+            var libminstream = LoadResource(libMinURI);
+            var libminstring = "NOTHING LOADED";
+            var libraryHTMLPage = "HELLO WORLD";
+
+            using (var reader = new StreamReader(libminstream))
+            {
+                libminstring = reader.ReadToEnd();
+            }
+
+            using (var reader = new StreamReader(stream))
+            {
+                libraryHTMLPage = reader.ReadToEnd().Replace(lib_min_template, libminstring);
+            }
+
+            view.Browser.IsJavaScriptEnabled = true;
+            view.Browser.IsScriptNotifyAllowed = true;
+            //view.Loaded += OnLibraryViewLoaded;
 
             // TODO: This needs to be more generic, e.g. Window.leftExtensionGrid.Add()
             var sidebarGrid = dynamoWindow.FindName("sidebarGrid") as Grid;
             sidebarGrid.Children.Add(view);
+            view.Browser.NavigateToString(libraryHTMLPage);
+
 
             browser = view.Browser;
-            browser.RegisterAsyncJsObject("controller", this);
+            //    browser.RegisterAsyncJsObject("controller", this);
 
             browser.Loaded += Browser_Loaded;
             browser.SizeChanged += Browser_SizeChanged;
-            browser.LoadError += Browser_LoadError;
+            browser.ScriptNotify += scriptNotifyHandler;
+        }
+
+
+        private async void scriptNotifyHandler(object sender, Microsoft.Toolkit.Win32.UI.Controls.Interop.WinRT.WebViewControlScriptNotifyEventArgs e)
+        {
+            
+            if(e.Value == "requestUpdateLibrary")
+            {
+                var ext1 = string.Empty;
+                var ext2 = string.Empty;
+
+                //TODO removing using - need to dispose manually...
+                var reader = new StreamReader(nodeProvider.GetResource(out ext1));
+
+                //this should be a json string now
+                var loadedTypes = reader.ReadToEnd();
+
+                var reader2 = new StreamReader(layoutProvider.GetResource(out ext2));
+               
+
+                var layoutSpec = reader2.ReadToEnd();
+                //TRY ESCAPING ALL JSON AND JS THAT WE READ FROM RESOURCES.
+                var x = ((sender as WebView).
+                     InvokeScriptAsync("refreshLibViewFromData", loadedTypes, layoutSpec));
+                reader.Dispose();
+                reader2.Dispose();
+            }
+            else if(!string.IsNullOrEmpty(e.Value))
+            {
+                /*will be an object like:
+                {func:funcName,
+                data:"string" | data:object[] | bool}
+                 */
+                var simpleRPCPayload = JsonConvert.DeserializeObject<Dictionary<string, object>>(e.Value);
+                var funcName = simpleRPCPayload["func"] as string;
+                if (funcName == "createNode")
+                {
+                    var data = simpleRPCPayload["data"] as string;
+                    CreateNode(data);
+                }
+                else if (funcName == "showNodeTooltip"){
+                    var data = (simpleRPCPayload["data"] as JArray).Children();
+                    ShowNodeTooltip(data.ElementAt(0).Value<string>(), data.ElementAt(1).Value<double>() );
+                }
+                else if (funcName == "closeNodeTooltip")
+                {
+                    var data = (bool)simpleRPCPayload["data"];
+                    CloseNodeTooltip(data);
+                }
+                else if (funcName == "importLibrary")
+                {
+                    ImportLibrary();
+                }
+                else if (funcName == "logEventsToInstrumentation")
+                {
+                    var data = (simpleRPCPayload["data"] as JArray).Children();
+                    LogEventsToInstrumentation(data.ElementAt(0).Value<string>(), data.ElementAt(1).Value<string>());
+                }
+                else if (funcName == "performSearch")
+                {
+                    var data = simpleRPCPayload["data"] as string;
+                    var extension = string.Empty;
+                    var searchStream = searchResultDataProvider.GetResource(data, out extension);
+                    var searchReader = new StreamReader(searchStream);
+                    var results = searchReader.ReadToEnd();
+                    //send back results to libjs
+                    (sender as WebView).
+                     InvokeScriptAsync("completeSearch", results);
+                    searchReader.Dispose();
+                }
+            }
+           
+                  
         }
 
         private void Browser_Loaded(object sender, RoutedEventArgs e)
@@ -197,7 +304,7 @@ namespace Dynamo.LibraryUI
             // Attempt to load resources
             try
             {
-                RegisterResources(this.browser);
+                //   RegisterResources(this.browser);
                 string msg = "Preparing to load the library resources.";
                 this.dynamoViewModel.Model.Logger.Log(msg);
             }
@@ -209,7 +316,7 @@ namespace Dynamo.LibraryUI
                 this.dynamoViewModel.Model.Logger.LogError(error);
             }
         }
-
+        /*
         // Browser LoadError events occur when the resource load for a navigation fails or is canceled
         private void Browser_LoadError(object sender, LoadErrorEventArgs e)
         {
@@ -235,7 +342,7 @@ namespace Dynamo.LibraryUI
             }
 #endif
         }
-
+        */
         //if the browser window itself is resized, toggle visibility to force redraw.
         private void Browser_SizeChanged(object sender, SizeChangedEventArgs e)
         {
@@ -318,6 +425,7 @@ namespace Dynamo.LibraryUI
             return textStream;
         }
 
+        /*
         private void OnLibraryViewLoaded(object sender, RoutedEventArgs e)
         {
             var libraryView = sender as LibraryView;
@@ -326,15 +434,18 @@ namespace Dynamo.LibraryUI
             browser.ConsoleMessage += OnBrowserConsoleMessage;
 #endif
         }
+        
 
         private void OnBrowserConsoleMessage(object sender, ConsoleMessageEventArgs e)
         {
             System.Diagnostics.Trace.WriteLine("*****Chromium Browser Messages******");
             System.Diagnostics.Trace.Write(e.Message);
         }
+        */
 
         internal static IDisposable SetupSearchModelEventsObserver(NodeSearchModel model, IEventController controller, ILibraryViewCustomization customization, int throttleTime = 200)
         {
+            //TODO handle this event on the c# side and remove from jsside.
             customization.SpecificationUpdated += (o, e) => controller.RaiseEvent("libraryDataUpdated");
 
             var observer = new EventObserver<NodeSearchElement, IEnumerable<NodeSearchElement>>(
@@ -406,7 +517,17 @@ namespace Dynamo.LibraryUI
             }
         }
 
-        private void InitializeResourceStreams(DynamoModel model, LibraryViewCustomization customization)
+        private void InitializeResourceProviders(DynamoModel model, LibraryViewCustomization customization)
+        {
+            
+            layoutProvider = new LayoutSpecProvider(customization, "Dynamo.LibraryUI.web.library.layoutSpecs.json");
+            iconProvider = new IconResourceProvider(model.PathManager);
+            nodeProvider = new NodeItemDataProvider(model.SearchModel,iconProvider);
+            searchResultDataProvider = new SearchResultDataProvider(model.SearchModel,iconProvider);
+        }
+
+        /*
+        private void InitializeResourceStreams(DynamoModel model, LibraryViewCustomization customization, WebView browser)
         {
             //TODO: Remove the parameter after testing.
             //For testing purpose.
@@ -441,12 +562,13 @@ namespace Dynamo.LibraryUI
             resourceFactory.RegisterProvider("/layoutSpecs", new LayoutSpecProvider(customization, "Dynamo.LibraryUI.web.library.layoutSpecs.json"));
 
             //Setup the event observer for NodeSearchModel to update customization/spec provider.
+            //TODO this needs to be handled.
             observer = SetupSearchModelEventsObserver(model.SearchModel, this, customization);
 
             //Register provider for searching node data
             resourceFactory.RegisterProvider(SearchResultDataProvider.serviceIdentifier, new SearchResultDataProvider(model.SearchModel));
         }
-
+        */
         private void OnResourceStreamRegistered(string key, Stream value)
         {
             Uri url = new Uri(key, UriKind.RelativeOrAbsolute);
@@ -454,21 +576,10 @@ namespace Dynamo.LibraryUI
                 url = new Uri(new Uri("http://localhost"), url);
 
             var extension = Path.GetExtension(key);
-            var handler = ResourceHandler.FromStream(value, ResourceHandler.GetMimeType(extension));
-            resourceFactory.RegisterHandler(url.AbsoluteUri, handler);
+            //var handler = ResourceHandler.FromStream(value, ResourceHandler.GetMimeType(extension));
+            //resourceFactory.RegisterHandler(url.AbsoluteUri, handler);
         }
 
-        private void RegisterResources(ChromiumWebBrowser browser)
-        {
-            browser.ResourceHandlerFactory = resourceFactory;
-        }
-
-        private void OnDescriptionViewLoaded(object sender, System.Windows.RoutedEventArgs e)
-        {
-            var view = sender as DetailsView;
-            var browser = view.Browser;
-            browser.ConsoleMessage += OnBrowserConsoleMessage;
-        }
 
         public void Dispose()
         {
@@ -491,7 +602,9 @@ namespace Dynamo.LibraryUI
             if (this.browser != null)
             {
                 browser.SizeChanged -= Browser_SizeChanged;
-                browser.LoadError -= Browser_LoadError;
+                //TODO not sure this is going to survive.
+                browser.ScriptNotify -= scriptNotifyHandler;
+                //browser.LoadError -= Browser_LoadError;
                 browser.Dispose();
                 browser = null;
             }
