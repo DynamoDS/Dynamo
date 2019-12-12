@@ -199,6 +199,17 @@ namespace Dynamo.Controls
             FocusableGrid.InputBindings.Clear();
         }
 
+        /// <summary>
+        /// This method close a tab item in the right side bar based on passed extension
+        /// </summary>
+        /// <param name="viewExtension">Extension to be closed</param>
+        /// <returns></returns>
+        internal void CloseTabItem(IViewExtension viewExtension)
+        {
+            string tabName = viewExtension.Name;
+            CloseTab(tabName);
+        }
+
         // This method adds a tab item to the right side bar and 
         // sets the extension window as the tab content.
         internal TabItem AddTabItem(IViewExtension viewExtension, ContentControl contentControl)
@@ -242,7 +253,15 @@ namespace Dynamo.Controls
         private void CloseTab(object sender, RoutedEventArgs e)
         {
             string tabName = (sender as Button).CommandParameter.ToString();
-            
+            CloseTab(tabName);
+        }
+
+        /// <summary>
+        /// Close tab by its name
+        /// </summary>
+        /// <param name="tabName">tab name</param>
+        private void CloseTab(string tabName)
+        {
             TabItem tab = tabDynamic.SelectedItem as TabItem;
 
             if (tab != null)
@@ -259,7 +278,8 @@ namespace Dynamo.Controls
                 // Highlight previously selected tab. if that is removed then Highlight the first tab
                 if (selectedTab == null || selectedTab.Equals(tab))
                 {
-                    if (TabItems.Count > 0) {
+                    if (TabItems.Count > 0)
+                    {
                         selectedTab = TabItems[0];
                     }
                 }
