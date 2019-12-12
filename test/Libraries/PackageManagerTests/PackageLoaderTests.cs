@@ -562,6 +562,18 @@ namespace Dynamo.PackageManager.Tests
             Assert.IsTrue(entries.Any(x => x.FullName == "SignedPackage.SignedPackage.SignedPackage.Hello"));
         }
 
+        //FYI SingedPackage zero-touch code
+        //namespace SignedPackage
+        //{
+        //    public class SignedPackage
+        //    {
+        //        public string Hello()
+        //        {
+        //            return nameof(Hello);
+        //        }
+        //    }
+        //}
+
         [Test]
         public void IsUnderPackageControlIsCorrectForValidFunctionDefinition()
         {
