@@ -65,7 +65,7 @@ namespace Dynamo.Controls
         private int tabSlidingWindowStart, tabSlidingWindowEnd;
         private GalleryView galleryView;
         private readonly LoginService loginService;
-        internal ViewExtensionManager viewExtensionManager = new ViewExtensionManager();
+        internal ViewExtensionManager viewExtensionManager;
         private ShortcutToolbar shortcutBar;
         private bool loaded = false;
 
@@ -97,6 +97,9 @@ namespace Dynamo.Controls
             Title = dynamoViewModel.BrandingResourceProvider.GetString(ResourceNames.MainWindow.Title);
 
             tabSlidingWindowStart = tabSlidingWindowEnd = 0;
+
+            //Initialize the ViewExtensionManager with the CommonDataDirectory so that view extensions found here are checked first for dll's with signed certificates
+            viewExtensionManager = new ViewExtensionManager(new[] {dynamoViewModel.Model.PathManager.CommonDataDirectory });
 
             _timer = new Stopwatch();
             _timer.Start();
