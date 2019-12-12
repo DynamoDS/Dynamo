@@ -562,7 +562,9 @@ namespace Dynamo.PackageManager.Tests
             Assert.IsTrue(entries.Any(x => x.FullName == "SignedPackage.SignedPackage.SignedPackage.Hello"));
         }
 
-        //FYI SingedPackage zero-touch code
+        //FYI this is the code for the SingedPackage zero-touch node used in the previous test
+        //The built and signed dll lives in the test\pkgs_signed\Signed Package\bin directory
+        //This is for furture reference if we need to recreate the package in the future
         //namespace SignedPackage
         //{
         //    public class SignedPackage
