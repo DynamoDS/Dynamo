@@ -550,6 +550,7 @@ namespace Dynamo.PackageManager.Tests
 
             // Assert that ScanPackageDirectory returns a package
             Assert.IsNotNull(pkg);
+            Assert.IsTrue(pkg.RequiresSignedEntryPoints);
             loader.LoadPackages(new List<Package> { pkg });
 
             // Verify that package resolved successfully
