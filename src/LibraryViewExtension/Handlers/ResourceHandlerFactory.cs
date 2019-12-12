@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using CefSharp;
+using CefSharp.Internals;
 using Dynamo.Logging;
 
 namespace Dynamo.LibraryUI.Handlers
@@ -30,35 +31,35 @@ namespace Dynamo.LibraryUI.Handlers
             this.logger = log;
         }
 
-        ///// <summary>
-        ///// This method is called before a resource is loaded, if a valid resource handler
-        ///// is returned then this resource handler would serve the response of web request.
-        ///// </summary>
-        //protected override IResourceHandler GetResourceRequestHandler(IWebBrowser browserControl, IBrowser browser, IFrame frame, IRequest request)
-        //{
-        //    try
-        //    {
-        //        ResourceRequestHandlerFactoryItem handlerItem;
+        /// <summary>
+        /// This method is called before a resource is loaded, if a valid resource handler
+        /// is returned then this resource handler would serve the response of web request.
+        /// </summary>
+        protected override IResourceRequestHandler GetResourceRequestHandler(IWebBrowser browserControl, IBrowser browser, IFrame frame, IRequest request, bool isNavigation, bool isDownload, string requestInitiator, ref bool disableDefaultHandling)
+        {
+            try
+            {
+                ResourceRequestHandlerFactoryItem handlerItem;
 
-        //        // Create a handlerItem for the new resource,
-        //        // if the resource has already been loaded don't load it again
-        //        if (!Handlers.TryGetValue(request.Url, out handlerItem))
-        //        {
-        //            IResourceHandler handler = this.GetResourceHandler(request);
+                // Create a handlerItem for the new resource,
+                // if the resource has already been loaded don't load it again
+                if (!Handlers.TryGetValue(request.Url, out handlerItem))
+                {
+                    IResourceRequestHandler handler = this.GetResourceHandler(request);
 
-        //            // Make sure the handler is unregistered after use
-        //            // See: http://cefsharp.github.io/api/75.1.x/html/T_CefSharp_ResourceRequestHandlerFactoryItem.htm
-        //            handlerItem = new ResourceRequestHandlerFactoryItem(handlerItem.Data, handlerItem.MimeType, true);
-        //            return handler;
-        //        }
+                    // Make sure the handler is unregistered after use
+                    // See: http://cefsharp.github.io/api/75.1.x/html/T_CefSharp_ResourceRequestHandlerFactoryItem.htm
+                    handlerItem = new ResourceRequestHandlerFactoryItem(handlerItem.Data, handlerItem.MimeType, true);
+                    return handler;
+                }
 
-        //        return null;
-        //    }
-        //    finally
-        //    {
-        //        request.Dispose();
-        //    }
-        //}
+                return null;
+            }
+            finally
+            {
+                request.Dispose();
+            }
+        }
 
         /// <summary>
         /// Clients can register a resource provider for a given base url. The 
@@ -77,7 +78,7 @@ namespace Dynamo.LibraryUI.Handlers
         /// <summary>
         /// Creates resource handler for the given request
         /// </summary>
-        private IResourceHandler GetResourceHandler(IRequest request)
+        private IResourceRequestHandler GetResourceHandler(IRequest request)
         {
             Uri uri = new Uri(request.Url);
             
@@ -104,7 +105,7 @@ namespace Dynamo.LibraryUI.Handlers
                     {
                         this.RegisterHandler(request.Url, memoryStream.ToArray());
                     }
-                    return handler;
+                    return new InMemoryResourceRequestHandler(memoryStream.ToArray(), ResourceHandler.GetMimeType(extension));
                 }
             }
 
