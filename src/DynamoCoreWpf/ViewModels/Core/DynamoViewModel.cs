@@ -470,7 +470,7 @@ namespace Dynamo.ViewModels
             get { return BackgroundPreviewViewModel.Active; }
         }
 
-        internal bool HideReportOptions { get; set; } = false;
+        public bool HideReportOptions { get; }
 
         #endregion
 
