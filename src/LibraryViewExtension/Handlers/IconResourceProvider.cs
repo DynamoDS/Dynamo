@@ -3,8 +3,10 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Reflection;
 using System.Resources;
+using System.Text.RegularExpressions;
 using Dynamo.Engine;
 using Dynamo.Interfaces;
 
@@ -20,6 +22,7 @@ namespace Dynamo.LibraryUI.Handlers
         private IPathManager pathManager;
         private string defaultIconString;
         private string defaultIconName;
+        private DllResourceProvider embeddedDllResourceProvider;
 
         /// <summary>
         /// Default constructor for the IconResourceProvider
@@ -34,28 +37,84 @@ namespace Dynamo.LibraryUI.Handlers
             defaultIconName = defaultIcon;
         }
 
+        public IconResourceProvider(IPathManager pathManager, DllResourceProvider dllResourceProvider, string defaultIcon = "default-icon.svg") :
+            this(pathManager, defaultIcon)
+        {
+            this.embeddedDllResourceProvider = dllResourceProvider;
+        }
+
+
         /// <summary>
         /// Gets the stream for the given icon resource request.
         /// </summary>
         /// <param name="request">Request object for the icon resource.</param>
         /// <param name="extension">Returns the extension to describe the type of resource.</param>
         /// <returns>A valid Stream if the icon resource found successfully else null.</returns>
-        public string GetResource(string iconpath,out string extension)
+        public string GetResourceAsString(string url,out string extension)
         {
+
+#if DEBUG
+            Console.WriteLine(url);
+#endif
+            //because we modify the spec the icon urls may have been replaed by base64 enoded images
+            //if thats the case, no need to look them up again from disk, just return the string.
+            if (!String.IsNullOrEmpty(url) && url.Contains("data:image/"))
+            {
+                var match = Regex.Match(url, @"data:(?<type>.+?);base64,(?<data>.+)");
+                var base64Data = match.Groups["data"].Value;
+                var contentType = match.Groups["type"].Value;
+                //image/png -> png
+                extension = contentType.Split('/').Skip(1).FirstOrDefault();
+                return base64Data;
+            }
+            var base64String = string.Empty;
+            extension = "png";
             //Create IconUrl to parse the request.Url to icon name and path.
-            var icon = new IconUrl(new Uri(iconpath));
-            
-            var base64String = GetIconAsBase64(icon, out extension);
-            if (base64String == null)
+            if (String.IsNullOrEmpty(url))
+            {
+                return string.Empty;
+            }
+
+            //before trying to create a uri - we have to handle resources that might 
+            //be embedded into the resources.dlls
+            //these paths will start with ./dist
+            if (url.StartsWith(@"./dist"))
+            {
+                //make relative url a full uri
+                url = url.Replace(@"./dist", @"http://localhost/dist");
+                var ext = string.Empty;
+                var stream = embeddedDllResourceProvider.GetResource(url, out ext);
+                if (stream != null)
+                {
+                    extension = ext;
+                    base64String = GetIconAsBase64(stream, ext);
+                }
+            }
+            else
+            {
+                //encode this path like it came from a webrequest...
+                //var path = @"?path=";
+                //var pathIndex = url.IndexOf(path);
+                //url = WebUtility.UrlEncode(url);
+
+                var icon = new IconUrl(new Uri(url/*Uri.EscapeUriString(url)*/));
+                base64String = GetIconAsBase64(icon, out extension);
+            }
+
+            if (base64String == null) {
+                //TODO this might need to use the dllresprovider as well.
                 base64String = GetDefaultIconBase64(out extension);
+            }
 
             return base64String;
         }
 
-        public override Stream GetResource(out string extension)
+        public override Stream GetResource(string url, out string extension)
         {
+            //TODO unify.
             throw new NotImplementedException();
         }
+
 
         /// <summary>
         /// Gets the stream for a default icon, to be used when no icon found 
@@ -122,6 +181,31 @@ namespace Dynamo.LibraryUI.Handlers
                 return base64String;
             }
         }
+
+        private string GetIconAsBase64(Stream stream, string extension)
+        {
+            string base64String = string.Empty;
+            if (extension.ToLower().Contains("svg"))
+            {
+                var reader = new BinaryReader(stream);
+                //TODO will fail for very large svgs....
+                var imageBytes = reader.ReadBytes((int)stream.Length);
+                base64String = Convert.ToBase64String(imageBytes);
+                reader.Dispose();
+            }
+
+            else if (extension.ToLower().Contains("png"))
+            {
+                var reader = new BinaryReader(stream);
+                var imageBytes = reader.ReadBytes((int)stream.Length);
+                base64String = Convert.ToBase64String(imageBytes);
+                reader.Dispose();
+            }
+
+            return base64String;
+
+        }
+
     }
     
 }

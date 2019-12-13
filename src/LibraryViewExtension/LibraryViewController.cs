@@ -30,52 +30,7 @@ namespace Dynamo.LibraryUI
         void RaiseEvent(string eventName, params object[] parameters);
     }
 
-    /*
-    public class EventController : IEventController
-    {
-        private object contextData = null;
-        private Dictionary<string, List<IAsyncResult>> callbacks = new Dictionary<string, List<IAsyncResult>>();
 
-        public void On(string eventName, object callback)
-        {
-            List<IAsyncResult> cblist;
-            if (!callbacks.TryGetValue(eventName, out cblist))
-            {
-                cblist = new List<IAsyncResult>();
-            }
-            cblist.Add(callback as IAsyncResult);
-            callbacks[eventName] = cblist;
-        }
-
-        public void RaiseEvent(string eventName, params object[] parameters)
-        {
-            List<IJavascriptCallback> cblist;
-            if (callbacks.TryGetValue(eventName, out cblist))
-            {
-                foreach (var cbfunc in cblist)
-                {
-                    if (cbfunc.CanExecute)
-                    {
-                        cbfunc.ExecuteAsync(parameters);
-                    }
-                }
-            }
-        }
-
-        /// <summary>
-        /// Gets details view context data, e.g. packageId if it shows details of a package
-        /// </summary>
-        public object DetailsViewContextData
-        {
-            get { return contextData; }
-            set
-            {
-                contextData = value;
-                this.RaiseEvent("detailsViewContextDataChanged", contextData);
-            }
-        }
-    }
-    */
     /// <summary>
     /// This class holds methods and data to be called from javascript
     /// </summary>
@@ -96,6 +51,7 @@ namespace Dynamo.LibraryUI
         private NodeItemDataProvider nodeProvider;
         private SearchResultDataProvider searchResultDataProvider;
         private IconResourceProvider iconProvider;
+        private LibraryViewCustomization customization;
 
         /// <summary>
         /// Creates LibraryViewController
@@ -106,6 +62,7 @@ namespace Dynamo.LibraryUI
         {
             this.dynamoWindow = dynamoView;
             dynamoViewModel = dynamoView.DataContext as DynamoViewModel;
+            this.customization = customization;
             libraryViewTooltip = CreateTooltipControl();
 
             this.commandExecutive = commandExecutive;
@@ -224,6 +181,29 @@ namespace Dynamo.LibraryUI
             browser.Loaded += Browser_Loaded;
             browser.SizeChanged += Browser_SizeChanged;
             browser.ScriptNotify += scriptNotifyHandler;
+            LibraryViewController.SetupSearchModelEventsObserver(browser, dynamoViewModel.Model.SearchModel, this, this.customization);
+
+        }
+
+        private void refreshLibraryView(WebView browser)
+        {
+            Application.Current.Dispatcher.BeginInvoke(new Action(() => {
+                var ext1 = string.Empty;
+                var ext2 = string.Empty;
+
+                var reader = new StreamReader(nodeProvider.GetResource(null, out ext1));
+                //this is a json string now.
+                var loadedTypes = reader.ReadToEnd();
+                var reader2 = new StreamReader(layoutProvider.GetResource(null, out ext2));
+
+
+                var layoutSpec = reader2.ReadToEnd();
+                browser.
+                     InvokeScriptAsync("refreshLibViewFromData", loadedTypes, layoutSpec);
+                reader.Dispose();
+                reader2.Dispose();
+            }));
+            
         }
 
 
@@ -232,25 +212,12 @@ namespace Dynamo.LibraryUI
             
             if(e.Value == "requestUpdateLibrary")
             {
-                var ext1 = string.Empty;
-                var ext2 = string.Empty;
-
-                //TODO removing using - need to dispose manually...
-                var reader = new StreamReader(nodeProvider.GetResource(out ext1));
-
-                //this should be a json string now
-                var loadedTypes = reader.ReadToEnd();
-
-                var reader2 = new StreamReader(layoutProvider.GetResource(out ext2));
-               
-
-                var layoutSpec = reader2.ReadToEnd();
-                //TRY ESCAPING ALL JSON AND JS THAT WE READ FROM RESOURCES.
-                var x = ((sender as WebView).
-                     InvokeScriptAsync("refreshLibViewFromData", loadedTypes, layoutSpec));
-                reader.Dispose();
-                reader2.Dispose();
+                if(sender is WebView)
+                {
+                    refreshLibraryView(sender as WebView);
+                }
             }
+            //a more complex action needs to be taken on the c# side.
             else if(!string.IsNullOrEmpty(e.Value))
             {
                 /*will be an object like:
@@ -425,30 +392,18 @@ namespace Dynamo.LibraryUI
             return textStream;
         }
 
-        /*
-        private void OnLibraryViewLoaded(object sender, RoutedEventArgs e)
-        {
-            var libraryView = sender as LibraryView;
-#if DEBUG
-            var browser = libraryView.Browser;
-            browser.ConsoleMessage += OnBrowserConsoleMessage;
-#endif
-        }
-        
 
-        private void OnBrowserConsoleMessage(object sender, ConsoleMessageEventArgs e)
-        {
-            System.Diagnostics.Trace.WriteLine("*****Chromium Browser Messages******");
-            System.Diagnostics.Trace.Write(e.Message);
-        }
-        */
-
-        internal static IDisposable SetupSearchModelEventsObserver(NodeSearchModel model, IEventController controller, ILibraryViewCustomization customization, int throttleTime = 200)
+        internal static IDisposable SetupSearchModelEventsObserver(WebView webview, NodeSearchModel model, LibraryViewController controller, ILibraryViewCustomization customization, int throttleTime = 200)
         {
             //TODO handle this event on the c# side and remove from jsside.
-            customization.SpecificationUpdated += (o, e) => controller.RaiseEvent("libraryDataUpdated");
+            customization.SpecificationUpdated += (o, e) =>
+            {
+                controller.refreshLibraryView(webview);
+                controller.CloseNodeTooltip(true);
+            };
 
-            var observer = new EventObserver<NodeSearchElement, IEnumerable<NodeSearchElement>>(
+
+var observer = new EventObserver<NodeSearchElement, IEnumerable<NodeSearchElement>>(
                     elements => NotifySearchModelUpdate(customization, elements), CollectToList
                 ).Throttle(TimeSpan.FromMilliseconds(throttleTime));
 
@@ -519,65 +474,12 @@ namespace Dynamo.LibraryUI
 
         private void InitializeResourceProviders(DynamoModel model, LibraryViewCustomization customization)
         {
-            
-            layoutProvider = new LayoutSpecProvider(customization, "Dynamo.LibraryUI.web.library.layoutSpecs.json");
-            iconProvider = new IconResourceProvider(model.PathManager);
+            var dllProvider = new DllResourceProvider("http://localhost/dist", "Dynamo.LibraryUI.web.library");
+            iconProvider = new IconResourceProvider(model.PathManager,dllProvider);
             nodeProvider = new NodeItemDataProvider(model.SearchModel,iconProvider);
             searchResultDataProvider = new SearchResultDataProvider(model.SearchModel,iconProvider);
-        }
+            layoutProvider = new LayoutSpecProvider(customization,iconProvider, "Dynamo.LibraryUI.web.library.layoutSpecs.json");
 
-        /*
-        private void InitializeResourceStreams(DynamoModel model, LibraryViewCustomization customization, WebView browser)
-        {
-            //TODO: Remove the parameter after testing.
-            //For testing purpose.
-            resourceFactory = new ResourceHandlerFactory(model.Logger);
-
-            //Register the resource stream registered through the LibraryViewCustomization
-            foreach (var item in customization.Resources)
-            {
-                OnResourceStreamRegistered(item.Key, item.Value);
-            }
-
-            //Setup the event handler for resource registration
-            customization.ResourceStreamRegistered += OnResourceStreamRegistered;
-
-            resourceFactory.RegisterProvider("/dist",
-                new DllResourceProvider("http://localhost/dist",
-                    "Dynamo.LibraryUI.web.library"));
-
-            resourceFactory.RegisterProvider(IconUrl.ServiceEndpoint, new IconResourceProvider(model.PathManager));
-
-            {
-                var url = "http://localhost/library.html";
-                var resource = "Dynamo.LibraryUI.web.library.library.html";
-                var stream = LoadResource(resource);
-                resourceFactory.RegisterHandler(url, ResourceHandler.FromStream(stream));
-            }
-
-            //Register provider for node data
-            resourceFactory.RegisterProvider("/loadedTypes", new NodeItemDataProvider(model.SearchModel));
-
-            //Register provider for layout spec
-            resourceFactory.RegisterProvider("/layoutSpecs", new LayoutSpecProvider(customization, "Dynamo.LibraryUI.web.library.layoutSpecs.json"));
-
-            //Setup the event observer for NodeSearchModel to update customization/spec provider.
-            //TODO this needs to be handled.
-            observer = SetupSearchModelEventsObserver(model.SearchModel, this, customization);
-
-            //Register provider for searching node data
-            resourceFactory.RegisterProvider(SearchResultDataProvider.serviceIdentifier, new SearchResultDataProvider(model.SearchModel));
-        }
-        */
-        private void OnResourceStreamRegistered(string key, Stream value)
-        {
-            Uri url = new Uri(key, UriKind.RelativeOrAbsolute);
-            if (!url.IsAbsoluteUri)
-                url = new Uri(new Uri("http://localhost"), url);
-
-            var extension = Path.GetExtension(key);
-            //var handler = ResourceHandler.FromStream(value, ResourceHandler.GetMimeType(extension));
-            //resourceFactory.RegisterHandler(url.AbsoluteUri, handler);
         }
 
 
@@ -602,9 +504,7 @@ namespace Dynamo.LibraryUI
             if (this.browser != null)
             {
                 browser.SizeChanged -= Browser_SizeChanged;
-                //TODO not sure this is going to survive.
                 browser.ScriptNotify -= scriptNotifyHandler;
-                //browser.LoadError -= Browser_LoadError;
                 browser.Dispose();
                 browser = null;
             }

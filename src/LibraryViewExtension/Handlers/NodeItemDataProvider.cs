@@ -52,7 +52,7 @@ namespace Dynamo.LibraryUI.Handlers
             this.iconProvider = iconProvider;
         }
         
-        public override Stream GetResource( out string extension)
+        public override Stream GetResource( string url, out string extension)
         {
             extension = "json";
             return GetNodeItemDataStream(model.SearchEntries,true);
@@ -83,8 +83,12 @@ namespace Dynamo.LibraryUI.Handlers
                 //lookup each loaded type and gets its icon, and embed that string in the type
                 foreach (var item in loadedTypes)
                 {
-                    var iconAsBase64 = iconProvider.GetResource(item.iconUrl, out ext);
-                    item.iconUrl = $"data:image/png;base64, {iconAsBase64}";
+                    var iconAsBase64 = iconProvider.GetResourceAsString(item.iconUrl, out ext);
+                    if(ext == "svg")
+                    {
+                        ext = "svg+xml";
+                    }
+                    item.iconUrl = $"data:image/{ext};base64, {iconAsBase64}";
                 }
             }
             serializer.Serialize(sw, data);

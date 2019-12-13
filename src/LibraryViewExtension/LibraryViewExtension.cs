@@ -1,4 +1,5 @@
-﻿using Dynamo.Models;
+﻿using System.Threading.Tasks;
+using Dynamo.Models;
 using Dynamo.PackageManager;
 using Dynamo.Wpf.Extensions;
 using Dynamo.Wpf.Interfaces;
@@ -32,12 +33,19 @@ namespace Dynamo.LibraryUI
 
         public void Loaded(ViewLoadedParams p)
         {
-            if (!DynamoModel.IsTestMode)
-            {
-                viewLoadedParams = p;
-                controller = new LibraryViewController(p.DynamoWindow, p.CommandExecutive, customization);
-                controller.AddLibraryView();
-            }
+                //TODO this is unfortunate but we need to delay this a bit
+                //or sharpdx seems to run into problems. We really want to wait
+                //until DynamoView is completely loaded.
+                Task.Delay(5000).ContinueWith((t)=>
+                {
+                    if (!DynamoModel.IsTestMode)
+                    {
+                        viewLoadedParams = p;
+                        controller = new LibraryViewController(p.DynamoWindow, p.CommandExecutive, customization);
+                        controller.AddLibraryView();
+                    }
+                }, TaskScheduler.FromCurrentSynchronizationContext());
+
         }
 
         public void Shutdown()

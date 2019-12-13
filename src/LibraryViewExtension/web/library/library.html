@@ -96,10 +96,7 @@
 
         //Create library view
         let libContainer = libController.createLibraryByElementId("libraryContainerPlaceholder");
-        //Update the view with contents
-        refreshLibraryView(libController);
-        window.external.notify("requestUpdateLibrary"); 
-
+     
         var searchCallback = null;
         function completeSearch(searchLoadedTypes){
             searchCallback(JSON.parse(searchLoadedTypes));
@@ -120,27 +117,20 @@
 
         libController.on(libController.ItemClickedEventName, function (nodeCreationName) {
             console.log('Library Node Clicked: ' + nodeCreationName);
-            //csharpController.closeDetailsView(); //ensure that the details view is closed.
-            //csharpController.createNode(nodeCreationName);
             window.external.notify(JSON.stringify({"func":"createNode","data":nodeCreationName})); 
         });
 
         libController.on(libController.ItemMouseEnterEventName, function (arg) {
-            //console.log('Mouse entered: ' + arg.data);
-            //csharpController.showNodeTooltip(arg.data, arg.rect.top);
             window.external.notify(JSON.stringify({"func":"showNodeTooltip","data":[arg.data,arg.rect.top]})); 
         });
 
         libController.on(libController.ItemMouseLeaveEventName, function (arg) {
-            //console.log('Mouse left: ' + arg.data);
-           // csharpController.closeNodeTooltip(true);
             window.external.notify(JSON.stringify({"func":"closeNodeTooltip","data":true})); 
         });
 
         libController.on(libController.SectionIconClickedEventName, function (section) {
             console.log("Section clicked: " + section);
             if (section == "Add-ons") {
-            //    csharpController.importLibrary();
                 window.external.notify(JSON.stringify({"func":"importLibrary","data":""})); 
             }
         });
@@ -152,23 +142,14 @@
                 categories.push(catString); 
             });
 
-            //csharpController.logEventsToInstrumentation("Filter-Categories", categories.join(","));
             window.external.notify(JSON.stringify({"func":"logEventsToInstrumentation","data":["Filter-Categories",categories.join(",")]})); 
         });
 
-        /*//TODO HANDLE THESE
-        csharpController.on("error", function (msg) {
-            console.log("Error: " + msg);
-            pkgController.raiseEvent("error", msg);
-        });
-
-        csharpController.on("libraryDataUpdated", function (items) {
-            console.log(items);
-            refreshLibraryView(libController);
-            csharpController.closeNodeTooltip(true);
-        });
-        */
+        //Update the view with contents
+       //refreshLibraryView(libController);
+         window.external.notify("requestUpdateLibrary");
        
+
 
     </script>
 

@@ -25,7 +25,7 @@ namespace Dynamo.LibraryUI.Handlers
         /// of the requested resource. This extension does not contain "." character.</param>
         /// <returns>Returns the stream if the requested resource can be found, or null 
         /// otherwise.</returns>
-        Stream GetResource( out string extension);
+        Stream GetResource(string url, out string extension);
     }
 
     /// <summary>
@@ -43,6 +43,6 @@ namespace Dynamo.LibraryUI.Handlers
 
         public string Scheme { get; private set; }
 
-        public abstract Stream GetResource(out string extension);
+        public abstract Stream GetResource(string url, out string extension);
     }
 }

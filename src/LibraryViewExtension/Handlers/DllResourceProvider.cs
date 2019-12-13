@@ -6,7 +6,7 @@ using System.Reflection;
 
 namespace Dynamo.LibraryUI.Handlers
 {
-    /*
+    
     /// <summary>
     /// A simple DllResourceProvider, which provides embedded resources from the dll.
     /// </summary>
@@ -49,26 +49,31 @@ namespace Dynamo.LibraryUI.Handlers
         /// <summary>
         /// Call this method to get the stream for a given requested resource.
         /// </summary>
-        /// <param name="request">The request object.</param>
+        /// <param name="url">The requested url.</param>
         /// <param name="extension">Output parameter whose value is the extension
         /// of the requested resource. This extension does not contain "." character.</param>
         /// <returns>Returns the stream if the requested resource can be found, or null 
         /// otherwise.</returns>
-        public override Stream GetResource(IRequest request, out string extension)
+        public override Stream GetResource(string url, out string extension)
         {
+            Console.WriteLine(url);
             extension = "txt";
-            var uri = new Uri(request.Url);
+            var uri = new Uri(url);
             string resourceName;
             var assembly = GetResourceAssembly(uri, out resourceName);
-            if (null == assembly) return null;
-
+            if (null == assembly)
+            {
+               
+                return null;
+            }
+       
             var stream = assembly.GetManifestResourceStream(resourceName);
             var idx = resourceName.LastIndexOf('.');
             if (idx > 0)
             {
                 extension = resourceName.Substring(idx+1);
             }
-            
+         
             return stream;
         }
 
@@ -79,5 +84,5 @@ namespace Dynamo.LibraryUI.Handlers
             return this.Assembly;
         }
     }
-    */
+    
 }

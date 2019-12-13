@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Dynamo.LibraryUI.Handlers;
 using Dynamo.Wpf.Interfaces;
+using Newtonsoft.Json;
 
 namespace Dynamo.LibraryUI
 {
@@ -135,6 +137,15 @@ namespace Dynamo.LibraryUI
         }
 
         /// <summary>
+        /// Serializes the current specification to JSON stream and optionally replaces icon urls with images as base64 data
+        /// </summary>
+        public Stream ToJSONStream(bool replaceIconURLWithData, IconResourceProvider iconResourceProvider = null)
+        {
+            return ToJSONStream(root, replaceIconURLWithData,iconResourceProvider);
+        }
+
+
+        /// <summary>
         /// Notifies when a resource stream is registered. This event is
         /// used by ResourceHandlerFactory to register the resource handler
         /// for provided url path.
@@ -191,6 +202,63 @@ namespace Dynamo.LibraryUI
                 }
                 resources.Clear();
             }
+        }
+
+        //layoutSpec helpers
+        /// <summary>
+        /// Serializes the layout specification to json stream and
+        /// optionally replaces icon urls with image data as base64 encoded strings
+        /// </summary>
+        /// <returns></returns>
+        private Stream ToJSONStream(LayoutSpecification spec, bool replaceIconURLWithData, IconResourceProvider iconProvider = null)
+        {
+            var ms = new MemoryStream();
+            var sw = new StreamWriter(ms);
+            if (replaceIconURLWithData && iconProvider != null)
+            {
+                //foreach section update all nested children and nested includes, and root iconurls to image data.
+                spec.sections.ForEach(section => {
+                    section.iconUrl = getBase64ImageString(section, iconProvider);
+                    section.EnumerateChildren().ToList().ForEach(child => child.iconUrl = getBase64ImageString(child, iconProvider));
+                    section.EnumerateIncludes().ToList().ForEach(child => child.iconUrl = getBase64ImageString(child, iconProvider));
+                });
+            }
+
+            var serializer = new JsonSerializer() { Formatting = Formatting.Indented, NullValueHandling = NullValueHandling.Ignore };
+            serializer.Serialize(sw, spec);
+
+            sw.Flush();
+            ms.Position = 0;
+            return ms;
+        }
+
+        private string getBase64ImageString(LayoutElement item,IconResourceProvider iconProvider)
+        {
+            var ext = string.Empty;
+            var iconAsBase64 = iconProvider.GetResourceAsString(item.iconUrl, out ext);
+            if (string.IsNullOrEmpty(iconAsBase64))
+            {
+                return "";
+            }
+            if (ext == "svg")
+            {
+                ext = "svg+xml";
+            }
+            return $"data:image/{ext};base64, {iconAsBase64}";
+        }
+        private string getBase64ImageString(LayoutIncludeInfo item, IconResourceProvider iconProvider)
+        {
+            var ext = string.Empty;
+            var iconAsBase64 = iconProvider.GetResourceAsString(item.iconUrl, out ext);
+            if (string.IsNullOrEmpty(iconAsBase64))
+            {
+                return "";
+            }
+            if (ext == "svg")
+            {
+                ext = "svg+xml";
+            }
+            return $"data:image/{ext};base64, {iconAsBase64}";
         }
     }
 }

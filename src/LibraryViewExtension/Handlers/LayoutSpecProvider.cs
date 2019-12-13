@@ -1,7 +1,9 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using Dynamo.Wpf.Interfaces;
+using Newtonsoft.Json;
 
 namespace Dynamo.LibraryUI.Handlers
 {
@@ -14,6 +16,7 @@ namespace Dynamo.LibraryUI.Handlers
     {
         private Stream resourceStream;
         private readonly ILibraryViewCustomization customization;
+        private readonly IconResourceProvider iconProvider;
 
         /// <summary>
         /// Creates the LayoutSpecProvider
@@ -33,6 +36,12 @@ namespace Dynamo.LibraryUI.Handlers
             this.customization.SpecificationUpdated += OnSpecificationUpdate;
         }
 
+        public LayoutSpecProvider(ILibraryViewCustomization customization, IconResourceProvider iconProvider, string resource, Assembly assembly = null):
+            this(customization,resource,assembly)
+        {
+            this.iconProvider = iconProvider;
+        }
+
         private void OnSpecificationUpdate(object sender, EventArgs e)
         {
             DisposeResourceStream();
@@ -41,12 +50,12 @@ namespace Dynamo.LibraryUI.Handlers
         /// <summary>
         /// Gets the resource for the given request
         /// </summary>
-        public override Stream GetResource(out string extension)
+        public override Stream GetResource(string url, out string extension)
         {
             extension = "json";
             if (resourceStream == null)
             {
-                resourceStream = customization.ToJSONStream();
+                resourceStream = (customization as LibraryViewCustomization).ToJSONStream(true, iconProvider);
             }
 
             return resourceStream;
@@ -60,5 +69,6 @@ namespace Dynamo.LibraryUI.Handlers
                 resourceStream = null;
             }
         }
+
     }
 }

@@ -9,7 +9,7 @@
              d:DesignHeight="525"
              d:DesignWidth="350">
     <Grid >
-        <microsoftWeb:WebView x:Name="Browser" Panel.ZIndex="-1" />
+        <microsoftWeb:WebView x:Name="Browser" />
     </Grid>
    
     
