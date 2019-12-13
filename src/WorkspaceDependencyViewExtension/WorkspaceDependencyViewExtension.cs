@@ -91,12 +91,20 @@ namespace Dynamo.WorkspaceDependency
             };
 
             // Adding a button in view menu to refresh and show manually
-            packageDependencyMenuItem = new MenuItem { Header = Resources.MenuItemString };
+            packageDependencyMenuItem = new MenuItem { Header = Resources.MenuItemString, IsCheckable = true, IsChecked = false };
             packageDependencyMenuItem.Click += (sender, args) =>
             {
-                // Refresh dependency data
-                DependencyView.DependencyRegen(viewLoadedParams.CurrentWorkspaceModel as WorkspaceModel);
-                viewLoadedParams.AddToExtensionsSideBar(this, DependencyView);
+                if (packageDependencyMenuItem.IsChecked)
+                {
+                    // Refresh dependency data
+                    DependencyView.DependencyRegen(viewLoadedParams.CurrentWorkspaceModel as WorkspaceModel);
+                    viewLoadedParams.AddToExtensionsSideBar(this, DependencyView);
+                }
+                else
+                {
+                    viewLoadedParams.CloseExtensioninInSideBar(this);
+                }
+
             };
             viewLoadedParams.AddMenuItem(MenuBarType.View, packageDependencyMenuItem);
         }
