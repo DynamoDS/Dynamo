@@ -111,6 +111,16 @@ namespace Dynamo.Wpf.Extensions
             }
         }
 
+        /// <summary>
+        /// Close the tab for extension UI control element in the extensions side bar.
+        /// </summary>
+        /// <param name="viewExtension">Instance of the view extension object that is being added to the extensions side bar.</param>
+        /// <returns></returns>
+        public void CloseExtensioninInSideBar(IViewExtension viewExtension)
+        {
+            dynamoView.CloseTabItem(viewExtension);
+        }
+
         public void AddSeparator(MenuBarType type, Separator separatorObj, int index = -1)
         {
             AddItemToMenu(type, separatorObj, index);
