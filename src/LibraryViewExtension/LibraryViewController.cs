@@ -135,6 +135,22 @@ namespace Dynamo.LibraryUI
             }
         }
 
+        private string replaceUrlWithBase64Image(string html, string minifiedURL)
+        {
+            var ext = string.Empty;
+            var searchString = minifiedURL.Replace("n.p+", @"./dist").Replace("\"","");
+            var base64 = iconProvider.GetResourceAsString(searchString, out ext);
+            //replace some urls to svg icons with base64 data.
+            if (ext == "svg")
+            {
+                ext = "svg+xml";
+            }
+            base64 = $"data:image/{ext};base64, {base64}";
+
+            html = html.Replace(minifiedURL, '"'+base64+'"');
+            return html;
+        }
+
         /// <summary>
         /// Creates and add the library view to the WPF visual tree
         /// </summary>
@@ -158,6 +174,9 @@ namespace Dynamo.LibraryUI
             using (var reader = new StreamReader(libminstream))
             {
                 libminstring = reader.ReadToEnd();
+
+                libminstring = replaceUrlWithBase64Image(libminstring, "n.p+\"/resources/library-create.svg\"" );
+
             }
 
             using (var reader = new StreamReader(stream))

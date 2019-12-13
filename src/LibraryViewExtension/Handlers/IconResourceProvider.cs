@@ -92,12 +92,7 @@ namespace Dynamo.LibraryUI.Handlers
             }
             else
             {
-                //encode this path like it came from a webrequest...
-                //var path = @"?path=";
-                //var pathIndex = url.IndexOf(path);
-                //url = WebUtility.UrlEncode(url);
-
-                var icon = new IconUrl(new Uri(url/*Uri.EscapeUriString(url)*/));
+                var icon = new IconUrl(new Uri(url));
                 base64String = GetIconAsBase64(icon, out extension);
             }
 
@@ -126,7 +121,7 @@ namespace Dynamo.LibraryUI.Handlers
         /// <returns>A valid Stream if the icon resource found successfully else null.</returns>
         private string GetDefaultIconBase64(out string extension)
         {
-            extension = Path.GetExtension(defaultIconName);
+            extension = Path.GetExtension(defaultIconName).Replace(".","");
             if (defaultIconString == null)
             {
                 var assembly = Assembly.GetExecutingAssembly();
@@ -136,7 +131,7 @@ namespace Dynamo.LibraryUI.Handlers
 
                 defaultIconName = resource;
                 var reader = new StreamReader(assembly.GetManifestResourceStream(defaultIconName));
-                defaultIconString = reader.ReadToEnd();
+                defaultIconString = Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(reader.ReadToEnd()));
                 reader.Dispose();
             }
 
