@@ -537,8 +537,6 @@ namespace Dynamo.PackageManager.Tests
         }
 
         [Test]
-        //Todo need to add a new signed package file with unique name space
-        [Category("Failure")]
         public void ScanPackageDirectoryWithCheckingCertificatesEnabledWillLoadPackageWithValidCertificate()
         {
             var loader = new PackageLoader(new[] { PackagesDirectory }, new[] { PackagesDirectorySigned });
@@ -557,12 +555,26 @@ namespace Dynamo.PackageManager.Tests
 
             // Verify that package resolved successfully
             var libs = CurrentDynamoModel.LibraryServices.ImportedLibraries.ToList();
-            Assert.IsTrue(libs.Contains(Path.Combine(PackagesDirectorySigned, "Signed Package", "bin", "Package.dll")));
+            Assert.IsTrue(libs.Contains(Path.Combine(PackagesDirectorySigned, "Signed Package", "bin", "SignedPackage.dll")));
 
             // Verify that the package are imported successfully
             var entries = CurrentDynamoModel.SearchModel.SearchEntries.ToList();
-            Assert.IsTrue(entries.Any(x => x.FullName == "Package.Package.Package.Hello"));
+            Assert.IsTrue(entries.Any(x => x.FullName == "SignedPackage.SignedPackage.SignedPackage.Hello"));
         }
+
+        //FYI this is the code for the SingedPackage zero-touch node used in the previous test
+        //The built and signed dll lives in the test\pkgs_signed\Signed Package\bin directory
+        //This is for furture reference if we need to recreate the package in the future
+        //namespace SignedPackage
+        //{
+        //    public class SignedPackage
+        //    {
+        //        public string Hello()
+        //        {
+        //            return nameof(Hello);
+        //        }
+        //    }
+        //}
 
         [Test]
         public void IsUnderPackageControlIsCorrectForValidFunctionDefinition()

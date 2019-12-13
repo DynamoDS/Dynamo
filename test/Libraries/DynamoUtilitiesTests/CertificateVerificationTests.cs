@@ -18,7 +18,7 @@ namespace DynamoUtilitiesTests
         {
             var executingDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             var directory = new DirectoryInfo(executingDirectory);
-            var testFilePath = Path.Combine(directory.Parent.Parent.Parent.FullName, "test", "pkgs_signed", "Signed Package", "bin", "Package.dll");
+            var testFilePath = Path.Combine(directory.Parent.Parent.Parent.FullName, "test", "pkgs_signed", "Signed Package", "bin", "SignedPackage.dll");
 
             Assert.IsTrue(File.Exists(testFilePath));
 
