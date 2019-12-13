@@ -634,6 +634,7 @@
                                   CommandParameter="{Binding  RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"
                                   IsChecked="{Binding Path=IsAnalyticsReportingApproved, Mode=OneWay, Source={x:Static service:UsageReportingManager.Instance} }"
                                   ToolTip="{x:Static p:Resources.DynamoViewSettingMenuEnableSummaryReportingTooltip}"
+                                  Visibility="{Binding HideReportOptions, Converter={StaticResource InverseBoolToVisibilityCollapsedConverter}}"
                                   Focusable="False"/>
                         <MenuItem Header="{x:Static p:Resources.DynamoViewSettingMenuEnableDataReporting}"
                                   Name="ToggleIsUsageReportingApprovedCommand"
@@ -641,6 +642,7 @@
                                   CommandParameter="{Binding  RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"
                                   IsChecked="{Binding Path=IsUsageReportingApproved, Mode=OneWay, Source={x:Static service:UsageReportingManager.Instance} }"
                                   ToolTip="{x:Static p:Resources.DynamoViewSettingMenuEnableDataReportingTooltip}"
+                                  Visibility="{Binding HideReportOptions, Converter={StaticResource InverseBoolToVisibilityCollapsedConverter}}"
                                   Focusable="False" />
                         <Separator />
                         <MenuItem Focusable="False" 
