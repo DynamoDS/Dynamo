@@ -183,16 +183,4 @@ namespace Dynamo.Interfaces
             IsActive = true;
         }
     }
-
-    /// <summary>
-    /// Temporary interface to avoid breaking changes.
-    /// TODO: Merge with IPreferences or IStartConfiguration for 3.0
-    /// </summary>
-    public interface IHideReportOptionsPreferences
-    {
-        ///<summary>
-        ///If true, Analytics and Usage options are hidden from UI 
-        ///</summary>
-        bool HideReportOptions{ get; set; }
-    }
 }

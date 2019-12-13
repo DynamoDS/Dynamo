@@ -15,8 +15,7 @@ namespace Dynamo.Configuration
     /// from a XML file from DYNAMO_SETTINGS_FILE.
     /// When GUI is closed, the settings are saved back into the XML file.
     /// </summary>
-    public class PreferenceSettings : NotificationObject, IPreferences, 
-        IRenderPrecisionPreference, IHideReportOptionsPreferences
+    public class PreferenceSettings : NotificationObject, IPreferences, IRenderPrecisionPreference
     {
         private string numberFormat;
         private string lastUpdateDownloadPath;
@@ -67,12 +66,6 @@ namespace Dynamo.Configuration
         /// Indicates whether analytics reporting is approved or not.
         /// </summary>
         public bool IsAnalyticsReportingApproved { get; set; }
-
-        ///<summary>
-        ///If true, Analytics and Usage options are hidden from UI 
-        ///</summary>
-        public bool HideReportOptions { get; set; }
-
         #endregion
 
         #region UI & Graphics settings
@@ -330,7 +323,6 @@ namespace Dynamo.Configuration
             IsFirstRun = true;
             IsUsageReportingApproved = false;
             IsAnalyticsReportingApproved = true;
-            HideReportOptions = false;
             LibraryWidth = 304;
             ConsoleHeight = 0;
             ShowPreviewBubbles = true;

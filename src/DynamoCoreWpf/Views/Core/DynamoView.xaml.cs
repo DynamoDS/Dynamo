@@ -621,7 +621,7 @@ namespace Dynamo.Controls
             //Backing up IsFirstRun to determine whether to show Gallery
             var isFirstRun = dynamoViewModel.Model.PreferenceSettings.IsFirstRun;
 
-            if (!dynamoViewModel.Model.PreferenceSettings.HideReportOptions)
+            if (!dynamoViewModel.HideReportOptions)
             {
                 // If first run, Collect Info Prompt will appear
                 UsageReportingManager.Instance.CheckIsFirstRun(this, dynamoViewModel.BrandingResourceProvider);

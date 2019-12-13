@@ -469,7 +469,13 @@ namespace Dynamo.ViewModels
         {
             get { return BackgroundPreviewViewModel.Active; }
         }
-        
+
+        /// <summary>
+        /// If true, Analytics and Usage options are hidden from UI 
+        /// TO DO: include to StartConfiguration for Dynamo 3.0
+        /// </summary>
+        public bool HideReportOptions { get; set; } = false;
+
         #endregion
 
         public struct StartConfiguration
