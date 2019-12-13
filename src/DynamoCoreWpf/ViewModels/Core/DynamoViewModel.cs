@@ -470,11 +470,7 @@ namespace Dynamo.ViewModels
             get { return BackgroundPreviewViewModel.Active; }
         }
 
-        /// <summary>
-        /// If true, Analytics and Usage options are hidden from UI 
-        /// TO DO: include to StartConfiguration for Dynamo 3.0
-        /// </summary>
-        public bool HideReportOptions { get; set; } = false;
+        internal bool HideReportOptions { get; set; } = false;
 
         #endregion
 
@@ -491,6 +487,11 @@ namespace Dynamo.ViewModels
             /// at startup in order to be used to pass in host specific resources to DynamoViewModel
             /// </summary>
             public IBrandingResourceProvider BrandingResourceProvider { get; set; }
+
+            /// <summary>
+            /// If true, Analytics and Usage options are hidden from UI 
+            /// </summary>
+            public bool HideReportOptions { get; set; }
         }
 
         public static DynamoViewModel Start(StartConfiguration startConfiguration = new StartConfiguration())
@@ -538,6 +539,7 @@ namespace Dynamo.ViewModels
             this.model.CommandStarting += OnModelCommandStarting;
             this.model.CommandCompleted += OnModelCommandCompleted;
 
+            this.HideReportOptions = startConfiguration.HideReportOptions;
             UsageReportingManager.Instance.InitializeCore(this);
             this.WatchHandler = startConfiguration.WatchHandler;
             var pmExtension = model.GetPackageManagerExtension();
