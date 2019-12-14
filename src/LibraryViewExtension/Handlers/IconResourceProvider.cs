@@ -197,6 +197,14 @@ namespace Dynamo.LibraryUI.Handlers
                 reader.Dispose();
             }
 
+            else if (extension.ToLower().Contains("ttf") || extension.ToLower().Contains("woff"))
+            {
+                var reader = new BinaryReader(stream);
+                var fontBytes = reader.ReadBytes((int)stream.Length);
+                base64String = Convert.ToBase64String(fontBytes);
+                reader.Dispose();
+            }
+
             return base64String;
 
         }

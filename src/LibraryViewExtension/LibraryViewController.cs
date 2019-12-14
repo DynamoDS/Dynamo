@@ -134,22 +134,54 @@ namespace Dynamo.LibraryUI
                 Analytics.LogPiiInfo(eventName, data);
             }
         }
-
-        private string replaceUrlWithBase64Image(string html, string minifiedURL)
+        //TODO handle other formats like fonts.
+        private string replaceUrlWithBase64Image(string html, string minifiedURL, bool magicreplace = true)
         {
+            //TODO use string builder for better perf and memory.
             var ext = string.Empty;
+            if (magicreplace)
+            {
+                minifiedURL = $"n.p+\"{minifiedURL}\"";
+            }
             var searchString = minifiedURL.Replace("n.p+", @"./dist").Replace("\"","");
             var base64 = iconProvider.GetResourceAsString(searchString, out ext);
             //replace some urls to svg icons with base64 data.
             if (ext == "svg")
             {
                 ext = "svg+xml";
+                base64 = $"data:image/{ext};base64, {base64}";
             }
-            base64 = $"data:image/{ext};base64, {base64}";
+           
+
+            if(ext == "ttf" || ext == "woff" || ext == "woff2" || ext == "eot")
+            {
+                
+                base64 = $"data:application/x-font-{ext};charset=utf-8;base64,{base64}";
+            }
 
             html = html.Replace(minifiedURL, '"'+base64+'"');
             return html;
         }
+
+        private readonly (string,bool)[] dynamicIconPaths = new (string,bool)[15]
+        {
+           ("/resources/library-create.svg",true),
+           ("/resources/default-icon.svg",true),
+           ("/resources/fontawesome-webfont.eot",true),
+           //"/resources/fontawesome-webfont.svg",
+           ("/resources/fontawesome-webfont.ttf",true),
+           ("/resources/fontawesome-webfont.woff2",true),
+           ("/resources/fontawesome-webfont.woff",true),
+           ("/resources/library-action.svg",true),
+           ("/resources/library-query.svg",true),
+           ("/resources/indent-arrow-down-wo-lines.svg",true),
+           ("/resources/indent-arrow-down.svg",true),
+           ("/resources/indent-arrow-right-last.svg",true),
+           ("/resources/indent-arrow-right-wo-lines.svg",true),
+           ("/resources/indent-arrow-right.svg",true),
+           ("/resources/ArtifaktElement-Bold.woff",true),
+           ("/resources/ArtifaktElement-Regular.woff",true)
+        };
 
         /// <summary>
         /// Creates and add the library view to the WPF visual tree
@@ -174,9 +206,11 @@ namespace Dynamo.LibraryUI
             using (var reader = new StreamReader(libminstream))
             {
                 libminstring = reader.ReadToEnd();
-
-                libminstring = replaceUrlWithBase64Image(libminstring, "n.p+\"/resources/library-create.svg\"" );
-
+                dynamicIconPaths.ToList().ForEach(path =>
+                {
+                    libminstring = replaceUrlWithBase64Image(libminstring, path.Item1,path.Item2);
+                });
+               
             }
 
             using (var reader = new StreamReader(stream))
