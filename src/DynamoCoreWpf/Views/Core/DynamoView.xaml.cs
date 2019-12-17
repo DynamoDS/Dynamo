@@ -203,14 +203,16 @@ namespace Dynamo.Controls
         }
 
         /// <summary>
-        /// This method close a tab item in the right side bar based on passed extension
+        /// This method will close a tab item in the right side bar based on passed extension
         /// </summary>
         /// <param name="viewExtension">Extension to be closed</param>
         /// <returns></returns>
         internal void CloseTabItem(IViewExtension viewExtension)
         {
             string tabName = viewExtension.Name;
-            CloseTab(tabName);
+
+            TabItem tabitem = TabItems.OfType<TabItem>().SingleOrDefault(n => n.Name == tabName);
+            CloseTab(tabitem);
         }
 
         // This method adds a tab item to the right side bar and 
@@ -227,6 +229,7 @@ namespace Dynamo.Controls
                 TabItem tab = new TabItem();
                 tab.Header = viewExtension.Name;
                 tab.Tag = viewExtension.GetType();
+                tab.Uid = viewExtension.UniqueId;
                 tab.HeaderTemplate = tabDynamic.FindResource("TabHeader") as DataTemplate;
 
                 // setting the extension UI to the current tab content 
@@ -256,38 +259,37 @@ namespace Dynamo.Controls
         private void CloseTab(object sender, RoutedEventArgs e)
         {
             string tabName = (sender as Button).CommandParameter.ToString();
-            CloseTab(tabName);
+
+            TabItem tabitem = TabItems.OfType<TabItem>().SingleOrDefault(n => n.Name == tabName);
+            CloseTab(tabitem);
         }
 
         /// <summary>
         /// Close tab by its name
         /// </summary>
-        /// <param name="tabName">tab name</param>
-        private void CloseTab(string tabName)
+        /// <param name="tabitem">tab item</param>
+        private void CloseTab(TabItem tabitem)
         {
-            TabItem tab = tabDynamic.SelectedItem as TabItem;
+            TabItem tabToBeRemoved = tabitem;
 
-            if (tab != null)
+            // get the selected tab
+            TabItem selectedTab = tabDynamic.SelectedItem as TabItem;
+
+            // clear tab control binding and bind to the new tab-list. 
+            tabDynamic.DataContext = null;
+            TabItems.Remove(tabToBeRemoved);
+            TabItems = TabItems;
+            tabDynamic.DataContext = TabItems;
+
+            // Highlight previously selected tab. if that is removed then Highlight the first tab
+            if (selectedTab.Equals(tabToBeRemoved))
             {
-                // get the selected tab
-                TabItem selectedTab = tabDynamic.SelectedItem as TabItem;
-
-                // clear tab control binding and bind to the new tab-list. 
-                tabDynamic.DataContext = null;
-                TabItems.Remove(tab);
-                TabItems = TabItems;
-                tabDynamic.DataContext = TabItems;
-
-                // Highlight previously selected tab. if that is removed then Highlight the first tab
-                if (selectedTab == null || selectedTab.Equals(tab))
+                if (TabItems.Count > 0)
                 {
-                    if (TabItems.Count > 0)
-                    {
-                        selectedTab = TabItems[0];
-                    }
+                    selectedTab = TabItems[0];
                 }
-                tabDynamic.SelectedItem = selectedTab;
             }
+            tabDynamic.SelectedItem = selectedTab;
         }
 
         // This event is triggered when the tabitems list is changed and will show/hide the right side bar accordingly.
