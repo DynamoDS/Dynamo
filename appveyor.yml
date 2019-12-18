@@ -6,8 +6,11 @@ configuration: Release
 
 image: Visual Studio 2017
 
+before_build:
+  - nuget restore .\src\Dynamo.All.sln
+
 environment:
-  dynamo_solution: src/build.xml
+  dynamo_solution: src/Dynamo.All.sln
 
 
 build_script:
