@@ -12,6 +12,7 @@ environment:
   image: Visual Studio 2017
 
 build_script:
+  - which msbuild
   - msbuild %dynamo_solution%
 
   
