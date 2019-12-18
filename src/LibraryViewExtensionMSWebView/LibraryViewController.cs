@@ -14,6 +14,11 @@ using Dynamo.ViewModels;
 using Dynamo.Wpf.Interfaces;
 using Dynamo.Wpf.ViewModels;
 using LibraryViewExtensionMSWebView.Handlers;
+using LibraryViewExtensionMSWebView.ViewModels;
+using LibraryViewExtensionMSWebView.Views;
+using Microsoft.Toolkit.Wpf.UI.Controls;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace LibraryViewExtensionMSWebView
 {
@@ -99,7 +104,7 @@ namespace LibraryViewExtensionMSWebView
                 }
                 //Create the node of given item name
                 var cmd = new DynamoModel.CreateNodeCommand(Guid.NewGuid().ToString(), nodeName, -1, -1, true, false);
-                commandExecutive.ExecuteCommand(cmd, Guid.NewGuid().ToString(), LibraryMSViewExtension.ExtensionName);
+                commandExecutive.ExecuteCommand(cmd, Guid.NewGuid().ToString(), LibraryViewExtensionMSWebView.ExtensionName);
                 LogEventsToInstrumentation(CreateNodeInstrumentationString, nodeName);
 
                 this.disableObserver = false;

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Dynamo.Search;
+using Dynamo.Search.SearchElements;
 
 namespace LibraryViewExtensionMSWebView.Handlers
 {
@@ -47,7 +48,7 @@ namespace LibraryViewExtensionMSWebView.Handlers
         /// <param name="searchText"></param>
         /// <param name="extension"></param>
         /// <returns></returns>
-        public Stream GetResource(string searchText, out string extension)
+        public override Stream GetResource(string searchText, out string extension)
         {
 
             var text = Uri.UnescapeDataString(searchText);

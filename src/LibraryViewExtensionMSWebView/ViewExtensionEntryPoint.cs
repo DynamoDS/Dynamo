@@ -78,12 +78,4 @@ namespace LibraryViewExtensionMSWebView
         }
 
     }
-
-    public static class DynamoModelExtensions
-    {
-        public static PackageManagerExtension GetPackageManagerExtension(this DynamoModel model)
-        {
-            return PackageManager.DynamoModelExtensions.GetPackageManagerExtension(model);
-        }
-    }
 }

@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Dynamo.Wpf.Interfaces;
 using LibraryViewExtensionMSWebView.Handlers;
+using Newtonsoft.Json;
 
 namespace LibraryViewExtensionMSWebView
 {
