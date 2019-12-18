@@ -97,9 +97,6 @@
     <EmbeddedResource Include="web\library\librarie.min.js" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="web\library\resources\" />
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="web\library\layoutSpecs.json" />
   </ItemGroup>
   <ItemGroup>
@@ -118,6 +115,202 @@
     <PackageReference Include="System.Runtime.WindowsRuntime.UI.Xaml">
       <Version>4.6.0</Version>
     </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="..\LibraryViewExtension\web\library\resources\ArtifaktElement-Bold.woff">
+      <Link>web\library\resources\ArtifaktElement-Bold.woff</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\LibraryViewExtension\web\library\resources\ArtifaktElement-Regular.woff">
+      <Link>web\library\resources\ArtifaktElement-Regular.woff</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\LibraryViewExtension\web\library\resources\fontawesome-webfont.eot">
+      <Link>web\library\resources\fontawesome-webfont.eot</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\LibraryViewExtension\web\library\resources\fontawesome-webfont.ttf">
+      <Link>web\library\resources\fontawesome-webfont.ttf</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\LibraryViewExtension\web\library\resources\fontawesome-webfont.woff">
+      <Link>web\library\resources\fontawesome-webfont.woff</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\LibraryViewExtension\web\library\resources\fontawesome-webfont.woff2">
+      <Link>web\library\resources\fontawesome-webfont.woff2</Link>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="..\LibraryViewExtension\web\library\resources\Autodesk.DesignScript.Geometry.Arc.png">
+      <Link>web\library\resources\Autodesk.DesignScript.Geometry.Arc.png</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\LibraryViewExtension\web\library\resources\Autodesk.DesignScript.Geometry.BoundingBox.png">
+      <Link>web\library\resources\Autodesk.DesignScript.Geometry.BoundingBox.png</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\LibraryViewExtension\web\library\resources\Autodesk.DesignScript.Geometry.Circle.png">
+      <Link>web\library\resources\Autodesk.DesignScript.Geometry.Circle.png</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\LibraryViewExtension\web\library\resources\Autodesk.DesignScript.Geometry.Cone.png">
+      <Link>web\library\resources\Autodesk.DesignScript.Geometry.Cone.png</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\LibraryViewExtension\web\library\resources\Autodesk.DesignScript.Geometry.CoordinateSystem.png">
+      <Link>web\library\resources\Autodesk.DesignScript.Geometry.CoordinateSystem.png</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\LibraryViewExtension\web\library\resources\Autodesk.DesignScript.Geometry.Cuboid.png">
+      <Link>web\library\resources\Autodesk.DesignScript.Geometry.Cuboid.png</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\LibraryViewExtension\web\library\resources\Autodesk.DesignScript.Geometry.Curve.png">
+      <Link>web\library\resources\Autodesk.DesignScript.Geometry.Curve.png</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\LibraryViewExtension\web\library\resources\Autodesk.DesignScript.Geometry.Cylinder.png">
+      <Link>web\library\resources\Autodesk.DesignScript.Geometry.Cylinder.png</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\LibraryViewExtension\web\library\resources\Autodesk.DesignScript.Geometry.Edge.png">
+      <Link>web\library\resources\Autodesk.DesignScript.Geometry.Edge.png</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\LibraryViewExtension\web\library\resources\Autodesk.DesignScript.Geometry.Ellipse.png">
+      <Link>web\library\resources\Autodesk.DesignScript.Geometry.Ellipse.png</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\LibraryViewExtension\web\library\resources\Autodesk.DesignScript.Geometry.EllipseArc.png">
+      <Link>web\library\resources\Autodesk.DesignScript.Geometry.EllipseArc.png</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\LibraryViewExtension\web\library\resources\Autodesk.DesignScript.Geometry.Face.png">
+      <Link>web\library\resources\Autodesk.DesignScript.Geometry.Face.png</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\LibraryViewExtension\web\library\resources\Autodesk.DesignScript.Geometry.Helix.png">
+      <Link>web\library\resources\Autodesk.DesignScript.Geometry.Helix.png</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\LibraryViewExtension\web\library\resources\Autodesk.DesignScript.Geometry.IndexGroup.png">
+      <Link>web\library\resources\Autodesk.DesignScript.Geometry.IndexGroup.png</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\LibraryViewExtension\web\library\resources\Autodesk.DesignScript.Geometry.Line.png">
+      <Link>web\library\resources\Autodesk.DesignScript.Geometry.Line.png</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\LibraryViewExtension\web\library\resources\Autodesk.DesignScript.Geometry.Mesh.png">
+      <Link>web\library\resources\Autodesk.DesignScript.Geometry.Mesh.png</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\LibraryViewExtension\web\library\resources\Autodesk.DesignScript.Geometry.NurbsCurve.png">
+      <Link>web\library\resources\Autodesk.DesignScript.Geometry.NurbsCurve.png</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\LibraryViewExtension\web\library\resources\Autodesk.DesignScript.Geometry.NurbsSurface.png">
+      <Link>web\library\resources\Autodesk.DesignScript.Geometry.NurbsSurface.png</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\LibraryViewExtension\web\library\resources\Autodesk.DesignScript.Geometry.Plane.png">
+      <Link>web\library\resources\Autodesk.DesignScript.Geometry.Plane.png</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\LibraryViewExtension\web\library\resources\Autodesk.DesignScript.Geometry.Point.png">
+      <Link>web\library\resources\Autodesk.DesignScript.Geometry.Point.png</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\LibraryViewExtension\web\library\resources\Autodesk.DesignScript.Geometry.PolyCurve.png">
+      <Link>web\library\resources\Autodesk.DesignScript.Geometry.PolyCurve.png</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\LibraryViewExtension\web\library\resources\Autodesk.DesignScript.Geometry.Polygon.png">
+      <Link>web\library\resources\Autodesk.DesignScript.Geometry.Polygon.png</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\LibraryViewExtension\web\library\resources\Autodesk.DesignScript.Geometry.PolySurface.png">
+      <Link>web\library\resources\Autodesk.DesignScript.Geometry.PolySurface.png</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\LibraryViewExtension\web\library\resources\Autodesk.DesignScript.Geometry.Rectangle.png">
+      <Link>web\library\resources\Autodesk.DesignScript.Geometry.Rectangle.png</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\LibraryViewExtension\web\library\resources\Autodesk.DesignScript.Geometry.Solid.png">
+      <Link>web\library\resources\Autodesk.DesignScript.Geometry.Solid.png</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\LibraryViewExtension\web\library\resources\Autodesk.DesignScript.Geometry.Sphere.png">
+      <Link>web\library\resources\Autodesk.DesignScript.Geometry.Sphere.png</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\LibraryViewExtension\web\library\resources\Autodesk.DesignScript.Geometry.Surface.png">
+      <Link>web\library\resources\Autodesk.DesignScript.Geometry.Surface.png</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\LibraryViewExtension\web\library\resources\Autodesk.DesignScript.Geometry.Topology.png">
+      <Link>web\library\resources\Autodesk.DesignScript.Geometry.Topology.png</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\LibraryViewExtension\web\library\resources\Autodesk.DesignScript.Geometry.UV.png">
+      <Link>web\library\resources\Autodesk.DesignScript.Geometry.UV.png</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\LibraryViewExtension\web\library\resources\Autodesk.DesignScript.Geometry.Vector.png">
+      <Link>web\library\resources\Autodesk.DesignScript.Geometry.Vector.png</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\LibraryViewExtension\web\library\resources\Autodesk.DesignScript.Geometry.Vertex.png">
+      <Link>web\library\resources\Autodesk.DesignScript.Geometry.Vertex.png</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\LibraryViewExtension\web\library\resources\Category.Dictionary.svg">
+      <Link>web\library\resources\Category.Dictionary.svg</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\LibraryViewExtension\web\library\resources\Category.Display.svg">
+      <Link>web\library\resources\Category.Display.svg</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\LibraryViewExtension\web\library\resources\Category.Geometry.svg">
+      <Link>web\library\resources\Category.Geometry.svg</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\LibraryViewExtension\web\library\resources\Category.ImportExport.svg">
+      <Link>web\library\resources\Category.ImportExport.svg</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\LibraryViewExtension\web\library\resources\Category.Input.svg">
+      <Link>web\library\resources\Category.Input.svg</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\LibraryViewExtension\web\library\resources\Category.List.svg">
+      <Link>web\library\resources\Category.List.svg</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\LibraryViewExtension\web\library\resources\Category.Math.svg">
+      <Link>web\library\resources\Category.Math.svg</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\LibraryViewExtension\web\library\resources\Category.Revit.svg">
+      <Link>web\library\resources\Category.Revit.svg</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\LibraryViewExtension\web\library\resources\Category.Script.svg">
+      <Link>web\library\resources\Category.Script.svg</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\LibraryViewExtension\web\library\resources\Category.String.svg">
+      <Link>web\library\resources\Category.String.svg</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\LibraryViewExtension\web\library\resources\default-icon.svg">
+      <Link>web\library\resources\default-icon.svg</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\LibraryViewExtension\web\library\resources\DSCore.DayOfWeek.png">
+      <Link>web\library\resources\DSCore.DayOfWeek.png</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\LibraryViewExtension\web\library\resources\Dynamo.svg">
+      <Link>web\library\resources\Dynamo.svg</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\LibraryViewExtension\web\library\resources\fontawesome-webfont.svg">
+      <Link>web\library\resources\fontawesome-webfont.svg</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\LibraryViewExtension\web\library\resources\indent-arrow-down-without-line.svg">
+      <Link>web\library\resources\indent-arrow-down-without-line.svg</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\LibraryViewExtension\web\library\resources\indent-arrow-down-wo-lines.svg">
+      <Link>web\library\resources\indent-arrow-down-wo-lines.svg</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\LibraryViewExtension\web\library\resources\indent-arrow-down.svg">
+      <Link>web\library\resources\indent-arrow-down.svg</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\LibraryViewExtension\web\library\resources\indent-arrow-right-last.svg">
+      <Link>web\library\resources\indent-arrow-right-last.svg</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\LibraryViewExtension\web\library\resources\indent-arrow-right-wo-lines.svg">
+      <Link>web\library\resources\indent-arrow-right-wo-lines.svg</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\LibraryViewExtension\web\library\resources\indent-arrow-right.svg">
+      <Link>web\library\resources\indent-arrow-right.svg</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\LibraryViewExtension\web\library\resources\library-action.svg">
+      <Link>web\library\resources\library-action.svg</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\LibraryViewExtension\web\library\resources\library-create.svg">
+      <Link>web\library\resources\library-create.svg</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\LibraryViewExtension\web\library\resources\library-query.svg">
+      <Link>web\library\resources\library-query.svg</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\LibraryViewExtension\web\library\resources\plus-symbol.svg">
+      <Link>web\library\resources\plus-symbol.svg</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\LibraryViewExtension\web\library\resources\Tessellation.ConvexHull.png">
+      <Link>web\library\resources\Tessellation.ConvexHull.png</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\LibraryViewExtension\web\library\resources\Tessellation.Delaunay.png">
+      <Link>web\library\resources\Tessellation.Delaunay.png</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\LibraryViewExtension\web\library\resources\Tessellation.Voronoi.png">
+      <Link>web\library\resources\Tessellation.Voronoi.png</Link>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
