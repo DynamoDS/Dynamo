@@ -1,0 +1,87 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Librarie.js sample page</title>
+    <style>
+        body {
+            padding: 0;
+            margin: 0;
+            background-color: #353535;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Placeholders must exist before all other scripts that try to access them -->
+    <div class="OuterMostContainer" id="libraryContainerPlaceholder"></div>
+
+    <!-- The main library view component -->
+    <script>
+        LIBPLACEHOLDER>
+    </script>
+
+    <script>
+        function refreshLibViewFromData(loadedTypes,layoutSpec){
+            let append = false; // Replace existing contents instead of appending.
+            libController.setLoadedTypesJson(JSON.parse(loadedTypes) , append);
+            libController.setLayoutSpecsJson(JSON.parse(layoutSpec) , append);
+            libController.refreshLibraryView(); // Refresh library view.
+        }
+
+
+        //Create library controller
+        var libController = LibraryEntryPoint.CreateLibraryController();
+        //Create library view
+        let libContainer = libController.createLibraryByElementId("libraryContainerPlaceholder");
+
+        var searchCallback = null;
+        function completeSearch(searchLoadedTypes){
+            searchCallback(JSON.parse(searchLoadedTypes));
+        }
+        libController.searchLibraryItemsHandler = function (text, callback) {
+			let encodedText = encodeURIComponent(text);
+
+                window.external.notify(JSON.stringify({"func":"performSearch","data":encodedText}));
+                window.external.notify(JSON.stringify({"func":"logEventsToInstrumentation","data":["Search",encodedText]}));
+            //save the callback so we can access from our completion function
+                searchCallback = callback;
+                //csharpController.logEventsToInstrumentation("Search", encodedText);
+        }
+
+        // Register event handlers for various events on library controller and package controller.
+        libController.on(libController.ItemClickedEventName, function (nodeCreationName) {
+            console.log('Library Node Clicked: ' + nodeCreationName);
+            window.external.notify(JSON.stringify({"func":"createNode","data":nodeCreationName}));
+        });
+        libController.on(libController.ItemMouseEnterEventName, function (arg) {
+            window.external.notify(JSON.stringify({"func":"showNodeTooltip","data":[arg.data,arg.rect.top]}));
+        });
+        libController.on(libController.ItemMouseLeaveEventName, function (arg) {
+            window.external.notify(JSON.stringify({"func":"closeNodeTooltip","data":true}));
+        });
+        libController.on(libController.SectionIconClickedEventName, function (section) {
+            console.log("Section clicked: " + section);
+            if (section == "Add-ons") {
+                window.external.notify(JSON.stringify({"func":"importLibrary","data":""}));
+            }
+        });
+        libController.on(libController.FilterCategoryEventName, function (item) {
+            var categories = [];
+            item.forEach((elem) => {
+                var catString = elem.name + ":" + (elem.checked ? "Selected" : "Unselected");
+                categories.push(catString);
+            });
+            window.external.notify(JSON.stringify({"func":"logEventsToInstrumentation","data":["Filter-Categories",categories.join(",")]}));
+        });
+
+        //Update the view with contents
+         window.external.notify("requestUpdateLibrary");
+
+    </script>
+
+</body>
+
+</html>
