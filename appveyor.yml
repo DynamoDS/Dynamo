@@ -4,9 +4,11 @@ platform: Any CPU
 
 configuration: Release
 
+image: Visual Studio 2017
+
 environment:
   dynamo_solution: src/build.xml
-  image: Visual Studio 2017
+
 
 build_script:
   - where msbuild
