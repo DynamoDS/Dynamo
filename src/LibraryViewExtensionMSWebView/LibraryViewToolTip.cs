@@ -2,7 +2,7 @@
 using System.Windows.Controls.Primitives;
 using Dynamo.UI.Controls;
 
-namespace LibraryViewExtensionMSWebView
+namespace Dynamo.LibraryViewExtensionMSWebView
 {
     public class FloatingLibraryTooltipPopup : LibraryToolTipPopup
     {

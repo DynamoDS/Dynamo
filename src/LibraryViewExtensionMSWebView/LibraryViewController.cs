@@ -6,6 +6,9 @@ using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using Dynamo.Extensions;
+using Dynamo.LibraryViewExtensionMSWebView.Handlers;
+using Dynamo.LibraryViewExtensionMSWebView.ViewModels;
+using Dynamo.LibraryViewExtensionMSWebView.Views;
 using Dynamo.Logging;
 using Dynamo.Models;
 using Dynamo.Search;
@@ -13,14 +16,11 @@ using Dynamo.Search.SearchElements;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Interfaces;
 using Dynamo.Wpf.ViewModels;
-using LibraryViewExtensionMSWebView.Handlers;
-using LibraryViewExtensionMSWebView.ViewModels;
-using LibraryViewExtensionMSWebView.Views;
 using Microsoft.Toolkit.Wpf.UI.Controls;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace LibraryViewExtensionMSWebView
+namespace Dynamo.LibraryViewExtensionMSWebView
 {
     public interface IEventController
     {
@@ -193,10 +193,10 @@ namespace LibraryViewExtensionMSWebView
 
             //TODO move somewhere reusable.
             var lib_min_template = "LIBPLACEHOLDER";
-            var libHTMLURI = "Dynamo.LibraryUI.web.library.library.html";
+            var libHTMLURI = "Dynamo.LibraryViewExtensionMSWebView.web.library.library.html";
             var stream = LoadResource(libHTMLURI);
 
-            var libMinURI = "Dynamo.LibraryUI.web.library.librarie.min.js";
+            var libMinURI = "Dynamo.LibraryViewExtensionMSWebView.web.library.librarie.min.js";
             var libminstream = LoadResource(libMinURI);
             var libminstring = "NOTHING LOADED";
             var libraryHTMLPage = "HELLO WORLD";
@@ -524,11 +524,11 @@ namespace LibraryViewExtensionMSWebView
 
         private void InitializeResourceProviders(DynamoModel model, LibraryViewCustomization customization)
         {
-            var dllProvider = new DllResourceProvider("http://localhost/dist", "Dynamo.LibraryUI.web.library");
+            var dllProvider = new DllResourceProvider("http://localhost/dist", "Dynamo.LibraryViewExtensionMSWebView.web.library");
             iconProvider = new IconResourceProvider(model.PathManager, dllProvider);
             nodeProvider = new NodeItemDataProvider(model.SearchModel, iconProvider);
             searchResultDataProvider = new SearchResultDataProvider(model.SearchModel, iconProvider);
-            layoutProvider = new LayoutSpecProvider(customization, iconProvider, "Dynamo.LibraryUI.web.library.layoutSpecs.json");
+            layoutProvider = new LayoutSpecProvider(customization, iconProvider, "Dynamo.LibraryViewExtensionMSWebView.web.library.layoutSpecs.json");
 
         }
 

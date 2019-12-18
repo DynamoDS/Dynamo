@@ -7,7 +7,7 @@ using Dynamo.Models;
 using Dynamo.Wpf.Extensions;
 using Dynamo.Wpf.Interfaces;
 
-namespace LibraryViewExtensionMSWebView
+namespace Dynamo.LibraryViewExtensionMSWebView
 {
     /// <summary>
     /// This extension duplicates many of the types in the CEF based LibraryViewExtension
@@ -25,7 +25,7 @@ namespace LibraryViewExtensionMSWebView
             get { return "63cd0755-4a36-4670-ae89-b68e772633c4"; }
         }
 
-        public static readonly string ExtensionName = "LibraryUI";
+        public static readonly string ExtensionName = "LibraryUI2";
 
         public string Name
         {

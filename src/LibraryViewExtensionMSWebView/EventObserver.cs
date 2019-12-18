@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading;
 
-namespace LibraryViewExtensionMSWebView
+namespace Dynamo.LibraryViewExtensionMSWebView
 {
     /// <summary>
     /// A class that observes an event and notifies the clients with a transformed 

@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 using Dynamo.Engine;
 using Dynamo.Interfaces;
 
-namespace LibraryViewExtensionMSWebView.Handlers
+namespace Dynamo.LibraryViewExtensionMSWebView.Handlers
 {
     /// <summary>
     /// Implements resource provider for icons

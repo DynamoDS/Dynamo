@@ -5,10 +5,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Dynamo.Wpf.Interfaces;
-using LibraryViewExtensionMSWebView.Handlers;
+using Dynamo.LibraryViewExtensionMSWebView.Handlers;
 using Newtonsoft.Json;
 
-namespace LibraryViewExtensionMSWebView
+namespace Dynamo.LibraryViewExtensionMSWebView
 {
     class LibraryViewCustomization : ILibraryViewCustomization, IDisposable
     {

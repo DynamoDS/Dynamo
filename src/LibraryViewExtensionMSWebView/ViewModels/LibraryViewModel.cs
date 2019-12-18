@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using Dynamo.Core;
 
-namespace LibraryViewExtensionMSWebView.ViewModels
+namespace Dynamo.LibraryViewExtensionMSWebView.ViewModels
 {
     /// <summary>
     /// Library View Loader

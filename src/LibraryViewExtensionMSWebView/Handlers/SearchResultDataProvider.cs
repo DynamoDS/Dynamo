@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using Dynamo.Search;
 using Dynamo.Search.SearchElements;
 
-namespace LibraryViewExtensionMSWebView.Handlers
+namespace Dynamo.LibraryViewExtensionMSWebView.Handlers
 {
     class LoadedTypeItemExtended : LoadedTypeItem
     {
