@@ -18,6 +18,7 @@ namespace Dynamo.WorkspaceDependency
     public class WorkspaceDependencyViewExtension : IViewExtension, ILogSource
     {
         internal MenuItem packageDependencyMenuItem;
+        private String extensionName = "Workspace References";
 
         internal WorkspaceDependencyView DependencyView
         {
@@ -34,7 +35,7 @@ namespace Dynamo.WorkspaceDependency
         {
             get
             {
-                return "Workspace References";
+                return extensionName;
             }
         }
 
@@ -81,9 +82,12 @@ namespace Dynamo.WorkspaceDependency
             this.MessageLogged?.Invoke(msg);
         }
 
-        internal void OnCloseExtension()
+        internal void OnCloseExtension(String extensionTabName)
         {
-            this.packageDependencyMenuItem.IsChecked = false;
+            if (extensionTabName.Equals(extensionName))
+            {
+                this.packageDependencyMenuItem.IsChecked = false;
+            }  
         }
 
         public void Loaded(ViewLoadedParams viewLoadedParams)

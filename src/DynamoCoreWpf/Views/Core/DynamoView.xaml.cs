@@ -69,7 +69,7 @@ namespace Dynamo.Controls
         private ShortcutToolbar shortcutBar;
         private bool loaded = false;
         // This event is raised on the dynamo view when an extension tab is closed.
-        internal static event Action CloseExtension;
+        internal static event Action<String> CloseExtension;
 
         internal ObservableCollection<TabItem> TabItems { set; get; } = new ObservableCollection<TabItem>();
 
@@ -260,7 +260,7 @@ namespace Dynamo.Controls
         {
             string tabName = (sender as Button).DataContext.ToString();
 
-            CloseExtension?.Invoke();
+            CloseExtension?.Invoke(tabName);
 
             TabItem tabitem = TabItems.OfType<TabItem>().SingleOrDefault(n => n.Header.ToString() == tabName);
             CloseTab(tabitem);

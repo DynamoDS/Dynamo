@@ -174,14 +174,15 @@ namespace Dynamo.WorkspaceDependency
 
         /// <summary>
         /// This event is raised when an extension tab is closed and this event 
-        /// is subscired by the Workspace dependency view extension
+        /// is subscribed by the Workspace dependency view extension.
+        /// <param name="extensionTabName"></param>
         /// </summary>
-        internal event Action OnExtensionTabClosed;
-        private void OnExtensionTabClosedHandler()
+        internal event Action<String> OnExtensionTabClosed;
+        private void OnExtensionTabClosedHandler(String extensionTabName)
         {
             if (OnExtensionTabClosed != null)
             {
-                OnExtensionTabClosed();
+                OnExtensionTabClosed(extensionTabName);
             }
         }
 
