@@ -51,10 +51,13 @@ namespace Dynamo.WorkspaceDependency
             set
             {
                 hasDependencyIssue = value;
-                if (hasDependencyIssue && !dependencyViewExtension.packageDependencyMenuItem.IsChecked)
+                if (hasDependencyIssue)
                 {
                     loadedParams.AddToExtensionsSideBar(dependencyViewExtension, this);
-                    dependencyViewExtension.packageDependencyMenuItem.IsChecked = true;
+                    if (dependencyViewExtension.workspaceReferencesMenuItem != null && !dependencyViewExtension.workspaceReferencesMenuItem.IsChecked)
+                    {
+                        dependencyViewExtension.workspaceReferencesMenuItem.IsChecked = true;
+                    }
                 }
             }
         }

@@ -17,7 +17,7 @@ namespace Dynamo.WorkspaceDependency
     /// </summary>
     public class WorkspaceDependencyViewExtension : IViewExtension, ILogSource
     {
-        internal MenuItem packageDependencyMenuItem;
+        internal MenuItem workspaceReferencesMenuItem;
         private String extensionName = "Workspace References";
 
         internal WorkspaceDependencyView DependencyView
@@ -86,7 +86,7 @@ namespace Dynamo.WorkspaceDependency
         {
             if (extensionTabName.Equals(extensionName))
             {
-                this.packageDependencyMenuItem.IsChecked = false;
+                this.workspaceReferencesMenuItem.IsChecked = false;
             }  
         }
 
@@ -104,24 +104,24 @@ namespace Dynamo.WorkspaceDependency
             DependencyView.OnExtensionTabClosed += OnCloseExtension;
 
             // Adding a button in view menu to refresh and show manually
-            packageDependencyMenuItem = new MenuItem { Header = Resources.MenuItemString, IsCheckable = true, IsChecked = false };
-            packageDependencyMenuItem.Click += (sender, args) =>
+            workspaceReferencesMenuItem = new MenuItem { Header = Resources.MenuItemString, IsCheckable = true, IsChecked = false };
+            workspaceReferencesMenuItem.Click += (sender, args) =>
             {
-                if (packageDependencyMenuItem.IsChecked)
+                if (workspaceReferencesMenuItem.IsChecked)
                 {
                     // Refresh dependency data
                     DependencyView.DependencyRegen(viewLoadedParams.CurrentWorkspaceModel as WorkspaceModel);
                     viewLoadedParams.AddToExtensionsSideBar(this, DependencyView);
-                    packageDependencyMenuItem.IsChecked = true;
+                    workspaceReferencesMenuItem.IsChecked = true;
                 }
                 else
                 {
                     viewLoadedParams.CloseExtensioninInSideBar(this);
-                    packageDependencyMenuItem.IsChecked = false;
+                    workspaceReferencesMenuItem.IsChecked = false;
                 }
 
             };
-            viewLoadedParams.AddMenuItem(MenuBarType.View, packageDependencyMenuItem);
+            viewLoadedParams.AddMenuItem(MenuBarType.View, workspaceReferencesMenuItem);
         }
 
     }
