@@ -167,7 +167,7 @@ namespace DynamoCoreWpfTests
 
             var initialNum = View.TabItems.Count;
 
-            // Adding the workspace dependency view extension will 
+            // Adding the workspace references extension will 
             // not add a dup tab in the extensions side bar
             extensionManager.Add(viewExtension);
             Assert.AreEqual(initialNum, View.TabItems.Count);
