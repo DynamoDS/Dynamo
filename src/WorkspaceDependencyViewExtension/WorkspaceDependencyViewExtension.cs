@@ -54,6 +54,7 @@ namespace Dynamo.WorkspaceDependency
         /// </summary>
         public void Dispose()
         {
+            DependencyView.OnExtensionTabClosed -= OnCloseExtension;
         }
 
 
@@ -96,7 +97,7 @@ namespace Dynamo.WorkspaceDependency
                 DependencyView.DependencyRegen(viewLoadedParams.CurrentWorkspaceModel as WorkspaceModel);
             };
 
-            viewLoadedParams.OnExtensionTabClosed += OnCloseExtension;
+            DependencyView.OnExtensionTabClosed += OnCloseExtension;
 
             // Adding a button in view menu to refresh and show manually
             packageDependencyMenuItem = new MenuItem { Header = Resources.MenuItemString, IsCheckable = true, IsChecked = false };

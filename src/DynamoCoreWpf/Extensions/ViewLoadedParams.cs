@@ -83,7 +83,6 @@ namespace Dynamo.Wpf.Extensions
             dynamoMenu = dynamoView.titleBar.ChildOfType<Menu>();
             ViewStartupParams = new ViewStartupParams(dynamoVM);
             DynamoSelection.Instance.Selection.CollectionChanged += OnSelectionCollectionChanged;
-            DynamoView.CloseExtension += this.OnExtensionTabClosedHandler;
         }
 
         public void AddMenuItem(MenuBarType type, MenuItem menuItem, int index = -1)
@@ -148,18 +147,6 @@ namespace Dynamo.Wpf.Extensions
             }
         }
 
-        /// <summary>
-        /// This event is raised when an extension tab is closed and this event 
-        /// is subscired by the Workspace dependency view extension
-        /// </summary>
-        internal event Action OnExtensionTabClosed;
-        private void OnExtensionTabClosedHandler()
-        {
-            if (OnExtensionTabClosed != null)
-            {
-                OnExtensionTabClosed();
-            }
-        }
 
         private void AddItemToMenu(MenuBarType type, Control itemToAdd, int index)
         {

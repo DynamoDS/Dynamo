@@ -6,6 +6,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using Dynamo.Controls;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Logging;
 using Dynamo.Utilities;
@@ -168,6 +169,20 @@ namespace Dynamo.WorkspaceDependency
             packageInstaller = p.PackageInstaller;
             dependencyViewExtension = viewExtension;
             DependencyRegen(currentWorkspace);
+            DynamoView.CloseExtension += this.OnExtensionTabClosedHandler;
+        }
+
+        /// <summary>
+        /// This event is raised when an extension tab is closed and this event 
+        /// is subscired by the Workspace dependency view extension
+        /// </summary>
+        internal event Action OnExtensionTabClosed;
+        private void OnExtensionTabClosedHandler()
+        {
+            if (OnExtensionTabClosed != null)
+            {
+                OnExtensionTabClosed();
+            }
         }
 
         /// <summary>
@@ -248,6 +263,7 @@ namespace Dynamo.WorkspaceDependency
             loadedParams.CurrentWorkspaceChanged -= OnWorkspaceChanged;
             loadedParams.CurrentWorkspaceCleared -= OnWorkspaceCleared;
             WorkspaceModel.DummyNodesReloaded -= TriggerDependencyRegen;
+            DynamoView.CloseExtension -= this.OnExtensionTabClosedHandler;
         }
 
         private void Refresh_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
