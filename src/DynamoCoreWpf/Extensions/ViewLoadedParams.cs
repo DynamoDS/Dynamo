@@ -147,7 +147,6 @@ namespace Dynamo.Wpf.Extensions
             }
         }
 
-
         private void AddItemToMenu(MenuBarType type, Control itemToAdd, int index)
         {
             if (dynamoMenu == null) return;
