@@ -152,7 +152,7 @@ namespace Dynamo.Wpf.Extensions
         /// This event is raised when an extension tab is closed and this event 
         /// is subscired by the Workspace dependency view extension
         /// </summary>
-        public event Action OnExtensionTabClosed;
+        internal event Action OnExtensionTabClosed;
         private void OnExtensionTabClosedHandler()
         {
             if (OnExtensionTabClosed != null)
