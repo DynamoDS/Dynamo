@@ -17,7 +17,7 @@ namespace Dynamo.WorkspaceDependency
     /// </summary>
     public class WorkspaceDependencyViewExtension : IViewExtension, ILogSource
     {
-        private MenuItem packageDependencyMenuItem;
+        internal MenuItem packageDependencyMenuItem;
 
         internal WorkspaceDependencyView DependencyView
         {
@@ -74,9 +74,15 @@ namespace Dynamo.WorkspaceDependency
         }
 
         public event Action<ILogMessage> MessageLogged;
+
         internal void OnMessageLogged(ILogMessage msg)
         {
             this.MessageLogged?.Invoke(msg);
+        }
+
+        internal void OnCloseExtension()
+        {
+            this.packageDependencyMenuItem.IsChecked = false;
         }
 
         public void Loaded(ViewLoadedParams viewLoadedParams)
@@ -90,6 +96,8 @@ namespace Dynamo.WorkspaceDependency
                 DependencyView.DependencyRegen(viewLoadedParams.CurrentWorkspaceModel as WorkspaceModel);
             };
 
+            viewLoadedParams.OnExtensionTabClosed += OnCloseExtension;
+
             // Adding a button in view menu to refresh and show manually
             packageDependencyMenuItem = new MenuItem { Header = Resources.MenuItemString, IsCheckable = true, IsChecked = false };
             packageDependencyMenuItem.Click += (sender, args) =>
@@ -99,10 +107,12 @@ namespace Dynamo.WorkspaceDependency
                     // Refresh dependency data
                     DependencyView.DependencyRegen(viewLoadedParams.CurrentWorkspaceModel as WorkspaceModel);
                     viewLoadedParams.AddToExtensionsSideBar(this, DependencyView);
+                    packageDependencyMenuItem.IsChecked = true;
                 }
                 else
                 {
                     viewLoadedParams.CloseExtensioninInSideBar(this);
+                    packageDependencyMenuItem.IsChecked = false;
                 }
 
             };

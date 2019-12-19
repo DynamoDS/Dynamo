@@ -9,7 +9,6 @@ using Dynamo.Selection;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Visualization;
-using Dynamo.Wpf.ViewModels;
 using Dynamo.Wpf.ViewModels.Watch3D;
 
 namespace Dynamo.Wpf.Extensions
@@ -84,6 +83,7 @@ namespace Dynamo.Wpf.Extensions
             dynamoMenu = dynamoView.titleBar.ChildOfType<Menu>();
             ViewStartupParams = new ViewStartupParams(dynamoVM);
             DynamoSelection.Instance.Selection.CollectionChanged += OnSelectionCollectionChanged;
+            DynamoView.CloseExtension += this.OnExtensionTabClosedHandler;
         }
 
         public void AddMenuItem(MenuBarType type, MenuItem menuItem, int index = -1)
@@ -145,6 +145,19 @@ namespace Dynamo.Wpf.Extensions
             if (SelectionCollectionChanged != null)
             {
                 SelectionCollectionChanged(notifyCollectionChangedEventArgs);
+            }
+        }
+
+        /// <summary>
+        /// This event is raised when an extension tab is closed and this event 
+        /// is subscired by the Workspace dependency view extension
+        /// </summary>
+        public event Action OnExtensionTabClosed;
+        private void OnExtensionTabClosedHandler()
+        {
+            if (OnExtensionTabClosed != null)
+            {
+                OnExtensionTabClosed();
             }
         }
 

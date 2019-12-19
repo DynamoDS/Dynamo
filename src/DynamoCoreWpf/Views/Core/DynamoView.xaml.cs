@@ -68,6 +68,8 @@ namespace Dynamo.Controls
         internal ViewExtensionManager viewExtensionManager;
         private ShortcutToolbar shortcutBar;
         private bool loaded = false;
+        // This event is raised on the dynamo view when an extension tab is closed.
+        internal static event Action CloseExtension;
 
         internal ObservableCollection<TabItem> TabItems { set; get; } = new ObservableCollection<TabItem>();
 
@@ -210,8 +212,7 @@ namespace Dynamo.Controls
         internal void CloseTabItem(IViewExtension viewExtension)
         {
             string tabName = viewExtension.Name;
-
-            TabItem tabitem = TabItems.OfType<TabItem>().SingleOrDefault(n => n.Name == tabName);
+            TabItem tabitem = TabItems.OfType<TabItem>().SingleOrDefault(n => n.Header.ToString() == tabName);
             CloseTab(tabitem);
         }
 
@@ -245,7 +246,6 @@ namespace Dynamo.Controls
 
                 //Insert the tab at the end
                 TabItems.Insert(count, tab);
-                TabItems = TabItems;
 
                 tabDynamic.DataContext = TabItems;
                 tabDynamic.SelectedItem = tab;
@@ -258,9 +258,11 @@ namespace Dynamo.Controls
         // This method triggers the close operation on the selected tab. 
         private void CloseTab(object sender, RoutedEventArgs e)
         {
-            string tabName = (sender as Button).CommandParameter.ToString();
+            string tabName = (sender as Button).DataContext.ToString();
 
-            TabItem tabitem = TabItems.OfType<TabItem>().SingleOrDefault(n => n.Name == tabName);
+            CloseExtension?.Invoke();
+
+            TabItem tabitem = TabItems.OfType<TabItem>().SingleOrDefault(n => n.Header.ToString() == tabName);
             CloseTab(tabitem);
         }
 
@@ -275,21 +277,24 @@ namespace Dynamo.Controls
             // get the selected tab
             TabItem selectedTab = tabDynamic.SelectedItem as TabItem;
 
-            // clear tab control binding and bind to the new tab-list. 
-            tabDynamic.DataContext = null;
-            TabItems.Remove(tabToBeRemoved);
-            TabItems = TabItems;
-            tabDynamic.DataContext = TabItems;
-
-            // Highlight previously selected tab. if that is removed then Highlight the first tab
-            if (selectedTab.Equals(tabToBeRemoved))
+            if (tabToBeRemoved != null)
             {
-                if (TabItems.Count > 0)
+                // clear tab control binding and bind to the new tab-list. 
+                tabDynamic.DataContext = null;
+                TabItems.Remove(tabToBeRemoved);
+                TabItems = TabItems;
+                tabDynamic.DataContext = TabItems;
+
+                // Highlight previously selected tab. if that is removed then Highlight the first tab
+                if (selectedTab.Equals(tabToBeRemoved))
                 {
-                    selectedTab = TabItems[0];
+                    if (TabItems.Count > 0)
+                    {
+                        selectedTab = TabItems[0];
+                    }
                 }
+                tabDynamic.SelectedItem = selectedTab;
             }
-            tabDynamic.SelectedItem = selectedTab;
         }
 
         // This event is triggered when the tabitems list is changed and will show/hide the right side bar accordingly.
